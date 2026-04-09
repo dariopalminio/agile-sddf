@@ -26,37 +26,30 @@ La dimensión **F (Formato)** evalúa qué tan cerca está la historia del templ
 ## ✅ Criterios de aceptación
 
 ### Escenario principal – {título}
-```gherkin
 Dado {contexto}
   Y {condición adicional}
 Cuando {acción}
 Entonces {resultado}
   Y {otro resultado}
-```
 
 ### Escenario alternativo / error – {título}
-```gherkin
 Dado {contexto}
 Cuando {acción inválida}
 Entonces {error o comportamiento alternativo}
   Pero {excepción}
-```
 
 ### Escenario con datos (Scenario Outline) – opcional
-```gherkin
 Escenario: {título}
   Dado que el usuario tiene el rol "<rol>"
-  ...
 Ejemplos:
   | col1 | col2 |
   | val1 | val2 |
-```
 
 ## ⚙️ Criterios no funcionales (opcional)
 ## 📎 Notas / contexto adicional (opcional)
 ```
 
-Una historia que no usa este template puede igual ser evaluada, pero obtendrá scores más bajos en F en función de cuánto se aleja de esta estructura.
+Una historia que no usa la plantilla story-gherkin-template.md (o este template) puede igual ser evaluada, pero obtendrá scores más bajos en F en función de cuánto se aleja de esta estructura.
 
 ---
 
