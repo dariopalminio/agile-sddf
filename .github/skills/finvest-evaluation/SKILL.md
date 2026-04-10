@@ -1,10 +1,10 @@
 ---
 name: finvest-evaluation
-description: "Evalúa la calidad de una historia de usuario aplicando la rúbrica FINVEST (Formato + INVEST) con escala Likert 1–5. Produce un score por dimensión, score global, decisión (Ready / Refinar / Rechazar) y recomendaciones accionables."
+description: "Evalúa la calidad de una historia de usuario aplicando la rúbrica FINVEST (Formato + INVEST) con escala Likert 1–5. Produce un score por dimensión, score global, decisión (APROBADA / REFINAR / RECHAZAR) y recomendaciones accionables."
 ---
 # Skill: /finvest-evaluation
 
-Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** (Format + INVEST) con escala Likert 1–5. Produce un score por dimensión, score global, decisión (Ready / Refinar / Rechazar) y recomendaciones accionables.
+Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** (Format + INVEST) con escala Likert 1–5. Produce un score por dimensión, score global, decisión (APROBADA / REFINAR / RECHAZAR) y recomendaciones accionables.
 
 **Cuándo usar este skill:**
 - Antes de llevar una historia de usuario a sprint planning
@@ -78,7 +78,7 @@ INVEST_Score = (I + N + V + E + S + T) / 6
 FINVEST_Score = (F_score + INVEST_Score) / 2
 ```
 
-**Regla crítica:** Si cualquier dimensión INVEST tiene score = 1 → Decisión automática **Rechazar**, independientemente del score total.
+**Regla crítica:** Si cualquier dimensión INVEST tiene score = 1 → Decisión automática **RECHAZAR**, independientemente del score total.
 
 ---
 
@@ -86,11 +86,11 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 
 | Condición | Decisión |
 |-----------|----------|
-| F_score < 2.5 | **Rechazar** — Formato insuficiente |
-| F_score ≥ 2.5 y alguna dimensión INVEST = 1 | **Rechazar** — Dimensión crítica |
-| F_score ≥ 2.5 y FINVEST_Score ≥ 4.0 | **Ready** |
-| F_score ≥ 2.5 y 3.0 ≤ FINVEST_Score < 4.0 | **Refinar** |
-| F_score ≥ 2.5 y FINVEST_Score < 3.0 | **Rechazar** — Score insuficiente |
+| F_score < 2.5 | **RECHAZAR** — Formato insuficiente |
+| F_score ≥ 2.5 y alguna dimensión INVEST = 1 | **RECHAZAR** — Dimensión crítica |
+| F_score ≥ 2.5 y FINVEST_Score ≥ 4.0 | **APROBADA** |
+| F_score ≥ 2.5 y 3.0 ≤ FINVEST_Score < 4.0 | **REFINAR** |
+| F_score ≥ 2.5 y FINVEST_Score < 3.0 | **RECHAZAR** — Score insuficiente |
 
 ---
 
@@ -225,8 +225,8 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 
 Los 3 ejemplos muestran historias escritas con el template `story-gherkin-template.md`:
 
-- `examples/example-ready.md` — Historia con secciones completas → F_score 5.0, FINVEST Score 4.4 → **Ready**
-- `examples/example-refinar.md` — Historia sin encabezados de sección ni bloques gherkin → F_score 2.5, FINVEST Score 3.0 → **Refinar**
+- `examples/example-ready.md` — Historia con secciones completas → F_score 5.0, FINVEST Score 4.4 → **APROBADA**
+- `examples/example-refinar.md` — Historia sin encabezados de sección ni bloques gherkin → F_score 2.5, FINVEST Score 3.0 → **REFINAR**
 - `examples/example-rechazar.md` — Dos casos:
-  - Caso A: Sin secciones ni Gherkin formal → F_score 1.4 → **Rechazar** por formato insuficiente
-  - Caso B: Secciones completas pero dimensiones INVEST críticas → **Rechazar** por I, E, S = 1
+  - Caso A: Sin secciones ni Gherkin formal → F_score 1.4 → **RECHAZAR** por formato insuficiente
+  - Caso B: Secciones completas pero dimensiones INVEST críticas → **RECHAZAR** por I, E, S = 1
