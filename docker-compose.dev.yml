@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: features-spec-builder-dev
+    volumes:
+      # Monta el proyecto completo para hot reload / edición en vivo
+      - .:/app
+      # Evita que el .venv local del host pise el del contenedor
+      - /app/.venv
+    stdin_open: true
+    tty: true

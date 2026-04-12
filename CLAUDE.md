@@ -2,12 +2,19 @@
 
 Sistema cliente agentico minimalista que automatiza la especificación de features e historias de usuario solo con skills y templates (scripts y agentes si es necesario) para crear historias de usuario, dividirlas y evaluarlas.
 
+# Entorno de Desarrollo con Docker + VSCode Dev Containers
+🎯 Objetivo
+Tener un entorno de desarrollo completamente aislado usando Docker, donde:
+* El proyecto de agentes IA corre dentro de un contenedor
+* VSCode se conecta directamente al contenedor
+* Hot reload funciona correctamente
+* No se ensucia el sistema host
+
 ## Project structure
 
 ```
 features_spec_builder/   # main package
 tests/                   # pytest tests
-pyproject.toml           # project metadata and dependencies
 features_spec_builder/
   ├── docs/specs/features/              # Directorio de salida de documentos generados
   ├── AGENTS.md                        # Convención .agent/ — compatible con Codex, Cursor, etc.
