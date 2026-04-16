@@ -1,3 +1,5 @@
+![project-spec-factory](assets\logo\agile-sddf-logo-v1.png)
+
 # features-spec-builder
 
 Sistema agentico minimalista para crear, dividir y evaluar historias de usuario de alta calidad usando skills de Claude Code.

@@ -1,18 +1,4 @@
-# OpenSpec
-openspec/
-.claude/commands/opsx
-.claude/skills/openspec-apply-change
-.claude/skills/openspec-archive-change
-.claude/skills/openspec-explore
-.claude/skills/openspec-propose
-.github/skills/openspec-apply-change
-.github/skills/openspec-archive-change
-.github/skills/openspec-explore
-.github/skills/openspec-propose
-.github/prompts/opsx-apply.prompt.md
-.github/prompts/opsx-archive.prompt.md
-.github/prompts/opsx-explore.prompt.md
-.github/prompts/opsx-propose.prompt.md
+
 
 # Skills
 .claude/skills/skill-creator
