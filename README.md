@@ -181,3 +181,108 @@ Entonces {error}
 - Bill Wake — *INVEST in Good Stories* (2003)
 - Richard Lawrence & Peter Green — *Humanizing Work Guide to Splitting User Stories*
 - User Experience Mapping — Peter W. Szabo
+
+# cli-requirement-from-code — Instrucciones para Claude Code
+
+Este directorio contiene el skill `/requirement-from-code` para Claude Code. Úsalo en cualquier repositorio de código para generar automáticamente una especificación de requerimientos a partir del código fuente.
+
+## Cómo usar el skill
+
+Desde la raíz del repositorio que quieras analizar, ejecuta:
+
+```
+/requirement-from-code
+```
+
+### Opciones
+
+| Opción | Descripción |
+|---|---|
+| `--focus <path>` | Limita el análisis a un directorio o módulo específico |
+| `--update` | Re-ejecuta el análisis actualizando una `requirement-spec.md` ya existente |
+| `--verbose` | Muestra el razonamiento de cada agente y estadísticas del análisis |
+
+## Salida generada
+
+El skill crea el archivo `docs/specs/project/requirement-spec.md` con:
+
+- **Stack y arquitectura** detectados automáticamente
+- **Features** agrupadas por dominio con nivel de confianza
+- **Reglas de negocio** en formato `DADO / CUANDO / ENTONCES` con referencia al archivo y línea de código
+- **Mapa de navegación ASCII** de rutas, pantallas y endpoints
+- **Gaps** — secciones no inferibles marcadas con `<!-- PENDING MANUAL REVIEW -->` y preguntas sugeridas
+
+## Template personalizado
+
+Si quieres controlar la estructura del documento de salida, coloca un archivo `requirement-spec-template.md` en la raíz del repositorio a analizar. El skill lo detecta automáticamente y lo usa como base. Sin él, aplica el template interno por defecto.
+
+## Agentes que se ejecutan
+
+El skill lanza un pipeline multi-agente de forma automática. No necesitas invocarlos manualmente:
+
+| Agente | Qué analiza |
+|---|---|
+| `arch-reverse-engineer` | Estructura técnica, capas, frameworks, patrones, dependencias |
+| `product-discovery` | Features desde la perspectiva del usuario: rutas, endpoints, textos de UI |
+| `business-rules-analyst` | Reglas de negocio, validaciones, permisos, workflows |
+| `ux-flow-mapper` | Mapa de navegación: pantallas, rutas, guards, entry points |
+| `requirements-synthesizer` | Fusiona todos los outputs y genera el documento final |
+
+Los primeros cuatro agentes corren en paralelo. El synthesizer corre al final con todos sus outputs.
+
+## Niveles de confianza
+
+Cada inferencia en el documento generado incluye un nivel de confianza:
+
+| Rango | Significado |
+|---|---|
+| 0.9 – 1.0 | Extraído directamente del código |
+| 0.7 – 0.9 | Inferido con patrones claros |
+| 0.5 – 0.7 | Inferido con análisis semántico |
+| < 0.5 | Sugerencia — revisar manualmente |
+
+## Restricciones
+
+- Solo análisis estático: no ejecuta código del repositorio.
+- No detecta features planeadas pero no implementadas.
+- La precisión depende de convenciones de nomenclatura del proyecto analizado.
+- Frameworks con metaprogramación intensiva pueden producir inferencias de baja confianza.
+ es un documento vivo y puede ser actualizada con feedback tuyo, o del usuarios. Puedes sugerir mejora arquitectura de solución, nuevos agentes, skills, o cambios en el template. El objetivo es crear una herramienta práctica y efectiva para la ingeniería inversa de requerimientos desde código.
+ 
+ # Definición y Uso de Agentes, Skills y Comandos
+
+Los **agentes**, las **skills** y los **comandos** son elementos fundamentales para estructurar un el equipo de inteligencia artificial automatizado para Agile Spec-Driven Development Framework (SDDF). Aquí tienes la definición y el uso de cada uno:
+
+## Agentes
+
+Los agentes funcionan como **pequeños empleados virtuales especializados** en tareas concretas dentro de un proyecto, como por ejemplo un agente que hace discovery, otro que redacta especificaciones o uno que diseña arquitectura. Técnicamente, son archivos de texto (Markdown) que contienen instrucciones de roly contexto específico sobre cómo deben actuar. Estos agentes pueden trabajar de forma autónoma, simultánea o en equipo, entregando resultados listos para usar.
+
+## Comandos
+
+Evitamos usar comandos.
+
+### Comandos en Opencode
+
+Los comandos en OpenCode se ubican en ".opencode/commands/": Permite máxima personalización para un desarrollo acelerado. Puedes usar argumentos ($ARGUMENTS), inyectar resultados de comandos Bash (!), y referenciar archivos (@), lo que te permite construir flujos de automatización complejos.
+
+### Comandos en Claude
+
+Los comandos en Claude se ubican en ".claude/commands/". En Claude evitamos usar comandos por se más bien legacy ("precede al sistema de skills actual"). En su lugar, recomendamos usar skills para encapsular la lógica de ejecución, lo que permite una mayor flexibilidad y reutilización. Sin embargo, si decides usar comandos, asegúrate de que estén bien documentados y organizados para facilitar su uso.
+
+## Skills (Habilidades)
+
+Los skills son las **habilidades personalizadas o herramientas** que construyes para dárselas a tus agentes. Se definen mediante documentos de texto que actúan como instrucciones continuas para dotar al agente de una especialización deseada, indicándole exactamente cómo debe comportarse o ejecutar una acción exclusiva. Gracias a las skills, los agentes pueden realizar tareas de forma autónoma, como redactar una especificación siguiendo una plantilla, conectarse a aplicaciones externas o aplicar técnicas específicas de escritura.
+
+## Modelo de un solo nivel de delegación
+
+En este modelo, el skill actúa como el punto de entrada y coordinador que invoca agentes especialistas. El skill es responsable de orquestar la ejecución de los agentes, asegurándose de que cada uno realice su tarea específica y luego recopile los resultados para generar la salida final. Este enfoque mantiene la estructura simple y clara, evitando la complejidad de múltiples niveles de delegación.
+
+Los skills son el punto de entrada y el coordinador que invoca agentes especialistas. Es el patrón establecido en este proyecto.
+
+skill (entry point + coordinator/orquestador)
+    └── agent A (Subagentes A)
+    └── agent B (Subagentes B)
+    └── agent C (Subagentes C)
+
+Esto es acorde a la arquitectura de Claude Code donde la sesión principal actúa como agente primario que orquesta la ejecución de skills y agentes especializados (Subagentes), manteniendo una estructura plana (Sesión → Subagente), clara y eficiente sin necesidad de múltiples niveles de delegación (agentes en .claude/agents/, invocados por la sesión principal).
+
