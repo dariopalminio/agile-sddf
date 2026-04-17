@@ -10,7 +10,9 @@ Sistema multiagente minimalista que automatiza el ciclo completo de especificaci
 **quienes** sufren de procesos manuales, prompts inconsistentes y falta de estructura para transformar ideas en especificaciones precisas que la IA pueda ejecutar de forma predecible,
 **nuestro producto** es un sistema que extrae dinámicamente la estructura de los templates en tiempo de ejecución para generar preguntas contextuales, garantizando que el framework evolucione junto con tus prácticas sin modificar lógica hardcodeada. Integra nativamente con OpenSpec y SpecKit, potenciando sus capacidades con agentes y skills personalizables.
 
-## Niveles de flujos de trabajo
+## Fundamentos del Framework (Conceptual)
+
+### Niveles de flujos de trabajo
 
 Este framework propone y soporta flujos de trabajo a diferentes niveles de granularidad, desde la visión general del proyecto hasta tareas específicas:
 
@@ -20,7 +22,7 @@ Este framework propone y soporta flujos de trabajo a diferentes niveles de granu
 
 Estos niveles tienen cierta semejanza con la jerarquía tradicional de proyectos ágiles (Project --> Epic --> Story), con el modelo "Flight Levels" de Klaus Leopold (L3 -estratégico- --> L2 -coordinación- --> L1 -táctico-) y con los tres niveles que se suelen utilizar en herramientas como Jira software (Initiative --> Epic --> Story).
 
-## Elementos de trabajo (Worki-tems)
+### Elementos de trabajo (Worki-tems)
 
 Los elementos de trabajo (Worki-tems) representan las unidades de valor o tareas que se gestionan dentro de cada nivel de flujo de trabajo. Cada tipo de elemento de trabajo tiene un propósito específico y se organiza jerárquicamente para reflejar la estructura del proyecto. En este framework, los tipos de elementos de trabajo se organizan de la siguiente manera:
 
@@ -28,7 +30,7 @@ Los elementos de trabajo (Worki-tems) representan las unidades de valor o tareas
 * **Release:** Independientemente que con qué nombre lo implementes en tu herramienta u organización, el Release representa un entregable (Epic) o release específico dentro de un proyecto, que se divide en features o stories. Es el contenedor de nivel medio dentro del framework. El release a nivel de gestión de trabajo es independiente del release real y versión de software en herramientas como github. Un entregable Release puede ser liberado de un tirón (acumulativo) o de manera incremental (en varios releases o merges al main). El Release representa un conjunto de features (stories) liberables a producción.
 * **Story:** Independientemente que con qué nombre lo implementes en tu herramienta u organización, la Story representa una feature o un trozo de feature o una historia de usuario o tarea específica de desarrollo dentro de un release, que se puede dividir en subtareas, specs o tareas técnicas.
 
-## Tipos de Story
+### Tipos de Story
 
 Las historias Story pueden ser de diferentes tipos según su propósito o naturaleza. En este framework, se proponen los siguientes tipos de Story:
 
@@ -37,7 +39,7 @@ Las historias Story pueden ser de diferentes tipos según su propósito o natura
 * **Chore:** Tarea técnica no funcional (configuraciones, refactorización, etc.).
 * **Hotfix:** Corrección urgente en producción (flujo especial).
 
-## Jerarquía de elementos de trabajo (Worki-tems)
+### Jerarquía de elementos de trabajo (Worki-tems)
 
 El modelo jerárquico de elementos de trabajo (Worki-tems) se organiza en tres niveles, reflejando la estructura típica de proyectos ágiles:
 
@@ -47,7 +49,7 @@ Project (project)
         └── Story (stories)
 ```
 
-## Documentos de especificaciones
+### Documentos de especificaciones
 
 La documentación generada por el framework se organiza en tres carpetas principales, cada una correspondiente a un nivel de flujo de trabajo:
 
@@ -55,6 +57,33 @@ La documentación generada por el framework se organiza en tres carpetas princip
 * **L2 - Release:** `docs\specs\releases` — para documentos relacionados con entregables específicos o releases dentro del proyecto, como especificaciones de features o epics.
 * **L1 - Story:** `docs\specs\stories` — para documentos relacionados con historias de usuario individuales, como la historia de usuario en formato gherkin, criterios de aceptación, y evaluaciones de calidad de la historia.
 
+### 2. Flujo de Trabajo en repositorio de código (Git)
+
+Si bien el modelo es independiente de la estrategia de branching que utilices, proponemos una convención de ramas básica que refleja la jerarquía de elementos de trabajo para facilitar la trazabilidad y el control de versiones; y que también sirve de forma didáctica para entender los niveles de trabajo.
+
+El flujo se basa en una jerarquía de ramas de tres niveles: `main` → `release/` → (`feat/`/`fix`/`chore`).
+
+```
+main  o----------------------------------o (tag v1.0.2)
+      |                                  |
+      | git checkout -b                  | PR (de release a main)
+      |                                  |
+      v                                  |
+   release o-----------------------------o
+            |                             |
+            | git checkout -b             | PR (de feat a release)
+            |                             |
+            v                             |
+         feat o---------------------------o
+```
+
+* **main:** La rama main representa y el nivel de proyecto siendo la acumulación de releases de proyectos. La rama main termina en ambiente producción.
+* **release:** Cada rama release representa un entregable específico dentro del proyecto, que puede ser liberado de un tirón o de manera incremental. La rama release generalmente es probada en ambientes de staging (eso dependerá de tu diseño de CI/CD).
+* **feat:** Cada rama feat representa una historia de usuario o feature específica dentro de un release, que se puede dividir en subtareas o tareas técnicas o specs partes del desarrollo (operativo y táctico). Las feats acumulan los commits del desarrollo. La rama feat generalmente es probada en ambientes de desarrollo y/o testing (también dependerá de tu diseño de CI/CD).
+
+Buenas prácticas:
+* Esto respeta la "Convención de branches" recomendado [Conventional Branch](https://conventional-branch.github.io/).
+* Se recomienda usar "Convensión de Commits" [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) para mantener un historial de commits claro y estructurado, lo que facilita la generación de changelogs y la trazabilidad de cambios.
 
 ---
 
