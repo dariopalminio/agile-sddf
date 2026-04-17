@@ -279,10 +279,12 @@ En este modelo, el skill actúa como el punto de entrada y coordinador que invoc
 
 Los skills son el punto de entrada y el coordinador que invoca agentes especialistas. Es el patrón establecido en este proyecto.
 
+```
 skill (entry point + coordinator/orquestador)
     └── agent A (Subagentes A)
     └── agent B (Subagentes B)
     └── agent C (Subagentes C)
+```
 
 Esto es acorde a la arquitectura de Claude Code donde la sesión principal actúa como agente primario que orquesta la ejecución de skills y agentes especializados (Subagentes), manteniendo una estructura plana (Sesión → Subagente), clara y eficiente sin necesidad de múltiples niveles de delegación (agentes en .claude/agents/, invocados por la sesión principal).
 
