@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.1] — 2026-04-17
+
+### Changed
+- Renamed skill `finvest-evaluation` → `story-finvest-evaluation` for consistency with the `story-` prefix convention used by sibling skills (`story-creation`, `story-split`)
+  - Renamed directories in `.claude/skills/`, `.agents/skills/`, `.github/skills/`
+  - Updated `name:` and heading in all three copies of `SKILL.md`
+  - Updated all references in `story-creation`, `story-split`, `rovo/` agents, and `README.md`
+
+### Added
+- **Restricciones de entrada** section in `story-finvest-evaluation/SKILL.md`: el skill ahora ignora adjuntos de imagen (wireframes, screenshots) y evalúa únicamente el texto Markdown de la historia de usuario
+
+---
+
 ## [1.3.0] — 2026-04-17 — Reverse Engineering
 
 ### Added
