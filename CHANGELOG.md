@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.0] — 2026-04-17 — Reverse Engineering
+
+### Added
+- Skill `reverse-engineering` (invocation: `/reverse-engineering`)
+- Reverse-engineering agents to follow `reverse-engineer-<rol>` convention:
+  - `reverse-engineer-architect.agent.md`
+  - `reverse-engineer-business-analyst.agent.md`
+  - `reverse-engineer-ux-flow-mapper.agent.md`
+  - `reverse-engineer-product-discovery.agent.md`
+  - `reverse-engineer-synthesizer.agent.md`
+
+---
+
 ## [1.2.1]
 
 ### Changed
@@ -40,7 +53,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [1.1.0] — 2026-04-09 — features-spec-builder
+## [1.1.0] — 2026-04-09 — Features-spec-builder
 
 ### Added
 - **`/story-creation`** — creates a user story in story-gherkin format (Como/Quiero/Para + Gherkin) applying Mike Cohn, 3 C's, and INVEST principles
