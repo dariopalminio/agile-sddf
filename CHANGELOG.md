@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [Unreleased]
+## [1.2.1]
 
 ### Changed
 - Renamed agent files to follow `project-` prefix convention:
@@ -21,7 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [0.2.0] — 2026-04-16 — ProjectSpecFactory CLI
+## [1.2.0] — 2026-04-16 — ProjectSpecFactory CLI
 
 ### Added
 - **ProjectSpecFactory CLI pipeline** — three-skill workflow for project specification:
@@ -40,7 +40,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [0.1.0] — 2026-04-09 — features-spec-builder
+## [1.1.0] — 2026-04-09 — features-spec-builder
 
 ### Added
 - **`/story-creation`** — creates a user story in story-gherkin format (Como/Quiero/Para + Gherkin) applying Mike Cohn, 3 C's, and INVEST principles

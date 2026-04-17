@@ -5,21 +5,6 @@
       "source": "anthropics/skills",
       "sourceType": "github",
       "computedHash": "57f470f512f45bdac598e302bc72fd62bf2b649fc7fad032efe97720149cde4d"
-    },
-    "user-stories": {
-      "source": "phuryn/pm-skills",
-      "sourceType": "github",
-      "computedHash": "f430b0828102f2f54eb5d1658726e8feaacae9f04afad6ab56e5d6334e4f7dd7"
-    },
-    "user-story": {
-      "source": "deanpeters/product-manager-skills",
-      "sourceType": "github",
-      "computedHash": "9c9c5780c408ac4cd8476facb2332275609650d0b8f8f3148d766f89777ee285"
-    },
-    "user-story-splitting": {
-      "source": "deanpeters/product-manager-skills",
-      "sourceType": "github",
-      "computedHash": "40217c8fa4d5eefd90471fa011a256bd6c576e4fb318b83afb97211be399837d"
     }
   }
 }
