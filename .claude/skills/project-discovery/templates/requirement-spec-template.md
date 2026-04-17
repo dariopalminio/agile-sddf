@@ -26,7 +26,11 @@ alwaysApply: false
      1. **Para:** "¿Para quién va dirigido el producto o servicio (Personas, Usuarios, Clientes)?"
      2. **Quiénes:** "¿Qué necesidades, problemas o dolores resuelve el producto o servicio?"
      3. **Nuestro producto:** "¿Cuál es el nombre del producto?"
-     4. **Es un/a:** "¿Cuál es el tipo o categoría de producto?"
+     4. **Es un:** "¿Cuál es la categoría de software según ejecución e interfaz de usuario 
+     (Aplicación web, Aplicación móvil, Aplicación PWA, Aplicación de escritorio, API, Script, Bot, Chat-bot, CLI, AI-CLI, ETL, etc.)?
+     y ¿qué tipo de modelo de negocio o producto es 
+     (Plataforma, Aplicación de mensajería, SaaS, Superapp, Software empresarial -ERP, CRM, BPM-, Software de sistema, Middleware, 
+     Streamming, E-learning, E-commerce, Microservicio, Integración, Automatización, WMS, OMS, TMS, etc.)?"
      5. **Que provee:** "¿Beneficio clave o razón para comprarlo?"
      6. **A diferencia de:** "¿Alternativas de la competencia?"
      7. **Nuestro producto:** "¿Cuáles son las diferencias claves, ventaja única y propuesta de valor diferenciadora?"
@@ -34,7 +38,8 @@ alwaysApply: false
 - **Para:** [¿Para quién va dirigido el producto o servicio (Personas, Usuarios, Clientes)?]
 - **Quiénes:** [¿Qué necesidades, problemas o dolores resuelve el producto o servicio?]
 - **Nuestro producto:** [¿Cuál es el nombre del producto?]
-- **Es un/a:** [¿Cuál es el tipo o categoría de producto?]
+- **Es un:** software [¿Cuál es el tipo o categoría de software según ejecución e interfaz de usuario (Aplicación web, Aplicación móvil, Aplicación PWA,Aplicación de escritorio, API, Script, Bot, Chat-bot, CLI, AI-CLI, ETL)?]
+tipo [¿y qué tipo de modelo de negocio o producto es (Plataforma, Aplicación de mensajería, SaaS, Superapp, Software empresarial -ERP, CRM, BPM-, Software de sistema, Middleware, Streamming, E-learning, E-commerce, Microservicio, Integración, Automatización, WMS, OMS, TMS, etc.)?]
 - **Que provee:** [¿Beneficio clave o razón para comprarlo?]
 - **A diferencia de:** [¿Alternativas de la competencia?]
 - **Nuestro producto:** [¿Cuáles son las diferencias claves, ventaja única y propuesta de valor diferenciadora?]
