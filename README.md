@@ -18,10 +18,10 @@ Estamos descubriendo formas mejores de desarrollar software potenciados con IA. 
 
 Los valores de la Agilidad Extrema se adaptan a esta nueva realidad:
 
-💎 Valor 1: Individuos e interacciones → Orquestación Humana de Agentes IA
-💎 Valor 2: Software funcionando → Arquitectura Coherente y Especificaciones Ejecutables
-💎 Valor 3: Colaboración con el cliente → Validación Continua de Valor Híbrida
-💎 Valor 4: Respuesta ante el cambio → Adaptación Extrema y Gobernanza de Riesgos
+* 💎 Valor 1: Individuos e interacciones → Orquestación Humana de Agentes IA
+* 💎 Valor 2: Software funcionando → Arquitectura Coherente y Especificaciones Ejecutables
+* 💎 Valor 3: Colaboración con el cliente → Validación Continua de Valor Híbrida
+* 💎 Valor 4: Respuesta ante el cambio → Adaptación Extrema y Gobernanza de Riesgos
 
 ### Niveles de flujos de trabajo
 
