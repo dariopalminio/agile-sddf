@@ -1,4 +1,6 @@
-# Agilidad Extrema con Ingeniería Agéntica
+# Agilidad Agentica (Agentic Agile)
+
+## Agilidad Extrema con Ingeniería Agéntica
 
 Estamos descubriendo formas mejores de desarrollar software potenciados con IA.  Vivimos en un tiempo de "Agilidad Extrema" donde la integración de la IA generativa con Agile, potencia sus principios fundamentales. El objetivo no es eliminar la intervención humana del proceso de desarrollo, sino crear equipos altamente eficaces, potenciados por la IA, que combinen la creatividad y el pensamiento estratégico humanos con la velocidad y el poder analítico de la IA. El futuro inmediato del desarrollo de software pertenece a quienes adoptan esta sinergia.
 
@@ -11,7 +13,7 @@ Los valores de la Agilidad Extrema se adaptan a esta nueva realidad:
 💎 **Valor 3:** Colaboración con el cliente → **Validación Continua de Valor Híbrida**
 💎 **Valor 4:** Respuesta ante el cambio → **Adaptación Extrema y Gobernanza de Riesgos**
 
-# Valores de la Agilidad Extrema
+## Valores de la Agilidad Extrema
 
 💎 **Valor 1:** Individuos e interacciones → **Orquestación Humana de Agentes IA**
 La agilidad ya no depende solo de cómo colaboran los humanos entre sí, sino de cómo los humanos orquestan, gobiernan y se comunican con los agentes de IA aplicando «ingeniería agéntica». El valor se traslada de la mera interacción a la dirección estratégica: los humanos definen el "qué", el "por qué" y "cómo" crear arquitecturas agénticas, mientras la IA ejecuta el "cómo" táctico. Esto requiere habilidades de prompting, ingeniería agéntica, validación crítica y supervisión ética. La orquestación efectiva convierte a los equipos en centros de control de un ecosistema de agentes especializados.
@@ -25,7 +27,7 @@ La IA permite ciclos de feedback ultrarrápidos: los prototipos y features se ge
 💎 **Valor 4:** Respuesta ante el cambio → **Adaptación Extrema y Gobernanza de Riesgos**
 Responder al cambio ya no es solo reaccionar, sino anticiparse. La IA permite modelar escenarios, simular impactos y sugerir rutas de adaptación antes de que el cambio ocurra. El valor evoluciona hacia una gobernanza proactiva del riesgo, donde los humanos definen "guardrails" (límites y políticas) y la IA explora alternativas dentro de ellos. La adaptación extrema combina velocidad de ejecución con control estratégico, transformando la incertidumbre en una ventaja competitiva.
 
-# Metodologías en la Era de la Agilidad Extrema con Ingeniería Agéntica
+## Metodologías en la Era de la Agilidad Extrema con Ingeniería Agéntica
 
 Metodologías como Scrum, Kanban, XP, FDD, BDD y TDD siguen siendo relevantes, pero su aplicación se transforma.
 
