@@ -12,6 +12,17 @@ Sistema multiagente minimalista que automatiza el ciclo completo de especificaci
 
 ## Fundamentos del Framework (Conceptual)
 
+### Agilidad Extrema
+
+Estamos descubriendo formas mejores de desarrollar software potenciados con IA.  Vivimos en un tiempo de "Agilidad Extrema" donde la integración de la IA generativa con Agile, potencia sus principios fundamentales. El objetivo no es eliminar la intervención humana del proceso de desarrollo, sino crear equipos altamente eficaces, potenciados por la IA, que combinen la creatividad y el pensamiento estratégico humanos con la velocidad y el poder analítico de la IA. El futuro inmediato del desarrollo de software pertenece a quienes adoptan esta sinergia.
+
+Los valores de la Agilidad Extrema se adaptan a esta nueva realidad:
+
+💎 Valor 1: Individuos e interacciones → Orquestación Humana de Agentes IA
+💎 Valor 2: Software funcionando → Arquitectura Coherente y Especificaciones Ejecutables
+💎 Valor 3: Colaboración con el cliente → Validación Continua de Valor Híbrida
+💎 Valor 4: Respuesta ante el cambio → Adaptación Extrema y Gobernanza de Riesgos
+
 ### Niveles de flujos de trabajo
 
 Este framework propone y soporta flujos de trabajo a diferentes niveles de granularidad, desde la visión general del proyecto hasta tareas específicas:
