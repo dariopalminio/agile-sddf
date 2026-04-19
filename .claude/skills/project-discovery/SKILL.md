@@ -43,12 +43,12 @@ Lee `docs/specs/project/requirement-spec.md` (si existe) y detecta el valor de `
 
 ### 3. Verificar que el template existe
 
-Lee `.agent/skills/project-discovery/templates/requirement-spec-template.md`.
+Lee `docs/specs/templates/requirement-spec-template.md`.
 
 - Si el archivo **existe**: continua al paso 4.
 - Si el archivo **no existe**: informa al usuario y detén la ejecución:
 
-  > ❌ No se encontró el template requerido en `.agent/skills/project-discovery/templates/requirement-spec-template.md`.
+  > ❌ No se encontró el template requerido en `docs/specs/templates/requirement-spec-template.md`.
   > Por favor verifica que el archivo existe antes de continuar.
 
 ### 4. Fase Discovery - Delegar al project-pm
@@ -67,7 +67,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 
 Una vez completado el discovery, invoca al agente `project-architect` con la siguiente instrucción:
 
-> Lee `docs/specs/project/project-intent.md` y el resumen del discovery de la fase anterior. Lee tambien el template `.agent/skills/project-discovery/templates/requirement-spec-template.md`.
+> Lee `docs/specs/project/project-intent.md` y el resumen del discovery de la fase anterior. Lee tambien el template `docs/specs/templates/requirement-spec-template.md`.
 >
 > Si estas en flujo de retoma (documento existente en `Estado: Doing`), primero lee `docs/specs/project/requirement-spec.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >

@@ -56,4 +56,3 @@ Ejemplos:
 
 ## 📎 Notas / contexto adicional
 {Información relevante para el equipo de desarrollo o QA}
-

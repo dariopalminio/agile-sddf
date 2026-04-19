@@ -23,12 +23,13 @@ Extrae los flags del input del usuario:
 
 ### 2. Resolver ruta del template
 
-Busca el template en este orden:
-1. `requirements-spec-template.md` en el directorio `templates` de este skill (`..\skills\reverse-engineering\templates`)
-2. si no existe busca en `.agents\skills\reverse-engineering`
-3. Si no existe: usa `requirements-spec-template.md` en la raíz del proyecto `cli-reverse` (donde está este skill)
+Lee `docs/specs/templates/requirement-spec-template.md`.
 
-Guarda la ruta resuelta como `TEMPLATE_PATH` — la pasarás a todos los agentes.
+- Si el archivo **existe**: guarda la ruta como `TEMPLATE_PATH` — la pasarás a todos los agentes.
+- Si no existe: informa al usuario y detén la ejecución:
+
+  > ❌ No se encontró el template en `docs/specs/templates/requirement-spec-template.md`.
+  > Por favor verifica que el archivo existe antes de continuar.
 
 ### 3. Verificar modo --update
 

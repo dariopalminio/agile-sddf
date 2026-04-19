@@ -5,6 +5,11 @@
       "source": "anthropics/skills",
       "sourceType": "github",
       "computedHash": "57f470f512f45bdac598e302bc72fd62bf2b649fc7fad032efe97720149cde4d"
+    },
+    "user-story-mapping": {
+      "source": "melodic-software/claude-code-plugins",
+      "sourceType": "github",
+      "computedHash": "13850601d6526c87ae902ed9c35fee1ac049790a3fa1048b0a9ca840b5884f84"
     }
   }
 }

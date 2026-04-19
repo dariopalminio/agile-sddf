@@ -42,33 +42,60 @@ Lee `docs/specs/project/project-plan.md` (si existe) y detecta el valor de `**Es
 
 ### 3. Verificar que el template existe
 
-Lee `.agent/skills/project-planning/templates/project-plan-template.md`.
+Lee `.claude/skills/project-planning/templates/project-plan-template.md`.
 
 - Si el archivo **existe**: continua al paso 4.
 - Si el archivo **no existe**: informa al usuario y detén la ejecución:
 
-  > ❌ No se encontró el template requerido en `.agent/skills/project-planning/templates/project-plan-template.md`.
+  > ❌ No se encontró el template requerido en `.claude/skills/project-planning/templates/project-plan-template.md`.
   > Por favor verifica que el archivo existe antes de continuar.
 
-### 4. Delegar al project-architect
+### 4. Story Mapping (fase previa a la planificación)
+
+Lee `docs/specs/project/story-map.md`:
+
+**Si el archivo existe:**
+
+- Informa al usuario:
+  > ✅ Se encontró `docs/specs/project/story-map.md`. Se usará como guía estructural para el plan de proyecto.
+- Continúa al paso 5 con el story map disponible como contexto adicional.
+
+**Si el archivo NO existe:**
+
+- Pregunta al usuario:
+  > ¿Deseas realizar un Story Mapping antes de planificar? Esto produce un mapa de actividades del usuario (backbone, walking skeleton y release slices) que enriquecerá el plan.
+  >
+  > Opciones:
+  > 1. **Sí, hacer Story Mapping ahora** — invoca el skill `project-story-mapping` y luego continúa con la planificación.
+  > 2. **No, continuar sin Story Mapping** — salta directamente a la planificación (comportamiento anterior).
+
+  - Si el usuario elige **opción 1**: invoca el skill `project-story-mapping`. Cuando termine y `story-map.md` esté generado, continúa al paso 5 con el story map como contexto.
+  - Si el usuario elige **opción 2**: continúa al paso 5 sin story map (comportamiento idéntico a la versión anterior).
+
+### 5. Delegar al project-architect
 
 Invoca al agente `project-architect` con la siguiente instrucción:
 
-> Lee los documentos `docs/specs/project/project-intent.md` y `docs/specs/project/requirement-spec.md`. Lee tambien el template `.agent/skills/project-planning/templates/project-plan-template.md`.
+> Lee los documentos `docs/specs/project/project-intent.md` y `docs/specs/project/requirement-spec.md`. Lee también el template `.claude/skills/project-planning/templates/project-plan-template.md`.
 >
-> Si estas en flujo de retoma (documento existente en `Estado: Doing`), primero lee `docs/specs/project/project-plan.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
+> Si estás en flujo de retoma (documento existente en `Estado: Doing`), primero lee `docs/specs/project/project-plan.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
-> Extrae features atomicas con IDs FEAT-NNN, priorizalas, agrupalas en releases con MVP en Release 1, y escribe el resultado en `docs/specs/project/project-plan.md`.
+> [CONDICIONAL — incluir solo si `docs/specs/project/story-map.md` existe]
+> Lee también `docs/specs/project/story-map.md`. Usa las actividades del backbone como guía para agrupar features relacionadas en el plan. Usa los release slices del story map como referencia estructural para definir qué features van en cada release (respetando las dependencias técnicas y el valor de negocio). No estás obligado a replicar el story map exactamente — es una guía, no una restricción.
+> [FIN CONDICIONAL]
+>
+> Extrae features atómicas con IDs FEAT-NNN, priorízalas, agrúpalas en releases con MVP en Release 1, y escribe el resultado en `docs/specs/project/project-plan.md`.
 
 El `project-architect` se encargará de:
 - Leer los documentos de entrada de fases anteriores
 - Leer el template y derivar la estructura del output dinámicamente
+- Leer `story-map.md` si existe y usar el backbone/release slices como guía estructural
 - Extraer features atómicas con IDs únicos (FEAT-NNN), descripciones y dependencias
 - Priorizar por valor de negocio, dependencias y riesgo técnico
 - Agrupar en releases con MVP en Release 1, incluyendo criterios de éxito
 - Escribir el documento final con metadatos y checkboxes vacíos `- [ ]`
 
-### 5. Confirmar output
+### 6. Confirmar output
 
 Cuando el `project-architect` termine:
 

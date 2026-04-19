@@ -38,7 +38,7 @@ alwaysApply: false
      identificado en project-intent.md y puede ser entregado a usuarios reales para obtener feedback.
      Releases posteriores agregan valor incremental sobre el MVP. -->
 
-### Release 1: MVP
+### Release Walking Skeleton: MVP
 
 **Objetivo:** [Qué valor entrega este release — qué problema central resuelve.]
 
@@ -51,9 +51,9 @@ alwaysApply: false
 
 ---
 
-### Release 2: [Nombre descriptivo]
+### Release 1: [Nombre descriptivo]
 
-**Objetivo:** [Qué valor incremental agrega sobre el MVP.]
+**Objetivo:** [Qué valor incremental agrega sobre el Walking Skeleton (MVP).]
 
 - [ ] FEAT-003: [Nombre feature]
 
@@ -62,7 +62,7 @@ alwaysApply: false
 
 ---
 
-<!-- Agrega más releases si el proyecto lo justifica. Mantén el documento minimalista:
+<!-- Agrega más releases (Release 2, Release 3, Futuro, etc.) si el proyecto lo justifica. Mantén el documento minimalista:
      sin descripciones redundantes, sin texto innecesario, solo backlog y releases. -->
 
 ## Resumen

@@ -5,7 +5,7 @@ description: "Divide una historia de usuario grande en historias más pequeñas 
 
 # Skill: /story-split
 
-Toma una historia grande, épica o feature demasiado amplio y lo divide en historias más pequeñas e independientes. Cada historia resultante sigue **estrictamente** el template `templates/story-gherkin-template.md`.
+Toma una historia grande, épica o feature demasiado amplio y lo divide en historias más pequeñas e independientes. Cada historia resultante sigue **estrictamente** el template `docs/specs/templates/story-gherkin-template.md`.
 
 **Usar cuando:**
 - Una historia tiene ≥ 4 escenarios Gherkin o ≥ 8 pasos totales
@@ -190,7 +190,7 @@ TAD 3: Construir el motor de recomendación más simple posible
 
 ### Fase 3 — Escribir cada historia resultante
 
-Cada historia del split debe seguir **estrictamente** el template `templates/story-gherkin-template.md`:
+Cada historia del split debe seguir **estrictamente** el template `docs/specs/templates/story-gherkin-template.md`:
 
 ```markdown
 ## 📖 Historia
@@ -314,7 +314,7 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 
 ## Referencias
 
-- **Template canónico:** `templates/story-gherkin-template.md`
+- **Template canónico:** `docs/specs/templates/story-gherkin-template.md`
 - **Creación de historias:** `/story-creation`
 - **Evaluación de calidad:** `/story-evaluation`
 - Richard Lawrence & Peter Green, *Humanizing Work Guide to Splitting User Stories* — origen de los 8 patrones

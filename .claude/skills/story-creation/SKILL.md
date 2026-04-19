@@ -5,7 +5,7 @@ description: "Crea historias de usuario siguiendo el template story-gherkin (Com
 
 # Skill: /story-creation
 
-Crea una historia de usuario completa a partir de una necesidad o feature descrito en lenguaje natural. El output sigue **estrictamente** el template `templates/story-gherkin-template.md` definido en este skill.
+Crea una historia de usuario completa a partir de una necesidad o feature descrito en lenguaje natural. El output sigue **estrictamente** el template `docs/specs/templates/story-gherkin-template.md` definido en este skill.
 
 **Usar cuando:**
 - Se necesita redactar una historia de usuario lista para sprint planning
@@ -16,7 +16,7 @@ Crea una historia de usuario completa a partir de una necesidad o feature descri
 
 ## Template canónico (fuente de verdad)
 
-Toda historia generada por este skill debe seguir **exactamente** esta estructura (ver `templates/story-gherkin-template.md`):
+Toda historia generada por este skill debe seguir **exactamente** esta estructura (ver `docs/specs/templates/story-gherkin-template.md`):
 
 ```markdown
 ## 📖 Historia
@@ -245,7 +245,7 @@ Flujo de recuperación vía email. SMS queda fuera de scope de esta historia.
 
 ## Referencias
 
-- **Template canónico:** `templates/story-gherkin-template.md`
+- **Template canónico:** `docs/specs/templates/story-gherkin-template.md`
 - **Evaluación de calidad:** `/story-evaluation`
 - **División de historias grandes:** `/user-story-splitting`
 - Mike Cohn, *User Stories Applied* (2004)
