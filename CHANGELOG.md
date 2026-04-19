@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.3] — 2026-04-18
+
+### Changed
+- Clarified automatic rejection rule in `story-evaluation` to explicitly scope `INVE-T` as all INVEST dimensions except `S` (Small)
+- Strengthened `story-product-owner` guidance with stricter story-writing checks:
+  - Added explicit guardrails for a real, concrete user role in `Como`
+  - Added explicit clarity criteria for `Quiero`
+  - Expanded refinement guidance to include `DIVIDIR` decisions and separate weak cohesion from pure size issues
+
+### Added
+- Archived OpenSpec change `add-skill-story-refine` under `openspec/changes/archive/2026-04-18-add-skill-story-refine/` with full proposal/design/spec/tasks artifacts
+- Promoted capability spec to `openspec/specs/story-refine-skill/spec.md`
+
+---
+
 ## [1.3.2] — 2026-04-18
 
 ### Added

@@ -88,7 +88,7 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 
 **Reglas críticas:**
 1. Si la dimensión S – Small (Tamaño) es 1 → Decisión automática **DIVIDIR**, independientemente del score total — Tamaño muy grande para una historia única.
-2. Si cualquier dimensión INVE-T tiene score = 1 → Decisión automática **RECHAZAR**, independientemente del score total.
+2. Si cualquier dimensión INVE-T (cualquier dimensión INVEST excepto S) tiene score = 1 → Decisión automática **RECHAZAR**, independientemente del score total.
 
 ---
 
