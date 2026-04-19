@@ -4,7 +4,7 @@ description: "Evalúa la calidad de una historia de usuario aplicando la rúbric
 ---
 # Skill: /story-evaluation
 
-Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** (Format + INVEST) con escala Likert 1–5. Produce un score por dimensión, score global, decisión (APROBADA / REFINAR / RECHAZAR) y recomendaciones accionables.
+Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** (Format + INVEST) con escala Likert 1–5. Produce un score por dimensión, score global, decisión (APROBADA / REFINAR / RECHAZAR / DIVIDIR) y recomendaciones accionables.
 
 **Cuándo usar este skill:**
 - Antes de llevar una historia de usuario a sprint planning
@@ -86,7 +86,9 @@ INVEST_Score = (I + N + V + E + S + T) / 6
 FINVEST_Score = (F_score + INVEST_Score) / 2
 ```
 
-**Regla crítica:** Si cualquier dimensión INVEST tiene score = 1 → Decisión automática **RECHAZAR**, independientemente del score total.
+**Reglas críticas:**
+1. Si la dimensión S – Small (Tamaño) es 1 → Decisión automática **DIVIDIR**, independientemente del score total — Tamaño muy grande para una historia única.
+2. Si cualquier dimensión INVE-T tiene score = 1 → Decisión automática **RECHAZAR**, independientemente del score total.
 
 ---
 
@@ -99,6 +101,7 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 | F_score ≥ 2.5 y FINVEST_Score ≥ 4.0 | **APROBADA** |
 | F_score ≥ 2.5 y 3.0 ≤ FINVEST_Score < 4.0 | **REFINAR** |
 | F_score ≥ 2.5 y FINVEST_Score < 3.0 | **RECHAZAR** — Score insuficiente |
+| S – Small (Tamaño) | **DIVIDIR** — Tamaño muy grande |
 
 ---
 
@@ -195,11 +198,11 @@ Usar la cantidad de escenarios Gherkin (incluyendo filas de Scenario Outline) co
 
 | Score | Categoría | N° escenarios / filas Ejemplos | Complejidad de pasos | Señal de alerta |
 |:---:|---|:---:|---|---|
-| 5 | Trivial | 1 | ≤ 3 pasos totales | Ninguna |
-| 4 | Muy pequeña | 1–2 | 4–5 pasos | Un solo `Y` |
-| 3 | Pequeña (ideal) | 2–3 | 5–7 pasos | 1 escenario alternativo claro |
-| 2 | Grande | 4–5 | 8–10 pasos | Múltiples `Y` o tablas pequeñas |
-| 1 | Épica / Demasiado grande | ≥ 6 | ≥ 11 pasos | Tablas con ≥ 4 filas o `Y` anidados |
+| 5 | Trivial | 1 | ≤ 2 pasos totales | Ninguna |
+| 4 | Muy pequeña | 1–2 | 3–4 pasos | Un solo `Y` |
+| 3 | Pequeña (ideal) | 2–3 | 5 pasos | 1 escenario alternativo claro |
+| 2 | Grande | 4–5 | 6–8 pasos | Múltiples `Y` o tablas pequeñas |
+| 1 | Épica / Demasiado grande | ≥ 6 | ≥ 9 pasos | Tablas con ≥ 4 filas o `Y` anidados |
 
 Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita del texto.
 
