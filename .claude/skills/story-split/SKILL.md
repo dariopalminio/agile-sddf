@@ -216,6 +216,9 @@ Entonces {error o comportamiento alternativo}
   Pero {excepción}
 ```
 
+### Requerimiento (opcional)
+{Requerimiento específico (como regla de negocio) relacionado con la historia, si aplica}
+
 ## ⚙️ Criterios no funcionales (opcional)
 ## 📎 Notas / contexto adicional
 ```

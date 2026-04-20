@@ -41,6 +41,10 @@ Los elementos de trabajo (Work-items) representan las unidades de valor o tareas
 * **Release:** Independientemente que con qué nombre lo implementes en tu herramienta u organización, el Release representa un entregable (Epic) o release específico dentro de un proyecto, que se divide en features o stories. Es el contenedor de nivel medio dentro del framework. El release a nivel de gestión de trabajo es independiente del release real y versión de software en herramientas como github. Un entregable Release puede ser liberado de un tirón (acumulativo) o de manera incremental (en varios releases o merges al main). El Release representa un conjunto de features (stories) liberables a producción.
 * **Story:** Independientemente que con qué nombre lo implementes en tu herramienta u organización, la Story representa una feature o un trozo de feature o una historia de usuario o tarea específica de desarrollo dentro de un release, que se puede dividir en subtareas, specs o tareas técnicas.
 
+**Buenas prácticas:**
+* **Story DoD**: Para garantizar la calidad y la completitud de las historias, se recomienda definir una "Definition of Done" (DoD) específica para las Stories, que incluya criterios de completitud claros y verificables para que una historia se considere completa y potencialmente entregable (releseable). Aquí se recomienda incluir criterios relacionados con la implementación, pruebas unitarias (cobertura), pruebas de criterios de aceptación, pruebas de integración, pruebas de regresión selectiva (pruebas de regresión parcial), documentación (changelog, etc.) y cualquier otro aspecto relevante para asegurar que la historia esté lista para ser incluida en un release.
+* **Release DoD**: Para garantizar la calidad y la completitud de los releases, se recomienda definir una "Definition of Done" (DoD) específica para los Releases, que incluya criterios de completitud y checklist de subida a producción. Aquí se recomienda incluir criterios relacionados con la integración, pruebas de regresión completa o crítica, documentación de release (Release notes, etc.) y cualquier otro aspecto relevante para asegurar que el release esté listo para ser liberado a producción.
+
 ### Tipos de Story
 
 Las historias Story pueden ser de diferentes tipos según su propósito o naturaleza. En este framework, se proponen los siguientes tipos de Story:
@@ -92,9 +96,9 @@ main  o----------------------------------o (tag v1.0.2)
 * **release:** Cada rama release representa un entregable específico dentro del proyecto, que puede ser liberado de un tirón o de manera incremental. La rama release generalmente es probada en ambientes de staging (eso dependerá de tu diseño de CI/CD).
 * **feat:** Cada rama feat representa una historia de usuario o feature específica dentro de un release, que se puede dividir en subtareas o tareas técnicas o specs partes del desarrollo (operativo y táctico). Las feats acumulan los commits del desarrollo. La rama feat generalmente es probada en ambientes de desarrollo y/o testing (también dependerá de tu diseño de CI/CD).
 
-Buenas prácticas:
-* Esto respeta la "Convención de branches" recomendado [Conventional Branch](https://conventional-branch.github.io/).
-* Se recomienda usar "Convensión de Commits" [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) para mantener un historial de commits claro y estructurado, lo que facilita la generación de changelogs y la trazabilidad de cambios.
+**Buenas prácticas:**
+* **Convención de branches:** Esto respeta la "Convención de branches" recomendado [Conventional Branch](https://conventional-branch.github.io/).
+* **Convención de Commits:** Se recomienda usar "Convensión de Commits" [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) para mantener un historial de commits claro y estructurado, lo que facilita la generación de changelogs y la trazabilidad de cambios.
 
 ---
 
@@ -222,6 +226,9 @@ Dado {contexto}
 Cuando {acción inválida}
 Entonces {error}
   Pero {excepción}
+
+### Requerimiento (opcional)
+{Requerimiento específico (como regla de negocio) relacionado con la historia, si aplica}
 
 ## Criterios no funcionales (opcional)
 ## Notas / contexto adicional (opcional)

@@ -48,7 +48,7 @@ Ejemplos:
   | admin     | /admin    | "Panel de control"    |
 ```
 
-### Requirement (opcional)
+### Requerimiento (opcional)
 {Requerimiento específico (como regla de negocio) relacionado con la historia, si aplica}
 
 ## ⚙️ Criterios no funcionales (opcional)
