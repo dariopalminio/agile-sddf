@@ -42,8 +42,9 @@ alwaysApply: false
 
 **Objetivo:** [Qué valor entrega este release — qué problema central resuelve.]
 
-- [ ] FEAT-001: [Nombre feature]
-- [ ] FEAT-002: [Nombre feature]
+- [ ] FEAT-001 - **[Nombre feature 1]:** [Breve descripción de la feature]
+- [ ] FEAT-002 - **[Nombre feature 2]:** [Breve descripción de la feature]
+- [ ] FEAT-003 - **[Nombre feature 3]:** [Breve descripción de la feature]
 
 **Criterios de éxito:**
 - [ ] [Criterio medible 1]
@@ -55,7 +56,7 @@ alwaysApply: false
 
 **Objetivo:** [Qué valor incremental agrega sobre el Walking Skeleton (MVP).]
 
-- [ ] FEAT-003: [Nombre feature]
+- [ ] FEAT-003 - **[Nombre feature 3]:** [Breve descripción de la feature]
 
 **Criterios de éxito:**
 - [ ] [Criterio medible 1]
