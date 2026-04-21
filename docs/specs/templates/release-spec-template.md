@@ -1,14 +1,23 @@
+---
+alwaysApply: false
+---
+**Título**: [Nombre del release]
+**Versión**: 1.0
+**Estado**: [Doing | Ready]
+**Fecha**: [Fecha de generación]
+---
+
 # Release/Epic: [Nombre de la Épica/Release]
 
-## Descripción
+## Descripción <!-- sección obligatoria-->
 [Explica el valor de negocio, qué problema resuelve y el contexto necesario. Máximo 3-4 líneas.]
 
-## Features
+## Features <!-- sección obligatoria-->
 - **[Nombre feature 1]:** [Breve descripción de la feature]
 - **[Nombre feature 2]:** [Breve descripción]
 - **[Nombre feature 3]:** [Breve descripción]
 
-## Flujos Críticos / Smoke Tests
+## Flujos Críticos / Smoke Tests <!-- sección obligatoria, al menos un escenario -->
 *Si alguno de estos falla,  se debe detener el despliegue (o  se debe hacer rollback automático).*
 
 ### Escenario 1: [Nombre descriptivo del escenario]
@@ -26,7 +35,7 @@
 **CUANDO** [acción]  
 **ENTONCES** [resultado esperado]
 
-## Requerimiento (opcional)
+## Requerimiento  <!-- sección opcional-->
 {Requerimiento específico (como regla de negocio) relacionado con el release, si aplica}
 
 ## Impacto en Procesos Claves
@@ -34,12 +43,12 @@
 - **[Proceso B]:** [Cómo se ve afectado este proceso por el release (o épica)]
 - **[Proceso C]:** [Cómo se ve afectado este proceso por el release (o épica)]
 
-## Dependencias Críticas (si las hay)
+## Dependencias Críticas (si las hay) <!-- sección opcional-->
 - **[Descripción de la dependencia]**  
   *Dueño:* [Responsable dueño de la dependencia]  
   *Fecha compromiso:* [fecha]
 
-  ## Riesgos (opcional)
+  ## Riesgos (opcional) <!-- sección opcional-->
 - **[Riesgo 1]:** [Descripción] – **Mitigación:** [qué hacer para evitarlo o reducir su impacto]
 - **[Riesgo 2]:** [Descripción] – **Mitigación:** [acción propuesta]
 

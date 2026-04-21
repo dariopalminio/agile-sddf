@@ -1,3 +1,11 @@
+---
+alwaysApply: false
+---
+**Título**: Enhance Project Spec (Expansión project spec)
+**Versión**: 1.0
+**Estado**: Ready
+**Fecha**: 2026-04-18
+---
 # Release 05 — Enhance Project Spec (Expansión project spec)
 
 ## Descripción

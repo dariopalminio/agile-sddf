@@ -1,3 +1,12 @@
+---
+alwaysApply: false
+---
+**Título**: Reverse Engineering (Ingeniería inversa)
+**Versión**: 1.0
+**Estado**: Ready
+**Fecha**: 2026-04-16
+---
+
 # Release 03 — Reverse Engineering (Ingeniería inversa)
 
 ## Descripción

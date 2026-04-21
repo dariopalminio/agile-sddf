@@ -1,3 +1,12 @@
+---
+alwaysApply: false
+---
+**Título**: Refactor Features Spec Builder (Consolidación y calidad)
+**Versión**: 1.0
+**Estado**: Ready
+**Fecha**: 2026-04-17
+---
+
 # Release 04 — Refactor Features Spec Builder (Consolidación y calidad)
 
 ## Descripción

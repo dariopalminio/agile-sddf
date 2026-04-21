@@ -161,11 +161,11 @@ Asigna score 1–5 a cada dimensión:
 - 1: Imposible de estimar; gaps masivos de conocimiento técnico o de dominio ⚠️
 
 ### S – Small (Tamaño)
-- 5: Trivial — 1 escenario, ≤2 pasos totales
-- 4: Muy pequeña — 1–2 escenarios, 3–4 pasos
-- 3: Pequeña (ideal) — 2–3 escenarios, 5 pasos
-- 2: Grande — 4 escenarios, 6–8 pasos
-- 1: Épica — ≥5 escenarios o ≥9 pasos ⚠️
+- 5: Trivial — 1 escenario, ≤3 pasos totales
+- 4: Muy pequeña — 1–2 escenarios, 4–5 pasos
+- 3: Pequeña (ideal) — 2–3 escenarios, 5–7 pasos
+- 2: Grande — 4–5 escenarios, 8–10 pasos
+- 1: Épica — ≥6 escenarios o ≥11 pasos ⚠️
 
 Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita del texto.
 

@@ -1,3 +1,12 @@
+---
+alwaysApply: false
+---
+**Título**: Project Spec Builder (Pipeline de proyecto)
+**Versión**: 1.0
+**Estado**: Ready
+**Fecha**: 2026-04-16
+---
+
 # Release 02 — Project Spec Builder (Pipeline de proyecto)
 
 ## Descripción

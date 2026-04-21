@@ -11,7 +11,7 @@ alwaysApply: false
 
 # Historia de Usuario
 
-## 📖 Historia
+## 📖 Historia: {Título de la historia}
 
 **Como** {rol o persona}  
 **Quiero** {acción o funcionalidad}  
@@ -48,14 +48,14 @@ Ejemplos:
   | admin     | /admin    | "Panel de control"    |
 ```
 
-### Requerimiento (opcional)
-{Requerimiento específico (como regla de negocio) relacionado con la historia, si aplica}
+### Requirement: {Título del requerimiento} <!-- sección opcional-->
+{Requerimiento específicos (como regla de negocio) relacionado con la historia, si aplica}
 
-## ⚙️ Criterios no funcionales (opcional)
+## ⚙️ Criterios no funcionales <!-- sección opcional-->
 
 * Rendimiento: {ej. la búsqueda responde en <2s}
 * Seguridad: {ej. solo usuarios con rol X pueden ver Y}
 * UX/Accesibilidad: {ej. compatible con lectores de pantalla}
 
-## 📎 Notas / contexto adicional
+## 📎 Notas / contexto adicional <!-- sección opcional-->
 {Información relevante para el equipo de desarrollo o QA}

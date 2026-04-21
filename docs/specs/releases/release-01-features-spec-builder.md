@@ -1,3 +1,12 @@
+---
+alwaysApply: false
+---
+**Título**: Features Spec Builder (Base del framework)
+**Versión**: 1.0
+**Estado**: Ready
+**Fecha**: 2026-04-09
+---
+
 # Release 01 — Features Spec Builder
 
 ## Descripción
