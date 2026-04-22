@@ -7,7 +7,7 @@ alwaysApply: false
 **Fecha**: 2026-04-20
 ---
 
-# Release 06 — Release & Story Generator
+# Release 06 — Release & Story Generator & Soporte Atlassian Rovo
 
 ## Descripción
 Automatiza la creación de dos artefactos clave después del planning: el documento de release (a partir de `project-plan.md`) y las stories derivadas (a partir del release generado).

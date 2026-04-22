@@ -188,7 +188,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 ---
 
-### Release 06 — Release & Story Generator
+### Release 06 — Release & Story Generator & Soporte Atlassian Rovo
 
 **Estado:** Doing | **Fecha:** 2026-04-20
 
