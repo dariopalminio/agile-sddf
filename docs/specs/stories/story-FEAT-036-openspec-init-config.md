@@ -4,12 +4,12 @@ alwaysApply: false
 **Título**: Inicializar configuración de OpenSpec automáticamente
 **Versión**: 1.0
 **Estado**: Completed
-**Fecha**: 2026-04-22
+**Fecha**: 2026-04-23
 **FINVEST Score:** —
 **FINVEST Decisión:** —
 ---
 
-## 📖 Historia
+## 📖 Historia: Inicializar configuración de OpenSpec automáticamente
 
 **Como** developer que usa OpenSpec en un proyecto y necesita configurar el contexto inicial
 **Quiero** ejecutar el skill `/openspec-init-config` para que analice la documentación del proyecto y actualice automáticamente el campo `context:` de `openspec/config.yaml`

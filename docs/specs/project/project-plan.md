@@ -50,7 +50,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] **FEAT-033: Soporte Atlassian Rovo para crear Epic Release** — Agente `release-creator-agent.md` para el runtime Rovo. _(deps: FEAT-027, FEAT-030)_
 - [ ] **FEAT-034: Rovo Agent: Release Reverse Generator from children** — Agente `release-reverse-generator.md` para el runtime Rovo. _(deps: FEAT-027, FEAT-030)
 - [ ] **FEAT-035: Generar todas las stories desde todos los archivo de release**: Skill `release-generate-all-stories` que itera sobre todos los archivos de release en `docs/specs/releases/` y genera las stories correspondientes para cada uno, siguiendo el mismo proceso que `release-generate-stories`.
-- [x] **FEAT-036: Skill openspec-load-context** Skill openspec-load-context para cargar el contexto del proyecto para openspec en el archivo openspec\config.yaml. _(deps: FEAT-001, FEAT-003, FEAT-004)_
+- [ ] **FEAT-036: Skill openspec-load-context** Skill openspec-load-context para cargar el contexto del proyecto para openspec en el archivo openspec\config.yaml. _(deps: FEAT-001, FEAT-003, FEAT-004)_
 - [ ] **FEAT-037: Skill openspec-generate-baseline** Skill `openspec-generate-baseline` para que haciendo ingeniería inversa genere una línea base del proyecto como propuesta y luego lo archive para que quede una lìnea base especificada. _(deps: FEAT-037)_
 
 ---
