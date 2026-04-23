@@ -1,5 +1,34 @@
 schema: spec-driven
 
+context: |
+  Proyecto: Agile Spec-Driven-Development Framework (SDDF)
+  Dominio: Framework multiagente minimalista que automatiza el ciclo completo de especificación de proyectos software — desde la intención inicial hasta el backlog planificado y las historias de usuario — para builders, freelancers, developers y equipos ágiles que usan IA para acelerar el desarrollo.
+
+  Stack: Claude Code (Anthropic), Markdown, YAML, OpenSpec CLI, Docker, Git/GitHub
+  Plataformas compatibles: Claude Code, OpenCode, GitHub Copilot, Jira Rovo, Gemini Gem
+
+  Arquitectura: Modelo de un solo nivel de delegación — skill (orquestador/entry point) → agentes especializados (subagentes).
+  - .claude/agents/ — agentes especializados: project-pm, project-architect, project-ux, reverse-engineer-*, story-*
+  - .claude/skills/ — fuente única de verdad para skills reutilizables
+  - openspec/changes/ — cambios activos y archivados (spec-driven workflow)
+  - openspec/specs/ — capabilities con sus spec.md por dominio
+  - docs/specs/project/ — documentos L3: project-intent.md, requirement-spec.md, project-plan.md
+  - docs/specs/releases/ — documentos L2: release-[ID]-[nombre].md
+  - docs/specs/stories/ — documentos L1: story-[ID]-[nombre-kebab].md
+
+  Niveles de workflow:
+  - L3 Project: /project-begin → /project-discovery → /project-planning
+  - L2 Release: /releases-from-project-plan → /release-format-validation
+  - L1 Story: /story-creation → /story-evaluation → /story-split → /story-refine
+
+  Convenciones:
+  - Kebab-case para nombres de archivos, skills y capabilities
+  - Conventional Commits (feat/fix/chore/hotfix) y Conventional Branch (main → release/ → feat/)
+  - Skills como punto de entrada único (no comandos legacy en .claude/commands/)
+  - Templates Markdown como fuente de verdad estructural, extraídos dinámicamente en runtime
+  - WIP=1: un proyecto activo a la vez; documentos con estados Doing/Ready
+  - Estructura de branches: main → release/[ID]-[nombre] → feat/[ID]-[nombre]
+
 # Project context (optional)
 # This is shown to AI when creating artifacts.
 # Add your tech stack, conventions, style guides, domain knowledge, etc.
