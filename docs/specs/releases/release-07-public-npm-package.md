@@ -3,7 +3,7 @@ alwaysApply: false
 ---
 **Título**: Publicación del Framework SDDF como Paquete NPM
 **Versión**: 1.0
-**Estado**: Ready
+**Estado**: Completed
 **Fecha**: 2026-04-20
 ---
 

@@ -1,3 +1,14 @@
+---
+alwaysApply: false
+---
+**Título**: Instalar skills via postinstall (script)
+**Versión**: 1.0
+**Estado**: Completed
+**Fecha**: 2026-04-23
+**FINVEST Score:** —
+**FINVEST Decisión:** —
+---
+
 ## 📖 Historia: Instalar skills via postinstall (script)
 
 **Como** desarrollador que adopta el framework SDDF

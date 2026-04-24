@@ -1,3 +1,13 @@
+---
+alwaysApply: false
+---
+**Título**: Publicar framework en npm
+**Versión**: 1.0
+**Estado**: Completed
+**Fecha**: 2026-04-23
+**FINVEST Score:** —
+**FINVEST Decisión:** —
+---
 ## 📖 Historia: Publicar framework en npm
 
 **Como** mantenedor del framework SDDF
