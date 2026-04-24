@@ -52,7 +52,8 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] **FEAT-035: Generar todas las stories desde todos los archivo de release**: Skill `release-generate-all-stories` que itera sobre todos los archivos de release en `docs/specs/releases/` y genera las stories correspondientes para cada uno, siguiendo el mismo proceso que `release-generate-stories`.
 - [ ] **FEAT-036: Skill openspec-load-context** Skill openspec-load-context para cargar el contexto del proyecto para openspec en el archivo openspec\config.yaml. _(deps: FEAT-001, FEAT-003, FEAT-004)_
 - [ ] **FEAT-037: Skill openspec-generate-baseline** Skill `openspec-generate-baseline` para que haciendo ingeniería inversa genere una línea base del proyecto como propuesta y luego lo archive para que quede una lìnea base especificada. _(deps: FEAT-037)_
-
+- [ ] **FEAT-039: Publicar el framework Agile Spec-Driven-Development (SDDF) como paquete NPM para instalación global** — Empaquetar y publicar todos los skills, agentes y templates del framework en NPM para instalación global con npm install -g @sddf/core. _(deps: —)_
+- [ ] **FEAT-040: Instalar skills via postinstall (script)** — Configurar el script `postinstall` para copiar automáticamente los skills y agentes a `~/.claude/` tras la instalación global. Implica crear un script Node.js (scripts/postinstall.js) que npm ejecuta automáticamente al hacer npm install -g.  _(deps: FEAT-039)_
 ---
 
 ## Propuesta de Releases

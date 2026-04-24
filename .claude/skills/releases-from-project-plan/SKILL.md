@@ -4,7 +4,7 @@ description: "Genera archivos de especificación de release (release-[ID]-[Nombr
 ---
 # Skill: /releases-from-project-plan
 
-Lee `docs/specs/project/project-plan.md` y genera automáticamente un archivo `release-[ID]-[Nombre].md` por cada release planificado en la sección "Propuesta de Releases". Cada archivo generado sigue exactamente la estructura de `docs/specs/templates/release-spec-template.md`.
+Lee `docs/specs/project/project-plan.md` y genera automáticamente un archivo `release-[ID]-[Nombre].md` por cada release planificado en la sección "Propuesta de Releases". Cada archivo generado sigue exactamente la estructura de `.claude/skills/releases-from-project-plan/templates/release-spec-template.md`.
 
 **Usar cuando:**
 - Se quiere materializar los releases de un `project-plan.md` como archivos de especificación listos para editar

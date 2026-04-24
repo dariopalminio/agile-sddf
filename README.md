@@ -4,6 +4,16 @@
 
 Sistema multiagente minimalista que automatiza el ciclo completo de especificación de proyectos software — desde la intención inicial hasta el backlog planificado y las historias de usuario — usando solo archivos Markdown como agentes, skills y templates en Claude Code.
 
+## Instalación
+
+```bash
+npm install -g agile-sddf
+```
+
+El script `postinstall` copia automáticamente todos los skills y agentes a `~/.claude/skills/` y `~/.claude/agents/`. Los archivos que ya existan no se sobrescriben.
+
+> **Nota**: Si usas un entorno que bloquea scripts de instalación (`npm install --ignore-scripts`), ejecuta manualmente: `node $(npm root -g)/agile-sddf/scripts/postinstall.js`
+
 ## Vision
 
 **Para** builders, freelancers, developers y equipos ágiles que usan IA para acelerar el desarrollo de software,

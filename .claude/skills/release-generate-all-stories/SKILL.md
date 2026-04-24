@@ -4,7 +4,7 @@ description: "Genera archivos de historia de usuario (story-[ID]-[Nombre-kebab].
 ---
 # Skill: /release-generate-all-stories
 
-Escanea todos los archivos de release en `docs/specs/releases/` y genera automáticamente un archivo `story-[ID]-[Nombre-kebab].md` por cada feature encontrada en cada release, siguiendo exactamente la estructura de `docs/specs/templates/story-gherkin-template.md`. Es el equivalente batch de `/release-generate-stories`.
+Escanea todos los archivos de release en `docs/specs/releases/` y genera automáticamente un archivo `story-[ID]-[Nombre-kebab].md` por cada feature encontrada en cada release, siguiendo exactamente la estructura de `.claude/skills/release-generate-all-stories/templates/story-gherkin-template.md`. Es el equivalente batch de `/release-generate-stories`.
 
 **Usar cuando:**
 - Se quiere poblar `docs/specs/stories/` de forma completa a partir de todos los releases del proyecto

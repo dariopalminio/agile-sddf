@@ -23,12 +23,12 @@ Extrae los flags del input del usuario:
 
 ### 2. Resolver ruta del template
 
-Lee `docs/specs/templates/requirement-spec-template.md`.
+Lee `.claude/skills/reverse-engineering/templates/requirement-spec-template.md`.
 
 - Si el archivo **existe**: guarda la ruta como `TEMPLATE_PATH` — la pasarás a todos los agentes.
 - Si no existe: informa al usuario y detén la ejecución:
 
-  > ❌ No se encontró el template en `docs/specs/templates/requirement-spec-template.md`.
+  > ❌ No se encontró el template en `.claude/skills/reverse-engineering/templates/requirement-spec-template.md`.
   > Por favor verifica que el archivo existe antes de continuar.
 
 ### 3. Verificar modo --update

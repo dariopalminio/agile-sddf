@@ -1,0 +1,36 @@
+{
+  "name": "agile-sddf",
+  "version": "1.5.0",
+  "description": "Agile Spec-Driven-Development Framework — sistema multiagente minimalista que automatiza el ciclo completo de especificación de proyectos software usando solo archivos Markdown como agentes, skills y templates en Claude Code.",
+  "keywords": [
+    "agile",
+    "sddf",
+    "spec-driven-development",
+    "claude",
+    "claude-code",
+    "ai-agents",
+    "user-stories",
+    "openspec"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dariopalminio/agile-sddf.git"
+  },
+  "homepage": "https://github.com/dariopalminio/agile-sddf#readme",
+  "files": [
+    ".claude/",
+    "scripts/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "fs-extra": "^11.3.4"
+  }
+}

@@ -23,7 +23,7 @@ Si el usuario adjunta solo una imagen sin proporcionar texto de historia de usua
 
 ## Formato de referencia
 
-La dimensión **F (Formato)** evalúa qué tan cerca está la historia del template canónico definido en `docs/specs/templates/story-gherkin-template.md`:
+La dimensión **F (Formato)** evalúa qué tan cerca está la historia del template canónico definido en `.claude/skills/story-evaluation/templates/story-gherkin-template.md`:
 
 ```markdown
 ## 📖 Historia
@@ -225,7 +225,7 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 
 ## Instrucciones de Output
 
-1. Usar la estructura del template en `docs/specs/templates/evaluation-output-template.md`.
+1. Usar la estructura del template en `.claude/skills/story-evaluation/templates/evaluation-output-template.md`.
 2. Calcular F_score con dos decimales de precisión.
 3. Si F_score < 2.5, detenerse en Fase 1 y no calcular INVEST.
 4. Para cada dimensión con score ≤ 3, incluir al menos 1 recomendación concreta y accionable en la sección "Comentarios".

@@ -4,7 +4,7 @@ description: "Valida que un archivo de especificación de release cumple la estr
 ---
 # Skill: /release-format-validation
 
-Valida que un archivo de especificación de release contiene todas las secciones obligatorias del template `docs/specs/templates/release-spec-template.md`. Produce resultado **APROBADO**, **REFINAR** o **RECHAZADO**.
+Valida que un archivo de especificación de release contiene todas las secciones obligatorias del template `.claude/skills/release-format-validation/templates/release-spec-template.md`. Produce resultado **APROBADO**, **REFINAR** o **RECHAZADO**.
 
 **Usar cuando:**
 - Antes de usar un archivo de release como input para `generate-stories` u otros skills del pipeline SDDF
@@ -47,7 +47,7 @@ Terminar la ejecución del skill sin continuar.
 
 ## Fase 1 — Extraer secciones obligatorias del template
 
-Leer el archivo `docs/specs/templates/release-spec-template.md`.
+Leer el archivo `.claude/skills/release-format-validation/templates/release-spec-template.md`.
 
 Extraer dinámicamente los encabezados de las secciones que contengan el comentario `<!-- sección obligatoria` (con o sin espacio antes de `-->`).
 
@@ -110,7 +110,7 @@ Secciones/campos faltantes:
 - <nombre exacto del campo o encabezado faltante 2>
 ...
 
-Revisa el template en docs/specs/templates/release-spec-template.md para completar las secciones indicadas.
+Revisa el template en .claude/skills/release-format-validation/templates/release-spec-template.md para completar las secciones indicadas.
 ```
 
 ---
