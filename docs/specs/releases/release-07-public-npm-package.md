@@ -33,7 +33,7 @@ Implementar FEAT-040:
 
 Se requieren intervención humana directa:
 - 5.1	npm whoami — verificar sesión activa, o npm login si no estás autenticado
-- 5.2	npm publish --access public — publicar el paquete
+- 5.2	npm publish --access public — publicar el paquete + agile-sddf@1.5.0
 - 5.3	Verificar https://www.npmjs.com/package/agile-sddf en el navegador
 - 5.4	npm install -g agile-sddf en un entorno limpio para confirmar que .claude/ queda instalado
 
