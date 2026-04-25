@@ -3,7 +3,7 @@ alwaysApply: false
 ---
 **Título**: Npm Install locally
 **Versión**: 1.0
-**Estado**: In progress
+**Estado**: Completed
 **Fecha**: 2026-04-23
 **FINVEST Score:** —
 **FINVEST Decisión:** —

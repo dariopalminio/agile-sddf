@@ -1,4 +1,15 @@
 
+---
+alwaysApply: false
+---
+**Título**: Error en instalación local de npm install agile-sddf en Windows 11
+**Versión**: 1.0
+**Estado**: Completed
+**Fecha**: 2026-04-25
+**FINVEST Score:** —
+**FINVEST Decisión:** —
+---
+
 ## Bug: Error en instalación local de npm install agile-sddf en Windows 11
 
 ## Descripción
@@ -100,17 +111,17 @@ Todo aparece como "skipped" porque source === destination, npm suprime el output
 
 ## Postsolución
 
-npm version patch         # 1.5.1 → 1.5.3
-git tag -a v1.5.3 -m "Release  v1.5.3 - Fix postinstall script to include agents"
-gh release create v1.5.3 --notes-from-tag
-git push origin v1.5.3
+npm version patch         # 1.5.1 → 1.5.4
+git tag -a v1.5.4 -m "Release  v1.5.4 - Fix postinstall script"
+gh release create v1.5.4 --notes-from-tag
+git push origin v1.5.4
 npm publish --access public
-// la versión subida es agile-sddf@1.5.3
+// la versión subida es agile-sddf@1.5.4
 
-Lo que pasará cuando publiquemos v1.5.3:
+Lo que pasará cuando publiquemos v1.5.4:
 
 En el proyecto del usuario:
-npm install agile-sddf@1.5.3 --foreground-scripts
+npm install agile-sddf@1.5.4 --foreground-scripts
 Esto:
 
 Detecta versión nueva → reinstala
