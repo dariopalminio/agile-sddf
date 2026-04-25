@@ -1,6 +1,6 @@
 {
   "name": "agile-sddf",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Agile Spec-Driven-Development Framework — sistema multiagente minimalista que automatiza el ciclo completo de especificación de proyectos software usando solo archivos Markdown como agentes, skills y templates en Claude Code.",
   "keywords": [
     "agile",
