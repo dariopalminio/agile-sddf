@@ -2,7 +2,7 @@
 type: story
 id: FEAT-012
 slug: FEAT-012-story-split
-title: "story-split � Dividir �picas en historias peque�as"
+title: "story-split ó Dividir ópicas en historias pequeóas"
 date: 2026-04-22
 status: COMPLETED
 substatus: READY
@@ -14,30 +14,33 @@ parent: EPIC-01-features-spec-builder
 
 # Historia de Usuario
 
-## ?? Historia: story-split � Dividir �picas en historias peque�as
+## ?? Historia: story-split ó Dividir ópicas en historias pequeóas
 
 **Como** desarrollador o PM que tiene una historia de usuario demasiado grande para estimar o entregar en un sprint
-**Quiero** ejecutar el skill `story-split` sobre esa historia para obtener historias m�s peque�as e independientes
+**Quiero** ejecutar el skill `story-split` sobre esa historia para obtener historias mós pequeóas e independientes
 **Para** conseguir unidades de trabajo estimables, entregables de forma incremental y que cumplan el criterio S (Small) de INVEST
 
-## ? Criterios de aceptaci�n
+## ? Criterios de aceptación
 
-### Escenario principal � Divisi�n exitosa usando el patr�n de pasos de flujo
+### Escenario principal: División exitosa usando el patrón de pasos de flujo
 ```gherkin
-Dado que "docs/specs/stories/story-gestion-completa-pedidos.md" cubre creaci�n, edici�n y cancelaci�n de pedidos
+Dado que "docs/specs/stories/story-gestion-completa-pedidos.md" cubre creación, edición y cancelación de pedidos
 Cuando el desarrollador ejecuta el skill "story-split" sobre esa historia
-Entonces el skill identifica el patr�n de splitting m�s adecuado (pasos de flujo)
+Entonces el skill identifica el patrón de splitting mós adecuado (pasos de flujo)
   Y genera tres historias independientes: crear pedido, editar pedido, cancelar pedido
   Y cada historia resultante sigue el template story-template.md con sus propios escenarios Gherkin
 ```
 
-### Escenario alternativo / error � Historia ya suficientemente peque�a
+### Escenario alternativo / error ó Historia ya suficientemente pequeóa
 ```gherkin
 Dado que la historia indicada tiene un solo escenario principal y alcance acotado
-Cuando el skill eval�a si necesita divisi�n
+Cuando el skill evalóa si necesita división
 Entonces el skill informa que la historia ya cumple el criterio S de INVEST
-  Pero no genera historias derivadas sin confirmaci�n del usuario
+  Pero no genera historias derivadas sin confirmación del usuario
 ```
+
+### Requerimiento: finvest-evaluation-report.md como input
+El skill busca finvest-evaluation-report.md en el mismo directorio de la story y lo usa como input. Busca finvest-evaluation-report.md en el directorio de la historia, verifica decision: DIVIDIR en el frontmatter, extrae la tabla de la sección "Plan de división sugerido" y la guarda como plan_finvest. El plan FINVEST actúa como guía principal y los 8 patrones de Richard Lawrence se ejecutan siempre — para validar la agrupación propuesta y cubrir cualquier elemento que el plan no haya definido explícitamente (escenarios ambiguos, criterios no funcionales sin historia asignada, requerimientos sueltos).
 
 ## ?? Criterios no funcionales
 
@@ -45,5 +48,5 @@ Entonces el skill informa que la historia ya cumple el criterio S de INVEST
 
 ## ?? Notas / contexto adicional
 
-Generado autom�ticamente desde el release: release-01-features-spec-builder.md
-Feature origen: FEAT-012 � story-split
+Generado automóticamente desde el release: release-01-features-spec-builder.md
+Feature origen: FEAT-012 ó story-split

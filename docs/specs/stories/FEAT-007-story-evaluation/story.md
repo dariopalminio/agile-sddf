@@ -2,7 +2,7 @@
 type: story
 id: FEAT-007
 slug: FEAT-007-story-evaluation
-title: "story-evaluation ó EvaluaciÛn FINVEST de historias"
+title: "story-evaluation √≥ Evaluaci√≥n FINVEST de historias"
 date: 2026-04-22
 status: COMPLETED
 substatus: READY
@@ -14,30 +14,33 @@ parent: EPIC-01-features-spec-builder
 
 # Historia de Usuario
 
-## ?? Historia: story-evaluation ó EvaluaciÛn FINVEST de historias
+## ?? Historia: story-evaluation √≥ Evaluaci√≥n FINVEST de historias
 
 **Como** desarrollador o PM que ha redactado una historia de usuario
-**Quiero** ejecutar el skill `story-evaluation` sobre esa historia para obtener una evaluaciÛn de calidad
-**Para** recibir un score Likert 1ñ5 por cada dimensiÛn FINVEST, una decisiÛn accionable (APROBADA / REFINAR / RECHAZAR) y recomendaciones concretas para mejorarla
+**Quiero** ejecutar el skill `story-evaluation` sobre esa historia para obtener una evaluaci√≥n de calidad
+**Para** recibir un score Likert 1√≥5 por cada dimensi√≥n FINVEST, una decisi√≥n accionable (APROBADA / REFINAR / RECHAZAR) y recomendaciones concretas para mejorarla
 
-## ? Criterios de aceptaciÛn
+## ? Criterios de aceptaci√≥n
 
-### Escenario principal ñ EvaluaciÛn exitosa de historia aprobada
+### Escenario principal / Evaluaci√≥n exitosa de historia aprobada
 ```gherkin
 Dado que existe "docs/specs/stories/story-recuperar-contrasena.md" con Como/Quiero/Para y dos escenarios Gherkin bien definidos
 Cuando el desarrollador ejecuta el skill "story-evaluation" sobre ese archivo
-Entonces el skill muestra el score por dimensiÛn (F, I, N, V, E, S, T) con escala 1-5
+Entonces el skill muestra el score por dimensi√≥n (F, I, N, V, E, S, T) con escala 1-5
   Y muestra un score global ponderado
-  Y muestra la decisiÛn "APROBADA" con sugerencias de mejora opcionales
+  Y muestra la decisi√≥n "APROBADA" con sugerencias de mejora opcionales
 ```
 
-### Escenario alternativo / error ñ Historia con formato incorrecto
+### Escenario alternativo / error √≥ Historia con formato incorrecto
 ```gherkin
-Dado que el archivo indicado no contiene la secciÛn Como/Quiero/Para
-Cuando el skill eval˙a la dimensiÛn F (Formato)
-Entonces la dimensiÛn F recibe score 1
-  Y la decisiÛn es "RECHAZAR" con indicaciÛn de secciones faltantes
+Dado que el archivo indicado no contiene la secci√≥n Como/Quiero/Para
+Cuando el skill eval√∫a la dimensi√≥n F (Formato)
+Entonces la dimensi√≥n F recibe score 1
+  Y la decisi√≥n es "RECHAZAR" con indicaci√≥n de secciones faltantes
 ```
+
+### Requerimiento: finvest-evaluation-report.md como output
+El skill genera un archivo finvest-evaluation-report.md en el mismo directorio de la historia. Si el archivo ya existe, sobreescribirlo (la evaluaci√≥n m√°s reciente siempre reemplaza la anterior).
 
 ## ?? Criterios no funcionales
 
@@ -45,5 +48,5 @@ Entonces la dimensiÛn F recibe score 1
 
 ## ?? Notas / contexto adicional
 
-Generado autom·ticamente desde el release: release-01-features-spec-builder.md
-Feature origen: FEAT-007 ó story-evaluation (antes story-finvest-evaluation)
+Generado autom√≥ticamente desde el release: release-01-features-spec-builder.md
+Feature origen: FEAT-007 √≥ story-evaluation (antes story-finvest-evaluation)

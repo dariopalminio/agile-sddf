@@ -150,11 +150,44 @@ Leer la historia completa y responder:
 
 Identificar el **patrón de splitting más apropiado** (ver Paso 4). Si aplican varios, aplicarlos en orden.
 
+#### Paso 3b — Leer reporte FINVEST (si existe)
+
+Si el directorio de la historia contiene `finvest-evaluation-report.md`:
+
+1. Leer el archivo usando Glob con el patrón `<directorio-historia>/finvest-evaluation-report.md`.
+2. Verificar el frontmatter YAML: si `decision: DIVIDIR`, continuar; si no, ignorar el archivo.
+3. Buscar en el cuerpo la sección `## Plan de división sugerido` o `### Plan de división sugerido`.
+4. Si la sección existe, extraer la tabla de división: para cada fila capturar la historia hija
+   propuesta (ej. `FEAT-074a`), los escenarios asignados y el foco.
+5. Guardar este plan como `plan_finvest` para usarlo en el Paso 4.
+
+Si el archivo no existe, si `decision` ≠ `DIVIDIR`, o si no contiene la sección de plan,
+`plan_finvest` queda vacío y el Paso 4 continúa con la detección automática de patrones.
+
 ---
 
 ### Paso 4 — Seleccionar el patrón de splitting
 
-Si se especificó `--pattern N`, usar ese patrón directamente. Si no, aplicar en orden hasta encontrar el que encaja:
+#### Prioridad de decisión de splitting
+
+Aplicar en este orden:
+
+1. **Plan FINVEST (guía principal):** si `plan_finvest` fue poblado en el Paso 3b,
+   usarlo como punto de partida de la división. Para cada fila de la tabla del plan:
+   - El nombre de historia hija (ej. `FEAT-074a`) es orientativo del foco, no del ID final.
+   - "Escenarios" indica qué escenarios del original incluir en cada historia hija.
+   - "Foco" define el título y `Quiero` de cada historia resultante.
+   Informar al usuario:
+   `📊 Plan de división detectado en finvest-evaluation-report.md — usando como guía principal.`
+   Continuar igualmente con la detección de patrones (punto 3) para validar o complementar
+   el plan: si algún aspecto de la agrupación no queda completamente definido por la tabla
+   FINVEST (escenarios ambiguos, criterios no funcionales sin historia asignada, requerimientos
+   sueltos), aplicar el patrón de Richard Lawrence más apropiado para resolverlo.
+
+2. **Flag explícito:** si se especificó `--pattern N`, usar ese patrón directamente.
+
+3. **Detección automática:** si no hay plan previo ni flag, aplicar los 8 patrones de
+   Richard Lawrence en orden hasta encontrar el que encaja:
 
 #### Patrón 1 — Pasos del flujo de trabajo
 **Cuándo:** La historia cubre pasos secuenciales de un mismo journey.
