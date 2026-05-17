@@ -42,6 +42,9 @@ Entonces el skill informa que la historia ya cumple el criterio S de INVEST
 ### Requerimiento: finvest-evaluation-report.md como input
 El skill busca finvest-evaluation-report.md en el mismo directorio de la story y lo usa como input. Busca finvest-evaluation-report.md en el directorio de la historia, verifica decision: DIVIDIR en el frontmatter, extrae la tabla de la sección "Plan de división sugerido" y la guarda como plan_finvest. El plan FINVEST actúa como guía principal y los 8 patrones de Richard Lawrence se ejecutan siempre — para validar la agrupación propuesta y cubrir cualquier elemento que el plan no haya definido explícitamente (escenarios ambiguos, criterios no funcionales sin historia asignada, requerimientos sueltos).
 
+### Requerimiento: historias hijas son nuevas historias a nivel de hermanas (las hijas son hermanas)
+Usar $SPECS_BASE/specs/stories/FEAT-*/story.md como patrón Glob + fallback Bash. Cuando genere nuevas historias hijas, debe crear nuevos directorios de historias bajo el mismo directorio padre de la historia original, siguiendo la estructura de carpetas actual. Por ejemplo, si la historia original está en `docs/specs/stories/FEAT-012-story-split/story.md`, las historias hijas se crearán en `docs/specs/stories/FEAT-012-story-split/story.md`, `docs/specs/stories/FEAT-013-story-hija/story.md`, etc.
+
 ## ?? Criterios no funcionales
 
 [Por completar]

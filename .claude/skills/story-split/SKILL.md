@@ -345,10 +345,19 @@ Si se especificó `--dry-run`, mostrar el plan de splitting y detenerse aquí si
 La **historia core** conserva el ID de la historia original — no se le asigna un ID nuevo.
 
 Las **historias adicionales** reciben IDs nuevos consecutivos:
-1. Listar todos los subdirectorios de `$SPECS_BASE/specs/stories/` cuyo nombre comience con `FEAT-`
+
+> **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
+> `specs/stories/FEAT-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> el patrón de archivo anidado descrito a continuación.
+
+1. Usar Glob con el patrón `$SPECS_BASE/specs/stories/FEAT-*/story.md` para localizar todas las
+   historias existentes. De cada ruta retornada, extraer el número `NNN` del segmento `FEAT-NNN-*`
+   (directorio padre inmediato). Ejemplo: de `docs/specs/stories/FEAT-074-integrar-.../story.md` → `74`.
+   Si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/stories/ | grep -E "^FEAT-[0-9]+"`)
+   antes de asumir que no hay historias previas.
 2. Extraer los números de todos los prefijos `FEAT-NNN` encontrados
 3. Tomar el número más alto y asignar IDs desde ese punto: `FEAT-(N+1)`, `FEAT-(N+2)`, etc.
-4. Si no hay ninguno, comenzar en `FEAT-002` (reservando `FEAT-001` para la core)
+4. Solo comenzar en `FEAT-002` si ambos mecanismos (Glob + fallback Bash) confirman que no existe ningún `FEAT-*`
 5. Formatear con ceros a la izquierda hasta 3 dígitos
 
 #### Repurpose del directorio original como historia core
