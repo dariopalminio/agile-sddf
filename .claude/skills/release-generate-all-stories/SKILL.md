@@ -65,7 +65,7 @@ Sin parámetros — el skill no expone flags ni argumentos posicionales.
 
 ## Restricciones / Reglas
 
-1. El skill **no valida** calidad FINVEST — esa responsabilidad es de `/story-evaluation`
+1. El skill **no valida** calidad FINVEST — en flujo batch la validación INVEST se delega al paso posterior `/story-evaluation` para no bloquear la generación masiva de historias; ejecutar `/story-evaluation` sobre cada historia generada como siguiente paso obligatorio
 2. El skill **no modifica** los archivos de release
 3. El skill procesa **todas** las features de cada release (pendientes `[ ]` y completadas `[x]`)
 4. El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
@@ -87,7 +87,7 @@ Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los 
 
 ### Paso 1 — Descubrir directorios de release
 
-Listar todos los **subdirectorios** en `$SPECS_BASE/specs/releases/` que contengan un archivo `release.md`, ordenados alfabéticamente por nombre de directorio.
+Listar todos los releases disponibles usando Glob con el patrón `$SPECS_BASE/specs/releases/EPIC-*/release.md`. La herramienta Glob solo encuentra archivos, no directorios — el patrón debe apuntar al archivo `release.md` anidado dentro de cada directorio `EPIC-NN-*`. Ordenar los resultados alfabéticamente por nombre de directorio padre.
 
 **Si el directorio `$SPECS_BASE/specs/releases/` no existe o no contiene ningún subdirectorio con `release.md`**, mostrar el siguiente mensaje y terminar sin generar ningún archivo:
 
@@ -114,6 +114,12 @@ Procesando en orden alfabético.
 Antes de procesar ningún release, verificar qué historias ya existen en `$SPECS_BASE/specs/stories/` que serían generadas en este batch.
 
 Para ello, leer la sección `## Features` de cada `release.md` descubierto en el Paso 1 y calcular los nombres de directorio que se generarían (`FEAT-[NNN]-[nombre-kebab]/`). Verificar cuáles de esos directorios ya existen en `$SPECS_BASE/specs/stories/`.
+
+> **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios.
+> Para verificar si ya existe una historia, usar el patrón de archivo anidado:
+> `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/story.md`.
+> Si Glob retorna ese archivo, el directorio existe. Nunca usar el patrón de directorio
+> desnudo — retornará vacío aunque el directorio exista, causando detección fallida.
 
 **Si no hay ningún conflicto**, continuar directamente al Paso 3 sin mostrar pantalla de confirmación.
 
