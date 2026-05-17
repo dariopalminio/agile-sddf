@@ -21,12 +21,13 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 - Aplica las 6 dimensiones INVEST con rúbricas Likert 1–5
 - Calcula F_score, INVEST_Score y FINVEST_Score
 - Emite una decisión (APROBADA / REFINAR / RECHAZAR / DIVIDIR) con recomendaciones accionables
+- Genera el reporte en `finvest-evaluation-report.md` dentro del directorio de la historia (si el input fue ID o ruta de archivo)
 - Si la decisión es `APROBADA` y el input fue una ruta de archivo, actualiza el frontmatter de `story.md` con `status: SPECIFYING` / `substatus: DONE`
 
 **Qué NO hace este skill:**
 - Generar diseño, tasks ni artefactos de planning
 - Corregir o reescribir la historia automáticamente
-- Crear archivos nuevos en `$SPECS_BASE/specs/`
+- Crear artefactos distintos de `finvest-evaluation-report.md` en `$SPECS_BASE/specs/`
 
 ---
 
@@ -67,7 +68,7 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 
 ## Restricciones / Reglas
 
-1. Este skill no invoca `skill-preflight` — evalúa el input proporcionado sin generar artefactos en `$SPECS_BASE/specs/`. **Excepción:** si el input fue una ruta de archivo y la decisión es `APROBADA`, actualiza únicamente los campos `status` y `substatus` del frontmatter de ese archivo.
+1. Este skill no invoca `skill-preflight` — su único output en disco son `finvest-evaluation-report.md` (siempre que el input sea ID o ruta de archivo) y la actualización del frontmatter de `story.md` (solo si la decisión es `APROBADA`).
 2. El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida.
 3. Si `F_score < 2.5`, no evaluar dimensiones INVEST — emitir `RECHAZAR` directamente por formato insuficiente.
 4. **Imágenes adjuntas:** si el input incluye imágenes adjuntas (wireframes, screenshots u otros archivos binarios de imagen), ignorarlas completamente. Evaluar únicamente el contenido en texto (Markdown) de la historia de usuario. Si el usuario adjunta solo una imagen sin texto de historia, indicar que el skill requiere texto para evaluar.
@@ -144,7 +145,34 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 
 ---
 
-### Paso 6 — Actualizar frontmatter si APROBADA
+### Paso 6 — Guardar reporte en archivo
+
+**Condición:** el input fue proporcionado como ID (`FEAT-NNN`) o como ruta de archivo (no texto libre).
+
+1. Resolver la ruta del directorio de la historia:
+   - Si el input fue un ID → buscar el directorio `$SPECS_BASE/specs/stories/FEAT-NNN-*/` usando Glob con el patrón `$SPECS_BASE/specs/stories/FEAT-NNN-*/story.md` y extraer el directorio padre.
+   - Si el input fue una ruta de archivo → usar el directorio que contiene ese archivo.
+2. Escribir el reporte completo (el mismo contenido mostrado en conversación) en:
+   `<directorio-de-la-historia>/finvest-evaluation-report.md`
+3. El archivo usa frontmatter mínimo:
+   ```yaml
+   ---
+   type: finvest-evaluation
+   story-id: <FEAT-NNN>
+   finvest-score: <score>
+   decision: <APROBADA|REFINAR|RECHAZAR|DIVIDIR>
+   evaluated: <YYYY-MM-DD>
+   ---
+   ```
+   seguido del reporte completo en Markdown.
+4. Si el archivo ya existe, sobreescribirlo (la evaluación más reciente siempre reemplaza la anterior).
+5. Confirmar en el output: `✓ Reporte guardado: <ruta>/finvest-evaluation-report.md`
+6. Si el directorio no es accesible, emitir advertencia y continuar sin bloquear:
+   `⚠️ No se pudo guardar el reporte en: <ruta> — verifica permisos`
+
+---
+
+### Paso 7 — Actualizar frontmatter si APROBADA
 
 **Condición:** decisión = `APROBADA` Y el input fue proporcionado como ruta de archivo (no como texto libre) o ID de story (ubicada en un archivo).
 
@@ -288,8 +316,9 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 
 ## Salida
 
-- Reporte de evaluación generado con la estructura de `assets/evaluation-output-template.md`
-- Frontmatter de `story.md` actualizado (únicamente si decisión = `APROBADA` y el input fue una ruta de archivo o `{story ID}`): `status: SPECIFYING` / `substatus: DONE`
+- Reporte mostrado en conversación con la estructura de `assets/evaluation-output-template.md`
+- `<directorio-historia>/finvest-evaluation-report.md` — reporte persistido en disco (si el input fue ID o ruta de archivo)
+- Frontmatter de `story.md` actualizado (únicamente si decisión = `APROBADA` y el input fue ID o ruta de archivo): `status: SPECIFYING` / `substatus: DONE`
 
 ### Ejemplos de referencia
 

@@ -11,8 +11,8 @@ created: 2026-05-17
 updated: 2026-05-17
 related: []
 ---
-**FINVEST Score:** [pendiente — ejecutar `/story-evaluation`]
-**FINVEST Decisión:** [pendiente]
+**FINVEST Score:** 3.88 (F: 4.60 | I: 4 | N: 3 | V: 3 | E: 3 | S: 1 | T: 5)
+**FINVEST Decisión:** DIVIDIR
 ---
 
 # 📖 Historia: story-integrate — Integración multi-estrategia configurable de historias
