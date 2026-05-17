@@ -59,7 +59,7 @@ Lee `release.md` de un directorio de release en `$SPECS_BASE/specs/releases/` y 
 
 ## Restricciones / Reglas
 
-1. El skill **no valida** calidad FINVEST — esa responsabilidad es de `/story-evaluation`
+1. El skill **no valida** calidad FINVEST — en flujo batch la validación INVEST se delega al paso posterior `/story-evaluation` para no bloquear la generación masiva de historias; ejecutar `/story-evaluation` sobre cada historia generada como siguiente paso obligatorio
 2. El skill **no modifica** el archivo de release
 3. El skill procesa **todas** las features del release (pendientes `[ ]` y completadas `[x]`)
 4. Si dos features tienen el mismo ID (duplicado en el release), añadir sufijo `-bis` al segundo archivo (ej. `FEAT-029-nombre-bis/`) e informar al usuario
@@ -152,7 +152,14 @@ Ruta del archivo de salida: `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]
 
 #### 4b. Verificar existencia previa
 
-Si ya existe el **directorio** `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/`, informar al usuario:
+> **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. Para
+> verificar si ya existe la historia, usar el patrón de archivo anidado:
+> `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/story.md`.
+> Si Glob retorna ese archivo, el directorio existe. Si retorna vacío, no existe.
+> Nunca usar el patrón de directorio desnudo (`FEAT-[NNN]-[nombre-kebab]/`) — retornará
+> vacío aunque el directorio exista, causando sobreescritura silenciosa sin confirmación.
+
+Si ya existe `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/story.md`, informar al usuario:
 
 ```
 El directorio $SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/ ya existe.
@@ -191,7 +198,7 @@ Las secciones opcionales (`⚙️ Criterios no funcionales`, `📎 Notas`) se in
 Crear el directorio `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/specs/templates/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
-- `status: READY-FOR-IMPLEMENT` — estado inicial de toda historia generada desde un release planificado (pendiente de refinamiento)
+- `status: SPECIFYING` — estado inicial de toda historia generada desde un release planificado (pendiente de refinamiento)
 
 Si no se puede leer el template, generar el archivo con la siguiente estructura de fallback:
 
@@ -201,7 +208,7 @@ type: story
 id: <FEAT-NNN>
 slug: <nombre-del-directorio-de-historia>
 title: "<Nombre de la feature>"
-status: READY-FOR-IMPLEMENT
+status: SPECIFYING
 substatus: IN‑PROGRESS
 parent: <EPIC-NN>
 created: <YYYY-MM-DD>
