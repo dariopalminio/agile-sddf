@@ -100,7 +100,14 @@ Si el usuario no proporcionó un nombre de release junto con el comando, pregunt
 
 Con el nombre provisto:
 - Derivar el **slug kebab-case**: minúsculas, palabras separadas por guiones, sin caracteres especiales (Ej: `"Sistema de pagos"` → `sistema-de-pagos`)
-- Construir el **ID de directorio**: pedir al usuario un identificador de épica (Ej: `EPIC-01`) o proponer uno basado en los directorios existentes en `$SPECS_BASE/specs/releases/`. Formato final: `EPIC-NN-<slug>` (Ej: `EPIC-01-sistema-de-pagos`)
+- Construir el **ID de directorio**: proponer el siguiente ID disponible buscando con Glob el
+  patrón `$SPECS_BASE/specs/releases/EPIC-*/release.md`. La herramienta Glob solo encuentra
+  archivos, no directorios — usar siempre este patrón de archivo anidado. De cada ruta retornada,
+  extraer el número `NN` del segmento `EPIC-NN-*` (directorio padre). Tomar el número más alto
+  y sumarle 1; si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/releases/ |
+  grep -E "^EPIC-"`) antes de asumir que no hay releases previos.
+  Formato final: `EPIC-NN-<slug>` con NN de 2 dígitos (Ej: `EPIC-14-mi-release`).
+  Si el usuario prefiere asignar el ID manualmente, aceptarlo sin objeción.
 - Definir la **ruta de salida**: `$SPECS_BASE/specs/releases/<EPIC-NN-slug>/release.md`
 
 #### Verificar conflicto de directorio

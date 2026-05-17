@@ -210,9 +210,20 @@ Si alguna dimensión falla, ajustar la historia antes de continuar. Si `S` es de
 
 #### Derivar el siguiente ID (FEAT-NNN)
 
-1. Listar todos los subdirectorios de `$SPECS_BASE/specs/stories/` cuyo nombre comience con `FEAT-` o `FIX-`
+> **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
+> `specs/stories/FEAT-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> el patrón de archivo anidado descrito a continuación.
+
+1. Usar Glob con el patrón `$SPECS_BASE/specs/stories/FEAT-*/story.md` para localizar todos los
+   archivos `story.md` dentro de directorios `FEAT-NNN-*`. A partir de cada ruta retornada,
+   extraer el segmento `FEAT-NNN` del nombre del directorio padre inmediato.
+   Ejemplo: de `docs/specs/stories/FEAT-073-skill-security-audit-condicional/story.md` → `73`.
+   Si Glob retorna vacío, usar como fallback:
+   - Bash: `ls $SPECS_BASE/specs/stories/ | grep -E "^FEAT-[0-9]+"`
+   - PowerShell: `Get-ChildItem $SPECS_BASE/specs/stories -Directory | Where-Object { $_.Name -match "^FEAT-" }`
+   Nunca asumir que "sin resultados de Glob" significa "no hay historias previas".
 2. Extraer los números de todos los prefijos `FEAT-NNN` encontrados
-3. Tomar el número más alto y sumarle 1. Si no hay ninguno, comenzar en `FEAT-001`
+3. Tomar el número más alto y sumarle 1. Solo comenzar en `FEAT-001` si ambos mecanismos (Glob + fallback) confirman que no existe ningún directorio `FEAT-*`
 4. Formatear con ceros a la izquierda hasta 3 dígitos: `FEAT-001`, `FEAT-053`, etc.
 
 #### Reglas de nomenclatura
