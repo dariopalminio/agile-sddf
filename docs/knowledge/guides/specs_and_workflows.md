@@ -32,14 +32,16 @@ Un subestado representa el nivel de avance interno de un work item dentro de un 
 ## Story Workflow
 
 Happy path:
-
+```
 SPECIFYING --> PLANNING --> READY-FOR-IMPLEMENT --> IMPLEMENTING --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED
+```
 
 Rejected path:
-
+```
 READY-FOR-IMPLEMENT --> IMPLEMENTING --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED
        |                                     |              |            | 
        |                                  REJECTED        REJECTED     REJECTED
        |                                     |              |            |         
        |                                     v              v            v           
        <------------------------------------------------------------------          
+```

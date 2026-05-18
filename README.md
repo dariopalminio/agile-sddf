@@ -29,6 +29,7 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **User Story Mapping**: sesión colaborativa al estilo Jeff Patton para construir backbone, walking skeleton y release slices
 - **Gestión de épicas de releases**: planificación de releases con `project-plan.md` y generación automática de artefactos de release (feature specs, historias de usuario) con trazabilidad completa
 - **Gestión de historias de usuario**: creación (Como/Quiero/Para + Gherkin), evaluación con rúbrica FINVEST (Likert 1–5), splitting con 8 patrones y refinamiento iterativo
+- **SDD workflow**: Se implemente un workflow a nivel de story "SPECIFYING --> PLANNING --> READY-FOR-IMPLEMENT --> IMPLEMENTING --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED" con skills dedicados para cada fase y generación de artefactos específicos (design.md, tasks.md, analyze.md, implement-report.md, code-review-report.md)
 - **Pipeline SDD completo de historia**: planning y implementación tarea a tarea — `story-plan` orquesta `story-design` → `story-tasking` → `story-analyze` en un solo comando; `story-implement` implementa con TDD, generando test + código de producción por cada tarea con trazabilidad completa y `story-code-review` para revisión de código post-implementación.
 - **Políticas de proyecto**: generación de `constitution.md` y `definition-of-done-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
 - **Integración OpenSpec**: exploración, propuesta, implementación y archivado de cambios con trazabilidad completa
@@ -150,20 +151,30 @@ Los artefactos de especificación se organizan en directorios por workitem bajo 
 ```
 docs/specs/
 ├── projects/
-│   └── PROJ-01-nombre-proyecto/    # un directorio por proyecto
+│   └── PROJ-01-nombre-proyecto/         # un directorio por proyecto
 │       ├── project-intent.md
 │       ├── requirement-spec.md
 │       ├── project-plan.md
 │       └── story-map.md
 ├── releases/
-│   └── EPIC-01-nombre-release/     # un directorio por release
+│   └── EPIC-01-nombre-release/          # un directorio por release
 │       └── release.md
 └── stories/
-    └── FEAT-001-nombre-historia/   # un directorio por historia
-        └── story.md
+    └── FEAT-001-nombre-historia/        # un directorio por historia
+        ├── story.md                     # historia (SPECIFYING → PLANNING → READY-FOR-IMPLEMENT)
+        ├── finvest-evaluation-report.md # evaluación FINVEST (story-evaluation)
+        ├── story-improvement-log.md     # log de mejoras aplicadas (story-improve)
+        ├── design.md                    # diseño técnico (story-design)
+        ├── tasks.md                     # plan de tareas (story-tasking)
+        ├── analyze.md                   # reporte de coherencia (story-analyze)
+        ├── implement-report.md          # reporte de implementación (story-implement)
+        ├── code-review-report.md        # reporte de revisión de código (story-code-review)
+        └── fix-directives.md            # instrucciones de corrección cuando hay bloqueantes (story-code-review)
 ```
 
 Cada archivo principal usa un nombre canónico (`project-intent.md`, `release.md`, `story.md`) e incluye frontmatter con `type`, `id`, `title`, `status`, `parent`, `created` y `updated`. Las relaciones jerárquicas se expresan mediante el campo `parent` (ej. una release tiene `parent: PROJ-01`).
+
+El ciclo de vida de una historia atraviesa los estados `SPECIFYING → PLANNING → READY-FOR-IMPLEMENT → IMPLEMENTING → DONE`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio.
 
 ### Basic Usage
 
@@ -214,8 +225,11 @@ Cada archivo principal usa un nombre canónico (`project-intent.md`, `release.md
 # Solo crear una historia
 /story-creation "Como usuario quiero poder registrarme para acceder al sistema"
 
-# Evaluar una historia existente
-/story-evaluation docs/specs/stories/FEAT-001-nombre/story.md
+# Evaluar una historia existente con rúbrica FINVEST (genera finvest-evaluation-report.md)
+/story-evaluation FEAT-001
+
+# Mejorar una historia aplicando las recomendaciones del reporte FINVEST
+/story-improve FEAT-001
 
 # Dividir una historia grande
 /story-split docs/specs/stories/FEAT-001-nombre/story.md
