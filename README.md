@@ -161,7 +161,7 @@ docs/specs/
 │       └── release.md
 └── stories/
     └── FEAT-001-nombre-historia/        # un directorio por historia
-        ├── story.md                     # historia (SPECIFYING → PLANNING → READY-FOR-IMPLEMENT)
+        ├── story.md                     # historia (story-creation)
         ├── finvest-evaluation-report.md # evaluación FINVEST (story-evaluation)
         ├── story-improvement-log.md     # log de mejoras aplicadas (story-improve)
         ├── design.md                    # diseño técnico (story-design)
@@ -169,7 +169,8 @@ docs/specs/
         ├── analyze.md                   # reporte de coherencia (story-analyze)
         ├── implement-report.md          # reporte de implementación (story-implement)
         ├── code-review-report.md        # reporte de revisión de código (story-code-review)
-        └── fix-directives.md            # instrucciones de corrección cuando hay bloqueantes (story-code-review)
+        ├── fix-directives.md            # instrucciones de corrección cuando hay bloqueantes (story-code-review)
+        └── verify-report.md             # reporte de verificación (story-verify)
 ```
 
 Cada archivo principal usa un nombre canónico (`project-intent.md`, `release.md`, `story.md`) e incluye frontmatter con `type`, `id`, `title`, `status`, `parent`, `created` y `updated`. Las relaciones jerárquicas se expresan mediante el campo `parent` (ej. una release tiene `parent: PROJ-01`).
