@@ -1,12 +1,14 @@
 {
   "name": "agile-sddf",
   "version": "1.9.1",
-  "description": "Agile Spec-Driven-Development Framework — sistema multiagente minimalista que automatiza el ciclo completo de especificación de proyectos software usando solo archivos Markdown como agentes, skills y templates en Claude Code.",
+  "description": "Agile Spec-Driven-Development Framework for AI agents",
   "keywords": [
     "agile",
-    "sddf",
+    "spec-driven",
+    "ssdf",
+    "sdd",
+    "framework",
     "spec-driven-development",
-    "claude",
     "claude-code",
     "ai-agents",
     "user-stories",
