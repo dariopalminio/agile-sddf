@@ -10,6 +10,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Skill `/story-improve`** (FEAT-077) — aplica automáticamente las recomendaciones del reporte FINVEST sobre `story.md`; lee `finvest-evaluation-report.md` del directorio de la historia, extrae scores y recomendaciones por dimensión, y aplica mínimo 1 mejora concreta por cada dimensión con score ≤ 3; gate de decisión: si `decision: APROBADA` informa y termina sin modificar ningún archivo; carga contexto de historias hermanas condicionalmente (solo si dimensión I ≤ 3) para evitar duplicar cobertura; crea `story.md.bak` antes de cualquier modificación (idempotente: sobreescribe si ya existe); genera `story-improvement-log.md` con trazabilidad de recomendación aplicada y cambio realizado por dimensión; incluido en `package.json` files para distribución npm
+
+### Changed
+
+- **`story-evaluation`** — genera `finvest-evaluation-report.md` en disco además de mostrar el reporte en conversación; el archivo incluye frontmatter YAML con `story-id`, `finvest-score`, `decision` y `evaluated`; si el input fue ID o ruta de archivo, el reporte se persiste en el directorio de la historia; sobreescribe evaluaciones anteriores (la más reciente siempre reemplaza); la actualización del frontmatter de `story.md` a `SPECIFYING/DONE` solo ocurre cuando `decision: APROBADA`
+
+### Fixed
+
+- **`story-evaluation`** — corregido bug de derivación de IDs idéntico al de `story-creation`: la búsqueda de IDs existentes fallaba silenciosamente cuando el directorio `specs/stories/` estaba vacío o el patrón glob no coincidía, resultando en IDs duplicados o mal formados
+- **`release-generate-all-stories`** — corregido bug de derivación de IDs (misma causa raíz que `story-creation`) y eliminado caso donde INVEST se omitía sin justificación en la evaluación de historias generadas en lote
+- **`release-generate-stories`** — corregido bug de derivación de IDs (misma causa raíz que `story-creation`) y eliminado caso donde INVEST se omitía sin justificación en la evaluación de historias individuales
+- **`release-creation`** y **`story-creation`** — corregida asignación incorrecta de IDs cuando la búsqueda de IDs existentes fallaba silenciosamente; la falla silenciosa provocaba que los IDs se generaran desde 0 en lugar de continuar la secuencia existente
+
+---
+
+### Added
+
 - **Skill `/story-acceptance`** (FEAT-072, EPIC-13) — quality gate de validación humana final antes de INTEGRATION; guía al validador a través de los criterios de aceptación Gherkin de `story.md` y los criterios DoD ACCEPTANCE uno a uno; recopila resultado `PASS / FAIL / BLOCKED` con observaciones obligatorias para los no aprobados; genera `acceptance-report.md` con trazabilidad completa (ID, texto, resultado, observación, timestamp) y resumen ejecutivo; actualiza `story.md` a `ACCEPTANCE/DONE` si todos APPROVED o a `READY-FOR-IMPLEMENT/DONE` si hay rechazados; soporta sesiones interrumpibles y reanudables (`session-status: partial`), flag `--restart` y flag `--dry-run`; lee la sección ACCEPTANCE del DoD en runtime (dinámica) y usa solo criterios Gherkin si el DoD no tiene esa sección
 
 - **Skill `/story-verify`** (FEAT-071, EPIC-13) — quality gate de verificación automática post-`story-code-review`; lanza el subagente QA Engineer que detecta el framework de testing del proyecto (Jest, pytest, Mocha, etc.) y ejecuta las suites; genera `verify-report.md` con resultado por suite, cobertura y estado final `VERIFY-PASSED / VERIFY-FAILED`; transiciona `story.md` a `VERIFY/DONE` si pasan o a `IMPLEMENTING/IN-PROGRESS` si fallan; incluye ejemplos de proyectos Jest y pytest y evals de detección de modo

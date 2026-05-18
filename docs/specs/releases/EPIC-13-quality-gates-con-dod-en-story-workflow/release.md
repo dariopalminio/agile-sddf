@@ -23,6 +23,7 @@ Integra la lectura y validación del Definition of Done en los tres skills del p
 - [x] FEAT-071 - **VERIFY con story-verify:** un SKILL que se encargue de la etapa de pruebas llamada VERIFY que implica implica la ejecución de los casos de prueba en el entorno de pruebas (pruebas automáticas, e2e, integración, regresión, etc.), la documentación de los resultados para su análisis y la identificación, detección y registro de los defectos. Lo ideal es que el SKIL sea o refleje el proceso genérico de pruebas que se quiera implementar, y que se pueda configurar para cada proyecto o equipo. Este SKILL se integraría al pipeline después de CODE-REVIEW y antes de ACCEPTANCE, como un quality gate adicional basado en la validación de los criterios de prueba definidos en el DoD.
 - [x] FEAT-072 - **ACCEPTANCE en story-acceptance:** Validación final por un "humano" de criterios de aceptación definidos en el DoD, asegurando que la historia cumple con los requisitos funcionales y de calidad antes de marcarla INTEGRATION.
 - [x] FEAT-073 - **Construir skill `security-audit` para auditoría automática condicional de seguridad**. El security-audit ejecuta un análisis estático de seguridad. El skill story-code-review debe invocar al security-audit para analizar los cambios de la story foco. Si el security-audit reporta hallazgos de seguridad con severidad HIGH o MEDIUM, story-code-review debe indicar el `review-status` del reporte a `needs-changes` y los hallazgos se documentan en fix-directives.md como parte de las directivas de corrección para el desarrollador.
+- [x] FEAT-077 - **story-improve:** Mejora automática de historia desde reporte FINVEST.
 
 ## Flujos Críticos / Smoke Tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
@@ -62,7 +63,7 @@ El DoD debe leerse en runtime desde el archivo real (`$SPECS_BASE/policies/defin
 
 **Criterios de éxito:**
 - [ ] story-analyze genera sección "Cumplimiento DoD — Fase PLAN" en analyze.md con tabla de criterios ✓/❌
-- [ ] story-implement no avanza a READY-FOR-CODE-REVIEW/DONE si hay criterios DoD con severidad ERROR
+- [ ] story-implement no avanza a DONE si hay criterios DoD con severidad ERROR
 - [ ] story-code-review cambia `review-status` a `needs-changes` cuando hay criterios DoD CODE-REVIEW no cumplidos de severidad HIGH/MEDIUM
 - [ ] Los tres skills muestran `⚠️` y continúan sin bloquear si `definition-of-done-story.md` no existe o la sección no se encuentra
 
