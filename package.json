@@ -41,6 +41,7 @@
     ".claude/skills/reverse-engineering",
     ".claude/skills/sddf-init",
     ".claude/skills/project-policies-generation",
+    ".claude/skills/security-audit",
     ".claude/skills/story-plan",
     ".claude/skills/story-design",
     ".claude/skills/story-tasking",
