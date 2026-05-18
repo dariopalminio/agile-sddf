@@ -1,0 +1,62 @@
+---
+alwaysApply: false
+type: story
+id: FEAT-075
+slug: FEAT-075-integrar-historia-modo-manual-dryrun
+title: "story-integrate: Modos de ejecución manual y dry-run"
+status: SPECIFYING
+substatus: IN-PROGRESS
+parent: <nombre-del-release-padre>
+created: 2026-05-17
+updated: 2026-05-17
+related:
+  - FEAT-074
+  - FEAT-076
+---
+**FINVEST Score:** [pendiente — ejecutar `/story-evaluation`]
+**FINVEST Decisión:** [pendiente]
+---
+<!-- Historia adicional resultante del split de FEAT-074 -->
+[[FEAT-074-integrar-historia-batch-configurable]]
+
+# 📖 Historia: story-integrate — Modos de ejecución manual y dry-run
+
+**Como** desarrollador que necesita controlar o verificar el proceso de integración antes de ejecutarlo
+**Quiero** ejecutar story-integrate en modo manual (con guía paso a paso y confirmación explícita) o en modo simulación sin efectos reales
+**Para** tener control total sobre cada paso de la integración o verificar el comportamiento del skill sin riesgo de cambios irreversibles en el repositorio
+
+## ✅ Criterios de aceptación
+
+### Escenario principal – Modo manual con guía interactiva
+
+```gherkin
+Dado que ejecuto story-integrate con el flag de modo manual para la historia "FEAT-042"
+Cuando el skill inicia en modo manual
+Entonces presenta al usuario las opciones de modelo de entrega disponibles
+  Y solicita confirmación de la versión del release antes de continuar
+  Y muestra la rama objetivo calculada antes de ejecutar cualquier acción
+  Y espera confirmación explícita del usuario antes de crear el PR
+  Y el usuario puede cancelar en cualquier punto sin que se produzcan cambios en el repositorio
+```
+
+### Escenario alternativo – Simulación en modo dry-run
+
+```gherkin
+Dado que ejecuto story-integrate con el flag de simulación para la historia "FEAT-042"
+Cuando el skill procesa la integración en modo simulación
+Entonces muestra cada paso que ejecutaría (rama origen, rama destino, acción a realizar)
+  Y no crea ni fusiona ningún PR
+  Y no modifica story.md
+  Y finaliza indicando que la simulación completó sin efectos reales
+```
+
+## ⚙️ Criterios no funcionales
+
+* **UX:** en modo manual el skill muestra el progreso paso a paso con indicadores visuales del estado de cada acción; en modo dry-run genera un listado de pasos planificados
+* **Seguridad:** en modo manual el usuario aprueba explícitamente cada acción irreversible (crear PR, fusionar, eliminar rama) antes de ejecutarla
+
+## 📎 Notas / contexto adicional
+
+Historia adicional resultante del split de FEAT-074 (épica original).
+Precondición de implementación: FEAT-074 (integración batch core) debe estar completa para que los modos manual y dry-run tengan una ejecución base sobre la que operar.
+Historias hermanas: FEAT-074 (batch configurable — core), FEAT-076 (multi-modelo de entrega).

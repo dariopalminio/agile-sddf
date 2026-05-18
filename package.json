@@ -51,6 +51,7 @@
     ".claude/skills/story-evaluation",
     ".claude/skills/story-refine",
     ".claude/skills/story-split",
+    ".claude/skills/story-improve",
     ".claude/skills/story-acceptance",
     ".claude/skills/story-verify",
     ".claude/skills/changelog-generator",
