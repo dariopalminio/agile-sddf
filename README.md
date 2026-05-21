@@ -112,6 +112,17 @@ O ejecuta cada fase individualmente:
 /project-planning
 ```
 
+### Inicialización de políticas del proyecto
+
+Antes de iniciar el pipeline, genera las políticas del proyecto para que todos los skills operen con las mismas reglas de calidad y convenciones técnicas:
+
+```bash
+# Genera constitution.md y definition-of-done-story.md con preguntas guiadas
+/project-policies-generation
+```
+
+Los archivos se crean en `docs/policies/` y se referencian automáticamente en `CLAUDE.md` / `AGENTS.md`. Solo es necesario ejecutarlo una vez; actualízalos cuando cambien las convenciones del equipo.
+
 ## Usage
 
 ### Flujos principales SDDF
@@ -146,6 +157,58 @@ openspec-init-config → openspec-generate-baseline →
 
 ### Estructura de artefactos
 
+### Estructura de políticas explícitas
+
+Las políticas del proyecto son documentos Markdown versionados en el repositorio que actúan como fuente de verdad para todos los agentes IA y miembros del equipo. Se generan con `/project-policies-generation` y se referencian automáticamente desde `CLAUDE.md` y `AGENTS.md` para que todos los skills las lean en cada sesión.
+
+```
+docs/policies/
+├── constitution.md              # principios técnicos inamovibles
+└── definition-of-done-story.md # criterios de terminado por estado
+```
+
+#### constitution.md
+
+Define los principios que ningún skill ni agente puede violar. Contiene:
+
+| Sección | Contenido |
+|---------|-----------|
+| Stack tecnológico | Lenguaje, runtime, frameworks y librerías core |
+| Infraestructura | Control de versiones, contenedores, paquete npm |
+| Convenciones de código | Estilo, formato y nomenclatura (kebab-case) |
+| Estándares de skills | Estructura de directorios, frontmatter YAML, Preflight como Paso 0, patrón de delegación único |
+| Patrones de nomenclatura | IDs jerárquicos (PROJ-NN, EPIC-NN, FEAT-NNN), frontmatter canónico |
+| Reglas de comportamiento | Control WIP=1, gates secuenciales, idempotencia, flags opcionales |
+| Principios técnicos inamovibles | 10 principios — repositorio como sistema, orquestación multiagente, Spec-first, KISS, etc. |
+
+Los skills leen `constitution.md` para mantener coherencia de patrones sin que el usuario tenga que repetir las reglas en cada sesión.
+
+#### definition-of-done-story.md
+
+Define los criterios de "terminado" para cada estado del ciclo de vida de una historia. Un skill de transición de estado verifica estos criterios antes de avanzar:
+
+| Estado | Criterios clave |
+|--------|-----------------|
+| `SPECIFYING` | Título claro, formato Como/Quiero/Para, Gherkin cubriendo escenarios principales, cumple INVEST, frontmatter completo |
+| `PLAN` | `design.md` con trazabilidad a cada AC, `tasks.md` con tareas atómicas ordenadas, `analyze.md` sin ambigüedades técnicas abiertas |
+| `IMPLEMENTING` | Todos los escenarios Gherkin pasan, código sin TODOs ni imports sin usar, tests deterministas, cobertura no decrece |
+| `CODE-REVIEW` | Sin hallazgos HIGH/MEDIUM, `tasks.md` sin tareas pendientes, `code-review-report.md` con `review-status: approved` |
+| `ACCEPTANCE` | Escenarios validados manualmente, `acceptance-report.md` con resultado `ACCEPTANCE-APPROVED`, aprobación humana explícita |
+
+#### Integración en el flujo
+
+Los skills comprueban estas políticas en dos momentos:
+
+1. **Preflight (Paso 0):** `skill-preflight` verifica que los archivos de políticas existen y son legibles antes de ejecutar cualquier lógica.
+2. **Gate de transición:** skills como `story-code-review` y `story-acceptance` leen `definition-of-done-story.md` para decidir si el artefacto cumple los criterios del estado destino antes de actualizar `status`/`substatus` en el frontmatter.
+
+```bash
+# Genera o actualiza ambas políticas con preguntas guiadas
+/project-policies-generation
+```
+
+### Estructura de artefactos de especificación
+
 Los artefactos de especificación se organizan en directorios por workitem bajo `{SDDF_ROOT}/specs/`:
 
 ```
@@ -175,7 +238,7 @@ docs/specs/
 
 Cada archivo principal usa un nombre canónico (`project-intent.md`, `release.md`, `story.md`) e incluye frontmatter con `type`, `id`, `title`, `status`, `parent`, `created` y `updated`. Las relaciones jerárquicas se expresan mediante el campo `parent` (ej. una release tiene `parent: PROJ-01`).
 
-El ciclo de vida de una historia atraviesa los estados `SPECIFYING → PLANNING → READY-FOR-IMPLEMENT → IMPLEMENTING → DONE`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio.
+El ciclo de vida de una historia atraviesa los estados `SPECIFYING → PLANNING → READY-FOR-IMPLEMENT → IMPLEMENTING → ... → COMPLETED`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio.
 
 ### Basic Usage
 
