@@ -108,6 +108,8 @@ La transición `PLANNING/IN‑PROGRESS` se aplica **incondicionalmente** al inic
 - El estado `PLANNING/IN‑PROGRESS` se aplica incondicionalmente al iniciar, sin importar el estado previo
 - La idempotencia de cada artefacto (design.md, tasks.md, analyze.md) es responsabilidad del sub-skill correspondiente
 - Con `--skip-analyze` solo se omite el análisis de coherencia; design y tasking siempre se ejecutan
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
+- NO genere código; estas orquestando el flujo de planificación, no implementando los artefactos técnicos
 
 ---
 

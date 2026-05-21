@@ -76,6 +76,8 @@ agentes IA los lean automáticamente antes de cualquier acción:
 - **Sin sobreescritura silenciosa:** si un archivo de políticas ya existe, siempre se pide confirmación antes de sobreescribir.
 - **Inserción conservadora en CLAUDE.md:** si no se puede identificar la sección correcta para insertar referencias, el skill muestra las líneas a agregar manualmente en lugar de modificar el archivo.
 - **Extracción dinámica:** la estructura de los documentos de políticas se deriva en runtime del template; si los templates cambian, el output se actualiza automáticamente.
+- NO modifique ningún archivo existente en el código fuente (estamos especificando políticas de desarrollo, no implementando los artefactos técnicos)
+- NO genere código; estas especificando políticas de desarrollo, no implementando los artefactos técnicos
 
 ## Flujo de ejecución
 

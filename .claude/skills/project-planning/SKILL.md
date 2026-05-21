@@ -76,6 +76,8 @@ en releases, produciendo `$SPECS_BASE/specs/projects/$PROJ_DIR/project-plan.md`.
 - **Extracción dinámica:** la estructura del output se deriva en runtime del template; si el template cambia, el output se actualiza automáticamente.
 - **Story map como guía, no como restricción:** si `story-map.md` existe, el `project-architect` lo usa como referencia estructural pero no está obligado a replicarlo exactamente.
 - **Sin avance automático:** el skill no invoca el siguiente paso del pipeline — el usuario decide cuándo continuar.
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de planeación y especificación, no de implementación)
+- NO genere código; estas especificando, no implementando los artefactos técnicos
 
 ## Flujo de ejecución
 

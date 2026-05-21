@@ -65,6 +65,8 @@ del template `release-spec-template.md`. Produce resultado **APROBADO**, **REFIN
 - **Validación estructural, no semántica:** verifica presencia de secciones por encabezado `##`, no el contenido.
 - **Extracción dinámica:** las secciones obligatorias se derivan en runtime del template mediante el comentario `<!-- sección obligatoria -->`; si el template cambia, el skill se adapta automáticamente.
 - **Sin corrección:** la generación o corrección de contenido están fuera del scope de este skill.
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO genere código; estas validando, no implementando los artefactos técnicos
 
 ## Flujo de ejecución
 

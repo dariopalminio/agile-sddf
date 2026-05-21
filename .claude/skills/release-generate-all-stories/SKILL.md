@@ -65,13 +65,15 @@ Sin parámetros — el skill no expone flags ni argumentos posicionales.
 
 ## Restricciones / Reglas
 
-1. El skill **no valida** calidad FINVEST — en flujo batch la validación INVEST se delega al paso posterior `/story-evaluation` para no bloquear la generación masiva de historias; ejecutar `/story-evaluation` sobre cada historia generada como siguiente paso obligatorio
-2. El skill **no modifica** los archivos de release
-3. El skill procesa **todas** las features de cada release (pendientes `[ ]` y completadas `[x]`)
-4. El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
-5. Si dos features en distintos releases generan el mismo nombre de directorio (mismo ID y slug), el segundo se nombra con sufijo `-bis` (ej. `FEAT-027-nombre-bis/`) e informa al usuario en el resumen
-6. Las secciones opcionales de cada historia se incluyen con placeholder `[Por completar]` para facilitar la edición posterior
-7. El orden de procesamiento es siempre alfabético por nombre de directorio de release, equivalente al orden numérico dado el patrón `EPIC-NN-nombre/`
+- El skill **no valida** calidad FINVEST — en flujo batch la validación INVEST se delega al paso posterior `/story-evaluation` para no bloquear la generación masiva de historias; ejecutar `/story-evaluation` sobre cada historia generada como siguiente paso obligatorio
+- El skill **no modifica** los archivos de release
+- El skill procesa **todas** las features de cada release (pendientes `[ ]` y completadas `[x]`)
+- El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
+- Si dos features en distintos releases generan el mismo nombre de directorio (mismo ID y slug), el segundo se nombra con sufijo `-bis` (ej. `FEAT-027-nombre-bis/`) e informa al usuario en el resumen
+- Las secciones opcionales de cada historia se incluyen con placeholder `[Por completar]` para facilitar la edición posterior
+- El orden de procesamiento es siempre alfabético por nombre de directorio de release, equivalente al orden numérico dado el patrón `EPIC-NN-nombre/`
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO genere código; estas especificando, no implementando los artefactos técnicos
 
 ---
 

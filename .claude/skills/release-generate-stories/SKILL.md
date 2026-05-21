@@ -59,13 +59,15 @@ Lee `release.md` de un directorio de release en `$SPECS_BASE/specs/releases/` y 
 
 ## Restricciones / Reglas
 
-1. El skill **no valida** calidad FINVEST — en flujo batch la validación INVEST se delega al paso posterior `/story-evaluation` para no bloquear la generación masiva de historias; ejecutar `/story-evaluation` sobre cada historia generada como siguiente paso obligatorio
-2. El skill **no modifica** el archivo de release
-3. El skill procesa **todas** las features del release (pendientes `[ ]` y completadas `[x]`)
-4. Si dos features tienen el mismo ID (duplicado en el release), añadir sufijo `-bis` al segundo archivo (ej. `FEAT-029-nombre-bis/`) e informar al usuario
-5. Las secciones opcionales de cada historia se incluyen con placeholder `[Por completar]` para facilitar la edición posterior
-6. El skill no realiza evaluación INVEST ni splitting — si una historia parece demasiado grande, sugerirlo en las notas pero no dividirla automáticamente
-7. El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
+- El skill **no valida** calidad FINVEST — en flujo batch la validación INVEST se delega al paso posterior `/story-evaluation` para no bloquear la generación masiva de historias; ejecutar `/story-evaluation` sobre cada historia generada como siguiente paso obligatorio
+- El skill **no modifica** el archivo de release
+- El skill procesa **todas** las features del release (pendientes `[ ]` y completadas `[x]`)
+- Si dos features tienen el mismo ID (duplicado en el release), añadir sufijo `-bis` al segundo archivo (ej. `FEAT-029-nombre-bis/`) e informar al usuario
+- Las secciones opcionales de cada historia se incluyen con placeholder `[Por completar]` para facilitar la edición posterior
+- El skill no realiza evaluación INVEST ni splitting — si una historia parece demasiado grande, sugerirlo en las notas pero no dividirla automáticamente
+- El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO genere código; estas especificando, no implementando los artefactos técnicos
 
 ## Flujo de ejecución
 

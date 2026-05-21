@@ -89,6 +89,9 @@ Fuente estructural del output: `$SPECS_BASE/specs/templates/story-template.md` (
   - Dependencias duras entre splits — reordenar o replantear el patrón
   - Split arbitrario sin racionalidad de valor o workflow — usar uno de los 8 patrones con justificación
   - Dejar la historia original como huérfana con `status: SPLIT` — siempre repurpose el directorio como historia core
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO genere código; este skill solo produce archivos de especificaciones `.md`.
+- NO incluya detalles de implementación (consultas específicas, estructuras JSON, firmas de métodos, anotaciones, inventarios de la capa de componentes, lógica paso a paso); estos detalles pertenecen a la etapa de planeación del diseño.
 
 ---
 

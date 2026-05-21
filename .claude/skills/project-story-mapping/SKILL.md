@@ -79,6 +79,8 @@ project-begin → project-discovery → [project-story-mapping] → project-plan
 - **Solo frontmatter:** el skill no modifica el contenido del `story-map.md` generado; solo prepende el bloque de frontmatter YAML.
 - **Contexto opcional:** si no se encuentran documentos del proyecto, el agente recopila el contexto interactivamente — la ausencia de documentos no es un error bloqueante.
 - **Frontmatter derivado dinámicamente:** `title` se extrae del primer `#` heading del documento; `date` es la fecha actual; `substatus` por defecto es `IN-PROGRESS`.
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de planeación y especificación, no de implementación)
+- NO genere código; estas especificando, no implementando los artefactos técnicos
 
 ## Flujo de ejecución
 

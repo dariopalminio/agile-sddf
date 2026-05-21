@@ -15,7 +15,12 @@ sddf-init → skill-preflight → [cualquier skill SDDF]
 - Al configurar SDDF en un proyecto nuevo por primera vez
 - Cuando `skill-preflight` reporta que faltan directorios base
 
-**No hacer:**
+---
+
+## Restricciones / Reglas
+
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de inicialización de especificaciones, no de implementación)
+- NO genere código; estas iniciando el entorno SDDF, no implementando los artefactos técnicos
 - No carga contexto en `openspec/config.yaml` — eso es tarea de `openspec-init-config`
 - No inicializa repositorio git
 - No instala dependencias

@@ -80,6 +80,8 @@ story-acceptance  → validación humana final              ← aquí
 - **Precondición de estado:** solo ejecuta si `story.md` tiene `status: VERIFY/DONE` o `ACCEPTANCE/IN-PROGRESS`
 - **FAIL/BLOCKED requieren observación:** el skill rechaza respuestas sin texto de observación no vacío
 - **DoD dinámico:** los criterios ACCEPTANCE se leen en runtime; nunca están hardcodeados
+- NO modifique ningún archivo existente en el código fuente (estamos aceptando la implementación, no implementando los artefactos técnicos)
+- NO genere código; estamos aceptando la implementación, no implementando los artefactos técnicos
 
 ---
 

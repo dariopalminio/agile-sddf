@@ -68,11 +68,13 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 
 ## Restricciones / Reglas
 
-1. Este skill no invoca `skill-preflight` — su único output en disco son `finvest-evaluation-report.md` (siempre que el input sea ID o ruta de archivo) y la actualización del frontmatter de `story.md` (solo si la decisión es `APROBADA`).
-2. El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida.
-3. Si `F_score < 2.5`, no evaluar dimensiones INVEST — emitir `RECHAZAR` directamente por formato insuficiente.
-4. **Imágenes adjuntas:** si el input incluye imágenes adjuntas (wireframes, screenshots u otros archivos binarios de imagen), ignorarlas completamente. Evaluar únicamente el contenido en texto (Markdown) de la historia de usuario. Si el usuario adjunta solo una imagen sin texto de historia, indicar que el skill requiere texto para evaluar.
-5. Responder siempre en el mismo idioma que la historia de entrada.
+- Este skill no invoca `skill-preflight` — su único output en disco son `finvest-evaluation-report.md` (siempre que el input sea ID o ruta de archivo) y la actualización del frontmatter de `story.md` (solo si la decisión es `APROBADA`).
+- El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida.
+- Si `F_score < 2.5`, no evaluar dimensiones INVEST — emitir `RECHAZAR` directamente por formato insuficiente.
+- **Imágenes adjuntas:** si el input incluye imágenes adjuntas (wireframes, screenshots u otros archivos binarios de imagen), ignorarlas completamente. Evaluar únicamente el contenido en texto (Markdown) de la historia de usuario. Si el usuario adjunta solo una imagen sin texto de historia, indicar que el skill requiere texto para evaluar.
+- Responder siempre en el mismo idioma que la historia de entrada.
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO genere código; este skill solo evalúa, no crea archivos.
 
 ---
 

@@ -81,16 +81,19 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 
 ## Restricciones / Reglas
 
-1. No modificar los skills existentes `story-creation`, `story-evaluation` ni `story-split`
-2. Usar `$SPECS_BASE/specs/stories/` como único directorio de salida para historias
-3. Toda historia activa debe tener `status: SPECIFYING` / `substatus: IN‑PROGRESS` en su frontmatter
-4. Una historia pasa automáticamente a `status: SPECIFYING` / `substatus: DONE` cuando `story-evaluation` devuelve `Decision: APROBADA`
-5. Si la decisión es `REFINAR` o `RECHAZAR`, nunca entrar en bucle infinito — siempre pedir al usuario una decisión explícita antes de iterar (gate anti-bucle, Paso 6)
-6. Para indagar, analizar el problema, enriquecer la redacción o proponer mejoras, usar el agente `story-product-owner`
-7. Mantener la interactividad con el usuario en todo momento — nunca avanzar en silencio
-8. Conservar la esencia y el formato de los skills originales sin reescribir su lógica
-9. Nunca perder trazabilidad de historias derivadas — toda historia del split se registra inmediatamente
-10. Mantener `$SPECS_BASE/specs/stories/` como fuente de verdad del estado real de cada historia
+- No modificar los skills existentes `story-creation`, `story-evaluation` ni `story-split`
+- Usar `$SPECS_BASE/specs/stories/` como único directorio de salida para historias
+- Toda historia activa debe tener `status: SPECIFYING` / `substatus: IN‑PROGRESS` en su frontmatter
+- Una historia pasa automáticamente a `status: SPECIFYING` / `substatus: DONE` cuando `story-evaluation` devuelve `Decision: APROBADA`
+- Si la decisión es `REFINAR` o `RECHAZAR`, nunca entrar en bucle infinito — siempre pedir al usuario una decisión explícita antes de iterar (gate anti-bucle, Paso 6)
+- Para indagar, analizar el problema, enriquecer la redacción o proponer mejoras, usar el agente `story-product-owner`
+- Mantener la interactividad con el usuario en todo momento — nunca avanzar en silencio
+- Conservar la esencia y el formato de los skills originales sin reescribir su lógica
+- Nunca perder trazabilidad de historias derivadas — toda historia del split se registra inmediatamente
+- Mantener `$SPECS_BASE/specs/stories/` como fuente de verdad del estado real de cada historia
+- NO modifique ningún archivo existente en el código solo se debe orquestar
+- NO genere código; este skill solo orquestar y produce archivos de especificaciones `.md`.
+- NO incluya detalles de implementación (consultas específicas, estructuras JSON, firmas de métodos, anotaciones, inventarios de la capa de componentes, lógica paso a paso); estos detalles pertenecen a la etapa de planeación del diseño.
 
 ---
 

@@ -11,6 +11,12 @@ Eres el **orquestador del pipeline completo** de ProjectSpecFactory. Tu tarea es
 
 El flujo es: **Fase 1 (Begin Intention)** → **Fase 2 (Discovery)** → **Fase 3 (Planning)**
 
+---
+
+## Restricciones / Reglas
+
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación de proyecto, no de implementación)
+- NO genere código; estas en especificación de proyecto, no implementando los artefactos técnicos
 
 ---
 

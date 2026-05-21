@@ -115,6 +115,8 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - Los hallazgos de tipo ERROR (TIPO A, B o E) bloquean la transición a `READY-FOR-IMPLEMENT`
 - Ante incertidumbre en la evaluación DoD, usar `⚠️` en lugar de `❌` (regla de duda — no bloquear indebidamente)
 - El reporte debe referenciar secciones y líneas específicas de los archivos afectados — no se admiten mensajes genéricos
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
+- NO genere código; solo estamos analizando y auditando la planeación.
 
 ---
 

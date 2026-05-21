@@ -13,6 +13,13 @@ Lee `$SPECS_BASE/specs/projects/$PROJ_DIR/project-plan.md` y genera automáticam
 
 ---
 
+## Restricciones / Reglas
+
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO genere código; estas especificando, no implementando los artefactos técnicos
+
+---
+
 ## Paso 0 — Verificar entorno (`skill-preflight`)
 
 Invocar `skill-preflight` antes de cualquier operación con archivos. El preflight verifica `SDDF_ROOT`, resuelve `SPECS_BASE` (fallback: `docs`) y confirma los subdirectorios de specs estándar. Si retorna `✗ Entorno inválido`, detener la ejecución.

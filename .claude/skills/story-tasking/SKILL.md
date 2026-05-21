@@ -91,6 +91,8 @@ tasks.md   → When: tareas de implementación, orden, seguimiento  ← aquí
 - La descripción es suficientemente específica para saber exactamente cuándo está hecha
 - No hay decisiones de diseño aplazadas: si algo es incierto, está documentado en `design.md`
 - Todas las tareas de verificación cubren los escenarios de los ACs
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
+- NO genere código; este skill solo produce archivos de especificaciones de tareas `.md`.
 
 **Formato de líneas de tarea:**
 

@@ -68,11 +68,13 @@ Conduce al usuario a través de la creación de un archivo de release completo m
 
 ## Restricciones / Reglas
 
-1. El template `release-spec-template.md` es la **única fuente de estructura** — nunca hardcodear nombres de secciones; extraerlos dinámicamente en tiempo de ejecución
-2. El template es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
-3. No pedir IDs de features al usuario — calcularlos automáticamente leyendo los directorios existentes en `$SPECS_BASE/specs/stories/`
-4. En modo rápido (`--quick`), las secciones opcionales se omiten sin preguntar
-5. Si el directorio destino ya existe, preguntar al usuario antes de sobreescribir
+- El template `release-spec-template.md` es la **única fuente de estructura** — nunca hardcodear nombres de secciones; extraerlos dinámicamente en tiempo de ejecución
+- El template es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
+- No pedir IDs de features al usuario — calcularlos automáticamente leyendo los directorios existentes en `$SPECS_BASE/specs/stories/`
+- En modo rápido (`--quick`), las secciones opcionales se omiten sin preguntar
+- Si el directorio destino ya existe, preguntar al usuario antes de sobreescribir
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO genere código; estas ESPECIFICANDO, no implementando los artefactos técnicos
 
 ---
 

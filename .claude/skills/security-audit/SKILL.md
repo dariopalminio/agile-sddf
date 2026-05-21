@@ -147,6 +147,8 @@ Invocación integrada (desde story-code-review):
 - **Safe-by-default ante incertidumbre** — si una variable de contexto no puede determinarse, asumir el valor más conservador (`environment = "production"`, booleanos → `false`) y marcar `manual_review_required` en el reporte
 - **Fail-fast ante dependencias faltantes** — si `assets/security-checklist.md` no existe o `.tmp/security-audit/` no puede crearse, abortar con mensaje claro
 - **Idempotencia** — el directorio `.tmp/security-audit/` se recrea en cada ejecución; no hay estado persistente entre ejecuciones
+- NO genere código; estamos auditando seguridad, no implementando los artefactos técnicos
+- NO modifique ningún archivo que no sean los archivos de salida bajo `.tmp/security-audit/` y el archivo `audit-report.md` (nunca escribir en los assets ni en los agentes)
 
 ---
 

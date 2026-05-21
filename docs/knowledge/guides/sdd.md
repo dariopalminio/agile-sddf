@@ -9,17 +9,17 @@ Usar esa especificación como fuente tanto para humanos como para agentes de IA.
 
 Generar código a partir de la spec, no de prompts improvisados.
 
-Como lo resume GitHub en su documentación de Spec Kit: "En este nuevo mundo, mantener software significa evolucionar especificaciones. [...] El código es el enfoque de última milla."[3]
+Como lo resume GitHub en su documentación de Spec Kit: "En este nuevo mundo, mantener software significa evolucionar especificaciones. [...] El código es el enfoque de última milla."[1]
 
-SDD no propone documentación extensiva estilo waterfall. Propone especificaciones vivas, ejecutables y versionadas que evolucionan con el código. Como GitHub lo describe: "Spec-Driven Development no se trata de escribir documentos de requisitos exhaustivos que nadie lee. Tampoco se trata de planificación waterfall."[3]
+SDD no propone documentación extensiva estilo waterfall. Propone especificaciones vivas, ejecutables y versionadas que evolucionan con el código. Como GitHub lo describe: "Spec-Driven Development no se trata de escribir documentos de requisitos exhaustivos que nadie lee. Tampoco se trata de planificación waterfall."[1]
 
 ## Herramientas del ecosistema SDD
 
-El ecosistema de herramientas SDD está creciendo rápidamente:[6]
+El ecosistema de herramientas SDD está creciendo rápidamente:
 
-- **OpenSpec:** OpenSpec es un framework de SDD creado por Fission AI, publicado bajo licencia MIT. Su flujo principal es: /opsx:propose ──► /opsx:apply ──► /opsx:archive
+- **OpenSpec:** OpenSpec es un framework de SDD creado por Fission AI, publicado bajo licencia MIT. Su flujo principal es: /opsx:propose ──► /opsx:apply ──► /opsx:archive [2].
 
-- **GitHub Spec Kit:** Toolkit open source que proporciona un flujo estructurado: Constitution → Specify → Plan → Tasks → Implement. Funciona con Copilot, Claude Code y otros.
+- **GitHub Spec Kit:** Toolkit open source que proporciona un flujo estructurado: Constitution → Specify → Plan → Tasks → Implement. Funciona con Copilot, Claude Code y otros [3].
 
 - **Kiro (AWS):** IDE basado en VS Code con flujo integrado de Requirements → Design → Tasks.
 
@@ -27,7 +27,13 @@ El ecosistema de herramientas SDD está creciendo rápidamente:[6]
 
 - **BMAD Method:** Usa agentes virtuales (Analyst, Product Manager, Architect) para generar PRDs y specs de arquitectura.
 
+- **Open SPDD:** Enfoque Structured-Prompt-Driven Development (SPDD) enfatiza prompts estructurados para generar código a partir de specs. El departamento de TI interno de Thoughtworks utiliza LLMs para sus equipos y ha desarrollado un método y flujo de trabajo denominado Desarrollo Estructurado Guiado por Indicaciones (SPDD). El flujo de trabajo SPDD consta de los siguientes pasos: create initial requirements → clarify analysis → generate analysis context → generate structured prompt → generate code → generate unit test → integrate-build-and-deploy [4][5].
 
 
 Referencias:
-[3]: GitHub Blog - Spec-driven development with AI: github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai 
+[1]: GitHub Blog - Spec-driven development with AI: github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai 
+[2]: https://openspec.dev/
+[3]: https://speckit.org/
+[4]: https://martinfowler.com/articles/structured-prompt-driven/?shem=rimspwouoe
+[5]: https://github.com/gszhangwei/open-spdd/tree/main
+

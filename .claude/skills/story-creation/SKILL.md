@@ -80,6 +80,9 @@ Fuente estructural del output: `$SPECS_BASE/specs/templates/story-template.md` (
 - El `Quiero` describe la acción del usuario, no la solución técnica
 - El `Para` expresa beneficio real y medible, no restatement del `Quiero`
 - Los pasos Gherkin (`Entonces`) deben ser verificables objetivamente — sin resultados subjetivos
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO genere código; este skill solo produce archivos de especificaciones `.md`.
+- NO incluya detalles de implementación (consultas específicas, estructuras JSON, firmas de métodos, anotaciones, inventarios de la capa de componentes, lógica paso a paso); estos detalles pertenecen a la etapa de planeación del diseño.
 
 ---
 

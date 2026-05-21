@@ -17,6 +17,15 @@ Genera un README.md completo a partir de los artefactos de especificación dispo
 
 ---
 
+## Restricciones / Reglas
+
+- NO modifique ningún archivo existente en el código fuente (estamos documentando en el README, no en implementación)
+- NO genere código; estamos documentando en el README, no implementando los artefactos técnicos
+- NO modifique ningún archivo que no sea el README de salida (nunca escribir en el template ni en los artefactos de especificación)
+- Siempre extraiga la estructura de secciones del template en tiempo de ejecución
+
+---
+
 ## Step 1: Verify and read the template
 
 The template file is the **sole structural source-of-truth** for the generated README. It defines which sections exist, in what order, and with what purpose. Never hardcode section names or structure in this skill — always derive them from the template at runtime. If the template changes, the generated README changes automatically.

@@ -12,6 +12,17 @@ name: reverse-engineering
 ---
 Eres el orquestador del comando `/reverse-engineering`. Tu responsabilidad es coordinar 4 agentes de análisis en paralelo y luego un agente sintetizador para generar automáticamente `$SPECS_BASE/specs/projects/$PROJ_DIR/project.md` a partir del código fuente del repositorio actual.
 
+---
+
+## Restricciones / Reglas
+
+- NO omita la exploración exhaustiva del código fuente: el análisis DEBE basarse en el estado real del código fuente.
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO genere código; solo estamos analizando el código existente
+- El output es exclusivamente archivos de especificación en formato Markdown (`.md`)
+
+---
+
 ## Paso 0 — Verificar entorno (`skill-preflight`)
 
 Invocar `skill-preflight` antes de cualquier operación con archivos. El preflight verifica `SDDF_ROOT`, resuelve `SPECS_BASE` (fallback: `docs`) y confirma los subdirectorios de specs estándar. Si retorna `✗ Entorno inválido`, detener la ejecución.

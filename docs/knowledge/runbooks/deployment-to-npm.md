@@ -28,10 +28,10 @@ O modificar manualmente version en package.json y luego:
 git add . 
 git commit -m "chore: version 1.5.6 - Fix postinstall script to install agents correctly"
 git push origin main
-git tag -a v1.5.6 -m "Release  v1.5.6 - Fix postinstall script"
+#git tag -a v1.5.6 -m "Release  v1.5.6 - Fix postinstall script"
 git push origin v1.5.6
 gh release create v1.5.6 --notes-from-tag
-git push origin v1.5.6
+#git push origin v1.5.6
 ```
 
 # Publicación en NPM

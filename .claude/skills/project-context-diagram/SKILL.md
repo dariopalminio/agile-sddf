@@ -91,6 +91,8 @@ externos (personas/roles) y sistemas adyacentes. Escribe el resultado en
 - **`Person()` solo para humanos/roles:** los sistemas técnicos externos siempre van en `System_Ext()`.
 - **Preview obligatorio:** siempre mostrar el diagrama generado al usuario y pedir confirmación antes de escribir el archivo.
 - **Verificación de sobreescritura:** si `context-diagram.puml` ya existe, pedir confirmación antes de sobreescribir.
+- NO modifique ningún archivo existente en el código fuente (estamos diagramando, no implementando)
+- NO genere código; estas diagramando, no implementando los artefactos técnicos
 
 ## Flujo de ejecución
 

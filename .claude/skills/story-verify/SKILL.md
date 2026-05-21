@@ -81,6 +81,8 @@ story-verify    ← aquí
 - **Idempotente:** ejecutable múltiples veces; sobreescribe `verify-report.md` preservando el historial de ejecuciones anteriores.
 - **Precondición de estado:** solo ejecuta si `story.md` tiene `status: CODE-REVIEW/DONE` o `IMPLEMENTING/DONE`; cualquier otro estado detiene la ejecución con error descriptivo sin modificar archivos.
 - **DoD dinámico:** los criterios VERIFY se leen en runtime desde el DoD; nunca están hardcodeados en el skill.
+- NO modifique ningún archivo existente en el código fuente (estamos verificando la implementación, no implementando los artefactos técnicos)
+- NO genere código; estamos verificando la implementación, no implementando los artefactos técnicos
 
 ## Flujo de ejecución
 

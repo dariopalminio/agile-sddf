@@ -74,6 +74,8 @@ de usuarios con el agente `project-pm` y la especificación de requisitos con
 - **Template de solo lectura:** `project-template.md` nunca se modifica ni se usa como ruta de salida.
 - **Extracción dinámica:** las secciones del documento se derivan en runtime del template; si el template cambia, el output se actualiza automáticamente.
 - **Sin avance automático:** el skill no invoca `project-planning` — el usuario decide cuándo continuar.
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de descubrimiento y especificación, no de implementación)
+- NO genere código; estas en descubrimiento, no implementando los artefactos técnicos
 
 ## Flujo de ejecución
 

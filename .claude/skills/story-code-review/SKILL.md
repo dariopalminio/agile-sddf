@@ -120,6 +120,8 @@ El flujo por defecto es siempre el equipo de tres agentes. El flag `--single-age
 
 - La ejecución es idempotente: `.tmp/story-code-review/` se limpia al inicio de cada ejecución
 - `story-code-review` solo puede ejecutarse si `story.md` tiene `status: IMPLEMENTING` + `substatus: DONE`. Si la precondición no se cumple, la ejecución se detiene con error descriptivo.
+- NO modifique ningún archivo existente en el código fuente (estamos revisando el código de la implementación, no implementando los artefactos técnicos)
+- NO genere código; estamos revisando la implementación, no implementando los artefactos técnicos
 
 ---
 

@@ -79,6 +79,8 @@ refinar la intención del proyecto, produciendo
 - **Extracción dinámica:** las secciones del documento se derivan en runtime del template;
   si el template cambia, el output se actualiza automáticamente.
 - **Sin avance automático:** el skill no invoca `project-discovery` — el usuario decide cuándo continuar.
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de  inicial, no de implementación)
+- NO genere código; estas iniciando la especificación, no implementando los artefactos técnicos
 
 ## Flujo de ejecución
 

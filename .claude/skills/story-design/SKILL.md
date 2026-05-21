@@ -96,6 +96,8 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 - Los nombres de componentes deben usar el vocabulario del dominio de la historia (no nombres técnicos genéricos)
 - No hay decisiones aplazadas: toda ambigüedad se resuelve en el diseño o se registra como CR
 - Todo contenido técnico tiene origen trazable en las fuentes del proyecto — nunca se inventa
+- NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
+- NO genere código; este skill solo produce archivos de especificaciones de diseño `.md`.
 
 ---
 
