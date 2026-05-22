@@ -1,0 +1,48 @@
+{
+  "skill_name": "story-creation",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Crear una historia de usuario para: un vendedor de una empresa SaaS quiere poder exportar su lista de clientes activos a un archivo CSV para compartirla con su gerente de ventas antes de la reunión mensual de pipeline.",
+      "expected_output": "Un archivo story.md generado en docs/specs/stories/FEAT-NNN-*/story.md con: (1) formato Como/Quiero/Para con rol específico 'vendedor de empresa SaaS', (2) al menos 1 escenario Gherkin principal y 1 alternativo en bloques gherkin, (3) frontmatter completo con id, slug, status: SPECIFYING, (4) sin detalles de implementación técnica.",
+      "files": [],
+      "expectations": [
+        "La historia usa formato Como/Quiero/Para con rol específico y no 'usuario' genérico",
+        "El 'Quiero' describe la acción del usuario (exportar), no la solución técnica",
+        "El 'Para' expresa un beneficio real y medible (ej. compartir con gerente, preparar reunión)",
+        "El archivo story.md incluye al menos 1 escenario Gherkin principal (happy path) en bloque gherkin",
+        "El archivo story.md incluye al menos 1 escenario alternativo o de error en bloque gherkin",
+        "Los pasos Gherkin son específicos y verificables (sin resultados subjetivos como 'funciona bien')",
+        "El frontmatter contiene los campos id (FEAT-NNN), slug, status, created y type",
+        "La historia NO incluye detalles de implementación técnica (SQL, JSON, firmas de métodos, etc.)"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "historia de usuario - el administrador de una plataforma de e-learning necesita poder suspender temporalmente cuentas de estudiantes que llevan más de 30 días con pago vencido, para cumplir con la política de morosidad de la empresa.",
+      "expected_output": "Un archivo story.md con: (1) rol específico 'administrador de plataforma e-learning' (no 'usuario' genérico), (2) Quiero describe acción del usuario no solución técnica, (3) Para expresa valor de negocio medible (política de morosidad), (4) escenarios Gherkin con valores concretos (ej. '30 días'), (5) criterio no funcional sobre seguridad o autorización.",
+      "files": [],
+      "expectations": [
+        "La historia usa formato Como/Quiero/Para con rol específico 'administrador' (no 'usuario' genérico)",
+        "El 'Para' refleja el beneficio de negocio (política de morosidad), no un restatement del Quiero",
+        "Los escenarios Gherkin usan valores concretos y verificables (ej. '30 días', estado de cuenta)",
+        "El archivo story.md incluye al menos 1 escenario principal y 1 alternativo/error en bloques gherkin",
+        "La historia incluye al menos 1 criterio no funcional (seguridad, autorización, UX o rendimiento)",
+        "Los pasos 'Entonces' son objetivamente verificables y no subjetivos",
+        "La historia NO prescribe la implementación técnica (sin mencionar queries, APIs, clases, etc.)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Necesito una historia de usuario completa para implementar todo el módulo de autenticación de la aplicación: registro de nuevos usuarios con email y contraseña, login, recuperación de contraseña por email, autenticación de dos factores (2FA) con SMS y app autenticadora, gestión de sesiones múltiples, y cierre de sesión global.",
+      "expected_output": "El skill detecta que el alcance es demasiado grande (falla dimensión S de INVEST) y sugiere usar /story-split. Idealmente genera una historia acotada a una funcionalidad específica del módulo, o genera la historia pero incluye advertencia explícita sobre el tamaño y la sugerencia de dividir.",
+      "files": [],
+      "expectations": [
+        "El skill detecta que el alcance es demasiado grande y sugiere /story-split o indica que falla la dimensión S (Small) de INVEST",
+        "Si genera una historia, está acotada a una sola funcionalidad (no cubre las 5+ funciones del input)",
+        "La historia generada (si existe) tiene formato Como/Quiero/Para coherente con el alcance acotado",
+        "La respuesta incluye una explicación de qué quedó fuera del scope y por qué"
+      ]
+    }
+  ]
+}
