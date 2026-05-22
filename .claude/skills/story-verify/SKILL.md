@@ -83,6 +83,9 @@ story-verify    ← aquí
 - **DoD dinámico:** los criterios VERIFY se leen en runtime desde el DoD; nunca están hardcodeados en el skill.
 - NO modifique ningún archivo existente en el código fuente (estamos verificando la implementación, no implementando los artefactos técnicos)
 - NO genere código; estamos verificando la implementación, no implementando los artefactos técnicos
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ## Flujo de ejecución
 

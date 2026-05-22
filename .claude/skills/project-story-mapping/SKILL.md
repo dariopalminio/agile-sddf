@@ -81,7 +81,10 @@ project-begin → project-discovery → [project-story-mapping] → project-plan
 - **Frontmatter derivado dinámicamente:** `title` se extrae del primer `#` heading del documento; `date` es la fecha actual; `substatus` por defecto es `IN-PROGRESS`.
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de planeación y especificación, no de implementación)
 - NO genere código; estas especificando, no implementando los artefactos técnicos
-
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
+  
 ## Flujo de ejecución
 
 ### Paso 0 — Verificar entorno (`skill-preflight`)

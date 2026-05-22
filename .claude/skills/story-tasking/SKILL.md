@@ -93,6 +93,9 @@ tasks.md   → When: tareas de implementación, orden, seguimiento  ← aquí
 - Todas las tareas de verificación cubren los escenarios de los ACs
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
 - NO genere código; este skill solo produce archivos de especificaciones de tareas `.md`.
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 **Formato de líneas de tarea:**
 

@@ -84,6 +84,9 @@ Opera completamente inline — sin delegar a subagentes.
 - **No sobreescritura de frontmatter:** si un archivo ya tiene frontmatter, se preserva sin modificación. No fusionar automáticamente.
 - **Wikilinks no bloqueantes:** nodos pendientes (wikilinks sin archivo correspondiente) no detienen la generación del índice — se marcan con ⚠️.
 - **Template de solo lectura:** `assets/wiki-index-template.md` nunca se modifica ni se usa como ruta de salida.
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ## Flujo de ejecución
 

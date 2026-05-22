@@ -98,6 +98,9 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 - Todo contenido técnico tiene origen trazable en las fuentes del proyecto — nunca se inventa
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
 - NO genere código; este skill solo produce archivos de especificaciones de diseño `.md`.
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ---
 

@@ -20,6 +20,9 @@ Eres el orquestador del comando `/reverse-engineering`. Tu responsabilidad es co
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
 - NO genere código; solo estamos analizando el código existente
 - El output es exclusivamente archivos de especificación en formato Markdown (`.md`)
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ---
 

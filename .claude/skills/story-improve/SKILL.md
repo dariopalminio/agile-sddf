@@ -88,7 +88,10 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 - **Revisión integral antes de escribir:** revisar todas las dimensiones con score ≤ 3 en un único ciclo antes de escribir `story.md`; no escribir cambios parciales por dimensión
 - **Preservar intención original:** aplicar el mínimo cambio necesario para satisfacer la recomendación; no reescribir secciones válidas
 - **Gate APROBADA es definitivo:** si `decision: APROBADA`, terminar inmediatamente sin escribir ningún archivo
-
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
+  
 ---
 
 ## Flujo de ejecución

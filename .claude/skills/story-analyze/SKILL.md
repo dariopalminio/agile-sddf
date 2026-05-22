@@ -117,6 +117,9 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - El reporte debe referenciar secciones y líneas específicas de los archivos afectados — no se admiten mensajes genéricos
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
 - NO genere código; solo estamos analizando y auditando la planeación.
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ---
 

@@ -68,6 +68,9 @@ Lee `release.md` de un directorio de release en `$SPECS_BASE/specs/releases/` y 
 - El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
 - NO genere código; estas especificando, no implementando los artefactos técnicos
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ## Flujo de ejecución
 

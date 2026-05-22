@@ -75,6 +75,9 @@ Conduce al usuario a través de la creación de un archivo de release completo m
 - Si el directorio destino ya existe, preguntar al usuario antes de sobreescribir
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
 - NO genere código; estas ESPECIFICANDO, no implementando los artefactos técnicos
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ---
 

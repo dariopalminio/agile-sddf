@@ -67,7 +67,10 @@ del template `release-spec-template.md`. Produce resultado **APROBADO**, **REFIN
 - **Sin corrección:** la generación o corrección de contenido están fuera del scope de este skill.
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
 - NO genere código; estas validando, no implementando los artefactos técnicos
-
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
+  
 ## Flujo de ejecución
 
 ### Paso 0 — Verificar entorno (`skill-preflight`)

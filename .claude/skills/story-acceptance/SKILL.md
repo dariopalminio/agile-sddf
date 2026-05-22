@@ -82,7 +82,9 @@ story-acceptance  → validación humana final              ← aquí
 - **DoD dinámico:** los criterios ACCEPTANCE se leen en runtime; nunca están hardcodeados
 - NO modifique ningún archivo existente en el código fuente (estamos aceptando la implementación, no implementando los artefactos técnicos)
 - NO genere código; estamos aceptando la implementación, no implementando los artefactos técnicos
-
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 ---
 
 ## Flujo de ejecución

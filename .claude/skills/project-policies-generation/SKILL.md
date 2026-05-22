@@ -78,6 +78,9 @@ agentes IA los lean automáticamente antes de cualquier acción:
 - **Extracción dinámica:** la estructura de los documentos de políticas se deriva en runtime del template; si los templates cambian, el output se actualiza automáticamente.
 - NO modifique ningún archivo existente en el código fuente (estamos especificando políticas de desarrollo, no implementando los artefactos técnicos)
 - NO genere código; estas especificando políticas de desarrollo, no implementando los artefactos técnicos
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ## Flujo de ejecución
 

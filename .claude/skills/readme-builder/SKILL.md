@@ -23,6 +23,9 @@ Genera un README.md completo a partir de los artefactos de especificación dispo
 - NO genere código; estamos documentando en el README, no implementando los artefactos técnicos
 - NO modifique ningún archivo que no sea el README de salida (nunca escribir en el template ni en los artefactos de especificación)
 - Siempre extraiga la estructura de secciones del template en tiempo de ejecución
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ---
 

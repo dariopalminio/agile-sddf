@@ -122,6 +122,9 @@ El flujo por defecto es siempre el equipo de tres agentes. El flag `--single-age
 - `story-code-review` solo puede ejecutarse si `story.md` tiene `status: IMPLEMENTING` + `substatus: DONE`. Si la precondición no se cumple, la ejecución se detiene con error descriptivo.
 - NO modifique ningún archivo existente en el código fuente (estamos revisando el código de la implementación, no implementando los artefactos técnicos)
 - NO genere código; estamos revisando la implementación, no implementando los artefactos técnicos
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ---
 
