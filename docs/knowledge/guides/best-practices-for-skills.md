@@ -85,3 +85,6 @@ Nota:
 Es un metadato del runtime para Claude, no del schema SDDF, y borrarlo cambiaría el comportamiento de Claude Code con ese archivo.
 
 https://agentskills.io/home
+
+
+
