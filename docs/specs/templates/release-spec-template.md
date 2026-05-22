@@ -10,8 +10,10 @@ parent: null
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 related:
-  - <slug de project relacionado (si existe)>
+  - <slug de project relacionado (si existe)> <!-- Colocar referencias solo si existe proyecto relacionado -->
 ---
+<!-- Referencias: colocar referencias solo si existe proyecto relacionado -->
+[[<slug de project relacionado (si existe)>]]
 
 # Release/Epic: [Nombre de la Épica/Release] <!-- nombre obligatorio -->
 

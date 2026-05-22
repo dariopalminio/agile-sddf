@@ -10,12 +10,12 @@ parent: <nombre-del-directorio-de-release>
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 related:
-  - <nombre-del-directorio-de-release o slug del release relacionado (si existe)>
+  - <nombre-del-directorio-de-release o slug del release relacionado (si existe)> <!-- Colocar referencias solo si existe release relacionado o historia relacionada -->
 ---
 **FINVEST Score:** [FINVEST Score]
 **FINVEST Decisión:** [APROBADA | REFINAR | RECHAZAR]
 ---
-<!-- Referencias -->
+<!-- Referencias: colocar referencias solo si existe release relacionado -->
 [[<nombre-del-directorio-de-release o slug del release relacionado (si existe)>]]
 
 # 📖 Historia: [Título de la historia o nombre de historia]
