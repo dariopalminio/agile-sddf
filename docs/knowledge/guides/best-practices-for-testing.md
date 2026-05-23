@@ -28,10 +28,15 @@ Los casos de prueba siguen la pirámide de pruebas:
 ## Tipos de Prueba clásicas
 
 - **Unit Tests (unit):** La prueba unitaria verifica una unidad de código aislada (una función, un método, una clase) en un entorno controlado (entorno real o simulado como base de datos, servicios auxiliares, etc.), sin dependencias externas (bases de datos, APIs, el DOM). Su objetivo es confirmar que la lógica pura funciona correctamente. Las herramientas más comunes son: Jest (sin configuraciones especiales), Vitest, Mocha, Ava.
+
 - **Component Tests (component):** La Prueba de Componente de Frontend verifica un componente de UI (ej. un botón, un formulario, una tarjeta). A menudo implica renderizar el componente (sin el navegador real, usando un DOM simulado como JSDOM) e interactuar con él (simular clics, cambios de input). Su objetivo es que el componente se renderiza correctamente y responde a las interacciones del usuario según lo esperado. Las herramientas más comunes son: Jest + React Testing Library, Vitest + Vue Testing Library, Angular TestBed.
+
 - **Integration Tests (integration):** Las pruebas de Integración/API verifican que dos o más componentes (módulos, servicios, microservicio/endpoint, sistemas) interactúan correctamente a través de sus interfaces (APIs, bases de datos, colas de mensajes). Su objetivo es detectar errores en la comunicación (formato de datos, autenticación, manejo de errores, transacciones) entre partes que funcionan correctamente de forma aislada. Las herramientas más comunes suelen ser: Supertest (Node), Spring MockMvc (Java), pytest con requests (Python), Postman/Newman, REST Assured.
+
 - **Contract Tests (contract):** Verifican que dos sistemas independientes (cliente y servidor, productor y consumidor) adhierten al mismo "contrato" de comunicación (mensajes, campos, tipos, formato). Su objetivo es asegurar que los cambios en un sistema no rompan la compatibilidad con el otro, sin necesidad de pruebas de integración completas. Muy usado en microservicios. Las herramientas comunes suelen ser: Pact (más popular), Spring Cloud Contract, OpenAPI (Swagger) con validación de ejemplos.
+
 - **E2E Tests (e2e):** Las Pruebas End-to-End simulan un flujo completo de usuario, en un entorno completo (como staging), a través de todo el sistema: frontend, backend, base de datos, servicios externos. Su objetivo es validar que la aplicación funciona como un todo integrado desde la perspectiva del usuario final. Las herramientas comunes suelen ser: Cypress, Playwright, Selenium, TestCafe.
+
 - **Performance Tests (performance):** Miden el comportamiento del sistema bajo una carga específica (número de usuarios simultáneos, peticiones por segundo, volumen de datos). Incluyen subtipos: estrés, resistencia, pico. El objetivo es identificar cuellos de botella, límites de escalabilidad, tiempos de respuesta degradados, fugas de memoria. Herramientas comunes: k6, JMeter, Gatling, Locust, Vegeta.
 
 ---
@@ -46,13 +51,90 @@ Los casos de prueba siguen la pirámide de pruebas:
 
 - **E2E de Agente (flujo completo de varios skills encadenados):** Estas pruebas simulan un flujo completo de interacción entre múltiples skills/agentes, verificando que el agente funcione correctamente como un todo integrado y que los skills se coordinen adecuadamente para cumplir con los objetivos del usuario.
 
-### Test-first (pruebas primero)
+## Pruebas de regresión (regression)
+
+Regression testing es el proceso de verificar que la funcionalidad que funcionaba anteriormente sigue funcionando correctamente después de cambios de código, detectando bugs donde código nuevo hace que features existentes fallen.
+
+## Regression Suite
+
+Según SmartBear State of Software Quality 2025, el 68% de los equipos de desarrollo identifican los bugs de regresión como el tipo de defecto más costoso de corregir en producción. La escala de este problema crece con la complejidad: la investigación de ISTQB muestra que en un sistema con 50 features hay más de 1.200 puntos de interacción potenciales — mucho más de lo que cualquier proceso de regresión manual puede cubrir confiablemente. Es por eso que el regression testing automatizado se ha convertido en un requisito para la entrega continua: sin él, los equipos no pueden hacer múltiples deployments por día sin riesgo inaceptable. Un regression suite efectivo protege los paths críticos de usuario, se ejecuta automáticamente en cada pull request y escala con el codebase.
+
+### Pruebas de regresión larga (full) vs. corta (smoke)
+
+- **Regresión Selectiva (selective):** Ejecuta solo los tests relevantes para el cambio específico (una feature/story), identificados mediante análisis de impacto o etiquetado. Suele durar entre 5 y 30 minutos. Ideal para ejecutar en desarrollo y/o cada pull request, optimizando el tiempo de feedback sin sacrificar la cobertura crítica.
+
+- **Smoke tests (smoke):** El Smoke tests es una regresión corta y rápida que ejecuta solo un subconjunto representativo de los tests E2E e integración (escenarios felices y críticos). Suele durar < 5 minutos. Ideal para ejecutar en cada commit, en cada pull request o en producción post-deploy, después de un cambio en una feature o con estrategia de despliegue Continuous Deployment (continuous) donde se desarrolla y despliega por historia. Usado para estrategias de despliegue acumulativa (batch) a nivel de historia donde se desarrolla por historia, con regresión corta, pero se despliega por release (allì con regresión larga). 
+
+- **Core regression (core):** Ejecuta un subconjunto más amplio de tests que la regresión corta, incluyendo escenarios críticos y algunos escenarios adicionales. Suele durar entre 5 y 30 minutos. Ideal para ejecutar en cada pull request importante o en builds nocturnos o en Pull Request.
+
+- **Regresión completa (full):** Ejecuta toda la suite (E2E, integración, contract, rendimiento). Puede durar horas. Se ejecuta antes de releases mayores, refactorizaciones, despues de largos períodos de desarrollo, en nightly builds, o bajo demanda. Ideal para validar la estabilidad general del sistema, detectar regresiones sutiles, y tener una visión completa del impacto de los cambios. Usado para estrategias de despliegue acumulativa (batch) a nivel de release donde se desarrolla por historia pero se despliega por release. Usado también para ejecutar en cada pull request a producción (main) o con estrategia de despliegue Continuous Deployment (continuous) donde se desarrolla y despliega por historia.
+
+### Cuándo Correr Tests de Regresión
+
+Se recomiendan diferentes tipos de regresión según el entorno:
+
+- Desarrollo → Smoke tests (rápido)
+- Desarrollo → Selective test (rápido)
+- Pull Request → Core regression (medio)
+- Staging → Full regression (completo)
+- Production → Smoke tests (post-deploy)
+
+### Desafíos Comunes 
+
+#### Desafío 1: Test Suites Lentos
+Problema: Regresión completa toma demasiado tiempo. Para checks de pull request, tests de regresión deben completarse en 15 minutos para no bloquear desarrolladores. Suites de regresión completos pueden correr 1-2 horas o más, lo que no es práctico para cada pull request.
+
+Soluciones:
+- Paraleliza tests
+- Corre subset en PRs, suite completo de noche
+- Optimiza tests lentos
+
+#### Desafío 2: Flaky Tests
+Problema: Tests que fallan aleatoriamente
+
+Soluciones:
+- Pon en cuarentena tests flaky
+- Arregla o remueve después de X fallos
+- Agrega retry con umbral de fallos
+
+#### Desafío 3: Mantenimiento de Tests
+
+Problema: Tests se rompen con cada cambio
+
+Soluciones:
+- Usa selectores estables (data-testid)
+- Testea comportamiento, no implementación
+- Crea utilidades de test compartidas
+
+### IA en Regression Testing
+
+Las herramientas de IA pueden ayudar a construir y mantener regression suites.
+
+Lo que la IA hace bien:
+- Generar test cases desde cambios de código
+- Identificar áreas que necesitan cobertura de regresión
+- Sugerir qué tests correr basado en archivos cambiados
+- Crear datos de test para escenarios de regresión
+
+Lo que aún necesita humanos:
+- Decidir qué paths críticos proteger
+- Evaluar si fallos de tests son regresiones reales
+- Diseñar la estrategia general de testing
+- Balancear cobertura con velocidad de ejecución
+
+
+## Pruebas primero (test-first)
 
 SDD exige diseñar especificaciones concisas de prueba antes de codificar. No es formalismo, sino una consideración práctica:
 
-- **Los casos de prueba son requisitos ejecutables**: el formato Given-When-Then es más preciso que el lenguaje natural y elimina la ambigüedad en los requisitos
+- **Los casos de prueba son requisitos ejecutables**: el formato Given-When-Then es más preciso que el lenguaje natural y elimina la ambigüedad en los requisitos.
+
 - **El test-first provee evidencia cuantificable para la revisión**: en la revisión se puede verificar la completitud funcional directamente comparando la cobertura de pruebas/criterios de aceptación como escenarios de prueba, en lugar de confiar en la revisión de código o la inspección visual de la implementación.
 
+- **TDD es una práctica de diseño y desarrollo**: escribir el test primero obliga a pensar en la interfaz, los casos de uso y los escenarios de borde antes de la implementación, lo que conduce a un diseño más limpio, modular y testeable. Luego se practica el proceso TDD en tres pasos principales: 1) Rojo (fallo del test) donde se escribe el test, 2) Verde (paso del test) donde se escribe el código funcional y 3) Refactorización, donde se mejora el código.
 
 
+## Fuentes y Lectura Adicional
+- [Glosario ISTQB: Regression Testing — Definición oficial y terminología de testing](https://glossary.istqb.org/en_US/search?term=&exact_matches_first=true)
+- [SmartBear State of Software Quality 2025 — Datos de industria sobre costos de defectos de regresión](https://smartbear.com/)
 
