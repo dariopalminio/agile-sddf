@@ -63,16 +63,11 @@ updated: <YYYY-MM-DD>
 - [ ] Se uso el skill `skill-creator` para crear skills nuevos
 - [ ] Si se agrega un nuevo skill, la ruta del skill debe haber sido incluida en el arreglo de "files" en `package.json` para ser publicada en npm
 
-
 #### 🧪 Criterios de Tests
 
 <!-- Cobertura y calidad de las pruebas. -->
 
-- [ ] Existe al menos un test por escenario principal de `story.md`
-- [ ] Todos los tests existentes pasan (sin tests saltados sin justificación)
-- [ ] La cobertura de tests no disminuye respecto al baseline del proyecto
-- [ ] Los tests son deterministas (no flaky)
-- [ ] Los tests de integración cubren los flujos críticos de la historia
+- [ ] Los skills crìticos deben tener pruebas `evals/evals.json`
 - [ ] Se ejecutaron y evalúan los casos de prueba automáticamente según la sección "Test Cases" del skill `skill-creator`
 
 #### 📝 Criterios de Documentación
