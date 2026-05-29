@@ -39,6 +39,9 @@ Los casos de prueba siguen la pirámide de pruebas:
 
 - **Performance Tests (performance):** Miden el comportamiento del sistema bajo una carga específica (número de usuarios simultáneos, peticiones por segundo, volumen de datos). Incluyen subtipos: estrés, resistencia, pico. El objetivo es identificar cuellos de botella, límites de escalabilidad, tiempos de respuesta degradados, fugas de memoria. Herramientas comunes: k6, JMeter, Gatling, Locust, Vegeta.
 
+- **Visual Tests (visual):** Las pruebas visuales verifican aspectos no funcionales (apariencia, diseño, layout) y requieren su propia estrategia y herramientas (Chromatic, Percy, Playwright). Se considera fuera de la Pirámide de Pruebas tradicional, pero es crucial para garantizar una experiencia de usuario consistente y de alta calidad, especialmente en aplicaciones con interfaces de usuario complejas o que dependen en gran medida del diseño visual. Las pruebas visuales pueden incluir pruebas de regresión visual (comparar capturas de pantalla con versiones anteriores), pruebas de diseño responsivo (verificar que la UI se adapte correctamente a diferentes tamaños de pantalla) y pruebas de accesibilidad visual (asegurar que los elementos sean visibles y legibles para todos los usuarios). Estas pruebas ayudan a detectar problemas que podrían no ser evidentes a través de pruebas funcionales tradicionales, como cambios no intencionados en el diseño, problemas de contraste o errores en la disposición de los elementos.
+
+
 ---
 
 ## Tipos de Prueba para Skills, Prompts y Agentes
@@ -59,7 +62,7 @@ Regression testing es el proceso de verificar que la funcionalidad que funcionab
 
 Según SmartBear State of Software Quality 2025, el 68% de los equipos de desarrollo identifican los bugs de regresión como el tipo de defecto más costoso de corregir en producción. La escala de este problema crece con la complejidad: la investigación de ISTQB muestra que en un sistema con 50 features hay más de 1.200 puntos de interacción potenciales — mucho más de lo que cualquier proceso de regresión manual puede cubrir confiablemente. Es por eso que el regression testing automatizado se ha convertido en un requisito para la entrega continua: sin él, los equipos no pueden hacer múltiples deployments por día sin riesgo inaceptable. Un regression suite efectivo protege los paths críticos de usuario, se ejecuta automáticamente en cada pull request y escala con el codebase.
 
-### Pruebas de regresión larga (full) vs. corta (smoke)
+### Pruebas de regresión larga (full), core vs. corta (smoke)
 
 - **Regresión Selectiva (selective):** Ejecuta solo los tests relevantes para el cambio específico (una feature/story), identificados mediante análisis de impacto o etiquetado. Suele durar entre 5 y 30 minutos. Ideal para ejecutar en desarrollo y/o cada pull request, optimizando el tiempo de feedback sin sacrificar la cobertura crítica.
 
