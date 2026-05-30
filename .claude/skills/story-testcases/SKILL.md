@@ -30,7 +30,7 @@ Genera `testcases.md`: la fuente de verdad de especificación de pruebas para un
 
 **Posición en el pipeline:**
 ```
-story-design → story-tasking → story-testcases → story-analyze → story-implement
+story-design → story-tasking → story-testcases → story-analyze → story-implement-tasks
 ```
 
 **Qué hace este skill:**

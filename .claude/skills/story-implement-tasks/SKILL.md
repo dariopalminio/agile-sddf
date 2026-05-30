@@ -1,24 +1,24 @@
 ---
-name: story-implement
+name: story-implement-tasks
 description: >-
   Implementa el código de una historia SDD tarea por tarea siguiendo TDD, generando primero el test
   y luego el código de producción mínimo. Lee story.md, design.md y tasks.md del directorio de la historia,
   actualiza tasks.md en tiempo real y genera implement-report.md al finalizar.
   Usar siempre que el usuario quiera implementar una historia, generar código tarea por tarea,
   ejecutar el ciclo TDD sobre una historia planificada, o completar el flujo SDD después de story-plan.
-  Invocar también cuando el usuario mencione "implementar historia", "story-implement",
+  Invocar también cuando el usuario mencione "implementar historia", "story-implement-tasks",
   "generar código de la historia", "implementar tareas", "codificar historia",
-  "programar historia", "TDD historia", "ejecutar story-implement" o equivalentes.
+  "programar historia", "TDD historia", "ejecutar story-implement-tasks" o equivalentes.
 triggers:
-  - story-implement
-  - /story-implement
+  - story-implement-tasks
+  - /story-implement-tasks-tasks
   - implementar historia
   - generar código de la historia
   - implementar tareas
   - codificar historia
   - programar historia
   - TDD historia
-  - ejecutar story-implement
+  - ejecutar story-implement-tasks
 ---
 
 ## Objetivo
@@ -110,7 +110,7 @@ Cualquier otro estado detiene la ejecución con error descriptivo.
 
 | Modo | Invocación | Comportamiento |
 |---|---|---|
-| Manual | `/story-implement {story_id}` | Interactivo, muestra progreso en tiempo real por tarea |
+| Manual | `/story-implement-tasks {story_id}` | Interactivo, muestra progreso en tiempo real por tarea |
 | Agent | Invocado por orquestador | Automático, reporta resultado al finalizar |
 
 ---
@@ -565,7 +565,7 @@ Si `N_completadas = 0` (ejecución inicial), omitir las filas de "ejecución ant
 
 | Tarea | Razón del bloqueo | Acción recomendada |
 |---|---|---|
-| T002 | Componente "X" no encontrado en design.md | Definir "X" en design.md y re-ejecutar /story-implement |
+| T002 | Componente "X" no encontrado en design.md | Definir "X" en design.md y re-ejecutar /story-implement-tasks |
 
 ---
 

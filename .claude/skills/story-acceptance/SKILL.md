@@ -42,7 +42,7 @@ story-acceptance    ← aquí
      ↓
 [story.md: ACCEPTANCE/DONE]
 ──────────────────────────────────────────────────────────────────────────────────────
-story-implement   → implementa código
+story-implement-tasks   → implementa código
 story-code-review → revisa código
 story-verify      → ejecuta pruebas automáticas
 story-acceptance  → validación humana final              ← aquí

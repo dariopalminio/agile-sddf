@@ -4,7 +4,7 @@ type: story
 id: FEAT-079
 slug: FEAT-079-story-testcases
 title: "story-testcases — generación de testcases.md desde story.md y design.md"
-status: IMPLEMENTING
+status: COMPLETED
 substatus: DONE
 parent: EPIC-14-fabrica-de-skills
 created: 2026-05-29

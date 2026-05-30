@@ -46,7 +46,7 @@
     ".claude/skills/story-design",
     ".claude/skills/story-tasking",
     ".claude/skills/story-analyze",
-    ".claude/skills/story-implement",
+    ".claude/skills/story-implement-tasks",
     ".claude/skills/story-code-review",
     ".claude/skills/skill-preflight",
     ".claude/skills/skill-master",

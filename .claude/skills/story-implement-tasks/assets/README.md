@@ -1,4 +1,4 @@
-# story-implement
+# story-implement-tasks
 
 Skill que implementa el código de una historia SDD tarea por tarea siguiendo TDD.
 
@@ -15,7 +15,7 @@ Skill que implementa el código de una historia SDD tarea por tarea siguiendo TD
     ├── /story-tasking  → Genera tasks.md
     └── /story-analyze  → Genera analyze.md [story.md: → READY-FOR-IMPLEMENT/DONE si sin ERROREs]
     ↓ [story.md: READY-FOR-IMPLEMENT/DONE]
-/story-implement                       [story.md: → IMPLEMENTING/IN‑PROGRESS → IMPLEMENTING/DONE]
+/story-implement-tasks                       [story.md: → IMPLEMENTING/IN‑PROGRESS → IMPLEMENTING/DONE]
     → Implementa código tarea por tarea con TDD  ← aquí
     → Genera implement-report.md al finalizar
     → Actualiza checklist en release.md padre
@@ -53,8 +53,8 @@ Al alcanzar `IMPLEMENTING/DONE`, el skill también actualiza el checklist en el 
 ## Uso
 
 ```
-/story-implement FEAT-059
-/story-implement FEAT-059 --path docs/specs/stories/FEAT-059-mi-historia/
+/story-implement-tasks FEAT-059
+/story-implement-tasks FEAT-059 --path docs/specs/stories/FEAT-059-mi-historia/
 ```
 
 ## Contenido de este directorio

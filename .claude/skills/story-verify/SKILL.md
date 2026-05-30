@@ -75,7 +75,7 @@ story-verify    ← aquí
 ## Restricciones / Reglas
 
 - **No modifica código fuente:** solo escribe `verify-report.md` y actualiza el frontmatter de `story.md`.
-- **No genera tests:** la generación de tests es responsabilidad de `story-implement`.
+- **No genera tests:** la generación de tests es responsabilidad de `story-implement-tasks`.
 - **No revisa código:** eso corresponde a `story-code-review`.
 - **No despliega:** el despliegue corresponde a `story-deploy`.
 - **Idempotente:** ejecutable múltiples veces; sobreescribe `verify-report.md` preservando el historial de ejecuciones anteriores.

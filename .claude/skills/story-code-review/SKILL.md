@@ -8,7 +8,7 @@ description: >-
   bloqueantes genera fix-directives.md, agrega tarea en tasks.md y retrocede story.md a READY-FOR-IMPLEMENT/DONE.
   Usar siempre que el usuario quiera revisar el código de una historia implementada, validar que la
   implementación cumple los criterios de aceptación y la arquitectura antes de marcar Done,
-  o ejecutar el quality gate posterior a story-implement.
+  o ejecutar el quality gate posterior a story-implement-tasks.
   Invocar también cuando el usuario mencione "revisar código", "code review", "story-code-review",
   "revisión multi-agente", "quality gate post-implement", "validar implementación" o equivalentes.
 triggers:
@@ -26,7 +26,7 @@ invocable: true
 
 ## Objetivo
 
-Quality gate formal entre `/story-implement` y la marca final de Done. Lanza tres subagentes revisores en paralelo, consolida sus hallazgos y genera `code-review-report.md` con la decisión final.
+Quality gate formal entre `/story-implement-tasks` y la marca final de Done. Lanza tres subagentes revisores en paralelo, consolida sus hallazgos y genera `code-review-report.md` con la decisión final.
 
 **Qué hace este skill:**
 - Verifica precondiciones antes de revisar (fail-fast ante artefactos faltantes)
@@ -44,7 +44,7 @@ Quality gate formal entre `/story-implement` y la marca final de Done. Lanza tre
 ### Posicionamiento
 
 ```
-[story.md: IMPLEMENTING/DONE]   ← precondición requerida (viene de story-implement)
+[story.md: IMPLEMENTING/DONE]   ← precondición requerida (viene de story-implement-tasks)
      ↓
 story-code-review  → Quality gate: revisión multi-agente del código  ← aquí
      │   Al iniciar: story.md → CODE-REVIEW/IN-PROGRESS
@@ -194,8 +194,8 @@ Leer el frontmatter de `story.md` y verificar `status: IMPLEMENTING` y `substatu
 
    Estado actual: status: <valor_actual> / substatus: <valor_actual>
 
-   story-code-review requiere que story-implement haya completado exitosamente.
-   Sugerencia: ejecuta /story-implement {story_id} para completar la implementación.
+   story-code-review requiere que story-implement-tasks haya completado exitosamente.
+   Sugerencia: ejecuta /story-implement-tasks {story_id} para completar la implementación.
 ```
 Detener la ejecución **sin modificar ningún archivo**.
 
