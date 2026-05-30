@@ -18,7 +18,7 @@ related:
 ## 1. Setup — Estructura del skill
 
 - [ ] T001 Crear el directorio `.claude/skills/story-improve/` con subdirectorios `assets/`, `examples/`, `agents/` y `evals/`
-- [ ] T002 Revisar `.claude/skills/skill-creator/assets/skill-template.md` y `docs/knowledge/guides/skill-structural-pattern.md` para confirmar el frontmatter y la estructura SKILL.md requeridos antes de escribir código
+- [ ] T002 Revisar `.claude/skills/skill-master/assets/skill-template.md` y `docs/knowledge/guides/skill-structural-pattern.md` para confirmar el frontmatter y la estructura SKILL.md requeridos antes de escribir código
 
 ## 2. Componente principal — SKILL.md
 
@@ -35,7 +35,7 @@ related:
 - [ ] T013 Documentar en `SKILL.md` el Paso 8: generación de `story-improvement-log.md` usando `assets/improvement-log-template.md` como fuente de verdad dinámica (// satisface: AC-1)
 - [ ] T014 Documentar en `SKILL.md` el Paso 9: mostrar resumen en consola con dimensiones mejoradas y archivos generados (// satisface: AC-1)
 - [ ] T015 Agregar sección "Non-Goals" en `SKILL.md`: no modificar `finvest-evaluation-report.md`, no modificar historias hermanas, no ejecutar `story-evaluation` automáticamente (// satisface: AC-1, AC-2)
-- [ ] T016 Verificar seguir lineamientos de `skill-creator`.md y se sigue la estructura canónica de skills \skill-creator\assets\skill-template.md
+- [ ] T016 Verificar seguir lineamientos de `skill-master`.md y se sigue la estructura canónica de skills \skill-master\assets\skill-template.md
 
 ## 3. Assets — Template del log de mejoras
 

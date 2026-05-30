@@ -58,8 +58,8 @@ Entonces el skill emite una advertencia ⚠️ indicando que el DoD no fue encon
 ### Requerimiento: Patrones estructurales de Skills (Skill Structural patterns)
 Se debe seguir y respetar los lineamientos estructurales de skills definido en `docs\knowledge\guides\skill-structural-pattern.md`.
 
-### Requerimiento: Seguir lineamientos de skill-creator
-Se debe seguir y respetar los lineamientos del skill `skill-creator` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos.
+### Requerimiento: Seguir lineamientos de skill-master
+Se debe seguir y respetar los lineamientos del skill `skill-master` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos.
 
 ## ⚙️ Criterios no funcionales
 

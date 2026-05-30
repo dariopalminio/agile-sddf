@@ -54,7 +54,7 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
 
 - **Technical**: El sistema no tiene código ejecutable propio — es un framework declarativo de instrucciones Markdown. Depende de un runtime de IA compatible (Claude Code como primario, GitHub Copilot, Codex/Cursor, Google Gemini, Atlassian Rovo como alternativos). Sin base de datos: el almacenamiento es el sistema de archivos local. El entorno de desarrollo requiere Docker (imagen `debian:bookworm-slim`).
 - **Time**: Sin deadline definido — proyecto continuo que evoluciona orgánicamente. [CONFIRMED]
-- **Resources**: Solo developer (1 persona). La única dependencia externa de runtime confirmada es `skill-creator` (anthropics/skills, hash `57f470f5...`) gestionada vía `skills-lock.json`. [CONFIRMED]
+- **Resources**: Solo developer (1 persona). La única dependencia externa de runtime confirmada es `skill-master` (anthropics/skills, hash `57f470f5...`) gestionada vía `skills-lock.json`. [CONFIRMED]
 
 ## 1.7. Fuera de alcance (Non-Goals)
 
@@ -339,7 +339,7 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
 - **NFR-011**: Versionado de dependencias externas de skills
     - **Descripción**: El sistema SHALL gestionar las dependencias de skills externos mediante `skills-lock.json`, incluyendo hash de verificación de integridad para cada skill externo instalado.
     - **Prioridad**: Media
-    - **Criterio de aceptación**: `skills-lock.json` existe en la raíz del repositorio y contiene el hash del skill `skill-creator` (anthropics/skills).
+    - **Criterio de aceptación**: `skills-lock.json` existe en la raíz del repositorio y contiene el hash del skill `skill-master` (anthropics/skills).
 
 ### 2.2.7 Entorno de Desarrollo
 
@@ -374,7 +374,7 @@ Minimalista y conversacional — el framework no tiene interfaz gráfica propia.
 
 ## 3.2. Visual Inspiration
 
-- **Referencias:** No aplica — el sistema es CLI sin interfaz web. El único artefacto visual es el `eval_review.html` generado por el skill `skill-creator` para comparación de benchmarks.
+- **Referencias:** No aplica — el sistema es CLI sin interfaz web. El único artefacto visual es el `eval_review.html` generado por el skill `skill-master` para comparación de benchmarks.
 - **Estilo:** No aplica (CLI/conversacional)
 - **Mood board:** Documentos Markdown bien estructurados con encabezados jerárquicos, tablas de datos, árboles ASCII y checkboxes de estado.
 
@@ -516,7 +516,7 @@ AGILE SDDF — Sistema de Invocación de Skills
 │       └── Fase 3 — Confirmación: contar secciones PENDING MANUAL REVIEW
 │
 └── PIPELINE G: Skill Creator 
-    └── skill-creator
+    └── skill-master
         ├── Captura de intención → Entrevista → Draft SKILL.md
         ├── Definición de casos de prueba → evals/evals.json
         ├── Ejecución paralela de runs (with-skill + baseline como subagentes)
@@ -530,7 +530,7 @@ AGILE SDDF — Sistema de Invocación de Skills
 
 ## 3.4. Wireframe ASCII (Box Drawing)
 
-El sistema no tiene interfaz gráfica. El único artefacto visual interactivo es el `eval_review.html` generado por `skill-creator`.
+El sistema no tiene interfaz gráfica. El único artefacto visual interactivo es el `eval_review.html` generado por `skill-master`.
 
 # 4. Arquitectura Técnica
 
@@ -541,7 +541,7 @@ El sistema no tiene interfaz gráfica. El único artefacto visual interactivo es
 | Capa | Tecnología | Versión / Notas | Confianza |
 |------|-----------|-----------------|-----------|
 | Lenguaje primario | Markdown (`.md`) | 100+ archivos — lenguaje dominante del repositorio | |
-| Lenguaje secundario | Python 3.x | 10 archivos `.py` en `.claude/skills/skill-creator/scripts/` | |
+| Lenguaje secundario | Python 3.x | 10 archivos `.py` en `.claude/skills/skill-master/scripts/` | |
 | Runtime primario | Claude Code (Anthropic Claude Agent SDK) | Lee `.claude/agents/` y `.claude/skills/` | |
 | Runtime alternativo | GitHub Copilot | Lee `.github/skills/` y `.github/prompts/` | |
 | Runtime alternativo | Codex / Cursor / OpenCode | Lee `.agents/skills/` | |
@@ -552,7 +552,7 @@ El sistema no tiene interfaz gráfica. El único artefacto visual interactivo es
 | IDE | VS Code Dev Container | `.devcontainer/devcontainer.json` | |
 | Gestión de dependencias de skills | `skills-lock.json` | Análogo a `package-lock.json` para skills externos | |
 | CLI externo | `openspec` CLI | Requerido por skills `openspec-*` | |
-| CLI externo | `claude -p` | Invocado por scripts Python de `skill-creator` | |
+| CLI externo | `claude -p` | Invocado por scripts Python de `skill-master` | |
 
 **Patrón arquitectónico**: Framework de agentes multi-plataforma con orquestación por skills. No es monolito ni microservicio tradicional — es un sistema de instrucciones distribuidas para múltiples runtimes de IA.
 
@@ -587,7 +587,7 @@ Sin referencias.
 | **INFERRED** | Nivel de confianza: dato derivado por análisis lógico del código, no explícitamente documentado |
 | **SUGGESTED** | Nivel de confianza: hipótesis basada en evidencia indirecta, requiere confirmación |
 | **Runtime de IA** | Plataforma de ejecución de agentes: Claude Code, GitHub Copilot, Codex, Cursor, Google Gemini Gems, Atlassian Rovo |
-| **skill-creator** | Meta-skill para crear y mejorar skills mediante ciclos iterativos de evaluación y benchmarking |
+| **skill-master** | Meta-skill para crear y mejorar skills mediante ciclos iterativos de evaluación y benchmarking |
 | **`skills-lock.json`** | Archivo de versionado de dependencias externas de skills, análogo a `package-lock.json` |
 | **Gate de revisión** | Punto de control en el pipeline donde el sistema solicita confirmación humana antes de avanzar |
 | **Gate anti-bucle** | Mecanismo en `story-refine` que impide iteraciones infinitas solicitando confirmación explícita del usuario |
@@ -602,7 +602,7 @@ Sin referencias.
 
 - No se detectó mecanismo de sincronización entre plataformas (.claude/, .agents/, .github/, rovo/). **Pregunta sugerida**: ¿Existe un script de sincronización automática de skills entre directorios de plataforma o se mantienen manualmente?
 - ~~El directorio `openspec/specs/` parece vacío~~ **RESUELTO**: Contiene specs activas en `openspec/specs/project-story-mapping/spec.md` y `openspec/specs/project-planning-skill/spec.md`.
-- Los scripts Python en `skill-creator/` invocan `claude -p` via subprocess. **Pregunta sugerida**: ¿Funciona esta integración en el entorno de CI/CD del equipo?
+- Los scripts Python en `skill-master/` invocan `claude -p` via subprocess. **Pregunta sugerida**: ¿Funciona esta integración en el entorno de CI/CD del equipo?
 - No se detectó archivo `.gitignore`. **Pregunta sugerida**: ¿Los archivos temporales en `.tmp/` se commitean accidentalmente? ¿Debe agregarse un `.gitignore`?
 - No hay documentación de configuración de autenticación con Claude API, Gemini API o Rovo en distintos entornos. **Pregunta sugerida**: ¿Cómo se configura la autenticación para cada runtime en un nuevo entorno de usuario?
 - No hay proceso de release/publish detectado. **Pregunta sugerida**: ¿Existe un proceso de release para distribuir actualizaciones del framework a usuarios?

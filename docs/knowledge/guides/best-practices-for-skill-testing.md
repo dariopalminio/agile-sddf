@@ -1,18 +1,18 @@
 # Pruebas de skills
 
 
-## Pruebas con skill-creator eval
+## Pruebas con skill-master eval
 
-El skill-creator permite la creación, edición y testeo de skills, con un fuerte enfoque interactivo y conversacional.
+El skill-master permite la creación, edición y testeo de skills, con un fuerte enfoque interactivo y conversacional.
 
 
 Los skills crìticos deben tener pruebas automatizadas en `evals/evals.json` que se pueden ejecutar con:
 
 ```
-/skill-creator eval --skill <skill-name>
+/skill-master eval --skill <skill-name>
 ```
 
-Aquí tienes un resumen de buenas prácticas para crear un skill y probarlo con `/skill-creator eval --skill <skill-name>`, extraído de la experiencia práctica y de los puntos de dolor comunes.
+Aquí tienes un resumen de buenas prácticas para crear un skill y probarlo con `/skill-master eval --skill <skill-name>`, extraído de la experiencia práctica y de los puntos de dolor comunes.
 
 ### 🧱 Fase de Diseño del Skill
 
@@ -38,13 +38,13 @@ Aquí tienes un resumen de buenas prácticas para crear un skill y probarlo con 
    - Si tu skill genera YAML frontmatter, no dejes `<...>` sin reemplazar.  
    - Incluye una aserción que verifique la ausencia de placeholders (ej. `grep -v '<[^>]*>'`).  
 
-### 🧪 Fase de Prueba (`skill-creator eval`)
+### 🧪 Fase de Prueba (`skill-master eval`)
 
 6. **Ejecuta siempre con `--baseline`** (comparación con/sin skill)  
    Es la única forma de medir el valor añadido real. Sin baseline, no sabes si el skill mejora algo.
 
 7. **Comienza con un subconjunto pequeño de evals (2-3)**  
-   Ejecuta `skill-creator eval` con solo los casos más críticos para iterar rápido. Añade más cuando el skill se estabilice.
+   Ejecuta `skill-master eval` con solo los casos más críticos para iterar rápido. Añade más cuando el skill se estabilice.
 
 8. **Revisa los outputs en el visor (`eval-viewer/generate_review.py`)**  
    - Mira las salidas **con** y **sin** skill lado a lado.  
@@ -152,17 +152,17 @@ Puedes usar el campo `assertions` para definir comprobaciones objetivas y verifi
 
 ---
 
-##  ⚖️ **`agent-skills-eval` vs. `skill-creator`**
+##  ⚖️ **`agent-skills-eval` vs. `skill-master`**
 
 Es importante entender cómo encaja esta herramienta con el ecosistema de Anthropic:
 
-| Característica | `agent-skills-eval` | `skill-creator` (de Anthropic) |
+| Característica | `agent-skills-eval` | `skill-master` (de Anthropic) |
 | :--- | :--- | :--- |
 | **Propósito** | Evaluación de skills (`evals`) y generación de reportes comparativos. | Creación, edición y testeo de skills, con un fuerte enfoque interactivo y conversacional. |
 | **Uso Principal** | Línea de comandos, ideal para CI/CD y automatización de pruebas. | Interfaz conversacional (Claude Code), guiando paso a paso en la creación y mejora del skill. |
 | **Enfoque** | **Cuantitativo**. Mide numéricamente la mejora de tu skill. | **Cualitativo y práctico**. Ayuda a redactar, iterar y probar el skill con feedback humano. |
 
-En la práctica, son herramientas complementarias que pueden usarse en conjunto: se puede iterar el diseño con `skill-creator` y, una vez maduro, se integra `agent-skills-eval` en el pipeline de CI/CD para mantener su calidad.
+En la práctica, son herramientas complementarias que pueden usarse en conjunto: se puede iterar el diseño con `skill-master` y, una vez maduro, se integra `agent-skills-eval` en el pipeline de CI/CD para mantener su calidad.
 
 ---
 

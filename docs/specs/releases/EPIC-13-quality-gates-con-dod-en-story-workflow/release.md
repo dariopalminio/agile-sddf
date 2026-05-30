@@ -16,7 +16,7 @@ updated: 2026-05-13
 Integra la lectura y validación del Definition of Done en los tres skills del pipeline de historias SDD. Cada skill leerá su sección correspondiente del archivo `$SPECS_BASE/policies/definition-of-done-story.md` (PLAN, IMPLEMENTING, CODE-REVIEW) y validará que los criterios de esa fase estén cumplidos antes de avanzar al siguiente estado. Convierte el DoD en un quality gate ejecutable dentro del flujo automatizado.
 
 ## Features
-- [x] Mejorar skill-creator con dynamic-template skill-creator lee assets/skill-template.md en runtime al crear un skill nuevo. Cuando el skill-creator genera el SKILL.md de un skill nuevo, SHALL leer `assets/skill-template.md` antes de escribir cualquier contenido. El modelo SHALL extraer las secciones del template dinámicamente y completarlas con la información del skill en lugar de generar estructura hardcodeada.
+- [x] Mejorar skill-master con dynamic-template skill-master lee assets/skill-template.md en runtime al crear un skill nuevo. Cuando el skill-master genera el SKILL.md de un skill nuevo, SHALL leer `assets/skill-template.md` antes de escribir cualquier contenido. El modelo SHALL extraer las secciones del template dinámicamente y completarlas con la información del skill en lugar de generar estructura hardcodeada.
 - [x] FEAT-068 - **DoD PLAN en story-analyze:** Leer sección PLAN del DoD y validar criterios antes de avanzar a READY-FOR-IMPLEMENT
 - [x] FEAT-069 - **DoD IMPLEMENTING en story-implement:** Leer sección IMPLEMENTING del DoD y validar criterios antes de avanzar a READY-FOR-CODE-REVIEW
 - [x] FEAT-070 - **DoD CODE-REVIEW en story-code-review:** Leer sección CODE-REVIEW del DoD y validar criterios, influyendo en `review-status`

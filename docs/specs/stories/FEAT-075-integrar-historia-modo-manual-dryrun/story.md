@@ -54,8 +54,8 @@ Entonces muestra cada paso que ejecutaría (rama origen, rama destino, acción a
 
 * **Pautas del skill:** Patrones estructurales de Skills (Skill Structural patterns)
 Se debe seguir y respetar los lineamientos estructurales de skills definido en `docs\knowledge\guides\skill-structural-pattern.md`.
-* **Usar skill-creator:** Seguir lineamientos de skill-creator
-Se debe seguir y respetar los lineamientos del skill `skill-creator` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos. La estructura del markdown del skill debe respetar la estructura definida en `.claude\skills\skill-creator\assets\skill-template.md`.
+* **Usar skill-master:** Seguir lineamientos de skill-master
+Se debe seguir y respetar los lineamientos del skill `skill-master` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos. La estructura del markdown del skill debe respetar la estructura definida en `.claude\skills\skill-master\assets\skill-template.md`.
 * **UX:** en modo manual el skill muestra el progreso paso a paso con indicadores visuales del estado de cada acción; en modo dry-run genera un listado de pasos planificados. La secuencia de confirmaciones en el escenario principal (opciones → versión → rama → PR → cancelación) es un requerimiento UX deliberado para garantizar información progresiva antes de cada decisión irreversible; el equipo puede negociar la granularidad de los pasos pero no omitirlos.
 * **Seguridad:** en modo manual el usuario aprueba explícitamente cada acción irreversible (crear PR, fusionar, eliminar rama) antes de ejecutarla
 

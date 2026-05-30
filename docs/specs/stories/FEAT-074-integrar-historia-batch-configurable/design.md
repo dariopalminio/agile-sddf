@@ -32,7 +32,7 @@ El skill `story-integrate` es el mecanismo de integración del ciclo SDD: toma u
 ## Goals / Non-Goals
 
 **Goals:**
-- Crear el skill `.claude/skills/story-integrate/SKILL.md` usando el skill-creator y resptendo el template .claude\skills\skill-creator\assets\skill-template.md para la estructura del markdown del skill.
+- Crear el skill `.claude/skills/story-integrate/SKILL.md` usando el skill-master y resptendo el template .claude\skills\skill-master\assets\skill-template.md para la estructura del markdown del skill.
 - El skill debe ejecutar el flujo de integración batch usando comandos de un archivo de config externo
 - Definir el schema del archivo de configuración de integración (YAML) con el modelo `batch`
 - Implementar la resolución de versión desde `.release-version`

@@ -85,7 +85,7 @@ updated: 2026-05-15
 | AC-6 | Contrato JSON con story-code-review | `SKILL.md` Paso 1 (modo integrado), `report-generator` (audit-report.json con status/summary/report) |
 | AC-7 | Agente local al skill | Tres agentes en `agents/` del directorio del skill, sin dependencias externas |
 | AC-8 | Patrones estructurales de skill-structural-pattern.md | Estructura `assets/`, `agents/`, `examples/`, `evals/`; YAML frontmatter en todos los archivos; preflight como Paso 0 |
-| AC-9 | Lineamientos de skill-creator | SKILL.md bajo 500 líneas; assets como fuente de verdad dinámica; agentes en `agents/`; ejemplos en `examples/`; evals en `evals/` |
+| AC-9 | Lineamientos de skill-master | SKILL.md bajo 500 líneas; assets como fuente de verdad dinámica; agentes en `agents/`; ejemplos en `examples/`; evals en `evals/` |
 
 ---
 
@@ -102,7 +102,7 @@ updated: 2026-05-15
 | 7 | No hay variables, imports ni funciones sin usar | ✓ | No aplica (Markdown puro); todos los campos y secciones del SKILL.md son referencias activas |
 | 8 | El código pasa el linter y formateador | ⚠️ | No aplica para Markdown. Frontmatter YAML válido en todos los archivos del skill |
 | 9 | No se introducen dependencias nuevas sin aprobación | ✓ | El skill no requiere ninguna dependencia de npm ni paquetes externos |
-| 10 | Se usó el skill `skill-creator` para crear skills nuevos | ⚠️ | El skill-creator se consultó para seguir sus lineamientos estructurales (assets como fuente de verdad, estructura de directorios, frontmatter). La implementación sigue todos los patrones de skill-creator sin invocar su flujo iterativo de evaluación (la historia tenía un design.md completo que hacía ese paso redundante) |
+| 10 | Se usó el skill `skill-master` para crear skills nuevos | ⚠️ | El skill-master se consultó para seguir sus lineamientos estructurales (assets como fuente de verdad, estructura de directorios, frontmatter). La implementación sigue todos los patrones de skill-master sin invocar su flujo iterativo de evaluación (la historia tenía un design.md completo que hacía ese paso redundante) |
 | 11 | Si se agrega un nuevo skill, la ruta debe incluirse en `files` de `package.json` | ⚠️ | Requiere que el mantenedor del proyecto agregue `.claude/skills/security-audit/` al campo `files` en `package.json` para ser publicado en npm |
 
 **Resumen:** 6/11 criterios ✓ | 5/11 criterios ⚠️ (ningún ❌)

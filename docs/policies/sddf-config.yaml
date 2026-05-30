@@ -27,42 +27,14 @@ complementary_skills:
   specifying:
     skills:  none
     description: "Habilidades para la fase de especificación (definir qué probar, no ejecutar tests)"
+
   plan:
-    skills:  none
-    description: "Habilidades para la fase de plan y diseño (definir cómo probar, no ejecutar tests)" 
-  implementing:
-    skills:  none
-    description: "Habilidades para la fase de implementación (definir cómo probar, ejecutar tests)"
-  code-review:
-    skills:  none
-    description: "Habilidades para la fase de revisión de código (definir cómo probar, ejecutar tests)"
-  verify:
-    skills:  none
-    description: "Habilidades para la fase de verificación (definir cómo probar, ejecutar tests)"
-  acceptance:
-    skills:  none
-    description: "Habilidades para la fase de aceptación (definir cómo probar, ejecutar tests)"
-  integration:
-    skills:  none
-    description: "Habilidades para la fase de integración (definir cómo probar, ejecutar tests)"
-# Ruta donde se guardarán los reportes (relativa a la raíz del proyecto)
-reports_dir: "reports/"
+    skills:
+      - name: design-skill-architecture
+        type: reference
+        references_path: ".claude/skills/skill-master/references"
+        description: "Guías de buenas prácticas para diseñar skills SDDF"
+        required: false
 
-regression:
-  # Perfil rápido: se ejecuta en cada PR o después de cambios en una feature
-  smoke:
-    required: false
-    description: "Suite rápida para validar cambios incrementales (feature branch)"
-    # Comandos específicos para este perfil (sobrescriben los defaults)
-    e2e: "pnpm run test:e2e:smoke"          # solo escenarios críticos (~10% de los tests)
-    integration: "pnpm run test:integration:smoke"  # solo endpoints principales
 
-  # Perfil completo: se ejecuta antes de un release (lento, exhaustivo)
-  full:
-    required: false
-    description: "Suite completa de regresión (antes de releases importantes)"
-    e2e: "pnpm run test:e2e:full"           # todos los escenarios E2E
-    integration: "pnpm run test:integration"
-    contract: "pnpm run test:contract"
-    performance: "pnpm run test:performance"
 

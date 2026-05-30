@@ -34,7 +34,7 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Políticas de proyecto**: generación de `constitution.md` y `definition-of-done-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
 - **Integración OpenSpec**: exploración, propuesta, implementación y archivado de cambios con trazabilidad completa
 - **Multi-runtime**: los mismos skills operan en Claude Code, GitHub Copilot, Codex/Cursor/OpenCode, Google Gemini Gems y Atlassian Rovo sin modificar el SKILL.md fuente
-- **Meta-framework**: crea, benchmarkea y distribuye nuevas skills con ciclo iterativo (skill-creator)
+- **Meta-framework**: crea, benchmarkea y distribuye nuevas skills con ciclo iterativo (skill-master)
 - **Trazabilidad completa**: IDs únicos FEAT-NNN y manejo de sub-estados IN‑PROGRESS/Ready en cada documento del pipeline
 - **Docs as Wiki**: skill docs-wiki-builder para generar documentación de proyecto en formato wiki navegable. Incluye un skill header-aggregation para generar encabezados frontmatter de archivo '.md'. Permite navegación bidireccional entre documentos, generación de índices automáticos y visualización de grafos con "Foam for VSCode".
 - **Auditoría de seguridad**: skill `security-audit` para análisis automático de vulnerabilidades en código fuente, con evaluación OWASP Top 10, OWASP API Top 10 y OWASP Top 10 para LLMs.
@@ -375,7 +375,7 @@ Usar OpenSpec es algo opcional. Esta sección asume que tienes OpenSpec configur
 
 ```bash
 # Ciclo iterativo de creación y benchmarking
-/skill-creator
+/skill-master
 ```
 
 ## Configuration
@@ -447,10 +447,10 @@ El contenedor usa imagen `debian:bookworm-slim` con git, curl y bash.
 
 ### Running Tests
 
-El framework no tiene suite de tests automatizados para el pipeline principal. La calidad de los skills se valida con el meta-skill `skill-creator` mediante ejecución paralela (con skill vs sin skill) y un viewer HTML de benchmarking:
+El framework no tiene suite de tests automatizados para el pipeline principal. La calidad de los skills se valida con el meta-skill `skill-master` mediante ejecución paralela (con skill vs sin skill) y un viewer HTML de benchmarking:
 
 ```bash
-/skill-creator
+/skill-master
 ```
 
 ## License

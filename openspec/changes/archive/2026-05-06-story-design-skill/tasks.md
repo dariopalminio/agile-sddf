@@ -24,10 +24,10 @@
 - [x] 4.2 Crear `examples/output/design.md` con el output esperado para el ejemplo de input
 - [x] 4.3 Asegurarse de que el ejemplo cubre el escenario principal de generación exitosa
 
-## 5. Validación con skill-creator
+## 5. Validación con skill-master
 
-- [x] 5.1 Invocar `/skill-creator` sobre el skill `story-design` para revisar estructura, frontmatter y ejemplos
-- [x] 5.2 Corregir cualquier observación del `skill-creator` (documentación, casos edge, triggering)
+- [x] 5.1 Invocar `/skill-master` sobre el skill `story-design` para revisar estructura, frontmatter y ejemplos
+- [x] 5.2 Corregir cualquier observación del `skill-master` (documentación, casos edge, triggering)
 - [x] 5.3 Confirmar que el skill aparece correctamente en el listado de skills disponibles
 
 ## 6. Registro en openspec

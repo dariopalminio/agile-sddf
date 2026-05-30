@@ -60,7 +60,7 @@ updated: <YYYY-MM-DD>
 - [ ] No hay variables, imports ni funciones sin usar
 - [ ] El código pasa el linter y el formateador sin errores ni warnings
 - [ ] No se introducen dependencias nuevas sin aprobación del equipo
-- [ ] Se uso el skill `skill-creator` para crear skills nuevos
+- [ ] Se uso el skill `skill-master` para crear skills nuevos
 - [ ] Si se agrega un nuevo skill, la ruta del skill debe haber sido incluida en el arreglo de "files" en `package.json` para ser publicada en npm
 
 #### 🧪 Criterios de Tests
@@ -68,7 +68,7 @@ updated: <YYYY-MM-DD>
 <!-- Cobertura y calidad de las pruebas. -->
 
 - [ ] Los skills crìticos deben tener pruebas `evals/evals.json`
-- [ ] Se ejecutaron y evalúan los casos de prueba automáticamente según la sección "Test Cases" del skill `skill-creator`
+- [ ] Se ejecutaron y evalúan los casos de prueba automáticamente según la sección "Test Cases" del skill `skill-master`
 
 #### 📝 Criterios de Documentación
 

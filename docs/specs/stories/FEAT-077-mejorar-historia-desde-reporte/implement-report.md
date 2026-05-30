@@ -46,7 +46,7 @@ updated: 2026-05-17
 | T013 — Paso 8: generación de `story-improvement-log.md` con template | ✅ completada | `.claude/skills/story-improve/SKILL.md` |
 | T014 — Paso 9: resumen en consola | ✅ completada | `.claude/skills/story-improve/SKILL.md` |
 | T015 — Sección Non-Goals en `SKILL.md` | ✅ completada | `.claude/skills/story-improve/SKILL.md` |
-| T016 — Verificar lineamientos skill-creator y estructura canónica | ✅ completada | Verificación manual: todos los contratos superados |
+| T016 — Verificar lineamientos skill-master y estructura canónica | ✅ completada | Verificación manual: todos los contratos superados |
 
 ### Grupo 3 — Assets — Template del log de mejoras
 

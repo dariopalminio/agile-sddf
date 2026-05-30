@@ -63,14 +63,14 @@ updated: 2026-05-15
 | 7 | No hay variables, imports ni funciones sin usar | ✓ | Archivos Markdown — no aplica imports; todos los placeholders del template están definidos en SKILL.md |
 | 8 | El código pasa el linter y formateador | ⚠️ | No hay linter configurado para Markdown en el proyecto |
 | 9 | Sin dependencias nuevas sin aprobación | ✓ | El skill es puro Markdown; ninguna dependencia npm nueva |
-| 10 | Se usó skill-creator para crear el skill nuevo | ⚠️ | El skill fue creado manualmente siguiendo los patrones de skill-creator — el skill-creator no fue invocado como herramienta |
+| 10 | Se usó skill-master para crear el skill nuevo | ⚠️ | El skill fue creado manualmente siguiendo los patrones de skill-master — el skill-master no fue invocado como herramienta |
 | 11 | Ruta del skill incluida en package.json `files` | ⚠️ | Pendiente — no se modificó package.json; requiere acción post-implementación |
 | 12 | Existe al menos un test por escenario principal | ✓ | pytest-project (AC-1/AC-5), jest-project (AC-6), no-tests-project (AC-3), eval-mode-detection.md (AC-6/AC-10) |
 | 13 | Todos los tests existentes pasan | ⚠️ | Requiere ejecución manual de los ejemplos |
 | 14 | La cobertura no disminuye respecto al baseline | ⚠️ | No hay baseline de cobertura definido en el proyecto |
 | 15 | Los tests son deterministas (no flaky) | ✓ | Los ejemplos de test son deterministas por construcción (valores fijos, sin dependencias externas) |
 | 16 | Los tests de integración cubren los flujos críticos | ✓ | evals/eval-mode-detection.md cubre los 9 casos de detección de modo; pytest-project cubre flujos PASS y BLOCKED |
-| 17 | Casos de prueba automáticos según "Test Cases" de skill-creator | ⚠️ | skill-creator no fue invocado; evals/eval-mode-detection.md sirve como cobertura equivalente |
+| 17 | Casos de prueba automáticos según "Test Cases" de skill-master | ⚠️ | skill-master no fue invocado; evals/eval-mode-detection.md sirve como cobertura equivalente |
 | 18 | tasks.md tiene todas las tareas marcadas como [x] | ✓ | Las 18 tareas del tasks.md están marcadas como [x] |
 | 19 | README/docs actualizados si modifica APIs o contratos | ✓ | README.md creado; template canónico publicado en docs/specs/templates/ |
 | 20 | Decisiones de diseño no previstas documentadas en design.md | ✓ | Sin decisiones no previstas — todo cubierto por el design.md existente |

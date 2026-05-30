@@ -4,7 +4,7 @@ El pipeline de ProjectSpecFactory comienza con el estado **Funnel**, pero actual
 
 ## What Changes
 
-- Nuevo skill `/ps-funnel` (`.claude/skills/ps-funnel/SKILL.md`) que orquesta el inicio del pipeline (puede usar `.claude/skills/skill-creator` para generar el skill)
+- Nuevo skill `/ps-funnel` (`.claude/skills/ps-funnel/SKILL.md`) que orquesta el inicio del pipeline (puede usar `.claude/skills/skill-master` para generar el skill)
 - Nuevo template `initial-prompt-template.md` que define la estructura del documento de entrada
 - Nuevo agente PM (`.claude/agents/pm-agent.md`) especializado en entrevistar al usuario para capturar la intención del proyecto
 - El agente hace preguntas al usuario sección por sección del template y completa el documento con las respuestas + su propia pericia

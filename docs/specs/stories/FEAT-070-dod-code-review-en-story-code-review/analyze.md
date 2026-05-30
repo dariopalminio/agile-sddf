@@ -38,7 +38,7 @@ related:
 | AC-2 | agents approved + DoD cumplido → approved; report con todos ✓; READY-FOR-VERIFY/DONE | ✓ | D2 (todos ✓ → no cambia status), D4 (Paso 5b sección DoD en report), Goals |
 | AC-3 (NFR) | DoD no encontrado → `$DOD_CODE_REVIEW_CRITERIA = []`; ⚠️ en carga; continúa sin bloquear | ✓ | D1 (búsqueda flexible con degradación ⚠️), D6 (criterios de entorno externo → ⚠️) |
 | Req-Struct | Seguir lineamientos estructurales de skill-structural-pattern.md | ✓ | Goals: sub-paso `4c.1` numerado secuencialmente entre 4c y 4d sin renumerar pasos existentes |
-| Req-SC | Seguir lineamientos de skill-creator | ✓ | N/A — FEAT-070 modifica skill existente, no crea uno nuevo |
+| Req-SC | Seguir lineamientos de skill-master | ✓ | N/A — FEAT-070 modifica skill existente, no crea uno nuevo |
 
 ---
 
@@ -99,6 +99,6 @@ Sin inconsistencias detectadas.
 
 1. **CR-002 (orden 4c → 4c.1 → 4d):** Confirmar durante la implementación que en el SKILL.md el sub-paso `4c.1` se ubica después de `4c` y antes de `4d`, y que `4d` (bifurcación) lee el `$REVIEW_STATUS` ya ajustado por `4c.1`. Orden ya especificado en design.md y resuelto en CR-002.
 
-2. **Req-SC:** FEAT-070 modifica un skill existente, no crea uno nuevo. No se requiere usar el flujo de skill-creator. Sin acción.
+2. **Req-SC:** FEAT-070 modifica un skill existente, no crea uno nuevo. No se requiere usar el flujo de skill-master. Sin acción.
 
 3. **T010/T011 (ejemplos):** Al actualizar los ejemplos, asegurarse de que `example-approved` muestre criterios DoD todos ✓ y `example-needs-changes-medium` tenga al menos una fila con `Dimensión: DoD-CODE-REVIEW` de severidad MEDIUM en fix-directives.md. Esto valida visualmente el comportamiento de ambas ramas (AC-1 y AC-2).

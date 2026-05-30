@@ -38,7 +38,7 @@ related:
 | AC-2 | DoD-ERRORs bloquean transición; story.md permanece IMPLEMENTING/IN-PROGRESS; implement-report documenta criterios fallidos | ✓ | D2 (evaluación semántica), D3 (❌→ERROR bloquea), D4 (condición en 4b) |
 | AC-3 (NFR) | archivo DoD no encontrado o sección ausente → ⚠️ warning; continúa sin bloquear | ✓ | D1 (búsqueda flexible con degradación ⚠️), D6 (criterios no evaluables → ⚠️) |
 | Req-Struct | Seguir lineamientos estructurales de skill-structural-pattern.md | ✓ | Goals de design.md: sub-paso 2f numerado alfabéticamente; sub-paso 4g insertado entre 4a y 4b sin renumerar // satisface: Req-Struct |
-| Req-SC | Seguir lineamientos de skill-creator | ✓ | Goals de design.md: actualizar examples/output/implement-report.md con sección DoD (FEAT-069 modifica skill existente — no aplica skill-creator para creación) |
+| Req-SC | Seguir lineamientos de skill-master | ✓ | Goals de design.md: actualizar examples/output/implement-report.md con sección DoD (FEAT-069 modifica skill existente — no aplica skill-master para creación) |
 
 ---
 
@@ -97,4 +97,4 @@ Sin inconsistencias detectadas.
 
 1. **CR-002 (orden 4a → 4g → 4b):** Asegurar durante la implementación que el SKILL.md quede con el orden correcto: primero generar la estructura base del reporte (4a), luego evaluar criterios DoD y completar la sección DoD en el reporte (4g), luego condicionar la transición (4b). Este orden ya está resuelto en design.md — confirmar al editar el SKILL.md.
 
-2. **Req-SC:** FEAT-069 modifica un skill existente, no crea uno nuevo. El requisito "Se uso el skill skill-creator para crear skills nuevos" no aplica aquí. Sin acción requerida.
+2. **Req-SC:** FEAT-069 modifica un skill existente, no crea uno nuevo. El requisito "Se uso el skill skill-master para crear skills nuevos" no aplica aquí. Sin acción requerida.

@@ -41,7 +41,7 @@ El skill SHALL agregar referencias `@` a los archivos de políticas en `CLAUDE.m
 - **THEN** el skill muestra las líneas a agregar manualmente sin modificar el archivo
 
 ### Requirement: Cumplimiento de Skill Structural Patterns
-El skill `project-policies-generation` MUST seguir los lineamientos estructurales definidos en `docs/knowledge/guides/skill-structural-pattern.md` y MUST ser construido usando el skill `skill-creator`.
+El skill `project-policies-generation` MUST seguir los lineamientos estructurales definidos en `docs/knowledge/guides/skill-structural-pattern.md` y MUST ser construido usando el skill `skill-master`.
 
 #### Scenario: Estructura de directorios correcta
 - **WHEN** se inspecciona el directorio `.claude/skills/project-policies-generation/`

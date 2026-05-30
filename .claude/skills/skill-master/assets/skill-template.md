@@ -38,7 +38,7 @@ triggers:
 
 ## Dependencias
 
-- Skills: [`skill-preflight`]
+- Skills: [`skill-preflight`] (opcional — solo si se ejecuta en un entorno SDDF)
 - Herramientas: [`git`]
 
 ## Modos de ejecución
@@ -53,8 +53,9 @@ triggers:
 
 ## Flujo de ejecución
 
-### 0. Preflight
-- Invocar `skill-preflight`. Detener si reporta ERROR.
+### 0. Preflight (opcional — solo en entornos SDDF)
+- Si el entorno usa SDDF: invocar `skill-preflight`. Detener si reporta ERROR.
+- En entornos no-SDDF: omitir este paso.
 
 ### 1. Cargar contexto
 - Leer los artefactos necesarios (story.md, design.md, etc.).

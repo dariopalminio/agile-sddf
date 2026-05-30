@@ -61,7 +61,7 @@ updated: 2026-05-14
 | 9 | Existe al menos un test por escenario principal de story.md | ✓ | Tareas T012, T013, T014 verifican AC-1, AC-2, AC-3 respectivamente |
 | 10 | Todos los tests existentes pasan | ⚠️ | Requiere ejecución — no evaluable por story-implement |
 | 11 | tasks.md tiene todas las tareas marcadas como `[x]` | ✓ | 14/14 tareas completadas |
-| 12 | Si se agrega un nuevo skill, se usó skill-creator | ✓ | No se crea skill nuevo; se modifica el SKILL.md existente de story-code-review |
+| 12 | Si se agrega un nuevo skill, se usó skill-master | ✓ | No se crea skill nuevo; se modifica el SKILL.md existente de story-code-review |
 
 **Resumen:** 7/12 criterios ✓ | 5/12 criterios ⚠️ (requieren ejecución externa) | 0 criterios ❌
 

@@ -51,7 +51,7 @@ When `README.md` already exists, the skill:
 
 The skill orchestrates all steps inline without spawning subagents. Content generation, template reading, artifact discovery, and file writing all happen within the single skill invocation.
 
-**Why:** The task has no parallelism opportunity (steps are sequential) and the output is a single file. Adding subagents would introduce coordination overhead without benefit. The skill-creator guide confirms subagents are optional and should be omitted when sequential work suffices.
+**Why:** The task has no parallelism opportunity (steps are sequential) and the output is a single file. Adding subagents would introduce coordination overhead without benefit. The skill-master guide confirms subagents are optional and should be omitted when sequential work suffices.
 
 ## Risks / Trade-offs
 

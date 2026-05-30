@@ -64,9 +64,9 @@ El archivo `design.md` generado SHALL incluir un frontmatter YAML válido que co
 
 ---
 
-### Requirement: Creación del skill con skill-creator
-El skill `story-design` SHALL ser construido usando el skill `skill-creator`, garantizando que incluya frontmatter YAML estandarizado, estructura de directorios conforme al patrón SDDF (`SKILL.md`, `assets/`, `examples/`) y casos de prueba documentados.
+### Requirement: Creación del skill con skill-master
+El skill `story-design` SHALL ser construido usando el skill `skill-master`, garantizando que incluya frontmatter YAML estandarizado, estructura de directorios conforme al patrón SDDF (`SKILL.md`, `assets/`, `examples/`) y casos de prueba documentados.
 
-#### Scenario: Estructura del skill generada con skill-creator
-- **WHEN** se crea el skill `story-design` usando `/skill-creator`
+#### Scenario: Estructura del skill generada con skill-master
+- **WHEN** se crea el skill `story-design` usando `/skill-master`
 - **THEN** el directorio `.claude/skills/story-design/` contiene `SKILL.md` con frontmatter YAML válido, el subdirectorio `assets/` con el template de diseño, y al menos un ejemplo en `examples/`

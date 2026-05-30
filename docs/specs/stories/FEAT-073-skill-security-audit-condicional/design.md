@@ -18,7 +18,7 @@ related:
 
 ## Context
 
-El skill `security-audit` es un componente nuevo del framework SDDF que automatiza la evaluación de seguridad de un repositorio de código. Opera como skill independiente siguiendo el patrón establecido en `skill-structural-pattern.md` y `skill-creator.md`: el SKILL.md actúa como orquestador y delega en subagentes especializados locales.
+El skill `security-audit` es un componente nuevo del framework SDDF que automatiza la evaluación de seguridad de un repositorio de código. Opera como skill independiente siguiendo el patrón establecido en `skill-structural-pattern.md` y `skill-master.md`: el SKILL.md actúa como orquestador y delega en subagentes especializados locales.
 
 El skill es invocable de forma aislada por un ingeniero o como herramienta integrada dentro del flujo de `story-code-review`. Su salida es un reporte estructurado (Markdown o JSON) con el estado de auditoría y hallazgos detallados.
 
@@ -38,7 +38,7 @@ El skill es invocable de forma aislada por un ingeniero o como herramienta integ
 - AC-6: Contrato de integración JSON con `story-code-review`.
 - AC-7: Agente local al skill (sin dependencias de agentes externos/compartidos).
 - AC-8: Seguir patrones estructurales de `skill-structural-pattern.md`.
-- AC-9: Seguir lineamientos de `skill-creator`.
+- AC-9: Seguir lineamientos de `skill-master`.
 - AC-10: Modos de Auditoría Release y Story Review.
 
 ---

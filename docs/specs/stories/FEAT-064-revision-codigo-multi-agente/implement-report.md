@@ -30,7 +30,7 @@ updated: 2026-05-09
 | ID | Descripción | Estado | Archivos generados |
 |---|---|---|---|
 | 1.1 | Crear directorio `.claude/skills/story-code-review/` con subdirectorios | ✓ completado | `.claude/skills/story-code-review/` |
-| 1.2 | Scaffoldear estructura base con skill-creator | ✓ completado | estructura base aplicada |
+| 1.2 | Scaffoldear estructura base con skill-master | ✓ completado | estructura base aplicada |
 | 2.1 | Frontmatter YAML y sección Posicionamiento | ✓ completado | `.claude/skills/story-code-review/SKILL.md` |
 | 2.2 | Sección Modos de Ejecución | ✓ completado | `.claude/skills/story-code-review/SKILL.md` |
 | 2.3 | Paso 0 — Preflight | ✓ completado | `.claude/skills/story-code-review/SKILL.md` |

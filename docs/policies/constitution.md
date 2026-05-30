@@ -30,7 +30,7 @@ Los skills y agentes se definen en Markdown, pero las partes ejecutables (script
 - **yaml:** Parseo de frontmatter en archivos Markdown (si se usa) y configuraciones.
 - **json:** Para manipulación de datos estructurados en memoria o configuraciones.
 
-No se incluyen dependencias para los skills como skill-creator (los skills son solo Markdown); las librerías son solo para la parte ejecutable del framework
+No se incluyen dependencias para los skills como skill-master (los skills son solo Markdown); las librerías son solo para la parte ejecutable del framework
 
 ### Infraestructura y despliegue
 

@@ -49,7 +49,7 @@
 - [x] 7.4 Actualizar `reverse-engineering`: reemplazar validación por `skill-preflight`
 - [x] 7.5 Actualizar `project-context-diagram`: reemplazar validación por `skill-preflight`
 - [x] 7.6 Actualizar `openspec-init-config`, `openspec-apply-change`, `openspec-archive-change`, `openspec-explore`, `openspec-propose`, `openspec-generate-baseline`: reemplazar validación por `skill-preflight` donde aplique
-- [x] 7.7 Actualizar `skill-creator`: reemplazar validación por `skill-preflight`
+- [x] 7.7 Actualizar `skill-master`: reemplazar validación por `skill-preflight`
 
 ## 8. Validación
 

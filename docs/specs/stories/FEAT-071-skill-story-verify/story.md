@@ -262,8 +262,8 @@ Basarse en el siguiente template de test report para generar el `verify-report.m
 ### Requerimiento: Patrones estructurales de Skills (Skill Structural patterns)
 Se debe seguir y respetar los lineamientos estructurales de skills definido en `docs\knowledge\guides\skill-structural-pattern.md`.
 
-### Requerimiento: Seguir lineamientos de skill-creator
-Se debe seguir y respetar los lineamientos del skill `skill-creator` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos.
+### Requerimiento: Seguir lineamientos de skill-master
+Se debe seguir y respetar los lineamientos del skill `skill-master` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos.
 
 ### Requerimiento: No modifica código ni artefactos 
 El skill `story-verify` no debe modificar ningún código fuente ni artefacto de la historia (excepto generar o actualizar `verify-report.md` y el frontmatter de `story.md` para reflejar el resultado de la verificación). No debe eliminar ni sobreescribir archivos existentes sin confirmación explícita del usuario. Su función es exclusivamente orquestar la ejecución de pruebas y documentar resultados, sin alterar la implementación de la historia.

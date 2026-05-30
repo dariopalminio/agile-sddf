@@ -55,8 +55,8 @@ Ejemplos:
 ## Requerimiento: Patrones estructurales de Skills (Skill Structural patterns)
 Se debe seguir y respetar los lineamientos estructurales de skills definido en `docs\knowledge\guides\skill-structural-pattern.md`.
 
-## Requerimiento: skill-creator
-Seguir lineamientos establecidos por `skill-creator` para asegurar que el skill a modificar siga los estándares de estructura, documentación y funcionalidad definidos. 
+## Requerimiento: skill-master
+Seguir lineamientos establecidos por `skill-master` para asegurar que el skill a modificar siga los estándares de estructura, documentación y funcionalidad definidos. 
 
 ## ⚙️ Criterios no funcionales
 

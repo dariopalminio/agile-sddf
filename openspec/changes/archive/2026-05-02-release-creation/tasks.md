@@ -3,9 +3,9 @@
 - [x] 1.1 Copiar `release-spec-template.md` desde `.claude/skills/release-format-validation/assets/` a `.claude/skills/release-creation/assets/`
 - [x] 1.2 Crear el directorio `.claude/skills/release-creation/examples/` para los casos de prueba
 
-## 2. Construcción del skill con skill-creator
+## 2. Construcción del skill con skill-master
 
-- [x] 2.1 Invocar el skill `skill-creator` con intent: "crear skill interactivo `release-creation` que complete el template release dinámicamente preguntando al usuario sección por sección"
+- [x] 2.1 Invocar el skill `skill-master` con intent: "crear skill interactivo `release-creation` que complete el template release dinámicamente preguntando al usuario sección por sección"
 - [x] 2.2 Redactar el draft inicial de `SKILL.md` incluyendo: descripción, triggers, flujo de fases (Fase 0: resolver input, Fase 1: leer template, Fase 2: preguntas obligatorias, Fase 3: preguntas opcionales, Fase 4: generar archivo, Fase 5: validar)
 - [x] 2.3 Documentar el frontmatter YAML del `SKILL.md` con `name`, `description` y triggers correctos
 

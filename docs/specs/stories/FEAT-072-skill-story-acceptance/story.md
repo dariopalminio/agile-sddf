@@ -116,8 +116,8 @@ Cada criterio evaluado debe registrar en `acceptance-report.md`: identificador d
 ### Requerimiento: Patrones estructurales de Skills (Skill Structural patterns)
 Se debe seguir y respetar los lineamientos estructurales de skills definido en `docs\knowledge\guides\skill-structural-pattern.md`.
 
-### Requerimiento: Seguir lineamientos de skill-creator
-Se debe seguir y respetar los lineamientos del skill `skill-creator` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos. - Se debe seguir lineamientos de `skill-creator`.md y se sigue la estructura canónica de skills .claude\skills\skill-creator\assets\skill-template.md
+### Requerimiento: Seguir lineamientos de skill-master
+Se debe seguir y respetar los lineamientos del skill `skill-master` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos. - Se debe seguir lineamientos de `skill-master`.md y se sigue la estructura canónica de skills .claude\skills\skill-master\assets\skill-template.md
 
 ### Requerimiento: No modifica código ni artefactos 
 El skill `story-acceptance` no debe modificar ningún código fuente ni artefacto de la historia (excepto el frontmatter de `story.md` para reflejar el resultado de la aceptación si es necesario). No debe eliminar ni sobreescribir archivos existentes sin confirmación explícita del usuario. Su función es exclusivamente orquestar la validación manual, interactuar con humano usuario y documentar resultados, sin alterar la implementación de la historia.
