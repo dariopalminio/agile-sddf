@@ -66,3 +66,44 @@ skill-name/
 | `evals/` | el skill es crítico o tiene comportamiento medible | skill trivial de una línea |
 | `examples/` | el comportamiento no es obvio por el nombre | skill autoexplicativo |
 | `scripts/` | necesita I/O de sistema o procesamiento de datos | toda la lógica cabe en el SKILL.md |
+
+## Reglas de comportamiento
+
+### Idempotencia declarada
+
+El skill DEBE ser idempotente: ejecutarse múltiples veces sin efectos adversos. Si el artefacto de salida ya existe, el skill DEBE ofrecer opciones al usuario antes de sobrescribir:
+
+- `(r) Regenerar` — reemplazar el contenido existente
+- `(n) No modificar` — saltar la generación y terminar
+- `(c) Comparar` — mostrar diff antes de decidir (si aplica)
+
+Skills de inicialización (p.ej. `sddf-init`) DEBEN declarar explícitamente que no sobrescriben archivos existentes.
+
+Excepción: si el skill recibe el flag `--force`, puede sobrescribir directamente, emitiendo `[INFO] <archivo> sobreescrito con --force`.
+
+### Flags opcionales para modos alternativos
+
+Los skills DEBEN exponer flags para variantes de comportamiento cuando aplique. Usar estos nombres canónicos:
+
+| Flag | Comportamiento |
+|------|---------------|
+| `--dry-run` | Muestra el plan de ejecución sin crear ni modificar archivos |
+| `--force` | Sobreescribe artefactos existentes sin pedir confirmación |
+| `--interactive` | Pausa en cada paso clave para pedir confirmación (predeterminado en skills manuales) |
+| `--auto` | Ejecuta sin pausas; se detiene solo ante errores |
+| `--update` | Actualiza un artefacto existente en lugar de regenerarlo desde cero |
+| `--quick` | Omite pasos opcionales para una ejecución más rápida |
+| `--from-files` | Lee inputs desde archivos en lugar de contexto de conversación |
+| `--verbose` | Emite logs detallados de cada paso |
+
+### Progreso en comandos largos
+
+Si un paso puede tardar más de unos segundos (ejecución de tests, análisis de codebase, generación masiva), el skill DEBE emitir indicadores de progreso periódicos. Ejemplos:
+
+```
+[1/5] Leyendo story.md...
+[2/5] Derivando casos E2E desde ACs...
+[3/5] Derivando casos UT desde design.md...
+```
+
+No dejar al usuario sin feedback durante operaciones de larga duración.

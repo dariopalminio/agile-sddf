@@ -1,0 +1,377 @@
+{
+  "skill": "story-implement-tdd",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el skill story-implement-tdd: orquestación del ciclo TDD (Fase RED) para historias SDDF",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path-fase-red-config-valida-tests-generados-rojo-confirmado",
+      "type": "happy-path",
+      "description": "sddf-config.yaml con test_generators válidos y skills existentes en .claude/skills/ → el skill invoca cada subagente en el orden configurado, emite ✅ RED confirmado por tipo y escribe red-phase-status.json con generators_invoked y red_confirmed:true",
+      "input": {
+        "story_id": "FEAT-TEST",
+        "sddf_config": {
+          "implementing": {
+            "test_generators": [
+              { "type": "unit", "skill": "story-test-unit-jest", "required": true },
+              { "type": "eval", "skill": "story-test-eval", "required": true }
+            ]
+          }
+        },
+        "skills_present": ["story-test-unit-jest", "story-test-eval"],
+        "testcases_present": true
+      },
+      "expected": {
+        "contains": [
+          "✅",
+          "RED",
+          "red-phase-status.json",
+          "generators_invoked"
+        ],
+        "not_contains": [
+          "❌",
+          "Skill '",
+          "no encontrado"
+        ],
+        "output_file": ".tmp/story-implement-tdd/red-phase-status.json",
+        "output_contains": [
+          "red_confirmed",
+          "generators_invoked",
+          "story_id"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-skill-declarado-no-encontrado-required-true",
+      "type": "fail-fast",
+      "description": "sddf-config.yaml declara un skill con required:true cuyo directorio no existe en .claude/skills/ → el skill emite ❌ con el nombre exacto del skill, detiene la ejecución sin generar ningún archivo de prueba",
+      "input": {
+        "story_id": "FEAT-TEST",
+        "sddf_config": {
+          "implementing": {
+            "test_generators": [
+              { "type": "unit", "skill": "skill-inexistente-xyz", "required": true }
+            ]
+          }
+        },
+        "skills_present": [],
+        "testcases_present": true
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "skill-inexistente-xyz",
+          "no encontrado"
+        ],
+        "not_contains": [
+          "✅",
+          "RED confirmado",
+          "red-phase-status.json",
+          "invocando"
+        ],
+        "exit_gracefully": true
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "fallback-testcases-ausente-continua-con-story-y-design",
+      "type": "alternative-flow",
+      "description": "testcases.md no existe en el directorio de la historia → el skill emite ⚠️ con mensaje exacto 'testcases.md no encontrado — generando pruebas desde story.md y design.md' y continúa la Fase RED usando story.md y design.md como fuentes, sin bloquear la ejecución",
+      "input": {
+        "story_id": "FEAT-TEST",
+        "sddf_config": {
+          "implementing": {
+            "test_generators": [
+              { "type": "eval", "skill": "story-test-eval", "required": true }
+            ]
+          }
+        },
+        "skills_present": ["story-test-eval"],
+        "testcases_present": false,
+        "story_present": true,
+        "design_present": true
+      },
+      "expected": {
+        "contains": [
+          "⚠️",
+          "testcases.md no encontrado",
+          "story.md",
+          "design.md"
+        ],
+        "not_contains": [
+          "❌",
+          "deteniendo ejecución",
+          "Artefactos de especificación insuficientes"
+        ],
+        "exit_gracefully": false
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "happy-path-green-refactor-exitoso-story-actualizada-cycle-status-escrito",
+      "type": "happy-path",
+      "description": "red-phase-status.json existe con red_confirmed:true, code_generator existe en .claude/skills/, subagente retorna status:ok en Fase GREEN y en Fase REFACTOR, tests pasan tras GREEN y siguen pasando tras REFACTOR → story.md actualizada a CODE-REVIEW/IN-PROGRESS y cycle-status.json escrito con los tres confirmed:true",
+      "input": {
+        "story_id": "FEAT-TEST",
+        "red_phase_status": {
+          "story_id": "FEAT-TEST",
+          "red_confirmed": true,
+          "generators_invoked": ["unit", "eval"],
+          "files_generated": ["tests/unit/feat-test.spec.ts", "evals/evals.json"]
+        },
+        "sddf_config": {
+          "implementing": {
+            "code_generator": { "skill": "story-code-nodejs", "required": true }
+          }
+        },
+        "skills_present": ["story-code-nodejs"],
+        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "✅",
+          "Fase GREEN",
+          "Fase REFACTOR",
+          "CODE-REVIEW",
+          "cycle-status.json"
+        ],
+        "not_contains": [
+          "❌",
+          "regresiones",
+          "REFACTOR no ejecutado"
+        ],
+        "output_file": ".tmp/story-implement-tdd/cycle-status.json",
+        "output_contains": [
+          "red_confirmed",
+          "green_confirmed",
+          "refactor_confirmed",
+          "story_id"
+        ],
+        "story_status": "CODE-REVIEW",
+        "story_substatus": "IN-PROGRESS"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-005",
+      "name": "fase-green-falla-ciclo-detenido-sin-refactor-story-sin-cambio",
+      "type": "error-flow",
+      "description": "red-phase-status.json existe con red_confirmed:true, code_generator declarado y existente, pero subagente retorna status:error durante la Fase GREEN → el skill emite ❌ con el nombre exacto del skill, la Fase REFACTOR no se ejecuta, y story.md NO se actualiza",
+      "input": {
+        "story_id": "FEAT-TEST",
+        "red_phase_status": {
+          "story_id": "FEAT-TEST",
+          "red_confirmed": true,
+          "generators_invoked": ["unit"],
+          "files_generated": ["tests/unit/feat-test.spec.ts"]
+        },
+        "sddf_config": {
+          "implementing": {
+            "code_generator": { "skill": "story-code-nodejs", "required": true }
+          }
+        },
+        "skills_present": ["story-code-nodejs"],
+        "code_generator_green_result": { "status": "error", "message": "Error de compilación en src/feat-test.ts" }
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "Fase GREEN fallida",
+          "story-code-nodejs"
+        ],
+        "not_contains": [
+          "✅",
+          "Fase REFACTOR",
+          "CODE-REVIEW",
+          "cycle-status.json"
+        ],
+        "story_status_unchanged": true,
+        "exit_gracefully": true
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-006",
+      "name": "refactor-introduce-regresiones-warning-con-lista-story-sin-cambio",
+      "type": "error-flow",
+      "description": "Fase GREEN exitosa (tests pasan), Fase REFACTOR completa pero tests que pasaban tras GREEN ahora fallan → el skill emite ⚠️ con cantidad y nombres exactos de los tests regresados, story.md NO se actualiza a CODE-REVIEW",
+      "input": {
+        "story_id": "FEAT-TEST",
+        "red_phase_status": {
+          "story_id": "FEAT-TEST",
+          "red_confirmed": true,
+          "generators_invoked": ["unit"],
+          "files_generated": ["tests/unit/feat-test.spec.ts"]
+        },
+        "sddf_config": {
+          "implementing": {
+            "code_generator": { "skill": "story-code-nodejs", "required": true }
+          }
+        },
+        "skills_present": ["story-code-nodejs"],
+        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+        "tests_pass_after_green": true,
+        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "tests_pass_after_refactor": false,
+        "regressed_tests": ["feat-test > debería retornar valor correcto", "feat-test > debería manejar caso edge"]
+      },
+      "expected": {
+        "contains": [
+          "⚠️",
+          "REFACTOR introdujo regresiones",
+          "feat-test > debería retornar valor correcto"
+        ],
+        "not_contains": [
+          "CODE-REVIEW",
+          "cycle-status.json",
+          "✅ Fase REFACTOR"
+        ],
+        "story_status_unchanged": true
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-007",
+      "name": "modo-interactivo-pause1-y-pause2-con-confirmacion-ciclo-completa",
+      "type": "happy-path",
+      "description": "Invocación sin --auto (modo interactivo predeterminado): Pause-1 muestra resumen RED y pregunta '¿Continuar con la Fase GREEN? (s/n)' (respuesta 's'), Pause-2 muestra resumen GREEN y pregunta '¿Continuar con la Fase REFACTOR? (s/n)' (respuesta 's') → ciclo completa con las 3 fases exitosamente",
+      "input": {
+        "story_id": "FEAT-TEST",
+        "invocation_flags": [],
+        "exec_mode": "interactive",
+        "red_phase_status": {
+          "story_id": "FEAT-TEST",
+          "red_confirmed": true,
+          "generators_invoked": ["unit"],
+          "files_generated": ["tests/unit/feat-test.spec.ts"]
+        },
+        "sddf_config": {
+          "implementing": {
+            "code_generator": { "skill": "story-code-nodejs", "required": true }
+          }
+        },
+        "skills_present": ["story-code-nodejs"],
+        "user_responses": { "pause_1": "s", "pause_2": "s" },
+        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "[INFO] Modo de ejecución: interactive",
+          "¿Continuar con la Fase GREEN? (s/n)",
+          "¿Continuar con la Fase REFACTOR? (s/n)",
+          "CODE-REVIEW",
+          "cycle-status.json"
+        ],
+        "not_contains": [
+          "🛑 Ciclo TDD pausado",
+          "[INFO] Modo de ejecución: auto"
+        ],
+        "pause_1_shown": true,
+        "pause_2_shown": true,
+        "story_status": "CODE-REVIEW",
+        "story_substatus": "IN-PROGRESS"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-008",
+      "name": "modo-auto-ciclo-completo-sin-pausas-resumen-consolidado",
+      "type": "happy-path",
+      "description": "Invocación con --auto: ningún bloque Pause-1 ni Pause-2 se ejecuta, ciclo completa sin interrupciones, muestra resumen consolidado de las 3 fases al finalizar (✅ Fase RED, ✅ Fase GREEN, ✅ Fase REFACTOR)",
+      "input": {
+        "story_id": "FEAT-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "red_phase_status": {
+          "story_id": "FEAT-TEST",
+          "red_confirmed": true,
+          "generators_invoked": ["unit"],
+          "files_generated": ["tests/unit/feat-test.spec.ts"]
+        },
+        "sddf_config": {
+          "implementing": {
+            "code_generator": { "skill": "story-code-nodejs", "required": true }
+          }
+        },
+        "skills_present": ["story-code-nodejs"],
+        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "[INFO] Modo de ejecución: auto",
+          "✅ Fase RED",
+          "✅ Fase GREEN",
+          "✅ Fase REFACTOR",
+          "cycle-status.json",
+          "CODE-REVIEW"
+        ],
+        "not_contains": [
+          "¿Continuar con la Fase GREEN?",
+          "¿Continuar con la Fase REFACTOR?",
+          "🛑 Ciclo TDD pausado",
+          "[INFO] Modo de ejecución: interactive"
+        ],
+        "pause_1_shown": false,
+        "pause_2_shown": false,
+        "story_status": "CODE-REVIEW",
+        "story_substatus": "IN-PROGRESS"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-009",
+      "name": "modo-auto-error-en-fase-green-detiene-sin-prompt",
+      "type": "error-flow",
+      "description": "Invocación con --auto, error simulado en Fase GREEN (code_generator retorna status:error) → el skill detiene la ejecución sin mostrar prompt de confirmación al usuario, emite ❌ con nombre del skill y detalle de la fase fallida, story.md sin cambio",
+      "input": {
+        "story_id": "FEAT-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "red_phase_status": {
+          "story_id": "FEAT-TEST",
+          "red_confirmed": true,
+          "generators_invoked": ["unit"],
+          "files_generated": ["tests/unit/feat-test.spec.ts"]
+        },
+        "sddf_config": {
+          "implementing": {
+            "code_generator": { "skill": "story-code-nodejs", "required": true }
+          }
+        },
+        "skills_present": ["story-code-nodejs"],
+        "code_generator_green_result": { "status": "error", "message": "Error de compilación TypeScript" }
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "Fase GREEN fallida",
+          "story-code-nodejs"
+        ],
+        "not_contains": [
+          "¿Continuar",
+          "🛑 Ciclo TDD pausado",
+          "CODE-REVIEW",
+          "cycle-status.json",
+          "✅ Fase GREEN"
+        ],
+        "no_interactive_prompt": true,
+        "story_status_unchanged": true,
+        "exit_gracefully": true
+      },
+      "threshold": 1.0
+    }
+  ]
+}
