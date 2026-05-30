@@ -1,7 +1,7 @@
 {
-  "skill": "story-implement-tdd",
+  "skill": "story-implement",
   "version": "1.0.0",
-  "description": "Casos de prueba para el skill story-implement-tdd: orquestación del ciclo TDD (Fase RED) para historias SDDF",
+  "description": "Casos de prueba para el skill story-implement: orquestación del ciclo TDD (Fase RED) para historias SDDF",
   "cases": [
     {
       "id": "TC-001",
@@ -33,7 +33,7 @@
           "Skill '",
           "no encontrado"
         ],
-        "output_file": ".tmp/story-implement-tdd/red-phase-status.json",
+        "output_file": ".tmp/story-implement/red-phase-status.json",
         "output_contains": [
           "red_confirmed",
           "generators_invoked",
@@ -147,7 +147,7 @@
           "regresiones",
           "REFACTOR no ejecutado"
         ],
-        "output_file": ".tmp/story-implement-tdd/cycle-status.json",
+        "output_file": ".tmp/story-implement/cycle-status.json",
         "output_contains": [
           "red_confirmed",
           "green_confirmed",

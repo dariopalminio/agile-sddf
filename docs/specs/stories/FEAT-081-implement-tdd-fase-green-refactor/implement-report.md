@@ -3,13 +3,13 @@ alwaysApply: false
 type: implement-report
 id: FEAT-081
 slug: FEAT-081-implement-report
-title: "Implement Report: story-implement-tdd — Fases GREEN y REFACTOR"
+title: "Implement Report: story-implement — Fases GREEN y REFACTOR"
 story: FEAT-081
 created: 2026-05-30
 updated: 2026-05-30
 ---
 
-# Reporte de Implementación: story-implement-tdd — Fases GREEN y REFACTOR
+# Reporte de Implementación: story-implement — Fases GREEN y REFACTOR
 
 ## Resumen
 
@@ -30,15 +30,15 @@ updated: 2026-05-30
 
 | ID | Descripción | Estado | Archivos generados/modificados |
 |---|---|---|---|
-| 1.1 | Extender evals.json con TC-004, TC-005, TC-006 | ✓ completado | `.claude/skills/story-implement-tdd/evals/evals.json` |
-| 2.1 | Agregar Paso 7 — precondición red-phase-status.json | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.2 | Agregar Paso 8 — leer y validar code_generator | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.3 | Agregar Paso 9 — Fase GREEN invocar code_generator | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.4 | Agregar Paso 9b — confirmación estado GREEN | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.5 | Agregar Paso 10 — Fase REFACTOR + verificación no-regresión | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.6 | Agregar Paso 11 — transición story.md + cycle-status.json | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.7 | Actualizar sección "Qué hace este skill" para ciclo completo | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.8 | Extender tabla "Manejo de errores" con 10 nuevos casos | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
+| 1.1 | Extender evals.json con TC-004, TC-005, TC-006 | ✓ completado | `.claude/skills/story-implement/evals/evals.json` |
+| 2.1 | Agregar Paso 7 — precondición red-phase-status.json | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.2 | Agregar Paso 8 — leer y validar code_generator | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.3 | Agregar Paso 9 — Fase GREEN invocar code_generator | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.4 | Agregar Paso 9b — confirmación estado GREEN | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.5 | Agregar Paso 10 — Fase REFACTOR + verificación no-regresión | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.6 | Agregar Paso 11 — transición story.md + cycle-status.json | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.7 | Actualizar sección "Qué hace este skill" para ciclo completo | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.8 | Extender tabla "Manejo de errores" con 10 nuevos casos | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
 | 3.1 | Verificar eval TC-004 (happy path GREEN+REFACTOR) | ✓ completado | — |
 | 3.2 | Verificar eval TC-005 (Fase GREEN falla) | ✓ completado | — |
 | 3.3 | Verificar eval TC-006 (REFACTOR regresiones) | ✓ completado | — |
@@ -59,7 +59,7 @@ updated: 2026-05-30
 | 8 | El código pasa el linter y formateador sin errores | ⚠️ | Requiere ejecución externa; SKILL.md es Markdown válido sin frontmatter roto |
 | 9 | No se introducen dependencias nuevas sin aprobación | ✓ | Sin dependencias nuevas; el code_generator es configurado externamente vía sddf-config.yaml |
 | 10 | Se usó skill-master para crear el skill | ⚠️ | Este skill extiende uno existente (no es creación desde cero); skill-master aplica para skills nuevos según DoD |
-| 11 | Ruta del skill en package.json (si es nuevo) | ✓ | `.claude/skills/story-implement-tdd` ya estaba declarado en package.json desde FEAT-078 |
+| 11 | Ruta del skill en package.json (si es nuevo) | ✓ | `.claude/skills/story-implement` ya estaba declarado en package.json desde FEAT-078 |
 | 12 | Skills críticos tienen evals/evals.json | ✓ | evals.json extendido con TC-004, TC-005, TC-006 (total 6 casos) |
 | 13 | Casos de prueba ejecutados y evaluados según skill-master | ⚠️ | Requiere ejecución del skill skill-test-evals sobre evals.json — no evaluable por story-implement |
 | 14 | tasks.md tiene todas las tareas marcadas [x] | ✓ | 12/12 tareas completadas con [x] |
@@ -80,6 +80,6 @@ updated: 2026-05-30
 Esta historia implementa un skill en Markdown (`SKILL.md`), no código ejecutable. Los "tests" son los casos de prueba en `evals/evals.json` que deben ejecutarse con el skill `skill-test-evals`.
 
 Pasos recomendados:
-1. Ejecutar `/skill-test-evals .claude/skills/story-implement-tdd` para evaluar los 6 casos (TC-001 a TC-006)
+1. Ejecutar `/skill-test-evals .claude/skills/story-implement` para evaluar los 6 casos (TC-001 a TC-006)
 2. Verificar que la tasa de acierto supera el umbral configurado (0.95 para TC-004, 1.0 para TC-005 y TC-006)
 3. Consultar `design.md` para verificar que cada paso del SKILL.md satisface la decisión de diseño correspondiente

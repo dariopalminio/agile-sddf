@@ -57,7 +57,7 @@ Entonces genera evals/evals.json con casos de prueba que cubren el flujo princip
 
 ### Requerimiento: declarado en sddf-config.yaml para invocación agnóstica
 
-`skill-test-evals` debe estar declarado en `docs/policies/sddf-config.yaml` bajo la sección `implementing.test_generators` con `type: eval`. Esto permite que `story-implement-tdd` lo descubra e invoque sin acoplamiento directo: cambiar el skill de generación de evals solo requiere actualizar la configuración, no modificar el orquestador.
+`skill-test-evals` debe estar declarado en `docs/policies/sddf-config.yaml` bajo la sección `implementing.test_generators` con `type: eval`. Esto permite que `story-implement` lo descubra e invoque sin acoplamiento directo: cambiar el skill de generación de evals solo requiere actualizar la configuración, no modificar el orquestador.
 
 ## ⚙️ Criterios no funcionales
 
@@ -67,7 +67,7 @@ Entonces genera evals/evals.json con casos de prueba que cubren el flujo princip
 
 ## 📎 Notas / contexto adicional
 
-- **Posición en el pipeline:** `story-implement-tdd` invoca `skill-test-evals` durante la Fase RED para que los evals queden establecidos antes de generar o modificar `SKILL.md`
+- **Posición en el pipeline:** `story-implement` invoca `skill-test-evals` durante la Fase RED para que los evals queden establecidos antes de generar o modificar `SKILL.md`
 - **Invocación:** el skill recibe del orquestador el bundle `{story_id, testcases_path, story_path, design_path}` vía el patrón un solo nivel de delegación
 - **Fuentes de entrada en orden de prioridad:** (1) `testcases.md` → (2) `story.md` + `design.md` → (3) `SKILL.md` existente
 - **Historias relacionadas:** FEAT-078 (Fase RED donde se invoca este skill), FEAT-079 (story-testcases que genera el testcases.md que este skill consume)

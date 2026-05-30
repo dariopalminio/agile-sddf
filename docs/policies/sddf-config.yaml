@@ -26,30 +26,18 @@ defaults:
 implementing:
   test_generators:
     - type: unit
-      skill: story-test-unit-jest
-      required: true
+      skill: none
+      required: false
     - type: e2e
-      skill: story-test-e2e-playwright
+      skill: none
       required: false
     - type: eval
-      skill: story-test-eval
+      skill: skill-test-eval
       required: true
   code_generator:
-    skill: story-code-nodejs
+    skill: skill-master
     required: true
 
-complementary_skills:
-  specifying:
-    skills:  none
-    description: "Habilidades para la fase de especificación (definir qué probar, no ejecutar tests)"
-
-  plan:
-    skills:
-      - name: design-skill-architecture
-        type: reference
-        references_path: ".claude/skills/skill-master/references"
-        description: "Guías de buenas prácticas para diseñar skills SDDF"
-        required: false
 
 
 

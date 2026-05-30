@@ -3,7 +3,7 @@ alwaysApply: false
 type: analyze
 id: FEAT-081
 slug: FEAT-081-analyze
-title: "Analyze: story-implement-tdd — Fases GREEN y REFACTOR"
+title: "Analyze: story-implement — Fases GREEN y REFACTOR"
 story: FEAT-081
 design: FEAT-081
 tasks: FEAT-081
@@ -14,7 +14,7 @@ related:
   - FEAT-078-implement-tdd-fase-red
 ---
 
-# Reporte de Coherencia: story-implement-tdd — Fases GREEN y REFACTOR
+# Reporte de Coherencia: story-implement — Fases GREEN y REFACTOR
 
 ## Resumen Ejecutivo
 
@@ -94,15 +94,15 @@ related:
 ### INC-001 [WARNING]
 
 - **Tipo:** D (desalineación con release)
-- **Descripción:** El release.md de EPIC-14 tiene un entry `- [x] FEAT-081 - **skill-test-evals**: generación de evals/evals.json...` marcado como completado, mientras que el story.md de FEAT-081 en este análisis es sobre "story-implement-tdd Fases GREEN y REFACTOR". El ID FEAT-081 está siendo usado para dos features conceptualmente distintas: la primera (skill-test-evals) ya completada, y la segunda (Fases GREEN+REFACTOR) aún por implementar.
+- **Descripción:** El release.md de EPIC-14 tiene un entry `- [x] FEAT-081 - **skill-test-evals**: generación de evals/evals.json...` marcado como completado, mientras que el story.md de FEAT-081 en este análisis es sobre "story-implement Fases GREEN y REFACTOR". El ID FEAT-081 está siendo usado para dos features conceptualmente distintas: la primera (skill-test-evals) ya completada, y la segunda (Fases GREEN+REFACTOR) aún por implementar.
 - **Archivo afectado:** `docs/specs/releases/EPIC-14-fabrica-de-skills/release.md` — sección "Features"
-- **Acción requerida:** Añadir una nueva entrada en release.md para FEAT-081 como "story-implement-tdd Fases GREEN y REFACTOR", o asignar un nuevo ID a esta historia para evitar ambigüedad. El entry existente `[x] FEAT-081 - skill-test-evals` podría corresponder a un renombramiento anterior del mismo feature.
+- **Acción requerida:** Añadir una nueva entrada en release.md para FEAT-081 como "story-implement Fases GREEN y REFACTOR", o asignar un nuevo ID a esta historia para evitar ambigüedad. El entry existente `[x] FEAT-081 - skill-test-evals` podría corresponder a un renombramiento anterior del mismo feature.
 
 ---
 
 ## Recomendaciones
 
-1. **[INC-001]** Actualizar `docs/specs/releases/EPIC-14-fabrica-de-skills/release.md` añadiendo la entrada `- [ ] FEAT-081 - **story-implement-tdd (Fases GREEN+REFACTOR)**: implementación del código mínimo...` bajo la sección Features. Si el ID genera ambigüedad con el story anterior (skill-test-evals), considerar reasignar a FEAT-083 o el siguiente ID disponible, coordinando con FEAT-078 que ya referencia a FEAT-081 en sus artefactos.
+1. **[INC-001]** Actualizar `docs/specs/releases/EPIC-14-fabrica-de-skills/release.md` añadiendo la entrada `- [ ] FEAT-081 - **story-implement (Fases GREEN+REFACTOR)**: implementación del código mínimo...` bajo la sección Features. Si el ID genera ambigüedad con el story anterior (skill-test-evals), considerar reasignar a FEAT-083 o el siguiente ID disponible, coordinando con FEAT-078 que ya referencia a FEAT-081 en sus artefactos.
 
 ---
 

@@ -3,7 +3,7 @@ alwaysApply: false
 type: design
 id: FEAT-078
 slug: FEAT-078-implement-tdd-fase-red-design
-title: "Design: story-implement-tdd — Fase RED: validar configuración y generar pruebas"
+title: "Design: story-implement — Fase RED: validar configuración y generar pruebas"
 date: 2026-05-30
 status: SPECIFYING
 substatus: IN-PROGRESS
@@ -19,13 +19,13 @@ related:
 
 ## Context
 
-`story-implement-tdd` es un nuevo skill SDDF que implementa el ciclo TDD (RED → GREEN → REFACTOR) de forma agnóstica al stack. Esta historia cubre exclusivamente la **Fase RED**: validar que los skills de generación de pruebas declarados en `sddf-config.yaml` existen y son accesibles, invocarlos en orden para generar archivos de test en el código productivo, y confirmar que los tests fallan (estado rojo) antes de empezar la implementación.
+`story-implement` es un nuevo skill SDDF que implementa el ciclo TDD (RED → GREEN → REFACTOR) de forma agnóstica al stack. Esta historia cubre exclusivamente la **Fase RED**: validar que los skills de generación de pruebas declarados en `sddf-config.yaml` existen y son accesibles, invocarlos en orden para generar archivos de test en el código productivo, y confirmar que los tests fallan (estado rojo) antes de empezar la implementación.
 
-Actualmente no existe ningún skill SDDF que cierre la brecha entre la especificación de pruebas (`testcases.md`) y la generación real de archivos de test en el código productivo. `story-implement-tdd` es la pieza que conecta esos artefactos con los skills concretos de testing del proyecto del usuario.
+Actualmente no existe ningún skill SDDF que cierre la brecha entre la especificación de pruebas (`testcases.md`) y la generación real de archivos de test en el código productivo. `story-implement` es la pieza que conecta esos artefactos con los skills concretos de testing del proyecto del usuario.
 
 **Posición en el pipeline:**
 ```
-story-plan → story-testcases → story-implement-tdd (Fase RED) → story-implement-tdd (GREEN+REFACTOR, FEAT-081) → story-code-review
+story-plan → story-testcases → story-implement (Fase RED) → story-implement (GREEN+REFACTOR, FEAT-081) → story-code-review
 ```
 
 **Criterios de aceptación de referencia:**
@@ -41,9 +41,9 @@ story-plan → story-testcases → story-implement-tdd (Fase RED) → story-impl
 ## Goals / Non-Goals
 
 **Goals:**
-- Definir la estructura y frontmatter de `.claude/skills/story-implement-tdd/SKILL.md`
+- Definir la estructura y frontmatter de `.claude/skills/story-implement/SKILL.md`
 - Diseñar el schema YAML que extiende `sddf-config.yaml` con la sección `implementing.test_generators`
-- Definir el contrato de invocación entre `story-implement-tdd` y cada skill de generación de pruebas
+- Definir el contrato de invocación entre `story-implement` y cada skill de generación de pruebas
 - Definir el algoritmo de validación de skills declarados (fail-fast)
 - Definir la resolución de inputs: `testcases.md` vs fallback a `story.md` + `design.md`
 - Definir cómo el skill confirma el estado rojo tras la generación
@@ -128,7 +128,7 @@ El bundle de inputs `{story_id, testcases_path|null, story_path, design_path}` s
 El skill sigue el patrón de un solo nivel de delegación:
 
 ```
-story-implement-tdd (Fase RED)   ← orquestador
+story-implement (Fase RED)   ← orquestador
   └── {skill tipo unit}           ← subagente
   └── {skill tipo e2e}            ← subagente
   └── {skill tipo eval}           ← subagente
@@ -140,7 +140,7 @@ story-implement-tdd (Fase RED)   ← orquestador
 
 Si `status: error` → el orquestador detiene la Fase RED sin invocar subagentes siguientes (fail-fast) y reporta el error.
 
-Los subagentes escriben sus resultados en `.tmp/story-implement-tdd/{tipo}/results.json` (D-8) para que sean legibles de forma independiente.
+Los subagentes escriben sus resultados en `.tmp/story-implement/{tipo}/results.json` (D-8) para que sean legibles de forma independiente.
 
 **Alternativa rechazada — pasar el contexto completo heredado al subagente:** Viola el principio "evitar el teléfono descompuesto" (constitution.md §6); los subagentes deben recibir solo lo necesario para su tarea.
 
@@ -163,11 +163,11 @@ Tras generar los tests de cada tipo, el skill confirma el estado rojo ejecutando
 
 ---
 
-### D-6: Estructura de directorios del skill story-implement-tdd
+### D-6: Estructura de directorios del skill story-implement
 // satisface: Req-5
 
 ```
-.claude/skills/story-implement-tdd/
+.claude/skills/story-implement/
 ├── SKILL.md          # Fase RED (esta historia) + referencia a FEAT-081 y FEAT-082
 └── evals/
     └── evals.json    # DEBE existir antes que SKILL.md (principio TDD para skills)
@@ -177,23 +177,23 @@ Tras generar los tests de cada tipo, el skill confirma el estado rojo ejecutando
 - `agents/` omitido: los subagentes son skills del sistema invocables directamente; no se necesitan agentes locales en esta entrega
 - `evals/evals.json` es prerequisito al SKILL.md (TDD); debe generarse en la fase RED del propio ciclo de construcción del skill
 
-**Alternativa rechazada — SKILL.md separado por fase:** El skill es un único punto de entrada; las fases son secciones internas del mismo SKILL.md, no skills independientes. Dividirlos rompería la invocación simple `/story-implement-tdd`.
+**Alternativa rechazada — SKILL.md separado por fase:** El skill es un único punto de entrada; las fases son secciones internas del mismo SKILL.md, no skills independientes. Dividirlos rompería la invocación simple `/story-implement`.
 
 ---
 
-### D-7: Frontmatter del SKILL.md de story-implement-tdd
+### D-7: Frontmatter del SKILL.md de story-implement
 // satisface: Req-5
 
 ```yaml
 ---
-name: story-implement-tdd
+name: story-implement
 description: >-
   Implementa el ciclo TDD (RED→GREEN→REFACTOR) para una historia SDDF, delegando
   generación de pruebas y código a skills configurados en sddf-config.yaml.
-  Usar cuando el practitioner quiere ejecutar story-implement-tdd, implementar
+  Usar cuando el practitioner quiere ejecutar story-implement, implementar
   una historia con TDD, o completar el ciclo rojo-verde-refactor de una historia.
 triggers:
-  - "story-implement-tdd"
+  - "story-implement"
   - "implementar con TDD"
   - "ciclo TDD historia"
   - "fase RED historia"
@@ -210,10 +210,10 @@ output: "archivos de prueba en código productivo + story.md actualizado a CODE-
 ### D-8: Output intermedio en `.tmp/`
 // satisface: AC-1, constitution.md §6
 
-El orquestador escribe el estado de la Fase RED en `.tmp/story-implement-tdd/` para desacoplar la comunicación entre fases:
+El orquestador escribe el estado de la Fase RED en `.tmp/story-implement/` para desacoplar la comunicación entre fases:
 
 ```
-.tmp/story-implement-tdd/
+.tmp/story-implement/
 ├── red-phase-status.json     # resumen de la fase
 └── {tipo}/
     └── results.json          # output de cada subagente

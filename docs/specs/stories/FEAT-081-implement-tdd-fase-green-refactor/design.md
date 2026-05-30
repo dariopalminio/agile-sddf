@@ -3,7 +3,7 @@ alwaysApply: false
 type: design
 id: FEAT-081
 slug: FEAT-081-implement-tdd-fase-green-refactor-design
-title: "Design: story-implement-tdd — Fases GREEN y REFACTOR: implementar código y refactorizar"
+title: "Design: story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar"
 date: 2026-05-30
 status: SPECIFYING
 substatus: IN-PROGRESS
@@ -19,13 +19,13 @@ related:
 
 ## Context
 
-`story-implement-tdd` es el skill SDDF que orquesta el ciclo TDD completo (RED → GREEN → REFACTOR) de forma agnóstica al stack. FEAT-078 cubrió la Fase RED. Esta historia, FEAT-081, cubre las **Fases GREEN y REFACTOR**: invocar el skill de coding declarado en `sddf-config.yaml` para implementar el código mínimo que hace pasar los tests en verde (GREEN), luego refactorizar ese código sin romper los tests (REFACTOR), y finalmente actualizar `story.md` a `CODE-REVIEW/IN-PROGRESS` para habilitar la siguiente etapa del pipeline.
+`story-implement` es el skill SDDF que orquesta el ciclo TDD completo (RED → GREEN → REFACTOR) de forma agnóstica al stack. FEAT-078 cubrió la Fase RED. Esta historia, FEAT-081, cubre las **Fases GREEN y REFACTOR**: invocar el skill de coding declarado en `sddf-config.yaml` para implementar el código mínimo que hace pasar los tests en verde (GREEN), luego refactorizar ese código sin romper los tests (REFACTOR), y finalmente actualizar `story.md` a `CODE-REVIEW/IN-PROGRESS` para habilitar la siguiente etapa del pipeline.
 
-La Fase GREEN no puede ejecutarse si la Fase RED no fue completada exitosamente. El artefacto de desacoplamiento entre fases es `.tmp/story-implement-tdd/red-phase-status.json`, producido por FEAT-078 y consumido como precondición aquí.
+La Fase GREEN no puede ejecutarse si la Fase RED no fue completada exitosamente. El artefacto de desacoplamiento entre fases es `.tmp/story-implement/red-phase-status.json`, producido por FEAT-078 y consumido como precondición aquí.
 
 **Posición en el pipeline:**
 ```
-story-plan → story-testcases → story-implement-tdd (Fase RED, FEAT-078) → story-implement-tdd (GREEN+REFACTOR) ← aquí → story-code-review
+story-plan → story-testcases → story-implement (Fase RED, FEAT-078) → story-implement (GREEN+REFACTOR) ← aquí → story-code-review
 ```
 
 **Criterios de aceptación de referencia:**
@@ -46,7 +46,7 @@ story-plan → story-testcases → story-implement-tdd (Fase RED, FEAT-078) → 
 - Definir la transición de estado de `story.md` al completar el ciclo
 - Diseñar el output intermedio para Fases GREEN y REFACTOR en `.tmp/`
 - Diseñar el comportamiento ante fallos de GREEN y regresiones de REFACTOR
-- Extender el SKILL.md existente (`.claude/skills/story-implement-tdd/SKILL.md`) con las secciones GREEN y REFACTOR
+- Extender el SKILL.md existente (`.claude/skills/story-implement/SKILL.md`) con las secciones GREEN y REFACTOR
 
 **Non-Goals:**
 - Diseñar skills de coding específicos (ej. `story-code-nodejs`) — son historias separadas
@@ -63,12 +63,12 @@ story-plan → story-testcases → story-implement-tdd (Fase RED, FEAT-078) → 
 
 Antes de ejecutar cualquier lógica de GREEN, verificar la precondición de la Fase RED:
 
-1. Buscar `.tmp/story-implement-tdd/red-phase-status.json`
+1. Buscar `.tmp/story-implement/red-phase-status.json`
 2. Si no existe:
    ```
    ❌ Precondición no cumplida: Fase RED no completada
    
-   Ejecuta story-implement-tdd en Fase RED antes de continuar con GREEN.
+   Ejecuta story-implement en Fase RED antes de continuar con GREEN.
    ```
    Detener la ejecución.
 3. Si existe, leer y verificar `red_confirmed: true`
@@ -138,7 +138,7 @@ Validar la existencia del skill de coding **antes** de cualquier ejecución de c
 El skill sigue el patrón de un solo nivel de delegación (igual que Fase RED):
 
 ```
-story-implement-tdd (Fase GREEN/REFACTOR)   ← orquestador
+story-implement (Fase GREEN/REFACTOR)   ← orquestador
   └── {code_generator skill}                ← subagente
 ```
 
@@ -163,7 +163,7 @@ story-implement-tdd (Fase GREEN/REFACTOR)   ← orquestador
 }
 ```
 
-El subagente escribe sus resultados en `.tmp/story-implement-tdd/{phase}/results.json` (en minúsculas: `green/results.json`, `refactor/results.json`).
+El subagente escribe sus resultados en `.tmp/story-implement/{phase}/results.json` (en minúsculas: `green/results.json`, `refactor/results.json`).
 
 **Alternativa rechazada — pasar contexto heredado completo al subagente:** Viola constitution.md §6 ("evitar el teléfono descompuesto"); el subagente solo necesita los archivos de test, la fase, y los artefactos de especificación.
 
@@ -252,10 +252,10 @@ Actualizar también `updated: <YYYY-MM-DD>` en el frontmatter de `story.md`.
 ### D-8: Output intermedio en `.tmp/`
 // satisface: AC-1, constitution.md §6
 
-Extender la estructura `.tmp/story-implement-tdd/` de FEAT-078 D-8:
+Extender la estructura `.tmp/story-implement/` de FEAT-078 D-8:
 
 ```
-.tmp/story-implement-tdd/
+.tmp/story-implement/
 ├── red-phase-status.json       # producido por FEAT-078 (precondición)
 ├── green/
 │   └── results.json            # output del code_generator en Fase GREEN
@@ -285,10 +285,10 @@ Schema de `cycle-status.json`:
 ### D-9: Extensión del SKILL.md existente
 // satisface: Req-5 (Patrones estructurales)
 
-FEAT-081 **extiende** el SKILL.md de `story-implement-tdd` (creado en FEAT-078) en lugar de crear un nuevo archivo. El skill es un único punto de entrada; las fases son secciones numeradas internas:
+FEAT-081 **extiende** el SKILL.md de `story-implement` (creado en FEAT-078) en lugar de crear un nuevo archivo. El skill es un único punto de entrada; las fases son secciones numeradas internas:
 
 ```
-.claude/skills/story-implement-tdd/
+.claude/skills/story-implement/
 ├── SKILL.md   ← extender con Pasos 7-11 (GREEN + REFACTOR) y actualizar "Qué hace este skill"
 └── evals/
     └── evals.json   ← extender con casos TC-004, TC-005, TC-006
@@ -301,7 +301,7 @@ Los pasos del SKILL.md pasan de 6 (Fase RED) a 11 (ciclo completo):
 - Paso 10: Fase REFACTOR (invocar + verificar no-regresión)
 - Paso 11: Transición de estado + escribir `cycle-status.json`
 
-**Alternativa rechazada — SKILL.md separado por fase (ej. `story-implement-tdd-green.md`):** Viola D-6 de FEAT-078; el skill es un único punto de entrada invocable con una sola frase. Dividirlo requeriría que el practitioner conozca y ordene manualmente las fases.
+**Alternativa rechazada — SKILL.md separado por fase (ej. `story-implement-green.md`):** Viola D-6 de FEAT-078; el skill es un único punto de entrada invocable con una sola frase. Dividirlo requeriría que el practitioner conozca y ordene manualmente las fases.
 
 ---
 
@@ -312,7 +312,7 @@ Los pasos del SKILL.md pasan de 6 (Fase RED) a 11 (ciclo completo):
 | El code_generator genera código que pasa los tests pero viola las convenciones del proyecto | El orquestador pasa `design_path` al subagente; el code_generator es responsable de leer y respetar design.md |
 | `red-phase-status.json` existe de una ejecución anterior con datos desactualizados | El skill verifica `story_id` del archivo contra el story_id actual; si difieren, emite `⚠️` y solicita re-ejecutar Fase RED |
 | El code_generator no soporta la fase REFACTOR (solo implementa) | D-6 trata el error del subagente como no-fatal con `❌` de REFACTOR; el practitioner puede avanzar manualmente |
-| Los tests pasan tras GREEN pero el coverage es insuficiente | Fuera de scope de story-implement-tdd; es responsabilidad del code_generator y del code-review posterior |
+| Los tests pasan tras GREEN pero el coverage es insuficiente | Fuera de scope de story-implement; es responsabilidad del code_generator y del code-review posterior |
 | Los archivos de test generados en RED apuntan a rutas que el code_generator no conoce | El bundle incluye `test_files` explícitos; el code_generator crea el código de producción en las rutas convencionales del stack |
 
 ---

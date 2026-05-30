@@ -3,7 +3,7 @@ alwaysApply: false
 type: analyze
 id: FEAT-082
 slug: FEAT-082-analyze
-title: "Analyze: story-implement-tdd — modos interactivo y automático de ejecución del ciclo TDD"
+title: "Analyze: story-implement — modos interactivo y automático de ejecución del ciclo TDD"
 story: FEAT-082
 design: FEAT-082
 tasks: FEAT-082
@@ -15,7 +15,7 @@ related:
   - FEAT-081-implement-tdd-fase-green-refactor
 ---
 
-# Reporte de Coherencia: story-implement-tdd — modos interactivo y automático
+# Reporte de Coherencia: story-implement — modos interactivo y automático
 
 ## Resumen Ejecutivo
 
@@ -92,7 +92,7 @@ related:
 - **Tipo:** D (desalineación con release)
 - **Descripción:** `docs/specs/releases/EPIC-14-fabrica-de-skills/release.md` no tiene una entrada de checklist explícita para FEAT-082. Las features FEAT-078, FEAT-079, FEAT-080, FEAT-081 están listadas con `- [ ]` / `- [x]`, pero FEAT-082 no tiene su línea correspondiente.
 - **Archivo afectado:** `docs/specs/releases/EPIC-14-fabrica-de-skills/release.md` — sección "## Features"
-- **Acción requerida:** Añadir la entrada `- [ ] FEAT-082 — **story-implement-tdd modos interactivo/auto**: flag --auto para ejecución sin pausas en CI + Pause-1/Pause-2 en modo interactivo` bajo la sección Features del release.
+- **Acción requerida:** Añadir la entrada `- [ ] FEAT-082 — **story-implement modos interactivo/auto**: flag --auto para ejecución sin pausas en CI + Pause-1/Pause-2 en modo interactivo` bajo la sección Features del release.
 
 ---
 
@@ -100,7 +100,7 @@ related:
 
 1. **[INC-001]** Añadir en `docs/specs/releases/EPIC-14-fabrica-de-skills/release.md` (sección "## Features") la entrada:
    ```
-   - [ ] FEAT-082 — **story-implement-tdd (modos interactivo/auto)**: flag `--auto` para ejecución sin pausas en CI; Pause-1 (tras RED) y Pause-2 (tras GREEN) en modo interactivo.
+   - [ ] FEAT-082 — **story-implement (modos interactivo/auto)**: flag `--auto` para ejecución sin pausas en CI; Pause-1 (tras RED) y Pause-2 (tras GREEN) en modo interactivo.
    ```
    Esto no bloquea la implementación — es un WARNING de trazabilidad.
 

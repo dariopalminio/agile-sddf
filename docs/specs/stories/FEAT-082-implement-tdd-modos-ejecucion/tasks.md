@@ -3,7 +3,7 @@ alwaysApply: false
 type: tasks
 id: FEAT-082
 slug: FEAT-082-implement-tdd-modos-ejecucion-tasks
-title: "Tasks: story-implement-tdd — modos interactivo y automático de ejecución del ciclo TDD"
+title: "Tasks: story-implement — modos interactivo y automático de ejecución del ciclo TDD"
 date: 2026-05-30
 status: SPECIFYING
 substatus: IN-PROGRESS
@@ -21,7 +21,7 @@ related:
 
 ## 1. Setup — Evals antes de implementar (TDD)
 
-- [x] 1.1 Extender `.claude/skills/story-implement-tdd/evals/evals.json` con tres casos nuevos: TC-007 (modo interactivo sin `--auto` → Pause-1 muestra resumen RED y pregunta "¿Continuar con la Fase GREEN? (s/n)", Pause-2 hace lo mismo tras GREEN — AC-1), TC-008 (modo `--auto` → ciclo completo sin pausas + resumen consolidado de 3 fases al finalizar — AC-2), TC-009 (modo `--auto` + error en cualquier fase → detiene sin prompt, reporta error con detalle de fase — AC-3) — D-7
+- [x] 1.1 Extender `.claude/skills/story-implement/evals/evals.json` con tres casos nuevos: TC-007 (modo interactivo sin `--auto` → Pause-1 muestra resumen RED y pregunta "¿Continuar con la Fase GREEN? (s/n)", Pause-2 hace lo mismo tras GREEN — AC-1), TC-008 (modo `--auto` → ciclo completo sin pausas + resumen consolidado de 3 fases al finalizar — AC-2), TC-009 (modo `--auto` + error en cualquier fase → detiene sin prompt, reporta error con detalle de fase — AC-3) — D-7
 
 ## 2. Implementación — Extender SKILL.md con modos de ejecución
 

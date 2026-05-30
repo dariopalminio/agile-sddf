@@ -3,7 +3,7 @@ alwaysApply: false
 type: design
 id: FEAT-082
 slug: FEAT-082-implement-tdd-modos-ejecucion-design
-title: "Design: story-implement-tdd — modos interactivo y automático de ejecución del ciclo TDD"
+title: "Design: story-implement — modos interactivo y automático de ejecución del ciclo TDD"
 date: 2026-05-30
 status: SPECIFYING
 substatus: IN-PROGRESS
@@ -19,7 +19,7 @@ related:
 
 ## Context
 
-`story-implement-tdd` ya orquesta el ciclo TDD completo (RED → GREEN → REFACTOR) gracias a FEAT-078 y FEAT-081. FEAT-082 añade la capacidad de elegir entre dos modos de ejecución:
+`story-implement` ya orquesta el ciclo TDD completo (RED → GREEN → REFACTOR) gracias a FEAT-078 y FEAT-081. FEAT-082 añade la capacidad de elegir entre dos modos de ejecución:
 
 - **Modo interactivo** (predeterminado): el skill pausa al completar cada fase y pide confirmación antes de continuar con la siguiente.
 - **Modo automático** (`--auto`): ejecuta las tres fases sin interrupciones, deteniéndose solo ante errores.
@@ -30,7 +30,7 @@ Esto permite adaptar el mismo skill a dos contextos distintos: trabajo manual su
 ```
 [FEAT-078: Fase RED implementada]
 [FEAT-081: Fases GREEN+REFACTOR implementadas]
-→ story-implement-tdd (modos interactivo/auto) ← FEAT-082
+→ story-implement (modos interactivo/auto) ← FEAT-082
 → story-code-review
 ```
 
@@ -137,7 +137,7 @@ Al completar las tres fases en modo `auto`, mostrar el resumen consolidado del c
 ✅ Fase GREEN:    {N} archivo(s) de producción generados
 ✅ Fase REFACTOR: sin regresiones
 ──────────────────────────────────────────────────────────
-📄 cycle-status.json → .tmp/story-implement-tdd/cycle-status.json
+📄 cycle-status.json → .tmp/story-implement/cycle-status.json
 📋 story.md: CODE-REVIEW/IN-PROGRESS ✓
 ```
 
@@ -165,7 +165,7 @@ La diferencia con modo interactivo es únicamente la ausencia del prompt. La ló
 ### D-6: Propagación del modo a través del ciclo sin acoplar subagentes
 // satisface: AC-1, AC-2, Req-4
 
-`$EXEC_MODE` es una variable del orquestador (`story-implement-tdd`). Los subagentes (skills de test generation y code_generator) **no reciben ni conocen** `$EXEC_MODE`:
+`$EXEC_MODE` es una variable del orquestador (`story-implement`). Los subagentes (skills de test generation y code_generator) **no reciben ni conocen** `$EXEC_MODE`:
 - El modo solo afecta al orquestador: cuándo pausar, cuándo continuar.
 - Los subagentes reciben el mismo bundle de inputs independientemente del modo.
 
@@ -178,7 +178,7 @@ Esta separación mantiene los subagentes agnósticos al contexto de ejecución d
 ### D-7: Extensión del SKILL.md existente
 // satisface: AC-1, AC-2, AC-3, Req-4
 
-FEAT-082 extiende el mismo SKILL.md de `story-implement-tdd` (ya extendido por FEAT-081):
+FEAT-082 extiende el mismo SKILL.md de `story-implement` (ya extendido por FEAT-081):
 
 **Cambios en SKILL.md:**
 1. Añadir `--auto` al campo `input` del frontmatter

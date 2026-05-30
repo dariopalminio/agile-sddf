@@ -1,5 +1,5 @@
 ---
-name: story-implement-tdd
+name: story-implement
 description: >-
   Orquesta el ciclo TDD completo (RED→GREEN→REFACTOR) para una historia SDDF, delegando
   generación de pruebas y código a skills configurados en sddf-config.yaml. Soporta modo
@@ -9,7 +9,7 @@ description: >-
   ciclo rojo-verde-refactor de una historia, generar tests y código desde una historia,
   completar el ciclo TDD completo de una story, o ejecutar TDD en modo automático.
 triggers:
-  - "story-implement-tdd"
+  - "story-implement"
   - "implementar con TDD"
   - "ciclo TDD historia"
   - "ciclo TDD completo"
@@ -27,7 +27,7 @@ invocable: true
 alwaysApply: false
 ---
 
-# Skill: /story-implement-tdd
+# Skill: /story-implement
 
 ## Objetivo
 
@@ -35,7 +35,7 @@ Orquesta el ciclo TDD (RED → GREEN → REFACTOR) para una historia SDDF delega
 
 **Posición en el pipeline:**
 ```
-story-plan → story-testcases → story-implement-tdd (ciclo TDD completo) → story-code-review
+story-plan → story-testcases → story-implement (ciclo TDD completo) → story-code-review
 ```
 
 **Qué hace este skill:**
@@ -175,7 +175,7 @@ Para cada entry de `test_generators` no omitida (en el orden del YAML):
 
 1. Mostrar: `[{tipo}] → invocando {skill}...`
 2. Invocar el skill pasando el bundle de inputs del Paso 3
-3. El subagente escribe sus resultados en `.tmp/story-implement-tdd/{tipo}/results.json`
+3. El subagente escribe sus resultados en `.tmp/story-implement/{tipo}/results.json`
 4. **Si el subagente retorna `status: error`:**
    ```
    ❌ El skill '{skill}' retornó error durante la Fase RED — deteniendo ejecución
@@ -207,7 +207,7 @@ Para cada tipo generado exitosamente:
 
 ### Paso 6 — Escribir output intermedio
 
-Escribir `.tmp/story-implement-tdd/red-phase-status.json`:
+Escribir `.tmp/story-implement/red-phase-status.json`:
 
 ```json
 {
@@ -249,13 +249,13 @@ Leer respuesta del usuario:
 
 ### Paso 7 — Verificar precondición RED (Fase GREEN)
 
-Leer `.tmp/story-implement-tdd/red-phase-status.json`.
+Leer `.tmp/story-implement/red-phase-status.json`.
 
 **Si el archivo no existe:**
 ```
-❌ Precondición RED no cumplida: .tmp/story-implement-tdd/red-phase-status.json no encontrado
+❌ Precondición RED no cumplida: .tmp/story-implement/red-phase-status.json no encontrado
 
-Ejecuta story-implement-tdd primero para completar la Fase RED antes de continuar con GREEN.
+Ejecuta story-implement primero para completar la Fase RED antes de continuar con GREEN.
 ```
 Detener la ejecución.
 
@@ -331,7 +331,7 @@ Mostrar: `[GREEN] → invocando {skill}...`
 
 Invocar el skill `{skill}` pasando el bundle.
 
-El subagente escribe sus resultados en `.tmp/story-implement-tdd/green/results.json`.
+El subagente escribe sus resultados en `.tmp/story-implement/green/results.json`.
 
 **Si el subagente retorna `status: error`:**
 ```
@@ -410,7 +410,7 @@ Mostrar: `[REFACTOR] → invocando {skill}...`
 
 Invocar el skill `{skill}` pasando el bundle.
 
-El subagente escribe sus resultados en `.tmp/story-implement-tdd/refactor/results.json`.
+El subagente escribe sus resultados en `.tmp/story-implement/refactor/results.json`.
 
 **Si el subagente retorna `status: error`:**
 ```
@@ -448,7 +448,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
    - `substatus: IN-PROGRESS`
    - `updated: {YYYY-MM-DD}`
 
-2. Escribir `.tmp/story-implement-tdd/cycle-status.json`:
+2. Escribir `.tmp/story-implement/cycle-status.json`:
 ```json
 {
   "story_id": "{$RED_STORY_ID}",
@@ -471,7 +471,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 ✅ Fase GREEN:    {N} archivo(s) de producción generados
 ✅ Fase REFACTOR: sin regresiones
 ──────────────────────────────────────────────────────────
-📄 cycle-status.json → .tmp/story-implement-tdd/cycle-status.json
+📄 cycle-status.json → .tmp/story-implement/cycle-status.json
 📋 story.md: CODE-REVIEW/IN-PROGRESS ✓
 ```
 
@@ -483,7 +483,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
    Fase REFACTOR: sin regresiones
    
    story.md → CODE-REVIEW/IN-PROGRESS
-   cycle-status.json → .tmp/story-implement-tdd/cycle-status.json
+   cycle-status.json → .tmp/story-implement/cycle-status.json
 ```
 
 **Si hubo errores en GREEN o REFACTOR:** no ejecutar este paso (la detención ya ocurrió en el paso correspondiente).
@@ -503,7 +503,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 | `story.md` o `design.md` ausentes | `❌ Artefactos de especificación insuficientes (falta story.md y/o design.md)` | Detener ejecución |
 | Subagente retorna `status: error` (Fase RED) | `❌ El skill '{skill}' retornó error durante la Fase RED` | Detener sin invocar siguientes |
 | Tests pasan sin implementación (Fase RED) | `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos` | Advertir, continuar |
-| `red-phase-status.json` no existe | `❌ Precondición RED no cumplida: .tmp/story-implement-tdd/red-phase-status.json no encontrado` | Detener Fase GREEN |
+| `red-phase-status.json` no existe | `❌ Precondición RED no cumplida: .tmp/story-implement/red-phase-status.json no encontrado` | Detener Fase GREEN |
 | `red_confirmed: false` en red-phase-status.json | `❌ Precondición RED no cumplida: red_confirmed es false` | Detener Fase GREEN |
 | `implementing.code_generator` no declarado | `❌ implementing.code_generator no declarado en sddf-config.yaml` | Detener Fase GREEN |
 | code_generator `required:true` no existe | `❌ Skill '{skill}' declarado como code_generator no encontrado en .claude/skills/` | Detener Fase GREEN |
@@ -522,14 +522,14 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 ## Arquitectura de delegación
 
 ```
-story-implement-tdd (orquestador — Fase RED)
+story-implement (orquestador — Fase RED)
   └── {skill de tipo unit}   ← subagente, ej. story-test-unit-jest
   └── {skill de tipo e2e}    ← subagente, ej. story-test-e2e-playwright
   └── {skill de tipo eval}   ← subagente, ej. story-test-eval
 ```
 
 Los subagentes reciben solo el bundle `{story_id, testcases_path, story_path, design_path}`.
-Escriben sus resultados en `.tmp/story-implement-tdd/{tipo}/results.json` de forma independiente.
+Escriben sus resultados en `.tmp/story-implement/{tipo}/results.json` de forma independiente.
 El orquestador nunca pasa su contexto completo heredado a los subagentes.
 
 ---
@@ -539,8 +539,8 @@ El orquestador nunca pasa su contexto completo heredado a los subagentes.
 | Artefacto | Ruta | Descripción |
 |---|---|---|
 | Archivos de prueba | según skill de generación | Tests generados en código productivo |
-| `red-phase-status.json` | `.tmp/story-implement-tdd/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN |
-| `results.json` por tipo | `.tmp/story-implement-tdd/{tipo}/results.json` | Output de cada subagente |
+| `red-phase-status.json` | `.tmp/story-implement/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN |
+| `results.json` por tipo | `.tmp/story-implement/{tipo}/results.json` | Output de cada subagente |
 
 ---
 

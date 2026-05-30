@@ -3,7 +3,7 @@ alwaysApply: false
 type: analyze
 id: FEAT-078
 slug: FEAT-078-implement-tdd-fase-red-analyze
-title: "Analyze: story-implement-tdd — Fase RED"
+title: "Analyze: story-implement — Fase RED"
 story: FEAT-078
 design: FEAT-078
 tasks: FEAT-078
@@ -16,7 +16,7 @@ related:
 <!-- Referencias -->
 [[FEAT-078-implement-tdd-fase-red]]
 
-# Reporte de Coherencia: story-implement-tdd — Fase RED
+# Reporte de Coherencia: story-implement — Fase RED
 
 ## Resumen Ejecutivo
 
@@ -49,7 +49,7 @@ related:
 
 | Tarea | Descripción | Elemento de diseño | Estado |
 |---|---|---|---|
-| 1.1 | Crear directorios `.claude/skills/story-implement-tdd/evals/` | D-6 | ✓ |
+| 1.1 | Crear directorios `.claude/skills/story-implement/evals/` | D-6 | ✓ |
 | 1.2 | Crear `evals/evals.json` con 3 casos de prueba | D-6, Req-5 (TDD) | ✓ |
 | 2.1 | Añadir sección `implementing` a sddf-config.yaml | D-1 | ✓ |
 | 3.1 | Frontmatter YAML del SKILL.md | D-7 | ✓ |
@@ -88,7 +88,7 @@ related:
 
 | Criterio | Estado | Detalle |
 |---|---|---|
-| Historia listada en release | ✓ | `- [ ] FEAT-078 - story-implement-tdd` en sección Features |
+| Historia listada en release | ✓ | `- [ ] FEAT-078 - story-implement` en sección Features |
 | Objetivo alineado | ✓ | "Para tener todos los archivos de prueba generados... antes de implementar" alineado con el objetivo de la Fábrica de Skills de integrar el ciclo TDD al workflow |
 | Restricciones respetadas | ✓ | La historia cubre solo la Fase RED (agnóstica al stack), conforme a la separación de responsabilidades declarada en el release |
 

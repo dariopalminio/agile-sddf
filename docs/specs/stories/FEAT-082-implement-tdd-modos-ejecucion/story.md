@@ -3,7 +3,7 @@ alwaysApply: false
 type: story
 id: FEAT-082
 slug: FEAT-082-implement-tdd-modos-ejecucion
-title: "story-implement-tdd — modos interactivo y automático de ejecución del ciclo TDD"
+title: "story-implement — modos interactivo y automático de ejecución del ciclo TDD"
 status: VERIFY
 substatus: TODO
 parent: EPIC-14-fabrica-de-skills
@@ -19,9 +19,9 @@ related:
 ---
 [[EPIC-14-fabrica-de-skills]]
 
-# 📖 Historia: story-implement-tdd — modos interactivo y automático de ejecución del ciclo TDD
+# 📖 Historia: story-implement — modos interactivo y automático de ejecución del ciclo TDD
 
-**Como** practitioner de SDDF que usa story-implement-tdd en diferentes contextos de trabajo,  
+**Como** practitioner de SDDF que usa story-implement en diferentes contextos de trabajo,  
 **Quiero** poder elegir entre modo interactivo (el skill pausa al finalizar cada fase para pedir confirmación antes de continuar) y modo automático (ejecuta todas las fases sin pausas, deteniéndose solo ante errores),  
 **Para** adaptar el flujo TDD a mi contexto: revisión manual paso a paso cuando trabajo de forma colaborativa, o ejecución continua sin interrupciones cuando ejecuto en pipelines de CI.
 
@@ -29,7 +29,7 @@ related:
 
 ### Escenario principal – Modo interactivo: el skill pausa entre fases y espera confirmación
 ```gherkin
-Dado que el practitioner invoca story-implement-tdd sin el flag --auto
+Dado que el practitioner invoca story-implement sin el flag --auto
 Cuando el skill completa la Fase RED
 Entonces muestra el resumen de la fase completada
   Y pregunta "¿Continuar con la Fase GREEN? (s/n)"
@@ -39,7 +39,7 @@ Entonces muestra el resumen de la fase completada
 
 ### Escenario alternativo – Modo automático: el skill ejecuta todas las fases sin pausas
 ```gherkin
-Dado que el practitioner invoca story-implement-tdd con el flag --auto
+Dado que el practitioner invoca story-implement con el flag --auto
 Cuando el skill ejecuta el ciclo TDD completo
 Entonces ejecuta la Fase RED sin pausa
   Y ejecuta la Fase GREEN inmediatamente después
@@ -49,7 +49,7 @@ Entonces ejecuta la Fase RED sin pausa
 
 ### Escenario alternativo – Modo automático con error: detiene sin pedir confirmación
 ```gherkin
-Dado que el practitioner invocó story-implement-tdd con el flag --auto
+Dado que el practitioner invocó story-implement con el flag --auto
 Cuando ocurre un error en cualquier fase del ciclo TDD
 Entonces el skill detiene la ejecución inmediatamente
   Y reporta el error con el detalle de la fase fallida

@@ -3,13 +3,13 @@ alwaysApply: false
 type: implement-report
 id: FEAT-082
 slug: FEAT-082-implement-report
-title: "Implement Report: story-implement-tdd — modos interactivo y automático"
+title: "Implement Report: story-implement — modos interactivo y automático"
 story: FEAT-082
 created: 2026-05-30
 updated: 2026-05-30
 ---
 
-# Reporte de Implementación: story-implement-tdd — modos interactivo y automático
+# Reporte de Implementación: story-implement — modos interactivo y automático
 
 ## Resumen
 
@@ -30,13 +30,13 @@ updated: 2026-05-30
 
 | ID | Descripción | Estado | Archivos generados/modificados |
 |---|---|---|---|
-| 1.1 | Extender evals.json con TC-007, TC-008, TC-009 | ✓ completado | `.claude/skills/story-implement-tdd/evals/evals.json` |
-| 2.1 | Actualizar frontmatter SKILL.md (v1.2.0, triggers, input con --auto) | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.2 | Agregar Paso 0b — parseo `--auto` → `$EXEC_MODE` | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.3 | Insertar bloque Pause-1 (entre Paso 6 y Paso 7) | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.4 | Insertar bloque Pause-2 (entre Paso 9b y Paso 10) | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.5 | Actualizar Paso 11 — resumen consolidado en modo auto | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
-| 2.6 | Extender tabla "Manejo de errores" (4 nuevos casos de pausa y modo auto) | ✓ completado | `.claude/skills/story-implement-tdd/SKILL.md` |
+| 1.1 | Extender evals.json con TC-007, TC-008, TC-009 | ✓ completado | `.claude/skills/story-implement/evals/evals.json` |
+| 2.1 | Actualizar frontmatter SKILL.md (v1.2.0, triggers, input con --auto) | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.2 | Agregar Paso 0b — parseo `--auto` → `$EXEC_MODE` | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.3 | Insertar bloque Pause-1 (entre Paso 6 y Paso 7) | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.4 | Insertar bloque Pause-2 (entre Paso 9b y Paso 10) | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.5 | Actualizar Paso 11 — resumen consolidado en modo auto | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| 2.6 | Extender tabla "Manejo de errores" (4 nuevos casos de pausa y modo auto) | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
 | 3.1 | Verificar eval TC-007 (interactivo happy path) | ✓ completado | — |
 | 3.2 | Verificar eval TC-008 (auto happy path) | ✓ completado | — |
 | 3.3 | Verificar eval TC-009 (auto con error) | ✓ completado | — |
@@ -57,7 +57,7 @@ updated: 2026-05-30
 | 8 | El código pasa el linter | ⚠️ | Requiere ejecución externa; SKILL.md es Markdown válido |
 | 9 | No se introducen dependencias nuevas | ✓ | Sin dependencias nuevas; solo flag CLI `--auto` leído de los argumentos de invocación |
 | 10 | Se usó skill-master si aplica | ⚠️ | Esta historia extiende un skill existente; skill-master aplica para creación de skills nuevos |
-| 11 | Ruta del skill en package.json | ✓ | `.claude/skills/story-implement-tdd` ya declarado en package.json desde FEAT-078 |
+| 11 | Ruta del skill en package.json | ✓ | `.claude/skills/story-implement` ya declarado en package.json desde FEAT-078 |
 | 12 | Skills críticos tienen evals/evals.json | ✓ | evals.json extendido con TC-007, TC-008, TC-009 (total: 9 casos, TC-001 a TC-009) |
 | 13 | Casos de prueba ejecutados según skill-master | ⚠️ | Requiere ejecución del skill skill-test-evals |
 | 14 | tasks.md tiene todas las tareas marcadas [x] | ✓ | 10/10 tareas completadas con [x] |
@@ -78,7 +78,7 @@ updated: 2026-05-30
 Esta historia implementa extensiones a un skill en Markdown (`SKILL.md`), no código ejecutable. Los "tests" son los casos de prueba en `evals/evals.json`.
 
 Pasos recomendados:
-1. Ejecutar `/skill-test-evals .claude/skills/story-implement-tdd` para evaluar los 9 casos (TC-001 a TC-009)
+1. Ejecutar `/skill-test-evals .claude/skills/story-implement` para evaluar los 9 casos (TC-001 a TC-009)
 2. Verificar que la tasa de acierto supera el umbral (0.95 para TC-007/008, 1.0 para TC-009)
 3. Verificar que el modo interactivo bloquea correctamente esperando input en Pause-1 y Pause-2
 4. Verificar que `--auto` completa el ciclo sin pausas mostrando el resumen consolidado
