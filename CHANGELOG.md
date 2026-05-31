@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **`.github/workflows/docker-security.yml`** — workflow de CI que construye `Dockerfile.dev` y escanea la imagen con Trivy en cada push/PR que modifique archivos Docker; falla en hallazgos CRITICAL o HIGH sin parche disponible (SEC-076)
 - **`sddf.config.yaml`** en raíz del proyecto — configuración operacional del framework (comandos de test por tipo, mapeo de skills `test_generators` y `code_generator`); movida desde `docs/policies/sddf-config.yaml` para ser agnóstica al CLI de IA (`.claude/` es propiedad de Anthropic; `.agents/` podría usarse en el futuro); ahora incluida en el array `files` de `package.json` para distribución npm
+- **`sddf.config.yaml.example`** en `sddf-init/assets/` — configuración de ejemplo para proyectos de librería UI React + TypeScript; preconfigura `test-component-react-testing-library` como generador de tests de componente, `test-e2e-playwright-cucumber` como generador E2E e `impl-frontend-library-react-component` como code generator
+- **EPIC-15 — Skills de Testing Especializado y E2E Capability** — release creado con 4 features: FEAT-084 (`impl-frontend-library-react-component`), FEAT-085 (`test-component-react-testing-library`), FEAT-086 (`test-e2e-cypress-cucumber`), FEAT-087 (`test-e2e-playwright-cucumber`); skills registrados en `package.json` files array
 
 ### Changed
 
