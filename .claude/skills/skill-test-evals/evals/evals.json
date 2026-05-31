@@ -1,0 +1,163 @@
+{
+  "skill": "skill-test-evals",
+  "version": "2.0.0",
+  "description": "Casos de prueba para skill-test-evals unificado: modos generate, evals y benchmark",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "generate-from-free-text-creates-evals-and-skeleton",
+      "type": "happy-path",
+      "description": "Invocación con descripción libre (sin --from-skill ni --source). El skill debe inferir el nombre del skill, generar evals/evals.json con casos TC-NNN y crear un skeleton SKILL.md vacío en .claude/skills/{skill_name}/.",
+      "input": {
+        "flags": [],
+        "context": "El usuario dice: 'crea los evals para un skill que formatea mensajes de commit de git siguiendo Conventional Commits, el skill se llamará commit-formatter'"
+      },
+      "expected": {
+        "contains": [
+          "evals/evals.json",
+          "commit-formatter",
+          "TC-001",
+          "SKILL.md"
+        ],
+        "not_contains": [
+          "❌",
+          "error"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-002",
+      "name": "generate-from-skill-reads-existing-skillmd",
+      "type": "happy-path",
+      "description": "Invocación con --from-skill apuntando a un skill existente con SKILL.md. El skill debe leer el SKILL.md, extraer intención y triggers, y generar evals/evals.json co-ubicado en el directorio del skill.",
+      "input": {
+        "flags": ["--from-skill .claude/skills/story-improve"],
+        "context": "El directorio .claude/skills/story-improve/ existe con SKILL.md válido"
+      },
+      "expected": {
+        "contains": [
+          "evals/evals.json",
+          "story-improve",
+          "TC-001",
+          "happy-path"
+        ],
+        "not_contains": [
+          "No SKILL.md found",
+          "❌"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-003",
+      "name": "generate-fail-fast-no-args-prompts-user",
+      "type": "fail-fast",
+      "description": "El skill se invoca en modo generate sin ningún argumento y sin --source. En modo manual debe preguntar al usuario qué debe hacer el skill, sin crear archivos ni emitir error.",
+      "input": {
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "¿Qué debe hacer el skill"
+        ],
+        "not_contains": [
+          "❌",
+          "evals/evals.json escrito"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "evals-happy-path-skill-with-passing-cases",
+      "type": "happy-path",
+      "description": "Modo evals sobre skill story-improve que tiene evals/evals.json válido con casos TC-NNN. El skill debe ejecutar los casos, evaluar el output y producir un informe con pass_rate y tabla de resultados.",
+      "input": {
+        "flags": ["evals", "story-improve"],
+        "context": "El directorio .claude/skills/story-improve/ existe con SKILL.md y evals/evals.json en formato SDDF con cases[]"
+      },
+      "expected": {
+        "contains": [
+          "Pass rate",
+          "TC-001",
+          "PASS",
+          "Eval Report"
+        ],
+        "not_contains": [
+          "No se encontró evals/evals.json",
+          "formato trigger"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-005",
+      "name": "evals-fail-fast-missing-evals-json",
+      "type": "fail-fast",
+      "description": "Modo evals sobre skill que existe pero no tiene evals/evals.json. El skill debe emitir ❌ indicando el archivo faltante y sugerir ejecutar /skill-test-evals para generarlos.",
+      "input": {
+        "flags": ["evals", "story-design"],
+        "context": "El directorio .claude/skills/story-design/ existe con SKILL.md pero sin evals/evals.json"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "evals/evals.json",
+          "skill-test-evals"
+        ],
+        "not_contains": [
+          "Pass rate",
+          "Eval Report"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-006",
+      "name": "benchmark-happy-path-statistical-metrics",
+      "type": "happy-path",
+      "description": "Modo benchmark sobre story-improve con --runs 3. El skill debe ejecutar 3 runs por cada caso TC-NNN y producir un informe con métricas mean, stddev, pass_rate y tabla de resultados por caso.",
+      "input": {
+        "flags": ["benchmark", "story-improve", "--runs", "3"],
+        "context": "El directorio .claude/skills/story-improve/ existe con SKILL.md y evals/evals.json válido"
+      },
+      "expected": {
+        "contains": [
+          "Benchmark Report",
+          "Pass rate",
+          "ms",
+          "TC-001",
+          "Runs por caso"
+        ],
+        "not_contains": [
+          "❌ No se encontró",
+          "evals/evals.json"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-007",
+      "name": "benchmark-edge-case-runs-5-iterations",
+      "type": "edge-case",
+      "description": "Modo benchmark con --runs 5 (más de 3 por defecto). El skill debe respetar el parámetro y ejecutar exactamente 5 runs por caso, reflejando el valor en el informe.",
+      "input": {
+        "flags": ["benchmark", "story-improve", "--runs", "5"],
+        "context": "El directorio .claude/skills/story-improve/ existe con SKILL.md y evals/evals.json válido"
+      },
+      "expected": {
+        "contains": [
+          "Runs por caso",
+          "5",
+          "Benchmark Report"
+        ],
+        "not_contains": [
+          "⚠️ --runs mínimo",
+          "⚠️ --runs máximo"
+        ]
+      },
+      "threshold": 0.90
+    }
+  ]
+}

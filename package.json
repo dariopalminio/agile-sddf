@@ -52,7 +52,6 @@
     ".claude/skills/skill-preflight",
     ".claude/skills/skill-test-evals",
     ".claude/skills/skill-master",
-    ".claude/skills/skill-verify",
     ".claude/skills/story-creation",
     ".claude/skills/story-evaluation",
     ".claude/skills/story-refine",

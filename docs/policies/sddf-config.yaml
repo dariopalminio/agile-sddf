@@ -32,7 +32,7 @@ implementing:
       skill: none
       required: false
     - type: eval
-      skill: skill-test-eval
+      skill: skill-test-evals
       required: true
   code_generator:
     skill: skill-master

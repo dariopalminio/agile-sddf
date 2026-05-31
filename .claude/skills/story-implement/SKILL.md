@@ -544,8 +544,4 @@ El orquestador nunca pasa su contexto completo heredado a los subagentes.
 
 ---
 
-## Historias relacionadas
 
-- **FEAT-081** — Fases GREEN y REFACTOR: implementa el código de producción y el refactor
-- **FEAT-082** — Modos de ejecución: interactivo vs automático, flags `--interactive`, `--auto`
-- **FEAT-079** — `story-testcases`: genera `testcases.md` que esta historia consume como fuente primaria
