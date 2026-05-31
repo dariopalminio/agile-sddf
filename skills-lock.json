@@ -27,7 +27,7 @@
       "sourceType": "local",
       "file": ".claude/skills/release-creation/SKILL.md"
     },
-    "skill-creator": {
+    "skill-master": {
       "source": "anthropics/skills",
       "sourceType": "github",
       "computedHash": "7e3c9cd74e9e2b4828527a857170e86310f2dab5ea8030a9043df2c7e6c88857"

@@ -9,7 +9,7 @@ El pipeline SDDF tiene un skill `release-format-validation` que valida si un rel
 
 - **Nuevo skill `release-creation`** en `.claude/skills/release-creation/SKILL.md`: orquestador interactivo que extrae dinámicamente las secciones del template `assets/release-spec-template.md` y formula preguntas al usuario para completar cada campo, produciendo un archivo `release.md` en `$SPECS_BASE/specs/releases/<slug>/`.
 - El skill reutiliza el mismo `assets/release-spec-template.md` ya existente en `release-format-validation` (copia local en el nuevo skill para mantener encapsulamiento del skill).
-- Se crea usando el skill `skill-creator` como metodología de diseño y validación.
+- Se crea usando el skill `skill-master` como metodología de diseño y validación.
 
 ## Capabilities
 

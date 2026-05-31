@@ -23,7 +23,7 @@ related:
 
 El skill `story-improve` cierra el ciclo de refinamiento de historias SDDF. Cuando `story-evaluation` emite una decisión `REFINAR` o `RECHAZAR`, el usuario actualmente debe reescribir la historia de forma manual consultando las recomendaciones del reporte `finvest-evaluation-report.md`. Este skill automatiza ese paso: lee el reporte, identifica las dimensiones con score ≤ 3, aplica las recomendaciones de forma concreta sobre `story.md` y deja trazabilidad completa del proceso en `story-improvement-log.md`, preservando siempre el original en `story.md.bak`.
 
-El skill se ubica en `.claude/skills/story-improve/SKILL.md`, sigue los lineamientos de /skill-creator, sigue los patrones estructurales del proyecto (skill-structural-pattern.md): frontmatter YAML estandarizado, preflight como Paso 0, un solo nivel de delegación (skill → subagentes opcionales), templates como fuente de verdad dinámica y salida en rutas predecibles; y respeta el template .claude\skills\skill-creator\assets\skill-template.md para la estructura del markdown del skill.
+El skill se ubica en `.claude/skills/story-improve/SKILL.md`, sigue los lineamientos de /skill-master, sigue los patrones estructurales del proyecto (skill-structural-pattern.md): frontmatter YAML estandarizado, preflight como Paso 0, un solo nivel de delegación (skill → subagentes opcionales), templates como fuente de verdad dinámica y salida en rutas predecibles; y respeta el template .claude\skills\skill-master\assets\skill-template.md para la estructura del markdown del skill.
 
 Actores principales: desarrolladores y product owners que iteran historias en el pipeline SDDF (estados SPECIFYING/PLANNING).
 
@@ -129,8 +129,8 @@ previous-score: X.XX
 **Cambio realizado:** <descripción concreta del cambio en story.md>
 ```
 ### Estructura de story-improve/SKILL.md
-El `SKILL.md` sigue la estructura definida en `.claude\skills\skill-creator\assets\skill-template.md`, con secciones adaptadas al contexto de este skill específico. Se documentan explícitamente las interacciones con los archivos del directorio de la historia objetivo y se incluyen ejemplos de entrada/salida para validar cada criterio de aceptación.
-Se debe usar /skill-creator para generar el `SKILL.md` inicial y luego adaptarlo al caso de uso específico, asegurando que se mantengan los lineamientos de estructura, documentación, funcionalidad y pruebas con ejemplos.
+El `SKILL.md` sigue la estructura definida en `.claude\skills\skill-master\assets\skill-template.md`, con secciones adaptadas al contexto de este skill específico. Se documentan explícitamente las interacciones con los archivos del directorio de la historia objetivo y se incluyen ejemplos de entrada/salida para validar cada criterio de aceptación.
+Se debe usar /skill-master para generar el `SKILL.md` inicial y luego adaptarlo al caso de uso específico, asegurando que se mantengan los lineamientos de estructura, documentación, funcionalidad y pruebas con ejemplos.
 
 ## Flujos Clave
 

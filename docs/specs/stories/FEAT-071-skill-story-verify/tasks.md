@@ -57,7 +57,7 @@ related:
 - [x] 6.6 Verificar AC-7 (idempotencia): ejecutar story-verify dos veces sobre la misma historia y confirmar que la segunda ejecución sobreescribe verify-report.md pero preserva la entrada de la primera ejecución en la sección "Historial de ejecuciones anteriores"
 - [x] 6.7 Verificar AC-8 (DoD dinámico): modificar la sección VERIFY en definition-of-done-story.md añadiendo un nuevo criterio y re-ejecutar el skill; confirmar que el nuevo criterio aparece evaluado en verify-report.md sin modificar SKILL.md
 - [x] 6.8 Verificar mitigaciones de riesgos (INC-001): al completar la tarea 4.1 (SKILL.md), revisar la tabla `Risks / Trade-offs` de `design.md` y confirmar que cada mitigación está implementada: (a) detección de config no estándar → SKILL.md cae en modo `manual` como fallback; (b) tests que tardan >30s → SKILL.md muestra progreso cada 15s; (c) E2E no mapeables a escenarios Gherkin por nombre → se registran como SKIP con nota explicativa; (d) sección VERIFY no encontrada en DoD → SKILL.md usa criterios mínimos genéricos y emite advertencia; (e) directorio `.tmp/story-verify/` no puede crearse → SKILL.md aborta con mensaje de error de permisos
-- [x] 6.9 Verificar AC-13: Seguir lineamientos de `skill-creator`.md 
+- [x] 6.9 Verificar AC-13: Seguir lineamientos de `skill-master`.md 
 
 ## 7. Documentación y evals
 

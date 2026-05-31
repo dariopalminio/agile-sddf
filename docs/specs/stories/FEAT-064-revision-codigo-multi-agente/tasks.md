@@ -20,7 +20,7 @@ related:
 ## 1. Setup — Estructura de directorios del skill
 
 - [x] 1.1 Crear el directorio `.claude/skills/story-code-review/` con subdirectorios `agents/`, `assets/`, `examples/`
-- [x] 1.2 Ejecutar `/skill-creator` para scaffoldear la estructura base del skill y generar el SKILL.md inicial antes de escribirlo manualmente
+- [x] 1.2 Ejecutar `/skill-master` para scaffoldear la estructura base del skill y generar el SKILL.md inicial antes de escribirlo manualmente
 
 ## 2. Core — SKILL.md (Orquestador)
 

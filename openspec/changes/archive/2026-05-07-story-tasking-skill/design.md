@@ -8,7 +8,7 @@ El workflow L1 de SDDF tiene dos artefactos activos: `story.md` (criterios de ac
 - Implementar el skill `/story-tasking` en `.claude/skills/story-tasking/SKILL.md` con el patrón estándar SDDF
 - Generar `tasks.md` con IDs secuenciales (`T001`...), marcadores `[P]` y agrupamiento bajo encabezados `##` numerados
 - Garantizar trazabilidad entre tareas, ACs de `story.md` y componentes de `design.md`
-- Crearlo usando `skill-creator` para asegurar artefactos de calidad (README, ejemplos, validación)
+- Crearlo usando `skill-master` para asegurar artefactos de calidad (README, ejemplos, validación)
 
 **Non-Goals:**
 - Modificar `story.md` ni `design.md` — el skill es de solo lectura sobre esos artefactos
@@ -23,8 +23,8 @@ El skill lee `docs/specs/templates/tasks-template.md` en runtime. Sin fallback e
 **D2 — Extracción dual `story.md` + `design.md`:**
 Las tareas se derivan combinando ACs de `story.md` (trazabilidad de comportamiento) y componentes/interfaces de `design.md` (trazabilidad técnica). Alternativa descartada: derivar tareas solo de `design.md` — perdería la vinculación directa con los criterios de aceptación funcionales.
 
-**D3 — Uso de `skill-creator` en la implementación:**
-El skill se crea invocando `/skill-creator` para garantizar conformidad con el estándar SDDF: frontmatter YAML correcto, estructura de directorios, ejemplos input/output y validación mediante casos de prueba. Requerido por DoD del proyecto.
+**D3 — Uso de `skill-master` en la implementación:**
+El skill se crea invocando `/skill-master` para garantizar conformidad con el estándar SDDF: frontmatter YAML correcto, estructura de directorios, ejemplos input/output y validación mediante casos de prueba. Requerido por DoD del proyecto.
 
 **D4 — Sin subagentes:**
 El skill orquesta directamente (patrón #4 SDDF). La generación de `tasks.md` es una tarea con inputs bien definidos que no justifica delegación a agentes especializados.

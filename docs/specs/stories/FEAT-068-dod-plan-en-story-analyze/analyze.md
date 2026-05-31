@@ -38,7 +38,7 @@ related:
 | AC-2 | Criterios DoD PLAN con severidad ERROR bloquean transición a READY-FOR-IMPLEMENT | ✓ | D3 (❌ → ERROR bloquea), D4 (Step 9 guardia de transición DoD) |
 | AC-3 | DoD no encontrado o sección PLAN ausente → ⚠️ warning, continúa sin error fatal | ✓ | D1 (flexible matching + ⚠️ con lista vacía), D4 (sub-paso 1g fallback) |
 | Req4 | Seguir lineamientos skill-structural-pattern.md | ⚠️ | Sin sección explícita en design.md — cambios son consistentes con estructura existente pero no verificados formalmente |
-| Req5 | Seguir lineamientos skill-creator | ⚠️ | Sin sección explícita en design.md — Task 7.1 cubre la actualización de examples/ pero no fue documentada como decisión de diseño |
+| Req5 | Seguir lineamientos skill-master | ⚠️ | Sin sección explícita en design.md — Task 7.1 cubre la actualización de examples/ pero no fue documentada como decisión de diseño |
 | NFR-1 | Lectura runtime: skill se adapta si DoD cambia sin modificar su código | ✓ | D1 (dynamic section search, non-goals "no hardcodear"), D2 (evaluación semántica sin reglas hardcodeadas) |
 | NFR-2 | Degradación elegante: ausencia DoD/sección es ⚠️ WARNING, no ❌ ERROR | ✓ | D1 (⚠️ cuando no hay sección), D3 (⚠️ para indeterminable), Risks/Trade-offs, CR-001 |
 
@@ -56,7 +56,7 @@ related:
 | 4.1 | Step 8 — completar sección DoD en reporte | D4 "Step 8", D5 (nueva sección template) | ✓ |
 | 5.1 | Step 9a — guardia: DoD-ERRORs bloquean transición | D4 "Step 9", D3 (❌ → ERROR bloquea) | ✓ |
 | 6.1 | Step 10 — línea `DoD PLAN: N/Total ✓` en resumen | D4 "Step 10 — Línea de resumen DoD" | ✓ |
-| 7.1 | Actualizar examples/output/analyze.md con sección DoD | Implícito en Req5 (skill-creator guidelines) + D5 (cambios en template y output) — no listado explícitamente en "Artefactos afectados" del design.md | ⚠️ |
+| 7.1 | Actualizar examples/output/analyze.md con sección DoD | Implícito en Req5 (skill-master guidelines) + D5 (cambios en template y output) — no listado explícitamente en "Artefactos afectados" del design.md | ⚠️ |
 | 8.1 | Agregar sección PLAN a definition-of-done-story.md | CR-001 "Acción requerida: Agregar sección PLAN" | ✓ |
 | 9.1 [P] | Verificar AC-1 (sección DoD en analyze.md) | AC-1 story.md + D4 Step 8 | ✓ |
 | 9.2 [P] | Verificar AC-2 (bloqueo transición ante ❌) | AC-2 story.md + D4 Step 9 | ✓ |
@@ -103,7 +103,7 @@ related:
 ### INC-001 [WARNING]
 
 - **Tipo:** B (tarea sin elemento explícito de diseño)
-- **Descripción:** Task 7.1 (actualizar `story-analyze/examples/output/analyze.md`) no figura en la lista "Artefactos afectados" de `design.md`. El diseño lista solo `story-analyze/SKILL.md` y `analyze-report-template.md`. La tarea es correcta y está justificada por Req5 (lineamientos skill-creator incluyen mantener ejemplos actualizados), pero el design.md no la documenta.
+- **Descripción:** Task 7.1 (actualizar `story-analyze/examples/output/analyze.md`) no figura en la lista "Artefactos afectados" de `design.md`. El diseño lista solo `story-analyze/SKILL.md` y `analyze-report-template.md`. La tarea es correcta y está justificada por Req5 (lineamientos skill-master incluyen mantener ejemplos actualizados), pero el design.md no la documenta.
 - **Archivo afectado:** `design.md` — sección "Context / Artefactos afectados"
 - **Acción requerida:** Agregar `story-analyze/examples/output/analyze.md` a la lista de "Artefactos afectados" en `design.md`, o aceptar la cobertura implícita y proceder sin modificar el diseño.
 
@@ -115,7 +115,7 @@ related:
 ### INC-003 [WARNING]
 
 - **Tipo:** C (criterio con cobertura solo implícita)
-- **Descripción:** `Req5` ("Seguir lineamientos del skill-creator") tiene Task 7.1 en `tasks.md` (actualización de examples), pero `design.md` no documenta esta decisión ni evalúa si hay otros lineamientos skill-creator pendientes (p. ej. evals, descripción del skill).
+- **Descripción:** `Req5` ("Seguir lineamientos del skill-master") tiene Task 7.1 en `tasks.md` (actualización de examples), pero `design.md` no documenta esta decisión ni evalúa si hay otros lineamientos skill-master pendientes (p. ej. evals, descripción del skill).
 - **Archivo afectado:** `design.md` — sección "Goals / Non-Goals"
 - **Acción requerida:** Revisar en implementación si se requieren evals o actualización de descripción del skill además de los examples.
 
@@ -139,7 +139,7 @@ related:
 
 2. **INC-002 (media prioridad):** Agregar en la implementación (Task 2.1 o como tarea nueva) una verificación rápida: confirmar que el sub-paso 1g añadido sigue la numeración y estilo de los pasos existentes del SKILL.md (línea de verificación en la guía de skill-structural-pattern.md §3 Preflight, §2 frontmatter).
 
-3. **INC-003 (baja prioridad):** Durante Task 7.1, revisar si skill-creator guidelines requieren actualizar también `evals/` o la `description` del SKILL.md de story-analyze (el trigger no menciona la nueva sección DoD).
+3. **INC-003 (baja prioridad):** Durante Task 7.1, revisar si skill-master guidelines requieren actualizar también `evals/` o la `description` del SKILL.md de story-analyze (el trigger no menciona la nueva sección DoD).
 
 4. **INC-004 (baja prioridad):** Documentar en la tarea 9.1 que se ejecute story-analyze dos veces sobre la misma historia y se compare la sección DoD de ambos resultados para detectar flakiness en la evaluación semántica.
 

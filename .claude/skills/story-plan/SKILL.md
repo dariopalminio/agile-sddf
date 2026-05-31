@@ -46,7 +46,7 @@ story-plan   → Entry point: orquesta design → tasking → analyze  ← aquí
   story-tasking → tasks.md
   story-analyze → analyze.md + story.md → READY-FOR-IMPLEMENT/DONE (si sin ERROREs)
      ↓
-[story.md: READY-FOR-IMPLEMENT/DONE]   → listo para story-implement
+[story.md: READY-FOR-IMPLEMENT/DONE]   → listo para story-implement-tasks
 ──────────────────────────────────────────────────────────────
 story.md     → What: requisitos, criterios de aceptación, comportamiento esperado
 design.md    → How: arquitectura, componentes, interfaces, decisiones técnicas

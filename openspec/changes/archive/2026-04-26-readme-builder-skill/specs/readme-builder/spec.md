@@ -76,4 +76,4 @@ The skill SHALL always write the generated README to the project root directory.
 Para planificar e idear el skill puedes inspirarte en los siguientes skills: `/readme-creator` (https://skills.sh/mblode/agent-skills/readme-creator), `readme-blueprint-generator` (https://skills.sh/github/awesome-copilot/readme-blueprint-generator).
 
 ### Requirement: Asistente para la creación del skill y mejores prácticas
-Puedes apoyarte en el skill creator (`skill-creator`), .claude\skills\skill-creator,  para planificar y crear el skill, siguiendo las mejores prácticas.
+Puedes apoyarte en el skill creator (`skill-master`), .claude\skills\skill-master,  para planificar y crear el skill, siguiendo las mejores prácticas.

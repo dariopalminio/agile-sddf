@@ -46,7 +46,7 @@ related:
 | Req-8 | Idempotencia y sesiones reanudables | ✓ | D-3 (estado partial/complete), D-7 (historial preservado sin sobrescribir) |
 | Req-9 | Trazabilidad de validación humana | ✓ | D-5 (tabla con id, texto, resultado, observación, timestamp, validador) |
 | Req-10 | Patrones estructurales de Skills | ✓ | D-1 (estructura skill-name/SKILL.md + assets/ + examples/) |
-| Req-11 | Lineamientos de skill-creator | ✓ | D-1 (skill structure, Task 5.1-5.3 ejemplos, Task 6.x verificación) |
+| Req-11 | Lineamientos de skill-master | ✓ | D-1 (skill structure, Task 5.1-5.3 ejemplos, Task 6.x verificación) |
 | Req-12 | No modifica código fuente | ✓ | Goals/Non-Goals, D-4 (solo story.md frontmatter + acceptance-report.md) |
 
 ---

@@ -77,4 +77,4 @@ Cualquier cambio en las convenciones de rutas del framework SDDF (ej. renombrar 
 
 ## 📎 Notas / contexto adicional
 
-La lógica original (4 pasos de validación de SDDF_ROOT) se migró desde ~15 skills que la duplicaban. Los skills `readme-builder`, `docs-wiki-builder`, `skill-creator` y los openspec-* no requerían el bloque (sin SDDF_ROOT → no migrados). La migración completa se realizó en el change `skill-preflight` del pipeline OpenSpec. El skill `story-evaluation` tampoco requiere preflight (no escribe artefactos a disco).
+La lógica original (4 pasos de validación de SDDF_ROOT) se migró desde ~15 skills que la duplicaban. Los skills `readme-builder`, `docs-wiki-builder`, `skill-master` y los openspec-* no requerían el bloque (sin SDDF_ROOT → no migrados). La migración completa se realizó en el change `skill-preflight` del pipeline OpenSpec. El skill `story-evaluation` tampoco requiere preflight (no escribe artefactos a disco).

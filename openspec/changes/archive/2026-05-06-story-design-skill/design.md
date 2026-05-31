@@ -16,7 +16,7 @@ El nuevo skill `story-design` ocupa el hueco entre `story-refine` y la fase de i
 - Incluir una fase de investigación de alternativas técnicas documentada en el design
 - Respetar `constitution.md` como fuente de restricciones técnicas del proyecto
 - Seguir los patrones estructurales de skills: preflight, template dinámico, un nivel de delegación
-- El skill debe crearse usando `skill-creator` para garantizar calidad y consistencia
+- El skill debe crearse usando `skill-master` para garantizar calidad y consistencia
 
 **Non-Goals:**
 - No generar tareas de implementación (eso es `story-tasking`)
@@ -46,11 +46,11 @@ El nuevo skill `story-design` ocupa el hueco entre `story-refine` y la fase de i
 
 ---
 
-### Decisión 3: Creación del skill con `skill-creator`
+### Decisión 3: Creación del skill con `skill-master`
 
-**Elegido:** El skill `story-design` se construye usando el skill `skill-creator`, que guía la estructura, genera ejemplos y define evals.
+**Elegido:** El skill `story-design` se construye usando el skill `skill-master`, que guía la estructura, genera ejemplos y define evals.
 
-**Alternativa descartada:** Crear el skill manualmente sin usar `skill-creator`.
+**Alternativa descartada:** Crear el skill manualmente sin usar `skill-master`.
 
 **Razón:** Requerimiento explícito de la historia (`FEAT-057`). Garantiza conformidad con los estándares de documentación, estructura de directorios y evals del framework.
 

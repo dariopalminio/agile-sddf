@@ -30,7 +30,7 @@ related:
 - [ ] T010 Escribir Paso 7 — merge del PR: ejecutar comando `merge-pr` de la config con `{pr-number}` expandido; extraer `commit-hash` del output
 - [ ] T011 Escribir Paso 8 — actualización de `story.md`: añadir bloque `integration:` al frontmatter con `target-branch`, `source-branch`, `pr-number`, `pr-url`, `commit-hash`, `integrated-at`; actualizar `status: INTEGRATED` / `substatus: DONE`
 - [ ] T012 Escribir lógica de sanitización de placeholders como función reutilizable dentro del SKILL.md (regex `^[a-zA-Z0-9/\-.]+$` contra cada valor de placeholder antes de expansión)
-- [ ] T013 Verificar seguir lineamientos de `skill-creator`.md y se sigue la estructura canónica de skills \skill-creator\assets\skill-template.md
+- [ ] T013 Verificar seguir lineamientos de `skill-master`.md y se sigue la estructura canónica de skills \skill-master\assets\skill-template.md
 
 ## 3. Assets
 

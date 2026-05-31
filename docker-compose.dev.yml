@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     container_name: features-spec-builder-dev
+    user: "${UID:-1001}:${GID:-1001}"
     volumes:
       # Monta el proyecto completo para hot reload / edición en vivo
       - .:/app

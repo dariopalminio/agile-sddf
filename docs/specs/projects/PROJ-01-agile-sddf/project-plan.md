@@ -69,7 +69,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] **FEAT-045: Sill de generación de diagramas de arquitacture** — Skill `architecture-diagram-generator` que genera diagramas de arquitectura técnica (C4, secuencia) a partir del análisis del repositorio, la información proporcionada en los documentos de requisitos e interacción con el usuario. _(deps: FEAT-018)_
 - [ ] **FEAT-046: GitHub Actions CI/CD for npm** — **Como** mantenedor del framework SDDF **Quiero** que al crear un release en GitHub se publique automáticamente la nueva versión en npm **Para** distribuir cada versión del framework sin pasos manuales de publicación.
 - [ ] **FEAT-047: Skills con templates Multicliente y rutas relativas** — Asegurar que los skills sean independientes de los clientes llm, haciendo que sean portables y multicliente. _(deps: FEAT-001, FEAT-003, FEAT-004)_
-- [ ] **FEAT-048: Skill builder** — Crear un skill `skill-creator` que pueda crear skills nuevos facilitando la creación de nuevos skills siguiendo las mejores prácticas establecidas y basados en templates. _(deps: FEAT-001, FEAT-003, FEAT-004)_
+- [ ] **FEAT-048: Skill builder** — Crear un skill `skill-master` que pueda crear skills nuevos facilitando la creación de nuevos skills siguiendo las mejores prácticas establecidas y basados en templates. _(deps: FEAT-001, FEAT-003, FEAT-004)_
 - [ ] **Inicializar entorno SDDF:** Skill para inicializar el entorno SDDF, configurando variables de entorno y preparando directorios necesarios para la ejecución de otros skills.
 - [ ] **Project policies**: crear un skill llamado project-policies-generation para definir las políticas de proyecto como el definition-of-done y constitución del proyecto.
 - [ ] **Skill para Diseño:** crear un skill para diseño (en fase PLANNING de story) llamado `story-design` (algo equivalente al comando speckit.plan de speckit o a el design.md de openspec que se ejecuta cuando se llama a proposal).
@@ -261,7 +261,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] FEAT-026 - Empaquetado y Distribución de Skills
 
 **Criterios de éxito:**
-- [ ] El sistema `skill-creator` permite crear una nueva skill completa (SKILL.md + casos de prueba) en una sesión guiada.
+- [ ] El sistema `skill-master` permite crear una nueva skill completa (SKILL.md + casos de prueba) en una sesión guiada.
 - [ ] El benchmarking ejecuta casos de prueba en paralelo (con skill vs sin skill) y genera un viewer HTML con comparación cualitativa y cuantitativa.
 - [ ] Una skill empaquetada como `.skill` puede instalarse en otro entorno con un único comando.
 

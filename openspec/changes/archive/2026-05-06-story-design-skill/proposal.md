@@ -10,7 +10,7 @@ El workflow SDD (Story-Driven Development) en SDDF carece de un paso formal entr
 - **Nuevo skill `story-design`** en `.claude/skills/story-design/`: skill orquestador que lee `story.md` y genera `design.md` en el mismo directorio de la historia.
 - **Nuevo template `story-design-template.md`** en `docs/specs/templates/`: define la estructura canónica de `design.md` (investigación de alternativas, decisión técnica, plan de implementación).
 - El skill sigue los patrones estructurales de SDDF: preflight como Paso 0, template como fuente de verdad dinámica, un solo nivel de delegación.
-- El skill debe crearse usando `skill-creator` para garantizar conformidad con los estándares del framework.
+- El skill debe crearse usando `skill-master` para garantizar conformidad con los estándares del framework.
 
 ## Capabilities
 

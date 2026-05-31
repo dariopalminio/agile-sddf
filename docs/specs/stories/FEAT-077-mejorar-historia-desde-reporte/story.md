@@ -49,8 +49,8 @@ Entonces el skill informa "FEAT-074 ya tiene decisión APROBADA — no se realiz
 * **Pautas del skill:** Patrones estructurales de Skills (Skill Structural patterns)
 Se debe seguir y respetar los lineamientos estructurales de skills definido en `docs\knowledge\guides\skill-structural-pattern.md`.
 
-* **Usar skill-creator:** Seguir lineamientos de skill-creator
-Se debe seguir y respetar los lineamientos del skill `skill-creator` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos. La estructura del markdown del skill debe respetar la estructura definida en `.claude\skills\skill-creator\assets\skill-template.md`.
+* **Usar skill-master:** Seguir lineamientos de skill-master
+Se debe seguir y respetar los lineamientos del skill `skill-master` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos. La estructura del markdown del skill debe respetar la estructura definida en `.claude\skills\skill-master\assets\skill-template.md`.
 
 * **Seguridad:** el skill nunca descarta el contenido original — siempre genera `story.md.bak` antes de aplicar cambios; las mejoras son trazables en `story-improvement-log.md`
 * **Contexto:** el skill carga las historias hermanas (mismo directorio `$SPECS_BASE/specs/stories/`, mismo `related:` o `parent:`) para contextualizar la dimensión I y evitar introducir dependencias que ya resuelven otras historias

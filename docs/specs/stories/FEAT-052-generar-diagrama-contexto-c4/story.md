@@ -95,8 +95,8 @@ El skill SHALL determinar el directorio raíz de especificaciones antes de cualq
 - **WHEN** la variable de entorno `SDDF_ROOT` está definida pero la ruta no existe
 - **THEN** el skill muestra `⚠️ La ruta definida en SDDF_ROOT no existe. Se usará el valor por defecto: docs` y usa `SPECS_BASE=docs`
 
-### Requirement: Skill construido con metodología skill-creator
-El skill `release-creation` SHALL ser construido usando el skill `skill-creator`, incluyendo la captura de intent, redacción del SKILL.md, y definición de casos de prueba documentados.
+### Requirement: Skill construido con metodología skill-master
+El skill `release-creation` SHALL ser construido usando el skill `skill-master`, incluyendo la captura de intent, redacción del SKILL.md, y definición de casos de prueba documentados.
 
 ## ⚙️ Criterios no funcionales
 

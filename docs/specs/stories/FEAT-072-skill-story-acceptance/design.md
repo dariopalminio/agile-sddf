@@ -39,7 +39,7 @@ story-implement → story-code-review → story-verify → story-acceptance → 
 - Output de historias en `docs/specs/stories/FEAT-NNN/`
 - Directorio temporal de trabajo entre agentes: `.tmp/{skill-name}/`
 - Gestión de estado de historia mediante frontmatter YAML (`status` / `substatus`)
-- Skill para creación de nuevos skills: `/skill-creator` y la estructura canónica de skills `.claude\skills\skill-creator\assets\skill-template.md`
+- Skill para creación de nuevos skills: `/skill-master` y la estructura canónica de skills `.claude\skills\skill-master\assets\skill-template.md`
 
 ---
 
@@ -54,7 +54,7 @@ story-implement → story-code-review → story-verify → story-acceptance → 
 - Verificar precondiciones de estado antes de iniciar la sesión // satisface: AC-4
 - Definir el template `acceptance-report-template.md` en `assets/` // satisface: Req-10
 - Garantizar que el skill no modifica código fuente ni artefactos distintos de `story.md` (frontmatter) y `acceptance-report.md` // satisface: Req-12
-- Garantizar que se usa el skill /skill-creator y se sigue la estructura canónica de skills .claude\skills\skill-creator\assets\skill-template.md
+- Garantizar que se usa el skill /skill-master y se sigue la estructura canónica de skills .claude\skills\skill-master\assets\skill-template.md
 **Non-Goals:**
 - Ejecutar pruebas automáticas (responsabilidad de `story-verify`)
 - Revisar código fuente (responsabilidad de `story-code-review`)
@@ -174,8 +174,8 @@ session-status: complete | partial
 final-status: ACCEPTANCE-APPROVED | ACCEPTANCE-REJECTED
 ---
 
-### D-6: Uso de skill-creator
-Garantizar que se usa el skill /skill-creator y se sigue la estructura canónica de skills .claude\skills\skill-creator\assets\skill-template.md
+### D-6: Uso de skill-master
+Garantizar que se usa el skill /skill-master y se sigue la estructura canónica de skills .claude\skills\skill-master\assets\skill-template.md
 
 # Acceptance Report: FEAT-NNN — <título>
 

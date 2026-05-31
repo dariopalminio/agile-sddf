@@ -56,8 +56,8 @@ Entonces el skill informa que el modelo de entrega "<modelo-desconocido>" no est
 
 * **Pautas del skill:** Patrones estructurales de Skills (Skill Structural patterns)
 Se debe seguir y respetar los lineamientos estructurales de skills definido en `docs\knowledge\guides\skill-structural-pattern.md`.
-* **Usar skill-creator:** Seguir lineamientos de skill-creator
-Se debe seguir y respetar los lineamientos del skill `skill-creator` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos. La estructura del markdown del skill debe respetar la estructura definida en `.claude\skills\skill-creator\assets\skill-template.md`.
+* **Usar skill-master:** Seguir lineamientos de skill-master
+Se debe seguir y respetar los lineamientos del skill `skill-master` para asegurar que el skill siga los estándares de estructura, documentación, funcionalidad y pruebas con ejemplos. La estructura del markdown del skill debe respetar la estructura definida en `.claude\skills\skill-master\assets\skill-template.md`.
 * **Extensibilidad:** el mecanismo de resolución de rama admite nuevos modelos futuros (ej. `canary`, `feature-flag`) sin cambios en el skill, solo actualizando la configuración del proyecto
 * **Configurabilidad:** la asociación modelo → rama se define exclusivamente en la configuración del proyecto, no en el skill
 

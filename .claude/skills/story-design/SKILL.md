@@ -212,6 +212,38 @@ Registrar internamente:
 
 ---
 
+### Paso 3b — Cargar skills complementarios de la fase `plan`
+
+Leer `sddf.config.yaml`.
+
+Si el archivo no existe: emitir ⚠️ y continuar con Paso 4.
+
+```
+⚠️ No se encontró sddf.config.yaml
+   Se omite la carga de skills complementarios. Continúa con flujo genérico.
+```
+
+Obtener `skills.plan` (lista de skills complementarios).
+
+**Para cada skill con `type: reference`:**
+- Leer todos los archivos `.md` en `references_path`
+- Añadirlos al contexto técnico interno como "Guías de referencia: <nombre-skill>"
+- Emitir: `[OK] Contexto enriquecido con referencias de <nombre-skill>`
+
+**Para cada skill con `type: delegate` y `required: false`:**
+- Invocar ese skill pasándole `story.md` como entrada
+- El skill produce su artefacto de output (`skill.output`)
+- Si el delegate falla: emitir advertencia y continuar
+- Si el delegate tiene `required: true`: si falla, detener con error
+
+**Al completar el Paso 3b:**
+- Si algún delegate completó el artefacto que story-design iba a generar (design.md):
+  - Omitir los pasos de generación genérica (Pasos 4–7)
+  - Continuar directamente al Paso 8 (guardar)
+- Si solo hubo references: continuar con Paso 4 usando el contexto enriquecido
+
+---
+
 ### Paso 4 — Leer el template en tiempo de ejecución
 
 Leer el archivo de template resuelto en el Paso 1.

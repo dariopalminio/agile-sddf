@@ -1,13 +1,18 @@
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim@sha256:0104b334637a5f19aa9c983a91b54c89887c0984081f2068983107a6f6c21eeb
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
-    curl \
     bash \
     && rm -rf /var/lib/apt/lists/*
+
+ARG USER_UID=1001
+ARG USER_GID=1001
+RUN groupadd -g ${USER_GID} appuser \
+    && useradd -u ${USER_UID} -g appuser -m appuser
 
 WORKDIR /app
 
 COPY . .
 
+USER appuser
 CMD ["bash"]

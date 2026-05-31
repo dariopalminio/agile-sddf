@@ -64,7 +64,7 @@ related:
 - [x] 6.7 Verificar idempotencia (Req-8): ejecutar el skill dos veces sobre una historia que ya tiene `acceptance-report.md` completo → confirmar que la segunda ejecución ofrece "reiniciar / ver resultado anterior" y no sobreescribe el report sin confirmación explícita
 - [x] 6.8 Verificar `--dry-run`: ejecutar con el flag → confirmar que se lista la cantidad y texto de criterios a validar sin iniciar la sesión interactiva ni modificar ningún archivo
 - [x] 6.9 Verificar `--validator "<nombre>"`: ejecutar con el flag → confirmar que el nombre aparece en el frontmatter (`validator:`) y en la sección "Resumen ejecutivo" del `acceptance-report.md` generado
-- [x] 6.10 Verificar seguir lineamientos de `skill-creator`.md y se sigue la estructura canónica de skills \skill-creator\assets\skill-template.md
+- [x] 6.10 Verificar seguir lineamientos de `skill-master`.md y se sigue la estructura canónica de skills \skill-master\assets\skill-template.md
 
 ## 7. Correcciones de code-review
 

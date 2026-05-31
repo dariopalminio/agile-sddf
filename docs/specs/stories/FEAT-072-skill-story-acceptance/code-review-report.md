@@ -63,7 +63,7 @@ reviewers:
 | Req-7 | Lectura dinámica del DoD en runtime | Paso 2b: nunca hardcodeado | CUBIERTO |
 | Req-8 | Idempotencia + sesiones reanudables + --restart | Paso 3, restricciones, flag --restart | CUBIERTO |
 | Req-9 | Trazabilidad completa por criterio + validador | Paso 5 + Paso 6 + template | CUBIERTO |
-| Req-10 | Estructura canónica skill-creator | Frontmatter YAML + Paso 0 preflight + Test Cases | CUBIERTO |
+| Req-10 | Estructura canónica skill-master | Frontmatter YAML + Paso 0 preflight + Test Cases | CUBIERTO |
 | Req-11 | Ejemplos estáticos en examples/ | 3 subdirectorios con acceptance-report.md | CUBIERTO PARCIALMENTE* |
 | Req-12 | No modifica código fuente | Restricción explícita + [Q] preserva story.md | CUBIERTO |
 

@@ -51,7 +51,7 @@ related:
 | AC-10 | Detección de frameworks de prueba + delegación a skill personalizado | ✓ | D-2 (`// satisface: AC-6, AC-10`) |
 | AC-11 | Template del reporte leído de `$SPECS_BASE/specs/templates` | ✓ | D-5 (`// satisface: AC-1, AC-3, AC-5, AC-7, AC-9, AC-11`), Interface SKILL→template (`// satisface: AC-11, AC-5`) |
 | AC-12 | Seguir patrones estructurales de skill-structural-pattern.md | ✓ | D-1 (`// satisface: AC-12, AC-13`) |
-| AC-13 | Seguir lineamientos de skill-creator | ✓ | D-1 (`// satisface: AC-12, AC-13`) |
+| AC-13 | Seguir lineamientos de skill-master | ✓ | D-1 (`// satisface: AC-12, AC-13`) |
 | AC-14 | No modifica código fuente ni artefactos (solo verify-report.md y frontmatter) | ✓ | D-3 (`// satisface: AC-14, AC-3, NFR`), Flujo 4 (`// satisface: AC-4, AC-14`) |
 
 ---
@@ -75,7 +75,7 @@ related:
 | 6.5 | Verificar AC-5 | Flujo 5, D-4/D-5 | ✓ |
 | 6.6 | Verificar AC-7 (idempotencia) | D-5 (idempotency con historial) | ✓ |
 | 6.7 | Verificar AC-8 (DoD dinámico) | D-6 (dynamic DoD reading) | ✓ |
-| 7.1 | README.md del skill | AC-13 (skill-creator docs), D-2 (flags reference) | ✓ |
+| 7.1 | README.md del skill | AC-13 (skill-master docs), D-2 (flags reference) | ✓ |
 | 7.2 | evals/eval-mode-detection.md | D-2 (mode detection benchmarks), D-1 (evals dir) | ✓ |
 
 ---

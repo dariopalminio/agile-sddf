@@ -1,6 +1,6 @@
-## 1. Preparación con skill-creator
+## 1. Preparación con skill-master
 
-- [x] 1.1 Ejecutar el skill `skill-creator` para scaffoldear el directorio `.claude/skills/project-policies-generation/` con la estructura estándar (SKILL.md, assets/, examples/)
+- [x] 1.1 Ejecutar el skill `skill-master` para scaffoldear el directorio `.claude/skills/project-policies-generation/` con la estructura estándar (SKILL.md, assets/, examples/)
 - [x] 1.2 Verificar que la estructura generada cumple los Skill Structural Patterns de `docs/knowledge/guides/skill-structural-pattern.md`
 
 ## 2. Templates de políticas

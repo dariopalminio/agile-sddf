@@ -39,7 +39,7 @@ related:
 | AC-2 | Outline: LOW/ninguna → approved, no fix-directives.md | ✓ | D-3 (umbral de severidad) |
 | R-1 | 3 agentes paralelos especializados | ✓ | D-1 (estructura), D-2 (contratos), D-4 (paralelismo) |
 | R-Skills | Seguir `skill-structural-pattern.md` | ⚠️ | Context sección (implícito, no trazado explícitamente) |
-| R-Creator | Usar `/skill-creator` para crear el skill | ⚠️ | Sin elemento de diseño ni tarea dedicada |
+| R-Creator | Usar `/skill-master` para crear el skill | ⚠️ | Sin elemento de diseño ni tarea dedicada |
 | R-Modes | Incluir sección "Modos de Ejecución" | ✓ | Tarea 2.2 cubre la sección en SKILL.md |
 | NF-1 | Rendimiento < 3 min / ≤10 archivos | ✓ | D-4 (ejecución paralela) |
 | NF-2 | Idempotencia | ✓ | Risks section + Tarea 2.6 (limpia .tmp/) |

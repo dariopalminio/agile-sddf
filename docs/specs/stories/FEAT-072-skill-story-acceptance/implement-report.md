@@ -56,7 +56,7 @@ updated: 2026-05-16
 | 6.7 | Verificar idempotencia (sesión completa → ofrece reiniciar/ver) | ✓ completado | Paso 3 Estado C en SKILL.md |
 | 6.8 | Verificar --dry-run | ✓ completado | Flag documentado e implementado en Paso 5 |
 | 6.9 | Verificar --validator | ✓ completado | Flag documentado e implementado en Paso 6 + Paso 7 |
-| 6.10 | Verificar estructura canónica skill-creator | ✓ completado | SKILL.md + assets/ + examples/ presentes |
+| 6.10 | Verificar estructura canónica skill-master | ✓ completado | SKILL.md + assets/ + examples/ presentes |
 | 7 fix-1 | Implementar fix-directives.md — Corrección #1: Paso 8a YAML `ACCEPTANCE/REJECTED` → `VERIFY/REJECTED` + Test Case 2 | ✓ completado | `.claude/skills/story-acceptance/SKILL.md` |
 | 7 fix-2 | Implementar fix-directives.md — Corrección #2: Mover guard `--dry-run` al inicio del Paso 4 antes de actualizar frontmatter | ✓ completado | `.claude/skills/story-acceptance/SKILL.md` |
 | 7 pkg | package.json — verificar que `.claude/skills/story-acceptance` está en `files` array | ✓ completado (ejecución anterior) | `package.json` |
@@ -76,14 +76,14 @@ updated: 2026-05-16
 | 7 | No hay variables, imports ni funciones sin usar | ✓ | No aplica a skills Markdown; todos los pasos del SKILL.md son referenciados |
 | 8 | El código pasa el linter y el formateador | ⚠️ | No hay linter Markdown configurado en el proyecto; Markdown sintácticamente correcto |
 | 9 | No se introducen dependencias nuevas sin aprobación | ✓ | El skill es Markdown puro; no se agregaron dependencias npm |
-| 10 | Se usó el skill `skill-creator` para crear skills nuevos | ✓ | Estructura canónica de skill-creator seguida: frontmatter YAML + pasos numerados + Test Cases |
+| 10 | Se usó el skill `skill-master` para crear skills nuevos | ✓ | Estructura canónica de skill-master seguida: frontmatter YAML + pasos numerados + Test Cases |
 | 11 | Si se agrega un nuevo skill, la ruta está en `package.json` `files` | ✓ | `.claude/skills/story-acceptance` y `.claude/skills/story-verify` agregados a `package.json` |
 | 12 | Existe al menos un test por escenario principal de `story.md` | ✓ | Ejemplos en `examples/`: approved (AC-1), rejected (AC-2), partial (AC-3); Test Cases en SKILL.md para AC-4 y AC-5 |
 | 13 | Todos los tests existentes pasan | ⚠️ | Requiere ejecución manual — los ejemplos son estáticos |
 | 14 | La cobertura no disminuye respecto al baseline | ⚠️ | No hay baseline de cobertura cuantitativa para skills Markdown |
 | 15 | Los tests son deterministas (no flaky) | ✓ | Los ejemplos son archivos estáticos — salida siempre determinista |
 | 16 | Los tests de integración cubren los flujos críticos | ⚠️ | Requiere ejecutar el skill sobre historias FEAT reales en entorno de integración |
-| 17 | Se ejecutaron y evalúan los casos de prueba del skill `skill-creator` | ✓ | Sección "Test Cases" en SKILL.md cubre los 5 escenarios principales (happy path, rejected, error estado, DoD sin sección, partial) |
+| 17 | Se ejecutaron y evalúan los casos de prueba del skill `skill-master` | ✓ | Sección "Test Cases" en SKILL.md cubre los 5 escenarios principales (happy path, rejected, error estado, DoD sin sección, partial) |
 | 18 | El `tasks.md` tiene todas las tareas marcadas como `[x]` | ✓ | Todas las tareas 1.1 a 6.10 marcadas `[x]` en `tasks.md` |
 | 19 | Si modifica APIs públicas o contratos, el README está actualizado | ✓ | No se modifican APIs públicas; el skill es nuevo y autocontenido |
 | 20 | Decisiones de diseño relevantes no previstas documentadas en `design.md` | ✓ | No hubo decisiones no previstas; el diseño se siguió íntegramente |

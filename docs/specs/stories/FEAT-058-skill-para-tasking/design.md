@@ -37,7 +37,7 @@ El workflow SDD de SDDF tiene `story.md` (el qué) y `design.md` (el cómo), per
 - Template como única fuente de verdad estructural del output (patrón #5 SDDF)
 - Un solo nivel de delegación: skill orquesta directamente sin subagentes intermedios (patrón #4 SDDF)
 - Preflight obligatorio como Paso 0 (patrón #3 SDDF)
-- Skill debe crearse usando `skill-creator` para garantizar estándares SDDF (DoD)
+- Skill debe crearse usando `skill-master` para garantizar estándares SDDF (DoD)
 
 ---
 
@@ -125,34 +125,34 @@ El AC-1 exige ordenamiento por dependencias lógicas y el AC-4 exige el marcador
 
 ---
 
-### Decisión 3: Uso de skill-creator en la creación del skill
+### Decisión 3: Uso de skill-master en la creación del skill
 
-<!-- satisface: requisito de skill-creator en story.md -->
+<!-- satisface: requisito de skill-master en story.md -->
 
-**Opción elegida:** Invocar `skill-creator` como herramienta de scaffolding y validación antes de entregar el skill
+**Opción elegida:** Invocar `skill-master` como herramienta de scaffolding y validación antes de entregar el skill
 
 **Justificación:**
-La historia especifica explícitamente el uso de `skill-creator`. El DoD del proyecto también lo requiere: "Se uso el skill `skill-creator` para crear skills nuevos". El skill-creator garantiza que el nuevo skill siga los estándares SDDF: frontmatter correcto, estructura de directorios, ejemplos input/output y validación de casos de prueba.
+La historia especifica explícitamente el uso de `skill-master`. El DoD del proyecto también lo requiere: "Se uso el skill `skill-master` para crear skills nuevos". El skill-master garantiza que el nuevo skill siga los estándares SDDF: frontmatter correcto, estructura de directorios, ejemplos input/output y validación de casos de prueba.
 
-#### Alternativa A: Crear el skill manualmente sin invocar skill-creator
+#### Alternativa A: Crear el skill manualmente sin invocar skill-master
 
-**Descripción:** Crear los archivos del skill directamente sin invocar `skill-creator`.
+**Descripción:** Crear los archivos del skill directamente sin invocar `skill-master`.
 
 **Ventajas:**
 - Más directo, sin dependencia de otra herramienta
 
 **Desventajas:**
 - Puede omitir artefactos obligatorios (README, ejemplos, evals)
-- Viola el criterio del DoD: "Se uso el skill `skill-creator` para crear skills nuevos"
+- Viola el criterio del DoD: "Se uso el skill `skill-master` para crear skills nuevos"
 - Sin validación automática de calidad del skill generado
 
 **Descartada porque:** viola el DoD y el requisito explícito de la historia.
 
 ---
 
-#### Alternativa B: Usar skill-creator como herramienta de scaffolding (elegida)
+#### Alternativa B: Usar skill-master como herramienta de scaffolding (elegida)
 
-**Descripción:** El flujo de implementación incluye la invocación de `skill-creator` para generar y validar los artefactos del skill `story-tasking`.
+**Descripción:** El flujo de implementación incluye la invocación de `skill-master` para generar y validar los artefactos del skill `story-tasking`.
 
 **Ventajas:**
 - Garantiza artefactos completos y conformes con el estándar SDDF

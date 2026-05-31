@@ -17,7 +17,7 @@ SDD no propone documentación extensiva estilo waterfall. Propone especificacion
 
 El ecosistema de herramientas SDD está creciendo rápidamente:
 
-- **OpenSpec:** OpenSpec es un framework de SDD creado por Fission AI, publicado bajo licencia MIT. Su flujo principal es: /opsx:propose ──► /opsx:apply ──► /opsx:archive [2].
+- **OpenSpec:** OpenSpec es un framework de SDD ("capa de definición de requisitos") creado por Fission AI, publicado bajo licencia MIT. Su flujo principal es: /opsx:propose ──► /opsx:apply ──► /opsx:archive [2].
 
 - **GitHub Spec Kit:** Toolkit open source que proporciona un flujo estructurado: Constitution → Specify → Plan → Tasks → Implement. Funciona con Copilot, Claude Code y otros [3].
 
@@ -29,6 +29,8 @@ El ecosistema de herramientas SDD está creciendo rápidamente:
 
 - **Open SPDD:** Enfoque Structured-Prompt-Driven Development (SPDD) enfatiza prompts estructurados para generar código a partir de specs. El departamento de TI interno de Thoughtworks utiliza LLMs para sus equipos y ha desarrollado un método y flujo de trabajo denominado Desarrollo Estructurado Guiado por Indicaciones (SPDD). El flujo de trabajo SPDD consta de los siguientes pasos: create initial requirements → clarify analysis → generate analysis context → generate structured prompt → generate code → generate unit test → integrate-build-and-deploy [4][5].
 
+- **Superpowers:** Es un Claude Plugin de desarrollo low-code que se integra con OpenSpec para ejecutar el flujo SDD. Superpowers la de "capa de ingeniería de software" [6]. Es una metodología completa de desarrollo de software para tus agentes de codificación, construida sobre un conjunto de skills combinables y algunas instrucciones iniciales que garantizan que tu agente las utilice.
+
 
 Referencias:
 [1]: GitHub Blog - Spec-driven development with AI: github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai 
@@ -36,4 +38,6 @@ Referencias:
 [3]: https://speckit.org/
 [4]: https://martinfowler.com/articles/structured-prompt-driven/?shem=rimspwouoe
 [5]: https://github.com/gszhangwei/open-spdd/tree/main
+[6]: https://github.com/obra/superpowers
+
 

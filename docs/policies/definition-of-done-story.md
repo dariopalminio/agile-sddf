@@ -60,20 +60,15 @@ updated: <YYYY-MM-DD>
 - [ ] No hay variables, imports ni funciones sin usar
 - [ ] El código pasa el linter y el formateador sin errores ni warnings
 - [ ] No se introducen dependencias nuevas sin aprobación del equipo
-- [ ] Se uso el skill `skill-creator` para crear skills nuevos
+- [ ] Se uso el skill `skill-master` para crear skills nuevos
 - [ ] Si se agrega un nuevo skill, la ruta del skill debe haber sido incluida en el arreglo de "files" en `package.json` para ser publicada en npm
-
 
 #### 🧪 Criterios de Tests
 
 <!-- Cobertura y calidad de las pruebas. -->
 
-- [ ] Existe al menos un test por escenario principal de `story.md`
-- [ ] Todos los tests existentes pasan (sin tests saltados sin justificación)
-- [ ] La cobertura de tests no disminuye respecto al baseline del proyecto
-- [ ] Los tests son deterministas (no flaky)
-- [ ] Los tests de integración cubren los flujos críticos de la historia
-- [ ] Se ejecutaron y evalúan los casos de prueba automáticamente según la sección "Test Cases" del skill `skill-creator`
+- [ ] Los skills crìticos deben tener pruebas `evals/evals.json`
+- [ ] Se ejecutaron y evalúan los casos de prueba automáticamente según la sección "Test Cases" del skill `skill-master`
 
 #### 📝 Criterios de Documentación
 

@@ -70,8 +70,8 @@ El archivo `release.md` producido SHALL contener frontmatter completo (Título, 
 - **WHEN** `release-format-validation` retorna REFINAR
 - **THEN** el skill muestra las secciones faltantes y ofrece completarlas de forma interactiva antes de terminar
 
-### Requirement: Skill construido con metodología skill-creator
-El skill `release-creation` SHALL ser construido usando el skill `skill-creator`, incluyendo la captura de intent, redacción del SKILL.md, y definición de casos de prueba documentados.
+### Requirement: Skill construido con metodología skill-master
+El skill `release-creation` SHALL ser construido usando el skill `skill-master`, incluyendo la captura de intent, redacción del SKILL.md, y definición de casos de prueba documentados.
 
 #### Scenario: Casos de prueba documentados
 - **WHEN** el skill `release-creation` es creado

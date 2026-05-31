@@ -2,7 +2,7 @@
 
 El pipeline SDDF L2 dispone de `release-format-validation` para validar releases existentes y `releases-from-project-plan` para generar releases desde un plan estructurado. No existe un skill que conduzca al usuario paso a paso para *crear* un release desde cero cuando no hay `project-plan.md` previo. El nuevo skill `release-creation` cubre ese hueco: un asistente interactivo que usa el template como fuente única de verdad estructural (igual que lo hace `release-format-validation`) y formula preguntas en tiempo de ejecución para completar cada sección.
 
-El skill se construye siguiendo la metodología del skill `skill-creator`: diseño del flujo, redacción del `SKILL.md`, y validación contra el output esperado.
+El skill se construye siguiendo la metodología del skill `skill-master`: diseño del flujo, redacción del `SKILL.md`, y validación contra el output esperado.
 
 ## Goals / Non-Goals
 
@@ -11,7 +11,7 @@ El skill se construye siguiendo la metodología del skill `skill-creator`: dise�
 - Flujo interactivo de preguntas por sección (obligatorias primero, opcionales con opción de saltar)
 - Genera `$SPECS_BASE/specs/releases/<slug>/release.md` con frontmatter completo
 - El archivo producido debe pasar `release-format-validation` sin refinamiento adicional
-- Usa `skill-creator` como metodología de construcción del skill
+- Usa `skill-master` como metodología de construcción del skill
 
 **Non-Goals:**
 - No modifica `release-format-validation` ni `releases-from-project-plan`
@@ -37,8 +37,8 @@ Para secciones opcionales del template, el skill pregunta "¿Quieres completar l
 ### D4 — Slug del directorio derivado del nombre del release
 El skill pide el nombre del release como primera pregunta. Derivan automáticamente el slug kebab-case para crear `$SPECS_BASE/specs/releases/<EPIC-NN-slug>/release.md`. Si el directorio ya existe, el skill pregunta si sobreescribir o usar un nombre diferente.
 
-### D5 — Construcción con `skill-creator`
-El SKILL.md se redacta usando la metodología `skill-creator`: captura de intent, redacción del draft, definición de casos de prueba y criterios de evaluación. No se ejecutan benchmarks automatizados (skill de tipo workflow interactivo), pero sí se documentan los casos de prueba para validación manual.
+### D5 — Construcción con `skill-master`
+El SKILL.md se redacta usando la metodología `skill-master`: captura de intent, redacción del draft, definición de casos de prueba y criterios de evaluación. No se ejecutan benchmarks automatizados (skill de tipo workflow interactivo), pero sí se documentan los casos de prueba para validación manual.
 
 ## Risks / Trade-offs
 

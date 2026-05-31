@@ -1,6 +1,6 @@
 ---
 name: sddf-init
-description: "Inicializa el entorno SDDF en un proyecto nuevo: crea la estructura de directorios base (`<SPECS_BASE>/specs/projects/`, `<SPECS_BASE>/specs/releases/`, `<SPECS_BASE>/specs/stories/`), genera `openspec/config.yaml` mínimo y `.env.template` documentando `SDDF_ROOT`, y opcionalmente inicializa las políticas del proyecto (`constitution.md`, `definition-of-done-story.md`) invocando `project-policies-generation`. Idempotente — no sobrescribe archivos ni directorios existentes."
+description: "Inicializa el entorno SDDF en un proyecto nuevo: crea la estructura de directorios base (`<SPECS_BASE>/specs/projects/`, `<SPECS_BASE>/specs/releases/`, `<SPECS_BASE>/specs/stories/`), genera `sddf.config.yaml` con la configuración operacional del framework y `.env.template` documentando `SDDF_ROOT`, y opcionalmente inicializa las políticas del proyecto (`constitution.md`, `definition-of-done-story.md`) invocando `project-policies-generation`. Idempotente — no sobrescribe archivos ni directorios existentes."
 ---
 
 # Skill: sddf-init
@@ -21,7 +21,6 @@ sddf-init → skill-preflight → [cualquier skill SDDF]
 
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de inicialización de especificaciones, no de implementación)
 - NO genere código; estas iniciando el entorno SDDF, no implementando los artefactos técnicos
-- No carga contexto en `openspec/config.yaml` — eso es tarea de `openspec-init-config`
 - No inicializa repositorio git
 - No instala dependencias
 
@@ -57,16 +56,15 @@ Verificar si el directorio existe:
 
 Si algún directorio requiere rutas intermedias (ej. `SPECS_BASE/specs/`), crearlas también.
 
-### Paso 3 — Generar openspec/config.yaml
+### Paso 3 — Generar sddf.config.yaml
 
-Verificar si `openspec/config.yaml` existe y tiene contenido:
+Verificar si `sddf.config.yaml` existe en la raíz del proyecto:
 - **No existe (o existe vacío):**
-  - Crear el directorio `openspec/` si no existe
-  - Crear `openspec/config.yaml` usando exactamente el contenido del template en `.claude/skills/sddf-init/assets/config.yaml.template`
-  - Registrar `[CREADO]  openspec/config.yaml`
+  - Crear `sddf.config.yaml` usando exactamente el contenido del template en `.claude/skills/sddf-init/assets/sddf.config.yaml.template`
+  - Registrar `[CREADO]  sddf.config.yaml`
 - **Ya existe con contenido:**
   - No sobrescribirlo
-  - Registrar `[YA EXISTÍA]  openspec/config.yaml` y emitir `[INFO] openspec/config.yaml ya existe — se mantiene sin cambios`
+  - Registrar `[YA EXISTÍA]  sddf.config.yaml` y emitir `[INFO] sddf.config.yaml ya existe — se mantiene sin cambios`
 
 ### Paso 4 — Generar .env.template
 
@@ -114,7 +112,7 @@ Emitir el informe consolidado con todos los artefactos verificados:
 [CREADO]     docs/specs/projects/
 [CREADO]     docs/specs/releases/
 [YA EXISTÍA] docs/specs/stories/
-[CREADO]     openspec/config.yaml
+[CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 [CREADO]     docs/policies/constitution.md
 [CREADO]     docs/policies/definition-of-done-story.md

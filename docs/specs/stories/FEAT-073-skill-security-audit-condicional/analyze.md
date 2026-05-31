@@ -46,7 +46,7 @@ related:
 | AC-6 | Contrato de integración JSON con story-code-review | ✓ | D-4 (`// satisface: AC-4, AC-6`), Interface contrato integración (`// satisface: AC-6`), Flujo 4 |
 | AC-7 | Agente local al skill (sin dependencias externas) | ✓ | D-1 (`// satisface: AC-8, AC-9`), D-5 (`// satisface: AC-1, AC-3, AC-4, AC-7`) |
 | AC-8 | Seguir patrones estructurales de skill-structural-pattern.md | ✓ | D-1 (`// satisface: AC-8, AC-9`) |
-| AC-9 | Seguir lineamientos de skill-creator | ✓ | D-1 (`// satisface: AC-8, AC-9`), tarea 7.1 README.md |
+| AC-9 | Seguir lineamientos de skill-master | ✓ | D-1 (`// satisface: AC-8, AC-9`), tarea 7.1 README.md |
 
 ---
 

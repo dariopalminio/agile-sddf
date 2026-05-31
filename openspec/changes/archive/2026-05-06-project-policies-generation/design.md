@@ -11,7 +11,7 @@ El skill `project-policies-generation` resuelve este gap creando `constitution.m
 - Leer templates en tiempo de ejecución desde `$SPECS_BASE/specs/templates/` (template autonomy pattern).
 - Crear los archivos `$SPECS_BASE/policies/constitution.md` y `$SPECS_BASE/policies/definition-of-done-story.md` si no existen, o abrirlos para edición si ya existen.
 - Agregar referencias `@` a los archivos de políticas en `CLAUDE.md` / `AGENTS.md`.
-- Construir el skill usando `skill-creator` para garantizar estructura, documentación y ejemplos estándar.
+- Construir el skill usando `skill-master` para garantizar estructura, documentación y ejemplos estándar.
 
 **Non-Goals:**
 - Validar el contenido semántico de las políticas generadas (no es auditor de calidad).
@@ -32,9 +32,9 @@ El skill lee el template en tiempo de ejecución (`$SPECS_BASE/specs/templates/p
 
 **Alternativa considerada:** hardcodear la estructura en el skill → descartada porque acopla el skill al formato y dificulta la evolución.
 
-### Decisión 3: Construir con `skill-creator`
+### Decisión 3: Construir con `skill-master`
 
-El skill se crea usando el skill `skill-creator` para garantizar consistencia con los Skill Structural Patterns: directorio `SKILL.md`, `assets/`, `examples/`. Esto también asegura que el skill sea multicliente (Claude, OpenCode, Cursor).
+El skill se crea usando el skill `skill-master` para garantizar consistencia con los Skill Structural Patterns: directorio `SKILL.md`, `assets/`, `examples/`. Esto también asegura que el skill sea multicliente (Claude, OpenCode, Cursor).
 
 ### Decisión 4: Modificación conservadora de CLAUDE.md / AGENTS.md
 

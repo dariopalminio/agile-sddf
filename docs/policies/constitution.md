@@ -19,17 +19,18 @@ updated: 2026-05-06
 
 ### Lenguaje principal
 
-- **Lenguaje:** [ej. TypeScript 5.x / Python 3.12 / Go 1.22]
-- **Runtime / Entorno:** [ej. Node.js 20 LTS / CPython / GVM]
+- **Lenguaje:** Markdown .md / TypeScript/Node.js/Js para scripts ejecutables (instalación, extracción de contexto, generación de diagramas, etc.)
+- **Runtime / Entorno:** Node
 
 Los skills y agentes se definen en Markdown, pero las partes ejecutables (scripts de instalación, extractores de contexto, generadores de diagramas, etc.) se implementan en TypeScript/Node.js para garantizar portabilidad y facilidad de empaquetado.
 
 ### Frameworks y librerías core
 
-- **[fs-extra]:** Manejo avanzado de archivos (copia, eliminación, lectura recursiva).
-- **[yaml]:** Parseo de frontmatter en archivos Markdown (si se usa).
+- **fs-extra:** Manejo avanzado de archivos (copia, eliminación, lectura recursiva).
+- **yaml:** Parseo de frontmatter en archivos Markdown (si se usa) y configuraciones.
+- **json:** Para manipulación de datos estructurados en memoria o configuraciones.
 
-No se incluyen dependencias para los skills como skill-creator (los skills son solo Markdown); las librerías son solo para la parte ejecutable del framework
+No se incluyen dependencias para los skills como skill-master (los skills son solo Markdown); las librerías son solo para la parte ejecutable del framework
 
 ### Infraestructura y despliegue
 
@@ -77,7 +78,7 @@ skill-name/
 ├── examples/         # casos de prueba input/output
 ├── scripts/          # código ejecutable (Python, Bash)
 ├── agents/           # subagentes locales que el skill invoca
-└── evals/            # benchmarks de evaluación
+└── evals/            # benchmarks de evaluación & quality gates (testing)
 ```
 
 #### 2. Frontmatter YAML en SKILL.md
@@ -131,8 +132,8 @@ updated: YYYY-MM-DD
 
 ### Reglas de comportamiento
 
-#### 9. Control WIP = 1
-Solo un documento puede tener substatus: IN-PROGRESS a la vez por nivel del pipeline. El skill debe verificar esto antes de activar un nuevo ítem.
+#### 9. Control WIP = 1 en el nivel de proyecto
+Solo un documento puede tener substatus: IN-PROGRESS a la vez por nivel del pipeline de proyecto. El skill debe verificar esto antes de activar un nuevo ítem.
 
 #### 10. Gates secuenciales con precondiciones
 Cada skill verifica que el artefacto del paso anterior existe y está válido antes de ejecutar. Ejemplo: release-generate-stories requiere que release-format-validation haya pasado.
@@ -174,9 +175,7 @@ Lista los principios que NO pueden violarse bajo ninguna circunstancia.
 8. **Mantener buenas prácticas y estándares homogéneos:** El código base debe estar bien estructurado y definimos buenas prácticas y reglas claras para que los patrones de resultado esperado sean predecibles.
 9. **Spec-first:** Escribes la spec antes de codificar, la usas para la tarea en curso, y luego la descartas. Es el nivel más básico.
 10. **Spec-anchored:** La spec se mantiene después de completar la tarea y se usa para evolución y mantenimiento del feature.
-
-
-
+11. TDD (Test-Driven Development) para skills: Define primero los casos de prueba (`evals/evals.json`) **antes** del `SKILL.md`.
 
 ---
 

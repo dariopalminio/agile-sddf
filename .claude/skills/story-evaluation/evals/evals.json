@@ -1,0 +1,118 @@
+{
+  "skill": "story-evaluation",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-evaluation: evalúa historias de usuario con rúbrica FINVEST y genera finvest-evaluation-report.md",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "evaluacion-historia-feat-nnn-genera-reporte",
+      "type": "happy-path",
+      "description": "Invocar con FEAT-075 (historia existente con story.md y template disponible). El skill debe evaluar las 7 dimensiones FINVEST, mostrar el reporte completo con scores y decisión, y confirmar que guardó finvest-evaluation-report.md en el directorio de la historia.",
+      "input": {
+        "flags": ["FEAT-075"],
+        "context": "La historia FEAT-075 existe en docs/specs/stories/FEAT-075-integrar-historia-modo-manual-dryrun/story.md y el template docs/specs/templates/story-template.md existe"
+      },
+      "expected": {
+        "contains": [
+          "FINVEST",
+          "✓ Reporte guardado",
+          "Decisión",
+          "F –"
+        ],
+        "not_contains": [
+          "No se encontró el template"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-template-ausente-detiene-ejecucion",
+      "type": "fail-fast",
+      "description": "Evaluar una historia cuando story-template.md no existe en $SPECS_BASE/specs/templates/. El skill debe emitir ❌ indicando el archivo faltante y detener sin generar ningún reporte ni score.",
+      "input": {
+        "flags": ["FEAT-075"],
+        "context": "La historia FEAT-075 existe pero el archivo docs/specs/templates/story-template.md NO existe"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "story-template.md",
+          "No se encontró"
+        ],
+        "not_contains": [
+          "✓ Reporte guardado",
+          "APROBADA",
+          "REFINAR"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "edge-case-formato-insuficiente-rechazar-sin-invest",
+      "type": "edge-case",
+      "description": "Historia sin estructura INVEST: texto libre sin Como/Quiero/Para ni Gherkin formal. El F_score debe ser < 2.5 → RECHAZAR inmediato sin calcular INVEST_Score ni evaluar dimensiones I, N, V, E, S, T.",
+      "input": {
+        "flags": [],
+        "context": "El usuario proporciona este texto libre como historia: 'Necesito que el sistema haga login. El usuario entra sus datos y accede. Debe funcionar bien.'"
+      },
+      "expected": {
+        "contains": [
+          "RECHAZAR",
+          "Formato",
+          "F_score"
+        ],
+        "not_contains": [
+          "APROBADA",
+          "INVEST_Score =",
+          "DIVIDIR"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case-small-score-1-decision-dividir",
+      "type": "edge-case",
+      "description": "Historia con formato correcto (F_score ≥ 2.5) pero con ≥6 escenarios Gherkin distintos que llevan S – Small a score 1. El skill debe emitir DIVIDIR automáticamente independientemente del score total FINVEST.",
+      "input": {
+        "flags": [],
+        "context": "Historia bien formada con Como/Quiero/Para completo, sección de criterios de aceptación y 7 escenarios Gherkin distintos con múltiples pasos cada uno"
+      },
+      "expected": {
+        "contains": [
+          "DIVIDIR",
+          "S",
+          "1"
+        ],
+        "not_contains": [
+          "Decision: APROBADA",
+          "Decisión: RECHAZAR"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-005",
+      "name": "happy-path-texto-libre-sin-guardar-archivo",
+      "type": "happy-path",
+      "description": "Input como texto libre de historia bien formada (no ID FEAT-NNN ni ruta de archivo). El skill debe generar el reporte completo con scores FINVEST en la conversación pero NO guardar finvest-evaluation-report.md en disco.",
+      "input": {
+        "flags": [],
+        "context": "El usuario proporciona el texto completo de una historia bien formada con Como/Quiero/Para, criterios de aceptación y escenarios Gherkin, sin mencionar ningún ID ni ruta de archivo"
+      },
+      "expected": {
+        "contains": [
+          "FINVEST",
+          "Decision"
+        ],
+        "not_contains": [
+          "✓ Reporte guardado",
+          "finvest-evaluation-report.md"
+        ]
+      },
+      "threshold": 1.0
+    }
+  ]
+}

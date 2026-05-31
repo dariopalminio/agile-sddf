@@ -1,0 +1,128 @@
+{
+  "skill": "story-testcases",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el skill story-testcases: generación de testcases.md desde story.md y design.md",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path-genera-testcases-desde-story-y-design",
+      "type": "happy-path",
+      "description": "story.md con ACs Gherkin y design.md con componentes válidos generan testcases.md con tabla correcta de columnas ID/Tipo/Escenario/Dado/Cuando/Entonces/Ref y prefijos tipificados",
+      "input": {
+        "input_path": "examples/input",
+        "flags": []
+      },
+      "expected": {
+        "output_file": "examples/output/testcases.md",
+        "contains": [
+          "| ID |",
+          "| Tipo |",
+          "| Escenario |",
+          "| Dado |",
+          "| Cuando |",
+          "| Entonces |",
+          "| Ref |",
+          "UT-",
+          "E2E-",
+          "AC-"
+        ],
+        "not_contains": [
+          "TODO",
+          "undefined",
+          "{story_id}",
+          "{id}"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-story-sin-criterios-de-aceptacion",
+      "type": "fail-fast",
+      "description": "story.md sin secciones de criterios de aceptación emite ⚠️ y no genera testcases.md parcial",
+      "input": {
+        "input_path": "examples/input/empty-story.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "⚠️",
+          "contenido suficiente"
+        ],
+        "not_contains": [
+          "| ID |",
+          "type: testcases"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "error-handling-story-ausente",
+      "type": "error-handling",
+      "description": "story.md ausente emite error limpio y detiene la ejecución sin crash",
+      "input": {
+        "input_path": "examples/input/nonexistent-dir",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "story.md"
+        ],
+        "not_contains": [
+          "stack trace",
+          "Error:",
+          "| ID |"
+        ],
+        "exit_gracefully": true
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case-force-sobreescribe-sin-confirmacion",
+      "type": "edge-case",
+      "description": "Con --force sobreescribe testcases.md existente y emite [INFO] sin preguntar al usuario",
+      "input": {
+        "input_path": "examples/input",
+        "flags": ["--force"]
+      },
+      "expected": {
+        "contains": [
+          "[INFO]",
+          "testcases.md",
+          "--force"
+        ],
+        "not_contains": [
+          "¿Qué deseas hacer?",
+          "(r) Regenerar",
+          "(n) No modificar"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-005",
+      "name": "edge-case-tasks-enriquece-cobertura-con-t-nnn",
+      "type": "edge-case",
+      "description": "Con tasks.md presente que incluye tareas tipo code/test, los casos derivados de tareas tienen Ref con T-NNN",
+      "input": {
+        "input_path": "examples/input",
+        "flags": ["--with-tasks"]
+      },
+      "expected": {
+        "output_file": "examples/output/testcases.md",
+        "contains": [
+          "T-0",
+          "| Ref |"
+        ],
+        "not_contains": [
+          "❌",
+          "tasks.md no encontrado"
+        ]
+      },
+      "threshold": 0.90
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-## 1. Scaffolding con skill-creator
+## 1. Scaffolding con skill-master
 
-- [x] 1.1 Invocar `/skill-creator` para crear la estructura base del skill `story-tasking` en `.claude/skills/story-tasking/`
+- [x] 1.1 Invocar `/skill-master` para crear la estructura base del skill `story-tasking` en `.claude/skills/story-tasking/`
 - [x] 1.2 Verificar que se generaron: `SKILL.md`, `assets/`, `examples/input/`, `examples/output/`
 
 ## 2. SKILL.md — Frontmatter y configuración

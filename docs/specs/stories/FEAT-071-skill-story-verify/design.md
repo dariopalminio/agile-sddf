@@ -55,7 +55,7 @@ story-verify    ← aquí
 - AC-10: Detección de frameworks de prueba + delegación a skill de testing si existe.
 - AC-11: Template del reporte leído de `$SPECS_BASE/specs/templates`.
 - AC-12: Seguir patrones estructurales de `skill-structural-pattern.md`.
-- AC-13: Seguir lineamientos de `skill-creator`.
+- AC-13: Seguir lineamientos de `skill-master`.
 - AC-14: El skill no modifica código fuente ni artefactos de la historia (solo `verify-report.md` y frontmatter de `story.md`).
 
 ---

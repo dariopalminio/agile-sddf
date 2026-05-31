@@ -11,7 +11,7 @@ El flujo SDD (Story SDD Workflow, EPIC-12) exige que los agentes IA conozcan las
 - El skill genera `$SPECS_BASE/policies/constitution.md` y `$SPECS_BASE/policies/definition-of-done-story.md` desde templates Markdown ubicados en `$SPECS_BASE/specs/templates/`.
 - Si los archivos ya existen, los abre para edición en lugar de sobreescribirlos.
 - Agrega referencias a los documentos generados en `CLAUDE.md` / `AGENTS.md` usando sintaxis `@` para que los agentes los lean automáticamente.
-- El skill sigue los Skill Structural Patterns definidos en `docs/knowledge/guides/skill-structural-pattern.md` y se construye con el skill `skill-creator`.
+- El skill sigue los Skill Structural Patterns definidos en `docs/knowledge/guides/skill-structural-pattern.md` y se construye con el skill `skill-master`.
 
 ## Capabilities
 
