@@ -32,31 +32,6 @@ La flexibilidad para elegir entre la versión «light» y la versión completa e
 - [x] FEAT-084-skill-verify - **skill-verify:** Skill de la fase VERIFY que ejecuta evals/evals.json para un skill dado, calcula la tasa de acierto y genera un informe de benchmark comparando el rendimiento del skill con y sin la implementación (with_skill vs without_skill). Se invoca después de la implementación: `story-implement → skill-verify`. Es un skill complementario de soporte y conocimiento que asesora sobre cómo verificar el skill, no lo diseña ni lo implementa. El skill story-verify funciona como orquestador del proceso, invocando skill-verify para la fase de verificación. El skill skill-verify estará declarado en un archivo de configuración docs\policies\sddf-config.yaml, el cual leerá el skill story-verify para saber que existe y que debe invocarlo. El skill story-verify debe ser agnóstico a los skills particulares que invocará para completar la tarea de verificación, de modo que en el futuro se puedan agregar otros skills de verificación sin modificar story-verify, simplemente declarándolos en sddf-config.yaml y haciendo que story-verify los invoque según corresponda (según diferentes stack de tecnología usados en diferentes proyectos).
 
 
-- [ ] FEAT-BORRADOR - **test-skill-verify:** Es usado por el skill .claude\skills\story-verify para ejecutar benchmarks sobre el skill implementado; genera informe de tasa de acierto con comparativa `with_skill` vs `without_skill`; falla si la tasa de acierto es inferior al 95% o el costo es excesivo. Es un skill complementario de soporte y conocimiento que asesora sobre cómo verificar el skill, no lo diseña ni lo implementa. El skill story-verify funciona como orquestador del proceso, invocando test-skill-verify para la fase de verificación. El skill test-skill-verify estará declarado en un archivo de configuración docs\policies\sddf-config.yaml, el cual leerá el skill story-verify para saber que existe y que debe invocarlo. El skill story-verify debe ser agnóstico a los skills particulares que invocará para completar la tarea de verificación, de modo que en el futuro se puedan agregar otros skills de verificación sin modificar story-verify, simplemente declarándolos en sddf-config.yaml y haciendo que story-verify los invoque según corresponda (según diferentes stack de tecnología usados en diferentes proyectos).
-- [ ] FEAT-BORRADOR - Un solo skill extra de la fábrica de skills es suficiente para construir un skill SDDF completo para equipos pequeños o para skills simples. La fábrica completa (con orquestadores, skills accesorios, configuración YAML, detección de stack, etc.) es compleja y puede ser excesiva para proyectos pequeños o para construir skills simples. Ofrecer una versión "light" con un solo skill skill-factory que integre diseño, implementación y verificación básicos, para quienes no necesiten la separación ni el TDD obligatorio. La fábrica completa sería para skills críticos o equipos grandes.
-
-## Flujos Críticos / Smoke Tests
-*Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
-
-### Escenario 1: design-skill-architecture apoya al skill story-design para el diseño
-**DADO** una story.md con criterios de aceptación Gherkin válidos  
-**Y** docs\policies\sddf-config.yaml configurado con design-skill-architecture declarado como skill de la fase de plan (diseño)
-**CUANDO** se invoca el skill design-skill-architecture  
-**ENTONCES** se obtiene el conocimiento necesario para que story-design genere design.md y tasks.md con estructura de carpetas, scripts sugeridos, referencias y evals propuestos para el skill design-skill-architecture
-
-### Escenario 2: impl-skill-builder apoya al skill story-implement para completar la implementación y el ciclo TDD
-**DADO** design.md y tasks.md generados por design-skill-architecture  
-**Y** docs\policies\sddf-config.yaml configurado con impl-skill-builder declarado como skill de la fase de implementation
-**CUANDO** se invoca el skill impl-skill-builder  
-**ENTONCES** se ejecuta el ciclo RED‑GREEN‑REFACTOR, el pressure scenario falla en RED, pasa en GREEN, y sigue pasando tras el REFACTOR
-**Y** se genera SKILL.md, scripts y evals para el skill implementado
-
-### Escenario 3: test-skill-verify apoya al skill story-verify para generar informe de benchmark
-**DADO** un skill implementado con evals/evals.json definidos  
-**Y** docs\policies\sddf-config.yaml configurado con test-skill-verify declarado como skill de la fase de verificación
-**CUANDO** se invoca el skill test-skill-verify  
-**ENTONCES** se genera un informe con tasa de acierto ≥95% y una comparativa cuantitativa with_skill vs without_skill
-
 ## Requerimiento
 La fábrica de skills debe cumplir las siguientes reglas de construcción:
 - El skill impl-skill-builder proporciona las instrucciones para que el agente ejecute el ciclo TDD manualmente (siguiendo el método Superpowers). Incluye ejemplos de pressure scenarios, comandos para lanzar subagentes, y criterios para pasar de RED a GREEN.
