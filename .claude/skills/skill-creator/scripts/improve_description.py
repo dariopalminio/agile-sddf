@@ -14,7 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from scripts.utils import parse_skill_md
+from scripts.utils import parse_skill_md, sanitize_for_llm
 
 
 def _call_claude(prompt: str, model: str | None, timeout: int = 300) -> str:
@@ -121,7 +121,7 @@ Current scores ({scores_summary}):
 
 Skill content (for context on what the skill does):
 <skill_content>
-{skill_content}
+{sanitize_for_llm(skill_content)}
 </skill_content>
 
 Based on the failures, write a new and improved description that is more likely to trigger correctly. When I say "based on the failures", it's a bit of a tricky line to walk because we don't want to overfit to the specific cases you're seeing. So what I DON'T want you to do is produce an ever-expanding list of specific queries that this skill should or shouldn't trigger for. Instead, try to generalize from the failures to broader categories of user intent and situations where this skill would be useful or not useful. The reason for this is twofold:

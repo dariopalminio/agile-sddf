@@ -16,7 +16,7 @@ import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
-from scripts.utils import parse_skill_md
+from scripts.utils import parse_skill_md, sanitize_for_llm
 
 
 def find_project_root() -> Path:
@@ -69,7 +69,7 @@ def run_single_query(
 
         cmd = [
             "claude",
-            "-p", query,
+            "-p", sanitize_for_llm(query),
             "--output-format", "stream-json",
             "--verbose",
             "--include-partial-messages",
