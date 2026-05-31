@@ -41,6 +41,7 @@ This allows users to skip explicit flags and just say what they want.
 | "crear pruebas de...", "create tests for...", "escribe los evals para un skill que...", "genera los casos de prueba para...", "write evals for a skill that..." | **plan** | Generate `evals/evals.json` from the description |
 | "create skill...", "construye un skill...", "implementa el skill...", "build the skill", "haz que pase las pruebas", "make it pass the tests" | **build** | Use existing `evals/evals.json` to produce `SKILL.md` via TDD |
 | "mejora este skill", "optimiza la descripción", "ejecuta el benchmark", "run evals on..." | **improve** | Run evaluation/benchmark loop on existing skill |
+| "ejecutar evals de...", "validar skill...", "verificar que el skill funciona", "correr los tests del skill", "comprobar el skill", "/skill-master evals" | **evals** | Delegate to `skill-verify` to execute TC-NNN cases |
 | Ambiguous (e.g., just "skill-master" or "quiero un skill") | **full-flow** | Fall back to full interactive flow below |
 
 **Mapping rule:**
@@ -50,6 +51,7 @@ This allows users to skip explicit flags and just say what they want.
 - Intent = **build** → act as `/skill-master build --manual`
   - Verify `evals/evals.json` exists; if not, inform user and offer to run `plan` first
 - Intent = **improve** → go directly to "Running and evaluating test cases" in Full Flow
+- Intent = **evals** → act as `/skill-verify <skill-name>`; invoke `skill-verify` directly
 - Add `--auto` behavior when the user's message includes phrases like "automáticamente", "sin pausas", "sin interacción", "just do it", "go ahead"
 
 ### Example
@@ -75,6 +77,10 @@ Generates `evals/evals.json` from an input source (story.md, testcases.md, free 
 **`/skill-master build [--skill-dir <path>] [--auto]`**
 Takes an existing `evals/evals.json` and produces SKILL.md via RED → GREEN → REFACTOR. Requires evals to exist first.
 > **Language triggers:** "build skill", "implementa el skill", "haz que pase los tests", "construye el skill a partir de las pruebas", "create skill", "make it pass the evals"
+
+**`/skill-master evals <skill-name>`**
+Delegates to `skill-verify` — runs all TC-NNN cases in `evals/evals.json` and returns a pass/fail report.
+> **Language triggers:** "ejecutar evals de...", "validar skill...", "comprobar que el skill funciona", "verificar skill", "correr los tests del skill"
 
 **`/skill-master` (no flags — default)**
 Full interactive flow. Detects where the user is and jumps in at the right stage.

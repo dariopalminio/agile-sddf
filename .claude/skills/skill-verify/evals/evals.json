@@ -1,0 +1,90 @@
+{
+  "skill": "skill-verify",
+  "version": "1.0.0",
+  "description": "Casos de prueba para skill-verify: ejecución de evals TC-NNN contra un skill y generación de informe pass/fail",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path-todos-los-casos-pasan",
+      "type": "happy-path",
+      "description": "evals.json válido con 2 casos, ambos pasan → informe con pass_rate 100%, tabla con ✅ en cada fila",
+      "input": {
+        "skill_name": "skill-test",
+        "evals_present": true,
+        "evals_format": "sddf",
+        "cases_count": 2,
+        "all_cases_pass": true
+      },
+      "expected": {
+        "contains": ["✅", "100%", "TC-001", "TC-002", "PASS"],
+        "not_contains": ["❌", "FAIL", "no encontrado"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-skill-no-encontrado",
+      "type": "fail-fast",
+      "description": "El skill indicado no existe en .claude/skills/ → ❌ con mensaje indicando la ruta esperada",
+      "input": {
+        "skill_name": "skill-inexistente-xyz"
+      },
+      "expected": {
+        "contains": ["❌", "skill-inexistente-xyz", "no encontrado"],
+        "not_contains": ["✅", "PASS", "pass_rate"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "fail-fast-evals-json-ausente",
+      "type": "fail-fast",
+      "description": "El skill existe pero no tiene evals/evals.json → ❌ con sugerencia de ejecutar skill-test-evals",
+      "input": {
+        "skill_name": "skill-sin-evals",
+        "skill_present": true,
+        "evals_present": false
+      },
+      "expected": {
+        "contains": ["❌", "evals/evals.json", "skill-test-evals"],
+        "not_contains": ["✅", "PASS", "pass_rate"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "error-handling-formato-trigger-evals",
+      "type": "error-handling",
+      "description": "evals.json usa formato trigger (array con query/should_trigger, no cases[]) → ❌ explicando que ese formato es para optimización de descripción, no para verificación",
+      "input": {
+        "skill_name": "skill-test",
+        "evals_present": true,
+        "evals_format": "trigger"
+      },
+      "expected": {
+        "contains": ["❌", "trigger", "skill-test-evals"],
+        "not_contains": ["✅", "PASS", "pass_rate"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-005",
+      "name": "edge-case-algunos-casos-fallan",
+      "type": "edge-case",
+      "description": "evals.json con 3 casos, 2 pasan y 1 falla → informe con pass_rate 66%, tabla con ✅ y ❌, sección de detalles del caso fallido",
+      "input": {
+        "skill_name": "skill-test",
+        "evals_present": true,
+        "evals_format": "sddf",
+        "cases_count": 3,
+        "passing_cases": ["TC-001", "TC-002"],
+        "failing_cases": ["TC-003"]
+      },
+      "expected": {
+        "contains": ["❌", "TC-003", "FAIL", "66%", "✅ TC-001", "✅ TC-002"],
+        "not_contains": ["100%", "All cases passed"]
+      },
+      "threshold": 0.90
+    }
+  ]
+}

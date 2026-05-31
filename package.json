@@ -59,6 +59,7 @@
     ".claude/skills/story-verify",
     ".claude/skills/story-testcases",
     ".claude/skills/story-implement",
+    ".claude/skills/skill-verify",
     ".claude/skills/changelog-generator",
     "scripts/",
     "README.md",
