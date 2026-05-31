@@ -3,10 +3,11 @@ name: skill-verify
 description: >-
   Ejecuta los casos de prueba TC-NNN definidos en evals/evals.json de un skill
   y devuelve un informe detallado de resultados pass/fail con evidencia por caso.
-  Usar cuando el usuario quiera verificar que un skill funciona correctamente,
-  ejecutar sus evals, comprobar la tasa de aciertos, o validar antes de publicar.
-  También responde a: "ejecutar evals del skill", "verificar skill", "correr los
-  tests del skill", "comprobar que el skill funciona", "run evals on skill".
+  En modo benchmark corre los evals N veces y calcula métricas estadísticas (mean ±
+  stddev de pass_rate, duración y tokens). Usar cuando el usuario quiera verificar
+  que un skill funciona correctamente, ejecutar sus evals, comprobar la tasa de
+  aciertos, medir rendimiento del skill, ejecutar benchmark del skill, o validar
+  antes de publicar.
 triggers:
   - "skill-verify"
   - "ejecutar evals del skill"
@@ -14,10 +15,13 @@ triggers:
   - "correr los tests del skill"
   - "comprobar que el skill funciona"
   - "run evals on skill"
-version: "1.0.0"
+  - "skill-verify benchmark"
+  - "benchmark del skill"
+  - "medir rendimiento del skill"
+version: "1.1.0"
 type: delegate
-input: "<skill-name> | <skill-path> [--report]"
-output: "Informe markdown pass/fail por caso TC-NNN + pass_rate"
+input: "<skill-name> [--report] | benchmark <skill-name> [--runs N] [--report]"
+output: "Informe markdown pass/fail (verify) o informe estadístico mean/stddev (benchmark)"
 invocable: true
 alwaysApply: false
 ---
@@ -32,17 +36,21 @@ Complementa el par simétrico de skills TDD:
 - `skill-test-evals` → *genera* `evals/evals.json` (fase RED: define qué debe cumplir el skill)
 - `skill-verify` → *ejecuta* `evals/evals.json` (fase de validación: comprueba que el skill cumple)
 
+**Modos de operación:**
+- **verify** (predeterminado): ejecuta cada caso TC-NNN una vez → informe pass/fail
+- **benchmark** (subcomando): ejecuta cada caso N veces → informe estadístico mean ± stddev
+
 **Qué hace este skill:**
 - Verifica que el skill objetivo existe y tiene `evals/evals.json` en formato SDDF
 - Ejecuta cada caso TC-NNN invocando el skill objetivo con el escenario descrito
 - Evalúa el output contra `expected.contains` y `expected.not_contains`
 - Calcula `pass_rate` por caso y global
 - Genera un informe markdown estructurado con tabla de resultados y detalle de fallos
+- En modo `benchmark`: corre cada caso N veces y calcula mean ± stddev de pass_rate, duración y tokens
 - Guarda el informe en `.tmp/skill-verify/{skill_name}/` si se pasa `--report`
 
 **Qué NO hace este skill:**
 - Crear ni modificar `evals/evals.json` — eso es responsabilidad de `skill-test-evals`
-- Ejecutar benchmarks con múltiples iteraciones — para eso usar `skill-benchmark`
 - Ejecutar evals en formato trigger (`query`/`should_trigger`) — ese formato es para `scripts/run_eval.py`
 
 ---
@@ -52,7 +60,16 @@ Complementa el par simétrico de skills TDD:
 | Parámetro | Tipo | Descripción |
 |---|---|---|
 | `{skill_name}` | posicional | Nombre del skill (ej. `story-design`) o ruta explícita |
+| `benchmark` | sub-comando | Activa modo estadístico — corre cada caso N veces en lugar de una |
+| `--runs N` | flag numérico | Número de iteraciones por caso en modo benchmark (default: 3, mínimo: 2, máximo: 10) |
 | `--report` | flag opcional | Guarda el informe en `.tmp/skill-verify/{skill_name}/report-YYYYMMDD.md` |
+
+### Sintaxis de uso
+
+/skill-verify {skill_name}                    → 1 run → pass/fail
+/skill-verify benchmark {skill_name}          → 3 runs × caso → mean/stddev
+/skill-verify benchmark {skill_name} --runs 5 → 5 runs × caso → métricas estadísticas
+/skill-verify benchmark {skill_name} --report → guarda benchmark-YYYYMMDD.md
 
 ---
 
@@ -77,7 +94,22 @@ Si retorna `✗ Entorno inválido`, detener la ejecución.
 
 ### Paso 1 — Resolver parámetros
 
-Si no se proporcionó argumento, preguntar:
+#### 1a. Detectar modo de ejecución
+
+Examinar los argumentos de invocación:
+- Si el **primer argumento** es exactamente `benchmark`:
+  - Registrar `$MODE = benchmark`
+  - El skill_name es el **segundo argumento** (si no hay segundo argumento, preguntar)
+  - Leer `--runs N` si está presente (default: 3); si N < 2 → `⚠️ --runs mínimo es 2. Usando N=2`; si N > 10 → `⚠️ --runs máximo recomendado es 10. Usando N=10`
+  - Emitir: `[INFO] Modo: benchmark | Runs por caso: {N}`
+- Si el primer argumento NO es `benchmark`:
+  - Registrar `$MODE = verify`
+  - El skill_name es el **primer argumento**
+  - Emitir: `[INFO] Modo: verify`
+
+#### 1b. Resolver el skill_name
+
+Si no se proporcionó skill_name (ningún argumento o primer argumento ausente en modo benchmark), preguntar:
 ```
 ¿Qué skill deseas verificar?
 Proporciona el nombre (ej. story-design) o la ruta completa al directorio.
@@ -236,6 +268,91 @@ Si no se pasó `--report`:
 
 ---
 
+---
+
+## Modo benchmark — `/skill-verify benchmark <skill-name>`
+
+Se activa cuando `$MODE = benchmark`. Los Pasos 0–2 (preflight, resolver parámetros,
+validar evals.json) son **idénticos** al modo verify. En lugar de ejecutar el Paso 3,
+ejecutar los siguientes pasos B3–B6:
+
+### Paso B3 — Ejecutar cada caso N veces
+
+Para cada caso en `cases[]`, ejecutar N iteraciones secuencialmente:
+
+Por cada run `r` en `[1..N]`:
+1. Registrar timestamp de inicio: `t_start`
+2. Construir el prompt de escenario (idéntico al Paso 3a del modo verify)
+3. Invocar el skill objetivo como subagente con el prompt construido
+4. Registrar timestamp de fin: `t_end`
+5. Evaluar output contra `expected.contains` / `expected.not_contains` (mismo criterio del Paso 3c)
+6. Registrar internamente: `{ run: r, pass: bool, duration_ms: t_end - t_start, tokens_estimated: len(output) / 4 }`
+
+Emitir progreso por caso:
+```
+[TC-001] run 1/3… ✅  |  run 2/3… ✅  |  run 3/3… ✅
+[TC-002] run 1/3… ✅  |  run 2/3… ❌  |  run 3/3… ✅
+```
+
+### Paso B4 — Calcular métricas estadísticas por caso
+
+Para cada caso, con los datos de las N runs:
+
+```
+pass_rate  = (cantidad de runs con pass / N) × 100
+durations  = [duration_ms de cada run]
+mean_ms    = suma(durations) / N
+stddev_ms  = sqrt( suma((d - mean_ms)^2) / max(N-1, 1) )   ← desviación estándar muestral
+tokens_est = promedio(tokens_estimated de cada run)
+
+estabilidad:
+  estable   → pass_rate = 100% o 0%   (resultado determinista)
+  inestable → 0% < pass_rate < 100%   (flakiness detectada)
+```
+
+Métricas globales:
+```
+global_pass_rate        = promedio(pass_rate de todos los casos)
+global_mean_duration_ms = promedio(mean_ms de todos los casos)
+global_stddev_duration_ms = promedio(stddev_ms de todos los casos)
+global_mean_tokens      = promedio(tokens_est de todos los casos)
+```
+
+### Paso B5 — Generar informe de benchmark
+
+Leer `assets/benchmark-report-template.md` del directorio del skill `skill-verify`.
+
+Completar el template:
+
+**Tabla de métricas por caso** (campo `{rows}`):
+```
+| TC-001 | nombre-del-caso | 100%  | 245 ms | ±12 ms  | 3 |
+| TC-002 | otro-caso       | 66%   | 310 ms | ±45 ms  | 3 |
+```
+
+**Sección de casos inestables** (campo `{unstable_cases}`):
+Si hay casos con `0% < pass_rate < 100%`:
+```
+⚠️ Casos inestables detectados (el resultado varía entre runs — posible flakiness):
+- TC-002: 2/3 runs pasaron (66%) → el skill produce resultados inconsistentes en este escenario
+```
+Si no hay casos inestables: omitir la sección.
+
+**Mensaje final** (campo `{summary_message}`):
+- `global_pass_rate ≥ 95%`: `✅ Benchmark completado. Pass rate global: X%. El skill es estable.`
+- `global_pass_rate < 95%`: `⚠️ Pass rate: X%. Considera ejecutar /skill-master build para mejorar el skill.`
+
+### Paso B6 — Guardar informe (si `--report`)
+
+Si se pasó el flag `--report`:
+- Crear directorio `.tmp/skill-verify/{skill_name}/` si no existe
+- Escribir informe en `.tmp/skill-verify/{skill_name}/benchmark-YYYYMMDD.md`
+- Emitir: `📄 Benchmark guardado en: .tmp/skill-verify/{skill_name}/benchmark-YYYYMMDD.md`
+
+Si no se pasó `--report`: mostrar el informe directamente en la conversación.
+
+---
+
 ## Manejo de errores
 
 | Condición | Mensaje | Acción |
@@ -245,6 +362,8 @@ Si no se pasó `--report`:
 | Formato trigger detectado | `❌ Este evals.json usa formato trigger ... skill-verify requiere formato SDDF con cases[]` | Detener |
 | `cases[]` vacío | `⚠️ evals.json no contiene casos. Añade al menos TC-001 antes de verificar.` | Detener |
 | Subagente falla al ejecutar caso | Marcar caso como `❌ ERROR` con mensaje del subagente como evidencia | Continuar con siguiente caso |
+| `--runs < 2` en modo benchmark | `⚠️ --runs mínimo es 2. Usando N=2.` | Continuar con N=2 |
+| `--runs > 10` en modo benchmark | `⚠️ --runs máximo recomendado es 10. Usando N=10.` | Continuar con N=10 |
 
 ---
 
@@ -282,4 +401,4 @@ Si no se pasó `--report`:
 
 - **Par simétrico:** `skill-test-evals` (genera evals) ↔ `skill-verify` (ejecuta evals)
 - **Formato de evals:** `references/skill-evals-format.md` en `skill-master`
-- **Benchmark estadístico:** `skill-benchmark` (múltiples iteraciones con media/stddev)
+- **Infraestructura benchmark:** `scripts/aggregate_benchmark.py` en `skill-master` (agregación avanzada si se necesita)

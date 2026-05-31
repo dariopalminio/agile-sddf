@@ -85,6 +85,40 @@
         "not_contains": ["100%", "All cases passed"]
       },
       "threshold": 0.90
+    },
+    {
+      "id": "TC-006",
+      "name": "benchmark-happy-path-metricas-estadisticas",
+      "type": "happy-path",
+      "description": "Invocación con subcomando 'benchmark' y 2 casos, 3 runs cada uno → informe con mean pass_rate, mean_duration_ms y stddev por caso",
+      "input": {
+        "subcommand": "benchmark",
+        "skill_name": "skill-test",
+        "evals_present": true,
+        "evals_format": "sddf",
+        "cases_count": 2,
+        "runs": 3
+      },
+      "expected": {
+        "contains": ["mean", "stddev", "pass_rate", "duration_ms", "benchmark", "TC-001", "TC-002"],
+        "not_contains": ["❌ No se encontró", "evals/evals.json"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-007",
+      "name": "benchmark-fail-fast-skill-no-encontrado",
+      "type": "fail-fast",
+      "description": "Subcomando 'benchmark' con skill inexistente → misma detención que modo verify: ❌ con nombre del skill",
+      "input": {
+        "subcommand": "benchmark",
+        "skill_name": "skill-inexistente-xyz"
+      },
+      "expected": {
+        "contains": ["❌", "skill-inexistente-xyz", "no encontrado"],
+        "not_contains": ["mean", "stddev", "benchmark report"]
+      },
+      "threshold": 1.0
     }
   ]
 }
