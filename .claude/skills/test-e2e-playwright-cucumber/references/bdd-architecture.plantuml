@@ -1,0 +1,65 @@
+@startuml
+!theme plain
+
+title **BDD Test Architecture with Cucumber + POM**
+
+' Components
+package "1. Feature File (*.feature)" as FEATURE #LightBlue
+package "2. Page Object (POM)" as POM #LightGreen
+package "3. Step Definitions" as STEPS #LightYellow
+package "4. World (Context)" as WORLD #LightCoral
+package "5. Hooks (Setup/Teardown)" as HOOKS #LightGray
+
+' Relationships
+FEATURE --> STEPS : "describes scenarios (Gherkin)"
+STEPS --> POM : "use high-level methods"
+STEPS --> WORLD : "access page/driver via World"
+WORLD --> POM : "instantiates Page Objects"
+HOOKS --> WORLD : "initializes/cleans up World"
+
+' Explanatory notes
+note right of FEATURE
+  **Example:** login.feature
+  Contains scenarios in
+  Given/When/Then format. It is the
+  executable specification.
+end note
+
+note right of POM
+  **Example:** LoginPage.ts
+  Encapsulates locators and
+  page actions.
+  Methods like `loginWithValidCredentials()`
+end note
+
+note right of STEPS
+  **Example:** login.steps.ts
+  Maps each Gherkin step to
+  an action on the Page Object.
+  Delegates UI logic.
+end note
+
+note right of WORLD
+  **Example:** world.ts
+  Shared context between steps.
+  Stores `page`, `browser`,
+  Page Object instances.
+end note
+
+note right of HOOKS
+  **Example:** hooks.ts
+  Defines `@Before` and `@After`.
+  Initializes World (driver, page)
+  and cleans up after each scenario.
+end note
+
+' Execution flow
+note bottom of HOOKS
+  **Flow:**
+  1. Hooks run `@Before` → create World.
+  2. Cucumber reads Feature and executes Steps.
+  3. Steps use World and Page Objects.
+  4. On completion, `@After` releases resources.
+end note
+
+@enduml

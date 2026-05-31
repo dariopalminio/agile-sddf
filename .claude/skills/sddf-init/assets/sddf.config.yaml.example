@@ -1,0 +1,42 @@
+# Ejemplo de configuración SDDF para desarrollo de librería UI (React + TypeScript)
+# Proyecto: componentes React con RTL para tests de componente y Playwright+Cucumber para E2E
+#
+# Uso: copiar como sddf.config.yaml en la raíz del proyecto y ajustar comandos según el package manager.
+
+defaults:
+  unit:
+    command: "pnpm run test:unit"
+    required: false
+  component:
+    command_template: "pnpm run test:component -- {{test_file}}"
+    required: true
+  integration:
+    command: "pnpm run test:integration"
+    required: false
+  contract:
+    command: "pnpm run test:contract"
+    required: false
+  e2e:
+    command: "pnpm run test:e2e"
+    required: true
+  performance:
+    command: "pnpm run test:performance"
+    required: false
+  eval:
+    command: "pnpm run test:eval"
+    required: true
+
+implementing:
+  test_generators:
+    - type: component
+      skill: test-component-react-testing-library
+      required: true
+    - type: e2e
+      skill: test-e2e-playwright-cucumber
+      required: true
+    - type: eval
+      skill: none
+      required: false
+  code_generator:
+    skill: impl-frontend-library-react-component
+    required: true

@@ -4,8 +4,8 @@ type: release
 id: EPIC-14
 slug: fabrica-de-skills
 title: "Fábrica de Skills"
-status: DEV-IN-PROGRESS
-substatus: IN-PROGRESS
+status: COMPLETED
+substatus: DONE
 parent: PROJ-01-agile-sddf
 created: 2026-05-28
 updated: 2026-05-28
