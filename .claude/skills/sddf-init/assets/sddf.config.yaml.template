@@ -1,0 +1,39 @@
+# Valores por defecto para todos los tipos
+# este archivo debe diseñarse y reconstruiserse para ser fácilmente extendible y adaptable a diferentes proyectos y tecnologías
+defaults:
+  unit:
+    command: "pnpm run test:unit"
+    required: false
+  component:
+    command_template: "pnpm run test:component -- {{test_file}}"
+    required: false
+  integration:
+    command: "pnpm run test:integration"
+    required: false
+  contract:
+    command: "pnpm run test:contract"
+    required: false
+  e2e:
+    command: "pnpm run test:e2e"
+    required: false
+  performance:
+    command: "pnpm run test:performance"
+    required: false
+  eval:
+    command: "pnpm run test:eval"
+    required: true
+
+implementing:
+  test_generators:
+    - type: unit
+      skill: none
+      required: false
+    - type: e2e
+      skill: none
+      required: false
+    - type: eval
+      skill: skill-test-evals
+      required: true
+  code_generator:
+    skill: skill-master
+    required: true

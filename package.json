@@ -62,6 +62,7 @@
     ".claude/skills/story-testcases",
     ".claude/skills/changelog-generator",
     "scripts/",
+    "sddf.config.yaml",
     "README.md",
     "LICENSE"
   ],

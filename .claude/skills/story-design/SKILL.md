@@ -214,12 +214,12 @@ Registrar internamente:
 
 ### Paso 3b — Cargar skills complementarios de la fase `plan`
 
-Leer `docs/policies/sddf-config.yaml`.
+Leer `sddf.config.yaml`.
 
 Si el archivo no existe: emitir ⚠️ y continuar con Paso 4.
 
 ```
-⚠️ No se encontró docs/policies/sddf-config.yaml
+⚠️ No se encontró sddf.config.yaml
    Se omite la carga de skills complementarios. Continúa con flujo genérico.
 ```
 

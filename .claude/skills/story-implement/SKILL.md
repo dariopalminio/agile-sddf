@@ -2,7 +2,7 @@
 name: story-implement
 description: >-
   Orquesta el ciclo TDD completo (RED→GREEN→REFACTOR) para una historia SDDF, delegando
-  generación de pruebas y código a skills configurados en sddf-config.yaml. Soporta modo
+  generación de pruebas y código a skills configurados en sddf.config.yaml. Soporta modo
   interactivo (predeterminado: pausas entre fases para confirmación manual) y modo
   automático (--auto: ciclo completo sin interrupciones, ideal para CI).
   Usar cuando el practitioner quiere implementar una historia con TDD, ejecutar el
@@ -21,7 +21,7 @@ triggers:
   - "--auto"
 version: "1.2.0"
 type: delegate
-input: "story.md + testcases.md (opcional) + sddf-config.yaml + --auto (opcional)"
+input: "story.md + testcases.md (opcional) + sddf.config.yaml + --auto (opcional)"
 output: "archivos de prueba + código de producción + cycle-status.json + story.md actualizada a CODE-REVIEW/IN-PROGRESS"
 invocable: true
 alwaysApply: false
@@ -31,7 +31,7 @@ alwaysApply: false
 
 ## Objetivo
 
-Orquesta el ciclo TDD (RED → GREEN → REFACTOR) para una historia SDDF delegando la generación de pruebas y código a skills especializados declarados en `docs/policies/sddf-config.yaml`. El skill es agnóstico al stack: solo lee configuración y delega; los skills de generación son subagentes independientes.
+Orquesta el ciclo TDD (RED → GREEN → REFACTOR) para una historia SDDF delegando la generación de pruebas y código a skills especializados declarados en `sddf.config.yaml`. El skill es agnóstico al stack: solo lee configuración y delega; los skills de generación son subagentes independientes.
 
 **Posición en el pipeline:**
 ```
@@ -40,7 +40,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 
 **Qué hace este skill:**
 - Invoca `skill-preflight` como Paso 0
-- **Fase RED:** Lee `implementing.test_generators` de `sddf-config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden; confirma estado rojo; escribe `red-phase-status.json`
+- **Fase RED:** Lee `implementing.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden; confirma estado rojo; escribe `red-phase-status.json`
 - **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implementing.code_generator`; invoca el code_generator con `phase:"GREEN"`; confirma que los tests pasan
 - **Fase REFACTOR:** Invoca el code_generator con `phase:"REFACTOR"`; verifica no-regresión ejecutando comandos de test
 - Al completar el ciclo exitosamente: actualiza `story.md` a `CODE-REVIEW/IN-PROGRESS` y escribe `cycle-status.json`
@@ -100,11 +100,11 @@ Emitir: `[INFO] Modo de ejecución: {$EXEC_MODE}`
 
 ### Paso 1 — Leer configuración de test_generators
 
-Leer `docs/policies/sddf-config.yaml`.
+Leer `sddf.config.yaml`.
 
-**Si `sddf-config.yaml` no existe:**
+**Si `sddf.config.yaml` no existe:**
 ```
-❌ docs/policies/sddf-config.yaml no encontrado
+❌ sddf.config.yaml no encontrado
 
 Verifica que el archivo existe o ejecuta /sddf-init para inicializar el entorno.
 ```
@@ -114,7 +114,7 @@ Extraer la sección `implementing.test_generators`.
 
 **Si la sección `implementing` no existe o `test_generators` está vacío:**
 ```
-[WARN] No hay test_generators configurados en sddf-config.yaml — Fase RED sin generación de pruebas
+[WARN] No hay test_generators configurados en sddf.config.yaml — Fase RED sin generación de pruebas
 ```
 Continuar con Paso 4 (confirmación RED) sin invocar subagentes.
 
@@ -134,9 +134,9 @@ Para cada entry en `test_generators`:
 2. Verificar existencia con Glob
 3. **Si no existe y `required: true`:**
    ```
-   ❌ Skill '<nombre>' declarado en sddf-config.yaml no encontrado en .claude/skills/
+   ❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en .claude/skills/
    
-   Verifica el nombre del skill en sddf-config.yaml o instálalo antes de continuar.
+   Verifica el nombre del skill en sddf.config.yaml o instálalo antes de continuar.
    ```
    Detener la ejecución sin generar ningún archivo de prueba.
 4. **Si no existe y `required: false`:**
@@ -193,7 +193,7 @@ Para cada entry de `test_generators` no omitida (en el orden del YAML):
 
 Para cada tipo generado exitosamente:
 
-1. Leer `defaults.{type}.command` de `sddf-config.yaml`
+1. Leer `defaults.{type}.command` de `sddf.config.yaml`
 2. **Si el comando existe:**
    - Ejecutarlo en el directorio raíz del proyecto
    - Exit code ≠ 0: `✅ Tests en estado rojo (fallan correctamente) — tipo: {tipo}`
@@ -279,15 +279,15 @@ Mostrar: `[INFO] Precondición RED verificada — story_id: {$RED_STORY_ID}, {N}
 
 ### Paso 8 — Leer y validar code_generator
 
-Leer `docs/policies/sddf-config.yaml` (ya cargado en Paso 1).
+Leer `sddf.config.yaml` (ya cargado en Paso 1).
 
 Extraer `implementing.code_generator`:
 
 **Si `implementing.code_generator` no existe en el YAML:**
 ```
-❌ implementing.code_generator no declarado en sddf-config.yaml
+❌ implementing.code_generator no declarado en sddf.config.yaml
 
-Añade la sección code_generator bajo implementing en docs/policies/sddf-config.yaml.
+Añade la sección code_generator bajo implementing en sddf.config.yaml.
 ```
 Detener la ejecución.
 
@@ -299,7 +299,7 @@ Verificar existencia: `.claude/skills/{skill}/SKILL.md` (Glob).
 ```
 ❌ Skill '{skill}' declarado como code_generator no encontrado en .claude/skills/
 
-Verifica el nombre del skill en sddf-config.yaml o instálalo antes de continuar.
+Verifica el nombre del skill en sddf.config.yaml o instálalo antes de continuar.
 ```
 Detener la ejecución.
 
@@ -352,7 +352,7 @@ Detener la ejecución **sin ejecutar la Fase REFACTOR ni modificar story.md**.
 
 Para cada tipo en `$RED_GENERATORS_INVOKED`:
 
-1. Leer `defaults.{type}.command` de `sddf-config.yaml`
+1. Leer `defaults.{type}.command` de `sddf.config.yaml`
 2. **Si el comando existe:**
    - Ejecutarlo en el directorio raíz del proyecto
    - Exit code = 0: `✅ Fase GREEN exitosa — tipo: {tipo} (tests pasan)`
@@ -423,7 +423,7 @@ Detener sin modificar story.md.
 **Si retorna `status: ok`:** verificar no-regresión ejecutando comandos de test por tipo:
 
 Para cada tipo en `$RED_GENERATORS_INVOKED`:
-1. Leer `defaults.{type}.command` de `sddf-config.yaml`
+1. Leer `defaults.{type}.command` de `sddf.config.yaml`
 2. Si existe, ejecutar:
    - Exit code = 0: `✅ Fase REFACTOR sin regresiones — tipo: {tipo}`
    - Exit code ≠ 0: recopilar tests fallidos y emitir:
@@ -494,10 +494,10 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| `sddf-config.yaml` no encontrado | `❌ docs/policies/sddf-config.yaml no encontrado` | Detener ejecución |
+| `sddf.config.yaml` no encontrado | `❌ sddf.config.yaml no encontrado` | Detener ejecución |
 | `implementing.test_generators` vacío o ausente | `[WARN] No hay test_generators configurados — Fase RED sin generación de pruebas` | Continuar sin subagentes |
 | Tipo activo sin campo `skill` | `[WARN] Sin skill declarado para tipo '<tipo>' — omitiendo ese tipo` | Omitir tipo |
-| Skill `required:true` no existe (test_generator) | `❌ Skill '<nombre>' declarado en sddf-config.yaml no encontrado en .claude/skills/` | Detener sin generar archivos |
+| Skill `required:true` no existe (test_generator) | `❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en .claude/skills/` | Detener sin generar archivos |
 | Skill `required:false` no existe (test_generator) | `[WARN] Skill '<nombre>' no encontrado — omitiendo tipo '<tipo>'` | Omitir tipo y continuar |
 | `testcases.md` ausente | `⚠️ testcases.md no encontrado — generando pruebas desde story.md y design.md` | Continuar con fallback |
 | `story.md` o `design.md` ausentes | `❌ Artefactos de especificación insuficientes (falta story.md y/o design.md)` | Detener ejecución |
@@ -505,7 +505,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 | Tests pasan sin implementación (Fase RED) | `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos` | Advertir, continuar |
 | `red-phase-status.json` no existe | `❌ Precondición RED no cumplida: .tmp/story-implement/red-phase-status.json no encontrado` | Detener Fase GREEN |
 | `red_confirmed: false` en red-phase-status.json | `❌ Precondición RED no cumplida: red_confirmed es false` | Detener Fase GREEN |
-| `implementing.code_generator` no declarado | `❌ implementing.code_generator no declarado en sddf-config.yaml` | Detener Fase GREEN |
+| `implementing.code_generator` no declarado | `❌ implementing.code_generator no declarado en sddf.config.yaml` | Detener Fase GREEN |
 | code_generator `required:true` no existe | `❌ Skill '{skill}' declarado como code_generator no encontrado en .claude/skills/` | Detener Fase GREEN |
 | code_generator `required:false` no existe | `[WARN] Skill '{skill}' no encontrado y required:false — omitiendo Fases GREEN y REFACTOR` | Terminar limpiamente |
 | Subagente retorna `status: error` (Fase GREEN) | `❌ Fase GREEN fallida: el skill '{skill}' retornó error` | Detener sin REFACTOR, story.md sin cambio |

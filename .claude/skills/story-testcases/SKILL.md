@@ -37,7 +37,7 @@ story-design → story-tasking → story-testcases → story-analyze → story-i
 - Deriva casos de prueba desde los ACs de `story.md` y los elementos de `design.md`
 - Clasifica automáticamente cada caso por tipo según reglas semánticas
 - Enriquece la cobertura con `tasks.md` si está disponible (opcional)
-- Integra referencias de la fase `plan` desde `sddf-config.yaml`
+- Integra referencias de la fase `plan` desde `sddf.config.yaml`
 - Soporta `--force` para sobreescritura sin interacción (útil en CI)
 
 **Qué NO hace este skill:**
@@ -54,7 +54,7 @@ story-design → story-tasking → story-testcases → story-analyze → story-i
 | `story.md` | ✓ obligatorio | Fuente de ACs y escenarios Gherkin |
 | `design.md` | ✓ obligatorio | Fuente de elementos estructurales (componentes, interfaces, endpoints) |
 | `tasks.md` | opcional | Enriquece la cobertura con casos derivados de tareas tipo code/test |
-| `sddf-config.yaml` | opcional | Referencias de la fase `plan` para enriquecer el contexto |
+| `sddf.config.yaml` | opcional | Referencias de la fase `plan` para enriquecer el contexto |
 
 ## Parámetros
 
@@ -100,9 +100,9 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener sin gener
 
 Usar `$SPECS_BASE` (resuelto por preflight) para todas las rutas.
 
-Leer `docs/policies/sddf-config.yaml` (si existe). Extraer `complementary_skills.plan.skills`.
+Leer `sddf.config.yaml` (si existe). Extraer `complementary_skills.plan.skills`.
 Para cada entrada con `type: reference`, leer los `.md` en `references_path` y añadirlos al contexto.
-Si `sddf-config.yaml` no existe: emitir `⚠️ sddf-config.yaml no encontrado — continúa con flujo genérico`.
+Si `sddf.config.yaml` no existe: emitir `⚠️ sddf.config.yaml no encontrado — continúa con flujo genérico`.
 Si una `references_path` no existe: emitir `[WARN] referencias no encontradas para <name> — continúa sin ellas`.
 
 ---
