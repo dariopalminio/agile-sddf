@@ -87,7 +87,7 @@
           "1"
         ],
         "not_contains": [
-          "APROBADA",
+          "Decision: APROBADA",
           "Decisión: RECHAZAR"
         ]
       },
