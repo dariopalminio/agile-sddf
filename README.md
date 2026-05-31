@@ -39,7 +39,6 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Meta-framework de skills**: crea y benchmarkea nuevas skills con ciclo iterativo — `skill-master` orquesta el flujo completo de creación; `skill-test-evals` gestiona el ciclo de vida de los evals (generar, ejecutar, benchmarkear) con tres modos: `generate` (crea `evals/evals.json` + skeleton SKILL.md desde descripción libre o SKILL.md existente), `evals` (1 run → informe pass/fail con evidencia) y `benchmark` (N runs × caso → métricas estadísticas mean ± stddev); integrado en el ciclo TDD RED del `story-implement`
 - **Trazabilidad completa**: IDs únicos FEAT-NNN y manejo de sub-estados IN‑PROGRESS/Ready en cada documento del pipeline
 - **Docs as Wiki**: skill docs-wiki-builder para generar documentación de proyecto en formato wiki navegable. Incluye un skill header-aggregation para generar encabezados frontmatter de archivo '.md'. Permite navegación bidireccional entre documentos, generación de índices automáticos y visualización de grafos con "Foam for VSCode".
-- **Fábrica de skills**: Un skill-master para crear nuevos skills con ciclo iterativo de generación → benchmarking → ajuste. Y un skill skill-test-evals para gestionar el ciclo de vida completo de pruebas y benchmarking de skills propios personalizados.
 - **Auditoría de seguridad**: skill `security-audit` para análisis automático de vulnerabilidades en código fuente, con evaluación OWASP Top 10, OWASP API Top 10 y OWASP Top 10 para LLMs.
 
 ## Installation
