@@ -30,13 +30,16 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Gestión de épicas de releases**: planificación de releases con `project-plan.md` y generación automática de artefactos de release (feature specs, historias de usuario) con trazabilidad completa
 - **Gestión de historias de usuario**: creación (Como/Quiero/Para + Gherkin), evaluación con rúbrica FINVEST (Likert 1–5), splitting con 8 patrones y refinamiento iterativo
 - **SDD workflow**: Se implemente un workflow a nivel de story "SPECIFYING --> PLANNING --> READY-FOR-IMPLEMENT --> IMPLEMENTING --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED" con skills dedicados para cada fase y generación de artefactos específicos (design.md, tasks.md, analyze.md, implement-report.md, code-review-report.md)
-- **Pipeline SDD completo de historia**: planning y implementación tarea a tarea — `story-plan` orquesta `story-design` → `story-tasking` → `story-analyze` en un solo comando; `story-implement` implementa con TDD, generando test + código de producción por cada tarea con trazabilidad completa y `story-code-review` para revisión de código post-implementación.
+- **Pipeline SDD completo de historia**: planning y implementación tarea a tarea — `story-plan` orquesta `story-design` → `story-tasking` → `story-testcases` → `story-analyze` en un solo comando; `story-implement` ejecuta el ciclo TDD completo (RED→GREEN→REFACTOR) delegando a skills configurables por stack tecnológico (`sddf.config.yaml`): genera tests con el skill `test_generator` declarado, implementa código con el `code_generator` y refactoriza sin romper suites; soporta modo interactivo (con pausas de confirmación entre fases) y modo automático (`--auto`) para CI; `story-code-review` para revisión multi-agente post-implementación
+- **Testing especializado y E2E**: skills plug-in para generar pruebas reales ejecutables en proyectos existentes — `test-component-react-testing-library` genera tests de componentes React con RTL trazables a criterios de aceptación; `test-e2e-playwright-cucumber` y `test-e2e-cypress-cucumber` generan archivos `.feature` y step definitions TypeScript directamente desde escenarios Gherkin de `story.md`; `impl-frontend-library-react-component` implementa componentes de librerías UI (MUI, Shadcn, etc.) desde el diseño técnico; todos configurables en `sddf.config.yaml` como `test_generators` o `code_generator`
+- **Configuración operacional por stack (`sddf.config.yaml`)**: archivo de configuración en la raíz del proyecto que declara los skills activos para cada fase del pipeline TDD (qué skill genera los tests de componente, qué skill genera los E2E, qué skill implementa el código); permite añadir nuevos skills de testing o implementación sin modificar los orquestadores; generado automáticamente por `sddf-init` desde un template canónico con soporte para ejemplos de configuración por stack (ej. `sddf.config.yaml.example` para librería UI React)
 - **Políticas de proyecto**: generación de `constitution.md` y `definition-of-done-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
 - **Integración OpenSpec**: exploración, propuesta, implementación y archivado de cambios con trazabilidad completa
 - **Multi-runtime**: los mismos skills operan en Claude Code, GitHub Copilot, Codex/Cursor/OpenCode, Google Gemini Gems y Atlassian Rovo sin modificar el SKILL.md fuente
-- **Meta-framework**: crea, benchmarkea y distribuye nuevas skills con ciclo iterativo (skill-master)
+- **Meta-framework de skills**: crea y benchmarkea nuevas skills con ciclo iterativo — `skill-master` orquesta el flujo completo de creación; `skill-test-evals` gestiona el ciclo de vida de los evals (generar, ejecutar, benchmarkear) con tres modos: `generate` (crea `evals/evals.json` + skeleton SKILL.md desde descripción libre o SKILL.md existente), `evals` (1 run → informe pass/fail con evidencia) y `benchmark` (N runs × caso → métricas estadísticas mean ± stddev); integrado en el ciclo TDD RED del `story-implement`
 - **Trazabilidad completa**: IDs únicos FEAT-NNN y manejo de sub-estados IN‑PROGRESS/Ready en cada documento del pipeline
 - **Docs as Wiki**: skill docs-wiki-builder para generar documentación de proyecto en formato wiki navegable. Incluye un skill header-aggregation para generar encabezados frontmatter de archivo '.md'. Permite navegación bidireccional entre documentos, generación de índices automáticos y visualización de grafos con "Foam for VSCode".
+- **Fábrica de skills**: Un skill-master para crear nuevos skills con ciclo iterativo de generación → benchmarking → ajuste. Y un skill skill-test-evals para gestionar el ciclo de vida completo de pruebas y benchmarking de skills propios personalizados.
 - **Auditoría de seguridad**: skill `security-audit` para análisis automático de vulnerabilidades en código fuente, con evaluación OWASP Top 10, OWASP API Top 10 y OWASP Top 10 para LLMs.
 
 ## Installation
@@ -73,14 +76,14 @@ Después de instalar el paquete, inicializa la estructura de directorios SDDF en
 /sddf-init
 ```
 
-Este skill crea los directorios base de artefactos bajo `<SPECS_BASE>/specs/` (por defecto `docs/`), genera `openspec/config.yaml` y el archivo `.env.template` con la variable `SDDF_ROOT`. Solo es necesario ejecutarlo una vez por proyecto.
+Este skill crea los directorios base de artefactos bajo `<SPECS_BASE>/specs/` (por defecto `docs/`), genera `sddf.config.yaml` con la configuración operacional del framework y el archivo `.env.template` con la variable `SDDF_ROOT`. Solo es necesario ejecutarlo una vez por proyecto.
 
 ```
 ── sddf-init ────────────────────────────────────
 [CREADO]     docs/specs/projects/
 [CREADO]     docs/specs/releases/
 [CREADO]     docs/specs/stories/
-[CREADO]     openspec/config.yaml
+[CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 ─────────────────────────────────────────────────
 ✓ Entorno SDDF inicializado correctamente en docs/
@@ -230,6 +233,7 @@ docs/specs/
         ├── design.md                    # diseño técnico (story-design)
         ├── tasks.md                     # plan de tareas (story-tasking)
         ├── analyze.md                   # reporte de coherencia (story-analyze)
+        ├── testcases.md                 # tabla de casos de prueba tipificados UT/CT/IT/API/E2E/EV (story-testcases)
         ├── implement-report.md          # reporte de implementación (story-implement)
         ├── code-review-report.md        # reporte de revisión de código (story-code-review)
         ├── fix-directives.md            # instrucciones de corrección cuando hay bloqueantes (story-code-review)
