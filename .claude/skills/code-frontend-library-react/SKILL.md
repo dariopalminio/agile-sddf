@@ -1,5 +1,5 @@
 ---
-name: impl-frontend-library-react-component
+name: code-frontend-library-react
 description: |
   Implement React components for React UI Library: CSS pure + BEM + design tokens, TypeScript strict, tsup build, Turborepo monorepo. Use when creating new components, adding variants, or integrating with demo/storybook apps.
 
@@ -13,7 +13,7 @@ metadata:
   output-format: spec, code
 ---
 
-# React UI — Component Implementation
+#  Code Front-end Library-React Components (React UI Library)
 
 Implement production-ready components for `packages/ui` following the project's strict conventions: plain CSS + CSS variables, BEM naming, two-layer token system, TypeScript strict, and Next.js App Router compatibility.
 

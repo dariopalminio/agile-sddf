@@ -38,5 +38,5 @@ implementing:
       skill: none
       required: false
   code_generator:
-    skill: impl-frontend-library-react-component
+    skill: code-frontend-library-react
     required: true

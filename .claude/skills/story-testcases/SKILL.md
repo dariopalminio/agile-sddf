@@ -74,13 +74,15 @@ Aplicar esta tabla al procesar cada elemento de `story.md` y `design.md`:
 
 | Señal en los artefactos | Prefijo | Tipo |
 |-------------------------|---------|------|
-| Función/método público de módulo o servicio | UT | Unit |
-| Componente UI (props, eventos, renderizado) | CT | Component |
+| Escenario Gherkin completo en story.md | E2E | End-to-End |
 | Integración entre dos componentes o servicios | IT | Integration |
 | Endpoint REST (verbo HTTP + ruta definida) | API | API |
-| Escenario Gherkin completo en story.md | E2E | End-to-End |
-| Skill SDDF como sujeto de validación | EV | Eval |
 | Store/gestor de estado global (si aplica al proyecto) | ST | Store |
+| Carga esperada o estrés definido en criterios de aceptación | PT | Performance |
+| Contrato definido entre sistemas | CON | Contract |
+| Función/método público de módulo o servicio | UT | Unit |
+| Componente UI (props, eventos, renderizado) | CT | Component |
+| Skill SDDF como sujeto de validación | EV | Eval |
 
 **Cobertura mínima por tipo:**
 - UT: happy path + al menos un caso de error/borde
@@ -89,7 +91,8 @@ Aplicar esta tabla al procesar cada elemento de `story.md` y `design.md`:
 - API: request válido + respuesta esperada (happy path)
 - E2E: trazable 1-a-1 al escenario Gherkin de origen
 - EV: happy-path del skill + caso fail-fast
-
+- PT: carga esperada + estrés (si aplica)
+- CON: contrato definido + validación de contrato (si aplica)
 ---
 
 ## Flujo de ejecución

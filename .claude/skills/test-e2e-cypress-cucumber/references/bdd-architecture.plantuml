@@ -1,0 +1,72 @@
+@startuml bdd-architecture
+!theme plain
+
+title **BDD Test Architecture with Cypress + Cucumber + POM**
+
+' Components
+package "1. Feature File (*.feature)" as FEATURE #LightBlue
+package "2. Page Object (POM)" as POM #LightGreen
+package "3. Step Definitions" as STEPS #LightYellow
+package "4. Hooks (Setup/Teardown)" as HOOKS #LightGray
+package "5. World (optional)" as WORLD #LightCoral
+
+' Relationships
+FEATURE --> STEPS : "describes scenarios (Gherkin)"
+STEPS --> POM : "use static selector strings"
+HOOKS --> STEPS : "Before/After per scenario"
+STEPS --> WORLD : "access scenario data via this"
+WORLD --> HOOKS : "populated in Before hook"
+
+' Explanatory notes
+note right of FEATURE
+  **Example:** login.feature
+  Contains scenarios in
+  Given/When/Then format. It is the
+  executable specification.
+end note
+
+note right of POM
+  **Example:** LoginPage.ts
+  Exports static selector strings only.
+  Example:
+  static emailInput = "[data-testid='email']"
+  Steps import these — never hardcode selectors.
+end note
+
+note right of STEPS
+  **Example:** login.steps.ts
+  Maps each Gherkin step to
+  Cypress commands (cy.get, cy.click, etc.)
+  using Page Object selectors.
+  Delegates UI logic.
+end note
+
+note right of HOOKS
+  **Example:** hooks.ts
+  Before/After from @badeball/
+  cypress-cucumber-preprocessor.
+  NO browser launch — Cypress handles it.
+  Use for: cookies, API seed data, screenshots.
+end note
+
+note right of WORLD
+  **Example:** world.ts (optional)
+  Shared scenario-scoped data only.
+  No browser/page/context management.
+  Use when steps pass data between each other
+  (e.g., this.orderId created in Given,
+  read in Then).
+end note
+
+' Execution flow
+note bottom of HOOKS
+  **Cypress Flow:**
+  1. Cypress opens browser automatically.
+  2. Before hook runs (cookies, seed data).
+  3. Cucumber reads Feature → executes Steps.
+  4. Steps use cy.* commands + Page Objects.
+  5. After hook runs (screenshots on failure).
+  6. Cypress closes browser automatically.
+end note
+
+@enduml

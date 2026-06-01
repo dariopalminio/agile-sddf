@@ -7,46 +7,73 @@ Los casos de prueba siguen la pirámide de pruebas:
 
 ```
         /\
-       /  \      E2E Tests (10%)
+       /  \      E2E (10%)
       /----\     - Flujos críticos de usuario
-     /      \
-    /--------\   Integration + Contract Tests (20%)
-   /          \  - API, DB, comunicación entre servicios
-  /            \ - Contract (Pact, OpenAPI)
- /--------------\ 
-/                \ Component + Unit Tests (70%)
-------------------  - Componentes UI (con DOM simulado)
-                    - Lógica de negocio (funciones puras)
+     /      \    - Acceptance tests (criterios de aceptación como casos de prueba)
+    /        \   Integration (20%)
+   /          \  - API: API, DB, comunicación entre servicios
+  /------------\ - Contract Tests (Pact, OpenAPI)
+ /              \   Unit (70%)
+/                \  - CT: Componentes UI (con DOM simulado)
+------------------  - UT: Lógica de negocio (funciones puras)
                     - Condiciones de borde
 --- Extras (fuera de la pirámide) ---
-- Performance Tests (carga, estrés, resistencia)
-- Eval Tests (skills, prompts, agentes) → su propia pirámide
+- PT: Performance Tests (carga, estrés, resistencia)
+- EV: Eval Tests (skills, prompts, agentes) → su propia pirámide
 ```
 
 ---
 
+## Reglas de clasificación de tipos de test
+
+Aplicar esta tabla a la clasificación de pruebas para asegurar consistencia y claridad en la comunicación:
+
+| Señal en los artefactos | Prefijo | Tipo |
+|-------------------------|---------|------|
+| Escenario Gherkin completo en story.md | E2E | End-to-End |
+| Integración entre dos componentes o servicios | IT | Integration |
+| Endpoint REST (verbo HTTP + ruta definida) | API | API |
+| Store/gestor de estado global (si aplica al proyecto) | ST | Store |
+| Carga esperada o estrés definido en criterios de aceptación | PT | Performance |
+| Contrato definido entre sistemas | CON | Contract |
+| Función/método público de módulo o servicio | UT | Unit |
+| Componente UI (props, eventos, renderizado) | CT | Component |
+| Skill SDDF como sujeto de validación | EV | Eval |
+
+
+**Cobertura mínima por tipo:**
+- UT: happy path + al menos un caso de error/borde
+- CT: renderizado correcto + un caso de prop/evento edge
+- IT: flujo positivo de integración entre los dos componentes
+- API: request válido + respuesta esperada (happy path)
+- E2E: trazable 1-a-1 al escenario Gherkin de origen
+- EV: happy-path del skill + caso fail-fast
+- PT: carga esperada + estrés (si aplica)
+- CON: contrato definido + validación de contrato (si aplica)
+---
+
 ## Tipos de Prueba clásicas
 
-- **Unit Tests (unit):** La prueba unitaria verifica una unidad de código aislada (una función, un método, una clase) en un entorno controlado (entorno real o simulado como base de datos, servicios auxiliares, etc.), sin dependencias externas (bases de datos, APIs, el DOM). Su objetivo es confirmar que la lógica pura funciona correctamente. Las herramientas más comunes son: Jest (sin configuraciones especiales), Vitest, Mocha, Ava.
+- **Unit Tests (unit/UT):** La prueba unitaria verifica una unidad de código aislada (una función, un método, una clase) en un entorno controlado (entorno real o simulado como base de datos, servicios auxiliares, etc.), sin dependencias externas (bases de datos, APIs, el DOM). Su objetivo es confirmar que la lógica pura funciona correctamente. Las herramientas más comunes son: Jest (sin configuraciones especiales), Vitest, Mocha, Ava.
 
-- **Component Tests (component):** La Prueba de Componente de Frontend verifica un componente de UI (ej. un botón, un formulario, una tarjeta). A menudo implica renderizar el componente (sin el navegador real, usando un DOM simulado como JSDOM) e interactuar con él (simular clics, cambios de input). Su objetivo es que el componente se renderiza correctamente y responde a las interacciones del usuario según lo esperado. Las herramientas más comunes son: Jest + React Testing Library, Vitest + Vue Testing Library, Angular TestBed.
+- **Component Tests (component/CT):** La Prueba de Componente de Frontend verifica un componente de UI (ej. un botón, un formulario, una tarjeta). A menudo implica renderizar el componente (sin el navegador real, usando un DOM simulado como JSDOM) e interactuar con él (simular clics, cambios de input). Su objetivo es que el componente se renderiza correctamente y responde a las interacciones del usuario según lo esperado. Las herramientas más comunes son: Jest + React Testing Library, Vitest + Vue Testing Library, Angular TestBed.
 
-- **Integration Tests (integration):** Las pruebas de Integración/API verifican que dos o más componentes (módulos, servicios, microservicio/endpoint, sistemas) interactúan correctamente a través de sus interfaces (APIs, bases de datos, colas de mensajes). Su objetivo es detectar errores en la comunicación (formato de datos, autenticación, manejo de errores, transacciones) entre partes que funcionan correctamente de forma aislada. Las herramientas más comunes suelen ser: Supertest (Node), Spring MockMvc (Java), pytest con requests (Python), Postman/Newman, REST Assured.
+- **Integration Tests (integration/IT):** Las pruebas de Integración/API verifican que dos o más componentes (módulos, servicios, microservicio/endpoint, sistemas) interactúan correctamente a través de sus interfaces (APIs, bases de datos, colas de mensajes). Su objetivo es detectar errores en la comunicación (formato de datos, autenticación, manejo de errores, transacciones) entre partes que funcionan correctamente de forma aislada. Las herramientas más comunes suelen ser: Supertest (Node), Spring MockMvc (Java), pytest con requests (Python), Postman/Newman, REST Assured.
 
-- **Contract Tests (contract):** Verifican que dos sistemas independientes (cliente y servidor, productor y consumidor) adhierten al mismo "contrato" de comunicación (mensajes, campos, tipos, formato). Su objetivo es asegurar que los cambios en un sistema no rompan la compatibilidad con el otro, sin necesidad de pruebas de integración completas. Muy usado en microservicios. Las herramientas comunes suelen ser: Pact (más popular), Spring Cloud Contract, OpenAPI (Swagger) con validación de ejemplos.
+- **Contract Tests (contract/CON):** Verifican que dos sistemas independientes (cliente y servidor, productor y consumidor) adhierten al mismo "contrato" de comunicación (mensajes, campos, tipos, formato). Su objetivo es asegurar que los cambios en un sistema no rompan la compatibilidad con el otro, sin necesidad de pruebas de integración completas. Muy usado en microservicios. Las herramientas comunes suelen ser: Pact (más popular), Spring Cloud Contract, OpenAPI (Swagger) con validación de ejemplos.
 
-- **E2E Tests (e2e):** Las Pruebas End-to-End simulan un flujo completo de usuario, en un entorno completo (como staging), a través de todo el sistema: frontend, backend, base de datos, servicios externos. Su objetivo es validar que la aplicación funciona como un todo integrado desde la perspectiva del usuario final. Las herramientas comunes suelen ser: Cypress, Playwright, Selenium, TestCafe.
+- **E2E Tests (e2e/E2E):** Las Pruebas End-to-End simulan un flujo completo de usuario, en un entorno completo (como staging), a través de todo el sistema: frontend, backend, base de datos, servicios externos. Su objetivo es validar que la aplicación funciona como un todo integrado desde la perspectiva del usuario final. Las herramientas comunes suelen ser: Cypress, Playwright, Selenium, TestCafe.
 
-- **Performance Tests (performance):** Miden el comportamiento del sistema bajo una carga específica (número de usuarios simultáneos, peticiones por segundo, volumen de datos). Incluyen subtipos: estrés, resistencia, pico. El objetivo es identificar cuellos de botella, límites de escalabilidad, tiempos de respuesta degradados, fugas de memoria. Herramientas comunes: k6, JMeter, Gatling, Locust, Vegeta.
+- **Performance Tests (performance/PT):** Miden el comportamiento del sistema bajo una carga específica (número de usuarios simultáneos, peticiones por segundo, volumen de datos). Incluyen subtipos: estrés, resistencia, pico. El objetivo es identificar cuellos de botella, límites de escalabilidad, tiempos de respuesta degradados, fugas de memoria. Herramientas comunes: k6, JMeter, Gatling, Locust, Vegeta.
 
-- **Visual Tests (visual):** Las pruebas visuales verifican aspectos no funcionales (apariencia, diseño, layout) y requieren su propia estrategia y herramientas (Chromatic, Percy, Playwright). Se considera fuera de la Pirámide de Pruebas tradicional, pero es crucial para garantizar una experiencia de usuario consistente y de alta calidad, especialmente en aplicaciones con interfaces de usuario complejas o que dependen en gran medida del diseño visual. Las pruebas visuales pueden incluir pruebas de regresión visual (comparar capturas de pantalla con versiones anteriores), pruebas de diseño responsivo (verificar que la UI se adapte correctamente a diferentes tamaños de pantalla) y pruebas de accesibilidad visual (asegurar que los elementos sean visibles y legibles para todos los usuarios). Estas pruebas ayudan a detectar problemas que podrían no ser evidentes a través de pruebas funcionales tradicionales, como cambios no intencionados en el diseño, problemas de contraste o errores en la disposición de los elementos.
+- **Visual Tests (visual/VT):** Las pruebas visuales verifican aspectos no funcionales (apariencia, diseño, layout) y requieren su propia estrategia y herramientas (Chromatic, Percy, Playwright). Se considera fuera de la Pirámide de Pruebas tradicional, pero es crucial para garantizar una experiencia de usuario consistente y de alta calidad, especialmente en aplicaciones con interfaces de usuario complejas o que dependen en gran medida del diseño visual. Las pruebas visuales pueden incluir pruebas de regresión visual (comparar capturas de pantalla con versiones anteriores), pruebas de diseño responsivo (verificar que la UI se adapte correctamente a diferentes tamaños de pantalla) y pruebas de accesibilidad visual (asegurar que los elementos sean visibles y legibles para todos los usuarios). Estas pruebas ayudan a detectar problemas que podrían no ser evidentes a través de pruebas funcionales tradicionales, como cambios no intencionados en el diseño, problemas de contraste o errores en la disposición de los elementos.
 
 
 ---
 
 ## Tipos de Prueba para Skills, Prompts y Agentes
 
-- **Eval Tests (eval):** Un "Eval" es un caso de prueba que verifica que un LLM (como Claude), cuando utiliza un Skill, se comporta como se espera. Los Evals actúan como las pruebas unitarias y de integración para los Skills. Verifica la capacidad para desempeñar el rol completo de un agente/skill en un entorno controlado, ejecutando el LLM real, que imita la realidad. Las herramientas típicas son: skill-master, agent-skills-eval. Las herramientas como agent-skills-eval permiten comparativa con/sin skill (baseline) y que miden pass rate, tokens y latencia.
+- **Eval Tests (eval/EV):** Un "Eval" es un caso de prueba que verifica que un LLM (como Claude), cuando utiliza un Skill, se comporta como se espera. Los Evals actúan como las pruebas unitarias y de integración para los Skills. Verifica la capacidad para desempeñar el rol completo de un agente/skill en un entorno controlado, ejecutando el LLM real, que imita la realidad. Las herramientas típicas son: skill-master, agent-skills-eval. Las herramientas como agent-skills-eval permiten comparativa con/sin skill (baseline) y que miden pass rate, tokens y latencia.
 
 - **Benchmarks (comparativa with/without skill):** Un benchmark es una batería de pruebas estandarizada que se ejecuta de forma controlada para medir el rendimiento de un skill de manera objetiva y repetible. La característica más importante es la comparativa directa: ejecutar el mismo conjunto de pruebas dos veces, una con el skill activado (with_skill) y otra sin él (without_skill), y luego comparar los resultados. Esto permite evaluar el impacto real del skill en el rendimiento, la precisión, la eficiencia y otros aspectos clave, proporcionando una visión clara de su valor añadido.
 
@@ -68,9 +95,9 @@ Según SmartBear State of Software Quality 2025, el 68% de los equipos de desarr
 
 - **Smoke tests (smoke):** El Smoke tests es una regresión corta y rápida que ejecuta solo un subconjunto representativo de los tests E2E e integración (escenarios felices y críticos). Suele durar < 5 minutos. Ideal para ejecutar en cada commit, en cada pull request o en producción post-deploy, después de un cambio en una feature o con estrategia de despliegue Continuous Deployment (continuous) donde se desarrolla y despliega por historia. Usado para estrategias de despliegue acumulativa (batch) a nivel de historia donde se desarrolla por historia, con regresión corta, pero se despliega por release (allì con regresión larga). 
 
-- **Core regression (core):** Ejecuta un subconjunto más amplio de tests que la regresión corta, incluyendo escenarios críticos y algunos escenarios adicionales. Suele durar entre 5 y 30 minutos. Ideal para ejecutar en cada pull request importante o en builds nocturnos o en Pull Request.
+- **Core regression (sanity):** Ejecuta un subconjunto más amplio de tests que la regresión corta, incluyendo escenarios críticos y algunos escenarios adicionales. Suele durar entre 5 y 30 minutos. Ideal para ejecutar en cada pull request importante o en builds nocturnos o en Pull Request.
 
-- **Regresión completa (full):** Ejecuta toda la suite (E2E, integración, contract, rendimiento). Puede durar horas. Se ejecuta antes de releases mayores, refactorizaciones, despues de largos períodos de desarrollo, en nightly builds, o bajo demanda. Ideal para validar la estabilidad general del sistema, detectar regresiones sutiles, y tener una visión completa del impacto de los cambios. Usado para estrategias de despliegue acumulativa (batch) a nivel de release donde se desarrolla por historia pero se despliega por release. Usado también para ejecutar en cada pull request a producción (main) o con estrategia de despliegue Continuous Deployment (continuous) donde se desarrolla y despliega por historia.
+- **Regresión completa (regression/full):** Ejecuta toda la suite (E2E, integración, contract, rendimiento). Puede durar horas. Se ejecuta antes de releases mayores, refactorizaciones, despues de largos períodos de desarrollo, en nightly builds, o bajo demanda. Ideal para validar la estabilidad general del sistema, detectar regresiones sutiles, y tener una visión completa del impacto de los cambios. Usado para estrategias de despliegue acumulativa (batch) a nivel de release donde se desarrolla por historia pero se despliega por release. Usado también para ejecutar en cada pull request a producción (main) o con estrategia de despliegue Continuous Deployment (continuous) donde se desarrolla y despliega por historia.
 
 ### Cuándo Correr Tests de Regresión
 
