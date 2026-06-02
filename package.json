@@ -70,6 +70,9 @@
     "README.md",
     "LICENSE"
   ],
+  "bin": {
+    "agile-sddf": "scripts/cli.js"
+  },
   "scripts": {
     "postinstall": "node scripts/postinstall.js"
   },

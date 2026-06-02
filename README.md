@@ -59,6 +59,35 @@ npm install agile-sddf
 
 Los skills y agentes se copian a `./.claude/` del directorio actual.
 
+### Monorepos con pnpm (workspaces)
+
+pnpm v9+ bloquea los postinstall scripts por defecto. Instala el paquete en la raíz del workspace y luego ejecuta el comando de instalación manualmente:
+
+```bash
+pnpm add agile-sddf -w
+npx agile-sddf install
+```
+
+Si prefieres que el postinstall se ejecute automáticamente en futuras reinstalaciones, agrega `agile-sddf` a `allowedBuiltDependencies` en el `package.json` raíz de tu workspace:
+
+```json
+{
+  "pnpm": {
+    "allowedBuiltDependencies": ["agile-sddf"]
+  }
+}
+```
+
+### CLI reference
+
+El paquete expone el comando `agile-sddf` con los siguientes subcomandos:
+
+| Comando | Descripción |
+|---------|-------------|
+| `agile-sddf install` | Copia skills y agentes a `.claude/` del proyecto actual |
+| `agile-sddf install --global` | Copia skills y agentes a `~/.claude/` |
+| `agile-sddf help` | Muestra la ayuda |
+
 ### Prerequisites
 
 - Node.js >= 18
