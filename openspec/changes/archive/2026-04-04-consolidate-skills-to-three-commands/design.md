@@ -3,7 +3,7 @@
 El pipeline actual tiene 7 skills expuestos al usuario final distribuidos en directorios independientes bajo `.claude/skills/`. Cada skill tiene su propio template y SKILL.md. Los skills a consolidar son:
 
 - `ps-funnel/` + `ps-draft/` → nuevo `ps-begin-intention/`
-- `ps-discovery/` + `ps-specifying/` → nuevo `ps-project-spec/`
+- `ps-discovery/` + `ps-SPECIFY/` → nuevo `ps-project-spec/`
 - `ps-planning/` → se mantiene con ajustes menores
 - `ps-approval/` + `ps-finish/` → se eliminan sin reemplazo
 
@@ -11,7 +11,7 @@ Templates existentes relevantes:
 - `ps-funnel/templates/initial-prompt-template.md` — ya no se necesita (el output intermedio desaparece)
 - `ps-draft/templates/project-intent-template.md` → mueve a `ps-begin-intention/templates/`
 - `ps-discovery/templates/discovery-template.md` — ya no se necesita (output intermedio desaparece)
-- `ps-specifying/templates/project-template.md` → mueve a `ps-project-spec/templates/`
+- `ps-SPECIFY/templates/project-template.md` → mueve a `ps-project-spec/templates/`
 - `ps-planning/templates/project-plan-template.md` → se mantiene en su lugar
 
 ## Goals / Non-Goals
@@ -56,7 +56,7 @@ El agente usa `project-template.md` como estructura de output. El `ux-designer-a
 | Template original | Nueva ubicación |
 |---|---|
 | `ps-draft/templates/project-intent-template.md` | `ps-begin-intention/templates/project-intent-template.md` |
-| `ps-specifying/templates/project-template.md` | `ps-project-spec/templates/project-template.md` |
+| `ps-SPECIFY/templates/project-template.md` | `ps-project-spec/templates/project-template.md` |
 | `ps-planning/templates/project-plan-template.md` | Sin cambios |
 
 Templates eliminados (documentos intermedios que desaparecen):
@@ -66,6 +66,6 @@ Templates eliminados (documentos intermedios que desaparecen):
 
 ## Risks / Trade-offs
 
-- **[Riesgo] Pérdida de granularidad**: Los usuarios no pueden pausar entre Funnel y Draft, ni entre Discovery y Specifying. → Mitigation: Los nuevos skills son re-ejecutables (idempotencia); si el usuario quiere pausar, puede simplemente interrumpir y re-ejecutar.
+- **[Riesgo] Pérdida de granularidad**: Los usuarios no pueden pausar entre Funnel y Draft, ni entre Discovery y SPECIFY. → Mitigation: Los nuevos skills son re-ejecutables (idempotencia); si el usuario quiere pausar, puede simplemente interrumpir y re-ejecutar.
 - **[Trade-off] Sessions más largas**: Los nuevos skills tienen más pasos en una sola sesión. → Aceptable dado que el principio de minimalismo prioriza la simplicidad de interfaz sobre la granularidad de control.
 - **[Riesgo] CLAUDE.md stale**: El workflow documentado en CLAUDE.md debe actualizarse. → Mitigation: incluido en las tareas de implementación.

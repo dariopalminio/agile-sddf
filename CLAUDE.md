@@ -32,8 +32,8 @@ features_spec_builder/
   ├── .claude/                          # Fuente única de verdad para agentes y skills
   │   ├── agents/
   │   │   ├── project-pm.agent.md      # PM — Begin Intention, Discovery
-  │   │   ├── project-architect.agent.md # Arquitecto — Specifying, Planning
-  │   │   └── project-ux.agent.md      # UX — apoyo en Discovery y Specifying
+  │   │   ├── project-architect.agent.md # Arquitecto — SPECIFY, Planning
+  │   │   └── project-ux.agent.md      # UX — apoyo en Discovery y SPECIFY
   │   └── skills/
   │       ├── skill-name/
   │       │   ├── assets/           # Templates específicos para este skill

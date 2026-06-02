@@ -21,4 +21,4 @@ The system SHALL provide the six story workflow skills at canonical paths under 
 
 #### Scenario: Full workflow produces observable status progression
 - **WHEN** a story goes through the complete workflow: `story-creation` → `story-plan` → `story-implement`
-- **THEN** the `status`/`substatus` sequence in `story.md` follows: `SPECIFYING/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLANNING/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENTING/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`
+- **THEN** the `status`/`substatus` sequence in `story.md` follows: `SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLAN/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENTING/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`

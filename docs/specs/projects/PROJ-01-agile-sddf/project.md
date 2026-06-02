@@ -403,7 +403,7 @@ AGILE SDDF — Sistema de Invocación de Skills
 │   ├── [Fase 2] project-discovery 
 │   │   ├── Precondición: project-intent.md con Estado: Ready 
 │   │   ├── Sub-fase Discovery: agente project-pm  (+ apoyo opcional project-ux)
-│   │   ├── Sub-fase Specifying: agente project-architect  (+ apoyo opcional project-ux)
+│   │   ├── Sub-fase SPECIFY: agente project-architect  (+ apoyo opcional project-ux)
 │   │   ├── Output: docs/specs/projects/project.md
 │   │   └── [Bifurcación] Estado del output:
 │   │       ├── No existe → Crear
@@ -571,7 +571,7 @@ Sin referencias.
 | **Agente** | Subprocesador especializado definido en un archivo Markdown (`.agent.md`). Invocado por un skill. |
 | **Pipeline ProjectSpecFactory** | Flujo secuencial de tres fases: Begin Intention → Discovery → Planning |
 | **WIP** | Work In Progress — en este sistema, restricción de máximo 1 proyecto activo (`substatus: IN‑PROGRESS`) simultáneamente |
-| **status** | Campo de control de flujo que indica que un documento spec tipo workitem está en una fase determinada, por ejemplo en historia de usuario story: SPECIFYING, PLANNING, READY-FOR-IMPLEMENT, IMPLEMENTING, CODE-REVIEW, VERIFY, ACCEPTANCE, INTEGRATION, COMPLETED |
+| **status** | Campo de control de flujo que indica que un documento spec tipo workitem está en una fase determinada, por ejemplo en historia de usuario story: SPECIFY, PLANNING, READY-FOR-IMPLEMENT, IMPLEMENTING, CODE-REVIEW, VERIFY, ACCEPTANCE, INTEGRATION, COMPLETED |
 | **substatus** | Campo de control de subestado que indica que un documento spec tipo workitem está en TODO, IN-PROGRESS o DONE |
 | **FINVEST** | Rúbrica de evaluación de historias: Formato + INVEST (Independent, Negotiable, Valuable, Estimable, Small, Testable) |
 | **INVEST** | Criterios de calidad de historias de usuario: Independent, Negotiable, Valuable, Estimable, Small, Testable |

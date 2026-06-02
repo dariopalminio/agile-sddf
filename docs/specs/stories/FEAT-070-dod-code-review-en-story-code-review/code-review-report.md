@@ -32,7 +32,7 @@ reviewers:
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
 | LOW | .claude/skills/story-code-review/SKILL.md:456 | El aviso de DoD vacío en Paso 5b hardcodea el literal `$SPECS_BASE/policies/definition-of-done-story.md` en lugar de usar la variable `$DOD_PATH` ya resuelta en Paso 2d. No afecta el comportamiento (la ruta se resuelve correctamente en runtime), pero el mensaje al usuario puede ser impreciso. | Reemplazar el literal por `$DOD_PATH` ya resuelta, ej.: `Verifica que $DOD_PATH contiene la sección "CODE-REVIEW".` |
-| LOW | .claude/skills/story-code-review/SKILL.md:52 | Tabla "Ciclo de vida de estados": la fila "Finalización con bloqueantes" indica `IMPLEMENTING/IN-PROGRESS`, pero el Paso 4g.2 establece `READY-FOR-IMPLEMENT/DONE`. Discrepancia menor entre la tabla de referencia rápida y el paso ejecutable. | Actualizar la columna de la tabla resumen a `READY-FOR-IMPLEMENT / DONE` para que coincida con el comportamiento definido en Paso 4g.2. |
+| LOW | .claude/skills/story-code-review/SKILL.md:52 | Tabla "Ciclo de vida de estados": la fila "Finalización con bloqueantes" indica `IMPLEMENT/IN-PROGRESS`, pero el Paso 4g.2 establece `READY-FOR-IMPLEMENT/DONE`. Discrepancia menor entre la tabla de referencia rápida y el paso ejecutable. | Actualizar la columna de la tabla resumen a `READY-FOR-IMPLEMENT / DONE` para que coincida con el comportamiento definido en Paso 4g.2. |
 
 **Veredicto:** approved — Los cuatro artefactos implementados respetan las convenciones del proyecto (Markdown, kebab-case, frontmatter YAML estandarizado, sin secrets, sin TODOs sueltos). Los dos hallazgos LOW son inconsistencias menores de documentación interna sin impacto funcional.
 

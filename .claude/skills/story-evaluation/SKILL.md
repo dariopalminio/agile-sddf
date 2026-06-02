@@ -22,7 +22,7 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 - Calcula F_score, INVEST_Score y FINVEST_Score
 - Emite una decisión (APROBADA / REFINAR / RECHAZAR / DIVIDIR) con recomendaciones accionables
 - Genera el reporte en `finvest-evaluation-report.md` dentro del directorio de la historia (si el input fue ID o ruta de archivo)
-- Si la decisión es `APROBADA` y el input fue una ruta de archivo, actualiza el frontmatter de `story.md` con `status: SPECIFYING` / `substatus: DONE`
+- Si la decisión es `APROBADA` y el input fue una ruta de archivo, actualiza el frontmatter de `story.md` con `status: SPECIFY` / `substatus: DONE`
 
 **Qué NO hace este skill:**
 - Generar diseño, tasks ni artefactos de planning
@@ -183,11 +183,11 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 
 1. Verificar que el archivo existe en la ruta proporcionada o con el `{story ID}` proporcionado.
 2. Actualizar únicamente los campos `status` y `substatus` en el frontmatter YAML del archivo:
-   - `status: SPECIFYING`
+   - `status: SPECIFY`
    - `substatus: DONE`
 3. Si los campos no existen en el frontmatter, agregarlos.
 4. No modificar ningún otro campo del frontmatter ni el cuerpo del archivo.
-5. Confirmar en el output: `✓ Frontmatter actualizado: status: SPECIFYING / substatus: DONE`
+5. Confirmar en el output: `✓ Frontmatter actualizado: status: SPECIFY / substatus: DONE`
 6. Si el archivo no es accesible o no tiene frontmatter YAML válido, emitir advertencia y continuar sin bloquear:
    `⚠️ No se pudo actualizar el frontmatter de: <ruta> — verifica permisos y formato`
 
@@ -323,7 +323,7 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 
 - Reporte mostrado en conversación con la estructura de `assets/evaluation-output-template.md`
 - `<directorio-historia>/finvest-evaluation-report.md` — reporte persistido en disco (si el input fue ID o ruta de archivo)
-- Frontmatter de `story.md` actualizado (únicamente si decisión = `APROBADA` y el input fue ID o ruta de archivo): `status: SPECIFYING` / `substatus: DONE`
+- Frontmatter de `story.md` actualizado (únicamente si decisión = `APROBADA` y el input fue ID o ruta de archivo): `status: SPECIFY` / `substatus: DONE`
 
 ### Ejemplos de referencia
 

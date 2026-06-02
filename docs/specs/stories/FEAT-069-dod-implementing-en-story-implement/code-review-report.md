@@ -49,7 +49,7 @@ reviewers:
 **Cobertura detallada:**
 
 - **AC-1** (DoD section en reporte + transición condicional): completamente cubierto por sub-paso `2f` (carga), `4g` (evaluación), `4a` (sección en plantilla), `4b` (transición), y Resumen Final (línea DoD).
-- **AC-2** (DoD-ERRORs bloquean transición): completamente cubierto — `4g` calcula `$DOD_BLOQUEADO = true` si `N_dod_error > 0`; `4b` mantiene `story.md` en IMPLEMENTING/IN-PROGRESS con mensaje de bloqueo.
+- **AC-2** (DoD-ERRORs bloquean transición): completamente cubierto — `4g` calcula `$DOD_BLOQUEADO = true` si `N_dod_error > 0`; `4b` mantiene `story.md` en IMPLEMENT/IN-PROGRESS con mensaje de bloqueo.
 - **AC-3** (degradación elegante si DoD ausente): completamente cubierto — ambas ramas del sub-paso `2f` (archivo no existe / sección no encontrada) emiten `⚠️`, registran `$DOD_IMPLEMENTING_CRITERIA = []` y continúan sin bloquear.
 
 **Veredicto:** approved — los tres escenarios Gherkin tienen correspondencia completa y explícita en SKILL.md.

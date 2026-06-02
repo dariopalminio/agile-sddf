@@ -5,7 +5,7 @@ id: FEAT-082
 slug: FEAT-082-implement-tdd-modos-ejecucion-design
 title: "Design: story-implement — modos interactivo y automático de ejecución del ciclo TDD"
 date: 2026-05-30
-status: SPECIFYING
+status: SPECIFY
 substatus: IN-PROGRESS
 parent: EPIC-14-fabrica-de-skills
 related:

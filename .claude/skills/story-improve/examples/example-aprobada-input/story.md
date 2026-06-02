@@ -4,7 +4,7 @@ type: story
 id: FEAT-074
 slug: FEAT-074-integrar-historia-batch-configurable
 title: "story-integrate: Integración batch configurable"
-status: SPECIFYING
+status: SPECIFY
 substatus: DONE
 parent: <nombre-del-release-padre>
 created: 2026-05-17

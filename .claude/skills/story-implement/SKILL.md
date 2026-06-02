@@ -22,7 +22,7 @@ triggers:
 version: "1.2.0"
 type: delegate
 input: "story.md + testcases.md (opcional) + sddf.config.yaml + --auto (opcional)"
-output: "archivos de prueba + código de producción + cycle-status.json + story.md actualizada a CODE-REVIEW/IN-PROGRESS"
+output: "archivos de prueba + código de producción + implement-report.md + story.md actualizada a IMPLEMENTING/DONE (o IMPLEMENT/IN-PROGRESS si DoD-ERRORs) + release.md checklist actualizado"
 invocable: true
 alwaysApply: false
 ---
@@ -40,16 +40,38 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 
 **Qué hace este skill:**
 - Invoca `skill-preflight` como Paso 0
-- **Fase RED:** Lee `implementing.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden; confirma estado rojo; escribe `red-phase-status.json`
-- **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implementing.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"` y `layer:"{layer}"`; consolida resultados; confirma que los tests pasan
+- **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden; confirma estado rojo; escribe `red-phase-status.json`
+- **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"` y `layer:"{layer}"`; consolida resultados; confirma que los tests pasan
 - **Fase REFACTOR:** Itera sobre cada capa activa invocando su skill con `phase:"REFACTOR"` y `layer:"{layer}"`; verifica no-regresión ejecutando comandos de test
-- Al completar el ciclo exitosamente: actualiza `story.md` a `CODE-REVIEW/IN-PROGRESS` y escribe `cycle-status.json`
+- Al completar el ciclo exitosamente: evalúa DoD IMPLEMENTING, genera `implement-report.md`, actualiza `story.md` a `IMPLEMENTING/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs), actualiza checklist de `release.md` y escribe `cycle-status.json`
 
 **Qué NO hace este skill:**
 - Crear skills de generación específicos (ej. `story-test-unit-jest`, `story-code-nodejs`) — son skills separados
 - Gestionar modos interactivo/automático (`--auto`) — cubiertos en FEAT-082
 - Ejecutar el suite completo de CI — solo ejecuta comandos de test configurados por tipo
 
+---
+
+### Posicionamiento
+
+```
+[story.md: READY-FOR-IMPLEMENT/DONE]    ← precondición inicial (viene de story-plan/story-analyze)
+[story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación (viene de story-code-review needs-changes)
+     ↓
+story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
+     │   Al iniciar: story.md → IMPLEMENTING/IN‑PROGRESS
+     │   Al finalizar: story.md → IMPLEMENT/DONE + release.md checklist actualizado
+     ↓
+[story.md: IMPLEMENT/DONE]
+──────────────────────────────────────────────────────────────────────────────────────
+story.md          → What: requisitos, criterios de aceptación, comportamiento esperado
+design.md         → How: arquitectura, componentes, interfaces, decisiones técnicas
+testcases.md          → test plan detallado, casos de prueba explícitos
+tasks.md          → (optativo) When: tareas de implementación, orden, seguimiento
+implement-report.md → Done: código generado, estado por tarea, bloqueos documentados ← aquí
+story-plan        → Entry point del planning: orquesta design → tasking → analyze
+story-implement   → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
+```
 ---
 
 ## Parámetros
@@ -74,7 +96,7 @@ Si no se proporciona argumento, solicitar interactivamente.
 - **Utiliza los fallos en las pruebas como retroalimentación**: una prueba fallida debe guiar su desarrollo y resaltar las mejoras necesarias.
 - **Historias de nueva funcionalidad** → Los tests preexistentes no deben romperse.
 - **Historias de refactorización** → Los tests pueden modificarse, siempre que el comportamiento funcional (criterios de aceptación) no cambie y que los tests sigan pasando después de la refactorización.
-
+- **Transición de estado bloqueada por DoD-ERRORs:** si hay criterios DoD con `❌`, el frontmatter permanece en `IMPLEMENT/IN-PROGRESS`. Solo al resolver todos los bloqueos, cumplir el DoD y pruebas pasan, se actualiza a `IMPLEMENT/DONE`.
 ---
 
 ## Flujo de ejecución
@@ -114,9 +136,9 @@ Verifica que el archivo existe o ejecuta /sddf-init para inicializar el entorno.
 ```
 Detener la ejecución.
 
-Extraer la sección `implementing.test_generators`.
+Extraer la sección `implement.test_generators`.
 
-**Si la sección `implementing` no existe o `test_generators` está vacío:**
+**Si la sección `implement` no existe o `test_generators` está vacío:**
 ```
 [WARN] No hay test_generators configurados en sddf.config.yaml — Fase RED sin generación de pruebas
 ```
@@ -285,13 +307,13 @@ Mostrar: `[INFO] Precondición RED verificada — story_id: {$RED_STORY_ID}, {N}
 
 Leer `sddf.config.yaml` (ya cargado en Paso 1).
 
-Extraer `implementing.code_generators` como lista.
+Extraer `implement.code_generators` como lista.
 
-**Si `implementing.code_generators` no existe en el YAML o está vacío:**
+**Si `implement.code_generators` no existe en el YAML o está vacío:**
 ```
-❌ implementing.code_generators no declarado o vacío en sddf.config.yaml
+❌ implement.code_generators no declarado o vacío en sddf.config.yaml
 
-Añade la sección code_generators bajo implementing en sddf.config.yaml.
+Añade la sección code_generators bajo implement en sddf.config.yaml.
 ```
 Detener la ejecución.
 
@@ -494,12 +516,88 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 
 **Si GREEN y REFACTOR completaron sin errores ni regresiones** (`$REFACTOR_REGRESIONES = false`):
 
-1. Actualizar frontmatter de `story.md`:
-   - `status: CODE-REVIEW`
-   - `substatus: IN-PROGRESS`
-   - `updated: {YYYY-MM-DD}`
+#### 11a — Evaluar criterios DoD IMPLEMENTING
 
-2. Escribir `.tmp/story-implement/cycle-status.json`:
+Cargar los criterios de la sección `IMPLEMENTING` de `docs/policies/definition-of-done-story.md`.
+
+Para cada criterio evaluar:
+- `✓` si hay evidencia positiva en los artefactos generados por el ciclo (archivos de test, código, sin errores reportados)
+- `❌` si hay evidencia explícita de incumplimiento
+- `⚠️` cuando no se puede determinar con certeza (caso por defecto para ejecución manual de tests)
+
+Registrar `$DOD_BLOQUEADO`:
+- `true` si algún criterio resultó `❌`
+- `false` si ningún criterio resultó `❌`
+
+#### 11b — Generar `implement-report.md`
+
+Escribir `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md`:
+
+```markdown
+---
+type: implement-report
+id: <story_id>
+story: <FEAT-NNN>
+created: <YYYY-MM-DD>
+updated: <YYYY-MM-DD>
+---
+
+## Resumen
+
+| Métrica | Valor |
+|---|---|
+| Fase RED confirmada | sí / no |
+| Fase GREEN confirmada | sí / no |
+| Fase REFACTOR confirmada | sí / no |
+| Archivos de prueba generados | N |
+| Archivos de producción generados | N |
+
+## Ciclo TDD
+
+| Fase | Estado | Detalle |
+|---|---|---|
+| RED | ✅/❌ | {tipos generados, rojo confirmado} |
+| GREEN | ✅/❌ | {capas, archivos generados} |
+| REFACTOR | ✅/❌ | {sin regresiones / regresiones detectadas} |
+
+## DoD IMPLEMENTING
+
+| Criterio | Estado | Observación |
+|---|---|---|
+| {criterio 1} | ✓/❌/⚠️ | {observación} |
+| {criterio N} | ✓/❌/⚠️ | {observación} |
+
+> Los tests deben ejecutarse manualmente para confirmar el resultado final.
+```
+
+#### 11c — Actualizar `story.md` (condicional)
+
+**Si `$DOD_BLOQUEADO = false`:**
+- `status: IMPLEMENTING`
+- `substatus: DONE`
+- `updated: {YYYY-MM-DD}`
+
+**Si `$DOD_BLOQUEADO = true`:**
+- `status: IMPLEMENT`
+- `substatus: IN-PROGRESS`
+- `updated: {YYYY-MM-DD}`
+- Emitir: `⚠️ story.md permanece en IMPLEMENT/IN-PROGRESS por criterios DoD con ❌ — resolver antes de continuar`
+
+#### 11d — Actualizar `release.md` (si existe release padre)
+
+1. Leer campo `parent` del frontmatter de `story.md`
+2. Si `parent` existe, resolver ruta: `$SPECS_BASE/specs/releases/<parent>/release.md`
+3. **Si el archivo existe:**
+   - Buscar la línea del checklist que contenga el id o slug de la historia (ej. `FEAT-NNN`)
+   - Cambiar `- [ ]` → `- [x]` en esa línea
+   - Emitir: `[INFO] release.md actualizado: [{story_id}] marcado como completado`
+4. **Si no existe o `parent` está vacío:**
+   - Emitir: `[INFO] release.md no encontrado o sin parent declarado — omitiendo actualización`
+   - No es condición de error.
+
+#### 11e — Escribir `cycle-status.json` y mostrar resumen final
+
+Escribir `.tmp/story-implement/cycle-status.json`:
 ```json
 {
   "story_id": "{$RED_STORY_ID}",
@@ -508,33 +606,44 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
   "refactor_confirmed": true,
   "files_generated": "{$GREEN_FILES_GENERATED}",
   "files_modified": "{archivos modificados en REFACTOR}",
-  "final_status": "CODE-REVIEW/IN-PROGRESS",
+  "dod_bloqueado": false,
+  "final_status": "IMPLEMENTING/DONE",
   "timestamp": "{ISO timestamp}"
 }
 ```
 
-3. Mostrar resumen según `$EXEC_MODE`:
+Mostrar resumen según `$EXEC_MODE`:
 
-**Si `$EXEC_MODE = auto`** — mostrar resumen consolidado del ciclo completo:
+**Si `$EXEC_MODE = auto`:**
 ```
 ── Ciclo TDD completado automáticamente (--auto) ──────────
 ✅ Fase RED:      {N} tipo(s) generado(s) | rojo confirmado: {✅ / ⚠️}
 ✅ Fase GREEN:    {N} archivo(s) de producción generados
 ✅ Fase REFACTOR: sin regresiones
 ──────────────────────────────────────────────────────────
-📄 cycle-status.json → .tmp/story-implement/cycle-status.json
-📋 story.md: CODE-REVIEW/IN-PROGRESS ✓
+📄 implement-report.md → {$SPECS_BASE}/specs/stories/{story_id}/implement-report.md
+📄 cycle-status.json   → .tmp/story-implement/cycle-status.json
+📋 story.md: {IMPLEMENTING/DONE o IMPLEMENT/IN-PROGRESS} ✓
+📋 release.md: {actualizado / no encontrado}
+
+DoD IMPLEMENTING:
+{tabla criterios ✓/❌/⚠️}
 ```
 
-**Si `$EXEC_MODE = interactive`** — el usuario ya vio el resumen por fases en Pause-1 y Pause-2; mostrar solo el cierre:
+**Si `$EXEC_MODE = interactive`:**
 ```
 ✅ Ciclo TDD completado
    Fase RED:      tests en rojo confirmados
    Fase GREEN:    {N} archivo(s) de producción generados
    Fase REFACTOR: sin regresiones
-   
-   story.md → CODE-REVIEW/IN-PROGRESS
-   cycle-status.json → .tmp/story-implement/cycle-status.json
+
+   implement-report.md → {$SPECS_BASE}/specs/stories/{story_id}/implement-report.md
+   cycle-status.json   → .tmp/story-implement/cycle-status.json
+   story.md            → {IMPLEMENTING/DONE o IMPLEMENT/IN-PROGRESS}
+   release.md          → {actualizado / no encontrado}
+
+DoD IMPLEMENTING:
+{tabla criterios ✓/❌/⚠️}
 ```
 
 **Si hubo errores en GREEN o REFACTOR:** no ejecutar este paso (la detención ya ocurrió en el paso correspondiente).
@@ -546,7 +655,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 | Condición | Mensaje | Acción |
 |---|---|---|
 | `sddf.config.yaml` no encontrado | `❌ sddf.config.yaml no encontrado` | Detener ejecución |
-| `implementing.test_generators` vacío o ausente | `[WARN] No hay test_generators configurados — Fase RED sin generación de pruebas` | Continuar sin subagentes |
+| `implement.test_generators` vacío o ausente | `[WARN] No hay test_generators configurados — Fase RED sin generación de pruebas` | Continuar sin subagentes |
 | Tipo activo sin campo `skill` | `[WARN] Sin skill declarado para tipo '<tipo>' — omitiendo ese tipo` | Omitir tipo |
 | Skill `required:true` no existe (test_generator) | `❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en .claude/skills/` | Detener sin generar archivos |
 | Skill `required:false` no existe (test_generator) | `[WARN] Skill '<nombre>' no encontrado — omitiendo tipo '<tipo>'` | Omitir tipo y continuar |
@@ -556,7 +665,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 | Tests pasan sin implementación (Fase RED) | `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos` | Advertir, continuar |
 | `red-phase-status.json` no existe | `❌ Precondición RED no cumplida: .tmp/story-implement/red-phase-status.json no encontrado` | Detener Fase GREEN |
 | `red_confirmed: false` en red-phase-status.json | `❌ Precondición RED no cumplida: red_confirmed es false` | Detener Fase GREEN |
-| `implementing.code_generators` no declarado o vacío | `❌ implementing.code_generators no declarado o vacío en sddf.config.yaml` | Detener Fase GREEN |
+| `implement.code_generators` no declarado o vacío | `❌ implement.code_generators no declarado o vacío en sddf.config.yaml` | Detener Fase GREEN |
 | Entry con `skill: none` | `[INFO] Capa '{layer}': skill none — omitiendo` | Omitir capa |
 | code_generator `required:true` no existe | `❌ Skill '{skill}' (capa '{layer}') declarado como code_generator no encontrado en .claude/skills/` | Detener Fase GREEN |
 | code_generator `required:false` no existe | `[WARN] Skill '{skill}' (capa '{layer}') no encontrado — omitiendo capa` | Omitir capa, continuar |
@@ -599,8 +708,13 @@ El orquestador nunca pasa su contexto completo heredado a los subagentes.
 | Artefacto | Ruta | Descripción |
 |---|---|---|
 | Archivos de prueba | según skill de generación | Tests generados en código productivo |
+| Archivos de producción | según skill de generación | Código generado en Fases GREEN/REFACTOR |
+| `implement-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase |
+| `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENTING/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
+| `release.md` (actualizado) | `$SPECS_BASE/specs/releases/<parent>/release.md` | Checklist con `[x]` para la historia completada (si existe) |
 | `red-phase-status.json` | `.tmp/story-implement/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN |
-| `results.json` por tipo | `.tmp/story-implement/{tipo}/results.json` | Output de cada subagente |
+| `cycle-status.json` | `.tmp/story-implement/cycle-status.json` | Estado final del ciclo TDD completo |
+| `results.json` por tipo/capa | `.tmp/story-implement/{tipo o fase/capa}/results.json` | Output de cada subagente |
 
 ---
 

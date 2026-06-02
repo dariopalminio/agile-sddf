@@ -1,14 +1,14 @@
 ## ADDED Requirements
 
-### Requirement: Agente specifying-agent valida el estado de discovery.md
-El sistema SHALL proveer un agente `specifying-agent` en `.claude/agents/specifying-agent.md` que, al iniciarse, lee `$SPECS_BASE/specs/projects/discovery.md` y verifica el campo `**Estado**`.
+### Requirement: Agente SPECIFY-agent valida el estado de discovery.md
+El sistema SHALL proveer un agente `SPECIFY-agent` en `.claude/agents/SPECIFY-agent.md` que, al iniciarse, lee `$SPECS_BASE/specs/projects/discovery.md` y verifica el campo `**Estado**`.
 
 #### Scenario: discovery.md tiene Estado Ready
-- **WHEN** el `specifying-agent` lee `discovery.md` y el campo `**Estado**` es `DONE`
+- **WHEN** el `SPECIFY-agent` lee `discovery.md` y el campo `**Estado**` es `DONE`
 - **THEN** el agente continúa directamente a la entrevista sin interrumpir al usuario
 
 #### Scenario: discovery.md tiene Estado IN‑PROGRESS
-- **WHEN** el `specifying-agent` lee `discovery.md` y el campo `**Estado**` es `IN‑PROGRESS`
+- **WHEN** el `SPECIFY-agent` lee `discovery.md` y el campo `**Estado**` es `IN‑PROGRESS`
 - **THEN** el agente pregunta al usuario con `AskUserQuestion` si confirma que el discovery está listo
 
 #### Scenario: Usuario confirma avanzar con Estado IN‑PROGRESS
@@ -20,7 +20,7 @@ El sistema SHALL proveer un agente `specifying-agent` en `.claude/agents/specify
 - **THEN** el agente informa que debe completarse el discovery primero y detiene la ejecución
 
 ### Requirement: Agente extrae secciones del template en runtime
-El sistema SHALL proveer que el `specifying-agent` extraiga dinámicamente los headers `##` y comentarios `<!-- -->` del template `project-template.md` para derivar las preguntas de la entrevista.
+El sistema SHALL proveer que el `SPECIFY-agent` extraiga dinámicamente los headers `##` y comentarios `<!-- -->` del template `project-template.md` para derivar las preguntas de la entrevista.
 
 #### Scenario: Extracción exitosa de secciones
 - **WHEN** el agente lee el template `project-template.md`
@@ -31,7 +31,7 @@ El sistema SHALL proveer que el `specifying-agent` extraiga dinámicamente los h
 - **THEN** el agente adapta automáticamente su comportamiento a las nuevas secciones sin requerir cambios en el agente
 
 ### Requirement: Agente conduce entrevista sección por sección
-El sistema SHALL proveer que el `specifying-agent` conduzca la entrevista de especificación en rondas de máximo 3-4 preguntas, agrupadas en orden de aparición en el template.
+El sistema SHALL proveer que el `SPECIFY-agent` conduzca la entrevista de especificación en rondas de máximo 3-4 preguntas, agrupadas en orden de aparición en el template.
 
 #### Scenario: Pre-relleno desde discovery.md
 - **WHEN** una sección del template puede responderse con información ya disponible en `discovery.md`
@@ -42,11 +42,11 @@ El sistema SHALL proveer que el `specifying-agent` conduzca la entrevista de esp
 - **THEN** agrupa máximo 3-4 preguntas por ronda y espera las respuestas antes de continuar
 
 ### Requirement: Agente produce requirement-spec.md
-El sistema SHALL proveer que el `specifying-agent` escriba el documento final `$SPECS_BASE/specs/projects/project.md` usando el template como estructura base.
+El sistema SHALL proveer que el `SPECIFY-agent` escriba el documento final `$SPECS_BASE/specs/projects/project.md` usando el template como estructura base.
 
 #### Scenario: Documento generado con metadatos
 - **WHEN** el agente finaliza la entrevista
-- **THEN** usa `Write` para crear `$SPECS_BASE/specs/projects/project.md` con metadatos: Versión 1.0, Estado IN‑PROGRESS, Fecha actual, Generado por specifying-agent
+- **THEN** usa `Write` para crear `$SPECS_BASE/specs/projects/project.md` con metadatos: Versión 1.0, Estado IN‑PROGRESS, Fecha actual, Generado por SPECIFY-agent
 
 #### Scenario: Comentarios HTML excluidos del output
 - **WHEN** el agente escribe el documento final

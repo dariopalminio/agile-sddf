@@ -23,7 +23,7 @@ defaults:
     command: "pnpm run test:eval"
     required: true
 
-implementing:
+implement:
   test_generators:
     - type: component
       skill: test-component-react-testing-library

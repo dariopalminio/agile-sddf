@@ -1,6 +1,6 @@
 ## Context
 
-Actualmente `.claude/agents/` contiene 6 agentes organizados por estado del workflow: `funnel-agent`, `draft-agent`, `discovery-agent`, `specifying-agent`, `approval-agent`, `planning-agent`. Cada agente está especializado en un único paso, lo que genera duplicación de instrucciones relacionadas al mismo rol (e.g., el PM conduce entrevistas tanto en Funnel como en Draft y Discovery).
+Actualmente `.claude/agents/` contiene 6 agentes organizados por estado del workflow: `funnel-agent`, `draft-agent`, `discovery-agent`, `SPECIFY-agent`, `approval-agent`, `planning-agent`. Cada agente está especializado en un único paso, lo que genera duplicación de instrucciones relacionadas al mismo rol (e.g., el PM conduce entrevistas tanto en Funnel como en Draft y Discovery).
 
 Claude Code carga agentes via frontmatter YAML con campos: `name`, `description`, `tools`, `model`. Los skills en `.claude/skills/*/SKILL.md` invocan agentes por nombre.
 
@@ -13,7 +13,7 @@ Claude Code carga agentes via frontmatter YAML con campos: `name`, `description`
 - Mantener los comandos disponibles sin cambio externo (`/ps-funnel`, `/ps-draft`, etc.)
 
 **Non-Goals:**
-- Cambiar el workflow secuencial (Funnel → Draft → Discovery → Specifying → Approval → Planning)
+- Cambiar el workflow secuencial (Funnel → Draft → Discovery → SPECIFY → Approval → Planning)
 - Modificar los documentos generados por cada estado
 - Introducir nuevos comandos o skills
 - Migrar `.claude/commands/` (legacy, se deja como está)
@@ -35,7 +35,7 @@ Claude Code carga agentes via frontmatter YAML con campos: `name`, `description`
 | Funnel      | product-manager-agent     | —                     |
 | Draft       | product-manager-agent     | —                     |
 | Discovery   | product-manager-agent     | ux-designer-agent     |
-| Specifying  | architect-agent           | product-manager-agent |
+| SPECIFY  | architect-agent           | product-manager-agent |
 | Approval    | product-manager-agent     | architect-agent       |
 | Planning    | architect-agent           | —                     |
 
@@ -61,7 +61,7 @@ model: claude-sonnet-4-6
 # ux-designer-agent.md
 ---
 name: ux-designer-agent
-description: UX Designer especializado en flujos de usuario, usabilidad y validación de experiencia en discovery y specifying
+description: UX Designer especializado en flujos de usuario, usabilidad y validación de experiencia en discovery y SPECIFY
 tools: Read, Write, Edit, AskUserQuestion
 model: claude-sonnet-4-6
 ---

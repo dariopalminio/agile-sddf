@@ -152,7 +152,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 > Al terminar, entrega un resumen estructurado del discovery para que el project-architect lo use en la siguiente fase.
 > Si necesitas apoyo para los flujos de usuario y usabilidad, invoca al agente `project-ux`.
 
-### 2.5 Sub-fase Specifying — Delegar al project-architect
+### 2.5 Sub-fase SPECIFY — Delegar al project-architect
 
 Una vez completado el discovery, invoca al agente `project-architect` con la siguiente instrucción:
 

@@ -47,6 +47,15 @@ story-design → story-tasking → story-testcases → story-analyze → story-i
 
 ---
 
+### Posicionamiento
+
+```
+story.md   → What: requisitos, criterios de aceptación, comportamiento esperado
+design.md  → How: arquitectura, componentes, interfaces, decisiones técnicas
+testcases.md   → casos de prueba tipificados y trazables  ← aquí
+```
+---
+
 ## Entrada
 
 | Artefacto | Requerido | Descripción |

@@ -27,7 +27,7 @@ related:
 
 ## 3. Actualización de status en modo reanudación — Paso 2e de SKILL.md (D-1)
 
-- [x] 3.1 Modificar Paso 2e de SKILL.md para que solo actualice `story.md` a `IMPLEMENTING/IN-PROGRESS` si el estado actual no es ya `IMPLEMENTING/IN-PROGRESS`; omitir la escritura si el estado ya es correcto
+- [x] 3.1 Modificar Paso 2e de SKILL.md para que solo actualice `story.md` a `IMPLEMENT/IN-PROGRESS` si el estado actual no es ya `IMPLEMENT/IN-PROGRESS`; omitir la escritura si el estado ya es correcto
 
 ## 4. Sub-flujo para tarea "Implementar fix-directives.md" — Paso 3c de SKILL.md (D-3)
 

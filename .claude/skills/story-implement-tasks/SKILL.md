@@ -43,13 +43,13 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
 
 ```
 [story.md: READY-FOR-IMPLEMENT/DONE]    ← precondición inicial (viene de story-plan/story-analyze)
-[story.md: IMPLEMENTING/IN-PROGRESS]    ← precondición reanudación (viene de story-code-review needs-changes)
+[story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación (viene de story-code-review needs-changes)
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
      │   Al iniciar: story.md → IMPLEMENTING/IN‑PROGRESS
-     │   Al finalizar: story.md → IMPLEMENTING/DONE + release.md checklist actualizado
+     │   Al finalizar: story.md → IMPLEMENT/DONE + release.md checklist actualizado
      ↓
-[story.md: IMPLEMENTING/DONE]
+[story.md: IMPLEMENT/DONE]
 ──────────────────────────────────────────────────────────────────────────────────────
 story.md          → What: requisitos, criterios de aceptación, comportamiento esperado
 design.md         → How: arquitectura, componentes, interfaces, decisiones técnicas
@@ -133,7 +133,7 @@ Cualquier otro estado detiene la ejecución con error descriptivo.
 - **No bloquear el pipeline por tareas con componentes no definidos:** marcar como `[~]` y continuar con la siguiente tarea.
 - **Gate de tareas completadas:** si `N_pendientes = 0` y `N_completadas > 0`, detener la ejecución sin modificar ningún archivo.
 - **No reimplementar artefactos de planning:** si los artefactos ya existen y son válidos, no sobrescribirlos.
-- **Transición de estado bloqueada por DoD-ERRORs:** si hay criterios DoD con `❌`, el frontmatter permanece en `IMPLEMENTING/IN-PROGRESS`.
+- **Transición de estado bloqueada por DoD-ERRORs:** si hay criterios DoD con `❌`, el frontmatter permanece en `IMPLEMENT/IN-PROGRESS`.
 
 ---
 
@@ -225,14 +225,14 @@ Precondición válida si:
 
    story-implement requiere uno de los siguientes estados:
    · READY-FOR-IMPLEMENT/DONE      → ejecución inicial
-   · IMPLEMENTING/IN-PROGRESS     → reanudación de implementación parcial
+   · IMPLEMENT/IN-PROGRESS     → reanudación de implementación parcial
 
    Para ejecución inicial: ejecuta /story-plan {story_id} para completar el planning.
    Si ya ejecutaste story-plan, verifica que story-analyze no reportó ERROREs.
 ```
 Detener la ejecución **sin implementar ninguna tarea**.
 
-**Si `status`/`substatus` no existen en el frontmatter**, tratar como `SPECIFYING/TODO` y aplicar el mismo error anterior.
+**Si `status`/`substatus` no existen en el frontmatter**, tratar como `SPECIFY/TODO` y aplicar el mismo error anterior.
 
 Registrar internamente:
 - `$ENTRADA_STATUS`: el valor de `status` leído del frontmatter
@@ -243,7 +243,7 @@ Mostrar confirmación de inicio:
    Directorio: <ruta_directorio>
    Artefactos: story.md ✓ | design.md ✓ | tasks.md ✓
    Estado: READY-FOR-IMPLEMENT/DONE ✓        (si $ENTRADA_STATUS = READY-FOR-IMPLEMENT)
-   Estado: IMPLEMENTING/IN-PROGRESS ✓        (si $ENTRADA_STATUS = IMPLEMENTING)
+   Estado: IMPLEMENT/IN-PROGRESS ✓        (si $ENTRADA_STATUS = IMPLEMENTING)
 ```
 
 ---
@@ -339,7 +339,7 @@ Mostrar resumen de carga:
    Tareas ya completadas:  <N>
 ```
 
-#### 2e. Actualizar frontmatter a IMPLEMENTING/IN-PROGRESS (si no está ya en ese estado)
+#### 2e. Actualizar frontmatter a IMPLEMENT/IN-PROGRESS (si no está ya en ese estado)
 
 Antes de ejecutar la primera tarea, verificar el estado de entrada registrado en `$ENTRADA_STATUS`:
 
@@ -633,7 +633,7 @@ Calcular:
 
 Completar la sección "Cumplimiento DoD — Fase IMPLEMENTING" en `implement-report.md` con la tabla resultante y la línea de resumen `**Resumen:** N_dod_ok/Total criterios ✓`.
 
-#### 4b. Actualizar frontmatter a IMPLEMENTING/DONE (condicional según DoD)
+#### 4b. Actualizar frontmatter a IMPLEMENT/DONE (condicional según DoD)
 
 **Si `$DOD_BLOQUEADO = false`** (no hay criterios DoD con `❌`):
 - Actualizar el frontmatter de `story.md`:
@@ -641,7 +641,7 @@ Completar la sección "Cumplimiento DoD — Fase IMPLEMENTING" en `implement-rep
   - `substatus: DONE`
 
 **Si `$DOD_BLOQUEADO = true`** (hay al menos un criterio DoD con `❌`):
-- NO actualizar el frontmatter — `story.md` permanece en `IMPLEMENTING/IN-PROGRESS`
+- NO actualizar el frontmatter — `story.md` permanece en `IMPLEMENT/IN-PROGRESS`
 - Mostrar al usuario los criterios DoD fallidos:
   ```
   ⚠️ Transición a IMPLEMENTING bloqueada por DoD-ERRORs:
@@ -668,7 +668,7 @@ Buscar el archivo `release.md` correspondiente en: `$SPECS_BASE/specs/releases/<
   ```
   ⚠️ Release checklist no actualizado: <razón>
   ```
-- Continuar sin bloquear — la transición a `IMPLEMENTING/DONE` ya fue aplicada
+- Continuar sin bloquear — la transición a `IMPLEMENT/DONE` ya fue aplicada
 
 #### 4d. Sección "Tareas Bloqueadas"
 
@@ -707,7 +707,7 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 | Artefacto | Ruta | Descripción |
 |---|---|---|
 | `implement-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
-| `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENTING/DONE` (o `IMPLEMENTING/IN-PROGRESS` si hay DoD-ERRORs) |
+| `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs) |
 | `tasks.md` (actualizado) | mismo directorio | Tareas marcadas `[x]` (completadas) o `[~]` (bloqueadas) |
 | `release.md` (actualizado) | `$SPECS_BASE/specs/releases/<parent>/release.md` | Checklist con `[x]` para la historia completada (si existe) |
 | Archivos de test | según stack del proyecto | Tests generados por ciclo TDD (uno por tarea completada) |
@@ -731,8 +731,8 @@ Al terminar, mostrar:
 ─────────────────────────────────────────────────────────────
 
 📄 Reporte generado: <ruta>/implement-report.md
-📋 Estado story.md: IMPLEMENTING/DONE ✓             (si $DOD_BLOQUEADO = false)
-📋 Estado story.md: IMPLEMENTING/IN-PROGRESS ✓               (si $DOD_BLOQUEADO = true)
+📋 Estado story.md: IMPLEMENT/DONE ✓             (si $DOD_BLOQUEADO = false)
+📋 Estado story.md: IMPLEMENT/IN-PROGRESS ✓               (si $DOD_BLOQUEADO = true)
 📋 Release checklist: <✓ actualizado en <ruta>/release.md | ⚠️ no actualizado — <razón>>
 📋 DoD IMPLEMENTING: {N_dod_ok}/{Total} criterios ✓          (si DoD fue evaluado)
 📋 DoD IMPLEMENTING: ⚠️ no evaluado (sección no encontrada)  (si DoD no disponible)
@@ -745,7 +745,7 @@ O si hay DoD-ERRORs:
 ```
 ⚠️ Implementación completada con DoD-ERRORs pendientes
    Revisa implement-report.md → sección "Cumplimiento DoD — Fase IMPLEMENTING"
-📋 Estado story.md: IMPLEMENTING/IN-PROGRESS (transición bloqueada por DoD-ERRORs)
+📋 Estado story.md: IMPLEMENT/IN-PROGRESS (transición bloqueada por DoD-ERRORs)
 📋 DoD IMPLEMENTING: {N_dod_ok}/{Total} criterios ✓ | {N_dod_error} criterios ❌
 ```
 
@@ -754,7 +754,7 @@ O si hay bloqueos de tareas (sin DoD-ERRORs):
 ```
 ⚠️ Implementación completada con tareas pendientes de aclaración
    Revisa implement-report.md → sección "Tareas Bloqueadas"
-📋 Estado story.md: IMPLEMENTING/DONE ✓
+📋 Estado story.md: IMPLEMENT/DONE ✓
 📋 Release checklist: <✓ actualizado | ⚠️ no actualizado — <razón>>
 📋 DoD IMPLEMENTING: {N_dod_ok}/{Total} criterios ✓
 ```

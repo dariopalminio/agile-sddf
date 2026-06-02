@@ -33,15 +33,25 @@ Un subestado representa el nivel de avance interno de un work item dentro de un 
 
 Happy path:
 ```
-SPECIFYING --> PLANNING --> READY-FOR-IMPLEMENT --> IMPLEMENTING --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED
+SPECIFY --> PLAN --> READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED
 ```
 
 Rejected path:
 ```
-READY-FOR-IMPLEMENT --> IMPLEMENTING --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED
-       |                                     |              |            | 
-       |                                  REJECTED        REJECTED     REJECTED
-       |                                     |              |            |         
-       |                                     v              v            v           
+READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED
+       |                                   |            |            | 
+       |                                REJECTED     REJECTED     REJECTED
+       |                                   |            |            |         
+       |                                   v            v            v           
        <------------------------------------------------------------------          
 ```
+
+- SPECIFY – Especificación de requisitos.
+- PLAN – Fase donde se generan design.md, tasks.md, testcases.md y analyze.md.
+- READY-FOR-IMPLEMENT – Cola buffer.
+- IMPLEMENT – Fase donde se escribe código y se ejecuta TDD.
+- CODE-REVIEW – Revisión de código independiente (IA o humano).
+- VERIFY – Fase donde se ejecutan pruebas automáticas.
+- ACCEPTANCE – Aceptación humana o del PO.  
+- INTEGRATION – Fase donde se integra a la rama release/main.
+- COMPLETED – Estado final "Done".

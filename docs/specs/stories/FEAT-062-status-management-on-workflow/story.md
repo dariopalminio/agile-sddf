@@ -31,7 +31,7 @@ related:
 ```gherkin
 Dado que existe una historia "FEAT-062/story.md" con status: BACKLOG / substatus: TODO
 Cuando ejecuto "/story-refine" sobre esa historia
-Entonces "story.md" tiene status: SPECIFYING / substatus: IN-PROGRESS
+Entonces "story.md" tiene status: SPECIFY / substatus: IN-PROGRESS
   Y al aprobar FINVEST "story.md" tiene status: READY-FOR-PLAN / substatus: DONE
 Cuando ejecuto "/story-plan FEAT-062"
 Entonces "story.md" tiene status: PLANNING / substatus: IN-PROGRESS
@@ -93,11 +93,11 @@ Escenario: Transición de estado al iniciar cada skill
   Entonces "story.md" cambia a "<estado_resultante>"
 Ejemplos:
   | skill            | estado_previo          | estado_resultante        |
-  | /story-refine    | BACKLOG/TODO           | SPECIFYING/IN-PROGRESS   |
-  | /story-refine    | SPECIFYING/IN-PROGRESS | SPECIFYING/IN-PROGRESS   |
+  | /story-refine    | BACKLOG/TODO           | SPECIFY/IN-PROGRESS   |
+  | /story-refine    | SPECIFY/IN-PROGRESS | SPECIFY/IN-PROGRESS   |
   | /story-plan      | READY-FOR-PLAN/DONE         | PLANNING/IN-PROGRESS     |
   | /story-plan      | READY-FOR-IMPLEMENT/DONE           | PLANNING/IN-PROGRESS     |
-  | /story-implement | READY-FOR-IMPLEMENT/DONE           | IMPLEMENTING/IN-PROGRESS |
+  | /story-implement | READY-FOR-IMPLEMENT/DONE           | IMPLEMENT/IN-PROGRESS |
 ```
 
 ## ⚙️ Criterios no funcionales
@@ -110,9 +110,9 @@ Ejemplos:
 
 La máquina de estados canónica es:
 ```
-BACKLOG/TODO → SPECIFYING/IN-PROGRESS → READY-FOR-PLAN/DONE
+BACKLOG/TODO → SPECIFY/IN-PROGRESS → READY-FOR-PLAN/DONE
              → PLANNING/IN-PROGRESS → READY-FOR-IMPLEMENT/DONE
-             → IMPLEMENTING/IN-PROGRESS → READY-FOR-CODE-REVIEW/DONE
+             → IMPLEMENT/IN-PROGRESS → READY-FOR-CODE-REVIEW/DONE
 ```
 
 Skills NO afectados por transiciones de estado propias: `story-design`, `story-tasking`, `story-split`, `story-evaluation` — sus transiciones son gestionadas por sus orquestadores (`story-refine` y `story-plan`).

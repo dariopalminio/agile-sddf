@@ -5,7 +5,7 @@ id: FEAT-081
 slug: FEAT-081-implement-tdd-fase-green-refactor-design
 title: "Design: story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar"
 date: 2026-05-30
-status: SPECIFYING
+status: SPECIFY
 substatus: IN-PROGRESS
 parent: EPIC-14-fabrica-de-skills
 related:

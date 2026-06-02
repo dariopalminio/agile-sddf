@@ -34,7 +34,7 @@ Integra la lectura y validación del Definition of Done en los tres skills del p
 **ENTONCES** analyze.md incluye una sección "Cumplimiento DoD — Fase PLAN" con el estado de cada criterio, y si hay ERRORs la historia no avanza a READY-FOR-IMPLEMENT
 
 ### Escenario 2: story-implement bloquea transición por DoD IMPLEMENTING no cumplido
-**DADO** una historia en `status: IMPLEMENTING/IN-PROGRESS` con todas las tareas completadas  
+**DADO** una historia en `status: IMPLEMENT/IN-PROGRESS` con todas las tareas completadas  
 **CUANDO** se ejecuta `/story-implement` y el DoD tiene criterios IMPLEMENTING no cumplidos con severidad ERROR  
 **ENTONCES** implement-report.md incluye sección de validación DoD y story.md no avanza a READY-FOR-CODE-REVIEW/DONE
 

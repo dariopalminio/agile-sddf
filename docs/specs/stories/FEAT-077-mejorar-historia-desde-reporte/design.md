@@ -25,7 +25,7 @@ El skill `story-improve` cierra el ciclo de refinamiento de historias SDDF. Cuan
 
 El skill se ubica en `.claude/skills/story-improve/SKILL.md`, sigue los lineamientos de /skill-master, sigue los patrones estructurales del proyecto (skill-structural-pattern.md): frontmatter YAML estandarizado, preflight como Paso 0, un solo nivel de delegación (skill → subagentes opcionales), templates como fuente de verdad dinámica y salida en rutas predecibles; y respeta el template .claude\skills\skill-master\assets\skill-template.md para la estructura del markdown del skill.
 
-Actores principales: desarrolladores y product owners que iteran historias en el pipeline SDDF (estados SPECIFYING/PLANNING).
+Actores principales: desarrolladores y product owners que iteran historias en el pipeline SDDF (estados SPECIFY/PLANNING).
 
 ## Goals / Non-Goals
 

@@ -73,7 +73,7 @@ Entonces el skill detecta que existe un "acceptance-report.md" parcial
 Dado que existe una historia "FEAT-040" con status IMPLEMENTING y substatus IN-PROGRESS
 Cuando el desarrollador ejecuta `story-acceptance` con el ID "FEAT-040"
 Entonces el skill detecta que la historia no cumple la precondición de estado
-  Y muestra el mensaje "La historia FEAT-040 tiene status IMPLEMENTING/IN-PROGRESS. Completa primero story-code-review y story-verify antes de ejecutar story-acceptance."
+  Y muestra el mensaje "La historia FEAT-040 tiene status IMPLEMENT/IN-PROGRESS. Completa primero story-code-review y story-verify antes de ejecutar story-acceptance."
   Pero no genera ni modifica ningún archivo existente
 ```
 

@@ -3,7 +3,7 @@ type: story
 id: FEAT-099
 slug: FEAT-099-gestionar-carrito-compras
 title: "Gestionar carrito de compras"
-status: SPECIFYING
+status: SPECIFY
 substatus: IN‑PROGRESS
 parent: EPIC-05-tienda-online
 created: 2026-01-10

@@ -246,7 +246,7 @@ Si el directorio `FEAT-{NNN}-{slug}/` ya existe, incrementar NNN hasta encontrar
 En el archivo `story.md`, completar los campos del frontmatter con los valores resueltos:
 - `id: FEAT-{NNN}`
 - `slug: FEAT-{NNN}-{slug}`
-- `status: SPECIFYING` — estado inicial de toda historia creada directamente
+- `status: SPECIFY` — estado inicial de toda historia creada directamente
 
 #### Mostrar resumen
 
@@ -279,7 +279,7 @@ Si la historia fue simplificada para cumplir INVEST, explicar brevemente qué se
 ## Salida
 
 - `$SPECS_BASE/specs/stories/FEAT-{NNN}-{slug}/story.md` — historia de usuario generada
-- Estado del workitem: `SPECIFYING` (estado inicial; pendiente de evaluación con `/story-evaluation`)
+- Estado del workitem: `SPECIFY` (estado inicial; pendiente de evaluación con `/story-evaluation`)
 
 ### Ejemplo de output
 

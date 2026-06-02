@@ -35,7 +35,7 @@ related:
 | AC | Descripción | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
 | AC-1 | implement-report.md incluye sección "Cumplimiento DoD — Fase IMPLEMENTING" con tabla ✓/❌; si no hay DoD-ERRORs → READY-FOR-CODE-REVIEW/DONE | ✓ | D4 (sub-paso 4g), D5 (sección DoD en 4a), D4 (Guardia transición en 4b), D4 (Resumen Final) |
-| AC-2 | DoD-ERRORs bloquean transición; story.md permanece IMPLEMENTING/IN-PROGRESS; implement-report documenta criterios fallidos | ✓ | D2 (evaluación semántica), D3 (❌→ERROR bloquea), D4 (condición en 4b) |
+| AC-2 | DoD-ERRORs bloquean transición; story.md permanece IMPLEMENT/IN-PROGRESS; implement-report documenta criterios fallidos | ✓ | D2 (evaluación semántica), D3 (❌→ERROR bloquea), D4 (condición en 4b) |
 | AC-3 (NFR) | archivo DoD no encontrado o sección ausente → ⚠️ warning; continúa sin bloquear | ✓ | D1 (búsqueda flexible con degradación ⚠️), D6 (criterios no evaluables → ⚠️) |
 | Req-Struct | Seguir lineamientos estructurales de skill-structural-pattern.md | ✓ | Goals de design.md: sub-paso 2f numerado alfabéticamente; sub-paso 4g insertado entre 4a y 4b sin renumerar // satisface: Req-Struct |
 | Req-SC | Seguir lineamientos de skill-master | ✓ | Goals de design.md: actualizar examples/output/implement-report.md con sección DoD (FEAT-069 modifica skill existente — no aplica skill-master para creación) |

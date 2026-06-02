@@ -18,7 +18,7 @@ updated: 2026-05-17
 | Tareas totales | 26 |
 | Tareas completadas | 26 |
 | Tareas bloqueadas | 0 |
-| Estado final | ✅ IMPLEMENTING/DONE |
+| Estado final | ✅ IMPLEMENT/DONE |
 
 ## Estado por tarea
 

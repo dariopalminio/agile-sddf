@@ -37,10 +37,10 @@ Orquesta el flujo completo de planning de una historia SDD ejecutando los tres s
 ### Posicionamiento
 
 ```
-[story.md: SPECIFYING/DONE]  ← precondición implícita (viene de story-refine)
+[story.md: SPECIFY/DONE]  ← precondición implícita (viene de story-refine)
      ↓
 story-plan   → Entry point: orquesta design → tasking → analyze  ← aquí
-     │   Al iniciar: story.md → PLANNING/IN‑PROGRESS
+     │   Al iniciar: story.md → PLAN/IN‑PROGRESS
      ↓
   story-design  → design.md
   story-tasking → tasks.md
@@ -61,7 +61,7 @@ analyze.md   → Check: coherencia entre los tres artefactos
 | Inicio del pipeline (siempre, sin condición) | `PLANNING` | `IN‑PROGRESS` |
 | `story-analyze` finaliza sin ERROREs | `READY-FOR-IMPLEMENT` | `DONE` (gestionado por `story-analyze`) |
 
-La transición `PLANNING/IN‑PROGRESS` se aplica **incondicionalmente** al iniciar, independientemente del estado previo de la historia. Esto permite re-ejecutar el pipeline sobre historias en cualquier estado.
+La transición `PLAN/IN‑PROGRESS` se aplica **incondicionalmente** al iniciar, independientemente del estado previo de la historia. Esto permite re-ejecutar el pipeline sobre historias en cualquier estado.
 
 ---
 
@@ -105,7 +105,7 @@ La transición `PLANNING/IN‑PROGRESS` se aplica **incondicionalmente** al inic
 
 - El skill es un orquestador puro — no reimplementa lógica de los sub-skills
 - Fail-fast en Pasos 2 y 3: un fallo en `story-design` o `story-tasking` detiene la cadena; `story-analyze` (Paso 4) no es bloqueante técnicamente
-- El estado `PLANNING/IN‑PROGRESS` se aplica incondicionalmente al iniciar, sin importar el estado previo
+- El estado `PLAN/IN‑PROGRESS` se aplica incondicionalmente al iniciar, sin importar el estado previo
 - La idempotencia de cada artefacto (design.md, tasks.md, analyze.md) es responsabilidad del sub-skill correspondiente
 - Con `--skip-analyze` solo se omite el análisis de coherencia; design y tasking siempre se ejecutan
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
@@ -143,7 +143,7 @@ Proporciona el ID (ej. FEAT-057) o la ruta completa al directorio.
 2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
 3. Si no se encuentra: notificar y detener (ver sección Manejo de errores)
 
-#### 1c. Actualizar frontmatter a PLANNING/IN‑PROGRESS
+#### 1c. Actualizar frontmatter a PLAN/IN‑PROGRESS
 
 Actualizar el frontmatter de `story.md` estableciendo `status: PLANNING` / `substatus: IN‑PROGRESS`.
 
@@ -153,7 +153,7 @@ Mostrar confirmación de inicio:
 ```
 🚀 Iniciando pipeline de planning para: <story_id>
    Directorio: <ruta_directorio>
-   Estado: PLANNING/IN‑PROGRESS
+   Estado: PLAN/IN‑PROGRESS
    Pasos: story-design → story-tasking → story-analyze
 ```
 
@@ -267,7 +267,7 @@ Estado de story.md: READY-FOR-IMPLEMENT/DONE ✓
 Se detectaron inconsistencias entre los artefactos. Revisa antes de implementar:
 → <ruta_directorio>/analyze.md
 
-Estado de story.md: PLANNING/IN‑PROGRESS (no actualizado — hay ERROREs pendientes)
+Estado de story.md: PLAN/IN‑PROGRESS (no actualizado — hay ERROREs pendientes)
 
 Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés listo.
 ```
@@ -277,7 +277,7 @@ Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés l
 ✗ Pipeline interrumpido en: <nombre_del_paso>
 
 Los artefactos generados antes del fallo están disponibles en: <ruta_directorio>
-Estado de story.md: PLANNING/IN‑PROGRESS (no completado)
+Estado de story.md: PLAN/IN‑PROGRESS (no completado)
 Corrige el problema indicado arriba y re-ejecuta /story-plan <story_id>.
 
 Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los artefactos existentes.

@@ -26,12 +26,12 @@ El skill `story-refine` SHALL orquestar el flujo interactivo usando los skills e
 Cada historia en refinamiento SHALL mantener los campos `status` y `substatus` en el frontmatter YAML de `story.md`, y el orquestador SHALL gestionar la transición según el resultado de `story-evaluation` y las decisiones del usuario.
 
 Los valores válidos para el ciclo de refinement son:
-- `status: SPECIFYING` / `substatus: IN‑PROGRESS` — mientras el refinamiento está activo
+- `status: SPECIFY` / `substatus: IN‑PROGRESS` — mientras el refinamiento está activo
 - `status: READY-FOR-PLAN` / `substatus: DONE` — cuando `story-evaluation` retorna `APROBADA`
 
-#### Scenario: Story remains SPECIFYING/IN‑PROGRESS during active refinement
+#### Scenario: Story remains SPECIFY/IN‑PROGRESS during active refinement
 - **WHEN** una historia aún no cumple criterios de cierre (evaluación no aprobada)
-- **THEN** su `story.md` MUST tener `status: SPECIFYING` y `substatus: IN‑PROGRESS`
+- **THEN** su `story.md` MUST tener `status: SPECIFY` y `substatus: IN‑PROGRESS`
 
 #### Scenario: Story becomes READY-FOR-PLAN/DONE when FINVEST is approved
 - **WHEN** `story-evaluation` retorna decisión `APROBADA`
@@ -39,14 +39,14 @@ Los valores válidos para el ciclo de refinement son:
 
 #### Scenario: User decides to pause refinement
 - **WHEN** la decisión FINVEST es `REFINAR` o `RECHAZAR` y el usuario elige pausar
-- **THEN** el orquestador MUST permitir finalizar la sesión dejando la historia en `status: SPECIFYING` / `substatus: IN‑PROGRESS`
+- **THEN** el orquestador MUST permitir finalizar la sesión dejando la historia en `status: SPECIFY` / `substatus: IN‑PROGRESS`
 
-### Requirement: story-refine sets SPECIFYING/IN‑PROGRESS at the start of refinement
-The system SHALL update `status: SPECIFYING` and `substatus: IN‑PROGRESS` in `story.md` frontmatter when `story-refine` (or `story-creation` as the entry point) begins processing a story.
+### Requirement: story-refine sets SPECIFY/IN‑PROGRESS at the start of refinement
+The system SHALL update `status: SPECIFY` and `substatus: IN‑PROGRESS` in `story.md` frontmatter when `story-refine` (or `story-creation` as the entry point) begins processing a story.
 
 #### Scenario: Status updated at refinement start
 - **WHEN** `/story-refine` (or `/story-creation`) begins a new or existing story
-- **THEN** `story.md` frontmatter MUST be updated to `status: SPECIFYING` and `substatus: IN‑PROGRESS` before any sub-skill is invoked
+- **THEN** `story.md` frontmatter MUST be updated to `status: SPECIFY` and `substatus: IN‑PROGRESS` before any sub-skill is invoked
 
 ### Requirement: story-refine sets READY-FOR-PLAN/DONE when FINVEST approves
 The system SHALL update `status: READY-FOR-PLAN` and `substatus: DONE` in `story.md` frontmatter when `story-evaluation` returns `APROBADA`.
@@ -55,9 +55,9 @@ The system SHALL update `status: READY-FOR-PLAN` and `substatus: DONE` in `story
 - **WHEN** `story-evaluation` returns decision `APROBADA` during the `story-refine` flow
 - **THEN** `story.md` frontmatter MUST be updated to `status: READY-FOR-PLAN` and `substatus: DONE` before the skill terminates
 
-#### Scenario: Status remains SPECIFYING/IN‑PROGRESS on non-approved evaluation
+#### Scenario: Status remains SPECIFY/IN‑PROGRESS on non-approved evaluation
 - **WHEN** `story-evaluation` returns `REFINAR` or `RECHAZAR`
-- **THEN** `story.md` frontmatter MUST remain at `status: SPECIFYING` and `substatus: IN‑PROGRESS` to signal that refinement is still in progress
+- **THEN** `story.md` frontmatter MUST remain at `status: SPECIFY` and `substatus: IN‑PROGRESS` to signal that refinement is still in progress
 
 ### Requirement: story-refine tracks and processes derived stories
 El orquestador SHALL mantener registro de cuantas historias existen en el flujo, cuales son derivadas por split y cuales siguen pendientes de refinamiento.

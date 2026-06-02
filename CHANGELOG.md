@@ -41,7 +41,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - story-implement: add TDD support and skill complementaries.
 - integrar-config-sddf-init: moved sddf.config.yaml template from docs/policies to skill assets and updated sddf-init to generate it
-- **`story-evaluation`** — genera `finvest-evaluation-report.md` en disco además de mostrar el reporte en conversación; el archivo incluye frontmatter YAML con `story-id`, `finvest-score`, `decision` y `evaluated`; si el input fue ID o ruta de archivo, el reporte se persiste en el directorio de la historia; sobreescribe evaluaciones anteriores (la más reciente siempre reemplaza); la actualización del frontmatter de `story.md` a `SPECIFYING/DONE` solo ocurre cuando `decision: APROBADA`
+- **`story-evaluation`** — genera `finvest-evaluation-report.md` en disco además de mostrar el reporte en conversación; el archivo incluye frontmatter YAML con `story-id`, `finvest-score`, `decision` y `evaluated`; si el input fue ID o ruta de archivo, el reporte se persiste en el directorio de la historia; sobreescribe evaluaciones anteriores (la más reciente siempre reemplaza); la actualización del frontmatter de `story.md` a `SPECIFY/DONE` solo ocurre cuando `decision: APROBADA`
 
 ### Fixed
 
@@ -55,11 +55,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Skill `/story-acceptance`** (FEAT-072, EPIC-13) — quality gate de validación humana final antes de INTEGRATION; guía al validador a través de los criterios de aceptación Gherkin de `story.md` y los criterios DoD ACCEPTANCE uno a uno; recopila resultado `PASS / FAIL / BLOCKED` con observaciones obligatorias para los no aprobados; genera `acceptance-report.md` con trazabilidad completa (ID, texto, resultado, observación, timestamp) y resumen ejecutivo; actualiza `story.md` a `ACCEPTANCE/DONE` si todos APPROVED o a `READY-FOR-IMPLEMENT/DONE` si hay rechazados; soporta sesiones interrumpibles y reanudables (`session-status: partial`), flag `--restart` y flag `--dry-run`; lee la sección ACCEPTANCE del DoD en runtime (dinámica) y usa solo criterios Gherkin si el DoD no tiene esa sección
 
-- **Skill `/story-verify`** (FEAT-071, EPIC-13) — quality gate de verificación automática post-`story-code-review`; lanza el subagente QA Engineer que detecta el framework de testing del proyecto (Jest, pytest, Mocha, etc.) y ejecuta las suites; genera `verify-report.md` con resultado por suite, cobertura y estado final `VERIFY-PASSED / VERIFY-FAILED`; transiciona `story.md` a `VERIFY/DONE` si pasan o a `IMPLEMENTING/IN-PROGRESS` si fallan; incluye ejemplos de proyectos Jest y pytest y evals de detección de modo
+- **Skill `/story-verify`** (FEAT-071, EPIC-13) — quality gate de verificación automática post-`story-code-review`; lanza el subagente QA Engineer que detecta el framework de testing del proyecto (Jest, pytest, Mocha, etc.) y ejecuta las suites; genera `verify-report.md` con resultado por suite, cobertura y estado final `VERIFY-PASSED / VERIFY-FAILED`; transiciona `story.md` a `VERIFY/DONE` si pasan o a `IMPLEMENT/IN-PROGRESS` si fallan; incluye ejemplos de proyectos Jest y pytest y evals de detección de modo
 
 - **Skill `/security-audit`** (EPIC-13) — auditoría de seguridad condicional y automatizada; lanza en paralelo tres subagentes especializados: Context Detector (identifica el stack y la superficie de ataque), Checklist Evaluator (evalúa el proyecto contra `security-checklist.md` con más de 100 controles por categoría: auth, input validation, secrets, dependencies, cryptography, etc.) y Report Generator (consolida hallazgos con severidades `CRITICAL / HIGH / MEDIUM / LOW / INFO`); el skill es condicional: si no detecta superficie de riesgo omite la auditoría sin error; incluye evals de detección y ejemplos de proyectos JWT y vacíos
 
-- **Skill `/story-code-review`** (FEAT-064, FEAT-065) — ejecuta una revisión multi-agente del código implementado en una historia SDD; lanza en paralelo tres subagentes especializados: Inspector de Código (convenciones, complejidad, seguridad), Guardián de Requisitos (cobertura de ACs) e Inspector de Integración (contratos de interfaz); consolida hallazgos en `code-review-report.md` con severidades `HIGH / MEDIUM / LOW / INFO`; cuando no hay hallazgos HIGH ni MEDIUM establece `review-status: approved` y transiciona `story.md` a `READY-FOR-VERIFY/DONE`; cuando detecta bloqueantes genera `fix-directives.md` con instrucciones concretas por archivo y retrocede `story.md` a `IMPLEMENTING/IN-PROGRESS`; actúa como quality gate post-`story-implement` en el pipeline SDD
+- **Skill `/story-code-review`** (FEAT-064, FEAT-065) — ejecuta una revisión multi-agente del código implementado en una historia SDD; lanza en paralelo tres subagentes especializados: Inspector de Código (convenciones, complejidad, seguridad), Guardián de Requisitos (cobertura de ACs) e Inspector de Integración (contratos de interfaz); consolida hallazgos en `code-review-report.md` con severidades `HIGH / MEDIUM / LOW / INFO`; cuando no hay hallazgos HIGH ni MEDIUM establece `review-status: approved` y transiciona `story.md` a `READY-FOR-VERIFY/DONE`; cuando detecta bloqueantes genera `fix-directives.md` con instrucciones concretas por archivo y retrocede `story.md` a `IMPLEMENT/IN-PROGRESS`; actúa como quality gate post-`story-implement` en el pipeline SDD
 
 ### Changed
 
@@ -89,7 +89,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Skill `/story-plan`** (FEAT-060) — orquestador del pipeline de planning: `story-design → story-tasking → story-analyze`; flag `--skip-analyze`; tabla de estado por paso
 - **Skill `/story-implement`** (FEAT-061) — implementa una historia SDD tarea por tarea siguiendo TDD; genera test fallido → código mínimo; actualiza `tasks.md` en tiempo real; genera `implement-report.md`; precondición de estado `READY-FOR-IMPLEMENT/DONE` requerida
 - **Skill `/changelog-generator`** — genera release notes y changelogs profesionales; soporta Keep a Changelog, release notes amigables y técnicas; categoriza por tipo de cambio (feat, fix, security, etc.)
-- **Máquina de estados del ciclo de vida de historias SDD** (FEAT-062) — define formalmente los estados válidos y transiciones: `BACKLOG/TODO → SPECIFYING/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLANNING/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENTING/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`
+- **Máquina de estados del ciclo de vida de historias SDD** (FEAT-062) — define formalmente los estados válidos y transiciones: `BACKLOG/TODO → SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLAN/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENTING/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`
 
 - **Skill `/docs-wiki-builder`** (FEAT-044) — reorganiza `docs/` como wiki navegable con índice central `docs/index.md` y wikilinks internos `[[slug]]`; patrón LLM Wiki (Karpathy); soporta `--update` y `--dry-run`
 - **Skill `/header-aggregation`** (FEAT-040) — agrega tabla de contenido a documentos Markdown existentes
@@ -100,7 +100,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- **`story-refine`** — añade gestión de ciclo de vida de estados: establece `status: SPECIFYING / substatus: IN‑PROGRESS` al iniciar o retomar una historia y `status: READY-FOR-PLAN / substatus: DONE` al aprobar FINVEST; reemplaza los valores `IN-PROGRESS`/`DONE` por los estados canónicos de la máquina de estados; añade sección "Modos de Ejecución" (manual y retomar backlog)
+- **`story-refine`** — añade gestión de ciclo de vida de estados: establece `status: SPECIFY / substatus: IN‑PROGRESS` al iniciar o retomar una historia y `status: READY-FOR-PLAN / substatus: DONE` al aprobar FINVEST; reemplaza los valores `IN-PROGRESS`/`DONE` por los estados canónicos de la máquina de estados; añade sección "Modos de Ejecución" (manual y retomar backlog)
 - **`story-plan`** — añade transición `status: PLANNING / substatus: IN‑PROGRESS` al inicio del pipeline (incondicional, permite re-ejecución sobre cualquier estado previo); resumen final reporta si el estado fue actualizado correctamente; añade tabla de ciclo de vida de estados
 - **`story-analyze`** — añade actualización de frontmatter a `status: READY-FOR-IMPLEMENT / substatus: DONE` al finalizar sin ERROREs; si hay inconsistencias ERROR-level el estado permanece en `PLAN/IN‑PROGRESS`; aplica tanto en modo manual como en modo Agent; confirmación final refleja el estado resultante
 - **`story-implement`** — añade precondición de estado (`READY-FOR-IMPLEMENT/DONE` requerido); error descriptivo con estado actual si no se cumple; actualización a `IMPLEMENTING/IN‑PROGRESS` antes de la primera tarea; actualización a `READY-FOR-CODE-REVIEW/DONE` y checklist del release al finalizar
@@ -242,7 +242,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - `/ps-discovery` — conducts user discovery and produces `$SPECS_BASE/specs/projects/project.md`
   - `/ps-planning` — generates prioritized release backlog and produces `$SPECS_BASE/specs/projects/project-plan.md`
 - **Role-based agents** — three specialized agents replacing task-based agents:
-  - `architect.agent.md` — technical architect for Specifying and Planning phases
+  - `architect.agent.md` — technical architect for SPECIFY and Planning phases
   - `product-manager.agent.md` — PM for Begin Intention and Discovery phases
   - `ux-designer.agent.md` — UX Designer supporting Discovery phase
 - **Skill templates** — `project-intent-template.md`, `project-template.md`, `project-plan-template.md`

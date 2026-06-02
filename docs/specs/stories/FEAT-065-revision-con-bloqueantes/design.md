@@ -156,7 +156,7 @@ Esta decisión es consistente con D-6 de FEAT-064: la actualización de `story.m
 
 El árbitro registra en la salida del skill:
 ```
-⚠️ Review: needs-changes — story.md permanece en IMPLEMENTING/IN-PROGRESS
+⚠️ Review: needs-changes — story.md permanece en IMPLEMENT/IN-PROGRESS
 → Revisa: docs/specs/stories/FEAT-NNN/fix-directives.md
 ```
 

@@ -30,11 +30,11 @@ updated: 2026-05-09
 | ID | Descripción | Estado | Archivos modificados |
 |---|---|---|---|
 | fix | Implementar fix-directives.md | ✓ completado | `.claude/skills/story-implement/SKILL.md`, `story.md` |
-| 1.1 | Modificar Paso 1d para aceptar IMPLEMENTING/IN-PROGRESS como precondición válida adicional | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
+| 1.1 | Modificar Paso 1d para aceptar IMPLEMENT/IN-PROGRESS como precondición válida adicional | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
 | 2.1 | Extender Paso 2c para calcular N_completadas, N_pendientes y detectar fix-directives.md; registrar modo | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
 | 2.2 | Añadir gate de salida anticipada (AC-3): N_pendientes=0 y N_completadas>0 | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
 | 2.3 | Añadir display del resumen de modo reanudación antes de la primera tarea | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
-| 3.1 | Modificar Paso 2e para omitir escritura si frontmatter ya es IMPLEMENTING/IN-PROGRESS | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
+| 3.1 | Modificar Paso 2e para omitir escritura si frontmatter ya es IMPLEMENT/IN-PROGRESS | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
 | 4.1 | Añadir detección de tarea especial al inicio del ciclo de Paso 3c | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
 | 4.2 | Implementar sub-flujo paso 1: verificar existencia de fix-directives.md | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
 | 4.3 | Implementar sub-flujo paso 2: leer tabla "Instrucciones de corrección" y aplicar correcciones | ✓ completado (ejecución anterior) | `.claude/skills/story-implement/SKILL.md` |
@@ -55,7 +55,7 @@ updated: 2026-05-09
 
 Acepta dos estados válidos de entrada:
 - `READY-FOR-IMPLEMENT/DONE` → ejecución inicial
-- `IMPLEMENTING/IN-PROGRESS` → reanudación de implementación parcial
+- `IMPLEMENT/IN-PROGRESS` → reanudación de implementación parcial
 
 El mensaje de error ahora muestra ambas opciones. Se registra `$ENTRADA_STATUS` internamente para uso en Paso 2e.
 

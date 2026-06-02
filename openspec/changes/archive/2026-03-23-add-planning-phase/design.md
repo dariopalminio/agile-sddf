@@ -1,6 +1,6 @@
 ## Context
 
-The Planning phase is the 6th step in the pipeline (Funnel → Draft → Discovery → Specifying → Approval → **Planning** → Finished). It is the final generative step before the project is archived.
+The Planning phase is the 6th step in the pipeline (Funnel → Draft → Discovery → SPECIFY → Approval → **Planning** → Finished). It is the final generative step before the project is archived.
 
 Currently `.claude/skills/ps-plan/SKILL.md` exists as a stub with no agent and no template. The pipeline cannot complete without a proper Planning implementation.
 

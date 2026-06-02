@@ -23,7 +23,7 @@ defaults:
     command: "pnpm run test:eval"
     required: true
 
-implementing:
+implement:
   test_generators:
     - type: unit
       skill: none
@@ -34,7 +34,7 @@ implementing:
     - type: eval
       skill: skill-test-evals
       required: true
-  code_generator:
+  code_generators:
     skill: skill-master
     required: true
 

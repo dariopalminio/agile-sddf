@@ -22,7 +22,7 @@ La historia tiene 3 flujos principales independientes (agregar, eliminar, cambia
 type: story
 id: FEAT-099
 slug: FEAT-099-agregar-item-carrito
-status: SPECIFYING
+status: SPECIFY
 substatus: IN‑PROGRESS
 related: [FEAT-100, FEAT-101]
 ---

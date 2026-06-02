@@ -24,7 +24,7 @@ FEAT-068 agrega un **quinto eje de validación**: verificar que los artefactos d
 - `.claude/skills/story-analyze/SKILL.md` — pasos 1, 6, 9, 10
 - `.claude/skills/story-analyze/assets/analyze-report-template.md` — nuevas filas/sección DoD
 
-**Restricción detectada:** `docs/policies/definition-of-done-story.md` contiene secciones para SPECIFYING, IMPLEMENTING y CODE-REVIEW, pero no una sección con término "PLAN". La degradación elegante es obligatoria. Ver CR-001.
+**Restricción detectada:** `docs/policies/definition-of-done-story.md` contiene secciones para SPECIFY, IMPLEMENTING y CODE-REVIEW, pero no una sección con término "PLAN". La degradación elegante es obligatoria. Ver CR-001.
 
 ## Goals / Non-Goals
 
@@ -52,7 +52,7 @@ El DoD puede evolucionar (secciones renombradas, añadidas). El skill no debe ha
 
 **Alternativas rechazadas:**
 - *Match exacto al string "PLAN"*: frágil; si el DoD titula la sección "PLANIFICACIÓN" o "PLANNING", falla. Rechazado.
-- *Mapping fijo "PLAN" → "SPECIFYING"*: hardcodea equivalencia que contradice P6 (diseño para el cambio). Si el DoD añade una sección PLAN real, el mapping quedaría obsoleto. Rechazado.
+- *Mapping fijo "PLAN" → "SPECIFY"*: hardcodea equivalencia que contradice P6 (diseño para el cambio). Si el DoD añade una sección PLAN real, el mapping quedaría obsoleto. Rechazado.
 
 ### D2 — Estrategia de evaluación de cada criterio DoD // satisface: AC-1, AC-2
 

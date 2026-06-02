@@ -13,7 +13,7 @@ The system SHALL define the story lifecycle as a linear state machine with the f
 
 | State | Substatus | Set by | Meaning |
 |---|---|---|---|
-| `SPECIFYING` | `IN‑PROGRESS` | `story-creation` / `story-refine` | La historia está siendo especificada |
+| `SPECIFY` | `IN‑PROGRESS` | `story-creation` / `story-refine` | La historia está siendo especificada |
 | `READY-FOR-PLAN` | `DONE` | `story-creation` / `story-refine` | Especificación aprobada (FINVEST APROBADA) |
 | `PLAN` | `IN‑PROGRESS` | `story-plan` | El pipeline de planning está en curso |
 | `READY-FOR-IMPLEMENT` | `DONE` | `story-analyze` | Planning completo y artefactos coherentes |
@@ -22,14 +22,14 @@ The system SHALL define the story lifecycle as a linear state machine with the f
 
 #### Scenario: State machine defines valid transitions
 - **WHEN** a skill updates the story status
-- **THEN** the transition MUST follow the sequence: `SPECIFYING/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLANNING/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENTING/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`
+- **THEN** the transition MUST follow the sequence: `SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLAN/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENTING/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`
 
 ### Requirement: Stories without explicit status are treated as BACKLOG/TODO
 The system SHALL treat any `story.md` without a `status` field (or with `status: BACKLOG`) as being in the initial `BACKLOG/TODO` state, allowing all skills to operate on it without precondition failures.
 
 #### Scenario: Story with no status field
 - **WHEN** a skill reads `story.md` and the frontmatter contains no `status` field or `status: BACKLOG`
-- **THEN** the skill treats the story as eligible for the first applicable transition (e.g., `story-creation` can set `SPECIFYING/IN‑PROGRESS`)
+- **THEN** the skill treats the story as eligible for the first applicable transition (e.g., `story-creation` can set `SPECIFY/IN‑PROGRESS`)
 
 ### Requirement: Skills update story.md frontmatter status fields directly
 The system SHALL update `status` and `substatus` fields in the frontmatter YAML of `story.md` by rewriting the file inline, without external scripts or tools. The LLM executing the skill is responsible for writing the updated frontmatter.

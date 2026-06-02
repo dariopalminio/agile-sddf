@@ -44,7 +44,7 @@ Quality gate formal entre `/story-implement-tasks` y la marca final de Done. Lan
 ### Posicionamiento
 
 ```
-[story.md: IMPLEMENTING/DONE]   ← precondición requerida (viene de story-implement-tasks)
+[story.md: IMPLEMENT/DONE]   ← precondición requerida (viene de story-implement-tasks)
      ↓
 story-code-review  → Quality gate: revisión multi-agente del código  ← aquí
      │   Al iniciar: story.md → CODE-REVIEW/IN-PROGRESS
@@ -190,7 +190,7 @@ Leer el frontmatter de `story.md` y verificar `status: IMPLEMENTING` y `substatu
 
 **Si la precondición NO se cumple:**
 ```
-❌ La historia <story_id> no está en estado IMPLEMENTING/DONE.
+❌ La historia <story_id> no está en estado IMPLEMENT/DONE.
 
    Estado actual: status: <valor_actual> / substatus: <valor_actual>
 
@@ -210,7 +210,7 @@ Mostrar confirmación de inicio:
 🔍 Iniciando revisión de código para: <story_id>
    Directorio: <ruta_directorio>
    Artefactos: story.md ✓ | design.md ✓ | implement-report.md ✓
-   Estado: IMPLEMENTING/DONE ✓
+   Estado: IMPLEMENT/DONE ✓
 ```
 
 ---

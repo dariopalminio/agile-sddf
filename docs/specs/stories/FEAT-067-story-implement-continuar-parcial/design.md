@@ -23,7 +23,7 @@ related:
 
 El skill `story-implement` en su estado actual (FEAT-061) asume que todas las tareas de `tasks.md` están pendientes (`[ ]`) y que el estado de `story.md` es `READY-FOR-IMPLEMENT/DONE`. Este contrato es correcto para la ejecución inicial.
 
-Sin embargo, el flujo post-review introduce un nuevo escenario: `/story-code-review` con resultado `needs-changes` retrocede `story.md` a `IMPLEMENTING/IN-PROGRESS` y agrega `- [ ] Implementar fix-directives.md` a `tasks.md`, que ya contiene las tareas previas marcadas como `[x]`. Al re-ejecutar `/story-implement`, el skill actual rechaza la historia porque no cumple la precondición `READY-FOR-IMPLEMENT/DONE`.
+Sin embargo, el flujo post-review introduce un nuevo escenario: `/story-code-review` con resultado `needs-changes` retrocede `story.md` a `IMPLEMENT/IN-PROGRESS` y agrega `- [ ] Implementar fix-directives.md` a `tasks.md`, que ya contiene las tareas previas marcadas como `[x]`. Al re-ejecutar `/story-implement`, el skill actual rechaza la historia porque no cumple la precondición `READY-FOR-IMPLEMENT/DONE`.
 
 **Archivo afectado:** `.claude/skills/story-implement/SKILL.md` — único componente a modificar.
 
@@ -35,7 +35,7 @@ Sin embargo, el flujo post-review introduce un nuevo escenario: `/story-code-rev
 ## Goals / Non-Goals
 
 **Goals:**
-- Relajar la precondición de estado para aceptar también `IMPLEMENTING/IN-PROGRESS` // satisface: AC-1, AC-2
+- Relajar la precondición de estado para aceptar también `IMPLEMENT/IN-PROGRESS` // satisface: AC-1, AC-2
 - Detectar el modo de reanudación y mostrarlo al usuario antes de ejecutar tareas // satisface: R-1
 - Definir un gate de salida anticipada cuando no hay tareas `[ ]` pendientes // satisface: AC-3
 - Especificar el procesamiento de la tarea `Implementar fix-directives.md` dentro del loop existente // satisface: AC-1, R-2
@@ -103,7 +103,7 @@ si N_pendientes  = 0 AND N_completadas > 0: salida anticipada (AC-3)
 Sin modificar ningún archivo.
 
 **Alternativas rechazadas:**
-- Detección por estado del frontmatter → el estado puede ser `IMPLEMENTING/IN-PROGRESS` tanto en reanudación como en la ejecución inicial (si el skill se interrumpió), lo que hace el frontmatter poco fiable como señal de modo.
+- Detección por estado del frontmatter → el estado puede ser `IMPLEMENT/IN-PROGRESS` tanto en reanudación como en la ejecución inicial (si el skill se interrumpió), lo que hace el frontmatter poco fiable como señal de modo.
 - Flag `--resume` explícito → requiere que el usuario recuerde pasarlo; la detección automática por `tasks.md` es más simple y menos error-prone.
 
 ---

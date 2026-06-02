@@ -75,8 +75,8 @@ Entonces el skill entra en modo manual e interactivo
 ```gherkin
 Dado que existe una historia "FEAT-040" con status IMPLEMENTING y substatus IN-PROGRESS
 Cuando el desarrollador ejecuta `story-verify` con el ID "FEAT-040"
-Entonces el skill detecta que la historia no cumple la precondición de estado (CODE-REVIEW o IMPLEMENTING/DONE)
-  Y muestra el mensaje "La historia FEAT-040 tiene status IMPLEMENTING/IN-PROGRESS. Ejecuta story-code-review antes de continuar."
+Entonces el skill detecta que la historia no cumple la precondición de estado (CODE-REVIEW o IMPLEMENT/DONE)
+  Y muestra el mensaje "La historia FEAT-040 tiene status IMPLEMENT/IN-PROGRESS. Ejecuta story-code-review antes de continuar."
   Pero no genera ni sobreescribe ningún archivo existente
 ```
 
@@ -300,7 +300,7 @@ El skill `story-verify` no debe modificar ningún código fuente ni artefacto de
 - Estado final: VERIFY-PASSED / VERIFY-REJECTED
 
 **Precondiciones requeridas:**
-- Historia con `status: CODE-REVIEW` (o `IMPLEMENTING/DONE` como mínimo aceptable)
+- Historia con `status: CODE-REVIEW` (o `IMPLEMENT/DONE` como mínimo aceptable)
 - Archivo `story.md` accesible en `$SPECS_BASE/specs/stories/<story-id>/`
 - Archivo DoD en `$SPECS_BASE/policies/definition-of-done-story.md`
 - Para modo automático: herramientas del stack instaladas (node, python, etc.)

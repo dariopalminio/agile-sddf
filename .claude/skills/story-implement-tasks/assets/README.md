@@ -5,17 +5,17 @@ Skill que implementa el código de una historia SDD tarea por tarea siguiendo TD
 ## Posicionamiento en el Flujo SDD
 
 ```
-/story-refine                          [story.md: SPECIFYING/IN‑PROGRESS → READY-FOR-PLAN/DONE]
+/story-refine                          [story.md: SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE]
     ├── /story-creation   → Crea story.md
     ├── /story-evaluation → Evalúa con FINVEST
     └── /story-split      → Divide historias grandes
     ↓ [story.md: READY-FOR-PLAN/DONE]
-/story-plan                            [story.md: → PLANNING/IN‑PROGRESS al inicio]
+/story-plan                            [story.md: → PLAN/IN‑PROGRESS al inicio]
     ├── /story-design   → Genera design.md
     ├── /story-tasking  → Genera tasks.md
     └── /story-analyze  → Genera analyze.md [story.md: → READY-FOR-IMPLEMENT/DONE si sin ERROREs]
     ↓ [story.md: READY-FOR-IMPLEMENT/DONE]
-/story-implement-tasks                       [story.md: → IMPLEMENTING/IN‑PROGRESS → IMPLEMENTING/DONE]
+/story-implement-tasks                       [story.md: → IMPLEMENTING/IN‑PROGRESS → IMPLEMENT/DONE]
     → Implementa código tarea por tarea con TDD  ← aquí
     → Genera implement-report.md al finalizar
     → Actualiza checklist en release.md padre
@@ -41,7 +41,7 @@ Si algún artefacto falta o la historia no está en `READY-FOR-IMPLEMENT/DONE`, 
 | Antes de la primera tarea | `IMPLEMENTING` | `IN‑PROGRESS` |
 | Después de generar `implement-report.md` | `IMPLEMENTING` | `DONE` |
 
-Al alcanzar `IMPLEMENTING/DONE`, el skill también actualiza el checklist en el `release.md` padre (campo `parent` del frontmatter de `story.md`).
+Al alcanzar `IMPLEMENT/DONE`, el skill también actualiza el checklist en el `release.md` padre (campo `parent` del frontmatter de `story.md`).
 
 ## Artefacto generado
 

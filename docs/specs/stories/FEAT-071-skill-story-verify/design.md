@@ -162,7 +162,7 @@ Rechazada porque violaría AC-14 (no-destructividad) al dar al agente acceso de 
 | Inicio de story-verify | READY-FOR-VERIFY/DONE | VERIFY | IN-PROGRESS |
 | Todos los criterios DoD VERIFY pasan | VERIFY/IN-PROGRESS | VERIFY | DONE |
 | Algún criterio DoD VERIFY falla | VERIFY/IN-PROGRESS | VERIFY | BLOCKED |
-| Estado incorrecto (precondición no cumplida) | cualquiera excepto READY-FOR-VERIFY o IMPLEMENTING/DONE | sin cambio | sin cambio |
+| Estado incorrecto (precondición no cumplida) | cualquiera excepto READY-FOR-VERIFY o IMPLEMENT/DONE | sin cambio | sin cambio |
 
 Precondiciones aceptables para ejecutar: `status: READY-FOR-VERIFY` o `status: IMPLEMENTING, substatus: DONE` (mínimo aceptable según la historia).
 
@@ -265,7 +265,7 @@ Campos actualizados en frontmatter:
 ### Flujo 1: Verificación automática unit tests // satisface: AC-1, AC-6
 
 ```
-SKILL.md lee story.md → verifica precondición (READY-FOR-VERIFY o IMPLEMENTING/DONE)
+SKILL.md lee story.md → verifica precondición (READY-FOR-VERIFY o IMPLEMENT/DONE)
 → actualiza story.md: VERIFY/IN-PROGRESS
 → lee DoD VERIFY de definition-of-done-story.md
 → detecta config de unit tests (pytest.ini / jest.config / etc.)
@@ -309,7 +309,7 @@ SKILL.md no detecta configuración de tests
 
 ```
 SKILL.md lee story.md frontmatter
-→ status ≠ READY-FOR-VERIFY y ≠ IMPLEMENTING/DONE
+→ status ≠ READY-FOR-VERIFY y ≠ IMPLEMENT/DONE
 → emite mensaje: "La historia <ID> tiene status <S>/<SS>. Ejecuta <skill-previo> antes de continuar."
 → termina sin crear ni modificar ningún archivo
 ```

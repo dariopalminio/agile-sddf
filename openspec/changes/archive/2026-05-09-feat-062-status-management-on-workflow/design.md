@@ -40,10 +40,10 @@ Alternativa descartada: un script `update-story-status.ts` auxiliar. Añade comp
 ```
 BACKLOG/TODO  (default implícito — sin transición explícita)
   ↓
-SPECIFYING/IN‑PROGRESS  → seteado por story-creation/story-refine al inicio
+SPECIFY/IN‑PROGRESS  → seteado por story-creation/story-refine al inicio
 READY-FOR-PLAN/DONE    → seteado por story-creation/story-refine al finalizar
   ↓
-PLANNING/IN‑PROGRESS    → seteado por story-plan al inicio del pipeline
+PLAN/IN‑PROGRESS    → seteado por story-plan al inicio del pipeline
 READY-FOR-IMPLEMENT/DONE      → seteado por story-analyze al finalizar (último paso del pipeline)
   ↓
 IMPLEMENTING/IN‑PROGRESS → seteado por story-implement al inicio

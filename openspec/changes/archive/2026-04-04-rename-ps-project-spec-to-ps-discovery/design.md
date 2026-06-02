@@ -1,6 +1,6 @@
 ## Context
 
-El skill `ps-project-spec` fue creado en el cambio anterior como fusión de Discovery + Specifying. El nombre elegido priorizó el artefacto de salida (`requirement-spec`) sobre la acción que conduce el skill. El nombre `ps-discovery` es más intuitivo para el usuario y es consistente con el vocabulario del workflow (`begin-intention → discovery → planning`).
+El skill `ps-project-spec` fue creado en el cambio anterior como fusión de Discovery + SPECIFY. El nombre elegido priorizó el artefacto de salida (`requirement-spec`) sobre la acción que conduce el skill. El nombre `ps-discovery` es más intuitivo para el usuario y es consistente con el vocabulario del workflow (`begin-intention → discovery → planning`).
 
 El cambio es puramente de renaming — no hay modificaciones de comportamiento, lógica ni templates.
 

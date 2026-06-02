@@ -32,7 +32,7 @@ related:
 ## 4. Orquestador principal (SKILL.md)
 
 - [x] 4.1 Escribir `SKILL.md` con frontmatter YAML estandarizado (name, description, triggers, outputs) e instrucciones completas de orquestación cubriendo los 5 flujos del diseño:
-  - **(a) Precondición (AC-4):** leer frontmatter de story.md; si status ≠ READY-FOR-VERIFY y ≠ IMPLEMENTING/DONE → emitir mensaje de error específico y terminar sin modificar archivos
+  - **(a) Precondición (AC-4):** leer frontmatter de story.md; si status ≠ READY-FOR-VERIFY y ≠ IMPLEMENT/DONE → emitir mensaje de error específico y terminar sin modificar archivos
   - **(b) Inicio:** actualizar story.md → VERIFY/IN-PROGRESS
   - **(c) Lectura DoD (D-6):** leer `$SPECS_BASE/policies/definition-of-done-story.md`, extraer sección VERIFY; si no existe → usar criterios mínimos genéricos + advertencia
   - **(d) Detección de modo (D-2):** buscar en este orden: skill de testing personalizado en `.claude/skills/` → modo delegado; playwright.config/cypress.config/cucumber → modo e2e; pytest.ini/jest.config/etc. → modo unit; ninguno → modo manual
@@ -52,7 +52,7 @@ related:
 - [x] 6.1 Verificar AC-1: ejecutar skill sobre `examples/pytest-project/` con historia en READY-FOR-VERIFY/DONE y confirmar que genera verify-report.md con Summary, Test Scope, DoD criteria y que story.md se actualiza a VERIFY/DONE (si todos los tests del ejemplo pasan)
 - [x] 6.2 Verificar AC-2: simular proyecto con `playwright.config.ts` y confirmar que SKILL.md detecta modo `automatico-e2e`, ejecuta suite E2E y registra resultados PASS/FAIL/SKIP por escenario Gherkin en verify-report.md
 - [x] 6.3 Verificar AC-3: ejecutar skill sobre `examples/no-tests-project/` y confirmar que qa-engineer.agent.md es invocado en modo manual, guía escenario por escenario y los resultados ingresados manualmente quedan registrados en verify-report.md
-- [x] 6.4 Verificar AC-4: ejecutar skill sobre una historia con status IMPLEMENTING/IN-PROGRESS y confirmar que el mensaje de error es "La historia <ID> tiene status IMPLEMENTING/IN-PROGRESS. Ejecuta story-code-review antes de continuar." y que ningún archivo es creado ni modificado
+- [x] 6.4 Verificar AC-4: ejecutar skill sobre una historia con status IMPLEMENT/IN-PROGRESS y confirmar que el mensaje de error es "La historia <ID> tiene status IMPLEMENT/IN-PROGRESS. Ejecuta story-code-review antes de continuar." y que ningún archivo es creado ni modificado
 - [x] 6.5 Verificar AC-5: ejecutar skill sobre `examples/pytest-project/` con el test fallido activo y confirmar que verify-report.md tiene sección Findings con el defecto, story.md queda con substatus BLOCKED y se muestra "VERIFY BLOQUEADO: se encontraron N defectos."
 - [x] 6.6 Verificar AC-7 (idempotencia): ejecutar story-verify dos veces sobre la misma historia y confirmar que la segunda ejecución sobreescribe verify-report.md pero preserva la entrada de la primera ejecución en la sección "Historial de ejecuciones anteriores"
 - [x] 6.7 Verificar AC-8 (DoD dinámico): modificar la sección VERIFY en definition-of-done-story.md añadiendo un nuevo criterio y re-ejecutar el skill; confirmar que el nuevo criterio aparece evaluado en verify-report.md sin modificar SKILL.md

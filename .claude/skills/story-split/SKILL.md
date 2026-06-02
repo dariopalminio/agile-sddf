@@ -374,7 +374,7 @@ Las **historias adicionales** reciben IDs nuevos consecutivos:
 3. Actualizar su frontmatter:
    - `id: FEAT-{NNN}` (conservado)
    - `slug: FEAT-{NNN}-{slug-core}` (actualizado)
-   - `status: SPECIFYING` / `substatus: IN‑PROGRESS`
+   - `status: SPECIFY` / `substatus: IN‑PROGRESS`
    - Campo `related:` con los IDs de las historias adicionales: `[FEAT-{N+1}, FEAT-{N+2}, ...]`
 4. Advertir en el resumen que el directorio fue renombrado y que las referencias al slug anterior deben actualizarse manualmente
 
@@ -383,7 +383,7 @@ Las **historias adicionales** reciben IDs nuevos consecutivos:
 Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/stories/`:
 - **Directorio:** `FEAT-{NNN}-{slug}/`
 - **Archivo:** `story.md` con la historia completa en formato del template
-- **Frontmatter:** `id: FEAT-{NNN}`, `slug: FEAT-{NNN}-{slug}`, `status: SPECIFYING`, campo `related:` con el ID de la core y las demás historias hermanas
+- **Frontmatter:** `id: FEAT-{NNN}`, `slug: FEAT-{NNN}-{slug}`, `status: SPECIFY`, campo `related:` con el ID de la core y las demás historias hermanas
 
 #### Mostrar resumen
 
@@ -439,7 +439,7 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 
 - `$SPECS_BASE/specs/stories/FEAT-{NNN}-{slug-core}/story.md` — historia core (directorio repurposed del original)
 - `$SPECS_BASE/specs/stories/FEAT-{N+1}-{slug}/story.md` … — historias adicionales (nuevas)
-- Estado de todas las historias resultantes: `SPECIFYING` (pendiente de re-evaluación con `/story-evaluation`)
+- Estado de todas las historias resultantes: `SPECIFY` (pendiente de re-evaluación con `/story-evaluation`)
 
 ### Referencias
 

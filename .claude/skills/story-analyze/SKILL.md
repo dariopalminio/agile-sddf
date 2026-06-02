@@ -44,7 +44,7 @@ El skill nunca modifica los artefactos que analiza. Solo lee, correlaciona y gen
 ### Posicionamiento
 
 ```
-[story.md: PLANNING/IN‑PROGRESS]  ← seteado por story-plan al inicio del pipeline
+[story.md: PLAN/IN‑PROGRESS]  ← seteado por story-plan al inicio del pipeline
      ↓
 story.md   → What: requisitos, criterios de aceptación, comportamiento esperado
 design.md  → How: arquitectura, componentes, interfaces, decisiones técnicas
@@ -401,8 +401,8 @@ Después de guardar `analyze.md`, evaluar si hay inconsistencias de tipo ERROR (
 
 **Si hay ERROREs (inconsistencias bloqueantes — TIPO A, B o E):**
 - NO actualizar el frontmatter de `story.md`
-- El estado permanece en `PLANNING/IN‑PROGRESS` (o el que tuviera antes)
-- Registrar internamente: `Estado story.md: PLANNING/IN‑PROGRESS (no actualizado — hay ERROREs)`
+- El estado permanece en `PLAN/IN‑PROGRESS` (o el que tuviera antes)
+- Registrar internamente: `Estado story.md: PLAN/IN‑PROGRESS (no actualizado — hay ERROREs)`
 
 ---
 
@@ -427,7 +427,7 @@ Mostrar al usuario:
    · <N> ERROR(ES) — requieren corrección antes de implementar
    · <N> WARNING(S) — revisar pero no bloquean
 
-   Estado story.md: <READY-FOR-IMPLEMENT/DONE ✓ | PLANNING/IN‑PROGRESS — hay ERROREs pendientes>
+   Estado story.md: <READY-FOR-IMPLEMENT/DONE ✓ | PLAN/IN‑PROGRESS — hay ERROREs pendientes>
 ```
 
 Si hay ERROREs:
@@ -436,7 +436,7 @@ Si hay ERROREs:
    Corrige los ERROREs en design.md o tasks.md antes de comenzar la implementación.
    Sugerencias en: <ruta>/analyze.md → sección "Recomendaciones"
 
-   Estado story.md: PLANNING/IN‑PROGRESS (no se actualizó a READY-FOR-IMPLEMENT — hay ERROREs)
+   Estado story.md: PLAN/IN‑PROGRESS (no se actualizó a READY-FOR-IMPLEMENT — hay ERROREs)
 ```
 
 Si solo hay WARNINGs o está todo OK:

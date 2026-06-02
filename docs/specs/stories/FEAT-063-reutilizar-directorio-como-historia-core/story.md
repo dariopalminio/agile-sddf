@@ -33,7 +33,7 @@ Dado que existe la historia "FEAT-063-story-code-review" con status SPLIT candid
 Cuando se ejecuta la Fase 6 del skill (guardar y entregar el output)
 Entonces el directorio original "FEAT-063-story-code-review/" es renombrado al slug de la historia core
   Y el archivo story.md dentro del directorio renombrado contiene la historia core con id: FEAT-063
-  Y el frontmatter de la historia core incluye status: SPECIFYING y substatus: IN-PROGRESS
+  Y el frontmatter de la historia core incluye status: SPECIFY y substatus: IN-PROGRESS
   Y el frontmatter de la historia core incluye el campo related: con los IDs de las historias adicionales
   Y se crean nuevos directorios para cada historia adicional con IDs consecutivos a partir de FEAT-(N+1)
 ```

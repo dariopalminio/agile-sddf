@@ -7,7 +7,7 @@
 ## 2. Crear skill ps-project-spec
 
 - [x] 2.1 Crear directorio `.claude/skills/ps-project-spec/templates/`
-- [x] 2.2 Copiar `.claude/skills/ps-specifying/templates/project-template.md` → `.claude/skills/ps-project-spec/templates/project-template.md`
+- [x] 2.2 Copiar `.claude/skills/ps-SPECIFY/templates/project-template.md` → `.claude/skills/ps-project-spec/templates/project-template.md`
 - [x] 2.3 Crear `.claude/skills/ps-project-spec/SKILL.md` — orquestador que verifica que existe `project-intent.md`, invoca `product-manager-agent` para discovery y `architect-agent` para especificación, produciendo `$SPECS_BASE/specs/projects/project.md`
 
 ## 3. Eliminar skills obsoletos
@@ -15,7 +15,7 @@
 - [x] 3.1 Eliminar directorio `.claude/skills/ps-funnel/` (incluye templates/)
 - [x] 3.2 Eliminar directorio `.claude/skills/ps-draft/` (incluye templates/)
 - [x] 3.3 Eliminar directorio `.claude/skills/ps-discovery/` (incluye templates/)
-- [x] 3.4 Eliminar directorio `.claude/skills/ps-specifying/` (incluye templates/)
+- [x] 3.4 Eliminar directorio `.claude/skills/ps-SPECIFY/` (incluye templates/)
 - [x] 3.5 Eliminar directorio `.claude/skills/ps-approval/` (incluye templates/)
 - [x] 3.6 Eliminar directorio `.claude/skills/ps-finish/`
 

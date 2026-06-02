@@ -45,7 +45,7 @@ reviewers:
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| LOW | `.claude/skills/story-implement/SKILL.md:23` (Posicionamiento) | El bloque "Posicionamiento" y la tabla "Ciclo de vida de estados" solo describen `READY-FOR-IMPLEMENT/DONE` como precondición, ignorando `IMPLEMENTING/IN-PROGRESS` aceptado en Paso 1d. | Actualizar el cuadro "Ciclo de vida de estados" y el diagrama de Posicionamiento para reflejar ambas precondiciones. |
+| LOW | `.claude/skills/story-implement/SKILL.md:23` (Posicionamiento) | El bloque "Posicionamiento" y la tabla "Ciclo de vida de estados" solo describen `READY-FOR-IMPLEMENT/DONE` como precondición, ignorando `IMPLEMENT/IN-PROGRESS` aceptado en Paso 1d. | Actualizar el cuadro "Ciclo de vida de estados" y el diagrama de Posicionamiento para reflejar ambas precondiciones. |
 | LOW | `.claude/skills/story-implement/SKILL.md:47` (nota Precondición) | La nota "Precondición:" dice "solo puede ejecutarse si `status: READY-FOR-IMPLEMENT` + `substatus: DONE`", contradiciendo el Paso 1d. | Reemplazar esa nota por una descripción de dos condiciones válidas. |
 
 Todos los ACs principales cubiertos:
@@ -65,11 +65,11 @@ Todos los ACs principales cubiertos:
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| LOW | `.claude/skills/story-implement/SKILL.md:23` | El diagrama de "Posicionamiento" sigue indicando `[story.md: READY-FOR-IMPLEMENT/DONE]` como única precondición sin mencionar `IMPLEMENTING/IN-PROGRESS`. | Agregar al diagrama una segunda línea: `[story.md: IMPLEMENTING/IN-PROGRESS]  ← reanudación`. |
-| LOW | `.claude/skills/story-implement/SKILL.md:39-46` | La tabla "Ciclo de vida de estados" no incluye `IMPLEMENTING/IN-PROGRESS` como punto de entrada válido. | Agregar fila: `Precondición para reanudación | IMPLEMENTING | IN-PROGRESS`. |
+| LOW | `.claude/skills/story-implement/SKILL.md:23` | El diagrama de "Posicionamiento" sigue indicando `[story.md: READY-FOR-IMPLEMENT/DONE]` como única precondición sin mencionar `IMPLEMENT/IN-PROGRESS`. | Agregar al diagrama una segunda línea: `[story.md: IMPLEMENT/IN-PROGRESS]  ← reanudación`. |
+| LOW | `.claude/skills/story-implement/SKILL.md:39-46` | La tabla "Ciclo de vida de estados" no incluye `IMPLEMENT/IN-PROGRESS` como punto de entrada válido. | Agregar fila: `Precondición para reanudación | IMPLEMENTING | IN-PROGRESS`. |
 
 Todas las decisiones de diseño verificadas:
-- ✅ D-1 (Paso 1d): acepta READY-FOR-IMPLEMENT/DONE y IMPLEMENTING/IN-PROGRESS; registra $ENTRADA_STATUS
+- ✅ D-1 (Paso 1d): acepta READY-FOR-IMPLEMENT/DONE y IMPLEMENT/IN-PROGRESS; registra $ENTRADA_STATUS
 - ✅ D-2 (Paso 2c): N_completadas, N_pendientes, fix_directives_existe, modo; gate AC-3; resumen reanudación
 - ✅ D-3 (Paso 3c): detección por trim+lowercase; 3 sub-pasos; single-level delegation respetado
 - ✅ D-4 (Paso 4a): tareas previas [x] con "ejecución anterior"; campo "Tareas omitidas" = N_completadas

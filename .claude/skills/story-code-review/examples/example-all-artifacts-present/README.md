@@ -24,7 +24,7 @@ y el skill avanza al Paso 2 (carga de contexto) sin emitir errores de precondici
 🔍 Iniciando revisión de código para: FEAT-000
    Directorio: docs/specs/stories/FEAT-000-test/
    Artefactos: story.md ✓ | design.md ✓ | implement-report.md ✓
-   Estado: IMPLEMENTING/DONE ✓
+   Estado: IMPLEMENT/DONE ✓
 ```
 
 El skill continúa con el Paso 2 (carga de contexto), lanza los tres agentes revisores

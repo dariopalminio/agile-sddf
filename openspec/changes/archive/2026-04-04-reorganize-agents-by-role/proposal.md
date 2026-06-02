@@ -4,11 +4,11 @@ Los agentes actuales están organizados por tarea/estado del workflow (funnel-ag
 
 ## What Changes
 
-- Eliminar agentes task-based: `funnel-agent.md`, `draft-agent.md`, `discovery-agent.md`, `specifying-agent.md`, `approval-agent.md`, `planning-agent.md`
+- Eliminar agentes task-based: `funnel-agent.md`, `draft-agent.md`, `discovery-agent.md`, `SPECIFY-agent.md`, `approval-agent.md`, `planning-agent.md`
 - Crear agentes role-based en `.claude/agents/`:
   - `product-manager-agent.md` — orquesta el pipeline completo, conduce entrevistas, genera docs de intención y discovery
   - `architect-agent.md` — define arquitectura técnica, valida specs de requisitos, genera architecture-spec
-  - `ux-designer-agent.md` — define flujos de usuario, valida usabilidad, apoya en discovery y specifying
+  - `ux-designer-agent.md` — define flujos de usuario, valida usabilidad, apoya en discovery y SPECIFY
 - Actualizar todos los skills que referencian agentes task-based para usar los nuevos agentes por rol
 - Actualizar CLAUDE.md con la nueva estructura de agentes
 
@@ -21,7 +21,7 @@ Los agentes actuales están organizados por tarea/estado del workflow (funnel-ag
 - `ps-funnel-skill`: Cambia referencia de `funnel-agent` a `product-manager-agent`
 - `ps-draft-skill`: Cambia referencia de `draft-agent` a `product-manager-agent`
 - `ps-discovery-skill`: Cambia referencia de `discovery-agent` a `product-manager-agent`
-- `ps-specifying-skill`: Cambia referencia de `specifying-agent` a `architect-agent` + `product-manager-agent`
+- `ps-SPECIFY-skill`: Cambia referencia de `SPECIFY-agent` a `architect-agent` + `product-manager-agent`
 - `ps-planning-skill`: Cambia referencia de `planning-agent` a `architect-agent`
 
 ## Impact

@@ -22,7 +22,7 @@ _(ninguna — no cambian specs existentes)_
 
 ## Impact
 
-- Completa el tercer eslabón del workflow `Funnel → Draft → Discovery → Specifying → Approval → Planning → Finished`
+- Completa el tercer eslabón del workflow `Funnel → Draft → Discovery → SPECIFY → Approval → Planning → Finished`
 - Archivos nuevos: `.claude/agents/discovery-agent.md`, `.claude/skills/ps-discovery/SKILL.md`, `.claude/skills/ps-discovery/templates/discovery-template.md`
 - Documento de salida: `$SPECS_BASE/specs/discovery.md`
 - Sin dependencias externas; sin cambios al filesystem de otros estados

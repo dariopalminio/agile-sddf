@@ -1,8 +1,8 @@
 ## Context
 
-The ProjectSpecFactory pipeline has a placeholder `ps-approve` skill with no agent, no template, and no implementation. The Approval phase sits between Specifying and Planning and is responsible for surfacing ambiguities, contradictions, and open questions across all prior documents before committing to planning. Without it, the pipeline moves from specification to planning without structured validation.
+The ProjectSpecFactory pipeline has a placeholder `ps-approve` skill with no agent, no template, and no implementation. The Approval phase sits between SPECIFY and Planning and is responsible for surfacing ambiguities, contradictions, and open questions across all prior documents before committing to planning. Without it, the pipeline moves from specification to planning without structured validation.
 
-Existing reference implementations to follow: `ps-specifying` (skill + specifying-agent + template), `ps-discovery` (skill + discovery-agent + template).
+Existing reference implementations to follow: `ps-SPECIFY` (skill + SPECIFY-agent + template), `ps-discovery` (skill + discovery-agent + template).
 
 ## Goals / Non-Goals
 
@@ -26,9 +26,9 @@ Existing reference implementations to follow: `ps-specifying` (skill + specifyin
 **Why**: A single-perspective review misses category-specific issues. PM catches scope/business gaps; Architect catches technical/feasibility gaps; UX catches usability/user-journey gaps. Three lenses produce more actionable clarifications than one.
 **Alternative considered**: Single-pass linear review — rejected because it produces fewer, less categorized findings.
 
-### Decision 2: Template-driven questions (same as specifying-agent)
+### Decision 2: Template-driven questions (same as SPECIFY-agent)
 **Choice**: The `approval-agent` derives its section structure from `##` headers and `<!-- -->` comments in `clarifications-template.md` at runtime, not from hardcoded logic.
-**Why**: Consistent with the established pattern in `specifying-agent` and `discovery-agent`. If the template changes, agent behavior adapts automatically without code changes.
+**Why**: Consistent with the established pattern in `SPECIFY-agent` and `discovery-agent`. If the template changes, agent behavior adapts automatically without code changes.
 **Alternative considered**: Hardcoded sections in the agent — rejected because it violates the idempotence/extensibility principles.
 
 ### Decision 3: Skill named `ps-approval` (not modifying `ps-approve`)
@@ -36,9 +36,9 @@ Existing reference implementations to follow: `ps-specifying` (skill + specifyin
 **Why**: The existing `ps-approve` stub may be referenced by the CLAUDE.md command list. Creating `ps-approval` as the canonical implementation leaves the legacy stub intact and avoids breaking references. Both can coexist; `ps-approve` can be updated separately to forward to `ps-approval`.
 **Alternative considered**: Replace `ps-approve` in-place — rejected to avoid unintended side effects.
 
-### Decision 4: State validation mirrors specifying-agent pattern
+### Decision 4: State validation mirrors SPECIFY-agent pattern
 **Choice**: The skill reads `requirement-spec.md` and checks `substatus`; if `IN‑PROGRESS`, asks the user to confirm before proceeding.
-**Why**: Consistent with how `ps-specifying` validates `discovery.md` state. The pattern is already proven in the pipeline.
+**Why**: Consistent with how `ps-SPECIFY` validates `discovery.md` state. The pattern is already proven in the pipeline.
 
 ## Risks / Trade-offs
 

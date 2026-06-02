@@ -31,12 +31,12 @@ reviewers:
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| MEDIUM | docs/specs/stories/FEAT-065-revision-con-bloqueantes/story.md:39 | Inconsistencia de estado entre story.md y SKILL.md: el AC-1 establece que story.md debe permanecer en `status: IMPLEMENTING / substatus: IN-PROGRESS` tras un needs-changes, pero SKILL.md Paso 4g implementa `CODE-REVIEW/DONE`. tasks.md T2.4 también referencia `IMPLEMENTING/IN-PROGRESS` en el mensaje de aviso. El criterio de aceptación no se satisface según su definición literal. | Alinear story.md AC-1 para reflejar el estado implementado real (`CODE-REVIEW/DONE`), actualizando también tasks.md T2.4. Si el negocio requiere `IMPLEMENTING/IN-PROGRESS`, actualizar SKILL.md Paso 4g, la tabla de ciclo de vida y el Paso 4d. |
+| MEDIUM | docs/specs/stories/FEAT-065-revision-con-bloqueantes/story.md:39 | Inconsistencia de estado entre story.md y SKILL.md: el AC-1 establece que story.md debe permanecer en `status: IMPLEMENTING / substatus: IN-PROGRESS` tras un needs-changes, pero SKILL.md Paso 4g implementa `CODE-REVIEW/DONE`. tasks.md T2.4 también referencia `IMPLEMENT/IN-PROGRESS` en el mensaje de aviso. El criterio de aceptación no se satisface según su definición literal. | Alinear story.md AC-1 para reflejar el estado implementado real (`CODE-REVIEW/DONE`), actualizando también tasks.md T2.4. Si el negocio requiere `IMPLEMENT/IN-PROGRESS`, actualizar SKILL.md Paso 4g, la tabla de ciclo de vida y el Paso 4d. |
 | LOW | .claude/skills/story-code-review/examples/example-needs-changes-medium/fix-directives.md:41 | Nota interna de desarrollo presente en artefacto de ejemplo | Eliminar la línea de nota interna del archivo |
 | LOW | .claude/skills/story-code-review/assets/fix-directives-template.md:1 | El frontmatter del template omite el campo `slug` requerido por el Patrón 8 de la constitución | Agregar el campo `slug: {{STORY_ID}}-fix-directives` al frontmatter del template |
 | LOW | docs/specs/stories/FEAT-000-test/ | El fixture `fix-directives.md` documentado en tasks.md T4.1 no existe en FEAT-000-test; fue eliminado durante T4.7 sin evidencia explícita en implement-report | Documentar en implement-report que el fixture fue eliminado intencionalmente durante la verificación T4.7 |
 
-**Veredicto Tech-Lead:** needs-changes — AC no satisfecho según definición literal (estado IMPLEMENTING/IN-PROGRESS vs CODE-REVIEW/DONE).
+**Veredicto Tech-Lead:** needs-changes — AC no satisfecho según definición literal (estado IMPLEMENT/IN-PROGRESS vs CODE-REVIEW/DONE).
 
 ---
 
@@ -44,7 +44,7 @@ reviewers:
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| LOW | SKILL.md:35 / story.md:39 | Discrepancia de estado en escenario needs-changes: el Gherkin especifica `IMPLEMENTING/IN-PROGRESS`, el SKILL.md implementa `CODE-REVIEW/DONE`. El comportamiento funcional (no avanzar) es idéntico. | Actualizar story.md para que el Gherkin refleje `CODE-REVIEW/DONE`, alineándose con el SKILL.md. |
+| LOW | SKILL.md:35 / story.md:39 | Discrepancia de estado en escenario needs-changes: el Gherkin especifica `IMPLEMENT/IN-PROGRESS`, el SKILL.md implementa `CODE-REVIEW/DONE`. El comportamiento funcional (no avanzar) es idéntico. | Actualizar story.md para que el Gherkin refleje `CODE-REVIEW/DONE`, alineándose con el SKILL.md. |
 
 **Veredicto Product-Owner:** approved — Todos los escenarios Gherkin de FEAT-065 (AC-1 y AC-2) están completamente cubiertos por la implementación. El flujo needs-changes está correctamente bifurcado, fix-directives.md con lista blanca está implementado, y la no-actualización de story.md está garantizada. La discrepancia de estado es LOW sin impacto funcional.
 
@@ -54,7 +54,7 @@ reviewers:
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| LOW | .claude/skills/story-code-review/SKILL.md:35 | D-4: design.md describe story.md como permaneciendo en `IMPLEMENTING/IN-PROGRESS`, pero SKILL.md implementa `CODE-REVIEW/DONE`. Discrepancia de documentación sin impacto funcional. | Actualizar la redacción de D-4 en design.md para reflejar `CODE-REVIEW/DONE`. |
+| LOW | .claude/skills/story-code-review/SKILL.md:35 | D-4: design.md describe story.md como permaneciendo en `IMPLEMENT/IN-PROGRESS`, pero SKILL.md implementa `CODE-REVIEW/DONE`. Discrepancia de documentación sin impacto funcional. | Actualizar la redacción de D-4 en design.md para reflejar `CODE-REVIEW/DONE`. |
 
 **Veredicto Integration:** approved — D-1 a D-5 implementados correctamente. Template existe con todas las secciones especificadas. Algoritmo de lista blanca fiel al diseño. Idempotencia y eliminación de fix-directives en approved confirmadas.
 

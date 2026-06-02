@@ -16,7 +16,7 @@ The system SHALL provide a `ps-approval` skill at `.claude/skills/ps-approval/SK
 
 #### Scenario: requirement-spec.md does not exist
 - **WHEN** the user runs `/ps-approval`
-- **THEN** the skill informs the user that `requirement-spec.md` is missing and instructs them to run `/ps-specifying` first, then stops execution
+- **THEN** the skill informs the user that `requirement-spec.md` is missing and instructs them to run `/ps-SPECIFY` first, then stops execution
 
 #### Scenario: requirement-spec.md has Estado Ready
 - **WHEN** `requirement-spec.md` exists and `**Estado**` equals `DONE`
@@ -28,7 +28,7 @@ The system SHALL provide a `ps-approval` skill at `.claude/skills/ps-approval/SK
 
 #### Scenario: requirement-spec.md has Estado IN‑PROGRESS — user rejects
 - **WHEN** `requirement-spec.md` has `**substatus**: IN‑PROGRESS` and the user declines to proceed
-- **THEN** the skill informs the user to complete the Specifying phase first and stops execution
+- **THEN** the skill informs the user to complete the SPECIFY phase first and stops execution
 
 ### Requirement: approval-agent reads all prior phase documents
 The `approval-agent` SHALL read `initial-prompt.md`, `project-intent.md`, `discovery.md`, and `requirement-spec.md` from `$SPECS_BASE/specs/projects/` before beginning analysis.

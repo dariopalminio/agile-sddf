@@ -29,7 +29,7 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **User Story Mapping**: sesión colaborativa al estilo Jeff Patton para construir backbone, walking skeleton y release slices
 - **Gestión de épicas de releases**: planificación de releases con `project-plan.md` y generación automática de artefactos de release (feature specs, historias de usuario) con trazabilidad completa
 - **Gestión de historias de usuario**: creación (Como/Quiero/Para + Gherkin), evaluación con rúbrica FINVEST (Likert 1–5), splitting con 8 patrones y refinamiento iterativo
-- **SDD workflow**: Se implemente un workflow a nivel de story "SPECIFYING --> PLANNING --> READY-FOR-IMPLEMENT --> IMPLEMENTING --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED" con skills dedicados para cada fase y generación de artefactos específicos (design.md, tasks.md, analyze.md, implement-report.md, code-review-report.md)
+- **SDD workflow**: Se implemente un workflow a nivel de story "SPECIFY --> PLANNING --> READY-FOR-IMPLEMENT --> IMPLEMENTING --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED" con skills dedicados para cada fase y generación de artefactos específicos (design.md, tasks.md, analyze.md, implement-report.md, code-review-report.md)
 - **Pipeline SDD completo de historia**: planning y implementación tarea a tarea — `story-plan` orquesta `story-design` → `story-tasking` → `story-testcases` → `story-analyze` en un solo comando; `story-implement` ejecuta el ciclo TDD completo (RED→GREEN→REFACTOR) delegando a skills configurables por stack tecnológico (`sddf.config.yaml`): genera tests con el skill `test_generator` declarado, implementa código con el `code_generator` y refactoriza sin romper suites; soporta modo interactivo (con pausas de confirmación entre fases) y modo automático (`--auto`) para CI; `story-code-review` para revisión multi-agente post-implementación
 - **Testing especializado y E2E**: skills plug-in para generar pruebas reales ejecutables en proyectos existentes — `test-component-react-testing-library` genera tests de componentes React con RTL trazables a criterios de aceptación; `test-e2e-playwright-cucumber` y `test-e2e-cypress-cucumber` generan archivos `.feature` y step definitions TypeScript directamente desde escenarios Gherkin de `story.md`; `impl-frontend-library-react-component` implementa componentes de librerías UI (MUI, Shadcn, etc.) desde el diseño técnico; todos configurables en `sddf.config.yaml` como `test_generators` o `code_generator`
 - **Configuración operacional por stack (`sddf.config.yaml`)**: archivo de configuración en la raíz del proyecto que declara los skills activos para cada fase del pipeline TDD (qué skill genera los tests de componente, qué skill genera los E2E, qué skill implementa el código); permite añadir nuevos skills de testing o implementación sin modificar los orquestadores; generado automáticamente por `sddf-init` desde un template canónico con soporte para ejemplos de configuración por stack (ej. `sddf.config.yaml.example` para librería UI React)
@@ -170,7 +170,7 @@ project-flow orquesta los 3 primeros pasos en una sola sesión con gates de revi
 
 releases-from-project-plan
 
-#### 3. L1: Pipeline de generación y refinamiento de historias (SPECIFYING)
+#### 3. L1: Pipeline de generación y refinamiento de historias (SPECIFY)
 
 release-generate-stories →
 
@@ -220,7 +220,7 @@ Define los criterios de "terminado" para cada estado del ciclo de vida de una hi
 
 | Estado | Criterios clave |
 |--------|-----------------|
-| `SPECIFYING` | Título claro, formato Como/Quiero/Para, Gherkin cubriendo escenarios principales, cumple INVEST, frontmatter completo |
+| `SPECIFY` | Título claro, formato Como/Quiero/Para, Gherkin cubriendo escenarios principales, cumple INVEST, frontmatter completo |
 | `PLAN` | `design.md` con trazabilidad a cada AC, `tasks.md` con tareas atómicas ordenadas, `analyze.md` sin ambigüedades técnicas abiertas |
 | `IMPLEMENTING` | Todos los escenarios Gherkin pasan, código sin TODOs ni imports sin usar, tests deterministas, cobertura no decrece |
 | `CODE-REVIEW` | Sin hallazgos HIGH/MEDIUM, `tasks.md` sin tareas pendientes, `code-review-report.md` con `review-status: approved` |
@@ -270,7 +270,7 @@ docs/specs/
 
 Cada archivo principal usa un nombre canónico (`project-intent.md`, `release.md`, `story.md`) e incluye frontmatter con `type`, `id`, `title`, `status`, `parent`, `created` y `updated`. Las relaciones jerárquicas se expresan mediante el campo `parent` (ej. una release tiene `parent: PROJ-01`).
 
-El ciclo de vida de una historia atraviesa los estados `SPECIFYING → PLANNING → READY-FOR-IMPLEMENT → IMPLEMENTING → ... → COMPLETED`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio.
+El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING → READY-FOR-IMPLEMENT → IMPLEMENTING → ... → COMPLETED`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio.
 
 ### Basic Usage
 

@@ -56,7 +56,7 @@ Cada skill generador declara explícitamente en su SKILL.md el `status` inicial 
 | `project-discovery`, `reverse-engineering` | `DISCOVERY` |
 | `release-creation`, `releases-from-project-plan` | `DEFINITION` |
 | `release-generate-stories`, `release-generate-all-stories` | `READY-FOR-IMPLEMENT` |
-| `story-creation`, `story-split` | `SPECIFYING` |
+| `story-creation`, `story-split` | `SPECIFY` |
 
 ## ⚙️ Criterios no funcionales
 

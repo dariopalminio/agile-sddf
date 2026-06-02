@@ -40,7 +40,7 @@ Entonces implement-report.md incluye una sección "Cumplimiento DoD — Fase IMP
 ```gherkin
 Dado que story-implement detecta criterios DoD IMPLEMENTING con severidad ERROR no cumplidos
 Cuando story-implement evalúa el DoD en el sub-paso 4g (antes de actualizar el estado)
-Entonces story.md permanece en IMPLEMENTING/IN-PROGRESS
+Entonces story.md permanece en IMPLEMENT/IN-PROGRESS
   Y implement-report.md documenta los criterios DoD fallidos con evidencia esperada
   Y el resumen final muestra los criterios DoD pendientes
 ```

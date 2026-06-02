@@ -79,7 +79,7 @@ story-verify    ← aquí
 - **No revisa código:** eso corresponde a `story-code-review`.
 - **No despliega:** el despliegue corresponde a `story-deploy`.
 - **Idempotente:** ejecutable múltiples veces; sobreescribe `verify-report.md` preservando el historial de ejecuciones anteriores.
-- **Precondición de estado:** solo ejecuta si `story.md` tiene `status: CODE-REVIEW/DONE` o `IMPLEMENTING/DONE`; cualquier otro estado detiene la ejecución con error descriptivo sin modificar archivos.
+- **Precondición de estado:** solo ejecuta si `story.md` tiene `status: CODE-REVIEW/DONE` o `IMPLEMENT/DONE`; cualquier otro estado detiene la ejecución con error descriptivo sin modificar archivos.
 - **DoD dinámico:** los criterios VERIFY se leen en runtime desde el DoD; nunca están hardcodeados en el skill.
 - NO modifique ningún archivo existente en el código fuente (estamos verificando la implementación, no implementando los artefactos técnicos)
 - NO genere código; estamos verificando la implementación, no implementando los artefactos técnicos
@@ -149,7 +149,7 @@ Si la precondición NO se cumple:
 
    story-verify requiere uno de los siguientes estados:
    · CODE-REVIEW/DONE       → camino normal desde story-code-review
-   · IMPLEMENTING/DONE      → mínimo aceptable
+   · IMPLEMENT/DONE      → mínimo aceptable
 
    La historia {story_id} tiene status {status}/{substatus}.
    Ejecuta story-code-review antes de continuar.

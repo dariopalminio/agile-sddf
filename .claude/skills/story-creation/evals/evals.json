@@ -4,7 +4,7 @@
     {
       "id": 0,
       "prompt": "Crear una historia de usuario para: un vendedor de una empresa SaaS quiere poder exportar su lista de clientes activos a un archivo CSV para compartirla con su gerente de ventas antes de la reunión mensual de pipeline.",
-      "expected_output": "Un archivo story.md generado en docs/specs/stories/FEAT-NNN-*/story.md con: (1) formato Como/Quiero/Para con rol específico 'vendedor de empresa SaaS', (2) al menos 1 escenario Gherkin principal y 1 alternativo en bloques gherkin, (3) frontmatter completo con id, slug, status: SPECIFYING, (4) sin detalles de implementación técnica.",
+      "expected_output": "Un archivo story.md generado en docs/specs/stories/FEAT-NNN-*/story.md con: (1) formato Como/Quiero/Para con rol específico 'vendedor de empresa SaaS', (2) al menos 1 escenario Gherkin principal y 1 alternativo en bloques gherkin, (3) frontmatter completo con id, slug, status: SPECIFY, (4) sin detalles de implementación técnica.",
       "files": [],
       "expectations": [
         "La historia usa formato Como/Quiero/Para con rol específico y no 'usuario' genérico",

@@ -203,7 +203,7 @@ Las secciones opcionales (`⚙️ Criterios no funcionales`, `📎 Notas`) se in
 Crear el directorio `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `../story-creation/assets/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
-- `status: SPECIFYING` — estado inicial de toda historia generada desde un release planificado (pendiente de refinamiento)
+- `status: SPECIFY` — estado inicial de toda historia generada desde un release planificado (pendiente de refinamiento)
 
 Si no se puede leer el template, generar el archivo con la siguiente estructura de fallback:
 
@@ -213,7 +213,7 @@ type: story
 id: <FEAT-NNN>
 slug: <nombre-del-directorio-de-historia>
 title: "<Nombre de la feature>"
-status: SPECIFYING
+status: SPECIFY
 substatus: IN‑PROGRESS
 parent: <EPIC-NN>
 created: <YYYY-MM-DD>

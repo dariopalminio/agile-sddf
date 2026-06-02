@@ -16,7 +16,7 @@ El sistema SHALL incluir un agente `project-pm` en `.claude/agents/project-pm.ag
 ### Requirement: Project-Architect Agent exists as role-based agent
 El sistema SHALL incluir un agente `project-architect` en `.claude/agents/project-architect.agent.md` con frontmatter YAML válido (name: project-architect, description, tools, model) que lo describa como arquitecto técnico especializado en especificaciones de software y planificación técnica.
 
-#### Scenario: Architect agent handles specifying and planning states
+#### Scenario: Architect agent handles SPECIFY and planning states
 - **WHEN** los skills project-discovery o project-planning invocan al agente
 - **THEN** el `project-architect` DEBE ejecutar la tarea correspondiente con enfoque técnico
 
@@ -28,11 +28,11 @@ El sistema SHALL incluir un agente `project-ux` en `.claude/agents/project-ux.ag
 - **THEN** el `project-ux` DEBE aportar perspectiva de usabilidad al documento de discovery generado
 
 ### Requirement: Task-based agents are removed
-El sistema NO SHALL contener agentes task-based (`funnel-agent`, `draft-agent`, `discovery-agent`, `specifying-agent`, `approval-agent`, `planning-agent`) en `.claude/agents/` tras la migración.
+El sistema NO SHALL contener agentes task-based (`funnel-agent`, `draft-agent`, `discovery-agent`, `SPECIFY-agent`, `approval-agent`, `planning-agent`) en `.claude/agents/` tras la migración.
 
 #### Scenario: No task-based agent files remain
 - **WHEN** se lista el directorio `.claude/agents/`
-- **THEN** MUST NOT existir ningún archivo con los nombres: funnel-agent.md, draft-agent.md, discovery-agent.md, specifying-agent.md, approval-agent.md, planning-agent.md
+- **THEN** MUST NOT existir ningún archivo con los nombres: funnel-agent.md, draft-agent.md, discovery-agent.md, SPECIFY-agent.md, approval-agent.md, planning-agent.md
 
 ### Requirement: Skills reference role-based agents
 Todos los SKILL.md que previamente referenciaban agentes task-based SHALL actualizarse para referenciar los agentes role-based correspondientes según el mapeo definido en design.md.
@@ -41,6 +41,6 @@ Todos los SKILL.md que previamente referenciaban agentes task-based SHALL actual
 - **WHEN** el usuario ejecuta `/ps-funnel`
 - **THEN** el skill MUST invocar `project-pm` (no `funnel-agent`)
 
-#### Scenario: ps-specifying skill uses project-architect
-- **WHEN** el usuario ejecuta `/ps-specifying`
+#### Scenario: ps-SPECIFY skill uses project-architect
+- **WHEN** el usuario ejecuta `/ps-SPECIFY`
 - **THEN** el skill MUST invocar `project-architect` como agente principal

@@ -5,7 +5,7 @@ id: FEAT-078
 slug: FEAT-078-implement-tdd-fase-red-design
 title: "Design: story-implement — Fase RED: validar configuración y generar pruebas"
 date: 2026-05-30
-status: SPECIFYING
+status: SPECIFY
 substatus: IN-PROGRESS
 parent: EPIC-14-fabrica-de-skills
 related:

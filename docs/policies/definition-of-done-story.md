@@ -15,7 +15,7 @@ updated: <YYYY-MM-DD>
 
 ---
 
-### Definition of Done para el estado SPECIFYING
+### Definition of Done para el estado SPECIFY
 
 #### ✅ Criterios de Especificación
 <!-- Criterios relacionados con la definición clara y completa de la historia. -->

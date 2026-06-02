@@ -22,7 +22,7 @@ The Planning phase (`/ps-plan`) exists only as a stub skill with no agent or tem
 
 ## Impact
 
-- Completes the pipeline: Funnel → Draft → Discovery → Specifying → Approval → **Planning** → Finished
+- Completes the pipeline: Funnel → Draft → Discovery → SPECIFY → Approval → **Planning** → Finished
 - No external dependencies — pure Markdown files
 - Input: `$SPECS_BASE/specs/projects/clarifications.md` (and all prior phase docs)
 - Output: `$SPECS_BASE/specs/projects/project-plan.md`

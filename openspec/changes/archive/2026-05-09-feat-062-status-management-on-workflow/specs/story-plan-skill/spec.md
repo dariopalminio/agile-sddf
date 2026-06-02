@@ -3,7 +3,7 @@
 
 ## ADDED Requirements
 
-### Requirement: story-plan sets PLANNING/IN‑PROGRESS at the start of the pipeline
+### Requirement: story-plan sets PLAN/IN‑PROGRESS at the start of the pipeline
 The system SHALL update `status: PLANNING` and `substatus: IN‑PROGRESS` in `story.md` frontmatter when `story-plan` begins the orchestrated pipeline, before invoking `story-design`.
 
 #### Scenario: Status updated before pipeline starts

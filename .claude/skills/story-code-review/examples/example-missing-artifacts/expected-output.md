@@ -22,7 +22,7 @@ Completa los artefactos faltantes y vuelve a ejecutar /story-code-review FEAT-00
 ## Condiciones de validación
 
 - El mensaje de error es una **única** salida (no mensajes separados por cada faltante)
-- El frontmatter de `story.md` **no se modifica** (permanece `IMPLEMENTING/DONE`)
+- El frontmatter de `story.md` **no se modifica** (permanece `IMPLEMENT/DONE`)
 - No se genera ningún archivo de output: ni `code-review-report.md`, ni `fix-directives.md`
 - No se crea el directorio `.tmp/story-code-review/`
 - No se lanzan agentes revisores

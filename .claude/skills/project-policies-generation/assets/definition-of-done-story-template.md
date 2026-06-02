@@ -13,7 +13,7 @@ updated: <YYYY-MM-DD>
 
 ---
 
-## 📝 SPECIFYING (Definición de Hecho para la fase de Especificación)
+## 📝 SPECIFY (Definición de Hecho para la fase de Especificación)
 
 ### ✅ Criterios de Especificación
 <!-- Criterios relacionados con la definición clara y completa de la historia. -->

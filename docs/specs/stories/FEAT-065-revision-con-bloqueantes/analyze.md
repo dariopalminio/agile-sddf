@@ -58,7 +58,7 @@ related:
 | 4.1 | Verificar AC-1 con hallazgo HIGH → fix-directives.md | AC-1 | ✓ |
 | 4.2 | Verificar NF-1 (trazabilidad archivo:línea, dimensión) | NF-1 | ✓ |
 | 4.3 | Verificar whitelist = archivos de hallazgos HIGH/MEDIUM | D-3 | ✓ |
-| 4.4 | Verificar story.md permanece IMPLEMENTING/IN-PROGRESS | D-4, AC-1 | ✓ |
+| 4.4 | Verificar story.md permanece IMPLEMENT/IN-PROGRESS | D-4, AC-1 | ✓ |
 | 4.5 | Verificar idempotencia (dos ejecuciones, mismo output) | NF-2 | ✓ |
 | 4.6 | Verificar Scenario Outline con MEDIUM | AC-2 | ✓ |
 | 4.7 | Verificar cleanup fix-directives.md en approved | D-5, Risks | ✓ |

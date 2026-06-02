@@ -26,7 +26,7 @@ Incorpora el pipeline completo de especificación de proyectos (ProjectSpecFacto
 - [x] **FEAT-004 — project-planning**: Skill de planificación de releases con extracción de features FEAT-NNN, priorización y agrupación en releases incrementales. Produce `project-plan.md`.
 - [x] **Agente project-pm**: Especializado en discovery de usuarios, identificación de perfiles y dolores, e integraciones externas.
 - [x] **Agente project-architect**: Especializado en entrevista de especificación de requisitos sección por sección y planificación de releases con criterio de priorización.
-- [x] **Agente project-ux**: Especializado en flujos de usuario y usabilidad, invocado como apoyo durante discovery y specifying.
+- [x] **Agente project-ux**: Especializado en flujos de usuario y usabilidad, invocado como apoyo durante discovery y SPECIFY.
 - [x] **Templates canónicos**: `project-intent-template.md`, `project-template.md` y `project-plan-template.md`.
 - [x] **Soporte Google Gemini Gems**: Prompts adaptados en `gem/prompts/` para el runtime Gemini.
 - [x] **FEAT-008 — Control WIP=1**: Mecanismo de detección de `Estado: IN‑PROGRESS` para impedir múltiples proyectos activos simultáneos.

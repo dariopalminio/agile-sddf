@@ -32,7 +32,7 @@ related:
 
 ## 4. Modificar story-implement/SKILL.md — Paso 4b (transición condicional)
 
-- [x] T007 Modificar el Paso 4b de `.claude/skills/story-implement/SKILL.md` para condicionar la transición a `READY-FOR-CODE-REVIEW/DONE`: si `$DOD_RESULT` contiene al menos un criterio con resultado `❌`, NO actualizar frontmatter de `story.md` a `READY-FOR-CODE-REVIEW/DONE`; mantener en `IMPLEMENTING/IN-PROGRESS`; incluir en el resumen final `DoD IMPLEMENTING: N criterios ❌ — transición bloqueada`
+- [x] T007 Modificar el Paso 4b de `.claude/skills/story-implement/SKILL.md` para condicionar la transición a `READY-FOR-CODE-REVIEW/DONE`: si `$DOD_RESULT` contiene al menos un criterio con resultado `❌`, NO actualizar frontmatter de `story.md` a `READY-FOR-CODE-REVIEW/DONE`; mantener en `IMPLEMENT/IN-PROGRESS`; incluir en el resumen final `DoD IMPLEMENTING: N criterios ❌ — transición bloqueada`
 - [x] T008 Agregar instrucción en Paso 4b para el caso bloqueado: mostrar al usuario los criterios DoD fallidos con la evidencia registrada en `$DOD_RESULT` e indicar que debe resolverlos antes de avanzar a code review
 
 ## 5. Modificar story-implement/SKILL.md — Resumen Final (línea DoD)
@@ -46,5 +46,5 @@ related:
 ## 7. Verificación de criterios de aceptación
 
 - [x] T011 [P] Verificar AC-1: revisar manualmente que, con sección IMPLEMENTING presente en el DoD, story-implement genera `implement-report.md` con sección "Cumplimiento DoD — Fase IMPLEMENTING" que contiene tabla con cada criterio y estado ✓/❌/⚠️, que el Resumen Final incluye la línea DoD, y que cuando no hay DoD-ERRORs story.md avanza a READY-FOR-CODE-REVIEW/DONE
-- [x] T012 [P] Verificar AC-2: revisar manualmente que cuando el sub-paso 4g reporta al menos un criterio `❌`, story.md NO se actualiza a READY-FOR-CODE-REVIEW/DONE, permanece en IMPLEMENTING/IN-PROGRESS, y implement-report.md documenta los criterios fallidos con evidencia esperada
+- [x] T012 [P] Verificar AC-2: revisar manualmente que cuando el sub-paso 4g reporta al menos un criterio `❌`, story.md NO se actualiza a READY-FOR-CODE-REVIEW/DONE, permanece en IMPLEMENT/IN-PROGRESS, y implement-report.md documenta los criterios fallidos con evidencia esperada
 - [x] T013 Verificar AC-3: revisar manualmente que cuando `definition-of-done-story.md` no existe o no contiene la sección IMPLEMENTING, story-implement emite `⚠️`, continúa la ejecución, genera `implement-report.md` con sección DoD de aviso sin error fatal, y no bloquea la transición por esta causa
