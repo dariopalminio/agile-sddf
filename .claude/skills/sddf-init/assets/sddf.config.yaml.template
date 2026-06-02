@@ -6,7 +6,7 @@ defaults:
     required: false
   component:
     command_template: "pnpm run test:component -- {{test_file}}"
-    required: false
+    required: true
   integration:
     command: "pnpm run test:integration"
     required: false
@@ -15,7 +15,7 @@ defaults:
     required: false
   e2e:
     command: "pnpm run test:e2e"
-    required: false
+    required: true
   performance:
     command: "pnpm run test:performance"
     required: false
@@ -25,15 +25,23 @@ defaults:
 
 implementing:
   test_generators:
-    - type: unit
-      skill: none
-      required: false
-    - type: e2e
-      skill: none
-      required: false
-    - type: eval
-      skill: skill-test-evals
+    - type: component
+      skill: test-component-react-testing-library
       required: true
-  code_generator:
-    skill: skill-master
-    required: true
+    - type: e2e
+      skill: test-e2e-playwright-cucumber
+      required: true
+    - type: eval
+      skill: none
+      required: false
+
+  code_generators:
+    - layer: frontend
+      skill: code-frontend-library-react
+      required: true
+    - layer: backend
+      skill: none
+      required: false
+    - layer: database
+      skill: none
+      required: false

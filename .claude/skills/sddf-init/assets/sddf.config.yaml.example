@@ -37,6 +37,14 @@ implementing:
     - type: eval
       skill: none
       required: false
-  code_generator:
-    skill: code-frontend-library-react
-    required: true
+
+  code_generators:
+    - layer: frontend
+      skill: code-frontend-library-react
+      required: true
+    - layer: backend
+      skill: none
+      required: false
+    - layer: database
+      skill: none
+      required: false

@@ -41,8 +41,8 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 **Qué hace este skill:**
 - Invoca `skill-preflight` como Paso 0
 - **Fase RED:** Lee `implementing.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden; confirma estado rojo; escribe `red-phase-status.json`
-- **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implementing.code_generator`; invoca el code_generator con `phase:"GREEN"`; confirma que los tests pasan
-- **Fase REFACTOR:** Invoca el code_generator con `phase:"REFACTOR"`; verifica no-regresión ejecutando comandos de test
+- **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implementing.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"` y `layer:"{layer}"`; consolida resultados; confirma que los tests pasan
+- **Fase REFACTOR:** Itera sobre cada capa activa invocando su skill con `phase:"REFACTOR"` y `layer:"{layer}"`; verifica no-regresión ejecutando comandos de test
 - Al completar el ciclo exitosamente: actualiza `story.md` a `CODE-REVIEW/IN-PROGRESS` y escribe `cycle-status.json`
 
 **Qué NO hace este skill:**
@@ -62,14 +62,18 @@ Si no se proporciona argumento, solicitar interactivamente.
 
 ---
 
-## Filosofía Central
+## Filosofía, Restricciones y Reglas
 
+### Filosofía
 > **Write Tests First, Code Later**
 
-1. **Primero escribe las pruebas, luego el código**: cada punto funcional debe tener sus casos de prueba correspondientes
-2. **Las pruebas son documentación**: los casos de prueba describen el comportamiento esperado del sistema
-3. **Rojo-Verde-Refactorizar**: primero haz fallar la prueba, luego hazla pasar
-4. **Utiliza los fallos en las pruebas como retroalimentación**: una prueba fallida debe guiar su desarrollo y resaltar las mejoras necesarias.
+### Reglas
+- **Primero escribe las pruebas, luego el código**: cada punto funcional debe tener sus casos de prueba correspondientes
+- **Las pruebas son documentación**: los casos de prueba describen el comportamiento esperado del sistema
+- **Rojo-Verde-Refactorizar**: primero haz fallar la prueba, luego hazla pasar
+- **Utiliza los fallos en las pruebas como retroalimentación**: una prueba fallida debe guiar su desarrollo y resaltar las mejoras necesarias.
+- **Historias de nueva funcionalidad** → Los tests preexistentes no deben romperse.
+- **Historias de refactorización** → Los tests pueden modificarse, siempre que el comportamiento funcional (criterios de aceptación) no cambie y que los tests sigan pasando después de la refactorización.
 
 ---
 
@@ -277,74 +281,108 @@ Mostrar: `[INFO] Precondición RED verificada — story_id: {$RED_STORY_ID}, {N}
 
 ---
 
-### Paso 8 — Leer y validar code_generator
+### Paso 8 — Leer y validar code_generators
 
 Leer `sddf.config.yaml` (ya cargado en Paso 1).
 
-Extraer `implementing.code_generator`:
+Extraer `implementing.code_generators` como lista.
 
-**Si `implementing.code_generator` no existe en el YAML:**
+**Si `implementing.code_generators` no existe en el YAML o está vacío:**
 ```
-❌ implementing.code_generator no declarado en sddf.config.yaml
+❌ implementing.code_generators no declarado o vacío en sddf.config.yaml
 
-Añade la sección code_generator bajo implementing en sddf.config.yaml.
-```
-Detener la ejecución.
-
-Obtener `{skill}` y `{required}` del objeto `code_generator`.
-
-Verificar existencia: `.claude/skills/{skill}/SKILL.md` (Glob).
-
-**Si el skill no existe y `required: true`:**
-```
-❌ Skill '{skill}' declarado como code_generator no encontrado en .claude/skills/
-
-Verifica el nombre del skill en sddf.config.yaml o instálalo antes de continuar.
+Añade la sección code_generators bajo implementing en sddf.config.yaml.
 ```
 Detener la ejecución.
 
-**Si el skill no existe y `required: false`:**
-```
-[WARN] Skill '{skill}' no encontrado y required:false — omitiendo Fases GREEN y REFACTOR
-```
-Terminar la ejecución de Fase GREEN/REFACTOR de forma limpia (sin error).
+Inicializar `$CODE_GENERATORS_VALID = []` y `$CODE_GENERATORS_SKIPPED = []`.
 
-**Si el skill existe:**
-Mostrar: `[INFO] code_generator resuelto: {skill}`
+Para cada entry `{layer, skill, required}` en la lista (en orden del YAML):
+
+1. **Si `skill == "none"`:**
+   ```
+   [INFO] Capa '{layer}': skill none — omitiendo
+   ```
+   Añadir `{layer}` a `$CODE_GENERATORS_SKIPPED`. Continuar con la siguiente entry.
+
+2. Verificar existencia: `.claude/skills/{skill}/SKILL.md` (Glob).
+
+3. **Si el skill no existe y `required: true`:**
+   ```
+   ❌ Skill '{skill}' (capa '{layer}') declarado como code_generator no encontrado en .claude/skills/
+
+   Verifica el nombre del skill en sddf.config.yaml o instálalo antes de continuar.
+   ```
+   Detener la ejecución.
+
+4. **Si el skill no existe y `required: false`:**
+   ```
+   [WARN] Skill '{skill}' (capa '{layer}') no encontrado — omitiendo capa
+   ```
+   Añadir `{layer}` a `$CODE_GENERATORS_SKIPPED`. Continuar con la siguiente entry.
+
+5. **Si el skill existe:** añadir la entry completa `{layer, skill, required}` a `$CODE_GENERATORS_VALID`.
+
+**Si `$CODE_GENERATORS_VALID` está vacío** (ningún error bloqueante, pero ningún skill activo):
+```
+[WARN] Ningún code_generator activo — Fases GREEN y REFACTOR sin invocación de skills
+```
+Continuar (no es error).
+
+Mostrar: `[INFO] code_generators resueltos: {N} activo(s), {M} omitido(s)`
 
 ---
 
-### Paso 9 — Fase GREEN: invocar code_generator
+### Paso 9 — Fase GREEN: invocar code_generators
+
+Inicializar `$GREEN_FILES_GENERATED = []` y `$GREEN_LAYERS_OK = []`.
+
+Para cada entry `{layer, skill, required}` en `$CODE_GENERATORS_VALID` (en orden del YAML):
 
 Construir bundle de inputs:
 ```json
 {
   "story_id": "{$RED_STORY_ID}",
   "phase": "GREEN",
+  "layer": "{layer}",
   "test_files": "{$RED_FILES_GENERATED}",
   "story_path": "{$SPECS_BASE}/specs/stories/{story_id}*/story.md",
   "design_path": "{$SPECS_BASE}/specs/stories/{story_id}*/design.md"
 }
 ```
 
-Mostrar: `[GREEN] → invocando {skill}...`
+Mostrar: `[GREEN/{layer}] → invocando {skill}...`
 
 Invocar el skill `{skill}` pasando el bundle.
 
-El subagente escribe sus resultados en `.tmp/story-implement/green/results.json`.
+El subagente escribe sus resultados en `.tmp/story-implement/green/{layer}/results.json`.
 
 **Si el subagente retorna `status: error`:**
-```
-❌ Fase GREEN fallida: el skill '{skill}' retornó error
 
-Error: {message}
-Sugerencia: revisa el código generado manualmente o ajusta la configuración del skill.
-```
-Detener la ejecución **sin ejecutar la Fase REFACTOR ni modificar story.md**.
+- Si `required: true`:
+  ```
+  ❌ Fase GREEN fallida: skill '{skill}' (capa '{layer}') retornó error
+
+  Error: {message}
+  Sugerencia: revisa el código generado manualmente o ajusta la configuración del skill.
+  ```
+  Detener la ejecución **sin procesar capas restantes, sin ejecutar la Fase REFACTOR ni modificar story.md**.
+
+- Si `required: false`:
+  ```
+  [WARN] Capa '{layer}' falló en GREEN — continuando con capas restantes
+  Error: {message}
+  ```
+  Continuar con la siguiente entry.
 
 **Si retorna `status: ok`:**
-- Registrar `$GREEN_FILES_GENERATED` = archivos generados por el subagente
-- Mostrar: `[GREEN] ✓ {N} archivo(s) de producción generado(s)`
+- Agregar `files_generated` del subagente a `$GREEN_FILES_GENERATED`.
+- Agregar `{layer}` a `$GREEN_LAYERS_OK`.
+- Mostrar: `[GREEN/{layer}] ✓ {N} archivo(s) de producción generado(s)`
+
+Al finalizar todas las capas:
+
+Mostrar: `[GREEN] ✓ {N} archivo(s) de producción generado(s) en {M} capa(s) ({$GREEN_LAYERS_OK})`
 
 ---
 
@@ -393,34 +431,47 @@ Leer respuesta del usuario:
 
 ---
 
-### Paso 10 — Fase REFACTOR: invocar code_generator y verificar no-regresión
+### Paso 10 — Fase REFACTOR: invocar code_generators y verificar no-regresión
+
+Para cada entry `{layer, skill, required}` en `$CODE_GENERATORS_VALID` (en orden del YAML):
 
 Construir bundle de inputs:
 ```json
 {
   "story_id": "{$RED_STORY_ID}",
   "phase": "REFACTOR",
+  "layer": "{layer}",
   "test_files": "{$RED_FILES_GENERATED}",
   "story_path": "{$SPECS_BASE}/specs/stories/{story_id}*/story.md",
   "design_path": "{$SPECS_BASE}/specs/stories/{story_id}*/design.md"
 }
 ```
 
-Mostrar: `[REFACTOR] → invocando {skill}...`
+Mostrar: `[REFACTOR/{layer}] → invocando {skill}...`
 
 Invocar el skill `{skill}` pasando el bundle.
 
-El subagente escribe sus resultados en `.tmp/story-implement/refactor/results.json`.
+El subagente escribe sus resultados en `.tmp/story-implement/refactor/{layer}/results.json`.
 
 **Si el subagente retorna `status: error`:**
-```
-❌ Fase REFACTOR fallida: el skill '{skill}' retornó error
 
-Nota: los tests siguen en verde (Fase GREEN fue exitosa). El refactor no se aplicó.
-```
-Detener sin modificar story.md.
+- Si `required: true`:
+  ```
+  ❌ Fase REFACTOR fallida: skill '{skill}' (capa '{layer}') retornó error
 
-**Si retorna `status: ok`:** verificar no-regresión ejecutando comandos de test por tipo:
+  Nota: los tests siguen en verde (Fase GREEN fue exitosa). El refactor no se aplicó.
+  ```
+  Detener sin modificar story.md.
+
+- Si `required: false`:
+  ```
+  [WARN] Capa '{layer}' falló en REFACTOR — continuando con capas restantes
+  ```
+  Continuar con la siguiente entry.
+
+**Si retorna `status: ok`:** continuar con la siguiente capa.
+
+Al finalizar todas las capas, verificar no-regresión ejecutando comandos de test por tipo:
 
 Para cada tipo en `$RED_GENERATORS_INVOKED`:
 1. Leer `defaults.{type}.command` de `sddf.config.yaml`
@@ -505,12 +556,16 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 | Tests pasan sin implementación (Fase RED) | `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos` | Advertir, continuar |
 | `red-phase-status.json` no existe | `❌ Precondición RED no cumplida: .tmp/story-implement/red-phase-status.json no encontrado` | Detener Fase GREEN |
 | `red_confirmed: false` en red-phase-status.json | `❌ Precondición RED no cumplida: red_confirmed es false` | Detener Fase GREEN |
-| `implementing.code_generator` no declarado | `❌ implementing.code_generator no declarado en sddf.config.yaml` | Detener Fase GREEN |
-| code_generator `required:true` no existe | `❌ Skill '{skill}' declarado como code_generator no encontrado en .claude/skills/` | Detener Fase GREEN |
-| code_generator `required:false` no existe | `[WARN] Skill '{skill}' no encontrado y required:false — omitiendo Fases GREEN y REFACTOR` | Terminar limpiamente |
-| Subagente retorna `status: error` (Fase GREEN) | `❌ Fase GREEN fallida: el skill '{skill}' retornó error` | Detener sin REFACTOR, story.md sin cambio |
+| `implementing.code_generators` no declarado o vacío | `❌ implementing.code_generators no declarado o vacío en sddf.config.yaml` | Detener Fase GREEN |
+| Entry con `skill: none` | `[INFO] Capa '{layer}': skill none — omitiendo` | Omitir capa |
+| code_generator `required:true` no existe | `❌ Skill '{skill}' (capa '{layer}') declarado como code_generator no encontrado en .claude/skills/` | Detener Fase GREEN |
+| code_generator `required:false` no existe | `[WARN] Skill '{skill}' (capa '{layer}') no encontrado — omitiendo capa` | Omitir capa, continuar |
+| Ningún code_generator activo | `[WARN] Ningún code_generator activo — Fases GREEN y REFACTOR sin invocación de skills` | Continuar (no es error) |
+| Subagente `required:true` retorna error (Fase GREEN) | `❌ Fase GREEN fallida: skill '{skill}' (capa '{layer}') retornó error` | Detener sin REFACTOR, story.md sin cambio |
+| Subagente `required:false` retorna error (Fase GREEN) | `[WARN] Capa '{layer}' falló en GREEN — continuando con capas restantes` | Continuar con siguiente capa |
 | Tests no pasan tras GREEN | `❌ Fase GREEN fallida: el skill '{skill}' retornó error — los tests de tipo '{tipo}' no pasan` | Detener sin REFACTOR, story.md sin cambio |
-| Subagente retorna `status: error` (Fase REFACTOR) | `❌ Fase REFACTOR fallida: el skill '{skill}' retornó error` | Detener, story.md sin cambio |
+| Subagente `required:true` retorna error (Fase REFACTOR) | `❌ Fase REFACTOR fallida: skill '{skill}' (capa '{layer}') retornó error` | Detener, story.md sin cambio |
+| Subagente `required:false` retorna error (Fase REFACTOR) | `[WARN] Capa '{layer}' falló en REFACTOR — continuando con capas restantes` | Continuar |
 | REFACTOR introduce regresiones | `⚠️ Fase REFACTOR introdujo regresiones: {N} tests que pasaban ahora fallan` | Listar tests, story.md sin cambio |
 | Usuario responde 'n' en Pause-1 | `🛑 Ciclo TDD pausado por el usuario tras Fase RED` | Terminar sin error (exit limpio), sin invocar GREEN ni REFACTOR |
 | Usuario responde 'n' en Pause-2 | `🛑 Ciclo TDD pausado por el usuario tras Fase GREEN` | Terminar sin error (exit limpio), sin invocar REFACTOR |
@@ -526,10 +581,15 @@ story-implement (orquestador — Fase RED)
   └── {skill de tipo unit}   ← subagente, ej. story-test-unit-jest
   └── {skill de tipo e2e}    ← subagente, ej. story-test-e2e-playwright
   └── {skill de tipo eval}   ← subagente, ej. story-test-eval
+
+story-implement (orquestador — Fases GREEN y REFACTOR)
+  └── {skill capa frontend}  ← subagente, ej. code-frontend-library-react
+  └── {skill capa backend}   ← subagente, ej. code-backend-nodejs (si existe)
+  └── {skill capa database}  ← subagente, ej. code-database-prisma (si existe)
 ```
 
-Los subagentes reciben solo el bundle `{story_id, testcases_path, story_path, design_path}`.
-Escriben sus resultados en `.tmp/story-implement/{tipo}/results.json` de forma independiente.
+Los subagentes de Fase RED reciben el bundle `{story_id, testcases_path, story_path, design_path}` y escriben en `.tmp/story-implement/{tipo}/results.json`.
+Los subagentes de Fases GREEN/REFACTOR reciben el bundle `{story_id, phase, layer, test_files, story_path, design_path}` y escriben en `.tmp/story-implement/{phase}/{layer}/results.json`.
 El orquestador nunca pasa su contexto completo heredado a los subagentes.
 
 ---

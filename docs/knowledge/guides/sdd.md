@@ -31,6 +31,8 @@ El ecosistema de herramientas SDD está creciendo rápidamente:
 
 - **Superpowers:** Es un Claude Plugin de desarrollo low-code que se integra con OpenSpec para ejecutar el flujo SDD. Superpowers la de "capa de ingeniería de software" [6]. Es una metodología completa de desarrollo de software para tus agentes de codificación, construida sobre un conjunto de skills combinables y algunas instrucciones iniciales que garantizan que tu agente las utilice.
 
+- **Gentle AI:** Proyecto open source que explora el uso de agentes de IA para generar código a partir de especificaciones [7]. Es un configurador de ecosistemas que toma cualquier agente de codificación de IA que utilices y lo potencia con memoria persistente, flujos de trabajo de desarrollo guiado por especificaciones (SDD), habilidades de codificación seleccionadas, servidores MCP, un selector de proveedores de IA, un perfil orientado a la enseñanza con permisos que priorizan la seguridad y asignación de modelos por fase para que cada paso de SDD pueda ejecutarse en un modelo diferente.
+
 
 Referencias:
 [1]: GitHub Blog - Spec-driven development with AI: github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai 
@@ -39,5 +41,5 @@ Referencias:
 [4]: https://martinfowler.com/articles/structured-prompt-driven/?shem=rimspwouoe
 [5]: https://github.com/gszhangwei/open-spdd/tree/main
 [6]: https://github.com/obra/superpowers
-
+[7]: https://github.com/Gentleman-Programming/gentle-ai
 
