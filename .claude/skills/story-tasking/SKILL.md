@@ -51,7 +51,7 @@ tasks.md   → When: tareas de implementación, orden, seguimiento  ← aquí
 |---|---|---|
 | `story.md` | **Requerido** | Fuente de criterios de aceptación y comportamiento esperado |
 | `design.md` | **Requerido** | Fuente de componentes e interfaces a implementar; el skill no puede generar tareas sin diseño técnico |
-| `$SPECS_BASE/specs/templates/tasks-template.md` | **Requerido** | Estructura del documento de salida — sin este template no se genera ningún archivo (sin fallback) |
+| `assets/tasks-template.md` | **Requerido** | Estructura del documento de salida — sin este template no se genera ningún archivo (sin fallback) |
 
 ---
 
@@ -67,7 +67,7 @@ tasks.md   → When: tareas de implementación, orden, seguimiento  ← aquí
 
 - `story.md` debe existir en el directorio de la historia
 - `design.md` debe existir en el directorio de la historia
-- `$SPECS_BASE/specs/templates/tasks-template.md` debe existir
+- `assets/tasks-template.md` debe existir
 
 ---
 
@@ -167,9 +167,9 @@ Detener la ejecución. **No se genera ningún archivo.**
 
 #### 1e. Verificación del template de tareas (sin fallback)
 
-Verificar que `$SPECS_BASE/specs/templates/tasks-template.md` existe. Si no:
+Verificar que `assets/tasks-template.md` existe. Si no:
 ```
-❌ No se encontró el template de tareas en: $SPECS_BASE/specs/templates/tasks-template.md
+❌ No se encontró el template de tareas en: assets/tasks-template.md
 
 El skill no puede generar tasks.md sin el template. No se usa fallback interno.
 Verifica que el archivo existe en la ruta indicada.
@@ -178,7 +178,7 @@ Detener la ejecución. **No se genera ningún archivo.**
 
 Informar qué template se está usando:
 ```
-✓ Template: $SPECS_BASE/specs/templates/tasks-template.md
+✓ Template: assets/tasks-template.md
 ```
 
 #### 1f. Resolución de la ruta de salida
@@ -232,7 +232,7 @@ Los componentes e interfaces del diseño son la fuente de verdad de las **tareas
 
 ### Paso 4 — Leer el template en tiempo de ejecución
 
-Leer el archivo `$SPECS_BASE/specs/templates/tasks-template.md`.
+Leer el archivo `assets/tasks-template.md`.
 
 Identificar:
 - La estructura de grupos (`##` numerados) y sus placeholders

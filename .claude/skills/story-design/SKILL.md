@@ -53,7 +53,7 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 - `$SPECS_BASE/policies/constitution.md` — stack, convenciones y restricciones técnicas del proyecto (opcional)
 - `$SPECS_BASE/policies/definition-of-done-story.md` — criterios de calidad mínimos (opcional)
 - Archivo de dependencias del proyecto: `package.json`, `requirements.txt`, `go.mod` o `pom.xml` (opcional)
-- Template de diseño: `$SPECS_BASE/specs/templates/design-template.md` (opcional, hay fallback interno)
+- Template de diseño: `assets/design-template.md` (opcional, hay fallback interno)
 
 ---
 
@@ -137,7 +137,7 @@ Proporciona el ID (ej. FEAT-057) o la ruta completa al directorio.
 #### 1c. Resolución del template (primera coincidencia)
 
 1. Ruta explícita `--template {path}` si se proporcionó
-2. `$SPECS_BASE/specs/templates/design-template.md`
+2. `assets/design-template.md`
 3. Template interno de fallback (definido en la sección `## Salida`)
 
 Informar qué template se está usando:

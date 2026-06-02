@@ -46,8 +46,8 @@ agentes IA los lean automáticamente antes de cualquier acción:
 
 ## Entrada
 
-- `$SPECS_BASE/specs/templates/project-constitution-template.md` — template fuente para constitution (solo lectura)
-- `$SPECS_BASE/specs/templates/definition-of-done-story-template.md` — template fuente para DoD (solo lectura)
+- `assets/project-constitution-template.md` — template fuente para constitution (solo lectura)
+- `assets/definition-of-done-story-template.md` — template fuente para DoD (solo lectura)
 - `CLAUDE.md` o `AGENTS.md` en la raíz del repositorio — archivo de entrada del agente donde se registran las referencias
 
 ## Parámetros
@@ -57,13 +57,13 @@ agentes IA los lean automáticamente antes de cualquier acción:
 ## Precondiciones
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
-- `$SPECS_BASE/specs/templates/project-constitution-template.md` debe existir
-- `$SPECS_BASE/specs/templates/definition-of-done-story-template.md` debe existir
+- `assets/project-constitution-template.md` debe existir
+- `assets/definition-of-done-story-template.md` debe existir
 
 ## Dependencias
 
 - Skills: [`skill-preflight`]
-- Archivos: [`$SPECS_BASE/specs/templates/project-constitution-template.md`, `$SPECS_BASE/specs/templates/definition-of-done-story-template.md`]
+- Archivos: [`assets/project-constitution-template.md`, `assets/definition-of-done-story-template.md`]
 
 ## Modos de ejecución
 
@@ -91,13 +91,13 @@ Invocar `skill-preflight` antes de cualquier operación con archivos. El preflig
 Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los pasos siguientes.
 
 Verificar adicionalmente que existen los templates requeridos:
-- `$SPECS_BASE/specs/templates/project-constitution-template.md`
-- `$SPECS_BASE/specs/templates/definition-of-done-story-template.md`
+- `assets/project-constitution-template.md`
+- `assets/definition-of-done-story-template.md`
 
 Si alguno de los templates no existe, mostrar el mensaje y detener la ejecución:
 
 ```
-❌ No se encontró el template requerido en: $SPECS_BASE/specs/templates/<nombre>.md
+❌ No se encontró el template requerido en: assets/<nombre>.md
 
 Por favor verifica que el archivo existe o ejecuta `sddf-init` para inicializar la estructura base.
 ```
@@ -115,7 +115,7 @@ Si no existe, crearlo antes de continuar e informar al usuario:
 
 #### 2a. Leer el template
 
-Leer el archivo `$SPECS_BASE/specs/templates/project-constitution-template.md`.
+Leer el archivo `assets/project-constitution-template.md`.
 
 La estructura del output la define íntegramente el template — nunca hardcodear secciones en este skill.
 
@@ -146,7 +146,7 @@ Esperar respuesta antes de continuar:
 
 #### 3a. Leer el template
 
-Leer el archivo `$SPECS_BASE/specs/templates/definition-of-done-story-template.md`.
+Leer el archivo `assets/definition-of-done-story-template.md`.
 
 La estructura del output la define íntegramente el template.
 

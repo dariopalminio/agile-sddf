@@ -14,7 +14,7 @@ triggers:
 
 ## Objetivo
 
-Escanea todos los **directorios** de release en `$SPECS_BASE/specs/releases/`, lee `release.md` de cada uno, y genera automáticamente un directorio `FEAT-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature encontrada, siguiendo exactamente la estructura de `$SPECS_BASE/specs/templates/story-template.md`. Es el equivalente batch de `/release-generate-stories`.
+Escanea todos los **directorios** de release en `$SPECS_BASE/specs/releases/`, lee `release.md` de cada uno, y genera automáticamente un directorio `FEAT-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature encontrada, siguiendo exactamente la estructura de `../story-creation/assets/story-template.md`. Es el equivalente batch de `/release-generate-stories`.
 
 **Qué hace este skill:**
 - Descubre automáticamente todos los releases en `$SPECS_BASE/specs/releases/`
@@ -44,7 +44,7 @@ Sin parámetros — el skill no expone flags ni argumentos posicionales.
 ## Precondiciones
 
 - `$SPECS_BASE/specs/releases/` debe existir y contener al menos un subdirectorio con `release.md`
-- `$SPECS_BASE/specs/templates/story-template.md` debe existir (para estructurar las historias generadas)
+- `../story-creation/assets/story-template.md` debe existir (para estructurar las historias generadas)
 - `skill-preflight` retorna estado OK (entorno válido)
 
 ---
@@ -52,7 +52,7 @@ Sin parámetros — el skill no expone flags ni argumentos posicionales.
 ## Dependencias
 
 - Skills: [`skill-preflight`]
-- Archivos: [`$SPECS_BASE/specs/templates/story-template.md`]
+- Archivos: [`../story-creation/assets/story-template.md`]
 
 ---
 
@@ -196,7 +196,7 @@ Ruta del archivo de salida: `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]
 
 El archivo de plantilla es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. El template es de **solo lectura**.
 
-Leer el archivo `$SPECS_BASE/specs/templates/story-template.md`.
+Leer el archivo `../story-creation/assets/story-template.md`.
 
 - Si el archivo **no existe**: detener la ejecución (ver Manejo de errores).
 - Si el archivo **existe**: continuar.
@@ -214,7 +214,7 @@ Generar al menos un escenario Gherkin principal (happy path) y uno alternativo/e
 
 **5. Escribir el archivo:**
 
-Crear el directorio `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/` si no existe, luego crear `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/specs/templates/story-template.md` infiriendo la información. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
+Crear el directorio `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/` si no existe, luego crear `story.md` dentro de ese directorio con la estructura del template `../story-creation/assets/story-template.md` infiriendo la información. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
 - `status: READY-FOR-IMPLEMENT` — estado inicial de toda historia generada desde un release planificado (pendiente de refinamiento)
@@ -308,7 +308,7 @@ Al finalizar el procesamiento de todos los releases, mostrar el resumen:
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
 | `$SPECS_BASE/specs/releases/` vacío o sin `release.md` | `No se encontraron directorios de release en $SPECS_BASE/specs/releases/` | Mostrar mensaje de orientación y detener |
-| Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/story-template.md` | Detener la ejecución del batch |
+| Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en ../story-creation/assets/story-template.md` | Detener la ejecución del batch |
 | Release sin sección `## Features` | — | Registrar como `[nombre-release] — saltado (sin features)` y continuar con el siguiente release |
 
 ---

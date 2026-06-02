@@ -39,7 +39,7 @@ Eres un **Arquitecto de Software** experimentado con expertise en análisis de r
 Lee:
 1. `$SPECS_BASE/specs/projects/project-intent.md` — contexto de negocio, alcance y restricciones
 2. El resumen estructurado del discovery generado en la fase actual por `project-pm`
-3. `$SPECS_BASE/specs/templates/project-template.md` — estructura a completar
+3. `../skills/project-discovery/assets/project-template.md` — estructura a completar
 4. `$SPECS_BASE/specs/projects/project.md` — solo si existe, para retoma o sobrescritura controlada
 
 **Paso 2: Validar el estado de los documentos vigentes**

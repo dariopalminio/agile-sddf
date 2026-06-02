@@ -15,7 +15,7 @@ triggers:
 
 ## Objetivo
 
-Crea una historia de usuario completa a partir de una necesidad o feature descrito en lenguaje natural. El output sigue **estrictamente** el template `$SPECS_BASE/specs/templates/story-template.md` definido en el proyecto.
+Crea una historia de usuario completa a partir de una necesidad o feature descrito en lenguaje natural. El output sigue **estrictamente** el template `assets/story-template.md` definido en el proyecto.
 
 **Qué hace este skill:**
 - Convierte texto libre, archivos existentes o términos de búsqueda en una historia de usuario bien formada
@@ -39,7 +39,7 @@ El skill acepta tres tipos de input:
 - **Tipo B — Ruta de archivo**: ruta relativa o absoluta a un archivo `.md` existente con contenido de historia incompleto
 - **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia existente en `$SPECS_BASE/specs/stories/`
 
-Fuente estructural del output: `$SPECS_BASE/specs/templates/story-template.md` (leído en tiempo de ejecución)
+Fuente estructural del output: `assets/story-template.md` (leído en tiempo de ejecución)
 
 ---
 
@@ -51,7 +51,7 @@ Fuente estructural del output: `$SPECS_BASE/specs/templates/story-template.md` (
 
 ## Precondiciones
 
-- El archivo `$SPECS_BASE/specs/templates/story-template.md` existe
+- El archivo `assets/story-template.md` existe
 - `skill-preflight` retorna estado OK (entorno válido)
 
 ---
@@ -59,7 +59,7 @@ Fuente estructural del output: `$SPECS_BASE/specs/templates/story-template.md` (
 ## Dependencias
 
 - Skills: [`skill-preflight`]
-- Archivos: [`$SPECS_BASE/specs/templates/story-template.md`]
+- Archivos: [`assets/story-template.md`]
 
 ---
 
@@ -105,7 +105,7 @@ Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los 
 
 ### Paso 1 — Leer template canónico
 
-Leer el archivo `$SPECS_BASE/specs/templates/story-template.md`.
+Leer el archivo `assets/story-template.md`.
 
 El template es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. Si el template cambia, el output generado se actualizará automáticamente.
 
@@ -270,7 +270,7 @@ Si la historia fue simplificada para cumplir INVEST, explicar brevemente qué se
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| Template no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/story-template.md` | Detener. Pedir al usuario que verifique que el archivo existe |
+| Template no encontrado | `❌ No se encontró el template requerido en assets/story-template.md` | Detener. Pedir al usuario que verifique que el archivo existe |
 | Más de 1 coincidencia en búsqueda (Tipo C) | Mostrar lista de coincidencias | Pedir al usuario que elija antes de continuar |
 | Historia demasiado grande (falla `S` de INVEST) | Informar qué la hace grande | Sugerir `/story-split` antes de guardar |
 
@@ -320,7 +320,7 @@ Flujo de recuperación vía email. SMS queda fuera de scope de esta historia.
 
 ### Referencias
 
-- **Template canónico:** `$SPECS_BASE/specs/templates/story-template.md`
+- **Template canónico:** `assets/story-template.md`
 - **Evaluación de calidad:** `/story-evaluation`
 - **División de historias grandes:** `/story-split`
 - Mike Cohn, *User Stories Applied* (2004)

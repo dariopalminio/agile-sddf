@@ -20,7 +20,7 @@ features definidas en un `release.md`. Invocar también cuando el usuario mencio
 
 ## Objetivo
 
-Lee `release.md` de un directorio de release en `$SPECS_BASE/specs/releases/` y genera automáticamente un directorio `FEAT-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature definida en la sección `## Features` del release. Cada archivo generado sigue exactamente la estructura de `$SPECS_BASE/specs/templates/story-template.md`.
+Lee `release.md` de un directorio de release en `$SPECS_BASE/specs/releases/` y genera automáticamente un directorio `FEAT-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature definida en la sección `## Features` del release. Cada archivo generado sigue exactamente la estructura de `../story-creation/assets/story-template.md`.
 
 **Qué hace este skill:**
 - Resuelve el release a procesar por nombre de directorio (parcial o completo) o por ruta explícita
@@ -44,13 +44,13 @@ Lee `release.md` de un directorio de release en `$SPECS_BASE/specs/releases/` y 
 ## Precondiciones
 
 - El directorio de release indicado debe existir en `$SPECS_BASE/specs/releases/` y contener `release.md`
-- `$SPECS_BASE/specs/templates/story-template.md` debe existir
+- `../story-creation/assets/story-template.md` debe existir
 - `skill-preflight` retorna estado OK (entorno válido)
 
 ## Dependencias
 
 - Skills: [`skill-preflight`]
-- Archivos: [`$SPECS_BASE/specs/templates/story-template.md`]
+- Archivos: [`../story-creation/assets/story-template.md`]
 
 ## Modos de ejecución
 
@@ -177,7 +177,7 @@ Esperar confirmación antes de continuar. Si el usuario responde `n` o `no`, sal
 
 El archivo de plantilla es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. El template es de **solo lectura**.
 
-Leer el archivo `$SPECS_BASE/specs/templates/story-template.md`.
+Leer el archivo `../story-creation/assets/story-template.md`.
 
 - Si el archivo **no existe**: detener la ejecución (ver Manejo de errores).
 - Si el archivo **existe**: continuar.
@@ -200,7 +200,7 @@ Las secciones opcionales (`⚙️ Criterios no funcionales`, `📎 Notas`) se in
 
 #### 4e. Escribir el archivo de historia
 
-Crear el directorio `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/specs/templates/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
+Crear el directorio `$SPECS_BASE/specs/stories/FEAT-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `../story-creation/assets/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
 - `status: SPECIFYING` — estado inicial de toda historia generada desde un release planificado (pendiente de refinamiento)
@@ -295,7 +295,7 @@ Si alguna feature no pudo procesarse por formato inesperado, listarla como:
 | Release no encontrado (Formato A, sin coincidencias) | `No se encontró el directorio de release: <término>. Asegúrate de que el directorio existe en $SPECS_BASE/specs/releases/ y vuelve a intentarlo.` | Detener sin generar archivos |
 | Release no encontrado (Formato B, ruta inválida) | `No se encontró release.md en: <ruta>. Asegúrate de que la ruta es correcta y vuelve a intentarlo.` | Detener sin generar archivos |
 | Sección `## Features` vacía o ausente | `No se encontraron features en el archivo de release indicado.` | Mostrar orientación y detener |
-| Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/story-template.md.` | Detener la ejecución |
+| Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en ../story-creation/assets/story-template.md.` | Detener la ejecución |
 
 ---
 

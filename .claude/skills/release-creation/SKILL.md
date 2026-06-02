@@ -14,7 +14,7 @@ triggers:
 
 ## Objetivo
 
-Conduce al usuario a través de la creación de un archivo de release completo mediante preguntas interactivas. Extrae la estructura del template `$SPECS_BASE/specs/templates/release-spec-template.md` en tiempo de ejecución — si el template cambia, el flujo de preguntas se actualiza automáticamente.
+Conduce al usuario a través de la creación de un archivo de release completo mediante preguntas interactivas. Extrae la estructura del template `assets/release-spec-template.md` en tiempo de ejecución — si el template cambia, el flujo de preguntas se actualiza automáticamente.
 
 **Qué hace este skill:**
 - Guía la creación de un release de forma interactiva, sección por sección, extrayendo estructura del template en tiempo de ejecución
@@ -46,7 +46,7 @@ Conduce al usuario a través de la creación de un archivo de release completo m
 
 ## Precondiciones
 
-- `$SPECS_BASE/specs/templates/release-spec-template.md` debe existir
+- `assets/release-spec-template.md` debe existir
 - `skill-preflight` retorna estado OK (entorno válido)
 
 ---
@@ -54,7 +54,7 @@ Conduce al usuario a través de la creación de un archivo de release completo m
 ## Dependencias
 
 - Skills: [`skill-preflight`, `release-format-validation`]
-- Archivos: [`$SPECS_BASE/specs/templates/release-spec-template.md`]
+- Archivos: [`assets/release-spec-template.md`]
 
 ---
 
@@ -131,7 +131,7 @@ Si elige "2", volver al inicio del Paso 1 para pedir un nombre diferente.
 
 El archivo de plantilla es la **única fuente de información estructural**. Nunca hardcodear nombres de secciones.
 
-Leer `$SPECS_BASE/specs/templates/release-spec-template.md`.
+Leer `assets/release-spec-template.md`.
 
 - Si el archivo **no existe**: detener la ejecución (ver Manejo de errores).
 - Si el archivo **existe**: extraer dinámicamente:
@@ -291,7 +291,7 @@ Si el usuario responde "sí": volver al Paso 4 o Paso 5 según corresponda para 
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| Template no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/release-spec-template.md. Por favor verifica que el archivo existe antes de continuar.` | Detener la ejecución |
+| Template no encontrado | `❌ No se encontró el template requerido en assets/release-spec-template.md. Por favor verifica que el archivo existe antes de continuar.` | Detener la ejecución |
 | Conflicto de directorio | `El directorio <ruta> ya existe. ¿Qué deseas hacer? 1. Sobreescribir / 2. Usar un nombre diferente` | Esperar decisión del usuario; si elige "2", volver al Paso 1 |
 | Validación retorna REFINAR | `⚠️ REFINAR — Las siguientes secciones están incompletas: [lista]` | Ofrecer completar las secciones faltantes de forma interactiva |
 
@@ -303,7 +303,7 @@ Si el usuario responde "sí": volver al Paso 4 o Paso 5 según corresponda para 
 
 ### Referencias
 
-- **Template canónico:** `$SPECS_BASE/specs/templates/release-spec-template.md`
+- **Template canónico:** `assets/release-spec-template.md`
 - **Validación de releases:** `/release-format-validation`
 - **Generación de stories:** `/release-generate-stories`
 - **Generación desde plan:** `/releases-from-project-plan`

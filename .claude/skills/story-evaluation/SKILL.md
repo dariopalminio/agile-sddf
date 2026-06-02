@@ -48,14 +48,14 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 ## Precondiciones
 
 - Si el input es una ruta de archivo: el archivo debe existir y ser legible
-- El template `$SPECS_BASE/specs/templates/story-template.md` debe existir (requerido para evaluar la dimensión F)
+- El template `../story-creation/assets/story-template.md` debe existir (requerido para evaluar la dimensión F)
 
 ---
 
 ## Dependencias
 
 - Skills: ninguno
-- Archivos: [`$SPECS_BASE/specs/templates/story-template.md`], [`assets/evaluation-output-template.md`]
+- Archivos: [`../story-creation/assets/story-template.md`], [`assets/evaluation-output-template.md`]
 
 ---
 
@@ -85,9 +85,9 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 
 ### Paso 1 — Leer template canónico
 
-El archivo `$SPECS_BASE/specs/templates/story-template.md` es la **única fuente de información estructural** para la dimensión F. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. El template es de **solo lectura**.
+El archivo `../story-creation/assets/story-template.md` es la **única fuente de información estructural** para la dimensión F. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. El template es de **solo lectura**.
 
-Leer el archivo `$SPECS_BASE/specs/templates/story-template.md`.
+Leer el archivo `../story-creation/assets/story-template.md`.
 
 - Si el archivo **no existe**: detener la ejecución (ver Manejo de errores).
 - Si el archivo **existe**: continuar al Paso 2.
@@ -312,7 +312,7 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Template no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/story-template.md. Por favor verifica que el archivo existe antes de continuar.` | Detener la ejecución |
+| Template no encontrado | `❌ No se encontró el template requerido en ../story-creation/assets/story-template.md. Por favor verifica que el archivo existe antes de continuar.` | Detener la ejecución |
 | Archivo de historia no accesible (input fue ruta) | `⚠️ No se pudo leer el archivo: <ruta>` | Notificar y detener |
 | Input es solo imagen sin texto de historia | `ℹ️ El skill requiere el texto de la historia para evaluar. Las imágenes adjuntas no pueden procesarse.` | Solicitar texto y detener |
 | Frontmatter no actualizable (APROBADA + ruta) | `⚠️ No se pudo actualizar el frontmatter de: <ruta> — verifica permisos y formato` | Emitir advertencia y continuar sin bloquear |

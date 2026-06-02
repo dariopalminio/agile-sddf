@@ -42,7 +42,7 @@ story-verify    ← aquí
 - `$SPECS_BASE/policies/definition-of-done-story.md` — criterios DoD sección VERIFY (opcional; usa fallback genérico si no existe)
 - Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático
 - `.tmp/story-verify/qa-input.json` / `qa-output.json` — canal de comunicación con el agente QA (solo modo manual)
-- `$SPECS_BASE/specs/templates/verify-report-template.md` — template del reporte (con fallback a `assets/verify-report-template.md`)
+- `assets/verify-report-template.md` — template del reporte
 
 ## Parámetros
 
@@ -57,7 +57,7 @@ story-verify    ← aquí
 - Skills: [`skill-preflight`]
 - Agentes: [`agents/qa-engineer.agent.md`] (modo manual y e2e-assessment)
 - Herramientas de testing (según modo detectado): `pytest`, `jest`, `vitest`, `go test`, `npx playwright`, `npx cypress`, `npx cucumber-js`
-- Archivos de entrada: `$SPECS_BASE/policies/definition-of-done-story.md`, `$SPECS_BASE/specs/templates/verify-report-template.md`
+- Archivos de entrada: `$SPECS_BASE/policies/definition-of-done-story.md`, `assets/verify-report-template.md`
 
 ## Modos de ejecución
 
@@ -333,8 +333,7 @@ Si no existe: `$HISTORY_CONTENT = "(sin ejecuciones anteriores)"`
 #### 6b. Leer el template
 
 Buscar en este orden:
-1. `$SPECS_BASE/specs/templates/verify-report-template.md` — ubicación canónica
-2. `assets/verify-report-template.md` — fallback local
+1. `assets/verify-report-template.md` — ubicación canónica
 
 Si ninguno existe, usar una estructura mínima integrada.
 

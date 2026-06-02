@@ -209,8 +209,7 @@ Verificar si `tasks.md` existe en el directorio.
 
 Buscar el template en este orden:
 1. `assets/testcases-template.md` relativo al directorio del skill activo
-2. `$SPECS_BASE/specs/templates/testcases-template.md`
-3. Template de fallback interno (sección `## Template de Fallback` al final de este archivo)
+2. Template de fallback interno (sección `## Template de Fallback` al final de este archivo)
 
 Informar: `✓ Template: <ruta> [local | global | fallback interno]`
 

@@ -37,7 +37,7 @@ del template `release-spec-template.md`. Produce resultado **APROBADO**, **REFIN
 
 - Argumento posicional: ruta relativa, nombre (con o sin `.md`) o término de búsqueda del archivo de release
 - `$SPECS_BASE/specs/releases/` — directorio donde se buscan los archivos de release
-- `$SPECS_BASE/specs/templates/release-spec-template.md` — fuente de verdad estructural (solo lectura)
+- `../release-creation/assets/release-spec-template.md` — fuente de verdad estructural (solo lectura)
 
 ## Parámetros
 
@@ -46,13 +46,13 @@ del template `release-spec-template.md`. Produce resultado **APROBADO**, **REFIN
 ## Precondiciones
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
-- `$SPECS_BASE/specs/templates/release-spec-template.md` debe existir
+- `../release-creation/assets/release-spec-template.md` debe existir
 - Debe proporcionarse al menos un argumento para identificar el archivo a validar
 
 ## Dependencias
 
 - Skills: [`skill-preflight`]
-- Archivos: `$SPECS_BASE/specs/templates/release-spec-template.md`
+- Archivos: `../release-creation/assets/release-spec-template.md`
 
 ## Modos de ejecución
 
@@ -119,11 +119,11 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `$SPECS_BASE/specs/templates/release-spec-template.md`.
+Lee el archivo de plantilla `../release-creation/assets/release-spec-template.md`.
 
 - Si el archivo **no existe**: informar al usuario y detener la ejecución:
 
-  > ❌ No se encontró el template requerido en `$SPECS_BASE/specs/templates/release-spec-template.md`.
+  > ❌ No se encontró el template requerido en `../release-creation/assets/release-spec-template.md`.
   > Por favor verifica que el archivo existe antes de continuar.
 
 - Si el archivo **existe**: continua.
@@ -193,7 +193,7 @@ Secciones/campos faltantes:
 - <nombre exacto del campo o encabezado faltante 2>
 ...
 
-Revisa el template en $SPECS_BASE/specs/templates/release-spec-template.md para completar las secciones indicadas.
+Revisa el template en ../release-creation/assets/release-spec-template.md para completar las secciones indicadas.
 ```
 
 ---

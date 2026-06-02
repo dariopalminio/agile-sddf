@@ -72,7 +72,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - `tasks.md` — plan de tareas de implementación (obligatorio)
 - `$SPECS_BASE/policies/definition-of-done-story.md` — criterios DoD fase PLAN (opcional)
 - `$SPECS_BASE/specs/releases/{parent}-*/release.md` — release padre para verificar alineación (opcional)
-- Template del reporte: `$SPECS_BASE/specs/templates/analyze-report-template.md` (opcional, hay fallback interno)
+- Template del reporte: `assets/analyze-report-template.md` (opcional, hay fallback interno)
 
 ---
 
@@ -343,9 +343,8 @@ Registrar internamente: `$DOD_ERROR_COUNT` = número de criterios con resultado 
 ### Paso 7 — Leer el template en tiempo de ejecución
 
 Intentar localizar el template del reporte en este orden:
-1. `$SPECS_BASE/specs/templates/analyze-report-template.md`
-2. `assets/analyze-report-template.md` (relativo al directorio del skill)
-3. Template de fallback interno (definido en la sección `## Salida`)
+1. `assets/analyze-report-template.md` (relativo al directorio del skill)
+2. Template de fallback interno (definido en la sección `## Salida`)
 
 Informar qué template se está usando:
 ```

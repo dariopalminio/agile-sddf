@@ -87,7 +87,7 @@ Para cada sección del template:
 Lee:
 1. `$SPECS_BASE/specs/projects/project-intent.md` — input principal de la fase
 2. `.claude/skills/project-begin/assets/project-intent-template.md` — referencia para entender la estructura y el nivel de refinamiento esperado del contexto de negocio
-3. `$SPECS_BASE/specs/templates/project-template.md` — estructura objetivo a completar
+3. `../skills/project-discovery/assets/project-template.md` — estructura objetivo a completar
 4. `$SPECS_BASE/specs/projects/project.md` — solo si existe, para retoma o sobrescritura controlada
 
 **Paso 2: Validar el Estado de los documentos vigentes**

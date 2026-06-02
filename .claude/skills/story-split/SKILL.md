@@ -14,7 +14,7 @@ triggers:
 
 ## Objetivo
 
-Toma una historia grande, épica o feature demasiado amplio y lo divide en historias más pequeñas e independientes. Cada historia resultante sigue **estrictamente** el template `$SPECS_BASE/specs/templates/story-template.md`.
+Toma una historia grande, épica o feature demasiado amplio y lo divide en historias más pequeñas e independientes. Cada historia resultante sigue **estrictamente** el template `../story-creation/assets/story-template.md`.
 
 **Qué hace este skill:**
 - Divide historias grandes en historias más pequeñas aplicando los 8 patrones de splitting de Richard Lawrence
@@ -39,7 +39,7 @@ El skill acepta tres tipos de input:
 - **Tipo B — Ruta de archivo**: ruta relativa o absoluta a un archivo `.md` con el contenido de la historia
 - **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia en `$SPECS_BASE/specs/stories/`
 
-Fuente estructural del output: `$SPECS_BASE/specs/templates/story-template.md` (leído en tiempo de ejecución)
+Fuente estructural del output: `../story-creation/assets/story-template.md` (leído en tiempo de ejecución)
 
 ---
 
@@ -55,7 +55,7 @@ Fuente estructural del output: `$SPECS_BASE/specs/templates/story-template.md` (
 ## Precondiciones
 
 - La historia a dividir existe bajo `$SPECS_BASE/specs/stories/` o fue provista como texto libre o ruta de archivo
-- El archivo `$SPECS_BASE/specs/templates/story-template.md` existe
+- El archivo `../story-creation/assets/story-template.md` existe
 - `skill-preflight` retorna estado OK (entorno válido)
 
 ---
@@ -63,7 +63,7 @@ Fuente estructural del output: `$SPECS_BASE/specs/templates/story-template.md` (
 ## Dependencias
 
 - Skills: [`skill-preflight`]
-- Archivos: [`$SPECS_BASE/specs/templates/story-template.md`]
+- Archivos: [`../story-creation/assets/story-template.md`]
 
 ---
 
@@ -114,7 +114,7 @@ Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los 
 
 ### Paso 1 — Leer template canónico
 
-Leer el archivo `$SPECS_BASE/specs/templates/story-template.md`.
+Leer el archivo `../story-creation/assets/story-template.md`.
 
 El template es la **única fuente de información estructural** para generar el output. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución.
 
@@ -427,7 +427,7 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| Template no encontrado | `❌ No se encontró el template en $SPECS_BASE/specs/templates/story-template.md` | Detener. Pedir verificar que el archivo existe |
+| Template no encontrado | `❌ No se encontró el template en ../story-creation/assets/story-template.md` | Detener. Pedir verificar que el archivo existe |
 | Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/release-generate-stories` |
 | Más de 1 coincidencia (Tipo C) | Mostrar lista de coincidencias | Pedir al usuario que elija antes de continuar |
 | Directorio de historia adicional ya existe | Informar al usuario del conflicto | No sobreescribir; continuar con las demás |
@@ -443,7 +443,7 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 
 ### Referencias
 
-- **Template canónico:** `$SPECS_BASE/specs/templates/story-template.md`
+- **Template canónico:** `../story-creation/assets/story-template.md`
 - **Creación de historias:** `/story-creation`
 - **Evaluación de calidad:** `/story-evaluation`
 - Richard Lawrence & Peter Green, *Humanizing Work Guide to Splitting User Stories* — origen de los 8 patrones

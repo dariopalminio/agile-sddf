@@ -43,7 +43,7 @@ de usuarios con el agente `project-pm` y la especificación de requisitos con
 ## Entrada
 
 - `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md` — input principal (precondición: `substatus: DONE`)
-- `$SPECS_BASE/specs/templates/project-template.md` — fuente de verdad estructural (solo lectura)
+- `assets/project-template.md` — fuente de verdad estructural (solo lectura)
 - `$SPECS_BASE/specs/projects/` — directorio para resolver el proyecto activo
 
 ## Parámetros
@@ -54,13 +54,13 @@ de usuarios con el agente `project-pm` y la especificación de requisitos con
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
 - `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md` debe existir con `substatus: DONE`
-- `$SPECS_BASE/specs/templates/project-template.md` debe existir
+- `assets/project-template.md` debe existir
 
 ## Dependencias
 
 - Skills: [`skill-preflight`]
 - Agentes: [`project-pm`, `project-architect`, `project-ux`]
-- Archivos: [`$SPECS_BASE/specs/templates/project-template.md`]
+- Archivos: [`assets/project-template.md`]
 
 ## Modos de ejecución
 
@@ -132,11 +132,11 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-template.md`.
+Lee el archivo de plantilla `assets/project-template.md`.
 
 - Si el archivo **no existe**: informar al usuario y detener la ejecución:
 
-  > ❌ No se encontró el template requerido en `$SPECS_BASE/specs/templates/project-template.md`.
+  > ❌ No se encontró el template requerido en `assets/project-template.md`.
   > Por favor verifica que el archivo existe antes de continuar.
 
 - Si el archivo **existe**: continua.
@@ -157,7 +157,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 
 Una vez completado el discovery, invoca al agente `project-architect` con la siguiente instrucción:
 
-> Lee `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md` y el resumen del discovery de la fase anterior. Lee tambien el template `$SPECS_BASE/specs/templates/project-template.md`.
+> Lee `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md` y el resumen del discovery de la fase anterior. Lee tambien el template `assets/project-template.md`.
 >
 > Si estas en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/projects/$PROJ_DIR/project.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
