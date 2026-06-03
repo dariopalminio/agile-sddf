@@ -199,9 +199,9 @@ Completar cada placeholder del template con los datos extraídos siguiendo esta 
 | Code review | `[ej. pair review...]` |  CLAUDE.md / AGENTS.md |
 | Patrón principal | `[ej. Clean Architecture...]` | CLAUDE.md / AGENTS.md |
 | Gestión de estado | `[ej. Redux...]` | package.json → redux, zustand, jotai, etc. |
-| Restricciones de diseño | `[ej. No usar ORMs...]` |  CLAUDE.md / AGENTS.md / .specify/memory/constitution.md |
-| Principios Técnicos Inamovibles | `[Principio N]` / `[descripción y razón]` |  CLAUDE.md / AGENTS.md / .specify/memory/constitution.md / .github/instructions |
-| Notas adicionales | `[Por completar]` | .specify/memory/constitution.md si existe / .github/instructions si existe |
+| Restricciones de diseño | `[ej. No usar ORMs...]` |  CLAUDE.md / AGENTS.md / .specify/memory/constitution.md / .github/instructions / .github/copilot-instructions.md |
+| Principios Técnicos Inamovibles | `[Principio N]` / `[descripción y razón]` |  CLAUDE.md / AGENTS.md / .specify/memory/constitution.md / .github/instructions / .github/copilot-instructions.md |
+| Notas adicionales | `[Por completar]` | .specify/memory/constitution.md si existe / .github/instructions / .github/copilot-instructions.md si existe |
 
 #### Reglas de completado
 
