@@ -1,5 +1,5 @@
 ---
-name: test-e2e-cypress-cucumber
+name: test-cypress-cucumber
 description: Use when writing E2E tests with Cucumber BDD and Cypress, setting up BDD test infrastructure, writing Gherkin feature files, implementing step definitions, configuring hooks and custom commands, or integrating Cypress Cucumber with CI/CD. Invoke for Cucumber, BDD, Gherkin, feature files, step definitions, Given When Then, hooks, tags, @badeball, cypress-cucumber, scenario outline, behaviour driven, BDD testing.
 license: MIT
 metadata:

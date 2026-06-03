@@ -1,5 +1,5 @@
 ---
-name: test-component-react-testing-library
+name: test-react-testing-library
 description: |
   Test React components with Vitest + Testing Library + happy-dom + axe-core.
   Use it to write rendering tests, user interaction tests, accessibility tests, and mocks.

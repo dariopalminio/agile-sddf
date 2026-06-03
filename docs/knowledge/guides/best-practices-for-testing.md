@@ -47,9 +47,9 @@ Aplicar esta tabla a la clasificación de pruebas para asegurar consistencia y c
 - IT: flujo positivo de integración entre los dos componentes
 - API: request válido + respuesta esperada (happy path)
 - E2E: trazable 1-a-1 al escenario Gherkin de origen
-- EV: happy-path del skill + caso fail-fast
 - PT: carga esperada + estrés (si aplica)
 - CON: contrato definido + validación de contrato (si aplica)
+- EV: happy-path del skill + caso fail-fast
 ---
 
 ## Tipos de Prueba clásicas

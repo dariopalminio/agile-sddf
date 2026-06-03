@@ -1,5 +1,5 @@
 ---
-name: test-e2e-playwright-cucumber
+name: test-playwright-cucumber
 description: |
   Use when writing E2E tests with Cucumber BDD and Playwright, setting up BDD test infrastructure, writing Gherkin feature files, implementing step definitions, configuring hooks and World, or integrating Cucumber with CI/CD.  
   Invoke for Cucumber, BDD, Gherkin, feature files, step definitions, Given When Then, hooks, tags, World, scenario outline, @cucumber/cucumber.
