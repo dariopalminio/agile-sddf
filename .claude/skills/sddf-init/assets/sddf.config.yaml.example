@@ -1,14 +1,11 @@
-# Ejemplo de configuración SDDF para desarrollo de librería UI (React + TypeScript)
-# Proyecto: componentes React con RTL para tests de componente y Playwright+Cucumber para E2E
-#
-# Uso: copiar como sddf.config.yaml en la raíz del proyecto y ajustar comandos según el package manager.
-
+# Valores por defecto para todos los tipos
+# este archivo debe diseñarse y reconstruiserse para ser fácilmente extendible y adaptable a diferentes proyectos y tecnologías
 defaults:
   unit:
     command: "pnpm run test:unit"
-    required: false
+    required: true
   component:
-    command_template: "pnpm run test:component -- {{test_file}}"
+    command_template: "pnpm run test:component:file -- {{test_file_path}}"  # pnpm test:component:file packages\ui\src\components\Alert\Alert.test.tsx
     required: true
   integration:
     command: "pnpm run test:integration"
@@ -17,7 +14,13 @@ defaults:
     command: "pnpm run test:contract"
     required: false
   e2e:
-    command: "pnpm run test:e2e"
+    command: "pnpm run test:e2e:smoke"
+    required: true
+  e2e-smoke:
+    command: "pnpm run test:e2e:smoke"
+    required: true
+  e2e-file:
+    command: "pnpm run test:e2e:file -- {{test_file_path}}" # pnpm run test:e2e -- apps\demo\tests\e2e\features\components\alert.feature
     required: true
   performance:
     command: "pnpm run test:performance"
@@ -32,11 +35,21 @@ implement:
       skill: test-component-react-testing-library
       required: true
     - type: e2e
-      skill: test-e2e-playwright-cucumber
+      skill: test-playwright-cucumber
       required: true
     - type: eval
       skill: none
       required: false
+
+  # Contexto E2E del proyecto — leído por story-implement para enriquecer el bundle
+  # del test_generator de tipo e2e. Si se omite, el subagente explora el proyecto.
+  e2e_context:
+    framework: cucumber                                    # cucumber | playwright | cypress
+    base_path: apps/demo/tests/e2e                         # Raíz relativa del directorio E2E
+    features_path: apps/demo/tests/e2e/features/components # Donde van los *.feature files
+    steps_path: apps/demo/tests/e2e/step_definitions/components  # Step definitions
+    pages_path: apps/demo/tests/e2e/pages                  # Page Objects
+    support_path: apps/demo/tests/e2e/support              # Hooks y World
 
   code_generators:
     - layer: frontend

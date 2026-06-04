@@ -35,6 +35,16 @@ implement:
       skill: none
       required: false
 
+  # Contexto E2E del proyecto — leído por story-implement para enriquecer el bundle
+  # del test_generator de tipo e2e. Si se omite, el subagente explora el proyecto.
+  e2e_context:
+    framework: cucumber                                    # cucumber | playwright | cypress
+    base_path: tests/e2e                         # Raíz relativa del directorio E2E
+    features_path: tests/e2e/features # Donde van los *.feature files
+    steps_path: tests/e2e/step_definitions  # Step definitions
+    pages_path: tests/e2e/pages                  # Page Objects
+    support_path: tests/e2e/support              # Hooks y World
+
   code_generators:
     - layer: frontend
       skill: code-frontend-library-react

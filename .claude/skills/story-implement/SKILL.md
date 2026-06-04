@@ -101,6 +101,20 @@ Si no se proporciona argumento, solicitar interactivamente.
 
 ## Flujo de ejecución
 
+> **Concepto fundamental — test_generators vs. ejecución de tests:**
+>
+> Los `test_generators` (Paso 4) generan **archivos estáticos** de especificación de pruebas:
+> feature files Gherkin, archivos `.test.tsx`, step definitions TypeScript, etc.
+> Estos archivos son la Fase RED del ciclo TDD — deben existir (y fallar) **antes** de la implementación.
+>
+> - **Paso 4 = GENERAR** archivos de prueba → no necesita servidor, base de datos, ni servicios externos corriendo
+> - **Paso 5 = EJECUTAR** comandos para confirmar estado rojo → puede fallar por infraestructura
+>
+> `tasks.md` es un artefacto del desarrollador y **no guía el pipeline** de `story-implement`.
+> El pipeline está guiado exclusivamente por `sddf.config.yaml` (qué skills invocar) y `testcases.md` (qué casos generar).
+
+---
+
 ### Paso 0 — Verificar entorno (`skill-preflight`)
 
 Invocar el skill `skill-preflight` antes de cualquier operación.
@@ -137,6 +151,8 @@ Verifica que el archivo existe o ejecuta /sddf-init para inicializar el entorno.
 Detener la ejecución.
 
 Extraer la sección `implement.test_generators`.
+
+Extraer también la sección `implement.e2e_context` (opcional). Si no existe, registrar `$E2E_CONTEXT = null`.
 
 **Si la sección `implement` no existe o `test_generators` está vacío:**
 ```
@@ -183,8 +199,8 @@ Resolver los artefactos de la historia en `$SPECS_BASE/specs/stories/<story_id>*
 | 2 | `testcases.md` ausente | `⚠️ testcases.md no encontrado — generando pruebas desde story.md y design.md` |
 | 3 | `story.md` o `design.md` ausentes (fallback) | `❌ Artefactos de especificación insuficientes (falta story.md y/o design.md)` + detener |
 
-Construir bundle de inputs:
-```
+Construir bundle base de inputs (común a todos los test_generators):
+```json
 {
   "story_id": "<FEAT-NNN>",
   "testcases_path": "<ruta o null>",
@@ -193,25 +209,78 @@ Construir bundle de inputs:
 }
 ```
 
+> **Nota sobre testcases.md:** Si existe, es la **fuente canónica y excluyente** de casos de prueba.
+> Contiene todos los tipos (UT, CT, IT, E2E, etc.) ya derivados y tipificados por `story-testcases`.
+> El skill NO necesita releer `story.md` ni `design.md` para derivar casos adicionales cuando
+> `testcases.md` está presente. El subagente generador debe leer `testcases.md` y filtrar los casos
+> del tipo que le corresponde.
+>
+> **Nota sobre tasks.md:** El skill NO lee ni considera `tasks.md` en ningún paso del ciclo TDD.
+> La presencia de una tarea "T-NNN — ejecutar E2E" en `tasks.md` no reemplaza ni posterga la
+> generación del spec E2E en Paso 4. `tasks.md` es un artefacto del desarrollador, no del pipeline.
+
 ---
 
 ### Paso 4 — Invocar skills de generación en orden
 
+> ⚠️ **RESTRICCIÓN CRÍTICA — Omisiones válidas e inválidas:**
+>
+> Las **únicas** condiciones que justifican no invocar un test_generator en este paso son:
+> - `skill: "none"` en el YAML → omisión declarada explícitamente por el proyecto
+> - `required: false` + el skill no existe en `.claude/skills/` → skill opcional ausente
+> - El skill retorna `status: error` durante la invocación → error real del subagente
+>
+> Los siguientes razonamientos **NO son válidos** para omitir un test_generator:
+>
+> | Razonamiento incorrecto | Por qué es incorrecto |
+> |---|---|
+> | "El tipo e2e requiere servidor corriendo" | Paso 4 genera archivos estáticos; el servidor no es relevante |
+> | "El test E2E se genera/verifica en task T-NNN" | `tasks.md` no guía el pipeline; esta fase no lo lee |
+> | "Hay un bloqueador de infraestructura para otro tipo" | Cada tipo es independiente; un error en `unit` no afecta a `e2e` |
+> | "El servidor de la demo no está disponible" | Paso 4 genera archivos; Paso 5 ejecuta comandos — son pasos distintos |
+>
+> Si un generator con `required: true` y `skill != "none"` no es invocado sin una condición válida,
+> es un **error del orquestador**, no una situación prevista. Ver Paso 6 — validación post-escritura.
+
 Para cada entry de `test_generators` no omitida (en el orden del YAML):
 
 1. Mostrar: `[{tipo}] → invocando {skill}...`
-2. Invocar el skill pasando el bundle de inputs del Paso 3
-3. El subagente escribe sus resultados en `.tmp/story-implement/{tipo}/results.json`
-4. **Si el subagente retorna `status: error`:**
+2. Construir el bundle de inputs según el tipo:
+   - **Tipos que no sean `e2e`**: usar el bundle base del Paso 3
+   - **Tipo `e2e`**: usar el bundle base del Paso 3 **más** el campo `e2e_context`:
+     ```json
+     {
+       "story_id": "<FEAT-NNN>",
+       "testcases_path": "<ruta o null>",
+       "story_path": "<ruta>",
+       "design_path": "<ruta>",
+       "e2e_context": {
+         "framework": "<valor de sddf.config.yaml implement.e2e_context o null>",
+         "base_path": "<valor de sddf.config.yaml o null>",
+         "features_path": "<valor de sddf.config.yaml o null>",
+         "steps_path": "<valor de sddf.config.yaml o null>",
+         "pages_path": "<valor de sddf.config.yaml o null>",
+         "support_path": "<valor de sddf.config.yaml o null>"
+       }
+     }
+     ```
+     Si `$E2E_CONTEXT = null` (sección ausente en el YAML), pasar `"e2e_context": null`.
+     En ese caso el subagente es responsable de explorar el proyecto para detectar el framework E2E
+     (buscar scripts E2E en `package.json`, archivos de configuración comunes como `cucumber.js`,
+     `playwright.config.ts`, `cypress.config.ts`) y respetar la estructura de directorios existente.
+3. Invocar el skill pasando el bundle construido
+4. El subagente escribe sus resultados en `.tmp/story-implement/{tipo}/results.json`
+5. **Si el subagente retorna `status: error`:**
    ```
    ❌ El skill '{skill}' retornó error durante la Fase RED — deteniendo ejecución
    
    Error: {message}
    ```
    Detener sin invocar skills siguientes.
-5. **Si retorna `status: ok`:**
+6. **Si retorna `status: ok`:**
    - Registrar `files_generated` del subagente
    - Mostrar: `[{tipo}] ✓ {N} archivo(s) generado(s)`
+   - Añadir el tipo a `$RED_GENERATORS_INVOKED`
 
 ---
 
@@ -246,7 +315,28 @@ Escribir `.tmp/story-implement/red-phase-status.json`:
 }
 ```
 
-Este archivo es la precondición que leerá la Fase GREEN (FEAT-081) antes de invocar el code-generator.
+Este archivo es la precondición que leerá la Fase GREEN antes de invocar el code-generator.
+
+### Validación post-escritura — Omisiones inválidas
+
+Después de escribir el archivo, verificar que ningún generator con `required: true` y `skill != "none"` aparece en `generators_skipped`:
+
+Para cada entry en `generators_skipped`:
+1. Buscar esa entry en `sddf.config.yaml → implement.test_generators`
+2. Si tiene `required: true` y `skill != "none"` → **detener la ejecución**:
+   ```
+   ❌ ERROR: El test_generator de tipo '{tipo}' (skill: '{skill}') está declarado como
+      required:true en sddf.config.yaml pero fue omitido sin una condición válida.
+   
+   Condiciones válidas de omisión:
+     · skill: "none" en el YAML
+     · required: false + skill no existe en .claude/skills/
+   
+   Acción requerida:
+     a) Volver al Paso 4 e invocar el skill '{skill}' para el tipo '{tipo}'
+     b) O cambiar required: false en sddf.config.yaml si la omisión es intencional permanente
+   ```
+3. No continuar con Pause-1 ni Paso 7 hasta resolver.
 
 ---
 
@@ -660,6 +750,7 @@ DoD IMPLEMENTING:
 | Skill `required:true` no existe (test_generator) | `❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en .claude/skills/` | Detener sin generar archivos |
 | Skill `required:false` no existe (test_generator) | `[WARN] Skill '<nombre>' no encontrado — omitiendo tipo '<tipo>'` | Omitir tipo y continuar |
 | `testcases.md` ausente | `⚠️ testcases.md no encontrado — generando pruebas desde story.md y design.md` | Continuar con fallback |
+| Generator `required:true` con `skill!=none` en `generators_skipped` | `❌ ERROR: test_generator '{tipo}' es required:true pero fue omitido sin condición válida` | Detener antes de GREEN; exigir corrección o cambiar a required:false |
 | `story.md` o `design.md` ausentes | `❌ Artefactos de especificación insuficientes (falta story.md y/o design.md)` | Detener ejecución |
 | Subagente retorna `status: error` (Fase RED) | `❌ El skill '{skill}' retornó error durante la Fase RED` | Detener sin invocar siguientes |
 | Tests pasan sin implementación (Fase RED) | `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos` | Advertir, continuar |
@@ -697,7 +788,7 @@ story-implement (orquestador — Fases GREEN y REFACTOR)
   └── {skill capa database}  ← subagente, ej. code-database-prisma (si existe)
 ```
 
-Los subagentes de Fase RED reciben el bundle `{story_id, testcases_path, story_path, design_path}` y escriben en `.tmp/story-implement/{tipo}/results.json`.
+Los subagentes de Fase RED reciben el bundle `{story_id, testcases_path, story_path, design_path}` (más `e2e_context` para el tipo `e2e`) y escriben en `.tmp/story-implement/{tipo}/results.json`.
 Los subagentes de Fases GREEN/REFACTOR reciben el bundle `{story_id, phase, layer, test_files, story_path, design_path}` y escriben en `.tmp/story-implement/{phase}/{layer}/results.json`.
 El orquestador nunca pasa su contexto completo heredado a los subagentes.
 
