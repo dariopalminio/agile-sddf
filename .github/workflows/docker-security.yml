@@ -14,6 +14,8 @@ jobs:
   trivy:
     name: Trivy image scan
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
 
@@ -21,7 +23,7 @@ jobs:
         run: docker build -f Dockerfile.dev -t agile-sddf-dev:ci .
 
       - name: Scan with Trivy
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: agile-sddf-dev:ci
           format: table
