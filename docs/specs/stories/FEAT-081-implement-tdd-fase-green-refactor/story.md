@@ -68,6 +68,9 @@ El skill determina qué skill de coding invocar leyendo `implementing.code_gener
 
 Invocar `skill-preflight` antes de cualquier operación. Si retorna `✗ Entorno inválido`, detener inmediatamente.
 
+## Requerimiento:
+El archivo testcases.md incluye una sección de progreso con checkboxes, y `/story-implement` debe actualizarla automáticamente al validar cada tipo de test en la Fase GREEN.
+
 ## ⚙️ Criterios no funcionales
 
 * **Agnósticidad de stack:** el skill de coding se resuelve dinámicamente desde sddf-config.yaml; no se hardcodea ningún lenguaje ni framework

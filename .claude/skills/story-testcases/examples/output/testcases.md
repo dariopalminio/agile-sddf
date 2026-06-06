@@ -53,3 +53,21 @@ related:
 - E2E-001..E2E-003 trazan 1-a-1 los tres escenarios Gherkin de story.md (AC-1, AC-2, AC-3).
 - tasks.md no fue usado como fuente (no hay casos T-NNN) — se usó solo story.md y design.md.
 - Criterio no funcional (< 3 segundos para 10.000 registros) no genera caso en esta tabla; se verifica en el ciclo de performance tests del proyecto.
+
+## Test Cases Progress for FEAT-099
+
+<!-- Generado automáticamente por story-testcases. Actualizado por story-implement en fase GREEN.
+     [x] = test pasó | [ ] = pendiente | [!] = test falló -->
+- [ ] UT-001: CsvExportService.export retorna Buffer con datos correctos
+- [ ] UT-002: CsvExportService.export retorna null si no hay registros
+- [ ] UT-003: CsvExportService escapa campos con comas
+- [ ] UT-004: CsvExportService escapa campos con comillas dobles
+- [ ] CT-001: ExportButton se renderiza con texto "Exportar CSV"
+- [ ] CT-002: ExportButton queda deshabilitado durante la exportación
+- [ ] IT-001: ExportController llama a CsvExportService y retorna el buffer como descarga
+- [ ] API-001: GET /api/export/csv — exportación exitosa con datos
+- [ ] API-002: GET /api/export/csv — sin datos disponibles
+- [ ] API-003: GET /api/export/csv — error del servidor
+- [ ] E2E-001: Exportación exitosa: descarga archivo CSV con datos del usuario
+- [ ] E2E-002: Sin datos: se muestra mensaje informativo sin descarga
+- [ ] E2E-003: Error del servidor: UI no queda en estado inconsistente

@@ -168,8 +168,7 @@ SDD exige diseñar especificaciones concisas de prueba antes de codificar. No es
 
 - Todo el código debe tener pruebas unitarias.
 
-- Todo el código debe superar todas las pruebas unitarias antes de su
-lanzamiento.
+- Todo el código debe superar todas las pruebas unitarias antes de su lanzamiento.
 
 - Cuando se encuentra un error, se crean pruebas.
 

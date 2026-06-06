@@ -49,3 +49,9 @@ related:
 
 <!-- Observaciones sobre la derivación de casos, gaps de cobertura detectados,
      o decisiones sobre qué no cubrir en este artefacto. -->
+
+## Test Cases Progress for {story_id}
+
+<!-- Generado automáticamente por story-testcases. Actualizado por story-implement en fase GREEN.
+     [x] = test pasó | [ ] = pendiente | [!] = test falló -->
+{progress_checklist}

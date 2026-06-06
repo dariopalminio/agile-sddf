@@ -505,8 +505,18 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 1. Leer `defaults.{type}.command` de `sddf.config.yaml`
 2. **Si el comando existe:**
    - Ejecutarlo en el directorio raíz del proyecto
-   - Exit code = 0: `✅ Fase GREEN exitosa — tipo: {tipo} (tests pasan)`
+   - Exit code = 0:
+     - Emitir: `✅ Fase GREEN exitosa — tipo: {tipo} (tests pasan)`
+     - **Actualizar checkboxes en testcases.md** (si existe la sección `## Test Cases Progress for`):
+       - Determinar el prefijo de ID según el tipo del generador:
+         `unit → UT` | `component → CT` | `integration → IT` | `api → API` | `e2e → E2E` | `eval → EV` | `store → ST`
+       - En la sección de progreso, reemplazar `- [ ] {PREFIX}-` → `- [x] {PREFIX}-` para todas las líneas del prefijo
+       - Emitir: `✅ testcases.md — {count} caso(s) de tipo {PREFIX} marcados como [x]`
+       - Si testcases.md no existe o no tiene la sección: omitir silenciosamente
    - Exit code ≠ 0:
+     - **Actualizar checkboxes en testcases.md** (si existe la sección `## Test Cases Progress for`):
+       - Reemplazar `- [ ] {PREFIX}-` → `- [!] {PREFIX}-` para todas las líneas del prefijo
+       - Emitir: `⚠️ testcases.md — {count} caso(s) de tipo {PREFIX} marcados como [!]`
      ```
      ❌ Fase GREEN fallida: el skill '{skill}' retornó error — los tests de tipo '{tipo}' no pasan
      

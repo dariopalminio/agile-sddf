@@ -97,6 +97,12 @@ Si retorna `✗ Entorno inválido`, detener la ejecución inmediatamente. No gen
 
 Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los pasos siguientes.
 
+## Requerimiento: checklist de progreso en testcases.md
+El archivo testcases.md debe incluir una sección de progreso con checkboxes. Cada caso de prueba listado en la tabla debe tener un checkbox asociado que indique su estado:
+- [ ] Pendiente: el caso de prueba ha sido generado pero no implementado ni ejecutado.
+- [x] Completado: el caso de prueba ha sido implementado y ha pasado exitosamente.
+- [!] Fallido: el caso de prueba ha sido implementado pero ha fallado en su ejecución.
+
 ## Requerimiento: skill-master
 Usar en la creación del skill el skill `skill-master` para asegurar que el nuevo skill siga los estándares de estructura, documentación y funcionalidad definidos para los skills en SDDF. Esto incluye la generación de un README.md con la descripción del skill, sus comandos, ejemplos de uso y cualquier configuración necesaria. Además, el skill debe incluir pruebas unitarias para validar su correcto funcionamiento y manejo de errores. El uso de `skill-master` garantiza que el skill `project-policies-generation` esté bien diseñado, documentado y sea fácil de mantener a largo plazo.
 

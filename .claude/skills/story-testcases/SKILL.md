@@ -266,6 +266,7 @@ Leer el template del Paso 4. Completar:
 - Sección "Resumen de cobertura": tabla de conteo por tipo
 - Sección "Tabla de casos": una fila por caso derivado en el Paso 5
 - Sección "Notas de cobertura": mencionar si tasks.md fue usado, si algún AC no generó E2E, o si hay gaps detectados
+- Sección "Test Cases Progress for {story_id}": generar iterando cada fila de la tabla de casos en el mismo orden. Cada entrada usa el formato `- [ ] {ID}: {Escenario}` donde `{ID}` es la columna ID y `{Escenario}` es la columna Escenario. Todos los checkboxes se generan vacíos `[ ]` — la implementación aún no ha comenzado.
 
 Guardar en `{directorio_historia}/testcases.md`.
 
@@ -341,4 +342,10 @@ updated: {date}
 ## Notas de cobertura
 
 {notas}
+
+## Test Cases Progress for {story_id}
+
+<!-- Generado automáticamente por story-testcases. Actualizado por story-implement en fase GREEN.
+     [x] = test pasó | [ ] = pendiente | [!] = test falló -->
+{progress_checklist}
 ```
