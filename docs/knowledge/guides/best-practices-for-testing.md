@@ -64,7 +64,9 @@ Aplicar esta tabla a la clasificación de pruebas para asegurar consistencia y c
 
 - **UI Test (UI):** Las pruebas UI buscan asegurar la corrección visual y de interacción de la interfaz, independientemente del backend ya que se enfoca únicamente en la capa de presentación (frontend). Verifica que los componentes de la interfaz se rendericen correctamente, que los elementos sean visibles, que los eventos de usuario (clics, entradas de texto) provoquen las acciones esperadas en la UI, pero sin necesidad de que el backend real esté presente (se pueden usar mocks o stubs). Las herramientas comunes suelen ser: Testing Library, Vitest, Jest, Storybook (para pruebas visuales), y también herramientas como Playwright o Cypress.
 
-- **E2E Tests (e2e/E2E):** Las Pruebas End-to-End simulan un flujo completo de usuario, en un entorno completo (como staging), a través de todo el sistema: frontend, backend, base de datos, servicios externos. Su objetivo es validar que la aplicación funciona como un todo integrado desde la perspectiva del usuario final. Las herramientas comunes suelen ser: Cypress, Playwright, Selenium, TestCafe, Cucumber.
+- **E2E Tests (e2e/E2E):** Las Pruebas End-to-End simulan un flujo completo de usuario, en un entorno completo (como staging), a través de todo el sistema: frontend, backend, base de datos, servicios externos. Su objetivo es validar que la aplicación funciona como un todo integrado desde la perspectiva del usuario final. Las herramientas comunes suelen ser: Cypress, Playwright, Selenium, TestCafe, Cucumber, SpecFlow o Behave.
+
+- **Acceptance Tests (acceptance/AT):** Las pruebas de aceptación son un tipo de pruebas de sistema end-to-end que verifican que el sistema cumple con los requisitos y expectativas del usuario final. Se suelen generar desde historias de usuario y se centran en escenarios de negocio y flujos de trabajo completos, asegurando que las funcionalidades implementadas satisfacen las necesidades del cliente. A menudo se escriben en lenguaje natural (Gherkin) y se ejecutan con herramientas como Cucumber, SpecFlow o Behave. Las pruebas de aceptación son más orientadas al negocio y a los criterios del cliente (criterios de aceptación). En la práctica, la implementación técnica de una prueba de aceptación en "Extreme Programming" suele ser una prueba E2E, por lo que se usa el término indistintamente.
 
 - **Visual Tests (visual/VT):** Las pruebas visuales son una especia de UI Test y verifican aspectos no funcionales (apariencia, diseño, layout). Se considera fuera de la Pirámide de Pruebas tradicional, pero es crucial para garantizar una experiencia de usuario consistente y de alta calidad, especialmente en aplicaciones con interfaces de usuario complejas o que dependen en gran medida del diseño visual. Las pruebas visuales pueden incluir pruebas de regresión visual (comparar capturas de pantalla con versiones anteriores), pruebas de diseño responsivo (verificar que la UI se adapte correctamente a diferentes tamaños de pantalla) y pruebas de accesibilidad visual (asegurar que los elementos sean visibles y legibles para todos los usuarios). Estas pruebas ayudan a detectar problemas que podrían no ser evidentes a través de pruebas funcionales tradicionales, como cambios no intencionados en el diseño, problemas de contraste o errores en la disposición de los elementos. Herramientas: Chromatic, Percy, Playwright.
 
@@ -163,6 +165,15 @@ SDD exige diseñar especificaciones concisas de prueba antes de codificar. No es
 - **El test-first provee evidencia cuantificable para la revisión**: en la revisión se puede verificar la completitud funcional directamente comparando la cobertura de pruebas/criterios de aceptación como escenarios de prueba, en lugar de confiar en la revisión de código o la inspección visual de la implementación.
 
 - **TDD es una práctica de diseño y desarrollo**: escribir el test primero obliga a pensar en la interfaz, los casos de uso y los escenarios de borde antes de la implementación, lo que conduce a un diseño más limpio, modular y testeable. Luego se practica el proceso TDD en tres pasos principales: 1) Rojo (fallo del test) donde se escribe el test, 2) Verde (paso del test) donde se escribe el código funcional y 3) Refactorización, donde se mejora el código.
+
+- Todo el código debe tener pruebas unitarias.
+
+- Todo el código debe superar todas las pruebas unitarias antes de su
+lanzamiento.
+
+- Cuando se encuentra un error, se crean pruebas.
+
+- Pruebas de aceptación: Las pruebas de aceptación se ejecutan con frecuencia.
 
 
 ## Fuentes y Lectura Adicional

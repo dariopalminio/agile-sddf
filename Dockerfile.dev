@@ -3,8 +3,12 @@ FROM debian:bookworm-slim@sha256:0104b334637a5f19aa9c983a91b54c89887c0984081f206
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends \
+    ca-certificates \
     git \
     bash \
+    && git clone https://github.com/p3nchan/skill-shielder.git /opt/skill-shielder \
+    && chmod +x /opt/skill-shielder/shield.sh /opt/skill-shielder/scanners/*.sh \
+    && ln -s /opt/skill-shielder/shield.sh /usr/local/bin/shield \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_UID=1001

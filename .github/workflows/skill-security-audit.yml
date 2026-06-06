@@ -1,0 +1,46 @@
+name: Skill Security Audit
+
+on:
+  pull_request:
+    paths:
+      - '.claude/skills/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  skill-shielder:
+    name: Audit skills with Skill Shielder
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone Skill Shielder
+        run: git clone https://github.com/p3nchan/skill-shielder.git /tmp/shielder
+
+      - name: Make scripts executable
+        run: chmod +x /tmp/shielder/shield.sh /tmp/shielder/scanners/*.sh
+
+      - name: Audit skills
+        id: audit
+        run: |
+          /tmp/shielder/shield.sh .claude/skills > audit-report.txt
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+        continue-on-error: true
+
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-audit-report
+          path: audit-report.txt
+          retention-days: 14
+
+      - name: Fail on critical issues
+        if: steps.audit.outputs.exit_code == '2'
+        run: |
+          echo "FAIL: Critical security issues found in skills"
+          cat audit-report.txt
+          exit 1
