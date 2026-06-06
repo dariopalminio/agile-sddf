@@ -172,7 +172,9 @@ SDD exige diseñar especificaciones concisas de prueba antes de codificar. No es
 
 - Cuando se encuentra un error, se crean pruebas.
 
-- Pruebas de aceptación: Las pruebas de aceptación se ejecutan con frecuencia.
+- Las pruebas de aceptación se ejecutan con frecuencia.
+
+- Una historia de usuario no se considera completa hasta que haya superado sus pruebas de aceptación.
 
 
 ## Fuentes y Lectura Adicional
