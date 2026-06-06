@@ -5,7 +5,7 @@ id: EPIC-16
 slug: EPIC-16-enhancement
 title: "enhancement"
 status: INPROGRESS
-substatus: DONE
+substatus: INPROGRESS
 parent: null
 created: 2026-06-05
 updated: 2026-06-05
@@ -16,7 +16,7 @@ related: []
 
 ## Descripción
 
-Amplía las capacidades del framework SDDF con skills especializados de testing: implementación de componentes de librerías React, tests de componentes con React Testing Library, y tests E2E con Cypress+Cucumber y Playwright+Cucumber. El objetivo es que los agentes puedan generar pruebas reales ejecutables en proyectos reales, cerrando el ciclo TDD desde la especificación hasta la validación automatizada en un stack frontend moderno.
+Ampliar las capacidades del skill de implementación, mejorar seguridad y auditoría de skills.
 
 ## Features
 
