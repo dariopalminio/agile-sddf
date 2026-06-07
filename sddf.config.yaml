@@ -1,12 +1,15 @@
 # Valores por defecto para todos los tipos
 # este archivo debe diseñarse y reconstruiserse para ser fácilmente extendible y adaptable a diferentes proyectos y tecnologías
 defaults:
+  delivery-model: batch # batch | continuous
+
+verify:
   unit:
     command: "pnpm run test:unit"
-    required: false
+    required: true
   component:
-    command_template: "pnpm run test:component -- {{test_file}}"
-    required: false
+    command_template: "pnpm run test:component:file -- {{test_file_path}}"  # pnpm test:component:file packages\ui\src\components\Alert\Alert.test.tsx
+    required: true
   integration:
     command: "pnpm run test:integration"
     required: false
@@ -14,7 +17,19 @@ defaults:
     command: "pnpm run test:contract"
     required: false
   e2e:
-    command: "pnpm run test:e2e"
+    command: "pnpm run test:e2e:smoke"
+    required: false
+  e2e-smoke:
+    command: "pnpm run test:e2e:smoke"
+    required: false
+  e2e-sanity:
+    command: "pnpm run test:e2e:sanity"
+    required: false
+  e2e-regression:
+    command: "pnpm run test:e2e:regression"
+    required: false
+  e2e-file:
+    command: "pnpm run test:e2e:file -- {{test_file_path}}" # pnpm run test:e2e -- apps\demo\tests\e2e\features\components\alert.feature
     required: false
   performance:
     command: "pnpm run test:performance"

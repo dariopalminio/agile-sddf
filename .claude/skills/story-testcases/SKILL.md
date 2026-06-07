@@ -40,11 +40,6 @@ story-design → story-tasking → story-testcases → story-analyze → story-i
 - Integra referencias de la fase `plan` desde `sddf.config.yaml`
 - Soporta `--force` para sobreescritura sin interacción (útil en CI)
 
-**Qué NO hace este skill:**
-- Generar código de tests — `testcases.md` es solo especificación
-- Ejecutar tests ni verificar implementación
-- Actualizar el frontmatter de `story.md` (responsabilidad de `story-analyze`)
-
 ---
 
 ### Posicionamiento
@@ -74,6 +69,18 @@ testcases.md   → casos de prueba tipificados y trazables  ← aquí
 ## Salida
 
 - `{directorio_historia}/testcases.md` — tabla de casos de prueba tipificados y trazables
+
+## Restricciones / Reglas
+
+- **No ejecuta pruebas automáticas:** eso corresponde a `story-verify`
+- **No revisa código:** eso corresponde a `story-code-review`
+- **No Actualizar el frontmatter de `story.md`**
+- **Idempotente:** ejecutable múltiples veces; preserva historial en `acceptance-report.md`
+- **NO modifique ningún archivo existente en el código fuente** (estamos diseñando pruebas de la implementación, no implementando los artefactos técnicos)
+- **NO genere código**; estamos aceptando la implementación, no implementando los artefactos técnicos
+- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
+  Do not use Latin-1, CP-1252, or any other encoding. 
+  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ---
 

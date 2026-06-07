@@ -40,7 +40,8 @@ story-verify    ← aquí
 
 - `$SPECS_BASE/specs/stories/<story-id>/story.md` — historia a verificar (precondición de estado)
 - `$SPECS_BASE/policies/definition-of-done-story.md` — criterios DoD sección VERIFY (opcional; usa fallback genérico si no existe)
-- Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático
+- `$SDDF_ROOT/sddf.config.yaml` — configuración de pruebas del proyecto (opcional; si existe y contiene tests `required: true`, tiene prioridad sobre la detección automática)
+- Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático (fallback cuando sddf.config.yaml no existe)
 - `.tmp/story-verify/qa-input.json` / `qa-output.json` — canal de comunicación con el agente QA (solo modo manual)
 - `assets/verify-report-template.md` — template del reporte
 
@@ -63,7 +64,8 @@ story-verify    ← aquí
 
 | Modo | Condición de activación | Prioridad |
 |---|---|---|
-| **delegado** | Existe un skill con "test"/"testing" en `.claude/skills/` | 1 (máxima) |
+| **config-driven** | `sddf.config.yaml` existe con al menos un test `required: true` en la sección `verify` | 0 (máxima) |
+| **delegado** | Existe un skill con "test"/"testing" en `.claude/skills/` | 1 |
 | **automatico-e2e** | Se detecta `playwright.config.*`, `cypress.config.*` o `features/*.feature` | 2 |
 | **automatico-unit** | Se detecta `pytest.ini`, `jest.config.*`, `vitest.config.*`, `go.mod`+`*_test.go`, etc. | 3 |
 | **manual** | Ninguna configuración de tests detectada | 4 (fallback) |
@@ -203,7 +205,44 @@ Mostrar:
 
 ---
 
-### Paso 4 — Detectar modo de ejecución
+### Paso 4 — Leer configuración de pruebas (sddf.config.yaml)
+
+Buscar `sddf.config.yaml` en `$SDDF_ROOT`.
+
+**Si el archivo NO existe:**
+- Registrar `$CONFIG_VERIFY_FOUND = false`
+- Continuar hacia Paso 5 (detección por archivos)
+
+**Si el archivo existe:**
+
+1. Leer `defaults.delivery-model` → `$DELIVERY_MODEL` (valores: `batch` | `continuous`; usar `batch` si el campo está ausente)
+2. Leer la sección `verify` y construir `$TEST_EXECUTION_LIST`:
+   - Para cada tipo de test en `verify` (unit, component, integration, contract, e2e, e2e-smoke, e2e-sanity, e2e-regression, e2e-file, performance, eval):
+     - Si `required: true` → añadir a `$TEST_EXECUTION_LIST` con su `command` o `command_template`
+3. Aplicar regla según `$DELIVERY_MODEL`:
+   - Si `$DELIVERY_MODEL = batch` y existe `verify.e2e-regression` con `required: true` → asegurar que `e2e-regression` está en `$TEST_EXECUTION_LIST` (añadir si aún no está)
+   - Si `$DELIVERY_MODEL = continuous` y existe `verify.e2e-sanity` con `required: true` → asegurar que `e2e-sanity` está en `$TEST_EXECUTION_LIST` (añadir si aún no está)
+4. Si `$TEST_EXECUTION_LIST` está vacío (ningún test con `required: true`):
+   ```
+   ⚠️ sddf.config.yaml encontrado pero ninguna prueba marcada como required: true
+      Pasando a modo de detección automática...
+   ```
+   → Registrar `$CONFIG_VERIFY_FOUND = false` y continuar hacia Paso 5
+5. Si `$TEST_EXECUTION_LIST` tiene al menos un elemento:
+   - Registrar `$CONFIG_VERIFY_FOUND = true`
+   - Registrar `$MODO = config-driven`
+   - Mostrar:
+     ```
+     📄 sddf.config.yaml encontrado — usando configuración de pruebas definida
+        Delivery model: {$DELIVERY_MODEL}
+        Pruebas a ejecutar ({N}): {lista de tipos separados por coma}
+     ```
+
+---
+
+### Paso 5 — Detectar modo de ejecución
+
+> **Solo ejecutar si `$CONFIG_VERIFY_FOUND = false`** — sddf.config.yaml no encontrado o sin pruebas requeridas configuradas.
 
 Verificar si se pasó `--mode manual` o `--mode auto` (override explícito).
 
@@ -243,7 +282,26 @@ Mostrar:
 
 ---
 
-### Paso 5 — Ejecutar pruebas según el modo
+### Paso 6 — Ejecutar pruebas según el modo
+
+#### Modo: config-driven
+
+Ejecutar cada test en `$TEST_EXECUTION_LIST` en el orden en que aparecen en la sección `verify` del config:
+
+- Si el tipo tiene `command`: ejecutar el comando directamente.
+- Si el tipo tiene `command_template` con `{{test_file_path}}`: deducir la ruta del archivo de test más relevante para la historia (buscando en el directorio del proyecto archivos de test asociados al story_id o módulo) y sustituir el placeholder antes de ejecutar.
+
+Si la ejecución supera 30 segundos, mostrar progreso cada 15s:
+```
+⏳ Tests en ejecución [{tipo}]... ({N}s transcurridos)
+```
+
+Recopilar resultados acumulados de todas las ejecuciones:
+- `$TOTAL_TESTS`, `$PASSED`, `$FAILED`, `$SKIPPED` — suma de todas las ejecuciones
+- `$COVERAGE` — si algún runner lo reporta; usar el último valor disponible
+- `$TEST_OUTPUT` — salida completa concatenada por tipo
+
+Si un comando retorna código de error distinto de 0, registrar ese tipo como fallido pero continuar ejecutando los tipos restantes de `$TEST_EXECUTION_LIST`.
 
 #### Modo: automatico-unit
 
@@ -320,7 +378,7 @@ Si el directorio existe, proceder:
 
 ---
 
-### Paso 6 — Generar verify-report.md
+### Paso 7 — Generar verify-report.md
 
 #### 6a. Verificar si verify-report.md ya existe (idempotencia — AC-7)
 
@@ -415,7 +473,7 @@ Escribir `$STORY_DIR/verify-report.md` con el contenido construido.
 
 ---
 
-### Paso 7 — Transición de estado y resumen
+### Paso 8 — Transición de estado y resumen
 
 #### 7a. Actualizar frontmatter de story.md
 

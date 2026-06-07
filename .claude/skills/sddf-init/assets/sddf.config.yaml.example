@@ -1,6 +1,9 @@
 # Valores por defecto para todos los tipos
 # este archivo debe diseñarse y reconstruiserse para ser fácilmente extendible y adaptable a diferentes proyectos y tecnologías
 defaults:
+  delivery-model: batch # batch | continuous
+
+verify:
   unit:
     command: "pnpm run test:unit"
     required: true
@@ -18,6 +21,12 @@ defaults:
     required: true
   e2e-smoke:
     command: "pnpm run test:e2e:smoke"
+    required: true
+  e2e-sanity:
+    command: "pnpm run test:e2e:sanity"
+    required: true
+  e2e-regression:
+    command: "pnpm run test:e2e:regression"
     required: true
   e2e-file:
     command: "pnpm run test:e2e:file -- {{test_file_path}}" # pnpm run test:e2e -- apps\demo\tests\e2e\features\components\alert.feature

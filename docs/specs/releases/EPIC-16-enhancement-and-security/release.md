@@ -4,8 +4,8 @@ type: release
 id: EPIC-16
 slug: EPIC-16-enhancement-and-security
 title: "enhancement and security improvements for skills (Safe Enhancement & Fortify Skills)"
-status: INPROGRESS
-substatus: INPROGRESS
+status: COMPLETED
+substatus: DONE
 parent: PROJ-01-agile-sddf
 created: 2026-06-05
 updated: 2026-06-05
@@ -15,6 +15,7 @@ related: [
     - plan-03-integrate-story-improve-in-story-specify
     - plan-04-add-and-improve-skills-readme
     - plan-05-extend-story-code-review-with-testcases
+    - plan-06-configure-story-verify-with-config-file
 ]
 ---
 [[plan-01-root-folder-selection-to-installer]]
@@ -22,6 +23,7 @@ related: [
 [[plan-03-integrate-story-improve-in-story-specify]]
 [[plan-04-add-and-improve-skills-readme]]
 [[plan-05-extend-story-code-review-with-testcases]]
+[[plan-06-configure-story-verify-with-config-file]]
 
 # Release/Epic: enhancement and security improvements for skills (Safe Enhancement & Fortify Skills)
 
@@ -39,5 +41,5 @@ Agregar selección de root folder de skills al instalador, ampliar las capacidad
 - [x] **Integrar skill story-improve en story-specify**: Agregar invocación a skill story-improve en story-specify como parte del ciclo de especificación y refinamiento de la historia.
 - [x] **Agregar documentación README**: agregar readme en skill-master, skill-test-evals, story-specify, story-plan.
 - [x] **Agregar selección de root folder de skills al instalador**: Agregar en el script de instalación inicial de skills la posibilidad de elegir en qué directorio guardar los skills: .agents, .claude o .github, con un prompt de selección. Esto permitirá a los usuarios organizar sus skills según sus preferencias y necesidades, manteniendo una estructura clara y accesible. Se deben modificar los archivos: scripts/install.js y scripts/cli.js, mientras que el postinstall.js se mantiene sin cambios para asegurar compatibilidad con instalaciones globales y locales sin interacción. 
-- [x] **Extender story-code-review con análisis de testcases.md e implement-report.md opcional**: Agregar al skill de quality gate `story-code-review` el análisis de los resultados de `/story-implement` y el archivo `testcases.md` para que sean tenidos en cuenta en el reporte final `code-review-report.md`.
-
+- [x] **Extender story-code-review con análisis de testcases.md e implement-report.md opcional**: Agregar al skill de quality gate `story-code-review` el análisis de los resultados de `/story-implement` y el archivo `testcases.md` para que sean tenidos en cuenta en el reporte final `code-review-report.md`. 
+- [x] **Configurar story-verify según sddf.config.yaml**: El skill skills\story-verify debe leer el archivo de configuración `sddf.config.yaml` para determinar: el delivery-model configurado (`batch` | `continuous`) y comandos apara ejecutar las pruebas correspondiente. Antes de intentar ejecutar comandos genéricos de ejecución de pruebas (como ya lo hace). Si el delivery-model es `batch` debe ejecutar sanity test `e2e-regression` (si está marcado como requerido) además de las pruebas configuradas. Si el delivery-model es `continuous` debe ejecutar regression test `e2e-sanity` (si está marcado como requerido) además de las pruebas configuradas. Los comandos de ejecución de pruebas se configuran en la sección `verify` del archivo de configuración `sddf.config.yaml`. Los comandos de ejecución de pruebas pueden ser: unit | component | integration | contract | e2e | e2e-smoke|e2e-sanity | e2e-regression | e2e-file | performance | eval. Solo si no encuentra configuraciones en `sddf.config.yaml` intentarà deducir las pruebas existentes y comandos necesario a ejecutar pruebas (como lo hace actualmente).

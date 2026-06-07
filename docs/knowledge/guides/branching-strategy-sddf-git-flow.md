@@ -22,7 +22,7 @@ El modelo SDDF (‘deliveryModel‘) es compatible con diferentes estrategias de
 
 En el modelo de entrega por lotes (‘batch’), las historias de usuario o features se agrupan en releases más grandes que se entregan a producción en intervalos regulares, por ejemplo para: librerìas de npm, release programado, plugins, SDKs, pruebas end-to-end lentas, cumplimiento normativo que requiere revisiones de release formales, migración de datos o enrutamiento complejo. Esto es ideal para proyectos que requieren una planificación más estructurada y un control más riguroso sobre las entregas. Se puede usar para: proyectos con requisitos bien definidos y estables, aplicaciones empresariales donde se requiere una planificación detallada, o proyectos con ciclos de desarrollo más largos.
 
-### Continuous Delivery (per‑story)
+### Continuous Delivery (continuous)
 
 En este modelo, cada historia de usuario o feature se desarrolla y se entrega de forma independiente, lo que permite una entrega continua y rápida a producción. Esto es ideal para proyectos que requieren una rápida iteración y feedback constante. Se puede usar para: proyectos con un alto grado de incertidumbre o que están en una fase temprana de desarrollo, sitios web donde se puede entregar contenido de forma incremental, o aplicaciones requieren actualizaciones frecuentes.
 
