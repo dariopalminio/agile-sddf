@@ -19,7 +19,7 @@ context: |
   Niveles de workflow:
   - L3 Project: /project-begin → /project-discovery → /project-planning
   - L2 Release: /releases-from-project-plan → /release-format-validation
-  - L1 Story: /story-creation → /story-evaluation → /story-split → /story-refine
+  - L1 Story: /story-creation → /story-evaluation → /story-split → /story-specify
 
   Convenciones:
   - Kebab-case para nombres de archivos, skills y capabilities

@@ -6,7 +6,7 @@ slug: e2e-capability
 title: "Skills de Testing Especializado y E2E Capability"
 status: COMPLETED
 substatus: DONE
-parent: null
+parent: PROJ-01-agile-sddf
 created: 2026-05-31
 updated: 2026-05-31
 related: []

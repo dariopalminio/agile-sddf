@@ -1,31 +1,33 @@
 ---
-name: story-refine
+name: story-specify
 description: >-
-  Orquestador interactivo del flujo de refinamiento de historias usando
-  story-creation, story-evaluation y story-split en secuencia, con control de
-  estado por archivo y seguimiento de historias derivadas.
+  Orquestador interactivo del flujo de especificación de historias usando
+  story-creation, story-evaluation, story-split, story-improve y story-product-owner
+  en secuencia, con control de estado por archivo y seguimiento de historias derivadas.
+  Produce especificaciones completas y aprobadas (SPECIFY/DONE) listas para el pipeline de planning.
 triggers:
-  - "story-refine"
-  - "refinar historia"
-  - "ciclo de refinamiento"
-  - "mejorar historia"
-  - "orquestar refinamiento"
-  - "flujo de refinamiento"
+  - "story-specify"
+  - "especificar historia"
+  - "ciclo de especificación"
+  - "especificación de historia"
+  - "orquestar especificación"
+  - "flujo de especificación"
 ---
 
-# Skill: `/story-refine`
+# Skill: `/story-specify`
 
 ## Objetivo
 
-Orquestador del flujo completo de refinamiento de historias. Guía al usuario a través de un ciclo interactivo de creación, evaluación, división y mejora continua de historias de usuario, sin modificar los skills existentes `story-creation`, `story-evaluation` y `story-split`.
+Orquestador del flujo completo de especificación de historias. Guía al usuario a través de un ciclo interactivo de creación, evaluación, división y mejora continua de historias de usuario, produciendo especificaciones completas y aprobadas (SPECIFY/DONE) listas para pasar al pipeline de planning. No modifica los skills existentes `story-creation`, `story-evaluation` ni `story-split`.
 
 El flujo base es: **story-creation → story-evaluation → story-split**.
 
 **Qué hace este skill:**
-- Orquesta `story-creation → story-evaluation → story-split` en ciclo interactivo
+- Orquesta `story-creation → story-evaluation → story-split → story-improve → story-product-owner` en ciclo interactivo
 - Gestiona un backlog de sesión con registro de todas las historias activas y derivadas
 - Mantiene trazabilidad de historias originales y sus splits durante toda la sesión
-- Invoca al agente `story-product-owner` para enriquecer redacción y claridad cuando hay decisiones `REFINAR` o `RECHAZAR`
+- Aplica mejoras automáticas por dimensión FINVEST con `story-improve` antes del refinamiento conversacional
+- Invoca al agente `story-product-owner` para atender discovery y gaps de contexto que la automatización no puede resolver
 - Actualiza el frontmatter de cada historia conforme avanza el ciclo
 - Implementa un gate anti-bucle que requiere decisión explícita del usuario antes de iterar
 
@@ -66,15 +68,15 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 
 ## Dependencias
 
-- Skills: [`skill-preflight`, `story-creation`, `story-evaluation`, `story-split`]
+- Skills: [`skill-preflight`, `story-creation`, `story-evaluation`, `story-split`, `story-improve`]
 - Agentes: [`story-product-owner`]
 
 ---
 
 ## Modos de ejecución
 
-- **Manual** (`/story-refine`): interactivo, guía al usuario paso a paso, muestra backlog en tiempo real y pide confirmación antes de cada ciclo de refinamiento
-- **Retomar** (`/story-refine` con historias en `SPECIFY/IN‑PROGRESS`): detecta el backlog existente y pregunta si retomar o crear historia nueva
+- **Manual** (`/story-specify`): interactivo, guía al usuario paso a paso, muestra backlog en tiempo real y pide confirmación antes de cada ciclo de especificación
+- **Retomar** (`/story-specify` con historias en `SPECIFY/IN‑PROGRESS`): detecta el backlog existente y pregunta si retomar o crear historia nueva
 - **Automático**: invocado por orquestador de nivel superior — reporta resultado sin interacción
 
 ---
@@ -206,22 +208,47 @@ Si la decisión es `DIVIDIR` o `RECHAZAR` con recomendación de división, ejecu
 5. Mostrar al usuario cuántas historias nuevas fueron creadas y cuáles son sus archivos
 
 **Si `story-split` no aplica o no aporta valor:**
-Conservar la historia actual como ítem activo y continuar al Paso 5.
+Conservar la historia actual como ítem activo y continuar al Paso 5A.
 
 ---
 
-### Paso 5 — Refinar historias no aprobadas con ayuda del Product Owner
+### Paso 5A — Aplicar mejoras automáticas FINVEST (`story-improve`, modo Agent)
 
-Si la decisión es `REFINAR` o `RECHAZAR`, si la historia sigue activa después del split, o si el usuario quiere mejorar una historia derivada:
+Si la decisión no es `APROBADA` y la historia sigue activa tras el split (o el split no aplica):
+
+Invocar el skill `story-improve` en modo Agent:
+- `--story-id <FEAT-NNN>` con el ID de la historia activa
+- Modo Agent: automático, sin confirmación interactiva
+
+**Si `story-improve` informa que la decisión ya es `APROBADA` (gate interno del skill):**
+- Mostrar: `ℹ️ <FEAT-NNN> ya tiene decisión APROBADA — avanzando al gate`
+- Actualizar el registro con `Decision FINVEST = APROBADA`
+- Ir directamente al Paso 6 (omitir Paso 5B)
+
+**Si `story-improve` completa con mejoras aplicadas:**
+- Registrar en el backlog: `story-improvement-log.md generado`
+- Mostrar resumen breve de dimensiones mejoradas
+- Continuar al Paso 5B para atender gaps de discovery o contexto que la automatización no resolvió
+
+**Si `story-improve` falla con error técnico o no encuentra `finvest-evaluation-report.md`:**
+- Registrar en el backlog: `⚠️ story-improve — no ejecutado`
+- Continuar al Paso 5B sin bloquear el flujo
+
+---
+
+### Paso 5B — Refinar historias no aprobadas con ayuda del Product Owner
+
+Si la decisión es `REFINAR` o `RECHAZAR`, si la historia sigue activa después del Paso 5A, o si el usuario quiere mejorar una historia derivada:
 
 1. Invocar al agente `story-product-owner`
 2. Proveer como contexto:
-   - El contenido actual de la historia
+   - El contenido actual de la historia (ya mejorado por `story-improve` si ejecutó en 5A)
    - El resultado de `story-evaluation`
    - Si existió, el diagnóstico de `story-split`
+   - Si existió, el `story-improvement-log.md` generado en el Paso 5A
 3. El agente debe:
    - Hacer preguntas adicionales si falta información relevante
-   - Proponer mejoras de redacción
+   - Proponer mejoras de redacción y claridad
    - Fortalecer valor, claridad y testabilidad
    - Sugerir simplificaciones o recortes de alcance si conviene
 4. Aplicar las mejoras al archivo manteniendo `status: SPECIFY` / `substatus: IN‑PROGRESS`
@@ -274,7 +301,8 @@ Historias derivadas creadas: [lista]
 | `$SPECS_BASE/specs/stories/` no existe | — | Crear el directorio y continuar |
 | `story-creation` falla | Informar el error al usuario | No registrar la historia en el backlog; preguntar si reintentar |
 | `story-evaluation` falla | Informar el error al usuario | Conservar `Decision FINVEST = Pendiente`; ofrecer reintentar |
-| `story-split` falla o no aplica | Informar al usuario | Conservar historia como activa; continuar al Paso 5 |
+| `story-split` falla o no aplica | Informar al usuario | Conservar historia como activa; continuar al Paso 5A |
+| `story-improve` falla o no encuentra reporte | `⚠️ story-improve — no ejecutado` | Non-blocking; registrar en backlog y continuar al Paso 5B |
 | Frontmatter de `story.md` sin campos `status`/`substatus` | — | Agregarlos con `SPECIFY/IN‑PROGRESS` y continuar |
 
 ---
@@ -282,6 +310,8 @@ Historias derivadas creadas: [lista]
 ## Salida
 
 - Archivos `story.md` en `$SPECS_BASE/specs/stories/FEAT-{NNN}-{slug}/` — creados o actualizados durante el ciclo
+- `story.md.bak` — backup del original antes de aplicar mejoras automáticas (generado por `story-improve` en Paso 5A, cuando aplica)
+- `story-improvement-log.md` — log de cambios por dimensión FINVEST (generado por `story-improve` en Paso 5A, cuando aplica)
 - Estado final de cada historia:
   - `SPECIFY / DONE` — aprobada por `story-evaluation` o cerrada manualmente
   - `SPECIFY / IN‑PROGRESS` — pausada para retomar en sesión futura

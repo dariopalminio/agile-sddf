@@ -62,7 +62,7 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 ## Modos de ejecución
 
 - **Modo manual** (`/story-evaluation`): el usuario proporciona el texto, identificador o ruta de la historia; el skill muestra el reporte completo con scores, decisión y recomendaciones
-- **Modo Agent** (invocado por `story-refine` u orquestador): automático, recibe la historia como contexto, retorna la decisión y el reporte; si la decisión es `APROBADA` y el input fue una ruta de archivo, actualiza el frontmatter de `story.md` directamente
+- **Modo Agent** (invocado por `story-specify` u orquestador): automático, recibe la historia como contexto, retorna la decisión y el reporte; si la decisión es `APROBADA` y el input fue una ruta de archivo, actualiza el frontmatter de `story.md` directamente
 
 ---
 

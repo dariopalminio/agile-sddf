@@ -297,7 +297,7 @@ Al finalizar el procesamiento de todos los releases, mostrar el resumen:
 ### Releases sin features (no procesados)
 - $SPECS_BASE/specs/releases/EPIC-NN-nombre/
 
-**Siguiente paso:** Ejecuta `/story-evaluation` para verificar la calidad de las historias generadas, o `/story-refine` para refinarlas de forma interactiva.
+**Siguiente paso:** Ejecuta `/story-evaluation` para verificar la calidad de las historias generadas, o `/story-specify` para especificarlas de forma interactiva.
 ```
 
 ---

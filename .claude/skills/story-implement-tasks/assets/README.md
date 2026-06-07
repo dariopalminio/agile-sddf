@@ -5,7 +5,7 @@ Skill que implementa el código de una historia SDD tarea por tarea siguiendo TD
 ## Posicionamiento en el Flujo SDD
 
 ```
-/story-refine                          [story.md: SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE]
+/story-specify                         [story.md: SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE]
     ├── /story-creation   → Crea story.md
     ├── /story-evaluation → Evalúa con FINVEST
     └── /story-split      → Divide historias grandes

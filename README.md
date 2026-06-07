@@ -181,7 +181,7 @@ releases-from-project-plan
 
 release-generate-stories →
 
-story-creation → story-evaluation → story-split → story-refine →
+story-creation → story-evaluation → story-split → story-specify →
 
 story-plan ( story-design → story-tasking → story-analyze ) → story-implement
 
@@ -322,8 +322,8 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING →
 **Crear y refinar una historia de usuario:**
 
 ```bash
-# Ciclo completo: creación → evaluación FINVEST → split → mejora
-/story-refine
+# Ciclo completo: creación → evaluación FINVEST → split → especificación
+/story-specify
 
 # Solo crear una historia
 /story-creation "Como usuario quiero poder registrarme para acceder al sistema"

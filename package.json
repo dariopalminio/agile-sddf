@@ -54,7 +54,7 @@
     ".claude/skills/skill-master",
     ".claude/skills/story-creation",
     ".claude/skills/story-evaluation",
-    ".claude/skills/story-refine",
+    ".claude/skills/story-specify",
     ".claude/skills/story-split",
     ".claude/skills/story-improve",
     ".claude/skills/story-acceptance",

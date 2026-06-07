@@ -77,4 +77,4 @@ story-creation → story-evaluation → story-split
 | `story-evaluation` | Evalúa calidad con rúbrica FINVEST (1–5 por dimensión) → `APROBADA / REFINAR / RECHAZAR` |
 | `story-split` | Divide historias grandes usando 8 patrones de splitting |
 
-> `story-refine` orquesta el ciclo completo con control de backlog por archivo (`substatus: IN‑PROGRESS / READY`).
+> `story-specify` orquesta el ciclo completo con control de backlog por archivo (`substatus: IN‑PROGRESS / READY`).

@@ -272,7 +272,7 @@ Se generaron [N] directorios de historia en $SPECS_BASE/specs/stories/:
 - $SPECS_BASE/specs/stories/FEAT-NNN-nombre/story.md
 ...
 
-**Siguiente paso:** Ejecuta `/story-evaluation` para verificar la calidad de cada historia generada, o `/story-refine` para refinarlas de forma interactiva.
+**Siguiente paso:** Ejecuta `/story-evaluation` para verificar la calidad de cada historia generada, o `/story-specify` para especificarlas de forma interactiva.
 ```
 
 Si alguna feature fue saltada (usuario eligió no sobreescribir), listarla como:
