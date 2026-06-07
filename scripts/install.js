@@ -3,21 +3,45 @@
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+const readline = require('readline');
 const fse = require('fs-extra');
 
 const SOURCE_DIR = path.join(__dirname, '..', '.claude');
 
+const VALID_FOLDERS = ['.claude', '.agents', '.github'];
+
+async function promptFolderSelection() {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  const menu = [
+    '  1) .claude   (Claude Code — recommended)',
+    '  2) .agents   (OpenCode)',
+    '  3) .github   (GitHub Copilot)',
+  ].join('\n');
+
+  return new Promise((resolve) => {
+    console.log('\nWhere would you like to install SDDF skills and agents?');
+    console.log(menu);
+    rl.question('Enter choice [1]: ', (answer) => {
+      rl.close();
+      const choice = answer.trim() || '1';
+      const map = { '1': '.claude', '2': '.agents', '3': '.github' };
+      resolve(map[choice] || '.claude');
+    });
+  });
+}
+
 function resolveDestDir(options = {}) {
+  const folder = options.folder || '.claude';
   if (options.global || process.env.npm_config_global === 'true') {
-    return { destDir: path.join(os.homedir(), '.claude'), mode: 'global' };
+    return { destDir: path.join(os.homedir(), folder), mode: 'global' };
   }
   const projectDir = process.env.INIT_CWD || process.cwd();
-  return { destDir: path.join(projectDir, '.claude'), mode: 'local' };
+  return { destDir: path.join(projectDir, folder), mode: 'local' };
 }
 
 function validateDestBase(destDir) {
   if (fs.existsSync(destDir) && !fs.statSync(destDir).isDirectory()) {
-    throw new Error('.claude exists but is not a directory');
+    throw new Error(`${destDir} exists but is not a directory`);
   }
 }
 
@@ -48,6 +72,10 @@ async function copyDir(srcDir, destDir) {
 }
 
 async function installSDDF(options = {}) {
+  if (!options.folder && process.stdin.isTTY) {
+    options.folder = await promptFolderSelection();
+  }
+
   const { destDir, mode } = resolveDestDir(options);
 
   console.log(`\nSDDF install: copying skills and agents to ${destDir}\n`);
@@ -65,4 +93,4 @@ async function installSDDF(options = {}) {
   console.log(`\nSDDF installed (${mode}): ${si} skills, ${ai} agents (${ss + as_} skipped)\n`);
 }
 
-module.exports = { installSDDF };
+module.exports = { installSDDF, promptFolderSelection, VALID_FOLDERS };

@@ -27,6 +27,5 @@ Ampliar las capacidades del skill de implementación y specify, mejorar segurida
 - [x] **Renombrar skill story-refine a story-specify**: Actualizar la descripción para reflejar que ahora se enfoca en la especificación de historias.
 - [x] **Integrar skill story-improve en story-specify**: Agregar invocación a skill story-improve en story-specify como parte del ciclo de especificación y refinamiento de la historia.
 - [x] **Agregar documentación README**: agregar readme en skill-master, skill-test-evals, story-specify, story-plan.
-- [ ] **Agregar selección de root folder de skills al instalador**: Agregar en el script de instalación inicial de skills la posibilidad de elegir en qué directorio guardar los skills: .agents, .claude o .github, con un prompt de selección. Esto permitirá a los usuarios organizar sus skills según sus preferencias y necesidades, manteniendo una estructura clara y accesible.
-
+- [x] **Agregar selección de root folder de skills al instalador**: Agregar en el script de instalación inicial de skills la posibilidad de elegir en qué directorio guardar los skills: .agents, .claude o .github, con un prompt de selección. Esto permitirá a los usuarios organizar sus skills según sus preferencias y necesidades, manteniendo una estructura clara y accesible. Se deben modificar los archivos: scripts/install.js y scripts/cli.js, mientras que el postinstall.js se mantiene sin cambios para asegurar compatibilidad con instalaciones globales y locales sin interacción. 
 
