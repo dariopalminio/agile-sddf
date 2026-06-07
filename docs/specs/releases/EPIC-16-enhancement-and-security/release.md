@@ -14,13 +14,14 @@ related: [
     - plan-02-integrate-story-testcases-in-story-plan
     - plan-03-integrate-story-improve-in-story-specify
     - plan-04-add-and-improve-skills-readme
+    - plan-05-extend-story-code-review-with-testcases
 ]
 ---
 [[plan-01-root-folder-selection-to-installer]]
 [[plan-02-integrate-story-testcases-in-story-plan]]
 [[plan-03-integrate-story-improve-in-story-specify]]
 [[plan-04-add-and-improve-skills-readme]]
-
+[[plan-05-extend-story-code-review-with-testcases]]
 
 # Release/Epic: enhancement and security improvements for skills (Safe Enhancement & Fortify Skills)
 
@@ -38,4 +39,5 @@ Agregar selección de root folder de skills al instalador, ampliar las capacidad
 - [x] **Integrar skill story-improve en story-specify**: Agregar invocación a skill story-improve en story-specify como parte del ciclo de especificación y refinamiento de la historia.
 - [x] **Agregar documentación README**: agregar readme en skill-master, skill-test-evals, story-specify, story-plan.
 - [x] **Agregar selección de root folder de skills al instalador**: Agregar en el script de instalación inicial de skills la posibilidad de elegir en qué directorio guardar los skills: .agents, .claude o .github, con un prompt de selección. Esto permitirá a los usuarios organizar sus skills según sus preferencias y necesidades, manteniendo una estructura clara y accesible. Se deben modificar los archivos: scripts/install.js y scripts/cli.js, mientras que el postinstall.js se mantiene sin cambios para asegurar compatibilidad con instalaciones globales y locales sin interacción. 
+- [ ] **Extender story-code-review con análisis de testcases.md e implement-report.md opcional**: Agregar al skill de quality gate `story-code-review` el análisis de los resultados de `/story-implement` y el archivo `testcases.md` para que sean tenidos en cuenta en el reporte final `code-review-report.md`.
 

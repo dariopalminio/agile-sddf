@@ -21,6 +21,7 @@ reviewers:
 | Review status | {{REVIEW_STATUS}} |
 | Severidad máxima detectada | {{MAX_SEVERITY}} |
 | Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer |
+| testcases.md | {{TESTCASES_STATUS}} |
 | Fecha | {{DATE}} |
 
 ---
@@ -42,6 +43,12 @@ reviewers:
 ### Integración y Arquitectura (Integration-Reviewer)
 
 {{INTEGRATION_FINDINGS}}
+
+---
+
+### Cobertura de Casos de Prueba (testcases.md)
+
+{{TESTCASES_COVERAGE_SECTION}}
 
 ---
 

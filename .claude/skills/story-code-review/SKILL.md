@@ -6,9 +6,12 @@ description: >-
   y Auditor de Seguridad) y consolidando sus hallazgos en un code-review-report.md. Genera review-status: approved cuando no
   hay hallazgos de severidad HIGH o MEDIUM y actualiza story.md a CODE-REVIEW/DONE; si hay
   bloqueantes genera fix-directives.md, agrega tarea en tasks.md y retrocede story.md a READY-FOR-IMPLEMENT/DONE.
+  Funciona independientemente de si se usó /story-implement (TDD completo con testcases.md) o
+  /story-implement-tasks (implementación tarea a tarea): implement-report.md y testcases.md son
+  opcionales — si existen enriquecen el análisis; si no existen, la revisión continúa sin bloquear.
   Usar siempre que el usuario quiera revisar el código de una historia implementada, validar que la
   implementación cumple los criterios de aceptación y la arquitectura antes de marcar Done,
-  o ejecutar el quality gate posterior a story-implement-tasks.
+  o ejecutar el quality gate posterior a story-implement o story-implement-tasks.
   Invocar también cuando el usuario mencione "revisar código", "code review", "story-code-review",
   "revisión multi-agente", "quality gate post-implement", "validar implementación" o equivalentes.
 triggers:
@@ -26,7 +29,7 @@ invocable: true
 
 ## Objetivo
 
-Quality gate formal entre `/story-implement-tasks` y la marca final de Done. Lanza tres subagentes revisores en paralelo, consolida sus hallazgos y genera `code-review-report.md` con la decisión final.
+Quality gate formal entre la implementación y la marca final de Done. Compatible con `/story-implement` (TDD completo) y `/story-implement-tasks` (tarea a tarea). Lanza tres subagentes revisores en paralelo, consolida sus hallazgos y genera `code-review-report.md` con la decisión final.
 
 **Qué hace este skill:**
 - Verifica precondiciones antes de revisar (fail-fast ante artefactos faltantes)
@@ -44,7 +47,7 @@ Quality gate formal entre `/story-implement-tasks` y la marca final de Done. Lan
 ### Posicionamiento
 
 ```
-[story.md: IMPLEMENT/DONE]   ← precondición requerida (viene de story-implement-tasks)
+[story.md: IMPLEMENT/DONE]   ← precondición requerida (viene de /story-implement o /story-implement-tasks)
      ↓
 story-code-review  → Quality gate: revisión multi-agente del código  ← aquí
      │   Al iniciar: story.md → CODE-REVIEW/IN-PROGRESS
@@ -53,9 +56,10 @@ story-code-review  → Quality gate: revisión multi-agente del código  ← aqu
      ↓
 [story.md: CODE-REVIEW/DONE]
 ──────────────────────────────────────────────────────────────────────────────────────
-story.md              → What: requisitos, criterios de aceptación, escenarios Gherkin
-design.md             → How: arquitectura, componentes, interfaces, decisiones técnicas
-implement-report.md   → Done: código generado, archivos, estado por tarea
+story.md              → What: requisitos, criterios de aceptación, escenarios Gherkin  [Requerido]
+design.md             → How: arquitectura, componentes, interfaces, decisiones técnicas [Requerido]
+testcases.md          → Spec: tabla canónica de casos de prueba por tipo               [Opcional]
+implement-report.md   → Done: código generado, archivos, estado por tarea              [Opcional]
 code-review-report.md → Review: hallazgos por dimensión, decisión final  ← aquí
 ```
 
@@ -63,13 +67,14 @@ code-review-report.md → Review: hallazgos por dimensión, decisión final  ←
 
 ## Entrada
 
-Los siguientes artefactos deben existir en `$STORY_DIR` para que el skill pueda ejecutarse. Si alguno falta, el skill detiene la ejecución antes de realizar cualquier efecto secundario.
+Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md` son requeridos para iniciar la ejecución. Los artefactos opcionales enriquecen el análisis cuando existen.
 
 | Artefacto | Categoría | Justificación |
 |---|---|---|
 | `story.md` | **Requerido** | Fuente de criterios de aceptación — sin él, el Product-Owner-Reviewer no puede operar |
 | `design.md` | **Requerido** | Fuente de arquitectura esperada — sin él, el Integration-Reviewer no puede operar |
-| `implement-report.md` | **Requerido** | Evidencia de implementación — sin él, ningún agente tiene qué revisar |
+| `implement-report.md` | Opcional | Evidencia de implementación producida por `/story-implement` o `/story-implement-tasks`; si no existe, los agentes verifican conformidad sin cruzar con tareas del reporte |
+| `testcases.md` | Opcional | Especificación canónica de casos de prueba producida por `/story-testcases`; si existe, se incorpora al análisis de cobertura de ACs y trazabilidad de diseño |
 | `tasks.md` | Opcional | El Tech-Lead-Reviewer puede revisar calidad sin lista de tareas |
 | `constitution.md` | Opcional | Mejora la revisión pero no la bloquea si no existe |
 | `definition-of-done-story.md` | Opcional | Mismo caso que `constitution.md` |
@@ -89,7 +94,8 @@ Los siguientes artefactos deben existir en `$STORY_DIR` para que el skill pueda 
 ## Precondiciones
 
 - `story.md` debe tener `status: IMPLEMENTING` y `substatus: DONE`
-- Los tres artefactos requeridos (`story.md`, `design.md`, `implement-report.md`) deben existir en `$STORY_DIR`
+- `story.md` y `design.md` deben existir en `$STORY_DIR`
+- `implement-report.md` y `testcases.md` son opcionales: si no existen, el skill continúa sin bloquear
 
 ---
 
@@ -163,14 +169,13 @@ Proporciona el ID (ej. FEAT-064) o la ruta completa al directorio.
    ```
    Detener la ejecución.
 
-#### 1c. Validar artefactos requeridos (all-at-once)
+#### 1c. Validar artefactos requeridos y detectar opcionales
 
-Comprobar simultáneamente la existencia de los tres artefactos requeridos (ver sección `## Entrada`):
+**Artefactos requeridos** — comprobar simultáneamente la existencia de:
 - `story.md`
 - `design.md`
-- `implement-report.md`
 
-Acumular todos los faltantes en una lista. Si la lista no está vacía, emitir **un único** mensaje de error con todos los faltantes y detener la ejecución **sin modificar ningún archivo**:
+Acumular faltantes en una lista. Si la lista no está vacía, emitir **un único** mensaje de error y detener la ejecución **sin modificar ningún archivo**:
 
 ```
 ❌ Artefactos requeridos no encontrados en: <$STORY_DIR>/
@@ -182,7 +187,11 @@ Acumular todos los faltantes en una lista. Si la lista no está vacía, emitir *
 Completa los artefactos faltantes y vuelve a ejecutar /story-code-review <story_id>.
 ```
 
-Si todos los artefactos requeridos están presentes, continuar al paso 1d.
+**Artefactos opcionales** — detectar presencia y registrar internamente:
+- Si existe `implement-report.md` → `$IMPL_REPORT_AVAILABLE = true`; si no → `$IMPL_REPORT_AVAILABLE = false`
+- Si existe `testcases.md` → `$TESTCASES_AVAILABLE = true`; si no → `$TESTCASES_AVAILABLE = false`
+
+Si los artefactos requeridos están presentes, continuar al paso 1d.
 
 #### 1d. Verificar precondición de estado
 
@@ -190,12 +199,12 @@ Leer el frontmatter de `story.md` y verificar `status: IMPLEMENTING` y `substatu
 
 **Si la precondición NO se cumple:**
 ```
-❌ La historia <story_id> no está en estado IMPLEMENT/DONE.
+❌ La historia <story_id> no está en estado IMPLEMENTING/DONE.
 
    Estado actual: status: <valor_actual> / substatus: <valor_actual>
 
-   story-code-review requiere que story-implement-tasks haya completado exitosamente.
-   Sugerencia: ejecuta /story-implement-tasks {story_id} para completar la implementación.
+   story-code-review requiere que /story-implement o /story-implement-tasks haya completado exitosamente.
+   Sugerencia: ejecuta /story-implement {story_id} o /story-implement-tasks {story_id} para completar la implementación.
 ```
 Detener la ejecución **sin modificar ningún archivo**.
 
@@ -209,8 +218,9 @@ Mostrar confirmación de inicio:
 ```
 🔍 Iniciando revisión de código para: <story_id>
    Directorio: <ruta_directorio>
-   Artefactos: story.md ✓ | design.md ✓ | implement-report.md ✓
-   Estado: IMPLEMENT/DONE ✓
+   Artefactos requeridos: story.md ✓ | design.md ✓
+   Artefactos opcionales: implement-report.md ✓/⏭️ | testcases.md ✓/⏭️
+   Estado: IMPLEMENTING/DONE ✓
 ```
 
 ---
@@ -231,11 +241,13 @@ Extraer y registrar internamente:
 - Componentes afectados y sus rutas de archivos
 - Interfaces definidas y sus contratos
 
-#### 2c. Leer implement-report.md
+#### 2c. Leer implement-report.md (si disponible)
 
-Extraer y registrar internamente:
-- Lista de archivos generados por tarea (tests y código de producción)
-- Tareas completadas y bloqueadas
+**Si `$IMPL_REPORT_AVAILABLE = true`:** leer `implement-report.md` y extraer:
+- Lista de archivos generados por tarea (tests y código de producción) → registrar como `$IMPL_FILES`
+- Tareas completadas y bloqueadas → registrar como `$IMPL_TASKS`
+
+**Si `$IMPL_REPORT_AVAILABLE = false`:** registrar `$IMPL_FILES = []` y `$IMPL_TASKS = []`. No emitir error.
 
 #### 2d. Localizar políticas del proyecto y extraer criterios DoD CODE-REVIEW
 
@@ -263,12 +275,22 @@ Registrar internamente `$DOD_CODE_REVIEW_CRITERIA = []` y continuar.
    Registrar internamente `$DOD_CODE_REVIEW_CRITERIA = []` y continuar.
 4. **Si se encontró la sección:** extraer todas las líneas `- [ ] <texto>` y `- [x] <texto>` dentro de esa sección, con su número de línea en el archivo, como lista de criterios planos; registrar internamente como `$DOD_CODE_REVIEW_CRITERIA`
 
+#### 2e. Leer testcases.md (si disponible)
+
+**Si `$TESTCASES_AVAILABLE = true`:** leer `testcases.md` y extraer:
+- Tabla de casos de prueba (ID, Tipo, Escenario, Dado, Cuando, Entonces, Ref) → registrar como `$TESTCASES_DATA`
+- Resumen de cobertura por tipo (UT/CT/IT/API/E2E/EV) → registrar como `$TESTCASES_SUMMARY`
+- Checklist "Test Cases Progress" con estado de cada entrada (`[ ]`, `[x]`, `[!]`) → registrar como `$TESTCASES_PROGRESS`
+
+**Si `$TESTCASES_AVAILABLE = false`:** registrar `$TESTCASES_DATA = []`. No emitir error.
+
 Mostrar resumen de carga:
 ```
 📋 Contexto cargado:
    ACs encontrados:          <N>
    Escenarios Gherkin:       <N>
-   Archivos implementados:   <N>
+   implement-report.md:      ✓ (<N> archivos implementados) | ⏭️ no disponible
+   testcases.md:             ✓ (<N> casos de prueba) | ⏭️ no disponible
    constitution.md:          <ruta>
    definition-of-done-story.md:    <ruta>
    DoD CODE-REVIEW: <N criterios cargados | ⚠️ no encontrado>
@@ -290,6 +312,8 @@ Lanzar simultáneamente los siguientes subagentes y skill, pasando a cada agente
 - `$STORY_DIR`: ruta del directorio de la historia
 - `$CONSTITUTION_PATH`: ruta a constitution.md
 - `$DOD_PATH`: ruta a definition-of-done-story.md
+- `$IMPL_REPORT_AVAILABLE`: flag booleano de disponibilidad de implement-report.md
+- `$TESTCASES_AVAILABLE`: flag booleano de disponibilidad de testcases.md
 
 **Agente 1 — Tech-Lead-Reviewer** (`agents/tech-lead-reviewer.agent.md`):
 - Revisa calidad, legibilidad, duplicación y seguridad del código fuente
@@ -499,7 +523,11 @@ Leer `assets/code-review-report-template.md` como fuente de verdad de la estruct
 Completar el template con:
 - Frontmatter: `story_id`, `$REVIEW_STATUS`, fecha actual, `$MAX_SEVERITY`
 - Sección Resumen: título de la historia, revisores, severidad máxima
+  - `{{TESTCASES_STATUS}}`: `✓ analizado (<N> casos — UT:<N>/CT:<N>/IT:<N>/API:<N>/E2E:<N>/EV:<N>)` si `$TESTCASES_AVAILABLE = true`; o `⏭️ no encontrado — ejecuta /story-testcases para generar la especificación canónica` si `$TESTCASES_AVAILABLE = false`
 - Sección Hallazgos por dimensión: contenido de cada informe parcial
+- Sección `### Cobertura de Casos de Prueba (testcases.md)` — `{{TESTCASES_COVERAGE_SECTION}}`:
+  - **Si `$TESTCASES_AVAILABLE = false`:** `⏭️ testcases.md no encontrado — análisis de cobertura omitido. Considera ejecutar /story-testcases para generar la especificación canónica de pruebas.`
+  - **Si `$TESTCASES_AVAILABLE = true`:** extraer y mostrar los hallazgos de la sección "Hallazgos — Cobertura en testcases.md" del `product-owner-report.md` y los hallazgos de la sección "Hallazgos — Trazabilidad de diseño en testcases.md" del `integration-report.md`
 - Sección Decisión final: `$REVIEW_STATUS` con justificación
 - Sección `## Security Audit` (inyectada dinámicamente, después de los hallazgos de los tres revisores):
   - **Si `$SECURITY_STATUS = pass`:** mostrar `✅ Security Audit: PASS` y resumen de reglas evaluadas (evaluated/pass/fail/na extraídos de `audit-report.md`)
@@ -546,6 +574,7 @@ Mostrar:
  Calidad de Código          │ <sev>     │ <N> hallazgos
  Cobertura de Requisitos    │ <sev>     │ <N> escenarios verificados
  Integración y Arquitectura │ <sev>     │ <N> hallazgos
+ Cobertura testcases.md     │ <sev>/—   │ <N> casos analizados / ⏭️ omitido
  🔒 Security Audit          │ PASS      │ <N> reglas evaluadas          (si ejecutó y pasó)
  🔒 Security Audit          │ FAIL      │ <N> hallazgos de seguridad    (si ejecutó y falló)
  🔒 Security Audit          │ —         │ omitido                       (si skipped)
@@ -573,6 +602,7 @@ O si hay bloqueantes:
  Calidad de Código          │ <sev>     │ <N> hallazgos
  Cobertura de Requisitos    │ <sev>     │ <N> hallazgos
  Integración y Arquitectura │ <sev>     │ <N> hallazgos
+ Cobertura testcases.md     │ <sev>/—   │ <N> casos analizados / ⏭️ omitido
  DoD CODE-REVIEW            │ <sev>     │ <N> criterios no cumplidos
  🔒 Security Audit          │ FAIL      │ <N> hallazgos de seguridad    (si ejecutó y falló)
  🔒 Security Audit          │ —         │ omitido                       (si skipped)
