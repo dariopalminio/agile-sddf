@@ -9,14 +9,24 @@ substatus: INPROGRESS
 parent: PROJ-01-agile-sddf
 created: 2026-06-05
 updated: 2026-06-05
-related: []
+related: [
+    - plan-01-root-folder-selection-to-installer
+    - plan-02-integrate-story-testcases-in-story-plan
+    - plan-03-integrate-story-improve-in-story-specify
+    - plan-04-add-and-improve-skills-readme
+]
 ---
+[[plan-01-root-folder-selection-to-installer]]
+[[plan-02-integrate-story-testcases-in-story-plan]]
+[[plan-03-integrate-story-improve-in-story-specify]]
+[[plan-04-add-and-improve-skills-readme]]
+
 
 # Release/Epic: enhancement and security improvements for skills (Safe Enhancement & Fortify Skills)
 
 ## Descripción
 
-Ampliar las capacidades del skill de implementación y specify, mejorar seguridad y auditoría de skills.
+Agregar selección de root folder de skills al instalador, ampliar las capacidades del skill de implementación y specify, mejorar seguridad y auditoría de skills.
 
 ## Features
 

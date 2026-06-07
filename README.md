@@ -56,7 +56,11 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 npm install -g agile-sddf
 ```
 
-Después de la instalación, el script `postinstall` copia automáticamente los skills y agentes a `~/.claude/` para que estén disponibles en Claude Code de forma global.
+Después de la instalación, el script `postinstall` copia automáticamente los skills y agentes a `~/.claude/` (predeterminado silencioso). Para elegir la carpeta destino de forma interactiva, ejecuta:
+
+```bash
+agile-sddf install --global
+```
 
 ### Local — solo para el proyecto actual
 
@@ -64,7 +68,27 @@ Después de la instalación, el script `postinstall` copia automáticamente los 
 npm install agile-sddf
 ```
 
-Los skills y agentes se copian a `./.claude/` del directorio actual.
+El `postinstall` copia los skills y agentes a `./.claude/` en silencio. Para elegir la carpeta destino de forma interactiva o apuntar a otro runtime, ejecuta:
+
+```bash
+npx agile-sddf install
+```
+
+El instalador mostrará un menú numerado para seleccionar la carpeta destino:
+
+```
+Where would you like to install SDDF skills and agents?
+  1) .claude   (Claude Code — recommended)
+  2) .agents   (OpenCode)
+  3) .github   (GitHub Copilot)
+Enter choice [1]:
+```
+
+Para omitir el prompt y apuntar directamente a una carpeta, usa `--target`:
+
+```bash
+npx agile-sddf install --target .agents
+```
 
 ### Monorepos con pnpm (workspaces)
 
@@ -91,9 +115,14 @@ El paquete expone el comando `agile-sddf` con los siguientes subcomandos:
 
 | Comando | Descripción |
 |---------|-------------|
-| `agile-sddf install` | Copia skills y agentes a `.claude/` del proyecto actual |
-| `agile-sddf install --global` | Copia skills y agentes a `~/.claude/` |
+| `agile-sddf install` | Instala con selección interactiva de carpeta destino (`.claude/`, `.agents/`, `.github/`) |
+| `agile-sddf install --global` | Instala en `~/.<folder>` con selección interactiva de carpeta |
+| `agile-sddf install --target .agents` | Instala en `.agents/` sin prompt interactivo |
+| `agile-sddf install --target .github` | Instala en `.github/` sin prompt interactivo |
+| `agile-sddf install --global --target .agents` | Instala en `~/.agents/` sin prompt interactivo |
 | `agile-sddf help` | Muestra la ayuda |
+
+> **Nota:** El hook `postinstall` (ejecutado automáticamente por npm/pnpm al instalar el paquete) siempre usa `.claude/` por defecto y no muestra el prompt interactivo. Para elegir otra carpeta destino, ejecuta `agile-sddf install` manualmente después de la instalación.
 
 ### Prerequisites
 
