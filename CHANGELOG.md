@@ -8,6 +8,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+---
+
+## [1.12.0] — 2026-06-07 — Safe Enhancement & Fortify Skills (EPIC-16)
+
+### Added
+
+- **`story-plan`** — genera `testcases.md` por defecto invocando `story-testcases`; acepta parámetros para generar solo `tasks.md`, solo `testcases.md`, o ambos (default); mantiene compatibilidad con flujos existentes que no usan testcases
+- **Checklist de progreso en `testcases.md`** — nueva sección `## Test Cases Progress for {story_id}` con checkboxes `[ ]` / `[x]` / `[!]` por cada caso de prueba; `story-implement` actualiza los checkboxes automáticamente tras ejecutar las pruebas (mapping: unit→UT, component→CT, integration→IT, e2e→E2E, etc.); actualización silenciosa si `testcases.md` no existe o no tiene la sección
+- **Selección de directorio de instalación de skills** — `scripts/install.js` y `scripts/cli.js` presentan un prompt de selección para elegir el directorio destino: `.agents`, `.claude` o `.github`; `postinstall.js` sin cambios para preservar compatibilidad con instalaciones globales/locales sin interacción
+- **READMEs en `skill-master` y `skill-test-evals`** — documentación de uso, flags soportados y ejemplos de integración
+
+### Changed
+
+- **`story-verify`** — lee `sddf.config.yaml` para determinar el `delivery-model` (`batch` | `continuous`) y los comandos de ejecución de pruebas configurados en la sección `verify`; si `delivery-model: batch` ejecuta `e2e-regression` si está marcado como requerido; si `delivery-model: continuous` ejecuta `e2e-sanity`; solo deduce pruebas automáticamente si no encuentra configuración en `sddf.config.yaml`
+- **`story-code-review`** — extendido con análisis de `testcases.md` y del reporte `implement-report.md` (opcional) generado por `story-implement`; los resultados de tests y cobertura quedan reflejados en `code-review-report.md`
+- **`story-specify`** — renombrado desde `story-refine`; integra invocación a `story-improve` como parte del ciclo de especificación y refinamiento; descripción y triggers actualizados para reflejar el nuevo enfoque
+
 ### Added
 
 - **`.github/workflows/docker-security.yml`** — workflow de CI que construye `Dockerfile.dev` y escanea la imagen con Trivy en cada push/PR que modifique archivos Docker; falla en hallazgos CRITICAL o HIGH sin parche disponible (SEC-076)
