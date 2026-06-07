@@ -1,3 +1,20 @@
+---
+alwaysApply: false
+type: release
+id: plan-05-extend-story-code-review-with-testcases
+slug: plan-05-extend-story-code-review-with-testcases
+title: "Plan 05: Extender story-code-review con análisis de testcases.md e implement-report.md opcional"
+status: COMPLETED
+substatus: DONE
+parent: EPIC-16-enhancement-and-security
+created: 2026-06-05
+updated: 2026-06-05
+related: [
+  - EPIC-16-enhancement-and-security
+]
+---
+[[EPIC-16-enhancement-and-security]]
+
 ## Plan: Extender story-code-review con análisis de testcases.md e implement-report.md opcional
 
 ### Contexto
@@ -99,15 +116,18 @@ Si $IMPL_REPORT_AVAILABLE = false, leer igualmente design.md y los archivos de c
 
 4. assets/code-review-report-template.md — Template de salida
 Agregar nueva sección entre "Integración y Arquitectura" y "Decisión final":
-
+```
 ### Cobertura de Casos de Prueba (testcases.md)
 
 {{TESTCASES_COVERAGE_SECTION}}
 
 ---
-Agregar fila en la tabla de Resumen:
+```
 
+Agregar fila en la tabla de Resumen:
+```
 | testcases.md | {{TESTCASES_STATUS}} |
+```
 Donde {{TESTCASES_STATUS}} será ✓ analizado (<N> casos) o ⏭️ no encontrado.
 
 ###  Archivos a modificar (en orden)
