@@ -26,5 +26,7 @@ Ampliar las capacidades del skill de implementación y specify, mejorar segurida
 - [x] **Generar testcases en skill story-plan**: Modificar el comando story-plan para que, sume generar casos de prueba `testcases.md` por default, es decir que incluya llamada a skill story-testcases. Además debe aceptar un parámetro que indique si genera solo `tasks.md` (que actualmente lo genera por defecto), para no romper los flujos actuales que lo utilizan sin generar testcases, o solo `testcases.md` para los que no quieren trabajar orientados a tareas. Por default genera ambos.
 - [x] **Renombrar skill story-refine a story-specify**: Actualizar la descripción para reflejar que ahora se enfoca en la especificación de historias.
 - [x] **Integrar skill story-improve en story-specify**: Agregar invocación a skill story-improve en story-specify como parte del ciclo de especificación y refinamiento de la historia.
+- [x] **Agregar documentación README**: agregar readme en skill-master, skill-test-evals, story-specify, story-plan.
+- [ ] **Agregar selección de root folder de skill**: Agregar en el script de instalación inicial de skills la posibilidad de elegir en qué directoria guardar los skills: .agents o .claude, con un prompt de selección. Esto permitirá a los usuarios organizar sus skills según sus preferencias y necesidades, manteniendo una estructura clara y accesible.
 
 
