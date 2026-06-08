@@ -16,7 +16,7 @@ Skill orquestador que ejecuta el pipeline completo de planning de una historia S
     ├── /story-testcases  → Genera testcases.md   (omitido con --only-tasks)
     └── /story-analyze    → Genera analyze.md     [story.md: → READY-FOR-IMPLEMENT/DONE si sin ERROREs]
     ↓ [story.md: READY-FOR-IMPLEMENT/DONE]
-/story-implement-tasks                 [story.md: → IMPLEMENTING/IN‑PROGRESS → IMPLEMENT/DONE]
+/story-implement-tasks                 [story.md: → IMPLEMENT/IN‑PROGRESS → IMPLEMENT/DONE]
 ```
 
 ## Precondiciones

@@ -36,7 +36,7 @@ related:
 
 | AC / NF | Descripción (resumen) | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
-| AC-1 | needs-changes → fix-directives.md + whitelist + story.md permanece IMPLEMENTING | ✓ | D-1 (bifurcación árbitro), D-2 (formato), D-3 (whitelist), D-4 (story.md) |
+| AC-1 | needs-changes → fix-directives.md + whitelist + story.md permanece IMPLEMENT | ✓ | D-1 (bifurcación árbitro), D-2 (formato), D-3 (whitelist), D-4 (story.md) |
 | AC-2 | HIGH o MEDIUM → review-status needs-changes + fix-directives.md | ✓ | D-1 (bifurcación árbitro), D-2 (formato) |
 | NF-1 | Trazabilidad: cada instrucción referencia hallazgo exacto (archivo:línea, dimensión) | ✓ | D-2 (tabla instrucciones con columna Archivo:Línea), D-3 (whitelist con referencia de hallazgo) |
 | NF-2 | Idempotencia: mismos hallazgos → mismo fix-directives.md | ✓ | D-2 (sobreescritura incondicional), D-5 (cleanup .tmp al inicio — heredado de FEAT-064) |
@@ -51,7 +51,7 @@ related:
 | 2.1 | Bifurcación árbitro en SKILL.md | D-1 (dónde vive la lógica) | ✓ |
 | 2.2 | Algoritmo de construcción de lista blanca | D-3 (whitelist construction) | ✓ |
 | 2.3 | Generación de fix-directives.md desde template | D-2 (formato y sobreescritura) | ✓ |
-| 2.4 | NO actualizar story.md + mostrar aviso | D-4 (story.md stays IMPLEMENTING) | ✓ |
+| 2.4 | NO actualizar story.md + mostrar aviso | D-4 (story.md stays IMPLEMENT) | ✓ |
 | 2.5 | Eliminar fix-directives.md cuando review = approved | D-5 + Risks (cleanup on approved) | ✓ |
 | 3.1 | Completar example-needs-changes/ con fix-directives.md esperado | D-2 (ejemplos), convenciones del proyecto | ✓ |
 | 3.2 | Crear example-needs-changes-medium/ | AC-2 (Scenario Outline con MEDIUM) | ✓ |

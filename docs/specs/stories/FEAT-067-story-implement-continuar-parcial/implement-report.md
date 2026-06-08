@@ -70,7 +70,7 @@ Resumen de reanudación: si `modo = reanudación`, muestra contadores y estado d
 
 ### Paso 2e — Actualización condicional del frontmatter (tarea 3.1)
 
-Solo escribe el frontmatter si `$ENTRADA_STATUS` es `READY-FOR-IMPLEMENT`. Si ya es `IMPLEMENTING`, omite la escritura (idempotencia).
+Solo escribe el frontmatter si `$ENTRADA_STATUS` es `READY-FOR-IMPLEMENT`. Si ya es `IMPLEMENT`, omite la escritura (idempotencia).
 
 ### Paso 3c — Sub-flujo para fix-directives.md (tareas 4.1–4.4)
 

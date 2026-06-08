@@ -90,10 +90,10 @@ Antes de ejecutar cualquier lógica de GREEN, verificar la precondición de la F
 ### D-2: Schema del `code_generator` en sddf-config.yaml
 // satisface: AC-1, Req-4
 
-Reusar el campo `implementing.code_generator` ya declarado en FEAT-078 D-1:
+Reusar el campo `IMPLEMENT.code_generator` ya declarado en FEAT-078 D-1:
 
 ```yaml
-implementing:
+IMPLEMENT:
   code_generator:
     skill: story-code-nodejs   # nombre del directorio en .claude/skills/
     required: true             # true = abortar si no existe; false = WARN y continuar
@@ -112,7 +112,7 @@ El `code_generator` es una entrada única (no lista) porque hay un solo skill de
 
 Validar la existencia del skill de coding **antes** de cualquier ejecución de código:
 
-1. Leer `implementing.code_generator.skill` de `sddf-config.yaml`
+1. Leer `IMPLEMENT.code_generator.skill` de `sddf-config.yaml`
 2. Construir ruta: `.claude/skills/{skill}/SKILL.md`
 3. Verificar existencia con Glob
 4. Si no existe y `required: true`:

@@ -92,7 +92,7 @@ La historia FEAT-070 avanza a `READY-FOR-VERIFY/DONE`. No se requieren correccio
 
 | # | Criterio | Estado | Severidad | Evidencia |
 |---|----------|--------|-----------|-----------|
-| 1 | Definition of Done para el estado IMPLEMENTING es satisfactorio | ✓ | — | implement-report: 7/12 ✓, 5/12 ⚠️, 0 ❌; $DOD_BLOQUEADO=false; historia avanzó a READY-FOR-CODE-REVIEW/DONE |
+| 1 | Definition of Done para el estado IMPLEMENT es satisfactorio | ✓ | — | implement-report: 7/12 ✓, 5/12 ⚠️, 0 ❌; $DOD_BLOQUEADO=false; historia avanzó a READY-FOR-CODE-REVIEW/DONE |
 | 2 | Se cumplen los estándares del proyecto (`constitution.md`) | ✓ | — | Tech-Lead + Integration confirman: Markdown, kebab-case, frontmatter YAML, sin secrets/TODOs, sin hardcoding de criterios DoD |
 | 3 | Cada escenario Gherkin tiene correspondencia en el código | ✓ | — | Product-Owner: 3/3 escenarios cubiertos (AC-1, AC-2, AC-3) en SKILL.md, template y ejemplos |
 | 4 | Los componentes respetan la arquitectura de `design.md` | ✓ | — | Integration: D1-D6 verificados; todos los 5 puntos de integración de D4 presentes |

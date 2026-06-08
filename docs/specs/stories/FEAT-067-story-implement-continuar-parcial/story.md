@@ -34,7 +34,7 @@ related:
 ```gherkin
 Dado que "docs/specs/stories/FEAT-NNN/tasks.md" tiene al menos una tarea "[x]" y al menos una tarea "[ ]"
   Y existe "docs/specs/stories/FEAT-NNN/fix-directives.md" con instrucciones de corrección
-  Y "story.md" tiene status: IMPLEMENTING y substatus: IN-PROGRESS
+  Y "story.md" tiene status: IMPLEMENT y substatus: IN-PROGRESS
 Cuando ejecuto "/story-implement FEAT-NNN"
 Entonces el skill omite todas las tareas ya marcadas "[x]" en tasks.md
   Y ejecuta solo las tareas "[ ]" en el orden definido en tasks.md
@@ -48,7 +48,7 @@ Entonces el skill omite todas las tareas ya marcadas "[x]" en tasks.md
 ```gherkin
 Dado que "tasks.md" tiene tareas "[x]" completadas y tareas "[ ]" pendientes
   Y NO existe "fix-directives.md" en el directorio de la historia
-  Y "story.md" tiene status: IMPLEMENTING y substatus: IN-PROGRESS
+  Y "story.md" tiene status: IMPLEMENT y substatus: IN-PROGRESS
 Cuando ejecuto "/story-implement FEAT-NNN"
 Entonces el skill omite las tareas "[x]" y ejecuta solo las "[ ]"
   Y actualiza tasks.md e implement-report.md normalmente

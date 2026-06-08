@@ -140,7 +140,7 @@ Leer el frontmatter de `story.md` y verificar:
 Precondición válida si:
   (status: CODE-REVIEW  AND substatus: DONE)            ← camino normal desde story-code-review
   OR
-  (status: IMPLEMENTING      AND substatus: DONE)       ← mínimo aceptable (AC-4)
+  (status: IMPLEMENT      AND substatus: DONE)       ← mínimo aceptable (AC-4)
 ```
 
 Si la precondición NO se cumple:

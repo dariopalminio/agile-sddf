@@ -15,7 +15,7 @@ La historia debe tener uno de estos estados antes de ejecutar:
 | status | substatus | Fuente |
 |--------|-----------|--------|
 | `READY-FOR-VERIFY` | `DONE` | Camino normal desde `story-code-review` |
-| `IMPLEMENTING` | `DONE` | Mínimo aceptable (historia sin code review) |
+| `IMPLEMENT` | `DONE` | Mínimo aceptable (historia sin code review) |
 
 Cualquier otro estado genera un error descriptivo sin modificar archivos.
 

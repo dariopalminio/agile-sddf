@@ -21,7 +21,7 @@ based-on: code-review-report.md
 
 | # | Archivo:Línea | Dimensión | Severidad | Hallazgo | Acción requerida |
 |---|---------------|-----------|-----------|----------|-----------------|
-| 1 | docs/specs/stories/FEAT-065-revision-con-bloqueantes/story.md:39 | code-quality | MEDIUM | AC-1 especifica que story.md permanece en `status: IMPLEMENTING / substatus: IN-PROGRESS` tras needs-changes, pero SKILL.md Paso 4g implementa `CODE-REVIEW/DONE`. El criterio de aceptación no se satisface según su definición literal. | Actualizar el Gherkin AC-1 de story.md línea 39 para reflejar `status: CODE-REVIEW / substatus: DONE`, alineándose con el ciclo de vida real implementado en SKILL.md. Revisar también tasks.md T2.4 que referencia `IMPLEMENT/IN-PROGRESS` en el mensaje de aviso. |
+| 1 | docs/specs/stories/FEAT-065-revision-con-bloqueantes/story.md:39 | code-quality | MEDIUM | AC-1 especifica que story.md permanece en `status: IMPLEMENT / substatus: IN-PROGRESS` tras needs-changes, pero SKILL.md Paso 4g implementa `CODE-REVIEW/DONE`. El criterio de aceptación no se satisface según su definición literal. | Actualizar el Gherkin AC-1 de story.md línea 39 para reflejar `status: CODE-REVIEW / substatus: DONE`, alineándose con el ciclo de vida real implementado en SKILL.md. Revisar también tasks.md T2.4 que referencia `IMPLEMENT/IN-PROGRESS` en el mensaje de aviso. |
 
 ## Lista blanca de archivos permitidos para modificar
 

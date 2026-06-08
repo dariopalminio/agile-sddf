@@ -11,11 +11,11 @@ Skill orquestador que ejecuta el ciclo TDD completo (RED → GREEN → REFACTOR)
     ├── /story-testcases  → Genera testcases.md
     └── /story-analyze    → Genera analyze.md
     ↓ [story.md: READY-FOR-IMPLEMENT/DONE]
-/story-implement                       [story.md: → IMPLEMENTING/IN‑PROGRESS → IMPLEMENTING/DONE]  ← aquí
+/story-implement                       [story.md: → IMPLEMENT/IN‑PROGRESS → IMPLEMENT/DONE]  ← aquí
     ├── Fase RED      → invoca test_generators de sddf.config.yaml  → archivos de prueba
     ├── Fase GREEN    → invoca code_generators de sddf.config.yaml  → código de producción
     └── Fase REFACTOR → invoca code_generators con phase:REFACTOR   → código mejorado
-    ↓ [story.md: IMPLEMENTING/DONE]
+    ↓ [story.md: IMPLEMENT/DONE]
 /story-code-review                     [story.md: → CODE-REVIEW/IN‑PROGRESS]
 ```
 
@@ -54,7 +54,7 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 |---|---|---|
 | Archivos de prueba | según skill generador | Tests en Fase RED (deben fallar) |
 | Archivos de producción | según skill generador | Código generado en Fases GREEN y REFACTOR |
-| `implement-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENTING, estado por fase |
+| `implement-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENT, estado por fase |
 | `story.md` (actualizado) | mismo directorio | Frontmatter actualizado (ver transiciones de estado) |
 | `release.md` (actualizado) | `$SPECS_BASE/specs/releases/<parent>/release.md` | Checklist con `[x]` para la historia completada |
 | `red-phase-status.json` | `.tmp/story-implement/red-phase-status.json` | Estado de Fase RED — precondición para GREEN |
@@ -65,8 +65,8 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 
 | Evento | status | substatus |
 |--------|--------|-----------|
-| Inicio del ciclo (Fase RED) | `IMPLEMENTING` | `IN‑PROGRESS` |
-| Ciclo completado sin DoD-ERRORs | `IMPLEMENTING` | `DONE` |
+| Inicio del ciclo (Fase RED) | `IMPLEMENT` | `IN‑PROGRESS` |
+| Ciclo completado sin DoD-ERRORs | `IMPLEMENT` | `DONE` |
 | Ciclo completado con criterios DoD `❌` | `IMPLEMENT` | `IN-PROGRESS` |
 
 ## Arquitectura de delegación

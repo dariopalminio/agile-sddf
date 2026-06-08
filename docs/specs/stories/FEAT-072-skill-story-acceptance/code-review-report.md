@@ -108,7 +108,7 @@ La historia FEAT-072 avanza a `READY-FOR-VERIFY/DONE`. Ejecutar `/story-verify F
 
 | # | Criterio | Estado | Severidad | Evidencia |
 |---|----------|--------|-----------|-----------|
-| 1 | Definition of Done para el estado IMPLEMENTING es satisfactorio | ✓ | — | implement-report.md: 13/25 ✓, 0 ❌; ambos hallazgos MEDIUM de revisión anterior corregidos |
+| 1 | Definition of Done para el estado IMPLEMENT es satisfactorio | ✓ | — | implement-report.md: 13/25 ✓, 0 ❌; ambos hallazgos MEDIUM de revisión anterior corregidos |
 | 2 | Se cumplen los estándares del proyecto (constitution.md) | ✓ | — | Integration-Reviewer confirmó: kebab-case, estructura canónica, preflight, nivel único de delegación |
 | 3 | Cada escenario Gherkin tiene correspondencia en el código | ✓ | — | PO-Reviewer confirmó: AC-1 a AC-6 todos cubiertos explícitamente en SKILL.md |
 | 4 | Los componentes respetan la arquitectura de design.md | ✓ | — | Integration-Reviewer confirmó: D-1 a D-7 correctamente implementados; D-4 crítico resuelto |

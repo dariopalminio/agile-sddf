@@ -30,8 +30,8 @@ related:
 
 | ID | Tipo | Escenario | Dado | Cuando | Entonces | Ref |
 |----|------|-----------|------|--------|----------|-----|
-| UT-001 | Unit | Leer test_generators válidos de sddf-config.yaml | sddf-config.yaml tiene sección `implementing.test_generators` con entradas unit, e2e, eval | El skill lee la sección | Retorna lista ordenada de entradas con fields type, skill, required | D-1 |
-| UT-002 | Unit | Sección implementing ausente en sddf-config.yaml | sddf-config.yaml existe pero no tiene sección `implementing` | El skill intenta leer test_generators | Emite `[WARN] No hay test_generators configurados` y retorna lista vacía sin detener la ejecución | D-1 |
+| UT-001 | Unit | Leer test_generators válidos de sddf-config.yaml | sddf-config.yaml tiene sección `IMPLEMENT.test_generators` con entradas unit, e2e, eval | El skill lee la sección | Retorna lista ordenada de entradas con fields type, skill, required | D-1 |
+| UT-002 | Unit | Sección IMPLEMENT ausente en sddf-config.yaml | sddf-config.yaml existe pero no tiene sección `IMPLEMENT` | El skill intenta leer test_generators | Emite `[WARN] No hay test_generators configurados` y retorna lista vacía sin detener la ejecución | D-1 |
 | UT-003 | Unit | Validación de skills — todos existen | sddf-config.yaml declara skills unit, e2e, eval cuyos directorios existen en .claude/skills/ | El skill ejecuta la validación previa | Retorna lista validada completa sin errores ni advertencias | D-2, AC-1 |
 | UT-004 | Unit | Validación fail-fast — skill required:true no encontrado | sddf-config.yaml declara skill `story-test-inexistente` con required:true y el directorio no existe | El skill ejecuta la validación previa | Emite `❌ Skill 'story-test-inexistente' declarado en sddf-config.yaml no encontrado en .claude/skills/` y retorna error sin continuar | D-2, AC-2 |
 | UT-005 | Unit | Validación permisiva — skill required:false no encontrado | sddf-config.yaml declara skill inexistente con required:false | El skill ejecuta la validación previa | Emite `[WARN]` con nombre del skill, excluye la entrada de la lista de invocación y continúa | D-2 |

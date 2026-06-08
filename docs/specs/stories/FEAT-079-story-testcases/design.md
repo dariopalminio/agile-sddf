@@ -80,7 +80,7 @@ El skill sigue la estructura canónica de skills SDDF definida en `skill-structu
 
 **Alternativa rechazada — ubicar el skill en `docs/specs/stories/`:** rechazada porque los skills siempre viven en `.claude/skills/` según `constitution.md`.
 
-**Registro npm:** La ruta `.claude/skills/story-testcases/**` debe incluirse en el campo `files` de `package.json` para que el skill se distribuya correctamente al publicar el paquete `agile-sddf` en npm (según `constitution.md` y DoD IMPLEMENTING).
+**Registro npm:** La ruta `.claude/skills/story-testcases/**` debe incluirse en el campo `files` de `package.json` para que el skill se distribuya correctamente al publicar el paquete `agile-sddf` en npm (según `constitution.md` y DoD IMPLEMENT).
 
 ---
 

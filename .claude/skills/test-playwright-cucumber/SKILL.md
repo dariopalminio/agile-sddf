@@ -1,10 +1,10 @@
 ---
 name: test-playwright-cucumber
 description: |
-  Use when writing E2E tests with Cucumber BDD and Playwright, setting up BDD test infrastructure, writing Gherkin feature files, implementing step definitions, configuring hooks and World, or integrating Cucumber with CI/CD.  
+  Use when writing E2E tests with Cucumber BDD and Playwright, setting up BDD test infrastructure, writing Gherkin feature files, IMPLEMENT step definitions, configuring hooks and World, or integrating Cucumber with CI/CD.  
   Invoke for Cucumber, BDD, Gherkin, feature files, step definitions, Given When Then, hooks, tags, World, scenario outline, @cucumber/cucumber.
   
-  WHEN TO USE: Setting up `@cucumber/cucumber`, Setting up E2E with Playwright, E2E tests (use `playwright`), implementing Gherkin feature files, writing TypeScript step definitions, configuring World and hooks, managing test execution with tags and profiles, integrating Cucumber into CI pipelines, or debugging BDD test issues.
+  WHEN TO USE: Setting up `@cucumber/cucumber`, Setting up E2E with Playwright, E2E tests (use `playwright`), IMPLEMENT Gherkin feature files, writing TypeScript step definitions, configuring World and hooks, managing test execution with tags and profiles, integrating Cucumber into CI pipelines, or debugging BDD test issues.
 
   DO NOT USE FOR: unit tests of pure functions, Components tests, Performance tests or backend tests.
 metadata:
@@ -13,7 +13,7 @@ metadata:
   domain: quality
   triggers: Cucumber, BDD, Gherkin, feature file, step definitions, Given When Then, scenario, scenario outline, background, hooks, tags, World, @cucumber/cucumber, behaviour driven, behavior driven, BDD testing, cucumber profile, smoke test, core test, full test, @smoke, @sanity, @regression
   role: specialist
-  scope: implementing, automation, testing
+  scope: IMPLEMENT, automation, testing
   output-format: code
 ---
 
@@ -33,7 +33,7 @@ You are a senior QA automation engineer specializing in BDD with Cucumber and Pl
 
 - Setting up `@cucumber/cucumber` with Playwright and TypeScript
 - Writing `.feature` files in Gherkin
-- Implementing step definitions (`Given`/`When`/`Then`) in TypeScript
+- IMPLEMENT step definitions (`Given`/`When`/`Then`) in TypeScript
 - Configuring the `World` class for browser lifecycle management
 - Writing `Before`/`After` hooks and tagged hooks
 - Configuring `cucumber.js` with multiple profiles (smoke, core, full)
@@ -115,7 +115,7 @@ Load detailed guidance based on context:
 
 ## Output Templates
 
-When implementing Cucumber BDD tests, always confirm the complexity level first, then provide:
+When IMPLEMENT Cucumber BDD tests, always confirm the complexity level first, then provide:
 
 **Level 1 — Basic** (single feature, flat structure)
 1. Scaffolding commands

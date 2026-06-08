@@ -3,7 +3,7 @@
 
 ## BDD Test Architecture Diagram
 
-The following PlantUML diagram shows the architecture of five main components (files) for implementing BDD with Cucumber and Page Object Model, following best practices.
+The following PlantUML diagram shows the architecture of five main components (files) for IMPLEMENT BDD with Cucumber and Page Object Model, following best practices.
 
 See file: `\bdd-architecture.plantuml`
 

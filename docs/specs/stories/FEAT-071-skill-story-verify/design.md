@@ -164,7 +164,7 @@ Rechazada porque violaría AC-14 (no-destructividad) al dar al agente acceso de 
 | Algún criterio DoD VERIFY falla | VERIFY/IN-PROGRESS | VERIFY | BLOCKED |
 | Estado incorrecto (precondición no cumplida) | cualquiera excepto READY-FOR-VERIFY o IMPLEMENT/DONE | sin cambio | sin cambio |
 
-Precondiciones aceptables para ejecutar: `status: READY-FOR-VERIFY` o `status: IMPLEMENTING, substatus: DONE` (mínimo aceptable según la historia).
+Precondiciones aceptables para ejecutar: `status: READY-FOR-VERIFY` o `status: IMPLEMENT, substatus: DONE` (mínimo aceptable según la historia).
 
 **Alternativa rechazada:** Permitir ejecución desde cualquier estado y solo emitir advertencia.
 Rechazada porque compromete la integridad del pipeline SDD. El fail-fast ante precondición incorrecta es un principio de calidad del framework.

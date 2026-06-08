@@ -78,4 +78,4 @@ Invocar `skill-preflight` antes de cualquier operación. Si retorna `✗ Entorno
 - **Posición en el pipeline:** story-plan → story-testcases → **story-implement (Fase RED)** → story-implement (GREEN+REFACTOR, FEAT-081)
 - **Historias hermanas:** FEAT-081 (Fases GREEN y REFACTOR), FEAT-082 (modos de ejecución)
 - **Output de esta historia:** archivos de prueba generados en el código productivo + confirmación de estado rojo. El estado de story.md no se modifica en esta fase.
-- **Configuración esperada en sddf-config.yaml:** sección `implementing.test_generators` con lista de entradas `{type, skill, required}`.
+- **Configuración esperada en sddf-config.yaml:** sección `IMPLEMENT.test_generators` con lista de entradas `{type, skill, required}`.

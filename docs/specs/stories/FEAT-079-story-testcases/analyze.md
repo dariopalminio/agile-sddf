@@ -75,7 +75,7 @@ related:
 | T018 | SKILL.md — Pasos 6-8 (completar, guardar, confirmar) | D-9, D-10 | ✓ |
 | T019 | SKILL.md — Manejo de errores | D-8 | ✓ |
 | T020 | examples/output/testcases.md de referencia | D-3, D-11 | ✓ |
-| T021 | Verificar package.json incluye ruta del skill en `files` | DoD IMPLEMENTING / constitution.md | ⚠️ |
+| T021 | Verificar package.json incluye ruta del skill en `files` | DoD IMPLEMENT / constitution.md | ⚠️ |
 | T022 | Ejecutar /skill-master para validar estructura | D-11 (TDD/REFACTOR) | ✓ |
 | T023 | Revisar CR-002: story-analyze y testcases.md | D-10 (CR-002 registrado) | ✓ |
 | T024 | Verificar TC-001 (happy-path) | D-11, AC-1 | ✓ |
@@ -124,7 +124,7 @@ related:
 ### INC-001 [RESUELTO]
 
 - **Tipo:** D — Desalineación parcial con release
-- **Descripción:** La descripción de FEAT-079 en `release.md` afirmaba que el skill "es usado por story-implement", implicando invocación durante la fase IMPLEMENTING. Sin embargo, la historia y el diseño (D-10, D-9) lo posicionan en la fase PLAN: `story-design → story-tasking → story-testcases → story-analyze`.
+- **Descripción:** La descripción de FEAT-079 en `release.md` afirmaba que el skill "es usado por story-implement", implicando invocación durante la fase IMPLEMENT. Sin embargo, la historia y el diseño (D-10, D-9) lo posicionan en la fase PLAN: `story-design → story-tasking → story-testcases → story-analyze`.
 - **Archivo afectado:** `docs/specs/releases/EPIC-14-fabrica-de-skills/release.md` — sección "Features > FEAT-079"
 - **Resolución:** Descripción de FEAT-079 en release.md actualizada para reflejar la posición PLAN del skill y el pipeline correcto.
 

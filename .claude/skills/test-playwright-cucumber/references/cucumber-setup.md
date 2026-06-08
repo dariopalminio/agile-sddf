@@ -49,6 +49,34 @@ npx playwright install chromium
 }
 ```
 
+### tsconfig.json (modern ES modules + ts-node/esm)
+
+The tsconfig.json file following is configured for a project that uses modern ES modules (with "type": "module" in its package.json), Node.js-style module resolution, and ts-node support for running TypeScript code directly in ESM environments.
+
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@tatians-react-ui-lib/ui": ["../../packages/ui/src"],
+      "@ui-button": ["../../packages/cli/src/templates/button"],
+      "@/*": ["./*"]
+    },
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": false
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "include": ["src", "tests/e2e"]
+}
+```
+
 ---
 
 ## cucumber.js — Minimal Config
@@ -77,6 +105,105 @@ module.exports = {
 | `paths` | Glob to `.feature` files |
 | `publishQuiet` | Suppresses Cucumber Cloud publishing prompt |
 
+### cucumber.cjs — Big Config example (modern ES modules + ts-node/esm)
+
+The cucumber.cjs file following is configured for a project that uses modern ES modules (with "type": "module" in its package.json), Node.js-style module resolution, and ts-node support for running TypeScript code directly in ESM environments.
+
+
+```cjs
+// cucumber.cjs — profile configuration for @cucumber/cucumber
+// NOTE: Using .cjs extension because apps/demo has "type": "module" in package.json.
+// Using --import with ts-node/esm loader (ESM-native TypeScript support).
+//
+// Usage:
+//   npx cucumber-js --config cucumber.cjs                  (default profile — all non-wip)
+//   npx cucumber-js --config cucumber.cjs --profile smoke  (smoke: happy path only)
+//   npx cucumber-js --config cucumber.cjs --profile core   (core: smoke + variants/state)
+//   npx cucumber-js --config cucumber.cjs --profile full   (full: all scenarios)
+//   npx cucumber-js --config cucumber.cjs --profile ci     (CI: all + JUnit XML)
+
+// TS_NODE_PROJECT must be set in the environment before running cucumber-js
+// so that ts-node/esm picks up tsconfig.cucumber.json instead of tsconfig.json.
+// The npm scripts set this via cross-env.
+const common = {
+  import: ['tests/e2e/support/hooks.ts', 'tests/e2e/step_definitions/**/*.ts'],
+  loader: ['ts-node/esm'],
+  publishQuiet: true,
+};
+
+module.exports = {
+
+  // ── Default: run all scenarios except @wip ──────────────────────────────
+  default: {
+    ...common,
+    paths: ['tests/e2e/features/**/*.feature'],
+    tags: 'not @wip',
+    format: [
+      'progress',
+      'html:tests/e2e/reports/cucumber-report.html',
+      'json:tests/e2e/reports/cucumber-report.json',
+    ],
+  },
+
+  // ── Smoke: fast sanity check — @smoke tagged scenarios only ─────────────
+  smoke: {
+    ...common,
+    paths: ['tests/e2e/features/**/*.feature'],
+    tags: '@smoke and not @wip',
+    format: [
+      'progress',
+      'html:tests/e2e/reports/smoke-report.html',
+      'json:tests/e2e/reports/smoke-report.json',
+    ],
+  },
+
+  // ── Sanity: smoke + variants/state — @smoke or @sanity ─────────────────────
+  sanity: {
+    ...common,
+    paths: ['tests/e2e/features/**/*.feature'],
+    tags: '(@smoke or @sanity) and not @wip',
+    format: [
+      'progress',
+      'html:tests/e2e/reports/sanity-report.html',
+      'json:tests/e2e/reports/sanity-report.json',
+    ],
+  },
+
+  // ── Regression: complete regression — all non-wip scenarios ───────────────────
+  regression: {
+    ...common,
+    paths: ['tests/e2e/features/**/*.feature'],
+    tags: 'not @wip',
+    format: [
+      'progress',
+      'html:tests/e2e/reports/regression-report.html',
+      'json:tests/e2e/reports/regression-report.json',
+    ],
+  },
+
+  // ── CI: all non-wip with JUnit XML for GitHub Actions ───────────────────
+  ci: {
+    ...common,
+    paths: ['tests/e2e/features/**/*.feature'],
+    tags: 'not @wip',
+    format: [
+      'progress',
+      'html:tests/e2e/reports/cucumber-report.html',
+      'json:tests/e2e/reports/cucumber-report.json',
+      'junit:tests/e2e/reports/junit-report.xml',
+    ],
+  },
+
+  single: {
+    ...common,
+    paths: [],                         // vacío para no interferir
+    // sin paths fijos, se usará el argumento de CLI
+    format: ['progress'],             // opcional, puedes personalizar
+  },
+
+};
+
+```
 ---
 
 ## package.json Scripts
@@ -90,6 +217,24 @@ module.exports = {
     "test:headed":     "HEADLESS=false cucumber-js",
     "test:debug":      "HEADLESS=false SLOWMO=500 cucumber-js"
   }
+}
+```
+
+### package.json Scripts
+The package.json scripts following are configured for a project that uses modern ES modules (with "type": "module" in its package.json), Node.js-style module resolution, and ts-node support for running TypeScript code directly in ESM environments. The scripts set the TS_NODE_PROJECT environment variable to ensure that ts-node uses the correct tsconfig file for Cucumber tests.
+
+```json
+{
+  "scripts": {
+    "test:e2e": "cross-env TS_NODE_PROJECT=tsconfig.cucumber.json cucumber-js --config cucumber.cjs",
+    "test:e2e:visual": "cd apps/storybook && pnpm run test:visual",
+    "test:e2e:smoke": "cross-env TS_NODE_PROJECT=tsconfig.cucumber.json cucumber-js --config cucumber.cjs --profile smoke",
+    "test:e2e:sanity": "cross-env TS_NODE_PROJECT=tsconfig.cucumber.json cucumber-js --config cucumber.cjs --profile sanity",
+    "test:e2e:regression": "cross-env TS_NODE_PROJECT=tsconfig.cucumber.json cucumber-js --config cucumber.cjs --profile regression",
+    "test:e2e:headed": "cross-env TS_NODE_PROJECT=tsconfig.cucumber.json HEADLESS=false cucumber-js --config cucumber.cjs",
+    "test:e2e:debug": "cross-env TS_NODE_PROJECT=tsconfig.cucumber.json HEADLESS=false SLOWMO=500 cucumber-js --config cucumber.cjs",
+    "lint:e2e": "eslint tests/e2e",
+    "typecheck:e2e": "tsc --noEmit --project tsconfig.cucumber.json && echo \"Typecheck passed\""
 }
 ```
 
@@ -127,13 +272,20 @@ npm test
 npm run test:smoke
 
 # 5. Run a single feature file
-npx cucumber-js e2e/features/auth/login.feature
+npx cucumber-js tests/e2e/features/auth/login.feature
 
 # 6. Run by ad-hoc tag
 npx cucumber-js --tags "@login and not @wip"
 
 # 7. Run headed (visible browser) for debugging
 npm run test:headed
+
+# 8. Run a single feature file with Cucumber and pnpm, using cucumber.cjs — Big Config example
+pnpm exec cucumber-js --profile single tests/e2e/features/auth/login.feature
+
+# 9. Run smoke tests only with pnpm
+pnpm run test:smoke
+
 ```
 
 ---
@@ -146,5 +298,5 @@ npm run test:headed
 | `npm run test:smoke` | Run `@smoke` tagged scenarios |
 | `npm run test:regression` | Run `@regression` (excluding `@wip`) |
 | `npx cucumber-js --tags "@tag"` | Ad-hoc tag filter |
-| `npx cucumber-js e2e/features/auth/login.feature` | Single feature file |
+| `npx cucumber-js tests/e2e/features/auth/login.feature` | Single feature file |
 | `HEADLESS=false npm test` | Visible browser |

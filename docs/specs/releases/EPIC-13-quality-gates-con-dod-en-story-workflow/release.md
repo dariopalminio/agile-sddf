@@ -13,12 +13,12 @@ updated: 2026-05-13
 # Release/Epic: Quality Gates con DoD en Story Workflow
 
 ## Descripción
-Integra la lectura y validación del Definition of Done en los tres skills del pipeline de historias SDD. Cada skill leerá su sección correspondiente del archivo `$SPECS_BASE/policies/definition-of-done-story.md` (PLAN, IMPLEMENTING, CODE-REVIEW) y validará que los criterios de esa fase estén cumplidos antes de avanzar al siguiente estado. Convierte el DoD en un quality gate ejecutable dentro del flujo automatizado.
+Integra la lectura y validación del Definition of Done en los tres skills del pipeline de historias SDD. Cada skill leerá su sección correspondiente del archivo `$SPECS_BASE/policies/definition-of-done-story.md` (PLAN, IMPLEMENT, CODE-REVIEW) y validará que los criterios de esa fase estén cumplidos antes de avanzar al siguiente estado. Convierte el DoD en un quality gate ejecutable dentro del flujo automatizado.
 
 ## Features
 - [x] Mejorar skill-master con dynamic-template skill-master lee assets/skill-template.md en runtime al crear un skill nuevo. Cuando el skill-master genera el SKILL.md de un skill nuevo, SHALL leer `assets/skill-template.md` antes de escribir cualquier contenido. El modelo SHALL extraer las secciones del template dinámicamente y completarlas con la información del skill en lugar de generar estructura hardcodeada.
 - [x] FEAT-068 - **DoD PLAN en story-analyze:** Leer sección PLAN del DoD y validar criterios antes de avanzar a READY-FOR-IMPLEMENT
-- [x] FEAT-069 - **DoD IMPLEMENTING en story-implement:** Leer sección IMPLEMENTING del DoD y validar criterios antes de avanzar a READY-FOR-CODE-REVIEW
+- [x] FEAT-069 - **DoD IMPLEMENT en story-implement:** Leer sección IMPLEMENT del DoD y validar criterios antes de avanzar a READY-FOR-CODE-REVIEW
 - [x] FEAT-070 - **DoD CODE-REVIEW en story-code-review:** Leer sección CODE-REVIEW del DoD y validar criterios, influyendo en `review-status`
 - [x] FEAT-071 - **VERIFY con story-verify:** un SKILL que se encargue de la etapa de pruebas llamada VERIFY que implica implica la ejecución de los casos de prueba en el entorno de pruebas (pruebas automáticas, e2e, integración, regresión, etc.), la documentación de los resultados para su análisis y la identificación, detección y registro de los defectos. Lo ideal es que el SKIL sea o refleje el proceso genérico de pruebas que se quiera implementar, y que se pueda configurar para cada proyecto o equipo. Este SKILL se integraría al pipeline después de CODE-REVIEW y antes de ACCEPTANCE, como un quality gate adicional basado en la validación de los criterios de prueba definidos en el DoD.
 - [x] FEAT-072 - **ACCEPTANCE en story-acceptance:** Validación final por un "humano" de criterios de aceptación definidos en el DoD, asegurando que la historia cumple con los requisitos funcionales y de calidad antes de marcarla INTEGRATION.
@@ -33,9 +33,9 @@ Integra la lectura y validación del Definition of Done en los tres skills del p
 **CUANDO** se ejecuta `/story-analyze` y existe `$SPECS_BASE/policies/definition-of-done-story.md` con sección PLAN  
 **ENTONCES** analyze.md incluye una sección "Cumplimiento DoD — Fase PLAN" con el estado de cada criterio, y si hay ERRORs la historia no avanza a READY-FOR-IMPLEMENT
 
-### Escenario 2: story-implement bloquea transición por DoD IMPLEMENTING no cumplido
+### Escenario 2: story-implement bloquea transición por DoD IMPLEMENT no cumplido
 **DADO** una historia en `status: IMPLEMENT/IN-PROGRESS` con todas las tareas completadas  
-**CUANDO** se ejecuta `/story-implement` y el DoD tiene criterios IMPLEMENTING no cumplidos con severidad ERROR  
+**CUANDO** se ejecuta `/story-implement` y el DoD tiene criterios IMPLEMENT no cumplidos con severidad ERROR  
 **ENTONCES** implement-report.md incluye sección de validación DoD y story.md no avanza a READY-FOR-CODE-REVIEW/DONE
 
 ### Escenario 3: story-code-review cambia review-status por DoD CODE-REVIEW no cumplido
@@ -53,13 +53,13 @@ El DoD debe leerse en runtime desde el archivo real (`$SPECS_BASE/policies/defin
 - **definition-of-done-story.md:** Pasa de ser documentación pasiva a un artefacto activo del pipeline, leído y ejecutado por los tres skills
 
 ## Dependencias Críticas (si las hay)
-- **El archivo `$SPECS_BASE/policies/definition-of-done-story.md` debe existir con secciones PLAN, IMPLEMENTING y CODE-REVIEW**  
+- **El archivo `$SPECS_BASE/policies/definition-of-done-story.md` debe existir con secciones PLAN, IMPLEMENT y CODE-REVIEW**  
   *Dueño:* Equipo del proyecto  
   *Fecha compromiso:* Disponible antes de ejecutar las historias de este release
 
 ## Riesgos
 - **DoD con criterios ambiguos:** Los criterios del DoD podrían no tener evidencia objetiva verificable en los artefactos, generando falsos negativos – **Mitigación:** Los criterios del DoD deben redactarse de forma verificable (con referencia a artefactos concretos: story.md, design.md, tasks.md, código generado)
-- **Sección del DoD ausente:** El archivo puede existir pero no tener la sección esperada (PLAN/IMPLEMENTING/CODE-REVIEW) – **Mitigación:** Degradación elegante — si la sección no existe, el skill emite un `⚠️` y continúa sin bloquear
+- **Sección del DoD ausente:** El archivo puede existir pero no tener la sección esperada (PLAN/IMPLEMENT/CODE-REVIEW) – **Mitigación:** Degradación elegante — si la sección no existe, el skill emite un `⚠️` y continúa sin bloquear
 
 **Criterios de éxito:**
 - [ ] story-analyze genera sección "Cumplimiento DoD — Fase PLAN" en analyze.md con tabla de criterios ✓/❌

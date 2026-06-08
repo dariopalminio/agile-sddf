@@ -20,7 +20,7 @@ El skill `story-code-review` (`.claude/skills/story-code-review/SKILL.md`) ejecu
 
 FEAT-070 agrega **validación de Definition of Done para la fase CODE-REVIEW**: después de consolidar los hallazgos de los tres agentes y antes de derivar el `review-status` definitivo, el skill extrae dinámicamente la sección "CODE-REVIEW" de `$SPECS_BASE/policies/definition-of-done-story.md`, evalúa cada criterio contra el estado del código revisado, y si hay criterios no cumplidos con severidad HIGH o MEDIUM los incorpora como hallazgos adicionales — ajustando `review-status` a `needs-changes` si correspondiera.
 
-Este diseño sigue el patrón establecido por FEAT-068 (DoD PLAN en story-analyze) y FEAT-069 (DoD IMPLEMENTING en story-implement), adaptándolo a la lógica de consolidación multi-agente de story-code-review.
+Este diseño sigue el patrón establecido por FEAT-068 (DoD PLAN en story-analyze) y FEAT-069 (DoD IMPLEMENT en story-implement), adaptándolo a la lógica de consolidación multi-agente de story-code-review.
 
 **Diferencias clave respecto a FEAT-068/069:**
 1. Los hallazgos DoD se incorporan a la **tabla consolidada de hallazgos** junto a los hallazgos de los agentes, no en una sección separada

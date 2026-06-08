@@ -93,7 +93,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 
 ## Precondiciones
 
-- `story.md` debe tener `status: IMPLEMENTING` y `substatus: DONE`
+- `story.md` debe tener `status: IMPLEMENT` y `substatus: DONE`
 - `story.md` y `design.md` deben existir en `$STORY_DIR`
 - `implement-report.md` y `testcases.md` son opcionales: si no existen, el skill continúa sin bloquear
 
@@ -119,13 +119,13 @@ El flujo por defecto es siempre el equipo de tres agentes. El flag `--single-age
 
 | Evento | status | substatus |
 |--------|--------|-----------|
-| Precondición requerida para ejecutar | `IMPLEMENTING` | `DONE` |
+| Precondición requerida para ejecutar | `IMPLEMENT` | `DONE` |
 | Al iniciar la revisión (Paso 1) | `CODE-REVIEW` | `IN-PROGRESS` |
 | Finalización aprobada (Paso 6) | `CODE-REVIEW` | `DONE` |
 | Finalización con bloqueantes (Paso 4g) | `READY-FOR-IMPLEMENT` | `DONE` |
 
 - La ejecución es idempotente: `.tmp/story-code-review/` se limpia al inicio de cada ejecución
-- `story-code-review` solo puede ejecutarse si `story.md` tiene `status: IMPLEMENTING` + `substatus: DONE`. Si la precondición no se cumple, la ejecución se detiene con error descriptivo.
+- `story-code-review` solo puede ejecutarse si `story.md` tiene `status: IMPLEMENT` + `substatus: DONE`. Si la precondición no se cumple, la ejecución se detiene con error descriptivo.
 - NO modifique ningún archivo existente en el código fuente (estamos revisando el código de la implementación, no implementando los artefactos técnicos)
 - NO genere código; estamos revisando la implementación, no implementando los artefactos técnicos
 - **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
@@ -195,11 +195,11 @@ Si los artefactos requeridos están presentes, continuar al paso 1d.
 
 #### 1d. Verificar precondición de estado
 
-Leer el frontmatter de `story.md` y verificar `status: IMPLEMENTING` y `substatus: DONE`.
+Leer el frontmatter de `story.md` y verificar `status: IMPLEMENT` y `substatus: DONE`.
 
 **Si la precondición NO se cumple:**
 ```
-❌ La historia <story_id> no está en estado IMPLEMENTING/DONE.
+❌ La historia <story_id> no está en estado IMPLEMENT/DONE.
 
    Estado actual: status: <valor_actual> / substatus: <valor_actual>
 
@@ -220,7 +220,7 @@ Mostrar confirmación de inicio:
    Directorio: <ruta_directorio>
    Artefactos requeridos: story.md ✓ | design.md ✓
    Artefactos opcionales: implement-report.md ✓/⏭️ | testcases.md ✓/⏭️
-   Estado: IMPLEMENTING/DONE ✓
+   Estado: IMPLEMENT/DONE ✓
 ```
 
 ---

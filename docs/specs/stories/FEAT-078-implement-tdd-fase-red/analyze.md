@@ -51,7 +51,7 @@ related:
 |---|---|---|---|
 | 1.1 | Crear directorios `.claude/skills/story-implement/evals/` | D-6 | ✓ |
 | 1.2 | Crear `evals/evals.json` con 3 casos de prueba | D-6, Req-5 (TDD) | ✓ |
-| 2.1 | Añadir sección `implementing` a sddf-config.yaml | D-1 | ✓ |
+| 2.1 | Añadir sección `IMPLEMENT` a sddf-config.yaml | D-1 | ✓ |
 | 3.1 | Frontmatter YAML del SKILL.md | D-7 | ✓ |
 | 3.2 | Paso 0: invocar skill-preflight | Req-6 (sin D-N en design.md) | ⚠️ |
 | 3.3 | Paso 1: leer sddf-config.yaml y extraer test_generators | D-1 | ✓ |
@@ -71,7 +71,7 @@ related:
 
 | Elemento de diseño | Sección en design.md | Tarea(s) que lo implementan | Estado |
 |---|---|---|---|
-| D-1: Schema `implementing.test_generators` | Decisions | 2.1, 3.3 | ✓ |
+| D-1: Schema `IMPLEMENT.test_generators` | Decisions | 2.1, 3.3 | ✓ |
 | D-2: Algoritmo de validación fail-fast | Decisions | 3.4 | ✓ |
 | D-3: Resolución de inputs | Decisions | 3.5 | ✓ |
 | D-4: Contrato de invocación (1 nivel) | Decisions | 3.6 | ✓ |

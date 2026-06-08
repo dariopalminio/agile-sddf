@@ -17,12 +17,12 @@ The system SHALL define the story lifecycle as a linear state machine with the f
 | `READY-FOR-PLAN` | `DONE` | `story-creation` / `story-specify` | Especificación aprobada (FINVEST APROBADA) |
 | `PLAN` | `IN‑PROGRESS` | `story-plan` | El pipeline de planning está en curso |
 | `READY-FOR-IMPLEMENT` | `DONE` | `story-analyze` | Planning completo y artefactos coherentes |
-| `IMPLEMENTING` | `IN‑PROGRESS` | `story-implement` | Implementación en curso |
+| `IMPLEMENT` | `IN‑PROGRESS` | `story-implement` | Implementación en curso |
 | `READY-FOR-CODE-REVIEW` | `DONE` | `story-implement` | Historia completamente implementada |
 
 #### Scenario: State machine defines valid transitions
 - **WHEN** a skill updates the story status
-- **THEN** the transition MUST follow the sequence: `SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLAN/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENTING/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`
+- **THEN** the transition MUST follow the sequence: `SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLAN/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENT/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`
 
 ### Requirement: Stories without explicit status are treated as BACKLOG/TODO
 The system SHALL treat any `story.md` without a `status` field (or with `status: BACKLOG`) as being in the initial `BACKLOG/TODO` state, allowing all skills to operate on it without precondition failures.

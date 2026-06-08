@@ -28,7 +28,7 @@ related:
 ### Escenario principal – Integración exitosa hacia rama de release
 
 ```gherkin
-Dado que la historia "FEAT-042" tiene status: IMPLEMENTING / substatus: DONE
+Dado que la historia "FEAT-042" tiene status: IMPLEMENT / substatus: DONE
   Y el modelo de entrega configurado es "batch" con rama objetivo "release/v1.2.0"
 Cuando ejecuto story-integrate para la historia "FEAT-042"
 Entonces el skill crea un commit de integración en la rama "release/v1.2.0"
@@ -39,7 +39,7 @@ Entonces el skill crea un commit de integración en la rama "release/v1.2.0"
 ### Escenario alternativo – Historia no lista para integrar
 
 ```gherkin
-Dado que la historia "FEAT-042" tiene status: IMPLEMENTING / substatus: IN-PROGRESS
+Dado que la historia "FEAT-042" tiene status: IMPLEMENT / substatus: IN-PROGRESS
 Cuando ejecuto story-integrate para la historia "FEAT-042"
 Entonces el skill informa que la historia no está lista para integrar
   Y muestra el estado actual y el estado requerido

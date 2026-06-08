@@ -21,7 +21,7 @@ Amplía las capacidades del framework SDDF con skills especializados de testing:
 ## Features
 
 - [x] FEAT-084 - **Skill `impl-frontend-library-react-component`:** Skill que implementa componentes de librerías frontend existentes (Material UI, Shadcn, Ant Design, etc.) a partir de `story.md` y `design.md`; genera el componente React en TypeScript siguiendo las convenciones del proyecto y las props definidas en el diseño técnico
-- [x] FEAT-085 - **Skill `test-component-react-testing-library`:** Skill que genera tests de componentes React con React Testing Library (RTL) a partir de `story.md` y `design.md`; cubre renderizado, interacciones de usuario, accesibilidad y casos de borde; los tests deben pasar con el componente generado por `impl-frontend-library-react-component`
+- [x] FEAT-085 - **Skill `test-react-testing-library`:** Skill que genera tests de componentes React con React Testing Library (RTL) a partir de `story.md` y `design.md`; cubre renderizado, interacciones de usuario, accesibilidad y casos de borde; los tests deben pasar con el componente generado por `impl-frontend-library-react-component`
 - [x] FEAT-086 - **Skill `test-e2e-cypress-cucumber`:** Skill que genera tests E2E con Cypress y Cucumber/Gherkin derivados directamente de los escenarios Gherkin de `story.md`; genera archivos `.feature` y step definitions en TypeScript; los tests cubren el flujo completo del usuario en un entorno de navegador real
 - [x] FEAT-087 - **Skill `test-e2e-playwright-cucumber`:** Skill que genera tests E2E con Playwright y Cucumber/Gherkin; alternativa a Cypress para proyectos que prefieran Playwright; misma trazabilidad Gherkin → test que FEAT-086 pero con la API y configuración de Playwright
 
@@ -32,7 +32,7 @@ Amplía las capacidades del framework SDDF con skills especializados de testing:
 ### Escenario 1: Generación de componente React + test RTL ejecutable
 
 **DADO** una historia FEAT-NNN con `story.md`, `design.md` y criterios de aceptación Gherkin definidos, y un proyecto React con RTL configurado  
-**CUANDO** se invocan `/impl-frontend-library-react-component FEAT-NNN` y luego `/test-component-react-testing-library FEAT-NNN`  
+**CUANDO** se invocan `/impl-frontend-library-react-component FEAT-NNN` y luego `/test-react-testing-library FEAT-NNN`  
 **ENTONCES** el componente generado existe en la ruta definida en `design.md`, los tests generados referencian el componente correctamente, y `npm test` (o equivalente) pasa sin errores
 
 ### Escenario 2: Generación de test E2E Cypress desde escenario Gherkin

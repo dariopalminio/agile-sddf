@@ -33,7 +33,7 @@ The system SHALL provide the six story workflow skills at canonical paths under 
 
 #### Scenario: Full workflow produces observable status progression
 - **WHEN** a story goes through the complete workflow: `story-creation` → `story-plan` → `story-implement`
-- **THEN** the `status`/`substatus` sequence in `story.md` follows: `SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLAN/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENTING/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`
+- **THEN** the `status`/`substatus` sequence in `story.md` follows: `SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLAN/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENT/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`
 
 ### Requirement: Story Creation Produces Canonical Story-Gherkin Output
 The system SHALL generate a user story in canonical story-gherkin format from a natural-language need, including role, goal, measurable benefit, and at least one main acceptance scenario.

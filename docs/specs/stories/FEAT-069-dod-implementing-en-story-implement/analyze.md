@@ -2,20 +2,20 @@
 type: analyze
 id: FEAT-069
 slug: FEAT-069-analyze-report
-title: "Analyze: DoD IMPLEMENTING en story-implement"
+title: "Analyze: DoD IMPLEMENT en story-implement"
 story: FEAT-069
 design: FEAT-069
 tasks: FEAT-069
 created: 2026-05-14
 updated: 2026-05-14
 related:
-  - dod-implementing-en-story-implement
+  - dod-IMPLEMENT-en-story-implement
 ---
 
 <!-- Referencias -->
-[[dod-implementing-en-story-implement]]
+[[dod-IMPLEMENT-en-story-implement]]
 
-# Reporte de Coherencia: DoD IMPLEMENTING en story-implement
+# Reporte de Coherencia: DoD IMPLEMENT en story-implement
 
 ## Resumen Ejecutivo
 
@@ -34,7 +34,7 @@ related:
 
 | AC | Descripción | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
-| AC-1 | implement-report.md incluye sección "Cumplimiento DoD — Fase IMPLEMENTING" con tabla ✓/❌; si no hay DoD-ERRORs → READY-FOR-CODE-REVIEW/DONE | ✓ | D4 (sub-paso 4g), D5 (sección DoD en 4a), D4 (Guardia transición en 4b), D4 (Resumen Final) |
+| AC-1 | implement-report.md incluye sección "Cumplimiento DoD — Fase IMPLEMENT" con tabla ✓/❌; si no hay DoD-ERRORs → READY-FOR-CODE-REVIEW/DONE | ✓ | D4 (sub-paso 4g), D5 (sección DoD en 4a), D4 (Guardia transición en 4b), D4 (Resumen Final) |
 | AC-2 | DoD-ERRORs bloquean transición; story.md permanece IMPLEMENT/IN-PROGRESS; implement-report documenta criterios fallidos | ✓ | D2 (evaluación semántica), D3 (❌→ERROR bloquea), D4 (condición en 4b) |
 | AC-3 (NFR) | archivo DoD no encontrado o sección ausente → ⚠️ warning; continúa sin bloquear | ✓ | D1 (búsqueda flexible con degradación ⚠️), D6 (criterios no evaluables → ⚠️) |
 | Req-Struct | Seguir lineamientos estructurales de skill-structural-pattern.md | ✓ | Goals de design.md: sub-paso 2f numerado alfabéticamente; sub-paso 4g insertado entre 4a y 4b sin renumerar // satisface: Req-Struct |
@@ -81,7 +81,7 @@ related:
 
 | Criterio | Estado | Detalle |
 |---|---|---|
-| Historia listada en release | ✓ | `- [ ] FEAT-069 - DoD IMPLEMENTING en story-implement` presente en release.md |
+| Historia listada en release | ✓ | `- [ ] FEAT-069 - DoD IMPLEMENT en story-implement` presente en release.md |
 | Objetivo de la historia alineado con release | ✓ | La historia garantiza que el código cumple estándares antes de avanzar a code review, alineado con el objetivo del release de convertir el DoD en quality gate ejecutable |
 | Restricciones del release respetadas | ✓ | Lectura en runtime del DoD, degradación elegante si la sección no existe — ambas restricciones del release implementadas en D1 y D6 |
 

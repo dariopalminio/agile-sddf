@@ -3,7 +3,7 @@ type: story
 id: FEAT-000
 slug: FEAT-000-missing-artifacts
 title: "Ejemplo: Historia con artefactos faltantes"
-status: IMPLEMENTING
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-00-example
 created: 2026-05-09

@@ -495,7 +495,7 @@ o bien (si ACCEPTANCE-BLOCKED):
 
 ### Caso 3 — Estado incorrecto
 
-**Input:** Historia con `status: IMPLEMENTING / substatus: IN-PROGRESS`
+**Input:** Historia con `status: IMPLEMENT / substatus: IN-PROGRESS`
 **Acción:** Ejecutar `/story-acceptance FEAT-NNN`
 **Output esperado:**
 - Mensaje de error con estado actual y estados válidos requeridos

@@ -59,7 +59,7 @@ Sin embargo, el flujo post-review introduce un nuevo escenario: `/story-code-rev
 Precondición válida si:
   (status: READY-FOR-IMPLEMENT  AND substatus: DONE)    ← ejecución inicial
   OR
-  (status: IMPLEMENTING          AND substatus: IN-PROGRESS) ← reanudación
+  (status: IMPLEMENT          AND substatus: IN-PROGRESS) ← reanudación
 ```
 
 Si el estado no es ninguno de los dos, emitir error descriptivo con ambas opciones como sugerencia.
@@ -98,7 +98,7 @@ si N_pendientes  = 0 AND N_completadas > 0: salida anticipada (AC-3)
 
 ```
 ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.
-   Sugerencia: ejecuta /story-code-review <story_id> si la historia está en IMPLEMENTING.
+   Sugerencia: ejecuta /story-code-review <story_id> si la historia está en IMPLEMENT.
 ```
 Sin modificar ningún archivo.
 

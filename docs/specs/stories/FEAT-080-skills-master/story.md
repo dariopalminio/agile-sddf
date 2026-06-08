@@ -118,7 +118,7 @@ assets/skill-template.md: paso Preflight y dependencia skill-preflight marcados 
 ## Verificación
 
 Story creada cumple:
-1. Frontmatter completo con status IMPLEMENTING/substatus DONE (trabajo ya completado)
+1. Frontmatter completo con status IMPLEMENT/substatus DONE (trabajo ya completado)
 2. 3Cs: Como developer/agente / Quiero modos+detección+independencia / Para delegación+usabilidad
 3. 6 escenarios Gherkin cubriendo: renombramiento, plan mode, build mode, --auto/--manual, detección de lenguaje, independencia SDDF
 4. Requerimientos documentando renombramiento completo, backward compatibility y delegación

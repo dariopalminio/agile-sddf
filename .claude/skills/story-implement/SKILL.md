@@ -22,7 +22,7 @@ triggers:
 version: "1.2.0"
 type: delegate
 input: "story.md + testcases.md (opcional) + sddf.config.yaml + --auto (opcional)"
-output: "archivos de prueba + código de producción + implement-report.md + story.md actualizada a IMPLEMENTING/DONE (o IMPLEMENT/IN-PROGRESS si DoD-ERRORs) + release.md checklist actualizado"
+output: "archivos de prueba + código de producción + implement-report.md + story.md actualizada a IMPLEMENT/DONE (o IMPLEMENT/IN-PROGRESS si DoD-ERRORs) + release.md checklist actualizado"
 invocable: true
 alwaysApply: false
 ---
@@ -43,7 +43,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 - **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden; confirma estado rojo; escribe `red-phase-status.json`
 - **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"` y `layer:"{layer}"`; consolida resultados; confirma que los tests pasan
 - **Fase REFACTOR:** Itera sobre cada capa activa invocando su skill con `phase:"REFACTOR"` y `layer:"{layer}"`; verifica no-regresión ejecutando comandos de test
-- Al completar el ciclo exitosamente: evalúa DoD IMPLEMENTING, genera `implement-report.md`, actualiza `story.md` a `IMPLEMENTING/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs), actualiza checklist de `release.md` y escribe `cycle-status.json`
+- Al completar el ciclo exitosamente: evalúa DoD IMPLEMENT, genera `implement-report.md`, actualiza `story.md` a `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs), actualiza checklist de `release.md` y escribe `cycle-status.json`
 
 **Qué NO hace este skill:**
 - Crear skills de generación específicos (ej. `story-test-unit-jest`, `story-code-nodejs`) — son skills separados
@@ -59,7 +59,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 [story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación (viene de story-code-review needs-changes)
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
-     │   Al iniciar: story.md → IMPLEMENTING/IN‑PROGRESS
+     │   Al iniciar: story.md → IMPLEMENT/IN‑PROGRESS
      │   Al finalizar: story.md → IMPLEMENT/DONE + release.md checklist actualizado
      ↓
 [story.md: IMPLEMENT/DONE]
@@ -616,9 +616,9 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 
 **Si GREEN y REFACTOR completaron sin errores ni regresiones** (`$REFACTOR_REGRESIONES = false`):
 
-#### 11a — Evaluar criterios DoD IMPLEMENTING
+#### 11a — Evaluar criterios DoD IMPLEMENT
 
-Cargar los criterios de la sección `IMPLEMENTING` de `docs/policies/definition-of-done-story.md`.
+Cargar los criterios de la sección `IMPLEMENT` de `docs/policies/definition-of-done-story.md`.
 
 Para cada criterio evaluar:
 - `✓` si hay evidencia positiva en los artefactos generados por el ciclo (archivos de test, código, sin errores reportados)
@@ -660,7 +660,7 @@ updated: <YYYY-MM-DD>
 | GREEN | ✅/❌ | {capas, archivos generados} |
 | REFACTOR | ✅/❌ | {sin regresiones / regresiones detectadas} |
 
-## DoD IMPLEMENTING
+## DoD IMPLEMENT
 
 | Criterio | Estado | Observación |
 |---|---|---|
@@ -673,7 +673,7 @@ updated: <YYYY-MM-DD>
 #### 11c — Actualizar `story.md` (condicional)
 
 **Si `$DOD_BLOQUEADO = false`:**
-- `status: IMPLEMENTING`
+- `status: IMPLEMENT`
 - `substatus: DONE`
 - `updated: {YYYY-MM-DD}`
 
@@ -707,7 +707,7 @@ Escribir `.tmp/story-implement/cycle-status.json`:
   "files_generated": "{$GREEN_FILES_GENERATED}",
   "files_modified": "{archivos modificados en REFACTOR}",
   "dod_bloqueado": false,
-  "final_status": "IMPLEMENTING/DONE",
+  "final_status": "IMPLEMENT/DONE",
   "timestamp": "{ISO timestamp}"
 }
 ```
@@ -723,10 +723,10 @@ Mostrar resumen según `$EXEC_MODE`:
 ──────────────────────────────────────────────────────────
 📄 implement-report.md → {$SPECS_BASE}/specs/stories/{story_id}/implement-report.md
 📄 cycle-status.json   → .tmp/story-implement/cycle-status.json
-📋 story.md: {IMPLEMENTING/DONE o IMPLEMENT/IN-PROGRESS} ✓
+📋 story.md: {IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS} ✓
 📋 release.md: {actualizado / no encontrado}
 
-DoD IMPLEMENTING:
+DoD IMPLEMENT:
 {tabla criterios ✓/❌/⚠️}
 ```
 
@@ -739,10 +739,10 @@ DoD IMPLEMENTING:
 
    implement-report.md → {$SPECS_BASE}/specs/stories/{story_id}/implement-report.md
    cycle-status.json   → .tmp/story-implement/cycle-status.json
-   story.md            → {IMPLEMENTING/DONE o IMPLEMENT/IN-PROGRESS}
+   story.md            → {IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS}
    release.md          → {actualizado / no encontrado}
 
-DoD IMPLEMENTING:
+DoD IMPLEMENT:
 {tabla criterios ✓/❌/⚠️}
 ```
 
@@ -811,7 +811,7 @@ El orquestador nunca pasa su contexto completo heredado a los subagentes.
 | Archivos de prueba | según skill de generación | Tests generados en código productivo |
 | Archivos de producción | según skill de generación | Código generado en Fases GREEN/REFACTOR |
 | `implement-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase |
-| `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENTING/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
+| `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
 | `release.md` (actualizado) | `$SPECS_BASE/specs/releases/<parent>/release.md` | Checklist con `[x]` para la historia completada (si existe) |
 | `red-phase-status.json` | `.tmp/story-implement/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN |
 | `cycle-status.json` | `.tmp/story-implement/cycle-status.json` | Estado final del ciclo TDD completo |

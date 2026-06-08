@@ -11,7 +11,7 @@
       "input": {
         "story_id": "FEAT-TEST",
         "sddf_config": {
-          "implementing": {
+          "IMPLEMENT": {
             "test_generators": [
               { "type": "unit", "skill": "story-test-unit-jest", "required": true },
               { "type": "eval", "skill": "story-test-eval", "required": true }
@@ -50,7 +50,7 @@
       "input": {
         "story_id": "FEAT-TEST",
         "sddf_config": {
-          "implementing": {
+          "IMPLEMENT": {
             "test_generators": [
               { "type": "unit", "skill": "skill-inexistente-xyz", "required": true }
             ]
@@ -83,7 +83,7 @@
       "input": {
         "story_id": "FEAT-TEST",
         "sddf_config": {
-          "implementing": {
+          "IMPLEMENT": {
             "test_generators": [
               { "type": "eval", "skill": "story-test-eval", "required": true }
             ]
@@ -124,7 +124,7 @@
           "files_generated": ["tests/unit/feat-test.spec.ts", "evals/evals.json"]
         },
         "sddf_config": {
-          "implementing": {
+          "IMPLEMENT": {
             "code_generator": { "skill": "story-code-nodejs", "required": true }
           }
         },
@@ -173,7 +173,7 @@
           "files_generated": ["tests/unit/feat-test.spec.ts"]
         },
         "sddf_config": {
-          "implementing": {
+          "IMPLEMENT": {
             "code_generator": { "skill": "story-code-nodejs", "required": true }
           }
         },
@@ -211,7 +211,7 @@
           "files_generated": ["tests/unit/feat-test.spec.ts"]
         },
         "sddf_config": {
-          "implementing": {
+          "IMPLEMENT": {
             "code_generator": { "skill": "story-code-nodejs", "required": true }
           }
         },
@@ -253,7 +253,7 @@
           "files_generated": ["tests/unit/feat-test.spec.ts"]
         },
         "sddf_config": {
-          "implementing": {
+          "IMPLEMENT": {
             "code_generator": { "skill": "story-code-nodejs", "required": true }
           }
         },
@@ -299,7 +299,7 @@
           "files_generated": ["tests/unit/feat-test.spec.ts"]
         },
         "sddf_config": {
-          "implementing": {
+          "IMPLEMENT": {
             "code_generator": { "skill": "story-code-nodejs", "required": true }
           }
         },
@@ -347,7 +347,7 @@
           "files_generated": ["tests/unit/feat-test.spec.ts"]
         },
         "sddf_config": {
-          "implementing": {
+          "IMPLEMENT": {
             "code_generator": { "skill": "story-code-nodejs", "required": true }
           }
         },

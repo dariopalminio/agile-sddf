@@ -31,7 +31,7 @@ updated: 2026-05-30
 |---|---|---|---|
 | T1.1 | Crear estructura de directorios `.claude/skills/story-implement/evals/` | ✓ completado | `.claude/skills/story-implement/evals/` |
 | T1.2 | Crear `evals/evals.json` con 3 casos de prueba (TC-001, TC-002, TC-003) | ✓ completado | `.claude/skills/story-implement/evals/evals.json` |
-| T2.1 | Añadir sección `implementing` a `docs/policies/sddf-config.yaml` | ✓ completado | `docs/policies/sddf-config.yaml` |
+| T2.1 | Añadir sección `IMPLEMENT` a `docs/policies/sddf-config.yaml` | ✓ completado | `docs/policies/sddf-config.yaml` |
 | T3.1 | Frontmatter YAML completo en SKILL.md | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
 | T3.2 | Paso 0: invocar skill-preflight | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
 | T3.3 | Paso 1: leer sddf-config.yaml y extraer test_generators | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
@@ -47,7 +47,7 @@ updated: 2026-05-30
 
 ---
 
-## Cumplimiento DoD — Fase IMPLEMENTING
+## Cumplimiento DoD — Fase IMPLEMENT
 
 | # | Criterio | Estado | Evidencia / Justificación |
 |---|---|---|---|

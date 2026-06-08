@@ -5,7 +5,7 @@ id: FEAT-078
 slug: FEAT-078-implement-tdd-fase-red-tasks
 title: "Tasks: story-implement — Fase RED: validar configuración y generar pruebas"
 date: 2026-05-30
-status: IMPLEMENTING
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-14-fabrica-de-skills
 story: FEAT-078
@@ -26,13 +26,13 @@ related:
 
 ## 2. Configuración — Extender sddf-config.yaml
 
-- [x] 2.1 Añadir sección `implementing` a `docs/policies/sddf-config.yaml` con `test_generators` (entradas de ejemplo: unit, e2e, eval con campos type/skill/required) y `code_generator` (skill + required) — D-1, Req-4
+- [x] 2.1 Añadir sección `IMPLEMENT` a `docs/policies/sddf-config.yaml` con `test_generators` (entradas de ejemplo: unit, e2e, eval con campos type/skill/required) y `code_generator` (skill + required) — D-1, Req-4
 
 ## 3. Implementación — SKILL.md de story-implement (Fase RED)
 
 - [x] 3.1 Escribir el archivo `.claude/skills/story-implement/SKILL.md` con frontmatter YAML completo: name, description (con frases trigger), triggers, version 1.0.0, type delegate, input, output — D-7
 - [x] 3.2 Agregar Paso 0 al SKILL.md: invocar `skill-preflight`; si retorna `✗ Entorno inválido` detener inmediatamente — Req-6
-- [x] 3.3 Agregar Paso 1 al SKILL.md: leer `docs/policies/sddf-config.yaml` y extraer `implementing.test_generators`; si sección ausente o vacía emitir `[WARN]` y continuar — D-1, Req-4
+- [x] 3.3 Agregar Paso 1 al SKILL.md: leer `docs/policies/sddf-config.yaml` y extraer `IMPLEMENT.test_generators`; si sección ausente o vacía emitir `[WARN]` y continuar — D-1, Req-4
 - [x] 3.4 [P] Agregar Paso 2 al SKILL.md: validar existencia de cada skill declarado con Glob `.claude/skills/{skill}/SKILL.md` antes de invocar ninguno (fail-fast); emitir ❌ si required:true y no existe, [WARN] si required:false — D-2, AC-2
 - [x] 3.5 [P] Agregar Paso 3 al SKILL.md: resolver inputs — priorizar testcases.md; si ausente emitir ⚠️ y usar story.md + design.md como fuentes alternativas; si ambas ausentes emitir ❌ y detener — D-3, AC-3
 - [x] 3.6 Agregar Paso 4 al SKILL.md: invocar skills de generación en orden configurado (un solo nivel de delegación); pasar bundle `{story_id, testcases_path|null, story_path, design_path}`; si subagente retorna `status: error` detener la fase RED sin invocar siguientes — D-4, AC-1

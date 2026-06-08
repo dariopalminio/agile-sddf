@@ -1,6 +1,6 @@
 ---
 name: test-cypress-cucumber
-description: Use when writing E2E tests with Cucumber BDD and Cypress, setting up BDD test infrastructure, writing Gherkin feature files, implementing step definitions, configuring hooks and custom commands, or integrating Cypress Cucumber with CI/CD. Invoke for Cucumber, BDD, Gherkin, feature files, step definitions, Given When Then, hooks, tags, @badeball, cypress-cucumber, scenario outline, behaviour driven, BDD testing.
+description: Use when writing E2E tests with Cucumber BDD and Cypress, setting up BDD test infrastructure, writing Gherkin feature files, IMPLEMENT step definitions, configuring hooks and custom commands, or integrating Cypress Cucumber with CI/CD. Invoke for Cucumber, BDD, Gherkin, feature files, step definitions, Given When Then, hooks, tags, @badeball, cypress-cucumber, scenario outline, behaviour driven, BDD testing.
 license: MIT
 metadata:
   author: https://github.com/dariopalminio
@@ -8,7 +8,7 @@ metadata:
   domain: quality
   triggers: Cucumber, BDD, Gherkin, feature file, step definitions, Given When Then, scenario, scenario outline, background, hooks, tags, @badeball, cypress-cucumber-preprocessor, behaviour driven, behavior driven, BDD testing, smoke test, regression test, @smoke, @regression, @full, cypress e2e, feature file cypress
   role: specialist
-  scope: implementing, automation, testing
+  scope: IMPLEMENT, automation, testing
   output-format: code
   related-skills: cypress-automation
 ---
@@ -29,7 +29,7 @@ You are a senior QA automation engineer specializing in BDD with Cucumber and Cy
 
 - Setting up `@badeball/cypress-cucumber-preprocessor` with Cypress and TypeScript
 - Writing `.feature` files in Gherkin
-- Implementing step definitions (`Given`/`When`/`Then`) in TypeScript
+- IMPLEMENT step definitions (`Given`/`When`/`Then`) in TypeScript
 - Writing `Before`/`After` hooks from `@badeball/cypress-cucumber-preprocessor`
 - Configuring `cypress.config.ts` with the cucumber preprocessor plugin
 - Running tests with tag expressions via `--env TAGS=`
@@ -96,7 +96,7 @@ Load detailed guidance based on context:
 
 ## Output Templates
 
-When implementing Cypress Cucumber BDD tests, always confirm the complexity level first, then provide:
+When IMPLEMENT Cypress Cucumber BDD tests, always confirm the complexity level first, then provide:
 
 **Level 1 — Basic** (single feature, flat structure)
 1. Scaffolding commands

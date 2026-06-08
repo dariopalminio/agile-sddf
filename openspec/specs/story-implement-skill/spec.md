@@ -12,7 +12,7 @@ The system SHALL provide the `story-implement` skill at `.claude/skills/story-im
 - **WHEN** the repository is inspected
 - **THEN** `.claude/skills/story-implement/SKILL.md` exists and contains valid YAML frontmatter with `name: story-implement`
 
-### Requirement: Skill requires all three planning artifacts before implementing
+### Requirement: Skill requires all three planning artifacts before IMPLEMENT
 The system SHALL verify that `story.md`, `design.md`, and `tasks.md` exist in the target story directory before executing any implementation task.
 
 #### Scenario: design.md or tasks.md is missing
@@ -37,7 +37,7 @@ The system SHALL process each pending task in `tasks.md` in order, generating a 
 The system SHALL mark each task as complete (`- [ ]` → `- [x]`) or blocked (`- [ ]` → `- [~]`) immediately after processing it, without waiting until all tasks are done.
 
 #### Scenario: Task marked complete immediately
-- **WHEN** the skill finishes implementing a task
+- **WHEN** the skill finishes IMPLEMENT a task
 - **THEN** `tasks.md` is updated with `- [x]` for that task before the skill begins the next task
 
 ### Requirement: Skill handles unimplementable tasks without stopping the pipeline
@@ -80,12 +80,12 @@ The system SHALL verify that `story.md` has `status: READY-FOR-IMPLEMENT` and `s
 - **WHEN** `/story-implement` is invoked and `story.md` has no `status` field or `status: BACKLOG`
 - **THEN** the skill halts with an error suggesting running `/story-plan` to complete the planning pipeline
 
-### Requirement: story-implement sets IMPLEMENTING/IN‑PROGRESS at the start of implementation
-The system SHALL update `status: IMPLEMENTING` and `substatus: IN‑PROGRESS` in `story.md` frontmatter after verifying preconditions and before processing the first task.
+### Requirement: story-implement sets IMPLEMENT/IN‑PROGRESS at the start of implementation
+The system SHALL update `status: IMPLEMENT` and `substatus: IN‑PROGRESS` in `story.md` frontmatter after verifying preconditions and before processing the first task.
 
 #### Scenario: Status set before first task
 - **WHEN** all preconditions are met and the skill is about to start the TDD loop
-- **THEN** `story.md` frontmatter MUST be updated to `status: IMPLEMENTING` and `substatus: IN‑PROGRESS` before `[T001] → implementando…` is displayed
+- **THEN** `story.md` frontmatter MUST be updated to `status: IMPLEMENT` and `substatus: IN‑PROGRESS` before `[T001] → implementando…` is displayed
 
 ### Requirement: story-implement sets READY-FOR-CODE-REVIEW/DONE upon completion
 The system SHALL update `status: READY-FOR-CODE-REVIEW` and `substatus: DONE` in `story.md` frontmatter after all tasks have been processed (completed and/or blocked) and `implement-report.md` has been generated.
@@ -96,7 +96,7 @@ The system SHALL update `status: READY-FOR-CODE-REVIEW` and `substatus: DONE` in
 
 #### Scenario: READY-FOR-CODE-REVIEW/DONE set even with blocked tasks
 - **WHEN** some tasks are blocked (`[~]`) but all tasks have been evaluated and `implement-report.md` lists all blockers
-- **THEN** `story.md` frontmatter MUST still be updated to `status: READY-FOR-CODE-REVIEW` and `substatus: DONE` (blocked tasks are documented, not a reason to leave the story in IMPLEMENTING)
+- **THEN** `story.md` frontmatter MUST still be updated to `status: READY-FOR-CODE-REVIEW` and `substatus: DONE` (blocked tasks are documented, not a reason to leave the story in IMPLEMENT)
 
 ### Requirement: story-implement updates the parent release checklist on READY-FOR-CODE-REVIEW/DONE
 The system SHALL locate the parent `release.md` (via `parent` field in `story.md` frontmatter) and update the story's checklist entry from `- [ ]` to `- [x]` when the story reaches `READY-FOR-CODE-REVIEW/DONE`.

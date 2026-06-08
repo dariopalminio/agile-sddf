@@ -30,7 +30,7 @@ related:
 ### Escenario principal – GREEN exitoso y REFACTOR con tests en verde, historia actualizada a CODE-REVIEW
 ```gherkin
 Dado que los tests están en estado rojo (Fase RED completada)
-  Y sddf-config.yaml declara el skill de coding bajo implementing.code_generator
+  Y sddf-config.yaml declara el skill de coding bajo IMPLEMENT.code_generator
   Y el skill de coding declarado existe en .claude/skills/
 Cuando story-implement ejecuta la Fase GREEN
 Entonces el skill invoca el code-generator para escribir el código mínimo que hace pasar los tests
@@ -62,7 +62,7 @@ Entonces el skill emite ⚠️ "Fase REFACTOR introdujo regresiones: <N> tests q
 
 ### Requerimiento: configurabilidad del skill de coding en sddf-config.yaml
 
-El skill determina qué skill de coding invocar leyendo `implementing.code_generator` en sddf-config.yaml. Cambiar el stack (de Node.js a Python, de React a Vue) solo requiere actualizar sddf-config.yaml; story-implement no necesita modificarse.
+El skill determina qué skill de coding invocar leyendo `IMPLEMENT.code_generator` en sddf-config.yaml. Cambiar el stack (de Node.js a Python, de React a Vue) solo requiere actualizar sddf-config.yaml; story-implement no necesita modificarse.
 
 ### Requerimiento: skill-preflight como Paso 0
 
@@ -81,4 +81,4 @@ El archivo testcases.md incluye una sección de progreso con checkboxes, y `/sto
 - **Posición en el pipeline:** story-implement (Fase RED, FEAT-078) → **story-implement (GREEN+REFACTOR)** → story-code-review
 - **Precondición de ejecución:** requiere que la Fase RED (FEAT-078) haya generado los archivos de prueba y confirmado el estado rojo
 - **Historias hermanas:** FEAT-078 (Fase RED), FEAT-082 (modos de ejecución)
-- **Configuración esperada en sddf-config.yaml:** sección `implementing.code_generator` con `{skill, required}`.
+- **Configuración esperada en sddf-config.yaml:** sección `IMPLEMENT.code_generator` con `{skill, required}`.

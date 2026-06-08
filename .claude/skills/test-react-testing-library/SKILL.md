@@ -18,7 +18,7 @@ metadata:
   domain: quality
   triggers: React, component testing, Testing Library, Vitest, happy-dom, axe-core, render, screen, userEvent, accessibility, describe, it
   role: specialist
-  scope: implementing, automation, testing, components-testing
+  scope: IMPLEMENT, automation, testing, components-testing
   output-format: code
 ---
 

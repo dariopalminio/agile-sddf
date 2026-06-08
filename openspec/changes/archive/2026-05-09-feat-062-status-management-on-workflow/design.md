@@ -46,7 +46,7 @@ READY-FOR-PLAN/DONE    → seteado por story-creation/story-refine al finalizar
 PLAN/IN‑PROGRESS    → seteado por story-plan al inicio del pipeline
 READY-FOR-IMPLEMENT/DONE      → seteado por story-analyze al finalizar (último paso del pipeline)
   ↓
-IMPLEMENTING/IN‑PROGRESS → seteado por story-implement al inicio
+IMPLEMENT/IN‑PROGRESS → seteado por story-implement al inicio
 READY-FOR-CODE-REVIEW/DONE   → seteado por story-implement al finalizar
 ```
 

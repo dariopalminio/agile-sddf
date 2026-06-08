@@ -2,13 +2,13 @@
 type: implement-report
 id: FEAT-069
 slug: feat-069-implement-report
-title: "Implement Report: DoD IMPLEMENTING en story-implement"
+title: "Implement Report: DoD IMPLEMENT en story-implement"
 story: FEAT-069
 created: 2026-05-14
 updated: 2026-05-14
 ---
 
-# Reporte de Implementación: DoD IMPLEMENTING en story-implement
+# Reporte de Implementación: DoD IMPLEMENT en story-implement
 
 ## Resumen
 
@@ -37,7 +37,7 @@ updated: 2026-05-14
 | T006 | Agregar instrucción condicional en paso 4a (DoD no encontrado) | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
 | T007 | Modificar paso 4b para transición condicional según DoD | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
 | T008 | Agregar instrucción para caso bloqueado en paso 4b | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
-| T009 | Modificar Resumen Final para incluir línea DoD IMPLEMENTING | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
+| T009 | Modificar Resumen Final para incluir línea DoD IMPLEMENT | ✓ completado | `.claude/skills/story-implement/SKILL.md` |
 | T010 | Actualizar ejemplo de output implement-report.md con sección DoD | ✓ completado | `.claude/skills/story-implement/examples/output/implement-report.md` |
 | T011 | [P] Verificar AC-1: sección DoD en reporte y transición sin errores | ✓ completado | — |
 | T012 | [P] Verificar AC-2: bloqueo de transición cuando hay DoD-ERRORs | ✓ completado | — |
@@ -45,7 +45,7 @@ updated: 2026-05-14
 
 ---
 
-## Cumplimiento DoD — Fase IMPLEMENTING
+## Cumplimiento DoD — Fase IMPLEMENT
 
 | # | Criterio | Estado | Evidencia / Justificación |
 |---|---|---|---|
@@ -55,7 +55,7 @@ updated: 2026-05-14
 | 4 | No hay regresiones en funcionalidades previamente trabajadas | ⚠️ | Requiere ejecución — no evaluable por story-implement |
 | 5 | El código sigue las convenciones de constitution.md | ✓ | Solo Markdown en SKILL.md; rutas usan $SPECS_BASE; sin hardcoding de prefijos de cliente |
 | 6 | No hay código comentado ni TODO sin issue asociado | ✓ | El SKILL.md no introduce comentarios ni TODOs |
-| 7 | No hay variables/imports/funciones sin usar | ✓ | Todas las variables ($DOD_IMPLEMENTING_CRITERIA, $DOD_RESULT, $DOD_BLOQUEADO) son referenciadas en 2f, 4g, 4b y Resumen Final |
+| 7 | No hay variables/imports/funciones sin usar | ✓ | Todas las variables ($DOD_IMPLEMENT_CRITERIA, $DOD_RESULT, $DOD_BLOQUEADO) son referenciadas en 2f, 4g, 4b y Resumen Final |
 | 8 | El código pasa el linter sin errores | ⚠️ | No evaluable — SKILL.md es Markdown, no código ejecutable |
 | 9 | Existe al menos un test por escenario principal de story.md | ✓ | Tareas T011, T012, T013 verifican AC-1, AC-2, AC-3 respectivamente |
 | 10 | Todos los tests existentes pasan | ⚠️ | Requiere ejecución — no evaluable por story-implement |

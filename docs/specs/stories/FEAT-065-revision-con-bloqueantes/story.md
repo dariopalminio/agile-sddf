@@ -25,7 +25,7 @@ related:
 # 📖 Historia: Skill story-code-review — instrucciones de corrección cuando la revisión detecta bloqueantes
 
 **Como** desarrollador o tech lead cuya revisión multi-agente detectó problemas de severidad HIGH o MEDIUM  
-**Quiero** recibir instrucciones concretas de corrección y que la historia retroceda a IMPLEMENTING  
+**Quiero** recibir instrucciones concretas de corrección y que la historia retroceda a IMPLEMENT  
 **Para** corregir el código con guía clara sobre qué cambiar y en qué archivos, sin perder el contexto de lo que falló
 
 ## ✅ Criterios de aceptación
@@ -36,7 +36,7 @@ Dado que "/story-code-review FEAT-NNN" detecta al menos un problema de severidad
 Cuando el árbitro consolida los informes de los tres revisores
 Entonces el skill genera "docs/specs/stories/FEAT-NNN/fix-directives.md" con instrucciones concretas de corrección
   Y "fix-directives.md" incluye la lista de archivos permitidos para modificar (lista blanca)
-  Y el frontmatter de "story.md" permanece en status: IMPLEMENTING y substatus: IN-PROGRESS
+  Y el frontmatter de "story.md" permanece en status: IMPLEMENT y substatus: IN-PROGRESS
   Pero no se actualiza la historia a READY-FOR-VERIFY hasta que una nueva revisión retorne "approved"
 ```
 

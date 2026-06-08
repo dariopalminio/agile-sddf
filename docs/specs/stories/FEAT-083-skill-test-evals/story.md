@@ -57,7 +57,7 @@ Entonces genera evals/evals.json con casos de prueba que cubren el flujo princip
 
 ### Requerimiento: declarado en sddf-config.yaml para invocación agnóstica
 
-`skill-test-evals` debe estar declarado en `docs/policies/sddf-config.yaml` bajo la sección `implementing.test_generators` con `type: eval`. Esto permite que `story-implement` lo descubra e invoque sin acoplamiento directo: cambiar el skill de generación de evals solo requiere actualizar la configuración, no modificar el orquestador.
+`skill-test-evals` debe estar declarado en `docs/policies/sddf-config.yaml` bajo la sección `IMPLEMENT.test_generators` con `type: eval`. Esto permite que `story-implement` lo descubra e invoque sin acoplamiento directo: cambiar el skill de generación de evals solo requiere actualizar la configuración, no modificar el orquestador.
 
 ## ⚙️ Criterios no funcionales
 
@@ -73,7 +73,7 @@ Entonces genera evals/evals.json con casos de prueba que cubren el flujo princip
 - **Historias relacionadas:** FEAT-078 (Fase RED donde se invoca este skill), FEAT-079 (story-testcases que genera el testcases.md que este skill consume)
 - **Configuración esperada en sddf-config.yaml:**
   ```yaml
-  implementing:
+  IMPLEMENT:
     test_generators:
       - type: eval
         skill: skill-test-evals

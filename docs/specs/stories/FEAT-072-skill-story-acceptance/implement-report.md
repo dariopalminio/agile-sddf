@@ -63,7 +63,7 @@ updated: 2026-05-16
 
 ---
 
-## Cumplimiento DoD — Fase IMPLEMENTING
+## Cumplimiento DoD — Fase IMPLEMENT
 
 | # | Criterio | Estado | Evidencia / Justificación |
 |---|---|---|---|

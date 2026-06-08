@@ -44,7 +44,7 @@ defaults:
     command: "pnpm run test:eval"
     required: true
 
-implementing:
+IMPLEMENT:
   test_generators:
     - type: unit
       skill: none

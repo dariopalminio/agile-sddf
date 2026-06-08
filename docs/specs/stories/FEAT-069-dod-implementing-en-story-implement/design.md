@@ -2,63 +2,63 @@
 alwaysApply: false
 type: design
 id: FEAT-069
-slug: dod-implementing-en-story-implement-design
-title: "Design: DoD IMPLEMENTING en story-implement"
+slug: dod-IMPLEMENT-en-story-implement-design
+title: "Design: DoD IMPLEMENT en story-implement"
 story: FEAT-069
 created: 2026-05-14
 updated: 2026-05-14
 related:
-  - dod-implementing-en-story-implement
+  - dod-IMPLEMENT-en-story-implement
 ---
 
 <!-- Referencias -->
-[[dod-implementing-en-story-implement]]
+[[dod-IMPLEMENT-en-story-implement]]
 
 ## Context
 
 El skill `story-implement` (`.claude/skills/story-implement/SKILL.md`) implementa el código de una historia SDD tarea por tarea en ciclo TDD. Al finalizar todas las tareas, genera `implement-report.md` y transiciona `story.md` a `READY-FOR-CODE-REVIEW/DONE`.
 
-FEAT-069 agrega **validación de Definition of Done para la fase IMPLEMENTING**: antes de cerrar la historia, el skill lee dinámicamente los criterios DoD de la sección "IMPLEMENTING" de `$SPECS_BASE/policies/definition-of-done-story.md`, evalúa cada criterio contra la evidencia generada durante la implementación, e incluye los resultados en `implement-report.md`. Si hay DoD-ERRORs (criterios ❌), la transición a `READY-FOR-CODE-REVIEW/DONE` se bloquea.
+FEAT-069 agrega **validación de Definition of Done para la fase IMPLEMENT**: antes de cerrar la historia, el skill lee dinámicamente los criterios DoD de la sección "IMPLEMENT" de `$SPECS_BASE/policies/definition-of-done-story.md`, evalúa cada criterio contra la evidencia generada durante la implementación, e incluye los resultados en `implement-report.md`. Si hay DoD-ERRORs (criterios ❌), la transición a `READY-FOR-CODE-REVIEW/DONE` se bloquea.
 
-Este diseño sigue el mismo patrón establecido por FEAT-068 (DoD PLAN en story-analyze), aplicándolo al skill story-implement y a la fase IMPLEMENTING.
+Este diseño sigue el mismo patrón establecido por FEAT-068 (DoD PLAN en story-analyze), aplicándolo al skill story-implement y a la fase IMPLEMENT.
 
 **Artefactos afectados:**
 - `.claude/skills/story-implement/SKILL.md` — sub-paso `2f` (carga DoD), sub-paso `4g` (evaluación DoD), paso `4a` (sección DoD en reporte), paso `4b` (condición de transición), Resumen Final
 
-**Restricción detectada:** El DoD puede no tener sección con término "IMPLEMENTING" (por cambio de nombre o ausencia). La degradación elegante es obligatoria: si la sección no se encuentra, emitir ⚠️ y continuar sin validar. Ver CR-001.
+**Restricción detectada:** El DoD puede no tener sección con término "IMPLEMENT" (por cambio de nombre o ausencia). La degradación elegante es obligatoria: si la sección no se encuentra, emitir ⚠️ y continuar sin validar. Ver CR-001.
 
 **Restricción adicional:** Story-implement genera código y tests, pero no los **ejecuta**. Los criterios DoD que requieren ejecución (ej. "tests pasan", "CI pasa") no pueden evaluarse de forma concluyente — deben clasificarse como ⚠️ (evidencia insuficiente), no como ❌.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Agregar sub-paso `2f` en Step 2: localizar y cargar `definition-of-done-story.md`, extraer sección del estado IMPLEMENTING, registrar criterios como `$DOD_IMPLEMENTING_CRITERIA` o emitir ⚠️ si no encontrado. // satisface: AC-3
-- Agregar sub-paso `4g` en Step 4 (antes de `4b`): evaluar cada criterio DoD IMPLEMENTING contra evidencia del implement-report y código generado, clasificar `✓`/`❌`/`⚠️`. // satisface: AC-1, AC-2
-- Modificar paso `4a`: incluir sección "Cumplimiento DoD — Fase IMPLEMENTING" en `implement-report.md` con tabla de criterio / estado / evidencia. // satisface: AC-1
+- Agregar sub-paso `2f` en Step 2: localizar y cargar `definition-of-done-story.md`, extraer sección del estado IMPLEMENT, registrar criterios como `$DOD_IMPLEMENT_CRITERIA` o emitir ⚠️ si no encontrado. // satisface: AC-3
+- Agregar sub-paso `4g` en Step 4 (antes de `4b`): evaluar cada criterio DoD IMPLEMENT contra evidencia del implement-report y código generado, clasificar `✓`/`❌`/`⚠️`. // satisface: AC-1, AC-2
+- Modificar paso `4a`: incluir sección "Cumplimiento DoD — Fase IMPLEMENT" en `implement-report.md` con tabla de criterio / estado / evidencia. // satisface: AC-1
 - Modificar paso `4b`: condicionar la transición a `READY-FOR-CODE-REVIEW/DONE` al resultado del sub-paso `4g` (no transicionar si hay DoD-ERRORs). // satisface: AC-2
-- Agregar línea `DoD IMPLEMENTING: N/Total criterios ✓` al resumen final mostrado al usuario. // satisface: AC-1
+- Agregar línea `DoD IMPLEMENT: N/Total criterios ✓` al resumen final mostrado al usuario. // satisface: AC-1
 - Los cambios respetan los patrones de `skill-structural-pattern.md`: sub-paso `2f` numerado alfabéticamente dentro de Step 2, sub-paso `4g` insertado entre `4a` y `4b` sin renumerar los pasos existentes (4b–4f permanecen inalterados). // satisface: Req-Struct
-- Actualizar `.claude/skills/story-implement/examples/output/implement-report.md` para incluir la sección "Cumplimiento DoD — Fase IMPLEMENTING" con al menos una fila `✓` y una fila `⚠️` (requiere ejecución externa), reflejando el output esperado tras los cambios. // satisface: Req-SC (artefactos de ejemplo actualizados)
+- Actualizar `.claude/skills/story-implement/examples/output/implement-report.md` para incluir la sección "Cumplimiento DoD — Fase IMPLEMENT" con al menos una fila `✓` y una fila `⚠️` (requiere ejecución externa), reflejando el output esperado tras los cambios. // satisface: Req-SC (artefactos de ejemplo actualizados)
 
 **Non-Goals:**
 - Modificar la lógica TDD del Paso 3 (ciclo test → código → refactor)
-- Agregar la sección "IMPLEMENTING" al DoD si no existe (tarea externa, ver CR-001)
+- Agregar la sección "IMPLEMENT" al DoD si no existe (tarea externa, ver CR-001)
 - Ejecutar tests ni verificar que los tests generados pasan
 - Crear un subagente evaluador para el DoD (el LLM evalúa semánticamente con el contexto disponible)
 - Modificar el ciclo de vida de estados más allá de lo especificado en la historia
 
 ## Decisions
 
-### D1 — Estrategia de extracción de la sección "IMPLEMENTING" del DoD // satisface: AC-3
+### D1 — Estrategia de extracción de la sección "IMPLEMENT" del DoD // satisface: AC-3
 
 El DoD puede evolucionar (secciones renombradas, añadidas, eliminadas). El skill no debe hardcodear el nombre exacto de la sección.
 
-**Opción elegida:** Búsqueda por coincidencia flexible — localizar el primer encabezado h3 (`###`) cuyo texto contenga, case-insensitive, alguno de los términos: `["IMPLEMENTING", "IMPLEMENTANDO", "IMPLEMENTACIÓN"]`. Registrar en el log qué encabezado fue encontrado. Extraer todas las líneas de checkbox (`- [ ] <texto>` y `- [x] <texto>`) dentro de esa sección como lista de criterios planos.
+**Opción elegida:** Búsqueda por coincidencia flexible — localizar el primer encabezado h3 (`###`) cuyo texto contenga, case-insensitive, alguno de los términos: `["IMPLEMENT", "IMPLEMENTANDO", "IMPLEMENTACIÓN"]`. Registrar en el log qué encabezado fue encontrado. Extraer todas las líneas de checkbox (`- [ ] <texto>` y `- [x] <texto>`) dentro de esa sección como lista de criterios planos.
 
-Resultado: lista `$DOD_IMPLEMENTING_CRITERIA` = lista de strings, una por criterio.
+Resultado: lista `$DOD_IMPLEMENT_CRITERIA` = lista de strings, una por criterio.
 
 **Alternativas rechazadas:**
-- *Match exacto al string "IMPLEMENTING"*: frágil; si el DoD titula la sección "IMPLEMENTACIÓN" o "IMPLEMENTANDO", falla sin degradación. Rechazado.
+- *Match exacto al string "IMPLEMENT"*: frágil; si el DoD titula la sección "IMPLEMENTACIÓN" o "IMPLEMENTANDO", falla sin degradación. Rechazado.
 - *Hardcodear los criterios del DoD en el skill*: viola P6 (diseño para el cambio) y el principio 5 del framework (template como fuente de verdad). Si el DoD evoluciona, el skill queda desactualizado. Rechazado.
 - *Leer todo el DoD y enviar al LLM a extraer*: innecesariamente costoso en contexto; la extracción por encabezado es suficiente y predecible. Rechazado.
 
@@ -93,11 +93,11 @@ Integrar en los pasos existentes siguiendo la numeración del SKILL.md sin crear
 
 | Punto de integración | Acción | Paso actual |
 |---|---|---|
-| Sub-paso `2f` | Localizar DoD, extraer sección IMPLEMENTING, registrar `$DOD_IMPLEMENTING_CRITERIA` o emitir ⚠️ | Step 2 |
+| Sub-paso `2f` | Localizar DoD, extraer sección IMPLEMENT, registrar `$DOD_IMPLEMENT_CRITERIA` o emitir ⚠️ | Step 2 |
 | Sub-paso `4g` (nuevo, antes de `4b`) | Evaluar cada criterio semánticamente, clasificar ✓/❌/⚠️, registrar `$DOD_RESULT` | Step 4 |
-| Sección DoD en `4a` | Completar sección "Cumplimiento DoD — Fase IMPLEMENTING" en implement-report.md | Step 4 |
+| Sección DoD en `4a` | Completar sección "Cumplimiento DoD — Fase IMPLEMENT" en implement-report.md | Step 4 |
 | Guardia de transición DoD en `4b` | `status: READY-FOR-CODE-REVIEW` solo si `$DOD_RESULT` no contiene ❌ | Step 4 |
-| Línea resumen DoD | `DoD IMPLEMENTING: N/Total criterios ✓` en Resumen Final | Resumen Final |
+| Línea resumen DoD | `DoD IMPLEMENT: N/Total criterios ✓` en Resumen Final | Resumen Final |
 
 **Alternativa rechazada:** Paso dedicado (ej. "Paso 4.5") entre Step 4 y el resumen. Rompe la numeración establecida sin aportar valor estructural. Rechazado.
 
@@ -110,7 +110,7 @@ El formato del reporte actual (definido inline en el SKILL.md del Paso 4a) no in
 Nueva sección al final del reporte (antes del bloque "Nota sobre los Tests"):
 
 ```
-## Cumplimiento DoD — Fase IMPLEMENTING
+## Cumplimiento DoD — Fase IMPLEMENT
 
 | # | Criterio | Estado | Evidencia / Justificación |
 |---|---|---|---|
@@ -122,8 +122,8 @@ Nueva sección al final del reporte (antes del bloque "Nota sobre los Tests"):
 
 Si el DoD no fue encontrado (AC-3), mostrar sección con texto:
 ```
-⚠️ DoD IMPLEMENTING no encontrado — se omitió la validación.
-   Verifica que $SPECS_BASE/policies/definition-of-done-story.md contiene la sección "IMPLEMENTING".
+⚠️ DoD IMPLEMENT no encontrado — se omitió la validación.
+   Verifica que $SPECS_BASE/policies/definition-of-done-story.md contiene la sección "IMPLEMENT".
 ```
 
 **Alternativa rechazada:** Omitir la sección si el DoD no se encontró. Da menos visibilidad al usuario sobre el estado de la validación. Rechazado.
@@ -140,7 +140,7 @@ Story-implement genera código pero no lo ejecuta. Criterios como "todos los tes
 
 | Riesgo | Mitigación |
 |---|---|
-| DoD no tiene sección "IMPLEMENTING" (CR-001) | AC-3 exige degradación: emitir ⚠️ y continuar. La sección DoD en el reporte muestra el aviso |
+| DoD no tiene sección "IMPLEMENT" (CR-001) | AC-3 exige degradación: emitir ⚠️ y continuar. La sección DoD en el reporte muestra el aviso |
 | Evaluación semántica produce resultado inconsistente en re-ejecuciones | Ante duda usar `⚠️` no `❌`; la ambigüedad no bloquea |
 | Criterios de ejecución (tests, CI) nunca pueden ser ✓ | D6: clasificar como ⚠️ explícito con razón "requiere ejecución externa" |
 | Sub-paso 4g agrega latencia al cierre | La evaluación ocurre solo una vez al final; no afecta el ciclo TDD por tarea |
@@ -148,14 +148,14 @@ Story-implement genera código pero no lo ejecuta. Criterios como "todos los tes
 
 ## Open Questions
 
-- **CR-001**: La sección "IMPLEMENTING" de `definition-of-done-story.md` existe y tiene contenido (verificado en Paso 3). A diferencia de FEAT-068 (donde "PLAN" no existía), aquí el DoD sí tiene la sección requerida. El sub-paso 2f debería encontrarla exitosamente.
+- **CR-001**: La sección "IMPLEMENT" de `definition-of-done-story.md` existe y tiene contenido (verificado en Paso 3). A diferencia de FEAT-068 (donde "PLAN" no existía), aquí el DoD sí tiene la sección requerida. El sub-paso 2f debería encontrarla exitosamente.
 - ¿Debe el Resumen Final cambiar su estado final (`✅`/`⚠️`) según el resultado del DoD, o solo mostrar la línea de conteo? Propuesta: si hay DoD-ERRORs, el estado mostrado cambia a `⚠️ Implementación completada con DoD-ERRORs pendientes` en lugar de `✅ Implementación completa`.
 
 ## Registro de Cambios (CR)
 
 ### CR-001
 - **Tipo**: dependencia (resuelta)
-- **Descripción**: `docs/policies/definition-of-done-story.md` SÍ contiene la sección `### Definition of Done para el estado IMPLEMENTING` con criterios de aceptación, código, tests, documentación e integración. Sub-paso 2f podrá extraerlos exitosamente. No hay bloqueo.
+- **Descripción**: `docs/policies/definition-of-done-story.md` SÍ contiene la sección `### Definition of Done para el estado IMPLEMENT` con criterios de aceptación, código, tests, documentación e integración. Sub-paso 2f podrá extraerlos exitosamente. No hay bloqueo.
 - **Documento afectado**: ninguno — condición favorable
 - **Acción requerida**: ninguna
 

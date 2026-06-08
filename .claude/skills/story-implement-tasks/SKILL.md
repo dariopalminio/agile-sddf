@@ -46,7 +46,7 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
 [story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación (viene de story-code-review needs-changes)
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
-     │   Al iniciar: story.md → IMPLEMENTING/IN‑PROGRESS
+     │   Al iniciar: story.md → IMPLEMENT/IN‑PROGRESS
      │   Al finalizar: story.md → IMPLEMENT/DONE + release.md checklist actualizado
      ↓
 [story.md: IMPLEMENT/DONE]
@@ -91,7 +91,7 @@ El frontmatter de `story.md` debe cumplir alguna de las siguientes condiciones a
 | Condición | status | substatus | Descripción |
 |---|---|---|---|
 | Ejecución inicial o re-implementación | `READY-FOR-IMPLEMENT` | `DONE` | viene de story-plan / story-analyze / story-code-review (rejection) |
-| Reanudación | `IMPLEMENTING` | `IN-PROGRESS` | viene de una ejecución parcial o de story-code-review con cambios requeridos |
+| Reanudación | `IMPLEMENT` | `IN-PROGRESS` | viene de una ejecución parcial o de story-code-review con cambios requeridos |
 
 Cualquier otro estado detiene la ejecución con error descriptivo.
 
@@ -122,9 +122,9 @@ Cualquier otro estado detiene la ejecución con error descriptivo.
 | Evento | status | substatus |
 |--------|--------|-----------|
 | Precondición inicial (ejecución nueva) | `READY-FOR-IMPLEMENT` | `DONE` |
-| Precondición reanudación (parcialmente implementada) | `IMPLEMENTING` | `IN-PROGRESS` |
-| Antes de la primera tarea (Paso 2) | `IMPLEMENTING` | `IN-PROGRESS` |
-| Después de generar `implement-report.md` (Paso 4) | `IMPLEMENTING` | `DONE` |
+| Precondición reanudación (parcialmente implementada) | `IMPLEMENT` | `IN-PROGRESS` |
+| Antes de la primera tarea (Paso 2) | `IMPLEMENT` | `IN-PROGRESS` |
+| Después de generar `implement-report.md` (Paso 4) | `IMPLEMENT` | `DONE` |
 
 ### Reglas de comportamiento
 
@@ -214,7 +214,7 @@ Leer el frontmatter de `story.md` y verificar que se cumple alguna de las siguie
 Precondición válida si:
   (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← ejecución inicial o re-implementación tras code review
   OR
-  (status: IMPLEMENTING          AND substatus: IN-PROGRESS) ← reanudación de implementación parcial
+  (status: IMPLEMENT          AND substatus: IN-PROGRESS) ← reanudación de implementación parcial
 ```
 
 **Si la precondición NO se cumple:**
@@ -243,7 +243,7 @@ Mostrar confirmación de inicio:
    Directorio: <ruta_directorio>
    Artefactos: story.md ✓ | design.md ✓ | tasks.md ✓
    Estado: READY-FOR-IMPLEMENT/DONE ✓        (si $ENTRADA_STATUS = READY-FOR-IMPLEMENT)
-   Estado: IMPLEMENT/IN-PROGRESS ✓        (si $ENTRADA_STATUS = IMPLEMENTING)
+   Estado: IMPLEMENT/IN-PROGRESS ✓        (si $ENTRADA_STATUS = IMPLEMENT)
 ```
 
 ---
@@ -301,7 +301,7 @@ Calcular y registrar internamente:
 ```
 ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.
    Tareas completadas: <N_completadas>
-   Sugerencia: ejecuta /story-code-review <story_id> si la historia está en IMPLEMENTING.
+   Sugerencia: ejecuta /story-code-review <story_id> si la historia está en IMPLEMENT.
 ```
 
 **Si `modo = reanudación`** (y `N_pendientes > 0`), mostrar el siguiente resumen antes de la primera tarea:
@@ -343,37 +343,37 @@ Mostrar resumen de carga:
 
 Antes de ejecutar la primera tarea, verificar el estado de entrada registrado en `$ENTRADA_STATUS`:
 
-- Si `$ENTRADA_STATUS` es `IMPLEMENTING` (el frontmatter ya tiene `status: IMPLEMENTING / substatus: IN-PROGRESS`): **omitir la escritura** — el estado ya es correcto, no se realiza ninguna modificación al archivo.
+- Si `$ENTRADA_STATUS` es `IMPLEMENT` (el frontmatter ya tiene `status: IMPLEMENT / substatus: IN-PROGRESS`): **omitir la escritura** — el estado ya es correcto, no se realiza ninguna modificación al archivo.
 - Si `$ENTRADA_STATUS` es `READY-FOR-IMPLEMENT`: actualizar el frontmatter de `story.md`:
-  - `status: IMPLEMENTING`
+  - `status: IMPLEMENT`
   - `substatus: IN-PROGRESS`
 
 Esta verificación debe ocurrir antes de procesar cualquier tarea del Paso 3.
 
-#### 2f. Cargar criterios DoD IMPLEMENTING
+#### 2f. Cargar criterios DoD IMPLEMENT
 
 Intentar localizar `$SPECS_BASE/policies/definition-of-done-story.md`.
 
 **Si el archivo no existe:**
 ```
-⚠️ definition-of-done-story.md no encontrado en $SPECS_BASE/policies/ — se omitirá la validación DoD IMPLEMENTING
+⚠️ definition-of-done-story.md no encontrado en $SPECS_BASE/policies/ — se omitirá la validación DoD IMPLEMENT
 ```
-Registrar internamente `$DOD_IMPLEMENTING_CRITERIA = []` y continuar.
+Registrar internamente `$DOD_IMPLEMENT_CRITERIA = []` y continuar.
 
 **Si el archivo existe:**
-1. Buscar el primer encabezado h3 (`###`) cuyo texto contenga, case-insensitive, alguno de los términos: `IMPLEMENTING`, `IMPLEMENTANDO` o `IMPLEMENTACIÓN`
+1. Buscar el primer encabezado h3 (`###`) cuyo texto contenga, case-insensitive, alguno de los términos: `IMPLEMENT`, `IMPLEMENTANDO` o `IMPLEMENTACIÓN`
 2. Registrar en log el encabezado encontrado
 3. **Si no se encuentra ningún encabezado coincidente:**
    ```
-   ⚠️ Sección IMPLEMENTING no encontrada en DoD — se omitirá la validación DoD IMPLEMENTING
+   ⚠️ Sección IMPLEMENT no encontrada en DoD — se omitirá la validación DoD IMPLEMENT
    ```
-   Registrar internamente `$DOD_IMPLEMENTING_CRITERIA = []` y continuar.
-4. **Si se encontró la sección:** extraer todas las líneas `- [ ] <texto>` y `- [x] <texto>` dentro de esa sección como lista de criterios planos; registrar internamente como `$DOD_IMPLEMENTING_CRITERIA`
+   Registrar internamente `$DOD_IMPLEMENT_CRITERIA = []` y continuar.
+4. **Si se encontró la sección:** extraer todas las líneas `- [ ] <texto>` y `- [x] <texto>` dentro de esa sección como lista de criterios planos; registrar internamente como `$DOD_IMPLEMENT_CRITERIA`
 
 Mostrar resumen de carga DoD:
 ```
-📋 DoD IMPLEMENTING: <N> criterios cargados desde <ruta>      (si encontrado)
-📋 DoD IMPLEMENTING: ⚠️ no disponible — se omitirá la validación  (si no encontrado)
+📋 DoD IMPLEMENT: <N> criterios cargados desde <ruta>      (si encontrado)
+📋 DoD IMPLEMENT: ⚠️ no disponible — se omitirá la validación  (si no encontrado)
 ```
 
 ---
@@ -569,14 +569,14 @@ Si `N_completadas = 0` (ejecución inicial), omitir las filas de "ejecución ant
 
 ---
 
-## Cumplimiento DoD — Fase IMPLEMENTING
+## Cumplimiento DoD — Fase IMPLEMENT
 
 <!-- Completar con resultados del sub-paso 4g -->
 
-**Si `$DOD_IMPLEMENTING_CRITERIA` está vacío:**
+**Si `$DOD_IMPLEMENT_CRITERIA` está vacío:**
 ```
-⚠️ DoD IMPLEMENTING no encontrado — se omitió la validación.
-   Verifica que $SPECS_BASE/policies/definition-of-done-story.md contiene la sección "IMPLEMENTING".
+⚠️ DoD IMPLEMENT no encontrado — se omitió la validación.
+   Verifica que $SPECS_BASE/policies/definition-of-done-story.md contiene la sección "IMPLEMENT".
 ```
 
 **Si hay criterios evaluados**, incluir la siguiente tabla con los resultados del sub-paso 4g:
@@ -600,14 +600,14 @@ Pasos recomendados:
 3. Consultar `design.md` para verificar que la implementación respeta las interfaces definidas
 ```
 
-#### 4g. Evaluar criterios DoD IMPLEMENTING
+#### 4g. Evaluar criterios DoD IMPLEMENT
 
-**Si `$DOD_IMPLEMENTING_CRITERIA` está vacío** (no se cargó la sección DoD en el paso 2f):
+**Si `$DOD_IMPLEMENT_CRITERIA` está vacío** (no se cargó la sección DoD en el paso 2f):
 - Registrar `$DOD_RESULT = []` y `$DOD_BLOQUEADO = false`
-- Completar la sección "Cumplimiento DoD — Fase IMPLEMENTING" en `implement-report.md` con el aviso de sección no encontrada
+- Completar la sección "Cumplimiento DoD — Fase IMPLEMENT" en `implement-report.md` con el aviso de sección no encontrada
 - Continuar sin bloquear la transición de estado
 
-**Si `$DOD_IMPLEMENTING_CRITERIA` tiene criterios:**
+**Si `$DOD_IMPLEMENT_CRITERIA` tiene criterios:**
 
 Para cada criterio, evaluar semánticamente contra:
 - Contenido de `tasks.md` (tareas completadas con `[x]`)
@@ -631,20 +631,20 @@ Calcular:
 - `N_dod_error` = criterios con `❌`
 - `$DOD_BLOQUEADO` = `true` si `N_dod_error > 0`; `false` en caso contrario
 
-Completar la sección "Cumplimiento DoD — Fase IMPLEMENTING" en `implement-report.md` con la tabla resultante y la línea de resumen `**Resumen:** N_dod_ok/Total criterios ✓`.
+Completar la sección "Cumplimiento DoD — Fase IMPLEMENT" en `implement-report.md` con la tabla resultante y la línea de resumen `**Resumen:** N_dod_ok/Total criterios ✓`.
 
 #### 4b. Actualizar frontmatter a IMPLEMENT/DONE (condicional según DoD)
 
 **Si `$DOD_BLOQUEADO = false`** (no hay criterios DoD con `❌`):
 - Actualizar el frontmatter de `story.md`:
-  - `status: IMPLEMENTING`
+  - `status: IMPLEMENT`
   - `substatus: DONE`
 
 **Si `$DOD_BLOQUEADO = true`** (hay al menos un criterio DoD con `❌`):
 - NO actualizar el frontmatter — `story.md` permanece en `IMPLEMENT/IN-PROGRESS`
 - Mostrar al usuario los criterios DoD fallidos:
   ```
-  ⚠️ Transición a IMPLEMENTING bloqueada por DoD-ERRORs:
+  ⚠️ Transición a IMPLEMENT bloqueada por DoD-ERRORs:
 
   <lista de criterios con ❌ y su evidencia>
 
@@ -734,8 +734,8 @@ Al terminar, mostrar:
 📋 Estado story.md: IMPLEMENT/DONE ✓             (si $DOD_BLOQUEADO = false)
 📋 Estado story.md: IMPLEMENT/IN-PROGRESS ✓               (si $DOD_BLOQUEADO = true)
 📋 Release checklist: <✓ actualizado en <ruta>/release.md | ⚠️ no actualizado — <razón>>
-📋 DoD IMPLEMENTING: {N_dod_ok}/{Total} criterios ✓          (si DoD fue evaluado)
-📋 DoD IMPLEMENTING: ⚠️ no evaluado (sección no encontrada)  (si DoD no disponible)
+📋 DoD IMPLEMENT: {N_dod_ok}/{Total} criterios ✓          (si DoD fue evaluado)
+📋 DoD IMPLEMENT: ⚠️ no evaluado (sección no encontrada)  (si DoD no disponible)
 
 ✅ Implementación completa                                    (si no hay DoD-ERRORs ni bloqueos)
 ```
@@ -744,9 +744,9 @@ O si hay DoD-ERRORs:
 
 ```
 ⚠️ Implementación completada con DoD-ERRORs pendientes
-   Revisa implement-report.md → sección "Cumplimiento DoD — Fase IMPLEMENTING"
+   Revisa implement-report.md → sección "Cumplimiento DoD — Fase IMPLEMENT"
 📋 Estado story.md: IMPLEMENT/IN-PROGRESS (transición bloqueada por DoD-ERRORs)
-📋 DoD IMPLEMENTING: {N_dod_ok}/{Total} criterios ✓ | {N_dod_error} criterios ❌
+📋 DoD IMPLEMENT: {N_dod_ok}/{Total} criterios ✓ | {N_dod_error} criterios ❌
 ```
 
 O si hay bloqueos de tareas (sin DoD-ERRORs):
@@ -756,5 +756,5 @@ O si hay bloqueos de tareas (sin DoD-ERRORs):
    Revisa implement-report.md → sección "Tareas Bloqueadas"
 📋 Estado story.md: IMPLEMENT/DONE ✓
 📋 Release checklist: <✓ actualizado | ⚠️ no actualizado — <razón>>
-📋 DoD IMPLEMENTING: {N_dod_ok}/{Total} criterios ✓
+📋 DoD IMPLEMENT: {N_dod_ok}/{Total} criterios ✓
 ```

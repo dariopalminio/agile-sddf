@@ -127,7 +127,7 @@ Cumplimiento de patrones estructurales (`skill-structural-pattern.md`):
 
 ---
 
-## Cumplimiento DoD — Fase IMPLEMENTING
+## Cumplimiento DoD — Fase IMPLEMENT
 
 | # | Criterio | Estado | Evidencia |
 |---|---|---|---|

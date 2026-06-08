@@ -40,7 +40,7 @@ updated: <YYYY-MM-DD>
 
 ---
 
-### Definition of Done para el estado IMPLEMENTING
+### Definition of Done para el estado IMPLEMENT
 
 #### ✅ Criterios de Aceptación
 
@@ -114,7 +114,7 @@ updated: <YYYY-MM-DD>
 
 ### Definition of Done para el estado CODE-REVIEW
 
-- [ ] Definition of Done para el estado IMPLEMENTING es satisfactorio
+- [ ] Definition of Done para el estado IMPLEMENT es satisfactorio
 - [ ] Se cumplen los estándares del proyecto (`constitution.md`)
 - [ ] Cada escenario Gherkin tiene correspondencia en el código
 - [ ] Los componentes respetan la arquitectura de `design.md`

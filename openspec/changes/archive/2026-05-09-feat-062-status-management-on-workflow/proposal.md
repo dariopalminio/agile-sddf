@@ -10,9 +10,9 @@ Los skills del flujo SDD generan artefactos pero no actualizan el estado de la h
 - **`story-creation` / `story-refine`**: Actualiza `status: SPECIFY / substatus: IN‑PROGRESS` al iniciar y `status: READY-FOR-PLAN / substatus: DONE` al finalizar la especificación.
 - **`story-plan`**: Actualiza `status: PLANNING / substatus: IN‑PROGRESS` al comenzar el pipeline de planning.
 - **`story-analyze`**: Actualiza `status: READY-FOR-IMPLEMENT / substatus: DONE` al concluir el análisis de coherencia (último paso del pipeline de planning).
-- **`story-implement`**: Agrega precondición — solo puede ejecutarse si `status: READY-FOR-IMPLEMENT` y `substatus: DONE`. Actualiza `status: IMPLEMENTING / substatus: IN‑PROGRESS` al iniciar y `status: READY-FOR-CODE-REVIEW / substatus: DONE` al finalizar.
+- **`story-implement`**: Agrega precondición — solo puede ejecutarse si `status: READY-FOR-IMPLEMENT` y `substatus: DONE`. Actualiza `status: IMPLEMENT / substatus: IN‑PROGRESS` al iniciar y `status: READY-FOR-CODE-REVIEW / substatus: DONE` al finalizar.
 - **Release checklist**: Al alcanzar `READY-FOR-CODE-REVIEW / DONE`, el skill actualiza `- [ ]` → `- [x]` en el `release.md` padre para la historia correspondiente.
-- **Máquina de estados**: El ciclo completo queda definido formalmente como: `SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLAN/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENTING/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`.
+- **Máquina de estados**: El ciclo completo queda definido formalmente como: `SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE → PLAN/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE → IMPLEMENT/IN‑PROGRESS → READY-FOR-CODE-REVIEW/DONE`.
 
 ## Capabilities
 
@@ -25,7 +25,7 @@ Los skills del flujo SDD generan artefactos pero no actualizan el estado de la h
 - `story-refine-skill`: Agrega transiciones de estado al inicio (`SPECIFY/IN‑PROGRESS`) y al finalizar (`READY-FOR-PLAN/DONE`).
 - `story-plan-skill`: Agrega transición de estado al inicio del pipeline (`PLAN/IN‑PROGRESS`). Delega la transición de cierre (`READY-FOR-IMPLEMENT/DONE`) a `story-analyze`.
 - `story-analyze-skill`: Agrega actualización de estado al finalizar (`READY-FOR-IMPLEMENT/DONE`).
-- `story-implement-skill`: Agrega precondición de estado (`READY-FOR-IMPLEMENT/DONE` requerido), transición al inicio (`IMPLEMENTING/IN‑PROGRESS`), transición al finalizar (`READY-FOR-CODE-REVIEW/DONE`) y actualización del checklist en `release.md`.
+- `story-implement-skill`: Agrega precondición de estado (`READY-FOR-IMPLEMENT/DONE` requerido), transición al inicio (`IMPLEMENT/IN‑PROGRESS`), transición al finalizar (`READY-FOR-CODE-REVIEW/DONE`) y actualización del checklist en `release.md`.
 - `story-workflow-mvp`: Actualiza el workflow canónico para reflejar los estados visibles entre cada skill.
 
 ## Impact

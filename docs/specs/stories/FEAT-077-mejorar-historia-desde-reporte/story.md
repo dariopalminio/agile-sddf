@@ -4,7 +4,7 @@ type: story
 id: FEAT-077
 slug: FEAT-077-mejorar-historia-desde-reporte
 title: "story-improve: Mejora automática de historia desde reporte FINVEST"
-status: IMPLEMENTING
+status: IMPLEMENT
 substatus: DONE
 parent: <nombre-del-release-padre>
 created: 2026-05-17

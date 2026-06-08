@@ -1,10 +1,11 @@
 ---
 name: story-analyze
 description: >-
-  Analiza la coherencia entre story.md, design.md y tasks.md de una historia antes de implementar.
-  Usar siempre que el usuario quiera verificar la alineación de artefactos de una historia, detectar
-  inconsistencias entre el diseño y las tareas, auditar la cobertura de criterios de aceptación,
-  o necesite el paso de validación previo a story-implement-tasks.
+  Analiza la coherencia entre story.md, design.md y los artefactos de implementación (testcases.md y/o tasks.md)
+  de una historia antes de implementar. Al menos uno de testcases.md o tasks.md debe existir; si ambos faltan
+  el análisis se rechaza. Usar siempre que el usuario quiera verificar la alineación de artefactos de una historia,
+  detectar inconsistencias entre el diseño y las tareas, auditar la cobertura de criterios de aceptación,
+  o necesite el paso de validación previo a story-implement-tasks o story-implement.
   Invocar también cuando el usuario mencione "analizar plan de historia", "coherencia de artefactos del plan de historia",
   "verificar alineación", "auditar historia", "story-analyze", "inconsistencias de diseño",
   "chequear story antes de implementar" o equivalentes.
@@ -29,15 +30,17 @@ El skill nunca modifica los artefactos que analiza. Solo lee, correlaciona y gen
 
 **Qué hace este skill:**
 - Detecta criterios de aceptación sin cobertura en design.md
-- Detecta tareas en tasks.md sin elemento de diseño asociado
-- Detecta elementos de diseño sin tarea correspondiente
+- Detecta tareas en tasks.md sin elemento de diseño asociado (si tasks.md está presente)
+- Detecta elementos de diseño sin tarea correspondiente (si tasks.md está presente)
+- Verifica la cobertura de ACs en testcases.md (si existe)
+- Informa la vía de implementación disponible (`/story-implement` o `/story-implement-tasks`)
 - Detecta objetivos de la historia desalineados con el release padre
 - Valida el cumplimiento del DoD para la fase PLAN
 - Genera `analyze.md` con el reporte de coherencia y recomendaciones accionables
 - Actualiza el estado de `story.md` a `READY-FOR-IMPLEMENT/DONE` si no hay ERROREs
 
 **Qué NO hace este skill:**
-- Modificar ningún artefacto analizado (story.md, design.md, tasks.md)
+- Modificar ningún artefacto analizado (story.md, design.md, tasks.md, testcases.md)
 - Generar diseño, tareas ni historia nuevos
 - Corregir inconsistencias automáticamente
 
@@ -46,10 +49,11 @@ El skill nunca modifica los artefactos que analiza. Solo lee, correlaciona y gen
 ```
 [story.md: PLAN/IN‑PROGRESS]  ← seteado por story-plan al inicio del pipeline
      ↓
-story.md   → What: requisitos, criterios de aceptación, comportamiento esperado
-design.md  → How: arquitectura, componentes, interfaces, decisiones técnicas
-tasks.md   → When: tareas de implementación, orden, seguimiento
-analyze.md → Check: coherencia entre los tres ← aquí (ejecutar después de story-tasking)
+story.md      → What: requisitos, criterios de aceptación, comportamiento esperado
+design.md     → How: arquitectura, componentes, interfaces, decisiones técnicas
+testcases.md  → Test: escenarios de prueba por AC (habilita /story-implement)
+tasks.md      → When: tareas de implementación, orden, seguimiento (habilita /story-implement-tasks)
+analyze.md    → Check: coherencia entre los artefactos ← aquí (ejecutar después de story-design, story-testcases o story-tasking)
      ↓
 [story.md: READY-FOR-IMPLEMENT/DONE]    ← seteado por story-analyze si no hay ERROREs
 ```
@@ -69,7 +73,8 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 
 - `story.md` — historia con criterios de aceptación numerados AC-1…AC-N (obligatorio)
 - `design.md` — diseño técnico con componentes, interfaces y decisiones (obligatorio)
-- `tasks.md` — plan de tareas de implementación (obligatorio)
+- `testcases.md` — casos de prueba por criterio de aceptación (opcional; requerido si tasks.md ausente)
+- `tasks.md` — plan de tareas de implementación (opcional; requerido si testcases.md ausente)
 - `$SPECS_BASE/policies/definition-of-done-story.md` — criterios DoD fase PLAN (opcional)
 - `$SPECS_BASE/specs/releases/{parent}-*/release.md` — release padre para verificar alineación (opcional)
 - Template del reporte: `assets/analyze-report-template.md` (opcional, hay fallback interno)
@@ -89,8 +94,11 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - El directorio de la historia existe bajo `$SPECS_BASE/specs/stories/`
 - `story.md` existe en el directorio de la historia
 - `design.md` existe en el directorio de la historia (requiere haber ejecutado `/story-design`)
-- `tasks.md` existe en el directorio de la historia (requiere haber ejecutado `/story-tasking`)
 - `skill-preflight` retorna estado OK (entorno válido)
+- Al menos uno de `testcases.md` o `tasks.md` debe existir en el directorio de la historia. Si ambos están ausentes, la ejecución se detiene con error.
+- Si solo existe `testcases.md`: habilita implementación vía `/story-implement`
+- Si solo existe `tasks.md`: habilita implementación vía `/story-implement-tasks`
+- Si ambos existen: ambas vías disponibles
 
 ---
 
@@ -110,8 +118,11 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 
 ## Restricciones / Reglas
 
-- El skill nunca modifica los artefactos que analiza — es estrictamente de solo lectura sobre story.md, design.md y tasks.md
-- Sin los tres artefactos obligatorios (story, design, tasks) la ejecución se detiene
+- El skill nunca modifica los artefactos que analiza — es estrictamente de solo lectura sobre story.md, design.md, testcases.md y tasks.md
+- Sin `story.md` o `design.md` la ejecución se detiene
+- Sin al menos uno de `testcases.md` o `tasks.md`, la ejecución se detiene (análisis rechazado)
+- Si `tasks.md` está ausente pero `testcases.md` presente: las correlaciones tarea↔diseño se omiten con `⚠️`
+- Si `testcases.md` está ausente pero `tasks.md` presente: la cobertura de ACs en testcases se omite con `⚠️`
 - Los hallazgos de tipo ERROR (TIPO A, B o E) bloquean la transición a `READY-FOR-IMPLEMENT`
 - Ante incertidumbre en la evaluación DoD, usar `⚠️` en lugar de `❌` (regla de duda — no bloquear indebidamente)
 - El reporte debe referenciar secciones y líneas específicas de los archivos afectados — no se admiten mensajes genéricos
@@ -228,18 +239,54 @@ Si design.md no tiene anotaciones `satisface: AC-N`, realizar matching semántic
 
 ---
 
-### Paso 4 — Leer tasks.md y extraer tareas
+### Paso 4 — Leer tasks.md y extraer tareas (condicional)
 
-Leer `tasks.md` del directorio resuelto.
+Intentar leer `tasks.md` del directorio resuelto.
 
-Extraer y registrar internamente:
-- Lista de tareas con ID (`T001`, `T002`...) y descripción
-- Agrupaciones (`##` de grupos) como contexto de área técnica
-- Tareas de verificación de ACs (buscar menciones de `AC-{n}` en la descripción)
+**Si `tasks.md` no existe:**
+- Emitir: `⚠️ tasks.md no encontrado — las correlaciones tarea↔diseño se omitirán`
+- Registrar internamente: `$TASKS_AVAILABLE = false`
+- Continuar (no detener la ejecución)
 
-Construir la tabla interna de alineación tarea-diseño:
-- Para cada tarea, determinar si existe un componente o interfaz en design.md que justifique la tarea
-- Estrategia: buscar menciones de nombres de componentes del diseño en la descripción de la tarea, o si la tarea pertenece a un grupo cuyo nombre coincide con un componente del diseño
+**Si `tasks.md` existe:**
+- Registrar internamente: `$TASKS_AVAILABLE = true`
+- Extraer lista de tareas con ID (`T001`, `T002`...) y descripción
+- Extraer agrupaciones (`##` de grupos) como contexto de área técnica
+- Extraer tareas de verificación de ACs (buscar menciones de `AC-{n}` en la descripción)
+- Construir la tabla interna de alineación tarea-diseño:
+  - Para cada tarea, determinar si existe un componente o interfaz en design.md que justifique la tarea
+  - Estrategia: buscar menciones de nombres de componentes del diseño en la descripción de la tarea, o si la tarea pertenece a un grupo cuyo nombre coincide con un componente del diseño
+
+---
+
+### Paso 4b — Leer testcases.md y extraer casos de prueba (condicional)
+
+Intentar leer `testcases.md` del directorio resuelto.
+
+**Si `testcases.md` no existe:**
+- Emitir: `⚠️ testcases.md no encontrado — la cobertura de ACs en casos de prueba se omitirá`
+- Registrar internamente: `$TESTCASES_AVAILABLE = false`
+- Continuar (no detener la ejecución)
+
+**Si `testcases.md` existe:**
+- Registrar internamente: `$TESTCASES_AVAILABLE = true`
+- Extraer escenarios de prueba con referencia a AC (buscar menciones de `AC-{n}`, `Scenario`, `Given/When/Then`, `Dado/Cuando/Entonces`)
+- Construir tabla interna de cobertura de ACs en testcases.md:
+  - Para cada AC de story.md, determinar si existe al menos un escenario de prueba que lo cubra
+  - Buscar: mención explícita de `AC-{n}` en el escenario, o matching semántico del concepto clave del AC
+
+**Gate de exclusión — verificar después de leer ambos artefactos:**
+
+Si `$TASKS_AVAILABLE = false` Y `$TESTCASES_AVAILABLE = false`:
+- Emitir:
+  ```
+  ❌ Análisis rechazado: no se encontró ningún artefacto de implementación.
+     Se requiere al menos uno de:
+       - testcases.md (para implementar con /story-implement)
+       - tasks.md    (para implementar con /story-implement-tasks)
+     Ejecuta primero /story-testcases {story_id} o /story-tasking {story_id}
+  ```
+- Detener la ejecución. No generar ningún archivo.
 
 ---
 
@@ -295,6 +342,10 @@ Registrar ACs sin cobertura como inconsistencia **TIPO A**.
 
 #### Correlación 2 — Tareas sin diseño asociado
 
+**Si `$TASKS_AVAILABLE = false`:** omitir con nota `⚠️ Omitida — tasks.md no disponible`.
+
+**Si `$TASKS_AVAILABLE = true`:**
+
 Para cada tarea de tasks.md:
 - ✓ **Con diseño**: su descripción o grupo corresponde a un componente/interfaz del diseño
 - ❌ **Sin diseño**: no se puede trazar a ningún elemento del diseño
@@ -302,6 +353,10 @@ Para cada tarea de tasks.md:
 Registrar tareas sin diseño como inconsistencia **TIPO B**.
 
 #### Correlación 3 — Elementos de diseño sin tarea
+
+**Si `$TASKS_AVAILABLE = false`:** omitir con nota `⚠️ Omitida — tasks.md no disponible`.
+
+**Si `$TASKS_AVAILABLE = true`:**
 
 Para cada componente e interfaz de design.md:
 - ✓ **Con tarea**: existe al menos una tarea que lo implementa
@@ -321,12 +376,26 @@ Si la verificación del release encontró desalineaciones, registrar como incons
 
 **Si `$DOD_PLAN_CRITERIA` tiene criterios:**
 
-Para cada criterio, evaluar semánticamente contra el contenido combinado de story.md, design.md y tasks.md:
+Para cada criterio, evaluar semánticamente contra el contenido combinado de story.md, design.md y tasks.md (si está disponible):
 - `✓` — evidencia clara de cumplimiento presente en los artefactos
 - `❌` — evidencia clara de incumplimiento → clasificar como **ERROR** (TIPO E)
 - `⚠️` — evidencia insuficiente o criterio no evaluable → clasificar como **WARNING**
 
+Si `$TASKS_AVAILABLE = false`, los criterios DoD que refieran explícitamente a `tasks.md` deben evaluarse como `⚠️` (no evaluable), no como `❌`.
+
 Registrar internamente: `$DOD_ERROR_COUNT` = número de criterios con resultado `❌`.
+
+#### Correlación 6 — Cobertura de ACs en testcases.md
+
+**Si `$TESTCASES_AVAILABLE = false`:** omitir con nota `⚠️ Omitida — testcases.md no disponible`.
+
+**Si `$TESTCASES_AVAILABLE = true`:**
+
+Para cada AC de story.md:
+- ✓ **Cubierto**: existe al menos un escenario de prueba en testcases.md que lo referencia o cubre semánticamente
+- ⚠️ **Sin caso de prueba**: ningún escenario cubre este AC
+
+Registrar ACs sin caso de prueba como inconsistencia **TIPO F** (WARNING, no bloquea).
 
 #### Clasificación de severidad
 
@@ -337,6 +406,7 @@ Registrar internamente: `$DOD_ERROR_COUNT` = número de criterios con resultado 
 | C | Elemento de diseño sin tarea | WARNING |
 | D | Desalineación con release | WARNING |
 | E | Criterio DoD PLAN no cumplido | ERROR |
+| F | AC sin caso de prueba en testcases.md | WARNING |
 
 ---
 
@@ -365,7 +435,8 @@ slug: {story_id}-analyze-report
 title: "Analyze: <título>"
 story: <FEAT-NNN>
 design: <FEAT-NNN>
-tasks: <FEAT-NNN>
+testcases: <FEAT-NNN>  # omitir este campo si $TESTCASES_AVAILABLE = false
+tasks: <FEAT-NNN>      # omitir este campo si $TASKS_AVAILABLE = false
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 related:
@@ -376,8 +447,10 @@ Completar el reporte con los resultados de la correlación del Paso 6:
 
 - **Resumen ejecutivo**: estado general (✓ Coherente / ⚠️ Advertencias / ❌ Inconsistencias). Completar la fila `Cumplimiento DoD — Fase PLAN` con `{dod_status}` = ✓ / ⚠️ / ❌ según los resultados de Correlación 5, y `{dod_n}/{dod_total}` con el conteo de criterios ✓. Si `$DOD_PLAN_CRITERIA` estuvo vacío, usar `{dod_status}` = `⚠️` y `{dod_n}/{dod_total}` = `—`
 - **Tabla de cobertura de ACs**: cada AC + estado + elemento de diseño que lo cubre
-- **Tabla de alineación tareas ↔ diseño**: cada tarea + estado + justificación
-- **Tabla de cobertura diseño → tareas**: cada componente/interfaz + estado
+- **Tabla de alineación tareas ↔ diseño**: cada tarea + estado + justificación (si `$TASKS_AVAILABLE = false`: reemplazar con nota `⚠️ tasks.md no presente — análisis de tareas omitido`)
+- **Tabla de cobertura diseño → tareas**: cada componente/interfaz + estado (si `$TASKS_AVAILABLE = false`: reemplazar con nota `⚠️ tasks.md no presente — análisis de tareas omitido`)
+- **Tabla de cobertura de ACs en testcases.md**: cada AC + estado + escenario que lo cubre (si `$TESTCASES_AVAILABLE = false`: reemplazar con nota `⚠️ testcases.md no presente — cobertura de pruebas no evaluada`)
+- **Sección "Vía de implementación disponible"**: tabla indicando qué skills están habilitados según los artefactos presentes (`/story-implement` si testcases.md presente; `/story-implement-tasks` si tasks.md presente)
 - **Alineación con release**: estado + detalles
 - **Inconsistencias detectadas**: lista numerada con tipo, descripción, archivo afectado, sección específica
 - **Recomendaciones**: para cada inconsistencia, una acción concreta
@@ -417,11 +490,16 @@ Mostrar al usuario:
    Historia: <FEAT-NNN> — <título>
 
    Cobertura de ACs:     <N>/<Total> criterios cubiertos en design.md
-   Alineación tareas:    <N>/<Total> tareas con diseño asociado
-   Cobertura de diseño:  <N>/<Total> elementos de diseño con tarea
+   Alineación tareas:    <N>/<Total> tareas con diseño asociado  |  ⚠️ no evaluada — tasks.md no presente
+   Cobertura de diseño:  <N>/<Total> elementos de diseño con tarea  |  ⚠️ no evaluada — tasks.md no presente
+   Cobertura testcases:  <N>/<Total> ACs con caso de prueba  |  ⚠️ no evaluada — testcases.md no presente
 
    Release (<EPIC-NN>):  <alineado ✓ / desalineado ❌ / no verificado ⚠️>
    DoD PLAN:             <N>/<Total> criterios ✓  |  ⚠️ no evaluado (sección no encontrada)
+
+   Vía de implementación:
+   · testcases.md <✓ presente | ❌ ausente> → /story-implement <disponible | no disponible>
+   · tasks.md     <✓ presente | ❌ ausente> → /story-implement-tasks <disponible | no disponible>
 
    Inconsistencias:
    · <N> ERROR(ES) — requieren corrección antes de implementar
@@ -429,6 +507,10 @@ Mostrar al usuario:
 
    Estado story.md: <READY-FOR-IMPLEMENT/DONE ✓ | PLAN/IN‑PROGRESS — hay ERROREs pendientes>
 ```
+
+Cuando `$TASKS_AVAILABLE = false`, mostrar las líneas `Alineación tareas` y `Cobertura de diseño` con el valor `⚠️ no evaluada — tasks.md no presente` en lugar de los conteos.
+
+Cuando `$TESTCASES_AVAILABLE = false`, mostrar la línea `Cobertura testcases` con el valor `⚠️ no evaluada — testcases.md no presente` en lugar del conteo.
 
 Si hay ERROREs:
 ```
@@ -454,7 +536,9 @@ Si solo hay WARNINGs o está todo OK:
 | Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/release-generate-stories` |
 | `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/release-generate-stories` |
 | `design.md` ausente | `❌ No se encontró design.md en: <ruta>` | Detener. Sugerir `/story-design {story_id}` |
-| `tasks.md` ausente | `❌ No se encontró tasks.md en: <ruta>` | Detener. Sugerir `/story-tasking {story_id}` |
+| `testcases.md` y `tasks.md` ambos ausentes | `❌ Análisis rechazado: sin artefacto de implementación` | Detener. Sugerir `/story-testcases {story_id}` o `/story-tasking {story_id}` |
+| `testcases.md` ausente (tasks.md presente) | `⚠️ testcases.md no encontrado — cobertura de pruebas omitida` | Advertir y continuar |
+| `tasks.md` ausente (testcases.md presente) | `⚠️ No se encontró tasks.md en: <ruta> — análisis de tareas omitido` | Advertir y continuar. Informar que `/story-tasking {story_id}` habilita el análisis completo |
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
 | `definition-of-done-story.md` ausente | `⚠️ definition-of-done-story.md no encontrado` | Advertir y continuar sin validación DoD |
 | Sección PLAN no encontrada en DoD | `⚠️ Sección PLAN no encontrada en DoD` | Advertir y continuar sin validación DoD |
@@ -465,7 +549,7 @@ Si solo hay WARNINGs o está todo OK:
 
 ## Salida
 
-- `{directorio_historia}/analyze.md` — reporte de coherencia entre story.md, design.md y tasks.md
+- `{directorio_historia}/analyze.md` — reporte de coherencia entre story.md, design.md, testcases.md (si existe) y tasks.md (si existe)
 - Estado del workitem actualizado en `story.md`:
   - `READY-FOR-IMPLEMENT / DONE` si no hay ERROREs
   - Sin cambio si hay ERROREs bloqueantes
@@ -494,6 +578,7 @@ updated: {date}
 | Métrica | Estado | Detalle |
 |---|---|---|
 | Cobertura de ACs en design.md | {ac_coverage_status} | {ac_coverage_N}/{ac_total} criterios cubiertos |
+| Cobertura de ACs en testcases.md | {tc_coverage_status} | {tc_covered_N}/{ac_total} ACs con caso de prueba |
 | Alineación tareas → diseño | {tasks_coverage_status} | {tasks_covered_N}/{tasks_total} tareas con diseño |
 | Cobertura diseño → tareas | {design_coverage_status} | {design_covered_N}/{design_total} elementos con tarea |
 | Alineación con release {parent} | {release_status} | {release_detail} |
@@ -545,7 +630,7 @@ updated: {date}
 
 ### INC-001 [ERROR / WARNING]
 
-- **Tipo:** A / B / C / D / E
+- **Tipo:** A / B / C / D / E / F
 - **Descripción:** {description}
 - **Archivo afectado:** {file} — sección "{section}"
 - **Acción requerida:** {action}
@@ -557,6 +642,25 @@ updated: {date}
 <!-- Para cada inconsistencia, una acción concreta con el archivo y sección a modificar. -->
 
 1. {recommendation_1}
+
+---
+
+## Cobertura de ACs en Testcases
+
+<!-- Si $TESTCASES_AVAILABLE = false, reemplazar la tabla con: ⚠️ testcases.md no presente — cobertura de pruebas no evaluada -->
+
+| AC | Descripción | Cubierto en testcases.md | Escenario |
+|---|---|---|---|
+| AC-1 | {ac_1_desc} | ✓ / ⚠️ | {scenario_name} |
+
+---
+
+## Vía de Implementación Disponible
+
+| Artefacto | Presente | Skill habilitado |
+|---|---|---|
+| testcases.md | ✓ / ❌ | `/story-implement {story_id}` |
+| tasks.md | ✓ / ❌ | `/story-implement-tasks {story_id}` |
 
 ---
 

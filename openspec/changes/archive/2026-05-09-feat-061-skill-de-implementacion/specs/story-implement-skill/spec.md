@@ -10,7 +10,7 @@ The system SHALL provide the `story-implement` skill at `.claude/skills/story-im
 - **WHEN** the repository is inspected
 - **THEN** `.claude/skills/story-implement/SKILL.md` exists and contains valid YAML frontmatter with `name: story-implement`
 
-### Requirement: Skill requires all three planning artifacts before implementing
+### Requirement: Skill requires all three planning artifacts before IMPLEMENT
 The system SHALL verify that `story.md`, `design.md`, and `tasks.md` exist in the target story directory before executing any implementation task.
 
 #### Scenario: design.md or tasks.md is missing
@@ -35,7 +35,7 @@ The system SHALL process each pending task in `tasks.md` in order, generating a 
 The system SHALL mark each task as complete (`- [ ]` → `- [x]`) or blocked (`- [ ]` → `- [~]`) immediately after processing it, without waiting until all tasks are done.
 
 #### Scenario: Task marked complete immediately
-- **WHEN** the skill finishes implementing a task
+- **WHEN** the skill finishes IMPLEMENT a task
 - **THEN** `tasks.md` is updated with `- [x]` for that task before the skill begins the next task
 
 ### Requirement: Skill handles unimplementable tasks without stopping the pipeline

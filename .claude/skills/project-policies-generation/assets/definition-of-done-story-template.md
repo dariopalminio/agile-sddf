@@ -34,7 +34,7 @@ updated: <YYYY-MM-DD>
 - [ ] La historia tiene un diseño asociado en `design.md` si es necesario (UI/UX, arquitectura, etc.)
 - [ ] La historia tiene un `tasks.md` con las tareas necesarias para su implementación
 
-## 🛠️ IMPLEMENTING (Definición de Hecho para la fase de Implementación)
+## 🛠️ IMPLEMENT (Definición de Hecho para la fase de Implementación)
 
 ### ✅ Criterios de Aceptación
 
@@ -87,7 +87,7 @@ updated: <YYYY-MM-DD>
 
 ## 🔍 CODE-REVIEW (Definición de Hecho para la fase de Revisión de Código)
 
-- [ ] Definition of Done para el estado IMPLEMENTING es satisfactorio
+- [ ] Definition of Done para el estado IMPLEMENT es satisfactorio
 - [ ] Se cumplen los estándares del proyecto (`constitution.md`)
 - [ ] Cada escenario Gherkin tiene correspondencia en el código
 - [ ] Los componentes respetan la arquitectura de `design.md`

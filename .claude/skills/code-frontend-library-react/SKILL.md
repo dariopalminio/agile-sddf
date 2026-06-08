@@ -9,7 +9,7 @@ metadata:
   domain: ui, frontend
   triggers: React 18, BEM, CSS variables, design tokens, component library, ui-component, tsup, monorepo, Turborepo, packages/ui, forwardRef, compound component, Storybook, ThemeProvider, useTheme, "use client"
   role: specialist
-  scope: design, implementing
+  scope: design, IMPLEMENT
   output-format: spec, code
 ---
 
@@ -17,13 +17,13 @@ metadata:
 
 Implement production-ready components for `packages/ui` following the project's strict conventions: plain CSS + CSS variables, BEM naming, two-layer token system, TypeScript strict, and Next.js App Router compatibility.
 
-> **Testing is out of scope for this skill.** For unit tests use `test-component-react-testing-library`; for E2E use `test-e2e-playwright-cucumber`.
+> **Testing is out of scope for this skill.** For unit tests use `test-react-testing-library`; for E2E use `test-e2e-playwright-cucumber`.
 
 ## When to Use This Skill
 
 - Creating a new UI component in `packages/ui/src/components/`
 - Adding a new variant or size to an existing component
-- Implementing compound component sub-parts (e.g., `CardHeader`, `CardBody`)
+- IMPLEMENT compound component sub-parts (e.g., `CardHeader`, `CardBody`)
 - Adding a component page/demo to `apps/demo`
 - Adding Storybook stories to `apps/storybook`
 - Refactoring a component to use the `--ui-*` token system
@@ -31,7 +31,7 @@ Implement production-ready components for `packages/ui` following the project's 
 
 ## Reference Guide
 
-Load the relevant reference based on what you're implementing:
+Load the relevant reference based on what you're IMPLEMENT:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|

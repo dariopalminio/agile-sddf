@@ -24,7 +24,7 @@ FEAT-068 agrega un **quinto eje de validación**: verificar que los artefactos d
 - `.claude/skills/story-analyze/SKILL.md` — pasos 1, 6, 9, 10
 - `.claude/skills/story-analyze/assets/analyze-report-template.md` — nuevas filas/sección DoD
 
-**Restricción detectada:** `docs/policies/definition-of-done-story.md` contiene secciones para SPECIFY, IMPLEMENTING y CODE-REVIEW, pero no una sección con término "PLAN". La degradación elegante es obligatoria. Ver CR-001.
+**Restricción detectada:** `docs/policies/definition-of-done-story.md` contiene secciones para SPECIFY, IMPLEMENT y CODE-REVIEW, pero no una sección con término "PLAN". La degradación elegante es obligatoria. Ver CR-001.
 
 ## Goals / Non-Goals
 

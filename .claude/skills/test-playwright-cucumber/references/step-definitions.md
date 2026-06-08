@@ -1,6 +1,6 @@
 # Step Definitions
 
-Implementing `Given`/`When`/`Then` steps in TypeScript using `@cucumber/cucumber` and Playwright.
+IMPLEMENT `Given`/`When`/`Then` steps in TypeScript using `@cucumber/cucumber` and Playwright.
 
 ---
 

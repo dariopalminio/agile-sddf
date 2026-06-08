@@ -28,8 +28,8 @@ verify:
   e2e-regression:
     command: "pnpm run test:e2e:regression"
     required: true
-  e2e-file:
-    command: "pnpm run test:e2e:file -- {{test_file_path}}" # pnpm run test:e2e -- apps\demo\tests\e2e\features\components\alert.feature
+  e2e-single: # Ejecuta un solo archivo de feature con Cucumber, ideal para la etapa de implementación y debugging
+    command: "pnpm exec cucumber-js --profile single {{test_file_path}}" # pnpm exec cucumber-js --profile single tests/e2e/features/components/switch.feature
     required: true
   performance:
     command: "pnpm run test:performance"
@@ -41,7 +41,7 @@ verify:
 implement:
   test_generators:
     - type: component
-      skill: test-component-react-testing-library
+      skill: test-react-testing-library
       required: true
     - type: e2e
       skill: test-playwright-cucumber

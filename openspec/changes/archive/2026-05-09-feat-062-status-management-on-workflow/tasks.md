@@ -18,11 +18,11 @@
 - [x] 3.3 Asegurarse de que la actualización de estado ocurre tanto en modo manual como en modo Agent (invocado por `story-plan`)
 - [x] 3.4 Reflejar el estado resultante (`READY-FOR-IMPLEMENT/DONE` o `PLAN/IN‑PROGRESS`) en la sección de confirmación del Paso 10
 
-## 4. story-implement — Precondición + transiciones IMPLEMENTING y READY-FOR-CODE-REVIEW
+## 4. story-implement — Precondición + transiciones IMPLEMENT y READY-FOR-CODE-REVIEW
 
 - [x] 4.1 En `.claude/skills/story-implement/SKILL.md`, añadir en el Paso 1c la lectura del frontmatter de `story.md` y la verificación de `status: READY-FOR-IMPLEMENT` + `substatus: DONE`
 - [x] 4.2 Si la precondición no se cumple: mostrar error descriptivo con el estado actual y sugerir `/story-plan`, detener la ejecución
-- [x] 4.3 En el Paso 2 (inicio del contexto de carga), añadir la actualización del frontmatter a `status: IMPLEMENTING` / `substatus: IN‑PROGRESS` antes de la primera tarea
+- [x] 4.3 En el Paso 2 (inicio del contexto de carga), añadir la actualización del frontmatter a `status: IMPLEMENT` / `substatus: IN‑PROGRESS` antes de la primera tarea
 - [x] 4.4 En el Paso 4 (después de generar `implement-report.md`): actualizar el frontmatter a `status: READY-FOR-CODE-REVIEW` / `substatus: DONE`
 - [x] 4.5 Actualizar el resumen final para mostrar el estado final de `story.md`
 
@@ -49,5 +49,5 @@
 - [x] 7.4 Verificar que `story-analyze` actualiza `story.md` a `READY-FOR-IMPLEMENT/DONE` cuando no hay ERROREs
 - [x] 7.5 Verificar que `story-analyze` NO actualiza el estado cuando hay inconsistencias ERROR-level
 - [x] 7.6 Verificar que `story-implement` falla con error descriptivo si `story.md` no está en `READY-FOR-IMPLEMENT/DONE`
-- [x] 7.7 Verificar que `story-implement` actualiza `story.md` a `IMPLEMENTING/IN‑PROGRESS` antes del primer `[T001]`
+- [x] 7.7 Verificar que `story-implement` actualiza `story.md` a `IMPLEMENT/IN‑PROGRESS` antes del primer `[T001]`
 - [x] 7.8 Verificar que `story-implement` actualiza `story.md` a `READY-FOR-CODE-REVIEW/DONE` y el release checklist al finalizar

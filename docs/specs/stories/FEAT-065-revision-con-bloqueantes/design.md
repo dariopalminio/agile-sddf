@@ -20,11 +20,11 @@ related:
 
 ## Context
 
-Este diseño extiende el skill `story-code-review` definido en FEAT-064 para cubrir el flujo de revisión con bloqueantes: cuando el árbitro determina `review-status: needs-changes` (al menos un hallazgo de severidad HIGH o MEDIUM), el skill debe generar `fix-directives.md` con instrucciones concretas de corrección y garantizar que `story.md` permanezca en `status: IMPLEMENTING / substatus: IN-PROGRESS`.
+Este diseño extiende el skill `story-code-review` definido en FEAT-064 para cubrir el flujo de revisión con bloqueantes: cuando el árbitro determina `review-status: needs-changes` (al menos un hallazgo de severidad HIGH o MEDIUM), el skill debe generar `fix-directives.md` con instrucciones concretas de corrección y garantizar que `story.md` permanezca en `status: IMPLEMENT / substatus: IN-PROGRESS`.
 
 **Relación con FEAT-064:**
 - FEAT-064 diseñó el happy path (review aprobado → `code-review-report.md` → story.md pasa a READY-FOR-VERIFY).
-- FEAT-065 diseña el flujo alternativo (needs-changes → `fix-directives.md` → story.md permanece en IMPLEMENTING).
+- FEAT-065 diseña el flujo alternativo (needs-changes → `fix-directives.md` → story.md permanece en IMPLEMENT).
 - El árbitro y la regla de consolidación (`max_severity ∈ {HIGH, MEDIUM} → needs-changes`) ya están definidos en D-3 de FEAT-064. Este diseño solo amplía el comportamiento post-árbitro cuando el resultado es `needs-changes`.
 
 **Contexto técnico detectado (heredado de FEAT-064):**
@@ -68,7 +68,7 @@ SKILL.md (orquestador)
   ├── [paralelo] integration-reviewer.agent.md → .tmp/.../integration-report.md
   └── [árbitro, secuencial]
         ├── review-status = approved → code-review-report.md + story.md → READY-FOR-VERIFY (FEAT-064)
-        └── review-status = needs-changes → fix-directives.md + story.md PERMANECE en IMPLEMENTING (FEAT-065)
+        └── review-status = needs-changes → fix-directives.md + story.md PERMANECE en IMPLEMENT (FEAT-065)
 ```
 
 **Alternativas rechazadas:**
@@ -150,9 +150,9 @@ Cada archivo de la lista blanca anota qué hallazgo(s) lo referencian (`hallazgo
 
 ### D-4: Comportamiento de story.md cuando hay bloqueantes // satisface: AC-1
 
-**Opción elegida:** El árbitro NO actualiza `story.md` cuando `review-status = needs-changes`. El frontmatter permanece tal cual (status: IMPLEMENTING, substatus: IN-PROGRESS).
+**Opción elegida:** El árbitro NO actualiza `story.md` cuando `review-status = needs-changes`. El frontmatter permanece tal cual (status: IMPLEMENT, substatus: IN-PROGRESS).
 
-Esta decisión es consistente con D-6 de FEAT-064: la actualización de `story.md` solo ocurre cuando `review-status = approved`. El comportamiento "permanece en IMPLEMENTING" es el comportamiento por defecto del skill cuando no hay aprobación.
+Esta decisión es consistente con D-6 de FEAT-064: la actualización de `story.md` solo ocurre cuando `review-status = approved`. El comportamiento "permanece en IMPLEMENT" es el comportamiento por defecto del skill cuando no hay aprobación.
 
 El árbitro registra en la salida del skill:
 ```
@@ -161,7 +161,7 @@ El árbitro registra en la salida del skill:
 ```
 
 **Alternativas rechazadas:**
-- Actualizar story.md a `status: NEEDS-CHANGES / substatus: IN-PROGRESS`: introduce un nuevo estado en el ciclo de vida del pipeline que no está definido en constitution.md; agrega complejidad sin beneficio sobre "permanecer en IMPLEMENTING".
+- Actualizar story.md a `status: NEEDS-CHANGES / substatus: IN-PROGRESS`: introduce un nuevo estado en el ciclo de vida del pipeline que no está definido en constitution.md; agrega complejidad sin beneficio sobre "permanecer en IMPLEMENT".
 - Actualizar `substatus: REJECTED`: semánticamente incorrecto; la historia no está bloqueada por dependencias externas, sino por hallazgos de revisión propios.
 
 ---

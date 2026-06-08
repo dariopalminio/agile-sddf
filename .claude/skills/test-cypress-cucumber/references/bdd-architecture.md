@@ -2,7 +2,7 @@
 
 ## BDD Test Architecture Diagram
 
-The following PlantUML diagram shows the architecture of the main components for implementing BDD with Cypress + `@badeball/cypress-cucumber-preprocessor` and Page Object Model, following best practices.
+The following PlantUML diagram shows the architecture of the main components for IMPLEMENT BDD with Cypress + `@badeball/cypress-cucumber-preprocessor` and Page Object Model, following best practices.
 
 See file: `bdd-architecture.plantuml`
 

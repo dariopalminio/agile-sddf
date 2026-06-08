@@ -17,7 +17,7 @@ related:
 
 ## 1. Precondición — Paso 1d de SKILL.md (D-1)
 
-- [x] 1.1 Modificar Paso 1d de `.claude/skills/story-implement/SKILL.md` para aceptar `status: IMPLEMENTING / substatus: IN-PROGRESS` como precondición válida adicional a `READY-FOR-IMPLEMENT/DONE`; actualizar el mensaje de error para mostrar ambas opciones válidas
+- [x] 1.1 Modificar Paso 1d de `.claude/skills/story-implement/SKILL.md` para aceptar `status: IMPLEMENT / substatus: IN-PROGRESS` como precondición válida adicional a `READY-FOR-IMPLEMENT/DONE`; actualizar el mensaje de error para mostrar ambas opciones válidas
 
 ## 2. Detección de modo reanudación — Paso 2c/2d de SKILL.md (D-2)
 

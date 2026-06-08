@@ -11,7 +11,7 @@ created: 2026-05-14
 updated: 2026-05-14
 related:
   - FEAT-068-dod-plan-en-story-analyze
-  - FEAT-069-dod-implementing-en-story-implement
+  - FEAT-069-dod-IMPLEMENT-en-story-implement
   - FEAT-070-dod-code-review-en-story-code-review
 ---
 **FINVEST Score:** [pendiente de evaluación]
@@ -20,7 +20,7 @@ related:
 <!-- Referencias -->
 [[EPIC-13-quality-gates-con-dod-en-story-workflow]]
 [[FEAT-068-dod-plan-en-story-analyze]]
-[[FEAT-069-dod-implementing-en-story-implement]]
+[[FEAT-069-dod-IMPLEMENT-en-story-implement]]
 [[FEAT-070-dod-code-review-en-story-code-review]]
 
 # 📖 Historia: Skill story-verify: Orquestar la fase VERIFY de pruebas de una historia
@@ -73,7 +73,7 @@ Entonces el skill entra en modo manual e interactivo
 ### Escenario alternativo / error – Historia en estado incorrecto para VERIFY
 
 ```gherkin
-Dado que existe una historia "FEAT-040" con status IMPLEMENTING y substatus IN-PROGRESS
+Dado que existe una historia "FEAT-040" con status IMPLEMENT y substatus IN-PROGRESS
 Cuando el desarrollador ejecuta `story-verify` con el ID "FEAT-040"
 Entonces el skill detecta que la historia no cumple la precondición de estado (CODE-REVIEW o IMPLEMENT/DONE)
   Y muestra el mensaje "La historia FEAT-040 tiene status IMPLEMENT/IN-PROGRESS. Ejecuta story-code-review antes de continuar."

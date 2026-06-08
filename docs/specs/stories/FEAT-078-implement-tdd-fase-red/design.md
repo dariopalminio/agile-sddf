@@ -42,7 +42,7 @@ story-plan → story-testcases → story-implement (Fase RED) → story-implemen
 
 **Goals:**
 - Definir la estructura y frontmatter de `.claude/skills/story-implement/SKILL.md`
-- Diseñar el schema YAML que extiende `sddf-config.yaml` con la sección `implementing.test_generators`
+- Diseñar el schema YAML que extiende `sddf-config.yaml` con la sección `IMPLEMENT.test_generators`
 - Definir el contrato de invocación entre `story-implement` y cada skill de generación de pruebas
 - Definir el algoritmo de validación de skills declarados (fail-fast)
 - Definir la resolución de inputs: `testcases.md` vs fallback a `story.md` + `design.md`
@@ -59,13 +59,13 @@ story-plan → story-testcases → story-implement (Fase RED) → story-implemen
 
 ## Decisions
 
-### D-1: Schema de `implementing.test_generators` en sddf-config.yaml
+### D-1: Schema de `IMPLEMENT.test_generators` en sddf-config.yaml
 // satisface: AC-1, Req-4
 
-Extender el `docs/policies/sddf-config.yaml` existente con una nueva sección `implementing`:
+Extender el `docs/policies/sddf-config.yaml` existente con una nueva sección `IMPLEMENT`:
 
 ```yaml
-implementing:
+IMPLEMENT:
   test_generators:
     - type: unit          # coincide con clave de defaults.unit
       skill: story-test-unit-jest   # nombre del directorio en .claude/skills/
@@ -94,7 +94,7 @@ El orden de las entradas en `test_generators` define el orden de invocación. Lo
 
 Validar todos los skills declarados **antes** de invocar ninguno:
 
-1. Si `implementing.test_generators` no existe o está vacío → emitir `[WARN] No hay test_generators configurados — Fase RED sin generación de pruebas` y continuar
+1. Si `IMPLEMENT.test_generators` no existe o está vacío → emitir `[WARN] No hay test_generators configurados — Fase RED sin generación de pruebas` y continuar
 2. Para cada entry en `test_generators`:
    - Construir ruta: `.claude/skills/{entry.skill}/SKILL.md`
    - Verificar existencia con Glob
@@ -241,7 +241,7 @@ Este archivo es la precondición que leerá FEAT-081 (Fase GREEN) antes de invoc
 |--------|-----------|
 | Un skill de generación escribe en rutas incorrectas (incumple contrato) | El orquestador verifica que `files_generated` no esté vacío tras la invocación |
 | El comando de tests del usuario no existe (`required: false` en defaults) | La confirmación RED se omite con `[INFO]`; no bloquea la fase |
-| `sddf-config.yaml` no tiene sección `implementing` (proyecto en migración) | El skill emite `[WARN]` y continúa con flujo genérico; nunca lanza error fatal |
+| `sddf-config.yaml` no tiene sección `IMPLEMENT` (proyecto en migración) | El skill emite `[WARN]` y continúa con flujo genérico; nunca lanza error fatal |
 | Los skills de generación (ej. `story-test-unit-jest`) aún no existen | D-2 detecta la ausencia en la validación previa y emite `❌` con sugerencia explícita de instalación |
 | La Fase RED genera tests que pasan de inmediato (tests mal escritos) | D-5 emite `⚠️` con instrucción de verificar los tests; el ciclo no avanza automáticamente a GREEN |
 

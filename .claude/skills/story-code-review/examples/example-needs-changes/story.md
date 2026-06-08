@@ -3,7 +3,7 @@ type: story
 id: FEAT-000
 slug: FEAT-000-example-needs-changes
 title: "Ejemplo: Historia con hallazgos bloqueantes en code review"
-status: IMPLEMENTING
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-00-example
 created: 2026-05-09

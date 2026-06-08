@@ -37,7 +37,7 @@ Cuando ejecuto "/story-plan FEAT-062"
 Entonces "story.md" tiene status: PLANNING / substatus: IN-PROGRESS
   Y al finalizar "story-analyze" sin ERROREs "story.md" tiene status: READY-FOR-IMPLEMENT / substatus: DONE
 Cuando ejecuto "/story-implement FEAT-062"
-Entonces "story.md" tiene status: IMPLEMENTING / substatus: IN-PROGRESS antes de la primera tarea
+Entonces "story.md" tiene status: IMPLEMENT / substatus: IN-PROGRESS antes de la primera tarea
   Y al finalizar todas las tareas "story.md" tiene status: READY-FOR-CODE-REVIEW / substatus: DONE
 ```
 
