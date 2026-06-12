@@ -91,15 +91,18 @@ Todos los skills invocan skill-preflight como primer paso antes de ejecutar cual
 
 ### Patrones de arquitectura
 
-#### 4. Un solo nivel de delegación
+#### 4. Composición de skills + un solo salto de delegación
 
 ```
-skill (orquestador)
-  └── agent A
-  └── agent B
+skill orquestador (sesión principal)
+  ├── skill B (composición inline — misma sesión)
+  ├── agent A (subagente — contexto aislado)
+  └── agent C (subagente — contexto aislado)
   ```
 
-El skill es siempre el punto de entrada. Los agentes especializados son subagentes. No hay delegación entre agentes.
+Componer skills (inline) está permitido pero con cadenas cortas, porque el contexto se acumula. Delegar (subagentes) solo desde la sesión que ejecuta skills, nunca de subagente a subagente. El skill es el punto de entrada; los agentes especializados son subagentes que escriben su output en `.tmp/<skill-name>/` y devuelven el control.
+
+Los subagentes no invocan skills orquestadores. Si un subagente necesita la lógica de un skill, el skill orquestador se la pasa como parte de su prompt (o referencia el archivo para que el subagente lo lea con `Read`). Los skills orquestadores solo se ejecutan en la sesión principal. Un subagente puede seguir un skill **worker** (sin interacción con el usuario, sin lanzar subagentes y sin depender de contexto conversacional no provisto en el prompt).
 
 #### 5. Template como fuente de verdad dinámica
 

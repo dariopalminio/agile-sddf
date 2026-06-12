@@ -7,7 +7,7 @@ context: |
   Stack: Claude Code (Anthropic), Markdown, YAML, OpenSpec CLI, Docker, Git/GitHub
   Plataformas compatibles: Claude Code, OpenCode, GitHub Copilot, Jira Rovo, Gemini Gem
 
-  Arquitectura: Modelo de un solo nivel de delegación — skill (orquestador/entry point) → agentes especializados (subagentes).
+  Arquitectura: Composición de skills + un solo salto de delegación — los skills se componen inline (misma sesión, cadenas cortas) y solo la sesión que ejecuta skills delega en agentes especializados (subagentes con contexto aislado); nunca subagente → subagente.
   - .claude/agents/ — agentes especializados: project-pm, project-architect, project-ux, reverse-engineer-*, story-*
   - .claude/skills/ — fuente única de verdad para skills reutilizables
   - openspec/changes/ — cambios activos y archivados (spec-driven workflow)

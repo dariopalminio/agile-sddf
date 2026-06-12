@@ -30,20 +30,48 @@ Los skills son las **habilidades personalizadas o herramientas** que construyes 
 
 Assets empaquetados por skill: cada skill incluye su propio subdirectorio `assets/` para portabilidad multi-cliente. Los templates y recursos se copian junto con el skill en la instalación, lo que garantiza que cada skill tenga acceso a sus propios assets sin depender de rutas globales o hardcodeadas.
 
-## Modelo de un solo nivel de delegación
+## Modelo de delegación: composición de skills + un solo salto de subagente
 
-En este modelo, el skill actúa como el punto de entrada y coordinador que invoca agentes especialistas. El skill es responsable de orquestar la ejecución de los agentes, asegurándose de que cada uno realice su tarea específica y luego recopile los resultados para generar la salida final. Este enfoque mantiene la estructura simple y clara, evitando la complejidad de múltiples niveles de delegación.
+Distinguimos dos mecanismos de invocación, según cómo funciona realmente el harness de Claude Code (ver `[[harness-engineering]]`):
 
-Los skills son el punto de entrada y el coordinador que invoca agentes especialistas. Es el patrón establecido en este proyecto.
+- **Composición (skill → skill, inline):** cuando un skill invoca a otro skill, la misma sesión lee el SKILL.md del sub-skill y sigue sus instrucciones dentro de la misma conversación. No se crea un segundo agente ni un contexto aislado. **Está permitido componer skills, pero con cadenas cortas, porque el contexto se acumula** (las instrucciones de todos los skills compuestos quedan activas simultáneamente en la misma ventana de contexto).
+- **Delegación (→ subagente):** lanzar un subagente crea un contexto nuevo y aislado. **Solo la sesión que ejecuta skills puede delegar en subagentes; un subagente nunca delega en otro subagente.** El subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el control.
+
+El skill es el punto de entrada y coordinador: orquesta la ejecución, delega trabajo aislado o paralelo a agentes especialistas y consolida sus resultados en la salida final.
 
 ```
-skill (entry point + coordinator/orquestador)
-    └── agent A (Subagentes A)
-    └── agent B (Subagentes B)
-    └── agent C (Subagentes C)
+skill orquestador (entry point, sesión principal)
+    ├── skill B (composición inline — misma sesión, cadena corta)
+    ├── agent A (subagente — contexto aislado)
+    └── agent C (subagente — contexto aislado)
+                  └── ✗ prohibido: agente que delega en otro agente
 ```
 
-Esto es acorde a la arquitectura de Claude Code donde la sesión principal actúa como agente primario que orquesta la ejecución de skills y agentes especializados (Subagentes), manteniendo una estructura plana (Sesión → Subagente), clara y eficiente sin necesidad de múltiples niveles de delegación (agentes en .claude/agents/, invocados por la sesión principal).
+Criterio de elección: **inline** cuando se necesita continuidad de contexto e interacción con el usuario; **subagente** cuando se necesita aislamiento, paralelismo, o proteger la sesión principal de trabajo voluminoso (ej. leer 50 archivos para producir un informe de 20 líneas).
+
+Esto es acorde a la arquitectura de Claude Code, donde la sesión principal actúa como agente primario que ejecuta skills inline y mantiene una estructura plana de delegación (Sesión → Subagente), con agentes en `.claude/agents/` invocados por la sesión principal.
+
+### Subagentes y skills
+
+**Los subagentes no invocan skills orquestadores.** Si un subagente necesita la lógica de un skill, el skill orquestador se la pasa como parte de su prompt (o referencia el archivo para que el subagente lo lea con `Read`). Los skills orquestadores solo se ejecutan en la sesión principal.
+
+Un subagente sí puede seguir un skill **worker**, es decir, un skill que cumple las tres condiciones:
+
+1. **No interactúa con el usuario** — sin pasos que requieran AskUserQuestion ni confirmaciones (o que puedan correr con defaults, sin preguntas).
+2. **No lanza subagentes** — si lo hiciera, se produciría subagente → subagente, el caso prohibido.
+3. **No depende de contexto conversacional no provisto** — el subagente arranca con contexto vacío; el orquestador debe pasarle en el prompt los valores ya resueltos (ej. `SPECS_BASE`, ruta de la historia) o el subagente debe poder re-ejecutar `skill-preflight` por su cuenta.
+
+Matriz de invocaciones permitidas:
+
+| Invocación | ¿Permitido? |
+|---|---|
+| skill → skill (inline, sesión principal) | ✅ cadenas cortas |
+| skill → subagente | ✅ un solo salto |
+| subagente → skill **worker** | ✅ inline dentro del subagente, con contexto provisto en el prompt |
+| subagente → skill **orquestador** | ❌ delegación encubierta de segundo nivel |
+| subagente → subagente | ❌ prohibido |
+
+Nota: la garantía más fuerte no es esta prosa sino el harness — los agentes de `.claude/agents/` declaran listas de `tools` restringidas que no incluyen `Skill`. Mantener esas listas mínimas es lo que hace la regla verificable; un agente nuevo con `tools: *` la anularía silenciosamente.
 
 ## Patrón de comunicación inter-agente: `.tmp/<skill>/`
 

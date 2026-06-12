@@ -89,6 +89,10 @@ updated: <YYYY-MM-DD>
 - [ ] El despliegue puede revertirse sin pérdida de datos si algo falla
 
 ---
+### Definition of Done para el estado VERIFY
+
+<!-- Condiciones necesarias para verificar la historia antes de avanzar a ACCEPTANCE. -->
+<!-- Por el momento sin criterios -->
 
 ### Definition of Done para el estado ACCEPTANCE
 

@@ -1,4 +1,4 @@
-Busca los skills y agents en .agents
+Busca los skills y agents en .claude
 
 
 # Agile Spec-Driven-Development Framework (SDDF)
@@ -23,9 +23,7 @@ Sistema cliente agentico minimalista que automatiza la especificación de featur
 ## Project structure
 
 ```
-features_spec_builder/   # main package
-tests/                   # pytest tests
-features_spec_builder/
+agile-sddf/
   ├── docs/specs/stories/              # Directorio de salida de documentos generados
   ├── AGENTS.md                        # Convención .agent/ — compatible con Codex, Cursor, etc.
   ├── CLAUDE.md                        # Instrucciones globales del proyecto
@@ -70,18 +68,24 @@ Los skills son las **habilidades personalizadas o herramientas** que construyes 
 
 Los skills deben ser Multicliente, es decir, diseñados para ser reutilizados por múltiples agentes. Esto significa que un skill debe ser lo suficientemente genérico y flexible para adaptarse a diferentes contextos y necesidades de los agentes que lo utilicen. Al diseñar un skill, es importante considerar cómo puede ser aplicado por diferentes agentes sin requerir modificaciones específicas para cada uno, lo que maximiza su utilidad y eficiencia dentro del sistema.
 
-## Modelo de un solo nivel de delegación
+## Modelo de delegación: composición de skills + un solo salto de subagente
 
-En este modelo, el skill actúa como el punto de entrada y coordinador que invoca agentes especialistas. El skill es responsable de orquestar la ejecución de los agentes, asegurándose de que cada uno realice su tarea específica y luego recopile los resultados para generar la salida final. Este enfoque mantiene la estructura simple y clara, evitando la complejidad de múltiples niveles de delegación.
+Distinguimos dos mecanismos de invocación, según cómo funciona realmente el harness de Claude Code:
 
-Los skills son el punto de entrada y el coordinador que invoca agentes especialistas. Es el patrón establecido en este proyecto.
+- **Composición (skill → skill, inline):** cuando un skill invoca a otro skill, la misma sesión lee el SKILL.md del sub-skill y sigue sus instrucciones dentro de la misma conversación. No se crea un segundo agente ni un contexto aislado. **Está permitido componer skills, pero con cadenas cortas, porque el contexto se acumula** (las instrucciones de todos los skills compuestos quedan activas simultáneamente en la misma ventana de contexto).
+- **Delegación (→ subagente):** lanzar un subagente crea un contexto nuevo y aislado. **Solo la sesión que ejecuta skills puede delegar en subagentes; un subagente nunca delega en otro subagente.** El subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el control.
 
-skill (entry point + coordinator/orquestador)
-    └── agent A (Subagentes A)
-    └── agent B (Subagentes B)
-    └── agent C (Subagentes C)
+El skill es el punto de entrada y coordinador: orquesta la ejecución, delega trabajo aislado o paralelo a agentes especialistas y consolida sus resultados en la salida final.
 
-Esto es acorde a la arquitectura de Claude Code donde la sesión principal actúa como agente primario que orquesta la ejecución de skills y agentes especializados (Subagentes), manteniendo una estructura plana (Sesión → Subagente), clara y eficiente sin necesidad de múltiples niveles de delegación (agentes en .claude/agents/, invocados por la sesión principal).
+skill orquestador (entry point, sesión principal)
+    ├── skill B (composición inline — misma sesión, cadena corta)
+    ├── agent A (subagente — contexto aislado)
+    └── agent C (subagente — contexto aislado)
+                  └── ✗ prohibido: agente que delega en otro agente
+
+Criterio de elección: **inline** cuando se necesita continuidad de contexto e interacción con el usuario; **subagente** cuando se necesita aislamiento, paralelismo, o proteger la sesión principal de trabajo voluminoso (ej. leer 50 archivos para producir un informe de 20 líneas).
+
+Esto es acorde a la arquitectura de Claude Code, donde la sesión principal actúa como agente primario que ejecuta skills inline y mantiene una estructura plana de delegación (Sesión → Subagente), con agentes en `.claude/agents/` invocados por la sesión principal.
 
 
 # Políticas del Proyecto
