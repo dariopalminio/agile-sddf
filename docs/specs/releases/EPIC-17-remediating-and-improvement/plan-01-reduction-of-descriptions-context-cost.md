@@ -1,4 +1,4 @@
-# Plan 01: Remediar hallazgo A1 — Costo de contexto de las descriptions de skills
+# Plan 01: Remediar hallazgo A1 — Reducción de costo de contexto de descriptions — Feature del EPIC-17
 
 ## Contexto
 
