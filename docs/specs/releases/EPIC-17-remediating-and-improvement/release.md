@@ -26,9 +26,11 @@ con su propio principio §3 ("obligar a demostrar, no declarar").
 
 ## Features <!-- sección obligatoria-->
 
-- [x] plan-01 - **Reducción de costo de contexto de descriptions:** Remediar hallazgo A1 — Costo de contexto de las descriptions de skills. Recortar las 47 descriptions del system prompt de 22.017 a ≤12.000 chars siguiendo el patrón "cuándo invocarme" (qué + cuándo + triggers, ≤500 chars/skill).
+- [x] plan-01 - **Enhance - Reducción de costo de contexto de descriptions:** Remediar hallazgo A1 — Costo de contexto de las descriptions de skills. Recortar las 47 descriptions del system prompt de 22.017 a ≤12.000 chars siguiendo el patrón "cuándo invocarme" (qué + cuándo + triggers, ≤500 chars/skill).
 
-- [x] plan-02 - **Corrección de CLAUDE.md:** Actualizar la información falsa sobre la estructura del repo para que los agentes lean datos verídicos. 
+- [x] plan-02 - **Fix - Corrección de CLAUDE.md:** Actualizar la información falsa sobre la estructura del repo para que los agentes lean datos verídicos. 
+
+- [ ] **Limpieza: assets muertos, skills-lock, directorios legacy multi-cliente**: (generarlos desde .claude/ con un build, o eliminarlos), config de ejemplo neutral. Plantilla muerta constitution-template.md junto a la usada project-constitution-template.md; Skills-lock.json con skills que ya no existen; El sddf.config.yaml raíz contiene comandos pnpm de otro proyecto (una UI library React); El docs/index.md usa un guion no-ASCII (U+2011) en substatus; idiomas mezclados sin criterio declarado.
 
 - [ ] **Estandarización del esquema de evals:** Unificar los dos esquemas incompatibles de evals.json en uno solo y migrar los evals existentes.
 
@@ -48,17 +50,9 @@ con su propio principio §3 ("obligar a demostrar, no declarar").
 
 - [ ] A7 — **Multi-cliente declarado, no mantenido:** se promete compatibilidad con 5 plataformas, pero .opencode/ y .github/ están casi vacíos (1 entrada vs 47 skills) y gem//rovo/ son prompts legacy divergentes. Cinco fuentes de verdad parciales contra la "fuente única" declarada.
 
-- [ ] **Máquina de estados implícita sin documento canónico;**
-
-- [ ] **Plantilla muerta constitution-template.md junto a la usada project-constitution-template.md;**
-
-- [ ] **Skills-lock.json con skills que ya no existen;**
-
-- [ ] **El sddf.config.yaml raíz contiene comandos pnpm de otro proyecto (una UI library React);**
+- [ ] **Máquina de estados implícita sin documento canónico;** Realizar un documento canónico de máquina de estados.
 
 - [ ] **El postinstall de npm pregunta por stdin (anti-patrón) y su skip-if-exists hace que los upgrades nunca propaguen skills ya instalados;**
-
-- [ ] **El docs/index.md usa un guion no-ASCII (U+2011) en substatus; idiomas mezclados sin criterio declarado.**
 
 - [ ] **El párrafo de preflight está copiado literal en ~30 SKILL.md (cambiarlo = editar 30 archivos);**
 
