@@ -153,3 +153,13 @@ Que el skill sea "worker" significa que cumple esto, y conviene escribirlo como 
 2. No lanza subagentes — si los lanzara, tendrías subagente → subagente, el caso prohibido.
 3. No depende de contexto conversacional que el subagente no tiene. Este es el que más se pasa por alto: los skills SDDF asumen que el preflight ya corrió y que SPECS_BASE está resuelto. El subagente arranca con contexto vacío — no sabe nada de eso. El orquestador debe pasarle los valores resueltos en el prompt (el "bundle"), o aceptar que el subagente re-ejecute skill-preflight por su cuenta (que es legal — preflight es worker puro, solo lecturas — pero duplica trabajo).
 
+## Resumen de relaciones entre mecanismos de ejecución y organización:
+
+| Invocación | Nombre | Mecanismo real | ¿Permitido? |
+|------------|--------|----------------|-------------|
+| skill → skill | composición | inline, sesión principal | ✅ cadenas cortas |
+| skill → subagente | delegación | spawn (contexto nuevo y aislado) | ✅ un solo salto |
+| subagente → skill worker | adopción | inline, dentro del subagente | ✅ con bundle de contexto |
+| subagente → skill orquestador | delegación encubierta | inline que exige spawns que el subagente no puede hacer | ❌ |
+| subagente → subagente | delegación anidada | spawn desde un spawn | ❌ |
+
