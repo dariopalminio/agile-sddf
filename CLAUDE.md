@@ -24,21 +24,31 @@ Sistema cliente agentico minimalista que automatiza la especificación de featur
 
 ```
 agile-sddf/
-  ├── docs/specs/stories/              # Directorio de salida de documentos generados
+  ├── docs/specs/                      # Artefactos generados (projects/, releases/, stories/)
+  ├── docs/policies/                   # constitution.md, definition-of-done-story.md
   ├── AGENTS.md                        # Convención .agent/ — compatible con Codex, Cursor, etc.
   ├── CLAUDE.md                        # Instrucciones globales del proyecto
-  ├── .claude/                          # Fuente única de verdad para agentes y skills
-  │   ├── agents/
-  │   │   ├── project-pm.agent.md      # PM — Begin Intention, Discovery
-  │   │   ├── project-architect.agent.md # Arquitecto — SPECIFY, Planning
-  │   │   └── project-ux.agent.md      # UX — apoyo en Discovery y SPECIFY
-  │   └── skills/
-  │       ├── skill-name/
-  │       │   ├── assets/           # Templates específicos para este skill
-  │       │   ├── examples/           # Ejemplos específicos para este skill
-  │       │   ├── scripts/ 
-  │       │   └── SKILL.md
-  │       └── ...
+  └── .claude/                         # Fuente única de verdad para agentes y skills
+      ├── agents/                      # 10 agentes registrados por el harness
+      │   ├── project-pm.agent.md
+      │   ├── project-architect.agent.md
+      │   ├── project-ux.agent.md
+      │   ├── project-story-mapper.agent.md
+      │   ├── story-product-owner.agent.md
+      │   ├── reverse-engineer-architect.agent.md
+      │   ├── reverse-engineer-business-analyst.agent.md
+      │   ├── reverse-engineer-product-discovery.agent.md
+      │   ├── reverse-engineer-synthesizer.agent.md
+      │   └── reverse-engineer-ux-flow-mapper.agent.md
+      ├── commands/
+      │   └── opsx/                    # Integración experimental OpenSpec (apply, archive, explore, propose)
+      └── skills/
+          ├── skill-name/
+          │   ├── assets/
+          │   ├── examples/
+          │   ├── scripts/
+          │   └── SKILL.md
+          └── ...
 ```
 
 
@@ -52,7 +62,7 @@ Los agentes funcionan como **pequeños empleados virtuales especializados** en t
 
 ## Comandos
 
-Evitamos usar comandos.
+En Claude **preferimos skills sobre commands**. Los commands son una excepción justificada solo para integraciones externas donde el harness de commands ofrece ventajas claras.
 
 ### Comandos en Opencode
 
@@ -60,7 +70,9 @@ Los comandos en OpenCode se ubican en ".opencode/commands/": Permite máxima per
 
 ### Comandos en Claude
 
-Los comandos en Claude se ubican en ".claude/commands/". En Claude evitamos usar comandos por se más bien legacy ("precede al sistema de skills actual"). En su lugar, recomendamos usar skills para encapsular la lógica de ejecución, lo que permite una mayor flexibilidad y reutilización. Sin embargo, si decides usar comandos, asegúrate de que estén bien documentados y organizados para facilitar su uso.
+Los comandos en Claude se ubican en `.claude/commands/`. Los skills son más componibles, más fáciles de versionar y se adaptan al contexto de ejecución. Los commands son apropiados solo para integraciones externas donde el harness de commands ofrece ventajas claras (argumentos posicionales `$ARGUMENTS`, inyección de resultados de shell).
+
+**Excepción activa:** `.claude/commands/opsx/` mantiene 4 comandos de integración OpenSpec (`propose`, `apply`, `archive`, `explore`) mientras se evalúa su migración a skills. No crear nuevos commands Claude sin evaluar primero si un skill cumple el mismo propósito.
 
 ## Skills (Habilidades)
 
