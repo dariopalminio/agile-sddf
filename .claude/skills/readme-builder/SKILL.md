@@ -1,13 +1,10 @@
 ---
 name: readme-builder
 description: >-
-  Generates a complete, ready-to-publish README.md by reading available SDDF spec artifacts
-  (project-intent.md, requirement-spec.md, project-plan.md) and filling a Markdown template.
-  Use when the user wants to generate, create, write, or build a README.md from existing project
-  documentation or specs. Triggers on /readme-builder and on requests like "generate README",
-  "create README for this project", "write a README", "build README from specs", or 
-  "document my project". Also triggers when the user has just finished a /project-discovery 
-  or /project-planning and wants to produce public documentation.
+  Generates README.md from SDDF spec artifacts (project-intent.md, requirement-spec.md, project-plan.md).
+  Use after /project-discovery or /project-planning to document the project.
+  Triggers on /readme-builder, "generate README", "create README", "write a README",
+  "build README from specs", "document my project".
 alwaysApply: false
 ---
 

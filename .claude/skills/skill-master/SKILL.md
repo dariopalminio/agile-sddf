@@ -256,6 +256,7 @@ Check available MCPs - if useful for research (searching docs, finding similar s
 
 - **`name`**: Skill identifier in kebab-case.
 - **`description`**: When to trigger and what it does — this is the primary triggering mechanism. Include specific phrases/contexts that should invoke the skill. Make it slightly "pushy": instead of *"How to build a dashboard"*, write *"How to build a dashboard. Use this whenever the user mentions dashboards, data visualization, or internal metrics, even if they don't say 'dashboard' explicitly."* All "when to use" logic goes here, not in the body.
+  **Budget: ≤ 350 chars target, 500 chars hard maximum.** The description is loaded into the system prompt of EVERY session regardless of which skills are used — keep it focused on answering "¿cuándo invocarme?" only. Use this 3-part pattern: (1) what it produces (1 sentence), (2) when to use it (1 sentence), (3) trigger phrases ("Invocar también cuando el usuario mencione…"). The "how" always goes in the body, never here. Use `>-` YAML scalar (folded, strip). Preserve all existing trigger phrases when editing — they are what cause dispatching.
 - **`triggers`**: List of key phrases that reliably signal this skill (used for description optimization).
 - **Body sections**: Fill each section from the template with information gathered during the interview. Adapt or omit sections that don't apply to the skill's domain — the template is a starting point, not a rigid checklist.
 

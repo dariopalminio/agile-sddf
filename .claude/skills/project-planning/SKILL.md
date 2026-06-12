@@ -1,11 +1,8 @@
 ---
 name: project-planning
 description: >-
-  Tercer paso del pipeline de ProjectSpecFactory. Verifica que project.md existe en el
-  directorio del proyecto activo, ofrece realizar Story Mapping previo, y delega la
-  generación del plan al agente project-architect, produciendo project-plan.md.
-  Usar siempre que el usuario quiera planificar el proyecto, generar el backlog inicial
-  de releases, o crear project-plan.md a partir de project.md.
+  Produce project-plan.md (paso 3 de ProjectSpecFactory) delegando la generación del backlog
+  al agente project-architect. Usar para planificar el proyecto a partir de project.md.
   Invocar también cuando el usuario mencione "planificación del proyecto", "plan del proyecto",
   "project-planning" o equivalentes.
 triggers:

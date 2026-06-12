@@ -1,19 +1,10 @@
 ---
 name: story-code-review
 description: >-
-  Ejecuta una revisión multi-agente del código implementado en una historia SDD, lanzando en paralelo
-  cuatro subagentes especializados (Inspector de Código, Guardián de Requisitos, Inspector de Integración
-  y Auditor de Seguridad) y consolidando sus hallazgos en un code-review-report.md. Genera review-status: approved cuando no
-  hay hallazgos de severidad HIGH o MEDIUM y actualiza story.md a CODE-REVIEW/DONE; si hay
-  bloqueantes genera fix-directives.md, agrega tarea en tasks.md y retrocede story.md a READY-FOR-IMPLEMENT/DONE.
-  Funciona independientemente de si se usó /story-implement (TDD completo con testcases.md) o
-  /story-implement-tasks (implementación tarea a tarea): implement-report.md y testcases.md son
-  opcionales — si existen enriquecen el análisis; si no existen, la revisión continúa sin bloquear.
-  Usar siempre que el usuario quiera revisar el código de una historia implementada, validar que la
-  implementación cumple los criterios de aceptación y la arquitectura antes de marcar Done,
-  o ejecutar el quality gate posterior a story-implement o story-implement-tasks.
-  Invocar también cuando el usuario mencione "revisar código", "code review", "story-code-review",
-  "revisión multi-agente", "quality gate post-implement", "validar implementación" o equivalentes.
+  Genera code-review-report.md con revisión multi-agente (4 subagentes: código, requisitos, integración, seguridad).
+  Usar después de story-implement como quality gate antes de Done.
+  Invocar para "code review", "revisar código", "story-code-review",
+  "quality gate post-implement" o "validar implementación".
 triggers:
   - "revisar código"
   - "code review"

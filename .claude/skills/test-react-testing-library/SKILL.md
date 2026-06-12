@@ -1,16 +1,10 @@
 ---
 name: test-react-testing-library
-description: |
-  Test React components with Vitest + Testing Library + happy-dom + axe-core.
-  Use it to write rendering tests, user interaction tests, accessibility tests, and mocks.
-  Ideal for UI components, forms, hooks, and any element that renders in the DOM.
-  
-  WHEN TO USE: The user mentions "componente React", "prueba de componente", "Testing Library",
-  "render", "screen", "userEvent", "axe", "accesibilidad", or writes tests with `describe`/`it` over JSX.
-  Also, when `vitest.config.ts` is configured with `environment: 'happy-dom'`.
-
-  DO NOT USE FOR: unit tests of pure functions (use generic `vitest` skill), E2E tests (use `playwright`),
-  or backend tests.
+description: >-
+  Tests React components with Vitest + Testing Library + happy-dom + axe-core (rendering, interaction, accessibility).
+  Use when testing UI components, forms, or hooks that render in the DOM.
+  Invoke for "Testing Library", "componente React", "render", "screen", "userEvent", "axe".
+  DO NOT USE FOR unit tests, E2E tests, or backend tests.
 allowed-tools: Read, Grep, Glob, Write, Edit
 metadata:
   author: https://github.com/dariopalminio

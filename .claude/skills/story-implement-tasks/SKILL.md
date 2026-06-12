@@ -1,14 +1,10 @@
 ---
 name: story-implement-tasks
 description: >-
-  Implementa el código de una historia SDD tarea por tarea siguiendo TDD, generando primero el test
-  y luego el código de producción mínimo. Lee story.md, design.md y tasks.md del directorio de la historia,
-  actualiza tasks.md en tiempo real y genera implement-report.md al finalizar.
-  Usar siempre que el usuario quiera implementar una historia, generar código tarea por tarea,
-  ejecutar el ciclo TDD sobre una historia planificada, o completar el flujo SDD después de story-plan.
-  Invocar también cuando el usuario mencione "implementar historia", "story-implement-tasks",
-  "generar código de la historia", "implementar tareas", "codificar historia",
-  "programar historia", "TDD historia", "ejecutar story-implement-tasks" o equivalentes.
+  Implementa una historia SDD tarea por tarea con TDD, generando implement-report.md.
+  Usar después de story-plan para completar el flujo SDD.
+  Invocar para "story-implement-tasks", "implementar historia", "codificar historia",
+  "TDD historia" o "implementar tareas".
 triggers:
   - story-implement-tasks
   - /story-implement-tasks-tasks

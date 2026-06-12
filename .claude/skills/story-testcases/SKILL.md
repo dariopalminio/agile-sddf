@@ -2,11 +2,9 @@
 name: story-testcases
 description: >-
   Genera testcases.md con tabla de casos de prueba tipificados (UT/CT/IT/API/E2E/EV)
-  derivada de story.md y design.md. Usar cuando se quieran especificar pruebas antes
-  de implementar, generar testcases.md, crear tabla de casos trazables a criterios de
-  aceptación, o necesite el artefacto de pruebas del pipeline SDDF. Invocar también
-  cuando el usuario mencione "casos de prueba", "testcases", "especificar pruebas" o
-  "tabla de pruebas desde historia".
+  derivada de story.md y design.md. Usar antes de implementar para especificar pruebas trazables a ACs.
+  Invocar también cuando el usuario mencione "casos de prueba", "testcases",
+  "especificar pruebas", "tabla de pruebas desde historia" o equivalentes.
 triggers:
   - "story-testcases"
   - "generar casos de prueba"

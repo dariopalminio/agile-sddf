@@ -1,13 +1,9 @@
 ---
 name: project-discovery
 description: >-
-  Segundo paso del pipeline de ProjectSpecFactory. Verifica que project-intent.md existe
-  en el directorio del proyecto activo, conduce discovery de usuarios con project-pm y
-  especificación de requisitos con project-architect, produciendo project.md en una sola sesión.
-  Usar siempre que el usuario quiera iniciar la fase de discovery, especificar requisitos
-  del proyecto, o generar project.md a partir de project-intent.md.
-  Invocar también cuando el usuario mencione "discovery del proyecto", "especificación de
-  requisitos", "project-discovery" o equivalentes.
+  Produce project.md (paso 2 de ProjectSpecFactory) delegando discovery y requisitos a agentes especializados.
+  Usar a partir de project-intent.md para iniciar la fase de discovery.
+  Invocar para "discovery del proyecto", "especificación de requisitos" o "project-discovery".
 triggers:
   - project-discovery
   - /project-discovery

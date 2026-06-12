@@ -1,13 +1,10 @@
 ---
 name: project-policies-generation
 description: >-
-  Inicializa o actualiza los documentos de políticas y constitución del proyecto SDDF
-  (constitution.md y definition-of-done-story.md) a partir de templates Markdown, y
-  registra las referencias en CLAUDE.md / AGENTS.md para que los agentes IA los lean
-  automáticamente. Usar cuando se quiere establecer o actualizar las reglas técnicas,
-  convenciones y criterios de calidad del proyecto.
-  Invocar también cuando el usuario mencione "generar políticas", "actualizar constitución",
-  "definition of done", "project-policies-generation" o equivalentes.
+  Inicializa o actualiza constitution.md y definition-of-done-story.md registrando referencias en CLAUDE.md.
+  Usar para establecer reglas técnicas y criterios de calidad del proyecto.
+  Invocar para "generar políticas", "actualizar constitución",
+  "definition of done" o "project-policies-generation".
 triggers:
   - project-policies-generation
   - /project-policies-generation

@@ -1,10 +1,9 @@
 ---
 name: story-improve
-description: >
-  Lee el reporte FINVEST de una historia (finvest-evaluation-report.md) y aplica automáticamente
-  las recomendaciones de cada dimensión con score ≤ 3 sobre story.md, generando un backup y un
-  log de cambios trazable. Invocar cuando el usuario mencione "mejorar historia", "aplicar
-  recomendaciones FINVEST", "story-improve" o quiera corregir una decisión REFINAR o RECHAZAR.
+description: >-
+  Aplica recomendaciones FINVEST (score ≤ 3) sobre story.md, generando backup y log de cambios.
+  Usar para corregir una historia con decisión REFINAR o RECHAZAR.
+  Invocar para "mejorar historia", "aplicar recomendaciones FINVEST" o "story-improve".
 triggers:
   - "/story-improve"
   - "mejorar historia desde reporte"

@@ -1,12 +1,10 @@
 ---
 name: story-plan
 description: >-
-  Orquesta el flujo completo de planning de una historia SDD ejecutando story-design → story-tasking → story-testcases → story-analyze
-  en secuencia con un solo comando. Por defecto genera design.md + tasks.md + testcases.md + analyze.md.
-  Usar siempre que el usuario quiera planificar una historia completa, ejecutar el pipeline de planning,
-  o preparar la historia para implementar.
-  Invocar también cuando el usuario mencione "planificar historia", "pipeline de planning",
-  "preparar historia para implementar", "story-plan", "orquestar planning" o equivalentes.
+  Orquesta el pipeline de planning SDD (story-design → story-tasking → story-testcases → story-analyze) en un solo comando.
+  Usar para planificar una historia completa o prepararla para implementar.
+  Invocar para "planificar historia", "pipeline de planning",
+  "preparar historia para implementar", "story-plan" o "orquestar planning".
 triggers:
   - "story-plan"
   - "planificar historia"

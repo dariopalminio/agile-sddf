@@ -1,11 +1,9 @@
 ---
 name: story-design
 description: >-
-  Genera design.md a partir de story.md, documentando el diseño técnico antes de implementar.
-  Usar siempre que el usuario quiera planificar técnicamente una historia, generar un design,
-  documentar alternativas de implementación, crear design.md, diseñar la solución de una historia,
-  o necesite el puente entre los criterios de aceptación y el código. Invocar también cuando el
-  usuario mencione "cómo implementar la historia", "diseño técnico", "arquitectura de la historia"
+  Genera design.md documentando el diseño técnico de una historia antes de implementar.
+  Usar para crear el puente entre criterios de aceptación y código.
+  Invocar para "diseño técnico", "generar design", "crear design.md", "story-design"
   o "decisiones técnicas antes de codificar".
 triggers:
   - "diseño técnico"

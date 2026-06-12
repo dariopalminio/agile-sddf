@@ -1,14 +1,10 @@
 ---
 name: docs-wiki-builder
 description: >-
-  Reorganiza el directorio $SPECS_BASE/ como una wiki navegable con un índice central
-  ($SPECS_BASE/index.md) y wikilinks internos [[slug]]. Implementa el patrón LLM Wiki
-  (Karpathy): el LLM lee index.md primero para obtener el mapa completo de la documentación
-  antes de abrir nodos individuales, haciendo el acceso O(index) en lugar de O(all-files).
-  Usar cuando se quiere generar o actualizar la estructura wiki de docs, crear el índice
-  central o validar wikilinks internos.
-  Invocar también cuando el usuario mencione "wiki de docs", "índice de documentación",
-  "wikilinks", "LLM wiki", "docs-wiki-builder" o equivalentes.
+  Reorganiza $SPECS_BASE/ como wiki navegable con index.md central y wikilinks [[slug]] (patrón LLM Wiki).
+  Usar para generar o actualizar la estructura wiki de docs o crear el índice central.
+  Invocar para "wiki de docs", "índice de documentación", "wikilinks",
+  "LLM wiki" o "docs-wiki-builder".
 triggers:
   - docs-wiki-builder
   - /docs-wiki-builder

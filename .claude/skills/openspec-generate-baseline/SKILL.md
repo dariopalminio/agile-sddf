@@ -1,6 +1,8 @@
 ---
 name: openspec-generate-baseline
-description: Genera una línea base de especificaciones OpenSpec mediante ingeniería inversa del código fuente. Lee src/, README.md y AGENTS.md para deducir el comportamiento actual, propone los artefactos como un change llamado "baseline" y lo archiva directamente sin fase de apply. Usar cuando un proyecto ya tiene código pero no tiene especificaciones OpenSpec.
+description: >-
+  Genera una línea base OpenSpec por ingeniería inversa del código (src/, README.md, AGENTS.md) y la archiva directamente.
+  Usar cuando el proyecto tiene código pero no tiene especificaciones OpenSpec.
 license: MIT
 compatibility: Requires openspec CLI, openspec/config.yaml, and opsx:propose + opsx:archive skills.
 metadata:

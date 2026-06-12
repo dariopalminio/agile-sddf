@@ -1,11 +1,8 @@
 ---
 name: project-begin
 description: >-
-  Primer paso del pipeline de ProjectSpecFactory. Entrevista al usuario mediante
-  el agente project-pm para capturar la intención del proyecto y refinarla,
-  produciendo project-intent.md en una sola sesión.
-  Usar siempre que el usuario quiera iniciar un nuevo proyecto, capturar la intención
-  inicial, o generar el primer artefacto del pipeline (project-intent.md).
+  Produce project-intent.md (paso 1 de ProjectSpecFactory) entrevistando al usuario
+  mediante el agente project-pm. Usar para iniciar un nuevo proyecto o capturar la intención inicial.
   Invocar también cuando el usuario mencione "comenzar proyecto", "iniciar proyecto",
   "capturar intención", "project-begin" o equivalentes.
 triggers:

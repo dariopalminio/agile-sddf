@@ -1,13 +1,10 @@
 ---
 name: story-verify
 description: >-
-  Orquesta la fase VERIFY del pipeline SDD: verifica precondiciones, detecta el modo de ejecución
-  de pruebas (automatico-unit, automatico-e2e, delegado, manual), ejecuta o guía las pruebas,
-  evalúa los criterios del DoD VERIFY, genera verify-report.md y actualiza el frontmatter de story.md.
-  Usar siempre que el usuario quiera ejecutar pruebas sobre una historia, generar un reporte de
-  verificación, validar criterios DoD VERIFY, o completar el flujo SDD después de story-code-review.
-  Invocar también cuando el usuario mencione "story-verify", "verificar historia", "ejecutar pruebas",
-  "fase VERIFY", "generar verify-report", "validar criterios de prueba" o equivalentes.
+  Genera verify-report.md ejecutando la fase VERIFY del pipeline SDD (detecta modo: unit/e2e/manual).
+  Usar después de story-code-review antes de ACCEPTANCE.
+  Invocar para "story-verify", "verificar historia", "ejecutar pruebas",
+  "fase VERIFY" o "validar criterios de prueba".
 triggers:
   - story-verify
   - /story-verify

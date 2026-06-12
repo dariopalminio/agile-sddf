@@ -1,10 +1,9 @@
 ---
 name: story-specify
 description: >-
-  Orquestador interactivo del flujo de especificación de historias usando
-  story-creation, story-evaluation, story-split, story-improve y story-product-owner
-  en secuencia, con control de estado por archivo y seguimiento de historias derivadas.
-  Produce especificaciones completas y aprobadas (SPECIFY/DONE) listas para el pipeline de planning.
+  Orquesta el flujo de especificación (story-creation → story-evaluation → story-split → story-improve)
+  produciendo historias SPECIFY/DONE listas para el pipeline de planning.
+  Invocar para "story-specify", "especificar historia" o "ciclo de especificación".
 triggers:
   - "story-specify"
   - "especificar historia"

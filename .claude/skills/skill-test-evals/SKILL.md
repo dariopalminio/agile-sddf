@@ -2,13 +2,11 @@
 name: skill-test-evals
 version: 2.0.0
 type: delegate
-description: >
-  Skill para el ciclo completo de evals de skills: genera evals/evals.json desde
-  cualquier fuente (modo generate), ejecuta los casos TC-NNN contra el skill y produce un informe
-  pass/fail (modo evals), y corre cada caso N veces con métricas estadísticas mean/stddev (modo benchmark).
-  Invocar cuando el usuario quiera crear pruebas para un skill, escribir evals antes de implementar
-  (fase RED del TDD), generar evals.json desde story.md o testcases.md, ejecutar evals de un skill,
-  verificar que el skill pasa sus casos de prueba, o correr un benchmark estadístico.
+description: >-
+  Ciclo completo de evals de skills: genera evals.json, ejecuta casos TC-NNN (pass/fail) y benchmarks.
+  Usar para crear pruebas para un skill o validar que pasa sus casos TC-NNN.
+  Invocar para "evals de skill", "generar evals.json", "ejecutar evals",
+  "validar skill" o "benchmark de skill".
 triggers:
   - "crear pruebas de"
   - "escribe los evals"

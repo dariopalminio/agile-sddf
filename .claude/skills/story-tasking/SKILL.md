@@ -1,12 +1,9 @@
 ---
 name: story-tasking
 description: >-
-  Genera tasks.md a partir de story.md y design.md, produciendo un plan de implementación
-  con tareas atómicas ordenadas por dependencias. Usar siempre que el usuario quiera generar
-  tareas de implementación para una historia, crear tasks.md, planificar el trabajo de una
-  historia antes de codificar, o necesite el tercer artefacto del trío story → design → tasks.
-  Invocar también cuando el usuario mencione "tasking", "plan de implementación", "tareas de la historia",
-  "generar tasks", "qué hay que hacer para implementar" o "cómo implemento esta historia".
+  Genera tasks.md con tareas atómicas ordenadas por dependencia desde story.md y design.md.
+  Usar antes de codificar para descomponer la historia en pasos ejecutables.
+  Invocar para "tasking", "tareas de la historia", "generar tasks" o "plan de implementación".
 triggers:
   - "tasking"
   - "plan de implementación"

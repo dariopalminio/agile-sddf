@@ -1,6 +1,10 @@
 ---
 name: header-aggregation
-description: Añade o actualiza frontmatter YAML estandarizado en archivos Markdown de spec (project-intent, requirement-spec, project-plan, release-*, story-*). Soporta un archivo individual o modo batch sobre un directorio completo. Detecta frontmatter existente y propone un merge con confirmación del usuario antes de sobreescribir. Usar cuando se necesite estandarizar metadatos de trazabilidad en archivos de spec, preparar archivos para el patrón LLM Wiki (index-first navigation), o añadir campos slug/type/status de forma masiva.
+description: >-
+  Añade o actualiza frontmatter YAML estandarizado en archivos Markdown de spec, individual o en batch.
+  Usar para estandarizar metadatos de trazabilidad o preparar archivos para el patrón LLM Wiki.
+  Invocar para "header-aggregation", "frontmatter", "añadir frontmatter",
+  "estandarizar metadatos" o "slug/type/status de forma masiva".
 ---
 
 # Skill: /header-aggregation

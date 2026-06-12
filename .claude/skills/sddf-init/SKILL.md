@@ -1,6 +1,9 @@
 ---
 name: sddf-init
-description: "Inicializa el entorno SDDF en un proyecto nuevo: crea la estructura de directorios base (`<SPECS_BASE>/specs/projects/`, `<SPECS_BASE>/specs/releases/`, `<SPECS_BASE>/specs/stories/`), genera `sddf.config.yaml` con la configuración operacional del framework y `.env.template` documentando `SDDF_ROOT`, y opcionalmente inicializa las políticas del proyecto (`constitution.md`, `definition-of-done-story.md`) invocando `project-policies-generation`. Idempotente — no sobrescribe archivos ni directorios existentes."
+description: >-
+  Inicializa el entorno SDDF: crea directorios base, sddf.config.yaml y .env.template. Idempotente.
+  Usar como primer paso antes de cualquier skill SDDF cuando el entorno no está configurado.
+  Invocar para "inicializar SDDF", "sddf-init", "configurar entorno SDDF" o "primer paso del framework".
 ---
 
 # Skill: sddf-init

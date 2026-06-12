@@ -1,15 +1,10 @@
 ---
 name: security-audit
 description: >-
-  Skill de auditoría automática condicional de seguridad. Detecta las características del repositorio,
-  evalúa un checklist de seguridad condicional y genera un reporte estructurado con hallazgos, evidencias
-  y recomendaciones. Invocable de forma aislada o integrado dentro de story-code-review.
-  Usar cuando: el usuario quiera auditar la seguridad de un repositorio antes de merge o deploy,
-  ejecutar una revisión de seguridad automatizada, verificar cumplimiento de checklist de seguridad,
-  o cuando story-code-review necesite el componente de auditoría de seguridad.
-  Invocar también cuando el usuario mencione "security audit", "auditoría de seguridad",
-  "revisar seguridad del repo", "security-audit", "checklist de seguridad", "vulnerabilidades",
-  "OWASP checklist", "security review automatizado" o equivalentes.
+  Genera audit-report.md con auditoría automática de seguridad (checklist OWASP + evidencias).
+  Usar antes de merge/deploy o como componente de story-code-review.
+  Invocar para "security audit", "auditoría de seguridad", "security-audit",
+  "checklist de seguridad", "OWASP checklist" o "vulnerabilidades".
 alwaysApply: false
 invocable: true
 outputs:

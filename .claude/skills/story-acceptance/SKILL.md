@@ -1,14 +1,10 @@
 ---
 name: story-acceptance
 description: >-
-  Orquesta la fase ACCEPTANCE del pipeline SDD: guía la validación manual de los criterios
-  de aceptación de una historia, criterio por criterio, recopila evidencia del validador humano,
-  genera acceptance-report.md y actualiza el frontmatter de story.md.
-  Usar siempre que el usuario quiera ejecutar la validación final de una historia, confirmar
-  que cumple los requisitos funcionales y de calidad antes de INTEGRATION, o generar un
-  acceptance-report.md con trazabilidad completa de la validación humana.
-  Invocar también cuando el usuario mencione "story-acceptance", "acceptance", "validación final",
-  "gate de acceptance", "aprobar historia", "validar criterios de aceptación manualmente" o equivalentes.
+  Genera acceptance-report.md guiando la validación manual de criterios de aceptación criterio por criterio.
+  Usar para el gate de aceptación antes de INTEGRATION.
+  Invocar para "story-acceptance", "acceptance", "validación final",
+  "gate de acceptance" o "aprobar historia".
 triggers:
   - story-acceptance
   - /story-acceptance

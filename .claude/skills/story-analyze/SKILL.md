@@ -1,14 +1,10 @@
 ---
 name: story-analyze
 description: >-
-  Analiza la coherencia entre story.md, design.md y los artefactos de implementación (testcases.md y/o tasks.md)
-  de una historia antes de implementar. Al menos uno de testcases.md o tasks.md debe existir; si ambos faltan
-  el análisis se rechaza. Usar siempre que el usuario quiera verificar la alineación de artefactos de una historia,
-  detectar inconsistencias entre el diseño y las tareas, auditar la cobertura de criterios de aceptación,
-  o necesite el paso de validación previo a story-implement-tasks o story-implement.
-  Invocar también cuando el usuario mencione "analizar plan de historia", "coherencia de artefactos del plan de historia",
-  "verificar alineación", "auditar historia", "story-analyze", "inconsistencias de diseño",
-  "chequear story antes de implementar" o equivalentes.
+  Genera analyze.md auditando la coherencia entre story.md, design.md y testcases.md/tasks.md antes de implementar.
+  Usar para detectar desalineaciones (requiere testcases.md o tasks.md).
+  Invocar para "analizar plan de historia", "auditar historia", "story-analyze",
+  "inconsistencias de diseño" o "chequear story antes de implementar".
 triggers:
   - "story-analyze"
   - "analizar historia"

@@ -1,6 +1,10 @@
 ---
 name: story-split
-description: "Divide una historia de usuario épica o demasiado grande en historias más pequeñas e independientes. Usar cuando una historia tiene S≤2 en evaluación FINVEST, ≥4 escenarios Gherkin, múltiples flujos de usuario bundleados, o el equipo no puede estimarla. Aplica los 8 patrones de splitting de Richard Lawrence. Cada historia resultante sigue el template story-template.md (Como/Quiero/Para + Gherkin) y cumple criterios INVEST. El directorio original se reutiliza como historia core (happy path), las adicionales reciben IDs nuevos."
+description: >-
+  Divide una historia épica en historias más pequeñas usando los 8 patrones de Richard Lawrence.
+  Usar cuando S≤2 en FINVEST, ≥4 escenarios Gherkin, o el equipo no puede estimarla.
+  Invocar para "story-split", "dividir historia", "historia muy grande",
+  "split de historia", "historia épica", "descomponer historia".
 triggers:
   - "story-split"
   - "dividir historia"

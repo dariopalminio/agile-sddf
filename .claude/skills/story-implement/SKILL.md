@@ -1,13 +1,9 @@
 ---
 name: story-implement
 description: >-
-  Orquesta el ciclo TDD completo (RED→GREEN→REFACTOR) para una historia SDDF, delegando
-  generación de pruebas y código a skills configurados en sddf.config.yaml. Soporta modo
-  interactivo (predeterminado: pausas entre fases para confirmación manual) y modo
-  automático (--auto: ciclo completo sin interrupciones, ideal para CI).
-  Usar cuando el practitioner quiere implementar una historia con TDD, ejecutar el
-  ciclo rojo-verde-refactor de una historia, generar tests y código desde una historia,
-  completar el ciclo TDD completo de una story, o ejecutar TDD en modo automático.
+  Orquesta el ciclo TDD completo (RED→GREEN→REFACTOR) delegando generación de pruebas y código a skills en sddf.config.yaml.
+  Usar para implementar una historia con TDD (modos: interactivo y --auto para CI).
+  Invocar para "story-implement", "implementar con TDD", "ciclo TDD historia", "ciclo TDD completo".
 triggers:
   - "story-implement"
   - "implementar con TDD"

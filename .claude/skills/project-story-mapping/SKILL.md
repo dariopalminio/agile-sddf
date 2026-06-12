@@ -1,13 +1,10 @@
 ---
 name: project-story-mapping
 description: >-
-  Orquesta una sesión de User Story Mapping (Jeff Patton) para el proyecto activo en SDDF:
-  prepara el contexto desde los documentos del proyecto y delega la sesión completa al agente
-  project-story-mapper, produciendo story-map.md con backbone, walking skeleton y release slices.
-  Usar cuando se quiere organizar requisitos en incrementos entregables, definir el MVP,
-  visualizar el journey del usuario o planificar releases.
-  Invocar también cuando el usuario mencione "story mapping", "user story map", "backbone",
-  "walking skeleton", "release slices", "project-story-mapping" o equivalentes.
+  Produce story-map.md (backbone, walking skeleton, release slices) via sesión interactiva de User Story Mapping.
+  Usar para organizar requisitos en incrementos entregables o definir el MVP.
+  Invocar para "story mapping", "user story map", "backbone",
+  "walking skeleton", "release slices" o "project-story-mapping".
 triggers:
   - project-story-mapping
   - /project-story-mapping

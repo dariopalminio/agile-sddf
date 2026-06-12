@@ -1,12 +1,10 @@
 ---
 name: test-playwright-cucumber
-description: |
-  Use when writing E2E tests with Cucumber BDD and Playwright, setting up BDD test infrastructure, writing Gherkin feature files, IMPLEMENT step definitions, configuring hooks and World, or integrating Cucumber with CI/CD.  
-  Invoke for Cucumber, BDD, Gherkin, feature files, step definitions, Given When Then, hooks, tags, World, scenario outline, @cucumber/cucumber.
-  
-  WHEN TO USE: Setting up `@cucumber/cucumber`, Setting up E2E with Playwright, E2E tests (use `playwright`), IMPLEMENT Gherkin feature files, writing TypeScript step definitions, configuring World and hooks, managing test execution with tags and profiles, integrating Cucumber into CI pipelines, or debugging BDD test issues.
-
-  DO NOT USE FOR: unit tests of pure functions, Components tests, Performance tests or backend tests.
+description: >-
+  Writes E2E tests with Cucumber BDD + Playwright: feature files, step definitions, hooks, and CI/CD integration.
+  Use when setting up @cucumber/cucumber or writing Gherkin scenarios.
+  Invoke for Cucumber, BDD, Gherkin, Given When Then, @badeball, @smoke, @regression.
+  DO NOT USE FOR unit tests, component tests, or backend tests.
 metadata:
   author: https://github.com/dariopalminio
   version: "1.0.0"
