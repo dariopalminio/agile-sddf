@@ -161,3 +161,19 @@ Que el skill sea "worker" significa que cumple esto, y conviene escribirlo como 
 | subagente → skill orquestador | delegación encubierta | inline que exige spawns que el subagente no puede hacer | ❌ |
 | subagente → subagente | delegación anidada | spawn desde un spawn | ❌ |
 
+### Reglas de oro de relaciones del Harness Engineering
+
+* Relaciones permitidas:
+  - skill-orquestador → skill-worker ✅ composición cadena corta
+  - skill-orquestador → subagente ✅ delegación spawn
+  - skill-orquestador → subagente → skill-worker ✅ delegación y adopción inline dentro del subagente (con bundle de contexto)
+  - skill-worker → skill-worker ✅ composición inline dentro del mismo contexto
+  - subagente → skill-worker ✅ adopción inline dentro del subagente (con bundle de contexto)
+  - skill-orquestador → skill-orquestador ✅ condicionado (solo en sesión principal, y la cadena de spawns resultante sigue siendo de un salto)
+
+* Relaciones NO permitidas:
+  - skill-worker → skill-orquestador ❌ el "worker" pasa a ser orquestador y pierde la adoptabilidad
+  - subagente → skill-worker → skill-orquestador ❌ de "delegación encubierta"
+  - subagente → skill-orquestador ❌ de "delegación encubierta"
+  - subagente → subagente ❌ de "delegación anidada"
+

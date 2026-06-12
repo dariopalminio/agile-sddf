@@ -78,4 +78,11 @@ Usar en la creación del skill el skill `skill-master` para asegurar que el nuev
 Generado automáticamente desde el release: EPIC-12-story-sdd-workflow  
 Feature origen: FEAT-060 — Orquestación del plan
 
-`story-plan` es el coordinador del flujo de planning. Sigue el modelo de un solo nivel de delegación del SDDF: el skill orquesta los sub-skills especializados (story-design, story-tasking, story-analyze) sin delegar en sub-orquestadores intermedios.
+`story-plan` es el coordinador del flujo de planning. Sigue el modelo de un solo nivel del SDDF: el skill se relacona por COMPOSICIÓN con los sub-skills especializados (story-design, story-tasking, story-analyze) sin delegar en sub-orquestadores intermedios.
+story-plan → skill-preflight
+story-plan → story-design → skill-preflight
+story-plan → story-tasking → skill-preflight
+story-plan → story-testcases → skill-preflight
+story-plan → story-analyze → skill-preflight
+
+

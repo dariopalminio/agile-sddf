@@ -31,6 +31,24 @@ Cool? Cool.
 
 ---
 
+## Golden Rules of Harness Engineering Relationships
+
+* Allowed relationships:
+  - skill-orquestador → skill-worker ✅ short chain composition
+  - skill-orquestador → subagente ✅ spawn delegation
+  - skill-worker → skill-worker ✅ inline composition within the same context
+  - skill-orquestador → subagente → skill-worker ✅ delegation and inline adoption within the subagent (with context bundle)
+  - skill-orquestador → skill-orquestador ✅ conditioned (only in main session, and the resulting spawn chain remains a single jump)
+
+* Relationships NOT allowed:
+  - skill-worker → skill-orquestador ❌ the "worker" becomes an orchestrator and loses adoptability
+  - subagente → skill-worker → skill-orquestador ❌ hidden delegation
+  - subagente → skill-orquestador ❌ hidden delegation
+  - subagente → subagente ❌ nested delegation
+
+---
+
+
 ## Intent detection (language-first)
 
 Before applying any mode, analyze the user's natural language to determine intent.
