@@ -20,7 +20,7 @@ related:
 
 Harness Engineering es un enfoque de diseño y desarrollo de sistemas de IA que se centra en crear un entorno controlado y estructurado para que la IA opere de manera eficiente y efectiva.
 
-# Principios clave del Harness Engineering
+## Principios clave del Harness Engineering
 
 Este enfoque se basa en varios principios clave:
 
@@ -34,9 +34,7 @@ Este enfoque se basa en varios principios clave:
 * **Mantener buenas prácticas y estándares homogéneos:** El código base debe estar bien estructurado y definimos buenas prácticas y reglas claras para que los patrones de resultado esperado sean predecibles.
 
 
-# Cómo funciona realmente el harness en Claude Code
-
-## Mecanismos de ejecución
+## Mecanismos de ejecución en Claude Code
 
 En Claude Code hay exactamente dos mecanismos de ejecución:
 
@@ -49,7 +47,7 @@ En Claude Code hay exactamente dos mecanismos de ejecución:
 - **Agent/Task tool**: lanza un subagente con contexto aislado. Pero solo puede lanzar tipos registrados — los agentes que viven en .claude/agents/ — o tipos genéricos (general-purpose).
 
 
-## Mecanismos de organización de skills y agentes
+## Mecanismos de organización de skills y agentes en Claude Code
 
 ### Composición inline entre skills (skill→skill)
 
