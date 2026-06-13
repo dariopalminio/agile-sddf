@@ -46,7 +46,7 @@ con su propio principio §3 ("obligar a demostrar, no declarar").
 
 - [x] plan-10 — **Resiliencia de Entrevistas Multivuelta (project-pm con AskUserQuestion):** Entrevistas multivuelta delegadas a subagentes (project-pm con AskUserQuestion), los subagentes corren autónomos; la interacción humana vía subagente es el punto más frágil del harness y no hay fallback documentado. *Resuelto: Protocolo de Resiliencia de 4 niveles agregado a `project-pm.agent.md`; excepción de subagente interactivo documentada en `harness-engineering.md`; instrucción de resiliencia propagada a los 3 skills invocadores (`project-begin`, `project-discovery`, `project-flow`).*
 
-- [ ] **El postinstall de npm pregunta por stdin (anti-patrón) y su skip-if-exists hace que los upgrades nunca propaguen skills ya instalados;**
+- [x] **Fix instalador npm — quitar prompt de postinstall y agregar --force para upgrades**: El postinstall de npm pregunta por stdin (anti-patrón) y su skip-if-exists hace que los upgrades nunca propaguen skills ya instalados. Quitar en el Instalador el prompt del postinstall (moverlo a npx agile-sddf install) y añadir --force/diff de versión para upgrades.
 
 - [ ] **El párrafo de preflight está copiado literal en ~30 SKILL.md (cambiarlo = editar 30 archivos);**
 

@@ -166,9 +166,9 @@ Funcionalmente es lo mismo que invocarlo — el subagente carga las instruccione
 
 Que el skill sea "worker" significa que cumple esto, y conviene escribirlo como checklist:
 
-1. No interactúa con el usuario — el subagente no puede sostener una entrevista ni pedir confirmaciones. Si el skill tiene pasos con AskUserQuestion, debe poder correr en el equivalente a tu "modo Agent" (defaults, sin preguntas).
-2. No lanza subagentes — si los lanzara, tendrías subagente → subagente, el caso prohibido.
-3. No depende de contexto conversacional que el subagente no tiene. Este es el que más se pasa por alto: los skills SDDF asumen que el preflight ya corrió y que SPECS_BASE está resuelto. El subagente arranca con contexto vacío — no sabe nada de eso. El orquestador debe pasarle los valores resueltos en el prompt (el "bundle"), o aceptar que el subagente re-ejecute skill-preflight por su cuenta (que es legal — preflight es worker puro, solo lecturas — pero duplica trabajo).
+1. **El skill no interactúa con el usuario** — el subagente no puede sostener una entrevista ni pedir confirmaciones. Si el skill tiene pasos con AskUserQuestion, debe poder correr en el equivalente a tu "modo Agent" (defaults, sin preguntas).
+2. **El skill no lanza subagentes** — si sus instrucciones disparan un spawn, el subagente que lo adopta crearía la cadena subagente → subagente, el caso prohibido. El subagente fue lanzado por el skill orquestador de la sesión principal. Una vez que el subagente está corriendo, adopta el skill-worker leyendo su SKILL.md. Si ese SKILL.md contiene instrucciones del tipo "ahora lanzá un subagente para hacer X", quien ejecutaría ese spawn sería el subagente mismo — creando subagente → subagente (nuevo), que es el caso prohibido.
+3. **El skill no depende de contexto conversacional** que el subagente no tiene. Este es el que más se pasa por alto: los skills SDDF asumen que el preflight ya corrió y que SPECS_BASE está resuelto. El subagente arranca con contexto vacío — no sabe nada de eso. El orquestador debe pasarle los valores resueltos en el prompt (el "bundle"), o aceptar que el subagente re-ejecute skill-preflight por su cuenta (que es legal — preflight es worker puro, solo lecturas — pero duplica trabajo).
 
 > **Excepción documentada — Subagente interactivo:** `project-pm` viola la condición #1 de forma intencional. Es el único agente del framework diseñado para conducir entrevistas multivuelta con el usuario desde un contexto de subagente. Esto funciona en Claude Code porque `AskUserQuestion` está disponible para subagentes. El riesgo es que si el harness cambia o se ejecuta en contexto no-interactivo, la entrevista falla. Por eso `project-pm` define un **Protocolo de Resiliencia** que degrada a inferencia cuando no hay respuesta del usuario.
 
@@ -197,4 +197,5 @@ Que el skill sea "worker" significa que cumple esto, y conviene escribirlo como 
   - subagente → skill-worker → skill-orquestador ❌ de "delegación encubierta"
   - subagente → skill-orquestador ❌ de "delegación encubierta"
   - subagente → subagente ❌ de "delegación anidada"
+  - subagente → skill-worker → subagente ❌ de "delegación encubierta" con salto intermedio a worker
 

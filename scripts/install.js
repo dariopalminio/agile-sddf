@@ -45,7 +45,7 @@ function validateDestBase(destDir) {
   }
 }
 
-async function copyDir(srcDir, destDir) {
+async function copyDir(srcDir, destDir, { force = false } = {}) {
   if (!fs.existsSync(srcDir)) return { installed: 0, skipped: 0 };
 
   await fse.ensureDir(destDir);
@@ -58,12 +58,13 @@ async function copyDir(srcDir, destDir) {
     const srcEntry = path.join(srcDir, entry.name);
     const destEntry = path.join(destDir, entry.name);
 
-    if (fs.existsSync(destEntry)) {
+    if (!force && fs.existsSync(destEntry)) {
       console.log(`  Skipped (already exists): ${destEntry}`);
       skipped++;
     } else {
-      await fse.copy(srcEntry, destEntry);
-      console.log(`  Installed: ${destEntry}`);
+      const isUpdate = fs.existsSync(destEntry);
+      await fse.copy(srcEntry, destEntry, { overwrite: true });
+      console.log(`  ${isUpdate ? 'Updated' : 'Installed'}: ${destEntry}`);
       installed++;
     }
   }
@@ -72,10 +73,6 @@ async function copyDir(srcDir, destDir) {
 }
 
 async function installSDDF(options = {}) {
-  if (!options.folder && process.stdin.isTTY) {
-    options.folder = await promptFolderSelection();
-  }
-
   const { destDir, mode } = resolveDestDir(options);
 
   console.log(`\nSDDF install: copying skills and agents to ${destDir}\n`);
@@ -84,11 +81,11 @@ async function installSDDF(options = {}) {
 
   const skillsSrc = path.join(SOURCE_DIR, 'skills');
   const skillsDest = path.join(destDir, 'skills');
-  const { installed: si, skipped: ss } = await copyDir(skillsSrc, skillsDest);
+  const { installed: si, skipped: ss } = await copyDir(skillsSrc, skillsDest, { force: options.force });
 
   const agentsSrc = path.join(SOURCE_DIR, 'agents');
   const agentsDest = path.join(destDir, 'agents');
-  const { installed: ai, skipped: as_ } = await copyDir(agentsSrc, agentsDest);
+  const { installed: ai, skipped: as_ } = await copyDir(agentsSrc, agentsDest, { force: options.force });
 
   console.log(`\nSDDF installed (${mode}): ${si} skills, ${ai} agents (${ss + as_} skipped)\n`);
 }

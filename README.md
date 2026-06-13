@@ -121,6 +121,8 @@ El paquete expone el comando `agile-sddf` con los siguientes subcomandos:
 | `agile-sddf install --target .agents` | Instala en `.agents/` sin prompt interactivo |
 | `agile-sddf install --target .github` | Instala en `.github/` sin prompt interactivo |
 | `agile-sddf install --global --target .agents` | Instala en `~/.agents/` sin prompt interactivo |
+| `agile-sddf install --force` | Sobreescribe archivos existentes (usar para upgrades) |
+| `agile-sddf install --target .agents --force` | Instala en `.agents/` sobreescribiendo archivos existentes |
 | `agile-sddf help` | Muestra la ayuda |
 
 > **Nota:** El hook `postinstall` (ejecutado automáticamente por npm/pnpm al instalar el paquete) siempre usa `.claude/` por defecto y no muestra el prompt interactivo. Para elegir otra carpeta destino, ejecuta `agile-sddf install` manualmente después de la instalación.
@@ -456,6 +458,7 @@ El framework es declarativo y su flujo se controla mediante el campo `substatus`
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `SDDF_ROOT` | No | `docs` | Directorio raíz donde los skills leen y escriben artefactos (`specs/projects/`, `specs/releases/`, `specs/stories/`) |
+| `SDDF_TARGET` | No | `.claude` | Carpeta destino del `postinstall` automático (`.claude`, `.agents`, `.github`). Útil en CI para instalar en un runtime distinto sin prompt interactivo. |
 
 El runtime de IA (Claude Code, GitHub Copilot, etc.) gestiona su propia autenticación de forma independiente al framework.
 

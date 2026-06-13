@@ -42,9 +42,11 @@ Cool? Cool.
 
 * Relationships NOT allowed:
   - skill-worker → skill-orquestador ❌ the "worker" becomes an orchestrator and loses adoptability
-  - subagente → skill-worker → skill-orquestador ❌ hidden delegation
-  - subagente → skill-orquestador ❌ hidden delegation
-  - subagente → subagente ❌ nested delegation
+  - skill → subagente → skill-worker → skill-orquestador ❌ hidden delegation
+  - skill → subagente → skill-orquestador ❌ hidden delegation
+  - skill → subagente → subagente ❌ nested delegation
+  - skill → subagente → skill-worker → subagente ❌ de "delegación encubierta" con salto intermedio a worker
+  - skill-orquestador → subagente → skill-worker → subagente ❌ de "delegación encubierta" con salto intermedio a worker
 
 ---
 
