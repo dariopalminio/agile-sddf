@@ -88,6 +88,7 @@ parent: null
 
 ### Decisiones de arquitectura (docs/adr/)
 - [[ADR-0001-centralizar-templates-compartidos]] — Templates compartidos en `$SPECS_BASE/specs/templates/`
+- [[ADR-0002-invocacion-agentes-locales-de-skill]] — Contrato de invocación de agentes locales de skill
 
 ---
 

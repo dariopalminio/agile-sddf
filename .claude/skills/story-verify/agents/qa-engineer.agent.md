@@ -7,7 +7,7 @@ description: >-
   No accede a archivos de la historia directamente — recibe contexto vía .tmp/story-verify/qa-input.json
   y escribe resultados en .tmp/story-verify/qa-output.json.
 role: QA Engineer
-invocable: false
+output: .tmp/story-verify/qa-output.json
 ---
 
 # Agente: QA Engineer

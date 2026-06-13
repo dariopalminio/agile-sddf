@@ -298,6 +298,8 @@ Esto garantiza que ejecuciones repetidas del skill producen el mismo resultado (
 
 #### 3b. Lanzar cuatro participantes en paralelo
 
+> **Mecanismo de invocación:** cada agente local se lanza leyendo su archivo `agents/<nombre>.agent.md` y creando un subagente `general-purpose` cuyo prompt es el contenido del archivo más el bloque de contexto con las variables resueltas. El subagente escribe en el `output:` declarado en su frontmatter y devuelve el control. Ver contrato completo en `docs/knowledge/guides/best-practices-for-skills.md` (ADR-0002).
+
 Lanzar simultáneamente los siguientes subagentes y skill, pasando a cada agente:
 - `$STORY_DIR`: ruta del directorio de la historia
 - `$CONSTITUTION_PATH`: ruta a constitution.md

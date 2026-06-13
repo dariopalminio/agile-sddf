@@ -371,6 +371,9 @@ Si el directorio existe, proceder:
 }
 ```
 3. Invocar `agents/qa-engineer.agent.md` (modo manual)
+
+   > **Mecanismo de invocación:** el agente local se lanza leyendo su archivo `agents/qa-engineer.agent.md` y creando un subagente `general-purpose` cuyo prompt es el contenido del archivo más el bloque de contexto con las variables resueltas. El subagente escribe en el `output:` declarado en su frontmatter y devuelve el control. Ver contrato completo en `docs/knowledge/guides/best-practices-for-skills.md` (ADR-0002).
+
 4. Leer `.tmp/story-verify/qa-output.json` una vez el agente complete
 
 ---

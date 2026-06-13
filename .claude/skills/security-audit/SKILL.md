@@ -177,6 +177,8 @@ Invocar `skill-preflight`. Si retorna error bloqueante, detener la ejecución.
 
 ### 2. Proceso principal
 
+> **Mecanismo de invocación:** cada agente local se lanza leyendo su archivo `agents/<nombre>.agent.md` y creando un subagente `general-purpose` cuyo prompt es el contenido del archivo más el bloque de contexto con las variables resueltas. El subagente escribe en el `output:` declarado en su frontmatter y devuelve el control. Ver contrato completo en `docs/knowledge/guides/best-practices-for-skills.md` (ADR-0002).
+
 **2a. Detección de contexto del repositorio**
 
 Invocar `agents/context-detector.agent.md` pasando `$REPO_PATH` y `$CHANGED_FILES`.

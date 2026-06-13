@@ -106,6 +106,43 @@ Cuando un skill orquesta múltiples subagentes en paralelo, cada subagente debe 
 
 El agente `reverse-engineer-synthesizer` lee solo esos cuatro archivos para generar el artefacto final, sin acceder al contexto de la sesión principal.
 
+## Patrón de invocación de agentes locales (`<skill>/agents/`)
+
+Un skill puede empaquetar **agentes locales** en su directorio `agents/` (ej. `story-code-review/agents/tech-lead-reviewer.agent.md`). Estos agentes **no son tipos registrados por el harness** — solo los de `.claude/agents/` lo son. Son archivos de instrucciones que viajan empaquetados con el skill.
+
+### Cuándo usar agente local vs. agente registrado
+
+| Tipo | Cuándo | Características |
+|------|--------|-----------------|
+| **Local** (`<skill>/agents/`) | Uso exclusivo de un skill | Viaja con el skill (npm); sin `tools:` ni `model:`; invocado solo por el skill dueño |
+| **Registrado** (`.claude/agents/`) | Reutilizable por varios skills o por la sesión | Tipo registrado por el harness; declara `tools:` restringidas y `model:` |
+
+### Contrato de invocación (ver [[ADR-0002-invocacion-agentes-locales-de-skill]])
+
+Para lanzar `agents/<nombre>.agent.md`, el skill orquestador (sesión principal):
+
+1. **Lee** el archivo del agente con `Read`.
+2. **Lanza un subagente** vía Agent tool con `subagent_type: general-purpose`, cuyo prompt es: el contenido íntegro del archivo del agente + un **bloque de contexto** con las variables resueltas que el agente necesita (`$STORY_DIR`, `$SPECS_BASE`, rutas de input...). Nunca el contexto completo de la sesión.
+3. El subagente **escribe su resultado** en la ruta declarada en el frontmatter `output:` del agente (bajo `.tmp/<skill-name>/`) y devuelve el control.
+4. El orquestador **lee solo los outputs** de `.tmp/<skill-name>/` para consolidar.
+
+Este patrón de invocación y el patrón de comunicación `.tmp/<skill>/` (sección anterior) son las dos mitades del mismo contrato.
+
+### Formato del archivo agente local
+
+```yaml
+---
+name: <nombre-kebab>
+description: >-
+  Subagente del skill <skill-dueño>. <Qué hace>.
+  Invocado exclusivamente por el orquestador <skill-dueño> — no invocar directamente.
+role: <Rol interpretativo>
+output: .tmp/<skill-name>/<nombre>-report.md
+---
+```
+
+El body contiene las instrucciones completas del agente (misión, contexto que recibe, criterios, formato del output). Como el subagente es `general-purpose` (sin restricción de `tools:` declarada), cualquier restricción de herramientas debe expresarse en las instrucciones del propio agente.
+
 Nota:
 **alwaysApply**: El campo alwaysApply en headers controla si el archivo se inyecta automáticamente en el contexto de cada conversación:
     - alwaysApply: true — Claude Code incluye este archivo en el contexto siempre, sin que el usuario lo pida. Útil para instrucciones globales (ej: CLAUDE.md de un skill).

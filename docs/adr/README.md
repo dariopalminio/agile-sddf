@@ -50,3 +50,4 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | ID | Título | Estado | Fecha |
 |----|--------|--------|-------|
 | [ADR-0001](ADR-0001-centralizar-templates-compartidos.md) | Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` | ACCEPTED | 2026-06-12 |
+| [ADR-0002](ADR-0002-invocacion-agentes-locales-de-skill.md) | Contrato de invocación de agentes locales de skill | ACCEPTED | 2026-06-12 |
