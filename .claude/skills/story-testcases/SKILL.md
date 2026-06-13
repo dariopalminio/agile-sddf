@@ -105,18 +105,9 @@ Aplicar esta tabla al procesar cada elemento de `story.md` y `design.md`:
 
 ## Flujo de ejecución
 
-### Paso 0 — Verificar entorno y cargar referencias
+### Paso 0 — Verificar entorno (`skill-preflight`)
 
-Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener sin generar archivos.
-
-Usar `$SPECS_BASE` (resuelto por preflight) para todas las rutas.
-
-Leer `sddf.config.yaml` (si existe). Extraer `complementary_skills.plan.skills`.
-Para cada entrada con `type: reference`, leer los `.md` en `references_path` y añadirlos al contexto.
-Si `sddf.config.yaml` no existe: emitir `⚠️ sddf.config.yaml no encontrado — continúa con flujo genérico`.
-Si una `references_path` no existe: emitir `[WARN] referencias no encontradas para <name> — continúa sin ellas`.
-
----
+Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
 
 ### Paso 1 — Resolver parámetros
 

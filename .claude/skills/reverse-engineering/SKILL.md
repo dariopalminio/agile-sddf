@@ -24,9 +24,7 @@ Eres el orquestador del comando `/reverse-engineering`. Tu responsabilidad es co
 
 ## Paso 0 — Verificar entorno (`skill-preflight`)
 
-Invocar `skill-preflight` antes de cualquier operación con archivos. El preflight verifica `SDDF_ROOT`, resuelve `SPECS_BASE` (fallback: `docs`) y confirma los subdirectorios de specs estándar. Si retorna `✗ Entorno inválido`, detener la ejecución.
-
-Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los pasos siguientes.
+Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
 
 ---
 

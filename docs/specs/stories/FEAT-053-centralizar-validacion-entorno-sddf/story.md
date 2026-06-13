@@ -4,8 +4,8 @@ type: story
 id: FEAT-053
 slug: FEAT-053-centralizar-validacion-entorno-sddf
 title: "Centralizar la validación de entorno SDDF con skill-preflight"
-status: BACKLOG
-substatus: READY
+status: COMPLETED
+substatus: DONE
 parent: <nombre-del-directorio-de-release>
 created: 2026-05-02
 updated: 2026-05-02

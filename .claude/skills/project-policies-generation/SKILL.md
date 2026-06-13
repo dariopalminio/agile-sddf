@@ -83,21 +83,7 @@ agentes IA los lean automáticamente antes de cualquier acción:
 
 ### Paso 0 — Verificar entorno (`skill-preflight`)
 
-Invocar `skill-preflight` antes de cualquier operación con archivos. El preflight verifica `SDDF_ROOT`, resuelve `SPECS_BASE` (fallback: `docs`) y confirma los subdirectorios de specs estándar. Si retorna `✗ Entorno inválido`, detener la ejecución.
-
-Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los pasos siguientes.
-
-Verificar adicionalmente que existen los templates requeridos:
-- `assets/project-constitution-template.md`
-- `assets/definition-of-done-story-template.md`
-
-Si alguno de los templates no existe, mostrar el mensaje y detener la ejecución:
-
-```
-❌ No se encontró el template requerido en: assets/<nombre>.md
-
-Por favor verifica que el archivo existe o ejecuta `sddf-init` para inicializar la estructura base.
-```
+Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
 
 ### Paso 1 — Preparar directorio de políticas
 

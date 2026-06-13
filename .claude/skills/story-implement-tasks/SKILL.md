@@ -137,15 +137,7 @@ Cualquier otro estado detiene la ejecución con error descriptivo.
 
 ### Paso 0 — Verificar entorno (`skill-preflight`)
 
-Invocar el skill `skill-preflight` antes de cualquier operación.
-
-El preflight verifica `SDDF_ROOT`, resuelve `SPECS_BASE` (fallback: `docs`) y confirma los subdirectorios de specs estándar.
-
-Si retorna `✗ Entorno inválido`, detener la ejecución inmediatamente. No generar ningún archivo.
-
-Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los pasos siguientes.
-
----
+Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
 
 ### Paso 1 — Resolver Parámetros de Entrada
 

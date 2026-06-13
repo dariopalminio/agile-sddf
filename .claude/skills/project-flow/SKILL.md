@@ -21,11 +21,7 @@ El flujo es: **Fase 1 (Begin Intention)** → **Fase 2 (Discovery)** → **Fase 
 
 ## Paso 0 — Detección de estado inicial
 
-Antes que todo Verificar entorno (`skill-preflight`)
-
-Invocar `skill-preflight` antes de cualquier operación con archivos. El preflight verifica `SDDF_ROOT`, resuelve `SPECS_BASE` (fallback: `docs`) y confirma los subdirectorios de specs estándar. Si retorna `✗ Entorno inválido`, detener la ejecución.
-
-Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los pasos siguientes.
+Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
 
 Luego, lee los tres documentos de output para determinar desde dónde retomar:
 

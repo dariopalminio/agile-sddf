@@ -100,44 +100,9 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 
 ## Flujo de ejecución
 
-### Paso 0 — Verificar entorno y detectar punto de entrada
+### Paso 0 — Verificar entorno (`skill-preflight`)
 
-#### 0A — Verificar entorno (`skill-preflight`)
-
-Invocar `skill-preflight` antes de cualquier operación con archivos.
-
-El preflight verifica `SDDF_ROOT`, resuelve `SPECS_BASE` (fallback: `docs`) y confirma los subdirectorios de specs estándar.
-
-Si retorna `✗ Entorno inválido`, detener la ejecución.
-
-Usar `$SPECS_BASE` (resuelto por `skill-preflight`) para todas las rutas en los pasos siguientes.
-
-#### 0B — Detectar punto de entrada e inicializar registro de sesión
-
-1. Revisar `$SPECS_BASE/specs/stories/`
-2. Identificar archivos `story.md` con `status: SPECIFY/IN‑PROGRESS` (en refinamiento) y con `status: SPECIFY/DONE` (aprobadas)
-3. Construir el registro inicial de historias con esta estructura:
-
-| ID | Archivo | Origen | Estado | Decision FINVEST | Siguiente acción |
-|---|---|---|---|---|---|
-| ST-001 | `$SPECS_BASE/specs/stories/.../story.md` | original | SPECIFY/IN‑PROGRESS | Pendiente | evaluar |
-
-Reglas del registro:
-- `ID`: usar `ST-001`, `ST-002`, etc.
-- `Archivo`: ruta real del archivo markdown
-- `Origen`: `original` o `split de ST-00X`
-- `Estado`: refleja el frontmatter real del archivo (`SPECIFY/IN‑PROGRESS` o `SPECIFY/DONE`)
-- `Decision FINVEST`: `APROBADA`, `REFINAR`, `RECHAZAR` o `Pendiente`
-- `Siguiente acción`: próximo paso concreto
-
-Cada vez que cambie el backlog, mostrar resumen con: total de historias, cuántas en `SPECIFY/IN‑PROGRESS`, cuántas en `SPECIFY/DONE`, cuáles quedan pendientes.
-
-**Lógica de arranque:**
-- Si existen historias en `SPECIFY/IN‑PROGRESS`: informar el backlog detectado y preguntar si el usuario quiere `Retomar backlog actual` o `Crear una historia nueva`
-- Si no existen historias en `SPECIFY/IN‑PROGRESS`: comenzar con una historia nueva
-- Si el directorio no existe: crearlo antes de continuar
-
----
+Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
 
 ### Paso 1 — Crear o normalizar la historia activa
 

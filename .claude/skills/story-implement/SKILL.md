@@ -107,13 +107,7 @@ Si no se proporciona argumento, solicitar interactivamente.
 
 ### Paso 0 — Verificar entorno (`skill-preflight`)
 
-Invocar el skill `skill-preflight` antes de cualquier operación.
-
-Si retorna `✗ Entorno inválido`, detener la ejecución inmediatamente sin generar ningún archivo.
-
-Usar `$SPECS_BASE` resuelto por `skill-preflight` para todas las rutas siguientes.
-
----
+Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
 
 ### Paso 0b — Parsear flags de invocación e inicializar `$EXEC_MODE`
 
