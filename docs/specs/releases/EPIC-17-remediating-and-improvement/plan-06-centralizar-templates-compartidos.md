@@ -1,4 +1,4 @@
-# Plan: A3 — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` (completar EPIC-11/FEAT-055)
+# Plan: Refactor — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` (completar EPIC-11/FEAT-055)
 
 ## Context
 
