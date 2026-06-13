@@ -1,7 +1,8 @@
 ---
 name: story-code-review
 description: >-
-  Genera code-review-report.md con revisión multi-agente (4 subagentes: código, requisitos, integración, seguridad).
+  Genera code-review-report.md con revisión multi-agente: 3 subagentes (Inspector de Código,
+  Guardián de Requisitos, Inspector de Integración) + skill security-audit en paralelo.
   Usar después de story-implement como quality gate antes de Done.
   Invocar para "code review", "revisar código", "story-code-review",
   "quality gate post-implement" o "validar implementación".
@@ -12,8 +13,6 @@ triggers:
   - "revisión multi-agente"
   - "quality gate post-implement"
   - "validar implementación"
-alwaysApply: false
-invocable: true
 ---
 
 # Skill: /story-code-review

@@ -1,5 +1,6 @@
 Busca los skills y agents en .claude
 
+> **Idioma de trabajo:** Los skills, agentes y documentos de este repositorio se redactan en **español**. Los skills heredados de fuentes externas o integrados de ecosistemas en inglés pueden mantener su idioma original.
 
 # Agile Spec-Driven-Development Framework (SDDF)
 

@@ -11,8 +11,6 @@ triggers:
   - "generar tasks"
   - "qué hay que hacer para implementar"
   - "cómo implemento esta historia"
-alwaysApply: false
-invocable: true
 ---
 
 # Skill: /story-tasking

@@ -5,16 +5,6 @@ description: >-
   Use when setting up @badeball/cypress-cucumber-preprocessor or writing Gherkin scenarios.
   Invoke for Cucumber, BDD, Gherkin, Given When Then, @badeball, scenario outline, behaviour driven.
   DO NOT USE FOR unit tests, component tests, or backend tests.
-license: MIT
-metadata:
-  author: https://github.com/dariopalminio
-  version: "1.0.0"
-  domain: quality
-  triggers: Cucumber, BDD, Gherkin, feature file, step definitions, Given When Then, scenario, scenario outline, background, hooks, tags, @badeball, cypress-cucumber-preprocessor, behaviour driven, behavior driven, BDD testing, smoke test, regression test, @smoke, @regression, @full, cypress e2e, feature file cypress
-  role: specialist
-  scope: IMPLEMENT, automation, testing
-  output-format: code
-  related-skills: cypress-automation
 ---
 
 # E2E Cypress Cucumber

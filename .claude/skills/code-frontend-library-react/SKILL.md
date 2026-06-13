@@ -3,14 +3,6 @@ name: code-frontend-library-react
 description: |
   Implement React components for React UI Library: CSS pure + BEM + design tokens, TypeScript strict, tsup build, Turborepo monorepo. Use when creating new components, adding variants, or integrating with demo/storybook apps.
 
-metadata:
-  author: https://github.com/dariopalminio
-  version: "2.1.0"
-  domain: ui, frontend
-  triggers: React 18, BEM, CSS variables, design tokens, component library, ui-component, tsup, monorepo, Turborepo, packages/ui, forwardRef, compound component, Storybook, ThemeProvider, useTheme, "use client"
-  role: specialist
-  scope: design, IMPLEMENT
-  output-format: spec, code
 ---
 
 #  Code Front-end Library-React Components (React UI Library)

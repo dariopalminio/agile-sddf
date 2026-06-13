@@ -6,14 +6,6 @@ description: >-
   Invoke for "Testing Library", "componente React", "render", "screen", "userEvent", "axe".
   DO NOT USE FOR unit tests, E2E tests, or backend tests.
 allowed-tools: Read, Grep, Glob, Write, Edit
-metadata:
-  author: https://github.com/dariopalminio
-  version: "1.0.0"
-  domain: quality
-  triggers: React, component testing, Testing Library, Vitest, happy-dom, axe-core, render, screen, userEvent, accessibility, describe, it
-  role: specialist
-  scope: IMPLEMENT, automation, testing, components-testing
-  output-format: code
 ---
 
 

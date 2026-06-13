@@ -5,14 +5,6 @@ description: >-
   Usar antes de merge/deploy o como componente de story-code-review.
   Invocar para "security audit", "auditoría de seguridad", "security-audit",
   "checklist de seguridad", "OWASP checklist" o "vulnerabilidades".
-alwaysApply: false
-invocable: true
-outputs:
-  - .tmp/security-audit/project-context.json
-  - .tmp/security-audit/active-rules.json
-  - .tmp/security-audit/rule-results.json
-  - .tmp/security-audit/audit-report.md
-  - .tmp/security-audit/audit-report.json (solo si --output json)
 triggers:
   - security audit
   - auditoría de seguridad

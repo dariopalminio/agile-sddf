@@ -5,14 +5,6 @@ description: >-
   Use when setting up @cucumber/cucumber or writing Gherkin scenarios.
   Invoke for Cucumber, BDD, Gherkin, Given When Then, @badeball, @smoke, @regression.
   DO NOT USE FOR unit tests, component tests, or backend tests.
-metadata:
-  author: https://github.com/dariopalminio
-  version: "1.0.0"
-  domain: quality
-  triggers: Cucumber, BDD, Gherkin, feature file, step definitions, Given When Then, scenario, scenario outline, background, hooks, tags, World, @cucumber/cucumber, behaviour driven, behavior driven, BDD testing, cucumber profile, smoke test, core test, full test, @smoke, @sanity, @regression
-  role: specialist
-  scope: IMPLEMENT, automation, testing
-  output-format: code
 ---
 
 # E2E Playwright Cucumber

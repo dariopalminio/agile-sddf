@@ -1,11 +1,6 @@
 ---
 name: openspec-init-config
 description: Carga el contexto del proyecto en openspec/config.yaml leyendo exhaustivamente la documentación del proyecto (README.md, CLAUDE.md, AGENTS.md). Usar cuando se quiera inicializar o actualizar el contexto de OpenSpec para un proyecto.
-license: MIT
-compatibility: Requires openspec CLI and openspec/config.yaml present in the project.
-metadata:
-  author: sddf
-  version: "1.0"
 ---
 
 Carga el contexto del proyecto en `openspec/config.yaml` leyendo la documentación existente.

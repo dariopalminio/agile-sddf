@@ -15,12 +15,6 @@ triggers:
   - "generar tests y código"
   - "modo automático"
   - "--auto"
-version: "1.2.0"
-type: delegate
-input: "story.md + testcases.md (opcional) + sddf.config.yaml + --auto (opcional)"
-output: "archivos de prueba + código de producción + implement-report.md + story.md actualizada a IMPLEMENT/DONE (o IMPLEMENT/IN-PROGRESS si DoD-ERRORs) + release.md checklist actualizado"
-invocable: true
-alwaysApply: false
 ---
 
 # Skill: /story-implement

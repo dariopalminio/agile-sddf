@@ -11,8 +11,6 @@ description: >-
 triggers:
   - "frase disparadora 1"
   - "frase disparadora 2"
-version: "1.0.0"
-type: delegate
 ---
 ```
 
@@ -59,72 +57,34 @@ triggers:
   - "pdf-summarizer"
 ```
 
-### `version` (OBLIGATORIO)
-- DEBE seguir SemVer: `"MAJOR.MINOR.PATCH"`
-- Incrementar `PATCH` para correcciones sin cambio de comportamiento
-- Incrementar `MINOR` para nuevas capacidades backwards-compatible
-- Incrementar `MAJOR` para cambios que rompen el contrato del skill
-- Ejemplo: `"1.0.0"` → `"1.0.1"` (fix) → `"1.1.0"` (nueva sección) → `"2.0.0"` (nuevo formato de output)
-
-### `type` (RECOMENDADO)
-- `delegate`: el skill toma control y genera un artefacto específico
-- `reference`: el skill aporta guías de referencia que el orquestador carga en contexto
-- Si se omite, el skill se trata como `delegate` por defecto
-
----
-
-## Campos adicionales para skills `type: reference`
-
+### `allowed-tools` (OPCIONAL — procesado por Claude Code)
+- Restringe las herramientas disponibles durante la ejecución del skill
+- SOLO usar cuando el skill debe limitar explícitamente el acceso a herramientas
+- Ejemplo:
 ```yaml
----
-name: my-reference-skill
-type: reference
-references_path: "skills/my-reference-skill/references"
-version: "1.0.0"
----
+allowed-tools: Read, Grep, Glob, Write, Edit
 ```
 
-| Campo | Descripción |
-|-------|-------------|
-| `references_path` | Ruta al directorio que contiene los archivos `.md` de referencia |
+---
+
+## Campos eliminados del canon
+
+Los siguientes campos se usaron históricamente pero **no son procesados por el harness de Claude Code** y generan metadata muerta. No incluirlos en skills nuevos ni existentes:
+
+| Campo | Motivo de eliminación |
+|-------|----------------------|
+| `version` | No procesado por el harness. El ciclo de vida se gestiona con git. |
+| `type` | No procesado. `delegate` es el comportamiento por defecto siempre. |
+| `input` / `output` / `outputs` | No procesados. Documentar en el body del skill si es necesario. |
+| `invocable` | No procesado. Todo skill es invocable por defecto. |
+| `alwaysApply` | Solo aplica a **agentes** (`.claude/agents/`), no a skills. En skills es no-op. |
+| `license` | No procesado por el harness. Usar solo en skills publicados en npm. |
+| `metadata` | Bloque anidado no procesado. Cualquier metadato relevante va en el body. |
+| `compatibility` | No procesado. Documentar precondiciones en la sección "Precondiciones". |
+| `author`, `version`, `tags`, `category`, `models`, `mcp`, `capabilities`, `languages`, `department` | Metadata de origen externo. Sin efecto en el harness. |
 
 ---
 
-## Campos adicionales para skills `type: delegate`
+## Nota sobre `alwaysApply`
 
-```yaml
----
-name: doc-generator
-type: delegate
-input: "spec.md"
-output: "report.md"
-version: "1.0.0"
----
-```
-
-| Campo | Descripción |
-|-------|-------------|
-| `input` | Artefacto de entrada que el skill necesita |
-| `output` | Artefacto que el skill produce |
-
----
-
-## Cuándo usar `alwaysApply: true`
-
-- DEBE usarse solo cuando el skill DEBE ejecutarse en TODA invocación del orquestador, sin excepción
-- Ejemplo: un `setup-validator` que siempre verifica el entorno antes de cualquier skill
-- NO DEBE usarse en skills opcionales o contextuales (como los declarados en el archivo de configuración del proyecto)
-
-```yaml
-alwaysApply: true   # solo para skills de infraestructura obligatoria
-```
-
-## Cuándo usar `invocable: true`
-
-- DEBE usarse cuando el skill puede ser invocado directamente por el usuario con `/nombre-skill`
-- Si es `false` (por defecto), el skill solo se activa como subagente de otro skill
-- Ejemplo: `pdf-summarizer` es invocable por el usuario; un `setup-validator` puede ser no invocable (solo infraestructura)
-
-```yaml
-invocable: true   # el usuario puede invocar /pdf-summarizer directamente
-```
+`alwaysApply: true` es un campo de **agentes** (archivos `.agent.md` en `.claude/agents/`), no de skills. En agents, indica que el agente se inyecta en el system prompt de toda sesión. En skills, este campo no tiene efecto. No usarlo en SKILL.md.

@@ -5,7 +5,6 @@ description: >-
   Use after /project-discovery or /project-planning to document the project.
   Triggers on /readme-builder, "generate README", "create README", "write a README",
   "build README from specs", "document my project".
-alwaysApply: false
 ---
 
 # Skill: /readme-builder

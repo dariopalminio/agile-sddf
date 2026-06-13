@@ -1,6 +1,6 @@
 ---
 name: nombre-del-skill
-description: >
+description: >-
   Qué hace este skill y cuándo usarlo. Incluir frases clave que disparan el skill.
   Invocar también cuando el usuario mencione "<alias>", "<alias>" o equivalentes.
 triggers:

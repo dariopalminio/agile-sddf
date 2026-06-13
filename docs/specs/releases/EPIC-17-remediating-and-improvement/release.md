@@ -30,31 +30,31 @@ con su propio principio §3 ("obligar a demostrar, no declarar").
 
 - [x] plan-02 - **Fix - Corrección de CLAUDE.md:** Actualizar la información falsa sobre la estructura del repo para que los agentes lean datos verídicos. 
 
-- [ ] **Limpieza: assets muertos, skills-lock, directorios legacy multi-cliente**: (generarlos desde .claude/ con un build, o eliminarlos), config de ejemplo neutral. Plantilla muerta constitution-template.md junto a la usada project-constitution-template.md; Skills-lock.json con skills que ya no existen; El sddf.config.yaml raíz contiene comandos pnpm de otro proyecto (una UI library React); El docs/index.md usa un guion no-ASCII (U+2011) en substatus; idiomas mezclados sin criterio declarado.
+- [x] plan-03 - **Limpieza: assets muertos, skills-lock, directorios legacy multi-cliente**: (generarlos desde .claude/ con un build, o eliminarlos), config de ejemplo neutral. Plantilla muerta constitution-template.md junto a la usada project-constitution-template.md; Skills-lock.json con skills que ya no existen; El sddf.config.yaml raíz contiene comandos pnpm de otro proyecto (una UI library React); El docs/index.md usa un guion no-ASCII (U+2011) en substatus; idiomas mezclados sin criterio declarado.
 
-- [ ] **Estandarización del esquema de evals:** Unificar los dos esquemas incompatibles de evals.json en uno solo y migrar los evals existentes.
+- [x] A5 — **Fix - Inconsistencia interna:** la description de story-code-review promete "cuatro subagentes (Inspector de Código, Guardián de Requisitos...)"; el body lanza "tres subagentes + 1 skill" con otros nombres (tech-lead-reviewer...). Dos modelos mentales en el mismo artefacto.
 
-- [ ] **Cobertura mínima de evals en skills críticos:** Crear evals.json para los skills del pipeline principal que no tienen cobertura (79% sin evals).
-
-- [ ] **Verificación automática de la constitución:** Implementar un skill o script que audite el cumplimiento de las reglas de la constitución de forma ejecutable.
-
-- [ ] A2 — **Zoo de frontmatter**: 24 campos distintos entre skills (output y outputs, input e inputs, triggers, invocable, alwaysApply, department...). Claude Code solo honra name/description/allowed-tools/license; el resto es metadata muerta. skill-master define un estándar que nadie valida.
+- [x] A2 — **Enhance - Normalizar Zoo de frontmatter**: 24 campos distintos entre skills (output y outputs, input e inputs, triggers, invocable, alwaysApply, department...). Claude Code solo honra name/description/allowed-tools/license; el resto es metadata muerta. skill-master define un estándar que nadie valida.
 
 - [ ] A3 — **Acoplamiento por rutas relativas entre skills:** release-format-validation lee ../release-creation/assets/release-spec-template.md; release-generate-stories lee ../story-creation/assets/story-template.md. Instalación parcial = skill roto. Hubo un EPIC-11 "centralizar-templates" y el acoplamiento persiste.
 
 - [ ] A4 — **Agentes locales sin mecanismo definido:** los agentes en story-code-review/agents/, security-audit/agents/, etc. no son tipos registrados por el harness (solo .claude/agents/ lo es). El skill dice "lanzar Agente 1 (agents/tech-lead-reviewer.agent.md)" sin especificar el cómo (leer archivo → spawn general-purpose con ese prompt). Funciona por inferencia, no por contrato. Y story-improve/agents/ está vacío.
 
-- [ ] A5 — **Inconsistencia interna:** la description de story-code-review promete "cuatro subagentes (Inspector de Código, Guardián de Requisitos...)"; el body lanza "tres subagentes + 1 skill" con otros nombres (tech-lead-reviewer...). Dos modelos mentales en el mismo artefacto.
-
 - [ ] A6 — **Entrevistas multivuelta delegadas a subagentes (project-pm con AskUserQuestion):** los subagentes corren autónomos; la interacción humana vía subagente es el punto más frágil del harness y no hay fallback documentado.
 
 - [ ] A7 — **Multi-cliente declarado, no mantenido:** se promete compatibilidad con 5 plataformas, pero .opencode/ y .github/ están casi vacíos (1 entrada vs 47 skills) y gem//rovo/ son prompts legacy divergentes. Cinco fuentes de verdad parciales contra la "fuente única" declarada.
 
-- [ ] **Máquina de estados implícita sin documento canónico;** Realizar un documento canónico de máquina de estados.
+- [ ] **Feat - Máquina de estados implícita sin documento canónico;** Realizar un documento canónico de máquina de estados.
 
 - [ ] **El postinstall de npm pregunta por stdin (anti-patrón) y su skip-if-exists hace que los upgrades nunca propaguen skills ya instalados;**
 
 - [ ] **El párrafo de preflight está copiado literal en ~30 SKILL.md (cambiarlo = editar 30 archivos);**
+
+- [ ] **Test - Estandarización del esquema de evals:** Unificar los dos esquemas incompatibles de evals.json en uno solo y migrar los evals existentes.
+
+- [ ] **Test - Cobertura mínima de evals en skills críticos:** Crear evals.json para los skills del pipeline principal que no tienen cobertura (79% sin evals).
+
+- [ ] **Verificación automática de la constitución:** Implementar un skill o script que audite el cumplimiento de las reglas de la constitución de forma ejecutable.
 
 
 ## Riesgos <!-- sección opcional-->

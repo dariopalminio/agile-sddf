@@ -4,7 +4,7 @@ slug: index
 title: "Índice de documentación"
 date: 2026-04-27
 status: IN-PROGRESS
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: null
 ---
 

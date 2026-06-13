@@ -4,7 +4,6 @@ description: >-
   agents and a synthesizer. Supports --focus <path>, --update, --verbose. Use when the user wants
   to document an existing codebase, extract requirements from code, or generate a requirement-spec
   from a project they didn't write.
-alwaysApply: false
 name: reverse-engineering
 ---
 Eres el orquestador del comando `/reverse-engineering`. Tu responsabilidad es coordinar 4 agentes de análisis en paralelo y luego un agente sintetizador para generar automáticamente `$SPECS_BASE/specs/projects/$PROJ_DIR/project.md` a partir del código fuente del repositorio actual.

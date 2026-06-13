@@ -1,41 +1,42 @@
-# Valores por defecto para todos los tipos
-# este archivo debe diseñarse y reconstruiserse para ser fácilmente extendible y adaptable a diferentes proyectos y tecnologías
+# Configuración SDDF — personalizar para cada proyecto
+# Reemplaza los comandos de prueba con los de tu stack tecnológico y runner de tests
+
 defaults:
   delivery-model: batch # batch | continuous
 
 verify:
   unit:
-    command: "pnpm run test:unit"
+    command: "npm run test:unit"
     required: true
   component:
-    command_template: "pnpm run test:component:file -- {{test_file_path}}"  # pnpm test:component:file packages\ui\src\components\Alert\Alert.test.tsx
+    command_template: "npm run test:component:file -- {{test_file_path}}"
     required: true
   integration:
-    command: "pnpm run test:integration"
+    command: "npm run test:integration"
     required: false
   contract:
-    command: "pnpm run test:contract"
+    command: "npm run test:contract"
     required: false
   e2e:
-    command: "pnpm run test:e2e:smoke"
+    command: "npm run test:e2e:smoke"
     required: false
   e2e-smoke:
-    command: "pnpm run test:e2e:smoke"
+    command: "npm run test:e2e:smoke"
     required: false
   e2e-sanity:
-    command: "pnpm run test:e2e:sanity"
+    command: "npm run test:e2e:sanity"
     required: false
   e2e-regression:
-    command: "pnpm run test:e2e:regression"
+    command: "npm run test:e2e:regression"
     required: false
   e2e-file:
-    command: "pnpm run test:e2e:file -- {{test_file_path}}" # pnpm run test:e2e -- apps\demo\tests\e2e\features\components\alert.feature
+    command: "npm run test:e2e:file -- {{test_file_path}}"
     required: false
   performance:
-    command: "pnpm run test:performance"
+    command: "npm run test:performance"
     required: false
   eval:
-    command: "pnpm run test:eval"
+    command: "npm run test:eval"
     required: true
 
 implement:
@@ -52,5 +53,3 @@ implement:
   code_generators:
     skill: skill-master
     required: true
-
-

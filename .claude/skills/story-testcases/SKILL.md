@@ -12,12 +12,6 @@ triggers:
   - "tabla de pruebas"
   - "especificar pruebas"
   - "casos de prueba desde story"
-version: "1.0.0"
-type: delegate
-input: "story.md, design.md"
-output: "testcases.md"
-invocable: true
-alwaysApply: false
 ---
 
 # Skill: /story-testcases

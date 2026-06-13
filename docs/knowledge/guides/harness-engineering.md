@@ -99,6 +99,25 @@ Sesión principal
   ▼ 
   ```
 
+#### Delegación automática
+
+Claude delega automáticamente tareas basadas en la descripción de la tarea en su solicitud, el campo description en configuraciones de subagentes y el contexto actual. Para alentar delegación proactiva, incluya frases como “use proactively” en el campo description de su subagente.
+
+#### Invocar delegación a subagentes explícitamente
+
+Cuando la delegación automática no es suficiente, puede solicitar un subagente usted mismo. Tres patrones escalan desde una sugerencia única a un valor predeterminado de sesión completa:
+- Lenguaje natural: nombre el subagente en su solicitud; Claude decide si delegar
+- @-mention: garantiza que el subagente se ejecute para una tarea
+- Sesión completa: toda la sesión usa el mensaje del sistema del subagente, restricciones de herramientas y modelo a través de la bandera --agent o la configuración agent
+Para lenguaje natural, no hay sintaxis especial. Nombre el subagente y Claude típicamente delega:
+  ```
+  Use the test-runner subagent to fix failing tests
+  Have the code-reviewer subagent look at my recent changes
+  ```
+@-mention el subagente. Escriba @ y elija el subagente del typeahead, de la misma manera que @-menciona archivos. Esto asegura que ese subagente específico se ejecute en lugar de dejar la opción a Claude:
+@"code-reviewer (agent)" look at the auth changes
+Su mensaje completo aún va a Claude, que escribe el mensaje de tarea del subagente basado en lo que pidió. El @-mention controla qué subagente Claude invoca, no qué mensaje recibe.
+
 ### Orquestación
 
 Podemos definir dos tipos de skills:
