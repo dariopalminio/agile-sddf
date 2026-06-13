@@ -37,7 +37,7 @@ del template `release-spec-template.md`. Produce resultado **APROBADO**, **REFIN
 
 - Argumento posicional: ruta relativa, nombre (con o sin `.md`) o término de búsqueda del archivo de release
 - `$SPECS_BASE/specs/releases/` — directorio donde se buscan los archivos de release
-- `../release-creation/assets/release-spec-template.md` — fuente de verdad estructural (solo lectura)
+- `$SPECS_BASE/specs/templates/release-spec-template.md` — fuente de verdad estructural (solo lectura)
 
 ## Parámetros
 
@@ -46,13 +46,13 @@ del template `release-spec-template.md`. Produce resultado **APROBADO**, **REFIN
 ## Precondiciones
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
-- `../release-creation/assets/release-spec-template.md` debe existir
+- `$SPECS_BASE/specs/templates/release-spec-template.md` debe existir
 - Debe proporcionarse al menos un argumento para identificar el archivo a validar
 
 ## Dependencias
 
 - Skills: [`skill-preflight`]
-- Archivos: `../release-creation/assets/release-spec-template.md`
+- Archivos: `$SPECS_BASE/specs/templates/release-spec-template.md`
 
 ## Modos de ejecución
 
@@ -119,14 +119,17 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `../release-creation/assets/release-spec-template.md`.
+Lee el archivo de plantilla `$SPECS_BASE/specs/templates/release-spec-template.md`.
 
-- Si el archivo **no existe**: informar al usuario y detener la ejecución:
+- Si el archivo central **no existe**: usar el fallback `.claude/skills/release-creation/assets/release-spec-template.md` y emitir:
 
-  > ❌ No se encontró el template requerido en `../release-creation/assets/release-spec-template.md`.
-  > Por favor verifica que el archivo existe antes de continuar.
+  > ⚠️ Usando template del skill release-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
 
-- Si el archivo **existe**: continua.
+- Si tampoco existe el fallback: informar al usuario y detener la ejecución:
+
+  > ❌ Template `release-spec-template.md` no encontrado. Ejecuta `sddf-init`.
+
+- Si alguno de los dos **existe**: continua.
 
 ---
 
@@ -193,7 +196,7 @@ Secciones/campos faltantes:
 - <nombre exacto del campo o encabezado faltante 2>
 ...
 
-Revisa el template en ../release-creation/assets/release-spec-template.md para completar las secciones indicadas.
+Revisa el template en $SPECS_BASE/specs/templates/release-spec-template.md para completar las secciones indicadas.
 ```
 
 ---

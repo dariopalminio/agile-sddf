@@ -80,13 +80,13 @@ Lee `$SPECS_BASE/specs/projects/project-intent.md` (si existe):
 
 ### 1.3 Verificar template
 
-Lee `project-begin/assets/project-intent-template.md`. Si no existe, informa y detén.
+Lee `$SPECS_BASE/specs/templates/project-intent-template.md`. Si no existe, usa el fallback `.claude/skills/project-begin/assets/project-intent-template.md` (emite ⚠️ sugiriendo ejecutar `sddf-init`). Si tampoco existe el fallback, informa y detén.
 
 ### 1.4 Delegar al project-pm
 
 Invoca al agente `project-pm` con la siguiente instrucción:
 
-> Lee el template en `project-begin/assets/project-intent-template.md`. Extrae las secciones del template en runtime.
+> Lee el template en `$SPECS_BASE/specs/templates/project-intent-template.md`. Extrae las secciones del template en runtime.
 >
 > Si estás en flujo de retoma (documento existente en `substatus: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/projects/project-intent.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
@@ -137,7 +137,7 @@ Lee `$SPECS_BASE/specs/projects/project.md` (si existe):
 
 ### 2.3 Verificar template
 
-Lee `../project-discovery/assets/project-template.md`. Si no existe, informa y detén.
+Lee `$SPECS_BASE/specs/templates/project-template.md`. Si no existe, usa el fallback `.claude/skills/project-discovery/assets/project-template.md` (emite ⚠️ sugiriendo ejecutar `sddf-init`). Si tampoco existe el fallback, informa y detén.
 
 ### 2.4 Sub-fase Discovery — Delegar al project-pm
 
@@ -155,7 +155,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 
 Una vez completado el discovery, invoca al agente `project-architect` con la siguiente instrucción:
 
-> Lee `$SPECS_BASE/specs/projects/project-intent.md` y el resumen del discovery de la fase anterior. Lee también el template `../project-discovery/assets/project-template.md`.
+> Lee `$SPECS_BASE/specs/projects/project-intent.md` y el resumen del discovery de la fase anterior. Lee también el template `$SPECS_BASE/specs/templates/project-template.md`.
 >
 > Si estás en flujo de retoma (documento existente en `substatus: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/projects/project.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
@@ -203,13 +203,13 @@ Lee `$SPECS_BASE/specs/projects/project-plan.md` (si existe):
 
 ### 3.3 Verificar template
 
-Lee `project-planning/assets/project-plan-template.md`. Si no existe, informa y detén.
+Lee `$SPECS_BASE/specs/templates/project-plan-template.md`. Si no existe, usa el fallback `.claude/skills/project-planning/assets/project-plan-template.md` (emite ⚠️ sugiriendo ejecutar `sddf-init`). Si tampoco existe el fallback, informa y detén.
 
 ### 3.4 Delegar al project-architect
 
 Invoca al agente `project-architect` con la siguiente instrucción:
 
-> Lee los documentos `$SPECS_BASE/specs/projects/project-intent.md` y `$SPECS_BASE/specs/projects/project.md`. Lee también el template `project-planning/assets/project-plan-template.md`.
+> Lee los documentos `$SPECS_BASE/specs/projects/project-intent.md` y `$SPECS_BASE/specs/projects/project.md`. Lee también el template `$SPECS_BASE/specs/templates/project-plan-template.md`.
 >
 > Si estás en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/projects/project-plan.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >

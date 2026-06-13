@@ -163,6 +163,16 @@ El ciclo de vida de un artefacto se traza con status + substatus, no con version
 
 Existe un skill de validación explícito (release-format-validation) que actúa como gate antes de que los skills de generación consuman el documento.
 
+#### 16. Registro de decisiones en tres niveles
+
+Las decisiones se registran en el nivel que corresponde a su alcance:
+
+- **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`$SPECS_BASE/specs/stories/FEAT-NNN/design.md`)
+- **Decisiones de un cambio OpenSpec** → `design.md` del change (`openspec/changes/`)
+- **Decisiones transversales de arquitectura** → `docs/adr/ADR-NNNN-slug.md` siguiendo `docs/adr/adr-template.md`
+
+Un ADR es obligatorio cuando la decisión afecta a más de un skill/módulo o restringe decisiones futuras. Los ADRs aceptados son inmutables: se reemplazan con un ADR nuevo (`superseded-by`), nunca se editan. Ver convención completa en `docs/adr/README.md`.
+
 
 ## ✅ Principios Técnicos Inamovibles
 

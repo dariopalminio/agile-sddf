@@ -129,12 +129,13 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `assets/project-intent-template.md`.
+Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-intent-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
 
-- Si el archivo **no existe**: informar al usuario y detener la ejecución:
-  > ❌ No se encontró el template requerido en `assets/project-intent-template.md`.
-  > Por favor verifica que el archivo existe antes de continuar.
-- Si el archivo **existe**: continua.
+- Si el archivo central **no existe**: usar el seed `assets/project-intent-template.md` y emitir:
+  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
+- Si tampoco existe el seed: informar al usuario y detener la ejecución:
+  > ❌ Template `project-intent-template.md` no encontrado. Ejecuta `sddf-init`.
+- Si alguno de los dos **existe**: continua.
 
 ### Paso 4 — Delegar al project-pm
 

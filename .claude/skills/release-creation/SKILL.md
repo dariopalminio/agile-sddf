@@ -136,9 +136,10 @@ Si elige "2", volver al inicio del Paso 1 para pedir un nombre diferente.
 
 El archivo de plantilla es la **única fuente de información estructural**. Nunca hardcodear nombres de secciones.
 
-Leer `assets/release-spec-template.md`.
+Leer `$SPECS_BASE/specs/templates/release-spec-template.md` (fuente de verdad del proyecto, puede contener personalizaciones). Si no existe, usar el seed `assets/release-spec-template.md` y emitir:
+> ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
 
-- Si el archivo **no existe**: detener la ejecución (ver Manejo de errores).
+- Si ninguno de los dos archivos existe: detener la ejecución (ver Manejo de errores).
 - Si el archivo **existe**: extraer dinámicamente:
   - **Secciones obligatorias**: líneas que empiecen con `##` y contengan `<!-- sección obligatoria`
   - **Secciones opcionales**: líneas que empiecen con `##` y contengan `<!-- sección opcional`

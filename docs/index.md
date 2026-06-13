@@ -86,6 +86,9 @@ parent: null
 - [[project-template]]
 - [[story-template]]
 
+### Decisiones de arquitectura (docs/adr/)
+- [[ADR-0001-centralizar-templates-compartidos]] — Templates compartidos en `$SPECS_BASE/specs/templates/`
+
 ---
 
 ## 🧠 Wiki de conocimiento (docs/wiki/)

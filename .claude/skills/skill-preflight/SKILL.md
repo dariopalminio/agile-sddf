@@ -52,9 +52,17 @@ Los directorios faltantes son advertencias, no errores bloqueantes (algunos work
 
 ### Verificación 3 — Templates requeridos por el skill invocador (opcional)
 
-Si el skill invocador declara una lista de templates requeridos (archivos en su directorio `assets/`):
+Si el skill invocador declara una lista de templates requeridos, verificar cada uno según su tipo:
 
-Para cada template declarado:
+**Templates centrales** (compartidos, resueltos vía `$SPECS_BASE/specs/templates/<nombre>`):
+- **Existe en el central:** emitir `[OK]  Template presente: $SPECS_BASE/specs/templates/<nombre>`
+- **No existe en el central pero sí en el `assets/` del skill dueño:** emitir
+  `[WARNING] Template <nombre> no centralizado → usando fallback del skill dueño. Ejecutar sddf-init para centralizarlo`
+- **No existe en ninguno de los dos:** emitir
+  `[ERROR]  Template faltante: <nombre> → Ejecutar sddf-init`
+  - Registrar error bloqueante.
+
+**Templates locales** (archivos en el directorio `assets/` del propio skill invocador):
 - **Existe:** emitir `[OK]  Template presente: <ruta>`
 - **No existe:** emitir `[ERROR]  Template faltante: <ruta> → Verificar que el archivo existe en assets/`
   - Registrar error bloqueante.

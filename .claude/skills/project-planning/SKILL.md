@@ -131,14 +131,17 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `assets/project-plan-template.md`.
+Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-plan-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
 
-- Si el archivo **no existe**: informar al usuario y detener la ejecución:
+- Si el archivo central **no existe**: usar el seed `assets/project-plan-template.md` y emitir:
 
-  > ❌ No se encontró el template requerido en `assets/project-plan-template.md`.
-  > Por favor verifica que el archivo existe antes de continuar.
+  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
 
-- Si el archivo **existe**: continua.
+- Si tampoco existe el seed: informar al usuario y detener la ejecución:
+
+  > ❌ Template `project-plan-template.md` no encontrado. Ejecuta `sddf-init`.
+
+- Si alguno de los dos **existe**: continua.
 
 ### Paso 4 — Story Mapping (fase previa opcional)
 

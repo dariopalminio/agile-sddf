@@ -59,6 +59,25 @@ Verificar si el directorio existe:
 
 Si algún directorio requiere rutas intermedias (ej. `SPECS_BASE/specs/`), crearlas también.
 
+### Paso 2b — Copiar templates compartidos al directorio central
+
+Crear `SPECS_BASE/specs/templates/` si no existe (registrar `[CREADO]` / `[YA EXISTÍA]`).
+
+Copiar los templates compartidos desde el `assets/` de su skill dueño. Esta tabla es la fuente de verdad de qué se centraliza:
+
+| Template | Skill dueño (origen) |
+|----------|---------------------|
+| `story-template.md` | `.claude/skills/story-creation/assets/` |
+| `release-spec-template.md` | `.claude/skills/release-creation/assets/` |
+| `project-template.md` | `.claude/skills/project-discovery/assets/` |
+| `project-intent-template.md` | `.claude/skills/project-begin/assets/` |
+| `project-plan-template.md` | `.claude/skills/project-planning/assets/` |
+
+Para cada template:
+- **No existe en `SPECS_BASE/specs/templates/`:** copiarlo desde el origen y registrar `[CREADO]  <ruta destino>`
+- **Ya existe en el destino:** no sobrescribirlo (puede contener personalizaciones del proyecto) y registrar `[YA EXISTÍA]  <ruta destino>`
+- **El origen no existe (skill dueño no instalado):** emitir `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)` y continuar sin bloquear.
+
 ### Paso 3 — Generar sddf.config.yaml
 
 Verificar si `sddf.config.yaml` existe en la raíz del proyecto:
@@ -115,6 +134,12 @@ Emitir el informe consolidado con todos los artefactos verificados:
 [CREADO]     docs/specs/projects/
 [CREADO]     docs/specs/releases/
 [YA EXISTÍA] docs/specs/stories/
+[CREADO]     docs/specs/templates/
+[CREADO]     docs/specs/templates/story-template.md
+[CREADO]     docs/specs/templates/release-spec-template.md
+[CREADO]     docs/specs/templates/project-template.md
+[CREADO]     docs/specs/templates/project-intent-template.md
+[CREADO]     docs/specs/templates/project-plan-template.md
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 [CREADO]     docs/policies/constitution.md
