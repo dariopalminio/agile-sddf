@@ -55,3 +55,5 @@ READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> 
 - ACCEPTANCE – Aceptación humana o del PO.  
 - INTEGRATION – Fase donde se integra a la rama release/main.
 - COMPLETED – Estado final "Done".
+
+> La máquina de estados completa con transiciones skill a skill, retrocesos y los niveles project y release está en [[state-machine]].

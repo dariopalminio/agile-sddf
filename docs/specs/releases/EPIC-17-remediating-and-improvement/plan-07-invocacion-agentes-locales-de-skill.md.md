@@ -1,3 +1,17 @@
+---
+type: plan
+id: plan-7
+slug: plan-7-invocacion-agentes-locales-de-skill
+title: "Contrato explícito de invocación de agentes locales de skill — Feature del EPIC-17"
+status: DEFINITION
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
+
 # Plan: A4 — Contrato explícito de invocación de agentes locales de skill — Feature del EPIC-17
 
 ## Context

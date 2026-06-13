@@ -25,9 +25,9 @@ Sistema cliente agentico minimalista que automatiza la especificación de featur
 
 ```
 agile-sddf/
-  ├── docs/specs/                      # Artefactos generados (projects/, releases/, stories/)
+  ├── docs/specs/                      # Artefactos generados (projects/, releases/, stories/, templates/)
   ├── docs/policies/                   # constitution.md, definition-of-done-story.md
-  ├── AGENTS.md                        # Convención .agent/ — compatible con Codex, Cursor, etc.
+  ├── docs/adr/                        # Architecture Decision Records (ADR-NNNN)
   ├── CLAUDE.md                        # Instrucciones globales del proyecto
   └── .claude/                         # Fuente única de verdad para agentes y skills
       ├── agents/                      # 10 agentes registrados por el harness
@@ -41,8 +41,6 @@ agile-sddf/
       │   ├── reverse-engineer-product-discovery.agent.md
       │   ├── reverse-engineer-synthesizer.agent.md
       │   └── reverse-engineer-ux-flow-mapper.agent.md
-      ├── commands/
-      │   └── opsx/                    # Integración experimental OpenSpec (apply, archive, explore, propose)
       └── skills/
           ├── skill-name/
           │   ├── assets/
@@ -51,6 +49,8 @@ agile-sddf/
           │   └── SKILL.md
           └── ...
 ```
+
+**Plataformas soportadas:** Claude Code, OpenCode y GitHub Copilot — elegidas al instalar la librería; el instalador copia desde `.claude/` (fuente única) al destino `.claude`/`.agents`/`.github`. Los directorios `gem/` (Google Gemini Gems) y `rovo/` (Atlassian Rovo) son utilidades accesorias, no runtimes del framework. El soporte a otros CLI/LLMs se evaluará en releases futuros.
 
 
 # Definición y Uso de Agentes, Skills y Comandos
@@ -72,8 +72,6 @@ Los comandos en OpenCode se ubican en ".opencode/commands/": Permite máxima per
 ### Comandos en Claude
 
 Los comandos en Claude se ubican en `.claude/commands/`. Los skills son más componibles, más fáciles de versionar y se adaptan al contexto de ejecución. Los commands son apropiados solo para integraciones externas donde el harness de commands ofrece ventajas claras (argumentos posicionales `$ARGUMENTS`, inyección de resultados de shell).
-
-**Excepción activa:** `.claude/commands/opsx/` mantiene 4 comandos de integración OpenSpec (`propose`, `apply`, `archive`, `explore`) mientras se evalúa su migración a skills. No crear nuevos commands Claude sin evaluar primero si un skill cumple el mismo propósito.
 
 ## Skills (Habilidades)
 

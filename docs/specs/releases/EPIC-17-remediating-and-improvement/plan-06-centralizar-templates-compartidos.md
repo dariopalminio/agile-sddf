@@ -1,3 +1,17 @@
+---
+type: plan
+id: plan-6
+slug: plan-6-centralizar-templates-compartidos
+title: "Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` — Feature del EPIC-17"
+status: DEFINITION
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
+
 # Plan: Refactor — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` (completar EPIC-11/FEAT-055)
 
 ## Context

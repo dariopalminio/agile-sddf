@@ -1,3 +1,17 @@
+---
+type: plan
+id: plan-02
+slug: plan-02-fix-claude-md
+title: "Corrección de CLAUDE.md — Feature del EPIC-17"
+status: DEFINITION
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
+
 # Plan: Corrección de CLAUDE.md — Feature del EPIC-17
 
 ## Contexto

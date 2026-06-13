@@ -97,6 +97,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 > **Fase 2 — Refinamiento:** A partir de las respuestas de la Fase 1, profundiza sección por sección del template (máx 3-4 preguntas por ronda). Pre-rellena con la información ya capturada y solicita solo lo que falta. Infiere el contenido faltante marcándolo con `[inferido]`.
 >
 > Escribe el resultado completo en `$SPECS_BASE/specs/projects/project-intent.md` con `substatus: IN‑PROGRESS`.
+> Si no puedes obtener respuesta del usuario, aplica tu Protocolo de Resiliencia: degrada a inferencia, marca con `[inferido: sin respuesta del usuario]` y lista las inferencias al final.
 
 ### 1.5 Gate de revisión — Fase 1
 
@@ -150,6 +151,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 > Usa máx 3-4 preguntas por ronda. Infiere lo que sea posible desde `project-intent.md` y pregunta solo lo que falta.
 > Al terminar, entrega un resumen estructurado del discovery para que el project-architect lo use en la siguiente fase.
 > Si necesitas apoyo para los flujos de usuario y usabilidad, invoca al agente `project-ux`.
+> Si no puedes obtener respuesta del usuario, aplica tu Protocolo de Resiliencia: degrada a inferencia, marca con `[inferido: sin respuesta del usuario]` y lista las inferencias al final.
 
 ### 2.5 Sub-fase SPECIFY — Delegar al project-architect
 

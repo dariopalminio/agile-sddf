@@ -107,6 +107,10 @@ parent: null
 
 ### UX
 
+### Proceso
+- [[state-machine]] — Máquina de estados canónica (story, project, release)
+- [[specs_and_workflows]] — Definición de specs, workflows, status y substatus
+
 ### Guías teóricas
 - [[extreme-agile]]
 - [[flight-leves-model]]

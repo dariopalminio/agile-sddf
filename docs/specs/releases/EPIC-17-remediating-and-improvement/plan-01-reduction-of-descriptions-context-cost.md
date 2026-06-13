@@ -1,3 +1,17 @@
+---
+type: plan
+id: plan-01
+slug: plan-01-reduction-of-descriptions-context-cost
+title: "Remediar hallazgo A1 — Reducción de costo de contexto de descriptions — Feature del EPIC-17"
+status: DEFINITION
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
+
 # Plan 01: Remediar hallazgo A1 — Reducción de costo de contexto de descriptions — Feature del EPIC-17
 
 ## Contexto

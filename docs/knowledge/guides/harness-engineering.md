@@ -170,6 +170,8 @@ Que el skill sea "worker" significa que cumple esto, y conviene escribirlo como 
 2. No lanza subagentes — si los lanzara, tendrías subagente → subagente, el caso prohibido.
 3. No depende de contexto conversacional que el subagente no tiene. Este es el que más se pasa por alto: los skills SDDF asumen que el preflight ya corrió y que SPECS_BASE está resuelto. El subagente arranca con contexto vacío — no sabe nada de eso. El orquestador debe pasarle los valores resueltos en el prompt (el "bundle"), o aceptar que el subagente re-ejecute skill-preflight por su cuenta (que es legal — preflight es worker puro, solo lecturas — pero duplica trabajo).
 
+> **Excepción documentada — Subagente interactivo:** `project-pm` viola la condición #1 de forma intencional. Es el único agente del framework diseñado para conducir entrevistas multivuelta con el usuario desde un contexto de subagente. Esto funciona en Claude Code porque `AskUserQuestion` está disponible para subagentes. El riesgo es que si el harness cambia o se ejecuta en contexto no-interactivo, la entrevista falla. Por eso `project-pm` define un **Protocolo de Resiliencia** que degrada a inferencia cuando no hay respuesta del usuario.
+
 ## Resumen de relaciones entre mecanismos de ejecución y organización:
 
 | Invocación | Nombre | Mecanismo real | ¿Permitido? |

@@ -25,7 +25,7 @@ id: <PROJ-NN | EPIC-NN | FEAT-NNN>         # OBLIGATORIO (según type)
 slug: <nombre-del-directorio>              # OBLIGATORIO
 title: "<Título legible del documento>"    # OBLIGATORIO
 status: <BACKLOG | BEGINNING | DISCOVERY | PLANNING | DEFINITION | SPECIFY | READY-FOR-IMPLEMENT | IN-PROGRESS | IN-DEVELOPMENT | DEVELOPING | TESTING | ACCEPTANCE | INTEGRATION | RELEASE | RELEASED | MEASURING-VALUE | COMPLETED | FINISHED | CANCELED | COMPLETED> # OBLIGATORIO
-substatus: <null | TODO | IN‑PROGRESS | READY>    # OBLIGATORIO
+substatus: <null | TODO | IN-PROGRESS | DONE | BLOCKED>    # OBLIGATORIO
 parent: <null | PROJ-NN | EPIC-NN>         # OBLIGATORIO
 created: <YYYY-MM-DD>                      # OBLIGATORIO
 updated: <YYYY-MM-DD>                      # OBLIGATORIO

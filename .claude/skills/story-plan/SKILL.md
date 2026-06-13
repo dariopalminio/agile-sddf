@@ -59,10 +59,10 @@ analyze.md    → Check: coherencia entre los tres artefactos
 
 | Evento | status | substatus |
 |---|---|---|
-| Inicio del pipeline (siempre, sin condición) | `PLANNING` | `IN‑PROGRESS` |
+| Inicio del pipeline (siempre, sin condición) | `PLAN` | `IN‑PROGRESS` |
 | `story-analyze` finaliza sin ERROREs | `READY-FOR-IMPLEMENT` | `DONE` (gestionado por `story-analyze`) |
 
-La transición `PLAN/IN‑PROGRESS` se aplica **incondicionalmente** al iniciar, independientemente del estado previo de la historia. Esto permite re-ejecutar el pipeline sobre historias en cualquier estado.
+La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, independientemente del estado previo de la historia. Esto permite re-ejecutar el pipeline sobre historias en cualquier estado.
 
 ---
 
@@ -170,7 +170,7 @@ Proporciona el ID (ej. FEAT-057) o la ruta completa al directorio.
 
 #### 1e. Actualizar frontmatter a PLAN/IN‑PROGRESS
 
-Actualizar el frontmatter de `story.md` estableciendo `status: PLANNING` / `substatus: IN‑PROGRESS`.
+Actualizar el frontmatter de `story.md` estableciendo `status: PLAN` / `substatus: IN-PROGRESS`.
 
 Esta actualización es **incondicional**. Si los campos `status`/`substatus` no existen, agregarlos.
 
@@ -409,4 +409,4 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 - `{directorio_historia}/analyze.md` — reporte de coherencia entre artefactos (generado por `story-analyze`, omitido con `--skip-analyze`)
 - Estado del workitem actualizado en `story.md`:
   - `READY-FOR-IMPLEMENT / DONE` si el pipeline completa sin ERROREs
-  - `PLANNING / IN‑PROGRESS` si hay fallos o inconsistencias bloqueantes
+  - `PLAN / IN-PROGRESS` si hay fallos o inconsistencias bloqueantes

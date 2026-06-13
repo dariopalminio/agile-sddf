@@ -152,6 +152,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 > **Fase 2 — Refinamiento:** A partir de las respuestas de la Fase 1, profundiza sección por sección del template (máx 3-4 preguntas por ronda). Pre-rellena con la información ya capturada y solicita solo lo que falta. Infiere el contenido faltante marcándolo con `[inferido]`.
 >
 > Escribe el resultado completo en `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md`.
+> Si no puedes obtener respuesta del usuario, aplica tu Protocolo de Resiliencia: degrada a inferencia, marca con `[inferido: sin respuesta del usuario]` y lista las inferencias al final.
 
 El `project-pm` se encargará de:
 - Capturar la intención inicial del proyecto en la Fase 1

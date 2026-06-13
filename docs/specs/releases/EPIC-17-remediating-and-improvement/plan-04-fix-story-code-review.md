@@ -1,3 +1,17 @@
+---
+type: plan
+id: plan-4
+slug: plan-4-fix-story-code-review
+title: "Fix inconsistencia interna en story-code-review — Feature del EPIC-17"
+status: DEFINITION
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
+
 # Plan: Fix inconsistencia interna en story-code-review — Feature del EPIC-17
 
 ## Context

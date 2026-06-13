@@ -2,6 +2,8 @@
 
 #  ProjectSpecFactory Gem para Spec Driven Development Framework (SDDF)
 
+> **Utilidad accesoria** — complemento del framework para el ecosistema Google (Gemini Gems), orientado a stakeholders no técnicos. No es un runtime del framework: no recibe los 47 skills ni se sincroniza desde `.claude/`. Los prompts de `prompts/` se mantienen manualmente. Las plataformas soportadas del framework son Claude Code, OpenCode y GitHub Copilot (ver README.md raíz).
+
 Solución Gemini Gems como ProjectSpecFactory experto personalizado para construir especificación de proyectos (o iniciativas) de software. Las ProjectSpecFactory Gems son expertos de IA personalizados que brindan ayuda sobre especificación de proyectos de software. 
 
 Aprovechar el ecosistema de Google (Workspace, AI Studio)

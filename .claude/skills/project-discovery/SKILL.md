@@ -151,6 +151,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 > Usa máx 3-4 preguntas por ronda. Infiere lo que sea posible desde `project-intent.md` y pregunta solo lo que falta.
 > Al terminar, entrega un resumen estructurado del discovery para que el project-architect lo use en la siguiente fase.
 > Si necesitas apoyo para los flujos de usuario y usabilidad, invoca al agente `project-ux`.
+> Si no puedes obtener respuesta del usuario, aplica tu Protocolo de Resiliencia: degrada a inferencia, marca con `[inferido: sin respuesta del usuario]` y lista las inferencias al final.
 
 ### Paso 5 — Fase SPECIFY: delegar al project-architect
 

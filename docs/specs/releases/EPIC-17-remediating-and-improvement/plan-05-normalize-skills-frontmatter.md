@@ -1,3 +1,16 @@
+---
+type: plan
+id: plan-5
+slug: plan-5-normalize-skills-frontmatter
+title: "Normalizar zoo de frontmatter en skills — Feature del EPIC-17"
+status: DEFINITION
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
 # Plan: Normalizar zoo de frontmatter en skills — Feature del EPIC-17
 
 ## Context
