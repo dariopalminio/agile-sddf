@@ -54,7 +54,7 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 |---|---|---|
 | `finvest-evaluation-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>-*/finvest-evaluation-report.md` | ✓ obligatorio |
 | `story.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>-*/story.md` | ✓ obligatorio |
-| `assets/improvement-log-template.md` | `.claude/skills/story-improve/assets/improvement-log-template.md` | ✓ obligatorio |
+| `assets/improvement-log-template.md` | `$CLI_ROOT/skills/story-improve/assets/improvement-log-template.md` | ✓ obligatorio |
 
 ## Parámetros
 

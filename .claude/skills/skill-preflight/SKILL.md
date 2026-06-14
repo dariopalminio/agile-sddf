@@ -77,6 +77,20 @@ Verificar si `openspec/config.yaml` existe y tiene contenido:
 
 Esta es una advertencia, no un error bloqueante.
 
+### Verificación 5 — Resolución de `CLI_ROOT`
+
+1. Si la variable de entorno `SDDF_CLI_ROOT` está definida → `CLI_ROOT = $SDDF_CLI_ROOT`.
+2. Si no, detectar por filesystem (en orden de prioridad):
+   - Si `.claude/` existe → `CLI_ROOT = .claude`
+   - Si `.opencode/` existe → `CLI_ROOT = .opencode`
+   - Si `.github/copilot/` existe → `CLI_ROOT = .github/copilot`
+3. Si ninguno de los anteriores existe:
+   - Emitir: `[WARNING] No se detectó directorio CLI conocido → Se usará ".claude" como valor por defecto`
+   - `CLI_ROOT = .claude`
+4. Emitir: `[OK]  CLI_ROOT = <ruta>`
+
+Exponer `CLI_ROOT` al skill invocador para que lo use en rutas a skills, agents y commands.
+
 ---
 
 ## Informe de estado final
@@ -86,6 +100,7 @@ Después de todas las verificaciones, emitir el informe consolidado:
 ```
 ── Preflight SDDF ──────────────────────────────
 [OK]      SDDF_ROOT = docs
+[OK]      CLI_ROOT = .claude
 [OK]      specs/projects/ existe
 [WARNING] specs/releases/ no encontrado → Crear el directorio si el skill lo requiere
 [OK]      specs/stories/ existe

@@ -1,3 +1,18 @@
+---
+type: plan
+id: plan-13
+slug: plan-13-remove-gem-and-rovo
+title: "Eliminar gem/ y rovo/ (FEAT-054)"
+status: COMPLETED
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
+
+
 # Plan: Eliminar gem/ y rovo/
 
 ## Contexto

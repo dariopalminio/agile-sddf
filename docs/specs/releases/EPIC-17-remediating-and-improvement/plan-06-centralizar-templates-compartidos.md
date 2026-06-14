@@ -3,7 +3,7 @@ type: plan
 id: plan-6
 slug: plan-6-centralizar-templates-compartidos
 title: "Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` — Feature del EPIC-17"
-status: DEFINITION
+status: COMPLETED
 substatus: DONE
 parent: EPIC-17
 created: 2026-06-13

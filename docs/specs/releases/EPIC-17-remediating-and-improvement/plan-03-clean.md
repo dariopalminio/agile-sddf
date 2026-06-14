@@ -3,7 +3,7 @@ type: plan
 id: plan-03
 slug: plan-03-clean
 title: "Limpieza de assets muertos y configuración legacy — Feature del EPIC-17"
-status: DEFINITION
+status: COMPLETED
 substatus: DONE
 parent: EPIC-17
 created: 2026-06-13

@@ -3,7 +3,7 @@ type: plan
 id: plan-8
 slug: plan-8-align-the-declared-multi-client-support
 title: "Alinear el soporte multi-cliente declarado con el real — Feature del EPIC-17"
-status: DEFINITION
+status: COMPLETED
 substatus: DONE
 parent: EPIC-17
 created: 2026-06-13

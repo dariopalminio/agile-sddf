@@ -26,7 +26,7 @@
         "context": "Tengo esta historia épica y necesito dividirla con /story-split:\n\n# 📖 Historia: Registro completo de nuevo usuario\n\n**Como** visitante de la plataforma **Quiero** registrarme, verificar mi email y completar mi perfil **Para** acceder a todas las funciones de la aplicación\n\n## ✅ Criterios de aceptación\n\n### Escenario principal – Crear cuenta\n```gherkin\nDado que soy un visitante sin cuenta\nCuando completo el formulario con email 'nuevo@ejemplo.com' y contraseña válida\nEntonces se crea mi cuenta y recibo un email de verificación\n  Y soy redirigido a la pantalla 'Verifica tu email'\n```\n\n### Escenario principal – Verificar email\n```gherkin\nDado que recibí el email de verificación en 'nuevo@ejemplo.com'\nCuando hago clic en el enlace de verificación dentro de las 24 horas\nEntonces mi cuenta queda verificada\n  Y soy redirigido a la pantalla de completar perfil\n```\n\n### Escenario principal – Completar perfil\n```gherkin\nDado que mi cuenta está verificada y no he completado el perfil\nCuando ingreso mi nombre, rol y foto de perfil\nEntonces mi perfil queda guardado\n  Y accedo al dashboard principal de la aplicación\n```"
       },
       "expected": {
-        "contains": ["Patrón 1", "crear cuenta", "verificar email", "completar perfil"],
+        "contains": ["Pasos del flujo", "crear cuenta", "verificar email", "completar perfil"],
         "not_contains": ["❌"]
       },
       "threshold": 0.90

@@ -67,11 +67,11 @@ Copiar los templates compartidos desde el `assets/` de su skill dueño. Esta tab
 
 | Template | Skill dueño (origen) |
 |----------|---------------------|
-| `story-template.md` | `.claude/skills/story-creation/assets/` |
-| `release-spec-template.md` | `.claude/skills/release-creation/assets/` |
-| `project-template.md` | `.claude/skills/project-discovery/assets/` |
-| `project-intent-template.md` | `.claude/skills/project-begin/assets/` |
-| `project-plan-template.md` | `.claude/skills/project-planning/assets/` |
+| `story-template.md` | `$CLI_ROOT/skills/story-creation/assets/` |
+| `release-spec-template.md` | `$CLI_ROOT/skills/release-creation/assets/` |
+| `project-template.md` | `$CLI_ROOT/skills/project-discovery/assets/` |
+| `project-intent-template.md` | `$CLI_ROOT/skills/project-begin/assets/` |
+| `project-plan-template.md` | `$CLI_ROOT/skills/project-planning/assets/` |
 
 Para cada template:
 - **No existe en `SPECS_BASE/specs/templates/`:** copiarlo desde el origen y registrar `[CREADO]  <ruta destino>`
@@ -82,7 +82,7 @@ Para cada template:
 
 Verificar si `sddf.config.yaml` existe en la raíz del proyecto:
 - **No existe (o existe vacío):**
-  - Crear `sddf.config.yaml` usando exactamente el contenido del template en `.claude/skills/sddf-init/assets/sddf.config.yaml.template`
+  - Crear `sddf.config.yaml` usando exactamente el contenido del template en `$CLI_ROOT/skills/sddf-init/assets/sddf.config.yaml.template`
   - Registrar `[CREADO]  sddf.config.yaml`
 - **Ya existe con contenido:**
   - No sobrescribirlo

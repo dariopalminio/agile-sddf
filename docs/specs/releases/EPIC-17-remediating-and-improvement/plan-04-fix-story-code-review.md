@@ -3,7 +3,7 @@ type: plan
 id: plan-4
 slug: plan-4-fix-story-code-review
 title: "Fix inconsistencia interna en story-code-review — Feature del EPIC-17"
-status: DEFINITION
+status: COMPLETED
 substatus: DONE
 parent: EPIC-17
 created: 2026-06-13

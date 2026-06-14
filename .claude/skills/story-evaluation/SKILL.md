@@ -89,7 +89,7 @@ El archivo `$SPECS_BASE/specs/templates/story-template.md` es la **única fuente
 
 Leer el archivo `$SPECS_BASE/specs/templates/story-template.md`.
 
-- Si el archivo central **no existe**: usar el fallback `.claude/skills/story-creation/assets/story-template.md` y emitir:
+- Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/story-creation/assets/story-template.md` y emitir:
   > ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
 - Si tampoco existe el fallback: detener la ejecución (ver Manejo de errores).
 - Si alguno de los dos **existe**: continuar al Paso 2.

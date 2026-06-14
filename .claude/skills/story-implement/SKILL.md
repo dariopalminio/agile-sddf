@@ -156,11 +156,11 @@ Continuar con Paso 4 (confirmación RED) sin invocar subagentes.
 Validar **todos** los skills declarados en `test_generators` **antes** de invocar ninguno:
 
 Para cada entry en `test_generators`:
-1. Construir ruta: `.claude/skills/{entry.skill}/SKILL.md`
+1. Construir ruta: `$CLI_ROOT/skills/{entry.skill}/SKILL.md`
 2. Verificar existencia con Glob
 3. **Si no existe y `required: true`:**
    ```
-   ❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en .claude/skills/
+   ❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en $CLI_ROOT/skills/
    
    Verifica el nombre del skill en sddf.config.yaml o instálalo antes de continuar.
    ```
@@ -211,7 +211,7 @@ Construir bundle base de inputs (común a todos los test_generators):
 >
 > Las **únicas** condiciones que justifican no invocar un test_generator en este paso son:
 > - `skill: "none"` en el YAML → omisión declarada explícitamente por el proyecto
-> - `required: false` + el skill no existe en `.claude/skills/` → skill opcional ausente
+> - `required: false` + el skill no existe en `$CLI_ROOT/skills/` → skill opcional ausente
 > - El skill retorna `status: error` durante la invocación → error real del subagente
 >
 > Los siguientes razonamientos **NO son válidos** para omitir un test_generator:
@@ -252,7 +252,19 @@ Para cada entry de `test_generators` no omitida (en el orden del YAML):
      En ese caso el subagente es responsable de explorar el proyecto para detectar el framework E2E
      (buscar scripts E2E en `package.json`, archivos de configuración comunes como `cucumber.js`,
      `playwright.config.ts`, `cypress.config.ts`) y respetar la estructura de directorios existente.
-3. Invocar el skill pasando el bundle construido
+3. Invocar el skill siguiendo el contrato ADR-0002:
+   a. Leer `$CLI_ROOT/skills/{skill}/SKILL.md` con `Read`
+   b. Lanzar subagente vía `Agent` tool con `subagent_type: general-purpose`, cuyo prompt es:
+      - Contenido íntegro del SKILL.md leído
+      - Bloque de contexto con las variables resueltas:
+        ```
+        Contexto de invocación:
+        - story_id: {$RED_STORY_ID}
+        - testcases_path: {$TESTCASES_PATH}
+        - story_path: {$STORY_PATH}
+        - design_path: {$DESIGN_PATH}
+        - e2e_context: {$E2E_CONTEXT}   ← solo para tipo e2e; null si la sección está ausente en el YAML
+        ```
 4. El subagente escribe sus resultados en `.tmp/story-implement/{tipo}/results.json`
 5. **Si el subagente retorna `status: error`:**
    ```
@@ -314,7 +326,7 @@ Para cada entry en `generators_skipped`:
    
    Condiciones válidas de omisión:
      · skill: "none" en el YAML
-     · required: false + skill no existe en .claude/skills/
+     · required: false + skill no existe en $CLI_ROOT/skills/
    
    Acción requerida:
      a) Volver al Paso 4 e invocar el skill '{skill}' para el tipo '{tipo}'
@@ -401,11 +413,11 @@ Para cada entry `{layer, skill, required}` en la lista (en orden del YAML):
    ```
    Añadir `{layer}` a `$CODE_GENERATORS_SKIPPED`. Continuar con la siguiente entry.
 
-2. Verificar existencia: `.claude/skills/{skill}/SKILL.md` (Glob).
+2. Verificar existencia: `$CLI_ROOT/skills/{skill}/SKILL.md` (Glob).
 
 3. **Si el skill no existe y `required: true`:**
    ```
-   ❌ Skill '{skill}' (capa '{layer}') declarado como code_generator no encontrado en .claude/skills/
+   ❌ Skill '{skill}' (capa '{layer}') declarado como code_generator no encontrado en $CLI_ROOT/skills/
 
    Verifica el nombre del skill en sddf.config.yaml o instálalo antes de continuar.
    ```
@@ -449,9 +461,21 @@ Construir bundle de inputs:
 
 Mostrar: `[GREEN/{layer}] → invocando {skill}...`
 
-Invocar el skill `{skill}` pasando el bundle.
-
-El subagente escribe sus resultados en `.tmp/story-implement/green/{layer}/results.json`.
+Invocar el skill siguiendo el contrato ADR-0002:
+1. Leer `$CLI_ROOT/skills/{skill}/SKILL.md` con `Read`
+2. Lanzar subagente vía `Agent` tool con `subagent_type: general-purpose`, cuyo prompt es:
+   - Contenido íntegro del SKILL.md leído
+   - Bloque de contexto con las variables resueltas:
+     ```
+     Contexto de invocación:
+     - story_id: {$RED_STORY_ID}
+     - phase: GREEN
+     - layer: {layer}
+     - test_files: {$RED_FILES_GENERATED}
+     - story_path: {$SPECS_BASE}/specs/stories/{story_id}*/story.md
+     - design_path: {$SPECS_BASE}/specs/stories/{story_id}*/design.md
+     ```
+3. El subagente escribe sus resultados en `.tmp/story-implement/green/{layer}/results.json`
 
 **Si el subagente retorna `status: error`:**
 
@@ -555,9 +579,21 @@ Construir bundle de inputs:
 
 Mostrar: `[REFACTOR/{layer}] → invocando {skill}...`
 
-Invocar el skill `{skill}` pasando el bundle.
-
-El subagente escribe sus resultados en `.tmp/story-implement/refactor/{layer}/results.json`.
+Invocar el skill siguiendo el contrato ADR-0002:
+1. Leer `$CLI_ROOT/skills/{skill}/SKILL.md` con `Read`
+2. Lanzar subagente vía `Agent` tool con `subagent_type: general-purpose`, cuyo prompt es:
+   - Contenido íntegro del SKILL.md leído
+   - Bloque de contexto con las variables resueltas:
+     ```
+     Contexto de invocación:
+     - story_id: {$RED_STORY_ID}
+     - phase: REFACTOR
+     - layer: {layer}
+     - test_files: {$RED_FILES_GENERATED}
+     - story_path: {$SPECS_BASE}/specs/stories/{story_id}*/story.md
+     - design_path: {$SPECS_BASE}/specs/stories/{story_id}*/design.md
+     ```
+3. El subagente escribe sus resultados en `.tmp/story-implement/refactor/{layer}/results.json`
 
 **Si el subagente retorna `status: error`:**
 
@@ -741,7 +777,7 @@ DoD IMPLEMENT:
 | `sddf.config.yaml` no encontrado | `❌ sddf.config.yaml no encontrado` | Detener ejecución |
 | `implement.test_generators` vacío o ausente | `[WARN] No hay test_generators configurados — Fase RED sin generación de pruebas` | Continuar sin subagentes |
 | Tipo activo sin campo `skill` | `[WARN] Sin skill declarado para tipo '<tipo>' — omitiendo ese tipo` | Omitir tipo |
-| Skill `required:true` no existe (test_generator) | `❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en .claude/skills/` | Detener sin generar archivos |
+| Skill `required:true` no existe (test_generator) | `❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en $CLI_ROOT/skills/` | Detener sin generar archivos |
 | Skill `required:false` no existe (test_generator) | `[WARN] Skill '<nombre>' no encontrado — omitiendo tipo '<tipo>'` | Omitir tipo y continuar |
 | `testcases.md` ausente | `⚠️ testcases.md no encontrado — generando pruebas desde story.md y design.md` | Continuar con fallback |
 | Generator `required:true` con `skill!=none` en `generators_skipped` | `❌ ERROR: test_generator '{tipo}' es required:true pero fue omitido sin condición válida` | Detener antes de GREEN; exigir corrección o cambiar a required:false |
@@ -752,7 +788,7 @@ DoD IMPLEMENT:
 | `red_confirmed: false` en red-phase-status.json | `❌ Precondición RED no cumplida: red_confirmed es false` | Detener Fase GREEN |
 | `implement.code_generators` no declarado o vacío | `❌ implement.code_generators no declarado o vacío en sddf.config.yaml` | Detener Fase GREEN |
 | Entry con `skill: none` | `[INFO] Capa '{layer}': skill none — omitiendo` | Omitir capa |
-| code_generator `required:true` no existe | `❌ Skill '{skill}' (capa '{layer}') declarado como code_generator no encontrado en .claude/skills/` | Detener Fase GREEN |
+| code_generator `required:true` no existe | `❌ Skill '{skill}' (capa '{layer}') declarado como code_generator no encontrado en $CLI_ROOT/skills/` | Detener Fase GREEN |
 | code_generator `required:false` no existe | `[WARN] Skill '{skill}' (capa '{layer}') no encontrado — omitiendo capa` | Omitir capa, continuar |
 | Ningún code_generator activo | `[WARN] Ningún code_generator activo — Fases GREEN y REFACTOR sin invocación de skills` | Continuar (no es error) |
 | Subagente `required:true` retorna error (Fase GREEN) | `❌ Fase GREEN fallida: skill '{skill}' (capa '{layer}') retornó error` | Detener sin REFACTOR, story.md sin cambio |
@@ -785,6 +821,8 @@ story-implement (orquestador — Fases GREEN y REFACTOR)
 Los subagentes de Fase RED reciben el bundle `{story_id, testcases_path, story_path, design_path}` (más `e2e_context` para el tipo `e2e`) y escriben en `.tmp/story-implement/{tipo}/results.json`.
 Los subagentes de Fases GREEN/REFACTOR reciben el bundle `{story_id, phase, layer, test_files, story_path, design_path}` y escriben en `.tmp/story-implement/{phase}/{layer}/results.json`.
 El orquestador nunca pasa su contexto completo heredado a los subagentes.
+
+La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md → `Agent` tool (`subagent_type: general-purpose`) → output en `.tmp/` → `Read` de resultados. Los skills de generación permanecen en `$CLI_ROOT/skills/` (no en `.claude/agents/`) para preservar su invocabilidad directa y la configurabilidad vía `sddf.config.yaml`.
 
 ---
 

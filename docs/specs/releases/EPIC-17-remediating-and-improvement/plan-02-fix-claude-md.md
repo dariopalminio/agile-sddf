@@ -3,7 +3,7 @@ type: plan
 id: plan-02
 slug: plan-02-fix-claude-md
 title: "Corrección de CLAUDE.md — Feature del EPIC-17"
-status: DEFINITION
+status: COMPLETED
 substatus: DONE
 parent: EPIC-17
 created: 2026-06-13

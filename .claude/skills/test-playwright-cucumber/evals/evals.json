@@ -14,7 +14,7 @@
       "expected": {
         "contains": [
           "setWorldConstructor",
-          "try/finally",
+          "finally",
           "this.attach()",
           "publishQuiet: true",
           "config.ts"

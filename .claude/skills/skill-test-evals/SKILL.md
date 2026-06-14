@@ -97,7 +97,7 @@ Examinar el primer argumento de invocación:
 
 - Si `--from-skill <path>`: salida en `<path>/evals/evals.json` (co-ubicado con el skill)
 - Si `--skill-dir`: salida en `<skill-dir>/evals/evals.json`
-- Si `--skill-name`: salida en `.claude/skills/<skill-name>/evals/evals.json`
+- Si `--skill-name`: salida en `$CLI_ROOT/skills/<skill-name>/evals/evals.json`
 - Si ninguno: inferir el nombre del skill desde la descripción (ej. "formatea commits de git" → `commit-formatter`). Confirmar con el usuario en modo `--manual`.
 
 ### Paso G3 — Extraer intención de la fuente
@@ -130,7 +130,7 @@ Cuando la fuente es un archivo SKILL.md, extraer en este orden:
 
 3. **Generar prompts invirtiendo los triggers:**
    - Para cada trigger, construir un prompt realista con suficiente contexto
-   - Ejemplo: trigger `"crear pruebas de"` → prompt `"crea las pruebas de un skill que formatea commits de git en mi repo, el skill está en .claude/skills/commit-formatter"`
+   - Ejemplo: trigger `"crear pruebas de"` → prompt `"crea las pruebas de un skill que formatea commits de git en mi repo, el skill está en $CLI_ROOT/skills/commit-formatter"`
    - Agregar detalles concretos: rutas, contexto de dominio, escenario realista
 
 4. **Derivar expectativas de la sección de Output:**
@@ -218,7 +218,7 @@ Crear el directorio `evals/` si no existe. Escribir con el esquema TC-NNN (leer 
 Si la fuente de entrada fue **descripción libre** (no `--from-skill` ni `--source` apuntando a un archivo existente):
 
 1. Verificar que `<skill-dir>/SKILL.md` **no existe** — si existe, no sobreescribir
-2. Crear el directorio `.claude/skills/{skill_name}/` si no existe
+2. Crear el directorio `$CLI_ROOT/skills/{skill_name}/` si no existe
 3. Escribir un skeleton `SKILL.md` mínimo:
 
 ```markdown
@@ -278,12 +278,12 @@ Proporciona el nombre (ej. story-design) o la ruta completa al directorio.
 ```
 
 Resolver la ruta del skill:
-- Si el argumento no contiene `/` ni `\`: construir path `.claude/skills/{arg}/`
+- Si el argumento no contiene `/` ni `\`: construir path `$CLI_ROOT/skills/{arg}/`
 - Si contiene separadores: usar como ruta directa
 
 Verificar que `SKILL.md` existe en la ruta resuelta:
 ```
-❌ No se encontró el skill '{arg}' en .claude/skills/
+❌ No se encontró el skill '{arg}' en $CLI_ROOT/skills/
    Verifica el nombre del skill y que existe en el directorio de skills.
 ```
 Si no existe, detener.
@@ -471,7 +471,7 @@ Si no se pasó `--report`: mostrar el informe directamente.
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Skill no encontrado (modos evals/benchmark) | `❌ No se encontró el skill '{name}' en .claude/skills/` | Detener |
+| Skill no encontrado (modos evals/benchmark) | `❌ No se encontró el skill '{name}' en $CLI_ROOT/skills/` | Detener |
 | `evals.json` ausente (modos evals/benchmark) | `❌ No se encontró evals/evals.json ... Ejecuta /skill-test-evals {skill_name} primero` | Detener |
 | Formato trigger detectado | `❌ Este evals.json usa formato trigger ... requiere SDDF con cases[]` | Detener |
 | `cases[]` vacío | `⚠️ evals.json no contiene casos. Añade al menos TC-001 antes de verificar.` | Detener |

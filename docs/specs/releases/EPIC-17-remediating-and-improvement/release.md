@@ -54,7 +54,12 @@ con su propio principio §3 ("obligar a demostrar, no declarar").
 
 - [x] plan-14 - **Test - Estandarización del esquema de evals:** Unificar los dos esquemas incompatibles de evals.json en uno solo y migrar los evals existentes. *Resuelto: 5 archivos legacy (Schema 1: `skill_name`+`evals[]`) migrados a Schema 2 canónico (TC-NNN: `skill`+`version`+`cases[]`). Total: 10 evals.json en Schema 2 uniforme.*
 
-- [ ] **Test - Cobertura mínima de evals en skills críticos:** Crear evals.json para los skills del pipeline principal que no tienen cobertura (79% sin evals).
+- [x] plan-15 - Formalizar la invocación de code_generators en story-implement (ADR-0002). El problema real es que story-implement/SKILL.md (l. 452) dice literalmente: "Invocar el skill {skill} pasando el bundle." Sin especificar el mecanismo — exactamente el "funciona por inferencia, no por contrato" que plan-07 ya remedió en story-code-review. La solución es aplicar el mismo contrato ADR-0002 que ya funciona allí.
+
+- [x] plan-16 - **Desacoplar referencias `.claude/` de los skills SDDF**: Actualmente el archivo skill /story-implement tiene 13 referencias a “.claude/”: por ejemplo “Leer `.claude/skills/{skill}/SKILL.md` con `Read`”. Esto genera acoplamiento con claude y el framework (si bien está escrito por claude) debe ser agnóstico al llm y cli.
+
+
+- [ ] **Test - Cobertura mínima de evals en skills críticos:** Crear evals.json para los skills del pipeline principal que no tienen cobertura (79% sin evals). Solo 10 de 47 skills tienen evals/evals.json. Y security-audit/evals/ y story-verify/evals/ contienen .md descriptivos, no evals.
 
 - [ ] **Verificación automática de la constitución:** Implementar un skill o script que audite el cumplimiento de las reglas de la constitución de forma ejecutable.
 

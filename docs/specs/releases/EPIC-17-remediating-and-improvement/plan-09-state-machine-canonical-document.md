@@ -3,7 +3,7 @@ type: plan
 id: plan-09
 slug: plan-09-state-machine-canonical-document
 title: "Documento canónico de la máquina de estados SDDF"
-status: DEFINITION
+status: COMPLETED
 substatus: DONE
 parent: EPIC-17
 created: 2026-06-13

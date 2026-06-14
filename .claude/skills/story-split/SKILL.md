@@ -114,7 +114,7 @@ Leer el archivo `$SPECS_BASE/specs/templates/story-template.md`.
 
 El template es la **única fuente de información estructural** para generar el output. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución.
 
-Si el archivo central **no existe**, usar el fallback `.claude/skills/story-creation/assets/story-template.md` y emitir:
+Si el archivo central **no existe**, usar el fallback `$CLI_ROOT/skills/story-creation/assets/story-template.md` y emitir:
 > ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
 
 Si tampoco existe el fallback, detener y notificar (ver sección Manejo de errores).

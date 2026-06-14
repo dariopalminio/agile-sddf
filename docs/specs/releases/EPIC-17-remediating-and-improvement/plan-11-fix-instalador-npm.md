@@ -1,3 +1,18 @@
+---
+type: plan
+id: plan-11
+slug: plan-11-fix-instalador-npm
+title: "Fix instalador npm — quitar prompt de postinstall y agregar --force para upgrades"
+status: COMPLETED
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
+
+
 # Plan: Fix instalador npm — quitar prompt de postinstall y agregar --force para upgrades
 
 ## Contexto

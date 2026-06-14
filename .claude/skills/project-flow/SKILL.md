@@ -76,7 +76,7 @@ Lee `$SPECS_BASE/specs/projects/project-intent.md` (si existe):
 
 ### 1.3 Verificar template
 
-Lee `$SPECS_BASE/specs/templates/project-intent-template.md`. Si no existe, usa el fallback `.claude/skills/project-begin/assets/project-intent-template.md` (emite ⚠️ sugiriendo ejecutar `sddf-init`). Si tampoco existe el fallback, informa y detén.
+Lee `$SPECS_BASE/specs/templates/project-intent-template.md`. Si no existe, usa el fallback `$CLI_ROOT/skills/project-begin/assets/project-intent-template.md` (emite ⚠️ sugiriendo ejecutar `sddf-init`). Si tampoco existe el fallback, informa y detén.
 
 ### 1.4 Delegar al project-pm
 
@@ -134,7 +134,7 @@ Lee `$SPECS_BASE/specs/projects/project.md` (si existe):
 
 ### 2.3 Verificar template
 
-Lee `$SPECS_BASE/specs/templates/project-template.md`. Si no existe, usa el fallback `.claude/skills/project-discovery/assets/project-template.md` (emite ⚠️ sugiriendo ejecutar `sddf-init`). Si tampoco existe el fallback, informa y detén.
+Lee `$SPECS_BASE/specs/templates/project-template.md`. Si no existe, usa el fallback `$CLI_ROOT/skills/project-discovery/assets/project-template.md` (emite ⚠️ sugiriendo ejecutar `sddf-init`). Si tampoco existe el fallback, informa y detén.
 
 ### 2.4 Sub-fase Discovery — Delegar al project-pm
 
@@ -201,7 +201,7 @@ Lee `$SPECS_BASE/specs/projects/project-plan.md` (si existe):
 
 ### 3.3 Verificar template
 
-Lee `$SPECS_BASE/specs/templates/project-plan-template.md`. Si no existe, usa el fallback `.claude/skills/project-planning/assets/project-plan-template.md` (emite ⚠️ sugiriendo ejecutar `sddf-init`). Si tampoco existe el fallback, informa y detén.
+Lee `$SPECS_BASE/specs/templates/project-plan-template.md`. Si no existe, usa el fallback `$CLI_ROOT/skills/project-planning/assets/project-plan-template.md` (emite ⚠️ sugiriendo ejecutar `sddf-init`). Si tampoco existe el fallback, informa y detén.
 
 ### 3.4 Delegar al project-architect
 

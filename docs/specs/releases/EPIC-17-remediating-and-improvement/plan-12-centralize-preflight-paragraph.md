@@ -1,3 +1,18 @@
+---
+type: plan
+id: plan-12
+slug: plan-12-centralize-preflight-paragraph
+title: "Centralizar párrafo de preflight (FEAT-053)"
+status: COMPLETED
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
+
+
 # Plan: Enhance - Centralizar párrafo de preflight (FEAT-053)
 
 ## Contexto

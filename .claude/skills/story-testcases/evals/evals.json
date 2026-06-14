@@ -60,22 +60,21 @@
       "id": "TC-003",
       "name": "error-handling-story-ausente",
       "type": "error-handling",
-      "description": "story.md ausente emite error limpio y detiene la ejecución sin crash",
+      "description": "story_id inexistente emite error limpio con ❌ y detiene la ejecución sin crash ni tabla generada",
       "input": {
-        "input_path": "examples/input/nonexistent-dir",
+        "input_path": "FEAT-999",
         "flags": []
       },
       "expected": {
         "contains": [
           "❌",
-          "story.md"
+          "No se encontró"
         ],
         "not_contains": [
           "stack trace",
           "Error:",
           "| ID |"
-        ],
-        "exit_gracefully": true
+        ]
       },
       "threshold": 1.0
     },

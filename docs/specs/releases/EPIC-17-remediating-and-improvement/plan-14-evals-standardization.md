@@ -1,3 +1,18 @@
+---
+type: plan
+id: plan-14
+slug: plan-14-evals-standardization
+title: "Estandarización del esquema de evals.json (FEAT-055)"
+status: COMPLETED
+substatus: DONE
+parent: EPIC-17
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - EPIC-17-remediating-and-improvement
+---
+
+
 # Plan: Estandarización del esquema de evals.json (EPIC-17)
 
 ## Contexto

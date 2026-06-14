@@ -21,7 +21,7 @@
           "screenshotOnRunFailure",
           "Cypress.env()"
         ],
-        "not_contains": ["@cucumber/cucumber", "❌"]
+        "not_contains": ["from '@cucumber/cucumber'", "❌"]
       },
       "threshold": 0.90
     },
@@ -41,7 +41,7 @@
           "@auth",
           "@smoke"
         ],
-        "not_contains": ["@cucumber/cucumber", "❌"]
+        "not_contains": ["from '@cucumber/cucumber'", "❌"]
       },
       "threshold": 0.90
     },

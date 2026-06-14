@@ -62,7 +62,7 @@ El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifiq
 
 Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-template.md`.
 
-- Si el archivo central **no existe**: usar el fallback `.claude/skills/project-discovery/assets/project-template.md` y emitir:
+- Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/project-discovery/assets/project-template.md` y emitir:
 
   > ⚠️ Usando template del skill project-discovery. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
 

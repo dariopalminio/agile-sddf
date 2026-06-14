@@ -129,7 +129,7 @@ El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifiq
 
 Lee el archivo de plantilla `$SPECS_BASE/specs/templates/release-spec-template.md`.
 
-- Si el archivo central **no existe**: usar el fallback `.claude/skills/release-creation/assets/release-spec-template.md` y emitir:
+- Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/release-creation/assets/release-spec-template.md` y emitir:
 
   > ⚠️ Usando template del skill release-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
 

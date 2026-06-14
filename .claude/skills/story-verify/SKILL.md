@@ -62,7 +62,7 @@ story-verify    ← aquí
 | Modo | Condición de activación | Prioridad |
 |---|---|---|
 | **config-driven** | `sddf.config.yaml` existe con al menos un test `required: true` en la sección `verify` | 0 (máxima) |
-| **delegado** | Existe un skill con "test"/"testing" en `.claude/skills/` | 1 |
+| **delegado** | Existe un skill con "test"/"testing" en `$CLI_ROOT/skills/` | 1 |
 | **automatico-e2e** | Se detecta `playwright.config.*`, `cypress.config.*` o `features/*.feature` | 2 |
 | **automatico-unit** | Se detecta `pytest.ini`, `jest.config.*`, `vitest.config.*`, `go.mod`+`*_test.go`, etc. | 3 |
 | **manual** | Ninguna configuración de tests detectada | 4 (fallback) |
@@ -238,7 +238,7 @@ Verificar si se pasó `--mode manual` o `--mode auto` (override explícito).
 Si no hay override, detectar automáticamente en este orden (primera coincidencia gana):
 
 #### 1. Modo delegado — skill de testing personalizado
-Buscar en `.claude/skills/` un skill cuyo nombre contenga `test` o `testing`.
+Buscar en `$CLI_ROOT/skills/` un skill cuyo nombre contenga `test` o `testing`.
 Si se encuentra → `$MODO = delegado`, `$SKILL_TESTING = <nombre del skill encontrado>`
 
 #### 2. Modo automatico-e2e — frameworks E2E
