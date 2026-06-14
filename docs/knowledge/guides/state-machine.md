@@ -123,17 +123,6 @@ stateDiagram-v2
 
 Gate de calidad: `release-format-validation` valida la estructura del `release.md` como precondición para `release-generate-stories` (constitución, regla 15).
 
----
-
-## Inconsistencias conocidas
-
-| Inconsistencia | Estado |
-|----------------|--------|
-| `story-plan/SKILL.md` usaba `PLANNING` en lugar de `PLAN` en su tabla de ciclo de vida | Corregido en EPIC-17 (plan-09) |
-| Normalización U+2011 → ASCII en `IN-PROGRESS` distribuida en ~30 SKILL.md | Pendiente — ítem abierto en EPIC-17 |
-| `INTEGRATION` y `COMPLETED` sin skill asociado | Diseño aceptado: transiciones manuales/CI |
-| Arquitecturas distintas por nivel (story: status+substatus; project/release: solo substatus) | Diseño aceptado — no es un bug |
-| `header-aggregation/SKILL.md` lista `PLANNING` como valor de `status` en el esquema canónico | Pendiente de actualizar en EPIC-17 |
 
 ---
 

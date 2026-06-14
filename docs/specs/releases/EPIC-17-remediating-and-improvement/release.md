@@ -4,7 +4,7 @@ type: release
 id: EPIC-17
 slug: remediating-and-improvement
 title: "Remediating and Improvement"
-status: DEFINITION
+status: IMPLEMENT
 substatus: IN-PROGRESS
 parent: null
 created: 2026-06-12
@@ -12,7 +12,10 @@ updated: 2026-06-12
 related: []
 ---
 
-# Release/Epic: Remediating and Improvement
+# Release/Epic: Remediating and Improvement (Reducción de deuda técnica y mejoras de estabilidad)
+
+## Objetivo
+Reducir la deuda técnica del framework y mejorar su estabilidad y mantenibilidad a través de una serie de mejoras y remediaciones en skills, documentación y estructura general.
 
 ## Descripción <!-- sección obligatoria-->
 El framework tiene una arquitectura agéntica sólida con patrones probados
@@ -75,10 +78,4 @@ con su propio principio §3 ("obligar a demostrar, no declarar").
 - [ ] Todas las rutas y estructuras mencionadas en CLAUDE.md existen en el filesystem
 - [ ] `constitution.md` incluye regla explícita sobre veracidad de CLAUDE.md
 
-## Notas adicionales <!-- sección opcional-->
-Este release tiene un plan de implementación detallado para la Feature 1 (reducción
-de costo de contexto) documentado en
-`C:\Users\Daro\.claude\plans\puedes-diagramar-un-listado-zazzy-scroll.md`.
-El criterio de verificación del hallazgo A1 es ejecutable: el script PowerShell
-de medición de chars puede correr en cualquier momento para medir cumplimiento.
-Las Features 2–6 requieren un análisis previo de cada skill afectado antes de implementar.
+
