@@ -1,7 +1,7 @@
 ---
 type: acceptance-report
 story: FEAT-072
-title: "Acceptance Report: FEAT-072 — Skill story-acceptance: Validación final humana de criterios de aceptación antes de INTEGRATION"
+title: "Acceptance Report: FEAT-072 — Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER"
 date: 2026-05-16
 validator: no especificado
 dod-version: 2026-05-16
@@ -9,11 +9,11 @@ session-status: complete
 final-status: ACCEPTANCE-APPROVED
 ---
 
-# Acceptance Report: FEAT-072 — Skill story-acceptance: Validación final humana de criterios de aceptación antes de INTEGRATION
+# Acceptance Report: FEAT-072 — Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER
 
 ## Resumen ejecutivo
 
-- **Historia:** FEAT-072 — Skill story-acceptance: Validación final humana de criterios de aceptación antes de INTEGRATION
+- **Historia:** FEAT-072 — Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER
 - **Fecha:** 2026-05-16
 - **Validador:** no especificado
 - **Total criterios:** 14

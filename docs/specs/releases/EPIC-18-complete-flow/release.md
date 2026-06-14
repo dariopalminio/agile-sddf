@@ -1,0 +1,30 @@
+---
+alwaysApply: false
+type: release
+id: EPIC-18
+slug: complete-flow
+title: "Complete Flow — Skills para el Workflow de Story y Release"
+status: DEVELOP
+substatus: IN-PROGRESS
+parent: null
+created: 2026-06-14
+updated: 2026-06-14
+related: []
+---
+
+# Release/Epic: Complete Flow — Skills para el Workflow de Story y Release
+
+## Descripción
+Este release añade al framework las capacidades de bulk y orquestacion de flujo completo que faltan: ejecutar `story-plan` e `story-implement` sobre multiples historias en lote, un skill que orquesta el ciclo completo de un release de punta a punta, y herramientas de inspeccion y actualizacion masiva de status. Resuelve el cuello de botella de tener que invocar skills uno a uno cuando se trabaja con releases de 5+ historias.
+
+## Features 
+
+- [ ] PLAN-01 - **Renombrar INTEGRATION → DELIVER en el workflow de story:** reemplazar INTEGRATION por DELIVER en el workflow de story. Usa DELIVER como nombre de integration, y actualiza todas las referencias correspondientes en el código y la documentación. El término DELIVER puede servir para un incremento potencialmente entregable (para modelo batch) como para un incremento entregado al usuario final (para continuous).
+
+- [ ] PLAN-02 - **Definir workflow canónico de Épica/Release:** definir nuevo workflow para épicas/release: DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED.
+
+
+
+
+
+

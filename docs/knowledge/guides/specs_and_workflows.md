@@ -33,12 +33,12 @@ Un subestado representa el nivel de avance interno de un work item dentro de un 
 
 Happy path:
 ```
-SPECIFY --> PLAN --> READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED
+SPECIFY --> PLAN --> READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> DELIVER --> COMPLETED
 ```
 
 Rejected path:
 ```
-READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> INTEGRATION --> COMPLETED
+READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> DELIVER --> COMPLETED
        |                                   |            |            | 
        |                                REJECTED     REJECTED     REJECTED
        |                                   |            |            |         
@@ -53,7 +53,24 @@ READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> 
 - CODE-REVIEW – Revisión de código independiente (IA o humano).
 - VERIFY – Fase donde se ejecutan pruebas automáticas.
 - ACCEPTANCE – Aceptación humana o del PO.  
-- INTEGRATION – Fase donde se integra a la rama release/main.
+- DELIVER – Incremento listo para entregar o ya entregado al usuario. Cubre tanto el modelo batch (potencialmente entregable, esperando ventana de despliegue) como el modelo continuous (ya desplegado en producción).
 - COMPLETED – Estado final "Done".
 
 > La máquina de estados completa con transiciones skill a skill, retrocesos y los niveles project y release está en [[state-machine]].
+
+## Release (Épica) Workflow
+
+Happy path:
+```
+DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED
+```
+
+- DEFINE – Se define el alcance: objetivos de alto nivel, features que componen la épica, criterios de éxito y valor esperado. Se documenta en `release.md`.
+- PLAN – Se planifica la ejecución: se desglosan las historias de usuario, se asignan a releases, se estima esfuerzo y se identifican dependencias.
+- READY-FOR-DEV – Estado buffer. La épica está completamente planificada, priorizada y aprobada. Espera a que el equipo tenga capacidad para comenzar el desarrollo. Se aplican límites de WIP.
+- DEVELOP – Desarrollo en curso: las historias de la épica se implementan. La épica permanece aquí hasta que todas las historias estén entregadas.
+- VALIDATE – Se ejecutan pruebas de integración y regresión del conjunto completo (end-to-end, UAT, requisitos no funcionales).
+- SHIP – La épica se libera: se publica el artefacto, se despliega a producción o se marca como disponible para los usuarios finales. Último estado activo.
+- COMPLETED – Estado terminal pasivo. La épica está cerrada administrativamente. Sin acciones pendientes.
+
+> Ver diagrama Mermaid y tabla de transiciones en [[state-machine]].

@@ -153,7 +153,7 @@ Preguntar los campos del frontmatter con valores sugeridos. Para cada campo, mos
 |---|---|---|
 | `title` | "¿Cuál es el título del release?" | El nombre ingresado en el Paso 1 |
 | `date` | "¿Fecha del release? (YYYY-MM-DD)" | Fecha de hoy |
-| `status` | "¿Estado inicial?" | `DEFINITION` — estado inicial de un release recién creado (en etapa de definición) |
+| `status` | "¿Estado inicial?" | `DEFINE` — estado inicial de un release recién creado (en etapa de definición de alcance) |
 | `substatus` | "¿Subestado? (IN‑PROGRESS / REVIEW / READY)" | `IN‑PROGRESS` |
 | `slug` | — | Derivado automáticamente del nombre (mostrar al usuario, permitir corrección) |
 

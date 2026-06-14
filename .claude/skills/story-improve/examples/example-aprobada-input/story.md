@@ -32,7 +32,7 @@ Dado que la historia "FEAT-042" tiene status: IMPLEMENT / substatus: DONE
   Y el modelo de entrega configurado es "batch" con rama objetivo "release/v1.2.0"
 Cuando ejecuto story-integrate para la historia "FEAT-042"
 Entonces el skill crea un commit de integración en la rama "release/v1.2.0"
-  Y actualiza el frontmatter de story.md con status: INTEGRATION / substatus: DONE
+  Y actualiza el frontmatter de story.md con status: DELIVER / substatus: DONE
   Y genera un reporte de integración con el resultado de la operación
 ```
 

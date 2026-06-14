@@ -2,7 +2,7 @@
 name: story-acceptance
 description: >-
   Genera acceptance-report.md guiando la validación manual de criterios de aceptación criterio por criterio.
-  Usar para el gate de aceptación antes de INTEGRATION.
+  Usar para el gate de aceptación antes de DELIVER.
   Invocar para "story-acceptance", "acceptance", "validación final",
   "gate de acceptance" o "aprobar historia".
 triggers:
@@ -399,7 +399,7 @@ status: ACCEPTANCE
 substatus: DONE
 updated: {fecha}
 ```
-Mostrar: `✅ ACCEPTANCE APROBADO: historia {story_id} lista para INTEGRATION`
+Mostrar: `✅ ACCEPTANCE APROBADO: historia {story_id} lista para DELIVER`
 
 **Si `$FINAL_STATUS = ACCEPTANCE-REJECTED`:**
 ```yaml
@@ -437,7 +437,7 @@ Mostrar: `⚠️ ACCEPTANCE BLOQUEADO: {N} criterio(s) no pudieron evaluarse. La
 📋 Estado story.md: READY-FOR-IMPLEMENT/DONE ⚠️               (si ACCEPTANCE-REJECTED)
 📋 Estado story.md: ACCEPTANCE/BLOCKED ⚠️                     (si ACCEPTANCE-BLOCKED)
 
-✅ ACCEPTANCE APROBADO: historia {story_id} lista para INTEGRATION
+✅ ACCEPTANCE APROBADO: historia {story_id} lista para DELIVER
 ```
 o bien:
 ```
@@ -470,7 +470,7 @@ o bien (si ACCEPTANCE-BLOCKED):
 **Output esperado:**
 - `acceptance-report.md` con `final-status: ACCEPTANCE-APPROVED`, `session-status: complete`
 - `story.md` actualizado a `status: ACCEPTANCE / substatus: DONE`
-- Mensaje: "ACCEPTANCE APROBADO: historia FEAT-NNN lista para INTEGRATION"
+- Mensaje: "ACCEPTANCE APROBADO: historia FEAT-NNN lista para DELIVER"
 
 ### Caso 2 — Criterio rechazado
 

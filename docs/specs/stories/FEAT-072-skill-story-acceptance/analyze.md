@@ -3,7 +3,7 @@ alwaysApply: false
 type: analyze
 id: FEAT-072
 slug: FEAT-072-skill-story-acceptance-analyze
-title: "Analyze: Skill story-acceptance — Validación final humana de criterios de aceptación antes de INTEGRATION"
+title: "Analyze: Skill story-acceptance — Validación final humana de criterios de aceptación antes de DELIVER"
 story: FEAT-072
 design: FEAT-072
 tasks: FEAT-072
@@ -103,7 +103,7 @@ related:
 | Criterio | Estado | Detalle |
 |---|---|---|
 | Historia listada en release | ✓ | `- [ ] FEAT-072` presente en release.md sección Features |
-| Objetivo alineado | ✓ | El objetivo de la historia (validación humana antes de INTEGRATION) es la gate de ACCEPTANCE que el release define como quality gate final del pipeline |
+| Objetivo alineado | ✓ | El objetivo de la historia (validación humana antes de DELIVER) es la gate de ACCEPTANCE que el release define como quality gate final del pipeline |
 | Restricciones respetadas | ✓ | El skill lee el DoD en runtime (no hardcodea), y hace degradación elegante si la sección ACCEPTANCE no existe — ambas restricciones explícitas del release están satisfechas en D-2 |
 
 ---

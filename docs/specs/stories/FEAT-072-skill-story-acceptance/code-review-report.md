@@ -1,7 +1,7 @@
 ---
 type: code-review-report
 story: FEAT-072
-title: "Code Review Report: Skill story-acceptance — Validación final humana de criterios de aceptación antes de INTEGRATION"
+title: "Code Review Report: Skill story-acceptance — Validación final humana de criterios de aceptación antes de DELIVER"
 review-status: approved
 date: 2026-05-16
 max-severity: LOW
@@ -17,7 +17,7 @@ reviewers:
 
 | Campo | Valor |
 |-------|-------|
-| Historia | FEAT-072 — Skill story-acceptance: Validación final humana de criterios de aceptación antes de INTEGRATION |
+| Historia | FEAT-072 — Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER |
 | Review status | approved |
 | Severidad máxima detectada | LOW |
 | Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer |

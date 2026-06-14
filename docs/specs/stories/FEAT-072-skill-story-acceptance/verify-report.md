@@ -1,7 +1,7 @@
 ---
 type: verify-report
 story: FEAT-072
-title: "Verify Report: Skill story-acceptance — Validación final humana de criterios de aceptación antes de INTEGRATION"
+title: "Verify Report: Skill story-acceptance — Validación final humana de criterios de aceptación antes de DELIVER"
 date: 2026-05-16
 mode: manual
 dod-version: "criterios mínimos genéricos (sección VERIFY no definida en DoD)"

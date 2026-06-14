@@ -3,7 +3,7 @@ alwaysApply: false
 type: tasks
 id: FEAT-072
 slug: FEAT-072-skill-story-acceptance-tasks
-title: "Tasks: Skill story-acceptance — Validación final humana de criterios de aceptación antes de INTEGRATION"
+title: "Tasks: Skill story-acceptance — Validación final humana de criterios de aceptación antes de DELIVER"
 story: FEAT-072
 design: FEAT-072
 created: 2026-05-15
@@ -40,7 +40,7 @@ related:
 - [x] 3.8 Implementar actualización de frontmatter de `story.md` a `ACCEPTANCE/IN-PROGRESS` al inicio de sesión nueva o al reiniciar (design.md D-4)
 - [x] 3.9 Implementar Paso 6 en SKILL.md: bucle interactivo de presentación de criterios — mostrar cada criterio uno por vez con instrucción clara; aceptar respuestas `[P] PASS`, `[F] FAIL + observación`, `[B] BLOCKED + razón`, `[Q] Salir` (guarda sesión parcial); validar que FAIL y BLOCKED incluyen texto no vacío; registrar resultado, observación y timestamp por criterio; soporte de `--dry-run` para listar criterios sin iniciar sesión (design.md D-6, AC-1, AC-2, AC-6)
 - [x] 3.10 Implementar Paso 7 en SKILL.md: consolidación al completar todos los criterios — calcular totales (aprobados/rechazados/bloqueados); generar `acceptance-report.md` desde `assets/acceptance-report-template.md` completando frontmatter y todas las secciones; si ya existe un `acceptance-report.md` con sesión previa, añadir el anterior como entrada en "Historial de sesiones anteriores" sin eliminarlo (design.md D-5, D-7, Req-9)
-- [x] 3.11 Implementar Paso 8 en SKILL.md: actualizar frontmatter de `story.md` según el resultado de consolidación — si todos APPROVED → `ACCEPTANCE/DONE` + mensaje "ACCEPTANCE APROBADO: historia FEAT-NNN lista para INTEGRATION"; si ≥1 REJECTED/BLOCKED → `VERIFY/REJECTED` + mensaje "ACCEPTANCE BLOQUEADO: N criterios no aprobados. La historia regresa a VERIFY para corrección." (design.md D-4, AC-1, AC-2)
+- [x] 3.11 Implementar Paso 8 en SKILL.md: actualizar frontmatter de `story.md` según el resultado de consolidación — si todos APPROVED → `ACCEPTANCE/DONE` + mensaje "ACCEPTANCE APROBADO: historia FEAT-NNN lista para DELIVER"; si ≥1 REJECTED/BLOCKED → `VERIFY/REJECTED` + mensaje "ACCEPTANCE BLOQUEADO: N criterios no aprobados. La historia regresa a VERIFY para corrección." (design.md D-4, AC-1, AC-2)
 - [x] 3.12 Implementar soporte del flag `--validator "<nombre>"` en SKILL.md: si se proporciona, registrar el nombre en el campo `validator` del frontmatter de `acceptance-report.md` y en la sección "Resumen ejecutivo"; si no se proporciona, usar "no especificado" (design.md D-6, Req-9)
 
 ## 4. DoD — Agregar sección ACCEPTANCE

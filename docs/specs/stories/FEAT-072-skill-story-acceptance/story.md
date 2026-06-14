@@ -3,7 +3,7 @@ alwaysApply: false
 type: story
 id: FEAT-072
 slug: FEAT-072-skill-story-acceptance
-title: "Skill story-acceptance: Validación final humana de criterios de aceptación antes de INTEGRATION"
+title: "Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER"
 status: COMPLETED
 substatus: DONE
 parent: EPIC-13-quality-gates-con-dod-en-story-workflow
@@ -22,11 +22,11 @@ related:
 [[FEAT-071-skill-story-verify]]
 [[FEAT-070-dod-code-review-en-story-code-review]]
 
-# 📖 Historia: Skill story-acceptance: Validación final humana de criterios de aceptación antes de INTEGRATION
+# 📖 Historia: Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER
 
 **Como** desarrollador o Product Owner que ha completado la fase VERIFY de una historia  
 **Quiero** ejecutar el skill `story-acceptance` para guiar la validación manual de los criterios de aceptación del DoD  
-**Para** confirmar que la historia cumple todos los requisitos funcionales y de calidad antes de marcarla lista para INTEGRATION, con evidencia trazable del resultado
+**Para** confirmar que la historia cumple todos los requisitos funcionales y de calidad antes de marcarla lista para DELIVER, con evidencia trazable del resultado
 
 ## ✅ Criterios de aceptación
 
@@ -41,7 +41,7 @@ Entonces el skill lee la sección ACCEPTANCE del DoD y extrae los criterios a va
   Y el usuario confirma PASS para cada criterio validado
   Y el skill genera "$SPECS_BASE/specs/stories/FEAT-055/acceptance-report.md" con los resultados y evidencia de cada validación
   Y actualiza el frontmatter de "story.md" con status ACCEPTANCE y substatus DONE
-  Y muestra el mensaje "ACCEPTANCE APROBADO: historia FEAT-055 lista para INTEGRATION"
+  Y muestra el mensaje "ACCEPTANCE APROBADO: historia FEAT-055 lista para DELIVER"
 ```
 
 ### Escenario alternativo – Uno o más criterios rechazados por el validador humano
@@ -53,7 +53,7 @@ Cuando el skill consolida los resultados de la sesión
 Entonces genera "acceptance-report.md" con todos los criterios evaluados, marcando los fallidos con observaciones del usuario
   Y actualiza el frontmatter de "story.md" con status VERIFY y substatus BLOCKED
   Y muestra el mensaje "ACCEPTANCE BLOQUEADO: N criterios no aprobados. La historia regresa a VERIFY para corrección."
-  Pero no avanza el status hacia INTEGRATION
+  Pero no avanza el status hacia DELIVER
 ```
 
 ### Escenario alternativo – Sesión de acceptance interrumpida y reanudada
@@ -133,7 +133,7 @@ El skill `story-acceptance` no debe modificar ningún código fuente ni artefact
 
 **Posición en el pipeline de calidad:**
 ```
-story-implement → story-code-review → story-verify → story-acceptance → INTEGRATION
+story-implement → story-code-review → story-verify → story-acceptance → DELIVER
 ```
 
 **Diferencia con `story-verify`:**

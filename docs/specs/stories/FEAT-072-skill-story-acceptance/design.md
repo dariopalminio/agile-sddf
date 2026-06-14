@@ -3,7 +3,7 @@ alwaysApply: false
 type: design
 id: FEAT-072
 slug: FEAT-072-skill-story-acceptance-design
-title: "Design: Skill story-acceptance — Validación final humana de criterios de aceptación antes de INTEGRATION"
+title: "Design: Skill story-acceptance — Validación final humana de criterios de aceptación antes de DELIVER"
 story: FEAT-072
 created: 2026-05-15
 updated: 2026-05-15
@@ -22,11 +22,11 @@ related:
 
 ## Context
 
-Este diseño especifica el skill `story-acceptance`, última gate de calidad antes de que una historia avance a INTEGRATION. A diferencia de `story-verify` (que ejecuta pruebas automáticas), `story-acceptance` es una gate de validación **exclusivamente humana**: guía al usuario criterio por criterio, recopila evidencia manual y genera un `acceptance-report.md` trazable.
+Este diseño especifica el skill `story-acceptance`, última gate de calidad antes de que una historia avance a DELIVER. A diferencia de `story-verify` (que ejecuta pruebas automáticas), `story-acceptance` es una gate de validación **exclusivamente humana**: guía al usuario criterio por criterio, recopila evidencia manual y genera un `acceptance-report.md` trazable.
 
 **Posición en el pipeline de calidad:**
 ```
-story-implement → story-code-review → story-verify → story-acceptance → INTEGRATION
+story-implement → story-code-review → story-verify → story-acceptance → DELIVER
 ```
 
 **Contexto técnico del proyecto (extraído de constitution.md y código existente):**
@@ -330,7 +330,7 @@ Los mecanismos de `story-verify` (pruebas automáticas que preceden a acceptance
    c. Registrar en sesión: id, texto, resultado, timestamp
 9. Consolidar: todos APPROVED → generar acceptance-report.md completo
 10. Actualizar story.md: ACCEPTANCE/DONE
-11. Mostrar: "ACCEPTANCE APROBADO: historia FEAT-NNN lista para INTEGRATION"
+11. Mostrar: "ACCEPTANCE APROBADO: historia FEAT-NNN lista para DELIVER"
 ```
 
 ### Flujo alternativo — criterios rechazados (AC-2)

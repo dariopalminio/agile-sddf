@@ -47,7 +47,7 @@ final-status: ACCEPTANCE-APPROVED
 
 ## Estado final
 
-**ACCEPTANCE APROBADO** — Historia FEAT-055 lista para INTEGRATION
+**ACCEPTANCE APROBADO** — Historia FEAT-055 lista para DELIVER
 
 ## Historial de sesiones anteriores
 

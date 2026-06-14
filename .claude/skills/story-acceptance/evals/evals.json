@@ -24,7 +24,7 @@
           "ACCEPTANCE",
           "DONE",
           "acceptance-report.md",
-          "lista para INTEGRATION",
+          "lista para DELIVER",
           "APPROVED"
         ],
         "not_contains": [
@@ -67,7 +67,7 @@
         "not_contains": [
           "ACCEPTANCE-APPROVED",
           "ACCEPTANCE-BLOCKED",
-          "lista para INTEGRATION",
+          "lista para DELIVER",
           "Entorno inválido"
         ]
       },
@@ -191,7 +191,7 @@
           "ACCEPTANCE-APPROVED",
           "ACCEPTANCE-REJECTED",
           "READY-FOR-IMPLEMENT",
-          "lista para INTEGRATION",
+          "lista para DELIVER",
           "Entorno inválido"
         ]
       },
@@ -289,7 +289,7 @@
         "not_contains": [
           "ACCEPTANCE-APPROVED",
           "ACCEPTANCE-BLOCKED",
-          "lista para INTEGRATION",
+          "lista para DELIVER",
           "Entorno inválido"
         ]
       },

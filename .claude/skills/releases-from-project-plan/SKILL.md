@@ -146,7 +146,7 @@ Crear el directorio `$SPECS_BASE/specs/releases/EPIC-[ID]-[nombre-kebab]/` si no
 Completa el archivo de plantilla `$SPECS_BASE/specs/templates/release-spec-template.md` infiriendo la información. Siempre completa dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros en la estructura del template. Para cada sección del template, si el dato correspondiente no existe en el bloque del release, usar el placeholder `[Por completar]` para asegurar que la sección siempre está presente y el archivo tiene estructura completa.
 
 Al completar el frontmatter del archivo generado, usar:
-- `status: DEFINITION` — estado inicial de todo release generado desde un project-plan (en etapa de definición, pendiente de validación)
+- `status: DEFINE` — estado inicial de todo release generado desde un project-plan (en etapa de definición de alcance)
 
 Por ejemplo:
 
@@ -154,7 +154,7 @@ Por ejemplo:
 ---
 title: <"Nombre completo del release">
 date: <Fecha extraída o fecha actual con formato YYYY-MM-DD>
-status: DEFINITION
+status: DEFINE
 substatus: <substatus extraido o IN‑PROGRESS>
 parent: <nombre del archivo de requirement-spec del proyecto del cual se genera el releaseo N/A>
 ---

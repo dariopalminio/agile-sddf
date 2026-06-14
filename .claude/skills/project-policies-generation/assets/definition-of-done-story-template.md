@@ -114,7 +114,7 @@ updated: <YYYY-MM-DD>
 
 ---
 
-## 🖇️ INTEGRATION (Definición de Hecho para la fase de Integración)
+## 🖇️ DELIVER (Definición de Hecho para la fase de Entrega)
 
 ---
 

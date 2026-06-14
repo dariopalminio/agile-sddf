@@ -98,7 +98,7 @@ updated: <YYYY-MM-DD>
 
 #### ✅ Criterios de Aceptación Funcional
 
-<!-- Criterios que el validador humano debe confirmar manualmente antes de avanzar a INTEGRATION. -->
+<!-- Criterios que el validador humano debe confirmar manualmente antes de avanzar a DELIVER. -->
 
 - [ ] Todos los escenarios Gherkin de `story.md` han sido ejecutados manualmente y verificados
 - [ ] Los criterios no funcionales de `story.md` (performance, UX, accesibilidad) han sido validados

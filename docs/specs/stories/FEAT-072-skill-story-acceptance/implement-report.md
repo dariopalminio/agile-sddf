@@ -2,7 +2,7 @@
 type: implement-report
 id: FEAT-072
 slug: FEAT-072-implement-report
-title: "Implement Report: Skill story-acceptance — Validación final humana de criterios de aceptación antes de INTEGRATION"
+title: "Implement Report: Skill story-acceptance — Validación final humana de criterios de aceptación antes de DELIVER"
 story: FEAT-072
 created: 2026-05-16
 updated: 2026-05-16
