@@ -50,7 +50,7 @@ agile-sddf/
           └── ...
 ```
 
-**Plataformas soportadas:** Claude Code, OpenCode y GitHub Copilot — elegidas al instalar la librería; el instalador copia desde `.claude/` (fuente única) al destino `.claude`/`.agents`/`.github`. Los directorios `gem/` (Google Gemini Gems) y `rovo/` (Atlassian Rovo) son utilidades accesorias, no runtimes del framework. El soporte a otros CLI/LLMs se evaluará en releases futuros.
+**Plataformas soportadas:** Claude Code, OpenCode y GitHub Copilot — elegidas al instalar la librería; el instalador copia desde `.claude/` (fuente única) al destino `.claude`/`.agents`/`.github`. El soporte a otros CLI/LLMs se evaluará en releases futuros.
 
 
 # Definición y Uso de Agentes, Skills y Comandos

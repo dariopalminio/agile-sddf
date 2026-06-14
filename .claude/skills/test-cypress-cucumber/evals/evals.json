@@ -1,117 +1,70 @@
 {
-  "skill_name": "cypress-cucumber-expert",
-  "evals": [
+  "skill": "cypress-cucumber-expert",
+  "version": "1.0.0",
+  "description": "Casos de prueba para test-cypress-cucumber: configuración BDD con Cypress y @badeball/cypress-cucumber-preprocessor, Page Objects y CI/CD.",
+  "cases": [
     {
-      "id": 1,
-      "prompt": "Quiero arrancar un proyecto de automatización BDD desde cero para una app de reservas médicas. Usamos TypeScript, Cypress y @badeball/cypress-cucumber-preprocessor. Nunca configuramos esto antes. Necesito el cypress.config.ts con el preprocessor correctamente configurado, la estructura de carpetas para empezar, y un ejemplo de hooks.ts con Before y After que gestione el ciclo de vida del test. También necesito que los screenshots se tomen automáticamente cuando un escenario falla.",
-      "expected_output": "cypress.config.ts con addCucumberPreprocessorPlugin(), createEsbuildPlugin(), specPattern apuntando a .feature, y return config al final de setupNodeEvents. filterSpecs y omitFiltered configurados. hooks.ts con Before y After importados de @badeball/cypress-cucumber-preprocessor. screenshotOnRunFailure: true en cypress.config.ts. Estructura de carpetas con cypress/e2e/features/, cypress/support/step_definitions/, cypress/support/pages/, cypress/utils/config.ts.",
-      "assertions": [
-        {
-          "id": "cypress-config-return-config",
-          "text": "cypress.config.ts setupNodeEvents function ends with 'return config' — not just calling the plugin without returning"
-        },
-        {
-          "id": "cypress-config-specPattern-feature",
-          "text": "specPattern is set to 'cypress/e2e/**/*.feature' (or equivalent glob targeting .feature files)"
-        },
-        {
-          "id": "cypress-config-preprocessor-plugin",
-          "text": "setupNodeEvents calls addCucumberPreprocessorPlugin(on, config) and on('file:preprocessor', createEsbuildPlugin())"
-        },
-        {
-          "id": "cypress-config-filterSpecs",
-          "text": "filterSpecs and omitFiltered are configured (in cypress.config.ts or .cypress-cucumber-preprocessorrc.json) to improve performance with tag filtering"
-        },
-        {
-          "id": "hooks-import-from-badeball",
-          "text": "hooks.ts imports Before, After (and optionally BeforeAll, AfterAll) from '@badeball/cypress-cucumber-preprocessor', not from '@cucumber/cucumber'"
-        },
-        {
-          "id": "screenshot-on-failure",
-          "text": "Screenshots on failure are configured via screenshotOnRunFailure: true in cypress.config.ts and/or a custom After hook"
-        },
-        {
-          "id": "config-ts-present",
-          "text": "A utils/config.ts (or equivalent) is provided using Cypress.env() to centralize baseURL, credentials, and timeout configuration"
-        }
-      ],
-      "files": []
+      "id": "TC-001",
+      "name": "setup-inicial-cypress-cucumber-desde-cero",
+      "type": "happy-path",
+      "description": "El skill genera cypress.config.ts con preprocessor, hooks.ts con Before/After desde @badeball, estructura de carpetas y screenshots automáticos en fallo.",
+      "input": {
+        "context": "Quiero arrancar un proyecto de automatización BDD desde cero para una app de reservas médicas. Usamos TypeScript, Cypress y @badeball/cypress-cucumber-preprocessor. Nunca configuramos esto antes. Necesito el cypress.config.ts con el preprocessor correctamente configurado, la estructura de carpetas para empezar, y un ejemplo de hooks.ts con Before y After que gestione el ciclo de vida del test. También necesito que los screenshots se tomen automáticamente cuando un escenario falla."
+      },
+      "expected": {
+        "contains": [
+          "return config",
+          "specPattern",
+          "addCucumberPreprocessorPlugin",
+          "filterSpecs",
+          "@badeball/cypress-cucumber-preprocessor",
+          "screenshotOnRunFailure",
+          "Cypress.env()"
+        ],
+        "not_contains": ["@cucumber/cucumber", "❌"]
+      },
+      "threshold": 0.90
     },
     {
-      "id": 2,
-      "prompt": "Ya tengo Cypress Cucumber configurado. Ahora necesito escribir los tests para el flujo de login de la app. La página de login tiene un campo email (data-testid='email'), un campo password (data-testid='password'), un botón submit (data-testid='submit'), y muestra un mensaje de error (data-testid='error-message') con texto 'Credenciales inválidas' cuando las credenciales son incorrectas. Dame el feature file en Gherkin con al menos 3 escenarios (login exitoso, contraseña incorrecta, y email no registrado), los step definitions en TypeScript, y la clase LoginPage.",
-      "expected_output": "login.feature con Background para navegar a /login, al menos 3 escenarios con tags @auth y @smoke/@regression. Step definitions con arrow functions OK, importando de @badeball/cypress-cucumber-preprocessor, delegando cy.* a LoginPage, assertions solo en Then. LoginPage con selectores via data-testid, métodos que retornan cy.get() chainables, sin assertions internas.",
-      "assertions": [
-        {
-          "id": "step-defs-import-badeball",
-          "text": "Step definitions import Given, When, Then from '@badeball/cypress-cucumber-preprocessor' — not from '@cucumber/cucumber'"
-        },
-        {
-          "id": "page-object-data-testid",
-          "text": "LoginPage uses cy.get('[data-testid=...]') selectors — not CSS classes, IDs, or element tag selectors"
-        },
-        {
-          "id": "page-object-no-assertions",
-          "text": "LoginPage methods contain no .should() or expect() calls — they only perform actions or return cy.get() chainables"
-        },
-        {
-          "id": "no-cy-in-steps-directly",
-          "text": "Step definitions contain no direct cy.get(), cy.click(), cy.type() or other cy.* interaction commands — all browser actions are delegated to LoginPage"
-        },
-        {
-          "id": "assertions-in-then-only",
-          "text": ".should() assertions appear only inside Then step definitions — not inside Given or When steps"
-        },
-        {
-          "id": "feature-three-required-scenarios",
-          "text": "The feature file contains all 3 required scenarios: successful login, wrong password, and unregistered email (or equivalent negative case)"
-        },
-        {
-          "id": "feature-domain-and-runlevel-tags",
-          "text": "Each scenario or the Feature block uses at least one domain tag (@auth or equivalent) and one run-level tag (@smoke or @regression)"
-        },
-        {
-          "id": "feature-background-navigation",
-          "text": "A Background section handles navigation to the login page so it's not repeated in every scenario"
-        }
-      ],
-      "files": []
+      "id": "TC-002",
+      "name": "tests-login-con-page-object-y-data-testid",
+      "type": "happy-path",
+      "description": "El skill genera feature file con 3 escenarios de login (exitoso, contraseña incorrecta, email no registrado), step definitions delegando a LoginPage, y LoginPage con selectores data-testid sin assertions internas.",
+      "input": {
+        "context": "Ya tengo Cypress Cucumber configurado. Ahora necesito escribir los tests para el flujo de login de la app. La página de login tiene un campo email (data-testid='email'), un campo password (data-testid='password'), un botón submit (data-testid='submit'), y muestra un mensaje de error (data-testid='error-message') con texto 'Credenciales inválidas' cuando las credenciales son incorrectas. Dame el feature file en Gherkin con al menos 3 escenarios (login exitoso, contraseña incorrecta, y email no registrado), los step definitions en TypeScript, y la clase LoginPage."
+      },
+      "expected": {
+        "contains": [
+          "@badeball/cypress-cucumber-preprocessor",
+          "data-testid",
+          "Background",
+          "@auth",
+          "@smoke"
+        ],
+        "not_contains": ["@cucumber/cucumber", "❌"]
+      },
+      "threshold": 0.90
     },
     {
-      "id": 3,
-      "prompt": "Tenemos la suite BDD funcionando localmente. Ahora quiero configurar los scripts de npm para ejecutar tests por tag: uno para smoke (solo @smoke), uno para regression (@regression), y uno para full (@full). También quiero el workflow de GitHub Actions para que en cada pull request corra el perfil smoke, y en push a main corra regression completo. Usamos Node 20. También quiero que se genere el reporte HTML al final.",
-      "expected_output": "package.json scripts: test:e2e, test:e2e:smoke con --env TAGS='@smoke', test:e2e:regression con --env TAGS='@regression', test:e2e:full, test:e2e:report. GitHub Actions YAML con on: pull_request corriendo smoke, y on: push branches: [main] corriendo regression. Node 20 en setup-node. Paso de generación del reporte HTML. Upload de artefactos con actions/upload-artifact.",
-      "assertions": [
-        {
-          "id": "npm-scripts-tag-filtering",
-          "text": "package.json includes test:e2e:smoke and test:e2e:regression scripts using --env TAGS='@smoke' and --env TAGS='@regression' syntax (not cucumber.js profiles)"
-        },
-        {
-          "id": "npm-scripts-report",
-          "text": "package.json includes a test:e2e:report script that runs the cucumber-html-report.js generator (or equivalent)"
-        },
-        {
-          "id": "github-actions-pr-trigger",
-          "text": "The GitHub Actions workflow triggers on pull_request and runs the smoke tag tests"
-        },
-        {
-          "id": "github-actions-main-push-trigger",
-          "text": "The GitHub Actions workflow triggers on push to main (or master) and runs the regression tests"
-        },
-        {
-          "id": "github-actions-setup-node",
-          "text": "The GitHub Actions workflow uses actions/setup-node with node-version '20' (or 20.x)"
-        },
-        {
-          "id": "github-actions-report-generation",
-          "text": "The GitHub Actions workflow includes a step to generate the HTML report after tests run (with 'if: always()' to run even on failure)"
-        },
-        {
-          "id": "github-actions-artifact-upload",
-          "text": "The GitHub Actions workflow uploads the report artifacts using actions/upload-artifact with 'if: always()'"
-        }
-      ],
-      "files": []
+      "id": "TC-003",
+      "name": "scripts-npm-y-github-actions-por-tag",
+      "type": "happy-path",
+      "description": "El skill genera scripts npm con filtrado por tag (@smoke, @regression) y workflow GitHub Actions que ejecuta smoke en PR, regression en push a main, con reporte HTML y upload de artefactos.",
+      "input": {
+        "context": "Tenemos la suite BDD funcionando localmente. Ahora quiero configurar los scripts de npm para ejecutar tests por tag: uno para smoke (solo @smoke), uno para regression (@regression), y uno para full (@full). También quiero el workflow de GitHub Actions para que en cada pull request corra el perfil smoke, y en push a main corra regression completo. Usamos Node 20. También quiero que se genere el reporte HTML al final."
+      },
+      "expected": {
+        "contains": [
+          "TAGS='@smoke'",
+          "TAGS='@regression'",
+          "pull_request",
+          "node-version",
+          "upload-artifact",
+          "if: always()"
+        ],
+        "not_contains": ["❌"]
+      },
+      "threshold": 0.90
     }
   ]
 }

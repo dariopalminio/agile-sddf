@@ -1,81 +1,50 @@
 {
-  "skill_name": "story-split",
-  "evals": [
+  "skill": "story-split",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-split: división de historias épicas usando patrones SPIDR con generación de historias hijas y soporte --dry-run.",
+  "cases": [
     {
-      "id": 1,
-      "eval_name": "split-patron4-carrito",
-      "prompt": "Divide esta historia usando /story-split:\n\n# 📖 Historia: Gestionar carrito de compras\n\n**Como** comprador registrado **Quiero** gestionar los productos en mi carrito **Para** controlar qué voy a comprar antes de pagar\n\n## ✅ Criterios de aceptación\n\n### Escenario principal – Agregar ítem\n```gherkin\nDado que estoy en el detalle del producto 'Auriculares BT-200' con stock\nCuando hago clic en 'Agregar al carrito'\nEntonces el producto aparece en mi carrito con cantidad 1\n  Y el contador del ícono de carrito se actualiza\n```\n\n### Escenario principal – Eliminar ítem\n```gherkin\nDado que tengo 'Auriculares BT-200' en mi carrito\nCuando hago clic en el ícono de eliminar\nEntonces el producto desaparece de mi carrito\n  Y el total se recalcula\n```\n\n### Escenario principal – Cambiar cantidad\n```gherkin\nDado que tengo 'Auriculares BT-200' con cantidad 1\nCuando cambio la cantidad a 3\nEntonces el subtotal se actualiza a precio × 3\n  Y el total se recalcula\n```\n\n### Escenario alternativo / error – Sin stock\n```gherkin\nDado que el producto tiene stock 0\nCuando intento agregarlo\nEntonces el botón dice 'Sin stock' y está deshabilitado\n```",
-      "expected_output": "3 historias creadas: core (agregar, repurposed del original), + 2 nuevas (eliminar, cambiar cantidad). El directorio original se renombra con el nuevo slug. Se muestra advertencia de renombrado. Cada historia tiene ≤3 escenarios.",
-      "assertions": [
-        {
-          "text": "El skill identifica la historia core como el happy path de agregar ítem",
-          "type": "qualitative"
-        },
-        {
-          "text": "Se producen exactamente 3 historias resultantes",
-          "type": "qualitative"
-        },
-        {
-          "text": "El directorio original se marca como repurposed en el resumen",
-          "type": "qualitative"
-        },
-        {
-          "text": "Cada historia resultante tiene ≤3 escenarios Gherkin",
-          "type": "qualitative"
-        },
-        {
-          "text": "El resumen incluye la advertencia ⚠️ sobre renombrado de directorio",
-          "type": "qualitative"
-        }
-      ]
+      "id": "TC-001",
+      "name": "split-patron4-carrito-tres-historias-con-renombrado",
+      "type": "happy-path",
+      "description": "División de historia de gestión de carrito (Patrón 4 – operaciones CRUD): produce 3 historias hijas (agregar, eliminar, cambiar cantidad) y emite advertencia de renombrado de directorio.",
+      "input": {
+        "context": "Divide esta historia usando /story-split:\n\n# 📖 Historia: Gestionar carrito de compras\n\n**Como** comprador registrado **Quiero** gestionar los productos en mi carrito **Para** controlar qué voy a comprar antes de pagar\n\n## ✅ Criterios de aceptación\n\n### Escenario principal – Agregar ítem\n```gherkin\nDado que estoy en el detalle del producto 'Auriculares BT-200' con stock\nCuando hago clic en 'Agregar al carrito'\nEntonces el producto aparece en mi carrito con cantidad 1\n  Y el contador del ícono de carrito se actualiza\n```\n\n### Escenario principal – Eliminar ítem\n```gherkin\nDado que tengo 'Auriculares BT-200' en mi carrito\nCuando hago clic en el ícono de eliminar\nEntonces el producto desaparece de mi carrito\n  Y el total se recalcula\n```\n\n### Escenario principal – Cambiar cantidad\n```gherkin\nDado que tengo 'Auriculares BT-200' con cantidad 1\nCuando cambio la cantidad a 3\nEntonces el subtotal se actualiza a precio × 3\n  Y el total se recalcula\n```\n\n### Escenario alternativo / error – Sin stock\n```gherkin\nDado que el producto tiene stock 0\nCuando intento agregarlo\nEntonces el botón dice 'Sin stock' y está deshabilitado\n```"
+      },
+      "expected": {
+        "contains": ["3 historias", "agregar", "⚠️"],
+        "not_contains": ["❌"]
+      },
+      "threshold": 0.90
     },
     {
-      "id": 2,
-      "eval_name": "split-patron1-flujo-registro",
-      "prompt": "Tengo esta historia épica y necesito dividirla con /story-split:\n\n# 📖 Historia: Registro completo de nuevo usuario\n\n**Como** visitante de la plataforma **Quiero** registrarme, verificar mi email y completar mi perfil **Para** acceder a todas las funciones de la aplicación\n\n## ✅ Criterios de aceptación\n\n### Escenario principal – Crear cuenta\n```gherkin\nDado que soy un visitante sin cuenta\nCuando completo el formulario con email 'nuevo@ejemplo.com' y contraseña válida\nEntonces se crea mi cuenta y recibo un email de verificación\n  Y soy redirigido a la pantalla 'Verifica tu email'\n```\n\n### Escenario principal – Verificar email\n```gherkin\nDado que recibí el email de verificación en 'nuevo@ejemplo.com'\nCuando hago clic en el enlace de verificación dentro de las 24 horas\nEntonces mi cuenta queda verificada\n  Y soy redirigido a la pantalla de completar perfil\n```\n\n### Escenario principal – Completar perfil\n```gherkin\nDado que mi cuenta está verificada y no he completado el perfil\nCuando ingreso mi nombre, rol y foto de perfil\nEntonces mi perfil queda guardado\n  Y accedo al dashboard principal de la aplicación\n```\n\n### Escenario alternativo – Email ya registrado\n```gherkin\nDado que 'existente@ejemplo.com' ya tiene cuenta\nCuando intento registrarme con ese email\nEntonces veo 'Este email ya está registrado. ¿Quieres iniciar sesión?'\n```\n\n### Escenario alternativo – Enlace de verificación expirado\n```gherkin\nDado que el enlace de verificación tiene más de 24 horas\nCuando hago clic en él\nEntonces veo 'El enlace expiró. Te enviamos uno nuevo a tu email'\n```",
-      "expected_output": "3 historias usando Patrón 1 (pasos del flujo de trabajo): crear cuenta (core), verificar email, completar perfil. El core es crear cuenta como primer paso del journey. Orden de implementación sugerido secuencial.",
-      "assertions": [
-        {
-          "text": "El skill selecciona Patrón 1 (pasos del flujo de trabajo) como el apropiado",
-          "type": "qualitative"
-        },
-        {
-          "text": "La historia core es 'crear cuenta' (primer paso del journey)",
-          "type": "qualitative"
-        },
-        {
-          "text": "Se generan 3 historias con las etapas: crear cuenta, verificar email, completar perfil",
-          "type": "qualitative"
-        },
-        {
-          "text": "El resumen incluye sugerencia de orden de implementación secuencial",
-          "type": "qualitative"
-        }
-      ]
+      "id": "TC-002",
+      "name": "split-patron1-flujo-registro-historias-secuenciales",
+      "type": "happy-path",
+      "description": "División de historia de registro completo usando Patrón 1 (pasos del flujo): produce 3 historias secuenciales (crear cuenta, verificar email, completar perfil) con orden de implementación sugerido.",
+      "input": {
+        "context": "Tengo esta historia épica y necesito dividirla con /story-split:\n\n# 📖 Historia: Registro completo de nuevo usuario\n\n**Como** visitante de la plataforma **Quiero** registrarme, verificar mi email y completar mi perfil **Para** acceder a todas las funciones de la aplicación\n\n## ✅ Criterios de aceptación\n\n### Escenario principal – Crear cuenta\n```gherkin\nDado que soy un visitante sin cuenta\nCuando completo el formulario con email 'nuevo@ejemplo.com' y contraseña válida\nEntonces se crea mi cuenta y recibo un email de verificación\n  Y soy redirigido a la pantalla 'Verifica tu email'\n```\n\n### Escenario principal – Verificar email\n```gherkin\nDado que recibí el email de verificación en 'nuevo@ejemplo.com'\nCuando hago clic en el enlace de verificación dentro de las 24 horas\nEntonces mi cuenta queda verificada\n  Y soy redirigido a la pantalla de completar perfil\n```\n\n### Escenario principal – Completar perfil\n```gherkin\nDado que mi cuenta está verificada y no he completado el perfil\nCuando ingreso mi nombre, rol y foto de perfil\nEntonces mi perfil queda guardado\n  Y accedo al dashboard principal de la aplicación\n```"
+      },
+      "expected": {
+        "contains": ["Patrón 1", "crear cuenta", "verificar email", "completar perfil"],
+        "not_contains": ["❌"]
+      },
+      "threshold": 0.90
     },
     {
-      "id": 3,
-      "eval_name": "dry-run-muestra-plan",
-      "prompt": "Quiero ver el plan de splitting sin crear archivos. Usa el flag --dry-run con esta historia:\n\n# 📖 Historia: Exportar reportes en múltiples formatos\n\n**Como** analista de datos **Quiero** exportar mis reportes en PDF, Excel y CSV **Para** compartirlos con stakeholders que usan diferentes herramientas\n\n## ✅ Criterios de aceptación\n\n### Escenario – Exportar en PDF\n```gherkin\nDado que tengo un reporte generado con datos del último trimestre\nCuando selecciono 'Exportar como PDF'\nEntonces descargo un archivo PDF con el reporte formateado\n  Y el PDF incluye los gráficos y tablas\n```\n\n### Escenario – Exportar en Excel\n```gherkin\nDado que tengo un reporte generado\nCuando selecciono 'Exportar como Excel'\nEntonces descargo un archivo .xlsx con los datos en hojas separadas\n```\n\n### Escenario – Exportar en CSV\n```gherkin\nDado que tengo un reporte generado\nCuando selecciono 'Exportar como CSV'\nEntonces descargo un archivo .csv con los datos sin formato\n  Y las columnas tienen headers en la primera fila\n```\n\n### Escenario alternativo – Reporte sin datos\n```gherkin\nDado que el reporte no tiene datos para el período seleccionado\nCuando intento exportar en cualquier formato\nEntonces veo 'No hay datos para exportar en el período seleccionado'\n```",
-      "expected_output": "El skill NO crea archivos. Muestra el plan: patrón seleccionado (Patrón 3 — variaciones de datos), core propuesta (PDF por ser el más usado/valioso), historias propuestas con sus slugs. Mensaje claro de que es modo dry-run y no se escribió nada.",
-      "assertions": [
-        {
-          "text": "No se crea ningún archivo ni directorio (modo dry-run respetado)",
-          "type": "qualitative"
-        },
-        {
-          "text": "El plan muestra el patrón seleccionado y la justificación",
-          "type": "qualitative"
-        },
-        {
-          "text": "El plan propone 3 historias (PDF, Excel, CSV) con sus slugs tentantes",
-          "type": "qualitative"
-        },
-        {
-          "text": "El output incluye indicación clara de que es modo --dry-run",
-          "type": "qualitative"
-        }
-      ]
+      "id": "TC-003",
+      "name": "dry-run-muestra-plan-sin-crear-archivos",
+      "type": "edge-case",
+      "description": "Con flag --dry-run el skill muestra el patrón seleccionado, la historia core y los slugs propuestos sin crear ningún archivo ni directorio.",
+      "input": {
+        "flags": ["--dry-run"],
+        "context": "Quiero ver el plan de splitting sin crear archivos. Usa el flag --dry-run con esta historia:\n\n# 📖 Historia: Exportar reportes en múltiples formatos\n\n**Como** analista de datos **Quiero** exportar mis reportes en PDF, Excel y CSV **Para** compartirlos con stakeholders que usan diferentes herramientas\n\n## ✅ Criterios de aceptación\n\n### Escenario – Exportar en PDF\n```gherkin\nDado que tengo un reporte generado con datos del último trimestre\nCuando selecciono 'Exportar como PDF'\nEntonces descargo un archivo PDF con el reporte formateado\n  Y el PDF incluye los gráficos y tablas\n```\n\n### Escenario – Exportar en Excel\n```gherkin\nDado que tengo un reporte generado\nCuando selecciono 'Exportar como Excel'\nEntonces descargo un archivo .xlsx con los datos en hojas separadas\n```\n\n### Escenario – Exportar en CSV\n```gherkin\nDado que tengo un reporte generado\nCuando selecciono 'Exportar como CSV'\nEntonces descargo un archivo .csv con los datos sin formato\n  Y las columnas tienen headers en la primera fila\n```"
+      },
+      "expected": {
+        "contains": ["dry-run", "PDF", "Excel", "CSV"],
+        "not_contains": ["archivo creado", "directorio creado", "❌"]
+      },
+      "threshold": 0.90
     }
   ]
 }

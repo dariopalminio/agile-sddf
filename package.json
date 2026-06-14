@@ -24,8 +24,6 @@
     ".claude/agents/",
     ".claude/skills/docs-wiki-builder",
     ".claude/skills/header-aggregation",
-    ".claude/skills/openspec-generate-baseline",
-    ".claude/skills/openspec-init-config",
     ".claude/skills/project-begin",
     ".claude/skills/project-context-diagram",
     ".claude/skills/project-discovery",

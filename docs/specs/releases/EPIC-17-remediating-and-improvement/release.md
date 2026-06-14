@@ -50,7 +50,9 @@ con su propio principio §3 ("obligar a demostrar, no declarar").
 
 - [x] plan-12 — **Enhance - Centralizar párrafo de preflight:** El párrafo de preflight está copiado literal en ~30 SKILL.md (cambiarlo = editar 30 archivos). Existen dos variantes principales (larga y condensada), pero ambas repiten el mismo texto explicativo de lo que hace skill-preflight — información que ya vive exclusivamente en skill-preflight/SKILL.md. El resultado: cambiar cualquier convención de rutas requiere editar 30+ archivos a mano. Reducir cada Paso 0 a una invocación mínima de 3 líneas. Los detalles del protocolo quedan como fuente única en skill-preflight/SKILL.md. *Resuelto: 29 SKILL.md normalizados al bloque canónico de 3 líneas vía `scripts/normalize-preflight-paso0.js`; fuente única en `skill-preflight/SKILL.md`.*
 
-- [ ] **Test - Estandarización del esquema de evals:** Unificar los dos esquemas incompatibles de evals.json en uno solo y migrar los evals existentes.
+- [x] plan-13 - **Eliminar gem y rovo** porque son prompts legacy divergentes, no pertenecen realmente al framework. *Resuelto: directorios `gem/` (4 archivos) y `rovo/` (7 archivos) eliminados; referencias quitadas de README.md y CLAUDE.md.*
+
+- [x] plan-14 - **Test - Estandarización del esquema de evals:** Unificar los dos esquemas incompatibles de evals.json en uno solo y migrar los evals existentes. *Resuelto: 5 archivos legacy (Schema 1: `skill_name`+`evals[]`) migrados a Schema 2 canónico (TC-NNN: `skill`+`version`+`cases[]`). Total: 10 evals.json en Schema 2 uniforme.*
 
 - [ ] **Test - Cobertura mínima de evals en skills críticos:** Crear evals.json para los skills del pipeline principal que no tienen cobertura (79% sin evals).
 
