@@ -1,0 +1,67 @@
+{
+  "skill": "release-format-validation",
+  "version": "1.0.0",
+  "description": "Casos de prueba para release-format-validation: valida que produce APROBADO, REFINAR o RECHAZADO según la estructura del archivo de release.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "release-completo-resultado-aprobado",
+      "type": "happy-path",
+      "description": "Archivo de release con frontmatter completo y las 3 secciones obligatorias presentes. El skill debe retornar APROBADO.",
+      "input": {
+        "input_path": "docs/specs/releases/EPIC-01-mvp/release.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["APROBADO", "cumple la estructura"],
+        "not_contains": ["REFINAR", "RECHAZADO", "faltante"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "archivo-no-encontrado-resultado-rechazado",
+      "type": "fail-fast",
+      "description": "El input no corresponde a ningún archivo existente. El skill debe retornar RECHAZADO con mensaje descriptivo.",
+      "input": {
+        "input_path": "docs/specs/releases/EPIC-99-inexistente/release.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["RECHAZADO", "no encontrado"],
+        "not_contains": ["APROBADO", "REFINAR"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "secciones-faltantes-resultado-refinar",
+      "type": "fail-fast",
+      "description": "Release con frontmatter completo pero sin las secciones Features y Flujos Criticos. El skill debe retornar REFINAR con lista de secciones ausentes.",
+      "input": {
+        "input_path": "docs/specs/releases/EPIC-02-incompleto/release.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["REFINAR", "faltante", "Features"],
+        "not_contains": ["APROBADO", "RECHAZADO"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "frontmatter-incompleto-resultado-refinar",
+      "type": "edge-case",
+      "description": "Release con secciones obligatorias presentes pero sin los campos Version y Fecha en el frontmatter. El skill debe retornar REFINAR con los campos faltantes.",
+      "input": {
+        "input_path": "docs/specs/releases/EPIC-03-sin-frontmatter/release.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["REFINAR", "faltante", "Version", "Fecha"],
+        "not_contains": ["APROBADO", "RECHAZADO"]
+      },
+      "threshold": 0.95
+    }
+  ]
+}

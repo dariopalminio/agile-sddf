@@ -1,0 +1,103 @@
+{
+  "skill": "release-generate-stories",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el skill release-generate-stories. Verifica: happy-path con generacion de historias desde un release con multiples features, fail-fast ante release inexistente, fail-fast ante seccion Features vacia, y confirmacion de sobreescritura cuando la historia ya existe.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path: genera historias desde release con multiples features",
+      "type": "functional",
+      "description": "Ejecutar release-generate-stories con un nombre de release que contiene 3 features en la seccion ## Features. El skill debe invocar preflight, resolver el directorio del release, extraer las 3 features, leer el story-template.md, generar un story.md por feature en $SPECS_BASE/specs/stories/FEAT-NNN-nombre/ y mostrar el resumen con los 3 archivos creados y el siguiente paso sugerido.",
+      "input": {
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/specs/templates/story-template.md existe. El directorio $SPECS_BASE/specs/releases/EPIC-01-autenticacion/ contiene release.md con 3 features: '- [ ] FEAT-001 — Login de usuario: permite autenticarse con email y password', '- [ ] FEAT-002 — Registro de usuario: crea cuenta nueva', '- [x] FEAT-003 — Recuperacion de password: flujo de reset via email'. No existen historias previas en $SPECS_BASE/specs/stories/.",
+        "release_input": "EPIC-01-autenticacion"
+      },
+      "expected": {
+        "contains": [
+          "FEAT-001",
+          "FEAT-002",
+          "FEAT-003",
+          "story.md",
+          "Historias generadas",
+          "story-evaluation"
+        ],
+        "not_contains": [
+          "Entorno invalido",
+          "No se encontro el template",
+          "No se encontraron features",
+          "no procesada"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast: release inexistente detiene la ejecucion sin generar archivos",
+      "type": "fail-fast",
+      "description": "Ejecutar release-generate-stories con un nombre de directorio que no existe en $SPECS_BASE/specs/releases/. El skill debe fallar en el Paso 1 con el mensaje de error correspondiente y terminar sin crear ningun directorio ni archivo de historia.",
+      "input": {
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. El directorio $SPECS_BASE/specs/releases/ existe pero no contiene ningun subdirectorio que coincida con el termino indicado.",
+        "release_input": "release-inexistente"
+      },
+      "expected": {
+        "contains": [
+          "release-inexistente",
+          "specs/releases"
+        ],
+        "not_contains": [
+          "story.md",
+          "FEAT-",
+          "Historias generadas",
+          "APROBADO"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "fail-fast: seccion Features ausente detiene la ejecucion",
+      "type": "fail-fast",
+      "description": "Ejecutar release-generate-stories con un release.md que no contiene la seccion ## Features. El skill debe detectar la ausencia de features en el Paso 2, emitir el mensaje de error indicado y terminar sin generar ningun archivo de historia.",
+      "input": {
+        "context": "Entorno SDDF valido. El directorio $SPECS_BASE/specs/releases/EPIC-02-sin-features/ existe y contiene release.md con frontmatter y seccion ## Descripcion pero sin seccion ## Features.",
+        "release_input": "EPIC-02-sin-features"
+      },
+      "expected": {
+        "contains": [
+          "No se encontraron features"
+        ],
+        "not_contains": [
+          "story.md",
+          "FEAT-",
+          "Historias generadas"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case: confirmacion de sobreescritura cuando story.md ya existe",
+      "type": "edge-case",
+      "description": "Ejecutar release-generate-stories con un release que tiene 2 features, donde la primera (FEAT-010) ya tiene story.md existente y la segunda (FEAT-011) es nueva. El skill debe detectar el conflicto en la primera, preguntar al usuario si desea sobreescribir, y al responder 'n' (no), saltar FEAT-010 y generar solo FEAT-011. El resumen debe mostrar FEAT-010 como saltada y FEAT-011 como generada.",
+      "input": {
+        "context": "Entorno SDDF valido. El directorio $SPECS_BASE/specs/releases/EPIC-03-pagos/ contiene release.md con 2 features: FEAT-010 y FEAT-011. Ya existe $SPECS_BASE/specs/stories/FEAT-010-checkout/story.md. El usuario responde 'n' cuando se le pregunta si desea sobreescribir FEAT-010.",
+        "release_input": "EPIC-03-pagos",
+        "user_responses": ["n"]
+      },
+      "expected": {
+        "contains": [
+          "FEAT-011",
+          "story.md",
+          "saltada",
+          "Historias generadas"
+        ],
+        "not_contains": [
+          "Entorno invalido",
+          "No se encontraron features",
+          "no procesada (formato no reconocido)"
+        ]
+      },
+      "threshold": 0.85
+    }
+  ]
+}

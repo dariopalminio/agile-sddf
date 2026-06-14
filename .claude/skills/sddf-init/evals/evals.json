@@ -1,0 +1,109 @@
+{
+  "skill": "sddf-init",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el skill sddf-init. Verifica: happy-path de inicializacion en proyecto vacio, idempotencia en proyecto ya inicializado, fail-fast ante SDDF_ROOT inexistente, y modo --dry-run sin escrituras.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path: init en proyecto vacio",
+      "type": "functional",
+      "description": "Ejecutar sddf-init en un directorio sin estructura SDDF previa. Debe crear docs/specs/projects/, docs/specs/releases/, docs/specs/stories/, docs/specs/templates/, sddf.config.yaml y .env.template, reportando [CREADO] para cada artefacto y terminando con el mensaje de exito.",
+      "input": {
+        "context": "Proyecto nuevo sin ninguna estructura SDDF. SDDF_ROOT no esta definida. El directorio docs/ no existe.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "[CREADO]",
+          "docs/specs/projects/",
+          "docs/specs/releases/",
+          "docs/specs/stories/",
+          "docs/specs/templates/",
+          "sddf.config.yaml",
+          ".env.template",
+          "Entorno SDDF inicializado correctamente"
+        ],
+        "not_contains": [
+          "[ERROR]",
+          "[YA EXISTIA]",
+          "sin cambios necesarios"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-002",
+      "name": "edge-case: idempotencia en proyecto ya inicializado",
+      "type": "edge-case",
+      "description": "Ejecutar sddf-init por segunda vez en un proyecto donde todos los artefactos ya existen. No debe sobrescribir ningun archivo. Debe registrar [YA EXISTIA] para cada artefacto y terminar con el mensaje de que el entorno ya esta inicializado.",
+      "input": {
+        "context": "Proyecto con estructura SDDF completa preexistente: docs/specs/projects/, docs/specs/releases/, docs/specs/stories/, docs/specs/templates/ con todos los templates, sddf.config.yaml con contenido personalizado, .env.template existente. SDDF_ROOT no definida.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "[YA EXISTIA]",
+          "sddf.config.yaml",
+          ".env.template",
+          "sin cambios necesarios"
+        ],
+        "not_contains": [
+          "[ERROR]",
+          "[CREADO]",
+          "Entorno SDDF inicializado correctamente"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-003",
+      "name": "fail-fast: SDDF_ROOT apunta a ruta inexistente",
+      "type": "fail-fast",
+      "description": "SDDF_ROOT esta definida con una ruta que no existe en el sistema de archivos. El skill debe emitir [ERROR] con la ruta invalida, indicar como corregirlo y detener la ejecucion sin crear ningun directorio ni archivo.",
+      "input": {
+        "context": "Variable de entorno SDDF_ROOT definida apuntando a '/ruta/que/no/existe'. El directorio no existe en el sistema de archivos.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "[ERROR]",
+          "SDDF_ROOT apunta a ruta inexistente",
+          "/ruta/que/no/existe",
+          "Corrige SDDF_ROOT"
+        ],
+        "not_contains": [
+          "[CREADO]",
+          "sddf.config.yaml",
+          "Entorno SDDF inicializado"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case: --dry-run lista acciones sin crear nada",
+      "type": "edge-case",
+      "description": "Ejecutar sddf-init con el flag --dry-run en un proyecto nuevo. El skill debe listar todos los artefactos que crearia (directorios, sddf.config.yaml, .env.template, templates) sin crear ningun archivo ni directorio. El sistema de archivos queda inalterado.",
+      "input": {
+        "context": "Proyecto nuevo sin estructura SDDF. SDDF_ROOT no definida. Se invoca con flag --dry-run.",
+        "flags": ["--dry-run"]
+      },
+      "expected": {
+        "contains": [
+          "dry-run",
+          "docs/specs/projects/",
+          "docs/specs/releases/",
+          "docs/specs/stories/",
+          "sddf.config.yaml",
+          ".env.template"
+        ],
+        "not_contains": [
+          "[CREADO]",
+          "[ERROR]",
+          "Entorno SDDF inicializado correctamente"
+        ]
+      },
+      "threshold": 0.90
+    }
+  ]
+}

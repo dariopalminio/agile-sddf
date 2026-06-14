@@ -1,0 +1,147 @@
+{
+  "skill": "story-analyze",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-analyze: auditoria de coherencia entre story.md, design.md y testcases.md/tasks.md antes de implementar",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path-artefactos-completos-coherentes",
+      "type": "happy-path",
+      "description": "Todos los artefactos presentes (story.md, design.md, tasks.md) con cobertura completa de ACs, tareas alineadas al diseno y sin inconsistencias ERROR. El skill debe generar analyze.md con estado general OK y actualizar story.md a READY-FOR-IMPLEMENT/DONE.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "FEAT-099",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "type: analyze",
+          "story: FEAT-099",
+          "Reporte de Coherencia",
+          "Resumen Ejecutivo",
+          "Cobertura de Criterios de Aceptacion",
+          "Alineacion Tareas",
+          "Cobertura Diseno",
+          "Inconsistencias Detectadas",
+          "Recomendaciones",
+          "Via de Implementacion Disponible",
+          "Cumplimiento DoD",
+          "READY-FOR-IMPLEMENT"
+        ],
+        "not_contains": [
+          "Analisis rechazado",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-sin-design-md",
+      "type": "fail-fast",
+      "description": "story.md existe pero design.md esta ausente. El skill debe detenerse con error indicando que se requiere ejecutar /story-design primero. No debe generarse ningun archivo analyze.md.",
+      "input": {
+        "input_path": "FEAT-001",
+        "story_id": "FEAT-001",
+        "flags": [],
+        "context": "story.md presente, design.md ausente"
+      },
+      "expected": {
+        "contains": [
+          "design.md",
+          "story-design"
+        ],
+        "not_contains": [
+          "type: analyze",
+          "Resumen Ejecutivo",
+          "analyze.md"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "fail-fast-sin-artefactos-implementacion",
+      "type": "fail-fast",
+      "description": "story.md y design.md existen pero ni testcases.md ni tasks.md estan presentes. El skill debe rechazar el analisis con el mensaje canonico y sugerir ejecutar /story-testcases o /story-tasking. No genera ningun archivo.",
+      "input": {
+        "input_path": "FEAT-002",
+        "story_id": "FEAT-002",
+        "flags": [],
+        "context": "story.md y design.md presentes, testcases.md y tasks.md ausentes"
+      },
+      "expected": {
+        "contains": [
+          "Analisis rechazado",
+          "testcases.md",
+          "tasks.md",
+          "story-testcases",
+          "story-tasking"
+        ],
+        "not_contains": [
+          "type: analyze",
+          "Resumen Ejecutivo",
+          "READY-FOR-IMPLEMENT"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "happy-path-ac-sin-cobertura-en-design",
+      "type": "happy-path",
+      "description": "story.md tiene 3 ACs, design.md cubre solo 2 (AC-3 sin cobertura), tasks.md presente. El skill debe detectar la inconsistencia TIPO A como ERROR, registrar INC-001 con tipo A, y NO actualizar story.md a READY-FOR-IMPLEMENT (status permanece en PLAN/IN-PROGRESS).",
+      "input": {
+        "input_path": "FEAT-003",
+        "story_id": "FEAT-003",
+        "flags": [],
+        "context": "AC-3 en story.md no tiene elemento de diseno asociado en design.md"
+      },
+      "expected": {
+        "contains": [
+          "type: analyze",
+          "Resumen Ejecutivo",
+          "Inconsistencias Detectadas",
+          "Tipo: A",
+          "ERROR",
+          "AC-3",
+          "Cobertura de Criterios de Aceptacion",
+          "Recomendaciones",
+          "PLAN"
+        ],
+        "not_contains": [
+          "READY-FOR-IMPLEMENT",
+          "Sin inconsistencias bloqueantes"
+        ]
+      },
+      "threshold": 0.92
+    },
+    {
+      "id": "TC-005",
+      "name": "edge-case-solo-testcases-sin-tasks",
+      "type": "edge-case",
+      "description": "story.md y design.md presentes, testcases.md presente, tasks.md ausente. El skill debe ejecutar el analisis omitiendo las correlaciones de tareas (Tipo B y C), emitir advertencia de tasks.md no encontrado, habilitar /story-implement y generar analyze.md valido. Las secciones de tareas deben mostrar el aviso de omision.",
+      "input": {
+        "input_path": "FEAT-004",
+        "story_id": "FEAT-004",
+        "flags": [],
+        "context": "testcases.md presente con cobertura de ACs, tasks.md ausente"
+      },
+      "expected": {
+        "contains": [
+          "type: analyze",
+          "Resumen Ejecutivo",
+          "Cobertura de ACs en Testcases",
+          "tasks.md no presente",
+          "story-implement",
+          "Via de Implementacion Disponible"
+        ],
+        "not_contains": [
+          "Analisis rechazado",
+          "story-implement-tasks"
+        ]
+      },
+      "threshold": 0.92
+    }
+  ]
+}

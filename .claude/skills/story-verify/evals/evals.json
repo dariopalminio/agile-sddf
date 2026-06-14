@@ -1,0 +1,131 @@
+{
+  "skill": "story-verify",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-verify: verifica deteccion de modo, precondicion de estado, generacion de verify-report.md y transicion de estado de story.md.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path-automatico-unit-jest",
+      "type": "happy-path",
+      "description": "Historia en CODE-REVIEW/DONE con jest.config.js presente. El skill debe detectar modo automatico-unit (framework: jest), ejecutar npx jest, generar verify-report.md y actualizar story.md a VERIFY/DONE si todos los tests pasan.",
+      "input": {
+        "input_path": "examples/jest-project",
+        "story_id": "FEAT-050",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "Iniciando verificacion para: FEAT-050",
+          "Estado valido",
+          "VERIFY",
+          "IN-PROGRESS",
+          "automatico-unit",
+          "jest",
+          "verify-report.md",
+          "VERIFY/DONE"
+        ],
+        "not_contains": [
+          "Entorno invalido",
+          "no esta en un estado valido",
+          "No se encontro la historia",
+          "VERIFY RECHAZADO"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-precondicion-estado-invalido",
+      "type": "fail-fast",
+      "description": "Historia cuyo story.md tiene un estado distinto a CODE-REVIEW/DONE o IMPLEMENT/DONE (por ejemplo PLAN/DONE). El skill debe detenerse inmediatamente con mensaje de error descriptivo sin modificar ningun archivo.",
+      "input": {
+        "input_path": "examples/jest-project",
+        "story_id": "FEAT-051",
+        "flags": [],
+        "story_overrides": {
+          "status": "PLAN",
+          "substatus": "DONE"
+        }
+      },
+      "expected": {
+        "contains": [
+          "no esta en un estado valido para VERIFY",
+          "FEAT-051",
+          "PLAN",
+          "DONE",
+          "story-verify requiere",
+          "CODE-REVIEW/DONE",
+          "IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "Iniciando verificacion",
+          "verify-report.md",
+          "VERIFY/IN-PROGRESS",
+          "automatico-unit",
+          "automatico-e2e",
+          "manual"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "modo-manual-sin-configuracion-tests",
+      "type": "edge-case",
+      "description": "Historia en IMPLEMENT/DONE sin ningun archivo de configuracion de tests (sin pytest.ini, jest.config, playwright.config ni carpeta features/). El skill debe detectar modo manual, invocar qa-engineer.agent.md y generar verify-report.md con los resultados de la revision manual.",
+      "input": {
+        "input_path": "examples/no-tests-project",
+        "story_id": "FEAT-052",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "Iniciando verificacion para: FEAT-052",
+          "manual",
+          "qa-engineer",
+          "verify-report.md"
+        ],
+        "not_contains": [
+          "Entorno invalido",
+          "no esta en un estado valido",
+          "automatico-unit",
+          "automatico-e2e",
+          "delegado",
+          "pytest",
+          "jest",
+          "playwright",
+          "cypress"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-004",
+      "name": "happy-path-automatico-e2e-pytest-verify-rechazado",
+      "type": "edge-case",
+      "description": "Historia en CODE-REVIEW/DONE con pytest.ini presente pero los tests fallan (hay tests fallidos). El skill debe detectar modo automatico-unit (pytest), generar verify-report.md con findings, y actualizar story.md a READY-FOR-IMPLEMENT/DONE (REJECTED) por criterios DoD fallidos.",
+      "input": {
+        "input_path": "examples/pytest-project",
+        "story_id": "FEAT-053",
+        "flags": [],
+        "simulate_test_failure": true
+      },
+      "expected": {
+        "contains": [
+          "Iniciando verificacion para: FEAT-053",
+          "automatico-unit",
+          "pytest",
+          "verify-report.md",
+          "VERIFY RECHAZADO",
+          "READY-FOR-IMPLEMENT"
+        ],
+        "not_contains": [
+          "Entorno invalido",
+          "no esta en un estado valido",
+          "VERIFY/DONE"
+        ]
+      },
+      "threshold": 0.85
+    }
+  ]
+}

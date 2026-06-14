@@ -1,0 +1,95 @@
+{
+  "skill": "skill-preflight",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el protocolo de verificacion de entorno SDDF. Valida que skill-preflight emita [OK]/[WARNING]/[ERROR] correctos y la decision final segun el estado del entorno.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path entorno valido",
+      "type": "functional",
+      "description": "SDDF_ROOT apunta a un directorio existente con todos los subdirectorios de specs y CLI detectado. El informe debe mostrar [OK] para SPECS_BASE y CLI_ROOT y terminar con Entorno OK.",
+      "input": {
+        "context": "SDDF_ROOT esta definida y apunta a un directorio que existe. Los subdirectorios specs/projects/, specs/releases/ y specs/stories/ existen bajo SPECS_BASE. El directorio .claude/ existe en el proyecto. openspec/config.yaml existe con contenido.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "[OK]",
+          "SPECS_BASE",
+          "CLI_ROOT",
+          "Entorno OK"
+        ],
+        "not_contains": [
+          "[ERROR]",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast SDDF_ROOT apunta a ruta inexistente",
+      "type": "error",
+      "description": "SDDF_ROOT esta definida pero la ruta no existe en el filesystem. El skill debe emitir [ERROR] y terminar con Entorno invalido deteniendo la ejecucion.",
+      "input": {
+        "context": "SDDF_ROOT esta definida con valor '/ruta/que/no/existe/sddf'. El directorio no existe en el filesystem.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "[ERROR]",
+          "Entorno invalido"
+        ],
+        "not_contains": [
+          "Entorno OK"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "edge-case SDDF_ROOT no definida usa default docs",
+      "type": "edge-case",
+      "description": "SDDF_ROOT no esta definida como variable de entorno. El skill debe emitir [WARNING] indicando que se usa 'docs' como valor por defecto y establecer SPECS_BASE = docs.",
+      "input": {
+        "context": "La variable de entorno SDDF_ROOT no esta definida. No hay ningun valor para SDDF_ROOT en el entorno de ejecucion.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "[WARNING]",
+          "SDDF_ROOT no definida",
+          "docs"
+        ],
+        "not_contains": [
+          "[ERROR]",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case subdirectorios de specs faltantes emiten WARNING sin bloquear",
+      "type": "edge-case",
+      "description": "SDDF_ROOT valida pero uno o mas subdirectorios de specs (specs/projects/, specs/releases/, specs/stories/) no existen. El skill debe emitir [WARNING] por cada directorio faltante sin registrar error bloqueante y terminar con Entorno OK.",
+      "input": {
+        "context": "SDDF_ROOT esta definida y la ruta existe. Sin embargo, los directorios specs/releases/ y specs/stories/ no existen bajo SPECS_BASE. Solo specs/projects/ existe.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "[WARNING]",
+          "specs/releases/",
+          "specs/stories/",
+          "Entorno OK"
+        ],
+        "not_contains": [
+          "[ERROR]",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 0.95
+    }
+  ]
+}

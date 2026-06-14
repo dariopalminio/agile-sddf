@@ -1,0 +1,165 @@
+{
+  "skill": "story-plan",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-plan: verifica el comportamiento del orquestador (mensajes de progreso, artefactos generados, fail-fast y modos alternativos) sin evaluar el contenido interno de cada sub-skill.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "pipeline-completo-happy-path",
+      "type": "happy-path",
+      "description": "Modo default (sin flags): el orquestador ejecuta los 4 pasos en secuencia (story-design → story-tasking → story-testcases → story-analyze), muestra progreso paso a paso, actualiza story.md a PLAN/IN-PROGRESS al inicio y cierra con READY-FOR-IMPLEMENT/DONE y tabla de resumen completa.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "FEAT-099",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "Iniciando pipeline de planning para: FEAT-099",
+          "PLAN",
+          "IN-PROGRESS",
+          "story-design → story-tasking → story-testcases → story-analyze",
+          "[1/4] → story-design",
+          "[1/4] ✓ story-design — design.md generado",
+          "[2/4] → story-tasking",
+          "[2/4] ✓ story-tasking — tasks.md generado",
+          "[3/4] → story-testcases",
+          "[3/4] ✓ story-testcases — testcases.md generado",
+          "[4/4] → story-analyze",
+          "[4/4] ✓ story-analyze — analyze.md generado",
+          "design.md",
+          "tasks.md",
+          "testcases.md",
+          "analyze.md",
+          "Planning completo",
+          "READY-FOR-IMPLEMENT"
+        ],
+        "not_contains": [
+          "Pipeline interrumpido",
+          "Flags mutuamente excluyentes",
+          "No se encontró la historia",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-historia-no-encontrada",
+      "type": "fail-fast",
+      "description": "El orquestador recibe un story_id que no existe en $SPECS_BASE/specs/stories/. Debe detenerse inmediatamente sin invocar ningún sub-skill y mostrar el mensaje de historia no encontrada.",
+      "input": {
+        "input_path": null,
+        "story_id": "FEAT-000",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "No se encontró la historia FEAT-000"
+        ],
+        "not_contains": [
+          "Iniciando pipeline de planning",
+          "story-design",
+          "story-tasking",
+          "story-testcases",
+          "story-analyze",
+          "Planning completo",
+          "READY-FOR-IMPLEMENT"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "flags-mutuamente-excluyentes",
+      "type": "fail-fast",
+      "description": "El orquestador recibe --only-tasks y --only-testcases simultáneamente. Debe reportar el error de flags mutuamente excluyentes y detenerse antes de invocar cualquier sub-skill.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "FEAT-099",
+        "flags": ["--only-tasks", "--only-testcases"]
+      },
+      "expected": {
+        "contains": [
+          "--only-tasks",
+          "--only-testcases",
+          "mutuamente excluyentes"
+        ],
+        "not_contains": [
+          "Iniciando pipeline de planning",
+          "story-design",
+          "story-tasking",
+          "story-testcases",
+          "Planning completo"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "modo-only-tasks-sin-testcases",
+      "type": "edge-case",
+      "description": "Modo --only-tasks: el orquestador ejecuta solo story-design → story-tasking → story-analyze (3 pasos). No debe invocar story-testcases ni generar testcases.md. El resumen final muestra la tabla con 3 filas y la leyenda [--only-tasks].",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "FEAT-099",
+        "flags": ["--only-tasks"]
+      },
+      "expected": {
+        "contains": [
+          "Iniciando pipeline de planning para: FEAT-099",
+          "--only-tasks",
+          "story-design → story-tasking → story-analyze",
+          "[1/3] → story-design",
+          "[1/3] ✓ story-design — design.md generado",
+          "[2/3] → story-tasking",
+          "[2/3] ✓ story-tasking — tasks.md generado",
+          "[3/3] → story-analyze",
+          "design.md",
+          "tasks.md"
+        ],
+        "not_contains": [
+          "story-testcases",
+          "testcases.md",
+          "Flags mutuamente excluyentes",
+          "Pipeline interrumpido"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-005",
+      "name": "modo-default-skip-analyze",
+      "type": "edge-case",
+      "description": "Modo default con --skip-analyze: el orquestador ejecuta story-design → story-tasking → story-testcases (3 pasos) y omite story-analyze. El resumen final no debe incluir una fila para story-analyze ni el estado READY-FOR-IMPLEMENT/DONE.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "FEAT-099",
+        "flags": ["--skip-analyze"]
+      },
+      "expected": {
+        "contains": [
+          "Iniciando pipeline de planning para: FEAT-099",
+          "story-design → story-tasking → story-testcases",
+          "[1/3] → story-design",
+          "[1/3] ✓ story-design — design.md generado",
+          "[2/3] → story-tasking",
+          "[2/3] ✓ story-tasking — tasks.md generado",
+          "[3/3] → story-testcases",
+          "[3/3] ✓ story-testcases — testcases.md generado",
+          "design.md",
+          "tasks.md",
+          "testcases.md"
+        ],
+        "not_contains": [
+          "story-analyze",
+          "analyze.md",
+          "READY-FOR-IMPLEMENT",
+          "Pipeline interrumpido",
+          "Flags mutuamente excluyentes"
+        ]
+      },
+      "threshold": 0.90
+    }
+  ]
+}

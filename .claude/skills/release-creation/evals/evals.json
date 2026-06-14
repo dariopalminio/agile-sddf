@@ -1,0 +1,105 @@
+{
+  "skill": "release-creation",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el skill release-creation. Verifica: happy-path creacion interactiva completa, modo --quick omitiendo secciones opcionales, fail-fast ante template ausente, y manejo de slug con caracteres especiales.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path: creacion interactiva completa de release",
+      "type": "functional",
+      "description": "Ejecutar release-creation con nombre 'Sistema de pagos'. El skill debe ejecutar preflight, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo release.md en $SPECS_BASE/specs/releases/EPIC-NN-sistema-de-pagos/, invocar release-format-validation y mostrar APROBADO con la ruta del archivo y el siguiente paso sugerido.",
+      "input": {
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/specs/templates/release-spec-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 releases previos (EPIC-01, EPIC-02) en $SPECS_BASE/specs/releases/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa descripcion, lista 2 features y define un flujo critico. Acepta las secciones opcionales o las salta.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "EPIC-03",
+          "sistema-de-pagos",
+          "release.md",
+          "APROBADO",
+          "release-generate-stories"
+        ],
+        "not_contains": [
+          "[ERROR]",
+          "Entorno invalido",
+          "No se encontro el template",
+          "FEAT-000"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-002",
+      "name": "edge-case: modo --quick omite secciones opcionales sin preguntar",
+      "type": "edge-case",
+      "description": "Ejecutar release-creation --quick con nombre 'Onboarding v2'. El skill debe completar frontmatter y secciones obligatorias sin mostrar preguntas por las secciones opcionales. El release.md generado debe contener solo secciones obligatorias. La validacion debe pasar y no debe aparecer ninguna pregunta del tipo '¿Quieres completar la seccion?'.",
+      "input": {
+        "context": "Entorno SDDF valido. Template disponible con al menos 2 secciones opcionales marcadas como '<!-- seccion opcional'. No hay releases previos en $SPECS_BASE/specs/releases/. El usuario provee nombre 'Onboarding v2', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
+        "flags": ["--quick"]
+      },
+      "expected": {
+        "contains": [
+          "EPIC-01",
+          "onboarding-v2",
+          "release.md",
+          "APROBADO"
+        ],
+        "not_contains": [
+          "¿Quieres completar la seccion",
+          "saltar todas",
+          "[ERROR]",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-003",
+      "name": "fail-fast: template ausente detiene la ejecucion",
+      "type": "fail-fast",
+      "description": "Ejecutar release-creation cuando ni $SPECS_BASE/specs/templates/release-spec-template.md ni assets/release-spec-template.md existen. El skill debe detectar la ausencia del template en el Paso 2, emitir el mensaje de error indicado en la documentacion y detener la ejecucion sin crear ningun directorio ni archivo.",
+      "input": {
+        "context": "Entorno SDDF valido (preflight OK). El archivo $SPECS_BASE/specs/templates/release-spec-template.md NO existe. El archivo assets/release-spec-template.md tampoco existe. El usuario intenta crear un release llamado 'Feature flags'.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "No se encontro el template requerido",
+          "assets/release-spec-template.md"
+        ],
+        "not_contains": [
+          "release.md",
+          "APROBADO",
+          "EPIC-",
+          "[CREADO]"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case: slug derivado correctamente desde nombre con caracteres especiales",
+      "type": "edge-case",
+      "description": "Ejecutar release-creation con nombre que contenga tildes, mayusculas, espacios multiples y caracteres especiales como 'Autenticacion & Autorización — v2.0!'. El skill debe derivar un slug kebab-case valido sin tildes ni caracteres especiales (ej: 'autenticacion-autorizacion-v2-0'), mostrarlo al usuario para confirmacion y usarlo para nombrar el directorio y el archivo release.md.",
+      "input": {
+        "context": "Entorno SDDF valido. Template disponible. No hay releases previos. El usuario ingresa el nombre 'Autenticacion & Autorizacion — v2.0!' y acepta el slug derivado sin modificarlo.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "EPIC-01",
+          "release.md",
+          "APROBADO"
+        ],
+        "not_contains": [
+          "Autenticacion & Autorizacion",
+          "v2.0!",
+          "[ERROR]",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 0.85
+    }
+  ]
+}

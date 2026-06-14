@@ -1,0 +1,129 @@
+{
+  "skill": "story-design",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-design: generacion de design.md con trazabilidad AC, principios P1-P12, manejo de errores y casos borde",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path-generacion-design-desde-story-valido",
+      "type": "happy-path",
+      "description": "Genera design.md correctamente a partir de un story.md valido con criterios de aceptacion numerados. Verifica frontmatter, trazabilidad AC, secciones obligatorias y checklist de principios.",
+      "input": {
+        "input_path": ".claude/skills/story-design/examples/input/story.md",
+        "story_id": "FEAT-057",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "type: design",
+          "id: FEAT-057",
+          "story: FEAT-057",
+          "satisface: AC-",
+          "## Decisiones de Dise",
+          "Alternativa",
+          "Descartada porque",
+          "Componentes Afectados",
+          "Contratos de Verificacion",
+          "Registro de Cambios"
+        ],
+        "not_contains": [
+          "❌ No se encontró la historia",
+          "❌ No se encontró story.md",
+          "✗ Entorno invalido"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-story-id-inexistente",
+      "type": "fail-fast",
+      "description": "El skill debe detenerse con un mensaje de error claro cuando el story_id no corresponde a ningun directorio bajo SPECS_BASE/specs/stories/. No debe generarse ningun archivo.",
+      "input": {
+        "input_path": null,
+        "story_id": "FEAT-999",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "No se encontr"
+        ],
+        "not_contains": [
+          "type: design",
+          "design.md",
+          "satisface: AC-"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "fail-fast-story-md-ausente-en-directorio",
+      "type": "fail-fast",
+      "description": "Cuando el directorio de la historia existe pero no contiene story.md, el skill debe emitir un error descriptivo y sugerir /release-generate-stories. No debe generarse design.md.",
+      "input": {
+        "input_path": "docs/specs/stories/FEAT-001-historia-sin-story/",
+        "story_id": "FEAT-001",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "story.md"
+        ],
+        "not_contains": [
+          "type: design",
+          "satisface: AC-",
+          "Checklist de principios"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case-template-externo-ausente-usa-fallback",
+      "type": "edge-case",
+      "description": "Cuando el template externo assets/design-template.md no existe, el skill debe usar el template de fallback interno e informar al usuario. El design.md resultante debe ser valido y completo.",
+      "input": {
+        "input_path": ".claude/skills/story-design/examples/input/story.md",
+        "story_id": "FEAT-057",
+        "flags": ["--template", "ruta/inexistente/template.md"]
+      },
+      "expected": {
+        "contains": [
+          "fallback",
+          "type: design",
+          "id: FEAT-057",
+          "satisface: AC-"
+        ],
+        "not_contains": [
+          "❌",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-005",
+      "name": "edge-case-design-md-ya-existe-pide-confirmacion",
+      "type": "edge-case",
+      "description": "Cuando design.md ya existe en el directorio de la historia, el skill debe detectarlo y preguntar al usuario si regenerar o saltar, sin sobrescribir de forma silenciosa.",
+      "input": {
+        "input_path": ".claude/skills/story-design/examples/input/story.md",
+        "story_id": "FEAT-057",
+        "flags": [],
+        "precondition": "design.md ya existe en el directorio de la historia"
+      },
+      "expected": {
+        "contains": [
+          "design.md ya existe",
+          "Regenerar",
+          "No modificar"
+        ],
+        "not_contains": [
+          "type: design\nid: FEAT-057"
+        ]
+      },
+      "threshold": 1.0
+    }
+  ]
+}

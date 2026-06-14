@@ -58,10 +58,8 @@ con su propio principio §3 ("obligar a demostrar, no declarar").
 
 - [x] plan-16 - **Desacoplar referencias `.claude/` de los skills SDDF**: Actualmente el archivo skill /story-implement tiene 13 referencias a “.claude/”: por ejemplo “Leer `.claude/skills/{skill}/SKILL.md` con `Read`”. Esto genera acoplamiento con claude y el framework (si bien está escrito por claude) debe ser agnóstico al llm y cli.
 
+- [x] plan-17 - **Test - Cobertura mínima de evals en skills críticos:** Crear evals.json para los skills del pipeline principal que no tienen cobertura (79% sin evals). Solo 10 de 47 skills tienen evals/evals.json. Y security-audit/evals/ y story-verify/evals/ contienen .md descriptivos, no evals. Pasar de 10 skills con evals a 24 skills con evals aumentando la covertura a más de un 50% (~49% sin cobertura).
 
-- [ ] **Test - Cobertura mínima de evals en skills críticos:** Crear evals.json para los skills del pipeline principal que no tienen cobertura (79% sin evals). Solo 10 de 47 skills tienen evals/evals.json. Y security-audit/evals/ y story-verify/evals/ contienen .md descriptivos, no evals.
-
-- [ ] **Verificación automática de la constitución:** Implementar un skill o script que audite el cumplimiento de las reglas de la constitución de forma ejecutable.
 
 
 ## Riesgos <!-- sección opcional-->

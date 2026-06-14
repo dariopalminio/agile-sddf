@@ -1,0 +1,127 @@
+{
+  "skill": "story-tasking",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el skill story-tasking: generacion de tasks.md con tareas atomicas ordenadas por dependencia desde story.md y design.md",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path-genera-tasks-desde-story-y-design",
+      "type": "happy-path",
+      "description": "story.md con ACs Gherkin y design.md con componentes e interfaces válidos generan tasks.md con grupos numerados (##), IDs secuenciales T001/T002..., marcadores [P] para paralelizables y frontmatter correcto",
+      "input": {
+        "input_path": "examples/input",
+        "flags": []
+      },
+      "expected": {
+        "output_file": "examples/output/tasks.md",
+        "contains": [
+          "type: tasks",
+          "- [ ] T001",
+          "- [ ] T002",
+          "## 1.",
+          "## 2.",
+          "[P]",
+          "Verificar"
+        ],
+        "not_contains": [
+          "TODO",
+          "undefined",
+          "{story_id}",
+          "{id}",
+          "<!-- "
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-ausencia-de-design-md",
+      "type": "fail-fast",
+      "description": "Cuando design.md no existe en el directorio de la historia, el skill emite error con icono ❌ y detiene la ejecucion sin generar tasks.md",
+      "input": {
+        "input_path": "FEAT-001",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "design.md"
+        ],
+        "not_contains": [
+          "type: tasks",
+          "- [ ] T001",
+          "tasks.md guardado"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "error-handling-story-id-inexistente",
+      "type": "error-handling",
+      "description": "story_id que no existe bajo $SPECS_BASE/specs/stories/ emite error limpio con ❌ indicando que no se encontro la historia y detiene la ejecucion sin generar ningun archivo",
+      "input": {
+        "input_path": "FEAT-999",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "No se encontro"
+        ],
+        "not_contains": [
+          "stack trace",
+          "Error:",
+          "type: tasks",
+          "- [ ] T001"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case-tasks-existente-pide-confirmacion",
+      "type": "edge-case",
+      "description": "Cuando tasks.md ya existe en el directorio de la historia, el skill pregunta al usuario si regenerar (r) o no modificar (n) antes de sobreescribir",
+      "input": {
+        "input_path": "examples/input",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "tasks.md ya existe",
+          "(r) Regenerar",
+          "(n) No modificar"
+        ],
+        "not_contains": [
+          "❌"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-005",
+      "name": "edge-case-tareas-cubren-todos-los-acs",
+      "type": "edge-case",
+      "description": "El tasks.md generado incluye al menos una tarea de verificacion por cada AC definido en story.md (AC-1, AC-2, AC-3) y el grupo de verificacion es el ultimo grupo de encabezados ##",
+      "input": {
+        "input_path": "examples/input",
+        "flags": []
+      },
+      "expected": {
+        "output_file": "examples/output/tasks.md",
+        "contains": [
+          "AC-1",
+          "AC-2",
+          "AC-3",
+          "Verificar"
+        ],
+        "not_contains": [
+          "❌",
+          "design.md no encontrado"
+        ]
+      },
+      "threshold": 0.90
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "skill": "story-specify",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-specify: verifica el comportamiento del orquestador (flujo completo, detección de backlog, fail-fast de preflight, split automático y gate anti-bucle) sin evaluar el contenido interno de cada sub-skill invocado.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "ciclo-completo-historia-nueva-aprobada",
+      "type": "happy-path",
+      "description": "Flujo completo con historia nueva: preflight OK → story-creation → story-evaluation devuelve APROBADA → el orquestador actualiza el frontmatter a SPECIFY/DONE y muestra el resumen final con ruta del archivo generado. No se invocan story-split ni story-improve.",
+      "input": {
+        "context": "Un vendedor de una empresa SaaS quiere exportar su lista de clientes activos a CSV para compartirla con su gerente antes de la reunión mensual de pipeline."
+      },
+      "expected": {
+        "contains": [
+          "story-creation",
+          "story-evaluation",
+          "APROBADA",
+          "SPECIFY",
+          "DONE",
+          "specs/stories/",
+          "story.md",
+          "Refinamiento finalizado"
+        ],
+        "not_contains": [
+          "Entorno inválido",
+          "story-split",
+          "story-improve",
+          "REFINAR",
+          "RECHAZAR",
+          "DIVIDIR"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-002",
+      "name": "deteccion-backlog-existente-retomar",
+      "type": "happy-path",
+      "description": "El skill detecta al inicio que existe al menos una historia con status SPECIFY / substatus IN-PROGRESS en $SPECS_BASE/specs/stories/. Debe ofrecer al usuario la opción de retomar el backlog o crear una historia nueva, sin iniciar story-creation de forma automática.",
+      "input": {
+        "context": "Existe docs/specs/stories/FEAT-010-login-usuario/story.md con frontmatter status: SPECIFY y substatus: IN-PROGRESS creado en una sesión anterior."
+      },
+      "expected": {
+        "contains": [
+          "SPECIFY",
+          "IN-PROGRESS",
+          "backlog",
+          "retomar"
+        ],
+        "not_contains": [
+          "Entorno inválido",
+          "Refinamiento finalizado"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-003",
+      "name": "preflight-invalido-detiene-ejecucion",
+      "type": "fail-fast",
+      "description": "skill-preflight retorna estado de error (entorno inválido: SDDF_ROOT no configurado o directorio de stories faltante). El orquestador debe detenerse inmediatamente en el Paso 0 sin invocar story-creation, story-evaluation ni ningún otro sub-skill.",
+      "input": {
+        "context": "SDDF_ROOT no está configurado en el entorno. skill-preflight retorna error de entorno inválido."
+      },
+      "expected": {
+        "contains": [
+          "inválido"
+        ],
+        "not_contains": [
+          "story-creation",
+          "story-evaluation",
+          "story-split",
+          "story-improve",
+          "SPECIFY",
+          "Refinamiento finalizado"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "split-automatico-tras-decision-dividir",
+      "type": "edge-case",
+      "description": "story-evaluation devuelve decision DIVIDIR para la historia activa. El orquestador debe invocar story-split, registrar las historias hijas con ID ST-00X, actualizar su frontmatter a SPECIFY/IN-PROGRESS, marcar la historia origen como 'dividida en historias derivadas' y agregar las hijas a la cola del backlog para continuar refinándolas.",
+      "input": {
+        "context": "Historia FEAT-020 con alcance muy amplio (módulo completo de autenticación con registro, login, 2FA y recuperación de contraseña). story-evaluation retorna decision: DIVIDIR con recomendación de dividir en al menos 3 historias independientes."
+      },
+      "expected": {
+        "contains": [
+          "DIVIDIR",
+          "story-split",
+          "historias derivadas",
+          "SPECIFY",
+          "IN-PROGRESS",
+          "backlog"
+        ],
+        "not_contains": [
+          "Entorno inválido",
+          "Refinamiento finalizado",
+          "APROBADA"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-005",
+      "name": "gate-antibucle-decision-refinar",
+      "type": "edge-case",
+      "description": "story-evaluation devuelve decision REFINAR. El orquestador ejecuta story-improve (Paso 5A) y luego story-product-owner (Paso 5B). Tras el refinamiento, el gate anti-bucle (Paso 6) debe presentar al usuario exactamente tres opciones explícitas sin volver automáticamente al Paso 3.",
+      "input": {
+        "context": "Historia FEAT-030 con scores I=2, N=3, E=3 en el reporte FINVEST. story-evaluation retorna decision: REFINAR. story-improve aplica mejoras y genera story-improvement-log.md."
+      },
+      "expected": {
+        "contains": [
+          "REFINAR",
+          "story-improve",
+          "story-product-owner",
+          "Seguir iterando",
+          "Cerrar manualmente",
+          "Dejar en IN-PROGRESS"
+        ],
+        "not_contains": [
+          "Entorno inválido",
+          "Refinamiento finalizado",
+          "APROBADA"
+        ]
+      },
+      "threshold": 0.90
+    }
+  ]
+}

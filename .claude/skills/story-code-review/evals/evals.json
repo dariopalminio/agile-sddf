@@ -1,0 +1,150 @@
+{
+  "skill": "story-code-review",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente (happy path aprobado, needs-changes con fix-directives, precondicion invalida y artefactos faltantes), asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path-revision-aprobada",
+      "type": "happy-path",
+      "description": "Flujo completo con historia en IMPLEMENT/DONE, story.md y design.md presentes, implement-report.md y testcases.md disponibles. Los tres agentes revisores y security-audit no reportan hallazgos de severidad HIGH ni MEDIUM. El skill debe generar code-review-report.md con review-status approved, actualizar story.md a CODE-REVIEW/DONE y no generar fix-directives.md.",
+      "input": {
+        "story_id": "FEAT-010",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "implement-report.md", "testcases.md", "tasks.md"],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_audit_status": "pass"
+        }
+      },
+      "expected": {
+        "contains": [
+          "approved",
+          "code-review-report.md",
+          "CODE-REVIEW",
+          "DONE",
+          "ninguna",
+          "Revision aprobada"
+        ],
+        "not_contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "READY-FOR-IMPLEMENT",
+          "Entorno invalido",
+          "Artefactos requeridos no encontrados",
+          "no esta en estado IMPLEMENT"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-002",
+      "name": "needs-changes-hallazgo-high-genera-fix-directives",
+      "type": "fail-path",
+      "description": "Historia en IMPLEMENT/DONE con story.md y design.md presentes. El Tech-Lead-Reviewer reporta un hallazgo HIGH (API key hardcodeada en src/auth.ts:42). El skill debe calcular max-severity HIGH, generar fix-directives.md con la instruccion de correccion correspondiente, agregar tarea en tasks.md y retroceder story.md a READY-FOR-IMPLEMENT/DONE. No debe marcar CODE-REVIEW/DONE.",
+      "input": {
+        "story_id": "FEAT-020",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md"],
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/auth.ts:42",
+              "dimension": "code-quality",
+              "severity": "HIGH",
+              "finding": "API key hardcodeada en el codigo fuente",
+              "action": "Mover a variable de entorno process.env.API_KEY"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_audit_status": "fail"
+        }
+      },
+      "expected": {
+        "contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "READY-FOR-IMPLEMENT",
+          "DONE",
+          "HIGH",
+          "code-review-report.md",
+          "Implementar fix-directives.md",
+          "hallazgos criticos"
+        ],
+        "not_contains": [
+          "approved",
+          "CODE-REVIEW/DONE",
+          "Revision aprobada",
+          "Entorno invalido",
+          "Artefactos requeridos no encontrados"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-003",
+      "name": "fail-fast-precondicion-estado-invalido",
+      "type": "fail-fast",
+      "description": "La historia tiene status PLAN y substatus DONE (no cumple la precondicion IMPLEMENT/DONE). El skill debe mostrar un mensaje de error descriptivo con el estado actual y el estado requerido, y no modificar ningun archivo ni crear code-review-report.md.",
+      "input": {
+        "story_id": "FEAT-030",
+        "story_status": "PLAN",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md"]
+      },
+      "expected": {
+        "contains": [
+          "IMPLEMENT",
+          "DONE",
+          "PLAN",
+          "story-code-review requiere"
+        ],
+        "not_contains": [
+          "code-review-report.md",
+          "fix-directives.md",
+          "approved",
+          "needs-changes",
+          "CODE-REVIEW/IN-PROGRESS",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "fail-fast-artefactos-requeridos-faltantes",
+      "type": "fail-fast",
+      "description": "La historia tiene status IMPLEMENT/DONE pero design.md no existe en el directorio de la historia. El skill debe detectar el artefacto faltante, emitir un unico mensaje de error con la lista de faltantes y detener la ejecucion sin modificar ningun archivo.",
+      "input": {
+        "story_id": "FEAT-040",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md"]
+      },
+      "expected": {
+        "contains": [
+          "Artefactos requeridos no encontrados",
+          "design.md",
+          "Faltantes",
+          "story-code-review"
+        ],
+        "not_contains": [
+          "code-review-report.md",
+          "fix-directives.md",
+          "approved",
+          "needs-changes",
+          "CODE-REVIEW/IN-PROGRESS",
+          "Entorno invalido",
+          "Iniciando revision"
+        ]
+      },
+      "threshold": 1.0
+    }
+  ]
+}

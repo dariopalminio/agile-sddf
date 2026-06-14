@@ -575,7 +575,7 @@ Mostrar:
 ✅ Revisión aprobada — historia lista para verificación final
 ```
 
-O si hay bloqueantes:
+O si hay hallazgos criticos:
 
 ```
 ─────────────────────────────────────────────────────────────────────
@@ -622,4 +622,4 @@ Ejecuta /story-code-review {story_id} nuevamente tras corregir los hallazgos.
 
 Estado final de `story.md`:
 - `CODE-REVIEW/DONE` si la revisión es aprobada
-- `READY-FOR-IMPLEMENT/DONE` si hay hallazgos bloqueantes
+- `READY-FOR-IMPLEMENT/DONE` si hay hallazgos criticos (severidad HIGH o MEDIUM)
