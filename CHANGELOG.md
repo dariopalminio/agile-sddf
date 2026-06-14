@@ -10,6 +10,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.13.0] — 2026-06-14 — Remediating and Improvement (EPIC-17)
+
+### Added
+
+- **`docs/knowledge/guides/state-machine.md`** — documento canónico de la máquina de estados SDDF con diagramas Mermaid para los 3 niveles (story, project, release), tabla de transiciones por skill y sección de inconsistencias conocidas; referenciado desde `specs_and_workflows.md` y `docs/index.md` (plan-09)
+- **`ADR-0002`** — registro de decisión de arquitectura que formaliza el contrato de invocación de agentes locales de skill: bloque de mecanismo de 4 pasos insertado en los 3 SKILL.md afectados (`story-code-review`, `security-audit`, `story-implement`); propagado también a `best-practices-for-skills.md` (plan-07, plan-15)
+
+### Changed
+
+- **Descriptions de skills recortadas** — 47 descriptions normalizadas al patrón "cuándo invocarme" (qué + cuándo + triggers, ≤500 chars/skill); total reducido de 22.017 a ≤12.000 chars en el system prompt (plan-01)
+- **`skill-preflight` — párrafo centralizado** — 29 SKILL.md normalizados al bloque canónico de 3 líneas vía `scripts/normalize-preflight-paso0.js`; detalles del protocolo quedan como fuente única en `skill-preflight/SKILL.md` (plan-12)
+- **Frontmatter YAML de skills estandarizado** — zoo de 24 campos distintos reducido al estándar declarado en `skill-master`; eliminados campos muertos (`inputs`, `outputs`, `invocable`, `department`, etc.) no procesados por Claude Code (plan-05)
+- **Templates compartidos centralizados** — 5 templates compartidos migrados a `$SPECS_BASE/specs/templates/` completando FEAT-055; 13 SKILL.md actualizados con lógica de resolución central → seed del dueño → error; `sddf-init` copia los templates en Paso 2b; `skill-preflight` verifica templates centrales (plan-06)
+- **Soporte multi-cliente declarado alineado con el real** — `README.md` y `CLAUDE.md` consistentes con 3 plataformas soportadas (Claude Code, OpenCode, GitHub Copilot) + accesorios; `gem/` y `rovo/` documentados con `README.md` propio como utilidades accesorias, no runtime del framework (plan-08)
+- **Resiliencia de entrevistas multivuelta** — Protocolo de Resiliencia de 4 niveles agregado a `project-pm.agent.md`; excepción de subagente interactivo documentada en `harness-engineering.md`; instrucción de resiliencia propagada a los 3 skills invocadores (`project-begin`, `project-discovery`, `project-flow`) (plan-10)
+- **Skills agnósticos al CLI** — 13 referencias a `.claude/` eliminadas de `story-implement/SKILL.md` reemplazadas por rutas relativas agnósticas al LLM/CLI (plan-16)
+- **`story-plan`** — estado `PLANNING` corregido a `PLAN` (plan-09)
+- **`header-aggregation`** — substatus ampliado con `DONE` y `BLOCKED` (plan-09)
+- **Esquema de evals unificado** — 5 archivos `evals.json` legacy (Schema 1: `skill_name` + `evals[]`) migrados a Schema 2 canónico (TC-NNN: `skill` + `version` + `cases[]`); total: 10 evals.json en esquema uniforme (plan-14)
+- **Cobertura de evals ampliada** — 14 nuevos `evals/evals.json` creados para skills críticos del pipeline sin cobertura; cobertura aumentada de 10 a 24 skills (del 21% al ~51%) (plan-17)
+
+### Fixed
+
+- **`CLAUDE.md`** — información falsa sobre estructura del repo corregida para reflejar el estado real del filesystem; añadida regla explícita en `constitution.md`: "CLAUDE.md solo describe estructura verificable con el filesystem" (plan-02)
+- **`story-code-review`** — inconsistencia entre description (prometía 4 subagentes con nombres ‹Inspector de Código, Guardián de Requisitos›) y body (lanzaba 3 subagentes con otros nombres) resuelta; un único modelo mental coherente en todo el artefacto (plan-04)
+- **Instalador npm** — eliminado prompt por stdin en `postinstall` (anti-patrón); lógica de skip-if-exists reemplazada por diff de versión con flag `--force` para que upgrades propaguen skills ya instalados (plan-11)
+
+### Removed
+
+- **Assets muertos y legacy** — `constitution-template.md` duplicada junto a `project-constitution-template.md` usada; `skills-lock.json` con entradas de skills inexistentes; comandos `pnpm` de proyecto externo en `sddf.config.yaml` raíz; guion no-ASCII (U+2011) en `docs/index.md`; `story-improve/agents/` vacío (plan-03, plan-07)
+- **Directorios `gem/` y `rovo/`** — 11 archivos de prompts legacy divergentes eliminados; referencias quitadas de `README.md` y `CLAUDE.md` (plan-13)
+
+---
+
 ## [1.12.0] — 2026-06-07 — Safe Enhancement & Fortify Skills (EPIC-16)
 
 ### Added

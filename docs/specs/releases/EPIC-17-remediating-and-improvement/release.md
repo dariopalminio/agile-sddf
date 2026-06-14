@@ -5,7 +5,7 @@ id: EPIC-17
 slug: remediating-and-improvement
 title: "Remediating and Improvement"
 status: IMPLEMENT
-substatus: IN-PROGRESS
+substatus: DONE
 parent: null
 created: 2026-06-12
 updated: 2026-06-12
