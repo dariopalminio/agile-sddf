@@ -9,7 +9,10 @@ substatus: IN-PROGRESS
 parent: null
 created: 2026-06-14
 updated: 2026-06-14
-related: []
+related:
+  - plan-01-deliver-status
+  - plan-02-epic-workflow-definition
+  - plan-03-lazy-assignment-of-feat-ids
 ---
 
 # Release/Epic: Complete Flow — Skills para el Workflow de Story y Release

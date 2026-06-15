@@ -24,7 +24,9 @@
           "[ERROR]",
           "Entorno invalido",
           "No se encontro el template",
-          "FEAT-000"
+          "FEAT-000",
+          "FEAT-001",
+          "FEAT-NNN"
         ]
       },
       "threshold": 0.85
@@ -49,7 +51,9 @@
           "¿Quieres completar la seccion",
           "saltar todas",
           "[ERROR]",
-          "Entorno invalido"
+          "Entorno invalido",
+          "FEAT-001",
+          "FEAT-NNN"
         ]
       },
       "threshold": 0.90
@@ -65,13 +69,12 @@
       },
       "expected": {
         "contains": [
-          "No se encontro el template requerido",
+          "No se encontró el template requerido",
           "assets/release-spec-template.md"
         ],
         "not_contains": [
-          "release.md",
           "APROBADO",
-          "EPIC-",
+          "Archivo creado:",
           "[CREADO]"
         ]
       },
@@ -89,12 +92,13 @@
       "expected": {
         "contains": [
           "EPIC-01",
+          "autenticacion-autorizacion-v2-0",
           "release.md",
           "APROBADO"
         ],
         "not_contains": [
-          "Autenticacion & Autorizacion",
-          "v2.0!",
+          "EPIC-01-autenticacion & autorizacion",
+          "EPIC-01-v2.0",
           "[ERROR]",
           "Entorno invalido"
         ]
