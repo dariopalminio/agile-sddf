@@ -23,6 +23,7 @@ Este release añade al framework las capacidades de bulk y orquestacion de flujo
 
 - [ ] PLAN-02 - **Definir workflow canónico de Épica/Release:** definir nuevo workflow para épicas/release: DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED.
 
+- [ ] PLAN-03 - **Asignación lazy de FEAT IDs**: mover la asignación de FEAT IDs al momento real de creación de directorios de historia (`release-generate-stories`). El `release.md` describe features **sin ID**; el ID se asigna y se escribe en `release.md` recién cuando `release-generate-stories` crea los directorios.
 
 
 

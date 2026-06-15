@@ -178,11 +178,11 @@ Preguntar de forma iterativa:
 > `Nombre: descripción breve`
 > (Escribe 'listo' cuando termines)"
 
-Acepta múltiples features en un mismo mensaje o una por una. **No pedir IDs al usuario** — calcularlos al generar el archivo leyendo los directorios existentes en `$SPECS_BASE/specs/stories/` para determinar el próximo número disponible y evitar colisiones. El formato final en el archivo será:
+Acepta múltiples features en un mismo mensaje o una por una. **No pedir IDs al usuario** — los IDs se asignan al generar las historias con `/release-generate-stories`, no durante la creación del release. El formato final en el archivo será:
 ```
-- [ ] FEAT-{N} - **{Nombre}:** {descripción}
+- [ ] **{Nombre}:** {descripción}
 ```
-Donde `{N}` es el número de 3 dígitos siguiente al mayor `FEAT-NNN` existente en `$SPECS_BASE/specs/stories/` (o `001` si no hay ninguno), incrementando por cada feature adicional del mismo release.
+> Los FEAT IDs se asignan al ejecutar `/release-generate-stories`. No se pre-asignan en el release para evitar colisiones con otros releases en definición simultánea.
 
 ##### Flujos Críticos / Smoke Tests
 > "Define al menos un flujo crítico que, si falla, debe detener el despliegue. Para cada escenario, describe:

@@ -60,7 +60,7 @@ Lee `release.md` de un directorio de release en `$SPECS_BASE/specs/releases/` y 
 ## Restricciones / Reglas
 
 - El skill **no valida** calidad FINVEST — en flujo batch la validación INVEST se delega al paso posterior `/story-evaluation` para no bloquear la generación masiva de historias; ejecutar `/story-evaluation` sobre cada historia generada como siguiente paso obligatorio
-- El skill **no modifica** el archivo de release
+- El skill **solo modifica** el archivo de release para backfill de FEAT IDs: reemplaza líneas `- [ ] **Nombre:** desc` por `- [ ] FEAT-NNN - **Nombre:** desc` en la sección `## Features` antes de generar los directorios de historia. No modifica ninguna otra sección ni ningún otro archivo.
 - El skill procesa **todas** las features del release (pendientes `[ ]` y completadas `[x]`)
 - Si dos features tienen el mismo ID (duplicado en el release), añadir sufijo `-bis` al segundo archivo (ej. `FEAT-029-nombre-bis/`) e informar al usuario
 - Las secciones opcionales de cada historia se incluyen con placeholder `[Por completar]` para facilitar la edición posterior
@@ -108,19 +108,55 @@ Leer el archivo de release resuelto en el Paso 1.
 
 Localizar la sección `## Features`. Solo analizar el contenido dentro de esa sección.
 
-Dentro de esa sección, extraer cada línea de feature con el formato:
-- `- [ ] FEAT-NNN — Nombre: descripción` (pendiente)
-- `- [x] FEAT-NNN — Nombre: descripción` (completada)
+Dentro de esa sección, extraer cada línea de feature. Reconocer dos formatos:
+
+**Formato A — Con ID asignado (releases existentes o migrados):**
+- `- [ ] FEAT-NNN - **Nombre:** descripción`
+- `- [ ] FEAT-NNN — Nombre: descripción`
 - `- [ ] **FEAT-NNN — Nombre:** descripción`
 - Variantes con guion largo `—`, doble guión `--` o dos puntos como separador
 
-Para cada feature, capturar:
-- **ID**: el identificador de la feature (ej. `FEAT-027`, `FEAT-029`)
-- **Nombre**: el texto después del ID hasta el separador (ej. `Validación de formato de Release`)
-- **Descripción**: el texto después del separador, si existe
-- **Estado**: `[ ]` (pendiente) o `[x]` (completada) — se procesan todas independientemente del estado
+**Formato B — Sin ID (releases creados con el flujo lazy):**
+- `- [ ] **Nombre:** descripción`
+- `- [x] **Nombre:** descripción`
 
-**Si la sección `## Features` no existe o no contiene ninguna entrada**: terminar sin generar ningún archivo (ver Manejo de errores).
+Para cada feature, capturar:
+- **ID**: el identificador `FEAT-NNN` si está presente; `null` si no hay ID (Formato B).
+- **Nombre**: el nombre de la feature.
+- **Descripción**: el texto después del separador, si existe.
+- **Estado**: `[ ]` (pendiente) o `[x]` (completada) — se procesan todas independientemente del estado.
+
+**Si la sección `## Features` no existe o no contiene ninguna entrada reconocible**: terminar sin generar ningún archivo (ver Manejo de errores).
+
+---
+
+### Paso 2b — Asignar FEAT IDs a features sin ID
+
+Si **ninguna** feature tiene ID `null` → saltar este paso (todos tienen ID; comportamiento actual sin cambios).
+
+Si **alguna** feature tiene ID `null`:
+
+1. **Calcular el máximo ID en uso desde dos fuentes:**
+   - **Fuente A — Filesystem:** usar Glob `$SPECS_BASE/specs/stories/FEAT-*/story.md`. De cada ruta extraer el número `NNN` del segmento `FEAT-NNN-*`. Tomar el mayor.
+   - **Fuente B — Releases existentes:** leer todos los archivos `$SPECS_BASE/specs/releases/*/release.md` y extraer cualquier `FEAT-NNN` presente en sus secciones `## Features`. Tomar el mayor entre todos los encontrados.
+   - `MAX_ID = máximo entre Fuente A y Fuente B` (o `0` si ambas están vacías).
+
+2. **Asignar IDs secuencialmente** a las features con ID `null`, en orden de aparición:
+   - Primera sin ID → `FEAT-(MAX_ID+1)` con cero-padding a 3 dígitos (ej. `FEAT-091`)
+   - Segunda sin ID → `FEAT-(MAX_ID+2)`, etc.
+
+3. **Backfill en `release.md`:** actualizar la sección `## Features` del release activo, reemplazando cada línea sin ID por la versión con ID asignado:
+   - `- [ ] **Nombre:** desc` → `- [ ] FEAT-NNN - **Nombre:** desc`
+   
+   Escribir el archivo actualizado antes de continuar al Paso 3.
+
+4. Emitir resumen de asignación:
+   ```
+   ℹ️ FEAT IDs asignados y registrados en release.md:
+   - story-bulk-plan → FEAT-091
+   - story-bulk-implement → FEAT-092
+   ...
+   ```
 
 ---
 
