@@ -120,8 +120,10 @@
           "Entorno invalido",
           "No se encontraron features",
           "no procesada",
-          "FEAT-001",
-          "FEAT-004"
+          "FEAT-001-pasarela",
+          "FEAT-004-pasarela",
+          "→ FEAT-001",
+          "→ FEAT-004"
         ]
       },
       "threshold": 0.85
