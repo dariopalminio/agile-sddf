@@ -35,23 +35,35 @@ El orquestador te pasa como contexto:
 - Nombres de variables, funciones y clases son descriptivos y siguen las convenciones del proyecto (kebab-case para archivos, camelCase o la convención detectada para código)
 - No hay código duplicado obvio que pueda extraerse
 - Las funciones tienen responsabilidad única y tamaño razonable
-- No hay código comentado sin justificación
+- Si se detecta código muerto o comentado sin justificación, **no asumir que debe eliminarse**: reportarlo como candidato en la tabla de hallazgos con severidad `LOW` y la recomendación "Confirmar con el autor si puede eliminarse; no eliminar en silencio durante esta revisión"
 
 **Seguridad básica:**
 - No hay secrets, tokens o credenciales hardcodeadas
 - No hay vulnerabilidades obvias (inyección, exposición de datos sensibles)
 - No hay operaciones destructivas sin confirmación
 
+**Performance:**
+- No hay consultas a base de datos o llamadas a APIs dentro de loops sin paginación ni batching (riesgo N+1)
+- No hay loops sin límite superior claro sobre colecciones potencialmente grandes
+- No hay operaciones síncronas bloqueantes (I/O, lectura de archivos, llamadas de red) que deberían ser asíncronas según el patrón ya usado en el resto del módulo
+- No hay re-renders o recálculos innecesarios en código de UI reactiva (si aplica al stack del proyecto)
+- Las consultas que retornan colecciones potencialmente grandes implementan paginación o límite explícito
+
 **Cumplimiento de DoD:**
 - No hay variables, imports ni funciones sin usar
 - No hay TODOs sin issue asociado
 - El código sigue el estilo definido en constitution.md
+- **Disciplina de dependencias** (solo si se detecta una dependencia nueva en `package.json` o manifest equivalente): evaluar si (a) el stack o las librerías ya presentes en el proyecto resuelven la necesidad sin agregar una dependencia nueva, (b) se documentó o justificó el impacto en tamaño de bundle/paquete, (c) la dependencia está activamente mantenida (no archivada, con releases recientes), (d) es compatible con la licencia del proyecto. Si la dependencia nueva no tiene justificación visible en `implement-report.md`, `design.md` o comentarios del código, reportar hallazgo `MEDIUM`: "Dependencia nueva '<paquete>' sin justificación de necesidad" con recomendación "Documentar en design.md por qué el stack existente no cubre esta necesidad, o removerla si no es indispensable"
+
+## Estándar de aprobación
+
+Aprueba un cambio cuando definitivamente mejora la salud general del código, aunque no sea perfecto. No bloquees por preferencia personal, estilo subjetivo no normado en `constitution.md`, ni por buscar la solución ideal cuando la entregada es correcta y mantenible. Reserva `HIGH`/`MEDIUM` para problemas reales de funcionalidad, seguridad, mantenibilidad significativa o performance; usa `LOW` para mejoras opcionales que no deben bloquear el merge.
 
 ## Formato de severidad
 
 Clasifica cada hallazgo con:
 - `HIGH`: problema que rompe funcionalidad, expone secretos o viola principios inamovibles
-- `MEDIUM`: problema que impacta mantenibilidad o introduce deuda técnica significativa
+- `MEDIUM`: problema que impacta mantenibilidad o introduce deuda técnica significativa (incluye hallazgos de performance con impacto medible — N+1, loops sin límite, operaciones síncronas bloqueantes — y dependencias nuevas sin justificación)
 - `LOW`: mejora recomendada sin impacto funcional
 
 Si no hay hallazgos de ningún tipo, `max-severity: ninguna`.

@@ -1,7 +1,7 @@
 {
   "skill": "story-code-review",
   "version": "1.0.0",
-  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente (happy path aprobado, needs-changes con fix-directives, precondicion invalida y artefactos faltantes), asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
+  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente (happy path aprobado, needs-changes con fix-directives, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio y disciplina de dependencias), asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
   "cases": [
     {
       "id": "TC-001",
@@ -145,6 +145,122 @@
         ]
       },
       "threshold": 1.0
+    },
+    {
+      "id": "TC-005",
+      "name": "hallazgo-performance-detectado-genera-needs-changes",
+      "type": "fail-path",
+      "description": "Historia en IMPLEMENT/DONE con story.md, design.md e implement-report.md presentes. El Tech-Lead-Reviewer detecta un hallazgo de performance (consulta a base de datos dentro de un loop, riesgo N+1) clasificado MEDIUM bajo la nueva subseccion Performance. El skill debe tratarlo igual que cualquier otro hallazgo de code-quality: calcular max-severity MEDIUM, generar fix-directives.md y retroceder story.md a READY-FOR-IMPLEMENT/DONE.",
+      "input": {
+        "story_id": "FEAT-050",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "implement-report.md"],
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/orders/list.ts:55",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Consulta a base de datos ejecutada dentro de un loop sobre la lista de pedidos (riesgo N+1)",
+              "action": "Reemplazar por una sola consulta con IN o batching antes del loop"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_audit_status": "pass"
+        }
+      },
+      "expected": {
+        "contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "READY-FOR-IMPLEMENT",
+          "MEDIUM",
+          "N+1"
+        ],
+        "not_contains": [
+          "approved",
+          "CODE-REVIEW/DONE",
+          "Revision aprobada"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-006",
+      "name": "advertencia-tamano-cambio-no-afecta-approved",
+      "type": "happy-path",
+      "description": "Historia en IMPLEMENT/DONE con implement-report.md que lista 15 archivos generados, pero ningun agente ni security-audit reporta severidad HIGH/MEDIUM. El skill debe mostrar la nota informativa de tamano de cambio (Paso 4c.2) sugiriendo /story-split, sin que esto afecte el calculo de max-severity ni review-status: debe seguir siendo approved y story.md debe avanzar a CODE-REVIEW/DONE.",
+      "input": {
+        "story_id": "FEAT-060",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "implement-report.md"],
+        "implement_report_files_count": 15,
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_audit_status": "pass"
+        }
+      },
+      "expected": {
+        "contains": [
+          "approved",
+          "CODE-REVIEW",
+          "DONE",
+          "story-split",
+          "informativa"
+        ],
+        "not_contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "READY-FOR-IMPLEMENT"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-007",
+      "name": "dependencia-nueva-sin-justificacion-detectada",
+      "type": "fail-path",
+      "description": "El Tech-Lead-Reviewer detecta una dependencia nueva agregada al manifest de paquetes (package.json) sin justificacion visible en design.md ni implement-report.md. Debe reportarse como hallazgo MEDIUM bajo el checklist de disciplina de dependencias, generando needs-changes y fix-directives.md.",
+      "input": {
+        "story_id": "FEAT-070",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "implement-report.md"],
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "package.json:18",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Dependencia nueva 'lodash' sin justificacion de necesidad",
+              "action": "Documentar en design.md por que el stack existente no cubre esta necesidad, o removerla"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_audit_status": "pass"
+        }
+      },
+      "expected": {
+        "contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "Dependencia nueva",
+          "package.json"
+        ],
+        "not_contains": [
+          "approved",
+          "CODE-REVIEW/DONE"
+        ]
+      },
+      "threshold": 0.85
     }
   ]
 }

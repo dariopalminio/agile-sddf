@@ -299,6 +299,8 @@ Lanzar simultáneamente los siguientes subagentes y skill, pasando a cada agente
 - `$IMPL_REPORT_AVAILABLE`: flag booleano de disponibilidad de implement-report.md
 - `$TESTCASES_AVAILABLE`: flag booleano de disponibilidad de testcases.md
 
+> **Principio compartido — Estándar de aprobación:** los tres agentes aplican el mismo criterio: aprobar cuando el cambio mejora claramente la salud del código, sin bloquear por preferencia personal ni por buscar la solución perfecta. El texto completo está duplicado en la sección "Estándar de aprobación" de cada `agents/*.agent.md` (los subagentes no heredan el contexto de este SKILL.md).
+
 **Agente 1 — Tech-Lead-Reviewer** (`agents/tech-lead-reviewer.agent.md`):
 - Revisa calidad, legibilidad, duplicación y seguridad del código fuente
 - Output: `.tmp/story-code-review/tech-lead-report.md`
@@ -418,6 +420,19 @@ review-status = needs-changes  si max_severity ∈ {HIGH, MEDIUM}
 
 Registrar los valores actualizados como `$MAX_SEVERITY` y `$REVIEW_STATUS`.
 
+#### 4c.2. Verificación informativa de tamaño de cambio (no bloqueante)
+
+Esta verificación es puramente informativa: **no participa en el cálculo de `$MAX_SEVERITY` ni `$REVIEW_STATUS`** (ya cerrados en 4b/4c/4c.1).
+
+1. Contar el número de archivos distintos en `$IMPL_FILES` (extraído en el Paso 2c desde `implement-report.md`). Registrar como `$CHANGED_FILES_COUNT`.
+2. Si `$IMPL_FILES` está vacío (porque `implement-report.md` no estaba disponible), omitir esta verificación y registrar `$CHANGE_SIZE_NOTE = ""`.
+3. Clasificar según umbrales:
+   - `$CHANGED_FILES_COUNT ≤ 5` → sin nota (`$CHANGE_SIZE_NOTE = ""`)
+   - `6 ≤ $CHANGED_FILES_COUNT ≤ 12` → `$CHANGE_SIZE_NOTE = "ℹ️ Nota informativa: tamaño de cambio aceptable (<N> archivos modificados) — sin acción requerida."`
+   - `$CHANGED_FILES_COUNT > 12` → `$CHANGE_SIZE_NOTE = "⚠️ Nota informativa: tamaño de cambio elevado (<N> archivos modificados). Considera ejecutar /story-split antes de futuras historias similares para reducir el alcance. Esta nota es informativa y no afecta la decisión de este review."`
+
+No se invoca `git diff` ni ningún comando nuevo: el conteo reutiliza `$IMPL_FILES`, ya disponible desde el Paso 2c, evitando duplicar lo que `security-audit` resuelve internamente y manteniendo el orquestador sin lógica de Bash propia.
+
 #### 4d. Bifurcación post-árbitro
 
 **Si `$REVIEW_STATUS = needs-changes`:** ejecutar los pasos 4e–4g y después el Paso 5, luego saltar al Paso 7.
@@ -512,6 +527,7 @@ Completar el template con:
 - Sección `### Cobertura de Casos de Prueba (testcases.md)` — `{{TESTCASES_COVERAGE_SECTION}}`:
   - **Si `$TESTCASES_AVAILABLE = false`:** `⏭️ testcases.md no encontrado — análisis de cobertura omitido. Considera ejecutar /story-testcases para generar la especificación canónica de pruebas.`
   - **Si `$TESTCASES_AVAILABLE = true`:** extraer y mostrar los hallazgos de la sección "Hallazgos — Cobertura en testcases.md" del `product-owner-report.md` y los hallazgos de la sección "Hallazgos — Trazabilidad de diseño en testcases.md" del `integration-report.md`
+- Sección `### Nota de Tamaño de Cambio` — `{{CHANGE_SIZE_NOTE}}`: contenido de `$CHANGE_SIZE_NOTE` calculado en el Paso 4c.2; si está vacío, dejar la sección sin contenido visible (no mostrar el placeholder literal)
 - Sección Decisión final: `$REVIEW_STATUS` con justificación
 - Sección `## Security Audit` (inyectada dinámicamente, después de los hallazgos de los tres revisores):
   - **Si `$SECURITY_STATUS = pass`:** mostrar `✅ Security Audit: PASS` y resumen de reglas evaluadas (evaluated/pass/fail/na extraídos de `audit-report.md`)
@@ -562,6 +578,7 @@ Mostrar:
  🔒 Security Audit          │ PASS      │ <N> reglas evaluadas          (si ejecutó y pasó)
  🔒 Security Audit          │ FAIL      │ <N> hallazgos de seguridad    (si ejecutó y falló)
  🔒 Security Audit          │ —         │ omitido                       (si skipped)
+ 📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
  Review status:   <review_status>
@@ -590,6 +607,7 @@ O si hay hallazgos criticos:
  DoD CODE-REVIEW            │ <sev>     │ <N> criterios no cumplidos
  🔒 Security Audit          │ FAIL      │ <N> hallazgos de seguridad    (si ejecutó y falló)
  🔒 Security Audit          │ —         │ omitido                       (si skipped)
+ 📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
  Review status:   needs-changes

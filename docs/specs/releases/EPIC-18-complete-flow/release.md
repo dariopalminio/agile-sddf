@@ -30,4 +30,5 @@ Este release añade al framework las capacidades de bulk y orquestacion de flujo
 
 - [ ] PLAN-04 - **Mejorar documentación de story-implement:** actualizar la documentación de `story-implement` para reflejar correctamente la exposición de variables y la configuración de `code_generators` por capas (frontend/backend).
 
+- [ ] PLAN-06 - **Incorporar mejoras a `story-code-review`:** identificar prácticas valiosas que falten en nuestro skill, y diseñar un plan de integración de esas prácticas (performance, estándar de aprobación, disciplina de dependencias, tamaño de cambio, código muerto) dentro de la estructura actual de subagentes y orquestación, asegurando coherencia y sin introducir complejidad innecesaria.
 

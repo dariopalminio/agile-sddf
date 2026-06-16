@@ -46,6 +46,12 @@ reviewers:
 
 ---
 
+### Nota de Tamaño de Cambio
+
+{{CHANGE_SIZE_NOTE}}
+
+---
+
 ### Cobertura de Casos de Prueba (testcases.md)
 
 {{TESTCASES_COVERAGE_SECTION}}

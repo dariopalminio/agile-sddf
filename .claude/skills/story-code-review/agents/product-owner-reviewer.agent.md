@@ -53,6 +53,10 @@ El orquestador te pasa como contexto:
 - El checklist "Test Cases Progress" no contiene entradas `[!]` (test fallido)
 - Si `$IMPL_REPORT_AVAILABLE = false`: anotar como informativo que no hay implement-report para cruzar referencias de archivos; no penalizar con severidad
 
+## Estándar de aprobación
+
+Aprueba la cobertura de requisitos cuando los escenarios Gherkin principales están verificados de forma observable, aunque la cobertura de casos extremos no sea exhaustiva. No bloquees por falta de tests triviales o de bajo valor; reserva `HIGH`/`MEDIUM` para escenarios principales sin cobertura real, y usa `LOW` para huecos menores (datos de ejemplo incompletos, aserciones débiles) que no comprometen el comportamiento esperado.
+
 ## Formato de severidad
 
 Clasifica cada hallazgo con:

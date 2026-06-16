@@ -59,6 +59,10 @@ El orquestador te pasa como contexto:
 - No hay referencias D-N huérfanas (valores en columna Ref que apuntan a decisiones inexistentes)
 - Los casos de tipo IT (Integration) y API tienen al menos una referencia a decisiones de diseño
 
+## Estándar de aprobación
+
+Aprueba la integración cuando la arquitectura implementada es consistente con `design.md` en sus decisiones estructurales clave, aunque existan desviaciones menores de naming o detalle. No bloquees por diferencias triviales que no afectan la integración con otros componentes; reserva `HIGH`/`MEDIUM` para violaciones de contratos de interfaz o componentes faltantes, y usa `LOW` para inconsistencias menores sin impacto funcional.
+
 ## Formato de severidad
 
 Clasifica cada hallazgo con:
