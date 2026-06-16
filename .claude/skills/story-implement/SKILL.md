@@ -107,7 +107,7 @@ Si no se proporciona argumento, solicitar interactivamente.
 
 ### Paso 0 — Verificar entorno (`skill-preflight`)
 
-Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
+Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. `skill-preflight` resuelve y expone `$SPECS_BASE` y `$CLI_ROOT` — usar `$SPECS_BASE` en todas las rutas a artefactos de specs y `$CLI_ROOT` en todas las rutas a skills (`$CLI_ROOT/skills/{skill}/SKILL.md`) en los pasos siguientes.
 
 ### Paso 0b — Parsear flags de invocación e inicializar `$EXEC_MODE`
 
@@ -822,7 +822,7 @@ Los subagentes de Fase RED reciben el bundle `{story_id, testcases_path, story_p
 Los subagentes de Fases GREEN/REFACTOR reciben el bundle `{story_id, phase, layer, test_files, story_path, design_path}` y escriben en `.tmp/story-implement/{phase}/{layer}/results.json`.
 El orquestador nunca pasa su contexto completo heredado a los subagentes.
 
-La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md → `Agent` tool (`subagent_type: general-purpose`) → output en `.tmp/` → `Read` de resultados. Los skills de generación permanecen en `$CLI_ROOT/skills/` (no en `.claude/agents/`) para preservar su invocabilidad directa y la configurabilidad vía `sddf.config.yaml`.
+La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md → `Agent` tool (`subagent_type: general-purpose`) → output en `.tmp/` → `Read` de resultados. Los skills de generación permanecen en `$CLI_ROOT/skills/` (no en `$CLI_ROOT/agents/`) para preservar su invocabilidad directa y la configurabilidad vía `sddf.config.yaml`.
 
 ---
 

@@ -28,7 +28,6 @@ Este release añade al framework las capacidades de bulk y orquestacion de flujo
 
 - [ ] PLAN-03 - **Asignación lazy de FEAT IDs**: mover la asignación de FEAT IDs al momento real de creación de directorios de historia (`release-generate-stories`). El `release.md` describe features **sin ID**; el ID se asigna y se escribe en `release.md` recién cuando `release-generate-stories` crea los directorios.
 
-
-
+- [ ] PLAN-04 - **Mejorar documentación de story-implement:** actualizar la documentación de `story-implement` para reflejar correctamente la exposición de variables y la configuración de `code_generators` por capas (frontend/backend).
 
 

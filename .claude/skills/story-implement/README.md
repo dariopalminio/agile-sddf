@@ -27,7 +27,7 @@ Skill orquestador que ejecuta el ciclo TDD completo (RED → GREEN → REFACTOR)
 | `design.md` presente | Arquitectura, componentes e interfaces (fallback si falta `testcases.md`) |
 | `testcases.md` presente *(recomendado)* | Fuente canónica de casos de prueba por tipo |
 | `sddf.config.yaml` presente | Declara `implement.test_generators` y `implement.code_generators` |
-| Skills declarados en `sddf.config.yaml` existen en `.claude/skills/` | Verificación fail-fast en Paso 2 |
+| Skills declarados en `sddf.config.yaml` existen en `$CLI_ROOT/skills/` | Verificación fail-fast en Paso 2 |
 
 Si `testcases.md` no existe, el skill emite una advertencia y usa `story.md` + `design.md` como fallback.
 Si `sddf.config.yaml` no existe o sus secciones están vacías, la ejecución se detiene con un mensaje descriptivo.
@@ -84,6 +84,39 @@ story-implement (orquestador — Fases GREEN y REFACTOR)
 ```
 
 Los skills generadores se declaran en `sddf.config.yaml` bajo `implement.test_generators` (Fase RED) e `implement.code_generators` (Fases GREEN/REFACTOR). El orquestador es agnóstico al stack.
+
+## Configurar code_generators por capas (frontend / backend)
+
+`implement.code_generators` en `sddf.config.yaml` es una **lista** de entradas `{layer, skill, required}`, una por cada capa de tu arquitectura. El orquestador recorre la lista en orden e invoca el skill de cada capa en las Fases GREEN y REFACTOR — no necesita conocer el stack, solo que cada skill cumple el contrato de entrada/salida.
+
+```yaml
+implement:
+  code_generators:
+    - layer: frontend
+      skill: code-frontend-library-react   # skill especializado en la capa frontend
+      required: true
+    - layer: backend
+      skill: code-backend-nodejs           # skill especializado en la capa backend (créalo con skill-master si no existe)
+      required: true
+    - layer: database
+      skill: none                          # capa deshabilitada
+      required: false
+```
+
+| Campo | Descripción |
+|---|---|
+| `layer` | Nombre de la capa (`frontend`, `backend`, `database`, o cualquier nombre que use tu arquitectura). Se pasa como `layer` en el bundle de invocación y determina la ruta de resultados `.tmp/story-implement/{phase}/{layer}/results.json`. |
+| `skill` | Nombre del skill en `$CLI_ROOT/skills/{skill}/SKILL.md` que genera/refactoriza el código de esa capa. Usa `none` para omitir la capa. |
+| `required` | Si `true` y el skill no existe, el ciclo se detiene (fail-fast, Paso 8 de `SKILL.md`). Si `false`, la capa se omite con `[WARN]` y el ciclo continúa. |
+
+### Cómo usar un skill específico por capa
+
+1. **Identifica o crea el skill de cada capa.** `code-frontend-library-react` ya existe en `$CLI_ROOT/skills/` para proyectos React. Para backend o base de datos, usa el skill de tu stack (ej. `code-backend-nodejs`, `code-database-prisma`) o créalo con `skill-master` siguiendo el patrón de `code-frontend-library-react/SKILL.md` (estructura, `evals/evals.json`, etc.) — la constitución exige usar `skill-master` para crear skills nuevos.
+2. **Declara la capa en `sddf.config.yaml`** bajo `implement.code_generators`, en el orden en que quieres que se invoquen.
+3. **Asegúrate de que el skill respeta el contrato de invocación** (ADR-0002, ver "Arquitectura de delegación" arriba): recibe el bundle `{story_id, phase, layer, test_files, story_path, design_path}` y escribe su resultado en `.tmp/story-implement/{phase}/{layer}/results.json`.
+4. **Cada capa se invoca de forma independiente**, en el orden declarado en el YAML, tanto en GREEN como en REFACTOR.
+
+> **Nota:** este propio repositorio (`agile-sddf`) genera skills, no código de aplicación, por lo que su `sddf.config.yaml` raíz usa una forma simplificada de un solo generador (`code_generators: { skill: skill-master, required: true }`) en vez del formato de lista por capas. Para proyectos que generan código de aplicación (frontend/backend), usa el formato de lista mostrado arriba — ver la plantilla completa en `$CLI_ROOT/skills/sddf-init/assets/sddf.config.yaml.template`.
 
 ## Uso
 
