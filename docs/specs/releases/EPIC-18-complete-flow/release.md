@@ -13,6 +13,9 @@ related:
   - plan-01-deliver-status
   - plan-02-epic-workflow-definition
   - plan-03-lazy-assignment-of-feat-ids
+  - plan-04-doc-story-implement
+  - plan-05-enhance-code-review
+  - plan-06-isolate-workspace-by-story
 ---
 
 # Release/Epic: Complete Flow — Skills para el Workflow de Story y Release
@@ -30,5 +33,7 @@ Este release añade al framework las capacidades de bulk y orquestacion de flujo
 
 - [ ] PLAN-04 - **Mejorar documentación de story-implement:** actualizar la documentación de `story-implement` para reflejar correctamente la exposición de variables y la configuración de `code_generators` por capas (frontend/backend).
 
-- [ ] PLAN-06 - **Incorporar mejoras a `story-code-review`:** identificar prácticas valiosas que falten en nuestro skill, y diseñar un plan de integración de esas prácticas (performance, estándar de aprobación, disciplina de dependencias, tamaño de cambio, código muerto) dentro de la estructura actual de subagentes y orquestación, asegurando coherencia y sin introducir complejidad innecesaria.
+- [ ] PLAN-05 - **Incorporar mejoras a `story-code-review`:** identificar prácticas valiosas que falten en nuestro skill, y diseñar un plan de integración de esas prácticas (performance, estándar de aprobación, disciplina de dependencias, tamaño de cambio, código muerto) dentro de la estructura actual de subagentes y orquestación, asegurando coherencia y sin introducir complejidad innecesaria.
+
+- [ ] PLAN-06 - **Aislar espacio de trabajo por historia:** en `story-implement` y en `story-code-review`, modificar las rutas de archivos intermedios generados por `story-implement` y `story-code-review` para incluir `{story_id}`, evitando colisiones cuando múltiples agentes ejecutan el skill simultáneamente sobre historias distintas. Esto asegura que cada historia tenga su propio espacio de trabajo aislado, manteniendo la integridad de los datos y el flujo de trabajo.
 

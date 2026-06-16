@@ -1,7 +1,7 @@
 ---
 type: plan
-id: plan-06
-slug: plan-06-enhance-code-review
+id: plan-05
+slug: plan-05-enhance-code-review
 title: "Incorporar mejoras a `story-code-review`"
 status: COMPLETED
 substatus: DONE

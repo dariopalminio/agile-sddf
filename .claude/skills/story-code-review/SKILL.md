@@ -23,7 +23,7 @@ Quality gate formal entre la implementación y la marca final de Done. Compatibl
 
 **Qué hace este skill:**
 - Verifica precondiciones antes de revisar (fail-fast ante artefactos faltantes)
-- Limpia `.tmp/story-code-review/` para garantizar idempotencia
+- Limpia `.tmp/story-code-review/{story_id}/` para garantizar idempotencia
 - Lanza tres subagentes revisores en paralelo con responsabilidades exclusivas
 - Consolida los informes parciales y calcula la severidad máxima
 - **Si `approved`**: genera `code-review-report.md`, elimina `fix-directives.md` (si existe) y marca `story.md` como `CODE-REVIEW/DONE`
@@ -114,7 +114,7 @@ El flujo por defecto es siempre el equipo de tres agentes. El flag `--single-age
 | Finalización aprobada (Paso 6) | `CODE-REVIEW` | `DONE` |
 | Finalización con bloqueantes (Paso 4g) | `READY-FOR-IMPLEMENT` | `DONE` |
 
-- La ejecución es idempotente: `.tmp/story-code-review/` se limpia al inicio de cada ejecución
+- La ejecución es idempotente: `.tmp/story-code-review/{story_id}/` se limpia al inicio de cada ejecución
 - `story-code-review` solo puede ejecutarse si `story.md` tiene `status: IMPLEMENT` + `substatus: DONE`. Si la precondición no se cumple, la ejecución se detiene con error descriptivo.
 - NO modifique ningún archivo existente en el código fuente (estamos revisando el código de la implementación, no implementando los artefactos técnicos)
 - NO genere código; estamos revisando la implementación, no implementando los artefactos técnicos
@@ -284,7 +284,7 @@ Mostrar resumen de carga:
 
 #### 3a. Limpiar directorio temporal (idempotencia)
 
-Eliminar el directorio `.tmp/story-code-review/` si existe y recrearlo vacío.
+Eliminar el directorio `.tmp/story-code-review/{story_id}/` si existe y recrearlo vacío.
 
 Esto garantiza que ejecuciones repetidas del skill producen el mismo resultado (NF-2).
 
@@ -303,15 +303,15 @@ Lanzar simultáneamente los siguientes subagentes y skill, pasando a cada agente
 
 **Agente 1 — Tech-Lead-Reviewer** (`agents/tech-lead-reviewer.agent.md`):
 - Revisa calidad, legibilidad, duplicación y seguridad del código fuente
-- Output: `.tmp/story-code-review/tech-lead-report.md`
+- Output: `.tmp/story-code-review/{story_id}/tech-lead-report.md`
 
 **Agente 2 — Product-Owner-Reviewer** (`agents/product-owner-reviewer.agent.md`):
 - Verifica que cada escenario Gherkin tiene correspondencia en el código
-- Output: `.tmp/story-code-review/product-owner-report.md`
+- Output: `.tmp/story-code-review/{story_id}/product-owner-report.md`
 
 **Agente 3 — Integration-Reviewer** (`agents/integration-reviewer.agent.md`):
 - Valida que los componentes respetan la arquitectura de design.md
-- Output: `.tmp/story-code-review/integration-report.md`
+- Output: `.tmp/story-code-review/{story_id}/integration-report.md`
 
 **Participante 4 — Security-Audit** (skill `security-audit`):
 - Invocación: `security-audit --repo $SDDF_ROOT --story $STORY_DIR`
@@ -335,7 +335,7 @@ Esperar a que los cuatro finalicen antes de continuar.
 
 #### 4a. Leer los cuatro informes
 
-Leer los archivos de `.tmp/story-code-review/`:
+Leer los archivos de `.tmp/story-code-review/{story_id}/`:
 - `tech-lead-report.md`
 - `product-owner-report.md`
 - `integration-report.md`
@@ -633,9 +633,9 @@ Ejecuta /story-code-review {story_id} nuevamente tras corregir los hallazgos.
 |-----------|-----------|
 | `$SPECS_BASE/specs/stories/FEAT-NNN/code-review-report.md` | Siempre |
 | `$SPECS_BASE/specs/stories/FEAT-NNN/fix-directives.md` | Solo si `needs-changes` |
-| `.tmp/story-code-review/tech-lead-report.md` | Temporal (intermedio) |
-| `.tmp/story-code-review/product-owner-report.md` | Temporal (intermedio) |
-| `.tmp/story-code-review/integration-report.md` | Temporal (intermedio) |
+| `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
+| `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
+| `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |
 | `.tmp/security-audit/audit-report.md` | Temporal (si `$SECURITY_STATUS ≠ skipped`) |
 
 Estado final de `story.md`:

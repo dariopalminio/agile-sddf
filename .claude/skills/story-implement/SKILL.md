@@ -265,7 +265,7 @@ Para cada entry de `test_generators` no omitida (en el orden del YAML):
         - design_path: {$DESIGN_PATH}
         - e2e_context: {$E2E_CONTEXT}   ← solo para tipo e2e; null si la sección está ausente en el YAML
         ```
-4. El subagente escribe sus resultados en `.tmp/story-implement/{tipo}/results.json`
+4. El subagente escribe sus resultados en `.tmp/story-implement/{story_id}/{tipo}/results.json`
 5. **Si el subagente retorna `status: error`:**
    ```
    ❌ El skill '{skill}' retornó error durante la Fase RED — deteniendo ejecución
@@ -298,7 +298,7 @@ Para cada tipo generado exitosamente:
 
 ### Paso 6 — Escribir output intermedio
 
-Escribir `.tmp/story-implement/red-phase-status.json`:
+Escribir `.tmp/story-implement/{story_id}/red-phase-status.json`:
 
 ```json
 {
@@ -361,11 +361,11 @@ Leer respuesta del usuario:
 
 ### Paso 7 — Verificar precondición RED (Fase GREEN)
 
-Leer `.tmp/story-implement/red-phase-status.json`.
+Leer `.tmp/story-implement/{story_id}/red-phase-status.json`.
 
 **Si el archivo no existe:**
 ```
-❌ Precondición RED no cumplida: .tmp/story-implement/red-phase-status.json no encontrado
+❌ Precondición RED no cumplida: .tmp/story-implement/{story_id}/red-phase-status.json no encontrado
 
 Ejecuta story-implement primero para completar la Fase RED antes de continuar con GREEN.
 ```
@@ -475,7 +475,7 @@ Invocar el skill siguiendo el contrato ADR-0002:
      - story_path: {$SPECS_BASE}/specs/stories/{story_id}*/story.md
      - design_path: {$SPECS_BASE}/specs/stories/{story_id}*/design.md
      ```
-3. El subagente escribe sus resultados en `.tmp/story-implement/green/{layer}/results.json`
+3. El subagente escribe sus resultados en `.tmp/story-implement/{story_id}/green/{layer}/results.json`
 
 **Si el subagente retorna `status: error`:**
 
@@ -593,7 +593,7 @@ Invocar el skill siguiendo el contrato ADR-0002:
      - story_path: {$SPECS_BASE}/specs/stories/{story_id}*/story.md
      - design_path: {$SPECS_BASE}/specs/stories/{story_id}*/design.md
      ```
-3. El subagente escribe sus resultados en `.tmp/story-implement/refactor/{layer}/results.json`
+3. El subagente escribe sus resultados en `.tmp/story-implement/{story_id}/refactor/{layer}/results.json`
 
 **Si el subagente retorna `status: error`:**
 
@@ -717,7 +717,7 @@ updated: <YYYY-MM-DD>
 
 #### 11e — Escribir `cycle-status.json` y mostrar resumen final
 
-Escribir `.tmp/story-implement/cycle-status.json`:
+Escribir `.tmp/story-implement/{story_id}/cycle-status.json`:
 ```json
 {
   "story_id": "{$RED_STORY_ID}",
@@ -742,7 +742,7 @@ Mostrar resumen según `$EXEC_MODE`:
 ✅ Fase REFACTOR: sin regresiones
 ──────────────────────────────────────────────────────────
 📄 implement-report.md → {$SPECS_BASE}/specs/stories/{story_id}/implement-report.md
-📄 cycle-status.json   → .tmp/story-implement/cycle-status.json
+📄 cycle-status.json   → .tmp/story-implement/{story_id}/cycle-status.json
 📋 story.md: {IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS} ✓
 📋 release.md: {actualizado / no encontrado}
 
@@ -758,7 +758,7 @@ DoD IMPLEMENT:
    Fase REFACTOR: sin regresiones
 
    implement-report.md → {$SPECS_BASE}/specs/stories/{story_id}/implement-report.md
-   cycle-status.json   → .tmp/story-implement/cycle-status.json
+   cycle-status.json   → .tmp/story-implement/{story_id}/cycle-status.json
    story.md            → {IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS}
    release.md          → {actualizado / no encontrado}
 
@@ -784,7 +784,7 @@ DoD IMPLEMENT:
 | `story.md` o `design.md` ausentes | `❌ Artefactos de especificación insuficientes (falta story.md y/o design.md)` | Detener ejecución |
 | Subagente retorna `status: error` (Fase RED) | `❌ El skill '{skill}' retornó error durante la Fase RED` | Detener sin invocar siguientes |
 | Tests pasan sin implementación (Fase RED) | `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos` | Advertir, continuar |
-| `red-phase-status.json` no existe | `❌ Precondición RED no cumplida: .tmp/story-implement/red-phase-status.json no encontrado` | Detener Fase GREEN |
+| `red-phase-status.json` no existe | `❌ Precondición RED no cumplida: .tmp/story-implement/{story_id}/red-phase-status.json no encontrado` | Detener Fase GREEN |
 | `red_confirmed: false` en red-phase-status.json | `❌ Precondición RED no cumplida: red_confirmed es false` | Detener Fase GREEN |
 | `implement.code_generators` no declarado o vacío | `❌ implement.code_generators no declarado o vacío en sddf.config.yaml` | Detener Fase GREEN |
 | Entry con `skill: none` | `[INFO] Capa '{layer}': skill none — omitiendo` | Omitir capa |
@@ -818,8 +818,8 @@ story-implement (orquestador — Fases GREEN y REFACTOR)
   └── {skill capa database}  ← subagente, ej. code-database-prisma (si existe)
 ```
 
-Los subagentes de Fase RED reciben el bundle `{story_id, testcases_path, story_path, design_path}` (más `e2e_context` para el tipo `e2e`) y escriben en `.tmp/story-implement/{tipo}/results.json`.
-Los subagentes de Fases GREEN/REFACTOR reciben el bundle `{story_id, phase, layer, test_files, story_path, design_path}` y escriben en `.tmp/story-implement/{phase}/{layer}/results.json`.
+Los subagentes de Fase RED reciben el bundle `{story_id, testcases_path, story_path, design_path}` (más `e2e_context` para el tipo `e2e`) y escriben en `.tmp/story-implement/{story_id}/{tipo}/results.json`.
+Los subagentes de Fases GREEN/REFACTOR reciben el bundle `{story_id, phase, layer, test_files, story_path, design_path}` y escriben en `.tmp/story-implement/{story_id}/{phase}/{layer}/results.json`.
 El orquestador nunca pasa su contexto completo heredado a los subagentes.
 
 La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md → `Agent` tool (`subagent_type: general-purpose`) → output en `.tmp/` → `Read` de resultados. Los skills de generación permanecen en `$CLI_ROOT/skills/` (no en `$CLI_ROOT/agents/`) para preservar su invocabilidad directa y la configurabilidad vía `sddf.config.yaml`.
@@ -835,9 +835,9 @@ La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md �
 | `implement-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase |
 | `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
 | `release.md` (actualizado) | `$SPECS_BASE/specs/releases/<parent>/release.md` | Checklist con `[x]` para la historia completada (si existe) |
-| `red-phase-status.json` | `.tmp/story-implement/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN |
-| `cycle-status.json` | `.tmp/story-implement/cycle-status.json` | Estado final del ciclo TDD completo |
-| `results.json` por tipo/capa | `.tmp/story-implement/{tipo o fase/capa}/results.json` | Output de cada subagente |
+| `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN |
+| `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD completo |
+| `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente |
 
 ---
 
