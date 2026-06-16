@@ -39,7 +39,7 @@ story-verify    ← aquí
 - `$SPECS_BASE/policies/definition-of-done-story.md` — criterios DoD sección VERIFY (opcional; usa fallback genérico si no existe)
 - `$SDDF_ROOT/sddf.config.yaml` — configuración de pruebas del proyecto (opcional; si existe y contiene tests `required: true`, tiene prioridad sobre la detección automática)
 - Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático (fallback cuando sddf.config.yaml no existe)
-- `.tmp/story-verify/qa-input.json` / `qa-output.json` — canal de comunicación con el agente QA (solo modo manual)
+- `.tmp/story-verify/{story_id}/qa-input.json` / `qa-output.json` — canal de comunicación con el agente QA (solo modo manual)
 - `assets/verify-report-template.md` — template del reporte
 
 ## Parámetros
@@ -341,18 +341,18 @@ Leer el output del skill invocado para construir los resultados.
 
 #### Modo: manual
 
-Preparar el directorio `.tmp/story-verify/` y verificar que puede crearse.
+Preparar el directorio `.tmp/story-verify/{story_id}/` y verificar que puede crearse.
 
 Si no puede crearse:
 ```
-❌ No se puede crear el directorio .tmp/story-verify/ — verifique permisos.
+❌ No se puede crear el directorio .tmp/story-verify/{story_id}/ — verifique permisos.
    Abortando la ejecución del modo manual.
 ```
 
 Si el directorio existe, proceder:
 
 1. Leer los escenarios Gherkin de `story.md` (sección `## ✅ Criterios de aceptación`)
-2. Escribir `.tmp/story-verify/qa-input.json`:
+2. Escribir `.tmp/story-verify/{story_id}/qa-input.json`:
 ```json
 {
   "story_id": "{story_id}",
@@ -366,7 +366,7 @@ Si el directorio existe, proceder:
 
    > **Mecanismo de invocación:** el agente local se lanza leyendo su archivo `agents/qa-engineer.agent.md` y creando un subagente `general-purpose` cuyo prompt es el contenido del archivo más el bloque de contexto con las variables resueltas. El subagente escribe en el `output:` declarado en su frontmatter y devuelve el control. Ver contrato completo en `docs/knowledge/guides/best-practices-for-skills.md` (ADR-0002).
 
-4. Leer `.tmp/story-verify/qa-output.json` una vez el agente complete
+4. Leer `.tmp/story-verify/{story_id}/qa-output.json` una vez el agente complete
 
 ---
 

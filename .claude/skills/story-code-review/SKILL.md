@@ -316,7 +316,8 @@ Lanzar simultáneamente los siguientes subagentes y skill, pasando a cada agente
 **Participante 4 — Security-Audit** (skill `security-audit`):
 - Invocación: `security-audit --repo $SDDF_ROOT --story $STORY_DIR`
 - Resuelve archivos modificados por la historia via git diff o tasks.md (delegado al skill)
-- Output: `.tmp/security-audit/audit-report.md`
+- Output: `.tmp/security-audit/<basename($STORY_DIR)>/audit-report.md`
+- Registrar `$SEC_AUDIT_REPORT = .tmp/security-audit/<basename($STORY_DIR)>/audit-report.md` (ej. `.tmp/security-audit/FEAT-059-login-flow/audit-report.md`) para usarla en el Paso 4a
 
 Mostrar progreso:
 ```
@@ -343,7 +344,7 @@ Leer los archivos de `.tmp/story-code-review/{story_id}/`:
 **Si algún informe de agente falta o tiene frontmatter inválido:**
 Asumir `max-severity: HIGH` para ese agente (fail-safe).
 
-Leer `.tmp/security-audit/audit-report.md` y determinar `$SECURITY_STATUS`:
+Leer `$SEC_AUDIT_REPORT` y determinar `$SECURITY_STATUS`:
 - Si el archivo **no existe** o contiene `source_files_found: false` → registrar `$SECURITY_STATUS = skipped`
 - Si el archivo existe y contiene `status: PASS` → registrar `$SECURITY_STATUS = pass`
 - Si el archivo existe y contiene `status: FAIL` → registrar `$SECURITY_STATUS = fail`
@@ -636,7 +637,7 @@ Ejecuta /story-code-review {story_id} nuevamente tras corregir los hallazgos.
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |
-| `.tmp/security-audit/audit-report.md` | Temporal (si `$SECURITY_STATUS ≠ skipped`) |
+| `.tmp/security-audit/<basename($STORY_DIR)>/audit-report.md` | Temporal (si `$SECURITY_STATUS ≠ skipped`) |
 
 Estado final de `story.md`:
 - `CODE-REVIEW/DONE` si la revisión es aprobada

@@ -25,10 +25,10 @@ Auditoría automática condicional de seguridad de repositorios de código. Dete
 [Ingeniero o story-code-review]
        ↓
 security-audit  ← entry point
-  └── agents/context-detector.agent.md    → .tmp/security-audit/project-context.json
-  └── assets/security-checklist.md        → .tmp/security-audit/active-rules.json  (filtra el orquestador)
-  └── agents/checklist-evaluator.agent.md → .tmp/security-audit/rule-results.json
-  └── agents/report-generator.agent.md    → .tmp/security-audit/audit-report.md / audit-report.json
+  └── agents/context-detector.agent.md    → $AUDIT_TMP/project-context.json
+  └── assets/security-checklist.md        → $AUDIT_TMP/active-rules.json  (filtra el orquestador)
+  └── agents/checklist-evaluator.agent.md → $AUDIT_TMP/rule-results.json
+  └── agents/report-generator.agent.md    → $AUDIT_TMP/audit-report.md / audit-report.json
        ↓
 [Reporte Markdown en stdout / JSON retornado al invocador]
 ```
@@ -132,10 +132,10 @@ Invocación integrada (desde story-code-review):
 - **Nunca ejecutar código del repositorio auditado** — solo búsqueda de patrones en texto
 - **El checklist es la fuente de verdad** — leer `assets/security-checklist.md` en runtime; no hardcodear reglas en la lógica del skill
 - **Safe-by-default ante incertidumbre** — si una variable de contexto no puede determinarse, asumir el valor más conservador (`environment = "production"`, booleanos → `false`) y marcar `manual_review_required` en el reporte
-- **Fail-fast ante dependencias faltantes** — si `assets/security-checklist.md` no existe o `.tmp/security-audit/` no puede crearse, abortar con mensaje claro
-- **Idempotencia** — el directorio `.tmp/security-audit/` se recrea en cada ejecución; no hay estado persistente entre ejecuciones
+- **Fail-fast ante dependencias faltantes** — si `assets/security-checklist.md` no existe o `$AUDIT_TMP/` no puede crearse, abortar con mensaje claro
+- **Idempotencia** — el directorio `$AUDIT_TMP/` se recrea en cada ejecución; no hay estado persistente entre ejecuciones
 - NO genere código; estamos auditando seguridad, no implementando los artefactos técnicos
-- NO modifique ningún archivo que no sean los archivos de salida bajo `.tmp/security-audit/` y el archivo `audit-report.md` (nunca escribir en los assets ni en los agentes)
+- NO modifique ningún archivo que no sean los archivos de salida bajo `$AUDIT_TMP/` y el archivo `audit-report.md` (nunca escribir en los assets ni en los agentes)
 
 ---
 
@@ -154,6 +154,7 @@ Invocar `skill-preflight`. Si retorna error bloqueante, detener la ejecución.
    - `$AUDIT_SCOPE` → `release` si `--scope release`, sino `full`
    - `$CHANGED_FILES` → lista de archivos (ver resolución por modo abajo), o `null` para auditoría completa
    - `$EXECUTION_MODE` → `full | release | story | files | diff | integrated`
+   - `$AUDIT_TMP` → directorio de trabajo temporal: `.tmp/security-audit/<slug>` si `$EXECUTION_MODE = story` (donde `<slug>` = nombre final del directorio `--story`, ej. `FEAT-059-login-flow`); `.tmp/security-audit` en cualquier otro modo
 3. Si no se proporcionó `--repo` ni payload JSON, preguntar: `¿Qué repositorio deseas auditar?`
 4. **Resolver `$CHANGED_FILES` según el modo:**
    - **`--files <f1,f2,...>`**: parsear la cadena separada por comas → lista de archivos. Verificar que cada archivo existe bajo `$REPO_PATH`; advertir (no abortar) si alguno no se encuentra.
@@ -169,7 +170,7 @@ Invocar `skill-preflight`. Si retorna error bloqueante, detener la ejecución.
    - Release: `🚀 Auditoría de Release Readiness: <repo>`
    - Story: `📖 Auditoría de historia: <story-dir> (<N> archivos detectados)`
    - Files: `📂 Auditoría acotada: <N> archivos indicados`
-6. Crear el directorio `.tmp/security-audit/` si no existe — abortar con error si no puede crearse
+6. Crear el directorio `$AUDIT_TMP/` si no existe — abortar con error si no puede crearse
 7. Leer `assets/security-checklist.md` — abortar con error si no existe:
    ```
    ❌ Checklist no encontrado en assets/security-checklist.md
@@ -182,7 +183,7 @@ Invocar `skill-preflight`. Si retorna error bloqueante, detener la ejecución.
 **2a. Detección de contexto del repositorio**
 
 Invocar `agents/context-detector.agent.md` pasando `$REPO_PATH` y `$CHANGED_FILES`.
-El agente escribe `.tmp/security-audit/project-context.json`.
+El agente escribe `$AUDIT_TMP/project-context.json`.
 Si el agente falla completamente (no escribe el archivo), abortar con error descriptivo y detener.
 
 **2b. Filtrado del checklist por condición**
@@ -192,18 +193,18 @@ Para cada regla de `assets/security-checklist.md`:
 - Si una variable tiene valor `"manual_review_required"`, tratarla como `true` (conservador)
 - Si `source_files_found: false` en el contexto, marcar todas las reglas como `N/A` directamente
 
-Escribir `.tmp/security-audit/active-rules.json` con las reglas cuya condición es `true`.
+Escribir `$AUDIT_TMP/active-rules.json` con las reglas cuya condición es `true`.
 Mostrar resumen: `📋 Checklist: <N_total> reglas | <N_activas> activas | <N_omitidas> omitidas`
 
 **2c. Evaluación de reglas**
 
 Invocar `agents/checklist-evaluator.agent.md` con referencias a `project-context.json` y `active-rules.json`.
-El agente escribe `.tmp/security-audit/rule-results.json`.
+El agente escribe `$AUDIT_TMP/rule-results.json`.
 
 **2d. Generación del reporte**
 
 Invocar `agents/report-generator.agent.md` pasando `$OUTPUT_FORMAT`, `$AUDIT_SCOPE` y `$CHANGED_FILES`.
-El agente escribe `.tmp/security-audit/audit-report.md` (siempre) y `audit-report.json` (si `$OUTPUT_FORMAT = json`).
+El agente escribe `$AUDIT_TMP/audit-report.md` (siempre) y `audit-report.json` (si `$OUTPUT_FORMAT = json`).
 
 ### 3. Manejo de errores
 
@@ -214,7 +215,7 @@ El agente escribe `.tmp/security-audit/audit-report.md` (siempre) y `audit-repor
 | Una regla individual falla en evaluación | Marcar esa regla como N/A con justificación "error en evaluación"; continuar |
 | `source_files_found: false` | Marcar todas las reglas N/A; mensaje: "No se encontraron archivos fuente reconocidos"; exit 0 |
 | Variable de contexto no determinable | Asumir safe-default + marcar `manual_review_required` en reporte; no interrumpir |
-| `.tmp/security-audit/` no puede crearse | Abortar con error de permisos |
+| `$AUDIT_TMP/` no puede crearse | Abortar con error de permisos |
 
 ### 4. Fin de proceso
 
@@ -230,11 +231,11 @@ Retornar el resultado según el modo detectado en el Paso 1:
 
 | Artefacto | Cuándo | Descripción |
 |---|---|---|
-| `.tmp/security-audit/project-context.json` | Siempre | Contexto detectado: variables booleanas + lenguajes + notas |
-| `.tmp/security-audit/active-rules.json` | Siempre | Reglas del checklist cuya condición aplica al proyecto |
-| `.tmp/security-audit/rule-results.json` | Siempre | PASS / FAIL / N/A con evidencia (archivo, línea, fragmento) por regla |
-| `.tmp/security-audit/audit-report.md` | Siempre | Reporte Markdown: resumen ejecutivo + contexto + tabla de reglas + detalle de FAILs |
-| `.tmp/security-audit/audit-report.json` | Solo `--output json` o modo integrado | JSON `{status, summary, detected_context, results, report}` |
+| `$AUDIT_TMP/project-context.json` | Siempre | Contexto detectado: variables booleanas + lenguajes + notas |
+| `$AUDIT_TMP/active-rules.json` | Siempre | Reglas del checklist cuya condición aplica al proyecto |
+| `$AUDIT_TMP/rule-results.json` | Siempre | PASS / FAIL / N/A con evidencia (archivo, línea, fragmento) por regla |
+| `$AUDIT_TMP/audit-report.md` | Siempre | Reporte Markdown: resumen ejecutivo + contexto + tabla de reglas + detalle de FAILs |
+| `$AUDIT_TMP/audit-report.json` | Solo `--output json` o modo integrado | JSON `{status, summary, detected_context, results, report}` |
 
 **Contrato de retorno en modo integrado:**
 ```json
