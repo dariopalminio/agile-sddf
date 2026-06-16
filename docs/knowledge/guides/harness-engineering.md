@@ -81,6 +81,10 @@ No hay costo de arranque ni riesgo de "teléfono descompuesto": no hay handoff d
 
 - Lo peligroso: El contexto solo crece. Si skill-A compone 4 sub-skills de 400-600 líneas cada uno, la sesión termina cargando ~2.500 líneas de instrucciones simultáneamente activas. Las instrucciones de los primeros sub-skills siguen "vivas" en el contexto y pueden interferir con los últimos (el modelo puede mezclar reglas de story-tasking mientras ejecuta story-testcases). No hay aislamiento de fallos. Si skill-A deja la conversación en un estado confuso, skill-B lo hereda. Con un subagente, el desorden muere con el subagente y solo vuelve el resultado. No hay paralelismo. Inline es secuencial por definición. Por eso un skill-C sí necesita usar subagentes para 3 tareas: necesita lanzarlos en paralelo y con contextos limpios.
 
+### Handoffs
+
+Las transferencias "Handoffs" son transiciones entre agentes aprobadas por el usuario. El agente actual termina, usted hace clic en un botón (o se envía automáticamente) y un nuevo agente toma el relevo. Utilice traspasos para las fases con un punto de control humano: Planificar → Implementar → Revisar → Confirmar.
+
 
 ### Delegación a subagentes
 
@@ -98,6 +102,8 @@ Sesión principal
   │◄─ resultado ─┘   
   ▼ 
   ```
+
+Los subagentes son delegación. El agente activo llama a otro en un contexto aislado, obtiene un resultado y continúa. Utilice subagentes para el aislamiento del contexto: envíe a un investigador a leer 50 archivos y devolver un resumen.
 
 #### Delegación automática
 
