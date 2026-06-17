@@ -107,7 +107,7 @@ implement:
 |---|---|
 | `layer` | Nombre de la capa (`frontend`, `backend`, `database`, o cualquier nombre que use tu arquitectura). Se pasa como `layer` en el bundle de invocación y determina la ruta de resultados `.tmp/story-implement/{phase}/{layer}/results.json`. |
 | `skill` | Nombre del skill en `$CLI_ROOT/skills/{skill}/SKILL.md` que genera/refactoriza el código de esa capa. Usa `none` para omitir la capa. |
-| `required` | Si `true` y el skill no existe, el ciclo se detiene (fail-fast, Paso 8 de `SKILL.md`). Si `false`, la capa se omite con `[WARN]` y el ciclo continúa. |
+| `required` | Solo controla qué pasa si el skill declarado **no existe**: si `true`, el ciclo se detiene (fail-fast, Paso 8 de `SKILL.md`); si `false`, la capa se omite con `[WARN]` y el ciclo continúa. **No desactiva una capa cuyo skill sí existe** — para deshabilitar una capa explícitamente usa `skill: none`. |
 
 ### Cómo usar un skill específico por capa
 
@@ -116,7 +116,7 @@ implement:
 3. **Asegúrate de que el skill respeta el contrato de invocación** (ADR-0002, ver "Arquitectura de delegación" arriba): recibe el bundle `{story_id, phase, layer, test_files, story_path, design_path}` y escribe su resultado en `.tmp/story-implement/{phase}/{layer}/results.json`.
 4. **Cada capa se invoca de forma independiente**, en el orden declarado en el YAML, tanto en GREEN como en REFACTOR.
 
-> **Nota:** este propio repositorio (`agile-sddf`) genera skills, no código de aplicación, por lo que su `sddf.config.yaml` raíz usa una forma simplificada de un solo generador (`code_generators: { skill: skill-master, required: true }`) en vez del formato de lista por capas. Para proyectos que generan código de aplicación (frontend/backend), usa el formato de lista mostrado arriba — ver la plantilla completa en `$CLI_ROOT/skills/sddf-init/assets/sddf.config.yaml.template`.
+> **Nota:** `code_generators` siempre se declara como lista, incluso para proyectos de una sola capa — no existe una forma simplificada de objeto único (el Paso 8 de `SKILL.md` extrae `implement.code_generators` como lista; un objeto suelto no es un contrato soportado). Este propio repositorio (`agile-sddf`) genera skills, no código de aplicación, así que su `sddf.config.yaml` raíz usa una lista de un solo elemento con `layer: monolithic` y `skill: skill-master` (las capas `frontend`/`backend`/`database` quedan con `skill: none`). Úsalo como ejemplo canónico de proyecto monocapa. Para proyectos que generan código de aplicación real (frontend/backend), usa el formato de lista multi-capa mostrado arriba — ver la plantilla completa en `$CLI_ROOT/skills/sddf-init/assets/sddf.config.yaml.template`.
 
 ## Uso
 

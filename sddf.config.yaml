@@ -51,5 +51,15 @@ implement:
       skill: skill-test-evals
       required: true
   code_generators:
-    skill: skill-master
-    required: true
+    - layer: monolithic # este repo no tiene capas frontend/backend/database — todo el "código de producción" son skills
+      skill: skill-master
+      required: true
+    - layer: frontend
+      skill: none
+      required: false
+    - layer: backend
+      skill: none
+      required: false
+    - layer: database
+      skill: none
+      required: false

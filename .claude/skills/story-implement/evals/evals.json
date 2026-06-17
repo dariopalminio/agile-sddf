@@ -114,7 +114,7 @@
       "id": "TC-004",
       "name": "happy-path-green-refactor-exitoso-story-actualizada-cycle-status-escrito",
       "type": "happy-path",
-      "description": "red-phase-status.json existe con red_confirmed:true, code_generator existe en .claude/skills/, subagente retorna status:ok en Fase GREEN y en Fase REFACTOR, tests pasan tras GREEN y siguen pasando tras REFACTOR → story.md actualizada a CODE-REVIEW/IN-PROGRESS y cycle-status.json escrito con los tres confirmed:true",
+      "description": "red-phase-status.json existe con red_confirmed:true, code_generators (lista, layer monolithic) declarado y el skill existe en .claude/skills/, subagente retorna status:ok en Fase GREEN y en Fase REFACTOR, tests pasan tras GREEN y siguen pasando tras REFACTOR → story.md actualizada a CODE-REVIEW/IN-PROGRESS y cycle-status.json escrito con los tres confirmed:true",
       "input": {
         "story_id": "FEAT-TEST",
         "red_phase_status": {
@@ -125,7 +125,7 @@
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generator": { "skill": "story-code-nodejs", "required": true }
+            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
           }
         },
         "skills_present": ["story-code-nodejs"],
@@ -163,7 +163,7 @@
       "id": "TC-005",
       "name": "fase-green-falla-ciclo-detenido-sin-refactor-story-sin-cambio",
       "type": "error-flow",
-      "description": "red-phase-status.json existe con red_confirmed:true, code_generator declarado y existente, pero subagente retorna status:error durante la Fase GREEN → el skill emite ❌ con el nombre exacto del skill, la Fase REFACTOR no se ejecuta, y story.md NO se actualiza",
+      "description": "red-phase-status.json existe con red_confirmed:true, code_generators (lista, layer monolithic) declarado y el skill existente, pero subagente retorna status:error durante la Fase GREEN → el skill emite ❌ con el nombre exacto del skill, la Fase REFACTOR no se ejecuta, y story.md NO se actualiza",
       "input": {
         "story_id": "FEAT-TEST",
         "red_phase_status": {
@@ -174,7 +174,7 @@
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generator": { "skill": "story-code-nodejs", "required": true }
+            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
           }
         },
         "skills_present": ["story-code-nodejs"],
@@ -212,7 +212,7 @@
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generator": { "skill": "story-code-nodejs", "required": true }
+            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
           }
         },
         "skills_present": ["story-code-nodejs"],
@@ -254,7 +254,7 @@
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generator": { "skill": "story-code-nodejs", "required": true }
+            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
           }
         },
         "skills_present": ["story-code-nodejs"],
@@ -300,7 +300,7 @@
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generator": { "skill": "story-code-nodejs", "required": true }
+            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
           }
         },
         "skills_present": ["story-code-nodejs"],
@@ -348,7 +348,7 @@
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generator": { "skill": "story-code-nodejs", "required": true }
+            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
           }
         },
         "skills_present": ["story-code-nodejs"],

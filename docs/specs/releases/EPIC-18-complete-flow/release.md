@@ -16,6 +16,7 @@ related:
   - plan-04-doc-story-implement
   - plan-05-enhance-code-review
   - plan-06-isolate-workspace-by-story
+  - plan-07-fix_code_generators_of_story-implement
 ---
 
 # Release/Epic: Complete Flow — Skills para el Workflow de Story y Release
@@ -25,15 +26,17 @@ Este release añade al framework las capacidades de bulk y orquestacion de flujo
 
 ## Features 
 
-- [ ] PLAN-01 - **Renombrar INTEGRATION → DELIVER en el workflow de story:** reemplazar INTEGRATION por DELIVER en el workflow de story. Usa DELIVER como nombre de integration, y actualiza todas las referencias correspondientes en el código y la documentación. El término DELIVER puede servir para un incremento potencialmente entregable (para modelo batch) como para un incremento entregado al usuario final (para continuous).
+- [x] PLAN-01 - **Renombrar INTEGRATION → DELIVER en el workflow de story:** reemplazar INTEGRATION por DELIVER en el workflow de story. Usa DELIVER como nombre de integration, y actualiza todas las referencias correspondientes en el código y la documentación. El término DELIVER puede servir para un incremento potencialmente entregable (para modelo batch) como para un incremento entregado al usuario final (para continuous).
 
-- [ ] PLAN-02 - **Definir workflow canónico de Épica/Release:** definir nuevo workflow para épicas/release: DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED.
+- [x] PLAN-02 - **Definir workflow canónico de Épica/Release:** definir nuevo workflow para épicas/release: DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED.
 
-- [ ] PLAN-03 - **Asignación lazy de FEAT IDs**: mover la asignación de FEAT IDs al momento real de creación de directorios de historia (`release-generate-stories`). El `release.md` describe features **sin ID**; el ID se asigna y se escribe en `release.md` recién cuando `release-generate-stories` crea los directorios.
+- [x] PLAN-03 - **Asignación lazy de FEAT IDs**: mover la asignación de FEAT IDs al momento real de creación de directorios de historia (`release-generate-stories`). El `release.md` describe features **sin ID**; el ID se asigna y se escribe en `release.md` recién cuando `release-generate-stories` crea los directorios.
 
-- [ ] PLAN-04 - **Mejorar documentación de story-implement:** actualizar la documentación de `story-implement` para reflejar correctamente la exposición de variables y la configuración de `code_generators` por capas (frontend/backend).
+- [x] PLAN-04 - **Mejorar documentación de story-implement:** actualizar la documentación de `story-implement` para reflejar correctamente la exposición de variables y la configuración de `code_generators` por capas (frontend/backend).
 
-- [ ] PLAN-05 - **Incorporar mejoras a `story-code-review`:** identificar prácticas valiosas que falten en nuestro skill, y diseñar un plan de integración de esas prácticas (performance, estándar de aprobación, disciplina de dependencias, tamaño de cambio, código muerto) dentro de la estructura actual de subagentes y orquestación, asegurando coherencia y sin introducir complejidad innecesaria.
+- [x] PLAN-05 - **Incorporar mejoras a `story-code-review`:** identificar prácticas valiosas que falten en nuestro skill, y diseñar un plan de integración de esas prácticas (performance, estándar de aprobación, disciplina de dependencias, tamaño de cambio, código muerto) dentro de la estructura actual de subagentes y orquestación, asegurando coherencia y sin introducir complejidad innecesaria.
 
-- [ ] PLAN-06 - **Aislar espacio de trabajo por historia:** modificar las rutas de archivos intermedios generados por skills (en `story-implement`, `story-code-review`, `security-audit`, `story-verify`) para incluir `{story_id}`, evitando colisiones cuando múltiples agentes ejecutan el skill simultáneamente sobre historias distintas. Esto asegura que cada historia tenga su propio espacio de trabajo aislado, manteniendo la integridad de los datos y el flujo de trabajo. Esto habilita escalabilidad para trabajo en paralelo.
+- [x] PLAN-06 - **Aislar espacio de trabajo por historia:** modificar las rutas de archivos intermedios generados por skills (en `story-implement`, `story-code-review`, `security-audit`, `story-verify`) para incluir `{story_id}`, evitando colisiones cuando múltiples agentes ejecutan el skill simultáneamente sobre historias distintas. Esto asegura que cada historia tenga su propio espacio de trabajo aislado, manteniendo la integridad de los datos y el flujo de trabajo. Esto habilita escalabilidad para trabajo en paralelo.
+
+- [x] PLAN-07 - **Corregir desincronización en code_generators de story-implement:** sincronizar la configuración de `code_generators` entre `sddf.config.yaml`, `SKILL.md` y la implementación real del skill para evitar invocaciones innecesarias de generadores de código en capas no existentes.
 
