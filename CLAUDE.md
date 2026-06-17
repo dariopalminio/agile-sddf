@@ -1,103 +1,71 @@
-Busca los skills y agents en .claude
+# IMPORTANTE — leer antes de actuar
 
-> **Idioma de trabajo:** Los skills, agentes y documentos de este repositorio se redactan en **español**. Los skills heredados de fuentes externas o integrados de ecosistemas en inglés pueden mantener su idioma original.
+- **Idioma de trabajo:** skills, agentes y documentos de este repositorio se redactan en **español**. Los skills heredados de ecosistemas en inglés (ej. `test-cypress-cucumber`, `test-playwright-cucumber`) pueden mantener su idioma original.
+- **El repositorio es la fuente de verdad:** specs, políticas, ADRs y decisiones viven versionados aquí dentro. Si necesitas saber "cómo trabajamos", está en el repo, no fuera de él.
+- **`.claude/` es la fuente única de agentes y skills.** El catálogo vigente de agentes (`.claude/agents/`) y skills (`.claude/skills/`) ya se inyecta en cada conversación de Claude Code — no los enumeres de memoria en este archivo; verifica con `ls` si necesitas confirmar que algo existe antes de referenciarlo.
+- **`skill-preflight` es el paso 0 obligatorio** de cualquier skill: verifica `SDDF_ROOT`, estructura de directorios y templates antes de ejecutar lógica de negocio.
+- **Veracidad ante todo:** antes de editar la sección de estructura de este archivo, verifica con el filesystem (`ls .claude/agents/`, `ls docs/`). Nunca describas algo que no existe ni omitas algo relevante que sí existe.
+
+---
 
 # Agile Spec-Driven-Development Framework (SDDF)
 
-Este es un proyecto Agile Spec-Driven-Development Framework (SDDF) que utiliza un sistema de agentes y skills para automatizar el proceso de especificación de proyectos software, desde la intención inicial hasta la planificación del backlog, y escritura de historias de usuario. El sistema está diseñado para ser minimalista, utilizando solo archivos Markdown para definir agentes, skills y documentos de salida, con un enfoque en la claridad, la estructura y la colaboración entre agentes.
+Framework multiagente minimalista (solo Markdown + scripts Node.js de instalación) que automatiza el ciclo Spec-Driven Development completo — intención → discovery → planning → historias de usuario → implementación con TDD — operando sobre Claude Code, OpenCode y GitHub Copilot. La visión de producto completa vive en `docs/specs/projects/PROJ-01-agile-sddf/project-intent.md`; este mismo repositorio dogfoodea su propio framework para desarrollarse a sí mismo (ver `docs/specs/projects/PROJ-01-agile-sddf/`).
 
-Sistema CLI multiagente minimalista que automatiza el ciclo completo de especificación de proyectos software, desde la intención inicial hasta el backlog planificado, siguiendo un workflow secuencial con control de WIP y revisión humana en cada etapa.
+## Stack y comandos
 
-Sistema cliente agentico minimalista que automatiza la especificación de features e historias de usuario solo con skills y templates (scripts y agentes si es necesario) para crear historias de usuario, dividirlas y evaluarlas.
+- **Lenguaje:** Markdown (skills/agentes) + TypeScript/Node.js solo para la parte ejecutable (`scripts/cli.js`, `install.js`, `postinstall.js`).
+- **Sin build/test/lint propios:** `package.json` no declara ningún script salvo `postinstall`. No busques `npm test` ni `npm run build` — no existen en este repo.
+- **Instalar skills/agentes en otro proyecto:** `npx agile-sddf install [--global] [--target .claude|.agents|.github] [--force]`.
+- **CI (`.github/workflows/`):** solo corre escaneo de seguridad de skills (Skill Shielder vía `skill-security-audit.yml`) y `docker-security.yml`; no hay pipeline de tests funcionales.
 
-## Vision
-
-**Para** builders, freelancers, developers y equipos ágiles que usan IA para acelerar el desarrollo de software,
-**quienes** sufren de procesos manuales, prompts inconsistentes y falta de estructura para transformar ideas en código de calidad de manera predecible,
-**nuestro producto** Agile Spec-Driven-Development Framework (SDDF) es un sistema multiagente minimalista que automatiza todo el ciclo de vida del desarrollo de software – desde la intención inicial hasta el código desplegado – utilizando Spec-Driven Development (OpenSpec / SpecKit), agentes especializados, skills reutilizables y comandos simples, todo gestionado con archivos Markdown.
-
-**Que** provee un workflow ágil y secuencial con control de WIP, puntos de compromiso y revisiones humanas integradas: planificación de releases, especificación de features, descomposición en historias de usuario, generación de tareas, implementación con IA y validación automática, garantizando trazabilidad y calidad en cada paso.
-
-**A diferencia de** escribir prompts ad-hoc, usar herramientas monolíticas o frameworks rígidos que no se adaptan al contexto del proyecto ni permiten evolución orgánica de los templates,
-**nuestro producto** es el único sistema que extrae dinámicamente la estructura de los templates en tiempo de ejecución para generar preguntas contextuales y comandos, permitiendo que el framework evolucione junto con tus prácticas de desarrollo sin modificar código subyacente. Además, integra nativamente con OpenSpec y SpecKit, potenciando sus capacidades con agentes y skills personalizables.
-
-## Project structure
+## Estructura del repositorio
 
 ```
 agile-sddf/
-  ├── docs/specs/                      # Artefactos generados (projects/, releases/, stories/, templates/)
-  ├── docs/policies/                   # constitution.md, definition-of-done-story.md
-  ├── docs/adr/                        # Architecture Decision Records (ADR-NNNN)
-  ├── CLAUDE.md                        # Instrucciones globales del proyecto
-  └── .claude/                         # Fuente única de verdad para agentes y skills
-      ├── agents/                      # 10 agentes registrados por el harness
-      │   ├── project-pm.agent.md
-      │   ├── project-architect.agent.md
-      │   ├── project-ux.agent.md
-      │   ├── project-story-mapper.agent.md
-      │   ├── story-product-owner.agent.md
-      │   ├── reverse-engineer-architect.agent.md
-      │   ├── reverse-engineer-business-analyst.agent.md
-      │   ├── reverse-engineer-product-discovery.agent.md
-      │   ├── reverse-engineer-synthesizer.agent.md
-      │   └── reverse-engineer-ux-flow-mapper.agent.md
-      └── skills/
-          ├── skill-name/
-          │   ├── assets/
-          │   ├── examples/
-          │   ├── scripts/
-          │   └── SKILL.md
-          └── ...
+├── docs/
+│   ├── specs/{projects,releases,stories,templates}/  # artefactos generados por los skills SDD
+│   ├── policies/                                      # constitution.md, definition-of-done-story.md
+│   ├── adr/                                           # decisiones de arquitectura (ADR-NNNN, inmutables)
+│   └── knowledge/{guides,how-to,runbooks}/            # guías de referencia (ver docs/index.md)
+├── .claude/                                           # fuente única de verdad: agents/ y skills/
+├── scripts/                                           # cli.js, install.js, postinstall.js
+└── sddf.config.yaml                                   # skills activos por fase del pipeline TDD de este repo
 ```
 
-**Plataformas soportadas:** Claude Code, OpenCode y GitHub Copilot — elegidas al instalar la librería; el instalador copia desde `.claude/` (fuente única) al destino `.claude`/`.agents`/`.github`. El soporte a otros CLI/LLMs se evaluará en releases futuros.
+**Plataformas soportadas:** Claude Code, OpenCode y GitHub Copilot. El instalador copia desde `.claude/` (fuente única) al destino elegido (`.claude/`, `.agents/`, `.github/`); soporte a otros CLI/LLMs se evalúa en releases futuros.
 
+## Particularidades de este repo (lo que el código no te dice)
 
-# Definición y Uso de Agentes, Skills y Comandos
+- **`SDDF_ROOT`** define la raíz de artefactos (default `docs`); este repo usa el valor por defecto, así que los specs viven en `docs/specs/`, no en `.sdd/` ni en la raíz.
+- **WIP = 1 por nivel de pipeline:** solo un documento puede tener `substatus: IN-PROGRESS` a la vez por nivel (project, release o story). Verifícalo antes de activar un ítem nuevo.
+- **`.tmp/<skill-name>/` nunca se versiona:** es el canal de comunicación entre subagentes y el skill orquestador, para evitar el "teléfono descompuesto". Está en `.gitignore`; no lo trates como directorio permanente.
+- **Los ADR aceptados son inmutables:** se reemplazan con un ADR nuevo (`superseded-by`), nunca se editan in place. Ver `docs/adr/README.md`.
+- **Publicar un skill nuevo en npm:** su ruta debe agregarse al arreglo `files` de `package.json`, o quienes instalen el paquete no lo recibirán vía `postinstall`.
+- **Commands son legacy en Claude:** preferimos skills sobre `.claude/commands/` (que de hecho no existe en este repo); los commands solo se justifican para integraciones externas.
 
-Los **agentes**, las **skills** y los **comandos** son elementos fundamentales para estructurar un el equipo de inteligencia artificial automatizado para Agile Spec-Driven Development Framework (SDDF). Aquí tienes la definición y el uso de cada uno:
+## Modelo de delegación: skills, agentes y subagentes
 
-## Agentes
+Dos mecanismos de invocación, según cómo funciona el harness de Claude Code:
 
-Los agentes funcionan como **pequeños empleados virtuales especializados** en tareas concretas dentro de un proyecto, como por ejemplo un agente que hace discovery, otro que redacta especificaciones o uno que diseña arquitectura. Técnicamente, son archivos de texto (Markdown) que contienen instrucciones de roly contexto específico sobre cómo deben actuar. Estos agentes pueden trabajar de forma autónoma, simultánea o en equipo, entregando resultados listos para usar.
+- **Composición inline (skill → skill):** la misma sesión lee el `SKILL.md` del sub-skill y sigue sus instrucciones; comparten todo el contexto. Permitido, pero en cadenas cortas — el contexto se acumula.
+- **Delegación (→ subagente):** crea un contexto nuevo y aislado. Solo la sesión que ejecuta skills delega en subagentes (`.claude/agents/`); **un subagente nunca delega en otro subagente.**
 
-## Comandos
-
-En Claude **preferimos skills sobre commands**. Los commands son una excepción justificada solo para integraciones externas donde el harness de commands ofrece ventajas claras.
-
-### Comandos en Opencode
-
-Los comandos en OpenCode se ubican en ".opencode/commands/": Permite máxima personalización para un desarrollo acelerado. Puedes usar argumentos ($ARGUMENTS), inyectar resultados de comandos Bash (!), y referenciar archivos (@), lo que te permite construir flujos de automatización complejos.
-
-### Comandos en Claude
-
-Los comandos en Claude se ubican en `.claude/commands/`. Los skills son más componibles, más fáciles de versionar y se adaptan al contexto de ejecución. Los commands son apropiados solo para integraciones externas donde el harness de commands ofrece ventajas claras (argumentos posicionales `$ARGUMENTS`, inyección de resultados de shell).
-
-## Skills (Habilidades)
-
-Los skills son las **habilidades personalizadas o herramientas** que construyes para dárselas a tus agentes. Se definen mediante documentos de texto que actúan como instrucciones continuas para dotar al agente de una especialización deseada, indicándole exactamente cómo debe comportarse o ejecutar una acción exclusiva. Gracias a las skills, los agentes pueden realizar tareas de forma autónoma, como redactar una especificación siguiendo una plantilla, conectarse a aplicaciones externas o aplicar técnicas específicas de escritura.
-
-Los skills deben ser Multicliente, es decir, diseñados para ser reutilizados por múltiples agentes. Esto significa que un skill debe ser lo suficientemente genérico y flexible para adaptarse a diferentes contextos y necesidades de los agentes que lo utilicen. Al diseñar un skill, es importante considerar cómo puede ser aplicado por diferentes agentes sin requerir modificaciones específicas para cada uno, lo que maximiza su utilidad y eficiencia dentro del sistema.
-
-## Modelo de delegación: composición de skills + un solo salto de subagente
-
-Distinguimos dos mecanismos de invocación, según cómo funciona realmente el harness de Claude Code:
-
-- **Composición (skill → skill, inline):** cuando un skill invoca a otro skill, la misma sesión lee el SKILL.md del sub-skill y sigue sus instrucciones dentro de la misma conversación. No se crea un segundo agente ni un contexto aislado. **Está permitido componer skills, pero con cadenas cortas, porque el contexto se acumula** (las instrucciones de todos los skills compuestos quedan activas simultáneamente en la misma ventana de contexto).
-- **Delegación (→ subagente):** lanzar un subagente crea un contexto nuevo y aislado. **Solo la sesión que ejecuta skills puede delegar en subagentes; un subagente nunca delega en otro subagente.** El subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el control.
-
-El skill es el punto de entrada y coordinador: orquesta la ejecución, delega trabajo aislado o paralelo a agentes especialistas y consolida sus resultados en la salida final.
-
-skill orquestador (entry point, sesión principal)
+```
+skill orquestador (sesión principal)
     ├── skill B (composición inline — misma sesión, cadena corta)
     ├── agent A (subagente — contexto aislado)
     └── agent C (subagente — contexto aislado)
                   └── ✗ prohibido: agente que delega en otro agente
+```
 
-Criterio de elección: **inline** cuando se necesita continuidad de contexto e interacción con el usuario; **subagente** cuando se necesita aislamiento, paralelismo, o proteger la sesión principal de trabajo voluminoso (ej. leer 50 archivos para producir un informe de 20 líneas).
+Cada subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el control; el orquestador lee solo esos archivos para consolidar — nunca le pasa al subagente todo su contexto heredado. El detalle completo (matriz de invocaciones permitidas, patrón de agentes locales en `<skill>/agents/`, contrato de `.tmp/`) está en `docs/knowledge/guides/best-practices-for-skills.md`.
 
-Esto es acorde a la arquitectura de Claude Code, donde la sesión principal actúa como agente primario que ejecuta skills inline y mantiene una estructura plana de delegación (Sesión → Subagente), con agentes en `.claude/agents/` invocados por la sesión principal.
+## Documentación de referencia
 
+`docs/index.md` es el punto de entrada wiki (wikilinks `[[slug]]`) hacia specs, ADRs y guías. Antes de inventar una convención nueva, comprueba si ya existe una guía en `docs/knowledge/guides/` (agentes, skills, comandos, harness engineering, branching, organización de artefactos, specs y workflows, etc.).
+
+---
 
 # Políticas del Proyecto
 
