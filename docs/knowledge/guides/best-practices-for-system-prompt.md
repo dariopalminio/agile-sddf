@@ -6,12 +6,12 @@
 El archivo AGENTS.md complementa un README.md al contener el contexto adicional, a veces detallado, que necesitan los agentes de codificación: pasos de compilación, pruebas y convenciones que podrían saturar un archivo README o que no son relevantes para los colaboradores humanos. Proporcione a los agentes un lugar claro y predecible para recibir instrucciones.
 Un único archivo AGENTS.md funciona en muchos agentes. La mayoría de los agentes de codificación incluso pueden generarlo automáticamente si se lo pides amablemente.
 
-### Ubicación
+### Ubicación de AGENTS.md
 
 Crea un archivo AGENTS.md en la raíz del repositorio. 
 En Monorepositorio grande utilizar archivos AGENTS.md anidados para los subproyectos.
 
-### Cubre lo que importa
+### Cubre lo que importa en AGENTS.md
 
 Agregue secciones que ayuden a un agente a trabajar eficazmente con su proyecto. Opciones populares:
 
