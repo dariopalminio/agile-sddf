@@ -5,7 +5,7 @@
 - **`.claude/` es la fuente única de agentes y skills.** El catálogo vigente de agentes (`.claude/agents/`) y skills (`.claude/skills/`) ya se inyecta en cada conversación de Claude Code — no los enumeres de memoria en este archivo; verifica con `ls` si necesitas confirmar que algo existe antes de referenciarlo.
 - **`skill-preflight` es el paso 0 obligatorio** de cualquier skill: verifica `SDDF_ROOT`, estructura de directorios y templates antes de ejecutar lógica de negocio.
 - **Veracidad ante todo:** antes de editar la sección de estructura de este archivo, verifica con el filesystem (`ls .claude/agents/`, `ls docs/`). Nunca describas algo que no existe ni omitas algo relevante que sí existe.
-
+- **Framework agnóstico al SDK/LLM:** aunque el desarrollo inicial se hizo con Claude Code, el diseño de SDDF es independiente del SDK o LLM específico. La instalación de skills/agentes en `.agents/` y `.github/` es un paso explícito para soportar múltiples plataformas; el orquestador de cada skill puede adaptarse a las APIs de cada plataforma sin afectar la estructura general del framework. Los skills no tienen que tener referencias explícitas a `.claude`. 
 ---
 
 # Agile Spec-Driven-Development Framework (SDDF)
