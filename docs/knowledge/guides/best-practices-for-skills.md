@@ -35,6 +35,17 @@ my-skill-name/
 
 Solo un nivel de profundidad. No. references/v1/handbook.md Solo references/handbook.md.
 
+### Ubicación de los skills
+
+Claude (Proyecto, Compatible con OpenCode)--> .claude/skills/<name>/SKILL.md
+Claude (Global, Compatible con OpenCode) --> ~/.claude/skills/<name>/SKILL.md
+OpenCode (Configuración del proyecto) --> .opencode/skills/<name>/SKILL.md
+OpenCode (Configuración global) --> ~/.config/opencode/skills/<name>/SKILL.md
+OpenCode (Compatible con agente de proyecto) --> .agents/skills/<name>/SKILL.md
+OpenCode (Compatible con agentes globales) --> ~/.agents/skills/<name>/SKILL.md
+Github Copilot (Proyecto) --> .github/skills/<name>/SKILL.md
+Github Copilot (Global) --> ~/.copilot/skills/<name>/SKILL.md
+
 ### Skills en Github Copilot (Habilidades del Agente)
 
 Las habilidades describen lo que Copilot sabe hacer. Son el mecanismo más avanzado y reutilizable. A diferencia de los simples comandos /, los Skills son carpetas completas que incluyen no solo instrucciones, sino también scripts, recursos y, crucialmente, lógica interna para interactuar con el sistema de archivos, convirtiéndose en una "mini aplicación" que el agente puede ejecutar. Se almacenan en .github/skills/<skill-name>/SKILL.md a nivel de proyecto o en ~/.copilot/skills/ para uso personal.
@@ -62,7 +73,8 @@ Característica del metadato:
 2. Desencadenantes específicos. "Convertir archivos .cshtml" , "reemplazar la representación del lado del servidor" : las frases exactas que usan los usuarios.
 3. Disparadores negativos. “No lo utilice para la creación de nuevos componentes en proyectos desde cero”. Indique al entorno de ejecución cuándo no debe activarse.
 4. Reglas estrictas: `name:` debe estar en minúsculas, usar guiones en lugar de espacios y coincidir exactamente con el nombre de la carpeta.
-5. El tamaño en caracteres de la descripción debe ser ~255 caracteres y no debe superar los 500 caracteres para evitar un coste de contexto excesivo. Si la descripción es demasiado larga, recorte el texto y mueva detalles al cuerpo.
+5. Asegúrese de que los nombres de las habilidades sean únicos en todas las ubicaciones
+6. El tamaño en caracteres de la descripción debe ser ~255 caracteres y no debe superar los 500 caracteres para evitar un coste de contexto excesivo. Si la descripción es demasiado larga, recorte el texto y mueva detalles al cuerpo.
 
 Característica del cuerpo del skill:
 
@@ -216,6 +228,7 @@ Nota:
 Es un metadato del runtime para Claude, no del schema SDDF, y borrarlo cambiaría el comportamiento de Claude Code con ese archivo.
 
 https://agentskills.io/home
+
 
 
 

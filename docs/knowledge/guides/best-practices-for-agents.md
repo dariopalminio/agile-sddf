@@ -16,15 +16,24 @@ related:                                    # opcional, si tiene relación con o
 
 # Buenas prácticas para Agentes
 
-Los **agentes**, las **skills** y los **comandos** son elementos fundamentales para estructurar un el equipo de inteligencia artificial automatizado para Agile Spec-Driven Development Framework (SDDF). Aquí tienes la definición y el uso de agentes:
+Los agentes son asistentes de IA especializados que se pueden configurar para tareas y flujos de trabajo específicos. Los **agentes**, las **skills** y los **comandos** son elementos fundamentales para estructurar un el equipo de inteligencia artificial automatizado para Agile Spec-Driven Development Framework (SDDF). Aquí tienes la definición y el uso de agentes:
 
 ## Agentes
 
 Los agentes funcionan como **pequeños empleados virtuales especializados** en tareas concretas dentro de un proyecto, como por ejemplo un agente que hace discovery, otro que redacta especificaciones o uno que diseña arquitectura. Técnicamente, son archivos de texto (Markdown) que contienen instrucciones de roly contexto específico sobre cómo deben actuar. Estos agentes pueden trabajar de forma autónoma, simultánea o en equipo, entregando resultados listos para usar.
 
+### Ubicación de los agentes personalizados
+
+Claude (Compatible con OpenCode) --> .claude/agents/docs-writer.agent.md
+Github Copilot (en proyecto) --> .github/agents/docs-writer.agent.md
+OpenCode (en proyecto) --> .opencode/agents/docs-writer.agent.md
+OpenCode (global) --> ~/.config/opencode/agents/docs-writer.agent.md
+OpenCode (Compatible con agentes de proyecto) --> .agents/agents/docs-writer.agent.md
+OpenCode (Compatible con agentes de globales) --> ~/.agents/agents/docs-writer.agent.md
+
 ### Agentes personalizados (*.agent.md)
 
-El archivo de agente personalizado debe terminar en *.agent.md — Contratar a un especialista para un trabajo específico. A veces no se necesita un copiloto o agente generalista, sino un especialista. Un ingeniero de pruebas que solo escribe pruebas. Un revisor que solo revisa. Cada uno .agent.mddefine el rol, las herramientas permitidas y las reglas.
+El archivo de agente personalizado puede tener un nombre como review.md pero se recomienda terminar en *.agent.md — Contratar a un especialista para un trabajo específico. A veces no se necesita un copiloto o agente generalista, sino un especialista. Un ingeniero de pruebas que solo escribe pruebas. Un revisor que solo revisa. Cada uno .agent.mddefine el rol, las herramientas permitidas y las reglas.
 
 La información preliminar que importa (frontmatter) es:
 
@@ -88,6 +97,44 @@ Ejemplo de límites:
 - Desactive u omita las pruebas para que "pasen"
 ```
 
+#### Ejemplo de un excelente agente personalizado
+
+A continuación se muestra un ejemplo para agregar una agent.mdpersona de documentación en su repositorio
+
+```
+---
+name: docs-writer.agent
+description: Expert technical writer for this project
+---
+
+You are an expert technical writer for this project.
+
+## Your role
+- You are fluent in Markdown and can read TypeScript code
+- You write for a developer audience, focusing on clarity and practical examples
+- Your task: read code from `src/` and generate or update documentation in `docs/`
+
+## Project knowledge
+- **Tech Stack:** React 18, TypeScript, Vite, Tailwind CSS
+- **File Structure:**
+  - `src/` – Application source code (you READ from here)
+  - `docs/` – All documentation (you WRITE to here)
+  - `tests/` – Unit, Integration, and Playwright tests
+
+## Commands you can use
+Build docs: `npm run docs:build` (checks for broken links)
+Lint markdown: `npx markdownlint docs/` (validates your work)
+
+## Documentation practices
+Be concise, specific, and value dense
+Write so that a new developer to this codebase can understand your writing, don’t assume your audience are experts in the topic/area you are writing about.
+
+## Boundaries
+- ✅ **Always do:** Write new files to `docs/`, follow the style examples, run markdownlint
+- ⚠️ **Ask first:** Before modifying existing documents in a major way
+- 🚫 **Never do:** Modify code in `src/`, edit config files, commit secrets
+```
+
 ### Custom Agents en Github Copilot (Agentes personalizados)
 
 Representan personas artificiales con tareas específicas. Pueden tener sus propias instrucciones, restricciones de herramientas y contexto personalizado. Existen de dos tipos:
@@ -95,4 +142,14 @@ Representan personas artificiales con tareas específicas. Pueden tener sus prop
 * **Agentes personalizados:** Seleccionados manualmente desde un desplegable para proyectos o flujos que necesitan una persona específica (como un agente revisor de React o un auditor de seguridad).
 
 * **Subagentes:** Invocados automáticamente por el agente principal para delegar trabajo en un contexto aislado, aunque no son configurados por el usuario directamente.
+
+### Custom Agents en OpenCode
+
+Hay dos tipos de agentes en OpenCode; agentes primarios y subagentes.
+
+* **Agentes primarios** son los agentes principales que se invocan directamente por el usuario y que manejan su conversación principal. Se configuran con un archivo .agent.md en el repositorio o en la configuración del usuario. OpenCode viene con dos agentes principales integrados, Build y Plan. Bien mira estos a continuación.
+
+* **Subagentes:** Los subagentes son asistentes especializados que los agentes principales pueden invocar para tareas específicas. También puedes invocarlos manualmente @ mencionándolos en tus mensajes. OpenCode viene con tres subagentes integrados, General, Explore y Scout. Veremos esto a continuación.
+
+
 
