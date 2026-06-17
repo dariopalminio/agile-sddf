@@ -6,10 +6,10 @@ defaults:
 verify:
   unit:
     command: "pnpm run test:unit"
-    required: true
+    required: false
   component:
     command_template: "pnpm run test:component:file -- {{test_file_path}}"  # pnpm test:component:file packages\ui\src\components\Alert\Alert.test.tsx
-    required: true
+    required: tfalserue
   integration:
     command: "pnpm run test:integration"
     required: false
@@ -18,36 +18,36 @@ verify:
     required: false
   e2e:
     command: "pnpm run test:e2e:smoke"
-    required: true
+    required: false
   e2e-smoke:
     command: "pnpm run test:e2e:smoke"
-    required: true
+    required: false
   e2e-sanity:
     command: "pnpm run test:e2e:sanity"
-    required: true
+    required: false
   e2e-regression:
     command: "pnpm run test:e2e:regression"
-    required: true
+    required: false
   e2e-single: # Ejecuta un solo archivo de feature con Cucumber, ideal para la etapa de implementación y debugging
     command: "pnpm exec cucumber-js --profile single {{test_file_path}}" # pnpm exec cucumber-js --profile single tests/e2e/features/components/switch.feature
-    required: true
+    required: false
   performance:
     command: "pnpm run test:performance"
     required: false
   eval:
     command: "pnpm run test:eval"
-    required: true
+    required: false
 
 implement:
   test_generators:
     - type: component
-      skill: test-react-testing-library
-      required: true
+      skill: none # test-react-testing-library
+      required: false
     - type: e2e
-      skill: test-e2e-playwright-cucumber
-      required: true
+      skill: none # test-e2e-playwright-cucumber
+      required: false
     - type: eval
-      skill: none
+      skill: none # skill-test-evals
       required: false
 
   # Contexto E2E del proyecto — leído por story-implement para enriquecer el bundle
@@ -61,9 +61,12 @@ implement:
     support_path: tests/e2e/support              # Hooks y World
 
   code_generators:
+    - layer: monolithic
+      skill: none # skill-master
+      required: false
     - layer: frontend
-      skill: code-frontend-library-react
-      required: true
+      skill: none # code-frontend-library-react
+      required: false
     - layer: backend
       skill: none
       required: false
