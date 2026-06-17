@@ -21,8 +21,74 @@ Los **agentes**, las **skills** y los **comandos** son elementos fundamentales p
 
 ## Skills (Habilidades)
 
-### Agent Skills en Github Copilot (Habilidades del Agente)
-Son el mecanismo más avanzado y reutilizable. A diferencia de los simples comandos /, los Skills son carpetas completas que incluyen no solo instrucciones, sino también scripts, recursos y, crucialmente, lógica interna para interactuar con el sistema de archivos, convirtiéndose en una "mini aplicación" que el agente puede ejecutar. Se almacenan en .github/skills/<skill-name>/SKILL.md a nivel de proyecto o en ~/.copilot/skills/ para uso personal.
+Una habilidad es un procedimiento. Un manual de instrucciones.
+
+### Estructura de un skill
+
+```
+my-skill-name/ 
+├── SKILL.md             # archivo principal del skill, requerido
+ ├── references/          # documentación de referencia extensa
+ ├── scripts/             # funciones auxiliares opcionales
+ └── assets/              # plantillas, fragmentos de código
+```
+
+Solo un nivel de profundidad. No. references/v1/handbook.md Solo references/handbook.md.
+
+### Skills en Github Copilot (Habilidades del Agente)
+
+Las habilidades describen lo que Copilot sabe hacer. Son el mecanismo más avanzado y reutilizable. A diferencia de los simples comandos /, los Skills son carpetas completas que incluyen no solo instrucciones, sino también scripts, recursos y, crucialmente, lógica interna para interactuar con el sistema de archivos, convirtiéndose en una "mini aplicación" que el agente puede ejecutar. Se almacenan en .github/skills/<skill-name>/SKILL.md a nivel de proyecto o en ~/.copilot/skills/ para uso personal.
+
+Una SKILL.mdcarga en tres niveles:
+
+1. **Metadatos** (siempre cargados) — name y description desde el frontmatter. Coste de contexto insignificante.
+2. **Cuerpo** (cargado al activarse): el contenido completo SKILL.md. Se carga solo cuando la descripción coincide con la intención del usuario.
+3. **Referencias** (cargadas bajo demanda): archivos en references/, scripts/, assets/. Se cargan solo si el agente las busca.
+
+La implicación es la siguiente: las habilidades son el único elemento de personalización que permite almacenar contenido ilimitado con un coste de inactividad prácticamente nulo. Por eso son el lugar ideal para guardar material de referencia extenso, manuales de migración y cualquier documento procedimental.
+
+#### Metadatos del skill
+
+```yaml
+--- 
+nombre:  migrating-razor-to-angular 
+descripción:  Migra  vistas Razor de ASP.NET  MVC  a componentes independientes de Angular 20. Úselo al convertir archivos .cshtml , reemplazar la representación del lado del servidor con componentes del lado del cliente o modernizar vistas MVC heredadas . No lo use para la creación de nuevos componentes en proyectos desde cero .
+---                                
+```
+
+Característica del metadato:
+
+1. Descripción en tercera persona. "Migra", no "yo migro" . El punto de vista inconsistente dificulta el descubrimiento.
+2. Desencadenantes específicos. "Convertir archivos .cshtml" , "reemplazar la representación del lado del servidor" : las frases exactas que usan los usuarios.
+3. Disparadores negativos. “No lo utilice para la creación de nuevos componentes en proyectos desde cero”. Indique al entorno de ejecución cuándo no debe activarse.
+4. Reglas estrictas: `name:` debe estar en minúsculas, usar guiones en lugar de espacios y coincidir exactamente con el nombre de la carpeta.
+5. El tamaño en caracteres de la descripción debe ser ~255 caracteres y no debe superar los 500 caracteres para evitar un coste de contexto excesivo. Si la descripción es demasiado larga, recorte el texto y mueva detalles al cuerpo.
+
+Característica del cuerpo del skill:
+
+1. Título/Objetivo (Title, Qué hace este skill)— una frase sobre lo que permite la habilidad
+2. Cuándo usar el skill (When to Use This Skill)— escenarios desencadenantes concretos como balas
+3. Prerrequisitos (Parámetros, entradas, precondiciones) — entrada, herramientas y dependencias necesarias
+4. Flujo de ejecución (Step-by-Step, Workflows)— pasos de procedimiento numerados.
+5. Advertencias (Gotchas, Problemas comunes)— advertencias proactivas que evitan errores
+6. Recomendado (Troubleshooting, Solución de problemas) — tabla de síntomas y soluciones
+7. References (opcional) — punteros a archivos en `references/`
+8. El cuerpo sigue la siguiente estructura: Descripción → Entradas → Flujo de trabajo → Salida → Validación
+
+Cada línea de una habilidad debería enseñar algo que Copilot podría interpretar erróneamente o pasar por alto por completo.
+Mantener un cuerpo conciso. Deshazte del volumen moviendo a references/. Un cuerpo de 2000 líneas SKILL.md anula el propósito.
+
+#### Seguridad en skills
+
+Las habilidades pueden incluir código ejecutable. Este poder hace que las habilidades maliciosas sean peligrosas. GitHub advierte: «Inspeccione siempre el contenido de una habilidad antes de instalarla gh skill preview». Instale solo desde fuentes confiables.
+
+#### Verifica qué es lo que realmente está cargado
+
+Puedes pasar una hora optimizando archivos que ni siquiera se cargan. No adivines:
+
+VS Code: haga clic con el botón derecho en la vista de chat → Diagnóstico . Muestra todos los archivos de instrucciones cargados y cualquier error.
+Coloca el cursor sobre cualquier respuesta de Copilot para ver qué modelo la procesó.
+Copilot CLI: /context muestra el uso de la ventana; /skills info <name> confirma que se ha cargado una habilidad.
 
 ### Skills en Claude
 

@@ -38,3 +38,12 @@ Un repositorio saludable tiene el siguiente aspecto:
 ```
 
 Solo dotnet.instructions.mdse carga cuando trabajas con .csarchivos. copilot-instructions.mdEn su lugar, guarda todo allí y se enviará en cada solicitud, incluidas las de Angular, donde es información irrelevante.
+
+En lo que respecta específicamente a los archivos con ámbito de ruta, al observar cómo la colección github/awesome-copilot organiza sus guías de lenguaje, emerge un patrón consistente:
+
+Propósito : una o dos frases sobre lo que cubre esta capa.
+Convenciones básicas : las reglas
+Patrones concretos : haga esto, no aquello , con ejemplos.
+Herramientas : analizadores de código, formateadores, comandos de compilación/prueba
+Cada archivo debe centrarse en una sola función. Un archivo react.instructions.mdno debería abarcar también el backend de Node; ese es un archivo aparte con su propio patrón de búsqueda.
+
