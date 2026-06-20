@@ -9,7 +9,7 @@ parent: EPIC-18
 created: 2026-06-13
 updated: 2026-06-13
 related:
-  - EPIC-18-complete-flow
+  - EPIC-18-workflow-hardening
 ---
 
 

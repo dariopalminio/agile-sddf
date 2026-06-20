@@ -2,10 +2,10 @@
 alwaysApply: false
 type: release
 id: EPIC-18
-slug: complete-flow
-title: "Complete Flow — Skills para el Workflow de Story y Release"
-status: DEVELOP
-substatus: IN-PROGRESS
+slug: workflow-hardening
+title: "Workflow Hardening — Robustecer el flujo de Story y Release"
+status: COMPLETED
+substatus: DONE
 parent: null
 created: 2026-06-14
 updated: 2026-06-14
@@ -20,10 +20,10 @@ related:
   - plan-08-move-skills-to-the-root
 ---
 
-# Release/Epic: Complete Flow — Skills para el Workflow de Story y Release
+# Release/Epic: Workflow Hardening — Robustecer el flujo de Story y Release
 
 ## Descripción
-Este release añade al framework las capacidades de bulk y orquestacion de flujo completo que faltan: ejecutar `story-plan` e `story-implement` sobre multiples historias en lote, un skill que orquesta el ciclo completo de un release de punta a punta, y herramientas de inspeccion y actualizacion masiva de status. Resuelve el cuello de botella de tener que invocar skills uno a uno cuando se trabaja con releases de 5+ historias.
+Este release robustece y completa el workflow de punta a punta de story y release mediante una serie de refinamientos y correcciones estructurales: renombra estados del workflow (INTEGRATION → DELIVER), define el workflow canónico de épica/release, mueve la asignación de FEAT IDs al momento de creación (lazy), aísla el espacio de trabajo por historia para habilitar trabajo en paralelo, incorpora mejoras a `story-code-review`, corrige la desincronización de `code_generators` en `story-implement`, y mueve los skills y agentes a la raíz del repo para desacoplar el framework del CLI/LLM.
 
 ## Features 
 
