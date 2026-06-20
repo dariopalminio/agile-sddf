@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Skills y agentes movidos a la raíz** — la fuente de verdad de skills y agentes dejó de vivir bajo `.claude/` y pasó a `skills/` y `agents/` en la raíz, para que el framework sea agnóstico del CLI/LLM; `scripts/install.js` (`SOURCE_DIR`) y `scripts/normalize-preflight-paso0.js` (`SKILLS_DIR`) actualizados para leer desde la nueva ubicación. El destino de instalación se mantiene (`.claude` / `.agents` / `.github`)
+- **`package.json` — arreglo `files` simplificado** — las ~41 entradas individuales `.claude/skills/<nombre>` y `.claude/agents/` reemplazadas por las entradas de directorio `skills/` y `agents/`; se mantiene en sync automáticamente al agregar skills y elimina referencias a rutas inexistentes
+- **`README.md`** — sustituido el bullet "Testing especializado y E2E" (que listaba como features skills ya no incluidos) por "Skills worker customizados (extensión)", aclarando que los workers de implementación, testing y utilidades se instalan por separado desde [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension) y se declaran en `sddf.config.yaml`
+
+### Removed
+
+- **Skills worker movidos a repositorio de extensión** — `test-react-testing-library`, `test-cypress-cucumber`, `test-playwright-cucumber`, `code-frontend-library-react` y `changelog-generator` ya no se publican desde este paquete; los workers customizados por stack ahora viven en [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension)
+
 ---
 
 ## [1.13.0] — 2026-06-14 — Remediating and Improvement (EPIC-17)
