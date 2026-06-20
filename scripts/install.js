@@ -6,7 +6,7 @@ const fs = require('fs');
 const readline = require('readline');
 const fse = require('fs-extra');
 
-const SOURCE_DIR = path.join(__dirname, '..', '.claude');
+const SOURCE_DIR = path.join(__dirname, '..');
 
 const VALID_FOLDERS = ['.claude', '.agents', '.github'];
 

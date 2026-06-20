@@ -16,7 +16,7 @@ const CANONICAL = `### Paso 0 — Verificar entorno (\`skill-preflight\`)
 Invocar \`skill-preflight\`. Si retorna \`✗ Entorno inválido\`, detener la ejecución. Usar \`$SPECS_BASE\` en todas las rutas siguientes.
 `;
 
-const SKILLS_DIR = path.join(__dirname, '..', '.claude', 'skills');
+const SKILLS_DIR = path.join(__dirname, '..', 'skills');
 const EXCLUDE_SKILL = 'skill-preflight';
 
 function findSkillMdFiles(dir) {

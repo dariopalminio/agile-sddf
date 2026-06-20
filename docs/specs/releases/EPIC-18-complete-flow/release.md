@@ -17,6 +17,7 @@ related:
   - plan-05-enhance-code-review
   - plan-06-isolate-workspace-by-story
   - plan-07-fix_code_generators_of_story-implement
+  - plan-08-move-skills-to-the-root
 ---
 
 # Release/Epic: Complete Flow — Skills para el Workflow de Story y Release
@@ -39,4 +40,6 @@ Este release añade al framework las capacidades de bulk y orquestacion de flujo
 - [x] PLAN-06 - **Aislar espacio de trabajo por historia:** modificar las rutas de archivos intermedios generados por skills (en `story-implement`, `story-code-review`, `security-audit`, `story-verify`) para incluir `{story_id}`, evitando colisiones cuando múltiples agentes ejecutan el skill simultáneamente sobre historias distintas. Esto asegura que cada historia tenga su propio espacio de trabajo aislado, manteniendo la integridad de los datos y el flujo de trabajo. Esto habilita escalabilidad para trabajo en paralelo.
 
 - [x] PLAN-07 - **Corregir desincronización en code_generators de story-implement:** sincronizar la configuración de `code_generators` entre `sddf.config.yaml`, `SKILL.md` y la implementación real del skill para evitar invocaciones innecesarias de generadores de código en capas no existentes.
+
+- [x] PLAN-08 - **Mover los skills a la raíz:** Anteriormente los skills se localizaban, en este proyecto, en: .claude\skillsAhora se localizan en: skillsAntes los agentes se localizaban en:. claude\agentsAhora se localizan en: agentsDebido a este cambio es necesario actualizar las ubicaciones de origen en los scripts de instalación.
 
