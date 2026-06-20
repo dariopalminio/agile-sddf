@@ -189,7 +189,7 @@ Lista los principios que NO pueden violarse bajo ninguna circunstancia.
 9. **Spec-first:** Escribes la spec antes de codificar, la usas para la tarea en curso, y luego la descartas. Es el nivel más básico.
 10. **Spec-anchored:** La spec se mantiene después de completar la tarea y se usa para evolución y mantenimiento del feature.
 11. TDD (Test-Driven Development) para skills: Define primero los casos de prueba (`evals/evals.json`) **antes** del `SKILL.md`.
-12. **Veracidad de CLAUDE.md:** CLAUDE.md solo describe estructura verificable con el filesystem en el momento de la edición. Antes de actualizar la sección de estructura de directorios o la lista de agentes, verificar con `ls .claude/agents/` y `ls .claude/commands/`. Nunca listar archivos que no existen ni omitir directorios relevantes que sí existen.
+12. **Veracidad de CLAUDE.md:** CLAUDE.md solo describe estructura verificable con el filesystem en el momento de la edición. Antes de actualizar la sección de estructura de directorios o la lista de agentes, verificar con `ls skills/` y `ls agents/` (la fuente de skills/agentes de este repo vive en la raíz, no en `.claude/`). Nunca listar archivos que no existen ni omitir directorios relevantes que sí existen.
 
 ---
 
