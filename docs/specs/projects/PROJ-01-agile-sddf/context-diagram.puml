@@ -11,11 +11,13 @@ System_Ext(claude_api, "Agentic AI coding assistant", "Runtime de IA primario qu
 System_Ext(github, "GitHub", "Repositorio de código y artefactos de especificación. Gestión de branches y publicación del paquete npm.")
 System_Ext(openspec_cli, "SDD CLI", "Herramienta de línea de comandos para gestión del ciclo de vida de cambios spec-driven (OpenSpec, Speckit).")
 System_Ext(npm_registry, "npm Registry", "Registro público desde donde se instala el framework globalmente o por proyecto.")
+System_Ext(agile_sddf_ext, "Agile SDDF Extension", "Repositorio que provee una biblioteca de skills reutilizables para el framework Agile SDDF.")
 
 Rel(usuario, sddf, "Invoca skills, revisa y aprueba artefactos generados", "CLI / Chat")
 Rel(sddf, claude_api, "Delega ejecución de agentes y generación de contenido", "API REST / HTTPS")
 Rel(sddf, github, "Versiona artefactos de especificación y publica releases del paquete", "Git / HTTPS")
 Rel(sddf, openspec_cli, "Gestiona cambios spec-driven: new, status, apply, archive", "CLI / Node.js")
 Rel(npm_registry, sddf, "Provee distribución del paquete para instalación global o local", "npm / HTTPS")
+Rel(sddf, agile_sddf_ext, "Consume skills desde", "HTTPS / Git")
 
 @enduml
