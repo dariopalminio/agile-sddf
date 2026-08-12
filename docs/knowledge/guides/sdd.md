@@ -3,11 +3,26 @@
 ## Qué es Spec Driven Development
 Spec Driven Development propone, en esencia que la especificación preceda y guíe al código. No es un marco de trabajo ni una metodología prescriptiva como scrum. Es más bien un enfoque de trabajo que propone:
 
-Escribir primero una especificación clara de lo que se quiere construir: objetivos, reglas de negocio, criterios de aceptación, restricciones técnicas.
+1. **Specify:** Escribir primero una especificación clara de lo que se quiere construir: objetivos, reglas de negocio, comportamiento, criterios de aceptación y requisitos, restricciones técnicas. Sin prescribir cómo se implementa.
+2. **Plan:** Definir cómo se va a construir: arquitectura y diseño (tecnologías, modelos de datos, contratos, interfaces, error handling) y tareas.
+3. **Implement:** Escribir el código siguiendo la especificación y el plan (validando mediante TDD y pruebas automáticas).
+4. **Validate:** Verificar que la implementación cumple con la especificación sin errores (por ejemplo, mediante pruebas de aceptación automatizadas, revisiones de código y aceptación humana).
 
-Usar esa especificación como fuente tanto para humanos como para agentes de IA.
+```
+Human review           Human review           Human review        Automated + Human
+       :                      :                      :                      :
+       v                      v                      v                      v
++--------------+       +--------------+       +--------------+       +--------------+
+|   Specify    | ----> |     Plan     | ----> |  Implement   | ----> |   Validate   |
+| What to build|       | How to build |       |   Build it   |       |  Verify it   |
++--------------+       +--------------+       +--------------+       +--------------+
+       ^                                                                    |
+       |                                                                    |
+       + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  +
+                              Refine spec if needed
+```
 
-Generar código a partir de la spec, no de prompts improvisados.
+Con este enfoque se busca usar las especificaciones vivas como fuente de la verdad, tanto para humanos como para agentes de IA, para generar código robusto a partir de la spec, no de prompts improvisados.
 
 Como lo resume GitHub en su documentación de Spec Kit: "En este nuevo mundo, mantener software significa evolucionar especificaciones. [...] El código es el enfoque de última milla."[1]
 
@@ -35,6 +50,9 @@ El ecosistema de herramientas SDD está creciendo rápidamente:
 
 - **Agent Skills:** Las habilidades codifican los flujos de trabajo, los controles de calidad y las mejores prácticas que utilizan los ingenieros sénior al desarrollar software. Estas se empaquetan para que los agentes de IA las sigan de forma coherente en cada fase del desarrollo [8]. Skills para un flujo de trabajo completo de SDD: Define, Plan, Build, Verify, Review, Ship.
 
+- **Spec-Driven Development Skill:** Skill que implementa un flujo de trabajo completo de SDD basado en especificaciones [9]. Compatible con Claude Code, Cursor, GitHub Copilot, JetBrains Junie, Windsurf y herramientas similares.
+
+
 Referencias:
 [1]: GitHub Blog - Spec-driven development with AI: github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai 
 [2]: https://openspec.dev/
@@ -44,5 +62,6 @@ Referencias:
 [6]: https://github.com/obra/superpowers
 [7]: https://github.com/Gentleman-Programming/gentle-ai
 [8]: https://github.com/addyosmani/agent-skills
+[9]: https://github.com/mariano-aguero/spec-driven-development-skill
 
 
