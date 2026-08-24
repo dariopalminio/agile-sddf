@@ -25,12 +25,14 @@ Una habilidad es un procedimiento. Un manual de instrucciones.
 
 ### Estructura de un skill
 
+La estructura principal de un skill es la siguiente:
 ```
 my-skill-name/ 
-├── SKILL.md             # archivo principal del skill, requerido
- ├── references/          # documentación de referencia extensa
+ ├── SKILL.md             # archivo principal del skill, requerido
+ ├── references/          # documentación de referencia extensa, opcional
  ├── scripts/             # funciones auxiliares opcionales
- └── assets/              # plantillas, fragmentos de código
+ ├── assets/              # plantillas, fragmentos de código
+ └── evals/               # pruebas del skill, opcional
 ```
 
 Solo un nivel de profundidad. No. references/v1/handbook.md Solo references/handbook.md.
@@ -38,13 +40,21 @@ Solo un nivel de profundidad. No. references/v1/handbook.md Solo references/hand
 ### Ubicación de los skills
 
 Claude (Proyecto, Compatible con OpenCode)--> .claude/skills/<name>/SKILL.md
+
 Claude (Global, Compatible con OpenCode) --> ~/.claude/skills/<name>/SKILL.md
+
 OpenCode (Configuración del proyecto) --> .opencode/skills/<name>/SKILL.md
+
 OpenCode (Configuración global) --> ~/.config/opencode/skills/<name>/SKILL.md
+
 OpenCode (Compatible con agente de proyecto) --> .agents/skills/<name>/SKILL.md
+
 OpenCode (Compatible con agentes globales) --> ~/.agents/skills/<name>/SKILL.md
+
 Github Copilot (Proyecto) --> .github/skills/<name>/SKILL.md
+
 Github Copilot (Global) --> ~/.copilot/skills/<name>/SKILL.md
+
 
 ### Skills en Github Copilot (Habilidades del Agente)
 
