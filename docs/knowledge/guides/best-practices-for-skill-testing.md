@@ -1,9 +1,14 @@
 # Pruebas de skills
 
+Los skills pueden ser probados de varias maneras, dependiendo de la etapa de desarrollo y del tipo de skill. A continuación se presentan las mejores prácticas para probar skills, incluyendo el uso de `skill-master`, `skill-test-evals` y `agent-skills-eval`.
 
-## Pruebas con skill-master eval
+## Evals
 
-El skill-master permite la creación, edición y testeo de skills, con un fuerte enfoque interactivo y conversacional.
+Las pruebas de skills se definen en archivos `evals.json` dentro de una carpeta `evals` (dentro de la carpeta del skill) que contienen los casos de prueba y las aserciones que deben cumplirse. Estos evals permiten verificar que el skill funciona correctamente y cumple con los requisitos esperados.
+
+## Pruebas con skill-master o skill-test-evals
+
+El skill-master o skill-test-evals permiten la creación, edición y testeo de skills, con un fuerte enfoque interactivo y conversacional.
 
 
 Los skills crìticos deben tener pruebas automatizadas en `evals/evals.json` que se pueden ejecutar con:
@@ -11,8 +16,13 @@ Los skills crìticos deben tener pruebas automatizadas en `evals/evals.json` que
 ```
 /skill-master eval --skill <skill-name>
 ```
+o
 
-Aquí tienes un resumen de buenas prácticas para crear un skill y probarlo con `/skill-master eval --skill <skill-name>`, extraído de la experiencia práctica y de los puntos de dolor comunes.
+```
+skill-test-evals --skill <skill-name>
+```
+
+Aquí tienes un resumen de buenas prácticas para crear un skill y probarlo con `/skill-test-evals --skill <skill-name>`, extraído de la experiencia práctica y de los puntos de dolor comunes.
 
 ### 🧱 Fase de Diseño del Skill
 
@@ -38,13 +48,13 @@ Aquí tienes un resumen de buenas prácticas para crear un skill y probarlo con 
    - Si tu skill genera YAML frontmatter, no dejes `<...>` sin reemplazar.  
    - Incluye una aserción que verifique la ausencia de placeholders (ej. `grep -v '<[^>]*>'`).  
 
-### 🧪 Fase de Prueba (`skill-master eval`)
+### 🧪 Fase de Prueba (`skill-test-evals`)
 
 6. **Ejecuta siempre con `--baseline`** (comparación con/sin skill)  
    Es la única forma de medir el valor añadido real. Sin baseline, no sabes si el skill mejora algo.
 
 7. **Comienza con un subconjunto pequeño de evals (2-3)**  
-   Ejecuta `skill-master eval` con solo los casos más críticos para iterar rápido. Añade más cuando el skill se estabilice.
+   Ejecuta `skill-master eval` o `skill-test-evals` con solo los casos más críticos para iterar rápido. Añade más cuando el skill se estabilice.
 
 8. **Revisa los outputs en el visor (`eval-viewer/generate_review.py`)**  
    - Mira las salidas **con** y **sin** skill lado a lado.  
