@@ -269,6 +269,7 @@ For detailed guidance on structure, patterns, and principles, read these referen
 - `references/skill-anatomy.md` — anatomy, progressive disclosure, multi-client design, principle of lack of surprise
 - `references/writing-guide.md` — writing style, output format patterns, how to think about improvements
 - `references/skill-structure.md` — canonical folder structure and rules per directory
+- `references/skill-performance.md` — context budgets, progressive disclosure and performance audit checklist
 - `references/skill-frontmatter.md` — frontmatter YAML conventions (type, triggers, version, alwaysApply)
 - `references/tdd-workflow.md` — RED/GREEN/REFACTOR cycle: evals BEFORE SKILL.md
 - `references/skill-evals-format.md` — TC-NNN format with contains/not_contains/threshold
@@ -576,6 +577,7 @@ The `references/` directory contains detailed guides and schemas:
 | `references/writing-guide.md` | Writing style, output format patterns, improvement thinking |
 | `references/platform-guides.md` | Claude.ai and Cowork specific instructions |
 | `references/skill-structure.md` | Canonical folder structure and per-directory rules |
+| `references/skill-performance.md` | Context budgets (R-01…R-06), progressive disclosure, audit checklist and performance anti-patterns |
 | `references/skill-frontmatter.md` | Frontmatter YAML conventions (type, triggers, version, alwaysApply) |
 | `references/tdd-workflow.md` | RED/GREEN/REFACTOR cycle with pressure scenarios |
 | `references/skill-tasks-template.md` | Tasks template with TDD phases annotated [Pre-RED/RED/GREEN/REFACTOR] |
