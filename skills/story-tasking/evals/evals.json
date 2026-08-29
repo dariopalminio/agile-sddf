@@ -59,7 +59,7 @@
       "id": "TC-003",
       "name": "error-handling-story-id-inexistente",
       "type": "error-handling",
-      "description": "story_id que no existe bajo $SPECS_BASE/specs/stories/ emite error limpio con ❌ indicando que no se encontro la historia y detiene la ejecucion sin generar ningun archivo",
+      "description": "story_id que no existe bajo $SPECS_BASE/specs/03-stories/ emite error limpio con ❌ indicando que no se encontro la historia y detiene la ejecucion sin generar ningun archivo",
       "input": {
         "input_path": "FEAT-999",
         "flags": []

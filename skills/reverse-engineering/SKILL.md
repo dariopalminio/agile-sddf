@@ -6,7 +6,7 @@ description: >-
   from a project they didn't write.
 name: reverse-engineering
 ---
-Eres el orquestador del comando `/reverse-engineering`. Tu responsabilidad es coordinar 4 agentes de análisis en paralelo y luego un agente sintetizador para generar automáticamente `$SPECS_BASE/specs/projects/$PROJ_DIR/project.md` a partir del código fuente del repositorio actual.
+Eres el orquestador del comando `/reverse-engineering`. Tu responsabilidad es coordinar 4 agentes de análisis en paralelo y luego un agente sintetizador para generar automáticamente `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` a partir del código fuente del repositorio actual.
 
 ---
 
@@ -30,18 +30,18 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 
 ## Configuración 0b — Resolver o crear directorio del proyecto (`PROJ_DIR`)
 
-1. Listar todos los subdirectorios de `$SPECS_BASE/specs/projects/`.
+1. Listar todos los subdirectorios de `$SPECS_BASE/specs/01-projects/`.
 2. Para cada subdirectorio, leer `project-intent.md` y verificar si `substatus` es `DONE` o `IN‑PROGRESS`.
 3. Si se encuentra exactamente uno → usar ese directorio como `$PROJ_DIR`.
 4. Si se encuentran varios → mostrar la lista y pedir al usuario que elija.
 5. Si no se encuentra ninguno → **derivar el ID desde el nombre del repositorio**:
    - Obtener el nombre del directorio raíz del repositorio (ej. `my-project`).
    - Convertir a kebab-case: `PROJ-01-my-project`.
-   - Crear el directorio `$SPECS_BASE/specs/projects/PROJ-01-my-project/` si no existe.
+   - Crear el directorio `$SPECS_BASE/specs/01-projects/PROJ-01-my-project/` si no existe.
    - Usar `PROJ-01-my-project` como `$PROJ_DIR`.
-   - Informar al usuario: `ℹ️ No se encontró proyecto activo. Se creará en: $SPECS_BASE/specs/projects/$PROJ_DIR/`
+   - Informar al usuario: `ℹ️ No se encontró proyecto activo. Se creará en: $SPECS_BASE/specs/01-projects/$PROJ_DIR/`
 
-La ruta completa del proyecto es: `$SPECS_BASE/specs/projects/$PROJ_DIR/`
+La ruta completa del proyecto es: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`
 
 ---
 
@@ -75,7 +75,7 @@ Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-template.md`.
 ### 3. Verificar modo --update
 
 Si `--update` está activo:
-1. Lee `$SPECS_BASE/specs/projects/$PROJ_DIR/project.md` si existe
+1. Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` si existe
 2. Verifica el campo `substatus`:
    - `IN‑PROGRESS`: continúa en modo incremental
    - `DONE`: informa al usuario que el documento ya está completo y pide confirmación antes de continuar
@@ -97,7 +97,7 @@ Fase 1: Análisis paralelo (4 agentes)
   → reverse-engineer-ux-flow-mapper          → .tmp/rfc-navigation.md
 
 Fase 2: Síntesis
-  → reverse-engineer-synthesizer → $SPECS_BASE/specs/projects/$PROJ_DIR/project.md
+  → reverse-engineer-synthesizer → $SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md
 ```
 
 ---
@@ -174,7 +174,7 @@ Verifica la existencia de cada archivo `.tmp/rfc-*.md`. Si alguno falta, adviert
 >   - `.tmp/rfc-features.md` (existe: [sí/no])
 >   - `.tmp/rfc-business-rules.md` (existe: [sí/no])
 >   - `.tmp/rfc-navigation.md` (existe: [sí/no])
-> - Output path: `$SPECS_BASE/specs/projects/$PROJ_DIR/project.md`
+> - Output path: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`
 > - Update mode: [true/false] — si true, también lee el documento existente y preserva secciones ya completas.
 >
 > Al completar el frontmatter del documento generado, usar `status: DISCOVERY` — estado inicial de todo proyecto generado por ingeniería inversa (descubrimiento de requisitos desde código).
@@ -184,12 +184,12 @@ Verifica la existencia de cada archivo `.tmp/rfc-*.md`. Si alguno falta, adviert
 
 ## Fase 3 — Confirmación
 
-1. Verifica que `$SPECS_BASE/specs/projects/$PROJ_DIR/project.md` existe leyendo el archivo
+1. Verifica que `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` existe leyendo el archivo
 2. Cuenta las ocurrencias de `<!-- PENDING MANUAL REVIEW -->` en el output
 3. Reporta al usuario:
    ```
    ✅ Especificación generada correctamente.
-   Path: $SPECS_BASE/specs/projects/$PROJ_DIR/project.md
+   Path: $SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md
    Secciones completadas: [N]
    Secciones pendientes de revisión: [M] (<!-- PENDING MANUAL REVIEW -->)
    

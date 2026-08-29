@@ -59,11 +59,20 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 
 ### Proceso de desarrollo
 
-- **Metodología:** SDD (Spec-Driven Development) con tres niveles de workflow: project, release y story.
+- **Metodología:** SDD (Spec-Driven Development) con tres niveles de workflow: project, epic y story.
 
 ---
+## Jerarquía de desarrollo
 
-## Estandares de construcción de Skills
+Un proyecto (project) contiene varias épicas (epic), y cada épica contiene varias historias (story).
+
+project (`$SPECS_BASE/specs/01-projects/<PROJECT-NAME>/project.md`)
+    └── epic (`$SPECS_BASE/specs/02-epics/<EPIC-NAME>/epic.md`)
+        └── story (`$SPECS_BASE/specs/03-stories/<STORY-NAME>/story.md`)
+
+
+---
+## Estándares de construcción de Skills
 
 Respetar las [Política de Creación de Skills para Agentes de IA](docs/policies/references/skill_creation_policy.md)
 
@@ -119,13 +128,13 @@ La lógica de dominio vive en los templates (estructura) y en los agentes (crite
 #### 7. IDs jerárquicos
 Nivel	Patrón	Ejemplo
 Proyecto	PROJ-NN-kebab	PROJ-01-mi-app
-Release/Épica	EPIC-NN-kebab	EPIC-12-story-sdd-workflow
+Épica	EPIC-NN-kebab	EPIC-12-story-sdd-workflow
 Feature/Historia	FEAT-NNN-kebab	FEAT-042-login
 
 #### 8. Frontmatter YAML en documentos generados
 
 ---
-type: project | release | story
+type: project | epic | story
 id: EPIC-NN
 slug: nombre-kebab
 status: BACKLOG | DISCOVERY | PLANNING | ...
@@ -141,7 +150,7 @@ updated: YYYY-MM-DD
 Solo un documento puede tener substatus: IN-PROGRESS a la vez por nivel del pipeline de proyecto. El skill debe verificar esto antes de activar un nuevo ítem.
 
 #### 10. Gates secuenciales con precondiciones
-Cada skill verifica que el artefacto del paso anterior existe y está válido antes de ejecutar. Ejemplo: release-generate-stories requiere que release-format-validation haya pasado.
+Cada skill verifica que el artefacto del paso anterior existe y está válido antes de ejecutar. Ejemplo: epic-generate-stories requiere que epic-format-validation haya pasado.
 
 #### 11. Idempotencia declarada
 Skills de inicialización (sddf-init, openspec-init-config) declaran explícitamente que no sobrescriben archivos existentes.
@@ -153,9 +162,9 @@ Los skills exponen flags para variantes de comportamiento: --quick, --update, --
 
 #### 13. Rutas de output predecibles
 
-$SPECS_BASE/specs/projects/<PROJ-ID>/  → artefactos de proyecto
-$SPECS_BASE/specs/releases/<EPIC-NN>/  → releases
-$SPECS_BASE/specs/stories/<FEAT-NNN>/ → historias
+$SPECS_BASE/specs/01-projects/<PROJ-ID>/  → artefactos de proyecto
+$SPECS_BASE/specs/02-epics/<EPIC-NN>/  → releases
+$SPECS_BASE/specs/03-stories/<FEAT-NNN>/ → historias
 
 #### 14. Versionado mediante substatus
 
@@ -163,13 +172,13 @@ El ciclo de vida de un artefacto se traza con status + substatus, no con version
 
 #### 15. Skills de validación antes de transformación
 
-Existe un skill de validación explícito (release-format-validation) que actúa como gate antes de que los skills de generación consuman el documento.
+Existe un skill de validación explícito (epic-format-validation) que actúa como gate antes de que los skills de generación consuman el documento.
 
 #### 16. Registro de decisiones en tres niveles
 
 Las decisiones se registran en el nivel que corresponde a su alcance:
 
-- **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`$SPECS_BASE/specs/stories/FEAT-NNN/design.md`)
+- **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`$SPECS_BASE/specs/03-stories/FEAT-NNN/design.md`)
 - **Decisiones de un cambio OpenSpec** → `design.md` del change (`openspec/changes/`)
 - **Decisiones transversales de arquitectura** → `docs/adr/ADR-NNNN-slug.md` siguiendo `docs/adr/adr-template.md`
 
@@ -191,7 +200,7 @@ Lista los principios que NO pueden violarse bajo ninguna circunstancia.
 9. **Spec-first:** Escribes la spec antes de codificar, la usas para la tarea en curso, y luego la descartas. Es el nivel más básico.
 10. **Spec-anchored:** La spec se mantiene después de completar la tarea y se usa para evolución y mantenimiento del feature.
 11. TDD (Test-Driven Development) para skills: Define primero los casos de prueba (`evals/evals.json`) **antes** del `SKILL.md`.
-12. **Veracidad de CLAUDE.md:** CLAUDE.md solo describe estructura verificable con el filesystem en el momento de la edición. Antes de actualizar la sección de estructura de directorios o la lista de agentes, verificar con `ls skills/` y `ls agents/` (la fuente de skills/agentes de este repo vive en la raíz, no en `.claude/`). Nunca listar archivos que no existen ni omitir directorios relevantes que sí existen.
+12. **Veracidad de CLAUDE.md/AGENTS.md:** CLAUDE.md solo describe estructura verificable con el filesystem en el momento de la edición. Antes de actualizar la sección de estructura de directorios o la lista de agentes, verificar con `ls skills/` y `ls agents/` (la fuente de skills/agentes de este repo vive en la raíz, no en `.claude/`). Nunca listar archivos que no existen ni omitir directorios relevantes que sí existen.
 
 ---
 

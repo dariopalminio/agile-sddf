@@ -18,7 +18,7 @@
           "APROBADA",
           "SPECIFY",
           "DONE",
-          "specs/stories/",
+          "specs/03-stories/",
           "story.md",
           "Refinamiento finalizado"
         ],
@@ -37,9 +37,9 @@
       "id": "TC-002",
       "name": "deteccion-backlog-existente-retomar",
       "type": "happy-path",
-      "description": "El skill detecta al inicio que existe al menos una historia con status SPECIFY / substatus IN-PROGRESS en $SPECS_BASE/specs/stories/. Debe ofrecer al usuario la opción de retomar el backlog o crear una historia nueva, sin iniciar story-creation de forma automática.",
+      "description": "El skill detecta al inicio que existe al menos una historia con status SPECIFY / substatus IN-PROGRESS en $SPECS_BASE/specs/03-stories/. Debe ofrecer al usuario la opción de retomar el backlog o crear una historia nueva, sin iniciar story-creation de forma automática.",
       "input": {
-        "context": "Existe docs/specs/stories/FEAT-010-login-usuario/story.md con frontmatter status: SPECIFY y substatus: IN-PROGRESS creado en una sesión anterior."
+        "context": "Existe docs/specs/03-stories/FEAT-010-login-usuario/story.md con frontmatter status: SPECIFY y substatus: IN-PROGRESS creado en una sesión anterior."
       },
       "expected": {
         "contains": [

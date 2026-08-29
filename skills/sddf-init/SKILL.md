@@ -49,9 +49,9 @@ sddf-init → skill-preflight → [cualquier skill SDDF]
 ### Paso 2 — Crear directorios de specs
 
 Para cada uno de los siguientes directorios bajo `SPECS_BASE`:
-- `specs/projects/`
-- `specs/releases/`
-- `specs/stories/`
+- `specs/01-projects/`
+- `specs/02-epics/`
+- `specs/03-stories/`
 
 Verificar si el directorio existe:
 - **No existe:** crearlo y registrar `[CREADO]  <ruta>`
@@ -68,7 +68,7 @@ Copiar los templates compartidos desde el `assets/` de su skill dueño. Esta tab
 | Template | Skill dueño (origen) |
 |----------|---------------------|
 | `story-template.md` | `$CLI_ROOT/skills/story-creation/assets/` |
-| `release-spec-template.md` | `$CLI_ROOT/skills/release-creation/assets/` |
+| `epic-template.md` | `$CLI_ROOT/skills/epic-creation/assets/` |
 | `project-template.md` | `$CLI_ROOT/skills/project-discovery/assets/` |
 | `project-intent-template.md` | `$CLI_ROOT/skills/project-begin/assets/` |
 | `project-plan-template.md` | `$CLI_ROOT/skills/project-planning/assets/` |
@@ -131,12 +131,12 @@ Emitir el informe consolidado con todos los artefactos verificados:
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     docs/specs/projects/
-[CREADO]     docs/specs/releases/
-[YA EXISTÍA] docs/specs/stories/
+[CREADO]     docs/specs/01-projects/
+[CREADO]     docs/specs/02-epics/
+[YA EXISTÍA] docs/specs/03-stories/
 [CREADO]     docs/specs/templates/
 [CREADO]     docs/specs/templates/story-template.md
-[CREADO]     docs/specs/templates/release-spec-template.md
+[CREADO]     docs/specs/templates/epic-template.md
 [CREADO]     docs/specs/templates/project-template.md
 [CREADO]     docs/specs/templates/project-intent-template.md
 [CREADO]     docs/specs/templates/project-plan-template.md

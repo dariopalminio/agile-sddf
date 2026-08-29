@@ -30,7 +30,7 @@ El skill nunca modifica los artefactos que analiza. Solo lee, correlaciona y gen
 - Detecta elementos de diseño sin tarea correspondiente (si tasks.md está presente)
 - Verifica la cobertura de ACs en testcases.md (si existe)
 - Informa la vía de implementación disponible (`/story-implement` o `/story-implement-tasks`)
-- Detecta objetivos de la historia desalineados con el release padre
+- Detecta objetivos de la historia desalineados con la épica padre
 - Valida el cumplimiento del DoD para la fase PLAN
 - Genera `analyze.md` con el reporte de coherencia y recomendaciones accionables
 - Actualiza el estado de `story.md` a `READY-FOR-IMPLEMENT/DONE` si no hay ERROREs
@@ -72,7 +72,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - `testcases.md` — casos de prueba por criterio de aceptación (opcional; requerido si tasks.md ausente)
 - `tasks.md` — plan de tareas de implementación (opcional; requerido si testcases.md ausente)
 - `$SPECS_BASE/policies/definition-of-done-story.md` — criterios DoD fase PLAN (opcional)
-- `$SPECS_BASE/specs/releases/{parent}-*/release.md` — release padre para verificar alineación (opcional)
+- `$SPECS_BASE/specs/02-epics/{parent}-*/epic.md` — épica padre para verificar alineación (opcional)
 - Template del reporte: `assets/analyze-report-template.md` (opcional, hay fallback interno)
 
 ---
@@ -87,7 +87,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `$SPECS_BASE/specs/stories/`
+- El directorio de la historia existe bajo `$SPECS_BASE/specs/03-stories/`
 - `story.md` existe en el directorio de la historia
 - `design.md` existe en el directorio de la historia (requiere haber ejecutado `/story-design`)
 - `skill-preflight` retorna estado OK (entorno válido)
@@ -149,7 +149,7 @@ Proporciona el ID (ej. FEAT-059) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
+2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
 3. Si no se encuentra: notificar y detener (ver sección Manejo de errores)
 
 #### 1c. Resolución de la ruta de salida
@@ -189,7 +189,7 @@ Leer `story.md` del directorio resuelto.
 
 Extraer y registrar internamente:
 - `story_id` del frontmatter (`id: FEAT-NNN`)
-- `story_slug`, `story_title`, `story_parent` (release EPIC del frontmatter)
+- `story_slug`, `story_title`, `story_parent` (ID de la épica EPIC-NN del frontmatter)
 - **Criterios de aceptación numerados como AC-1, AC-2 … AC-N** — fuente de verdad del comportamiento esperado
 - Requisitos no funcionales
 - Objetivo de la historia (frase "Para ..." del user story)
@@ -278,38 +278,38 @@ Si `$TASKS_AVAILABLE = false` Y `$TESTCASES_AVAILABLE = false`:
 
 ---
 
-### Paso 5 — Verificar alineación con el release padre
+### Paso 5 — Verificar alineación con la épica padre
 
-#### 5a. Localizar el release padre
+#### 5a. Localizar la épica padre
 
-Buscar el ID del release en el frontmatter `parent:` de story.md (ej. `EPIC-12-story-sdd-workflow`).
+Buscar el ID de la épica en el frontmatter `parent:` de story.md (ej. `EPIC-12-story-sdd-workflow`).
 
-Intentar encontrar `$SPECS_BASE/specs/releases/{parent}-*/release.md`.
+Intentar encontrar `$SPECS_BASE/specs/02-epics/{parent}-*/epic.md`.
 
-Si no existe: emitir advertencia y continuar sin verificación de release:
+Si no existe: emitir advertencia y continuar sin verificación de épica:
 ```
-⚠️ No se encontró release.md para: <parent>
-   La verificación de alineación con el release se omitirá.
+⚠️ No se encontró epic.md para: <parent>
+   La verificación de alineación con la épica se omitirá.
 ```
 
-#### 5b. Leer objetivos del release
+#### 5b. Leer objetivos de la épica
 
-Si release.md existe, extraer:
-- Objetivos del release / descripción del épica
+Si epic.md existe, extraer:
+- Objetivos y descripción de la épica
 - Lista de features incluidas (buscar la feature correspondiente a la historia analizada)
-- Restricciones o criterios del release
+- Restricciones o criterios de la épica
 
 #### 5c. Verificar alineación
 
 Comparar:
-- ¿El objetivo de la historia ("Para ..." del user story) está alineado con los objetivos del release?
-- ¿La historia está listada como feature del release?
-- ¿Existen restricciones del release que la historia no respeta?
+- ¿El objetivo de la historia ("Para ..." del user story) está alineado con los objetivos de la épica?
+- ¿La historia está listada como feature de la épica?
+- ¿Existen restricciones de la épica que la historia no respeta?
 
 Registrar internamente:
 ```
-Release alineado: ✓ / ❌
-  - Historia listada en release: ✓ / ❌
+Épica alineada: ✓ / ❌
+  - Historia listada en la épica: ✓ / ❌
   - Objetivo alineado: ✓ / ❌ [descripción]
   - Restricciones respetadas: ✓ / ❌ [descripción]
 ```
@@ -352,9 +352,9 @@ Para cada componente e interfaz de design.md:
 
 Registrar elementos sin tarea como inconsistencia **TIPO C** (advertencia, no error).
 
-#### Correlación 4 — Alineación con release
+#### Correlación 4 — Alineación con la épica
 
-Si la verificación del release encontró desalineaciones, registrar como inconsistencia **TIPO D**.
+Si la verificación de la épica encontró desalineaciones, registrar como inconsistencia **TIPO D**.
 
 #### Correlación 5 — Cumplimiento DoD PLAN
 
@@ -392,7 +392,7 @@ Registrar ACs sin caso de prueba como inconsistencia **TIPO F** (WARNING, no blo
 | A | AC sin cobertura en design.md | ERROR |
 | B | Tarea sin diseño asociado | ERROR |
 | C | Elemento de diseño sin tarea | WARNING |
-| D | Desalineación con release | WARNING |
+| D | Desalineación con la épica | WARNING |
 | E | Criterio DoD PLAN no cumplido | ERROR |
 | F | AC sin caso de prueba en testcases.md | WARNING |
 
@@ -439,7 +439,7 @@ Completar el reporte con los resultados de la correlación del Paso 6:
 - **Tabla de cobertura diseño → tareas**: cada componente/interfaz + estado (si `$TASKS_AVAILABLE = false`: reemplazar con nota `⚠️ tasks.md no presente — análisis de tareas omitido`)
 - **Tabla de cobertura de ACs en testcases.md**: cada AC + estado + escenario que lo cubre (si `$TESTCASES_AVAILABLE = false`: reemplazar con nota `⚠️ testcases.md no presente — cobertura de pruebas no evaluada`)
 - **Sección "Vía de implementación disponible"**: tabla indicando qué skills están habilitados según los artefactos presentes (`/story-implement` si testcases.md presente; `/story-implement-tasks` si tasks.md presente)
-- **Alineación con release**: estado + detalles
+- **Alineación con la épica**: estado + detalles
 - **Inconsistencias detectadas**: lista numerada con tipo, descripción, archivo afectado, sección específica
 - **Recomendaciones**: para cada inconsistencia, una acción concreta
 - **Sección "Cumplimiento DoD — Fase PLAN"**: si `$DOD_PLAN_CRITERIA` estuvo vacío, mostrar aviso de omisión; si hay criterios, completar la tabla con una fila por criterio evaluado en Correlación 5
@@ -482,7 +482,7 @@ Mostrar al usuario:
    Cobertura de diseño:  <N>/<Total> elementos de diseño con tarea  |  ⚠️ no evaluada — tasks.md no presente
    Cobertura testcases:  <N>/<Total> ACs con caso de prueba  |  ⚠️ no evaluada — testcases.md no presente
 
-   Release (<EPIC-NN>):  <alineado ✓ / desalineado ❌ / no verificado ⚠️>
+   Épica (<EPIC-NN>):   <alineado ✓ / desalineado ❌ / no verificado ⚠️>
    DoD PLAN:             <N>/<Total> criterios ✓  |  ⚠️ no evaluado (sección no encontrada)
 
    Vía de implementación:
@@ -521,8 +521,8 @@ Si solo hay WARNINGs o está todo OK:
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/release-generate-stories` |
-| `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/release-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
+| `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/epic-generate-stories` |
 | `design.md` ausente | `❌ No se encontró design.md en: <ruta>` | Detener. Sugerir `/story-design {story_id}` |
 | `testcases.md` y `tasks.md` ambos ausentes | `❌ Análisis rechazado: sin artefacto de implementación` | Detener. Sugerir `/story-testcases {story_id}` o `/story-tasking {story_id}` |
 | `testcases.md` ausente (tasks.md presente) | `⚠️ testcases.md no encontrado — cobertura de pruebas omitida` | Advertir y continuar |
@@ -530,7 +530,7 @@ Si solo hay WARNINGs o está todo OK:
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
 | `definition-of-done-story.md` ausente | `⚠️ definition-of-done-story.md no encontrado` | Advertir y continuar sin validación DoD |
 | Sección PLAN no encontrada en DoD | `⚠️ Sección PLAN no encontrada en DoD` | Advertir y continuar sin validación DoD |
-| Release padre no encontrado | `⚠️ No se encontró release.md para: <parent>` | Advertir y continuar sin verificación de release |
+| Épica padre no encontrada | `⚠️ No se encontró epic.md para: <parent>` | Advertir y continuar sin verificación de épica |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
 
 ---
@@ -569,7 +569,7 @@ updated: {date}
 | Cobertura de ACs en testcases.md | {tc_coverage_status} | {tc_covered_N}/{ac_total} ACs con caso de prueba |
 | Alineación tareas → diseño | {tasks_coverage_status} | {tasks_covered_N}/{tasks_total} tareas con diseño |
 | Cobertura diseño → tareas | {design_coverage_status} | {design_covered_N}/{design_total} elementos con tarea |
-| Alineación con release {parent} | {release_status} | {release_detail} |
+| Alineación con la épica {parent} | {epic_status} | {epic_detail} |
 | Cumplimiento DoD — Fase PLAN | {dod_status} | {dod_n}/{dod_total} criterios ✓ |
 
 **Estado general:** {overall_status}
@@ -600,13 +600,13 @@ updated: {date}
 
 ---
 
-## Alineación con Release
+## Alineación con la Épica
 
-**Release padre:** {parent}
+**Épica padre:** {parent}
 
 | Criterio | Estado | Detalle |
 |---|---|---|
-| Historia listada en release | ✓ / ❌ | {detail} |
+| Historia listada en la épica | ✓ / ❌ | {detail} |
 | Objetivo alineado | ✓ / ❌ | {detail} |
 | Restricciones respetadas | ✓ / ❌ | {detail} |
 

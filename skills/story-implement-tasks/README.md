@@ -18,7 +18,7 @@ Skill que implementa el código de una historia SDD tarea por tarea siguiendo TD
 /story-implement-tasks                       [story.md: → IMPLEMENT/IN‑PROGRESS → IMPLEMENT/DONE]
     → Implementa código tarea por tarea con TDD  ← aquí
     → Genera implement-report.md al finalizar
-    → Actualiza checklist en release.md padre
+    → Actualiza checklist en epic.md padre
 ```
 
 ## Precondiciones
@@ -41,7 +41,7 @@ Si algún artefacto falta o la historia no está en `READY-FOR-IMPLEMENT/DONE`, 
 | Antes de la primera tarea | `IMPLEMENT` | `IN‑PROGRESS` |
 | Después de generar `implement-report.md` | `IMPLEMENT` | `DONE` |
 
-Al alcanzar `IMPLEMENT/DONE`, el skill también actualiza el checklist en el `release.md` padre (campo `parent` del frontmatter de `story.md`).
+Al alcanzar `IMPLEMENT/DONE`, el skill también actualiza el checklist en el `epic.md` padre (campo `parent` del frontmatter de `story.md`).
 
 ## Artefacto generado
 
@@ -54,7 +54,7 @@ Al alcanzar `IMPLEMENT/DONE`, el skill también actualiza el checklist en el `re
 
 ```
 /story-implement-tasks FEAT-059
-/story-implement-tasks FEAT-059 --path docs/specs/stories/FEAT-059-mi-historia/
+/story-implement-tasks FEAT-059 --path docs/specs/03-stories/FEAT-059-mi-historia/
 ```
 
 ## Contenido de este directorio

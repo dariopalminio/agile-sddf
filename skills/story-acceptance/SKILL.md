@@ -46,9 +46,9 @@ story-acceptance  → validación humana final              ← aquí
 
 ## Entrada
 
-- `$SPECS_BASE/specs/stories/<story-id>/story.md` — historia a validar (precondición de estado)
+- `$SPECS_BASE/specs/03-stories/<story-id>/story.md` — historia a validar (precondición de estado)
 - `$SPECS_BASE/policies/definition-of-done-story.md` — criterios DoD sección ACCEPTANCE (opcional)
-- `$SPECS_BASE/specs/stories/<story-id>/acceptance-report.md` — si existe, detección de sesión previa
+- `$SPECS_BASE/specs/03-stories/<story-id>/acceptance-report.md` — si existe, detección de sesión previa
 
 ## Parámetros
 
@@ -107,13 +107,13 @@ Proporciona el ID (ej. FEAT-055) o la ruta completa al directorio.
 #### 1b. Resolver el directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia
+2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — primera coincidencia
 
 Si no se encuentra:
 ```
-❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
+❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/
 
-Verifica el ID o ejecuta /release-generate-stories para generar la historia primero.
+Verifica el ID o ejecuta /epic-generate-stories para generar la historia primero.
 ```
 Detener la ejecución.
 
@@ -455,7 +455,7 @@ o bien (si ACCEPTANCE-BLOCKED):
 
 ## Salida
 
-- `$SPECS_BASE/specs/stories/<story-id>/acceptance-report.md` — reporte de validación con trazabilidad por criterio, resumen ejecutivo, historial de sesiones e historial de versiones anteriores
+- `$SPECS_BASE/specs/03-stories/<story-id>/acceptance-report.md` — reporte de validación con trazabilidad por criterio, resumen ejecutivo, historial de sesiones e historial de versiones anteriores
 - `story.md` frontmatter actualizado:
   - `status: ACCEPTANCE / substatus: DONE` — si todos los criterios APPROVED (ACCEPTANCE-APPROVED)
   - `status: READY-FOR-IMPLEMENT / substatus: DONE` — si ≥1 criterio REJECTED (ACCEPTANCE-REJECTED)

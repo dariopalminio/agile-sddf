@@ -37,20 +37,20 @@ En este esquema las historias se agrupan en releases (liberación por lote) en u
 ```
 main  o----------------------------------o (tag v1.0.2)
       |                                  |
-      | git checkout -b                  | PR (de release a main)
+      | git checkout -b                  | PR (de epic a main)
       |                                  |
       v                                  |
-     epic/<release-id> o----------------o
+     epic/<epic-id> o------------------o
             |                             |
-            | git checkout -b             | PR (de feat a release)
+            | git checkout -b             | PR (de feat a epic)
             |                             |
             v                             |
          feat/<story-id> o---------------o
 ```
 
-* **main:** La rama main representa y el nivel de proyecto siendo la acumulación de releases de proyectos. La rama main termina en ambiente producción.
-* **epic:** Cada rama epic representa un entregable específico dentro del proyecto, que puede ser liberado de un tirón o de manera incremental. La rama epic generalmente es probada en ambientes de staging (eso dependerá de tu diseño de CI/CD). Se crea al inicio del release y se mantiene hasta su publicación (es como una gran feat que agrupa feat).
-* **feat:** Cada rama feat representa una historia de usuario o feature específica dentro de un release, que se puede dividir en subtareas o tareas técnicas o specs partes del desarrollo (operativo y táctico). Las feats acumulan los commits del desarrollo. La rama feat generalmente es probada en ambientes de desarrollo y/o testing (también dependerá de tu diseño de CI/CD). Se bifurca desde la rama `epic/` activa y se mantiene hasta su integración a la rama release.
+* **main:** La rama main representa y el nivel de proyecto siendo la acumulación de entregables (épicas) de proyectos. La rama main termina en ambiente producción.
+* **epic:** Cada rama epic representa un entregable específico dentro del proyecto, que puede ser liberado de un tirón o de manera incremental. La rama epic generalmente es probada en ambientes de staging (eso dependerá de tu diseño de CI/CD). Se crea al inicio de la épica y se mantiene hasta su publicación (es como una gran feat que agrupa feat).
+* **feat:** Cada rama feat representa una historia de usuario o feature específica dentro de una épica, que se puede dividir en subtareas o tareas técnicas o specs partes del desarrollo (operativo y táctico). Las feats acumulan los commits del desarrollo. La rama feat generalmente es probada en ambientes de desarrollo y/o testing (también dependerá de tu diseño de CI/CD). Se bifurca desde la rama `epic/` activa y se mantiene hasta su integración a la rama `epic/`.
 
 ### Continuous Delivery Branching
 

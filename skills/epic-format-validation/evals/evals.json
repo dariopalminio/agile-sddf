@@ -1,0 +1,67 @@
+{
+  "skill": "epic-format-validation",
+  "version": "1.0.0",
+  "description": "Casos de prueba para epic-format-validation: valida que produce APROBADO, REFINAR o RECHAZADO según la estructura del archivo de épica.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "épica-completo-resultado-aprobado",
+      "type": "happy-path",
+      "description": "Archivo de épica con frontmatter completo y las 3 secciones obligatorias presentes. El skill debe retornar APROBADO.",
+      "input": {
+        "input_path": "docs/specs/02-epics/EPIC-01-mvp/epic.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["APROBADO", "cumple la estructura"],
+        "not_contains": ["REFINAR", "RECHAZADO", "faltante"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "archivo-no-encontrado-resultado-rechazado",
+      "type": "fail-fast",
+      "description": "El input no corresponde a ningún archivo existente. El skill debe retornar RECHAZADO con mensaje descriptivo.",
+      "input": {
+        "input_path": "docs/specs/02-epics/EPIC-99-inexistente/epic.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["RECHAZADO", "no encontrado"],
+        "not_contains": ["APROBADO", "REFINAR"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "secciones-faltantes-resultado-refinar",
+      "type": "fail-fast",
+      "description": "Épica con frontmatter completo pero sin las secciones Features y Flujos Criticos. El skill debe retornar REFINAR con lista de secciones ausentes.",
+      "input": {
+        "input_path": "docs/specs/02-epics/EPIC-02-incompleto/epic.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["REFINAR", "faltante", "Features"],
+        "not_contains": ["APROBADO", "RECHAZADO"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "frontmatter-incompleto-resultado-refinar",
+      "type": "edge-case",
+      "description": "Épica con secciones obligatorias presentes pero sin los campos Version y Fecha en el frontmatter. El skill debe retornar REFINAR con los campos faltantes.",
+      "input": {
+        "input_path": "docs/specs/02-epics/EPIC-03-sin-frontmatter/epic.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["REFINAR", "faltante", "Version", "Fecha"],
+        "not_contains": ["APROBADO", "RECHAZADO"]
+      },
+      "threshold": 0.95
+    }
+  ]
+}

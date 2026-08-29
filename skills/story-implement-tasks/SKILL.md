@@ -43,7 +43,7 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
      │   Al iniciar: story.md → IMPLEMENT/IN‑PROGRESS
-     │   Al finalizar: story.md → IMPLEMENT/DONE + release.md checklist actualizado
+     │   Al finalizar: story.md → IMPLEMENT/DONE + epic.md checklist actualizado
      ↓
 [story.md: IMPLEMENT/DONE]
 ──────────────────────────────────────────────────────────────────────────────────────
@@ -61,10 +61,10 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 
 | Artefacto | Ubicación | Requerido |
 |---|---|---|
-| `story.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/story.md` | ✓ obligatorio |
-| `design.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/design.md` | ✓ obligatorio |
-| `tasks.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/tasks.md` | ✓ obligatorio |
-| `fix-directives.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/fix-directives.md` | opcional |
+| `story.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/story.md` | ✓ obligatorio |
+| `design.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/design.md` | ✓ obligatorio |
+| `tasks.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/tasks.md` | ✓ obligatorio |
+| `fix-directives.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/fix-directives.md` | opcional |
 | `definition-of-done-story.md` | `$SPECS_BASE/policies/definition-of-done-story.md` | opcional |
 
 ---
@@ -155,12 +155,12 @@ Proporciona el ID (ej. FEAT-059) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
+2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
 3. Si no se encuentra ninguno:
    ```
-   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
+   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/
 
-   Verifica el ID o ejecuta /release-generate-stories para generar la historia.
+   Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
    ```
    Detener la ejecución.
 
@@ -173,7 +173,7 @@ Verificar que el directorio resuelto contiene los tres artefactos requeridos:
 ❌ No se encontró story.md en: <ruta>
 
 La historia debe existir antes de ejecutar la implementación.
-Sugerencia: ejecuta /release-generate-stories para generar la historia primero.
+Sugerencia: ejecuta /epic-generate-stories para generar la historia primero.
 ```
 
 **Si falta `design.md`:**
@@ -639,22 +639,22 @@ Completar la sección "Cumplimiento DoD — Fase IMPLEMENT" en `implement-report
   Resuelve los criterios pendientes antes de avanzar a code review.
   ```
 
-#### 4c. Actualizar checklist del release padre
+#### 4c. Actualizar checklist de la épica padre
 
 Leer el campo `parent` del frontmatter de `story.md` (ej. `EPIC-12-story-sdd-workflow`).
 
-Buscar el archivo `release.md` correspondiente en: `$SPECS_BASE/specs/releases/<parent>-*/release.md`
+Buscar el archivo `epic.md` correspondiente en: `$SPECS_BASE/specs/02-epics/<parent>-*/epic.md`
 
-**Si se encuentra `release.md`:**
-- Localizar la línea que contiene el `story_id` (patrón `FEAT-NNN`) en el checklist del release
+**Si se encuentra `epic.md`:**
+- Localizar la línea que contiene el `story_id` (patrón `FEAT-NNN`) en el checklist de la épica
 - Cambiar `- [ ]` por `- [x]` en esa línea
-- Registrar: `Release checklist: ✓ actualizado en <ruta>/release.md`
+- Registrar: `Checklist de épica: ✓ actualizado en <ruta>/epic.md`
 
-**Si NO se encuentra `release.md` o la historia no está en el checklist:**
-- Emitir WARNING en consola: `⚠️ No se pudo actualizar el release checklist: <razón>`
+**Si NO se encuentra `epic.md` o la historia no está en el checklist:**
+- Emitir WARNING en consola: `⚠️ No se pudo actualizar el checklist de la épica: <razón>`
 - Agregar en `implement-report.md` una sección de advertencia:
   ```
-  ⚠️ Release checklist no actualizado: <razón>
+  ⚠️ Checklist de épica no actualizado: <razón>
   ```
 - Continuar sin bloquear — la transición a `IMPLEMENT/DONE` ya fue aplicada
 
@@ -694,10 +694,10 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 
 | Artefacto | Ruta | Descripción |
 |---|---|---|
-| `implement-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
+| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
 | `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs) |
 | `tasks.md` (actualizado) | mismo directorio | Tareas marcadas `[x]` (completadas) o `[~]` (bloqueadas) |
-| `release.md` (actualizado) | `$SPECS_BASE/specs/releases/<parent>/release.md` | Checklist con `[x]` para la historia completada (si existe) |
+| `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
 | Archivos de test | según stack del proyecto | Tests generados por ciclo TDD (uno por tarea completada) |
 | Archivos de producción | según stack del proyecto | Código de producción generado por ciclo TDD |
 
@@ -721,7 +721,7 @@ Al terminar, mostrar:
 📄 Reporte generado: <ruta>/implement-report.md
 📋 Estado story.md: IMPLEMENT/DONE ✓             (si $DOD_BLOQUEADO = false)
 📋 Estado story.md: IMPLEMENT/IN-PROGRESS ✓               (si $DOD_BLOQUEADO = true)
-📋 Release checklist: <✓ actualizado en <ruta>/release.md | ⚠️ no actualizado — <razón>>
+📋 Checklist de épica: <✓ actualizado en <ruta>/epic.md | ⚠️ no actualizado — <razón>>
 📋 DoD IMPLEMENT: {N_dod_ok}/{Total} criterios ✓          (si DoD fue evaluado)
 📋 DoD IMPLEMENT: ⚠️ no evaluado (sección no encontrada)  (si DoD no disponible)
 
@@ -743,6 +743,6 @@ O si hay bloqueos de tareas (sin DoD-ERRORs):
 ⚠️ Implementación completada con tareas pendientes de aclaración
    Revisa implement-report.md → sección "Tareas Bloqueadas"
 📋 Estado story.md: IMPLEMENT/DONE ✓
-📋 Release checklist: <✓ actualizado | ⚠️ no actualizado — <razón>>
+📋 Checklist de épica: <✓ actualizado | ⚠️ no actualizado — <razón>>
 📋 DoD IMPLEMENT: {N_dod_ok}/{Total} criterios ✓
 ```

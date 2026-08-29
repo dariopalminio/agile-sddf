@@ -40,9 +40,9 @@ Exponer `SPECS_BASE` al skill invocador para que lo use en todas sus rutas.
 ### Verificación 2 — Subdirectorios de specs estándar
 
 Para cada uno de los siguientes directorios bajo `SPECS_BASE`:
-- `specs/projects/`
-- `specs/releases/`
-- `specs/stories/`
+- `specs/01-projects/`
+- `specs/02-epics/`
+- `specs/03-stories/`
 
 Verificar si existe:
 - **Existe:** emitir `[OK]  <ruta> existe`
@@ -101,9 +101,9 @@ Después de todas las verificaciones, emitir el informe consolidado:
 ── Preflight SDDF ──────────────────────────────
 [OK]      SDDF_ROOT = docs
 [OK]      CLI_ROOT = .claude
-[OK]      specs/projects/ existe
-[WARNING] specs/releases/ no encontrado → Crear el directorio si el skill lo requiere
-[OK]      specs/stories/ existe
+[OK]      specs/01-projects/ existe
+[WARNING] specs/02-epics/ no encontrado → Crear el directorio si el skill lo requiere
+[OK]      specs/03-stories/ existe
 [OK]      openspec/config.yaml inicializado
 ────────────────────────────────────────────────
 ```

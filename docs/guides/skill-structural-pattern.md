@@ -67,13 +67,13 @@ La lógica de dominio vive en los templates (estructura) y en los agentes (crite
 ### 7. IDs jerárquicos
 Nivel	Patrón	Ejemplo
 Proyecto	PROJ-NN-kebab	PROJ-01-mi-app
-Release/Épica	EPIC-NN-kebab	EPIC-12-story-sdd-workflow
+Épica/Épica	EPIC-NN-kebab	EPIC-12-story-sdd-workflow
 Feature/Historia	FEAT-NNN-kebab	FEAT-042-login
 
 ### 8. Frontmatter YAML en documentos generados
 
 ---
-type: project | release | story
+type: project | epic | story
 id: EPIC-NN
 slug: nombre-kebab
 status: BACKLOG | BEGINNING | DISCOVERY | PLANNING | SPECIFY | READY-FOR-IMPLEMENT | IMPLEMENT | CODE-REVIEW | VERIFY | ACCEPTANCE | DELIVER | DEFINE | PLAN | READY-FOR-DEV | DEVELOP | VALIDATE | SHIP | COMPLETED | MEASURING-VALUE | FINISHED | CANCELED
@@ -96,7 +96,7 @@ related:
 Solo un documento puede tener substatus: IN-PROGRESS a la vez por nivel del pipeline. El skill debe verificar esto antes de activar un nuevo ítem.
 
 ### 10. Gates secuenciales con precondiciones
-Cada skill verifica que el artefacto del paso anterior existe y está válido antes de ejecutar. Ejemplo: release-generate-stories requiere que release-format-validation haya pasado.
+Cada skill verifica que el artefacto del paso anterior existe y está válido antes de ejecutar. Ejemplo: epic-generate-stories requiere que epic-format-validation haya pasado.
 
 ### 11. Idempotencia declarada
 Skills de inicialización (sddf-init, openspec-init-config) declaran explícitamente que no sobrescriben archivos existentes.
@@ -112,9 +112,9 @@ Si los comandos de prueba tardan mucho, el skill debe mostrar progreso periódic
 
 ### 14. Rutas de output predecibles
 
-$SPECS_BASE/specs/projects/<PROJ-ID>/  → artefactos de proyecto
-$SPECS_BASE/specs/releases/<EPIC-NN>/  → releases
-$SPECS_BASE/specs/stories/<FEAT-NNN>/ → historias
+$SPECS_BASE/specs/01-projects/<PROJ-ID>/  → artefactos de proyecto
+$SPECS_BASE/specs/02-epics/<EPIC-NN>/  → épicas
+$SPECS_BASE/specs/03-stories/<FEAT-NNN>/ → historias
 
 ### 15. Versionado mediante substatus
 
@@ -122,7 +122,7 @@ El ciclo de vida de un artefacto se traza con status + substatus, no con version
 
 ### 16. Skills de validación antes de transformación
 
-Existe un skill de validación explícito (release-format-validation) que actúa como gate antes de que los skills de generación consuman el documento.
+Existe un skill de validación explícito (epic-format-validation) que actúa como gate antes de que los skills de generación consuman el documento.
 
 
 

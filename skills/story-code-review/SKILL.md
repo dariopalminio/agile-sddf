@@ -143,11 +143,11 @@ Proporciona el ID (ej. FEAT-064) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
+2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
 3. Si no se encuentra:
    ```
-   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
-   Verifica el ID o ejecuta /release-generate-stories para generarla.
+   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/
+   Verifica el ID o ejecuta /epic-generate-stories para generarla.
    ```
    Detener la ejecución.
 
@@ -632,8 +632,8 @@ Ejecuta /story-code-review {story_id} nuevamente tras corregir los hallazgos.
 
 | Artefacto | Condición |
 |-----------|-----------|
-| `$SPECS_BASE/specs/stories/FEAT-NNN/code-review-report.md` | Siempre |
-| `$SPECS_BASE/specs/stories/FEAT-NNN/fix-directives.md` | Solo si `needs-changes` |
+| `$SPECS_BASE/specs/03-stories/FEAT-NNN/code-review-report.md` | Siempre |
+| `$SPECS_BASE/specs/03-stories/FEAT-NNN/fix-directives.md` | Solo si `needs-changes` |
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |

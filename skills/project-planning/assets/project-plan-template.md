@@ -36,16 +36,16 @@ related:
 
 ---
 
-## Propuesta de Releases
+## Propuesta de Épicas
 
-<!-- Agrupa las features del backlog en releases incrementales. Cada release debe ser desplegable y testeable.
-     Release 1 SIEMPRE es el MVP: mínimo conjunto de features que resuelve el problema central
+<!-- Agrupa las features del backlog en épicas incrementales. Cada épica debe ser desplegable y testeable.
+     La Épica 1 SIEMPRE es el MVP: mínimo conjunto de features que resuelve el problema central
      identificado en project-intent.md y puede ser entregado a usuarios reales para obtener feedback.
-     Releases posteriores agregan valor incremental sobre el MVP. -->
+     Las épicas posteriores agregan valor incremental sobre el MVP. -->
 
-### Release Walking Skeleton: MVP
+### Épica Walking Skeleton: MVP
 
-**Objetivo:** [Qué valor entrega este release — qué problema central resuelve.]
+**Objetivo:** [Qué valor entrega esta épica — qué problema central resuelve.]
 
 - [ ] FEAT-001 - **[Nombre feature 1]:** [Breve descripción de la feature]
 - [ ] FEAT-002 - **[Nombre feature 2]:** [Breve descripción de la feature]
@@ -57,7 +57,7 @@ related:
 
 ---
 
-### Release 1: [Nombre descriptivo]
+### Épica 1: [Nombre descriptivo]
 
 **Objetivo:** [Qué valor incremental agrega sobre el Walking Skeleton (MVP).]
 
@@ -68,15 +68,15 @@ related:
 
 ---
 
-<!-- Agrega más releases (Release 2, Release 3, Futuro, etc.) si el proyecto lo justifica. Mantén el documento minimalista:
-     sin descripciones redundantes, sin texto innecesario, solo backlog y releases. -->
+<!-- Agrega más épicas (Épica 2, Épica 3, Futuro, etc.) si el proyecto lo justifica. Mantén el documento minimalista:
+     sin descripciones redundantes, sin texto innecesario, solo backlog y épicas. -->
 
 ## Resumen
 
-<!-- Tabla de métricas derivada del backlog y los releases. Calcula los valores reales. -->
+<!-- Tabla de métricas derivada del backlog y las épicas. Calcula los valores reales. -->
 
 | Métrica | Valor |
 |---------|-------|
 | Total Features | N |
 | Features en MVP | N |
-| Releases planificados | N |
+| Épicas planificadas | N |

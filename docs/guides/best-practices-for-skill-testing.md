@@ -88,7 +88,7 @@ Aquí tienes un resumen de buenas prácticas para crear un skill y probarlo con 
 
 11. **No ejecutes la batería completa en cada cambio pequeño**  
     - Usa `--no-judge` o ejecuta solo un eval manualmente con `--eval-id` (si la herramienta lo soporta).  
-    - Guarda los evals completos para validaciones pre-commit o pre-release.
+    - Guarda los evals completos para validaciones pre-commit o pre-épica.
 
 12. **Usa evaluadores locales (Ollama) durante desarrollo**  
     - Configura `--judge` con un modelo pequeño local. El costo es cero y la iteración es más rápida.  

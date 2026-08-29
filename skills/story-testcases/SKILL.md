@@ -122,15 +122,15 @@ Proporciona el ID (ej. FEAT-057) o la ruta completa al directorio.
 #### 1b. Resolución del directorio (primera coincidencia)
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/`
-3. Si no se encuentra: `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` → detener
+2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/`
+3. Si no se encuentra: `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` → detener
 
 #### 1c. Verificar artefactos obligatorios
 
 Si `story.md` no existe:
 ```
 ❌ No se encontró story.md en: <ruta>
-   Sugerencia: ejecuta /release-generate-stories para generar la historia primero.
+   Sugerencia: ejecuta /epic-generate-stories para generar la historia primero.
 ```
 Detener.
 
@@ -288,7 +288,7 @@ Próximo paso: /story-analyze {story_id}
 | Condición | Mensaje | Acción |
 |-----------|---------|--------|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| Historia no encontrada | `❌ No se encontró la historia {story_id}` | Detener. Sugerir `/release-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id}` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener |
 | `design.md` ausente | `❌ No se encontró design.md en: <ruta>` | Detener. Sugerir `/story-design` |
 | `story.md` sin ACs o `design.md` vacío | `⚠️ Contenido insuficiente para derivar casos de prueba` | No generar testcases.md parcial. Sugerir completar artefactos |

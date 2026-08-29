@@ -23,7 +23,7 @@ updated: 2026-05-07
 | Cobertura de ACs en design.md | ✓ | 3/3 criterios cubiertos |
 | Alineación tareas → diseño | ✓ | 20/20 tareas con diseño |
 | Cobertura diseño → tareas | ✓ | 3/3 componentes con tarea |
-| Alineación con release EPIC-10-data-management | ⚠️ | release.md no encontrado — verificación omitida |
+| Alineación con la épica EPIC-10-data-management | ⚠️ | epic.md no encontrado — verificación omitida |
 | Cumplimiento DoD — Fase PLAN | ❌ | 1/3 criterios ✓ |
 
 **Estado general:** ❌ Inconsistencias bloqueantes — corrige los ERROREs antes de implementar.
@@ -44,7 +44,7 @@ updated: 2026-05-07
 
 | Tarea | Descripción | Elemento de diseño asociado | Estado |
 |---|---|---|---|
-| T001 | Crear rama desde release | Setup del proyecto | ✓ |
+| T001 | Crear rama desde la épica | Setup del proyecto | ✓ |
 | T002 | Verificar directorios del proyecto | Setup del proyecto | ✓ |
 | T003 | Crear `csv-export.service.ts` con método export | CsvExportService (Componentes) | ✓ |
 | T004 | Implementar consulta de registros | CsvExportService.export lógica | ✓ |
@@ -79,15 +79,15 @@ updated: 2026-05-07
 
 ---
 
-## Alineación con Release
+## Alineación con la Épica
 
-**Release padre:** EPIC-10-data-management
+**Épica padre:** EPIC-10-data-management
 
 | Criterio | Estado | Detalle |
 |---|---|---|
-| Historia listada en release | ⚠️ | No verificado — release.md no encontrado en `docs/specs/releases/EPIC-10-data-management*/` |
-| Objetivo alineado con release | ⚠️ | No verificado — release.md no encontrado |
-| Restricciones del release respetadas | ⚠️ | No verificado — release.md no encontrado |
+| Historia listada en release | ⚠️ | No verificado — epic.md no encontrado en `docs/specs/02-epics/EPIC-10-data-management*/` |
+| Objetivo alineado con la épica | ⚠️ | No verificado — epic.md no encontrado |
+| Restricciones de la épica respetadas | ⚠️ | No verificado — epic.md no encontrado |
 
 ---
 
@@ -104,7 +104,7 @@ updated: 2026-05-07
 
 ## Recomendaciones
 
-1. **Verificar alineación con release**: El archivo `release.md` para `EPIC-10-data-management` no fue encontrado. Ejecuta `/releases-from-project-plan` para generarlo o verifica que el directorio `docs/specs/releases/EPIC-10-data-management-*/` existe. Una vez disponible, vuelve a ejecutar `/story-analyze FEAT-099` para completar la verificación de alineación.
+1. **Verificar alineación con release**: El archivo `epic.md` para `EPIC-10-data-management` no fue encontrado. Ejecuta `/epic-from-project-plan` para generarlo o verifica que el directorio `docs/specs/02-epics/EPIC-10-data-management-*/` existe. Una vez disponible, vuelve a ejecutar `/story-analyze FEAT-099` para completar la verificación de alineación.
 2. **Corregir criterio DoD PLAN — tasks.md**: Reordenar las tareas en `tasks.md` de modo que queden agrupadas por dependencia lógica (setup → componentes core → soporte → tests → verificación).
 
 ---

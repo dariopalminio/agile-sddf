@@ -6,7 +6,7 @@ slug: FEAT-074-integrar-historia-batch-configurable
 title: "story-integrate: Integración batch configurable"
 status: SPECIFY
 substatus: DONE
-parent: <nombre-del-release-padre>
+parent: <nombre-del-directorio-de-la-epica-padre>
 created: 2026-05-17
 updated: 2026-05-17
 related:

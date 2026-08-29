@@ -7,7 +7,7 @@
       "id": "TC-001",
       "name": "happy-path: init en proyecto vacio",
       "type": "functional",
-      "description": "Ejecutar sddf-init en un directorio sin estructura SDDF previa. Debe crear docs/specs/projects/, docs/specs/releases/, docs/specs/stories/, docs/specs/templates/, sddf.config.yaml y .env.template, reportando [CREADO] para cada artefacto y terminando con el mensaje de exito.",
+      "description": "Ejecutar sddf-init en un directorio sin estructura SDDF previa. Debe crear docs/specs/01-projects/, docs/specs/02-epics/, docs/specs/03-stories/, docs/specs/templates/, sddf.config.yaml y .env.template, reportando [CREADO] para cada artefacto y terminando con el mensaje de exito.",
       "input": {
         "context": "Proyecto nuevo sin ninguna estructura SDDF. SDDF_ROOT no esta definida. El directorio docs/ no existe.",
         "flags": []
@@ -15,9 +15,9 @@
       "expected": {
         "contains": [
           "[CREADO]",
-          "docs/specs/projects/",
-          "docs/specs/releases/",
-          "docs/specs/stories/",
+          "docs/specs/01-projects/",
+          "docs/specs/02-epics/",
+          "docs/specs/03-stories/",
           "docs/specs/templates/",
           "sddf.config.yaml",
           ".env.template",
@@ -37,7 +37,7 @@
       "type": "edge-case",
       "description": "Ejecutar sddf-init por segunda vez en un proyecto donde todos los artefactos ya existen. No debe sobrescribir ningun archivo. Debe registrar [YA EXISTIA] para cada artefacto y terminar con el mensaje de que el entorno ya esta inicializado.",
       "input": {
-        "context": "Proyecto con estructura SDDF completa preexistente: docs/specs/projects/, docs/specs/releases/, docs/specs/stories/, docs/specs/templates/ con todos los templates, sddf.config.yaml con contenido personalizado, .env.template existente. SDDF_ROOT no definida.",
+        "context": "Proyecto con estructura SDDF completa preexistente: docs/specs/01-projects/, docs/specs/02-epics/, docs/specs/03-stories/, docs/specs/templates/ con todos los templates, sddf.config.yaml con contenido personalizado, .env.template existente. SDDF_ROOT no definida.",
         "flags": []
       },
       "expected": {
@@ -91,9 +91,9 @@
       "expected": {
         "contains": [
           "dry-run",
-          "docs/specs/projects/",
-          "docs/specs/releases/",
-          "docs/specs/stories/",
+          "docs/specs/01-projects/",
+          "docs/specs/02-epics/",
+          "docs/specs/03-stories/",
           "sddf.config.yaml",
           ".env.template"
         ],

@@ -6,7 +6,7 @@ slug: FEAT-075-integrar-historia-modo-manual-dryrun
 title: "story-integrate: Modos de ejecución (manual y dry-run)"
 status: SPECIFY
 substatus: DONE
-parent: <nombre-del-release-padre>
+parent: <nombre-del-directorio-de-la-epica-padre>
 created: 2026-05-17
 updated: 2026-05-17
 related:

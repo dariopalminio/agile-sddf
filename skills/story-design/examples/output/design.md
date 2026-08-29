@@ -116,7 +116,7 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
 /story-design FEAT-057
   → Paso 0: skill-preflight (verificar entorno, resolver SPECS_BASE)
   → Paso 1: resolver parámetros
-      ├── directorio historia: glob SPECS_BASE/specs/stories/FEAT-057-*/
+      ├── directorio historia: glob SPECS_BASE/specs/03-stories/FEAT-057-*/
       ├── template: SPECS_BASE/specs/templates/story-design-template.md
       └── salida: {directorio}/design.md
   → Paso 2: leer story.md → extraer AC-1, AC-2 + contexto
@@ -167,11 +167,11 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
 
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
-| 1 | Ejecutar `/story-design FEAT-057` genera `design.md` en `docs/specs/stories/FEAT-057-skill-para-diseno/` | Manual: verificar existencia del archivo | AC-1 |
+| 1 | Ejecutar `/story-design FEAT-057` genera `design.md` en `docs/specs/03-stories/FEAT-057-skill-para-diseno/` | Manual: verificar existencia del archivo | AC-1 |
 | 2 | El `design.md` generado tiene frontmatter con `type: design` e `id: FEAT-057` | Manual: leer frontmatter del archivo | AC-1 |
 | 3 | El `design.md` contiene al menos dos alternativas técnicas documentadas | Manual: contar secciones de alternativas | AC-1 |
 | 4 | Si se elimina `story-design-template.md`, el skill usa el fallback interno sin error bloqueante | Manual: eliminar template y ejecutar el skill | AC-2 |
-| 5 | Si `story.md` no existe en el directorio, el error sugiere ejecutar `/release-generate-stories` | Manual: apuntar a directorio sin story.md | AC-2 |
+| 5 | Si `story.md` no existe en el directorio, el error sugiere ejecutar `/epic-generate-stories` | Manual: apuntar a directorio sin story.md | AC-2 |
 
 ---
 

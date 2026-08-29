@@ -52,7 +52,7 @@ El skill detecta automáticamente el modo en este orden:
 
 | Archivo | Descripción |
 |---------|-------------|
-| `$SPECS_BASE/specs/stories/<ID>/verify-report.md` | Reporte completo de verificación |
+| `$SPECS_BASE/specs/03-stories/<ID>/verify-report.md` | Reporte completo de verificación |
 | `story.md` frontmatter | `status: VERIFY`, `substatus: DONE | REJECTED` |
 
 ## Template del reporte

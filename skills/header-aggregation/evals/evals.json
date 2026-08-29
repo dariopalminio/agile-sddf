@@ -9,8 +9,8 @@
       "type": "happy-path",
       "description": "El skill agrega frontmatter YAML canónico a un archivo que no tiene encabezado, derivando slug, type, title, date y status automáticamente.",
       "input": {
-        "input_path": "docs/specs/stories/FEAT-044-directorio-docs-tipo-wiki/story.md",
-        "context": "Añade el encabezado YAML estándar a docs/specs/stories/FEAT-044-directorio-docs-tipo-wiki/story.md — ese archivo no tiene frontmatter todavía"
+        "input_path": "docs/specs/03-stories/FEAT-044-directorio-docs-tipo-wiki/story.md",
+        "context": "Añade el encabezado YAML estándar a docs/specs/03-stories/FEAT-044-directorio-docs-tipo-wiki/story.md — ese archivo no tiene frontmatter todavía"
       },
       "expected": {
         "contains": ["slug", "type", "title", "status", "created"],
@@ -24,8 +24,8 @@
       "type": "happy-path",
       "description": "El skill detecta frontmatter existente, construye propuesta con campos faltantes del esquema canónico, muestra diff y solicita confirmación antes de escribir.",
       "input": {
-        "input_path": "docs/specs/stories/FEAT-042-readme-builder/story.md",
-        "context": "Aplica el esquema de metadatos estándar a docs/specs/stories/FEAT-042-readme-builder/story.md — creo que le faltan algunos campos del nuevo esquema canónico"
+        "input_path": "docs/specs/03-stories/FEAT-042-readme-builder/story.md",
+        "context": "Aplica el esquema de metadatos estándar a docs/specs/03-stories/FEAT-042-readme-builder/story.md — creo que le faltan algunos campos del nuevo esquema canónico"
       },
       "expected": {
         "contains": ["diff", "confirmación"],
@@ -39,8 +39,8 @@
       "type": "edge-case",
       "description": "El skill activa modo batch para un directorio, lista los archivos, muestra resumen anticipado con conteo y solicita confirmación global antes de proceder.",
       "input": {
-        "input_path": "docs/specs/releases/",
-        "context": "Necesito estandarizar el frontmatter YAML de todos los archivos en docs/specs/releases/ — algunos ya lo tienen, otros no"
+        "input_path": "docs/specs/02-epics/",
+        "context": "Necesito estandarizar el frontmatter YAML de todos los archivos en docs/specs/02-epics/ — algunos ya lo tienen, otros no"
       },
       "expected": {
         "contains": ["Confirma"],

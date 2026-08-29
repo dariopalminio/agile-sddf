@@ -41,27 +41,27 @@ project-begin → project-discovery → project-planning
 
 | Skill | Input | Output |
 |---|---|---|
-| `project-begin` | Intención del usuario (conversación) | `$SPECS_BASE/specs/projects/project-intent.md` |
-| `project-discovery` | `project-intent.md` | `$SPECS_BASE/specs/projects/project.md` |
-| `project-planning` | `requirement-spec.md` | `$SPECS_BASE/specs/projects/project-plan.md` |
+| `project-begin` | Intención del usuario (conversación) | `$SPECS_BASE/specs/01-projects/project-intent.md` |
+| `project-discovery` | `project-intent.md` | `$SPECS_BASE/specs/01-projects/project.md` |
+| `project-planning` | `requirement-spec.md` | `$SPECS_BASE/specs/01-projects/project-plan.md` |
 
 > `project-flow` orquesta los 3 pasos en una sola sesión con gates de revisión entre etapas.
 > `$SPECS_BASE` es `docs` por defecto, o el valor de `SDDF_ROOT` si está configurada.
 
 ---
 
-## 2. Pipeline de generación de releases e historias
+## 2. Pipeline de generación de épicas e historias
 
 ```
-releases-from-project-plan → release-generate-stories
+epic-from-project-plan → epic-generate-stories
 ```
 
 | Skill | Input | Output |
 |---|---|---|
-| `releases-from-project-plan` | `project-plan.md` | `$SPECS_BASE/specs/releases/release-[ID]-[Nombre].md` (uno por release) |
-| `release-generate-stories` | Un archivo `release-*.md` | `$SPECS_BASE/specs/stories/story-[ID]-[Nombre].md` (una por feature) |
+| `epic-from-project-plan` | `project-plan.md` | `$SPECS_BASE/specs/02-epics/épica-[ID]-[Nombre].md` (uno por épica) |
+| `epic-generate-stories` | Un archivo `epic.md` | `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre]/story.md` (una por feature) |
 
-> `release-generate-all-stories` procesa todos los releases en batch.
+> `epic-generate-all-stories` procesa todas las épicas en batch.
 
 ---
 

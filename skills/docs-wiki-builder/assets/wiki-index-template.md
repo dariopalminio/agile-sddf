@@ -29,12 +29,12 @@ updated: <YYYY-MM-DD>
 <!-- Documentos de nivel proyecto: intención, requisitos, plan -->
 - [[project-intent]] — Intención inicial del proyecto
 - [[requirement-spec]] — Especificación de requisitos
-- [[project-plan]] — Plan de releases y backlog de features
+- [[project-plan]] — Plan de épicas y backlog de features
 - [[story-map]] — Mapa de historias de usuario
 
-### L2 — Releases
-<!-- Documentos de nivel release: épicas y smoke tests -->
-<!-- Añadir wikilinks a cada release cuando existan -->
+### L2 — Épicas
+<!-- Documentos de nivel épica: alcance, features y smoke tests -->
+<!-- Añadir wikilinks a cada épica cuando existan -->
 
 ### L1 — Historias de usuario
 <!-- Documentos de nivel feature/story -->

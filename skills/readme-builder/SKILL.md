@@ -61,9 +61,9 @@ Check sources in order. Stop at the first tier that yields usable content.
 **Tier 1 — Formal SDDF spec artifacts**
 
 Check if any of these files exist and read them all if found:
-- `$SPECS_BASE/specs/projects/project-intent.md`
-- `$SPECS_BASE/specs/projects/project.md`
-- `$SPECS_BASE/specs/projects/project-plan.md`
+- `$SPECS_BASE/specs/01-projects/project-intent.md`
+- `$SPECS_BASE/specs/01-projects/project.md`
+- `$SPECS_BASE/specs/01-projects/project-plan.md`
 
 These are the primary content source. Use their combined content to populate all README sections.
 

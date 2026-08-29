@@ -22,7 +22,7 @@ updated: {date}
 | Cobertura de ACs en design.md | {ac_coverage_status} | {ac_coverage_n}/{ac_total} criterios cubiertos |
 | Alineación tareas → diseño | {tasks_alignment_status} | {tasks_aligned_n}/{tasks_total} tareas con diseño |
 | Cobertura diseño → tareas | {design_coverage_status} | {design_covered_n}/{design_total} elementos con tarea |
-| Alineación con release {parent} | {release_status} | {release_detail} |
+| Alineación con la épica {parent} | {epic_status} | {epic_detail} |
 | Cumplimiento DoD — Fase PLAN | {dod_status} | {dod_n}/{dod_total} criterios ✓ |
 
 **Estado general:** {overall_status}
@@ -60,15 +60,15 @@ updated: {date}
 
 ---
 
-## Alineación con Release
+## Alineación con la Épica
 
-**Release padre:** {parent}
+**Épica padre:** {parent}
 
 | Criterio | Estado | Detalle |
 |---|---|---|
-| Historia listada en release | ✓ / ❌ | {detail} |
-| Objetivo de la historia alineado con release | ✓ / ❌ | {detail} |
-| Restricciones del release respetadas | ✓ / ❌ | {detail} |
+| Historia listada en la épica | ✓ / ❌ | {detail} |
+| Objetivo de la historia alineado con la épica | ✓ / ❌ | {detail} |
+| Restricciones de la épica respetadas | ✓ / ❌ | {detail} |
 
 ---
 
@@ -78,7 +78,7 @@ updated: {date}
 
 ### INC-001 [{ERROR / WARNING}]
 
-- **Tipo:** {A: AC sin cobertura / B: tarea sin diseño / C: diseño sin tarea / D: desalineación release}
+- **Tipo:** {A: AC sin cobertura / B: tarea sin diseño / C: diseño sin tarea / D: desalineación con la épica}
 - **Descripción:** {descripción_concreta}
 - **Archivo afectado:** {filename} — sección "{section_name}"
 - **Acción requerida:** {accion_concreta}

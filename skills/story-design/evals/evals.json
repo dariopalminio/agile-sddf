@@ -38,7 +38,7 @@
       "id": "TC-002",
       "name": "fail-fast-story-id-inexistente",
       "type": "fail-fast",
-      "description": "El skill debe detenerse con un mensaje de error claro cuando el story_id no corresponde a ningun directorio bajo SPECS_BASE/specs/stories/. No debe generarse ningun archivo.",
+      "description": "El skill debe detenerse con un mensaje de error claro cuando el story_id no corresponde a ningun directorio bajo SPECS_BASE/specs/03-stories/. No debe generarse ningun archivo.",
       "input": {
         "input_path": null,
         "story_id": "FEAT-999",
@@ -60,9 +60,9 @@
       "id": "TC-003",
       "name": "fail-fast-story-md-ausente-en-directorio",
       "type": "fail-fast",
-      "description": "Cuando el directorio de la historia existe pero no contiene story.md, el skill debe emitir un error descriptivo y sugerir /release-generate-stories. No debe generarse design.md.",
+      "description": "Cuando el directorio de la historia existe pero no contiene story.md, el skill debe emitir un error descriptivo y sugerir /epic-generate-stories. No debe generarse design.md.",
       "input": {
-        "input_path": "docs/specs/stories/FEAT-001-historia-sin-story/",
+        "input_path": "docs/specs/03-stories/FEAT-001-historia-sin-story/",
         "story_id": "FEAT-001",
         "flags": []
       },

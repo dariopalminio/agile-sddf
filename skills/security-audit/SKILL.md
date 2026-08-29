@@ -87,7 +87,7 @@ Automatizar la evaluación de seguridad de un repositorio de código mediante un
 /security-audit --repo /ruta/al/proyecto --files src/auth.ts,src/api/routes.ts,src/middleware/jwt.ts
 
 # Auditoría de historia — resolución automática desde directorio de historia
-/security-audit --repo /ruta/al/proyecto --story docs/specs/stories/FEAT-071-skill-story-verify
+/security-audit --repo /ruta/al/proyecto --story docs/specs/03-stories/FEAT-071-skill-story-verify
 
 # Combinación: release scope + archivos acotados (hotfix previo a release)
 /security-audit --repo /ruta/al/proyecto --scope release --files src/auth.ts,src/db/migrations/001.sql

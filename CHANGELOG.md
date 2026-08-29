@@ -8,15 +8,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`ADR-0004` — El nivel L2 es una épica, y los niveles viven en directorios numerados** — registra la decisión completa (renombre semántico + reestructura de directorios), su fundamento de cardinalidad N:M entre épica y release, y las alternativas descartadas: mantener `release` y documentar mejor; renombrar solo skills y artefacto dejando `specs/releases/`; usar `epics/` sin prefijo numérico; numerar también `templates/`; alias retrocompatibles. Añadido al índice de `docs/adr/README.md`, que además recupera la fila de `ADR-0003` que faltaba
+- **Frontmatter en 6 guías** — `best-practices-for-skill-testing`, `best-practices-for-system-prompt`, `best-practices-for-testing`, `specs_and_workflows` y `skill-structural-pattern` no tenían bloque YAML, y `root-folder-practices` declaraba un `slug` duplicado de `organization-of-artifacts`; aplicado con `/header-aggregation` usando `slug` = nombre de archivo (regla de `docs-wiki-builder`, no la de directorio, que habría dado `slug: guides` en las 18) y `date` = fecha del primer commit de cada archivo. Las 18 guías tienen ahora `slug` único
+
 ### Changed
 
+- **⚠️ BREAKING — el nivel L2 pasa de llamarse "release" a llamarse "épica"** — el término colisionaba con su sentido CI/CD (liberación, despliegue, versión publicada), hasta el punto de que `flight-leves-model.md` tenía que aclarar que "el release a nivel de gestión de trabajo es independiente del release real y versión de software en herramientas como github". A partir de esta versión **`release` queda reservado exclusivamente para CI/CD** y el work item de nivel medio es siempre una **épica** (`EPIC-NN`). Ver `ADR-0004`. Cambios:
+  - **Skills renombrados:** `release-creation` → `epic-creation`, `release-format-validation` → `epic-format-validation`, `release-generate-stories` → `epic-generate-stories`, `release-generate-all-stories` → `epic-generate-all-stories`, `releases-from-project-plan` → `epic-from-project-plan`. Los triggers antiguos ("crear release", "validar release", …) **no** se conservan como alias
+  - **Artefacto renombrado:** `release.md` → `epic.md` dentro de cada `EPIC-NN-*/`, y frontmatter `type: release` → `type: epic`
+  - **Sección de `project-plan.md`:** `## Propuesta de Releases` → `## Propuesta de Épicas`, con sus bloques `### Release NN` → `### Épica NN`. Cambio coordinado en los dos `project-plan-template.md` (seed y central), en el parser de `epic-from-project-plan` y en el agente `project-architect`
+  - **Consumidores actualizados:** `header-aggregation` (mapa `EPIC-*` → `type: epic`, busca `epic.md`), `docs-wiki-builder`, `sddf-init`, `project-planning`, `project-flow`, `project-story-mapping`, los `story-*` que leen la épica padre, y los templates `story-template.md` (campo `parent`) y `analyze-report-template.md` (`{epic_status}`, `{epic_detail}`)
+  - **⚠️ Directorios de specs reestructurados a niveles numerados** — `specs/projects/` → `specs/01-projects/`, `specs/releases/` → `specs/02-epics/`, `specs/stories/` → `specs/03-stories/`. `specs/templates/` **no** se numera: es infraestructura, no un nivel de vuelo. El prefijo hace que el orden alfabético del explorador coincida con el jerárquico (L3 → L2 → L1), que era la virtud accidental del nombre `releases`. Motivo de fondo: épica y release son **N:M** — una épica abarca varias releases y una release contiene varias épicas — así que anidar `epic.md` dentro de `releases/` afirmaba una contención que no existe. El nombre `releases/` queda libre para documentar lanzamientos reales. Actualizadas 1081 referencias en 79 archivos del framework vivo; `sddf-init` y `skill-preflight` (los dos dueños de la estructura) crean y verifican los nombres nuevos
+  - **`release` se conserva donde significa CI/CD:** `security-audit --scope release` y su sección Release Readiness, el modelo batch de `branching-strategy-sddf-git-flow.md`, `deployment-to-npm.md` y las entradas pasadas de este CHANGELOG
+  - **Sin fallback retrocompatible.** **Migración manual** para proyectos con SDDF ya instalado:
+    ```bash
+    # 1. artefacto release.md → epic.md y su frontmatter
+    find docs/specs/releases -name release.md -execdir git mv release.md epic.md \;
+    sed -i 's/^type: release$/type: epic/' docs/specs/releases/*/epic.md
+    sed -i 's/^## Propuesta de Releases$/## Propuesta de Épicas/;s/^### Release \([0-9]\{2\}\) —/### Épica \1 —/' docs/specs/projects/*/project-plan.md
+
+    # 2. directorios de nivel → numerados
+    git mv docs/specs/projects docs/specs/01-projects
+    git mv docs/specs/releases docs/specs/02-epics
+    git mv docs/specs/stories  docs/specs/03-stories
+
+    # 3. referencias de ruta en tus propios documentos
+    grep -rlZ 'specs/projects\|specs/releases\|specs/stories' docs \
+      | xargs -0 sed -i -e 's|specs/projects|specs/01-projects|g' \
+                        -e 's|specs/releases|specs/02-epics|g' \
+                        -e 's|specs/stories|specs/03-stories|g'
+    ```
+    Después, reinstalar los skills (`npx agile-sddf install --force`) y borrar a mano los directorios `release-*` huérfanos en `.claude/skills/` (o `.agents/`, `.github/`). Los comandos `/release-*` dejan de existir: usar `/epic-*`
+- **`release-spec-template.md` renombrado a `epic-template.md`** — era el único de los cinco templates centrales que no seguía el patrón `<tipo>-template.md` de sus hermanos; renombrados el central (`docs/specs/templates/`) y el seed (`skills/release-creation/assets/`), con 35 referencias actualizadas en 9 archivos operativos: `description` de frontmatter y cuerpo de `release-creation`, `release-format-validation`, `releases-from-project-plan` y `sddf-init` (tabla de templates centralizados del Paso 2b), más `evals.json`, 3 `examples/` y `docs/index.md`. **Upgrade:** quien ya corrió `sddf-init` conserva un `release-spec-template.md` huérfano en `$SPECS_BASE/specs/templates/` que hay que borrar a mano tras re-ejecutar `sddf-init`; sin re-ejecutarlo, los skills caen en el fallback al seed con el WARNING documentado (`central → seed → error`), sin romperse
+- **`docs/index.md` regenerado** — el índice describía una sección `docs/wiki/` inexistente y ninguno de sus wikilinks resolvía (usaba una convención propia como `[[story-FEAT-001-project-begin]]` en vez del `slug` real del frontmatter). Reescrito contra el filesystem: 170 rutas enlazadas, 157 wikilinks, 0 rotos; cada entrada lleva wikilink más ruta relativa navegable en VS Code y GitHub; incorpora EPIC-10→18, los 31 `plan-NN.md`, FEAT-049→085, ADR-0003, `docs/policies/`, `docs/guides/` y `docs/runbooks/`
+- **Rutas `docs/knowledge/guides/` → `docs/guides/`** — actualizadas en `CLAUDE.md`, `ADR-0002` y los SKILL.md de `security-audit`, `story-code-review` y `story-verify`, que apuntaban a la estructura anterior al aplanamiento. No se tocó `docs/specs/`: esos planes describen el estado del repo en su momento
+- **`skills/docs-wiki-builder/assets/wiki-index-template.md`** — el template generaba la estructura obsoleta (`docs/wiki/`, `knowledge/{constitution,architecture,process,ux}/`); alineado con la estructura vigente (`policies/`, `adr/`, `guides/`, `runbooks/`)
+- **`docs/policies/constitution.md`** — `type: constitution` → `type: policy`; añadida referencia a la Política de Creación de Skills
+- **`README.md` — sección OpenSpec retirada** — eliminada la documentación de gestión de cambios con OpenSpec (`/openspec-init-config`, `/openspec-propose`, `/openspec-apply-change`, `/openspec-archive-change` y `/openspec-explore` ya no se documentan como flujo del framework)
 - **Skills y agentes movidos a la raíz** — la fuente de verdad de skills y agentes dejó de vivir bajo `.claude/` y pasó a `skills/` y `agents/` en la raíz, para que el framework sea agnóstico del CLI/LLM; `scripts/install.js` (`SOURCE_DIR`) y `scripts/normalize-preflight-paso0.js` (`SKILLS_DIR`) actualizados para leer desde la nueva ubicación. El destino de instalación se mantiene (`.claude` / `.agents` / `.github`)
 - **`package.json` — arreglo `files` simplificado** — las ~41 entradas individuales `.claude/skills/<nombre>` y `.claude/agents/` reemplazadas por las entradas de directorio `skills/` y `agents/`; se mantiene en sync automáticamente al agregar skills y elimina referencias a rutas inexistentes
 - **`README.md`** — sustituido el bullet "Testing especializado y E2E" (que listaba como features skills ya no incluidos) por "Skills worker customizados (extensión)", aclarando que los workers de implementación, testing y utilidades se instalan por separado desde [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension) y se declaran en `sddf.config.yaml`
 
+### Fixed
+
+- **Defectos introducidos por el barrido `release → épica`** — el reemplazo masivo tradujo texto que debía permanecer en ASCII o describir el pasado: (a) el **valor de frontmatter** `type: project | épica | story` en `organization-of-artifacts`, `skill-structural-pattern` y `artifact-directory-migration` — el más grave, porque son plantillas que un agente copia literalmente al generar YAML; corregido a `project | epic | story`; (b) un directorio inexistente `épicas/` (con tilde) en 9 puntos de `organization-of-artifacts` y `root-folder-practices`; (c) `artifact-directory-migration.md` documentaba una migración *pasada* y el barrido reescribió los nombres **de origen** (`release-01-nombre.md` → `épica-01-nombre.md`), archivos que nunca existieron con ese nombre — restaurada la columna "ruta anterior" a lo realmente existente; (d) slugs con tilde (`EPIC-001-nombre-épica`), que por constitución son kebab-case ASCII; (e) el placeholder de argumento `{épica}` de `epic-generate-stories` → `{epic}`
+- **`sddf-commands-pipeline.md`** — declaraba que el input de `epic-generate-stories` era `épica-*.md` y su output `stories/story-[ID]-[Nombre].md`; ambos obsoletos desde la migración a directorios por workitem. Corregidos a `epic.md` y `03-stories/FEAT-[NNN]-[nombre]/story.md`
+- **`organization-of-artifacts.md`** — el ejemplo de rutas listaba `docs\specs\projects\PROJ-01-nombre-project\release.md`, un `release.md` dentro del directorio de proyecto que nunca tuvo sentido; corregido a `project.md`
+- **17 guías restauradas en `docs/guides/`** — `branching-strategy-sddf-git-flow` se borró en `cb2e3e7` (2026-08-05) y las otras 16 en `63fb587` (2026-08-26) durante el aplanamiento de `docs/knowledge/`; el contenido único de `best-practices-for-skills.md` (modelo de delegación, patrón `.tmp/<skill>/` y contrato de invocación de agentes locales del ADR-0002) no había sobrevivido en ningún otro documento pese a seguir siendo citado como normativo por `CLAUDE.md`, `constitution.md` (principio #6), ADR-0002, ADR-0003 y tres SKILL.md. Recuperadas verbatim desde el historial de `main` (`63fb587^` y `cb2e3e7^`), verificadas hash a hash
+
 ### Removed
 
 - **Skills worker movidos a repositorio de extensión** — `test-react-testing-library`, `test-cypress-cucumber`, `test-playwright-cucumber`, `code-frontend-library-react` y `changelog-generator` ya no se publican desde este paquete; los workers customizados por stack ahora viven en [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension)
+- **`skill-master` y `skill-test-evals`** — retirados del paquete; la fábrica de skills y el generador de evals dejan de distribuirse desde este repositorio
+- **`docs/how-to/`** — los dos how-to de Docker dev container se consolidaron en `docs/runbooks/`, que pasa a agrupar procedimientos operativos y guías paso a paso
 
 ---
 

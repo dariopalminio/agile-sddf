@@ -40,8 +40,8 @@ Este agente es un **subagente interactivo**: usa `AskUserQuestion` para entrevis
 
 ## Estado Begin Intention — Capturar y refinar la intención del proyecto
 
-**Input:** user prompt directo; `$SPECS_BASE/specs/projects/project-intent.md` si existe
-**Output:** `$SPECS_BASE/specs/projects/project-intent.md`
+**Input:** user prompt directo; `$SPECS_BASE/specs/01-projects/project-intent.md` si existe
+**Output:** `$SPECS_BASE/specs/01-projects/project-intent.md`
 
 ### Proceso
 
@@ -49,11 +49,11 @@ Este agente es un **subagente interactivo**: usa `AskUserQuestion` para entrevis
 
 Lee:
 1. `.claude/skills/project-begin/assets/project-intent-template.md` — estructura a completar
-2. `$SPECS_BASE/specs/projects/project-intent.md` — solo si existe, para retoma o sobrescritura controlada
+2. `$SPECS_BASE/specs/01-projects/project-intent.md` — solo si existe, para retoma o sobrescritura controlada
 
 **Paso 2: Validar el Estado del documento vigente de Begin Intention**
 
-Si `$SPECS_BASE/specs/projects/project-intent.md` existe, verifica el campo `substatus` del documento vigente derivado de `project-intent-template.md`:
+Si `$SPECS_BASE/specs/01-projects/project-intent.md` existe, verifica el campo `substatus` del documento vigente derivado de `project-intent-template.md`:
 - Si es `IN‑PROGRESS`: interpreta que estás retomando un documento en progreso. Lee el documento existente, identifica secciones incompletas y continúa solo con esas secciones.
 - Si es `DONE`: pregunta al usuario con `AskUserQuestion` si desea sobrescribir el documento completo antes de continuar.
 - Si el archivo no existe: continúa como primera ejecución.
@@ -76,7 +76,7 @@ Para cada sección del template:
 
 **Paso 5: Escribir el documento final**
 
-1. Usa `Write` para crear `$SPECS_BASE/specs/projects/project-intent.md`
+1. Usa `Write` para crear `$SPECS_BASE/specs/01-projects/project-intent.md`
 2. Conserva todos los headers y el orden de secciones del template
 3. **No incluyas** los comentarios HTML `<!-- -->` en el output
 4. Incluye en metadatos:
@@ -88,27 +88,27 @@ Para cada sección del template:
 
 ## Estado Discovery — Discovery de usuarios y refinamiento para requirement-spec
 
-**Input:** `$SPECS_BASE/specs/projects/project-intent.md`
-**Output:** `$SPECS_BASE/specs/projects/project.md`
+**Input:** `$SPECS_BASE/specs/01-projects/project-intent.md`
+**Output:** `$SPECS_BASE/specs/01-projects/project.md`
 
 ### Proceso
 
 **Paso 1: Leer el contexto**
 
 Lee:
-1. `$SPECS_BASE/specs/projects/project-intent.md` — input principal de la fase
+1. `$SPECS_BASE/specs/01-projects/project-intent.md` — input principal de la fase
 2. `.claude/skills/project-begin/assets/project-intent-template.md` — referencia para entender la estructura y el nivel de refinamiento esperado del contexto de negocio
 3. `../skills/project-discovery/assets/project-template.md` — estructura objetivo a completar
-4. `$SPECS_BASE/specs/projects/project.md` — solo si existe, para retoma o sobrescritura controlada
+4. `$SPECS_BASE/specs/01-projects/project.md` — solo si existe, para retoma o sobrescritura controlada
 
 **Paso 2: Validar el Estado de los documentos vigentes**
 
-Verifica primero `$SPECS_BASE/specs/projects/project-intent.md`:
+Verifica primero `$SPECS_BASE/specs/01-projects/project-intent.md`:
 - Si no existe: informa que primero debe ejecutarse `/project-begin` y detén la ejecución.
 - Si existe con **`substatus: IN‑PROGRESS`**: informa que Begin Intention aún no está completo y detén la ejecución.
 - Si existe con **`substatus: DONE`**: continúa.
 
-Si `$SPECS_BASE/specs/projects/project.md` existe, verifica su campo `substatus`:
+Si `$SPECS_BASE/specs/01-projects/project.md` existe, verifica su campo `substatus`:
 - Si es `IN‑PROGRESS`: interpreta que estás retomando el requirement spec. Lee el documento existente y continúa solo con las secciones incompletas.
 - Si es `DONE`: pregunta al usuario con `AskUserQuestion` si desea sobrescribirlo antes de continuar.
 - Si no existe: continúa como primera ejecución.
@@ -140,7 +140,7 @@ Para cada sección objetivo de `project-template.md`:
 
 **Paso 6: Escribir el documento final**
 
-1. Usa `Write` para crear `$SPECS_BASE/specs/projects/project.md`
+1. Usa `Write` para crear `$SPECS_BASE/specs/01-projects/project.md`
 2. Conserva todos los headers y el orden de secciones de `project-template.md`
 3. **No incluyas** los comentarios HTML `<!-- -->` en el output
 4. Incluye metadatos:

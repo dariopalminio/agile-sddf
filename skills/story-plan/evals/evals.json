@@ -47,7 +47,7 @@
       "id": "TC-002",
       "name": "fail-fast-historia-no-encontrada",
       "type": "fail-fast",
-      "description": "El orquestador recibe un story_id que no existe en $SPECS_BASE/specs/stories/. Debe detenerse inmediatamente sin invocar ningún sub-skill y mostrar el mensaje de historia no encontrada.",
+      "description": "El orquestador recibe un story_id que no existe en $SPECS_BASE/specs/03-stories/. Debe detenerse inmediatamente sin invocar ningún sub-skill y mostrar el mensaje de historia no encontrada.",
       "input": {
         "input_path": null,
         "story_id": "FEAT-000",

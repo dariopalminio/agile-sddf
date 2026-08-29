@@ -26,7 +26,7 @@ Este directorio contiene recursos de referencia para el skill `story-plan`.
 
 ## Precondiciones
 
-- El directorio de la historia debe existir bajo `$SPECS_BASE/specs/stories/`
+- El directorio de la historia debe existir bajo `$SPECS_BASE/specs/03-stories/`
 - El archivo `story.md` debe estar presente en el directorio de la historia
 - Los skills `story-design`, `story-tasking` y `story-analyze` deben estar disponibles en `.claude/skills/`
 

@@ -51,3 +51,5 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 |----|--------|--------|-------|
 | [ADR-0001](ADR-0001-centralizar-templates-compartidos.md) | Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` | ACCEPTED | 2026-06-12 |
 | [ADR-0002](ADR-0002-invocacion-agentes-locales-de-skill.md) | Contrato de invocación de agentes locales de skill | ACCEPTED | 2026-06-12 |
+| [ADR-0003](ADR-0003-workflow-canonico-story-y-epic.md) | Workflows canónicos de Story y Epic en el pipeline SDDF | ACCEPTED | 2026-06-14 |
+| [ADR-0004](ADR-0004-nivel-l2-epic-y-directorios-numerados.md) | El nivel L2 es una épica, y los niveles viven en directorios numerados | ACCEPTED | 2026-08-29 |

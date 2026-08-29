@@ -27,7 +27,7 @@ Invocar también cuando el usuario mencione "diagrama de contexto", "C4 context"
 Genera un **diagrama de contexto C4 Nivel 1** (System Context) en formato PlantUML para
 el proyecto activo en SDDF, describiendo cómo el sistema principal interactúa con actores
 externos (personas/roles) y sistemas adyacentes. Escribe el resultado en
-`$SPECS_BASE/specs/projects/<PROJ-slug>/context-diagram.puml`.
+`$SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml`.
 
 **Qué hace este skill:**
 - Guía al usuario con preguntas estructuradas (modo `--interactive`) o infiere los elementos
@@ -45,7 +45,7 @@ externos (personas/roles) y sistemas adyacentes. Escribe el resultado en
 
 - Argumentos opcionales: `--interactive`, `--from-files`, o ruta a un archivo de specs
 - `assets/c4-context-template.puml` — template base del diagrama (solo lectura)
-- `$SPECS_BASE/specs/projects/` — directorio de proyectos para modo `--from-files` y selección de destino
+- `$SPECS_BASE/specs/01-projects/` — directorio de proyectos para modo `--from-files` y selección de destino
 - Archivos del proyecto (modo `--from-files`): `project.md`, `README.md`, `package.json`,
   `pyproject.toml`, archivos de código fuente
 
@@ -59,7 +59,7 @@ externos (personas/roles) y sistemas adyacentes. Escribe el resultado en
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
 - `assets/c4-context-template.puml` debe existir en el directorio del skill
-- En modo `--from-files`, debe existir al menos un proyecto en `$SPECS_BASE/specs/projects/`
+- En modo `--from-files`, debe existir al menos un proyecto en `$SPECS_BASE/specs/01-projects/`
 
 ## Dependencias
 
@@ -157,7 +157,7 @@ Para cada actor y sistema externo recopilado, preguntar:
 
 Escanear los siguientes archivos en orden de prioridad para inferir los elementos del diagrama:
 
-1. **`$SPECS_BASE/specs/projects/*/project.md`** — leer si existe; extraer nombre del sistema, actores mencionados ("Como un..."), sistemas externos e integraciones.
+1. **`$SPECS_BASE/specs/01-projects/*/project.md`** — leer si existe; extraer nombre del sistema, actores mencionados ("Como un..."), sistemas externos e integraciones.
 2. **`README.md`** — extraer nombre del sistema, descripción y sistemas mencionados.
 3. **`package.json` / `pyproject.toml` / `*.csproj`** — inferir stack tecnológico como hint para protocolos.
 4. **Imports del código fuente** — buscar imports de servicios conocidos (Stripe, SendGrid, AWS SDK, Firebase, etc.) para inferir sistemas externos.
@@ -168,7 +168,7 @@ Construir los elementos `Person`, `System`, `System_Ext` y `Rel` a partir de la 
 #### Fallback interactivo (cuando el archivo indicado no existe)
 
 1. Mostrar: `❌ No se encontró el archivo de especificaciones indicado: <ruta>`
-2. Listar los proyectos disponibles en `$SPECS_BASE/specs/projects/` (mostrar nombres de directorios).
+2. Listar los proyectos disponibles en `$SPECS_BASE/specs/01-projects/` (mostrar nombres de directorios).
 3. Ofrecer al usuario:
    - **Opción A:** Seleccionar uno de los proyectos listados y continuar en modo `--from-files` con su `project.md`.
    - **Opción B:** Continuar en modo `--interactive` con preguntas guiadas.
@@ -207,23 +207,23 @@ Si se está en modo `--from-files` con un documento específico, usar el slug de
 
 Si se está en modo `--interactive`, preguntar:
 > ¿En qué proyecto deseas guardar el diagrama?
-Listar los directorios disponibles en `$SPECS_BASE/specs/projects/` y pedir al usuario que elija uno.
+Listar los directorios disponibles en `$SPECS_BASE/specs/01-projects/` y pedir al usuario que elija uno.
 
 Si el directorio del proyecto no existe → mostrar:
-> ❌ El proyecto `<PROJ-slug>` no existe en `$SPECS_BASE/specs/projects/`. Lista de proyectos disponibles: [...]
+> ❌ El proyecto `<PROJ-slug>` no existe en `$SPECS_BASE/specs/01-projects/`. Lista de proyectos disponibles: [...]
 
 #### 6.2 — Verificar si el archivo ya existe
 
-Comprobar si `$SPECS_BASE/specs/projects/<PROJ-slug>/context-diagram.puml` ya existe:
+Comprobar si `$SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml` ya existe:
 - **No existe** → escribir el archivo directamente.
 - **Ya existe** → preguntar al usuario:
-  > ⚠️ Ya existe un `context-diagram.puml` en `$SPECS_BASE/specs/projects/<PROJ-slug>/`. ¿Deseas sobreescribirlo? (Sí / No)
+  > ⚠️ Ya existe un `context-diagram.puml` en `$SPECS_BASE/specs/01-projects/<PROJ-slug>/`. ¿Deseas sobreescribirlo? (Sí / No)
   - **Sí** → sobreescribir.
   - **No** → detener sin escribir.
 
 #### 6.3 — Escribir el archivo
 
-Escribir el contenido PlantUML generado en `$SPECS_BASE/specs/projects/<PROJ-slug>/context-diagram.puml`.
+Escribir el contenido PlantUML generado en `$SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml`.
 
 ### Paso 7 — Confirmar resultado
 
@@ -231,7 +231,7 @@ Mostrar:
 
 ```
 ✅ Diagrama de contexto C4 generado:
-   $SPECS_BASE/specs/projects/<PROJ-slug>/context-diagram.puml
+   $SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml
 
 Para renderizarlo localmente, instala la extensión PlantUML en VS Code
 (ext: jebbs.plantuml) o visita https://www.plantuml.com/plantuml
@@ -241,5 +241,5 @@ Siguiente paso sugerido: /project-planning
 
 ## Salida
 
-- `$SPECS_BASE/specs/projects/<PROJ-slug>/context-diagram.puml` — diagrama de contexto C4
+- `$SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml` — diagrama de contexto C4
   Nivel 1 en formato PlantUML, listo para renderizar con la extensión PlantUML de VS Code.

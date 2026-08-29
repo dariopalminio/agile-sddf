@@ -12,7 +12,7 @@ la validación de precondiciones pasa sin error y el skill procede al Paso 2.
 ## Referencia
 
 Ver el fixture completo en:
-- `docs/specs/stories/FEAT-000-test/` — directorio de fixture creado en FEAT-064
+- `docs/specs/03-stories/FEAT-000-test/` — directorio de fixture creado en FEAT-064
 
 El fixture contiene `story.md`, `design.md` e `implement-report.md` con contenido mínimo válido.
 Ejecutar `/story-code-review FEAT-000` sobre ese fixture confirma que la validación pasa
@@ -22,7 +22,7 @@ y el skill avanza al Paso 2 (carga de contexto) sin emitir errores de precondici
 
 ```
 🔍 Iniciando revisión de código para: FEAT-000
-   Directorio: docs/specs/stories/FEAT-000-test/
+   Directorio: docs/specs/03-stories/FEAT-000-test/
    Artefactos: story.md ✓ | design.md ✓ | implement-report.md ✓
    Estado: IMPLEMENT/DONE ✓
 ```

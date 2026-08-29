@@ -20,7 +20,7 @@ Este esquema es la fuente de verdad del skill. Nunca lo hardcodees en otro lugar
 ```yaml
 ---
 alwaysApply: false                         # OBLIGATORIO — siempre false en archivos spec
-type: <project | release | story | wiki>   # OBLIGATORIO
+type: <project | epic | story | wiki>   # OBLIGATORIO
 id: <PROJ-NN | EPIC-NN | FEAT-NNN>         # OBLIGATORIO (según type)
 slug: <nombre-del-directorio>              # OBLIGATORIO
 title: "<Título legible del documento>"    # OBLIGATORIO
@@ -53,14 +53,14 @@ El skill acepta tres formas de input:
 
 **A) Nombre corto de directorio o archivo** (ej. `FEAT-043-header-aggregation` o `project-intent`):
 - Busca el archivo canónico en este orden:
-  - `$SPECS_BASE/specs/stories/*/story.md` (busca directorio que coincida con el término)
-  - `$SPECS_BASE/specs/releases/*/release.md` (busca directorio que coincida)
-  - `$SPECS_BASE/specs/projects/*/` (busca en todos los archivos del directorio del proyecto)
+  - `$SPECS_BASE/specs/03-stories/*/story.md` (busca directorio que coincida con el término)
+  - `$SPECS_BASE/specs/02-epics/*/epic.md` (busca directorio que coincida)
+  - `$SPECS_BASE/specs/01-projects/*/` (busca en todos los archivos del directorio del proyecto)
 - Si hay exactamente un resultado → úsalo directamente
 - Si hay múltiples resultados → muestra la lista y pide selección al usuario
 - Si no hay resultado → trata el input como texto libre e informa al usuario
 
-**B) Ruta relativa o absoluta** (ej. `$SPECS_BASE/specs/stories/FEAT-043-nombre/story.md` o directorio `$SPECS_BASE/specs/stories/`):
+**B) Ruta relativa o absoluta** (ej. `$SPECS_BASE/specs/03-stories/FEAT-043-nombre/story.md` o directorio `$SPECS_BASE/specs/03-stories/`):
 - Usa la ruta directamente sin búsqueda adicional
 - Si es un directorio → activa el modo batch (ver Paso 4)
 
@@ -77,18 +77,18 @@ Para cada archivo a procesar, deriva automáticamente los campos obligatorios:
 | Campo | Regla de derivación |
 |-------|---------------------|
 | `alwaysApply` | false |
-| `id` | Extraer del frontmatter existente si tiene. Si no: prefijo del nombre de directorio → `FEAT-NNN` para stories, `EPIC-NN` para releases, `PROJ-NN` para projects |
+| `id` | Extraer del frontmatter existente si tiene. Si no: prefijo del nombre de directorio → `FEAT-NNN` para stories, `EPIC-NN` para épicas, `PROJ-NN` para projects |
 | `slug` | Nombre del **directorio** contenedor en kebab-case (ej. `FEAT-043-header-aggregation`, `EPIC-01-nombre`, `PROJ-01-nombre`) |
-| `type` | Prefijo del nombre de directorio: `FEAT-*` → `story`, `EPIC-*` → `release`, `PROJ-*` → `project`, archivos fuera de estas convenciones → `wiki` |
+| `type` | Prefijo del nombre de directorio: `FEAT-*` → `story`, `EPIC-*` → `epic`, `PROJ-*` → `project`, archivos fuera de estas convenciones → `wiki` |
 | `title` | Primer heading `#` del contenido del archivo. Si no hay heading `#`, usar el nombre del directorio formateado (guiones → espacios, capitalizar) |
 | `status` | Buscar `**substatus**: IN‑PROGRESS` en el contenido → `IN-PROGRESS`; `**substatus**: DONE` → `COMPLETED`; ausente o desconocido → `BACKLOG` |
 | `substatus` | no es un archivo spec → null; si es un archivo de spec → derivar según contenido; ausente o desconocido → null |
-| `parent` | Para stories: extraer nombre del directorio del release (la Epic o release) padre del frontmatter existente o de la sección del documento o el slug del archivo release padre (ej. `EPIC-01-nombre`). Para releases: extraer nombre del directorio del proyecto padre o slug del archivo padre project.md (ej. `PROJ-01-nombre`). Para projects u otros archivos: `null` |
+| `parent` | Para stories: extraer nombre del directorio de la épica padre del frontmatter existente o de la sección del documento o el slug del archivo `epic.md` padre (ej. `EPIC-01-nombre`). Para épicas: extraer nombre del directorio del proyecto padre o slug del archivo padre project.md (ej. `PROJ-01-nombre`). Para projects u otros archivos: `null` |
 | `created` | Preservar del frontmatter existente (`created` o `date`). Si no existe → fecha actual `YYYY-MM-DD` |
 | `updated` | Fecha actual `YYYY-MM-DD` siempre que se haga un merge/update |
 | `related` | Lista de slug de elementos relacionados (ej. `EPIC-01-nombre`) incluida el parent |
 
-Se agrega una referencias inmediatamente despues del frontmatter con el formato `[[slug-del-release-o-proyecto]]` con el listado de `related` para facilitar la navegación y trazabilidad.
+Se agrega una referencias inmediatamente despues del frontmatter con el formato `[[slug-de-la-épica-o-proyecto]]` con el listado de `related` para facilitar la navegación y trazabilidad.
 
 Muestra los valores derivados al usuario antes de escribir y permite correcciones.
 
@@ -136,19 +136,19 @@ Cuando el input es un directorio, el skill adapta el escaneo según el tipo de d
 
 **Si el directorio es `$SPECS_BASE/specs/` o cualquier directorio padre equivalente:**
 - Escanea los tres subdirectorios de artefactos en profundidad:
-  - `$SPECS_BASE/specs/projects/*/project-intent.md` (y cualquier otro `.md` dentro de cada `PROJ-*-*/`)
-  - `$SPECS_BASE/specs/releases/*/release.md`
-  - `$SPECS_BASE/specs/stories/*/story.md`
+  - `$SPECS_BASE/specs/01-projects/*/project-intent.md` (y cualquier otro `.md` dentro de cada `PROJ-*-*/`)
+  - `$SPECS_BASE/specs/02-epics/*/epic.md`
+  - `$SPECS_BASE/specs/03-stories/*/story.md`
 
-**Si el directorio es uno de los tres tipos de artefacto** (ej. `$SPECS_BASE/specs/stories/`):
+**Si el directorio es uno de los tres tipos de artefacto** (ej. `$SPECS_BASE/specs/03-stories/`):
 - Lista todos los **subdirectorios** directamente dentro (no recursivo en el segundo nivel)
 - Busca el archivo canónico en cada subdirectorio:
   - Para `stories/`: busca `story.md`
-  - Para `releases/`: busca `release.md`
+  - Para `releases/` (nivel épica): busca `epic.md`
   - Para `projects/`: busca `project-intent.md`
 - Ignora subdirectorios que no contengan el archivo canónico esperado
 
-**Si el directorio es un subdirectorio de artefacto** (ej. `$SPECS_BASE/specs/stories/FEAT-043-header-aggregation/`):
+**Si el directorio es un subdirectorio de artefacto** (ej. `$SPECS_BASE/specs/03-stories/FEAT-043-header-aggregation/`):
 - Lista todos los archivos `.md` directamente dentro de ese directorio
 
 ### 4.2 Clasificación y confirmación

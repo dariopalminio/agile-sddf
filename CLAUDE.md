@@ -10,7 +10,7 @@
 
 # Agile Spec-Driven-Development Framework (SDDF)
 
-Framework multiagente minimalista (solo Markdown + scripts Node.js de instalación) que automatiza el ciclo Spec-Driven Development completo — intención → discovery → planning → historias de usuario → implementación con TDD — operando sobre Claude Code, OpenCode y GitHub Copilot. La visión de producto completa vive en `docs/specs/projects/PROJ-01-agile-sddf/project-intent.md`; este mismo repositorio dogfoodea su propio framework para desarrollarse a sí mismo (ver `docs/specs/projects/PROJ-01-agile-sddf/`).
+Framework multiagente minimalista (solo Markdown + scripts Node.js de instalación) que automatiza el ciclo Spec-Driven Development completo — intención → discovery → planning → historias de usuario → implementación con TDD — operando sobre Claude Code, OpenCode y GitHub Copilot. La visión de producto completa vive en `docs/specs/01-projects/PROJ-01-agile-sddf/project-intent.md`; este mismo repositorio dogfoodea su propio framework para desarrollarse a sí mismo (ver `docs/specs/01-projects/PROJ-01-agile-sddf/`).
 
 ## Stack y comandos
 
@@ -39,7 +39,7 @@ agile-sddf/
 ## Particularidades de este repo (lo que el código no te dice)
 
 - **`SDDF_ROOT`** define la raíz de artefactos (default `docs`); este repo usa el valor por defecto, así que los specs viven en `docs/specs/`, no en `.sdd/` ni en la raíz.
-- **WIP = 1 por nivel de pipeline:** solo un documento puede tener `substatus: IN-PROGRESS` a la vez por nivel (project, release o story). Verifícalo antes de activar un ítem nuevo.
+- **WIP = 1 por nivel de pipeline:** solo un documento puede tener `substatus: IN-PROGRESS` a la vez por nivel (project, épica o story). Verifícalo antes de activar un ítem nuevo.
 - **`.tmp/<skill-name>/` nunca se versiona:** es el canal de comunicación entre subagentes y el skill orquestador, para evitar el "teléfono descompuesto". Está en `.gitignore`; no lo trates como directorio permanente.
 - **Los ADR aceptados son inmutables:** se reemplazan con un ADR nuevo (`superseded-by`), nunca se editan in place. Ver `docs/adr/README.md`.
 - **Publicar un skill nuevo en npm:** su ruta debe agregarse al arreglo `files` de `package.json`, o quienes instalen el paquete no lo recibirán vía `postinstall`.

@@ -55,7 +55,7 @@
       "description": "Historia FEAT-099 cuyo directorio tiene story.md pero no finvest-evaluation-report.md. El skill debe emitir ❌ con el nombre del archivo faltante y sugerir ejecutar /story-evaluation para generarlo.",
       "input": {
         "flags": ["--story-id FEAT-099"],
-        "context": "Directorio docs/specs/stories/FEAT-099-test/ existe con story.md válido pero sin finvest-evaluation-report.md"
+        "context": "Directorio docs/specs/03-stories/FEAT-099-test/ existe con story.md válido pero sin finvest-evaluation-report.md"
       },
       "expected": {
         "contains": [

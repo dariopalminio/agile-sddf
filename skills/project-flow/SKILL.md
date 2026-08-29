@@ -25,9 +25,9 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 
 Luego, lee los tres documentos de output para determinar desde dónde retomar:
 
-1. `$SPECS_BASE/specs/projects/project-intent.md` → detecta `substatus`
-2. `$SPECS_BASE/specs/projects/project.md` → detecta `substatus`
-3. `$SPECS_BASE/specs/projects/project-plan.md` → detecta `substatus`
+1. `$SPECS_BASE/specs/01-projects/project-intent.md` → detecta `substatus`
+2. `$SPECS_BASE/specs/01-projects/project.md` → detecta `substatus`
+3. `$SPECS_BASE/specs/01-projects/project-plan.md` → detecta `substatus`
 
 **Lógica de arranque:**
 
@@ -59,7 +59,7 @@ Informa al usuario el estado detectado y las fases que se ejecutarán antes de c
 
 ### 1.1 Verificar WIP=1
 
-Revisa `$SPECS_BASE/specs/projects/` y detecta si existe algún archivo con `substatus: IN‑PROGRESS`.
+Revisa `$SPECS_BASE/specs/01-projects/` y detecta si existe algún archivo con `substatus: IN‑PROGRESS`.
 
 - Si **no** existe ninguno en substatus `IN‑PROGRESS`: continúa al paso 1.2.
 - Si **existe** al menos uno en substatus `IN‑PROGRESS`: notifica el conflicto WIP=1 y ofrece:
@@ -68,7 +68,7 @@ Revisa `$SPECS_BASE/specs/projects/` y detecta si existe algún archivo con `sub
 
 ### 1.2 Verificar estado del documento de output
 
-Lee `$SPECS_BASE/specs/projects/project-intent.md` (si existe):
+Lee `$SPECS_BASE/specs/01-projects/project-intent.md` (si existe):
 
 - No existe → primera ejecución, continúa.
 - `substatus: IN‑PROGRESS` → flujo de retoma, continúa.
@@ -84,7 +84,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 
 > Lee el template en `$SPECS_BASE/specs/templates/project-intent-template.md`. Extrae las secciones del template en runtime.
 >
-> Si estás en flujo de retoma (documento existente en `substatus: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/projects/project-intent.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
+> Si estás en flujo de retoma (documento existente en `substatus: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/project-intent.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
 > Conduce la entrevista de intención de proyecto con el usuario en dos fases dentro de la misma sesión:
 >
@@ -92,14 +92,14 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 >
 > **Fase 2 — Refinamiento:** A partir de las respuestas de la Fase 1, profundiza sección por sección del template (máx 3-4 preguntas por ronda). Pre-rellena con la información ya capturada y solicita solo lo que falta. Infiere el contenido faltante marcándolo con `[inferido]`.
 >
-> Escribe el resultado completo en `$SPECS_BASE/specs/projects/project-intent.md` con `substatus: IN‑PROGRESS`.
+> Escribe el resultado completo en `$SPECS_BASE/specs/01-projects/project-intent.md` con `substatus: IN‑PROGRESS`.
 > Si no puedes obtener respuesta del usuario, aplica tu Protocolo de Resiliencia: degrada a inferencia, marca con `[inferido: sin respuesta del usuario]` y lista las inferencias al final.
 
 ### 1.5 Gate de revisión — Fase 1
 
 Cuando el `project-pm` termine:
 
-1. Lee `$SPECS_BASE/specs/projects/project-intent.md` y verifica que existe.
+1. Lee `$SPECS_BASE/specs/01-projects/project-intent.md` y verifica que existe.
 2. Muestra al usuario un resumen del documento generado (título, secciones principales).
 3. Pregunta:
    > 📋 **Revisión Fase 1 — project-intent.md**
@@ -109,7 +109,7 @@ Cuando el `project-pm` termine:
    > - `No, necesito ajustes` → continúa la entrevista para completar secciones faltantes
 
 4. Si el usuario confirma:
-   - Edita `$SPECS_BASE/specs/projects/project-intent.md` reemplazando `substatus: IN‑PROGRESS` por `substatus: DONE`.
+   - Edita `$SPECS_BASE/specs/01-projects/project-intent.md` reemplazando `substatus: IN‑PROGRESS` por `substatus: DONE`.
    - Confirma:
      > ✅ project-intent.md → Estado: Ready
      > Continuando con la Fase 2 (Discovery)...
@@ -122,11 +122,11 @@ Cuando el `project-pm` termine:
 
 ### 2.1 Verificar precondición
 
-Lee `$SPECS_BASE/specs/projects/project-intent.md`. Debe existir con `substatus: DONE` (garantizado por el gate anterior).
+Lee `$SPECS_BASE/specs/01-projects/project-intent.md`. Debe existir con `substatus: DONE` (garantizado por el gate anterior).
 
 ### 2.2 Verificar estado del documento de output
 
-Lee `$SPECS_BASE/specs/projects/project.md` (si existe):
+Lee `$SPECS_BASE/specs/01-projects/project.md` (si existe):
 
 - No existe → primera ejecución, continúa.
 - `substatus: IN‑PROGRESS` → flujo de retoma, continúa.
@@ -140,7 +140,7 @@ Lee `$SPECS_BASE/specs/templates/project-template.md`. Si no existe, usa el fall
 
 Invoca al agente `project-pm` con la siguiente instrucción:
 
-> Lee `$SPECS_BASE/specs/projects/project-intent.md`. Conduce el discovery de usuarios con el usuario:
+> Lee `$SPECS_BASE/specs/01-projects/project-intent.md`. Conduce el discovery de usuarios con el usuario:
 > - Identifica los perfiles de usuario del sistema (quiénes son, qué necesitan, cuál es su contexto de uso)
 > - Descubre los flujos de uso principales y los puntos de dolor actuales
 > - Identifica restricciones de negocio, integraciones externas y contexto del ecosistema
@@ -153,20 +153,20 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 
 Una vez completado el discovery, invoca al agente `project-architect` con la siguiente instrucción:
 
-> Lee `$SPECS_BASE/specs/projects/project-intent.md` y el resumen del discovery de la fase anterior. Lee también el template `$SPECS_BASE/specs/templates/project-template.md`.
+> Lee `$SPECS_BASE/specs/01-projects/project-intent.md` y el resumen del discovery de la fase anterior. Lee también el template `$SPECS_BASE/specs/templates/project-template.md`.
 >
-> Si estás en flujo de retoma (documento existente en `substatus: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/projects/project.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
+> Si estás en flujo de retoma (documento existente en `substatus: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/project.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
 > Extrae las secciones del template en runtime y conduce la entrevista de especificación de requisitos con el usuario por secciones (máx 3-4 preguntas por ronda).
 > Pre-rellena con la información ya disponible del discovery y el project-intent. Infiere contenido faltante marcándolo con `[inferido]`.
 > Para secciones de experiencia de usuario y usabilidad, puedes apoyarte en el agente `project-ux`.
-> Escribe el documento final en `$SPECS_BASE/specs/projects/project.md` con `substatus: IN‑PROGRESS`.
+> Escribe el documento final en `$SPECS_BASE/specs/01-projects/project.md` con `substatus: IN‑PROGRESS`.
 
 ### 2.6 Gate de revisión — Fase 2
 
 Cuando el `project-architect` termine:
 
-1. Lee `$SPECS_BASE/specs/projects/project.md` y verifica que existe.
+1. Lee `$SPECS_BASE/specs/01-projects/project.md` y verifica que existe.
 2. Muestra al usuario un resumen del documento generado.
 3. Pregunta:
    > 📋 **Revisión Fase 2 — requirement-spec.md**
@@ -176,7 +176,7 @@ Cuando el `project-architect` termine:
    > - `No, necesito ajustes` → continúa la entrevista para completar secciones faltantes
 
 4. Si el usuario confirma:
-   - Edita `$SPECS_BASE/specs/projects/project.md` reemplazando `substatus: IN‑PROGRESS` por `substatus: DONE`.
+   - Edita `$SPECS_BASE/specs/01-projects/project.md` reemplazando `substatus: IN‑PROGRESS` por `substatus: DONE`.
    - Confirma:
      > ✅ requirement-spec.md → Estado: Ready
      > Continuando con la Fase 3 (Planning)...
@@ -189,11 +189,11 @@ Cuando el `project-architect` termine:
 
 ### 3.1 Verificar precondición
 
-Lee `$SPECS_BASE/specs/projects/project.md`. Debe existir con `substatus: DONE` (garantizado por el gate anterior).
+Lee `$SPECS_BASE/specs/01-projects/project.md`. Debe existir con `substatus: DONE` (garantizado por el gate anterior).
 
 ### 3.2 Verificar estado del documento de output
 
-Lee `$SPECS_BASE/specs/projects/project-plan.md` (si existe):
+Lee `$SPECS_BASE/specs/01-projects/project-plan.md` (si existe):
 
 - No existe → primera ejecución, continúa.
 - `substatus: IN‑PROGRESS` → flujo de retoma, continúa.
@@ -207,27 +207,27 @@ Lee `$SPECS_BASE/specs/templates/project-plan-template.md`. Si no existe, usa el
 
 Invoca al agente `project-architect` con la siguiente instrucción:
 
-> Lee los documentos `$SPECS_BASE/specs/projects/project-intent.md` y `$SPECS_BASE/specs/projects/project.md`. Lee también el template `$SPECS_BASE/specs/templates/project-plan-template.md`.
+> Lee los documentos `$SPECS_BASE/specs/01-projects/project-intent.md` y `$SPECS_BASE/specs/01-projects/project.md`. Lee también el template `$SPECS_BASE/specs/templates/project-plan-template.md`.
 >
-> Si estás en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/projects/project-plan.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
+> Si estás en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/project-plan.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
-> Extrae features atómicas con IDs FEAT-NNN, priorizalas, agrúpalas en releases con MVP en Release 1, y escribe el resultado en `$SPECS_BASE/specs/projects/project-plan.md` con `substatus: IN‑PROGRESS`.
+> Extrae features atómicas con IDs FEAT-NNN, priorizalas, agrúpalas en épicas con MVP en la Épica 1, y escribe el resultado en `$SPECS_BASE/specs/01-projects/project-plan.md` con `substatus: IN‑PROGRESS`.
 
 ### 3.5 Gate de revisión — Fase 3
 
 Cuando el `project-architect` termine:
 
-1. Lee `$SPECS_BASE/specs/projects/project-plan.md` y verifica que existe.
-2. Muestra al usuario un resumen del plan generado (número de features, releases identificados).
+1. Lee `$SPECS_BASE/specs/01-projects/project-plan.md` y verifica que existe.
+2. Muestra al usuario un resumen del plan generado (número de features, épicas identificadas).
 3. Pregunta:
    > 📋 **Revisión Fase 3 — project-plan.md**
    > El plan de proyecto ha sido generado. Por favor revísalo.
    > ¿Está completo y listo para finalizar el pipeline?
    > - `Sí, finalizar` → marca el documento como Ready y completa el pipeline
-   > - `No, necesito ajustes` → continúa la planificación para ajustar features o releases
+   > - `No, necesito ajustes` → continúa la planificación para ajustar features o épicas
 
 4. Si el usuario confirma:
-   - Edita `$SPECS_BASE/specs/projects/project-plan.md` reemplazando `substatus: IN‑PROGRESS` por `substatus: DONE`.
+   - Edita `$SPECS_BASE/specs/01-projects/project-plan.md` reemplazando `substatus: IN‑PROGRESS` por `substatus: DONE`.
    - Confirma:
      > ✅ project-plan.md → Estado: Ready
 
@@ -242,9 +242,9 @@ Cuando las tres fases estén completas:
 > 🎉 **Pipeline ProjectSpecFactory completado exitosamente.**
 >
 > **Documentos generados:**
-> - ✅ `$SPECS_BASE/specs/projects/project-intent.md` → Estado: Ready
-> - ✅ `$SPECS_BASE/specs/projects/project.md` → Estado: Ready
-> - ✅ `$SPECS_BASE/specs/projects/project-plan.md` → Estado: Ready
+> - ✅ `$SPECS_BASE/specs/01-projects/project-intent.md` → Estado: Ready
+> - ✅ `$SPECS_BASE/specs/01-projects/project.md` → Estado: Ready
+> - ✅ `$SPECS_BASE/specs/01-projects/project-plan.md` → Estado: Ready
 >
 > El proyecto está completamente especificado y listo para la fase de desarrollo.
 

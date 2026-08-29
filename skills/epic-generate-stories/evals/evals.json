@@ -1,0 +1,132 @@
+{
+  "skill": "epic-generate-stories",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el skill epic-generate-stories. Verifica: happy-path con generacion de historias desde una épica con multiples features, fail-fast ante épica inexistente, fail-fast ante seccion Features vacia, y confirmacion de sobreescritura cuando la historia ya existe.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path: genera historias desde épica con multiples features",
+      "type": "functional",
+      "description": "Ejecutar epic-generate-stories con un nombre de épica que contiene 3 features en la seccion ## Features. El skill debe invocar preflight, resolver el directorio de la épica, extraer las 3 features, leer el story-template.md, generar un story.md por feature en $SPECS_BASE/specs/03-stories/FEAT-NNN-nombre/ y mostrar el resumen con los 3 archivos creados y el siguiente paso sugerido.",
+      "input": {
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/specs/templates/story-template.md existe. El directorio $SPECS_BASE/specs/02-epics/EPIC-01-autenticacion/ contiene epic.md con 3 features: '- [ ] FEAT-001 — Login de usuario: permite autenticarse con email y password', '- [ ] FEAT-002 — Registro de usuario: crea cuenta nueva', '- [x] FEAT-003 — Recuperacion de password: flujo de reset via email'. No existen historias previas en $SPECS_BASE/specs/03-stories/.",
+        "épica_input": "EPIC-01-autenticacion"
+      },
+      "expected": {
+        "contains": [
+          "FEAT-001",
+          "FEAT-002",
+          "FEAT-003",
+          "story.md",
+          "Historias generadas",
+          "story-evaluation"
+        ],
+        "not_contains": [
+          "Entorno invalido",
+          "No se encontro el template",
+          "No se encontraron features",
+          "no procesada"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast: épica inexistente detiene la ejecucion sin generar archivos",
+      "type": "fail-fast",
+      "description": "Ejecutar epic-generate-stories con un nombre de directorio que no existe en $SPECS_BASE/specs/02-epics/. El skill debe fallar en el Paso 1 con el mensaje de error correspondiente y terminar sin crear ningun directorio ni archivo de historia.",
+      "input": {
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. El directorio $SPECS_BASE/specs/02-epics/ existe pero no contiene ningun subdirectorio que coincida con el termino indicado.",
+        "épica_input": "épica-inexistente"
+      },
+      "expected": {
+        "contains": [
+          "épica-inexistente",
+          "specs/02-epics"
+        ],
+        "not_contains": [
+          "story.md",
+          "FEAT-",
+          "Historias generadas",
+          "APROBADO"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "fail-fast: seccion Features ausente detiene la ejecucion",
+      "type": "fail-fast",
+      "description": "Ejecutar epic-generate-stories con un epic.md que no contiene la seccion ## Features. El skill debe detectar la ausencia de features en el Paso 2, emitir el mensaje de error indicado y terminar sin generar ningun archivo de historia.",
+      "input": {
+        "context": "Entorno SDDF valido. El directorio $SPECS_BASE/specs/02-epics/EPIC-02-sin-features/ existe y contiene epic.md con frontmatter y seccion ## Descripcion pero sin seccion ## Features.",
+        "épica_input": "EPIC-02-sin-features"
+      },
+      "expected": {
+        "contains": [
+          "No se encontraron features"
+        ],
+        "not_contains": [
+          "story.md",
+          "FEAT-",
+          "Historias generadas"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case: confirmacion de sobreescritura cuando story.md ya existe",
+      "type": "edge-case",
+      "description": "Ejecutar epic-generate-stories con una épica que tiene 2 features, donde la primera (FEAT-010) ya tiene story.md existente y la segunda (FEAT-011) es nueva. El skill debe detectar el conflicto en la primera, preguntar al usuario si desea sobreescribir, y al responder 'n' (no), saltar FEAT-010 y generar solo FEAT-011. El resumen debe mostrar FEAT-010 como saltada y FEAT-011 como generada.",
+      "input": {
+        "context": "Entorno SDDF valido. El directorio $SPECS_BASE/specs/02-epics/EPIC-03-pagos/ contiene epic.md con 2 features: FEAT-010 y FEAT-011. Ya existe $SPECS_BASE/specs/03-stories/FEAT-010-checkout/story.md. El usuario responde 'n' cuando se le pregunta si desea sobreescribir FEAT-010.",
+        "épica_input": "EPIC-03-pagos",
+        "user_responses": ["n"]
+      },
+      "expected": {
+        "contains": [
+          "FEAT-011",
+          "story.md",
+          "saltada",
+          "Historias generadas"
+        ],
+        "not_contains": [
+          "Entorno invalido",
+          "No se encontraron features",
+          "no procesada (formato no reconocido)"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-005",
+      "name": "happy-path: asignacion-lazy-de-feat-ids-en-épica-sin-ids",
+      "type": "happy-path",
+      "description": "Ejecutar epic-generate-stories con un epic.md que tiene features en Formato B (sin FEAT-NNN). El skill debe activar el Paso 2b: calcular el maximo ID en uso desde filesystem + otras épicas, asignar IDs secuenciales, hacer backfill en epic.md actualizando las lineas de features con los IDs asignados, y luego generar los story.md con esos IDs.",
+      "input": {
+        "context": "Entorno SDDF valido. El épica $SPECS_BASE/specs/02-epics/EPIC-05-pagos/epic.md tiene 2 features en Formato B (sin ID): '- [ ] **Pasarela de pago:** integracion con Stripe' y '- [ ] **Historial de transacciones:** consulta de pagos pasados'. El mayor FEAT-NNN existente en $SPECS_BASE/specs/03-stories/ es FEAT-004 (4 historias previas). Ningun otro épica tiene FEAT IDs asignados en su seccion Features. Template story-template.md existe.",
+        "épica_input": "EPIC-05-pagos"
+      },
+      "expected": {
+        "contains": [
+          "FEAT-005",
+          "FEAT-006",
+          "story.md",
+          "Historias generadas",
+          "story-evaluation"
+        ],
+        "not_contains": [
+          "Entorno invalido",
+          "No se encontraron features",
+          "no procesada",
+          "FEAT-001-pasarela",
+          "FEAT-004-pasarela",
+          "→ FEAT-001",
+          "→ FEAT-004"
+        ]
+      },
+      "threshold": 0.85
+    }
+  ]
+}

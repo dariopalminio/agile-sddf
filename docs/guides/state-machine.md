@@ -11,7 +11,7 @@ parent: null
 
 # Máquina de estados del framework SDDF
 
-> Documento canónico de estados, subestados y transiciones del pipeline SDDF. Es la fuente de verdad para los skills que actualizan `story.md`, `release.md` y los documentos de proyecto.
+> Documento canónico de estados, subestados y transiciones del pipeline SDDF. Es la fuente de verdad para los skills que actualizan `story.md`, `epic.md` y los documentos de proyecto.
 
 ## Modelo general
 
@@ -121,9 +121,9 @@ Cada documento transita `substatus: IN-PROGRESS → DONE` dentro de su fase. Reg
 
 ---
 
-## Nivel RELEASE (Épica)
+## Nivel ÉPICA
 
-El release/épica usa `status` + `substatus` en `release.md` siguiendo el mismo modelo ortogonal que el nivel story.
+La épica usa `status` + `substatus` en `epic.md` siguiendo el mismo modelo ortogonal que el nivel story.
 
 ### Pipeline de estados
 
@@ -150,8 +150,8 @@ DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETE
 
 | Status | Descripción | Actor |
 |--------|-------------|-------|
-| `DEFINE` | Se define el alcance: objetivos, features, criterios de éxito y valor esperado. Se documenta en `release.md`. | PM / PO |
-| `PLAN` | Se desglosan las historias, se asignan a releases, se estima esfuerzo y se identifican dependencias. | PM / Equipo |
+| `DEFINE` | Se define el alcance: objetivos, features, criterios de éxito y valor esperado. Se documenta en `epic.md`. | PM / PO |
+| `PLAN` | Se desglosan las historias, se asignan a épicas, se estima esfuerzo y se identifican dependencias. | PM / Equipo |
 | `READY-FOR-DEV` | Buffer/cola. Épica completamente planificada y aprobada. Espera capacidad del equipo. Aplica límite WIP. | Sistema |
 | `DEVELOP` | Desarrollo en curso: las historias de la épica se implementan siguiendo su propio workflow. La épica permanece aquí hasta que todas las historias estén en `DELIVER`. | Equipo |
 | `VALIDATE` | Pruebas de integración y regresión del conjunto completo: end-to-end, UAT, requisitos no funcionales. | QA / Equipo |
@@ -160,7 +160,7 @@ DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETE
 
 **SHIP y COMPLETED son transiciones manuales** (o disparadas por CI/CD) — ningún skill los escribe automáticamente.
 
-Gate de calidad: `release-format-validation` valida la estructura del `release.md` como precondición para `release-generate-stories` (constitución, regla 15).
+Gate de calidad: `epic-format-validation` valida la estructura del `epic.md` como precondición para `epic-generate-stories` (constitución, regla 15).
 
 
 ---

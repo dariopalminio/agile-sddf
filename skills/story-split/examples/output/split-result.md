@@ -16,7 +16,7 @@ La historia tiene 3 flujos principales independientes (agregar, eliminar, cambia
 
 ### FEAT-099 — Agregar ítem al carrito (core, repurposed)
 
-**Archivo:** `docs/specs/stories/FEAT-099-agregar-item-carrito/story.md` ← repurposed (era `FEAT-099-gestionar-carrito-compras/`)
+**Archivo:** `docs/specs/03-stories/FEAT-099-agregar-item-carrito/story.md` ← repurposed (era `FEAT-099-gestionar-carrito-compras/`)
 
 ---
 type: story
@@ -52,7 +52,7 @@ Entonces el botón aparece deshabilitado con texto "Sin stock"
 
 ### FEAT-100 — Eliminar ítem del carrito
 
-**Archivo:** `docs/specs/stories/FEAT-100-eliminar-item-carrito/story.md` ← nuevo
+**Archivo:** `docs/specs/03-stories/FEAT-100-eliminar-item-carrito/story.md` ← nuevo
 
 **Como** comprador que revisó su carrito  
 **Quiero** eliminar un producto de mi carrito  
@@ -79,7 +79,7 @@ Entonces veo el estado vacío: "Tu carrito está vacío. Agrega productos para c
 
 ### FEAT-101 — Cambiar cantidad de ítem en el carrito
 
-**Archivo:** `docs/specs/stories/FEAT-101-cambiar-cantidad-carrito/story.md` ← nuevo
+**Archivo:** `docs/specs/03-stories/FEAT-101-cambiar-cantidad-carrito/story.md` ← nuevo
 
 **Como** comprador que quiere ajustar su pedido  
 **Quiero** cambiar la cantidad de un producto en mi carrito  
@@ -105,12 +105,12 @@ Entonces veo el mensaje "Solo quedan 2 unidades disponibles"
 
 ## Archivos generados
 
-- `docs/specs/stories/FEAT-099-agregar-item-carrito/story.md` ← **repurposed** (era `FEAT-099-gestionar-carrito-compras/`)
-- `docs/specs/stories/FEAT-100-eliminar-item-carrito/story.md` ← nuevo
-- `docs/specs/stories/FEAT-101-cambiar-cantidad-carrito/story.md` ← nuevo
+- `docs/specs/03-stories/FEAT-099-agregar-item-carrito/story.md` ← **repurposed** (era `FEAT-099-gestionar-carrito-compras/`)
+- `docs/specs/03-stories/FEAT-100-eliminar-item-carrito/story.md` ← nuevo
+- `docs/specs/03-stories/FEAT-101-cambiar-cantidad-carrito/story.md` ← nuevo
 
 > ⚠️ El directorio `FEAT-099-gestionar-carrito-compras/` fue renombrado a `FEAT-099-agregar-item-carrito/`.
-> Actualiza manualmente cualquier referencia al slug anterior en `release.md` u otros documentos.
+> Actualiza manualmente cualquier referencia al slug anterior en `epic.md` u otros documentos.
 
 ## Notas del splitting
 

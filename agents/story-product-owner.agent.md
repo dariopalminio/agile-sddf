@@ -40,7 +40,7 @@ Intervienes cuando `story-specify` necesita:
 
 Lee segun corresponda:
 
-1. El archivo de historia actual en `$SPECS_BASE/specs/stories/`.
+1. El archivo de historia actual en `$SPECS_BASE/specs/03-stories/`.
 2. El resultado mas reciente de `story-evaluation`, si existe.
 3. El template canonico de `story-creation` y las reglas de `story-split`, si necesitas revisar estructura o criterios de splitting.
 

@@ -37,7 +37,7 @@ El skill acepta tres tipos de input:
 
 - **Tipo A — Texto libre**: descripción de una necesidad o feature en lenguaje natural
 - **Tipo B — Ruta de archivo**: ruta relativa o absoluta a un archivo `.md` existente con contenido de historia incompleto
-- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia existente en `$SPECS_BASE/specs/stories/`
+- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia existente en `$SPECS_BASE/specs/03-stories/`
 
 Fuente estructural del output: `assets/story-template.md` (leído en tiempo de ejecución)
 
@@ -126,7 +126,7 @@ Detectar el tipo de input proporcionado:
 #### Tipo C — Término de búsqueda
 **Señal:** El input es una palabra o frase corta que no parece texto de historia ni ruta explícita.
 **Acción:**
-1. Buscar en `$SPECS_BASE/specs/stories/` archivos cuyo nombre contenga el término (sin distinguir mayúsculas)
+1. Buscar en `$SPECS_BASE/specs/03-stories/` archivos cuyo nombre contenga el término (sin distinguir mayúsculas)
 2. Si hay exactamente 1 coincidencia → leerlo y usarlo como base. Continuar al Paso 3.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que elija antes de continuar.
 4. Si no hay coincidencias → tratar el input como Tipo A (texto libre).
@@ -210,16 +210,16 @@ Si alguna dimensión falla, ajustar la historia antes de continuar. Si `S` es de
 #### Derivar el siguiente ID (FEAT-NNN)
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
-> `specs/stories/FEAT-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> `specs/03-stories/FEAT-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
 > el patrón de archivo anidado descrito a continuación.
 
-1. Usar Glob con el patrón `$SPECS_BASE/specs/stories/FEAT-*/story.md` para localizar todos los
+1. Usar Glob con el patrón `$SPECS_BASE/specs/03-stories/FEAT-*/story.md` para localizar todos los
    archivos `story.md` dentro de directorios `FEAT-NNN-*`. A partir de cada ruta retornada,
    extraer el segmento `FEAT-NNN` del nombre del directorio padre inmediato.
-   Ejemplo: de `docs/specs/stories/FEAT-073-skill-security-audit-condicional/story.md` → `73`.
+   Ejemplo: de `docs/specs/03-stories/FEAT-073-skill-security-audit-condicional/story.md` → `73`.
    Si Glob retorna vacío, usar como fallback:
-   - Bash: `ls $SPECS_BASE/specs/stories/ | grep -E "^FEAT-[0-9]+"`
-   - PowerShell: `Get-ChildItem $SPECS_BASE/specs/stories -Directory | Where-Object { $_.Name -match "^FEAT-" }`
+   - Bash: `ls $SPECS_BASE/specs/03-stories/ | grep -E "^FEAT-[0-9]+"`
+   - PowerShell: `Get-ChildItem $SPECS_BASE/specs/03-stories -Directory | Where-Object { $_.Name -match "^FEAT-" }`
    Nunca asumir que "sin resultados de Glob" significa "no hay historias previas".
 2. Extraer los números de todos los prefijos `FEAT-NNN` encontrados
 3. Tomar el número más alto y sumarle 1. Solo comenzar en `FEAT-001` si ambos mecanismos (Glob + fallback) confirman que no existe ningún directorio `FEAT-*`
@@ -230,7 +230,7 @@ Si alguna dimensión falla, ajustar la historia antes de continuar. Si `S` es de
 - **Directorio:** `FEAT-{NNN}-{slug}/`
 - **Archivo:** `story.md` dentro de ese directorio
 - El `{slug}` se deriva del `Quiero` de la historia: minúsculas, palabras separadas por guiones, máximo 5 palabras significativas, sin acentos ni caracteres especiales
-- Ruta final: `$SPECS_BASE/specs/stories/FEAT-{NNN}-{slug}/story.md`
+- Ruta final: `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug}/story.md`
 
 Si el directorio `FEAT-{NNN}-{slug}/` ya existe, incrementar NNN hasta encontrar uno disponible.
 
@@ -246,7 +246,7 @@ En el archivo `story.md`, completar los campos del frontmatter con los valores r
 Después de guardar, mostrar en la conversación:
 
 ```
-**Archivo generado:** `$SPECS_BASE/specs/stories/FEAT-{NNN}-{slug}/story.md`
+**Archivo generado:** `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug}/story.md`
 
 [Historia completa en formato story-template.md]
 
@@ -271,7 +271,7 @@ Si la historia fue simplificada para cumplir INVEST, explicar brevemente qué se
 
 ## Salida
 
-- `$SPECS_BASE/specs/stories/FEAT-{NNN}-{slug}/story.md` — historia de usuario generada
+- `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug}/story.md` — historia de usuario generada
 - Estado del workitem: `SPECIFY` (estado inicial; pendiente de evaluación con `/story-evaluation`)
 
 ### Ejemplo de output

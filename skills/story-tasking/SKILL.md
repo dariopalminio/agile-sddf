@@ -123,12 +123,12 @@ Proporciona el ID (ej. FEAT-058) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia (primera coincidencia)
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
+2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
 3. Si no se encuentra ninguno: notificar y detener
    ```
-   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
+   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/
 
-   Verifica el ID o ejecuta /release-generate-stories para generar la historia.
+   Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
    ```
 
 #### 1c. Verificación de story.md
@@ -137,7 +137,7 @@ Verificar que el directorio resuelto contiene `story.md`. Si no:
 ```
 ❌ No se encontró story.md en: <ruta>
 
-Sugerencia: ejecuta /release-generate-stories para generar la historia primero.
+Sugerencia: ejecuta /epic-generate-stories para generar la historia primero.
 ```
 Detener la ejecución.
 

@@ -1,0 +1,109 @@
+{
+  "skill": "epic-creation",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el skill epic-creation. Verifica: happy-path creacion interactiva completa, modo --quick omitiendo secciones opcionales, fail-fast ante template ausente, y manejo de slug con caracteres especiales.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path: creacion interactiva completa de épica",
+      "type": "functional",
+      "description": "Ejecutar epic-creation con nombre 'Sistema de pagos'. El skill debe ejecutar preflight, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo epic.md en $SPECS_BASE/specs/02-epics/EPIC-NN-sistema-de-pagos/, invocar epic-format-validation y mostrar APROBADO con la ruta del archivo y el siguiente paso sugerido.",
+      "input": {
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/specs/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en $SPECS_BASE/specs/02-epics/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa descripcion, lista 2 features y define un flujo critico. Acepta las secciones opcionales o las salta.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "EPIC-03",
+          "sistema-de-pagos",
+          "epic.md",
+          "APROBADO",
+          "epic-generate-stories"
+        ],
+        "not_contains": [
+          "[ERROR]",
+          "Entorno invalido",
+          "No se encontro el template",
+          "FEAT-000",
+          "FEAT-001",
+          "FEAT-NNN"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-002",
+      "name": "edge-case: modo --quick omite secciones opcionales sin preguntar",
+      "type": "edge-case",
+      "description": "Ejecutar epic-creation --quick con nombre 'Onboarding v2'. El skill debe completar frontmatter y secciones obligatorias sin mostrar preguntas por las secciones opcionales. El epic.md generado debe contener solo secciones obligatorias. La validacion debe pasar y no debe aparecer ninguna pregunta del tipo '¿Quieres completar la seccion?'.",
+      "input": {
+        "context": "Entorno SDDF valido. Template disponible con al menos 2 secciones opcionales marcadas como '<!-- seccion opcional'. No hay épicas previas en $SPECS_BASE/specs/02-epics/. El usuario provee nombre 'Onboarding v2', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
+        "flags": ["--quick"]
+      },
+      "expected": {
+        "contains": [
+          "EPIC-01",
+          "onboarding-v2",
+          "epic.md",
+          "APROBADO"
+        ],
+        "not_contains": [
+          "¿Quieres completar la seccion",
+          "saltar todas",
+          "[ERROR]",
+          "Entorno invalido",
+          "FEAT-001",
+          "FEAT-NNN"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-003",
+      "name": "fail-fast: template ausente detiene la ejecucion",
+      "type": "fail-fast",
+      "description": "Ejecutar epic-creation cuando ni $SPECS_BASE/specs/templates/epic-template.md ni assets/epic-template.md existen. El skill debe detectar la ausencia del template en el Paso 2, emitir el mensaje de error indicado en la documentacion y detener la ejecucion sin crear ningun directorio ni archivo.",
+      "input": {
+        "context": "Entorno SDDF valido (preflight OK). El archivo $SPECS_BASE/specs/templates/epic-template.md NO existe. El archivo assets/epic-template.md tampoco existe. El usuario intenta crear una épica llamada 'Feature flags'.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "No se encontró el template requerido",
+          "assets/epic-template.md"
+        ],
+        "not_contains": [
+          "APROBADO",
+          "Archivo creado:",
+          "[CREADO]"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "edge-case: slug derivado correctamente desde nombre con caracteres especiales",
+      "type": "edge-case",
+      "description": "Ejecutar epic-creation con nombre que contenga tildes, mayusculas, espacios multiples y caracteres especiales como 'Autenticacion & Autorización — v2.0!'. El skill debe derivar un slug kebab-case valido sin tildes ni caracteres especiales (ej: 'autenticacion-autorizacion-v2-0'), mostrarlo al usuario para confirmacion y usarlo para nombrar el directorio y el archivo epic.md.",
+      "input": {
+        "context": "Entorno SDDF valido. Template disponible. No hay épicas previas. El usuario ingresa el nombre 'Autenticacion & Autorizacion — v2.0!' y acepta el slug derivado sin modificarlo.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "EPIC-01",
+          "autenticacion-autorizacion-v2-0",
+          "epic.md",
+          "APROBADO"
+        ],
+        "not_contains": [
+          "EPIC-01-autenticacion & autorizacion",
+          "EPIC-01-v2.0",
+          "[ERROR]",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 0.85
+    }
+  ]
+}

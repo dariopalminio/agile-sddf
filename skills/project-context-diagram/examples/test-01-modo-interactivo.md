@@ -114,7 +114,7 @@ Rel(portal, github, "Sincroniza el estado de las tareas con commits y pull reque
 
 **Skill:**
 > ✅ Diagrama de contexto C4 generado:  
-> `$SPECS_BASE/specs/projects/PROJ-01-portal-gestion-proyectos/context-diagram.puml`
+> `$SPECS_BASE/specs/01-projects/PROJ-01-portal-gestion-proyectos/context-diagram.puml`
 >
 > Para renderizarlo localmente, instala la extensión PlantUML en VS Code (ext: jebbs.plantuml) o visita https://www.plantuml.com/plantuml
 >

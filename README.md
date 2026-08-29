@@ -33,8 +33,8 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Ingeniería inversa de repositorios**: genera `requirement-spec.md` automáticamente desde código existente mediante análisis paralelo de 4 agentes especializados
 - **Pipeline a nivel de proyecto**: workflow secuencial Begin Intention → Discovery → Planning con gates de revisión humana entre cada fase
 - **Control WIP=1**: impide proyectos activos simultáneos, ofreciendo exactamente las opciones Sobrescribir o Retomar
-- **User Story Mapping**: sesión colaborativa al estilo Jeff Patton para construir backbone, walking skeleton y release slices
-- **Gestión de épicas de releases**: planificación de releases con `project-plan.md` y generación automática de artefactos de release (feature specs, historias de usuario) con trazabilidad completa
+- **User Story Mapping**: sesión colaborativa al estilo Jeff Patton para construir backbone, walking skeleton y slices de épicas
+- **Gestión de épicas**: planificación de épicas con `project-plan.md` y generación automática de artefactos de épica (feature specs, historias de usuario) con trazabilidad completa
 - **Gestión de historias de usuario**: creación (Como/Quiero/Para + Gherkin), evaluación con rúbrica FINVEST (Likert 1–5), splitting con 8 patrones y refinamiento iterativo
 - **SDD workflow**: Se implemente un workflow a nivel de story "SPECIFY --> PLAN --> READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> DELIVER --> COMPLETED" con skills dedicados para cada fase y generación de artefactos específicos (design.md, tasks.md, analyze.md, implement-report.md, code-review-report.md)
 - **Pipeline SDD completo de historia**: planning y implementación tarea a tarea — `story-plan` orquesta `story-design` → `story-tasking` → `story-testcases` → `story-analyze` en un solo comando; `story-implement` ejecuta el ciclo TDD completo (RED→GREEN→REFACTOR) delegando a skills configurables por stack tecnológico (`sddf.config.yaml`): genera tests con el skill `test_generator` declarado, implementa código con el `code_generator` y refactoriza sin romper suites; soporta modo interactivo (con pausas de confirmación entre fases) y modo automático (`--auto`) para CI; `story-code-review` para revisión multi-agente post-implementación
@@ -144,9 +144,9 @@ Este skill crea los directorios base de artefactos bajo `<SPECS_BASE>/specs/` (p
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     docs/specs/projects/
-[CREADO]     docs/specs/releases/
-[CREADO]     docs/specs/stories/
+[CREADO]     docs/specs/01-projects/
+[CREADO]     docs/specs/02-epics/
+[CREADO]     docs/specs/03-stories/
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 ─────────────────────────────────────────────────
@@ -175,7 +175,7 @@ O ejecuta cada fase individualmente:
 # Fase 2 — Discovery de usuarios y especificación de requisitos
 /project-discovery
 
-# Fase 3 — Planificación de releases y backlog de features
+# Fase 3 — Planificación de épicas y backlog de features
 /project-planning
 ```
 
@@ -194,7 +194,7 @@ Los archivos se crean en `docs/policies/` y se referencian automáticamente en `
 
 ### Flujos principales SDDF
 
-SDDF se organiza en 4 niveles principales que cubren todo el ciclo de vida de la especificación, desde la intención inicial (nivel de proyecto o L3), la especificación de entregas releases (L2), la especificaciòn de historias (L1), y con integración opcional de OpenSpec para gestión de cambios (L0). Cada nivel tiene su pipeline y se compone de un conjunto de skills que operan sobre documentos Markdown con control de sub-estado `IN‑PROGRESS`/`DONE` para garantizar un flujo estructurado, reproducible y automatizable.
+SDDF se organiza en 4 niveles principales que cubren todo el ciclo de vida de la especificación, desde la intención inicial (nivel de proyecto o L3), la especificación de entregables o épicas (L2), la especificaciòn de historias (L1), y con integración opcional de OpenSpec para gestión de cambios (L0). Cada nivel tiene su pipeline y se compone de un conjunto de skills que operan sobre documentos Markdown con control de sub-estado `IN‑PROGRESS`/`DONE` para garantizar un flujo estructurado, reproducible y automatizable.
 
 #### 1. L3: Pipeline de especificación de proyecto (iniciativa)
 
@@ -202,13 +202,13 @@ project-begin → project-discovery → project-planning → project-story-mappi
 
 project-flow orquesta los 3 primeros pasos en una sola sesión con gates de revisión entre etapas. project-story-mapping se ejecuta de forma opcional como sesión de mapeo colaborativo post-planning.
 
-#### 2. L2: Pipeline de generación de releases e historias
+#### 2. L2: Pipeline de generación de épicas e historias
 
-releases-from-project-plan
+epic-from-project-plan
 
 #### 3. L1: Pipeline de generación y refinamiento de historias (SPECIFY)
 
-release-generate-stories →
+epic-generate-stories →
 
 story-creation → story-evaluation → story-split → story-specify →
 
@@ -287,8 +287,8 @@ docs/specs/
 │       ├── project-plan.md
 │       └── story-map.md
 ├── releases/
-│   └── EPIC-01-nombre-release/          # un directorio por release
-│       └── release.md
+│   └── EPIC-01-nombre-epica/            # un directorio por épica
+│       └── epic.md
 └── stories/
     └── FEAT-001-nombre-historia/        # un directorio por historia
         ├── story.md                     # historia (story-creation)
@@ -304,7 +304,7 @@ docs/specs/
         └── verify-report.md             # reporte de verificación (story-verify)
 ```
 
-Cada archivo principal usa un nombre canónico (`project-intent.md`, `release.md`, `story.md`) e incluye frontmatter con `type`, `id`, `title`, `status`, `parent`, `created` y `updated`. Las relaciones jerárquicas se expresan mediante el campo `parent` (ej. una release tiene `parent: PROJ-01`).
+Cada archivo principal usa un nombre canónico (`project-intent.md`, `epic.md`, `story.md`) e incluye frontmatter con `type`, `id`, `title`, `status`, `parent`, `created` y `updated`. Las relaciones jerárquicas se expresan mediante el campo `parent` (ej. una épica tiene `parent: PROJ-01`).
 
 El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING → READY-FOR-IMPLEMENT → IMPLEMENT → ... → COMPLETED`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio.
 
@@ -313,7 +313,7 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING →
 **Documentación y visualización de proyecto:**
 
 ```bash
-# Sesión interactiva de User Story Mapping (Jeff Patton) para construir backbone y release slices
+# Sesión interactiva de User Story Mapping (Jeff Patton) para construir backbone y slices de épicas
 /project-story-mapping
 
 # Genera diagrama de contexto C4 Nivel 1 en PlantUML con preguntas guiadas
@@ -329,23 +329,23 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING →
 /project-policies-generation
 ```
 
-**Generar artefactos de release (Release Epics):**
+**Generar artefactos de épica (EPIC-NN):**
 
 ```bash
-# Genera el plan de releases
-/release-creation
+# Crea una épica de forma interactiva
+/epic-creation
 
-# Genera todos los directorios de release desde project-plan.md
-/releases-from-project-plan
+# Genera todos los directorios de épica desde project-plan.md
+/epic-from-project-plan
 
-# Genera las historias de usuario de un release específico
-/release-generate-stories EPIC-01-features-spec-builder
+# Genera las historias de usuario de una épica específica
+/epic-generate-stories EPIC-01-features-spec-builder
 
-# Genera las historias de todos los releases
-/release-generate-all-stories
+# Genera las historias de todas las épicas
+/epic-generate-all-stories
 
-# Valida que un release cumple la estructura obligatoria antes de generar historias
-/release-format-validation EPIC-01-features-spec-builder
+# Valida que una épica cumple la estructura obligatoria antes de generar historias
+/epic-format-validation EPIC-01-features-spec-builder
 ```
 
 **Crear y refinar una historia de usuario:**
@@ -364,7 +364,7 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING →
 /story-improve FEAT-001
 
 # Dividir una historia grande
-/story-split docs/specs/stories/FEAT-001-nombre/story.md
+/story-split docs/specs/03-stories/FEAT-001-nombre/story.md
 ```
 
 **Planificar e implementar una historia (pipeline SDD completo):**
@@ -412,7 +412,7 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING →
 /docs-wiki-builder
 
 # Add or update canonical YAML frontmatter in spec Markdown files
-/header-aggregation docs/specs/stories/FEAT-001-nombre/story.md
+/header-aggregation docs/specs/03-stories/FEAT-001-nombre/story.md
 ```
 
 ## Configuration
@@ -423,7 +423,7 @@ El framework es declarativo y su flujo se controla mediante el campo `substatus`
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `SDDF_ROOT` | No | `docs` | Directorio raíz donde los skills leen y escriben artefactos (`specs/projects/`, `specs/releases/`, `specs/stories/`) |
+| `SDDF_ROOT` | No | `docs` | Directorio raíz donde los skills leen y escriben artefactos (`specs/01-projects/`, `specs/02-epics/`, `specs/03-stories/`) |
 | `SDDF_TARGET` | No | `.claude` | Carpeta destino del `postinstall` automático (`.claude`, `.agents`, `.github`). Útil en CI para instalar en un runtime distinto sin prompt interactivo. |
 
 El runtime de IA (Claude Code, GitHub Copilot, etc.) gestiona su propia autenticación de forma independiente al framework.

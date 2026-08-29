@@ -33,7 +33,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 - **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden; confirma estado rojo; escribe `red-phase-status.json`
 - **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"` y `layer:"{layer}"`; consolida resultados; confirma que los tests pasan
 - **Fase REFACTOR:** Itera sobre cada capa activa invocando su skill con `phase:"REFACTOR"` y `layer:"{layer}"`; verifica no-regresión ejecutando comandos de test
-- Al completar el ciclo exitosamente: evalúa DoD IMPLEMENT, genera `implement-report.md`, actualiza `story.md` a `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs), actualiza checklist de `release.md` y escribe `cycle-status.json`
+- Al completar el ciclo exitosamente: evalúa DoD IMPLEMENT, genera `implement-report.md`, actualiza `story.md` a `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs), actualiza checklist de `epic.md` y escribe `cycle-status.json`
 
 **Qué NO hace este skill:**
 - Crear skills de generación específicos (ej. `story-test-unit-jest`, `story-code-nodejs`) — son skills separados
@@ -50,7 +50,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
      │   Al iniciar: story.md → IMPLEMENT/IN‑PROGRESS
-     │   Al finalizar: story.md → IMPLEMENT/DONE + release.md checklist actualizado
+     │   Al finalizar: story.md → IMPLEMENT/DONE + epic.md checklist actualizado
      ↓
 [story.md: IMPLEMENT/DONE]
 ──────────────────────────────────────────────────────────────────────────────────────
@@ -175,7 +175,7 @@ Para cada entry en `test_generators`:
 
 ### Paso 3 — Resolver artefactos de especificación
 
-Resolver los artefactos de la historia en `$SPECS_BASE/specs/stories/<story_id>*/`:
+Resolver los artefactos de la historia en `$SPECS_BASE/specs/03-stories/<story_id>*/`:
 
 | Prioridad | Artefacto | Acción |
 |-----------|-----------|--------|
@@ -454,8 +454,8 @@ Construir bundle de inputs:
   "phase": "GREEN",
   "layer": "{layer}",
   "test_files": "{$RED_FILES_GENERATED}",
-  "story_path": "{$SPECS_BASE}/specs/stories/{story_id}*/story.md",
-  "design_path": "{$SPECS_BASE}/specs/stories/{story_id}*/design.md"
+  "story_path": "{$SPECS_BASE}/specs/03-stories/{story_id}*/story.md",
+  "design_path": "{$SPECS_BASE}/specs/03-stories/{story_id}*/design.md"
 }
 ```
 
@@ -472,8 +472,8 @@ Invocar el skill siguiendo el contrato ADR-0002:
      - phase: GREEN
      - layer: {layer}
      - test_files: {$RED_FILES_GENERATED}
-     - story_path: {$SPECS_BASE}/specs/stories/{story_id}*/story.md
-     - design_path: {$SPECS_BASE}/specs/stories/{story_id}*/design.md
+     - story_path: {$SPECS_BASE}/specs/03-stories/{story_id}*/story.md
+     - design_path: {$SPECS_BASE}/specs/03-stories/{story_id}*/design.md
      ```
 3. El subagente escribe sus resultados en `.tmp/story-implement/{story_id}/green/{layer}/results.json`
 
@@ -572,8 +572,8 @@ Construir bundle de inputs:
   "phase": "REFACTOR",
   "layer": "{layer}",
   "test_files": "{$RED_FILES_GENERATED}",
-  "story_path": "{$SPECS_BASE}/specs/stories/{story_id}*/story.md",
-  "design_path": "{$SPECS_BASE}/specs/stories/{story_id}*/design.md"
+  "story_path": "{$SPECS_BASE}/specs/03-stories/{story_id}*/story.md",
+  "design_path": "{$SPECS_BASE}/specs/03-stories/{story_id}*/design.md"
 }
 ```
 
@@ -590,8 +590,8 @@ Invocar el skill siguiendo el contrato ADR-0002:
      - phase: REFACTOR
      - layer: {layer}
      - test_files: {$RED_FILES_GENERATED}
-     - story_path: {$SPECS_BASE}/specs/stories/{story_id}*/story.md
-     - design_path: {$SPECS_BASE}/specs/stories/{story_id}*/design.md
+     - story_path: {$SPECS_BASE}/specs/03-stories/{story_id}*/story.md
+     - design_path: {$SPECS_BASE}/specs/03-stories/{story_id}*/design.md
      ```
 3. El subagente escribe sus resultados en `.tmp/story-implement/{story_id}/refactor/{layer}/results.json`
 
@@ -651,7 +651,7 @@ Registrar `$DOD_BLOQUEADO`:
 
 #### 11b — Generar `implement-report.md`
 
-Escribir `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md`:
+Escribir `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/implement-report.md`:
 
 ```markdown
 ---
@@ -703,16 +703,16 @@ updated: <YYYY-MM-DD>
 - `updated: {YYYY-MM-DD}`
 - Emitir: `⚠️ story.md permanece en IMPLEMENT/IN-PROGRESS por criterios DoD con ❌ — resolver antes de continuar`
 
-#### 11d — Actualizar `release.md` (si existe release padre)
+#### 11d — Actualizar `epic.md` (si existe épica padre)
 
 1. Leer campo `parent` del frontmatter de `story.md`
-2. Si `parent` existe, resolver ruta: `$SPECS_BASE/specs/releases/<parent>/release.md`
+2. Si `parent` existe, resolver ruta: `$SPECS_BASE/specs/02-epics/<parent>/epic.md`
 3. **Si el archivo existe:**
    - Buscar la línea del checklist que contenga el id o slug de la historia (ej. `FEAT-NNN`)
    - Cambiar `- [ ]` → `- [x]` en esa línea
-   - Emitir: `[INFO] release.md actualizado: [{story_id}] marcado como completado`
+   - Emitir: `[INFO] epic.md actualizado: [{story_id}] marcado como completado`
 4. **Si no existe o `parent` está vacío:**
-   - Emitir: `[INFO] release.md no encontrado o sin parent declarado — omitiendo actualización`
+   - Emitir: `[INFO] epic.md no encontrado o sin parent declarado — omitiendo actualización`
    - No es condición de error.
 
 #### 11e — Escribir `cycle-status.json` y mostrar resumen final
@@ -741,10 +741,10 @@ Mostrar resumen según `$EXEC_MODE`:
 ✅ Fase GREEN:    {N} archivo(s) de producción generados
 ✅ Fase REFACTOR: sin regresiones
 ──────────────────────────────────────────────────────────
-📄 implement-report.md → {$SPECS_BASE}/specs/stories/{story_id}/implement-report.md
+📄 implement-report.md → {$SPECS_BASE}/specs/03-stories/{story_id}/implement-report.md
 📄 cycle-status.json   → .tmp/story-implement/{story_id}/cycle-status.json
 📋 story.md: {IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS} ✓
-📋 release.md: {actualizado / no encontrado}
+📋 epic.md: {actualizado / no encontrado}
 
 DoD IMPLEMENT:
 {tabla criterios ✓/❌/⚠️}
@@ -757,10 +757,10 @@ DoD IMPLEMENT:
    Fase GREEN:    {N} archivo(s) de producción generados
    Fase REFACTOR: sin regresiones
 
-   implement-report.md → {$SPECS_BASE}/specs/stories/{story_id}/implement-report.md
+   implement-report.md → {$SPECS_BASE}/specs/03-stories/{story_id}/implement-report.md
    cycle-status.json   → .tmp/story-implement/{story_id}/cycle-status.json
    story.md            → {IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS}
-   release.md          → {actualizado / no encontrado}
+   epic.md          → {actualizado / no encontrado}
 
 DoD IMPLEMENT:
 {tabla criterios ✓/❌/⚠️}
@@ -832,9 +832,9 @@ La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md �
 |---|---|---|
 | Archivos de prueba | según skill de generación | Tests generados en código productivo |
 | Archivos de producción | según skill de generación | Código generado en Fases GREEN/REFACTOR |
-| `implement-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase |
+| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase |
 | `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
-| `release.md` (actualizado) | `$SPECS_BASE/specs/releases/<parent>/release.md` | Checklist con `[x]` para la historia completada (si existe) |
+| `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
 | `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN |
 | `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD completo |
 | `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente |

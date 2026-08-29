@@ -128,7 +128,7 @@ Su mensaje completo aún va a Claude, que escribe el mensaje de tarea del subage
 
 Podemos definir dos tipos de skills:
 
-- **Skills-worker** (instrucciones puras: story-creation, release-format-validation): un subagente podría seguirlos sin problema. Es solo texto-guía.
+- **Skills-worker** (instrucciones puras: story-creation, epic-format-validation): un subagente podría seguirlos sin problema. Es solo texto-guía.
 
 - **Skills-orquestador** (story-plan, story-code-review, project-flow): estos skills delegan en subagentes y/o interactúan con el usuario. Ejecutados dentro de un subagente fallan por dos lados: el subagente normalmente no puede lanzar otros subagentes (el harness no le da la Task tool anidada), y no puede sostener una entrevista con el usuario. El skill intentaría hacer cosas que su entorno de ejecución no permite, y el modelo improvisaría — exactamente el no-determinismo que el framework quiere eliminar.
 

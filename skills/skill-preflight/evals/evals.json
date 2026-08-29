@@ -9,7 +9,7 @@
       "type": "functional",
       "description": "SDDF_ROOT apunta a un directorio existente con todos los subdirectorios de specs y CLI detectado. El informe debe mostrar [OK] para SPECS_BASE y CLI_ROOT y terminar con Entorno OK.",
       "input": {
-        "context": "SDDF_ROOT esta definida y apunta a un directorio que existe. Los subdirectorios specs/projects/, specs/releases/ y specs/stories/ existen bajo SPECS_BASE. El directorio .claude/ existe en el proyecto. openspec/config.yaml existe con contenido.",
+        "context": "SDDF_ROOT esta definida y apunta a un directorio que existe. Los subdirectorios specs/01-projects/, specs/02-epics/ y specs/03-stories/ existen bajo SPECS_BASE. El directorio .claude/ existe en el proyecto. openspec/config.yaml existe con contenido.",
         "flags": []
       },
       "expected": {
@@ -72,16 +72,16 @@
       "id": "TC-004",
       "name": "edge-case subdirectorios de specs faltantes emiten WARNING sin bloquear",
       "type": "edge-case",
-      "description": "SDDF_ROOT valida pero uno o mas subdirectorios de specs (specs/projects/, specs/releases/, specs/stories/) no existen. El skill debe emitir [WARNING] por cada directorio faltante sin registrar error bloqueante y terminar con Entorno OK.",
+      "description": "SDDF_ROOT valida pero uno o mas subdirectorios de specs (specs/01-projects/, specs/02-epics/, specs/03-stories/) no existen. El skill debe emitir [WARNING] por cada directorio faltante sin registrar error bloqueante y terminar con Entorno OK.",
       "input": {
-        "context": "SDDF_ROOT esta definida y la ruta existe. Sin embargo, los directorios specs/releases/ y specs/stories/ no existen bajo SPECS_BASE. Solo specs/projects/ existe.",
+        "context": "SDDF_ROOT esta definida y la ruta existe. Sin embargo, los directorios specs/02-epics/ y specs/03-stories/ no existen bajo SPECS_BASE. Solo specs/01-projects/ existe.",
         "flags": []
       },
       "expected": {
         "contains": [
           "[WARNING]",
-          "specs/releases/",
-          "specs/stories/",
+          "specs/02-epics/",
+          "specs/03-stories/",
           "Entorno OK"
         ],
         "not_contains": [

@@ -120,9 +120,9 @@ Si `$SPECS_BASE/` no existe o está vacío:
 
 1. Crea los siguientes directorios:
    ```
-   $SPECS_BASE/specs/projects/
-   $SPECS_BASE/specs/releases/
-   $SPECS_BASE/specs/stories/
+   $SPECS_BASE/specs/01-projects/
+   $SPECS_BASE/specs/02-epics/
+   $SPECS_BASE/specs/03-stories/
    $SPECS_BASE/knowledge/constitution/
    $SPECS_BASE/knowledge/architecture/
    $SPECS_BASE/knowledge/process/
@@ -137,9 +137,9 @@ Si `$SPECS_BASE/` no existe o está vacío:
 Si `$SPECS_BASE/` existe con archivos pero sin estructura wiki:
 
 1. Analiza cada archivo `.md` encontrado e infiere su ubicación en la nueva estructura:
-   - Archivos con prefijo `story-*` → `$SPECS_BASE/specs/stories/`
-   - Archivos con prefijo `release-*` → `$SPECS_BASE/specs/releases/`
-   - Archivos con prefijo `project-*` → `$SPECS_BASE/specs/projects/`
+   - Archivos con prefijo `story-*` → `$SPECS_BASE/specs/03-stories/`
+   - Archivos con prefijo `epic-*` o llamados `epic.md` → `$SPECS_BASE/specs/02-epics/`
+   - Archivos con prefijo `project-*` → `$SPECS_BASE/specs/01-projects/`
    - Documentación técnica / artículos → `$SPECS_BASE/knowledge/guides/` o `$SPECS_BASE/knowledge/how-to/`
    - Archivos que ya están en la ubicación correcta → sin movimiento
 
@@ -152,9 +152,9 @@ Si `$SPECS_BASE/` existe con archivos pero sin estructura wiki:
    - <SPECS_BASE>/extreme-agile/extreme-agile.md → <SPECS_BASE>/knowledge/guides/extreme-agile.md
 
    Sin cambios (ya en ubicación correcta):
-   - <SPECS_BASE>/specs/projects/project-intent.md
-   - <SPECS_BASE>/specs/releases/...
-   - <SPECS_BASE>/specs/stories/...
+   - <SPECS_BASE>/specs/01-projects/project-intent.md
+   - <SPECS_BASE>/specs/02-epics/...
+   - <SPECS_BASE>/specs/03-stories/...
 
    Crear directorios nuevos:
    - <SPECS_BASE>/knowledge/constitution/
@@ -176,9 +176,9 @@ Lee el template `assets/wiki-index-template.md`.
 Construye `$SPECS_BASE/index.md` listando todos los archivos `.md` encontrados en `$SPECS_BASE/`:
 
 1. **Organiza por sección** según el subdirectorio:
-   - Archivos en `$SPECS_BASE/specs/projects/` → sección "L3 — Proyecto"
-   - Archivos en `$SPECS_BASE/specs/releases/` → sección "L2 — Releases"
-   - Archivos en `$SPECS_BASE/specs/stories/` → sección "L1 — Historias de usuario"
+   - Archivos en `$SPECS_BASE/specs/01-projects/` → sección "L3 — Proyecto"
+   - Archivos en `$SPECS_BASE/specs/02-epics/` → sección "L2 — Épicas"
+   - Archivos en `$SPECS_BASE/specs/03-stories/` → sección "L1 — Historias de usuario"
    - Archivos en `$SPECS_BASE/knowledge/constitution/` → sección "Constitución"
    - Archivos en `$SPECS_BASE/knowledge/architecture/` → sección "Arquitectura"
    - Archivos en `$SPECS_BASE/knowledge/process/` → sección "Proceso"
@@ -186,7 +186,7 @@ Construye `$SPECS_BASE/index.md` listando todos los archivos `.md` encontrados e
    - Archivos en `$SPECS_BASE/knowledge/guides/` → sección "Guías teóricas"
    - Archivos en `$SPECS_BASE/knowledge/how-to/` → sección "How-to"
 
-2. **Genera wikilinks** para cada archivo usando la sintaxis `[[slug]]` donde `slug` = nombre del archivo sin extensión (kebab-case). Ejemplo: `$SPECS_BASE/specs/projects/project-intent.md` → `[[project-intent]]`.
+2. **Genera wikilinks** para cada archivo usando la sintaxis `[[slug]]` donde `slug` = nombre del archivo sin extensión (kebab-case). Ejemplo: `$SPECS_BASE/specs/01-projects/project-intent.md` → `[[project-intent]]`.
 
 3. **Valida wikilinks** (ver Paso 6) y marca los rotos antes de escribir el índice.
 
@@ -239,7 +239,7 @@ Para cada archivo `.md` procesado (creado o movido) por el skill:
 - **`type`**: Se deriva según la ubicación del archivo:
   - Archivos en `$SPECS_BASE/knowledge/` → `knowledge`
   - Archivos con prefijo `story-*` → `story`
-  - Archivos con prefijo `release-*` → `release`
+  - Archivos con prefijo `epic-*` o llamados `epic.md` → `epic`
   - Archivos con prefijo `project-*` → `project`
   - Otros → `knowledge`
 - **`slug`**: Nombre del archivo sin extensión, en kebab-case. Ejemplo: `project-intent.md` → `project-intent`.

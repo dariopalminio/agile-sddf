@@ -52,9 +52,9 @@ La estructura dentro de `specs/` sigue la estrategia definida en el documento de
 
 ```
 ${SDDF_ROOT}/specs/
-├── projects/
-├── releases/
-└── stories/
+├── 01-projects/
+├── 02-epics/
+└── 03-stories/
 ```
 
 ---
@@ -109,7 +109,7 @@ Agrega la variable directamente al entorno de Claude Code:
 SPECS_BASE="${SDDF_ROOT:-docs}"
 
 # Ruta completa a los proyectos
-PROJECTS_DIR="$SPECS_BASE/specs/projects"
+PROJECTS_DIR="$SPECS_BASE/specs/01-projects"
 ```
 
 #### En scripts de shell (recomendado para Claude Code skills)
@@ -119,7 +119,7 @@ PROJECTS_DIR="$SPECS_BASE/specs/projects"
 SPECS_BASE="${SDDF_ROOT:-docs}"
 
 # Ruta completa a los projects
-PROJECTS_DIR="$SPECS_BASE/specs/projects"
+PROJECTS_DIR="$SPECS_BASE/specs/01-projects"
 
 # Ejemplo: crear un nuevo proyecto
 mkdir -p "$PROJECTS_DIR/PROJ-001"
@@ -129,7 +129,7 @@ mkdir -p "$PROJECTS_DIR/PROJ-001"
 
 ```javascript
 const SPECS_BASE = process.env.SDDF_ROOT || 'docs';
-const PROJECTS_DIR = `${SPECS_BASE}/specs/projects`;
+const PROJECTS_DIR = `${SPECS_BASE}/specs/01-projects`;
 ```
 
 #### En scripts Python
@@ -194,9 +194,9 @@ mi-proyecto/
 ├── openspec/          # OpenSpec
 ├── docs/
 │   └── specs/         # SDDF (porque SDDF_ROOT=docs)
-│       ├── projects/
-│       ├── releases/
-│       └── stories/
+│       ├── 01-projects/
+│       ├── 02-epics/
+│       └── 03-stories/
 └── ...
 ```
 

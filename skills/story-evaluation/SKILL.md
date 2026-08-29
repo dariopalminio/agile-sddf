@@ -34,7 +34,7 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 ## Entrada
 
 - Texto libre de historia de usuario
-- Identificador `FEAT-NNN` de una historia existente en `$SPECS_BASE/specs/stories/`
+- Identificador `FEAT-NNN` de una historia existente en `$SPECS_BASE/specs/03-stories/`
 - Ruta de archivo `story.md`
 
 ---
@@ -157,7 +157,7 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 **Condición:** el input fue proporcionado como ID (`FEAT-NNN`) o como ruta de archivo (no texto libre).
 
 1. Resolver la ruta del directorio de la historia:
-   - Si el input fue un ID → buscar el directorio `$SPECS_BASE/specs/stories/FEAT-NNN-*/` usando Glob con el patrón `$SPECS_BASE/specs/stories/FEAT-NNN-*/story.md` y extraer el directorio padre.
+   - Si el input fue un ID → buscar el directorio `$SPECS_BASE/specs/03-stories/FEAT-NNN-*/` usando Glob con el patrón `$SPECS_BASE/specs/03-stories/FEAT-NNN-*/story.md` y extraer el directorio padre.
    - Si el input fue una ruta de archivo → usar el directorio que contiene ese archivo.
 2. Escribir el reporte completo (el mismo contenido mostrado en conversación) en:
    `<directorio-de-la-historia>/finvest-evaluation-report.md`

@@ -48,7 +48,7 @@ El flujo base es: **story-creation → story-evaluation → story-split**.
 ## Entrada
 
 - Descripción de la historia en lenguaje natural (para historia nueva)
-- Historias existentes en `$SPECS_BASE/specs/stories/` con `status: SPECIFY/IN‑PROGRESS` (para retomar backlog)
+- Historias existentes en `$SPECS_BASE/specs/03-stories/` con `status: SPECIFY/IN‑PROGRESS` (para retomar backlog)
 
 ---
 
@@ -61,7 +61,7 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 ## Precondiciones
 
 - `skill-preflight` retorna estado OK (entorno válido)
-- `$SPECS_BASE/specs/stories/` accesible (se crea si no existe)
+- `$SPECS_BASE/specs/03-stories/` accesible (se crea si no existe)
 
 ---
 
@@ -83,7 +83,7 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 ## Restricciones / Reglas
 
 - No modificar los skills existentes `story-creation`, `story-evaluation` ni `story-split`
-- Usar `$SPECS_BASE/specs/stories/` como único directorio de salida para historias
+- Usar `$SPECS_BASE/specs/03-stories/` como único directorio de salida para historias
 - Toda historia activa debe tener `status: SPECIFY` / `substatus: IN‑PROGRESS` en su frontmatter
 - Una historia pasa automáticamente a `status: SPECIFY` / `substatus: DONE` cuando `story-evaluation` devuelve `Decision: APROBADA`
 - Si la decisión es `REFINAR` o `RECHAZAR`, nunca entrar en bucle infinito — siempre pedir al usuario una decisión explícita antes de iterar (gate anti-bucle, Paso 6)
@@ -91,7 +91,7 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 - Mantener la interactividad con el usuario en todo momento — nunca avanzar en silencio
 - Conservar la esencia y el formato de los skills originales sin reescribir su lógica
 - Nunca perder trazabilidad de historias derivadas — toda historia del split se registra inmediatamente
-- Mantener `$SPECS_BASE/specs/stories/` como fuente de verdad del estado real de cada historia
+- Mantener `$SPECS_BASE/specs/03-stories/` como fuente de verdad del estado real de cada historia
 - NO modifique ningún archivo existente en el código solo se debe orquestar
 - NO genere código; este skill solo orquestar y produce archivos de especificaciones `.md`.
 - NO incluya detalles de implementación (consultas específicas, estructuras JSON, firmas de métodos, anotaciones, inventarios de la capa de componentes, lógica paso a paso); estos detalles pertenecen a la etapa de planeación del diseño.
@@ -110,7 +110,7 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 
 1. Si el input del usuario es incompleto, invocar al agente `story-product-owner` para aclarar usuario, necesidad, valor, contexto y restricciones
 2. Invocar el skill `story-creation` con el contexto refinado
-3. Cuando `story-creation` genere el archivo en `$SPECS_BASE/specs/stories/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN‑PROGRESS`; si los campos no existen, agregarlos
+3. Cuando `story-creation` genere el archivo en `$SPECS_BASE/specs/03-stories/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN‑PROGRESS`; si los campos no existen, agregarlos
 4. Registrar la historia en la tabla de backlog con `Estado = SPECIFY/IN‑PROGRESS` y `Decision FINVEST = Pendiente`
 
 #### Caso B — Historia existente en refinamiento
@@ -243,7 +243,7 @@ Cuando no queden historias pendientes para iterar o el usuario decida detenerse,
    - Historias con `SPECIFY/DONE`
    - Historias con `SPECIFY/IN‑PROGRESS`
    - Historias derivadas creadas
-2. Ruta de todos los archivos afectados en `$SPECS_BASE/specs/stories/`
+2. Ruta de todos los archivos afectados en `$SPECS_BASE/specs/03-stories/`
 3. Próximo paso recomendado para cada historia en `SPECIFY/IN‑PROGRESS`
 
 Formato:
@@ -262,7 +262,7 @@ Historias derivadas creadas: [lista]
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| `$SPECS_BASE/specs/stories/` no existe | — | Crear el directorio y continuar |
+| `$SPECS_BASE/specs/03-stories/` no existe | — | Crear el directorio y continuar |
 | `story-creation` falla | Informar el error al usuario | No registrar la historia en el backlog; preguntar si reintentar |
 | `story-evaluation` falla | Informar el error al usuario | Conservar `Decision FINVEST = Pendiente`; ofrecer reintentar |
 | `story-split` falla o no aplica | Informar al usuario | Conservar historia como activa; continuar al Paso 5A |
@@ -273,7 +273,7 @@ Historias derivadas creadas: [lista]
 
 ## Salida
 
-- Archivos `story.md` en `$SPECS_BASE/specs/stories/FEAT-{NNN}-{slug}/` — creados o actualizados durante el ciclo
+- Archivos `story.md` en `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug}/` — creados o actualizados durante el ciclo
 - `story.md.bak` — backup del original antes de aplicar mejoras automáticas (generado por `story-improve` en Paso 5A, cuando aplica)
 - `story-improvement-log.md` — log de cambios por dimensión FINVEST (generado por `story-improve` en Paso 5A, cuando aplica)
 - Estado final de cada historia:

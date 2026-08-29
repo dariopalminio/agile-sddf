@@ -12,7 +12,7 @@ updated: 2026-05-07
 
 ## 1. Setup
 
-- [ ] T001 Crear rama `feat/099-exportar-datos-csv` desde `release/10-data-management`
+- [ ] T001 Crear rama `feat/099-exportar-datos-csv` desde `epic/10-data-management`
 - [ ] T002 [P] Verificar que `src/services/`, `src/controllers/` y `src/components/` existen en el proyecto
 
 ## 2. Servicio de exportación

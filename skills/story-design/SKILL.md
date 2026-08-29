@@ -66,7 +66,7 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `$SPECS_BASE/specs/stories/`
+- El directorio de la historia existe bajo `$SPECS_BASE/specs/03-stories/`
 - `story.md` existe en el directorio de la historia con criterios de aceptación definidos
 - `skill-preflight` retorna estado OK (entorno válido)
 
@@ -121,7 +121,7 @@ Proporciona el ID (ej. FEAT-057) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia (primera coincidencia)
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
+2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
 3. Si no se encuentra ninguno: notificar y detener
 
 #### 1c. Resolución del template (primera coincidencia)
@@ -458,8 +458,8 @@ Preguntar: "¿La solución técnica refleja correctamente la historia? ¿Necesit
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/release-generate-stories` |
-| `story.md` ausente en el directorio | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/release-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
+| `story.md` ausente en el directorio | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/epic-generate-stories` |
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
 | `constitution.md` ausente | `⚠️ No se encontró constitution.md` | Advertir y continuar |

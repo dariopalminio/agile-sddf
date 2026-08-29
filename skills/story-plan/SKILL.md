@@ -86,7 +86,7 @@ La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, i
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `$SPECS_BASE/specs/stories/`
+- El directorio de la historia existe bajo `$SPECS_BASE/specs/03-stories/`
 - `story.md` existe en el directorio de la historia
 - `skill-preflight` retorna estado OK (entorno válido)
 
@@ -157,7 +157,7 @@ Proporciona el ID (ej. FEAT-057) o la ruta completa al directorio.
 #### 1d. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
+2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
 3. Si no se encuentra: notificar y detener (ver sección Manejo de errores)
 
 #### 1e. Actualizar frontmatter a PLAN/IN‑PROGRESS
@@ -384,8 +384,8 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 |---|---|---|
 | `--only-tasks` y `--only-testcases` simultáneos | `❌ Flags mutuamente excluyentes` | Detener inmediatamente antes de cualquier sub-skill |
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No invocar sub-skills |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/release-generate-stories` |
-| `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener sin invocar sub-skills. Sugerir `/release-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
+| `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener sin invocar sub-skills. Sugerir `/epic-generate-stories` |
 | Fallo en `story-design` | `[1/<N>] ✗ story-design — FALLO` | Registrar todos los pasos restantes como `—`. Ir a resumen |
 | Fallo en `story-tasking` | `[2/<N>] ✗ story-tasking — FALLO` | Registrar pasos restantes como `—`. Ir a resumen |
 | Fallo en `story-testcases` | `[<N>/<N>] ✗ story-testcases — FALLO` | Registrar `story-analyze → —`. Ir a resumen |

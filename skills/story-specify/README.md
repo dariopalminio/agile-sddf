@@ -5,7 +5,7 @@ Skill orquestador del flujo completo de especificación de historias SDD: guía 
 ## Posicionamiento en el flujo SDD
 
 ```
-/release-generate-stories              → genera story.md iniciales desde release.md
+/epic-generate-stories              → genera story.md iniciales desde epic.md
     ↓
 /story-specify                         [story.md: SPECIFY/IN‑PROGRESS → SPECIFY/DONE]  ← aquí
     ├── /story-creation     → Crea o normaliza story.md (Como/Quiero/Para + Gherkin)
@@ -22,7 +22,7 @@ Skill orquestador del flujo completo de especificación de historias SDD: guía 
 | Precondición | Descripción |
 |---|---|
 | `skill-preflight` retorna OK | Entorno válido (SDDF_ROOT, subdirectorios de specs) |
-| `$SPECS_BASE/specs/stories/` accesible | Se crea automáticamente si no existe |
+| `$SPECS_BASE/specs/03-stories/` accesible | Se crea automáticamente si no existe |
 
 ## Modos de ejecución
 

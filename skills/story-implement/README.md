@@ -54,9 +54,9 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 |---|---|---|
 | Archivos de prueba | según skill generador | Tests en Fase RED (deben fallar) |
 | Archivos de producción | según skill generador | Código generado en Fases GREEN y REFACTOR |
-| `implement-report.md` | `$SPECS_BASE/specs/stories/<FEAT-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENT, estado por fase |
+| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENT, estado por fase |
 | `story.md` (actualizado) | mismo directorio | Frontmatter actualizado (ver transiciones de estado) |
-| `release.md` (actualizado) | `$SPECS_BASE/specs/releases/<parent>/release.md` | Checklist con `[x]` para la historia completada |
+| `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada |
 | `red-phase-status.json` | `.tmp/story-implement/red-phase-status.json` | Estado de Fase RED — precondición para GREEN |
 | `cycle-status.json` | `.tmp/story-implement/cycle-status.json` | Estado final del ciclo TDD |
 | `results.json` por tipo/capa | `.tmp/story-implement/{tipo o fase/capa}/results.json` | Output de cada subagente |

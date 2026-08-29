@@ -10,7 +10,7 @@
       "description": "Invocar con FEAT-075 (historia existente con story.md y template disponible). El skill debe evaluar las 7 dimensiones FINVEST, mostrar el reporte completo con scores y decisión, y confirmar que guardó finvest-evaluation-report.md en el directorio de la historia.",
       "input": {
         "flags": ["FEAT-075"],
-        "context": "La historia FEAT-075 existe en docs/specs/stories/FEAT-075-integrar-historia-modo-manual-dryrun/story.md y el template docs/specs/templates/story-template.md existe"
+        "context": "La historia FEAT-075 existe en docs/specs/03-stories/FEAT-075-integrar-historia-modo-manual-dryrun/story.md y el template docs/specs/templates/story-template.md existe"
       },
       "expected": {
         "contains": [

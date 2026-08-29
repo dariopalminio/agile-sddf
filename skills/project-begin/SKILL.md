@@ -26,7 +26,7 @@ Invocar también cuando el usuario mencione "comenzar proyecto", "iniciar proyec
 Orquesta el estado **Begin Intention** del pipeline de ProjectSpecFactory: conduce una
 entrevista estructurada con el usuario a través del agente `project-pm` para capturar y
 refinar la intención del proyecto, produciendo
-`$SPECS_BASE/specs/projects/<PROJ-ID>-<nombre>/project-intent.md` en una sola sesión.
+`$SPECS_BASE/specs/01-projects/<PROJ-ID>-<nombre>/project-intent.md` en una sola sesión.
 
 **Qué hace este skill:**
 - Verifica el entorno y la regla WIP=1 antes de iniciar
@@ -42,7 +42,7 @@ refinar la intención del proyecto, produciendo
 
 - No se requiere input explícito — el skill inicia una entrevista interactiva
 - `assets/project-intent-template.md` — fuente de verdad estructural del documento de salida (solo lectura)
-- `$SPECS_BASE/specs/projects/` — directorio donde se detectan proyectos activos (WIP=1)
+- `$SPECS_BASE/specs/01-projects/` — directorio donde se detectan proyectos activos (WIP=1)
 
 ## Parámetros
 
@@ -52,7 +52,7 @@ refinar la intención del proyecto, produciendo
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
 - `assets/project-intent-template.md` debe existir
-- No debe existir ningún proyecto con `substatus: IN-PROGRESS` en `$SPECS_BASE/specs/projects/`
+- No debe existir ningún proyecto con `substatus: IN-PROGRESS` en `$SPECS_BASE/specs/01-projects/`
   (regla WIP=1), salvo que el usuario elija retomar o sobrescribir el activo
 
 ## Dependencias
@@ -92,17 +92,17 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 
 Antes de iniciar la entrevista, determinar el directorio del proyecto activo:
 
-1. Listar todos los subdirectorios de `$SPECS_BASE/specs/projects/`.
+1. Listar todos los subdirectorios de `$SPECS_BASE/specs/01-projects/`.
 2. Para cada subdirectorio encontrado, leer `project-intent.md` y verificar si `substatus` es `IN‑PROGRESS`.
 3. Si se encuentra exactamente uno con `substatus: IN‑PROGRESS` → usar ese directorio como `$PROJ_DIR`. Ejemplo: `PROJ-01-mi-proyecto`.
 4. Si no se encuentra ninguno → `$PROJ_DIR` se determinará durante la entrevista (ver Paso 4): el `project-pm` derivará el ID desde el título del proyecto (formato `PROJ-NN-nombre-kebab`) y lo confirmará con el usuario antes de crear el directorio.
 5. Si se encuentran varios con `substatus: IN‑PROGRESS` → mostrar la lista y pedir al usuario que elija uno antes de continuar.
 
-La ruta completa del proyecto será: `$SPECS_BASE/specs/projects/$PROJ_DIR/`
+La ruta completa del proyecto será: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`
 
 ### Paso 1 — Verificar WIP=1
 
-Antes de iniciar, escanea `$SPECS_BASE/specs/projects/` y detecta si existe algún subdirectorio con `project-intent.md` que tenga `substatus: IN‑PROGRESS`.
+Antes de iniciar, escanea `$SPECS_BASE/specs/01-projects/` y detecta si existe algún subdirectorio con `project-intent.md` que tenga `substatus: IN‑PROGRESS`.
 
 - Si **no** existe ningun documento en substatus `IN‑PROGRESS`: continua al Paso 2.
 - Si **existe** al menos uno en substatus `IN‑PROGRESS`: notifica el conflicto WIP=1 e indica que ya hay un proyecto activo. Muestra cual documento esta en substatus `IN‑PROGRESS` y ofrece solo estas opciones:
@@ -113,7 +113,7 @@ Si el usuario elige retomar, activa el flujo de retoma del Paso 4 sin reiniciar 
 
 ### Paso 2 — Verificar estado del documento de output
 
-Lee `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md` (si existe) y detecta el valor de `**Estado**:`.
+Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` (si existe) y detecta el valor de `**Estado**:`.
 
 - Si el archivo **no existe**: continua al Paso 3 (primera ejecucion).
 - Si existe con `substatus: IN‑PROGRESS`: activa flujo de retoma y continua al Paso 3.
@@ -141,7 +141,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 
 > Lee el template en `assets/project-intent-template.md`. Extrae las secciones del template en runtime.
 >
-> Si estas en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
+> Si estas en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
 > Conduce la entrevista de intencion de proyecto con el usuario en dos fases dentro de la misma sesion:
 >
@@ -149,7 +149,7 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 >
 > **Fase 2 — Refinamiento:** A partir de las respuestas de la Fase 1, profundiza sección por sección del template (máx 3-4 preguntas por ronda). Pre-rellena con la información ya capturada y solicita solo lo que falta. Infiere el contenido faltante marcándolo con `[inferido]`.
 >
-> Escribe el resultado completo en `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md`.
+> Escribe el resultado completo en `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`.
 > Si no puedes obtener respuesta del usuario, aplica tu Protocolo de Resiliencia: degrada a inferencia, marca con `[inferido: sin respuesta del usuario]` y lista las inferencias al final.
 
 El `project-pm` se encargará de:
@@ -162,14 +162,14 @@ El `project-pm` se encargará de:
 
 Cuando el `project-pm` termine:
 
-1. Verifica que `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md` existe leyendo el archivo
+1. Verifica que `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` existe leyendo el archivo
 2. Si existe, confirma al usuario:
   > ✅ Documento generado correctamente.
-  > Path: `$SPECS_BASE/specs/projects/$PROJ_DIR/project-intent.md`
+  > Path: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`
   > Siguiente comando: `/project-discovery`.
 3. Si no existe, informa al usuario que algo salió mal y sugiere ejecutar `/project-begin` nuevamente.
 
 ## Salida
 
-- `$SPECS_BASE/specs/projects/<PROJ-ID>-<nombre>/project-intent.md` — documento de intención
+- `$SPECS_BASE/specs/01-projects/<PROJ-ID>-<nombre>/project-intent.md` — documento de intención
   del proyecto generado por `project-pm`, con `substatus: DONE` al completarse.

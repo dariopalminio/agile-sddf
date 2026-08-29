@@ -35,7 +35,7 @@ story-verify    ← aquí
 
 ## Entrada
 
-- `$SPECS_BASE/specs/stories/<story-id>/story.md` — historia a verificar (precondición de estado)
+- `$SPECS_BASE/specs/03-stories/<story-id>/story.md` — historia a verificar (precondición de estado)
 - `$SPECS_BASE/policies/definition-of-done-story.md` — criterios DoD sección VERIFY (opcional; usa fallback genérico si no existe)
 - `$SDDF_ROOT/sddf.config.yaml` — configuración de pruebas del proyecto (opcional; si existe y contiene tests `required: true`, tiene prioridad sobre la detección automática)
 - Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático (fallback cuando sddf.config.yaml no existe)
@@ -110,11 +110,11 @@ Proporciona el ID (ej. FEAT-050) o la ruta completa al directorio.
 #### 1b. Resolver el directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia
+2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — primera coincidencia
 
 Si no se encuentra:
 ```
-❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
+❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/
 ```
 
 #### 1c. Verificar existencia de story.md
@@ -512,7 +512,7 @@ Mostrar en pantalla si hay rechazo:
 
 ## Salida
 
-- `$SPECS_BASE/specs/stories/<story-id>/verify-report.md` — reporte de verificación con summary, findings por severidad, criterios DoD evaluados e historial de ejecuciones.
+- `$SPECS_BASE/specs/03-stories/<story-id>/verify-report.md` — reporte de verificación con summary, findings por severidad, criterios DoD evaluados e historial de ejecuciones.
 - `story.md` frontmatter actualizado:
   - `status: VERIFY / substatus: DONE` — si todos los criterios DoD VERIFY pasan
   - `status: READY-FOR-IMPLEMENT / substatus: DONE` — si hay criterios fallidos o defectos CRITICAL/HIGH sin resolver (REJECTED)

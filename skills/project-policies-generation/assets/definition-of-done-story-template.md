@@ -23,7 +23,7 @@ updated: <YYYY-MM-DD>
 - [ ] Tiene criterios de aceptación en formato Gherkin (Given-When-Then) que cubren los escenarios principales
 - [ ] Cumple los criterios INVEST (Independent, Negotiable, Valuable, Estimable, Small, Testable).
 - [ ] La historia tiene el frontmatter completo con metadata correcta (status, substatus, tags, etc.)
-- [ ] La historia tiene el frontmatter con referencia a la épica padre si está incluida en un epic release (`release.md`)
+- [ ] La historia tiene el frontmatter con referencia a la épica padre si está incluida en una épica (`epic.md`)
 - [ ] La historia tiene referencias a historias relacionadas cercanas (historias hermanas de división por split)
 
 ## 🗺️ PLAN (Definición de Hecho para la fase de Planificación)

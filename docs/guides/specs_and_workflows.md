@@ -23,7 +23,7 @@ related:
 
 ## Specs primarios vs secundarios
 
-Los specs primarios representan especificaciones de work items, por ejemplo: project, release o story. 
+Los specs primarios representan especificaciones de work items, por ejemplo: project, épica o story. 
 Los specs secundarios representan especificaciones secundarias de un work item, por ejemplo: project-plan.
 
 ## Workflow
@@ -70,17 +70,17 @@ READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> 
 - DELIVER – Incremento listo para entregar o ya entregado al usuario. Cubre tanto el modelo batch (potencialmente entregable, esperando ventana de despliegue) como el modelo continuous (ya desplegado en producción).
 - COMPLETED – Estado final "Done".
 
-> La máquina de estados completa con transiciones skill a skill, retrocesos y los niveles project y release está en [[state-machine]].
+> La máquina de estados completa con transiciones skill a skill, retrocesos y los niveles project y épica está en [[state-machine]].
 
-## Release (Épica) Workflow
+## Épica (Épica) Workflow
 
 Happy path:
 ```
 DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED
 ```
 
-- DEFINE – Se define el alcance: objetivos de alto nivel, features que componen la épica, criterios de éxito y valor esperado. Se documenta en `release.md`.
-- PLAN – Se planifica la ejecución: se desglosan las historias de usuario, se asignan a releases, se estima esfuerzo y se identifican dependencias.
+- DEFINE – Se define el alcance: objetivos de alto nivel, features que componen la épica, criterios de éxito y valor esperado. Se documenta en `epic.md`.
+- PLAN – Se planifica la ejecución: se desglosan las historias de usuario, se asignan a épicas, se estima esfuerzo y se identifican dependencias.
 - READY-FOR-DEV – Estado buffer. La épica está completamente planificada, priorizada y aprobada. Espera a que el equipo tenga capacidad para comenzar el desarrollo. Se aplican límites de WIP.
 - DEVELOP – Desarrollo en curso: las historias de la épica se implementan. La épica permanece aquí hasta que todas las historias estén entregadas.
 - VALIDATE – Se ejecutan pruebas de integración y regresión del conjunto completo (end-to-end, UAT, requisitos no funcionales).
