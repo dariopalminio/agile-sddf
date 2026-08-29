@@ -1,3 +1,12 @@
+---
+alwaysApply: false
+type: policy
+slug: skill_creation_policy
+title: "Política de Creación de Skills para Agentes de IA"
+created: 2026-05-06
+updated: 2026-05-06
+---
+
 # Política de Creación de Skills para Agentes de IA
 
 ---

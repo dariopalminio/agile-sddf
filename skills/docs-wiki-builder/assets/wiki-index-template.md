@@ -18,6 +18,11 @@ updated: <YYYY-MM-DD>
 
 ---
 
+## ⚖️ Políticas (docs/policies/)
+- [[constitution]] ⚠️ nodo pendiente
+
+---
+
 ## 🗂️ Especificaciones del proyecto (docs/specs/)
 
 ### L3 — Proyecto
@@ -37,13 +42,7 @@ updated: <YYYY-MM-DD>
 
 ---
 
-## 🧠 Wiki de conocimiento (docs/wiki/)
-
-### Constitución
-<!-- Reglas y principios fundamentales del proyecto -->
-- [[constitution]] ⚠️ nodo pendiente
-
-### Arquitectura
+## 📐 Decisiones de arquitectura (docs/adr/)
 <!-- Decisiones técnicas, stack, diagramas -->
 - [[tech-stack]] ⚠️ nodo pendiente
 - [[principles]] ⚠️ nodo pendiente
@@ -53,13 +52,14 @@ updated: <YYYY-MM-DD>
 - [[definition-of-done-story]] ⚠️ nodo pendiente
 - [[definition-of-ready]] ⚠️ nodo pendiente
 
-### UX
-<!-- Decisiones y guías de UX/UI -->
 
-### Guías teóricas
-<!-- Artículos y metodologías -->
+## 📖 Guías y operación
 
-### How-to
+### Guías (docs/guides/)
+
+Las guías se dividen en guides (guías prácticas) y reference (documentación de referencia).
+
+### Runbook / How-to (docs/runbooks)
 <!-- Guías prácticas paso a paso -->
 
 ---

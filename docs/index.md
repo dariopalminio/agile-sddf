@@ -256,14 +256,41 @@ placeholder, por lo que se enlazan solo por ruta:
 
 Las guías se dividen en guides (guías prácticas) y reference (documentación de referencia).
 
-- [[best-practices-for-commands]] — [best-practices-for-commands.md](guides/best-practices-for-commands.md) — Buenas prácticas para comandos de LLM clients
+#### Metodología y proceso
 
-> ⚠️ El resto de las guías (`best-practices-for-agents`, `best-practices-for-skills`, `state-machine`,
-> `specs_and_workflows`, `extreme-agile`, `flight-leves-model`, `harness-engineering`,
-> `organization-of-artifacts`, `sdd`, `root-folder-practices`, `skill-structural-pattern`, entre otras)
-> se eliminaron en el commit `63fb587 doc: change of doc structure`, junto con el aplanamiento de
-> `docs/knowledge/` hacia `docs/guides/` y `docs/runbooks/`. Parte de ese contenido vive ahora en
-> [policies/references/skill_creation_policy.md](policies/references/skill_creation_policy.md).
+- [[sdd]] — [sdd.md](guides/sdd.md) — Spec Driven Development (SDD): fundamentos del método
+- [[specs-and-workflows]] — [specs_and_workflows.md](guides/specs_and_workflows.md) — Specs y workflows: contratos, trazabilidad, status y substatus
+- [[state-machine]] — [state-machine.md](guides/state-machine.md) — Máquina de estados canónica del framework (story, project, release) con diagramas Mermaid
+- [[sddf-commands-pipeline]] — [sddf-commands-pipeline.md](guides/sddf-commands-pipeline.md) — Flujos principales SDDF: qué skill corre en cada fase
+- [[extreme-agile]] — [extreme-agile.md](guides/extreme-agile.md) — Agilidad agéntica (Agentic Agile)
+- [[flight-leves-model]] — [flight-leves-model.md](guides/flight-leves-model.md) — Modelo de Niveles de Vuelo (Flight Levels)
+- [[branching-strategy-sddf-git-flow]] — [branching-strategy-sddf-git-flow.md](guides/branching-strategy-sddf-git-flow.md) — Modelo de branching SDDF git flow
+
+#### Construcción de skills y agentes
+
+- [[best-practices-for-skills]] — [best-practices-for-skills.md](guides/best-practices-for-skills.md) — Modelo de delegación, patrón `.tmp/<skill>/` y contrato de invocación de agentes locales (ADR-0002)
+- [[best-practices-for-agents]] — [best-practices-for-agents.md](guides/best-practices-for-agents.md) — Buenas prácticas para agentes
+- [[best-practices-for-commands]] — [best-practices-for-commands.md](guides/best-practices-for-commands.md) — Buenas prácticas para comandos de LLM clients
+- [[harness-engineering]] — [harness-engineering.md](guides/harness-engineering.md) — Harness engineering: modelo de delegación y relaciones permitidas
+- [[skill-structural-pattern]] — [skill-structural-pattern.md](guides/skill-structural-pattern.md) — Patrones estructurales de skills
+- [[best-practices-for-system-prompt]] — [best-practices-for-system-prompt.md](guides/best-practices-for-system-prompt.md) — Mejores prácticas para el prompt de sistema y `AGENTS.md`
+
+#### Testing
+
+- [[best-practices-for-testing]] — [best-practices-for-testing.md](guides/best-practices-for-testing.md) — Pirámide de pruebas y prácticas generales de testing
+- [[best-practices-for-skill-testing]] — [best-practices-for-skill-testing.md](guides/best-practices-for-skill-testing.md) — Pruebas de skills: `evals.json`, quality gates
+
+#### Organización de artefactos
+
+- [[organization-of-artifacts]] — [organization-of-artifacts.md](guides/organization-of-artifacts.md) — Reglas de la estrategia de organización de artefactos
+- [[artifact-directory-migration]] — [artifact-directory-migration.md](guides/artifact-directory-migration.md) — Guía de migración a la estructura de directorios de artefactos
+- [[root-folder-practices]] — [root-folder-practices.md](guides/root-folder-practices.md) — Prácticas de gestión del directorio raíz
+
+> ℹ️ Estas 17 guías se borraron en `cb2e3e7` (2026-08-05) y `63fb587` (2026-08-26) y se restauraron
+> desde el historial de `main` el 2026-08-29, con el contenido verbatim. El frontmatter de 6 de ellas
+> se completó con `/header-aggregation` ese mismo día; las 18 tienen ahora `slug` único.
+> Nota: `specs_and_workflows.md` conserva el nombre de archivo con guiones bajos, pero su slug es
+> `specs-and-workflows` (kebab-case, como lo referencia [[workflow-canonico-story-y-epic]]).
 
 
 ### Runbooks (docs/runbooks/)
@@ -280,18 +307,19 @@ Los procedimientos, how-to suele ser más general, mientras que los runbooks son
 
 | Métrica | Valor |
 |---------|-------|
-| Archivos `.md` en `docs/` | 241 |
-| Entradas indexadas (nodos principales) | 151 |
-| — L3 proyecto | 4 |
+| Archivos `.md` en `docs/` | 258 |
+| Rutas únicas enlazadas desde el índice | 170 |
+| — L3 proyecto (4 `.md` + `context-diagram.puml`) | 5 |
 | — L2 releases (19 `release.md` + 31 `plan-NN.md`) | 50 |
-| — L1 historias (76 `story.md` + 4 planes) | 80 |
+| — L1 historias (76 `story.md` + 5 planes) | 81 |
 | — Templates de spec | 5 |
 | — ADR (3 + índice + template) | 5 |
 | — Políticas | 3 |
-| — Guías (1) + runbooks (3) | 4 |
-| Artefactos derivados no indexados (`design`, `tasks`, `analyze`, `*-report`, `testcases`) | 89 |
+| — Guías (18) + runbooks (3) | 21 |
+| Artefactos derivados no indexados (`design`, `tasks`, `analyze`, `*-report`, `testcases`) | 88 |
+| Wikilinks | 157 |
 | Wikilinks rotos (⚠️) | 0 |
-| Entradas sin wikilink (archivo sin `slug:` real) | 12 |
+| Entradas sin wikilink (archivo sin `slug:` usable) | 13 |
 | Última actualización | 2026-08-29 |
 
 ---

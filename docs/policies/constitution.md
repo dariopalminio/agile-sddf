@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-type: constitution
+type: policy
 slug: constitution
 title: "Constitución del Proyecto"
 created: 2026-05-06
@@ -64,6 +64,8 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 ---
 
 ## Estandares de construcción de Skills
+
+Respetar las [Política de Creación de Skills para Agentes de IA](docs/policies/references/skill_creation_policy.md)
 
 ### Patrones estructurales
 

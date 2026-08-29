@@ -43,7 +43,7 @@ Los agentes locales son archivos de instrucciones, no infraestructura: no aparec
 
 **Positivas:**
 - El mecanismo es contrato verificable, no convención implícita: cualquier agente (o humano) que lea el SKILL.md sabe exactamente cómo se lanza un agente local.
-- El protocolo completo vive en un solo lugar (`docs/knowledge/guides/best-practices-for-skills.md`); los SKILL.md solo lo referencian con una frase — sin duplicación masiva.
+- El protocolo completo vive en un solo lugar (`docs/guides/best-practices-for-skills.md`); los SKILL.md solo lo referencian con una frase — sin duplicación masiva.
 - Distinción clara entre agente local (uso exclusivo, empaquetado con el skill) y agente registrado (`.claude/agents/`, reutilizable).
 
 **Negativas / trade-offs:**
@@ -53,6 +53,6 @@ Los agentes locales son archivos de instrucciones, no infraestructura: no aparec
 ## Referencias
 
 - [[EPIC-17-remediating-and-improvement]] — hallazgo A4
-- `docs/knowledge/guides/best-practices-for-skills.md` — protocolo paso a paso y patrón `.tmp/<skill>/`
-- `docs/knowledge/guides/harness-engineering.md` — modelo de delegación y relaciones permitidas
+- `docs/guides/best-practices-for-skills.md` — protocolo paso a paso y patrón `.tmp/<skill>/`
+- `docs/guides/harness-engineering.md` — modelo de delegación y relaciones permitidas
 - [[ADR-0001-centralizar-templates-compartidos]]

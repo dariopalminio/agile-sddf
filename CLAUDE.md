@@ -60,11 +60,11 @@ skill orquestador (sesión principal)
                   └── ✗ prohibido: agente que delega en otro agente
 ```
 
-Cada subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el control; el orquestador lee solo esos archivos para consolidar — nunca le pasa al subagente todo su contexto heredado. El detalle completo (matriz de invocaciones permitidas, patrón de agentes locales en `<skill>/agents/`, contrato de `.tmp/`) está en `docs/knowledge/guides/best-practices-for-skills.md`.
+Cada subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el control; el orquestador lee solo esos archivos para consolidar — nunca le pasa al subagente todo su contexto heredado. El detalle completo (matriz de invocaciones permitidas, patrón de agentes locales en `<skill>/agents/`, contrato de `.tmp/`) está en `docs/guides/best-practices-for-skills.md`.
 
 ## Documentación de referencia
 
-`docs/index.md` es el punto de entrada wiki (wikilinks `[[slug]]`) hacia specs, ADRs y guías. Antes de inventar una convención nueva, comprueba si ya existe una guía en `docs/knowledge/guides/` (agentes, skills, comandos, harness engineering, branching, organización de artefactos, specs y workflows, etc.).
+`docs/index.md` es el punto de entrada wiki (wikilinks `[[slug]]`) hacia specs, ADRs y guías. Antes de inventar una convención nueva, comprueba si ya existe una guía en `docs/guides/` (agentes, skills, comandos, harness engineering, branching, organización de artefactos, specs y workflows, etc.).
 
 ---
 

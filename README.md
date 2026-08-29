@@ -405,40 +405,15 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING →
 /reverse-engineering --update
 ```
 
-**Gestión de cambios con OpenSpec:**
-
-Usar OpenSpec es algo opcional. Esta sección asume que tienes OpenSpec configurado en tu proyecto. SDDF proporciona skills para integrar el proceso de gestión de cambios de OpenSpec directamente en tu flujo de especificación, permitiéndote generar propuestas de cambio, implementarlas y archivarlas sin salir del entorno SDDF.
-
-```bash
-# Inicializar el contexto del proyecto en openspec/config.yaml
-/openspec-init-config
-
-# Generar baseline de especificaciones OpenSpec desde código fuente existente
-/openspec-generate-baseline
-
-# Explorar una idea sin implementar
-/openspec-explore
-
-# Proponer un cambio con todos los artefactos generados
-/openspec-propose "agregar soporte para exportar historias a CSV"
-
-# Implementar las tareas de un cambio
-/openspec-apply-change
-
-# Archivar un cambio completado
-/openspec-archive-change
-```
-
 **Docs wiki y frontmatter:**
 
 ```bash
-# Reorganizar docs/ como wiki navegable con índice central (LLM Wiki pattern)
+# Reorganize docs/ as a navigable wiki with a central index (LLM Wiki pattern)
 /docs-wiki-builder
 
-# Añadir o actualizar frontmatter YAML canónico en archivos spec Markdown
+# Add or update canonical YAML frontmatter in spec Markdown files
 /header-aggregation docs/specs/stories/FEAT-001-nombre/story.md
 ```
-
 
 ## Configuration
 
