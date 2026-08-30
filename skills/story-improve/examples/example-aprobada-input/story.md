@@ -1,8 +1,8 @@
 ---
 alwaysApply: false
 type: story
-id: FEAT-074
-slug: FEAT-074-integrar-historia-batch-configurable
+id: STORY-074
+slug: STORY-074-integrar-historia-batch-configurable
 title: "story-integrate: Integración batch configurable"
 status: SPECIFY
 substatus: DONE
@@ -10,8 +10,8 @@ parent: <nombre-del-directorio-de-la-epica-padre>
 created: 2026-05-17
 updated: 2026-05-17
 related:
-  - FEAT-075
-  - FEAT-076
+  - STORY-075
+  - STORY-076
 ---
 **FINVEST Score:** 4.19
 **FINVEST Decisión:** APROBADA
@@ -28,9 +28,9 @@ related:
 ### Escenario principal – Integración exitosa hacia rama de release
 
 ```gherkin
-Dado que la historia "FEAT-042" tiene status: IMPLEMENT / substatus: DONE
+Dado que la historia "STORY-042" tiene status: IMPLEMENT / substatus: DONE
   Y el modelo de entrega configurado es "batch" con rama objetivo "release/v1.2.0"
-Cuando ejecuto story-integrate para la historia "FEAT-042"
+Cuando ejecuto story-integrate para la historia "STORY-042"
 Entonces el skill crea un commit de integración en la rama "release/v1.2.0"
   Y actualiza el frontmatter de story.md con status: DELIVER / substatus: DONE
   Y genera un reporte de integración con el resultado de la operación
@@ -39,8 +39,8 @@ Entonces el skill crea un commit de integración en la rama "release/v1.2.0"
 ### Escenario alternativo – Historia no lista para integrar
 
 ```gherkin
-Dado que la historia "FEAT-042" tiene status: IMPLEMENT / substatus: IN-PROGRESS
-Cuando ejecuto story-integrate para la historia "FEAT-042"
+Dado que la historia "STORY-042" tiene status: IMPLEMENT / substatus: IN-PROGRESS
+Cuando ejecuto story-integrate para la historia "STORY-042"
 Entonces el skill informa que la historia no está lista para integrar
   Y muestra el estado actual y el estado requerido
   Y no ejecuta ninguna acción de integración
@@ -53,5 +53,5 @@ Entonces el skill informa que la historia no está lista para integrar
 
 ## 📎 Notas / contexto adicional
 
-Historia core resultante del split de FEAT-074 (épica original de integración batch).
-Historias hermanas: FEAT-075 (modos manual/dry-run), FEAT-076 (multi-modelo de entrega).
+Historia core resultante del split de STORY-074 (épica original de integración batch).
+Historias hermanas: STORY-075 (modos manual/dry-run), STORY-076 (multi-modelo de entrega).

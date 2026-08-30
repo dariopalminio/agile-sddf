@@ -23,53 +23,53 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 ## Backlog de Features
 
-- [ ] **FEAT-001: Captura de Intención Inicial** — El sistema conduce una entrevista guiada para capturar nombre, problema, visión, criterios de éxito y restricciones del proyecto, escribiendo el resultado en `project-intent.md`. _(deps: —)_
-- [ ] **FEAT-002: Extracción Dinámica de Templates** — Los agentes leen los headers `##` y comentarios `<!-- -->` de los templates en runtime para derivar preguntas y completar secciones, sin lógica hardcodeada. _(deps: —)_
-- [ ] **FEAT-003: Especificación de Requisitos por Entrevista** — El sistema conduce una entrevista de descubrimiento de perfiles de usuario y especificación de requisitos funcionales y no funcionales sección por sección, escribiendo el resultado en `requirement-spec.md`. _(deps: FEAT-001, FEAT-002)_
-- [ ] **FEAT-004: Planificación de Releases con Features FEAT-NNN** — El sistema extrae features atómicas con IDs FEAT-NNN desde `requirement-spec.md`, las prioriza y las agrupa en releases incrementales, escribiendo el resultado en `project-plan.md`. _(deps: FEAT-003)_
-- [ ] **FEAT-005: User Story Mapping Interactivo** — El sistema conduce una sesión colaborativa para identificar personas, construir el backbone de actividades, definir el walking skeleton y trazar release slices, escribiendo el resultado en `story-map.md`. _(deps: FEAT-003)_
-- [ ] **FEAT-006: Creación de Historias de Usuario** — El sistema genera historias completas (en fase SPECIFY de story) en formato Como/Quiero/Para con criterios de aceptación Gherkin (mínimo 1 escenario principal y 1 alternativo), guardando el resultado en `story-{slug}.md`. _(deps: —)_
-- [ ] **FEAT-007: Evaluación de Calidad con Rúbrica FINVEST** — El sistema evalúa historias de usuario (en fase SPECIFY de story) aplicando la rúbrica FINVEST (Formato + INVEST) con scores Likert 1-5 por dimensión y produce una decisión APROBADA / REFINAR / RECHAZAR / DIVIDIR. _(deps: FEAT-006)_
-- [ ] **FEAT-008: Control WIP=1 en el Pipeline** — El sistema detecta documentos con `Estado: IN‑PROGRESS` al inicio de cada pipeline y ofrece exactamente dos opciones al usuario: Sobrescribir o Retomar, sin permitir proyectos activos simultáneos. _(deps: FEAT-001)_
-- [ ] **FEAT-009: Retoma de Proyecto Interrumpido** — El sistema detecta automáticamente el campo `Estado` de los documentos existentes y reanuda el trabajo desde la sección incompleta sin re-preguntar secciones ya completadas. _(deps: FEAT-008)_
-- [ ] **FEAT-010: Gates de Revisión Humana entre Fases** — El sistema presenta un resumen del documento generado y solicita confirmación del usuario antes de avanzar a la siguiente fase; el documento avanza a `Estado: Ready` solo tras confirmación. _(deps: FEAT-003, FEAT-004)_
-- [ ] **FEAT-011: Integración Story Map en Planning** — El sistema detecta si existe `story-map.md` durante la fase de Planning y lo usa como guía estructural para agrupar features en releases respetando el backbone. _(deps: FEAT-004, FEAT-005)_
-- [ ] **FEAT-012: División de Historias con 8 Patrones de Splitting** — El sistema divide historias grandes en historias más pequeñas e independientes (en fase SPECIFY de story) aplicando uno de los 8 patrones de splitting (pasos de flujo, variaciones de reglas, datos, complejidad, esfuerzo, dependencias externas, DevOps, TADs). _(deps: FEAT-006)_
-- [ ] **FEAT-013: Ciclo Iterativo de Refinamiento de Historias** — El sistema orquesta el ciclo completo creación → evaluación → split → mejora con gate anti-bucle que solicita confirmación antes de reiterar y ofrece tres salidas explícitas. _(deps: FEAT-006, FEAT-007, FEAT-012)_
-- [ ] **FEAT-014: Búsqueda de Historias por Término** — El sistema permite invocar skills de historia con un término corto, busca automáticamente en `$SPECS_BASE/specs/03-stories/` el archivo correspondiente y solicita selección si hay múltiples coincidencias. _(deps: FEAT-006)_
-- [ ] **FEAT-015: Pipeline Completo en una Sola Sesión** — El skill `project-flow` ejecuta las tres fases (Begin Intention → Discovery → Planning) en una sesión continua con detección automática del estado actual del pipeline y gates entre etapas. _(deps: FEAT-001, FEAT-003, FEAT-004, FEAT-009, FEAT-010)_
-- [ ] **FEAT-016: Backlog de Historias con Trazabilidad** — El sistema mantiene un registro de backlog de sesión con ID, archivo, origen (original o derivado de split), estado y decisión FINVEST, con trazabilidad mediante IDs únicos ST-00X. _(deps: FEAT-007, FEAT-012)_
-- [ ] **FEAT-017: Ingeniería Inversa de Repositorios** — El sistema analiza un repositorio existente mediante 4 agentes especializados en paralelo y un agente sintetizador para generar automáticamente `requirement-spec.md`, marcando secciones sin datos como `<!-- PENDING MANUAL REVIEW -->`. _(deps: FEAT-002)_
-- [ ] **FEAT-018: Análisis de Arquitectura Técnica del Repositorio** — El agente `reverse-engineer-architect` detecta stack tecnológico, dependencias, frameworks, patrones arquitectónicos y puntos de integración con niveles de confianza DIRECT / INFERRED / SUGGESTED. _(deps: FEAT-017)_
-- [ ] **FEAT-019: Extracción de Features desde Perspectiva del Usuario** — El agente `reverse-engineer-product-discovery` analiza rutas, endpoints, textos de UI y componentes del repositorio para producir un inventario de features agrupado por dominio de negocio. _(deps: FEAT-017)_
-- [ ] **FEAT-020: Extracción de Reglas de Negocio desde el Código** — El agente `reverse-engineer-business-analyst` analiza validaciones, permisos, workflows y lógica condicional del repositorio para producir un catálogo de reglas de negocio clasificadas por tipo. _(deps: FEAT-017)_
-- [ ] **FEAT-021: Reconstrucción del Mapa de Navegación** — El agente `reverse-engineer-ux-flow-mapper` mapea la estructura de navegación del repositorio (rutas, pantallas, guards, flujos) y produce un árbol ASCII compatible con el template de requisitos. _(deps: FEAT-017)_
-- [ ] **FEAT-022: Creación de Nuevas Skills con Ciclo Iterativo** — El sistema permite crear nuevas skills mediante el ciclo: captura de intención → redacción del SKILL.md → generación de casos de prueba → ejecución paralela → review del usuario → mejora hasta satisfacción. _(deps: —)_
-- [ ] **FEAT-023: Análisis con Scope Acotado (--focus)** — El sistema permite limitar el análisis de ingeniería inversa a una ruta específica del repositorio usando el flag `--focus <path>`. _(deps: FEAT-017)_
-- [ ] **FEAT-024: Modo Incremental de Actualización (--update)** — El sistema re-analiza solo las secciones marcadas como `<!-- PENDING MANUAL REVIEW -->` en el documento existente, preservando verbatim las secciones ya completas. _(deps: FEAT-017)_
-- [ ] **FEAT-025: Benchmarking Comparativo de Versiones de Skills** — El sistema ejecuta casos de prueba en paralelo (con skill vs sin skill), gradea resultados contra aserciones y genera un viewer HTML para comparación cualitativa y cuantitativa. _(deps: FEAT-022)_
-- [ ] **FEAT-026: Empaquetado y Distribución de Skills** — El sistema permite empaquetar una skill finalizada en un archivo `.skill` para distribuirla e instalarla en otros entornos. _(deps: FEAT-022)_
-- [ ] **FEAT-027: Validación de Formato de Release** — El sistema valida que un archivo de especificación de release cumple la estructura obligatoria del template `release-spec-template.md`, produciendo resultado APROBADO, REFINAR o RECHAZADO. _(deps: FEAT-004)_
-- [ ] **FEAT-028: Generación de Especificaciones de Release** — El skill `releases-from-project-plan` crea `release-[ID]-[Nombre].md` a partir de `project-plan.md` usando el template `release-spec-template.md`. _(deps: FEAT-004, FEAT-027)_
-- [ ] **FEAT-029: Generación de Historias desde Release** — El skill `release-generate-stories` crea `story-[ID]-[Nombre].md` a partir del archivo de release usando el template `story-template.md`. _(deps: FEAT-028, FEAT-006)_
-- [ ] **FEAT-030: **Soporte Atlassian Rovo**: Agente `story-creator-agent.md` para el runtime Rovo. _(deps: FEAT-006)_
-- [ ] **FEAT-031: Soporte Atlassian Rovo expandido** — Agente `story-creator-agent.md` actualizado para operar con el conjunto completo de skills (creation, evaluation, split) en el runtime Rovo. _(deps: FEAT-030)_
-- [ ] **FEAT-032: Soporte Atlassian Rovo para Validar Release** — Agente `release-validator-agent.md` para el runtime Rovo. _(deps: FEAT-027, FEAT-030)_
-- [ ] **FEAT-033: Soporte Atlassian Rovo para crear Epic Release** — Agente `release-creator-agent.md` para el runtime Rovo. _(deps: FEAT-027, FEAT-030)_
-- [ ] **FEAT-034: Rovo Agent: Release Reverse Generator from children** — Agente `release-reverse-generator.md` para el runtime Rovo. _(deps: FEAT-027, FEAT-030)
-- [ ] **FEAT-035: Generar todas las stories desde todos los archivo de release**: Skill `release-generate-all-stories` que itera sobre todos los archivos de release en `$SPECS_BASE/specs/02-epics/` y genera las stories correspondientes para cada uno, siguiendo el mismo proceso que `release-generate-stories`.
-- [ ] **FEAT-036: Skill openspec-load-context** Skill openspec-load-context para cargar el contexto del proyecto para openspec en el archivo openspec\config.yaml. _(deps: FEAT-001, FEAT-003, FEAT-004)_
-- [ ] **FEAT-037: Skill openspec-generate-baseline** Skill `openspec-generate-baseline` para que haciendo ingeniería inversa genere una línea base del proyecto como propuesta y luego lo archive para que quede una lìnea base especificada. _(deps: FEAT-037)_
-- [ ] **FEAT-039: Publicar el framework Agile Spec-Driven-Development (SDDF) como paquete NPM para instalación global** — Empaquetar y publicar todos los skills, agentes y templates del framework en NPM para instalación global con npm install -g @sddf/core. _(deps: —)_
-- [ ] **FEAT-040: Instalar skills via postinstall (script)** — Configurar el script `postinstall` para copiar automáticamente los skills y agentes a `~/.claude/` tras la instalación global. Implica crear un script Node.js (scripts/postinstall.js) que npm ejecuta automáticamente al hacer npm install -g.  _(deps: FEAT-039)_
-- [ ] **FEAT-041: Npm Install locally** — Permitir instalación local del framework con npm install @sddf/core, copiando los skills y agentes a `./.claude/` para uso en proyectos específicos sin afectar la instalación global. _(deps: FEAT-039, FEAT-040)_
-- [ ] **FEAT-042: README.md builder** — Skill `readme-builder` que genera o sobreescribe un README.md completo para el proyecto a partir de los documentos de intención, requisitos, plan o analizando todo el proyecto actual, usando un template específico para README. _(deps: FEAT-001, FEAT-003, FEAT-004)_
-- [ ] **FEAT-043: Encabezado de archivos spec con metadata de estado** — Añadir un encabezado YAML a cada archivo de especificación (`project-intent.md`, `requirement-spec.md`, `project-plan.md`, `release*`, `story*`) con campos específicos estandarizados para trazabilidad y linkeo entre nodos. _(deps: FEAT-008)_
-- [ ] **FEAT-044: Directorio docs tipo wiki** — Reorganizar el directorio `docs/` para que funcione como una wiki de documentación del proyecto (memoria a largo plazo del proyecto), con subdirectorio specs (memoria de especificaciones) para los artefactos principales de desarrollo, un directorio wiki/ para información de conocimiento profundo (guías, artículos, etc.) y un índice principal que enlace a cada documento. La fuente de verdad son archivos dentro del mismo repositorio. Cada nodo documento es un archivo markdown con frontmatter YAML. Los links internos usan la sintaxis [[slug]] (wikilinks). El índice (index.md) es el cursor principal: Los clientes LLMs IA como Copilot, Claude u Opencode lo leen primero en cada operación para decidir qué nodos abrir, sin leer toda la wiki de una vez. La clave está en que Claude lee el índice primero en cada operación, haciendo que la recuperación sea O(índice) y no O(todos-los-archivos). Se sigue el patrón LLM Wiki - Karpathy. _(deps: FEAT-001, FEAT-003, FEAT-004)_
-- [ ] **FEAT-045: Sill de generación de diagramas de arquitacture** — Skill `architecture-diagram-generator` que genera diagramas de arquitectura técnica (C4, secuencia) a partir del análisis del repositorio, la información proporcionada en los documentos de requisitos e interacción con el usuario. _(deps: FEAT-018)_
-- [ ] **FEAT-046: GitHub Actions CI/CD for npm** — **Como** mantenedor del framework SDDF **Quiero** que al crear un release en GitHub se publique automáticamente la nueva versión en npm **Para** distribuir cada versión del framework sin pasos manuales de publicación.
-- [ ] **FEAT-047: Skills con templates Multicliente y rutas relativas** — Asegurar que los skills sean independientes de los clientes llm, haciendo que sean portables y multicliente. _(deps: FEAT-001, FEAT-003, FEAT-004)_
-- [ ] **FEAT-048: Skill builder** — Crear un skill `skill-master` que pueda crear skills nuevos facilitando la creación de nuevos skills siguiendo las mejores prácticas establecidas y basados en templates. _(deps: FEAT-001, FEAT-003, FEAT-004)_
+- [ ] **STORY-001: Captura de Intención Inicial** — El sistema conduce una entrevista guiada para capturar nombre, problema, visión, criterios de éxito y restricciones del proyecto, escribiendo el resultado en `project-intent.md`. _(deps: —)_
+- [ ] **STORY-002: Extracción Dinámica de Templates** — Los agentes leen los headers `##` y comentarios `<!-- -->` de los templates en runtime para derivar preguntas y completar secciones, sin lógica hardcodeada. _(deps: —)_
+- [ ] **STORY-003: Especificación de Requisitos por Entrevista** — El sistema conduce una entrevista de descubrimiento de perfiles de usuario y especificación de requisitos funcionales y no funcionales sección por sección, escribiendo el resultado en `requirement-spec.md`. _(deps: STORY-001, STORY-002)_
+- [ ] **STORY-004: Planificación de Releases con Features STORY-NNN** — El sistema extrae features atómicas con IDs STORY-NNN desde `requirement-spec.md`, las prioriza y las agrupa en releases incrementales, escribiendo el resultado en `project-plan.md`. _(deps: STORY-003)_
+- [ ] **STORY-005: User Story Mapping Interactivo** — El sistema conduce una sesión colaborativa para identificar personas, construir el backbone de actividades, definir el walking skeleton y trazar release slices, escribiendo el resultado en `story-map.md`. _(deps: STORY-003)_
+- [ ] **STORY-006: Creación de Historias de Usuario** — El sistema genera historias completas (en fase SPECIFY de story) en formato Como/Quiero/Para con criterios de aceptación Gherkin (mínimo 1 escenario principal y 1 alternativo), guardando el resultado en `story-{slug}.md`. _(deps: —)_
+- [ ] **STORY-007: Evaluación de Calidad con Rúbrica FINVEST** — El sistema evalúa historias de usuario (en fase SPECIFY de story) aplicando la rúbrica FINVEST (Formato + INVEST) con scores Likert 1-5 por dimensión y produce una decisión APROBADA / REFINAR / RECHAZAR / DIVIDIR. _(deps: STORY-006)_
+- [ ] **STORY-008: Control WIP=1 en el Pipeline** — El sistema detecta documentos con `Estado: IN‑PROGRESS` al inicio de cada pipeline y ofrece exactamente dos opciones al usuario: Sobrescribir o Retomar, sin permitir proyectos activos simultáneos. _(deps: STORY-001)_
+- [ ] **STORY-009: Retoma de Proyecto Interrumpido** — El sistema detecta automáticamente el campo `Estado` de los documentos existentes y reanuda el trabajo desde la sección incompleta sin re-preguntar secciones ya completadas. _(deps: STORY-008)_
+- [ ] **STORY-010: Gates de Revisión Humana entre Fases** — El sistema presenta un resumen del documento generado y solicita confirmación del usuario antes de avanzar a la siguiente fase; el documento avanza a `Estado: Ready` solo tras confirmación. _(deps: STORY-003, STORY-004)_
+- [ ] **STORY-011: Integración Story Map en Planning** — El sistema detecta si existe `story-map.md` durante la fase de Planning y lo usa como guía estructural para agrupar features en releases respetando el backbone. _(deps: STORY-004, STORY-005)_
+- [ ] **STORY-012: División de Historias con 8 Patrones de Splitting** — El sistema divide historias grandes en historias más pequeñas e independientes (en fase SPECIFY de story) aplicando uno de los 8 patrones de splitting (pasos de flujo, variaciones de reglas, datos, complejidad, esfuerzo, dependencias externas, DevOps, TADs). _(deps: STORY-006)_
+- [ ] **STORY-013: Ciclo Iterativo de Refinamiento de Historias** — El sistema orquesta el ciclo completo creación → evaluación → split → mejora con gate anti-bucle que solicita confirmación antes de reiterar y ofrece tres salidas explícitas. _(deps: STORY-006, STORY-007, STORY-012)_
+- [ ] **STORY-014: Búsqueda de Historias por Término** — El sistema permite invocar skills de historia con un término corto, busca automáticamente en `$SPECS_BASE/specs/03-stories/` el archivo correspondiente y solicita selección si hay múltiples coincidencias. _(deps: STORY-006)_
+- [ ] **STORY-015: Pipeline Completo en una Sola Sesión** — El skill `project-flow` ejecuta las tres fases (Begin Intention → Discovery → Planning) en una sesión continua con detección automática del estado actual del pipeline y gates entre etapas. _(deps: STORY-001, STORY-003, STORY-004, STORY-009, STORY-010)_
+- [ ] **STORY-016: Backlog de Historias con Trazabilidad** — El sistema mantiene un registro de backlog de sesión con ID, archivo, origen (original o derivado de split), estado y decisión FINVEST, con trazabilidad mediante IDs únicos ST-00X. _(deps: STORY-007, STORY-012)_
+- [ ] **STORY-017: Ingeniería Inversa de Repositorios** — El sistema analiza un repositorio existente mediante 4 agentes especializados en paralelo y un agente sintetizador para generar automáticamente `requirement-spec.md`, marcando secciones sin datos como `<!-- PENDING MANUAL REVIEW -->`. _(deps: STORY-002)_
+- [ ] **STORY-018: Análisis de Arquitectura Técnica del Repositorio** — El agente `reverse-engineer-architect` detecta stack tecnológico, dependencias, frameworks, patrones arquitectónicos y puntos de integración con niveles de confianza DIRECT / INFERRED / SUGGESTED. _(deps: STORY-017)_
+- [ ] **STORY-019: Extracción de Features desde Perspectiva del Usuario** — El agente `reverse-engineer-product-discovery` analiza rutas, endpoints, textos de UI y componentes del repositorio para producir un inventario de features agrupado por dominio de negocio. _(deps: STORY-017)_
+- [ ] **STORY-020: Extracción de Reglas de Negocio desde el Código** — El agente `reverse-engineer-business-analyst` analiza validaciones, permisos, workflows y lógica condicional del repositorio para producir un catálogo de reglas de negocio clasificadas por tipo. _(deps: STORY-017)_
+- [ ] **STORY-021: Reconstrucción del Mapa de Navegación** — El agente `reverse-engineer-ux-flow-mapper` mapea la estructura de navegación del repositorio (rutas, pantallas, guards, flujos) y produce un árbol ASCII compatible con el template de requisitos. _(deps: STORY-017)_
+- [ ] **STORY-022: Creación de Nuevas Skills con Ciclo Iterativo** — El sistema permite crear nuevas skills mediante el ciclo: captura de intención → redacción del SKILL.md → generación de casos de prueba → ejecución paralela → review del usuario → mejora hasta satisfacción. _(deps: —)_
+- [ ] **STORY-023: Análisis con Scope Acotado (--focus)** — El sistema permite limitar el análisis de ingeniería inversa a una ruta específica del repositorio usando el flag `--focus <path>`. _(deps: STORY-017)_
+- [ ] **STORY-024: Modo Incremental de Actualización (--update)** — El sistema re-analiza solo las secciones marcadas como `<!-- PENDING MANUAL REVIEW -->` en el documento existente, preservando verbatim las secciones ya completas. _(deps: STORY-017)_
+- [ ] **STORY-025: Benchmarking Comparativo de Versiones de Skills** — El sistema ejecuta casos de prueba en paralelo (con skill vs sin skill), gradea resultados contra aserciones y genera un viewer HTML para comparación cualitativa y cuantitativa. _(deps: STORY-022)_
+- [ ] **STORY-026: Empaquetado y Distribución de Skills** — El sistema permite empaquetar una skill finalizada en un archivo `.skill` para distribuirla e instalarla en otros entornos. _(deps: STORY-022)_
+- [ ] **STORY-027: Validación de Formato de Release** — El sistema valida que un archivo de especificación de release cumple la estructura obligatoria del template `release-spec-template.md`, produciendo resultado APROBADO, REFINAR o RECHAZADO. _(deps: STORY-004)_
+- [ ] **STORY-028: Generación de Especificaciones de Release** — El skill `releases-from-project-plan` crea `release-[ID]-[Nombre].md` a partir de `project-plan.md` usando el template `release-spec-template.md`. _(deps: STORY-004, STORY-027)_
+- [ ] **STORY-029: Generación de Historias desde Release** — El skill `release-generate-stories` crea `story-[ID]-[Nombre].md` a partir del archivo de release usando el template `story-template.md`. _(deps: STORY-028, STORY-006)_
+- [ ] **STORY-030: **Soporte Atlassian Rovo**: Agente `story-creator-agent.md` para el runtime Rovo. _(deps: STORY-006)_
+- [ ] **STORY-031: Soporte Atlassian Rovo expandido** — Agente `story-creator-agent.md` actualizado para operar con el conjunto completo de skills (creation, evaluation, split) en el runtime Rovo. _(deps: STORY-030)_
+- [ ] **STORY-032: Soporte Atlassian Rovo para Validar Release** — Agente `release-validator-agent.md` para el runtime Rovo. _(deps: STORY-027, STORY-030)_
+- [ ] **STORY-033: Soporte Atlassian Rovo para crear Epic Release** — Agente `release-creator-agent.md` para el runtime Rovo. _(deps: STORY-027, STORY-030)_
+- [ ] **STORY-034: Rovo Agent: Release Reverse Generator from children** — Agente `release-reverse-generator.md` para el runtime Rovo. _(deps: STORY-027, STORY-030)
+- [ ] **STORY-035: Generar todas las stories desde todos los archivo de release**: Skill `release-generate-all-stories` que itera sobre todos los archivos de release en `$SPECS_BASE/specs/02-epics/` y genera las stories correspondientes para cada uno, siguiendo el mismo proceso que `release-generate-stories`.
+- [ ] **STORY-036: Skill openspec-load-context** Skill openspec-load-context para cargar el contexto del proyecto para openspec en el archivo openspec\config.yaml. _(deps: STORY-001, STORY-003, STORY-004)_
+- [ ] **STORY-037: Skill openspec-generate-baseline** Skill `openspec-generate-baseline` para que haciendo ingeniería inversa genere una línea base del proyecto como propuesta y luego lo archive para que quede una lìnea base especificada. _(deps: STORY-037)_
+- [ ] **STORY-039: Publicar el framework Agile Spec-Driven-Development (SDDF) como paquete NPM para instalación global** — Empaquetar y publicar todos los skills, agentes y templates del framework en NPM para instalación global con npm install -g @sddf/core. _(deps: —)_
+- [ ] **STORY-040: Instalar skills via postinstall (script)** — Configurar el script `postinstall` para copiar automáticamente los skills y agentes a `~/.claude/` tras la instalación global. Implica crear un script Node.js (scripts/postinstall.js) que npm ejecuta automáticamente al hacer npm install -g.  _(deps: STORY-039)_
+- [ ] **STORY-041: Npm Install locally** — Permitir instalación local del framework con npm install @sddf/core, copiando los skills y agentes a `./.claude/` para uso en proyectos específicos sin afectar la instalación global. _(deps: STORY-039, STORY-040)_
+- [ ] **STORY-042: README.md builder** — Skill `readme-builder` que genera o sobreescribe un README.md completo para el proyecto a partir de los documentos de intención, requisitos, plan o analizando todo el proyecto actual, usando un template específico para README. _(deps: STORY-001, STORY-003, STORY-004)_
+- [ ] **STORY-043: Encabezado de archivos spec con metadata de estado** — Añadir un encabezado YAML a cada archivo de especificación (`project-intent.md`, `requirement-spec.md`, `project-plan.md`, `release*`, `story*`) con campos específicos estandarizados para trazabilidad y linkeo entre nodos. _(deps: STORY-008)_
+- [ ] **STORY-044: Directorio docs tipo wiki** — Reorganizar el directorio `docs/` para que funcione como una wiki de documentación del proyecto (memoria a largo plazo del proyecto), con subdirectorio specs (memoria de especificaciones) para los artefactos principales de desarrollo, un directorio wiki/ para información de conocimiento profundo (guías, artículos, etc.) y un índice principal que enlace a cada documento. La fuente de verdad son archivos dentro del mismo repositorio. Cada nodo documento es un archivo markdown con frontmatter YAML. Los links internos usan la sintaxis [[slug]] (wikilinks). El índice (index.md) es el cursor principal: Los clientes LLMs IA como Copilot, Claude u Opencode lo leen primero en cada operación para decidir qué nodos abrir, sin leer toda la wiki de una vez. La clave está en que Claude lee el índice primero en cada operación, haciendo que la recuperación sea O(índice) y no O(todos-los-archivos). Se sigue el patrón LLM Wiki - Karpathy. _(deps: STORY-001, STORY-003, STORY-004)_
+- [ ] **STORY-045: Sill de generación de diagramas de arquitacture** — Skill `architecture-diagram-generator` que genera diagramas de arquitectura técnica (C4, secuencia) a partir del análisis del repositorio, la información proporcionada en los documentos de requisitos e interacción con el usuario. _(deps: STORY-018)_
+- [ ] **STORY-046: GitHub Actions CI/CD for npm** — **Como** mantenedor del framework SDDF **Quiero** que al crear un release en GitHub se publique automáticamente la nueva versión en npm **Para** distribuir cada versión del framework sin pasos manuales de publicación.
+- [ ] **STORY-047: Skills con templates Multicliente y rutas relativas** — Asegurar que los skills sean independientes de los clientes llm, haciendo que sean portables y multicliente. _(deps: STORY-001, STORY-003, STORY-004)_
+- [ ] **STORY-048: Skill builder** — Crear un skill `skill-master` que pueda crear skills nuevos facilitando la creación de nuevos skills siguiendo las mejores prácticas establecidas y basados en templates. _(deps: STORY-001, STORY-003, STORY-004)_
 - [ ] **Inicializar entorno SDDF:** Skill para inicializar el entorno SDDF, configurando variables de entorno y preparando directorios necesarios para la ejecución de otros skills.
 - [ ] **Project policies**: crear un skill llamado project-policies-generation para definir las políticas de proyecto como el definition-of-done y constitución del proyecto.
 - [ ] **Skill para Diseño:** crear un skill para diseño (en fase PLANNING de story) llamado `story-design` (algo equivalente al comando speckit.plan de speckit o a el design.md de openspec que se ejecuta cuando se llama a proposal).
@@ -90,9 +90,9 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 **Objetivo:** Establecer la estructura fundacional del framework: convenciones de directorios, configuración de entornos reproducibles y el mecanismo de extracción dinámica de templates que habilita a todos los agentes a generar preguntas contextuales en runtime sin lógica hardcodeada.
 
-- [ ] FEAT-002 - Extracción Dinámica de Templates
+- [ ] STORY-002 - Extracción Dinámica de Templates
 
-**Ítems de soporte (sin FEAT propio):**
+**Ítems de soporte (sin historia propia):**
 - Estructura inicial de directorios `.claude/skills/`, `.claude/agents/`, `$SPECS_BASE/specs/`
 - Convenciones CLAUDE.md y AGENTS.md del framework
 - Configuración de entorno Docker con imagen `debian:bookworm-slim`
@@ -110,11 +110,11 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 **Objetivo:** Primera versión funcional del framework. Establece el ciclo completo de gestión de historias de usuario: creación, evaluación de calidad con FINVEST y división de épicas, demostrando que el ciclo puede automatizarse con skills Markdown y agentes de IA, sin código ejecutable propio.
 
-- [ ] FEAT-006 - Creación de Historias de Usuario
-- [ ] FEAT-007 - Evaluación de Calidad con Rúbrica FINVEST
-- [ ] FEAT-012 - División de Historias con 8 Patrones de Splitting
+- [ ] STORY-006 - Creación de Historias de Usuario
+- [ ] STORY-007 - Evaluación de Calidad con Rúbrica FINVEST
+- [ ] STORY-012 - División de Historias con 8 Patrones de Splitting
 
-**Ítems de soporte (sin FEAT propio):**
+**Ítems de soporte (sin historia propia):**
 - Agente `story-creator-agent.md` para el runtime Atlassian Rovo
 - Template `story-template.md` para historias de usuario
 
@@ -131,13 +131,13 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 **Objetivo:** Incorporar el pipeline completo de especificación de proyectos (ProjectSpecFactory): captura de intención, discovery de usuarios, especificación de requisitos y planificación de releases. Se añaden tres agentes especializados y el control WIP=1 para impedir proyectos activos simultáneos.
 
-- [ ] FEAT-001 - Captura de Intención Inicial
-- [ ] FEAT-003 - Especificación de Requisitos por Entrevista
-- [ ] FEAT-004 - Planificación de Releases con Features FEAT-NNN
-- [ ] FEAT-008 - Control WIP=1 en el Pipeline
-- [ ] FEAT-010 - Gates de Revisión Humana entre Fases
+- [ ] STORY-001 - Captura de Intención Inicial
+- [ ] STORY-003 - Especificación de Requisitos por Entrevista
+- [ ] STORY-004 - Planificación de Releases con Features STORY-NNN
+- [ ] STORY-008 - Control WIP=1 en el Pipeline
+- [ ] STORY-010 - Gates de Revisión Humana entre Fases
 
-**Ítems de soporte (sin FEAT propio):**
+**Ítems de soporte (sin historia propia):**
 - Agentes `project-pm`, `project-architect`, `project-ux`
 - Templates canónicos: `project-intent-template.md`, `project-template.md`, `project-plan-template.md`
 - Soporte Google Gemini Gems: prompts en `gem/prompts/`
@@ -155,15 +155,15 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 **Objetivo:** Añadir la capacidad de ingeniería inversa: dado un repositorio existente, el sistema genera automáticamente un `requirement-spec.md` completo mediante análisis paralelo de 4 agentes especializados y un sintetizador. Incluye soporte de scope acotado (`--focus`) y modo incremental (`--update`).
 
-- [ ] FEAT-017 - Ingeniería Inversa de Repositorios
-- [ ] FEAT-018 - Análisis de Arquitectura Técnica del Repositorio
-- [ ] FEAT-019 - Extracción de Features desde Perspectiva del Usuario
-- [ ] FEAT-020 - Extracción de Reglas de Negocio desde el Código
-- [ ] FEAT-021 - Reconstrucción del Mapa de Navegación
-- [ ] FEAT-023 - Análisis con Scope Acotado (--focus)
-- [ ] FEAT-024 - Modo Incremental de Actualización (--update)
+- [ ] STORY-017 - Ingeniería Inversa de Repositorios
+- [ ] STORY-018 - Análisis de Arquitectura Técnica del Repositorio
+- [ ] STORY-019 - Extracción de Features desde Perspectiva del Usuario
+- [ ] STORY-020 - Extracción de Reglas de Negocio desde el Código
+- [ ] STORY-021 - Reconstrucción del Mapa de Navegación
+- [ ] STORY-023 - Análisis con Scope Acotado (--focus)
+- [ ] STORY-024 - Modo Incremental de Actualización (--update)
 
-**Ítems de soporte (sin FEAT propio):**
+**Ítems de soporte (sin historia propia):**
 - Agente `reverse-engineer-synthesizer` (fusión de outputs en `requirement-spec.md`)
 - Niveles de confianza DIRECT / INFERRED / SUGGESTED en hallazgos
 - Archivos intermedios `.tmp/rfc-*.md`
@@ -183,10 +183,10 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 **Objetivo:** Release de consolidación y calidad. Se renombran skills para mayor consistencia semántica, se refuerzan las restricciones de input, se mejoran los ejemplos few-shot y se amplía el soporte multi-runtime. No añade nuevas funcionalidades sino que afina las herramientas existentes para producir evaluaciones más precisas y reducir errores de uso.
 
 **Mejoras sobre features existentes:**
-- Mejora de FEAT-007: renombrado `story-finvest-evaluation` → `story-evaluation`, gate explícito para imágenes adjuntas, actualización de `example-refinar.md` para representar con mayor fidelidad el caso INVEST aceptable con formato parcial.
-- Mejora de FEAT-006 y FEAT-012: sincronización de skills `story-creation` y `story-split` entre `.claude/skills/`, `.agents/skills/` y `.github/skills/` para garantizar paridad entre runtimes.
+- Mejora de STORY-007: renombrado `story-finvest-evaluation` → `story-evaluation`, gate explícito para imágenes adjuntas, actualización de `example-refinar.md` para representar con mayor fidelidad el caso INVEST aceptable con formato parcial.
+- Mejora de STORY-006 y STORY-012: sincronización de skills `story-creation` y `story-split` entre `.claude/skills/`, `.agents/skills/` y `.github/skills/` para garantizar paridad entre runtimes.
 
-**Ítems de soporte (sin FEAT propio):**
+**Ítems de soporte (sin historia propia):**
 - Agente `story-creator-agent.md` actualizado para operar con el conjunto completo de skills en Atlassian Rovo
 - README y CLAUDE.md revisados para reflejar la arquitectura definitiva del módulo de gestión de historias
 
@@ -202,12 +202,12 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 **Objetivo:** Expandir el pipeline de especificación con orquestación de sesión completa, story mapping según Jeff Patton como fase pre-planning, refinamiento iterativo de historias con gate anti-bucle, y centralización de templates compartidos. También incluye la primera auto-especificación del framework mediante ingeniería inversa.
 
-- [ ] FEAT-005 - User Story Mapping Interactivo
-- [ ] FEAT-011 - Integración Story Map en Planning
-- [ ] FEAT-013 - Ciclo Iterativo de Refinamiento de Historias
-- [ ] FEAT-015 - Pipeline Completo en una Sola Sesión
+- [ ] STORY-005 - User Story Mapping Interactivo
+- [ ] STORY-011 - Integración Story Map en Planning
+- [ ] STORY-013 - Ciclo Iterativo de Refinamiento de Historias
+- [ ] STORY-015 - Pipeline Completo en una Sola Sesión
 
-**Ítems de soporte (sin FEAT propio):**
+**Ítems de soporte (sin historia propia):**
 - Agentes `project-story-mapper` y `story-product-owner`
 - Estandarización de assets por skill en `./.claude/skills/*/assets/`
 - Limpieza de directorios legacy `.agents/` y `.github/` desactualizados
@@ -226,9 +226,9 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 **Objetivo:** Automatizar la creación de los dos artefactos clave posteriores al planning: el documento de release (a partir de `project-plan.md`) y las historias de usuario derivadas (a partir del release generado), cerrando el ciclo desde el plan hasta el backlog de historias listo para desarrollo.
 
-- [ ] FEAT-027 - Validación de Formato de Release
-- [ ] FEAT-028 - Generación de Especificaciones de Release
-- [ ] FEAT-029 - Generación de Historias desde Release
+- [ ] STORY-027 - Validación de Formato de Release
+- [ ] STORY-028 - Generación de Especificaciones de Release
+- [ ] STORY-029 - Generación de Historias desde Release
 
 **Criterios de éxito:**
 - [ ] El skill `release-format-validation` produce APROBADO, REFINAR (con lista de secciones faltantes) o RECHAZADO para cualquier archivo de release dado.
@@ -241,9 +241,9 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 **Objetivo:** Completar la resiliencia del pipeline ante interrupciones, añadir búsqueda de historias por término y establecer trazabilidad bidireccional del backlog con IDs únicos ST-00X.
 
-- [ ] FEAT-009 - Retoma de Proyecto Interrumpido
-- [ ] FEAT-014 - Búsqueda de Historias por Término
-- [ ] FEAT-016 - Backlog de Historias con Trazabilidad
+- [ ] STORY-009 - Retoma de Proyecto Interrumpido
+- [ ] STORY-014 - Búsqueda de Historias por Término
+- [ ] STORY-016 - Backlog de Historias con Trazabilidad
 
 **Criterios de éxito:**
 - [ ] Al retomar un proyecto interrumpido, el agente no re-pregunta ninguna sección ya completada y reanuda desde la primera sección con contenido ausente o incompleto.
@@ -256,9 +256,9 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 **Objetivo:** Incorporar las herramientas para crear, benchmarkear y distribuir nuevas skills, convirtiendo al framework en un meta-framework extensible por la comunidad.
 
-- [ ] FEAT-022 - Creación de Nuevas Skills con Ciclo Iterativo
-- [ ] FEAT-025 - Benchmarking Comparativo de Versiones de Skills
-- [ ] FEAT-026 - Empaquetado y Distribución de Skills
+- [ ] STORY-022 - Creación de Nuevas Skills con Ciclo Iterativo
+- [ ] STORY-025 - Benchmarking Comparativo de Versiones de Skills
+- [ ] STORY-026 - Empaquetado y Distribución de Skills
 
 **Criterios de éxito:**
 - [ ] El sistema `skill-master` permite crear una nueva skill completa (SKILL.md + casos de prueba) en una sesión guiada.

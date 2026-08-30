@@ -64,18 +64,18 @@ El workflow completo queda:
 - Reemplazar sección header: `## 🖇️ DELIVER (Definición de Hecho para la fase de Entrega)`
 - Reemplazar referencias `INTEGRATION` → `DELIVER` e `Integración` → `Entrega`.
 
-### Grupo 4 — Specs de historia FEAT-072 (story-acceptance)
+### Grupo 4 — Specs de historia STORY-072 (story-acceptance)
 
 Los artefactos de la historia que implementó `story-acceptance` contienen referencias al estado. Actualizar:
 
-- `docs/specs/stories/FEAT-072-skill-story-acceptance/story.md`
-- `docs/specs/stories/FEAT-072-skill-story-acceptance/design.md`
-- `docs/specs/stories/FEAT-072-skill-story-acceptance/tasks.md`
-- `docs/specs/stories/FEAT-072-skill-story-acceptance/analyze.md`
-- `docs/specs/stories/FEAT-072-skill-story-acceptance/verify-report.md`
-- `docs/specs/stories/FEAT-072-skill-story-acceptance/acceptance-report.md`
-- `docs/specs/stories/FEAT-072-skill-story-acceptance/code-review-report.md`
-- `docs/specs/stories/FEAT-072-skill-story-acceptance/implement-report.md`
+- `docs/specs/stories/STORY-072-skill-story-acceptance/story.md`
+- `docs/specs/stories/STORY-072-skill-story-acceptance/design.md`
+- `docs/specs/stories/STORY-072-skill-story-acceptance/tasks.md`
+- `docs/specs/stories/STORY-072-skill-story-acceptance/analyze.md`
+- `docs/specs/stories/STORY-072-skill-story-acceptance/verify-report.md`
+- `docs/specs/stories/STORY-072-skill-story-acceptance/acceptance-report.md`
+- `docs/specs/stories/STORY-072-skill-story-acceptance/code-review-report.md`
+- `docs/specs/stories/STORY-072-skill-story-acceptance/implement-report.md`
 
 Estrategia: `replace_all` de `INTEGRATION` → `DELIVER` en cada archivo. Los títulos del frontmatter (`title`) también se actualizan si contienen el término.
 
@@ -83,7 +83,7 @@ Estrategia: `replace_all` de `INTEGRATION` → `DELIVER` en cada archivo. Los t�
 
 - `README.md` — flujo de workflow en línea 39.
 - `docs/specs/projects/PROJ-01-agile-sddf/project.md` — enum de status en glosario (línea 574).
-- `docs/specs/releases/EPIC-13-quality-gates-con-dod-en-story-workflow/release.md` — descripción de feature FEAT-072.
+- `docs/specs/releases/EPIC-13-quality-gates-con-dod-en-story-workflow/release.md` — descripción de feature STORY-072.
 - `docs/specs/releases/EPIC-17-remediating-and-improvement/plan-09-state-machine-canonical-document.md` — documento del canonical state machine.
 
 ### Grupo 6 — Examples y evals

@@ -39,7 +39,7 @@
       "type": "happy-path",
       "description": "El skill detecta al inicio que existe al menos una historia con status SPECIFY / substatus IN-PROGRESS en $SPECS_BASE/specs/03-stories/. Debe ofrecer al usuario la opción de retomar el backlog o crear una historia nueva, sin iniciar story-creation de forma automática.",
       "input": {
-        "context": "Existe docs/specs/03-stories/FEAT-010-login-usuario/story.md con frontmatter status: SPECIFY y substatus: IN-PROGRESS creado en una sesión anterior."
+        "context": "Existe docs/specs/03-stories/STORY-010-login-usuario/story.md con frontmatter status: SPECIFY y substatus: IN-PROGRESS creado en una sesión anterior."
       },
       "expected": {
         "contains": [
@@ -84,7 +84,7 @@
       "type": "edge-case",
       "description": "story-evaluation devuelve decision DIVIDIR para la historia activa. El orquestador debe invocar story-split, registrar las historias hijas con ID ST-00X, actualizar su frontmatter a SPECIFY/IN-PROGRESS, marcar la historia origen como 'dividida en historias derivadas' y agregar las hijas a la cola del backlog para continuar refinándolas.",
       "input": {
-        "context": "Historia FEAT-020 con alcance muy amplio (módulo completo de autenticación con registro, login, 2FA y recuperación de contraseña). story-evaluation retorna decision: DIVIDIR con recomendación de dividir en al menos 3 historias independientes."
+        "context": "Historia STORY-020 con alcance muy amplio (módulo completo de autenticación con registro, login, 2FA y recuperación de contraseña). story-evaluation retorna decision: DIVIDIR con recomendación de dividir en al menos 3 historias independientes."
       },
       "expected": {
         "contains": [
@@ -109,7 +109,7 @@
       "type": "edge-case",
       "description": "story-evaluation devuelve decision REFINAR. El orquestador ejecuta story-improve (Paso 5A) y luego story-product-owner (Paso 5B). Tras el refinamiento, el gate anti-bucle (Paso 6) debe presentar al usuario exactamente tres opciones explícitas sin volver automáticamente al Paso 3.",
       "input": {
-        "context": "Historia FEAT-030 con scores I=2, N=3, E=3 en el reporte FINVEST. story-evaluation retorna decision: REFINAR. story-improve aplica mejoras y genera story-improvement-log.md."
+        "context": "Historia STORY-030 con scores I=2, N=3, E=3 en el reporte FINVEST. story-evaluation retorna decision: REFINAR. story-improve aplica mejoras y genera story-improvement-log.md."
       },
       "expected": {
         "contains": [

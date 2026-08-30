@@ -75,7 +75,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 
 ## Parámetros
 
-- `{story_id}` — identificador de la historia (ej. `FEAT-064`)
+- `{story_id}` — identificador de la historia (ej. `STORY-064`)
 - `{story_path}` — ruta explícita al directorio de la historia (opcional)
 - `--single-agent` — modo agente único para historias ≤3 archivos modificados (lanza solo el Tech-Lead-Reviewer)
 
@@ -137,7 +137,7 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 Si no se proporcionó ningún argumento, preguntar:
 ```
 ¿Qué historia deseas revisar?
-Proporciona el ID (ej. FEAT-064) o la ruta completa al directorio.
+Proporciona el ID (ej. STORY-064) o la ruta completa al directorio.
 ```
 
 #### 1b. Resolución del directorio de la historia
@@ -317,7 +317,7 @@ Lanzar simultáneamente los siguientes subagentes y skill, pasando a cada agente
 - Invocación: `security-audit --repo $SDDF_ROOT --story $STORY_DIR`
 - Resuelve archivos modificados por la historia via git diff o tasks.md (delegado al skill)
 - Output: `.tmp/security-audit/<basename($STORY_DIR)>/audit-report.md`
-- Registrar `$SEC_AUDIT_REPORT = .tmp/security-audit/<basename($STORY_DIR)>/audit-report.md` (ej. `.tmp/security-audit/FEAT-059-login-flow/audit-report.md`) para usarla en el Paso 4a
+- Registrar `$SEC_AUDIT_REPORT = .tmp/security-audit/<basename($STORY_DIR)>/audit-report.md` (ej. `.tmp/security-audit/STORY-059-login-flow/audit-report.md`) para usarla en el Paso 4a
 
 Mostrar progreso:
 ```
@@ -632,8 +632,8 @@ Ejecuta /story-code-review {story_id} nuevamente tras corregir los hallazgos.
 
 | Artefacto | Condición |
 |-----------|-----------|
-| `$SPECS_BASE/specs/03-stories/FEAT-NNN/code-review-report.md` | Siempre |
-| `$SPECS_BASE/specs/03-stories/FEAT-NNN/fix-directives.md` | Solo si `needs-changes` |
+| `$SPECS_BASE/specs/03-stories/STORY-NNN/code-review-report.md` | Siempre |
+| `$SPECS_BASE/specs/03-stories/STORY-NNN/fix-directives.md` | Solo si `needs-changes` |
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |

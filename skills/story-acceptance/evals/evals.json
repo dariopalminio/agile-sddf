@@ -9,7 +9,7 @@
       "type": "happy-path",
       "description": "Flujo completo con historia en VERIFY/DONE, 2 escenarios Gherkin y sección ACCEPTANCE en el DoD. El validador responde PASS a todos los criterios. El skill debe generar acceptance-report.md con final-status ACCEPTANCE-APPROVED, session-status complete, y actualizar story.md a ACCEPTANCE/DONE.",
       "input": {
-        "story_id": "FEAT-055",
+        "story_id": "STORY-055",
         "story_status": "VERIFY",
         "story_substatus": "DONE",
         "gherkin_criterios": 2,
@@ -44,7 +44,7 @@
       "type": "fail-path",
       "description": "Historia en VERIFY/DONE. El validador responde FAIL con observación al segundo criterio Gherkin. El skill debe generar acceptance-report.md con final-status ACCEPTANCE-REJECTED, y actualizar story.md a READY-FOR-IMPLEMENT/DONE. El criterio FAIL debe contener la observación registrada.",
       "input": {
-        "story_id": "FEAT-060",
+        "story_id": "STORY-060",
         "story_status": "VERIFY",
         "story_substatus": "DONE",
         "gherkin_criterios": 2,
@@ -79,7 +79,7 @@
       "type": "fail-fast",
       "description": "La historia tiene status IMPLEMENT y substatus IN-PROGRESS (no cumple la precondición). El skill debe mostrar el error con el estado actual y los estados válidos requeridos (VERIFY/DONE o ACCEPTANCE/IN-PROGRESS) y no modificar ningún archivo.",
       "input": {
-        "story_id": "FEAT-070",
+        "story_id": "STORY-070",
         "story_status": "IMPLEMENT",
         "story_substatus": "IN-PROGRESS"
       },
@@ -108,7 +108,7 @@
       "type": "edge-case",
       "description": "Historia en VERIFY/DONE. El archivo definition-of-done-story.md no contiene sección ACCEPTANCE. El skill debe emitir un aviso y continuar la sesión usando únicamente los criterios Gherkin de story.md como criterios a validar.",
       "input": {
-        "story_id": "FEAT-080",
+        "story_id": "STORY-080",
         "story_status": "VERIFY",
         "story_substatus": "DONE",
         "dod_has_acceptance_section": false,
@@ -136,7 +136,7 @@
       "type": "edge-case",
       "description": "Existe un acceptance-report.md con session-status partial: 1 de 2 criterios evaluados (criterio 1 = APPROVED). Al ejecutar el skill nuevamente y responder 'c' para continuar, el skill debe reanudar desde el criterio 2 sin repetir el criterio 1 ya evaluado, y al finalizar generar el reporte completo.",
       "input": {
-        "story_id": "FEAT-062",
+        "story_id": "STORY-062",
         "story_status": "ACCEPTANCE",
         "story_substatus": "IN-PROGRESS",
         "existing_report": {
@@ -169,7 +169,7 @@
       "type": "edge-case",
       "description": "Historia en VERIFY/DONE. El validador responde BLOCKED con razón al primer criterio y APPROVED al resto. El skill debe generar acceptance-report.md con final-status ACCEPTANCE-BLOCKED y actualizar story.md a ACCEPTANCE/BLOCKED.",
       "input": {
-        "story_id": "FEAT-085",
+        "story_id": "STORY-085",
         "story_status": "VERIFY",
         "story_substatus": "DONE",
         "gherkin_criterios": 2,
@@ -203,7 +203,7 @@
       "type": "edge-case",
       "description": "Se ejecuta con --dry-run. El skill debe listar todos los criterios Gherkin y DoD a validar sin iniciar la sesión interactiva, sin actualizar el frontmatter de story.md y sin crear acceptance-report.md.",
       "input": {
-        "story_id": "FEAT-055",
+        "story_id": "STORY-055",
         "story_status": "VERIFY",
         "story_substatus": "DONE",
         "flags": ["--dry-run"],
@@ -233,7 +233,7 @@
       "type": "edge-case",
       "description": "Existe un acceptance-report.md con session-status partial. Se ejecuta con --restart. El skill debe reiniciar desde el primer criterio sin preguntar al usuario, descartando la sesión anterior (el historial se preserva en la sección de historial del nuevo reporte).",
       "input": {
-        "story_id": "FEAT-062",
+        "story_id": "STORY-062",
         "story_status": "ACCEPTANCE",
         "story_substatus": "IN-PROGRESS",
         "flags": ["--restart"],
@@ -267,7 +267,7 @@
       "type": "edge-case",
       "description": "Historia en VERIFY/DONE con 3 criterios. El validador responde FAIL al criterio 1 y BLOCKED al criterio 2, APPROVED al criterio 3. Según la regla: si hay ≥1 REJECTED + ≥1 BLOCKED → final-status ACCEPTANCE-REJECTED, story.md regresa a READY-FOR-IMPLEMENT/DONE.",
       "input": {
-        "story_id": "FEAT-090",
+        "story_id": "STORY-090",
         "story_status": "VERIFY",
         "story_substatus": "DONE",
         "gherkin_criterios": 3,
@@ -301,7 +301,7 @@
       "type": "fail-fast",
       "description": "skill-preflight retorna estado de error (entorno inválido: SDDF_ROOT no configurado o directorio de stories faltante). El skill debe detenerse en el Paso 0 sin avanzar a la verificación de precondiciones ni modificar ningún archivo.",
       "input": {
-        "story_id": "FEAT-055",
+        "story_id": "STORY-055",
         "preflight_status": "invalid",
         "error": "SDDF_ROOT no está configurado"
       },
@@ -326,7 +326,7 @@
       "type": "edge-case",
       "description": "El validador responde FAIL a un criterio pero no proporciona observación (texto vacío). El skill debe rechazar la respuesta y solicitar observación obligatoria antes de continuar.",
       "input": {
-        "story_id": "FEAT-055",
+        "story_id": "STORY-055",
         "story_status": "VERIFY",
         "story_substatus": "DONE",
         "gherkin_criterios": 1,
@@ -355,7 +355,7 @@
       "type": "edge-case",
       "description": "El validador responde 'q' (QUIT) durante la sesión interactiva tras evaluar el primer criterio. El skill debe guardar acceptance-report.md con session-status partial, mantener story.md en ACCEPTANCE/IN-PROGRESS y mostrar el mensaje de sesión guardada con instrucción para reanudar.",
       "input": {
-        "story_id": "FEAT-055",
+        "story_id": "STORY-055",
         "story_status": "VERIFY",
         "story_substatus": "DONE",
         "gherkin_criterios": 2,

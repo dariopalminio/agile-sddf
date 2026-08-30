@@ -2,7 +2,7 @@
 type: plan
 id: plan-14
 slug: plan-14-evals-standardization
-title: "Estandarización del esquema de evals.json (FEAT-055)"
+title: "Estandarización del esquema de evals.json (STORY-055)"
 status: COMPLETED
 substatus: DONE
 parent: EPIC-17

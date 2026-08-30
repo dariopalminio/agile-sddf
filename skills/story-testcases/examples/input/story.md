@@ -1,7 +1,7 @@
 ---
 type: story
-id: FEAT-099
-slug: FEAT-099-exportar-datos-csv
+id: STORY-099
+slug: STORY-099-exportar-datos-csv
 title: "Exportar datos en CSV"
 status: PLANNING
 substatus: IN-PROGRESS

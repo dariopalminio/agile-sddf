@@ -82,10 +82,10 @@ Paso 5 → Paso 6 (Resumen final) — tabla dinámica según modo activo; estado
 ### Verificación
 Tras la implementación, verificar manualmente:
 
-/story-plan FEAT-XYZ (sin flags) → debe ejecutar los 4 pasos y generar design.md, tasks.md, testcases.md, analyze.md
-/story-plan FEAT-XYZ --only-tasks → debe ejecutar solo los 3 pasos originales (sin testcases.md)
-/story-plan FEAT-XYZ --only-testcases → debe ejecutar design → testcases → analyze (sin tasks.md)
-/story-plan FEAT-XYZ --only-tasks --only-testcases → debe reportar error de flags mutuamente excluyentes y detenerse
-/story-plan FEAT-XYZ --skip-analyze → default sin analyze (design → tasking → testcases)
-/story-plan FEAT-XYZ --only-tasks --skip-analyze → solo design → tasking (sin testcases ni analyze)
+/story-plan STORY-XYZ (sin flags) → debe ejecutar los 4 pasos y generar design.md, tasks.md, testcases.md, analyze.md
+/story-plan STORY-XYZ --only-tasks → debe ejecutar solo los 3 pasos originales (sin testcases.md)
+/story-plan STORY-XYZ --only-testcases → debe ejecutar design → testcases → analyze (sin tasks.md)
+/story-plan STORY-XYZ --only-tasks --only-testcases → debe reportar error de flags mutuamente excluyentes y detenerse
+/story-plan STORY-XYZ --skip-analyze → default sin analyze (design → tasking → testcases)
+/story-plan STORY-XYZ --only-tasks --skip-analyze → solo design → tasking (sin testcases ni analyze)
 

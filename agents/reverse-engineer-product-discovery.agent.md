@@ -101,14 +101,14 @@ Escribe el resultado en `.tmp/rfc-features.md`. **Escribe el archivo aunque el a
 ## Features by Domain
 
 ### [Nombre del Dominio]
-- **FEAT-001**: [Nombre de la Feature] `[DIRECT|INFERRED|SUGGESTED]`
+- **STORY-001**: [Nombre de la Feature] `[DIRECT|INFERRED|SUGGESTED]`
   - **Descripción**: [qué puede hacer el usuario con esta feature]
   - **Tipo**: [Core | Edge case]
   - **Source**: [archivo(s) de referencia]
   - **Ruta/Endpoint asociado**: [path si aplica]
 
 ### [Otro Dominio]
-- **FEAT-NNN**: ...
+- **STORY-NNN**: ...
 
 ## UI Text Signals
 [Textos de UI encontrados que revelan features — agrupados por tipo]

@@ -37,7 +37,7 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
 ## 1.4. Beneficios Clave
 
 - Automatización del ciclo completo de especificación: desde la intención inicial (`project-intent.md`) hasta el plan de releases (`project-plan.md`) con gates de revisión humana en cada etapa
-- Trazabilidad completa entre intención, requisitos, historias de usuario y plan de backlog, con IDs únicos (`FEAT-NNN`) y control de estado por documento
+- Trazabilidad completa entre intención, requisitos, historias de usuario y plan de backlog, con IDs únicos (`STORY-NNN`) y control de estado por documento
 - Flexibilidad de plataforma: los mismos skills y agentes operan en Claude Code, GitHub Copilot, Codex/Cursor/OpenCode, Google Gemini y Atlassian Rovo sin modificar el código del framework
 - Calidad de historias de usuario garantizada mediante la rúbrica FINVEST (Formato + INVEST) con scores cuantitativos, decisiones accionables y ciclos de refinamiento automatizados
 - Ingeniería inversa de codebases existentes para generar especificaciones de requisitos automáticamente mediante análisis paralelo de 4 agentes especializados
@@ -76,7 +76,7 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
     - **Descripción**: Rol responsable de la calidad de las historias de usuario. Usa los skills `story-evaluation`, `story-split` y `story-refine` para garantizar que las historias cumplan la rúbrica FINVEST antes de entrar al sprint.
 
 - **US-004**: Arquitecto de Software
-    - **Descripción**: Rol representado por el agente `project-architect`. Conduce la entrevista de requisitos, extrae features FEAT-NNN y planifica releases con criterio de priorización (valor de negocio → dependencias → riesgo técnico → esfuerzo).
+    - **Descripción**: Rol representado por el agente `project-architect`. Conduce la entrevista de requisitos, extrae features STORY-NNN y planifica releases con criterio de priorización (valor de negocio → dependencias → riesgo técnico → esfuerzo).
 
 # 2. Requisitos
 
@@ -86,49 +86,49 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
     - **Descripción**: El sistema SHALL conducir una entrevista interactiva guiada para capturar el nombre del proyecto, el problema que resuelve, la visión, los beneficios clave, los criterios de éxito, las restricciones y los non-goals. El resultado se escribe en `$SPECS_BASE/specs/01-projects/project-intent.md` con `Estado: IN‑PROGRESS`.
     - **Prioridad**: Alta
     - **Usuario**: US-001, US-002
-    - **Fuente**: FEAT-001, `.claude/skills/project-begin/SKILL.md`
+    - **Fuente**: STORY-001, `.claude/skills/project-begin/SKILL.md`
 
 - **FR-002**: Discovery del proyecto con descubrimiento de usuarios y especificación de requisitos
     - **Descripción**: El sistema SHALL colaborar con el usuario en dos sub-fases: (1) Discovery de perfiles de usuario y sus dolores, y (2) Entrevista de especificación sección por sección del template de requisitos. El output es `$SPECS_BASE/specs/01-projects/project.md`.
     - **Prioridad**: Alta
     - **Usuario**: US-001, US-002, US-003
-    - **Fuente**: FEAT-002, `.claude/skills/project-discovery/SKILL.md`
+    - **Fuente**: STORY-002, `.claude/skills/project-discovery/SKILL.md`
 
 - **FR-003**: Planificación de proyecto con releases y backlog de features
-    - **Descripción**: El sistema SHALL extraer features atómicas con IDs FEAT-NNN desde el `requirement-spec.md`, priorizarlas según criterios (valor de negocio → dependencias → riesgo técnico → esfuerzo) y agruparlas en releases incrementales con MVP en Release 1 (mínimo 3-5 features, desplegable, con 2+ criterios de éxito medibles). El output es `$SPECS_BASE/specs/01-projects/project-plan.md`.
+    - **Descripción**: El sistema SHALL extraer features atómicas con IDs STORY-NNN desde el `requirement-spec.md`, priorizarlas según criterios (valor de negocio → dependencias → riesgo técnico → esfuerzo) y agruparlas en releases incrementales con MVP en Release 1 (mínimo 3-5 features, desplegable, con 2+ criterios de éxito medibles). El output es `$SPECS_BASE/specs/01-projects/project-plan.md`.
     - **Prioridad**: Alta
     - **Usuario**: US-002, US-004
-    - **Fuente**: FEAT-003, BR-043, BR-044, BR-045, `.claude/skills/project-planning/SKILL.md`
+    - **Fuente**: STORY-003, BR-043, BR-044, BR-045, `.claude/skills/project-planning/SKILL.md`
 
 - **FR-004**: Ejecución del pipeline de proyecto completo en una sola sesión
     - **Descripción**: El sistema SHALL permitir ejecutar las tres fases (Begin Intention → Discovery → Planning) en una sola sesión continua mediante el skill `project-flow`, con gates de revisión humana entre cada etapa y detección automática del estado actual del pipeline.
     - **Prioridad**: Alta
     - **Usuario**: US-001, US-002
-    - **Fuente**: FEAT-004, BR-023, `.claude/skills/project-flow/SKILL.md`
+    - **Fuente**: STORY-004, BR-023, `.claude/skills/project-flow/SKILL.md`
 
 - **FR-005**: Retoma de proyecto interrumpido
     - **Descripción**: El sistema SHALL detectar automáticamente el campo `Estado` de los documentos existentes en `$SPECS_BASE/specs/01-projects/` y reanudar el trabajo desde la fase o sección incompleta sin requerir configuración manual. El agente NO debe re-preguntar secciones ya completadas.
     - **Prioridad**: Alta
     - **Usuario**: US-001, US-002
-    - **Fuente**: FEAT-005, BR-039, BR-040
+    - **Fuente**: STORY-005, BR-039, BR-040
 
 - **FR-006**: Control de Pipeline de Proyecto con Work-In-Progress (WIP=1)
     - **Descripción**: El sistema SHALL verificar al inicio de cada pipeline si existe un documento con `Estado: IN‑PROGRESS`. Si existe, presenta al usuario las opciones "Sobrescribir" o "Retomar". No permite proyectos activos simultáneos sin confirmación explícita.
     - **Prioridad**: Alta
     - **Usuario**: US-001, US-002
-    - **Fuente**: FEAT-006, BR-037, BR-038
+    - **Fuente**: STORY-006, BR-037, BR-038
 
 - **FR-007**: Gates de revisión humana entre fases
     - **Descripción**: El sistema SHALL presentar un resumen del documento generado y solicitar confirmación del usuario antes de avanzar a la siguiente fase. El documento avanza a `Estado: Ready` solo cuando el usuario confirma. Si el usuario pide ajustes, el sistema regresa al agente correspondiente.
     - **Prioridad**: Alta
     - **Usuario**: US-001, US-002
-    - **Fuente**: FEAT-007, BR-025, BR-026
+    - **Fuente**: STORY-007, BR-025, BR-026
 
 - **FR-008**: Extracción dinámica de secciones de templates en runtime
     - **Descripción**: El sistema SHALL leer los headers `##` y los comentarios `<!-- -->` de los templates en tiempo de ejecución para derivar preguntas y completar secciones, sin lógica hardcodeada. Cambiar un template modifica automáticamente el comportamiento del agente.
     - **Prioridad**: Alta
     - **Usuario**: US-001, US-002, US-004
-    - **Fuente**: FEAT-008, BR-041
+    - **Fuente**: STORY-008, BR-041
 
 ## 2.1.2 User Story Mapping
 
@@ -136,13 +136,13 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
     - **Descripción**: El sistema SHALL conducir una sesión colaborativa para identificar personas, construir el backbone de actividades, definir el walking skeleton y trazar release slices. El output es `$SPECS_BASE/specs/01-projects/story-map.md` con mapa ASCII estilo Jeff Patton.
     - **Prioridad**: Media
     - **Usuario**: US-002, US-003
-    - **Fuente**: FEAT-009
+    - **Fuente**: STORY-009
 
 - **FR-010**: Integración del story map como guía de planificación
     - **Descripción**: El sistema SHALL detectar si existe `story-map.md` durante la fase de Planning y, si existe, usarlo como guía estructural para agrupar features en releases respetando el backbone como organizador de actividades del usuario.
     - **Prioridad**: Media
     - **Usuario**: US-002, US-004
-    - **Fuente**: FEAT-010, BR-021, BR-027
+    - **Fuente**: STORY-010, BR-021, BR-027
 
 ## 2.1.3 Gestión de Historias de Usuario
 
@@ -150,37 +150,37 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
     - **Descripción**: El sistema SHALL generar historias completas en formato Como/Quiero/Para con criterios de aceptación Gherkin (Dado/Cuando/Entonces), incluyendo mínimo 1 escenario principal y 1 escenario alternativo o de error. El output se guarda como `story-{slug}.md` en `$SPECS_BASE/specs/03-stories/`.
     - **Prioridad**: Alta
     - **Usuario**: US-003
-    - **Fuente**: FEAT-011, BR-007, BR-008, BR-009, BR-010
+    - **Fuente**: STORY-011, BR-007, BR-008, BR-009, BR-010
 
 - **FR-012**: Evaluación de calidad de historias con rúbrica FINVEST
     - **Descripción**: El sistema SHALL evaluar historias de usuario aplicando la rúbrica FINVEST (Formato + INVEST) con scores en escala Likert 1-5 por dimensión. La decisión final SHALL ser una de: APROBADA (FINVEST ≥ 4.0), REFINAR (3.0 ≤ FINVEST < 4.0), RECHAZAR (FINVEST < 3.0 o dimensión crítica = 1), DIVIDIR (S = 1). Si F_score < 2.5, el sistema rechaza sin evaluar INVEST.
     - **Prioridad**: Alta
     - **Usuario**: US-003
-    - **Fuente**: FEAT-012, BR-001, BR-002, BR-003, BR-011, BR-056, BR-057
+    - **Fuente**: STORY-012, BR-001, BR-002, BR-003, BR-011, BR-056, BR-057
 
 - **FR-013**: División de historias grandes (Story Splitting)
     - **Descripción**: El sistema SHALL dividir historias grandes en historias más pequeñas e independientes aplicando uno de los 8 patrones de splitting (pasos de flujo de trabajo, variaciones de reglas de negocio, variaciones de datos, complejidad de criterios, esfuerzo mayor, dependencias externas, pasos DevOps, TADs). Las historias derivadas del Patrón 8 (TADs) no se guardan como archivos de historia.
     - **Prioridad**: Alta
     - **Usuario**: US-003
-    - **Fuente**: FEAT-013, BR-006, BR-049
+    - **Fuente**: STORY-013, BR-006, BR-049
 
 - **FR-014**: Refinamiento iterativo de historias con ciclo completo
     - **Descripción**: El sistema SHALL orquestar un ciclo completo de creación → evaluación → división → mejora de historias con control de backlog (Estado: IN‑PROGRESS/Ready) y gate anti-bucle que solicita confirmación del usuario antes de reiterar. El sistema SHALL invocar al agente `story-product-owner` para fortalecer la redacción antes de re-evaluar.
     - **Prioridad**: Alta
     - **Usuario**: US-003
-    - **Fuente**: FEAT-014, BR-028, BR-029, BR-030, BR-031, BR-036
+    - **Fuente**: STORY-014, BR-028, BR-029, BR-030, BR-031, BR-036
 
 - **FR-015**: Búsqueda de historias por término o nombre de archivo
     - **Descripción**: El sistema SHALL permitir invocar los skills de story-creation o story-split con un término corto, buscar automáticamente en `$SPECS_BASE/specs/03-stories/` el archivo correspondiente, y solicitar selección al usuario si hay múltiples coincidencias.
     - **Prioridad**: Media
     - **Usuario**: US-003
-    - **Fuente**: FEAT-015, BR-053
+    - **Fuente**: STORY-015, BR-053
 
 - **FR-016**: Backlog de historias con trazabilidad de origen
     - **Descripción**: El sistema SHALL mantener un registro de backlog de sesión con ID, archivo, origen (original o derivado de split), estado y decisión FINVEST por historia, incluyendo trazabilidad de historias derivadas mediante IDs únicos (ST-00X).
     - **Prioridad**: Media
     - **Usuario**: US-003
-    - **Fuente**: FEAT-016, BR-031, BR-032
+    - **Fuente**: STORY-016, BR-031, BR-032
 
 ## 2.1.4 Ingeniería Inversa de Repositorios
 
@@ -188,43 +188,43 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
     - **Descripción**: El sistema SHALL analizar un repositorio existente mediante 4 agentes especializados en paralelo y un agente sintetizador, generando automáticamente `$SPECS_BASE/specs/01-projects/project.md`. Las secciones sin datos suficientes se marcan como `<!-- PENDING MANUAL REVIEW -->`.
     - **Prioridad**: Alta
     - **Usuario**: US-001, US-002, US-004
-    - **Fuente**: FEAT-017, BR-034, BR-052
+    - **Fuente**: STORY-017, BR-034, BR-052
 
 - **FR-018**: Análisis de arquitectura técnica del repositorio
     - **Descripción**: El sistema SHALL detectar el stack tecnológico, dependencias, frameworks, patrones arquitectónicos y puntos de integración del repositorio con niveles de confianza explícitos (DIRECT / INFERRED / SUGGESTED).
     - **Prioridad**: Alta
     - **Usuario**: US-004
-    - **Fuente**: FEAT-018
+    - **Fuente**: STORY-018
 
 - **FR-019**: Extracción de features desde perspectiva del usuario
     - **Descripción**: El sistema SHALL analizar rutas, endpoints, textos de UI, botones y componentes del repositorio para producir un inventario de features agrupado por dominio de negocio.
     - **Prioridad**: Alta
     - **Usuario**: US-004
-    - **Fuente**: FEAT-019
+    - **Fuente**: STORY-019
 
 - **FR-020**: Extracción de reglas de negocio desde el código
     - **Descripción**: El sistema SHALL analizar validaciones, permisos, workflows y lógica condicional del repositorio para producir un catálogo de reglas de negocio clasificadas por tipo (Validación / Permiso / Workflow / Negocio / Cálculo).
     - **Prioridad**: Alta
     - **Usuario**: US-004
-    - **Fuente**: FEAT-020
+    - **Fuente**: STORY-020
 
 - **FR-021**: Reconstrucción del mapa de navegación y flujos de usuario
     - **Descripción**: El sistema SHALL mapear la estructura de navegación del repositorio (rutas, pantallas, guards, flujos) y producir un árbol ASCII compatible con el template de requisitos.
     - **Prioridad**: Alta
     - **Usuario**: US-004
-    - **Fuente**: FEAT-021
+    - **Fuente**: STORY-021
 
 - **FR-022**: Análisis con scope acotado (--focus)
     - **Descripción**: El sistema SHALL permitir limitar el análisis de ingeniería inversa a una ruta específica del repositorio usando el flag `--focus <path>`.
     - **Prioridad**: Media
     - **Usuario**: US-001, US-004
-    - **Fuente**: FEAT-024
+    - **Fuente**: STORY-024
 
 - **FR-023**: Modo incremental de actualización de especificación (--update)
     - **Descripción**: El sistema SHALL re-analizar solo las secciones marcadas como `<!-- PENDING MANUAL REVIEW -->` en el documento existente al ejecutarse con el flag `--update`, preservando verbatim las secciones ya completas.
     - **Prioridad**: Media
     - **Usuario**: US-001, US-004
-    - **Fuente**: FEAT-023
+    - **Fuente**: STORY-023
 
 ## 2.1.5 Gestión y Creación de Skills (Meta-Framework)
 
@@ -232,19 +232,19 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
     - **Descripción**: El sistema SHALL permitir crear nuevas skills mediante un ciclo: captura de intención → redacción del SKILL.md → generación de casos de prueba → ejecución paralela (con/sin skill) → review del usuario → mejora hasta satisfacción.
     - **Prioridad**: Media
     - **Usuario**: US-001, US-004
-    - **Fuente**: FEAT-025
+    - **Fuente**: STORY-025
 
 - **FR-025**: Benchmarking comparativo de versiones de skills
     - **Descripción**: El sistema SHALL ejecutar casos de prueba en paralelo (con skill vs sin skill o versión anterior), gradear resultados contra aserciones y generar un viewer HTML para comparación cualitativa y cuantitativa.
     - **Prioridad**: Baja
     - **Usuario**: US-001
-    - **Fuente**: FEAT-026
+    - **Fuente**: STORY-026
 
 - **FR-026**: Empaquetado y distribución de skills
     - **Descripción**: El sistema SHALL permitir empaquetar una skill finalizada en un archivo `.skill` para distribuirla e instalarla en otros entornos.
     - **Prioridad**: Baja
     - **Usuario**: US-001
-    - **Fuente**: FEAT-028
+    - **Fuente**: STORY-028
 
 ## 2.1.6 Integración OpenSpec
 
@@ -252,25 +252,25 @@ Los builders, freelancers, desarrolladores y equipos ágiles que usan IA para ac
     - **Descripción**: El sistema SHALL crear un cambio OpenSpec con los artefactos `proposal.md`, `design.md` y `tasks.md` en `openspec/changes/<name>/` a partir de una descripción del usuario. Si el input es ambiguo, el sistema pregunta antes de proceder.
     - **Prioridad**: Alta
     - **Usuario**: US-004
-    - **Fuente**: FEAT-029, BR-050
+    - **Fuente**: STORY-029, BR-050
 
 - **FR-028**: Exploración y pensamiento previo al cambio (OpenSpec Explore)
     - **Descripción**: El sistema SHALL proveer un modo "thinking partner" para explorar ideas e investigar el codebase sin implementar código, generando artefactos OpenSpec solo a elección del usuario.
     - **Prioridad**: Alta
     - **Usuario**: US-004
-    - **Fuente**: FEAT-030
+    - **Fuente**: STORY-030
 
 - **FR-029**: Implementación de tareas de un cambio OpenSpec
     - **Descripción**: El sistema SHALL implementar las tareas pendientes de un cambio OpenSpec en secuencia, marcando checkboxes `- [ ]` → `- [x]`, y pausar ante ambigüedades o problemas de diseño revelados durante la implementación.
     - **Prioridad**: Alta
     - **Usuario**: US-004
-    - **Fuente**: FEAT-031, BR-051
+    - **Fuente**: STORY-031, BR-051
 
 - **FR-030**: Archivado de cambio completado con sincronización de specs
     - **Descripción**: El sistema SHALL verificar artefactos y tareas pendientes antes de archivar un cambio, ofrecer sincronizar delta specs hacia los specs principales, y mover el directorio a `openspec/changes/archive/YYYY-MM-DD-<name>/`.
     - **Prioridad**: Media
     - **Usuario**: US-004
-    - **Fuente**: FEAT-032, BR-033
+    - **Fuente**: STORY-032, BR-033
 
 ## 2.2. Requisitos No Funcionales
 
@@ -577,7 +577,7 @@ Sin referencias.
 | **INVEST** | Criterios de calidad de historias de usuario: Independent, Negotiable, Valuable, Estimable, Small, Testable |
 | **F_score** | Score de la dimensión Formato en la rúbrica FINVEST. Fórmula: `(puntaje_historia × 0.4) + (puntaje_criterios × 0.3) + (puntaje_gherkin × 0.3)` |
 | **FINVEST_Score** | Score combinado final. Fórmula: `(F_score + INVEST_Score) / 2` |
-| **FEAT-NNN** | Identificador único de feature en el plan de proyecto (ej: FEAT-001) |
+| **STORY-NNN** | Identificador único de feature en el plan de proyecto (ej: STORY-001) |
 | **TAD** | Tiny Act of Discovery — experimento de investigación generado por el Patrón 8 de story-split cuando la historia tiene demasiadas incógnitas para escribir historias concretas |
 | **OpenSpec** | Sistema propio de spec-driven change management con estructura `changes/specs` y CLI `openspec` |
 | **Gherkin** | Lenguaje de especificación de comportamiento usado en criterios de aceptación: Dado/Cuando/Entonces (Given/When/Then) |
@@ -620,7 +620,7 @@ Sin referencias.
 
 - Límite máximo de features por release no especificado para Release 2+. BR-043 define "3-5 features ideal" solo para MVP. **Pregunta sugerida**: ¿Cuántas features como máximo puede tener un release no-MVP?
 - Criterio de completitud de secciones en retoma no completamente especificado. **Pregunta sugerida**: ¿Una sección con una sola palabra o frase muy breve se considera completa o incompleta al retomar?
-- No existe regla explícita que vincule `story-*.md` con `FEAT-NNN` del plan. **Pregunta sugerida**: ¿Cómo se debe vincular una historia de usuario con su feature correspondiente para garantizar trazabilidad bidireccional?
+- No existe regla explícita que vincule `story-*.md` con `STORY-NNN` del plan. **Pregunta sugerida**: ¿Cómo se debe vincular una historia de usuario con su feature correspondiente para garantizar trazabilidad bidireccional?
 - No hay límite de iteraciones máximo en `story-refine`. **Pregunta sugerida**: ¿Cuántas veces puede una historia iterarse antes de forzar una decisión definitiva?
 - Las reglas internas del CLI `openspec` no son visibles en el repositorio analizado. **Pregunta sugerida**: ¿Hay documentación del CLI openspec disponible que deba incluirse en esta especificación?
 - No hay política de nombres únicos de proyectos para múltiples proyectos en el mismo repositorio más allá de WIP=1. **Pregunta sugerida**: ¿Puede el mismo repositorio gestionar múltiples proyectos con carpetas separadas?

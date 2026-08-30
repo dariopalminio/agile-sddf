@@ -1,6 +1,6 @@
 ---
 name: epic-generate-all-stories
-description: "Genera historias de usuario (directorio FEAT-NNN-nombre/story.md) para todas las épicas existentes en `<SPECS_BASE>/specs/02-epics/`, aplicando el mismo flujo de extracción y generación del skill epic-generate-stories. Procesa todos los directorios de épica en orden alfabético en una sola invocación."
+description: "Genera historias de usuario (directorio STORY-NNN-nombre/story.md) para todas las épicas existentes en `<SPECS_BASE>/specs/02-epics/`, aplicando el mismo flujo de extracción y generación del skill epic-generate-stories. Procesa todos los directorios de épica en orden alfabético en una sola invocación."
 triggers:
   - "epic-generate-all-stories"
   - "generar todas las historias"
@@ -14,7 +14,7 @@ triggers:
 
 ## Objetivo
 
-Escanea todos los **directorios** de épica en `$SPECS_BASE/specs/02-epics/`, lee `epic.md` de cada uno, y genera automáticamente un directorio `FEAT-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature encontrada, siguiendo exactamente la estructura de `$SPECS_BASE/specs/templates/story-template.md`. Es el equivalente batch de `/epic-generate-stories`.
+Escanea todos los **directorios** de épica en `$SPECS_BASE/specs/02-epics/`, lee `epic.md` de cada uno, y genera automáticamente un directorio `STORY-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature encontrada, siguiendo exactamente la estructura de `$SPECS_BASE/specs/templates/story-template.md`. Es el equivalente batch de `/epic-generate-stories`.
 
 **Qué hace este skill:**
 - Descubre automáticamente todas las épicas en `$SPECS_BASE/specs/02-epics/`
@@ -69,7 +69,7 @@ Sin parámetros — el skill no expone flags ni argumentos posicionales.
 - El skill **no modifica** los archivos de épica
 - El skill procesa **todas** las features de cada épica (pendientes `[ ]` y completadas `[x]`)
 - El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
-- Si dos features en distintos épicas generan el mismo nombre de directorio (mismo ID y slug), el segundo se nombra con sufijo `-bis` (ej. `FEAT-027-nombre-bis/`) e informa al usuario en el resumen
+- Si dos features en distintos épicas generan el mismo nombre de directorio (mismo ID y slug), el segundo se nombra con sufijo `-bis` (ej. `STORY-027-nombre-bis/`) e informa al usuario en el resumen
 - Las secciones opcionales de cada historia se incluyen con placeholder `[Por completar]` para facilitar la edición posterior
 - El orden de procesamiento es siempre alfabético por nombre de directorio de la épica, equivalente al orden numérico dado el patrón `EPIC-NN-nombre/`
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
@@ -114,11 +114,11 @@ Procesando en orden alfabético.
 
 Antes de procesar ningún épica, verificar qué historias ya existen en `$SPECS_BASE/specs/03-stories/` que serían generadas en este batch.
 
-Para ello, leer la sección `## Features` de cada `epic.md` descubierto en el Paso 1 y calcular los nombres de directorio que se generarían (`FEAT-[NNN]-[nombre-kebab]/`). Verificar cuáles de esos directorios ya existen en `$SPECS_BASE/specs/03-stories/`.
+Para ello, leer la sección `## Historias` de cada `epic.md` descubierto en el Paso 1 y calcular los nombres de directorio que se generarían (`STORY-[NNN]-[nombre-kebab]/`). Verificar cuáles de esos directorios ya existen en `$SPECS_BASE/specs/03-stories/`.
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios.
 > Para verificar si ya existe una historia, usar el patrón de archivo anidado:
-> `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/story.md`.
+> `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/story.md`.
 > Si Glob retorna ese archivo, el directorio existe. Nunca usar el patrón de directorio
 > desnudo — retornará vacío aunque el directorio exista, causando detección fallida.
 
@@ -128,8 +128,8 @@ Para ello, leer la sección `## Features` de cada `epic.md` descubierto en el Pa
 
 ```
 Se detectaron [N] directorios de historia que ya existen y serían sobreescritos:
-- $SPECS_BASE/specs/03-stories/FEAT-NNN-nombre/ (EPIC-XX)
-- $SPECS_BASE/specs/03-stories/FEAT-NNN-nombre/ (EPIC-YY)
+- $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/ (EPIC-XX)
+- $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/ (EPIC-YY)
 ...
 
 ¿Cómo deseas manejar los conflictos?
@@ -156,14 +156,14 @@ Iterar sobre cada archivo de épica en el orden alfabético establecido en el Pa
 
 #### 4a. Extraer features de la épica
 
-Leer la sección `## Features` del archivo de épica. Extraer cada línea de feature con el formato:
-- `- [ ] FEAT-NNN — Nombre: descripción` (pendiente)
-- `- [x] FEAT-NNN — Nombre: descripción` (completada)
+Leer la sección `## Historias` del archivo de épica. Extraer cada línea de feature con el formato:
+- `- [ ] STORY-NNN — Nombre: descripción` (pendiente)
+- `- [x] STORY-NNN — Nombre: descripción` (completada)
 - Variantes con `**` (bold), guion largo `—`, doble guión `--` o dos puntos como separador
 
-Capturar para cada feature: **ID** (ej. `FEAT-027`), **Nombre** (texto después del ID hasta el separador), **Descripción** (texto después del separador, si existe).
+Capturar para cada feature: **ID** (ej. `STORY-027`), **Nombre** (texto después del ID hasta el separador), **Descripción** (texto después del separador, si existe).
 
-**Si la sección `## Features` no existe o está vacía:**
+**Si la sección `## Historias` no existe o está vacía:**
 - Registrar: `[nombre-epica] — saltada (sin features)`
 - Continuar con el siguiente épica **sin interrumpir el batch**
 
@@ -179,9 +179,9 @@ Convertir el nombre de la feature a kebab-case:
 3. Reemplazar espacios y caracteres no alfanuméricos por guion `-`
 4. Eliminar guiones consecutivos y al inicio/final
 
-Nombre de directorio resultante: `FEAT-[NNN]-[nombre-kebab]`
+Nombre de directorio resultante: `STORY-[NNN]-[nombre-kebab]`
 
-Ruta del archivo de salida: `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/story.md`
+Ruta del archivo de salida: `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/story.md`
 
 **2. Gestionar idempotencia según la decisión del Paso 2:**
 - **(a) Sobreescribir todos:** sobreescribir sin preguntar
@@ -212,17 +212,19 @@ Generar al menos un escenario Gherkin principal (happy path) y uno alternativo/e
 
 **5. Escribir el archivo:**
 
-Crear el directorio `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/` si no existe, luego crear `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/specs/templates/story-template.md` infiriendo la información. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
+Crear el directorio `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/specs/templates/story-template.md` infiriendo la información. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
 - `status: READY-FOR-IMPLEMENT` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento)
+- `kind: feat` — tipo de historia por defecto; cambiar a `fix`, `chore` o `hotfix` según la naturaleza del trabajo (determina el prefijo de rama)
 
 Si no se puede leer el template, generar el archivo con la siguiente estructura de fallback:
 
 ```markdown
 ---
 type: story
-id: <FEAT-NNN>
+id: <STORY-NNN>
+kind: feat
 slug: <nombre-del-directorio-de-historia>
 title: "<Nombre de la feature>"
 status: READY-FOR-IMPLEMENT
@@ -284,12 +286,12 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 **Épicas sin features:** [N épicas que no tenían features]
 
 ### Directorios creados
-- $SPECS_BASE/specs/03-stories/FEAT-NNN-nombre/story.md  (EPIC-XX)
-- $SPECS_BASE/specs/03-stories/FEAT-NNN-nombre/story.md  (EPIC-YY)
+- $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/story.md  (EPIC-XX)
+- $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/story.md  (EPIC-YY)
 ...
 
 ### Directorios saltados (ya existían)
-- $SPECS_BASE/specs/03-stories/FEAT-NNN-nombre/  (EPIC-XX)
+- $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/  (EPIC-XX)
 ...
 
 ### Épicas sin features (no procesados)
@@ -307,11 +309,11 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
 | `$SPECS_BASE/specs/02-epics/` vacío o sin `epic.md` | `No se encontraron directorios de épica en $SPECS_BASE/specs/02-epics/` | Mostrar mensaje de orientación y detener |
 | Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/story-template.md` | Detener la ejecución del batch |
-| Épica sin sección `## Features` | — | Registrar como `[nombre-epica] — saltada (sin features)` y continuar con la siguiente épica |
+| Épica sin sección `## Historias` | — | Registrar como `[nombre-epica] — saltada (sin features)` y continuar con la siguiente épica |
 
 ---
 
 ## Salida
 
-- Directorios `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/story.md` creados — una historia por feature de cada épica procesada
+- Directorios `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/story.md` creados — una historia por feature de cada épica procesada
 - Resumen consolidado con: épicas procesadas, historias generadas, historias saltadas, épicas sin features

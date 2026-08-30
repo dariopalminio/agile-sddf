@@ -34,14 +34,14 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 ## Entrada
 
 - Texto libre de historia de usuario
-- Identificador `FEAT-NNN` de una historia existente en `$SPECS_BASE/specs/03-stories/`
+- Identificador `STORY-NNN` de una historia existente en `$SPECS_BASE/specs/03-stories/`
 - Ruta de archivo `story.md`
 
 ---
 
 ## Parámetros
 
-- `{story ID}` — texto libre, ID (ej. `FEAT-057`) o ruta de archivo de la historia a evaluar (obligatorio)
+- `{story ID}` — texto libre, ID (ej. `STORY-057`) o ruta de archivo de la historia a evaluar (obligatorio)
 
 ---
 
@@ -154,10 +154,10 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 
 ### Paso 6 — Guardar reporte en archivo
 
-**Condición:** el input fue proporcionado como ID (`FEAT-NNN`) o como ruta de archivo (no texto libre).
+**Condición:** el input fue proporcionado como ID (`STORY-NNN`) o como ruta de archivo (no texto libre).
 
 1. Resolver la ruta del directorio de la historia:
-   - Si el input fue un ID → buscar el directorio `$SPECS_BASE/specs/03-stories/FEAT-NNN-*/` usando Glob con el patrón `$SPECS_BASE/specs/03-stories/FEAT-NNN-*/story.md` y extraer el directorio padre.
+   - Si el input fue un ID → buscar el directorio `$SPECS_BASE/specs/03-stories/STORY-NNN-*/` usando Glob con el patrón `$SPECS_BASE/specs/03-stories/STORY-NNN-*/story.md` y extraer el directorio padre.
    - Si el input fue una ruta de archivo → usar el directorio que contiene ese archivo.
 2. Escribir el reporte completo (el mismo contenido mostrado en conversación) en:
    `<directorio-de-la-historia>/finvest-evaluation-report.md`
@@ -165,7 +165,7 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
    ```yaml
    ---
    type: finvest-evaluation
-   story-id: <FEAT-NNN>
+   story-id: <STORY-NNN>
    finvest-score: <score>
    decision: <APROBADA|REFINAR|RECHAZAR|DIVIDIR>
    evaluated: <YYYY-MM-DD>

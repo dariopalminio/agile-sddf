@@ -25,7 +25,7 @@
 
 ### Fase 1 — Leer template
 - Se lee `$SPECS_BASE/specs/templates/epic-template.md`
-- Secciones obligatorias: `Descripción`, `Features`, `Flujos Críticos / Smoke Tests`
+- Secciones obligatorias: `Descripción`, `Historias`, `Flujos Críticos / Smoke Tests`
 - Secciones opcionales: `Requerimiento`, `Impacto en Procesos Claves`, `Dependencias Críticas`, `Riesgos`, `Criterios de éxito`, `Notas adicionales`
 
 ### Fase 2 — Frontmatter
@@ -40,9 +40,9 @@
 ### Fase 3 — Secciones obligatorias
 - **Descripción:** "Integra la pasarela de pagos para permitir que usuarios realicen compras con tarjeta de crédito/débito. Resuelve la falta de monetización directa en la plataforma."
 - **Features:**
-  - `FEAT-001 - Pago con tarjeta: Procesar pagos con tarjeta Visa/Mastercard vía Stripe`
-  - `FEAT-002 - Historial de transacciones: Ver pagos realizados con fecha, monto y estado`
-  - `FEAT-003 - Reembolsos: Solicitar devolución de pago dentro de 30 días`
+  - `STORY-001 - Pago con tarjeta: Procesar pagos con tarjeta Visa/Mastercard vía Stripe`
+  - `STORY-002 - Historial de transacciones: Ver pagos realizados con fecha, monto y estado`
+  - `STORY-003 - Reembolsos: Solicitar devolución de pago dentro de 30 días`
 - **Flujos Críticos / Smoke Tests:**
   - Escenario 1: Pago exitoso — DADO usuario con tarjeta válida / CUANDO realiza pago / ENTONCES transacción aprobada y saldo debitado
   - Escenario 2: Pago rechazado — DADO usuario con fondos insuficientes / CUANDO intenta pagar / ENTONCES transacción rechazada sin cargo

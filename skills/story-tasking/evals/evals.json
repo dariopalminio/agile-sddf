@@ -39,7 +39,7 @@
       "type": "fail-fast",
       "description": "Cuando design.md no existe en el directorio de la historia, el skill emite error con icono ❌ y detiene la ejecucion sin generar tasks.md",
       "input": {
-        "input_path": "FEAT-001",
+        "input_path": "STORY-001",
         "flags": []
       },
       "expected": {
@@ -61,7 +61,7 @@
       "type": "error-handling",
       "description": "story_id que no existe bajo $SPECS_BASE/specs/03-stories/ emite error limpio con ❌ indicando que no se encontro la historia y detiene la ejecucion sin generar ningun archivo",
       "input": {
-        "input_path": "FEAT-999",
+        "input_path": "STORY-999",
         "flags": []
       },
       "expected": {

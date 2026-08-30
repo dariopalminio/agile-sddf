@@ -1,8 +1,8 @@
 ---
 alwaysApply: false
 type: story
-id: FEAT-057
-slug: FEAT-057-skill-para-diseno
+id: STORY-057
+slug: STORY-057-skill-para-diseno
 title: "Skill para Diseño (story-design)"
 status: READY-FOR-IMPLEMENT
 substatus: TODO

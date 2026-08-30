@@ -1,7 +1,7 @@
 ---
 type: story
-id: FEAT-000
-slug: FEAT-000-missing-artifacts
+id: STORY-000
+slug: STORY-000-missing-artifacts
 title: "Ejemplo: Historia con artefactos faltantes"
 status: IMPLEMENT
 substatus: DONE
@@ -21,7 +21,7 @@ updated: 2026-05-09
 ### Escenario – Artefactos ausentes
 ```gherkin
 Dado que falta "design.md" e "implement-report.md" en el directorio de la historia
-Cuando ejecuto "/story-code-review FEAT-000"
+Cuando ejecuto "/story-code-review STORY-000"
 Entonces el skill muestra el error con ambos faltantes listados
   Y detiene la ejecución sin generar ningún output parcial
 ```

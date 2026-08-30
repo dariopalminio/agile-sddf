@@ -12,7 +12,7 @@ parent: null
 
 > Registro de decisiones transversales de arquitectura y diseño del proyecto.
 > Complementa los otros dos niveles de registro de decisiones del framework:
-> decisiones de **historia** viven en el `design.md` de la historia (`docs/specs/stories/FEAT-NNN/design.md`),
+> decisiones de **historia** viven en el `design.md` de la historia (`docs/specs/stories/STORY-NNN/design.md`),
 > y decisiones de **cambio OpenSpec** en el `design.md` del change (`openspec/changes/`).
 
 ---
@@ -53,3 +53,4 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0002](ADR-0002-invocacion-agentes-locales-de-skill.md) | Contrato de invocación de agentes locales de skill | ACCEPTED | 2026-06-12 |
 | [ADR-0003](ADR-0003-workflow-canonico-story-y-epic.md) | Workflows canónicos de Story y Epic en el pipeline SDDF | ACCEPTED | 2026-06-14 |
 | [ADR-0004](ADR-0004-nivel-l2-epic-y-directorios-numerados.md) | El nivel L2 es una épica, y los niveles viven en directorios numerados | ACCEPTED | 2026-08-29 |
+| [ADR-0005](ADR-0005-prefijo-story-para-el-nivel-l1.md) | El ID del nivel L1 se prefija con `STORY`; el tipo de trabajo vive en el campo `kind` | ACCEPTED | 2026-08-29 |

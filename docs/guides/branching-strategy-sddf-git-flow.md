@@ -65,7 +65,7 @@ main  o----------------------------------o (tag v1.0.2)
     feat/<story-id> o--------------------o
 ```
 
-- **Nombres de ramas**: `feat/<story-id>`, `fix/<story-id>`, `chore/<story-id>`.
+- **Nombres de ramas**: `<kind>/<story-id>-<slug>`, donde `<kind>` es el campo `kind` del frontmatter de la historia — `feat/`, `fix/`, `chore/` o `hotfix/` (ej. `fix/STORY-087-error-in-npm-install-locally`). El ID nombra el **nivel** (L1) y `kind` el **tipo** de trabajo.
 - **Rama principal**: `main` – representa producción. Todo commit en `main` debe ser desplegable.  
 - **Ramas de historia**: `feat/<story-id>` – se crean desde `main`, contienen toda la especificación, diseño, tareas y código de la historia.  
 - **Conventional Commits**: `feat:`, `fix:`, `docs:`, `chore:`, etc.

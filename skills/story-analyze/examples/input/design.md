@@ -1,10 +1,10 @@
 ---
 alwaysApply: false
 type: design
-id: FEAT-099
-slug: FEAT-099-exportar-datos-csv-design
+id: STORY-099
+slug: STORY-099-exportar-datos-csv-design
 title: "Design: Exportar datos en CSV"
-story: FEAT-099
+story: STORY-099
 created: 2026-05-07
 updated: 2026-05-07
 ---
@@ -13,7 +13,7 @@ updated: 2026-05-07
 
 ## Contexto
 
-**Historia de origen:** FEAT-099 — Exportar datos en CSV
+**Historia de origen:** STORY-099 — Exportar datos en CSV
 
 El usuario necesita descargar sus datos en CSV desde un botón en la UI. El flujo involucra un servicio backend que consulta y serializa los datos, un endpoint HTTP que devuelve el archivo, y un componente frontend que dispara la descarga automática.
 

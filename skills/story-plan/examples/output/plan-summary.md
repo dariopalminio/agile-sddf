@@ -1,14 +1,14 @@
-# Ejemplo de output esperado: /story-plan FEAT-099
+# Ejemplo de output esperado: /story-plan STORY-099
 
-Este documento muestra el resumen final que `story-plan` produce al completar el pipeline de planning para la historia de ejemplo `FEAT-099`.
+Este documento muestra el resumen final que `story-plan` produce al completar el pipeline de planning para la historia de ejemplo `STORY-099`.
 
 ---
 
 ## Output en consola durante la ejecución
 
 ```
-🚀 Iniciando pipeline de planning para: FEAT-099
-   Directorio: docs/specs/03-stories/FEAT-099-exportar-reporte-pdf/
+🚀 Iniciando pipeline de planning para: STORY-099
+   Directorio: docs/specs/03-stories/STORY-099-exportar-reporte-pdf/
    Pasos: story-design → story-tasking → story-analyze
 
 [Paso 0] ✓ Entorno verificado — SPECS_BASE = docs
@@ -27,7 +27,7 @@ Este documento muestra el resumen final que `story-plan` produce al completar el
 
 ```
 ─────────────────────────────────────────────────────────────────────
- Planning: FEAT-099 — Exportar reporte de actividad como PDF
+ Planning: STORY-099 — Exportar reporte de actividad como PDF
 ─────────────────────────────────────────────────────────────────────
  Paso            │ Estado │ Artefacto
 ─────────────────────────────────────────────────────────────────────
@@ -47,7 +47,7 @@ Todos los artefactos están listos. La historia puede pasar a implementación.
 
 ```
 ─────────────────────────────────────────────────────────────────────
- Planning: FEAT-099 — Exportar reporte de actividad como PDF
+ Planning: STORY-099 — Exportar reporte de actividad como PDF
 ─────────────────────────────────────────────────────────────────────
  Paso            │ Estado │ Artefacto
 ─────────────────────────────────────────────────────────────────────
@@ -59,7 +59,7 @@ Todos los artefactos están listos. La historia puede pasar a implementación.
 ⚠️ Planning completado — requiere revisión
 
 Se detectaron inconsistencias entre los artefactos. Revisa antes de implementar:
-→ docs/specs/03-stories/FEAT-099-exportar-reporte-pdf/analyze.md
+→ docs/specs/03-stories/STORY-099-exportar-reporte-pdf/analyze.md
 
 Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés listo.
 ```
@@ -70,7 +70,7 @@ Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés l
 
 ```
 ─────────────────────────────────────────────────────────────────────
- Planning: FEAT-099 — Exportar reporte de actividad como PDF
+ Planning: STORY-099 — Exportar reporte de actividad como PDF
 ─────────────────────────────────────────────────────────────────────
  Paso            │ Estado │ Artefacto
 ─────────────────────────────────────────────────────────────────────
@@ -82,9 +82,9 @@ Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés l
 ✗ Pipeline interrumpido en: story-design
 
 Los artefactos generados antes del fallo están disponibles en:
-  docs/specs/03-stories/FEAT-099-exportar-reporte-pdf/
+  docs/specs/03-stories/STORY-099-exportar-reporte-pdf/
 
-Corrige el problema indicado arriba y re-ejecuta /story-plan FEAT-099.
+Corrige el problema indicado arriba y re-ejecuta /story-plan STORY-099.
 
 Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los artefactos existentes.
 ```
@@ -96,7 +96,7 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 Tras una ejecución exitosa, el directorio de la historia contendrá:
 
 ```
-docs/specs/03-stories/FEAT-099-exportar-reporte-pdf/
+docs/specs/03-stories/STORY-099-exportar-reporte-pdf/
 ├── story.md      (existía antes — no modificado)
 ├── design.md     (generado por story-design)
 ├── tasks.md      (generado por story-tasking)

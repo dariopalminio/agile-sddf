@@ -22,7 +22,7 @@ Crea una historia de usuario completa a partir de una necesidad o feature descri
 - Aplica los criterios de calidad de Mike Cohn (Como/Quiero/Para) y el marco 3 C's
 - Genera escenarios Gherkin (Dado/Cuando/Entonces) con al menos 1 happy path y 1 escenario alternativo
 - Verifica el cumplimiento de INVEST antes de guardar
-- Asigna automáticamente el siguiente ID `FEAT-NNN` disponible y guarda en la ruta canónica
+- Asigna automáticamente el siguiente ID `STORY-NNN` disponible y guarda en la ruta canónica
 
 **Qué NO hace este skill:**
 - Evaluar la calidad de la historia (eso corresponde a `/story-evaluation`)
@@ -207,38 +207,39 @@ Si alguna dimensión falla, ajustar la historia antes de continuar. Si `S` es de
 
 ### Paso 7 — Guardar y entregar
 
-#### Derivar el siguiente ID (FEAT-NNN)
+#### Derivar el siguiente ID (STORY-NNN)
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
-> `specs/03-stories/FEAT-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> `specs/03-stories/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
 > el patrón de archivo anidado descrito a continuación.
 
-1. Usar Glob con el patrón `$SPECS_BASE/specs/03-stories/FEAT-*/story.md` para localizar todos los
-   archivos `story.md` dentro de directorios `FEAT-NNN-*`. A partir de cada ruta retornada,
-   extraer el segmento `FEAT-NNN` del nombre del directorio padre inmediato.
-   Ejemplo: de `docs/specs/03-stories/FEAT-073-skill-security-audit-condicional/story.md` → `73`.
+1. Usar Glob con el patrón `$SPECS_BASE/specs/03-stories/STORY-*/story.md` para localizar todos los
+   archivos `story.md` dentro de directorios `STORY-NNN-*`. A partir de cada ruta retornada,
+   extraer el segmento `STORY-NNN` del nombre del directorio padre inmediato.
+   Ejemplo: de `docs/specs/03-stories/STORY-073-skill-security-audit-condicional/story.md` → `73`.
    Si Glob retorna vacío, usar como fallback:
-   - Bash: `ls $SPECS_BASE/specs/03-stories/ | grep -E "^FEAT-[0-9]+"`
-   - PowerShell: `Get-ChildItem $SPECS_BASE/specs/03-stories -Directory | Where-Object { $_.Name -match "^FEAT-" }`
+   - Bash: `ls $SPECS_BASE/specs/03-stories/ | grep -E "^STORY-[0-9]+"`
+   - PowerShell: `Get-ChildItem $SPECS_BASE/specs/03-stories -Directory | Where-Object { $_.Name -match "^STORY-" }`
    Nunca asumir que "sin resultados de Glob" significa "no hay historias previas".
-2. Extraer los números de todos los prefijos `FEAT-NNN` encontrados
-3. Tomar el número más alto y sumarle 1. Solo comenzar en `FEAT-001` si ambos mecanismos (Glob + fallback) confirman que no existe ningún directorio `FEAT-*`
-4. Formatear con ceros a la izquierda hasta 3 dígitos: `FEAT-001`, `FEAT-053`, etc.
+2. Extraer los números de todos los prefijos `STORY-NNN` encontrados
+3. Tomar el número más alto y sumarle 1. Solo comenzar en `STORY-001` si ambos mecanismos (Glob + fallback) confirman que no existe ningún directorio `STORY-*`
+4. Formatear con ceros a la izquierda hasta 3 dígitos: `STORY-001`, `STORY-053`, etc.
 
 #### Reglas de nomenclatura
 
-- **Directorio:** `FEAT-{NNN}-{slug}/`
+- **Directorio:** `STORY-{NNN}-{slug}/`
 - **Archivo:** `story.md` dentro de ese directorio
 - El `{slug}` se deriva del `Quiero` de la historia: minúsculas, palabras separadas por guiones, máximo 5 palabras significativas, sin acentos ni caracteres especiales
-- Ruta final: `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug}/story.md`
+- Ruta final: `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug}/story.md`
 
-Si el directorio `FEAT-{NNN}-{slug}/` ya existe, incrementar NNN hasta encontrar uno disponible.
+Si el directorio `STORY-{NNN}-{slug}/` ya existe, incrementar NNN hasta encontrar uno disponible.
 
 #### Completar frontmatter
 
 En el archivo `story.md`, completar los campos del frontmatter con los valores resueltos:
-- `id: FEAT-{NNN}`
-- `slug: FEAT-{NNN}-{slug}`
+- `id: STORY-{NNN}`
+- `kind: feat` — tipo de historia por defecto; preguntar al usuario si el trabajo es una corrección (`fix`), una tarea técnica (`chore`) o urgente en producción (`hotfix`). Determina el prefijo de rama
+- `slug: STORY-{NNN}-{slug}`
 - `status: SPECIFY` — estado inicial de toda historia creada directamente
 
 #### Mostrar resumen
@@ -246,7 +247,7 @@ En el archivo `story.md`, completar los campos del frontmatter con los valores r
 Después de guardar, mostrar en la conversación:
 
 ```
-**Archivo generado:** `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug}/story.md`
+**Archivo generado:** `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug}/story.md`
 
 [Historia completa en formato story-template.md]
 
@@ -271,7 +272,7 @@ Si la historia fue simplificada para cumplir INVEST, explicar brevemente qué se
 
 ## Salida
 
-- `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug}/story.md` — historia de usuario generada
+- `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug}/story.md` — historia de usuario generada
 - Estado del workitem: `SPECIFY` (estado inicial; pendiente de evaluación con `/story-evaluation`)
 
 ### Ejemplo de output

@@ -139,9 +139,9 @@ Donde {{TESTCASES_STATUS}} será ✓ analizado (<N> casos) o ⏭️ no encontrad
 
 ###  Verificación
 
-Ejecutar /story-code-review FEAT-NNN sobre una historia que tiene testcases.md e implement-report.md → el reporte debe incluir la sección "Cobertura de Casos de Prueba" con hallazgos reales.
-Ejecutar /story-code-review FEAT-NNN sobre una historia que no tiene implement-report.md → el skill no debe fallar; el reporte debe mostrar ⏭️ implement-report.md no encontrado.
-Ejecutar /story-code-review FEAT-NNN sobre una historia que no tiene testcases.md → el skill no debe fallar; la sección testcases del reporte muestra el mensaje informativo.
+Ejecutar /story-code-review STORY-NNN sobre una historia que tiene testcases.md e implement-report.md → el reporte debe incluir la sección "Cobertura de Casos de Prueba" con hallazgos reales.
+Ejecutar /story-code-review STORY-NNN sobre una historia que no tiene implement-report.md → el skill no debe fallar; el reporte debe mostrar ⏭️ implement-report.md no encontrado.
+Ejecutar /story-code-review STORY-NNN sobre una historia que no tiene testcases.md → el skill no debe fallar; la sección testcases del reporte muestra el mensaje informativo.
 Verificar que el mensaje de error de precondición de estado ya no menciona solo /story-implement-tasks.
 Revisar que el ejemplo example-approved sigue siendo válido como referencia (no necesita modificarse ya que testcases.md es opcional).
 

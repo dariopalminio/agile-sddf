@@ -2,7 +2,7 @@
 type: plan
 id: plan-12
 slug: plan-12-centralize-preflight-paragraph
-title: "Centralizar párrafo de preflight (FEAT-053)"
+title: "Centralizar párrafo de preflight (STORY-053)"
 status: COMPLETED
 substatus: DONE
 parent: EPIC-17
@@ -13,7 +13,7 @@ related:
 ---
 
 
-# Plan: Enhance - Centralizar párrafo de preflight (FEAT-053)
+# Plan: Enhance - Centralizar párrafo de preflight (STORY-053)
 
 ## Contexto
 
@@ -21,7 +21,7 @@ El párrafo "Paso 0 — Verificar entorno (`skill-preflight`)" está copiado lit
 
 La solución es reducir cada Paso 0 a una invocación mínima de 3 líneas. Los detalles del protocolo quedan como fuente única en `skill-preflight/SKILL.md`.
 
-**Story de referencia:** `docs/specs/stories/FEAT-053-centralizar-validacion-entorno-sddf/story.md` (BACKLOG / READY)
+**Story de referencia:** `docs/specs/stories/STORY-053-centralizar-validacion-entorno-sddf/story.md` (BACKLOG / READY)
 
 ---
 
@@ -63,7 +63,7 @@ Revisar el listado de archivos `[UPDATED]` y verificar manualmente 3–5 represe
 
 ### Paso 3 — Actualizar story
 
-En `docs/specs/stories/FEAT-053-centralizar-validacion-entorno-sddf/story.md`:
+En `docs/specs/stories/STORY-053-centralizar-validacion-entorno-sddf/story.md`:
 - Cambiar `status: BACKLOG` → `status: IMPLEMENT`
 - Cambiar `substatus: READY` → `substatus: DONE`
 
@@ -82,7 +82,7 @@ En `docs/specs/releases/EPIC-17-remediating-and-improvement/release.md`, línea 
 | `.claude/skills/skill-preflight/SKILL.md` | Fuente de verdad del protocolo — NO modificar |
 | `.claude/skills/story-design/SKILL.md` | Representativo — variante larga |
 | `.claude/skills/release-creation/SKILL.md` | Representativo — variante condensada |
-| `docs/specs/stories/FEAT-053-.../story.md` | Actualizar status |
+| `docs/specs/stories/STORY-053-.../story.md` | Actualizar status |
 | `docs/specs/releases/EPIC-17-.../release.md` | Marcar ítem completado |
 
 Los ~38 SKILL.md afectados los detecta y actualiza el script automáticamente; no se enumeran aquí.

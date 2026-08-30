@@ -74,7 +74,7 @@ La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, i
 
 ## Parámetros
 
-- `{story_id}` — identificador de la historia (ej. `FEAT-057`)
+- `{story_id}` — identificador de la historia (ej. `STORY-057`)
 - `{story_path}` — ruta explícita al directorio de la historia (opcional, sobreescribe la resolución por glob)
 - `--only-tasks` — ejecutar solo `story-design → story-tasking → story-analyze` (comportamiento anterior al default actual; no genera testcases.md)
 - `--only-testcases` — ejecutar solo `story-design → story-testcases → story-analyze` (no genera tasks.md)
@@ -151,7 +151,7 @@ Detener inmediatamente. No invocar ningún sub-skill.
 Si no se proporcionó ningún argumento, preguntar:
 ```
 ¿Qué historia deseas planificar?
-Proporciona el ID (ej. FEAT-057) o la ruta completa al directorio.
+Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 ```
 
 #### 1d. Resolución del directorio de la historia

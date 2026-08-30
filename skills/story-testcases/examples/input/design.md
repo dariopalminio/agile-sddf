@@ -1,9 +1,9 @@
 ---
 type: design
-id: FEAT-099
-slug: FEAT-099-exportar-datos-csv-design
+id: STORY-099
+slug: STORY-099-exportar-datos-csv-design
 title: "Design: Exportar datos en CSV"
-story: FEAT-099
+story: STORY-099
 created: 2026-05-01
 updated: 2026-05-01
 ---

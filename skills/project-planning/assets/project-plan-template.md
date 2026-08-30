@@ -28,11 +28,11 @@ related:
      No incluir tareas técnicas internas.
      Criterios de priorización: valor de negocio (alto→bajo), dependencias (bloqueantes primero), riesgo técnico.
      Formato de cada línea:
-       - [ ] **FEAT-NNN: Nombre** — Descripción concisa en una oración. _(deps: FEAT-XXX o —)_ -->
+       - [ ] **STORY-NNN: Nombre** — Descripción concisa en una oración. _(deps: STORY-XXX o —)_ -->
 
-- [ ] **FEAT-001: [Nombre]** — [Descripción en una oración.] _(deps: —)_
-- [ ] **FEAT-002: [Nombre]** — [Descripción en una oración.] _(deps: FEAT-001)_
-- [ ] **FEAT-003: [Nombre]** — [Descripción en una oración.] _(deps: —)_
+- [ ] **STORY-001: [Nombre]** — [Descripción en una oración.] _(deps: —)_
+- [ ] **STORY-002: [Nombre]** — [Descripción en una oración.] _(deps: STORY-001)_
+- [ ] **STORY-003: [Nombre]** — [Descripción en una oración.] _(deps: —)_
 
 ---
 
@@ -47,9 +47,9 @@ related:
 
 **Objetivo:** [Qué valor entrega esta épica — qué problema central resuelve.]
 
-- [ ] FEAT-001 - **[Nombre feature 1]:** [Breve descripción de la feature]
-- [ ] FEAT-002 - **[Nombre feature 2]:** [Breve descripción de la feature]
-- [ ] FEAT-003 - **[Nombre feature 3]:** [Breve descripción de la feature]
+- [ ] STORY-001 - **[Nombre feature 1]:** [Breve descripción de la feature]
+- [ ] STORY-002 - **[Nombre feature 2]:** [Breve descripción de la feature]
+- [ ] STORY-003 - **[Nombre feature 3]:** [Breve descripción de la feature]
 
 **Criterios de éxito:**
 - [ ] [Criterio medible 1]
@@ -61,7 +61,7 @@ related:
 
 **Objetivo:** [Qué valor incremental agrega sobre el Walking Skeleton (MVP).]
 
-- [ ] FEAT-003 - **[Nombre feature 3]:** [Breve descripción de la feature]
+- [ ] STORY-003 - **[Nombre feature 3]:** [Breve descripción de la feature]
 
 **Criterios de éxito:**
 - [ ] [Criterio medible 1]

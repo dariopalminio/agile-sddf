@@ -1,18 +1,18 @@
 ---
 type: fix-directives
-story: FEAT-000
-title: "Fix Directives: FEAT-000 (MEDIUM)"
+story: STORY-000
+title: "Fix Directives: STORY-000 (MEDIUM)"
 review-status: needs-changes
 date: 2026-05-09
 max-severity: MEDIUM
 based-on: code-review-report.md
 ---
 
-# Fix Directives: FEAT-000
+# Fix Directives: STORY-000
 
 ## Resumen de bloqueantes
 
-- **Story:** FEAT-000 — Ejemplo de historia con hallazgo de severidad MEDIUM
+- **Story:** STORY-000 — Ejemplo de historia con hallazgo de severidad MEDIUM
 - **Review status:** needs-changes
 - **Severidad máxima:** MEDIUM
 - **Total de hallazgos bloqueantes:** 1
@@ -36,8 +36,8 @@ No deben modificarse archivos fuera de esta lista sin previa aprobación.
 
 1. Aplica las correcciones indicadas en la tabla de instrucciones.
 2. Limita los cambios a los archivos de la lista blanca.
-3. Re-ejecuta `/story-code-review FEAT-000`.
+3. Re-ejecuta `/story-code-review STORY-000`.
 4. Si el resultado es `approved`, la historia avanza a READY-FOR-VERIFY.
 
 ---
-> Nota: Este ejemplo cubre el Scenario Outline AC-2 de FEAT-065: severidad MEDIUM → needs-changes + fix-directives.md.
+> Nota: Este ejemplo cubre el Scenario Outline AC-2 de STORY-065: severidad MEDIUM → needs-changes + fix-directives.md.

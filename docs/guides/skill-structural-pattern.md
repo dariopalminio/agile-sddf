@@ -68,7 +68,7 @@ La lógica de dominio vive en los templates (estructura) y en los agentes (crite
 Nivel	Patrón	Ejemplo
 Proyecto	PROJ-NN-kebab	PROJ-01-mi-app
 Épica/Épica	EPIC-NN-kebab	EPIC-12-story-sdd-workflow
-Feature/Historia	FEAT-NNN-kebab	FEAT-042-login
+Feature/Historia	STORY-NNN-kebab	STORY-042-login
 
 ### 8. Frontmatter YAML en documentos generados
 
@@ -82,9 +82,9 @@ parent: PROJ-NN
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 related:
-  - FEAT-071-skill-story-verify
-  - FEAT-070-dod-code-review-en-story-code-review
-  - FEAT-068-dod-plan-en-story-analyze
+  - STORY-071-skill-story-verify
+  - STORY-070-dod-code-review-en-story-code-review
+  - STORY-068-dod-plan-en-story-analyze
 ---
 <!-- Referencias -->
 [[slug-de-documento-relacionado]]
@@ -114,7 +114,7 @@ Si los comandos de prueba tardan mucho, el skill debe mostrar progreso periódic
 
 $SPECS_BASE/specs/01-projects/<PROJ-ID>/  → artefactos de proyecto
 $SPECS_BASE/specs/02-epics/<EPIC-NN>/  → épicas
-$SPECS_BASE/specs/03-stories/<FEAT-NNN>/ → historias
+$SPECS_BASE/specs/03-stories/<STORY-NNN>/ → historias
 
 ### 15. Versionado mediante substatus
 

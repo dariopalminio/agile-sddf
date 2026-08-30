@@ -20,7 +20,7 @@ Al ser invocado, el SKILL.md ya habrá escrito el contexto en `.tmp/story-verify
 
 ```json
 {
-  "story_id": "FEAT-NNN",
+  "story_id": "STORY-NNN",
   "story_title": "...",
   "mode": "manual" | "e2e-assessment",
   "scenarios": [

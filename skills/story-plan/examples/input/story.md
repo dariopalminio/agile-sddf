@@ -1,6 +1,6 @@
 ---
 type: story
-id: FEAT-099
+id: STORY-099
 slug: exportar-reporte-pdf
 title: "Exportar reporte de actividad como PDF"
 status: BACKLOG

@@ -20,5 +20,5 @@ related:
 ## Descripción <!-- sección obligatoria-->
 Centralizar templates de spec en directorio compartido.
 
-## Features
-- [x] FEAT-055 - **Centralizar templates de spec en directorio compartido:** Migración de los templates `story-template.md`, `release-spec-template.md` y `project-template.md` desde las carpetas `assets/` de cada skill individual hacia `$SPECS_BASE/specs/templates/` como única fuente de verdad, eliminando divergencias de frontmatter y definiendo status inicial por workflow en cada skill generador. *Implementado vía EPIC-17/A3 con alcance ampliado a 5 templates (incluye `project-intent-template.md` y `project-plan-template.md`); los skills dueños conservan el seed en `assets/` y `sddf-init` copia al directorio central; resolución central → seed → error.*
+## Historias
+- [x] STORY-055 - **Centralizar templates de spec en directorio compartido:** Migración de los templates `story-template.md`, `release-spec-template.md` y `project-template.md` desde las carpetas `assets/` de cada skill individual hacia `$SPECS_BASE/specs/templates/` como única fuente de verdad, eliminando divergencias de frontmatter y definiendo status inicial por workflow en cada skill generador. *Implementado vía EPIC-17/A3 con alcance ampliado a 5 templates (incluye `project-intent-template.md` y `project-plan-template.md`); los skills dueños conservan el seed en `assets/` y `sddf-init` copia al directorio central; resolución central → seed → error.*

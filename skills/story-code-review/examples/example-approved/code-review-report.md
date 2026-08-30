@@ -1,7 +1,7 @@
 ---
 type: code-review-report
-story: FEAT-000
-title: "Code Review Report: FEAT-000"
+story: STORY-000
+title: "Code Review Report: STORY-000"
 review-status: approved
 date: 2026-05-09
 max-severity: ninguna
@@ -11,13 +11,13 @@ reviewers:
   - integration-reviewer
 ---
 
-# Code Review Report: FEAT-000
+# Code Review Report: STORY-000
 
 ## Resumen
 
 | Campo | Valor |
 |-------|-------|
-| Historia | FEAT-000 — Ejemplo de revisión aprobada |
+| Historia | STORY-000 — Ejemplo de revisión aprobada |
 | Review status | approved |
 | Severidad máxima detectada | ninguna |
 | Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer |

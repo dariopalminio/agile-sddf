@@ -33,10 +33,10 @@ El skill detecta automáticamente el modo en este orden:
 ## Uso
 
 ```bash
-/story-verify FEAT-050
-/story-verify FEAT-050 --mode manual
-/story-verify FEAT-050 --dry-run
-/story-verify FEAT-050 --verbose
+/story-verify STORY-050
+/story-verify STORY-050 --mode manual
+/story-verify STORY-050 --dry-run
+/story-verify STORY-050 --verbose
 ```
 
 ## Flags

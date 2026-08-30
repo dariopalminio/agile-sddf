@@ -1,7 +1,7 @@
 ---
 alwaysApply: false
 type: design
-id: FEAT-003
+id: STORY-003
 slug: <slug-de-la-story-relacionada-design>
 title: "Design: <título-de-la-story-relacionada>"
 date: 2026-04-22

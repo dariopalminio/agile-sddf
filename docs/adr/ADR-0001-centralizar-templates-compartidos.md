@@ -13,7 +13,7 @@ superseded-by: null
 
 ## Contexto y problema
 
-Existían 13 acoplamientos cross-skill por rutas relativas: skills que leían templates desde el `assets/` de otro skill (ej. `release-format-validation` leía `../release-creation/assets/release-spec-template.md`; cuatro skills leían `../story-creation/assets/story-template.md`). Una instalación parcial de skills dejaba a los consumidores rotos. EPIC-11/FEAT-055 había decidido centralizar pero nunca se implementó, y tres skills (`story-design`, `story-analyze`, `story-tasking`) ya documentaban la lectura desde un directorio central que no existía. Origen: hallazgo A3 de EPIC-17 (remediating-and-improvement).
+Existían 13 acoplamientos cross-skill por rutas relativas: skills que leían templates desde el `assets/` de otro skill (ej. `release-format-validation` leía `../release-creation/assets/release-spec-template.md`; cuatro skills leían `../story-creation/assets/story-template.md`). Una instalación parcial de skills dejaba a los consumidores rotos. EPIC-11/STORY-055 había decidido centralizar pero nunca se implementó, y tres skills (`story-design`, `story-analyze`, `story-tasking`) ya documentaban la lectura desde un directorio central que no existía. Origen: hallazgo A3 de EPIC-17 (remediating-and-improvement).
 
 ## Decisión
 
@@ -48,7 +48,7 @@ Existían 13 acoplamientos cross-skill por rutas relativas: skills que leían te
 ## Referencias
 
 - [[EPIC-17-remediating-and-improvement]] — hallazgo A3
-- [[EPIC-11-centralizar-templates]] — FEAT-055, decisión original sin implementar
+- [[EPIC-11-centralizar-templates]] — STORY-055, decisión original sin implementar
 - `docs/specs/releases/EPIC-17-remediating-and-improvement/plan-06-detach-shared-templates.md`
 - `.claude/skills/sddf-init/SKILL.md` — Paso 2b (copia idempotente)
 - `.claude/skills/skill-preflight/SKILL.md` — Verificación 3 (templates centrales)

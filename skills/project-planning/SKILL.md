@@ -175,13 +175,13 @@ Invoca al agente `project-architect` con la siguiente instrucción:
 > Lee también `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md`. Usa las actividades del backbone como guía para agrupar features relacionadas en el plan. Usa los slices de épicas del story map como referencia estructural para definir qué features van en cada épica (respetando las dependencias técnicas y el valor de negocio). No estás obligado a replicar el story map exactamente — es una guía, no una restricción.
 > [FIN CONDICIONAL]
 >
-> Extrae features atómicas con IDs FEAT-NNN, priorízalas, agrúpalas en épicas con MVP en la Épica 1, y escribe el resultado en `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md`.
+> Extrae features atómicas con IDs STORY-NNN, priorízalas, agrúpalas en épicas con MVP en la Épica 1, y escribe el resultado en `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md`.
 
 El `project-architect` se encargará de:
 - Leer los documentos de entrada de fases anteriores
 - Leer el template y derivar la estructura del output dinámicamente
 - Leer `story-map.md` si existe y usar el backbone y los slices de épicas como guía estructural
-- Extraer features atómicas con IDs únicos (FEAT-NNN), descripciones y dependencias
+- Extraer features atómicas con IDs únicos (STORY-NNN), descripciones y dependencias
 - Priorizar por valor de negocio, dependencias y riesgo técnico
 - Agrupar en épicas con MVP en la Épica 1, incluyendo criterios de éxito
 - Escribir el documento final con metadatos y checkboxes vacíos `- [ ]`
@@ -199,5 +199,5 @@ Cuando el `project-architect` termine:
 
 ## Salida
 
-- `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md` — plan del proyecto con features FEAT-NNN
+- `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md` — plan del proyecto con features STORY-NNN
   agrupadas en épicas priorizadas, generado por `project-architect`.

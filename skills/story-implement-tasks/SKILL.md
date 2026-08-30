@@ -61,10 +61,10 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 
 | Artefacto | Ubicación | Requerido |
 |---|---|---|
-| `story.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/story.md` | ✓ obligatorio |
-| `design.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/design.md` | ✓ obligatorio |
-| `tasks.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/tasks.md` | ✓ obligatorio |
-| `fix-directives.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/fix-directives.md` | opcional |
+| `story.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/story.md` | ✓ obligatorio |
+| `design.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/design.md` | ✓ obligatorio |
+| `tasks.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/tasks.md` | ✓ obligatorio |
+| `fix-directives.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/fix-directives.md` | opcional |
 | `definition-of-done-story.md` | `$SPECS_BASE/policies/definition-of-done-story.md` | opcional |
 
 ---
@@ -73,7 +73,7 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 
 | Parámetro | Tipo | Descripción |
 |---|---|---|
-| `{story_id}` | posicional | ID de la historia (ej. `FEAT-059`) |
+| `{story_id}` | posicional | ID de la historia (ej. `STORY-059`) |
 | `{story_path}` | posicional opcional | Ruta explícita al directorio; sobreescribe la resolución por glob |
 
 Si no se proporciona ningún argumento, el skill lo solicita interactivamente.
@@ -143,13 +143,13 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 
 #### 1a. Argumentos aceptados
 
-- `{story_id}` — identificador de la historia (ej. `FEAT-059`)
+- `{story_id}` — identificador de la historia (ej. `STORY-059`)
 - `{story_path}` — ruta explícita al directorio de la historia (opcional, sobreescribe la resolución por glob)
 
 Si no se proporcionó ningún argumento, preguntar:
 ```
 ¿Qué historia deseas implementar?
-Proporciona el ID (ej. FEAT-059) o la ruta completa al directorio.
+Proporciona el ID (ej. STORY-059) o la ruta completa al directorio.
 ```
 
 #### 1b. Resolución del directorio de la historia
@@ -508,10 +508,10 @@ El reporte **no se actualiza incrementalmente**: se genera como artefacto de cie
 ```markdown
 ---
 type: implement-report
-id: <FEAT-NNN>
+id: <STORY-NNN>
 slug: <story_id>-implement-report
 title: "Implement Report: <story_title>"
-story: <FEAT-NNN>
+story: <STORY-NNN>
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 ---
@@ -522,7 +522,7 @@ updated: <YYYY-MM-DD>
 
 | Métrica | Valor |
 |---|---|
-| Historia | <FEAT-NNN> |
+| Historia | <STORY-NNN> |
 | Total de tareas | <N> |
 | Tareas completadas | <N_completadas_en_esta_ejecución> |
 | Tareas bloqueadas | <N_bloqueadas> |
@@ -646,7 +646,7 @@ Leer el campo `parent` del frontmatter de `story.md` (ej. `EPIC-12-story-sdd-wor
 Buscar el archivo `epic.md` correspondiente en: `$SPECS_BASE/specs/02-epics/<parent>-*/epic.md`
 
 **Si se encuentra `epic.md`:**
-- Localizar la línea que contiene el `story_id` (patrón `FEAT-NNN`) en el checklist de la épica
+- Localizar la línea que contiene el `story_id` (patrón `STORY-NNN`) en el checklist de la épica
 - Cambiar `- [ ]` por `- [x]` en esa línea
 - Registrar: `Checklist de épica: ✓ actualizado en <ruta>/epic.md`
 
@@ -694,7 +694,7 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 
 | Artefacto | Ruta | Descripción |
 |---|---|---|
-| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
+| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
 | `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs) |
 | `tasks.md` (actualizado) | mismo directorio | Tareas marcadas `[x]` (completadas) o `[~]` (bloqueadas) |
 | `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |

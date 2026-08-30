@@ -181,11 +181,11 @@ Conservar la historia actual como ítem activo y continuar al Paso 5A.
 Si la decisión no es `APROBADA` y la historia sigue activa tras el split (o el split no aplica):
 
 Invocar el skill `story-improve` en modo Agent:
-- `--story-id <FEAT-NNN>` con el ID de la historia activa
+- `--story-id <STORY-NNN>` con el ID de la historia activa
 - Modo Agent: automático, sin confirmación interactiva
 
 **Si `story-improve` informa que la decisión ya es `APROBADA` (gate interno del skill):**
-- Mostrar: `ℹ️ <FEAT-NNN> ya tiene decisión APROBADA — avanzando al gate`
+- Mostrar: `ℹ️ <STORY-NNN> ya tiene decisión APROBADA — avanzando al gate`
 - Actualizar el registro con `Decision FINVEST = APROBADA`
 - Ir directamente al Paso 6 (omitir Paso 5B)
 
@@ -273,7 +273,7 @@ Historias derivadas creadas: [lista]
 
 ## Salida
 
-- Archivos `story.md` en `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug}/` — creados o actualizados durante el ciclo
+- Archivos `story.md` en `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug}/` — creados o actualizados durante el ciclo
 - `story.md.bak` — backup del original antes de aplicar mejoras automáticas (generado por `story-improve` en Paso 5A, cuando aplica)
 - `story-improvement-log.md` — log de cambios por dimensión FINVEST (generado por `story-improve` en Paso 5A, cuando aplica)
 - Estado final de cada historia:

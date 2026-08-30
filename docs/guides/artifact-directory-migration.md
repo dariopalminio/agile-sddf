@@ -23,7 +23,7 @@ Esta guía explica cómo migrar artefactos existentes (proyectos, épicas, histo
 | project-plan.md | `$SPECS_BASE/specs/projects/project-plan.md` | `$SPECS_BASE/specs/01-projects/PROJ-01-nombre/project-plan.md` |
 | story-map.md | `$SPECS_BASE/specs/projects/story-map.md` | `$SPECS_BASE/specs/01-projects/PROJ-01-nombre/story-map.md` |
 | release-01-nombre.md | `$SPECS_BASE/specs/releases/release-01-nombre.md` | `$SPECS_BASE/specs/02-epics/EPIC-01-nombre/epic.md` |
-| story-FEAT-001-nombre.md | `$SPECS_BASE/specs/stories/story-FEAT-001-nombre.md` | `$SPECS_BASE/specs/03-stories/FEAT-001-nombre/story.md` |
+| story-STORY-001-nombre.md | `$SPECS_BASE/specs/stories/story-STORY-001-nombre.md` | `$SPECS_BASE/specs/03-stories/STORY-001-nombre/story.md` |
 
 ---
 
@@ -58,13 +58,13 @@ mv docs/specs/releases/release-01-features-spec-builder.md \
 
 #### 3. Migrar historias
 
-Por cada archivo `story-FEAT-NNN-nombre.md` en `$SPECS_BASE/specs/stories/`:
+Por cada archivo `story-STORY-NNN-nombre.md` en `$SPECS_BASE/specs/stories/`:
 
 ```bash
-# Ejemplo para story-FEAT-001-project-begin.md
-mkdir -p docs/specs/03-stories/FEAT-001-project-begin
-mv docs/specs/stories/story-FEAT-001-project-begin.md \
-   docs/specs/03-stories/FEAT-001-project-begin/story.md
+# Ejemplo para story-STORY-001-project-begin.md
+mkdir -p docs/specs/03-stories/STORY-001-project-begin
+mv docs/specs/stories/story-STORY-001-project-begin.md \
+   docs/specs/03-stories/STORY-001-project-begin/story.md
 ```
 
 ---

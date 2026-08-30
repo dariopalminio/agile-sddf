@@ -1,10 +1,10 @@
 ---
 alwaysApply: false
 type: design
-id: FEAT-099
-slug: FEAT-099-exportar-datos-csv
+id: STORY-099
+slug: STORY-099-exportar-datos-csv
 title: "Design: Exportar datos en CSV"
-story: FEAT-099-exportar-datos-csv
+story: STORY-099-exportar-datos-csv
 created: 2026-05-07
 updated: 2026-05-07
 ---
@@ -15,7 +15,7 @@ updated: 2026-05-07
 
 ## 📋 Contexto
 
-**Historia:** FEAT-099 — Exportar datos en CSV
+**Historia:** STORY-099 — Exportar datos en CSV
 
 **Problema técnico:** La plataforma no tiene mecanismo de exportación. Se necesita un endpoint que genere CSV a demanda y una acción en el frontend que lo descargue.
 

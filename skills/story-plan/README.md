@@ -41,7 +41,7 @@ En cualquier modo, `--skip-analyze` elimina el paso `story-analyze` y reduce el 
 
 | Parámetro | Tipo | Descripción |
 |---|---|---|
-| `{story_id}` | requerido | Identificador de la historia (ej. `FEAT-057`) |
+| `{story_id}` | requerido | Identificador de la historia (ej. `STORY-057`) |
 | `{story_path}` | opcional | Ruta explícita al directorio; sobreescribe la resolución por glob |
 | `--only-tasks` | opcional | Ejecuta solo design → tasking → analyze; no genera `testcases.md` |
 | `--only-testcases` | opcional | Ejecuta solo design → testcases → analyze; no genera `tasks.md` |
@@ -70,20 +70,20 @@ En cualquier modo, `--skip-analyze` elimina el paso `story-analyze` y reduce el 
 
 ```bash
 # Default: genera design.md + tasks.md + testcases.md + analyze.md
-/story-plan FEAT-057
+/story-plan STORY-057
 
 # Solo tareas (comportamiento previo): design.md + tasks.md + analyze.md
-/story-plan FEAT-057 --only-tasks
+/story-plan STORY-057 --only-tasks
 
 # Solo casos de prueba: design.md + testcases.md + analyze.md
-/story-plan FEAT-057 --only-testcases
+/story-plan STORY-057 --only-testcases
 
 # Default sin analyze: design.md + tasks.md + testcases.md
-/story-plan FEAT-057 --skip-analyze
+/story-plan STORY-057 --skip-analyze
 
 # Solo tareas sin analyze: design.md + tasks.md
-/story-plan FEAT-057 --only-tasks --skip-analyze
+/story-plan STORY-057 --only-tasks --skip-analyze
 
 # Ruta explícita al directorio de la historia
-/story-plan FEAT-057 docs/specs/03-stories/FEAT-057-mi-historia/
+/story-plan STORY-057 docs/specs/03-stories/STORY-057-mi-historia/
 ```

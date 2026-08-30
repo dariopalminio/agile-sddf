@@ -1,7 +1,7 @@
 ---
 type: story
-id: FEAT-000
-slug: FEAT-000-example-approved
+id: STORY-000
+slug: STORY-000-example-approved
 title: "Ejemplo: Historia aprobada en code review"
 status: IMPLEMENT
 substatus: DONE

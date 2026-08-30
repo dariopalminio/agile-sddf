@@ -107,7 +107,7 @@ Para cada sección del template (en orden):
 - Marca con `[INFERRED]` cuando derives de código, no de documentación explícita
 
 **Requisitos funcionales (FR)**:
-- Convierte cada feature `FEAT-NNN` de `rfc-features.md` en un `FR-NNN` con formato del template
+- Convierte cada feature `STORY-NNN` de `rfc-features.md` en un `FR-NNN` con formato del template
 - Agrega como FR adicionales las reglas de negocio workflow de `rfc-business-rules.md` que impliquen funcionalidad
 - Prioridad: Core features = Alta, Edge case features = Media, features `[SUGGESTED]` = Baja
 

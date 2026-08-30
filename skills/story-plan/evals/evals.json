@@ -10,12 +10,12 @@
       "description": "Modo default (sin flags): el orquestador ejecuta los 4 pasos en secuencia (story-design → story-tasking → story-testcases → story-analyze), muestra progreso paso a paso, actualiza story.md a PLAN/IN-PROGRESS al inicio y cierra con READY-FOR-IMPLEMENT/DONE y tabla de resumen completa.",
       "input": {
         "input_path": "examples/input",
-        "story_id": "FEAT-099",
+        "story_id": "STORY-099",
         "flags": []
       },
       "expected": {
         "contains": [
-          "Iniciando pipeline de planning para: FEAT-099",
+          "Iniciando pipeline de planning para: STORY-099",
           "PLAN",
           "IN-PROGRESS",
           "story-design → story-tasking → story-testcases → story-analyze",
@@ -50,12 +50,12 @@
       "description": "El orquestador recibe un story_id que no existe en $SPECS_BASE/specs/03-stories/. Debe detenerse inmediatamente sin invocar ningún sub-skill y mostrar el mensaje de historia no encontrada.",
       "input": {
         "input_path": null,
-        "story_id": "FEAT-000",
+        "story_id": "STORY-000",
         "flags": []
       },
       "expected": {
         "contains": [
-          "No se encontró la historia FEAT-000"
+          "No se encontró la historia STORY-000"
         ],
         "not_contains": [
           "Iniciando pipeline de planning",
@@ -76,7 +76,7 @@
       "description": "El orquestador recibe --only-tasks y --only-testcases simultáneamente. Debe reportar el error de flags mutuamente excluyentes y detenerse antes de invocar cualquier sub-skill.",
       "input": {
         "input_path": "examples/input",
-        "story_id": "FEAT-099",
+        "story_id": "STORY-099",
         "flags": ["--only-tasks", "--only-testcases"]
       },
       "expected": {
@@ -102,12 +102,12 @@
       "description": "Modo --only-tasks: el orquestador ejecuta solo story-design → story-tasking → story-analyze (3 pasos). No debe invocar story-testcases ni generar testcases.md. El resumen final muestra la tabla con 3 filas y la leyenda [--only-tasks].",
       "input": {
         "input_path": "examples/input",
-        "story_id": "FEAT-099",
+        "story_id": "STORY-099",
         "flags": ["--only-tasks"]
       },
       "expected": {
         "contains": [
-          "Iniciando pipeline de planning para: FEAT-099",
+          "Iniciando pipeline de planning para: STORY-099",
           "--only-tasks",
           "story-design → story-tasking → story-analyze",
           "[1/3] → story-design",
@@ -134,12 +134,12 @@
       "description": "Modo default con --skip-analyze: el orquestador ejecuta story-design → story-tasking → story-testcases (3 pasos) y omite story-analyze. El resumen final no debe incluir una fila para story-analyze ni el estado READY-FOR-IMPLEMENT/DONE.",
       "input": {
         "input_path": "examples/input",
-        "story_id": "FEAT-099",
+        "story_id": "STORY-099",
         "flags": ["--skip-analyze"]
       },
       "expected": {
         "contains": [
-          "Iniciando pipeline de planning para: FEAT-099",
+          "Iniciando pipeline de planning para: STORY-099",
           "story-design → story-tasking → story-testcases",
           "[1/3] → story-design",
           "[1/3] ✓ story-design — design.md generado",

@@ -1,12 +1,12 @@
 ---
 type: improvement-log
-story-id: <FEAT-NNN>
+story-id: <STORY-NNN>
 improved: <YYYY-MM-DD>
 dimensions-improved: [<lista-de-dimensiones>]
 previous-score: <X.XX>
 ---
 
-# Log de mejoras: <FEAT-NNN>
+# Log de mejoras: <STORY-NNN>
 
 ## Resumen
 
@@ -32,9 +32,9 @@ previous-score: <X.XX>
 
 ### I – Independencia (score previo: 2)
 
-**Recomendación aplicada:** Una vez que FEAT-074 defina su contrato de integración, este actúa como único punto de acoplamiento y permite desarrollar la resolución multi-modelo con stubs. El Scenario Outline ya tiene los valores concretos que facilitan testing independiente.
+**Recomendación aplicada:** Una vez que STORY-074 defina su contrato de integración, este actúa como único punto de acoplamiento y permite desarrollar la resolución multi-modelo con stubs. El Scenario Outline ya tiene los valores concretos que facilitan testing independiente.
 
-**Cambio realizado:** Se añadió en "Notas / contexto adicional" una descripción del contrato mínimo de integración con FEAT-074 (interface del método de resolución de rama) y se indicó explícitamente que la historia puede desarrollarse con un stub de dicho contrato, eliminando el bloqueo de dependencia dura.
+**Cambio realizado:** Se añadió en "Notas / contexto adicional" una descripción del contrato mínimo de integración con STORY-074 (interface del método de resolución de rama) y se indicó explícitamente que la historia puede desarrollarse con un stub de dicho contrato, eliminando el bloqueo de dependencia dura.
 
 ---
 

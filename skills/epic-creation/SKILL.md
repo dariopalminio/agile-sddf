@@ -172,7 +172,7 @@ Para cada sección obligatoria extraída en el Paso 2, formular una pregunta cla
 ##### Descripción
 > "Describe la épica en 2-4 líneas: ¿qué valor de negocio entrega, qué problema resuelve y en qué contexto?"
 
-##### Features
+##### Historias
 Preguntar de forma iterativa:
 > "¿Cuáles son las features principales de esta épica? Lista cada una con formato:
 > `Nombre: descripción breve`
@@ -182,7 +182,7 @@ Acepta múltiples features en un mismo mensaje o una por una. **No pedir IDs al 
 ```
 - [ ] **{Nombre}:** {descripción}
 ```
-> Los FEAT IDs se asignan al ejecutar `/epic-generate-stories`. No se pre-asignan en la épica para evitar colisiones con otras épicas en definición simultánea.
+> Los IDs de historia se asignan al ejecutar `/epic-generate-stories`. No se pre-asignan en la épica para evitar colisiones con otras épicas en definición simultánea.
 
 ##### Flujos Críticos / Smoke Tests
 > "Define al menos un flujo crítico que, si falla, debe detener el despliegue. Para cada escenario, describe:

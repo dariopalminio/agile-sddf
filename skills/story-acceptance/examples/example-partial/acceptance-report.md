@@ -1,7 +1,7 @@
 ---
 type: acceptance-report
-story: FEAT-062
-title: "Acceptance Report: FEAT-062 — Edición de perfil de usuario"
+story: STORY-062
+title: "Acceptance Report: STORY-062 — Edición de perfil de usuario"
 date: 2026-05-16
 validator: "Darío Palminio"
 dod-version: "2026-05-15"
@@ -9,13 +9,13 @@ session-status: partial
 final-status: IN-PROGRESS
 ---
 
-# Acceptance Report: FEAT-062 — Edición de perfil de usuario
+# Acceptance Report: STORY-062 — Edición de perfil de usuario
 
-> **Sesión parcial** — 1 de 2 criterios evaluados. Ejecuta `/story-acceptance FEAT-062` para continuar.
+> **Sesión parcial** — 1 de 2 criterios evaluados. Ejecuta `/story-acceptance STORY-062` para continuar.
 
 ## Resumen ejecutivo
 
-- **Historia:** FEAT-062 — Edición de perfil de usuario
+- **Historia:** STORY-062 — Edición de perfil de usuario
 - **Fecha:** 2026-05-16
 - **Validador:** Darío Palminio
 - **Total criterios:** 2 (1 evaluado, 1 pendiente)
@@ -41,7 +41,7 @@ final-status: IN-PROGRESS
 
 ## Estado final
 
-**EN PROGRESO** — Sesión interrumpida. Reanudar con `/story-acceptance FEAT-062`.
+**EN PROGRESO** — Sesión interrumpida. Reanudar con `/story-acceptance STORY-062`.
 
 ## Historial de sesiones anteriores
 

@@ -18,7 +18,7 @@ related:
 
 ### Contexto
 
-El skill `story-implement` escribe todos sus archivos intermedios bajo `.tmp/story-implement/` sin incluir el `{story_id}` en la ruta. Si dos agentes ejecutan el skill simultáneamente sobre historias distintas (FEAT-059 y FEAT-060, por ejemplo), sobreescriben los mismos archivos:
+El skill `story-implement` escribe todos sus archivos intermedios bajo `.tmp/story-implement/` sin incluir el `{story_id}` en la ruta. Si dos agentes ejecutan el skill simultáneamente sobre historias distintas (STORY-059 y STORY-060, por ejemplo), sobreescriben los mismos archivos:
 
 - `red-phase-status.json` — precondición crítica que desencadena la Fase GREEN
 - `cycle-status.json` — estado final del ciclo TDD
@@ -26,7 +26,7 @@ El skill `story-implement` escribe todos sus archivos intermedios bajo `.tmp/sto
 - `green/{layer}/results.json` — output de cada subagente de la Fase GREEN
 - `refactor/{layer}/results.json` — output de cada subagente de la Fase REFACTOR
 
-La solución es insertar `{story_id}` en todas esas rutas, tal como ya se hace con los artefactos permanentes en `$SPECS_BASE/specs/stories/<FEAT-NNN>/`. El cambio es puramente estructural: no afecta la lógica del pipeline, solo la ruta donde cada ejecución escribe su estado.
+La solución es insertar `{story_id}` en todas esas rutas, tal como ya se hace con los artefactos permanentes en `$SPECS_BASE/specs/stories/<STORY-NNN>/`. El cambio es puramente estructural: no afecta la lógica del pipeline, solo la ruta donde cada ejecución escribe su estado.
 
 ### Archivo a modificar
 
@@ -149,7 +149,7 @@ Skill invocado **standalone** (`security-audit --repo $SDDF_ROOT`) y desde `stor
 - `.tmp/security-audit/rule-results.json`
 - `.tmp/security-audit/audit-report.md` / `audit-report.json`
 
-El colisión real ocurre cuando `story-code-review` invoca `security-audit` para FEAT-059 y FEAT-060 en paralelo: ambas ejecuciones de `security-audit` sobreescriben los mismos archivos.
+El colisión real ocurre cuando `story-code-review` invoca `security-audit` para STORY-059 y STORY-060 en paralelo: ambas ejecuciones de `security-audit` sobreescriben los mismos archivos.
 
 **Fix:** usar `{story_id}` cuando el skill es invocado con `--story`, y mantener `.tmp/security-audit/` para invocaciones standalone. 
 
@@ -157,7 +157,7 @@ Esto requiere que `security-audit` detecte si recibió `--story` y construya la 
 - Con `--story`: `.tmp/security-audit/{story_id}/`  
 - Sin `--story` (standalone): `.tmp/security-audit/` (sin cambio)
 
-El `{story_id}` se extrae del basename del path en `--story $STORY_DIR` (ej. `FEAT-059-login-flow` → prefijo `FEAT-059`).
+El `{story_id}` se extrae del basename del path en `--story $STORY_DIR` (ej. `STORY-059-login-flow` → prefijo `STORY-059`).
 
 **Archivo:** `.claude/skills/security-audit/SKILL.md`
 

@@ -1,17 +1,17 @@
 ---
 type: testcases
-id: FEAT-099
-slug: FEAT-099-exportar-datos-csv-testcases
+id: STORY-099
+slug: STORY-099-exportar-datos-csv-testcases
 title: "Test Cases: Exportar datos en CSV"
-story: FEAT-099
+story: STORY-099
 created: 2026-06-13
 updated: 2026-06-13
 related:
-  - FEAT-099-exportar-datos-csv
+  - STORY-099-exportar-datos-csv
 ---
 
 <!-- Referencias -->
-[[FEAT-099-exportar-datos-csv]]
+[[STORY-099-exportar-datos-csv]]
 
 # Casos de Prueba: Exportar datos en CSV
 
@@ -64,7 +64,7 @@ related:
 - El criterio no funcional de rendimiento (exportacion <= 3s para 10.000 registros) no se traduce a caso PT porque el alcance del skill excluye pruebas de performance no especificadas como carga/estres formal en los ACs. Si se desea cobertura PT, debe definirse explicitamente en story.md o design.md.
 - UT-002 y UT-005 cubren la misma condicion (null sin registros); UT-005 se mantiene para trazabilidad con T005.
 
-## Test Cases Progress for FEAT-099
+## Test Cases Progress for STORY-099
 
 <!-- Generado automaticamente por story-testcases. Actualizado por story-implement en fase GREEN.
      [x] = test paso | [ ] = pendiente | [!] = test fallo -->

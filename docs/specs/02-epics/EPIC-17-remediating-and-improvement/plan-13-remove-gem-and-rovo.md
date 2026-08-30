@@ -2,7 +2,7 @@
 type: plan
 id: plan-13
 slug: plan-13-remove-gem-and-rovo
-title: "Eliminar gem/ y rovo/ (FEAT-054)"
+title: "Eliminar gem/ y rovo/ (STORY-054)"
 status: COMPLETED
 substatus: DONE
 parent: EPIC-17

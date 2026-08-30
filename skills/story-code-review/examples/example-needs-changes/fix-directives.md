@@ -1,18 +1,18 @@
 ---
 type: fix-directives
-story: FEAT-000
-title: "Fix Directives: FEAT-000"
+story: STORY-000
+title: "Fix Directives: STORY-000"
 review-status: needs-changes
 date: 2026-05-09
 max-severity: HIGH
 based-on: code-review-report.md
 ---
 
-# Fix Directives: FEAT-000
+# Fix Directives: STORY-000
 
 ## Resumen de bloqueantes
 
-- **Story:** FEAT-000 — Ejemplo de historia con hallazgos bloqueantes
+- **Story:** STORY-000 — Ejemplo de historia con hallazgos bloqueantes
 - **Review status:** needs-changes
 - **Severidad máxima:** HIGH
 - **Total de hallazgos bloqueantes:** 1
@@ -34,5 +34,5 @@ No deben modificarse archivos fuera de esta lista sin previa aprobación.
 
 1. Aplica las correcciones indicadas en la tabla de instrucciones.
 2. Limita los cambios a los archivos de la lista blanca.
-3. Re-ejecuta `/story-code-review FEAT-000`.
+3. Re-ejecuta `/story-code-review STORY-000`.
 4. Si el resultado es `approved`, la historia avanza a READY-FOR-VERIFY.

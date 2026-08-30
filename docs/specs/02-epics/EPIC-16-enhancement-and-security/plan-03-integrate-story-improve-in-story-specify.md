@@ -40,7 +40,7 @@ Paso 5B: story-product-owner (agente conversacional)  [antes llamado Paso 5]
 Paso 6: gate anti-bucle (sin cambios)
 Paso 7: resumen final (sin cambios)
 Comportamiento de Paso 5A
-Se invoca en modo Agent (automático, sin confirmación interactiva) con --story-id <FEAT-NNN>
+Se invoca en modo Agent (automático, sin confirmación interactiva) con --story-id <STORY-NNN>
 Precondición implícita: finvest-evaluation-report.md ya existe porque Paso 3 lo generó
 Si story-improve no encuentra el reporte o falla técnicamente → non-blocking: se registra ⚠️ en el backlog, se continúa a Paso 5B
 Si story-improve informa que la decisión ya es APROBADA (gate interno del skill) → se muestra esa información y se pasa a Paso 6 directamente (omitir 5B)
@@ -62,11 +62,11 @@ Detalle de Paso 5A a insertar
 Si la decisión no es `APROBADA` y la historia sigue activa tras el split (o el split no aplica):
 
 Invocar el skill `story-improve` en modo Agent:
-- `--story-id <FEAT-NNN>` con el ID de la historia activa
+- `--story-id <STORY-NNN>` con el ID de la historia activa
 - Modo Agent: automático, sin confirmación interactiva
 
 **Si `story-improve` informa que la decisión ya es `APROBADA` (gate interno):**
-- Mostrar: `ℹ️ <FEAT-NNN> ya tiene decisión APROBADA — avanzando al gate`
+- Mostrar: `ℹ️ <STORY-NNN> ya tiene decisión APROBADA — avanzando al gate`
 - Actualizar registro con `Decision FINVEST = APROBADA`
 - Ir directamente al Paso 6 (omitir Paso 5B)
 
@@ -152,8 +152,8 @@ Actualizar referencias a story-refine (líneas 16-17, 30-31).
 CHANGELOG.md — registro histórico de releases
 openspec/changes/archive/ — todos los archivos de cambios archivados
 docs/specs/projects/PROJ-01-agile-sddf/ — documentación histórica del proyecto
-docs/specs/stories/FEAT-013-story-refine/ — historia de implementación del skill original
-docs/specs/stories/FEAT-062*/ y FIX-001*/ — historias históricas
+docs/specs/stories/STORY-013-story-refine/ — historia de implementación del skill original
+docs/specs/03-stories/STORY-062*/ y STORY-087*/ — historias históricas
 docs/specs/releases/EPIC-16-enhancement/release.md — especificación de la tarea en curso (no modificar el enunciado)
 Verificación
 El skill invocable como /story-specify ejecuta el mismo flujo que antes

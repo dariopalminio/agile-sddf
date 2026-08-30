@@ -1,7 +1,7 @@
 ---
 type: acceptance-report
-story: FEAT-060
-title: "Acceptance Report: FEAT-060 — Recuperación de contraseña por email"
+story: STORY-060
+title: "Acceptance Report: STORY-060 — Recuperación de contraseña por email"
 date: 2026-05-16
 validator: "Darío Palminio"
 dod-version: "2026-05-15"
@@ -9,11 +9,11 @@ session-status: complete
 final-status: ACCEPTANCE-REJECTED
 ---
 
-# Acceptance Report: FEAT-060 — Recuperación de contraseña por email
+# Acceptance Report: STORY-060 — Recuperación de contraseña por email
 
 ## Resumen ejecutivo
 
-- **Historia:** FEAT-060 — Recuperación de contraseña por email
+- **Historia:** STORY-060 — Recuperación de contraseña por email
 - **Fecha:** 2026-05-16
 - **Validador:** Darío Palminio
 - **Total criterios:** 4

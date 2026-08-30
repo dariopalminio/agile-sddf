@@ -1,7 +1,7 @@
 ---
 type: story
-id: FEAT-055
-slug: FEAT-055-login-usuario
+id: STORY-055
+slug: STORY-055-login-usuario
 title: "Login de usuario con email y contraseña"
 status: VERIFY
 substatus: DONE

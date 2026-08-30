@@ -17,14 +17,14 @@ outputs:
   - "story.md.bak — backup del contenido original antes de la mejora"
   - "story-improvement-log.md — log de cambios con dimensiones afectadas y recomendaciones aplicadas"
 flags:
-  - "--story-id <FEAT-NNN>: ID de la historia a mejorar (obligatorio)"
+  - "--story-id <STORY-NNN>: ID de la historia a mejorar (obligatorio)"
 ---
 
 # Skill: `/story-improve`
 
 **Cuándo usar este skill:**
 - Cuando una historia tiene `decision: REFINAR` o `decision: RECHAZAR` en su `finvest-evaluation-report.md` y se quiere mejorar automáticamente siguiendo las recomendaciones del reporte.
-- Cuando el usuario dice "mejorar historia FEAT-NNN", "aplicar recomendaciones del reporte FINVEST", "story-improve".
+- Cuando el usuario dice "mejorar historia STORY-NNN", "aplicar recomendaciones del reporte FINVEST", "story-improve".
 - Cuando se quiere reducir el número de ciclos manuales de refinamiento antes de volver a ejecutar `/story-evaluation`.
 
 ## Objetivo
@@ -52,13 +52,13 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 
 | Artefacto | Ubicación | Requerido |
 |---|---|---|
-| `finvest-evaluation-report.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>-*/finvest-evaluation-report.md` | ✓ obligatorio |
-| `story.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>-*/story.md` | ✓ obligatorio |
+| `finvest-evaluation-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/finvest-evaluation-report.md` | ✓ obligatorio |
+| `story.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md` | ✓ obligatorio |
 | `assets/improvement-log-template.md` | `$CLI_ROOT/skills/story-improve/assets/improvement-log-template.md` | ✓ obligatorio |
 
 ## Parámetros
 
-- `--story-id <FEAT-NNN>`: ID de la historia a mejorar (ej. `FEAT-075`). Obligatorio.
+- `--story-id <STORY-NNN>`: ID de la historia a mejorar (ej. `STORY-075`). Obligatorio.
 
 ## Precondiciones
 
@@ -74,7 +74,7 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 
 ## Modos de ejecución
 
-- **Manual**: `/story-improve --story-id <FEAT-NNN>` — interactivo, muestra progreso en tiempo real
+- **Manual**: `/story-improve --story-id <STORY-NNN>` — interactivo, muestra progreso en tiempo real
 - **Automático**: invocado por orquestador — reporta resultado al finalizar sin interacción adicional
 
 ## Restricciones / Reglas
@@ -106,20 +106,20 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 Si no se proporcionó ningún argumento, preguntar:
 ```
 ¿Qué historia deseas mejorar?
-Proporciona el ID (ej. FEAT-075).
+Proporciona el ID (ej. STORY-075).
 ```
 
 #### 1b. Resolver directorio de la historia
 
 Buscar el directorio usando Glob con el patrón:
 ```
-$SPECS_BASE/specs/03-stories/<FEAT-NNN>-*/story.md
+$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md
 ```
 Extraer el directorio padre de la primera coincidencia cuyo nombre comienza con el ID.
 
 **Si no se encuentra:**
 ```
-❌ No se encontró la historia <FEAT-NNN> bajo $SPECS_BASE/specs/03-stories/
+❌ No se encontró la historia <STORY-NNN> bajo $SPECS_BASE/specs/03-stories/
 Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
 ```
 Detener la ejecución.
@@ -134,7 +134,7 @@ Verificar que el directorio contiene:
 ```
 ❌ No se encontró finvest-evaluation-report.md en: <ruta>
 La historia debe tener un reporte FINVEST antes de ejecutar story-improve.
-Sugerencia: ejecuta /story-evaluation <FEAT-NNN> para generar el reporte.
+Sugerencia: ejecuta /story-evaluation <STORY-NNN> para generar el reporte.
 ```
 Detener la ejecución.
 
@@ -170,7 +170,7 @@ Extraer y registrar internamente:
 
 Si `decision: APROBADA`:
 ```
-ℹ️ <FEAT-NNN> ya tiene decisión APROBADA — no se realizan cambios
+ℹ️ <STORY-NNN> ya tiene decisión APROBADA — no se realizan cambios
 ```
 Terminar la ejecución sin escribir ni modificar ningún archivo.
 
@@ -288,7 +288,7 @@ Confirmar:
 
 ```
 ──────────────────────────────────────────────────
- story-improve: <FEAT-NNN>
+ story-improve: <STORY-NNN>
 ──────────────────────────────────────────────────
  Decisión previa:    REFINAR (FINVEST <score>)
  Dimensiones mejoradas: <lista ej. I, E>
@@ -298,7 +298,7 @@ Confirmar:
    ✓ story.md         — historia mejorada
    ✓ story-improvement-log.md — log de cambios
 ──────────────────────────────────────────────────
- Siguiente paso: ejecuta /story-evaluation <FEAT-NNN>
+ Siguiente paso: ejecuta /story-evaluation <STORY-NNN>
  para verificar si la historia supera el umbral APROBADA.
 ──────────────────────────────────────────────────
 ```
@@ -318,8 +318,8 @@ Confirmar:
 
 | Artefacto | Ubicación | Condición |
 |---|---|---|
-| `story.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>-*/story.md` | Siempre (cuando decision ≠ APROBADA) |
-| `story.md.bak` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>-*/story.md.bak` | Siempre (cuando decision ≠ APROBADA) |
-| `story-improvement-log.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>-*/story-improvement-log.md` | Siempre (cuando decision ≠ APROBADA) |
+| `story.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md` | Siempre (cuando decision ≠ APROBADA) |
+| `story.md.bak` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md.bak` | Siempre (cuando decision ≠ APROBADA) |
+| `story-improvement-log.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story-improvement-log.md` | Siempre (cuando decision ≠ APROBADA) |
 
 Cuando `decision: APROBADA`: ningún archivo se crea ni modifica.

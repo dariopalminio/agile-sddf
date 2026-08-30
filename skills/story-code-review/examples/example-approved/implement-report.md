@@ -1,9 +1,9 @@
 ---
 type: implement-report
-id: FEAT-000
-slug: FEAT-000-implement-report
+id: STORY-000
+slug: STORY-000-implement-report
 title: "Implement Report: Ejemplo de revisión aprobada"
-story: FEAT-000
+story: STORY-000
 created: 2026-05-09
 updated: 2026-05-09
 ---
@@ -14,7 +14,7 @@ updated: 2026-05-09
 
 | Métrica | Valor |
 |---|---|
-| Historia | FEAT-000 |
+| Historia | STORY-000 |
 | Total de tareas | 2 |
 | Tareas completadas | 2 |
 | Tareas bloqueadas | 0 |

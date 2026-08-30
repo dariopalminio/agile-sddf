@@ -52,7 +52,7 @@ story-acceptance  → validación humana final              ← aquí
 
 ## Parámetros
 
-- `{story_id}` o primer argumento posicional: ID de la historia a validar (ej. `FEAT-055`)
+- `{story_id}` o primer argumento posicional: ID de la historia a validar (ej. `STORY-055`)
 - `--restart`: descarta sesión previa y reinicia acceptance desde cero sin preguntar
 - `--dry-run`: muestra la lista de criterios a validar sin iniciar la sesión interactiva
 - `--validator "<nombre>"`: registra el nombre del validador humano en el informe
@@ -94,14 +94,14 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 #### 1a. Resolver el story_id
 
 Aceptar como argumento:
-- `{story_id}` — identificador de la historia (ej. `FEAT-055`)
+- `{story_id}` — identificador de la historia (ej. `STORY-055`)
 - `{story_path}` — ruta explícita al directorio de la historia (sobreescribe la resolución por glob)
 - `--story <ID>` — forma larga del flag
 
 Si no se proporcionó ningún argumento, preguntar:
 ```
 ¿Qué historia deseas validar en acceptance?
-Proporciona el ID (ej. FEAT-055) o la ruta completa al directorio.
+Proporciona el ID (ej. STORY-055) o la ruta completa al directorio.
 ```
 
 #### 1b. Resolver el directorio de la historia
@@ -465,16 +465,16 @@ o bien (si ACCEPTANCE-BLOCKED):
 
 ### Caso 1 — Happy path (todos APPROVED)
 
-**Input:** Historia `FEAT-NNN` con `status: VERIFY / substatus: DONE`, 2 escenarios Gherkin, sección ACCEPTANCE en DoD
-**Acción:** Ejecutar `/story-acceptance FEAT-NNN`, responder PASS a todos los criterios
+**Input:** Historia `STORY-NNN` con `status: VERIFY / substatus: DONE`, 2 escenarios Gherkin, sección ACCEPTANCE en DoD
+**Acción:** Ejecutar `/story-acceptance STORY-NNN`, responder PASS a todos los criterios
 **Output esperado:**
 - `acceptance-report.md` con `final-status: ACCEPTANCE-APPROVED`, `session-status: complete`
 - `story.md` actualizado a `status: ACCEPTANCE / substatus: DONE`
-- Mensaje: "ACCEPTANCE APROBADO: historia FEAT-NNN lista para DELIVER"
+- Mensaje: "ACCEPTANCE APROBADO: historia STORY-NNN lista para DELIVER"
 
 ### Caso 2 — Criterio rechazado
 
-**Input:** Historia `FEAT-NNN` con `status: VERIFY / substatus: DONE`
+**Input:** Historia `STORY-NNN` con `status: VERIFY / substatus: DONE`
 **Acción:** Responder FAIL con observación "No muestra mensaje de error" al segundo criterio
 **Output esperado:**
 - `acceptance-report.md` con `final-status: ACCEPTANCE-REJECTED`, criterio 2 como REJECTED con observación
@@ -484,7 +484,7 @@ o bien (si ACCEPTANCE-BLOCKED):
 ### Caso 3 — Estado incorrecto
 
 **Input:** Historia con `status: IMPLEMENT / substatus: IN-PROGRESS`
-**Acción:** Ejecutar `/story-acceptance FEAT-NNN`
+**Acción:** Ejecutar `/story-acceptance STORY-NNN`
 **Output esperado:**
 - Mensaje de error con estado actual y estados válidos requeridos
 - Ningún archivo modificado
@@ -492,7 +492,7 @@ o bien (si ACCEPTANCE-BLOCKED):
 ### Caso 4 — DoD sin sección ACCEPTANCE
 
 **Input:** Historia en `VERIFY/DONE`, `definition-of-done-story.md` sin sección ACCEPTANCE
-**Acción:** Ejecutar `/story-acceptance FEAT-NNN`
+**Acción:** Ejecutar `/story-acceptance STORY-NNN`
 **Output esperado:**
 - Aviso: "No se encontró sección ACCEPTANCE en el DoD. Se usarán los criterios de story.md"
 - Sesión continúa usando solo criterios Gherkin
@@ -500,7 +500,7 @@ o bien (si ACCEPTANCE-BLOCKED):
 ### Caso 5 — Sesión interrumpida y reanudada
 
 **Input:** `acceptance-report.md` con `session-status: partial` (1 de 2 criterios evaluados)
-**Acción:** Ejecutar `/story-acceptance FEAT-NNN` nuevamente, responder "c" para continuar
+**Acción:** Ejecutar `/story-acceptance STORY-NNN` nuevamente, responder "c" para continuar
 **Output esperado:**
 - El skill presenta desde el criterio 2 (el primero pendiente)
 - No repite el criterio 1 ya evaluado

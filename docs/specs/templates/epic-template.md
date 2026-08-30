@@ -20,10 +20,10 @@ related:
 ## Descripción <!-- sección obligatoria-->
 [Explica el valor de negocio, qué problema resuelve y el contexto necesario. Máximo 3-4 líneas.]
 
-## Features <!-- sección obligatoria-->
-- [ ] FEAT-[INDEX] - **[Nombre feature 1]:** [Breve descripción de la feature]
-- [ ] FEAT-[INDEX] - **[Nombre feature 2]:** [Breve descripción de la feature]
-- [ ] FEAT-[INDEX] - **[Nombre feature 3]:** [Breve descripción de la feature]
+## Historias <!-- sección obligatoria-->
+- [ ] STORY-[INDEX] - **[Nombre feature 1]:** [Breve descripción de la feature]
+- [ ] STORY-[INDEX] - **[Nombre feature 2]:** [Breve descripción de la feature]
+- [ ] STORY-[INDEX] - **[Nombre feature 3]:** [Breve descripción de la feature]
 
 ## Flujos Críticos / Smoke Tests <!-- sección obligatoria, al menos un escenario -->
 *Si alguno de estos falla,  se debe detener el despliegue (o  se debe hacer rollback automático).*

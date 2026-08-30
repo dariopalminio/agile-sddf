@@ -1,7 +1,7 @@
 ---
 type: story
-id: FEAT-099
-slug: FEAT-099-gestionar-carrito-compras
+id: STORY-099
+slug: STORY-099-gestionar-carrito-compras
 title: "Gestionar carrito de compras"
 status: SPECIFY
 substatus: IN‑PROGRESS

@@ -17,9 +17,9 @@ related:
 
 **Objetivo:** Establecer la estructura fundacional del framework: convenciones de directorios, configuración de entornos reproducibles y el mecanismo de extracción dinámica de templates que habilita a todos los agentes a generar preguntas contextuales en runtime sin lógica hardcodeada.
 
-- [x] FEAT-002 - Extracción Dinámica de Templates
+- [x] STORY-002 - Extracción Dinámica de Templates
 
-**Ítems de soporte (sin FEAT propio):**
+**Ítems de soporte (sin historia propia):**
 - Crear proyecto en VSCode con estructura inicial de directorios: `.claude/skills/`, `.claude/agents/`, `$SPECS_BASE/specs/`.
 - Estructura inicial de directorios `.claude/skills/`, `.claude/agents/`, `$SPECS_BASE/specs/`
 - Convenciones CLAUDE.md y AGENTS.md del framework

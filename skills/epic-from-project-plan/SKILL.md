@@ -70,7 +70,7 @@ Dentro de esa sección, extraer cada bloque delimitado por un encabezado `### É
 - substatus: el valor del campo `substatus:` si existe en el bloque (ej. `DONE`, `IN‑PROGRESS`); si no existe, usar `IN‑PROGRESS`
 - **Fecha**: el valor del campo `**Fecha:**` si existe; si no existe, usar la fecha actual en formato YYYY-MM-DD
 - **Objetivo**: el párrafo que sigue a `**Objetivo:**`
-- **Features**: las líneas con formato `- [ ] FEAT-NNN - Nombre` o `- [x] FEAT-NNN - Nombre` dentro del bloque
+- **Features**: las líneas con formato `- [ ] STORY-NNN - Nombre` o `- [x] STORY-NNN - Nombre` dentro del bloque
 - **Criterios de éxito**: las líneas que siguen a `**Criterios de éxito:**` dentro del bloque
 
 **Si no se encuentra ningún bloque `### Épica`** dentro de la sección, mostrar el siguiente mensaje y terminar:
@@ -164,8 +164,8 @@ parent: <nombre del archivo de requirement-spec del proyecto del cual se genera 
 ## Descripción
 [Objetivo de la épica extraída del plan. Si no hay objetivo, usar "[Por completar]".]
 
-## Features
-[Lista de features extraída del plan, manteniendo el formato `- [ ] FEAT-NNN - **Nombre:** descripción`.
+## Historias
+[Lista de features extraída del plan, manteniendo el formato `- [ ] STORY-NNN - **Nombre:** descripción`.
 Si no hay features, usar `- [ ] [Por completar]`.]
 
 ## Flujos Críticos / Smoke Tests

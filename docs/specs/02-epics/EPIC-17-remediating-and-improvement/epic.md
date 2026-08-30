@@ -27,7 +27,7 @@ Este release remedia las violaciones más críticas a la constitución y estable
 verificación automática como mecanismo de cumplimiento, alineando el framework
 con su propio principio §3 ("obligar a demostrar, no declarar").
 
-## Features <!-- sección obligatoria-->
+## Historias <!-- sección obligatoria-->
 
 - [x] plan-01 - **Enhance - Reducción de costo de contexto de descriptions:** Remediar hallazgo A1 — Costo de contexto de las descriptions de skills. Recortar las 47 descriptions del system prompt de 22.017 a ≤12.000 chars siguiendo el patrón "cuándo invocarme" (qué + cuándo + triggers, ≤500 chars/skill).
 
@@ -39,7 +39,7 @@ con su propio principio §3 ("obligar a demostrar, no declarar").
 
 - [x] plan-05 — **Enhance - Normalizar Zoo de frontmatter**: 24 campos distintos entre skills (output y outputs, input e inputs, triggers, invocable, alwaysApply, department...). Claude Code solo honra name/description/allowed-tools/license; el resto es metadata muerta. skill-master define un estándar que nadie valida.
 
-- [x] plan-06 — **Refactor - Centralizar templates compartidos en `$SPECS_BASE/specs/templates/`:** Acoplamiento por rutas relativas entre skills, release-format-validation lee ../release-creation/assets/release-spec-template.md; release-generate-stories lee ../story-creation/assets/story-template.md. Instalación parcial = skill roto. Hubo un EPIC-11 "centralizar-templates" y el acoplamiento persiste. *Resuelto: 5 templates compartidos centralizados en `$SPECS_BASE/specs/templates/` (completa FEAT-055); 13 SKILL.md actualizados con resolución central → seed del dueño → error; `sddf-init` copia los templates (Paso 2b); `skill-preflight` verifica templates centrales.*
+- [x] plan-06 — **Refactor - Centralizar templates compartidos en `$SPECS_BASE/specs/templates/`:** Acoplamiento por rutas relativas entre skills, release-format-validation lee ../release-creation/assets/release-spec-template.md; release-generate-stories lee ../story-creation/assets/story-template.md. Instalación parcial = skill roto. Hubo un EPIC-11 "centralizar-templates" y el acoplamiento persiste. *Resuelto: 5 templates compartidos centralizados en `$SPECS_BASE/specs/templates/` (completa STORY-055); 13 SKILL.md actualizados con resolución central → seed del dueño → error; `sddf-init` copia los templates (Paso 2b); `skill-preflight` verifica templates centrales.*
 
 - [x] plan-07 — **Contrato explícito de invocación de agentes locales de skill:** Agentes locales sin mecanismo definido; los agentes en story-code-review/agents/, security-audit/agents/, etc. no son tipos registrados por el harness (solo .claude/agents/ lo es). El skill dice "lanzar Agente 1 (agents/tech-lead-reviewer.agent.md)" sin especificar el cómo (leer archivo → spawn general-purpose con ese prompt). Funciona por inferencia, no por contrato. Y story-improve/agents/ está vacío. *Resuelto: contrato de 4 pasos formalizado en ADR-0002 y `best-practices-for-skills.md` (sección "Patrón de invocación de agentes locales"); bloque de mecanismo insertado en los 3 SKILL.md afectados; `story-improve/agents/` vacío eliminado; `skill-master/agents/` se mantiene en formato upstream.*
 

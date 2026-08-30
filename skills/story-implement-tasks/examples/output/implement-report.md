@@ -1,9 +1,9 @@
 ---
 type: implement-report
-id: FEAT-099
+id: STORY-099
 slug: feat-099-implement-report
 title: "Implement Report: Generador de Slugs"
-story: FEAT-099
+story: STORY-099
 created: 2026-05-01
 updated: 2026-05-01
 ---
@@ -14,7 +14,7 @@ updated: 2026-05-01
 
 | Métrica | Valor |
 |---|---|
-| Historia | FEAT-099 |
+| Historia | STORY-099 |
 | Total de tareas | 7 |
 | Tareas completadas | 7 |
 | Tareas bloqueadas | 0 |

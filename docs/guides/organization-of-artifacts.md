@@ -59,7 +59,7 @@ docs\specs\01-projects\PROJ-01-nombre-project\project-intent.md
 docs\specs\01-projects\PROJ-01-nombre-project\project-plan.md
 docs\specs\01-projects\PROJ-01-nombre-project\story-map.md
 docs\specs\02-epics\EPIC-01-nombre-epica\epic.md 
-docs\specs\03-stories\FEAT-001-nombre-story\story.md 
+docs\specs\03-stories\STORY-001-nombre-story\story.md 
 
 
 ---

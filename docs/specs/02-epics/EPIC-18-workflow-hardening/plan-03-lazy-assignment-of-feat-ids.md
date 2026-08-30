@@ -36,7 +36,7 @@ directorios.
 
 ### 1. `.claude/skills/release-creation/assets/release-spec-template.md`
 
-Actualizar el bloque `## Features` para que no incluya `FEAT-[INDEX]`:
+Actualizar el bloque `## Features` para que no incluya `STORY-[INDEX]`:
 
 ```markdown
 ## Features <!-- sección obligatoria-->
@@ -48,7 +48,7 @@ Actualizar el bloque `## Features` para que no incluya `FEAT-[INDEX]`:
 ### 2. `.claude/skills/release-creation/SKILL.md`
 
 En **Paso 4 — Features**:
-- Eliminar el párrafo sobre cálculo automático del siguiente `FEAT-NNN`
+- Eliminar el párrafo sobre cálculo automático del siguiente `STORY-NNN`
   (leer dirs de `$SPECS_BASE/specs/stories/`, incrementar, etc.).
 - El formato de salida en `release.md` pasa a ser: `- [ ] **{Nombre}:** {descripción}`
 - Añadir nota al final del bloque Features:
@@ -60,21 +60,21 @@ En **Paso 4 — Features**:
 #### Paso 2 — Extraer features (ampliar parsing)
 
 Añadir soporte para ambos formatos:
-- **Con ID (releases existentes):** `- [ ] FEAT-NNN - **Nombre:** desc` → usar ID extraído.
+- **Con ID (releases existentes):** `- [ ] STORY-NNN - **Nombre:** desc` → usar ID extraído.
 - **Sin ID (releases nuevos):** `- [ ] **Nombre:** desc` → marcar como "pendiente de asignación".
 
 #### Nuevo sub-paso 2b — Asignar IDs a features sin ID
 
 Para features sin ID:
-1. Leer con Glob `$SPECS_BASE/specs/stories/FEAT-*/story.md` → encontrar mayor `FEAT-NNN`
+1. Leer con Glob `$SPECS_BASE/specs/stories/STORY-*/story.md` → encontrar mayor `STORY-NNN`
    en el filesystem.
 2. Leer **todos** los `release.md` en `$SPECS_BASE/specs/releases/*/` y extraer cualquier
-   `FEAT-NNN` ya presente en sus secciones Features — evita colisiones con releases que ya
+   `STORY-NNN` ya presente en sus secciones Features — evita colisiones con releases que ya
    tienen IDs asignados pero cuyas historias aún no existen en disco.
 3. Tomar el máximo entre ambas fuentes y asignar IDs secuenciales desde `max+1`.
 4. **Backfill en `release.md`:** actualizar la sección `## Features` del release activo,
    reemplazando cada línea sin ID por la versión con ID asignado:
-   `- [ ] FEAT-NNN - **Nombre:** desc`
+   `- [ ] STORY-NNN - **Nombre:** desc`
 
    Esto restaura la trazabilidad: después de la generación, `release.md` refleja los IDs reales.
 
@@ -83,7 +83,7 @@ Para features sin ID:
 Cambiar la regla `El skill **no modifica** el archivo de release` a:
 
 > El skill **solo modifica** el archivo de release para backfill de FEAT IDs: reemplaza
-> líneas `- [ ] **Nombre:** desc` por `- [ ] FEAT-NNN - **Nombre:** desc` en la sección
+> líneas `- [ ] **Nombre:** desc` por `- [ ] STORY-NNN - **Nombre:** desc` en la sección
 > `## Features` antes de generar los directorios de historia. No modifica ninguna otra
 > sección ni ningún otro archivo.
 
@@ -92,8 +92,8 @@ Cambiar la regla `El skill **no modifica** el archivo de release` a:
 ## Compatibilidad hacia atrás
 
 `release-generate-stories` debe manejar ambos formatos:
-- Formato nuevo (sin ID): línea no contiene patrón `FEAT-\d+`.
-- Formato antiguo (con ID): releases históricos que ya tienen `FEAT-NNN`.
+- Formato nuevo (sin ID): línea no contiene patrón `STORY-\d+`.
+- Formato antiguo (con ID): releases históricos que ya tienen `STORY-NNN`.
 
 Si todos los features de un release ya tienen ID → comportamiento actual sin cambios.
 Si algunos o todos carecen de ID → asignar y hacer backfill antes de generar.
@@ -104,7 +104,7 @@ Si algunos o todos carecen de ID → asignar y hacer backfill antes de generar.
 
 | Archivo | Cambio |
 |---------|--------|
-| `.claude/skills/release-creation/assets/release-spec-template.md` | Quitar `FEAT-[INDEX]` del bloque Features |
+| `.claude/skills/release-creation/assets/release-spec-template.md` | Quitar `STORY-[INDEX]` del bloque Features |
 | `.claude/skills/release-creation/SKILL.md` | Eliminar lógica de asignación de IDs en Paso 4; actualizar formato de salida |
 | `.claude/skills/release-generate-stories/SKILL.md` | Ampliar Paso 2; añadir sub-paso 2b de asignación + backfill; actualizar restricciones |
 
@@ -117,8 +117,8 @@ Si algunos o todos carecen de ID → asignar y hacer backfill antes de generar.
 
 ## Verificación
 
-1. Crear release con `/release-creation` → `release.md` NO contiene `FEAT-NNN` en Features.
-2. Ejecutar `/release-generate-stories` → directorios `FEAT-NNN-nombre/` creados con IDs
+1. Crear release con `/release-creation` → `release.md` NO contiene `STORY-NNN` en Features.
+2. Ejecutar `/release-generate-stories` → directorios `STORY-NNN-nombre/` creados con IDs
    correctos; `release.md` actualizado con backfill de IDs.
 3. Crear dos releases sin generar historias; luego ejecutar `/release-generate-stories` sobre
    cada uno → los IDs no colisionan entre releases.

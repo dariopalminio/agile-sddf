@@ -1,18 +1,18 @@
 ---
 alwaysApply: false
 type: analyze
-id: FEAT-099
-slug: FEAT-099-exportar-datos-csv-analyze-report
+id: STORY-099
+slug: STORY-099-exportar-datos-csv-analyze-report
 title: "Analyze Report: Exportar datos en CSV"
-story: FEAT-099
-design: FEAT-099
-tasks: FEAT-099
+story: STORY-099
+design: STORY-099
+tasks: STORY-099
 created: 2026-05-07
 updated: 2026-05-07
 ---
 
 <!-- Referencias -->
-[[FEAT-099-exportar-datos-csv]]
+[[STORY-099-exportar-datos-csv]]
 
 # Reporte de Coherencia: Exportar datos en CSV
 
@@ -104,7 +104,7 @@ updated: 2026-05-07
 
 ## Recomendaciones
 
-1. **Verificar alineación con release**: El archivo `epic.md` para `EPIC-10-data-management` no fue encontrado. Ejecuta `/epic-from-project-plan` para generarlo o verifica que el directorio `docs/specs/02-epics/EPIC-10-data-management-*/` existe. Una vez disponible, vuelve a ejecutar `/story-analyze FEAT-099` para completar la verificación de alineación.
+1. **Verificar alineación con release**: El archivo `epic.md` para `EPIC-10-data-management` no fue encontrado. Ejecuta `/epic-from-project-plan` para generarlo o verifica que el directorio `docs/specs/02-epics/EPIC-10-data-management-*/` existe. Una vez disponible, vuelve a ejecutar `/story-analyze STORY-099` para completar la verificación de alineación.
 2. **Corregir criterio DoD PLAN — tasks.md**: Reordenar las tareas en `tasks.md` de modo que queden agrupadas por dependencia lógica (setup → componentes core → soporte → tests → verificación).
 
 ---

@@ -9,7 +9,7 @@
       "type": "happy-path",
       "description": "Flujo completo con historia en IMPLEMENT/DONE, story.md y design.md presentes, implement-report.md y testcases.md disponibles. Los tres agentes revisores y security-audit no reportan hallazgos de severidad HIGH ni MEDIUM. El skill debe generar code-review-report.md con review-status approved, actualizar story.md a CODE-REVIEW/DONE y no generar fix-directives.md.",
       "input": {
-        "story_id": "FEAT-010",
+        "story_id": "STORY-010",
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE",
         "artifacts_present": ["story.md", "design.md", "implement-report.md", "testcases.md", "tasks.md"],
@@ -46,7 +46,7 @@
       "type": "fail-path",
       "description": "Historia en IMPLEMENT/DONE con story.md y design.md presentes. El Tech-Lead-Reviewer reporta un hallazgo HIGH (API key hardcodeada en src/auth.ts:42). El skill debe calcular max-severity HIGH, generar fix-directives.md con la instruccion de correccion correspondiente, agregar tarea en tasks.md y retroceder story.md a READY-FOR-IMPLEMENT/DONE. No debe marcar CODE-REVIEW/DONE.",
       "input": {
-        "story_id": "FEAT-020",
+        "story_id": "STORY-020",
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE",
         "artifacts_present": ["story.md", "design.md", "tasks.md"],
@@ -93,7 +93,7 @@
       "type": "fail-fast",
       "description": "La historia tiene status PLAN y substatus DONE (no cumple la precondicion IMPLEMENT/DONE). El skill debe mostrar un mensaje de error descriptivo con el estado actual y el estado requerido, y no modificar ningun archivo ni crear code-review-report.md.",
       "input": {
-        "story_id": "FEAT-030",
+        "story_id": "STORY-030",
         "story_status": "PLAN",
         "story_substatus": "DONE",
         "artifacts_present": ["story.md", "design.md"]
@@ -122,7 +122,7 @@
       "type": "fail-fast",
       "description": "La historia tiene status IMPLEMENT/DONE pero design.md no existe en el directorio de la historia. El skill debe detectar el artefacto faltante, emitir un unico mensaje de error con la lista de faltantes y detener la ejecucion sin modificar ningun archivo.",
       "input": {
-        "story_id": "FEAT-040",
+        "story_id": "STORY-040",
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE",
         "artifacts_present": ["story.md"]
@@ -152,7 +152,7 @@
       "type": "fail-path",
       "description": "Historia en IMPLEMENT/DONE con story.md, design.md e implement-report.md presentes. El Tech-Lead-Reviewer detecta un hallazgo de performance (consulta a base de datos dentro de un loop, riesgo N+1) clasificado MEDIUM bajo la nueva subseccion Performance. El skill debe tratarlo igual que cualquier otro hallazgo de code-quality: calcular max-severity MEDIUM, generar fix-directives.md y retroceder story.md a READY-FOR-IMPLEMENT/DONE.",
       "input": {
-        "story_id": "FEAT-050",
+        "story_id": "STORY-050",
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE",
         "artifacts_present": ["story.md", "design.md", "implement-report.md"],
@@ -194,7 +194,7 @@
       "type": "happy-path",
       "description": "Historia en IMPLEMENT/DONE con implement-report.md que lista 15 archivos generados, pero ningun agente ni security-audit reporta severidad HIGH/MEDIUM. El skill debe mostrar la nota informativa de tamano de cambio (Paso 4c.2) sugiriendo /story-split, sin que esto afecte el calculo de max-severity ni review-status: debe seguir siendo approved y story.md debe avanzar a CODE-REVIEW/DONE.",
       "input": {
-        "story_id": "FEAT-060",
+        "story_id": "STORY-060",
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE",
         "artifacts_present": ["story.md", "design.md", "implement-report.md"],
@@ -228,7 +228,7 @@
       "type": "fail-path",
       "description": "El Tech-Lead-Reviewer detecta una dependencia nueva agregada al manifest de paquetes (package.json) sin justificacion visible en design.md ni implement-report.md. Debe reportarse como hallazgo MEDIUM bajo el checklist de disciplina de dependencias, generando needs-changes y fix-directives.md.",
       "input": {
-        "story_id": "FEAT-070",
+        "story_id": "STORY-070",
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE",
         "artifacts_present": ["story.md", "design.md", "implement-report.md"],

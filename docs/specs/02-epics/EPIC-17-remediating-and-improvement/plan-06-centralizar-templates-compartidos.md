@@ -12,11 +12,11 @@ related:
   - EPIC-17-remediating-and-improvement
 ---
 
-# Plan: Refactor — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` (completar EPIC-11/FEAT-055)
+# Plan: Refactor — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` (completar EPIC-11/STORY-055)
 
 ## Context
 
-13 acoplamientos cross-skill confirmados: skills que leen templates de otros skills por ruta relativa (`../story-creation/assets/story-template.md`, etc.). Una instalación parcial de skills rompe a los consumidores. EPIC-11/FEAT-055 ya decidió la solución — centralizar en `$SPECS_BASE/specs/templates/` — pero quedó marcado RELEASED sin implementar. Tres skills (`story-design`, `story-analyze`, `story-tasking`) ya documentan en sus `assets/README.md` que leen del directorio central, y los examples/evals de `release-creation` y `story-evaluation` también lo esperan. **El directorio central no existe**: hay divergencia entre intención documentada y realidad.
+13 acoplamientos cross-skill confirmados: skills que leen templates de otros skills por ruta relativa (`../story-creation/assets/story-template.md`, etc.). Una instalación parcial de skills rompe a los consumidores. EPIC-11/STORY-055 ya decidió la solución — centralizar en `$SPECS_BASE/specs/templates/` — pero quedó marcado RELEASED sin implementar. Tres skills (`story-design`, `story-analyze`, `story-tasking`) ya documentan en sus `assets/README.md` que leen del directorio central, y los examples/evals de `release-creation` y `story-evaluation` también lo esperan. **El directorio central no existe**: hay divergencia entre intención documentada y realidad.
 
 ### Justificación de la arquitectura elegida (respuesta a la pregunta de mejor práctica)
 
@@ -84,7 +84,7 @@ Extender la "Verificación 3 — Templates requeridos": si el skill invocador de
 Este repositorio es a su vez un proyecto SDDF (`SPECS_BASE = docs`). Crear `docs/specs/templates/` y copiar los 5 templates desde sus skills dueños — deja al repo consistente con lo que sus propios examples/evals ya esperan.
 
 ### 5. Cierre de trazabilidad
-- `docs/specs/releases/EPIC-11-centralizar-templates/release.md`: marcar FEAT-055 como `[x]` con nota de que se implementó vía EPIC-17/A3 (alcance ampliado de 3 a 5 templates).
+- `docs/specs/releases/EPIC-11-centralizar-templates/release.md`: marcar STORY-055 como `[x]` con nota de que se implementó vía EPIC-17/A3 (alcance ampliado de 3 a 5 templates).
 - `docs/specs/releases/EPIC-17-remediating-and-improvement/release.md`: marcar el ítem A3 como completado.
 
 ### Fuera de alcance
@@ -117,7 +117,7 @@ skill-preflight — la Verificación 3 ahora distingue templates centrales (OK c
 
 Dogfooding — creado docs/specs/templates/ en este repo con los 5 templates, verificados byte-idénticos a sus seeds por hash. Esto deja al repo consistente con lo que sus propios examples y evals ya esperaban.
 
-Trazabilidad — FEAT-055 marcada [x] en EPIC-11 (con nota de alcance ampliado de 3 a 5 templates) y A3 marcado [x] en EPIC-17.
+Trazabilidad — STORY-055 marcada [x] en EPIC-11 (con nota de alcance ampliado de 3 a 5 templates) y A3 marcado [x] en EPIC-17.
 
 Queda pendiente de tu lado, si quieres validarlo end-to-end: invocar /release-format-validation EPIC-17 y confirmar que resuelve el template desde docs/specs/templates/release-spec-template.md sin warning.
 

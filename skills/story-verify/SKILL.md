@@ -97,14 +97,14 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 #### 1a. Resolver el story_id
 
 Aceptar como argumento:
-- `{story_id}` — identificador de la historia (ej. `FEAT-050`)
+- `{story_id}` — identificador de la historia (ej. `STORY-050`)
 - `{story_path}` — ruta explícita al directorio de la historia (sobreescribe la resolución por glob)
 - `--story <ID>` — forma larga del flag
 
 Si no se proporcionó ningún argumento:
 ```
 ¿Qué historia deseas verificar?
-Proporciona el ID (ej. FEAT-050) o la ruta completa al directorio.
+Proporciona el ID (ej. STORY-050) o la ruta completa al directorio.
 ```
 
 #### 1b. Resolver el directorio de la historia

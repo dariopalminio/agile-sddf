@@ -1,22 +1,22 @@
 ---
 type: expected-output
-story: FEAT-000
+story: STORY-000
 scenario: missing-artifacts
 ---
 
 # Output esperado: Artefactos faltantes
 
-Cuando se ejecuta `/story-code-review FEAT-000` con solo `story.md` presente
+Cuando se ejecuta `/story-code-review STORY-000` con solo `story.md` presente
 (faltan `design.md` e `implement-report.md`), el skill debe emitir **exactamente**:
 
 ```
-❌ Artefactos requeridos no encontrados en: docs/specs/03-stories/FEAT-000-missing-artifacts/
+❌ Artefactos requeridos no encontrados en: docs/specs/03-stories/STORY-000-missing-artifacts/
 
    Faltantes:
    · design.md
    · implement-report.md
 
-Completa los artefactos faltantes y vuelve a ejecutar /story-code-review FEAT-000.
+Completa los artefactos faltantes y vuelve a ejecutar /story-code-review STORY-000.
 ```
 
 ## Condiciones de validación

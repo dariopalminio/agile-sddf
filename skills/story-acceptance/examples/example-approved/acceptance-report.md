@@ -1,7 +1,7 @@
 ---
 type: acceptance-report
-story: FEAT-055
-title: "Acceptance Report: FEAT-055 — Login de usuario con email y contraseña"
+story: STORY-055
+title: "Acceptance Report: STORY-055 — Login de usuario con email y contraseña"
 date: 2026-05-16
 validator: "Darío Palminio"
 dod-version: "2026-05-15"
@@ -9,11 +9,11 @@ session-status: complete
 final-status: ACCEPTANCE-APPROVED
 ---
 
-# Acceptance Report: FEAT-055 — Login de usuario con email y contraseña
+# Acceptance Report: STORY-055 — Login de usuario con email y contraseña
 
 ## Resumen ejecutivo
 
-- **Historia:** FEAT-055 — Login de usuario con email y contraseña
+- **Historia:** STORY-055 — Login de usuario con email y contraseña
 - **Fecha:** 2026-05-16
 - **Validador:** Darío Palminio
 - **Total criterios:** 6
@@ -47,7 +47,7 @@ final-status: ACCEPTANCE-APPROVED
 
 ## Estado final
 
-**ACCEPTANCE APROBADO** — Historia FEAT-055 lista para DELIVER
+**ACCEPTANCE APROBADO** — Historia STORY-055 lista para DELIVER
 
 ## Historial de sesiones anteriores
 

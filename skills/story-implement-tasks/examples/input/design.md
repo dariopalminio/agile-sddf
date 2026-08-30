@@ -1,9 +1,9 @@
 ---
 type: design
-id: FEAT-099
+id: STORY-099
 slug: feat-099-generador-de-slugs-design
 title: "Design: Generador de Slugs"
-story: FEAT-099
+story: STORY-099
 created: 2026-05-01
 updated: 2026-05-01
 ---

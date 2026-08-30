@@ -1,7 +1,7 @@
 ---
 type: story
-id: FEAT-000
-slug: FEAT-000-example-needs-changes
+id: STORY-000
+slug: STORY-000-example-needs-changes
 title: "Ejemplo: Historia con hallazgos bloqueantes en code review"
 status: IMPLEMENT
 substatus: DONE
@@ -14,7 +14,7 @@ updated: 2026-05-09
 
 **Como** desarrollador
 **Quiero** tener un endpoint que lea datos de usuario desde la base de datos
-**Para** verificar el flujo de revisión con hallazgos HIGH (referencia para FEAT-065)
+**Para** verificar el flujo de revisión con hallazgos HIGH (referencia para STORY-065)
 
 ## ✅ Criterios de aceptación
 

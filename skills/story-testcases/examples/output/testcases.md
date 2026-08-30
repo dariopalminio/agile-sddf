@@ -1,17 +1,17 @@
 ---
 type: testcases
-id: FEAT-099
-slug: FEAT-099-exportar-datos-csv-testcases
+id: STORY-099
+slug: STORY-099-exportar-datos-csv-testcases
 title: "Test Cases: Exportar datos en CSV"
-story: FEAT-099
+story: STORY-099
 created: 2026-05-01
 updated: 2026-05-01
 related:
-  - FEAT-099-exportar-datos-csv
+  - STORY-099-exportar-datos-csv
 ---
 
 <!-- Referencias -->
-[[FEAT-099-exportar-datos-csv]]
+[[STORY-099-exportar-datos-csv]]
 
 # Casos de Prueba: Exportar datos en CSV
 
@@ -54,7 +54,7 @@ related:
 - tasks.md no fue usado como fuente (no hay casos T-NNN) — se usó solo story.md y design.md.
 - Criterio no funcional (< 3 segundos para 10.000 registros) no genera caso en esta tabla; se verifica en el ciclo de performance tests del proyecto.
 
-## Test Cases Progress for FEAT-099
+## Test Cases Progress for STORY-099
 
 <!-- Generado automáticamente por story-testcases. Actualizado por story-implement en fase GREEN.
      [x] = test pasó | [ ] = pendiente | [!] = test falló -->

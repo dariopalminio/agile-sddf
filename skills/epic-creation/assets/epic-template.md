@@ -20,7 +20,7 @@ related:
 ## Descripción <!-- sección obligatoria-->
 [Explica el valor de negocio, qué problema resuelve y el contexto necesario. Máximo 3-4 líneas.]
 
-## Features <!-- sección obligatoria-->
+## Historias <!-- sección obligatoria-->
 - [ ] **[Nombre feature 1]:** [Breve descripción de la feature]
 - [ ] **[Nombre feature 2]:** [Breve descripción de la feature]
 - [ ] **[Nombre feature 3]:** [Breve descripción de la feature]

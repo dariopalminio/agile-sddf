@@ -18,19 +18,19 @@ related:
 ## Descripción
 Permite la distribución del framework Agile Spec-Driven-Development (SDDF) como un paquete NPM público, facilitando la instalación global de todos los skills, agentes y templates del framework.
 
-## Features
-- [x] **FEAT-038: Copiar los templates a los skills correspondientes** — Reorganizar los templates de `$SPECS_BASE/specs/templates/` a los directorios `templates/` de los skills que los utilizan. _(deps: —)_
-- [x] **FEAT-039: Publicar framework en npm** — (package structure + npm publish manual) Empaquetar y publicar todos los skills, agentes y templates del framework en NPM para instalación global con npm install -g @sddf/core. _(deps: FEAT-038)_
-- [x] **FEAT-040: Instalar skills via postinstall (script)** — Configurar el script `postinstall` para copiar automáticamente los skills y agentes a `~/.claude/` tras la instalación global. Implica crear un script Node.js (scripts/postinstall.js) que npm ejecuta automáticamente al hacer npm install -g.  _(deps: FEAT-039)_
+## Historias
+- [x] **STORY-038: Copiar los templates a los skills correspondientes** — Reorganizar los templates de `$SPECS_BASE/specs/templates/` a los directorios `templates/` de los skills que los utilizan. _(deps: —)_
+- [x] **STORY-039: Publicar framework en npm** — (package structure + npm publish manual) Empaquetar y publicar todos los skills, agentes y templates del framework en NPM para instalación global con npm install -g @sddf/core. _(deps: STORY-038)_
+- [x] **STORY-040: Instalar skills via postinstall (script)** — Configurar el script `postinstall` para copiar automáticamente los skills y agentes a `~/.claude/` tras la instalación global. Implica crear un script Node.js (scripts/postinstall.js) que npm ejecuta automáticamente al hacer npm install -g.  _(deps: STORY-039)_
 
 ## Notas:
 
-Implementar FEAT-039:
+Implementar STORY-039:
 - Reorganizar la estructura del proyecto para que cada skill, agente y template tenga su propio package.json con la configuración adecuada para npm.
 - Asegurarse de que cada package.json incluya los campos necesarios como name, version, main, files, etc.
 - Verificar que los archivos necesarios para cada skill, agente y template estén incluidos en el campo files de su respectivo package.json.
 - Probar la estructura con npm pack --dry-run para asegurarse de que todo esté configurado correctamente antes de publicar.
-Implementar FEAT-040:
+Implementar STORY-040:
 - Implementar scripts/postinstall.js localmente
 - Agregarlo al package.json ("scripts": { "postinstall": "node scripts/postinstall.js" })
 - Agregar scripts/postinstall.js al campo files

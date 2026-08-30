@@ -1,6 +1,6 @@
 ---
 name: epic-generate-stories
-description: "Genera historias de usuario (directorio `<SPECS_BASE>/specs/03-stories/FEAT-NNN-nombre/story.md`) a partir de las features definidas en el epic.md de un directorio de épica, usando el template story-template.md. El usuario puede indicar el nombre del directorio de la épica."
+description: "Genera historias de usuario (directorio `<SPECS_BASE>/specs/03-stories/STORY-NNN-nombre/story.md`) a partir de las features definidas en el epic.md de un directorio de épica, usando el template story-template.md. El usuario puede indicar el nombre del directorio de la épica."
 triggers:
   - "epic-generate-stories"
   - "generar historias"
@@ -20,11 +20,11 @@ features definidas en un `epic.md`. Invocar también cuando el usuario mencione
 
 ## Objetivo
 
-Lee `epic.md` de un directorio de la épica en `$SPECS_BASE/specs/02-epics/` y genera automáticamente un directorio `FEAT-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature definida en la sección `## Features` de la épica. Cada archivo generado sigue exactamente la estructura de `$SPECS_BASE/specs/templates/story-template.md`.
+Lee `epic.md` de un directorio de la épica en `$SPECS_BASE/specs/02-epics/` y genera automáticamente un directorio `STORY-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature definida en la sección `## Historias` de la épica. Cada archivo generado sigue exactamente la estructura de `$SPECS_BASE/specs/templates/story-template.md`.
 
 **Qué hace este skill:**
 - Resuelve la épica a procesar por nombre de directorio (parcial o completo) o por ruta explícita
-- Extrae todas las features de la sección `## Features` del `epic.md` indicado
+- Extrae todas las features de la sección `## Historias` del `epic.md` indicado
 - Genera un `story.md` por feature, respetando el template canónico en tiempo de ejecución
 - Pregunta al usuario antes de sobreescribir historias existentes
 
@@ -60,9 +60,9 @@ Lee `epic.md` de un directorio de la épica en `$SPECS_BASE/specs/02-epics/` y g
 ## Restricciones / Reglas
 
 - El skill **no valida** calidad FINVEST — en flujo batch la validación INVEST se delega al paso posterior `/story-evaluation` para no bloquear la generación masiva de historias; ejecutar `/story-evaluation` sobre cada historia generada como siguiente paso obligatorio
-- El skill **solo modifica** el archivo de épica para backfill de FEAT IDs: reemplaza líneas `- [ ] **Nombre:** desc` por `- [ ] FEAT-NNN - **Nombre:** desc` en la sección `## Features` antes de generar los directorios de historia. No modifica ninguna otra sección ni ningún otro archivo.
+- El skill **solo modifica** el archivo de épica para backfill de IDs de historia: reemplaza líneas `- [ ] **Nombre:** desc` por `- [ ] STORY-NNN - **Nombre:** desc` en la sección `## Historias` antes de generar los directorios de historia. No modifica ninguna otra sección ni ningún otro archivo.
 - El skill procesa **todas** las features de la épica (pendientes `[ ]` y completadas `[x]`)
-- Si dos features tienen el mismo ID (duplicado en la épica), añadir sufijo `-bis` al segundo archivo (ej. `FEAT-029-nombre-bis/`) e informar al usuario
+- Si dos features tienen el mismo ID (duplicado en la épica), añadir sufijo `-bis` al segundo archivo (ej. `STORY-029-nombre-bis/`) e informar al usuario
 - Las secciones opcionales de cada historia se incluyen con placeholder `[Por completar]` para facilitar la edición posterior
 - El skill no realiza evaluación INVEST ni splitting — si una historia parece demasiado grande, sugerirlo en las notas pero no dividirla automáticamente
 - El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
@@ -106,14 +106,14 @@ El skill acepta dos formatos de input:
 
 Leer el archivo de épica resuelta en el Paso 1.
 
-Localizar la sección `## Features`. Solo analizar el contenido dentro de esa sección.
+Localizar la sección `## Historias`. Solo analizar el contenido dentro de esa sección.
 
 Dentro de esa sección, extraer cada línea de feature. Reconocer dos formatos:
 
 **Formato A — Con ID asignado (épicas existentes o migrados):**
-- `- [ ] FEAT-NNN - **Nombre:** descripción`
-- `- [ ] FEAT-NNN — Nombre: descripción`
-- `- [ ] **FEAT-NNN — Nombre:** descripción`
+- `- [ ] STORY-NNN - **Nombre:** descripción`
+- `- [ ] STORY-NNN — Nombre: descripción`
+- `- [ ] **STORY-NNN — Nombre:** descripción`
 - Variantes con guion largo `—`, doble guión `--` o dos puntos como separador
 
 **Formato B — Sin ID (épicas creadas con el flujo lazy):**
@@ -121,40 +121,40 @@ Dentro de esa sección, extraer cada línea de feature. Reconocer dos formatos:
 - `- [x] **Nombre:** descripción`
 
 Para cada feature, capturar:
-- **ID**: el identificador `FEAT-NNN` si está presente; `null` si no hay ID (Formato B).
+- **ID**: el identificador `STORY-NNN` si está presente; `null` si no hay ID (Formato B).
 - **Nombre**: el nombre de la feature.
 - **Descripción**: el texto después del separador, si existe.
 - **Estado**: `[ ]` (pendiente) o `[x]` (completada) — se procesan todas independientemente del estado.
 
-**Si la sección `## Features` no existe o no contiene ninguna entrada reconocible**: terminar sin generar ningún archivo (ver Manejo de errores).
+**Si la sección `## Historias` no existe o no contiene ninguna entrada reconocible**: terminar sin generar ningún archivo (ver Manejo de errores).
 
 ---
 
-### Paso 2b — Asignar FEAT IDs a features sin ID
+### Paso 2b — Asignar IDs de historia a features sin ID
 
 Si **ninguna** feature tiene ID `null` → saltar este paso (todos tienen ID; comportamiento actual sin cambios).
 
 Si **alguna** feature tiene ID `null`:
 
 1. **Calcular el máximo ID en uso desde dos fuentes:**
-   - **Fuente A — Filesystem:** usar Glob `$SPECS_BASE/specs/03-stories/FEAT-*/story.md`. De cada ruta extraer el número `NNN` del segmento `FEAT-NNN-*`. Tomar el mayor.
-   - **Fuente B — Épicas existentes:** leer todos los archivos `$SPECS_BASE/specs/02-epics/*/epic.md` y extraer cualquier `FEAT-NNN` presente en sus secciones `## Features`. Tomar el mayor entre todos los encontrados.
+   - **Fuente A — Filesystem:** usar Glob `$SPECS_BASE/specs/03-stories/STORY-*/story.md`. De cada ruta extraer el número `NNN` del segmento `STORY-NNN-*`. Tomar el mayor.
+   - **Fuente B — Épicas existentes:** leer todos los archivos `$SPECS_BASE/specs/02-epics/*/epic.md` y extraer cualquier `STORY-NNN` presente en sus secciones `## Historias`. Tomar el mayor entre todos los encontrados.
    - `MAX_ID = máximo entre Fuente A y Fuente B` (o `0` si ambas están vacías).
 
 2. **Asignar IDs secuencialmente** a las features con ID `null`, en orden de aparición:
-   - Primera sin ID → `FEAT-(MAX_ID+1)` con cero-padding a 3 dígitos (ej. `FEAT-091`)
-   - Segunda sin ID → `FEAT-(MAX_ID+2)`, etc.
+   - Primera sin ID → `STORY-(MAX_ID+1)` con cero-padding a 3 dígitos (ej. `STORY-091`)
+   - Segunda sin ID → `STORY-(MAX_ID+2)`, etc.
 
-3. **Backfill en `epic.md`:** actualizar la sección `## Features` de la épica activa, reemplazando cada línea sin ID por la versión con ID asignado:
-   - `- [ ] **Nombre:** desc` → `- [ ] FEAT-NNN - **Nombre:** desc`
+3. **Backfill en `epic.md`:** actualizar la sección `## Historias` de la épica activa, reemplazando cada línea sin ID por la versión con ID asignado:
+   - `- [ ] **Nombre:** desc` → `- [ ] STORY-NNN - **Nombre:** desc`
    
    Escribir el archivo actualizado antes de continuar al Paso 3.
 
 4. Emitir resumen de asignación:
    ```
-   ℹ️ FEAT IDs asignados y registrados en epic.md:
-   - story-bulk-plan → FEAT-091
-   - story-bulk-implement → FEAT-092
+   ℹ️ IDs de historia asignados y registrados en epic.md:
+   - story-bulk-plan → STORY-091
+   - story-bulk-implement → STORY-092
    ...
    ```
 
@@ -181,25 +181,25 @@ Convertir el nombre de la feature a kebab-case siguiendo estas reglas:
 4. Eliminar guiones consecutivos (`--` → `-`)
 5. Eliminar guiones al inicio o al final
 
-Nombre de directorio resultante: `FEAT-[NNN]-[nombre-kebab]`
+Nombre de directorio resultante: `STORY-[NNN]-[nombre-kebab]`
 
-Ruta del archivo de salida: `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/story.md`
+Ruta del archivo de salida: `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/story.md`
 
-**Ejemplo:** `FEAT-029 — Generar stories` → directorio `FEAT-029-generar-stories/` con archivo `story.md`
+**Ejemplo:** `STORY-029 — Generar stories` → directorio `STORY-029-generar-stories/` con archivo `story.md`
 
 #### 4b. Verificar existencia previa
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. Para
 > verificar si ya existe la historia, usar el patrón de archivo anidado:
-> `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/story.md`.
+> `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/story.md`.
 > Si Glob retorna ese archivo, el directorio existe. Si retorna vacío, no existe.
-> Nunca usar el patrón de directorio desnudo (`FEAT-[NNN]-[nombre-kebab]/`) — retornará
+> Nunca usar el patrón de directorio desnudo (`STORY-[NNN]-[nombre-kebab]/`) — retornará
 > vacío aunque el directorio exista, causando sobreescritura silenciosa sin confirmación.
 
-Si ya existe `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/story.md`, informar al usuario:
+Si ya existe `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/story.md`, informar al usuario:
 
 ```
-El directorio $SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/ ya existe.
+El directorio $SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/ ya existe.
 ¿Deseas sobreescribir story.md? (s/n)
 ```
 
@@ -234,17 +234,19 @@ Las secciones opcionales (`⚙️ Criterios no funcionales`, `📎 Notas`) se in
 
 #### 4e. Escribir el archivo de historia
 
-Crear el directorio `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/specs/templates/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
+Crear el directorio `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/specs/templates/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
 - `status: SPECIFY` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento)
+- `kind: feat` — tipo de historia por defecto; cambiar a `fix`, `chore` o `hotfix` según la naturaleza del trabajo (determina el prefijo de rama)
 
 Si no se puede leer el template, generar el archivo con la siguiente estructura de fallback:
 
 ```markdown
 ---
 type: story
-id: <FEAT-NNN>
+id: <STORY-NNN>
+kind: feat
 slug: <nombre-del-directorio-de-historia>
 title: "<Nombre de la feature>"
 status: SPECIFY
@@ -302,8 +304,8 @@ Al terminar de procesar todas las features, mostrar un resumen en pantalla:
 
 Se generaron [N] directorios de historia en $SPECS_BASE/specs/03-stories/:
 
-- $SPECS_BASE/specs/03-stories/FEAT-NNN-nombre/story.md
-- $SPECS_BASE/specs/03-stories/FEAT-NNN-nombre/story.md
+- $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/story.md
+- $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/story.md
 ...
 
 **Siguiente paso:** Ejecuta `/story-evaluation` para verificar la calidad de cada historia generada, o `/story-specify` para especificarlas de forma interactiva.
@@ -311,12 +313,12 @@ Se generaron [N] directorios de historia en $SPECS_BASE/specs/03-stories/:
 
 Si alguna feature fue saltada (usuario eligió no sobreescribir), listarla como:
 ```
-- $SPECS_BASE/specs/03-stories/FEAT-NNN-nombre/ — saltada (ya existía)
+- $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/ — saltada (ya existía)
 ```
 
 Si alguna feature no pudo procesarse por formato inesperado, listarla como:
 ```
-- FEAT-NNN — [Nombre] — no procesada (formato no reconocido)
+- STORY-NNN — [Nombre] — no procesada (formato no reconocido)
 ```
 
 ---
@@ -328,12 +330,12 @@ Si alguna feature no pudo procesarse por formato inesperado, listarla como:
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
 | Épica no encontrado (Formato A, sin coincidencias) | `No se encontró el directorio de la épica: <término>. Asegúrate de que el directorio existe en $SPECS_BASE/specs/02-epics/ y vuelve a intentarlo.` | Detener sin generar archivos |
 | Épica no encontrado (Formato B, ruta inválida) | `No se encontró epic.md en: <ruta>. Asegúrate de que la ruta es correcta y vuelve a intentarlo.` | Detener sin generar archivos |
-| Sección `## Features` vacía o ausente | `No se encontraron features en el archivo de épica indicada.` | Mostrar orientación y detener |
+| Sección `## Historias` vacía o ausente | `No se encontraron features en el archivo de épica indicada.` | Mostrar orientación y detener |
 | Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/story-template.md.` | Detener la ejecución |
 
 ---
 
 ## Salida
 
-- Directorios `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre-kebab]/story.md` creados — uno por feature de la épica
+- Directorios `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/story.md` creados — uno por feature de la épica
 - Resumen con: historias generadas, historias saltadas (por conflicto), features con formato no reconocido

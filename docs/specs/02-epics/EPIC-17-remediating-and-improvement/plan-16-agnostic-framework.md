@@ -2,7 +2,7 @@
 type: plan
 id: plan-16
 slug: plan-16-agnostic-framework
-title: "Desacoplar referencias `.claude/` de los skills SDDF (FEAT-056)"
+title: "Desacoplar referencias `.claude/` de los skills SDDF (STORY-056)"
 status: COMPLETED
 substatus: DONE
 parent: EPIC-17

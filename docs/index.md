@@ -102,7 +102,7 @@ También en ese directorio: [context-diagram.puml](specs/01-projects/PROJ-01-agi
 - [[workflow-hardening]] — [epic.md](specs/02-epics/EPIC-18-workflow-hardening/epic.md) — Robustecer el flujo de story y release
   - [[plan-01-deliver-status]] — [plan-01](specs/02-epics/EPIC-18-workflow-hardening/plan-01-deliver-status.md) — Renombrar `INTEGRATION` → `DELIVER`
   - [[plan-02-epic-workflow-definition]] — [plan-02](specs/02-epics/EPIC-18-workflow-hardening/plan-02-epic-workflow-definition.md) — Definir el workflow canónico de épica/release
-  - [[plan-03-lazy-assignment-of-feat-ids]] — [plan-03](specs/02-epics/EPIC-18-workflow-hardening/plan-03-lazy-assignment-of-feat-ids.md) — Asignación lazy de IDs `FEAT` en dos fases
+  - [[plan-03-lazy-assignment-of-feat-ids]] — [plan-03](specs/02-epics/EPIC-18-workflow-hardening/plan-03-lazy-assignment-of-feat-ids.md) — Asignación lazy de IDs de historia en dos fases
   - [[plan-04-doc-story-implement]] — [plan-04](specs/02-epics/EPIC-18-workflow-hardening/plan-04-doc-story-implement.md) — Mejorar la documentación de story-implement
   - [[plan-05-enhance-code-review]] — [plan-05](specs/02-epics/EPIC-18-workflow-hardening/plan-05-enhance-code-review.md) — Incorporar mejoras a story-code-review
   - [[plan-06-isolate-workspace-by-story]] — [plan-06](specs/02-epics/EPIC-18-workflow-hardening/plan-06-isolate-workspace-by-story.md) — Aislar el espacio de trabajo por historia
@@ -111,9 +111,9 @@ También en ese directorio: [context-diagram.puml](specs/01-projects/PROJ-01-agi
 
 ### L1 — Historias de usuario
 
-`specs/03-stories/FEAT-NNN-*/story.md`.
+`specs/03-stories/STORY-NNN-*/story.md`.
 
-> **Convención de directorio:** cada `FEAT-NNN-*/` contiene `story.md` como nodo principal y, según la
+> **Convención de directorio:** cada `STORY-NNN-*/` contiene `story.md` como nodo principal y, según la
 > fase alcanzada, puede contener además `analyze.md`, `design.md`, `tasks.md`, `testcases.md`,
 > `implement-report.md`, `code-review-report.md`, `verify-report.md`, `acceptance-report.md`,
 > `fix-directives.md` o `finvest-evaluation-report.md`. Esos artefactos derivados no se enumeran aquí:
@@ -121,113 +121,113 @@ También en ese directorio: [context-diagram.puml](specs/01-projects/PROJ-01-agi
 
 #### Pipeline de proyecto (EPIC-01 → EPIC-05)
 
-- [[FEAT-001-project-begin]] — [story.md](specs/03-stories/FEAT-001-project-begin/story.md) — project-begin: captura de intención inicial del proyecto
-- [[FEAT-003-project-discovery]] — [story.md](specs/03-stories/FEAT-003-project-discovery/story.md) — project-discovery: discovery de usuarios y especificación de requisitos
-- [[FEAT-004-project-planning]] — [story.md](specs/03-stories/FEAT-004-project-planning/story.md) — project-planning: planificación de épicas y backlog
-- [[FEAT-005-project-story-mapping]] — [story.md](specs/03-stories/FEAT-005-project-story-mapping/story.md) — project-story-mapping: user story mapping según Jeff Patton
-- [[FEAT-006-story-creation]] — [story.md](specs/03-stories/FEAT-006-story-creation/story.md) — story-creation: crear historias de usuario
-- [[FEAT-007-story-evaluation]] — [story.md](specs/03-stories/FEAT-007-story-evaluation/story.md) — story-evaluation: evaluación FINVEST de historias
-- [[FEAT-008-control-wip]] — [story.md](specs/03-stories/FEAT-008-control-wip/story.md) — Control WIP=1: detección de proyecto activo
-- [[FEAT-010-gates-de-revision]] — [story.md](specs/03-stories/FEAT-010-gates-de-revision/story.md) — Gates de revisión humana entre fases del pipeline
-- [[FEAT-011-project-planning-mejorado]] — [story.md](specs/03-stories/FEAT-011-project-planning-mejorado/story.md) — project-planning mejorado: integración con story mapping
-- [[FEAT-012-story-split]] — [story.md](specs/03-stories/FEAT-012-story-split/story.md) — story-split: dividir épicas en historias pequeñas
-- [[FEAT-013-story-refine]] — [story.md](specs/03-stories/FEAT-013-story-refine/story.md) — story-refine: refinamiento iterativo de historias
-- [[FEAT-015-project-flow]] — [story.md](specs/03-stories/FEAT-015-project-flow/story.md) — project-flow: orquestador del pipeline completo de proyecto
+- [[STORY-001-project-begin]] — [story.md](specs/03-stories/STORY-001-project-begin/story.md) — project-begin: captura de intención inicial del proyecto
+- [[STORY-003-project-discovery]] — [story.md](specs/03-stories/STORY-003-project-discovery/story.md) — project-discovery: discovery de usuarios y especificación de requisitos
+- [[STORY-004-project-planning]] — [story.md](specs/03-stories/STORY-004-project-planning/story.md) — project-planning: planificación de épicas y backlog
+- [[STORY-005-project-story-mapping]] — [story.md](specs/03-stories/STORY-005-project-story-mapping/story.md) — project-story-mapping: user story mapping según Jeff Patton
+- [[STORY-006-story-creation]] — [story.md](specs/03-stories/STORY-006-story-creation/story.md) — story-creation: crear historias de usuario
+- [[STORY-007-story-evaluation]] — [story.md](specs/03-stories/STORY-007-story-evaluation/story.md) — story-evaluation: evaluación FINVEST de historias
+- [[STORY-008-control-wip]] — [story.md](specs/03-stories/STORY-008-control-wip/story.md) — Control WIP=1: detección de proyecto activo
+- [[STORY-010-gates-de-revision]] — [story.md](specs/03-stories/STORY-010-gates-de-revision/story.md) — Gates de revisión humana entre fases del pipeline
+- [[STORY-011-project-planning-mejorado]] — [story.md](specs/03-stories/STORY-011-project-planning-mejorado/story.md) — project-planning mejorado: integración con story mapping
+- [[STORY-012-story-split]] — [story.md](specs/03-stories/STORY-012-story-split/story.md) — story-split: dividir épicas en historias pequeñas
+- [[STORY-013-story-refine]] — [story.md](specs/03-stories/STORY-013-story-refine/story.md) — story-refine: refinamiento iterativo de historias
+- [[STORY-015-project-flow]] — [story.md](specs/03-stories/STORY-015-project-flow/story.md) — project-flow: orquestador del pipeline completo de proyecto
 
 #### Ingeniería inversa (EPIC-03)
 
-- [[FEAT-017-reverse-engineering]] — [story.md](specs/03-stories/FEAT-017-reverse-engineering/story.md) — reverse-engineering: skill orquestador de ingeniería inversa
-- [[FEAT-018-agente-reverse-engineer-architect]] — [story.md](specs/03-stories/FEAT-018-agente-reverse-engineer-architect/story.md) — Agente reverse-engineer-architect
-- [[FEAT-019-agente-reverse-engineer-product-discovery]] — [story.md](specs/03-stories/FEAT-019-agente-reverse-engineer-product-discovery/story.md) — Agente reverse-engineer-product-discovery
-- [[FEAT-020-agente-reverse-engineer-business-analyst]] — [story.md](specs/03-stories/FEAT-020-agente-reverse-engineer-business-analyst/story.md) — Agente reverse-engineer-business-analyst
-- [[FEAT-021-agente-reverse-engineer-ux-flow-mapper]] — [story.md](specs/03-stories/FEAT-021-agente-reverse-engineer-ux-flow-mapper/story.md) — Agente reverse-engineer-ux-flow-mapper
-- [[FEAT-022-agente-reverse-engineer-synthesizer]] — [story.md](specs/03-stories/FEAT-022-agente-reverse-engineer-synthesizer/story.md) — Agente reverse-engineer-synthesizer
-- [[FEAT-023-scope-acotado-focus]] — [story.md](specs/03-stories/FEAT-023-scope-acotado-focus/story.md) — Scope acotado: flag `--focus` para reverse-engineering
-- [[FEAT-024-modo-incremental-update]] — [story.md](specs/03-stories/FEAT-024-modo-incremental-update/story.md) — Modo incremental: flag `--update` para reverse-engineering
+- [[STORY-017-reverse-engineering]] — [story.md](specs/03-stories/STORY-017-reverse-engineering/story.md) — reverse-engineering: skill orquestador de ingeniería inversa
+- [[STORY-018-agente-reverse-engineer-architect]] — [story.md](specs/03-stories/STORY-018-agente-reverse-engineer-architect/story.md) — Agente reverse-engineer-architect
+- [[STORY-019-agente-reverse-engineer-product-discovery]] — [story.md](specs/03-stories/STORY-019-agente-reverse-engineer-product-discovery/story.md) — Agente reverse-engineer-product-discovery
+- [[STORY-020-agente-reverse-engineer-business-analyst]] — [story.md](specs/03-stories/STORY-020-agente-reverse-engineer-business-analyst/story.md) — Agente reverse-engineer-business-analyst
+- [[STORY-021-agente-reverse-engineer-ux-flow-mapper]] — [story.md](specs/03-stories/STORY-021-agente-reverse-engineer-ux-flow-mapper/story.md) — Agente reverse-engineer-ux-flow-mapper
+- [[STORY-022-agente-reverse-engineer-synthesizer]] — [story.md](specs/03-stories/STORY-022-agente-reverse-engineer-synthesizer/story.md) — Agente reverse-engineer-synthesizer
+- [[STORY-023-scope-acotado-focus]] — [story.md](specs/03-stories/STORY-023-scope-acotado-focus/story.md) — Scope acotado: flag `--focus` para reverse-engineering
+- [[STORY-024-modo-incremental-update]] — [story.md](specs/03-stories/STORY-024-modo-incremental-update/story.md) — Modo incremental: flag `--update` para reverse-engineering
 
 #### Generadores de épica y story (EPIC-06)
 
-- [[FEAT-027-validacion-de-formato-de-release]] — [story.md](specs/03-stories/FEAT-027-validacion-de-formato-de-release/story.md) — Validación de formato de release
-- [[FEAT-028-generar-releases]] — [story.md](specs/03-stories/FEAT-028-generar-releases/story.md) — Generar releases desde el project-plan
-- [[FEAT-029-generar-stories]] — [story.md](specs/03-stories/FEAT-029-generar-stories/story.md) — Generar stories desde un archivo de release
-- [[FEAT-030-soporte-atlassian-rovo]] — [story.md](specs/03-stories/FEAT-030-soporte-atlassian-rovo/story.md) — Soporte Atlassian Rovo: agente story-creator *(retirado en plan-13 de EPIC-17)*
-- [[FEAT-032-soporte-atlassian-rovo-para-validar-release]] — [story.md](specs/03-stories/FEAT-032-soporte-atlassian-rovo-para-validar-release/story.md) — Soporte Atlassian Rovo para validar release *(retirado)*
-- [[FEAT-033-soporte-atlassian-rovo-para-crear-epic-release]] — [story.md](specs/03-stories/FEAT-033-soporte-atlassian-rovo-para-crear-epic-release/story.md) — Soporte Atlassian Rovo para crear epic release *(retirado)*
-- [[FEAT-034-rovo-agent-release-reverse-generator]] — [story.md](specs/03-stories/FEAT-034-rovo-agent-release-reverse-generator/story.md) — Rovo agent: release reverse generator desde hijos *(retirado)*
-- [[FEAT-035-generar-stories-todos-releases]] — [story.md](specs/03-stories/FEAT-035-generar-stories-todos-releases/story.md) — Generar stories de todos los releases en batch
-- [[FEAT-036-openspec-init-config]] — [story.md](specs/03-stories/FEAT-036-openspec-init-config/story.md) — Inicializar la configuración de OpenSpec automáticamente
-- [[FEAT-037-generar-baseline-openspec-inversa]] — [story.md](specs/03-stories/FEAT-037-generar-baseline-openspec-inversa/story.md) — Generar línea base de OpenSpec por ingeniería inversa
+- [[STORY-027-validacion-de-formato-de-release]] — [story.md](specs/03-stories/STORY-027-validacion-de-formato-de-release/story.md) — Validación de formato de release
+- [[STORY-028-generar-releases]] — [story.md](specs/03-stories/STORY-028-generar-releases/story.md) — Generar releases desde el project-plan
+- [[STORY-029-generar-stories]] — [story.md](specs/03-stories/STORY-029-generar-stories/story.md) — Generar stories desde un archivo de release
+- [[STORY-030-soporte-atlassian-rovo]] — [story.md](specs/03-stories/STORY-030-soporte-atlassian-rovo/story.md) — Soporte Atlassian Rovo: agente story-creator *(retirado en plan-13 de EPIC-17)*
+- [[STORY-032-soporte-atlassian-rovo-para-validar-release]] — [story.md](specs/03-stories/STORY-032-soporte-atlassian-rovo-para-validar-release/story.md) — Soporte Atlassian Rovo para validar release *(retirado)*
+- [[STORY-033-soporte-atlassian-rovo-para-crear-epic-release]] — [story.md](specs/03-stories/STORY-033-soporte-atlassian-rovo-para-crear-epic-release/story.md) — Soporte Atlassian Rovo para crear epic release *(retirado)*
+- [[STORY-034-rovo-agent-release-reverse-generator]] — [story.md](specs/03-stories/STORY-034-rovo-agent-release-reverse-generator/story.md) — Rovo agent: release reverse generator desde hijos *(retirado)*
+- [[STORY-035-generar-stories-todos-releases]] — [story.md](specs/03-stories/STORY-035-generar-stories-todos-releases/story.md) — Generar stories de todos los releases en batch
+- [[STORY-036-openspec-init-config]] — [story.md](specs/03-stories/STORY-036-openspec-init-config/story.md) — Inicializar la configuración de OpenSpec automáticamente
+- [[STORY-037-generar-baseline-openspec-inversa]] — [story.md](specs/03-stories/STORY-037-generar-baseline-openspec-inversa/story.md) — Generar línea base de OpenSpec por ingeniería inversa
 
 #### Empaquetado y distribución (EPIC-07 → EPIC-09)
 
-- [[FEAT-038-copy-templates-to-skills]] — [story.md](specs/03-stories/FEAT-038-copy-templates-to-skills/story.md) — Copiar los templates a los skills correspondientes
-- [[FEAT-039-publicar-framework-en-npm]] — [story.md](specs/03-stories/FEAT-039-publicar-framework-en-npm/story.md) — Publicar el framework en npm
-- [[FEAT-040-instalar-skills-via-postinstall]] — [story.md](specs/03-stories/FEAT-040-instalar-skills-via-postinstall/story.md) — Instalar skills vía script de `postinstall`
-- [[FEAT-041-npm-install-locally]] — [story.md](specs/03-stories/FEAT-041-npm-install-locally/story.md) — Instalación local con npm
-- [[FEAT-042-readme-builder]] — [story.md](specs/03-stories/FEAT-042-readme-builder/story.md) — readme-builder: generación de `README.md`
-- [[FEAT-043-header-aggregation]] — [story.md](specs/03-stories/FEAT-043-header-aggregation/story.md) — header-aggregation: metadata de estado en archivos spec
-- [[FEAT-044-directorio-docs-tipo-wiki]] — [story.md](specs/03-stories/FEAT-044-directorio-docs-tipo-wiki/story.md) — Directorio `docs/` tipo wiki (este índice)
-- [[FEAT-046-publicar-npm-con-github-actions]] — [story.md](specs/03-stories/FEAT-046-publicar-npm-con-github-actions/story.md) — CI/CD con GitHub Actions para publicar en npm
-- [[FIX-001-error-in-npm-install-locally]] — [story.md](specs/03-stories/FIX-001-error-in-npm-install-locally/story.md) — Fix: error de `npm install agile-sddf` en Windows 11
+- [[STORY-038-copy-templates-to-skills]] — [story.md](specs/03-stories/STORY-038-copy-templates-to-skills/story.md) — Copiar los templates a los skills correspondientes
+- [[STORY-039-publicar-framework-en-npm]] — [story.md](specs/03-stories/STORY-039-publicar-framework-en-npm/story.md) — Publicar el framework en npm
+- [[STORY-040-instalar-skills-via-postinstall]] — [story.md](specs/03-stories/STORY-040-instalar-skills-via-postinstall/story.md) — Instalar skills vía script de `postinstall`
+- [[STORY-041-npm-install-locally]] — [story.md](specs/03-stories/STORY-041-npm-install-locally/story.md) — Instalación local con npm
+- [[STORY-042-readme-builder]] — [story.md](specs/03-stories/STORY-042-readme-builder/story.md) — readme-builder: generación de `README.md`
+- [[STORY-043-header-aggregation]] — [story.md](specs/03-stories/STORY-043-header-aggregation/story.md) — header-aggregation: metadata de estado en archivos spec
+- [[STORY-044-directorio-docs-tipo-wiki]] — [story.md](specs/03-stories/STORY-044-directorio-docs-tipo-wiki/story.md) — Directorio `docs/` tipo wiki (este índice)
+- [[STORY-046-publicar-npm-con-github-actions]] — [story.md](specs/03-stories/STORY-046-publicar-npm-con-github-actions/story.md) — CI/CD con GitHub Actions para publicar en npm
+- [[STORY-087-error-in-npm-install-locally]] — [story.md](specs/03-stories/STORY-087-error-in-npm-install-locally/story.md) — `kind: fix` — error de `npm install agile-sddf` en Windows 11
 
 #### Estructura de artefactos y templates (EPIC-10 → EPIC-11)
 
-- [[FEAT-047-skills-multicliente-rutas-relativas]] — [story.md](specs/03-stories/FEAT-047-skills-multicliente-rutas-relativas/story.md) — Skills con templates multicliente y rutas relativas
-- [[FEAT-048-refactor-migrates-templates-to-assets]] — [story.md](specs/03-stories/FEAT-048-refactor-migrates-templates-to-assets/story.md) — Refactor: migrar templates a `assets/` en los skills
-- [[FEAT-049-reading-of-sddf-root]] — [story.md](specs/03-stories/FEAT-049-reading-of-sddf-root/story.md) — Lectura de `SDDF_ROOT` como ruta base de artefactos
-- [[FEAT-050-organizar-artefactos-en-directorio-propio]] — [story.md](specs/03-stories/FEAT-050-organizar-artefactos-en-directorio-propio/story.md) — Organizar artefactos de spec en un directorio por workitem
-- [[FEAT-051-crear-release-por-preguntas-guiadas]] — [story.md](specs/03-stories/FEAT-051-crear-release-por-preguntas-guiadas/story.md) — Crear un `epic.md` válido por preguntas guiadas
-- [[FEAT-052-generar-diagrama-contexto-c4]] — [story.md](specs/03-stories/FEAT-052-generar-diagrama-contexto-c4/story.md) — Generar un diagrama de contexto C4 del proyecto
-- [[FEAT-053-centralizar-validacion-entorno-sddf]] — [story.md](specs/03-stories/FEAT-053-centralizar-validacion-entorno-sddf/story.md) — Centralizar la validación de entorno con `skill-preflight`
-- [[FEAT-054-inicializar-entorno-sddf]] — [story.md](specs/03-stories/FEAT-054-inicializar-entorno-sddf/story.md) — Inicializar el entorno SDDF con `sddf-init` · `BACKLOG`
-- [[FEAT-055-centralizar-templates-en-specs-templates]] — [story.md](specs/03-stories/FEAT-055-centralizar-templates-en-specs-templates/story.md) — Centralizar templates de spec en directorio compartido
-- [[FEAT-056-project-policies]] — [story.md](specs/03-stories/FEAT-056-project-policies/story.md) — Políticas de proyecto (`constitution.md`, DoD)
+- [[STORY-047-skills-multicliente-rutas-relativas]] — [story.md](specs/03-stories/STORY-047-skills-multicliente-rutas-relativas/story.md) — Skills con templates multicliente y rutas relativas
+- [[STORY-048-refactor-migrates-templates-to-assets]] — [story.md](specs/03-stories/STORY-048-refactor-migrates-templates-to-assets/story.md) — Refactor: migrar templates a `assets/` en los skills
+- [[STORY-049-reading-of-sddf-root]] — [story.md](specs/03-stories/STORY-049-reading-of-sddf-root/story.md) — Lectura de `SDDF_ROOT` como ruta base de artefactos
+- [[STORY-050-organizar-artefactos-en-directorio-propio]] — [story.md](specs/03-stories/STORY-050-organizar-artefactos-en-directorio-propio/story.md) — Organizar artefactos de spec en un directorio por workitem
+- [[STORY-051-crear-release-por-preguntas-guiadas]] — [story.md](specs/03-stories/STORY-051-crear-release-por-preguntas-guiadas/story.md) — Crear un `epic.md` válido por preguntas guiadas
+- [[STORY-052-generar-diagrama-contexto-c4]] — [story.md](specs/03-stories/STORY-052-generar-diagrama-contexto-c4/story.md) — Generar un diagrama de contexto C4 del proyecto
+- [[STORY-053-centralizar-validacion-entorno-sddf]] — [story.md](specs/03-stories/STORY-053-centralizar-validacion-entorno-sddf/story.md) — Centralizar la validación de entorno con `skill-preflight`
+- [[STORY-054-inicializar-entorno-sddf]] — [story.md](specs/03-stories/STORY-054-inicializar-entorno-sddf/story.md) — Inicializar el entorno SDDF con `sddf-init` · `BACKLOG`
+- [[STORY-055-centralizar-templates-en-specs-templates]] — [story.md](specs/03-stories/STORY-055-centralizar-templates-en-specs-templates/story.md) — Centralizar templates de spec en directorio compartido
+- [[STORY-056-project-policies]] — [story.md](specs/03-stories/STORY-056-project-policies/story.md) — Políticas de proyecto (`constitution.md`, DoD)
 
 #### Story SDD workflow (EPIC-12)
 
-- [[FEAT-057-skill-para-diseno]] — [story.md](specs/03-stories/FEAT-057-skill-para-diseno/story.md) — Skill de diseño (`story-design`)
-- [[FEAT-058-skill-para-tasking]] — [story.md](specs/03-stories/FEAT-058-skill-para-tasking/story.md) — Skill de tasking (`story-tasking`)
-- [[FEAT-059-comando-de-analisis-transversal]] — [story.md](specs/03-stories/FEAT-059-comando-de-analisis-transversal/story.md) — Análisis transversal (`story-analyze`)
-- [[FEAT-060-orquestacion-del-plan]] — [story.md](specs/03-stories/FEAT-060-orquestacion-del-plan/story.md) — Orquestación del plan (`story-plan`)
-- [[FEAT-061-skill-de-implementacion-el-programador-autonomo]] — [story.md](specs/03-stories/FEAT-061-skill-de-implementacion-el-programador-autonomo/story.md) — Skill de implementación: el programador autónomo (`story-implement`)
-- [[FEAT-062-status-management-on-workflow]] — [story.md](specs/03-stories/FEAT-062-status-management-on-workflow/story.md) — Gestión de estados en el workflow
-- [[FEAT-063-reutilizar-directorio-como-historia-core]] — [story.md](specs/03-stories/FEAT-063-reutilizar-directorio-como-historia-core/story.md) — Reutilizar el directorio original como historia core al dividir
-- [[FEAT-064-revision-codigo-multi-agente]] — [story.md](specs/03-stories/FEAT-064-revision-codigo-multi-agente/story.md) — `story-code-review`: revisión multi-agente del código implementado
-- [[FEAT-065-revision-con-bloqueantes]] — [story.md](specs/03-stories/FEAT-065-revision-con-bloqueantes/story.md) — `story-code-review`: instrucciones de corrección ante bloqueantes
-- [[FEAT-066-revision-validacion-precondiciones]] — [story.md](specs/03-stories/FEAT-066-revision-validacion-precondiciones/story.md) — `story-code-review`: validar artefactos requeridos antes de revisar
-- [[FEAT-067-story-implement-continuar-parcial]] — [story.md](specs/03-stories/FEAT-067-story-implement-continuar-parcial/story.md) — `story-implement`: continuar implementación parcial con fix-directives
+- [[STORY-057-skill-para-diseno]] — [story.md](specs/03-stories/STORY-057-skill-para-diseno/story.md) — Skill de diseño (`story-design`)
+- [[STORY-058-skill-para-tasking]] — [story.md](specs/03-stories/STORY-058-skill-para-tasking/story.md) — Skill de tasking (`story-tasking`)
+- [[STORY-059-comando-de-analisis-transversal]] — [story.md](specs/03-stories/STORY-059-comando-de-analisis-transversal/story.md) — Análisis transversal (`story-analyze`)
+- [[STORY-060-orquestacion-del-plan]] — [story.md](specs/03-stories/STORY-060-orquestacion-del-plan/story.md) — Orquestación del plan (`story-plan`)
+- [[STORY-061-skill-de-implementacion-el-programador-autonomo]] — [story.md](specs/03-stories/STORY-061-skill-de-implementacion-el-programador-autonomo/story.md) — Skill de implementación: el programador autónomo (`story-implement`)
+- [[STORY-062-status-management-on-workflow]] — [story.md](specs/03-stories/STORY-062-status-management-on-workflow/story.md) — Gestión de estados en el workflow
+- [[STORY-063-reutilizar-directorio-como-historia-core]] — [story.md](specs/03-stories/STORY-063-reutilizar-directorio-como-historia-core/story.md) — Reutilizar el directorio original como historia core al dividir
+- [[STORY-064-revision-codigo-multi-agente]] — [story.md](specs/03-stories/STORY-064-revision-codigo-multi-agente/story.md) — `story-code-review`: revisión multi-agente del código implementado
+- [[STORY-065-revision-con-bloqueantes]] — [story.md](specs/03-stories/STORY-065-revision-con-bloqueantes/story.md) — `story-code-review`: instrucciones de corrección ante bloqueantes
+- [[STORY-066-revision-validacion-precondiciones]] — [story.md](specs/03-stories/STORY-066-revision-validacion-precondiciones/story.md) — `story-code-review`: validar artefactos requeridos antes de revisar
+- [[STORY-067-story-implement-continuar-parcial]] — [story.md](specs/03-stories/STORY-067-story-implement-continuar-parcial/story.md) — `story-implement`: continuar implementación parcial con fix-directives
 
 #### Quality gates con DoD (EPIC-13)
 
-- [[dod-plan-en-story-analyze]] — [story.md](specs/03-stories/FEAT-068-dod-plan-en-story-analyze/story.md) — FEAT-068: DoD PLAN en `story-analyze`
-- [[dod-IMPLEMENT-en-story-implement]] — [story.md](specs/03-stories/FEAT-069-dod-implementing-en-story-implement/story.md) — FEAT-069: DoD IMPLEMENT en `story-implement`
-- [[dod-code-review-en-story-code-review]] — [story.md](specs/03-stories/FEAT-070-dod-code-review-en-story-code-review/story.md) — FEAT-070: DoD CODE-REVIEW en `story-code-review` · `READY-FOR-VERIFY`
-- [[FEAT-071-skill-story-verify]] — [story.md](specs/03-stories/FEAT-071-skill-story-verify/story.md) — Skill `story-verify`: orquestar la fase VERIFY · `READY-FOR-CODE-REVIEW`
-- [[FEAT-072-skill-story-acceptance]] — [story.md](specs/03-stories/FEAT-072-skill-story-acceptance/story.md) — Skill `story-acceptance`: validación humana final antes de DELIVER
-- [[FEAT-073-skill-security-audit-condicional]] — [story.md](specs/03-stories/FEAT-073-skill-security-audit-condicional/story.md) — Skill `security-audit`: auditoría de seguridad condicional
+- [[dod-plan-en-story-analyze]] — [story.md](specs/03-stories/STORY-068-dod-plan-en-story-analyze/story.md) — STORY-068: DoD PLAN en `story-analyze`
+- [[dod-IMPLEMENT-en-story-implement]] — [story.md](specs/03-stories/STORY-069-dod-implementing-en-story-implement/story.md) — STORY-069: DoD IMPLEMENT en `story-implement`
+- [[dod-code-review-en-story-code-review]] — [story.md](specs/03-stories/STORY-070-dod-code-review-en-story-code-review/story.md) — STORY-070: DoD CODE-REVIEW en `story-code-review` · `READY-FOR-VERIFY`
+- [[STORY-071-skill-story-verify]] — [story.md](specs/03-stories/STORY-071-skill-story-verify/story.md) — Skill `story-verify`: orquestar la fase VERIFY · `READY-FOR-CODE-REVIEW`
+- [[STORY-072-skill-story-acceptance]] — [story.md](specs/03-stories/STORY-072-skill-story-acceptance/story.md) — Skill `story-acceptance`: validación humana final antes de DELIVER
+- [[STORY-073-skill-security-audit-condicional]] — [story.md](specs/03-stories/STORY-073-skill-security-audit-condicional/story.md) — Skill `security-audit`: auditoría de seguridad condicional
 
 #### Integración y entrega (`story-integrate`)
 
-- [[FEAT-074-integrar-historia-batch-configurable]] — [story.md](specs/03-stories/FEAT-074-integrar-historia-batch-configurable/story.md) — Integración batch configurable de historias · `READY-FOR-IMPLEMENT`
-- [[FEAT-075-integrar-historia-modo-manual-dryrun]] — [story.md](specs/03-stories/FEAT-075-integrar-historia-modo-manual-dryrun/story.md) — Modos de ejecución manual y `--dry-run` · `READY-FOR-IMPLEMENT`
-- [[FEAT-076-integrar-historia-multi-modelo-entrega]] — [story.md](specs/03-stories/FEAT-076-integrar-historia-multi-modelo-entrega/story.md) — Soporte multi-modelo de entrega (batch y continuous) · `READY-FOR-IMPLEMENT`
+- [[STORY-074-integrar-historia-batch-configurable]] — [story.md](specs/03-stories/STORY-074-integrar-historia-batch-configurable/story.md) — Integración batch configurable de historias · `READY-FOR-IMPLEMENT`
+- [[STORY-075-integrar-historia-modo-manual-dryrun]] — [story.md](specs/03-stories/STORY-075-integrar-historia-modo-manual-dryrun/story.md) — Modos de ejecución manual y `--dry-run` · `READY-FOR-IMPLEMENT`
+- [[STORY-076-integrar-historia-multi-modelo-entrega]] — [story.md](specs/03-stories/STORY-076-integrar-historia-multi-modelo-entrega/story.md) — Soporte multi-modelo de entrega (batch y continuous) · `READY-FOR-IMPLEMENT`
 
 #### Fábrica de skills y ciclo TDD (EPIC-14 → EPIC-15)
 
-- [[FEAT-077-mejorar-historia-desde-reporte]] — [story.md](specs/03-stories/FEAT-077-mejorar-historia-desde-reporte/story.md) — `story-improve`: mejora automática de historia desde reporte FINVEST · `IMPLEMENT`
-- [[FEAT-078-implement-tdd-fase-red]] — [story.md](specs/03-stories/FEAT-078-implement-tdd-fase-red/story.md) — `story-implement` fase RED: validar configuración y generar pruebas · `VERIFY`
-- [[FEAT-079-story-testcases]] — [story.md](specs/03-stories/FEAT-079-story-testcases/story.md) — `story-testcases`: generar `testcases.md` desde `story.md` y `design.md`
-- [[FEAT-080-skills-master]] — [story.md](specs/03-stories/FEAT-080-skills-master/story.md) — `skill-master`: modos plan/build e independencia de SDDF · plan en [plan.md](specs/03-stories/FEAT-080-skills-master/plan.md)
-- [[FEAT-081-implement-tdd-fase-green-refactor]] — [story.md](specs/03-stories/FEAT-081-implement-tdd-fase-green-refactor/story.md) — `story-implement` fases GREEN y REFACTOR · `VERIFY`
-- [[FEAT-082-implement-tdd-modos-ejecucion]] — [story.md](specs/03-stories/FEAT-082-implement-tdd-modos-ejecucion/story.md) — `story-implement`: modos interactivo y automático del ciclo TDD · `VERIFY`
-- [[FEAT-083-skill-test-evals]] — [story.md](specs/03-stories/FEAT-083-skill-test-evals/story.md) — `skill-test-evals`: generar `evals/evals.json` desde cualquier fuente
+- [[STORY-077-mejorar-historia-desde-reporte]] — [story.md](specs/03-stories/STORY-077-mejorar-historia-desde-reporte/story.md) — `story-improve`: mejora automática de historia desde reporte FINVEST · `IMPLEMENT`
+- [[STORY-078-implement-tdd-fase-red]] — [story.md](specs/03-stories/STORY-078-implement-tdd-fase-red/story.md) — `story-implement` fase RED: validar configuración y generar pruebas · `VERIFY`
+- [[STORY-079-story-testcases]] — [story.md](specs/03-stories/STORY-079-story-testcases/story.md) — `story-testcases`: generar `testcases.md` desde `story.md` y `design.md`
+- [[STORY-080-skills-master]] — [story.md](specs/03-stories/STORY-080-skills-master/story.md) — `skill-master`: modos plan/build e independencia de SDDF · plan en [plan.md](specs/03-stories/STORY-080-skills-master/plan.md)
+- [[STORY-081-implement-tdd-fase-green-refactor]] — [story.md](specs/03-stories/STORY-081-implement-tdd-fase-green-refactor/story.md) — `story-implement` fases GREEN y REFACTOR · `VERIFY`
+- [[STORY-082-implement-tdd-modos-ejecucion]] — [story.md](specs/03-stories/STORY-082-implement-tdd-modos-ejecucion/story.md) — `story-implement`: modos interactivo y automático del ciclo TDD · `VERIFY`
+- [[STORY-083-skill-test-evals]] — [story.md](specs/03-stories/STORY-083-skill-test-evals/story.md) — `skill-test-evals`: generar `evals/evals.json` desde cualquier fuente
 
 #### En planificación (sin `story.md` todavía)
 
 Estos directorios solo tienen documentos de plan, sin frontmatter — se enlazan por ruta:
 
-- FEAT-084-skill-verify — [plan-01](specs/03-stories/FEAT-084-skill-verify/plan-01.md) · [plan-02](specs/03-stories/FEAT-084-skill-verify/plan-02.md) · [plan-03](specs/03-stories/FEAT-084-skill-verify/plan-03.md)
-- FEAT-085-integrar-config-sddf-init — [plan.md](specs/03-stories/FEAT-085-integrar-config-sddf-init/plan.md) — Integrar `sddf.config.yaml` en el skill `sddf-init`
+- STORY-084-skill-verify — [plan-01](specs/03-stories/STORY-084-skill-verify/plan-01.md) · [plan-02](specs/03-stories/STORY-084-skill-verify/plan-02.md) · [plan-03](specs/03-stories/STORY-084-skill-verify/plan-03.md)
+- STORY-085-integrar-config-sddf-init — [plan.md](specs/03-stories/STORY-085-integrar-config-sddf-init/plan.md) — Integrar `sddf.config.yaml` en el skill `sddf-init`
 
 ### Templates de spec
 
@@ -249,6 +249,7 @@ placeholder, por lo que se enlazan solo por ruta:
 - [[invocacion-agentes-locales-de-skill]] — [ADR-0002](adr/ADR-0002-invocacion-agentes-locales-de-skill.md) — Contrato de invocación de agentes locales de skill · `ACCEPTED`
 - [[workflow-canonico-story-y-epic]] — [ADR-0003](adr/ADR-0003-workflow-canonico-story-y-epic.md) — Workflows canónicos de story y épica en el pipeline SDDF · `ACCEPTED`
 - [[nivel-l2-epic-y-directorios-numerados]] — [ADR-0004](adr/ADR-0004-nivel-l2-epic-y-directorios-numerados.md) — El nivel L2 es una épica, y los niveles viven en directorios numerados · `ACCEPTED`
+- [[prefijo-story-para-el-nivel-l1]] — [ADR-0005](adr/ADR-0005-prefijo-story-para-el-nivel-l1.md) — El ID del nivel L1 se prefija con `STORY`; el tipo vive en el campo `kind` · `ACCEPTED`
 - [adr-template.md](adr/adr-template.md) — Template para nuevos ADR (slug placeholder, sin wikilink)
 
 ## 📖 Guías y operación

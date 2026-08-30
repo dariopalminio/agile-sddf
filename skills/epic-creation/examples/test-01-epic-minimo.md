@@ -26,7 +26,7 @@
 
 ### Fase 1 — Leer template
 - Se lee `$SPECS_BASE/specs/templates/epic-template.md`
-- Secciones obligatorias extraídas: `Descripción`, `Features`, `Flujos Críticos / Smoke Tests`
+- Secciones obligatorias extraídas: `Descripción`, `Historias`, `Flujos Críticos / Smoke Tests`
 - Secciones opcionales extraídas: `Requerimiento`, `Impacto en Procesos Claves`, `Dependencias Críticas`, `Riesgos`, `Criterios de éxito`, `Notas adicionales`
 
 ### Fase 2 — Frontmatter
@@ -41,9 +41,9 @@
 ### Fase 3 — Secciones obligatorias
 - **Descripción:** "Implementa el sistema de login y registro de usuarios con email y contraseña. Resuelve la necesidad de autenticación segura como base del sistema."
 - **Features:**
-  - `FEAT-001 - Registro de usuario: Permite crear cuenta con email y contraseña`
-  - `FEAT-002 - Login: Permite iniciar sesión con credenciales válidas`
-  - `FEAT-003 - Logout: Permite cerrar sesión activa`
+  - `STORY-001 - Registro de usuario: Permite crear cuenta con email y contraseña`
+  - `STORY-002 - Login: Permite iniciar sesión con credenciales válidas`
+  - `STORY-003 - Logout: Permite cerrar sesión activa`
 - **Flujos Críticos / Smoke Tests:**
   - Escenario 1: Login exitoso — DADO usuario registrado / CUANDO intenta hacer login con credenciales correctas / ENTONCES accede al sistema
 
@@ -79,10 +79,10 @@ parent: null
 ## Descripción
 Implementa el sistema de login y registro de usuarios con email y contraseña. Resuelve la necesidad de autenticación segura como base del sistema.
 
-## Features
-- [ ] FEAT-001 - **Registro de usuario:** Permite crear cuenta con email y contraseña
-- [ ] FEAT-002 - **Login:** Permite iniciar sesión con credenciales válidas
-- [ ] FEAT-003 - **Logout:** Permite cerrar sesión activa
+## Historias
+- [ ] STORY-001 - **Registro de usuario:** Permite crear cuenta con email y contraseña
+- [ ] STORY-002 - **Login:** Permite iniciar sesión con credenciales válidas
+- [ ] STORY-003 - **Logout:** Permite cerrar sesión activa
 
 ## Flujos Críticos / Smoke Tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*

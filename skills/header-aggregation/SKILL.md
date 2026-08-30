@@ -21,7 +21,8 @@ Este esquema es la fuente de verdad del skill. Nunca lo hardcodees en otro lugar
 ---
 alwaysApply: false                         # OBLIGATORIO — siempre false en archivos spec
 type: <project | epic | story | wiki>   # OBLIGATORIO
-id: <PROJ-NN | EPIC-NN | FEAT-NNN>         # OBLIGATORIO (según type)
+id: <PROJ-NN | EPIC-NN | STORY-NNN>         # OBLIGATORIO (según type)
+kind: <feat | fix | chore | hotfix>        # OBLIGATORIO solo si type = story
 slug: <nombre-del-directorio>              # OBLIGATORIO
 title: "<Título legible del documento>"    # OBLIGATORIO
 status: <BACKLOG | BEGINNING | DISCOVERY | PLANNING | SPECIFY | READY-FOR-IMPLEMENT | IN-PROGRESS | IN-DEVELOPMENT | DEVELOPING | TESTING | ACCEPTANCE | DELIVER | DEFINE | PLAN | READY-FOR-DEV | DEVELOP | VALIDATE | SHIP | COMPLETED | MEASURING-VALUE | FINISHED | CANCELED> # OBLIGATORIO
@@ -51,7 +52,7 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 
 El skill acepta tres formas de input:
 
-**A) Nombre corto de directorio o archivo** (ej. `FEAT-043-header-aggregation` o `project-intent`):
+**A) Nombre corto de directorio o archivo** (ej. `STORY-043-header-aggregation` o `project-intent`):
 - Busca el archivo canónico en este orden:
   - `$SPECS_BASE/specs/03-stories/*/story.md` (busca directorio que coincida con el término)
   - `$SPECS_BASE/specs/02-epics/*/epic.md` (busca directorio que coincida)
@@ -60,7 +61,7 @@ El skill acepta tres formas de input:
 - Si hay múltiples resultados → muestra la lista y pide selección al usuario
 - Si no hay resultado → trata el input como texto libre e informa al usuario
 
-**B) Ruta relativa o absoluta** (ej. `$SPECS_BASE/specs/03-stories/FEAT-043-nombre/story.md` o directorio `$SPECS_BASE/specs/03-stories/`):
+**B) Ruta relativa o absoluta** (ej. `$SPECS_BASE/specs/03-stories/STORY-043-nombre/story.md` o directorio `$SPECS_BASE/specs/03-stories/`):
 - Usa la ruta directamente sin búsqueda adicional
 - Si es un directorio → activa el modo batch (ver Paso 4)
 
@@ -77,9 +78,10 @@ Para cada archivo a procesar, deriva automáticamente los campos obligatorios:
 | Campo | Regla de derivación |
 |-------|---------------------|
 | `alwaysApply` | false |
-| `id` | Extraer del frontmatter existente si tiene. Si no: prefijo del nombre de directorio → `FEAT-NNN` para stories, `EPIC-NN` para épicas, `PROJ-NN` para projects |
-| `slug` | Nombre del **directorio** contenedor en kebab-case (ej. `FEAT-043-header-aggregation`, `EPIC-01-nombre`, `PROJ-01-nombre`) |
-| `type` | Prefijo del nombre de directorio: `FEAT-*` → `story`, `EPIC-*` → `epic`, `PROJ-*` → `project`, archivos fuera de estas convenciones → `wiki` |
+| `id` | Extraer del frontmatter existente si tiene. Si no: prefijo del nombre de directorio → `STORY-NNN` para stories, `EPIC-NN` para épicas, `PROJ-NN` para projects |
+| `slug` | Nombre del **directorio** contenedor en kebab-case (ej. `STORY-043-header-aggregation`, `EPIC-01-nombre`, `PROJ-01-nombre`) |
+| `type` | Prefijo del nombre de directorio: `STORY-*` → `story`, `EPIC-*` → `epic`, `PROJ-*` → `project`, archivos fuera de estas convenciones → `wiki` |
+| `kind` | Solo para `type: story`. Preservar del frontmatter existente; si no existe → `feat` |
 | `title` | Primer heading `#` del contenido del archivo. Si no hay heading `#`, usar el nombre del directorio formateado (guiones → espacios, capitalizar) |
 | `status` | Buscar `**substatus**: IN‑PROGRESS` en el contenido → `IN-PROGRESS`; `**substatus**: DONE` → `COMPLETED`; ausente o desconocido → `BACKLOG` |
 | `substatus` | no es un archivo spec → null; si es un archivo de spec → derivar según contenido; ausente o desconocido → null |
@@ -143,12 +145,12 @@ Cuando el input es un directorio, el skill adapta el escaneo según el tipo de d
 **Si el directorio es uno de los tres tipos de artefacto** (ej. `$SPECS_BASE/specs/03-stories/`):
 - Lista todos los **subdirectorios** directamente dentro (no recursivo en el segundo nivel)
 - Busca el archivo canónico en cada subdirectorio:
-  - Para `stories/`: busca `story.md`
-  - Para `releases/` (nivel épica): busca `epic.md`
-  - Para `projects/`: busca `project-intent.md`
+  - Para `03-stories/`: busca `story.md`
+  - Para `02-epics/`: busca `epic.md`
+  - Para `01-projects/`: busca `project-intent.md`
 - Ignora subdirectorios que no contengan el archivo canónico esperado
 
-**Si el directorio es un subdirectorio de artefacto** (ej. `$SPECS_BASE/specs/03-stories/FEAT-043-header-aggregation/`):
+**Si el directorio es un subdirectorio de artefacto** (ej. `$SPECS_BASE/specs/03-stories/STORY-043-header-aggregation/`):
 - Lista todos los archivos `.md` directamente dentro de ese directorio
 
 ### 4.2 Clasificación y confirmación
@@ -193,8 +195,8 @@ Al terminar (archivo individual o batch), muestra siempre:
 ```
 ✓ Frontmatter aplicado: <ruta-del-archivo>
   type:    story
-  id:      FEAT-043
-  slug:    FEAT-043-header-aggregation
+  id:      STORY-043
+  slug:    STORY-043-header-aggregation
   title:   "Encabezado de archivos spec con metadata de estado"
   status:  IN-PROGRESS
   created: 2026-04-26

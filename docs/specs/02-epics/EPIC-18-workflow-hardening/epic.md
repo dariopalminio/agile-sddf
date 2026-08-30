@@ -25,7 +25,7 @@ related:
 ## Descripción
 Este release robustece y completa el workflow de punta a punta de story y release mediante una serie de refinamientos y correcciones estructurales: renombra estados del workflow (INTEGRATION → DELIVER), define el workflow canónico de épica/release, mueve la asignación de FEAT IDs al momento de creación (lazy), aísla el espacio de trabajo por historia para habilitar trabajo en paralelo, incorpora mejoras a `story-code-review`, corrige la desincronización de `code_generators` en `story-implement`, y mueve los skills y agentes a la raíz del repo para desacoplar el framework del CLI/LLM.
 
-## Features 
+## Historias
 
 - [x] PLAN-01 - **Renombrar INTEGRATION → DELIVER en el workflow de story:** reemplazar INTEGRATION por DELIVER en el workflow de story. Usa DELIVER como nombre de integration, y actualiza todas las referencias correspondientes en el código y la documentación. El término DELIVER puede servir para un incremento potencialmente entregable (para modelo batch) como para un incremento entregado al usuario final (para continuous).
 

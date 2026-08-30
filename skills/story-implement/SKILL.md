@@ -37,7 +37,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 
 **Qué NO hace este skill:**
 - Crear skills de generación específicos (ej. `story-test-unit-jest`, `story-code-nodejs`) — son skills separados
-- Gestionar modos interactivo/automático (`--auto`) — cubiertos en FEAT-082
+- Gestionar modos interactivo/automático (`--auto`) — cubiertos en STORY-082
 - Ejecutar el suite completo de CI — solo ejecuta comandos de test configurados por tipo
 
 ---
@@ -68,7 +68,7 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 
 | Parámetro | Tipo | Descripción |
 |---|---|---|
-| `{story_id}` | posicional | ID de la historia (ej. `FEAT-059`) |
+| `{story_id}` | posicional | ID de la historia (ej. `STORY-059`) |
 
 Si no se proporciona argumento, solicitar interactivamente.
 
@@ -186,7 +186,7 @@ Resolver los artefactos de la historia en `$SPECS_BASE/specs/03-stories/<story_i
 Construir bundle base de inputs (común a todos los test_generators):
 ```json
 {
-  "story_id": "<FEAT-NNN>",
+  "story_id": "<STORY-NNN>",
   "testcases_path": "<ruta o null>",
   "story_path": "<ruta>",
   "design_path": "<ruta>"
@@ -234,7 +234,7 @@ Para cada entry de `test_generators` no omitida (en el orden del YAML):
    - **Tipo `e2e`**: usar el bundle base del Paso 3 **más** el campo `e2e_context`:
      ```json
      {
-       "story_id": "<FEAT-NNN>",
+       "story_id": "<STORY-NNN>",
        "testcases_path": "<ruta o null>",
        "story_path": "<ruta>",
        "design_path": "<ruta>",
@@ -651,13 +651,13 @@ Registrar `$DOD_BLOQUEADO`:
 
 #### 11b — Generar `implement-report.md`
 
-Escribir `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/implement-report.md`:
+Escribir `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md`:
 
 ```markdown
 ---
 type: implement-report
 id: <story_id>
-story: <FEAT-NNN>
+story: <STORY-NNN>
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 ---
@@ -708,7 +708,7 @@ updated: <YYYY-MM-DD>
 1. Leer campo `parent` del frontmatter de `story.md`
 2. Si `parent` existe, resolver ruta: `$SPECS_BASE/specs/02-epics/<parent>/epic.md`
 3. **Si el archivo existe:**
-   - Buscar la línea del checklist que contenga el id o slug de la historia (ej. `FEAT-NNN`)
+   - Buscar la línea del checklist que contenga el id o slug de la historia (ej. `STORY-NNN`)
    - Cambiar `- [ ]` → `- [x]` en esa línea
    - Emitir: `[INFO] epic.md actualizado: [{story_id}] marcado como completado`
 4. **Si no existe o `parent` está vacío:**
@@ -832,7 +832,7 @@ La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md �
 |---|---|---|
 | Archivos de prueba | según skill de generación | Tests generados en código productivo |
 | Archivos de producción | según skill de generación | Código generado en Fases GREEN/REFACTOR |
-| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase |
+| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase |
 | `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
 | `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
 | `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN |

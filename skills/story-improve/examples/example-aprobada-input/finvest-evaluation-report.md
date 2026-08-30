@@ -1,16 +1,16 @@
 ---
 type: finvest-evaluation
-story-id: FEAT-074
+story-id: STORY-074
 finvest-score: 4.19
 decision: APROBADA
 evaluated: 2026-05-17
 ---
 
-# Reporte FINVEST — FEAT-074
+# Reporte FINVEST — STORY-074
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  FEAT-074  story-integrate: Integración batch configurable        │
+│  STORY-074  story-integrate: Integración batch configurable        │
 ├──────────────┬───────────────────────────────────────────────────┤
 │  F_score     │  4.70                                             │
 │  INVEST_Score│  3.67                                             │

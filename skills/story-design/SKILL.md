@@ -57,7 +57,7 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 
 ## Parámetros
 
-- `{story_id}` — identificador de la historia (ej. `FEAT-057`)
+- `{story_id}` — identificador de la historia (ej. `STORY-057`)
 - `{story_path}` — ruta explícita al directorio de la historia (opcional)
 - `--template {path}` — ruta al template de diseño (opcional)
 - `--output {path}` — ruta de salida del documento (opcional)
@@ -115,7 +115,7 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 Si no se proporcionó ningún argumento, preguntar:
 ```
 ¿A qué historia quieres generar el diseño?
-Proporciona el ID (ej. FEAT-057) o la ruta completa al directorio.
+Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 ```
 
 #### 1b. Resolución del directorio de la historia (primera coincidencia)
@@ -157,7 +157,7 @@ El archivo design.md ya existe en: <ruta>
 Leer el archivo `story.md` del directorio resuelto en el Paso 1.
 
 Extraer y registrar internamente:
-- ID de la historia del frontmatter (`id: FEAT-NNN`) → base para frontmatter del diseño
+- ID de la historia del frontmatter (`id: STORY-NNN`) → base para frontmatter del diseño
 - Slug del frontmatter
 - Título de la historia
 - **Criterios de aceptación numerados como AC-1, AC-2 … AC-N** — son la referencia de trazabilidad del diseño
@@ -269,10 +269,10 @@ Para cada sección y placeholder del template, seguir este procedimiento:
 **Frontmatter del documento generado:**
 ```yaml
 type: design
-id: <FEAT-NNN>              # ID de la historia origen
+id: <STORY-NNN>              # ID de la historia origen
 slug: <slug-historia-design>
 title: "Design: <título>"
-story: <FEAT-NNN>
+story: <STORY-NNN>
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 related:
@@ -434,7 +434,7 @@ Mostrar al usuario:
 ✅ Design guardado: <ruta>/design.md
 
 📐 Resumen:
-   Historia: <FEAT-NNN> — <título>
+   Historia: <STORY-NNN> — <título>
    Cobertura: <N>/<Total> criterios de aceptación cubiertos
 
    Elementos diseñados:

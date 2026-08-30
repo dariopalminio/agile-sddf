@@ -43,7 +43,7 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Políticas de proyecto**: generación de `constitution.md` y `definition-of-done-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
 - **Integración OpenSpec**: exploración, propuesta, implementación y archivado de cambios con trazabilidad completa
 - **Multi-runtime**: los mismos skills operan en Claude Code, GitHub Copilot y OpenCode sin modificar el SKILL.md fuente, eligiendo la carpeta destino al instalar (`.claude`/`.github`/`.agents`); el soporte a otros CLI/LLMs se evaluará en releases futuros
-- **Trazabilidad completa**: IDs únicos FEAT-NNN y manejo de sub-estados IN‑PROGRESS/Ready en cada documento del pipeline
+- **Trazabilidad completa**: IDs únicos STORY-NNN y manejo de sub-estados IN‑PROGRESS/Ready en cada documento del pipeline
 - **Docs as Wiki**: skill docs-wiki-builder para generar documentación de proyecto en formato wiki navegable. Incluye un skill header-aggregation para generar encabezados frontmatter de archivo '.md'. Permite navegación bidireccional entre documentos, generación de índices automáticos y visualización de grafos con "Foam for VSCode".
 - **Auditoría de seguridad**: skill `security-audit` para análisis automático de vulnerabilidades en código fuente, con evaluación OWASP Top 10, OWASP API Top 10 y OWASP Top 10 para LLMs.
 
@@ -244,7 +244,7 @@ Define los principios que ningún skill ni agente puede violar. Contiene:
 | Infraestructura | Control de versiones, contenedores, paquete npm |
 | Convenciones de código | Estilo, formato y nomenclatura (kebab-case) |
 | Estándares de skills | Estructura de directorios, frontmatter YAML, Preflight como Paso 0, patrón de delegación único |
-| Patrones de nomenclatura | IDs jerárquicos (PROJ-NN, EPIC-NN, FEAT-NNN), frontmatter canónico |
+| Patrones de nomenclatura | IDs jerárquicos (PROJ-NN, EPIC-NN, STORY-NNN), frontmatter canónico |
 | Reglas de comportamiento | Control WIP=1, gates secuenciales, idempotencia, flags opcionales |
 | Principios técnicos inamovibles | 10 principios — repositorio como sistema, orquestación multiagente, Spec-first, KISS, etc. |
 
@@ -290,7 +290,7 @@ docs/specs/
 │   └── EPIC-01-nombre-epica/            # un directorio por épica
 │       └── epic.md
 └── stories/
-    └── FEAT-001-nombre-historia/        # un directorio por historia
+    └── STORY-001-nombre-historia/        # un directorio por historia
         ├── story.md                     # historia (story-creation)
         ├── finvest-evaluation-report.md # evaluación FINVEST (story-evaluation)
         ├── story-improvement-log.md     # log de mejoras aplicadas (story-improve)
@@ -358,32 +358,32 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING →
 /story-creation "Como usuario quiero poder registrarme para acceder al sistema"
 
 # Evaluar una historia existente con rúbrica FINVEST (genera finvest-evaluation-report.md)
-/story-evaluation FEAT-001
+/story-evaluation STORY-001
 
 # Mejorar una historia aplicando las recomendaciones del reporte FINVEST
-/story-improve FEAT-001
+/story-improve STORY-001
 
 # Dividir una historia grande
-/story-split docs/specs/03-stories/FEAT-001-nombre/story.md
+/story-split docs/specs/03-stories/STORY-001-nombre/story.md
 ```
 
 **Planificar e implementar una historia (pipeline SDD completo):**
 
 ```bash
 # Pipeline de planning completo: genera design.md + tasks.md + analyze.md
-/story-plan FEAT-001
+/story-plan STORY-001
 
 # Solo generar el diseño técnico de una historia
-/story-design FEAT-001
+/story-design STORY-001
 
 # Solo generar el plan de tareas (requiere design.md previo)
-/story-tasking FEAT-001
+/story-tasking STORY-001
 
 # Auditar coherencia entre story.md, design.md y tasks.md
-/story-analyze FEAT-001
+/story-analyze STORY-001
 
 # Implementar una historia tarea por tarea con TDD (requiere READY-FOR-IMPLEMENT/DONE)
-/story-implement FEAT-001
+/story-implement STORY-001
 
 # Revisión de código post-implementación
 /story-code-review
@@ -412,7 +412,7 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING →
 /docs-wiki-builder
 
 # Add or update canonical YAML frontmatter in spec Markdown files
-/header-aggregation docs/specs/03-stories/FEAT-001-nombre/story.md
+/header-aggregation docs/specs/03-stories/STORY-001-nombre/story.md
 ```
 
 ## Configuration

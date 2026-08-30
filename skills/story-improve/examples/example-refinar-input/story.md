@@ -1,8 +1,8 @@
 ---
 alwaysApply: false
 type: story
-id: FEAT-075
-slug: FEAT-075-integrar-historia-modo-manual-dryrun
+id: STORY-075
+slug: STORY-075-integrar-historia-modo-manual-dryrun
 title: "story-integrate: Modos de ejecución (manual y dry-run)"
 status: SPECIFY
 substatus: DONE
@@ -10,8 +10,8 @@ parent: <nombre-del-directorio-de-la-epica-padre>
 created: 2026-05-17
 updated: 2026-05-17
 related:
-  - FEAT-074
-  - FEAT-076
+  - STORY-074
+  - STORY-076
 ---
 **FINVEST Score:** 3.94
 **FINVEST Decisión:** REFINAR
@@ -28,7 +28,7 @@ related:
 ### Escenario principal – Integración en modo dry-run
 
 ```gherkin
-Dado que la historia "FEAT-042" está lista para integrar
+Dado que la historia "STORY-042" está lista para integrar
   Y ejecuto story-integrate con el flag "--dry-run"
 Cuando el skill procesa la historia
 Entonces el skill muestra las acciones que ejecutaría (rama objetivo, commit, merge)
@@ -39,7 +39,7 @@ Entonces el skill muestra las acciones que ejecutaría (rama objetivo, commit, m
 ### Escenario alternativo – Modo manual: confirmación explícita requerida
 
 ```gherkin
-Dado que la historia "FEAT-042" está lista para integrar
+Dado que la historia "STORY-042" está lista para integrar
   Y ejecuto story-integrate con el flag "--manual"
 Cuando el skill llega al paso de integración
 Entonces el skill muestra un resumen de las acciones pendientes
@@ -54,6 +54,6 @@ Entonces el skill muestra un resumen de las acciones pendientes
 
 ## 📎 Notas / contexto adicional
 
-Historia adicional resultante del split de FEAT-074 (épica original).
-Precondición de implementación: FEAT-074 debe estar completa para poder implementar los modos manual y dry-run.
-Historias hermanas: FEAT-074 (batch configurable — core), FEAT-076 (multi-modelo de entrega).
+Historia adicional resultante del split de STORY-074 (épica original).
+Precondición de implementación: STORY-074 debe estar completa para poder implementar los modos manual y dry-run.
+Historias hermanas: STORY-074 (batch configurable — core), STORY-076 (multi-modelo de entrega).

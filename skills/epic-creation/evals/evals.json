@@ -24,9 +24,9 @@
           "[ERROR]",
           "Entorno invalido",
           "No se encontro el template",
-          "FEAT-000",
-          "FEAT-001",
-          "FEAT-NNN"
+          "STORY-000",
+          "STORY-001",
+          "STORY-NNN"
         ]
       },
       "threshold": 0.85
@@ -52,8 +52,8 @@
           "saltar todas",
           "[ERROR]",
           "Entorno invalido",
-          "FEAT-001",
-          "FEAT-NNN"
+          "STORY-001",
+          "STORY-NNN"
         ]
       },
       "threshold": 0.90

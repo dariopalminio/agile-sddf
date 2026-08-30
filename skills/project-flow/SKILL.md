@@ -211,7 +211,7 @@ Invoca al agente `project-architect` con la siguiente instrucción:
 >
 > Si estás en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/project-plan.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
-> Extrae features atómicas con IDs FEAT-NNN, priorizalas, agrúpalas en épicas con MVP en la Épica 1, y escribe el resultado en `$SPECS_BASE/specs/01-projects/project-plan.md` con `substatus: IN‑PROGRESS`.
+> Extrae features atómicas con IDs STORY-NNN, priorizalas, agrúpalas en épicas con MVP en la Épica 1, y escribe el resultado en `$SPECS_BASE/specs/01-projects/project-plan.md` con `substatus: IN‑PROGRESS`.
 
 ### 3.5 Gate de revisión — Fase 3
 

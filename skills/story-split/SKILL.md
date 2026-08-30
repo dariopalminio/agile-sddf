@@ -49,7 +49,7 @@ Fuente estructural del output: `$SPECS_BASE/specs/templates/story-template.md` (
 
 ## Parámetros
 
-- `{story_id}` — identificador o ruta de la historia a dividir (ej. `FEAT-042`)
+- `{story_id}` — identificador o ruta de la historia a dividir (ej. `STORY-042`)
 - `--dry-run` — muestra el plan de splitting (patrón, historias propuestas, core designada) sin crear ni modificar ningún archivo
 - `--pattern N` — fuerza el patrón de splitting 1–8, saltando la selección automática del Paso 4
 - `--core N` — designa manualmente qué historia del split (por número de orden) será la core; omite la selección automática del Paso 5
@@ -163,7 +163,7 @@ Si el directorio de la historia contiene `finvest-evaluation-report.md`:
 2. Verificar el frontmatter YAML: si `decision: DIVIDIR`, continuar; si no, ignorar el archivo.
 3. Buscar en el cuerpo la sección `## Plan de división sugerido` o `### Plan de división sugerido`.
 4. Si la sección existe, extraer la tabla de división: para cada fila capturar la historia hija
-   propuesta (ej. `FEAT-074a`), los escenarios asignados y el foco.
+   propuesta (ej. `STORY-074a`), los escenarios asignados y el foco.
 5. Guardar este plan como `plan_finvest` para usarlo en el Paso 4.
 
 Si el archivo no existe, si `decision` ≠ `DIVIDIR`, o si no contiene la sección de plan,
@@ -179,7 +179,7 @@ Aplicar en este orden:
 
 1. **Plan FINVEST (guía principal):** si `plan_finvest` fue poblado en el Paso 3b,
    usarlo como punto de partida de la división. Para cada fila de la tabla del plan:
-   - El nombre de historia hija (ej. `FEAT-074a`) es orientativo del foco, no del ID final.
+   - El nombre de historia hija (ej. `STORY-074a`) es orientativo del foco, no del ID final.
    - "Escenarios" indica qué escenarios del original incluir en cada historia hija.
    - "Foco" define el título y `Quiero` de cada historia resultante.
    Informar al usuario:
@@ -352,37 +352,37 @@ La **historia core** conserva el ID de la historia original — no se le asigna 
 Las **historias adicionales** reciben IDs nuevos consecutivos:
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
-> `specs/03-stories/FEAT-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> `specs/03-stories/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
 > el patrón de archivo anidado descrito a continuación.
 
-1. Usar Glob con el patrón `$SPECS_BASE/specs/03-stories/FEAT-*/story.md` para localizar todas las
-   historias existentes. De cada ruta retornada, extraer el número `NNN` del segmento `FEAT-NNN-*`
-   (directorio padre inmediato). Ejemplo: de `docs/specs/03-stories/FEAT-074-integrar-.../story.md` → `74`.
-   Si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/03-stories/ | grep -E "^FEAT-[0-9]+"`)
+1. Usar Glob con el patrón `$SPECS_BASE/specs/03-stories/STORY-*/story.md` para localizar todas las
+   historias existentes. De cada ruta retornada, extraer el número `NNN` del segmento `STORY-NNN-*`
+   (directorio padre inmediato). Ejemplo: de `docs/specs/03-stories/STORY-074-integrar-.../story.md` → `74`.
+   Si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/03-stories/ | grep -E "^STORY-[0-9]+"`)
    antes de asumir que no hay historias previas.
-2. Extraer los números de todos los prefijos `FEAT-NNN` encontrados
-3. Tomar el número más alto y asignar IDs desde ese punto: `FEAT-(N+1)`, `FEAT-(N+2)`, etc.
-4. Solo comenzar en `FEAT-002` si ambos mecanismos (Glob + fallback Bash) confirman que no existe ningún `FEAT-*`
+2. Extraer los números de todos los prefijos `STORY-NNN` encontrados
+3. Tomar el número más alto y asignar IDs desde ese punto: `STORY-(N+1)`, `STORY-(N+2)`, etc.
+4. Solo comenzar en `STORY-002` si ambos mecanismos (Glob + fallback Bash) confirman que no existe ningún `STORY-*`
 5. Formatear con ceros a la izquierda hasta 3 dígitos
 
 #### Repurpose del directorio original como historia core
 
-1. Renombrar el directorio `FEAT-{NNN}-{slug-original}/` a `FEAT-{NNN}-{slug-core}/`
+1. Renombrar el directorio `STORY-{NNN}-{slug-original}/` a `STORY-{NNN}-{slug-core}/`
    - El `{slug-core}` se deriva del `Quiero` de la historia core (kebab-case, máx. 5 palabras, sin acentos)
 2. Reescribir `story.md` dentro del directorio renombrado con el contenido de la historia core
 3. Actualizar su frontmatter:
-   - `id: FEAT-{NNN}` (conservado)
-   - `slug: FEAT-{NNN}-{slug-core}` (actualizado)
+   - `id: STORY-{NNN}` (conservado)
+   - `slug: STORY-{NNN}-{slug-core}` (actualizado)
    - `status: SPECIFY` / `substatus: IN‑PROGRESS`
-   - Campo `related:` con los IDs de las historias adicionales: `[FEAT-{N+1}, FEAT-{N+2}, ...]`
+   - Campo `related:` con los IDs de las historias adicionales: `[STORY-{N+1}, STORY-{N+2}, ...]`
 4. Advertir en el resumen que el directorio fue renombrado y que las referencias al slug anterior deben actualizarse manualmente
 
 #### Guardar cada historia adicional
 
 Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/03-stories/`:
-- **Directorio:** `FEAT-{NNN}-{slug}/`
+- **Directorio:** `STORY-{NNN}-{slug}/`
 - **Archivo:** `story.md` con la historia completa en formato del template
-- **Frontmatter:** `id: FEAT-{NNN}`, `slug: FEAT-{NNN}-{slug}`, `status: SPECIFY`, campo `related:` con el ID de la core y las demás historias hermanas
+- **Frontmatter:** `id: STORY-{NNN}`, `kind:` heredado de la historia madre, `slug: STORY-{NNN}-{slug}`, `status: SPECIFY`, campo `related:` con el ID de la core y las demás historias hermanas
 
 #### Mostrar resumen
 
@@ -396,11 +396,11 @@ Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/03-stories/`:
 ## Historias resultantes
 
 ### Historia 1 — {título corto}
-**Archivo:** `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug}/story.md`
+**Archivo:** `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug}/story.md`
 [Historia completa en formato story-template.md]
 
 ### Historia 2 — {título corto}
-**Archivo:** `$SPECS_BASE/specs/03-stories/FEAT-{NNN+1}-{slug}/story.md`
+**Archivo:** `$SPECS_BASE/specs/03-stories/STORY-{NNN+1}-{slug}/story.md`
 [Historia completa en formato story-template.md]
 
 ...
@@ -409,11 +409,11 @@ Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/03-stories/`:
 [Qué quedó fuera de scope, dependencias entre historias si las hay, orden de implementación sugerido]
 
 ## Archivos generados
-- `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug-core}/story.md` ← repurposed (era `FEAT-{NNN}-{slug-original}/`)
-- `$SPECS_BASE/specs/03-stories/FEAT-{N+1}-{slug-2}/story.md` ← nuevo
-- `$SPECS_BASE/specs/03-stories/FEAT-{N+2}-{slug-3}/story.md` ← nuevo
+- `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug-core}/story.md` ← repurposed (era `STORY-{NNN}-{slug-original}/`)
+- `$SPECS_BASE/specs/03-stories/STORY-{N+1}-{slug-2}/story.md` ← nuevo
+- `$SPECS_BASE/specs/03-stories/STORY-{N+2}-{slug-3}/story.md` ← nuevo
 
-> ⚠️ El directorio `FEAT-{NNN}-{slug-original}/` fue renombrado a `FEAT-{NNN}-{slug-core}/`.
+> ⚠️ El directorio `STORY-{NNN}-{slug-original}/` fue renombrado a `STORY-{NNN}-{slug-core}/`.
 > Actualiza manualmente cualquier referencia al slug anterior en `epic.md` u otros documentos.
 ```
 
@@ -436,8 +436,8 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 
 ## Salida
 
-- `$SPECS_BASE/specs/03-stories/FEAT-{NNN}-{slug-core}/story.md` — historia core (directorio repurposed del original)
-- `$SPECS_BASE/specs/03-stories/FEAT-{N+1}-{slug}/story.md` … — historias adicionales (nuevas)
+- `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug-core}/story.md` — historia core (directorio repurposed del original)
+- `$SPECS_BASE/specs/03-stories/STORY-{N+1}-{slug}/story.md` … — historias adicionales (nuevas)
 - Estado de todas las historias resultantes: `SPECIFY` (pendiente de re-evaluación con `/story-evaluation`)
 
 ### Referencias

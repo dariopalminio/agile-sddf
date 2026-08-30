@@ -1,7 +1,8 @@
 ---
 alwaysApply: false
 type: story
-id: <FEAT-NNN>
+id: <STORY-NNN>
+kind: <feat | fix | chore | hotfix>   # tipo de historia; determina el prefijo de rama
 slug: <nombre-del-directorio-de-historia>
 title: "<primer # heading del documento>"
 status: <ESTADO_INICIAL>

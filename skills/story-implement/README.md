@@ -45,7 +45,7 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 
 | Parámetro | Tipo | Descripción |
 |---|---|---|
-| `{story_id}` | requerido | Identificador de la historia (ej. `FEAT-059`) |
+| `{story_id}` | requerido | Identificador de la historia (ej. `STORY-059`) |
 | `--auto` | opcional | Ejecuta el ciclo TDD completo sin pausas de confirmación |
 
 ## Artefactos generados
@@ -54,7 +54,7 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 |---|---|---|
 | Archivos de prueba | según skill generador | Tests en Fase RED (deben fallar) |
 | Archivos de producción | según skill generador | Código generado en Fases GREEN y REFACTOR |
-| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<FEAT-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENT, estado por fase |
+| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENT, estado por fase |
 | `story.md` (actualizado) | mismo directorio | Frontmatter actualizado (ver transiciones de estado) |
 | `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada |
 | `red-phase-status.json` | `.tmp/story-implement/red-phase-status.json` | Estado de Fase RED — precondición para GREEN |
@@ -122,8 +122,8 @@ implement:
 
 ```bash
 # Ciclo TDD completo en modo interactivo (con pausas)
-/story-implement FEAT-059
+/story-implement STORY-059
 
 # Ciclo TDD completo en modo automático (sin pausas, ideal para CI)
-/story-implement FEAT-059 --auto
+/story-implement STORY-059 --auto
 ```

@@ -79,7 +79,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 
 ## Parámetros
 
-- `{story_id}` — identificador de la historia (ej. `FEAT-059`)
+- `{story_id}` — identificador de la historia (ej. `STORY-059`)
 - `{story_path}` — ruta explícita al directorio de la historia (opcional)
 - `--output {path}` — ruta de salida del reporte (opcional)
 
@@ -143,7 +143,7 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 Si no se proporcionó ningún argumento, preguntar:
 ```
 ¿Qué historia quieres analizar?
-Proporciona el ID (ej. FEAT-059) o la ruta completa al directorio.
+Proporciona el ID (ej. STORY-059) o la ruta completa al directorio.
 ```
 
 #### 1b. Resolución del directorio de la historia
@@ -188,7 +188,7 @@ Intentar localizar `$SPECS_BASE/policies/definition-of-done-story.md`.
 Leer `story.md` del directorio resuelto.
 
 Extraer y registrar internamente:
-- `story_id` del frontmatter (`id: FEAT-NNN`)
+- `story_id` del frontmatter (`id: STORY-NNN`)
 - `story_slug`, `story_title`, `story_parent` (ID de la épica EPIC-NN del frontmatter)
 - **Criterios de aceptación numerados como AC-1, AC-2 … AC-N** — fuente de verdad del comportamiento esperado
 - Requisitos no funcionales
@@ -418,13 +418,13 @@ Usar la estructura del template del Paso 7 como base.
 Completar el frontmatter del reporte:
 ```yaml
 type: analyze
-id: <FEAT-NNN>
+id: <STORY-NNN>
 slug: {story_id}-analyze-report
 title: "Analyze: <título>"
-story: <FEAT-NNN>
-design: <FEAT-NNN>
-testcases: <FEAT-NNN>  # omitir este campo si $TESTCASES_AVAILABLE = false
-tasks: <FEAT-NNN>      # omitir este campo si $TASKS_AVAILABLE = false
+story: <STORY-NNN>
+design: <STORY-NNN>
+testcases: <STORY-NNN>  # omitir este campo si $TESTCASES_AVAILABLE = false
+tasks: <STORY-NNN>      # omitir este campo si $TASKS_AVAILABLE = false
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 related:
@@ -475,7 +475,7 @@ Mostrar al usuario:
 ✅ Análisis guardado: <ruta>/analyze.md
 
 📊 Resumen de coherencia:
-   Historia: <FEAT-NNN> — <título>
+   Historia: <STORY-NNN> — <título>
 
    Cobertura de ACs:     <N>/<Total> criterios cubiertos en design.md
    Alineación tareas:    <N>/<Total> tareas con diseño asociado  |  ⚠️ no evaluada — tasks.md no presente

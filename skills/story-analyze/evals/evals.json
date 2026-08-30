@@ -10,13 +10,13 @@
       "description": "Todos los artefactos presentes (story.md, design.md, tasks.md) con cobertura completa de ACs, tareas alineadas al diseno y sin inconsistencias ERROR. El skill debe generar analyze.md con estado general OK y actualizar story.md a READY-FOR-IMPLEMENT/DONE.",
       "input": {
         "input_path": "examples/input",
-        "story_id": "FEAT-099",
+        "story_id": "STORY-099",
         "flags": []
       },
       "expected": {
         "contains": [
           "type: analyze",
-          "story: FEAT-099",
+          "story: STORY-099",
           "Reporte de Coherencia",
           "Resumen Ejecutivo",
           "Cobertura de Criterios de Aceptacion",
@@ -41,8 +41,8 @@
       "type": "fail-fast",
       "description": "story.md existe pero design.md esta ausente. El skill debe detenerse con error indicando que se requiere ejecutar /story-design primero. No debe generarse ningun archivo analyze.md.",
       "input": {
-        "input_path": "FEAT-001",
-        "story_id": "FEAT-001",
+        "input_path": "STORY-001",
+        "story_id": "STORY-001",
         "flags": [],
         "context": "story.md presente, design.md ausente"
       },
@@ -65,8 +65,8 @@
       "type": "fail-fast",
       "description": "story.md y design.md existen pero ni testcases.md ni tasks.md estan presentes. El skill debe rechazar el analisis con el mensaje canonico y sugerir ejecutar /story-testcases o /story-tasking. No genera ningun archivo.",
       "input": {
-        "input_path": "FEAT-002",
-        "story_id": "FEAT-002",
+        "input_path": "STORY-002",
+        "story_id": "STORY-002",
         "flags": [],
         "context": "story.md y design.md presentes, testcases.md y tasks.md ausentes"
       },
@@ -92,8 +92,8 @@
       "type": "happy-path",
       "description": "story.md tiene 3 ACs, design.md cubre solo 2 (AC-3 sin cobertura), tasks.md presente. El skill debe detectar la inconsistencia TIPO A como ERROR, registrar INC-001 con tipo A, y NO actualizar story.md a READY-FOR-IMPLEMENT (status permanece en PLAN/IN-PROGRESS).",
       "input": {
-        "input_path": "FEAT-003",
-        "story_id": "FEAT-003",
+        "input_path": "STORY-003",
+        "story_id": "STORY-003",
         "flags": [],
         "context": "AC-3 en story.md no tiene elemento de diseno asociado en design.md"
       },
@@ -122,8 +122,8 @@
       "type": "edge-case",
       "description": "story.md y design.md presentes, testcases.md presente, tasks.md ausente. El skill debe ejecutar el analisis omitiendo las correlaciones de tareas (Tipo B y C), emitir advertencia de tasks.md no encontrado, habilitar /story-implement y generar analyze.md valido. Las secciones de tareas deben mostrar el aviso de omision.",
       "input": {
-        "input_path": "FEAT-004",
-        "story_id": "FEAT-004",
+        "input_path": "STORY-004",
+        "story_id": "STORY-004",
         "flags": [],
         "context": "testcases.md presente con cobertura de ACs, tasks.md ausente"
       },

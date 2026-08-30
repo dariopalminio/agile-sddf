@@ -141,14 +141,14 @@ Reglas:
 - Si hay ambigüedad crítica que impide definir features correctamente, usa `AskUserQuestion` para resolverla (limitá las preguntas a lo estrictamente necesario)
 
 Para cada feature:
-- ID único en formato `FEAT-NNN` (ej: FEAT-001)
+- ID único en formato `STORY-NNN` (ej: STORY-001)
 - Nombre corto (2-5 palabras)
 - Descripción concisa en una sola oración
 - Dependencias (o "—" si ninguna)
 
 Formato en el backlog:
 ```
-- [ ] **FEAT-NNN: Nombre** — Descripción en una oración. _(deps: FEAT-XXX o —)_
+- [ ] **STORY-NNN: Nombre** — Descripción en una oración. _(deps: STORY-XXX o —)_
 ```
 
 **Paso 5: Priorizar features**

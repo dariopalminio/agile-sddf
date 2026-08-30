@@ -59,7 +59,7 @@ epic-from-project-plan → epic-generate-stories
 | Skill | Input | Output |
 |---|---|---|
 | `epic-from-project-plan` | `project-plan.md` | `$SPECS_BASE/specs/02-epics/épica-[ID]-[Nombre].md` (uno por épica) |
-| `epic-generate-stories` | Un archivo `epic.md` | `$SPECS_BASE/specs/03-stories/FEAT-[NNN]-[nombre]/story.md` (una por feature) |
+| `epic-generate-stories` | Un archivo `epic.md` | `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 
 > `epic-generate-all-stories` procesa todas las épicas en batch.
 

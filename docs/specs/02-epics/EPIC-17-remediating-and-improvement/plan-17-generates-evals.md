@@ -2,7 +2,7 @@
 type: plan
 id: plan-17
 slug: plan-17-generates-evals
-title: "Generar evals/evals.json para dos skills (FEAT-057)"
+title: "Generar evals/evals.json para dos skills (STORY-057)"
 status: COMPLETED
 substatus: DONE
 parent: EPIC-17
@@ -29,16 +29,16 @@ Write two new files. No existing files to modify.
   "cases": [
     {
       "id": "TC-001",
-      "name": "happy-path: release valido genera historias con IDs FEAT-NNN",
+      "name": "happy-path: release valido genera historias con IDs STORY-NNN",
       "type": "functional",
-      "description": "Dado un release.md valido con una seccion ## Features que contiene entradas FEAT-NNN, el skill debe generar un directorio FEAT-NNN-nombre/ con story.md por cada feature, con frontmatter correcto y estructura Gherkin",
+      "description": "Dado un release.md valido con una seccion ## Features que contiene entradas STORY-NNN, el skill debe generar un directorio STORY-NNN-nombre/ con story.md por cada feature, con frontmatter correcto y estructura Gherkin",
       "input": {
         "input_path": "docs/specs/releases/EPIC-01-ejemplo/release.md",
         "flags": []
       },
       "expected": {
         "contains": [
-          "FEAT-",
+          "STORY-",
           "story.md",
           "status: SPECIFY",
           "Como",
@@ -105,7 +105,7 @@ Write two new files. No existing files to modify.
       "id": "TC-004",
       "name": "edge-case: features duplicadas generan sufijo -bis e informan al usuario",
       "type": "edge",
-      "description": "Dado un release.md con dos features que producen el mismo ID y slug (FEAT-NNN duplicado), el segundo directorio debe generarse con sufijo -bis y el resumen debe informar del conflicto",
+      "description": "Dado un release.md con dos features que producen el mismo ID y slug (STORY-NNN duplicado), el segundo directorio debe generarse con sufijo -bis y el resumen debe informar del conflicto",
       "input": {
         "input_path": "docs/specs/releases/EPIC-03-duplicados/release.md",
         "flags": []
@@ -147,7 +147,7 @@ Write two new files. No existing files to modify.
       },
       "expected": {
         "contains": [
-          "FEAT-",
+          "STORY-",
           "story.md",
           "status: READY-FOR-IMPLEMENT",
           "Como",

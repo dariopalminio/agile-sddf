@@ -1,11 +1,11 @@
 ---
 alwaysApply: false
 type: tasks
-id: FEAT-099
-slug: FEAT-099-exportar-datos-csv-tasks
+id: STORY-099
+slug: STORY-099-exportar-datos-csv-tasks
 title: "Tasks: Exportar datos en CSV"
-story: FEAT-099
-design: FEAT-099
+story: STORY-099
+design: STORY-099
 created: 2026-05-07
 updated: 2026-05-07
 ---

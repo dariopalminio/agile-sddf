@@ -1,8 +1,8 @@
-# Resultado del splitting — FEAT-099-gestionar-carrito-compras
+# Resultado del splitting — STORY-099-gestionar-carrito-compras
 
 ## Historia original
 
-FEAT-099 — "Gestionar carrito de compras" — FINVEST Decisión: DIVIDIR (S=1, 6 escenarios, 18+ pasos totales)
+STORY-099 — "Gestionar carrito de compras" — FINVEST Decisión: DIVIDIR (S=1, 6 escenarios, 18+ pasos totales)
 
 ## Diagnóstico
 
@@ -14,17 +14,17 @@ La historia tiene 3 flujos principales independientes (agregar, eliminar, cambia
 
 ## Historias resultantes
 
-### FEAT-099 — Agregar ítem al carrito (core, repurposed)
+### STORY-099 — Agregar ítem al carrito (core, repurposed)
 
-**Archivo:** `docs/specs/03-stories/FEAT-099-agregar-item-carrito/story.md` ← repurposed (era `FEAT-099-gestionar-carrito-compras/`)
+**Archivo:** `docs/specs/03-stories/STORY-099-agregar-item-carrito/story.md` ← repurposed (era `STORY-099-gestionar-carrito-compras/`)
 
 ---
 type: story
-id: FEAT-099
-slug: FEAT-099-agregar-item-carrito
+id: STORY-099
+slug: STORY-099-agregar-item-carrito
 status: SPECIFY
 substatus: IN‑PROGRESS
-related: [FEAT-100, FEAT-101]
+related: [STORY-100, STORY-101]
 ---
 
 **Como** comprador registrado en la tienda  
@@ -50,9 +50,9 @@ Entonces el botón aparece deshabilitado con texto "Sin stock"
 
 ---
 
-### FEAT-100 — Eliminar ítem del carrito
+### STORY-100 — Eliminar ítem del carrito
 
-**Archivo:** `docs/specs/03-stories/FEAT-100-eliminar-item-carrito/story.md` ← nuevo
+**Archivo:** `docs/specs/03-stories/STORY-100-eliminar-item-carrito/story.md` ← nuevo
 
 **Como** comprador que revisó su carrito  
 **Quiero** eliminar un producto de mi carrito  
@@ -77,9 +77,9 @@ Entonces veo el estado vacío: "Tu carrito está vacío. Agrega productos para c
 
 ---
 
-### FEAT-101 — Cambiar cantidad de ítem en el carrito
+### STORY-101 — Cambiar cantidad de ítem en el carrito
 
-**Archivo:** `docs/specs/03-stories/FEAT-101-cambiar-cantidad-carrito/story.md` ← nuevo
+**Archivo:** `docs/specs/03-stories/STORY-101-cambiar-cantidad-carrito/story.md` ← nuevo
 
 **Como** comprador que quiere ajustar su pedido  
 **Quiero** cambiar la cantidad de un producto en mi carrito  
@@ -105,15 +105,15 @@ Entonces veo el mensaje "Solo quedan 2 unidades disponibles"
 
 ## Archivos generados
 
-- `docs/specs/03-stories/FEAT-099-agregar-item-carrito/story.md` ← **repurposed** (era `FEAT-099-gestionar-carrito-compras/`)
-- `docs/specs/03-stories/FEAT-100-eliminar-item-carrito/story.md` ← nuevo
-- `docs/specs/03-stories/FEAT-101-cambiar-cantidad-carrito/story.md` ← nuevo
+- `docs/specs/03-stories/STORY-099-agregar-item-carrito/story.md` ← **repurposed** (era `STORY-099-gestionar-carrito-compras/`)
+- `docs/specs/03-stories/STORY-100-eliminar-item-carrito/story.md` ← nuevo
+- `docs/specs/03-stories/STORY-101-cambiar-cantidad-carrito/story.md` ← nuevo
 
-> ⚠️ El directorio `FEAT-099-gestionar-carrito-compras/` fue renombrado a `FEAT-099-agregar-item-carrito/`.
+> ⚠️ El directorio `STORY-099-gestionar-carrito-compras/` fue renombrado a `STORY-099-agregar-item-carrito/`.
 > Actualiza manualmente cualquier referencia al slug anterior en `epic.md` u otros documentos.
 
 ## Notas del splitting
 
-- **Orden de implementación sugerido:** FEAT-099 (agregar) → FEAT-100 (eliminar) → FEAT-101 (cantidad)
-- **FEAT-099 es el core:** sin "agregar" no hay carrito que eliminar ni actualizar
+- **Orden de implementación sugerido:** STORY-099 (agregar) → STORY-100 (eliminar) → STORY-101 (cantidad)
+- **STORY-099 es el core:** sin "agregar" no hay carrito que eliminar ni actualizar
 - Los criterios no funcionales (persistencia en localStorage, rendimiento <500ms) aplican a las 3 historias; incluirlos en cada `story.md` hijo según corresponda

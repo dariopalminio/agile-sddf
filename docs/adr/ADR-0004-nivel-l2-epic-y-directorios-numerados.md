@@ -128,7 +128,7 @@ lanzamientos (`release-notes.md`, changelogs por versión).
   manual en proyectos ya instalados (ver `CHANGELOG.md`) y un salto de versión mayor a `2.0.0`.
 - Las rutas son algo más largas y llevan un prefijo numérico que no aporta significado semántico,
   solo ordenación.
-- Los artefactos históricos bajo `docs/specs/**` (planes `plan-NN.md`, historias `FEAT-0NN`) siguen
+- Los artefactos históricos bajo `docs/specs/**` (planes `plan-NN.md`, historias `STORY-0NN`) siguen
   hablando de "release" y citando rutas antiguas porque describen el estado del repo en su momento;
   no se reescriben.
 

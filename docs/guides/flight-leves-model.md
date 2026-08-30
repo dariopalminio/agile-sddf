@@ -40,7 +40,7 @@ Los elementos de trabajo (Work-items) representan las unidades de valor o tareas
 
 ## Tipos de Story
 
-Las historias Story pueden ser de diferentes tipos según su propósito o naturaleza. En este framework, se proponen los siguientes tipos de Story:
+Las historias Story pueden ser de diferentes tipos según su propósito o naturaleza. El tipo se declara en el campo **`kind`** del frontmatter de la historia y determina el prefijo de su rama; el ID (`STORY-NNN`) nombra el nivel, nunca el tipo. En este framework, se proponen los siguientes tipos de Story:
 
 * **Feat:** Feature funcional como trozo de funcionalidad o característica de software. Esta implementación funcional puede ser nueva o una mejora funcional. Las Feat son las clásicas historias de usuario.
 * **Fix:** Corrección de un error o bug.

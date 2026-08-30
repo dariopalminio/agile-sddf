@@ -62,7 +62,7 @@
       "type": "error-handling",
       "description": "story_id inexistente emite error limpio con ❌ y detiene la ejecución sin crash ni tabla generada",
       "input": {
-        "input_path": "FEAT-999",
+        "input_path": "STORY-999",
         "flags": []
       },
       "expected": {

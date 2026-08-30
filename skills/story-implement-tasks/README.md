@@ -53,8 +53,8 @@ Al alcanzar `IMPLEMENT/DONE`, el skill también actualiza el checklist en el `ep
 ## Uso
 
 ```
-/story-implement-tasks FEAT-059
-/story-implement-tasks FEAT-059 --path docs/specs/03-stories/FEAT-059-mi-historia/
+/story-implement-tasks STORY-059
+/story-implement-tasks STORY-059 --path docs/specs/03-stories/STORY-059-mi-historia/
 ```
 
 ## Contenido de este directorio

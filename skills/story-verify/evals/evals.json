@@ -10,12 +10,12 @@
       "description": "Historia en CODE-REVIEW/DONE con jest.config.js presente. El skill debe detectar modo automatico-unit (framework: jest), ejecutar npx jest, generar verify-report.md y actualizar story.md a VERIFY/DONE si todos los tests pasan.",
       "input": {
         "input_path": "examples/jest-project",
-        "story_id": "FEAT-050",
+        "story_id": "STORY-050",
         "flags": []
       },
       "expected": {
         "contains": [
-          "Iniciando verificacion para: FEAT-050",
+          "Iniciando verificacion para: STORY-050",
           "Estado valido",
           "VERIFY",
           "IN-PROGRESS",
@@ -40,7 +40,7 @@
       "description": "Historia cuyo story.md tiene un estado distinto a CODE-REVIEW/DONE o IMPLEMENT/DONE (por ejemplo PLAN/DONE). El skill debe detenerse inmediatamente con mensaje de error descriptivo sin modificar ningun archivo.",
       "input": {
         "input_path": "examples/jest-project",
-        "story_id": "FEAT-051",
+        "story_id": "STORY-051",
         "flags": [],
         "story_overrides": {
           "status": "PLAN",
@@ -50,7 +50,7 @@
       "expected": {
         "contains": [
           "no esta en un estado valido para VERIFY",
-          "FEAT-051",
+          "STORY-051",
           "PLAN",
           "DONE",
           "story-verify requiere",
@@ -75,12 +75,12 @@
       "description": "Historia en IMPLEMENT/DONE sin ningun archivo de configuracion de tests (sin pytest.ini, jest.config, playwright.config ni carpeta features/). El skill debe detectar modo manual, invocar qa-engineer.agent.md y generar verify-report.md con los resultados de la revision manual.",
       "input": {
         "input_path": "examples/no-tests-project",
-        "story_id": "FEAT-052",
+        "story_id": "STORY-052",
         "flags": []
       },
       "expected": {
         "contains": [
-          "Iniciando verificacion para: FEAT-052",
+          "Iniciando verificacion para: STORY-052",
           "manual",
           "qa-engineer",
           "verify-report.md"
@@ -106,13 +106,13 @@
       "description": "Historia en CODE-REVIEW/DONE con pytest.ini presente pero los tests fallan (hay tests fallidos). El skill debe detectar modo automatico-unit (pytest), generar verify-report.md con findings, y actualizar story.md a READY-FOR-IMPLEMENT/DONE (REJECTED) por criterios DoD fallidos.",
       "input": {
         "input_path": "examples/pytest-project",
-        "story_id": "FEAT-053",
+        "story_id": "STORY-053",
         "flags": [],
         "simulate_test_failure": true
       },
       "expected": {
         "contains": [
-          "Iniciando verificacion para: FEAT-053",
+          "Iniciando verificacion para: STORY-053",
           "automatico-unit",
           "pytest",
           "verify-report.md",

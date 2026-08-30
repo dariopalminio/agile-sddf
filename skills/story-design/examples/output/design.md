@@ -1,22 +1,22 @@
 ---
 alwaysApply: false
 type: design
-id: FEAT-057
-slug: FEAT-057-example-skill-design
+id: STORY-057
+slug: STORY-057-example-skill-design
 title: "Design: Skill para Diseño (story-design)"
-story: FEAT-057-example-skill
+story: STORY-057-example-skill
 created: 2026-05-06
 updated: 2026-05-06
 related:                              
-  - <FEAT-057-example-skill>
+  - <STORY-057-example-skill>
 ---
 
 <!-- Referencias -->
-[[<FEAT-057-example-skill>]]
+[[<STORY-057-example-skill>]]
 
 # Design: Skill para Diseño (story-design)
 
-<!-- TRAZABILIDAD: este diseño cubre los criterios de aceptación de FEAT-057:
+<!-- TRAZABILIDAD: este diseño cubre los criterios de aceptación de STORY-057:
      AC-1: Generación exitosa de design.md a partir de story.md válido
      AC-2: Error descriptivo si el template no existe -->
 
@@ -24,7 +24,7 @@ related:
 
 ## 📋 Contexto
 
-**Historia de origen:** `FEAT-057` — Skill para Diseño (story-design)
+**Historia de origen:** `STORY-057` — Skill para Diseño (story-design)
 
 **Problema técnico:**
 El workflow SDD de SDDF carece de un artefacto formal entre `story.md` (el qué) y la implementación (el código). El skill `story-design` debe leer un `story.md` válido y generar un `design.md` estructurado que documente las alternativas técnicas evaluadas, la decisión tomada y el plan de construcción, garantizando trazabilidad desde los criterios de aceptación hasta la arquitectura de la solución.
@@ -113,10 +113,10 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
 ### Flujo principal
 
 ```
-/story-design FEAT-057
+/story-design STORY-057
   → Paso 0: skill-preflight (verificar entorno, resolver SPECS_BASE)
   → Paso 1: resolver parámetros
-      ├── directorio historia: glob SPECS_BASE/specs/03-stories/FEAT-057-*/
+      ├── directorio historia: glob SPECS_BASE/specs/03-stories/STORY-057-*/
       ├── template: SPECS_BASE/specs/templates/story-design-template.md
       └── salida: {directorio}/design.md
   → Paso 2: leer story.md → extraer AC-1, AC-2 + contexto
@@ -167,8 +167,8 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
 
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
-| 1 | Ejecutar `/story-design FEAT-057` genera `design.md` en `docs/specs/03-stories/FEAT-057-skill-para-diseno/` | Manual: verificar existencia del archivo | AC-1 |
-| 2 | El `design.md` generado tiene frontmatter con `type: design` e `id: FEAT-057` | Manual: leer frontmatter del archivo | AC-1 |
+| 1 | Ejecutar `/story-design STORY-057` genera `design.md` en `docs/specs/03-stories/STORY-057-skill-para-diseno/` | Manual: verificar existencia del archivo | AC-1 |
+| 2 | El `design.md` generado tiene frontmatter con `type: design` e `id: STORY-057` | Manual: leer frontmatter del archivo | AC-1 |
 | 3 | El `design.md` contiene al menos dos alternativas técnicas documentadas | Manual: contar secciones de alternativas | AC-1 |
 | 4 | Si se elimina `story-design-template.md`, el skill usa el fallback interno sin error bloqueante | Manual: eliminar template y ejecutar el skill | AC-2 |
 | 5 | Si `story.md` no existe en el directorio, el error sugiere ejecutar `/epic-generate-stories` | Manual: apuntar a directorio sin story.md | AC-2 |

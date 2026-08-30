@@ -54,7 +54,7 @@ testcases.md   → casos de prueba tipificados y trazables  ← aquí
 
 ## Parámetros
 
-- `{story_id}` — ID de la historia (ej. `FEAT-057`)
+- `{story_id}` — ID de la historia (ej. `STORY-057`)
 - `{story_path}` — ruta explícita al directorio (opcional)
 - `--force` — sobreescribir `testcases.md` existente sin pedir confirmación
 
@@ -116,7 +116,7 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 Si no se proporcionó argumento, preguntar:
 ```
 ¿Para qué historia quieres generar los casos de prueba?
-Proporciona el ID (ej. FEAT-057) o la ruta completa al directorio.
+Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 ```
 
 #### 1b. Resolución del directorio (primera coincidencia)
@@ -271,7 +271,7 @@ Si se usó `--force`, emitir: `[INFO] testcases.md sobreescrito con --force`
 ✅ testcases.md guardado: <ruta>
 
 📋 Resumen:
-   Historia: <FEAT-NNN> — <título>
+   Historia: <STORY-NNN> — <título>
    Casos generados: <N> total
    · UT: <N> | CT: <N> | IT: <N> | API: <N> | E2E: <N> | EV: <N>
    · Ref AC: <N> | Ref D: <N> | Ref T: <N>
