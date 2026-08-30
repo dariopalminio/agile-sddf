@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-type: release
+type: plan
 id: plan-02-integrate-story-testcases-in-story-plan
 slug: plan-02-integrate-story-testcases-in-story-plan
 title: "Plan 02: Integrate story-testcases in story-plan"

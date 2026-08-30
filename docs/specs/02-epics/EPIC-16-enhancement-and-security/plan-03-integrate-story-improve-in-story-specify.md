@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-type: release
+type: plan
 id: plan-03-integrate-story-improve-in-story-specify
 slug: plan-03-integrate-story-improve-in-story-specify
 title: "Plan 03: Integrate story-improve in story-specify"

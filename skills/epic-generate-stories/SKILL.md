@@ -239,6 +239,7 @@ Crear el directorio `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/` s
 Al completar el frontmatter del archivo generado, usar:
 - `status: SPECIFY` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento)
 - `kind: feat` — tipo de historia por defecto; cambiar a `fix`, `chore` o `hotfix` según la naturaleza del trabajo (determina el prefijo de rama)
+- `parent: <EPIC-NN>-<slug>` — el **nombre del directorio** de la épica de origen (ej. `EPIC-01-features-spec-builder`), no el ID desnudo
 
 Si no se puede leer el template, generar el archivo con la siguiente estructura de fallback:
 
@@ -250,8 +251,8 @@ kind: feat
 slug: <nombre-del-directorio-de-historia>
 title: "<Nombre de la feature>"
 status: SPECIFY
-substatus: IN‑PROGRESS
-parent: <EPIC-NN>
+substatus: IN-PROGRESS
+parent: <EPIC-NN>-<slug>
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 ---

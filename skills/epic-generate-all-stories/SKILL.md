@@ -215,8 +215,9 @@ Generar al menos un escenario Gherkin principal (happy path) y uno alternativo/e
 Crear el directorio `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/specs/templates/story-template.md` infiriendo la información. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
-- `status: READY-FOR-IMPLEMENT` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento)
+- `status: SPECIFY` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento). No usar `READY-FOR-IMPLEMENT`: saltaría los gates SPECIFY y PLAN que la máquina de estados declara secuenciales
 - `kind: feat` — tipo de historia por defecto; cambiar a `fix`, `chore` o `hotfix` según la naturaleza del trabajo (determina el prefijo de rama)
+- `parent: <EPIC-NN>-<slug>` — el **nombre del directorio** de la épica de origen (ej. `EPIC-01-features-spec-builder`), no el ID desnudo
 
 Si no se puede leer el template, generar el archivo con la siguiente estructura de fallback:
 
@@ -227,9 +228,9 @@ id: <STORY-NNN>
 kind: feat
 slug: <nombre-del-directorio-de-historia>
 title: "<Nombre de la feature>"
-status: READY-FOR-IMPLEMENT
-substatus: IN‑PROGRESS
-parent: <EPIC-NN>
+status: SPECIFY
+substatus: IN-PROGRESS
+parent: <EPIC-NN>-<slug>
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 ---

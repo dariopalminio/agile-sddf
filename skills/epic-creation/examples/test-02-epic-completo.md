@@ -35,7 +35,7 @@
 | id | `EPIC-02` (del Paso 1) |
 | title | "Sistema de pagos" (aceptado) |
 | status | BACKLOG (default aceptado) |
-| substatus | IN‑PROGRESS (default aceptado) |
+| substatus | IN-PROGRESS (default aceptado) |
 | created | 2026-05-15 (usuario modifica la fecha sugerida) |
 | updated | 2026-05-15 (igual a `created` en la creación inicial) |
 | slug | `sistema-de-pagos` (confirmado) |

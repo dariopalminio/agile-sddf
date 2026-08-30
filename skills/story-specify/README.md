@@ -7,14 +7,14 @@ Skill orquestador del flujo completo de especificación de historias SDD: guía 
 ```
 /epic-generate-stories              → genera story.md iniciales desde epic.md
     ↓
-/story-specify                         [story.md: SPECIFY/IN‑PROGRESS → SPECIFY/DONE]  ← aquí
+/story-specify                         [story.md: SPECIFY/IN-PROGRESS → SPECIFY/DONE]  ← aquí
     ├── /story-creation     → Crea o normaliza story.md (Como/Quiero/Para + Gherkin)
     ├── /story-evaluation   → Evalúa con rúbrica FINVEST → APROBADA/REFINAR/RECHAZAR/DIVIDIR
     ├── /story-split        → Divide historias grandes en partes independientes
     ├── /story-improve      → Aplica mejoras automáticas por dimensión FINVEST (Paso 5A)
     └── story-product-owner → Refinamiento conversacional: discovery y gaps de contexto (Paso 5B)
     ↓ [story.md: SPECIFY/DONE]
-/story-plan                            [story.md: PLANNING/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE]
+/story-plan                            [story.md: PLANNING/IN-PROGRESS → READY-FOR-IMPLEMENT/DONE]
 ```
 
 ## Precondiciones
@@ -29,7 +29,7 @@ Skill orquestador del flujo completo de especificación de historias SDD: guía 
 | Modo | Descripción |
 |---|---|
 | **Iniciar** | Sin backlog previo — el skill crea la primera historia desde una descripción en lenguaje natural |
-| **Retomar** | Con historias en `SPECIFY/IN‑PROGRESS` — el skill detecta el backlog y pregunta si retomar o crear nueva |
+| **Retomar** | Con historias en `SPECIFY/IN-PROGRESS` — el skill detecta el backlog y pregunta si retomar o crear nueva |
 | **Automático** | Invocado por orquestador de nivel superior — reporta resultado sin interacción |
 
 ## Parámetros
@@ -73,10 +73,10 @@ story-evaluation (FINVEST score)
 
 | Evento | status | substatus |
 |---|---|---|
-| Historia nueva o retomada | `SPECIFY` | `IN‑PROGRESS` |
+| Historia nueva o retomada | `SPECIFY` | `IN-PROGRESS` |
 | `story-evaluation` retorna `APROBADA` | `SPECIFY` | `DONE` |
 | Usuario cierra manualmente | `SPECIFY` | `DONE` |
-| Usuario pausa sin aprobación | `SPECIFY` | `IN‑PROGRESS` (sin cambio) |
+| Usuario pausa sin aprobación | `SPECIFY` | `IN-PROGRESS` (sin cambio) |
 
 ## Uso
 
@@ -85,6 +85,6 @@ story-evaluation (FINVEST score)
 /story-specify
 ```
 
-El skill detecta automáticamente si existen historias en `SPECIFY/IN‑PROGRESS` y ofrece:
+El skill detecta automáticamente si existen historias en `SPECIFY/IN-PROGRESS` y ofrece:
 - **Retomar backlog actual** — continúa con las historias pendientes
 - **Crear una historia nueva** — inicia con una descripción en lenguaje natural

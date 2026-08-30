@@ -39,16 +39,16 @@ El flujo base es: **story-creation → story-evaluation → story-split**.
 
 | Evento | status | substatus |
 |---|---|---|
-| Historia nueva o retomada para refinamiento | `SPECIFY` | `IN‑PROGRESS` |
+| Historia nueva o retomada para refinamiento | `SPECIFY` | `IN-PROGRESS` |
 | `story-evaluation` retorna `APROBADA` | `SPECIFY` | `DONE` |
-| Usuario pausa sin aprobación | `SPECIFY` | `IN‑PROGRESS` (sin cambio) |
+| Usuario pausa sin aprobación | `SPECIFY` | `IN-PROGRESS` (sin cambio) |
 
 ---
 
 ## Entrada
 
 - Descripción de la historia en lenguaje natural (para historia nueva)
-- Historias existentes en `$SPECS_BASE/specs/03-stories/` con `status: SPECIFY/IN‑PROGRESS` (para retomar backlog)
+- Historias existentes en `$SPECS_BASE/specs/03-stories/` con `status: SPECIFY/IN-PROGRESS` (para retomar backlog)
 
 ---
 
@@ -75,7 +75,7 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 ## Modos de ejecución
 
 - **Manual** (`/story-specify`): interactivo, guía al usuario paso a paso, muestra backlog en tiempo real y pide confirmación antes de cada ciclo de especificación
-- **Retomar** (`/story-specify` con historias en `SPECIFY/IN‑PROGRESS`): detecta el backlog existente y pregunta si retomar o crear historia nueva
+- **Retomar** (`/story-specify` con historias en `SPECIFY/IN-PROGRESS`): detecta el backlog existente y pregunta si retomar o crear historia nueva
 - **Automático**: invocado por orquestador de nivel superior — reporta resultado sin interacción
 
 ---
@@ -84,7 +84,7 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 
 - No modificar los skills existentes `story-creation`, `story-evaluation` ni `story-split`
 - Usar `$SPECS_BASE/specs/03-stories/` como único directorio de salida para historias
-- Toda historia activa debe tener `status: SPECIFY` / `substatus: IN‑PROGRESS` en su frontmatter
+- Toda historia activa debe tener `status: SPECIFY` / `substatus: IN-PROGRESS` en su frontmatter
 - Una historia pasa automáticamente a `status: SPECIFY` / `substatus: DONE` cuando `story-evaluation` devuelve `Decision: APROBADA`
 - Si la decisión es `REFINAR` o `RECHAZAR`, nunca entrar en bucle infinito — siempre pedir al usuario una decisión explícita antes de iterar (gate anti-bucle, Paso 6)
 - Para indagar, analizar el problema, enriquecer la redacción o proponer mejoras, usar el agente `story-product-owner`
@@ -110,26 +110,26 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 
 1. Si el input del usuario es incompleto, invocar al agente `story-product-owner` para aclarar usuario, necesidad, valor, contexto y restricciones
 2. Invocar el skill `story-creation` con el contexto refinado
-3. Cuando `story-creation` genere el archivo en `$SPECS_BASE/specs/03-stories/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN‑PROGRESS`; si los campos no existen, agregarlos
-4. Registrar la historia en la tabla de backlog con `Estado = SPECIFY/IN‑PROGRESS` y `Decision FINVEST = Pendiente`
+3. Cuando `story-creation` genere el archivo en `$SPECS_BASE/specs/03-stories/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN-PROGRESS`; si los campos no existen, agregarlos
+4. Registrar la historia en la tabla de backlog con `Estado = SPECIFY/IN-PROGRESS` y `Decision FINVEST = Pendiente`
 
 #### Caso B — Historia existente en refinamiento
 
 1. Leer el archivo existente
-2. Si el frontmatter no tiene `status`, establecer `status: SPECIFY` / `substatus: IN‑PROGRESS`
-3. Si ya tiene `status: SPECIFY` / `substatus: IN‑PROGRESS`, no modificar
+2. Si el frontmatter no tiene `status`, establecer `status: SPECIFY` / `substatus: IN-PROGRESS`
+3. Si ya tiene `status: SPECIFY` / `substatus: IN-PROGRESS`, no modificar
 4. Usarlo como historia activa para la siguiente iteración
 
 ---
 
 ### Paso 2 — Procesar backlog con cola de trabajo
 
-Procesar una historia por vez hasta que no queden historias pendientes en substatus `IN‑PROGRESS` o el usuario decida detenerse.
+Procesar una historia por vez hasta que no queden historias pendientes en substatus `IN-PROGRESS` o el usuario decida detenerse.
 
 Reglas de cola:
-1. La siguiente historia a trabajar es la primera del registro con `Estado = SPECIFY/IN‑PROGRESS` y `Siguiente acción` pendiente
+1. La siguiente historia a trabajar es la primera del registro con `Estado = SPECIFY/IN-PROGRESS` y `Siguiente acción` pendiente
 2. Cuando una historia se divide, las historias hijas se agregan al final de la cola
-3. La historia origen de un split deja de iterarse como ítem activo y debe quedar registrada como `SPECIFY/IN‑PROGRESS` con nota `dividida en historias derivadas`, salvo que el usuario decida cerrarla manualmente en `SPECIFY/DONE`
+3. La historia origen de un split deja de iterarse como ítem activo y debe quedar registrada como `SPECIFY/IN-PROGRESS` con nota `dividida en historias derivadas`, salvo que el usuario decida cerrarla manualmente en `SPECIFY/DONE`
 
 Antes de cada iteración, mostrar:
 
@@ -166,7 +166,7 @@ Si la decisión es `DIVIDIR` o `RECHAZAR` con recomendación de división, ejecu
 
 **Si `story-split` devuelve historias derivadas útiles:**
 1. Registrar cada historia hija con un nuevo ID (`ST-00X`)
-2. Para cada archivo derivado, actualizar el frontmatter con `status: SPECIFY` / `substatus: IN‑PROGRESS` si no existe o si tiene valores distintos
+2. Para cada archivo derivado, actualizar el frontmatter con `status: SPECIFY` / `substatus: IN-PROGRESS` si no existe o si tiene valores distintos
 3. Marcar la historia origen con `Siguiente acción = dividida en historias derivadas`
 4. Agregar las historias hijas al backlog para seguir refinándolas una por una
 5. Mostrar al usuario cuántas historias nuevas fueron creadas y cuáles son sus archivos
@@ -215,7 +215,7 @@ Si la decisión es `REFINAR` o `RECHAZAR`, si la historia sigue activa después 
    - Proponer mejoras de redacción y claridad
    - Fortalecer valor, claridad y testabilidad
    - Sugerir simplificaciones o recortes de alcance si conviene
-4. Aplicar las mejoras al archivo manteniendo `status: SPECIFY` / `substatus: IN‑PROGRESS`
+4. Aplicar las mejoras al archivo manteniendo `status: SPECIFY` / `substatus: IN-PROGRESS`
 
 ---
 
@@ -226,12 +226,12 @@ Después de cada ciclo con decisión `REFINAR` o `RECHAZAR`, preguntar explícit
 Opciones:
 - `Seguir iterando ahora`: volver al Paso 3 para una nueva evaluación después del refinamiento
 - `Cerrar manualmente en READY`: establecer `status: SPECIFY` / `substatus: DONE` en el archivo aunque la historia no tenga `APROBADA`
-- `Dejar en IN‑PROGRESS para retomar luego`: conservar `status: SPECIFY` / `substatus: IN‑PROGRESS` y terminar el trabajo sobre esa historia por ahora
+- `Dejar en IN-PROGRESS para retomar luego`: conservar `status: SPECIFY` / `substatus: IN-PROGRESS` y terminar el trabajo sobre esa historia por ahora
 
 Reglas:
 1. Nunca volver automáticamente al Paso 3 sin confirmar al usuario
 2. Si el usuario elige `Cerrar manualmente en READY`, actualizar el frontmatter y dejar constancia en la conversación de que el cierre fue manual
-3. Si el usuario elige `Dejar en IN‑PROGRESS`, conservar el estado en el backlog pero no seguir iterando en esta sesión salvo que el usuario lo pida
+3. Si el usuario elige `Dejar en IN-PROGRESS`, conservar el estado en el backlog pero no seguir iterando en esta sesión salvo que el usuario lo pida
 
 ---
 
@@ -241,17 +241,17 @@ Cuando no queden historias pendientes para iterar o el usuario decida detenerse,
 
 1. Resumen del backlog final:
    - Historias con `SPECIFY/DONE`
-   - Historias con `SPECIFY/IN‑PROGRESS`
+   - Historias con `SPECIFY/IN-PROGRESS`
    - Historias derivadas creadas
 2. Ruta de todos los archivos afectados en `$SPECS_BASE/specs/03-stories/`
-3. Próximo paso recomendado para cada historia en `SPECIFY/IN‑PROGRESS`
+3. Próximo paso recomendado para cada historia en `SPECIFY/IN-PROGRESS`
 
 Formato:
 
 ```
 Refinamiento finalizado.
 SPECIFY/DONE: [lista]
-SPECIFY/IN‑PROGRESS: [lista]
+SPECIFY/IN-PROGRESS: [lista]
 Historias derivadas creadas: [lista]
 ```
 
@@ -267,7 +267,7 @@ Historias derivadas creadas: [lista]
 | `story-evaluation` falla | Informar el error al usuario | Conservar `Decision FINVEST = Pendiente`; ofrecer reintentar |
 | `story-split` falla o no aplica | Informar al usuario | Conservar historia como activa; continuar al Paso 5A |
 | `story-improve` falla o no encuentra reporte | `⚠️ story-improve — no ejecutado` | Non-blocking; registrar en backlog y continuar al Paso 5B |
-| Frontmatter de `story.md` sin campos `status`/`substatus` | — | Agregarlos con `SPECIFY/IN‑PROGRESS` y continuar |
+| Frontmatter de `story.md` sin campos `status`/`substatus` | — | Agregarlos con `SPECIFY/IN-PROGRESS` y continuar |
 
 ---
 
@@ -278,4 +278,4 @@ Historias derivadas creadas: [lista]
 - `story-improvement-log.md` — log de cambios por dimensión FINVEST (generado por `story-improve` en Paso 5A, cuando aplica)
 - Estado final de cada historia:
   - `SPECIFY / DONE` — aprobada por `story-evaluation` o cerrada manualmente
-  - `SPECIFY / IN‑PROGRESS` — pausada para retomar en sesión futura
+  - `SPECIFY / IN-PROGRESS` — pausada para retomar en sesión futura

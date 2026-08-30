@@ -1,0 +1,173 @@
+{
+  "skill": "epic-from-project-plan",
+  "version": "1.0.0",
+  "description": "Casos de prueba para epic-from-project-plan: generacion batch de directorios de epica en $SPECS_BASE/specs/02-epics/ a partir de la seccion '## Propuesta de Epicas' de project-plan.md. Cubre los dos separadores vigentes del encabezado '### Epica' (em dash y dos puntos), el bloque Walking Skeleton sin numero, el frontmatter canonico que exige el gate epic-format-validation, el fail-fast por plan ausente y el fail-fast por seccion sin bloques.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path: separador em dash genera un directorio por epica",
+      "type": "functional",
+      "description": "Ejecutar epic-from-project-plan sobre un project-plan.md cuya seccion '## Propuesta de Epicas' usa el separador em dash. El skill debe extraer los 3 bloques, normalizar el ID a dos digitos, construir el directorio EPIC-NN-nombre-kebab y escribir epic.md en cada uno, terminando con el resumen y el siguiente paso sugerido.",
+      "input": {
+        "context": "Entorno SDDF valido. SDDF_ROOT definido y PROJ_DIR resuelto a PROJ-01-mi-app. El template $SPECS_BASE/specs/templates/epic-template.md existe. El archivo $SPECS_BASE/specs/01-projects/PROJ-01-mi-app/project-plan.md contiene la seccion '## Propuesta de Epicas' con tres bloques: '### Epica 00 — Estructura Base', '### Epica 01 — Autenticacion de Usuarios' y '### Epica 2 — Reportes', cada uno con su parrafo '**Objetivo:**' y su lista '**Criterios de exito:**'. El directorio $SPECS_BASE/specs/02-epics/ esta vacio.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "EPIC-00-estructura-base",
+          "EPIC-01-autenticacion-de-usuarios",
+          "EPIC-02-reportes",
+          "epic.md",
+          "specs/02-epics",
+          "epic-format-validation"
+        ],
+        "not_contains": [
+          "No se encontraron epicas planificadas",
+          "No se encontro",
+          "EPIC-2-reportes",
+          "release"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-002",
+      "name": "separador dos puntos: la forma que genera el template tambien parsea",
+      "type": "edge-case",
+      "description": "El project-plan-template.md canonico genera los encabezados con dos puntos ('### Epica 1: [Nombre]'), no con em dash. El skill debe aceptar esta forma con identico resultado, extrayendo el nombre del texto que sigue a los dos puntos. Es el caso de regresion del soporte de ambos separadores.",
+      "input": {
+        "context": "Entorno SDDF valido. PROJ_DIR resuelto. El project-plan.md contiene '## Propuesta de Epicas' con dos bloques escritos con dos puntos: '### Epica 1: Catalogo de Productos' y '### Epica 2: Carrito de Compra'. El directorio $SPECS_BASE/specs/02-epics/ esta vacio.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "EPIC-01-catalogo-de-productos",
+          "EPIC-02-carrito-de-compra",
+          "epic.md"
+        ],
+        "not_contains": [
+          "No se encontraron epicas planificadas",
+          "EPIC-1-catalogo-de-productos"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-003",
+      "name": "bloque Walking Skeleton sin numero recibe el ID 00",
+      "type": "edge-case",
+      "description": "El template define un bloque inicial '### Epica Walking Skeleton: MVP' sin identificador numerico. El skill debe asignarle el ID 00 por ser siempre la primera epica, tomando 'MVP' como nombre, y numerar el resto sin colisionar con el.",
+      "input": {
+        "context": "Entorno SDDF valido. PROJ_DIR resuelto. El project-plan.md contiene '## Propuesta de Epicas' con '### Epica Walking Skeleton: MVP' seguido de '### Epica 1: Pagos'. El directorio $SPECS_BASE/specs/02-epics/ esta vacio.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "EPIC-00-mvp",
+          "EPIC-01-pagos",
+          "epic.md"
+        ],
+        "not_contains": [
+          "No se encontraron epicas planificadas",
+          "EPIC-01-mvp",
+          "EPIC-NN"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-004",
+      "name": "regresion de contrato: el epic.md generado pasa el gate epic-format-validation",
+      "type": "regression",
+      "description": "Cierre del bucle productor-gate. El frontmatter escrito debe cubrir las claves canonicas que epic-format-validation deriva del template (type, id, slug, title, status, substatus, created, updated) y no el campo legacy 'date'. Las secciones deben ser las del template vigente. Si el productor volviera al contrato antiguo, este caso falla.",
+      "input": {
+        "context": "Entorno SDDF valido. PROJ_DIR resuelto. El project-plan.md contiene un unico bloque '### Epica 01 — Onboarding' con objetivo y criterios de exito. Tras generar el archivo se valida con /epic-format-validation.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "type: epic",
+          "id: EPIC-01",
+          "status: DEFINE",
+          "created",
+          "updated",
+          "## Descripcion",
+          "## Historias",
+          "## Flujos Criticos"
+        ],
+        "not_contains": [
+          "date:",
+          "type: release",
+          "## Features",
+          "REFINAR"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-005",
+      "name": "fail-fast: project-plan.md inexistente no genera ningun archivo",
+      "type": "fail-fast",
+      "description": "Ejecutar el skill cuando $SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md no existe. El skill debe detenerse en la Fase 0 con el mensaje que remite a /project-planning, sin crear el directorio 02-epics ni ningun epic.md.",
+      "input": {
+        "context": "Entorno SDDF valido. PROJ_DIR resuelto a PROJ-01-mi-app, pero el archivo project-plan.md no existe en ese directorio.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "No se encontro",
+          "project-plan.md",
+          "project-planning"
+        ],
+        "not_contains": [
+          "epic.md",
+          "Epicas generados",
+          "EPIC-00"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-006",
+      "name": "fail-fast: seccion Propuesta de Epicas sin bloques reconocibles",
+      "type": "fail-fast",
+      "description": "El project-plan.md existe y tiene la seccion '## Propuesta de Epicas', pero no contiene ningun encabezado '### Epica'. El skill debe emitir el mensaje que nombra ambas formas admitidas de encabezado y terminar sin generar archivos.",
+      "input": {
+        "context": "Entorno SDDF valido. PROJ_DIR resuelto. El project-plan.md tiene la seccion '## Propuesta de Epicas' con un parrafo de texto libre y ningun bloque '### Epica'.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "No se encontraron epicas planificadas",
+          "Propuesta de Epicas"
+        ],
+        "not_contains": [
+          "epic.md",
+          "Epicas generados"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-007",
+      "name": "directorio de epica ya existente pide confirmacion antes de sobreescribir",
+      "type": "edge-case",
+      "description": "Si el directorio EPIC-NN-nombre ya existe, el skill debe pedir confirmacion antes de sobreescribir epic.md. Ante una respuesta negativa debe saltar esa epica, continuar con las demas y listarla como saltada en el resumen.",
+      "input": {
+        "context": "Entorno SDDF valido. PROJ_DIR resuelto. El project-plan.md declara '### Epica 01 — Autenticacion' y '### Epica 02 — Reportes'. El directorio $SPECS_BASE/specs/02-epics/EPIC-01-autenticacion/ ya existe con un epic.md editado a mano. El usuario responde 'n' a la confirmacion.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "ya existe",
+          "saltado",
+          "EPIC-02-reportes"
+        ],
+        "not_contains": [
+          "No se encontraron epicas planificadas"
+        ]
+      },
+      "threshold": 0.9
+    }
+  ]
+}

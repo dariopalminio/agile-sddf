@@ -5,17 +5,17 @@ Skill que implementa el código de una historia SDD tarea por tarea siguiendo TD
 ## Posicionamiento en el Flujo SDD
 
 ```
-/story-specify                         [story.md: SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE]
+/story-specify                         [story.md: SPECIFY/IN-PROGRESS → READY-FOR-PLAN/DONE]
     ├── /story-creation   → Crea story.md
     ├── /story-evaluation → Evalúa con FINVEST
     └── /story-split      → Divide historias grandes
     ↓ [story.md: READY-FOR-PLAN/DONE]
-/story-plan                            [story.md: → PLAN/IN‑PROGRESS al inicio]
+/story-plan                            [story.md: → PLAN/IN-PROGRESS al inicio]
     ├── /story-design   → Genera design.md
     ├── /story-tasking  → Genera tasks.md
     └── /story-analyze  → Genera analyze.md [story.md: → READY-FOR-IMPLEMENT/DONE si sin ERROREs]
     ↓ [story.md: READY-FOR-IMPLEMENT/DONE]
-/story-implement-tasks                       [story.md: → IMPLEMENT/IN‑PROGRESS → IMPLEMENT/DONE]
+/story-implement-tasks                       [story.md: → IMPLEMENT/IN-PROGRESS → IMPLEMENT/DONE]
     → Implementa código tarea por tarea con TDD  ← aquí
     → Genera implement-report.md al finalizar
     → Actualiza checklist en epic.md padre
@@ -38,7 +38,7 @@ Si algún artefacto falta o la historia no está en `READY-FOR-IMPLEMENT/DONE`, 
 
 | Evento | status | substatus |
 |--------|--------|-----------|
-| Antes de la primera tarea | `IMPLEMENT` | `IN‑PROGRESS` |
+| Antes de la primera tarea | `IMPLEMENT` | `IN-PROGRESS` |
 | Después de generar `implement-report.md` | `IMPLEMENT` | `DONE` |
 
 Al alcanzar `IMPLEMENT/DONE`, el skill también actualiza el checklist en el `epic.md` padre (campo `parent` del frontmatter de `story.md`).

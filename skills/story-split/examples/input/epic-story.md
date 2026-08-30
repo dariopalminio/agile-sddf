@@ -4,7 +4,7 @@ id: STORY-099
 slug: STORY-099-gestionar-carrito-compras
 title: "Gestionar carrito de compras"
 status: SPECIFY
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: EPIC-05-tienda-online
 created: 2026-01-10
 updated: 2026-01-10

@@ -7,7 +7,7 @@ slug: STORY-075-integrar-historia-modo-manual-dryrun
 title: "story-integrate: Modos de ejecución manual y dry-run"
 status: READY-FOR-IMPLEMENT
 substatus: DONE
-parent: <nombre-del-release-padre>
+parent: null
 created: 2026-05-17
 updated: 2026-05-17
 related:

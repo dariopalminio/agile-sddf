@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-type: release
+type: plan
 id: plan-05-extend-story-code-review-with-testcases
 slug: plan-05-extend-story-code-review-with-testcases
 title: "Plan 05: Extender story-code-review con análisis de testcases.md e implement-report.md opcional"

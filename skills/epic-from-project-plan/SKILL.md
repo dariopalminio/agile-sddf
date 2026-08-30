@@ -72,7 +72,7 @@ Para cada bloque, capturar:
 - **ID**: el número que sigue a `### Épica `, normalizado a dos dígitos (`1` → `01`, `06` → `06`).
   **Caso especial — bloque sin número:** el template define un bloque inicial `### Épica Walking Skeleton: MVP`. Ese bloque recibe el ID `00` (es el MVP, siempre la primera épica). Si además existe un bloque numerado `00`, aplicar la regla de duplicados de las Notas de implementación.
 - **Nombre**: el texto después del separador en la misma línea (ej. `Estructura Base y Mecanismo de Templates`). Para el bloque Walking Skeleton, el nombre es el texto después de los dos puntos (`MVP`).
-- **substatus**: el valor del campo `substatus:` si existe en el bloque (ej. `DONE`, `IN‑PROGRESS`); si no existe, usar `IN‑PROGRESS`
+- **substatus**: el valor del campo `substatus:` si existe en el bloque (ej. `DONE`, `IN-PROGRESS`); si no existe, usar `IN-PROGRESS`
 - **Objetivo**: el párrafo que sigue a `**Objetivo:**`
 - **Historias**: las líneas con formato `- [ ] STORY-NNN - Nombre` o `- [x] STORY-NNN - Nombre` dentro del bloque
 - **Criterios de éxito**: las líneas que siguen a `**Criterios de éxito:**` dentro del bloque
@@ -168,7 +168,7 @@ id: EPIC-[ID]
 slug: <nombre-kebab del directorio de la épica>
 title: <"Nombre completo de la épica">
 status: DEFINE
-substatus: <substatus extraido o IN‑PROGRESS>
+substatus: <substatus extraido o IN-PROGRESS>
 parent: <PROJ-NN del proyecto del cual se genera la épica, o null>
 created: <fecha actual con formato YYYY-MM-DD>
 updated: <fecha actual con formato YYYY-MM-DD>

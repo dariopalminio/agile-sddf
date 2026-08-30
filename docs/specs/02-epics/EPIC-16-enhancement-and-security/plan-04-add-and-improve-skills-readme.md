@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-type: release
+type: plan
 id: plan-04-add-and-improve-skills-readme
 slug: plan-04-add-and-improve-skills-readme
 title: "Plan 04: Add and Improve Skills README"

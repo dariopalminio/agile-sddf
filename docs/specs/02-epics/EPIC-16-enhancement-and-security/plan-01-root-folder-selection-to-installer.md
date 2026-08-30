@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-type: release
+type: plan
 id: plan-01-root-folder-selection-to-installer
 slug: plan-01-root-folder-selection-to-installer
 title: "Plan 01: Root Folder Selection for Installer"

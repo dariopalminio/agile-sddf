@@ -36,7 +36,7 @@
 | id | `EPIC-01` (del Paso 1) |
 | title | "Autenticación básica" (aceptado) |
 | status | BACKLOG (default aceptado) |
-| substatus | IN‑PROGRESS (default aceptado) |
+| substatus | IN-PROGRESS (default aceptado) |
 | created | 2026-05-01 (fecha de hoy, aceptada) |
 | updated | 2026-05-01 (igual a `created` en la creación inicial) |
 | slug | `autenticacion-basica` (confirmado) |
@@ -73,7 +73,7 @@ id: EPIC-01
 slug: autenticacion-basica
 title: "Autenticación básica"
 status: BACKLOG
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: null
 created: 2026-05-01
 updated: 2026-05-01

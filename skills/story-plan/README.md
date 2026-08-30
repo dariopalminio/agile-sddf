@@ -5,18 +5,18 @@ Skill orquestador que ejecuta el pipeline completo de planning de una historia S
 ## Posicionamiento en el flujo SDD
 
 ```
-/story-specify                         [story.md: SPECIFY/IN‑PROGRESS → READY-FOR-PLAN/DONE]
+/story-specify                         [story.md: SPECIFY/IN-PROGRESS → READY-FOR-PLAN/DONE]
     ├── /story-creation   → Crea story.md
     ├── /story-evaluation → Evalúa con FINVEST
     └── /story-split      → Divide historias grandes
     ↓ [story.md: READY-FOR-PLAN/DONE]
-/story-plan                            [story.md: → PLANNING/IN‑PROGRESS al inicio]  ← aquí
+/story-plan                            [story.md: → PLANNING/IN-PROGRESS al inicio]  ← aquí
     ├── /story-design     → Genera design.md
     ├── /story-tasking    → Genera tasks.md       (omitido con --only-testcases)
     ├── /story-testcases  → Genera testcases.md   (omitido con --only-tasks)
     └── /story-analyze    → Genera analyze.md     [story.md: → READY-FOR-IMPLEMENT/DONE si sin ERROREs]
     ↓ [story.md: READY-FOR-IMPLEMENT/DONE]
-/story-implement-tasks                 [story.md: → IMPLEMENT/IN‑PROGRESS → IMPLEMENT/DONE]
+/story-implement-tasks                 [story.md: → IMPLEMENT/IN-PROGRESS → IMPLEMENT/DONE]
 ```
 
 ## Precondiciones
@@ -62,9 +62,9 @@ En cualquier modo, `--skip-analyze` elimina el paso `story-analyze` y reduce el 
 
 | Evento | status | substatus |
 |---|---|---|
-| Inicio del pipeline (incondicional) | `PLANNING` | `IN‑PROGRESS` |
+| Inicio del pipeline (incondicional) | `PLANNING` | `IN-PROGRESS` |
 | `story-analyze` finaliza sin ERROREs | `READY-FOR-IMPLEMENT` | `DONE` |
-| Fallo en cualquier paso bloqueante | `PLANNING` | `IN‑PROGRESS` (sin cambio) |
+| Fallo en cualquier paso bloqueante | `PLANNING` | `IN-PROGRESS` (sin cambio) |
 
 ## Uso
 

@@ -23,7 +23,7 @@ type: story
 id: STORY-099
 slug: STORY-099-agregar-item-carrito
 status: SPECIFY
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 related: [STORY-100, STORY-101]
 ---
 

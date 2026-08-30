@@ -83,7 +83,7 @@ Para cada archivo a procesar, deriva automáticamente los campos obligatorios:
 | `type` | Prefijo del nombre de directorio: `STORY-*` → `story`, `EPIC-*` → `epic`, `PROJ-*` → `project`, archivos fuera de estas convenciones → `wiki` |
 | `kind` | Solo para `type: story`. Preservar del frontmatter existente; si no existe → `feat` |
 | `title` | Primer heading `#` del contenido del archivo. Si no hay heading `#`, usar el nombre del directorio formateado (guiones → espacios, capitalizar) |
-| `status` | Buscar `**substatus**: IN‑PROGRESS` en el contenido → `IN-PROGRESS`; `**substatus**: DONE` → `COMPLETED`; ausente o desconocido → `BACKLOG` |
+| `status` | Buscar `**substatus**: IN-PROGRESS` en el contenido → `IN-PROGRESS`; `**substatus**: DONE` → `COMPLETED`; ausente o desconocido → `BACKLOG` |
 | `substatus` | no es un archivo spec → null; si es un archivo de spec → derivar según contenido; ausente o desconocido → null |
 | `parent` | Para stories: extraer nombre del directorio de la épica padre del frontmatter existente o de la sección del documento o el slug del archivo `epic.md` padre (ej. `EPIC-01-nombre`). Para épicas: extraer nombre del directorio del proyecto padre o slug del archivo padre project.md (ej. `PROJ-01-nombre`). Para projects u otros archivos: `null` |
 | `created` | Preservar del frontmatter existente (`created` o `date`). Si no existe → fecha actual `YYYY-MM-DD` |

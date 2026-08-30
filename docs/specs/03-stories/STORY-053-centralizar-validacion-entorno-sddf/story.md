@@ -7,7 +7,7 @@ slug: STORY-053-centralizar-validacion-entorno-sddf
 title: "Centralizar la validación de entorno SDDF con skill-preflight"
 status: COMPLETED
 substatus: DONE
-parent: <nombre-del-directorio-de-release>
+parent: EPIC-10-mejora-estructura-artefactos-nuevos-skills
 created: 2026-05-02
 updated: 2026-05-02
 ---

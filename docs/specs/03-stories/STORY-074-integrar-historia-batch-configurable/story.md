@@ -7,7 +7,7 @@ slug: STORY-074-integrar-historia-batch-configurable
 title: "story-integrate: Integración batch configurable de historias"
 status: READY-FOR-IMPLEMENT
 substatus: DONE
-parent: <nombre-del-release-padre>
+parent: null
 created: 2026-05-17
 updated: 2026-05-17
 related:

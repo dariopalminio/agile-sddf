@@ -43,7 +43,7 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Políticas de proyecto**: generación de `constitution.md` y `definition-of-done-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
 - **Integración OpenSpec**: exploración, propuesta, implementación y archivado de cambios con trazabilidad completa
 - **Multi-runtime**: los mismos skills operan en Claude Code, GitHub Copilot y OpenCode sin modificar el SKILL.md fuente, eligiendo la carpeta destino al instalar (`.claude`/`.github`/`.agents`); el soporte a otros CLI/LLMs se evaluará en releases futuros
-- **Trazabilidad completa**: IDs únicos STORY-NNN y manejo de sub-estados IN‑PROGRESS/Ready en cada documento del pipeline
+- **Trazabilidad completa**: IDs únicos STORY-NNN y manejo de sub-estados IN-PROGRESS/Ready en cada documento del pipeline
 - **Docs as Wiki**: skill docs-wiki-builder para generar documentación de proyecto en formato wiki navegable. Incluye un skill header-aggregation para generar encabezados frontmatter de archivo '.md'. Permite navegación bidireccional entre documentos, generación de índices automáticos y visualización de grafos con "Foam for VSCode".
 - **Auditoría de seguridad**: skill `security-audit` para análisis automático de vulnerabilidades en código fuente, con evaluación OWASP Top 10, OWASP API Top 10 y OWASP Top 10 para LLMs.
 
@@ -175,7 +175,7 @@ O ejecuta cada fase individualmente:
 # Fase 2 — Discovery de usuarios y especificación de requisitos
 /project-discovery
 
-# Fase 3 — Planificación de épicas y backlog de features
+# Fase 3 — Planificación de épicas y backlog de historias
 /project-planning
 ```
 
@@ -194,7 +194,7 @@ Los archivos se crean en `docs/policies/` y se referencian automáticamente en `
 
 ### Flujos principales SDDF
 
-SDDF se organiza en 4 niveles principales que cubren todo el ciclo de vida de la especificación, desde la intención inicial (nivel de proyecto o L3), la especificación de entregables o épicas (L2), la especificaciòn de historias (L1), y con integración opcional de OpenSpec para gestión de cambios (L0). Cada nivel tiene su pipeline y se compone de un conjunto de skills que operan sobre documentos Markdown con control de sub-estado `IN‑PROGRESS`/`DONE` para garantizar un flujo estructurado, reproducible y automatizable.
+SDDF se organiza en 4 niveles principales que cubren todo el ciclo de vida de la especificación, desde la intención inicial (nivel de proyecto o L3), la especificación de entregables o épicas (L2), la especificaciòn de historias (L1), y con integración opcional de OpenSpec para gestión de cambios (L0). Cada nivel tiene su pipeline y se compone de un conjunto de skills que operan sobre documentos Markdown con control de sub-estado `IN-PROGRESS`/`DONE` para garantizar un flujo estructurado, reproducible y automatizable.
 
 #### 1. L3: Pipeline de especificación de proyecto (iniciativa)
 
@@ -280,16 +280,16 @@ Los artefactos de especificación se organizan en directorios por workitem bajo 
 
 ```
 docs/specs/
-├── projects/
+├── 01-projects/                          # L3 — proyecto
 │   └── PROJ-01-nombre-proyecto/         # un directorio por proyecto
 │       ├── project-intent.md
-│       ├── requirement-spec.md
+│       ├── project.md
 │       ├── project-plan.md
 │       └── story-map.md
-├── releases/
+├── 02-epics/                             # L2 — épica
 │   └── EPIC-01-nombre-epica/            # un directorio por épica
 │       └── epic.md
-└── stories/
+└── 03-stories/                           # L1 — historia
     └── STORY-001-nombre-historia/        # un directorio por historia
         ├── story.md                     # historia (story-creation)
         ├── finvest-evaluation-report.md # evaluación FINVEST (story-evaluation)
@@ -304,9 +304,9 @@ docs/specs/
         └── verify-report.md             # reporte de verificación (story-verify)
 ```
 
-Cada archivo principal usa un nombre canónico (`project-intent.md`, `epic.md`, `story.md`) e incluye frontmatter con `type`, `id`, `title`, `status`, `parent`, `created` y `updated`. Las relaciones jerárquicas se expresan mediante el campo `parent` (ej. una épica tiene `parent: PROJ-01`).
+Cada archivo principal usa un nombre canónico (`project-intent.md`, `epic.md`, `story.md`) e incluye frontmatter con `type`, `id`, `slug`, `title`, `status`, `substatus`, `parent`, `created` y `updated`; las historias añaden `kind` (`feat` / `fix` / `chore` / `hotfix`), que determina el prefijo de su rama. Las relaciones jerárquicas se expresan mediante el campo `parent` (ej. una épica tiene `parent: PROJ-01-nombre-proyecto`).
 
-El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLANNING → READY-FOR-IMPLEMENT → IMPLEMENT → ... → COMPLETED`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio.
+El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio. El conjunto canónico de estados y subestados por nivel vive en `docs/guides/state-machine.md`.
 
 ### Basic Usage
 
@@ -456,7 +456,7 @@ El único mecanismo de control de flujo es el campo `substatus` en cada document
 
 | Valor | Significado |
 |-------|-------------|
-| `IN‑PROGRESS` | Documento en progreso — el pipeline puede retomarlo |
+| `IN-PROGRESS` | Documento en progreso — el pipeline puede retomarlo |
 | `DONE` | Documento completo — actúa como precondición para la siguiente fase |
 
 ## Contributing

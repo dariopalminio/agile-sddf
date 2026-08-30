@@ -5,18 +5,18 @@ Skill orquestador que ejecuta el ciclo TDD completo (RED → GREEN → REFACTOR)
 ## Posicionamiento en el flujo SDD
 
 ```
-/story-plan                            [story.md: PLANNING/IN‑PROGRESS → READY-FOR-IMPLEMENT/DONE]
+/story-plan                            [story.md: PLANNING/IN-PROGRESS → READY-FOR-IMPLEMENT/DONE]
     ├── /story-design     → Genera design.md
     ├── /story-tasking    → Genera tasks.md
     ├── /story-testcases  → Genera testcases.md
     └── /story-analyze    → Genera analyze.md
     ↓ [story.md: READY-FOR-IMPLEMENT/DONE]
-/story-implement                       [story.md: → IMPLEMENT/IN‑PROGRESS → IMPLEMENT/DONE]  ← aquí
+/story-implement                       [story.md: → IMPLEMENT/IN-PROGRESS → IMPLEMENT/DONE]  ← aquí
     ├── Fase RED      → invoca test_generators de sddf.config.yaml  → archivos de prueba
     ├── Fase GREEN    → invoca code_generators de sddf.config.yaml  → código de producción
     └── Fase REFACTOR → invoca code_generators con phase:REFACTOR   → código mejorado
     ↓ [story.md: IMPLEMENT/DONE]
-/story-code-review                     [story.md: → CODE-REVIEW/IN‑PROGRESS]
+/story-code-review                     [story.md: → CODE-REVIEW/IN-PROGRESS]
 ```
 
 ## Precondiciones
@@ -65,7 +65,7 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 
 | Evento | status | substatus |
 |--------|--------|-----------|
-| Inicio del ciclo (Fase RED) | `IMPLEMENT` | `IN‑PROGRESS` |
+| Inicio del ciclo (Fase RED) | `IMPLEMENT` | `IN-PROGRESS` |
 | Ciclo completado sin DoD-ERRORs | `IMPLEMENT` | `DONE` |
 | Ciclo completado con criterios DoD `❌` | `IMPLEMENT` | `IN-PROGRESS` |
 

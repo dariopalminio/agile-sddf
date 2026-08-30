@@ -58,11 +58,11 @@ Lee:
 
 Verifica primero `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`:
 - Si no existe: informa que primero debe ejecutarse `/project-begin` y detén la ejecución.
-- Si existe con `substatus: IN‑PROGRESS`: informa que Begin Intention aún no está completo y detén la ejecución.
+- Si existe con `substatus: IN-PROGRESS`: informa que Begin Intention aún no está completo y detén la ejecución.
 - Si existe con `substatus: DONE`: continúa.
 
 Si `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` existe, verifica su campo `substatus`:
-- Si es **`IN‑PROGRESS`**: activa flujo de retoma leyendo el documento existente y completando solo secciones incompletas.
+- Si es **`IN-PROGRESS`**: activa flujo de retoma leyendo el documento existente y completando solo secciones incompletas.
 Si es `DONE` pregunta al usuario con `AskUserQuestion` si desea sobrescribir el documento completo antes de continuar.
 - Si no existe: continúa como primera ejecución.
 
@@ -82,7 +82,7 @@ Para cada sección del template:
 3. **Haz preguntas solo** para secciones que necesitan información nueva o mayor detalle
 4. **Agrupa** en máx 3-4 por ronda en orden de aparición en el template
 5. **Usa `AskUserQuestion`** con opciones cuando aplique, o preguntas abiertas para respuestas libres
-6. Si estás retomando un documento en substatus `IN‑PROGRESS`, no vuelvas a preguntar por secciones completas ni las sobrescribas
+6. Si estás retomando un documento en substatus `IN-PROGRESS`, no vuelvas a preguntar por secciones completas ni las sobrescribas
 
 Para secciones de UX/UI, accesibilidad, navegación o wireframes, puedes apoyarte en `project-ux`.
 
@@ -105,7 +105,7 @@ Cuando el usuario no proporciona suficiente detalle:
    - `slug: [nombre del directorio del proyecto]`
    - `title: [primer # heading del documento]`
    - `status: [estado inicial del pipeline]`
-   - `substatus: IN‑PROGRESS`
+   - `substatus: IN-PROGRESS`
    - `parent: null`
    - `created: [fecha actual en formato YYYY-MM-DD]`
    - `updated: [fecha actual en formato YYYY-MM-DD]`
@@ -144,7 +144,7 @@ Extrae dinámicamente:
 **Paso 3: Validar el estado del output si existe**
 
 Si `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md` existe, verifica el campo `substatus`:
-- Si es **`IN‑PROGRESS`**: lee el documento existente, identifica secciones incompletas y continúa solo con ellas.
+- Si es **`IN-PROGRESS`**: lee el documento existente, identifica secciones incompletas y continúa solo con ellas.
 Si es `DONE` pregunta al usuario con `AskUserQuestion` si desea sobrescribirlo antes de continuar.
 - Si no existe: continúa como primera ejecución.
 
@@ -208,7 +208,7 @@ Genera mínimo 2 épicas.
    - `slug: [nombre del directorio del proyecto | project-plan]`
    - `title: [primer # heading del documento]`
    - `status: PLANNING`
-   - `substatus: IN‑PROGRESS`
+   - `substatus: IN-PROGRESS`
    - `parent: null`
    - `created: [fecha actual en formato YYYY-MM-DD]`
    - `updated: [fecha actual en formato YYYY-MM-DD]`

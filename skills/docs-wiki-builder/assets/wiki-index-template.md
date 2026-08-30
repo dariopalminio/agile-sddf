@@ -4,7 +4,7 @@ type: wiki
 slug: index
 title: "Índice de documentación"
 status: IN-PROGRESS
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: null
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>

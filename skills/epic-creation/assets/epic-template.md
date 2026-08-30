@@ -5,7 +5,7 @@ id: <EPIC-NN>
 slug: <nombre-del-directorio-de-la-epica>
 title: "<primer # heading del documento>"
 status: <ESTADO_INICIAL>
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: null
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>

@@ -42,7 +42,7 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
 [story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación (viene de story-code-review needs-changes)
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
-     │   Al iniciar: story.md → IMPLEMENT/IN‑PROGRESS
+     │   Al iniciar: story.md → IMPLEMENT/IN-PROGRESS
      │   Al finalizar: story.md → IMPLEMENT/DONE + epic.md checklist actualizado
      ↓
 [story.md: IMPLEMENT/DONE]

@@ -5,7 +5,7 @@ id: <PROJ-NN>
 slug: < nombre-del-directorio-del-proyecto-project-plan >
 title: "<primer # heading del documento>"
 status: PLANNING
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: null
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
@@ -21,7 +21,7 @@ related:
 
 ---
 
-## Backlog de Features
+## Backlog de Historias
 
 <!-- Lista priorizada de features atómicas. El orden define la prioridad (arriba = mayor prioridad).
      Cada feature es una unidad de valor para el usuario o negocio, independientemente desarrollable y testeable.

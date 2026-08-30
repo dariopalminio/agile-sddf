@@ -7,7 +7,7 @@ slug: STORY-076-integrar-historia-multi-modelo-entrega
 title: "story-integrate: Soporte multi-modelo de entrega (batch y continuous)"
 status: READY-FOR-IMPLEMENT
 substatus: DONE
-parent: <nombre-del-release-padre>
+parent: null
 created: 2026-05-17
 updated: 2026-05-17
 related:

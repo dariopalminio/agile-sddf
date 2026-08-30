@@ -76,7 +76,7 @@ Cuando detectes problemas, entrega propuestas accionables, por ejemplo:
 Si `story-specify` te pide editar la historia:
 
 1. Conserva el formato canonico de la historia.
-2. Preserva el encabezado `substatus: IN‑PROGRESS` o `substatus: DONE` existente.
+2. Preserva el encabezado `substatus: IN-PROGRESS` o `substatus: DONE` existente.
 3. No elimines informacion valida ya confirmada por el usuario.
 4. Si agregas informacion inferida, marcalo claramente como `[inferido]` dentro de notas o contexto adicional cuando haga falta.
 

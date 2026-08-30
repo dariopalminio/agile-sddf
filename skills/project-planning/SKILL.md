@@ -106,9 +106,9 @@ Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`.
   > ❌ No se encontró `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`.
   > Debes completar primero la fase Discovery ejecutando `/project-discovery`.
 
-- Si el archivo **existe** pero `substatus` es `IN‑PROGRESS`: informa al usuario y deten la ejecucion.
+- Si el archivo **existe** pero `substatus` es `IN-PROGRESS`: informa al usuario y deten la ejecucion.
 
-  > ❌ `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` aun esta en `substatus: IN‑PROGRESS`.
+  > ❌ `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` aun esta en `substatus: IN-PROGRESS`.
   > Debes completar Discovery y dejar el documento en `Estado: Ready` antes de ejecutar `/project-planning`.
 
 - Si el archivo **existe** con `substatus: DONE`: continua al Paso 2.
@@ -118,7 +118,7 @@ Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`.
 Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md` (si existe) y detecta el valor de `substatus:`.
 
 - Si el archivo **no existe**: continua al Paso 3 (primera ejecucion).
-- Si existe con `substatus: IN‑PROGRESS`: activa flujo de retoma y continua al Paso 3.
+- Si existe con `substatus: IN-PROGRESS`: activa flujo de retoma y continua al Paso 3.
 - Si existe con `substatus: DONE`: informa que el documento ya esta completo y pide confirmacion antes de sobrescribir.
   - Si el usuario confirma sobrescribir: continua al Paso 3.
   - Si el usuario cancela: deten la ejecucion sin modificar el archivo.
@@ -173,7 +173,7 @@ Invoca al agente `project-architect` con la siguiente instrucción, **sustituyen
 >
 > Lee los documentos `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` y `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`. Lee también el template `$TEMPLATE_PATH` y deriva de él las secciones del output y el formato de los encabezados `### Épica ...`.
 >
-> Si estás en flujo de retoma (documento existente en `substatus: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
+> Si estás en flujo de retoma (documento existente en `substatus: IN-PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
 > [CONDICIONAL — incluir solo si `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md` existe]
 > Lee también `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md`. Usa las actividades del backbone como guía para agrupar features relacionadas en el plan. Usa los slices de épicas del story map como referencia estructural para definir qué features van en cada épica (respetando las dependencias técnicas y el valor de negocio). No estás obligado a replicar el story map exactamente — es una guía, no una restricción.

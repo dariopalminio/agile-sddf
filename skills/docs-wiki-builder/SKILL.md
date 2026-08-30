@@ -198,7 +198,7 @@ Construye `$SPECS_BASE/index.md` listando todos los archivos `.md` encontrados e
    title: "Índice de documentación"
    date: <fecha-actual YYYY-MM-DD>
    status: IN-PROGRESS
-   substatus: IN‑PROGRESS
+   substatus: IN-PROGRESS
    parent: null
    ---
    ```
@@ -245,8 +245,8 @@ Para cada archivo `.md` procesado (creado o movido) por el skill:
 - **`slug`**: Nombre del archivo sin extensión, en kebab-case. Ejemplo: `project-intent.md` → `project-intent`.
 - **`title`**: Primer heading `#` del documento. Si no hay heading, usar el nombre de archivo formateado.
 - **`date`**: Fecha actual en formato YYYY-MM-DD.
-- **`status`**: `substatus: IN‑PROGRESS` → `IN-PROGRESS`; `substatus: DONE` → `COMPLETED`; ausente → `BACKLOG`.
-- **`substatus`**: `substatus: IN‑PROGRESS` → `IN‑PROGRESS`; `substatus: DONE` → `DONE`; ausente → `N/A`.
+- **`status`**: `substatus: IN-PROGRESS` → `IN-PROGRESS`; `substatus: DONE` → `COMPLETED`; ausente → `BACKLOG`.
+- **`substatus`**: `substatus: IN-PROGRESS` → `IN-PROGRESS`; `substatus: DONE` → `DONE`; ausente → `N/A`.
 - **`parent`**: `N/A` por defecto (sin nodo padre).
 
 #### Comportamiento según estado del archivo

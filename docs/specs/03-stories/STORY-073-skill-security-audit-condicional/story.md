@@ -7,7 +7,7 @@ slug: STORY-073-skill-security-audit-condicional
 title: "Construir skill `security-audit` para auditoría automática condicional de seguridad"
 status: COMPLETED
 substatus: DONE
-parent: ~
+parent: EPIC-13-quality-gates-con-dod-en-story-workflow
 created: 2026-05-15
 updated: 2026-05-15
 related: []

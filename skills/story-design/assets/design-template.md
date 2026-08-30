@@ -6,7 +6,7 @@ slug: <slug-de-la-story-relacionada-design>
 title: "Design: <título-de-la-story-relacionada>"
 date: 2026-04-22
 status: <ESTADO_INICIAL>
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: null
 related:                              
   - <slug-de-la-story-relacionada>

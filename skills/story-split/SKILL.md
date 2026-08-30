@@ -373,7 +373,7 @@ Las **historias adicionales** reciben IDs nuevos consecutivos:
 3. Actualizar su frontmatter:
    - `id: STORY-{NNN}` (conservado)
    - `slug: STORY-{NNN}-{slug-core}` (actualizado)
-   - `status: SPECIFY` / `substatus: IN‑PROGRESS`
+   - `status: SPECIFY` / `substatus: IN-PROGRESS`
    - Campo `related:` con los IDs de las historias adicionales: `[STORY-{N+1}, STORY-{N+2}, ...]`
 4. Advertir en el resumen que el directorio fue renombrado y que las referencias al slug anterior deben actualizarse manualmente
 

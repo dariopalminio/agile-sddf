@@ -135,7 +135,7 @@ slug: <nombre-del-directorio-del-proyecto-story-map | story-map si es el primer 
 title: "[primer # heading del documento generado]"
 date: [YYYY-MM-DD]
 status: BACKLOG
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: null
 related:
   - <slug de project.md o project-plan.md relacionado (si existe)>
@@ -147,7 +147,7 @@ related:
 Reglas de derivación:
 - `title`: extrae el primer `#` heading del documento
 - `date`: fecha actual en formato YYYY-MM-DD
-- `substatus`: `IN‑PROGRESS` por defecto; `DONE` si el documento está completado
+- `substatus`: `IN-PROGRESS` por defecto; `DONE` si el documento está completado
 
 ## Salida
 

@@ -12,7 +12,7 @@ parent: null
 
 > Registro de decisiones transversales de arquitectura y diseño del proyecto.
 > Complementa los otros dos niveles de registro de decisiones del framework:
-> decisiones de **historia** viven en el `design.md` de la historia (`docs/specs/stories/STORY-NNN/design.md`),
+> decisiones de **historia** viven en el `design.md` de la historia (`docs/specs/03-stories/STORY-NNN-<slug>/design.md`),
 > y decisiones de **cambio OpenSpec** en el `design.md` del change (`openspec/changes/`).
 
 ---

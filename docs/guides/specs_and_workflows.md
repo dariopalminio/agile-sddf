@@ -38,8 +38,8 @@ Un status representa una etapa dentro de un flujo de trabajo (workflow) de un wo
 
 Un subestado representa el nivel de avance interno de un work item dentro de un estado del workflow, indicando si está pendiente de iniciarse, en ejecución activa o ya completado y listo para avanzar al siguiente estado.
 
-- **TODO**: El  work item está pendiente de iniciar en el status. Puede estar esperando capacidad (WIP limit). Cuando un desarrollador/IA toma el ítem, pasa a IN‑PROGRESS.
-- **IN‑PROGRESS**: Alguien está trabajando activamente en esta etapa (ej. redactando la especificación, planificando, implementando) sobre el work item. Al completar la tarea de la etapa (ej. finishing spec.md), pasa a DONE.
+- **TODO**: El  work item está pendiente de iniciar en el status. Puede estar esperando capacidad (WIP limit). Cuando un desarrollador/IA toma el ítem, pasa a IN-PROGRESS.
+- **IN-PROGRESS**: Alguien está trabajando activamente en esta etapa (ej. redactando la especificación, planificando, implementando) sobre el work item. Al completar la tarea de la etapa (ej. finishing spec.md), pasa a DONE.
 - **DONE**: El trabajo de esta etapa (status) ha terminado. El work item está listo para pasar a la siguiente etapa del flujo (listo para pasar al siguiente status). 
 - **BLOCKED**:  BLOCKED no retrocede. El work item no hizo nada malo; no puede evaluarse por un impedimento. El work item está bloqueado y no puede avanzar hasta que se resuelva el bloqueo. Generalmente el bloqueo consta de esperar una acción de un humano o usuario.
 

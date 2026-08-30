@@ -96,7 +96,7 @@ Para cada sección del template (en orden):
 **Categoría del Software**: [derivado del stack — Aplicación Frontend / Servicio Backend / CLI / etc.]
 **Título del Documento**: Especificación de Requisitos
 **Versión**: 1.0
-**Estado**: IN‑PROGRESS
+**Estado**: IN-PROGRESS
 **Fecha**: [fecha actual YYYY-MM-DD]
 **Generado por**: reverse-engineer-synthesizer
 ```

@@ -139,7 +139,7 @@ Leer `$SPECS_BASE/specs/templates/epic-template.md` (fuente de verdad del proyec
 - Si el archivo **existe**: extraer dinámicamente:
   - **Secciones obligatorias**: líneas que empiecen con `##` y contengan `<!-- sección obligatoria`
   - **Secciones opcionales**: líneas que empiecen con `##` y contengan `<!-- sección opcional`
-  - **Campos de frontmatter obligatorios**: `type`, `id`, `slug`, `title`, `status`, `substatus`, `created`, `updated` (contrato canónico que valida `epic-format-validation`; `alwaysApply`, `parent` y `related` son opcionales o nullables)
+  - **Campos de frontmatter obligatorios**: las claves YAML del bloque `---` del template, **menos** la allowlist de opcionales `alwaysApply`, `parent` y `related` (claves nullables o de configuración del documento, no del contrato). Es la misma derivación que aplica el gate `epic-format-validation` (Paso 3b): no hardcodear la lista aquí, para que una clave nueva en el template no desincronice productor y gate. Con el template actual resulta: `type`, `id`, `slug`, `title`, `status`, `substatus`, `created`, `updated`
 
 Guardar la lista de secciones para guiar los Pasos 3, 4 y 5.
 
@@ -155,7 +155,7 @@ Preguntar los campos del frontmatter con valores sugeridos. Para cada campo, mos
 | `id` | — | El `EPIC-NN` resuelto en el Paso 1 |
 | `title` | "¿Cuál es el título de la épica?" | El nombre ingresado en el Paso 1 |
 | `status` | "¿Estado inicial?" | `DEFINE` — estado inicial de una épica recién creada (en etapa de definición de alcance) |
-| `substatus` | "¿Subestado? (IN‑PROGRESS / REVIEW / READY)" | `IN‑PROGRESS` |
+| `substatus` | "¿Subestado? (TODO / IN-PROGRESS / DONE / BLOCKED)" | `TODO` — una épica recién creada aún no está activa; activarla con `IN-PROGRESS` está sujeto al límite WIP=1 del nivel |
 | `created` | "¿Fecha de creación de la épica? (YYYY-MM-DD)" | Fecha de hoy |
 | `updated` | — | El mismo valor de `created` en la creación inicial |
 | `slug` | — | Derivado automáticamente del nombre (mostrar al usuario, permitir corrección) |

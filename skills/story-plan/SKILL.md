@@ -39,7 +39,7 @@ Orquesta el flujo completo de planning de una historia SDD ejecutando los sub-sk
 [story.md: SPECIFY/DONE]  ← precondición implícita (viene de story-specify)
      ↓
 story-plan   → Entry point: orquesta design → tasking → testcases → analyze  ← aquí
-     │   Al iniciar: story.md → PLAN/IN‑PROGRESS
+     │   Al iniciar: story.md → PLAN/IN-PROGRESS
      ↓
   story-design    → design.md
   story-tasking   → tasks.md            (omitido con --only-testcases)
@@ -59,7 +59,7 @@ analyze.md    → Check: coherencia entre los tres artefactos
 
 | Evento | status | substatus |
 |---|---|---|
-| Inicio del pipeline (siempre, sin condición) | `PLAN` | `IN‑PROGRESS` |
+| Inicio del pipeline (siempre, sin condición) | `PLAN` | `IN-PROGRESS` |
 | `story-analyze` finaliza sin ERROREs | `READY-FOR-IMPLEMENT` | `DONE` (gestionado por `story-analyze`) |
 
 La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, independientemente del estado previo de la historia. Esto permite re-ejecutar el pipeline sobre historias en cualquier estado.
@@ -115,7 +115,7 @@ En cualquier modo, `--skip-analyze` elimina el paso `story-analyze` del pipeline
 
 - El skill es un orquestador puro — no reimplementa lógica de los sub-skills
 - Fail-fast en story-design, story-tasking y story-testcases: un fallo en cualquiera de estos pasos detiene la cadena; `story-analyze` no es bloqueante
-- El estado `PLAN/IN‑PROGRESS` se aplica incondicionalmente al iniciar, sin importar el estado previo
+- El estado `PLAN/IN-PROGRESS` se aplica incondicionalmente al iniciar, sin importar el estado previo
 - La idempotencia de cada artefacto es responsabilidad del sub-skill correspondiente
 - `--only-tasks` y `--only-testcases` son mutuamente excluyentes
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
@@ -160,7 +160,7 @@ Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
 3. Si no se encuentra: notificar y detener (ver sección Manejo de errores)
 
-#### 1e. Actualizar frontmatter a PLAN/IN‑PROGRESS
+#### 1e. Actualizar frontmatter a PLAN/IN-PROGRESS
 
 Actualizar el frontmatter de `story.md` estableciendo `status: PLAN` / `substatus: IN-PROGRESS`.
 
@@ -172,7 +172,7 @@ Mostrar confirmación de inicio con el pipeline según el modo:
 ```
 🚀 Iniciando pipeline de planning para: <story_id>
    Directorio: <ruta_directorio>
-   Estado: PLAN/IN‑PROGRESS
+   Estado: PLAN/IN-PROGRESS
    Pasos: story-design → story-tasking → story-testcases → story-analyze
 ```
 
@@ -180,7 +180,7 @@ Mostrar confirmación de inicio con el pipeline según el modo:
 ```
 🚀 Iniciando pipeline de planning para: <story_id>  [--only-tasks]
    Directorio: <ruta_directorio>
-   Estado: PLAN/IN‑PROGRESS
+   Estado: PLAN/IN-PROGRESS
    Pasos: story-design → story-tasking → story-analyze
 ```
 
@@ -188,7 +188,7 @@ Mostrar confirmación de inicio con el pipeline según el modo:
 ```
 🚀 Iniciando pipeline de planning para: <story_id>  [--only-testcases]
    Directorio: <ruta_directorio>
-   Estado: PLAN/IN‑PROGRESS
+   Estado: PLAN/IN-PROGRESS
    Pasos: story-design → story-testcases → story-analyze
 ```
 
@@ -360,7 +360,7 @@ Estado de story.md: READY-FOR-IMPLEMENT/DONE ✓
 Se detectaron inconsistencias entre los artefactos. Revisa antes de implementar:
 → <ruta_directorio>/analyze.md
 
-Estado de story.md: PLAN/IN‑PROGRESS (no actualizado — hay ERROREs pendientes)
+Estado de story.md: PLAN/IN-PROGRESS (no actualizado — hay ERROREs pendientes)
 
 Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés listo.
 ```
@@ -370,7 +370,7 @@ Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés l
 ✗ Pipeline interrumpido en: <nombre_del_paso>
 
 Los artefactos generados antes del fallo están disponibles en: <ruta_directorio>
-Estado de story.md: PLAN/IN‑PROGRESS (no completado)
+Estado de story.md: PLAN/IN-PROGRESS (no completado)
 Corrige el problema indicado arriba y re-ejecuta /story-plan <story_id>.
 
 Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los artefactos existentes.

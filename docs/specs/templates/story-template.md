@@ -6,7 +6,7 @@ kind: <feat | fix | chore | hotfix>   # tipo de historia; determina el prefijo d
 slug: <nombre-del-directorio-de-historia>
 title: "<primer # heading del documento>"
 status: <ESTADO_INICIAL>
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: <nombre-del-directorio-de-la-epica>
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>

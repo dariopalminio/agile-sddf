@@ -5,7 +5,7 @@ id: <PROJ-NN>
 slug: < nombre-del-directorio-del-proyecto-project-intent | project-intent si es el primer documento >
 title: "<primer # heading del documento>"
 status: BEGINNING
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: null
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>

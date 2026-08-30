@@ -154,3 +154,29 @@ Tres cosas que conviene que sepas:
 Salí del alcance aprobado en dos puntos, ambos del mismo defecto. Los mensajes literales de los generadores decían "No se encontraron features" / "saltada (sin features)", y los evals aseveran sobre ese texto — dejarlos habría hecho que eval y skill se contradijeran, así que migré el vocabulario en los dos SKILL.md. Y project-pm.agent.md tenía el mismo acoplamiento a .claude/skills/... que project-architect; lo corregí junto con su orquestador project-begin. Si prefieres esos dos cambios aparte, se revierten limpio.
 Los evals son 21, no 34. El implement-report de STORY-086 dice 34; el conteo real en todo el repo es 21. Probablemente contaba skills, no archivos.
 Las 10 épicas con date: siguen dando REFINAR por esa clave, además de los 17 sin "Flujos Críticos". Son carencias de contenido preexistentes en artefactos históricos, no del gate — migrarlas es un cambio de datos aparte. Dime si quieres que lo haga.
+
+## Reporte de Implementación: plan-05-findings-and-remediation-plan
+
+### Hallazgos (14) y qué se hizo
+
+Corregidos — F-0 a F-11, el alcance que aprobaste:
+
+Hallazgo	Impacto real
+F-1	IN‑PROGRESS con guion no-rompible U+2011 en los 5 templates centrales, los 5 seeds y ~35 skills	Todo artefacto generado desde template nacía invisible al control WIP=1. 156 reemplazos en 48 archivos
+F-3	epic-generate-all-stories creaba historias en READY-FOR-IMPLEMENT y epic-generate-stories en SPECIFY	La variante batch nacía saltándose los gates SPECIFY y PLAN
+F-2	epic-creation ofrecía substatus: REVIEW / READY, que no existen	Origen de los 62 substatus: READY del corpus. Default ahora TODO
+F-4	El README de npm seguía mostrando projects/ releases/ stories/	En la versión 2.0.0 cuyo breaking change es ese renombre
+F-5..F-11	type: release en 6 planes, ruta muerta en adr/README.md, 6 parent sin resolver, seed↔central divergentes, ## Backlog de Features, evals faltantes	—
+Documentados, no aplicados: F-12 (RELEASED en 13 épicas, deuda que ADR-0003 acepta), F-13 (vocabulario "feature" en prosa) y F-14, nuevo: PLANNING no es un estado canónico (state-machine.md define PLAN, y a nivel proyecto status ni se usa), pero aparece en 13 puntos vivos — incluido story-plan/README.md, que contradice a su propio SKILL.md. Es el mismo tipo de desincronización que F-3; queda a tu decisión.
+
+### Verificación ejecutada
+
+* Gate sobre las 19 épicas reales: 2 APROBADO / 17 REFINAR, idéntico a la baseline. Ningún REFINAR menciona ya Features, Versión, Título ni Fecha.
+* Productor→gate cerrado: generé una épica desde el project-plan.md vivo (los 9 bloques parsean) y pasa el gate APROBADO sin retoques. Las tres formas de encabezado funcionan: 01 — Nombre, 1: Nombre y Walking Skeleton: MVP → EPIC-00.
+* 0 U+2011 en skills/, agents/, docs/specs/templates/; 0 links rotos en docs/index.md; 22 evals parsean; npm pack con 181 archivos y 0 entradas skills/release; WIP=1 respetado en los tres niveles; los 66 archivos tocados en UTF-8 sin BOM.
+
+### Dos correcciones al implement-report previo
+
+Los evals son 21 (ahora 22), no 34. Y el diff entre epic-template.md seed y central era al revés de como lo describía plan-04: el central tenía STORY-[INDEX] y el seed no — y como sddf-init copia seed→central, un proyecto nuevo recibía un contrato distinto del que este repo usaba.
+
+No hice commit. Los cambios están sin stagear en 66 archivos; plan-05-findings-and-remediation-plan.md y skills/epic-from-project-plan/evals/ son nuevos.

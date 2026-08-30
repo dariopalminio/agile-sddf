@@ -31,7 +31,7 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 ## Configuración 0b — Resolver o crear directorio del proyecto (`PROJ_DIR`)
 
 1. Listar todos los subdirectorios de `$SPECS_BASE/specs/01-projects/`.
-2. Para cada subdirectorio, leer `project-intent.md` y verificar si `substatus` es `DONE` o `IN‑PROGRESS`.
+2. Para cada subdirectorio, leer `project-intent.md` y verificar si `substatus` es `DONE` o `IN-PROGRESS`.
 3. Si se encuentra exactamente uno → usar ese directorio como `$PROJ_DIR`.
 4. Si se encuentran varios → mostrar la lista y pedir al usuario que elija.
 5. Si no se encuentra ninguno → **derivar el ID desde el nombre del repositorio**:
@@ -77,7 +77,7 @@ Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-template.md`.
 Si `--update` está activo:
 1. Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` si existe
 2. Verifica el campo `substatus`:
-   - `IN‑PROGRESS`: continúa en modo incremental
+   - `IN-PROGRESS`: continúa en modo incremental
    - `DONE`: informa al usuario que el documento ya está completo y pide confirmación antes de continuar
    - No existe: ejecuta en modo normal (primera ejecución)
 

@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-type: release
+type: plan
 id: plan-06-configure-story-verify-with-config-file
 slug: plan-06-configure-story-verify-with-config-file
 title: "Plan 06: Configurar story-verify con sddf.config.yaml"

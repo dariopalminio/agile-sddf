@@ -54,7 +54,7 @@ Lee:
 **Paso 2: Validar el Estado del documento vigente de Begin Intention**
 
 Si `$SPECS_BASE/specs/01-projects/project-intent.md` existe, verifica el campo `substatus` del documento vigente derivado de `project-intent-template.md`:
-- Si es `IN‑PROGRESS`: interpreta que estás retomando un documento en progreso. Lee el documento existente, identifica secciones incompletas y continúa solo con esas secciones.
+- Si es `IN-PROGRESS`: interpreta que estás retomando un documento en progreso. Lee el documento existente, identifica secciones incompletas y continúa solo con esas secciones.
 - Si es `DONE`: pregunta al usuario con `AskUserQuestion` si desea sobrescribir el documento completo antes de continuar.
 - Si el archivo no existe: continúa como primera ejecución.
 
@@ -66,7 +66,7 @@ Para cada sección del template:
 3. **Haz preguntas solo** para secciones que necesitan refinamiento o información nueva
 4. **Agrupa** en máx 3-4 por ronda en orden de aparición en el template
 5. **Usa `AskUserQuestion`** para preguntas con opciones cuando aplique
-6. Si estás retomando un documento en substatus `IN‑PROGRESS`, **no vuelvas a preguntar** por secciones ya completas ni las sobrescribas
+6. Si estás retomando un documento en substatus `IN-PROGRESS`, **no vuelvas a preguntar** por secciones ya completas ni las sobrescribas
 
 **Paso 4: Completar con pericia de PM**
 
@@ -80,7 +80,7 @@ Para cada sección del template:
 2. Conserva todos los headers y el orden de secciones del template
 3. **No incluyas** los comentarios HTML `<!-- -->` en el output
 4. Incluye en metadatos:
-   - `substatus: IN‑PROGRESS`
+   - `substatus: IN-PROGRESS`
    - `date: [fecha actual en formato YYYY-MM-DD]`
 5. Confirma al usuario la ruta del archivo y el siguiente paso (`/project-discovery`).
 
@@ -105,11 +105,11 @@ Lee:
 
 Verifica primero `$SPECS_BASE/specs/01-projects/project-intent.md`:
 - Si no existe: informa que primero debe ejecutarse `/project-begin` y detén la ejecución.
-- Si existe con **`substatus: IN‑PROGRESS`**: informa que Begin Intention aún no está completo y detén la ejecución.
+- Si existe con **`substatus: IN-PROGRESS`**: informa que Begin Intention aún no está completo y detén la ejecución.
 - Si existe con **`substatus: DONE`**: continúa.
 
 Si `$SPECS_BASE/specs/01-projects/project.md` existe, verifica su campo `substatus`:
-- Si es `IN‑PROGRESS`: interpreta que estás retomando el requirement spec. Lee el documento existente y continúa solo con las secciones incompletas.
+- Si es `IN-PROGRESS`: interpreta que estás retomando el requirement spec. Lee el documento existente y continúa solo con las secciones incompletas.
 - Si es `DONE`: pregunta al usuario con `AskUserQuestion` si desea sobrescribirlo antes de continuar.
 - Si no existe: continúa como primera ejecución.
 
@@ -130,7 +130,7 @@ Para cada sección objetivo de `project-template.md`:
 3. **Haz preguntas solo** para secciones que necesitan información nueva, validación o mayor detalle
 4. **Agrupa** en máx 3-4 por ronda
 5. **Usa `AskUserQuestion`** con opciones cuando aplique, o preguntas abiertas para respuestas libres
-6. Si estás retomando un `requirement-spec.md` en `IN‑PROGRESS`, pregunta únicamente por las secciones incompletas
+6. Si estás retomando un `requirement-spec.md` en `IN-PROGRESS`, pregunta únicamente por las secciones incompletas
 
 **Paso 5: Completar con pericia de PM**
 
@@ -144,7 +144,7 @@ Para cada sección objetivo de `project-template.md`:
 2. Conserva todos los headers y el orden de secciones de `project-template.md`
 3. **No incluyas** los comentarios HTML `<!-- -->` en el output
 4. Incluye metadatos:
-   - `substatus: IN‑PROGRESS`
+   - `substatus: IN-PROGRESS`
    - `date: [fecha actual en formato YYYY-MM-DD]`
 5. Confirma al usuario la ruta del archivo y el siguiente paso (`/project-planning`).
 

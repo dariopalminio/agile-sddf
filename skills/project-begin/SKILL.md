@@ -93,21 +93,21 @@ Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecuc
 Antes de iniciar la entrevista, determinar el directorio del proyecto activo:
 
 1. Listar todos los subdirectorios de `$SPECS_BASE/specs/01-projects/`.
-2. Para cada subdirectorio encontrado, leer `project-intent.md` y verificar si `substatus` es `IN‑PROGRESS`.
-3. Si se encuentra exactamente uno con `substatus: IN‑PROGRESS` → usar ese directorio como `$PROJ_DIR`. Ejemplo: `PROJ-01-mi-proyecto`.
+2. Para cada subdirectorio encontrado, leer `project-intent.md` y verificar si `substatus` es `IN-PROGRESS`.
+3. Si se encuentra exactamente uno con `substatus: IN-PROGRESS` → usar ese directorio como `$PROJ_DIR`. Ejemplo: `PROJ-01-mi-proyecto`.
 4. Si no se encuentra ninguno → `$PROJ_DIR` se determinará durante la entrevista (ver Paso 4): el `project-pm` derivará el ID desde el título del proyecto (formato `PROJ-NN-nombre-kebab`) y lo confirmará con el usuario antes de crear el directorio.
-5. Si se encuentran varios con `substatus: IN‑PROGRESS` → mostrar la lista y pedir al usuario que elija uno antes de continuar.
+5. Si se encuentran varios con `substatus: IN-PROGRESS` → mostrar la lista y pedir al usuario que elija uno antes de continuar.
 
 La ruta completa del proyecto será: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`
 
 ### Paso 1 — Verificar WIP=1
 
-Antes de iniciar, escanea `$SPECS_BASE/specs/01-projects/` y detecta si existe algún subdirectorio con `project-intent.md` que tenga `substatus: IN‑PROGRESS`.
+Antes de iniciar, escanea `$SPECS_BASE/specs/01-projects/` y detecta si existe algún subdirectorio con `project-intent.md` que tenga `substatus: IN-PROGRESS`.
 
-- Si **no** existe ningun documento en substatus `IN‑PROGRESS`: continua al Paso 2.
-- Si **existe** al menos uno en substatus `IN‑PROGRESS`: notifica el conflicto WIP=1 e indica que ya hay un proyecto activo. Muestra cual documento esta en substatus `IN‑PROGRESS` y ofrece solo estas opciones:
+- Si **no** existe ningun documento en substatus `IN-PROGRESS`: continua al Paso 2.
+- Si **existe** al menos uno en substatus `IN-PROGRESS`: notifica el conflicto WIP=1 e indica que ya hay un proyecto activo. Muestra cual documento esta en substatus `IN-PROGRESS` y ofrece solo estas opciones:
   - `Sobrescribir`: iniciar de cero y continuar con el flujo normal.
-  - `Retomar`: continuar el proyecto activo aplicando flujo de retoma sobre el documento en substatus `IN‑PROGRESS`.
+  - `Retomar`: continuar el proyecto activo aplicando flujo de retoma sobre el documento en substatus `IN-PROGRESS`.
 
 Si el usuario elige retomar, activa el flujo de retoma del Paso 4 sin reiniciar desde cero.
 
@@ -116,7 +116,7 @@ Si el usuario elige retomar, activa el flujo de retoma del Paso 4 sin reiniciar 
 Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` (si existe) y detecta el valor de `**Estado**:`.
 
 - Si el archivo **no existe**: continua al Paso 3 (primera ejecucion).
-- Si existe con `substatus: IN‑PROGRESS`: activa flujo de retoma y continua al Paso 3.
+- Si existe con `substatus: IN-PROGRESS`: activa flujo de retoma y continua al Paso 3.
 - Si existe con `substatus: DONE`: informa que el documento ya esta completo y pide confirmacion antes de sobrescribir.
   - Si el usuario confirma sobrescribir: continua al Paso 3.
   - Si el usuario cancela: deten la ejecucion sin modificar el archivo.
@@ -143,7 +143,7 @@ Invoca al agente `project-pm` con la siguiente instrucción, **sustituyendo `$SP
 
 > Lee el template en `$TEMPLATE_PATH`. Extrae las secciones del template en runtime.
 >
-> Si estas en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
+> Si estas en flujo de retoma (documento existente en `Estado: IN-PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
 > Conduce la entrevista de intencion de proyecto con el usuario en dos fases dentro de la misma sesion:
 >

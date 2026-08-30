@@ -7,7 +7,7 @@ slug: STORY-077-mejorar-historia-desde-reporte
 title: "story-improve: Mejora automática de historia desde reporte FINVEST"
 status: IMPLEMENT
 substatus: DONE
-parent: <nombre-del-release-padre>
+parent: EPIC-13-quality-gates-con-dod-en-story-workflow
 created: 2026-05-17
 updated: 2026-05-17
 related: []

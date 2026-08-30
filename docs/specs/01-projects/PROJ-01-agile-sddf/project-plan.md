@@ -5,7 +5,7 @@ slug: project-plan
 title: "Project Plan"
 date: 2026-04-20
 status: IN-PROGRESS
-substatus: IN‑PROGRESS
+substatus: IN-PROGRESS
 parent: null
 related:
   - project-requirement-spec
@@ -21,7 +21,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 ---
 
-## Backlog de Features
+## Backlog de Historias
 
 - [ ] **STORY-001: Captura de Intención Inicial** — El sistema conduce una entrevista guiada para capturar nombre, problema, visión, criterios de éxito y restricciones del proyecto, escribiendo el resultado en `project-intent.md`. _(deps: —)_
 - [ ] **STORY-002: Extracción Dinámica de Templates** — Los agentes leen los headers `##` y comentarios `<!-- -->` de los templates en runtime para derivar preguntas y completar secciones, sin lógica hardcodeada. _(deps: —)_
@@ -30,7 +30,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] **STORY-005: User Story Mapping Interactivo** — El sistema conduce una sesión colaborativa para identificar personas, construir el backbone de actividades, definir el walking skeleton y trazar release slices, escribiendo el resultado en `story-map.md`. _(deps: STORY-003)_
 - [ ] **STORY-006: Creación de Historias de Usuario** — El sistema genera historias completas (en fase SPECIFY de story) en formato Como/Quiero/Para con criterios de aceptación Gherkin (mínimo 1 escenario principal y 1 alternativo), guardando el resultado en `story-{slug}.md`. _(deps: —)_
 - [ ] **STORY-007: Evaluación de Calidad con Rúbrica FINVEST** — El sistema evalúa historias de usuario (en fase SPECIFY de story) aplicando la rúbrica FINVEST (Formato + INVEST) con scores Likert 1-5 por dimensión y produce una decisión APROBADA / REFINAR / RECHAZAR / DIVIDIR. _(deps: STORY-006)_
-- [ ] **STORY-008: Control WIP=1 en el Pipeline** — El sistema detecta documentos con `Estado: IN‑PROGRESS` al inicio de cada pipeline y ofrece exactamente dos opciones al usuario: Sobrescribir o Retomar, sin permitir proyectos activos simultáneos. _(deps: STORY-001)_
+- [ ] **STORY-008: Control WIP=1 en el Pipeline** — El sistema detecta documentos con `Estado: IN-PROGRESS` al inicio de cada pipeline y ofrece exactamente dos opciones al usuario: Sobrescribir o Retomar, sin permitir proyectos activos simultáneos. _(deps: STORY-001)_
 - [ ] **STORY-009: Retoma de Proyecto Interrumpido** — El sistema detecta automáticamente el campo `Estado` de los documentos existentes y reanuda el trabajo desde la sección incompleta sin re-preguntar secciones ya completadas. _(deps: STORY-008)_
 - [ ] **STORY-010: Gates de Revisión Humana entre Fases** — El sistema presenta un resumen del documento generado y solicita confirmación del usuario antes de avanzar a la siguiente fase; el documento avanza a `Estado: Ready` solo tras confirmación. _(deps: STORY-003, STORY-004)_
 - [ ] **STORY-011: Integración Story Map en Planning** — El sistema detecta si existe `story-map.md` durante la fase de Planning y lo usa como guía estructural para agrupar features en releases respetando el backbone. _(deps: STORY-004, STORY-005)_
@@ -145,7 +145,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 **Criterios de éxito:**
 - [ ] El pipeline ProjectSpecFactory produce los 3 documentos canónicos (`project-intent.md`, `requirement-spec.md`, `project-plan.md`) en una sesión continua sin errores, con `Estado: Ready` en cada documento al finalizar.
-- [ ] El control WIP=1 impide la creación de múltiples proyectos activos sin confirmación explícita; ante un documento con `Estado: IN‑PROGRESS`, el sistema presenta exactamente las opciones "Sobrescribir" y "Retomar".
+- [ ] El control WIP=1 impide la creación de múltiples proyectos activos sin confirmación explícita; ante un documento con `Estado: IN-PROGRESS`, el sistema presenta exactamente las opciones "Sobrescribir" y "Retomar".
 
 ---
 
@@ -222,7 +222,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 
 ### Épica 06 — Release & Story Generator & Soporte Atlassian Rovo
 
-**Estado:** IN‑PROGRESS | **Fecha:** 2026-04-20
+**Estado:** IN-PROGRESS | **Fecha:** 2026-04-20
 
 **Objetivo:** Automatizar la creación de los dos artefactos clave posteriores al planning: el documento de release (a partir de `project-plan.md`) y las historias de usuario derivadas (a partir del release generado), cerrando el ciclo desde el plan hasta el backlog de historias listo para desarrollo.
 
