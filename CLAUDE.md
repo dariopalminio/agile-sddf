@@ -24,14 +24,16 @@ Framework multiagente minimalista (solo Markdown + scripts Node.js de instalaci�
 ```
 agile-sddf/
 ├── docs/
-│   ├── specs/{projects,releases,stories,templates}/  # artefactos generados por los skills SDD
-│   ├── policies/                                      # constitution.md, definition-of-done-story.md
-│   ├── adr/                                           # decisiones de arquitectura (ADR-NNNN, inmutables)
-│   └── knowledge/{guides,how-to,runbooks}/            # guías de referencia (ver docs/index.md)
-├── skills/                                            # fuente única de verdad: skills SDD (uno por carpeta)
-├── agents/                                            # fuente única de verdad: subagentes (*.agent.md)
-├── scripts/                                           # cli.js, install.js, postinstall.js
-└── sddf.config.yaml                                   # skills activos por fase del pipeline TDD de este repo
+│   ├── index.md                                            # punto de entrada wiki (wikilinks [[slug]])
+│   ├── specs/{01-projects,02-epics,03-stories,templates}/  # artefactos generados por los skills SDD
+│   ├── policies/                                           # constitution.md, definition-of-done-story.md
+│   ├── adr/                                                # decisiones de arquitectura (ADR-NNNN, inmutables)
+│   ├── guides/                                             # guías de referencia (ver docs/index.md)
+│   └── runbooks/                                           # procedimientos operativos (deploy npm, docker)
+├── skills/                                                 # fuente única de verdad: skills SDD (uno por carpeta)
+├── agents/                                                 # fuente única de verdad: subagentes (*.agent.md)
+├── scripts/                                                # cli.js, install.js, postinstall.js
+└── sddf.config.yaml                                        # skills activos por fase del pipeline TDD de este repo
 ```
 
 **Plataformas soportadas:** Claude Code, OpenCode y GitHub Copilot. El instalador copia desde `skills/` y `agents/` (raíz, fuente única) al destino elegido (`.claude/`, `.agents/`, `.github/`); soporte a otros CLI/LLMs se evalúa en releases futuros.

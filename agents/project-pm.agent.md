@@ -48,7 +48,7 @@ Este agente es un **subagente interactivo**: usa `AskUserQuestion` para entrevis
 **Paso 1: Leer el contexto**
 
 Lee:
-1. `.claude/skills/project-begin/assets/project-intent-template.md` — estructura a completar
+1. `$TEMPLATE_PATH` — el template `project-intent-template.md` ya resuelto por el skill orquestador; es la estructura a completar
 2. `$SPECS_BASE/specs/01-projects/project-intent.md` — solo si existe, para retoma o sobrescritura controlada
 
 **Paso 2: Validar el Estado del documento vigente de Begin Intention**
@@ -97,7 +97,7 @@ Para cada sección del template:
 
 Lee:
 1. `$SPECS_BASE/specs/01-projects/project-intent.md` — input principal de la fase
-2. `.claude/skills/project-begin/assets/project-intent-template.md` — referencia para entender la estructura y el nivel de refinamiento esperado del contexto de negocio
+2. `$TEMPLATE_PATH` — el template `project-intent-template.md` ya resuelto por el skill orquestador; referencia para entender la estructura y el nivel de refinamiento esperado del contexto de negocio
 3. `../skills/project-discovery/assets/project-template.md` — estructura objetivo a completar
 4. `$SPECS_BASE/specs/01-projects/project.md` — solo si existe, para retoma o sobrescritura controlada
 

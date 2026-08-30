@@ -31,15 +31,18 @@
 ### Fase 2 — Frontmatter
 | Campo | Valor ingresado |
 |---|---|
+| type | `epic` (fijo) |
+| id | `EPIC-02` (del Paso 1) |
 | title | "Sistema de pagos" (aceptado) |
-| date | 2026-05-15 (usuario modifica la fecha sugerida) |
 | status | BACKLOG (default aceptado) |
 | substatus | IN‑PROGRESS (default aceptado) |
+| created | 2026-05-15 (usuario modifica la fecha sugerida) |
+| updated | 2026-05-15 (igual a `created` en la creación inicial) |
 | slug | `sistema-de-pagos` (confirmado) |
 
 ### Fase 3 — Secciones obligatorias
 - **Descripción:** "Integra la pasarela de pagos para permitir que usuarios realicen compras con tarjeta de crédito/débito. Resuelve la falta de monetización directa en la plataforma."
-- **Features:**
+- **Historias:**
   - `STORY-001 - Pago con tarjeta: Procesar pagos con tarjeta Visa/Mastercard vía Stripe`
   - `STORY-002 - Historial de transacciones: Ver pagos realizados con fecha, monto y estado`
   - `STORY-003 - Reembolsos: Solicitar devolución de pago dentro de 30 días`

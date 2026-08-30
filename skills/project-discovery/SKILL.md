@@ -39,7 +39,7 @@ de usuarios con el agente `project-pm` y la especificación de requisitos con
 ## Entrada
 
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` — input principal (precondición: `substatus: DONE`)
-- `assets/project-template.md` — fuente de verdad estructural (solo lectura)
+- `$SPECS_BASE/specs/templates/project-template.md` — fuente de verdad estructural (solo lectura); si no existe, el seed `assets/project-template.md` del skill
 - `$SPECS_BASE/specs/01-projects/` — directorio para resolver el proyecto activo
 
 ## Parámetros
@@ -50,13 +50,13 @@ de usuarios con el agente `project-pm` y la especificación de requisitos con
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` debe existir con `substatus: DONE`
-- `assets/project-template.md` debe existir
+- `project-template.md` debe existir, sea el central en `$SPECS_BASE/specs/templates/` o el seed `assets/project-template.md`
 
 ## Dependencias
 
 - Skills: [`skill-preflight`]
 - Agentes: [`project-pm`, `project-architect`, `project-ux`]
-- Archivos: [`assets/project-template.md`]
+- Archivos: [`$SPECS_BASE/specs/templates/project-template.md`, `assets/project-template.md` (seed)]
 
 ## Modos de ejecución
 
@@ -138,6 +138,8 @@ Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-template.md` (f
 
 - Si alguno de los dos **existe**: continua.
 
+Guardar la ruta del template efectivamente resuelto (central o seed) como `$TEMPLATE_PATH`: es la que se le pasa al `project-architect` en el Paso 5. El agente no debe reconstruir la ruta por su cuenta — hacerlo lo acoplaría a una plataforma de instalación concreta (`.claude/`, `.agents/` o `.github/`).
+
 ### Paso 4 — Fase Discovery: delegar al project-pm
 
 Invoca al agente `project-pm` con la siguiente instrucción:
@@ -153,9 +155,11 @@ Invoca al agente `project-pm` con la siguiente instrucción:
 
 ### Paso 5 — Fase SPECIFY: delegar al project-architect
 
-Una vez completado el discovery, invoca al agente `project-architect` con la siguiente instrucción:
+Una vez completado el discovery, invoca al agente `project-architect` con la siguiente instrucción, **sustituyendo `$SPECS_BASE`, `$PROJ_DIR` y `$TEMPLATE_PATH` por los valores ya resueltos** (el agente no los resuelve por su cuenta):
 
-> Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` y el resumen del discovery de la fase anterior. Lee tambien el template `assets/project-template.md`.
+> Trabajás sobre el proyecto activo `$PROJ_DIR` en `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`.
+>
+> Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` y el resumen del discovery de la fase anterior. Lee tambien el template `$TEMPLATE_PATH`.
 >
 > Si estas en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >

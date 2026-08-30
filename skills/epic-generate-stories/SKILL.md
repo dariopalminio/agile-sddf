@@ -330,7 +330,7 @@ Si alguna feature no pudo procesarse por formato inesperado, listarla como:
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
 | Épica no encontrado (Formato A, sin coincidencias) | `No se encontró el directorio de la épica: <término>. Asegúrate de que el directorio existe en $SPECS_BASE/specs/02-epics/ y vuelve a intentarlo.` | Detener sin generar archivos |
 | Épica no encontrado (Formato B, ruta inválida) | `No se encontró epic.md en: <ruta>. Asegúrate de que la ruta es correcta y vuelve a intentarlo.` | Detener sin generar archivos |
-| Sección `## Historias` vacía o ausente | `No se encontraron features en el archivo de épica indicada.` | Mostrar orientación y detener |
+| Sección `## Historias` vacía o ausente | `No se encontraron historias en el archivo de épica indicada.` | Mostrar orientación y detener |
 | Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/story-template.md.` | Detener la ejecución |
 
 ---

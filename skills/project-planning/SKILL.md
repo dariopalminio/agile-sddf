@@ -42,7 +42,7 @@ en épicas, produciendo `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` — documento de especificación de requisitos (precondición: `substatus: DONE`)
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` — contexto adicional del proyecto
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md` — guía estructural opcional para el plan
-- `assets/project-plan-template.md` — fuente de verdad estructural (solo lectura)
+- `$SPECS_BASE/specs/templates/project-plan-template.md` — fuente de verdad estructural (solo lectura); si no existe, el seed `assets/project-plan-template.md` del skill
 
 ## Parámetros
 
@@ -52,13 +52,13 @@ en épicas, produciendo `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` debe existir con `substatus: DONE`
-- `assets/project-plan-template.md` debe existir
+- `project-plan-template.md` debe existir, sea el central en `$SPECS_BASE/specs/templates/` o el seed `assets/project-plan-template.md`
 
 ## Dependencias
 
 - Skills: [`skill-preflight`, `project-story-mapping`]
 - Agentes: [`project-architect`]
-- Archivos: [`assets/project-plan-template.md`]
+- Archivos: [`$SPECS_BASE/specs/templates/project-plan-template.md`, `assets/project-plan-template.md` (seed)]
 
 ## Modos de ejecución
 
@@ -69,7 +69,7 @@ en épicas, produciendo `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md
 ## Restricciones / Reglas
 
 - **Precondición de entrada obligatoria:** `project.md` con `substatus: DONE` es requerido; cualquier otro estado detiene la ejecución.
-- **Template de solo lectura:** `assets/project-plan-template.md` nunca se modifica ni se usa como ruta de salida.
+- **Template de solo lectura:** el `project-plan-template.md` resuelto (`$TEMPLATE_PATH`) nunca se modifica ni se usa como ruta de salida.
 - **Extracción dinámica:** la estructura del output se deriva en runtime del template; si el template cambia, el output se actualiza automáticamente.
 - **Story map como guía, no como restricción:** si `story-map.md` existe, el `project-architect` lo usa como referencia estructural pero no está obligado a replicarlo exactamente.
 - **Sin avance automático:** el skill no invoca el siguiente paso del pipeline — el usuario decide cuándo continuar.
@@ -141,6 +141,8 @@ Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-plan-template.m
 
 - Si alguno de los dos **existe**: continua.
 
+Guardar la ruta del template efectivamente resuelto (central o seed) como `$TEMPLATE_PATH`: es la que se le pasa al `project-architect` en el Paso 5. El agente no debe reconstruir la ruta por su cuenta — hacerlo lo acoplaría a una plataforma de instalación concreta (`.claude/`, `.agents/` o `.github/`).
+
 ### Paso 4 — Story Mapping (fase previa opcional)
 
 Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md`:
@@ -165,9 +167,11 @@ Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md`:
 
 ### Paso 5 — Delegar al project-architect
 
-Invoca al agente `project-architect` con la siguiente instrucción:
+Invoca al agente `project-architect` con la siguiente instrucción, **sustituyendo `$SPECS_BASE`, `$PROJ_DIR` y `$TEMPLATE_PATH` por los valores ya resueltos** (el agente no los resuelve por su cuenta):
 
-> Lee los documentos `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` y `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`. Lee también el template `assets/project-plan-template.md`.
+> Trabajás sobre el proyecto activo `$PROJ_DIR` en `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`.
+>
+> Lee los documentos `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` y `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`. Lee también el template `$TEMPLATE_PATH` y deriva de él las secciones del output y el formato de los encabezados `### Épica ...`.
 >
 > Si estás en flujo de retoma (documento existente en `substatus: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continúa solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >

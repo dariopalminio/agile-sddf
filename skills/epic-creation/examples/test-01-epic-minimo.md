@@ -32,15 +32,18 @@
 ### Fase 2 — Frontmatter
 | Campo | Valor ingresado |
 |---|---|
+| type | `epic` (fijo) |
+| id | `EPIC-01` (del Paso 1) |
 | title | "Autenticación básica" (aceptado) |
-| date | 2026-05-01 (fecha de hoy, aceptada) |
 | status | BACKLOG (default aceptado) |
 | substatus | IN‑PROGRESS (default aceptado) |
+| created | 2026-05-01 (fecha de hoy, aceptada) |
+| updated | 2026-05-01 (igual a `created` en la creación inicial) |
 | slug | `autenticacion-basica` (confirmado) |
 
 ### Fase 3 — Secciones obligatorias
 - **Descripción:** "Implementa el sistema de login y registro de usuarios con email y contraseña. Resuelve la necesidad de autenticación segura como base del sistema."
-- **Features:**
+- **Historias:**
   - `STORY-001 - Registro de usuario: Permite crear cuenta con email y contraseña`
   - `STORY-002 - Login: Permite iniciar sesión con credenciales válidas`
   - `STORY-003 - Logout: Permite cerrar sesión activa`
@@ -65,13 +68,16 @@ docs/specs/02-epics/EPIC-01-autenticacion-basica/epic.md
 ```markdown
 ---
 alwaysApply: false
-type: spec
+type: epic
+id: EPIC-01
 slug: autenticacion-basica
 title: "Autenticación básica"
-date: 2026-05-01
 status: BACKLOG
 substatus: IN‑PROGRESS
 parent: null
+created: 2026-05-01
+updated: 2026-05-01
+related: []
 ---
 
 # Épica: Autenticación básica

@@ -63,22 +63,28 @@ Leer `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md`.
 
 Localizar la sección `## Propuesta de Épicas`. Solo analizar el contenido dentro de esa sección (ignorar todo lo que esté antes o pertenezca a otras secciones `##`).
 
-Dentro de esa sección, extraer cada bloque delimitado por un encabezado `### Épica NN — Nombre` y el siguiente separador `---` o el siguiente `###`. Para cada bloque, capturar:
+Dentro de esa sección, extraer cada bloque delimitado por un encabezado `### Épica ...` y el siguiente separador `---` o el siguiente `###`.
 
-- **ID**: el número de dos dígitos que sigue a `### Épica ` (ej. `00`, `01`, `06`)
-- **Nombre**: el texto después de ` — ` en la misma línea (ej. `Estructura Base y Mecanismo de Templates`)
-- substatus: el valor del campo `substatus:` si existe en el bloque (ej. `DONE`, `IN‑PROGRESS`); si no existe, usar `IN‑PROGRESS`
-- **Fecha**: el valor del campo `**Fecha:**` si existe; si no existe, usar la fecha actual en formato YYYY-MM-DD
+El separador entre el identificador y el nombre puede ser **em dash (`—`) o dos puntos (`:`)** — ambas formas están vigentes: el template genera `### Épica 1: [Nombre]` y los planes existentes usan `### Épica 01 — Nombre`. Aceptar las dos.
+
+Para cada bloque, capturar:
+
+- **ID**: el número que sigue a `### Épica `, normalizado a dos dígitos (`1` → `01`, `06` → `06`).
+  **Caso especial — bloque sin número:** el template define un bloque inicial `### Épica Walking Skeleton: MVP`. Ese bloque recibe el ID `00` (es el MVP, siempre la primera épica). Si además existe un bloque numerado `00`, aplicar la regla de duplicados de las Notas de implementación.
+- **Nombre**: el texto después del separador en la misma línea (ej. `Estructura Base y Mecanismo de Templates`). Para el bloque Walking Skeleton, el nombre es el texto después de los dos puntos (`MVP`).
+- **substatus**: el valor del campo `substatus:` si existe en el bloque (ej. `DONE`, `IN‑PROGRESS`); si no existe, usar `IN‑PROGRESS`
 - **Objetivo**: el párrafo que sigue a `**Objetivo:**`
-- **Features**: las líneas con formato `- [ ] STORY-NNN - Nombre` o `- [x] STORY-NNN - Nombre` dentro del bloque
+- **Historias**: las líneas con formato `- [ ] STORY-NNN - Nombre` o `- [x] STORY-NNN - Nombre` dentro del bloque
 - **Criterios de éxito**: las líneas que siguen a `**Criterios de éxito:**` dentro del bloque
+
+Las fechas del frontmatter (`created` / `updated`) no se extraen del plan: se usa la fecha actual en formato YYYY-MM-DD.
 
 **Si no se encuentra ningún bloque `### Épica`** dentro de la sección, mostrar el siguiente mensaje y terminar:
 
 ```
 No se encontraron épicas planificadas en project-plan.md
 
-Verifica que el archivo contiene una sección "## Propuesta de Épicas" con bloques "### Épica NN — Nombre".
+Verifica que el archivo contiene una sección "## Propuesta de Épicas" con bloques "### Épica NN — Nombre" o "### Épica N: Nombre".
 ```
 
 ---
@@ -146,17 +152,27 @@ Crear el directorio `$SPECS_BASE/specs/02-epics/EPIC-[ID]-[nombre-kebab]/` si no
 Completa el archivo de plantilla `$SPECS_BASE/specs/templates/epic-template.md` infiriendo la información. Siempre completa dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros en la estructura del template. Para cada sección del template, si el dato correspondiente no existe en el bloque de la épica, usar el placeholder `[Por completar]` para asegurar que la sección siempre está presente y el archivo tiene estructura completa.
 
 Al completar el frontmatter del archivo generado, usar:
+- `type: epic` y `id: EPIC-[ID]` — contrato canónico del nivel L2
 - `status: DEFINE` — estado inicial de toda épica generada desde un project-plan (en etapa de definición de alcance)
+- `created` y `updated` con la fecha actual en formato YYYY-MM-DD
+
+El frontmatter debe cubrir todas las claves obligatorias que valida `/epic-format-validation`: `type`, `id`, `slug`, `title`, `status`, `substatus`, `created`, `updated`. Derívalas del bloque frontmatter del template, no de este ejemplo.
 
 Por ejemplo:
 
 ```markdown
 ---
+alwaysApply: false
+type: epic
+id: EPIC-[ID]
+slug: <nombre-kebab del directorio de la épica>
 title: <"Nombre completo de la épica">
-date: <Fecha extraída o fecha actual con formato YYYY-MM-DD>
 status: DEFINE
 substatus: <substatus extraido o IN‑PROGRESS>
-parent: <nombre del archivo de requirement-spec del proyecto del cual se genera la épica, o N/A>
+parent: <PROJ-NN del proyecto del cual se genera la épica, o null>
+created: <fecha actual con formato YYYY-MM-DD>
+updated: <fecha actual con formato YYYY-MM-DD>
+related: []
 ---
 
 # Épica: [Nombre completo de la épica]

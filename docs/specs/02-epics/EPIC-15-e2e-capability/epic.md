@@ -22,8 +22,6 @@ Amplía las capacidades del framework SDDF con skills especializados de testing:
 
 - [x] STORY-084 - **Skill `impl-frontend-library-react-component`:** Skill que implementa componentes de librerías frontend existentes (Material UI, Shadcn, Ant Design, etc.) a partir de `story.md` y `design.md`; genera el componente React en TypeScript siguiendo las convenciones del proyecto y las props definidas en el diseño técnico
 - [x] STORY-085 - **Skill `test-react-testing-library`:** Skill que genera tests de componentes React con React Testing Library (RTL) a partir de `story.md` y `design.md`; cubre renderizado, interacciones de usuario, accesibilidad y casos de borde; los tests deben pasar con el componente generado por `impl-frontend-library-react-component`
-- [x] STORY-086 - **Skill `test-e2e-cypress-cucumber`:** Skill que genera tests E2E con Cypress y Cucumber/Gherkin derivados directamente de los escenarios Gherkin de `story.md`; genera archivos `.feature` y step definitions en TypeScript; los tests cubren el flujo completo del usuario en un entorno de navegador real
-- [x] STORY-087 - **Skill `test-e2e-playwright-cucumber`:** Skill que genera tests E2E con Playwright y Cucumber/Gherkin; alternativa a Cypress para proyectos que prefieran Playwright; misma trazabilidad Gherkin → test que STORY-086 pero con la API y configuración de Playwright
 
 ## Flujos Críticos / Smoke Tests
 

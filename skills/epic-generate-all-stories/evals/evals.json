@@ -1,13 +1,13 @@
 {
   "skill": "epic-generate-all-stories",
   "version": "1.0.0",
-  "description": "Casos de prueba para el skill epic-generate-all-stories. Verifica: happy-path con procesamiento batch de multiples épicas sin conflictos, deteccion anticipada de conflictos con resolucion 'saltar todos', fail-fast ante directorio de la épicas vacio, y manejo de épica sin seccion Features que no interrumpe el batch.",
+  "description": "Casos de prueba para el skill epic-generate-all-stories. Verifica: happy-path con procesamiento batch de multiples épicas sin conflictos, deteccion anticipada de conflictos con resolucion 'saltar todos', fail-fast ante directorio de épicas vacio, y manejo de épica sin seccion Historias que no interrumpe el batch.",
   "cases": [
     {
       "id": "TC-001",
       "name": "happy-path: genera historias de todas las épicas sin conflictos",
       "type": "functional",
-      "description": "Ejecutar epic-generate-all-stories con 2 épicas en $SPECS_BASE/specs/02-epics/ (EPIC-01 con 2 features y EPIC-02 con 1 feature). No existen historias previas. El skill debe invocar preflight, descubrir las 2 épicas en orden alfabetico, verificar que no hay conflictos, generar 3 story.md (2 de EPIC-01 + 1 de EPIC-02) y mostrar el resumen consolidado con épicas procesadas, historias generadas y el siguiente paso sugerido.",
+      "description": "Ejecutar epic-generate-all-stories con 2 épicas en $SPECS_BASE/specs/02-epics/ (EPIC-01 con 2 historias y EPIC-02 con 1 historia). No existen historias previas. El skill debe invocar preflight, descubrir las 2 épicas en orden alfabetico, verificar que no hay conflictos, generar 3 story.md (2 de EPIC-01 + 1 de EPIC-02) y mostrar el resumen consolidado con épicas procesadas, historias generadas y el siguiente paso sugerido.",
       "input": {
         "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/specs/templates/story-template.md existe. $SPECS_BASE/specs/02-epics/ contiene: EPIC-01-autenticacion/epic.md con STORY-001 y STORY-002, y EPIC-02-dashboard/epic.md con STORY-010. No existen historias previas en $SPECS_BASE/specs/03-stories/."
       },
@@ -59,7 +59,7 @@
     },
     {
       "id": "TC-003",
-      "name": "fail-fast: directorio de la épicas vacio detiene la ejecucion",
+      "name": "fail-fast: directorio de épicas vacio detiene la ejecucion",
       "type": "fail-fast",
       "description": "Ejecutar epic-generate-all-stories cuando $SPECS_BASE/specs/02-epics/ no contiene ningun subdirectorio con epic.md. El skill debe detectar la ausencia de épicas en el Paso 1, emitir el mensaje de orientacion indicado en la documentacion y terminar sin generar ningun archivo.",
       "input": {
@@ -82,11 +82,11 @@
     },
     {
       "id": "TC-004",
-      "name": "edge-case: épica sin seccion Features no interrumpe el batch",
+      "name": "edge-case: épica sin seccion Historias no interrumpe el batch",
       "type": "edge-case",
-      "description": "Ejecutar epic-generate-all-stories con 3 épicas donde EPIC-02 no tiene seccion ## Features. El skill debe procesar EPIC-01 y EPIC-03 normalmente, registrar EPIC-02 como 'saltado (sin features)' y continuar el batch sin detenerse. El resumen final debe reflejar 1 épica sin features y los otros 2 procesados correctamente.",
+      "description": "Ejecutar epic-generate-all-stories con 3 épicas donde EPIC-02 no tiene seccion ## Historias. El skill debe procesar EPIC-01 y EPIC-03 normalmente, registrar EPIC-02 como 'saltada (sin historias)' y continuar el batch sin detenerse. El resumen final debe reflejar 1 épica sin historias y las otras 2 procesadas correctamente.",
       "input": {
-        "context": "Entorno SDDF valido. $SPECS_BASE/specs/02-epics/ contiene: EPIC-01-autenticacion/epic.md con STORY-001, EPIC-02-sin-features/epic.md con frontmatter y Descripcion pero sin seccion Features, EPIC-03-pagos/epic.md con STORY-020. No existen historias previas."
+        "context": "Entorno SDDF valido. $SPECS_BASE/specs/02-epics/ contiene: EPIC-01-autenticacion/epic.md con STORY-001, EPIC-02-sin-historias/epic.md con frontmatter y Descripcion pero sin seccion ## Historias, EPIC-03-pagos/epic.md con STORY-020. No existen historias previas."
       },
       "expected": {
         "contains": [
@@ -95,8 +95,8 @@
           "EPIC-03",
           "STORY-001",
           "STORY-020",
-          "Épicas sin features",
-          "saltado",
+          "Épicas sin historias",
+          "saltada",
           "Historias generadas"
         ],
         "not_contains": [

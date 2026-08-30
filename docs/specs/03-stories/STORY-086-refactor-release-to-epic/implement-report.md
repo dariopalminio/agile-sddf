@@ -5,11 +5,20 @@ id: STORY-086
 slug: STORY-086-implement-report
 title: "Reporte de Implementación STORY-086"
 story: STORY-086
-created: 2029-08-29
-updated: 2029-08-29
+created: 2026-08-29
+updated: 2026-08-29
 ---
 
 # Reporte de Implementación STORY-086
+
+> **Documento histórico — no describe el estado actual del repositorio.**
+> Cada sección narra el estado vigente **en el momento de ejecutar su plan**, dentro de una
+> migración de tres pasos encadenados. Por eso el texto contiene rutas e identificadores que
+> ya no existen (`docs/specs/stories/…`, `FEAT-086`, `specs/releases/`): eran correctos en ese
+> punto de la secuencia y los pasos posteriores los reemplazaron. La estructura y la
+> nomenclatura vigentes son las de `docs/specs/{01-projects,02-epics,03-stories}/` con el
+> prefijo `STORY-NNN`; ver `ADR-0004` y `ADR-0005`.
+> El cuerpo se conserva sin reescribir para no falsear el registro de lo ocurrido.
 
 ## Reporte de Implementación: plan-01-refactor-release-to-epic
 
@@ -126,3 +135,22 @@ Aparecieron restos de los barridos anteriores que corregí de paso: header-aggre
 story-map.md tiene 82 referencias a "release" en su vocabulario (columnas | Release |, ## Release Slices, "Releases 00–02"). Es un artefacto vivo que el barrido release → épica de hace dos turnos nunca tocó. Cambié solo la columna FEAT → ID, que era lo que entraba en el alcance aprobado. Queda fuera de esta tarea; dime si quieres que lo alinee.
 
 Tres directorios sin story.md — STORY-084, STORY-085 y STORY-086 solo contienen planes y reportes, así que no tienen frontmatter donde declarar kind. EPIC-00/epic.md tampoco tiene ninguna sección ## (por eso era uno de los REFINAR previos). Ambas cosas son preexistentes.
+
+## Reporte de Implementación: plan-04-fix-insights
+
+
+Todos los hallazgos están corregidos y verificados. No hice commit (no lo pediste).
+
+Corrección crítica — el gate. epic-format-validation/SKILL.md ahora deriva las dos mitades del contrato del template en runtime: secciones obligatorias (Descripción, Historias, Flujos Críticos / Smoke Tests) y claves YAML del bloque frontmatter menos una allowlist documentada de opcionales (alwaysApply, parent, related), con la tabla que explica por qué cada una es opcional. El Paso 4a busca claves clave: en vez de patrones Markdown **Campo**:.
+
+Productores alineados. El diagnóstico se confirmó en los datos: las 10 épicas históricas que no tienen created/updated llevan date: — el campo legacy que epic-creation y epic-from-project-plan seguían escribiendo. Ambos producen ya el frontmatter canónico. El parser de ### Épica acepta los dos separadores vigentes (— y :) y el bloque Walking Skeleton sin número, que recibe ID 00; verifiqué que ambas formas parsean.
+
+Evals migrados en los tres skills L2, más un caso de regresión (TC-005) que falla si el contrato antiguo vuelve. project-architect recibe $PROJ_DIR y $TEMPLATE_PATH del orquestador en vez de rutas de proyecto único y .claude/. CLAUDE.md y la regla 13 de la constitución describen la estructura real.
+
+Verificación: 2 APROBADO / 17 REFINAR sobre las 19 épicas reales — idéntico a la baseline, y ningún REFINAR menciona ya Features, Versión, Título ni Fecha. La prueba productor→gate (generar una épica desde el project-plan.md vivo y validarla) da APROBADO sin retoques. Los 21 evals.json parsean, las 13 rutas del árbol de CLAUDE.md existen, y los 18 archivos tocados quedaron en UTF-8 sin BOM.
+
+Tres cosas que conviene que sepas:
+
+Salí del alcance aprobado en dos puntos, ambos del mismo defecto. Los mensajes literales de los generadores decían "No se encontraron features" / "saltada (sin features)", y los evals aseveran sobre ese texto — dejarlos habría hecho que eval y skill se contradijeran, así que migré el vocabulario en los dos SKILL.md. Y project-pm.agent.md tenía el mismo acoplamiento a .claude/skills/... que project-architect; lo corregí junto con su orquestador project-begin. Si prefieres esos dos cambios aparte, se revierten limpio.
+Los evals son 21, no 34. El implement-report de STORY-086 dice 34; el conteo real en todo el repo es 21. Probablemente contaba skills, no archivos.
+Las 10 épicas con date: siguen dando REFINAR por esa clave, además de los 17 sin "Flujos Críticos". Son carencias de contenido preexistentes en artefactos históricos, no del gate — migrarlas es un cambio de datos aparte. Dime si quieres que lo haga.

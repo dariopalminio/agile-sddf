@@ -164,7 +164,7 @@ Leer la sección `## Historias` del archivo de épica. Extraer cada línea de fe
 Capturar para cada feature: **ID** (ej. `STORY-027`), **Nombre** (texto después del ID hasta el separador), **Descripción** (texto después del separador, si existe).
 
 **Si la sección `## Historias` no existe o está vacía:**
-- Registrar: `[nombre-epica] — saltada (sin features)`
+- Registrar: `[nombre-epica] — saltada (sin historias)`
 - Continuar con el siguiente épica **sin interrumpir el batch**
 
 #### 4b. Generar archivo de historia por feature
@@ -283,7 +283,7 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 **Épicas procesados:** [N total]
 **Historias generadas:** [N creadas]
 **Historias saltadas:** [N saltadas por conflicto]
-**Épicas sin features:** [N épicas que no tenían features]
+**Épicas sin historias:** [N épicas que no tenían historias]
 
 ### Directorios creados
 - $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/story.md  (EPIC-XX)
@@ -294,7 +294,7 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 - $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/  (EPIC-XX)
 ...
 
-### Épicas sin features (no procesados)
+### Épicas sin historias (no procesadas)
 - $SPECS_BASE/specs/02-epics/EPIC-NN-nombre/
 
 **Siguiente paso:** Ejecuta `/story-evaluation` para verificar la calidad de las historias generadas, o `/story-specify` para especificarlas de forma interactiva.
@@ -309,11 +309,11 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
 | `$SPECS_BASE/specs/02-epics/` vacío o sin `epic.md` | `No se encontraron directorios de épica en $SPECS_BASE/specs/02-epics/` | Mostrar mensaje de orientación y detener |
 | Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/story-template.md` | Detener la ejecución del batch |
-| Épica sin sección `## Historias` | — | Registrar como `[nombre-epica] — saltada (sin features)` y continuar con la siguiente épica |
+| Épica sin sección `## Historias` | — | Registrar como `[nombre-epica] — saltada (sin historias)` y continuar con la siguiente épica |
 
 ---
 
 ## Salida
 
 - Directorios `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/story.md` creados — una historia por feature de cada épica procesada
-- Resumen consolidado con: épicas procesadas, historias generadas, historias saltadas, épicas sin features
+- Resumen consolidado con: épicas procesadas, historias generadas, historias saltadas, épicas sin historias

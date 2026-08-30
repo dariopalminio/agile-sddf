@@ -167,9 +167,9 @@ Los skills exponen flags para variantes de comportamiento: --quick, --update, --
 
 #### 13. Rutas de output predecibles
 
-$SPECS_BASE/specs/01-projects/<PROJ-ID>/  → artefactos de proyecto
-$SPECS_BASE/specs/02-epics/<EPIC-NN>/  → releases
-$SPECS_BASE/specs/03-stories/<STORY-NNN>/ → historias
+$SPECS_BASE/specs/01-projects/<PROJ-NN>-<slug>/project.md  → artefactos de proyecto
+$SPECS_BASE/specs/02-epics/<EPIC-NN>-<slug>/epic.md        → épicas
+$SPECS_BASE/specs/03-stories/<STORY-NNN>-<slug>/story.md   → historias
 
 #### 14. Versionado mediante substatus
 

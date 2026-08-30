@@ -1,11 +1,11 @@
 {
   "skill": "epic-format-validation",
-  "version": "1.0.0",
-  "description": "Casos de prueba para epic-format-validation: valida que produce APROBADO, REFINAR o RECHAZADO según la estructura del archivo de épica.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para epic-format-validation: valida que produce APROBADO, REFINAR o RECHAZADO según la estructura del archivo de épica, contra el contrato canónico del template vigente (frontmatter YAML + secciones ## Descripción, ## Historias y ## Flujos Críticos / Smoke Tests).",
   "cases": [
     {
       "id": "TC-001",
-      "name": "épica-completo-resultado-aprobado",
+      "name": "épica-completa-resultado-aprobado",
       "type": "happy-path",
       "description": "Archivo de épica con frontmatter completo y las 3 secciones obligatorias presentes. El skill debe retornar APROBADO.",
       "input": {
@@ -37,14 +37,14 @@
       "id": "TC-003",
       "name": "secciones-faltantes-resultado-refinar",
       "type": "fail-fast",
-      "description": "Épica con frontmatter completo pero sin las secciones Features y Flujos Criticos. El skill debe retornar REFINAR con lista de secciones ausentes.",
+      "description": "Épica con frontmatter completo pero sin las secciones Historias y Flujos Críticos / Smoke Tests. El skill debe retornar REFINAR con lista de secciones ausentes.",
       "input": {
         "input_path": "docs/specs/02-epics/EPIC-02-incompleto/epic.md",
         "flags": []
       },
       "expected": {
-        "contains": ["REFINAR", "faltante", "Features"],
-        "not_contains": ["APROBADO", "RECHAZADO"]
+        "contains": ["REFINAR", "faltante", "Historias", "Flujos Críticos"],
+        "not_contains": ["APROBADO", "RECHAZADO", "Features"]
       },
       "threshold": 1.0
     },
@@ -52,16 +52,39 @@
       "id": "TC-004",
       "name": "frontmatter-incompleto-resultado-refinar",
       "type": "edge-case",
-      "description": "Épica con secciones obligatorias presentes pero sin los campos Version y Fecha en el frontmatter. El skill debe retornar REFINAR con los campos faltantes.",
+      "description": "Épica con las 3 secciones obligatorias presentes pero sin las claves created y updated en el frontmatter YAML. El skill debe retornar REFINAR listando esas claves como faltantes.",
       "input": {
-        "input_path": "docs/specs/02-epics/EPIC-03-sin-frontmatter/epic.md",
+        "input_path": "docs/specs/02-epics/EPIC-03-frontmatter-incompleto/epic.md",
         "flags": []
       },
       "expected": {
-        "contains": ["REFINAR", "faltante", "Version", "Fecha"],
-        "not_contains": ["APROBADO", "RECHAZADO"]
+        "contains": ["REFINAR", "faltante", "created", "updated"],
+        "not_contains": ["APROBADO", "RECHAZADO", "Versión", "Fecha"]
       },
       "threshold": 0.95
+    },
+    {
+      "id": "TC-005",
+      "name": "epica-canonica-sin-claves-opcionales-resultado-aprobado",
+      "type": "regression",
+      "description": "Regresión del contrato migrado: épica generada con el template vigente (frontmatter YAML type/id/slug/title/status/substatus/created/updated, sección ## Historias) y sin las claves opcionales parent y related. El skill NO debe exigir campos Markdown del contrato antiguo (**Título**, **Versión**, **Estado**, **Fecha**) ni la sección Features, y debe retornar APROBADO.",
+      "input": {
+        "input_path": "docs/specs/02-epics/EPIC-04-canonica/epic.md",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["APROBADO", "cumple la estructura"],
+        "not_contains": [
+          "REFINAR",
+          "RECHAZADO",
+          "Features",
+          "Versión",
+          "Título",
+          "parent",
+          "related"
+        ]
+      },
+      "threshold": 1.0
     }
   ]
 }

@@ -129,7 +129,11 @@ Lee el archivo de plantilla `$SPECS_BASE/specs/templates/epic-template.md`.
 
 ---
 
-### Paso 3 — Extraer secciones obligatorias del template
+### Paso 3 — Extraer el contrato obligatorio del template
+
+El contrato tiene dos partes, y **ambas se derivan del template en runtime**: las secciones obligatorias y las claves de frontmatter.
+
+#### 3a. Secciones obligatorias
 
 Extraer dinámicamente los encabezados de las secciones que contengan el comentario `<!-- sección obligatoria` (con o sin espacio antes de `-->`).
 
@@ -137,10 +141,25 @@ Extraer dinámicamente los encabezados de las secciones que contengan el comenta
 
 **Resultado esperado a partir del template actual:**
 - `Descripción`
-- `Features`
+- `Historias`
 - `Flujos Críticos / Smoke Tests`
 
-Adicionalmente, los campos de frontmatter siempre son obligatorios: **Título**, **Versión**, **Estado**, **Fecha**.
+#### 3b. Claves de frontmatter obligatorias
+
+Leer el bloque de frontmatter del template (el contenido entre el primer par de `---`) y extraer el nombre de cada clave YAML (el texto antes de los dos puntos, al inicio de línea y sin indentación).
+
+De esas claves, **exigir todas menos** las de esta allowlist de opcionales:
+
+| Clave opcional | Por qué no se exige |
+|---|---|
+| `alwaysApply` | Configuración de carga del documento en el harness, no parte del contrato de la épica |
+| `parent` | Nullable — una épica sin proyecto padre declara `parent: null` |
+| `related` | Nullable — una épica sin referencias declara `related: []` |
+
+La allowlist es la única parte codificada en este skill, y solo enumera claves nullables o de configuración. Cualquier clave nueva que se agregue al template pasa a ser obligatoria automáticamente, sin editar este skill.
+
+**Resultado esperado a partir del template actual:**
+`type`, `id`, `slug`, `title`, `status`, `substatus`, `created`, `updated`
 
 ---
 
@@ -150,11 +169,9 @@ Leer el archivo de épica resuelta en Paso 1.
 
 #### 4a. Validar frontmatter
 
-Verificar que el bloque frontmatter (entre los dos `---`) contiene los cuatro campos:
-- `**Título**:`
-- `**Versión**:`
-- `**Estado**:`
-- `**Fecha**:`
+Verificar que el bloque frontmatter del archivo de épica (el contenido entre el primer par de `---`) contiene una clave YAML `<clave>:` al inicio de línea por cada clave obligatoria derivada en el Paso 3b.
+
+Buscar claves YAML (`created:`), **no** patrones Markdown (`**Fecha**:`). Una clave presente pero con valor vacío cuenta como presente: este skill valida estructura, no contenido.
 
 Registrar cuáles están ausentes.
 

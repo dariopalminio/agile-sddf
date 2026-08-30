@@ -139,7 +139,7 @@ Leer `$SPECS_BASE/specs/templates/epic-template.md` (fuente de verdad del proyec
 - Si el archivo **existe**: extraer dinámicamente:
   - **Secciones obligatorias**: líneas que empiecen con `##` y contengan `<!-- sección obligatoria`
   - **Secciones opcionales**: líneas que empiecen con `##` y contengan `<!-- sección opcional`
-  - **Campos de frontmatter obligatorios**: `slug`, `title`, `date`, `status`
+  - **Campos de frontmatter obligatorios**: `type`, `id`, `slug`, `title`, `status`, `substatus`, `created`, `updated` (contrato canónico que valida `epic-format-validation`; `alwaysApply`, `parent` y `related` son opcionales o nullables)
 
 Guardar la lista de secciones para guiar los Pasos 3, 4 y 5.
 
@@ -151,11 +151,16 @@ Preguntar los campos del frontmatter con valores sugeridos. Para cada campo, mos
 
 | Campo | Pregunta | Valor por defecto |
 |---|---|---|
+| `type` | — | `epic` (fijo para este nivel) |
+| `id` | — | El `EPIC-NN` resuelto en el Paso 1 |
 | `title` | "¿Cuál es el título de la épica?" | El nombre ingresado en el Paso 1 |
-| `date` | "¿Fecha de la épica? (YYYY-MM-DD)" | Fecha de hoy |
 | `status` | "¿Estado inicial?" | `DEFINE` — estado inicial de una épica recién creada (en etapa de definición de alcance) |
 | `substatus` | "¿Subestado? (IN‑PROGRESS / REVIEW / READY)" | `IN‑PROGRESS` |
+| `created` | "¿Fecha de creación de la épica? (YYYY-MM-DD)" | Fecha de hoy |
+| `updated` | — | El mismo valor de `created` en la creación inicial |
 | `slug` | — | Derivado automáticamente del nombre (mostrar al usuario, permitir corrección) |
+
+Los campos opcionales del template (`alwaysApply`, `parent`, `related`) se completan con el valor del template o con `null` / `[]` si no aplican; no se preguntan al usuario.
 
 Confirmar el slug con el usuario antes de continuar. El slug determinará el nombre del directorio y del archivo.
 

@@ -41,7 +41,7 @@ refinar la intención del proyecto, produciendo
 ## Entrada
 
 - No se requiere input explícito — el skill inicia una entrevista interactiva
-- `assets/project-intent-template.md` — fuente de verdad estructural del documento de salida (solo lectura)
+- `$SPECS_BASE/specs/templates/project-intent-template.md` — fuente de verdad estructural del documento de salida (solo lectura); si no existe, el seed `assets/project-intent-template.md` del skill
 - `$SPECS_BASE/specs/01-projects/` — directorio donde se detectan proyectos activos (WIP=1)
 
 ## Parámetros
@@ -51,7 +51,7 @@ refinar la intención del proyecto, produciendo
 ## Precondiciones
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
-- `assets/project-intent-template.md` debe existir
+- `project-intent-template.md` debe existir, sea el central en `$SPECS_BASE/specs/templates/` o el seed `assets/project-intent-template.md`
 - No debe existir ningún proyecto con `substatus: IN-PROGRESS` en `$SPECS_BASE/specs/01-projects/`
   (regla WIP=1), salvo que el usuario elija retomar o sobrescribir el activo
 
@@ -59,7 +59,7 @@ refinar la intención del proyecto, produciendo
 
 - Skills: [`skill-preflight`]
 - Agentes: [`project-pm`]
-- Archivos: [`assets/project-intent-template.md`]
+- Archivos: [`$SPECS_BASE/specs/templates/project-intent-template.md`, `assets/project-intent-template.md` (seed)]
 
 ## Modos de ejecución
 
@@ -135,11 +135,13 @@ Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-intent-template
   > ❌ Template `project-intent-template.md` no encontrado. Ejecuta `sddf-init`.
 - Si alguno de los dos **existe**: continua.
 
+Guardar la ruta del template efectivamente resuelto (central o seed) como `$TEMPLATE_PATH`: es la que se le pasa al `project-pm` en el Paso 4. El agente no debe reconstruir la ruta por su cuenta — hacerlo lo acoplaría a una plataforma de instalación concreta (`.claude/`, `.agents/` o `.github/`).
+
 ### Paso 4 — Delegar al project-pm
 
-Invoca al agente `project-pm` con la siguiente instrucción:
+Invoca al agente `project-pm` con la siguiente instrucción, **sustituyendo `$SPECS_BASE`, `$PROJ_DIR` y `$TEMPLATE_PATH` por los valores ya resueltos** (el agente no los resuelve por su cuenta):
 
-> Lee el template en `assets/project-intent-template.md`. Extrae las secciones del template en runtime.
+> Lee el template en `$TEMPLATE_PATH`. Extrae las secciones del template en runtime.
 >
 > Si estas en flujo de retoma (documento existente en `Estado: IN‑PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
 >
