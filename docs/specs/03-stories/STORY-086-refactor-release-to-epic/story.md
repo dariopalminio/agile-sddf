@@ -5,8 +5,8 @@ id: STORY-086
 kind: chore
 slug: STORY-086-refactor-release-to-epic
 title: "Renombrar el nivel L2 de release a épica y numerar los directorios de specs"
-status: IMPLEMENT
-substatus: IN-PROGRESS
+status: COMPLETED
+substatus: DONE
 parent: null
 created: 2026-08-29
 updated: 2026-08-30
