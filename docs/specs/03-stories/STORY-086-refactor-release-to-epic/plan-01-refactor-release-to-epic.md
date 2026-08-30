@@ -1,4 +1,4 @@
-# Renombrar el nivel L2 de `release` a `epic`
+# PLAN: Renombrar el nivel L2 de `release` a `epic`
 
 ## Context
 
