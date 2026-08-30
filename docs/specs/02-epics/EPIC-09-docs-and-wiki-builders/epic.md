@@ -4,8 +4,8 @@ id: EPIC-09
 slug: EPIC-09-docs-and-wiki-builders
 title: "Release 09 — Docs and Wiki builders"
 date: 2026-04-25
-status: RELEASED
-substatus: READY
+status: COMPLETED
+substatus: DONE
 parent: PROJ-01-agile-sddf
 related:                              
   - project-plan

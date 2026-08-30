@@ -180,3 +180,64 @@ Documentados, no aplicados: F-12 (RELEASED en 13 épicas, deuda que ADR-0003 ace
 Los evals son 21 (ahora 22), no 34. Y el diff entre epic-template.md seed y central era al revés de como lo describía plan-04: el central tenía STORY-[INDEX] y el seed no — y como sddf-init copia seed→central, un proyecto nuevo recibía un contrato distinto del que este repo usaba.
 
 No hice commit. Los cambios están sin stagear en 66 archivos; plan-05-findings-and-remediation-plan.md y skills/epic-from-project-plan/evals/ son nuevos.
+
+## Reporte de Implementación: plan-06
+
+### Qué cambió
+
+1. project.md — reescrito (1258 líneas)
+
+El documento databa del 2026-04-19, generado por /reverse-engineering, y describía un sistema que ya no existe. Confirmé 13 desfases contra el filesystem. Los cuatro más graves no los habría encontrado leyendo documentación — solo aparecieron al comprobar el disco:
+
+No existe openspec/ ni ningún skill openspec-*: cuatro requisitos funcionales completos (FR-027…FR-030) y un pipeline entero del árbol de navegación describían una capacidad retirada.
+gem/ y rovo/ fueron eliminados (EPIC-17 plan-13) → 3 runtimes, no 5.
+skills-lock.json no existe; skill-master y skill-test-evals se movieron a agile-sddf-extension.
+El stack declaraba Python 3.x cuando los únicos .py restantes son fixtures de story-verify/examples/.
+Y uno de fondo: «generación de código» seguía listada como non-goal mientras story-implement ya ejecuta el ciclo TDD completo.
+
+Resultado: 54 FR en 9 categorías que espejan los pipelines reales y 24 NFR en 10 categorías, con dos bloques que el documento no tenía — arquitectura de agentes (delegación de un salto, contrato .tmp/<skill-name>/, ADR-0002) y seguridad. Rehíce el árbol de navegación con los tres niveles de vuelo, alineé el frontmatter al esquema canónico (date: → created:/updated:), y sustituí «Gaps & Next Steps» por dos apéndices: estado de implementación y brechas verificadas.
+
+2. actualizar-spec-de-proyecto.md — runbook nuevo
+
+Los 7 pasos con los comandos exactos, más el razonamiento de por qué /reverse-engineering --update no sirve aquí: solo re-analiza secciones marcadas PENDING MANUAL REVIEW, y el problema era justo el contrario — las secciones sin marcar eran las obsoletas.
+
+3. Registro — entradas en docs/index.md y CHANGELOG.md.
+
+### Verificación
+
+Los 34 skills y los 10 agentes aparecen en el documento; 0 wikilinks rotos; estructura conforme al template; FR-001…FR-054 contiguos; las cifras del apéndice (19 épicas / 77 historias / 34 skills / 23 con evals / 10+7 agentes) coinciden con el filesystem. No hay npm test en este repo, así que la verificación es documental.
+
+### Dos cosas que debes saber
+
+Brechas que encontré y no toqué (quedaron documentadas en el Apéndice B): 13 de 19 épicas usan status: RELEASED, fuera de la máquina de estados canónica de ADR-0003; 5 historias con parent: null; STORY-084/085 sin story.md y con IDs en colisión entre EPIC-14 y EPIC-15; STORY-043/story.md conserva los placeholders del template sin rellenar; y el README.md sigue anunciando «Integración OpenSpec».
+
+project-plan.md sigue desfasado — describe 9 épicas frente a las 19 reales, como acordamos. Es el siguiente candidato natural, y el runbook ya sirve para ello.
+
+No he hecho commit. En el working tree hay además tres archivos tuyos que no toqué: assets/agile-sddf-blueprint.png, STORY-086/tasks.md y el plan-06-update-project.md que guardaste durante la sesión.
+
+### La decisión de fondo de cambios de estados de epics 
+
+Actualización de estados de épicas hecho: Brechas que encontré y no toqué (quedaron documentadas en el Apéndice B): 13 de 19 épicas usan status: RELEASED, fuera de la máquina de estados canónica de ADR-0003.
+
+Tu petición contradecía una consecuencia documentada de ADR-0003 («no se migran retroactivamente»). Elegiste migrar y registrarlo con un ADR que lo supersede, así que ADR-0006 conserva íntegros los dos workflows de ADR-0003 y solo revierte esa consecuencia, con cuatro razones por las que la premisa dejó de sostenerse — la principal: la excepción alcanzaba a 15 de 19 épicas (79%), o sea el esquema antiguo era el mayoritario. Una convención que la mayoría del corpus incumple no es una convención. ADR-0003 queda SUPERSEDED, que es el único cambio que el repo permite sobre un ADR aceptado.
+
+Migración aplicada
+Antes	Después	Épicas
+RELEASED	COMPLETED	13
+DEFINITION	DEFINE	EPIC-13
+IMPLEMENT	DEVELOP	EPIC-17
+substatus: READY	DONE	12
+Resultado: 17 COMPLETED/DONE, 1 DEVELOP/DONE, 1 DEFINE/IN-PROGRESS.
+
+Descarté SHIP (lo que proponía plan-05 F-12) porque ADR-0003 lo define como «el último estado activo»: habría dejado 13 épicas históricas aparcadas para siempre en un estado activo y desalineadas de las cuatro que ya estaban en COMPLETED.
+
+Traduje etiquetas, no reevalué avance. Cada documento conserva la afirmación de progreso que ya hacía.
+
+Dos cosas que hice notar
+Toqué 15 de 19 archivos, no los 19. Había bumpeado updated: en EPIC-14/15/16/18, cuyo estado ya era canónico — el diff mostraba que el único cambio era la fecha. Eso registra una modificación que no ocurrió, así que las revertí.
+
+La migración destapó dos estados dudosos, ahora en el apéndice B de project.md y en las consecuencias de ADR-0006: EPIC-13 queda en DEFINE (el estado inicial) pese a tener sus 7 historias marcadas, aunque tres no están cerradas y sus criterios de éxito siguen sin marcar; y EPIC-17 en DEVELOP/DONE sin haber pasado por VALIDATE ni SHIP. Son revisiones de avance, no de nomenclatura — deliberadamente fuera de esta migración.
+
+También añadí como deuda que EPIC-00…EPIC-09 conservan date: en vez de created:/updated:. Es la misma deriva de esquema que corregí en project.md, pero es un cambio de esquema, no de estado, y no lo pediste.
+
+Actualicé además project.md (apéndice A, criterio de éxito ahora cumplido, apéndice B), docs/index.md, docs/adr/README.md y el CHANGELOG.md. Sin commit.

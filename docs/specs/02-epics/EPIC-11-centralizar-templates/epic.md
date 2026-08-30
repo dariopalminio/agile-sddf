@@ -4,11 +4,11 @@ type: epic
 id: EPIC-11
 slug: EPIC-11-centralizar-templates
 title: "Centralizar templates de spec en directorio compartido"
-status: RELEASED
-substatus: READY
+status: COMPLETED
+substatus: DONE
 parent: PROJ-01-agile-sddf
 created: 2026-05-01
-updated: 2026-05-01
+updated: 2026-08-30
 related:                              
   - PROJ-01-agile-sddf
 ---

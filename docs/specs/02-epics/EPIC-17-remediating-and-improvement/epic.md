@@ -4,11 +4,11 @@ type: epic
 id: EPIC-17
 slug: remediating-and-improvement
 title: "Remediating and Improvement"
-status: IMPLEMENT
+status: DEVELOP
 substatus: DONE
 parent: null
 created: 2026-06-12
-updated: 2026-06-12
+updated: 2026-08-30
 related: []
 ---
 

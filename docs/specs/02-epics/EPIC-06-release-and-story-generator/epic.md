@@ -4,8 +4,8 @@ id: EPIC-06
 slug: EPIC-06-release-and-story-generator
 title: "Release 06 — Release & Story Generator"
 date: 2026-04-20
-status: RELEASED
-substatus: READY
+status: COMPLETED
+substatus: DONE
 parent: PROJ-01-agile-sddf
 related:                              
   - project-plan

@@ -4,8 +4,8 @@ id: EPIC-04
 slug: EPIC-04-refactor-features-spec-builder
 title: "Release 04 — Refactor Features Spec Builder (Consolidación y calidad)"
 date: 2026-04-17
-status: RELEASED
-substatus: READY
+status: COMPLETED
+substatus: DONE
 parent: PROJ-01-agile-sddf
 related:                              
   - project-plan

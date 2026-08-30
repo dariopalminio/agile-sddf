@@ -4,8 +4,8 @@ id: EPIC-02
 slug: EPIC-02-project-spec-builder
 title: "Release 02 — Project Spec Builder (Pipeline de proyecto)"
 date: 2026-04-16
-status: RELEASED
-substatus: READY
+status: COMPLETED
+substatus: DONE
 parent: PROJ-01-agile-sddf
 related:                              
   - project-plan

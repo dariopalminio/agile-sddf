@@ -72,6 +72,17 @@ project (`$SPECS_BASE/specs/01-projects/<PROJECT-NAME>/project.md`)
 
 
 ---
+## Reglas de framework
+
+- **Estructura de directorios:** Seguir la jerarquía `project → epic → story` y la convención de nombres kebab-case.
+- **project.md debe mantenerse actualizado:** Reflejar siempre el estado actual del proyecto (documento vivo), incluyendo las épicas y sus historias asociadas.
+- **epic.md debe mantenerse actualizado:** Reflejar siempre el estado actual de la épica antes de ser completada, incluyendo sus historias asociadas. Una vez completada se freeza.
+- **story.md debe mantenerse actualizado:** Reflejar siempre el estado actual de la historia antes de ser completada, incluyendo sus tareas y subcomponentes asociados. Una vez completada se freeza.
+- **Mantener estructura de directorios consistente:** Asegurarse de que la jerarquía `project → epic → story` se respete en todo momento y que los nombres de los directorios sigan la convención kebab-case.
+- **Mantener constitution.md actualizado:** Asegurarse de que las políticas y convenciones del framework reflejadas en este documento estén siempre al día con las prácticas actuales del equipo y del proyecto.
+
+
+
 ## Estándares de construcción de Skills
 
 Respetar las [Política de Creación de Skills para Agentes de IA](docs/policies/references/skill_creation_policy.md)

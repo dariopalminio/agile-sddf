@@ -3,10 +3,10 @@ type: adr
 id: ADR-0003
 slug: workflow-canonico-story-y-epic
 title: "Workflows canónicos de Story y Epic en el pipeline SDDF"
-status: ACCEPTED
+status: SUPERSEDED
 date: 2026-06-14
 supersedes: null
-superseded-by: null
+superseded-by: ADR-0006
 ---
 
 # ADR-0003: Workflows canónicos de Story y Epic en el pipeline SDDF

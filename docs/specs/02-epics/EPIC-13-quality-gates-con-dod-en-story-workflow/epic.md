@@ -3,11 +3,11 @@ type: epic
 id: EPIC-13
 slug: quality-gates-con-dod-en-story-workflow
 title: "Quality Gates con DoD en Story Workflow"
-status: DEFINITION
+status: DEFINE
 substatus: IN-PROGRESS
 parent: null
 created: 2026-05-13
-updated: 2026-05-13
+updated: 2026-08-30
 ---
 
 # Release/Epic: Quality Gates con DoD en Story Workflow

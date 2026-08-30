@@ -4,8 +4,8 @@ id: EPIC-05
 slug: EPIC-05-enhance-project-spec
 title: "Release 05 — Enhance Project Spec (Expansión project spec)"
 date: 2026-04-18
-status: RELEASED
-substatus: READY
+status: COMPLETED
+substatus: DONE
 parent: PROJ-01-agile-sddf
 related:                              
   - project-plan

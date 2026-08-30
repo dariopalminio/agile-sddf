@@ -38,7 +38,7 @@ Cargadas automáticamente en cada sesión vía prompt de sistema (`CLAUDE.md`, `
 `specs/01-projects/PROJ-01-agile-sddf/`
 
 - [[PROJ-01-agile-sddf-project-intent]] — [project-intent.md](specs/01-projects/PROJ-01-agile-sddf/project-intent.md) — Intención inicial: problema, visión y alcance del framework
-- [[PROJ-01-agile-sddf]] — [project.md](specs/01-projects/PROJ-01-agile-sddf/project.md) — Especificación de requisitos del proyecto
+- [[PROJ-01-agile-sddf]] — [project.md](specs/01-projects/PROJ-01-agile-sddf/project.md) — Especificación de requisitos del proyecto · reescrita contra el repo el 2026-08-30 (54 FR, 24 NFR)
 - [[project-plan]] — [project-plan.md](specs/01-projects/PROJ-01-agile-sddf/project-plan.md) — Plan de épicas y backlog de features · `IN-PROGRESS`
 - [[story-map]] — [story-map.md](specs/01-projects/PROJ-01-agile-sddf/story-map.md) — Mapa de historias de usuario
 
@@ -62,7 +62,7 @@ También en ese directorio: [context-diagram.puml](specs/01-projects/PROJ-01-agi
 - [[EPIC-10-mejora-estructura-artefactos-nuevos-skills]] — [epic.md](specs/02-epics/EPIC-10-mejora-estructura-artefactos-nuevos-skills/epic.md) — Mejora en estructura de artefactos y nuevos skills
 - [[EPIC-11-centralizar-templates]] — [epic.md](specs/02-epics/EPIC-11-centralizar-templates/epic.md) — Centralizar templates de spec en directorio compartido
 - [[EPIC-12-story-sdd-workflow]] — [epic.md](specs/02-epics/EPIC-12-story-sdd-workflow/epic.md) — Comandos del flujo de story
-- [[quality-gates-con-dod-en-story-workflow]] — [epic.md](specs/02-epics/EPIC-13-quality-gates-con-dod-en-story-workflow/epic.md) — EPIC-13: Quality gates con DoD en el story workflow · `DEFINITION`
+- [[quality-gates-con-dod-en-story-workflow]] — [epic.md](specs/02-epics/EPIC-13-quality-gates-con-dod-en-story-workflow/epic.md) — EPIC-13: Quality gates con DoD en el story workflow · `DEFINE`
 - [[fabrica-de-skills]] — [epic.md](specs/02-epics/EPIC-14-fabrica-de-skills/epic.md) — EPIC-14: Fábrica de skills
 - [[e2e-capability]] — [epic.md](specs/02-epics/EPIC-15-e2e-capability/epic.md) — EPIC-15: Skills de testing especializado y capacidad E2E
 
@@ -78,7 +78,7 @@ También en ese directorio: [context-diagram.puml](specs/01-projects/PROJ-01-agi
 
 #### EPIC-17 — Remediating and Improvement
 
-- [[remediating-and-improvement]] — [epic.md](specs/02-epics/EPIC-17-remediating-and-improvement/epic.md) — Remediación de hallazgos y mejoras transversales · `IMPLEMENT`
+- [[remediating-and-improvement]] — [epic.md](specs/02-epics/EPIC-17-remediating-and-improvement/epic.md) — Remediación de hallazgos y mejoras transversales · `DEVELOP`
   - [[plan-01-reduction-of-descriptions-context-cost]] — [plan-01](specs/02-epics/EPIC-17-remediating-and-improvement/plan-01-reduction-of-descriptions-context-cost.md) — Reducir el costo de contexto de las `description`
   - [[plan-02-fix-claude-md]] — [plan-02](specs/02-epics/EPIC-17-remediating-and-improvement/plan-02-fix-claude-md.md) — Corrección de `CLAUDE.md`
   - [[plan-03-clean]] — [plan-03](specs/02-epics/EPIC-17-remediating-and-improvement/plan-03-clean.md) — Limpieza de assets muertos y configuración legacy
@@ -247,9 +247,10 @@ placeholder, por lo que se enlazan solo por ruta:
 - [[adr-index]] — [README.md](adr/README.md) — Índice y convención de ADRs (los aceptados son inmutables)
 - [[centralizar-templates-compartidos]] — [ADR-0001](adr/ADR-0001-centralizar-templates-compartidos.md) — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` · `ACCEPTED`
 - [[invocacion-agentes-locales-de-skill]] — [ADR-0002](adr/ADR-0002-invocacion-agentes-locales-de-skill.md) — Contrato de invocación de agentes locales de skill · `ACCEPTED`
-- [[workflow-canonico-story-y-epic]] — [ADR-0003](adr/ADR-0003-workflow-canonico-story-y-epic.md) — Workflows canónicos de story y épica en el pipeline SDDF · `ACCEPTED`
+- [[workflow-canonico-story-y-epic]] — [ADR-0003](adr/ADR-0003-workflow-canonico-story-y-epic.md) — Workflows canónicos de story y épica en el pipeline SDDF · `SUPERSEDED` por ADR-0006
 - [[nivel-l2-epic-y-directorios-numerados]] — [ADR-0004](adr/ADR-0004-nivel-l2-epic-y-directorios-numerados.md) — El nivel L2 es una épica, y los niveles viven en directorios numerados · `ACCEPTED`
 - [[prefijo-story-para-el-nivel-l1]] — [ADR-0005](adr/ADR-0005-prefijo-story-para-el-nivel-l1.md) — El ID del nivel L1 se prefija con `STORY`; el tipo vive en el campo `kind` · `ACCEPTED`
+- [[migracion-retroactiva-de-estados-de-epica]] — [ADR-0006](adr/ADR-0006-migracion-retroactiva-de-estados-de-epica.md) — Workflows canónicos de story y épica, con migración retroactiva de los estados históricos · `ACCEPTED`
 - [adr-template.md](adr/adr-template.md) — Template para nuevos ADR (slug placeholder, sin wikilink)
 
 ## 📖 Guías y operación
@@ -299,6 +300,7 @@ Las guías se dividen en guides (guías prácticas) y reference (documentación 
 
 Los procedimientos, how-to suele ser más general, mientras que los runbooks son más específicos de operaciones (despliegues, recuperación):
 
+- [[runbook-actualizar-spec-de-proyecto]] — [actualizar-spec-de-proyecto.md](runbooks/actualizar-spec-de-proyecto.md) — Runbook para resincronizar `project.md` con la realidad del repositorio · `COMPLETED`
 - [[runbook-deployment-to-npm]] — [deployment-to-npm.md](runbooks/deployment-to-npm.md) — Runbook de despliegue del paquete en npm · `BACKLOG`
 - [[docker-dev-container]] — [docker-dev-container.md](runbooks/docker-dev-container.md) — Entorno de desarrollo con Docker + VSCode Dev Containers · `BACKLOG`
 - [docker-dev-container-with-security-scann.md](runbooks/docker-dev-container-with-security-scann.md) — Integrar Skill Shielder en `Dockerfile.dev` (sin frontmatter)
@@ -309,7 +311,7 @@ Los procedimientos, how-to suele ser más general, mientras que los runbooks son
 
 | Métrica | Valor |
 |---------|-------|
-| Archivos `.md` en `docs/` | 258 |
+| Archivos `.md` en `docs/` | 270 |
 | Rutas únicas enlazadas desde el índice | 170 |
 | — L3 proyecto (4 `.md` + `context-diagram.puml`) | 5 |
 | — L2 épicas (19 `epic.md` + 31 `plan-NN.md`) | 50 |
@@ -317,12 +319,17 @@ Los procedimientos, how-to suele ser más general, mientras que los runbooks son
 | — Templates de spec | 5 |
 | — ADR (3 + índice + template) | 5 |
 | — Políticas | 3 |
-| — Guías (18) + runbooks (3) | 21 |
+| — Guías (18) + runbooks (4) | 22 |
 | Artefactos derivados no indexados (`design`, `tasks`, `analyze`, `*-report`, `testcases`) | 88 |
-| Wikilinks | 157 |
+| Wikilinks | 160 |
 | Wikilinks rotos (⚠️) | 0 |
 | Entradas sin wikilink (archivo sin `slug:` usable) | 13 |
-| Última actualización | 2026-08-29 |
+| Última actualización | 2026-08-30 |
+
+> Las filas «Rutas únicas enlazadas», «L1 historias» y «Artefactos derivados» conservan el valor de la
+> última generación completa (2026-08-29); en la edición manual del 2026-08-30 solo se recontaron los
+> archivos `.md`, los runbooks y los wikilinks. Reejecutar `/docs-wiki-builder --update` para
+> recalcular la tabla entera.
 
 ---
 
