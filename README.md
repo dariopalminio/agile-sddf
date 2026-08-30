@@ -6,6 +6,23 @@ Sistema multiagente minimalista que automatiza el ciclo completo de especificaci
 [![npm version](https://img.shields.io/npm/v/agile-sddf.svg)](https://npmjs.com/package/agile-sddf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+> ### ⚠️ ¿Vienes de la versión 1.x? Lee esto antes de actualizar
+>
+> La **2.0.0 cambia la estructura de directorios de `docs/specs/` y el nombre de varios artefactos**,
+> sin alias retrocompatibles. Si actualizas sin migrar, los skills no encontrarán tus documentos
+> existentes y los comandos `/release-*` dejarán de existir.
+>
+> | Antes (1.x) | Ahora (2.0.0) |
+> |---|---|
+> | `docs/specs/projects/` | `docs/specs/01-projects/` |
+> | `docs/specs/releases/` | `docs/specs/02-epics/` |
+> | `docs/specs/stories/` | `docs/specs/03-stories/` |
+> | `release.md` (`type: release`) | `epic.md` (`type: epic`) |
+> | `FEAT-NNN-<slug>/` | `STORY-NNN-<slug>/` |
+> | `/release-creation`, `/release-generate-stories`, … | `/epic-creation`, `/epic-generate-stories`, … |
+>
+> 👉 **[Cómo migrar tu proyecto](#upgrading-desde-1x)** — pasos y comandos.
+
 Los developers y equipos que trabajan con IA para desarrollar software carecen de un proceso estructurado y reproducible para transformar ideas en especificaciones de calidad. Agile SDDF resuelve esto con un workflow ágil y secuencial que cubre desde la intención inicial hasta el backlog planificado de historias de usuario, con control de WIP, gates de revisión humana y trazabilidad completa en cada etapa. A diferencia de los prompts ad-hoc o frameworks rígidos, el sistema extrae dinámicamente la estructura de los templates en runtime para generar preguntas y comportamientos contextuales, y opera en etapa de especificación sin modificar código subyacente en los runtimes de IA soportados (Claude Code, GitHub Copilot, OpenCode). En etapa de implenetación, SDDF genera código de producción + tests con TDD, y reportes de implementación y revisión de código para garantizar calidad y coherencia con la especificación.
 
 ### Context Diagram
@@ -18,10 +35,12 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 
 - [Features](#features)
 - [Installation](#installation)
+- [Upgrading desde 1.x](#upgrading-desde-1x) ⚠️
 - [Initialization](#initialization)
 - [Quick Start](#quick-start)
 - [Usage](#usage)
 - [Configuration](#configuration)
+- [Extensions — `agile-sddf-extension`](#extensions--agile-sddf-extension)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -38,7 +57,7 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Gestión de historias de usuario**: creación (Como/Quiero/Para + Gherkin), evaluación con rúbrica FINVEST (Likert 1–5), splitting con 8 patrones y refinamiento iterativo
 - **SDD workflow**: Se implemente un workflow a nivel de story "SPECIFY --> PLAN --> READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> DELIVER --> COMPLETED" con skills dedicados para cada fase y generación de artefactos específicos (design.md, tasks.md, analyze.md, implement-report.md, code-review-report.md)
 - **Pipeline SDD completo de historia**: planning y implementación tarea a tarea — `story-plan` orquesta `story-design` → `story-tasking` → `story-testcases` → `story-analyze` en un solo comando; `story-implement` ejecuta el ciclo TDD completo (RED→GREEN→REFACTOR) delegando a skills configurables por stack tecnológico (`sddf.config.yaml`): genera tests con el skill `test_generator` declarado, implementa código con el `code_generator` y refactoriza sin romper suites; soporta modo interactivo (con pausas de confirmación entre fases) y modo automático (`--auto`) para CI; `story-code-review` para revisión multi-agente post-implementación
-- **Skills worker customizados (extensión)**: los skills plug-in para implementación, testing y utilidades **no se incluyen en este paquete** — se instalan por separado desde el repositorio de extensiones [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension) y se declaran en `sddf.config.yaml` como `test_generator` / `code_generator`. Allí viven los workers específicos por stack (generadores de tests de componentes y E2E con React Testing Library, Playwright/Cypress + Cucumber, implementadores de componentes de librerías UI como MUI/Shadcn, etc.), de modo que el core de SDDF permanece agnóstico al stack mientras esos workers evolucionan en su propio repo
+- **Skills worker customizados (extensión)**: los workers específicos por stack —generadores de tests y de código para NestJS, React, Cypress/Playwright + Cucumber— **no se incluyen en este paquete**. Viven en [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension), se instalan por separado y se declaran en `sddf.config.yaml`, de modo que el core permanece agnóstico al stack mientras esos workers evolucionan en su propio repo. Ver [Extensions](#extensions--agile-sddf-extension)
 - **Configuración operacional por stack (`sddf.config.yaml`)**: archivo de configuración en la raíz del proyecto que declara los skills activos para cada fase del pipeline TDD (qué skill genera los tests de componente, qué skill genera los E2E, qué skill implementa el código); permite añadir nuevos skills de testing o implementación sin modificar los orquestadores; generado automáticamente por `sddf-init` desde un template canónico con soporte para ejemplos de configuración por stack (ej. `sddf.config.yaml.example` para librería UI React)
 - **Políticas de proyecto**: generación de `constitution.md` y `definition-of-done-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
 - **Integración OpenSpec**: exploración, propuesta, implementación y archivado de cambios con trazabilidad completa
@@ -131,6 +150,90 @@ El paquete expone el comando `agile-sddf` con los siguientes subcomandos:
 - Runtime compatible: Claude Code (Anthropic), GitHub Copilot, OpenCode.
 - Foam for VSCode: opcional, recomendado para navegación de docs como wiki.
 - PlantUML extension para VSCode: opcional, recomendado para visualizar diagramas c4 generados.
+
+## Upgrading desde 1.x
+
+> ⚠️ **Cambio incompatible.** La 2.0.0 renombra el work item de nivel medio (`release` → **épica**),
+> cambia el prefijo de ID del nivel L1 (`FEAT-NNN` → **`STORY-NNN`**) y reestructura `docs/specs/` en
+> directorios numerados por nivel de vuelo. **No hay alias retrocompatibles ni fallback automático.**
+
+**Si empiezas un proyecto nuevo, ignora esta sección**: `/sddf-init` ya crea la estructura correcta.
+
+### Por qué cambió
+
+`release` colisionaba con su sentido de CI/CD (liberación, despliegue, versión publicada), hasta el
+punto de que la documentación tenía que aclarar que «el release a nivel de gestión de trabajo es
+independiente del release real». Desde la 2.0.0, **`release` queda reservado exclusivamente para
+CI/CD** y el work item intermedio es siempre una **épica**. En paralelo, `FEAT` nombraba un *tipo* de
+trabajo, no un nivel, y chocaba con el prefijo de rama (`fix/FEAT-042` se contradice); ahora el tipo
+vive en el campo `kind` del frontmatter. El razonamiento completo está en los ADR
+[0004](https://github.com/dariopalminio/agile-sddf/blob/main/docs/adr/ADR-0004-nivel-l2-epic-y-directorios-numerados.md) y
+[0005](https://github.com/dariopalminio/agile-sddf/blob/main/docs/adr/ADR-0005-prefijo-story-para-el-nivel-l1.md).
+
+El número de cada historia **se conserva 1:1** (`FEAT-042` ≡ `STORY-042`), así que toda referencia
+histórica sigue siendo trazable.
+
+### Migración
+
+Haz commit de tu trabajo antes de empezar y ejecuta los pasos desde la raíz del proyecto. Ajusta
+`docs/` si usas otro `SDDF_ROOT`.
+
+```bash
+# 1. Artefacto release.md → epic.md, su frontmatter y la sección del plan
+find docs/specs/releases -name release.md -execdir git mv release.md epic.md \;
+sed -i 's/^type: release$/type: epic/' docs/specs/releases/*/epic.md
+sed -i 's/^## Propuesta de Releases$/## Propuesta de Épicas/;s/^### Release \([0-9]\{2\}\) —/### Épica \1 —/' docs/specs/projects/*/project-plan.md
+
+# 2. Directorios de nivel → numerados
+git mv docs/specs/projects docs/specs/01-projects
+git mv docs/specs/releases docs/specs/02-epics
+git mv docs/specs/stories  docs/specs/03-stories
+
+# 3. Referencias de ruta dentro de tus propios documentos
+grep -rlZ 'specs/projects\|specs/releases\|specs/stories' docs \
+  | xargs -0 sed -i -e 's|specs/projects|specs/01-projects|g' \
+                    -e 's|specs/releases|specs/02-epics|g' \
+                    -e 's|specs/stories|specs/03-stories|g'
+
+# 4. Prefijo de historia FEAT- → STORY- (el número se conserva)
+for d in docs/specs/03-stories/FEAT-*; do git mv "$d" "${d/FEAT-/STORY-}"; done
+grep -rlZ 'FEAT-' docs | xargs -0 sed -i 's/FEAT-/STORY-/g'
+
+# 5. Sección de las épicas y campo kind en las historias
+sed -i 's/^## Features *$/## Historias/' docs/specs/02-epics/*/epic.md
+sed -i '/^id: STORY-/a kind: feat' docs/specs/03-stories/*/story.md
+
+# 6. Reinstalar los skills renombrados
+npx agile-sddf install --force
+```
+
+### Después de migrar: revisa estos cuatro puntos
+
+1. **Borra a mano los directorios `release-*` huérfanos** en `.claude/skills/` (o `.agents/`,
+   `.github/`). El instalador copia los skills nuevos pero no elimina los antiguos, así que
+   convivirían `/release-creation` y `/epic-creation`.
+2. **Historias con prefijo propio** (`FIX-`, `BUG-`, `CHORE-`): el paso 4 **no las toca**. Renoméralas
+   al siguiente `STORY-NNN` libre y asígnales su `kind`. Si no lo haces quedan invisibles al glob
+   `03-stories/STORY-*/` que usan `story-creation`, `story-evaluation` y `epic-generate-stories` para
+   calcular el siguiente ID — y el cálculo puede asignar un número en colisión.
+3. **Revisa el `kind: feat` por defecto** del paso 5: las historias que en realidad sean correcciones
+   o tareas técnicas quedan mal clasificadas hasta que las ajustes a `fix` / `chore` / `hotfix`.
+4. **Borra el `release-spec-template.md` huérfano** de `{SDDF_ROOT}/specs/templates/` tras
+   reejecutar `/sddf-init`; ahora se llama `epic-template.md`. Sin reejecutarlo, los skills caen en el
+   fallback al template semilla con un `WARNING`, sin romperse.
+
+### Comandos renombrados
+
+| Antes | Ahora |
+|---|---|
+| `/release-creation` | `/epic-creation` |
+| `/release-format-validation` | `/epic-format-validation` |
+| `/releases-from-project-plan` | `/epic-from-project-plan` |
+| `/release-generate-stories` | `/epic-generate-stories` |
+| `/release-generate-all-stories` | `/epic-generate-all-stories` |
+
+Los triggers en lenguaje natural antiguos («crear release», «validar release», …) **no** se conservan
+como alias. El detalle completo de la versión está en el [CHANGELOG](CHANGELOG.md).
 
 ## Initialization
 
@@ -458,6 +561,101 @@ El único mecanismo de control de flujo es el campo `substatus` en cada document
 |-------|-------------|
 | `IN-PROGRESS` | Documento en progreso — el pipeline puede retomarlo |
 | `DONE` | Documento completo — actúa como precondición para la siguiente fase |
+
+## Extensions — `agile-sddf-extension`
+
+El core de SDDF es **agnóstico al stack tecnológico**: `story-implement` no sabe nada de React, NestJS
+ni Playwright. Orquesta el ciclo TDD (RED → GREEN → REFACTOR) y **delega** la generación de pruebas y
+de código a *skills worker* que tú declaras en `sddf.config.yaml`.
+
+Esos workers viven en un repositorio aparte:
+**[github.com/dariopalminio/agile-sddf-extension](https://github.com/dariopalminio/agile-sddf-extension)**
+
+### Por qué están separados del core
+
+- **El core no caduca con los frameworks.** Cuando cambie la API de Playwright o salga la próxima
+  librería de componentes, se actualiza el worker, no el pipeline.
+- **Instalas solo lo que usa tu stack.** Un proyecto NestJS no arrastra los skills de React.
+- **Ciclos de vida independientes.** El core versiona el *proceso*; la extensión versiona el
+  *conocimiento sobre tecnologías concretas*, que se mueve mucho más rápido.
+- **Puedes escribir los tuyos.** El contrato es un `SKILL.md` y una entrada en el YAML — nada más.
+
+### Qué contiene
+
+| Categoría | Skills |
+|---|---|
+| **Meta-framework** | `skill-master` (creación y benchmarking de skills), `skill-test-evals` (ciclo de vida de `evals.json`) |
+| **Implementación** | `code-backend-nestjs`, `code-frontend-library-react` |
+| **Testing** | `test-nestjs-jest-testing-module`, `test-nestjs-supertest`, `test-react-testing-library`, `test-cypress-cucumber`, `test-playwright-cucumber` |
+| **Utilidades** | `doc-policy-creator`, `doc-release-notes`, `ui-generate-design-md` |
+| **Soporte OpenSpec** | `openspec-init-config`, `openspec-generate-baseline` |
+
+Stacks cubiertos hoy: **NestJS** (Jest, Supertest), **React** (Testing Library, Vitest) y **E2E** con
+Cucumber sobre Cypress o Playwright. Consulta el repositorio para la lista vigente.
+
+### Instalación
+
+Los workers se instalan con [`npx skills`](https://github.com/dariopalminio/agile-sddf-extension),
+en la **misma carpeta de skills** que usa tu runtime (`.claude/skills/`, `.agents/skills/` o
+`.github/skills/`):
+
+```bash
+# Ver qué hay disponible, sin instalar nada
+npx skills add dariopalminio/agile-sddf-extension --list
+
+# Instalar solo los que necesitas
+npx skills add dariopalminio/agile-sddf-extension --skill test-react-testing-library
+npx skills add dariopalminio/agile-sddf-extension --skill code-frontend-library-react
+
+# O todos de una vez
+npx skills add dariopalminio/agile-sddf-extension --all
+```
+
+### Cómo se conectan al pipeline
+
+Una vez instalados, decláralos en el `sddf.config.yaml` de tu proyecto. `story-implement` lee esta
+sección y **valida que cada skill exista antes de invocar ninguno** (*fail-fast*): si el nombre está
+mal escrito o el worker no está instalado, se detiene con un error explícito en vez de fallar a mitad
+del ciclo TDD.
+
+```yaml
+implement:
+  # Fase RED — generan los archivos de especificación de pruebas
+  test_generators:
+    - type: unit                          # unit | e2e | eval
+      skill: test-react-testing-library
+      required: true
+    - type: e2e
+      skill: test-playwright-cucumber
+      required: false
+    - type: eval
+      skill: none                         # 'none' desactiva el generador
+      required: false
+
+  # Fases GREEN y REFACTOR — implementan el código por capa
+  code_generators:
+    - layer: frontend                     # monolithic | frontend | backend | database
+      skill: code-frontend-library-react
+      required: true
+    - layer: backend
+      skill: code-backend-nestjs
+      required: false
+```
+
+**Reglas del contrato:**
+
+- `skill: none` desactiva esa entrada sin borrarla.
+- `required` gobierna qué pasa si el worker **no está instalado**: con `true` el ciclo se detiene sin
+  generar nada; con `false` emite `[WARN] Skill '<nombre>' no encontrado — omitiendo tipo '<tipo>'` y
+  sigue con el siguiente. (Que un worker instalado devuelva error en ejecución es otra cosa: se
+  registra como error real del subagente, independientemente de `required`.)
+- Cada worker se invoca como **subagente independiente**, con `phase` y `layer`/`type` en su prompt.
+- Los generadores se ejecutan **en el orden en que aparecen** en el YAML.
+- Sin `test_generators` configurados, la fase RED emite un `[WARN]` y continúa sin generar pruebas.
+
+> Este repositorio dogfoodea el mecanismo: su propio `sddf.config.yaml` declara `skill-master` como
+> `code_generator` de la capa `monolithic` —porque aquí «el código de producción» son los skills— y
+> `skill-test-evals` como generador de `eval`. Ambos vienen de la extensión.
 
 ## Contributing
 
