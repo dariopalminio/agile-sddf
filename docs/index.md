@@ -164,7 +164,7 @@ También en ese directorio: [context-diagram.puml](specs/01-projects/PROJ-01-agi
 - [[STORY-039-publicar-framework-en-npm]] — [story.md](specs/03-stories/STORY-039-publicar-framework-en-npm/story.md) — Publicar el framework en npm
 - [[STORY-040-instalar-skills-via-postinstall]] — [story.md](specs/03-stories/STORY-040-instalar-skills-via-postinstall/story.md) — Instalar skills vía script de `postinstall`
 - [[STORY-041-npm-install-locally]] — [story.md](specs/03-stories/STORY-041-npm-install-locally/story.md) — Instalación local con npm
-- [[STORY-042-readme-builder]] — [story.md](specs/03-stories/STORY-042-readme-builder/story.md) — readme-builder: generación de `README.md`
+- [[STORY-042-readme-builder]] — [story.md](specs/03-stories/STORY-042-readme-builder/story.md) — readme-builder: generación de `README.md` *(skill migrado a agile-sddf-extension)*
 - [[STORY-043-header-aggregation]] — [story.md](specs/03-stories/STORY-043-header-aggregation/story.md) — header-aggregation: metadata de estado en archivos spec
 - [[STORY-044-directorio-docs-tipo-wiki]] — [story.md](specs/03-stories/STORY-044-directorio-docs-tipo-wiki/story.md) — Directorio `docs/` tipo wiki (este índice)
 - [[STORY-046-publicar-npm-con-github-actions]] — [story.md](specs/03-stories/STORY-046-publicar-npm-con-github-actions/story.md) — CI/CD con GitHub Actions para publicar en npm

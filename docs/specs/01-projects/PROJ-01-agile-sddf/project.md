@@ -609,13 +609,8 @@ conversación.
     - **Usuario**: US-002, US-006
     - **Fuente**: `docs-wiki-builder` · STORY-044 · EPIC-09
 
-- **FR-049**: Generación del README del proyecto
-    - **Descripción**: El sistema SHALL generar o sobrescribir el `README.md` del proyecto a partir
-      de los artefactos SDDF disponibles, degradando en tres niveles según lo que exista:
-      especificación formal → contexto del repositorio → ingeniería inversa.
-    - **Prioridad**: Media
-    - **Usuario**: US-001, US-005
-    - **Fuente**: `readme-builder` · STORY-042 · EPIC-09
+> **FR-049 retirado (2026-08-30)** — la generación del `README.md` migró al repositorio de
+> extensiones `agile-sddf-extension`. Ver §4.1, *Frontera core / extensión*.
 
 - **FR-050**: Auditoría de seguridad condicional
     - **Descripción**: El sistema SHALL analizar el código fuente contra un checklist de seguridad
@@ -1032,7 +1027,6 @@ AGILE SDDF — Sistema de invocación de skills (34 skills · 10 agentes + 7 sub
 SKILLS TRANSVERSALES (invocables en cualquier momento)
 ├── header-aggregation    → frontmatter YAML canónico (individual o batch por directorio)
 ├── docs-wiki-builder     [--update | --dry-run] → index.md con wikilinks [[slug]]
-├── readme-builder        → README.md (3 niveles de degradación según artefactos disponibles)
 └── security-audit        → audit-report.md (OWASP Top 10 · API Top 10 · LLM Top 10)
 
 DISTRIBUCIÓN
@@ -1101,7 +1095,9 @@ en `security-audit/agents/` y `qa-engineer` en `story-verify/agents/`.
 `story-verify` no saben nada de React, Playwright ni npm scripts. Los skills *worker* específicos por
 tecnología viven en el repositorio de extensiones `agile-sddf-extension`, se instalan aparte y se
 declaran en `sddf.config.yaml` bajo `implement.test_generators` e `implement.code_generators`. Esta
-frontera permite que el core evolucione sin arrastrar el ciclo de vida de cada stack soportado.
+frontera permite que el core evolucione sin arrastrar el ciclo de vida de cada stack soportado. La
+extensión aloja además utilidades documentales como `readme-builder`, cuya plantilla evoluciona con
+las convenciones de presentación de cada proyecto y no con el pipeline SDD.
 
 ## 11. Referencias
 

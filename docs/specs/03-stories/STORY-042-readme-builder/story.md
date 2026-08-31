@@ -13,6 +13,11 @@ parent: EPIC-09-docs-and-wiki-builders
 <!-- Referencias -->
 [[EPIC-09-docs-and-wiki-builders]]
 
+> **Nota (2026-08-30):** el skill `readme-builder` que esta historia entregó ya no vive en este
+> repositorio; se movió al repositorio de extensiones
+> [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension). La historia se
+> conserva como registro del trabajo realizado.
+
 # Historia de Usuario
 
 ## ?? Historia: README.md builder

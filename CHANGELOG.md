@@ -10,6 +10,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2.0.2] — 2026-08-30 — `readme-builder` sale del core
+
+### Removed
+
+- **Skill `readme-builder`** — la generación del `README.md` se movió al repositorio de extensiones
+  [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension). Su plantilla
+  evoluciona con las convenciones de presentación de cada proyecto, no con el pipeline SDD, así que
+  seguía el mismo criterio de frontera que ya separaba a `skill-master` y `skill-test-evals` del
+  core (ver 2.0.0). Quien lo use debe instalarlo con
+  `npx skills add dariopalminio/agile-sddf-extension --skill readme-builder`. El core pasa de 34 a
+  33 skills. `FR-049` de `project.md` queda retirado; `STORY-042` y `EPIC-09` se conservan como
+  registro histórico del trabajo.
+
+---
+
 ## [2.0.0] — 2026-08-30 — Épicas, niveles numerados y prefijo STORY (EPIC-18 + ADR-0004/0005/0006)
 
 > **Versión major.** Renombra el work item de nivel medio (`release` → **épica**), cambia el prefijo

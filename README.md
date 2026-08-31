@@ -425,9 +425,6 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLAN → REA
 # Genera diagrama de contexto C4 Nivel 1 infiriendo desde documentos de specs existentes
 /project-context-diagram --from-files
 
-# Genera README.md completo a partir de los artefactos de specs del proyecto
-/readme-builder
-
 # Políticas del proyecto: Genera o actualiza constitution.md y definition-of-done-story.md
 /project-policies-generation
 ```
@@ -587,7 +584,7 @@ Esos workers viven en un repositorio aparte:
 | **Meta-framework** | `skill-master` (creación y benchmarking de skills), `skill-test-evals` (ciclo de vida de `evals.json`) |
 | **Implementación** | `code-backend-nestjs`, `code-frontend-library-react` |
 | **Testing** | `test-nestjs-jest-testing-module`, `test-nestjs-supertest`, `test-react-testing-library`, `test-cypress-cucumber`, `test-playwright-cucumber` |
-| **Utilidades** | `doc-policy-creator`, `doc-release-notes`, `ui-generate-design-md` |
+| **Utilidades** | `doc-policy-creator`, `doc-release-notes`, `readme-builder` (genera el `README.md` desde los artefactos de specs), `ui-generate-design-md` |
 | **Soporte OpenSpec** | `openspec-init-config`, `openspec-generate-baseline` |
 
 Stacks cubiertos hoy: **NestJS** (Jest, Supertest), **React** (Testing Library, Vitest) y **E2E** con
