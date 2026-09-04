@@ -9,6 +9,7 @@ reviewers:
   - tech-lead-reviewer
   - product-owner-reviewer
   - integration-reviewer
+  - security-reviewer
 ---
 
 # Code Review Report: {{STORY_ID}}
@@ -20,7 +21,7 @@ reviewers:
 | Historia | {{STORY_ID}} — {{STORY_TITLE}} |
 | Review status | {{REVIEW_STATUS}} |
 | Severidad máxima detectada | {{MAX_SEVERITY}} |
-| Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer |
+| Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer, Security-Reviewer |
 | testcases.md | {{TESTCASES_STATUS}} |
 | Fecha | {{DATE}} |
 
@@ -43,6 +44,12 @@ reviewers:
 ### Integración y Arquitectura (Integration-Reviewer)
 
 {{INTEGRATION_FINDINGS}}
+
+---
+
+### Seguridad (Security-Reviewer)
+
+{{SECURITY_FINDINGS}}
 
 ---
 

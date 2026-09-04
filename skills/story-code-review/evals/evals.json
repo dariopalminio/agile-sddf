@@ -1,13 +1,13 @@
 {
   "skill": "story-code-review",
   "version": "1.0.0",
-  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente (happy path aprobado, needs-changes con fix-directives, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio y disciplina de dependencias), asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
+  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo happy path aprobado, needs-changes con fix-directives, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias y fallback del Security-Reviewer al baseline embebido, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
   "cases": [
     {
       "id": "TC-001",
       "name": "happy-path-revision-aprobada",
       "type": "happy-path",
-      "description": "Flujo completo con historia en IMPLEMENT/DONE, story.md y design.md presentes, implement-report.md y testcases.md disponibles. Los tres agentes revisores y security-audit no reportan hallazgos de severidad HIGH ni MEDIUM. El skill debe generar code-review-report.md con review-status approved, actualizar story.md a CODE-REVIEW/DONE y no generar fix-directives.md.",
+      "description": "Flujo completo con historia en IMPLEMENT/DONE, story.md y design.md presentes, implement-report.md y testcases.md disponibles. Los cuatro agentes revisores no reportan hallazgos de severidad HIGH ni MEDIUM. El skill debe generar code-review-report.md con review-status approved, actualizar story.md a CODE-REVIEW/DONE y no generar fix-directives.md.",
       "input": {
         "story_id": "STORY-010",
         "story_status": "IMPLEMENT",
@@ -17,7 +17,7 @@
           "tech_lead_max_severity": "ninguna",
           "product_owner_max_severity": "ninguna",
           "integration_max_severity": "ninguna",
-          "security_audit_status": "pass"
+          "security_max_severity": "ninguna"
         }
       },
       "expected": {
@@ -63,7 +63,7 @@
           ],
           "product_owner_max_severity": "ninguna",
           "integration_max_severity": "ninguna",
-          "security_audit_status": "fail"
+          "security_max_severity": "ninguna"
         }
       },
       "expected": {
@@ -169,7 +169,7 @@
           ],
           "product_owner_max_severity": "ninguna",
           "integration_max_severity": "ninguna",
-          "security_audit_status": "pass"
+          "security_max_severity": "ninguna"
         }
       },
       "expected": {
@@ -192,7 +192,7 @@
       "id": "TC-006",
       "name": "advertencia-tamano-cambio-no-afecta-approved",
       "type": "happy-path",
-      "description": "Historia en IMPLEMENT/DONE con implement-report.md que lista 15 archivos generados, pero ningun agente ni security-audit reporta severidad HIGH/MEDIUM. El skill debe mostrar la nota informativa de tamano de cambio (Paso 4c.2) sugiriendo /story-split, sin que esto afecte el calculo de max-severity ni review-status: debe seguir siendo approved y story.md debe avanzar a CODE-REVIEW/DONE.",
+      "description": "Historia en IMPLEMENT/DONE con implement-report.md que lista 15 archivos generados, pero ninguno de los cuatro agentes reporta severidad HIGH/MEDIUM. El skill debe mostrar la nota informativa de tamano de cambio (Paso 4c.2) sugiriendo /story-split, sin que esto afecte el calculo de max-severity ni review-status: debe seguir siendo approved y story.md debe avanzar a CODE-REVIEW/DONE.",
       "input": {
         "story_id": "STORY-060",
         "story_status": "IMPLEMENT",
@@ -203,7 +203,7 @@
           "tech_lead_max_severity": "ninguna",
           "product_owner_max_severity": "ninguna",
           "integration_max_severity": "ninguna",
-          "security_audit_status": "pass"
+          "security_max_severity": "ninguna"
         }
       },
       "expected": {
@@ -245,7 +245,7 @@
           ],
           "product_owner_max_severity": "ninguna",
           "integration_max_severity": "ninguna",
-          "security_audit_status": "pass"
+          "security_max_severity": "ninguna"
         }
       },
       "expected": {
@@ -258,6 +258,44 @@
         "not_contains": [
           "approved",
           "CODE-REVIEW/DONE"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-008",
+      "name": "seguridad-sin-checklist-usa-baseline",
+      "type": "happy-path",
+      "description": "Historia en IMPLEMENT/DONE en un proyecto que no tiene checklists de seguridad en docs/policies/references/ ni ningun skill de seguridad instalado en el contexto de ejecucion. El Security-Reviewer debe caer a su baseline embebido, declararlo en checklist-sources y no encontrar hallazgos. El skill debe consolidar la dimension security como un revisor mas (sin logica especial de pass/fail/skipped), generar code-review-report.md con la seccion Seguridad y marcar story.md como CODE-REVIEW/DONE.",
+      "input": {
+        "story_id": "STORY-080",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "implement-report.md"],
+        "security_checklists_present": [],
+        "security_skill_installed": false,
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna",
+          "security_checklist_sources": "baseline-embebido"
+        }
+      },
+      "expected": {
+        "contains": [
+          "approved",
+          "baseline",
+          "security-reviewer",
+          "Seguridad",
+          "CODE-REVIEW",
+          "DONE"
+        ],
+        "not_contains": [
+          "security-audit",
+          "needs-changes",
+          "fix-directives.md",
+          "READY-FOR-IMPLEMENT"
         ]
       },
       "threshold": 0.85

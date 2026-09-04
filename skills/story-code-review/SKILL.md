@@ -1,8 +1,8 @@
 ---
 name: story-code-review
 description: >-
-  Genera code-review-report.md con revisión multi-agente: 3 subagentes (Inspector de Código,
-  Guardián de Requisitos, Inspector de Integración) + skill security-audit en paralelo.
+  Genera code-review-report.md con revisión multi-agente: 4 subagentes en paralelo (Inspector de
+  Código, Guardián de Requisitos, Inspector de Integración, Auditor de Seguridad).
   Usar después de story-implement como quality gate antes de Done.
   Invocar para "code review", "revisar código", "story-code-review",
   "quality gate post-implement" o "validar implementación".
@@ -19,12 +19,12 @@ triggers:
 
 ## Objetivo
 
-Quality gate formal entre la implementación y la marca final de Done. Compatible con `/story-implement` (TDD completo) y `/story-implement-tasks` (tarea a tarea). Lanza tres subagentes revisores en paralelo, consolida sus hallazgos y genera `code-review-report.md` con la decisión final.
+Quality gate formal entre la implementación y la marca final de Done. Compatible con `/story-implement` (TDD completo) y `/story-implement-tasks` (tarea a tarea). Lanza cuatro subagentes revisores en paralelo, consolida sus hallazgos y genera `code-review-report.md` con la decisión final.
 
 **Qué hace este skill:**
 - Verifica precondiciones antes de revisar (fail-fast ante artefactos faltantes)
 - Limpia `.tmp/story-code-review/{story_id}/` para garantizar idempotencia
-- Lanza tres subagentes revisores en paralelo con responsabilidades exclusivas
+- Lanza cuatro subagentes revisores en paralelo con responsabilidades exclusivas
 - Consolida los informes parciales y calcula la severidad máxima
 - **Si `approved`**: genera `code-review-report.md`, elimina `fix-directives.md` (si existe) y marca `story.md` como `CODE-REVIEW/DONE`
 - **Si `needs-changes`**: genera `fix-directives.md`, agrega tarea "Implementar fix-directives.md" en `tasks.md` y retrocede `story.md` a `READY-FOR-IMPLEMENT/DONE`
@@ -91,8 +91,8 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 
 ## Dependencias
 
-- Skills: [`skill-preflight`, `security-audit`]
-- Agentes: [`tech-lead-reviewer`], [`product-owner-reviewer`], [`integration-reviewer`]
+- Skills: [`skill-preflight`]
+- Agentes locales: [`agents/tech-lead-reviewer.agent.md`, `agents/product-owner-reviewer.agent.md`, `agents/integration-reviewer.agent.md`, `agents/security-reviewer.agent.md`]
 
 ---
 
@@ -101,7 +101,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 - **Modo manual** (`/story-code-review {story_id}`): interactivo, muestra progreso de cada agente en tiempo real
 - **Modo Agent** (invocado por orquestador): automático, reporta resultado consolidado al finalizar
 
-El flujo por defecto es siempre el equipo de tres agentes. El flag `--single-agent` es la excepción para historias muy pequeñas.
+El flujo por defecto es siempre el equipo de cuatro agentes. El flag `--single-agent` es la excepción para historias muy pequeñas.
 
 ---
 
@@ -288,18 +288,20 @@ Eliminar el directorio `.tmp/story-code-review/{story_id}/` si existe y recrearl
 
 Esto garantiza que ejecuciones repetidas del skill producen el mismo resultado (NF-2).
 
-#### 3b. Lanzar cuatro participantes en paralelo
+#### 3b. Lanzar cuatro agentes en paralelo
 
 > **Mecanismo de invocación:** cada agente local se lanza leyendo su archivo `agents/<nombre>.agent.md` y creando un subagente `general-purpose` cuyo prompt es el contenido del archivo más el bloque de contexto con las variables resueltas. El subagente escribe en el `output:` declarado en su frontmatter y devuelve el control. Ver contrato completo en `docs/guides/best-practices-for-skills.md` (ADR-0002).
 
-Lanzar simultáneamente los siguientes subagentes y skill, pasando a cada agente:
+Lanzar simultáneamente los siguientes subagentes, pasando a cada agente:
 - `$STORY_DIR`: ruta del directorio de la historia
+- `$REPO_PATH`: ruta raíz del repositorio (`$SDDF_ROOT`)
 - `$CONSTITUTION_PATH`: ruta a constitution.md
 - `$DOD_PATH`: ruta a definition-of-done-story.md
 - `$IMPL_REPORT_AVAILABLE`: flag booleano de disponibilidad de implement-report.md
 - `$TESTCASES_AVAILABLE`: flag booleano de disponibilidad de testcases.md
+- `$IMPL_FILES`: lista de archivos implementados (extraída en el Paso 2c; puede estar vacía)
 
-> **Principio compartido — Estándar de aprobación:** los tres agentes aplican el mismo criterio: aprobar cuando el cambio mejora claramente la salud del código, sin bloquear por preferencia personal ni por buscar la solución perfecta. El texto completo está duplicado en la sección "Estándar de aprobación" de cada `agents/*.agent.md` (los subagentes no heredan el contexto de este SKILL.md).
+> **Principio compartido — Estándar de aprobación:** los cuatro agentes aplican el mismo criterio: aprobar cuando el cambio mejora claramente la salud del código, sin bloquear por preferencia personal ni por buscar la solución perfecta. El texto completo está duplicado en la sección "Estándar de aprobación" de cada `agents/*.agent.md` (los subagentes no heredan el contexto de este SKILL.md).
 
 **Agente 1 — Tech-Lead-Reviewer** (`agents/tech-lead-reviewer.agent.md`):
 - Revisa calidad, legibilidad, duplicación y seguridad del código fuente
@@ -313,11 +315,9 @@ Lanzar simultáneamente los siguientes subagentes y skill, pasando a cada agente
 - Valida que los componentes respetan la arquitectura de design.md
 - Output: `.tmp/story-code-review/{story_id}/integration-report.md`
 
-**Participante 4 — Security-Audit** (skill `security-audit`):
-- Invocación: `security-audit --repo $SDDF_ROOT --story $STORY_DIR`
-- Resuelve archivos modificados por la historia via git diff o tasks.md (delegado al skill)
-- Output: `.tmp/security-audit/<basename($STORY_DIR)>/audit-report.md`
-- Registrar `$SEC_AUDIT_REPORT = .tmp/security-audit/<basename($STORY_DIR)>/audit-report.md` (ej. `.tmp/security-audit/STORY-059-login-flow/audit-report.md`) para usarla en el Paso 4a
+**Agente 4 — Security-Reviewer** (`agents/security-reviewer.agent.md`):
+- Audita los archivos de la historia contra los checklists de seguridad que existan en el contexto de ejecución (`docs/policies/references/*security-checklist*.md`, o el checklist de un skill de seguridad instalado, que **lee** como fuente de reglas sin invocarlo); si no encuentra ninguno, aplica su baseline embebido
+- Output: `.tmp/story-code-review/{story_id}/security-report.md`
 
 Mostrar progreso:
 ```
@@ -325,7 +325,7 @@ Mostrar progreso:
    🔍 Tech-Lead-Reviewer     → analizando calidad de código
    📋 Product-Owner-Reviewer → verificando cobertura de requisitos
    🏗️  Integration-Reviewer   → validando integración con design.md
-   🔒 Security-Audit         → analizando archivos modificados
+   🔒 Security-Reviewer      → auditando seguridad de los archivos de la historia
 ```
 
 Esperar a que los cuatro finalicen antes de continuar.
@@ -340,28 +340,21 @@ Leer los archivos de `.tmp/story-code-review/{story_id}/`:
 - `tech-lead-report.md`
 - `product-owner-report.md`
 - `integration-report.md`
+- `security-report.md`
 
 **Si algún informe de agente falta o tiene frontmatter inválido:**
 Asumir `max-severity: HIGH` para ese agente (fail-safe).
 
-Leer `$SEC_AUDIT_REPORT` y determinar `$SECURITY_STATUS`:
-- Si el archivo **no existe** o contiene `source_files_found: false` → registrar `$SECURITY_STATUS = skipped`
-- Si el archivo existe y contiene `status: PASS` → registrar `$SECURITY_STATUS = pass`
-- Si el archivo existe y contiene `status: FAIL` → registrar `$SECURITY_STATUS = fail`
+Del `security-report.md`, registrar además los campos `checklist-sources` y `rules-evaluated` de su frontmatter para el reporte final.
 
 #### 4b. Calcular severidad máxima
 
 Para cada informe de agente, leer el campo `max-severity` del frontmatter.
 
-Incluir la severidad de security-audit según `$SECURITY_STATUS`:
-- `$SECURITY_STATUS = fail` → contribuye como `HIGH` al cálculo
-- `$SECURITY_STATUS = pass` → sin contribución a la severidad
-- `$SECURITY_STATUS = skipped` → sin contribución a la severidad
-
 Orden de severidad: `HIGH > MEDIUM > LOW > ninguna`
 
 ```
-max_severity = máxima severidad entre los cuatro participantes (tres agentes + security-audit)
+max_severity = máxima severidad entre los cuatro agentes
 ```
 
 #### 4c. Derivar review-status
@@ -373,8 +366,7 @@ review-status = needs-changes  si max_severity ∈ {HIGH, MEDIUM}
 
 Registrar internamente:
 - `$REVIEW_STATUS`: `approved` o `needs-changes`
-- `$MAX_SEVERITY`: valor calculado (considera los cuatro participantes)
-- `$SECURITY_STATUS`: `pass`, `fail` o `skipped`
+- `$MAX_SEVERITY`: valor calculado (considera los cuatro agentes)
 - Hallazgos consolidados por dimensión (tabla con columnas: #, Archivo:Línea, Dimensión, Severidad, Hallazgo, Recomendación)
 
 #### 4c.1. Evaluar criterios DoD CODE-REVIEW
@@ -388,7 +380,7 @@ Registrar internamente:
 
 Para cada criterio, evaluar semánticamente contra:
 - El código revisado (inferido del implement-report y los informes de agentes)
-- Los informes de los tres agentes (tech-lead-report, product-owner-report, integration-report)
+- Los informes de los cuatro agentes (tech-lead-report, product-owner-report, integration-report, security-report)
 - El contenido de `story.md` (criterios de aceptación, escenarios Gherkin)
 
 Clasificar cada criterio como:
@@ -432,7 +424,7 @@ Esta verificación es puramente informativa: **no participa en el cálculo de `$
    - `6 ≤ $CHANGED_FILES_COUNT ≤ 12` → `$CHANGE_SIZE_NOTE = "ℹ️ Nota informativa: tamaño de cambio aceptable (<N> archivos modificados) — sin acción requerida."`
    - `$CHANGED_FILES_COUNT > 12` → `$CHANGE_SIZE_NOTE = "⚠️ Nota informativa: tamaño de cambio elevado (<N> archivos modificados). Considera ejecutar /story-split antes de futuras historias similares para reducir el alcance. Esta nota es informativa y no afecta la decisión de este review."`
 
-No se invoca `git diff` ni ningún comando nuevo: el conteo reutiliza `$IMPL_FILES`, ya disponible desde el Paso 2c, evitando duplicar lo que `security-audit` resuelve internamente y manteniendo el orquestador sin lógica de Bash propia.
+No se invoca `git diff` ni ningún comando nuevo: el conteo reutiliza `$IMPL_FILES`, ya disponible desde el Paso 2c y ya pasado al Security-Reviewer en el Paso 3b, manteniendo el orquestador sin lógica de Bash propia.
 
 #### 4d. Bifurcación post-árbitro
 
@@ -459,10 +451,9 @@ Completar el template con:
 - Frontmatter: `story_id`, fecha actual, `$MAX_SEVERITY`
 - Sección "Resumen de bloqueantes": título de la historia, severidad máxima, total de hallazgos HIGH/MEDIUM (incluyendo hallazgos DoD si los hay)
 - Tabla "Instrucciones de corrección": una fila por hallazgo bloqueante (HIGH o MEDIUM) numeradas correlativamente, con columnas `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`
-  - Hallazgos de agentes: `Dimensión` = nombre del agente (code-quality, requirements-coverage, integration-architecture)
+  - Hallazgos de agentes: `Dimensión` = dimensión del agente (code-quality, requirements-coverage, integration-architecture, security)
   - Hallazgos DoD: `Dimensión` = `DoD-CODE-REVIEW`, `Archivo:Línea` = `docs/policies/definition-of-done-story.md:<número_de_línea>`
-  - Hallazgos de security-audit (si `$SECURITY_STATUS = fail`): `Dimensión` = `security-audit`; `Archivo:Línea` = valor del campo en `audit-report.md` cuando esté disponible, o `audit-report.md` cuando no haya ubicación específica
-  - Todos los hallazgos se numeran correlativamente sin IDs duplicados (agentes → DoD → security-audit)
+  - Todos los hallazgos se numeran correlativamente sin IDs duplicados (agentes → DoD)
 - Sección "Lista blanca de archivos permitidos": una línea por archivo de `$WHITELIST` con sus referencias de hallazgo
 
 Guardar en `$STORY_DIR/fix-directives.md`, sobreescribiendo si ya existe.
@@ -522,18 +513,15 @@ Leer `assets/code-review-report-template.md` como fuente de verdad de la estruct
 
 Completar el template con:
 - Frontmatter: `story_id`, `$REVIEW_STATUS`, fecha actual, `$MAX_SEVERITY`
-- Sección Resumen: título de la historia, revisores, severidad máxima
+- Sección Resumen: título de la historia, revisores (los cuatro), severidad máxima
   - `{{TESTCASES_STATUS}}`: `✓ analizado (<N> casos — UT:<N>/CT:<N>/IT:<N>/API:<N>/E2E:<N>/EV:<N>)` si `$TESTCASES_AVAILABLE = true`; o `⏭️ no encontrado — ejecuta /story-testcases para generar la especificación canónica` si `$TESTCASES_AVAILABLE = false`
 - Sección Hallazgos por dimensión: contenido de cada informe parcial
+- Sección `### Seguridad (Security-Reviewer)` — `{{SECURITY_FINDINGS}}`: contenido de la sección "Hallazgos" de `security-report.md`, precedido por una línea `**Fuentes de checklist:** <checklist-sources> (<rules-evaluated> reglas evaluadas)` con los valores leídos en el Paso 4a
 - Sección `### Cobertura de Casos de Prueba (testcases.md)` — `{{TESTCASES_COVERAGE_SECTION}}`:
   - **Si `$TESTCASES_AVAILABLE = false`:** `⏭️ testcases.md no encontrado — análisis de cobertura omitido. Considera ejecutar /story-testcases para generar la especificación canónica de pruebas.`
   - **Si `$TESTCASES_AVAILABLE = true`:** extraer y mostrar los hallazgos de la sección "Hallazgos — Cobertura en testcases.md" del `product-owner-report.md` y los hallazgos de la sección "Hallazgos — Trazabilidad de diseño en testcases.md" del `integration-report.md`
 - Sección `### Nota de Tamaño de Cambio` — `{{CHANGE_SIZE_NOTE}}`: contenido de `$CHANGE_SIZE_NOTE` calculado en el Paso 4c.2; si está vacío, dejar la sección sin contenido visible (no mostrar el placeholder literal)
 - Sección Decisión final: `$REVIEW_STATUS` con justificación
-- Sección `## Security Audit` (inyectada dinámicamente, después de los hallazgos de los tres revisores):
-  - **Si `$SECURITY_STATUS = pass`:** mostrar `✅ Security Audit: PASS` y resumen de reglas evaluadas (evaluated/pass/fail/na extraídos de `audit-report.md`)
-  - **Si `$SECURITY_STATUS = fail`:** mostrar `❌ Security Audit: FAIL`, resumen de reglas y listado de hallazgos FAIL con archivo, descripción y recomendación
-  - **Si `$SECURITY_STATUS = skipped`:** mostrar `⏭️ Security Audit: omitido — no se detectaron archivos fuente modificados`
 - Sección "Cumplimiento DoD — Fase CODE-REVIEW":
   - **Si `$DOD_CODE_REVIEW_CRITERIA` estaba vacío:** mostrar `⚠️ DoD CODE-REVIEW no encontrado — se omitió la validación. Verifica que $SPECS_BASE/policies/definition-of-done-story.md contiene la sección "CODE-REVIEW".`
   - **Si hay criterios evaluados:** completar tabla `| # | Criterio | Estado | Severidad | Evidencia |` con los resultados de `$DOD_CODE_REVIEW_RESULT` y línea de resumen `**Resumen:** N/Total criterios ✓`
@@ -575,10 +563,8 @@ Mostrar:
  Calidad de Código          │ <sev>     │ <N> hallazgos
  Cobertura de Requisitos    │ <sev>     │ <N> escenarios verificados
  Integración y Arquitectura │ <sev>     │ <N> hallazgos
+ 🔒 Seguridad               │ <sev>     │ <N> hallazgos (<N> reglas evaluadas)
  Cobertura testcases.md     │ <sev>/—   │ <N> casos analizados / ⏭️ omitido
- 🔒 Security Audit          │ PASS      │ <N> reglas evaluadas          (si ejecutó y pasó)
- 🔒 Security Audit          │ FAIL      │ <N> hallazgos de seguridad    (si ejecutó y falló)
- 🔒 Security Audit          │ —         │ omitido                       (si skipped)
  📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
@@ -604,10 +590,9 @@ O si hay hallazgos criticos:
  Calidad de Código          │ <sev>     │ <N> hallazgos
  Cobertura de Requisitos    │ <sev>     │ <N> hallazgos
  Integración y Arquitectura │ <sev>     │ <N> hallazgos
+ 🔒 Seguridad               │ <sev>     │ <N> hallazgos (<N> reglas evaluadas)
  Cobertura testcases.md     │ <sev>/—   │ <N> casos analizados / ⏭️ omitido
  DoD CODE-REVIEW            │ <sev>     │ <N> criterios no cumplidos
- 🔒 Security Audit          │ FAIL      │ <N> hallazgos de seguridad    (si ejecutó y falló)
- 🔒 Security Audit          │ —         │ omitido                       (si skipped)
  📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
@@ -637,7 +622,7 @@ Ejecuta /story-code-review {story_id} nuevamente tras corregir los hallazgos.
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |
-| `.tmp/security-audit/<basename($STORY_DIR)>/audit-report.md` | Temporal (si `$SECURITY_STATUS ≠ skipped`) |
+| `.tmp/story-code-review/{story_id}/security-report.md` | Temporal (intermedio) |
 
 Estado final de `story.md`:
 - `CODE-REVIEW/DONE` si la revisión es aprobada

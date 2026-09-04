@@ -27,5 +27,5 @@ y el skill avanza al Paso 2 (carga de contexto) sin emitir errores de precondici
    Estado: IMPLEMENT/DONE ✓
 ```
 
-El skill continúa con el Paso 2 (carga de contexto), lanza los tres agentes revisores
+El skill continúa con el Paso 2 (carga de contexto), lanza los cuatro agentes revisores
 y genera `code-review-report.md` al finalizar.

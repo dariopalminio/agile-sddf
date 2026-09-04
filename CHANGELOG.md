@@ -8,6 +8,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **`story-code-review` deja de depender del skill `security-audit`** — el Participante 4 pasa de ser
+  una invocación al skill `security-audit` a un agente local propio,
+  `skills/story-code-review/agents/security-reviewer.agent.md`. El agente descubre los checklists de
+  seguridad disponibles en el contexto de ejecución (`docs/policies/references/*security-checklist*.md`,
+  o el `assets/security-checklist.md` de un `security-audit` instalado, que **lee** como fuente de
+  reglas sin invocarlo — [[ADR-0002-invocacion-agentes-locales-de-skill]] prohíbe
+  `subagente → skill orquestador`) y cae a un baseline embebido de 8 reglas si no encuentra ninguno.
+  Los cuatro revisores comparten ahora el mismo contrato (`max-severity`), lo que elimina la lógica
+  dual de `$SECURITY_STATUS` (pass/fail/skipped) del Paso 4 y el acoplamiento a la ruta interna
+  `.tmp/security-audit/`. El skill `security-audit` sigue existiendo sin cambios como skill
+  independiente.
+
 ---
 
 ## [2.0.2] — 2026-08-30 — `readme-builder` sale del core
