@@ -42,6 +42,12 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 
 ---
 
+## Guardrails y reglas a seguir
+
+- [Checklist de Seguridad de IA](docs/policies/references/ai-security-checklist.md)
+- [Checklist de Seguridad de Código](docs/policies/references/code-security-checklist.md)
+- [Checklist de Creación de Skills](docs/policies/references/skill-creation-checklist.md)
+
 ## 📐 Convenciones de Código
 
 <!-- Define las reglas de estilo y formato que todo el código debe seguir. -->
