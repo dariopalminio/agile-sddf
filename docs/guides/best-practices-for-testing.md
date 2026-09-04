@@ -195,4 +195,4 @@ SDD exige diseñar especificaciones concisas de prueba antes de codificar. No es
 ## Fuentes y Lectura Adicional
 - [Glosario ISTQB: Regression Testing — Definición oficial y terminología de testing](https://glossary.istqb.org/en_US/search?term=&exact_matches_first=true)
 - [SmartBear State of Software Quality 2025 — Datos de industria sobre costos de defectos de regresión](https://smartbear.com/)
-- [Extreme Programming: Test-First](http://www.extremeprogramming.org/rules/testfirst.html)
+- [Martin Fowler: Test Driven Development — La práctica test-first de XP y el ciclo Red-Green-Refactor](https://martinfowler.com/bliki/TestDrivenDevelopment.html)

@@ -36,8 +36,32 @@ gh release create v1.5.6 --notes-from-tag
 
 # Publicación en NPM
 
+> ⚠️ **Paso de confirmación obligatorio — `npm publish` es irreversible.**
+> Una versión publicada no se puede reemplazar, y pasadas 72 h tampoco se puede despublicar.
+> Todo el que instale `agile-sddf` recibirá lo que se suba aquí, y el `postinstall` lo copiará
+> en su directorio de trabajo.
+>
+> Antes de ejecutar `npm publish`, confirmar las cuatro cosas y **detenerse ante cualquier duda**:
+>
+> 1. `npm publish --dry-run --access public` lista exactamente los archivos esperados (los del
+>    arreglo `files` de `package.json`) y ningún secreto, `.env` ni artefacto local.
+> 2. La versión de `package.json` es la nueva y no está ya publicada — comprobar con
+>    `npm view agile-sddf versions`.
+> 3. El tag y la release de GitHub del paso anterior existen y apuntan a este commit.
+> 4. `CHANGELOG.md` tiene la entrada de esta versión.
+>
+> Si un agente ejecuta este runbook, debe **pedir aprobación explícita al mantenedor** antes de
+> `npm publish` y mostrarle la salida del `--dry-run`. Sin respuesta afirmativa, no se publica:
+> el paso falla cerrado.
+
 ```bash
 npm login
+npm publish --dry-run --access public   # revisar la lista de archivos antes de continuar
+```
+
+Solo tras confirmar los cuatro puntos anteriores:
+
+```bash
 npm publish --access public
 ```
 

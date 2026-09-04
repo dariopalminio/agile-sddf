@@ -146,6 +146,31 @@ prints a line names the file and the breach.
 | Deterministic | Run the commands above; every `(error)` check prints nothing, and each `(warn)` line is triaged and either fixed or justified in the PR. |
 | Semantic | Review the semantic checklist against the diff (AI or human reviewer) and attach the result to the PR. |
 
+### Accepted exceptions
+
+These `(warn)` lines are expected output, not open findings: each one is a file that **quotes or
+specifies** a command rather than instructing an agent to run it, which the pattern match cannot
+tell apart. A run of the checks above that prints exactly these lines and nothing else is a pass.
+
+No rule, weight or check command was relaxed to accommodate them — this table is the whole
+concession. The compensating control is that every row pins a file **and a line**: if that file
+changes, the exception no longer describes it and the finding goes back to needing review. An
+exception whose line no longer matches its rule is expired and must be deleted, not updated.
+
+| File:line | Rule | Why the rule does not apply |
+|-----------|------|-----------------------------|
+| `docs/guides/best-practices-for-agents.md:58` | `ai-confirm-before-irreversible` | The `rm -rf` appears inside prose arguing *for* least privilege — that a test engineer needs no tool able to run it. Quoting the danger is the point of the sentence. |
+| `docs/runbooks/docker-dev-container-with-security-scann.md:30` | `ai-confirm-before-irreversible` | `rm -rf /var/lib/apt/lists/*` is standard apt cache cleanup inside a Docker image layer. It runs in the container build, never against the user's working directory. |
+| `docs/specs/02-epics/EPIC-17-remediating-and-improvement/plan-13-remove-gem-and-rovo.md:40` | `ai-confirm-before-irreversible` | Historical record of a plan already executed and archived. Spec artefacts describe what was done; they are not re-run. |
+| `docs/specs/03-stories/STORY-039-publicar-framework-en-npm/story.md:18,27,35` | `ai-confirm-before-irreversible` | `npm publish` appears inside Gherkin scenarios that *specify* the publication flow. The runbook that actually documents the command carries the confirmation step — see `docs/runbooks/deployment-to-npm.md`. |
+| `docs/specs/03-stories/STORY-046-publicar-npm-con-github-actions/story.md:30,46` | `ai-confirm-before-irreversible` | Same: acceptance criteria for the publish workflow, not an instruction to publish. |
+| `docs/specs/03-stories/STORY-087-error-in-npm-install-locally/story.md:153` | `ai-confirm-before-irreversible` | Same: reproduction notes for an install bug, quoting the command that produced it. |
+
+Decided by the maintainer (`dariopalminio`) while closing the audit that produced
+[SECURITY.md](../../../SECURITY.md), after triaging all eight `(warn)` findings: the two genuine
+ones — the missing confirmation in the npm runbook, and an `http://` reference in
+`docs/guides/best-practices-for-testing.md` — were fixed rather than excepted.
+
 ## Source of truth
 
 This guardrail **summarises** the AI-specific practice that applies to the agent-facing artefacts
