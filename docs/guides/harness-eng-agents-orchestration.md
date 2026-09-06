@@ -1,7 +1,7 @@
 ---
 type: guide
 slug: harness-engineering
-title: "Harness Engineering"
+title: "Harness Engineering: Orquestación de Skills y Agentes en Claude Code"
 date: 2026-03-26
 status: null
 substatus: null
@@ -16,53 +16,9 @@ related:
 [[best-practices-for-commands]]
 [[best-practices-for-skills]]
 
-# Harness Engineering
+# Harness Engineering: Orquestación de Skills y Agentes en Claude Code
 
 Harness Engineering es un enfoque de diseño y desarrollo de sistemas de IA que se centra en crear un entorno controlado y estructurado para que la IA opere de manera eficiente y efectiva.
-
-## Qué significa realmente el Harness Engineering
-
-El Harness Engineering consiste en construir un entorno de trabajo completo alrededor del modelo para que produzca resultados fiables. No se trata de escribir mejores prompts, sino de diseñar el sistema dentro del cual opera el modelo.
-
-Un harness tiene cinco subsistemas:
-```text
-    ┌────────────────────────────────────────────────────────────────┐
-    │                          EL HARNESS                            │
-    │                                                                │
-    │   ┌──────────────┐  ┌──────────────┐  ┌────────────────────┐   │
-    │   │ Instrucciones│  │    Estado    │  │   Verificación     │   │
-    │   │              │  │              │  │                    │   │
-    │   │ AGENTS.md    │  │ progress.md  │  │ tests + lint       │   │
-    │   │ CLAUDE.md    │  │ feature_list │  │ type-check         │   │
-    │   │ feature_list │  │ git log      │  │ smoke runs         │   │
-    │   │ docs/        │  │ traspaso ses.│  │ e2e pipeline       │   │
-    │   └──────────────┘  └──────────────┘  └────────────────────┘   │
-    │                                                                │
-    │   ┌──────────────┐  ┌──────────────────────────────────────┐   │
-    │   │   Alcance    │  │       Ciclo de Vida de Sesión        │   │
-    │   │              │  │                                      │   │
-    │   │ una feature  │  │ init.sh al inicio                    │   │
-    │   │ a la vez     │  │ checklist de estado limpio al final  │   │
-    │   │ definición   │  │ nota de traspaso a la próxima sesión │   │
-    │   │ de terminado │  │ commit solo si es seguro reanudar    │   │
-    │   └──────────────┘  └──────────────────────────────────────┘   │
-    │                                                                │
-    └────────────────────────────────────────────────────────────────┘
-
-    El MODELO decide qué código escribir.
-    El HARNESS gobierna cuándo, dónde y cómo lo escribe.
-    El harness no hace al modelo más inteligente.
-    Hace que la salida del modelo sea fiable.
-```
-
-Cada subsistema tiene una única función:
-
-- Instrucciones — Le dicen al agente qué hacer, en qué orden y qué leer antes de empezar. No es un único archivo gigante, sino una estructura de divulgación progresiva que el agente navega bajo demanda.
-- Estado — Registra qué se ha hecho, qué está en curso y qué viene después. Se persiste en disco para que la siguiente sesión retome exactamente donde lo dejó la anterior.
-- Verificación — Solo una suite de tests que pasa cuenta como evidencia. El agente no puede cantar victoria sin una prueba ejecutable.
-- Alcance — Restringe al agente a una feature a la vez. Sin excederse. Sin dejar tres cosas a medias. Sin reescribir la lista de features para ocultar trabajo sin terminar.
-- Ciclo de Vida de Sesión — Inicializar al comienzo. Limpiar al final. Dejar una ruta de reinicio limpia para la siguiente sesión.
-
 
 ## Principios clave del Harness Engineering
 

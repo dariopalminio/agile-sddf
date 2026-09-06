@@ -274,7 +274,7 @@ Las guías se dividen en guides (guías prácticas) y reference (documentación 
 - [[best-practices-for-skills]] — [best-practices-for-skills.md](guides/best-practices-for-skills.md) — Modelo de delegación, patrón `.tmp/<skill>/` y contrato de invocación de agentes locales (ADR-0002)
 - [[best-practices-for-agents]] — [best-practices-for-agents.md](guides/best-practices-for-agents.md) — Buenas prácticas para agentes
 - [[best-practices-for-commands]] — [best-practices-for-commands.md](guides/best-practices-for-commands.md) — Buenas prácticas para comandos de LLM clients
-- [[harness-engineering]] — [harness-engineering.md](guides/harness-engineering.md) — Harness engineering: modelo de delegación y relaciones permitidas
+- [[harness-eng-agents-orchestration]] — [harness-engineering.md](guides/harness-engineering.md) — Harness engineering: modelo de delegación y relaciones permitidas
 - [[skill-structural-pattern]] — [skill-structural-pattern.md](guides/skill-structural-pattern.md) — Patrones estructurales de skills
 - [[best-practices-for-system-prompt]] — [best-practices-for-system-prompt.md](guides/best-practices-for-system-prompt.md) — Mejores prácticas para el prompt de sistema y `AGENTS.md`
 
