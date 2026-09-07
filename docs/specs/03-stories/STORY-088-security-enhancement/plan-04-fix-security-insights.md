@@ -2,7 +2,7 @@
 
 ## Context
 
-Pregunta de partida: **¿se cumple [docs/policies/references/ai-security-checklist.md](docs/policies/references/ai-security-checklist.md) en este repositorio?**
+Pregunta de partida: **¿se cumple [docs/policies/ai-security-checklist.md](docs/policies/ai-security-checklist.md) en este repositorio?**
 
 Respuesta, tras correr las 11 reglas deterministas del bloque *How to run the validation* sobre los 446 archivos trackeados: **sí en todo lo que bloquea.** Las 7 reglas `(error)` pasan. Quedan **8 hallazgos `(warn)`**, y el guardrail no permite ignorarlos: *"`(warn)` does not block — apply it, or state why you did not"*. Hoy no están ni corregidos ni justificados en ninguna parte, así que el repo está en un estado indefinido respecto de su propia política.
 
@@ -76,7 +76,7 @@ El guardrail exige justificarlos, y una justificación que vive en el historial 
 
 1. **El guardrail completo queda limpio salvo las excepciones documentadas.** Extraer y correr el bloque tal como lo documenta el propio archivo:
    ```bash
-   sed -n '/^```bash$/,/^```$/p' docs/policies/references/ai-security-checklist.md | sed '1d;$d' > /tmp/run-ai.sh
+   sed -n '/^```bash$/,/^```$/p' docs/policies/ai-security-checklist.md | sed '1d;$d' > /tmp/run-ai.sh
    bash /tmp/run-ai.sh
    ```
    Esperado: `ai-confirm-before-irreversible` baja de 7 a 6 líneas (queda solo lo justificado en la tabla de excepciones) y `ai-https-only` no imprime nada.

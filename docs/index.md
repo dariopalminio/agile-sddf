@@ -27,7 +27,7 @@ Cargadas automáticamente en cada sesión vía prompt de sistema (`CLAUDE.md`, `
 
 - [[constitution]] — [constitution.md](policies/constitution.md) — Principios técnicos inamovibles, stack, estándares de construcción de skills
 - [[definition-of-done]] — [definition-of-done-story.md](policies/definition-of-done-story.md) — Definition of Done por estado del workflow de historia
-- [skill_creation_policy.md](policies/references/skill_creation_policy.md) — Política de creación de skills (referencia, sin frontmatter)
+- [skill_creation_policy.md](policies/skill_creation_policy.md) — Política de creación de skills (referencia, sin frontmatter)
 
 ---
 

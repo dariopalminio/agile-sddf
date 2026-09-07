@@ -59,7 +59,7 @@ output: .tmp/story-code-review/security-report.md
 - Si sigue vacío → registrar `scope: repositorio-no-resuelto` y emitir informe con `max-severity: ninguna` + nota informativa `⏭️ Sin archivos fuente resueltos — auditoría de seguridad omitida`. **Nunca ejecutar `git diff` ni comandos nuevos** (el skill ya evita lógica de Bash propia, ver Paso 4c.2 actual).
 
 ### Paso 2 — Descubrir checklists de seguridad (en orden, acumulativo)
-1. **Checklists de política del proyecto** — glob `docs/policies/references/*security-checklist*.md` bajo `$REPO_PATH` (y las rutas enlazadas desde `$CONSTITUTION_PATH` / `$DOD_PATH`). En este repo eso resuelve a [ai-security-checklist.md](docs/policies/references/ai-security-checklist.md) y [code-security-checklist.md](docs/policies/references/code-security-checklist.md), ya referenciados desde [constitution.md:47-48](docs/policies/constitution.md#L47-L48) y [definition-of-done-story.md:65-66](docs/policies/definition-of-done-story.md#L65-L66). Formato: líneas `- [ ] <regla> — grep: \`<rule-id>\` (error|warn)`.
+1. **Checklists de política del proyecto** — glob `docs/policies/*security-checklist*.md` bajo `$REPO_PATH` (y las rutas enlazadas desde `$CONSTITUTION_PATH` / `$DOD_PATH`). En este repo eso resuelve a [ai-security-checklist.md](docs/policies/ai-security-checklist.md) y [code-security-checklist.md](docs/policies/code-security-checklist.md), ya referenciados desde [constitution.md:47-48](docs/policies/constitution.md#L47-L48) y [definition-of-done-story.md:65-66](docs/policies/definition-of-done-story.md#L65-L66). Formato: líneas `- [ ] <regla> — grep: \`<rule-id>\` (error|warn)`.
 2. **Checklist de un skill de seguridad instalado** — buscar `*/security-audit/assets/security-checklist.md` bajo las rutas de instalación de skills que existan (`skills/`, `.claude/skills/`, `.agents/skills/`, `.github/skills/`). Si aparece, **leerlo como fuente de reglas** (formato `### SEC-NNN`, con `**Condición:**`, `**Severidad:**`, `**Patrones de detección:**`) y evaluar solo las reglas cuya condición sea plausible para los archivos del alcance. **Prohibido invocarlo con la herramienta `Skill`** — regla explícita en la sección "Reglas" del agente.
 3. **Ninguno encontrado** → usar el **baseline embebido** (abajo).
 
@@ -174,7 +174,7 @@ Entrada bajo `## [Unreleased]`, siguiendo el estilo narrativo existente:
 - **`story-code-review` deja de depender de `security-audit`** — el Participante 4 pasa de ser una
   invocación al skill `security-audit` a un agente local propio,
   `skills/story-code-review/agents/security-reviewer.agent.md`. El agente descubre los checklists de
-  seguridad disponibles en el contexto (`docs/policies/references/*security-checklist*.md`, o el
+  seguridad disponibles en el contexto (`docs/policies/*security-checklist*.md`, o el
   `assets/security-checklist.md` de un `security-audit` instalado, que lee como fuente de reglas sin
   invocarlo — ADR-0002 prohíbe subagente → skill orquestador) y cae a un baseline embebido de 8
   reglas si no encuentra ninguno. Los cuatro revisores comparten ahora el mismo contrato
@@ -197,10 +197,10 @@ Este repo no tiene tests ni build (`package.json` solo declara `postinstall`), a
 3. **Formato del agente nuevo** — frontmatter con `name`, `description`, `role`, `dimension`, `output`; comparar lado a lado con `tech-lead-reviewer.agent.md`.
 4. **Ejecución end-to-end** en este mismo repo (dogfooding): tomar una historia en `IMPLEMENT/DONE` y correr `/story-code-review <STORY-ID>`. Verificar que:
    - se crean los **cuatro** informes en `.tmp/story-code-review/<story_id>/`, incluido `security-report.md`;
-   - `security-report.md` cita en `checklist-sources` los checklists de `docs/policies/references/` (este repo sí los tiene);
+   - `security-report.md` cita en `checklist-sources` los checklists de `docs/policies/` (este repo sí los tiene);
    - `code-review-report.md` contiene la sección `### Seguridad (Security-Reviewer)` y ya **no** contiene `## Security Audit`;
    - `.tmp/security-audit/` **no** se crea durante la ejecución.
-5. **Fallback del baseline** — repetir contra un directorio sin `docs/policies/references/` para confirmar `checklist-sources: baseline-embebido`.
+5. **Fallback del baseline** — repetir contra un directorio sin `docs/policies/` para confirmar `checklist-sources: baseline-embebido`.
 6. **Encoding** — todos los `.md` guardados en UTF-8 sin BOM (restricción del propio SKILL.md); verificar que no aparecen `Ã³` ni `ðŸ"–`.
 
 > **Nota de convención (fuera de alcance):** los tres agentes existentes declaran `output: .tmp/story-code-review/<x>-report.md` mientras el SKILL.md usa `.tmp/story-code-review/{story_id}/<x>-report.md`. El agente nuevo replica la convención de sus hermanos para no introducir una tercera variante; unificar esa discrepancia es un cambio aparte.

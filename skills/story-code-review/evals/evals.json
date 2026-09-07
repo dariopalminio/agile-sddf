@@ -266,7 +266,7 @@
       "id": "TC-008",
       "name": "seguridad-sin-checklist-usa-baseline",
       "type": "happy-path",
-      "description": "Historia en IMPLEMENT/DONE en un proyecto que no tiene checklists de seguridad en docs/policies/references/ ni ningun skill de seguridad instalado en el contexto de ejecucion. El Security-Reviewer debe caer a su baseline embebido, declararlo en checklist-sources y no encontrar hallazgos. El skill debe consolidar la dimension security como un revisor mas (sin logica especial de pass/fail/skipped), generar code-review-report.md con la seccion Seguridad y marcar story.md como CODE-REVIEW/DONE.",
+      "description": "Historia en IMPLEMENT/DONE en un proyecto que no tiene checklists de seguridad en docs/policies/ ni ningun skill de seguridad instalado en el contexto de ejecucion. El Security-Reviewer debe caer a su baseline embebido, declararlo en checklist-sources y no encontrar hallazgos. El skill debe consolidar la dimension security como un revisor mas (sin logica especial de pass/fail/skipped), generar code-review-report.md con la seccion Seguridad y marcar story.md como CODE-REVIEW/DONE.",
       "input": {
         "story_id": "STORY-080",
         "story_status": "IMPLEMENT",

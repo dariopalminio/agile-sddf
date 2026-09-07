@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`story-code-review` deja de depender del skill `security-audit`** — el Participante 4 pasa de ser
   una invocación al skill `security-audit` a un agente local propio,
   `skills/story-code-review/agents/security-reviewer.agent.md`. El agente descubre los checklists de
-  seguridad disponibles en el contexto de ejecución (`docs/policies/references/*security-checklist*.md`,
+  seguridad disponibles en el contexto de ejecución (`docs/policies/*security-checklist*.md`,
   o el `assets/security-checklist.md` de un `security-audit` instalado, que **lee** como fuente de
   reglas sin invocarlo — [[ADR-0002-invocacion-agentes-locales-de-skill]] prohíbe
   `subagente → skill orquestador`) y cae a un baseline embebido de 8 reglas si no encuentra ninguno.

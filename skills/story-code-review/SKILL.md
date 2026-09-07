@@ -316,7 +316,7 @@ Lanzar simultáneamente los siguientes subagentes, pasando a cada agente:
 - Output: `.tmp/story-code-review/{story_id}/integration-report.md`
 
 **Agente 4 — Security-Reviewer** (`agents/security-reviewer.agent.md`):
-- Audita los archivos de la historia contra los checklists de seguridad que existan en el contexto de ejecución (`docs/policies/references/*security-checklist*.md`, o el checklist de un skill de seguridad instalado, que **lee** como fuente de reglas sin invocarlo); si no encuentra ninguno, aplica su baseline embebido
+- Audita los archivos de la historia contra los checklists de seguridad que existan en el contexto de ejecución (`docs/policies/*security-checklist*.md`, o el checklist de un skill de seguridad instalado, que **lee** como fuente de reglas sin invocarlo); si no encuentra ninguno, aplica su baseline embebido
 - Output: `.tmp/story-code-review/{story_id}/security-report.md`
 
 Mostrar progreso:

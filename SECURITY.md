@@ -17,7 +17,7 @@ Out of scope:
 
 - The applications an agent builds by *using* these skills. Their runtime, infrastructure and
   pipelines are governed by the security policy of that project — the boundary already stated at the
-  top of [docs/policies/references/code-security-checklist.md](docs/policies/references/code-security-checklist.md).
+  top of [docs/policies/code-security-checklist.md](docs/policies/code-security-checklist.md).
 - Model, training-data, vector-store and inference concerns. This repository hosts none of them.
 - Vulnerabilities in third-party tools this repository invokes or documents — Skill Shielder, Trivy,
   `fs-extra`. Report those upstream.
@@ -99,16 +99,16 @@ precisely because a grep will not read it.
 Two guardrails carry every rule, each classified by how it is verified — deterministically by a named
 command, or semantically by review:
 
-- [docs/policies/references/code-security-checklist.md](docs/policies/references/code-security-checklist.md)
+- [docs/policies/code-security-checklist.md](docs/policies/code-security-checklist.md)
   — secrets, executable scripts, tracked artefacts and documented commands.
-- [docs/policies/references/ai-security-checklist.md](docs/policies/references/ai-security-checklist.md)
+- [docs/policies/ai-security-checklist.md](docs/policies/ai-security-checklist.md)
   — agent-facing instructions, untrusted input and irreversible actions.
 
 Each file defines its checks in full, so they run with `git`, GNU `grep` and Python 3, with no
 external scanner. To run one:
 
 ```bash
-sed -n '/^```bash$/,/^```$/p' docs/policies/references/ai-security-checklist.md | sed '1d;$d' > run-guardrail.sh
+sed -n '/^```bash$/,/^```$/p' docs/policies/ai-security-checklist.md | sed '1d;$d' > run-guardrail.sh
 bash run-guardrail.sh
 ```
 

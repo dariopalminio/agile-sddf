@@ -51,7 +51,7 @@ Busca fuentes de reglas en este orden. Las fuentes son **acumulativas**: si encu
 
 ### 2a. Checklists de política del proyecto
 
-Buscar bajo `$REPO_PATH` archivos que coincidan con `docs/policies/references/*security-checklist*.md`, más cualquier ruta de checklist de seguridad enlazada desde `$CONSTITUTION_PATH` o `$DOD_PATH`.
+Buscar bajo `$REPO_PATH` archivos que coincidan con `docs/policies/*security-checklist*.md`, más cualquier ruta de checklist de seguridad enlazada desde `$CONSTITUTION_PATH` o `$DOD_PATH`.
 
 Formato esperado de estos checklists: líneas de la forma
 

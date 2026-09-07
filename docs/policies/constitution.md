@@ -44,11 +44,11 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 
 ## Guardrails y reglas a seguir
 
-- [Checklist de Seguridad de IA](docs/policies/references/ai-security-checklist.md)
-- [Checklist de Seguridad de Código](docs/policies/references/code-security-checklist.md)
-- [Checklist de Creación de Skills](docs/policies/references/skill-creation-checklist.md)
-- [Checklist de Creación de Agentes](docs/policies/references/agent-creation-checklist.md)
-- [Definition of Done - Story](docs/policies/references/definition-of-done-story.md)
+- [Checklist de Seguridad de IA](docs/policies/ai-security-checklist.md)
+- [Checklist de Seguridad de Código](docs/policies/code-security-checklist.md)
+- [Checklist de Creación de Skills](docs/policies/skill-creation-checklist.md)
+- [Checklist de Creación de Agentes](docs/policies/agent-creation-checklist.md)
+- [Definition of Done - Story](docs/policies/definition-of-done-story.md)
 
 ## 📐 Convenciones de Código
 
@@ -93,7 +93,7 @@ project (`$SPECS_BASE/specs/01-projects/<PROJECT-NAME>/project.md`)
 
 ## Estándares de construcción de Skills
 
-Respetar las [Política de Creación de Skills para Agentes de IA](docs/policies/references/skill_creation_policy.md)
+Respetar las [Política de Creación de Skills para Agentes de IA](docs/policies/skill_creation_policy.md)
 
 ### Patrones estructurales
 

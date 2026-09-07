@@ -17,7 +17,7 @@ Cambios aplicados:
 Nuevo agente — security-reviewer.agent.md, cuarto agente local del skill, con el mismo molde que sus tres hermanos (name/role/dimension/output, estándar de aprobación duplicado, mismo contrato de informe). Su flujo:
 
 Resuelve el alcance desde $IMPL_FILES → tasks.md → omite con max-severity: ninguna (nunca corre git diff por su cuenta).
-Descubre checklists acumulativamente: docs/policies/references/*security-checklist*.md + los enlazados desde constitution/DoD, y el security-audit/assets/security-checklist.md de un skill de seguridad instalado bajo skills/, .claude/skills/, .agents/skills/, .github/skills/.
+Descubre checklists acumulativamente: docs/policies/*security-checklist*.md + los enlazados desde constitution/DoD, y el security-audit/assets/security-checklist.md de un skill de seguridad instalado bajo skills/, .claude/skills/, .agents/skills/, .github/skills/.
 Si no hay ninguno → baseline embebido de 8 reglas (secretos, inyección, eval dinámico, autorización ausente, TLS deshabilitado, PII en logs, path traversal, HTML sin sanitizar).
 Normaliza severidades externas (CRITICAL|HIGH→HIGH, MEDIUM|error→MEDIUM, LOW|warn→LOW) y escribe security-report.md con checklist-sources y rules-evaluated.
 Regla explícita en el agente: el checklist del skill instalado se lee, no se invoca — ADR-0002 prohíbe subagente → skill orquestador.
