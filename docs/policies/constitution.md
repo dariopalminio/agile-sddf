@@ -48,6 +48,7 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 - [Checklist de Seguridad de Código](docs/policies/references/code-security-checklist.md)
 - [Checklist de Creación de Skills](docs/policies/references/skill-creation-checklist.md)
 - [Checklist de Creación de Agentes](docs/policies/references/agent-creation-checklist.md)
+- [Definition of Done - Story](docs/policies/references/definition-of-done-story.md)
 
 ## 📐 Convenciones de Código
 
