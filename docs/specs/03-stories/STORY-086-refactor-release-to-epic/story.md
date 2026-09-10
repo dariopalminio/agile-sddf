@@ -7,15 +7,15 @@ slug: STORY-086-refactor-release-to-epic
 title: "Renombrar el nivel L2 de release a épica y numerar los directorios de specs"
 status: COMPLETED
 substatus: DONE
-parent: null
+parent: EPIC-19-framework-consistency
 created: 2026-08-29
 updated: 2026-08-30
 related:
   - STORY-087
 ---
-**FINVEST Score:** [no aplica — historia de tipo chore, refactor estructural sin valor de usuario directo]
-**FINVEST Decisión:** [no aplica]
----
+<!-- Referencias -->
+[[EPIC-19-framework-consistency]]
+
 
 # 📖 Historia: Renombrar el nivel L2 de release a épica y numerar los directorios de specs
 

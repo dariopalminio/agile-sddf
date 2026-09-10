@@ -7,11 +7,11 @@ title: "Error en instalaci�n local de npm install agile-sddf en Windows 11"
 date: 2026-04-25
 status: COMPLETED
 substatus: READY
-parent: EPIC-08-npm-install-locally
+parent: EPIC-19-framework-consistency
 ---
 
 <!-- Referencias -->
-[[EPIC-08-npm-install-locally]]
+[[EPIC-19-framework-consistency]]
 
 ## Bug: Error en instalaci�n local de npm install agile-sddf en Windows 11
 
