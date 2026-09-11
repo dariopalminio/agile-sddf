@@ -1,17 +1,18 @@
 ---
-alwaysApply: false
-type: epic
-id: <EPIC-NN>
-slug: <nombre-del-directorio-de-la-epica>
-title: "<primer # heading del documento>"
-status: <ESTADO_INICIAL>
-substatus: IN-PROGRESS
-parent: null
-created: <YYYY-MM-DD>
-updated: <YYYY-MM-DD>
-related:
+alwaysApply: false   # escritor: epic-creation · epic-from-project-plan (valor fijo)
+type: epic   # escritor: epic-creation · epic-from-project-plan (valor fijo)
+id: <EPIC-NN>   # escritor: epic-creation · epic-from-project-plan
+slug: <nombre-del-directorio-de-la-epica>   # escritor: epic-creation · epic-from-project-plan
+title: "<primer # heading del documento>"   # escritor: epic-creation · epic-from-project-plan
+status: <ESTADO_INICIAL>   # escritor: epic-creation · epic-from-project-plan (inicial; ningún skill lo transiciona hoy)
+substatus: IN-PROGRESS   # escritor: epic-creation · epic-from-project-plan (inicial; ningún skill lo transiciona hoy)
+parent: null   # escritor: epic-creation · epic-from-project-plan
+created: <YYYY-MM-DD>   # escritor: epic-creation · epic-from-project-plan
+updated: <YYYY-MM-DD>   # escritor: epic-creation · epic-from-project-plan (inicial) · todo skill que edite el archivo (epic-generate-stories, epic-generate-all-stories, story-implement, story-implement-tasks)
+related:   # escritor: epic-creation · epic-from-project-plan
   - <slug de project relacionado (si existe)> <!-- Colocar referencias solo si existe proyecto relacionado -->
 ---
+<!-- escritor del cuerpo: epic-creation · epic-from-project-plan — salvo anotación distinta junto a la sección -->
 <!-- Referencias: colocar referencias solo si existe proyecto relacionado -->
 [[<slug de project relacionado (si existe)>]]
 
@@ -20,7 +21,7 @@ related:
 ## Descripción <!-- sección obligatoria-->
 [Explica el valor de negocio, qué problema resuelve y el contexto necesario. Máximo 3-4 líneas.]
 
-## Historias <!-- sección obligatoria-->
+## Historias <!-- sección obligatoria · escritor: epic-creation · epic-from-project-plan (inicial) · epic-generate-stories · epic-generate-all-stories (asignan STORY-NNN a cada línea) · story-implement · story-implement-tasks (marcan [x] al completar) -->
 - [ ] **[Nombre feature 1]:** [Breve descripción de la feature]
 - [ ] **[Nombre feature 2]:** [Breve descripción de la feature]
 - [ ] **[Nombre feature 3]:** [Breve descripción de la feature]

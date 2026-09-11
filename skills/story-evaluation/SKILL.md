@@ -193,6 +193,8 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 6. Si el archivo no es accesible o no tiene frontmatter YAML válido, emitir advertencia y continuar sin bloquear:
    `⚠️ No se pudo actualizar el frontmatter de: <ruta> — verifica permisos y formato`
 
+> La transición a `status: SPECIFY` / `substatus: DONE` es la **única huella de la aprobación en `story.md`** (equivale a decisión `APROBADA`); el score y la decisión viven exclusivamente en el frontmatter de `finvest-evaluation-report.md` (`finvest-score`, `decision`, `evaluated`) — el cuerpo de `story.md` no lleva ningún campo FINVEST (STORY-090).
+
 ---
 
 ### Rúbricas de referencia (F, I, N, V, E, S, T)

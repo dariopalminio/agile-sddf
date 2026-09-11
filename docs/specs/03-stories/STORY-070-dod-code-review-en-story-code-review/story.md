@@ -13,9 +13,6 @@ updated: 2026-05-13
 related:
   - EPIC-13-quality-gates-con-dod-en-story-workflow
 ---
-**FINVEST Score:** —
-**FINVEST Decisión:** —
----
 <!-- Referencias -->
 [[EPIC-13-quality-gates-con-dod-en-story-workflow]]
 

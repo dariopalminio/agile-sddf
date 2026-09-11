@@ -15,9 +15,6 @@ related:
   - STORY-070-dod-code-review-en-story-code-review
   - STORY-068-dod-plan-en-story-analyze
 ---
-**FINVEST Score:** [pendiente de evaluación]
-**FINVEST Decisión:** [pendiente de evaluación]
----
 <!-- Referencias -->
 [[EPIC-13-quality-gates-con-dod-en-story-workflow]]
 [[STORY-071-skill-story-verify]]

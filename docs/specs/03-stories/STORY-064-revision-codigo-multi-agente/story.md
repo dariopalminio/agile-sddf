@@ -15,9 +15,6 @@ related:
   - STORY-065-revision-con-bloqueantes
   - STORY-066-revision-validacion-precondiciones
 ---
-**FINVEST Score:** [FINVEST Score]
-**FINVEST Decisión:** [APROBADA | REFINAR | RECHAZAR]
----
 <!-- Referencias -->
 [[EPIC-12-story-sdd-workflow]]
 [[STORY-065-revision-con-bloqueantes]]

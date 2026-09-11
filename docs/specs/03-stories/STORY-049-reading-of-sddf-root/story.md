@@ -10,9 +10,6 @@ status: COMPLETED
 substatus: READY
 parent: EPIC-10-mejora-estructura-artefactos-nuevos-skills
 ---
-**FINVEST Score:** [pendiente]
-**FINVEST Decisión:** [pendiente]
----
 <!-- Referencias -->
 [[EPIC-10-mejora-estructura-artefactos-nuevos-skills]]
 

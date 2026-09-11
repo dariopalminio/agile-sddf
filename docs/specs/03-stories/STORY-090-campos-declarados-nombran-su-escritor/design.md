@@ -7,7 +7,7 @@ title: "Design: Todo campo declarado en un template nombra a su escritor"
 date: 2026-09-10
 status: PLAN
 substatus: IN-PROGRESS
-parent: EPIC-17-remediating-and-improvement
+parent: EPIC-19-framework-consistency
 related:
   - STORY-090-campos-declarados-nombran-su-escritor
   - STORY-089-story-fix-post-code-review
@@ -18,7 +18,7 @@ related:
 
 ## Context
 
-**Historia origen:** [[STORY-090-campos-declarados-nombran-su-escritor]] (kind: `chore`, épica `EPIC-17`).
+**Historia origen:** [[STORY-090-campos-declarados-nombran-su-escritor]] (kind: `chore`, épica `EPIC-19-framework-consistency`).
 
 **Criterios de aceptación de referencia** (numeración usada en todo el diseño):
 

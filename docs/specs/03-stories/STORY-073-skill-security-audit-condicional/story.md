@@ -12,9 +12,6 @@ created: 2026-05-15
 updated: 2026-05-15
 related: []
 ---
-**FINVEST Score:** [pendiente de evaluación]
-**FINVEST Decisión:** [pendiente de evaluación]
----
 <!-- Referencias -->
 [[EPIC-13-quality-gates-con-dod-en-story-workflow]]
 [[STORY-064-revision-codigo-multi-agente]]

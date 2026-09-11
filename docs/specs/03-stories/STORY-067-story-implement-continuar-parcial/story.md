@@ -15,9 +15,6 @@ related:
   - STORY-061-skill-de-implementacion-el-programador-autonomo
   - STORY-065-revision-con-bloqueantes
 ---
-**FINVEST Score:** 4.33 / 5.0
-**FINVEST Decisión:** APROBADA
----
 <!-- Referencias -->
 [[EPIC-12-story-sdd-workflow]]
 [[STORY-061-skill-de-implementacion-el-programador-autonomo]]

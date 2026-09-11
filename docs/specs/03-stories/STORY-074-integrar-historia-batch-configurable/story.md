@@ -14,9 +14,6 @@ related:
   - STORY-075
   - STORY-076
 ---
-**FINVEST Score:** [pendiente — ejecutar `/story-evaluation`]
-**FINVEST Decisión:** [pendiente]
----
 <!-- Historias resultante del split de STORY-074 -->
 [[STORY-075-integrar-historia-modo-manual-dryrun]]
 [[STORY-076-integrar-historia-multi-modelo-entrega]]

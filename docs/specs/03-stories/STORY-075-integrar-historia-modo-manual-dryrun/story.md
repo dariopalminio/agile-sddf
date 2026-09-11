@@ -14,9 +14,6 @@ related:
   - STORY-074
   - STORY-076
 ---
-**FINVEST Score:** [pendiente — ejecutar `/story-evaluation`]
-**FINVEST Decisión:** [pendiente]
----
 <!-- Historia adicional resultante del split de STORY-074 -->
 [[STORY-074-integrar-historia-batch-configurable]]
 

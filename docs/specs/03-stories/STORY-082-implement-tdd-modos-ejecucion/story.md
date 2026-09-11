@@ -15,9 +15,6 @@ related:
   - STORY-078
   - STORY-081
 ---
-**FINVEST Score:** [Por evaluar]
-**FINVEST Decisión:** [APROBADA | REFINAR | RECHAZAR]
----
 [[EPIC-14-fabrica-de-skills]]
 
 # 📖 Historia: story-implement — modos interactivo y automático de ejecución del ciclo TDD

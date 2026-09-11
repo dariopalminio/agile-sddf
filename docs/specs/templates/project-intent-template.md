@@ -1,17 +1,18 @@
 ---
-alwaysApply: false
-type: project
-id: <PROJ-NN>
-slug: < nombre-del-directorio-del-proyecto-project-intent | project-intent si es el primer documento >
-title: "<primer # heading del documento>"
-status: BEGINNING
-substatus: IN-PROGRESS
-parent: null
-created: <YYYY-MM-DD>
-updated: <YYYY-MM-DD>
-related:
+alwaysApply: false   # escritor: project-begin (project-pm) (valor fijo)
+type: project   # escritor: project-begin (project-pm) (valor fijo)
+id: <PROJ-NN>   # escritor: project-begin (project-pm)
+slug: < nombre-del-directorio-del-proyecto-project-intent | project-intent si es el primer documento >   # escritor: project-begin (project-pm)
+title: "<primer # heading del documento>"   # escritor: project-begin (project-pm)
+status: BEGINNING   # escritor: project-begin (project-pm) (valor fijo BEGINNING)
+substatus: IN-PROGRESS   # escritor: project-begin (project-pm; IN-PROGRESS durante la entrevista, DONE al completar) · project-flow (gate de revisión: lo lleva a DONE)
+parent: null   # escritor: project-begin (project-pm)
+created: <YYYY-MM-DD>   # escritor: project-begin (project-pm)
+updated: <YYYY-MM-DD>   # escritor: project-begin (project-pm) (inicial) · todo skill que edite el archivo
+related:   # escritor: project-begin (project-pm)
   - <slug del project.md o requirement-spec relacionado (si existe)>
 ---
+<!-- escritor del cuerpo: project-begin (project-pm) — salvo anotación distinta junto a la sección -->
 
 ## Definición del Problema
 <!-- Describe el problema central que este proyecto resuelve.

@@ -15,9 +15,6 @@ related:
   - STORY-064
   - STORY-066
 ---
-**FINVEST Score:** [FINVEST Score]
-**FINVEST Decisión:** [APROBADA | REFINAR | RECHAZAR]
----
 <!-- Referencias -->
 [[EPIC-12-story-sdd-workflow]]
 [[STORY-064-revision-codigo-multi-agente]]

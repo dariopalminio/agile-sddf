@@ -15,9 +15,6 @@ related:
   - STORY-078
   - STORY-082
 ---
-**FINVEST Score:** [Por evaluar]
-**FINVEST Decisión:** [APROBADA | REFINAR | RECHAZAR]
----
 [[EPIC-14-fabrica-de-skills]]
 
 # 📖 Historia: story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar

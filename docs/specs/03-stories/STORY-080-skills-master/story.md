@@ -16,9 +16,6 @@ related:
   - STORY-079-story-testcases
 ---
 
-**FINVEST Score:** [Por evaluar]  
-**FINVEST Decisión:** [APROBADA | REFINAR | RECHAZAR]
-
 [[EPIC-14-fabrica-de-skills]]
 
 ---

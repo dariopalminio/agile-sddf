@@ -15,9 +15,6 @@ related:
   - STORY-069-dod-IMPLEMENT-en-story-implement
   - STORY-070-dod-code-review-en-story-code-review
 ---
-**FINVEST Score:** [pendiente de evaluación]
-**FINVEST Decisión:** [pendiente de evaluación]
----
 <!-- Referencias -->
 [[EPIC-13-quality-gates-con-dod-en-story-workflow]]
 [[STORY-068-dod-plan-en-story-analyze]]

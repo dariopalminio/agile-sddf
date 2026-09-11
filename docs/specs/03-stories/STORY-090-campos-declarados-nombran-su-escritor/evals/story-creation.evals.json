@@ -1,0 +1,119 @@
+{
+  "skill": "story-creation",
+  "version": "1.0.0",
+  "description": "Evals de STORY-090 para story-creation: el template canónico de historia ya no declara el bloque FINVEST y lleva anotaciones `escritor:`; la historia instanciada no debe contener ni el campo ni las anotaciones, y el fail-fast sin template sigue intacto.",
+  "story": "STORY-090",
+  "source": "docs/specs/03-stories/STORY-090-campos-declarados-nombran-su-escritor/testcases.md",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "instancia-template-sin-campo-finvest-ni-anotaciones-escritor",
+      "type": "happy-path",
+      "story": "STORY-090",
+      "testcase_ref": "EV-001",
+      "description": "Con el template canónico anotado (comentarios `escritor:` y `<!-- escritor del cuerpo -->`) y sin el bloque FINVEST, /story-creation genera una historia de prueba que conserva la estructura del template (frontmatter, Como/Quiero/Para, Gherkin, criterios no funcionales, notas) pero no contiene el bloque `**FINVEST` ni copia ningún comentario de anotación al frontmatter ni al cuerpo. La historia generada se descarta tras la prueba.",
+      "input": {
+        "context": "Crear una historia de usuario de prueba para: un analista de soporte quiere filtrar los tickets abiertos por prioridad para atender primero los críticos. Entorno preflight OK; template canónico docs/specs/templates/story-template.md ya migrado por STORY-090 (sin bloque FINVEST, con anotaciones escritor:).",
+        "preconditions": [
+          "docs/specs/templates/story-template.md no contiene `**FINVEST Score:**` ni `**FINVEST Decisión:**`",
+          "docs/specs/templates/story-template.md contiene comentarios `# escritor:` en el frontmatter y `<!-- escritor del cuerpo:` tras el frontmatter",
+          "skills/story-creation/assets/story-template.md es idéntico al canónico (diff vacío)"
+        ],
+        "cleanup": "Eliminar el directorio STORY-NNN-* generado tras verificar el output"
+      },
+      "expected": {
+        "output_file": "docs/specs/03-stories/STORY-NNN-<slug>/story.md",
+        "contains": [
+          "type: story",
+          "status: SPECIFY",
+          "<!-- Referencias -->",
+          "# 📖 Historia:",
+          "**Como**",
+          "**Quiero**",
+          "**Para**",
+          "## ✅ Criterios de aceptación",
+          "Dado",
+          "Cuando",
+          "Entonces",
+          "## ⚙️ Criterios no funcionales",
+          "## 📎 Notas"
+        ],
+        "not_contains": [
+          "**FINVEST Score:**",
+          "**FINVEST Decisión:**",
+          "**FINVEST",
+          "# escritor:",
+          "escritor:",
+          "<!-- escritor del cuerpo",
+          "<!-- sección obligatoria",
+          "<!-- sección opcional",
+          "❌"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-sin-template-canonico-ni-seed",
+      "type": "fail-fast",
+      "story": "STORY-090",
+      "testcase_ref": "EV-002",
+      "description": "Con el template canónico y el seed ausentes (simulado en un directorio temporal con SDDF_ROOT apuntando a él), /story-creation se detiene con el mensaje de template no encontrado y no genera ningún archivo. Verifica que el retiro del bloque FINVEST no altera el comportamiento fail-fast previo.",
+      "input": {
+        "context": "Crear una historia de usuario para: un usuario quiere restablecer su contraseña por email.",
+        "preconditions": [
+          "SDDF_ROOT apunta a un directorio temporal (p. ej. .tmp/story-implement/STORY-090/eval/no-template/) sin docs/specs/templates/story-template.md",
+          "El fallback skills/story-creation/assets/story-template.md tampoco es resoluble desde ese entorno"
+        ],
+        "cleanup": "Eliminar el directorio temporal"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "No se encontró el template requerido"
+        ],
+        "not_contains": [
+          "**Como**",
+          "status: SPECIFY",
+          "**FINVEST",
+          "✅ Historia creada"
+        ],
+        "exit_gracefully": true,
+        "files_written": 0
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "epic-generate-stories-fallback-estructura-sin-bloque-finvest",
+      "type": "edge-case",
+      "story": "STORY-090",
+      "testcase_ref": "EV-001",
+      "description": "Caso límite derivado de IT-004/D-7: cuando epic-generate-stories no puede leer el template y usa su estructura de fallback (§4c), la historia generada tampoco contiene el bloque FINVEST ni anotaciones escritor:, porque ni el fallback ni el SKILL.md del escritor mencionan el literal. Cubre a los co-escritores del template de historia (epic-generate-stories / epic-generate-all-stories) que instancian el mismo template que story-creation.",
+      "input": {
+        "context": "Generar historias desde una épica de prueba EPIC-99-eval-story-090 con una sola feature, en un entorno donde docs/specs/templates/story-template.md no existe y el skill recurre a la estructura de fallback de §4c.",
+        "preconditions": [
+          "Directorio docs/specs/02-epics/EPIC-99-eval-story-090/epic.md con una feature en su tabla",
+          "docs/specs/templates/story-template.md ausente (renombrado temporalmente) para forzar el fallback"
+        ],
+        "cleanup": "Restaurar el template y eliminar EPIC-99-* y la STORY-NNN-* generada"
+      },
+      "expected": {
+        "output_file": "docs/specs/03-stories/STORY-NNN-<slug>/story.md",
+        "contains": [
+          "type: story",
+          "status: SPECIFY",
+          "parent: EPIC-99-eval-story-090",
+          "## 📖 Historia:"
+        ],
+        "not_contains": [
+          "**FINVEST Score:**",
+          "**FINVEST Decisión:**",
+          "escritor:",
+          "<!-- escritor del cuerpo"
+        ]
+      },
+      "threshold": 0.95
+    }
+  ]
+}

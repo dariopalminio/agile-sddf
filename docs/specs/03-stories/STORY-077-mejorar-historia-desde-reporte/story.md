@@ -12,9 +12,6 @@ created: 2026-05-17
 updated: 2026-05-17
 related: []
 ---
-**FINVEST Score:** [pendiente — ejecutar `/story-evaluation`]
-**FINVEST Decisión:** [pendiente]
----
 
 # 📖 Historia: story-improve — Mejora automática de historia desde reporte FINVEST
 

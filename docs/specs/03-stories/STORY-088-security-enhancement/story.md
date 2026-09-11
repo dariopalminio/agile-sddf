@@ -13,9 +13,6 @@ updated: 2026-09-10
 related:
   - EPIC-19-framework-consistency
 ---
-**FINVEST Score:** —
-**FINVEST Decisión:** —
----
 <!-- Referencias -->
 [[EPIC-19-framework-consistency]]
 

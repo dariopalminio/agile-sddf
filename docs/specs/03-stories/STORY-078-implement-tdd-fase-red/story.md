@@ -15,9 +15,6 @@ related:
   - STORY-081
   - STORY-082
 ---
-**FINVEST Score:** [Por evaluar]
-**FINVEST Decisión:** APROBADA
----
 [[EPIC-14-fabrica-de-skills]]
 
 # 📖 Historia: story-implement — Fase RED: validar configuración y generar pruebas
@@ -80,3 +77,4 @@ Invocar `skill-preflight` antes de cualquier operación. Si retorna `✗ Entorno
 - **Historias hermanas:** STORY-081 (Fases GREEN y REFACTOR), STORY-082 (modos de ejecución)
 - **Output de esta historia:** archivos de prueba generados en el código productivo + confirmación de estado rojo. El estado de story.md no se modifica en esta fase.
 - **Configuración esperada en sddf-config.yaml:** sección `IMPLEMENT.test_generators` con lista de entradas `{type, skill, required}`.
+- **Campo FINVEST retirado (STORY-090):** el valor `FINVEST Decisión: APROBADA` que figuraba en el cuerpo se retiró sin `finvest-evaluation-report.md` asociado; era redundante con el `status` del frontmatter (posterior a `SPECIFY/DONE`), por lo que la pérdida se acepta y queda registrada aquí.

@@ -53,22 +53,21 @@ SPECIFY --> PLAN --> READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIF
 Rejected path:
 ```
 READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> DELIVER --> COMPLETED
-       |                                   |            |            | 
-       |                                REJECTED     REJECTED     REJECTED
-       |                                   |            |            |         
-       |                                   v            v            v           
-       <------------------------------------------------------------------          
+                            ▲              │            │            │
+                            │              ▼            ▼            ▼
+                            └─────────────────────────────────────────        
 ```
 
-- SPECIFY – Especificación de requisitos.
-- PLAN – Fase donde se generan design.md, tasks.md, testcases.md y analyze.md.
-- READY-FOR-IMPLEMENT – Cola buffer.
-- IMPLEMENT – Fase donde se escribe código y se ejecuta TDD.
-- CODE-REVIEW – Revisión de código independiente (IA o humano).
-- VERIFY – Fase donde se ejecutan pruebas automáticas.
-- ACCEPTANCE – Aceptación humana o del PO.  
-- DELIVER – Incremento listo para entregar o ya entregado al usuario. Cubre tanto el modelo batch (potencialmente entregable, esperando ventana de despliegue) como el modelo continuous (ya desplegado en producción).
-- COMPLETED – Estado final "Done".
+- SPECIFY: Especificación funcional de requisitos.
+- PLAN: Diseño técnico.
+- READY-FOR-IMPLEMENT: Cola buffer y señal de listo para implementar con WIP limitado.
+- IMPLEMENT: Se escribe código y se ejecuta TDD..
+- CODE-REVIEW: Revisión de código independiente (IA o humano).
+- VERIFY: Se ejecutan pruebas automáticas (unitarias, de integración y de regresión).
+- ACCEPTANCE: Aceptación humana o del PO (pruebas exploratorias y Criteriosde Aceptación).  
+- DELIVER: Desplegando a producción.
+- COMPLETED: Estado final "Done" y cierre administrativo.
+- CANCELED: La historia fue cancelada sin entregar.
 
 > La máquina de estados completa con transiciones skill a skill, retrocesos y los niveles project y épica está en [[state-machine]].
 
@@ -79,12 +78,13 @@ Happy path:
 DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED
 ```
 
-- DEFINE – Se define el alcance: objetivos de alto nivel, features que componen la épica, criterios de éxito y valor esperado. Se documenta en `epic.md`.
-- PLAN – Se planifica la ejecución: se desglosan las historias de usuario, se asignan a épicas, se estima esfuerzo y se identifican dependencias.
-- READY-FOR-DEV – Estado buffer. La épica está completamente planificada, priorizada y aprobada. Espera a que el equipo tenga capacidad para comenzar el desarrollo. Se aplican límites de WIP.
-- DEVELOP – Desarrollo en curso: las historias de la épica se implementan. La épica permanece aquí hasta que todas las historias estén entregadas.
-- VALIDATE – Se ejecutan pruebas de integración y regresión del conjunto completo (end-to-end, UAT, requisitos no funcionales).
-- SHIP – La épica se libera: se publica el artefacto, se despliega a producción o se marca como disponible para los usuarios finales. Último estado activo.
-- COMPLETED – Estado terminal pasivo. La épica está cerrada administrativamente. Sin acciones pendientes.
+- DEFINE: Se define el alcance: objetivos de alto nivel, features que componen la épica, criterios de éxito y valor esperado. Se documenta en `epic.md`.
+- PLAN: Se planifica la ejecución: se desglosan las historias de usuario, se asignan a épicas, se estima esfuerzo y se identifican dependencias.
+- READY-FOR-DEV: Estado buffer. La épica está completamente planificada, priorizada y aprobada. Espera a que el equipo tenga capacidad para comenzar el desarrollo. Se aplican límites de WIP.
+- DEVELOP: Desarrollo en curso: las historias de la épica se implementan. La épica permanece aquí hasta que todas las historias estén entregadas.
+- VALIDATE: Se ejecutan pruebas de integración y regresión del conjunto completo (end-to-end, UAT, requisitos no funcionales).
+- SHIP: La épica se libera: se publica el artefacto, se despliega a producción o se marca como disponible para los usuarios finales. Último estado activo.
+- COMPLETED: Estado terminal pasivo. La épica está cerrada administrativamente. Sin acciones pendientes.
+- CANCELED: La épica fue cancelada sin entregar.
 
 > Ver diagrama Mermaid y tabla de transiciones en [[state-machine]].

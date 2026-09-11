@@ -13,9 +13,6 @@ updated: 2026-05-29
 related:
   - EPIC-14-fabrica-de-skills
 ---
-**FINVEST Score:** [Por evaluar]
-**FINVEST Decisión:** [APROBADA | REFINAR | RECHAZAR]
----
 [[EPIC-14-fabrica-de-skills]]
 
 # 📖 Historia: story-testcases — generación de testcases.md desde story.md y design.md

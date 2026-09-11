@@ -1,0 +1,108 @@
+{
+  "skill": "story-improve",
+  "version": "1.0.0",
+  "description": "Evals de STORY-090 para story-improve: tras retirar el bloque FINVEST del cuerpo de story.md, el skill sigue obteniendo score y decisión exclusivamente del frontmatter de finvest-evaluation-report.md, y falla de forma explícita cuando el reporte no existe.",
+  "story": "STORY-090",
+  "source": "docs/specs/03-stories/STORY-090-campos-declarados-nombran-su-escritor/testcases.md",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "lee-score-y-decision-del-reporte-no-del-cuerpo",
+      "type": "happy-path",
+      "story": "STORY-090",
+      "testcase_ref": "EV-003",
+      "description": "Historia migrada (sin bloque FINVEST en el cuerpo; el `---` del frontmatter va seguido de `<!-- Referencias -->`) con finvest-evaluation-report.md cuyo frontmatter declara `decision: REFINAR` y `finvest-score: 3.5`. /story-improve lee decision y finvest-score del frontmatter del reporte, supera el gate (REFINAR) y procede: crea story.md.bak y story-improvement-log.md con `previous-score: 3.5`. No reporta ausencia de datos.",
+      "input": {
+        "flags": ["--story-id STORY-091"],
+        "context": "Directorio docs/specs/03-stories/STORY-091-eval-story-090/ (fixture temporal) con story.md migrado y finvest-evaluation-report.md",
+        "fixtures": {
+          "story.md": "Frontmatter válido (type: story, id: STORY-091, status: SPECIFY, substatus: IN-PROGRESS) seguido directamente de `<!-- Referencias -->`; sin líneas `**FINVEST Score:**` / `**FINVEST Decisión:**`; cuerpo Como/Quiero/Para con al menos un escenario Gherkin",
+          "finvest-evaluation-report.md": "Frontmatter con `type: finvest-evaluation`, `story-id: STORY-091`, `finvest-score: 3.5`, `decision: REFINAR`, `evaluated: 2026-09-10`; tabla de scores con al menos una dimensión <= 3 y sección Comentarios y Recomendaciones con una recomendación accionable"
+        },
+        "cleanup": "Eliminar el directorio STORY-091-eval-story-090 tras la prueba"
+      },
+      "expected": {
+        "output_file": "docs/specs/03-stories/STORY-091-eval-story-090/story-improvement-log.md",
+        "contains": [
+          "REFINAR",
+          "3.5",
+          "previous-score: 3.5",
+          "story-improvement-log.md",
+          "story.md.bak"
+        ],
+        "not_contains": [
+          "❌",
+          "ℹ️",
+          "No se encontró finvest-evaluation-report.md",
+          "**FINVEST Score:**",
+          "**FINVEST Decisión:**"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "fail-fast-historia-migrada-sin-reporte",
+      "type": "fail-fast",
+      "story": "STORY-090",
+      "testcase_ref": "EV-004",
+      "description": "Historia migrada (sin bloque FINVEST en el cuerpo) y sin finvest-evaluation-report.md en su directorio. /story-improve se detiene con `❌ No se encontró finvest-evaluation-report.md en: <ruta>` y no escribe ningún archivo. Confirma que el cuerpo de story.md nunca fue fuente de score/decisión: al no existir el reporte no hay dato alguno que leer.",
+      "input": {
+        "flags": ["--story-id STORY-092"],
+        "context": "Directorio docs/specs/03-stories/STORY-092-eval-story-090-sin-reporte/ (fixture temporal) con story.md migrado y sin finvest-evaluation-report.md",
+        "fixtures": {
+          "story.md": "Frontmatter válido (type: story, id: STORY-092, status: SPECIFY) seguido directamente de `<!-- Referencias -->`; sin líneas `**FINVEST`"
+        },
+        "cleanup": "Eliminar el directorio STORY-092-* tras la prueba"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "No se encontró finvest-evaluation-report.md en:",
+          "STORY-092"
+        ],
+        "not_contains": [
+          "story.md.bak",
+          "story-improvement-log.md",
+          "previous-score",
+          "Dimensiones mejoradas"
+        ],
+        "exit_gracefully": true,
+        "files_written": 0
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "edge-cuerpo-con-literal-obsoleto-y-reporte-aprobada-prevalece-reporte",
+      "type": "edge-case",
+      "story": "STORY-090",
+      "testcase_ref": "EV-003",
+      "description": "Caso límite derivado de V-11 y de las historias no migradas (REQUIERE DECISIÓN): el cuerpo de story.md conserva todavía un bloque FINVEST con `**FINVEST Decisión:** REFINAR` desactualizado, mientras que finvest-evaluation-report.md declara `decision: APROBADA` y `finvest-score: 4.2`. El skill debe usar únicamente el reporte: aplica el gate APROBADA, informa con ℹ️ y termina sin crear ni modificar archivos. Demuestra que el literal del cuerpo no es fuente del dato.",
+      "input": {
+        "flags": ["--story-id STORY-093"],
+        "context": "Directorio docs/specs/03-stories/STORY-093-eval-story-090-literal-obsoleto/ (fixture temporal)",
+        "fixtures": {
+          "story.md": "Frontmatter válido seguido del bloque `**FINVEST Score:** 2.8` / `**FINVEST Decisión:** REFINAR` / `---` y luego `<!-- Referencias -->`",
+          "finvest-evaluation-report.md": "Frontmatter con `story-id: STORY-093`, `finvest-score: 4.2`, `decision: APROBADA`, `evaluated: 2026-09-10`"
+        },
+        "cleanup": "Eliminar el directorio STORY-093-* tras la prueba"
+      },
+      "expected": {
+        "contains": [
+          "ℹ️",
+          "APROBADA"
+        ],
+        "not_contains": [
+          "story.md.bak",
+          "story-improvement-log.md",
+          "REFINAR",
+          "2.8",
+          "❌"
+        ],
+        "files_written": 0
+      },
+      "threshold": 1.0
+    }
+  ]
+}

@@ -1,17 +1,18 @@
 ---
-alwaysApply: false
-type: project
-id: <PROJ-NN>
-slug: <nombre-del-directorio-del-proyecto>
-title: "<primer # heading del documento>"
-status: <ESTADO_INICIAL>
-substatus: IN-PROGRESS
-parent: null
-created: <YYYY-MM-DD>
-updated: <YYYY-MM-DD>
-related:
+alwaysApply: false   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer) (valor fijo)
+type: project   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer) (valor fijo)
+id: <PROJ-NN>   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer)
+slug: <nombre-del-directorio-del-proyecto>   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer)
+title: "<primer # heading del documento>"   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer)
+status: <ESTADO_INICIAL>   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer) (inicial: DISCOVERY; ningún skill lo transiciona hoy)
+substatus: IN-PROGRESS   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer) (IN-PROGRESS durante el discovery, DONE al completar) · project-flow (gate de revisión: lo lleva a DONE)
+parent: null   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer)
+created: <YYYY-MM-DD>   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer)
+updated: <YYYY-MM-DD>   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer) (inicial) · todo skill que edite el archivo
+related:   # escritor: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer)
   - <slug del project-intent relacionado (si existe)>
 ---
+<!-- escritor del cuerpo: project-discovery (project-architect; discovery con project-pm) · reverse-engineering (reverse-engineer-synthesizer) — salvo anotación distinta junto a la sección -->
 
 # 1. Definición del proyecto
 
@@ -108,9 +109,9 @@ tipo [¿y qué tipo de modelo de negocio o producto es (Plataforma, Aplicación 
     - **Prioridad**: [Alta | Media | Baja]
     - **Criterio de aceptación**: [Cómo se verifica que se cumple]
 
-·## 2.3. Experiencia de usuario (UX) y Diseño de Interfaz (UI)
+·## 2.3. Experiencia de usuario (UX) y Diseño de Interfaz (UI) <!-- escritor: project-discovery (project-architect con apoyo de project-ux) · reverse-engineering (reverse-engineer-synthesizer, desde reverse-engineer-ux-flow-mapper) -->
 
-# 3. Diseño de interfaz gráfica (UI) y experiencia de usuario (UX)
+# 3. Diseño de interfaz gráfica (UI) y experiencia de usuario (UX) <!-- escritor: project-discovery (project-architect con apoyo de project-ux) · reverse-engineering (reverse-engineer-synthesizer, desde reverse-engineer-ux-flow-mapper) -->
 
 ## 3.1. Design Vibe
 [1-2 frases describiendo la sensación general]
@@ -177,7 +178,7 @@ Ejemplo:
 │               │                                              │
 └───────────────┴──────────────────────────────────────────────┘
 
-# 4. Arquitectura Técnica
+# 4. Arquitectura Técnica <!-- escritor: project-discovery (project-architect) · reverse-engineering (reverse-engineer-synthesizer, desde reverse-engineer-architect) -->
 
 ## 4.1. Stack tecnológico
 <!-- Describe el stack tecnológico propuesto para el proyecto, incluyendo frontend, backend, base de datos, servicios en la nube, etc. Si el stack ya está definido como requisito no funcional, puedes referenciarlo aquí. -->

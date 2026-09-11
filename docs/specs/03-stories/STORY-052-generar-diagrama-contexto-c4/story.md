@@ -11,9 +11,6 @@ parent: EPIC-10-mejora-estructura-artefactos-nuevos-skills
 created: 2026-05-01
 updated: 2026-05-01
 ---
-**FINVEST Score:** pendiente
-**FINVEST Decisión:** pendiente
----
 <!-- Referencias -->
 [[EPIC-10-mejora-estructura-artefactos-nuevos-skills]]
 

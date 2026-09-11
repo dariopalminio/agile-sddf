@@ -1,17 +1,18 @@
 ---
-alwaysApply: false
-type: project
-id: <PROJ-NN>
-slug: < nombre-del-directorio-del-proyecto-project-plan >
-title: "<primer # heading del documento>"
-status: PLANNING
-substatus: IN-PROGRESS
-parent: null
-created: <YYYY-MM-DD>
-updated: <YYYY-MM-DD>
-related:                              
+alwaysApply: false   # escritor: project-planning (project-architect) (valor fijo)
+type: project   # escritor: project-planning (project-architect) (valor fijo)
+id: <PROJ-NN>   # escritor: project-planning (project-architect)
+slug: < nombre-del-directorio-del-proyecto-project-plan >   # escritor: project-planning (project-architect)
+title: "<primer # heading del documento>"   # escritor: project-planning (project-architect)
+status: PLANNING   # escritor: project-planning (project-architect) (valor fijo PLANNING)
+substatus: IN-PROGRESS   # escritor: project-planning (project-architect; IN-PROGRESS durante la planificación, DONE al completar) · project-flow (gate de revisión: lo lleva a DONE)
+parent: null   # escritor: project-planning (project-architect)
+created: <YYYY-MM-DD>   # escritor: project-planning (project-architect)
+updated: <YYYY-MM-DD>   # escritor: project-planning (project-architect) (inicial) · todo skill que edite el archivo
+related:   # escritor: project-planning (project-architect)
   - <nombre-del-directorio-del-proyecto-project o slug de project-plan relacionado (si existe)>
 ---
+<!-- escritor del cuerpo: project-planning (project-architect) — salvo anotación distinta junto a la sección -->
 <!-- Referencias -->
 [[nombre-del-directorio-del-proyecto-project o slug de project-plan relacionado (si existe)]]
 

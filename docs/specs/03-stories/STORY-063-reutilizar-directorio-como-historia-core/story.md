@@ -13,9 +13,6 @@ updated: 2026-05-09
 related:
   - EPIC-12-story-sdd-workflow
 ---
-**FINVEST Score:** [FINVEST Score]
-**FINVEST Decisión:** [APROBADA | REFINAR | RECHAZAR]
----
 <!-- Referencias -->
 [[EPIC-12-story-sdd-workflow]]
 

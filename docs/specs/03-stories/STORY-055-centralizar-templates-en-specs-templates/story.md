@@ -14,9 +14,6 @@ related:
   - EPIC-11-centralizar-templates
   - STORY-048-refactor-migrates-templates-to-assets
 ---
-**FINVEST Score:** —
-**FINVEST Decisión:** —
----
 <!-- Referencias -->
 [[EPIC-11-centralizar-templates]]
 [[STORY-048-refactor-migrates-templates-to-assets]]

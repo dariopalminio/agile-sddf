@@ -11,9 +11,6 @@ parent: EPIC-10-mejora-estructura-artefactos-nuevos-skills
 created: 2026-05-02
 updated: 2026-05-02
 ---
-**FINVEST Score:** [pendiente]
-**FINVEST Decisión:** [pendiente]
----
 <!-- Referencias -->
 [[skill-preflight]]
 
