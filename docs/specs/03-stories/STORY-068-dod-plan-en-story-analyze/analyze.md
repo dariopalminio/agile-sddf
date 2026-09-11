@@ -57,7 +57,7 @@ related:
 | 5.1 | Step 9a — guardia: DoD-ERRORs bloquean transición | D4 "Step 9", D3 (❌ → ERROR bloquea) | ✓ |
 | 6.1 | Step 10 — línea `DoD PLAN: N/Total ✓` en resumen | D4 "Step 10 — Línea de resumen DoD" | ✓ |
 | 7.1 | Actualizar examples/output/analyze.md con sección DoD | Implícito en Req5 (skill-master guidelines) + D5 (cambios en template y output) — no listado explícitamente en "Artefactos afectados" del design.md | ⚠️ |
-| 8.1 | Agregar sección PLAN a definition-of-done-story.md | CR-001 "Acción requerida: Agregar sección PLAN" | ✓ |
+| 8.1 | Agregar sección PLAN a dod-story.md | CR-001 "Acción requerida: Agregar sección PLAN" | ✓ |
 | 9.1 [P] | Verificar AC-1 (sección DoD en analyze.md) | AC-1 story.md + D4 Step 8 | ✓ |
 | 9.2 [P] | Verificar AC-2 (bloqueo transición ante ❌) | AC-2 story.md + D4 Step 9 | ✓ |
 | 9.3 | Verificar AC-3 (degradación elegante DoD ausente) | AC-3 story.md + D1 | ✓ |

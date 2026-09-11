@@ -296,7 +296,7 @@ conversación.
 
 - **FR-015**: Generación de políticas de proyecto
     - **Descripción**: El sistema SHALL inicializar o actualizar `constitution.md` (principios
-      técnicos inamovibles, stack, convenciones) y `definition-of-done-story.md` (DoD por estado del
+      técnicos inamovibles, stack, convenciones) y `dod-story.md` (DoD por estado del
       workflow), y SHALL registrar la referencia a ambos en el archivo de instrucciones del runtime
       (`CLAUDE.md` / `AGENTS.md`) para que se carguen en cada sesión.
     - **Prioridad**: Alta
@@ -815,7 +815,7 @@ conversación.
       con `evals/evals.json`.
 
 - **NFR-017**: Definition of Done como gate ejecutable
-    - **Descripción**: El Definition of Done por estado (`docs/policies/definition-of-done-story.md`)
+    - **Descripción**: El Definition of Done por estado (`docs/policies/dod-story.md`)
       SHALL evaluarse programáticamente como condición de avance, no como checklist informativa. Un
       DoD incumplido SHALL bloquear la transición y retroceder la historia al estado que corresponda.
     - **Prioridad**: Alta
@@ -957,7 +957,7 @@ AGILE SDDF — Sistema de invocación de skills (34 skills · 10 agentes + 7 sub
 │   │
 │   ├── project-story-mapping  → agente project-story-mapper    Output: story-map.md
 │   ├── project-context-diagram   [--interactive | --from-files] Output: context-diagram.puml
-│   └── project-policies-generation  Output: constitution.md + definition-of-done-story.md
+│   └── project-policies-generation  Output: constitution.md + dod-story.md
 │
 ├── ENTRADA ALTERNATIVA — Ingeniería inversa (repo existente → especificación)
 │   └── reverse-engineering        [--focus <path> | --update | --verbose]

@@ -124,6 +124,6 @@ En resumen, verbos > sustantivos porque los estados son hitos de ejecución, no 
 - [[state-machine]] — máquina de estados canónica con diagramas Mermaid por nivel
 - [[specs-and-workflows]] — descripcion narrativa de estados y subprocesos
 - [[constitution]] — principios 1, 4, 14; regla 9
-- `docs/policies/definition-of-done-story.md` — DoD alineada al workflow de story
+- `docs/policies/dod-story.md` — DoD alineada al workflow de story
 - EPIC-17 hallazgo A1 — motivacion del renombrado INTEGRATION → DELIVER
 - EPIC-18 `plan-01-deliver-status.md` — registro del cambio aplicado

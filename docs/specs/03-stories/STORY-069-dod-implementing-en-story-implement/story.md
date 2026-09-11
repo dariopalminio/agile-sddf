@@ -19,7 +19,7 @@ related:
 # 📖 Historia: DoD IMPLEMENT en story-implement
 
 **Como** desarrollador que usa `/story-implement` para generar código tarea por tarea  
-**Quiero** que el skill lea la sección "IMPLEMENT" de `$SPECS_BASE/policies/definition-of-done-story.md` y valide que la implementación cumple esos criterios antes de cerrar  
+**Quiero** que el skill lea la sección "IMPLEMENT" de `$SPECS_BASE/policies/dod-story.md` y valide que la implementación cumple esos criterios antes de cerrar  
 **Para** garantizar que el código generado cumple los estándares mínimos de la fase antes de avanzar a revisión
 
 ## ✅ Criterios de aceptación
@@ -27,7 +27,7 @@ related:
 ### Escenario principal – story-implement valida DoD IMPLEMENT y lo incluye en el reporte
 ```gherkin
 Dado una historia con todas las tareas completadas en story-implement
-  Y el archivo $SPECS_BASE/policies/definition-of-done-story.md existe con sección "IMPLEMENT"
+  Y el archivo $SPECS_BASE/policies/dod-story.md existe con sección "IMPLEMENT"
 Cuando story-implement ejecuta el Paso 4 (generar reporte final)
 Entonces implement-report.md incluye una sección "Cumplimiento DoD — Fase IMPLEMENT"
   Y esa sección contiene una tabla con cada criterio y su estado ✓ o ❌
@@ -45,7 +45,7 @@ Entonces story.md permanece en IMPLEMENT/IN-PROGRESS
 
 ### Escenario alternativo / error – archivo DoD no encontrado o sección ausente
 ```gherkin
-Dado que $SPECS_BASE/policies/definition-of-done-story.md no existe
+Dado que $SPECS_BASE/policies/dod-story.md no existe
   O el archivo existe pero no contiene la sección "IMPLEMENT"
 Cuando story-implement carga contexto en el sub-paso 2f
 Entonces el skill emite una advertencia ⚠️ indicando que el DoD no fue encontrado
@@ -71,7 +71,7 @@ Generado automáticamente desde el release: EPIC-13-quality-gates-con-dod-en-sto
 Feature origen: STORY-069 — DoD IMPLEMENT en story-implement
 
 **Ubicación de los cambios en el skill:**
-- Sub-paso `2f` en Paso 2: leer `$SPECS_BASE/policies/definition-of-done-story.md`, extraer sección "IMPLEMENT", registrar como `$DOD_IMPLEMENT_CRITERIA`
+- Sub-paso `2f` en Paso 2: leer `$SPECS_BASE/policies/dod-story.md`, extraer sección "IMPLEMENT", registrar como `$DOD_IMPLEMENT_CRITERIA`
 - Sub-paso `4g` en Paso 4 (antes de 4b): validar cada criterio DoD contra evidencia en implement-report.md y código generado
 - Paso 4a: incluir sección "Cumplimiento DoD — Fase IMPLEMENT" en implement-report.md
 - Paso 4b: condicionar transición a READY-FOR-CODE-REVIEW/DONE al resultado del sub-paso 4g

@@ -82,7 +82,7 @@ Actualizar la `description` raíz del JSON para mencionar los nuevos escenarios.
 - `d:\code\agile-sddf\.claude\skills\story-code-review\assets\code-review-report-template.md`
 - `d:\code\agile-sddf\.claude\skills\story-code-review\evals\evals.json`
 
-No se modifica `security-audit` ni `constitution.md`/`definition-of-done-story.md` — el checklist de dependencias y performance quedan dentro del alcance de `story-code-review`.
+No se modifica `security-audit` ni `constitution.md`/`dod-story.md` — el checklist de dependencias y performance quedan dentro del alcance de `story-code-review`.
 
 ## Verificación
 

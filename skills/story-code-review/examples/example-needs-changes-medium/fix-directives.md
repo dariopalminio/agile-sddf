@@ -22,13 +22,13 @@ based-on: code-review-report.md
 | # | Archivo:Línea | Dimensión | Severidad | Hallazgo | Acción requerida |
 |---|---------------|-----------|-----------|----------|-----------------|
 | 1 | src/users.ts:28 | code-quality | MEDIUM | Función `getUserById` tiene más de 3 responsabilidades | Extraer en funciones separadas: `validateUserId`, `fetchUserFromDb`, `formatUserResponse` |
-| 2 | docs/policies/definition-of-done-story.md:42 | DoD-CODE-REVIEW | MEDIUM | No hay código comentado ni `TODO` sin issue asociado — se detectaron TODOs en el código sin referencia a issue | Eliminar los comentarios TODO o asociarlos a un issue en el tracker del proyecto |
+| 2 | docs/policies/dod-story.md:42 | DoD-CODE-REVIEW | MEDIUM | No hay código comentado ni `TODO` sin issue asociado — se detectaron TODOs en el código sin referencia a issue | Eliminar los comentarios TODO o asociarlos a un issue en el tracker del proyecto |
 
 ## Lista blanca de archivos permitidos para modificar
 
 Los siguientes archivos pueden ser modificados al aplicar las correcciones:
 - `src/users.ts` (hallazgo #1)
-- `docs/policies/definition-of-done-story.md` (hallazgo #2 — referencia de trazabilidad; el cambio real es en el código)
+- `docs/policies/dod-story.md` (hallazgo #2 — referencia de trazabilidad; el cambio real es en el código)
 
 No deben modificarse archivos fuera de esta lista sin previa aprobación.
 

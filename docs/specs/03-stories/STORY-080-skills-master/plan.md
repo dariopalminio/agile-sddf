@@ -14,7 +14,7 @@ skills-lock.json — clave del registry
 package.json — ruta en files
 docs/policies/sddf-config.yaml — references_path
 docs/policies/constitution.md
-docs/policies/definition-of-done-story.md
+docs/policies/dod-story.md
 docs/specs/stories/STORY-079-story-testcases/story.md
 
 Reorganizar skill-master

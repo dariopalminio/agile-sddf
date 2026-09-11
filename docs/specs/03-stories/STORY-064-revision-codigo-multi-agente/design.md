@@ -78,7 +78,7 @@ El skill sigue el patrón de un solo nivel de delegación establecido en `consti
 
 Cada agente recibe como contexto:
 - Ruta del directorio de la historia (`$STORY_DIR`)
-- Ruta a `constitution.md` y `definition-of-done-story.md`
+- Ruta a `constitution.md` y `dod-story.md`
 
 Cada agente escribe su informe parcial a:
 ```

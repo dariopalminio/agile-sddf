@@ -1,7 +1,7 @@
 ---
 name: project-policies-generation
 description: >-
-  Inicializa o actualiza constitution.md y definition-of-done-story.md registrando referencias en CLAUDE.md.
+  Inicializa o actualiza constitution.md y dod-story.md registrando referencias en CLAUDE.md.
   Usar para establecer reglas técnicas y criterios de calidad del proyecto.
   Invocar para "generar políticas", "actualizar constitución",
   "definition of done" o "project-policies-generation".
@@ -30,11 +30,11 @@ Markdown y registra sus referencias en `CLAUDE.md` / `AGENTS.md` para que todos 
 agentes IA los lean automáticamente antes de cualquier acción:
 
 - `$SPECS_BASE/policies/constitution.md` — principios técnicos inamovibles del proyecto (stack, convenciones, metodologías)
-- `$SPECS_BASE/policies/definition-of-done-story.md` — criterios de calidad para considerar una historia completada
+- `$SPECS_BASE/policies/dod-story.md` — criterios de calidad para considerar una historia completada
 
 **Qué hace este skill:**
 - Crea o actualiza `constitution.md` desde el template, con confirmación del usuario si ya existe
-- Crea o actualiza `definition-of-done-story.md` desde el template, con confirmación del usuario si ya existe
+- Crea o actualiza `dod-story.md` desde el template, con confirmación del usuario si ya existe
 - Registra referencias a las políticas en `CLAUDE.md` o `AGENTS.md`
 
 **Qué NO hace este skill:**
@@ -212,7 +212,7 @@ Revisa el archivo generado y completa los campos [TBD] con la información espec
 
 Continuar con el Paso 3.
 
-### Paso 3 — Generar definition-of-done-story.md
+### Paso 3 — Generar dod-story.md
 
 #### 3a. Leer el template
 
@@ -222,22 +222,22 @@ La estructura del output la define íntegramente el template.
 
 #### 3b. Verificar existencia previa
 
-Si `$SPECS_BASE/policies/definition-of-done-story.md` **no existe**, preguntar al usuario:
+Si `$SPECS_BASE/policies/dod-story.md` **no existe**, preguntar al usuario:
 
 ```
-$SPECS_BASE/policies/definition-of-done-story.md no existe. ¿Cómo deseas crearlo?
+$SPECS_BASE/policies/dod-story.md no existe. ¿Cómo deseas crearlo?
   (a) Auto-completar — completar las notas adicionales con criterios específicos del stack detectado (Recomendado)
   (b) Template en blanco — crear con los placeholders sin completar
 ```
 
 Esperar respuesta antes de continuar:
 - `a` / `auto-completar`: ejecutar el **Paso 3c** (Auto-completado)
-- `b` / `blanco`: crear el archivo con el contenido del template, completando el frontmatter con `created` y `updated` (fecha actual). Informar: `✅ Creado: $SPECS_BASE/policies/definition-of-done-story.md`
+- `b` / `blanco`: crear el archivo con el contenido del template, completando el frontmatter con `created` y `updated` (fecha actual). Informar: `✅ Creado: $SPECS_BASE/policies/dod-story.md`
 
-Si `$SPECS_BASE/policies/definition-of-done-story.md` **ya existe**, preguntar al usuario:
+Si `$SPECS_BASE/policies/dod-story.md` **ya existe**, preguntar al usuario:
 
 ```
-El archivo $SPECS_BASE/policies/definition-of-done-story.md ya existe.
+El archivo $SPECS_BASE/policies/dod-story.md ya existe.
 ¿Qué deseas hacer?
   (a) Auto-completar — completar las notas adicionales con criterios específicos del stack detectado
   (e) Editar el contenido existente
@@ -251,7 +251,7 @@ Esperar respuesta antes de continuar:
 - `s` / `sobreescribir`: reemplazar el contenido con el template y actualizar el campo `updated`
 - `n` / `saltar`: no modificar el archivo y continuar con el Paso 4
 
-### Paso 3c — Auto-completar definition-of-done-story.md
+### Paso 3c — Auto-completar dod-story.md
 
 Este paso se ejecuta cuando el usuario elige la opción `(a)` en el Paso 3b.
 
@@ -278,12 +278,12 @@ Leer `package.json` (raíz y paquetes) para detectar las herramientas de testing
 
 #### Guardar y reportar
 
-Guardar el archivo en `$SPECS_BASE/policies/definition-of-done-story.md` (UTF-8 sin BOM).
+Guardar el archivo en `$SPECS_BASE/policies/dod-story.md` (UTF-8 sin BOM).
 
 Informar al usuario:
 
 ```
-✅ Auto-completado: $SPECS_BASE/policies/definition-of-done-story.md
+✅ Auto-completado: $SPECS_BASE/policies/dod-story.md
 
 Herramientas detectadas: [lista]
 Criterios adicionales generados en "Notas adicionales": N
@@ -308,14 +308,14 @@ Verificar en la raíz del repositorio:
 Agrega las siguientes líneas manualmente a tu archivo de entrada del agente:
 
 @docs/policies/constitution.md
-@docs/policies/definition-of-done-story.md
+@docs/policies/dod-story.md
 ```
 
 #### 4b. Verificar referencias existentes
 
 Buscar en el archivo detectado si ya contiene referencias a los archivos de políticas:
 - `@$SPECS_BASE/policies/constitution.md` (o la ruta relativa equivalente)
-- `@$SPECS_BASE/policies/definition-of-done-story.md`
+- `@$SPECS_BASE/policies/dod-story.md`
 
 Si **ambas referencias ya existen**: informar que no es necesario modificar el archivo:
 ```
@@ -336,14 +336,14 @@ Si el formato del archivo es no estándar o no se puede determinar la sección c
 Agrega las siguientes líneas manualmente:
 
 @docs/policies/constitution.md
-@docs/policies/definition-of-done-story.md
+@docs/policies/dod-story.md
 ```
 
 Si se insertaron las referencias exitosamente:
 ```
 ✅ Referencias agregadas en CLAUDE.md:
    @docs/policies/constitution.md
-   @docs/policies/definition-of-done-story.md
+   @docs/policies/dod-story.md
 ```
 
 ### Paso 5 — Resumen
@@ -355,7 +355,7 @@ Mostrar el resumen de la ejecución:
 
 📄 Archivos de políticas:
 - $SPECS_BASE/policies/constitution.md    [creado | auto-completado | actualizado | saltado]
-- $SPECS_BASE/policies/definition-of-done-story.md  [creado | auto-completado | actualizado | saltado]
+- $SPECS_BASE/policies/dod-story.md  [creado | auto-completado | actualizado | saltado]
 
 🔗 Referencias en CLAUDE.md:
 - [registradas | ya existían | requieren acción manual]
@@ -368,5 +368,5 @@ Luego ejecuta `/story-design` para comenzar a diseñar la implementación de una
 ## Salida
 
 - `$SPECS_BASE/policies/constitution.md` — documento de constitución del proyecto con principios técnicos inamovibles.
-- `$SPECS_BASE/policies/definition-of-done-story.md` — documento de criterios DoD para historias de usuario.
+- `$SPECS_BASE/policies/dod-story.md` — documento de criterios DoD para historias de usuario.
 - Actualizaciones en `CLAUDE.md` o `AGENTS.md` con referencias `@` a los archivos de políticas generados.

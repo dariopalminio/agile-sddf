@@ -95,7 +95,7 @@ Estos skills no se renombran pero referencian `release.md`, `type: release` o lo
 - [docs/guides/flight-leves-model.md](docs/guides/flight-leves-model.md) — documento raíz de la ambigüedad: `L2 - Release` → `L2 - Épica`, definición del nivel (línea 32), `Release DoD` → `Épica DoD`
 - `docs/guides/{organization-of-artifacts,state-machine,specs_and_workflows,skill-structural-pattern,sddf-commands-pipeline,harness-engineering,root-folder-practices,best-practices-for-testing,best-practices-for-skill-testing,artifact-directory-migration}.md`
 - [docs/policies/constitution.md](docs/policies/constitution.md) — regla 7 (IDs: "Release/Épica" → "Épica"), regla 13 (rutas), regla 15 (nombre del gate `epic-format-validation`), regla 8 del frontmatter (`type: project | epic | story`)
-- [docs/policies/definition-of-done-story.md](docs/policies/definition-of-done-story.md) — refs a `release.md`
+- [docs/policies/dod-story.md](docs/policies/dod-story.md) — refs a `release.md`
 - [docs/guides/branching-strategy-sddf-git-flow.md:45,53](docs/guides/branching-strategy-sddf-git-flow.md#L45) — solo donde dice "rama release" pero la rama real es `epic/` (inconsistencia preexistente). El resto del documento (batch delivery, PR a main, liberación) usa "release" en sentido CI/CD legítimo y **se conserva**
 
 **NO se tocan:**

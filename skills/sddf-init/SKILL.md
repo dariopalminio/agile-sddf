@@ -114,7 +114,7 @@ Preguntar al usuario:
 
 ```
 ¿Deseas inicializar los documentos de políticas del proyecto?
-(constitution.md y definition-of-done-story.md en $SPECS_BASE/policies/)
+(constitution.md y dod-story.md en $SPECS_BASE/policies/)
 
   (s) Sí — ejecutar project-policies-generation ahora
   (n) No — omitir este paso
@@ -143,7 +143,7 @@ Emitir el informe consolidado con todos los artefactos verificados:
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 [CREADO]     docs/policies/constitution.md
-[CREADO]     docs/policies/definition-of-done-story.md
+[CREADO]     docs/policies/dod-story.md
 ─────────────────────────────────────────────────
 ```
 

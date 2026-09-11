@@ -18,7 +18,7 @@ related:
 
 El skill `story-code-review` (`.claude/skills/story-code-review/SKILL.md`) ejecuta una revisión multi-agente del código: lanza tres subagentes en paralelo (Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer), consolida sus hallazgos y calcula `review-status` (approved/needs-changes) según la severidad máxima de los hallazgos.
 
-STORY-070 agrega **validación de Definition of Done para la fase CODE-REVIEW**: después de consolidar los hallazgos de los tres agentes y antes de derivar el `review-status` definitivo, el skill extrae dinámicamente la sección "CODE-REVIEW" de `$SPECS_BASE/policies/definition-of-done-story.md`, evalúa cada criterio contra el estado del código revisado, y si hay criterios no cumplidos con severidad HIGH o MEDIUM los incorpora como hallazgos adicionales — ajustando `review-status` a `needs-changes` si correspondiera.
+STORY-070 agrega **validación de Definition of Done para la fase CODE-REVIEW**: después de consolidar los hallazgos de los tres agentes y antes de derivar el `review-status` definitivo, el skill extrae dinámicamente la sección "CODE-REVIEW" de `$SPECS_BASE/policies/dod-story.md`, evalúa cada criterio contra el estado del código revisado, y si hay criterios no cumplidos con severidad HIGH o MEDIUM los incorpora como hallazgos adicionales — ajustando `review-status` a `needs-changes` si correspondiera.
 
 Este diseño sigue el patrón establecido por STORY-068 (DoD PLAN en story-analyze) y STORY-069 (DoD IMPLEMENT en story-implement), adaptándolo a la lógica de consolidación multi-agente de story-code-review.
 
@@ -38,7 +38,7 @@ Este diseño sigue el patrón establecido por STORY-068 (DoD PLAN en story-analy
 **Goals:**
 - Ampliar Paso 2d: extraer sección "CODE-REVIEW" del DoD, registrar como `$DOD_CODE_REVIEW_CRITERIA` o `[]` con ⚠️ si no encontrado. // satisface: AC-3
 - Agregar sub-paso `4c.1` entre los actuales `4c` y `4d`: evaluar cada criterio DoD semánticamente, asignar severidad (HIGH/MEDIUM/LOW), incorporar hallazgos ❌/⚠️ a la tabla consolidada y ajustar `$REVIEW_STATUS` si la nueva severidad máxima es HIGH/MEDIUM. // satisface: AC-1, AC-2
-- Ampliar Paso 4f: incluir en `fix-directives.md` las filas de hallazgos DoD con `Dimensión: DoD-CODE-REVIEW`, `Archivo:Línea` apuntando a la línea del criterio en `definition-of-done-story.md`. // satisface: AC-1 (NFR compatibilidad)
+- Ampliar Paso 4f: incluir en `fix-directives.md` las filas de hallazgos DoD con `Dimensión: DoD-CODE-REVIEW`, `Archivo:Línea` apuntando a la línea del criterio en `dod-story.md`. // satisface: AC-1 (NFR compatibilidad)
 - Ampliar Paso 5b: incluir sección "Cumplimiento DoD — Fase CODE-REVIEW" en `code-review-report.md` con tabla de criterio / estado / severidad / evidencia. // satisface: AC-1, AC-2
 - Ampliar Paso 7: mostrar línea `DoD CODE-REVIEW: N/Total criterios ✓` en el resumen final. // satisface: AC-1, AC-2
 - Los cambios respetan los patrones de `skill-structural-pattern.md`: sub-paso `4c.1` numerado secuencialmente dentro del Paso 4, sin renumerar los sub-pasos existentes (4d–4h permanecen). // satisface: Req-Struct
@@ -89,7 +89,7 @@ Los hallazgos DoD deben aparecer junto a los hallazgos de agentes en la tabla co
 
 **Opción elegida:** Los hallazgos DoD ❌ se añaden a la tabla consolidada interna al finalizar el sub-paso 4c.1, antes de re-calcular `$MAX_SEVERITY`. Se tratan exactamente igual que los hallazgos de agentes:
 - Columna `Dimensión`: `DoD-CODE-REVIEW`
-- Columna `Archivo:Línea`: `docs/policies/definition-of-done-story.md:<número_de_línea>` (del criterio en el DoD)
+- Columna `Archivo:Línea`: `docs/policies/dod-story.md:<número_de_línea>` (del criterio en el DoD)
 - Columna `Severidad`: valor asignado en D2
 - Columna `Hallazgo`: texto del criterio DoD
 - Columna `Acción requerida`: acción concreta derivada semánticamente del criterio
@@ -141,14 +141,14 @@ Algunos criterios DoD CODE-REVIEW requieren acceso al entorno de CI/CD o al hist
 
 ## Open Questions
 
-- **CR-001**: ¿Existe ya la sección "CODE-REVIEW" en `definition-of-done-story.md`? Revisión del archivo muestra que sí existe: `### Definition of Done para el estado CODE-REVIEW`. Sub-paso 4c.1 debería encontrarla exitosamente.
+- **CR-001**: ¿Existe ya la sección "CODE-REVIEW" en `dod-story.md`? Revisión del archivo muestra que sí existe: `### Definition of Done para el estado CODE-REVIEW`. Sub-paso 4c.1 debería encontrarla exitosamente.
 - ¿El `review-status` en la tabla de resumen (Paso 7) debe mostrar la contribución de DoD por separado (ej. "agents: approved + DoD: needs-changes → needs-changes") o solo el resultado final? Propuesta: mostrar solo el resultado final en la tabla y agregar la línea DoD como dato adicional.
 
 ## Registro de Cambios (CR)
 
 ### CR-001
 - **Tipo**: dependencia (resuelta)
-- **Descripción**: `docs/policies/definition-of-done-story.md` SÍ contiene la sección `### Definition of Done para el estado CODE-REVIEW` con criterios verificables. Sub-paso 4c.1 podrá extraerlos. No hay bloqueo.
+- **Descripción**: `docs/policies/dod-story.md` SÍ contiene la sección `### Definition of Done para el estado CODE-REVIEW` con criterios verificables. Sub-paso 4c.1 podrá extraerlos. No hay bloqueo.
 - **Documento afectado**: ninguno
 - **Acción requerida**: ninguna
 

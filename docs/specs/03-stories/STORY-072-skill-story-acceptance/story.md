@@ -32,7 +32,7 @@ related:
 
 ```gherkin
 Dado que existe una historia "STORY-055" con status VERIFY y substatus DONE
-  Y existe el archivo "$SPECS_BASE/policies/definition-of-done-story.md" con sección ACCEPTANCE
+  Y existe el archivo "$SPECS_BASE/policies/dod-story.md" con sección ACCEPTANCE
 Cuando el desarrollador ejecuta el skill `story-acceptance` con el ID "STORY-055"
 Entonces el skill lee la sección ACCEPTANCE del DoD y extrae los criterios a validar
   Y presenta al usuario los criterios de aceptación de "story.md" uno a uno solicitando validación manual
@@ -78,7 +78,7 @@ Entonces el skill detecta que la historia no cumple la precondición de estado
 ### Escenario alternativo / error – DoD sin sección ACCEPTANCE definida
 
 ```gherkin
-Dado que el archivo "$SPECS_BASE/policies/definition-of-done-story.md" no tiene una sección ACCEPTANCE
+Dado que el archivo "$SPECS_BASE/policies/dod-story.md" no tiene una sección ACCEPTANCE
 Cuando el desarrollador ejecuta `story-acceptance` con el ID "STORY-063"
 Entonces el skill muestra el aviso "No se encontró sección ACCEPTANCE en el DoD. Se usarán los criterios de aceptación de story.md como lista de validación."
   Y continúa la sesión usando exclusivamente los escenarios Gherkin de "story.md" como ítems a validar
@@ -101,7 +101,7 @@ Ejemplos:
 
 ### Requerimiento: Lectura dinámica del DoD ACCEPTANCE
 
-El skill lee la sección ACCEPTANCE (o "Definición de Hecho para la fase de ACCEPTANCE") de `$SPECS_BASE/policies/definition-of-done-story.md` en tiempo de ejecución. Los criterios del DoD se presentan como checklist al validador humano junto con los escenarios Gherkin de `story.md`. Si el DoD evoluciona, el skill lo refleja automáticamente.
+El skill lee la sección ACCEPTANCE (o "Definición de Hecho para la fase de ACCEPTANCE") de `$SPECS_BASE/policies/dod-story.md` en tiempo de ejecución. Los criterios del DoD se presentan como checklist al validador humano junto con los escenarios Gherkin de `story.md`. Si el DoD evoluciona, el skill lo refleja automáticamente.
 
 ### Requerimiento: Idempotencia y sesiones reanudables
 
@@ -149,7 +149,7 @@ story-implement → story-code-review → story-verify → story-acceptance → 
 **Precondiciones requeridas:**
 - Historia con `status: VERIFY` y `substatus: DONE` (o equivalente según el pipeline del proyecto)
 - Archivo `story.md` accesible con criterios de aceptación Gherkin definidos
-- Archivo DoD en `$SPECS_BASE/policies/definition-of-done-story.md`
+- Archivo DoD en `$SPECS_BASE/policies/dod-story.md`
 
 **Flags de entrada aceptados:**
 - `--story <ID>` o primer argumento posicional: ID de la historia a validar

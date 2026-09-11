@@ -67,7 +67,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 | `testcases.md` | Opcional | Especificación canónica de casos de prueba producida por `/story-testcases`; si existe, se incorpora al análisis de cobertura de ACs y trazabilidad de diseño |
 | `tasks.md` | Opcional | El Tech-Lead-Reviewer puede revisar calidad sin lista de tareas |
 | `constitution.md` | Opcional | Mejora la revisión pero no la bloquea si no existe |
-| `definition-of-done-story.md` | Opcional | Mismo caso que `constitution.md` |
+| `dod-story.md` | Opcional | Mismo caso que `constitution.md` |
 
 > Para actualizar esta lista en el futuro, editar únicamente esta sección sin modificar el cuerpo del Paso 1.
 
@@ -235,7 +235,7 @@ Extraer y registrar internamente:
 
 Buscar los siguientes archivos en el repositorio:
 - `docs/policies/constitution.md` (o ruta alternativa detectada)
-- `docs/policies/definition-of-done-story.md` (o ruta alternativa detectada)
+- `docs/policies/dod-story.md` (o ruta alternativa detectada)
 
 Registrar las rutas resueltas como `$CONSTITUTION_PATH` y `$DOD_PATH`.
 
@@ -243,7 +243,7 @@ Registrar las rutas resueltas como `$CONSTITUTION_PATH` y `$DOD_PATH`.
 
 **Si `$DOD_PATH` está vacío o el archivo no existe:**
 ```
-⚠️ definition-of-done-story.md no encontrado — se omitirá la validación DoD CODE-REVIEW
+⚠️ dod-story.md no encontrado — se omitirá la validación DoD CODE-REVIEW
 ```
 Registrar internamente `$DOD_CODE_REVIEW_CRITERIA = []` y continuar.
 
@@ -274,7 +274,7 @@ Mostrar resumen de carga:
    implement-report.md:      ✓ (<N> archivos implementados) | ⏭️ no disponible
    testcases.md:             ✓ (<N> casos de prueba) | ⏭️ no disponible
    constitution.md:          <ruta>
-   definition-of-done-story.md:    <ruta>
+   dod-story.md:    <ruta>
    DoD CODE-REVIEW: <N criterios cargados | ⚠️ no encontrado>
 ```
 
@@ -296,7 +296,7 @@ Lanzar simultáneamente los siguientes subagentes, pasando a cada agente:
 - `$STORY_DIR`: ruta del directorio de la historia
 - `$REPO_PATH`: ruta raíz del repositorio (`$SDDF_ROOT`)
 - `$CONSTITUTION_PATH`: ruta a constitution.md
-- `$DOD_PATH`: ruta a definition-of-done-story.md
+- `$DOD_PATH`: ruta a dod-story.md
 - `$IMPL_REPORT_AVAILABLE`: flag booleano de disponibilidad de implement-report.md
 - `$TESTCASES_AVAILABLE`: flag booleano de disponibilidad de testcases.md
 - `$IMPL_FILES`: lista de archivos implementados (extraída en el Paso 2c; puede estar vacía)
@@ -397,7 +397,7 @@ Clasificar cada criterio como:
 
 **Para cada hallazgo `❌`**, añadir a la tabla consolidada interna con:
 - `Dimensión`: `DoD-CODE-REVIEW`
-- `Archivo:Línea`: `docs/policies/definition-of-done-story.md:<número_de_línea>`
+- `Archivo:Línea`: `docs/policies/dod-story.md:<número_de_línea>`
 - `Severidad`: valor asignado (HIGH/MEDIUM/LOW)
 - `Hallazgo`: texto del criterio DoD
 - `Acción requerida`: acción concreta derivada semánticamente del criterio
@@ -452,7 +452,7 @@ Completar el template con:
 - Sección "Resumen de bloqueantes": título de la historia, severidad máxima, total de hallazgos HIGH/MEDIUM (incluyendo hallazgos DoD si los hay)
 - Tabla "Instrucciones de corrección": una fila por hallazgo bloqueante (HIGH o MEDIUM) numeradas correlativamente, con columnas `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`
   - Hallazgos de agentes: `Dimensión` = dimensión del agente (code-quality, requirements-coverage, integration-architecture, security)
-  - Hallazgos DoD: `Dimensión` = `DoD-CODE-REVIEW`, `Archivo:Línea` = `docs/policies/definition-of-done-story.md:<número_de_línea>`
+  - Hallazgos DoD: `Dimensión` = `DoD-CODE-REVIEW`, `Archivo:Línea` = `docs/policies/dod-story.md:<número_de_línea>`
   - Todos los hallazgos se numeran correlativamente sin IDs duplicados (agentes → DoD)
 - Sección "Lista blanca de archivos permitidos": una línea por archivo de `$WHITELIST` con sus referencias de hallazgo
 
@@ -523,7 +523,7 @@ Completar el template con:
 - Sección `### Nota de Tamaño de Cambio` — `{{CHANGE_SIZE_NOTE}}`: contenido de `$CHANGE_SIZE_NOTE` calculado en el Paso 4c.2; si está vacío, dejar la sección sin contenido visible (no mostrar el placeholder literal)
 - Sección Decisión final: `$REVIEW_STATUS` con justificación
 - Sección "Cumplimiento DoD — Fase CODE-REVIEW":
-  - **Si `$DOD_CODE_REVIEW_CRITERIA` estaba vacío:** mostrar `⚠️ DoD CODE-REVIEW no encontrado — se omitió la validación. Verifica que $SPECS_BASE/policies/definition-of-done-story.md contiene la sección "CODE-REVIEW".`
+  - **Si `$DOD_CODE_REVIEW_CRITERIA` estaba vacío:** mostrar `⚠️ DoD CODE-REVIEW no encontrado — se omitió la validación. Verifica que $SPECS_BASE/policies/dod-story.md contiene la sección "CODE-REVIEW".`
   - **Si hay criterios evaluados:** completar tabla `| # | Criterio | Estado | Severidad | Evidencia |` con los resultados de `$DOD_CODE_REVIEW_RESULT` y línea de resumen `**Resumen:** N/Total criterios ✓`
 
 Guardar en `$STORY_DIR/code-review-report.md`.

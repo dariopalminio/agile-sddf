@@ -32,7 +32,7 @@ Reemplazar el árbol de directorios por uno que refleje la realidad:
 ```
 agile-sddf/
   ├── docs/specs/                      # Artefactos generados (projects/, releases/, stories/)
-  ├── docs/policies/                   # constitution.md, definition-of-done-story.md
+  ├── docs/policies/                   # constitution.md, dod-story.md
   ├── AGENTS.md                        # Convención .agent/ — compatible con Codex, Cursor, etc.
   ├── CLAUDE.md                        # Instrucciones globales del proyecto
   └── .claude/                         # Fuente única de verdad para agentes y skills

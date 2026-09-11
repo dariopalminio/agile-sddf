@@ -638,7 +638,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 
 #### 11a — Evaluar criterios DoD IMPLEMENT
 
-Cargar los criterios de la sección `IMPLEMENT` de `docs/policies/definition-of-done-story.md`.
+Cargar los criterios de la sección `IMPLEMENT` de `docs/policies/dod-story.md`.
 
 Para cada criterio evaluar:
 - `✓` si hay evidencia positiva en los artefactos generados por el ciclo (archivos de test, código, sin errores reportados)

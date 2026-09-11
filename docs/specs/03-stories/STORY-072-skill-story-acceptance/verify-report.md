@@ -57,7 +57,7 @@ verify-status: VERIFY-PASSED
 
 ## Evaluación DoD VERIFY
 
-> Nota: no existe sección `### VERIFY` en `docs/policies/definition-of-done-story.md`. Se usaron los criterios mínimos genéricos.
+> Nota: no existe sección `### VERIFY` en `docs/policies/dod-story.md`. Se usaron los criterios mínimos genéricos.
 
 | # | Criterio | Estado | Evidencia |
 |---|---|---|---|
@@ -76,7 +76,7 @@ N/A — el skill `story-acceptance` es exclusivamente Markdown. No existen tests
 
 ## Recomendaciones
 
-1. **Agregar sección VERIFY al DoD** (`docs/policies/definition-of-done-story.md`) para establecer criterios específicos de verificación de skills Markdown, evitando el fallback a criterios genéricos en futuras ejecuciones.
+1. **Agregar sección VERIFY al DoD** (`docs/policies/dod-story.md`) para establecer criterios específicos de verificación de skills Markdown, evitando el fallback a criterios genéricos en futuras ejecuciones.
 2. (LOW, opcional) Añadir `(READY-FOR-IMPLEMENT)` al mensaje inline de Paso 8a para consistencia visual.
 3. (LOW, opcional) Mover resolución de `--validator` al Paso 1 del skill para mejorar la legibilidad del flujo.
 

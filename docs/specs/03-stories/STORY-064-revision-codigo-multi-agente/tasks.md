@@ -28,7 +28,7 @@ related:
 - [x] 2.2 Escribir sección "Modos de Ejecución" (Modo manual + Modo Agent)
 - [x] 2.3 Escribir "Paso 0 — Preflight": invocar `skill-preflight`, resolver SPECS_BASE
 - [x] 2.4 Escribir "Paso 1 — Resolver input": resolución del directorio de la historia (ID o ruta), verificación de `story.md`, actualización de frontmatter a `CODE-REVIEW / IN-PROGRESS`
-- [x] 2.5 Escribir "Paso 2 — Cargar contexto": leer `story.md`, `design.md`, `tasks.md`, `implement-report.md`, `constitution.md`, `definition-of-done-story.md`; pasar rutas a los agentes
+- [x] 2.5 Escribir "Paso 2 — Cargar contexto": leer `story.md`, `design.md`, `tasks.md`, `implement-report.md`, `constitution.md`, `dod-story.md`; pasar rutas a los agentes
 - [x] 2.6 Escribir "Paso 3 — Preparar ejecución": limpiar `.tmp/story-code-review/` (idempotencia NF-2), crear el directorio tmp, lanzar los 3 agentes en paralelo pasando `$STORY_DIR`
 - [x] 2.7 Escribir "Paso 4 — Consolidar resultados (árbitro)": leer los tres informes parciales de `.tmp/story-code-review/`, calcular `max-severity`, derivar `review-status` (approved si max-severity ∈ {LOW, ninguna})
 - [x] 2.8 Escribir "Paso 5 — Generar `code-review-report.md`": leer `assets/code-review-report-template.md`, completar con hallazgos consolidados, guardar en `$STORY_DIR/code-review-report.md`
@@ -37,7 +37,7 @@ related:
 
 ## 3. Agentes revisores
 
-- [x] 3.1 [P] Escribir `agents/tech-lead-reviewer.agent.md`: revisa calidad de código (legibilidad, duplicación, seguridad básica) contra `constitution.md` y `definition-of-done-story.md`; escribe informe parcial a `.tmp/story-code-review/tech-lead-report.md` con formato definido en design.md D-2
+- [x] 3.1 [P] Escribir `agents/tech-lead-reviewer.agent.md`: revisa calidad de código (legibilidad, duplicación, seguridad básica) contra `constitution.md` y `dod-story.md`; escribe informe parcial a `.tmp/story-code-review/tech-lead-report.md` con formato definido en design.md D-2
 - [x] 3.2 [P] Escribir `agents/product-owner-reviewer.agent.md`: verifica que cada escenario Gherkin de `story.md` tiene correspondencia directa en el código (Given → precondición, When → acción, Then → resultado); escribe a `.tmp/story-code-review/product-owner-report.md`
 - [x] 3.3 [P] Escribir `agents/integration-reviewer.agent.md`: valida que los componentes implementados respetan la arquitectura de `design.md` y las convenciones de `constitution.md`; escribe a `.tmp/story-code-review/integration-report.md`
 

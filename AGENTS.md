@@ -26,7 +26,7 @@ agile-sddf/
 ├── docs/
 │   ├── index.md                                            # punto de entrada wiki (wikilinks [[slug]])
 │   ├── specs/{01-projects,02-epics,03-stories,templates}/  # artefactos generados por los skills SDD
-│   ├── policies/                                           # constitution.md, definition-of-done-story.md
+│   ├── policies/                                           # constitution.md, dod-story.md
 │   ├── adr/                                                # decisiones de arquitectura (ADR-NNNN, inmutables)
 │   ├── guides/                                             # guías de referencia (ver docs/index.md)
 │   └── runbooks/                                           # procedimientos operativos (deploy npm, docker)
@@ -73,4 +73,4 @@ Cada subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el contro
 # Políticas del Proyecto
 
 @docs/policies/constitution.md
-@docs/policies/definition-of-done-story.md
+@docs/policies/dod-story.md

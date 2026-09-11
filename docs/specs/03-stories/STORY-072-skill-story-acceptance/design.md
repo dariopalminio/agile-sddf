@@ -88,7 +88,7 @@ story-acceptance/
 
 **Opción elegida:** Lectura dinámica en dos niveles:
 
-1. **Primario:** leer sección `ACCEPTANCE` (o equivalente) de `$SPECS_BASE/policies/definition-of-done-story.md`
+1. **Primario:** leer sección `ACCEPTANCE` (o equivalente) de `$SPECS_BASE/policies/dod-story.md`
 2. **Fallback:** si no existe la sección ACCEPTANCE, usar los escenarios Gherkin de `story.md` como lista de validación
 
 El skill detecta la ausencia de la sección ACCEPTANCE en el DoD y avisa al usuario antes de cambiar al fallback:
@@ -296,7 +296,7 @@ Los mecanismos de `story-verify` (pruebas automáticas que preceden a acceptance
 | `acceptance-report-template.md` | crear | `.claude/skills/story-acceptance/assets/acceptance-report-template.md` | AC-1, AC-2, AC-6, Req-9 |
 | `acceptance-report.md` | crear (output por historia) | `docs/specs/stories/STORY-NNN/acceptance-report.md` | AC-1, AC-2, AC-3, AC-6, Req-9 |
 | `story.md` (frontmatter) | modificar (solo status/substatus) | `docs/specs/stories/STORY-NNN/story.md` | AC-1, AC-2, AC-4, Req-12 |
-| `definition-of-done-story.md` | leer (sin modificar) | `docs/policies/definition-of-done-story.md` | AC-5, Req-7 |
+| `dod-story.md` | leer (sin modificar) | `docs/policies/dod-story.md` | AC-5, Req-7 |
 
 ---
 
@@ -308,7 +308,7 @@ Los mecanismos de `story-verify` (pruebas automáticas que preceden a acceptance
 | `story-acceptance {story_id} --restart` | Descarta sesión previa y reinicia desde el primer criterio | AC-3, Req-8 |
 | `story-acceptance {story_id} --dry-run` | Lista criterios a validar sin iniciar sesión interactiva | Req-8 |
 | `story-acceptance {story_id} --validator "<nombre>"` | Registra el nombre del validador en `acceptance-report.md` | Req-9 |
-| Lectura de `definition-of-done-story.md` | El skill lee la sección ACCEPTANCE en tiempo de ejecución; si no existe, usa Gherkin de story.md | AC-5, Req-7 |
+| Lectura de `dod-story.md` | El skill lee la sección ACCEPTANCE en tiempo de ejecución; si no existe, usa Gherkin de story.md | AC-5, Req-7 |
 | Detección de `acceptance-report.md` existente | Si existe: detecta partial vs. complete y ofrece resume/restart/show | AC-3, Req-8 |
 
 ---

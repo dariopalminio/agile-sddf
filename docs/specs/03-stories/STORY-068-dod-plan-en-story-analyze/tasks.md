@@ -22,7 +22,7 @@ related:
 
 ## 2. Modificar story-analyze/SKILL.md — sub-paso 1g (carga DoD)
 
-- [x] 2.1 Agregar sub-paso `1g` al Step 1 de `.claude/skills/story-analyze/SKILL.md` con las instrucciones: (a) intentar localizar `$SPECS_BASE/policies/definition-of-done-story.md`; (b) si no existe emitir `⚠️ definition-of-done-story.md no encontrado — se omitirá la validación DoD PLAN` y continuar con lista vacía; (c) si existe, buscar primer encabezado h3 cuyo texto contenga (case-insensitive) `PLAN`, `PLANNING` o `PLANIFICACIÓN`; (d) si no hay coincidencia emitir `⚠️ Sección PLAN no encontrada en DoD — se omitirá la validación DoD PLAN` y continuar con lista vacía; (e) si se encontró la sección, extraer todas las líneas `- [ ]` y `- [x]` como lista de criterios y registrar internamente
+- [x] 2.1 Agregar sub-paso `1g` al Step 1 de `.claude/skills/story-analyze/SKILL.md` con las instrucciones: (a) intentar localizar `$SPECS_BASE/policies/dod-story.md`; (b) si no existe emitir `⚠️ dod-story.md no encontrado — se omitirá la validación DoD PLAN` y continuar con lista vacía; (c) si existe, buscar primer encabezado h3 cuyo texto contenga (case-insensitive) `PLAN`, `PLANNING` o `PLANIFICACIÓN`; (d) si no hay coincidencia emitir `⚠️ Sección PLAN no encontrada en DoD — se omitirá la validación DoD PLAN` y continuar con lista vacía; (e) si se encontró la sección, extraer todas las líneas `- [ ]` y `- [x]` como lista de criterios y registrar internamente
 - [x] 2.2 Verificar conformidad con `skill-structural-pattern.md` (Req4): confirmar que (a) el sub-paso `1g` sigue la numeración alfabética del Step 1 existente, (b) los mensajes `⚠️` usan el mismo formato que los otros warnings del skill, (c) todas las rutas usan `$SPECS_BASE` sin hardcodear prefijos de cliente
 
 ## 3. Modificar story-analyze/SKILL.md — Correlación 5 (evaluación DoD)
@@ -48,12 +48,12 @@ related:
 
 ## 8. Setup de verificación — agregar sección PLAN al DoD (resuelve CR-001)
 
-- [x] 8.1 Agregar sección `### Definition of Done para el estado PLAN` a `docs/policies/definition-of-done-story.md` con al menos 3 criterios de calidad para los artefactos de planning: p.ej. `- [ ] story.md tiene criterios de aceptación en formato Gherkin`, `- [ ] design.md existe y cubre todos los ACs de story.md`, `- [ ] tasks.md existe con tareas atómicas ordenadas por dependencia`
+- [x] 8.1 Agregar sección `### Definition of Done para el estado PLAN` a `docs/policies/dod-story.md` con al menos 3 criterios de calidad para los artefactos de planning: p.ej. `- [ ] story.md tiene criterios de aceptación en formato Gherkin`, `- [ ] design.md existe y cubre todos los ACs de story.md`, `- [ ] tasks.md existe con tareas atómicas ordenadas por dependencia`
 
 ## 9. Verificación de criterios de aceptación
 
 - [x] 9.1 [P] Verificar AC-1 y solapamiento: revisar manualmente que, con sección PLAN presente en el DoD, story-analyze genera `analyze.md` con sección "Cumplimiento DoD — Fase PLAN" que contiene tabla con cada criterio y estado ✓/❌/⚠️, y que el Resumen Ejecutivo incluye la fila DoD. **Escenario de solapamiento:** preparar una historia donde el mismo AC falle tanto en Correlación 1 (sin cobertura en design.md) como en Correlación 5 (criterio DoD ❌); confirmar que analyze.md muestra ambas secciones de forma independiente con conteos separados — la fila de Correlación 1 y la fila de Cumplimiento DoD no se fusionan ni deduplication
 - [x] 9.2 [P] Verificar AC-2: revisar manualmente que cuando Correlación 5 reporta al menos un criterio `❌`, story.md NO se actualiza a `READY-FOR-IMPLEMENT` y analyze.md documenta los criterios fallidos
-- [x] 9.3 Verificar AC-3: revisar manualmente que cuando `definition-of-done-story.md` no existe o no tiene sección PLAN, story-analyze emite `⚠️`, continúa la ejecución, genera `analyze.md` sin error fatal y no bloquea la transición por esta causa
+- [x] 9.3 Verificar AC-3: revisar manualmente que cuando `dod-story.md` no existe o no tiene sección PLAN, story-analyze emite `⚠️`, continúa la ejecución, genera `analyze.md` sin error fatal y no bloquea la transición por esta causa
 
 - [x] Implementar fix-directives.md

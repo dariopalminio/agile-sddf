@@ -18,18 +18,18 @@ related:
 
 El skill `story-analyze` (`.claude/skills/story-analyze/SKILL.md`) audita la coherencia entre `story.md`, `design.md` y `tasks.md` antes de pasar a implementación. Ejecuta 4 correlaciones (cobertura de ACs en diseño, tareas sin diseño, diseño sin tarea, alineación con release) y actualiza `story.md` a `READY-FOR-IMPLEMENT` si no hay inconsistencias de tipo ERROR.
 
-STORY-068 agrega un **quinto eje de validación**: verificar que los artefactos de la fase PLAN cumplen los criterios definidos en `$SPECS_BASE/policies/definition-of-done-story.md`. Esta validación debe ser completamente dinámica — el skill lee los criterios del DoD en runtime, sin hardcodearlos.
+STORY-068 agrega un **quinto eje de validación**: verificar que los artefactos de la fase PLAN cumplen los criterios definidos en `$SPECS_BASE/policies/dod-story.md`. Esta validación debe ser completamente dinámica — el skill lee los criterios del DoD en runtime, sin hardcodearlos.
 
 **Artefactos afectados:**
 - `.claude/skills/story-analyze/SKILL.md` — pasos 1, 6, 9, 10
 - `.claude/skills/story-analyze/assets/analyze-report-template.md` — nuevas filas/sección DoD
 
-**Restricción detectada:** `docs/policies/definition-of-done-story.md` contiene secciones para SPECIFY, IMPLEMENT y CODE-REVIEW, pero no una sección con término "PLAN". La degradación elegante es obligatoria. Ver CR-001.
+**Restricción detectada:** `docs/policies/dod-story.md` contiene secciones para SPECIFY, IMPLEMENT y CODE-REVIEW, pero no una sección con término "PLAN". La degradación elegante es obligatoria. Ver CR-001.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Agregar sub-paso `1g` en Step 1: localizar y cargar `definition-of-done-story.md`, extraer sección del estado PLAN. // satisface: AC-3, AC-4-NFR
+- Agregar sub-paso `1g` en Step 1: localizar y cargar `dod-story.md`, extraer sección del estado PLAN. // satisface: AC-3, AC-4-NFR
 - Agregar Correlación 5 en Step 6: evaluar cada criterio DoD PLAN contra evidencia en los tres artefactos. // satisface: AC-1, AC-2
 - Actualizar `analyze-report-template.md` con fila DoD en Resumen Ejecutivo y nueva sección "Cumplimiento DoD — Fase PLAN". // satisface: AC-1
 - Hacer que los DoD-ERRORs (criterios ❌) bloqueen la transición a `READY-FOR-IMPLEMENT` en Step 9. // satisface: AC-2
@@ -38,7 +38,7 @@ STORY-068 agrega un **quinto eje de validación**: verificar que los artefactos 
 - Los cambios al SKILL.md respetan los patrones de `skill-structural-pattern.md`: sub-paso `1g` numerado alfabéticamente dentro de Step 1, Correlación 5 numerada secuencialmente dentro de Step 6, template leído desde `assets/` con fallback chain sin hardcodear secciones. // satisface: Req4
 
 **Non-Goals:**
-- Agregar la sección "PLAN" al archivo `definition-of-done-story.md` (tarea externa, ver CR-001)
+- Agregar la sección "PLAN" al archivo `dod-story.md` (tarea externa, ver CR-001)
 - Modificar las correlaciones 1–4 ni su lógica de severidad existente
 - Crear un nuevo skill o subagente; todos los cambios van en archivos existentes de `story-analyze/`
 
@@ -119,6 +119,6 @@ El template actual no tiene fila DoD en el Resumen Ejecutivo ni sección "Cumpli
 
 ### CR-001
 - **Tipo**: dependencia
-- **Descripción**: `docs/policies/definition-of-done-story.md` no contiene ninguna sección h3 con término "PLAN", "PLANNING" ni "PLANIFICACIÓN". Sub-paso 1g siempre emitirá ⚠️ y retornará lista vacía de criterios, haciendo que Correlación 5 no valide nada hasta que la sección exista.
-- **Documento afectado**: `docs/policies/definition-of-done-story.md`
+- **Descripción**: `docs/policies/dod-story.md` no contiene ninguna sección h3 con término "PLAN", "PLANNING" ni "PLANIFICACIÓN". Sub-paso 1g siempre emitirá ⚠️ y retornará lista vacía de criterios, haciendo que Correlación 5 no valide nada hasta que la sección exista.
+- **Documento afectado**: `docs/policies/dod-story.md`
 - **Acción requerida**: Agregar sección `### Definition of Done para el estado PLAN` con criterios de calidad para los artefactos story.md, design.md y tasks.md. Esta tarea es candidata a un story independiente dentro de EPIC-13 o puede ejecutarse junto con la implementación de STORY-068.

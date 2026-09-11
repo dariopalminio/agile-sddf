@@ -43,8 +43,8 @@ updated: 2026-05-16
 | 3.10 | Implementar Paso 7: consolidación y generación de acceptance-report.md | ✓ completado | `.claude/skills/story-acceptance/SKILL.md` |
 | 3.11 | Implementar Paso 8: actualizar frontmatter según resultado (AC-1, AC-2) | ✓ completado | `.claude/skills/story-acceptance/SKILL.md` |
 | 3.12 | Implementar soporte --validator | ✓ completado | `.claude/skills/story-acceptance/SKILL.md` |
-| 4.1 | Agregar sección ACCEPTANCE en `definition-of-done-story.md` | ✓ completado | `docs/policies/definition-of-done-story.md` |
-| 5.1 | Crear `examples/example-approved/` | ✓ completado | `.claude/skills/story-acceptance/examples/example-approved/story.md`, `acceptance-report.md`, `definition-of-done-story.md` |
+| 4.1 | Agregar sección ACCEPTANCE en `dod-story.md` | ✓ completado | `docs/policies/dod-story.md` |
+| 5.1 | Crear `examples/example-approved/` | ✓ completado | `.claude/skills/story-acceptance/examples/example-approved/story.md`, `acceptance-report.md`, `dod-story.md` |
 | 5.2 | Crear `examples/example-rejected/` | ✓ completado | `.claude/skills/story-acceptance/examples/example-rejected/acceptance-report.md` |
 | 5.3 | Crear `examples/example-partial/` | ✓ completado | `.claude/skills/story-acceptance/examples/example-partial/acceptance-report.md` |
 | 6.1 | Verificar AC-1 (happy path — ACCEPTANCE-APPROVED) | ✓ completado | Verificación estática sobre `example-approved/acceptance-report.md` |

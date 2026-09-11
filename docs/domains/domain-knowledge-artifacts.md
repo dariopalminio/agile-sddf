@@ -43,6 +43,7 @@
 * **Runbook:** Artefacto operativo que describe procedimientos de despliegue, recuperación o incidentes.
 * **TraceLink:** Relación tipada entre dos artefactos. Conjunto cerrado: `parent`, `related`, `verified-by`, `implements`, `traces-to`, `supersedes`, `superseded-by`, `originates-from`, `enforced-by`, `applied-by`, `modeled-by`.
 * **Frontmatter:** Bloque YAML obligatorio al inicio de cada artefacto.
+* **DOD:** Artefacto de`Definition of Done` (DoD) que define los criterios de verificación para las historias de usuario en sus diferentes estados para que se considere aceptada. Se expresa como checklist y su incumplimiento puede bloquear la transición de estados. Es un artefacto híbrido: su naturaleza es normativa (como una policy), pero su forma de operar es verificable y bloqueante (como un guardrail). El DoD comparte la forma (checklist + bloqueo) con el guardrail, pero protege algo distinto: no el contenido del repositorio, sino la transición entre estados de un work item.
 
 ---
 
@@ -97,6 +98,7 @@
 | **How-to** | — | `how-to/` | ❌ Evoluciona | Procedimiento paso a paso. |
 | **Runbook** | — | `runbooks/` | ❌ Evoluciona | Procedimiento operativo. |
 | **Knowledge** | — | `knowledge/` | ❌ Evoluciona | Conocimiento general (glosarios, referencias). |
+| **Definition of Done (DoD)** | DOD- | `policies/` | ❌ Evoluciona | Criterios de verificación para las historias de usuario en sus diferentes estados (SPECIFY, PLAN, IMPLEMENT, ACCEPTANCE). |
 
 ---
 

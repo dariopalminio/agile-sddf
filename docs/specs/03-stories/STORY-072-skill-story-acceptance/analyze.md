@@ -42,7 +42,7 @@ related:
 | AC-4 | Historia en estado incorrecto | ✓ | D-4 (precondición VERIFY/DONE obligatoria, error sin modificar archivos) |
 | AC-5 | DoD sin sección ACCEPTANCE → fallback Gherkin | ✓ | D-2 (fuente de criterios: DoD primario + fallback Gherkin) |
 | AC-6 | Scenario Outline — tipos de resultado por criterio | ✓ | D-5 (resultados APPROVED/REJECTED/BLOCKED), D-6 (presentación uno a uno) |
-| Req-7 | Lectura dinámica del DoD ACCEPTANCE | ✓ | D-2 (lectura en runtime desde definition-of-done-story.md) |
+| Req-7 | Lectura dinámica del DoD ACCEPTANCE | ✓ | D-2 (lectura en runtime desde dod-story.md) |
 | Req-8 | Idempotencia y sesiones reanudables | ✓ | D-3 (estado partial/complete), D-7 (historial preservado sin sobrescribir) |
 | Req-9 | Trazabilidad de validación humana | ✓ | D-5 (tabla con id, texto, resultado, observación, timestamp, validador) |
 | Req-10 | Patrones estructurales de Skills | ✓ | D-1 (estructura skill-name/SKILL.md + assets/ + examples/) |
@@ -92,7 +92,7 @@ related:
 | `acceptance-report-template.md` | Componentes Afectados | Tarea 2.1 | ✓ |
 | `acceptance-report.md` (output) | Componentes Afectados | Tarea 3.10 | ✓ |
 | `story.md` (frontmatter) | Componentes Afectados | Tareas 3.4, 3.8, 3.11 | ✓ |
-| `definition-of-done-story.md` (ACCEPTANCE section) | Componentes Afectados | Tarea 4.1 | ✓ |
+| `dod-story.md` (ACCEPTANCE section) | Componentes Afectados | Tarea 4.1 | ✓ |
 
 ---
 

@@ -38,7 +38,7 @@ Cuando se completa el renombramiento
 Entonces el directorio es .claude/skills/skill-master/
   Y el frontmatter name: es skill-master en SKILL.md
   Y los 6 archivos internos (SKILL.md, scripts/utils.py, scripts/aggregate_benchmark.py, references/schemas.md, references/skill-evals-format.md, references/skill-anatomy.md) tienen las referencias actualizadas
-  Y los 7 archivos externos (skills-lock.json, package.json, docs/policies/sddf-config.yaml, docs/policies/constitution.md, docs/policies/definition-of-done-story.md, docs/specs/stories/STORY-079-story-testcases/story.md) tienen las referencias actualizadas
+  Y los 7 archivos externos (skills-lock.json, package.json, docs/policies/sddf-config.yaml, docs/policies/constitution.md, docs/policies/dod-story.md, docs/specs/stories/STORY-079-story-testcases/story.md) tienen las referencias actualizadas
   Y el skill aparece como skill-master en la lista de skills disponibles del harness
 Escenario 2 — Modo plan: generar evals desde una fuente
 Dado que el usuario invoca /skill-master plan con --source apuntando a un archivo o descripción

@@ -195,7 +195,7 @@ Rechazada porque AC-7 requiere explícitamente mantener historial de ejecuciones
 
 ### D-6: Lectura dinámica del DoD VERIFY // satisface: AC-8
 
-**Opción elegida:** SKILL.md lee `$SPECS_BASE/policies/definition-of-done-story.md` en runtime y extrae la sección cuyo encabezado contenga "VERIFY" (case-insensitive).
+**Opción elegida:** SKILL.md lee `$SPECS_BASE/policies/dod-story.md` en runtime y extrae la sección cuyo encabezado contenga "VERIFY" (case-insensitive).
 
 Si la sección VERIFY no se encuentra:
 - Emitir advertencia: "Sección VERIFY no encontrada en DoD — usando criterios mínimos genéricos"
@@ -267,7 +267,7 @@ Campos actualizados en frontmatter:
 ```
 SKILL.md lee story.md → verifica precondición (READY-FOR-VERIFY o IMPLEMENT/DONE)
 → actualiza story.md: VERIFY/IN-PROGRESS
-→ lee DoD VERIFY de definition-of-done-story.md
+→ lee DoD VERIFY de dod-story.md
 → detecta config de unit tests (pytest.ini / jest.config / etc.)
 → ejecuta comando de tests (npm test / pytest / etc.)
 → si ejecución >30s: muestra progreso cada 15s

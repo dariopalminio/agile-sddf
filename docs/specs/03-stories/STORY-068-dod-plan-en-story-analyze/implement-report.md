@@ -39,7 +39,7 @@ updated: 2026-05-14
 | 5.1 | Modificar Step 9a para bloquear transición por ERROREs DoD | ✓ completado | `.claude/skills/story-analyze/SKILL.md` |
 | 6.1 | Modificar Step 10 para mostrar línea DoD PLAN en resumen | ✓ completado | `.claude/skills/story-analyze/SKILL.md` |
 | 7.1 | Actualizar ejemplo de output con sección DoD (1 criterio ✓, 1 criterio ❌) | ✓ completado | `.claude/skills/story-analyze/examples/output/analyze.md` |
-| 8.1 | Agregar sección PLAN al DoD con 5 criterios de calidad | ✓ completado | `docs/policies/definition-of-done-story.md` |
+| 8.1 | Agregar sección PLAN al DoD con 5 criterios de calidad | ✓ completado | `docs/policies/dod-story.md` |
 | 9.1 | Verificar AC-1 y escenario de solapamiento | ✓ completado | — |
 | 9.2 | Verificar AC-2: bloqueo de transición por DoD ❌ | ✓ completado | — |
 | 9.3 | Verificar AC-3: degradación elegante cuando DoD no disponible | ✓ completado | — |
@@ -50,7 +50,7 @@ updated: 2026-05-14
 
 ### `.claude/skills/story-analyze/SKILL.md`
 
-**Sub-paso 1g (Paso 1):** Nuevo sub-paso que carga los criterios DoD de la fase PLAN desde `$SPECS_BASE/policies/definition-of-done-story.md`. Implementa degradación elegante: si el archivo no existe o la sección PLAN no se encuentra, emite ⚠️ y continúa con lista vacía (no bloquea). Registra los criterios en `$DOD_PLAN_CRITERIA`.
+**Sub-paso 1g (Paso 1):** Nuevo sub-paso que carga los criterios DoD de la fase PLAN desde `$SPECS_BASE/policies/dod-story.md`. Implementa degradación elegante: si el archivo no existe o la sección PLAN no se encuentra, emite ⚠️ y continúa con lista vacía (no bloquea). Registra los criterios en `$DOD_PLAN_CRITERIA`.
 
 **Correlación 5 (Paso 6):** Nueva correlación que evalúa semánticamente cada criterio DoD contra los contenidos de story.md, design.md y tasks.md. Produce ✓/❌/⚠️ con evidencia. Registra `$DOD_ERROR_COUNT` para uso en Paso 9a.
 
@@ -73,7 +73,7 @@ updated: 2026-05-14
 - Inconsistencias Detectadas actualizada con INC-001 de tipo E
 - Sección "Cumplimiento DoD — Fase PLAN" añadida al final con tabla de 3 criterios: 2 ✓ y 1 ❌
 
-### `docs/policies/definition-of-done-story.md`
+### `docs/policies/dod-story.md`
 
 - Nueva sección `### Definition of Done para el estado PLAN` con 5 criterios de calidad para los artefactos story.md, design.md y tasks.md
 

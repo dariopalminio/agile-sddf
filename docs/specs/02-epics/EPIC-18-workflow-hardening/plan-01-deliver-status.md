@@ -57,7 +57,7 @@ El workflow completo queda:
 
 ### Grupo 3 — Políticas y templates
 
-**`docs/policies/definition-of-done-story.md`**
+**`docs/policies/dod-story.md`**
 - Reemplazar comentario: `<!-- Criterios que el validador humano debe confirmar manualmente antes de avanzar a DELIVER. -->`
 
 **`.claude/skills/project-policies-generation/assets/definition-of-done-story-template.md`**

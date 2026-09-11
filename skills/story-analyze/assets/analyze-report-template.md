@@ -96,7 +96,7 @@ updated: {date}
 ## Cumplimiento DoD — Fase PLAN
 
 <!-- Si $DOD_PLAN_CRITERIA estuvo vacío al ejecutar Correlación 5, mostrar el texto de aviso a continuación y omitir la tabla. -->
-<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que $SPECS_BASE/policies/definition-of-done-story.md contiene una sección con el término "PLAN". -->
+<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que $SPECS_BASE/policies/dod-story.md contiene una sección con el término "PLAN". -->
 
 | Criterio DoD | Estado | Severidad | Evidencia |
 |---|---|---|---|

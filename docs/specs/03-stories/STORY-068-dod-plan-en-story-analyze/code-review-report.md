@@ -76,12 +76,12 @@ reviewers:
 | Paso 8 — Completar template con Correlación 5 | D4: instrucciones condicionales según `$DOD_PLAN_CRITERIA` | ✓ |
 | Paso 9 — Guardia de transición TIPO E | D3: TIPO E añadido a condición de bloqueo | ✓ |
 | Paso 10 — Línea resumen DoD | D4: `DoD PLAN: N/Total criterios ✓` con variante degradada | ✓ |
-| definition-of-done-story.md (CR-001) | CR-001 resuelto: sección PLAN presente en línea 31 | ⚠️ (LOW) |
+| dod-story.md (CR-001) | CR-001 resuelto: sección PLAN presente en línea 31 | ⚠️ (LOW) |
 | Fallback template interno | D5: template como fuente de verdad | ⚠️ (LOW) |
 
 | # | Archivo:Línea | Dimensión | Severidad | Hallazgo | Acción requerida |
 |---|---|---|---|---|---|
-| INT-001 | `docs/policies/definition-of-done-story.md:31` | Consistencia documental | LOW | CR-001 en design.md documenta que la sección PLAN no existe, pero ya existe (línea 31, 5 criterios). Inconsistencia documental únicamente | Actualizar texto de CR-001 en design.md para reflejar que fue cerrado |
+| INT-001 | `docs/policies/dod-story.md:31` | Consistencia documental | LOW | CR-001 en design.md documenta que la sección PLAN no existe, pero ya existe (línea 31, 5 criterios). Inconsistencia documental únicamente | Actualizar texto de CR-001 en design.md para reflejar que fue cerrado |
 | INT-002 | `SKILL.md:444-530` | Coherencia template fallback | LOW | Fallback interno no incluye fila ni sección DoD (ver hallazgo coincidente de tech-lead y PO con MEDIUM) | Ver acción requerida del hallazgo #5 (Tech-Lead) / H-001 (PO) |
 
 ---

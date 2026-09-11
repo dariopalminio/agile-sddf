@@ -19,7 +19,7 @@ related:
 # 📖 Historia: DoD PLAN en story-analyze
 
 **Como** practitioner SDD que usa el pipeline de historias  
-**Quiero** que `/story-analyze` lea la sección fr la fase "PLAN" de `$SPECS_BASE/policies/definition-of-done-story.md` y valide que los artefactos cumplen esos criterios  
+**Quiero** que `/story-analyze` lea la sección fr la fase "PLAN" de `$SPECS_BASE/policies/dod-story.md` y valide que los artefactos cumplen esos criterios  
 **Para** no avanzar una historia a `READY-FOR-IMPLEMENT` cuando los artefactos de planning no cumplen el estándar de calidad de la fase
 
 ## ✅ Criterios de aceptación
@@ -28,7 +28,7 @@ related:
 ```gherkin
 Dado una historia en estado PLANNING/IN-PROGRESS
   Y los artefactos story.md, design.md y tasks.md presentes en el directorio
-  Y el archivo $SPECS_BASE/policies/definition-of-done-story.md existe con sección "PLAN"
+  Y el archivo $SPECS_BASE/policies/dod-story.md existe con sección "PLAN"
 Cuando ejecuto /story-analyze STORY-NNN
 Entonces analyze.md incluye una sección "Cumplimiento DoD — Fase PLAN"
   Y esa sección contiene una tabla con cada criterio DoD y su estado ✓ o ❌
@@ -46,7 +46,7 @@ Entonces story.md NO se actualiza a READY-FOR-IMPLEMENT
 
 ### Escenario alternativo / error – archivo DoD no encontrado o sección ausente
 ```gherkin
-Dado que $SPECS_BASE/policies/definition-of-done-story.md no existe
+Dado que $SPECS_BASE/policies/dod-story.md no existe
   O el archivo existe pero no contiene la sección "PLAN"
 Cuando ejecuto /story-analyze STORY-NNN
 Entonces el skill emite una advertencia ⚠️ indicando que el DoD no fue encontrado
@@ -71,7 +71,7 @@ Generado automáticamente desde el release: EPIC-13-quality-gates-con-dod-en-sto
 Feature origen: STORY-068 — DoD PLAN en story-analyze
 
 **Ubicación de los cambios en el skill:**
-- Sub-paso `1g` en Paso 1: localizar y leer `$SPECS_BASE/policies/definition-of-done-story.md`, extraer sección "PLAN"
+- Sub-paso `1g` en Paso 1: localizar y leer `$SPECS_BASE/policies/dod-story.md`, extraer sección "PLAN"
 - Correlación 5 en Paso 6: validar cada criterio DoD contra evidencia en story.md, design.md, tasks.md
 - Paso 8: incluir sección "Cumplimiento DoD — Fase PLAN" en analyze.md
 - Paso 9: considerar DoD-ERRORs como bloqueantes para la transición a READY-FOR-IMPLEMENT

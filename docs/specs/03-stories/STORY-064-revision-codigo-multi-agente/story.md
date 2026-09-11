@@ -51,7 +51,7 @@ Ejemplos:
 
 ### Requirement: Tres agentes especializados ejecutados en paralelo
 El skill invoca exactamente tres subagentes en paralelo, cada uno con foco exclusivo:
-- **Inspector de Código (Tech-Lead-Reviewer):** revisa calidad, legibilidad, duplicación y seguridad del código fuente contra `constitution.md` y `definition-of-done-story.md`
+- **Inspector de Código (Tech-Lead-Reviewer):** revisa calidad, legibilidad, duplicación y seguridad del código fuente contra `constitution.md` y `dod-story.md`
 - **Guardián de Requisitos (Product-Owner-Reviewer):** verifica que cada escenario Gherkin de `story.md` tiene correspondencia directa en el código
 - **Inspector de Integración (Integration-Reviewer):** valida que los componentes respetan la arquitectura de `design.md`
 

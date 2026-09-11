@@ -65,7 +65,7 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 | `design.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/design.md` | ✓ obligatorio |
 | `tasks.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/tasks.md` | ✓ obligatorio |
 | `fix-directives.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/fix-directives.md` | opcional |
-| `definition-of-done-story.md` | `$SPECS_BASE/policies/definition-of-done-story.md` | opcional |
+| `dod-story.md` | `$SPECS_BASE/policies/dod-story.md` | opcional |
 
 ---
 
@@ -340,11 +340,11 @@ Esta verificación debe ocurrir antes de procesar cualquier tarea del Paso 3.
 
 #### 2f. Cargar criterios DoD IMPLEMENT
 
-Intentar localizar `$SPECS_BASE/policies/definition-of-done-story.md`.
+Intentar localizar `$SPECS_BASE/policies/dod-story.md`.
 
 **Si el archivo no existe:**
 ```
-⚠️ definition-of-done-story.md no encontrado en $SPECS_BASE/policies/ — se omitirá la validación DoD IMPLEMENT
+⚠️ dod-story.md no encontrado en $SPECS_BASE/policies/ — se omitirá la validación DoD IMPLEMENT
 ```
 Registrar internamente `$DOD_IMPLEMENT_CRITERIA = []` y continuar.
 
@@ -564,7 +564,7 @@ Si `N_completadas = 0` (ejecución inicial), omitir las filas de "ejecución ant
 **Si `$DOD_IMPLEMENT_CRITERIA` está vacío:**
 ```
 ⚠️ DoD IMPLEMENT no encontrado — se omitió la validación.
-   Verifica que $SPECS_BASE/policies/definition-of-done-story.md contiene la sección "IMPLEMENT".
+   Verifica que $SPECS_BASE/policies/dod-story.md contiene la sección "IMPLEMENT".
 ```
 
 **Si hay criterios evaluados**, incluir la siguiente tabla con los resultados del sub-paso 4g:

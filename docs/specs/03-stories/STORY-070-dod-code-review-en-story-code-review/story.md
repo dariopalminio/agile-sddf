@@ -19,7 +19,7 @@ related:
 # 📖 Historia: DoD CODE-REVIEW en story-code-review
 
 **Como** tech lead o revisor que usa `/story-code-review` como quality gate  
-**Quiero** que el skill lea la sección "CODE-REVIEW" de `$SPECS_BASE/policies/definition-of-done-story.md` y valide esos criterios antes de determinar el `review-status` final  
+**Quiero** que el skill lea la sección "CODE-REVIEW" de `$SPECS_BASE/policies/dod-story.md` y valide esos criterios antes de determinar el `review-status` final  
 **Para** que la decisión de `approved`/`needs-changes` considere también el cumplimiento del DoD y no solo los hallazgos de los agentes revisores
 
 ## ✅ Criterios de aceptación
@@ -27,7 +27,7 @@ related:
 ### Escenario principal – DoD CODE-REVIEW incluido en la decisión final de review-status
 ```gherkin
 Dado una historia en estado READY-FOR-CODE-REVIEW/DONE
-  Y el archivo $SPECS_BASE/policies/definition-of-done-story.md existe con sección "CODE-REVIEW"
+  Y el archivo $SPECS_BASE/policies/dod-story.md existe con sección "CODE-REVIEW"
   Y los tres agentes revisores retornan max-severity LOW o ninguna (approved)
 Cuando story-code-review ejecuta el Paso 4c.1 (validación DoD)
   Y hay criterios DoD CODE-REVIEW no cumplidos con severidad HIGH o MEDIUM
@@ -48,7 +48,7 @@ Entonces review-status permanece approved
 
 ### Escenario alternativo / error – archivo DoD no encontrado o sección ausente
 ```gherkin
-Dado que $SPECS_BASE/policies/definition-of-done-story.md no existe
+Dado que $SPECS_BASE/policies/dod-story.md no existe
   O el archivo existe pero no contiene la sección "CODE-REVIEW"
 Cuando story-code-review carga contexto en el Paso 2d
 Entonces el skill registra $DOD_CODE_REVIEW_CRITERIA como vacío

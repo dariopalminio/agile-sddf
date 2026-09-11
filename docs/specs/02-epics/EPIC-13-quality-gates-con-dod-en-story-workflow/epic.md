@@ -13,7 +13,7 @@ updated: 2026-08-30
 # Release/Epic: Quality Gates con DoD en Story Workflow
 
 ## Descripción
-Integra la lectura y validación del Definition of Done en los tres skills del pipeline de historias SDD. Cada skill leerá su sección correspondiente del archivo `$SPECS_BASE/policies/definition-of-done-story.md` (PLAN, IMPLEMENT, CODE-REVIEW) y validará que los criterios de esa fase estén cumplidos antes de avanzar al siguiente estado. Convierte el DoD en un quality gate ejecutable dentro del flujo automatizado.
+Integra la lectura y validación del Definition of Done en los tres skills del pipeline de historias SDD. Cada skill leerá su sección correspondiente del archivo `$SPECS_BASE/policies/dod-story.md` (PLAN, IMPLEMENT, CODE-REVIEW) y validará que los criterios de esa fase estén cumplidos antes de avanzar al siguiente estado. Convierte el DoD en un quality gate ejecutable dentro del flujo automatizado.
 
 ## Historias
 - [x] Mejorar skill-master con dynamic-template skill-master lee assets/skill-template.md en runtime al crear un skill nuevo. Cuando el skill-master genera el SKILL.md de un skill nuevo, SHALL leer `assets/skill-template.md` antes de escribir cualquier contenido. El modelo SHALL extraer las secciones del template dinámicamente y completarlas con la información del skill en lugar de generar estructura hardcodeada.
@@ -30,7 +30,7 @@ Integra la lectura y validación del Definition of Done en los tres skills del p
 
 ### Escenario 1: story-analyze detecta criterio DoD PLAN no cumplido
 **DADO** una historia con `status: PLANNING/IN-PROGRESS` y los artefactos story.md, design.md y tasks.md presentes  
-**CUANDO** se ejecuta `/story-analyze` y existe `$SPECS_BASE/policies/definition-of-done-story.md` con sección PLAN  
+**CUANDO** se ejecuta `/story-analyze` y existe `$SPECS_BASE/policies/dod-story.md` con sección PLAN  
 **ENTONCES** analyze.md incluye una sección "Cumplimiento DoD — Fase PLAN" con el estado de cada criterio, y si hay ERRORs la historia no avanza a READY-FOR-IMPLEMENT
 
 ### Escenario 2: story-implement bloquea transición por DoD IMPLEMENT no cumplido
@@ -44,16 +44,16 @@ Integra la lectura y validación del Definition of Done en los tres skills del p
 **ENTONCES** `review-status` se actualiza a `needs-changes` y los criterios DoD aparecen como hallazgos en fix-directives.md
 
 ## Requerimiento
-El DoD debe leerse en runtime desde el archivo real (`$SPECS_BASE/policies/definition-of-done-story.md`); si el archivo o la sección cambia, el skill se adapta automáticamente sin modificar su código. Nunca hardcodear los criterios del DoD dentro de los skills.
+El DoD debe leerse en runtime desde el archivo real (`$SPECS_BASE/policies/dod-story.md`); si el archivo o la sección cambia, el skill se adapta automáticamente sin modificar su código. Nunca hardcodear los criterios del DoD dentro de los skills.
 
 ## Impacto en Procesos Claves
 - **story-analyze:** La salida del análisis incluye ahora una sección de cumplimiento DoD; el gate de READY-FOR-IMPLEMENT queda condicionado al resultado
 - **story-implement:** El reporte de implementación incluye validación DoD; la transición a READY-FOR-CODE-REVIEW queda bloqueada si hay DoD-ERRORs
 - **story-code-review:** El `review-status` puede cambiar de `approved` a `needs-changes` si los criterios DoD CODE-REVIEW no están cumplidos
-- **definition-of-done-story.md:** Pasa de ser documentación pasiva a un artefacto activo del pipeline, leído y ejecutado por los tres skills
+- **dod-story.md:** Pasa de ser documentación pasiva a un artefacto activo del pipeline, leído y ejecutado por los tres skills
 
 ## Dependencias Críticas (si las hay)
-- **El archivo `$SPECS_BASE/policies/definition-of-done-story.md` debe existir con secciones PLAN, IMPLEMENT y CODE-REVIEW**  
+- **El archivo `$SPECS_BASE/policies/dod-story.md` debe existir con secciones PLAN, IMPLEMENT y CODE-REVIEW**  
   *Dueño:* Equipo del proyecto  
   *Fecha compromiso:* Disponible antes de ejecutar las historias de este release
 
@@ -65,7 +65,7 @@ El DoD debe leerse en runtime desde el archivo real (`$SPECS_BASE/policies/defin
 - [ ] story-analyze genera sección "Cumplimiento DoD — Fase PLAN" en analyze.md con tabla de criterios ✓/❌
 - [ ] story-implement no avanza a DONE si hay criterios DoD con severidad ERROR
 - [ ] story-code-review cambia `review-status` a `needs-changes` cuando hay criterios DoD CODE-REVIEW no cumplidos de severidad HIGH/MEDIUM
-- [ ] Los tres skills muestran `⚠️` y continúan sin bloquear si `definition-of-done-story.md` no existe o la sección no se encuentra
+- [ ] Los tres skills muestran `⚠️` y continúan sin bloquear si `dod-story.md` no existe o la sección no se encuentra
 
 ## Notas adicionales
-El archivo de Definition of Done vive en `$SPECS_BASE/policies/definition-of-done-story.md` y es la fuente de verdad única para todos los quality gates del pipeline de historias. Cada skill lee su sección específica en runtime; cambiar el DoD no requiere modificar ningún skill.
+El archivo de Definition of Done vive en `$SPECS_BASE/policies/dod-story.md` y es la fuente de verdad única para todos los quality gates del pipeline de historias. Cada skill lee su sección específica en runtime; cambiar el DoD no requiere modificar ningún skill.

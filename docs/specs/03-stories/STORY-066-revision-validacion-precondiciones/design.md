@@ -63,7 +63,7 @@ Paso 1 — Resolver input
   1b. Validar artefactos requeridos [STORY-066] ← nuevo
       → Si alguno falta: mostrar error + detener
   1c. Actualizar frontmatter de story.md a CODE-REVIEW / IN-PROGRESS
-  1d. Cargar contexto (story.md, design.md, tasks.md, constitution.md, definition-of-done-story.md)
+  1d. Cargar contexto (story.md, design.md, tasks.md, constitution.md, dod-story.md)
 ```
 
 Insertar la validación entre 1a y 1c garantiza que si falla, `story.md` no se modifica (no hay rastro en el frontmatter), `.tmp/` no se toca y ningún agente se lanza.
@@ -119,7 +119,7 @@ El path de la historia se incluye en la cabecera para permitir diagnóstico ráp
 | `implement-report.md` | Requerido | Evidencia de implementación — sin él, ningún agente tiene qué revisar |
 | `tasks.md` | Opcional | El Tech-Lead-Reviewer puede revisar calidad de código sin lista de tareas |
 | `constitution.md` | Opcional | Mejora la revisión pero no la bloquea si no existe (ya tiene su propio aviso en STORY-064 Paso 2) |
-| `definition-of-done-story.md` | Opcional | Mismo caso que `constitution.md` |
+| `dod-story.md` | Opcional | Mismo caso que `constitution.md` |
 
 La validación de STORY-066 solo cubre los tres requeridos. Los opcionales se cargan con `if exists` sin generar error (comportamiento heredado de STORY-064).
 

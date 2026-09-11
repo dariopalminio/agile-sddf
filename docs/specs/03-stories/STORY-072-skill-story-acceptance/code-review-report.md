@@ -69,7 +69,7 @@ reviewers:
 
 | Severidad | Archivo:Sección | Descripción | Recomendación |
 |-----------|-----------------|-------------|---------------|
-| LOW | `examples/example-rejected/` y `examples/example-partial/` | Solo contienen `acceptance-report.md`; faltan archivos de input (`story.md`, `definition-of-done-story.md`) que `example-approved` sí incluye. | Agregar `story.md` en `example-rejected/` y `example-partial/` siguiendo el patrón de `example-approved`. |
+| LOW | `examples/example-rejected/` y `examples/example-partial/` | Solo contienen `acceptance-report.md`; faltan archivos de input (`story.md`, `dod-story.md`) que `example-approved` sí incluye. | Agregar `story.md` en `example-rejected/` y `example-partial/` siguiendo el patrón de `example-approved`. |
 | LOW | `SKILL.md` Paso 3, Estado B | La lógica de reanudación no especifica explícitamente qué campo del `acceptance-report.md` parcial se usa para identificar criterios pendientes. | Agregar instrucción explícita: leer la tabla "Detalle por criterio" buscando filas con resultado PENDIENTE. |
 | LOW | `SKILL.md` Paso 6 | El `--validator` se resuelve en Paso 6 (post-sesión), después del Paso 5. Si el usuario sale con [Q], la sesión parcial queda sin `$VALIDATOR_NAME`. | Mover la captura del nombre del validador al Paso 1 junto con los demás argumentos. |
 

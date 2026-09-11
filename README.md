@@ -59,7 +59,7 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Pipeline SDD completo de historia**: planning y implementación tarea a tarea — `story-plan` orquesta `story-design` → `story-tasking` → `story-testcases` → `story-analyze` en un solo comando; `story-implement` ejecuta el ciclo TDD completo (RED→GREEN→REFACTOR) delegando a skills configurables por stack tecnológico (`sddf.config.yaml`): genera tests con el skill `test_generator` declarado, implementa código con el `code_generator` y refactoriza sin romper suites; soporta modo interactivo (con pausas de confirmación entre fases) y modo automático (`--auto`) para CI; `story-code-review` para revisión multi-agente post-implementación
 - **Skills worker customizados (extensión)**: los workers específicos por stack —generadores de tests y de código para NestJS, React, Cypress/Playwright + Cucumber— **no se incluyen en este paquete**. Viven en [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension), se instalan por separado y se declaran en `sddf.config.yaml`, de modo que el core permanece agnóstico al stack mientras esos workers evolucionan en su propio repo. Ver [Extensions](#extensions--agile-sddf-extension)
 - **Configuración operacional por stack (`sddf.config.yaml`)**: archivo de configuración en la raíz del proyecto que declara los skills activos para cada fase del pipeline TDD (qué skill genera los tests de componente, qué skill genera los E2E, qué skill implementa el código); permite añadir nuevos skills de testing o implementación sin modificar los orquestadores; generado automáticamente por `sddf-init` desde un template canónico con soporte para ejemplos de configuración por stack (ej. `sddf.config.yaml.example` para librería UI React)
-- **Políticas de proyecto**: generación de `constitution.md` y `definition-of-done-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
+- **Políticas de proyecto**: generación de `constitution.md` y `dod-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
 - **Integración OpenSpec**: exploración, propuesta, implementación y archivado de cambios con trazabilidad completa
 - **Multi-runtime**: los mismos skills operan en Claude Code, GitHub Copilot y OpenCode sin modificar el SKILL.md fuente, eligiendo la carpeta destino al instalar (`.claude`/`.github`/`.agents`); el soporte a otros CLI/LLMs se evaluará en releases futuros
 - **Trazabilidad completa**: IDs únicos STORY-NNN y manejo de sub-estados IN-PROGRESS/Ready en cada documento del pipeline
@@ -287,7 +287,7 @@ O ejecuta cada fase individualmente:
 Antes de iniciar el pipeline, genera las políticas del proyecto para que todos los skills operen con las mismas reglas de calidad y convenciones técnicas:
 
 ```bash
-# Genera constitution.md y definition-of-done-story.md con preguntas guiadas
+# Genera constitution.md y dod-story.md con preguntas guiadas
 /project-policies-generation
 ```
 
@@ -334,7 +334,7 @@ Las políticas del proyecto son documentos Markdown versionados en el repositori
 ```
 docs/policies/
 ├── constitution.md              # principios técnicos inamovibles
-└── definition-of-done-story.md # criterios de terminado por estado
+└── dod-story.md # criterios de terminado por estado
 ```
 
 #### constitution.md
@@ -353,7 +353,7 @@ Define los principios que ningún skill ni agente puede violar. Contiene:
 
 Los skills leen `constitution.md` para mantener coherencia de patrones sin que el usuario tenga que repetir las reglas en cada sesión.
 
-#### definition-of-done-story.md
+#### dod-story.md
 
 Define los criterios de "terminado" para cada estado del ciclo de vida de una historia. Un skill de transición de estado verifica estos criterios antes de avanzar:
 
@@ -370,7 +370,7 @@ Define los criterios de "terminado" para cada estado del ciclo de vida de una hi
 Los skills comprueban estas políticas en dos momentos:
 
 1. **Preflight (Paso 0):** `skill-preflight` verifica que los archivos de políticas existen y son legibles antes de ejecutar cualquier lógica.
-2. **Gate de transición:** skills como `story-code-review` y `story-acceptance` leen `definition-of-done-story.md` para decidir si el artefacto cumple los criterios del estado destino antes de actualizar `status`/`substatus` en el frontmatter.
+2. **Gate de transición:** skills como `story-code-review` y `story-acceptance` leen `dod-story.md` para decidir si el artefacto cumple los criterios del estado destino antes de actualizar `status`/`substatus` en el frontmatter.
 
 ```bash
 # Genera o actualiza ambas políticas con preguntas guiadas
@@ -425,7 +425,7 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLAN → REA
 # Genera diagrama de contexto C4 Nivel 1 infiriendo desde documentos de specs existentes
 /project-context-diagram --from-files
 
-# Políticas del proyecto: Genera o actualiza constitution.md y definition-of-done-story.md
+# Políticas del proyecto: Genera o actualiza constitution.md y dod-story.md
 /project-policies-generation
 ```
 

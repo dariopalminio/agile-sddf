@@ -106,7 +106,7 @@
       "id": "TC-004",
       "name": "dod-sin-seccion-acceptance-usa-solo-gherkin",
       "type": "edge-case",
-      "description": "Historia en VERIFY/DONE. El archivo definition-of-done-story.md no contiene sección ACCEPTANCE. El skill debe emitir un aviso y continuar la sesión usando únicamente los criterios Gherkin de story.md como criterios a validar.",
+      "description": "Historia en VERIFY/DONE. El archivo dod-story.md no contiene sección ACCEPTANCE. El skill debe emitir un aviso y continuar la sesión usando únicamente los criterios Gherkin de story.md como criterios a validar.",
       "input": {
         "story_id": "STORY-080",
         "story_status": "VERIFY",

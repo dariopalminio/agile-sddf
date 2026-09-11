@@ -34,7 +34,7 @@ related:
 - [x] 4.1 Escribir `SKILL.md` con frontmatter YAML estandarizado (name, description, triggers, outputs) e instrucciones completas de orquestación cubriendo los 5 flujos del diseño:
   - **(a) Precondición (AC-4):** leer frontmatter de story.md; si status ≠ READY-FOR-VERIFY y ≠ IMPLEMENT/DONE → emitir mensaje de error específico y terminar sin modificar archivos
   - **(b) Inicio:** actualizar story.md → VERIFY/IN-PROGRESS
-  - **(c) Lectura DoD (D-6):** leer `$SPECS_BASE/policies/definition-of-done-story.md`, extraer sección VERIFY; si no existe → usar criterios mínimos genéricos + advertencia
+  - **(c) Lectura DoD (D-6):** leer `$SPECS_BASE/policies/dod-story.md`, extraer sección VERIFY; si no existe → usar criterios mínimos genéricos + advertencia
   - **(d) Detección de modo (D-2):** buscar en este orden: skill de testing personalizado en `.claude/skills/` → modo delegado; playwright.config/cypress.config/cucumber → modo e2e; pytest.ini/jest.config/etc. → modo unit; ninguno → modo manual
   - **(e) Ejecución de pruebas (AC-1, AC-2):** invocar comando detectado; si duración >30s mostrar progreso cada 15s; recopilar resultados
   - **(f) Modo manual (AC-3):** crear `.tmp/story-verify/qa-input.json`; invocar `qa-engineer.agent.md`; leer `qa-output.json`
@@ -55,7 +55,7 @@ related:
 - [x] 6.4 Verificar AC-4: ejecutar skill sobre una historia con status IMPLEMENT/IN-PROGRESS y confirmar que el mensaje de error es "La historia <ID> tiene status IMPLEMENT/IN-PROGRESS. Ejecuta story-code-review antes de continuar." y que ningún archivo es creado ni modificado
 - [x] 6.5 Verificar AC-5: ejecutar skill sobre `examples/pytest-project/` con el test fallido activo y confirmar que verify-report.md tiene sección Findings con el defecto, story.md queda con substatus BLOCKED y se muestra "VERIFY BLOQUEADO: se encontraron N defectos."
 - [x] 6.6 Verificar AC-7 (idempotencia): ejecutar story-verify dos veces sobre la misma historia y confirmar que la segunda ejecución sobreescribe verify-report.md pero preserva la entrada de la primera ejecución en la sección "Historial de ejecuciones anteriores"
-- [x] 6.7 Verificar AC-8 (DoD dinámico): modificar la sección VERIFY en definition-of-done-story.md añadiendo un nuevo criterio y re-ejecutar el skill; confirmar que el nuevo criterio aparece evaluado en verify-report.md sin modificar SKILL.md
+- [x] 6.7 Verificar AC-8 (DoD dinámico): modificar la sección VERIFY en dod-story.md añadiendo un nuevo criterio y re-ejecutar el skill; confirmar que el nuevo criterio aparece evaluado en verify-report.md sin modificar SKILL.md
 - [x] 6.8 Verificar mitigaciones de riesgos (INC-001): al completar la tarea 4.1 (SKILL.md), revisar la tabla `Risks / Trade-offs` de `design.md` y confirmar que cada mitigación está implementada: (a) detección de config no estándar → SKILL.md cae en modo `manual` como fallback; (b) tests que tardan >30s → SKILL.md muestra progreso cada 15s; (c) E2E no mapeables a escenarios Gherkin por nombre → se registran como SKIP con nota explicativa; (d) sección VERIFY no encontrada en DoD → SKILL.md usa criterios mínimos genéricos y emite advertencia; (e) directorio `.tmp/story-verify/` no puede crearse → SKILL.md aborta con mensaje de error de permisos
 - [x] 6.9 Verificar AC-13: Seguir lineamientos de `skill-master`.md 
 

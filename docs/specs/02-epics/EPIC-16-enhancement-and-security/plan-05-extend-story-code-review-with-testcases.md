@@ -35,7 +35,7 @@ implement-report.md	Opcional	Evidencia de implementación (producida por /story-
 testcases.md	Opcional	Especificación canónica de casos de prueba (producida por /story-testcases); si existe, se incorpora al análisis de cobertura
 tasks.md	Opcional	(sin cambios)
 constitution.md	Opcional	(sin cambios)
-definition-of-done-story.md	Opcional	(sin cambios)
+dod-story.md	Opcional	(sin cambios)
 Sección ## Precondiciones — solo requerir story.md y design.md.
 
 Paso 1c — validar solo story.md y design.md como requeridos. Para implement-report.md y testcases.md: detectar presencia y registrar:

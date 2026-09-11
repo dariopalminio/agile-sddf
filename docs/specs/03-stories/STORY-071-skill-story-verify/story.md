@@ -34,7 +34,7 @@ related:
 ```gherkin
 Dado que existe una historia "STORY-050" con status CODE-REVIEW y substatus DONE
   Y el proyecto tiene tests automáticos configurados (pytest, jest, etc.)
-  Y existe el archivo "$SPECS_BASE/policies/definition-of-done-story.md" con sección VERIFY
+  Y existe el archivo "$SPECS_BASE/policies/dod-story.md" con sección VERIFY
 Cuando el desarrollador ejecuta el skill `story-verify` con el ID "STORY-050"
 Entonces el skill lee la sección VERIFY del DoD y extrae los criterios a cumplir
   Y ejecuta los comandos de prueba detectados para el stack del proyecto
@@ -113,7 +113,7 @@ El skill puede ejecutarse múltiples veces sobre la misma historia sin efectos a
 
 ### Requerimiento: Lectura dinámica del DoD VERIFY
 
-El skill lee la sección VERIFY (o "Definición de Hecho para la fase de VERIFY") de `$SPECS_BASE/policies/definition-of-done-story.md` en tiempo de ejecución. Si el DoD evoluciona, el skill lo refleja automáticamente sin modificaciones. Si la sección VERIFY no existe en el DoD, muestra advertencia y usa criterios mínimos genéricos.
+El skill lee la sección VERIFY (o "Definición de Hecho para la fase de VERIFY") de `$SPECS_BASE/policies/dod-story.md` en tiempo de ejecución. Si el DoD evoluciona, el skill lo refleja automáticamente sin modificaciones. Si la sección VERIFY no existe en el DoD, muestra advertencia y usa criterios mínimos genéricos.
 
 ### Requerimiento: Severity Definitions
 ```
@@ -300,7 +300,7 @@ El skill `story-verify` no debe modificar ningún código fuente ni artefacto de
 **Precondiciones requeridas:**
 - Historia con `status: CODE-REVIEW` (o `IMPLEMENT/DONE` como mínimo aceptable)
 - Archivo `story.md` accesible en `$SPECS_BASE/specs/stories/<story-id>/`
-- Archivo DoD en `$SPECS_BASE/policies/definition-of-done-story.md`
+- Archivo DoD en `$SPECS_BASE/policies/dod-story.md`
 - Para modo automático: herramientas del stack instaladas (node, python, etc.)
 
 **Flags de entrada aceptados:**

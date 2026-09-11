@@ -173,7 +173,7 @@ Ambas vías disponibles. Dado que el "código" de esta historia es un script Nod
 
 ## Cumplimiento DoD — Fase PLAN
 
-`✓ DoD PLAN cargado: 5 criterios encontrados` (sección "Definition of Done para el estado PLAN" de `docs/policies/definition-of-done-story.md`)
+`✓ DoD PLAN cargado: 5 criterios encontrados` (sección "Definition of Done para el estado PLAN" de `docs/policies/dod-story.md`)
 
 | Criterio DoD | Estado | Severidad | Evidencia |
 |---|---|---|---|

@@ -65,7 +65,7 @@ Si el template cambia, el skill lo refleja automáticamente sin modificaciones.
 
 ## DoD VERIFY
 
-Los criterios evaluados se leen en runtime de `$SPECS_BASE/policies/definition-of-done-story.md`, sección VERIFY. Para añadir un nuevo criterio, editar ese archivo — el skill lo detecta automáticamente en la siguiente ejecución.
+Los criterios evaluados se leen en runtime de `$SPECS_BASE/policies/dod-story.md`, sección VERIFY. Para añadir un nuevo criterio, editar ese archivo — el skill lo detecta automáticamente en la siguiente ejecución.
 
 Si la sección VERIFY no existe, el skill usa criterios mínimos genéricos:
 1. Todos los tests del proyecto pasan

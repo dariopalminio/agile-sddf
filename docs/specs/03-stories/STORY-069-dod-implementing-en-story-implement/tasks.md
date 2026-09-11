@@ -17,7 +17,7 @@ related:
 
 ## 1. Modificar story-implement/SKILL.md — sub-paso 2f (carga DoD)
 
-- [x] T001 Agregar sub-paso `2f` al Step 2 de `.claude/skills/story-implement/SKILL.md` con instrucciones: (a) intentar localizar `$SPECS_BASE/policies/definition-of-done-story.md`; (b) si no existe emitir `⚠️ definition-of-done-story.md no encontrado — se omitirá la validación DoD IMPLEMENT` y registrar `$DOD_IMPLEMENT_CRITERIA = []`; (c) si existe, buscar primer encabezado h3 cuyo texto contenga (case-insensitive) `IMPLEMENT`, `IMPLEMENTANDO` o `IMPLEMENTACIÓN`; (d) si no hay coincidencia emitir `⚠️ Sección IMPLEMENT no encontrada en DoD — se omitirá la validación DoD IMPLEMENT` y registrar `$DOD_IMPLEMENT_CRITERIA = []`; (e) si se encontró la sección, extraer todas las líneas `- [ ]` y `- [x]` como lista de criterios planos y registrar internamente como `$DOD_IMPLEMENT_CRITERIA`
+- [x] T001 Agregar sub-paso `2f` al Step 2 de `.claude/skills/story-implement/SKILL.md` con instrucciones: (a) intentar localizar `$SPECS_BASE/policies/dod-story.md`; (b) si no existe emitir `⚠️ dod-story.md no encontrado — se omitirá la validación DoD IMPLEMENT` y registrar `$DOD_IMPLEMENT_CRITERIA = []`; (c) si existe, buscar primer encabezado h3 cuyo texto contenga (case-insensitive) `IMPLEMENT`, `IMPLEMENTANDO` o `IMPLEMENTACIÓN`; (d) si no hay coincidencia emitir `⚠️ Sección IMPLEMENT no encontrada en DoD — se omitirá la validación DoD IMPLEMENT` y registrar `$DOD_IMPLEMENT_CRITERIA = []`; (e) si se encontró la sección, extraer todas las líneas `- [ ]` y `- [x]` como lista de criterios planos y registrar internamente como `$DOD_IMPLEMENT_CRITERIA`
 - [x] T002 Verificar que el sub-paso `2f` sigue la numeración alfabética del Step 2 existente (2a–2e) y que los mensajes `⚠️` usan el mismo formato que los otros warnings del skill; confirmar que todas las rutas usan `$SPECS_BASE` sin hardcodear prefijos de cliente
 
 ## 2. Modificar story-implement/SKILL.md — sub-paso 4g (evaluación DoD)
@@ -28,7 +28,7 @@ related:
 ## 3. Modificar story-implement/SKILL.md — Paso 4a (sección DoD en implement-report.md)
 
 - [x] T005 Modificar el bloque de estructura del reporte en el Paso 4a de `.claude/skills/story-implement/SKILL.md` para incluir la sección `## Cumplimiento DoD — Fase IMPLEMENT` con tabla `| # | Criterio | Estado | Evidencia / Justificación |` y fila de resumen `**Resumen: N/Total criterios ✓**`
-- [x] T006 Agregar instrucción condicional en Paso 4a: si `$DOD_IMPLEMENT_CRITERIA` estaba vacío, mostrar en la sección `⚠️ DoD IMPLEMENT no encontrado — se omitió la validación. Verifica que $SPECS_BASE/policies/definition-of-done-story.md contiene la sección "IMPLEMENT".`; si hay criterios, completar tabla con resultados del sub-paso `4g`
+- [x] T006 Agregar instrucción condicional en Paso 4a: si `$DOD_IMPLEMENT_CRITERIA` estaba vacío, mostrar en la sección `⚠️ DoD IMPLEMENT no encontrado — se omitió la validación. Verifica que $SPECS_BASE/policies/dod-story.md contiene la sección "IMPLEMENT".`; si hay criterios, completar tabla con resultados del sub-paso `4g`
 
 ## 4. Modificar story-implement/SKILL.md — Paso 4b (transición condicional)
 
@@ -47,4 +47,4 @@ related:
 
 - [x] T011 [P] Verificar AC-1: revisar manualmente que, con sección IMPLEMENT presente en el DoD, story-implement genera `implement-report.md` con sección "Cumplimiento DoD — Fase IMPLEMENT" que contiene tabla con cada criterio y estado ✓/❌/⚠️, que el Resumen Final incluye la línea DoD, y que cuando no hay DoD-ERRORs story.md avanza a READY-FOR-CODE-REVIEW/DONE
 - [x] T012 [P] Verificar AC-2: revisar manualmente que cuando el sub-paso 4g reporta al menos un criterio `❌`, story.md NO se actualiza a READY-FOR-CODE-REVIEW/DONE, permanece en IMPLEMENT/IN-PROGRESS, y implement-report.md documenta los criterios fallidos con evidencia esperada
-- [x] T013 Verificar AC-3: revisar manualmente que cuando `definition-of-done-story.md` no existe o no contiene la sección IMPLEMENT, story-implement emite `⚠️`, continúa la ejecución, genera `implement-report.md` con sección DoD de aviso sin error fatal, y no bloquea la transición por esta causa
+- [x] T013 Verificar AC-3: revisar manualmente que cuando `dod-story.md` no existe o no contiene la sección IMPLEMENT, story-implement emite `⚠️`, continúa la ejecución, genera `implement-report.md` con sección DoD de aviso sin error fatal, y no bloquea la transición por esta causa

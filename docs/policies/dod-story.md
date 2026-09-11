@@ -9,7 +9,6 @@ updated: <YYYY-MM-DD>
 
 <!-- Un DoD es un guardrail, específicamente un guardrail de transición. No es una policy, aunque puede derivar de una policy. Es un artefacto híbrido: su naturaleza es normativa (como una policy), pero su forma de operar es verificable y bloqueante (como un guardrail). 
 El DoD comparte la forma (checklist + bloqueo) con el guardrail, pero protege algo distinto: no el contenido del repositorio, sino la transición entre estados de un work item.
-Recomendación: ubica el DoD en docs/guardrails/ con el sufijo -dod.md (gr-story-dod.md), y usa un campo protects: transition en el frontmatter para distinguirlo de los content guardrails.
 -->
 
 
