@@ -37,7 +37,7 @@ del template `epic-template.md`. Produce resultado **APROBADO**, **REFINAR**
 
 - Argumento posicional: ruta relativa, nombre (con o sin `.md`) o término de búsqueda del archivo de épica
 - `$SPECS_BASE/specs/02-epics/` — directorio donde se buscan los archivos de épica
-- `$SPECS_BASE/specs/templates/epic-template.md` — fuente de verdad estructural (solo lectura)
+- `$SPECS_BASE/templates/epic-template.md` — fuente de verdad estructural (solo lectura)
 
 ## Parámetros
 
@@ -46,13 +46,13 @@ del template `epic-template.md`. Produce resultado **APROBADO**, **REFINAR**
 ## Precondiciones
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
-- `$SPECS_BASE/specs/templates/epic-template.md` debe existir
+- `$SPECS_BASE/templates/epic-template.md` debe existir
 - Debe proporcionarse al menos un argumento para identificar el archivo a validar
 
 ## Dependencias
 
 - Skills: [`skill-preflight`]
-- Archivos: `$SPECS_BASE/specs/templates/epic-template.md`
+- Archivos: `$SPECS_BASE/templates/epic-template.md`
 
 ## Modos de ejecución
 
@@ -115,11 +115,11 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `$SPECS_BASE/specs/templates/epic-template.md`.
+Lee el archivo de plantilla `$SPECS_BASE/templates/epic-template.md`.
 
 - Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` y emitir:
 
-  > ⚠️ Usando template del skill epic-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
+  > ⚠️ Usando template del skill epic-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 
 - Si tampoco existe el fallback: informar al usuario y detener la ejecución:
 
@@ -209,7 +209,7 @@ Secciones/campos faltantes:
 - <nombre exacto del campo o encabezado faltante 2>
 ...
 
-Revisa el template en $SPECS_BASE/specs/templates/epic-template.md para completar las secciones indicadas.
+Revisa el template en $SPECS_BASE/templates/epic-template.md para completar las secciones indicadas.
 ```
 
 ---

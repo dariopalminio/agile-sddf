@@ -54,8 +54,8 @@ Los directorios faltantes son advertencias, no errores bloqueantes (algunos work
 
 Si el skill invocador declara una lista de templates requeridos, verificar cada uno según su tipo:
 
-**Templates centrales** (compartidos, resueltos vía `$SPECS_BASE/specs/templates/<nombre>`):
-- **Existe en el central:** emitir `[OK]  Template presente: $SPECS_BASE/specs/templates/<nombre>`
+**Templates centrales** (compartidos, resueltos vía `$SPECS_BASE/templates/<nombre>`):
+- **Existe en el central:** emitir `[OK]  Template presente: $SPECS_BASE/templates/<nombre>`
 - **No existe en el central pero sí en el `assets/` del skill dueño:** emitir
   `[WARNING] Template <nombre> no centralizado → usando fallback del skill dueño. Ejecutar sddf-init para centralizarlo`
 - **No existe en ninguno de los dos:** emitir

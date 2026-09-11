@@ -225,7 +225,7 @@ Lista los principios que NO pueden violarse bajo ninguna circunstancia.
 10. **Spec-anchored:** La spec se mantiene después de completar la tarea y se usa para evolución y mantenimiento del feature.
 11. TDD (Test-Driven Development) para skills: Define primero los casos de prueba (`evals/evals.json`) **antes** del `SKILL.md`.
 12. **Veracidad de CLAUDE.md/AGENTS.md:** CLAUDE.md solo describe estructura verificable con el filesystem en el momento de la edición. Antes de actualizar la sección de estructura de directorios o la lista de agentes, verificar con `ls skills/` y `ls agents/` (la fuente de skills/agentes de este repo vive en la raíz, no en `.claude/`). Nunca listar archivos que no existen ni omitir directorios relevantes que sí existen.
-13. **Todo campo declarado nombra a su escritor:** ningún template de `$SPECS_BASE/specs/templates/` puede declarar un campo (clave de frontmatter, línea de dato o sección) sin anotar junto a él qué skill lo escribe. Un campo cuyo escritor no existe se retira del template o se anota con el skill que pasará a escribirlo en la misma historia. La anotación usa la clave `escritor:` como comentario inline (YAML en frontmatter, HTML en el cuerpo) y no se copia a los documentos generados.
+13. **Todo campo declarado nombra a su escritor:** ningún template de `$SPECS_BASE/templates/` puede declarar un campo (clave de frontmatter, línea de dato o sección) sin anotar junto a él qué skill lo escribe. Un campo cuyo escritor no existe se retira del template o se anota con el skill que pasará a escribirlo en la misma historia. La anotación usa la clave `escritor:` como comentario inline (YAML en frontmatter, HTML en el cuerpo) y no se copia a los documentos generados.
 
 ---
 

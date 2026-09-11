@@ -36,7 +36,7 @@ El skill muestra:
 - El skill continúa con la ruta `$SPECS_BASE/specs/02-epics/EPIC-01-autenticacion-basica/epic.md`
 
 ### Fase 1 — Leer template
-- Se lee `$SPECS_BASE/specs/templates/epic-template.md`
+- Se lee `$SPECS_BASE/templates/epic-template.md`
 - Secciones extraídas normalmente
 
 ### Fases 2–4 — Completar contenido

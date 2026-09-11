@@ -9,7 +9,7 @@
       "type": "functional",
       "description": "Ejecutar epic-generate-all-stories con 2 épicas en $SPECS_BASE/specs/02-epics/ (EPIC-01 con 2 historias y EPIC-02 con 1 historia). No existen historias previas. El skill debe invocar preflight, descubrir las 2 épicas en orden alfabetico, verificar que no hay conflictos, generar 3 story.md (2 de EPIC-01 + 1 de EPIC-02) y mostrar el resumen consolidado con épicas procesadas, historias generadas y el siguiente paso sugerido.",
       "input": {
-        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/specs/templates/story-template.md existe. $SPECS_BASE/specs/02-epics/ contiene: EPIC-01-autenticacion/epic.md con STORY-001 y STORY-002, y EPIC-02-dashboard/epic.md con STORY-010. No existen historias previas en $SPECS_BASE/specs/03-stories/."
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/story-template.md existe. $SPECS_BASE/specs/02-epics/ contiene: EPIC-01-autenticacion/epic.md con STORY-001 y STORY-002, y EPIC-02-dashboard/epic.md con STORY-010. No existen historias previas en $SPECS_BASE/specs/03-stories/."
       },
       "expected": {
         "contains": [

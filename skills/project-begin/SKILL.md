@@ -41,7 +41,7 @@ refinar la intención del proyecto, produciendo
 ## Entrada
 
 - No se requiere input explícito — el skill inicia una entrevista interactiva
-- `$SPECS_BASE/specs/templates/project-intent-template.md` — fuente de verdad estructural del documento de salida (solo lectura); si no existe, el seed `assets/project-intent-template.md` del skill
+- `$SPECS_BASE/templates/project-intent-template.md` — fuente de verdad estructural del documento de salida (solo lectura); si no existe, el seed `assets/project-intent-template.md` del skill
 - `$SPECS_BASE/specs/01-projects/` — directorio donde se detectan proyectos activos (WIP=1)
 
 ## Parámetros
@@ -51,7 +51,7 @@ refinar la intención del proyecto, produciendo
 ## Precondiciones
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
-- `project-intent-template.md` debe existir, sea el central en `$SPECS_BASE/specs/templates/` o el seed `assets/project-intent-template.md`
+- `project-intent-template.md` debe existir, sea el central en `$SPECS_BASE/templates/` o el seed `assets/project-intent-template.md`
 - No debe existir ningún proyecto con `substatus: IN-PROGRESS` en `$SPECS_BASE/specs/01-projects/`
   (regla WIP=1), salvo que el usuario elija retomar o sobrescribir el activo
 
@@ -59,7 +59,7 @@ refinar la intención del proyecto, produciendo
 
 - Skills: [`skill-preflight`]
 - Agentes: [`project-pm`]
-- Archivos: [`$SPECS_BASE/specs/templates/project-intent-template.md`, `assets/project-intent-template.md` (seed)]
+- Archivos: [`$SPECS_BASE/templates/project-intent-template.md`, `assets/project-intent-template.md` (seed)]
 
 ## Modos de ejecución
 
@@ -127,10 +127,10 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-intent-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
+Lee el archivo de plantilla `$SPECS_BASE/templates/project-intent-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
 
 - Si el archivo central **no existe**: usar el seed `assets/project-intent-template.md` y emitir:
-  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
+  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 - Si tampoco existe el seed: informar al usuario y detener la ejecución:
   > ❌ Template `project-intent-template.md` no encontrado. Ejecuta `sddf-init`.
 - Si alguno de los dos **existe**: continua.

@@ -20,7 +20,7 @@ features definidas en un `epic.md`. Invocar también cuando el usuario mencione
 
 ## Objetivo
 
-Lee `epic.md` de un directorio de la épica en `$SPECS_BASE/specs/02-epics/` y genera automáticamente un directorio `STORY-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature definida en la sección `## Historias` de la épica. Cada archivo generado sigue exactamente la estructura de `$SPECS_BASE/specs/templates/story-template.md`.
+Lee `epic.md` de un directorio de la épica en `$SPECS_BASE/specs/02-epics/` y genera automáticamente un directorio `STORY-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature definida en la sección `## Historias` de la épica. Cada archivo generado sigue exactamente la estructura de `$SPECS_BASE/templates/story-template.md`.
 
 **Qué hace este skill:**
 - Resuelve la épica a procesar por nombre de directorio (parcial o completo) o por ruta explícita
@@ -44,13 +44,13 @@ Lee `epic.md` de un directorio de la épica en `$SPECS_BASE/specs/02-epics/` y g
 ## Precondiciones
 
 - El directorio de la épica indicada debe existir en `$SPECS_BASE/specs/02-epics/` y contener `epic.md`
-- `$SPECS_BASE/specs/templates/story-template.md` debe existir
+- `$SPECS_BASE/templates/story-template.md` debe existir
 - `skill-preflight` retorna estado OK (entorno válido)
 
 ## Dependencias
 
 - Skills: [`skill-preflight`]
-- Archivos: [`$SPECS_BASE/specs/templates/story-template.md`]
+- Archivos: [`$SPECS_BASE/templates/story-template.md`]
 
 ## Modos de ejecución
 
@@ -209,10 +209,10 @@ Esperar confirmación antes de continuar. Si el usuario responde `n` o `no`, sal
 
 El archivo de plantilla es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. El template es de **solo lectura**.
 
-Leer el archivo `$SPECS_BASE/specs/templates/story-template.md`.
+Leer el archivo `$SPECS_BASE/templates/story-template.md`.
 
 - Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/story-creation/assets/story-template.md` y emitir:
-  > ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
+  > ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 - Si tampoco existe el fallback: detener la ejecución (ver Manejo de errores).
 - Si alguno de los dos **existe**: continuar.
 
@@ -234,7 +234,7 @@ Las secciones opcionales (`⚙️ Criterios no funcionales`, `📎 Notas`) se in
 
 #### 4e. Escribir el archivo de historia
 
-Crear el directorio `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/specs/templates/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
+Crear el directorio `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/templates/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
 - `status: SPECIFY` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento)
@@ -332,7 +332,7 @@ Si alguna feature no pudo procesarse por formato inesperado, listarla como:
 | Épica no encontrado (Formato A, sin coincidencias) | `No se encontró el directorio de la épica: <término>. Asegúrate de que el directorio existe en $SPECS_BASE/specs/02-epics/ y vuelve a intentarlo.` | Detener sin generar archivos |
 | Épica no encontrado (Formato B, ruta inválida) | `No se encontró epic.md en: <ruta>. Asegúrate de que la ruta es correcta y vuelve a intentarlo.` | Detener sin generar archivos |
 | Sección `## Historias` vacía o ausente | `No se encontraron historias en el archivo de épica indicada.` | Mostrar orientación y detener |
-| Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/specs/templates/story-template.md.` | Detener la ejecución |
+| Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/templates/story-template.md.` | Detener la ejecución |
 
 ---
 

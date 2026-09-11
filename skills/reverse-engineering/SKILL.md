@@ -60,11 +60,11 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-template.md`.
+Lee el archivo de plantilla `$SPECS_BASE/templates/project-template.md`.
 
 - Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/project-discovery/assets/project-template.md` y emitir:
 
-  > ⚠️ Usando template del skill project-discovery. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
+  > ⚠️ Usando template del skill project-discovery. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 
 - Si tampoco existe el fallback: informar al usuario y detener la ejecución:
 

@@ -25,7 +25,7 @@
 - El directorio no existe → continuar
 
 ### Fase 1 — Leer template
-- Se lee `$SPECS_BASE/specs/templates/epic-template.md`
+- Se lee `$SPECS_BASE/templates/epic-template.md`
 - Secciones obligatorias extraídas: `Descripción`, `Historias`, `Flujos Críticos / Smoke Tests`
 - Secciones opcionales extraídas: `Requerimiento`, `Impacto en Procesos Claves`, `Dependencias Críticas`, `Riesgos`, `Criterios de éxito`, `Notas adicionales`
 

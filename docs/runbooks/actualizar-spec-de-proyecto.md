@@ -58,7 +58,7 @@ las épicas y en el `CHANGELOG.md`.
 Leer los dos documentos que definen el trabajo:
 
 - `$SPECS_BASE/specs/01-projects/<PROJ-NN>/project.md` — lo que hay que corregir.
-- `$SPECS_BASE/specs/templates/project-template.md` — la estructura obligatoria.
+- `$SPECS_BASE/templates/project-template.md` — la estructura obligatoria.
 
 **Regla:** la estructura de secciones no se negocia, viene del template (constitución, patrón 5). El
 trabajo de esta actualización es **solo de contenido**. Si el template evolucionó desde la última
@@ -202,7 +202,7 @@ for s in $(ls skills/); do grep -q "$s" "$P" || echo "FALTA: $s"; done
 
 # 4. La estructura sigue conforme al template
 diff <(grep -oE '^#+ [0-9]+\.?[0-9]*\.?' "$P") \
-     <(grep -oE '^#+ [0-9]+\.?[0-9]*\.?' docs/specs/templates/project-template.md)
+     <(grep -oE '^#+ [0-9]+\.?[0-9]*\.?' docs/templates/project-template.md)
 
 # 5. Las cifras del apéndice coinciden con el filesystem (reejecutar el Paso 2)
 ```

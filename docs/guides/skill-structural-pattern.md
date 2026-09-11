@@ -54,7 +54,7 @@ El skill es siempre el punto de entrada. Los agentes especializados son subagent
 
 Los skills no hardcodean la estructura del output. En runtime leen el template correspondiente y extraen secciones, campos y preguntas dinámicamente. Si el template evoluciona, el skill se adapta solo.
 
-Los templates globales y reusables están en `$SPECS_BASE/specs/templates/`. Los skills leen desde ahí para mantener una fuente de verdad única.
+Los templates globales y reusables están en `$SPECS_BASE/templates/`. Los skills leen desde ahí para mantener una fuente de verdad única.
 
 Los templates locales y particulares de un skill están en `skill-name/assets/` y el skill los lee desde ahí. Esto permite que cada skill tenga su propia versión del template sin afectar a otros skills.
 

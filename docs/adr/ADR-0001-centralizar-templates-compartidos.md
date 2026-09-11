@@ -3,13 +3,17 @@ type: adr
 id: ADR-0001
 slug: centralizar-templates-compartidos
 title: "Centralizar templates compartidos en $SPECS_BASE/specs/templates/"
-status: ACCEPTED
+status: SUPERSEDED
 date: 2026-06-12
 supersedes: null
-superseded-by: null
+superseded-by: ADR-0007
 ---
 
 # ADR-0001: Centralizar templates compartidos en `$SPECS_BASE/specs/templates/`
+
+> **Superado por [ADR-0007](ADR-0007-templates-como-capa-propia.md) (2026-09-11):** la ubicación pasó
+> a `$SPECS_BASE/templates/`, como capa hermana de `specs/`. El modelo seed → central, el orden de
+> resolución y la verificación de `skill-preflight` que decide este ADR siguen vigentes sin cambios.
 
 ## Contexto y problema
 

@@ -4,7 +4,7 @@ description: "Genera especificaciones de épica (directorio `EPIC-NN-nombre/epic
 ---
 # Skill: /epic-from-project-plan
 
-Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md` y genera automáticamente un directorio `EPIC-[ID]-[nombre-kebab]/` con un archivo `epic.md` por cada épica planificada en la sección "Propuesta de Épicas". Cada archivo generado sigue exactamente la estructura de `$SPECS_BASE/specs/templates/epic-template.md`.
+Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md` y genera automáticamente un directorio `EPIC-[ID]-[nombre-kebab]/` con un archivo `epic.md` por cada épica planificada en la sección "Propuesta de Épicas". Cada archivo generado sigue exactamente la estructura de `$SPECS_BASE/templates/epic-template.md`.
 
 **Usar cuando:**
 - Se quiere materializar las épicas de un `project-plan.md` como archivos de especificación listos para editar
@@ -133,11 +133,11 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `$SPECS_BASE/specs/templates/epic-template.md`.
+Lee el archivo de plantilla `$SPECS_BASE/templates/epic-template.md`.
 
 - Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` y emitir:
 
-  > ⚠️ Usando template del skill epic-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
+  > ⚠️ Usando template del skill epic-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 
 - Si tampoco existe el fallback: informar al usuario y detener la ejecución:
 
@@ -149,7 +149,7 @@ Lee el archivo de plantilla `$SPECS_BASE/specs/templates/epic-template.md`.
 
 Crear el directorio `$SPECS_BASE/specs/02-epics/EPIC-[ID]-[nombre-kebab]/` si no existe, luego crear el archivo `epic.md` dentro de ese directorio, poblando cada sección con los datos de la épica:
 
-Completa el archivo de plantilla `$SPECS_BASE/specs/templates/epic-template.md` infiriendo la información. Siempre completa dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros en la estructura del template. Para cada sección del template, si el dato correspondiente no existe en el bloque de la épica, usar el placeholder `[Por completar]` para asegurar que la sección siempre está presente y el archivo tiene estructura completa.
+Completa el archivo de plantilla `$SPECS_BASE/templates/epic-template.md` infiriendo la información. Siempre completa dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros en la estructura del template. Para cada sección del template, si el dato correspondiente no existe en el bloque de la épica, usar el placeholder `[Por completar]` para asegurar que la sección siempre está presente y el archivo tiene estructura completa.
 
 Al completar el frontmatter del archivo generado, usar:
 - `type: epic` y `id: EPIC-[ID]` — contrato canónico del nivel L2

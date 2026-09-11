@@ -9,7 +9,7 @@
       "type": "functional",
       "description": "Ejecutar epic-generate-stories con un nombre de épica que contiene 3 historias en la seccion ## Historias. El skill debe invocar preflight, resolver el directorio de la épica, extraer las 3 historias, leer el story-template.md, generar un story.md por historia en $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/ y mostrar el resumen con los 3 archivos creados y el siguiente paso sugerido.",
       "input": {
-        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/specs/templates/story-template.md existe. El directorio $SPECS_BASE/specs/02-epics/EPIC-01-autenticacion/ contiene epic.md con 3 historias en su seccion ## Historias: '- [ ] STORY-001 — Login de usuario: permite autenticarse con email y password', '- [ ] STORY-002 — Registro de usuario: crea cuenta nueva', '- [x] STORY-003 — Recuperacion de password: flujo de reset via email'. No existen historias previas en $SPECS_BASE/specs/03-stories/.",
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/story-template.md existe. El directorio $SPECS_BASE/specs/02-epics/EPIC-01-autenticacion/ contiene epic.md con 3 historias en su seccion ## Historias: '- [ ] STORY-001 — Login de usuario: permite autenticarse con email y password', '- [ ] STORY-002 — Registro de usuario: crea cuenta nueva', '- [x] STORY-003 — Recuperacion de password: flujo de reset via email'. No existen historias previas en $SPECS_BASE/specs/03-stories/.",
         "epic_input": "EPIC-01-autenticacion"
       },
       "expected": {

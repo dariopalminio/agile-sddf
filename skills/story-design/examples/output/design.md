@@ -117,7 +117,7 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
   → Paso 0: skill-preflight (verificar entorno, resolver SPECS_BASE)
   → Paso 1: resolver parámetros
       ├── directorio historia: glob SPECS_BASE/specs/03-stories/STORY-057-*/
-      ├── template: SPECS_BASE/specs/templates/story-design-template.md
+      ├── template: SPECS_BASE/templates/story-design-template.md
       └── salida: {directorio}/design.md
   → Paso 2: leer story.md → extraer AC-1, AC-2 + contexto
   → Paso 3: leer constitution.md + package.json (si existe) → stack real
@@ -134,7 +134,7 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
 | Componente | Acción | Ubicación | AC que satisface |
 |---|---|---|---|
 | SKILL.md | crear | `.claude/skills/story-design/SKILL.md` | AC-1, AC-2 |
-| story-design-template.md | crear | `docs/specs/templates/story-design-template.md` | AC-1 |
+| story-design-template.md | crear | `docs/templates/story-design-template.md` | AC-1 |
 | assets/README.md | crear | `.claude/skills/story-design/assets/README.md` | AC-1 |
 | examples/input/story.md | crear | `.claude/skills/story-design/examples/input/story.md` | AC-1 |
 | examples/output/design.md | crear | `.claude/skills/story-design/examples/output/design.md` | AC-1 |

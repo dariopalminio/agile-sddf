@@ -9,7 +9,7 @@
       "type": "functional",
       "description": "Ejecutar epic-from-project-plan sobre un project-plan.md cuya seccion '## Propuesta de Epicas' usa el separador em dash. El skill debe extraer los 3 bloques, normalizar el ID a dos digitos, construir el directorio EPIC-NN-nombre-kebab y escribir epic.md en cada uno, terminando con el resumen y el siguiente paso sugerido.",
       "input": {
-        "context": "Entorno SDDF valido. SDDF_ROOT definido y PROJ_DIR resuelto a PROJ-01-mi-app. El template $SPECS_BASE/specs/templates/epic-template.md existe. El archivo $SPECS_BASE/specs/01-projects/PROJ-01-mi-app/project-plan.md contiene la seccion '## Propuesta de Epicas' con tres bloques: '### Epica 00 — Estructura Base', '### Epica 01 — Autenticacion de Usuarios' y '### Epica 2 — Reportes', cada uno con su parrafo '**Objetivo:**' y su lista '**Criterios de exito:**'. El directorio $SPECS_BASE/specs/02-epics/ esta vacio.",
+        "context": "Entorno SDDF valido. SDDF_ROOT definido y PROJ_DIR resuelto a PROJ-01-mi-app. El template $SPECS_BASE/templates/epic-template.md existe. El archivo $SPECS_BASE/specs/01-projects/PROJ-01-mi-app/project-plan.md contiene la seccion '## Propuesta de Epicas' con tres bloques: '### Epica 00 — Estructura Base', '### Epica 01 — Autenticacion de Usuarios' y '### Epica 2 — Reportes', cada uno con su parrafo '**Objetivo:**' y su lista '**Criterios de exito:**'. El directorio $SPECS_BASE/specs/02-epics/ esta vacio.",
         "flags": []
       },
       "expected": {

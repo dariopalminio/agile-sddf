@@ -218,7 +218,7 @@ npx agile-sddf install --force
    calcular el siguiente ID — y el cálculo puede asignar un número en colisión.
 3. **Revisa el `kind: feat` por defecto** del paso 5: las historias que en realidad sean correcciones
    o tareas técnicas quedan mal clasificadas hasta que las ajustes a `fix` / `chore` / `hotfix`.
-4. **Borra el `release-spec-template.md` huérfano** de `{SDDF_ROOT}/specs/templates/` tras
+4. **Borra el `release-spec-template.md` huérfano** de `{SDDF_ROOT}/templates/` tras
    reejecutar `/sddf-init`; ahora se llama `epic-template.md`. Sin reejecutarlo, los skills caen en el
    fallback al template semilla con un `WARNING`, sin romperse.
 

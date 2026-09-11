@@ -132,8 +132,8 @@ Si elige "2", volver al inicio del Paso 1 para pedir un nombre diferente.
 
 El archivo de plantilla es la **única fuente de información estructural**. Nunca hardcodear nombres de secciones.
 
-Leer `$SPECS_BASE/specs/templates/epic-template.md` (fuente de verdad del proyecto, puede contener personalizaciones). Si no existe, usar el seed `assets/epic-template.md` y emitir:
-> ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
+Leer `$SPECS_BASE/templates/epic-template.md` (fuente de verdad del proyecto, puede contener personalizaciones). Si no existe, usar el seed `assets/epic-template.md` y emitir:
+> ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 
 - Si ninguno de los dos archivos existe: detener la ejecución (ver Manejo de errores).
 - Si el archivo **existe**: extraer dinámicamente:

@@ -46,12 +46,13 @@ sddf-init → skill-preflight → [cualquier skill SDDF]
      ```
    - **Detener la ejecución. No crear ningún directorio ni archivo.**
 
-### Paso 2 — Crear directorios de specs
+### Paso 2 — Crear directorios base
 
 Para cada uno de los siguientes directorios bajo `SPECS_BASE`:
 - `specs/01-projects/`
 - `specs/02-epics/`
 - `specs/03-stories/`
+- `templates/`
 
 Verificar si el directorio existe:
 - **No existe:** crearlo y registrar `[CREADO]  <ruta>`
@@ -59,9 +60,9 @@ Verificar si el directorio existe:
 
 Si algún directorio requiere rutas intermedias (ej. `SPECS_BASE/specs/`), crearlas también.
 
-### Paso 2b — Copiar templates compartidos al directorio central
+> `templates/` es una capa hermana de `specs/`, no un subdirectorio suyo: los templates son meta-artefactos que definen la estructura de otros artefactos. Ver [ADR-0007](../../docs/adr/ADR-0007-templates-como-capa-propia.md).
 
-Crear `SPECS_BASE/specs/templates/` si no existe (registrar `[CREADO]` / `[YA EXISTÍA]`).
+### Paso 2b — Copiar templates compartidos al directorio central
 
 Copiar los templates compartidos desde el `assets/` de su skill dueño. Esta tabla es la fuente de verdad de qué se centraliza:
 
@@ -74,7 +75,7 @@ Copiar los templates compartidos desde el `assets/` de su skill dueño. Esta tab
 | `project-plan-template.md` | `$CLI_ROOT/skills/project-planning/assets/` |
 
 Para cada template:
-- **No existe en `SPECS_BASE/specs/templates/`:** copiarlo desde el origen y registrar `[CREADO]  <ruta destino>`
+- **No existe en `SPECS_BASE/templates/`:** copiarlo desde el origen y registrar `[CREADO]  <ruta destino>`
 - **Ya existe en el destino:** no sobrescribirlo (puede contener personalizaciones del proyecto) y registrar `[YA EXISTÍA]  <ruta destino>`
 - **El origen no existe (skill dueño no instalado):** emitir `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)` y continuar sin bloquear.
 
@@ -134,12 +135,12 @@ Emitir el informe consolidado con todos los artefactos verificados:
 [CREADO]     docs/specs/01-projects/
 [CREADO]     docs/specs/02-epics/
 [YA EXISTÍA] docs/specs/03-stories/
-[CREADO]     docs/specs/templates/
-[CREADO]     docs/specs/templates/story-template.md
-[CREADO]     docs/specs/templates/epic-template.md
-[CREADO]     docs/specs/templates/project-template.md
-[CREADO]     docs/specs/templates/project-intent-template.md
-[CREADO]     docs/specs/templates/project-plan-template.md
+[CREADO]     docs/templates/
+[CREADO]     docs/templates/story-template.md
+[CREADO]     docs/templates/epic-template.md
+[CREADO]     docs/templates/project-template.md
+[CREADO]     docs/templates/project-intent-template.md
+[CREADO]     docs/templates/project-plan-template.md
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 [CREADO]     docs/policies/constitution.md

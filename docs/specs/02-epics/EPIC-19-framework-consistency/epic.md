@@ -24,7 +24,7 @@ Tras el hardening del workflow (EPIC-18) quedaron brechas que el propio uso del 
 - [x] **STORY-087 — Error en instalación local de `npm install agile-sddf` en Windows 11:** el postinstall reportaba skills instalados pero no creaba los directorios ni copiaba los agentes. Se corrige el instalador para que la copia a `.claude/` (o la carpeta elegida) sea real y verificable en Windows. — [[STORY-087-error-in-npm-install-locally]]
 - [x] **STORY-088 — Mejoras de seguridad:** desacoplar `story-code-review` del skill `security-audit`, publicar `SECURITY.md` y cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`. — [[STORY-088-security-enhancement]]
 - [ ] **STORY-089 — Ciclo de corrección con dueño tras un code review rechazado:** un veredicto `needs-changes` de `/story-code-review` deja la historia en un estado propio y remite a un ejecutor de correcciones, de modo que el desarrollador aplica los hallazgos y vuelve a revisión sin editar el frontmatter a mano ni depender de `tasks.md`. — [[STORY-089-story-fix-post-code-review]]
-- [x] **STORY-090 — Todo campo declarado en un template nombra a su escritor:** nuevo principio de la constitución y anotación de escritor en los cinco templates de `$SPECS_BASE/specs/templates/`, empezando por retirar el campo FINVEST del cuerpo de `story.md` (tres escritores, ningún lector) con una migración idempotente que se detiene ante datos sin otra copia. — [[STORY-090-campos-declarados-nombran-su-escritor]]
+- [x] **STORY-090 — Todo campo declarado en un template nombra a su escritor:** nuevo principio de la constitución y anotación de escritor en los cinco templates de `$SPECS_BASE/templates/`, empezando por retirar el campo FINVEST del cuerpo de `story.md` (tres escritores, ningún lector) con una migración idempotente que se detiene ante datos sin otra copia. — [[STORY-090-campos-declarados-nombran-su-escritor]]
 
 ## Documentación
 Agregar documentación de los dominios relacionados:
@@ -50,7 +50,7 @@ Agregar documentación de los dominios relacionados:
 **ENTONCES** la historia queda en `NEEDS-CHANGES`, las correcciones se aplican con el ejecutor indicado y un nuevo `/story-code-review` puede emitir `approved` sin ediciones manuales del frontmatter
 
 ### Escenario 4: Los templates no declaran campos huérfanos
-**DADO** los cinco templates de `$SPECS_BASE/specs/templates/`  
+**DADO** los cinco templates de `$SPECS_BASE/templates/`  
 **CUANDO** se leen campo a campo (frontmatter, líneas de dato y secciones)  
 **ENTONCES** cada campo tiene anotación `escritor:` o hereda del escritor por defecto del cuerpo, ningún template ni historia contiene el bloque `**FINVEST Score:**`, y `story-improve` / `story-split` siguen leyendo score y decisión de `finvest-evaluation-report.md`
 
@@ -80,7 +80,7 @@ Agregar documentación de los dominios relacionados:
 - [x] `npm install agile-sddf` en Windows 11 deja `.claude/skills/` y `.claude/agents/` completos
 - [x] `SECURITY.md` existe y el `ai-security-checklist` no tiene hallazgos `(warn)` abiertos
 - [ ] Un `needs-changes` de `/story-code-review` conduce, sin edición manual del frontmatter, a un nuevo review `approved`
-- [ ] Los cinco templates de `$SPECS_BASE/specs/templates/` tienen anotación de escritor en todos sus campos y ninguna historia conserva el bloque `**FINVEST Score:**`
+- [ ] Los cinco templates de `$SPECS_BASE/templates/` tienen anotación de escritor en todos sus campos y ninguna historia conserva el bloque `**FINVEST Score:**`
 - [ ] `docs/policies/constitution.md` incluye el principio "Todo campo declarado nombra a su escritor"
 
 ## Notas adicionales

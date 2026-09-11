@@ -58,7 +58,7 @@ El skill detecta automáticamente el modo en este orden:
 ## Template del reporte
 
 El skill lee el template en este orden:
-1. `$SPECS_BASE/specs/templates/verify-report-template.md` — ubicación canónica
+1. `$SPECS_BASE/templates/verify-report-template.md` — ubicación canónica
 2. `assets/verify-report-template.md` — fallback local del skill
 
 Si el template cambia, el skill lo refleja automáticamente sin modificaciones.

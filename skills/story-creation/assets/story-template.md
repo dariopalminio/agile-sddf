@@ -63,5 +63,8 @@ Ejemplos:
 * Seguridad: [ej. solo usuarios con rol X pueden ver Y]
 * UX/Accesibilidad: [ej. compatible con lectores de pantalla]
 
+## Fuera de alcance (Non-Goals)  <!-- sección opcional solo si es necesario indicar qué no se abordará -->
+[Aspectos que no serán abordados por esta historia, para evitar malentendidos]
+
 ## 📎 Notas / contexto adicional <!-- sección opcional · escritor: defecto · story-improve (dimensiones I y E) · story-split (contexto del split) -->
 [Información relevante para el equipo de desarrollo o QA]

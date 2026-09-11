@@ -229,28 +229,29 @@ Estos directorios solo tienen documentos de plan, sin frontmatter — se enlazan
 - STORY-084-skill-verify — [plan-01](specs/03-stories/STORY-084-skill-verify/plan-01.md) · [plan-02](specs/03-stories/STORY-084-skill-verify/plan-02.md) · [plan-03](specs/03-stories/STORY-084-skill-verify/plan-03.md)
 - STORY-085-integrar-config-sddf-init — [plan.md](specs/03-stories/STORY-085-integrar-config-sddf-init/plan.md) — Integrar `sddf.config.yaml` en el skill `sddf-init`
 
-### Templates de spec
+### Templates
 
-`specs/templates/` — fuente de verdad de la estructura de los artefactos generados. Su `slug:` es un
+`templates/` — fuente de verdad de la estructura de los artefactos generados. Su `slug:` es un
 placeholder, por lo que se enlazan solo por ruta:
 
-- [project-intent-template.md](specs/templates/project-intent-template.md) — Template de intención de proyecto
-- [project-template.md](specs/templates/project-template.md) — Template de especificación de requisitos
-- [project-plan-template.md](specs/templates/project-plan-template.md) — Template de plan de proyecto
-- [epic-template.md](specs/templates/epic-template.md) — Template de épica
-- [story-template.md](specs/templates/story-template.md) — Template de historia de usuario
+- [project-intent-template.md](templates/project-intent-template.md) — Template de intención de proyecto
+- [project-template.md](templates/project-template.md) — Template de especificación de requisitos
+- [project-plan-template.md](templates/project-plan-template.md) — Template de plan de proyecto
+- [epic-template.md](templates/epic-template.md) — Template de épica
+- [story-template.md](templates/story-template.md) — Template de historia de usuario
 
 ---
 
 ## 📐 Decisiones de arquitectura (docs/adr/)
 
 - [[adr-index]] — [README.md](adr/README.md) — Índice y convención de ADRs (los aceptados son inmutables)
-- [[centralizar-templates-compartidos]] — [ADR-0001](adr/ADR-0001-centralizar-templates-compartidos.md) — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` · `ACCEPTED`
+- [[centralizar-templates-compartidos]] — [ADR-0001](adr/ADR-0001-centralizar-templates-compartidos.md) — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` · `SUPERSEDED` por ADR-0007
 - [[invocacion-agentes-locales-de-skill]] — [ADR-0002](adr/ADR-0002-invocacion-agentes-locales-de-skill.md) — Contrato de invocación de agentes locales de skill · `ACCEPTED`
 - [[workflow-canonico-story-y-epic]] — [ADR-0003](adr/ADR-0003-workflow-canonico-story-y-epic.md) — Workflows canónicos de story y épica en el pipeline SDDF · `SUPERSEDED` por ADR-0006
 - [[nivel-l2-epic-y-directorios-numerados]] — [ADR-0004](adr/ADR-0004-nivel-l2-epic-y-directorios-numerados.md) — El nivel L2 es una épica, y los niveles viven en directorios numerados · `ACCEPTED`
 - [[prefijo-story-para-el-nivel-l1]] — [ADR-0005](adr/ADR-0005-prefijo-story-para-el-nivel-l1.md) — El ID del nivel L1 se prefija con `STORY`; el tipo vive en el campo `kind` · `ACCEPTED`
 - [[migracion-retroactiva-de-estados-de-epica]] — [ADR-0006](adr/ADR-0006-migracion-retroactiva-de-estados-de-epica.md) — Workflows canónicos de story y épica, con migración retroactiva de los estados históricos · `ACCEPTED`
+- [[templates-como-capa-propia]] — [ADR-0007](adr/ADR-0007-templates-como-capa-propia.md) — Los templates son una capa propia, hermana de `specs/` · `ACCEPTED`
 - [adr-template.md](adr/adr-template.md) — Template para nuevos ADR (slug placeholder, sin wikilink)
 
 ## 📖 Guías y operación
@@ -316,7 +317,7 @@ Los procedimientos, how-to suele ser más general, mientras que los runbooks son
 | — L3 proyecto (4 `.md` + `context-diagram.puml`) | 5 |
 | — L2 épicas (19 `epic.md` + 31 `plan-NN.md`) | 50 |
 | — L1 historias (76 `story.md` + 5 planes) | 81 |
-| — Templates de spec | 5 |
+| — Templates | 5 |
 | — ADR (3 + índice + template) | 5 |
 | — Políticas | 3 |
 | — Guías (18) + runbooks (4) | 22 |

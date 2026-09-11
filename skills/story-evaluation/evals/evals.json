@@ -10,7 +10,7 @@
       "description": "Invocar con STORY-075 (historia existente con story.md y template disponible). El skill debe evaluar las 7 dimensiones FINVEST, mostrar el reporte completo con scores y decisión, y confirmar que guardó finvest-evaluation-report.md en el directorio de la historia.",
       "input": {
         "flags": ["STORY-075"],
-        "context": "La historia STORY-075 existe en docs/specs/03-stories/STORY-075-integrar-historia-modo-manual-dryrun/story.md y el template docs/specs/templates/story-template.md existe"
+        "context": "La historia STORY-075 existe en docs/specs/03-stories/STORY-075-integrar-historia-modo-manual-dryrun/story.md y el template docs/templates/story-template.md existe"
       },
       "expected": {
         "contains": [
@@ -29,10 +29,10 @@
       "id": "TC-002",
       "name": "fail-fast-template-ausente-detiene-ejecucion",
       "type": "fail-fast",
-      "description": "Evaluar una historia cuando story-template.md no existe en $SPECS_BASE/specs/templates/. El skill debe emitir ❌ indicando el archivo faltante y detener sin generar ningún reporte ni score.",
+      "description": "Evaluar una historia cuando story-template.md no existe en $SPECS_BASE/templates/. El skill debe emitir ❌ indicando el archivo faltante y detener sin generar ningún reporte ni score.",
       "input": {
         "flags": ["STORY-075"],
-        "context": "La historia STORY-075 existe pero el archivo docs/specs/templates/story-template.md NO existe"
+        "context": "La historia STORY-075 existe pero el archivo docs/templates/story-template.md NO existe"
       },
       "expected": {
         "contains": [

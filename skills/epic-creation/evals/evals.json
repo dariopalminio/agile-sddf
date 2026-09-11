@@ -9,7 +9,7 @@
       "type": "functional",
       "description": "Ejecutar epic-creation con nombre 'Sistema de pagos'. El skill debe ejecutar preflight, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo epic.md en $SPECS_BASE/specs/02-epics/EPIC-NN-sistema-de-pagos/, invocar epic-format-validation y mostrar APROBADO con la ruta del archivo y el siguiente paso sugerido.",
       "input": {
-        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/specs/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en $SPECS_BASE/specs/02-epics/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa descripcion, lista 2 features y define un flujo critico. Acepta las secciones opcionales o las salta.",
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en $SPECS_BASE/specs/02-epics/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa descripcion, lista 2 features y define un flujo critico. Acepta las secciones opcionales o las salta.",
         "flags": []
       },
       "expected": {
@@ -62,9 +62,9 @@
       "id": "TC-003",
       "name": "fail-fast: template ausente detiene la ejecucion",
       "type": "fail-fast",
-      "description": "Ejecutar epic-creation cuando ni $SPECS_BASE/specs/templates/epic-template.md ni assets/epic-template.md existen. El skill debe detectar la ausencia del template en el Paso 2, emitir el mensaje de error indicado en la documentacion y detener la ejecucion sin crear ningun directorio ni archivo.",
+      "description": "Ejecutar epic-creation cuando ni $SPECS_BASE/templates/epic-template.md ni assets/epic-template.md existen. El skill debe detectar la ausencia del template en el Paso 2, emitir el mensaje de error indicado en la documentacion y detener la ejecucion sin crear ningun directorio ni archivo.",
       "input": {
-        "context": "Entorno SDDF valido (preflight OK). El archivo $SPECS_BASE/specs/templates/epic-template.md NO existe. El archivo assets/epic-template.md tampoco existe. El usuario intenta crear una épica llamada 'Feature flags'.",
+        "context": "Entorno SDDF valido (preflight OK). El archivo $SPECS_BASE/templates/epic-template.md NO existe. El archivo assets/epic-template.md tampoco existe. El usuario intenta crear una épica llamada 'Feature flags'.",
         "flags": []
       },
       "expected": {

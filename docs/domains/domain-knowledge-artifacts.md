@@ -29,8 +29,8 @@
 
 * **Artifact:** Unidad de conocimiento persistida en el repositorio con identidad única, tipo, capa y frontmatter.
 * **ArtifactId:** Identificador único global del artefacto (`FR-001`, `ADR-0003`, `STORY-042`).
-* **ArtifactType:** Tipo del artefacto. Conjunto cerrado: `requirement`, `adr`, `rfc`, `spec`, `domain`, `guardrail`, `policy`, `guide`, `how-to`, `runbook`, `knowledge`.
-* **Layer:** Capa de organización del artefacto dentro de `docs/`. Conjunto cerrado: `domains`, `requirements`, `adr`, `rfcs`, `specs`, `guardrails`, `policies`, `guides`, `how-to`, `runbooks`, `knowledge`.
+* **ArtifactType:** Tipo del artefacto. Conjunto cerrado: `requirement`, `adr`, `rfc`, `spec`, `domain`, `guardrail`, `policy`, `guide`, `how-to`, `runbook`, `knowledge`, `template`.
+* **Layer:** Capa de organización del artefacto dentro de `docs/`. Conjunto cerrado: `domains`, `requirements`, `adr`, `rfcs`, `specs`, `guardrails`, `policies`, `guides`, `how-to`, `runbooks`, `knowledge`, `templates`.
 * **Requirement:** Artefacto que describe qué debe hacer el sistema. Puede ser funcional (`FR-`) o no funcional (`NFR-`).
 * **ADR (Architecture Decision Record):** Artefacto inmutable que registra una decisión arquitectónica con su contexto, alternativas y consecuencias.
 * **RFC (Request for Comments):** Artefacto que propone un cambio grande que atraviesa múltiples áreas, con un período de revisión.
@@ -38,6 +38,7 @@
 * **Domain document:** Artefacto DDD que modela un bounded context del proyecto.
 * **Guardrail:** Artefacto que define **restricciones operativas o técnicas verificables** que un agente IA (o un humano) no debe violar. Se expresa como checklist con niveles de severidad (`error`, `warn`) y se comprueba mediante comandos deterministas (grep, git ls-files, linters). Es **ejecutable** y su incumplimiento **bloquea**.
 * **Policy:** Artefacto que define **reglas de gobernanza** del proyecto (convenciones, estándares, principios). Puede ser declarativo y no siempre verificable automáticamente. Su incumplimiento puede requerir juicio humano.
+* **Template:** Meta-artefacto que define la estructura de otros artefactos. No describe el sistema: describe la forma de un documento que un skill generará. Existe en dos ubicaciones con roles distintos: el **seed** en el `assets/` del skill dueño (se distribuye con el paquete) y la **copia activa** en `templates/` (fuente de verdad del proyecto, puede llevar personalizaciones). Ver [ADR-0007](../adr/ADR-0007-templates-como-capa-propia.md).
 * **Guide:** Artefacto que explica cómo hacer algo de forma didáctica (tutorial, guía).
 * **How-to:** Artefacto que describe un procedimiento paso a paso para una tarea concreta.
 * **Runbook:** Artefacto operativo que describe procedimientos de despliegue, recuperación o incidentes.
@@ -99,6 +100,9 @@
 | **Runbook** | — | `runbooks/` | ❌ Evoluciona | Procedimiento operativo. |
 | **Knowledge** | — | `knowledge/` | ❌ Evoluciona | Conocimiento general (glosarios, referencias). |
 | **Definition of Done (DoD)** | DOD- | `policies/` | ❌ Evoluciona | Criterios de verificación para las historias de usuario en sus diferentes estados (SPECIFY, PLAN, IMPLEMENT, ACCEPTANCE). |
+| **Template** | sufijo `-template.md` | `templates/`, `SKILL/<skill>/assets/` | ❌ Evoluciona | Estructura canónica de los artefactos que generan los skills. |
+
+
 
 ---
 
@@ -121,7 +125,8 @@ docs/
 ├── guides/           # Guías didácticas
 ├── how-to/           # Procedimientos paso a paso
 ├── runbooks/         # Procedimientos operativos
-└── knowledge/        # Conocimiento general
+├── knowledge/        # Conocimiento general
+└── templates/        # Plantillas de generación (meta-artefactos)
 ```
 
 ### Rol de cada capa
@@ -139,6 +144,7 @@ docs/
 | **how-to/** | ¿Cómo se ejecuta un procedimiento? | Media | Procedimientos |
 | **runbooks/** | ¿Cómo se opera el sistema? | Baja | Procedimientos operativos |
 | **knowledge/** | ¿Qué conocimiento general existe? | Media | Referencias, glosarios |
+| **templates/** | ¿Con qué estructura se generan los artefactos? | Baja | Plantillas canónicas del proyecto |
 
 ---
 
@@ -228,28 +234,29 @@ enforced-by:
 8. Los artefactos de tipo `spec` viven en `specs/01-projects/`, `specs/02-epics/` o `specs/03-stories/` según su nivel.
 9. Los artefactos de tipo `guardrail` viven en `guardrails/` y usan checklist con severidades.
 10. Los artefactos de tipo `policy` viven en `policies/` y declaran un `scope`.
+11. Los artefactos de tipo `template` viven en `templates/` y usan el sufijo `-template.md`. Su seed vive en el `assets/` del skill dueño; ambas copias deben ser idénticas.
 
 ### 8.3 Invariantes de trazabilidad
 
-11. Todo `Requirement` debe tener **al menos un `verified-by`** que apunte a una `Story` existente.
-12. Toda `Story` debe tener **al menos un `implements`** que apunte a un `Requirement` existente.
-13. Las relaciones `parent` son **obligatorias** para `Epic` y `Story`, y **prohibidas** para `Project`.
-14. Las relaciones `supersedes` y `superseded-by` son **bidireccionales**: si A supersede a B, B debe declarar superseded-by A.
-15. Las relaciones `originates-from` y `enforced-by` son **bidireccionales**: si un guardrail origina de una policy, la policy debe listar el guardrail en `enforced-by`.
+12. Todo `Requirement` debe tener **al menos un `verified-by`** que apunte a una `Story` existente.
+13. Toda `Story` debe tener **al menos un `implements`** que apunte a un `Requirement` existente.
+14. Las relaciones `parent` son **obligatorias** para `Epic` y `Story`, y **prohibidas** para `Project`.
+15. Las relaciones `supersedes` y `superseded-by` son **bidireccionales**: si A supersede a B, B debe declarar superseded-by A.
+16. Las relaciones `originates-from` y `enforced-by` son **bidireccionales**: si un guardrail origina de una policy, la policy debe listar el guardrail en `enforced-by`.
 
 ### 8.4 Invariantes de duplicación
 
-16. **Sin duplicación entre capas:** una regla de negocio vive en `domains/` o en `requirements/`, no en ambos. Si está en ambos, uno debe referenciar al otro.
-17. **Sin duplicación entre Gherkin y casos de uso:** el Gherkin en `story.md` es el caso de uso ejecutable. No se mantienen ambos.
-18. **Sin duplicación entre ADR y dominio:** una decisión arquitectónica vive en `adr/`; el modelo que la refleja vive en `domains/`. Se enlazan con `traces-to`.
-19. **Sin duplicación entre guardrail y policy:** una restricción verificable vive en `guardrails/`; la regla que la origina vive en `policies/`. Se enlazan con `originates-from` y `enforced-by`.
+17. **Sin duplicación entre capas:** una regla de negocio vive en `domains/` o en `requirements/`, no en ambos. Si está en ambos, uno debe referenciar al otro.
+18. **Sin duplicación entre Gherkin y casos de uso:** el Gherkin en `story.md` es el caso de uso ejecutable. No se mantienen ambos.
+19. **Sin duplicación entre ADR y dominio:** una decisión arquitectónica vive en `adr/`; el modelo que la refleja vive en `domains/`. Se enlazan con `traces-to`.
+20. **Sin duplicación entre guardrail y policy:** una restricción verificable vive en `guardrails/`; la regla que la origina vive en `policies/`. Se enlazan con `originates-from` y `enforced-by`.
 
 ### 8.5 Invariantes de inmutabilidad
 
-20. Los `ADR` son **inmutables** una vez aceptados. Si cambia la decisión, se crea un nuevo ADR que `supersedes` al anterior.
-21. Los `RFC` son **inmutables** tras su aprobación. Si cambia la propuesta, se crea un nuevo RFC.
-22. Los `Spec` (Project, Epic, Story) **evolucionan** con el proyecto.
-23. Los `Guardrail` y `Policy` **evolucionan** lentamente con el harness del proyecto.
+21. Los `ADR` son **inmutables** una vez aceptados. Si cambia la decisión, se crea un nuevo ADR que `supersedes` al anterior.
+22. Los `RFC` son **inmutables** tras su aprobación. Si cambia la propuesta, se crea un nuevo RFC.
+23. Los `Spec` (Project, Epic, Story) **evolucionan** con el proyecto.
+24. Los `Guardrail` y `Policy` **evolucionan** lentamente con el harness del proyecto.
 
 ### 8.6 Invariantes de estado
 
@@ -421,7 +428,9 @@ Toda relación debe poder navegarse en ambas direcciones:
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Guardrails:** `docs/guardrails/README.md` — convenciones de checklists y severidades
 * **Policies:** `docs/policies/constitution.md` — principios y reglas del proyecto
+* **Templates:** `docs/templates/README.md` — convención de nomenclatura y modelo seed/central
 * **Decisión de arquitectura:** [[ADR-0004]] — documentación en capas
+* **Decisión de arquitectura:** [[ADR-0007]] — los templates son una capa propia
 
 ---
 
@@ -435,4 +444,5 @@ Toda relación debe poder navegarse en ambas direcciones:
 * [[constitution]] — Constitución del proyecto (policy raíz)
 * [[security-checklist]] — Ejemplo de guardrail (GR-SEC-001)
 * [[ADR-0004]] — Documentación en capas
+* [[ADR-0007]] — Los templates son una capa propia, hermana de `specs/`
 

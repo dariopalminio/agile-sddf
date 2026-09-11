@@ -42,7 +42,7 @@ en épicas, produciendo `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` — documento de especificación de requisitos (precondición: `substatus: DONE`)
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` — contexto adicional del proyecto
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md` — guía estructural opcional para el plan
-- `$SPECS_BASE/specs/templates/project-plan-template.md` — fuente de verdad estructural (solo lectura); si no existe, el seed `assets/project-plan-template.md` del skill
+- `$SPECS_BASE/templates/project-plan-template.md` — fuente de verdad estructural (solo lectura); si no existe, el seed `assets/project-plan-template.md` del skill
 
 ## Parámetros
 
@@ -52,13 +52,13 @@ en épicas, produciendo `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` debe existir con `substatus: DONE`
-- `project-plan-template.md` debe existir, sea el central en `$SPECS_BASE/specs/templates/` o el seed `assets/project-plan-template.md`
+- `project-plan-template.md` debe existir, sea el central en `$SPECS_BASE/templates/` o el seed `assets/project-plan-template.md`
 
 ## Dependencias
 
 - Skills: [`skill-preflight`, `project-story-mapping`]
 - Agentes: [`project-architect`]
-- Archivos: [`$SPECS_BASE/specs/templates/project-plan-template.md`, `assets/project-plan-template.md` (seed)]
+- Archivos: [`$SPECS_BASE/templates/project-plan-template.md`, `assets/project-plan-template.md` (seed)]
 
 ## Modos de ejecución
 
@@ -129,11 +129,11 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-plan-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
+Lee el archivo de plantilla `$SPECS_BASE/templates/project-plan-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
 
 - Si el archivo central **no existe**: usar el seed `assets/project-plan-template.md` y emitir:
 
-  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
+  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 
 - Si tampoco existe el seed: informar al usuario y detener la ejecución:
 

@@ -25,7 +25,8 @@ Framework multiagente minimalista (solo Markdown + scripts Node.js de instalaci�
 agile-sddf/
 ├── docs/
 │   ├── index.md                                            # punto de entrada wiki (wikilinks [[slug]])
-│   ├── specs/{01-projects,02-epics,03-stories,templates}/  # artefactos generados por los skills SDD
+│   ├── specs/{01-projects,02-epics,03-stories}/            # artefactos generados por los skills SDD
+│   ├── templates/                                          # plantillas de generación (meta-artefactos)
 │   ├── policies/                                           # constitution.md, dod-story.md
 │   ├── adr/                                                # decisiones de arquitectura (ADR-NNNN, inmutables)
 │   ├── guides/                                             # guías de referencia (ver docs/index.md)

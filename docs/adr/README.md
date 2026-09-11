@@ -49,9 +49,10 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 
 | ID | Título | Estado | Fecha |
 |----|--------|--------|-------|
-| [ADR-0001](ADR-0001-centralizar-templates-compartidos.md) | Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` | ACCEPTED | 2026-06-12 |
+| [ADR-0001](ADR-0001-centralizar-templates-compartidos.md) | Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` | SUPERSEDED → [ADR-0007](ADR-0007-templates-como-capa-propia.md) | 2026-06-12 |
 | [ADR-0002](ADR-0002-invocacion-agentes-locales-de-skill.md) | Contrato de invocación de agentes locales de skill | ACCEPTED | 2026-06-12 |
 | [ADR-0003](ADR-0003-workflow-canonico-story-y-epic.md) | Workflows canónicos de Story y Epic en el pipeline SDDF | SUPERSEDED → [ADR-0006](ADR-0006-migracion-retroactiva-de-estados-de-epica.md) | 2026-06-14 |
 | [ADR-0004](ADR-0004-nivel-l2-epic-y-directorios-numerados.md) | El nivel L2 es una épica, y los niveles viven en directorios numerados | ACCEPTED | 2026-08-29 |
 | [ADR-0005](ADR-0005-prefijo-story-para-el-nivel-l1.md) | El ID del nivel L1 se prefija con `STORY`; el tipo de trabajo vive en el campo `kind` | ACCEPTED | 2026-08-29 |
 | [ADR-0006](ADR-0006-migracion-retroactiva-de-estados-de-epica.md) | Workflows canónicos de Story y Epic, con migración retroactiva de los estados históricos | ACCEPTED | 2026-08-30 |
+| [ADR-0007](ADR-0007-templates-como-capa-propia.md) | Los templates son una capa propia, hermana de `specs/` | ACCEPTED | 2026-09-11 |

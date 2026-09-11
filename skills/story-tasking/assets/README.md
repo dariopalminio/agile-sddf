@@ -3,7 +3,7 @@
 El template canónico para este skill se ubica en la ruta estándar de templates del proyecto:
 
 ```
-$SPECS_BASE/specs/templates/tasks-template.md
+$SPECS_BASE/templates/tasks-template.md
 ```
 
 El skill lo lee dinámicamente en runtime. No se duplica aquí para evitar sincronización manual.

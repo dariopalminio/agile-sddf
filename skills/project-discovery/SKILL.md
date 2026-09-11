@@ -39,7 +39,7 @@ de usuarios con el agente `project-pm` y la especificación de requisitos con
 ## Entrada
 
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` — input principal (precondición: `substatus: DONE`)
-- `$SPECS_BASE/specs/templates/project-template.md` — fuente de verdad estructural (solo lectura); si no existe, el seed `assets/project-template.md` del skill
+- `$SPECS_BASE/templates/project-template.md` — fuente de verdad estructural (solo lectura); si no existe, el seed `assets/project-template.md` del skill
 - `$SPECS_BASE/specs/01-projects/` — directorio para resolver el proyecto activo
 
 ## Parámetros
@@ -50,13 +50,13 @@ de usuarios con el agente `project-pm` y la especificación de requisitos con
 
 - El entorno debe superar el preflight (`skill-preflight`) sin errores
 - `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` debe existir con `substatus: DONE`
-- `project-template.md` debe existir, sea el central en `$SPECS_BASE/specs/templates/` o el seed `assets/project-template.md`
+- `project-template.md` debe existir, sea el central en `$SPECS_BASE/templates/` o el seed `assets/project-template.md`
 
 ## Dependencias
 
 - Skills: [`skill-preflight`]
 - Agentes: [`project-pm`, `project-architect`, `project-ux`]
-- Archivos: [`$SPECS_BASE/specs/templates/project-template.md`, `assets/project-template.md` (seed)]
+- Archivos: [`$SPECS_BASE/templates/project-template.md`, `assets/project-template.md` (seed)]
 
 ## Modos de ejecución
 
@@ -126,11 +126,11 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `$SPECS_BASE/specs/templates/project-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
+Lee el archivo de plantilla `$SPECS_BASE/templates/project-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
 
 - Si el archivo central **no existe**: usar el seed `assets/project-template.md` y emitir:
 
-  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/specs/templates/`.
+  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 
 - Si tampoco existe el seed: informar al usuario y detener la ejecución:
 
