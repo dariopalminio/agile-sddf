@@ -26,6 +26,11 @@ Tras el hardening del workflow (EPIC-18) quedaron brechas que el propio uso del 
 - [ ] **STORY-089 — Ciclo de corrección con dueño tras un code review rechazado:** un veredicto `needs-changes` de `/story-code-review` deja la historia en un estado propio y remite a un ejecutor de correcciones, de modo que el desarrollador aplica los hallazgos y vuelve a revisión sin editar el frontmatter a mano ni depender de `tasks.md`. — [[STORY-089-story-fix-post-code-review]]
 - [ ] **STORY-090 — Todo campo declarado en un template nombra a su escritor:** nuevo principio de la constitución y anotación de escritor en los cinco templates de `$SPECS_BASE/specs/templates/`, empezando por retirar el campo FINVEST del cuerpo de `story.md` (tres escritores, ningún lector) con una migración idempotente que se detiene ante datos sin otra copia. — [[STORY-090-campos-declarados-nombran-su-escritor]]
 
+## Documentación
+Agregar documentación de los dominios relacionados:
+- [[domain-work-item-hierarchy]] — Jerarquía de work items (Project → Epic → Story)
+- [[domain-state-management]] — Gestión de estados y transiciones de los work items
+
 ## Flujos Críticos / Smoke Tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
 
