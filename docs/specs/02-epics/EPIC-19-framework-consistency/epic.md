@@ -26,11 +26,6 @@ Tras el hardening del workflow (EPIC-18) quedaron brechas que el propio uso del 
 - [ ] **STORY-089 — Ciclo de corrección con dueño tras un code review rechazado:** un veredicto `needs-changes` de `/story-code-review` deja la historia en un estado propio y remite a un ejecutor de correcciones, de modo que el desarrollador aplica los hallazgos y vuelve a revisión sin editar el frontmatter a mano ni depender de `tasks.md`. — [[STORY-089-story-fix-post-code-review]]
 - [x] **STORY-090 — Todo campo declarado en un template nombra a su escritor:** nuevo principio de la constitución y anotación de escritor en los cinco templates de `$SPECS_BASE/templates/`, empezando por retirar el campo FINVEST del cuerpo de `story.md` (tres escritores, ningún lector) con una migración idempotente que se detiene ante datos sin otra copia. — [[STORY-090-campos-declarados-nombran-su-escritor]]
 
-## Documentación
-Agregar documentación de los dominios relacionados:
-- [[domain-work-item-hierarchy]] — Jerarquía de work items (Project → Epic → Story)
-- [[domain-state-management]] — Gestión de estados y transiciones de los work items
-
 ## Flujos Críticos / Smoke Tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
 
@@ -53,6 +48,39 @@ Agregar documentación de los dominios relacionados:
 **DADO** los cinco templates de `$SPECS_BASE/templates/`  
 **CUANDO** se leen campo a campo (frontmatter, líneas de dato y secciones)  
 **ENTONCES** cada campo tiene anotación `escritor:` o hereda del escritor por defecto del cuerpo, ningún template ni historia contiene el bloque `**FINVEST Score:**`, y `story-improve` / `story-split` siguen leyendo score y decisión de `finvest-evaluation-report.md`
+
+## Requerimiento: folder de templates global
+
+Se requiere que todos los templates compartidos por los distintos skills se ubiquen en un folder global (`$SPECS_BASE/templates/`) y que los skills lean desde este folder en caso de no encontrar templates en el folder local. Se mantienen copias locales y copias globales para las excepciones. Por defecto, si los skills son atómicos, buscan su template en su folder local assets.
+
+## Requerimiento: documentación de dominio
+Agregar documentación de los dominios relacionados:
+- [[domain-work-item-hierarchy]] — Jerarquía de work items (Project → Epic → Story)
+- [[domain-state-management]] — Gestión de estados y transiciones de los work items
+
+## Requerimiento: capas de documentación
+Establecer la estructura de carpetas para la documentación del proyecto, diferenciando entre dominios, requisitos, decisiones arquitectónicas, propuestas de cambio, work items, restricciones operativas, reglas de gobernanza, guías, procedimientos, conocimiento general y plantillas de generación.
+La estructura recomendada debe ser la siguiente:
+```
+docs/
+├── domains/          # Modelo DDD (estable)
+├── requirements/     # Catálogo de requisitos (vivo)
+│   ├── functional/
+│   └── non-functional/
+├── adr/              # Decisiones arquitectónicas (inmutables)
+├── rfcs/             # Propuestas de cambio grandes
+├── specs/            # Work items (Project, Epic, Story)
+│   ├── 01-projects/
+│   ├── 02-epics/
+│   └── 03-stories/
+├── guardrails/       # Restricciones operativas verificables
+├── policies/         # Reglas de gobernanza
+├── guides/           # Guías didácticas
+├── how-to/           # Procedimientos paso a paso
+├── runbooks/         # Procedimientos operativos
+├── knowledge/        # Conocimiento general
+└── templates/        # Plantillas de generación (meta-artefactos)
+```
 
 ## Impacto en Procesos Claves
 - **Instalación y onboarding:** la instalación en Windows es verificable (directorios y agentes realmente copiados); `sddf-init` + `skill-preflight` siguen siendo el único protocolo de arranque.
