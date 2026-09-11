@@ -6,10 +6,10 @@ id: STORY-090
 slug: STORY-090-campos-declarados-nombran-su-escritor
 title: "Todo campo declarado en un template nombra a su escritor"
 status: IMPLEMENT
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-19-framework-consistency
 created: 2026-09-10
-updated: 2026-09-10
+updated: 2026-09-11
 related:
   - EPIC-19-framework-consistency
   - STORY-089-story-fix-post-code-review
@@ -74,5 +74,7 @@ Los cinco templates de `$SPECS_BASE/specs/templates/` deben quedar anotados con 
 **Por qué se retira en vez de reasignarse.** El registro canónico ya existe, es machine-readable y tiene consumidores: el frontmatter de `finvest-evaluation-report.md`, que `story-improve` y `story-split` ya leen. La copia en `story.md` no tiene lectores y sí envejece: una historia refinada tras su evaluación deja el número desactualizado. Se descartó moverlo al frontmatter porque conserva la duplicación y obliga a propagar campos nuevos a `header-aggregation` y a los 78 archivos, por un dato que nadie consulta.
 
 **Decisión abierta para la planificación.** `STORY-067` es la única historia con un score real en el cuerpo y no tiene reporte en su directorio: su valor no existe en ningún otro sitio. Hay que reconstruirle el reporte o aceptar la pérdida de forma explícita. El escenario alternativo obliga a que la migración se detenga en ese caso en vez de resolverlo por su cuenta.
+
+**Cifras reales al implementar (2026-09-10, ver `design.md` › Context y CR-001):** 82 historias, 38 con el bloque; dos casos con dato real sin reporte — `STORY-067` (score 4.33: reporte reconstruido) y `STORY-078` (solo decisión `APROBADA`, redundante con su `status`: pérdida aceptada con nota).
 
 **Fuera de alcance:** validación automatizada del nuevo principio (un script o eval que falle ante un campo sin anotación). Esta historia lo establece como regla legible y anota los templates; el escenario de error se verifica leyendo los cinco templates, sin necesidad de ese script. Automatizar la verificación es una historia hermana, coherente con el principio §3 de la constitución de "obligar a demostrar, no declarar".

@@ -54,7 +54,7 @@ related:
 - [x] 4.4 [P] Anotar `docs/specs/templates/project-plan-template.md` (defecto `project-planning (project-architect)`; `## Backlog de Historias` local: `project-planning · epic-from-project-plan (lee, no escribe)` solo si aplica) y copiar a `skills/project-planning/assets/project-plan-template.md` — AC-3, AC-5, D-1
 - [x] 4.5 Resolver cualquier campo marcado huérfano en 1.3: retirarlo del template o anotarlo con el skill que pasará a escribirlo **e** instruir esa escritura en el `SKILL.md` correspondiente; registrar la lista (posiblemente vacía) para el `implement-report.md` — AC-3, D-1 regla 5
 - [x] 4.6 Verificar V-1, V-2 y V-3: lectura de los cinco templates sin campo sin anotación; grep de `FINVEST Score|FINVEST Decisi` vacío en `docs/specs/templates/` y en `skills/*/assets/*-template.md`; `diff` vacío en las cinco parejas canónico/seed — AC-3, AC-5, V-1, V-2, V-3
-- [ ] 4.7 Commit 1: `chore(templates): anotar escritor en los cinco templates y retirar campo FINVEST` (templates centrales + 5 seeds + `story-evaluation` Paso 7 + `scripts/migrate-finvest-field.js`). Refrescar la copia instalada con `node scripts/cli.js install --target .claude --force` — D-8
+- [x] 4.7 *(desviación: commit único `acc7922` hecho por el usuario en lugar de los 3 commits de D-8 — ver implement-report)* Commit 1: `chore(templates): anotar escritor en los cinco templates y retirar campo FINVEST` (templates centrales + 5 seeds + `story-evaluation` Paso 7 + `scripts/migrate-finvest-field.js`). Refrescar la copia instalada con `node scripts/cli.js install --target .claude --force` — D-8
 
 ## 5. Resolución de los casos con dato real sin reporte (según 1.2)
 
@@ -67,17 +67,17 @@ related:
 - [x] 6.2 Ejecutar la migración real; verificar en la salida el conteo de `MIGRADA` y en `git status` que solo cambian `docs/specs/03-stories/**/story.md` (más los archivos de 5.x) — AC-1, NFR-3
 - [x] 6.3 Verificar V-5: grep de `^\*\*FINVEST Score` en `docs/specs/03-stories/STORY-*/story.md` vacío; muestrear 3 historias migradas y comprobar que el `---` del frontmatter va seguido directamente de `<!-- Referencias -->` como en STORY-087 — AC-1, D-2
 - [x] 6.4 Verificar V-7 (idempotencia): segunda ejecución real → 0 `MIGRADA`, exit 0, `git status` sin cambios nuevos; guardar en `.tmp/story-090/run-2.txt` — NFR-2
-- [ ] 6.5 Commit 2 aislado: `chore(stories): migrar campo FINVEST retirado (STORY-090)` conteniendo únicamente `docs/specs/03-stories/**` (historias migradas + reporte reconstruido / notas de 5.x). Verificar V-8 con `git show --stat HEAD` — NFR-3, D-8
+- [x] 6.5 *(desviación: ídem: la migración no quedó en commit aislado; NFR-3 registrado como desviación aceptada en implement-report)* Commit 2 aislado: `chore(stories): migrar campo FINVEST retirado (STORY-090)` conteniendo únicamente `docs/specs/03-stories/**` (historias migradas + reporte reconstruido / notas de 5.x). Verificar V-8 con `git show --stat HEAD` — NFR-3, D-8
 
 ## 7. Constitución — principio 13
 
 - [x] 7.1 Añadir el ítem `13. **Todo campo declarado nombra a su escritor:** …` al final de la lista *"✅ Principios Técnicos Inamovibles"* en `docs/policies/constitution.md` con el enunciado de D-6 (campo = clave de frontmatter, línea de dato o sección; retirar o anotar con el skill que pasará a escribirlo; clave `escritor:`; no se copia a los documentos generados) y actualizar `updated:` del frontmatter — AC-4, D-6
-- [ ] 7.2 Commit 3: `docs(constitution): principio 13 — todo campo declarado nombra a su escritor` — D-8
+- [x] 7.2 *(desviación: ídem: incluido en `acc7922`)* Commit 3: `docs(constitution): principio 13 — todo campo declarado nombra a su escritor` — D-8
 
 ## 8. Verificación final y cierre
 
 - [x] 8.1 [P] Verificar V-4: grep de `FINVEST Score` vacío en `skills/story-creation/SKILL.md`, `skills/epic-generate-stories/SKILL.md`, `skills/epic-generate-all-stories/SKILL.md`; instanciar una historia de prueba con `/story-creation` (o dry-run leyendo el template) y comprobar que no contiene el bloque ni comentarios `escritor:`; descartar la historia de prueba sin commit — AC-1, D-7
 - [x] 8.2 [P] Verificar V-11: `git diff main -- skills/story-improve/SKILL.md skills/story-split/SKILL.md` vacío; ambos siguen leyendo `finvest-evaluation-report.md` (Paso 2 y Paso 3b respectivamente) — AC-1
 - [x] 8.3 [P] Verificar V-9 y V-10: la anotación de `status` en `story-template.md` y el Paso 7 de `story-evaluation` mencionan `SPECIFY/DONE ⇔ APROBADA`; `constitution.md` tiene el ítem 13 con el formato de los existentes — AC-1, AC-4
-- [ ] 8.4 Recorrer la Definition of Done para PLAN/IMPLEMENT de `docs/policies/definition-of-done-story.md` y dejar constancia de cada ítem en el `implement-report.md`, incluyendo: decisiones de 1.2, lista de huérfanos de 4.5, salidas de `.tmp/story-090/`, y la nota de que los fixtures de ejemplo (`story-improve/examples`, `story-split/examples`) se dejaron intactos por diseño — AC-1..AC-5
-- [ ] 8.5 Actualizar la nota de `story.md` "Decisión abierta para la planificación" con las cifras reales medidas (82 / 38 / STORY-067 y STORY-078) según CR-001, y marcar todas las tareas de este archivo como `[x]` — CR-001
+- [x] 8.4 Recorrer la Definition of Done para PLAN/IMPLEMENT de `docs/policies/definition-of-done-story.md` y dejar constancia de cada ítem en el `implement-report.md`, incluyendo: decisiones de 1.2, lista de huérfanos de 4.5, salidas de `.tmp/story-090/`, y la nota de que los fixtures de ejemplo (`story-improve/examples`, `story-split/examples`) se dejaron intactos por diseño — AC-1..AC-5
+- [x] 8.5 Actualizar la nota de `story.md` "Decisión abierta para la planificación" con las cifras reales medidas (82 / 38 / STORY-067 y STORY-078) según CR-001, y marcar todas las tareas de este archivo como `[x]` — CR-001
