@@ -44,10 +44,10 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 
 ## Guardrails y reglas a seguir
 
-- [Checklist de Seguridad de IA](docs/policies/ai-security-checklist.md)
-- [Checklist de Seguridad de Código](docs/policies/code-security-checklist.md)
-- [Checklist de Creación de Skills](docs/policies/skill-creation-checklist.md)
-- [Checklist de Creación de Agentes](docs/policies/agent-creation-checklist.md)
+- [Checklist de Seguridad de IA](docs/guardrails/gr-ai-security-checklist.md)
+- [Checklist de Seguridad de Código](docs/guardrails/gr-code-security-checklist.md)
+- [Checklist de Creación de Skills](docs/guardrails/gr-skill-creation-checklist.md)
+- [Checklist de Creación de Agentes](docs/guardrails/gr-agent-creation-checklist.md)
 - [Definition of Done - Story](docs/policies/definition-of-done-story.md)
 
 ## 📐 Convenciones de Código
