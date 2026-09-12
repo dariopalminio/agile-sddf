@@ -8,7 +8,7 @@ status: DEVELOP
 substatus: IN-PROGRESS
 parent: null
 created: 2026-06-14
-updated: 2026-09-10
+updated: 2026-09-11
 related: []
 ---
 
@@ -23,8 +23,10 @@ Tras el hardening del workflow (EPIC-18) quedaron brechas que el propio uso del 
 - [x] **STORY-086 — Renombrar el nivel L2 de release a épica y numerar los directorios de specs:** el nivel L2 pasa a llamarse *epic* (`epic.md`, `type: epic`, skills `epic-*`) y los directorios de specs quedan numerados por nivel de vuelo (`01-projects` / `02-epics` / `03-stories`). Se conserva "release" solo en su sentido de despliegue (runbooks, CHANGELOG, `security-audit --scope release`). Las historias quedan bajo el prefijo único `STORY-NNN` con el campo `kind` (`feat` / `fix` / `chore` / `hotfix`). — [[STORY-086-refactor-release-to-epic]]
 - [x] **STORY-087 — Error en instalación local de `npm install agile-sddf` en Windows 11:** el postinstall reportaba skills instalados pero no creaba los directorios ni copiaba los agentes. Se corrige el instalador para que la copia a `.claude/` (o la carpeta elegida) sea real y verificable en Windows. — [[STORY-087-error-in-npm-install-locally]]
 - [x] **STORY-088 — Mejoras de seguridad:** desacoplar `story-code-review` del skill `security-audit`, publicar `SECURITY.md` y cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`. — [[STORY-088-security-enhancement]]
-- [ ] **STORY-089 — Ciclo de corrección con dueño tras un code review rechazado:** un veredicto `needs-changes` de `/story-code-review` deja la historia en un estado propio y remite a un ejecutor de correcciones, de modo que el desarrollador aplica los hallazgos y vuelve a revisión sin editar el frontmatter a mano ni depender de `tasks.md`. — [[STORY-089-story-fix-post-code-review]]
+- [x] **STORY-089 — Un code review rechazado nombra al ejecutor de correcciones y no depende de tasks.md:** un veredicto `needs-changes` de `/story-code-review` devuelve la historia a la cola `READY-FOR-IMPLEMENT/DONE`, deja `fix-directives.md` (con `round`) como única señal de rework y nombra en su mensaje al ejecutor de correcciones (`/story-implement`; `/story-implement-tasks` si existe `tasks.md`), sin estado nuevo, sin editar el frontmatter a mano y sin depender de `tasks.md`. — [[STORY-089-rechazo-nombra-ejecutor-correcciones]]
 - [x] **STORY-090 — Todo campo declarado en un template nombra a su escritor:** nuevo principio de la constitución y anotación de escritor en los cinco templates de `$SPECS_BASE/templates/`, empezando por retirar el campo FINVEST del cuerpo de `story.md` (tres escritores, ningún lector) con una migración idempotente que se detiene ante datos sin otra copia. — [[STORY-090-campos-declarados-nombran-su-escritor]]
+- [ ] **STORY-091 — story-implement toma de la cola una historia rechazada y corrige en modo rework:** `/story-implement` reconoce el rework por la presencia de `fix-directives.md`, aplica un ciclo TDD acotado a los hallazgos y la lista blanca, y deja la historia lista para una nueva revisión sin intervención manual del frontmatter. — [[STORY-091-story-implement-modo-rework]]
+- [ ] **STORY-092 — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro:** reglas de robustez del modo rework: qué ocurre cuando la Fase RED no genera tests nuevos y con los archivos modificados fuera de la lista blanca de `fix-directives.md`. — [[STORY-092-reglas-robustez-modo-rework]]
 
 ## Flujos Críticos / Smoke Tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
@@ -42,7 +44,7 @@ Tras el hardening del workflow (EPIC-18) quedaron brechas que el propio uso del 
 ### Escenario 3: Un code review rechazado tiene camino de vuelta a revisión
 **DADO** una historia en IMPLEMENT con `code-review-report.md` en veredicto `needs-changes`  
 **CUANDO** el desarrollador sigue el siguiente paso indicado por el propio mensaje de `/story-code-review`  
-**ENTONCES** la historia queda en `NEEDS-CHANGES`, las correcciones se aplican con el ejecutor indicado y un nuevo `/story-code-review` puede emitir `approved` sin ediciones manuales del frontmatter
+**ENTONCES** la historia queda en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md` (round N) como señal de rework, las correcciones se aplican con el ejecutor indicado (`/story-implement` en modo rework, STORY-091) y un nuevo `/story-code-review` puede emitir `approved` sin ediciones manuales del frontmatter
 
 ### Escenario 4: Los templates no declaran campos huérfanos
 **DADO** los cinco templates de `$SPECS_BASE/templates/`  
@@ -93,7 +95,7 @@ docs/
 - **EPIC-18 Workflow Hardening (COMPLETED):** define el workflow canónico de épica y el traslado de skills a la raíz sobre los que esta épica construye.  
   *Dueño:* mantenedor del framework  
   *Fecha compromiso:* cerrada (2026-06-14)
-- **STORY-089 antes de cerrar el ciclo de corrección en la documentación del pipeline:** `docs/knowledge/guides/state-machine.md` y `sddf-commands-pipeline.md` deben reflejar el estado `NEEDS-CHANGES` con su skill de entrada y de salida.  
+- **STORY-089 antes de cerrar el ciclo de corrección en la documentación del pipeline:** `docs/domains/domain-story-lifecycle.md`, `docs/domains/domain-state-management.md` y `docs/guides/sddf-commands-pipeline.md` deben reflejar la señal de rework (`fix-directives.md`, sin estado nuevo) y el ejecutor de correcciones.  
   *Dueño:* mantenedor del framework  
   *Fecha compromiso:* al pasar STORY-089 a DELIVER
 
@@ -101,7 +103,7 @@ docs/
 - **Renombrado masivo release → epic rompe referencias externas:** proyectos que instalaron versiones previas conservan `specs/releases/`. – **Mitigación:** documentar la migración en el CHANGELOG y mantener `release` como término válido en su sentido CI/CD.
 - **Migración del campo FINVEST pierde el único dato sin copia (STORY-067):** – **Mitigación:** la migración se detiene ante cualquier historia con valor real y sin `finvest-evaluation-report.md`; la resolución (reconstruir el reporte o aceptar la pérdida) queda registrada en el commit.
 - **Un skill copia los comentarios `escritor:` al documento generado:** – **Mitigación:** el principio de la constitución lo prohíbe y STORY-090 verifica con una instanciación de prueba de `story-creation`.
-- **El estado `NEEDS-CHANGES` desalinea `state-machine.md`:** – **Mitigación:** STORY-089 exige como criterio no funcional reflejarlo en `docs/knowledge/guides/state-machine.md`.
+- **`story-implement` solo reconoce `fix-directives.md` como señal de rework:** los rechazos de `story-verify` y `story-acceptance` siguen encolando la historia pero sin ejecutor automático. – **Mitigación:** deuda registrada en ADR-0008 para una historia posterior.
 
 **Criterios de éxito:**
 - [x] Ningún skill, agente, script ni `package.json` referencia `release-*` como skill ni `specs/releases/`

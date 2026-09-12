@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- **`story-code-review` deja de escribir en `tasks.md`, numera rondas y nombra al ejecutor de
+  correcciones** — un veredicto `needs-changes` devuelve la historia a `READY-FOR-IMPLEMENT/DONE`,
+  crea o sobreescribe `fix-directives.md` con el campo `round` (ronda previa + 1; escritor único:
+  `story-code-review`) y cierra con `→ Ejecuta /story-implement <id>` (alternativa
+  `/story-implement-tasks <id>` solo si existe `tasks.md`). La presencia de `fix-directives.md` es la
+  única señal de rework; `approved` la elimina. Ya no se añade la tarea
+  `- [ ] Implementar fix-directives.md` a `tasks.md` (STORY-089).
+- **`story-implement-tasks` aplica `fix-directives.md` por presencia del archivo** — nuevo pre-paso
+  2f que ejecuta las correcciones antes del bucle de tareas, sin depender del literal de tarea; el
+  gate de salida anticipada de 2c ya no termina sin cambios cuando hay correcciones pendientes. El
+  literal se reconoce solo para no procesar como TDD las líneas legadas de `tasks.md`.
+- **`fix-directives-template.md`** nombra al ejecutor de correcciones y corrige el estado inexistente
+  `READY-FOR-VERIFY` → tras `approved` la historia queda en `CODE-REVIEW/DONE`.
+- **EPIC-19 y los dominios dejan de citar `NEEDS-CHANGES` / `REWORK`** — `epic.md` (Escenario 3,
+  dependencia crítica y riesgo), `domain-story-lifecycle.md` (glosario "Rework") y
+  `domain-state-management.md` §5.3 describen la señal de rework por artefacto, sin estado ni
+  substatus nuevo. `README.md` y `docs/domains/README.md` reemplazan la ruta inexistente
+  `state-machine.md` por `docs/domains/domain-story-lifecycle.md`.
+
+### Added
+
+- **[[ADR-0008-rework-sin-estado-propio]]** — registra el descarte del estado `NEEDS-CHANGES`
+  (propuesta de EPIC-19), del substatus `REWORK`, del campo `rework:` y de un skill `story-fix`; la
+  señal de rework es el artefacto de fallo. No supersede ADR-0003.
+- **`skills/story-implement-tasks/evals/evals.json`** — casos `fix-directives-presente-sin-literal-aplica-correcciones`
+  y `tasks-md-legado-con-literal-no-reaplica`.
+- **`docs/guides/sddf-commands-pipeline.md`** — sección 4 "Pipeline de implementación y ciclo de
+  corrección post-review".
+
+---
+
 ## [2.0.2] — 2026-08-30 Remove security-audit - It was moved to the extension repository
 
 ### Changed

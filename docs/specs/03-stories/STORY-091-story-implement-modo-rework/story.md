@@ -5,8 +5,8 @@ id: STORY-091
 kind: feat
 slug: STORY-091-story-implement-modo-rework
 title: "story-implement toma de la cola una historia rechazada y corrige en modo rework"
-status: SPECIFY
-substatus: TODO
+status: READY-FOR-IMPLEMENT
+substatus: DONE
 parent: EPIC-19-framework-consistency
 created: 2026-09-11
 updated: 2026-09-11

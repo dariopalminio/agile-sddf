@@ -24,6 +24,7 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
 **Qué hace este skill:**
 - Lee los tres artefactos de planning como entrada
 - Verifica precondiciones antes de implementar (fail-fast ante artefactos faltantes)
+- Aplica las correcciones de `fix-directives.md` cuando el archivo existe (rework tras `story-code-review`, pre-paso 2f), sin depender de una tarea en `tasks.md`
 - Implementa cada tarea pendiente en orden TDD: test fallido → código mínimo → refactor si aplica
 - Detecta tareas con componentes no definidos y las marca como bloqueadas sin detener el pipeline
 - Actualiza `tasks.md` en tiempo real al completar o bloquear cada tarea
@@ -38,8 +39,9 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
 ### Posicionamiento
 
 ```
-[story.md: READY-FOR-IMPLEMENT/DONE]    ← precondición inicial (viene de story-plan/story-analyze)
-[story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación (viene de story-code-review needs-changes)
+[story.md: READY-FOR-IMPLEMENT/DONE]    ← precondición inicial: ejecución inicial (viene de story-plan/story-analyze)
+                                          o rework encolado por story-code-review (señal: fix-directives.md presente)
+[story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación: tras DoD-ERRORs o ciclo interrumpido
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
      │   Al iniciar: story.md → IMPLEMENT/IN-PROGRESS
@@ -64,7 +66,7 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 | `story.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/story.md` | ✓ obligatorio |
 | `design.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/design.md` | ✓ obligatorio |
 | `tasks.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/tasks.md` | ✓ obligatorio |
-| `fix-directives.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/fix-directives.md` | opcional |
+| `fix-directives.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (`needs-changes`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
 | `dod-story.md` | `$SPECS_BASE/policies/dod-story.md` | opcional |
 
 ---
@@ -86,8 +88,8 @@ El frontmatter de `story.md` debe cumplir alguna de las siguientes condiciones a
 
 | Condición | status | substatus | Descripción |
 |---|---|---|---|
-| Ejecución inicial o re-implementación | `READY-FOR-IMPLEMENT` | `DONE` | viene de story-plan / story-analyze / story-code-review (rejection) |
-| Reanudación | `IMPLEMENT` | `IN-PROGRESS` | viene de una ejecución parcial o de story-code-review con cambios requeridos |
+| Ejecución inicial o rework | `READY-FOR-IMPLEMENT` | `DONE` | ejecución inicial (story-plan / story-analyze) o rework encolado por story-code-review (señal: `fix-directives.md`) |
+| Reanudación | `IMPLEMENT` | `IN-PROGRESS` | reanudación tras DoD-ERRORs o ciclo interrumpido |
 
 Cualquier otro estado detiene la ejecución con error descriptivo.
 
@@ -127,7 +129,8 @@ Cualquier otro estado detiene la ejecución con error descriptivo.
 - **Fail-fast en artefactos faltantes:** si falta cualquiera de los tres artefactos obligatorios, detener la ejecución antes de implementar cualquier tarea.
 - **Actualización incremental de tasks.md:** marcar cada tarea como `[x]` o `[~]` inmediatamente al completarla o bloquearla, nunca en batch al final.
 - **No bloquear el pipeline por tareas con componentes no definidos:** marcar como `[~]` y continuar con la siguiente tarea.
-- **Gate de tareas completadas:** si `N_pendientes = 0` y `N_completadas > 0`, detener la ejecución sin modificar ningún archivo.
+- **Gate de tareas completadas:** si `N_pendientes = 0` y `N_completadas > 0` y no existe `fix-directives.md`, detener la ejecución sin modificar ningún archivo. Si `fix-directives.md` existe, el flujo continúa para aplicar las correcciones (pre-paso 2f).
+- **Correcciones por presencia de `fix-directives.md`:** el disparador es la existencia del archivo, no una tarea en `tasks.md`. Este skill nunca escribe en `fix-directives.md` (escritor único: `story-code-review`).
 - **No reimplementar artefactos de planning:** si los artefactos ya existen y son válidos, no sobrescribirlos.
 - **Transición de estado bloqueada por DoD-ERRORs:** si hay criterios DoD con `❌`, el frontmatter permanece en `IMPLEMENT/IN-PROGRESS`.
 
@@ -200,9 +203,9 @@ Leer el frontmatter de `story.md` y verificar que se cumple alguna de las siguie
 
 ```
 Precondición válida si:
-  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← ejecución inicial o re-implementación tras code review
+  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← ejecución inicial o rework encolado por story-code-review (señal: fix-directives.md)
   OR
-  (status: IMPLEMENT          AND substatus: IN-PROGRESS) ← reanudación de implementación parcial
+  (status: IMPLEMENT          AND substatus: IN-PROGRESS) ← reanudación tras DoD-ERRORs o ciclo interrumpido
 ```
 
 **Si la precondición NO se cumple:**
@@ -212,8 +215,8 @@ Precondición válida si:
    Estado actual: status: <valor_actual> / substatus: <valor_actual>
 
    story-implement requiere uno de los siguientes estados:
-   · READY-FOR-IMPLEMENT/DONE      → ejecución inicial
-   · IMPLEMENT/IN-PROGRESS     → reanudación de implementación parcial
+   · READY-FOR-IMPLEMENT/DONE      → ejecución inicial o rework encolado por story-code-review (señal: fix-directives.md)
+   · IMPLEMENT/IN-PROGRESS     → reanudación tras DoD-ERRORs o ciclo interrumpido
 
    Para ejecución inicial: ejecuta /story-plan {story_id} para completar el planning.
    Si ya ejecutaste story-plan, verifica que story-analyze no reportó ERROREs.
@@ -284,13 +287,15 @@ Calcular y registrar internamente:
 - `fix_directives_existe` = `true` si `$STORY_DIR/fix-directives.md` existe, `false` si no
 - `modo` = `inicial` si `N_completadas = 0`; `reanudación` si `N_completadas > 0`
 
-**Gate de salida anticipada (AC-3):** si `N_pendientes = 0` AND `N_completadas > 0`, mostrar el siguiente mensaje y terminar **sin modificar ningún archivo**:
+**Gate de salida anticipada (AC-3 de STORY-067):** si `N_pendientes = 0` AND `N_completadas > 0` AND `fix_directives_existe = false`, mostrar el siguiente mensaje y terminar **sin modificar ningún archivo**:
 
 ```
 ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.
    Tareas completadas: <N_completadas>
    Sugerencia: ejecuta /story-code-review <story_id> si la historia está en IMPLEMENT.
 ```
+
+**Si `fix_directives_existe = true`** el gate NO aplica aunque no haya tareas pendientes: la historia está en rework (STORY-089) y el flujo continúa 2d → 2e → 2f (aplicar correcciones) → Paso 3 (solo si `N_pendientes > 0`) → Paso 4. Con `N_pendientes = 0` el bucle de tareas del Paso 3 no se ejecuta y se pasa directamente al Paso 4.
 
 **Si `modo = reanudación`** (y `N_pendientes > 0`), mostrar el siguiente resumen antes de la primera tarea:
 
@@ -338,7 +343,32 @@ Antes de ejecutar la primera tarea, verificar el estado de entrada registrado en
 
 Esta verificación debe ocurrir antes de procesar cualquier tarea del Paso 3.
 
-#### 2f. Cargar criterios DoD IMPLEMENT
+#### 2f. Aplicar correcciones de fix-directives.md (pre-paso de rework)
+
+**Condición:** ejecutar este sub-paso **una sola vez** y únicamente si `fix_directives_existe = true` (calculado en 2c). Si el archivo no existe, omitir el sub-paso sin mensaje y registrar `$FIX_DIRECTIVES_APPLIED = false`.
+
+**2f.1 — Leer la ronda:**
+Leer el campo `round` del frontmatter de `$STORY_DIR/fix-directives.md`. Si el campo no existe o no es un entero ≥ 1, usar `1` como valor por defecto (archivo legado). Registrar como `$FIX_ROUND`. **NUNCA escribir ni completar `round` en `fix-directives.md`**: su escritor único es `story-code-review`; este skill solo lo lee.
+
+Mostrar:
+```
+🔁 Correcciones de fix-directives.md (ronda <$FIX_ROUND>)
+```
+
+**2f.2 — Leer y aplicar correcciones:**
+Leer `fix-directives.md` y extraer la tabla "Instrucciones de corrección" (columnas: `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`) y la sección "Lista blanca de archivos permitidos para modificar". Si la tabla no es legible o falta la lista blanca, aplicar la degradación descrita en "Manejo de errores" (nunca detener la ejecución por ello).
+
+Para cada fila de la tabla:
+1. Extraer `archivo` y `línea` de la columna `Archivo:Línea` (texto antes y después del último `:`)
+2. Verificar que el archivo existe en el repositorio
+   - Si el archivo no existe: mostrar `⚠️ archivo no encontrado: <ruta>`, registrarlo en la lista interna `$FIX_SKIPPED` y continuar con la siguiente corrección **sin abortar las correcciones restantes**
+3. Aplicar la corrección indicada en `Acción requerida` en el archivo y línea especificados, limitando los cambios a la lista blanca
+4. Mostrar: `💻 corregido: <ruta>` y registrar la ruta en la lista interna `$FIX_CORRECTED`
+
+**2f.3 — Registrar resultado:**
+Al terminar todas las filas (incluso si alguna fue omitida por archivo inexistente), registrar `$FIX_DIRECTIVES_APPLIED = true`. Este sub-paso **no modifica `tasks.md`** (no añade, marca ni elimina tareas) **ni `fix-directives.md`**; el archivo lo elimina `story-code-review` al aprobar.
+
+#### 2g. Cargar criterios DoD IMPLEMENT
 
 Intentar localizar `$SPECS_BASE/policies/dod-story.md`.
 
@@ -400,46 +430,35 @@ Mostrar:
 
 Continuar con la siguiente tarea sin detener el pipeline.
 
-#### 3c. Si tarea es implementable → Detección de tarea especial o Ciclo TDD
+#### 3c. Si tarea es implementable → Detección de tarea legada o Ciclo TDD
 
 Mostrar:
 ```
 [T001] → implementando…
 ```
 
-**Detección de tarea especial:** al inicio del ciclo, antes del TDD estándar, evaluar la descripción de la tarea:
+**Detección de tarea legada (compatibilidad hacia atrás):** al inicio del ciclo, antes del TDD estándar, evaluar la descripción de la tarea:
 
 ```
 si descripción_tarea.trim().toLowerCase() == "implementar fix-directives.md":
-  ejecutar sub-flujo de fix-directives (ver abajo)
+  NO ejecutar el ciclo TDD ni volver a aplicar las correcciones (ya se aplicaron en el pre-paso 2f)
+  si $FIX_DIRECTIVES_APPLIED = true:
+    ir al Paso 3d y marcar la tarea [x] con la nota "aplicado en pre-paso 2f"
+  sino (fix-directives.md no existe en $STORY_DIR):
+    marcar la tarea [~] en tasks.md con la razón "fix-directives.md no encontrado en <$STORY_DIR>"
+    mostrar: [T] ⚠️ bloqueada — fix-directives.md no encontrado en <ruta>
+    continuar con la siguiente tarea sin error fatal
 sino:
   ejecutar ciclo TDD estándar (Paso TDD-1, TDD-2, TDD-3)
 ```
 
-> **Nota de diseño (D-3):** La comparación usa el literal exacto `"implementar fix-directives.md"` (normalizado con trim + lowercase). Este es el texto canónico generado por `story-code-review` en el Paso 4g.1. Si el nombre en `tasks.md` difiere por cualquier motivo (typo, traducción manual), la tarea se procesará como ciclo TDD estándar en lugar del sub-flujo — degradación controlada sin error fatal. Ver justificación en `design.md D-3`.
+Formato de marcado en `tasks.md` para la tarea legada:
+```
+- [x] Implementar fix-directives.md — aplicado en pre-paso 2f
+- [~] Implementar fix-directives.md — fix-directives.md no encontrado en <$STORY_DIR>
+```
 
-**Sub-flujo: Implementar fix-directives.md**
-
-**Sub-paso 1 — Verificar existencia:**
-Verificar que `$STORY_DIR/fix-directives.md` existe.
-
-Si no existe:
-- Marcar la tarea como `[~]` en `tasks.md` con mensaje: `fix-directives.md no encontrado en <$STORY_DIR>`
-- Mostrar: `[T] ⚠️ bloqueada — fix-directives.md no encontrado en <ruta>`
-- Continuar con la siguiente tarea sin ejecutar el resto del sub-flujo.
-
-**Sub-paso 2 — Leer y aplicar correcciones:**
-Leer `fix-directives.md` y extraer la tabla "Instrucciones de corrección" (columnas: `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`).
-
-Para cada fila de la tabla:
-1. Extraer `archivo` y `línea` de la columna `Archivo:Línea` (texto antes y después del último `:`)
-2. Verificar que el archivo existe en el repositorio
-   - Si el archivo no existe: mostrar `⚠️ archivo no encontrado: <ruta>` y continuar con la siguiente corrección **sin abortar las correcciones restantes**
-3. Aplicar la corrección indicada en `Acción requerida` en el archivo y línea especificados
-4. Mostrar: `[T] 💻 corregido: <ruta>`
-
-**Sub-paso 3 — Marcar completada:**
-Al completar todas las correcciones (incluso si alguna fue omitida por archivo inexistente), continuar al Paso 3d para marcar la tarea como `[x]` en `tasks.md`.
+> **Nota de diseño (D-3, actualizada por STORY-089):** el disparador de las correcciones es la **presencia** de `fix-directives.md` en el directorio de la historia (pre-paso 2f), no una tarea en `tasks.md`. El literal `"implementar fix-directives.md"` (normalizado con trim + lowercase) solo se reconoce para no procesar como ciclo TDD estándar las líneas legadas que `story-code-review` escribía en `tasks.md` antes de STORY-089; nunca vuelve a aplicar las correcciones. Si la línea legada difiere del literal (typo, traducción manual), se procesa como ciclo TDD estándar — degradación controlada sin error fatal. Esta rama desaparece cuando no queden `tasks.md` legados.
 
 ---
 
@@ -495,7 +514,7 @@ La actualización es por tarea, no en batch al final.
 
 ### Paso 4 — Generar Reporte Final y Actualizar Estado
 
-Al finalizar el procesamiento de todas las tareas (completadas + bloqueadas), ejecutar los siguientes pasos en orden:
+Al finalizar el procesamiento de todas las tareas (completadas + bloqueadas), o directamente tras el pre-paso 2f cuando `N_pendientes = 0` (rework sin tareas pendientes), ejecutar los siguientes pasos en orden:
 
 #### 4a. Generar `implement-report.md`
 
@@ -547,6 +566,20 @@ Si `N_completadas = 0` (ejecución inicial), omitir las filas de "ejecución ant
 
 ---
 
+## Correcciones de fix-directives.md (ronda <N>)
+
+<!-- Solo si $FIX_DIRECTIVES_APPLIED = true (pre-paso 2f); <N> = $FIX_ROUND -->
+
+| # | Archivo:Línea | Severidad | Resultado |
+|---|---|---|---|
+| 1 | src/auth.ts:42 | HIGH | 💻 corregido: src/auth.ts |
+| 2 | src/legacy/removed.ts:10 | MEDIUM | ⚠️ archivo no encontrado: src/legacy/removed.ts (omitido) |
+
+**Archivos corregidos:** <lista de $FIX_CORRECTED>
+**Hallazgos omitidos por archivo inexistente:** <lista de $FIX_SKIPPED, o "ninguno">
+
+---
+
 ## Tareas Bloqueadas
 
 <!-- Solo si hay tareas en [~] -->
@@ -590,7 +623,7 @@ Pasos recomendados:
 
 #### 4g. Evaluar criterios DoD IMPLEMENT
 
-**Si `$DOD_IMPLEMENT_CRITERIA` está vacío** (no se cargó la sección DoD en el paso 2f):
+**Si `$DOD_IMPLEMENT_CRITERIA` está vacío** (no se cargó la sección DoD en el paso 2g):
 - Registrar `$DOD_RESULT = []` y `$DOD_BLOQUEADO = false`
 - Completar la sección "Cumplimiento DoD — Fase IMPLEMENT" en `implement-report.md` con el aviso de sección no encontrada
 - Continuar sin bloquear la transición de estado
@@ -658,9 +691,11 @@ Buscar el archivo `epic.md` correspondiente en: `$SPECS_BASE/specs/02-epics/<par
   ```
 - Continuar sin bloquear — la transición a `IMPLEMENT/DONE` ya fue aplicada
 
-#### 4d. Sección "Tareas Bloqueadas"
+#### 4d. Secciones condicionales: "Correcciones de fix-directives.md" y "Tareas Bloqueadas"
 
-Incluir esta sección **solo si hay al menos una tarea con estado `- [~]`**. Listar cada tarea bloqueada con su razón de bloqueo y la acción recomendada para desbloquearla.
+Incluir la sección `## Correcciones de fix-directives.md (ronda N)` **solo si `$FIX_DIRECTIVES_APPLIED = true`**, con `N = $FIX_ROUND`, la lista de archivos corregidos (`$FIX_CORRECTED`) y los hallazgos omitidos por archivo inexistente (`$FIX_SKIPPED`).
+
+Incluir la sección "Tareas Bloqueadas" **solo si hay al menos una tarea con estado `- [~]`**. Listar cada tarea bloqueada con su razón de bloqueo y la acción recomendada para desbloquearla.
 
 #### 4e. Estado final del reporte
 
@@ -685,6 +720,24 @@ Siempre añadir al reporte:
 ```
 Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 ```
+
+### Manejo de errores
+
+| Condición | Mensaje | Acción |
+|---|---|---|
+| Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
+| `story.md`, `design.md` o `tasks.md` ausente | `❌ No se encontró <artefacto> en: <ruta>` | Detener sin implementar ninguna tarea |
+| Estado de `story.md` no válido | `❌ La historia <story_id> no está en un estado válido para implementar.` | Detener sin implementar ninguna tarea |
+| Sin tareas pendientes y sin `fix-directives.md` | `ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.` | Terminar sin modificar ningún archivo (gate 2c) |
+| `fix-directives.md` presente con `round` ausente o no entero ≥ 1 | — (sin advertencia: archivo legado) | `$FIX_ROUND = 1` y continuar; nunca escribir `round` |
+| `fix-directives.md` presente sin tabla "Instrucciones de corrección" legible | `[WARN] fix-directives.md sin tabla de correcciones legible — correcciones omitidas` | Advertir, `$FIX_DIRECTIVES_APPLIED = false` y continuar con el bucle de tareas |
+| `fix-directives.md` presente sin "Lista blanca de archivos permitidos para modificar" | `[WARN] fix-directives.md sin lista blanca — se aplican las correcciones solo en los archivos de la columna Archivo:Línea` | Advertir y continuar aplicando las correcciones |
+| Hallazgo con archivo inexistente (pre-paso 2f) | `⚠️ archivo no encontrado: <ruta>` | Registrar en `$FIX_SKIPPED` y continuar con el siguiente hallazgo |
+| Tarea legada `Implementar fix-directives.md` sin `fix-directives.md` en `$STORY_DIR` | `[T] ⚠️ bloqueada — fix-directives.md no encontrado en <ruta>` | Marcar `[~]` en `tasks.md` y continuar sin error fatal |
+| Tarea con componente no definido en `design.md` | `[T] ⚠️ bloqueada — componente "<nombre>" no definido en design.md` | Marcar `[~]` y continuar |
+| `dod-story.md` ausente o sin sección IMPLEMENT | `⚠️ dod-story.md no encontrado …` / `⚠️ Sección IMPLEMENT no encontrada en DoD …` | Advertir y continuar sin validación DoD |
+| Épica padre no encontrada | `⚠️ No se pudo actualizar el checklist de la épica: <razón>` | Advertir y continuar; la transición de estado ya fue aplicada |
 
 ---
 
@@ -718,8 +771,10 @@ Al terminar, mostrar:
  Total: <N> tareas │ <N_x> completadas │ <N_b> bloqueadas
 ─────────────────────────────────────────────────────────────
 
+🔁 Correcciones de fix-directives.md (ronda <N>): <N_corregidos> corregidos │ <N_omitidos> omitidos   (solo si $FIX_DIRECTIVES_APPLIED = true)
 📄 Reporte generado: <ruta>/implement-report.md
 📋 Estado story.md: IMPLEMENT/DONE ✓             (si $DOD_BLOQUEADO = false)
+→ Ejecuta /story-code-review <story_id>          (si $DOD_BLOQUEADO = false)
 📋 Estado story.md: IMPLEMENT/IN-PROGRESS ✓               (si $DOD_BLOQUEADO = true)
 📋 Checklist de épica: <✓ actualizado en <ruta>/epic.md | ⚠️ no actualizado — <razón>>
 📋 DoD IMPLEMENT: {N_dod_ok}/{Total} criterios ✓          (si DoD fue evaluado)
@@ -727,6 +782,8 @@ Al terminar, mostrar:
 
 ✅ Implementación completa                                    (si no hay DoD-ERRORs ni bloqueos)
 ```
+
+Cuando el rework no tenía tareas pendientes (`N_pendientes = 0` y `fix_directives_existe = true`), la tabla de tareas muestra todas las filas como `✓ completado (ejecución anterior)` y el trabajo de esta ejecución queda reflejado en la línea de correcciones.
 
 O si hay DoD-ERRORs:
 
@@ -743,6 +800,7 @@ O si hay bloqueos de tareas (sin DoD-ERRORs):
 ⚠️ Implementación completada con tareas pendientes de aclaración
    Revisa implement-report.md → sección "Tareas Bloqueadas"
 📋 Estado story.md: IMPLEMENT/DONE ✓
+→ Ejecuta /story-code-review <story_id>
 📋 Checklist de épica: <✓ actualizado | ⚠️ no actualizado — <razón>>
 📋 DoD IMPLEMENT: {N_dod_ok}/{Total} criterios ✓
 ```

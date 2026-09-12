@@ -56,3 +56,4 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0005](ADR-0005-prefijo-story-para-el-nivel-l1.md) | El ID del nivel L1 se prefija con `STORY`; el tipo de trabajo vive en el campo `kind` | ACCEPTED | 2026-08-29 |
 | [ADR-0006](ADR-0006-migracion-retroactiva-de-estados-de-epica.md) | Workflows canónicos de Story y Epic, con migración retroactiva de los estados históricos | ACCEPTED | 2026-08-30 |
 | [ADR-0007](ADR-0007-templates-como-capa-propia.md) | Los templates son una capa propia, hermana de `specs/` | ACCEPTED | 2026-09-11 |
+| [ADR-0008](ADR-0008-rework-sin-estado-propio.md) | Rework sin estado propio: la señal es el artefacto de fallo | ACCEPTED | 2026-09-11 |

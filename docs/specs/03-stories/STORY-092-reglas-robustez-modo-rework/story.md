@@ -5,8 +5,8 @@ id: STORY-092
 kind: feat
 slug: STORY-092-reglas-robustez-modo-rework
 title: "El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro"
-status: SPECIFY
-substatus: TODO
+status: READY-FOR-IMPLEMENT
+substatus: DONE
 parent: EPIC-19-framework-consistency
 created: 2026-09-11
 updated: 2026-09-11

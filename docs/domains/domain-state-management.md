@@ -110,7 +110,7 @@ Independientemente del nivel, existen cuatro tipos de transición:
 * Ocurren cuando una revisión, verificación o aceptación rechaza el trabajo.
 * El work item regresa a un estado de cola (`READY-FOR-IMPLEMENT` o `READY-FOR-DEV`, según el nivel).
 * El motivo del rechazo se documenta en el artefacto correspondiente (`review.md`, `verify-report.md`).
-* El skill de implementación detecta el rework por el subestado `REWORK` o por la existencia de un reporte de fallo.
+* El skill de implementación detecta el rework por la existencia del artefacto de fallo en el directorio del work item (p. ej. `fix-directives.md`), no por un subestado (ver ADR-0008).
 
 ### 5.4 Transiciones con `BLOCKED`
 

@@ -48,7 +48,7 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 - [Checklist de Seguridad de Código](docs/guardrails/gr-code-security-checklist.md)
 - [Checklist de Creación de Skills](docs/guardrails/gr-skill-creation-checklist.md)
 - [Checklist de Creación de Agentes](docs/guardrails/gr-agent-creation-checklist.md)
-- [Definition of Done - Story](docs/policies/dod-story.md)
+- [Definition of Done para la Story](docs/policies/dod-story.md)
 
 ## 📐 Convenciones de Código
 

@@ -6,7 +6,7 @@ slug: STORY-087-error-in-npm-install-locally
 title: "Error en instalaci�n local de npm install agile-sddf en Windows 11"
 date: 2026-04-25
 status: COMPLETED
-substatus: READY
+substatus: DONE
 parent: EPIC-19-framework-consistency
 ---
 

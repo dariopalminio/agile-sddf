@@ -27,12 +27,14 @@ Quality gate formal entre la implementación y la marca final de Done. Compatibl
 - Lanza cuatro subagentes revisores en paralelo con responsabilidades exclusivas
 - Consolida los informes parciales y calcula la severidad máxima
 - **Si `approved`**: genera `code-review-report.md`, elimina `fix-directives.md` (si existe) y marca `story.md` como `CODE-REVIEW/DONE`
-- **Si `needs-changes`**: genera `fix-directives.md`, agrega tarea "Implementar fix-directives.md" en `tasks.md` y retrocede `story.md` a `READY-FOR-IMPLEMENT/DONE`
+- **Si `needs-changes`**: genera `fix-directives.md` con `round: N` (ronda previa + 1), retrocede `story.md` a `READY-FOR-IMPLEMENT/DONE` y nombra al ejecutor de correcciones (`/story-implement`; `/story-implement-tasks` como alternativa si existe `tasks.md`)
 
 **Qué NO hace este skill:**
 - Ejecutar ni compilar código (opera sobre Markdown y texto plano únicamente)
 - Aplicar automáticamente las correcciones de `fix-directives.md`
 - Corregir el código implementado
+- Escribir en `tasks.md` (ni añadir tareas de corrección ni marcarlas)
+- Invocar automáticamente al ejecutor de correcciones
 
 ### Posicionamiento
 
@@ -43,6 +45,8 @@ story-code-review  → Quality gate: revisión multi-agente del código  ← aqu
      │   Al iniciar: story.md → CODE-REVIEW/IN-PROGRESS
      │   Al finalizar (approved): story.md → CODE-REVIEW/DONE
      │   Al finalizar (needs-changes): story.md → READY-FOR-IMPLEMENT/DONE
+     │       fix-directives.md (round N) = señal de rework → ejecutor: /story-implement
+     │       (alternativa si existe tasks.md: /story-implement-tasks)
      ↓
 [story.md: CODE-REVIEW/DONE]
 ──────────────────────────────────────────────────────────────────────────────────────
@@ -51,6 +55,7 @@ design.md             → How: arquitectura, componentes, interfaces, decisiones
 testcases.md          → Spec: tabla canónica de casos de prueba por tipo               [Opcional]
 implement-report.md   → Done: código generado, archivos, estado por tarea              [Opcional]
 code-review-report.md → Review: hallazgos por dimensión, decisión final  ← aquí
+fix-directives.md     → Rework: instrucciones de corrección + ronda (señal de rework)  ← aquí (solo needs-changes)
 ```
 
 ---
@@ -65,7 +70,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 | `design.md` | **Requerido** | Fuente de arquitectura esperada — sin él, el Integration-Reviewer no puede operar |
 | `implement-report.md` | Opcional | Evidencia de implementación producida por `/story-implement` o `/story-implement-tasks`; si no existe, los agentes verifican conformidad sin cruzar con tareas del reporte |
 | `testcases.md` | Opcional | Especificación canónica de casos de prueba producida por `/story-testcases`; si existe, se incorpora al análisis de cobertura de ACs y trazabilidad de diseño |
-| `tasks.md` | Opcional | El Tech-Lead-Reviewer puede revisar calidad sin lista de tareas |
+| `tasks.md` | Opcional | El Tech-Lead-Reviewer puede revisar calidad sin lista de tareas; su presencia solo decide si se ofrece `/story-implement-tasks` como ejecutor alternativo (Paso 4g). Este skill nunca escribe en él |
 | `constitution.md` | Opcional | Mejora la revisión pero no la bloquea si no existe |
 | `dod-story.md` | Opcional | Mismo caso que `constitution.md` |
 
@@ -443,54 +448,53 @@ Iterar los hallazgos consolidados filtrando solo los de `Severidad ∈ {HIGH, ME
 
 Registrar internamente como `$WHITELIST`: lista de `(archivo, [hallazgos])`.
 
-#### 4f. [needs-changes] Generar `fix-directives.md`
+#### 4f. [needs-changes] Calcular ronda y generar `fix-directives.md`
+
+**4f.1 — Calcular la ronda de corrección (antes de instanciar el template):**
+
+1. Si existe `$STORY_DIR/fix-directives.md` (rechazo anterior), leer el campo `round` de su frontmatter.
+2. `$PREV_ROUND` = ese valor si es un entero ≥ 1; en cualquier otro caso (archivo inexistente, campo ausente, valor no entero como `abc`, `null` o `0`) → `$PREV_ROUND = 0`. No emitir error ni advertencia bloqueante: es una degradación controlada (archivos legados sin `round`).
+3. `$ROUND = $PREV_ROUND + 1`.
+
+> `story-code-review` es el **escritor único** de `round`: ningún otro skill lo crea, lo modifica ni lo completa. `round` cuenta las ejecuciones de este skill cerradas en `needs-changes` para la historia, sin más semántica.
+
+**4f.2 — Instanciar el template:**
 
 Leer `assets/fix-directives-template.md` como fuente de verdad de la estructura.
 
 Completar el template con:
-- Frontmatter: `story_id`, fecha actual, `$MAX_SEVERITY`
-- Sección "Resumen de bloqueantes": título de la historia, severidad máxima, total de hallazgos HIGH/MEDIUM (incluyendo hallazgos DoD si los hay)
+- Frontmatter: `story_id`, fecha actual, `$MAX_SEVERITY`, `round: $ROUND`
+- Sección "Resumen de bloqueantes": título de la historia, severidad máxima, total de hallazgos HIGH/MEDIUM (incluyendo hallazgos DoD si los hay), `Ronda: $ROUND`
 - Tabla "Instrucciones de corrección": una fila por hallazgo bloqueante (HIGH o MEDIUM) numeradas correlativamente, con columnas `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`
   - Hallazgos de agentes: `Dimensión` = dimensión del agente (code-quality, requirements-coverage, integration-architecture, security)
   - Hallazgos DoD: `Dimensión` = `DoD-CODE-REVIEW`, `Archivo:Línea` = `docs/policies/dod-story.md:<número_de_línea>`
   - Todos los hallazgos se numeran correlativamente sin IDs duplicados (agentes → DoD)
 - Sección "Lista blanca de archivos permitidos": una línea por archivo de `$WHITELIST` con sus referencias de hallazgo
 
-Guardar en `$STORY_DIR/fix-directives.md`, sobreescribiendo si ya existe.
+Guardar en `$STORY_DIR/fix-directives.md`, sobreescribiendo si ya existe (la versión previa se reemplaza completa; solo `round` conserva continuidad).
 
 Mostrar:
 ```
-📋 Fix directives: <ruta>/fix-directives.md
+📋 Fix directives: <ruta>/fix-directives.md (ronda <N>)
 ```
 
-#### 4g. [needs-changes] Registrar tarea en `tasks.md` y retroceder story.md
-
-**4g.1 — Agregar tarea en `tasks.md`:**
-
-Si existe `$STORY_DIR/tasks.md`, agregar al final del archivo la siguiente línea:
-
-```
-- [ ] Implementar fix-directives.md
-```
-
-Si `tasks.md` no existe, omitir este sub-paso sin error.
-
-Mostrar:
-```
-📝 Tarea agregada en tasks.md: "Implementar fix-directives.md"
-```
-
-**4g.2 — Retroceder story.md a READY-FOR-IMPLEMENT/DONE:**
+#### 4g. [needs-changes] Retroceder story.md y determinar ejecutor
 
 Actualizar el frontmatter de `story.md`:
 - `status: READY-FOR-IMPLEMENT`
 - `substatus: DONE`
 
+Calcular `$TASKS_EXISTS = true` si existe `$STORY_DIR/tasks.md`, `false` si no. Este skill **no escribe** en ese archivo bajo ninguna condición: la señal de rework es la presencia de `fix-directives.md`, no una tarea.
+
 Mostrar:
 ```
 ⚠️  Review: needs-changes — story.md → READY-FOR-IMPLEMENT/DONE
-→ Revisa: <ruta>/fix-directives.md
+🔁 Ronda de corrección: <N>
+→ Ejecuta /story-implement <story_id>
+   Alternativa (tasks.md presente): /story-implement-tasks <story_id>      (solo si $TASKS_EXISTS = true)
 ```
+
+Ningún ejecutor se invoca automáticamente: la historia queda encolada en `READY-FOR-IMPLEMENT`.
 
 #### 4h. [approved] Limpiar fix-directives.md residual
 
@@ -548,7 +552,7 @@ Mostrar:
 📋 Estado story.md: CODE-REVIEW/DONE ✓
 ```
 
-**Si `$REVIEW_STATUS = needs-changes`:** el frontmatter ya fue actualizado a `READY-FOR-IMPLEMENT/DONE` en el Paso 4g.2. No ejecutar este paso.
+**Si `$REVIEW_STATUS = needs-changes`:** el frontmatter ya fue actualizado a `READY-FOR-IMPLEMENT/DONE` en el Paso 4g. No ejecutar este paso.
 
 ---
 
@@ -599,7 +603,7 @@ O si hay hallazgos criticos:
  Review status:   needs-changes
 ─────────────────────────────────────────────────────────────────────
 
-📋 Fix directives: <ruta>/fix-directives.md
+📋 Fix directives: <ruta>/fix-directives.md (ronda <N>)
 📄 Reporte:        <ruta>/code-review-report.md
 📋 Estado:         <story_id> → READY-FOR-IMPLEMENT/DONE
 📋 DoD CODE-REVIEW: {N}/{Total} criterios ✓ | {N_error} criterios ❌
@@ -608,8 +612,25 @@ O si hay hallazgos criticos:
 
 <N> hallazgo(s) de severidad HIGH o MEDIUM requieren corrección.
 Consulta fix-directives.md para las instrucciones de corrección.
-Ejecuta /story-code-review {story_id} nuevamente tras corregir los hallazgos.
+🔁 Ronda de corrección: <N>
+→ Ejecuta /story-implement {story_id}
+   Alternativa (tasks.md presente): /story-implement-tasks {story_id}      (solo si $TASKS_EXISTS = true)
 ```
+
+La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`: no se menciona `/story-implement-tasks` para historias sin `tasks.md`. Al aprobar tras las correcciones, `/story-code-review` elimina `fix-directives.md` (Paso 4h).
+
+### Manejo de errores
+
+| Condición | Mensaje | Acción |
+|---|---|---|
+| Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
+| `story.md` y/o `design.md` ausentes | `❌ Artefactos requeridos no encontrados en: <$STORY_DIR>/` (un único mensaje con la lista de faltantes) | Detener sin modificar ningún archivo |
+| `story.md` no está en `IMPLEMENT/DONE` (incluida una historia ya encolada en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`) | `❌ La historia <story_id> no está en estado IMPLEMENT/DONE.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
+| `implement-report.md` o `testcases.md` ausentes | — (se registran como `⏭️` en el informe) | Continuar sin ese contexto |
+| `dod-story.md` ausente o sin sección CODE-REVIEW | `⚠️ dod-story.md no encontrado …` / `⚠️ Sección CODE-REVIEW no encontrada en DoD …` | Advertir y continuar sin validación DoD |
+| Hallazgo bloqueante sin `Archivo:Línea` (Paso 4e) | — (se anota `[archivo no especificado]`) | Excluirlo de la lista blanca y continuar |
+| `fix-directives.md` previo con `round` ausente o ilegible (Paso 4f.1) | — (sin error ni advertencia: archivo legado) | `$PREV_ROUND = 0`: la cuenta de rondas se reinicia en 1 |
 
 ---
 
@@ -618,7 +639,7 @@ Ejecuta /story-code-review {story_id} nuevamente tras corregir los hallazgos.
 | Artefacto | Condición |
 |-----------|-----------|
 | `$SPECS_BASE/specs/03-stories/STORY-NNN/code-review-report.md` | Siempre |
-| `$SPECS_BASE/specs/03-stories/STORY-NNN/fix-directives.md` | Solo si `needs-changes` |
+| `$SPECS_BASE/specs/03-stories/STORY-NNN/fix-directives.md` | Solo si `needs-changes`; incluye `round` (escritor único: este skill); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Se elimina en `approved` |
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |

@@ -31,7 +31,7 @@
 * **Story:** Historia de usuario atómica que aporta valor de negocio. Identificada por `STORY-NNN`.
 * **Pipeline Story:** Secuencia canónica de estados que recorre una historia: `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`.
 * **Buffer (READY-FOR-IMPLEMENT):** Estado de cola que desacopla planificación de implementación, con WIP limitado.
-* **Rework:** Retorno a `READY-FOR-IMPLEMENT` tras un rechazo en `CODE-REVIEW`, `VERIFY` o `ACCEPTANCE`.
+* **Rework:** Retorno a `READY-FOR-IMPLEMENT` tras un rechazo en `CODE-REVIEW`, `VERIFY` o `ACCEPTANCE`. La señal de que una historia está en rework es la presencia del artefacto de fallo en su directorio (`fix-directives.md` para `CODE-REVIEW`); no existe estado ni substatus de rework (ver ADR-0008).
 * **DoD (Definition of Done):** Conjunto de criterios que una historia debe cumplir para avanzar de estado.
 * **Delivery Model:** Estrategia de entrega del proyecto (`batch` o `continuous`), que determina el significado de `DELIVER`.
 * **Incremento potencialmente entregable:** Resultado de una historia que está lista para producción pero aún no publicada (aplica en modelo `batch`).

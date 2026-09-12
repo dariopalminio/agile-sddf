@@ -5,11 +5,11 @@ id: STORY-089
 kind: feat
 slug: STORY-089-rechazo-nombra-ejecutor-correcciones
 title: "Un code review rechazado nombra al ejecutor de correcciones y no depende de tasks.md"
-status: SPECIFY
-substatus: IN-PROGRESS
+status: IMPLEMENT
+substatus: DONE
 parent: EPIC-19-framework-consistency
 created: 2026-09-10
-updated: 2026-09-11
+updated: 2026-09-12
 related:
   - EPIC-19-framework-consistency
   - STORY-091-story-implement-modo-rework

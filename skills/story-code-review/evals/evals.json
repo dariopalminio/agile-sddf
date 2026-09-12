@@ -1,7 +1,7 @@
 {
   "skill": "story-code-review",
   "version": "1.0.0",
-  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo happy path aprobado, needs-changes con fix-directives, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias y fallback del Security-Reviewer al baseline embebido, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
+  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo happy path aprobado, needs-changes con fix-directives.md numerado por ronda (campo round en el frontmatter: ronda previa + 1, escritor unico story-code-review; ausente o ilegible se trata como 0), ejecutor de correcciones nombrado en el mensaje de cierre (siempre /story-implement; /story-implement-tasks solo si existe tasks.md), ausencia total de escritura en tasks.md, limpieza del fix-directives.md previo al aprobar, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias y fallback del Security-Reviewer al baseline embebido, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
   "cases": [
     {
       "id": "TC-001",
@@ -44,12 +44,13 @@
       "id": "TC-002",
       "name": "needs-changes-hallazgo-high-genera-fix-directives",
       "type": "fail-path",
-      "description": "Historia en IMPLEMENT/DONE con story.md y design.md presentes. El Tech-Lead-Reviewer reporta un hallazgo HIGH (API key hardcodeada en src/auth.ts:42). El skill debe calcular max-severity HIGH, generar fix-directives.md con la instruccion de correccion correspondiente, agregar tarea en tasks.md y retroceder story.md a READY-FOR-IMPLEMENT/DONE. No debe marcar CODE-REVIEW/DONE.",
+      "description": "Historia en IMPLEMENT/DONE con story.md, design.md y tasks.md presentes y sin fix-directives.md previo. El Tech-Lead-Reviewer reporta un hallazgo HIGH (API key hardcodeada en src/auth.ts:42). El skill debe calcular max-severity HIGH, generar fix-directives.md con round: 1 en su frontmatter y la instruccion de correccion correspondiente, retroceder story.md a READY-FOR-IMPLEMENT/DONE y nombrar al ejecutor de correcciones con la linea '→ Ejecuta /story-implement'. No debe agregar ninguna tarea en tasks.md (tasks.md queda intacto) ni marcar CODE-REVIEW/DONE.",
       "input": {
         "story_id": "STORY-020",
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE",
         "artifacts_present": ["story.md", "design.md", "tasks.md"],
+        "existing_fix_directives": null,
         "agent_results": {
           "tech_lead_max_severity": "HIGH",
           "tech_lead_findings": [
@@ -70,14 +71,16 @@
         "contains": [
           "needs-changes",
           "fix-directives.md",
+          "round: 1",
           "READY-FOR-IMPLEMENT",
           "DONE",
           "HIGH",
           "code-review-report.md",
-          "Implementar fix-directives.md",
+          "→ Ejecuta /story-implement",
           "hallazgos criticos"
         ],
         "not_contains": [
+          "Implementar fix-directives.md",
           "approved",
           "CODE-REVIEW/DONE",
           "Revision aprobada",
@@ -299,6 +302,356 @@
         ]
       },
       "threshold": 0.85
+    },
+    {
+      "id": "TC-009",
+      "name": "needs-changes-segunda-ronda-incrementa-round",
+      "type": "fail-path",
+      "description": "Historia en IMPLEMENT/DONE que ya fue rechazada una vez: existe fix-directives.md previo con round: 1 en su frontmatter y tasks.md esta presente. El Tech-Lead-Reviewer reporta un hallazgo MEDIUM. El skill debe leer la ronda previa (1), sobreescribir fix-directives.md con round: 2, retroceder story.md a READY-FOR-IMPLEMENT/DONE y nombrar al ejecutor: linea '→ Ejecuta /story-implement' y, como tasks.md existe, la alternativa '/story-implement-tasks'. No debe escribir round: 1 en el nuevo archivo ni agregar la tarea 'Implementar fix-directives.md' en tasks.md.",
+      "input": {
+        "story_id": "STORY-110",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "implement-report.md", "fix-directives.md"],
+        "existing_fix_directives": { "round": 1 },
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/orders/service.ts:88",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Manejo de errores ausente en la llamada al repositorio",
+              "action": "Envolver la llamada en try/catch y propagar un error de dominio"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "round: 2",
+          "READY-FOR-IMPLEMENT",
+          "→ Ejecuta /story-implement",
+          "/story-implement-tasks"
+        ],
+        "not_contains": [
+          "round: 1",
+          "Implementar fix-directives.md",
+          "Tarea agregada",
+          "approved",
+          "CODE-REVIEW/DONE",
+          "Revision aprobada"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-010",
+      "name": "needs-changes-sin-tasks-md-no-menciona-implement-tasks",
+      "type": "edge-case",
+      "description": "Historia en IMPLEMENT/DONE implementada sin tasks.md: solo story.md y design.md estan presentes, sin fix-directives.md previo. El Tech-Lead-Reviewer reporta un hallazgo HIGH. El skill no debe fallar por la ausencia de tasks.md (es opcional): debe generar fix-directives.md con round: 1, retroceder story.md a READY-FOR-IMPLEMENT/DONE y nombrar unicamente '→ Ejecuta /story-implement'. Como tasks.md no existe, no debe mencionar /story-implement-tasks como alternativa ni intentar agregar la tarea 'Implementar fix-directives.md'.",
+      "input": {
+        "story_id": "STORY-120",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md"],
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/payments/webhook.ts:17",
+              "dimension": "code-quality",
+              "severity": "HIGH",
+              "finding": "Firma del webhook no verificada antes de procesar el payload",
+              "action": "Validar la firma HMAC con el secreto de entorno antes de cualquier procesamiento"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "round: 1",
+          "READY-FOR-IMPLEMENT",
+          "→ Ejecuta /story-implement"
+        ],
+        "not_contains": [
+          "/story-implement-tasks",
+          "Implementar fix-directives.md",
+          "Tarea agregada",
+          "Artefactos requeridos no encontrados",
+          "approved",
+          "CODE-REVIEW/DONE"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-011",
+      "name": "approved-elimina-fix-directives-previo",
+      "type": "happy-path",
+      "description": "Historia en IMPLEMENT/DONE que vuelve a revision tras una ronda de correcciones: existe fix-directives.md previo con round: 1. Los cuatro agentes revisores no reportan hallazgos HIGH ni MEDIUM. El skill debe cerrar en approved, eliminar el fix-directives.md residual mostrando 'fix-directives.md eliminado (revision anterior superada)', generar code-review-report.md y avanzar story.md a CODE-REVIEW/DONE. No debe retroceder a READY-FOR-IMPLEMENT ni generar una nueva ronda (round: 2).",
+      "input": {
+        "story_id": "STORY-130",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "implement-report.md", "testcases.md", "fix-directives.md"],
+        "existing_fix_directives": { "round": 1 },
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "approved",
+          "fix-directives.md eliminado",
+          "code-review-report.md",
+          "CODE-REVIEW",
+          "DONE"
+        ],
+        "not_contains": [
+          "needs-changes",
+          "READY-FOR-IMPLEMENT",
+          "round: 2",
+          "→ Ejecuta /story-implement",
+          "Entorno invalido",
+          "Artefactos requeridos no encontrados"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-012",
+      "name": "needs-changes-fix-directives-legado-sin-round-genera-round-1",
+      "type": "edge-case",
+      "description": "Historia en IMPLEMENT/DONE con un fix-directives.md legado generado por una version anterior del skill: su frontmatter no contiene el campo round (forma del fixture STORY-090). El Tech-Lead-Reviewer reporta un hallazgo MEDIUM. El skill debe tratar la ronda previa como 0 (degradacion controlada, sin error ni advertencia bloqueante), sobreescribir fix-directives.md con round: 1, retroceder story.md a READY-FOR-IMPLEMENT/DONE y nombrar al ejecutor. No debe escribir round: 0 ni round: 2 ni detenerse por el campo ausente.",
+      "input": {
+        "story_id": "STORY-140",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "implement-report.md", "fix-directives.md"],
+        "existing_fix_directives": { "round": null },
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/users/validator.ts:23",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Validacion de email duplicada respecto al helper compartido",
+              "action": "Reutilizar validateEmail() de src/shared/validation.ts"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "round: 1",
+          "READY-FOR-IMPLEMENT",
+          "→ Ejecuta /story-implement"
+        ],
+        "not_contains": [
+          "round: 0",
+          "round: 2",
+          "Implementar fix-directives.md",
+          "Tarea agregada",
+          "approved",
+          "CODE-REVIEW/DONE"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-013",
+      "name": "needs-changes-round-ilegible-reinicia-en-1",
+      "type": "edge-case",
+      "description": "Historia en IMPLEMENT/DONE con un fix-directives.md previo cuyo campo round fue editado a mano y no es un entero (round: abc). El Tech-Lead-Reviewer reporta un hallazgo MEDIUM. El skill debe tratar el valor ilegible como ronda 0, sobreescribir fix-directives.md con round: 1 y continuar el pipeline sin bloquearse: retroceder story.md a READY-FOR-IMPLEMENT/DONE y nombrar al ejecutor. No debe propagar el valor ilegible (round: abc) ni producir round: NaN.",
+      "input": {
+        "story_id": "STORY-150",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "implement-report.md", "fix-directives.md"],
+        "existing_fix_directives": { "round": "abc" },
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/reports/export.ts:61",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Formato de fecha hardcodeado en lugar de usar la utilidad de i18n",
+              "action": "Reemplazar por formatDate() de src/shared/i18n.ts"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "round: 1",
+          "READY-FOR-IMPLEMENT",
+          "→ Ejecuta /story-implement"
+        ],
+        "not_contains": [
+          "round: abc",
+          "round: NaN",
+          "round: 2",
+          "Implementar fix-directives.md",
+          "approved",
+          "CODE-REVIEW/DONE"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-014",
+      "name": "needs-changes-no-escribe-en-tasks-md",
+      "type": "fail-path",
+      "description": "Historia en IMPLEMENT/DONE con tasks.md presente (12 lineas, todas las tareas marcadas [x]) y sin fix-directives.md previo. El Tech-Lead-Reviewer reporta un hallazgo HIGH. El skill debe cerrar en needs-changes, generar fix-directives.md con round: 1 y retroceder story.md a READY-FOR-IMPLEMENT/DONE, pero tasks.md debe conservar exactamente sus 12 lineas y el mismo contenido: el output no debe anunciar ninguna tarea agregada ('📝 Tarea agregada') ni la tarea 'Implementar fix-directives.md', y tasks.md no debe figurar entre los archivos modificados.",
+      "input": {
+        "story_id": "STORY-160",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "implement-report.md"],
+        "tasks_md_line_count": 12,
+        "tasks_md_all_completed": true,
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/auth/session.ts:35",
+              "dimension": "code-quality",
+              "severity": "HIGH",
+              "finding": "Token de sesion registrado en logs en texto plano",
+              "action": "Eliminar el token del log o enmascararlo antes de registrar"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "round: 1",
+          "READY-FOR-IMPLEMENT",
+          "→ Ejecuta /story-implement"
+        ],
+        "not_contains": [
+          "📝 Tarea agregada",
+          "Tarea agregada en tasks.md",
+          "Implementar fix-directives.md",
+          "tasks.md (actualizado)",
+          "approved",
+          "CODE-REVIEW/DONE"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-015",
+      "name": "needs-changes-reejecucion-idempotente-incrementa-solo-round",
+      "type": "edge-case",
+      "description": "Historia ya rechazada (fix-directives.md con round: 1) sobre la que no se ha cambiado ninguna linea de codigo, y cuyo story.md fue devuelto a IMPLEMENT/DONE para volver a revisar. El skill se ejecuta dos veces consecutivas y en ambas el Tech-Lead-Reviewer reporta el mismo hallazgo MEDIUM. Cada ejecucion debe cerrar en needs-changes y sobreescribir fix-directives.md incrementando solo la ronda (round: 2 en la primera, round: 3 en la segunda), regenerar code-review-report.md y retroceder story.md a READY-FOR-IMPLEMENT/DONE. Ningun otro archivo del directorio debe cambiar: sin tarea agregada en tasks.md, sin lineas acumuladas entre ejecuciones y sin saltar a round: 4.",
+      "input": {
+        "story_id": "STORY-170",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "implement-report.md", "fix-directives.md", "code-review-report.md"],
+        "existing_fix_directives": { "round": 1 },
+        "consecutive_executions": 2,
+        "code_changed_between_executions": false,
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/catalog/search.ts:102",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Paginacion calculada en memoria sobre el resultado completo de la consulta",
+              "action": "Delegar LIMIT/OFFSET a la consulta del repositorio"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "needs-changes",
+          "fix-directives.md",
+          "round: 2",
+          "round: 3",
+          "code-review-report.md",
+          "READY-FOR-IMPLEMENT",
+          "→ Ejecuta /story-implement"
+        ],
+        "not_contains": [
+          "round: 4",
+          "📝 Tarea agregada",
+          "Implementar fix-directives.md",
+          "tasks.md (actualizado)",
+          "approved",
+          "CODE-REVIEW/DONE"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-016",
+      "name": "precondicion-ready-for-implement-con-fix-directives-detiene",
+      "type": "fail-fast",
+      "description": "Historia encolada tras un rechazo: story.md esta en READY-FOR-IMPLEMENT/DONE y fix-directives.md (round: 1) esta presente en el directorio, es decir, nadie ha ejecutado aun las correcciones. Se invoca /story-code-review directamente. El skill debe detenerse en la precondicion de estado existente ('no esta en estado IMPLEMENT/DONE' / 'story-code-review requiere que /story-implement o /story-implement-tasks haya completado') sin modificar ningun archivo: no debe tocar fix-directives.md ni su round, no debe eliminarlo, no debe generar code-review-report.md ni cambiar story.md.",
+      "input": {
+        "story_id": "STORY-180",
+        "story_status": "READY-FOR-IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "implement-report.md", "fix-directives.md"],
+        "existing_fix_directives": { "round": 1 }
+      },
+      "expected": {
+        "contains": [
+          "no está en estado IMPLEMENT/DONE",
+          "READY-FOR-IMPLEMENT",
+          "story-code-review requiere"
+        ],
+        "not_contains": [
+          "round: 2",
+          "fix-directives.md eliminado",
+          "code-review-report.md",
+          "needs-changes",
+          "approved",
+          "CODE-REVIEW/IN-PROGRESS",
+          "Entorno invalido"
+        ]
+      },
+      "threshold": 1.0
     }
   ]
 }

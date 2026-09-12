@@ -1,0 +1,280 @@
+{
+  "skill": "story-implement-tasks",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-implement-tasks centrados en el ciclo de correccion post code review (STORY-089): el skill aplica las correcciones de fix-directives.md como pre-paso 2f por presencia del archivo (sin depender de la tarea literal 'Implementar fix-directives.md' en tasks.md), reporta la ronda leida del frontmatter (ronda 1 si el campo round no existe, sin escribirlo nunca: el escritor unico es story-code-review), conserva el gate de salida anticipada cuando no hay fix-directives.md, mantiene la compatibilidad con tasks.md legados que aun contienen el literal (marcado [x] con nota 'aplicado en pre-paso 2f' o bloqueo [~] si el archivo no existe) y no aborta las correcciones restantes cuando un hallazgo apunta a un archivo inexistente. Los casos que no tocan fix-directives.md quedan fuera de alcance de este archivo.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "fix-directives-presente-sin-literal-aplica-correcciones",
+      "type": "happy-path",
+      "description": "Historia rechazada por story-code-review: story.md en READY-FOR-IMPLEMENT/DONE, tasks.md con todas sus tareas marcadas [x] y sin ninguna linea 'Implementar fix-directives.md', y fix-directives.md (round: 1) con un unico hallazgo HIGH en src/auth.ts:42 (API key hardcodeada). El skill NO debe salir por el gate de salida anticipada: debe pasar story.md a IMPLEMENT/IN-PROGRESS, ejecutar el pre-paso 2f anunciando 'Correcciones de fix-directives.md (ronda 1)', aplicar la correccion en src/auth.ts mostrando '💻 corregido: src/auth.ts', generar implement-report.md con la seccion de correcciones y dejar story.md en IMPLEMENT/DONE. tasks.md no debe recibir ninguna linea nueva.",
+      "input": {
+        "story_id": "STORY-210",
+        "story_status": "READY-FOR-IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "testcases.md", "fix-directives.md"],
+        "tasks_md": {
+          "total": 5,
+          "completed": 5,
+          "pending": 0,
+          "line_count": 18,
+          "contains_literal_implementar_fix_directives": false
+        },
+        "fix_directives": {
+          "round": 1,
+          "findings": [
+            {
+              "file_line": "src/auth.ts:42",
+              "dimension": "code-quality",
+              "severity": "HIGH",
+              "finding": "API key hardcodeada en el codigo fuente",
+              "action": "Mover a variable de entorno process.env.API_KEY"
+            }
+          ]
+        },
+        "repository_files_present": ["src/auth.ts"]
+      },
+      "expected": {
+        "contains": [
+          "Correcciones de fix-directives.md (ronda 1)",
+          "💻 corregido: src/auth.ts",
+          "implement-report.md",
+          "Estado story.md: IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "No hay tareas pendientes en tasks.md",
+          "Implementar fix-directives.md",
+          "fix-directives.md no encontrado en",
+          "⚠️ archivo no encontrado:",
+          "Tarea agregada"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-002",
+      "name": "tasks-md-legado-con-literal-no-reaplica",
+      "type": "edge-case",
+      "description": "Historia con tasks.md generado por la version anterior del flujo (fixture STORY-090): story.md en READY-FOR-IMPLEMENT/DONE, tasks.md con cuatro tareas [x] y una unica pendiente '- [ ] Implementar fix-directives.md', y fix-directives.md (round: 1) con un hallazgo MEDIUM en src/orders/list.ts:55. El skill debe aplicar la correccion una sola vez en el pre-paso 2f (anuncio 'Correcciones de fix-directives.md (ronda 1)' y '💻 corregido: src/orders/list.ts') y, al llegar a la tarea legada en el Paso 3, marcarla [x] en tasks.md con la nota 'aplicado en pre-paso 2f' sin volver a leer ni aplicar fix-directives.md ni generar tests para ella. story.md debe terminar en IMPLEMENT/DONE.",
+      "input": {
+        "story_id": "STORY-220",
+        "story_status": "READY-FOR-IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "fix-directives.md"],
+        "tasks_md": {
+          "total": 5,
+          "completed": 4,
+          "pending": 1,
+          "pending_tasks": ["- [ ] Implementar fix-directives.md"],
+          "contains_literal_implementar_fix_directives": true
+        },
+        "fix_directives": {
+          "round": 1,
+          "findings": [
+            {
+              "file_line": "src/orders/list.ts:55",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Consulta a base de datos ejecutada dentro de un loop sobre la lista de pedidos (riesgo N+1)",
+              "action": "Reemplazar por una sola consulta con IN o batching antes del loop"
+            }
+          ]
+        },
+        "repository_files_present": ["src/orders/list.ts"]
+      },
+      "expected": {
+        "contains": [
+          "Correcciones de fix-directives.md (ronda 1)",
+          "💻 corregido: src/orders/list.ts",
+          "aplicado en pre-paso 2f",
+          "[x] Implementar fix-directives.md",
+          "Estado story.md: IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "No hay tareas pendientes en tasks.md",
+          "fix-directives.md no encontrado en",
+          "[~] Implementar fix-directives.md",
+          "Correcciones de fix-directives.md (ronda 2)"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "sin-fix-directives-gate-salida-anticipada-intacto",
+      "type": "edge-case",
+      "description": "Regresion del AC-3 de STORY-067: story.md en READY-FOR-IMPLEMENT/DONE, tasks.md con todas sus tareas marcadas [x] y sin fix-directives.md en el directorio. El gate de salida anticipada del paso 2c debe seguir activo: el skill muestra 'No hay tareas pendientes en tasks.md — todas estan completadas' con el conteo de tareas completadas y termina sin modificar ningun archivo. No debe ejecutar el pre-paso 2f, ni pasar story.md a IMPLEMENT/IN-PROGRESS o IMPLEMENT/DONE, ni generar implement-report.md.",
+      "input": {
+        "story_id": "STORY-230",
+        "story_status": "READY-FOR-IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md"],
+        "tasks_md": {
+          "total": 6,
+          "completed": 6,
+          "pending": 0,
+          "contains_literal_implementar_fix_directives": false
+        },
+        "fix_directives": null
+      },
+      "expected": {
+        "contains": [
+          "No hay tareas pendientes en tasks.md",
+          "Tareas completadas: 6"
+        ],
+        "not_contains": [
+          "Correcciones de fix-directives.md",
+          "Estado story.md: IMPLEMENT/DONE",
+          "Estado story.md: IMPLEMENT/IN-PROGRESS",
+          "Reporte generado",
+          "💻 corregido:",
+          "fix-directives.md no encontrado en"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "literal-legado-sin-fix-directives-bloquea-tarea",
+      "type": "error-handling",
+      "description": "tasks.md legado con la linea '- [ ] Implementar fix-directives.md' pendiente (ademas de otra tarea TDD pendiente), pero fix-directives.md ya no existe en el directorio de la historia (por ejemplo, fue eliminado por un approved posterior). story.md en READY-FOR-IMPLEMENT/DONE. El pre-paso 2f no se ejecuta (no hay archivo). Al procesar la tarea legada, el skill debe marcarla [~] en tasks.md con la razon 'fix-directives.md no encontrado en <ruta del directorio>' y continuar con las demas tareas sin error fatal, generando implement-report.md con la seccion Tareas Bloqueadas.",
+      "input": {
+        "story_id": "STORY-240",
+        "story_status": "READY-FOR-IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md"],
+        "tasks_md": {
+          "total": 4,
+          "completed": 2,
+          "pending": 2,
+          "pending_tasks": [
+            "- [ ] Implementar fix-directives.md",
+            "- [ ] T004: Exponer endpoint GET /orders/:id"
+          ],
+          "contains_literal_implementar_fix_directives": true
+        },
+        "fix_directives": null
+      },
+      "expected": {
+        "contains": [
+          "fix-directives.md no encontrado en",
+          "[~]",
+          "Tareas Bloqueadas",
+          "implement-report.md"
+        ],
+        "not_contains": [
+          "Correcciones de fix-directives.md",
+          "💻 corregido:",
+          "aplicado en pre-paso 2f",
+          "No hay tareas pendientes en tasks.md",
+          "❌ Error fatal"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-005",
+      "name": "hallazgo-archivo-inexistente-no-aborta",
+      "type": "error-handling",
+      "description": "story.md en READY-FOR-IMPLEMENT/DONE, tasks.md todo [x] sin el literal, y fix-directives.md (round: 2) con dos hallazgos: el primero apunta a src/legacy/removed.ts:10 (archivo que ya no existe en el repositorio) y el segundo a src/auth.ts:42 (archivo real). Durante el pre-paso 2f el skill debe mostrar '⚠️ archivo no encontrado: src/legacy/removed.ts' para el primero y continuar con el segundo mostrando '💻 corregido: src/auth.ts', sin abortar las correcciones restantes. La seccion 'Correcciones de fix-directives.md (ronda 2)' de implement-report.md debe listar el hallazgo omitido; story.md termina en IMPLEMENT/DONE.",
+      "input": {
+        "story_id": "STORY-250",
+        "story_status": "READY-FOR-IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "fix-directives.md"],
+        "tasks_md": {
+          "total": 3,
+          "completed": 3,
+          "pending": 0,
+          "contains_literal_implementar_fix_directives": false
+        },
+        "fix_directives": {
+          "round": 2,
+          "findings": [
+            {
+              "file_line": "src/legacy/removed.ts:10",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Funcion sin uso exportada desde el modulo legado",
+              "action": "Eliminar la exportacion"
+            },
+            {
+              "file_line": "src/auth.ts:42",
+              "dimension": "code-quality",
+              "severity": "HIGH",
+              "finding": "API key hardcodeada en el codigo fuente",
+              "action": "Mover a variable de entorno process.env.API_KEY"
+            }
+          ]
+        },
+        "repository_files_present": ["src/auth.ts"],
+        "repository_files_absent": ["src/legacy/removed.ts"]
+      },
+      "expected": {
+        "contains": [
+          "Correcciones de fix-directives.md (ronda 2)",
+          "⚠️ archivo no encontrado: src/legacy/removed.ts",
+          "💻 corregido: src/auth.ts",
+          "Estado story.md: IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "💻 corregido: src/legacy/removed.ts",
+          "No hay tareas pendientes en tasks.md",
+          "Implementar fix-directives.md",
+          "❌ Error fatal"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-006",
+      "name": "fix-directives-sin-round-reporta-ronda-1",
+      "type": "edge-case",
+      "description": "Fixture legado (STORY-090): story.md en READY-FOR-IMPLEMENT/DONE, tasks.md todo [x] sin el literal, y fix-directives.md cuyo frontmatter NO contiene el campo round, con un hallazgo en src/auth.ts:42. El skill debe tratar la ronda ausente como 1: el anuncio del pre-paso 2f y la seccion de implement-report.md deben decir 'Correcciones de fix-directives.md (ronda 1)'. El skill no debe escribir ni completar el campo round en fix-directives.md (escritor unico: story-code-review) ni reportar la ronda como 0, desconocida o indefinida. story.md termina en IMPLEMENT/DONE.",
+      "input": {
+        "story_id": "STORY-260",
+        "story_status": "READY-FOR-IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "fix-directives.md"],
+        "tasks_md": {
+          "total": 4,
+          "completed": 4,
+          "pending": 0,
+          "contains_literal_implementar_fix_directives": false
+        },
+        "fix_directives": {
+          "round": null,
+          "frontmatter_has_round_field": false,
+          "findings": [
+            {
+              "file_line": "src/auth.ts:42",
+              "dimension": "code-quality",
+              "severity": "HIGH",
+              "finding": "API key hardcodeada en el codigo fuente",
+              "action": "Mover a variable de entorno process.env.API_KEY"
+            }
+          ]
+        },
+        "repository_files_present": ["src/auth.ts"]
+      },
+      "expected": {
+        "contains": [
+          "Correcciones de fix-directives.md (ronda 1)",
+          "💻 corregido: src/auth.ts",
+          "Estado story.md: IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "(ronda 0)",
+          "(ronda null)",
+          "(ronda undefined)",
+          "(ronda desconocida)",
+          "fix-directives.md (actualizado)",
+          "round: 1",
+          "No hay tareas pendientes en tasks.md",
+          "Implementar fix-directives.md"
+        ]
+      },
+      "threshold": 1.0
+    }
+  ]
+}

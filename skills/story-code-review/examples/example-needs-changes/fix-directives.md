@@ -5,6 +5,7 @@ title: "Fix Directives: STORY-000"
 review-status: needs-changes
 date: 2026-05-09
 max-severity: HIGH
+round: 1
 based-on: code-review-report.md
 ---
 
@@ -16,6 +17,7 @@ based-on: code-review-report.md
 - **Review status:** needs-changes
 - **Severidad máxima:** HIGH
 - **Total de hallazgos bloqueantes:** 1
+- **Ronda:** 1
 
 ## Instrucciones de corrección
 
@@ -32,7 +34,7 @@ No deben modificarse archivos fuera de esta lista sin previa aprobación.
 
 ## Ciclo de corrección
 
-1. Aplica las correcciones indicadas en la tabla de instrucciones.
+1. Ejecuta `/story-implement STORY-000` (o `/story-implement-tasks STORY-000` si la historia tiene `tasks.md`) para aplicar las correcciones de la tabla de instrucciones.
 2. Limita los cambios a los archivos de la lista blanca.
 3. Re-ejecuta `/story-code-review STORY-000`.
-4. Si el resultado es `approved`, la historia avanza a READY-FOR-VERIFY.
+4. Si el resultado es `approved`, este archivo se elimina y la historia queda en `CODE-REVIEW/DONE`.

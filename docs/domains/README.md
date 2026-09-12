@@ -61,7 +61,7 @@ Esta carpeta de dominios **no duplica** la información canónica que vive en ot
 
 | Documento | Ubicación | Propósito |
 |-----------|-----------|-----------|
-| [[state-machine]] | `docs/wiki/state-machine.md` | Máquina de estados completa (fuente canónica de transiciones). |
+| [[domain-story-lifecycle]] | `docs/domains/domain-story-lifecycle.md` | Máquina de estados de historia (fuente canónica de transiciones). |
 | [[specs-and-workflows]] | `docs/wiki/specs-and-workflows.md` | Workflow narrativo de estados y subestados. |
 | [[constitution]] | `docs/policies/constitution.md` | Constitución del proyecto (principios y reglas transversales). |
 | [[ADR-0003]] | `docs/adr/ADR-0003-workflow-canonico-story-y-epic.md` | Rationale de los workflows canónicos de story y epic. |
@@ -96,7 +96,7 @@ Esta carpeta de dominios **no duplica** la información canónica que vive en ot
 Esta carpeta **no contiene**:
 
 - Detalles operativos de skills (viven en `.claude/skills/*/SKILL.md`).
-- Máquina de estados completa (vive en [[state-machine]]).
+- Máquina de estados completa (vive en [[domain-story-lifecycle]], [[domain-epic-lifecycle]] y [[domain-project-lifecycle]], una por nivel).
 - Workflow narrativo (vive en [[specs-and-workflows]]).
 - Principios y reglas transversales del proyecto (viven en [[constitution]]).
 - Decisiones de arquitectura (viven en `docs/adr/`).

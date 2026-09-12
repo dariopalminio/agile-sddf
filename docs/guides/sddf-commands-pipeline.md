@@ -78,3 +78,20 @@ story-creation → story-evaluation → story-split
 | `story-split` | Divide historias grandes usando 8 patrones de splitting |
 
 > `story-specify` orquesta el ciclo completo con control de backlog por archivo (`substatus: IN-PROGRESS / READY`).
+
+---
+
+## 4. Pipeline de implementación y ciclo de corrección post-review
+
+```
+story-implement | story-implement-tasks → story-code-review → approved
+                                              └─ needs-changes → story-implement | story-implement-tasks → story-code-review → …
+```
+
+| Skill | Precondición (`story.md`) | Resultado |
+|---|---|---|
+| `story-implement` o `story-implement-tasks` | `READY-FOR-IMPLEMENT/DONE` (ejecución inicial o rework encolado) | `IMPLEMENT/DONE` + `implement-report.md`; si existe `fix-directives.md`, aplica sus correcciones |
+| `story-code-review` → `approved` | `IMPLEMENT/DONE` | `CODE-REVIEW/DONE` + `code-review-report.md`; `fix-directives.md` eliminado si existía |
+| `story-code-review` → `needs-changes` | `IMPLEMENT/DONE` | `READY-FOR-IMPLEMENT/DONE` + `code-review-report.md` + `fix-directives.md` con `round: N` (ronda previa + 1); mensaje `→ Ejecuta /story-implement <id>` (alternativa `/story-implement-tasks <id>` si existe `tasks.md`) |
+
+> La señal de rework es la presencia de `fix-directives.md` en el directorio de la historia: lo crea o sobreescribe `story-code-review` en `needs-changes` (escritor único de `round`) y lo elimina en `approved`. No existe estado ni substatus de rework; el ciclo `needs-changes → ejecutor → story-code-review` se repite sin editar el frontmatter a mano hasta obtener `approved` (ver [[rework-sin-estado-propio]], ADR-0008).

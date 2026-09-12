@@ -403,13 +403,13 @@ docs/specs/
         ├── testcases.md                 # tabla de casos de prueba tipificados UT/CT/IT/API/E2E/EV (story-testcases)
         ├── implement-report.md          # reporte de implementación (story-implement)
         ├── code-review-report.md        # reporte de revisión de código (story-code-review)
-        ├── fix-directives.md            # instrucciones de corrección cuando hay bloqueantes (story-code-review)
+        ├── fix-directives.md            # instrucciones de corrección y ronda (round N) cuando hay bloqueantes; señal de rework (story-code-review)
         └── verify-report.md             # reporte de verificación (story-verify)
 ```
 
 Cada archivo principal usa un nombre canónico (`project-intent.md`, `epic.md`, `story.md`) e incluye frontmatter con `type`, `id`, `slug`, `title`, `status`, `substatus`, `parent`, `created` y `updated`; las historias añaden `kind` (`feat` / `fix` / `chore` / `hotfix`), que determina el prefijo de su rama. Las relaciones jerárquicas se expresan mediante el campo `parent` (ej. una épica tiene `parent: PROJ-01-nombre-proyecto`).
 
-El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio. El conjunto canónico de estados y subestados por nivel vive en `docs/guides/state-machine.md`.
+El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`, y cada skill de la cadena genera o actualiza uno o más artefactos del directorio. El conjunto canónico de estados y subestados por nivel vive en `docs/domains/domain-story-lifecycle.md`.
 
 ### Basic Usage
 
