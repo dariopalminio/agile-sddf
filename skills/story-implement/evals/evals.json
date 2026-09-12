@@ -1,7 +1,7 @@
 {
   "skill": "story-implement",
-  "version": "1.1.0",
-  "description": "Casos de prueba para el skill story-implement: gate de estado (Paso 0c: READY-FOR-IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS, escritura de IMPLEMENT/IN-PROGRESS al arrancar), modo rework por presencia de fix-directives.md (ronda, lista blanca, campos rework_round/fix_directives_path/whitelist en los bundles, sección \"Ciclo de corrección\" del reporte), orquestación del ciclo TDD RED → GREEN → REFACTOR, DoD IMPLEMENT y sugerencia final de /story-code-review para historias SDDF",
+  "version": "1.2.0",
+  "description": "Casos de prueba para el skill story-implement: gate de estado (Paso 0c: READY-FOR-IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS, escritura de IMPLEMENT/IN-PROGRESS al arrancar), modo rework por presencia de fix-directives.md (ronda, lista blanca, campos rework_round/fix_directives_path/whitelist en los bundles, sección \"Ciclo de corrección\" del reporte), reglas de robustez del rework (gate de evidencia en RED: 0 tests + requirements-coverage ⇒ error, otras dimensiones ⇒ advertencia, rework_evidence en red-phase-status.json; barrera de lista blanca por fase: confirmación (s/n) en interactivo, [WARN] y registro en --auto, entradas \"solo lectura\" excluidas, subsección \"Archivos fuera de lista blanca\" del reporte), orquestación del ciclo TDD RED → GREEN → REFACTOR, DoD IMPLEMENT y sugerencia final de /story-code-review para historias SDDF",
   "cases": [
     {
       "id": "TC-001",
@@ -13,12 +13,23 @@
         "sddf_config": {
           "IMPLEMENT": {
             "test_generators": [
-              { "type": "unit", "skill": "story-test-unit-jest", "required": true },
-              { "type": "eval", "skill": "story-test-eval", "required": true }
+              {
+                "type": "unit",
+                "skill": "story-test-unit-jest",
+                "required": true
+              },
+              {
+                "type": "eval",
+                "skill": "story-test-eval",
+                "required": true
+              }
             ]
           }
         },
-        "skills_present": ["story-test-unit-jest", "story-test-eval"],
+        "skills_present": [
+          "story-test-unit-jest",
+          "story-test-eval"
+        ],
         "testcases_present": true
       },
       "expected": {
@@ -52,7 +63,11 @@
         "sddf_config": {
           "IMPLEMENT": {
             "test_generators": [
-              { "type": "unit", "skill": "skill-inexistente-xyz", "required": true }
+              {
+                "type": "unit",
+                "skill": "skill-inexistente-xyz",
+                "required": true
+              }
             ]
           }
         },
@@ -73,7 +88,7 @@
         ],
         "exit_gracefully": true
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-003",
@@ -85,11 +100,17 @@
         "sddf_config": {
           "IMPLEMENT": {
             "test_generators": [
-              { "type": "eval", "skill": "story-test-eval", "required": true }
+              {
+                "type": "eval",
+                "skill": "story-test-eval",
+                "required": true
+              }
             ]
           }
         },
-        "skills_present": ["story-test-eval"],
+        "skills_present": [
+          "story-test-eval"
+        ],
         "testcases_present": false,
         "story_present": true,
         "design_present": true
@@ -108,7 +129,7 @@
         ],
         "exit_gracefully": false
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-004",
@@ -120,17 +141,41 @@
         "red_phase_status": {
           "story_id": "STORY-TEST",
           "red_confirmed": true,
-          "generators_invoked": ["unit", "eval"],
-          "files_generated": ["tests/unit/feat-test.spec.ts", "evals/evals.json"]
+          "generators_invoked": [
+            "unit",
+            "eval"
+          ],
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts",
+            "evals/evals.json"
+          ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["story-code-nodejs"],
-        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "skills_present": [
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -170,16 +215,31 @@
         "red_phase_status": {
           "story_id": "STORY-TEST",
           "red_confirmed": true,
-          "generators_invoked": ["unit"],
-          "files_generated": ["tests/unit/feat-test.spec.ts"]
+          "generators_invoked": [
+            "unit"
+          ],
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["story-code-nodejs"],
-        "code_generator_green_result": { "status": "error", "message": "Error de compilación en src/feat-test.ts" }
+        "skills_present": [
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "error",
+          "message": "Error de compilación en src/feat-test.ts"
+        }
       },
       "expected": {
         "contains": [
@@ -196,7 +256,7 @@
         "story_status_unchanged": true,
         "exit_gracefully": true
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-006",
@@ -208,20 +268,45 @@
         "red_phase_status": {
           "story_id": "STORY-TEST",
           "red_confirmed": true,
-          "generators_invoked": ["unit"],
-          "files_generated": ["tests/unit/feat-test.spec.ts"]
+          "generators_invoked": [
+            "unit"
+          ],
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["story-code-nodejs"],
-        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+        "skills_present": [
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_green": true,
-        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_refactor": false,
-        "regressed_tests": ["feat-test > debería retornar valor correcto", "feat-test > debería manejar caso edge"]
+        "regressed_tests": [
+          "feat-test > debería retornar valor correcto",
+          "feat-test > debería manejar caso edge"
+        ]
       },
       "expected": {
         "contains": [
@@ -236,7 +321,7 @@
         ],
         "story_status_unchanged": true
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-007",
@@ -250,18 +335,43 @@
         "red_phase_status": {
           "story_id": "STORY-TEST",
           "red_confirmed": true,
-          "generators_invoked": ["unit"],
-          "files_generated": ["tests/unit/feat-test.spec.ts"]
+          "generators_invoked": [
+            "unit"
+          ],
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["story-code-nodejs"],
-        "user_responses": { "pause_1": "s", "pause_2": "s" },
-        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "skills_present": [
+          "story-code-nodejs"
+        ],
+        "user_responses": {
+          "pause_1": "s",
+          "pause_2": "s"
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -292,22 +402,46 @@
       "description": "Invocación con --auto: ningún bloque Pause-1 ni Pause-2 se ejecuta, ciclo completa sin interrupciones, muestra resumen consolidado de las 3 fases al finalizar (✅ Fase RED, ✅ Fase GREEN, ✅ Fase REFACTOR), story.md en IMPLEMENT/DONE y pie '→ Ejecuta /story-code-review STORY-TEST'",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
         "red_phase_status": {
           "story_id": "STORY-TEST",
           "red_confirmed": true,
-          "generators_invoked": ["unit"],
-          "files_generated": ["tests/unit/feat-test.spec.ts"]
+          "generators_invoked": [
+            "unit"
+          ],
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["story-code-nodejs"],
-        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "skills_present": [
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -341,21 +475,38 @@
       "description": "Invocación con --auto, error simulado en Fase GREEN (code_generator retorna status:error) → el skill detiene la ejecución sin mostrar prompt de confirmación al usuario, emite ❌ con nombre del skill y detalle de la fase fallida, story.md sin cambio",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
         "red_phase_status": {
           "story_id": "STORY-TEST",
           "red_confirmed": true,
-          "generators_invoked": ["unit"],
-          "files_generated": ["tests/unit/feat-test.spec.ts"]
+          "generators_invoked": [
+            "unit"
+          ],
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "code_generators": [ { "layer": "monolithic", "skill": "story-code-nodejs", "required": true } ]
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["story-code-nodejs"],
-        "code_generator_green_result": { "status": "error", "message": "Error de compilación TypeScript" }
+        "skills_present": [
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "error",
+          "message": "Error de compilación TypeScript"
+        }
       },
       "expected": {
         "contains": [
@@ -374,7 +525,7 @@
         "story_status_unchanged": true,
         "exit_gracefully": true
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-010",
@@ -383,33 +534,95 @@
       "description": "EV-001 / AC-1: story.md en READY-FOR-IMPLEMENT/DONE con fix-directives.md (round: 2) y sin tasks.md → el Paso 0c pasa story.md a IMPLEMENT/IN-PROGRESS antes de la Fase RED, anuncia '🔁 Modo rework (ronda 2)', los bundles RED/GREEN/REFACTOR llevan rework_round: 2, fix_directives_path y whitelist no nulos, implement-report.md contiene '## Ciclo de corrección — ronda 2', story.md termina en IMPLEMENT/DONE y el resumen final sugiere '→ Ejecuta /story-code-review STORY-TEST'. fix-directives.md no se modifica (escritor único: story-code-review)",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
-        "artifacts_absent": ["tasks.md"],
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "artifacts_absent": [
+          "tasks.md"
+        ],
         "fix_directives": {
           "round": 2,
           "max_severity": "MEDIUM",
           "findings": [
-            { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "MEDIUM", "accion_requerida": "Cubrir el AC-2 con un test y su implementación en src/feat-test.ts" },
-            { "#": 2, "archivo_linea": "tests/unit/feat-test.spec.ts:10", "dimension": "code-quality", "severidad": "MEDIUM", "accion_requerida": "Eliminar el test duplicado y renombrar el describe" }
+            {
+              "#": 1,
+              "archivo_linea": "src/feat-test.ts:42",
+              "dimension": "requirements-coverage",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Cubrir el AC-2 con un test y su implementación en src/feat-test.ts"
+            },
+            {
+              "#": 2,
+              "archivo_linea": "tests/unit/feat-test.spec.ts:10",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Eliminar el test duplicado y renombrar el describe"
+            }
           ],
           "whitelist_entries": [
-            { "path": "src/feat-test.ts", "note": "hallazgo #1" },
-            { "path": "tests/unit/feat-test.spec.ts", "note": "hallazgo #2" }
+            {
+              "path": "src/feat-test.ts",
+              "note": "hallazgo #1"
+            },
+            {
+              "path": "tests/unit/feat-test.spec.ts",
+              "note": "hallazgo #2"
+            }
           ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test-rework.spec.ts"] },
-        "code_generator_green_result": { "status": "ok", "files_generated": [], "files_modified": ["src/feat-test.ts", "tests/unit/feat-test.spec.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test-rework.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [],
+          "files_modified": [
+            "src/feat-test.ts",
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -439,7 +652,9 @@
           "green_confirmed",
           "refactor_confirmed"
         ],
-        "files_unchanged": ["fix-directives.md"]
+        "files_unchanged": [
+          "fix-directives.md"
+        ]
       },
       "threshold": 0.95
     },
@@ -450,21 +665,63 @@
       "description": "EV-002 / AC-2: story.md en READY-FOR-IMPLEMENT/DONE sin fix-directives.md → el gate escribe IMPLEMENT/IN-PROGRESS y el ciclo RED → GREEN → REFACTOR se ejecuta como hoy; los bundles llevan rework_round: null, fix_directives_path: null y whitelist: null; no aparece 'Modo rework', el reporte no tiene 'Ciclo de corrección' ni se emite la 'Instrucción de rework'; el resumen termina con '→ Ejecuta /story-code-review STORY-TEST'",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md"],
-        "artifacts_absent": ["fix-directives.md", "tasks.md"],
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md"
+        ],
+        "artifacts_absent": [
+          "fix-directives.md",
+          "tasks.md"
+        ],
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
-        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -499,16 +756,40 @@
       "input": {
         "story_id": "STORY-TEST",
         "invocation_flags": [],
-        "story_status": { "status": "CODE-REVIEW", "substatus": "DONE" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md"],
-        "artifacts_absent": ["fix-directives.md"],
+        "story_status": {
+          "status": "CODE-REVIEW",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md"
+        ],
+        "artifacts_absent": [
+          "fix-directives.md"
+        ],
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"]
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ]
       },
       "expected": {
         "contains": [
@@ -524,12 +805,16 @@
           "Modo rework",
           "🚀 Iniciando implementación"
         ],
-        "files_unchanged": ["story.md"],
-        "no_files_written": [".tmp/story-implement/STORY-TEST/"],
+        "files_unchanged": [
+          "story.md"
+        ],
+        "no_files_written": [
+          ".tmp/story-implement/STORY-TEST/"
+        ],
         "story_status_unchanged": true,
         "exit_gracefully": true
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-013",
@@ -539,16 +824,37 @@
       "input": {
         "story_id": "STORY-TEST",
         "invocation_flags": [],
-        "story_frontmatter": { "type": "story", "id": "STORY-TEST", "title": "Historia sin estado" },
-        "story_frontmatter_missing_fields": ["status", "substatus"],
-        "artifacts_present": ["story.md", "design.md", "testcases.md"],
-        "artifacts_absent": ["fix-directives.md"],
+        "story_frontmatter": {
+          "type": "story",
+          "id": "STORY-TEST",
+          "title": "Historia sin estado"
+        },
+        "story_frontmatter_missing_fields": [
+          "status",
+          "substatus"
+        ],
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md"
+        ],
+        "artifacts_absent": [
+          "fix-directives.md"
+        ],
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals"]
+        "skills_present": [
+          "skill-test-evals"
+        ]
       },
       "expected": {
         "contains": [
@@ -564,11 +870,15 @@
           "Modo rework",
           "🚀 Iniciando implementación"
         ],
-        "files_unchanged": ["story.md"],
-        "no_files_written": [".tmp/story-implement/STORY-TEST/"],
+        "files_unchanged": [
+          "story.md"
+        ],
+        "no_files_written": [
+          ".tmp/story-implement/STORY-TEST/"
+        ],
         "exit_gracefully": true
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-014",
@@ -577,42 +887,115 @@
       "description": "EV-005 / AC-4, D-1, D-8: story.md en IMPLEMENT/IN-PROGRESS pasa el gate ('Estado: IMPLEMENT/IN-PROGRESS ✓') y el modo lo decide únicamente la presencia de fix-directives.md — variante (a) con el archivo ⇒ 'Modo rework'; variante (b) sin el archivo ⇒ ciclo normal sin 'Modo rework'. En ambas, el Paso 0c solo cambia 'updated' en story.md (status/substatus ya son IMPLEMENT/IN-PROGRESS) y no hay error de gate",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "IMPLEMENT", "substatus": "IN-PROGRESS" },
+        "story_status": {
+          "status": "IMPLEMENT",
+          "substatus": "IN-PROGRESS"
+        },
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
-        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true,
         "variants": {
           "a": {
             "description": "IMPLEMENT/IN-PROGRESS + fix-directives.md presente (round: 1) ⇒ modo rework",
-            "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+            "artifacts_present": [
+              "story.md",
+              "design.md",
+              "testcases.md",
+              "fix-directives.md"
+            ],
             "fix_directives": {
               "round": 1,
-              "findings": [ { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "MEDIUM", "accion_requerida": "Cubrir el AC-2 en src/feat-test.ts" } ],
-              "whitelist_entries": [ { "path": "src/feat-test.ts", "note": "hallazgo #1" } ]
+              "findings": [
+                {
+                  "#": 1,
+                  "archivo_linea": "src/feat-test.ts:42",
+                  "dimension": "requirements-coverage",
+                  "severidad": "MEDIUM",
+                  "accion_requerida": "Cubrir el AC-2 en src/feat-test.ts"
+                }
+              ],
+              "whitelist_entries": [
+                {
+                  "path": "src/feat-test.ts",
+                  "note": "hallazgo #1"
+                }
+              ]
             },
             "expected": {
-              "contains": ["Estado: IMPLEMENT/IN-PROGRESS ✓", "Modo rework", "rework_round: 1"],
-              "not_contains": ["no está en un estado válido", "rework_round: null"]
+              "contains": [
+                "Estado: IMPLEMENT/IN-PROGRESS ✓",
+                "Modo rework",
+                "rework_round: 1"
+              ],
+              "not_contains": [
+                "no está en un estado válido",
+                "rework_round: null"
+              ]
             }
           },
           "b": {
             "description": "IMPLEMENT/IN-PROGRESS sin fix-directives.md ⇒ ciclo normal",
-            "artifacts_present": ["story.md", "design.md", "testcases.md"],
-            "artifacts_absent": ["fix-directives.md"],
+            "artifacts_present": [
+              "story.md",
+              "design.md",
+              "testcases.md"
+            ],
+            "artifacts_absent": [
+              "fix-directives.md"
+            ],
             "expected": {
-              "contains": ["Estado: IMPLEMENT/IN-PROGRESS ✓", "rework_round: null"],
-              "not_contains": ["no está en un estado válido", "Modo rework", "Ciclo de corrección"]
+              "contains": [
+                "Estado: IMPLEMENT/IN-PROGRESS ✓",
+                "rework_round: null"
+              ],
+              "not_contains": [
+                "no está en un estado válido",
+                "Modo rework",
+                "Ciclo de corrección"
+              ]
             }
           }
         }
@@ -627,7 +1010,9 @@
           "no está en un estado válido para implementar",
           "Estado actual: status: IMPLEMENT / substatus: IN-PROGRESS"
         ],
-        "story_frontmatter_changed_in_gate": ["updated"],
+        "story_frontmatter_changed_in_gate": [
+          "updated"
+        ],
         "all_variants_must_pass": true
       },
       "threshold": 0.95
@@ -639,24 +1024,72 @@
       "description": "EV-006 / AC-4, D-8: story.md en IMPLEMENT/IN-PROGRESS sin fix-directives.md y con un red-phase-status.json previo (red_confirmed: true) en .tmp/ → el gate acepta el estado, no aparece 'Modo rework' y el ciclo se ejecuta completo desde la Fase RED (no se retoma en GREEN por la existencia del JSON previo); rework_round: null; el resumen sugiere /story-code-review",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "IMPLEMENT", "substatus": "IN-PROGRESS" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md"],
-        "artifacts_absent": ["fix-directives.md"],
+        "story_status": {
+          "status": "IMPLEMENT",
+          "substatus": "IN-PROGRESS"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md"
+        ],
+        "artifacts_absent": [
+          "fix-directives.md"
+        ],
         "tmp_files_present": {
-          ".tmp/story-implement/STORY-TEST/red-phase-status.json": { "story_id": "STORY-TEST", "red_confirmed": true, "generators_invoked": ["eval"], "timestamp": "2026-09-10T10:00:00Z" }
+          ".tmp/story-implement/STORY-TEST/red-phase-status.json": {
+            "story_id": "STORY-TEST",
+            "red_confirmed": true,
+            "generators_invoked": [
+              "eval"
+            ],
+            "timestamp": "2026-09-10T10:00:00Z"
+          }
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
-        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -674,7 +1107,9 @@
           "no está en un estado válido"
         ],
         "red_phase_executed": true,
-        "generators_invoked_in_this_run": ["eval"],
+        "generators_invoked_in_this_run": [
+          "eval"
+        ],
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE"
       },
@@ -687,29 +1122,87 @@
       "description": "EV-007 / NFR-3, AC-6, D-2: story.md en READY-FOR-IMPLEMENT/DONE con un fix-directives.md legado (forma de STORY-090: frontmatter sin 'round', lista blanca con una entrada anotada '**solo lectura**' y una sublista introducida por el párrafo 'Destino de las acciones requeridas') → entra en modo rework anunciando '🔁 Modo rework (ronda 1)' y el conteo 'archivo(s) en lista blanca'; fix-directives.md no se modifica (el skill nunca escribe 'round'; escritor único story-code-review)",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
         "fix_directives": {
-          "frontmatter": { "type": "fix-directives", "story": "STORY-TEST", "review-status": "needs-changes", "max-severity": "MEDIUM", "based-on": "code-review-report.md" },
-          "frontmatter_missing_fields": ["round"],
+          "frontmatter": {
+            "type": "fix-directives",
+            "story": "STORY-TEST",
+            "review-status": "needs-changes",
+            "max-severity": "MEDIUM",
+            "based-on": "code-review-report.md"
+          },
+          "frontmatter_missing_fields": [
+            "round"
+          ],
           "findings": [
-            { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "MEDIUM", "accion_requerida": "Cubrir el AC-2 en src/feat-test.ts" },
-            { "#": 2, "archivo_linea": "docs/policies/dod-story.md:134", "dimension": "DoD-CODE-REVIEW", "severidad": "MEDIUM", "accion_requerida": "Resolver el hallazgo #1 y volver a ejecutar /story-code-review" }
+            {
+              "#": 1,
+              "archivo_linea": "src/feat-test.ts:42",
+              "dimension": "requirements-coverage",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Cubrir el AC-2 en src/feat-test.ts"
+            },
+            {
+              "#": 2,
+              "archivo_linea": "docs/policies/dod-story.md:134",
+              "dimension": "DoD-CODE-REVIEW",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Resolver el hallazgo #1 y volver a ejecutar /story-code-review"
+            }
           ],
           "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\n- `src/feat-test.ts` — hallazgo #1\n- `docs/policies/dod-story.md` — hallazgo #2 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `tests/unit/feat-test.spec.ts` — hallazgo #1 (test del AC-2)\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #1 (registrar CR)\n"
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
-        "code_generator_green_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": [] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": []
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -725,7 +1218,9 @@
           "no está en un estado válido",
           "❌"
         ],
-        "files_unchanged": ["fix-directives.md"],
+        "files_unchanged": [
+          "fix-directives.md"
+        ],
         "whitelist_entries_count": 4,
         "whitelist_note_preserved_for": "docs/policies/dod-story.md"
       },
@@ -738,25 +1233,76 @@
       "description": "EV-008 / D-2: fix-directives.md cuyo frontmatter tiene 'round: abc' (no es un entero ≥ 1) → el skill asume ronda 1 sin error ('🔁 Modo rework (ronda 1)', rework_round: 1) y no escribe el archivo para corregirlo",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
         "fix_directives": {
           "round": "abc",
-          "findings": [ { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "code-quality", "severidad": "MEDIUM", "accion_requerida": "Extraer la función duplicada" } ],
-          "whitelist_entries": [ { "path": "src/feat-test.ts", "note": "hallazgo #1" } ]
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "src/feat-test.ts:42",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Extraer la función duplicada"
+            }
+          ],
+          "whitelist_entries": [
+            {
+              "path": "src/feat-test.ts",
+              "note": "hallazgo #1"
+            }
+          ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
-        "code_generator_green_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": [] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": []
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -772,10 +1318,12 @@
           "❌",
           "no está en un estado válido"
         ],
-        "files_unchanged": ["fix-directives.md"],
+        "files_unchanged": [
+          "fix-directives.md"
+        ],
         "exit_gracefully": false
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-018",
@@ -784,28 +1332,79 @@
       "description": "EV-009 / D-2: la sección de lista blanca de fix-directives.md tiene 10 viñetas con la ruta entre acentos graves seguida de '— hallazgo #N', una de ellas con '**solo lectura**' y una sublista introducida por un párrafo → el Paso 0c.3 produce 10 entradas {path, note}, la entrada 'solo lectura' conserva su nota, el anuncio dice '10 archivo(s) en lista blanca' y no se emite ningún [WARN] de lista blanca",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
         "fix_directives": {
           "round": 1,
           "findings": [
-            { "#": 1, "archivo_linea": "evals/story-creation.evals.json:1", "dimension": "code-quality", "severidad": "MEDIUM", "accion_requerida": "Fusionar los casos en skills/story-creation/evals/evals.json" },
-            { "#": 2, "archivo_linea": "scripts/migrate-field.js:121", "dimension": "integration-architecture", "severidad": "MEDIUM", "accion_requerida": "Registrar CR-002 en design.md y actualizar UT-004" }
+            {
+              "#": 1,
+              "archivo_linea": "evals/story-creation.evals.json:1",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Fusionar los casos en skills/story-creation/evals/evals.json"
+            },
+            {
+              "#": 2,
+              "archivo_linea": "scripts/migrate-field.js:121",
+              "dimension": "integration-architecture",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Registrar CR-002 en design.md y actualizar UT-004"
+            }
           ],
           "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\nArchivos derivados de los hallazgos:\n\n- `docs/specs/03-stories/STORY-TEST/evals/story-creation.evals.json` — hallazgo #1\n- `docs/specs/03-stories/STORY-TEST/evals/story-improve.evals.json` — hallazgo #1\n- `scripts/migrate-field.js` — hallazgo #2\n- `docs/policies/dod-story.md` — hallazgos #3, #4, #5 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #2 (registrar `CR-002`)\n- `docs/specs/03-stories/STORY-TEST/testcases.md` — hallazgo #2 (actualizar `UT-004`)\n- `skills/story-creation/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `skills/story-improve/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `docs/specs/03-stories/STORY-TEST/implement-report.md` — hallazgo #1 (alternativa: corregir el comando declarado)\n- `CHANGELOG.md` — hallazgo #1 (entrada de la historia)\n\n## Ciclo de corrección\n"
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": ["skills/story-creation/evals/evals.json"] },
-        "code_generator_green_result": { "status": "ok", "files_modified": ["scripts/migrate-field.js", "docs/specs/03-stories/STORY-TEST/design.md"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": [] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "skills/story-creation/evals/evals.json"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_modified": [
+            "scripts/migrate-field.js",
+            "docs/specs/03-stories/STORY-TEST/design.md"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": []
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -822,8 +1421,13 @@
           "❌"
         ],
         "whitelist_entries_count": 10,
-        "whitelist_entry_with_note": { "path": "docs/policies/dod-story.md", "note_contains": "solo lectura" },
-        "files_unchanged": ["fix-directives.md"]
+        "whitelist_entry_with_note": {
+          "path": "docs/policies/dod-story.md",
+          "note_contains": "solo lectura"
+        },
+        "files_unchanged": [
+          "fix-directives.md"
+        ]
       },
       "threshold": 0.95
     },
@@ -834,26 +1438,78 @@
       "description": "EV-010 / D-2: fix-directives.md sin la sección '## Lista blanca de archivos permitidos para modificar' → el Paso 0c.3 emite '[WARN] fix-directives.md sin lista blanca — los generators recibirán whitelist vacía', los bundles llevan whitelist: [] (no null) y el ciclo continúa en modo rework sin detenerse",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
         "fix_directives": {
           "round": 1,
-          "findings": [ { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "HIGH", "accion_requerida": "Implementar la validación del AC-3" } ],
-          "sections_present": ["## Resumen de bloqueantes", "## Instrucciones de corrección", "## Ciclo de corrección"],
-          "sections_absent": ["## Lista blanca de archivos permitidos para modificar"]
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "src/feat-test.ts:42",
+              "dimension": "requirements-coverage",
+              "severidad": "HIGH",
+              "accion_requerida": "Implementar la validación del AC-3"
+            }
+          ],
+          "sections_present": [
+            "## Resumen de bloqueantes",
+            "## Instrucciones de corrección",
+            "## Ciclo de corrección"
+          ],
+          "sections_absent": [
+            "## Lista blanca de archivos permitidos para modificar"
+          ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
-        "code_generator_green_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": [] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": []
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -871,9 +1527,11 @@
           "no está en un estado válido"
         ],
         "exit_gracefully": false,
-        "files_unchanged": ["fix-directives.md"]
+        "files_unchanged": [
+          "fix-directives.md"
+        ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-020",
@@ -882,32 +1540,87 @@
       "description": "EV-011 / NFR-2, D-5, D-8: re-ejecución en modo rework (IMPLEMENT/IN-PROGRESS tras un ciclo interrumpido que ya aplicó las correcciones; fix-directives.md sigue presente) donde GREEN y REFACTOR devuelven files_generated: [] y files_modified: [] → no cambia ningún archivo de código, story.md queda en IMPLEMENT/DONE idéntico al de la ejecución previa completada salvo 'updated', y la sección '## Ciclo de corrección — ronda 2' marca cada hallazgo como '⚠️ sin evidencia' (nunca ❌)",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "IMPLEMENT", "substatus": "IN-PROGRESS" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md", "implement-report.md"],
+        "story_status": {
+          "status": "IMPLEMENT",
+          "substatus": "IN-PROGRESS"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md",
+          "implement-report.md"
+        ],
         "corrections_already_applied": true,
         "fix_directives": {
           "round": 2,
           "findings": [
-            { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "MEDIUM", "accion_requerida": "Cubrir el AC-2 en src/feat-test.ts" },
-            { "#": 2, "archivo_linea": "tests/unit/feat-test.spec.ts:10", "dimension": "code-quality", "severidad": "MEDIUM", "accion_requerida": "Eliminar el test duplicado" }
+            {
+              "#": 1,
+              "archivo_linea": "src/feat-test.ts:42",
+              "dimension": "requirements-coverage",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Cubrir el AC-2 en src/feat-test.ts"
+            },
+            {
+              "#": 2,
+              "archivo_linea": "tests/unit/feat-test.spec.ts:10",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Eliminar el test duplicado"
+            }
           ],
           "whitelist_entries": [
-            { "path": "src/feat-test.ts", "note": "hallazgo #1" },
-            { "path": "tests/unit/feat-test.spec.ts", "note": "hallazgo #2" }
+            {
+              "path": "src/feat-test.ts",
+              "note": "hallazgo #1"
+            },
+            {
+              "path": "tests/unit/feat-test.spec.ts",
+              "note": "hallazgo #2"
+            }
           ]
         },
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": [] },
-        "code_generator_green_result": { "status": "ok", "files_generated": [], "files_modified": [] },
-        "code_generator_refactor_result": { "status": "ok", "files_generated": [], "files_modified": [] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": []
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [],
+          "files_modified": []
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_generated": [],
+          "files_modified": []
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -925,8 +1638,12 @@
         "code_files_unchanged": true,
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE",
-        "story_identical_to_previous_completed_run_except": ["updated"],
-        "files_unchanged": ["fix-directives.md"]
+        "story_identical_to_previous_completed_run_except": [
+          "updated"
+        ],
+        "files_unchanged": [
+          "fix-directives.md"
+        ]
       },
       "threshold": 0.95
     },
@@ -937,23 +1654,74 @@
       "description": "EV-012 / AC-6, D-2: story.md en READY-FOR-IMPLEMENT/DONE con un verify-report.md que reporta criterios fallidos y un acceptance-report.md con REJECTED, pero sin fix-directives.md → el Paso 0c solo consulta fix-directives.md como señal de rework, por lo que se ejecuta el ciclo normal: sin 'Modo rework', sin 'Ciclo de corrección', rework_round: null",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
-        "artifacts_present": ["story.md", "design.md", "testcases.md", "verify-report.md", "acceptance-report.md"],
-        "artifacts_absent": ["fix-directives.md"],
-        "verify_report": { "status": "FAILED", "criteria_failed": ["E2E-002", "IT-001"] },
-        "acceptance_report": { "decision": "REJECTED" },
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "verify-report.md",
+          "acceptance-report.md"
+        ],
+        "artifacts_absent": [
+          "fix-directives.md"
+        ],
+        "verify_report": {
+          "status": "FAILED",
+          "criteria_failed": [
+            "E2E-002",
+            "IT-001"
+          ]
+        },
+        "acceptance_report": {
+          "decision": "REJECTED"
+        },
         "sddf_config": {
           "IMPLEMENT": {
-            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
           }
         },
-        "skills_present": ["skill-test-evals", "skill-master"],
-        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
-        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
-        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true
       },
@@ -970,10 +1738,15 @@
           "Instrucción de rework",
           "REJECTED"
         ],
-        "files_consulted_for_rework_detection": ["fix-directives.md"],
-        "files_not_consulted_for_rework_detection": ["verify-report.md", "acceptance-report.md"]
+        "files_consulted_for_rework_detection": [
+          "fix-directives.md"
+        ],
+        "files_not_consulted_for_rework_detection": [
+          "verify-report.md",
+          "acceptance-report.md"
+        ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-022",
@@ -982,45 +1755,112 @@
       "description": "EV-013 / AC-4, D-1 (riesgo 'detención posterior'): primera ejecución con READY-FOR-IMPLEMENT/DONE y un test_generator required:true cuyo skill no existe → el Paso 0c ya escribió IMPLEMENT/IN-PROGRESS y el Paso 2 detiene con '❌ Skill … no encontrado'; segunda ejecución (config corregida) → el gate acepta IMPLEMENT/IN-PROGRESS mostrando 'Estado: IMPLEMENT/IN-PROGRESS ✓' y el ciclo completa. Documenta un comportamiento aceptado: no debe 'corregirse' revirtiendo el estado tras la detención",
       "input": {
         "story_id": "STORY-TEST",
-        "invocation_flags": ["--auto"],
+        "invocation_flags": [
+          "--auto"
+        ],
         "exec_mode": "auto",
-        "artifacts_present": ["story.md", "design.md", "testcases.md"],
-        "artifacts_absent": ["fix-directives.md"],
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md"
+        ],
+        "artifacts_absent": [
+          "fix-directives.md"
+        ],
         "runs": [
           {
             "run": 1,
-            "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
+            "story_status": {
+              "status": "READY-FOR-IMPLEMENT",
+              "substatus": "DONE"
+            },
             "sddf_config": {
               "IMPLEMENT": {
-                "test_generators": [ { "type": "unit", "skill": "skill-inexistente-xyz", "required": true } ]
+                "test_generators": [
+                  {
+                    "type": "unit",
+                    "skill": "skill-inexistente-xyz",
+                    "required": true
+                  }
+                ]
               }
             },
             "skills_present": [],
             "expected": {
-              "contains": ["IMPLEMENT/IN-PROGRESS", "❌", "skill-inexistente-xyz", "no encontrado"],
-              "not_contains": ["invocando", "red-phase-status.json", "IMPLEMENT/DONE", "no está en un estado válido"],
+              "contains": [
+                "IMPLEMENT/IN-PROGRESS",
+                "❌",
+                "skill-inexistente-xyz",
+                "no encontrado"
+              ],
+              "not_contains": [
+                "invocando",
+                "red-phase-status.json",
+                "IMPLEMENT/DONE",
+                "no está en un estado válido"
+              ],
               "story_status": "IMPLEMENT",
               "story_substatus": "IN-PROGRESS"
             }
           },
           {
             "run": 2,
-            "story_status": { "status": "IMPLEMENT", "substatus": "IN-PROGRESS" },
+            "story_status": {
+              "status": "IMPLEMENT",
+              "substatus": "IN-PROGRESS"
+            },
             "sddf_config": {
               "IMPLEMENT": {
-                "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
-                "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+                "test_generators": [
+                  {
+                    "type": "eval",
+                    "skill": "skill-test-evals",
+                    "required": true
+                  }
+                ],
+                "code_generators": [
+                  {
+                    "layer": "monolithic",
+                    "skill": "skill-master",
+                    "required": true
+                  }
+                ]
               }
             },
-            "skills_present": ["skill-test-evals", "skill-master"],
-            "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
-            "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
-            "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+            "skills_present": [
+              "skill-test-evals",
+              "skill-master"
+            ],
+            "test_generator_result": {
+              "status": "ok",
+              "files_generated": [
+                "tests/unit/feat-test.spec.ts"
+              ]
+            },
+            "code_generator_green_result": {
+              "status": "ok",
+              "files_generated": [
+                "src/feat-test.ts"
+              ]
+            },
+            "code_generator_refactor_result": {
+              "status": "ok",
+              "files_modified": [
+                "src/feat-test.ts"
+              ]
+            },
             "tests_pass_after_green": true,
             "tests_pass_after_refactor": true,
             "expected": {
-              "contains": ["Estado: IMPLEMENT/IN-PROGRESS ✓", "IMPLEMENT/DONE", "Ejecuta /story-code-review"],
-              "not_contains": ["no está en un estado válido para implementar", "Modo rework"]
+              "contains": [
+                "Estado: IMPLEMENT/IN-PROGRESS ✓",
+                "IMPLEMENT/DONE",
+                "Ejecuta /story-code-review"
+              ],
+              "not_contains": [
+                "no está en un estado válido para implementar",
+                "Modo rework"
+              ]
             }
           }
         ]
@@ -1040,7 +1880,1772 @@
         "story_status_after_run_2": "IMPLEMENT/DONE",
         "all_runs_must_pass": true
       },
-      "threshold": 1.0
+      "threshold": 1
+    },
+    {
+      "id": "TC-023",
+      "name": "rework-red-sin-tests-requirements-coverage-detiene",
+      "type": "fail-fast",
+      "description": "EV-001 (STORY-092) / AC-1, D-1, D-2, V-1: modo rework con fix-directives.md cuya tabla 'Instrucciones de corrección' tiene filas requirements-coverage (#1) y code-quality (#2); el test_generator eval retorna status:ok con files_generated: [] y files_modified: [] → el Paso 6b (gate de evidencia) emite '❌ Rework sin evidencia' nombrando requirements-coverage, persiste rework_evidence: \"error\" en red-phase-status.json y detiene antes de Pause-1 y de la Fase GREEN; story.md queda en el IMPLEMENT/IN-PROGRESS que fijó el Paso 0c sin escrituras adicionales",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "requirements-coverage",
+            "code-quality"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:120",
+              "dimension": "requirements-coverage",
+              "severidad": "HIGH",
+              "accion_requerida": "Cubrir el AC-3 con un caso de eval y su implementación"
+            },
+            {
+              "#": 2,
+              "archivo_linea": "skills/story-implement/SKILL.md:300",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Unificar los dos bloques de contexto duplicados"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgos #1, #2"
+            },
+            {
+              "path": "skills/story-implement/evals/evals.json",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "message": "Sin casos nuevos que añadir",
+              "files_generated": [],
+              "files_modified": []
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [],
+            "modified": []
+          }
+        }
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "❌ Rework sin evidencia",
+          "requirements-coverage",
+          "#1"
+        ],
+        "not_contains": [
+          "[GREEN/",
+          "¿Continuar con la Fase GREEN?",
+          "⚠️ Rework sin tests nuevos",
+          "Fase REFACTOR",
+          "Ciclo TDD completado",
+          "Ejecuta /story-code-review"
+        ],
+        "output_file": ".tmp/story-implement/STORY-TEST/red-phase-status.json",
+        "output_contains": [
+          "\"rework_evidence\": \"error\"",
+          "files_modified",
+          "rework_round"
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "IN-PROGRESS",
+        "story_writes_after_gate": 0,
+        "code_generators_invoked": [],
+        "exit_gracefully": true
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-024",
+      "name": "rework-red-sin-tests-otras-dimensiones-advierte-y-continua",
+      "type": "happy-path",
+      "description": "EV-002 (STORY-092) / AC-2, D-1, D-2, V-2: modo rework con fix-directives.md cuyas filas tienen únicamente las dimensiones code-quality, integration-architecture, security y DoD-CODE-REVIEW (sin requirements-coverage); RED termina con 0 archivos de prueba → el Paso 6b emite '⚠️ Rework sin tests nuevos' listando las dimensiones presentes y '— continuando con la Fase GREEN', persiste rework_evidence: \"warning\" y el ciclo sigue con '[GREEN/' hasta IMPLEMENT/DONE",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "code-quality",
+            "integration-architecture",
+            "security",
+            "DoD-CODE-REVIEW"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:88",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Renombrar la variable $TMP a $RED_TMP"
+            },
+            {
+              "#": 2,
+              "archivo_linea": "skills/story-implement/SKILL.md:210",
+              "dimension": "integration-architecture",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Alinear el nombre del bundle con story-code-review"
+            },
+            {
+              "#": 3,
+              "archivo_linea": "skills/story-implement/SKILL.md:400",
+              "dimension": "security",
+              "severidad": "MEDIUM",
+              "accion_requerida": "No interpolar rutas sin normalizar en comandos shell"
+            },
+            {
+              "#": 4,
+              "archivo_linea": "docs/policies/dod-story.md:134",
+              "dimension": "DoD-CODE-REVIEW",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Resolver los hallazgos #1..#3 y volver a ejecutar /story-code-review"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgos #1, #2, #3"
+            },
+            {
+              "path": "docs/policies/dod-story.md",
+              "note": "hallazgo #4 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "message": "Los casos existentes ya cubren los hallazgos",
+              "files_generated": [],
+              "files_modified": []
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md"
+              ]
+            }
+          },
+          "REFACTOR": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": []
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [],
+            "modified": []
+          },
+          "GREEN": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md"
+            ]
+          },
+          "REFACTOR": {
+            "new": [],
+            "modified": []
+          }
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "⚠️ Rework sin tests nuevos",
+          "dimensiones presentes:",
+          "code-quality",
+          "integration-architecture",
+          "security",
+          "DoD-CODE-REVIEW",
+          "continuando con la Fase GREEN",
+          "[GREEN/",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "❌ Rework sin evidencia",
+          "❌ Precondición RED no cumplida",
+          "(s/n)"
+        ],
+        "output_file": ".tmp/story-implement/STORY-TEST/red-phase-status.json",
+        "output_contains": [
+          "\"rework_evidence\": \"warning\""
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-025",
+      "name": "rework-red-con-test-modificado-cuenta-como-evidencia",
+      "type": "happy-path",
+      "description": "EV-003 (STORY-092) / AC-1, D-1, V-3: modo rework con fila requirements-coverage en la tabla; el test_generator eval retorna files_generated: [] pero files_modified: ['skills/story-implement/evals/evals.json'] (casos añadidos a un evals.json existente) → el Paso 6b calcula files_generated ∪ files_modified = 1 archivo, no emite ni '❌ Rework sin evidencia' ni '⚠️ Rework sin tests nuevos', persiste rework_evidence: \"ok\" y el ciclo continúa con GREEN",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "requirements-coverage"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:120",
+              "dimension": "requirements-coverage",
+              "severidad": "HIGH",
+              "accion_requerida": "Cubrir el AC-3 con un caso de eval y su implementación"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgo #1"
+            },
+            {
+              "path": "skills/story-implement/evals/evals.json",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "message": "2 casos añadidos a evals.json existente",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/evals/evals.json"
+              ]
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md"
+              ]
+            }
+          },
+          "REFACTOR": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": []
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/evals/evals.json"
+            ]
+          },
+          "GREEN": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md"
+            ]
+          },
+          "REFACTOR": {
+            "new": [],
+            "modified": []
+          }
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "[GREEN/",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "❌ Rework sin evidencia",
+          "⚠️ Rework sin tests nuevos",
+          "❌ Precondición RED no cumplida",
+          "(s/n)"
+        ],
+        "output_file": ".tmp/story-implement/STORY-TEST/red-phase-status.json",
+        "output_contains": [
+          "\"rework_evidence\": \"ok\"",
+          "skills/story-implement/evals/evals.json"
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-026",
+      "name": "rework-red-sin-tests-dimension-desconocida-advierte",
+      "type": "edge-case",
+      "description": "EV-004 (STORY-092) / AC-5, D-2: modo rework con una única fila cuya columna Dimensión tiene un valor no catalogado ('performance', p. ej. de un agente revisor futuro); RED termina con 0 archivos de prueba → el gate no acopla story-implement al catálogo de dimensiones: cualquier valor distinto de requirements-coverage es advertencia ('⚠️ Rework sin tests nuevos … dimensiones presentes: performance'), rework_evidence: \"warning\" y continúa con GREEN; nunca error",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "performance"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:590",
+              "dimension": "performance",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Evitar releer sddf.config.yaml en cada iteración del bucle GREEN"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": []
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md"
+              ]
+            }
+          },
+          "REFACTOR": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": []
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [],
+            "modified": []
+          },
+          "GREEN": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md"
+            ]
+          },
+          "REFACTOR": {
+            "new": [],
+            "modified": []
+          }
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "⚠️ Rework sin tests nuevos",
+          "dimensiones presentes: performance",
+          "continuando con la Fase GREEN",
+          "[GREEN/",
+          "IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "❌ Rework sin evidencia",
+          "❌ fix-directives.md sin tabla",
+          "dimensión desconocida",
+          "❌ Precondición RED no cumplida"
+        ],
+        "output_file": ".tmp/story-implement/STORY-TEST/red-phase-status.json",
+        "output_contains": [
+          "\"rework_evidence\": \"warning\""
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-027",
+      "name": "rework-red-sin-tests-tabla-instrucciones-ilegible-detiene",
+      "type": "fail-fast",
+      "description": "EV-005 (STORY-092) / D-2 (degradación P7): modo rework con un fix-directives.md que carece del encabezado '## Instrucciones de corrección' (o cuya tabla no tiene columna 'Dimensión'), por lo que la Lectura de dimensiones produce un conjunto vacío; RED termina con 0 archivos de prueba → el gate falla cerrado: '❌ fix-directives.md sin tabla \"Instrucciones de corrección\" legible', rework_evidence: \"error\", no se ejecuta '[GREEN/' ni Pause-1",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [],
+          "findings": [],
+          "sections_present": [
+            "## Resumen de bloqueantes",
+            "## Lista blanca de archivos permitidos para modificar",
+            "## Ciclo de corrección"
+          ],
+          "sections_absent": [
+            "## Instrucciones de corrección"
+          ],
+          "instrucciones_table_readable": false,
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": []
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [],
+            "modified": []
+          }
+        }
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "❌ fix-directives.md sin tabla \"Instrucciones de corrección\" legible"
+        ],
+        "not_contains": [
+          "[GREEN/",
+          "¿Continuar con la Fase GREEN?",
+          "⚠️ Rework sin tests nuevos",
+          "❌ Rework sin evidencia",
+          "Ciclo TDD completado"
+        ],
+        "output_file": ".tmp/story-implement/STORY-TEST/red-phase-status.json",
+        "output_contains": [
+          "\"rework_evidence\": \"error\""
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "IN-PROGRESS",
+        "code_generators_invoked": [],
+        "exit_gracefully": true
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-028",
+      "name": "rework-green-precondicion-rechaza-rework-evidence-error-previo",
+      "type": "fail-fast",
+      "description": "EV-006 (STORY-092) / AC-1, D-1: reanudación en modo rework (IMPLEMENT/IN-PROGRESS) donde .tmp/ contiene un red-phase-status.json previo con red_confirmed: true pero rework_evidence: \"error\" (RED de una ejecución anterior detenida por el gate) y la Fase RED de esta ejecución vuelve a terminar con 0 archivos → al intentar la Fase GREEN (Paso 7) la precondición falla con '❌ Precondición RED no cumplida: rework_evidence es error en red-phase-status.json'; no se invoca ningún code_generator y story.md no cambia de estado",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "IMPLEMENT",
+          "substatus": "IN-PROGRESS"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "red_phase_status_previo": {
+          "story_id": "STORY-TEST",
+          "red_confirmed": true,
+          "generators_invoked": [
+            "eval"
+          ],
+          "files_generated": [],
+          "files_modified": [],
+          "rework_round": 1,
+          "rework_evidence": "error",
+          "timestamp": "2026-09-11T10:00:00Z"
+        },
+        "resume_at_phase": "GREEN",
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "requirements-coverage"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:120",
+              "dimension": "requirements-coverage",
+              "severidad": "HIGH",
+              "accion_requerida": "Cubrir el AC-3 con un caso de eval y su implementación"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": []
+            }
+          }
+        }
+      },
+      "expected": {
+        "contains": [
+          "❌ Precondición RED no cumplida",
+          "rework_evidence es error"
+        ],
+        "not_contains": [
+          "[GREEN/",
+          "[INFO] Precondición RED verificada",
+          "Fase REFACTOR",
+          "Ciclo TDD completado",
+          "Ejecuta /story-code-review"
+        ],
+        "code_generators_invoked": [],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "IN-PROGRESS",
+        "story_status_unchanged": true,
+        "exit_gracefully": true
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-029",
+      "name": "rework-interactivo-fuera-de-lista-n-detiene",
+      "type": "fail-fast",
+      "description": "EV-007 (STORY-092) / AC-3, D-3, D-4, D-6, V-4: modo rework interactivo con whitelist = [skills/story-implement/SKILL.md]; RED genera un test nuevo; en GREEN el code_generator monolithic (skill-master) reporta files_modified: [skills/story-implement/SKILL.md, README.md] → la Consolidación de alcance (GREEN) lista solo README.md como fuera de lista con su origen, pregunta '¿Aceptar estos cambios fuera de la lista blanca? (s/n)'; con 'n' emite '🛑 Ciclo TDD detenido en Fase GREEN: cambios fuera de la lista blanca rechazados por el usuario', sugiere git diff/git checkout -- README.md (sin ejecutarlos), termina sin error, no ejecuta REFACTOR y story.md queda intacto",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [],
+        "exec_mode": "interactive",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "requirements-coverage"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:120",
+              "dimension": "requirements-coverage",
+              "severidad": "HIGH",
+              "accion_requerida": "Cubrir el AC-3 con un caso de eval y su implementación"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "files_generated": [
+                "skills/story-implement/evals/evals.json"
+              ],
+              "files_modified": []
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md",
+                "README.md"
+              ]
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [
+              "skills/story-implement/evals/evals.json"
+            ],
+            "modified": []
+          },
+          "GREEN": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md",
+              "README.md"
+            ]
+          }
+        },
+        "tests_pass_after_green": true,
+        "user_responses": {
+          "pause_1": "s",
+          "out_of_scope_green": "n"
+        },
+        "user_input": "n"
+      },
+      "expected": {
+        "contains": [
+          "[INFO] Modo de ejecución: interactive",
+          "¿Continuar con la Fase GREEN? (s/n)",
+          "Archivos modificados fuera de la lista blanca (GREEN)",
+          "README.md",
+          "skill-master/monolithic",
+          "¿Aceptar estos cambios fuera de la lista blanca? (s/n)",
+          "🛑 Ciclo TDD detenido en Fase GREEN",
+          "rechazados por el usuario",
+          "git checkout -- README.md"
+        ],
+        "not_contains": [
+          "[REFACTOR/",
+          "¿Continuar con la Fase REFACTOR?",
+          "Ciclo TDD completado",
+          "Ejecuta /story-code-review",
+          "❌"
+        ],
+        "out_of_scope_files_listed": [
+          "README.md"
+        ],
+        "out_of_scope_files_not_listed": [
+          "skills/story-implement/SKILL.md",
+          "skills/story-implement/evals/evals.json"
+        ],
+        "files_unchanged": [
+          "story.md"
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "IN-PROGRESS",
+        "git_checkout_executed": false,
+        "exit_gracefully": true
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-030",
+      "name": "rework-interactivo-fuera-de-lista-s-continua-y-registra",
+      "type": "happy-path",
+      "description": "EV-008 (STORY-092) / AC-3, NFR-2, D-6, D-7, V-5: mismo escenario que TC-029 pero el usuario responde 's' a '¿Aceptar estos cambios fuera de la lista blanca? (s/n)' → la fase continúa hacia '[REFACTOR/', el ciclo termina en IMPLEMENT/DONE y implement-report.md contiene, bajo '## Ciclo de corrección — ronda 1', la subsección '### Archivos fuera de lista blanca' con la fila '| GREEN | README.md | skill-master/monolithic | confirmado (interactivo) |'",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [],
+        "exec_mode": "interactive",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "requirements-coverage"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:120",
+              "dimension": "requirements-coverage",
+              "severidad": "HIGH",
+              "accion_requerida": "Cubrir el AC-3 con un caso de eval y su implementación"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "files_generated": [
+                "skills/story-implement/evals/evals.json"
+              ],
+              "files_modified": []
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md",
+                "README.md"
+              ]
+            }
+          },
+          "REFACTOR": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md"
+              ]
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [
+              "skills/story-implement/evals/evals.json"
+            ],
+            "modified": []
+          },
+          "GREEN": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md",
+              "README.md"
+            ]
+          },
+          "REFACTOR": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md"
+            ]
+          }
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true,
+        "user_responses": {
+          "pause_1": "s",
+          "out_of_scope_green": "s",
+          "pause_2": "s"
+        },
+        "user_input": "s"
+      },
+      "expected": {
+        "contains": [
+          "Archivos modificados fuera de la lista blanca (GREEN)",
+          "¿Aceptar estos cambios fuera de la lista blanca? (s/n)",
+          "[REFACTOR/",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "🛑 Ciclo TDD detenido",
+          "[WARN] 1 archivo(s) fuera de la lista blanca",
+          "registrado (--auto)",
+          "❌"
+        ],
+        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_contains": [
+          "## Ciclo de corrección — ronda 1",
+          "### Archivos fuera de lista blanca",
+          "| Fase | Archivo | Origen | Resolución |",
+          "| GREEN | README.md | skill-master/monolithic | confirmado (interactivo) |",
+          "**Archivos nuevos:**",
+          "skills/story-implement/evals/evals.json"
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-031",
+      "name": "rework-auto-fuera-de-lista-registra-sin-confirmar",
+      "type": "happy-path",
+      "description": "EV-009 (STORY-092) / AC-4, NFR-3, D-6, D-7, V-6: mismo escenario que TC-029 con --auto → la Consolidación de alcance (GREEN) no muestra ningún prompt '(s/n)', emite '[WARN] 1 archivo(s) fuera de la lista blanca en Fase GREEN — registrados en implement-report.md', el ciclo continúa hasta IMPLEMENT/DONE y implement-report.md registra '| GREEN | README.md | skill-master/monolithic | registrado (--auto) |' en '### Archivos fuera de lista blanca'",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "requirements-coverage"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:120",
+              "dimension": "requirements-coverage",
+              "severidad": "HIGH",
+              "accion_requerida": "Cubrir el AC-3 con un caso de eval y su implementación"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "files_generated": [
+                "skills/story-implement/evals/evals.json"
+              ],
+              "files_modified": []
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md",
+                "README.md"
+              ]
+            }
+          },
+          "REFACTOR": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md"
+              ]
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [
+              "skills/story-implement/evals/evals.json"
+            ],
+            "modified": []
+          },
+          "GREEN": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md",
+              "README.md"
+            ]
+          },
+          "REFACTOR": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md"
+            ]
+          }
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "[INFO] Modo de ejecución: auto",
+          "[WARN] 1 archivo(s) fuera de la lista blanca en Fase GREEN — registrados en implement-report.md",
+          "README.md",
+          "[REFACTOR/",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "(s/n)",
+          "¿Aceptar estos cambios fuera de la lista blanca?",
+          "🛑 Ciclo TDD detenido",
+          "confirmado (interactivo)",
+          "❌"
+        ],
+        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_contains": [
+          "## Ciclo de corrección — ronda 1",
+          "### Archivos fuera de lista blanca",
+          "| GREEN | README.md | skill-master/monolithic | registrado (--auto) |"
+        ],
+        "no_interactive_prompt": true,
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-032",
+      "name": "rework-sin-desvios-subseccion-ninguno",
+      "type": "happy-path",
+      "description": "EV-010 (STORY-092) / AC-4, D-4, D-7, V-7: modo rework --auto donde todo files_modified de GREEN y REFACTOR está contenido en la whitelist y RED genera un archivo nuevo (skills/story-implement/evals/evals.json, que por construcción no está en la lista blanca) → los archivos nuevos no disparan confirmación ni [WARN]; implement-report.md escribe igualmente '### Archivos fuera de lista blanca' con 'Ninguno' en la tabla y la lista '**Archivos nuevos:**' con '- skills/story-implement/evals/evals.json (RED, skill-test-evals)'",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "requirements-coverage",
+            "code-quality"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:120",
+              "dimension": "requirements-coverage",
+              "severidad": "HIGH",
+              "accion_requerida": "Cubrir el AC-3 con un caso de eval y su implementación"
+            },
+            {
+              "#": 2,
+              "archivo_linea": "skills/story-implement/README.md:40",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Actualizar la tabla de outputs con files_modified"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgo #1"
+            },
+            {
+              "path": "skills/story-implement/README.md",
+              "note": "hallazgo #2"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "files_generated": [
+                "skills/story-implement/evals/evals.json"
+              ],
+              "files_modified": []
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md",
+                "skills/story-implement/README.md"
+              ]
+            }
+          },
+          "REFACTOR": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md"
+              ]
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [
+              "skills/story-implement/evals/evals.json"
+            ],
+            "modified": []
+          },
+          "GREEN": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md",
+              "skills/story-implement/README.md"
+            ]
+          },
+          "REFACTOR": {
+            "new": [],
+            "modified": [
+              "skills/story-implement/SKILL.md"
+            ]
+          }
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "(s/n)",
+          "[WARN] 1 archivo(s) fuera de la lista blanca",
+          "archivo(s) fuera de la lista blanca en Fase",
+          "Archivos modificados fuera de la lista blanca",
+          "⚠️ Rework sin tests nuevos",
+          "❌"
+        ],
+        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_contains": [
+          "## Ciclo de corrección — ronda 1",
+          "### Archivos fuera de lista blanca",
+          "Ninguno",
+          "**Archivos nuevos:**",
+          "- skills/story-implement/evals/evals.json (RED, skill-test-evals)"
+        ],
+        "output_not_contains": [
+          "confirmado (interactivo)",
+          "registrado (--auto)"
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-033",
+      "name": "sin-rework-reglas-inactivas",
+      "type": "edge-case",
+      "description": "EV-011 (STORY-092) / D-1, V-8 (no regresión): ejecución normal sin fix-directives.md donde el test_generator eval retorna files_generated: [] → ninguna de las dos reglas de STORY-092 se activa: sin '⚠️ Rework', sin '❌ Rework', sin snapshot 'git status', sin subsección 'Archivos fuera de lista blanca'; red-phase-status.json lleva rework_evidence: \"n/a\" y el resto del ciclo se comporta como en TC-011",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md"
+        ],
+        "artifacts_absent": [
+          "fix-directives.md",
+          "tasks.md"
+        ],
+        "git_available": true,
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "message": "Los casos existentes ya cubren la historia",
+              "files_generated": [],
+              "files_modified": []
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md",
+                "README.md"
+              ]
+            }
+          },
+          "REFACTOR": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": []
+            }
+          }
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "Modo rework",
+          "⚠️ Rework",
+          "❌ Rework",
+          "Archivos fuera de lista blanca",
+          "fuera de la lista blanca",
+          "git status",
+          "(s/n)",
+          "Ciclo de corrección"
+        ],
+        "output_file": ".tmp/story-implement/STORY-TEST/red-phase-status.json",
+        "output_contains": [
+          "\"rework_evidence\": \"n/a\"",
+          "\"rework_round\": null"
+        ],
+        "report_not_contains": [
+          "### Archivos fuera de lista blanca",
+          "## Ciclo de corrección"
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-034",
+      "name": "rework-lista-blanca-solo-lectura-excluida",
+      "type": "edge-case",
+      "description": "EV-012 (STORY-092) / AC-6, D-5, V-9: modo rework --auto con whitelist = [docs/policies/dod-story.md (note con '**solo lectura**'), scripts/x.js]; GREEN reporta files_modified: [docs/policies/dod-story.md] → Rutas permitidas excluye la entrada anotada 'solo lectura', por lo que dod-story.md cuenta como fuera de lista: '[WARN] 1 archivo(s) fuera de la lista blanca' y fila '| GREEN | docs/policies/dod-story.md |' en implement-report.md; scripts/x.js sigue siendo ruta permitida",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": true,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "code-quality",
+            "DoD-CODE-REVIEW"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "scripts/x.js:12",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Extraer la función duplicada a un helper"
+            },
+            {
+              "#": 3,
+              "archivo_linea": "docs/policies/dod-story.md:134",
+              "dimension": "DoD-CODE-REVIEW",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Resolver el hallazgo #1 y volver a ejecutar /story-code-review"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "docs/policies/dod-story.md",
+              "note": "hallazgos #3 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar"
+            },
+            {
+              "path": "scripts/x.js",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "files_generated": [
+                "tests/unit/x.spec.js"
+              ],
+              "files_modified": []
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "docs/policies/dod-story.md",
+                "scripts/x.js"
+              ]
+            }
+          },
+          "REFACTOR": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": []
+            }
+          }
+        },
+        "git_status_delta": {
+          "RED": {
+            "new": [
+              "tests/unit/x.spec.js"
+            ],
+            "modified": []
+          },
+          "GREEN": {
+            "new": [],
+            "modified": [
+              "docs/policies/dod-story.md",
+              "scripts/x.js"
+            ]
+          },
+          "REFACTOR": {
+            "new": [],
+            "modified": []
+          }
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "2 archivo(s) en lista blanca",
+          "[WARN] 1 archivo(s) fuera de la lista blanca en Fase GREEN — registrados en implement-report.md",
+          "docs/policies/dod-story.md",
+          "IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "(s/n)",
+          "[WARN] 2 archivo(s) fuera de la lista blanca",
+          "🛑 Ciclo TDD detenido",
+          "❌"
+        ],
+        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_contains": [
+          "### Archivos fuera de lista blanca",
+          "| GREEN | docs/policies/dod-story.md | skill-master/monolithic | registrado (--auto) |"
+        ],
+        "output_not_contains": [
+          "| GREEN | scripts/x.js |"
+        ],
+        "whitelist_paths_allowed": [
+          "scripts/x.js"
+        ],
+        "whitelist_paths_excluded": [
+          "docs/policies/dod-story.md"
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-035",
+      "name": "rework-auto-sin-git-alcance-solo-autoinforme",
+      "type": "error-handling",
+      "description": "EV-013 (STORY-092) / D-3 (degradación P7): modo rework --auto en un directorio sin repositorio git (o sin el binario git) → la Consolidación de alcance no puede tomar snapshots y degrada con '[WARN] Sin control de versiones — el alcance se evalúa solo con el autoinforme de los generators'; con el autoinforme files_modified: [README.md] fuera de lista sigue emitiendo '[WARN] 1 archivo(s) fuera de la lista blanca' y el ciclo no se detiene (IMPLEMENT/DONE)",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "READY-FOR-IMPLEMENT",
+          "substatus": "DONE"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "git_available": false,
+        "git_repository": false,
+        "fix_directives": {
+          "round": 1,
+          "dimensiones": [
+            "code-quality"
+          ],
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "skills/story-implement/SKILL.md:88",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Renombrar la variable $TMP a $RED_TMP"
+            }
+          ],
+          "whitelist": [
+            {
+              "path": "skills/story-implement/SKILL.md",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "generator_results": {
+          "RED": {
+            "eval": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/evals/evals.json"
+              ]
+            }
+          },
+          "GREEN": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": [
+                "skills/story-implement/SKILL.md",
+                "README.md"
+              ]
+            }
+          },
+          "REFACTOR": {
+            "monolithic": {
+              "status": "ok",
+              "files_generated": [],
+              "files_modified": []
+            }
+          }
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "[WARN] Sin control de versiones — el alcance se evalúa solo con el autoinforme de los generators",
+          "[WARN] 1 archivo(s) fuera de la lista blanca en Fase GREEN — registrados en implement-report.md",
+          "README.md",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "(s/n)",
+          "🛑 Ciclo TDD detenido",
+          "❌",
+          "fatal: not a git repository"
+        ],
+        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_contains": [
+          "### Archivos fuera de lista blanca",
+          "| GREEN | README.md | skill-master/monolithic | registrado (--auto) |"
+        ],
+        "git_status_invoked": false,
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "exit_gracefully": false
+      },
+      "threshold": 1
     }
   ]
 }

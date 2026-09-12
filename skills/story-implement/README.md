@@ -52,7 +52,9 @@ Si `sddf.config.yaml` no existe o sus secciones están vacías, la ejecución se
 - **Ronda:** `round` del frontmatter de `fix-directives.md`; si falta o no es un entero ≥ 1, se asume `1` (nunca se escribe de vuelta). El arranque anuncia `🔁 Modo rework (ronda N) — H hallazgo(s) bloqueante(s), W archivo(s) en lista blanca`.
 - **Bundles:** los subagentes RED, GREEN y REFACTOR reciben siempre `rework_round`, `fix_directives_path` y `whitelist` (`[{path, note}]`); fuera de rework los tres van como `null` (nunca ausentes). Solo en rework el bloque de contexto añade el párrafo "Instrucción de rework". `testcases.md` sigue siendo la fuente canónica de la Fase RED.
 - **Salida:** `implement-report.md` añade la sección `## Ciclo de corrección — ronda N` (solo en rework); `red-phase-status.json` y `cycle-status.json` llevan `rework_round`; el pie del resumen final es `→ Ejecuta /story-code-review {story_id}` cuando `story.md` queda en `IMPLEMENT/DONE`.
-- **Fuera de alcance (STORY-092):** las reglas sobre RED sin tests nuevos y sobre archivos modificados fuera de la lista blanca.
+- **Gate de evidencia en RED (Paso 6b):** si la Fase RED no generó ni modificó ningún archivo de prueba, el skill lee solo la columna `Dimensión` de la tabla "Instrucciones de corrección": con algún hallazgo `requirements-coverage` (o tabla ilegible) detiene con `❌` antes de GREEN; con otras dimensiones advierte con `⚠️` y continúa. El resultado queda en `red-phase-status.json.rework_evidence` (`ok`/`warning`/`error`; `n/a` fuera de rework).
+- **Barrera de alcance por lista blanca:** al cerrar cada fase compara los archivos modificados (autoinforme `files_modified` ∪ delta de `git status --porcelain`) con las rutas de la lista blanca (excluidas las anotadas `solo lectura`). En interactivo pide confirmación (`n` termina sin error y sin revertir nada); en `--auto` registra con `[WARN]` y continúa. Los archivos nuevos nunca bloquean.
+- **Rastro:** `implement-report.md › Archivos fuera de lista blanca` (subsección de `## Ciclo de corrección — ronda N`, siempre presente en rework, `Ninguno` si vacía) y `cycle-status.json.out_of_scope_files`.
 
 ## Modos de ejecución
 
@@ -76,12 +78,12 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 |---|---|---|
 | Archivos de prueba | según skill generador | Tests en Fase RED (deben fallar) |
 | Archivos de producción | según skill generador | Código generado en Fases GREEN y REFACTOR |
-| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENT, estado por fase + sección `## Ciclo de corrección — ronda N` solo en modo rework |
+| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENT, estado por fase + sección `## Ciclo de corrección — ronda N` (con la subsección `### Archivos fuera de lista blanca`) solo en modo rework |
 | `story.md` (actualizado) | mismo directorio | Frontmatter: `IMPLEMENT/IN-PROGRESS` al arrancar (0c.4); `IMPLEMENT/DONE` al terminar, o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs (11c) |
 | `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada |
-| `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de Fase RED — precondición para GREEN; incluye `rework_round` (`null` fuera de rework) |
-| `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD; incluye `rework_round` (`null` fuera de rework) |
-| `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente |
+| `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de Fase RED — precondición para GREEN; incluye `files_generated`, `files_modified`, `rework_round` (`null` fuera de rework) y `rework_evidence` (`ok`/`warning`/`error`; `n/a` fuera de rework) |
+| `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD; incluye `rework_round` (`null` fuera de rework) y `out_of_scope_files` (`0` fuera de rework) |
+| `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente: `{status, message?, files_generated, files_modified?}` — `files_generated` = archivos creados; `files_modified` = archivos existentes editados (opcional; ausente ⇒ `[]`) |
 
 ## Transiciones de estado
 

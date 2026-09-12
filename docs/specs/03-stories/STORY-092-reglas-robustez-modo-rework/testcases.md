@@ -79,19 +79,19 @@ related:
 - [ ] E2E-005: RED en rework sin tests nuevos — dimensión `DoD-CODE-REVIEW`
 - [ ] E2E-006: Corrección fuera de la lista blanca — modo interactivo
 - [ ] E2E-007: Corrección fuera de la lista blanca — modo `--auto`
-- [ ] EV-001: Gate de evidencia: 0 tests + `requirements-coverage` ⇒ error (fail-fast)
-- [ ] EV-002: Gate de evidencia: 0 tests + otras dimensiones ⇒ advertencia y continúa (happy-path)
-- [ ] EV-003: Un test existente modificado cuenta como evidencia
-- [ ] EV-004: Dimensión desconocida se trata como advertencia, no como error
-- [ ] EV-005: Tabla "Instrucciones de corrección" ilegible ⇒ error cerrado (fail-fast)
-- [ ] EV-006: Precondición GREEN rechaza `rework_evidence: error` en reanudación
-- [ ] EV-007: Interactivo: archivo fuera de lista + `n` ⇒ detiene sin tocar story.md (fail-fast)
-- [ ] EV-008: Interactivo: archivo fuera de lista + `s` ⇒ continúa y registra `confirmado (interactivo)`
-- [ ] EV-009: `--auto`: archivo fuera de lista ⇒ `[WARN]`, sin prompt, registrado en el reporte
-- [ ] EV-010: Rework sin desvíos ⇒ subsección presente con `Ninguno` y archivos nuevos listados
-- [ ] EV-011: Fuera de rework las reglas están inactivas (no regresión)
-- [ ] EV-012: Entrada de lista blanca anotada `solo lectura` no autoriza modificaciones
-- [ ] EV-013: Sin repositorio git el alcance se evalúa solo con el autoinforme
+- [x] EV-001: Gate de evidencia: 0 tests + `requirements-coverage` ⇒ error (fail-fast)
+- [x] EV-002: Gate de evidencia: 0 tests + otras dimensiones ⇒ advertencia y continúa (happy-path)
+- [x] EV-003: Un test existente modificado cuenta como evidencia
+- [x] EV-004: Dimensión desconocida se trata como advertencia, no como error
+- [x] EV-005: Tabla "Instrucciones de corrección" ilegible ⇒ error cerrado (fail-fast)
+- [x] EV-006: Precondición GREEN rechaza `rework_evidence: error` en reanudación
+- [x] EV-007: Interactivo: archivo fuera de lista + `n` ⇒ detiene sin tocar story.md (fail-fast)
+- [x] EV-008: Interactivo: archivo fuera de lista + `s` ⇒ continúa y registra `confirmado (interactivo)`
+- [x] EV-009: `--auto`: archivo fuera de lista ⇒ `[WARN]`, sin prompt, registrado en el reporte
+- [x] EV-010: Rework sin desvíos ⇒ subsección presente con `Ninguno` y archivos nuevos listados
+- [x] EV-011: Fuera de rework las reglas están inactivas (no regresión)
+- [x] EV-012: Entrada de lista blanca anotada `solo lectura` no autoriza modificaciones
+- [x] EV-013: Sin repositorio git el alcance se evalúa solo con el autoinforme
 - [ ] IT-001: `SKILL.md` documenta ambas reglas y el contrato ampliado
 - [ ] IT-002: Los nombres consumidos coinciden con los que implementa STORY-091
 - [ ] IT-003: `Rutas permitidas` sobre el fixture real STORY-090

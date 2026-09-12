@@ -18,6 +18,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   y `whitelist` (`null` fuera de rework) más una "Instrucción de rework"; `implement-report.md`
   añade la sección `## Ciclo de corrección — ronda N`; el resumen final cierra con
   `→ Ejecuta /story-code-review <id>` (STORY-091).
+- **`story-implement`: reglas de robustez del modo rework** — gate de evidencia en RED por dimensión
+  `requirements-coverage` (nuevo Paso 6b: 0 archivos de prueba generados/modificados + hallazgo
+  `requirements-coverage` ⇒ `❌` antes de GREEN; otras dimensiones ⇒ `⚠️` y continúa; solo lee la columna
+  `Dimensión`), barrera de alcance por lista blanca con confirmación (interactivo) o registro (`--auto`)
+  en `implement-report.md › Archivos fuera de lista blanca` (entradas `solo lectura` excluidas; archivos
+  nuevos nunca bloquean; `n` termina sin revertir); contrato `results.json` con `files_modified`;
+  `red-phase-status.json.rework_evidence`, `cycle-status.json.out_of_scope_files`; 13 evals nuevos
+  (TC-023..TC-035) (STORY-092).
 - **`story-code-review` deja de escribir en `tasks.md`, numera rondas y nombra al ejecutor de
   correcciones** — un veredicto `needs-changes` devuelve la historia a `READY-FOR-IMPLEMENT/DONE`,
   crea o sobreescribe `fix-directives.md` con el campo `round` (ronda previa + 1; escritor único:
