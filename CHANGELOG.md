@@ -10,6 +10,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **`story-implement` gana un gate de estado y un modo rework** — nuevo Paso 0c: solo acepta
+  `READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS` (otro estado detiene sin escribir nada),
+  escribe `IMPLEMENT/IN-PROGRESS` al arrancar (comportamiento nuevo: antes solo estaba documentado)
+  y detecta el rework por la presencia de `fix-directives.md` (`round` ausente ⇒ 1, nunca se
+  escribe). Los bundles de RED/GREEN/REFACTOR llevan siempre `rework_round`, `fix_directives_path`
+  y `whitelist` (`null` fuera de rework) más una "Instrucción de rework"; `implement-report.md`
+  añade la sección `## Ciclo de corrección — ronda N`; el resumen final cierra con
+  `→ Ejecuta /story-code-review <id>` (STORY-091).
 - **`story-code-review` deja de escribir en `tasks.md`, numera rondas y nombra al ejecutor de
   correcciones** — un veredicto `needs-changes` devuelve la historia a `READY-FOR-IMPLEMENT/DONE`,
   crea o sobreescribe `fix-directives.md` con el campo `round` (ronda previa + 1; escritor único:

@@ -30,37 +30,42 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 
 **Qué hace este skill:**
 - Invoca `skill-preflight` como Paso 0
-- **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden; confirma estado rojo; escribe `red-phase-status.json`
-- **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"` y `layer:"{layer}"`; consolida resultados; confirma que los tests pasan
-- **Fase REFACTOR:** Itera sobre cada capa activa invocando su skill con `phase:"REFACTOR"` y `layer:"{layer}"`; verifica no-regresión ejecutando comandos de test
-- Al completar el ciclo exitosamente: evalúa DoD IMPLEMENT, genera `implement-report.md`, actualiza `story.md` a `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs), actualiza checklist de `epic.md` y escribe `cycle-status.json`
+- **Paso 0c:** gate de estado (`READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS`), detección del modo rework por presencia de `fix-directives.md` (ronda, hallazgos y lista blanca) y transición de `story.md` a `IMPLEMENT/IN-PROGRESS` antes de leer `sddf.config.yaml`
+- **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden con un bundle que lleva siempre `rework_round`, `fix_directives_path` y `whitelist` (`null` fuera de rework); confirma estado rojo; escribe `red-phase-status.json` (con `rework_round`)
+- **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"`, `layer:"{layer}"` y los mismos tres campos de rework en el bundle; consolida resultados (`files_generated` y `files_modified`); confirma que los tests pasan
+- **Fase REFACTOR:** Itera sobre cada capa activa invocando su skill con `phase:"REFACTOR"`, `layer:"{layer}"` y los mismos tres campos de rework; verifica no-regresión ejecutando comandos de test
+- Al completar el ciclo exitosamente: evalúa DoD IMPLEMENT, genera `implement-report.md` (con la sección `## Ciclo de corrección — ronda N` solo en modo rework), actualiza `story.md` a `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs), actualiza checklist de `epic.md`, escribe `cycle-status.json` (con `rework_round`) y sugiere el siguiente paso (`→ Ejecuta /story-code-review {story_id}`)
 
 **Qué NO hace este skill:**
 - Crear skills de generación específicos (ej. `story-test-unit-jest`, `story-code-nodejs`) — son skills separados
 - Gestionar modos interactivo/automático (`--auto`) — cubiertos en STORY-082
 - Ejecutar el suite completo de CI — solo ejecuta comandos de test configurados por tipo
+- Aplicar reglas sobre RED sin tests nuevos ni sobre archivos fuera de la lista blanca de `fix-directives.md` — STORY-092
+- Reconocer `verify-report.md` / `acceptance-report.md` como señal de rework — solo `fix-directives.md` (rechazo de `story-code-review`) activa el modo rework
+- Crear, modificar o eliminar `fix-directives.md` — su escritor único es `story-code-review`
 
 ---
 
 ### Posicionamiento
 
 ```
-[story.md: READY-FOR-IMPLEMENT/DONE]    ← precondición inicial (viene de story-plan/story-analyze)
-[story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación (viene de story-code-review needs-changes)
+[story.md: READY-FOR-IMPLEMENT/DONE]  ← ejecución inicial (story-plan) o rework encolado por story-code-review (señal: fix-directives.md)
+[story.md: IMPLEMENT/IN-PROGRESS]     ← reanudación (ciclo interrumpido o DoD con ❌)
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
-     │   Al iniciar: story.md → IMPLEMENT/IN-PROGRESS
+     │   Al iniciar (Paso 0c): story.md → IMPLEMENT/IN-PROGRESS
      │   Al finalizar: story.md → IMPLEMENT/DONE + epic.md checklist actualizado
      ↓
 [story.md: IMPLEMENT/DONE]
 ──────────────────────────────────────────────────────────────────────────────────────
-story.md          → What: requisitos, criterios de aceptación, comportamiento esperado
-design.md         → How: arquitectura, componentes, interfaces, decisiones técnicas
-testcases.md          → test plan detallado, casos de prueba explícitos
-tasks.md          → (optativo) When: tareas de implementación, orden, seguimiento
+story.md            → What: requisitos, criterios de aceptación, comportamiento esperado
+design.md           → How: arquitectura, componentes, interfaces, decisiones técnicas
+testcases.md        → test plan detallado, casos de prueba explícitos
+fix-directives.md   → Rework: hallazgos, lista blanca y ronda (solo si existe; escritor: story-code-review)
+tasks.md            → (optativo) When: tareas de implementación, orden, seguimiento
 implement-report.md → Done: código generado, estado por tarea, bloqueos documentados ← aquí
-story-plan        → Entry point del planning: orquesta design → tasking → analyze
-story-implement   → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
+story-plan          → Entry point del planning: orquesta design → tasking → analyze
+story-implement     → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
 ```
 ---
 
@@ -122,6 +127,98 @@ Emitir: `[INFO] Modo de ejecución: {$EXEC_MODE}`
 
 ---
 
+### Paso 0c — Gate de estado, detección de modo y arranque
+
+Este paso se ejecuta **antes** de leer `sddf.config.yaml` (Pasos 1–2): la historia debe ser implementable antes de validar la configuración. Las variables que resuelve (`$STORY_DIR`, `$ENTRADA_STATUS`, `$REWORK_MODE`, `$REWORK_ROUND`, `$FIX_DIRECTIVES_PATH`, `$WHITELIST`, `$REWORK_FINDINGS`, `$REWORK_MAX_SEVERITY`) viven en memoria durante esta ejecución y se reutilizan en los Pasos 3, 4, 6, 9, 10 y 11.
+
+#### 0c.1 — Resolver `$STORY_DIR`
+
+Resolver el directorio de la historia con Glob: `$SPECS_BASE/specs/03-stories/{story_id}*/`.
+
+**Si no hay coincidencia:**
+```
+❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/
+
+Verifica el ID o ejecuta /epic-generate-stories para generar la historia desde su épica.
+```
+Detener la ejecución.
+
+Registrar `$STORY_DIR` = ruta del directorio encontrado. Los Pasos 3, 9, 10 y 11 usan `$STORY_DIR` en lugar de volver a resolver el glob.
+
+#### 0c.2 — Gate de estado
+
+Leer el frontmatter de `$STORY_DIR/story.md` y extraer `status` y `substatus`. Si alguno de los dos campos no existe, tratarlo como `status: SPECIFY` / `substatus: TODO`.
+
+```
+Precondición válida si:
+  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← ejecución inicial, o rework encolado por story-code-review (señal: fix-directives.md)
+  OR
+  (status: IMPLEMENT            AND substatus: IN-PROGRESS) ← reanudación de un ciclo interrumpido o con DoD pendiente (❌)
+```
+
+**Si la precondición NO se cumple:** detener la ejecución **sin escribir nada** (ni `story.md`, ni `.tmp/`, ni código, ni invocar ningún subagente):
+```
+❌ La historia {story_id} no está en un estado válido para implementar
+
+   Estado actual: status: {status} / substatus: {substatus}
+   Estados admitidos:
+     · READY-FOR-IMPLEMENT/DONE  (ejecución inicial, o rework encolado por story-code-review)
+     · IMPLEMENT/IN-PROGRESS     (reanudación de un ciclo interrumpido o con DoD pendiente)
+
+   → Si la historia aún no está planificada, ejecuta /story-plan {story_id}
+```
+Ejemplos: una historia ya aprobada (`CODE-REVIEW/DONE`) produce `Estado actual: status: CODE-REVIEW / substatus: DONE`; una historia sin `status`/`substatus` en el frontmatter produce `Estado actual: status: SPECIFY / substatus: TODO`. Una historia aprobada no se re-implementa sin pasar por un rechazo de `story-code-review`.
+
+**Si la precondición se cumple:** registrar `$ENTRADA_STATUS` = valor de `status` leído (`READY-FOR-IMPLEMENT` o `IMPLEMENT`).
+
+> **Reanudación (`IMPLEMENT/IN-PROGRESS`):** el gate la admite tanto si el ciclo anterior se interrumpió como si terminó con criterios DoD `❌`. En reanudación **no** se consulta `red-phase-status.json` ni `cycle-status.json` para saltar fases: el ciclo TDD se re-ejecuta completo (RED → GREEN → REFACTOR). El estado **no** decide el modo de trabajo — eso lo hace 0c.3.
+
+#### 0c.3 — Detección de modo rework
+
+`$REWORK_MODE = true` **si y solo si** existe el archivo `$STORY_DIR/fix-directives.md`. Es la **única** señal consultada: ni el estado de `story.md`, ni `verify-report.md`, ni `acceptance-report.md` (aunque existan con fallos o `REJECTED`) activan el modo rework. El skill **nunca crea, modifica ni elimina** `fix-directives.md`: su escritor único es `story-code-review`.
+
+**Si `$REWORK_MODE = true`**, leer `fix-directives.md` (solo lectura) y registrar:
+
+| Variable | Origen | Regla |
+|---|---|---|
+| `$FIX_DIRECTIVES_PATH` | ruta del archivo | `$STORY_DIR/fix-directives.md` |
+| `$REWORK_ROUND` | campo `round` del frontmatter | entero ≥ 1; si el campo falta o no es un entero ≥ 1 (p. ej. `abc`) ⇒ `1`. **Nunca se escribe de vuelta** al archivo |
+| `$REWORK_MAX_SEVERITY` | campo `max-severity` del frontmatter | texto tal cual; ausente ⇒ `null` |
+| `$REWORK_FINDINGS` | tabla de `## Instrucciones de corrección` | filas cuya columna `#` es numérica; columnas `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`. `H` = número de filas. Tabla ausente o ilegible ⇒ `[]` + `[WARN] fix-directives.md sin tabla de hallazgos legible — continuando con 0 hallazgo(s)` |
+| `$WHITELIST` | sección `## Lista blanca de archivos permitidos para modificar` | por cada línea que empieza por `- ` desde el encabezado hasta el siguiente `##`: `{ "path": primera ruta entre acentos graves, "note": texto libre restante de la viñeta }` (p. ej. `note: "hallazgo #2 · **solo lectura**: …"`). Las líneas de texto intermedias sin viñeta (p. ej. `Destino de las acciones requeridas:`) se ignoran, pero las viñetas que las siguen sí cuentan. `W` = número de entradas. La nota se conserva sin interpretarla |
+
+**Si la sección de lista blanca no existe o no tiene viñetas:** `$WHITELIST = []` y emitir:
+```
+[WARN] fix-directives.md sin lista blanca — los generators recibirán whitelist vacía
+```
+Ningún fallo de parseo de `fix-directives.md` detiene la ejecución: se emite `[WARN]` y se continúa con valores vacíos.
+
+**Si `$REWORK_MODE = false`:** `$REWORK_ROUND = null`, `$FIX_DIRECTIVES_PATH = null`, `$WHITELIST = null`, `$REWORK_FINDINGS = null`, `$REWORK_MAX_SEVERITY = null`.
+
+**Propagación a los subagentes:** `$REWORK_ROUND`, `$FIX_DIRECTIVES_PATH` y `$WHITELIST` viajan como las claves `rework_round`, `fix_directives_path` y `whitelist` en **todos** los bundles y bloques de contexto (Paso 4 — todos los tipos, incluido `e2e` —, Paso 9 y Paso 10), y `rework_round` también en `red-phase-status.json` (Paso 6) y `cycle-status.json` (11e). Los tres campos están **siempre** presentes: con los valores anteriores en modo rework y `null` fuera de él — el bundle tiene forma fija y un generator nunca debe distinguir "campo ausente" de "campo null". El párrafo "Instrucción de rework" del bloque de contexto se emite **solo si `$REWORK_MODE = true`**; fuera del modo rework el bloque no incluye ninguna mención a rework.
+
+#### 0c.4 — Arranque
+
+Escribir en el frontmatter de `$STORY_DIR/story.md`:
+- Si `$ENTRADA_STATUS = READY-FOR-IMPLEMENT`: `status: IMPLEMENT`, `substatus: IN-PROGRESS`, `updated: {YYYY-MM-DD}`
+- Si `$ENTRADA_STATUS = IMPLEMENT` (ya en `IMPLEMENT/IN-PROGRESS`): solo `updated: {YYYY-MM-DD}`
+
+Esta es la transición `→ IMPLEMENT/IN-PROGRESS` del Posicionamiento: la historia sale de la cola (`READY-FOR-IMPLEMENT`) en cuanto empieza a trabajarse.
+
+Mostrar el bloque de inicio:
+```
+🚀 Iniciando implementación para: {story_id}
+   Directorio: {$STORY_DIR}
+   Estado: {READY-FOR-IMPLEMENT/DONE | IMPLEMENT/IN-PROGRESS} ✓  → IMPLEMENT/IN-PROGRESS
+   Modo: {🔁 Modo rework (ronda {N}) — {H} hallazgo(s) bloqueante(s), {W} archivo(s) en lista blanca | ciclo TDD completo}
+```
+- Línea `Estado`: en ejecución inicial `Estado: READY-FOR-IMPLEMENT/DONE ✓  → IMPLEMENT/IN-PROGRESS`; en reanudación `Estado: IMPLEMENT/IN-PROGRESS ✓  → IMPLEMENT/IN-PROGRESS`.
+- Línea `Modo`: si `$REWORK_MODE = true`, `Modo: 🔁 Modo rework (ronda {N}) — {H} hallazgo(s) bloqueante(s), {W} archivo(s) en lista blanca` (p. ej. `🔁 Modo rework (ronda 1) — 2 hallazgo(s) bloqueante(s), 10 archivo(s) en lista blanca`; con lista blanca vacía, `0 archivo(s) en lista blanca`). Si `$REWORK_MODE = false`, `Modo: ciclo TDD completo` — sin mencionar rework. Este anuncio precede siempre a la Fase RED.
+
+> **Detención posterior por configuración inválida:** si los Pasos 1–2 detienen la ejecución (p. ej. `sddf.config.yaml` ausente o skill `required: true` no encontrado), `story.md` queda en `IMPLEMENT/IN-PROGRESS`. Ese estado lo admite el gate en la siguiente ejecución (equivale a un ciclo interrumpido): basta corregir la configuración y volver a ejecutar `/story-implement {story_id}`. Los mensajes de error de los Pasos 1–2 no cambian.
+
+---
+
 ### Paso 1 — Leer configuración de test_generators
 
 Leer `sddf.config.yaml`.
@@ -175,7 +272,7 @@ Para cada entry en `test_generators`:
 
 ### Paso 3 — Resolver artefactos de especificación
 
-Resolver los artefactos de la historia en `$SPECS_BASE/specs/03-stories/<story_id>*/`:
+Resolver los artefactos de la historia en `$STORY_DIR` (resuelto en el Paso 0c.1; no se vuelve a ejecutar el glob):
 
 | Prioridad | Artefacto | Acción |
 |-----------|-----------|--------|
@@ -183,15 +280,22 @@ Resolver los artefactos de la historia en `$SPECS_BASE/specs/03-stories/<story_i
 | 2 | `testcases.md` ausente | `⚠️ testcases.md no encontrado — generando pruebas desde story.md y design.md` |
 | 3 | `story.md` o `design.md` ausentes (fallback) | `❌ Artefactos de especificación insuficientes (falta story.md y/o design.md)` + detener |
 
+Registrar `$TESTCASES_PATH` (ruta de `testcases.md`, o `null` en fallback), `$STORY_PATH` y `$DESIGN_PATH`: son los valores de `testcases_path`, `story_path` y `design_path` en el bundle y en el bloque de contexto del Paso 4.
+
 Construir bundle base de inputs (común a todos los test_generators):
 ```json
 {
   "story_id": "<STORY-NNN>",
   "testcases_path": "<ruta o null>",
   "story_path": "<ruta>",
-  "design_path": "<ruta>"
+  "design_path": "<ruta>",
+  "rework_round": <N | null>,
+  "fix_directives_path": "<ruta> | null",
+  "whitelist": [{ "path": "<ruta>", "note": "<texto libre>" }] | null
 }
 ```
+
+Los tres campos de rework (`rework_round`, `fix_directives_path`, `whitelist`) llevan los valores del Paso 0c.3 y están siempre presentes — `null` fuera del modo rework (ver 0c.3, "Propagación a los subagentes").
 
 > **Nota sobre testcases.md:** Si existe, es la **fuente canónica y excluyente** de casos de prueba.
 > Contiene todos los tipos (UT, CT, IT, E2E, etc.) ya derivados y tipificados por `story-testcases`.
@@ -202,6 +306,11 @@ Construir bundle base de inputs (común a todos los test_generators):
 > **Nota sobre tasks.md:** El skill NO lee ni considera `tasks.md` en ningún paso del ciclo TDD.
 > La presencia de una tarea "T-NNN — ejecutar E2E" en `tasks.md` no reemplaza ni posterga la
 > generación del spec E2E en Paso 4. `tasks.md` es un artefacto del desarrollador, no del pipeline.
+>
+> **Nota sobre fix-directives.md:** En modo rework, `testcases.md` sigue siendo la **fuente canónica** de casos
+> (la resolución de artefactos de este paso no cambia). El acotamiento a los hallazgos de `fix-directives.md`
+> **no** viaja en el bundle: lo aporta el párrafo "Instrucción de rework" del bloque de contexto (Paso 4).
+> `tasks.md` sigue sin leerse también en modo rework.
 
 ---
 
@@ -222,6 +331,7 @@ Construir bundle base de inputs (común a todos los test_generators):
 > | "El test E2E se genera/verifica en task T-NNN" | `tasks.md` no guía el pipeline; esta fase no lo lee |
 > | "Hay un bloqueador de infraestructura para otro tipo" | Cada tipo es independiente; un error en `unit` no afecta a `e2e` |
 > | "El servidor de la demo no está disponible" | Paso 4 genera archivos; Paso 5 ejecuta comandos — son pasos distintos |
+> | "Estamos en modo rework, este tipo no aplica" | El modo rework no cambia las condiciones de omisión; el acotamiento viaja en la Instrucción de rework |
 >
 > Si un generator con `required: true` y `skill != "none"` no es invocado sin una condición válida,
 > es un **error del orquestador**, no una situación prevista. Ver Paso 6 — validación post-escritura.
@@ -238,6 +348,9 @@ Para cada entry de `test_generators` no omitida (en el orden del YAML):
        "testcases_path": "<ruta o null>",
        "story_path": "<ruta>",
        "design_path": "<ruta>",
+       "rework_round": <N | null>,
+       "fix_directives_path": "<ruta> | null",
+       "whitelist": [{ "path": "<ruta>", "note": "<texto libre>" }] | null,
        "e2e_context": {
          "framework": "<valor de sddf.config.yaml implement.e2e_context o null>",
          "base_path": "<valor de sddf.config.yaml o null>",
@@ -259,12 +372,18 @@ Para cada entry de `test_generators` no omitida (en el orden del YAML):
       - Bloque de contexto con las variables resueltas:
         ```
         Contexto de invocación:
-        - story_id: {$RED_STORY_ID}
+        - story_id: {story_id}
         - testcases_path: {$TESTCASES_PATH}
         - story_path: {$STORY_PATH}
         - design_path: {$DESIGN_PATH}
         - e2e_context: {$E2E_CONTEXT}   ← solo para tipo e2e; null si la sección está ausente en el YAML
+        - rework_round: {$REWORK_ROUND}   ← entero en modo rework; null fuera de él
+        - fix_directives_path: {$FIX_DIRECTIVES_PATH}   ← ruta en modo rework; null fuera de él
+        - whitelist: {$WHITELIST}   ← [{path, note}] en modo rework ([] si la sección faltaba); null fuera de él
+
+        Instrucción de rework (RED): genera únicamente los tests que cubren los hallazgos de la tabla "Instrucciones de corrección" de {fix_directives_path}; no regeneres tests existentes que ya pasan.
         ```
+      Las tres claves de rework se emiten siempre; el párrafo "Instrucción de rework (RED)" solo si `$REWORK_MODE = true` (ver 0c.3).
 4. El subagente escribe sus resultados en `.tmp/story-implement/{story_id}/{tipo}/results.json`
 5. **Si el subagente retorna `status: error`:**
    ```
@@ -294,6 +413,8 @@ Para cada tipo generado exitosamente:
    [INFO] Sin comando configurado para tipo '{tipo}' — confirmación de RED omitida
    ```
 
+La confirmación RED **no cambia en modo rework**: exit code ≠ 0 ⇒ rojo confirmado; exit code = 0 ⇒ la misma advertencia `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos`. Que un generator haya devuelto `files_generated: []` (p. ej. correcciones ya cubiertas por tests existentes) no es condición de error en este skill — la regla "RED sin tests nuevos" pertenece a STORY-092.
+
 ---
 
 ### Paso 6 — Escribir output intermedio
@@ -307,13 +428,16 @@ Escribir `.tmp/story-implement/{story_id}/red-phase-status.json`:
   "generators_skipped": ["eval"],
   "files_generated": ["ruta/al/test.spec.js"],
   "red_confirmed": true,
+  "rework_round": {$REWORK_ROUND},
   "timestamp": "{ISO timestamp}"
 }
 ```
 
+`rework_round` = `$REWORK_ROUND` (ver 0c.3): siempre presente, `null` fuera del modo rework.
+
 Este archivo es la precondición que leerá la Fase GREEN antes de invocar el code-generator.
 
-### Validación post-escritura — Omisiones inválidas
+#### Validación post-escritura — Omisiones inválidas
 
 Después de escribir el archivo, verificar que ningún generator con `required: true` y `skill != "none"` aparece en `generators_skipped`:
 
@@ -384,6 +508,9 @@ Extraer y registrar internamente:
 - `$RED_STORY_ID` = `story_id`
 - `$RED_FILES_GENERATED` = `files_generated`
 - `$RED_GENERATORS_INVOKED` = `generators_invoked`
+- `rework_round`: solo informativo — `$REWORK_ROUND` ya quedó fijado en 0c.3 en esta misma ejecución y no se sobreescribe desde este archivo
+
+Este paso valida **únicamente** `red_confirmed`: el valor de `rework_round` (entero, `null` o ausente en archivos anteriores a este campo) nunca invalida la precondición.
 
 Mostrar: `[INFO] Precondición RED verificada — story_id: {$RED_STORY_ID}, {N} archivo(s) de prueba`
 
@@ -443,7 +570,7 @@ Mostrar: `[INFO] code_generators resueltos: {N} activo(s), {M} omitido(s)`
 
 ### Paso 9 — Fase GREEN: invocar code_generators
 
-Inicializar `$GREEN_FILES_GENERATED = []` y `$GREEN_LAYERS_OK = []`.
+Inicializar `$GREEN_FILES_GENERATED = []`, `$GREEN_FILES_MODIFIED = []` y `$GREEN_LAYERS_OK = []`.
 
 Para cada entry `{layer, skill, required}` en `$CODE_GENERATORS_VALID` (en orden del YAML):
 
@@ -454,8 +581,11 @@ Construir bundle de inputs:
   "phase": "GREEN",
   "layer": "{layer}",
   "test_files": "{$RED_FILES_GENERATED}",
-  "story_path": "{$SPECS_BASE}/specs/03-stories/{story_id}*/story.md",
-  "design_path": "{$SPECS_BASE}/specs/03-stories/{story_id}*/design.md"
+  "story_path": "{$STORY_DIR}/story.md",
+  "design_path": "{$STORY_DIR}/design.md",
+  "rework_round": <N | null>,
+  "fix_directives_path": "<ruta> | null",
+  "whitelist": [{ "path": "<ruta>", "note": "<texto libre>" }] | null
 }
 ```
 
@@ -472,9 +602,15 @@ Invocar el skill siguiendo el contrato ADR-0002:
      - phase: GREEN
      - layer: {layer}
      - test_files: {$RED_FILES_GENERATED}
-     - story_path: {$SPECS_BASE}/specs/03-stories/{story_id}*/story.md
-     - design_path: {$SPECS_BASE}/specs/03-stories/{story_id}*/design.md
+     - story_path: {$STORY_DIR}/story.md
+     - design_path: {$STORY_DIR}/design.md
+     - rework_round: {$REWORK_ROUND}   ← entero en modo rework; null fuera de él
+     - fix_directives_path: {$FIX_DIRECTIVES_PATH}   ← ruta en modo rework; null fuera de él
+     - whitelist: {$WHITELIST}   ← [{path, note}] en modo rework ([] si la sección faltaba); null fuera de él
+
+     Instrucción de rework (GREEN/REFACTOR): aplica solo la "Acción requerida" de cada hallazgo de {fix_directives_path}; limita los cambios a los archivos de whitelist; reporta en files_modified todo archivo tocado.
      ```
+   Las tres claves de rework se emiten siempre; el párrafo "Instrucción de rework (GREEN/REFACTOR)" solo si `$REWORK_MODE = true` (ver 0c.3).
 3. El subagente escribe sus resultados en `.tmp/story-implement/{story_id}/green/{layer}/results.json`
 
 **Si el subagente retorna `status: error`:**
@@ -497,8 +633,9 @@ Invocar el skill siguiendo el contrato ADR-0002:
 
 **Si retorna `status: ok`:**
 - Agregar `files_generated` del subagente a `$GREEN_FILES_GENERATED`.
+- Agregar `files_modified` del subagente (si el campo existe; `[]` si no) a `$GREEN_FILES_MODIFIED` — en modo rework las correcciones suelen llegar como modificaciones, no como archivos nuevos; 11b usa ambas listas.
 - Agregar `{layer}` a `$GREEN_LAYERS_OK`.
-- Mostrar: `[GREEN/{layer}] ✓ {N} archivo(s) de producción generado(s)`
+- Mostrar: `[GREEN/{layer}] ✓ {N} archivo(s) de producción generado(s), {M} modificado(s)`
 
 Al finalizar todas las capas:
 
@@ -563,6 +700,8 @@ Leer respuesta del usuario:
 
 ### Paso 10 — Fase REFACTOR: invocar code_generators y verificar no-regresión
 
+Inicializar `$REFACTOR_FILES_MODIFIED = []`.
+
 Para cada entry `{layer, skill, required}` en `$CODE_GENERATORS_VALID` (en orden del YAML):
 
 Construir bundle de inputs:
@@ -572,8 +711,11 @@ Construir bundle de inputs:
   "phase": "REFACTOR",
   "layer": "{layer}",
   "test_files": "{$RED_FILES_GENERATED}",
-  "story_path": "{$SPECS_BASE}/specs/03-stories/{story_id}*/story.md",
-  "design_path": "{$SPECS_BASE}/specs/03-stories/{story_id}*/design.md"
+  "story_path": "{$STORY_DIR}/story.md",
+  "design_path": "{$STORY_DIR}/design.md",
+  "rework_round": <N | null>,
+  "fix_directives_path": "<ruta> | null",
+  "whitelist": [{ "path": "<ruta>", "note": "<texto libre>" }] | null
 }
 ```
 
@@ -590,9 +732,15 @@ Invocar el skill siguiendo el contrato ADR-0002:
      - phase: REFACTOR
      - layer: {layer}
      - test_files: {$RED_FILES_GENERATED}
-     - story_path: {$SPECS_BASE}/specs/03-stories/{story_id}*/story.md
-     - design_path: {$SPECS_BASE}/specs/03-stories/{story_id}*/design.md
+     - story_path: {$STORY_DIR}/story.md
+     - design_path: {$STORY_DIR}/design.md
+     - rework_round: {$REWORK_ROUND}   ← entero en modo rework; null fuera de él
+     - fix_directives_path: {$FIX_DIRECTIVES_PATH}   ← ruta en modo rework; null fuera de él
+     - whitelist: {$WHITELIST}   ← [{path, note}] en modo rework ([] si la sección faltaba); null fuera de él
+
+     Instrucción de rework (GREEN/REFACTOR): aplica solo la "Acción requerida" de cada hallazgo de {fix_directives_path}; limita los cambios a los archivos de whitelist; reporta en files_modified todo archivo tocado.
      ```
+   Las tres claves de rework se emiten siempre; el párrafo "Instrucción de rework (GREEN/REFACTOR)" solo si `$REWORK_MODE = true` (ver 0c.3).
 3. El subagente escribe sus resultados en `.tmp/story-implement/{story_id}/refactor/{layer}/results.json`
 
 **Si el subagente retorna `status: error`:**
@@ -611,7 +759,7 @@ Invocar el skill siguiendo el contrato ADR-0002:
   ```
   Continuar con la siguiente entry.
 
-**Si retorna `status: ok`:** continuar con la siguiente capa.
+**Si retorna `status: ok`:** agregar `files_modified` del subagente (si el campo existe; `[]` si no) a `$REFACTOR_FILES_MODIFIED` y continuar con la siguiente capa.
 
 Al finalizar todas las capas, verificar no-regresión ejecutando comandos de test por tipo:
 
@@ -651,7 +799,7 @@ Registrar `$DOD_BLOQUEADO`:
 
 #### 11b — Generar `implement-report.md`
 
-Escribir `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md`:
+Escribir `$STORY_DIR/implement-report.md` (sobreescritura completa en cada ejecución — no se acumulan rondas):
 
 ```markdown
 ---
@@ -680,6 +828,18 @@ updated: <YYYY-MM-DD>
 | GREEN | ✅/❌ | {capas, archivos generados} |
 | REFACTOR | ✅/❌ | {sin regresiones / regresiones detectadas} |
 
+<!-- Sección condicional: SOLO si $REWORK_MODE = true. En modo normal se omite completa (ni el título). -->
+## Ciclo de corrección — ronda {N}
+
+- **Origen:** `fix-directives.md` (max-severity: {sev}) — {H} hallazgo(s) bloqueante(s)
+
+| # | Archivo:Línea | Dimensión | Acción requerida | Archivos tocados | Estado |
+|---|---|---|---|---|---|
+| {n} | {archivo:línea} | {dimensión} | {acción} | {archivos de files_generated ∪ files_modified que coinciden} | ✓ aplicado / ⚠️ sin evidencia |
+
+**Lista blanca recibida:**
+- `{path}` — {note}
+
 ## DoD IMPLEMENT
 
 | Criterio | Estado | Observación |
@@ -689,6 +849,13 @@ updated: <YYYY-MM-DD>
 
 > Los tests deben ejecutarse manualmente para confirmar el resultado final.
 ```
+
+**Reglas de la sección "Ciclo de corrección — ronda {N}"** (entre `## Ciclo TDD` y `## DoD IMPLEMENT`):
+- Se escribe **solo si `$REWORK_MODE = true`**; en modo normal no aparece ni el título.
+- `{N}` = `$REWORK_ROUND`, `{sev}` = `$REWORK_MAX_SEVERITY` (`n/a` si `null`), `{H}` = número de filas de `$REWORK_FINDINGS`. Una fila de la tabla por hallazgo, en el orden de `fix-directives.md`.
+- **Archivos tocados:** archivos de `$GREEN_FILES_GENERATED ∪ $GREEN_FILES_MODIFIED ∪ $REFACTOR_FILES_MODIFIED` cuya ruta coincide con la del hallazgo (la parte anterior a `:` de `Archivo:Línea`); `—` si ninguno.
+- **Estado:** `✓ aplicado` si el archivo del hallazgo pertenece a esa unión; en cualquier otro caso `⚠️ sin evidencia` (p. ej. re-ejecución con correcciones ya aplicadas y `files_modified: []`). **Nunca `❌`**: este skill solo registra evidencia; el juicio sobre si el hallazgo quedó resuelto corresponde al siguiente `story-code-review`.
+- **Lista blanca recibida:** una viñeta por entrada de `$WHITELIST` con la ruta entre acentos graves seguida de `— {note}` (omitir `— {note}` si la nota está vacía); si `$WHITELIST = []`, escribir `(vacía)`.
 
 #### 11c — Actualizar `story.md` (condicional)
 
@@ -702,6 +869,7 @@ updated: <YYYY-MM-DD>
 - `substatus: IN-PROGRESS`
 - `updated: {YYYY-MM-DD}`
 - Emitir: `⚠️ story.md permanece en IMPLEMENT/IN-PROGRESS por criterios DoD con ❌ — resolver antes de continuar`
+- El pie del resumen final (11e) pasa a ser `→ Resuelve los criterios DoD ❌ y re-ejecuta /story-implement {story_id}` (el gate del Paso 0c admite `IMPLEMENT/IN-PROGRESS` en esa re-ejecución).
 
 #### 11d — Actualizar `epic.md` (si existe épica padre)
 
@@ -725,46 +893,59 @@ Escribir `.tmp/story-implement/{story_id}/cycle-status.json`:
   "green_confirmed": true,
   "refactor_confirmed": true,
   "files_generated": "{$GREEN_FILES_GENERATED}",
-  "files_modified": "{archivos modificados en REFACTOR}",
+  "files_modified": "{$GREEN_FILES_MODIFIED ∪ $REFACTOR_FILES_MODIFIED}",
   "dod_bloqueado": false,
   "final_status": "IMPLEMENT/DONE",
+  "rework_round": {$REWORK_ROUND},
   "timestamp": "{ISO timestamp}"
 }
 ```
+
+`rework_round` = `$REWORK_ROUND`, igual que en `red-phase-status.json` (ver 0c.3).
 
 Mostrar resumen según `$EXEC_MODE`:
 
 **Si `$EXEC_MODE = auto`:**
 ```
 ── Ciclo TDD completado automáticamente (--auto) ──────────
+🔁 Modo rework (ronda {N})                                   ← solo si $REWORK_MODE = true
 ✅ Fase RED:      {N} tipo(s) generado(s) | rojo confirmado: {✅ / ⚠️}
 ✅ Fase GREEN:    {N} archivo(s) de producción generados
 ✅ Fase REFACTOR: sin regresiones
 ──────────────────────────────────────────────────────────
-📄 implement-report.md → {$SPECS_BASE}/specs/03-stories/{story_id}/implement-report.md
+📄 implement-report.md → {$STORY_DIR}/implement-report.md
 📄 cycle-status.json   → .tmp/story-implement/{story_id}/cycle-status.json
 📋 story.md: {IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS} ✓
 📋 epic.md: {actualizado / no encontrado}
 
 DoD IMPLEMENT:
 {tabla criterios ✓/❌/⚠️}
+
+{→ Ejecuta /story-code-review {story_id} | → Resuelve los criterios DoD ❌ y re-ejecuta /story-implement {story_id}}
 ```
 
 **Si `$EXEC_MODE = interactive`:**
 ```
 ✅ Ciclo TDD completado
+   🔁 Modo rework (ronda {N})                                ← solo si $REWORK_MODE = true
    Fase RED:      tests en rojo confirmados
    Fase GREEN:    {N} archivo(s) de producción generados
    Fase REFACTOR: sin regresiones
 
-   implement-report.md → {$SPECS_BASE}/specs/03-stories/{story_id}/implement-report.md
+   implement-report.md → {$STORY_DIR}/implement-report.md
    cycle-status.json   → .tmp/story-implement/{story_id}/cycle-status.json
    story.md            → {IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS}
-   epic.md          → {actualizado / no encontrado}
+   epic.md             → {actualizado / no encontrado}
 
 DoD IMPLEMENT:
 {tabla criterios ✓/❌/⚠️}
+
+{→ Ejecuta /story-code-review {story_id} | → Resuelve los criterios DoD ❌ y re-ejecuta /story-implement {story_id}}
 ```
+
+Reglas comunes a ambos formatos:
+- La línea `🔁 Modo rework (ronda {N})` se emite **solo si `$REWORK_MODE = true`**; en modo normal se omite (sin mencionar rework).
+- El pie es obligatorio y depende de `$DOD_BLOQUEADO`: si `false` (story.md en `IMPLEMENT/DONE`) → `→ Ejecuta /story-code-review {story_id}` — en modo rework y en modo normal, porque el siguiente gate del pipeline es el mismo; si `true` (story.md en `IMPLEMENT/IN-PROGRESS`) → `→ Resuelve los criterios DoD ❌ y re-ejecuta /story-implement {story_id}`.
 
 **Si hubo errores en GREEN o REFACTOR:** no ejecutar este paso (la detención ya ocurrió en el paso correspondiente).
 
@@ -774,18 +955,23 @@ DoD IMPLEMENT:
 
 | Condición | Mensaje | Acción |
 |---|---|---|
+| Historia no encontrada (0c.1) | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener ejecución |
+| Estado de `story.md` no admitido (0c.2) | `❌ La historia {story_id} no está en un estado válido para implementar` | Detener sin modificar archivos (ni `story.md` ni `.tmp/`) ni invocar subagentes |
+| `fix-directives.md` sin sección de lista blanca (0c.3) | `[WARN] fix-directives.md sin lista blanca — los generators recibirán whitelist vacía` | Continuar con `whitelist: []` |
+| `fix-directives.md` con tabla "Instrucciones de corrección" ausente o ilegible (0c.3) | `[WARN] fix-directives.md sin tabla de hallazgos legible — continuando con 0 hallazgo(s)` | Continuar con hallazgos vacíos (`H = 0`) |
+| Detención por configuración inválida tras 0c.4 (Pasos 1–2) | Mismo `❌` del paso correspondiente (p. ej. `❌ sddf.config.yaml no encontrado`) | La historia queda en `IMPLEMENT/IN-PROGRESS`; el gate lo admite en la siguiente ejecución |
 | `sddf.config.yaml` no encontrado | `❌ sddf.config.yaml no encontrado` | Detener ejecución |
-| `implement.test_generators` vacío o ausente | `[WARN] No hay test_generators configurados — Fase RED sin generación de pruebas` | Continuar sin subagentes |
+| `implement.test_generators` vacío o ausente | `[WARN] No hay test_generators configurados en sddf.config.yaml — Fase RED sin generación de pruebas` | Continuar sin subagentes |
 | Tipo activo sin campo `skill` | `[WARN] Sin skill declarado para tipo '<tipo>' — omitiendo ese tipo` | Omitir tipo |
 | Skill `required:true` no existe (test_generator) | `❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en $CLI_ROOT/skills/` | Detener sin generar archivos |
 | Skill `required:false` no existe (test_generator) | `[WARN] Skill '<nombre>' no encontrado — omitiendo tipo '<tipo>'` | Omitir tipo y continuar |
 | `testcases.md` ausente | `⚠️ testcases.md no encontrado — generando pruebas desde story.md y design.md` | Continuar con fallback |
-| Generator `required:true` con `skill!=none` en `generators_skipped` | `❌ ERROR: test_generator '{tipo}' es required:true pero fue omitido sin condición válida` | Detener antes de GREEN; exigir corrección o cambiar a required:false |
+| Generator `required:true` con `skill!=none` en `generators_skipped` | `❌ ERROR: El test_generator de tipo '{tipo}' (skill: '{skill}') está declarado como required:true en sddf.config.yaml pero fue omitido sin una condición válida.` | Detener antes de GREEN; exigir corrección o cambiar a required:false |
 | `story.md` o `design.md` ausentes | `❌ Artefactos de especificación insuficientes (falta story.md y/o design.md)` | Detener ejecución |
-| Subagente retorna `status: error` (Fase RED) | `❌ El skill '{skill}' retornó error durante la Fase RED` | Detener sin invocar siguientes |
+| Subagente retorna `status: error` (Fase RED) | `❌ El skill '{skill}' retornó error durante la Fase RED — deteniendo ejecución` | Detener sin invocar siguientes |
 | Tests pasan sin implementación (Fase RED) | `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos` | Advertir, continuar |
 | `red-phase-status.json` no existe | `❌ Precondición RED no cumplida: .tmp/story-implement/{story_id}/red-phase-status.json no encontrado` | Detener Fase GREEN |
-| `red_confirmed: false` en red-phase-status.json | `❌ Precondición RED no cumplida: red_confirmed es false` | Detener Fase GREEN |
+| `red_confirmed: false` en red-phase-status.json | `❌ Precondición RED no cumplida: red_confirmed es false en red-phase-status.json` | Detener Fase GREEN |
 | `implement.code_generators` no declarado o vacío | `❌ implement.code_generators no declarado o vacío en sddf.config.yaml` | Detener Fase GREEN |
 | Entry con `skill: none` | `[INFO] Capa '{layer}': skill none — omitiendo` | Omitir capa |
 | code_generator `required:true` no existe | `❌ Skill '{skill}' (capa '{layer}') declarado como code_generator no encontrado en $CLI_ROOT/skills/` | Detener Fase GREEN |
@@ -818,8 +1004,9 @@ story-implement (orquestador — Fases GREEN y REFACTOR)
   └── {skill capa database}  ← subagente, ej. code-database-prisma (si existe)
 ```
 
-Los subagentes de Fase RED reciben el bundle `{story_id, testcases_path, story_path, design_path}` (más `e2e_context` para el tipo `e2e`) y escriben en `.tmp/story-implement/{story_id}/{tipo}/results.json`.
-Los subagentes de Fases GREEN/REFACTOR reciben el bundle `{story_id, phase, layer, test_files, story_path, design_path}` y escriben en `.tmp/story-implement/{story_id}/{phase}/{layer}/results.json`.
+Los subagentes de Fase RED reciben el bundle `{story_id, testcases_path, story_path, design_path, rework_round, fix_directives_path, whitelist}` (más `e2e_context` para el tipo `e2e`) y escriben en `.tmp/story-implement/{story_id}/{tipo}/results.json`.
+Los subagentes de Fases GREEN/REFACTOR reciben el bundle `{story_id, phase, layer, test_files, story_path, design_path, rework_round, fix_directives_path, whitelist}` y escriben en `.tmp/story-implement/{story_id}/{phase}/{layer}/results.json`.
+Los tres campos de rework llevan los valores del Paso 0c.3 (`null` fuera de rework, nunca ausentes) y el bloque de contexto añade la "Instrucción de rework" solo en modo rework (ver 0c.3).
 El orquestador nunca pasa su contexto completo heredado a los subagentes.
 
 La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md → `Agent` tool (`subagent_type: general-purpose`) → output en `.tmp/` → `Read` de resultados. Los skills de generación permanecen en `$CLI_ROOT/skills/` (no en `$CLI_ROOT/agents/`) para preservar su invocabilidad directa y la configurabilidad vía `sddf.config.yaml`.
@@ -832,11 +1019,11 @@ La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md �
 |---|---|---|
 | Archivos de prueba | según skill de generación | Tests generados en código productivo |
 | Archivos de producción | según skill de generación | Código generado en Fases GREEN/REFACTOR |
-| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase |
-| `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
+| `implement-report.md` | `$STORY_DIR/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase + sección `## Ciclo de corrección — ronda N` solo en modo rework |
+| `story.md` (actualizado) | `$STORY_DIR/story.md` | Frontmatter: 0c.4 → `IMPLEMENT/IN-PROGRESS` al arrancar; 11c → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
 | `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
-| `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN |
-| `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD completo |
+| `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN; incluye `rework_round` (`null` fuera de rework) |
+| `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD completo; incluye `rework_round` (`null` fuera de rework) |
 | `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente |
 
 ---

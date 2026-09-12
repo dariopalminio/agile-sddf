@@ -1,7 +1,7 @@
 {
   "skill": "story-implement",
-  "version": "1.0.0",
-  "description": "Casos de prueba para el skill story-implement: orquestación del ciclo TDD (Fase RED) para historias SDDF",
+  "version": "1.1.0",
+  "description": "Casos de prueba para el skill story-implement: gate de estado (Paso 0c: READY-FOR-IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS, escritura de IMPLEMENT/IN-PROGRESS al arrancar), modo rework por presencia de fix-directives.md (ronda, lista blanca, campos rework_round/fix_directives_path/whitelist en los bundles, sección \"Ciclo de corrección\" del reporte), orquestación del ciclo TDD RED → GREEN → REFACTOR, DoD IMPLEMENT y sugerencia final de /story-code-review para historias SDDF",
   "cases": [
     {
       "id": "TC-001",
@@ -114,7 +114,7 @@
       "id": "TC-004",
       "name": "happy-path-green-refactor-exitoso-story-actualizada-cycle-status-escrito",
       "type": "happy-path",
-      "description": "red-phase-status.json existe con red_confirmed:true, code_generators (lista, layer monolithic) declarado y el skill existe en .claude/skills/, subagente retorna status:ok en Fase GREEN y en Fase REFACTOR, tests pasan tras GREEN y siguen pasando tras REFACTOR → story.md actualizada a CODE-REVIEW/IN-PROGRESS y cycle-status.json escrito con los tres confirmed:true",
+      "description": "red-phase-status.json existe con red_confirmed:true, code_generators (lista, layer monolithic) declarado y el skill existe en .claude/skills/, subagente retorna status:ok en Fase GREEN y en Fase REFACTOR, tests pasan tras GREEN y siguen pasando tras REFACTOR → story.md actualizada a IMPLEMENT/DONE, cycle-status.json escrito con los tres confirmed:true y resumen final con la sugerencia '→ Ejecuta /story-code-review STORY-TEST'",
       "input": {
         "story_id": "STORY-TEST",
         "red_phase_status": {
@@ -139,8 +139,9 @@
           "✅",
           "Fase GREEN",
           "Fase REFACTOR",
-          "CODE-REVIEW",
-          "cycle-status.json"
+          "IMPLEMENT/DONE",
+          "cycle-status.json",
+          "Ejecuta /story-code-review"
         ],
         "not_contains": [
           "❌",
@@ -154,8 +155,8 @@
           "refactor_confirmed",
           "story_id"
         ],
-        "story_status": "CODE-REVIEW",
-        "story_substatus": "IN-PROGRESS"
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
       },
       "threshold": 0.95
     },
@@ -241,7 +242,7 @@
       "id": "TC-007",
       "name": "modo-interactivo-pause1-y-pause2-con-confirmacion-ciclo-completa",
       "type": "happy-path",
-      "description": "Invocación sin --auto (modo interactivo predeterminado): Pause-1 muestra resumen RED y pregunta '¿Continuar con la Fase GREEN? (s/n)' (respuesta 's'), Pause-2 muestra resumen GREEN y pregunta '¿Continuar con la Fase REFACTOR? (s/n)' (respuesta 's') → ciclo completa con las 3 fases exitosamente",
+      "description": "Invocación sin --auto (modo interactivo predeterminado): Pause-1 muestra resumen RED y pregunta '¿Continuar con la Fase GREEN? (s/n)' (respuesta 's'), Pause-2 muestra resumen GREEN y pregunta '¿Continuar con la Fase REFACTOR? (s/n)' (respuesta 's') → ciclo completa con las 3 fases exitosamente, story.md en IMPLEMENT/DONE y resumen final con '→ Ejecuta /story-code-review STORY-TEST'",
       "input": {
         "story_id": "STORY-TEST",
         "invocation_flags": [],
@@ -269,8 +270,9 @@
           "[INFO] Modo de ejecución: interactive",
           "¿Continuar con la Fase GREEN? (s/n)",
           "¿Continuar con la Fase REFACTOR? (s/n)",
-          "CODE-REVIEW",
-          "cycle-status.json"
+          "IMPLEMENT/DONE",
+          "cycle-status.json",
+          "Ejecuta /story-code-review"
         ],
         "not_contains": [
           "🛑 Ciclo TDD pausado",
@@ -278,8 +280,8 @@
         ],
         "pause_1_shown": true,
         "pause_2_shown": true,
-        "story_status": "CODE-REVIEW",
-        "story_substatus": "IN-PROGRESS"
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
       },
       "threshold": 0.95
     },
@@ -287,7 +289,7 @@
       "id": "TC-008",
       "name": "modo-auto-ciclo-completo-sin-pausas-resumen-consolidado",
       "type": "happy-path",
-      "description": "Invocación con --auto: ningún bloque Pause-1 ni Pause-2 se ejecuta, ciclo completa sin interrupciones, muestra resumen consolidado de las 3 fases al finalizar (✅ Fase RED, ✅ Fase GREEN, ✅ Fase REFACTOR)",
+      "description": "Invocación con --auto: ningún bloque Pause-1 ni Pause-2 se ejecuta, ciclo completa sin interrupciones, muestra resumen consolidado de las 3 fases al finalizar (✅ Fase RED, ✅ Fase GREEN, ✅ Fase REFACTOR), story.md en IMPLEMENT/DONE y pie '→ Ejecuta /story-code-review STORY-TEST'",
       "input": {
         "story_id": "STORY-TEST",
         "invocation_flags": ["--auto"],
@@ -316,7 +318,8 @@
           "✅ Fase GREEN",
           "✅ Fase REFACTOR",
           "cycle-status.json",
-          "CODE-REVIEW"
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
         ],
         "not_contains": [
           "¿Continuar con la Fase GREEN?",
@@ -326,8 +329,8 @@
         ],
         "pause_1_shown": false,
         "pause_2_shown": false,
-        "story_status": "CODE-REVIEW",
-        "story_substatus": "IN-PROGRESS"
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
       },
       "threshold": 0.95
     },
@@ -370,6 +373,672 @@
         "no_interactive_prompt": true,
         "story_status_unchanged": true,
         "exit_gracefully": true
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-010",
+      "name": "rework-desde-cola-con-fix-directives-anuncia-ronda-y-reporta",
+      "type": "happy-path",
+      "description": "EV-001 / AC-1: story.md en READY-FOR-IMPLEMENT/DONE con fix-directives.md (round: 2) y sin tasks.md → el Paso 0c pasa story.md a IMPLEMENT/IN-PROGRESS antes de la Fase RED, anuncia '🔁 Modo rework (ronda 2)', los bundles RED/GREEN/REFACTOR llevan rework_round: 2, fix_directives_path y whitelist no nulos, implement-report.md contiene '## Ciclo de corrección — ronda 2', story.md termina en IMPLEMENT/DONE y el resumen final sugiere '→ Ejecuta /story-code-review STORY-TEST'. fix-directives.md no se modifica (escritor único: story-code-review)",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+        "artifacts_absent": ["tasks.md"],
+        "fix_directives": {
+          "round": 2,
+          "max_severity": "MEDIUM",
+          "findings": [
+            { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "MEDIUM", "accion_requerida": "Cubrir el AC-2 con un test y su implementación en src/feat-test.ts" },
+            { "#": 2, "archivo_linea": "tests/unit/feat-test.spec.ts:10", "dimension": "code-quality", "severidad": "MEDIUM", "accion_requerida": "Eliminar el test duplicado y renombrar el describe" }
+          ],
+          "whitelist_entries": [
+            { "path": "src/feat-test.ts", "note": "hallazgo #1" },
+            { "path": "tests/unit/feat-test.spec.ts", "note": "hallazgo #2" }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test-rework.spec.ts"] },
+        "code_generator_green_result": { "status": "ok", "files_generated": [], "files_modified": ["src/feat-test.ts", "tests/unit/feat-test.spec.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "IMPLEMENT/IN-PROGRESS",
+          "🔁 Modo rework (ronda 2)",
+          "rework_round: 2",
+          "fix_directives_path",
+          "whitelist",
+          "Ciclo de corrección — ronda 2",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "no está en un estado válido",
+          "rework_round: null",
+          "❌"
+        ],
+        "story_status_before_red": "IMPLEMENT/IN-PROGRESS",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "output_file": ".tmp/story-implement/STORY-TEST/cycle-status.json",
+        "output_contains": [
+          "rework_round",
+          "red_confirmed",
+          "green_confirmed",
+          "refactor_confirmed"
+        ],
+        "files_unchanged": ["fix-directives.md"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-011",
+      "name": "ejecucion-inicial-sin-fix-directives-sin-anuncio-rework",
+      "type": "happy-path",
+      "description": "EV-002 / AC-2: story.md en READY-FOR-IMPLEMENT/DONE sin fix-directives.md → el gate escribe IMPLEMENT/IN-PROGRESS y el ciclo RED → GREEN → REFACTOR se ejecuta como hoy; los bundles llevan rework_round: null, fix_directives_path: null y whitelist: null; no aparece 'Modo rework', el reporte no tiene 'Ciclo de corrección' ni se emite la 'Instrucción de rework'; el resumen termina con '→ Ejecuta /story-code-review STORY-TEST'",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md"],
+        "artifacts_absent": ["fix-directives.md", "tasks.md"],
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
+        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "IMPLEMENT/IN-PROGRESS",
+          "rework_round: null",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "Modo rework",
+          "Ciclo de corrección",
+          "Instrucción de rework",
+          "no está en un estado válido"
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "output_file": ".tmp/story-implement/STORY-TEST/red-phase-status.json",
+        "output_contains": [
+          "rework_round",
+          "red_confirmed"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-012",
+      "name": "estado-no-admitido-detiene-sin-modificar",
+      "type": "fail-fast",
+      "description": "EV-003 / AC-3: story.md en CODE-REVIEW/DONE → el Paso 0c detiene con '❌ La historia STORY-TEST no está en un estado válido para implementar', muestra el estado actual ('Estado actual: status: CODE-REVIEW / substatus: DONE'), los dos admitidos (READY-FOR-IMPLEMENT/DONE e IMPLEMENT/IN-PROGRESS) y la sugerencia /story-plan; no invoca ningún subagente, no escribe red-phase-status.json ni modifica story.md",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [],
+        "story_status": { "status": "CODE-REVIEW", "substatus": "DONE" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md"],
+        "artifacts_absent": ["fix-directives.md"],
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"]
+      },
+      "expected": {
+        "contains": [
+          "no está en un estado válido para implementar",
+          "CODE-REVIEW / substatus: DONE",
+          "READY-FOR-IMPLEMENT/DONE",
+          "IMPLEMENT/IN-PROGRESS",
+          "/story-plan"
+        ],
+        "not_contains": [
+          "invocando",
+          "red-phase-status.json",
+          "Modo rework",
+          "🚀 Iniciando implementación"
+        ],
+        "files_unchanged": ["story.md"],
+        "no_files_written": [".tmp/story-implement/STORY-TEST/"],
+        "story_status_unchanged": true,
+        "exit_gracefully": true
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-013",
+      "name": "frontmatter-sin-status-se-trata-como-specify-todo",
+      "type": "fail-fast",
+      "description": "EV-004 / AC-3, AC-4: story.md cuyo frontmatter no tiene los campos status ni substatus → el gate los trata como SPECIFY/TODO y detiene con el mismo mensaje de estado no admitido mostrando 'Estado actual: status: SPECIFY / substatus: TODO', los estados admitidos y la sugerencia /story-plan; sin escrituras en story.md ni en .tmp/",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [],
+        "story_frontmatter": { "type": "story", "id": "STORY-TEST", "title": "Historia sin estado" },
+        "story_frontmatter_missing_fields": ["status", "substatus"],
+        "artifacts_present": ["story.md", "design.md", "testcases.md"],
+        "artifacts_absent": ["fix-directives.md"],
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals"]
+      },
+      "expected": {
+        "contains": [
+          "no está en un estado válido para implementar",
+          "Estado actual: status: SPECIFY / substatus: TODO",
+          "READY-FOR-IMPLEMENT/DONE",
+          "IMPLEMENT/IN-PROGRESS",
+          "/story-plan"
+        ],
+        "not_contains": [
+          "invocando",
+          "red-phase-status.json",
+          "Modo rework",
+          "🚀 Iniciando implementación"
+        ],
+        "files_unchanged": ["story.md"],
+        "no_files_written": [".tmp/story-implement/STORY-TEST/"],
+        "exit_gracefully": true
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-014",
+      "name": "reanudacion-in-progress-modo-por-presencia-de-fix-directives",
+      "type": "happy-path",
+      "description": "EV-005 / AC-4, D-1, D-8: story.md en IMPLEMENT/IN-PROGRESS pasa el gate ('Estado: IMPLEMENT/IN-PROGRESS ✓') y el modo lo decide únicamente la presencia de fix-directives.md — variante (a) con el archivo ⇒ 'Modo rework'; variante (b) sin el archivo ⇒ ciclo normal sin 'Modo rework'. En ambas, el Paso 0c solo cambia 'updated' en story.md (status/substatus ya son IMPLEMENT/IN-PROGRESS) y no hay error de gate",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "IMPLEMENT", "substatus": "IN-PROGRESS" },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
+        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true,
+        "variants": {
+          "a": {
+            "description": "IMPLEMENT/IN-PROGRESS + fix-directives.md presente (round: 1) ⇒ modo rework",
+            "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+            "fix_directives": {
+              "round": 1,
+              "findings": [ { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "MEDIUM", "accion_requerida": "Cubrir el AC-2 en src/feat-test.ts" } ],
+              "whitelist_entries": [ { "path": "src/feat-test.ts", "note": "hallazgo #1" } ]
+            },
+            "expected": {
+              "contains": ["Estado: IMPLEMENT/IN-PROGRESS ✓", "Modo rework", "rework_round: 1"],
+              "not_contains": ["no está en un estado válido", "rework_round: null"]
+            }
+          },
+          "b": {
+            "description": "IMPLEMENT/IN-PROGRESS sin fix-directives.md ⇒ ciclo normal",
+            "artifacts_present": ["story.md", "design.md", "testcases.md"],
+            "artifacts_absent": ["fix-directives.md"],
+            "expected": {
+              "contains": ["Estado: IMPLEMENT/IN-PROGRESS ✓", "rework_round: null"],
+              "not_contains": ["no está en un estado válido", "Modo rework", "Ciclo de corrección"]
+            }
+          }
+        }
+      },
+      "expected": {
+        "contains": [
+          "Estado: IMPLEMENT/IN-PROGRESS ✓",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "no está en un estado válido para implementar",
+          "Estado actual: status: IMPLEMENT / substatus: IN-PROGRESS"
+        ],
+        "story_frontmatter_changed_in_gate": ["updated"],
+        "all_variants_must_pass": true
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-015",
+      "name": "reanudacion-in-progress-sin-fix-directives-reejecuta-ciclo-completo",
+      "type": "happy-path",
+      "description": "EV-006 / AC-4, D-8: story.md en IMPLEMENT/IN-PROGRESS sin fix-directives.md y con un red-phase-status.json previo (red_confirmed: true) en .tmp/ → el gate acepta el estado, no aparece 'Modo rework' y el ciclo se ejecuta completo desde la Fase RED (no se retoma en GREEN por la existencia del JSON previo); rework_round: null; el resumen sugiere /story-code-review",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "IMPLEMENT", "substatus": "IN-PROGRESS" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md"],
+        "artifacts_absent": ["fix-directives.md"],
+        "tmp_files_present": {
+          ".tmp/story-implement/STORY-TEST/red-phase-status.json": { "story_id": "STORY-TEST", "red_confirmed": true, "generators_invoked": ["eval"], "timestamp": "2026-09-10T10:00:00Z" }
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
+        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "Estado: IMPLEMENT/IN-PROGRESS ✓",
+          "Fase RED",
+          "rework_round: null",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "Modo rework",
+          "Ciclo de corrección",
+          "no está en un estado válido"
+        ],
+        "red_phase_executed": true,
+        "generators_invoked_in_this_run": ["eval"],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-016",
+      "name": "fix-directives-sin-round-usa-ronda-1",
+      "type": "happy-path",
+      "description": "EV-007 / NFR-3, AC-6, D-2: story.md en READY-FOR-IMPLEMENT/DONE con un fix-directives.md legado (forma de STORY-090: frontmatter sin 'round', lista blanca con una entrada anotada '**solo lectura**' y una sublista introducida por el párrafo 'Destino de las acciones requeridas') → entra en modo rework anunciando '🔁 Modo rework (ronda 1)' y el conteo 'archivo(s) en lista blanca'; fix-directives.md no se modifica (el skill nunca escribe 'round'; escritor único story-code-review)",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+        "fix_directives": {
+          "frontmatter": { "type": "fix-directives", "story": "STORY-TEST", "review-status": "needs-changes", "max-severity": "MEDIUM", "based-on": "code-review-report.md" },
+          "frontmatter_missing_fields": ["round"],
+          "findings": [
+            { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "MEDIUM", "accion_requerida": "Cubrir el AC-2 en src/feat-test.ts" },
+            { "#": 2, "archivo_linea": "docs/policies/dod-story.md:134", "dimension": "DoD-CODE-REVIEW", "severidad": "MEDIUM", "accion_requerida": "Resolver el hallazgo #1 y volver a ejecutar /story-code-review" }
+          ],
+          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\n- `src/feat-test.ts` — hallazgo #1\n- `docs/policies/dod-story.md` — hallazgo #2 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `tests/unit/feat-test.spec.ts` — hallazgo #1 (test del AC-2)\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #1 (registrar CR)\n"
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
+        "code_generator_green_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": [] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "archivo(s) en lista blanca",
+          "rework_round: 1",
+          "IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "[WARN] fix-directives.md sin lista blanca",
+          "no está en un estado válido",
+          "❌"
+        ],
+        "files_unchanged": ["fix-directives.md"],
+        "whitelist_entries_count": 4,
+        "whitelist_note_preserved_for": "docs/policies/dod-story.md"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-017",
+      "name": "round-ilegible-en-fix-directives-usa-ronda-1-sin-escribir",
+      "type": "edge-case",
+      "description": "EV-008 / D-2: fix-directives.md cuyo frontmatter tiene 'round: abc' (no es un entero ≥ 1) → el skill asume ronda 1 sin error ('🔁 Modo rework (ronda 1)', rework_round: 1) y no escribe el archivo para corregirlo",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+        "fix_directives": {
+          "round": "abc",
+          "findings": [ { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "code-quality", "severidad": "MEDIUM", "accion_requerida": "Extraer la función duplicada" } ],
+          "whitelist_entries": [ { "path": "src/feat-test.ts", "note": "hallazgo #1" } ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
+        "code_generator_green_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": [] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "rework_round: 1"
+        ],
+        "not_contains": [
+          "ronda abc",
+          "ronda NaN",
+          "rework_round: null",
+          "❌",
+          "no está en un estado válido"
+        ],
+        "files_unchanged": ["fix-directives.md"],
+        "exit_gracefully": false
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-018",
+      "name": "lista-blanca-con-texto-libre-parsea-10-entradas-con-nota",
+      "type": "edge-case",
+      "description": "EV-009 / D-2: la sección de lista blanca de fix-directives.md tiene 10 viñetas con la ruta entre acentos graves seguida de '— hallazgo #N', una de ellas con '**solo lectura**' y una sublista introducida por un párrafo → el Paso 0c.3 produce 10 entradas {path, note}, la entrada 'solo lectura' conserva su nota, el anuncio dice '10 archivo(s) en lista blanca' y no se emite ningún [WARN] de lista blanca",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+        "fix_directives": {
+          "round": 1,
+          "findings": [
+            { "#": 1, "archivo_linea": "evals/story-creation.evals.json:1", "dimension": "code-quality", "severidad": "MEDIUM", "accion_requerida": "Fusionar los casos en skills/story-creation/evals/evals.json" },
+            { "#": 2, "archivo_linea": "scripts/migrate-field.js:121", "dimension": "integration-architecture", "severidad": "MEDIUM", "accion_requerida": "Registrar CR-002 en design.md y actualizar UT-004" }
+          ],
+          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\nArchivos derivados de los hallazgos:\n\n- `docs/specs/03-stories/STORY-TEST/evals/story-creation.evals.json` — hallazgo #1\n- `docs/specs/03-stories/STORY-TEST/evals/story-improve.evals.json` — hallazgo #1\n- `scripts/migrate-field.js` — hallazgo #2\n- `docs/policies/dod-story.md` — hallazgos #3, #4, #5 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #2 (registrar `CR-002`)\n- `docs/specs/03-stories/STORY-TEST/testcases.md` — hallazgo #2 (actualizar `UT-004`)\n- `skills/story-creation/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `skills/story-improve/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `docs/specs/03-stories/STORY-TEST/implement-report.md` — hallazgo #1 (alternativa: corregir el comando declarado)\n- `CHANGELOG.md` — hallazgo #1 (entrada de la historia)\n\n## Ciclo de corrección\n"
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": ["skills/story-creation/evals/evals.json"] },
+        "code_generator_green_result": { "status": "ok", "files_modified": ["scripts/migrate-field.js", "docs/specs/03-stories/STORY-TEST/design.md"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": [] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "10 archivo(s) en lista blanca",
+          "whitelist",
+          "solo lectura"
+        ],
+        "not_contains": [
+          "[WARN] fix-directives.md sin lista blanca",
+          "0 archivo(s) en lista blanca",
+          "❌"
+        ],
+        "whitelist_entries_count": 10,
+        "whitelist_entry_with_note": { "path": "docs/policies/dod-story.md", "note_contains": "solo lectura" },
+        "files_unchanged": ["fix-directives.md"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-019",
+      "name": "fix-directives-sin-seccion-lista-blanca-warn-y-continua",
+      "type": "error-handling",
+      "description": "EV-010 / D-2: fix-directives.md sin la sección '## Lista blanca de archivos permitidos para modificar' → el Paso 0c.3 emite '[WARN] fix-directives.md sin lista blanca — los generators recibirán whitelist vacía', los bundles llevan whitelist: [] (no null) y el ciclo continúa en modo rework sin detenerse",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md"],
+        "fix_directives": {
+          "round": 1,
+          "findings": [ { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "HIGH", "accion_requerida": "Implementar la validación del AC-3" } ],
+          "sections_present": ["## Resumen de bloqueantes", "## Instrucciones de corrección", "## Ciclo de corrección"],
+          "sections_absent": ["## Lista blanca de archivos permitidos para modificar"]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
+        "code_generator_green_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": [] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "[WARN] fix-directives.md sin lista blanca — los generators recibirán whitelist vacía",
+          "whitelist: []",
+          "🔁 Modo rework (ronda 1)",
+          "0 archivo(s) en lista blanca",
+          "Fase RED"
+        ],
+        "not_contains": [
+          "❌",
+          "whitelist: null",
+          "no está en un estado válido"
+        ],
+        "exit_gracefully": false,
+        "files_unchanged": ["fix-directives.md"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-020",
+      "name": "reejecucion-con-correcciones-aplicadas-no-cambia-story",
+      "type": "happy-path",
+      "description": "EV-011 / NFR-2, D-5, D-8: re-ejecución en modo rework (IMPLEMENT/IN-PROGRESS tras un ciclo interrumpido que ya aplicó las correcciones; fix-directives.md sigue presente) donde GREEN y REFACTOR devuelven files_generated: [] y files_modified: [] → no cambia ningún archivo de código, story.md queda en IMPLEMENT/DONE idéntico al de la ejecución previa completada salvo 'updated', y la sección '## Ciclo de corrección — ronda 2' marca cada hallazgo como '⚠️ sin evidencia' (nunca ❌)",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "IMPLEMENT", "substatus": "IN-PROGRESS" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md", "fix-directives.md", "implement-report.md"],
+        "corrections_already_applied": true,
+        "fix_directives": {
+          "round": 2,
+          "findings": [
+            { "#": 1, "archivo_linea": "src/feat-test.ts:42", "dimension": "requirements-coverage", "severidad": "MEDIUM", "accion_requerida": "Cubrir el AC-2 en src/feat-test.ts" },
+            { "#": 2, "archivo_linea": "tests/unit/feat-test.spec.ts:10", "dimension": "code-quality", "severidad": "MEDIUM", "accion_requerida": "Eliminar el test duplicado" }
+          ],
+          "whitelist_entries": [
+            { "path": "src/feat-test.ts", "note": "hallazgo #1" },
+            { "path": "tests/unit/feat-test.spec.ts", "note": "hallazgo #2" }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": [] },
+        "code_generator_green_result": { "status": "ok", "files_generated": [], "files_modified": [] },
+        "code_generator_refactor_result": { "status": "ok", "files_generated": [], "files_modified": [] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "IMPLEMENT/DONE",
+          "⚠️ sin evidencia",
+          "Ciclo de corrección — ronda 2",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "❌",
+          "no está en un estado válido"
+        ],
+        "code_files_unchanged": true,
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "story_identical_to_previous_completed_run_except": ["updated"],
+        "files_unchanged": ["fix-directives.md"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-021",
+      "name": "verify-report-fallido-sin-fix-directives-no-activa-rework",
+      "type": "edge-case",
+      "description": "EV-012 / AC-6, D-2: story.md en READY-FOR-IMPLEMENT/DONE con un verify-report.md que reporta criterios fallidos y un acceptance-report.md con REJECTED, pero sin fix-directives.md → el Paso 0c solo consulta fix-directives.md como señal de rework, por lo que se ejecuta el ciclo normal: sin 'Modo rework', sin 'Ciclo de corrección', rework_round: null",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
+        "artifacts_present": ["story.md", "design.md", "testcases.md", "verify-report.md", "acceptance-report.md"],
+        "artifacts_absent": ["fix-directives.md"],
+        "verify_report": { "status": "FAILED", "criteria_failed": ["E2E-002", "IT-001"] },
+        "acceptance_report": { "decision": "REJECTED" },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+            "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+          }
+        },
+        "skills_present": ["skill-test-evals", "skill-master"],
+        "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
+        "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+        "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "IMPLEMENT/IN-PROGRESS",
+          "rework_round: null",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "Modo rework",
+          "Ciclo de corrección",
+          "Instrucción de rework",
+          "REJECTED"
+        ],
+        "files_consulted_for_rework_detection": ["fix-directives.md"],
+        "files_not_consulted_for_rework_detection": ["verify-report.md", "acceptance-report.md"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-022",
+      "name": "config-invalida-tras-gate-deja-in-progress-admisible-en-reejecucion",
+      "type": "error-handling",
+      "description": "EV-013 / AC-4, D-1 (riesgo 'detención posterior'): primera ejecución con READY-FOR-IMPLEMENT/DONE y un test_generator required:true cuyo skill no existe → el Paso 0c ya escribió IMPLEMENT/IN-PROGRESS y el Paso 2 detiene con '❌ Skill … no encontrado'; segunda ejecución (config corregida) → el gate acepta IMPLEMENT/IN-PROGRESS mostrando 'Estado: IMPLEMENT/IN-PROGRESS ✓' y el ciclo completa. Documenta un comportamiento aceptado: no debe 'corregirse' revirtiendo el estado tras la detención",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": ["--auto"],
+        "exec_mode": "auto",
+        "artifacts_present": ["story.md", "design.md", "testcases.md"],
+        "artifacts_absent": ["fix-directives.md"],
+        "runs": [
+          {
+            "run": 1,
+            "story_status": { "status": "READY-FOR-IMPLEMENT", "substatus": "DONE" },
+            "sddf_config": {
+              "IMPLEMENT": {
+                "test_generators": [ { "type": "unit", "skill": "skill-inexistente-xyz", "required": true } ]
+              }
+            },
+            "skills_present": [],
+            "expected": {
+              "contains": ["IMPLEMENT/IN-PROGRESS", "❌", "skill-inexistente-xyz", "no encontrado"],
+              "not_contains": ["invocando", "red-phase-status.json", "IMPLEMENT/DONE", "no está en un estado válido"],
+              "story_status": "IMPLEMENT",
+              "story_substatus": "IN-PROGRESS"
+            }
+          },
+          {
+            "run": 2,
+            "story_status": { "status": "IMPLEMENT", "substatus": "IN-PROGRESS" },
+            "sddf_config": {
+              "IMPLEMENT": {
+                "test_generators": [ { "type": "eval", "skill": "skill-test-evals", "required": true } ],
+                "code_generators": [ { "layer": "monolithic", "skill": "skill-master", "required": true } ]
+              }
+            },
+            "skills_present": ["skill-test-evals", "skill-master"],
+            "test_generator_result": { "status": "ok", "files_generated": ["tests/unit/feat-test.spec.ts"] },
+            "code_generator_green_result": { "status": "ok", "files_generated": ["src/feat-test.ts"] },
+            "code_generator_refactor_result": { "status": "ok", "files_modified": ["src/feat-test.ts"] },
+            "tests_pass_after_green": true,
+            "tests_pass_after_refactor": true,
+            "expected": {
+              "contains": ["Estado: IMPLEMENT/IN-PROGRESS ✓", "IMPLEMENT/DONE", "Ejecuta /story-code-review"],
+              "not_contains": ["no está en un estado válido para implementar", "Modo rework"]
+            }
+          }
+        ]
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "skill-inexistente-xyz",
+          "no encontrado",
+          "Estado: IMPLEMENT/IN-PROGRESS ✓"
+        ],
+        "not_contains": [
+          "no está en un estado válido para implementar",
+          "Modo rework"
+        ],
+        "story_status_after_run_1": "IMPLEMENT/IN-PROGRESS",
+        "story_status_after_run_2": "IMPLEMENT/DONE",
+        "all_runs_must_pass": true
       },
       "threshold": 1.0
     }

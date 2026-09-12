@@ -8,7 +8,7 @@ status: DEVELOP
 substatus: IN-PROGRESS
 parent: null
 created: 2026-06-14
-updated: 2026-09-11
+updated: 2026-09-12
 related: []
 ---
 
@@ -25,7 +25,7 @@ Tras el hardening del workflow (EPIC-18) quedaron brechas que el propio uso del 
 - [x] **STORY-088 — Mejoras de seguridad:** desacoplar `story-code-review` del skill `security-audit`, publicar `SECURITY.md` y cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`. — [[STORY-088-security-enhancement]]
 - [x] **STORY-089 — Un code review rechazado nombra al ejecutor de correcciones y no depende de tasks.md:** un veredicto `needs-changes` de `/story-code-review` devuelve la historia a la cola `READY-FOR-IMPLEMENT/DONE`, deja `fix-directives.md` (con `round`) como única señal de rework y nombra en su mensaje al ejecutor de correcciones (`/story-implement`; `/story-implement-tasks` si existe `tasks.md`), sin estado nuevo, sin editar el frontmatter a mano y sin depender de `tasks.md`. — [[STORY-089-rechazo-nombra-ejecutor-correcciones]]
 - [x] **STORY-090 — Todo campo declarado en un template nombra a su escritor:** nuevo principio de la constitución y anotación de escritor en los cinco templates de `$SPECS_BASE/templates/`, empezando por retirar el campo FINVEST del cuerpo de `story.md` (tres escritores, ningún lector) con una migración idempotente que se detiene ante datos sin otra copia. — [[STORY-090-campos-declarados-nombran-su-escritor]]
-- [ ] **STORY-091 — story-implement toma de la cola una historia rechazada y corrige en modo rework:** `/story-implement` reconoce el rework por la presencia de `fix-directives.md`, aplica un ciclo TDD acotado a los hallazgos y la lista blanca, y deja la historia lista para una nueva revisión sin intervención manual del frontmatter. — [[STORY-091-story-implement-modo-rework]]
+- [x] **STORY-091 — story-implement toma de la cola una historia rechazada y corrige en modo rework:** `/story-implement` reconoce el rework por la presencia de `fix-directives.md`, aplica un ciclo TDD acotado a los hallazgos y la lista blanca, y deja la historia lista para una nueva revisión sin intervención manual del frontmatter. — [[STORY-091-story-implement-modo-rework]]
 - [ ] **STORY-092 — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro:** reglas de robustez del modo rework: qué ocurre cuando la Fase RED no genera tests nuevos y con los archivos modificados fuera de la lista blanca de `fix-directives.md`. — [[STORY-092-reglas-robustez-modo-rework]]
 
 ## Flujos Críticos / Smoke Tests
