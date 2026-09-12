@@ -47,6 +47,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`npm run test:eval` — runner headless de evals** (`scripts/run-evals.js`): ejecuta los casos
+  `TC-NNN` de `skills/<skill>/evals/evals.json` con `claude -p` en modo solo lectura (sonnet por
+  defecto), los califica con `contains` / `not_contains` / `output_contains` / `threshold` y devuelve
+  exit code 1 si alguno falla. Sin argumentos evalúa los skills con cambios respecto a HEAD, que es lo
+  que `story-implement` invoca vía `verify.eval.command`; `-- <skill>`, `--only`, `--all`, `--report`,
+  `--model`, `--concurrency`, `--timeout`. Cierra el hueco "`Missing script: test:eval`" documentado en
+  los `implement-report.md` de STORY-089…092.
 - **[[ADR-0008-rework-sin-estado-propio]]** — registra el descarte del estado `NEEDS-CHANGES`
   (propuesta de EPIC-19), del substatus `REWORK`, del campo `rework:` y de un skill `story-fix`; la
   señal de rework es el artefacto de fallo. No supersede ADR-0003.

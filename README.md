@@ -489,6 +489,29 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLAN → REA
 /story-code-review
 ```
 
+**Ejecutar los evals de un skill (runner headless):**
+
+`sddf.config.yaml` declara `verify.eval.command: "npm run test:eval"`. El script `scripts/run-evals.js`
+reproduce el modo `evals` de `skill-test-evals` sin sesión interactiva: por cada caso `TC-NNN` de
+`skills/<skill>/evals/evals.json` lanza `claude -p` en modo solo lectura (sonnet por defecto), califica la
+salida con `contains` / `not_contains` / `output_contains` y devuelve exit code 1 si algún caso falla —
+así `story-implement` confirma RED/GREEN automáticamente.
+
+```bash
+# Skills con cambios respecto a HEAD (lo que invoca story-implement)
+npm run test:eval
+
+# Un skill concreto, o solo algunos casos
+npm run test:eval -- story-implement
+npm run test:eval -- story-implement --only TC-023,TC-029 --report
+
+# Todos los skills con evals (lento: cada caso es una llamada a claude -p)
+npm run test:eval -- --all --concurrency 2
+```
+
+Salidas crudas e informes quedan en `.tmp/skill-test-evals/<skill>/`. Requiere el CLI `claude` en el
+`PATH`; `--model`, `--concurrency` y `--timeout` ajustan coste y tiempo (`npm run test:eval -- --help`).
+
 
 ### Advanced Usage
 

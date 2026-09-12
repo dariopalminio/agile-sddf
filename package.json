@@ -32,7 +32,8 @@
     "agile-sddf": "scripts/cli.js"
   },
   "scripts": {
-    "postinstall": "node scripts/postinstall.js"
+    "postinstall": "node scripts/postinstall.js",
+    "test:eval": "node scripts/run-evals.js"
   },
   "engines": {
     "node": ">=18.0.0"
