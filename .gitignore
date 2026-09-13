@@ -3,6 +3,10 @@
 # .agents/skills/skill-master
 .claude
 .github
+.agents
+
+skills-lock.json
+
 # openspec references
 
 # private notes (temporal not shared with the public)

@@ -18,6 +18,7 @@ La documentación está diseñada para ser **navegable por humanos y agentes IA*
 
 | Documento | Bounded Context | Nivel | Alcance |
 |-----------|-----------------|-------|---------|
+| [[domain]] | Conceptos Generales | **Transversal** | Definición de términos, principios y conceptos fundamentales del framework SDDF. |
 | [[domain-work-item-hierarchy]] | Jerarquía de Work Items | **Transversal** | Estructura Project → Epic → Story, reglas de parentesco, nomenclatura, mapeos con Flight Levels y estructura de carpetas. |
 | [[domain-state-management]] | Gestión de Estados (State Management) | **Transversal** | Conceptos, modelo táctico, invariantes y tipos de transición que aplican a los tres niveles (Project, Epic, Story). |
 | [[domain-project-lifecycle]] | Ciclo de Vida de Project | **L3** | Fases, documentos fundacionales, subestados y gates humanos específicos del nivel proyecto. |
