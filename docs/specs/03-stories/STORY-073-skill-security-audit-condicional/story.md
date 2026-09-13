@@ -5,7 +5,7 @@ id: STORY-073
 kind: feat
 slug: STORY-073-skill-security-audit-condicional
 title: "Construir skill `security-audit` para auditoría automática condicional de seguridad"
-status: COMPLETED
+status: CANCELED
 substatus: DONE
 parent: EPIC-13-quality-gates-con-dod-en-story-workflow
 created: 2026-05-15
@@ -168,3 +168,5 @@ El skill detecta automáticamente variables como `has_authentication`, `uses_jwt
 
 **Tamaño de esta historia:**
 Esta historia cubre múltiples capacidades interrelacionadas (detección, evaluación condicional, generación de reportes, modos de ejecución, integración). Fue intencionalmente mantenida como una sola historia porque el valor mínimo entregable requiere todas estas partes. Si el equipo decide reducir el alcance, se recomienda dividir por: (1) motor de detección + evaluación básica, (2) generación de reportes + modos de ejecución, (3) integración con `code-review`.
+
+Nota de cancelación: esta historia se canceló en este repositorio porque se implementa en otro repositorio externo: agile-sddf-extension

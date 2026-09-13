@@ -5,7 +5,7 @@ id: STORY-080
 kind: feat
 slug: STORY-080-skills-master
 title: "skill-master — refactorización de skill-tester-eval: modos plan/build, detección de lenguaje natural e independencia SDDF"
-status: COMPLETED
+status: CANCELED
 substatus: DONE
 parent: EPIC-14-fabrica-de-skills
 created: 2026-05-30
@@ -121,3 +121,5 @@ Story creada cumple:
 3. 6 escenarios Gherkin cubriendo: renombramiento, plan mode, build mode, --auto/--manual, detección de lenguaje, independencia SDDF
 4. Requerimientos documentando renombramiento completo, backward compatibility y delegación
 5. Parent: EPIC-14-fabrica-de-skills
+
+Nota de cancelación: esta historia se canceló en este repositorio porque se implementa en otro repositorio externo: agile-sddf-extension

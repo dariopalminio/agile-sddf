@@ -3,9 +3,8 @@
 ## Scope
 
 This repository ships **instructions that AI agents execute** — the skills under `skills/`, the
-subagents under `agents/`, the policies and guardrails an agent reads under `docs/policies/`, and
-four Node helper scripts under `scripts/` (`cli.js`, `install.js`, `postinstall.js`,
-`normalize-preflight-paso0.js`, about 310 lines in total). It is consumed by installing those files
+subagents under `agents/`, the policies and guardrails an agent reads under `docs/policies/` and
+`docs/guardrails/`, and the Node helper scripts under `scripts/`. It is consumed by installing those files
 into someone else's working directory, where an agent then acts on them.
 
 So a vulnerability here is not a crash or a memory bug. **It is anything in these files that makes an
@@ -17,7 +16,7 @@ Out of scope:
 
 - The applications an agent builds by *using* these skills. Their runtime, infrastructure and
   pipelines are governed by the security policy of that project — the boundary already stated at the
-  top of [docs/policies/code-security-checklist.md](docs/policies/code-security-checklist.md).
+  top of [docs/guardrails/gr-code-security-checklist.md](docs/guardrails/gr-code-security-checklist.md).
 - Model, training-data, vector-store and inference concerns. This repository hosts none of them.
 - Vulnerabilities in third-party tools this repository invokes or documents — Skill Shielder, Trivy,
   `fs-extra`. Report those upstream.
@@ -99,16 +98,16 @@ precisely because a grep will not read it.
 Two guardrails carry every rule, each classified by how it is verified — deterministically by a named
 command, or semantically by review:
 
-- [docs/policies/code-security-checklist.md](docs/policies/code-security-checklist.md)
+- [docs/guardrails/gr-code-security-checklist.md](docs/guardrails/gr-code-security-checklist.md)
   — secrets, executable scripts, tracked artefacts and documented commands.
-- [docs/policies/ai-security-checklist.md](docs/policies/ai-security-checklist.md)
+- [docs/guardrails/gr-ai-security-checklist.md](docs/guardrails/gr-ai-security-checklist.md)
   — agent-facing instructions, untrusted input and irreversible actions.
 
 Each file defines its checks in full, so they run with `git`, GNU `grep` and Python 3, with no
 external scanner. To run one:
 
 ```bash
-sed -n '/^```bash$/,/^```$/p' docs/policies/ai-security-checklist.md | sed '1d;$d' > run-guardrail.sh
+sed -n '/^```bash$/,/^```$/p' docs/guardrails/gr-ai-security-checklist.md | sed '1d;$d' > run-guardrail.sh
 bash run-guardrail.sh
 ```
 
@@ -117,7 +116,7 @@ What is automated, and what is not:
 | Control | Where it runs | Status |
 |---------|---------------|--------|
 | Trivy — `.github/workflows/docker-security.yml` | CI, on changes to `Dockerfile*` or `docker-compose*.yml` | Active. |
-| Skill Shielder — `.github/workflows/skill-security-audit.yml` | CI, filtered on `.claude/skills/**` | **Does not cover the real source.** `.claude/` is gitignored and holds no tracked files, while the skills live in `skills/`. Known limitation. |
+| Skill Shielder — `.github/workflows/skill-security-audit.yml` | CI on pull requests and pushes to `main` that modify a protected security surface; audits `skills/`, `agents/`, `scripts/`, `docs/policies/`, `docs/guardrails/` and `.github/workflows/` | Active. The scanner's report is retained on every run and any non-zero scanner exit blocks the job. |
 | The two guardrails above | A maintainer's machine | Manual. No CI job enforces them today. |
 | The repository's own `security-audit` skill | A maintainer's machine | Manual, dogfooding. This is how the absence of this policy was found. |
 

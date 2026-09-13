@@ -6,7 +6,7 @@ kind: chore
 slug: STORY-093-raiz-configurable-preflight-diagnostico
 title: "Resolver una raíz configurable y usar preflight como diagnóstico"
 status: IMPLEMENT
-substatus: DONE
+substatus: IN-PROGRESS
 parent: EPIC-19-framework-consistency
 created: 2026-09-12
 updated: 2026-09-12

@@ -33,7 +33,8 @@
   },
   "scripts": {
     "postinstall": "node scripts/postinstall.js",
-    "test:eval": "node scripts/run-evals.js"
+    "test:eval": "node scripts/run-evals.js",
+    "verify:security-ci": "node scripts/verify-skill-security-workflow.js"
   },
   "engines": {
     "node": ">=18.0.0"

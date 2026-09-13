@@ -5,7 +5,7 @@ id: STORY-083
 kind: feat
 slug: STORY-083-skill-test-evals
 title: "skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente"
-status: COMPLETED
+status: CANCELED
 substatus: DONE
 parent: EPIC-14-fabrica-de-skills
 created: 2026-05-30
@@ -77,3 +77,5 @@ Entonces genera evals/evals.json con casos de prueba que cubren el flujo princip
         skill: skill-test-evals
         required: true
   ```
+
+Nota de cancelación: esta historia se canceló en este repositorio porque se implementa en otro repositorio externo: agile-sddf-extension

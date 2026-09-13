@@ -3,7 +3,26 @@ name: Skill Security Audit
 on:
   pull_request:
     paths:
-      - '.claude/skills/**'
+      - 'skills/**'
+      - 'agents/**'
+      - 'scripts/**'
+      - 'docs/policies/**'
+      - 'docs/guardrails/**'
+      - '.github/workflows/**'
+      - 'SECURITY.md'
+      - 'AGENTS.md'
+  push:
+    branches:
+      - main
+    paths:
+      - 'skills/**'
+      - 'agents/**'
+      - 'scripts/**'
+      - 'docs/policies/**'
+      - 'docs/guardrails/**'
+      - '.github/workflows/**'
+      - 'SECURITY.md'
+      - 'AGENTS.md'
   workflow_dispatch:
 
 permissions:
@@ -18,29 +37,45 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Prepare audit report
+        run: : > audit-report.txt
+
+      - name: Verify workflow contract
+        run: |
+          set -o pipefail
+          node scripts/verify-skill-security-workflow.js 2>&1 | tee -a audit-report.txt
+
       - name: Clone Skill Shielder
-        run: git clone https://github.com/p3nchan/skill-shielder.git /tmp/shielder
+        run: |
+          set -o pipefail
+          git clone https://github.com/p3nchan/skill-shielder.git /tmp/shielder 2>&1 | tee -a audit-report.txt
 
       - name: Make scripts executable
-        run: chmod +x /tmp/shielder/shield.sh /tmp/shielder/scanners/*.sh
+        run: |
+          set -o pipefail
+          chmod +x /tmp/shielder/shield.sh /tmp/shielder/scanners/*.sh 2>&1 | tee -a audit-report.txt
 
-      - name: Audit skills
+      - name: Audit protected sources
         id: audit
         run: |
-          /tmp/shielder/shield.sh .claude/skills > audit-report.txt
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
+          set +e
+          scan_exit=0
+          for target in skills agents scripts docs/policies docs/guardrails .github/workflows; do
+            printf '\n===== Auditing %s =====\n' "$target" >> audit-report.txt
+            /tmp/shielder/shield.sh "$target" >> audit-report.txt 2>&1
+            target_exit=$?
+            if [ "$target_exit" -ne 0 ] && [ "$scan_exit" -eq 0 ]; then
+              scan_exit=$target_exit
+            fi
+          done
+          printf '\nSkill Shielder exit code: %s\n' "$scan_exit" >> audit-report.txt
+          echo "exit_code=$scan_exit" >> "$GITHUB_OUTPUT"
+          exit "$scan_exit"
 
       - name: Upload audit report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: skill-audit-report
           path: audit-report.txt
           retention-days: 14
-
-      - name: Fail on critical issues
-        if: steps.audit.outputs.exit_code == '2'
-        run: |
-          echo "FAIL: Critical security issues found in skills"
-          cat audit-report.txt
-          exit 1
