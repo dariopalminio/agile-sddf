@@ -18,19 +18,19 @@ updated: 2026-09-12
 
 **Descripción:** framework/harness AI-CLI multiagente que conduce el desarrollo de software desde
 la intención hasta código y pruebas verificables mediante artefactos Markdown versionados, skills,
-agentes, templates, trazabilidad y gates de calidad.
+agentes, templates, scripts, trazabilidad y gates de calidad.
 
 **Usuarios principales:** developers/builders individuales, equipos ágiles, Product Owners o
 analistas, arquitectos de software, mantenedores del framework y agentes de IA consumidores.
 
-**Objetivo de negocio:** sustituir prompts ad-hoc por un proceso reproducible, auditable y
-spec-first que reduzca retrabajo y mantenga la relación entre intención, requisitos, código y pruebas.
+**Objetivo de negocio:** ofrecer una alternativa profesional a los frameworks SDD actuales: un harness multi-agente que conduce el ciclo completo de desarrollo —de la intención al release— mediante artefactos versionados, gates de calidad y trazabilidad end-to-end, para que equipos y organizaciones adopten SDD sin sacrificar escalabilidad, auditoría ni gobernanza.
 
 **Etapa:** framework en evolución continua. No usar los deadlines históricos ni los contadores de
 work items como estado actual sin verificarlos en el filesystem.
 
 **Fuentes de inicio:** `AGENTS.md`, `docs/policies/constitution.md`,
 `docs/specs/01-projects/PROJ-01-agile-sddf/project.md`, `package.json` y `docs/domains/`.
+
 ## Domain Boundaries
 ### Alcance operativo central
 
@@ -40,11 +40,13 @@ work items como estado actual sin verificarlos en el filesystem.
 - Persistir specs, políticas, ADRs, templates y documentación como conocimiento versionado del
   repositorio.
 - Instalar la misma fuente de skills y agentes en runtimes compatibles.
+
 ### Alcance de soporte
 
 - Scripts Node.js para CLI, instalación y postinstall; `sddf.config.yaml` para comandos de prueba,
   modelo de entrega y workers por stack.
 - Documentación wiki, diagramas de contexto, ingeniería inversa de codebases y auditoría de seguridad.
+
 ### Fuera de alcance del core
 
 - Motor propio de LLM, base de datos, autenticación/RBAC, dashboards o mensajería.
@@ -52,12 +54,14 @@ work items como estado actual sin verificarlos en el filesystem.
 - Workers específicos de React, NestJS, Playwright u otros stacks: viven fuera del core, normalmente
   en `agile-sddf-extension`.
 - Integraciones/exportaciones nativas a Jira, Linear, Notion o herramientas equivalentes.
+
 ### Notas de frontera
 
 - El repositorio es la fuente de verdad; `skills/` y `agents/` en la raíz son la fuente de
   distribución. `.claude/`, `.agents/` y `.github/` son destinos instalados.
 - La persistencia del framework es el sistema de archivos. `.tmp/<skill-name>/` es comunicación
   temporal entre subagentes y no es un artefacto versionado.
+
 ## Terminology Glossary
 
 | Término | Definición |
@@ -77,6 +81,7 @@ work items como estado actual sin verificarlos en el filesystem.
 | **AC / TC** | Criterio de aceptación Gherkin / caso de prueba trazable. |
 | **FINVEST** | Rúbrica de calidad de historias: Formato + INVEST. |
 | **SDDF_ROOT / SPECS_BASE** | Override temporal / raíz resuelta por `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`. |
+
 ## Entity Registry
 
 | Entidad | Qué es | Atributos o relaciones esenciales |
@@ -90,6 +95,7 @@ work items como estado actual sin verificarlos en el filesystem.
 | **Template** | Meta-artefacto que define la forma de una salida. | Seed local y copia activa central; se interpreta en runtime. |
 | **Policy / DoD / ADR** | Artefactos normativos de gobernanza, calidad y decisiones. | El DoD actúa como gate; ADR aceptado es inmutable. |
 | **Configuración SDDF** | Configuración operacional por proyecto. | `sddf.config.yaml`: delivery model, pruebas y workers. |
+
 ## State Models
 
 - **Jerarquía documentada:** `Project (L3) → Epic (L2) → Story (L1)`.
@@ -103,6 +109,7 @@ work items como estado actual sin verificarlos en el filesystem.
 > **Cautela:** el repositorio contiene valores históricos y variaciones de `status`/`substatus`
 > (por ejemplo, `READY`). No normalizarlos ni asumir que todo documento cumple el modelo hasta
 > reconciliar las fuentes listadas en Open Questions.
+
 ## Relationship Map
 
 | Desde | Relación | Hacia | Notas |
@@ -115,12 +122,15 @@ work items como estado actual sin verificarlos en el filesystem.
 | Template | estructura | Artifact | La copia activa determina campos y secciones esperados. |
 | Policy / DoD | gobierna | Transición | Un gate puede bloquear o devolver el work item a rework. |
 | Configuración SDDF | selecciona | Worker y pruebas | Permite que el core siga siendo agnóstico al stack. |
+
 ## Flow Catalog
+
 ### Inicialización y diagnóstico de entorno
 
 1. `sddf-init` prepara estructura y configuración de forma idempotente.
 2. Cada skill resuelve localmente la raíz una vez y no continúa ante una fuente explícita inválida.
 3. `skill-preflight` se invoca bajo demanda para diagnosticar la raíz, templates y estructura sin modificar el repositorio.
+
 ### Proyecto, épicas e historias
 
 1. `project-begin → project-discovery → project-planning` produce los documentos fundacionales.
@@ -129,10 +139,12 @@ work items como estado actual sin verificarlos en el filesystem.
    de aceptación según corresponda.
 4. Fallos de review, verify o acceptance devuelven una historia a `READY-FOR-IMPLEMENT`; la señal de
    rework puede ser `fix-directives.md`.
+
 ### Distribución
 
 1. npm distribuye `skills/`, `agents/`, `scripts/` y configuración declarada por `package.json`.
 2. `agile-sddf install` copia las fuentes al runtime elegido: `.claude/`, `.agents/` o `.github/`.
+
 ## Business Rules
 
 | ID | Regla | Aplica a |
@@ -147,6 +159,7 @@ work items como estado actual sin verificarlos en el filesystem.
 | BR-008 | Un ADR aceptado no se edita: un ADR nuevo lo reemplaza mediante `superseded-by`. | Decisiones de arquitectura. |
 | BR-009 | La fuente de skills y agentes es la raíz del repositorio; las carpetas de runtime son salidas instaladas. | Distribución. |
 | BR-010 | Los templates se resuelven como copia central activa → seed del skill con advertencia → error. | Generación de artefactos. |
+
 ## Integration Points
 
 | Sistema | Propósito | Dirección |
@@ -157,6 +170,7 @@ work items como estado actual sin verificarlos en el filesystem.
 | GitHub Actions | Escaneo de seguridad de skills y Docker en este repositorio. | Entrada |
 | `agile-sddf-extension` | Workers específicos por tecnología, instalados aparte. | Entrada |
 | Docker / Dev Container | Entorno de desarrollo reproducible. | Soporte |
+
 ## User Roles
 
 | Rol | Responsabilidad principal |
@@ -167,10 +181,12 @@ work items como estado actual sin verificarlos en el filesystem.
 | Arquitecto | Descubre requisitos, prioriza y diseña. |
 | Mantenedor | Dogfooding, evolución del core, seguridad, evals y publicación npm. |
 | Agente IA consumidor | Carga sólo el contexto necesario y genera artefactos conformes. |
+
 ## Stakeholder Map
 
 No hay personas nombradas de forma fiable en las fuentes revisadas. Mantener los roles anteriores y
 registrar nombres, intereses y momentos de involucramiento cuando el equipo los confirme.
+
 ## Detail Files
 
 | Archivo | Contenido a cargar bajo demanda |
@@ -183,6 +199,7 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
 | `docs/domains/domain-knowledge-artifacts.md` | Modelo de artefactos, trazabilidad, policies, guardrails, DoD y templates. |
 | `docs/policies/constitution.md` | Principios técnicos y reglas vigentes. |
 | `docs/policies/dod-story.md` | Criterios de terminado por fase de historia. |
+
 ## Open Questions
 
 - [ ] ¿Cuál es la fuente canónica única para transiciones y valores de `status`/`substatus`? Los
@@ -195,6 +212,7 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
 - [ ] ¿OpenSpec es legado retirado o capacidad soportada? README y documentos históricos difieren
   de la especificación actual. — 2026-09-12
 - [ ] ¿Quiénes son los stakeholders nombrados y cuál es el estado actual del roadmap? — 2026-09-12
+
 ## Changelog
 
 | Fecha | Resumen | Entidades añadidas | Reglas añadidas |
