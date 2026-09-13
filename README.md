@@ -90,6 +90,19 @@ npm install agile-sddf
 npx agile-sddf install --target claude-code
 ```
 
+### Monorepos con pnpm (workspaces)
+
+Desde la raíz del workspace, agrega el paquete al workspace raíz y ejecuta la
+instalación del runtime de forma explícita:
+
+```bash
+pnpm add -w agile-sddf
+pnpm exec agile-sddf install --target claude-code
+```
+
+No es necesario configurar `allowedBuiltDependencies`: la instalación no usa
+`postinstall` ni crea directorios de runtime hasta ejecutar el segundo comando.
+
 Para una instalación global, usa el mismo runtime de forma explícita:
 
 ```bash
