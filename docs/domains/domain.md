@@ -76,7 +76,7 @@ work items como estado actual sin verificarlos en el filesystem.
 | **WIP** | Límite de trabajo simultáneo en progreso o en un buffer. |
 | **AC / TC** | Criterio de aceptación Gherkin / caso de prueba trazable. |
 | **FINVEST** | Rúbrica de calidad de historias: Formato + INVEST. |
-| **SDDF_ROOT / SPECS_BASE** | Raíz configurable de artefactos / ruta resuelta, `docs/` por defecto. |
+| **SDDF_ROOT / SPECS_BASE** | Override temporal / raíz resuelta por `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`. |
 ## Entity Registry
 
 | Entidad | Qué es | Atributos o relaciones esenciales |
@@ -116,11 +116,11 @@ work items como estado actual sin verificarlos en el filesystem.
 | Policy / DoD | gobierna | Transición | Un gate puede bloquear o devolver el work item a rework. |
 | Configuración SDDF | selecciona | Worker y pruebas | Permite que el core siga siendo agnóstico al stack. |
 ## Flow Catalog
-### Inicialización y preflight
+### Inicialización y diagnóstico de entorno
 
 1. `sddf-init` prepara estructura y configuración de forma idempotente.
-2. Todo skill inicia con `skill-preflight` y no continúa con un entorno en `ERROR`.
-3. El skill resuelve `SDDF_ROOT` (`docs/` por defecto), templates y rutas antes de su lógica de negocio.
+2. Cada skill resuelve localmente la raíz una vez y no continúa ante una fuente explícita inválida.
+3. `skill-preflight` se invoca bajo demanda para diagnosticar la raíz, templates y estructura sin modificar el repositorio.
 ### Proyecto, épicas e historias
 
 1. `project-begin → project-discovery → project-planning` produce los documentos fundacionales.
@@ -138,7 +138,7 @@ work items como estado actual sin verificarlos en el filesystem.
 | ID | Regla | Aplica a |
 |---|---|---|
 | BR-001 | El repositorio versionado contiene la memoria operativa, specs, políticas y decisiones. | Todo el framework. |
-| BR-002 | `skill-preflight` es el paso 0 de todo skill SDDF; un error bloqueante impide continuar. | Skills. |
+| BR-002 | Todo skill aplica la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`; una fuente explícita inválida impide escribir. `skill-preflight` es diagnóstico bajo demanda. | Skills. |
 | BR-003 | Las relaciones de nivel son Project → Epic → Story; no se permiten saltos de nivel en el modelo canónico. | Work items. |
 | BR-004 | Debe verificarse WIP=1 antes de activar un nuevo ítem por nivel; los buffers de Epic y Story documentan además límites configurables. | Work items. |
 | BR-005 | Los gates exigen precondiciones y DoD antes de una transición; rechazo o fallo produce bloqueo o rework. | Pipelines. |

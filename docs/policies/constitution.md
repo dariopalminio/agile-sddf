@@ -115,9 +115,12 @@ skill-name/
 
 Todos los skills arrancan con frontmatter YAML estandarizado (campos: name, description, triggers, outputs, etc.).
 
-#### 3. Preflight como Paso 0
+#### 3. Resolución local de raíz
 
-Todos los skills invocan skill-preflight como primer paso antes de ejecutar cualquier lógica. Verifica SDDF_ROOT, estructura de directorios y templates disponibles.
+Todo skill resuelve una vez `REPO_ROOT`, `SPECS_BASE` y la fuente efectiva antes de ejecutar
+su lógica: `SDDF_ROOT` válida, luego `sddf.config.yaml.root` válida y finalmente `docs`.
+Una fuente explícita inválida bloquea escrituras. `skill-preflight` se reserva para el
+diagnóstico explícito y no forma parte del hot path.
 
 ### Patrones de arquitectura
 
@@ -219,7 +222,7 @@ Lista los principios que NO pueden violarse bajo ninguna circunstancia.
 4. **Mantenlo simple con las herramientas (KISS):** otorgarle a la IA herramientas muy sencillas del ecosistema y dejar que la IA deduzca cómo resolver los problemas.
 5. **Gestión estricta de la memoria y el contexto:** la IA no debe acumular todo en su contexto; debe tener un sistema de memoria externa (ficheros locales o bases de datos) donde lea y escriba solo lo que necesita en cada momento.
 6. **Evita el "teléfono descompuesto":** cuando el agente padre crea subagentes, no debe pasarles todo su contexto heredado, en su lugar, los subagentes deben escribir sus resultados de forma independiente en un directorio `.tmp/<skill-name>/` para que otros agentes lean exclusivamente lo que necesiten. Ver patrón detallado en `[[best-practices-for-skills]]`.
-7. **Uso estricto de Protocolos de Inicialización:** La IA no puede empezar a trabajar hasta que un protocolo de verificación valide que el entorno es completamente sano. En este proyecto, ese protocolo está implementado como el skill `skill-preflight` (`[[skill-preflight]]`), que verifica la estructura de directorios, la existencia de templates y las dependencias requeridas antes de ejecutar cualquier skill. No se utiliza un script externo (`init.sh`) sino que la verificación está integrada como un skill reutilizable invocable desde cualquier otro skill.
+7. **Resolución segura y diagnóstico explícito:** La IA resuelve la raíz de artefactos localmente antes de escribir y se detiene ante una fuente explícita inválida. El skill `skill-preflight` (`[[skill-preflight]]`) proporciona un diagnóstico no mutante cuando el mantenedor lo solicita; no es una dependencia implícita de los workflows.
 8. **Mantener buenas prácticas y estándares homogéneos:** El código base debe estar bien estructurado y definimos buenas prácticas y reglas claras para que los patrones de resultado esperado sean predecibles.
 9. **Spec-first:** Escribes la spec antes de codificar, la usas para la tarea en curso, y luego la descartas. Es el nivel más básico.
 10. **Spec-anchored:** La spec se mantiene después de completar la tarea y se usa para evolución y mantenimiento del feature.

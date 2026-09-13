@@ -11,12 +11,12 @@ description: >-
 Inicializa el entorno base del framework SDDF en un proyecto. Es el primer paso del flujo de onboarding SDDF:
 
 ```
-sddf-init → skill-preflight → [cualquier skill SDDF]
+sddf-init → [cualquier skill SDDF con resolución local]
 ```
 
 **Usar cuando:**
 - Al configurar SDDF en un proyecto nuevo por primera vez
-- Cuando `skill-preflight` reporta que faltan directorios base
+- Cuando se necesita bootstrapear una raíz de artefactos declarada
 
 ---
 
@@ -26,25 +26,41 @@ sddf-init → skill-preflight → [cualquier skill SDDF]
 - NO genere código; estas iniciando el entorno SDDF, no implementando los artefactos técnicos
 - No inicializa repositorio git
 - No instala dependencias
+- Una fuente de raíz explícita inválida detiene el bootstrap antes de cualquier escritura.
 
 ---
 
 ## Protocolo de inicialización
 
-### Paso 1 — Resolver SDDF_ROOT y determinar SPECS_BASE
+### Paso 1 — Resolver contexto local y raíz de bootstrap
 
-1. Leer la variable de entorno `SDDF_ROOT`.
-2. **Si `SDDF_ROOT` no está definida:**
-   - Establecer `SPECS_BASE = docs`
-3. **Si `SDDF_ROOT` está definida y la ruta existe:**
-   - Establecer `SPECS_BASE = <valor de SDDF_ROOT>`
-4. **Si `SDDF_ROOT` está definida pero la ruta NO existe:**
-   - Emitir:
+<!-- SDDF-ROOT-RESOLUTION: v1 -->
+
+Determinar `REPO_ROOT` antes de leer configuración. Resolver la raíz una única vez, sin
+exportarla a otros procesos:
+
+1. Si `SDDF_ROOT` está definida, debe ser no vacía y resolver a un directorio accesible.
+   - Si no es utilizable, emitir `[ERROR] SDDF_ROOT no es utilizable: <valor>` y detener
+     sin crear archivos ni directorios.
+   - Si es válida, usarla como `SPECS_BASE` y registrar `ROOT_SOURCE = SDDF_ROOT`.
+   - Si además no existe `<REPO_ROOT>/sddf.config.yaml`, detener antes de escribir:
      ```
-     [ERROR] SDDF_ROOT apunta a ruta inexistente: <ruta>
-     Corrige SDDF_ROOT o elimina la variable para usar docs/ como valor por defecto
+     [ERROR] SDDF_ROOT está definida pero no existe sddf.config.yaml
+     Quita el override para inicializar el valor por defecto o declara primero una raíz versionada.
      ```
-   - **Detener la ejecución. No crear ningún directorio ni archivo.**
+     El bootstrap no persiste un override temporal de CI o de una sesión local.
+2. Solo si `SDDF_ROOT` no está definida, leer `<REPO_ROOT>/sddf.config.yaml`.
+   - Si declara `root` como escalar no vacío, las rutas relativas se normalizan contra
+     `REPO_ROOT` y se registra `ROOT_SOURCE = sddf.config.yaml`.
+   - Una clave `root` vacía, no escalar, YAML ilegible o una ruta absoluta/externa
+     inexistente es un error accionable sin escrituras.
+   - Como excepción de bootstrap, un `root` relativo dentro de `REPO_ROOT` puede no
+     existir aún: `sddf-init` crea esa raíz junto con el esqueleto estándar.
+3. Si no existe configuración o no declara `root`, usar `docs` relativo a `REPO_ROOT`
+   y registrar `ROOT_SOURCE = default`.
+
+`CLI_ROOT` se resuelve independientemente y solo para copiar templates desde los skills
+instalados; nunca se deriva de `SPECS_BASE`.
 
 ### Paso 2 — Crear directorios base
 
@@ -81,13 +97,13 @@ Para cada template:
 
 ### Paso 3 — Generar sddf.config.yaml
 
-Verificar si `sddf.config.yaml` existe en la raíz del proyecto:
+Verificar si `<REPO_ROOT>/sddf.config.yaml` existe en la raíz del proyecto:
 - **No existe (o existe vacío):**
   - Crear `sddf.config.yaml` usando exactamente el contenido del template en `$CLI_ROOT/skills/sddf-init/assets/sddf.config.yaml.template`
   - Registrar `[CREADO]  sddf.config.yaml`
 - **Ya existe con contenido:**
-  - No sobrescribirlo
-  - Registrar `[YA EXISTÍA]  sddf.config.yaml` y emitir `[INFO] sddf.config.yaml ya existe — se mantiene sin cambios`
+  - No sobrescribirlo ni reemplazar una clave `root` existente.
+  - Registrar `[YA EXISTÍA]  sddf.config.yaml` y emitir `[INFO] sddf.config.yaml ya existe — se mantiene sin cambios`.
 
 ### Paso 4 — Generar .env.template
 
@@ -95,14 +111,11 @@ Verificar si `.env.template` existe en la raíz del proyecto:
 - **No existe:**
   - Crear `.env.template` con el siguiente contenido exacto:
     ```
-    # SDDF_ROOT — directorio raíz de los artefactos SDDF
-    # Valor por defecto si no se define: docs
-    # Ejemplos válidos: docs | .sdd | custom/specs
+    # SDDF_ROOT es un override opcional de la raíz versionada en sddf.config.yaml.
+    # Déjalo sin definir para usar `root` (o docs cuando la clave no existe).
+    # Úsalo, por ejemplo, en CI: export SDDF_ROOT=artefactos-ci
     #
-    # Para aplicar, copia esta línea en tu archivo .env local o exporta la variable:
-    #   export SDDF_ROOT=docs
-    #
-    SDDF_ROOT=docs
+    # Una ruta explícita debe existir y ser accesible; no hay fallback silencioso.
     ```
   - Registrar `[CREADO]  .env.template`
 - **Ya existe:**
@@ -132,15 +145,15 @@ Emitir el informe consolidado con todos los artefactos verificados:
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     docs/specs/01-projects/
-[CREADO]     docs/specs/02-epics/
-[YA EXISTÍA] docs/specs/03-stories/
-[CREADO]     docs/templates/
-[CREADO]     docs/templates/story-template.md
-[CREADO]     docs/templates/epic-template.md
-[CREADO]     docs/templates/project-template.md
-[CREADO]     docs/templates/project-intent-template.md
-[CREADO]     docs/templates/project-plan-template.md
+[CREADO]     {SPECS_BASE}/specs/01-projects/
+[CREADO]     {SPECS_BASE}/specs/02-epics/
+[YA EXISTÍA] {SPECS_BASE}/specs/03-stories/
+[CREADO]     {SPECS_BASE}/templates/
+[CREADO]     {SPECS_BASE}/templates/story-template.md
+[CREADO]     {SPECS_BASE}/templates/epic-template.md
+[CREADO]     {SPECS_BASE}/templates/project-template.md
+[CREADO]     {SPECS_BASE}/templates/project-intent-template.md
+[CREADO]     {SPECS_BASE}/templates/project-plan-template.md
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 [CREADO]     docs/policies/constitution.md
@@ -150,7 +163,7 @@ Emitir el informe consolidado con todos los artefactos verificados:
 
 **Si se creó al menos un artefacto:**
 ```
-✓ Entorno SDDF inicializado correctamente en docs/
+✓ Entorno SDDF inicializado correctamente en {SPECS_BASE}/
 ```
 
 **Si todos los artefactos ya existían:**
@@ -158,4 +171,5 @@ Emitir el informe consolidado con todos los artefactos verificados:
 ✓ Entorno ya inicializado — sin cambios necesarios
 ```
 
-Terminar la ejecución. El usuario puede continuar con `skill-preflight` o cualquier skill SDDF.
+Terminar la ejecución. El diagnóstico explícito está disponible en `/skill-preflight`;
+el usuario también puede continuar directamente con cualquier skill SDDF.

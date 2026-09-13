@@ -68,7 +68,7 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 
 ## Restricciones / Reglas
 
-- Este skill no invoca `skill-preflight` — su único output en disco son `finvest-evaluation-report.md` (siempre que el input sea ID o ruta de archivo) y la actualización del frontmatter de `story.md` (solo si la decisión es `APROBADA`).
+- Este skill resuelve localmente la raíz de artefactos y no requiere un diagnóstico adicional para producir su resultado.
 - El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida.
 - Si `F_score < 2.5`, no evaluar dimensiones INVEST — emitir `RECHAZAR` directamente por formato insuficiente.
 - **Imágenes adjuntas:** si el input incluye imágenes adjuntas (wireframes, screenshots u otros archivos binarios de imagen), ignorarlas completamente. Evaluar únicamente el contenido en texto (Markdown) de la historia de usuario. Si el usuario adjunta solo una imagen sin texto de historia, indicar que el skill requiere texto para evaluar.
@@ -80,6 +80,20 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
   If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
 
 ---
+
+## Contexto de ejecución
+
+<!-- SDDF-ROOT-RESOLUTION: v1 -->
+
+Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+
+1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
+2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
+3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
+4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+
+El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
+
 
 ## Flujo de ejecución
 

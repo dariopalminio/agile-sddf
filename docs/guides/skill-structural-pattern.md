@@ -34,9 +34,12 @@ skill-name/
 
 Todos los skills arrancan con frontmatter YAML estandarizado (campos: name, description, triggers, outputs, etc.).
 
-### 3. Preflight como Paso 0
+### 3. Resolución local de contexto
 
-Todos los skills invocan skill-preflight como primer paso antes de ejecutar cualquier lógica. Verifica SDDF_ROOT, estructura de directorios y templates disponibles.
+Todos los skills resuelven una vez `REPO_ROOT`, `SPECS_BASE` y la fuente efectiva antes de
+ejecutar lógica de negocio. La precedencia es `SDDF_ROOT` válida →
+`sddf.config.yaml.root` válida → `docs`; una fuente explícita inválida detiene las
+escrituras. `skill-preflight` es un diagnóstico explícito, no un paso automático.
 
 ## Patrones de arquitectura
 
@@ -123,6 +126,5 @@ El ciclo de vida de un artefacto se traza con status + substatus, no con version
 ### 16. Skills de validación antes de transformación
 
 Existe un skill de validación explícito (epic-format-validation) que actúa como gate antes de que los skills de generación consuman el documento.
-
 
 

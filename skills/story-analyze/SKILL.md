@@ -90,7 +90,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - El directorio de la historia existe bajo `$SPECS_BASE/specs/03-stories/`
 - `story.md` existe en el directorio de la historia
 - `design.md` existe en el directorio de la historia (requiere haber ejecutado `/story-design`)
-- `skill-preflight` retorna estado OK (entorno válido)
+- La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 - Al menos uno de `testcases.md` o `tasks.md` debe existir en el directorio de la historia. Si ambos están ausentes, la ejecución se detiene con error.
 - Si solo existe `testcases.md`: habilita implementación vía `/story-implement`
 - Si solo existe `tasks.md`: habilita implementación vía `/story-implement-tasks`
@@ -100,7 +100,6 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 
 ## Dependencias
 
-- Skills: [`skill-preflight`]
 - Herramientas: ninguna externa requerida
 
 ---
@@ -132,9 +131,19 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 
 ## Flujo de ejecución
 
-### Paso 0 — Verificar entorno (`skill-preflight`)
+### Paso 0 — Resolver contexto local
 
-Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
+<!-- SDDF-ROOT-RESOLUTION: v1 -->
+
+Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+
+1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
+2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
+3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
+4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+
+El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
+
 
 ### Paso 1 — Resolver parámetros de entrada
 

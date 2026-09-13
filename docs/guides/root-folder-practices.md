@@ -1,222 +1,109 @@
 ---
 type: guide
 slug: root-folder-practices
-title: "Prácticas de gestión del directorio raíz de SDDF"
-date: 2026-05-01
-status: null
-substatus: null
-parent: null
-related:
-  - organization-of-artifacts
+title: "Prácticas para resolver la raíz de artefactos SDDF"
+status: active
 ---
-<!-- Referencias -->
-[[organization-of-artifacts]]
 
-## 📁 Prácticas de gestión del directorio raíz de SDDF
+# Prácticas para resolver la raíz de artefactos SDDF
 
-Este documento define cómo se configura el directorio raíz de especificaciones en el framework SDDF (Spec-Driven Development Framework). El objetivo es permitir que diferentes proyectos o usuarios usen ubicaciones distintas sin modificar los skills o scripts internos.
+SDDF separa tres raíces que no son intercambiables:
 
-### Flujo de onboarding recomendado
+| Raíz | Responsabilidad |
+|---|---|
+| `REPO_ROOT` | Repositorio, `sddf.config.yaml`, código, scripts y políticas. |
+| `SPECS_BASE` | Una única raíz de artefactos SDDF: `specs/`, `templates/`, políticas y documentación relacionada. |
+| `CLI_ROOT` | Runtime instalado que contiene skills y agentes; se resuelve solo cuando hace falta. |
 
-Al configurar SDDF en un proyecto nuevo, ejecutar los siguientes skills en orden:
+## Precedencia canónica
 
+Cada skill resuelve el contexto una vez al inicio y conserva el resultado durante toda
+la invocación. La precedencia es deliberadamente segura:
+
+| Prioridad | Fuente | Resultado |
+|---|---|---|
+| 1 | `SDDF_ROOT` definida, no vacía y accesible | Se usa como `SPECS_BASE`. La configuración no se lee. |
+| 1-error | `SDDF_ROOT` definida pero no utilizable | Se informa el error y no se escribe nada. |
+| 2 | Sin override y `sddf.config.yaml` declara `root` válido | Se usa `root`; las rutas relativas se anclan en `REPO_ROOT`. |
+| 2-error | Sin override y la configuración o `root` son inválidos | Se informa el error y no se cae a `docs`. |
+| 3 | No existe una fuente explícita | Se usa `docs` relativo a `REPO_ROOT`. |
+
+Una fuente explícita inválida nunca permite un fallback silencioso. Las rutas absolutas
+conservan su significado y los espacios internos son válidos.
+
+## Configuración versionada
+
+Declara la raíz normal del proyecto en `sddf.config.yaml`:
+
+```yaml
+root: docs
+
+defaults:
+  delivery-model: batch
 ```
-/sddf-init           → Crea directorios base y archivos de configuración
-/openspec-init-config → Carga el contexto del proyecto en openspec/config.yaml
-/skill-preflight     → Verifica que el entorno está correcto (se ejecuta automáticamente antes de cada skill)
+
+Para un repositorio que conserva los artefactos en otra carpeta versionada:
+
+```yaml
+root: docs-personalizada
 ```
 
-El skill `sddf-init` es idempotente: puede ejecutarse múltiples veces sin efectos destructivos.
+La carpeta debe existir antes de usarla en un workflow ordinario. `sddf-init` es la
+única excepción: puede crear una raíz relativa dentro de `REPO_ROOT` durante el
+bootstrap idempotente.
 
----
+## Override temporal
 
----
-
-### 1. Variable de entorno `SDDF_ROOT`
-
-La variable de entorno que define la raíz base de los artefactos SDDF es:
+`SDDF_ROOT` está reservado para CI, pruebas o sesiones locales que necesiten una raíz
+distinta sin modificar la configuración versionada.
 
 ```bash
-SDDF_ROOT
+# POSIX
+export SDDF_ROOT="artefactos-ci"
 ```
 
-**Valor por defecto:** `docs` (si la variable no está definida).
-
-Los artefactos de especificación se guardan dentro de la subcarpeta `specs/` de esta raíz.
-
-- Si `SDDF_ROOT=docs`, la ruta completa es `$SPECS_BASE/specs/`.
-- Si `SDDF_ROOT=.sdd`, la ruta completa es `.sdd/specs/`.
-- Si `SDDF_ROOT=./custom`, la ruta completa es `./custom/specs/`.
-
-La estructura dentro de `specs/` sigue la estrategia definida en el documento de organización de artefactos:
-
-```
-${SDDF_ROOT}/specs/
-├── 01-projects/
-├── 02-epics/
-└── 03-stories/
-```
-
----
-
-### 2. Cómo establecer la variable
-
-#### En Linux / macOS (bash, zsh)
-
-```bash
-# Temporal (solo para la sesión actual)
-export SDDF_ROOT="docs"
-
-# Permanente (añadir a ~/.bashrc, ~/.zshrc, etc.)
-echo 'export SDDF_ROOT="docs"' >> ~/.bashrc
-```
-
-#### En Windows (PowerShell)
-
-Definirla a nivel de usuario (persistente, recomendada):
 ```powershell
-[System.Environment]::SetEnvironmentVariable("SDDF_ROOT", "docs", "User")
-[System.Environment]::GetEnvironmentVariable("SDDF_ROOT", "User")
+# PowerShell, solo para la sesión actual
+$env:SDDF_ROOT = 'artefactos-ci'
 ```
 
-#### En un archivo `.env` para desarrollo local
+La ruta indicada tiene que existir y ser accesible. Déjala sin definir para que el
+workflow use `sddf.config.yaml.root` o, si la clave no existe, `docs`.
 
-Puedes crear un archivo `.env` en la raíz del proyecto y cargarlo antes de ejecutar scripts. Ejemplo:
+No declares un valor activo en `.env.template`: ese archivo documenta el override como
+opcional para evitar que anule el valor versionado sin intención.
 
-```
-SDDF_ROOT=docs
-```
-#### En Claude Code
+## Contrato que usan los skills
 
-Configurarla en .claude/settings.local.json
+Antes de acceder a artefactos, un skill debe:
 
-Agrega la variable directamente al entorno de Claude Code:
+1. Determinar `REPO_ROOT`.
+2. Resolver `SPECS_BASE` y `ROOT_SOURCE` con la tabla anterior.
+3. Detenerse antes de escribir si una fuente explícita no es utilizable.
+4. Resolver `CLI_ROOT` de forma independiente solo si necesita un skill, agente o
+   comando del runtime.
 
-{
-  "env": {
-    "SDDF_ROOT": ".sdd"
-  }
-}
+No uses sustituciones textuales entre estas raíces. En particular, `SPECS_BASE` no es
+la raíz de código ni la ubicación de `sddf.config.yaml`, y `CLI_ROOT` no se deriva de
+la carpeta de artefactos.
 
----
+## Bootstrap y diagnóstico
 
-### 3. Uso dentro de skills o scripts
+`/sddf-init` crea el esqueleto estándar, el archivo de configuración y los templates de
+forma idempotente. Si no hay configuración ni override, crea `docs/` y guarda
+`root: docs`. Si `root` ya existe, lo conserva. Si existe `SDDF_ROOT` pero no hay
+configuración versionada, el bootstrap se detiene para no persistir un valor temporal.
 
-#### Uso dentro de skills
+`/skill-preflight` es un diagnóstico explícito y no mutante. Informa `REPO_ROOT`,
+`SPECS_BASE`, `ROOT_SOURCE`, la estructura estándar, los cinco templates centrales y
+el runtime disponible. Un skill ordinario no lo invoca automáticamente.
 
-```bash
-# Tomar variable o usar valor por defecto
-SPECS_BASE="${SDDF_ROOT:-docs}"
+## Checklist de revisión
 
-# Ruta completa a los proyectos
-PROJECTS_DIR="$SPECS_BASE/specs/01-projects"
-```
-
-#### En scripts de shell (recomendado para Claude Code skills)
-
-```bash
-# Obtener la raíz base, con valor por defecto "docs"
-SPECS_BASE="${SDDF_ROOT:-docs}"
-
-# Ruta completa a los projects
-PROJECTS_DIR="$SPECS_BASE/specs/01-projects"
-
-# Ejemplo: crear un nuevo proyecto
-mkdir -p "$PROJECTS_DIR/PROJ-001"
-```
-
-#### En scripts Node.js
-
-```javascript
-const SPECS_BASE = process.env.SDDF_ROOT || 'docs';
-const PROJECTS_DIR = `${SPECS_BASE}/specs/01-projects`;
-```
-
-#### En scripts Python
-
-```python
-import os
-
-SPECS_BASE = os.environ.get('SDDF_ROOT', 'docs')
-PROJECTS_DIR = os.path.join(SPECS_BASE, 'specs', 'projects')
-```
-
----
-
-### 4. Precedencia de la configuración
-
-Para maximizar la flexibilidad, se recomienda el siguiente orden de prioridad (de mayor a menor):
-
-1. **Variable de entorno** `SDDF_ROOT`.
-2. **Archivo de configuración** del proyecto, por ejemplo `.sddconf.json` (opcional).
-3. **Valor por defecto** (`docs`).
-
-Ejemplo de `.sddconf.json`:
-
-```json
-{
-  "specs_root": "docs"
-}
-```
-
-Si se implementa este archivo, la lógica de carga sería:
-
-```bash
-# Si existe archivo de configuración, leerlo (con jq o similar)
-if [ -f ".sddconf.json" ]; then
-   SPECS_BASE=$(jq -r '.specs_root' .sddconf.json)
-fi
-# La variable de entorno tiene prioridad
-SPECS_BASE="${SDDF_ROOT:-$SPECS_BASE}"
-SPECS_BASE="${SPECS_BASE:-docs}"
-```
-
----
-
-### 5. Buenas prácticas
-
-- **Documentar la variable** en el `README.md` del proyecto.
-- **No hardcodear rutas** en los skills; usar siempre `$SDDF_ROOT`.
-- **Para entornos de CI/CD**, establecer la variable como secreto o en la configuración del pipeline.
-- **En Dev Containers / Codespaces**, definir la variable en `devcontainer.json` o en el archivo `.env`.
-
----
-
-### 6. Coexistencia con otras herramientas (Speckit, OpenSpec)
-
-Speckit usa la ruta fija `.specify/`. OpenSpec usa `openspec/`. SDDF permite definir su propia raíz, lo que evita conflictos.
-
-Ejemplo de un proyecto que mezcla herramientas:
-
-```
-mi-proyecto/
-├── .specify/          # Speckit
-├── openspec/          # OpenSpec
-├── docs/
-│   └── specs/         # SDDF (porque SDDF_ROOT=docs)
-│       ├── 01-projects/
-│       ├── 02-epics/
-│       └── 03-stories/
-└── ...
-```
-
-Para cambiar SDDF a una raíz diferente (ej. `.sdd`), basta con `export SDDF_ROOT=.sdd`.
-
----
-
-### 7. Resumen rápido
-
-| Concepto | Valor / Acción |
-|----------|----------------|
-| **Variable** | `SDDF_ROOT` |
-| **Valor por defecto** | `docs` |
-| **Ruta completa de artefactos** | `${SDDF_ROOT}/specs/` |
-| **Cómo definir** | `export SDDF_ROOT=.sdd` |
-| **Uso en scripts** | `SPECS_BASE="${SDDF_ROOT:-docs}"` |
-| **Precedencia** | Variable de entorno > archivo de configuración > defecto |
-
----
-
-## ✅ Conclusión
-
-La configuración mediante `SDDF_ROOT` es flexible, portable y se alinea con las prácticas de herramientas como Speckit y OpenSpec. Permite a cada proyecto o usuario decidir dónde guardar sus artefactos sin modificar los skills ni scripts del framework.
+- `sddf.config.yaml` declara una clave superior `root` no vacía para la configuración
+  versionada.
+- Las rutas relativas se interpretan desde `REPO_ROOT`.
+- Un override válido evita leer una configuración defectuosa.
+- Un override o `root` explícito inválido detiene antes de escribir.
+- Los skills documentan y reutilizan su resolución local durante la invocación.
+- El diagnóstico se ejecuta solo cuando se solicita expresamente.

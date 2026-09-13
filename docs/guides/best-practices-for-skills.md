@@ -147,7 +147,7 @@ Un subagente sí puede seguir un skill **worker**, es decir, un skill que cumple
 
 1. **No interactúa con el usuario** — sin pasos que requieran AskUserQuestion ni confirmaciones (o que puedan correr con defaults, sin preguntas).
 2. **No lanza subagentes** — si lo hiciera, se produciría subagente → subagente, el caso prohibido.
-3. **No depende de contexto conversacional no provisto** — el subagente arranca con contexto vacío; el orquestador debe pasarle en el prompt los valores ya resueltos (ej. `SPECS_BASE`, ruta de la historia) o el subagente debe poder re-ejecutar `skill-preflight` por su cuenta.
+3. **No depende de contexto conversacional no provisto** — el subagente arranca con contexto vacío; el orquestador debe pasarle en el prompt los valores ya resueltos (`REPO_ROOT`, `SPECS_BASE`, `ROOT_SOURCE`, ruta de la historia) o el worker debe aplicar el contrato local: `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`.
 
 Matriz de invocaciones permitidas:
 
@@ -238,7 +238,5 @@ Nota:
 Es un metadato del runtime para Claude, no del schema SDDF, y borrarlo cambiaría el comportamiento de Claude Code con ese archivo.
 
 https://agentskills.io/home
-
-
 
 

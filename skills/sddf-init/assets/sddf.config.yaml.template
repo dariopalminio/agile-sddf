@@ -1,5 +1,8 @@
 # Valores por defecto para todos los tipos
 # este archivo debe diseñarse y reconstruiserse para ser fácilmente extendible y adaptable a diferentes proyectos y tecnologías
+# Raíz versionada de los artefactos SDDF. SDDF_ROOT solo la sobrescribe si es válido.
+root: docs
+
 defaults:
   delivery-model: batch # batch | continuous
 

@@ -16,19 +16,20 @@ related:                                    # opcional, si tiene relación con o
 
 ---
 
-## Configuración — Variable `SDDF_ROOT`
+## Configuración — Raíz de artefactos
 
-Todos los skills resuelven la ruta raíz de especificaciones a partir de la variable de entorno `SDDF_ROOT`.
+Todos los skills resuelven localmente `SPECS_BASE` una vez por invocación.
 
 | Escenario | Ruta usada |
 |---|---|
-| `SDDF_ROOT` no definida | `docs/` (valor por defecto — retrocompatible) |
-| `SDDF_ROOT=".sdd"` y la ruta existe | `.sdd/` |
-| `SDDF_ROOT` definida pero ruta inexistente | `docs/` + advertencia `⚠️ La ruta definida en SDDF_ROOT no existe` |
+| `SDDF_ROOT` válida | La ruta del override; no se lee configuración. |
+| Sin override y `sddf.config.yaml.root` válida | La raíz versionada; las rutas relativas se anclan en `REPO_ROOT`. |
+| Sin fuente explícita | `docs/` (compatibilidad). |
+| Fuente explícita inválida | Error accionable y ninguna escritura. |
 
 ```bash
-# Opcional: personalizar la ubicación de los artefactos
-export SDDF_ROOT=".sdd"
+# Override opcional, por ejemplo para CI
+export SDDF_ROOT="artefactos-ci"
 ```
 
 ---
@@ -46,7 +47,7 @@ project-begin → project-discovery → project-planning
 | `project-planning` | `requirement-spec.md` | `$SPECS_BASE/specs/01-projects/project-plan.md` |
 
 > `project-flow` orquesta los 3 pasos en una sola sesión con gates de revisión entre etapas.
-> `$SPECS_BASE` es `docs` por defecto, o el valor de `SDDF_ROOT` si está configurada.
+> `$SPECS_BASE` procede de `SDDF_ROOT` válida, de `sddf.config.yaml.root` válida o de `docs` si no hay fuente explícita.
 
 ---
 

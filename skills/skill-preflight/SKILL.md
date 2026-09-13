@@ -1,121 +1,141 @@
 ---
 name: skill-preflight
-description: "Protocolo centralizado de verificación de entorno previo a la ejecución de cualquier skill SDDF. Verifica SDDF_ROOT, subdirectorios de specs estándar, templates requeridos y config.yaml. Produce un informe OK/WARNING/ERROR con mensajes accionables."
+description: >-
+  Diagnostica explícitamente la resolución de raíces y el estado del entorno SDDF sin modificarlo.
+  Úsalo cuando necesites investigar configuración, estructura o templates antes de un workflow,
+  o cuando el usuario mencione preflight, diagnóstico de entorno o SDDF_ROOT.
+triggers:
+  - "skill-preflight"
+  - "diagnosticar entorno SDDF"
+  - "verificar configuración SDDF"
+  - "revisar SDDF_ROOT"
 ---
 
 # Skill: skill-preflight
 
-Protocolo de verificación que centraliza todas las comprobaciones de entorno del framework SDDF. Cada skill SDDF llama a este skill en su Paso 0 en lugar de replicar la lógica de validación.
-
-> **Flujo de onboarding recomendado:** `sddf-init → skill-preflight → [cualquier skill SDDF]`
-> Usa `sddf-init` primero para crear la estructura base (directorios, config.yaml). Luego `skill-preflight` verifica que el entorno está correcto antes de cada ejecución.
+`skill-preflight` es un diagnóstico explícito, de solo lectura y bajo demanda. No forma
+parte del hot path de otros skills: cada workflow resuelve su propio contexto local antes
+de operar.
 
 **Usar cuando:**
-- Al inicio de cualquier skill SDDF (invocado internamente como Paso 0)
-- Cuando se quiere diagnosticar el estado del entorno antes de ejecutar un workflow
 
-**No es necesario invocar directamente** — los skills SDDF lo llaman automáticamente.
+- El mantenedor invoca `/skill-preflight` para investigar una configuración o una ruta.
+- Se necesita comprobar la estructura de una raíz SDDF sin crear ni modificar archivos.
+- Se requiere evidencia legible de la fuente que determinó `SPECS_BASE`.
+
+**No hace:**
+
+- No crea directorios, templates, archivos de configuración ni artefactos.
+- No exporta `SPECS_BASE`, `ROOT_SOURCE` ni `CLI_ROOT` como estado persistente a otro skill.
+- No inspecciona integraciones retiradas que no se hayan solicitado expresamente.
 
 ---
 
-## Protocolo de verificación
+## Contrato de resolución
 
-Ejecutar las siguientes verificaciones en orden. Acumular todos los resultados y emitir el informe completo al final.
+<!-- SDDF-ROOT-RESOLUTION: v1 -->
 
-### Verificación 1 — SDDF_ROOT y resolución de `SPECS_BASE`
+Determinar `REPO_ROOT` como la raíz de la invocación que contiene `sddf.config.yaml`.
+Resolver una única vez `SPECS_BASE` y `ROOT_SOURCE` con esta precedencia:
 
-1. Leer la variable de entorno `SDDF_ROOT`.
-2. **Si `SDDF_ROOT` está definida y la ruta existe:**
-   - Emitir: `[OK]  SDDF_ROOT = <ruta>`
-   - Establecer `SPECS_BASE = <ruta>`
-3. **Si `SDDF_ROOT` no está definida:**
-   - Emitir: `[WARNING] SDDF_ROOT no definida → Se usará "docs" como valor por defecto`
-   - Establecer `SPECS_BASE = docs`
-4. **Si `SDDF_ROOT` está definida pero la ruta no existe:**
-   - Emitir: `[ERROR]  SDDF_ROOT apunta a ruta inexistente: <ruta> → Crear el directorio o corregir la variable`
-   - Registrar error bloqueante.
+| Prioridad | Fuente | Resultado |
+|---|---|---|
+| 1 | `SDDF_ROOT` definida, no vacía y accesible | Usar la ruta; `ROOT_SOURCE = SDDF_ROOT`. No leer la configuración. |
+| 1-error | `SDDF_ROOT` definida pero vacía, inválida, inaccesible o inexistente | Error accionable; no continuar con comprobaciones que asuman una raíz. |
+| 2 | Sin override y `sddf.config.yaml.root` es un escalar no vacío y accesible | Usar la ruta; `ROOT_SOURCE = sddf.config.yaml`. Las rutas relativas se anclan en `REPO_ROOT`. |
+| 2-error | Sin override y el YAML es ilegible, `root` no es escalar válido o no es utilizable | Error accionable; no usar `docs` como fallback. |
+| 3 | Sin fuente explícita | Usar `docs` relativo a `REPO_ROOT`; `ROOT_SOURCE = default`. |
 
-Exponer `SPECS_BASE` al skill invocador para que lo use en todas sus rutas.
+Las rutas absolutas conservan su significado y los espacios internos no se alteran. La
+resolución no crea la raíz: una fuente explícita tiene que existir para ser válida.
 
-### Verificación 2 — Subdirectorios de specs estándar
+`CLI_ROOT` es independiente de `SPECS_BASE`. Solo se diagnostica después de resolver una
+raíz válida, usando este orden: `SDDF_CLI_ROOT`, `.claude/`, `.opencode/`,
+`.github/copilot/`; si ninguno existe, se informa el valor por defecto `.claude` como
+advertencia operativa, no como error de raíz.
 
-Para cada uno de los siguientes directorios bajo `SPECS_BASE`:
+---
+
+## Protocolo de diagnóstico
+
+### Verificación 1 — Raíces y fuente efectiva
+
+Informar siempre `REPO_ROOT`. Aplicar el contrato anterior y emitir uno de estos
+resultados:
+
+```text
+[OK]      SPECS_BASE = <ruta>
+[OK]      ROOT_SOURCE = SDDF_ROOT | sddf.config.yaml | default
+```
+
+o, ante una fuente explícita inválida:
+
+```text
+[ERROR]   <SDDF_ROOT | sddf.config.yaml.root> no es utilizable: <valor>
+          Corrige la fuente explícita o elimínala para usar la siguiente fuente permitida.
+```
+
+Una raíz explícita inválida es un error bloqueante para el informe de estructura. El
+diagnóstico puede seguir mostrando `REPO_ROOT`, pero no inventa una raíz alternativa.
+
+### Verificación 2 — Estructura estándar
+
+Solo con `SPECS_BASE` válida, verificar:
+
 - `specs/01-projects/`
 - `specs/02-epics/`
 - `specs/03-stories/`
 
-Verificar si existe:
-- **Existe:** emitir `[OK]  <ruta> existe`
-- **No existe:** emitir `[WARNING] <ruta> no encontrado → Crear el directorio si el skill lo requiere`
+Para cada ruta, emitir `[OK] <ruta> existe` o `[WARNING] <ruta> no encontrado`. Son
+advertencias operativas; este skill no crea directorios para corregirlas.
 
-Los directorios faltantes son advertencias, no errores bloqueantes (algunos workflows pueden no necesitar todos los directorios).
+### Verificación 3 — Templates centrales
 
-### Verificación 3 — Templates requeridos por el skill invocador (opcional)
+Solo con `SPECS_BASE` válida, verificar el conjunto fijo de templates centrales:
 
-Si el skill invocador declara una lista de templates requeridos, verificar cada uno según su tipo:
+- `story-template.md`
+- `epic-template.md`
+- `project-template.md`
+- `project-intent-template.md`
+- `project-plan-template.md`
 
-**Templates centrales** (compartidos, resueltos vía `$SPECS_BASE/templates/<nombre>`):
-- **Existe en el central:** emitir `[OK]  Template presente: $SPECS_BASE/templates/<nombre>`
-- **No existe en el central pero sí en el `assets/` del skill dueño:** emitir
-  `[WARNING] Template <nombre> no centralizado → usando fallback del skill dueño. Ejecutar sddf-init para centralizarlo`
-- **No existe en ninguno de los dos:** emitir
-  `[ERROR]  Template faltante: <nombre> → Ejecutar sddf-init`
-  - Registrar error bloqueante.
+Para cada `<template>` bajo `SPECS_BASE/templates/`, emitir `[OK] Template presente:` o
+`[WARNING] Template no encontrado:`. La invocación independiente no necesita conocer un
+skill consumidor ni usa un fallback para convertir una ausencia en éxito.
 
-**Templates locales** (archivos en el directorio `assets/` del propio skill invocador):
-- **Existe:** emitir `[OK]  Template presente: <ruta>`
-- **No existe:** emitir `[ERROR]  Template faltante: <ruta> → Verificar que el archivo existe en assets/`
-  - Registrar error bloqueante.
+### Verificación 4 — Runtime opcional
 
-Si no se declaran templates requeridos, omitir esta verificación.
+Resolver `CLI_ROOT` de forma independiente según el contrato y emitir:
 
-### Verificación 4 — Inicialización de config.yaml
+```text
+[OK]      CLI_ROOT = <ruta>
+```
 
-Verificar si `openspec/config.yaml` existe y tiene contenido:
-- **Existe con contenido:** emitir `[OK]  openspec/config.yaml inicializado`
-- **No existe o está vacío:** emitir `[WARNING] openspec/config.yaml no inicializado → Ejecutar /sddf-init seguido de /openspec-init-config`
-
-Esta es una advertencia, no un error bloqueante.
-
-### Verificación 5 — Resolución de `CLI_ROOT`
-
-1. Si la variable de entorno `SDDF_CLI_ROOT` está definida → `CLI_ROOT = $SDDF_CLI_ROOT`.
-2. Si no, detectar por filesystem (en orden de prioridad):
-   - Si `.claude/` existe → `CLI_ROOT = .claude`
-   - Si `.opencode/` existe → `CLI_ROOT = .opencode`
-   - Si `.github/copilot/` existe → `CLI_ROOT = .github/copilot`
-3. Si ninguno de los anteriores existe:
-   - Emitir: `[WARNING] No se detectó directorio CLI conocido → Se usará ".claude" como valor por defecto`
-   - `CLI_ROOT = .claude`
-4. Emitir: `[OK]  CLI_ROOT = <ruta>`
-
-Exponer `CLI_ROOT` al skill invocador para que lo use en rutas a skills, agents y commands.
+Si se usa el default por no detectar runtime conocido, anteponer también una advertencia
+que explique que la resolución de artefactos no depende de ese directorio.
 
 ---
 
-## Informe de estado final
+## Informe final
 
-Después de todas las verificaciones, emitir el informe consolidado:
+Acumular los resultados sin mutar el repositorio:
 
-```
-── Preflight SDDF ──────────────────────────────
-[OK]      SDDF_ROOT = docs
-[OK]      CLI_ROOT = .claude
-[OK]      specs/01-projects/ existe
-[WARNING] specs/02-epics/ no encontrado → Crear el directorio si el skill lo requiere
-[OK]      specs/03-stories/ existe
-[OK]      openspec/config.yaml inicializado
-────────────────────────────────────────────────
+```text
+── Preflight SDDF ───────────────────────────
+[OK]      REPO_ROOT = <ruta>
+[OK]      SPECS_BASE = <ruta>
+[OK]      ROOT_SOURCE = <fuente>
+[OK]      <comprobaciones de estructura, templates y runtime>
+[WARNING] <advertencias operativas, si existen>
+─────────────────────────────────────────────
+✓ Diagnóstico completado — sin cambios
 ```
 
-**Si no hay errores bloqueantes:**
-```
-✓ Entorno OK — listo para continuar
-```
-Ceder el control al skill invocador para que prosiga su ejecución.
+Si hay errores de raíz, cerrar con:
 
-**Si hay uno o más errores bloqueantes:**
+```text
+✗ Diagnóstico incompleto — corrige las fuentes [ERROR] antes de ejecutar un workflow que escriba artefactos
 ```
-✗ Entorno inválido — corregir los errores [ERROR] antes de continuar
-```
-Detener la ejecución. No continuar con el skill invocador hasta que el usuario corrija el entorno.
+
+La salida describe el estado observado; no habilita, bloquea ni modifica una invocación
+posterior de otro skill.

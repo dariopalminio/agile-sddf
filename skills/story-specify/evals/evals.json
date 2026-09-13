@@ -1,13 +1,13 @@
 {
   "skill": "story-specify",
   "version": "1.0.0",
-  "description": "Casos de prueba para story-specify: verifica el comportamiento del orquestador (flujo completo, detección de backlog, fail-fast de preflight, split automático y gate anti-bucle) sin evaluar el contenido interno de cada sub-skill invocado.",
+  "description": "Casos de prueba para story-specify: verifica el comportamiento del orquestador (flujo completo, detección de backlog, fail-fast de raíz explícita, split automático y gate anti-bucle) sin evaluar el contenido interno de cada sub-skill invocado.",
   "cases": [
     {
       "id": "TC-001",
       "name": "ciclo-completo-historia-nueva-aprobada",
       "type": "happy-path",
-      "description": "Flujo completo con historia nueva: preflight OK → story-creation → story-evaluation devuelve APROBADA → el orquestador actualiza el frontmatter a SPECIFY/DONE y muestra el resumen final con ruta del archivo generado. No se invocan story-split ni story-improve.",
+      "description": "Flujo completo con historia nueva: el contrato local resuelve una raíz válida → story-creation → story-evaluation devuelve APROBADA → el orquestador actualiza el frontmatter a SPECIFY/DONE y muestra el resumen final con ruta del archivo generado. No se invocan story-split ni story-improve.",
       "input": {
         "context": "Un vendedor de una empresa SaaS quiere exportar su lista de clientes activos a CSV para compartirla con su gerente antes de la reunión mensual de pipeline."
       },
@@ -57,11 +57,11 @@
     },
     {
       "id": "TC-003",
-      "name": "preflight-invalido-detiene-ejecucion",
+      "name": "raiz-explicita-invalida-detiene-ejecucion",
       "type": "fail-fast",
-      "description": "skill-preflight retorna estado de error (entorno inválido: SDDF_ROOT no configurado o directorio de stories faltante). El orquestador debe detenerse inmediatamente en el Paso 0 sin invocar story-creation, story-evaluation ni ningún otro sub-skill.",
+      "description": "SDDF_ROOT es una fuente explícita inválida. El orquestador debe detenerse inmediatamente durante la resolución local, sin invocar story-creation, story-evaluation ni ningún otro sub-skill.",
       "input": {
-        "context": "SDDF_ROOT no está configurado en el entorno. skill-preflight retorna error de entorno inválido."
+        "context": "SDDF_ROOT está definido con una ruta inexistente; no hay escrituras ni sub-skills permitidos."
       },
       "expected": {
         "contains": [

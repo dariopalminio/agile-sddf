@@ -1,6 +1,9 @@
 # Configuración SDDF — personalizar para cada proyecto
 # Reemplaza los comandos de prueba con los de tu stack tecnológico y runner de tests
 
+# Raíz versionada de los artefactos SDDF. SDDF_ROOT solo la sobrescribe si es válido.
+root: docs
+
 defaults:
   delivery-model: batch # batch | continuous
 

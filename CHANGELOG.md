@@ -10,6 +10,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **Resolución de la raíz de artefactos SDDF** — los workflows resuelven una vez
+  `SPECS_BASE` con la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`.
+  Una fuente explícita inválida ahora detiene las escrituras en lugar de caer silenciosamente a
+  `docs`; `REPO_ROOT`, `SPECS_BASE` y `CLI_ROOT` mantienen responsabilidades separadas. El bootstrap
+  de `sddf-init`, sus plantillas, `.env.template`, la documentación y los 32 skills fuente se
+  alinean con este contrato (STORY-093).
+- **`skill-preflight` pasa a ser diagnóstico explícito y no mutante** — informa la raíz efectiva y
+  su fuente, revisa estructura y los cinco templates centrales solo cuando se invoca; los workflows
+  ordinarios ya no lo ejecutan automáticamente y no comprueban la integración OpenSpec retirada
+  (STORY-093).
 - **`story-implement` gana un gate de estado y un modo rework** — nuevo Paso 0c: solo acepta
   `READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS` (otro estado detiene sin escribir nada),
   escribe `IMPLEMENT/IN-PROGRESS` al arrancar (comportamiento nuevo: antes solo estaba documentado)
@@ -45,8 +55,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   substatus nuevo. `README.md` y `docs/domains/README.md` reemplazan la ruta inexistente
   `state-machine.md` por `docs/domains/domain-story-lifecycle.md`.
 
+### Removed
+
+- **`scripts/normalize-preflight-paso0.js`** — se retira el normalizador que reinsertaba el
+  antiguo Paso 0 obligatorio de preflight, incompatible con la resolución local de raíz
+  (STORY-093).
+
 ### Added
 
+- **`scripts/audit-root-resolution.js`** — auditor Node de solo lectura que valida el contrato de
+  resolución, la ausencia de invocaciones automáticas de preflight y la coherencia de las fuentes
+  activas (STORY-093).
 - **`npm run test:eval` — runner headless de evals** (`scripts/run-evals.js`): ejecuta los casos
   `TC-NNN` de `skills/<skill>/evals/evals.json` con `claude -p` en modo solo lectura (sonnet por
   defecto), los califica con `contains` / `not_contains` / `output_contains` / `threshold` y devuelve

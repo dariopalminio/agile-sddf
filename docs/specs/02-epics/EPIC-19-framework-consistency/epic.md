@@ -27,6 +27,7 @@ Tras el hardening del workflow (EPIC-18) quedaron brechas que el propio uso del 
 - [x] **STORY-090 — Todo campo declarado en un template nombra a su escritor:** nuevo principio de la constitución y anotación de escritor en los cinco templates de `$SPECS_BASE/templates/`, empezando por retirar el campo FINVEST del cuerpo de `story.md` (tres escritores, ningún lector) con una migración idempotente que se detiene ante datos sin otra copia. — [[STORY-090-campos-declarados-nombran-su-escritor]]
 - [x] **STORY-091 — story-implement toma de la cola una historia rechazada y corrige en modo rework:** `/story-implement` reconoce el rework por la presencia de `fix-directives.md`, aplica un ciclo TDD acotado a los hallazgos y la lista blanca, y deja la historia lista para una nueva revisión sin intervención manual del frontmatter. — [[STORY-091-story-implement-modo-rework]]
 - [x] **STORY-092 — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro:** reglas de robustez del modo rework: qué ocurre cuando la Fase RED no genera tests nuevos y con los archivos modificados fuera de la lista blanca de `fix-directives.md`. — [[STORY-092-reglas-robustez-modo-rework]]
+- [x] **STORY-093 — Resolver una raíz configurable y usar preflight como diagnóstico:** los skills resuelven localmente `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`; `skill-preflight` pasa a ser diagnóstico explícito y no mutante. Sustituye operativamente los contratos de STORY-049 y STORY-053 sin modificar sus artefactos históricos. — [[STORY-093-raiz-configurable-preflight-diagnostico]]
 
 ## Flujos Críticos / Smoke Tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
@@ -85,7 +86,7 @@ docs/
 ```
 
 ## Impacto en Procesos Claves
-- **Instalación y onboarding:** la instalación en Windows es verificable (directorios y agentes realmente copiados); `sddf-init` + `skill-preflight` siguen siendo el único protocolo de arranque.
+- **Instalación y onboarding:** la instalación en Windows es verificable (directorios y agentes realmente copiados); `sddf-init` conserva el bootstrap idempotente y cada workflow resuelve su raíz localmente. `skill-preflight` queda disponible como diagnóstico explícito.
 - **Pipeline de historia (SPECIFY → PLAN → IMPLEMENT → VERIFY → ACCEPTANCE → DELIVER):** se incorpora el ciclo de corrección post-review (STORY-089) y desaparece el campo FINVEST del cuerpo de `story.md`; la señal de aprobación es `SPECIFY/DONE`, escrita solo por `story-evaluation`.
 - **Pipeline de épica:** los skills `release-*` pasan a `epic-*` y los artefactos a `epic.md`; los IDs de historia se unifican bajo `STORY-NNN` + `kind`.
 - **Mantenimiento de templates:** todo campo nuevo debe declarar su skill escritor (principio 13 de la constitución); los cinco templates centrales y sus seeds en `skills/*/assets/` se mantienen idénticos.

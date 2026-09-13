@@ -29,7 +29,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 ```
 
 **Qué hace este skill:**
-- Invoca `skill-preflight` como Paso 0
+- Resuelve `REPO_ROOT`, `SPECS_BASE` y `CLI_ROOT` localmente como Paso 0
 - **Paso 0c:** gate de estado (`READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS`), detección del modo rework por presencia de `fix-directives.md` (ronda, hallazgos y lista blanca) y transición de `story.md` a `IMPLEMENT/IN-PROGRESS` antes de leer `sddf.config.yaml`
 - **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden con un bundle que lleva siempre `rework_round`, `fix_directives_path` y `whitelist` (`null` fuera de rework); confirma estado rojo; escribe `red-phase-status.json` (con `files_modified`, `rework_round` y `rework_evidence`)
 - **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"`, `layer:"{layer}"` y los mismos tres campos de rework en el bundle; consolida resultados (`files_generated` y `files_modified`); confirma que los tests pasan
@@ -201,9 +201,19 @@ y por cada archivo: `$OUT_OF_SCOPE_LOG += {fase, archivo, origen, resolución: "
 
 ---
 
-### Paso 0 — Verificar entorno (`skill-preflight`)
+### Paso 0 — Resolver contexto local
 
-Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. `skill-preflight` resuelve y expone `$SPECS_BASE` y `$CLI_ROOT` — usar `$SPECS_BASE` en todas las rutas a artefactos de specs y `$CLI_ROOT` en todas las rutas a skills (`$CLI_ROOT/skills/{skill}/SKILL.md`) en los pasos siguientes.
+<!-- SDDF-ROOT-RESOLUTION: v1 -->
+
+Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+
+1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
+2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
+3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
+4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+
+El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
+
 
 ### Paso 0b — Parsear flags de invocación e inicializar `$EXEC_MODE`
 
@@ -314,7 +324,7 @@ Mostrar el bloque de inicio:
 
 ### Paso 1 — Leer configuración de test_generators
 
-Leer `sddf.config.yaml`.
+Leer `<REPO_ROOT>/sddf.config.yaml`.
 
 **Si `sddf.config.yaml` no existe:**
 ```
@@ -671,7 +681,7 @@ Mostrar: `[INFO] Precondición RED verificada — story_id: {$RED_STORY_ID}, {N}
 
 ### Paso 8 — Leer y validar code_generators
 
-Leer `sddf.config.yaml` (ya cargado en Paso 1).
+Reutilizar `<REPO_ROOT>/sddf.config.yaml` (ya cargado en Paso 1).
 
 Extraer `implement.code_generators` como lista.
 
@@ -1226,5 +1236,3 @@ La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md �
 | `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente: `{status, message?, files_generated, files_modified?}` |
 
 ---
-
-

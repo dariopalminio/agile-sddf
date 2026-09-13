@@ -58,7 +58,7 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **SDD workflow**: Se implemente un workflow a nivel de story "SPECIFY --> PLAN --> READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> DELIVER --> COMPLETED" con skills dedicados para cada fase y generación de artefactos específicos (design.md, tasks.md, analyze.md, implement-report.md, code-review-report.md)
 - **Pipeline SDD completo de historia**: planning y implementación tarea a tarea — `story-plan` orquesta `story-design` → `story-tasking` → `story-testcases` → `story-analyze` en un solo comando; `story-implement` ejecuta el ciclo TDD completo (RED→GREEN→REFACTOR) delegando a skills configurables por stack tecnológico (`sddf.config.yaml`): genera tests con el skill `test_generator` declarado, implementa código con el `code_generator` y refactoriza sin romper suites; soporta modo interactivo (con pausas de confirmación entre fases) y modo automático (`--auto`) para CI; `story-code-review` para revisión multi-agente post-implementación
 - **Skills worker customizados (extensión)**: los workers específicos por stack —generadores de tests y de código para NestJS, React, Cypress/Playwright + Cucumber— **no se incluyen en este paquete**. Viven en [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension), se instalan por separado y se declaran en `sddf.config.yaml`, de modo que el core permanece agnóstico al stack mientras esos workers evolucionan en su propio repo. Ver [Extensions](#extensions--agile-sddf-extension)
-- **Configuración operacional por stack (`sddf.config.yaml`)**: archivo de configuración en la raíz del proyecto que declara los skills activos para cada fase del pipeline TDD (qué skill genera los tests de componente, qué skill genera los E2E, qué skill implementa el código); permite añadir nuevos skills de testing o implementación sin modificar los orquestadores; generado automáticamente por `sddf-init` desde un template canónico con soporte para ejemplos de configuración por stack (ej. `sddf.config.yaml.example` para librería UI React)
+- **Configuración operacional por stack (`sddf.config.yaml`)**: archivo versionado en la raíz del proyecto que declara `root` para los artefactos SDDF y los skills activos para cada fase del pipeline TDD; `SDDF_ROOT` es un override temporal válido solo si apunta a un directorio accesible. `sddf-init` genera la configuración desde un template canónico.
 - **Políticas de proyecto**: generación de `constitution.md` y `dod-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
 - **Integración OpenSpec**: exploración, propuesta, implementación y archivado de cambios con trazabilidad completa
 - **Multi-runtime**: los mismos skills operan en Claude Code, GitHub Copilot y OpenCode sin modificar el SKILL.md fuente, eligiendo la carpeta destino al instalar (`.claude`/`.github`/`.agents`); el soporte a otros CLI/LLMs se evaluará en releases futuros
@@ -176,7 +176,8 @@ histórica sigue siendo trazable.
 ### Migración
 
 Haz commit de tu trabajo antes de empezar y ejecuta los pasos desde la raíz del proyecto. Ajusta
-`docs/` si usas otro `SDDF_ROOT`.
+`docs/` por el `SPECS_BASE` efectivo si tu `sddf.config.yaml` declara otro `root` o si aplicas un
+override válido mediante `SDDF_ROOT`.
 
 ```bash
 # 1. Artefacto release.md → epic.md, su frontmatter y la sección del plan
@@ -218,7 +219,7 @@ npx agile-sddf install --force
    calcular el siguiente ID — y el cálculo puede asignar un número en colisión.
 3. **Revisa el `kind: feat` por defecto** del paso 5: las historias que en realidad sean correcciones
    o tareas técnicas quedan mal clasificadas hasta que las ajustes a `fix` / `chore` / `hotfix`.
-4. **Borra el `release-spec-template.md` huérfano** de `{SDDF_ROOT}/templates/` tras
+4. **Borra el `release-spec-template.md` huérfano** de `{SPECS_BASE}/templates/` tras
    reejecutar `/sddf-init`; ahora se llama `epic-template.md`. Sin reejecutarlo, los skills caen en el
    fallback al template semilla con un `WARNING`, sin romperse.
 
@@ -243,7 +244,7 @@ Después de instalar el paquete, inicializa la estructura de directorios SDDF en
 /sddf-init
 ```
 
-Este skill crea los directorios base de artefactos bajo `<SPECS_BASE>/specs/` (por defecto `docs/`), genera `sddf.config.yaml` con la configuración operacional del framework y el archivo `.env.template` con la variable `SDDF_ROOT`. Solo es necesario ejecutarlo una vez por proyecto.
+Este skill crea los directorios base de artefactos bajo `<SPECS_BASE>/specs/`, genera `sddf.config.yaml` con `root: docs` cuando no existe una configuración y deja `.env.template` como documentación del override opcional `SDDF_ROOT`. Solo es necesario ejecutarlo una vez por proyecto.
 
 ```
 ── sddf-init ────────────────────────────────────
@@ -256,9 +257,9 @@ Este skill crea los directorios base de artefactos bajo `<SPECS_BASE>/specs/` (p
 ✓ Entorno SDDF inicializado correctamente en docs/
 ```
 
-Si `SDDF_ROOT` está definida como variable de entorno y la ruta no existe, el skill lo reporta como error antes de crear cualquier archivo. Consulta la sección [Configuration](#configuration) para más detalles sobre `SDDF_ROOT`.
+Si una fuente de raíz explícita (`SDDF_ROOT` o `sddf.config.yaml.root`) no es utilizable, el skill lo reporta como error antes de crear cualquier archivo. Consulta la sección [Configuration](#configuration) para más detalles.
 
-> **skill-preflight:** todos los skills SDDF invocan automáticamente `/skill-preflight` como Paso 0 antes de cualquier operación. Verifica `SDDF_ROOT`, los subdirectorios de specs y produce un informe OK/WARNING/ERROR. No es necesario invocarlo manualmente; se puede ejecutar directamente para diagnosticar el entorno antes de un workflow.
+> **skill-preflight:** `/skill-preflight` es un diagnóstico explícito y de solo lectura. Informa la raíz efectiva, la fuente que la determinó, la estructura y los templates; los skills ordinarios resuelven ese contrato localmente y no lo invocan automáticamente.
 
 ## Quick Start
 
@@ -346,7 +347,7 @@ Define los principios que ningún skill ni agente puede violar. Contiene:
 | Stack tecnológico | Lenguaje, runtime, frameworks y librerías core |
 | Infraestructura | Control de versiones, contenedores, paquete npm |
 | Convenciones de código | Estilo, formato y nomenclatura (kebab-case) |
-| Estándares de skills | Estructura de directorios, frontmatter YAML, Preflight como Paso 0, patrón de delegación único |
+| Estándares de skills | Estructura de directorios, frontmatter YAML, resolución local de raíz y patrón de delegación único |
 | Patrones de nomenclatura | IDs jerárquicos (PROJ-NN, EPIC-NN, STORY-NNN), frontmatter canónico |
 | Reglas de comportamiento | Control WIP=1, gates secuenciales, idempotencia, flags opcionales |
 | Principios técnicos inamovibles | 10 principios — repositorio como sistema, orquestación multiagente, Spec-first, KISS, etc. |
@@ -367,9 +368,9 @@ Define los criterios de "terminado" para cada estado del ciclo de vida de una hi
 
 #### Integración en el flujo
 
-Los skills comprueban estas políticas en dos momentos:
+Los skills aplican estas políticas en dos momentos:
 
-1. **Preflight (Paso 0):** `skill-preflight` verifica que los archivos de políticas existen y son legibles antes de ejecutar cualquier lógica.
+1. **Resolución local:** cada workflow determina `REPO_ROOT`, `SPECS_BASE` y la fuente de raíz antes de leer sus artefactos.
 2. **Gate de transición:** skills como `story-code-review` y `story-acceptance` leen `dod-story.md` para decidir si el artefacto cumple los criterios del estado destino antes de actualizar `status`/`substatus` en el frontmatter.
 
 ```bash
@@ -379,7 +380,9 @@ Los skills comprueban estas políticas en dos momentos:
 
 ### Estructura de artefactos de especificación
 
-Los artefactos de especificación se organizan en directorios por workitem bajo `{SDDF_ROOT}/specs/`:
+Los artefactos de especificación se organizan en directorios por workitem bajo
+`{SPECS_BASE}/specs/`, donde `SPECS_BASE` se resuelve una vez por workflow:
+`SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`.
 
 ```
 docs/specs/
@@ -542,34 +545,39 @@ Salidas crudas e informes quedan en `.tmp/skill-test-evals/<skill>/`. Requiere e
 
 El framework es declarativo y su flujo se controla mediante el campo `substatus` en los documentos Markdown del pipeline.
 
-### Environment Variables
+### Raíz de artefactos y variables de entorno
 
-| Variable | Required | Default | Description |
+| Fuente | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `SDDF_ROOT` | No | `docs` | Directorio raíz donde los skills leen y escriben artefactos (`specs/01-projects/`, `specs/02-epics/`, `specs/03-stories/`) |
+| `sddf.config.yaml.root` | Sí (recomendado) | `docs` si la clave falta | Raíz versionada de artefactos SDDF; las rutas relativas se anclan en la raíz del repositorio. |
+| `SDDF_ROOT` | No | — | Override temporal de la raíz versionada para CI o pruebas; debe apuntar a un directorio accesible. |
 | `SDDF_TARGET` | No | `.claude` | Carpeta destino del `postinstall` automático (`.claude`, `.agents`, `.github`). Útil en CI para instalar en un runtime distinto sin prompt interactivo. |
 
 El runtime de IA (Claude Code, GitHub Copilot, etc.) gestiona su propia autenticación de forma independiente al framework.
 
 ### SDDF_ROOT
 
-`SDDF_ROOT` define el directorio raíz donde todos los skills del framework buscan y crean artefactos. Permite alojar la carpeta de especificaciones en cualquier ubicación del repositorio sin modificar los skills.
+`sddf.config.yaml.root` define la raíz versionada donde los skills buscan y crean artefactos.
+`SDDF_ROOT` permite sobrescribirla temporalmente sin modificar el repositorio.
+
+```yaml
+# sddf.config.yaml
+root: docs-personalizada
+```
 
 ```bash
-# Usar un directorio personalizado
-export SDDF_ROOT=".sdd"
-
-# Usar el valor por defecto (docs/) — equivale a no definirla
-export SDDF_ROOT="docs"
+# Override temporal, por ejemplo en CI
+export SDDF_ROOT="artefactos-ci"
 ```
 
 **Comportamiento:**
-- Si `SDDF_ROOT` está definida y la ruta existe → los skills usan esa ruta como raíz.
-- Si `SDDF_ROOT` no está definida → los skills usan `docs` (retrocompatible con versiones anteriores).
-- Si `SDDF_ROOT` apunta a una ruta inexistente → los skills emiten una advertencia y vuelven a `docs`:
-  ```
-  ⚠️ La ruta definida en SDDF_ROOT no existe. Se usará el valor por defecto: docs
-  ```
+- Si `SDDF_ROOT` está definida y la ruta existe → los skills la usan y no leen la configuración.
+- Si no existe override y `root` es válido → los skills usan la raíz versionada.
+- Si no hay fuente explícita → usan `docs`, de forma compatible.
+- Si `SDDF_ROOT` o `root` son inválidos → emiten un error accionable y no escriben en `docs` por fallback.
+
+`/skill-preflight` puede mostrar esta resolución, la estructura y los templates cuando se invoca
+explícitamente. Los workflows normales no lo ejecutan de forma implícita.
 
 > **Nota sobre rutas con espacios:** si el valor de `SDDF_ROOT` contiene espacios, enciérralo entre comillas al exportarlo: `export SDDF_ROOT="mi carpeta/specs"`.
 

@@ -37,7 +37,7 @@ story-verify    ← aquí
 
 - `$SPECS_BASE/specs/03-stories/<story-id>/story.md` — historia a verificar (precondición de estado)
 - `$SPECS_BASE/policies/dod-story.md` — criterios DoD sección VERIFY (opcional; usa fallback genérico si no existe)
-- `$SDDF_ROOT/sddf.config.yaml` — configuración de pruebas del proyecto (opcional; si existe y contiene tests `required: true`, tiene prioridad sobre la detección automática)
+- `<REPO_ROOT>/sddf.config.yaml` — configuración de pruebas del proyecto (opcional; si existe y contiene tests `required: true`, tiene prioridad sobre la detección automática)
 - Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático (fallback cuando sddf.config.yaml no existe)
 - `.tmp/story-verify/{story_id}/qa-input.json` / `qa-output.json` — canal de comunicación con el agente QA (solo modo manual)
 - `assets/verify-report-template.md` — template del reporte
@@ -52,7 +52,6 @@ story-verify    ← aquí
 
 ## Dependencias
 
-- Skills: [`skill-preflight`]
 - Agentes: [`agents/qa-engineer.agent.md`] (modo manual y e2e-assessment)
 - Herramientas de testing (según modo detectado): `pytest`, `jest`, `vitest`, `go test`, `npx playwright`, `npx cypress`, `npx cucumber-js`
 - Archivos de entrada: `$SPECS_BASE/policies/dod-story.md`, `assets/verify-report-template.md`
@@ -88,9 +87,19 @@ story-verify    ← aquí
 
 ## Flujo de ejecución
 
-### Paso 0 — Verificar entorno (`skill-preflight`)
+### Paso 0 — Resolver contexto local
 
-Invocar `skill-preflight`. Si retorna `✗ Entorno inválido`, detener la ejecución. Usar `$SPECS_BASE` en todas las rutas siguientes.
+<!-- SDDF-ROOT-RESOLUTION: v1 -->
+
+Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+
+1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
+2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
+3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
+4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+
+El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
+
 
 ### Paso 1 — Resolver historia y verificar precondiciones
 
@@ -196,7 +205,7 @@ Mostrar:
 
 ### Paso 4 — Leer configuración de pruebas (sddf.config.yaml)
 
-Buscar `sddf.config.yaml` en `$SDDF_ROOT`.
+Buscar `<REPO_ROOT>/sddf.config.yaml`.
 
 **Si el archivo NO existe:**
 - Registrar `$CONFIG_VERIFY_FOUND = false`

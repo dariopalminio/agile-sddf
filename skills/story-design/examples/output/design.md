@@ -114,7 +114,7 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
 
 ```
 /story-design STORY-057
-  → Paso 0: skill-preflight (verificar entorno, resolver SPECS_BASE)
+  → Paso 0: resolver REPO_ROOT y SPECS_BASE localmente
   → Paso 1: resolver parámetros
       ├── directorio historia: glob SPECS_BASE/specs/03-stories/STORY-057-*/
       ├── template: SPECS_BASE/templates/story-design-template.md

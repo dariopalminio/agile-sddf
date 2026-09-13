@@ -3,7 +3,7 @@
 - **Idioma de trabajo:** skills, agentes y documentos de este repositorio se redactan en **español**. Los skills heredados de ecosistemas en inglés (ej. `test-cypress-cucumber`, `test-playwright-cucumber`) pueden mantener su idioma original.
 - **El repositorio es la fuente de verdad:** specs, políticas, ADRs y decisiones viven versionados aquí dentro. Si necesitas saber "cómo trabajamos", está en el repo, no fuera de él.
 - **`skills/` y `agents/` (en la raíz) son la fuente única de skills y agentes de este repo.** Los skills nuevos se crean en `skills/<skill-name>/` y los subagentes en `agents/<nombre>.agent.md`. El instalador (`scripts/install.js`) copia desde estas carpetas raíz hacia el destino elegido (`.claude/`, `.agents/` o `.github/`); ese destino es solo salida de instalación, no la fuente. El catálogo vigente ya se inyecta en cada conversación de Claude Code — no lo enumeres de memoria en este archivo; verifica con `ls skills/` / `ls agents/` si necesitas confirmar que algo existe antes de referenciarlo.
-- **`skill-preflight` es el paso 0 obligatorio** de cualquier skill: verifica `SDDF_ROOT`, estructura de directorios y templates antes de ejecutar lógica de negocio.
+- **Resolución de raíz obligatoria:** cada skill resuelve localmente `REPO_ROOT` y `SPECS_BASE` con la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válido → `docs`. Una fuente explícita inválida bloquea escrituras. `skill-preflight` es un diagnóstico explícito, no un paso automático.
 - **Veracidad ante todo:** antes de editar la sección de estructura de este archivo, verifica con el filesystem (`ls skills/`, `ls agents/`, `ls docs/`). Nunca describas algo que no existe ni omitas algo relevante que sí existe.
 - **Framework agnóstico al SDK/LLM:** aunque el desarrollo inicial se hizo con Claude Code, el diseño de SDDF es independiente del SDK o LLM específico. La instalación de skills/agentes en `.agents/` y `.github/` es un paso explícito para soportar múltiples plataformas; el orquestador de cada skill puede adaptarse a las APIs de cada plataforma sin afectar la estructura general del framework. Los skills no tienen que tener referencias explícitas a `.claude`. 
 ---
@@ -41,7 +41,7 @@ agile-sddf/
 
 ## Particularidades de este repo (lo que el código no te dice)
 
-- **`SDDF_ROOT`** define la raíz de artefactos (default `docs`); este repo usa el valor por defecto, así que los specs viven en `docs/specs/`, no en `.sdd/` ni en la raíz.
+- **`root` en `sddf.config.yaml`** declara la raíz versionada de artefactos; `SDDF_ROOT` es un override temporal válido solo si la ruta existe. Este repo declara `root: docs`, así que los specs viven en `docs/specs/`.
 - **WIP = 1 por nivel de pipeline:** solo un documento puede tener `substatus: IN-PROGRESS` a la vez por nivel (project, épica o story). Verifícalo antes de activar un ítem nuevo.
 - **`.tmp/<skill-name>/` nunca se versiona:** es el canal de comunicación entre subagentes y el skill orquestador, para evitar el "teléfono descompuesto". Está en `.gitignore`; no lo trates como directorio permanente.
 - **Los ADR aceptados son inmutables:** se reemplazan con un ADR nuevo (`superseded-by`), nunca se editan in place. Ver `docs/adr/README.md`.

@@ -92,4 +92,4 @@ updated: 2026-05-01
 - El campo `parent` en épicas apunta al ID del proyecto (`PROJ-01`), no al nombre del directorio.
 - El campo `parent` en historias apunta al ID de la épica (`EPIC-01`) o al proyecto si aún no está asignada a una épica.
 - Los IDs deben ser únicos globalmente en todo `$SPECS_BASE/specs/`.
-- Si usas `SDDF_ROOT` con un valor personalizado, reemplaza `$SPECS_BASE/specs/` con `$SDDF_ROOT/specs/` en todos los comandos anteriores.
+- Resuelve `$SPECS_BASE` con la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs` antes de ejecutar la migración; no sustituyas rutas manualmente ni continúes con una fuente explícita inválida.
