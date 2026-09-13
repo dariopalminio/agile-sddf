@@ -8,6 +8,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Runner de evals sin falsos verdes** — `npm run test:eval` añade `--changed-from <ref>` y valida
+  toda la selección antes de invocar Claude. Una referencia, manifiesto o ID inválido, un filtro
+  vacío o una selección sin casos ahora termina con exit 1; exit 0 requiere un plan no vacío y, en
+  ejecución real, que todos los casos aprueben. La suite determinista `test:eval:runner` y
+  `evals.yml` cubren el contrato; las PRs de skills comparan la SHA base inmutable con historial
+  completo en `--dry-run`, sin ejecutar LLMs ni exponer credenciales.
+- **Destino seguro del instalador npm** — `installSDDF` valida el destino para todos sus
+  consumidores, incluido `postinstall`: solo acepta `.claude`, `.agents` o `.github`, resuelve el
+  destino desde su base local/global y rechaza rutas vacías, no canónicas, absolutas o con traversal
+  antes de escribir. La regresión determinista cubre API, CLI, `postinstall` y el modo global.
+
 ### Changed
 
 - **Resolución de la raíz de artefactos SDDF** — los workflows resuelven una vez

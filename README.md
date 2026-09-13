@@ -64,7 +64,6 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Multi-runtime**: los mismos skills operan en Claude Code, GitHub Copilot y OpenCode sin modificar el SKILL.md fuente, eligiendo la carpeta destino al instalar (`.claude`/`.github`/`.agents`); el soporte a otros CLI/LLMs se evaluará en releases futuros
 - **Trazabilidad completa**: IDs únicos STORY-NNN y manejo de sub-estados IN-PROGRESS/Ready en cada documento del pipeline
 - **Docs as Wiki**: skill docs-wiki-builder para generar documentación de proyecto en formato wiki navegable. Incluye un skill header-aggregation para generar encabezados frontmatter de archivo '.md'. Permite navegación bidireccional entre documentos, generación de índices automáticos y visualización de grafos con "Foam for VSCode".
-- **Auditoría de seguridad**: skill `security-audit` para análisis automático de vulnerabilidades en código fuente, con evaluación OWASP Top 10, OWASP API Top 10 y OWASP Top 10 para LLMs.
 
 ## Installation
 
@@ -107,6 +106,11 @@ Para omitir el prompt y apuntar directamente a una carpeta, usa `--target`:
 ```bash
 npx agile-sddf install --target .agents
 ```
+
+`--target` y `SDDF_TARGET` aceptan exclusivamente `.claude`, `.agents` o
+`.github`. El valor por defecto `.claude` se usa solo cuando se omite el
+destino; una ruta arbitraria, traversal o un valor vacío hace fallar la
+instalación antes de que copie archivos.
 
 ### Monorepos con pnpm (workspaces)
 
@@ -494,26 +498,42 @@ El ciclo de vida de una historia atraviesa los estados `SPECIFY → PLAN → REA
 
 **Ejecutar los evals de un skill (runner headless):**
 
-`sddf.config.yaml` declara `verify.eval.command: "npm run test:eval"`. El script `scripts/run-evals.js`
-reproduce el modo `evals` de `skill-test-evals` sin sesión interactiva: por cada caso `TC-NNN` de
-`skills/<skill>/evals/evals.json` lanza `claude -p` en modo solo lectura (sonnet por defecto), califica la
-salida con `contains` / `not_contains` / `output_contains` y devuelve exit code 1 si algún caso falla —
-así `story-implement` confirma RED/GREEN automáticamente.
+`sddf.config.yaml` declara `verify.eval.command: "npm run test:eval"`. El script
+`scripts/run-evals.js` reproduce el modo `evals` de `skill-test-evals` sin sesión interactiva: por
+cada caso `TC-NNN` de `skills/<skill>/evals/evals.json` lanza `claude -p` en modo solo lectura
+(sonnet por defecto) y califica la salida con `contains`, `not_contains` y `output_contains`.
+
+El alcance se elige con exactamente uno de estos selectores: nombres de skills posicionales,
+`--all` o `--changed-from <ref>`. Sin selector, usa los cambios locales respecto de `HEAD`.
+`--only` es un filtro posterior y no puede estar vacío. Antes de llamar a Claude, el runner valida
+todos los manifests y el plan completo: una referencia, manifiesto o ID inválido, o una selección
+sin casos, termina con exit code 1.
 
 ```bash
-# Skills con cambios respecto a HEAD (lo que invoca story-implement)
+# Cambios locales respecto a HEAD (lo que invoca story-implement)
 npm run test:eval
 
 # Un skill concreto, o solo algunos casos
 npm run test:eval -- story-implement
 npm run test:eval -- story-implement --only TC-023,TC-029 --report
 
-# Todos los skills con evals (lento: cada caso es una llamada a claude -p)
+# PR: selecciona solo los skills modificados desde la SHA base, sin llamar a Claude
+npm run test:eval -- --changed-from <base-sha> --dry-run
+
+# Ejecución manual completa; --all no se combina con skills ni --changed-from
 npm run test:eval -- --all --concurrency 2
 ```
 
-Salidas crudas e informes quedan en `.tmp/skill-test-evals/<skill>/`. Requiere el CLI `claude` en el
-`PATH`; `--model`, `--concurrency` y `--timeout` ajustan coste y tiempo (`npm run test:eval -- --help`).
+El exit code 0 significa que existe un plan no vacío y, fuera de `--dry-run`, que todos sus casos
+aprobaron. `--dry-run` devuelve 0 solo cuando puede planificar al menos un caso válido; no requiere
+el CLI `claude`. Las ejecuciones reales requieren `claude` en el `PATH`. Las salidas crudas e
+informes quedan en `.tmp/skill-test-evals/<skill>/`; `--model`, `--concurrency` y `--timeout`
+ajustan coste y tiempo (`npm run test:eval -- --help`).
+
+En pull requests, `.github/workflows/evals.yml` ejecuta la suite determinista
+`npm run test:eval:runner`. Si cambian archivos bajo `skills/`, además hace checkout del historial
+completo y verifica en seco la selección contra la SHA base inmutable de la PR. No ejecuta
+evaluaciones LLM reales ni provee credenciales a código de una PR.
 
 
 ### Advanced Usage
@@ -551,7 +571,7 @@ El framework es declarativo y su flujo se controla mediante el campo `substatus`
 |----------|----------|---------|-------------|
 | `sddf.config.yaml.root` | Sí (recomendado) | `docs` si la clave falta | Raíz versionada de artefactos SDDF; las rutas relativas se anclan en la raíz del repositorio. |
 | `SDDF_ROOT` | No | — | Override temporal de la raíz versionada para CI o pruebas; debe apuntar a un directorio accesible. |
-| `SDDF_TARGET` | No | `.claude` | Carpeta destino del `postinstall` automático (`.claude`, `.agents`, `.github`). Útil en CI para instalar en un runtime distinto sin prompt interactivo. |
+| `SDDF_TARGET` | No | `.claude` si se omite | Carpeta destino exacta del `postinstall` automático: solo `.claude`, `.agents` o `.github`. Los valores no canónicos o rutas arbitrarias fallan antes de escribir. |
 
 El runtime de IA (Claude Code, GitHub Copilot, etc.) gestiona su propia autenticación de forma independiente al framework.
 

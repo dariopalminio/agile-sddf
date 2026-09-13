@@ -38,8 +38,9 @@ if (!command || command === 'help' || command === '--help' || command === '-h') 
 }
 
 if (command === 'install') {
-  if (targetFolder !== undefined && !VALID_FOLDERS.includes(targetFolder)) {
-    console.error(`Invalid --target "${targetFolder}". Valid values: ${VALID_FOLDERS.join(', ')}`);
+  if (targetIdx !== -1 && (targetFolder === undefined || !VALID_FOLDERS.includes(targetFolder))) {
+    const providedTarget = targetFolder === undefined ? '' : targetFolder;
+    console.error(`Invalid --target "${providedTarget}". Valid values: ${VALID_FOLDERS.join(', ')}`);
     process.exit(1);
   }
 

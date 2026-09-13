@@ -49,7 +49,7 @@ guardrails linked below, and the checks print them verbatim.
 | Remote code execution — downloaded content piped into an interpreter, or package resolution pointed at another registry | `ai-no-remote-pipe`, `sec-no-custom-registry` |
 | Hidden text — invisible or bidirectional characters carrying instructions a reviewer cannot see (ASCII smuggling, Trojan Source) | `ai-no-hidden-characters`, `ai-no-opaque-blob` |
 | Leaked secrets and personal data committed into skills, fixtures or docs | `sec-no-credential-literal`, `sec-no-provider-token`, `sec-no-personal-data` |
-| Install-time integrity — the installer writing outside the directory the user chose | review of `scripts/install.js`, `sec-no-absolute-path` |
+| Install-time integrity — the installer writing outside the directory the user chose | exact target allowlist and lexical containment in `scripts/install.js`, `sec-no-absolute-path` |
 
 Prompt injection is the one worth stating plainly: because the product is text an agent obeys, a
 malicious edit to a Markdown file is a code-execution primitive here, not a documentation typo.
@@ -58,10 +58,13 @@ Two surfaces are specific to shipping this as an npm package:
 
 **Install-time execution (OWASP A08 — software and data integrity).** `npm install agile-sddf` runs
 [scripts/postinstall.js](scripts/postinstall.js), which calls
-`installSDDF({ folder: process.env.SDDF_TARGET || '.claude' })` in
-[scripts/install.js](scripts/install.js) and copies `skills/` and `agents/` into that folder — under
-the project directory, or under the user's home directory for a global install. That is code running
-on the installing machine before anyone has read anything, so `scripts/` is held to the code
+`installSDDF({ folder: process.env.SDDF_TARGET })` in
+[scripts/install.js](scripts/install.js). The installer defaults only when the target is omitted,
+accepts only `.claude`, `.agents` or `.github`, and resolves the destination from the project or home
+directory before checking lexical containment. An invalid, absolute or traversal target fails before
+it creates or copies `skills/` and `agents/`. That check does not resolve a pre-existing symlink,
+junction or other reparse point; hardening those filesystem links is tracked separately. This is code
+running on the installing machine before anyone has read anything, so `scripts/` is held to the code
 guardrail and every change there is read line by line. Anyone who would rather not run it can install
 with `npm install agile-sddf --ignore-scripts` and then run `npx agile-sddf install` deliberately.
 

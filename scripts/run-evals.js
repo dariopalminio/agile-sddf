@@ -12,9 +12,10 @@
  * `sddf.config.yaml`.
  *
  * Uso:
- *   node scripts/run-evals.js                    # skills con cambios vs HEAD (git) en skills/<x>/
+ *   node scripts/run-evals.js                    # skills con cambios locales vs HEAD en skills/<x>/
  *   node scripts/run-evals.js story-implement    # uno o varios nombres de skill
  *   node scripts/run-evals.js --all              # todos los skills con evals/evals.json
+ *   node scripts/run-evals.js --changed-from <r> # skills modificados entre <r> y HEAD
  *
  * Flags:
  *   --only TC-023,TC-029   solo esos casos
@@ -28,19 +29,19 @@
 
 const path = require('path');
 const fs = require('fs');
-const { spawn, execSync } = require('child_process');
+const { spawn, execFileSync } = require('child_process');
 
 const REPO_ROOT = path.join(__dirname, '..');
-const TMP_ROOT = path.join(REPO_ROOT, '.tmp', 'skill-test-evals');
 const END_MARKER = '=== END ===';
 
 const USAGE = `
 Usage: node scripts/run-evals.js [skill ...] [options]
 
-Sin argumentos ejecuta los evals de los skills con cambios respecto a HEAD (git).
+Sin selector ejecuta los evals de los skills con cambios locales respecto a HEAD.
 
 Options:
   --all                 Ejecuta todos los skills que tienen evals/evals.json
+  --changed-from <ref>  Ejecuta skills modificados entre <ref> y HEAD
   --only TC-001,TC-002  Ejecuta solo esos casos
   --model <model>       Modelo para claude -p (default: sonnet; env SDDF_EVAL_MODEL)
   --concurrency <n>     Casos en paralelo (default: 4)
@@ -55,6 +56,7 @@ Examples:
   npm run test:eval -- story-implement
   npm run test:eval -- story-implement --only TC-023,TC-029 --report
   npm run test:eval -- --all --concurrency 2
+  npm run test:eval -- --changed-from origin/main --dry-run
 `;
 
 // ---------------------------------------------------------------------------
@@ -65,6 +67,7 @@ function parseArgs(argv) {
   const opts = {
     skills: [],
     all: false,
+    changedFrom: null,
     only: null,
     model: process.env.SDDF_EVAL_MODEL || 'sonnet',
     concurrency: 4,
@@ -83,7 +86,16 @@ function parseArgs(argv) {
     };
     if (a === '-h' || a === '--help') opts.help = true;
     else if (a === '--all') opts.all = true;
-    else if (a === '--only') opts.only = next().split(',').map((s) => s.trim()).filter(Boolean);
+    else if (a === '--changed-from') {
+      if (opts.changedFrom !== null) throw new Error('La opción --changed-from solo puede indicarse una vez.');
+      opts.changedFrom = next().trim();
+      if (!opts.changedFrom) throw new Error('La opción --changed-from requiere una referencia Git no vacía.');
+    } else if (a === '--only') {
+      if (opts.only !== null) throw new Error('La opción --only solo puede indicarse una vez.');
+      const only = next().split(',').map((s) => s.trim()).filter(Boolean);
+      if (only.length === 0) throw new Error('La opción --only requiere al menos un ID de caso.');
+      opts.only = [...new Set(only)];
+    }
     else if (a === '--model') opts.model = next();
     else if (a === '--concurrency') opts.concurrency = Math.max(1, parseInt(next(), 10) || 1);
     else if (a === '--timeout') opts.timeout = Math.max(1, parseInt(next(), 10) || 900);
@@ -92,6 +104,10 @@ function parseArgs(argv) {
     else if (a === '--dry-run') opts.dryRun = true;
     else if (a.startsWith('-')) throw new Error(`Opción desconocida: ${a}`);
     else opts.skills.push(a);
+  }
+  const selectors = [opts.skills.length > 0, opts.all, opts.changedFrom !== null].filter(Boolean).length;
+  if (selectors > 1) {
+    throw new Error('Los selectores de skills posicionales, --all y --changed-from son mutuamente excluyentes.');
   }
   return opts;
 }
@@ -109,55 +125,114 @@ function listSkillsWithEvals(skillsDir) {
     .sort();
 }
 
-function changedSkills(skillsDir) {
-  const rel = path.relative(REPO_ROOT, skillsDir).split(path.sep).join('/');
-  const lines = [];
-  const run = (cmd) => {
-    try {
-      lines.push(...execSync(cmd, { cwd: REPO_ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).split(/\r?\n/));
-    } catch (_) {
-      /* sin git o sin repositorio: se ignora */
-    }
-  };
-  run(`git status --porcelain -- "${rel}"`);
-  run(`git diff --name-only HEAD -- "${rel}"`);
-  const names = new Set();
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (!line) continue;
-    // `git status --porcelain` antepone "XY " a la ruta; `git diff --name-only` no.
-    const file = line.replace(/^[ MADRCU?!]{1,2}\s+/, '').replace(/^"|"$/g, '');
-    const m = file.match(new RegExp(`^${rel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/([^/]+)/`));
-    if (m) names.add(m[1]);
-  }
-  return [...names].filter((n) => fs.existsSync(path.join(skillsDir, n, 'evals', 'evals.json'))).sort();
+function gitOutput(args, runtime = {}) {
+  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
+  const execFile = runtime.execFileSync || execFileSync;
+  return execFile('git', args, {
+    cwd: repoRoot,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
 }
 
-function resolveSkills(opts) {
-  const skillsDir = path.resolve(REPO_ROOT, opts.skillsDir);
-  if (opts.all) return { skillsDir, names: listSkillsWithEvals(skillsDir) };
+function gitErrorDetail(err) {
+  const detail = err && (err.stderr || err.message);
+  return String(detail || 'sin detalle de Git').trim().split(/\r?\n/).pop();
+}
+
+function gitPathLines(output) {
+  return String(output).split('\0').filter(Boolean);
+}
+
+function changedSkills(skillsDir, base = null, runtime = {}) {
+  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
+  const rel = path.relative(repoRoot, skillsDir).split(path.sep).join('/');
+  let lines;
+  if (base !== null && base !== undefined) {
+    const ref = String(base).trim();
+    if (!ref) throw new Error('La opción --changed-from requiere una referencia Git no vacía.');
+
+    let commit;
+    try {
+      // Primero se resuelve a SHA: el diff nunca recibe la entrada no confiable como opción.
+      commit = gitOutput(['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`], runtime).trim();
+    } catch (err) {
+      throw new Error(
+        `❌ La referencia Git '${ref}' no está disponible como commit.\n` +
+        '   Proporciona una SHA o referencia presente localmente (en CI usa fetch-depth: 0), o ejecuta --all.\n' +
+        `   Detalle: ${gitErrorDetail(err)}`,
+      );
+    }
+
+    try {
+      lines = gitPathLines(gitOutput(['diff', '--name-only', '-z', `${commit}...HEAD`, '--', rel], runtime));
+    } catch (err) {
+      throw new Error(
+        `❌ No se pudieron comparar los cambios entre '${ref}' y HEAD.\n` +
+        '   Verifica que ambas historias Git estén disponibles o ejecuta --all.\n' +
+        `   Detalle: ${gitErrorDetail(err)}`,
+      );
+    }
+  } else {
+    try {
+      const tracked = gitPathLines(gitOutput(['diff', '--name-only', '-z', 'HEAD', '--', rel], runtime));
+      const untracked = gitPathLines(gitOutput(['ls-files', '--others', '--exclude-standard', '-z', '--', rel], runtime));
+      lines = [...tracked, ...untracked];
+    } catch (err) {
+      throw new Error(
+        '❌ No se pudieron resolver los cambios locales respecto a HEAD.\n' +
+        '   Verifica que estás en un repositorio Git con HEAD disponible, o ejecuta --all.\n' +
+        `   Detalle: ${gitErrorDetail(err)}`,
+      );
+    }
+  }
+
+  const names = new Set();
+  const escapedRel = rel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const raw of lines) {
+    const line = raw.trim().replace(/\\/g, '/');
+    if (!line) continue;
+    const match = line.match(new RegExp(`^${escapedRel}/([^/]+)/`));
+    if (match) names.add(match[1]);
+  }
+  return [...names].filter((name) => fs.existsSync(path.join(skillsDir, name, 'evals', 'evals.json'))).sort();
+}
+
+function resolveSkills(opts, runtime = {}) {
+  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
+  const skillsDir = path.resolve(repoRoot, opts.skillsDir);
+  if (opts.all) return { skillsDir, names: listSkillsWithEvals(skillsDir), mode: 'all' };
   if (opts.skills.length > 0) {
     for (const name of opts.skills) {
       const evalsPath = path.join(skillsDir, name, 'evals', 'evals.json');
       if (!fs.existsSync(path.join(skillsDir, name, 'SKILL.md'))) {
-        throw new Error(`❌ No se encontró el skill '${name}' en ${path.relative(REPO_ROOT, skillsDir) || '.'}/\n   Verifica el nombre del skill y que existe en el directorio de skills.`);
+        throw new Error(`❌ No se encontró el skill '${name}' en ${path.relative(repoRoot, skillsDir) || '.'}/\n   Verifica el nombre del skill y que existe en el directorio de skills.`);
       }
       if (!fs.existsSync(evalsPath)) {
-        throw new Error(`❌ No se encontró evals/evals.json en ${path.relative(REPO_ROOT, path.join(skillsDir, name))}.\n   Ejecuta /skill-test-evals ${name} primero para generar los casos de prueba.`);
+        throw new Error(`❌ No se encontró evals/evals.json en ${path.relative(repoRoot, path.join(skillsDir, name))}.\n   Ejecuta /skill-test-evals ${name} primero para generar los casos de prueba.`);
       }
     }
-    return { skillsDir, names: opts.skills };
+    return { skillsDir, names: [...new Set(opts.skills)], mode: 'explicit' };
   }
-  return { skillsDir, names: changedSkills(skillsDir) };
+  if (opts.changedFrom !== null) {
+    return { skillsDir, names: changedSkills(skillsDir, opts.changedFrom, runtime), mode: 'changed-from' };
+  }
+  return { skillsDir, names: changedSkills(skillsDir, null, runtime), mode: 'local' };
 }
 
 // ---------------------------------------------------------------------------
 // Paso E2 — Leer y validar evals.json
 // ---------------------------------------------------------------------------
 
-function loadCases(skillsDir, name, only) {
+function loadCases(skillsDir, name, runtime = {}) {
+  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
   const evalsPath = path.join(skillsDir, name, 'evals', 'evals.json');
-  const json = JSON.parse(fs.readFileSync(evalsPath, 'utf8'));
+  let json;
+  try {
+    json = JSON.parse(fs.readFileSync(evalsPath, 'utf8'));
+  } catch (err) {
+    throw new Error(`❌ No se pudo leer ${path.relative(repoRoot, evalsPath)} como JSON válido.\n   Detalle: ${err.message}`);
+  }
   if (Array.isArray(json) && json.length && json[0] && 'query' in json[0]) {
     throw new Error(
       `❌ Este evals.json usa formato trigger (array con query/should_trigger).\n` +
@@ -165,19 +240,72 @@ function loadCases(skillsDir, name, only) {
         `   Ejecuta /skill-test-evals ${name} para generar los evals correctos.`
     );
   }
-  if (!Array.isArray(json.cases)) {
-    throw new Error(`❌ ${path.relative(REPO_ROOT, evalsPath)} no tiene la clave cases[] (formato SDDF).`);
+  if (!json || !Array.isArray(json.cases)) {
+    throw new Error(`❌ El manifest ${path.relative(repoRoot, evalsPath)} no tiene la clave cases[] (formato SDDF).`);
   }
   if (json.cases.length === 0) {
     throw new Error(`⚠️ evals.json no contiene casos en cases[].\n   Añade al menos TC-001 antes de verificar.`);
   }
-  let cases = json.cases;
-  if (only) {
-    cases = cases.filter((c) => only.includes(c.id));
-    const missing = only.filter((id) => !json.cases.some((c) => c.id === id));
-    if (missing.length) console.warn(`[WARN] Casos no encontrados en ${name}: ${missing.join(', ')}`);
+  const hasInvalidCase = json.cases.some((testCase) => !testCase || typeof testCase.id !== 'string' || !testCase.id.trim());
+  if (hasInvalidCase) {
+    throw new Error(`❌ ${path.relative(repoRoot, evalsPath)} contiene un caso sin un id válido.`);
   }
-  return { evalsPath, cases };
+  return { evalsPath, cases: json.cases };
+}
+
+// ---------------------------------------------------------------------------
+// Paso E2b — Construir el plan de ejecución
+// ---------------------------------------------------------------------------
+
+function buildExecutionPlan(opts, runtime = {}) {
+  const { skillsDir, names, mode } = resolveSkills(opts, runtime);
+  if (names.length === 0) {
+    const scope = mode === 'changed-from'
+      ? `entre '${opts.changedFrom}' y HEAD`
+      : mode === 'all'
+        ? `en ${opts.skillsDir}/`
+        : 'en los cambios locales respecto a HEAD';
+    throw new Error(
+      `❌ No se seleccionó ningún skill evaluable ${scope}.\n` +
+      'Selecciona un skill, usa --all o revisa la referencia/rango de Git.',
+    );
+  }
+
+  // Cargar todo antes de ejecutar el primer caso evita resultados parciales de una selección inválida.
+  const manifests = names.map((name) => {
+    const skillMd = path.join(skillsDir, name, 'SKILL.md');
+    if (!fs.existsSync(skillMd)) {
+      throw new Error(`❌ No se encontró el contrato SKILL.md para '${name}' en ${path.relative(path.resolve(runtime.repoRoot || REPO_ROOT), skillsDir)}.`);
+    }
+    return { name, ...loadCases(skillsDir, name, runtime) };
+  });
+  if (opts.only) {
+    const availableIds = new Set(manifests.flatMap((manifest) => manifest.cases.map((testCase) => testCase.id)));
+    const missing = opts.only.filter((id) => !availableIds.has(id));
+    if (missing.length > 0) {
+      throw new Error(
+        `❌ Los casos solicitados no existen en los skills seleccionados: ${missing.join(', ')}.\n` +
+        'Revisa --only o elimina los IDs que no correspondan al alcance seleccionado.',
+      );
+    }
+  }
+
+  const skills = manifests
+    .map((manifest) => ({
+      ...manifest,
+      skillsDir,
+      cases: opts.only ? manifest.cases.filter((testCase) => opts.only.includes(testCase.id)) : manifest.cases,
+    }))
+    .filter((manifest) => manifest.cases.length > 0);
+  const totalCases = skills.reduce((total, skill) => total + skill.cases.length, 0);
+  if (totalCases === 0) {
+    throw new Error(
+      '❌ La selección final no contiene casos de evaluación.\n' +
+      'Revisa los IDs de --only, los manifests seleccionados o usa --all.',
+    );
+  }
+
+  return { skillsDir, mode, skills, totalCases };
 }
 
 // ---------------------------------------------------------------------------
@@ -218,7 +346,8 @@ function buildPrompt(skillName, skillMdRel, testCase) {
 // Paso E3b — Invocar claude -p
 // ---------------------------------------------------------------------------
 
-function runClaude(prompt, opts) {
+function runClaude(prompt, opts, runtime = {}) {
+  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
   return new Promise((resolve) => {
     const args = [
       '-p',
@@ -241,7 +370,7 @@ function runClaude(prompt, opts) {
     let stdout = '';
     let stderr = '';
     let timedOut = false;
-    const child = spawn('claude', args, { cwd: REPO_ROOT, env, stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn('claude', args, { cwd: repoRoot, env, stdio: ['ignore', 'pipe', 'pipe'] });
     const timer = setTimeout(() => {
       timedOut = true;
       child.kill();
@@ -299,32 +428,37 @@ async function runPool(items, concurrency, worker) {
   return results;
 }
 
-async function runSkill(skillName, skillsDir, opts) {
-  const { cases } = loadCases(skillsDir, skillName, opts.only);
-  const skillMdRel = path.relative(REPO_ROOT, path.join(skillsDir, skillName, 'SKILL.md')).split(path.sep).join('/');
-  const runsDir = path.join(TMP_ROOT, skillName, 'runs');
+async function runSkill(planSkill, opts, runtime = {}) {
+  const { name: skillName, cases, skillsDir } = planSkill;
+  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
+  const tmpRoot = runtime.tmpRoot || path.join(repoRoot, '.tmp', 'skill-test-evals');
+  const log = runtime.log || console.log;
+  const write = runtime.write || process.stdout.write.bind(process.stdout);
+  const runClaudeFn = runtime.runClaude || runClaude;
+  const skillMdRel = path.relative(repoRoot, path.join(skillsDir, skillName, 'SKILL.md')).split(path.sep).join('/');
+  const runsDir = path.join(tmpRoot, skillName, 'runs');
   if (!opts.dryRun) fs.mkdirSync(runsDir, { recursive: true });
 
-  console.log(`\n[INFO] ${cases.length} caso(s) encontrados en ${skillName}/evals/evals.json`);
+  log(`\n[INFO] ${cases.length} caso(s) encontrados en ${skillName}/evals/evals.json`);
 
   const results = await runPool(cases, opts.concurrency, async (tc) => {
     const prompt = buildPrompt(skillName, skillMdRel, tc);
     if (opts.dryRun) {
-      console.log(`\n----- ${tc.id} (${tc.name}) — prompt -----\n${prompt}\n`);
+      log(`\n----- ${tc.id} (${tc.name}) — prompt -----\n${prompt}\n`);
       return { tc, status: 'DRY', grade: null, durationMs: 0 };
     }
-    process.stdout.write(`[${tc.id}] ejecutando…\n`);
-    const run = await runClaude(prompt, opts);
+    write(`[${tc.id}] ejecutando…\n`);
+    const run = await runClaudeFn(prompt, opts, runtime);
     fs.writeFileSync(path.join(runsDir, `${tc.id}.txt`), run.stdout);
     if (run.stderr && run.stderr.trim()) fs.writeFileSync(path.join(runsDir, `${tc.id}.stderr.txt`), run.stderr);
 
-    if (!run.ok && !run.stdout.trim()) {
+    if (!run.ok) {
       const reason = run.timedOut ? `timeout tras ${opts.timeout}s` : `claude exit ${run.code}: ${run.stderr.trim().split('\n').pop() || 'sin salida'}`;
-      console.log(`[${tc.id}] ❌ ERROR — ${reason}`);
+      log(`[${tc.id}] ❌ ERROR — ${reason}`);
       return { tc, status: 'ERROR', grade: null, reason, durationMs: run.durationMs };
     }
     const grade = gradeOutput(tc, run.stdout);
-    console.log(`[${tc.id}] ${grade.pass ? '✅ PASS' : '❌ FAIL'} (${(run.durationMs / 1000).toFixed(0)}s)`);
+    log(`[${tc.id}] ${grade.pass ? '✅ PASS' : '❌ FAIL'} (${(run.durationMs / 1000).toFixed(0)}s)`);
     return { tc, status: grade.pass ? 'PASS' : 'FAIL', grade, durationMs: run.durationMs };
   });
 
@@ -409,70 +543,83 @@ function renderReport(skillName, results) {
 // main
 // ---------------------------------------------------------------------------
 
-async function main() {
+async function main(argv = process.argv.slice(2), runtime = {}) {
+  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
+  const tmpRoot = runtime.tmpRoot || path.join(repoRoot, '.tmp', 'skill-test-evals');
+  const log = runtime.log || console.log;
+  const error = runtime.error || console.error;
   let opts;
   try {
-    opts = parseArgs(process.argv.slice(2));
+    opts = parseArgs(argv);
   } catch (err) {
-    console.error(err.message);
-    console.log(USAGE);
-    process.exit(1);
+    error(err.message);
+    log(USAGE);
+    return 1;
   }
   if (opts.help) {
-    console.log(USAGE);
-    process.exit(0);
+    log(USAGE);
+    return 0;
   }
 
-  let resolved;
+  let executionPlan;
   try {
-    resolved = resolveSkills(opts);
+    executionPlan = buildExecutionPlan(opts, { ...runtime, repoRoot });
   } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
-  const { skillsDir, names } = resolved;
-
-  if (names.length === 0) {
-    if (opts.all) console.log(`[INFO] No hay skills con evals/evals.json en ${opts.skillsDir}/`);
-    else console.log('[INFO] Sin skills cambiados respecto a HEAD — nada que ejecutar. Usa `-- <skill>` o `-- --all`.');
-    process.exit(0);
+    error(err.message);
+    return 1;
   }
 
-  console.log(`[INFO] Skills a evaluar: ${names.join(', ')}`);
-  console.log(`[INFO] Modelo: ${opts.model} · concurrencia: ${opts.concurrency} · timeout: ${opts.timeout}s${opts.dryRun ? ' · dry-run' : ''}`);
+  log(`[INFO] Skills a evaluar: ${executionPlan.skills.map((skill) => skill.name).join(', ')}`);
+  log(`[INFO] Plan de selección: ${executionPlan.totalCases} caso(s) en ${executionPlan.skills.length} skill(s)`);
+  for (const skill of executionPlan.skills) {
+    log(`[INFO]   ${skill.name}: ${skill.cases.length} caso(s)`);
+  }
+  log(`[INFO] Modelo: ${opts.model} · concurrencia: ${opts.concurrency} · timeout: ${opts.timeout}s${opts.dryRun ? ' · dry-run' : ''}`);
 
   let anyFailure = false;
-  for (const name of names) {
+  for (const skill of executionPlan.skills) {
     let outcome;
     try {
-      outcome = await runSkill(name, skillsDir, opts);
+      outcome = await runSkill(skill, opts, { ...runtime, repoRoot, tmpRoot });
     } catch (err) {
-      console.error(err.message);
+      error(err.message);
       anyFailure = true;
       continue;
     }
     if (opts.dryRun) continue;
 
-    const report = renderReport(name, outcome.results);
-    console.log(`\n${report.markdown}`);
+    const report = renderReport(skill.name, outcome.results);
+    log(`\n${report.markdown}`);
     if (opts.report) {
-      const dir = path.join(TMP_ROOT, name);
+      const dir = path.join(tmpRoot, skill.name);
       fs.mkdirSync(dir, { recursive: true });
       const file = path.join(dir, `report-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}.md`);
       fs.writeFileSync(file, report.markdown);
-      console.log(`📄 Informe guardado en: ${path.relative(REPO_ROOT, file).split(path.sep).join('/')}`);
+      log(`📄 Informe guardado en: ${path.relative(repoRoot, file).split(path.sep).join('/')}`);
     }
     if (report.failed > 0) anyFailure = true;
   }
 
-  process.exit(anyFailure ? 1 : 0);
+  return anyFailure ? 1 : 0;
 }
 
 if (require.main === module) {
-  main().catch((err) => {
+  main().then((code) => {
+    process.exitCode = code;
+  }).catch((err) => {
     console.error('run-evals failed:', err.message);
-    process.exit(1);
+    process.exitCode = 1;
   });
 }
 
-module.exports = { parseArgs, changedSkills, buildPrompt, gradeOutput, renderReport };
+module.exports = {
+  parseArgs,
+  changedSkills,
+  resolveSkills,
+  loadCases,
+  buildExecutionPlan,
+  buildPrompt,
+  gradeOutput,
+  renderReport,
+  main,
+};

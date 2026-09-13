@@ -1,0 +1,88 @@
+name: Eval Runner
+
+on:
+  pull_request:
+    paths:
+      - 'skills/**'
+      - 'scripts/run-evals.js'
+      - 'test/run-evals.test.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/evals.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    name: Detect changed skills
+    runs-on: ubuntu-latest
+    outputs:
+      skills_changed: ${{ steps.skills.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - id: skills
+        name: Check whether skills changed from the PR base
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          set +e
+          git diff --quiet "$BASE_SHA...HEAD" -- skills
+          diff_status=$?
+          set -e
+          case "$diff_status" in
+            0) echo "changed=false" >> "$GITHUB_OUTPUT" ;;
+            1) echo "changed=true" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "No se pudo comparar la SHA base de la PR con HEAD." >&2
+              exit "$diff_status"
+              ;;
+          esac
+
+  runner-contract:
+    name: Test eval runner contract
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts
+
+      - name: Run deterministic eval runner tests
+        run: npm run test:eval:runner
+
+  selected-evals:
+    name: Verify selected skill evals
+    needs: changes
+    if: needs.changes.outputs.skills_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts
+
+      - name: Plan evals changed since the immutable PR base
+        run: npm run test:eval -- --changed-from "${{ github.event.pull_request.base.sha }}" --dry-run

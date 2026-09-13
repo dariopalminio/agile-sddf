@@ -15,9 +15,9 @@ Framework multiagente minimalista (solo Markdown + scripts Node.js de instalaci�
 ## Stack y comandos
 
 - **Lenguaje:** Markdown (skills/agentes) + TypeScript/Node.js solo para la parte ejecutable (`scripts/cli.js`, `install.js`, `postinstall.js`).
-- **Sin build/test/lint propios:** `package.json` no declara ningún script salvo `postinstall`. No busques `npm test` ni `npm run build` — no existen en este repo.
+- **Validación del runner de evals:** no hay `npm test`, build ni lint genéricos. `npm run test:eval:runner` ejecuta la suite determinista de `scripts/run-evals.js`; `npm run test:eval -- [opciones]` ejecuta o planifica los casos de `skills/<skill>/evals/evals.json`. Una selección inválida o vacía falla cerrada; `--dry-run` solo aprueba con un plan no vacío.
 - **Instalar skills/agentes en otro proyecto:** `npx agile-sddf install [--global] [--target .claude|.agents|.github] [--force]`.
-- **CI (`.github/workflows/`):** solo corre escaneo de seguridad de skills (Skill Shielder vía `skill-security-audit.yml`) y `docker-security.yml`; no hay pipeline de tests funcionales.
+- **CI (`.github/workflows/`):** `evals.yml` corre en PRs que cambian skills, el runner, su suite, manifiestos npm o el propio workflow. Siempre ejecuta la suite determinista; si cambia `skills/**`, usa checkout completo de la SHA head de la PR y `--changed-from` con su SHA base para comprobar en seco una selección no vacía. No invoca Claude ni concede credenciales a código no confiable. Los workflows de seguridad siguen cubriendo Skill Shielder y Docker.
 
 ## Estructura del repositorio
 

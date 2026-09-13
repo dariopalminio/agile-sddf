@@ -1,0 +1,54 @@
+name: Installer Security Regression
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/install.js'
+      - 'scripts/postinstall.js'
+      - 'scripts/cli.js'
+      - 'test/install.test.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'README.md'
+      - 'SECURITY.md'
+      - '.github/workflows/installer-security.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/install.js'
+      - 'scripts/postinstall.js'
+      - 'scripts/cli.js'
+      - 'test/install.test.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'README.md'
+      - 'SECURITY.md'
+      - '.github/workflows/installer-security.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  installer-security:
+    name: Test installer target containment
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts
+
+      - name: Test installer target containment
+        run: npm run test:installer
+
+      - name: Verify package contents
+        run: npm pack --dry-run

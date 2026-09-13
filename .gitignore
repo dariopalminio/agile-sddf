@@ -2,7 +2,10 @@
 # .claude/skills/skill-master
 # .agents/skills/skill-master
 .claude
-.github
+# Las salidas instaladas bajo .github siguen ignoradas; los workflows son fuente versionada de CI.
+.github/*
+!.github/workflows/
+!.github/workflows/**
 .agents
 
 skills-lock.json
