@@ -53,11 +53,12 @@ Antes de publicar, verifica el paquete que npm recibirá, no el checkout:
 ```bash
 # En la raíz del proyecto:
 npm pack
-mkdir -p .tmp/install-test
-cd .\.tmp\install-test\
-move ..\..\agile-sddf-<versión>.tgz .
-npm install agile-sddf-<versión>.tgz --ignore-scripts
+mkdir -p .tmp/test-consumer
+cd .\.tmp\test-consumer
+move ..\..\agile-sddf-<version>.tgz .
+npm install agile-sddf-<version>.tgz --ignore-scripts
 npx agile-sddf install --target claude-code
+npx agile-sddf --version
 ```
 
 La instalación debe dejar `node_modules` sin crear directorios de runtime por sí sola. Solo el último comando crea el destino canónico. Repite el smoke para cada runtime soportado por `config/runtimes.json` según la matriz CI.

@@ -85,36 +85,72 @@ Un **stack** es la composición declarada de comandos de verificación y workers
 
 `npm install` descarga el paquete, pero **no escribe directorios de runtime**. La copia de skills y agentes siempre requiere un acto explícito; por eso `npm install --ignore-scripts` es una práctica defensiva válida, no un workaround.
 
+Instala primero el paquete en el proyecto:
+
 ```bash
 npm install agile-sddf
-npx agile-sddf install
 ```
 
-O específicamente para un runtime determinado:
+### Claude Code
+
 ```bash
-npm install agile-sddf
 npx agile-sddf install --target claude-code
 ```
+
+Instala skills y agentes en `.claude/`.
+
+### OpenCode
+
+```bash
+npx agile-sddf install --target opencode
+```
+
+Instala skills y agentes en `.opencode/`.
+
+### GitHub Copilot
+
+```bash
+npx agile-sddf install --target github-copilot
+```
+
+Instala skills y agentes en `.github/`.
+
+### Codex — skills compatibles (integración manual)
+
+[Codex descubre skills de repositorio en `.agents/skills`](https://learn.chatgpt.com/docs/build-skills). Actualmente `codex` no es un runtime gestionado por el instalador de este paquete: `config/runtimes.json` solo declara los tres targets anteriores. Por tanto, no uses `--target codex` ni `--target .agents`; `.agents` no es un target válido del CLI.
+
+Para habilitar los skills de Agile SDDF en Codex, copia solo el directorio `skills/` al proyecto:
+
+```bash
+mkdir -p .agents/skills
+cp -R node_modules/agile-sddf/skills/. .agents/skills/
+```
+
+En PowerShell:
+
+```powershell
+New-Item -ItemType Directory -Force .agents\skills | Out-Null
+Copy-Item -Path node_modules\agile-sddf\skills\* -Destination .agents\skills\ -Recurse -Force
+```
+
+Esta integración habilita los skills y sus recursos locales. No constituye soporte completo del framework: los skills que delegan a los agentes publicados en `agents/` no quedan instalados ni probados para Codex. Para una instalación personal, Codex también descubre skills en `~/.agents/skills`.
 
 ### Monorepos con pnpm (workspaces)
 
 Desde la raíz del workspace, agrega el paquete al workspace raíz y ejecuta la
-instalación del runtime de forma explícita:
+instalación explícita del runtime elegido:
 
-```bash
-pnpm add -w agile-sddf
-pnpm exec agile-sddf install
-```
-O específicamente para un runtime determinado:
 ```bash
 pnpm add -w agile-sddf
 pnpm exec agile-sddf install --target claude-code
 ```
 
+Sustituye `claude-code` por `opencode` o `github-copilot` según corresponda. Para Codex, después de `pnpm add -w agile-sddf`, usa la copia manual a `.agents/skills` descrita arriba.
+
 No es necesario configurar `allowedBuiltDependencies`: la instalación no usa
 `postinstall` ni crea directorios de runtime hasta ejecutar el segundo comando.
 
-Para una instalación global, usa el mismo runtime de forma explícita:
+Para una instalación global de Claude Code, OpenCode o GitHub Copilot, usa el mismo runtime de forma explícita:
 
 ```bash
 npm install -g agile-sddf
@@ -129,7 +165,7 @@ agile-sddf install --global --target claude-code
 | GitHub Copilot | `github-copilot` | `.github/` | `~/.copilot/` |
 <!-- runtime-contract:end -->
 
-Usa esos IDs canónicos en nuevas instalaciones. Para migrar, el CLI aún acepta los aliases de carpeta `.claude`, `.opencode` y `.github`; no son una fuente de destinos adicional. `.agents/skills` es una ruta de compatibilidad de skills para algunos runtimes, pero no instala agentes de forma canónica y no es un target válido.
+Usa esos IDs canónicos en nuevas instalaciones. Para migrar, el CLI aún acepta los aliases de carpeta `.claude`, `.opencode` y `.github`; no son una fuente de destinos adicional. Para OpenCode y GitHub Copilot, `.agents/skills` es una ruta de compatibilidad de skills, pero no instala agentes de forma canónica y no es un target válido.
 
 ### Migrar desde 2.x
 
@@ -148,7 +184,8 @@ La versión 3.0.0 elimina la copia automática de `postinstall`. Después de act
 ### Prerequisites
 
 - Node.js >= 18
-- Runtime compatible: Claude Code (Anthropic), GitHub Copilot, OpenCode.
+- Instalación gestionada por el CLI: Claude Code (Anthropic), GitHub Copilot y OpenCode.
+- Codex: integración manual de skills en `.agents/skills`; no instala los agentes declarativos del paquete.
 - Foam for VSCode: opcional, recomendado para navegación de docs como wiki.
 - PlantUML extension para VSCode: opcional, recomendado para visualizar diagramas c4 generados.
 
