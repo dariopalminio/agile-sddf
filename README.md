@@ -87,6 +87,12 @@ Un **stack** es la composición declarada de comandos de verificación y workers
 
 ```bash
 npm install agile-sddf
+npx agile-sddf install
+```
+
+O específicamente para un runtime determinado:
+```bash
+npm install agile-sddf
 npx agile-sddf install --target claude-code
 ```
 
@@ -95,6 +101,11 @@ npx agile-sddf install --target claude-code
 Desde la raíz del workspace, agrega el paquete al workspace raíz y ejecuta la
 instalación del runtime de forma explícita:
 
+```bash
+pnpm add -w agile-sddf
+pnpm exec agile-sddf install
+```
+O específicamente para un runtime determinado:
 ```bash
 pnpm add -w agile-sddf
 pnpm exec agile-sddf install --target claude-code
