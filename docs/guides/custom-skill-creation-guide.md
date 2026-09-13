@@ -1,5 +1,9 @@
 # Guía de Creación de Skills Personalizados
 
+> **Contrato de runtime SDDF:** para instalar skills distribuidos por este paquete, consulta
+> [`config/runtimes.json`](../../config/runtimes.json). Esta guía compara capacidades de plataformas y no
+> añade destinos de instalación al contrato del paquete.
+
 Los **skills** (habilidades) son flujos de trabajo reutilizables y bajo demanda que los asistentes de IA cargan dinámicamente para mejorar su rendimiento en tareas especializadas. A diferencia de los agentes personalizados (que son roles especializados con límites de herramientas), un skill está diseñado para empaquetar un **procedimiento repetible de varios pasos** con sus propios recursos de soporte, como scripts, plantillas y documentación de referencia.
 
 | Aspecto | Skill | Custom Agent |

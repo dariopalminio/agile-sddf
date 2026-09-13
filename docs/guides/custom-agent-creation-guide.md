@@ -1,5 +1,9 @@
 # Guía de Creación de Custom Agents
 
+> **Contrato de runtime SDDF:** para instalar agentes distribuidos por este paquete, consulta
+> [`config/runtimes.json`](../../config/runtimes.json). Esta guía compara capacidades de plataformas y no
+> añade destinos de instalación al contrato del paquete.
+
 Los **custom agents** (agentes personalizados) son asistentes de IA especializados que se configuran mediante archivos de definición para realizar tareas específicas dentro de flujos de trabajo de desarrollo. A diferencia de un asistente de propósito general, un agente personalizado tiene:
 
 - **Instrucciones y personalidad enfocadas** en un dominio concreto

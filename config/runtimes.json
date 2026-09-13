@@ -1,0 +1,99 @@
+{
+  "$schema": "https://agile-sddf.dev/schemas/runtime-contract-v1.json",
+  "schemaVersion": 1,
+  "defaultRuntime": "claude-code",
+  "runtimes": [
+    {
+      "id": "claude-code",
+      "name": "Claude Code",
+      "support": "supported",
+      "aliases": [".claude"],
+      "destinations": {
+        "local": {
+          "rootSegments": [".claude"]
+        },
+        "global": {
+          "rootSegments": [".claude"]
+        }
+      },
+      "layout": {
+        "skillsDirectory": "skills",
+        "agentsDirectory": "agents",
+        "skillFileName": "SKILL.md",
+        "agentFileExtensions": [".md", ".agent.md"]
+      }
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "support": "supported",
+      "aliases": [".opencode"],
+      "destinations": {
+        "local": {
+          "rootSegments": [".opencode"]
+        },
+        "global": {
+          "rootSegments": [".config", "opencode"]
+        }
+      },
+      "layout": {
+        "skillsDirectory": "skills",
+        "agentsDirectory": "agents",
+        "skillFileName": "SKILL.md",
+        "agentFileExtensions": [".md", ".agent.md"]
+      },
+      "compatibilityPaths": [
+        {
+          "scope": "local",
+          "rootSegments": [".agents"],
+          "skillsDirectory": "skills",
+          "installable": false,
+          "reason": "OpenCode descubre skills compatibles en .agents/skills, pero sus agentes declarativos canónicos viven en .opencode/agents."
+        },
+        {
+          "scope": "global",
+          "rootSegments": [".agents"],
+          "skillsDirectory": "skills",
+          "installable": false,
+          "reason": "OpenCode descubre skills compatibles en ~/.agents/skills, pero sus agentes declarativos canónicos viven en ~/.config/opencode/agents."
+        }
+      ]
+    },
+    {
+      "id": "github-copilot",
+      "name": "GitHub Copilot",
+      "support": "supported",
+      "aliases": [".github"],
+      "destinations": {
+        "local": {
+          "rootSegments": [".github"]
+        },
+        "global": {
+          "rootSegments": [".copilot"]
+        }
+      },
+      "layout": {
+        "skillsDirectory": "skills",
+        "agentsDirectory": "agents",
+        "skillFileName": "SKILL.md",
+        "agentFileExtensions": [".agent.md", ".md"]
+      },
+      "compatibilityPaths": [
+        {
+          "scope": "local",
+          "rootSegments": [".agents"],
+          "skillsDirectory": "skills",
+          "installable": false,
+          "reason": "Copilot puede descubrir skills en .agents/skills, pero los agentes canónicos de proyecto viven en .github/agents."
+        },
+        {
+          "scope": "global",
+          "rootSegments": [".agents"],
+          "skillsDirectory": "skills",
+          "installable": false,
+          "reason": "Copilot puede descubrir skills personales en ~/.agents/skills, pero los agentes personales canónicos viven en ~/.copilot/agents."
+        }
+      ]
+    }
+  ]
+}

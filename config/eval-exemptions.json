@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "exemptions": [
+    {
+      "skill": "docs-wiki-builder",
+      "owner": "agile-sddf maintainers",
+      "reason": "Su evaluación requiere un corpus documental representativo; se incorporará con fixtures de wiki antes de la fecha de revisión.",
+      "review_by": "2026-12-31"
+    },
+    {
+      "skill": "project-begin",
+      "owner": "agile-sddf maintainers",
+      "reason": "Pendiente de fixtures deterministas para la entrevista inicial de proyecto.",
+      "review_by": "2026-12-31"
+    },
+    {
+      "skill": "project-context-diagram",
+      "owner": "agile-sddf maintainers",
+      "reason": "Pendiente de fixtures deterministas de PlantUML y contrato de renderizado.",
+      "review_by": "2026-12-31"
+    },
+    {
+      "skill": "project-discovery",
+      "owner": "agile-sddf maintainers",
+      "reason": "Pendiente de fixtures para consolidación multiagente de discovery.",
+      "review_by": "2026-12-31"
+    },
+    {
+      "skill": "project-flow",
+      "owner": "agile-sddf maintainers",
+      "reason": "Orquestador pendiente de una matriz de evals para sus gates de revisión.",
+      "review_by": "2026-12-31"
+    },
+    {
+      "skill": "project-planning",
+      "owner": "agile-sddf maintainers",
+      "reason": "Pendiente de fixtures deterministas de backlog y planificación de épicas.",
+      "review_by": "2026-12-31"
+    },
+    {
+      "skill": "project-policies-generation",
+      "owner": "agile-sddf maintainers",
+      "reason": "Pendiente de fixtures para políticas y Definition of Done generados.",
+      "review_by": "2026-12-31"
+    },
+    {
+      "skill": "project-story-mapping",
+      "owner": "agile-sddf maintainers",
+      "reason": "Pendiente de fixtures de story map y validación de slices.",
+      "review_by": "2026-12-31"
+    },
+    {
+      "skill": "reverse-engineering",
+      "owner": "agile-sddf maintainers",
+      "reason": "Pendiente de corpus determinista para el análisis paralelo de codebases.",
+      "review_by": "2026-12-31"
+    }
+  ]
+}

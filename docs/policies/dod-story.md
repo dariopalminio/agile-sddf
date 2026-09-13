@@ -67,9 +67,9 @@ El DoD comparte la forma (checklist + bloqueo) con el guardrail, pero protege al
 - [ ] No se introducen dependencias nuevas sin aprobación del equipo
 - [ ] Se uso el skill `skill-master` para crear skills nuevos
 - [ ] Si se agrega un nuevo skill, la ruta del skill debe haber sido incluida en el arreglo de "files" en `package.json` para ser publicada en npm
-- [ ] Se cumple el [Checklist de Seguridad de IA](docs/policies/ai-security-checklist.md)
-- [ ] Se cumple el [Checklist de Seguridad de Código](docs/policies/code-security-checklist.md)
-- [ ] Se cumple el [Checklist de Creación de Skills](docs/policies/skill-creation-checklist.md)
+- [ ] Se cumple el [Checklist de Seguridad de IA](../guardrails/gr-ai-security-checklist.md)
+- [ ] Se cumple el [Checklist de Seguridad de Código](../guardrails/gr-code-security-checklist.md)
+- [ ] Se cumple el [Checklist de Creación de Skills](../guardrails/gr-skill-creation-checklist.md)
 
 #### 🧪 Criterios de Tests
 

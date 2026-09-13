@@ -35,7 +35,7 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Prepare audit report
         run: : > audit-report.txt
@@ -46,9 +46,13 @@ jobs:
           node scripts/verify-skill-security-workflow.js 2>&1 | tee -a audit-report.txt
 
       - name: Clone Skill Shielder
+        env:
+          SKILL_SHIELDER_REVISION: b204cecb2d26fccaca0e4121eae94e352e210126
         run: |
           set -o pipefail
-          git clone https://github.com/p3nchan/skill-shielder.git /tmp/shielder 2>&1 | tee -a audit-report.txt
+          git clone --no-checkout https://github.com/p3nchan/skill-shielder.git /tmp/shielder 2>&1 | tee -a audit-report.txt
+          git -C /tmp/shielder checkout --detach "$SKILL_SHIELDER_REVISION" 2>&1 | tee -a audit-report.txt
+          test "$(git -C /tmp/shielder rev-parse HEAD)" = "$SKILL_SHIELDER_REVISION"
 
       - name: Make scripts executable
         run: |
@@ -74,7 +78,7 @@ jobs:
 
       - name: Upload audit report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: skill-audit-report
           path: audit-report.txt

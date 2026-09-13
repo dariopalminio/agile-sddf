@@ -90,7 +90,7 @@ related:
   - STORY-068-dod-plan-en-story-analyze
 ---
 <!-- Referencias -->
-[[slug-de-documento-relacionado]]
+`[[slug-de-documento-relacionado]]`
 
 
 ## Reglas de comportamiento
@@ -126,5 +126,4 @@ El ciclo de vida de un artefacto se traza con status + substatus, no con version
 ### 16. Skills de validación antes de transformación
 
 Existe un skill de validación explícito (epic-format-validation) que actúa como gate antes de que los skills de generación consuman el documento.
-
 

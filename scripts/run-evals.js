@@ -33,6 +33,86 @@ const { spawn, execFileSync } = require('child_process');
 
 const REPO_ROOT = path.join(__dirname, '..');
 const END_MARKER = '=== END ===';
+const SKILL_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CASE_ID_PATTERN = /^TC-\d{3,}$/;
+
+// ---------------------------------------------------------------------------
+// Rutas e identificadores no confiables
+// ---------------------------------------------------------------------------
+
+function resolveRoot(root, label = 'raíz') {
+  if (typeof root !== 'string' || !root.trim()) {
+    throw new Error(`❌ La ${label} debe ser una ruta no vacía.`);
+  }
+  return path.resolve(root);
+}
+
+function isAbsoluteOnAnySupportedPlatform(value) {
+  return path.isAbsolute(value) || path.posix.isAbsolute(value) || path.win32.isAbsolute(value) || /^[a-zA-Z]:/.test(value);
+}
+
+/**
+ * Resuelve una ruta hija sin permitir que sus segmentos abandonen `root`.
+ * La comprobación es léxica deliberadamente: no resuelve symlinks/junctions.
+ */
+function resolveContainedPath(root, ...segments) {
+  const resolvedRoot = resolveRoot(root);
+  if (segments.length === 0) {
+    throw new Error('❌ Una ruta contenida requiere al menos un segmento.');
+  }
+
+  const safeSegments = segments.map((segment) => {
+    if (typeof segment !== 'string' || !segment.trim()) {
+      throw new Error('❌ Un segmento de ruta debe ser no vacío.');
+    }
+    if (isAbsoluteOnAnySupportedPlatform(segment)) {
+      throw new Error(`❌ No se permiten rutas absolutas: ${JSON.stringify(segment)}.`);
+    }
+    if (segment.split(/[\\/]+/).includes('..')) {
+      throw new Error(`❌ La ruta no puede escapar de su raíz: ${JSON.stringify(segment)}.`);
+    }
+    return segment;
+  });
+
+  const resolvedPath = path.resolve(resolvedRoot, ...safeSegments);
+  const relative = path.relative(resolvedRoot, resolvedPath);
+  if (!relative || relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
+    throw new Error(`❌ La ruta resuelta debe permanecer dentro de su raíz: ${resolvedPath}.`);
+  }
+  return resolvedPath;
+}
+
+function validateSkillName(name) {
+  if (typeof name !== 'string' || !SKILL_NAME_PATTERN.test(name)) {
+    throw new Error(`❌ Nombre de skill inválido: ${JSON.stringify(name)}. Usa minúsculas, números y guiones simples.`);
+  }
+  return name;
+}
+
+function validateCaseId(id, source = 'manifest') {
+  if (typeof id !== 'string' || !CASE_ID_PATTERN.test(id)) {
+    throw new Error(`❌ ID de caso inválido en ${source}: ${JSON.stringify(id)}. Usa el formato TC-NNN (N ≥ 3 dígitos).`);
+  }
+  return id;
+}
+
+function resolveSkillsDir(repoRoot, skillsDir) {
+  if (typeof skillsDir !== 'string' || !skillsDir.trim()) {
+    throw new Error('❌ La opción --skills-dir requiere una ruta relativa no vacía contenida bajo repoRoot.');
+  }
+  return resolveContainedPath(repoRoot, skillsDir);
+}
+
+function resolveInjectedTmpRoot(repoRoot, runtime = {}) {
+  if (Object.prototype.hasOwnProperty.call(runtime, 'tmpRoot')) {
+    return resolveRoot(runtime.tmpRoot, 'tmpRoot inyectado');
+  }
+  return resolveContainedPath(repoRoot, '.tmp', 'skill-test-evals');
+}
+
+function skillFilePath(skillsDir, skillName, ...segments) {
+  return resolveContainedPath(skillsDir, validateSkillName(skillName), ...segments);
+}
 
 const USAGE = `
 Usage: node scripts/run-evals.js [skill ...] [options]
@@ -94,7 +174,7 @@ function parseArgs(argv) {
       if (opts.only !== null) throw new Error('La opción --only solo puede indicarse una vez.');
       const only = next().split(',').map((s) => s.trim()).filter(Boolean);
       if (only.length === 0) throw new Error('La opción --only requiere al menos un ID de caso.');
-      opts.only = [...new Set(only)];
+      opts.only = [...new Set(only.map((id) => validateCaseId(id, '--only')))];
     }
     else if (a === '--model') opts.model = next();
     else if (a === '--concurrency') opts.concurrency = Math.max(1, parseInt(next(), 10) || 1);
@@ -120,13 +200,17 @@ function listSkillsWithEvals(skillsDir) {
   if (!fs.existsSync(skillsDir)) return [];
   return fs
     .readdirSync(skillsDir, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && fs.existsSync(path.join(skillsDir, d.name, 'evals', 'evals.json')))
-    .map((d) => d.name)
+    .filter((d) => {
+      if (!d.isDirectory()) return false;
+      const name = validateSkillName(d.name);
+      return fs.existsSync(skillFilePath(skillsDir, name, 'evals', 'evals.json'));
+    })
+    .map((d) => validateSkillName(d.name))
     .sort();
 }
 
 function gitOutput(args, runtime = {}) {
-  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
+  const repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
   const execFile = runtime.execFileSync || execFileSync;
   return execFile('git', args, {
     cwd: repoRoot,
@@ -145,8 +229,11 @@ function gitPathLines(output) {
 }
 
 function changedSkills(skillsDir, base = null, runtime = {}) {
-  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
-  const rel = path.relative(repoRoot, skillsDir).split(path.sep).join('/');
+  const repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
+  const suppliedSkillsDir = resolveRoot(skillsDir, 'directorio de skills');
+  const skillsDirRelative = path.relative(repoRoot, suppliedSkillsDir);
+  const containedSkillsDir = resolveContainedPath(repoRoot, skillsDirRelative);
+  const rel = path.relative(repoRoot, containedSkillsDir).split(path.sep).join('/');
   let lines;
   if (base !== null && base !== undefined) {
     const ref = String(base).trim();
@@ -193,26 +280,29 @@ function changedSkills(skillsDir, base = null, runtime = {}) {
     const line = raw.trim().replace(/\\/g, '/');
     if (!line) continue;
     const match = line.match(new RegExp(`^${escapedRel}/([^/]+)/`));
-    if (match) names.add(match[1]);
+    if (match) names.add(validateSkillName(match[1]));
   }
-  return [...names].filter((name) => fs.existsSync(path.join(skillsDir, name, 'evals', 'evals.json'))).sort();
+  return [...names]
+    .filter((name) => fs.existsSync(skillFilePath(containedSkillsDir, name, 'evals', 'evals.json')))
+    .sort();
 }
 
 function resolveSkills(opts, runtime = {}) {
-  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
-  const skillsDir = path.resolve(repoRoot, opts.skillsDir);
+  const repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
+  const skillsDir = resolveSkillsDir(repoRoot, opts.skillsDir);
   if (opts.all) return { skillsDir, names: listSkillsWithEvals(skillsDir), mode: 'all' };
   if (opts.skills.length > 0) {
-    for (const name of opts.skills) {
-      const evalsPath = path.join(skillsDir, name, 'evals', 'evals.json');
-      if (!fs.existsSync(path.join(skillsDir, name, 'SKILL.md'))) {
+    const names = opts.skills.map(validateSkillName);
+    for (const name of names) {
+      const evalsPath = skillFilePath(skillsDir, name, 'evals', 'evals.json');
+      if (!fs.existsSync(skillFilePath(skillsDir, name, 'SKILL.md'))) {
         throw new Error(`❌ No se encontró el skill '${name}' en ${path.relative(repoRoot, skillsDir) || '.'}/\n   Verifica el nombre del skill y que existe en el directorio de skills.`);
       }
       if (!fs.existsSync(evalsPath)) {
         throw new Error(`❌ No se encontró evals/evals.json en ${path.relative(repoRoot, path.join(skillsDir, name))}.\n   Ejecuta /skill-test-evals ${name} primero para generar los casos de prueba.`);
       }
     }
-    return { skillsDir, names: [...new Set(opts.skills)], mode: 'explicit' };
+    return { skillsDir, names: [...new Set(names)], mode: 'explicit' };
   }
   if (opts.changedFrom !== null) {
     return { skillsDir, names: changedSkills(skillsDir, opts.changedFrom, runtime), mode: 'changed-from' };
@@ -225,8 +315,9 @@ function resolveSkills(opts, runtime = {}) {
 // ---------------------------------------------------------------------------
 
 function loadCases(skillsDir, name, runtime = {}) {
-  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
-  const evalsPath = path.join(skillsDir, name, 'evals', 'evals.json');
+  const repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
+  const skillName = validateSkillName(name);
+  const evalsPath = skillFilePath(skillsDir, skillName, 'evals', 'evals.json');
   let json;
   try {
     json = JSON.parse(fs.readFileSync(evalsPath, 'utf8'));
@@ -237,7 +328,7 @@ function loadCases(skillsDir, name, runtime = {}) {
     throw new Error(
       `❌ Este evals.json usa formato trigger (array con query/should_trigger).\n` +
         `   skill-test-evals evals requiere el formato SDDF con cases[].\n` +
-        `   Ejecuta /skill-test-evals ${name} para generar los evals correctos.`
+      `   Ejecuta /skill-test-evals ${skillName} para generar los evals correctos.`
     );
   }
   if (!json || !Array.isArray(json.cases)) {
@@ -246,9 +337,16 @@ function loadCases(skillsDir, name, runtime = {}) {
   if (json.cases.length === 0) {
     throw new Error(`⚠️ evals.json no contiene casos en cases[].\n   Añade al menos TC-001 antes de verificar.`);
   }
-  const hasInvalidCase = json.cases.some((testCase) => !testCase || typeof testCase.id !== 'string' || !testCase.id.trim());
-  if (hasInvalidCase) {
-    throw new Error(`❌ ${path.relative(repoRoot, evalsPath)} contiene un caso sin un id válido.`);
+  const seenIds = new Set();
+  for (const testCase of json.cases) {
+    if (!testCase || typeof testCase !== 'object') {
+      throw new Error(`❌ ${path.relative(repoRoot, evalsPath)} contiene un caso inválido.`);
+    }
+    const id = validateCaseId(testCase.id, path.relative(repoRoot, evalsPath));
+    if (seenIds.has(id)) {
+      throw new Error(`❌ ${path.relative(repoRoot, evalsPath)} contiene el ID duplicado ${id}.`);
+    }
+    seenIds.add(id);
   }
   return { evalsPath, cases: json.cases };
 }
@@ -273,15 +371,16 @@ function buildExecutionPlan(opts, runtime = {}) {
 
   // Cargar todo antes de ejecutar el primer caso evita resultados parciales de una selección inválida.
   const manifests = names.map((name) => {
-    const skillMd = path.join(skillsDir, name, 'SKILL.md');
+    const skillMd = skillFilePath(skillsDir, name, 'SKILL.md');
     if (!fs.existsSync(skillMd)) {
       throw new Error(`❌ No se encontró el contrato SKILL.md para '${name}' en ${path.relative(path.resolve(runtime.repoRoot || REPO_ROOT), skillsDir)}.`);
     }
     return { name, ...loadCases(skillsDir, name, runtime) };
   });
   if (opts.only) {
+    const onlyIds = opts.only.map((id) => validateCaseId(id, '--only'));
     const availableIds = new Set(manifests.flatMap((manifest) => manifest.cases.map((testCase) => testCase.id)));
-    const missing = opts.only.filter((id) => !availableIds.has(id));
+    const missing = onlyIds.filter((id) => !availableIds.has(id));
     if (missing.length > 0) {
       throw new Error(
         `❌ Los casos solicitados no existen en los skills seleccionados: ${missing.join(', ')}.\n` +
@@ -347,7 +446,7 @@ function buildPrompt(skillName, skillMdRel, testCase) {
 // ---------------------------------------------------------------------------
 
 function runClaude(prompt, opts, runtime = {}) {
-  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
+  const repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
   return new Promise((resolve) => {
     const args = [
       '-p',
@@ -429,19 +528,21 @@ async function runPool(items, concurrency, worker) {
 }
 
 async function runSkill(planSkill, opts, runtime = {}) {
-  const { name: skillName, cases, skillsDir } = planSkill;
-  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
-  const tmpRoot = runtime.tmpRoot || path.join(repoRoot, '.tmp', 'skill-test-evals');
+  const { cases, skillsDir } = planSkill;
+  const skillName = validateSkillName(planSkill.name);
+  const repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
+  const tmpRoot = resolveInjectedTmpRoot(repoRoot, runtime);
   const log = runtime.log || console.log;
   const write = runtime.write || process.stdout.write.bind(process.stdout);
   const runClaudeFn = runtime.runClaude || runClaude;
-  const skillMdRel = path.relative(repoRoot, path.join(skillsDir, skillName, 'SKILL.md')).split(path.sep).join('/');
-  const runsDir = path.join(tmpRoot, skillName, 'runs');
+  const skillMdRel = path.relative(repoRoot, skillFilePath(skillsDir, skillName, 'SKILL.md')).split(path.sep).join('/');
+  const runsDir = resolveContainedPath(tmpRoot, skillName, 'runs');
   if (!opts.dryRun) fs.mkdirSync(runsDir, { recursive: true });
 
   log(`\n[INFO] ${cases.length} caso(s) encontrados en ${skillName}/evals/evals.json`);
 
   const results = await runPool(cases, opts.concurrency, async (tc) => {
+    const testCaseId = validateCaseId(tc.id, `skill ${skillName}`);
     const prompt = buildPrompt(skillName, skillMdRel, tc);
     if (opts.dryRun) {
       log(`\n----- ${tc.id} (${tc.name}) — prompt -----\n${prompt}\n`);
@@ -449,8 +550,10 @@ async function runSkill(planSkill, opts, runtime = {}) {
     }
     write(`[${tc.id}] ejecutando…\n`);
     const run = await runClaudeFn(prompt, opts, runtime);
-    fs.writeFileSync(path.join(runsDir, `${tc.id}.txt`), run.stdout);
-    if (run.stderr && run.stderr.trim()) fs.writeFileSync(path.join(runsDir, `${tc.id}.stderr.txt`), run.stderr);
+    fs.writeFileSync(resolveContainedPath(runsDir, `${testCaseId}.txt`), run.stdout);
+    if (run.stderr && run.stderr.trim()) {
+      fs.writeFileSync(resolveContainedPath(runsDir, `${testCaseId}.stderr.txt`), run.stderr);
+    }
 
     if (!run.ok) {
       const reason = run.timedOut ? `timeout tras ${opts.timeout}s` : `claude exit ${run.code}: ${run.stderr.trim().split('\n').pop() || 'sin salida'}`;
@@ -544,12 +647,14 @@ function renderReport(skillName, results) {
 // ---------------------------------------------------------------------------
 
 async function main(argv = process.argv.slice(2), runtime = {}) {
-  const repoRoot = path.resolve(runtime.repoRoot || REPO_ROOT);
-  const tmpRoot = runtime.tmpRoot || path.join(repoRoot, '.tmp', 'skill-test-evals');
+  let repoRoot;
+  let tmpRoot;
   const log = runtime.log || console.log;
   const error = runtime.error || console.error;
   let opts;
   try {
+    repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
+    tmpRoot = resolveInjectedTmpRoot(repoRoot, runtime);
     opts = parseArgs(argv);
   } catch (err) {
     error(err.message);
@@ -591,9 +696,9 @@ async function main(argv = process.argv.slice(2), runtime = {}) {
     const report = renderReport(skill.name, outcome.results);
     log(`\n${report.markdown}`);
     if (opts.report) {
-      const dir = path.join(tmpRoot, skill.name);
+      const dir = resolveContainedPath(tmpRoot, validateSkillName(skill.name));
       fs.mkdirSync(dir, { recursive: true });
-      const file = path.join(dir, `report-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}.md`);
+      const file = resolveContainedPath(dir, `report-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}.md`);
       fs.writeFileSync(file, report.markdown);
       log(`📄 Informe guardado en: ${path.relative(repoRoot, file).split(path.sep).join('/')}`);
     }
@@ -613,6 +718,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  resolveContainedPath,
   parseArgs,
   changedSkills,
   resolveSkills,

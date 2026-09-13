@@ -3,7 +3,7 @@
 Applies to what this repository tells an agent to do — every `SKILL.md`, its `references/`,
 `assets/` and `examples/`, the guardrails and policies an agent reads, and the third-party skills
 declared in `skills-lock.json`. Does not apply to this repository's own scripts, secrets and tracked
-artefacts, which are [guardrails/code-security-checklist.md](code-security-checklist.md). Nor to anything this
+artefacts, which are [guardrails/gr-code-security-checklist.md](gr-code-security-checklist.md). Nor to anything this
 repository does not host — no model, no training data, no vector store, no agent runtime — so model
 provenance, data lineage, retention, consent and audit trails stay out.
 
@@ -39,7 +39,7 @@ id names the guardrail that owns it.
 - [ ] Every external URL uses `https://`; `localhost` and loopback addresses are the only exception — grep: `ai-https-only` (warn)
 
 > The allow-list of external *domains* is not repeated here — it lives in
-> [guardrails/skill-creation-checklist.md](skill-creation-checklist.md) and is checked by
+> [guardrails/gr-skill-creation-checklist.md](gr-skill-creation-checklist.md) and is checked by
 > `skill-url-allowlist`. This guardrail only checks the scheme, so do not duplicate the domain list
 > into it. That file also owns the worker/orchestrator relationship between skills.
 
@@ -167,7 +167,7 @@ exception whose line no longer matches its rule is expired and must be deleted, 
 | `docs/specs/03-stories/STORY-087-error-in-npm-install-locally/story.md:153` | `ai-confirm-before-irreversible` | Same: reproduction notes for an install bug, quoting the command that produced it. |
 
 Decided by the maintainer (`dariopalminio`) while closing the audit that produced
-[SECURITY.md](../../../SECURITY.md), after triaging all eight `(warn)` findings: the two genuine
+[SECURITY.md](../../SECURITY.md), after triaging all eight `(warn)` findings: the two genuine
 ones — the missing confirmation in the npm runbook, and an `http://` reference in
 `docs/guides/best-practices-for-testing.md` — were fixed rather than excepted.
 
@@ -180,5 +180,5 @@ for LLM Applications 2025 (LLM01, LLM03, LLM06) and the OWASP Agentic AI threat 
 AG05, AG08), published at [genai.owasp.org](https://genai.owasp.org/). Where this file and the
 security policy of the project being built disagree, that project's policy prevails.
 
-See also: [guardrails/code-security-checklist.md](code-security-checklist.md) — secrets, executable scripts and
+See also: [guardrails/gr-code-security-checklist.md](gr-code-security-checklist.md) — secrets, executable scripts and
 tracked artefacts in this repository's own content.

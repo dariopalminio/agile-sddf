@@ -99,7 +99,7 @@ Para cada template:
 
 Verificar si `<REPO_ROOT>/sddf.config.yaml` existe en la raíz del proyecto:
 - **No existe (o existe vacío):**
-  - Crear `sddf.config.yaml` usando exactamente el contenido del template en `$CLI_ROOT/skills/sddf-init/assets/sddf.config.yaml.template`
+  - Crear `sddf.config.yaml` usando exactamente el contenido del template en `$CLI_ROOT/skills/sddf-init/assets/sddf.config.yaml.template`. El template declara explícitamente `profile: core` y `stack: node-markdown`; no activa workers de extensión ni comandos requeridos.
   - Registrar `[CREADO]  sddf.config.yaml`
 - **Ya existe con contenido:**
   - No sobrescribirlo ni reemplazar una clave `root` existente.

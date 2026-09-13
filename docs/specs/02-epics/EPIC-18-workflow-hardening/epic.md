@@ -6,7 +6,7 @@ slug: workflow-hardening
 title: "Workflow Hardening — Robustecer el flujo de Story y Release"
 status: COMPLETED
 substatus: DONE
-parent: null
+parent: PROJ-01-agile-sddf
 created: 2026-06-14
 updated: 2026-06-14
 related:

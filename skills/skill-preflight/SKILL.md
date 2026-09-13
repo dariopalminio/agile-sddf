@@ -50,9 +50,15 @@ Las rutas absolutas conservan su significado y los espacios internos no se alter
 resolución no crea la raíz: una fuente explícita tiene que existir para ser válida.
 
 `CLI_ROOT` es independiente de `SPECS_BASE`. Solo se diagnostica después de resolver una
-raíz válida, usando este orden: `SDDF_CLI_ROOT`, `.claude/`, `.opencode/`,
-`.github/copilot/`; si ninguno existe, se informa el valor por defecto `.claude` como
-advertencia operativa, no como error de raíz.
+raíz válida. `SDDF_CLI_ROOT`, si está definido y es accesible, conserva su prioridad
+como override explícito. Si no se usa, leer `config/runtimes.json` y recorrer, en el
+orden declarado, los destinos `local.rootSegments` de los runtimes soportados. El primer
+directorio existente es `CLI_ROOT`; si ninguno existe, informar el destino local del
+`defaultRuntime` del mismo contrato como advertencia operativa, no como error de raíz.
+
+No se mantiene una lista paralela de `.claude`, `.opencode` o `.github` en este skill.
+Las rutas de compatibilidad declaradas como no instalables (por ejemplo `.agents`) pueden
+explicar un descubrimiento de *skills*, pero nunca se eligen como `CLI_ROOT` de agentes.
 
 ---
 
@@ -105,14 +111,16 @@ skill consumidor ni usa un fallback para convertir una ausencia en éxito.
 
 ### Verificación 4 — Runtime opcional
 
-Resolver `CLI_ROOT` de forma independiente según el contrato y emitir:
+Resolver `CLI_ROOT` de forma independiente según el contrato anterior y emitir el
+runtime detectado cuando provenga de `config/runtimes.json`:
 
 ```text
-[OK]      CLI_ROOT = <ruta>
+[OK]      CLI_ROOT = <ruta> (<runtime-id>)
 ```
 
 Si se usa el default por no detectar runtime conocido, anteponer también una advertencia
-que explique que la resolución de artefactos no depende de ese directorio.
+que explique que la resolución de artefactos no depende de ese directorio. Si se usa
+`SDDF_CLI_ROOT`, informar que es un override explícito y no inferir un runtime.
 
 ---
 

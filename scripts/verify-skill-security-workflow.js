@@ -80,6 +80,30 @@ function main() {
     'propagated scanner failure',
     errors,
   );
+  assertContains(
+    contents,
+    'SKILL_SHIELDER_REVISION: b204cecb2d26fccaca0e4121eae94e352e210126',
+    'immutable Skill Shielder revision',
+    errors,
+  );
+  assertContains(
+    contents,
+    'git clone --no-checkout https://github.com/p3nchan/skill-shielder.git /tmp/shielder',
+    'non-executing Skill Shielder clone',
+    errors,
+  );
+  assertContains(
+    contents,
+    'git -C /tmp/shielder checkout --detach "$SKILL_SHIELDER_REVISION"',
+    'detached Skill Shielder checkout',
+    errors,
+  );
+  assertContains(
+    contents,
+    'test "$(git -C /tmp/shielder rev-parse HEAD)" = "$SKILL_SHIELDER_REVISION"',
+    'verified Skill Shielder checkout',
+    errors,
+  );
 
   for (const forbidden of [
     '.claude/skills',

@@ -17,6 +17,10 @@ related:
 
 # 📘 Runbook para actualizar la especificación de proyecto
 
+> **Contrato de runtime SDDF:** las rutas de instalación vigentes se derivan de
+> [`config/runtimes.json`](../../config/runtimes.json). Las referencias de migración de este runbook no
+> definen destinos adicionales.
+
 Procedimiento para resincronizar `$SPECS_BASE/specs/01-projects/<PROJ-NN>/project.md` con la realidad
 del repositorio cuando el documento ha quedado obsoleto.
 

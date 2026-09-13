@@ -16,6 +16,10 @@ related:                                    # opcional, si tiene relación con o
 
 # Buenas prácticas para Agentes
 
+> **Contrato de runtime SDDF:** la instalación del paquete deriva IDs, rutas y soporte exclusivamente de
+> [`config/runtimes.json`](../../config/runtimes.json). Las rutas de plataforma que aparecen en esta guía
+> son contexto de compatibilidad; para OpenCode/Copilot, `.agents` no es un destino instalable de agentes.
+
 Los agentes son asistentes de IA especializados que se pueden configurar para tareas y flujos de trabajo específicos. Los **agentes**, las **skills** y los **comandos** son elementos fundamentales para estructurar un el equipo de inteligencia artificial automatizado para Agile Spec-Driven Development Framework (SDDF). Aquí tienes la definición y el uso de agentes:
 
 ## Agentes
@@ -150,6 +154,5 @@ Hay dos tipos de agentes en OpenCode; agentes primarios y subagentes.
 * **Agentes primarios** son los agentes principales que se invocan directamente por el usuario y que manejan su conversación principal. Se configuran con un archivo .agent.md en el repositorio o en la configuración del usuario. OpenCode viene con dos agentes principales integrados, Build y Plan. Bien mira estos a continuación.
 
 * **Subagentes:** Los subagentes son asistentes especializados que los agentes principales pueden invocar para tareas específicas. También puedes invocarlos manualmente @ mencionándolos en tus mensajes. OpenCode viene con tres subagentes integrados, General, Explore y Scout. Veremos esto a continuación.
-
 
 

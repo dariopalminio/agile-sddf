@@ -1,6 +1,6 @@
 {
   "name": "agile-sddf",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "Agile Spec-Driven-Development Framework for AI agents",
   "keywords": [
     "agile",
@@ -11,8 +11,7 @@
     "spec-driven-development",
     "claude-code",
     "ai-agents",
-    "user-stories",
-    "openspec"
+    "user-stories"
   ],
   "license": "MIT",
   "repository": {
@@ -23,6 +22,7 @@
   "files": [
     "agents/",
     "skills/",
+    "config/",
     "scripts/",
     "sddf.config.yaml",
     "README.md",
@@ -32,11 +32,22 @@
     "agile-sddf": "scripts/cli.js"
   },
   "scripts": {
-    "postinstall": "node scripts/postinstall.js",
+    "test": "node --test test",
+    "test:unit": "node --test test",
     "test:eval:runner": "node --test test/run-evals.test.js",
     "test:installer": "node --test test/install.test.js",
     "test:eval": "node scripts/run-evals.js",
-    "verify:security-ci": "node scripts/verify-skill-security-workflow.js"
+    "verify:security-ci": "node scripts/verify-skill-security-workflow.js",
+    "verify:syntax": "node scripts/verify-syntax.js",
+    "verify:profiles": "node scripts/verify-profiles.js",
+    "verify:runtimes": "node scripts/verify-runtime-documentation.js",
+    "verify:config": "node scripts/verify-config-contract.js",
+    "verify:eval-inventory": "node scripts/verify-eval-inventory.js",
+    "verify:links": "node scripts/check-doc-links.js",
+    "verify:supply-chain": "node scripts/verify-supply-chain.js",
+    "verify:release": "node scripts/verify-release.js",
+    "smoke:package": "node scripts/smoke-package-install.js",
+    "verify:repository": "node scripts/verify-repository.js"
   },
   "engines": {
     "node": ">=18.0.0"

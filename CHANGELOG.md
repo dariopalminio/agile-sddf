@@ -6,7 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [Unreleased]
+## [3.0.0] — 2026-09-13
+
+### Security
+
+- **Cadena de suministro inmutable** — todas las GitHub Actions se fijan a SHA completa con su release como comentario; Trivy queda en `v0.36.0`/`ed142fd0673e97e23eac54620cfb913e5ce36c25`. Skill Shielder queda fijado a `b204cecb2d26fccaca0e4121eae94e352e210126` en CI y `Dockerfile.dev`, con checkout detached y comprobación de `HEAD`. `scripts/verify-supply-chain.js` bloquea tags mutables, clones remotos no versionados y bases Docker sin digest.
+
+### Added
+
+- **Perfiles y runtimes versionados** — `config/profiles.json` declara `core`, `dogfood` y sus stacks; `config/runtimes.json` es la única fuente de destinos canónicos. `ADR-0009` registra la decisión, incluida la extensión de autoría fijada para dogfood.
+- **Gate determinista de documentación** — `scripts/check-doc-links.js` valida rutas locales, anchors y wikilinks de documentación activa sin consultar la red; los specs, ADRs y changelog históricos se excluyen de forma explícita. La matriz `quality.yml` cubre Ubuntu, Windows y macOS sin lifecycle scripts ni credenciales LLM.
 
 ### Fixed
 
@@ -16,10 +25,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   ejecución real, que todos los casos aprueben. La suite determinista `test:eval:runner` y
   `evals.yml` cubren el contrato; las PRs de skills comparan la SHA base inmutable con historial
   completo en `--dry-run`, sin ejecutar LLMs ni exponer credenciales.
-- **Destino seguro del instalador npm** — `installSDDF` valida el destino para todos sus
-  consumidores, incluido `postinstall`: solo acepta `.claude`, `.agents` o `.github`, resuelve el
-  destino desde su base local/global y rechaza rutas vacías, no canónicas, absolutas o con traversal
-  antes de escribir. La regresión determinista cubre API, CLI, `postinstall` y el modo global.
+- **Instalación explícita y contenida** — `npm install` ya no crea directorios de runtime ni lee
+  `SDDF_TARGET`; la copia ocurre solo con `agile-sddf install --target <runtime>`. El instalador usa
+  los destinos canónicos de Claude Code, OpenCode y GitHub Copilot, y rechaza IDs, rutas vacías,
+  absolutas o con traversal antes de escribir. Es un cambio incompatible de major.
 
 ### Changed
 
@@ -74,8 +83,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   antiguo Paso 0 obligatorio de preflight, incompatible con la resolución local de raíz
   (STORY-093).
 
-### Added
-
 - **`scripts/audit-root-resolution.js`** — auditor Node de solo lectura que valida el contrato de
   resolución, la ausencia de invocaciones automáticas de preflight y la coherencia de las fuentes
   activas (STORY-093).
@@ -96,7 +103,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [2.0.2] — 2026-08-30 Remove security-audit - It was moved to the extension repository
+## [2.0.2] — 2026-08-30
 
 ### Changed
 
@@ -113,8 +120,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   independiente.
 
 ---
-
-## [2.0.2] — 2026-08-30 — `readme-builder` sale del core
 
 ### Removed
 

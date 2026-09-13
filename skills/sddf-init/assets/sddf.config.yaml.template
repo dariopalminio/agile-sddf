@@ -2,6 +2,8 @@
 # este archivo debe diseñarse y reconstruiserse para ser fácilmente extendible y adaptable a diferentes proyectos y tecnologías
 # Raíz versionada de los artefactos SDDF. SDDF_ROOT solo la sobrescribe si es válido.
 root: docs
+profile: core
+stack: node-markdown
 
 defaults:
   delivery-model: batch # batch | continuous
@@ -12,7 +14,7 @@ verify:
     required: false
   component:
     command_template: "pnpm run test:component:file -- {{test_file_path}}"  # pnpm test:component:file packages\ui\src\components\Alert\Alert.test.tsx
-    required: tfalserue
+    required: false
   integration:
     command: "pnpm run test:integration"
     required: false

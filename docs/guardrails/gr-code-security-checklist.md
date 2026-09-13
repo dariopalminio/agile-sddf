@@ -5,7 +5,7 @@ templates under `assets/`, `references/` and `examples/`, and every Markdown doc
 to the applications an agent builds by *using* these skills: their runtime, their infrastructure and
 their pipelines are governed by the security policy of the target project. Nor to what a skill tells
 an agent to do — that is
-[guardrails/ai-security-checklist.md](ai-security-checklist.md).
+[guardrails/gr-ai-security-checklist.md](gr-ai-security-checklist.md).
 
 ## Mandatory rules
 
@@ -137,5 +137,5 @@ pipeline gates, SBOM and vulnerability SLAs — lives in the OWASP Top 10 and th
 [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/). Where this file and the security
 policy of the project being built disagree, that project's policy prevails.
 
-See also: [guardrails/ai-security-checklist.md](ai-security-checklist.md) — the other half of this
+See also: [guardrails/gr-ai-security-checklist.md](gr-ai-security-checklist.md) — the other half of this
 repository's security surface: what a skill instructs an agent to read, run and trust.

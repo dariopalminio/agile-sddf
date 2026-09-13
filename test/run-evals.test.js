@@ -7,7 +7,7 @@ const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
-const { main } = require('../scripts/run-evals.js');
+const { main, resolveContainedPath } = require('../scripts/run-evals.js');
 
 function createFixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'agile-sddf-run-evals-'));
@@ -71,7 +71,7 @@ function initializeGit(fixture) {
   return commitAll(fixture, 'fixture inicial');
 }
 
-async function runRunner(fixture, args, { runClaude } = {}) {
+async function runRunner(fixture, args, { runClaude, tmpRoot } = {}) {
   const messages = [];
   const claudeCalls = [];
   const capture = (...values) => {
@@ -86,9 +86,12 @@ async function runRunner(fixture, args, { runClaude } = {}) {
     timedOut: false,
   });
   const selectedRunClaude = runClaude || fakeClaude;
+  const selectedTmpRoot = tmpRoot === undefined
+    ? path.join(fixture.root, '.tmp', 'skill-test-evals')
+    : tmpRoot;
   const code = await main(args, {
     repoRoot: fixture.root,
-    tmpRoot: path.join(fixture.root, '.tmp', 'skill-test-evals'),
+    tmpRoot: selectedTmpRoot,
     log: capture,
     error: capture,
     write: capture,
@@ -108,6 +111,20 @@ function assertPreflightFailure(result) {
   assertExit(result, 1);
   assert.doesNotMatch(result.output, /----- TC-\d+/, result.output);
 }
+
+function assertNoRunArtifacts(fixture, tmpRoot = path.join(fixture.root, '.tmp', 'skill-test-evals')) {
+  assert.equal(fs.existsSync(tmpRoot), false, `No deben crearse artefactos temporales en ${tmpRoot}`);
+}
+
+test('el helper de contencion rechaza raices vacias, rutas absolutas y escapes lexicos', () => {
+  assert.throws(() => resolveContainedPath('', 'alpha'), /ra[ií]z|root/i);
+  assert.throws(() => resolveContainedPath('  ', 'alpha'), /ra[ií]z|root/i);
+  assert.throws(() => resolveContainedPath('C:\\repo', 'C:\\outside'), /absoluta|contenida|ruta/i);
+  assert.throws(() => resolveContainedPath('C:\\repo', '\\\\server\\share\\outside'), /absoluta|contenida|ruta/i);
+  assert.throws(() => resolveContainedPath('C:\\repo', '..\\outside'), /escape|contenida|ruta/i);
+  assert.throws(() => resolveContainedPath('C:\\repo', '../outside'), /escape|contenida|ruta/i);
+  assert.throws(() => resolveContainedPath('C:\\repo', '.'), /ra[ií]z|contenida|ruta/i);
+});
 
 test('un arbol limpio sin selector falla cerrado, tambien en dry-run', async (t) => {
   const fixture = createFixture(t);
@@ -140,6 +157,53 @@ test('--all sin manifests evaluables falla cerrado', async (t) => {
 
   assertPreflightFailure(result);
   assert.match(result.output, /seleccion|caso|skill/i);
+});
+
+test('los nombres de skill con traversal, rutas absolutas o UNC se rechazan antes de ejecutar', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+
+  for (const skill of [
+    '../outside',
+    '..\\outside',
+    path.join(fixture.root, 'outside'),
+    '\\\\server\\share\\outside',
+  ]) {
+    const result = await runRunner(fixture, [skill], {
+      runClaude: async () => {
+        throw new Error('Claude no debe invocarse con un nombre de skill invalido');
+      },
+    });
+
+    assertPreflightFailure(result);
+    assert.match(result.output, /skill|nombre|invalido/i);
+    assert.equal(result.claudeCalls.length, 0);
+    assertNoRunArtifacts(fixture);
+  }
+});
+
+test('--skills-dir solo acepta una ruta relativa contenida bajo repoRoot', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+
+  for (const skillsDir of [
+    '',
+    '../outside',
+    '..\\outside',
+    path.join(fixture.root, 'outside'),
+    '\\\\server\\share\\skills',
+  ]) {
+    const result = await runRunner(fixture, ['--all', '--skills-dir', skillsDir], {
+      runClaude: async () => {
+        throw new Error('Claude no debe invocarse con --skills-dir invalido');
+      },
+    });
+
+    assertPreflightFailure(result);
+    assert.match(result.output, /skills-dir|ruta|contenida/i);
+    assert.equal(result.claudeCalls.length, 0);
+    assertNoRunArtifacts(fixture);
+  }
 });
 
 test('--only con un ID inexistente falla antes de planificar casos', async (t) => {
@@ -180,6 +244,24 @@ test('--only vacio o solo separadores es un error de argumentos', async (t) => {
     const result = await runRunner(fixture, ['alpha', '--only', only, '--dry-run']);
     assertPreflightFailure(result);
     assert.match(result.output, /only/i);
+  }
+});
+
+test('--only rechaza IDs con traversal, separadores o formato distinto de TC-NNN', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+
+  for (const only of ['../outside', '..\\outside', 'TC-001/extra', 'TC-12', 'case-001']) {
+    const result = await runRunner(fixture, ['alpha', '--only', only], {
+      runClaude: async () => {
+        throw new Error('Claude no debe invocarse con un ID de --only invalido');
+      },
+    });
+
+    assertPreflightFailure(result);
+    assert.match(result.output, /ID|caso|only|formato/i);
+    assert.equal(result.claudeCalls.length, 0);
+    assertNoRunArtifacts(fixture);
   }
 });
 
@@ -253,6 +335,72 @@ test('un manifest con entradas de caso malformadas falla cerrado', async (t) => 
 
   assertPreflightFailure(result);
   assert.match(result.output, /caso|evals|manifest/i);
+});
+
+test('un manifest rechaza IDs con traversal, separadores o formato no TC-NNN antes de crear artefactos', async (t) => {
+  const fixture = createFixture(t);
+  const tmpRoot = path.join(fixture.root, '.tmp', 'skill-test-evals');
+  const escapedArtifact = path.join(fixture.root, 'outside-artifact.txt');
+
+  for (const id of ['../outside', '..\\outside', 'TC-001/extra', 'TC-12', 'case-001', '../../../../outside-artifact']) {
+    writeSkill(fixture, 'alpha', [makeCase(id)]);
+    const result = await runRunner(fixture, ['alpha'], {
+      runClaude: async () => {
+        throw new Error('Claude no debe invocarse cuando el manifest tiene un ID invalido');
+      },
+    });
+
+    assertPreflightFailure(result);
+    assert.match(result.output, /ID|caso|formato|evals/i);
+    assert.equal(result.claudeCalls.length, 0);
+    assertNoRunArtifacts(fixture, tmpRoot);
+    assert.equal(fs.existsSync(escapedArtifact), false, 'Un ID invalido no puede escribir fuera de tmpRoot');
+  }
+});
+
+test('un manifest rechaza IDs duplicados dentro del mismo skill antes de ejecutar', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha', [makeCase('TC-001'), makeCase('TC-001', 'duplicado')]);
+
+  const result = await runRunner(fixture, ['alpha'], {
+    runClaude: async () => {
+      throw new Error('Claude no debe invocarse cuando hay IDs duplicados');
+    },
+  });
+
+  assertPreflightFailure(result);
+  assert.match(result.output, /duplicad|TC-001/i);
+  assert.equal(result.claudeCalls.length, 0);
+  assertNoRunArtifacts(fixture);
+});
+
+test('los artefactos validos quedan contenidos bajo el tmpRoot inyectado', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const tmpRoot = path.join(fixture.root, 'tmp-inyectado');
+
+  const result = await runRunner(fixture, ['alpha', '--report'], {
+    tmpRoot,
+    runClaude: async () => ({
+      ok: true,
+      code: 0,
+      stdout: '=== END ===',
+      stderr: 'advertencia de fixture',
+      durationMs: 0,
+      timedOut: false,
+    }),
+  });
+
+  assertExit(result, 0);
+  assert.equal(fs.existsSync(path.join(tmpRoot, 'alpha', 'runs', 'TC-001.txt')), true);
+  assert.equal(fs.existsSync(path.join(tmpRoot, 'alpha', 'runs', 'TC-001.stderr.txt')), true);
+  assert.equal(fs.existsSync(path.join(tmpRoot, 'alpha', 'report-19700101.md')), false);
+  assert.equal(fs.existsSync(path.join(fixture.root, 'TC-001.txt')), false);
+  assert.equal(fs.existsSync(path.join(fixture.root, 'alpha', 'runs', 'TC-001.txt')), false);
+  assert.equal(
+    fs.readdirSync(path.join(tmpRoot, 'alpha')).some((name) => /^report-\d{8}\.md$/.test(name)),
+    true,
+  );
 });
 
 test('un error de Claude con stdout no puede convertirse en PASS', async (t) => {

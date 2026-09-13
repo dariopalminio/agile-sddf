@@ -27,7 +27,6 @@ Cargadas automáticamente en cada sesión vía prompt de sistema (`CLAUDE.md`, `
 
 - [[constitution]] — [constitution.md](policies/constitution.md) — Principios técnicos inamovibles, stack, estándares de construcción de skills
 - [[definition-of-done]] — [dod-story.md](policies/dod-story.md) — Definition of Done por estado del workflow de historia
-- [skill_creation_policy.md](policies/skill_creation_policy.md) — Política de creación de skills (referencia, sin frontmatter)
 
 ---
 
@@ -252,6 +251,8 @@ placeholder, por lo que se enlazan solo por ruta:
 - [[prefijo-story-para-el-nivel-l1]] — [ADR-0005](adr/ADR-0005-prefijo-story-para-el-nivel-l1.md) — El ID del nivel L1 se prefija con `STORY`; el tipo vive en el campo `kind` · `ACCEPTED`
 - [[migracion-retroactiva-de-estados-de-epica]] — [ADR-0006](adr/ADR-0006-migracion-retroactiva-de-estados-de-epica.md) — Workflows canónicos de story y épica, con migración retroactiva de los estados históricos · `ACCEPTED`
 - [[templates-como-capa-propia]] — [ADR-0007](adr/ADR-0007-templates-como-capa-propia.md) — Los templates son una capa propia, hermana de `specs/` · `ACCEPTED`
+- [[rework-sin-estado-propio]] — [ADR-0008](adr/ADR-0008-rework-sin-estado-propio.md) — Rework sin estado propio: la señal es el artefacto de fallo · `ACCEPTED`
+- [[perfiles-runtimes-e-instalacion-explicita]] — [ADR-0009](adr/ADR-0009-perfiles-runtimes-e-instalacion-explicita.md) — Perfiles reproducibles, runtimes canónicos e instalación explícita · `ACCEPTED`
 - [adr-template.md](adr/adr-template.md) — Template para nuevos ADR (slug placeholder, sin wikilink)
 
 ## 📖 Guías y operación
@@ -263,8 +264,6 @@ Las guías se dividen en guides (guías prácticas) y reference (documentación 
 #### Metodología y proceso
 
 - [[sdd]] — [sdd.md](guides/sdd.md) — Spec Driven Development (SDD): fundamentos del método
-- [[specs-and-workflows]] — [specs_and_workflows.md](guides/specs_and_workflows.md) — Specs y workflows: contratos, trazabilidad, status y substatus
-- [[state-machine]] — [state-machine.md](guides/state-machine.md) — Máquina de estados canónica del framework (story, project, épica) con diagramas Mermaid
 - [[sddf-commands-pipeline]] — [sddf-commands-pipeline.md](guides/sddf-commands-pipeline.md) — Flujos principales SDDF: qué skill corre en cada fase
 - [[extreme-agile]] — [extreme-agile.md](guides/extreme-agile.md) — Agilidad agéntica (Agentic Agile)
 - [[flight-leves-model]] — [flight-leves-model.md](guides/flight-leves-model.md) — Modelo de Niveles de Vuelo (Flight Levels)
@@ -275,7 +274,7 @@ Las guías se dividen en guides (guías prácticas) y reference (documentación 
 - [[best-practices-for-skills]] — [best-practices-for-skills.md](guides/best-practices-for-skills.md) — Modelo de delegación, patrón `.tmp/<skill>/` y contrato de invocación de agentes locales (ADR-0002)
 - [[best-practices-for-agents]] — [best-practices-for-agents.md](guides/best-practices-for-agents.md) — Buenas prácticas para agentes
 - [[best-practices-for-commands]] — [best-practices-for-commands.md](guides/best-practices-for-commands.md) — Buenas prácticas para comandos de LLM clients
-- [[harness-eng-agents-orchestration]] — [harness-engineering.md](guides/harness-engineering.md) — Harness engineering: modelo de delegación y relaciones permitidas
+- [[harness-engineering]] — [harness-eng-agents-orchestration.md](guides/harness-eng-agents-orchestration.md) — Harness engineering: modelo de delegación y relaciones permitidas
 - [[skill-structural-pattern]] — [skill-structural-pattern.md](guides/skill-structural-pattern.md) — Patrones estructurales de skills
 - [[best-practices-for-system-prompt]] — [best-practices-for-system-prompt.md](guides/best-practices-for-system-prompt.md) — Mejores prácticas para el prompt de sistema y `AGENTS.md`
 
@@ -312,25 +311,13 @@ Los procedimientos, how-to suele ser más general, mientras que los runbooks son
 
 | Métrica | Valor |
 |---------|-------|
-| Archivos `.md` en `docs/` | 270 |
-| Rutas únicas enlazadas desde el índice | 170 |
-| — L3 proyecto (4 `.md` + `context-diagram.puml`) | 5 |
-| — L2 épicas (19 `epic.md` + 31 `plan-NN.md`) | 50 |
-| — L1 historias (76 `story.md` + 5 planes) | 81 |
-| — Templates | 5 |
-| — ADR (3 + índice + template) | 5 |
-| — Políticas | 3 |
-| — Guías (18) + runbooks (4) | 22 |
-| Artefactos derivados no indexados (`design`, `tasks`, `analyze`, `*-report`, `testcases`) | 88 |
-| Wikilinks | 160 |
-| Wikilinks rotos (⚠️) | 0 |
-| Entradas sin wikilink (archivo sin `slug:` usable) | 13 |
-| Última actualización | 2026-08-30 |
+| Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
+| Alcance activo | `README.md`, `SECURITY.md`, `docs/index.md`, `policies/`, `guardrails/`, `guides/` y `runbooks/` |
+| Enlaces externos | Validación sintáctica solamente; no se consulta la red en CI |
+| Históricos excluidos | `docs/specs/`, `docs/adr/` y `CHANGELOG.md` conservan su contexto versionado |
+| Última actualización de la estructura | 2026-09-13 |
 
-> Las filas «Rutas únicas enlazadas», «L1 historias» y «Artefactos derivados» conservan el valor de la
-> última generación completa (2026-08-29); en la edición manual del 2026-08-30 solo se recontaron los
-> archivos `.md`, los runbooks y los wikilinks. Reejecutar `/docs-wiki-builder --update` para
-> recalcular la tabla entera.
+> El resultado de enlaces no se mantiene como un número manual: el checker lo genera y la CI lo exige.
 
 ---
 

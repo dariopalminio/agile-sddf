@@ -14,6 +14,10 @@ related:
 
 # Mejores prácticas para el prompt de sistema
 
+> **Contrato de runtime SDDF:** cualquier ejemplo de skills o agentes en esta guía es descriptivo de su
+> plataforma. El instalador de SDDF deriva los destinos soportados de
+> [`config/runtimes.json`](../../config/runtimes.json).
+
 Un prompt de sistema (system prompt) es el mensaje completo y el conjunto de instrucciones iniciales que una herramienta envía a una inteligencia artificial en segundo plano, englobando tu petición individual y el contexto adicional que le has proporcionado. El prompt de sistema es la base sobre la que la IA construye su respuesta, por lo que es crucial que esté bien diseñado para obtener resultados óptimos. Su propósito principal es moldear cómo se comportará la IA durante la conversación y dotarla del contexto que desconoce. Un buen prompt de sistema es claro, conciso y relevante, proporcionando a la IA la información necesaria para entender el contexto de tu solicitud y responder de manera efectiva.
 En resumen, es la "constitución" invisible que unifica tus instrucciones, las capacidades de la IA y el contexto de tu sistema para que tus solicitudes se ejecuten sin problemas. Un prompt de sistema bien elaborado es esencial para maximizar la utilidad de las herramientas de IA en tu flujo de trabajo diario.
 

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://agile-sddf.dev/schemas/profile-contract-v1.json",
+  "schemaVersion": 1,
+  "defaultProfile": "core",
+  "extensionLockFile": "sddf.extensions.lock.json",
+  "extensions": [
+    {
+      "id": "agile-sddf-authoring-legacy",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/dariopalminio/agile-sddf-extension.git",
+        "revision": "302d66c93a3905e70dc0a0e267f43a553c873f49"
+      },
+      "workers": [
+        {
+          "id": "skill-master",
+          "path": ".claude/skills/skill-master"
+        },
+        {
+          "id": "skill-test-evals",
+          "path": ".claude/skills/skill-test-evals"
+        }
+      ]
+    }
+  ],
+  "stacks": {
+    "node-markdown": {
+      "description": "Artefactos Markdown con utilidades deterministas de Node.js.",
+      "verification": [],
+      "workerCapabilities": []
+    },
+    "sddf-authoring": {
+      "description": "Stack de desarrollo del propio framework SDDF.",
+      "extends": "node-markdown",
+      "verification": [
+        {
+          "command": "npm run test:installer",
+          "required": true
+        },
+        {
+          "command": "npm run test:eval:runner",
+          "required": true
+        },
+        {
+          "command": "node scripts/audit-root-resolution.js",
+          "required": true
+        }
+      ],
+      "workerCapabilities": ["skill-master", "skill-test-evals"]
+    }
+  },
+  "profiles": {
+    "core": {
+      "description": "Perfil distribuido por npm; no descarga ni exige extensiones de autoría.",
+      "configuration": {
+        "base": "skills/sddf-init/assets/sddf.config.yaml.template",
+        "overlays": []
+      },
+      "stack": "node-markdown",
+      "runtimes": ["claude-code", "opencode", "github-copilot"],
+      "workers": [
+        {
+          "id": "skill-master",
+          "required": false,
+          "provider": "none"
+        },
+        {
+          "id": "skill-test-evals",
+          "required": false,
+          "provider": "none"
+        }
+      ]
+    },
+    "dogfood": {
+      "description": "Perfil del repositorio Agile SDDF; requiere extensiones de autoría provisionadas de forma explícita.",
+      "configuration": {
+        "base": "sddf.config.yaml",
+        "overlays": []
+      },
+      "stack": "sddf-authoring",
+      "runtimes": ["claude-code", "opencode", "github-copilot"],
+      "workers": [
+        {
+          "id": "skill-master",
+          "required": true,
+          "provider": "agile-sddf-authoring-legacy"
+        },
+        {
+          "id": "skill-test-evals",
+          "required": true,
+          "provider": "agile-sddf-authoring-legacy"
+        }
+      ]
+    }
+  }
+}

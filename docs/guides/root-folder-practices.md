@@ -13,7 +13,7 @@ SDDF separa tres raíces que no son intercambiables:
 |---|---|
 | `REPO_ROOT` | Repositorio, `sddf.config.yaml`, código, scripts y políticas. |
 | `SPECS_BASE` | Una única raíz de artefactos SDDF: `specs/`, `templates/`, políticas y documentación relacionada. |
-| `CLI_ROOT` | Runtime instalado que contiene skills y agentes; se resuelve solo cuando hace falta. |
+| `CLI_ROOT` | Runtime instalado que contiene skills y agentes; se resuelve solo cuando hace falta. Sus destinos canónicos viven en `config/runtimes.json`. |
 
 ## Precedencia canónica
 
@@ -86,6 +86,15 @@ Antes de acceder a artefactos, un skill debe:
 No uses sustituciones textuales entre estas raíces. En particular, `SPECS_BASE` no es
 la raíz de código ni la ubicación de `sddf.config.yaml`, y `CLI_ROOT` no se deriva de
 la carpeta de artefactos.
+
+Para detectar un runtime instalado, `skill-preflight` conserva el override explícito
+`SDDF_CLI_ROOT`; sin override, lee `config/runtimes.json`, recorre los destinos locales
+de sus runtimes soportados en el orden declarado y usa el primero que exista. Si no
+encuentra ninguno, informa como advertencia el destino local del `defaultRuntime` del
+mismo archivo. No copies esas rutas a otro documento o script: el mapa versionado es la
+única fuente. Una ruta de compatibilidad no instalable, como `.agents`, puede servir
+para descubrir skills donde el runtime lo soporte, pero no representa un `CLI_ROOT`
+canónico de agentes.
 
 ## Bootstrap y diagnóstico
 

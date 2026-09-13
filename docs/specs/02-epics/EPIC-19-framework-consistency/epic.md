@@ -6,10 +6,11 @@ slug: EPIC-19-framework-consistency
 title: "Framework Consistency — Coherencia de vocabulario, instalación, seguridad y ciclo de corrección"
 status: DEVELOP
 substatus: IN-PROGRESS
-parent: null
+parent: PROJ-01-agile-sddfl
 created: 2026-06-14
 updated: 2026-09-12
-related: []
+related:
+  - EPIC-18-workflow-hardening
 ---
 
 # Épica: Framework Consistency — Coherencia de vocabulario, instalación, seguridad y ciclo de corrección
@@ -28,15 +29,15 @@ Tras el hardening del workflow (EPIC-18) quedaron brechas que el propio uso del 
 - [x] **STORY-091 — story-implement toma de la cola una historia rechazada y corrige en modo rework:** `/story-implement` reconoce el rework por la presencia de `fix-directives.md`, aplica un ciclo TDD acotado a los hallazgos y la lista blanca, y deja la historia lista para una nueva revisión sin intervención manual del frontmatter. — [[STORY-091-story-implement-modo-rework]]
 - [x] **STORY-092 — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro:** reglas de robustez del modo rework: qué ocurre cuando la Fase RED no genera tests nuevos y con los archivos modificados fuera de la lista blanca de `fix-directives.md`. — [[STORY-092-reglas-robustez-modo-rework]]
 - [x] **STORY-093 — Resolver una raíz configurable y usar preflight como diagnóstico:** los skills resuelven localmente `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`; `skill-preflight` pasa a ser diagnóstico explícito y no mutante. Sustituye operativamente los contratos de STORY-049 y STORY-053 sin modificar sus artefactos históricos. — [[STORY-093-raiz-configurable-preflight-diagnostico]]. La recomendación base es: una sola raíz, declarada en sddf.config.yaml, leída directamente por los skills, con preflight solo como diagnóstico.
-- [ ] **STORY-094 — Hacer ejecutables y bloqueantes los contratos operativos del framework SDDF:** asegurar que `npm install agile-sddf` crea correctamente los directorios `.claude/skills/` y `.claude/agents/` en todas las plataformas soportadas y que `/skill-preflight` reporta `✓ Entorno OK` tras `sddf-init`. — [[STORY-094-installation-verification]]. Cerrar falsos verdes del runner de evals. Correcciones del archivo README. Limpieza o corrección de referencias invalidas en SECURITY.md.
+- [ ] **STORY-094 — Hacer ejecutables y bloqueantes los contratos operativos del framework SDDF:** asegurar que `npm install agile-sddf` no crea directorios de runtime y que el acto explícito `agile-sddf install --target <runtime>` copia skills y agentes al destino canónico en todas las plataformas soportadas; `/skill-preflight` debe reportar `✓ Entorno OK` tras `sddf-init`. — [[STORY-094-fixing-insights]]. Cerrar falsos verdes del runner de evals, reparar README/SECURITY y cerrar los hallazgos pendientes de auditoría.
 
 ## Flujos Críticos / Smoke Tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
 
 ### Escenario 1: La instalación deja el framework operativo en un proyecto limpio
 **DADO** un proyecto vacío en Windows, macOS o Linux con Node ≥ 18  
-**CUANDO** se ejecuta `npm install agile-sddf` (o `npx agile-sddf install --target .claude`)  
-**ENTONCES** existen `.claude/skills/` y `.claude/agents/` con el mismo inventario que `skills/` y `agents/` del paquete, y `/skill-preflight` reporta `✓ Entorno OK` tras `sddf-init`
+**CUANDO** se ejecuta `npm install agile-sddf` y luego `npx agile-sddf install --target claude-code`
+**ENTONCES** la primera orden no crea directorios de runtime; la segunda deja `.claude/skills/` y `.claude/agents/` con el mismo inventario que `skills/` y `agents/` del paquete, y `/skill-preflight` reporta `✓ Entorno OK` tras `sddf-init`
 
 ### Escenario 2: El vocabulario y la estructura numerada son consistentes de punta a punta
 **DADO** un repositorio con SDDF inicializado  

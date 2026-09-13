@@ -131,7 +131,7 @@ El ecosistema de herramientas SDD está creciendo rápidamente:
 - **Codeplain:** Plataforma de desarrollo de software, para spec-as-source, que permite a los equipos de ingeniería crear, mantener y evolucionar especificaciones vivas y ejecutables, integrando flujos de trabajo SDD con herramientas de control de versiones y CI/CD.
 
 Referencias:
-[1]: GitHub Blog - Spec-driven development with AI: github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai 
+[1]: https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai
 [2]: https://openspec.dev/
 [3]: https://speckit.org/
 [4]: https://martinfowler.com/articles/structured-prompt-driven/?shem=rimspwouoe
@@ -140,5 +140,4 @@ Referencias:
 [7]: https://github.com/Gentleman-Programming/gentle-ai
 [8]: https://github.com/addyosmani/agent-skills
 [9]: https://github.com/mariano-aguero/spec-driven-development-skill
-
 

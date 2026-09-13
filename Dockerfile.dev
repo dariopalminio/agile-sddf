@@ -1,12 +1,16 @@
 FROM debian:bookworm-slim@sha256:0104b334637a5f19aa9c983a91b54c89887c0984081f2068983107a6f6c21eeb
 
+ARG SKILL_SHIELDER_REVISION=b204cecb2d26fccaca0e4121eae94e352e210126
+
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
     bash \
-    && git clone https://github.com/p3nchan/skill-shielder.git /opt/skill-shielder \
+    && git clone --no-checkout https://github.com/p3nchan/skill-shielder.git /opt/skill-shielder \
+    && git -C /opt/skill-shielder checkout --detach "$SKILL_SHIELDER_REVISION" \
+    && test "$(git -C /opt/skill-shielder rev-parse HEAD)" = "$SKILL_SHIELDER_REVISION" \
     && chmod +x /opt/skill-shielder/shield.sh /opt/skill-shielder/scanners/*.sh \
     && ln -s /opt/skill-shielder/shield.sh /usr/local/bin/shield \
     && rm -rf /var/lib/apt/lists/*

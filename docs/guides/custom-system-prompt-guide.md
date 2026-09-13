@@ -1,5 +1,9 @@
 # Guía para la creación de System Prompts (AGENTS.md, CLAUDE.md, etc.)
 
+> **Contrato de runtime SDDF:** las rutas de skills o agentes de esta guía describen plataformas. La
+> instalación del paquete usa únicamente los destinos declarados en
+> [`config/runtimes.json`](../../config/runtimes.json).
+
 Un **system prompt** (prompt de sistema) es el conjunto de instrucciones iniciales y contexto que se envía a una inteligencia artificial en segundo plano. Actúa como la **"constitución" invisible** que unifica tus instrucciones, las capacidades de la IA y el contexto de tu proyecto, permitiendo que la IA entienda el propósito, las reglas y las limitaciones de tu entorno de desarrollo.
 
 Esta guía se centra en los archivos de instrucciones persistentes que diferentes herramientas de IA para programación (Claude Code, OpenCode, GitHub Copilot, Gemini CLI, etc.) utilizan para obtener contexto específico del proyecto. Estos archivos (como `AGENTS.md`, `CLAUDE.md`, `copilot-instructions.md`) son la forma más efectiva de alinear el comportamiento de la IA con las necesidades de tu equipo y tu código.

@@ -1,5 +1,9 @@
 # Guardrail: Agent Skill creation
 
+> **SDDF runtime contract:** package installation derives its supported skill destinations solely from
+> [`config/runtimes.json`](../../config/runtimes.json). Platform examples below are compatibility
+> context, not extra installer targets.
+
 Applies to every Agent Skill directory under `skills/` or `.claude/skills/` — creating one, editing
 one, or reviewing its diff. Does not apply to agents (`.claude/agents/`), to policies
 (`policies/`), or to guardrail files themselves.

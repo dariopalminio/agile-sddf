@@ -1,10 +1,14 @@
 # Guardrail: Custom agent creation
 
+> **SDDF runtime contract:** package installation derives its supported agent destinations solely from
+> [`config/runtimes.json`](../../config/runtimes.json). Platform examples below are compatibility
+> context, not extra installer targets; for OpenCode/Copilot, `.agents` is never an agent-install target.
+
 Applies to every custom agent definition file — `.claude/agents/` and `~/.claude/agents/` (Claude
 Code), `.opencode/agents/` and `~/.config/opencode/agents/` (OpenCode), `.github/agents/*.agent.md`
 (GitHub Copilot), `.agents/agents/` and `~/.gemini/config/agents/` (Antigravity) — creating one,
 editing one, or reviewing its diff. Does not apply to Agent Skills, which are governed by
-[guardrails/skill-creation-checklist.md](skill-creation-checklist.md), nor to policies, nor to the
+[guardrails/gr-skill-creation-checklist.md](gr-skill-creation-checklist.md), nor to policies, nor to the
 code an agent produces when it runs.
 
 ## Mandatory rules
@@ -52,7 +56,7 @@ stay greppable in the output. All commands assume `AGENT=<path to the agent file
 - [ ] The deprecated `tools:` block is absent; its capabilities are expressed under `permission` — grep: `agent-tools-deprecated` (warn)
 
 > Secrets, private keys and tracked artefacts are checked repo-wide by
-> [guardrails/code-security-checklist.md](code-security-checklist.md). Do not duplicate
+> [guardrails/gr-code-security-checklist.md](gr-code-security-checklist.md). Do not duplicate
 > `sec-no-credential-literal` here.
 
 ---
@@ -213,4 +217,3 @@ catalogues and per-platform invocation details — lives in each platform's offi
 [Claude Code subagents](https://docs.anthropic.com/en/docs/claude-code/sub-agents) and
 [GitHub Copilot custom agents](https://github.com/github/awesome-copilot). Where this file and the
 platform documentation disagree, the platform documentation prevails.
-

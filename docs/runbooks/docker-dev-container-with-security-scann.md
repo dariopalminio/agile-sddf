@@ -1,5 +1,7 @@
 # Integrar Skill Shielder en Dockerfile.dev
 
+> **Nota histórica actualizada:** este documento conserva el contexto de la integración. La fuente operativa es [`Dockerfile.dev`](../../Dockerfile.dev), que fija Skill Shielder a `b204cecb2d26fccaca0e4121eae94e352e210126` y comprueba que `HEAD` coincide antes de exponer `shield`.
+
 ## Context
 
 El contenedor de desarrollo (Dockerfile.dev) se usa con VSCode Dev Containers. 
@@ -9,7 +11,7 @@ https://github.com/p3nchan/skill-shielder
 
 Se puede ejecutar Skill Shielder para auditar seguridad de skills bajo demanda desde dentro del contenedor, sin depender de la instalación del host.
 
-La solución es clonar skill-shielder durante el build de la imagen y exponer el comando shield en el PATH del sistema.
+La solución es clonar una revisión inmutable de Skill Shielder durante el build, verificar `HEAD` y exponer el comando `shield` en el PATH del sistema.
 
 ## Cambio a realizar
 
@@ -31,7 +33,11 @@ RUN apt-get update \
 
 # Install Skill Shielder for on-demand skill auditing
 
-RUN git clone https://github.com/p3nchan/skill-shielder.git /opt/skill-shielder \
+ARG SKILL_SHIELDER_REVISION=b204cecb2d26fccaca0e4121eae94e352e210126
+
+RUN git clone --no-checkout https://github.com/p3nchan/skill-shielder.git /opt/skill-shielder \
+    && git -C /opt/skill-shielder checkout --detach "$SKILL_SHIELDER_REVISION" \
+    && test "$(git -C /opt/skill-shielder rev-parse HEAD)" = "$SKILL_SHIELDER_REVISION" \
     && chmod +x /opt/skill-shielder/shield.sh /opt/skill-shielder/scanners/*.sh \
     && ln -s /opt/skill-shielder/shield.sh /usr/local/bin/shield
 
@@ -50,16 +56,16 @@ Uso desde el contenedor
 
 # Auditar todos los skills del proyecto
 
-shield .claude/skills
+shield /app/skills
 
 # Auditar un skill concreto
 
-shield .claude/skills/story-creation
+shield /app/skills/story-creation
 Exit codes: 0 = limpio, 1 = warnings, 2 = problemas críticos.
 
 ## Verification
 
 docker build -f Dockerfile.dev -t agile-sddf-dev:local .
 docker run --rm agile-sddf-dev:local shield --version
-docker run --rm -v $(pwd):/app agile-sddf-dev:local shield /app/.claude/skills
+docker run --rm -v $(pwd):/app agile-sddf-dev:local shield /app/skills
 

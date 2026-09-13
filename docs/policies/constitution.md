@@ -44,11 +44,11 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 
 ## Guardrails y reglas a seguir
 
-- [Checklist de Seguridad de IA](docs/guardrails/gr-ai-security-checklist.md)
-- [Checklist de Seguridad de Código](docs/guardrails/gr-code-security-checklist.md)
-- [Checklist de Creación de Skills](docs/guardrails/gr-skill-creation-checklist.md)
-- [Checklist de Creación de Agentes](docs/guardrails/gr-agent-creation-checklist.md)
-- [Definition of Done para la Story](docs/policies/dod-story.md)
+- [Checklist de Seguridad de IA](../guardrails/gr-ai-security-checklist.md)
+- [Checklist de Seguridad de Código](../guardrails/gr-code-security-checklist.md)
+- [Checklist de Creación de Skills](../guardrails/gr-skill-creation-checklist.md)
+- [Checklist de Creación de Agentes](../guardrails/gr-agent-creation-checklist.md)
+- [Definition of Done para la Story](dod-story.md)
 
 ## 📐 Convenciones de Código
 
@@ -93,7 +93,7 @@ project (`$SPECS_BASE/specs/01-projects/<PROJECT-NAME>/project.md`)
 
 ## Estándares de construcción de Skills
 
-Respetar las [Política de Creación de Skills para Agentes de IA](docs/policies/skill_creation_policy.md)
+Respetar el [Checklist de Creación de Skills](../guardrails/gr-skill-creation-checklist.md).
 
 ### Patrones estructurales
 
@@ -222,7 +222,7 @@ Lista los principios que NO pueden violarse bajo ninguna circunstancia.
 4. **Mantenlo simple con las herramientas (KISS):** otorgarle a la IA herramientas muy sencillas del ecosistema y dejar que la IA deduzca cómo resolver los problemas.
 5. **Gestión estricta de la memoria y el contexto:** la IA no debe acumular todo en su contexto; debe tener un sistema de memoria externa (ficheros locales o bases de datos) donde lea y escriba solo lo que necesita en cada momento.
 6. **Evita el "teléfono descompuesto":** cuando el agente padre crea subagentes, no debe pasarles todo su contexto heredado, en su lugar, los subagentes deben escribir sus resultados de forma independiente en un directorio `.tmp/<skill-name>/` para que otros agentes lean exclusivamente lo que necesiten. Ver patrón detallado en `[[best-practices-for-skills]]`.
-7. **Resolución segura y diagnóstico explícito:** La IA resuelve la raíz de artefactos localmente antes de escribir y se detiene ante una fuente explícita inválida. El skill `skill-preflight` (`[[skill-preflight]]`) proporciona un diagnóstico no mutante cuando el mantenedor lo solicita; no es una dependencia implícita de los workflows.
+7. **Resolución segura y diagnóstico explícito:** La IA resuelve la raíz de artefactos localmente antes de escribir y se detiene ante una fuente explícita inválida. El skill `skill-preflight` proporciona un diagnóstico no mutante cuando el mantenedor lo solicita; no es una dependencia implícita de los workflows.
 8. **Mantener buenas prácticas y estándares homogéneos:** El código base debe estar bien estructurado y definimos buenas prácticas y reglas claras para que los patrones de resultado esperado sean predecibles.
 9. **Spec-first:** Escribes la spec antes de codificar, la usas para la tarea en curso, y luego la descartas. Es el nivel más básico.
 10. **Spec-anchored:** La spec se mantiene después de completar la tarea y se usa para evolución y mantenimiento del feature.

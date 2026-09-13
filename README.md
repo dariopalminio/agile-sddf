@@ -23,7 +23,7 @@ Sistema multiagente minimalista que automatiza el ciclo completo de especificaci
 >
 > 👉 **[Cómo migrar tu proyecto](#upgrading-desde-1x)** — pasos y comandos.
 
-Los developers y equipos que trabajan con IA para desarrollar software carecen de un proceso estructurado y reproducible para transformar ideas en especificaciones de calidad. Agile SDDF resuelve esto con un workflow ágil y secuencial que cubre desde la intención inicial hasta el backlog planificado de historias de usuario, con control de WIP, gates de revisión humana y trazabilidad completa en cada etapa. A diferencia de los prompts ad-hoc o frameworks rígidos, el sistema extrae dinámicamente la estructura de los templates en runtime para generar preguntas y comportamientos contextuales, y opera en etapa de especificación sin modificar código subyacente en los runtimes de IA soportados (Codex, Claude Code, GitHub Copilot, OpenCode). En etapa de implenetación, SDDF genera código de producción + tests con TDD, y reportes de implementación y revisión de código para garantizar calidad y coherencia con la especificación.
+Los developers y equipos que trabajan con IA para desarrollar software carecen de un proceso estructurado y reproducible para transformar ideas en especificaciones de calidad. Agile SDDF resuelve esto con un workflow ágil y secuencial que cubre desde la intención inicial hasta el backlog planificado de historias de usuario, con control de WIP, gates de revisión humana y trazabilidad completa en cada etapa. A diferencia de los prompts ad-hoc o frameworks rígidos, el sistema extrae dinámicamente la estructura de los templates en runtime para generar preguntas y comportamientos contextuales, y opera en etapa de especificación sin modificar código subyacente en los runtimes soportados (Claude Code, OpenCode y GitHub Copilot). En etapa de implementación, SDDF genera código de producción + tests con TDD, y reportes de implementación y revisión de código para garantizar calidad y coherencia con la especificación.
 
 ### Context Diagram
 ![agile-sddf-context-diagram](docs/architecture/context-diagram.png)
@@ -40,7 +40,7 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - [Quick Start](#quick-start)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Extensions — `agile-sddf-extension`](#extensions--agile-sddf-extension)
+- [Profiles and extensions](#profiles-and-extensions)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -57,96 +57,69 @@ Los developers y equipos que trabajan con IA para desarrollar software carecen d
 - **Gestión de historias de usuario**: creación (Como/Quiero/Para + Gherkin), evaluación con rúbrica FINVEST (Likert 1–5), splitting con 8 patrones y refinamiento iterativo
 - **SDD workflow**: Se implemente un workflow a nivel de story "SPECIFY --> PLAN --> READY-FOR-IMPLEMENT --> IMPLEMENT --> CODE-REVIEW --> VERIFY --> ACCEPTANCE --> DELIVER --> COMPLETED" con skills dedicados para cada fase y generación de artefactos específicos (design.md, tasks.md, analyze.md, implement-report.md, code-review-report.md)
 - **Pipeline SDD completo de historia**: planning y implementación tarea a tarea — `story-plan` orquesta `story-design` → `story-tasking` → `story-testcases` → `story-analyze` en un solo comando; `story-implement` ejecuta el ciclo TDD completo (RED→GREEN→REFACTOR) delegando a skills configurables por stack tecnológico (`sddf.config.yaml`): genera tests con el skill `test_generator` declarado, implementa código con el `code_generator` y refactoriza sin romper suites; soporta modo interactivo (con pausas de confirmación entre fases) y modo automático (`--auto`) para CI; `story-code-review` para revisión multi-agente post-implementación
-- **Skills worker customizados (extensión)**: los workers específicos por stack —generadores de tests y de código para NestJS, React, Cypress/Playwright + Cucumber— **no se incluyen en este paquete**. Viven en [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension), se instalan por separado y se declaran en `sddf.config.yaml`, de modo que el core permanece agnóstico al stack mientras esos workers evolucionan en su propio repo. Ver [Extensions](#extensions--agile-sddf-extension)
+- **Skills worker customizados (extensión)**: los workers específicos por stack —generadores de tests y de código para NestJS, React, Cypress/Playwright + Cucumber— **no se incluyen en este paquete**. Viven en [`agile-sddf-extension`](https://github.com/dariopalminio/agile-sddf-extension), se instalan por separado y se declaran en `sddf.config.yaml`, de modo que el core permanece agnóstico al stack mientras esos workers evolucionan en su propio repo. Ver [Profiles and extensions](#profiles-and-extensions).
 - **Configuración operacional por stack (`sddf.config.yaml`)**: archivo versionado en la raíz del proyecto que declara `root` para los artefactos SDDF y los skills activos para cada fase del pipeline TDD; `SDDF_ROOT` es un override temporal válido solo si apunta a un directorio accesible. `sddf-init` genera la configuración desde un template canónico.
 - **Políticas de proyecto**: generación de `constitution.md` y `dod-story.md` con `project-policies-generation`, registrando referencias automáticamente en `CLAUDE.md` / `AGENTS.md`
-- **Integración OpenSpec**: exploración, propuesta, implementación y archivado de cambios con trazabilidad completa
-- **Multi-runtime**: los mismos skills operan en Claude Code, GitHub Copilot y OpenCode sin modificar el SKILL.md fuente, eligiendo la carpeta destino al instalar (`.claude`/`.github`/`.agents`); el soporte a otros CLI/LLMs se evaluará en releases futuros
+- **Extensiones opt-in**: OpenSpec, los meta-skills y los workers específicos de stack no forman parte del core; se declaran y provisionan explícitamente como extensiones.
+- **Multi-runtime**: los mismos skills operan en Claude Code, OpenCode y GitHub Copilot sin modificar la fuente. El instalador usa sus rutas canónicas, declaradas en `config/runtimes.json`.
 - **Trazabilidad completa**: IDs únicos STORY-NNN y manejo de sub-estados IN-PROGRESS/Ready en cada documento del pipeline
 - **Docs as Wiki**: skill docs-wiki-builder para generar documentación de proyecto en formato wiki navegable. Incluye un skill header-aggregation para generar encabezados frontmatter de archivo '.md'. Permite navegación bidireccional entre documentos, generación de índices automáticos y visualización de grafos con "Foam for VSCode".
 
+## Profiles and extensions
+
+El manifiesto [`config/profiles.json`](config/profiles.json) separa lo que el paquete distribuye de las herramientas con las que se desarrolla este repositorio. `core` es el perfil predeterminado; `dogfood` es deliberadamente más estricto y requiere extensiones provisionadas de manera explícita y fijada.
+
+| Capacidad | Perfil | Origen | Runtime compatible | Requisito externo |
+|---|---|---|---|---|
+| Pipeline de proyectos, épicas e historias | `core` | Paquete npm | Claude Code, OpenCode, GitHub Copilot | Node.js 18+ |
+| Inicialización y políticas SDDF | `core` | Paquete npm | Los tres runtimes soportados | Ninguno |
+| Instalación de skills y agentes | `core` | Paquete npm + `config/runtimes.json` | Los tres runtimes soportados | Acto explícito `agile-sddf install` |
+| Workers TDD específicos de stack | Extensión | `agile-sddf-extension` | Según el worker | Instalación y configuración explícitas |
+| `skill-master` y `skill-test-evals` | `dogfood` | Extensión fijada en `config/profiles.json` | Los tres runtimes soportados | Lock local y workers provisionados |
+| OpenSpec | Extensión | No se distribuye en core | Según la extensión | Instalación explícita de la extensión |
+| `security-audit` | Control del repositorio | CI y guardrails de este repositorio | No aplica como capacidad core | Ejecución de CI/mantenedor |
+
+Un **stack** es la composición declarada de comandos de verificación y workers de un perfil; no es una tercera instalación implícita. La decisión y las rutas canónicas están registradas en [ADR-0009](docs/adr/ADR-0009-perfiles-runtimes-e-instalacion-explicita.md).
+
 ## Installation
 
-### Global — disponible en todos tus proyectos
-
-```bash
-npm install -g agile-sddf
-```
-
-Después de la instalación, el script `postinstall` copia automáticamente los skills y agentes a `~/.claude/` (predeterminado silencioso). Para elegir la carpeta destino de forma interactiva, ejecuta:
-
-```bash
-agile-sddf install --global
-```
-
-### Local — solo para el proyecto actual
+`npm install` descarga el paquete, pero **no escribe directorios de runtime**. La copia de skills y agentes siempre requiere un acto explícito; por eso `npm install --ignore-scripts` es una práctica defensiva válida, no un workaround.
 
 ```bash
 npm install agile-sddf
+npx agile-sddf install --target claude-code
 ```
 
-El `postinstall` copia los skills y agentes a `./.claude/` en silencio. Para elegir la carpeta destino de forma interactiva o apuntar a otro runtime, ejecuta:
+Para una instalación global, usa el mismo runtime de forma explícita:
 
 ```bash
-npx agile-sddf install
+npm install -g agile-sddf
+agile-sddf install --global --target claude-code
 ```
 
-El instalador mostrará un menú numerado para seleccionar la carpeta destino:
+<!-- runtime-contract:start -->
+| Runtime | `--target` | Destino local | Destino global |
+|---|---|---|---|
+| Claude Code | `claude-code` | `.claude/` | `~/.claude/` |
+| OpenCode | `opencode` | `.opencode/` | `~/.config/opencode/` |
+| GitHub Copilot | `github-copilot` | `.github/` | `~/.copilot/` |
+<!-- runtime-contract:end -->
 
-```
-Where would you like to install SDDF skills and agents?
-  1) .claude   (Claude Code — recommended)
-  2) .agents   (OpenCode)
-  3) .github   (GitHub Copilot)
-Enter choice [1]:
-```
+Usa esos IDs canónicos en nuevas instalaciones. Para migrar, el CLI aún acepta los aliases de carpeta `.claude`, `.opencode` y `.github`; no son una fuente de destinos adicional. `.agents/skills` es una ruta de compatibilidad de skills para algunos runtimes, pero no instala agentes de forma canónica y no es un target válido.
 
-Para omitir el prompt y apuntar directamente a una carpeta, usa `--target`:
+### Migrar desde 2.x
 
-```bash
-npx agile-sddf install --target .agents
-```
-
-`--target` y `SDDF_TARGET` aceptan exclusivamente `.claude`, `.agents` o
-`.github`. El valor por defecto `.claude` se usa solo cuando se omite el
-destino; una ruta arbitraria, traversal o un valor vacío hace fallar la
-instalación antes de que copie archivos.
-
-### Monorepos con pnpm (workspaces)
-
-pnpm v9+ bloquea los postinstall scripts por defecto. Instala el paquete en la raíz del workspace y luego ejecuta el comando de instalación manualmente:
-
-```bash
-pnpm add agile-sddf -w
-npx agile-sddf install
-```
-
-Si prefieres que el postinstall se ejecute automáticamente en futuras reinstalaciones, agrega `agile-sddf` a `allowedBuiltDependencies` en el `package.json` raíz de tu workspace:
-
-```json
-{
-  "pnpm": {
-    "allowedBuiltDependencies": ["agile-sddf"]
-  }
-}
-```
+La versión 3.0.0 elimina la copia automática de `postinstall`. Después de actualizar, ejecuta una vez `npx agile-sddf install --target <runtime>`; por ejemplo `--target claude-code`.
 
 ### CLI reference
 
-El paquete expone el comando `agile-sddf` con los siguientes subcomandos:
-
 | Comando | Descripción |
 |---------|-------------|
-| `agile-sddf install` | Instala con selección interactiva de carpeta destino (`.claude/`, `.agents/`, `.github/`) |
-| `agile-sddf install --global` | Instala en `~/.<folder>` con selección interactiva de carpeta |
-| `agile-sddf install --target .agents` | Instala en `.agents/` sin prompt interactivo |
-| `agile-sddf install --target .github` | Instala en `.github/` sin prompt interactivo |
-| `agile-sddf install --global --target .agents` | Instala en `~/.agents/` sin prompt interactivo |
-| `agile-sddf install --force` | Sobreescribe archivos existentes (usar para upgrades) |
-| `agile-sddf install --target .agents --force` | Instala en `.agents/` sobreescribiendo archivos existentes |
-| `agile-sddf help` | Muestra la ayuda |
-
-> **Nota:** El hook `postinstall` (ejecutado automáticamente por npm/pnpm al instalar el paquete) siempre usa `.claude/` por defecto y no muestra el prompt interactivo. Para elegir otra carpeta destino, ejecuta `agile-sddf install` manualmente después de la instalación.
+| `agile-sddf install` | Instala en el runtime predeterminado (`claude-code`) |
+| `agile-sddf install --target opencode` | Copia al destino canónico de OpenCode |
+| `agile-sddf install --global --target github-copilot` | Copia al destino global de Copilot |
+| `agile-sddf install --force` | Sobrescribe archivos existentes para un upgrade |
+| `agile-sddf help` | Muestra los IDs y rutas vigentes |
 
 ### Prerequisites
 
@@ -214,8 +187,9 @@ npx agile-sddf install --force
 
 ### Después de migrar: revisa estos cuatro puntos
 
-1. **Borra a mano los directorios `release-*` huérfanos** en `.claude/skills/` (o `.agents/`,
-   `.github/`). El instalador copia los skills nuevos pero no elimina los antiguos, así que
+> **Nota histórica:** estas rutas describen la línea 2.x. En 3.0.0, la instalación explícita y las rutas canónicas se rigen por [Installation](#installation).
+
+1. **Borra a mano los directorios `release-*` huérfanos** en `.claude/skills/` (o el directorio de skills del runtime instalado). El instalador copia los skills nuevos pero no elimina los antiguos, así que
    convivirían `/release-creation` y `/epic-creation`.
 2. **Historias con prefijo propio** (`FIX-`, `BUG-`, `CHORE-`): el paso 4 **no las toca**. Renoméralas
    al siguiente `STORY-NNN` libre y asígnales su `kind`. Si no lo haces quedan invisibles al glob
@@ -302,7 +276,7 @@ Los archivos se crean en `docs/policies/` y se referencian automáticamente en `
 
 ### Flujos principales SDDF
 
-SDDF se organiza en 4 niveles principales que cubren todo el ciclo de vida de la especificación, desde la intención inicial (nivel de proyecto o L3), la especificación de entregables o épicas (L2), la especificaciòn de historias (L1), y con integración opcional de OpenSpec para gestión de cambios (L0). Cada nivel tiene su pipeline y se compone de un conjunto de skills que operan sobre documentos Markdown con control de sub-estado `IN-PROGRESS`/`DONE` para garantizar un flujo estructurado, reproducible y automatizable.
+SDDF se organiza en tres niveles principales que cubren todo el ciclo de vida de la especificación, desde la intención inicial (nivel de proyecto o L3), la especificación de entregables o épicas (L2) y la especificación de historias (L1). OpenSpec es una integración opcional de extensión, no una capacidad core. Cada nivel se compone de skills que operan sobre documentos Markdown con control de sub-estado `IN-PROGRESS`/`DONE` para garantizar un flujo estructurado, reproducible y automatizable.
 
 #### 1. L3: Pipeline de especificación de proyecto (iniciativa)
 
@@ -324,11 +298,9 @@ story-plan ( story-design → story-tasking → story-analyze ) → story-implem
 
 `story-plan` orquesta los tres sub-skills de planning en secuencia con fail-fast y visibilidad de progreso. `story-implement` ejecuta TDD tarea por tarea y genera `implement-report.md` al finalizar.
 
-#### 4. L0: Pipeline granular SDD integración con OpenSpec
+#### Integración opcional con OpenSpec
 
-openspec-init-config → openspec-generate-baseline → 
-
-( propose → apply → archive )
+OpenSpec se instala y configura como extensión. Sus comandos no se incluyen ni se ejecutan en una instalación `core`.
 
 ### Estructura de artefactos
 
@@ -571,7 +543,7 @@ El framework es declarativo y su flujo se controla mediante el campo `substatus`
 |----------|----------|---------|-------------|
 | `sddf.config.yaml.root` | Sí (recomendado) | `docs` si la clave falta | Raíz versionada de artefactos SDDF; las rutas relativas se anclan en la raíz del repositorio. |
 | `SDDF_ROOT` | No | — | Override temporal de la raíz versionada para CI o pruebas; debe apuntar a un directorio accesible. |
-| `SDDF_TARGET` | No | `.claude` si se omite | Carpeta destino exacta del `postinstall` automático: solo `.claude`, `.agents` o `.github`. Los valores no canónicos o rutas arbitrarias fallan antes de escribir. |
+| `SDDF_TARGET` | No | — | No afecta `npm install` ni `postinstall`. Usa `agile-sddf install --target <runtime>` para copiar explícitamente. |
 
 El runtime de IA (Claude Code, GitHub Copilot, etc.) gestiona su propia autenticación de forma independiente al framework.
 
@@ -610,7 +582,7 @@ El único mecanismo de control de flujo es el campo `substatus` en cada document
 | `IN-PROGRESS` | Documento en progreso — el pipeline puede retomarlo |
 | `DONE` | Documento completo — actúa como precondición para la siguiente fase |
 
-## Extensions — `agile-sddf-extension`
+## Extensions
 
 El core de SDDF es **agnóstico al stack tecnológico**: `story-implement` no sabe nada de React, NestJS
 ni Playwright. Orquesta el ciclo TDD (RED → GREEN → REFACTOR) y **delega** la generación de pruebas y
@@ -644,8 +616,9 @@ Cucumber sobre Cypress o Playwright. Consulta el repositorio para la lista vigen
 ### Instalación
 
 Los workers se instalan con [`npx skills`](https://github.com/dariopalminio/agile-sddf-extension),
-en la **misma carpeta de skills** que usa tu runtime (`.claude/skills/`, `.agents/skills/` o
-`.github/skills/`):
+en la **carpeta canónica de skills** del runtime (`.claude/skills/`, `.opencode/skills/` o
+`.github/skills/`). Para el perfil `dogfood`, registra la revisión y los workers provisionados en
+`sddf.extensions.lock.json`; no se descargan como consecuencia de `npm install`.
 
 ```bash
 # Ver qué hay disponible, sin instalar nada

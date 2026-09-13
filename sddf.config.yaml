@@ -3,20 +3,22 @@
 
 # Raíz versionada de los artefactos SDDF. SDDF_ROOT solo la sobrescribe si es válido.
 root: docs
+profile: dogfood
+stack: sddf-authoring
 
 defaults:
   delivery-model: batch # batch | continuous
 
 verify:
   unit:
-    command: "npm run test:unit"
+    command: "npm run test:installer"
     required: true
   component:
-    command_template: "npm run test:component:file -- {{test_file_path}}"
+    command: "npm run test:eval:runner"
     required: true
   integration:
-    command: "npm run test:integration"
-    required: false
+    command: "node scripts/audit-root-resolution.js"
+    required: true
   contract:
     command: "npm run test:contract"
     required: false
@@ -40,7 +42,7 @@ verify:
     required: false
   eval:
     command: "npm run test:eval"
-    required: true
+    required: false
 
 implement:
   test_generators:

@@ -93,3 +93,67 @@ Validado con:
 - Ejecuciones reales de CLI: árbol limpio y referencia inexistente retornaron
   exit 1.
 - `git diff --check`.
+
+---
+
+## Implementación del Plan 04 — Cerrar hallazgos pendientes de auditoría
+
+### Resultado
+
+Se implementaron los paquetes P1–P7 con contratos versionados, validadores
+deterministas y pruebas de regresión.
+
+- **P1 — runner de evals:** `scripts/run-evals.js` valida nombres de skill,
+  IDs `TC-NNN`, duplicados por manifest y `--skills-dir`; resuelve cada ruta
+  mediante contención léxica antes de leer, escribir o invocar Claude. La
+  suite cubre traversal, UNC, rutas absolutas y preserva la reutilización de
+  IDs entre skills.
+- **P2/P3 — instalación y perfiles:** se eliminó el lifecycle `postinstall`
+  del paquete; el archivo heredado es un no-op. Solo `agile-sddf install`
+  copia archivos y solo `--global` explícito puede cambiar el alcance. Los
+  manifiestos `config/profiles.json` definen `core` (sin workers ni comandos
+  externos obligatorios) y `dogfood` (workers fijados por URL, SHA y lock).
+  El stack de pruebas del repositorio quedó en `sddf-authoring`, no en core.
+- **P4 — runtimes:** `config/runtimes.json` es la fuente única para Claude
+  Code, OpenCode y GitHub Copilot. Instalador, CLI, ayuda, documentación y
+  smoke consumen ese contrato; `.agents` queda explícitamente como
+  compatibilidad de skills, no como target instalable.
+- **P5/P6 — gate y documentación:** `npm run verify:repository` agrupa
+  pruebas, sintaxis, raíces, perfiles, runtimes, YAML, inventario de evals,
+  enlaces, supply chain, release, empaquetado y smoke. Las nueve ausencias de
+  evals tienen excepción versionada con dueño, razón y fecha. README publica
+  la matriz core/extensión/runtime y los documentos activos que describen
+  layouts remiten a `config/runtimes.json`.
+- **P7 — supply chain:** Actions, Trivy y Skill Shielder están fijados a SHA.
+  El validador falla ante tags, clones remotos no allowlisted o sin checkout y
+  comprobación de `HEAD` inmutables.
+
+### Evidencia local
+
+- `npm run verify:repository` — **59/59** pruebas deterministas aprobadas;
+  sintaxis de 28 archivos JS, auditoría de 32 skills, 32 skills con 9
+  excepciones de eval explícitas, 34 documentos activos sin enlaces rotos,
+  release `3.0.0` y smoke del tarball aprobados.
+- `node scripts/smoke-package-install.js` valida el tarball en un consumidor
+  temporal: no hay hooks de lifecycle permitidos, no aparecen destinos
+  locales/globales ni `.agents` antes de la acción explícita, los tres
+  runtimes copian el inventario y contenido completos de `skills/` y
+  `agents/`, y un destino no declarado falla.
+- `node scripts/verify-profiles.js --profile core` aprueba sin extensión.
+  La prueba de perfil comprueba que dogfood sin lock/worker falla con URL y
+  SHA accionables, y que un fixture fijado pasa.
+- `npm ci --ignore-scripts --dry-run` aprobó; el gate y la CI usan lifecycle
+  desactivado incluso durante el empaquetado y el smoke.
+
+### Evidencia pendiente de CI hospedada
+
+`.github/workflows/quality.yml` declara la misma verificación en Ubuntu,
+Windows y macOS, sin secretos LLM ni lifecycle scripts. Esta ejecución local
+aporta evidencia Windows; la confirmación real de runners Linux/macOS quedará
+registrada cuando el workflow corra en una PR, push a `main` o
+`workflow_dispatch`. No se publicó el paquete ni se ejecutaron evaluaciones
+LLM durante esta implementación.
+
+No se modificó el estado de `story.md`: faltan los artefactos formales
+`design.md` y `tasks.md` para una transición SDD, y la evidencia hospedada
+sigue pendiente.

@@ -2,10 +2,10 @@
 
 - **Idioma de trabajo:** skills, agentes y documentos de este repositorio se redactan en **español**. Los skills heredados de ecosistemas en inglés (ej. `test-cypress-cucumber`, `test-playwright-cucumber`) pueden mantener su idioma original.
 - **El repositorio es la fuente de verdad:** specs, políticas, ADRs y decisiones viven versionados aquí dentro. Si necesitas saber "cómo trabajamos", está en el repo, no fuera de él.
-- **`skills/` y `agents/` (en la raíz) son la fuente única de skills y agentes de este repo.** Los skills nuevos se crean en `skills/<skill-name>/` y los subagentes en `agents/<nombre>.agent.md`. El instalador (`scripts/install.js`) copia desde estas carpetas raíz hacia el destino elegido (`.claude/`, `.agents/` o `.github/`); ese destino es solo salida de instalación, no la fuente. El catálogo vigente ya se inyecta en cada conversación de Claude Code — no lo enumeres de memoria en este archivo; verifica con `ls skills/` / `ls agents/` si necesitas confirmar que algo existe antes de referenciarlo.
+- **`skills/` y `agents/` (en la raíz) son la fuente única de skills y agentes de este repo.** Los skills nuevos se crean en `skills/<skill-name>/` y los subagentes en `agents/<nombre>.agent.md`. El instalador copia desde estas carpetas solo mediante un acto explícito (`agile-sddf install`) hacia un runtime declarado en `config/runtimes.json`; ese destino es salida de instalación, no la fuente. El catálogo vigente ya se inyecta en cada conversación de Claude Code — no lo enumeres de memoria en este archivo; verifica con `ls skills/` / `ls agents/` si necesitas confirmar que algo existe antes de referenciarlo.
 - **Resolución de raíz obligatoria:** cada skill resuelve localmente `REPO_ROOT` y `SPECS_BASE` con la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válido → `docs`. Una fuente explícita inválida bloquea escrituras. `skill-preflight` es un diagnóstico explícito, no un paso automático.
 - **Veracidad ante todo:** antes de editar la sección de estructura de este archivo, verifica con el filesystem (`ls skills/`, `ls agents/`, `ls docs/`). Nunca describas algo que no existe ni omitas algo relevante que sí existe.
-- **Framework agnóstico al SDK/LLM:** aunque el desarrollo inicial se hizo con Claude Code, el diseño de SDDF es independiente del SDK o LLM específico. La instalación de skills/agentes en `.agents/` y `.github/` es un paso explícito para soportar múltiples plataformas; el orquestador de cada skill puede adaptarse a las APIs de cada plataforma sin afectar la estructura general del framework. Los skills no tienen que tener referencias explícitas a `.claude`. 
+- **Framework agnóstico al SDK/LLM:** aunque el desarrollo inicial se hizo con Claude Code, el diseño de SDDF es independiente del SDK o LLM específico. Los runtimes soportados, sus destinos locales/globales y su layout viven exclusivamente en `config/runtimes.json`; no dupliques esa lista en scripts o documentos. `.agents` es, cuando el contrato lo declare, una ruta de compatibilidad solo para skills y no un destino instalable de agentes.
 ---
 
 # Agile Spec-Driven-Development Framework (SDDF)
@@ -14,10 +14,11 @@ Framework multiagente minimalista (solo Markdown + scripts Node.js de instalaci�
 
 ## Stack y comandos
 
-- **Lenguaje:** Markdown (skills/agentes) + TypeScript/Node.js solo para la parte ejecutable (`scripts/cli.js`, `install.js`, `postinstall.js`).
+- **Lenguaje:** Markdown (skills/agentes) + TypeScript/Node.js solo para la parte ejecutable (`scripts/cli.js`, `install.js` y verificadores deterministas).
 - **Validación del runner de evals:** no hay `npm test`, build ni lint genéricos. `npm run test:eval:runner` ejecuta la suite determinista de `scripts/run-evals.js`; `npm run test:eval -- [opciones]` ejecuta o planifica los casos de `skills/<skill>/evals/evals.json`. Una selección inválida o vacía falla cerrada; `--dry-run` solo aprueba con un plan no vacío.
-- **Instalar skills/agentes en otro proyecto:** `npx agile-sddf install [--global] [--target .claude|.agents|.github] [--force]`.
-- **CI (`.github/workflows/`):** `evals.yml` corre en PRs que cambian skills, el runner, su suite, manifiestos npm o el propio workflow. Siempre ejecuta la suite determinista; si cambia `skills/**`, usa checkout completo de la SHA head de la PR y `--changed-from` con su SHA base para comprobar en seco una selección no vacía. No invoca Claude ni concede credenciales a código no confiable. Los workflows de seguridad siguen cubriendo Skill Shielder y Docker.
+- **Instalar skills/agentes en otro proyecto:** `npx agile-sddf install [--global] [--target <runtime>] [--force]`. Consulta `config/runtimes.json` para los IDs admitidos; `npm install` no crea directorios de runtime ni ejecuta una copia implícita.
+- **Perfiles y stacks:** `config/profiles.json` separa `core` (predeterminado, sin extensiones externas) de `dogfood` (este repositorio, con workers de autoría fijados). Un perfil selecciona un `stack`; no es otra forma de instalación. Valida el contrato con `node scripts/verify-profiles.js`; para comprobar dogfood instalado usa su `--extensions-dir` explícito.
+- **CI (`.github/workflows/`):** `quality.yml` ejecuta el gate determinista sin secretos ni lifecycle scripts en Windows, macOS y Linux. `evals.yml` conserva la selección desde SHA base en seco cuando cambian skills; las evaluaciones LLM reales no corren en PRs no confiables. Los workflows de seguridad siguen cubriendo Skill Shielder y Docker.
 
 ## Estructura del repositorio
 
@@ -33,11 +34,12 @@ agile-sddf/
 │   └── runbooks/                                           # procedimientos operativos (deploy npm, docker)
 ├── skills/                                                 # fuente única de verdad: skills SDD (uno por carpeta)
 ├── agents/                                                 # fuente única de verdad: subagentes (*.agent.md)
-├── scripts/                                                # cli.js, install.js, postinstall.js
+├── config/                                                 # contratos versionados de perfiles, stacks y runtimes
+├── scripts/                                                # CLI, instalación, runner y verificadores deterministas
 └── sddf.config.yaml                                        # skills activos por fase del pipeline TDD de este repo
 ```
 
-**Plataformas soportadas:** Claude Code, OpenCode y GitHub Copilot. El instalador copia desde `skills/` y `agents/` (raíz, fuente única) al destino elegido (`.claude/`, `.agents/`, `.github/`); soporte a otros CLI/LLMs se evalúa en releases futuros.
+**Plataformas soportadas:** las declaradas con estado `supported` en `config/runtimes.json`. El instalador copia desde `skills/` y `agents/` (raíz, fuente única) solamente al destino canónico del runtime solicitado. Consulta ese contrato para IDs, rutas concretas y soporte a otros CLI/LLMs antes de afirmar compatibilidad.
 
 ## Particularidades de este repo (lo que el código no te dice)
 
@@ -45,7 +47,7 @@ agile-sddf/
 - **WIP = 1 por nivel de pipeline:** solo un documento puede tener `substatus: IN-PROGRESS` a la vez por nivel (project, épica o story). Verifícalo antes de activar un ítem nuevo.
 - **`.tmp/<skill-name>/` nunca se versiona:** es el canal de comunicación entre subagentes y el skill orquestador, para evitar el "teléfono descompuesto". Está en `.gitignore`; no lo trates como directorio permanente.
 - **Los ADR aceptados son inmutables:** se reemplazan con un ADR nuevo (`superseded-by`), nunca se editan in place. Ver `docs/adr/README.md`.
-- **Publicar un skill nuevo en npm:** su ruta debe agregarse al arreglo `files` de `package.json`, o quienes instalen el paquete no lo recibirán vía `postinstall`.
+- **Publicar un skill nuevo en npm:** su ruta debe agregarse al arreglo `files` de `package.json`; después se distribuye mediante `agile-sddf install`, nunca por `postinstall`.
 - **Commands son legacy en Claude:** preferimos skills (en `skills/`) sobre commands (`.claude/commands/`, que no existe en este repo); los commands solo se justifican para integraciones externas.
 
 ## Modelo de delegación: skills, agentes y subagentes

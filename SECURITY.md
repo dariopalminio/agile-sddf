@@ -26,14 +26,16 @@ Out of scope:
 | Line | Status |
 |------|--------|
 | `main` | Supported. Fixes land here. |
-| `2.x` on npm | Supported. Fixes ship as a new patch release. |
-| `1.x` and earlier tags | Not supported. `2.0.0` changed the `docs/specs/` layout and the artefact names with no backward-compatible aliases. |
+| `3.x` on npm | Supported. Fixes ship as a new patch release. |
+| `2.x` and earlier tags | Not supported. `3.0.0` removes automatic runtime-directory writes during `npm install`; `2.0.0` also changed the `docs/specs/` layout and artefact names with no backward-compatible aliases. |
 
 `npx agile-sddf install` and `npm install agile-sddf` resolve the latest published version, so there
-is effectively one supported line and updating means re-installing. The installer **copies** skills
-and agents into `.claude/`, `.agents/` or `.github/`; it does not link them, so an installed tree
-keeps the version it was installed from until you re-run the installer. Moving from 1.x is a manual
-migration — see [Upgrading desde 1.x](README.md#upgrading-desde-1x) in the README.
+is effectively one supported line and updating means re-installing. `npm install` itself does **not**
+write a runtime directory. The explicit installer copies skills and agents only into the canonical
+target selected by `--target`; the runtime IDs, local/global destinations and layouts are derived from
+[`config/runtimes.json`](config/runtimes.json), not this policy. It does not link them. An installed tree keeps the version it was installed from until
+you re-run the installer. Moving from 2.x requires the explicit install command described in the
+[README](README.md#installation).
 
 ## Threat model
 
@@ -56,17 +58,16 @@ malicious edit to a Markdown file is a code-execution primitive here, not a docu
 
 Two surfaces are specific to shipping this as an npm package:
 
-**Install-time execution (OWASP A08 — software and data integrity).** `npm install agile-sddf` runs
-[scripts/postinstall.js](scripts/postinstall.js), which calls
-`installSDDF({ folder: process.env.SDDF_TARGET })` in
-[scripts/install.js](scripts/install.js). The installer defaults only when the target is omitted,
-accepts only `.claude`, `.agents` or `.github`, and resolves the destination from the project or home
-directory before checking lexical containment. An invalid, absolute or traversal target fails before
-it creates or copies `skills/` and `agents/`. That check does not resolve a pre-existing symlink,
-junction or other reparse point; hardening those filesystem links is tracked separately. This is code
-running on the installing machine before anyone has read anything, so `scripts/` is held to the code
-guardrail and every change there is read line by line. Anyone who would rather not run it can install
-with `npm install agile-sddf --ignore-scripts` and then run `npx agile-sddf install` deliberately.
+**Install-time execution (OWASP A08 — software and data integrity).** `npm install agile-sddf` does
+not declare a lifecycle hook and does not write the project/home directory. The legacy
+[scripts/postinstall.js](scripts/postinstall.js) is a no-op retained only for compatibility. Files are
+copied only by the explicit command in [scripts/cli.js](scripts/cli.js):
+`npx agile-sddf install --target <runtime>`. The allowed
+runtime IDs and their destinations come from `config/runtimes.json`; invalid, absolute or traversal
+targets fail before copying `skills/` and `agents/`. The lexical check does not resolve a pre-existing
+symlink, junction or other reparse point; hardening those filesystem links is tracked separately.
+`npm install --ignore-scripts` remains a valid defense-in-depth practice, but it is no longer needed
+to prevent implicit runtime writes.
 
 **Dependencies (OWASP A06 — vulnerable and outdated components).** The runtime tree is one direct
 dependency, `fs-extra`, with `engines: node >= 18`. A new dependency needs a technical reason, a
@@ -154,7 +155,7 @@ left waiting.
 
 The fix lands first. A public advisory, a [CHANGELOG.md](CHANGELOG.md) entry and the npm version that
 carries the fix follow it, so people who installed from the package know what to update to — and
-people who installed into `.claude/` know they need to re-run the installer. Reporters are credited by
+people who used an explicit runtime install know they need to re-run the installer. Reporters are credited by
 name or handle unless they ask not to be. There is no bug bounty.
 
 If you are unsure whether what you found is a vulnerability or just a rough edge, report it privately

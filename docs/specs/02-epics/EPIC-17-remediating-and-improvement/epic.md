@@ -6,7 +6,7 @@ slug: remediating-and-improvement
 title: "Remediating and Improvement"
 status: DEVELOP
 substatus: DONE
-parent: null
+parent: PROJ-01-agile-sddf
 created: 2026-06-12
 updated: 2026-08-30
 related: []

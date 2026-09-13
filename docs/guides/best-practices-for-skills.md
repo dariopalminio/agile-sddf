@@ -17,6 +17,10 @@ related:
 
 # Buenas prácticas para LLM Clients: Skills
 
+> **Contrato de runtime SDDF:** la instalación del paquete deriva IDs, rutas y soporte exclusivamente de
+> [`config/runtimes.json`](../../config/runtimes.json). Las rutas de plataforma que aparecen en esta guía
+> son contexto de compatibilidad; `.agents/skills` no instala agentes ni crea un runtime adicional.
+
 Los **agentes**, las **skills** y los **comandos** son elementos fundamentales para estructurar un el equipo de inteligencia artificial automatizado para Agile Spec-Driven Development Framework (SDDF). Aquí tienes la definición y el uso de skills:
 
 ## Skills (Habilidades)
@@ -205,7 +209,7 @@ Un skill puede empaquetar **agentes locales** en su directorio `agents/` (ej. `s
 | **Local** (`<skill>/agents/`) | Uso exclusivo de un skill | Viaja con el skill (npm); sin `tools:` ni `model:`; invocado solo por el skill dueño |
 | **Registrado** (`.claude/agents/`) | Reutilizable por varios skills o por la sesión | Tipo registrado por el harness; declara `tools:` restringidas y `model:` |
 
-### Contrato de invocación (ver [[ADR-0002-invocacion-agentes-locales-de-skill]])
+### Contrato de invocación (ver [[invocacion-agentes-locales-de-skill]])
 
 Para lanzar `agents/<nombre>.agent.md`, el skill orquestador (sesión principal):
 
@@ -238,5 +242,3 @@ Nota:
 Es un metadato del runtime para Claude, no del schema SDDF, y borrarlo cambiaría el comportamiento de Claude Code con ese archivo.
 
 https://agentskills.io/home
-
-
