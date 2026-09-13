@@ -28,7 +28,15 @@ Este procedimiento prepara una publicación; nunca publica sin la aprobación ex
 
 ## Preparar versión y release
 
-Usa `npm version` para mantener `package.json` y `package-lock.json` coherentes. Para este cambio incompatible:
+Usa `npm version` para mantener `package.json` y `package-lock.json` coherentes. 
+
+```bash
+npm version patch   # 1.0.0 -> 1.0.1 (bugfix)
+npm version minor   # 1.0.0 -> 1.1.0 (nueva funcionalidad)
+npm version major   # 1.0.0 -> 2.0.0 (cambio incompatible)
+```
+
+Por ejemplo versión, tag y release:
 
 ```bash
 npm version major
@@ -43,9 +51,12 @@ Confirma que el tag apunta al commit validado y que la release usa la misma vers
 Antes de publicar, verifica el paquete que npm recibirá, no el checkout:
 
 ```bash
+# En la raíz del proyecto:
 npm pack
-# En un directorio temporal vacío:
-npm install /ruta/al/agile-sddf-<versión>.tgz --ignore-scripts
+mkdir -p .tmp/install-test
+cd .\.tmp\install-test\
+move ..\..\agile-sddf-<versión>.tgz .
+npm install agile-sddf-<versión>.tgz --ignore-scripts
 npx agile-sddf install --target claude-code
 ```
 
@@ -56,6 +67,7 @@ La instalación debe dejar `node_modules` sin crear directorios de runtime por s
 > **Confirmación obligatoria:** `npm publish` es irreversible para esa versión. No ejecutes el siguiente bloque hasta que el mantenedor haya revisado el dry-run y responda afirmativamente.
 
 ```bash
+npm login
 npm publish --dry-run --access public
 # Tras aprobación explícita del mantenedor:
 npm publish --access public
