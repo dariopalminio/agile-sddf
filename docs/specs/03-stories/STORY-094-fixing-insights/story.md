@@ -64,6 +64,10 @@ related:
 10. **Cadena de suministro reproducible**  
     Skill Shielder se clona con commit SHA fijo y las acciones del workflow usan SHAs inmutables (no tags mutables).
 
+11. **Soporte PARCIAL instalación Codex (SOLO SKILLS)**  
+    El instalador debe aceptar `--target codex` y copiar los skills y agentes al destino correspondiente, verificando que `/skill-preflight` reporte `✓ Entorno OK` tras la instalación. : Codex carga skills desde .agents/skills, pero sus subagentes personalizados usan archivos TOML en .codex/agents. Implementaré codex como target gestionado de skills, sin copiar los agentes Markdown de SDDF a una ruta que Codex no reconoce. modelar Codex como destino de solo skills: instalará en .agents/skills sin copiar los agentes Markdown incompatibles. 
+
+
 ---
 
 ## Orden de ejecución acordado
@@ -72,7 +76,7 @@ related:
 2. Perfil core/dogfood reproducible y pruebas deterministas.
 3. Enlaces reparados y contrato real de capacidades/extensiones publicado.
 4. Release hygiene: versión `package.json` ↔ changelog, inventario, empaquetado y smoke de instalación.
-
+5. Soporte PARCIAL instalación Codex (SOLO SKILLS).
 ---
 
 ## Definición de Terminado
@@ -83,10 +87,11 @@ related:
 - [ ] `npm run test:eval` en árbol limpio devuelve exit ≠ 0.
 - [ ] `sddf.config.yaml` no exige scripts ni skills que no existan en una instalación core.
 - [ ] README refleja exactamente lo que el paquete instala por defecto.
-
+- [ ] Soporte instalación Codex
 ---
 
 ## Notas
 
 - **`skill-test-evals` y `skill-master` no son parte del core**: son necesarios solo para construir este framework. Para usuarios finales son opcionales y se instalan desde el repositorio de extensión correspondiente.
 - El foco no es añadir más proceso, sino **hacer ejecutables y bloqueantes** los contratos ya expresados en el repositorio.
+- **Soporte parcial Codex:** La implementación quedará explícitamente limitada a skills en Codex: el contrato rechazará configuraciones ambiguas y el instalador no creará .agents/agents ni .codex/agents. El usuario tendría que gestionar manualmente cualquier agente adicional necesario para Codex, para lo cual: deberá colocar los archivos de agentes de subagentes correspondientes en `.codex/agents` y asegurarse de que los subagentes personalizados sean reconocidos por Codex pidiendole al runtime que los transforme en TOML (se delega la responsabilidad al usuario consumidor). El usuario debe instalar manualmente los agentes y pedirle a Codex que los transforme en archivos TOML.

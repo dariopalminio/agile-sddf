@@ -19,7 +19,8 @@ related:
 
 > **Contrato de runtime SDDF:** la instalación del paquete deriva IDs, rutas y soporte exclusivamente de
 > [`config/runtimes.json`](../../config/runtimes.json). Las rutas de plataforma que aparecen en esta guía
-> son contexto de compatibilidad; `.agents/skills` no instala agentes ni crea un runtime adicional.
+> son contexto de compatibilidad; `.agents/skills` es el destino canónico de solo skills del
+> target `codex` y no instala los agentes Markdown del paquete.
 
 Los **agentes**, las **skills** y los **comandos** son elementos fundamentales para estructurar un el equipo de inteligencia artificial automatizado para Agile Spec-Driven Development Framework (SDDF). Aquí tienes la definición y el uso de skills:
 
@@ -54,6 +55,10 @@ OpenCode (Configuración global) --> ~/.config/opencode/skills/<name>/SKILL.md
 OpenCode (Compatible con agente de proyecto) --> .agents/skills/<name>/SKILL.md
 
 OpenCode (Compatible con agentes globales) --> ~/.agents/skills/<name>/SKILL.md
+
+Codex (Proyecto) --> .agents/skills/<name>/SKILL.md
+
+Codex (Global) --> ~/.agents/skills/<name>/SKILL.md
 
 Github Copilot (Proyecto) --> .github/skills/<name>/SKILL.md
 

@@ -83,16 +83,26 @@ function validateRuntime(runtime, ids) {
   if (!runtime.layout || typeof runtime.layout !== 'object') {
     failContract(`runtime ${runtime.id} is missing layout`);
   }
-  for (const key of ['skillsDirectory', 'agentsDirectory', 'skillFileName']) {
+  for (const key of ['skillsDirectory', 'skillFileName']) {
     if (!isSafePathSegment(runtime.layout[key])) {
       failContract(`runtime ${runtime.id} has unsafe layout.${key}`);
     }
   }
-  if (!Array.isArray(runtime.layout.agentFileExtensions)
-    || runtime.layout.agentFileExtensions.length === 0
-    || runtime.layout.agentFileExtensions.some((extension) => typeof extension !== 'string'
-      || !/^\.[A-Za-z0-9][A-Za-z0-9.-]*$/.test(extension))) {
-    failContract(`runtime ${runtime.id} must declare agent file extensions`);
+  if (runtime.layout.agentsDirectory === null) {
+    if (!Array.isArray(runtime.layout.agentFileExtensions)
+      || runtime.layout.agentFileExtensions.length !== 0) {
+      failContract(`runtime ${runtime.id} is skills-only and must declare agentFileExtensions as an empty array`);
+    }
+  } else {
+    if (!isSafePathSegment(runtime.layout.agentsDirectory)) {
+      failContract(`runtime ${runtime.id} has unsafe layout.agentsDirectory`);
+    }
+    if (!Array.isArray(runtime.layout.agentFileExtensions)
+      || runtime.layout.agentFileExtensions.length === 0
+      || runtime.layout.agentFileExtensions.some((extension) => typeof extension !== 'string'
+        || !/^\.[A-Za-z0-9][A-Za-z0-9.-]*$/.test(extension))) {
+      failContract(`runtime ${runtime.id} must declare agent file extensions`);
+    }
   }
   if (runtime.aliases !== undefined && (!Array.isArray(runtime.aliases)
     || runtime.aliases.some((alias) => typeof alias !== 'string' || alias.trim() === ''))) {
@@ -152,6 +162,10 @@ function formatRuntimeChoices(contract = loadRuntimeContract()) {
   return listInstallableRuntimes(contract).map((runtime) => runtime.id).join(', ');
 }
 
+function installsAgents(runtime) {
+  return runtime.layout.agentsDirectory !== null;
+}
+
 function resolveRuntimeTarget(target, contract = loadRuntimeContract()) {
   const selected = target === undefined ? contract.defaultRuntime : target;
   if (typeof selected !== 'string' || selected.trim() === '') {
@@ -162,7 +176,7 @@ function resolveRuntimeTarget(target, contract = loadRuntimeContract()) {
     || contract.runtimes.find((candidate) => (candidate.aliases || []).includes(selected));
   if (!runtime || runtime.support !== 'supported') {
     const legacyHint = selected === '.agents'
-      ? ' .agents is a skills-only compatibility path, not an installable runtime; use opencode or github-copilot.'
+      ? ' .agents is a destination path, not an installable runtime ID; use codex for Codex skills.'
       : '';
     throw new Error(`Invalid installation target "${selected}". Valid runtime IDs: ${formatRuntimeChoices(contract)}.${legacyHint}`);
   }
@@ -178,5 +192,6 @@ module.exports = {
   getRuntime,
   listInstallableRuntimes,
   formatRuntimeChoices,
+  installsAgents,
   resolveRuntimeTarget,
 };

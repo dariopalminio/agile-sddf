@@ -94,6 +94,25 @@
           "reason": "Copilot puede descubrir skills personales en ~/.agents/skills, pero los agentes personales canónicos viven en ~/.copilot/agents."
         }
       ]
+    },
+    {
+      "id": "codex",
+      "name": "Codex",
+      "support": "supported",
+      "destinations": {
+        "local": {
+          "rootSegments": [".agents"]
+        },
+        "global": {
+          "rootSegments": [".agents"]
+        }
+      },
+      "layout": {
+        "skillsDirectory": "skills",
+        "agentsDirectory": null,
+        "skillFileName": "SKILL.md",
+        "agentFileExtensions": []
+      }
     }
   ]
 }

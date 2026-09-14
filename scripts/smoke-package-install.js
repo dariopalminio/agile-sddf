@@ -8,7 +8,7 @@
  *
  * No intenta arrancar software propietario de los runtimes. La evidencia que
  * puede ser idéntica en Windows, macOS y Linux es la disposición canónica que
- * esos runtimes descubren: raíz, skills, agentes y sus inventarios.
+ * esos runtimes descubren: la raíz y los artefactos declarados para cada runtime.
  */
 
 const assert = require('node:assert/strict');
@@ -17,6 +17,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { npmInvocation } = require('./npm-invocation.js');
+const { installsAgents } = require('./runtime-contract.js');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const FORBIDDEN_LIFECYCLE_SCRIPTS = [
@@ -207,28 +208,36 @@ function verifyExplicitRuntimeInstalls({ consumerDir, homeDir, packageDir, runti
   const cliPath = path.join(packageDir, 'scripts', 'cli.js');
   assert.equal(fs.existsSync(cliPath), true, 'El tarball no contiene scripts/cli.js');
 
-  for (const runtime of runtimes) {
-    const local = runExplicitInstall(cliPath, consumerDir, homeDir, runtime.id);
-    assertInstallSucceeded(local, runtime, 'local');
-    const localRoot = destination(consumerDir, runtime, 'local');
-    assertSameTree(path.join(packageDir, 'skills'), path.join(localRoot, runtime.layout.skillsDirectory), `${runtime.id} local skills`);
-    assertSameTree(path.join(packageDir, 'agents'), path.join(localRoot, runtime.layout.agentsDirectory), `${runtime.id} local agents`);
-
-    const global = runExplicitInstall(cliPath, consumerDir, homeDir, runtime.id, true);
-    assertInstallSucceeded(global, runtime, 'global');
-    const globalRoot = destination(homeDir, runtime, 'global');
-    assertSameTree(path.join(packageDir, 'skills'), path.join(globalRoot, runtime.layout.skillsDirectory), `${runtime.id} global skills`);
-    assertSameTree(path.join(packageDir, 'agents'), path.join(globalRoot, runtime.layout.agentsDirectory), `${runtime.id} global agents`);
-  }
-
   const legacy = childProcess.spawnSync(process.execPath, [cliPath, 'install', '--target', '.agents'], {
     cwd: consumerDir,
     env: runtimeEnv(consumerDir, homeDir),
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
   });
-  assert.notEqual(legacy.status, 0, 'La ruta de compatibilidad .agents no debe ser instalable.');
+  assert.notEqual(legacy.status, 0, 'La ruta .agents no debe ser instalable como ID de runtime.');
   assert.equal(fs.existsSync(path.join(consumerDir, '.agents')), false, 'El rechazo de .agents no debe escribir nada.');
+
+  for (const runtime of runtimes) {
+    const local = runExplicitInstall(cliPath, consumerDir, homeDir, runtime.id);
+    assertInstallSucceeded(local, runtime, 'local');
+    const localRoot = destination(consumerDir, runtime, 'local');
+    assertSameTree(path.join(packageDir, 'skills'), path.join(localRoot, runtime.layout.skillsDirectory), `${runtime.id} local skills`);
+    if (installsAgents(runtime)) {
+      assertSameTree(path.join(packageDir, 'agents'), path.join(localRoot, runtime.layout.agentsDirectory), `${runtime.id} local agents`);
+    } else {
+      assert.equal(fs.existsSync(path.join(localRoot, 'agents')), false, `${runtime.id} no debe crear agentes Markdown.`);
+    }
+
+    const global = runExplicitInstall(cliPath, consumerDir, homeDir, runtime.id, true);
+    assertInstallSucceeded(global, runtime, 'global');
+    const globalRoot = destination(homeDir, runtime, 'global');
+    assertSameTree(path.join(packageDir, 'skills'), path.join(globalRoot, runtime.layout.skillsDirectory), `${runtime.id} global skills`);
+    if (installsAgents(runtime)) {
+      assertSameTree(path.join(packageDir, 'agents'), path.join(globalRoot, runtime.layout.agentsDirectory), `${runtime.id} global agents`);
+    } else {
+      assert.equal(fs.existsSync(path.join(globalRoot, 'agents')), false, `${runtime.id} no debe crear agentes Markdown globales.`);
+    }
+  }
 }
 
 function smokePackageInstall({ repoRoot = REPO_ROOT, keep = process.env.SDDF_SMOKE_KEEP === '1' } = {}) {

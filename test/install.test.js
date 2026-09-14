@@ -10,7 +10,7 @@ const test = require('node:test');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const POSTINSTALL_PATH = path.join(REPO_ROOT, 'scripts', 'postinstall.js');
 const CLI_PATH = path.join(REPO_ROOT, 'scripts', 'cli.js');
-const { loadRuntimeContract } = require('../scripts/runtime-contract.js');
+const { loadRuntimeContract, installsAgents } = require('../scripts/runtime-contract.js');
 const {
   installSDDF,
   resolveDestDir,
@@ -109,7 +109,13 @@ test('el mapa de runtimes es la única fuente de targets instalables', () => {
     assert.equal(Array.isArray(runtime.destinations.local.rootSegments), true);
     assert.equal(Array.isArray(runtime.destinations.global.rootSegments), true);
     assert.equal(runtime.layout.skillsDirectory, 'skills');
-    assert.equal(runtime.layout.agentsDirectory, 'agents');
+    if (installsAgents(runtime)) {
+      assert.equal(runtime.layout.agentsDirectory, 'agents');
+      assert.equal(runtime.layout.agentFileExtensions.length > 0, true);
+    } else {
+      assert.equal(runtime.layout.agentsDirectory, null);
+      assert.deepEqual(runtime.layout.agentFileExtensions, []);
+    }
   }
   assert.equal(VALID_TARGETS.includes('.agents'), false);
 });
@@ -126,7 +132,12 @@ test('installSDDF copia el inventario fuente al destino canónico de cada runtim
       assert.equal(result.runtime, runtime.id);
       assert.equal(result.destination, runtimeRoot);
       assert.deepEqual(topLevelEntries(path.join(runtimeRoot, runtime.layout.skillsDirectory)), sourceSkills);
-      assert.deepEqual(topLevelEntries(path.join(runtimeRoot, runtime.layout.agentsDirectory)), sourceAgents);
+      if (installsAgents(runtime)) {
+        assert.deepEqual(topLevelEntries(path.join(runtimeRoot, runtime.layout.agentsDirectory)), sourceAgents);
+      } else {
+        assert.deepEqual(result.agents, { installed: 0, skipped: 0 });
+        assert.equal(fs.existsSync(path.join(runtimeRoot, 'agents')), false);
+      }
     }
   }));
 });
@@ -138,9 +149,36 @@ test('installSDDF resuelve destinos globales desde el mapa y no desde un alias d
       const result = await installSDDF({ target: runtime.id, global: true, homeDir });
       assert.equal(result.destination, destination(homeDir, runtime, 'global'));
       assert.equal(fs.existsSync(path.join(result.destination, runtime.layout.skillsDirectory)), true);
-      assert.equal(fs.existsSync(path.join(result.destination, runtime.layout.agentsDirectory)), true);
+      if (installsAgents(runtime)) {
+        assert.equal(fs.existsSync(path.join(result.destination, runtime.layout.agentsDirectory)), true);
+      } else {
+        assert.deepEqual(result.agents, { installed: 0, skipped: 0 });
+        assert.equal(fs.existsSync(path.join(result.destination, 'agents')), false);
+      }
     }
   });
+});
+
+test('installSDDF instala Codex solo en .agents/skills', { concurrency: false }, async (t) => {
+  const { projectDir, homeDir } = createFixture(t);
+  const codex = RUNTIMES.find((runtime) => runtime.id === 'codex');
+  assert.ok(codex);
+
+  await withInitCwd(projectDir, () => withoutInstallLogs(async () => {
+    const local = await installSDDF({ target: 'codex' });
+    assert.equal(local.destination, path.join(projectDir, '.agents'));
+    assert.equal(fs.existsSync(path.join(local.destination, 'skills')), true);
+    assert.equal(fs.existsSync(path.join(local.destination, 'agents')), false);
+    assert.equal(fs.existsSync(path.join(projectDir, '.codex', 'agents')), false);
+    assert.deepEqual(local.agents, { installed: 0, skipped: 0 });
+
+    const global = await installSDDF({ target: 'codex', global: true, homeDir });
+    assert.equal(global.destination, path.join(homeDir, '.agents'));
+    assert.equal(fs.existsSync(path.join(global.destination, 'skills')), true);
+    assert.equal(fs.existsSync(path.join(global.destination, 'agents')), false);
+    assert.equal(fs.existsSync(path.join(homeDir, '.codex', 'agents')), false);
+    assert.deepEqual(global.agents, { installed: 0, skipped: 0 });
+  }));
 });
 
 test('installSDDF ignora npm_config_global hasta que el operador pasa --global explícitamente', { concurrency: false }, async (t) => {
@@ -240,6 +278,15 @@ test('el CLI valida IDs de runtime temprano y conserva la copia explícita', (t)
   assert.notEqual(legacyResult.status, 0);
   assert.match(legacyResult.stderr, /Invalid --target/);
   assert.equal(fs.existsSync(path.join(projectDir, '.agents')), false);
+
+  const codexResult = runNode(
+    CLI_PATH,
+    ['install', '--target', 'codex'],
+    childEnv({ initCwd: projectDir }),
+  );
+  assertSucceeded(codexResult);
+  assert.equal(fs.existsSync(path.join(projectDir, '.agents', 'skills')), true);
+  assert.equal(fs.existsSync(path.join(projectDir, '.agents', 'agents')), false);
 
   const missingValueResult = runNode(
     CLI_PATH,

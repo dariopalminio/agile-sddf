@@ -111,11 +111,12 @@ Los skills pueden almacenarse en diferentes ubicaciones, dependiendo del alcance
 |--------|------|----------------|
 | **Proyecto (GitHub Copilot)** | `.github/skills/*/SKILL.md` | Repositorio actual |
 | **Proyecto (Claude/OpenCode)** | `.claude/skills/*/SKILL.md` | Repositorio actual |
-| **Proyecto (Agentes)** | `.agents/skills/*/SKILL.md` | Repositorio actual |
+| **Proyecto (Codex)** | `.agents/skills/*/SKILL.md` | Repositorio actual |
 | **Proyecto (OpenCode)** | `.opencode/skills/*/SKILL.md` | Repositorio actual |
 | **Global (Usuario)** | `~/.copilot/skills/*/SKILL.md` | Todos los proyectos |
 | **Global (Claude/OpenCode)** | `~/.claude/skills/*/SKILL.md` | Todos los proyectos |
 | **Global (OpenCode)** | `~/.config/opencode/skills/*/SKILL.md` | Todos los proyectos |
+| **Global (Codex)** | `~/.agents/skills/*/SKILL.md` | Todos los proyectos |
 
 ### 3.2 Descubrimiento automático
 

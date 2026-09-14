@@ -31,7 +31,8 @@ Out of scope:
 
 `npx agile-sddf install` and `npm install agile-sddf` resolve the latest published version, so there
 is effectively one supported line and updating means re-installing. `npm install` itself does **not**
-write a runtime directory. The explicit installer copies skills and agents only into the canonical
+write a runtime directory. The explicit installer copies skills and any agent artifacts supported by
+the selected runtime only into the canonical
 target selected by `--target`; the runtime IDs, local/global destinations and layouts are derived from
 [`config/runtimes.json`](config/runtimes.json), not this policy. It does not link them. An installed tree keeps the version it was installed from until
 you re-run the installer. Moving from 2.x requires the explicit install command described in the
@@ -64,7 +65,7 @@ not declare a lifecycle hook and does not write the project/home directory. The 
 copied only by the explicit command in [scripts/cli.js](scripts/cli.js):
 `npx agile-sddf install --target <runtime>`. The allowed
 runtime IDs and their destinations come from `config/runtimes.json`; invalid, absolute or traversal
-targets fail before copying `skills/` and `agents/`. The lexical check does not resolve a pre-existing
+targets fail before copying any `skills/` or supported `agents/` artifacts. The lexical check does not resolve a pre-existing
 symlink, junction or other reparse point; hardening those filesystem links is tracked separately.
 `npm install --ignore-scripts` remains a valid defense-in-depth practice, but it is no longer needed
 to prevent implicit runtime writes.

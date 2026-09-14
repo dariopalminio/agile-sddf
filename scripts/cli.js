@@ -7,7 +7,7 @@ const {
   resolveInstallTarget,
   VALID_TARGETS,
 } = require('./install.js');
-const { loadRuntimeContract, listInstallableRuntimes } = require('./runtime-contract.js');
+const { loadRuntimeContract, listInstallableRuntimes, installsAgents } = require('./runtime-contract.js');
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -23,7 +23,8 @@ function targetHelpRows() {
     .map((runtime) => {
       const local = runtime.destinations.local.rootSegments.join('/');
       const global = runtime.destinations.global.rootSegments.join('/');
-      return `  ${runtime.id.padEnd(16)} ${runtime.name}; local ${local}/, global ~/${global}/`;
+      const scope = installsAgents(runtime) ? 'skills and agents' : 'skills only';
+      return `  ${runtime.id.padEnd(16)} ${runtime.name}; ${scope}; local ${local}/, global ~/${global}/`;
     })
     .join('\n');
 }
@@ -32,7 +33,7 @@ const USAGE = `
 Usage: agile-sddf <command> [options]
 
 Commands:
-  install    Copy skills and agents to a declared runtime destination
+  install    Copy skills and compatible agents to a declared runtime destination
 
 Options:
   --global             Install to the runtime's global destination instead of the current project
@@ -45,12 +46,13 @@ ${targetHelpRows()}
 Examples:
   agile-sddf install
   agile-sddf install --target opencode
+  agile-sddf install --target codex
   agile-sddf install --target github-copilot --force
   agile-sddf install --global --target claude-code
   npx agile-sddf install
 
-The legacy .agents path is skills-only compatibility discovery for some runtimes;
-it is not an install target because it cannot install their agents canonically.
+.agents is a destination path, not a runtime ID. Use --target codex for Codex
+(skills only); use the canonical OpenCode or GitHub Copilot runtime IDs otherwise.
 `;
 
 function exitInvalidTarget(providedTarget) {

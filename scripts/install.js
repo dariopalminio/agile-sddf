@@ -9,6 +9,7 @@ const {
   loadRuntimeContract,
   listInstallableRuntimes,
   formatRuntimeChoices,
+  installsAgents,
   resolveRuntimeTarget,
 } = require('./runtime-contract.js');
 
@@ -84,11 +85,11 @@ async function promptFolderSelection() {
   const defaultRuntime = resolveRuntimeTarget(undefined, contract);
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const menu = runtimes
-    .map((runtime, index) => `  ${index + 1}) ${runtime.id}  (${runtime.name}; ${formatDestination(runtime, 'local')}/)`)
+    .map((runtime, index) => `  ${index + 1}) ${runtime.id}  (${runtime.name}; ${installsAgents(runtime) ? 'skills + agents' : 'skills only'}; ${formatDestination(runtime, 'local')}/)`)
     .join('\n');
 
   return new Promise((resolve) => {
-    console.log('\nWhere would you like to install SDDF skills and agents?');
+    console.log('\nWhere would you like to install SDDF skills and compatible agents?');
     console.log(menu);
     rl.question(`Enter choice [${runtimes.indexOf(defaultRuntime) + 1}]: `, (answer) => {
       rl.close();
@@ -128,8 +129,9 @@ async function copyDir(srcDir, destDir, { force = false } = {}) {
 
 async function installSDDF(options = {}) {
   const { destDir, mode, runtime } = resolveDestDir(options);
+  const shouldInstallAgents = installsAgents(runtime);
 
-  console.log(`\nSDDF install: copying skills and agents for ${runtime.name} to ${destDir}\n`);
+  console.log(`\nSDDF install: copying skills${shouldInstallAgents ? ' and agents' : ''} for ${runtime.name} to ${destDir}\n`);
 
   validateDestBase(destDir);
 
@@ -138,10 +140,14 @@ async function installSDDF(options = {}) {
   assertDestinationContained(destDir, skillsDest);
   const { installed: si, skipped: ss } = await copyDir(skillsSrc, skillsDest, { force: options.force });
 
-  const agentsSrc = path.join(SOURCE_DIR, 'agents');
-  const agentsDest = path.resolve(destDir, runtime.layout.agentsDirectory);
-  assertDestinationContained(destDir, agentsDest);
-  const { installed: ai, skipped: as_ } = await copyDir(agentsSrc, agentsDest, { force: options.force });
+  let ai = 0;
+  let as_ = 0;
+  if (shouldInstallAgents) {
+    const agentsSrc = path.join(SOURCE_DIR, 'agents');
+    const agentsDest = path.resolve(destDir, runtime.layout.agentsDirectory);
+    assertDestinationContained(destDir, agentsDest);
+    ({ installed: ai, skipped: as_ } = await copyDir(agentsSrc, agentsDest, { force: options.force }));
+  }
 
   const result = {
     runtime: runtime.id,
@@ -151,7 +157,7 @@ async function installSDDF(options = {}) {
     agents: { installed: ai, skipped: as_ },
   };
 
-  console.log(`\nSDDF installed (${mode}, ${runtime.id}): ${si} skills, ${ai} agents (${ss + as_} skipped)\n`);
+  console.log(`\nSDDF installed (${mode}, ${runtime.id}): ${si} skills${shouldInstallAgents ? `, ${ai} agents` : ''} (${ss + as_} skipped)\n`);
   return result;
 }
 

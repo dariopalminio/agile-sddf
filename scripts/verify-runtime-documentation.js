@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { loadRuntimeContract } = require('./runtime-contract.js');
+const { loadRuntimeContract, installsAgents } = require('./runtime-contract.js');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const START = '<!-- runtime-contract:start -->';
@@ -24,7 +24,7 @@ const RUNTIME_GUIDANCE_ROOTS = [
   'docs/guides',
   'docs/runbooks',
 ];
-const RUNTIME_LAYOUT_PATH = /(?:(?:~[\\/])?\.(?:claude|opencode|agents|github|copilot)[\\/](?:skills|agents)|~[\\/]\.config[\\/]opencode[\\/](?:skills|agents))/i;
+const RUNTIME_LAYOUT_PATH = /(?:(?:~[\\/])?\.(?:claude|opencode|agents|github|copilot|codex)[\\/](?:skills|agents)|~[\\/]\.config[\\/]opencode[\\/](?:skills|agents))/i;
 
 function destinationPath(segments, global = false) {
   const rendered = `${global ? '~/' : ''}${segments.join('/')}/`;
@@ -126,8 +126,15 @@ function verifyRuntimeDocumentation(repoRoot = REPO_ROOT) {
       errors.push(`README.md: falta documentar el alias de migración ${alias}`);
     }
   }
-  if (!readme.includes('`.agents/skills`') || !readme.includes('no es un target válido')) {
-    errors.push('README.md: debe explicar que .agents/skills es compatibilidad y no un target instalable');
+  const skillsOnlyRuntimes = runtimes.filter((runtime) => !installsAgents(runtime));
+  for (const runtime of skillsOnlyRuntimes) {
+    if (!readme.includes(`--target ${runtime.id}`)
+      || !readme.includes('`.agents/skills`')
+      || !readme.includes('solo skills')
+      || !readme.includes('`--target .agents`')
+      || !readme.includes('no es un target válido')) {
+      errors.push(`README.md: debe documentar que ${runtime.id} es solo skills y que .agents es un destino, no un target instalable`);
+    }
   }
 
   const runtimeFiles = verifyRuntimeGuidanceReferences(repoRoot, errors);

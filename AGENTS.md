@@ -2,10 +2,10 @@
 
 - **Idioma de trabajo:** skills, agentes y documentos de este repositorio se redactan en **español**. Los skills heredados de ecosistemas en inglés (ej. `test-cypress-cucumber`, `test-playwright-cucumber`) pueden mantener su idioma original.
 - **El repositorio es la fuente de verdad:** specs, políticas, ADRs y decisiones viven versionados aquí dentro. Si necesitas saber "cómo trabajamos", está en el repo, no fuera de él.
-- **`skills/` y `agents/` (en la raíz) son la fuente única de skills y agentes de este repo.** Los skills nuevos se crean en `skills/<skill-name>/` y los subagentes en `agents/<nombre>.agent.md`. El instalador copia desde estas carpetas solo mediante un acto explícito (`agile-sddf install`) hacia un runtime declarado en `config/runtimes.json`; ese destino es salida de instalación, no la fuente. El catálogo vigente ya se inyecta en cada conversación de Claude Code — no lo enumeres de memoria en este archivo; verifica con `ls skills/` / `ls agents/` si necesitas confirmar que algo existe antes de referenciarlo.
+- **`skills/` y `agents/` (en la raíz) son la fuente única de skills y agentes de este repo.** Los skills nuevos se crean en `skills/<skill-name>/` y los subagentes en `agents/<nombre>.agent.md`. El instalador copia los artefactos que admita el runtime desde estas carpetas solo mediante un acto explícito (`agile-sddf install`) hacia un runtime declarado en `config/runtimes.json`; ese destino es salida de instalación, no la fuente. El catálogo vigente ya se inyecta en cada conversación de Claude Code — no lo enumeres de memoria en este archivo; verifica con `ls skills/` / `ls agents/` si necesitas confirmar que algo existe antes de referenciarlo.
 - **Resolución de raíz obligatoria:** cada skill resuelve localmente `REPO_ROOT` y `SPECS_BASE` con la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válido → `docs`. Una fuente explícita inválida bloquea escrituras. `skill-preflight` es un diagnóstico explícito, no un paso automático.
 - **Veracidad ante todo:** antes de editar la sección de estructura de este archivo, verifica con el filesystem (`ls skills/`, `ls agents/`, `ls docs/`). Nunca describas algo que no existe ni omitas algo relevante que sí existe.
-- **Framework agnóstico al SDK/LLM:** aunque el desarrollo inicial se hizo con Claude Code, el diseño de SDDF es independiente del SDK o LLM específico. Los runtimes soportados, sus destinos locales/globales y su layout viven exclusivamente en `config/runtimes.json`; no dupliques esa lista en scripts o documentos. `.agents` es, cuando el contrato lo declare, una ruta de compatibilidad solo para skills y no un destino instalable de agentes.
+- **Framework agnóstico al SDK/LLM:** aunque el desarrollo inicial se hizo con Claude Code, el diseño de SDDF es independiente del SDK o LLM específico. Los runtimes soportados, sus destinos locales/globales y su layout viven exclusivamente en `config/runtimes.json`; no dupliques esa lista en scripts o documentos. `.agents` puede ser una ruta de compatibilidad de skills o el destino de skills del target `codex`, pero nunca es un destino instalable de los agentes Markdown de este paquete.
 ---
 
 # Agile Spec-Driven-Development Framework (SDDF)
@@ -39,7 +39,7 @@ agile-sddf/
 └── sddf.config.yaml                                        # skills activos por fase del pipeline TDD de este repo
 ```
 
-**Plataformas soportadas:** las declaradas con estado `supported` en `config/runtimes.json`. El instalador copia desde `skills/` y `agents/` (raíz, fuente única) solamente al destino canónico del runtime solicitado. Consulta ese contrato para IDs, rutas concretas y soporte a otros CLI/LLMs antes de afirmar compatibilidad.
+**Plataformas soportadas:** las declaradas con estado `supported` en `config/runtimes.json`. El instalador copia `skills/` y, cuando el contrato lo admita, `agents/` desde la raíz al destino canónico del runtime solicitado. Consulta ese contrato para IDs, rutas concretas y soporte a otros CLI/LLMs antes de afirmar compatibilidad.
 
 ## Particularidades de este repo (lo que el código no te dice)
 

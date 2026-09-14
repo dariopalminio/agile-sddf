@@ -57,8 +57,10 @@ directorio existente es `CLI_ROOT`; si ninguno existe, informar el destino local
 `defaultRuntime` del mismo contrato como advertencia operativa, no como error de raíz.
 
 No se mantiene una lista paralela de `.claude`, `.opencode` o `.github` en este skill.
-Las rutas de compatibilidad declaradas como no instalables (por ejemplo `.agents`) pueden
-explicar un descubrimiento de *skills*, pero nunca se eligen como `CLI_ROOT` de agentes.
+Las rutas de compatibilidad declaradas como no instalables pueden explicar un descubrimiento
+de *skills*. Cuando el contrato declare el target `codex`, su destino `.agents` sí puede
+elegirse como `CLI_ROOT` de solo skills, pero nunca como raíz de los agentes Markdown del
+paquete.
 
 ---
 
