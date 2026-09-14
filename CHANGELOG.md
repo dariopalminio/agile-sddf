@@ -24,7 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **BUG**: Se introdujo un error de publicación clásico, se añadió el .tgz local como dependencia (probablemente para probar la instalación local), olvidó eliminarlo antes de npm publish, y el manifiesto quedó con una referencia que solo existe en la máquina del publicador. Cuando cualquier consumidor instala 3.1.1, el gestor intenta resolver esa ruta relativa en el proyecto del consumidor, no en el del publicador, y falla con ENOENT.
 
-Nota: esta versión no se instala.
+**Nota**: esta versión no se instala. Fue deprecada en npm "Published with invalid self-dependency. Use 3.1.2, 3.1.0. or latest (last version)".
 
 ## [3.0.0] — 2026-09-13
 
