@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [3.2.0] — 2026-09-13
+
+### Added
+
+- **Codex integration** — se añadió soporte bàsico (parcial, solo skills) para la integración con Codex, permitiendo la generación automática de código y documentación basada en IA.
+
+## [3.1.2] — 2026-09-13
+
+### Fixed
+
+- **Corrige metadata de publicación** — se solucionó un problema con la metadata de publicación que afectaba la instalación de la versión 3.1.1.
+
+## [3.1.1] — 2026-09-13 <DEPRECATED>
+
+### Changed
+
+- **BUG**: Se introdujo un error de publicación clásico, se añadió el .tgz local como dependencia (probablemente para probar la instalación local), olvidó eliminarlo antes de npm publish, y el manifiesto quedó con una referencia que solo existe en la máquina del publicador. Cuando cualquier consumidor instala 3.1.1, el gestor intenta resolver esa ruta relativa en el proyecto del consumidor, no en el del publicador, y falla con ENOENT.
+
+Nota: esta versión no se instala.
+
 ## [3.0.0] — 2026-09-13
 
 ### Security
