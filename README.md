@@ -108,7 +108,7 @@ Es idempotente: prepara `specs/`, templates compartidos, `sddf.config.yaml` y `.
 
 > `/skill-preflight` es un diagnóstico explícito y de solo lectura. Úsalo bajo demanda para inspeccionar la raíz efectiva, la estructura y los templates; no forma parte de los flujos normales.
 
-## Tu primera historia
+## Tu primera historia (flujo completo)
 
 Cuando ya existe un `project-plan.md`, el camino habitual es este:
 
