@@ -130,6 +130,9 @@ El ecosistema de herramientas SDD está creciendo rápidamente:
 
 - **Codeplain:** Plataforma de desarrollo de software, para spec-as-source, que permite a los equipos de ingeniería crear, mantener y evolucionar especificaciones vivas y ejecutables, integrando flujos de trabajo SDD con herramientas de control de versiones y CI/CD.
 
+- **InfoSails Agentic Harness:** Kit open source para desarrollo agéntico en Cursor, que permite que el producto avance por agentes (Discovery → Design → Build → Deploy), no por coding manual como camino principal. Tú hablas con un solo agente — el Director de Orquesta. Él activa Leads. Los Leads escriben memoria (memory/) que es la fuente de verdad. Esta memoria se utiliza para coordinar las acciones de los agentes y asegurar que todos los pasos del desarrollo estén alineados con las especificaciones y objetivos del proyecto [10].
+
+
 Referencias:
 [1]: https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai
 [2]: https://openspec.dev/
@@ -140,4 +143,5 @@ Referencias:
 [7]: https://github.com/Gentleman-Programming/gentle-ai
 [8]: https://github.com/addyosmani/agent-skills
 [9]: https://github.com/mariano-aguero/spec-driven-development-skill
+[10]: https://github.com/infosails/infosails-harness
 
