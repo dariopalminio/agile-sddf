@@ -30,14 +30,14 @@ El framework instala skills en el runtime que elijas y conserva la fuente de ver
 - [Para quién](#para-quien)
 - [Qué incluye](#que-incluye)
 - [Empieza en cinco minutos](#empieza-en-cinco-minutos)
-- [Tu primera historia](#tu-primera-historia)
+- [Tu primera historia](#tu-primera-historia-flujo-completo)
 - [Si algo se traba](#si-algo-se-traba)
 
 **Entender y extender**
 
 1. [Modelo mental](#modelo-mental)
 2. [Flujo y evidencia](#flujo-y-evidencia)
-3. [Artefactos que deja el flujo](#artefactos-que-deja-el-flujo)
+3. [Artefactos que deja el flujo](#artefactos-que-deja-el-flujo-memoria)
 4. [Instalación en tu runtime](#installation)
 5. [Configuración](#configuracion)
 6. [Referencia para profundizar](#referencia-para-profundizar)
