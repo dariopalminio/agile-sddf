@@ -144,4 +144,6 @@ Referencias:
 [8]: https://github.com/addyosmani/agent-skills
 [9]: https://github.com/mariano-aguero/spec-driven-development-skill
 [10]: https://github.com/infosails/infosails-harness
+[11]: https://github.github.io/spec-kit/concepts/sdd.html
+
 

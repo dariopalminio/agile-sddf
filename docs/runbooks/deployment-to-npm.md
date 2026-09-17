@@ -77,6 +77,9 @@ npm publish --access public
 ## Verificación posterior
 
 ```bash
+# Verifica latest apunte a la última versión publicada
+npm dist-tag ls agile-sddf
+# Verifica que la versión publicada coincida con la versión del changelog
 npm view agile-sddf@"$(node -p "require('./package.json').version")"
 ```
 
