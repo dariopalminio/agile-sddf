@@ -1,13 +1,19 @@
 ---
 alwaysApply: false
-type: definition-of-done
-slug: definition-of-done-story-template
-title: "Definition of Done"
+type: guardrail
+kind: transition
+enforcement: error
+slug: dod-story-checklist-template
+title: "Definition of Done — Story (transition guardrail)"
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 ---
 
 # Definition of Done (DoD) para Story
+
+Aplica a las transiciones de estado de una historia (SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY →
+ACCEPTANCE): cada sección es la compuerta que un skill del pipeline verifica antes de avanzar el estado.
+No aplica al contenido del repositorio — eso lo gobiernan los guardrails `gr-*-checklist.md`.
 
 > Una historia de usuario se considera **DONE** cuando cumple todos los criterios marcados en este documento. Ninguna historia puede cerrar su desarrollo ni desplegarse a producción sin satisfacer estos criterios.
 

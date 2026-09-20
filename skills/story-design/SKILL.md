@@ -48,8 +48,8 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 ## Entrada
 
 - `story.md` — historia de usuario con criterios de aceptación numerados (AC-1, AC-2 … AC-N)
-- `$SPECS_BASE/policies/constitution.md` — stack, convenciones y restricciones técnicas del proyecto (opcional)
-- `$SPECS_BASE/policies/dod-story.md` — criterios de calidad mínimos (opcional)
+- `$SPECS_BASE/constitution.md` — stack, convenciones y restricciones técnicas del proyecto (opcional)
+- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios de calidad mínimos (opcional)
 - Archivo de dependencias del proyecto: `package.json`, `requirements.txt`, `go.mod` o `pom.xml` (opcional)
 - Template de diseño: `assets/design-template.md` (opcional, hay fallback interno)
 
@@ -183,17 +183,25 @@ Si existen casos de prueba asociados a la historia (ej. archivos en el mismo dir
 Construir el contexto técnico que se usará al generar el diseño. Leer todas las fuentes disponibles:
 
 **Documentos de configuración del proyecto:**
-- `$SPECS_BASE/policies/constitution.md` — stack, convenciones, principios técnicos inamovibles, restricciones de diseño
-  - Si no existe: emitir advertencia y continuar
+- `$SPECS_BASE/constitution.md` — stack, convenciones, principios técnicos inamovibles, restricciones de diseño
+  - Si no existe, buscar la ruta heredada `$SPECS_BASE/policies/constitution.md`; si existe, usarla y emitir:
     ```
-    ⚠️ No se encontró $SPECS_BASE/policies/constitution.md
+    ⚠️ policies/constitution.md está deprecado — muévelo a la raíz de docs/ (constitution.md)
+    ```
+  - Si no existe ninguna: emitir advertencia y continuar
+    ```
+    ⚠️ No se encontró $SPECS_BASE/constitution.md
        El diseño se generará sin restricciones técnicas explícitas del proyecto.
        Para definir políticas del proyecto, ejecuta /project-policies-generation.
     ```
-- `$SPECS_BASE/policies/dod-story.md` — criterios de calidad mínimos
-  - Si no existe: emitir advertencia y continuar
+- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios de calidad mínimos (transition guardrail)
+  - Si no existe, buscar la ruta heredada `$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir:
     ```
-    ⚠️ No se encontró $SPECS_BASE/policies/dod-story.md
+    ⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md
+    ```
+  - Si no existe ninguna: emitir advertencia y continuar
+    ```
+    ⚠️ No se encontró $SPECS_BASE/guardrails/dod-story-checklist.md
        El diseño se generará sin criterios de calidad explícitos del proyecto.
        Para definir la Definition of Done del proyecto, ejecuta /project-policies-generation.
     ```
@@ -472,7 +480,7 @@ Preguntar: "¿La solución técnica refleja correctamente la historia? ¿Necesit
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
 | `constitution.md` ausente | `⚠️ No se encontró constitution.md` | Advertir y continuar |
-| `dod-story.md` ausente | `⚠️ No se encontró dod-story.md` | Advertir y continuar |
+| `dod-story-checklist.md` ausente | `⚠️ No se encontró dod-story-checklist.md` | Advertir y continuar |
 
 ---
 

@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- **Constitución como raíz de la gobernanza** — `docs/policies/constitution.md` pasa a `docs/constitution.md` con `type: constitution`, eliminando la auto-referencia "constitution → policies/" (vivía dentro de la carpeta que gobierna). Flujo de autoridad explícito `AGENTS.md → docs/constitution.md → docs/policies/ · docs/guardrails/`, documentado en la propia constitución, `AGENTS.md`, `docs/index.md` y el nuevo `docs/policies/README.md` (índice de la capa, hoy sin policies). `project-policies-generation` genera la constitución en la raíz de `docs/` y ofrece mover una heredada; `story-design` y `story-code-review` leen primero la nueva ruta y caen a `policies/constitution.md` con aviso de deprecación. `docs/constitution.md` se añade a las superficies protegidas de Skill Shielder y a los checkers de documentación; `constitution` entra al conjunto cerrado de `ArtifactType` en `domain-knowledge-artifacts.md`.
+- **DoD movido a `guardrails/`** — `docs/policies/dod-story.md` pasa a `docs/guardrails/dod-story-checklist.md` con frontmatter `type: guardrail`, `kind: transition`, `enforcement: error`: un Definition of Done es un transition guardrail (checklist que bloquea transiciones de estado), no una policy. `project-policies-generation` genera el archivo en la nueva ruta (template renombrado a `assets/dod-story-checklist-template.md`) y ofrece mover un `policies/dod-story.md` heredado. Los skills consumidores (`story-design`, `story-analyze`, `story-implement`, `story-implement-tasks`, `story-code-review`, `story-verify`, `story-acceptance`) leen primero la nueva ruta y, si no existe, la antigua con aviso de deprecación; `AGENTS.md`, `README.md`, `docs/index.md`, `constitution.md` y `docs/guardrails/README.md` apuntan a la nueva ubicación.
+
 ## [3.2.0] — 2026-09-13
 
 ### Added

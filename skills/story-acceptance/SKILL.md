@@ -47,7 +47,7 @@ story-acceptance  → validación humana final              ← aquí
 ## Entrada
 
 - `$SPECS_BASE/specs/03-stories/<story-id>/story.md` — historia a validar (precondición de estado)
-- `$SPECS_BASE/policies/dod-story.md` — criterios DoD sección ACCEPTANCE (opcional)
+- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios DoD sección ACCEPTANCE (opcional)
 - `$SPECS_BASE/specs/03-stories/<story-id>/acceptance-report.md` — si existe, detección de sesión previa
 
 ## Parámetros
@@ -59,7 +59,7 @@ story-acceptance  → validación humana final              ← aquí
 
 ## Dependencias
 
-- Archivos de entrada: `$SPECS_BASE/policies/dod-story.md`, `assets/acceptance-report-template.md`
+- Archivos de entrada: `$SPECS_BASE/guardrails/dod-story-checklist.md`, `assets/acceptance-report-template.md`
 
 ## Modos de ejecución
 
@@ -181,9 +181,11 @@ Registrar internamente como `$GHERKIN_CRITERIOS`.
 
 #### 2b. Leer DoD sección ACCEPTANCE
 
-Buscar `$SPECS_BASE/policies/dod-story.md`.
+Buscar `$SPECS_BASE/guardrails/dod-story-checklist.md`. Si no existe, buscar la ruta heredada
+`$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir
+`⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`.
 
-**Si el archivo no existe o no tiene sección ACCEPTANCE:**
+**Si ninguno de los dos archivos existe o no tiene sección ACCEPTANCE:**
 ```
 ⚠️ No se encontró sección ACCEPTANCE en el DoD.
    Se usarán los criterios de aceptación de story.md como lista de validación.
@@ -500,7 +502,7 @@ o bien (si ACCEPTANCE-BLOCKED):
 
 ### Caso 4 — DoD sin sección ACCEPTANCE
 
-**Input:** Historia en `VERIFY/DONE`, `dod-story.md` sin sección ACCEPTANCE
+**Input:** Historia en `VERIFY/DONE`, `dod-story-checklist.md` sin sección ACCEPTANCE
 **Acción:** Ejecutar `/story-acceptance STORY-NNN`
 **Output esperado:**
 - Aviso: "No se encontró sección ACCEPTANCE en el DoD. Se usarán los criterios de story.md"

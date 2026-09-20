@@ -67,7 +67,7 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 | `design.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/design.md` | ✓ obligatorio |
 | `tasks.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/tasks.md` | ✓ obligatorio |
 | `fix-directives.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (`needs-changes`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
-| `dod-story.md` | `$SPECS_BASE/policies/dod-story.md` | opcional |
+| `dod-story-checklist.md` | `$SPECS_BASE/guardrails/dod-story-checklist.md` | opcional |
 
 ---
 
@@ -380,11 +380,13 @@ Al terminar todas las filas (incluso si alguna fue omitida por archivo inexisten
 
 #### 2g. Cargar criterios DoD IMPLEMENT
 
-Intentar localizar `$SPECS_BASE/policies/dod-story.md`.
+Intentar localizar `$SPECS_BASE/guardrails/dod-story-checklist.md`. Si no existe, buscar la ruta heredada
+`$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir
+`⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`.
 
-**Si el archivo no existe:**
+**Si ninguno de los dos archivos existe:**
 ```
-⚠️ dod-story.md no encontrado en $SPECS_BASE/policies/ — se omitirá la validación DoD IMPLEMENT
+⚠️ dod-story-checklist.md no encontrado en $SPECS_BASE/guardrails/ — se omitirá la validación DoD IMPLEMENT
 ```
 Registrar internamente `$DOD_IMPLEMENT_CRITERIA = []` y continuar.
 
@@ -607,7 +609,7 @@ Si `N_completadas = 0` (ejecución inicial), omitir las filas de "ejecución ant
 **Si `$DOD_IMPLEMENT_CRITERIA` está vacío:**
 ```
 ⚠️ DoD IMPLEMENT no encontrado — se omitió la validación.
-   Verifica que $SPECS_BASE/policies/dod-story.md contiene la sección "IMPLEMENT".
+   Verifica que $SPECS_BASE/guardrails/dod-story-checklist.md contiene la sección "IMPLEMENT".
 ```
 
 **Si hay criterios evaluados**, incluir la siguiente tabla con los resultados del sub-paso 4g:
@@ -746,7 +748,7 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 | Hallazgo con archivo inexistente (pre-paso 2f) | `⚠️ archivo no encontrado: <ruta>` | Registrar en `$FIX_SKIPPED` y continuar con el siguiente hallazgo |
 | Tarea legada `Implementar fix-directives.md` sin `fix-directives.md` en `$STORY_DIR` | `[T] ⚠️ bloqueada — fix-directives.md no encontrado en <ruta>` | Marcar `[~]` en `tasks.md` y continuar sin error fatal |
 | Tarea con componente no definido en `design.md` | `[T] ⚠️ bloqueada — componente "<nombre>" no definido en design.md` | Marcar `[~]` y continuar |
-| `dod-story.md` ausente o sin sección IMPLEMENT | `⚠️ dod-story.md no encontrado …` / `⚠️ Sección IMPLEMENT no encontrada en DoD …` | Advertir y continuar sin validación DoD |
+| `dod-story-checklist.md` ausente o sin sección IMPLEMENT | `⚠️ dod-story-checklist.md no encontrado …` / `⚠️ Sección IMPLEMENT no encontrada en DoD …` | Advertir y continuar sin validación DoD |
 | Épica padre no encontrada | `⚠️ No se pudo actualizar el checklist de la épica: <razón>` | Advertir y continuar; la transición de estado ya fue aplicada |
 
 ---

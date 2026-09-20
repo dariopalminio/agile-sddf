@@ -19,14 +19,16 @@ parent: null
 
 ---
 
-## ⚖️ Políticas (docs/policies/)
+## ⚖️ Gobernanza (constitución → policies → guardrails)
 
-Las `policies` son reglas organizativas y contienen restricciones `guardrails` que guían el comportamiento y las decisiones dentro de la organización para el desarrollo y los agentes.
+Tres capas con jerarquía explícita: la **constitución** es el documento supremo; las **policies** la desarrollan en reglas de gobernanza; los **guardrails** la hacen verificable como checklists que bloquean. Ante conflicto, prevalece la constitución.
 
 Cargadas automáticamente en cada sesión vía prompt de sistema (`CLAUDE.md`, `AGENTS.md`).
 
-- [[constitution]] — [constitution.md](policies/constitution.md) — Principios técnicos inamovibles, stack, estándares de construcción de skills
-- [[definition-of-done]] — [dod-story.md](policies/dod-story.md) — Definition of Done por estado del workflow de historia
+- [[constitution]] — [constitution.md](constitution.md) — Principios técnicos inamovibles, stack, estándares de construcción de skills (raíz de `docs/`)
+- [[policies-index]] — [policies/README.md](policies/README.md) — Índice de policies derivadas (hoy vacío)
+- [[guardrails-index]] — [guardrails/README.md](guardrails/README.md) — Índice de content guardrails (`gr-*`) y transition guardrails (`dod-*`)
+- [[dod-story-checklist]] — [dod-story-checklist.md](guardrails/dod-story-checklist.md) — Definition of Done por estado del workflow de historia (transition guardrail)
 
 ---
 

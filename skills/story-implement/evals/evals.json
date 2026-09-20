@@ -1157,13 +1157,13 @@
             },
             {
               "#": 2,
-              "archivo_linea": "docs/policies/dod-story.md:134",
+              "archivo_linea": "docs/guardrails/dod-story-checklist.md:134",
               "dimension": "DoD-CODE-REVIEW",
               "severidad": "MEDIUM",
               "accion_requerida": "Resolver el hallazgo #1 y volver a ejecutar /story-code-review"
             }
           ],
-          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\n- `src/feat-test.ts` — hallazgo #1\n- `docs/policies/dod-story.md` — hallazgo #2 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `tests/unit/feat-test.spec.ts` — hallazgo #1 (test del AC-2)\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #1 (registrar CR)\n"
+          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\n- `src/feat-test.ts` — hallazgo #1\n- `docs/guardrails/dod-story-checklist.md` — hallazgo #2 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `tests/unit/feat-test.spec.ts` — hallazgo #1 (test del AC-2)\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #1 (registrar CR)\n"
         },
         "sddf_config": {
           "IMPLEMENT": {
@@ -1222,7 +1222,7 @@
           "fix-directives.md"
         ],
         "whitelist_entries_count": 4,
-        "whitelist_note_preserved_for": "docs/policies/dod-story.md"
+        "whitelist_note_preserved_for": "docs/guardrails/dod-story-checklist.md"
       },
       "threshold": 0.95
     },
@@ -1364,7 +1364,7 @@
               "accion_requerida": "Registrar CR-002 en design.md y actualizar UT-004"
             }
           ],
-          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\nArchivos derivados de los hallazgos:\n\n- `docs/specs/03-stories/STORY-TEST/evals/story-creation.evals.json` — hallazgo #1\n- `docs/specs/03-stories/STORY-TEST/evals/story-improve.evals.json` — hallazgo #1\n- `scripts/migrate-field.js` — hallazgo #2\n- `docs/policies/dod-story.md` — hallazgos #3, #4, #5 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #2 (registrar `CR-002`)\n- `docs/specs/03-stories/STORY-TEST/testcases.md` — hallazgo #2 (actualizar `UT-004`)\n- `skills/story-creation/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `skills/story-improve/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `docs/specs/03-stories/STORY-TEST/implement-report.md` — hallazgo #1 (alternativa: corregir el comando declarado)\n- `CHANGELOG.md` — hallazgo #1 (entrada de la historia)\n\n## Ciclo de corrección\n"
+          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\nArchivos derivados de los hallazgos:\n\n- `docs/specs/03-stories/STORY-TEST/evals/story-creation.evals.json` — hallazgo #1\n- `docs/specs/03-stories/STORY-TEST/evals/story-improve.evals.json` — hallazgo #1\n- `scripts/migrate-field.js` — hallazgo #2\n- `docs/guardrails/dod-story-checklist.md` — hallazgos #3, #4, #5 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #2 (registrar `CR-002`)\n- `docs/specs/03-stories/STORY-TEST/testcases.md` — hallazgo #2 (actualizar `UT-004`)\n- `skills/story-creation/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `skills/story-improve/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `docs/specs/03-stories/STORY-TEST/implement-report.md` — hallazgo #1 (alternativa: corregir el comando declarado)\n- `CHANGELOG.md` — hallazgo #1 (entrada de la historia)\n\n## Ciclo de corrección\n"
         },
         "sddf_config": {
           "IMPLEMENT": {
@@ -1422,7 +1422,7 @@
         ],
         "whitelist_entries_count": 10,
         "whitelist_entry_with_note": {
-          "path": "docs/policies/dod-story.md",
+          "path": "docs/guardrails/dod-story-checklist.md",
           "note_contains": "solo lectura"
         },
         "files_unchanged": [
@@ -2059,7 +2059,7 @@
             },
             {
               "#": 4,
-              "archivo_linea": "docs/policies/dod-story.md:134",
+              "archivo_linea": "docs/guardrails/dod-story-checklist.md:134",
               "dimension": "DoD-CODE-REVIEW",
               "severidad": "MEDIUM",
               "accion_requerida": "Resolver los hallazgos #1..#3 y volver a ejecutar /story-code-review"
@@ -2071,7 +2071,7 @@
               "note": "hallazgos #1, #2, #3"
             },
             {
-              "path": "docs/policies/dod-story.md",
+              "path": "docs/guardrails/dod-story-checklist.md",
               "note": "hallazgo #4 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar"
             }
           ]
@@ -3367,7 +3367,7 @@
       "id": "TC-034",
       "name": "rework-lista-blanca-solo-lectura-excluida",
       "type": "edge-case",
-      "description": "EV-012 (STORY-092) / AC-6, D-5, V-9: modo rework --auto con whitelist = [docs/policies/dod-story.md (note con '**solo lectura**'), scripts/x.js]; GREEN reporta files_modified: [docs/policies/dod-story.md] → Rutas permitidas excluye la entrada anotada 'solo lectura', por lo que dod-story.md cuenta como fuera de lista: '[WARN] 1 archivo(s) fuera de la lista blanca' y fila '| GREEN | docs/policies/dod-story.md |' en implement-report.md; scripts/x.js sigue siendo ruta permitida",
+      "description": "EV-012 (STORY-092) / AC-6, D-5, V-9: modo rework --auto con whitelist = [docs/guardrails/dod-story-checklist.md (note con '**solo lectura**'), scripts/x.js]; GREEN reporta files_modified: [docs/guardrails/dod-story-checklist.md] → Rutas permitidas excluye la entrada anotada 'solo lectura', por lo que dod-story-checklist.md cuenta como fuera de lista: '[WARN] 1 archivo(s) fuera de la lista blanca' y fila '| GREEN | docs/guardrails/dod-story-checklist.md |' en implement-report.md; scripts/x.js sigue siendo ruta permitida",
       "input": {
         "story_id": "STORY-TEST",
         "invocation_flags": [
@@ -3401,7 +3401,7 @@
             },
             {
               "#": 3,
-              "archivo_linea": "docs/policies/dod-story.md:134",
+              "archivo_linea": "docs/guardrails/dod-story-checklist.md:134",
               "dimension": "DoD-CODE-REVIEW",
               "severidad": "MEDIUM",
               "accion_requerida": "Resolver el hallazgo #1 y volver a ejecutar /story-code-review"
@@ -3409,7 +3409,7 @@
           ],
           "whitelist": [
             {
-              "path": "docs/policies/dod-story.md",
+              "path": "docs/guardrails/dod-story-checklist.md",
               "note": "hallazgos #3 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar"
             },
             {
@@ -3455,7 +3455,7 @@
               "status": "ok",
               "files_generated": [],
               "files_modified": [
-                "docs/policies/dod-story.md",
+                "docs/guardrails/dod-story-checklist.md",
                 "scripts/x.js"
               ]
             }
@@ -3478,7 +3478,7 @@
           "GREEN": {
             "new": [],
             "modified": [
-              "docs/policies/dod-story.md",
+              "docs/guardrails/dod-story-checklist.md",
               "scripts/x.js"
             ]
           },
@@ -3495,7 +3495,7 @@
           "🔁 Modo rework (ronda 1)",
           "2 archivo(s) en lista blanca",
           "[WARN] 1 archivo(s) fuera de la lista blanca en Fase GREEN — registrados en implement-report.md",
-          "docs/policies/dod-story.md",
+          "docs/guardrails/dod-story-checklist.md",
           "IMPLEMENT/DONE"
         ],
         "not_contains": [
@@ -3507,7 +3507,7 @@
         "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
         "output_contains": [
           "### Archivos fuera de lista blanca",
-          "| GREEN | docs/policies/dod-story.md | skill-master/monolithic | registrado (--auto) |"
+          "| GREEN | docs/guardrails/dod-story-checklist.md | skill-master/monolithic | registrado (--auto) |"
         ],
         "output_not_contains": [
           "| GREEN | scripts/x.js |"
@@ -3516,7 +3516,7 @@
           "scripts/x.js"
         ],
         "whitelist_paths_excluded": [
-          "docs/policies/dod-story.md"
+          "docs/guardrails/dod-story-checklist.md"
         ],
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE"

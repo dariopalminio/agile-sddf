@@ -1,15 +1,32 @@
 ---
 alwaysApply: false
-type: policy
+type: constitution
 slug: constitution
 title: "Constitución del Proyecto"
 created: 2026-05-06
-updated: 2026-09-10
+updated: 2026-09-20
 ---
 
 # Constitución del Proyecto
 
 > Este documento establece los principios técnicos inamovibles del proyecto. Es la fuente de verdad para todos los agentes IA y miembros del equipo. Todo lo que aquí se define debe respetarse en el diseño e implementación de cualquier historia.
+
+## Flujo de autoridad
+
+Este documento es la raíz de la gobernanza: vive en `docs/`, un nivel por encima de `policies/` y
+`guardrails/`, porque no es una policy más sino el origen de todas.
+
+```
+AGENTS.md                     # punto de entrada IA
+    ↓
+docs/constitution.md          # principios supremos (este documento)
+    ├──► docs/policies/       # reglas de gobernanza derivadas   (declaran derives-from: constitution)
+    └──► docs/guardrails/     # restricciones verificables       (declaran originates-from: policy o constitución)
+```
+
+- Las [policies](policies/README.md) desarrollan estos principios en reglas de gobernanza; cada una declara de qué principio deriva.
+- Los [guardrails](guardrails/README.md) los hacen verificables como checklists con severidad; su incumplimiento bloquea.
+- Ante conflicto entre una policy o guardrail y este documento, prevalece la constitución.
 
 ---
 
@@ -44,11 +61,11 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 
 ## Guardrails y reglas a seguir
 
-- [Checklist de Seguridad de IA](../guardrails/gr-ai-security-checklist.md)
-- [Checklist de Seguridad de Código](../guardrails/gr-code-security-checklist.md)
-- [Checklist de Creación de Skills](../guardrails/gr-skill-creation-checklist.md)
-- [Checklist de Creación de Agentes](../guardrails/gr-agent-creation-checklist.md)
-- [Definition of Done para la Story](dod-story.md)
+- [Checklist de Seguridad de IA](guardrails/gr-ai-security-checklist.md)
+- [Checklist de Seguridad de Código](guardrails/gr-code-security-checklist.md)
+- [Checklist de Creación de Skills](guardrails/gr-skill-creation-checklist.md)
+- [Checklist de Creación de Agentes](guardrails/gr-agent-creation-checklist.md)
+- [Definition of Done para la Story](guardrails/dod-story-checklist.md) (transition guardrail)
 
 ## 📐 Convenciones de Código
 
@@ -93,7 +110,7 @@ project (`$SPECS_BASE/specs/01-projects/<PROJECT-NAME>/project.md`)
 
 ## Estándares de construcción de Skills
 
-Respetar el [Checklist de Creación de Skills](../guardrails/gr-skill-creation-checklist.md).
+Respetar el [Checklist de Creación de Skills](guardrails/gr-skill-creation-checklist.md).
 
 ### Patrones estructurales
 

@@ -3,8 +3,8 @@
 ## Scope
 
 This repository ships **instructions that AI agents execute** — the skills under `skills/`, the
-subagents under `agents/`, the policies and guardrails an agent reads under `docs/policies/` and
-`docs/guardrails/`, and the Node helper scripts under `scripts/`. It is consumed by installing those files
+subagents under `agents/`, the constitution, policies and guardrails an agent reads (`docs/constitution.md`,
+`docs/policies/` and `docs/guardrails/`), and the Node helper scripts under `scripts/`. It is consumed by installing those files
 into someone else's working directory, where an agent then acts on them.
 
 So a vulnerability here is not a crash or a memory bug. **It is anything in these files that makes an
@@ -121,7 +121,7 @@ What is automated, and what is not:
 | Control | Where it runs | Status |
 |---------|---------------|--------|
 | Trivy — `.github/workflows/docker-security.yml` | CI, on changes to `Dockerfile*` or `docker-compose*.yml` | Active. |
-| Skill Shielder — `.github/workflows/skill-security-audit.yml` | CI on pull requests and pushes to `main` that modify a protected security surface; audits `skills/`, `agents/`, `scripts/`, `docs/policies/`, `docs/guardrails/` and `.github/workflows/` | Active. The scanner's report is retained on every run and any non-zero scanner exit blocks the job. |
+| Skill Shielder — `.github/workflows/skill-security-audit.yml` | CI on pull requests and pushes to `main` that modify a protected security surface; audits `skills/`, `agents/`, `scripts/`, `docs/constitution.md`, `docs/policies/`, `docs/guardrails/` and `.github/workflows/` | Active. The scanner's report is retained on every run and any non-zero scanner exit blocks the job. |
 | The two guardrails above | A maintainer's machine | Manual. No CI job enforces them today. |
 | The repository's own `security-audit` skill | A maintainer's machine | Manual, dogfooding. This is how the absence of this policy was found. |
 

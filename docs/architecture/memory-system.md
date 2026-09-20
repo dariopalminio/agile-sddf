@@ -1,3 +1,15 @@
+---
+type: architecture
+id: ARCH-MEMORY
+slug: memory-system
+title: "Sistema de Memoria del Framework SDDF"
+date: 2026-09-20
+status: active
+related:
+
+—
+
+
 # Sistema de Memoria SDDF
 
 > **Tipo:** architecture · **ID:** ARCH-MEMORY · **Estado:** active  
@@ -24,6 +36,7 @@
 | `domains/` | Modelo DDD (entidades, invariantes, lenguaje ubicuo) | Muy larga |
 | `architecture/` | C4, stack, vistas de sistema | Larga |
 | `adr/` | Decisiones inmutables (`ADR-NNNN`) | Inmutable |
+| `rfcs/` | Solicitudes de cambio de arquitectura | Larga |
 | `guardrails/` | Restricciones verificables (checklists con `error`/`warn`) | Larga |
 | `policies/` | Reglas de gobernanza; `constitution.md` en la raíz de `docs/` | Larga |
 | `guides/` | Explicaciones didácticas y how-tos | Media |
@@ -45,11 +58,13 @@ agile-sddf/
     ├── constitution.md                # principios supremos (raíz de gobernanza)
     │
     ├── product/                       # capa 1: contexto del negocio
+    │   ├── README.md
     │   ├── vision.md
     │   ├── stakeholders.md
     │   └── objectives.md
     │
     ├── requirements/                  # capa 2: contrato funcional (persistente)
+    │   ├── README.md
     │   ├── functional/
     │   │   └── FR-NNN-*.md
     │   └── non-functional/
@@ -70,40 +85,39 @@ agile-sddf/
     │
     ├── domains/                       # modelo DDD del sistema
     │   ├── README.md
-    │   ├── domain-work-item-hierarchy.md
-    │   ├── domain-state-management.md
-    │   ├── domain-knowledge-artifacts.md
-    │   ├── domain-project-lifecycle.md
-    │   ├── domain-epic-lifecycle.md
-    │   └── domain-story-lifecycle.md
+    │   └── domain-<name>.md
     │
     ├── architecture/                  # arquitectura técnica
+    │   ├── README.md
     │   ├── system-overview.md
     │   ├── tech-stack.md
-    │   └── c4/
-    │       ├── c4-context.md
-    │       └── c4-containers.md
+    │   └── c4/                        # diagramas c4
     │
     ├── adr/                           # decisiones inmutables
-    │   ├── ADR-0003-workflow-canonico.md
-    │   ├── ADR-0004-documentacion-en-capas.md
-    │   └── ADR-0008-rework-sin-estado-propio.md
+    │   ├── README.md
+    │   └── ADR-0001-<adr-name>.md
     │
     ├── policies/                      # gobernanza (derivan de constitution.md)
-    │   ├── security-policy.md
-    │   └── quality-policy.md
+    │   ├── README.md
+    │   └── <policy-name>-policy.md
     │
     ├── guardrails/                    # restricciones verificables
-    │   ├── dod-story.md               # transition guardrail
-    │   └── security-checklist.md      # content guardrail
+    │   ├── README.md
+    │   ├── dod-story-checklist.md     # transition guardrail
+    │   └── <guardrail-name>-checklist.md      # content guardrail
     │
     ├── guides/                        # documentación didáctica
-    │   ├── sddf-commands-pipeline.md
-    │   └── how-to-write-requirements.md
+    │   ├── README.md
+    │   ├── guide-<topic>.md
+    │   └── how-to-<topic>.md
     │
     ├── runbooks/                      # procedimientos operativos
-    │   ├── deploy-npm.md
-    │   └── docker-recovery.md
+    │   ├── README.md
+    │   └── runbook-<topic>.md
+    │
+    ├── rfcs/                          # solicitudes de cambio de arquitectura
+    │   ├── README.md
+    │   └── rfc-<topic>.md
     │
     └── templates/                     # meta-artefactos (plantillas)
         ├── story-template.md
@@ -142,6 +156,7 @@ agile-sddf/
 | Explicación didáctica | `guides/` |
 | Procedimiento operativo | `runbooks/` |
 | Plantilla de generación | `templates/` |
+| Solicitud de cambio de arquitectura | `rfcs/` | Larga |
 
 ---
 
@@ -198,7 +213,7 @@ docs/constitution.md          # principios supremos (fuera de policies/)
 - ❌ Duplicar un requirement en la story.
 - ❌ Editar un ADR aceptado.
 - ❌ Mezclar visión y requisitos bajo el mismo nombre.
-- ❌ Poner `dod-story.md` en `policies/` (es un transition guardrail).
+- ❌ Poner `dod-story-checklist.md` en `policies/` (es un transition guardrail).
 - ❌ Indexar todo en un archivo monolítico.
 - ❌ Enlazar sin bidireccionalidad.
 - ❌ Usar `docs/specs/templates/` en lugar de `docs/templates/`.

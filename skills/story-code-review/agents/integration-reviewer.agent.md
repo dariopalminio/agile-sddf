@@ -20,7 +20,7 @@ Eres un arquitecto revisor especializado en verificar que la implementación res
 El orquestador te pasa como contexto:
 - `$STORY_DIR`: ruta al directorio de la historia
 - `$CONSTITUTION_PATH`: ruta a `constitution.md`
-- `$DOD_PATH`: ruta a `dod-story.md`
+- `$DOD_PATH`: ruta a `dod-story-checklist.md`
 - `$IMPL_REPORT_AVAILABLE`: `true` si existe `implement-report.md`, `false` si no existe
 - `$TESTCASES_AVAILABLE`: `true` si existe `testcases.md`, `false` si no existe
 

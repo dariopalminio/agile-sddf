@@ -49,7 +49,7 @@ updated: <YYYY-MM-DD>
 
 ### Proceso
 <!-- Reglas del proceso de desarrollo -->
-- [[definition-of-done-story]] ⚠️ nodo pendiente
+- [[dod-story-checklist]] ⚠️ nodo pendiente
 - [[definition-of-ready]] ⚠️ nodo pendiente
 
 

@@ -3,9 +3,9 @@ alwaysApply: false
 type: story
 id: STORY-094
 kind: chore
-slug: STORY-094-fixing-insights
+slug: STORY-094-refactory-and-fixing-insights
 title: "Fix insight and Verificación de la instalación en Windows, macOS y Linux"
-status: IMPLEMENT
+status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: EPIC-19-framework-consistency
 created: 2026-09-13

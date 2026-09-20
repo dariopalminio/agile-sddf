@@ -231,7 +231,7 @@ Después de generar el índice, muestra un resumen de nodos pendientes al usuari
 ## Nodos pendientes detectados
 
 Los siguientes wikilinks apuntan a archivos que aún no existen:
-- [[constitution]] → <SPECS_BASE>/knowledge/constitution/constitution.md
+- [[constitution]] → <SPECS_BASE>/constitution.md
 - [[tech-stack]] → <SPECS_BASE>/knowledge/architecture/tech-stack.md
 
 Crea estos archivos cuando estés listo para expandir la wiki.

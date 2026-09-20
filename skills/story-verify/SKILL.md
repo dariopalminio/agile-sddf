@@ -36,7 +36,7 @@ story-verify    ← aquí
 ## Entrada
 
 - `$SPECS_BASE/specs/03-stories/<story-id>/story.md` — historia a verificar (precondición de estado)
-- `$SPECS_BASE/policies/dod-story.md` — criterios DoD sección VERIFY (opcional; usa fallback genérico si no existe)
+- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios DoD sección VERIFY (opcional; usa fallback genérico si no existe)
 - `<REPO_ROOT>/sddf.config.yaml` — configuración de pruebas del proyecto (opcional; si existe y contiene tests `required: true`, tiene prioridad sobre la detección automática)
 - Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático (fallback cuando sddf.config.yaml no existe)
 - `.tmp/story-verify/{story_id}/qa-input.json` / `qa-output.json` — canal de comunicación con el agente QA (solo modo manual)
@@ -54,7 +54,7 @@ story-verify    ← aquí
 
 - Agentes: [`agents/qa-engineer.agent.md`] (modo manual y e2e-assessment)
 - Herramientas de testing (según modo detectado): `pytest`, `jest`, `vitest`, `go test`, `npx playwright`, `npx cypress`, `npx cucumber-js`
-- Archivos de entrada: `$SPECS_BASE/policies/dod-story.md`, `assets/verify-report-template.md`
+- Archivos de entrada: `$SPECS_BASE/guardrails/dod-story-checklist.md`, `assets/verify-report-template.md`
 
 ## Modos de ejecución
 
@@ -177,11 +177,13 @@ Actualizar el frontmatter de `story.md`:
 
 ### Paso 3 — Cargar DoD VERIFY
 
-Buscar `$SPECS_BASE/policies/dod-story.md`.
+Buscar `$SPECS_BASE/guardrails/dod-story-checklist.md`. Si no existe, buscar la ruta heredada
+`$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir
+`⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`.
 
-**Si el archivo no existe:**
+**Si ninguno de los dos archivos existe:**
 ```
-⚠️ dod-story.md no encontrado — usando criterios mínimos genéricos:
+⚠️ dod-story-checklist.md no encontrado — usando criterios mínimos genéricos:
    1. Todos los tests del proyecto pasan
    2. Sin defectos CRITICAL o HIGH sin resolver
 ```

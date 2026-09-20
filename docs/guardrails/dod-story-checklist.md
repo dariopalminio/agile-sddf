@@ -1,8 +1,10 @@
 ---
 alwaysApply: false
-type: definition-of-done
-slug: definition-of-done
-title: "Definition of Done"
+type: guardrail
+kind: transition
+enforcement: error
+slug: dod-story-checklist
+title: "Definition of Done — Story (transition guardrail)"
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 ---
@@ -11,8 +13,11 @@ updated: <YYYY-MM-DD>
 El DoD comparte la forma (checklist + bloqueo) con el guardrail, pero protege algo distinto: no el contenido del repositorio, sino la transición entre estados de un work item.
 -->
 
-
 # Definition of Done (DoD)
+
+Aplica a las transiciones de estado de una historia (SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY →
+ACCEPTANCE): cada sección es la compuerta que un skill del pipeline verifica antes de avanzar el estado.
+No aplica al contenido del repositorio — eso lo gobiernan los guardrails `gr-*-checklist.md` de esta carpeta.
 
 ## Story Definition of Done
 

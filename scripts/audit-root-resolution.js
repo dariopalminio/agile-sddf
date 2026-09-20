@@ -23,7 +23,7 @@ const JSON_OUTPUT = process.argv.includes('--json');
 const ACTIVE_DOCS = [
   'AGENTS.md',
   'README.md',
-  'docs/policies/constitution.md',
+  'docs/constitution.md',
   'docs/domains/domain.md',
   'docs/guides/root-folder-practices.md',
   'docs/guides/sddf-commands-pipeline.md',

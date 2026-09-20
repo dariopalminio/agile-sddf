@@ -18,6 +18,7 @@ const ACTIVE_ROOTS = [
   'README.md',
   'SECURITY.md',
   'docs/index.md',
+  'docs/constitution.md',
   'docs/policies',
   'docs/guardrails',
   'docs/guides',

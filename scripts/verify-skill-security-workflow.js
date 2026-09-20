@@ -21,6 +21,7 @@ const REQUIRED_PATHS = [
   'skills/**',
   'agents/**',
   'scripts/**',
+  'docs/constitution.md',
   'docs/policies/**',
   'docs/guardrails/**',
   '.github/workflows/**',
@@ -61,7 +62,7 @@ function main() {
   );
   assertContains(
     contents,
-    'for target in skills agents scripts docs/policies docs/guardrails .github/workflows; do',
+    'for target in skills agents scripts docs/constitution.md docs/policies docs/guardrails .github/workflows; do',
     'complete protected-source scan loop',
     errors,
   );

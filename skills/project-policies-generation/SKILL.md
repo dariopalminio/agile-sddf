@@ -1,7 +1,7 @@
 ---
 name: project-policies-generation
 description: >-
-  Inicializa o actualiza constitution.md y dod-story.md registrando referencias en CLAUDE.md.
+  Inicializa o actualiza constitution.md y guardrails/dod-story-checklist.md registrando referencias en CLAUDE.md.
   Usar para establecer reglas técnicas y criterios de calidad del proyecto.
   Invocar para "generar políticas", "actualizar constitución",
   "definition of done" o "project-policies-generation".
@@ -25,16 +25,18 @@ constitución", "definition of done", "project-policies-generation" o equivalent
 
 ## Objetivo
 
-Genera o actualiza los documentos de políticas del proyecto SDDF a partir de templates
+Genera o actualiza los documentos de gobernanza del proyecto SDDF a partir de templates
 Markdown y registra sus referencias en `CLAUDE.md` / `AGENTS.md` para que todos los
 agentes IA los lean automáticamente antes de cualquier acción:
 
-- `$SPECS_BASE/policies/constitution.md` — principios técnicos inamovibles del proyecto (stack, convenciones, metodologías)
-- `$SPECS_BASE/policies/dod-story.md` — criterios de calidad para considerar una historia completada
+- `$SPECS_BASE/constitution.md` — documento supremo: principios técnicos inamovibles del proyecto (stack, convenciones, metodologías). Vive en la raíz de `docs/`, un nivel por encima de `policies/` y `guardrails/`, porque ambas capas derivan de él
+- `$SPECS_BASE/guardrails/dod-story-checklist.md` — transition guardrail: criterios de calidad que una historia debe cumplir para avanzar de estado
 
 **Qué hace este skill:**
 - Crea o actualiza `constitution.md` desde el template, con confirmación del usuario si ya existe
-- Crea o actualiza `dod-story.md` desde el template, con confirmación del usuario si ya existe
+- Crea o actualiza `dod-story-checklist.md` desde el template, con confirmación del usuario si ya existe
+- Ofrece mover un `policies/constitution.md` o `policies/dod-story.md` heredados a su ubicación actual (`docs/` y `guardrails/` respectivamente)
+- Crea `policies/README.md` (índice de la capa) si no existe
 - Registra referencias a las políticas en `CLAUDE.md` o `AGENTS.md`
 
 **Qué NO hace este skill:**
@@ -44,7 +46,7 @@ agentes IA los lean automáticamente antes de cualquier acción:
 ## Entrada
 
 - `assets/project-constitution-template.md` — template fuente para constitution (solo lectura)
-- `assets/definition-of-done-story-template.md` — template fuente para DoD (solo lectura)
+- `assets/dod-story-checklist-template.md` — template fuente para DoD (solo lectura)
 - `CLAUDE.md` o `AGENTS.md` en la raíz del repositorio — archivo de entrada del agente donde se registran las referencias
 
 ## Parámetros
@@ -55,11 +57,11 @@ agentes IA los lean automáticamente antes de cualquier acción:
 
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 - `assets/project-constitution-template.md` debe existir
-- `assets/definition-of-done-story-template.md` debe existir
+- `assets/dod-story-checklist-template.md` debe existir
 
 ## Dependencias
 
-- Archivos: [`assets/project-constitution-template.md`, `assets/definition-of-done-story-template.md`]
+- Archivos: [`assets/project-constitution-template.md`, `assets/dod-story-checklist-template.md`]
 
 ## Modos de ejecución
 
@@ -94,16 +96,24 @@ Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir a
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
 
-### Paso 1 — Preparar directorio de políticas
+### Paso 1 — Preparar directorios de políticas y guardrails
 
-Verificar si el directorio `$SPECS_BASE/policies/` existe.
+Verificar si existen los directorios `$SPECS_BASE/policies/` y `$SPECS_BASE/guardrails/`.
 
-Si no existe, crearlo antes de continuar e informar al usuario:
+Por cada uno que no exista, crearlo antes de continuar e informar al usuario:
 ```
 📁 Directorio creado: $SPECS_BASE/policies/
+📁 Directorio creado: $SPECS_BASE/guardrails/
 ```
 
+Si `$SPECS_BASE/policies/README.md` no existe, crearlo con un índice mínimo de la capa: qué es una policy,
+que la constitución vive un nivel arriba en `$SPECS_BASE/constitution.md`, la convención `<ámbito>-policy.md`
+y una tabla de índice vacía. Informar `📄 Creado: $SPECS_BASE/policies/README.md`.
+
 ### Paso 2 — Generar constitution.md
+
+La constitución es el documento supremo de gobernanza: vive en `$SPECS_BASE/constitution.md`, **no** dentro
+de `policies/`, porque las policies y los guardrails derivan de ella.
 
 #### 2a. Leer el template
 
@@ -111,24 +121,37 @@ Leer el archivo `assets/project-constitution-template.md`.
 
 La estructura del output la define íntegramente el template — nunca hardcodear secciones en este skill.
 
-#### 2b. Verificar existencia previa
+#### 2b. Migrar una constitución heredada
 
-Si `$SPECS_BASE/policies/constitution.md` **no existe**, preguntar al usuario:
+Si `$SPECS_BASE/constitution.md` **no existe** pero `$SPECS_BASE/policies/constitution.md` **sí**, preguntar al usuario:
 
 ```
-$SPECS_BASE/policies/constitution.md no existe. ¿Cómo deseas crearlo?
+⚠️ policies/constitution.md está deprecado: la constitución es la raíz de la gobernanza y ahora vive en la raíz de docs/.
+  (m) Mover policies/constitution.md → constitution.md conservando su contenido (Recomendado)
+  (n) No mover — continuar y crear uno nuevo desde el template
+```
+
+- `m` / `mover`: mover el archivo (con `git mv` si el repositorio está versionado), actualizar en su frontmatter `type: constitution` y `updated` (fecha actual), y reescribir los enlaces relativos internos (`../guardrails/` → `guardrails/`, `../policies/` → `policies/`). Informar `✅ Movido: $SPECS_BASE/constitution.md` y continuar con el **Paso 2c** tratando el archivo como existente.
+- `n` / `no`: continuar con el **Paso 2c** sin tocar el archivo heredado.
+
+#### 2c. Verificar existencia previa
+
+Si `$SPECS_BASE/constitution.md` **no existe**, preguntar al usuario:
+
+```
+$SPECS_BASE/constitution.md no existe. ¿Cómo deseas crearlo?
   (a) Auto-completar — leer el proyecto y completar los placeholders con datos reales (Recomendado)
   (b) Template en blanco — crear con los placeholders sin completar
 ```
 
 Esperar respuesta antes de continuar:
-- `a` / `auto-completar`: ejecutar el **Paso 2c** (Auto-completado)
-- `b` / `blanco`: crear el archivo con el contenido del template, completando el frontmatter con `created` y `updated` (fecha actual). Informar: `✅ Creado: $SPECS_BASE/policies/constitution.md`
+- `a` / `auto-completar`: ejecutar el **Paso 2d** (Auto-completado)
+- `b` / `blanco`: crear el archivo con el contenido del template, completando el frontmatter con `created` y `updated` (fecha actual). Informar: `✅ Creado: $SPECS_BASE/constitution.md`
 
-Si `$SPECS_BASE/policies/constitution.md` **ya existe**, preguntar al usuario:
+Si `$SPECS_BASE/constitution.md` **ya existe**, preguntar al usuario:
 
 ```
-El archivo $SPECS_BASE/policies/constitution.md ya existe.
+El archivo $SPECS_BASE/constitution.md ya existe.
 ¿Qué deseas hacer?
   (a) Auto-completar — leer el proyecto y completar los placeholders con datos reales
   (e) Editar el contenido existente
@@ -137,14 +160,14 @@ El archivo $SPECS_BASE/policies/constitution.md ya existe.
 ```
 
 Esperar respuesta antes de continuar:
-- `a` / `auto-completar`: ejecutar el **Paso 2c** (Auto-completado)
+- `a` / `auto-completar`: ejecutar el **Paso 2d** (Auto-completado)
 - `e` / `editar`: abrir el archivo para que el usuario lo edite; no modificar su contenido
 - `s` / `sobreescribir`: reemplazar el contenido con el template y actualizar el campo `updated`
 - `n` / `saltar`: no modificar el archivo y continuar con el Paso 3
 
-### Paso 2c — Auto-completar constitution.md
+### Paso 2d — Auto-completar constitution.md
 
-Este paso se ejecuta cuando el usuario elige la opción `(a)` en el Paso 2b.
+Este paso se ejecuta cuando el usuario elige la opción `(a)` en el Paso 2c.
 
 #### Recopilación de contexto del proyecto
 
@@ -205,12 +228,12 @@ Completar cada placeholder del template con los datos extraídos siguiendo esta 
 
 #### Guardar y reportar
 
-Guardar el archivo en `$SPECS_BASE/policies/constitution.md` (UTF-8 sin BOM).
+Guardar el archivo en `$SPECS_BASE/constitution.md` (UTF-8 sin BOM).
 
 Informar al usuario:
 
 ```
-✅ Auto-completado: $SPECS_BASE/policies/constitution.md
+✅ Auto-completado: $SPECS_BASE/constitution.md
 
 Campos completados automáticamente: N
 Campos que requieren revisión manual [TBD]: M
@@ -221,32 +244,48 @@ Revisa el archivo generado y completa los campos [TBD] con la información espec
 
 Continuar con el Paso 3.
 
-### Paso 3 — Generar dod-story.md
+### Paso 3 — Generar dod-story-checklist.md
+
+El DoD es un **transition guardrail** (checklist que bloquea transiciones de estado de una historia), por
+eso vive en `$SPECS_BASE/guardrails/`, no en `policies/`.
 
 #### 3a. Leer el template
 
-Leer el archivo `assets/definition-of-done-story-template.md`.
+Leer el archivo `assets/dod-story-checklist-template.md`.
 
 La estructura del output la define íntegramente el template.
 
-#### 3b. Verificar existencia previa
+#### 3b. Migrar un DoD heredado
 
-Si `$SPECS_BASE/policies/dod-story.md` **no existe**, preguntar al usuario:
+Si `$SPECS_BASE/guardrails/dod-story-checklist.md` **no existe** pero `$SPECS_BASE/policies/dod-story.md` **sí**, preguntar al usuario:
 
 ```
-$SPECS_BASE/policies/dod-story.md no existe. ¿Cómo deseas crearlo?
+⚠️ policies/dod-story.md está deprecado: el DoD es un transition guardrail y ahora vive en guardrails/.
+  (m) Mover policies/dod-story.md → guardrails/dod-story-checklist.md conservando su contenido (Recomendado)
+  (n) No mover — continuar y crear uno nuevo desde el template
+```
+
+- `m` / `mover`: mover el archivo (con `git mv` si el repositorio está versionado), actualizar en su frontmatter `type: guardrail`, `kind: transition`, `enforcement: error`, `slug: dod-story-checklist` y `updated` (fecha actual). Informar `✅ Movido: $SPECS_BASE/guardrails/dod-story-checklist.md` y continuar con el **Paso 3c** tratando el archivo como existente.
+- `n` / `no`: continuar con el **Paso 3c** sin tocar el archivo heredado.
+
+#### 3c. Verificar existencia previa
+
+Si `$SPECS_BASE/guardrails/dod-story-checklist.md` **no existe**, preguntar al usuario:
+
+```
+$SPECS_BASE/guardrails/dod-story-checklist.md no existe. ¿Cómo deseas crearlo?
   (a) Auto-completar — completar las notas adicionales con criterios específicos del stack detectado (Recomendado)
   (b) Template en blanco — crear con los placeholders sin completar
 ```
 
 Esperar respuesta antes de continuar:
-- `a` / `auto-completar`: ejecutar el **Paso 3c** (Auto-completado)
-- `b` / `blanco`: crear el archivo con el contenido del template, completando el frontmatter con `created` y `updated` (fecha actual). Informar: `✅ Creado: $SPECS_BASE/policies/dod-story.md`
+- `a` / `auto-completar`: ejecutar el **Paso 3d** (Auto-completado)
+- `b` / `blanco`: crear el archivo con el contenido del template, completando el frontmatter con `created` y `updated` (fecha actual). Informar: `✅ Creado: $SPECS_BASE/guardrails/dod-story-checklist.md`
 
-Si `$SPECS_BASE/policies/dod-story.md` **ya existe**, preguntar al usuario:
+Si `$SPECS_BASE/guardrails/dod-story-checklist.md` **ya existe**, preguntar al usuario:
 
 ```
-El archivo $SPECS_BASE/policies/dod-story.md ya existe.
+El archivo $SPECS_BASE/guardrails/dod-story-checklist.md ya existe.
 ¿Qué deseas hacer?
   (a) Auto-completar — completar las notas adicionales con criterios específicos del stack detectado
   (e) Editar el contenido existente
@@ -255,14 +294,14 @@ El archivo $SPECS_BASE/policies/dod-story.md ya existe.
 ```
 
 Esperar respuesta antes de continuar:
-- `a` / `auto-completar`: ejecutar el **Paso 3c** (Auto-completado)
+- `a` / `auto-completar`: ejecutar el **Paso 3d** (Auto-completado)
 - `e` / `editar`: abrir el archivo para que el usuario lo edite; no modificar su contenido
 - `s` / `sobreescribir`: reemplazar el contenido con el template y actualizar el campo `updated`
 - `n` / `saltar`: no modificar el archivo y continuar con el Paso 4
 
-### Paso 3c — Auto-completar dod-story.md
+### Paso 3d — Auto-completar dod-story-checklist.md
 
-Este paso se ejecuta cuando el usuario elige la opción `(a)` en el Paso 3b.
+Este paso se ejecuta cuando el usuario elige la opción `(a)` en el Paso 3c.
 
 El template de DoD contiene checkboxes predefinidos y no tiene placeholders de contenido significativos, salvo la sección **Notas adicionales** (`[Por completar]`) y el frontmatter. El auto-completado se enfoca en esas dos partes.
 
@@ -287,12 +326,12 @@ Leer `package.json` (raíz y paquetes) para detectar las herramientas de testing
 
 #### Guardar y reportar
 
-Guardar el archivo en `$SPECS_BASE/policies/dod-story.md` (UTF-8 sin BOM).
+Guardar el archivo en `$SPECS_BASE/guardrails/dod-story-checklist.md` (UTF-8 sin BOM).
 
 Informar al usuario:
 
 ```
-✅ Auto-completado: $SPECS_BASE/policies/dod-story.md
+✅ Auto-completado: $SPECS_BASE/guardrails/dod-story-checklist.md
 
 Herramientas detectadas: [lista]
 Criterios adicionales generados en "Notas adicionales": N
@@ -316,15 +355,17 @@ Verificar en la raíz del repositorio:
 
 Agrega las siguientes líneas manualmente a tu archivo de entrada del agente:
 
-@docs/policies/constitution.md
-@docs/policies/dod-story.md
+@docs/constitution.md
+@docs/guardrails/dod-story-checklist.md
 ```
 
 #### 4b. Verificar referencias existentes
 
 Buscar en el archivo detectado si ya contiene referencias a los archivos de políticas:
-- `@$SPECS_BASE/policies/constitution.md` (o la ruta relativa equivalente)
-- `@$SPECS_BASE/policies/dod-story.md`
+- `@$SPECS_BASE/constitution.md` (o la ruta relativa equivalente)
+- `@$SPECS_BASE/guardrails/dod-story-checklist.md`
+
+Si el archivo contiene una referencia heredada (`@$SPECS_BASE/policies/constitution.md` o `@$SPECS_BASE/policies/dod-story.md`) y el documento ya vive en su ubicación actual, reemplazarla por la nueva ruta en lugar de añadir una segunda línea.
 
 Si **ambas referencias ya existen**: informar que no es necesario modificar el archivo:
 ```
@@ -344,15 +385,15 @@ Si el formato del archivo es no estándar o no se puede determinar la sección c
 
 Agrega las siguientes líneas manualmente:
 
-@docs/policies/constitution.md
-@docs/policies/dod-story.md
+@docs/constitution.md
+@docs/guardrails/dod-story-checklist.md
 ```
 
 Si se insertaron las referencias exitosamente:
 ```
 ✅ Referencias agregadas en CLAUDE.md:
-   @docs/policies/constitution.md
-   @docs/policies/dod-story.md
+   @docs/constitution.md
+   @docs/guardrails/dod-story-checklist.md
 ```
 
 ### Paso 5 — Resumen
@@ -363,8 +404,8 @@ Mostrar el resumen de la ejecución:
 ## Políticas del proyecto generadas
 
 📄 Archivos de políticas:
-- $SPECS_BASE/policies/constitution.md    [creado | auto-completado | actualizado | saltado]
-- $SPECS_BASE/policies/dod-story.md  [creado | auto-completado | actualizado | saltado]
+- $SPECS_BASE/constitution.md                     [creado | movido | auto-completado | actualizado | saltado]
+- $SPECS_BASE/guardrails/dod-story-checklist.md   [creado | movido | auto-completado | actualizado | saltado]
 
 🔗 Referencias en CLAUDE.md:
 - [registradas | ya existían | requieren acción manual]
@@ -376,6 +417,7 @@ Luego ejecuta `/story-design` para comenzar a diseñar la implementación de una
 
 ## Salida
 
-- `$SPECS_BASE/policies/constitution.md` — documento de constitución del proyecto con principios técnicos inamovibles.
-- `$SPECS_BASE/policies/dod-story.md` — documento de criterios DoD para historias de usuario.
+- `$SPECS_BASE/constitution.md` — constitución del proyecto: documento supremo con los principios técnicos inamovibles.
+- `$SPECS_BASE/policies/README.md` — índice de la capa de policies (creado si no existía).
+- `$SPECS_BASE/guardrails/dod-story-checklist.md` — transition guardrail con los criterios DoD por estado de una historia.
 - Actualizaciones en `CLAUDE.md` o `AGENTS.md` con referencias `@` a los archivos de políticas generados.

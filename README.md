@@ -207,14 +207,16 @@ El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT �
 
 ```text
 <SPECS_BASE>/
+├── constitution.md
 ├── adr/
 ├── architecture/
 ├── domain/
 ├── templates/
 ├── guardrails/
+│   ├── gr-*-checklist.md
+│   └── dod-story-checklist.md
 ├── policies/
-│   ├── constitution.md
-│   └── dod-story.md
+│   └── README.md
 └── specs/
     ├── 01-projects/
     │    └── PROJ-01-mi-proyecto/
@@ -245,7 +247,7 @@ No todos los reportes existen desde el comienzo: aparecen cuando el flujo llega 
 |---|---|
 | Convenciones de artefactos, estados, trazabilidad y gates. | El problema, el dominio, las prioridades y los criterios de aceptación. |
 | Un camino para proyecto, épicas e historias. | El stack, la arquitectura y los comandos reales de prueba. |
-| Políticas versionadas y control WIP por nivel de flujo. | El contenido de `constitution.md` y `dod-story.md`. |
+| Políticas versionadas y control WIP por nivel de flujo. | El contenido de `constitution.md` y `dod-story-checklist.md`. |
 | Orquestación de TDD configurable por workers. | Qué workers instalar y declarar en `sddf.config.yaml`. |
 
 Genera o actualiza las políticas cuando el equipo las necesite:
@@ -413,7 +415,7 @@ npm run verify:runtimes
 npm run verify:links
 ```
 
-Mantén la documentación, los contratos y los tests alineados con cualquier cambio de comportamiento. Antes de abrir un Pull Request, revisa también las [políticas del proyecto](docs/policies/constitution.md) y el [Definition of Done](docs/policies/dod-story.md).
+Mantén la documentación, los contratos y los tests alineados con cualquier cambio de comportamiento. Antes de abrir un Pull Request, revisa también la [constitución del proyecto](docs/constitution.md) y el [Definition of Done](docs/guardrails/dod-story-checklist.md).
 
 ## Seguridad
 

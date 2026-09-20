@@ -26,13 +26,14 @@ Framework multiagente minimalista (solo Markdown + scripts Node.js de instalaci�
 agile-sddf/
 ├── docs/
 │   ├── index.md                                            # punto de entrada wiki (wikilinks [[slug]])
+│   ├── constitution.md                                     # documento supremo de gobernanza: de él derivan policies/ y guardrails/
 │   ├── specs/{01-projects,02-epics,03-stories}/            # Specs y artefactos generados por los skills SDD
 │   ├── domains/                                             # Modelo de dominio del sistema y reglas de negocio (DDD: Domain-Driven Design)
 │   ├── requirements/                                       # Requisitos del producto
 │   ├── adr/                                                # Decisiones puntuales e inmutables (ADR-NNNN, inmutables)
 │   ├── architecture/                                       # Arquitectura del sistema, estructura técnica (Diagramas C4, stack, visión de sistema, vistas de componentes)
-│   ├── guardrails/                                         # Guardrails del sistema (reglas de seguridad y buenas prácticas)
-│   ├── policies/                                           # constitution.md, dod-story.md y enlaces a guardrails
+│   ├── guardrails/                                         # Restricciones verificables: gr-*-checklist.md (contenido) y dod-story-checklist.md (transiciones)
+│   ├── policies/                                           # Reglas de gobernanza derivadas de la constitución (README índice; hoy sin policies)
 │   ├── guides/                                             # guías de referencia, how-to-guides (ver docs/index.md)
 │   ├── knowledge/                                          # Conocimiento general, investigación, lecciones aprendidas y documentación didáctica
 │   ├── runbooks/                                           # procedimientos operativos (deploy npm, docker)
@@ -77,9 +78,11 @@ Cada subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el contro
 
 `docs/index.md` es el punto de entrada wiki (wikilinks `[[slug]]`) hacia specs, ADRs y guías. Antes de inventar una convención nueva, comprueba si ya existe una guía en `docs/guides/` (agentes, skills, comandos, harness engineering, branching, organización de artefactos, specs y workflows, etc.).
 
+**Flujo de autoridad:** `AGENTS.md → docs/constitution.md → docs/policies/ · docs/guardrails/`. La constitución es el documento supremo; las policies la desarrollan y los guardrails la hacen verificable. Ante conflicto, prevalece la constitución.
+
 ---
 
 # Políticas del Proyecto
 
-@docs/policies/constitution.md
-@docs/policies/dod-story.md
+@docs/constitution.md
+@docs/guardrails/dod-story-checklist.md

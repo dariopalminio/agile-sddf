@@ -71,7 +71,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - `design.md` — diseño técnico con componentes, interfaces y decisiones (obligatorio)
 - `testcases.md` — casos de prueba por criterio de aceptación (opcional; requerido si tasks.md ausente)
 - `tasks.md` — plan de tareas de implementación (opcional; requerido si testcases.md ausente)
-- `$SPECS_BASE/policies/dod-story.md` — criterios DoD fase PLAN (opcional)
+- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios DoD fase PLAN (opcional)
 - `$SPECS_BASE/specs/02-epics/{parent}-*/epic.md` — épica padre para verificar alineación (opcional)
 - Template del reporte: `assets/analyze-report-template.md` (opcional, hay fallback interno)
 
@@ -178,10 +178,12 @@ El archivo analyze.md ya existe en: <ruta>
 
 #### 1d. Cargar criterios DoD — Fase PLAN
 
-Intentar localizar `$SPECS_BASE/policies/dod-story.md`.
+Intentar localizar `$SPECS_BASE/guardrails/dod-story-checklist.md`. Si no existe, buscar la ruta heredada
+`$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir
+`⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`.
 
-**Si el archivo no existe:**
-- Emitir: `⚠️ dod-story.md no encontrado — se omitirá la validación DoD PLAN`
+**Si ninguno de los dos archivos existe:**
+- Emitir: `⚠️ dod-story-checklist.md no encontrado — se omitirá la validación DoD PLAN`
 - Registrar internamente: `$DOD_PLAN_CRITERIA = []`
 - Continuar (no detener la ejecución)
 
@@ -537,7 +539,7 @@ Si solo hay WARNINGs o está todo OK:
 | `testcases.md` ausente (tasks.md presente) | `⚠️ testcases.md no encontrado — cobertura de pruebas omitida` | Advertir y continuar |
 | `tasks.md` ausente (testcases.md presente) | `⚠️ No se encontró tasks.md en: <ruta> — análisis de tareas omitido` | Advertir y continuar. Informar que `/story-tasking {story_id}` habilita el análisis completo |
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
-| `dod-story.md` ausente | `⚠️ dod-story.md no encontrado` | Advertir y continuar sin validación DoD |
+| `dod-story-checklist.md` ausente | `⚠️ dod-story-checklist.md no encontrado` | Advertir y continuar sin validación DoD |
 | Sección PLAN no encontrada en DoD | `⚠️ Sección PLAN no encontrada en DoD` | Advertir y continuar sin validación DoD |
 | Épica padre no encontrada | `⚠️ No se encontró epic.md para: <parent>` | Advertir y continuar sin verificación de épica |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
@@ -664,7 +666,7 @@ updated: {date}
 ## Cumplimiento DoD — Fase PLAN
 
 <!-- Si $DOD_PLAN_CRITERIA estuvo vacío al ejecutar Correlación 5, mostrar el texto de aviso a continuación y omitir la tabla. -->
-<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que $SPECS_BASE/policies/dod-story.md contiene una sección con el término "PLAN". -->
+<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que $SPECS_BASE/guardrails/dod-story-checklist.md contiene una sección con el término "PLAN". -->
 
 | Criterio DoD | Estado | Severidad | Evidencia |
 |---|---|---|---|

@@ -2,7 +2,7 @@
 name: tech-lead-reviewer
 description: >-
   Subagente del skill story-code-review. Revisa la calidad técnica del código implementado en una
-  historia SDD contra los criterios de constitution.md y dod-story.md. Escribe su informe
+  historia SDD contra los criterios de constitution.md y dod-story-checklist.md. Escribe su informe
   parcial a .tmp/story-code-review/tech-lead-report.md con el formato de contrato definido.
   Invocado exclusivamente por el orquestador story-code-review — no invocar directamente.
 role: Inspector de Código
@@ -19,7 +19,7 @@ Eres un Tech Lead revisor de código especializado en calidad, legibilidad, segu
 El orquestador te pasa como contexto:
 - `$STORY_DIR`: ruta al directorio de la historia (ej. `docs/specs/03-stories/STORY-064-revision-codigo-multi-agente/`)
 - `$CONSTITUTION_PATH`: ruta a `constitution.md`
-- `$DOD_PATH`: ruta a `dod-story.md`
+- `$DOD_PATH`: ruta a `dod-story-checklist.md`
 
 ## Tu misión
 

@@ -19,6 +19,7 @@ const RUNTIME_GUIDANCE_ROOTS = [
   'SECURITY.md',
   'AGENTS.md',
   'docs/index.md',
+  'docs/constitution.md',
   'docs/policies',
   'docs/guardrails',
   'docs/guides',

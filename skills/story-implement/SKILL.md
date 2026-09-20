@@ -121,7 +121,7 @@ y omitir los snapshots: `$PHASE_NEW` y `$PHASE_MODIFIED` se calculan únicamente
 ```
 $WHITELIST_PATHS = { normalizar(e.path) | e ∈ $WHITELIST ∧ "solo lectura" ∉ e.note }
 ```
-Es decir, se **excluye** toda entrada cuya `note` contiene el texto `solo lectura` (p. ej. `docs/policies/dod-story.md — hallazgo #3 · **solo lectura**: …` no es una ruta permitida aunque figure en la lista blanca). Conjunto deduplicado; comparación por igualdad exacta de rutas normalizadas (sin globs ni directorios). `$WHITELIST = []` o `null` ⇒ `$WHITELIST_PATHS = ∅` (toda modificación queda fuera de lista; nunca es error).
+Es decir, se **excluye** toda entrada cuya `note` contiene el texto `solo lectura` (p. ej. `docs/guardrails/dod-story-checklist.md — hallazgo #3 · **solo lectura**: …` no es una ruta permitida aunque figure en la lista blanca). Conjunto deduplicado; comparación por igualdad exacta de rutas normalizadas (sin globs ni directorios). `$WHITELIST = []` o `null` ⇒ `$WHITELIST_PATHS = ∅` (toda modificación queda fuera de lista; nunca es error).
 
 **Fuera de alcance.** `$OUT_OF_SCOPE = $PHASE_MODIFIED \ $WHITELIST_PATHS`. Los archivos **nuevos** nunca disparan confirmación ni `[WARN]`: por cada `f ∈ $PHASE_NEW`, `$NEW_FILES_LOG += {fase, archivo: f, origen}` y nada más.
 
@@ -181,7 +181,7 @@ y por cada archivo: `$OUT_OF_SCOPE_LOG += {fase, archivo, origen, resolución: "
      · README.md  ← skill-master/monolithic
   ```
   ⇒ fila `| GREEN | README.md | skill-master/monolithic | registrado (--auto) |` en el reporte y continúa.
-- Entrada `solo lectura`: con `$WHITELIST = [{path: "docs/policies/dod-story.md", note: "hallazgos #3 · **solo lectura**: …"}, {path: "scripts/x.js", note: "hallazgo #1"}]` y `files_modified: ["docs/policies/dod-story.md", "scripts/x.js"]`, `$WHITELIST_PATHS = {scripts/x.js}` y `$OUT_OF_SCOPE = {docs/policies/dod-story.md}` ⇒ en `--auto`, `[WARN] 1 archivo(s) fuera de la lista blanca en Fase GREEN — registrados en implement-report.md` y fila `| GREEN | docs/policies/dod-story.md | skill-master/monolithic | registrado (--auto) |`; `scripts/x.js` no genera fila.
+- Entrada `solo lectura`: con `$WHITELIST = [{path: "docs/guardrails/dod-story-checklist.md", note: "hallazgos #3 · **solo lectura**: …"}, {path: "scripts/x.js", note: "hallazgo #1"}]` y `files_modified: ["docs/guardrails/dod-story-checklist.md", "scripts/x.js"]`, `$WHITELIST_PATHS = {scripts/x.js}` y `$OUT_OF_SCOPE = {docs/guardrails/dod-story-checklist.md}` ⇒ en `--auto`, `[WARN] 1 archivo(s) fuera de la lista blanca en Fase GREEN — registrados en implement-report.md` y fila `| GREEN | docs/guardrails/dod-story-checklist.md | skill-master/monolithic | registrado (--auto) |`; `scripts/x.js` no genera fila.
 
 ---
 
@@ -959,7 +959,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
 
 #### 11a — Evaluar criterios DoD IMPLEMENT
 
-Cargar los criterios de la sección `IMPLEMENT` de `docs/policies/dod-story.md`.
+Cargar los criterios de la sección `IMPLEMENT` de `docs/guardrails/dod-story-checklist.md`. Si no existe, usar la ruta heredada `docs/policies/dod-story.md` y emitir `⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`.
 
 Para cada criterio evaluar:
 - `✓` si hay evidencia positiva en los artefactos generados por el ciclo (archivos de test, código, sin errores reportados)

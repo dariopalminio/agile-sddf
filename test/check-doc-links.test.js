@@ -22,6 +22,7 @@ function fixture(t, readme) {
   fs.writeFileSync(path.join(root, 'README.md'), readme, 'utf8');
   fs.writeFileSync(path.join(root, 'SECURITY.md'), '# Security\n', 'utf8');
   fs.writeFileSync(path.join(root, 'docs/index.md'), '# Index\n', 'utf8');
+  fs.writeFileSync(path.join(root, 'docs/constitution.md'), '# Constitution\n', 'utf8');
   fs.writeFileSync(path.join(root, 'docs/guides/guide.md'), [
     '---',
     'slug: guide',

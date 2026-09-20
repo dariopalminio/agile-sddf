@@ -29,7 +29,8 @@
 
 * **Artifact:** Unidad de conocimiento persistida en el repositorio con identidad única, tipo, capa y frontmatter.
 * **ArtifactId:** Identificador único global del artefacto (`FR-001`, `ADR-0003`, `STORY-042`).
-* **ArtifactType:** Tipo del artefacto. Conjunto cerrado: `requirement`, `adr`, `rfc`, `spec`, `domain`, `guardrail`, `policy`, `guide`, `how-to`, `runbook`, `knowledge`, `template`.
+* **ArtifactType:** Tipo del artefacto. Conjunto cerrado: `constitution`, `requirement`, `adr`, `rfc`, `spec`, `domain`, `guardrail`, `policy`, `guide`, `how-to`, `runbook`, `knowledge`, `template`.
+* **Constitution:** Artefacto único y supremo de gobernanza (`docs/constitution.md`). No pertenece a ninguna capa: vive en la raíz de `docs/` porque las policies derivan de él (`derives-from`) y los guardrails lo hacen verificable. Ante conflicto, prevalece sobre cualquier policy o guardrail.
 * **Layer:** Capa de organización del artefacto dentro de `docs/`. Conjunto cerrado: `domains`, `requirements`, `adr`, `rfcs`, `specs`, `guardrails`, `policies`, `guides`, `how-to`, `runbooks`, `knowledge`, `templates`.
 * **Requirement:** Artefacto que describe qué debe hacer el sistema. Puede ser funcional (`FR-`) o no funcional (`NFR-`).
 * **ADR (Architecture Decision Record):** Artefacto inmutable que registra una decisión arquitectónica con su contexto, alternativas y consecuencias.
@@ -93,8 +94,9 @@
 | **Spec (Epic)** | `EPIC-` | `specs/02-epics/` | ❌ Evoluciona | Entregable o release. |
 | **Spec (Story)** | `STORY-` | `specs/03-stories/` | ❌ Evoluciona | Historia de usuario atómica. |
 | **Domain** | `DOMAIN-` (implícito) | `domains/` | ❌ Evoluciona (lento) | Modelo DDD de un bounded context. |
+| **Constitution** | — | raíz de `docs/` | ❌ Evoluciona (lento, con aprobación) | Documento supremo del que derivan policies y guardrails. |
 | **Guardrail** | `GR-` (opcional) | `guardrails/` | ❌ Evoluciona | Restricción operativa verificable que bloquea el avance. |
-| **Policy** | `POLICY-` (opcional) | `policies/` | ❌ Evoluciona (lento) | Regla de gobernanza del proyecto. |
+| **Policy** | `POLICY-` (opcional) | `policies/` | ❌ Evoluciona (lento) | Regla de gobernanza derivada de la constitución. |
 | **Guide** | — | `guides/` | ❌ Evoluciona | Documento didáctico. |
 | **How-to** | — | `how-to/` | ❌ Evoluciona | Procedimiento paso a paso. |
 | **Runbook** | — | `runbooks/` | ❌ Evoluciona | Procedimiento operativo. |
@@ -427,7 +429,8 @@ Toda relación debe poder navegarse en ambas direcciones:
 * **Máquina de estados completa:** [[state-machine]]
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Guardrails:** `docs/guardrails/README.md` — convenciones de checklists y severidades
-* **Policies:** `docs/policies/constitution.md` — principios y reglas del proyecto
+* **Constitución:** `docs/constitution.md` — documento supremo del que derivan policies y guardrails
+* **Policies:** `docs/policies/README.md` — índice y convenciones de la capa
 * **Templates:** `docs/templates/README.md` — convención de nomenclatura y modelo seed/central
 * **Decisión de arquitectura:** [[ADR-0004]] — documentación en capas
 * **Decisión de arquitectura:** [[ADR-0007]] — los templates son una capa propia
@@ -441,7 +444,7 @@ Toda relación debe poder navegarse en ambas direcciones:
 * [[domain-project-lifecycle]] — Ciclo de vida del nivel L3
 * [[domain-epic-lifecycle]] — Ciclo de vida del nivel L2
 * [[domain-story-lifecycle]] — Ciclo de vida del nivel L1
-* [[constitution]] — Constitución del proyecto (policy raíz)
+* [[constitution]] — Constitución del proyecto (documento supremo, raíz de policies y guardrails)
 * [[security-checklist]] — Ejemplo de guardrail (GR-SEC-001)
 * [[ADR-0004]] — Documentación en capas
 * [[ADR-0007]] — Los templates son una capa propia, hermana de `specs/`

@@ -43,4 +43,4 @@ Entonces el skill muestra un mensaje de error indicando la ruta del template fal
 
 * Neutralidad tecnológica: el skill no prescribe ninguna metodología ni patrón — la estructura la define el template
 * Trazabilidad: design.md debe referenciar el ID de la historia origen en su frontmatter
-* Coherencia: el contenido técnico debe alinearse con `$SPECS_BASE/policies/constitution.md`
+* Coherencia: el contenido técnico debe alinearse con `$SPECS_BASE/constitution.md`

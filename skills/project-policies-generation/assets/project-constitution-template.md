@@ -11,6 +11,22 @@ updated: <YYYY-MM-DD>
 
 > Este documento establece los principios técnicos inamovibles del proyecto. Es la fuente de verdad para todos los agentes IA y miembros del equipo. Todo lo que aquí se define debe respetarse en el diseño e implementación de cualquier historia.
 
+## Flujo de autoridad
+
+<!-- La constitución vive en la raíz de docs/, un nivel por encima de policies/ y guardrails/: es el origen de ambas capas, no una policy más. -->
+
+```
+AGENTS.md                     # punto de entrada IA
+    ↓
+docs/constitution.md          # principios supremos (este documento)
+    ├──► docs/policies/       # reglas de gobernanza derivadas   (declaran derives-from: constitution)
+    └──► docs/guardrails/     # restricciones verificables       (declaran originates-from: policy o constitución)
+```
+
+- Las policies desarrollan estos principios en reglas de gobernanza; cada una declara de qué principio deriva.
+- Los guardrails los hacen verificables como checklists con severidad; su incumplimiento bloquea.
+- Ante conflicto entre una policy o guardrail y este documento, prevalece la constitución.
+
 ---
 
 ## 🧱 Stack Tecnológico

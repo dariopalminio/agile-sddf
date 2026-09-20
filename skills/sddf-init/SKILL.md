@@ -128,7 +128,7 @@ Preguntar al usuario:
 
 ```
 ¿Deseas inicializar los documentos de políticas del proyecto?
-(constitution.md y dod-story.md en $SPECS_BASE/policies/)
+($SPECS_BASE/constitution.md y $SPECS_BASE/guardrails/dod-story-checklist.md)
 
   (s) Sí — ejecutar project-policies-generation ahora
   (n) No — omitir este paso
@@ -156,8 +156,8 @@ Emitir el informe consolidado con todos los artefactos verificados:
 [CREADO]     {SPECS_BASE}/templates/project-plan-template.md
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
-[CREADO]     docs/policies/constitution.md
-[CREADO]     docs/policies/dod-story.md
+[CREADO]     docs/constitution.md
+[CREADO]     docs/guardrails/dod-story-checklist.md
 ─────────────────────────────────────────────────
 ```
 

@@ -28,7 +28,7 @@ analistas, arquitectos de software, mantenedores del framework y agentes de IA c
 **Etapa:** framework en evolución continua. No usar los deadlines históricos ni los contadores de
 work items como estado actual sin verificarlos en el filesystem.
 
-**Fuentes de inicio:** `AGENTS.md`, `docs/policies/constitution.md`,
+**Fuentes de inicio:** `AGENTS.md`, `docs/constitution.md`,
 `docs/specs/01-projects/PROJ-01-agile-sddf/project.md`, `package.json` y `docs/domains/`.
 
 ## Domain Boundaries
@@ -197,8 +197,8 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
 | `docs/domains/domain-epic-lifecycle.md` | Pipeline y gates del nivel L2. |
 | `docs/domains/domain-story-lifecycle.md` | Pipeline, rework y gates del nivel L1. |
 | `docs/domains/domain-knowledge-artifacts.md` | Modelo de artefactos, trazabilidad, policies, guardrails, DoD y templates. |
-| `docs/policies/constitution.md` | Principios técnicos y reglas vigentes. |
-| `docs/policies/dod-story.md` | Criterios de terminado por fase de historia. |
+| `docs/constitution.md` | Principios técnicos y reglas vigentes (documento supremo de gobernanza). |
+| `docs/guardrails/dod-story-checklist.md` | Criterios de terminado por fase de historia (transition guardrail). |
 
 ## Open Questions
 

@@ -157,3 +157,48 @@ LLM durante esta implementación.
 No se modificó el estado de `story.md`: faltan los artefactos formales
 `design.md` y `tasks.md` para una transición SDD, y la evidencia hospedada
 sigue pendiente.
+
+
+
+## Implementación del Plan 05 — Moviendo DoD a guardrails
+
+
+Implementado. dod-story.md ahora vive en docs/guardrails/dod-story-checklist.md como transition guardrail.
+
+Movimiento (con git mv, historial conservado)
+
+docs/policies/dod-story.md → docs/guardrails/dod-story-checklist.md, frontmatter type: guardrail, kind: transition, enforcement: error, slug: dod-story-checklist, más una nota de ámbito al inicio (transiciones SPECIFY → … → ACCEPTANCE; el contenido del repo lo gobiernan los gr-*).
+Template generador renombrado a dod-story-checklist-template.md con el mismo frontmatter.
+Skills
+
+project-policies-generation: crea guardrails/ si falta, genera en la nueva ruta, y tiene un paso nuevo (3b) que ofrece mover un policies/dod-story.md heredado; al registrar @ en CLAUDE.md reemplaza la referencia vieja en vez de duplicarla.
+Consumidores (story-design, story-analyze, story-implement, story-implement-tasks, story-code-review + sus 4 agentes, story-verify, story-acceptance): leen primero guardrails/dod-story-checklist.md; si no existe, caen a policies/dod-story.md con ⚠️ … está deprecado — muévelo a …. Mensajes, tablas de errores, ejemplos y fixtures de evals actualizados.
+sddf-init y el template de índice de docs-wiki-builder apuntan al nuevo nombre.
+Docs activas: AGENTS.md (árbol y @docs/guardrails/dod-story-checklist.md), README.md, docs/index.md, constitution.md, domain.md, memory-system.md, y docs/guardrails/README.md ahora distingue content guardrails (gr-*) de transition guardrails (dod-*) con su propia tabla. Entrada [Unreleased] → Changed en el CHANGELOG.
+
+No tocado: docs/specs/**, docs/adr/** y entradas pasadas del CHANGELOG (históricos). Una cosa que noté al escribir la convención: los gr-* no tienen frontmatter; lo dejé anotado en el README como estado actual en lugar de inventarlo.
+
+Verificación: check-doc-links.js OK (36 archivos), npm run test:installer 11/11, test:eval:runner 25/25, audit-root-resolution.js OK (32 skills), ambos evals.json parsean. El grep de policies/dod-story en fuentes activas devuelve solo las líneas de fallback/deprecación.
+
+## Implementación del Plan 06 - Reorganización de la Constitución y las Policies
+
+Estructura resultante
+
+
+AGENTS.md
+    ↓
+docs/constitution.md          # documento supremo (type: constitution)
+    ├──► docs/policies/       # README índice; hoy sin policies
+    └──► docs/guardrails/     # gr-*-checklist.md + dod-story-checklist.md
+Qué cambió
+
+docs/constitution.md: movido con git mv, type: constitution, enlaces relativos corregidos, y una sección nueva "Flujo de autoridad" con el diagrama y las relaciones (derives-from, originates-from, la constitución prevalece en conflicto). El template lleva la misma sección.
+docs/policies/README.md (nuevo): explica la capa, apunta a la constitución un nivel arriba, tabla policy vs guardrail, convención <ámbito>-policy.md, e índice vacío.
+project-policies-generation: genera en $SPECS_BASE/constitution.md, crea policies/README.md si falta, y tiene un Paso 2b que ofrece mover una policies/constitution.md heredada (simétrico al del DoD). La referencia en CLAUDE.md pasa a @docs/constitution.md y reemplaza la heredada en vez de duplicarla.
+story-design y story-code-review: nueva ruta con fallback a policies/constitution.md + aviso de deprecación. sddf-init y docs-wiki-builder (que apuntaba a un knowledge/constitution/ inexistente) corregidos.
+Scripts/CI: docs/constitution.md añadido a las superficies de Skill Shielder (workflow y su verificador), a check-doc-links.js (antes el archivo movido habría quedado fuera del checker), verify-runtime-documentation.js, audit-root-resolution.js y al fixture del test.
+Docs: AGENTS.md (árbol, línea de flujo de autoridad, @docs/constitution.md), README.md, docs/index.md (sección "Políticas" → "Gobernanza" con las tres capas), SECURITY.md, docs/domains/* (constitution entra al conjunto cerrado de ArtifactType con su propia fila), guardrails/README.md, y viñeta en [Unreleased] del CHANGELOG.
+Verificación: check-doc-links.js OK (37 archivos, ahora incluye la constitución), su test 3/3, test:installer 11/11, test:eval:runner 25/25, audit-root-resolution OK (32 skills), verify-runtime-documentation OK, verify-skill-security-workflow OK. El grep de policies/constitution en fuentes activas solo devuelve las líneas de migración/fallback.
+
+Una nota: el IDE marcó un warning "ambiguous identifier" en domain-knowledge-artifacts.md:446 — es el wikilink [[security-checklist]] preexistente (no lo toqué), no algo introducido aquí.
+
