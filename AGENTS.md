@@ -26,12 +26,18 @@ Framework multiagente minimalista (solo Markdown + scripts Node.js de instalaci�
 agile-sddf/
 ├── docs/
 │   ├── index.md                                            # punto de entrada wiki (wikilinks [[slug]])
-│   ├── specs/{01-projects,02-epics,03-stories}/            # artefactos generados por los skills SDD
-│   ├── templates/                                          # plantillas de generación (meta-artefactos)
-│   ├── policies/                                           # constitution.md, dod-story.md
-│   ├── adr/                                                # decisiones de arquitectura (ADR-NNNN, inmutables)
-│   ├── guides/                                             # guías de referencia (ver docs/index.md)
-│   └── runbooks/                                           # procedimientos operativos (deploy npm, docker)
+│   ├── specs/{01-projects,02-epics,03-stories}/            # Specs y artefactos generados por los skills SDD
+│   ├── domains/                                             # Modelo de dominio del sistema y reglas de negocio (DDD: Domain-Driven Design)
+│   ├── requirements/                                       # Requisitos del producto
+│   ├── adr/                                                # Decisiones puntuales e inmutables (ADR-NNNN, inmutables)
+│   ├── architecture/                                       # Arquitectura del sistema, estructura técnica (Diagramas C4, stack, visión de sistema, vistas de componentes)
+│   ├── guardrails/                                         # Guardrails del sistema (reglas de seguridad y buenas prácticas)
+│   ├── policies/                                           # constitution.md, dod-story.md y enlaces a guardrails
+│   ├── guides/                                             # guías de referencia, how-to-guides (ver docs/index.md)
+│   ├── knowledge/                                          # Conocimiento general, investigación, lecciones aprendidas y documentación didáctica
+│   ├── runbooks/                                           # procedimientos operativos (deploy npm, docker)
+│   ├── rfcs/                                              # Requests for Comments: propuestas de cambios y mejoras al framework
+│   └── templates/                                          # plantillas de generación (meta-artefactos)
 ├── skills/                                                 # fuente única de verdad: skills SDD (uno por carpeta)
 ├── agents/                                                 # fuente única de verdad: subagentes (*.agent.md)
 ├── config/                                                 # contratos versionados de perfiles, stacks y runtimes

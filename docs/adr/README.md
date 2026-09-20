@@ -3,8 +3,6 @@ type: wiki
 slug: adr-index
 title: "Índice de Architecture Decision Records (ADRs)"
 date: 2026-06-12
-status: IN-PROGRESS
-substatus: IN-PROGRESS
 parent: null
 ---
 
