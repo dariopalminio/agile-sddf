@@ -5,11 +5,11 @@ id: STORY-095
 kind: feat
 slug: STORY-095-memory-system-index-alias
 title: "Crear el skill memory-system con el modo index y deprecar docs-wiki-builder"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-20-memory-system
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 related:
   - EPIC-20-memory-system
   - STORY-096-memory-system-scaffold-ensure-rebuild
@@ -120,9 +120,11 @@ El modo `index` regenera `docs/index.md` con enlaces `[[slug]]` a todos los arte
 **Verificación sugerida:**
 
 1. Buscar `docs-wiki-builder` en `skills/` devuelve solo el alias deprecado.
-2. `/memory-system index` en este repositorio produce un `docs/index.md` con las mismas entradas que el índice manual vigente.
+2. `/memory-system index` en este repositorio produce un `docs/index.md` con las mismas entradas que el índice manual vigente (comparación por entradas — slug y ruta —, no por descripciones: la entrada generada usa el `title` del frontmatter; CR-003).
 3. `/docs-wiki-builder` produce el mismo `index.md` que `/memory-system index`, con aviso.
 4. `header-aggregation` sigue siendo invocable de forma independiente.
+
+**Dependencia de runtime (CR-001):** la reproducibilidad de `index` exige Node ≥ 18 en PATH (solo módulos nativos, sin `package.json` en el proyecto consumidor). Sin Node, el skill degrada a generación inline y avisa que la reproducibilidad byte a byte no está garantizada.
 
 Referencias:
 - Fuente de verdad: [[memory-system]] location: docs/architecture/memory-system.md

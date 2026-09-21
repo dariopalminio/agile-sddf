@@ -11,6 +11,10 @@ description: >-
 
 Aplica un bloque YAML frontmatter estandarizado a archivos Markdown de especificación del proyecto SDDF. El objetivo es habilitar el patrón LLM Wiki: cada archivo de spec tiene metadatos suficientes para que un índice pueda referenciar nodos sin abrir el contenido completo.
 
+> **Relación con `memory-system`:** `memory-system index` lee el `slug` y `title` de este esquema para
+> indexar; `header-aggregation` sigue siendo una utilidad independiente y no depende de `memory-system`.
+> STORY-096 podrá invocarlo desde `ensure --fix-frontmatter`.
+
 ---
 
 ## Esquema canónico de frontmatter

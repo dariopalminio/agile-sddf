@@ -28,7 +28,7 @@ La memoria del proyecto (`docs/`) está definida en `docs/architecture/memory-sy
 
 ## Historias
 
-- [ ] **STORY-095 — Crear el skill memory-system con el modo index y deprecar docs-wiki-builder:** motor determinista con `index` y detección de harness; `docs/index.md` reproducible con wikilinks `[[slug]]`; `docs-wiki-builder` pasa a alias deprecado con aviso; `header-aggregation` intacto. — [[STORY-095-memory-system-index-alias]]
+- [x] **STORY-095 — Crear el skill memory-system con el modo index y deprecar docs-wiki-builder:** motor determinista con `index` y detección de harness; `docs/index.md` reproducible con wikilinks `[[slug]]`; `docs-wiki-builder` pasa a alias deprecado con aviso; `header-aggregation` intacto. — [[STORY-095-memory-system-index-alias]]
 - [ ] **STORY-096 — Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild:** árbol semilla de once capas + `constitution.md` + seis plantillas; `ensure` (default) = scaffold + index sin sobrescribir; `rebuild --force` regenera solo archivos gestionados por el scaffold; `--fix-frontmatter` invoca `header-aggregation` en batch. — [[STORY-096-memory-system-scaffold-ensure-rebuild]]
 - [ ] **STORY-097 — Verificar la consistencia de la memoria con un modo check apto para CI:** reporta capas faltantes, huérfanos, frontmatters inválidos y wikilinks rotos sin escribir; salida `--json` y exit code 0/1/2. — [[STORY-097-memory-system-check-ci]]
 - [ ] **STORY-098 — Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate:** perfiles de harness (capas omitidas, mapeos, raíces externas indexadas); `migrate` propone un plan y pide confirmación antes de escribir; nunca toca los directorios del harness. — [[STORY-098-memory-system-migrate-harness]]

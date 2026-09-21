@@ -1,0 +1,63 @@
+{
+  "skill": "docs-wiki-builder",
+  "version": "1.0.0",
+  "description": "Casos de prueba para el alias deprecado docs-wiki-builder (STORY-095, D-5): emite el aviso literal de deprecación y delega en /memory-system index, mapeando --dry-run a index --dry-run sin lógica propia.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "alias-sin-argumentos-aviso-y-delegacion",
+      "type": "happy-path",
+      "description": "Origen: EV-005 (AC-2, AC-6, T003). Proyecto SDDF con docs/ que contiene artefactos (constitution.md, adr/, guides/, specs/03-stories/STORY-001-a/story.md); el skill memory-system está instalado y responde con éxito. El usuario invoca /docs-wiki-builder sin argumentos. El alias debe mostrar exactamente el aviso '⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.', mapear la ausencia de argumentos al modo index e invocar /memory-system index (sin --dry-run). No aplica ninguna lógica propia de generación de estructura wiki ni de reorganización de archivos.",
+      "input": {
+        "input_path": "../memory-system/examples/sddf",
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "memory_system_installed": true
+        }
+      },
+      "expected": {
+        "contains": [
+          "⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.",
+          "/memory-system index"
+        ],
+        "not_contains": [
+          "index --dry-run",
+          "wiki-index-template",
+          "knowledge/",
+          "Entorno inválido",
+          "❌"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-002",
+      "name": "alias-dry-run-delegacion-sin-escritura",
+      "type": "edge-case",
+      "description": "Origen: EV-006 (AC-2, T003). Mismo proyecto SDDF que TC-001 (docs/ con artefactos, memory-system instalado y respondiendo con éxito). El usuario invoca /docs-wiki-builder --dry-run. El alias debe mostrar el aviso literal '⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.' y delegar en /memory-system index --dry-run (mapeo --dry-run → index --dry-run). Al ser dry-run no se escribe ni modifica docs/index.md ni ningún otro archivo.",
+      "input": {
+        "input_path": "../memory-system/examples/sddf",
+        "flags": ["--dry-run"],
+        "environment": {
+          "specs_base": "docs",
+          "memory_system_installed": true
+        }
+      },
+      "expected": {
+        "contains": [
+          "⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.",
+          "/memory-system index --dry-run"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "wiki-index-template",
+          "knowledge/",
+          "Entorno inválido",
+          "❌"
+        ]
+      },
+      "threshold": 1.0
+    }
+  ]
+}

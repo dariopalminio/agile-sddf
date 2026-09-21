@@ -1,52 +1,108 @@
 {
   "skill": "header-aggregation",
-  "version": "1.0.0",
-  "description": "Casos de prueba para header-aggregation: adición y actualización de frontmatter YAML en archivos de specs SDDF.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para header-aggregation: adición y actualización de frontmatter YAML en archivos de specs SDDF. Usan fixtures propios bajo examples/ y expectativas basadas en los literales del SKILL.md (sin cadenas genéricas como 'error' o '❌', que colisionan con el contenido de los archivos que el skill reproduce).",
   "cases": [
     {
       "id": "TC-001",
       "name": "agregar-frontmatter-a-archivo-sin-encabezado",
       "type": "happy-path",
-      "description": "El skill agrega frontmatter YAML canónico a un archivo que no tiene encabezado, derivando slug, type, title, date y status automáticamente.",
+      "description": "Proyecto SDDF cuyo REPO_ROOT es skills/header-aggregation/examples/sin-frontmatter (sddf.config.yaml con root: docs). El archivo docs/specs/03-stories/STORY-901-fixture-sin-frontmatter/story.md NO comienza con '---': no tiene frontmatter. Su contenido tiene el heading '# 📖 Historia: Fixture sin frontmatter', la línea '**substatus**: IN-PROGRESS' y menciona la épica padre EPIC-90-fixture-a. El usuario invoca /header-aggregation sobre ese archivo. El skill debe aplicar el Paso 3.2: derivar los campos del esquema canónico (slug = nombre del directorio STORY-901-fixture-sin-frontmatter, type story, id STORY-901, title del heading, status IN-PROGRESS, created = fecha actual), anteponer el bloque YAML sin tocar el contenido y mostrar el resumen '✓ Frontmatter aplicado' con los valores derivados. No debe tratarlo como frontmatter existente ni ofrecer el merge del Paso 3.3.",
       "input": {
-        "input_path": "docs/specs/03-stories/STORY-044-directorio-docs-tipo-wiki/story.md",
-        "context": "Añade el encabezado YAML estándar a docs/specs/03-stories/STORY-044-directorio-docs-tipo-wiki/story.md — ese archivo no tiene frontmatter todavía"
+        "input_path": "skills/header-aggregation/examples/sin-frontmatter/docs/specs/03-stories/STORY-901-fixture-sin-frontmatter/story.md",
+        "context": "Añade el encabezado YAML estándar a skills/header-aggregation/examples/sin-frontmatter/docs/specs/03-stories/STORY-901-fixture-sin-frontmatter/story.md — ese archivo no tiene frontmatter todavía",
+        "environment": {
+          "repo_root": "skills/header-aggregation/examples/sin-frontmatter",
+          "specs_base": "docs",
+          "file_has_frontmatter": false
+        }
       },
       "expected": {
-        "contains": ["slug", "type", "title", "status", "created"],
-        "not_contains": ["❌", "error"]
+        "contains": [
+          "Frontmatter aplicado",
+          "STORY-901-fixture-sin-frontmatter",
+          "type:",
+          "story",
+          "title:",
+          "Fixture sin frontmatter",
+          "status:",
+          "IN-PROGRESS",
+          "created:"
+        ],
+        "not_contains": [
+          "Frontmatter existente encontrado",
+          "Sobrescribir con propuesta",
+          "Mantener el existente",
+          "Entorno inválido",
+          "No se encontró el archivo"
+        ]
       },
-      "threshold": 0.90
+      "threshold": 0.9
     },
     {
       "id": "TC-002",
-      "name": "actualizar-frontmatter-existente-con-diff-y-confirmacion",
+      "name": "actualizar-frontmatter-existente-con-propuesta-y-confirmacion",
       "type": "happy-path",
-      "description": "El skill detecta frontmatter existente, construye propuesta con campos faltantes del esquema canónico, muestra diff y solicita confirmación antes de escribir.",
+      "description": "Proyecto SDDF cuyo REPO_ROOT es skills/header-aggregation/examples/con-frontmatter (sddf.config.yaml con root: docs). El archivo docs/specs/03-stories/STORY-902-fixture-con-frontmatter/story.md comienza con '---' y tiene un frontmatter parcial: type, slug, title, date y status; le faltan alwaysApply, id, kind, substatus, parent, created y updated. El usuario invoca /header-aggregation sobre ese archivo y, cuando el skill pregunta qué hacer, elige 'Sobrescribir con propuesta'. El skill debe aplicar el Paso 3.3: detectar el frontmatter existente, construir la propuesta preservando los campos actuales y añadiendo los obligatorios que faltan, mostrar las líneas 'Campos añadidos:' y 'Campos existentes:', ofrecer las tres opciones (Sobrescribir con propuesta / Mantener el existente / Cancelar) y solo entonces escribir y mostrar '✓ Frontmatter aplicado'.",
       "input": {
-        "input_path": "docs/specs/03-stories/STORY-042-readme-builder/story.md",
-        "context": "Aplica el esquema de metadatos estándar a docs/specs/03-stories/STORY-042-readme-builder/story.md — creo que le faltan algunos campos del nuevo esquema canónico"
+        "input_path": "skills/header-aggregation/examples/con-frontmatter/docs/specs/03-stories/STORY-902-fixture-con-frontmatter/story.md",
+        "context": "Aplica el esquema de metadatos estándar a skills/header-aggregation/examples/con-frontmatter/docs/specs/03-stories/STORY-902-fixture-con-frontmatter/story.md — creo que le faltan algunos campos del nuevo esquema canónico",
+        "environment": {
+          "repo_root": "skills/header-aggregation/examples/con-frontmatter",
+          "specs_base": "docs",
+          "file_has_frontmatter": true,
+          "user_choice": "Sobrescribir con propuesta"
+        }
       },
       "expected": {
-        "contains": ["diff", "confirmación"],
-        "not_contains": ["❌", "error"]
+        "contains": [
+          "Campos añadidos:",
+          "Campos existentes:",
+          "Sobrescribir con propuesta",
+          "Mantener el existente",
+          "Cancelar",
+          "alwaysApply",
+          "STORY-902-fixture-con-frontmatter",
+          "Frontmatter aplicado"
+        ],
+        "not_contains": [
+          "Entorno inválido",
+          "No se encontró el archivo",
+          "Archivos a modificar"
+        ]
       },
-      "threshold": 0.90
+      "threshold": 0.9
     },
     {
       "id": "TC-003",
-      "name": "modo-batch-directorio-releases",
+      "name": "modo-batch-directorio-epicas",
       "type": "edge-case",
-      "description": "El skill activa modo batch para un directorio, lista los archivos, muestra resumen anticipado con conteo y solicita confirmación global antes de proceder.",
+      "description": "Proyecto SDDF cuyo REPO_ROOT es skills/header-aggregation/examples/batch (sddf.config.yaml con root: docs). El usuario invoca /header-aggregation sobre el directorio docs/specs/02-epics/, que contiene tres subdirectorios: EPIC-90-fixture-a/epic.md (con frontmatter canónico completo → conflicto potencial), EPIC-91-fixture-b/epic.md (sin frontmatter → será modificado) y EPIC-92-fixture-c/ que solo tiene notas.md (sin epic.md → se ignora). El skill debe aplicar el Paso 4: resolver el conjunto (solo los epic.md de los subdirectorios directos), clasificar, mostrar el resumen anticipado 'Archivos a modificar (sin frontmatter): 1' y 'Archivos con conflicto (frontmatter existente): 1', preguntar la estrategia para los conflictos y pedir la confirmación global '¿Confirmas el procesamiento de N archivos?' antes de procesar. El usuario responde 'Saltar todos los conflictos' y confirma.",
       "input": {
-        "input_path": "docs/specs/02-epics/",
-        "context": "Necesito estandarizar el frontmatter YAML de todos los archivos en docs/specs/02-epics/ — algunos ya lo tienen, otros no"
+        "input_path": "skills/header-aggregation/examples/batch/docs/specs/02-epics/",
+        "context": "Necesito estandarizar el frontmatter YAML de todos los archivos en skills/header-aggregation/examples/batch/docs/specs/02-epics/ — algunos ya lo tienen, otros no",
+        "environment": {
+          "repo_root": "skills/header-aggregation/examples/batch",
+          "specs_base": "docs",
+          "conflict_strategy": "Saltar todos los conflictos",
+          "global_confirmation": "s"
+        }
       },
       "expected": {
-        "contains": ["Confirma"],
-        "not_contains": ["❌"]
+        "contains": [
+          "Archivos a modificar",
+          "Archivos con conflicto",
+          "Confirmas el procesamiento",
+          "EPIC-91-fixture-b",
+          "EPIC-90-fixture-a"
+        ],
+        "not_contains": [
+          "Entorno inválido",
+          "No se encontró el directorio",
+          "Frontmatter aplicado: skills/header-aggregation/examples/batch/docs/specs/02-epics/EPIC-92-fixture-c/notas.md"
+        ]
       },
-      "threshold": 0.90
+      "threshold": 0.9
     }
   ]
 }

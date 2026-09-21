@@ -229,5 +229,53 @@ docs/constitution.md          # principios supremos (fuera de policies/)
 | [[docs/domains/domain-state-management]] | Estados, subestados, transiciones |
 | [[sddf.config.yaml]] | Configuración del framework |
 
+---
 
+## 10. Herramienta: skill `memory-system`
 
+El skill `memory-system` (`skills/memory-system/`, STORY-095) es el único punto de entrada
+operativo de este sistema. En 3.3.0 expone el modo `index`; los modos restantes llegan con las
+historias hermanas de EPIC-20.
+
+### 10.1 Modos
+
+| Modo | Estado | Qué hace |
+|------|--------|----------|
+| `index [--harness h] [--dry-run]` | 3.3.0 (STORY-095) | Regenera `docs/index.md` completo desde `assets/index-template.md`: una entrada `[[slug]]` por artefacto, agrupada por capa, más "Estado del grafo" y "Nodos pendientes". `--dry-run` imprime sin escribir. |
+| (sin modo) | reservado a `ensure` | Mientras `ensure` no exista informa `Modos disponibles: index` y termina sin error. |
+| `scaffold`, `ensure`, `rebuild` | STORY-096 | Crear y completar las capas de memoria. |
+| `check` | STORY-097 | Verificar invariantes con exit code para CI. |
+| `migrate` | STORY-098 | Adaptar el scaffolding a OpenSpec/Spec-kit. |
+
+### 10.2 Arquitectura
+
+- `SKILL.md` resuelve la raíz (contrato `SDDF-ROOT-RESOLUTION: v1`), interpreta el modo y delega en
+  `scripts/memory-system.js`, un motor Node ≥ 18 sin dependencias (solo `node:fs`, `node:path`,
+  `node:process`) que produce el mismo `index.md` en cada ejecución salvo `updated`. Sin `node` en
+  PATH el skill genera el índice inline con `references/memory-rules.md`, avisando de que la
+  reproducibilidad byte a byte no está garantizada.
+- **Detección de harness** (`detect`): `--harness` > `sddf.config.yaml` > `.specify/` > `openspec/`
+  > `generic`. La tabla `HARNESS_PROFILES` declara por harness el marcador y las raíces externas
+  indexadas en solo lectura (`specs/*/spec.md` y `plan.md` en Spec-kit; `openspec/specs/**/spec.md`
+  y `openspec/changes/*/proposal.md` en OpenSpec), y reserva `skipLayers`/`mappings` para STORY-098.
+- **Reglas de nodo** (`references/memory-rules.md`): slug = `frontmatter.slug`, o el directorio para
+  `story.md`/`epic.md`/`project.md`/`spec.md`/`proposal.md`/`plan.md`, o `<dir>-index` para
+  `README.md`, o el nombre del archivo; título = `frontmatter.title` o primer `#`; capa = primer
+  segmento de la ruta (`specs/` se divide en `specs-projects|epics|stories`, raíz = `root`, raíces
+  externas = `external`). Se excluyen `index.md`, `specs/.cache/`, `templates/`, `pre-split/` y los
+  derivados de historia (`design.md`, `tasks.md`, `testcases.md`, `analyze.md`, `*-report.md`,
+  `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`).
+- **Template como fuente de verdad**: `assets/index-template.md` fija las secciones; el motor solo
+  sustituye `{layer:<capa>}`, `{stats}` y `{date}`, y falla (exit 2, sin escribir) si un placeholder
+  no corresponde a una capa conocida o una capa con nodos carece de placeholder.
+- **Nodos sin frontmatter** se enlazan solo por ruta con `⚠️ sin frontmatter`; los wikilinks que no
+  resuelven se listan como `⚠️ nodo pendiente` sin bloquear (la invariante 8 se reporta, no se
+  impone, hasta que `check` exista).
+
+### 10.3 Deprecación de `docs-wiki-builder`
+
+`docs-wiki-builder` (STORY-044) queda como alias desde 3.3.0: emite
+`⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.`, mapea `--update` → `index` y
+`--dry-run` → `index --dry-run`, y no conserva lógica propia ni template. Se elimina en 4.0.0.
+`header-aggregation` no se fusiona: `memory-system` lee su esquema (`slug`, `title`) con un parser
+propio y el skill sigue siendo invocable de forma independiente.

@@ -1,0 +1,147 @@
+{
+  "skill": "memory-system",
+  "version": "1.0.0",
+  "description": "Casos de prueba para memory-system (STORY-095): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "index-happy-path-fixture-sddf",
+      "type": "happy-path",
+      "description": "Origen: EV-001 (AC-1, T001). Proyecto SDDF cuyo REPO_ROOT es examples/sddf: contiene sddf.config.yaml (root: docs) y docs/ con constitution.md (slug: constitution), adr/ADR-0001-x.md (slug: ADR-0001-x), guides/sdd.md (frontmatter con title pero sin slug; su cuerpo enlaza [[STORY-001-a]]), specs/03-stories/STORY-001-a/story.md (slug: STORY-001-a) y specs/03-stories/STORY-001-a/design.md (derivado de historia), templates/story-template.md (wikilinks placeholder) y policies/README.md (title sin slug). node está en PATH y scripts/memory-system.js detect devuelve sddf. El usuario invoca /memory-system index. El skill debe resolver SPECS_BASE=docs, invocar el motor, mostrar el índice regenerado en docs/index.md con una entrada [[slug]] por artefacto agrupada por capa (constitution, ADR-0001-x, sdd, STORY-001-a, policies-index), excluyendo design.md y templates/, y terminar con el resumen 'nodos indexados: N · sin frontmatter: M · nodos pendientes: K'.",
+      "input": {
+        "input_path": "examples/sddf",
+        "mode": "index",
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "sddf"
+        }
+      },
+      "expected": {
+        "contains": [
+          "index",
+          "sddf",
+          "[[constitution]]",
+          "[[ADR-0001-x]]",
+          "[[sdd]]",
+          "[[STORY-001-a]]",
+          "index.md",
+          "nodos indexados:",
+          "sin frontmatter:",
+          "nodos pendientes:"
+        ],
+        "not_contains": [
+          "Entorno inválido",
+          "Modo ensure aún no disponible",
+          "docs-wiki-builder está deprecado",
+          "[[STORY-001-a-design]]",
+          "STORY-001-a/design.md)",
+          "templates/story-template.md",
+          "[[story-template]]",
+          "⚠️ nodo pendiente",
+          "no admitido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-002",
+      "name": "index-dry-run-sin-escritura",
+      "type": "edge-case",
+      "description": "Origen: EV-002 (AC-1, T001). Mismo proyecto SDDF que TC-001 (REPO_ROOT examples/sddf, sddf.config.yaml con root: docs, docs/ con constitution.md, adr/ADR-0001-x.md, guides/sdd.md, specs/03-stories/STORY-001-a/story.md y design.md, templates/ y policies/README.md). node está en PATH. El usuario invoca /memory-system index --dry-run. El skill debe invocar el motor con --dry-run: el índice resultante se imprime por consola (stdout) con sus entradas [[slug]], seguido del resumen 'nodos indexados: N · sin frontmatter: M · nodos pendientes: K', y NO se escribe ni modifica docs/index.md ni ningún otro archivo.",
+      "input": {
+        "input_path": "examples/sddf",
+        "mode": "index",
+        "flags": ["--dry-run"],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "sddf"
+        }
+      },
+      "expected": {
+        "contains": [
+          "--dry-run",
+          "[[STORY-001-a]]",
+          "[[sdd]]",
+          "[[constitution]]",
+          "nodos indexados:"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "Entorno inválido",
+          "Modo ensure aún no disponible",
+          "[[STORY-001-a-design]]",
+          "no admitido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-003",
+      "name": "sin-modo-informa-modos-disponibles",
+      "type": "edge-case",
+      "description": "Origen: EV-003 (AC-7, D-1, F-3, T001). Cualquier proyecto con el framework instalado (se usa examples/sddf como raíz, pero el contenido de docs/ es irrelevante). El usuario invoca /memory-system sin ningún modo ni flag. El modo por defecto ensure está reservado para STORY-096 y aún no existe: el skill debe mostrar exactamente 'ℹ️ Modo ensure aún no disponible en esta versión. Modos disponibles: index. Ejecuta /memory-system index.' y terminar con éxito, sin invocar el motor, sin reportar error y sin escribir ningún archivo.",
+      "input": {
+        "input_path": "examples/sddf",
+        "mode": null,
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true
+        }
+      },
+      "expected": {
+        "contains": [
+          "Modo ensure aún no disponible en esta versión",
+          "Modos disponibles: index",
+          "Ejecuta /memory-system index"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "❌",
+          "Entorno inválido",
+          "nodos indexados:",
+          "[[STORY-001-a]]",
+          "no admitido"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "fail-fast-harness-no-admitido",
+      "type": "fail-fast",
+      "description": "Origen: EV-004 (AC-4, T001). Proyecto SDDF con REPO_ROOT examples/sddf (sddf.config.yaml con root: docs y docs/ con artefactos). node está en PATH. El usuario invoca /memory-system index --harness foo. El valor 'foo' no pertenece al conjunto admitido (sddf | speckit | openspec | generic): el motor termina con exit 2 y un mensaje de valor no admitido para --harness, el skill lo muestra y se detiene inmediatamente. No se genera ningún índice, no se muestra resumen de nodos indexados y no se escribe docs/index.md.",
+      "input": {
+        "input_path": "examples/sddf",
+        "mode": "index",
+        "flags": ["--harness", "foo"],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "engine_result": {
+            "exit_code": 2,
+            "stderr": "valor no admitido para --harness: foo (admitidos: sddf, speckit, openspec, generic)"
+          }
+        }
+      },
+      "expected": {
+        "contains": [
+          "harness",
+          "foo",
+          "no admitido"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "nodos indexados:",
+          "[[STORY-001-a]]",
+          "[[constitution]]",
+          "Modo ensure aún no disponible"
+        ]
+      },
+      "threshold": 1.0
+    }
+  ]
+}

@@ -136,12 +136,19 @@ function extractMarkdownTargets(contents) {
   return targets;
 }
 
+// Un wikilink seguido de este marcador en la misma línea es un nodo pendiente
+// declarado a propósito por `memory-system index`; no es un enlace roto.
+const PENDING_NODE_MARKER = '⚠️ nodo pendiente';
+
 function extractWikiTargets(contents) {
   const targets = [];
   const visible = visibleMarkdown(contents);
   const wikilink = /(?<!!)\[\[([^\]]+)\]\]/g;
   let match;
   while ((match = wikilink.exec(visible)) !== null) {
+    const lineEnd = visible.indexOf('\n', match.index);
+    const restOfLine = visible.slice(match.index + match[0].length, lineEnd === -1 ? undefined : lineEnd);
+    if (restOfLine.includes(PENDING_NODE_MARKER)) continue;
     const target = match[1].split('|', 1)[0].trim();
     if (target) targets.push({ target, index: match.index });
   }

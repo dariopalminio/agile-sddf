@@ -2,12 +2,6 @@
   "version": 1,
   "exemptions": [
     {
-      "skill": "docs-wiki-builder",
-      "owner": "agile-sddf maintainers",
-      "reason": "Su evaluación requiere un corpus documental representativo; se incorporará con fixtures de wiki antes de la fecha de revisión.",
-      "review_by": "2026-12-31"
-    },
-    {
       "skill": "project-begin",
       "owner": "agile-sddf maintainers",
       "reason": "Pendiente de fixtures deterministas para la entrevista inicial de proyecto.",

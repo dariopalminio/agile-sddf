@@ -5,7 +5,7 @@ slug: STORY-095-memory-system-index-alias-testcases
 title: "Test Cases: Crear el skill memory-system con el modo index y deprecar docs-wiki-builder"
 story: STORY-095
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 related:
   - STORY-095-memory-system-index-alias
 ---
@@ -86,22 +86,22 @@ related:
 - [ ] E2E-001: memory-system index regenera el índice con wikilinks
 - [ ] E2E-002: docs-wiki-builder es un alias deprecado
 - [ ] E2E-003: header-aggregation sigue siendo independiente
-- [ ] UT-001: detect: precedencia de detección
-- [ ] UT-002: detect: marcadores de directorio y generic
-- [ ] UT-003: detect: override y valor no admitido
-- [ ] UT-004: Parser de frontmatter: subconjunto YAML
-- [ ] UT-005: Parser de frontmatter: ausente o malformado
-- [ ] UT-006: Derivación de slug, título y capa
-- [ ] UT-007: Exclusiones del escáner
-- [ ] UT-008: index: reproducibilidad, orden y formato
-- [ ] UT-009: index: nodos pendientes, sin frontmatter y dry-run
-- [ ] UT-010: index: template desalineado
+- [x] UT-001: detect: precedencia de detección
+- [x] UT-002: detect: marcadores de directorio y generic
+- [x] UT-003: detect: override y valor no admitido
+- [x] UT-004: Parser de frontmatter: subconjunto YAML
+- [x] UT-005: Parser de frontmatter: ausente o malformado
+- [x] UT-006: Derivación de slug, título y capa
+- [x] UT-007: Exclusiones del escáner
+- [x] UT-008: index: reproducibilidad, orden y formato
+- [x] UT-009: index: nodos pendientes, sin frontmatter y dry-run
+- [x] UT-010: index: template desalineado
 - [ ] IT-001: SKILL.md invoca el motor y resume
-- [ ] IT-002: Índice de proyecto OpenSpec con raíces externas
+- [x] IT-002: Índice de proyecto OpenSpec con raíces externas
 - [ ] IT-003: Degradación sin node en PATH
-- [ ] EV-001: memory-system index happy-path
-- [ ] EV-002: memory-system index --dry-run
-- [ ] EV-003: memory-system sin modo
-- [ ] EV-004: memory-system fail-fast harness no admitido
-- [ ] EV-005: docs-wiki-builder alias sin argumentos
-- [ ] EV-006: docs-wiki-builder alias --dry-run
+- [x] EV-001: memory-system index happy-path
+- [x] EV-002: memory-system index --dry-run
+- [x] EV-003: memory-system sin modo
+- [x] EV-004: memory-system fail-fast harness no admitido
+- [x] EV-005: docs-wiki-builder alias sin argumentos
+- [x] EV-006: docs-wiki-builder alias --dry-run

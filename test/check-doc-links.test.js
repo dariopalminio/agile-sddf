@@ -54,3 +54,10 @@ test('reports unresolved wikilinks but ignores inline-code examples', (t) => {
   assert.equal(result.errors.length, 1);
   assert.match(result.errors[0], /Missing wikilink target: \[\[missing-page\]\]/);
 });
+
+test('ignores wikilinks flagged as pending nodes by memory-system index', (t) => {
+  const root = fixture(t, '# Readme\n- [[missing-page]] ⚠️ nodo pendiente\n[[other-missing]]\n');
+  const result = checkDocumentation({ repoRoot: root, files: [path.join(root, 'README.md')] });
+  assert.equal(result.errors.length, 1);
+  assert.match(result.errors[0], /Missing wikilink target: \[\[other-missing\]\]/);
+});

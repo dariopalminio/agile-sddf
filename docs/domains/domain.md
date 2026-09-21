@@ -1,5 +1,6 @@
 ---
 type: domain-context
+slug: domain
 project: agile-sddf
 version: "1.0"
 status: draft

@@ -34,6 +34,26 @@ export SDDF_ROOT="artefactos-ci"
 
 ---
 
+## 0. Memoria del proyecto
+
+```
+memory-system index
+```
+
+| Skill | Input | Output |
+|---|---|---|
+| `memory-system index [--harness h] [--dry-run]` | `$SPECS_BASE/` (artefactos con frontmatter `slug`/`title`) y, según el harness detectado, las raíces externas de Spec-kit/OpenSpec | `$SPECS_BASE/index.md` regenerado con wikilinks `[[slug]]` por capa; resumen `nodos indexados: N · sin frontmatter: M · nodos pendientes: K` |
+| `memory-system` (sin modo) | — | Informa los modos disponibles; el modo por defecto `ensure` llega con STORY-096 |
+
+> Regenera el índice tras añadir o mover artefactos: es el mapa que los LLMs leen antes de abrir
+> cualquier nodo. `--dry-run` imprime el resultado sin escribir. Los nodos sin frontmatter se
+> enlazan solo por ruta; complétalos con `/header-aggregation <ruta>`.
+>
+> ⚠️ `docs-wiki-builder` está deprecado desde 3.3.0 (se elimina en 4.0.0): es un alias que
+> delega en `/memory-system index` (`--update` → `index`, `--dry-run` → `index --dry-run`).
+
+---
+
 ## 1. Pipeline de especificación de proyecto
 
 ```
