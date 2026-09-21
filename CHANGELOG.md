@@ -13,6 +13,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Constitución como raíz de la gobernanza** — `docs/policies/constitution.md` pasa a `docs/constitution.md` con `type: constitution`, eliminando la auto-referencia "constitution → policies/" (vivía dentro de la carpeta que gobierna). Flujo de autoridad explícito `AGENTS.md → docs/constitution.md → docs/policies/ · docs/guardrails/`, documentado en la propia constitución, `AGENTS.md`, `docs/index.md` y el nuevo `docs/policies/README.md` (índice de la capa, hoy sin policies). `project-policies-generation` genera la constitución en la raíz de `docs/` y ofrece mover una heredada; `story-design` y `story-code-review` leen primero la nueva ruta y caen a `policies/constitution.md` con aviso de deprecación. `docs/constitution.md` se añade a las superficies protegidas de Skill Shielder y a los checkers de documentación; `constitution` entra al conjunto cerrado de `ArtifactType` en `domain-knowledge-artifacts.md`.
 - **DoD movido a `guardrails/`** — `docs/policies/dod-story.md` pasa a `docs/guardrails/dod-story-checklist.md` con frontmatter `type: guardrail`, `kind: transition`, `enforcement: error`: un Definition of Done es un transition guardrail (checklist que bloquea transiciones de estado), no una policy. `project-policies-generation` genera el archivo en la nueva ruta (template renombrado a `assets/dod-story-checklist-template.md`) y ofrece mover un `policies/dod-story.md` heredado. Los skills consumidores (`story-design`, `story-analyze`, `story-implement`, `story-implement-tasks`, `story-code-review`, `story-verify`, `story-acceptance`) leen primero la nueva ruta y, si no existe, la antigua con aviso de deprecación; `AGENTS.md`, `README.md`, `docs/index.md`, `constitution.md` y `docs/guardrails/README.md` apuntan a la nueva ubicación.
 
+## [3.2.1] — 2026-09-21
+
+### Added
+
+- **Skill `memory-system` con el modo `index`** (STORY-095, EPIC-20) — único punto de entrada de la memoria del proyecto. `/memory-system index [--harness h] [--dry-run]` regenera `docs/index.md` completo con una entrada `[[slug]]` por artefacto agrupada por capa, sección "Estado del grafo" y "Nodos pendientes" (wikilinks sin destino, no bloqueantes). Lo genera `skills/memory-system/scripts/memory-system.js`, un motor Node ≥ 18 sin dependencias (solo módulos `node:`), reproducible: dos ejecuciones producen el mismo archivo salvo `updated`. El motor expone también `detect` (harness `sddf | speckit | openspec | generic` por `--harness` > `sddf.config.yaml` > `.specify/` > `openspec/`; las raíces externas de Spec-kit/OpenSpec se indexan en solo lectura). Las reglas de slug/título/capa/exclusiones viven en `references/memory-rules.md`; las secciones del índice en `assets/index-template.md` (el motor falla con exit 2 si el template y las capas no coinciden). Sin modo, el skill informa `Modos disponibles: index` (el modo por defecto `ensure` llega con STORY-096; `check` con STORY-097; `migrate` con STORY-098). Tests en `test/memory-system.test.js` sobre los fixtures `skills/memory-system/examples/{sddf,openspec,speckit}/`.
+- **`scripts/check-doc-links.js` ignora los wikilinks marcados `⚠️ nodo pendiente`** — son avisos deliberados del índice generado, no enlaces rotos.
+
+### Changed
+
+- **`docs/index.md` regenerado con `/memory-system index`** — sustituye el mantenimiento manual: mismas entradas (slug y ruta) que el índice anterior más las capas `architecture/`, `domains/` y las historias/épicas que faltaban; las descripciones escritas a mano se reemplazan por el `title` del frontmatter (CR-003). `docs/domains/domain.md` recibe `slug: domain`.
+- **`header-aggregation`** — nota sobre su relación con `memory-system` (lee su esquema `slug`/`title`; sigue siendo independiente). Sin cambios funcionales.
+
+### Deprecated
+
+- **`docs-wiki-builder`** — alias delgado de `/memory-system index` desde esta versión; emite `⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.` y mapea `--update` → `index`, `--dry-run` → `index --dry-run`. Se elimina en 4.0.0. Retirados su lógica propia y `assets/wiki-index-template.md`; gana `evals/evals.json` y sale de `config/eval-exemptions.json`.
+
 ## [3.2.0] — 2026-09-13
 
 ### Added
