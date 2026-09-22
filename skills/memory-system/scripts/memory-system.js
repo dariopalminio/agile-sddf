@@ -2,11 +2,12 @@
 'use strict';
 
 /**
- * memory-system.js — motor determinista del skill `memory-system` (STORY-095).
+ * memory-system.js — motor determinista del skill `memory-system` (STORY-095, STORY-096).
  *
  * Subcomandos:
- *   detect --root <SPECS_BASE> [--harness h]
- *   index  --root <SPECS_BASE> [--harness h] [--dry-run] [--template <ruta>] [--date YYYY-MM-DD]
+ *   detect   --root <SPECS_BASE> [--harness h]
+ *   index    --root <SPECS_BASE> [--harness h] [--dry-run] [--template <ruta>] [--date YYYY-MM-DD]
+ *   scaffold --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--date YYYY-MM-DD]
  *
  * Solo usa módulos nativos (`node:fs`, `node:path`, `node:process`) para funcionar en
  * proyectos consumidores sin `package.json` (NFR-2). Node >= 18. Las rutas se normalizan
@@ -41,14 +42,26 @@ const HARNESS_PROFILES = {
 // Orden de precedencia de los marcadores (después de `--harness` explícito).
 const HARNESS_ORDER = ['sddf', 'speckit', 'openspec', 'generic'];
 
-// Capas que el template puede declarar aunque no tengan nodos.
-const KNOWN_LAYERS = [
-  'root', 'product', 'requirements', 'specs-projects', 'specs-epics', 'specs-stories',
-  'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'external',
+// Las once capas de memoria (ARCH-MEMORY §2-3), en orden de directorio. Es el único catálogo:
+// `scaffold` lo usa para saber qué capa falta y el índice deriva de él `KNOWN_LAYERS`.
+const LAYERS = [
+  'product', 'requirements', 'specs', 'domains', 'architecture', 'adr',
+  'policies', 'guardrails', 'guides', 'runbooks', 'templates',
 ];
 
 // Subdirectorios de `specs/` con nombre de capa propio.
 const SPECS_LAYERS = { '01-projects': 'specs-projects', '02-epics': 'specs-epics', '03-stories': 'specs-stories' };
+
+// Directorios excluidos del índice (D-3): caché, templates (wikilinks placeholder) y pre-split.
+const EXCLUDED_DIRS = new Set(['.cache', 'templates', 'pre-split']);
+
+// Capas que el template del índice puede declarar aunque no tengan nodos: la raíz, las capas de
+// memoria indexables (`specs` más su desglose por nivel, `templates` excluida) y las externas.
+const KNOWN_LAYERS = [
+  'root',
+  ...LAYERS.flatMap((layer) => (layer === 'specs' ? [layer, ...Object.values(SPECS_LAYERS)] : EXCLUDED_DIRS.has(layer) ? [] : [layer])),
+  'external',
+];
 
 // Archivos cuyo slug derivado es el nombre del directorio contenedor.
 const CANONICAL_FILES = new Set(['story.md', 'epic.md', 'project.md', 'spec.md', 'proposal.md', 'plan.md']);
@@ -58,7 +71,6 @@ const EXCLUDED_FILES = new Set([
   'design.md', 'tasks.md', 'testcases.md', 'analyze.md', 'fix-directives.md',
   'finvest-evaluation-report.md', 'story-improvement-log.md',
 ]);
-const EXCLUDED_DIRS = new Set(['.cache', 'templates', 'pre-split']);
 
 // Un slug declarado como `<placeholder>` pertenece a un template suelto (p. ej. adr-template.md):
 // el nodo se enlaza solo por ruta y sus wikilinks no cuentan como pendientes.
@@ -67,6 +79,28 @@ const PLACEHOLDER_SLUG = /^<.*>$/;
 const LAYER_PLACEHOLDER = /\{layer:([A-Za-z0-9-]+)\}/g;
 const DEFAULT_TEMPLATE = path.join(__dirname, '..', 'assets', 'index-template.md');
 const INDEX_FILE = 'index.md';
+
+// Árbol semilla del scaffold (STORY-096, D-1): espejo del destino, `{date}` como único placeholder.
+const SCAFFOLD_DIR = path.join(__dirname, '..', 'assets', 'scaffold');
+const TEMPLATES_LAYER = 'templates';
+
+// Templates compartidos (D-2): misma tabla que el Paso 2b de `sddf-init` (ADR-0001, un dueño por
+// template). Se copian byte a byte desde `<CLI_ROOT>/skills/<owner>/assets/<name>`.
+const SHARED_TEMPLATES = [
+  { name: 'story-template.md', owner: 'story-creation' },
+  { name: 'epic-template.md', owner: 'epic-creation' },
+  { name: 'project-template.md', owner: 'project-discovery' },
+  { name: 'project-intent-template.md', owner: 'project-begin' },
+  { name: 'project-plan-template.md', owner: 'project-planning' },
+];
+
+// Etiqueta de cada acción del scaffold: [ejecución real, --dry-run].
+const SCAFFOLD_LABELS = {
+  created: ['CREADO', 'CREARÍA'],
+  overwritten: ['SOBRESCRITO', 'SOBRESCRIBIRÍA'],
+  preserved: ['PRESERVADO', 'PRESERVARÍA'],
+  skipped: ['OMITIDO', 'OMITIRÍA'],
+};
 
 // Error de uso o de datos: se informa por stderr y termina con exit 2 sin escribir.
 class UsageError extends Error {}
@@ -116,23 +150,25 @@ function isDirectory(target) {
 // Argumentos
 // ---------------------------------------------------------------------------
 
-const USAGE = 'uso: memory-system.js <detect|index> --root <SPECS_BASE> [--harness h] [--dry-run]';
+const COMMANDS = ['detect', 'index', 'scaffold'];
+const USAGE = 'uso: memory-system.js <detect|index|scaffold> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force]';
 
 function parseArgs(argv) {
-  const args = { command: null, root: null, harness: null, dryRun: false, template: null, date: null };
-  const valueFlags = { '--root': 'root', '--harness': 'harness', '--template': 'template', '--date': 'date' };
+  const args = { command: null, root: null, cliRoot: null, harness: null, dryRun: false, force: false, template: null, date: null };
+  const valueFlags = { '--root': 'root', '--cli-root': 'cliRoot', '--harness': 'harness', '--template': 'template', '--date': 'date' };
+  const boolFlags = { '--dry-run': 'dryRun', '--force': 'force' };
   const rest = [...argv];
   while (rest.length) {
     const token = rest.shift();
     if (valueFlags[token]) args[valueFlags[token]] = rest.shift();
-    else if (token === '--dry-run') args.dryRun = true;
+    else if (boolFlags[token]) args[boolFlags[token]] = true;
     else if (token.startsWith('--')) throw new UsageError(`flag desconocido: ${token}`);
     else if (!args.command) args.command = token;
     else throw new UsageError(`argumento inesperado: ${token}`);
   }
   if (!args.command) throw new UsageError(USAGE);
-  if (!['detect', 'index'].includes(args.command)) {
-    throw new UsageError(`subcomando no admitido: ${args.command} (admitidos: detect, index)`);
+  if (!COMMANDS.includes(args.command)) {
+    throw new UsageError(`subcomando no admitido: ${args.command} (admitidos: ${COMMANDS.join(', ')})`);
   }
   if (!args.root) throw new UsageError(`falta --root <SPECS_BASE>\n${USAGE}`);
   return args;
@@ -237,7 +273,7 @@ function deriveLayer(relPath) {
   const segments = relPath.split('/');
   if (segments.length === 1) return 'root';
   if (segments[0] !== 'specs') return segments[0];
-  if (segments.length === 2) return 'specs'; // archivo suelto en specs/: sin placeholder → exit 2
+  if (segments.length === 2) return 'specs'; // archivo suelto en specs/ (p. ej. su README.md)
   return SPECS_LAYERS[segments[1]] || `specs-${segments[1]}`;
 }
 
@@ -422,8 +458,128 @@ function summaryLine(summary) {
 }
 
 // ---------------------------------------------------------------------------
+// STORY-096 D-1/D-2/D-4 — Scaffold: árbol semilla y plantillas compartidas
+// ---------------------------------------------------------------------------
+
+// Raíz del scaffold: existe, o se crea (bootstrap) si al menos existe su directorio padre.
+function resolveScaffoldRoot(root, dryRun) {
+  const specsBase = path.resolve(process.cwd(), root);
+  if (isDirectory(specsBase)) return specsBase;
+  if (fs.existsSync(specsBase) || !isDirectory(path.dirname(specsBase))) {
+    throw new UsageError(`la raíz no existe y su directorio padre tampoco: ${root}`);
+  }
+  if (!dryRun) fs.mkdirSync(specsBase);
+  return specsBase;
+}
+
+// Archivos del árbol semilla (incluidos los `.gitkeep`), como rutas relativas con `/` ordenadas.
+function listSeeds(dir, base = dir, out = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) listSeeds(full, base, out);
+    else if (entry.isFile()) out.push(toPosix(path.relative(base, full)));
+  }
+  return out.sort(ordinalCompare);
+}
+
+// Capa de un archivo del scaffold: primer segmento de la ruta, o `root` para la raíz.
+function scaffoldLayer(relPath) {
+  return relPath.includes('/') ? relPath.split('/')[0] : 'root';
+}
+
+/**
+ * Copia-si-falta del árbol semilla y de las plantillas compartidas sobre `options.root`.
+ * Por archivo: ausente → `created`; presente → `preserved` (o `overwritten` con `force`);
+ * capa en `skipLayers` del harness → `skipped`. Nunca elimina nada; con `dryRun` no escribe.
+ * Devuelve { root, harness, missingLayers, entries[], warnings[], summary }.
+ */
+function scaffold(options) {
+  const dryRun = Boolean(options.dryRun);
+  const force = Boolean(options.force);
+  const scaffoldDir = options.scaffoldDir || SCAFFOLD_DIR;
+  if (!isDirectory(scaffoldDir)) throw new UsageError(`no se encuentra el árbol semilla del scaffold: ${displayPath(scaffoldDir)}`);
+
+  const specsBase = resolveScaffoldRoot(options.root, dryRun);
+  const harness = detectHarness(path.dirname(specsBase), options.harness);
+  const skipLayers = new Set((HARNESS_PROFILES[harness] || HARNESS_PROFILES.generic).skipLayers);
+  const date = options.date || todayIso();
+  const seeds = listSeeds(scaffoldDir);
+
+  for (const layer of LAYERS) {
+    if (!seeds.some((rel) => scaffoldLayer(rel) === layer)) {
+      throw new UsageError(`el árbol semilla no cubre la capa "${layer}": ${displayPath(scaffoldDir)}`);
+    }
+  }
+  const missingLayers = LAYERS.filter((layer) => !isDirectory(path.join(specsBase, layer)));
+
+  const entries = [];
+  const warnings = [];
+  const summary = { created: 0, overwritten: 0, preserved: 0, skippedByHarness: 0 };
+
+  // Decide la acción de un destino y, si procede, escribe `content` (Buffer o string).
+  const apply = (relPath, kind, produce) => {
+    const target = path.join(specsBase, ...relPath.split('/'));
+    const exists = fs.existsSync(target);
+    let action = 'preserved';
+    if (skipLayers.has(scaffoldLayer(relPath))) action = 'skipped';
+    else if (!exists) action = 'created';
+    else if (force) action = 'overwritten';
+    if (!dryRun && (action === 'created' || action === 'overwritten')) {
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      fs.writeFileSync(target, produce());
+    }
+    entries.push({ relPath, kind, action });
+    summary[action === 'skipped' ? 'skippedByHarness' : action] += 1;
+  };
+
+  for (const rel of seeds) {
+    const source = path.join(scaffoldDir, ...rel.split('/'));
+    // Un `.gitkeep` solo materializa un directorio ausente: si ya existe no se lista ni se cuenta.
+    if (path.basename(rel) === '.gitkeep' && isDirectory(path.join(specsBase, path.dirname(rel)))) continue;
+    apply(rel, 'seed', () => (/\.md$/i.test(rel) ? readText(source).replace(/\{date\}/g, date) : fs.readFileSync(source)));
+  }
+
+  // Directorios de capa aunque una semilla no los cree (mismo catálogo que el índice).
+  if (!dryRun) {
+    for (const layer of LAYERS) {
+      if (!skipLayers.has(layer)) fs.mkdirSync(path.join(specsBase, layer), { recursive: true });
+    }
+  }
+
+  const cliRoot = options.cliRoot ? path.resolve(process.cwd(), options.cliRoot) : null;
+  for (const { name, owner } of SHARED_TEMPLATES) {
+    const source = cliRoot ? path.join(cliRoot, 'skills', owner, 'assets', name) : null;
+    if (!source || !fs.existsSync(source)) {
+      warnings.push(`template no copiado: ${name} (skill ${owner} no instalado)`);
+      continue;
+    }
+    apply(`${TEMPLATES_LAYER}/${name}`, 'shared-template', () => fs.readFileSync(source));
+  }
+
+  return { root: specsBase, harness, missingLayers, entries, warnings, summary };
+}
+
+function scaffoldSummaryLine(summary) {
+  return `creados: ${summary.created} · sobrescritos: ${summary.overwritten} · preservados: ${summary.preserved} · omitidos por harness: ${summary.skippedByHarness}`;
+}
+
+// ---------------------------------------------------------------------------
 // Subcomandos
 // ---------------------------------------------------------------------------
+
+function runScaffold(args) {
+  const result = scaffold(args);
+  const label = (action) => SCAFFOLD_LABELS[action][args.dryRun ? 1 : 0];
+  const lines = [
+    `harness: ${result.harness}`,
+    `capas faltantes: ${result.missingLayers.length ? result.missingLayers.join(', ') : 'ninguna'}`,
+    ...result.entries.map((entry) => `[${label(entry.action)}] ${entry.relPath}`),
+    ...result.warnings.map((warning) => `[WARNING] ${warning}`),
+    scaffoldSummaryLine(result.summary),
+  ];
+  process.stdout.write(`${lines.join('\n')}\n`);
+  return 0;
+}
 
 function runDetect(args) {
   const specsBase = resolveRoot(args.root);
@@ -454,7 +610,8 @@ function runIndex(args) {
 function main(argv = process.argv.slice(2)) {
   try {
     const args = parseArgs(argv);
-    return args.command === 'detect' ? runDetect(args) : runIndex(args);
+    const runners = { detect: runDetect, index: runIndex, scaffold: runScaffold };
+    return runners[args.command](args);
   } catch (error) {
     const usage = error instanceof UsageError;
     process.stderr.write(`❌ ${usage ? '' : 'error inesperado: '}${error.message}\n`);
@@ -466,7 +623,10 @@ if (require.main === module) process.exitCode = main();
 
 module.exports = {
   HARNESS_PROFILES,
+  LAYERS,
   KNOWN_LAYERS,
+  SCAFFOLD_DIR,
+  SHARED_TEMPLATES,
   parseArgs,
   parseFrontmatter,
   extractWikilinks,
@@ -475,5 +635,7 @@ module.exports = {
   detectHarness,
   renderIndex,
   summaryLine,
+  scaffold,
+  scaffoldSummaryLine,
   main,
 };

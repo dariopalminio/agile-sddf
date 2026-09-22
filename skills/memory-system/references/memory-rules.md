@@ -1,8 +1,9 @@
 # Reglas de memoria (memory-system)
 
-Fuente de verdad de las reglas que aplica `scripts/memory-system.js` en el modo `index`
-(decisiones D-2, D-3 y D-4 de STORY-095). `SKILL.md` las aplica a mano cuando `node` no está
-en PATH (degradación inline) y STORY-097 (`check`) las reutiliza sin duplicarlas.
+Fuente de verdad de las reglas que aplica `scripts/memory-system.js` en los modos `index`
+(decisiones D-2, D-3 y D-4 de STORY-095) y `scaffold` (D-1, D-2 y D-4 de STORY-096). `SKILL.md`
+las aplica a mano cuando `node` no está en PATH (degradación inline) y STORY-097 (`check`) las
+reutiliza sin duplicarlas.
 
 ## 1. Perfiles de harness (`HARNESS_PROFILES`)
 
@@ -56,8 +57,9 @@ Primer segmento de `relPath` (`adr`, `guides`, `policies`, …). Reglas especial
 
 - Archivo en la raíz de `SPECS_BASE` (`constitution.md`) → `root`.
 - `specs/01-projects/` → `specs-projects`; `specs/02-epics/` → `specs-epics`;
-  `specs/03-stories/` → `specs-stories`; otro subdirectorio `specs/<x>/` → `specs-<x>`; un archivo
-  suelto directamente en `specs/` → capa `specs` (sin placeholder en el template: exit 2, a propósito).
+  `specs/03-stories/` → `specs-stories`; otro subdirectorio `specs/<x>/` → `specs-<x>` (sin
+  placeholder en el template: exit 2, a propósito); un archivo suelto directamente en `specs/`
+  (su `README.md` semilla) → capa `specs`.
 - Nodos de raíces externas → `external`.
 
 ### Frontmatter
@@ -95,7 +97,7 @@ Si hay nodos pendientes, el índice termina con la sección `## ⚠️ Nodos pen
 `scripts/check-doc-links.js` del framework ignora los wikilinks marcados así.
 
 Protección del template (exit 2 sin escribir): un `{layer:<capa>}` que no sea una capa conocida
-(`root`, `product`, `requirements`, `specs-projects`, `specs-epics`, `specs-stories`, `domains`,
+(`root`, `product`, `requirements`, `specs`, `specs-projects`, `specs-epics`, `specs-stories`, `domains`,
 `architecture`, `adr`, `policies`, `guardrails`, `guides`, `runbooks`, `external`) ni una capa con
 nodos, o una capa con nodos sin placeholder. El mensaje nombra la capa.
 
@@ -109,3 +111,64 @@ Frontmatter del índice: `type: wiki`, `slug: index`, `title`, `status`, `substa
 ```
 nodos indexados: N · sin frontmatter: M · nodos pendientes: K
 ```
+
+## 5. Scaffold y archivos gestionados
+
+`scaffold` copia el árbol semilla `assets/scaffold/` (espejo del destino) sobre `SPECS_BASE` y
+después aplica la tabla de plantillas compartidas. Las once capas son el mismo catálogo `LAYERS`
+del índice: `product`, `requirements`, `specs`, `domains`, `architecture`, `adr`, `policies`,
+`guardrails`, `guides`, `runbooks`, `templates`.
+
+### Archivos gestionados
+
+Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild --force`
+(`scaffold --force`) sobrescribe. Todo lo demás son artefactos de autor y ningún modo los toca.
+
+| Archivo (relativo a `SPECS_BASE`) | Origen | `type` / `slug` |
+|---|---|---|
+| `constitution.md` | semilla | `constitution` / `constitution` |
+| `product/README.md` | semilla | `wiki` / `product-index` |
+| `product/vision.md`, `product/stakeholders.md`, `product/objectives.md` | semilla | `product` / `vision`, `stakeholders`, `objectives` |
+| `requirements/README.md`, `specs/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla | `wiki` / `<capa>-index` |
+| `specs/01-projects/.gitkeep`, `specs/02-epics/.gitkeep`, `specs/03-stories/.gitkeep` | semilla | solo si el directorio no existe; nunca se listan ni se sobrescriben si ya existe |
+| `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md` del framework) | template |
+| `templates/story-template.md` | `<CLI_ROOT>/skills/story-creation/assets/` | template |
+| `templates/epic-template.md` | `<CLI_ROOT>/skills/epic-creation/assets/` | template |
+| `templates/project-template.md` | `<CLI_ROOT>/skills/project-discovery/assets/` | template |
+| `templates/project-intent-template.md` | `<CLI_ROOT>/skills/project-begin/assets/` | template |
+| `templates/project-plan-template.md` | `<CLI_ROOT>/skills/project-planning/assets/` | template |
+
+### Reglas
+
+- **Copia-si-falta:** destino ausente → `[CREADO]`; presente → `[PRESERVADO]`, sin comparar
+  contenido. Con `--force` un destino presente → `[SOBRESCRITO]`. Con `--dry-run` se imprime el
+  plan (`[CREARÍA]`, `[PRESERVARÍA]`, `[SOBRESCRIBIRÍA]`) y no se escribe nada.
+- **Nunca se elimina nada**, ni archivos ni directorios, en ningún modo.
+- **`{date}`** es el único placeholder de las semillas: se sustituye por la fecha de ejecución
+  (`YYYY-MM-DD`, o `--date`) en `created`/`updated` al copiar. Las plantillas compartidas se
+  copian byte a byte, sin sustituciones.
+- **Frontmatter de las semillas:** esquema canónico de `header-aggregation` (`type`, `slug`,
+  `title`, `status`, `substatus`, `parent`, `created`, `updated`); el slug de un `README.md` de
+  capa es `<capa>-index`, coherente con la regla de slug de §2. Las semillas solo enlazan a
+  `[[index]]` para no generar nodos pendientes recién scaffoldeadas; no declaran `escritor:`
+  (son documentos iniciales, no plantillas de generación).
+- **Dueño ausente:** si `--cli-root` no se pasa o `<CLI_ROOT>/skills/<dueño>/assets/<nombre>` no
+  existe, el motor emite `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`,
+  no crea ese archivo y termina con exit 0 (misma regla que `sddf-init` Paso 2b; ADR-0001: un
+  dueño por template, sin copias en `assets/scaffold/`).
+- **Directorios:** se crean los intermedios que hagan falta y los once de capa aunque el harness
+  omita sus semillas. Raíz ausente con padre existente → se crea (bootstrap); sin padre → exit 2.
+  `assets/scaffold/` ausente → exit 2 nombrando la ruta.
+- **Harness:** `skipLayers` del perfil marca `[OMITIDO]` los archivos de esa capa (vacío hasta
+  STORY-098, por eso `omitidos por harness: 0`).
+
+### Resumen
+
+Última línea de `scaffold`:
+
+```
+creados: N · sobrescritos: S · preservados: M · omitidos por harness: K
+```
+
+`ensure` la combina con el índice en `creados: N · preservados: M · índice regenerado: sí|no`;
+`rebuild --force` en `creados: N · sobrescritos: S · índice regenerado: sí`.

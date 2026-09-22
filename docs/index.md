@@ -58,6 +58,8 @@ _(sin artefactos)_
 
 ## 🗂️ Especificaciones (specs/)
 
+_(sin artefactos)_
+
 ### L3 — Proyecto (specs/01-projects/)
 
 - [[PROJ-01-agile-sddf-project-intent]] — [project-intent.md](specs/01-projects/PROJ-01-agile-sddf/project-intent.md) — Project Intent: Agile SDDF (Spec-Driven Development Framework)

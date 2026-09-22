@@ -38,6 +38,7 @@
     "test:installer": "node --test test/install.test.js",
     "test:eval": "node scripts/run-evals.js",
     "verify:security-ci": "node scripts/verify-skill-security-workflow.js",
+    "verify:security-documents": "node scripts/verify-security-documents.js",
     "verify:syntax": "node scripts/verify-syntax.js",
     "verify:profiles": "node scripts/verify-profiles.js",
     "verify:runtimes": "node scripts/verify-runtime-documentation.js",

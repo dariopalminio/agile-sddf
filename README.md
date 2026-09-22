@@ -19,7 +19,7 @@ El framework instala skills en el runtime que elijas y conserva la fuente de ver
 | Preparar un repositorio | `/sddf-init` |
 | Empezar una iniciativa | `/project-flow` |
 | Entender código existente | `/reverse-engineering` |
-| Regenerar el índice de la memoria (`docs/index.md`) | `/memory-system index` |
+| Completar e indexar la memoria del proyecto (`docs/`) | `/memory-system` (`ensure`; `scaffold`, `rebuild --force`, `index`) |
 | Profundizar | [Índice de documentación](docs/index.md) |
 
 ---
@@ -242,7 +242,7 @@ El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT �
 
 No todos los reportes existen desde el comienzo: aparecen cuando el flujo llega a su fase. El árbol también puede incluir `analyze.md`, `finvest-evaluation-report.md`, `story-improvement-log.md` y `fix-directives.md`.
 
-`<SPECS_BASE>/index.md` es el mapa de esa memoria: `/memory-system index` lo regenera con un wikilink `[[slug]]` por artefacto agrupado por capa (idempotente; `--dry-run` solo imprime). `docs-wiki-builder` queda como alias deprecado desde 3.3.0 y se elimina en 4.0.0.
+`/memory-system` (modo `ensure`, recomendado tras `/sddf-init`) crea las once capas de esa memoria que falten (`constitution.md`, `product/*`, un `README.md` por capa y las seis plantillas de `templates/`) sin sobrescribir nada y regenera el índice; `scaffold` solo crea lo faltante, `rebuild --force` restaura los archivos semilla (única operación que sobrescribe, y solo esos archivos; nunca borra) e `index` regenera únicamente `<SPECS_BASE>/index.md`, el mapa de la memoria, con un wikilink `[[slug]]` por artefacto agrupado por capa (idempotente; `--dry-run` solo imprime). `docs-wiki-builder` queda como alias deprecado desde 3.3.0 y se elimina en 4.0.0.
 
 ## Qué decide SDDF y qué decides tú
 

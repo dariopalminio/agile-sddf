@@ -1,7 +1,7 @@
 {
   "skill": "memory-system",
-  "version": "1.0.0",
-  "description": "Casos de prueba para memory-system (STORY-095): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para memory-system. STORY-095 (TC-001..TC-004): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido. STORY-096 (TC-005..TC-010): ensure por defecto sobre examples/sddf-partial (crea solo lo faltante y regenera el índice), ensure idempotente, scaffold sobre examples/empty sin tocar index.md, rebuild sin --force (fail-fast sin escrituras), rebuild --force (advertencia literal y sobrescritura de semillas) y ensure --fix-frontmatter sobre examples/no-frontmatter (header-aggregation en batch con 'Saltar todos los conflictos').",
   "cases": [
     {
       "id": "TC-001",
@@ -53,7 +53,9 @@
       "input": {
         "input_path": "examples/sddf",
         "mode": "index",
-        "flags": ["--dry-run"],
+        "flags": [
+          "--dry-run"
+        ],
         "environment": {
           "specs_base": "docs",
           "node_in_path": true,
@@ -80,34 +82,34 @@
     },
     {
       "id": "TC-003",
-      "name": "sin-modo-informa-modos-disponibles",
-      "type": "edge-case",
-      "description": "Origen: EV-003 (AC-7, D-1, F-3, T001). Cualquier proyecto con el framework instalado (se usa examples/sddf como raíz, pero el contenido de docs/ es irrelevante). El usuario invoca /memory-system sin ningún modo ni flag. El modo por defecto ensure está reservado para STORY-096 y aún no existe: el skill debe mostrar exactamente 'ℹ️ Modo ensure aún no disponible en esta versión. Modos disponibles: index. Ejecuta /memory-system index.' y terminar con éxito, sin invocar el motor, sin reportar error y sin escribir ningún archivo.",
+      "name": "modo-no-reconocido-fail-fast",
+      "type": "fail-fast",
+      "description": "Origen: EV-003 de STORY-095, reconvertido en STORY-096 (D-3: sin modo ya no informa, ejecuta ensure). Proyecto SDDF con REPO_ROOT examples/sddf (sddf.config.yaml con root: docs, docs/ con artefactos). node en PATH. El usuario invoca /memory-system foo. El valor foo no es un modo válido: el skill muestra exactamente \"❌ Modo no reconocido: foo. Modos disponibles: ensure, scaffold, rebuild, index.\" y termina sin invocar el motor, sin escribir ningún archivo y sin mostrar informes de scaffold ni de índice.",
       "input": {
         "input_path": "examples/sddf",
-        "mode": null,
+        "mode": "foo",
         "flags": [],
         "environment": {
           "specs_base": "docs",
-          "node_in_path": true
+          "node_in_path": true,
+          "detect_result": "sddf"
         }
       },
       "expected": {
         "contains": [
-          "Modo ensure aún no disponible en esta versión",
-          "Modos disponibles: index",
-          "Ejecuta /memory-system index"
+          "Modo no reconocido: foo",
+          "Modos disponibles"
         ],
         "not_contains": [
           "=== FILE:",
-          "❌",
-          "Entorno inválido",
           "nodos indexados:",
-          "[[STORY-001-a]]",
-          "no admitido"
+          "creados:",
+          "[CREADO]",
+          "Modo ensure aún no disponible",
+          "[[STORY-001-a]]"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-004",
@@ -117,7 +119,10 @@
       "input": {
         "input_path": "examples/sddf",
         "mode": "index",
-        "flags": ["--harness", "foo"],
+        "flags": [
+          "--harness",
+          "foo"
+        ],
         "environment": {
           "specs_base": "docs",
           "node_in_path": true,
@@ -141,7 +146,247 @@
           "Modo ensure aún no disponible"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
+    },
+    {
+      "id": "TC-005",
+      "name": "ensure-happy-path-fixture-sddf-partial",
+      "type": "happy-path",
+      "description": "Origen: EV-001 (AC-1, AC-7, D-3, F-1, T001). Proyecto SDDF cuyo REPO_ROOT es examples/sddf-partial: contiene sddf.config.yaml (root: docs) y docs/ con constitution.md (slug: constitution, editado a mano con una línea 'Regla local: ...'), adr/ADR-0001-x.md, guides/sdd.md, specs/03-stories/STORY-001-a/story.md, templates/story-template.md y un README.md en policies/, guardrails/, domains/, architecture/ y runbooks/. NO existen docs/product/ ni docs/requirements/README.md ni docs/index.md. node está en PATH, CLI_ROOT es .claude (los skills dueños de las cinco plantillas compartidas están instalados), scripts/memory-system.js detect devuelve sddf y assets/scaffold/ existe. El usuario invoca /memory-system sin modo ni flags: el modo por defecto es ensure. El skill debe ejecutar detect, luego scaffold (crea solo lo faltante marcando cada archivo nuevo con [CREADO], entre ellos product/vision.md, product/stakeholders.md, product/objectives.md y requirements/README.md; marca [PRESERVADO] lo existente, incluido constitution.md que conserva su línea editada; ningún archivo se sobrescribe), NO invocar header-aggregation (no hay --fix-frontmatter), luego index (regenera docs/index.md) y cerrar con el informe final que combina el resumen del scaffold con 'índice regenerado: sí' (formato: creados: N · preservados: M · índice regenerado: sí).",
+      "input": {
+        "input_path": "examples/sddf-partial",
+        "mode": null,
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "cli_root": ".claude",
+          "harness": "sddf",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "missing_paths": [
+            "docs/product/",
+            "docs/requirements/README.md",
+            "docs/index.md"
+          ],
+          "hand_edited": [
+            "docs/constitution.md"
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "creados:",
+          "preservados:",
+          "índice regenerado: sí",
+          "[CREADO]",
+          "product/vision.md",
+          "requirements/README.md"
+        ],
+        "not_contains": [
+          "Modo ensure aún no disponible",
+          "rebuild es destructivo",
+          "[SOBRESCRITO]",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-006",
+      "name": "ensure-idempotente-segunda-ejecucion",
+      "type": "edge-case",
+      "description": "Origen: EV-002 (AC-7, NFR-1, D-3, F-1, T001). Misma raíz que TC-005 (examples/sddf-partial, sddf.config.yaml con root: docs, harness sddf) tras una primera ejecución exitosa de ensure: docs/ ya contiene constitution.md, las once capas con su README.md, product/{vision,stakeholders,objectives}.md, requirements/README.md, las seis plantillas en templates/ y docs/index.md regenerado. Ningún archivo falta. node está en PATH y CLI_ROOT es .claude. El usuario vuelve a invocar /memory-system sin modo ni flags. El skill debe ejecutar detect, scaffold (todos los archivos marcados [PRESERVADO]; no crea ni sobrescribe nada: la línea de resumen del motor es 'creados: 0 · sobrescritos: 0 · preservados: N · omitidos por harness: 0') e index (regenera docs/index.md con el mismo contenido), y cerrar con el informe 'creados: 0 · preservados: N · índice regenerado: sí' sin reportar ningún error ni mostrar marcas [CREADO] o [SOBRESCRITO].",
+      "input": {
+        "input_path": "examples/sddf-partial",
+        "mode": null,
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "cli_root": ".claude",
+          "harness": "sddf",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "already_scaffolded": true,
+          "missing_paths": []
+        }
+      },
+      "expected": {
+        "contains": [
+          "creados: 0",
+          "preservados:",
+          "índice regenerado: sí"
+        ],
+        "not_contains": [
+          "[CREADO]",
+          "[SOBRESCRITO]",
+          "❌",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-007",
+      "name": "scaffold-fixture-empty-sin-indexar",
+      "type": "happy-path",
+      "description": "Origen: EV-003 (AC-2, AC-5, AC-6, D-1, D-2, F-2, T001). Proyecto cuyo REPO_ROOT es examples/empty: contiene sddf.config.yaml (root: docs) y un directorio docs/ vacío (solo .gitkeep). No existe constitution.md, ninguna de las once capas, ninguna plantilla ni index.md. node está en PATH, CLI_ROOT es .claude con los skills dueños story-creation, epic-creation, project-discovery, project-begin y project-planning instalados (sus templates existen), scripts/memory-system.js detect devuelve sddf y assets/scaffold/ existe. El usuario invoca /memory-system scaffold. El skill debe ejecutar detect y luego scaffold (sin --force ni --dry-run): el motor imprime una línea [CREADO] por cada archivo del árbol semilla (constitution.md, product/README.md, product/vision.md, product/stakeholders.md, product/objectives.md, requirements/README.md, specs/README.md, domains/README.md, architecture/README.md, adr/README.md, policies/README.md, guardrails/README.md, guides/README.md, runbooks/README.md, templates/README.md, templates/adr-template.md) y por las cinco plantillas compartidas copiadas desde su skill dueño (story-template.md, epic-template.md, project-template.md, project-intent-template.md, project-plan-template.md), y termina con 'creados: N · sobrescritos: 0 · preservados: 0 · omitidos por harness: 0'. El modo scaffold NO invoca index ni header-aggregation: docs/index.md no se crea ni se escribe y el informe no incluye la línea de índice regenerado.",
+      "input": {
+        "input_path": "examples/empty",
+        "mode": "scaffold",
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "cli_root": ".claude",
+          "harness": "sddf",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "template_owners_installed": true,
+          "existing_paths": [
+            "sddf.config.yaml",
+            "docs/.gitkeep"
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "[CREADO]",
+          "constitution.md",
+          "product/vision.md",
+          "templates/adr-template.md",
+          "creados:"
+        ],
+        "not_contains": [
+          "índice regenerado",
+          "=== FILE: docs/index.md",
+          "[SOBRESCRITO]",
+          "rebuild es destructivo",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-008",
+      "name": "fail-fast-rebuild-sin-force",
+      "type": "fail-fast",
+      "description": "Origen: EV-004 (AC-3, D-4, F-3, T001). Proyecto SDDF con memoria existente cuyo REPO_ROOT es examples/sddf-partial ya scaffoldeado (sddf.config.yaml con root: docs; docs/ con constitution.md editado a mano, las once capas, product/*, las seis plantillas e index.md). node está en PATH y CLI_ROOT es .claude. El usuario invoca /memory-system rebuild SIN --force. El gate de rebuild se aplica antes de invocar el motor: el skill muestra exactamente '❌ rebuild es destructivo. Añade --force para confirmar.' y termina. No invoca detect, scaffold ni index, no muestra la advertencia de pérdida de cambios manuales, no imprime marcas [CREADO]/[SOBRESCRITO] ni resumen de creados/sobrescritos, y no escribe ni modifica ningún archivo de docs/.",
+      "input": {
+        "input_path": "examples/sddf-partial",
+        "mode": "rebuild",
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "cli_root": ".claude",
+          "harness": "sddf",
+          "node_in_path": true,
+          "already_scaffolded": true,
+          "hand_edited": [
+            "docs/constitution.md"
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "❌ rebuild es destructivo. Añade --force para confirmar."
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "[SOBRESCRITO]",
+          "[CREADO]",
+          "Los cambios manuales",
+          "creados:"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-009",
+      "name": "rebuild-force-sobrescribe-semillas",
+      "type": "edge-case",
+      "description": "Origen: EV-005 (AC-4, AC-7, D-4, F-3, T001). Proyecto SDDF con memoria existente cuyo REPO_ROOT es examples/sddf-partial ya scaffoldeado: sddf.config.yaml con root: docs; docs/ con constitution.md editado a mano (línea 'Regla local: ...'), README.md en las once capas, product/{vision,stakeholders,objectives}.md, las seis plantillas en templates/, los artefactos de autor adr/ADR-0001-x.md, guides/sdd.md y specs/03-stories/STORY-001-a/story.md, e index.md. node está en PATH, CLI_ROOT es .claude (skills dueños instalados), detect devuelve sddf. El usuario invoca /memory-system rebuild --force. El skill debe mostrar exactamente '⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.', ejecutar detect, luego scaffold --force (el motor marca [SOBRESCRITO] únicamente los archivos gestionados por el scaffold: constitution.md, product/*.md, el README.md de cada capa, templates/README.md, adr-template.md y las cinco plantillas compartidas; ADR-0001-x.md, sdd.md y story.md no aparecen ni se tocan; ningún archivo se elimina; línea de resumen 'creados: 0 · sobrescritos: S · preservados: 0 · omitidos por harness: 0') y luego index (regenera docs/index.md). Informe final con 'sobrescritos:' e 'índice regenerado: sí'. No aparece el mensaje de gate '❌ rebuild es destructivo'.",
+      "input": {
+        "input_path": "examples/sddf-partial",
+        "mode": "rebuild",
+        "flags": [
+          "--force"
+        ],
+        "environment": {
+          "specs_base": "docs",
+          "cli_root": ".claude",
+          "harness": "sddf",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "already_scaffolded": true,
+          "hand_edited": [
+            "docs/constitution.md"
+          ],
+          "author_artifacts": [
+            "docs/adr/ADR-0001-x.md",
+            "docs/guides/sdd.md",
+            "docs/specs/03-stories/STORY-001-a/story.md"
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.",
+          "[SOBRESCRITO]",
+          "sobrescritos:",
+          "índice regenerado: sí"
+        ],
+        "not_contains": [
+          "rebuild es destructivo",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-010",
+      "name": "ensure-fix-frontmatter-invoca-header-aggregation-batch",
+      "type": "edge-case",
+      "description": "Origen: EV-006 (AC-8, D-3, D-6, F-4, T001). Proyecto SDDF cuyo REPO_ROOT es examples/no-frontmatter: sddf.config.yaml (root: docs) y docs/ con guides/a.md y guides/b.md SIN frontmatter y guides/c.md CON frontmatter (type: guide, slug: c). Faltan constitution.md, las demás capas, las plantillas e index.md. node está en PATH, CLI_ROOT es .claude (skills dueños y skill header-aggregation instalados), detect devuelve sddf. El usuario invoca /memory-system ensure --fix-frontmatter. El skill debe ejecutar detect, scaffold (crea lo faltante con [CREADO]; a.md, b.md y c.md se preservan), y entonces, SOLO porque está presente --fix-frontmatter, invocar el skill header-aggregation con el directorio docs/ como input (modo batch), respondiendo a sus dos preguntas con la estrategia 'Saltar todos los conflictos' y 'Sí' a la confirmación global: solo guides/a.md y guides/b.md reciben frontmatter; guides/c.md no cambia y no se abre ningún diálogo de merge ni se elige 'Sobrescribir con propuesta'. Después ejecuta index (regenera docs/index.md) y cierra con el informe 'creados: N · preservados: M · índice regenerado: sí'. La salida debe nombrar la invocación de header-aggregation, la estrategia elegida y los dos archivos procesados.",
+      "input": {
+        "input_path": "examples/no-frontmatter",
+        "mode": "ensure",
+        "flags": [
+          "--fix-frontmatter"
+        ],
+        "environment": {
+          "specs_base": "docs",
+          "cli_root": ".claude",
+          "harness": "sddf",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "header_aggregation_installed": true,
+          "files_without_frontmatter": [
+            "docs/guides/a.md",
+            "docs/guides/b.md"
+          ],
+          "files_with_frontmatter": [
+            "docs/guides/c.md"
+          ],
+          "user_answers": {
+            "estrategia_conflictos": "Saltar todos los conflictos",
+            "confirmacion_global": "s"
+          }
+        }
+      },
+      "expected": {
+        "contains": [
+          "header-aggregation",
+          "Saltar todos los conflictos",
+          "guides/a.md",
+          "guides/b.md",
+          "índice regenerado: sí"
+        ],
+        "not_contains": [
+          "Sobrescribir con propuesta",
+          "rebuild es destructivo",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
     }
   ]
 }

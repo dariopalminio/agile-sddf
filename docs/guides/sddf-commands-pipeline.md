@@ -37,17 +37,23 @@ export SDDF_ROOT="artefactos-ci"
 ## 0. Memoria del proyecto
 
 ```
-memory-system index
+sddf-init → memory-system            (ensure: scaffold + index)
+memory-system index                  (solo reindexar)
 ```
 
 | Skill | Input | Output |
 |---|---|---|
+| `memory-system` = `memory-system ensure [--fix-frontmatter] [--harness h]` | `$SPECS_BASE/` (puede estar vacío o incompleto) y `<CLI_ROOT>/skills/<dueño>/assets/` para las plantillas compartidas | Crea solo lo que falta de las once capas (`constitution.md`, `product/*`, un `README.md` por capa, seis plantillas) y regenera `index.md`; informe `creados: N · preservados: M · índice regenerado: sí`. Con `--fix-frontmatter`, `header-aggregation` en batch ("Saltar todos los conflictos") completa antes los archivos sin frontmatter |
+| `memory-system scaffold [--dry-run] [--harness h]` | Igual que `ensure` | Solo crea lo faltante (`[CREADO]`/`[PRESERVADO]`); no toca `index.md` |
+| `memory-system rebuild --force` | Memoria existente | `⚠️` advertencia, sobrescribe únicamente los archivos gestionados por el scaffold (`[SOBRESCRITO]`) y regenera `index.md`; sin `--force` se detiene con `❌ rebuild es destructivo. Añade --force para confirmar.` |
 | `memory-system index [--harness h] [--dry-run]` | `$SPECS_BASE/` (artefactos con frontmatter `slug`/`title`) y, según el harness detectado, las raíces externas de Spec-kit/OpenSpec | `$SPECS_BASE/index.md` regenerado con wikilinks `[[slug]]` por capa; resumen `nodos indexados: N · sin frontmatter: M · nodos pendientes: K` |
-| `memory-system` (sin modo) | — | Informa los modos disponibles; el modo por defecto `ensure` llega con STORY-096 |
 
-> Regenera el índice tras añadir o mover artefactos: es el mapa que los LLMs leen antes de abrir
-> cualquier nodo. `--dry-run` imprime el resultado sin escribir. Los nodos sin frontmatter se
-> enlazan solo por ruta; complétalos con `/header-aggregation <ruta>`.
+> Ejecuta `/memory-system` justo después de `/sddf-init`: deja la memoria completa sin crear nada
+> a mano y sin riesgo para lo existente (ningún modo borra; solo `rebuild --force` sobrescribe, y
+> solo semillas y plantillas). Regenera el índice tras añadir o mover artefactos: es el mapa que
+> los LLMs leen antes de abrir cualquier nodo. `--dry-run` imprime el resultado sin escribir. Los
+> nodos sin frontmatter se enlazan solo por ruta; complétalos con `/header-aggregation <ruta>` o
+> `/memory-system ensure --fix-frontmatter`.
 >
 > ⚠️ `docs-wiki-builder` está deprecado desde 3.3.0 (se elimina en 4.0.0): es un alias que
 > delega en `/memory-system index` (`--update` → `index`, `--dry-run` → `index --dry-run`).

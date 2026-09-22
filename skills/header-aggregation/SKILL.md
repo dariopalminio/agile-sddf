@@ -13,7 +13,10 @@ Aplica un bloque YAML frontmatter estandarizado a archivos Markdown de especific
 
 > **Relación con `memory-system`:** `memory-system index` lee el `slug` y `title` de este esquema para
 > indexar; `header-aggregation` sigue siendo una utilidad independiente y no depende de `memory-system`.
-> STORY-096 podrá invocarlo desde `ensure --fix-frontmatter`.
+> Desde STORY-096, `memory-system ensure --fix-frontmatter` lo invoca en modo batch (Paso 4) sobre
+> `$SPECS_BASE` con la estrategia "Saltar todos los conflictos" y confirmación global, de modo que
+> solo procesa archivos sin frontmatter; los literales de esas dos preguntas son un acoplamiento
+> conocido con `memory-system`.
 
 ---
 

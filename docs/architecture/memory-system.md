@@ -115,17 +115,24 @@ agile-sddf/
     │   ├── README.md
     │   └── runbook-<topic>.md
     │
-    ├── rfcs/                          # solicitudes de cambio de arquitectura
-    │   ├── README.md
+    ├── rfcs/                          # (opcional) solicitudes de cambio de arquitectura;
+    │   ├── README.md                  #   no forma parte de las once capas ni la crea el scaffold
     │   └── rfc-<topic>.md
     │
-    └── templates/                     # meta-artefactos (plantillas)
-        ├── story-template.md
-        ├── epic-template.md
-        ├── project-template.md
-        ├── requirement-template.md
-        └── adr-template.md
+    └── templates/                     # meta-artefactos (las seis plantillas base)
+        ├── README.md
+        ├── story-template.md          # dueño: story-creation
+        ├── epic-template.md           # dueño: epic-creation
+        ├── project-template.md        # dueño: project-discovery
+        ├── project-intent-template.md # dueño: project-begin
+        ├── project-plan-template.md   # dueño: project-planning
+        └── adr-template.md            # semilla propia de memory-system
 ```
+
+Las once capas de memoria son `product/`, `requirements/`, `specs/`, `domains/`, `architecture/`,
+`adr/`, `policies/`, `guardrails/`, `guides/`, `runbooks/` y `templates/`, más `constitution.md`
+en la raíz. `rfcs/` es opcional y no la gestiona ningún skill. No existe `requirement-template.md`:
+ningún skill escribe ese template (principio 13 de la constitución), así que no se distribuye.
 
 ### Reglas del árbol
 
@@ -233,27 +240,47 @@ docs/constitution.md          # principios supremos (fuera de policies/)
 
 ## 10. Herramienta: skill `memory-system`
 
-El skill `memory-system` (`skills/memory-system/`, STORY-095) es el único punto de entrada
-operativo de este sistema. En 3.3.0 expone el modo `index`; los modos restantes llegan con las
-historias hermanas de EPIC-20.
+El skill `memory-system` (`skills/memory-system/`, STORY-095 y STORY-096) es el único punto de
+entrada operativo de este sistema. Expone los modos `ensure` (por defecto), `scaffold`, `rebuild`
+e `index`; `check` y `migrate` llegan con las historias hermanas de EPIC-20.
 
 ### 10.1 Modos
 
 | Modo | Estado | Qué hace |
 |------|--------|----------|
-| `index [--harness h] [--dry-run]` | 3.3.0 (STORY-095) | Regenera `docs/index.md` completo desde `assets/index-template.md`: una entrada `[[slug]]` por artefacto, agrupada por capa, más "Estado del grafo" y "Nodos pendientes". `--dry-run` imprime sin escribir. |
-| (sin modo) | reservado a `ensure` | Mientras `ensure` no exista informa `Modos disponibles: index` y termina sin error. |
-| `scaffold`, `ensure`, `rebuild` | STORY-096 | Crear y completar las capas de memoria. |
+| `ensure [--fix-frontmatter] [--harness h]` (= sin modo) | STORY-096 | `detect → scaffold → [header-aggregation] → index`: crea solo lo que falta de las once capas, regenera `index.md` y reporta `creados: N · preservados: M · índice regenerado: sí`. Con `--fix-frontmatter` invoca `header-aggregation` en batch con "Saltar todos los conflictos" (solo archivos sin frontmatter). Idempotente: la segunda ejecución reporta `creados: 0`. |
+| `scaffold [--dry-run] [--harness h]` | STORY-096 | `detect → scaffold`: copia-si-falta del árbol semilla y de las seis plantillas; no toca `index.md`. `--dry-run` imprime `[CREARÍA]`/`[PRESERVARÍA]` sin escribir. |
+| `rebuild [--force]` | STORY-096 | Sin `--force`: `❌ rebuild es destructivo. Añade --force para confirmar.` y ningún cambio. Con `--force`: advertencia `⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.`, `scaffold --force` (sobrescribe solo los archivos gestionados, §10.3) e `index`. Nunca borra. |
+| `index [--harness h] [--dry-run]` | STORY-095 | Regenera `docs/index.md` completo desde `assets/index-template.md`: una entrada `[[slug]]` por artefacto, agrupada por capa, más "Estado del grafo" y "Nodos pendientes". `--dry-run` imprime sin escribir. |
 | `check` | STORY-097 | Verificar invariantes con exit code para CI. |
-| `migrate` | STORY-098 | Adaptar el scaffolding a OpenSpec/Spec-kit. |
+| `migrate` | STORY-098 | Adaptar el scaffolding a OpenSpec/Spec-kit (`skipLayers`, `mappings`). |
 
 ### 10.2 Arquitectura
 
 - `SKILL.md` resuelve la raíz (contrato `SDDF-ROOT-RESOLUTION: v1`), interpreta el modo y delega en
   `scripts/memory-system.js`, un motor Node ≥ 18 sin dependencias (solo `node:fs`, `node:path`,
-  `node:process`) que produce el mismo `index.md` en cada ejecución salvo `updated`. Sin `node` en
-  PATH el skill genera el índice inline con `references/memory-rules.md`, avisando de que la
-  reproducibilidad byte a byte no está garantizada.
+  `node:process`) con los subcomandos `detect`, `scaffold` e `index`, que produce el mismo
+  `index.md` en cada ejecución salvo `updated`. Sin `node` en PATH el skill aplica scaffold e índice
+  inline con `references/memory-rules.md`, avisando de que la reproducibilidad byte a byte no está
+  garantizada. El gate `--force` de `rebuild` vive en `SKILL.md` (es interacción); el motor solo
+  conoce `scaffold --force`.
+- **Catálogo único de capas** (`LAYERS`): las once capas se declaran una vez en el motor; `scaffold`
+  las usa para detectar capas faltantes y el índice deriva de ellas sus placeholders (`specs` más
+  su desglose `specs-projects|epics|stories`, `templates` excluida, más `root` y `external`).
+- **Árbol semilla** (`assets/scaffold/**`, espejo del destino): `constitution.md` (secciones de la
+  constitución del framework con `[Por completar]`), `product/{README,vision,stakeholders,objectives}.md`,
+  un `README.md` por capa con propósito, convención de nombres y wikilink `[[index]]`,
+  `specs/01-projects/`, `02-epics/`, `03-stories/` (con `.gitkeep` solo si el directorio no existe),
+  `templates/README.md` y `templates/adr-template.md`. Frontmatter canónico de `header-aggregation`
+  con `created`/`updated` = `{date}`, el único placeholder que el motor sustituye al copiar.
+- **Plantillas compartidas**: `scaffold` aplica la misma tabla que `sddf-init` Paso 2b (ADR-0001:
+  un dueño por template) copiando byte a byte desde `<CLI_ROOT>/skills/<dueño>/assets/`; si el
+  dueño no está instalado emite `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`
+  y continúa con exit 0.
+- **Copia-si-falta y no-eliminación**: por archivo, destino ausente → `[CREADO]`; presente →
+  `[PRESERVADO]`; solo con `--force` → `[SOBRESCRITO]`. Ningún modo elimina archivos ni directorios.
+  Última línea: `creados: N · sobrescritos: S · preservados: M · omitidos por harness: K` (`K` = 0
+  hasta que STORY-098 rellene `skipLayers`).
 - **Detección de harness** (`detect`): `--harness` > `sddf.config.yaml` > `.specify/` > `openspec/`
   > `generic`. La tabla `HARNESS_PROFILES` declara por harness el marcador y las raíces externas
   indexadas en solo lectura (`specs/*/spec.md` y `plan.md` en Spec-kit; `openspec/specs/**/spec.md`
@@ -272,7 +299,25 @@ historias hermanas de EPIC-20.
   resuelven se listan como `⚠️ nodo pendiente` sin bloquear (la invariante 8 se reporta, no se
   impone, hasta que `check` exista).
 
-### 10.3 Deprecación de `docs-wiki-builder`
+### 10.3 Archivos gestionados por el scaffold (alcance de `rebuild --force`)
+
+`rebuild --force` puede sobrescribir **únicamente** esta lista (fuente de verdad:
+`skills/memory-system/references/memory-rules.md` §5); todo lo demás son artefactos de autor
+(ADRs, historias, épicas, proyectos, guías, runbooks, policies y guardrails concretos, `rfcs/`) y
+ningún modo los toca ni los elimina:
+
+| Gestionado | Origen |
+|---|---|
+| `constitution.md` | semilla |
+| `product/README.md`, `product/vision.md`, `product/stakeholders.md`, `product/objectives.md` | semilla |
+| `requirements/README.md`, `specs/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla |
+| `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md`) |
+| `templates/story-template.md`, `epic-template.md`, `project-template.md`, `project-intent-template.md`, `project-plan-template.md` | skill dueño (`story-creation`, `epic-creation`, `project-discovery`, `project-begin`, `project-planning`) |
+
+Un proyecto real recupera una constitución personalizada desde git tras `rebuild --force`; por eso
+el modo exige el flag y emite la advertencia literal antes de escribir.
+
+### 10.4 Deprecación de `docs-wiki-builder`
 
 `docs-wiki-builder` (STORY-044) queda como alias desde 3.3.0: emite
 `⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.`, mapea `--update` → `index` y
