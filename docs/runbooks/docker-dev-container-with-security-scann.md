@@ -54,18 +54,33 @@ USER appuser
 CMD ["bash"]
 Uso desde el contenedor
 
-# Auditar todos los skills del proyecto
+# Auditar todos los skills del proyecto, uno por uno
 
-shield /app/skills
+audit_exit=0
+for skill in /app/skills/*; do
+  [ -f "$skill/SKILL.md" ] || continue
+  shield "$skill"
+  skill_exit=$?
+  case "$skill_exit" in
+    0|1) ;;
+    2) audit_exit=2 ;;
+    *) audit_exit=3 ;;
+  esac
+done
+exit "$audit_exit"
 
 # Auditar un skill concreto
 
 shield /app/skills/story-creation
-Exit codes: 0 = limpio, 1 = warnings, 2 = problemas críticos.
+Exit codes de Skill Shielder: 0 = limpio, 1 = warnings, 2 = problemas críticos;
+3 u otro valor = error operativo. La CI conserva warnings en el artefacto para
+triage, pero solo bloquea ante un crítico o un error operativo. Nunca usar
+`shield /app/skills`: ese target mezcla evidencia de skills independientes y
+puede producir un `EXFIL_RISK` falso.
 
 ## Verification
 
 docker build -f Dockerfile.dev -t agile-sddf-dev:local .
 docker run --rm agile-sddf-dev:local shield --version
-docker run --rm -v $(pwd):/app agile-sddf-dev:local shield /app/skills
+docker run --rm -v $(pwd):/app agile-sddf-dev:local shield /app/skills/story-creation
 

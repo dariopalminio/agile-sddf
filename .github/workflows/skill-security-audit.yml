@@ -39,6 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
       - name: Prepare audit report
         run: ': > audit-report.txt'
 
@@ -61,22 +65,36 @@ jobs:
           set -o pipefail
           chmod +x /tmp/shielder/shield.sh /tmp/shielder/scanners/*.sh 2>&1 | tee -a audit-report.txt
 
-      - name: Audit protected sources
+      - name: Audit isolated sources
         id: audit
         run: |
           set +e
-          scan_exit=0
-          for target in skills agents scripts docs/constitution.md docs/policies docs/guardrails .github/workflows; do
-            printf '\n===== Auditing %s =====\n' "$target" >> audit-report.txt
-            /tmp/shielder/shield.sh "$target" >> audit-report.txt 2>&1
-            target_exit=$?
-            if [ "$target_exit" -ne 0 ] && [ "$scan_exit" -eq 0 ]; then
-              scan_exit=$target_exit
-            fi
-          done
-          printf '\nSkill Shielder exit code: %s\n' "$scan_exit" >> audit-report.txt
-          echo "exit_code=$scan_exit" >> "$GITHUB_OUTPUT"
-          exit "$scan_exit"
+          set -o pipefail
+          printf '\n===== Verifying security documents =====\n' >> audit-report.txt
+          node scripts/verify-security-documents.js 2>&1 | tee -a audit-report.txt
+          documents_exit=${PIPESTATUS[0]}
+
+          printf '\n===== Auditing isolated Skill Shielder targets =====\n' >> audit-report.txt
+          node scripts/run-skill-shielder-audit.js \
+            --shielder /tmp/shielder/shield.sh \
+            --skills-dir skills \
+            --report audit-report.txt
+          scanner_exit=$?
+
+          audit_exit=0
+          if [ "$documents_exit" -ne 0 ] || [ "$scanner_exit" -eq 3 ]; then
+            audit_exit=3
+          elif [ "$scanner_exit" -eq 2 ]; then
+            audit_exit=2
+          elif [ "$scanner_exit" -ne 0 ] && [ "$scanner_exit" -ne 1 ]; then
+            audit_exit=3
+          fi
+
+          printf '\nSecurity documents exit code: %s\n' "$documents_exit" >> audit-report.txt
+          printf 'Skill Shielder exit code: %s\n' "$scanner_exit" >> audit-report.txt
+          printf 'Audit exit code: %s\n' "$audit_exit" >> audit-report.txt
+          echo "exit_code=$audit_exit" >> "$GITHUB_OUTPUT"
+          exit "$audit_exit"
 
       - name: Upload audit report
         if: always()

@@ -1,10 +1,11 @@
 'use strict';
 
 /**
- * Tests del motor `skills/memory-system/scripts/memory-system.js` (STORY-095).
- * Cubre UT-001…UT-010 e IT-002 de testcases.md sobre los fixtures de
- * `skills/memory-system/examples/`. Los casos que escriben copian el fixture a un
- * directorio temporal para no ensuciar los ejemplos.
+ * Tests del motor `skills/memory-system/scripts/memory-system.js` (STORY-095, STORY-096).
+ * Cubre UT-001…UT-010 e IT-002 de STORY-095 y, con prefijo `S096-`, UT-001…UT-008 de
+ * STORY-096 (subcomando `scaffold`) sobre los fixtures de `skills/memory-system/examples/`.
+ * Los casos que escriben copian el fixture a un directorio temporal para no ensuciar los
+ * ejemplos.
  */
 
 const assert = require('node:assert/strict');
@@ -304,4 +305,249 @@ test('UT-002b HARNESS_PROFILES: claves reservadas para STORY-098 (D-2)', () => {
     assert.deepEqual(profile.mappings, {});
     assert.ok(Array.isArray(profile.externalRoots));
   }
+});
+
+// ---------------------------------------------------------------------------
+// STORY-096 — scaffold (UT-001…UT-008 de testcases.md, prefijo S096-)
+// ---------------------------------------------------------------------------
+
+const SCAFFOLD_SUMMARY = /^creados: (\d+) · sobrescritos: (\d+) · preservados: (\d+) · omitidos por harness: (\d+)$/;
+
+// Las once capas y las seis plantillas que scaffold garantiza (AC-5, AC-6).
+const LAYER_DIRS = ['product', 'requirements', 'specs', 'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
+const SIX_TEMPLATES = ['story-template.md', 'epic-template.md', 'project-template.md', 'project-intent-template.md', 'project-plan-template.md', 'adr-template.md'];
+
+const countFiles = (dir) => Object.keys(hashTree(dir)).length;
+const lastLine = (stdout) => stdout.trim().split('\n').pop();
+const summaryOf = (stdout) => {
+  const match = lastLine(stdout).match(SCAFFOLD_SUMMARY);
+  assert.ok(match, `resumen inesperado: ${lastLine(stdout)}`);
+  return { created: +match[1], overwritten: +match[2], preserved: +match[3], skipped: +match[4] };
+};
+
+// `--cli-root` real del repo: los cinco skills dueños están instalados en `skills/`.
+const CLI_ROOT = REPO_ROOT;
+
+test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sustituido', (t) => {
+  const repo = copyFixture(t, 'empty');
+  const docs = path.join(repo, 'docs');
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--date', '2026-03-04']);
+  assert.equal(result.status, 0, result.stderr);
+
+  assert.ok(fs.existsSync(path.join(docs, 'constitution.md')));
+  for (const name of ['vision', 'stakeholders', 'objectives']) {
+    assert.ok(fs.existsSync(path.join(docs, 'product', `${name}.md`)), name);
+  }
+  for (const layer of LAYER_DIRS) {
+    assert.ok(fs.existsSync(path.join(docs, layer, 'README.md')), `README de ${layer}`);
+  }
+  for (const name of SIX_TEMPLATES) {
+    assert.ok(fs.existsSync(path.join(docs, 'templates', name)), name);
+  }
+  for (const sub of ['01-projects', '02-epics', '03-stories']) {
+    assert.ok(fs.existsSync(path.join(docs, 'specs', sub, '.gitkeep')), sub);
+  }
+  assert.ok(!fs.existsSync(path.join(docs, 'index.md')), 'scaffold no crea index.md');
+
+  const vision = fs.readFileSync(path.join(docs, 'product', 'vision.md'), 'utf8');
+  assert.match(vision, /^created: 2026-03-04$/m);
+  assert.match(vision, /^updated: 2026-03-04$/m);
+  assert.ok(!vision.includes('{date}'));
+  assert.match(vision, /^type: product$/m);
+  assert.match(fs.readFileSync(path.join(docs, 'requirements', 'README.md'), 'utf8'), /^slug: requirements-index$/m);
+
+  const created = result.stdout.split('\n').filter((line) => line.startsWith('[CREADO] '));
+  assert.ok(created.includes('[CREADO] constitution.md'));
+  assert.ok(created.includes('[CREADO] product/vision.md'));
+  assert.ok(created.includes('[CREADO] templates/adr-template.md'));
+  assert.ok(!result.stdout.includes('[PRESERVADO]'));
+  assert.ok(!result.stdout.includes('[WARNING]'));
+  const summary = summaryOf(result.stdout);
+  assert.equal(summary.created, created.length);
+  assert.deepEqual([summary.overwritten, summary.preserved, summary.skipped], [0, 0, 0]);
+  assert.equal(countFiles(docs), created.length + 1); // + docs/.gitkeep del fixture
+});
+
+test('S096-UT-002 scaffold: idempotente, la segunda corrida preserva todo con creados: 0', (t) => {
+  const repo = copyFixture(t, 'sddf-partial');
+  const docs = path.join(repo, 'docs');
+  const first = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]);
+  assert.equal(first.status, 0, first.stderr);
+  assert.ok(first.stdout.includes('[CREADO] product/vision.md'));
+  assert.ok(first.stdout.includes('[CREADO] requirements/README.md'));
+  assert.ok(first.stdout.includes('[PRESERVADO] constitution.md'));
+  assert.ok(!first.stdout.includes('specs/03-stories/.gitkeep'), 'un directorio con contenido no recibe .gitkeep');
+  assert.match(fs.readFileSync(path.join(docs, 'constitution.md'), 'utf8'), /Regla local:/);
+  const after = hashTree(docs);
+
+  const second = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]);
+  assert.equal(second.status, 0, second.stderr);
+  assert.ok(!second.stdout.includes('[CREADO]'));
+  assert.ok(!second.stdout.includes('[SOBRESCRITO]'));
+  const summary = summaryOf(second.stdout);
+  assert.deepEqual([summary.created, summary.overwritten, summary.skipped], [0, 0, 0]);
+  // Los `.gitkeep` creados en la primera corrida no se vuelven a listar: su directorio ya existe.
+  const firstListed = first.stdout.split('\n').filter((line) => /^\[(CREADO|PRESERVADO)\] /.test(line) && !line.endsWith('.gitkeep'));
+  assert.equal(summary.preserved, firstListed.length);
+  assert.deepEqual(hashTree(docs), after);
+});
+
+test('S096-UT-003 scaffold --dry-run: lista [CREARÍA] y no escribe', (t) => {
+  const repo = copyFixture(t, 'empty');
+  const docs = path.join(repo, 'docs');
+  const before = hashTree(repo);
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--dry-run']);
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(result.stdout.includes('[CREARÍA] constitution.md'));
+  assert.ok(result.stdout.includes('[CREARÍA] templates/story-template.md'));
+  assert.ok(!result.stdout.includes('[CREADO]'));
+  assert.ok(summaryOf(result.stdout).created > 0);
+  assert.deepEqual(hashTree(repo), before);
+
+  // Bootstrap simulado: la raíz ausente (con padre existente) tampoco se crea con --dry-run.
+  const fresh = path.join(repo, 'docs-nueva');
+  const boot = run(['scaffold', '--root', fresh, '--dry-run']);
+  assert.equal(boot.status, 0, boot.stderr);
+  assert.ok(!fs.existsSync(fresh));
+});
+
+test('S096-UT-004 scaffold: plantillas compartidas copiadas byte a byte desde el skill dueño', (t) => {
+  const repo = copyFixture(t, 'empty');
+  const docs = path.join(repo, 'docs');
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]);
+  assert.equal(result.status, 0, result.stderr);
+  for (const { name, owner } of engine.SHARED_TEMPLATES) {
+    const source = fs.readFileSync(path.join(REPO_ROOT, 'skills', owner, 'assets', name));
+    assert.ok(source.equals(fs.readFileSync(path.join(docs, 'templates', name))), `${name} byte a byte`);
+  }
+  const seed = fs.readFileSync(path.join(engine.SCAFFOLD_DIR, 'templates', 'adr-template.md'), 'utf8').replace(/\r\n?/g, '\n');
+  assert.equal(fs.readFileSync(path.join(docs, 'templates', 'adr-template.md'), 'utf8'), seed);
+  assert.ok(!result.stdout.includes('[WARNING]'));
+});
+
+test('S096-UT-005 scaffold: dueño de plantilla ausente emite [WARNING] y termina con exit 0', (t) => {
+  const repo = copyFixture(t, 'empty');
+  const docs = path.join(repo, 'docs');
+  const emptyCli = tempDir(t, 'cli-root-');
+  const result = run(['scaffold', '--root', docs, '--cli-root', emptyCli]);
+  assert.equal(result.status, 0, result.stderr);
+  for (const { name, owner } of engine.SHARED_TEMPLATES) {
+    assert.ok(result.stdout.includes(`[WARNING] template no copiado: ${name} (skill ${owner} no instalado)`), name);
+    assert.ok(!fs.existsSync(path.join(docs, 'templates', name)));
+  }
+  assert.ok(fs.existsSync(path.join(docs, 'templates', 'adr-template.md')));
+  assert.ok(fs.existsSync(path.join(docs, 'templates', 'README.md')));
+
+  // Sin --cli-root: mismos avisos, mismo exit 0.
+  const noCli = run(['scaffold', '--root', path.join(copyFixture(t, 'empty'), 'docs')]);
+  assert.equal(noCli.status, 0, noCli.stderr);
+  assert.equal((noCli.stdout.match(/\[WARNING\] template no copiado/g) || []).length, engine.SHARED_TEMPLATES.length);
+});
+
+test('S096-UT-006 scaffold --force: restaura solo semillas y plantillas, conserva ADR-0001-x.md', (t) => {
+  const repo = copyFixture(t, 'sddf-partial');
+  const docs = path.join(repo, 'docs');
+  assert.equal(run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]).status, 0);
+  const pristine = hashTree(docs);
+
+  // Ediciones manuales sobre archivos gestionados y un artefacto de autor.
+  fs.appendFileSync(path.join(docs, 'constitution.md'), '\nRegla local añadida.\n');
+  fs.writeFileSync(path.join(docs, 'adr', 'README.md'), '# README editado\n');
+  fs.writeFileSync(path.join(docs, 'templates', 'story-template.md'), '# plantilla editada\n');
+  const adr = path.join(docs, 'adr', 'ADR-0001-x.md');
+  const adrHash = hashTree(docs)['adr' + path.sep + 'ADR-0001-x.md'];
+  const filesBefore = countFiles(docs);
+
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--force', '--date', '2026-03-04']);
+  assert.equal(result.status, 0, result.stderr);
+  for (const rel of ['constitution.md', 'adr/README.md', 'templates/story-template.md']) {
+    assert.ok(result.stdout.includes(`[SOBRESCRITO] ${rel}`), rel);
+  }
+  assert.ok(!result.stdout.includes('ADR-0001-x.md'));
+  assert.ok(!result.stdout.includes('guides/sdd.md'));
+  assert.ok(!result.stdout.includes('[CREADO]'));
+  assert.ok(!result.stdout.includes('[PRESERVADO]'));
+
+  const restored = hashTree(docs);
+  assert.equal(restored['adr' + path.sep + 'ADR-0001-x.md'], adrHash);
+  assert.ok(fs.existsSync(adr));
+  assert.equal(restored['guides' + path.sep + 'sdd.md'], pristine['guides' + path.sep + 'sdd.md']);
+  assert.ok(!fs.readFileSync(path.join(docs, 'constitution.md'), 'utf8').includes('Regla local'));
+  assert.match(fs.readFileSync(path.join(docs, 'adr', 'README.md'), 'utf8'), /^slug: adr-index$/m);
+  // La plantilla compartida vuelve a ser la del skill dueño (el fixture traía una versión propia).
+  const owner = fs.readFileSync(path.join(REPO_ROOT, 'skills', 'story-creation', 'assets', 'story-template.md'));
+  assert.ok(owner.equals(fs.readFileSync(path.join(docs, 'templates', 'story-template.md'))));
+  assert.equal(countFiles(docs), filesBefore);
+
+  const summary = summaryOf(result.stdout);
+  const managed = (result.stdout.match(/^\[SOBRESCRITO\] /gm) || []).length;
+  assert.equal(summary.overwritten, managed);
+  assert.ok(managed >= 3);
+  assert.deepEqual([summary.created, summary.preserved, summary.skipped], [0, 0, 0]);
+});
+
+test('S096-UT-007 scaffold: ningún modo elimina archivos', (t) => {
+  const repo = copyFixture(t, 'sddf-partial');
+  const docs = path.join(repo, 'docs');
+  // Archivos extra en cada capa (incluidas las que scaffold va a crear).
+  for (const layer of LAYER_DIRS) {
+    fs.mkdirSync(path.join(docs, layer), { recursive: true });
+    fs.writeFileSync(path.join(docs, layer, 'extra-de-autor.md'), `# extra ${layer}\n`);
+  }
+  fs.writeFileSync(path.join(docs, 'index.md'), '# índice previo\n');
+  let count = countFiles(docs);
+  for (const flags of [[], ['--force'], ['--dry-run'], ['--dry-run', '--force'], []]) {
+    const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, ...flags]);
+    assert.equal(result.status, 0, result.stderr);
+    const now = countFiles(docs);
+    assert.ok(now >= count, `flags ${flags.join(' ')}: ${now} < ${count}`);
+    count = now;
+    for (const layer of LAYER_DIRS) assert.ok(fs.existsSync(path.join(docs, layer, 'extra-de-autor.md')), layer);
+    assert.equal(fs.readFileSync(path.join(docs, 'index.md'), 'utf8'), '# índice previo\n');
+  }
+});
+
+test('S096-UT-008 scaffold: raíz sin padre y árbol semilla ausente terminan con exit 2 sin escribir', (t) => {
+  const repo = tempDir(t);
+  const missing = path.join(repo, 'no-existe', 'docs');
+  const result = run(['scaffold', '--root', missing]);
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /no-existe/);
+  assert.ok(!fs.existsSync(path.dirname(missing)));
+
+  const docs = path.join(copyFixture(t, 'empty'), 'docs');
+  const before = hashTree(docs);
+  const badSeeds = path.join(repo, 'sin-semillas');
+  assert.throws(() => engine.scaffold({ root: docs, scaffoldDir: badSeeds }), (error) => error.message.includes('sin-semillas'));
+  assert.deepEqual(hashTree(docs), before);
+
+  // Bootstrap: raíz ausente con padre existente se crea (caso `docs/` inexistente).
+  const boot = run(['scaffold', '--root', path.join(repo, 'docs')]);
+  assert.equal(boot.status, 0, boot.stderr);
+  assert.ok(fs.existsSync(path.join(repo, 'docs', 'constitution.md')));
+});
+
+test('S096-IT-001 scaffold + index: las semillas se indexan sin nodos pendientes', (t) => {
+  const repo = copyFixture(t, 'sddf-partial');
+  const docs = path.join(repo, 'docs');
+  assert.equal(run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]).status, 0);
+  const result = run(['index', '--root', docs]);
+  assert.equal(result.status, 0, result.stderr);
+  const index = fs.readFileSync(path.join(docs, 'index.md'), 'utf8');
+  for (const slug of ['vision', 'stakeholders', 'objectives', 'requirements-index', 'specs-index', 'adr-index', 'constitution']) {
+    assert.ok(index.includes(`- [[${slug}]]`), slug);
+  }
+  assert.ok(!index.includes('templates-index'), 'templates/ no se indexa');
+  assert.ok(!index.includes('⚠️ sin frontmatter'));
+  assert.match(lastLine(result.stdout), /nodos pendientes: 0$/);
+});
+
+test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
+  assert.deepEqual(engine.LAYERS, LAYER_DIRS);
+  for (const layer of engine.LAYERS) {
+    if (layer === 'specs') continue;
+    if (layer === 'templates') assert.ok(!engine.KNOWN_LAYERS.includes(layer));
+    else assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
+  }
+  assert.deepEqual(engine.SHARED_TEMPLATES.map((t) => t.name).concat('adr-template.md'), SIX_TEMPLATES);
 });

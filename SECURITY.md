@@ -121,8 +121,8 @@ What is automated, and what is not:
 | Control | Where it runs | Status |
 |---------|---------------|--------|
 | Trivy — `.github/workflows/docker-security.yml` | CI, on changes to `Dockerfile*` or `docker-compose*.yml` | Active. |
-| Skill Shielder — `.github/workflows/skill-security-audit.yml` | CI on pull requests and pushes to `main` that modify a protected security surface; audits `skills/`, `agents/`, `scripts/`, `docs/constitution.md`, `docs/policies/`, `docs/guardrails/` and `.github/workflows/` | Active. The scanner's report is retained on every run and any non-zero scanner exit blocks the job. |
-| The two guardrails above | A maintainer's machine | Manual. No CI job enforces them today. |
+| Skill Shielder + reglas documentales — `.github/workflows/skill-security-audit.yml` | CI on pull requests and pushes to `main` que modifican una superficie protegida. Skill Shielder analiza cada `skills/<skill>/` de forma independiente y prepara cada agente, script y workflow en su propio directorio. [`verify-security-documents.js`](scripts/verify-security-documents.js) valida constitution, policies, guardrails, `AGENTS.md` y esta política con reglas seguras para documentación normativa. | Activo. Los warnings se conservan y se revisan, pero no bloquean; un CRITICAL de Skill Shielder (`2`) o un error operativo (`3`/desconocido) bloquea. El reporte se conserva siempre. |
+| The two guardrails above | A maintainer's machine | Manual para la revisión semántica y sus comandos completos; CI aplica solamente el subconjunto documental determinista descrito arriba. |
 | The repository's own `security-audit` skill | A maintainer's machine | Manual, dogfooding. This is how the absence of this policy was found. |
 
 Findings are triaged under each guardrail's on-breach rule: an `(error)` blocks the change, a
