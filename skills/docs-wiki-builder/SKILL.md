@@ -15,6 +15,19 @@ Este skill ya no tiene lógica propia: desde la versión 3.3.0 es un alias de `/
 y se elimina en 4.0.0. Se conserva una versión minor para que los flujos que lo invocaban sigan
 funcionando mientras migran.
 
+## Paso 0 — Resolver contexto local
+
+<!-- SDDF-ROOT-RESOLUTION: v1 -->
+
+Antes de delegar en `/memory-system index`, resuelve una sola vez `REPO_ROOT` y `SPECS_BASE`:
+
+1. Si `SDDF_ROOT` está definida y apunta a un directorio accesible, úsala como `SPECS_BASE`.
+2. Si no existe, usa la clave `root` válida de `<REPO_ROOT>/sddf.config.yaml`.
+3. Si tampoco existe, usa `docs` relativo a `REPO_ROOT`.
+4. Una fuente explícita inválida detiene el flujo sin fallback ni escrituras.
+
+El diagnóstico de entorno es una operación explícita y separada; este alias no lo ejecuta como paso implícito.
+
 ## Flujo de ejecución
 
 ### Paso 1 — Emitir el aviso
