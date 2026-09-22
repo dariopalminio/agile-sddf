@@ -31,7 +31,7 @@ las exclusiones. Esquema: `{ path, relPath, layer, slug, title, hasFrontmatter, 
 ### Exclusiones
 
 - `index.md` en la raíz de `SPECS_BASE` (es el archivo que se genera).
-- Directorios `specs/.cache/`, `templates/` (sus wikilinks son placeholders) y cualquier `pre-split/`.
+- Directorios `.cache/`, `templates/` (sus wikilinks son placeholders) y `pre-split/`, a cualquier profundidad.
 - Derivados de historia: `design.md`, `tasks.md`, `testcases.md`, `analyze.md`, `*-report.md`,
   `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`.
 - Cualquier archivo que no sea `.md`.
@@ -152,6 +152,14 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
   capa es `<capa>-index`, coherente con la regla de slug de §2. Las semillas solo enlazan a
   `[[index]]` para no generar nodos pendientes recién scaffoldeadas; no declaran `escritor:`
   (son documentos iniciales, no plantillas de generación).
+- **`escritor:` en `templates/adr-template.md`:** la excepción a la regla anterior. Es la única
+  semilla que sí es plantilla de generación, así que el principio 13 de la constitución le exige
+  declarar escritor en cada campo. Ningún skill escribe ADRs, de modo que todos los campos se
+  anotan `escritor: autoría manual` (ADR-0012). La anotación va en **comentario de línea
+  completa** encima del campo, nunca al final de su línea: `parseFrontmatter` ignora las líneas
+  que empiezan por `#` pero incorporaría un comentario final al valor, contaminando `title` en el
+  índice del proyecto scaffoldeado. La semilla y `docs/adr/adr-template.md` del framework se
+  mantienen byte a byte idénticas.
 - **Dueño ausente:** si `--cli-root` no se pasa o `<CLI_ROOT>/skills/<dueño>/assets/<nombre>` no
   existe, el motor emite `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`,
   no crea ese archivo y termina con exit 0 (misma regla que `sddf-init` Paso 2b; ADR-0001: un

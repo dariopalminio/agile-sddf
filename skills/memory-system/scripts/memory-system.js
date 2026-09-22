@@ -102,6 +102,14 @@ const SCAFFOLD_LABELS = {
   skipped: ['OMITIDO', 'OMITIRÍA'],
 };
 
+// Línea de comandos: subcomandos, flags con valor y flags booleanos. `--template` y `--date`
+// son flags de prueba (reproducibilidad); no se exponen en SKILL.md.
+const COMMANDS = ['detect', 'index', 'scaffold'];
+const VALUE_FLAGS = { '--root': 'root', '--cli-root': 'cliRoot', '--harness': 'harness', '--template': 'template', '--date': 'date' };
+const BOOL_FLAGS = { '--dry-run': 'dryRun', '--force': 'force' };
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const USAGE = 'uso: memory-system.js <detect|index|scaffold> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force]';
+
 // Error de uso o de datos: se informa por stderr y termina con exit 2 sin escribir.
 class UsageError extends Error {}
 
@@ -146,22 +154,23 @@ function isDirectory(target) {
   return fs.existsSync(target) && fs.statSync(target).isDirectory();
 }
 
+function profileOf(harness) {
+  return HARNESS_PROFILES[harness] || HARNESS_PROFILES.generic;
+}
+
 // ---------------------------------------------------------------------------
 // Argumentos
 // ---------------------------------------------------------------------------
 
-const COMMANDS = ['detect', 'index', 'scaffold'];
-const USAGE = 'uso: memory-system.js <detect|index|scaffold> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force]';
-
 function parseArgs(argv) {
   const args = { command: null, root: null, cliRoot: null, harness: null, dryRun: false, force: false, template: null, date: null };
-  const valueFlags = { '--root': 'root', '--cli-root': 'cliRoot', '--harness': 'harness', '--template': 'template', '--date': 'date' };
-  const boolFlags = { '--dry-run': 'dryRun', '--force': 'force' };
   const rest = [...argv];
   while (rest.length) {
     const token = rest.shift();
-    if (valueFlags[token]) args[valueFlags[token]] = rest.shift();
-    else if (boolFlags[token]) args[boolFlags[token]] = true;
+    if (Object.hasOwn(VALUE_FLAGS, token)) {
+      if (!rest.length || rest[0].startsWith('--')) throw new UsageError(`falta el valor de ${token}`);
+      args[VALUE_FLAGS[token]] = rest.shift();
+    } else if (Object.hasOwn(BOOL_FLAGS, token)) args[BOOL_FLAGS[token]] = true;
     else if (token.startsWith('--')) throw new UsageError(`flag desconocido: ${token}`);
     else if (!args.command) args.command = token;
     else throw new UsageError(`argumento inesperado: ${token}`);
@@ -171,6 +180,7 @@ function parseArgs(argv) {
     throw new UsageError(`subcomando no admitido: ${args.command} (admitidos: ${COMMANDS.join(', ')})`);
   }
   if (!args.root) throw new UsageError(`falta --root <SPECS_BASE>\n${USAGE}`);
+  if (args.date !== null && !ISO_DATE.test(args.date)) throw new UsageError(`valor no admitido para --date: ${args.date} (formato YYYY-MM-DD)`);
   return args;
 }
 
@@ -361,7 +371,7 @@ function expandGlob(repoRoot, pattern) {
 /** Escanea SPECS_BASE y las raíces externas del perfil; devuelve los nodos ordenados por ruta. */
 function scanNodes(specsBase, harness = 'generic') {
   const repoRoot = path.dirname(specsBase);
-  const profile = HARNESS_PROFILES[harness] || HARNESS_PROFILES.generic;
+  const profile = profileOf(harness);
   const nodes = walk(specsBase, specsBase).map((file) => deriveNode(file, specsBase));
   const external = new Set(profile.externalRoots.flatMap((pattern) => expandGlob(repoRoot, pattern)));
   for (const file of external) nodes.push(deriveNode(file, specsBase, { external: true }));
@@ -487,56 +497,65 @@ function scaffoldLayer(relPath) {
   return relPath.includes('/') ? relPath.split('/')[0] : 'root';
 }
 
+// El árbol semilla debe aportar al menos un archivo por capa del catálogo.
+function assertSeedsCoverLayers(seeds, scaffoldDir) {
+  const uncovered = LAYERS.find((layer) => !seeds.some((rel) => scaffoldLayer(rel) === layer));
+  if (uncovered) throw new UsageError(`el árbol semilla no cubre la capa "${uncovered}": ${displayPath(scaffoldDir)}`);
+}
+
 /**
- * Copia-si-falta del árbol semilla y de las plantillas compartidas sobre `options.root`.
- * Por archivo: ausente → `created`; presente → `preserved` (o `overwritten` con `force`);
- * capa en `skipLayers` del harness → `skipped`. Nunca elimina nada; con `dryRun` no escribe.
+ * Coloca `source` en `target` con la política copia-si-falta y devuelve la acción:
+ * destino ausente → `created`; presente → `preserved`, o `overwritten` con `force`.
+ * `render` transforma el texto al copiar (semillas); sin él la copia es byte a byte.
+ * Con `dryRun` solo decide, no escribe.
+ */
+function placeFile(source, target, { force = false, dryRun = false, render = null } = {}) {
+  const action = !fs.existsSync(target) ? 'created' : force ? 'overwritten' : 'preserved';
+  if (!dryRun && action !== 'preserved') {
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, render ? render(readText(source)) : fs.readFileSync(source));
+  }
+  return action;
+}
+
+/**
+ * Copia el árbol semilla y las plantillas compartidas sobre `options.root` (D-1, D-2, D-4).
+ * Una capa en `skipLayers` del harness se marca `skipped`. Nunca elimina nada.
  * Devuelve { root, harness, missingLayers, entries[], warnings[], summary }.
  */
 function scaffold(options) {
-  const dryRun = Boolean(options.dryRun);
-  const force = Boolean(options.force);
+  const { dryRun = false, force = false } = options;
   const scaffoldDir = options.scaffoldDir || SCAFFOLD_DIR;
   if (!isDirectory(scaffoldDir)) throw new UsageError(`no se encuentra el árbol semilla del scaffold: ${displayPath(scaffoldDir)}`);
 
   const specsBase = resolveScaffoldRoot(options.root, dryRun);
   const harness = detectHarness(path.dirname(specsBase), options.harness);
-  const skipLayers = new Set((HARNESS_PROFILES[harness] || HARNESS_PROFILES.generic).skipLayers);
-  const date = options.date || todayIso();
+  const skipLayers = new Set(profileOf(harness).skipLayers);
   const seeds = listSeeds(scaffoldDir);
+  assertSeedsCoverLayers(seeds, scaffoldDir);
 
-  for (const layer of LAYERS) {
-    if (!seeds.some((rel) => scaffoldLayer(rel) === layer)) {
-      throw new UsageError(`el árbol semilla no cubre la capa "${layer}": ${displayPath(scaffoldDir)}`);
-    }
-  }
-  const missingLayers = LAYERS.filter((layer) => !isDirectory(path.join(specsBase, layer)));
-
-  const entries = [];
-  const warnings = [];
-  const summary = { created: 0, overwritten: 0, preserved: 0, skippedByHarness: 0 };
-
-  // Decide la acción de un destino y, si procede, escribe `content` (Buffer o string).
-  const apply = (relPath, kind, produce) => {
+  const result = {
+    root: specsBase,
+    harness,
+    missingLayers: LAYERS.filter((layer) => !isDirectory(path.join(specsBase, layer))),
+    entries: [],
+    warnings: [],
+    summary: { created: 0, overwritten: 0, preserved: 0, skippedByHarness: 0 },
+  };
+  const place = (relPath, kind, source, render) => {
     const target = path.join(specsBase, ...relPath.split('/'));
-    const exists = fs.existsSync(target);
-    let action = 'preserved';
-    if (skipLayers.has(scaffoldLayer(relPath))) action = 'skipped';
-    else if (!exists) action = 'created';
-    else if (force) action = 'overwritten';
-    if (!dryRun && (action === 'created' || action === 'overwritten')) {
-      fs.mkdirSync(path.dirname(target), { recursive: true });
-      fs.writeFileSync(target, produce());
-    }
-    entries.push({ relPath, kind, action });
-    summary[action === 'skipped' ? 'skippedByHarness' : action] += 1;
+    const action = skipLayers.has(scaffoldLayer(relPath)) ? 'skipped' : placeFile(source, target, { force, dryRun, render });
+    result.entries.push({ relPath, kind, action });
+    result.summary[action === 'skipped' ? 'skippedByHarness' : action] += 1;
   };
 
+  // Semillas: `{date}` es el único placeholder. Un `.gitkeep` solo materializa un directorio
+  // ausente: si el directorio ya existe no se lista ni se cuenta.
+  const date = options.date || todayIso();
+  const renderSeed = (text) => text.replace(/\{date\}/g, date);
   for (const rel of seeds) {
-    const source = path.join(scaffoldDir, ...rel.split('/'));
-    // Un `.gitkeep` solo materializa un directorio ausente: si ya existe no se lista ni se cuenta.
     if (path.basename(rel) === '.gitkeep' && isDirectory(path.join(specsBase, path.dirname(rel)))) continue;
-    apply(rel, 'seed', () => (/\.md$/i.test(rel) ? readText(source).replace(/\{date\}/g, date) : fs.readFileSync(source)));
+    place(rel, 'seed', path.join(scaffoldDir, ...rel.split('/')), /\.md$/i.test(rel) ? renderSeed : null);
   }
 
   // Directorios de capa aunque una semilla no los cree (mismo catálogo que el índice).
@@ -546,17 +565,15 @@ function scaffold(options) {
     }
   }
 
+  // Plantillas compartidas: byte a byte desde el skill dueño; dueño ausente → aviso, no error.
   const cliRoot = options.cliRoot ? path.resolve(process.cwd(), options.cliRoot) : null;
   for (const { name, owner } of SHARED_TEMPLATES) {
-    const source = cliRoot ? path.join(cliRoot, 'skills', owner, 'assets', name) : null;
-    if (!source || !fs.existsSync(source)) {
-      warnings.push(`template no copiado: ${name} (skill ${owner} no instalado)`);
-      continue;
-    }
-    apply(`${TEMPLATES_LAYER}/${name}`, 'shared-template', () => fs.readFileSync(source));
+    const source = cliRoot && path.join(cliRoot, 'skills', owner, 'assets', name);
+    if (source && fs.existsSync(source)) place(`${TEMPLATES_LAYER}/${name}`, 'shared-template', source, null);
+    else result.warnings.push(`template no copiado: ${name} (skill ${owner} no instalado)`);
   }
 
-  return { root: specsBase, harness, missingLayers, entries, warnings, summary };
+  return result;
 }
 
 function scaffoldSummaryLine(summary) {

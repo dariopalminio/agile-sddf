@@ -281,8 +281,8 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
    `[PRESERVADO] <ruta>` (con `rebuild --force`, sobrescribe y registra `[SOBRESCRITO]`). Copia
    las cinco plantillas compartidas desde `<CLI_ROOT>/skills/<dueño>/assets/` tal cual; si el
    origen no existe, `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`. Crea
-   los directorios de capa y `specs/01-projects/`, `02-epics/`, `03-stories/` (con `.gitkeep` si
-   están vacíos). No borres nada. Con `--dry-run` solo lista `[CREARÍA]`/`[PRESERVARÍA]`. Cierra
+   los directorios de capa y `specs/01-projects/`, `02-epics/`, `03-stories/` (con `.gitkeep` solo
+   si el directorio no existía). No borres nada. Con `--dry-run` solo lista `[CREARÍA]`/`[PRESERVARÍA]`. Cierra
    con `creados: N · sobrescritos: S · preservados: M · omitidos por harness: 0`.
 3. **Índice inline** (`ensure`, `rebuild --force`, `index`): lista los `.md` de `SPECS_BASE` (y las
    raíces externas del perfil) descartando las exclusiones. **Lee cada `.md` candidato con la

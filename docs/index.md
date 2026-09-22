@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-09-21
+updated: 2026-09-22
 ---
 
 # 📚 Índice de documentación
@@ -48,17 +48,20 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ### Producto (product/)
 
-_(sin artefactos)_
+- [[product-index]] — [README.md](product/README.md) — Producto
+- [[objectives]] — [objectives.md](product/objectives.md) — Objetivos
+- [[stakeholders]] — [stakeholders.md](product/stakeholders.md) — Stakeholders
+- [[vision]] — [vision.md](product/vision.md) — Visión del producto
 
 ### Requisitos (requirements/)
 
-_(sin artefactos)_
+- [[requirements-index]] — [README.md](requirements/README.md) — Requisitos
 
 ---
 
 ## 🗂️ Especificaciones (specs/)
 
-_(sin artefactos)_
+- [[specs-index]] — [README.md](specs/README.md) — Especificaciones
 
 ### L3 — Proyecto (specs/01-projects/)
 
@@ -279,6 +282,8 @@ _(sin artefactos)_
 - [[rework-sin-estado-propio]] — [ADR-0008-rework-sin-estado-propio.md](adr/ADR-0008-rework-sin-estado-propio.md) — Rework sin estado propio: la señal es el artefacto de fallo
 - [[perfiles-runtimes-e-instalacion-explicita]] — [ADR-0009-perfiles-runtimes-e-instalacion-explicita.md](adr/ADR-0009-perfiles-runtimes-e-instalacion-explicita.md) — Perfiles reproducibles, runtimes canónicos e instalación explícita
 - [[specs-dentro-de-docs]] — [ADR-0010-specs-dentro-de-docs.md](adr/ADR-0010-specs-dentro-de-docs.md) — Mantener specs/ dentro de docs/ en lugar de la raíz
+- [[archivos-canonicos-por-tipo]] — [ADR-0011-archivos-canonicos-por-tipo.md](adr/ADR-0011-archivos-canonicos-por-tipo.md) — Los archivos canónicos de work items se nombran por tipo (story.md, epic.md, project.md)
+- [[escritor-en-templates-de-autoria-manual]] — [ADR-0012-escritor-en-templates-de-autoria-manual.md](adr/ADR-0012-escritor-en-templates-de-autoria-manual.md) — Los templates de autoría manual anotan `escritor: autoría manual` en línea completa
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
 - [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
@@ -313,6 +318,7 @@ _(sin artefactos)_
 
 ### Runbooks (runbooks/)
 
+- [[runbooks-index]] — [README.md](runbooks/README.md) — Runbooks
 - [[runbook-actualizar-spec-de-proyecto]] — [actualizar-spec-de-proyecto.md](runbooks/actualizar-spec-de-proyecto.md) — Runbook para actualizar la especificación de proyecto (project.md)
 - [[runbook-deployment-to-npm]] — [deployment-to-npm.md](runbooks/deployment-to-npm.md) — Runbook para despliegue en npm
 - [docker-dev-container-with-security-scann.md](runbooks/docker-dev-container-with-security-scann.md) — Integrar Skill Shielder en Dockerfile.dev ⚠️ sin frontmatter
@@ -332,10 +338,10 @@ _(sin artefactos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 228 |
-| Nodos con frontmatter | 186 |
+| Nodos indexados | 237 |
+| Nodos con frontmatter | 195 |
 | Nodos sin frontmatter | 42 |
-| Wikilinks pendientes | 30 |
+| Wikilinks pendientes | 31 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |
 
@@ -356,6 +362,7 @@ Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artef
 - [[ADR-0003-workflow-canonico-story-y-epic]] ⚠️ nodo pendiente
 - [[ADR-0004]] ⚠️ nodo pendiente
 - [[ADR-0007]] ⚠️ nodo pendiente
+- [[ADR-0007-templates-como-capa-propia]] ⚠️ nodo pendiente
 - [[ADR-0009]] ⚠️ nodo pendiente
 - [[EPIC-13-quality-gates-con-dod-en-story-workflow]] ⚠️ nodo pendiente
 - [[EPIC-14-fabrica-de-skills]] ⚠️ nodo pendiente

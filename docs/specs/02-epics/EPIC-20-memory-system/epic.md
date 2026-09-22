@@ -29,7 +29,7 @@ La memoria del proyecto (`docs/`) está definida en `docs/architecture/memory-sy
 ## Historias
 
 - [x] **STORY-095 — Crear el skill memory-system con el modo index y deprecar docs-wiki-builder:** motor determinista con `index` y detección de harness; `docs/index.md` reproducible con wikilinks `[[slug]]`; `docs-wiki-builder` pasa a alias deprecado con aviso; `header-aggregation` intacto. — [[STORY-095-memory-system-index-alias]]
-- [ ] **STORY-096 — Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild:** árbol semilla de once capas + `constitution.md` + seis plantillas; `ensure` (default) = scaffold + index sin sobrescribir; `rebuild --force` regenera solo archivos gestionados por el scaffold; `--fix-frontmatter` invoca `header-aggregation` en batch. — [[STORY-096-memory-system-scaffold-ensure-rebuild]]
+- [x] **STORY-096 — Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild:** árbol semilla de once capas + `constitution.md` + seis plantillas; `ensure` (default) = scaffold + index sin sobrescribir; `rebuild --force` regenera solo archivos gestionados por el scaffold; `--fix-frontmatter` invoca `header-aggregation` en batch. — [[STORY-096-memory-system-scaffold-ensure-rebuild]]
 - [ ] **STORY-097 — Verificar la consistencia de la memoria con un modo check apto para CI:** reporta capas faltantes, huérfanos, frontmatters inválidos y wikilinks rotos sin escribir; salida `--json` y exit code 0/1/2. — [[STORY-097-memory-system-check-ci]]
 - [ ] **STORY-098 — Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate:** perfiles de harness (capas omitidas, mapeos, raíces externas indexadas); `migrate` propone un plan y pide confirmación antes de escribir; nunca toca los directorios del harness. — [[STORY-098-memory-system-migrate-harness]]
 - [ ] **STORY-099 — Inicializar la memoria completa desde sddf-init con el parámetro --level:** niveles `minimal | standard | full`; solo `full` invoca `memory-system scaffold`; el comportamiento por defecto no cambia. — [[STORY-099-sddf-init-level-full]]
@@ -74,6 +74,16 @@ La memoria del proyecto (`docs/`) está definida en `docs/architecture/memory-sy
 - **`check` apto para CI:** solo lectura, salida parseable con `--json`, exit code 0 sin problemas / 1 con problemas / 2 ante error técnico.
 - **Integraciones acotadas:** `sddf-init` solo añade `--level` y la invocación final en `full`; `header-aggregation` no cambia (se invoca desde `ensure --fix-frontmatter` en batch).
 - **Independencia de stack y portabilidad:** sin dependencia de `package.json` (solo Node ≥ 18 en PATH, con degradación inline si falta); rutas relativas; mismo resultado en Windows y Linux.
+- **Templates centrales:** Los templates de cada folder de cada capa del sistema de memoria DEBEN ser centrales en docs/templates/ (per ADR-0007).
+- **Un README por capa:** Cada capa/folder  debe tener un README.md que haga de guía. El README es el que resuelve la discoverability y el "cómo se escribe", no la ubicación del template.
+- **Modo scaffold:** El skill memory-system (modo scaffold) debe:
+  1. Crear docs/templates/ con las plantillas base.
+  2. Crear README.md en cada capa con una plantilla específica por capa.
+  3. No crear templates dentro de las capas.
+  4. Validar en modo check que:
+    a. Cada capa tiene un README.
+    b. Cada README enlaza a un template existente en docs/templates/.
+    c. No hay templates huérfanos dentro de capas.
 
 **Fuera de alcance:** migración automática de contenido entre harness (`migrate` solo hace scaffolding); reorganización de archivos `.md` dispersos (Flujo B de `docs-wiki-builder`); índices derivados (`specs-index.json`); interfaz gráfica; capa `rfcs/` y `requirement-template.md`.
 
@@ -122,3 +132,4 @@ La memoria del proyecto (`docs/`) está definida en `docs/architecture/memory-sy
 - **Fuente de skills:** los artefactos afectados viven en `skills/` (raíz del repositorio), no en `.claude/skills/`; el instalador los copia al runtime.
 - **Versión objetivo:** `3.3.0` para las cinco historias; retirada del alias `docs-wiki-builder` en `4.0.0`.
 - **Relación con EPIC-09 (Docs & wiki builders):** `docs-wiki-builder` (STORY-044) y `header-aggregation` (STORY-043) nacieron allí; esta épica los reorganiza sin invalidar esas historias.
+

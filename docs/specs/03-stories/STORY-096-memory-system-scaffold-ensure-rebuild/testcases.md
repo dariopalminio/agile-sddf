@@ -5,7 +5,7 @@ slug: STORY-096-memory-system-scaffold-ensure-rebuild-testcases
 title: "Test Cases: Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild"
 story: STORY-096
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-22
 related:
   - STORY-096-memory-system-scaffold-ensure-rebuild
 ---
@@ -85,21 +85,21 @@ related:
 - [ ] E2E-002: scaffold crea lo faltante y no indexa
 - [ ] E2E-003: rebuild sin --force se detiene
 - [ ] E2E-004: rebuild --force regenera y conserva artefactos de autor
-- [ ] UT-001: scaffold: copia-si-falta
-- [ ] UT-002: scaffold: idempotencia
-- [ ] UT-003: scaffold --dry-run no escribe
-- [ ] UT-004: scaffold: plantillas compartidas desde el dueño
-- [ ] UT-005: scaffold: dueño de plantilla ausente
-- [ ] UT-006: scaffold --force: alcance de sobrescritura
-- [ ] UT-007: Ningún modo elimina archivos
-- [ ] UT-008: scaffold: errores técnicos
+- [x] UT-001: scaffold: copia-si-falta
+- [x] UT-002: scaffold: idempotencia
+- [x] UT-003: scaffold --dry-run no escribe
+- [x] UT-004: scaffold: plantillas compartidas desde el dueño
+- [x] UT-005: scaffold: dueño de plantilla ausente
+- [x] UT-006: scaffold --force: alcance de sobrescritura
+- [x] UT-007: Ningún modo elimina archivos
+- [x] UT-008: scaffold: errores técnicos
 - [ ] IT-001: ensure = detect → scaffold → index
 - [ ] IT-002: ensure sin modo index disponible
 - [ ] IT-003: ensure --fix-frontmatter invoca header-aggregation en batch
 - [ ] IT-004: rebuild --force = scaffold --force + index
-- [ ] EV-001: memory-system ensure happy-path
-- [ ] EV-002: memory-system ensure idempotente
-- [ ] EV-003: memory-system scaffold
-- [ ] EV-004: memory-system fail-fast rebuild
-- [ ] EV-005: memory-system rebuild --force
-- [ ] EV-006: memory-system ensure --fix-frontmatter
+- [x] EV-001: memory-system ensure happy-path
+- [x] EV-002: memory-system ensure idempotente
+- [x] EV-003: memory-system scaffold
+- [x] EV-004: memory-system fail-fast rebuild
+- [x] EV-005: memory-system rebuild --force
+- [x] EV-006: memory-system ensure --fix-frontmatter

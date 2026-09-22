@@ -23,8 +23,9 @@ const EXAMPLES = path.join(SKILL_DIR, 'examples');
 
 const engine = require(ENGINE);
 
-function run(args, cwd = REPO_ROOT) {
-  return spawnSync(process.execPath, [ENGINE, ...args], { cwd, encoding: 'utf8' });
+// Ejecuta el motor desde REPO_ROOT y devuelve { status, stdout, stderr }.
+function run(args) {
+  return spawnSync(process.execPath, [ENGINE, ...args], { cwd: REPO_ROOT, encoding: 'utf8' });
 }
 
 function tempDir(t, prefix = 'memory-system-') {
@@ -45,12 +46,16 @@ function hashTree(dir) {
     for (const entry of fs.readdirSync(current, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
       const full = path.join(current, entry.name);
       if (entry.isDirectory()) visit(full);
-      else hashes[path.relative(dir, full)] = crypto.createHash('sha256').update(fs.readFileSync(full)).digest('hex');
+      else hashes[path.relative(dir, full).split(path.sep).join('/')] = crypto.createHash('sha256').update(fs.readFileSync(full)).digest('hex');
     }
   };
   visit(dir);
   return hashes;
 }
+
+const countFiles = (dir) => Object.keys(hashTree(dir)).length;
+const lastLine = (stdout) => stdout.trim().split('\n').pop();
+const readUtf8 = (...segments) => fs.readFileSync(path.join(...segments), 'utf8');
 
 const withoutUpdated = (content) => content.split('\n').filter((line) => !line.startsWith('updated:')).join('\n');
 
@@ -197,10 +202,10 @@ test('UT-008 index: reproducible salvo updated, formato de entrada y orden ordin
   }
   const first = run(['index', '--root', docs, '--date', '2026-01-01']);
   assert.equal(first.status, 0, first.stderr);
-  const one = fs.readFileSync(path.join(docs, 'index.md'), 'utf8');
+  const one = readUtf8(docs, 'index.md');
   const second = run(['index', '--root', docs, '--date', '2026-01-02']);
   assert.equal(second.status, 0, second.stderr);
-  const two = fs.readFileSync(path.join(docs, 'index.md'), 'utf8');
+  const two = readUtf8(docs, 'index.md');
   assert.notEqual(one, two);
   assert.equal(withoutUpdated(one), withoutUpdated(two));
   assert.match(two, /^updated: 2026-01-02$/m);
@@ -245,18 +250,18 @@ test('UT-010 index: template sin {layer:adr} termina con exit 2 sin escribir', (
   const docs = path.join(repo, 'docs');
   const previous = '# índice previo\n';
   fs.writeFileSync(path.join(docs, 'index.md'), previous);
-  const templatePath = templateVariant(repo, 'template-sin-adr.md', (t) => t.replace('{layer:adr}', ''));
+  const templatePath = templateVariant(repo, 'template-sin-adr.md', (tpl) => tpl.replace('{layer:adr}', ''));
   const result = run(['index', '--root', docs, '--template', templatePath]);
   assert.equal(result.status, 2);
   assert.match(result.stderr, /"adr"/);
   assert.match(result.stderr, /\{layer:adr\}/);
-  assert.equal(fs.readFileSync(path.join(docs, 'index.md'), 'utf8'), previous);
+  assert.equal(readUtf8(docs, 'index.md'), previous);
 });
 
 test('UT-010b index: placeholder de capa desconocida termina con exit 2', (t) => {
   const repo = copyFixture(t, 'sddf');
   const docs = path.join(repo, 'docs');
-  const templatePath = templateVariant(repo, 'template-desconocida.md', (t) => `${t}\n{layer:inventada}\n`);
+  const templatePath = templateVariant(repo, 'template-desconocida.md', (tpl) => `${tpl}\n{layer:inventada}\n`);
   const result = run(['index', '--root', docs, '--template', templatePath, '--dry-run']);
   assert.equal(result.status, 2);
   assert.match(result.stderr, /inventada/);
@@ -280,7 +285,7 @@ test('IT-002 index openspec: nodos externos indexados y openspec/ intacto', (t) 
   assert.equal(run(['detect', '--root', docs]).stdout.trim(), 'openspec');
   const result = run(['index', '--root', docs]);
   assert.equal(result.status, 0, result.stderr);
-  const index = fs.readFileSync(path.join(docs, 'index.md'), 'utf8');
+  const index = readUtf8(docs, 'index.md');
   const external = index.slice(index.indexOf('## 🔗 Artefactos externos'), index.indexOf('## 📊 Estado del grafo'));
   assert.match(external, /- \[\[auth\]\] — \[spec\.md\]\(\.\.\/openspec\/specs\/auth\/spec\.md\) — Auth capability/);
   assert.match(external, /- \[\[add-login\]\] — \[proposal\.md\]\(\.\.\/openspec\/changes\/add-login\/proposal\.md\) — Add login/);
@@ -317,8 +322,6 @@ const SCAFFOLD_SUMMARY = /^creados: (\d+) · sobrescritos: (\d+) · preservados:
 const LAYER_DIRS = ['product', 'requirements', 'specs', 'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
 const SIX_TEMPLATES = ['story-template.md', 'epic-template.md', 'project-template.md', 'project-intent-template.md', 'project-plan-template.md', 'adr-template.md'];
 
-const countFiles = (dir) => Object.keys(hashTree(dir)).length;
-const lastLine = (stdout) => stdout.trim().split('\n').pop();
 const summaryOf = (stdout) => {
   const match = lastLine(stdout).match(SCAFFOLD_SUMMARY);
   assert.ok(match, `resumen inesperado: ${lastLine(stdout)}`);
@@ -349,12 +352,12 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   }
   assert.ok(!fs.existsSync(path.join(docs, 'index.md')), 'scaffold no crea index.md');
 
-  const vision = fs.readFileSync(path.join(docs, 'product', 'vision.md'), 'utf8');
+  const vision = readUtf8(docs, 'product', 'vision.md');
   assert.match(vision, /^created: 2026-03-04$/m);
   assert.match(vision, /^updated: 2026-03-04$/m);
   assert.ok(!vision.includes('{date}'));
   assert.match(vision, /^type: product$/m);
-  assert.match(fs.readFileSync(path.join(docs, 'requirements', 'README.md'), 'utf8'), /^slug: requirements-index$/m);
+  assert.match(readUtf8(docs, 'requirements', 'README.md'), /^slug: requirements-index$/m);
 
   const created = result.stdout.split('\n').filter((line) => line.startsWith('[CREADO] '));
   assert.ok(created.includes('[CREADO] constitution.md'));
@@ -377,7 +380,7 @@ test('S096-UT-002 scaffold: idempotente, la segunda corrida preserva todo con cr
   assert.ok(first.stdout.includes('[CREADO] requirements/README.md'));
   assert.ok(first.stdout.includes('[PRESERVADO] constitution.md'));
   assert.ok(!first.stdout.includes('specs/03-stories/.gitkeep'), 'un directorio con contenido no recibe .gitkeep');
-  assert.match(fs.readFileSync(path.join(docs, 'constitution.md'), 'utf8'), /Regla local:/);
+  assert.match(readUtf8(docs, 'constitution.md'), /Regla local:/);
   const after = hashTree(docs);
 
   const second = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]);
@@ -421,7 +424,7 @@ test('S096-UT-004 scaffold: plantillas compartidas copiadas byte a byte desde el
     assert.ok(source.equals(fs.readFileSync(path.join(docs, 'templates', name))), `${name} byte a byte`);
   }
   const seed = fs.readFileSync(path.join(engine.SCAFFOLD_DIR, 'templates', 'adr-template.md'), 'utf8').replace(/\r\n?/g, '\n');
-  assert.equal(fs.readFileSync(path.join(docs, 'templates', 'adr-template.md'), 'utf8'), seed);
+  assert.equal(readUtf8(docs, 'templates', 'adr-template.md'), seed);
   assert.ok(!result.stdout.includes('[WARNING]'));
 });
 
@@ -454,8 +457,6 @@ test('S096-UT-006 scaffold --force: restaura solo semillas y plantillas, conserv
   fs.appendFileSync(path.join(docs, 'constitution.md'), '\nRegla local añadida.\n');
   fs.writeFileSync(path.join(docs, 'adr', 'README.md'), '# README editado\n');
   fs.writeFileSync(path.join(docs, 'templates', 'story-template.md'), '# plantilla editada\n');
-  const adr = path.join(docs, 'adr', 'ADR-0001-x.md');
-  const adrHash = hashTree(docs)['adr' + path.sep + 'ADR-0001-x.md'];
   const filesBefore = countFiles(docs);
 
   const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--force', '--date', '2026-03-04']);
@@ -469,11 +470,11 @@ test('S096-UT-006 scaffold --force: restaura solo semillas y plantillas, conserv
   assert.ok(!result.stdout.includes('[PRESERVADO]'));
 
   const restored = hashTree(docs);
-  assert.equal(restored['adr' + path.sep + 'ADR-0001-x.md'], adrHash);
-  assert.ok(fs.existsSync(adr));
-  assert.equal(restored['guides' + path.sep + 'sdd.md'], pristine['guides' + path.sep + 'sdd.md']);
-  assert.ok(!fs.readFileSync(path.join(docs, 'constitution.md'), 'utf8').includes('Regla local'));
-  assert.match(fs.readFileSync(path.join(docs, 'adr', 'README.md'), 'utf8'), /^slug: adr-index$/m);
+  for (const author of ['adr/ADR-0001-x.md', 'guides/sdd.md', 'specs/03-stories/STORY-001-a/story.md']) {
+    assert.equal(restored[author], pristine[author], `${author} intacto`);
+  }
+  assert.ok(!readUtf8(docs, 'constitution.md').includes('Regla local'));
+  assert.match(readUtf8(docs, 'adr', 'README.md'), /^slug: adr-index$/m);
   // La plantilla compartida vuelve a ser la del skill dueño (el fixture traía una versión propia).
   const owner = fs.readFileSync(path.join(REPO_ROOT, 'skills', 'story-creation', 'assets', 'story-template.md'));
   assert.ok(owner.equals(fs.readFileSync(path.join(docs, 'templates', 'story-template.md'))));
@@ -503,7 +504,7 @@ test('S096-UT-007 scaffold: ningún modo elimina archivos', (t) => {
     assert.ok(now >= count, `flags ${flags.join(' ')}: ${now} < ${count}`);
     count = now;
     for (const layer of LAYER_DIRS) assert.ok(fs.existsSync(path.join(docs, layer, 'extra-de-autor.md')), layer);
-    assert.equal(fs.readFileSync(path.join(docs, 'index.md'), 'utf8'), '# índice previo\n');
+    assert.equal(readUtf8(docs, 'index.md'), '# índice previo\n');
   }
 });
 
@@ -533,7 +534,7 @@ test('S096-IT-001 scaffold + index: las semillas se indexan sin nodos pendientes
   assert.equal(run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]).status, 0);
   const result = run(['index', '--root', docs]);
   assert.equal(result.status, 0, result.stderr);
-  const index = fs.readFileSync(path.join(docs, 'index.md'), 'utf8');
+  const index = readUtf8(docs, 'index.md');
   for (const slug of ['vision', 'stakeholders', 'objectives', 'requirements-index', 'specs-index', 'adr-index', 'constitution']) {
     assert.ok(index.includes(`- [[${slug}]]`), slug);
   }
@@ -549,5 +550,5 @@ test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
     if (layer === 'templates') assert.ok(!engine.KNOWN_LAYERS.includes(layer));
     else assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
   }
-  assert.deepEqual(engine.SHARED_TEMPLATES.map((t) => t.name).concat('adr-template.md'), SIX_TEMPLATES);
+  assert.deepEqual(engine.SHARED_TEMPLATES.map((template) => template.name).concat('adr-template.md'), SIX_TEMPLATES);
 });

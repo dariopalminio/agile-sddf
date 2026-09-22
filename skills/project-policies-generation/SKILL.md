@@ -273,7 +273,7 @@ Si `$SPECS_BASE/guardrails/dod-story-checklist.md` **no existe** pero `$SPECS_BA
 Si `$SPECS_BASE/guardrails/dod-story-checklist.md` **no existe**, preguntar al usuario:
 
 ```
-$SPECS_BASE/guardrails/dod-story-checklist.md no existe. ¿Cómo deseas crearlo?
+$SPECS_BASE/docs/policies/definition-of-done-story.md no existe. ¿Cómo deseas crearlo?
   (a) Auto-completar — completar las notas adicionales con criterios específicos del stack detectado (Recomendado)
   (b) Template en blanco — crear con los placeholders sin completar
 ```

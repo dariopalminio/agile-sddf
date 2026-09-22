@@ -5,11 +5,11 @@ id: STORY-096
 kind: feat
 slug: STORY-096-memory-system-scaffold-ensure-rebuild
 title: "Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-20-memory-system
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-22
 related:
   - EPIC-20-memory-system
   - STORY-095-memory-system-index-alias
