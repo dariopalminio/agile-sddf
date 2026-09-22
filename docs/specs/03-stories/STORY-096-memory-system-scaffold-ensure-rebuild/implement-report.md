@@ -251,7 +251,7 @@ El hallazgo MEDIUM que bloqueaba el code review (principio 13) está resuelto, y
 
 ```
 - $SPECS_BASE/guardrails/dod-story-checklist.md no existe. ¿Cómo deseas crearlo?
-+ $SPECS_BASE/docs/policies/definition-of-done-story.md no existe. ¿Cómo deseas crearlo?
++ $SPECS_BASE/policies/definition-of-done-story.md no existe. ¿Cómo deseas crearlo?
 ```
 
 Apunta a la ruta antigua y además duplica el prefijo (`$SPECS_BASE` ya resuelve a `docs`). Es el mismo patrón que los seis `analyze.md` revertidos en esta sesión. No se revierte: queda fuera del alcance aprobado.
