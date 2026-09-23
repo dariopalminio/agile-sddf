@@ -9,7 +9,7 @@ status: IMPLEMENT
 substatus: DONE
 parent: EPIC-20-memory-system
 created: 2026-09-20
-updated: 2026-09-22
+updated: 2026-09-23
 related:
   - EPIC-20-memory-system
   - STORY-095-memory-system-index-alias

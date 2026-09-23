@@ -34,6 +34,8 @@ title: "<Nombre de la política>"
 
 ## 1. [CONTEXT] Propósito y Alcance
 
+<!-- escritor: autoría manual -->
+
 <!-- Define el QUÉ y el POR QUÉ de esta política. Explica qué problema resuelve y a qué agentes/sistemas aplica. -->
 
 **Propósito:**
@@ -49,6 +51,8 @@ title: "<Nombre de la política>"
 
 ## 2. [CONTEXT] Definiciones y Términos Clave
 
+<!-- escritor: autoría manual -->
+
 <!-- Define términos técnicos o específicos del dominio para evitar ambigüedades. -->
 
 - **[Término 1]**: [Definición clara].
@@ -57,6 +61,8 @@ title: "<Nombre de la política>"
 ---
 
 ## 3. [GUARDRAIL - BLOQUEANTE] Reglas No Negociables
+
+<!-- escritor: autoría manual -->
 
 <!-- ESTAS REGLAS SON DE OBLIGADO CUMPLIMIENTO. El agente debe verificar CADA UNA antes de ejecutar. Si falla, ABORTA. -->
 
@@ -72,6 +78,8 @@ El agente debe **ABORTAR** la tarea y notificar el motivo con el ID de la regla 
 ---
 
 ## 4. [GUIDE - ALTA PRIORIDAD] Buenas Prácticas
+
+<!-- escritor: autoría manual -->
 
 <!-- Estas son recomendaciones de calidad. El agente DEBE esforzarse por cumplirlas. Si no puede, debe justificarlo en su PLAN.md. -->
 
@@ -89,6 +97,8 @@ El agente debe **ABORTAR** la tarea y notificar el motivo con el ID de la regla 
 
 ## 5. [GUIDE - RENDIMIENTO] Optimización y Eficiencia
 
+<!-- escritor: autoría manual -->
+
 <!-- Recomendaciones para minimizar el consumo de contexto (tokens) del agente. -->
 
 - **R-01** – ✅ **Mantén los archivos principales por debajo de [N] líneas**: [Explicación de por qué y cómo dividir].
@@ -98,6 +108,8 @@ El agente debe **ABORTAR** la tarea y notificar el motivo con el ID de la regla 
 ---
 
 ## 6. [GUIDE - ESTRUCTURA] Organización de Archivos (si aplica)
+
+<!-- escritor: autoría manual -->
 
 <!-- Define cómo deben organizarse físicamente las carpetas y archivos. -->
 
@@ -126,6 +138,8 @@ El agente debe **ABORTAR** la tarea y notificar el motivo con el ID de la regla 
 ---
 
 ## 7. [GUIDE - METADATOS] Reglas para el Descubrimiento (si aplica)
+
+<!-- escritor: autoría manual -->
 
 <!-- Define el formato de los metadatos para que los agentes encuentren el recurso. -->
 
@@ -159,6 +173,8 @@ description: >
 
 ## 8. [GUIDE - REFERENCIAS] Estándares y Documentación Oficial
 
+<!-- escritor: autoría manual -->
+
 <!-- Lista de fuentes externas que respaldan esta política. -->
 
 - **[Nombre del estándar](URL)** – [Breve descripción de por qué es relevante].
@@ -167,6 +183,8 @@ description: >
 ---
 
 ## 9. [INSTRUCTION] Directrices Operativas (si aplica)
+
+<!-- escritor: autoría manual -->
 
 <!-- Pasos secuenciales que el agente DEBE seguir para ejecutar esta política correctamente. -->
 
@@ -183,6 +201,8 @@ description: >
 
 ## 10. [CONTEXT] Resumen de Categorías
 
+<!-- escritor: autoría manual -->
+
 <!-- Clasificación interna del documento para que el agente sepa qué hacer con cada sección. -->
 
 | Sección | Categoría | Naturaleza | Acción ante incumplimiento |
@@ -195,6 +215,8 @@ description: >
 ---
 
 ## Historial de Cambios
+
+<!-- escritor: autoría manual -->
 
 <!-- Registro de versiones para trazabilidad. -->
 

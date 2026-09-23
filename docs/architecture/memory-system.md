@@ -274,10 +274,12 @@ punto de entrada operativo de este sistema. Expone los modos `ensure` (por defec
   constitución del framework con `[Por completar]`), `product/{README,vision,stakeholders,objectives}.md`,
   un `README.md` por capa con propósito, convención de nombres y wikilink `[[index]]`,
   `specs/01-projects/`, `02-epics/`, `03-stories/` (con `.gitkeep` solo si el directorio no existe),
-  `templates/README.md` y `templates/adr-template.md`. Frontmatter canónico de `header-aggregation`
-  con `created`/`updated` = `{date}`, el único placeholder que el motor sustituye al copiar.
-- **Plantillas compartidas**: `scaffold` aplica la misma tabla que `sddf-init` Paso 2b (ADR-0001:
-  un dueño por template) copiando byte a byte desde `<CLI_ROOT>/skills/<dueño>/assets/`; si el
+  `templates/README.md`, `templates/adr-template.md` y las semillas de autoría manual sin skill
+  dueño `templates/{domain,guardrail,policy}-template.md` (ADR-0012). Frontmatter canónico de
+  `header-aggregation` con `created`/`updated` = `{date}`, el único placeholder que el motor
+  sustituye al copiar.
+- **Plantillas compartidas**: `scaffold` aplica la misma tabla que `sddf-init` Paso 2b (ADR-0007,
+  que conserva la regla de ADR-0001: un dueño por template) copiando byte a byte desde `<CLI_ROOT>/skills/<dueño>/assets/`; si el
   dueño no está instalado emite `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`
   y continúa con exit 0.
 - **Copia-si-falta y no-eliminación**: por archivo, destino ausente → `[CREADO]`; presente →
@@ -319,6 +321,7 @@ ningún modo los toca ni los elimina:
 | `product/README.md`, `product/vision.md`, `product/stakeholders.md`, `product/objectives.md` | semilla |
 | `requirements/README.md`, `specs/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla |
 | `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md`) |
+| `templates/domain-template.md`, `guardrail-template.md`, `policy-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) |
 | `templates/story-template.md`, `epic-template.md`, `project-template.md`, `project-intent-template.md`, `project-plan-template.md` | skill dueño (`story-creation`, `epic-creation`, `project-discovery`, `project-begin`, `project-planning`) |
 
 Un proyecto real recupera una constitución personalizada desde git tras `rebuild --force`; por eso

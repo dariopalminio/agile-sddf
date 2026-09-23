@@ -177,3 +177,5 @@ related:
   > archivos fuera de la lista blanca.
 
 - [x] Implementar fix-directives.md — las siete acciones (a-g) aplicadas; CR-004 registrado en design.md
+
+- [x] Implementar fix-directives.md — ronda 3: #1 policy-template.md (11 secciones anotadas, copia byte a byte) y #2 memory-system.md §10.3; #3–#5 cerrados por derivación
