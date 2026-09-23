@@ -22,6 +22,8 @@ Precedencia de detección: `--harness` explícito > `sddf.config.yaml` > `.speci
 
 Las raíces externas se leen en modo solo lectura: `index` nunca escribe fuera de `SPECS_BASE`.
 `skipLayers` y `mappings` están reservadas para STORY-098 (adaptación del scaffolding por harness).
+`skipLayers` admite, además de las once capas, el valor `constitution.md`: `check` lo consulta
+también para el archivo raíz, que no es una capa pero sí una entrada esperada de la memoria (§7).
 
 ## 2. Nodo indexable
 
@@ -152,6 +154,9 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
 | `requirements/README.md`, `specs/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla | `wiki` / `<capa>-index` |
 | `specs/01-projects/.gitkeep`, `specs/02-epics/.gitkeep`, `specs/03-stories/.gitkeep` | semilla | solo si el directorio no existe; nunca se listan ni se sobrescriben si ya existe |
 | `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md` del framework) | template |
+| `templates/domain-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
+| `templates/guardrail-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
+| `templates/policy-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
 | `templates/story-template.md` | `<CLI_ROOT>/skills/story-creation/assets/` | template |
 | `templates/epic-template.md` | `<CLI_ROOT>/skills/epic-creation/assets/` | template |
 | `templates/project-template.md` | `<CLI_ROOT>/skills/project-discovery/assets/` | template |
@@ -182,8 +187,10 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
   mantienen byte a byte idénticas.
 - **Dueño ausente:** si `--cli-root` no se pasa o `<CLI_ROOT>/skills/<dueño>/assets/<nombre>` no
   existe, el motor emite `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`,
-  no crea ese archivo y termina con exit 0 (misma regla que `sddf-init` Paso 2b; ADR-0001: un
-  dueño por template, sin copias en `assets/scaffold/`).
+  no crea ese archivo y termina con exit 0 (misma regla que `sddf-init` Paso 2b; ADR-0007, que
+  conserva la regla de ADR-0001: un dueño por template compartido, sin copias en
+  `assets/scaffold/`. Las cuatro plantillas de autoría manual —`adr`, `domain`, `guardrail`,
+  `policy`— no tienen dueño y por eso viven en la semilla, conforme a ADR-0012).
 - **Directorios:** se crean los intermedios que hagan falta y los once de capa aunque el harness
   omita sus semillas. Raíz ausente con padre existente → se crea (bootstrap); sin padre → exit 2.
   `assets/scaffold/` ausente → exit 2 nombrando la ruta.
@@ -253,8 +260,9 @@ ampliar `REQUIRED_FIELDS` es una decisión de esta tabla, no del código.
 | `invalid-frontmatter` | Campo de `REQUIRED_FIELDS` ausente del frontmatter declarado (§6). | `falta <campo>` |
 | `broken-wikilink` | Ocurrencia de `[[slug]]` cuyo slug no está en el conjunto de slugs derivados (§2, incluidas las raíces externas del perfil). | `[[slug]] no resuelve` |
 
-`path` es `<capa>/` para `missing-layer` y la `relPath` del nodo en las demás familias, siempre
-relativa a `SPECS_BASE` y con `/`. Los problemas se ordenan por `(kind, path, detail)` con
+`path` es `<capa>/` para `missing-layer` —excepto `constitution.md`, que se reporta tal cual, sin
+barra final, por ser un archivo y no un directorio— y la `relPath` del nodo en las demás familias,
+siempre relativa a `SPECS_BASE` y con `/`. Los problemas se ordenan por `(kind, path, detail)` con
 comparación ordinal; el informe textual los agrupa en el orden de la tabla. `check` no escribe
 nada: ni `index.md`, ni frontmatter, ni directorios.
 
@@ -269,4 +277,8 @@ problemas: N (missing-layer n · orphan n · invalid-frontmatter n · broken-wik
 Solo aparecen entre paréntesis las familias con al menos un problema; sin problemas la línea es
 `problemas: 0`. Con `--json`, el mismo resultado es
 `{ harness, root, ok, summary, problems }` y stdout no lleva nada más. Exit 0 sin problemas, 1 con
-al menos uno, 2 ante error técnico (raíz inexistente, `--harness` no admitido, Node < 18).
+al menos uno, 2 ante error técnico: raíz inexistente, `--harness` no admitido, Node < 18, argumentos
+mal formados y **cualquier error inesperado durante el chequeo** (CR-008). En `check` el 1 significa
+exclusivamente "memoria con problemas", que es lo que hace el gate legible en CI. Con `--json`,
+todo exit 2 deja `{ "ok": false, "error": "…" }` en stdout, incluidos los errores de parseo de
+argumentos, que se detectan antes de entrar al subcomando.

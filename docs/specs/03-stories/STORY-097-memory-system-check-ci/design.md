@@ -223,13 +223,13 @@ Documentación de uso en CI (NFR-5), en `sddf-commands-pipeline.md`:
 | `node scripts/memory-system.js check --root <SPECS_BASE> [--harness h] [--json]` | Solo lectura. Texto agrupado por familia o JSON único en stdout; errores técnicos en stderr; exit 0 / 1 / 2. | AC-1, AC-2, AC-4 |
 | Objeto JSON de `check` | `{ harness, root, ok, summary{kind→n}, problems[{kind, path, detail}] }`; claves y orden estables; `problems` ordenado por `(kind, path, detail)`. | AC-2, NFR-1 |
 | `REQUIRED_FIELDS` | `{ all: [type, slug, title], specs: [id, status] }`; leído por `check` y documentado en `memory-rules.md`. | AC-3 |
-| Evaluador | `(ctx: { nodes, layers, profile, slugSet }) → Problem[]`; sin efectos. | AC-3, AC-4 |
+| Evaluador | `(ctx: { root, nodes, layers, profile, slugSet }) → Problem[]`; sin efectos (CR-007). | AC-3, AC-4 |
 
 ## Esquema de datos
 
 - **Problem**: `{ kind: missing-layer | orphan | invalid-frontmatter | broken-wikilink, path: string, detail: string }`.
 - **Resultado de check**: `{ harness, root, ok: boolean, summary: Record<kind, number>, problems: Problem[] }`.
-- **Contexto de evaluación**: `{ nodes: Node[], layers: LAYERS, profile: HARNESS_PROFILES[h], slugSet: Set<string> }`.
+- **Contexto de evaluación**: `{ root: string, nodes: Node[], layers: LAYERS, profile: HARNESS_PROFILES[h], slugSet: Set<string> }`; `root` solo lo consume `missingLayers`, el único evaluador que mira el disco (CR-007).
 
 ## Flujos clave
 
@@ -336,3 +336,17 @@ Sin preguntas abiertas.
 - **Decisión tomada**: la aserción pasa a `"ok"` + `false` (independiente del formato) y `not_contains` cubre ambas grafías de `ok: true`, de modo que una salida con `ok` verdadero sigue sin poder pasar. El formato exacto y la estabilidad byte a byte los verifica UT-008 de forma determinista.
 - **Documento afectado**: `skills/memory-system/evals/evals.json`
 - **Acción requerida**: ninguna; registrado.
+
+### CR-007
+- **Tipo**: ambigüedad
+- **Descripción**: el contexto que `checkMemory` construye y pasa a los evaluadores es `{ root, nodes, layers, profile, slugSet }`; las secciones *Interfaces* y *Esquema de datos* de este diseño declaran `(ctx: { nodes, layers, profile, slugSet }) → Problem[]`, sin `root`. La clave es necesaria porque `missingLayers` es el único evaluador que mira el disco (comprueba la existencia de cada capa bajo la raíz) y estaba justificada en el JSDoc del evaluador y en el helper `checkCtx` de los tests, pero no se había registrado — a diferencia de la extensión equivalente del nodo (`declared`, CR-005). Detectado por el Integration-Reviewer en el code review de la historia.
+- **Decisión tomada**: el contrato del evaluador queda fijado como `(ctx: { root, nodes, layers, profile, slugSet }) → Problem[]`. Los cuatro evaluadores siguen siendo funciones puras sin efectos; `root` se lee, no se escribe.
+- **Documento afectado**: design.md (*Interfaces*, *Esquema de datos*)
+- **Acción requerida**: ninguna; registrado.
+
+### CR-008
+- **Tipo**: decisión
+- **Descripción**: el code review detectó dos bordes del contrato de exit code que degradaban el gate de CI. (a) El sobre `{ "ok": false, "error": … }` se emitía dentro de `runCheck`, es decir **después** de `parseArgs`: un error de argumentos con `--json` (`check --json` sin `--root`, flag mal escrito) salía con exit 2 y stdout vacío, y el `jq -r ".error"` del snippet documentado en `sddf-commands-pipeline.md` fallaba —pese a que `SKILL.md` §3.5 afirmaba que el motor siempre deja el objeto en stdout—. (b) Un error inesperado dentro de `check` (p. ej. `EACCES` al leer un nodo) no es `UsageError`, así que `main` devolvía **1**, indistinguible de "memoria con problemas" para un pipeline: justo la ambigüedad que D-4 quería evitar reservando el 2.
+- **Decisión tomada**: el sobre JSON se emite en `main`, condicionado a que el `argv` crudo contenga `--json` (flag que solo `check` lee), de modo que cubre también los errores de parseo; `runCheck` pierde su `try/catch`, que existía solo para emitirlo. Y en `check` **todo** error termina con exit 2, no solo los tres casos que D-4 enumeró: el 1 queda reservado en exclusiva para "memoria con problemas". Amplía la enumeración de D-4 sin contradecir AC-4 —que pide 2 "ante un error técnico"— y hace AC-1 más cierto, no menos. Cubierto por `S097-UT-012`.
+- **Documento afectado**: `skills/memory-system/scripts/memory-system.js`, `skills/memory-system/SKILL.md`, `skills/memory-system/references/memory-rules.md` §7, `docs/architecture/memory-system.md` §10.4, `docs/guides/sddf-commands-pipeline.md`, `CHANGELOG.md`
+- **Acción requerida**: ninguna; aplicado y registrado.

@@ -51,7 +51,7 @@ related:
 - `docs/specs/02-epics/EPIC-19-framework-consistency/epic.md` — l. 26 (bullet STORY-089, "estado propio", wikilink al slug antiguo `STORY-089-story-fix-post-code-review`), l. 45 (Escenario 3, `NEEDS-CHANGES`), l. 96 y l. 104 (`docs/knowledge/guides/state-machine.md`, `NEEDS-CHANGES`).
 - `docs/adr/` — último ADR es `ADR-0007` (2026-09-11, ACCEPTED); `docs/adr/README.md` mantiene la tabla índice; `adr-template.md` define la estructura.
 - `docs/guides/sddf-commands-pipeline.md` — no menciona `story-code-review` ni el flujo post-review (secciones 1–3 solo cubren proyecto, épicas y refinamiento de historias).
-- `README.md` l. 406 lista `fix-directives.md` como artefacto; l. 412 referencia `docs/guides/state-machine.md` (inexistente). `docs/domains/README.md` l. 64 referencia `docs/wiki/state-machine.md` (inexistente).
+- `README.md` l. 406 lista `fix-directives.md` como artefacto; l. 412 referencia `docs/guides/state-machine.md` (inexistente). `docs/domains/README.md` l. 64 referencia `docs/wiki/state-machine.md` (inexistente) --> (luego sería `domain-story-lifecycle.md`).
 - **Fixture real:** `STORY-090` está en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md` (5 hallazgos MEDIUM, **sin** `round`) y con `tasks.md` que ya contiene la línea `- [ ] Implementar fix-directives.md` (l. 85) escrita por el 4g.1 actual.
 - `.claude/skills/` es copia instalada e ignorada por git; la fuente editable es `skills/` en la raíz (principio 12 de la constitución). Este repo no tiene capas de código: el "código de producción" son los `SKILL.md`, sus `assets/`, `examples/` y `evals/` (`sddf.config.yaml` → `code_generators.layer: monolithic`, skill `skill-master`).
 

@@ -109,3 +109,5 @@ related:
 - [x] T016 Ejecutar `npm run verify:links`, `npm run verify:eval-inventory`,
   `npm run verify:syntax` y `npm test`; registrar resultados en implement-report.md —
   NFR-5, V-12.
+
+- [x] Implementar fix-directives.md

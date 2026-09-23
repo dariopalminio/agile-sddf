@@ -3,7 +3,7 @@
 /**
  * Tests del motor `skills/memory-system/scripts/memory-system.js` (STORY-095, STORY-096, STORY-097).
  * Cubre UT-001…UT-010 e IT-002 de STORY-095; con prefijo `S096-`, UT-001…UT-008 de STORY-096
- * (subcomando `scaffold`); y con prefijo `S097-`, UT-001…UT-011 y E2E-001/E2E-002 de STORY-097
+ * (subcomando `scaffold`); y con prefijo `S097-`, UT-001…UT-012 y E2E-001/E2E-002 de STORY-097
  * (subcomando `check`), todos sobre los fixtures de `skills/memory-system/examples/`.
  * Los casos que escriben copian el fixture a un directorio temporal para no ensuciar los
  * ejemplos.
@@ -319,9 +319,12 @@ test('UT-002b HARNESS_PROFILES: claves reservadas para STORY-098 (D-2)', () => {
 
 const SCAFFOLD_SUMMARY = /^creados: (\d+) · sobrescritos: (\d+) · preservados: (\d+) · omitidos por harness: (\d+)$/;
 
-// Las once capas y las seis plantillas que scaffold garantiza (AC-5, AC-6).
+// Las once capas y las nueve plantillas que scaffold garantiza (AC-5, AC-6).
 const LAYER_DIRS = ['product', 'requirements', 'specs', 'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
-const SIX_TEMPLATES = ['story-template.md', 'epic-template.md', 'project-template.md', 'project-intent-template.md', 'project-plan-template.md', 'adr-template.md'];
+// Las cinco que se copian desde su skill dueño, más las cuatro de autoría manual que viajan en la
+// semilla porque no tienen dueño (ADR-0012).
+const MANUAL_TEMPLATES = ['adr-template.md', 'domain-template.md', 'guardrail-template.md', 'policy-template.md'];
+const NINE_TEMPLATES = ['story-template.md', 'epic-template.md', 'project-template.md', 'project-intent-template.md', 'project-plan-template.md', ...MANUAL_TEMPLATES];
 
 const summaryOf = (stdout) => {
   const match = lastLine(stdout).match(SCAFFOLD_SUMMARY);
@@ -345,7 +348,7 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   for (const layer of LAYER_DIRS) {
     assert.ok(fs.existsSync(path.join(docs, layer, 'README.md')), `README de ${layer}`);
   }
-  for (const name of SIX_TEMPLATES) {
+  for (const name of NINE_TEMPLATES) {
     assert.ok(fs.existsSync(path.join(docs, 'templates', name)), name);
   }
   for (const sub of ['01-projects', '02-epics', '03-stories']) {
@@ -544,6 +547,41 @@ test('S096-IT-001 scaffold + index: las semillas se indexan sin nodos pendientes
   assert.match(lastLine(result.stdout), /nodos pendientes: 0$/);
 });
 
+// El árbol semilla se declara en design.md, memory-rules.md §5, SKILL.md y la arquitectura. Esta
+// aserción es de EXHAUSTIVIDAD, no de presencia: un archivo añadido a `assets/scaffold/` sin
+// documentarlo se copia a todo proyecto consumidor y queda fuera del alcance declarado de
+// `rebuild --force`. Si este test falla, actualiza las cuatro listas antes de tocar la constante.
+test('S096-UT-001c assets/scaffold: el árbol semilla es exactamente el declarado', () => {
+  const seedRoot = path.join(SKILL_DIR, 'assets', 'scaffold');
+  const actual = Object.keys(hashTree(seedRoot)).sort();
+  const expected = [
+    'constitution.md',
+    'adr/README.md',
+    'architecture/README.md',
+    'domains/README.md',
+    'guardrails/README.md',
+    'guides/README.md',
+    'policies/README.md',
+    'product/README.md',
+    'product/objectives.md',
+    'product/stakeholders.md',
+    'product/vision.md',
+    'requirements/README.md',
+    'runbooks/README.md',
+    'specs/README.md',
+    'specs/01-projects/.gitkeep',
+    'specs/02-epics/.gitkeep',
+    'specs/03-stories/.gitkeep',
+    'templates/README.md',
+    ...MANUAL_TEMPLATES.map((name) => `templates/${name}`),
+  ].sort();
+  assert.deepEqual(actual, expected);
+  // Las cinco compartidas NO viajan en la semilla: se copian desde su skill dueño (ADR-0007).
+  for (const { name } of engine.SHARED_TEMPLATES) {
+    assert.ok(!actual.includes(`templates/${name}`), `${name} no debe estar en la semilla`);
+  }
+});
+
 test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
   assert.deepEqual(engine.LAYERS, LAYER_DIRS);
   for (const layer of engine.LAYERS) {
@@ -551,11 +589,11 @@ test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
     if (layer === 'templates') assert.ok(!engine.KNOWN_LAYERS.includes(layer));
     else assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
   }
-  assert.deepEqual(engine.SHARED_TEMPLATES.map((template) => template.name).concat('adr-template.md'), SIX_TEMPLATES);
+  assert.deepEqual(engine.SHARED_TEMPLATES.map((template) => template.name).concat(MANUAL_TEMPLATES), NINE_TEMPLATES);
 });
 
 // ---------------------------------------------------------------------------
-// STORY-097 — check (UT-001…UT-011 y E2E-001/E2E-002 de testcases.md, prefijo S097-)
+// STORY-097 — check (UT-001…UT-012 y E2E-001/E2E-002 de testcases.md, prefijo S097-)
 // Contratos de verificación V-1…V-10 de design.md.
 // ---------------------------------------------------------------------------
 
@@ -732,6 +770,30 @@ test('S097-UT-010 check: errores técnicos terminan con exit 2 (V-9)', (t) => {
   const parsed = JSON.parse(badHarnessJson.stdout);
   assert.equal(parsed.ok, false);
   assert.match(parsed.error, /--harness: foo/);
+});
+
+test('S097-UT-012 check: sobre JSON en error de parseo y exit 2 ante error inesperado (CR-008)', (t) => {
+  // F-1: el error nace en `parseArgs`, antes de `runCheck`, y aun así stdout lleva el sobre.
+  const noRoot = run(['check', '--json']);
+  assert.equal(noRoot.status, 2);
+  assert.match(noRoot.stderr, /falta --root/);
+  const parsed = JSON.parse(noRoot.stdout);
+  assert.equal(parsed.ok, false);
+  assert.match(parsed.error, /falta --root/);
+  assert.equal(noRoot.stdout.trim().split('\n').length, 1, 'un único objeto en stdout');
+
+  // Sin `--json` no se contamina stdout: el mensaje va solo a stderr.
+  const noRootText = run(['check']);
+  assert.equal(noRootText.status, 2);
+  assert.equal(noRootText.stdout, '');
+
+  // F-2: un error inesperado durante el chequeo sale con 2, no con 1 (que significa
+  // "memoria con problemas"). `fs.readdirSync` es el mismo objeto de módulo que usa `walk`.
+  t.mock.method(process.stderr, 'write', () => true);
+  t.mock.method(fs, 'readdirSync', () => {
+    throw new Error('EACCES simulado');
+  });
+  assert.equal(engine.main(['check', '--root', 'skills/memory-system/examples/sane/docs']), 2);
 });
 
 test('S097-UT-011 check: docs/ de este repositorio en menos de 5 s (V-10)', () => {

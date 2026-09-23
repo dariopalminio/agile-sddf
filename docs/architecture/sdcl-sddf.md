@@ -1,74 +1,27 @@
 ---
 type: architecture
 slug: sdcl-sddf
-title: SDLC-SDDF Flujo de estados (SDLC-TBD)
+title: "Correspondencia SDLC clásico ↔ SDDF"
 ---
 
-# SDLC-SDDF Flujo de estados (SDLC-TBD)
+<!-- Referencias -->
+[[state-machine]]
 
-Correspondencia SDLC clásico vs SDLC de SDDF:
-1. Requirement: SPECIFY
-2. Design: PLAN (Diseño técnico + test-cases + tasking)
-3. Development: IMPLEMENT + CODE-REVIEW
-4. Verification&Validation: VERIFY + ACCEPTANCE
-5. Deploy: DELIVER
-6. Done/Maintenance: COMPLETED
+# Correspondencia SDLC clásico ↔ SDDF
 
-Estados SDLC-SDDF:
-- **SPECIFY**: Especificación funcional.
-- **PLAN**: Diseño técnico + test-cases + tasking.
-- **READY-FOR-IMPLEMENT**: Cola buffer y señal de listo para implementar con WIP limitado.
-- **IMPLEMENT**: Se escribe código y se ejecuta TDD/BDD.
-- **CODE-REVIEW**: Revisión de código independiente (PR y merge a main para CI/CD).
-- **VERIFY**: Pruebas automáticas sobre main (E2E, regresión) + feature flag (flag OFF).
-- **ACCEPTANCE**: Aceptación humana o del PO, pruebas exploratorias y validación de criterios de aceptación.
-- **DELIVER**: Desplegando a producción (Flag-on).
-- **COMPLETED**: Cierre administrativo.
-- **CANCELED**: La historia fue cancelada sin entregar.
+> **La máquina de estados canónica vive en [[state-machine]]**: allí están el modelo de `status` + `substatus`, los diagramas por nivel (story, project, épica), la tabla de estados y la tabla de transiciones por skill. Este documento cubre solo una cosa que aquel no: cómo se mapean las fases del SDLC clásico sobre los estados de SDDF.
 
-Diagrama:
-```
-  ┌─────────┐       ┌────────┐
-  │ SPECIFY │──────▶│  PLAN  │
-  └─────────┘       └────┬───┘
-                         │
-                         ▼
-                    ┌────────────────────────┐         ┌───────────┐
-                    │  READY-FOR-IMPLEMENT   │────────▶│ IMPLEMENT │
-                    └────────────────────────┘         └─────┬─────┘
-                         ▲    ▲    ▲                         │
-                         │    │    │                         ▼
-                         │    │    │                   ┌─────────────┐
-                         │    │    └───────────────────│ CODE-REVIEW │
-                         │    │                        └──────┬──────┘
-                         │    │                               │
-                         │    │                               ▼
-                         │    │                        ┌──────────┐
-                         │    └────────────────────────│  VERIFY  │
-                         │                             └────┬─────┘
-                         │                                  │
-                         │                                  ▼
-                         │                          ┌─────────────┐      ┌──────────┐
-                         └──────────────────────────│ ACCEPTANCE  │─────▶│ DELIVER  │
-                                                    └─────────────┘      └─────┬────┘
-                                                                               │
-                                                                               ▼
-                                                                         ┌───────────┐
-                                                                         │ COMPLETED │
-                                                                         └───────────┘
+Un equipo que llega desde un proceso SDLC tradicional reconoce sus seis fases; SDDF las descompone en estados más finos para que cada uno tenga un gate y un dueño explícitos.
 
-                    * ────────────────────────────────────────────────▶ ┌──────────┐
-                                                                         │ CANCELED │
-                                                                         └──────────┘
+| Fase SDLC clásico | Estado(s) SDDF | Por qué se descompone |
+|---|---|---|
+| Requirement | `SPECIFY` | — |
+| Design | `PLAN` | Agrupa diseño técnico, casos de prueba y tasking en un solo estado con tres artefactos. |
+| Development | `IMPLEMENT` + `CODE-REVIEW` | La revisión es un gate independiente con su propio retroceso, no el final de la codificación. |
+| Verification & Validation | `VERIFY` + `ACCEPTANCE` | Separa lo que verifica una máquina (pruebas automáticas) de lo que valida una persona (criterios de aceptación). |
+| Deploy | `DELIVER` | — |
+| Done / Maintenance | `COMPLETED` | — |
 
-  ────────────────────────────────────────────────────────────────────────────────────
-  Leyenda:
+`READY-FOR-IMPLEMENT` no tiene equivalente en el SDLC clásico: es una cola con límite WIP entre el diseño y la codificación. `CANCELED` tampoco: es el terminal de una historia abandonada sin entregar.
 
-    ─────▶   Flujo normal (avance).
-    ▲        Rework: CODE-REVIEW, VERIFY y
-             ACCEPTANCE devuelven la historia a READY-FOR-IMPLEMENT/DONE.
-    *        Cancelación posible desde cualquier estado activo.
-  ────────────────────────────────────────────────────────────────────────────────────
-```
-
-
+Para el detalle de cada estado, sus actores y sus transiciones, ver [[state-machine]].

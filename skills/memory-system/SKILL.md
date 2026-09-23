@@ -32,7 +32,8 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 **Qué hace este skill:**
 - Detecta el harness del proyecto (`sddf | speckit | openspec | generic`) y decide qué raíces se indexan.
 - `scaffold`: copia-si-falta del árbol semilla de `assets/scaffold/` (constitución, `product/*`,
-  un `README.md` por capa, `templates/README.md`, `adr-template.md`) y de las cinco plantillas
+  un `README.md` por capa, `templates/README.md` y las cuatro plantillas de autoría manual
+  `adr-template.md`, `domain-template.md`, `guardrail-template.md`, `policy-template.md`) y de las cinco plantillas
   compartidas desde su skill dueño. `[CREADO]` lo nuevo, `[PRESERVADO]` lo existente.
 - `ensure` (por defecto): `scaffold` + `index` en un solo paso; con `--fix-frontmatter` normaliza
   antes los archivos sin frontmatter mediante `/header-aggregation` en batch.
@@ -197,8 +198,8 @@ Exit codes (comunes a todos los subcomandos):
 | Exit | Situación | Qué hacer |
 |---|---|---|
 | 0 | Éxito (en `check`: `problemas: 0`) | Continuar la secuencia y mostrar el informe. |
-| 2 | `--harness` no admitido, raíz inexistente (o sin padre), `assets/scaffold/` ausente, template desalineado, Node < 18 | Mostrar el mensaje del motor (por ejemplo `valor no admitido para --harness: foo (admitidos: sddf, speckit, openspec, generic)` o `raíz inexistente: no-existe (no existe o no es un directorio)`) y detenerse: nada se ha escrito y no se muestra informe. |
-| 1 | Error inesperado — **excepto en `check`**, donde 1 significa "al menos un problema" y es el resultado normal del gate | En `check`: mostrar el informe del motor y propagar el 1. En los demás modos: mostrar el mensaje y detenerse sin escribir. |
+| 2 | `--harness` no admitido, raíz inexistente (o sin padre), `assets/scaffold/` ausente, template desalineado, argumentos mal formados, Node < 18 (la comprobación de versión la hace hoy solo `check`) y, **en `check`, cualquier error inesperado** durante el chequeo (CR-008) | Mostrar el mensaje del motor (por ejemplo `valor no admitido para --harness: foo (admitidos: sddf, speckit, openspec, generic)` o `raíz inexistente: no-existe (no existe o no es un directorio)`) y detenerse: nada se ha escrito y no se muestra informe. |
+| 1 | Error inesperado — **excepto en `check`**, donde 1 significa exclusivamente "al menos un problema" y es el resultado normal del gate (en `check` un error inesperado sale con 2, no con 1) | En `check`: mostrar el informe del motor y propagar el 1. En los demás modos: mostrar el mensaje y detenerse sin escribir. |
 
 ### Paso 3 — Ejecutar la secuencia del modo
 
@@ -242,7 +243,7 @@ y nada se escribe.
 2. `detect` → `harness: <h>`.
 3. `scaffold --root <SPECS_BASE> --cli-root <CLI_ROOT> --force` → el motor marca `[SOBRESCRITO]`
    únicamente los archivos gestionados (constitución, `product/*.md`, `README.md` de cada capa,
-   `templates/README.md`, `adr-template.md` y las cinco plantillas compartidas) y `[CREADO]` los
+   `templates/README.md`, las cuatro plantillas de autoría manual y las cinco compartidas) y `[CREADO]` los
    que faltaban; los artefactos de autor no aparecen ni se tocan; nada se elimina. Resumen
    `creados: N · sobrescritos: S · preservados: 0 · omitidos por harness: K`.
 4. `index --root <SPECS_BASE>` → regenera `index.md` y muestra su resumen.
@@ -299,7 +300,9 @@ Reglas de esta secuencia:
 5. **Exit 2**: muestra el mensaje de stderr del motor (`❌ raíz inexistente: no-existe (no existe o
    no es un directorio)`) y detente. No imprimas ningún informe de problemas, ni `problemas: 0`,
    ni `problemas: N`; con `--json` el propio motor ya ha puesto `{ "ok": false, "error": "…" }` en
-   stdout, así que tampoco añadas nada.
+   stdout, así que tampoco añadas nada. Esto vale para **todos** los exit 2, incluidos los errores
+   de argumentos mal formados, que el motor detecta antes de entrar al subcomando (CR-008): con
+   `--json` siempre hay un objeto en stdout del que `jq` puede leer `.error`.
 6. **No corrijas nada**: `check` informa. Con exit 1 y problemas `orphan`, sugiere
    `/memory-system ensure --fix-frontmatter` (o `/header-aggregation <ruta>`); con `missing-layer`,
    `/memory-system scaffold`; con `broken-wikilink` o `invalid-frontmatter`, edición manual del
@@ -388,7 +391,7 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
 ## Salida
 
 - `$SPECS_BASE/constitution.md`, `product/{README,vision,stakeholders,objectives}.md`, un
-  `README.md` por capa, `specs/01-projects/`, `02-epics/`, `03-stories/` y las seis plantillas de
+  `README.md` por capa, `specs/01-projects/`, `02-epics/`, `03-stories/` y las nueve plantillas de
   `templates/` — solo los que faltaban (`scaffold`, `ensure`) o todos los gestionados
   (`rebuild --force`).
 - `$SPECS_BASE/index.md` — índice completo de la wiki con wikilinks `[[slug]]` por capa, sección

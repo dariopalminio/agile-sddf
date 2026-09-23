@@ -83,5 +83,5 @@ Archivos modificados:
 story-plan/SKILL.md — 3 ocurrencias de PLANNING → PLAN (tabla de ciclo de vida + 2 referencias en instrucciones)
 header-aggregation/SKILL.md — substatus canónico ampliado: DONE y BLOCKED que faltaban
 specs_and_workflows.md — referencia al nuevo documento canónico al final del Story Workflow
-docs/index.md — nueva sección "Proceso" con [[state-machine]] y [[specs_and_workflows]]
+docs/index.md — nueva sección "Proceso" con [[state-machine]] y [[specs-and-workflows]]
 release.md — plan-09 marcado [x]

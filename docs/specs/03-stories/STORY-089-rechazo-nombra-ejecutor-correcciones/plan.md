@@ -1,6 +1,6 @@
 ---
 type: plan
-slug: plan
+slug: plan-rechazo-nombra-ejecutor-correcciones
 title: STORY-089 — Análisis y propuesta de cambio
 ---
 

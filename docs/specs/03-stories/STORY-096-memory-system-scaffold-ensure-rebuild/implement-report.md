@@ -23,7 +23,7 @@ related:
 | Fase GREEN confirmada | sí (evals 10/10; `npm test` 89/89) |
 | Fase REFACTOR confirmada | sí (evals 10/10; `npm test` 106/106; salida del motor idéntica) |
 | Archivos de prueba generados | 6 casos TC-005…TC-010 en `evals.json` + 17 fixtures + 10 tests nuevos en `test/memory-system.test.js` |
-| Archivos de producción generados | 19 semillas creadas · 12 archivos modificados |
+| Archivos de producción generados | 22 semillas creadas · 12 archivos modificados |
 | Modo de ejecución | interactive |
 
 ## Ciclo TDD
@@ -31,14 +31,14 @@ related:
 | Fase | Estado | Detalle |
 |---|---|---|
 | RED | ✅ | Tipo `eval` (`skill-test-evals`): TC-005…TC-010 ← EV-001…EV-006; TC-003 reconvertido de "modo ensure no disponible" a "modo no reconocido" (D-3 lo sustituye); fixtures `examples/{sddf-partial,empty,no-frontmatter}/`. `unit` y `e2e` omitidos por `skill: none`. Rojo confirmado: 6/7 FAIL. |
-| GREEN | ✅ | Capa `monolithic` (`skill-master`): subcomando `scaffold` en el motor, árbol semilla `assets/scaffold/` (19 archivos), modos `ensure`/`scaffold`/`rebuild` en `SKILL.md`, §5 en `memory-rules.md`, 10 tests `S096-*`, documentación. Evals 10/10 (4 casos requirieron reejecución por fallo transitorio del CLI headless). |
+| GREEN | ✅ | Capa `monolithic` (`skill-master`): subcomando `scaffold` en el motor, árbol semilla `assets/scaffold/` (22 archivos), modos `ensure`/`scaffold`/`rebuild` en `SKILL.md`, §5 en `memory-rules.md`, 10 tests `S096-*`, documentación. Evals 10/10 (4 casos requirieron reejecución por fallo transitorio del CLI headless). |
 | REFACTOR | ✅ | Helper `placeFile()` unifica semillas y plantillas compartidas; `assertSeedsCoverLayers()` y `profileOf()` extraídos; constantes de CLI a cabecera; LOW de STORY-095 aplicados (`Object.hasOwn`, `UsageError` por flag sin valor, `--date` validado). Tests con helpers compartidos. Sin regresiones: evals 10/10, `npm test` 106/106, salida de `scaffold` byte a byte idéntica a la línea base. |
 
 ## Artefactos producidos
 
 | Acción | Archivo | Componente (design.md) |
 |---|---|---|
-| crear | `skills/memory-system/assets/scaffold/**` (19 archivos) | Árbol semilla (D-1, D-5) |
+| crear | `skills/memory-system/assets/scaffold/**` (22 archivos) | Árbol semilla (D-1, D-5) |
 | modificar | `skills/memory-system/scripts/memory-system.js` | Subcomando `scaffold` (D-1, D-2, D-4) |
 | modificar | `skills/memory-system/SKILL.md` | Modos `ensure`/`scaffold`/`rebuild` (D-3, D-4) |
 | modificar | `skills/memory-system/references/memory-rules.md` | §5 "Scaffold y archivos gestionados" (D-4) |
@@ -148,12 +148,16 @@ De paso se cierra el hallazgo LOW de deriva entre copias: la semilla y `docs/adr
 
 > Nota: `sddf.config.yaml` declara los comandos de prueba bajo `verify:`, no bajo `defaults:`. Se usó `verify.eval.command` (`npm run test:eval`) como comando de confirmación del tipo `eval`.
 
-### Trabajo fuera de la lista blanca — requiere aprobación
+### Trabajo que estuvo fuera de la lista blanca — cerrado
 
-Dos tareas quedaron parciales porque completarlas exige tocar archivos que `fix-directives.md` no autoriza:
+Durante la pasada de corrección, T016 y T017 quedaron parciales porque completarlas exigía tocar archivos que `fix-directives.md` no autorizaba. **Ambas se cerraron después, el 2026-09-22**, y `tasks.md` las registra `[x]` con su nota de cierre. Estado verificado en el árbol:
 
-- **T016 — `CHANGELOG.md`.** La guía §0 y `README.md` están hechos, pero la entrada de los modos quedó bajo `## [3.2.1] — 2026-09-21` en lugar de `## 3.3.0 [Unreleased]`, que es lo que piden la tarea y D-7. Existe la sección `3.3.0 [Unreleased]`, así que mover la entrada es mecánico. Es el hallazgo LOW de `code-review-report.md` (desviación 6), declarado "pendiente de decisión del mantenedor".
-- **T017 — `docs/product/` y `docs/requirements/`.** Ambos directorios **existen pero están vacíos**: `/memory-system ensure` nunca se ejecutó sobre este repositorio, así que faltan `product/{README,vision,stakeholders,objectives}.md` y `requirements/README.md`. La primera mitad de la tarea (retroalimentar CR-001 a `story.md`) sí está hecha. Ejecutarlo modificaría además `docs/index.md`.
+| Tarea | Estado | Verificación |
+|---|---|---|
+| **T016 — `CHANGELOG.md`** | ✓ cerrada | Las entradas de `memory-system` (3 Added, 3 Changed, 1 Deprecated) están bajo `## 3.3.0 [Unreleased]`. En `## [3.2.1] — 2026-09-21` solo queda la nota que explica el traslado: el tag `v3.2.1` (commit `d335738`) no contiene ningún archivo de `skills/memory-system/`. El encabezado `[3.2.1]` se conserva porque `scripts/verify-release.js` exige exactamente una sección de la versión actual. |
+| **T017 — `docs/product/` y `docs/requirements/`** | ✓ cerrada | `ensure` se ejecutó sobre este repositorio (previo `scaffold --dry-run`): 8 creados, 0 sobrescritos, 13 preservados. Existen `product/{README,vision,stakeholders,objectives}.md` y `requirements/README.md`, más `runbooks/README.md`, `specs/README.md` y `templates/adr-template.md`, que el mismo árbol semilla crea. |
+
+Con esto, el hallazgo LOW de `code-review-report.md` (desviación 6, "pendiente de decisión del mantenedor") queda resuelto.
 
 **T019** permanece `[ ]` por diseño: es verificación manual de extremo a extremo en un directorio temporal, propia de la fase VERIFY (`/story-verify`), no de IMPLEMENT.
 
@@ -255,3 +259,45 @@ El hallazgo MEDIUM que bloqueaba el code review (principio 13) está resuelto, y
 ```
 
 Apunta a la ruta antigua y además duplica el prefijo (`$SPECS_BASE` ya resuelve a `docs`). Es el mismo patrón que los seis `analyze.md` revertidos en esta sesión. No se revierte: queda fuera del alcance aprobado.
+
+---
+
+## Segunda ronda de review — plantillas de autoría manual (2026-09-23)
+
+`/story-code-review STORY-096` devolvió `needs-changes` con un único `MEDIUM`, detectado de forma independiente por el Tech-Lead-Reviewer y el Integration-Reviewer: el árbol semilla tenía **22 archivos y no los 19** declarados, por tres plantillas —`templates/{domain,guardrail,policy}-template.md`— añadidas en el commit `911a188` sin documentar.
+
+**Decisión del autor: las tres se quedan.** Se añadieron a mano de forma deliberada porque las considera necesarias. El hallazgo no era que existieran, sino que estaban sin documentar y contradecían cuatro reglas escritas por la propia historia: `listSeeds()` recorre el árbol sin filtro, así que `scaffold` las copia a `docs/templates/` de **todo** proyecto consumidor mientras `memory-rules.md` §5 afirmaba que su lista era "lo único" que `rebuild --force` sobrescribe, y el `README.md` de la semilla decía "Las seis plantillas base son…".
+
+### El precedente que resuelve el caso
+
+El `fix-directives.md` afirmó en su primera versión que documentarlas obligaba a "resolver su conflicto con ADR-0001". **Es incorrecto** y se retiró:
+
+- **ADR-0001 está `SUPERSEDED` por ADR-0007**, que conserva su regla de propiedad y solo cambia la ubicación. La cita de `memory-rules.md` §5 se corrigió para apuntar a ADR-0007.
+- **ADR-0012 ya cubre exactamente este caso**: *"Un template cuyos campos no escribe ningún skill satisface el principio 13 anotando `escritor: autoría manual`"*, y llama a `adr-template.md` *"el **primer** template bajo esta regla"*. Estas tres son el segundo, tercero y cuarto. No había conflicto que resolver, había un precedente que aplicar.
+
+### Cambios aplicados
+
+| # | Acción | Archivos |
+|---|---|---|
+| a | Anotación `escritor: autoría manual` según ADR-0012 | `policy-template.md` (4 campos declarados + 8 secciones), `guardrail-template.md` (5 secciones), `domain-template.md` (13 secciones) |
+| b | Frontmatter canónico (`type`, `slug`, `title`); eran las únicas semillas `.md` sin él | Los tres |
+| c | Cuatro listas de archivos gestionados: "seis plantillas" → nueve, más la corrección ADR-0001 → ADR-0007 | `memory-rules.md` §5, `SKILL.md` (§3.3 y *Salida*), `docs/architecture/memory-system.md` (§3 árbol y §10), `assets/scaffold/templates/README.md` |
+| e | Conteos e inventario | Este informe (19 → 22 semillas), `CHANGELOG.md`, `evals.json` (3 descripciones que enumeraban el estado esperado) |
+| f | Sincronización de `docs/templates/` del framework, que no las tenía | `docs/templates/{domain,guardrail,policy}-template.md` |
+| g | **Aserción de exhaustividad** del árbol semilla | `S096-UT-001c` en `test/memory-system.test.js` |
+
+**`evals.json` se sumó al alcance sobre la marcha**: tres descripciones enumeraban "las seis plantillas" como parte del estado esperado. Documentar nueve en todas partes y dejar los evals en seis solo habría movido la inconsistencia de sitio.
+
+### Por qué los tests no lo detectaron, y qué lo impide ahora
+
+`SIX_TEMPLATES` comprobaba **presencia**, no exhaustividad: verificaba que las seis plantillas estuvieran, no que no hubiera más. `S096-UT-001c` compara ahora el conjunto exacto de archivos de `assets/scaffold/` contra la lista declarada, y verifica además que las cinco plantillas compartidas **no** viajen en la semilla (se copian desde su skill dueño, ADR-0007). Un archivo añadido sin documentar rompe ese test.
+
+La constante pasa a `NINE_TEMPLATES`, con `MANUAL_TEMPLATES` como subconjunto de las cuatro sin dueño.
+
+### Acción d — CR-004 en `design.md`
+
+Registrado con el rationale del autor: **las tres plantillas son parte del estándar que todo proyecto SDDF debe recibir**, no material de un consumidor concreto. El argumento encaja con el modelo de capas: `domains/`, `guardrails/` y `policies/` son tres de las once capas de memoria y eran las únicas de autoría humana que el scaffold creaba **sin** una plantilla con la que empezar a escribir — el proyecto recibía el `README.md` de la capa pero ninguna guía de estructura para su primer artefacto.
+
+CR-004 amplía D-1 y D-2 de seis a nueve y deja explícitos los dos grupos por origen: cinco compartidas copiadas en runtime desde su skill dueño (ADR-0007) y cuatro de autoría manual que viajan en la semilla por no tener dueño (ADR-0012). El encabezado de D-2 y la lista de D-7 quedan alineados.
+
+Con esto, las siete acciones de `fix-directives.md` están aplicadas.

@@ -16,8 +16,9 @@
  * Windows, macOS y Linux.
  *
  * Exit codes: 0 éxito · 2 error de uso, raíz inexistente, harness no admitido o template
- * desalineado (nunca escribe en esos casos) · 1 error inesperado. `check` usa el 1 para
- * "memoria con problemas" (gate de CI) y reserva el 2 para el error técnico (D-4).
+ * desalineado (nunca escribe en esos casos) · 1 error inesperado. En `check` el 1 significa
+ * exclusivamente "memoria con problemas" (gate de CI) y **todo** error, incluido el inesperado,
+ * sale con 2 (D-4, CR-008).
  */
 
 const fs = require('node:fs');
@@ -763,39 +764,42 @@ function runIndex(args) {
 
 /**
  * `check`: gate de CI en solo lectura. Exit 0 sin problemas, 1 con al menos uno (sin mensaje de
- * error) y 2 ante error técnico, que se propaga a `main` para que lo informe por stderr; con
- * `--json` stdout lleva entonces el objeto de error y nada más (D-4).
+ * error) y 2 ante cualquier error, que se propaga a `main` para que lo informe por stderr y deje
+ * el sobre JSON en stdout (D-4, CR-008).
  */
 function runCheck(args) {
-  try {
-    assertRuntime();
-    const specsBase = resolveRoot(args.root);
-    const harness = detectHarness(path.dirname(specsBase), args.harness);
-    const evaluated = checkMemory(specsBase, harness);
-    const result = {
-      harness,
-      root: toPosix(args.root),
-      ok: evaluated.ok,
-      summary: evaluated.summary,
-      problems: evaluated.problems,
-    };
-    process.stdout.write(args.json ? `${JSON.stringify(result, null, 2)}\n` : renderCheckText(result));
-    return result.ok ? 0 : 1;
-  } catch (error) {
-    if (args.json) process.stdout.write(`{ "ok": false, "error": ${JSON.stringify(error.message)} }\n`);
-    throw error;
-  }
+  assertRuntime();
+  const specsBase = resolveRoot(args.root);
+  const harness = detectHarness(path.dirname(specsBase), args.harness);
+  const evaluated = checkMemory(specsBase, harness);
+  const result = {
+    harness,
+    root: toPosix(args.root),
+    ok: evaluated.ok,
+    summary: evaluated.summary,
+    problems: evaluated.problems,
+  };
+  process.stdout.write(args.json ? `${JSON.stringify(result, null, 2)}\n` : renderCheckText(result));
+  return result.ok ? 0 : 1;
 }
 
 function main(argv = process.argv.slice(2)) {
+  let command = null;
   try {
     const args = parseArgs(argv);
+    command = args.command;
     const runners = { detect: runDetect, index: runIndex, scaffold: runScaffold, check: runCheck };
     return runners[args.command](args);
   } catch (error) {
+    // El sobre JSON se emite aquí y no en `runCheck` para cubrir también los errores de
+    // `parseArgs` (p. ej. `check --json` sin `--root`): el contrato con `jq` del gate de CI exige
+    // que todo exit 2 con `--json` deje un objeto en stdout. Solo `check` lee `--json` (CR-008).
+    if (argv.includes('--json')) process.stdout.write(`{ "ok": false, "error": ${JSON.stringify(error.message)} }\n`);
     const usage = error instanceof UsageError;
     process.stderr.write(`❌ ${usage ? '' : 'error inesperado: '}${error.message}\n`);
-    return usage ? 2 : 1;
+    // En `check` todo error es técnico → 2: reservar el 1 para "memoria con problemas" es lo que
+    // hace el gate legible en CI (D-4, CR-008). Los demás modos conservan el 1.
+    return usage || command === 'check' ? 2 : 1;
   }
 }
 

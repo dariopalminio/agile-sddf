@@ -1,6 +1,6 @@
 ---
 type: plan
-slug: plan
+slug: plan-integrar-config-sddf-init
 title: "Plan: Integrar sddf.config.yaml en el skill sddf-init"
 ---
 

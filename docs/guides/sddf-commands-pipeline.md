@@ -81,12 +81,21 @@ runtime que tengas instalado. En el repositorio del framework el motor vive en
 ```
 
 - **Exit 0** = memoria consistente; **1** = al menos un problema (el gate falla y `problems` dice
-  cuál y dónde); **2** = error técnico (raíz inexistente, `--harness` no admitido, Node < 18), que
-  no debe confundirse con memoria rota.
+  cuál y dónde); **2** = error técnico (raíz inexistente, `--harness` no admitido, argumentos mal
+  formados, Node < 18 o cualquier error inesperado durante el chequeo), que no debe confundirse con
+  memoria rota. En `check` el 1 significa exclusivamente "memoria con problemas", así que el
+  pipeline puede fiarse de él. Con `--json`, todo exit 2 deja un objeto en stdout, de modo que el
+  `jq -r ".error"` de arriba siempre tiene qué leer.
 - Con `--json` el motor no escribe nada más en stdout, así que el archivo es JSON puro. Sin
   `--json` la salida es el informe textual, útil en local: `node … check --root docs`.
 - `check` es **solo lectura**: no corrige. Para corregir, `/memory-system ensure --fix-frontmatter`
   (frontmatter ausente), `/memory-system scaffold` (capa ausente) o editar el artefacto.
+
+> **El repositorio del framework aún no está en verde.** `check --root docs` devuelve hoy 46
+> problemas conocidos (exit 1): wikilinks a documentos canónicos borrados y aún no restaurados, nodos de
+> `templates/` —excluidos del escaneo por diseño— y artefactos sin encabezado del que derivar un
+> `title` honesto. Copiar el snippet tal cual en un workflow de este repositorio rompería el build.
+> Actívalo primero en proyectos consumidores, o espera a que esa deuda se cierre.
 
 > **`check` y `npm run verify:links` son complementarios, no sustitutos** (CR-003 de STORY-097).
 > `verify:links` (`scripts/check-doc-links.js`) valida los **enlaces Markdown relativos** de este

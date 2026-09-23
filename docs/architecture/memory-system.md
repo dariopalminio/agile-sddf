@@ -118,14 +118,17 @@ agile-sddf/
     │   ├── README.md                  #   no forma parte de las once capas ni la crea el scaffold
     │   └── rfc-<topic>.md
     │
-    └── templates/                     # meta-artefactos (las seis plantillas base)
+    └── templates/                     # meta-artefactos (las nueve plantillas base)
         ├── README.md
         ├── story-template.md          # dueño: story-creation
         ├── epic-template.md           # dueño: epic-creation
         ├── project-template.md        # dueño: project-discovery
         ├── project-intent-template.md # dueño: project-begin
         ├── project-plan-template.md   # dueño: project-planning
-        └── adr-template.md            # semilla propia de memory-system
+        ├── adr-template.md            # autoría manual, semilla de memory-system
+        ├── domain-template.md         # autoría manual, semilla de memory-system
+        ├── guardrail-template.md      # autoría manual, semilla de memory-system
+        └── policy-template.md         # autoría manual, semilla de memory-system
 ```
 
 Las once capas de memoria son `product/`, `requirements/`, `specs/`, `domains/`, `architecture/`,
@@ -249,7 +252,7 @@ punto de entrada operativo de este sistema. Expone los modos `ensure` (por defec
 | Modo | Estado | Qué hace |
 |------|--------|----------|
 | `ensure [--fix-frontmatter] [--harness h]` (= sin modo) | STORY-096 | `detect → scaffold → [header-aggregation] → index`: crea solo lo que falta de las once capas, regenera `index.md` y reporta `creados: N · preservados: M · índice regenerado: sí`. Con `--fix-frontmatter` invoca `header-aggregation` en batch con "Saltar todos los conflictos" (solo archivos sin frontmatter). Idempotente: la segunda ejecución reporta `creados: 0`. |
-| `scaffold [--dry-run] [--harness h]` | STORY-096 | `detect → scaffold`: copia-si-falta del árbol semilla y de las seis plantillas; no toca `index.md`. `--dry-run` imprime `[CREARÍA]`/`[PRESERVARÍA]` sin escribir. |
+| `scaffold [--dry-run] [--harness h]` | STORY-096 | `detect → scaffold`: copia-si-falta del árbol semilla y de las nueve plantillas; no toca `index.md`. `--dry-run` imprime `[CREARÍA]`/`[PRESERVARÍA]` sin escribir. |
 | `rebuild [--force]` | STORY-096 | Sin `--force`: `❌ rebuild es destructivo. Añade --force para confirmar.` y ningún cambio. Con `--force`: advertencia `⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.`, `scaffold --force` (sobrescribe solo los archivos gestionados, §10.3) e `index`. Nunca borra. |
 | `index [--harness h] [--dry-run]` | STORY-095 | Regenera `docs/index.md` completo desde `assets/index-template.md`: una entrada `[[slug]]` por artefacto, agrupada por capa, más "Estado del grafo" y "Nodos pendientes". `--dry-run` imprime sin escribir. |
 | `check [--json] [--harness h]` | STORY-097 | Verificación en **solo lectura** de cuatro familias de problemas, con exit code para CI (§10.4). No corrige nada y no regenera `index.md`. |
@@ -376,11 +379,13 @@ byte a byte. Sin `--json` el informe es textual, agrupado por familia, y su últ
 | Exit | Significado | Salida |
 |---|---|---|
 | `0` | Memoria consistente | `problemas: 0` (o `"ok": true`) en stdout. |
-| `1` | Al menos un problema — resultado normal del gate, no un fallo de la herramienta | El informe o el objeto JSON en stdout, sin mensaje de error. |
-| `2` | Error técnico: raíz inexistente, `--harness` no admitido, Node < 18 | Mensaje en stderr (`❌ raíz inexistente: … (no existe o no es un directorio)`); con `--json`, stdout lleva `{ "ok": false, "error": "…" }` y nada más. |
+| `1` | Al menos un problema — resultado normal del gate, no un fallo de la herramienta. En `check` es su **único** significado | El informe o el objeto JSON en stdout, sin mensaje de error. |
+| `2` | Error técnico: raíz inexistente, `--harness` no admitido, argumentos mal formados, Node < 18 y cualquier error inesperado durante el chequeo | Mensaje en stderr (`❌ raíz inexistente: … (no existe o no es un directorio)`); con `--json`, stdout lleva `{ "ok": false, "error": "…" }` y nada más, también cuando el error es de parseo de argumentos. |
 
 Distinguir `1` de `2` es deliberado: un pipeline no debe confundir "memoria rota" con "herramienta
-mal invocada". Un gate de CI se escribe con el motor directamente, sin pasar por el agente:
+mal invocada". Por eso en `check` **todo** error termina en `2`, no solo los tres casos que el
+diseño enumeró primero (CR-008): si un fallo inesperado saliera con `1`, el gate lo leería como
+"memoria con problemas" y el `1` dejaría de ser una señal fiable. Un gate de CI se escribe con el motor directamente, sin pasar por el agente:
 `node .claude/skills/memory-system/scripts/memory-system.js check --root docs --json`
 (ejemplo completo en [sddf-commands-pipeline.md](../guides/sddf-commands-pipeline.md) §0). `check` y
 `npm run verify:links` (`scripts/check-doc-links.js`) son complementarios: aquel valida enlaces

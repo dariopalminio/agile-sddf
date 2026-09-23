@@ -140,9 +140,14 @@ Alternativas rechazadas: (a) generar las semillas con el LLM — no idempotente 
 (b) una lista de rutas en el código con contenido inline — separa estructura de contenido y
 dificulta editar las semillas.
 
-### D-2 — Las seis plantillas: cinco del skill dueño + `adr-template.md` propio
+### D-2 — Las nueve plantillas: cinco del skill dueño + cuatro de autoría manual en la semilla
 
 // satisface: AC-6, AC-7
+
+> **Ampliado por CR-004** (de seis a nueve). Las cuatro de autoría manual —`adr-template.md`,
+> `domain-template.md`, `guardrail-template.md`, `policy-template.md`— no tienen skill dueño y
+> viajan en el árbol semilla, anotadas con `escritor: autoría manual` conforme a ADR-0012. La tabla
+> de abajo cubre las cinco compartidas, que sí se copian en runtime desde su dueño.
 
 Tras copiar el árbol semilla, `scaffold` aplica la misma tabla de templates compartidos y la
 misma regla que el Paso 2b de `sddf-init`:
@@ -243,7 +248,7 @@ una línea: "invocado por `memory-system ensure --fix-frontmatter` en batch con 
 // satisface: NFR-6
 
 - `docs/architecture/memory-system.md` §10 (creada en STORY-095): añadir los modos `scaffold`,
-  `ensure`, `rebuild`, el árbol semilla, la lista de seis plantillas (alinear §3 del árbol,
+  `ensure`, `rebuild`, el árbol semilla, la lista de plantillas —nueve tras CR-004— (alinear §3 del árbol,
   que hoy lista `requirement-template.md` y no `project-intent`/`project-plan`), el alcance
   de `rebuild --force` y `rfcs/` como capa opcional no gestionada.
 - `docs/guides/sddf-commands-pipeline.md` §0: `/memory-system` (ensure) como comando
@@ -377,3 +382,15 @@ Sin preguntas abiertas.
 - **Descripción**: `memory-system.md` §3 lista `requirement-template.md` en `templates/`; ningún skill escribe ese template (principio 13), por lo que el scaffold no lo crea y la lista del árbol de arquitectura queda desalineada con las seis plantillas.
 - **Documento afectado**: docs/architecture/memory-system.md
 - **Acción requerida**: sustituir `requirement-template.md` por `project-intent-template.md` y `project-plan-template.md` en el árbol §3 (tarea de documentación de esta historia).
+
+### CR-004
+- **Tipo**: ampliación de alcance
+- **Descripción**: el árbol semilla contiene **nueve** plantillas, no las seis que fijan D-1 y D-2. Las tres adicionales —`templates/{domain,guardrail,policy}-template.md`— las añadió el autor a mano en el commit `911a188` y quedaron sin documentar, lo que las dejaba fuera de las cuatro listas de archivos gestionados pese a que `listSeeds()` recorre el árbol sin filtro y `scaffold` las copia a todo proyecto consumidor. Detectado en la segunda ronda de code review, de forma independiente, por el Tech-Lead-Reviewer y el Integration-Reviewer.
+- **Rationale del autor**: las tres son **parte del estándar que todo proyecto SDDF debe recibir**, no material de un consumidor concreto. Es coherente con el modelo de capas: `domains/`, `guardrails/` y `policies/` son tres de las once capas de memoria, y hasta ahora eran las únicas capas de autoría humana que el scaffold creaba **sin** una plantilla con la que empezar a escribir. Un proyecto recibía el `README.md` de la capa pero ninguna guía de estructura para su primer artefacto.
+- **Decisión tomada**: D-1 y D-2 se amplían de seis a nueve plantillas, repartidas en dos grupos por origen:
+  - **Cinco compartidas**, copiadas en runtime desde el `assets/` de su skill dueño (`story`, `epic`, `project`, `project-intent`, `project-plan`), conforme a ADR-0007 —que conserva la regla de propiedad de ADR-0001 y solo cambia la ubicación—.
+  - **Cuatro de autoría manual**, que viajan en la semilla porque **no tienen skill dueño**: `adr`, `domain`, `guardrail` y `policy`. Las cuatro anotan `escritor: autoría manual` conforme a [[ADR-0012-escritor-en-templates-de-autoria-manual]], cuya decisión ya preveía este caso al declarar `adr-template.md` "el **primer** template bajo esta regla".
+
+  No hay conflicto con ADR-0001: su regla aplica a los templates **compartidos cross-skill**, que son los cinco del primer grupo. Una versión anterior del `fix-directives.md` afirmó lo contrario y se retiró.
+- **Documento afectado**: design.md (D-1, D-2), `skills/memory-system/references/memory-rules.md` §5, `skills/memory-system/SKILL.md`, `docs/architecture/memory-system.md`, `skills/memory-system/assets/scaffold/templates/README.md`, `skills/memory-system/evals/evals.json`, `CHANGELOG.md`, `docs/templates/`
+- **Acción requerida**: ninguna; aplicado y registrado. La regresión que lo hizo posible —`SIX_TEMPLATES` comprobaba presencia y no exhaustividad— queda cubierta por `S096-UT-001c`, que compara el conjunto exacto del árbol semilla contra la lista declarada.

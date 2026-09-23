@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-09-22
+updated: 2026-09-23
 ---
 
 # 📚 Índice de documentación
@@ -37,10 +37,10 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 - [[guardrails-index]] — [README.md](guardrails/README.md) — Índice de Guardrails
 - [[dod-story-checklist]] — [dod-story-checklist.md](guardrails/dod-story-checklist.md) — Definition of Done — Story (transition guardrail)
-- [gr-agent-creation-checklist.md](guardrails/gr-agent-creation-checklist.md) — Guardrail: Custom agent creation ⚠️ sin frontmatter
-- [gr-ai-security-checklist.md](guardrails/gr-ai-security-checklist.md) — Guardrail: AI security check for agent-facing artefacts ⚠️ sin frontmatter
-- [gr-code-security-checklist.md](guardrails/gr-code-security-checklist.md) — Guardrail: Code security check ⚠️ sin frontmatter
-- [gr-skill-creation-checklist.md](guardrails/gr-skill-creation-checklist.md) — Guardrail: Agent Skill creation ⚠️ sin frontmatter
+- [[gr-agent-creation-checklist]] — [gr-agent-creation-checklist.md](guardrails/gr-agent-creation-checklist.md) — Guardrail: Custom agent creation
+- [[gr-ai-security-checklist]] — [gr-ai-security-checklist.md](guardrails/gr-ai-security-checklist.md) — Guardrail: AI security check for agent-facing artefacts
+- [[gr-code-security-checklist]] — [gr-code-security-checklist.md](guardrails/gr-code-security-checklist.md) — Guardrail: Code security check
+- [[gr-skill-creation-checklist]] — [gr-skill-creation-checklist.md](guardrails/gr-skill-creation-checklist.md) — Guardrail: Agent Skill creation
 
 ---
 
@@ -209,43 +209,44 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-081-implement-tdd-fase-green-refactor]] — [story.md](specs/03-stories/STORY-081-implement-tdd-fase-green-refactor/story.md) — story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar
 - [[STORY-082-implement-tdd-modos-ejecucion]] — [story.md](specs/03-stories/STORY-082-implement-tdd-modos-ejecucion/story.md) — story-implement — modos interactivo y automático de ejecución del ciclo TDD
 - [[STORY-083-skill-test-evals]] — [story.md](specs/03-stories/STORY-083-skill-test-evals/story.md) — skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente
-- [plan-01.md](specs/03-stories/STORY-084-skill-verify/plan-01.md) — Plan: Crear el skill skill-verify ⚠️ sin frontmatter
-- [plan-02.md](specs/03-stories/STORY-084-skill-verify/plan-02.md) — Plan: Añadir modo benchmark a skill-verify ⚠️ sin frontmatter
+- [[plan-01]] — [plan-01.md](specs/03-stories/STORY-084-skill-verify/plan-01.md) — Plan: Crear el skill skill-verify
+- [[plan-02]] — [plan-02.md](specs/03-stories/STORY-084-skill-verify/plan-02.md) — Plan: Añadir modo benchmark a skill-verify
 - [plan-03.md](specs/03-stories/STORY-084-skill-verify/plan-03.md) — plan-03 ⚠️ sin frontmatter
 - [[STORY-084-skill-verify]] — [story.md](specs/03-stories/STORY-084-skill-verify/story.md) — Unificar generación, ejecución y benchmark de evals en `skill-test-evals`
-- [plan.md](specs/03-stories/STORY-085-integrar-config-sddf-init/plan.md) — Plan: Integrar sddf.config.yaml en el skill sddf-init ⚠️ sin frontmatter
+- [[plan-integrar-config-sddf-init]] — [plan.md](specs/03-stories/STORY-085-integrar-config-sddf-init/plan.md) — Plan: Integrar sddf.config.yaml en el skill sddf-init
 - [[STORY-085-integrar-config-sddf-init]] — [story.md](specs/03-stories/STORY-085-integrar-config-sddf-init/story.md) — Mejora de experiencia de inicialización
-- [plan-01-refactor-release-to-epic.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-01-refactor-release-to-epic.md) — PLAN: Renombrar el nivel L2 de `release` a `epic` ⚠️ sin frontmatter
-- [plan-02-refactor-dev-levels.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-02-refactor-dev-levels.md) — PLAN: Reestructurar `docs/specs/` a niveles numerados (`01-projects/`, `02-epics/`, `03-stories/`) ⚠️ sin frontmatter
-- [plan-03-refactor-feat-to-story.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-03-refactor-feat-to-story.md) — PLAN: Renombrar el prefijo de historias de `FEAT-NNN` a `STORY-NNN` ⚠️ sin frontmatter
-- [plan-04-fix-insights.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-04-fix-insights.md) — Cierre de la migración release→epic / FEAT→STORY: alinear gate, evals y documentación normativa ⚠️ sin frontmatter
-- [plan-05-findings-and-remediation-plan.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-05-findings-and-remediation-plan.md) — Revisión de STORY-086 — hallazgos y plan de remediación ⚠️ sin frontmatter
-- [plan-06-update-project.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-06-update-project.md) — Plan — Reescribir `project.md` contra la realidad + runbook del proceso ⚠️ sin frontmatter
+- [[plan-01-refactor-release-to-epic]] — [plan-01-refactor-release-to-epic.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-01-refactor-release-to-epic.md) — PLAN: Renombrar el nivel L2 de `release` a `epic`
+- [[plan-02-refactor-dev-levels]] — [plan-02-refactor-dev-levels.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-02-refactor-dev-levels.md) — PLAN: Reestructurar `docs/specs/` a niveles numerados (`01-projects/`, `02-epics/`, `03-stories/`)
+- [[plan-03-refactor-feat-to-story]] — [plan-03-refactor-feat-to-story.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-03-refactor-feat-to-story.md) — PLAN: Renombrar el prefijo de historias de `FEAT-NNN` a `STORY-NNN`
+- [[plan-04-fix-insights]] — [plan-04-fix-insights.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-04-fix-insights.md) — Cierre de la migración release→epic / FEAT→STORY: alinear gate, evals y documentación normativa
+- [[plan-05-findings-and-remediation-plan]] — [plan-05-findings-and-remediation-plan.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-05-findings-and-remediation-plan.md) — Revisión de STORY-086 — hallazgos y plan de remediación
+- [[plan-06-update-project]] — [plan-06-update-project.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-06-update-project.md) — Plan — Reescribir `project.md` contra la realidad + runbook del proceso
 - [[STORY-086-refactor-release-to-epic]] — [story.md](specs/03-stories/STORY-086-refactor-release-to-epic/story.md) — Renombrar el nivel L2 de release a épica y numerar los directorios de specs
 - [[STORY-087-error-in-npm-install-locally]] — [story.md](specs/03-stories/STORY-087-error-in-npm-install-locally/story.md) — Error en instalaci�n local de npm install agile-sddf en Windows 11
-- [plan-01-decouple-security-audit.md](specs/03-stories/STORY-088-security-enhancement/plan-01-decouple-security-audit.md) — Desacoplar `story-code-review` del skill `security-audit` ⚠️ sin frontmatter
+- [[plan-01-decouple-security-audit]] — [plan-01-decouple-security-audit.md](specs/03-stories/STORY-088-security-enhancement/plan-01-decouple-security-audit.md) — Desacoplar `story-code-review` del skill `security-audit`
 - [plan-02-security.md](specs/03-stories/STORY-088-security-enhancement/plan-02-security.md) — plan-02-security ⚠️ sin frontmatter
-- [plan-04-fix-security-insights.md](specs/03-stories/STORY-088-security-enhancement/plan-04-fix-security-insights.md) — Cerrar los 8 hallazgos `(warn)` del `ai-security-checklist` ⚠️ sin frontmatter
+- [[plan-04-fix-security-insights]] — [plan-04-fix-security-insights.md](specs/03-stories/STORY-088-security-enhancement/plan-04-fix-security-insights.md) — Cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`
 - [[STORY-088-security-enhancement]] — [story.md](specs/03-stories/STORY-088-security-enhancement/story.md) — Mejoras de seguridad
-- [plan.md](specs/03-stories/STORY-089-rechazo-nombra-ejecutor-correcciones/plan.md) — STORY-089 — Análisis y propuesta de cambio ⚠️ sin frontmatter
+- [[plan-rechazo-nombra-ejecutor-correcciones]] — [plan.md](specs/03-stories/STORY-089-rechazo-nombra-ejecutor-correcciones/plan.md) — STORY-089 — Análisis y propuesta de cambio
 - [[STORY-089-rechazo-nombra-ejecutor-correcciones]] — [story.md](specs/03-stories/STORY-089-rechazo-nombra-ejecutor-correcciones/story.md) — Un code review rechazado nombra al ejecutor de correcciones y no depende de tasks.md
 - [[STORY-090-campos-declarados-nombran-su-escritor]] — [story.md](specs/03-stories/STORY-090-campos-declarados-nombran-su-escritor/story.md) — Todo campo declarado en un template nombra a su escritor
 - [[STORY-091-story-implement-modo-rework]] — [story.md](specs/03-stories/STORY-091-story-implement-modo-rework/story.md) — story-implement toma de la cola una historia rechazada y corrige en modo rework
 - [[STORY-092-reglas-robustez-modo-rework]] — [story.md](specs/03-stories/STORY-092-reglas-robustez-modo-rework/story.md) — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro
 - [[STORY-093-raiz-configurable-preflight-diagnostico]] — [story.md](specs/03-stories/STORY-093-raiz-configurable-preflight-diagnostico/story.md) — Resolver una raíz configurable y usar preflight como diagnóstico
 - [insights.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/insights.md) — insights ⚠️ sin frontmatter
-- [plan-01-fix-ci-security-audit.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-01-fix-ci-security-audit.md) — Plan 01 — Corregir la cobertura y el fallo de la CI de seguridad ⚠️ sin frontmatter
-- [plan-02-fix-postinstall-target-validation.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-02-fix-postinstall-target-validation.md) — Plan 02 — Cerrar el traversal de `SDDF_TARGET` en `postinstall` ⚠️ sin frontmatter
-- [plan-03-fix-evals-runner-false-greens.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-03-fix-evals-runner-false-greens.md) — Plan 03 — Cerrar falsos verdes del runner de evals ⚠️ sin frontmatter
-- [plan-04-cerrar-hallazgos-pendientes-auditoria.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-04-cerrar-hallazgos-pendientes-auditoria.md) — Plan 04 — Cerrar los hallazgos pendientes de la auditoría ⚠️ sin frontmatter
-- [plan-05-move-dod-story.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-05-move-dod-story.md) — Mover `dod-story.md` de `policies/` a `guardrails/dod-story-checklist.md` ⚠️ sin frontmatter
-- [plan-06-constitution-as-root-in-docs.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-06-constitution-as-root-in-docs.md) — Constitución como raíz: mover `docs/policies/constitution.md` → `docs/constitution.md` ⚠️ sin frontmatter
+- [[plan-01-fix-ci-security-audit]] — [plan-01-fix-ci-security-audit.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-01-fix-ci-security-audit.md) — Plan 01 — Corregir la cobertura y el fallo de la CI de seguridad
+- [[plan-02-fix-postinstall-target-validation]] — [plan-02-fix-postinstall-target-validation.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-02-fix-postinstall-target-validation.md) — Plan 02 — Cerrar el traversal de `SDDF_TARGET` en `postinstall`
+- [[plan-03-fix-evals-runner-false-greens]] — [plan-03-fix-evals-runner-false-greens.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-03-fix-evals-runner-false-greens.md) — Plan 03 — Cerrar falsos verdes del runner de evals
+- [[plan-04-cerrar-hallazgos-pendientes-auditoria]] — [plan-04-cerrar-hallazgos-pendientes-auditoria.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-04-cerrar-hallazgos-pendientes-auditoria.md) — Plan 04 — Cerrar los hallazgos pendientes de la auditoría
+- [[plan-05-move-dod-story]] — [plan-05-move-dod-story.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-05-move-dod-story.md) — Mover `dod-story.md` de `policies/` a `guardrails/dod-story-checklist.md`
+- [[plan-06-constitution-as-root-in-docs]] — [plan-06-constitution-as-root-in-docs.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/plan-06-constitution-as-root-in-docs.md) — Constitución como raíz: mover `docs/policies/constitution.md` → `docs/constitution.md`
 - [[STORY-094-refactory-and-fixing-insights]] — [story.md](specs/03-stories/STORY-094-refactory-and-fixing-insights/story.md) — Fix insight and Verificación de la instalación en Windows, macOS y Linux
 - [[STORY-095-memory-system-index-alias]] — [story.md](specs/03-stories/STORY-095-memory-system-index-alias/story.md) — Crear el skill memory-system con el modo index y deprecar docs-wiki-builder
 - [[STORY-096-memory-system-scaffold-ensure-rebuild]] — [story.md](specs/03-stories/STORY-096-memory-system-scaffold-ensure-rebuild/story.md) — Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild
 - [[STORY-097-memory-system-check-ci]] — [story.md](specs/03-stories/STORY-097-memory-system-check-ci/story.md) — Verificar la consistencia de la memoria con un modo check apto para CI
 - [[STORY-098-memory-system-migrate-harness]] — [story.md](specs/03-stories/STORY-098-memory-system-migrate-harness/story.md) — Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate
 - [[STORY-099-sddf-init-level-full]] — [story.md](specs/03-stories/STORY-099-sddf-init-level-full/story.md) — Inicializar la memoria completa desde sddf-init con el parámetro --level
+- [[STORY-100-restaurar-documentos-canonicos-estados]] — [story.md](specs/03-stories/STORY-100-restaurar-documentos-canonicos-estados/story.md) — Restaurar los documentos canónicos de la máquina de estados borrados sin repuntar sus citas
 
 ---
 
@@ -253,22 +254,24 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ### Dominios (domains/)
 
-- [README.md](domains/README.md) — Documentación de Dominios — Framework SDDF ⚠️ sin frontmatter
-- [domain-epic-lifecycle.md](domains/domain-epic-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle) ⚠️ sin frontmatter
-- [domain-knowledge-artifacts.md](domains/domain-knowledge-artifacts.md) — Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifacts) ⚠️ sin frontmatter
-- [domain-project-lifecycle.md](domains/domain-project-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Project (Project Lifecycle) ⚠️ sin frontmatter
+- [[domains-index]] — [README.md](domains/README.md) — Documentación de Dominios — Framework SDDF
+- [[domain-epic-lifecycle]] — [domain-epic-lifecycle.md](domains/domain-epic-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle)
+- [[domain-knowledge-artifacts]] — [domain-knowledge-artifacts.md](domains/domain-knowledge-artifacts.md) — Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifacts)
+- [[domain-project-lifecycle]] — [domain-project-lifecycle.md](domains/domain-project-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Project (Project Lifecycle)
 - [domain-skills-map.md](domains/domain-skills-map.md) — domain-skills-map ⚠️ sin frontmatter
-- [domain-state-management.md](domains/domain-state-management.md) — Documentación del Dominio: Gestión de Estados (State Management) ⚠️ sin frontmatter
-- [domain-story-lifecycle.md](domains/domain-story-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Story (Story Lifecycle) ⚠️ sin frontmatter
-- [domain-work-item-hierarchy.md](domains/domain-work-item-hierarchy.md) — Documentación del Dominio: Jerarquía de Work Items (Work Item Hierarchy) ⚠️ sin frontmatter
+- [[domain-state-management]] — [domain-state-management.md](domains/domain-state-management.md) — Documentación del Dominio: Gestión de Estados (State Management)
+- [[domain-story-lifecycle]] — [domain-story-lifecycle.md](domains/domain-story-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Story (Story Lifecycle)
+- [[domain-work-item-hierarchy]] — [domain-work-item-hierarchy.md](domains/domain-work-item-hierarchy.md) — Documentación del Dominio: Jerarquía de Work Items (Work Item Hierarchy)
 - [[domain]] — [domain.md](domains/domain.md) — Agile SDDF — Contexto de dominio
 
 ### Arquitectura (architecture/)
 
 - [[architecture-index]] — [README.md](architecture/README.md) — Índice de arquitectura del framework SDDF
 - [[memory-system]] — [memory-system.md](architecture/memory-system.md) — Sistema de Memoria del Framework SDDF
-- [sddf-architecture.md](architecture/sddf-architecture.md) — Arquitectura del Framework SDDF ⚠️ sin frontmatter
-- [tech-stack.md](architecture/tech-stack.md) — Stack Tecnológico SDDF ⚠️ sin frontmatter
+- [[sdcl-sddf]] — [sdcl-sddf.md](architecture/sdcl-sddf.md) — Correspondencia SDLC clásico ↔ SDDF
+- [[sddf-architecture]] — [sddf-architecture.md](architecture/sddf-architecture.md) — Arquitectura del Framework SDDF
+- [[state-machine]] — [state-machine.md](architecture/state-machine.md) — Máquina de estados del framework SDDF
+- [[tech-stack]] — [tech-stack.md](architecture/tech-stack.md) — Stack Tecnológico SDDF
 
 ### Decisiones de arquitectura (adr/)
 
@@ -294,7 +297,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 ### Guías (guides/)
 
 - [[guides-index]] — [README.md](guides/README.md) — Índice de Guías
-- [agent-harness-guide.md](guides/agent-harness-guide.md) — Guía de Agent Harness ⚠️ sin frontmatter
+- [[agent-harness-guide]] — [agent-harness-guide.md](guides/agent-harness-guide.md) — Guía de Agent Harness
 - [[artifact-directory-migration]] — [artifact-directory-migration.md](guides/artifact-directory-migration.md) — Guía de migración — nueva estructura de directorios de artefactos SDDF
 - [[best-practices-for-agents]] — [best-practices-for-agents.md](guides/best-practices-for-agents.md) — Buenas prácticas para Agentes
 - [[best-practices-for-commands]] — [best-practices-for-commands.md](guides/best-practices-for-commands.md) — Buenas prácticas para LLM Clients: Comandos
@@ -303,25 +306,26 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[best-practices-for-system-prompt]] — [best-practices-for-system-prompt.md](guides/best-practices-for-system-prompt.md) — Mejores prácticas para el prompt de sistema
 - [[best-practices-for-testing]] — [best-practices-for-testing.md](guides/best-practices-for-testing.md) — Mejores Prácticas para Pruebas de Software
 - [[branching-strategy-sddf-git-flow]] — [branching-strategy-sddf-git-flow.md](guides/branching-strategy-sddf-git-flow.md) — Modelo de Branching SDDF git flow
-- [custom-agent-creation-guide.md](guides/custom-agent-creation-guide.md) — Guía de Creación de Custom Agents ⚠️ sin frontmatter
-- [custom-skill-creation-guide.md](guides/custom-skill-creation-guide.md) — Guía de Creación de Skills Personalizados ⚠️ sin frontmatter
-- [custom-system-prompt-guide.md](guides/custom-system-prompt-guide.md) — Guía para la creación de System Prompts (AGENTS.md, CLAUDE.md, etc.) ⚠️ sin frontmatter
+- [[custom-agent-creation-guide]] — [custom-agent-creation-guide.md](guides/custom-agent-creation-guide.md) — Guía de Creación de Custom Agents
+- [[custom-skill-creation-guide]] — [custom-skill-creation-guide.md](guides/custom-skill-creation-guide.md) — Guía de Creación de Skills Personalizados
+- [[custom-system-prompt-guide]] — [custom-system-prompt-guide.md](guides/custom-system-prompt-guide.md) — Guía para la creación de System Prompts (AGENTS.md, CLAUDE.md, etc.)
 - [[extreme-agile]] — [extreme-agile.md](guides/extreme-agile.md) — Agilidad Agentica (Agentic Agile)
 - [[flight-leves-model]] — [flight-leves-model.md](guides/flight-leves-model.md) — Modelo de Niveles de Vuelo (Flight Levels Model)
 - [[harness-engineering]] — [harness-eng-agents-orchestration.md](guides/harness-eng-agents-orchestration.md) — Harness Engineering: Orquestación de Skills y Agentes en Claude Code
-- [harness-engineering-guide.md](guides/harness-engineering-guide.md) — Guía de Harness Engineering ⚠️ sin frontmatter
+- [[harness-engineering-guide]] — [harness-engineering-guide.md](guides/harness-engineering-guide.md) — Guía de Harness Engineering
 - [[organization-of-artifacts]] — [organization-of-artifacts.md](guides/organization-of-artifacts.md) — Reglas de la estrategia de organización de artefactos (SDDF)
 - [[root-folder-practices]] — [root-folder-practices.md](guides/root-folder-practices.md) — Prácticas para resolver la raíz de artefactos SDDF
 - [[sdd]] — [sdd.md](guides/sdd.md) — Spec Driven Development (SDD)
 - [[sddf-commands-pipeline]] — [sddf-commands-pipeline.md](guides/sddf-commands-pipeline.md) — Flujos principales SDDF
 - [[skill-structural-pattern]] — [skill-structural-pattern.md](guides/skill-structural-pattern.md) — Patrones estructurales de Skills (Skill Structural patterns)
+- [[specs-and-workflows]] — [specs-and-workflows.md](guides/specs-and-workflows.md) — Specs y Workflows
 
 ### Runbooks (runbooks/)
 
 - [[runbooks-index]] — [README.md](runbooks/README.md) — Runbooks
 - [[runbook-actualizar-spec-de-proyecto]] — [actualizar-spec-de-proyecto.md](runbooks/actualizar-spec-de-proyecto.md) — Runbook para actualizar la especificación de proyecto (project.md)
 - [[runbook-deployment-to-npm]] — [deployment-to-npm.md](runbooks/deployment-to-npm.md) — Runbook para despliegue en npm
-- [docker-dev-container-with-security-scann.md](runbooks/docker-dev-container-with-security-scann.md) — Integrar Skill Shielder en Dockerfile.dev ⚠️ sin frontmatter
+- [[docker-dev-container-with-security-scann]] — [docker-dev-container-with-security-scann.md](runbooks/docker-dev-container-with-security-scann.md) — Integrar Skill Shielder en Dockerfile.dev
 - [[docker-dev-container]] — [docker-dev-container.md](runbooks/docker-dev-container.md) — Guía Completa: Entorno de Desarrollo React con Docker + VSCode Dev Containers
 
 ---
@@ -338,10 +342,10 @@ _(sin artefactos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 237 |
-| Nodos con frontmatter | 195 |
-| Nodos sin frontmatter | 42 |
-| Wikilinks pendientes | 31 |
+| Nodos indexados | 241 |
+| Nodos con frontmatter | 236 |
+| Nodos sin frontmatter | 5 |
+| Wikilinks pendientes | 5 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |
 
@@ -357,34 +361,8 @@ _(sin artefactos)_
 
 Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artefacto:
 
-- [[ADR-0001-centralizar-templates-compartidos]] ⚠️ nodo pendiente
-- [[ADR-0003]] ⚠️ nodo pendiente
-- [[ADR-0003-workflow-canonico-story-y-epic]] ⚠️ nodo pendiente
-- [[ADR-0004]] ⚠️ nodo pendiente
-- [[ADR-0007]] ⚠️ nodo pendiente
-- [[ADR-0007-templates-como-capa-propia]] ⚠️ nodo pendiente
-- [[ADR-0009]] ⚠️ nodo pendiente
-- [[EPIC-13-quality-gates-con-dod-en-story-workflow]] ⚠️ nodo pendiente
-- [[EPIC-14-fabrica-de-skills]] ⚠️ nodo pendiente
-- [[EPIC-17-remediating-and-improvement]] ⚠️ nodo pendiente
-- [[STORY-068-dod-plan-en-story-analyze]] ⚠️ nodo pendiente
-- [[STORY-069-dod-IMPLEMENT-en-story-implement]] ⚠️ nodo pendiente
-- [[STORY-070-dod-code-review-en-story-code-review]] ⚠️ nodo pendiente
-- [[STORY-078, STORY-079, STORY-080, STORY-081]] ⚠️ nodo pendiente
-- [[STORY-089-story-fix-post-code-review]] ⚠️ nodo pendiente
-- [[STORY-094-fixing-insights]] ⚠️ nodo pendiente
-- [[definition-of-done]] ⚠️ nodo pendiente
-- [[docs/domains/domain-knowledge-artifacts]] ⚠️ nodo pendiente
-- [[docs/domains/domain-state-management]] ⚠️ nodo pendiente
-- [[docs/domains/domain-work-item-hierarchy]] ⚠️ nodo pendiente
 - [[project-template]] ⚠️ nodo pendiente
 - [[release-spec-template]] ⚠️ nodo pendiente
-- [[sddf-config]] ⚠️ nodo pendiente
-- [[sddf.config.yaml]] ⚠️ nodo pendiente
 - [[security-checklist]] ⚠️ nodo pendiente
 - [[skill-preflight]] ⚠️ nodo pendiente
-- [[slug]] ⚠️ nodo pendiente
-- [[specs-and-workflows]] ⚠️ nodo pendiente
-- [[specs_and_workflows]] ⚠️ nodo pendiente
-- [[state-machine]] ⚠️ nodo pendiente
 - [[story-template]] ⚠️ nodo pendiente

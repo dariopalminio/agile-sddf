@@ -175,3 +175,5 @@ related:
   > (`npm test` 106/106, `verify:syntax`, `verify:links`, `verify:eval-inventory`,
   > `verify:config`, `verify:repository` en verde). T016 y T017 quedan parciales por tocar
   > archivos fuera de la lista blanca.
+
+- [x] Implementar fix-directives.md — las siete acciones (a-g) aplicadas; CR-004 registrado en design.md

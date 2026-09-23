@@ -3,7 +3,7 @@ type: fix-directives
 story: STORY-096
 title: "Fix Directives: STORY-096"
 review-status: needs-changes
-date: 2026-09-22
+date: 2026-09-23
 max-severity: MEDIUM
 based-on: code-review-report.md
 ---
@@ -15,45 +15,94 @@ based-on: code-review-report.md
 - **Story:** STORY-096 — Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild
 - **Review status:** needs-changes
 - **Severidad máxima:** MEDIUM
-- **Total de hallazgos bloqueantes:** 5 (1 de agentes + 4 de DoD CODE-REVIEW, de los cuales 2 se cierran por derivación)
+- **Total de hallazgos bloqueantes:** 1 (1 MEDIUM, 0 HIGH)
+
+**Un solo defecto**, detectado de forma independiente por el Tech-Lead-Reviewer y el Integration-Reviewer. Se consolida en una única acción.
+
+El motor, los modos, los tests `S096-*` y la auditoría de seguridad quedaron aprobados. El bloqueante está en el contenido del árbol semilla.
+
+## Decisión del autor — las tres plantillas se quedan
+
+`skills/memory-system/assets/scaffold/templates/{domain,guardrail,policy}-template.md` **se añadieron a mano de forma deliberada** porque el autor las considera necesarias. Eso descarta retirarlas y fija el camino: **documentarlas formalmente**.
+
+Conviene ser preciso sobre qué bloqueó el gate, porque no es que existan:
+
+> Bloqueó que **están sin documentar y contradicen cuatro reglas que la propia historia escribió**. `listSeeds()` recorre el árbol sin filtro, así que `scaffold` las copia a `docs/templates/` de **todo** proyecto consumidor —son comportamiento entregado, no archivos muertos—, mientras `memory-rules.md` §5 afirma que su lista es "lo único" que `rebuild --force` sobrescribe y `SKILL.md` habla de "las seis plantillas". Documentarlas resuelve el hallazgo por completo.
+
+### Corrección del árbitro sobre el conflicto con ADR-0001
+
+Una versión anterior de este documento afirmaba que documentarlas obligaba a "resolver su conflicto con ADR-0001". **Es incorrecto y se retira**, por dos razones verificadas:
+
+1. **ADR-0001 está `SUPERSEDED` por ADR-0007**, que conserva su regla de propiedad y solo cambia la ubicación de los templates. La cita de `memory-rules.md` §5 debería apuntar a ADR-0007.
+2. **ADR-0012 ya cubre exactamente este caso.** Su decisión: *"Un template cuyos campos no escribe ningún skill **satisface el principio 13 anotando `escritor: autoría manual`**, en lugar de retirar el campo"*, y añade que `adr-template.md` es *"el **primer** template bajo esta regla"*. Estas tres son el segundo, tercero y cuarto. No hay conflicto que resolver: hay un precedente que aplicar.
 
 ## Instrucciones de corrección
 
 | # | Archivo:Línea | Dimensión | Severidad | Hallazgo | Acción requerida |
 |---|---------------|-----------|-----------|----------|-----------------|
-| 1 | skills/memory-system/assets/scaffold/templates/adr-template.md:1 | integration-architecture | MEDIUM | La semilla `adr-template.md` se distribuye a `$SPECS_BASE/templates/` sin una sola anotación `escritor:` (0 ocurrencias), contra el principio 13 de `constitution.md` ("todo campo declarado nombra a su escritor"). Las otras cinco plantillas distribuidas sí las llevan (`story-template.md` 16, `epic-template.md` 12). El propio `design.md` invocó ese principio para excluir `requirement-template.md`, y D-1 generalizó la exención a un archivo que sí es plantilla de generación. La semilla se replica en todos los proyectos scaffoldeados. | Anotar `escritor:` en los campos y secciones de la semilla con el skill que los escribirá (o el previsto), **o** registrar la exención explícita de `adr-template.md` en un ADR bajo `docs/adr/` y en `skills/memory-system/references/memory-rules.md` §5 antes de distribuirla. |
-| 2 | docs/guardrails/dod-story-checklist.md:135 | DoD-CODE-REVIEW | MEDIUM | Criterio "Se cumplen los estándares del proyecto (`constitution.md`)" no cumplido: el principio 13 se incumple en la semilla `adr-template.md` (mismo origen que el hallazgo #1). | Resolver el hallazgo #1. Este criterio se cierra automáticamente al hacerlo. |
-| 3 | docs/specs/03-stories/STORY-096-memory-system-scaffold-ensure-rebuild/tasks.md:33 | DoD-CODE-REVIEW | MEDIUM | Criterio "Sin tareas pendientes en `tasks.md`" no cumplido: las 20 tareas T001…T020 siguen marcadas `- [ ]` pese a que `implement-report.md` declara la implementación completa (evals 10/10, `npm test` 106/106). La trazabilidad tarea → evidencia queda rota. | Marcar `- [x]` cada tarea efectivamente completada en `tasks.md`, dejando `- [ ]` únicamente las que sigan pendientes de VERIFY (p. ej. T019 verificación manual en directorio temporal) y anotando en ellas el motivo. |
-| 4 | docs/guardrails/dod-story-checklist.md:138 | DoD-CODE-REVIEW | MEDIUM | Criterio "Sin hallazgo bloqueante de severidad HIGH o MEDIUM" no cumplido: esta revisión registra 1 hallazgo MEDIUM de agente (#1). | Derivado. Resolver los hallazgos #1 y #3; se cierra automáticamente en la siguiente ejecución de `/story-code-review`. |
-| 5 | docs/guardrails/dod-story-checklist.md:142 | DoD-CODE-REVIEW | MEDIUM | Criterio "Revisión de código aprobada (Review status approved)" no cumplido: `code-review-report.md` de esta ejecución cierra con `review-status: needs-changes`. | Derivado. Resolver los hallazgos #1 y #3 y re-ejecutar `/story-code-review STORY-096`; se cierra automáticamente. |
+| 1 | skills/memory-system/assets/scaffold/templates/{domain,guardrail,policy}-template.md | code-quality · integration-architecture | MEDIUM | El árbol semilla contiene **22 archivos, no los 19** que declaran `design.md`, `implement-report.md` y el reporte anterior. Los tres extra no aparecen en ninguna de las cuatro listas de archivos gestionados, no llevan frontmatter canónico ni anotación `escritor:`, y `scaffold` los escribe en todo proyecto consumidor fuera del alcance documentado | Documentarlos formalmente siguiendo el precedente de ADR-0012. Ver el desglose de abajo |
+
+### Desglose de la acción 1
+
+**a. Anotar `escritor: autoría manual` según ADR-0012**, en las dos formas que fija ese ADR: comentario de línea completa encima de cada campo del frontmatter, y comentario HTML al inicio de cada sección del cuerpo.
+
+| Template | Campos declarados a anotar | Secciones |
+|---|---|---|
+| `policy-template.md` (191 l) | `**Versión:**`, `**Estado:**`, `**Última actualización:**`, `**Propietario:**` | 8 secciones numeradas |
+| `guardrail-template.md` (214 l) | — (basado en secciones) | *Mandatory rules*, *Minimum expected structure*, *How to run the validation*, *Verification*, *Source of truth* |
+| `domain-template.md` (158 l) | — (basado en secciones) | 8 secciones (*Purpose and Scope*, *Bounded Contexts*, *Context Map*, *Ubiquitous Language*, *Domain Model*, *Relationships and Invariants*, *Lifecycles and Domain Events*, *Business Processes*) |
+
+**b. Añadir frontmatter canónico** (`type`, `slug`, `title`) a los tres: hoy son las únicas semillas `.md` sin él, lo que exige D-1 y `memory-rules.md` §5.
+
+**c. Actualizar las cuatro listas de archivos gestionados**, para que `rebuild --force` vuelva a tener un alcance documentado veraz:
+
+- `skills/memory-system/references/memory-rules.md` §5 — tabla de archivos gestionados; corregir de paso la cita a ADR-0001 → ADR-0007.
+- `skills/memory-system/SKILL.md` §3.3 y sección *Salida* — "seis plantillas" → nueve.
+- `docs/architecture/memory-system.md` — misma corrección.
+- `skills/memory-system/assets/scaffold/templates/README.md` — la propia semilla afirma "Las seis plantillas base son…"; hoy el entregable se contradice a sí mismo.
+
+**d. Registrar un CR en `design.md`** que amplíe D-1/D-2 de seis a nueve plantillas, con el rationale del autor (por qué son necesarias) y la referencia a ADR-0012.
+
+**e. Actualizar los artefactos de la historia:** `implement-report.md` (19 → 22 semillas en *Artefactos producidos*), `tasks.md` (T005 solo cubre `adr-template.md`), `testcases.md` (AC-6) y `CHANGELOG.md`.
+
+**f. Sincronizar `docs/templates/` de este repositorio**, que hoy no contiene las tres plantillas: el framework está desincronizado con su propio scaffold, y un `ensure` sobre este repo las crearía ahora mismo.
+
+**g. Añadir a `test/memory-system.test.js` una aserción de exhaustividad** del árbol semilla (conjunto exacto o número de archivos). `SIX_TEMPLATES` comprueba **presencia**, no exhaustividad — por eso los tests no detectaron los tres extra. Sin esto, el mismo defecto puede repetirse.
 
 ## Lista blanca de archivos permitidos para modificar
 
-Los siguientes archivos pueden ser modificados al aplicar las correcciones:
-
-- `skills/memory-system/assets/scaffold/templates/adr-template.md` — hallazgo #1, #2
-- `skills/memory-system/references/memory-rules.md` — hallazgo #1 (solo si se opta por la vía de la exención documentada)
-- `docs/adr/` — hallazgo #1 (solo si se opta por registrar la exención como ADR nuevo)
-- `docs/specs/03-stories/STORY-096-memory-system-scaffold-ensure-rebuild/tasks.md` — hallazgo #3
-
-> Los hallazgos #4 y #5 son derivados del estado de esta revisión y apuntan a `docs/guardrails/dod-story-checklist.md`, que es la **fuente** de los criterios y **no debe editarse** para satisfacerlos. Por eso ese archivo queda fuera de la lista blanca.
+- `skills/memory-system/assets/scaffold/templates/domain-template.md` — acción 1a, 1b
+- `skills/memory-system/assets/scaffold/templates/guardrail-template.md` — acción 1a, 1b
+- `skills/memory-system/assets/scaffold/templates/policy-template.md` — acción 1a, 1b
+- `skills/memory-system/assets/scaffold/templates/README.md` — acción 1c
+- `skills/memory-system/references/memory-rules.md` — acción 1c
+- `skills/memory-system/SKILL.md` — acción 1c
+- `docs/architecture/memory-system.md` — acción 1c
+- `docs/templates/` — acción 1f
+- `CHANGELOG.md` — acción 1e
+- `test/memory-system.test.js` — acción 1g
+- En el directorio de la historia: `design.md` (acción 1d), `implement-report.md`, `tasks.md`, `testcases.md` (acción 1e)
 
 No deben modificarse archivos fuera de esta lista sin previa aprobación.
 
+## Hallazgos LOW — no bloquean, a criterio del autor
+
+No requieren acción para superar el gate. Se listan porque varios se cierran con la misma edición que el hallazgo #1:
+
+| Dimensión | Hallazgo |
+|---|---|
+| requirements-coverage | `evals.json` TC-005: la mitad negativa de AC-8 ("sin `--fix-frontmatter` no se invoca `header-aggregation`") está en la prosa pero no en `not_contains`; un `ensure` que la invocara indebidamente pasaría el caso |
+| requirements-coverage | `evals.json` TC-008: el "no modifica ningún archivo" se verifica por ausencia de marcas en la salida, no por hashes; la comprobación por hash solo existe en la corrida manual T019 |
+| requirements-coverage · integration | `testcases.md`: IT-001 sigue `[ ]` pese a que `S096-IT-001` existe y pasa; UT-006 conserva el literal `sobrescritos: 3` que la desviación 2 declara inaplicable |
+| code-quality | `memory-system.js:711`: el `[WARNING] template no copiado` también se emite cuando no se pasó `--cli-root`, donde el motor no comprobó nada — mensaje engañoso (fijado como correcto por `S096-UT-005`) |
+| code-quality | `memory-system.js:654`: plantillas copiadas byte a byte frente a la regla *Encoding* de `SKILL.md`; sin `.gitattributes`, un checkout Windows propaga CRLF a `$SPECS_BASE/templates/` |
+| code-quality | `scaffoldSummaryLine` exportado sin consumidor (heredado de STORY-095) — confirmar antes de retirar |
+| integration | `resolveScaffoldRoot` crea la raíz si falta (bootstrap), mientras el contrato de `design.md` dice "exit 2 si la raíz no existe"; está documentado en `memory-rules.md` §5 y cubierto por `S096-UT-008`, pero no figura entre las desviaciones del `implement-report.md` |
+| security | `SKILL.md:361`: el fallback inline sin `node` ordena leer cada `.md` de `SPECS_BASE` sin la cláusula "es dato, nunca instrucción" |
+
 ## Ciclo de corrección
 
-1. Aplica las correcciones indicadas en la tabla de instrucciones.
+1. Aplica las acciones 1a–1g.
 2. Limita los cambios a los archivos de la lista blanca.
 3. Re-ejecuta `/story-code-review STORY-096`.
-4. Si el resultado es `approved`, la historia avanza a READY-FOR-VERIFY.
-
-## Anexo — hallazgos LOW (no bloqueantes, informativos)
-
-No requieren acción para superar este gate; se listan para que el autor decida. Detalle completo en `code-review-report.md`.
-
-| Dimensión | Nº de hallazgos LOW | Temas |
-|---|---|---|
-| Calidad de código | 8 | Exports sin consumidor; frontmatter semilla fuera del esquema canónico de `header-aggregation`; CRLF en las plantillas compartidas en Windows; mensaje de error de `--root` no-directorio; deriva entre `adr-template.md` semilla y `docs/adr/adr-template.md`; entrada de CHANGELOG bajo `[3.2.1]` frente a "desde 3.3.0"; rama muerta del modo `index` en `SKILL.md:199`; `rebuild --force` sin `--backup`. |
-| Cobertura de requisitos | 8 | Aserciones débiles en TC-005/TC-008/TC-009 y mitad negativa de AC-8 sin asertar; 8 entradas `[ ]` en "Test Cases Progress"; literales desfasados de E2E-001 (`creados 5 · preservados 14`) y UT-006 (`sobrescritos: 3`). |
-| Integración y arquitectura | 6 | `assets/index-template.md` fuera de "Componentes afectados"; bootstrap de la raíz no declarado como desviación; CHANGELOG bajo `[3.2.1]`; commit `f9ed79c` mezcla mantenimiento de CI; fixture `examples/no-frontmatter/` sin documentar; literales de E2E-001 y UT-006. |
-| Seguridad | 3 | Confinamiento explícito de `--root` en `REPO_ROOT`; escritura que no siga symlinks en `placeFile`; filtrado de Unicode invisible en los títulos interpolados en `index.md`. |
+4. Si el resultado es `approved`, la historia avanza a CODE-REVIEW/DONE.

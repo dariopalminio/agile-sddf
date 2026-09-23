@@ -69,7 +69,8 @@ Esta carpeta de dominios **no duplica** la información canónica que vive en ot
 | Documento | Ubicación | Propósito |
 |-----------|-----------|-----------|
 | [[domain-story-lifecycle]] | `docs/domains/domain-story-lifecycle.md` | Máquina de estados de historia (fuente canónica de transiciones). |
-| [[specs-and-workflows]] | `docs/wiki/specs-and-workflows.md` | Workflow narrativo de estados y subestados. |
+| [[state-machine]] | `docs/architecture/state-machine.md` | Máquina de estados canónica: `status` + `substatus`, diagramas por nivel y tabla de transiciones por skill. |
+| [[specs-and-workflows]] | `docs/guides/specs-and-workflows.md` | Workflow narrativo de estados y subestados. |
 | [[constitution]] | `docs/constitution.md` | Constitución del proyecto (principios y reglas transversales; raíz de policies y guardrails). |
 | [[workflow-canonico-story-y-epic]] | `docs/adr/ADR-0003-workflow-canonico-story-y-epic.md` | Rationale de los workflows canónicos de story y epic. |
 | `header-aggregation/SKILL.md` | `.claude/skills/header-aggregation/SKILL.md` | Esquema canónico de frontmatter. |
