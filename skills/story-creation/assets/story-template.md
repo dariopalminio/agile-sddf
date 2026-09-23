@@ -54,14 +54,21 @@ Ejemplos:
   | admin     | /admin    | "Panel de control"    |
 ```
 
-### Requerimiento: [Título del requerimiento] <!-- sección opcional-->
-[Requerimiento específicos (como regla de negocio) relacionado con la historia, si aplica]
+## 📋 Requerimientos <!-- sección opcional · escritor: defecto · story-improve (aplica recomendaciones FINVEST) -->
 
-## ⚙️ Criterios no funcionales <!-- sección opcional · escritor: defecto · story-improve (aplica recomendaciones FINVEST) -->
+### Criterios funcionales
+<!-- Listado de requerimiento específicos (como regla de negocio) relacionado con la historia, si aplica. Cada requerimiento tiene un identificador interno a la historia. -->
 
-* Rendimiento: [ej. la búsqueda responde en <2s]
-* Seguridad: [ej. solo usuarios con rol X pueden ver Y]
-* UX/Accesibilidad: [ej. compatible con lectores de pantalla]
+- **CF-[n] — [Nombre de requerimiento]:** [Descripción del requerimiento funcional asociado a la historia.]
+
+- **CF-[n+1] — [Nombre de requerimiento]:** [Descripción del requerimiento funcional asociado a la historia.]
+
+
+## ⚙️ Criterios no funcionales
+
+- **CNF-[n] — [Nombre de requerimiento no funcional]:** [Descripción del requerimiento no funcional asociado a la historia.]
+
+- **CNF-[n+1] — [Nombre de requerimiento no funcional]:** [Descripción del requerimiento no funcional asociado a la historia.]
 
 ## Fuera de alcance (Non-Goals)  <!-- sección opcional solo si es necesario indicar qué no se abordará -->
 [Aspectos que no serán abordados por esta historia, para evitar malentendidos]
