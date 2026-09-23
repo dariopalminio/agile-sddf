@@ -105,7 +105,14 @@ No aplica al contenido del repositorio — eso lo gobiernan los guardrails `gr-*
 ### Definition of Done para el estado VERIFY
 
 <!-- Condiciones necesarias para verificar la historia antes de avanzar a ACCEPTANCE. -->
-<!-- Por el momento sin criterios -->
+
+- [ ] Todas las pruebas `required: true` de `sddf.config.yaml › verify` pasan (exit 0)
+- [ ] La suite completa `npm test` pasa sin fallos
+- [ ] Si la historia modifica un skill con `evals/evals.json`, `npm run test:eval -- <skill>` pasa; un fallo solo se acepta como flaky si pasa al reejecutarlo y queda registrado en `verify-report.md`
+- [ ] Ningún caso de `testcases.md` queda en `[!]` y cada `[ ]` restante cita en `verify-report.md` la evidencia que lo cubre
+- [ ] Sin defectos CRITICAL o HIGH abiertos en `verify-report.md`
+
+---
 
 ### Definition of Done para el estado ACCEPTANCE
 
