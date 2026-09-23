@@ -52,7 +52,7 @@ Los agentes locales son archivos de instrucciones, no infraestructura: no aparec
 
 ## Referencias
 
-- [[EPIC-17-remediating-and-improvement]] — hallazgo A4
+- [[remediating-and-improvement]] — hallazgo A4
 - `docs/guides/best-practices-for-skills.md` — protocolo paso a paso y patrón `.tmp/<skill>/`
 - `docs/guides/harness-engineering.md` — modelo de delegación y relaciones permitidas
-- [[ADR-0001-centralizar-templates-compartidos]]
+- [[centralizar-templates-compartidos]]

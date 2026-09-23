@@ -1,6 +1,7 @@
 ---
 type: domain-context
 slug: domain
+title: "Agile SDDF — Contexto de dominio"
 project: agile-sddf
 version: "1.0"
 status: draft

@@ -40,7 +40,7 @@ ADR estado ACCEPTED siguiendo `docs/adr/adr-template.md`:
 - **Decisión:** el contrato de 4 pasos de arriba.
 - **Rationale:** un agente local es un prompt empaquetado, no infraestructura; usar general-purpose mantiene KISS (principio 4) y el bundle de contexto explícito cumple el principio 6 (anti teléfono-descompuesto); coherente con la regla "un solo salto de delegación".
 - **Alternativas descartadas:** (a) registrar todos los agentes locales en `.claude/agents/` — contamina el espacio global con agentes de uso exclusivo de un skill y rompe el empaquetado autocontenido del skill; (b) inlining de las instrucciones del agente dentro del SKILL.md — infla el contexto del orquestador y elimina el aislamiento; (c) dejar la inferencia — funciona hoy pero es frágil ante modelos/harness futuros.
-- **Referencias:** `[[EPIC-17-remediating-and-improvement]]`, best-practices-for-skills.md, harness-engineering.md.
+- **Referencias:** `[[remediating-and-improvement]]`, best-practices-for-skills.md, harness-engineering.md.
 
 ### 2. `docs/adr/README.md` — agregar ADR-0002 a la tabla índice.
 

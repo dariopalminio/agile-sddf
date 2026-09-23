@@ -1,3 +1,9 @@
+---
+type: guardrail
+slug: gr-code-security-checklist
+title: "Guardrail: Code security check"
+---
+
 # Guardrail: Code security check
 
 Applies to every file this repository commits — the scripts under `skills/*/scripts/`, the code

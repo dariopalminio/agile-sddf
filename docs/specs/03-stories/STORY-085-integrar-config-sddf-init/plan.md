@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan
+title: "Plan: Integrar sddf.config.yaml en el skill sddf-init"
+---
+
 # Plan: Integrar sddf.config.yaml en el skill sddf-init
 
 ## Contexto

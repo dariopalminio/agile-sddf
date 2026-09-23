@@ -1,10 +1,16 @@
+---
+type: domain
+slug: domain-knowledge-artifacts
+title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifacts)"
+---
+
 # Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifacts)
 
 > **Bounded Context:** Knowledge Artifacts  
 > **Alcance:** Modelo transversal de los artefactos de conocimiento del proyecto  
 > **Dominio relacionado:** [[domain-work-item-hierarchy]]  
 > **Dominio relacionado:** [[domain-state-management]]  
-> **Decisión de arquitectura:** [[ADR-0004]] — documentación en capas
+> **Decisión de arquitectura:** [[nivel-l2-epic-y-directorios-numerados]] — documentación en capas
 
 ---
 
@@ -432,8 +438,8 @@ Toda relación debe poder navegarse en ambas direcciones:
 * **Constitución:** `docs/constitution.md` — documento supremo del que derivan policies y guardrails
 * **Policies:** `docs/policies/README.md` — índice y convenciones de la capa
 * **Templates:** `docs/templates/README.md` — convención de nomenclatura y modelo seed/central
-* **Decisión de arquitectura:** [[ADR-0004]] — documentación en capas
-* **Decisión de arquitectura:** [[ADR-0007]] — los templates son una capa propia
+* **Decisión de arquitectura:** [[nivel-l2-epic-y-directorios-numerados]] — documentación en capas
+* **Decisión de arquitectura:** [[templates-como-capa-propia]] — los templates son una capa propia
 
 ---
 
@@ -446,6 +452,6 @@ Toda relación debe poder navegarse en ambas direcciones:
 * [[domain-story-lifecycle]] — Ciclo de vida del nivel L1
 * [[constitution]] — Constitución del proyecto (documento supremo, raíz de policies y guardrails)
 * [[security-checklist]] — Ejemplo de guardrail (GR-SEC-001)
-* [[ADR-0004]] — Documentación en capas
-* [[ADR-0007]] — Los templates son una capa propia, hermana de `specs/`
+* [[nivel-l2-epic-y-directorios-numerados]] — Documentación en capas
+* [[templates-como-capa-propia]] — Los templates son una capa propia, hermana de `specs/`
 

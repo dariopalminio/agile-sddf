@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-03-fix-evals-runner-false-greens
+title: Plan 03 — Cerrar falsos verdes del runner de evals
+---
+
 # Plan 03 — Cerrar falsos verdes del runner de evals
 
 ## Objetivo

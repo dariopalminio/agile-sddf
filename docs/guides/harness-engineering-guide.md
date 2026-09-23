@@ -1,3 +1,9 @@
+---
+type: guide
+slug: harness-engineering-guide
+title: Guía de Harness Engineering
+---
+
 # Guía de Harness Engineering
 
 **Harness Engineering** (Ingeniería de Arneses) es la disciplina emergente que está transformando la forma en que construimos software con agentes de IA. No se trata de escribir mejores prompts, sino de **diseñar el entorno en el que los agentes operan** para que produzcan resultados confiables, repetibles y auditables.

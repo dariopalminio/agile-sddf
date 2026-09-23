@@ -1,3 +1,9 @@
+---
+type: domain
+slug: domain-work-item-hierarchy
+title: "Documentación del Dominio: Jerarquía de Work Items (Work Item Hierarchy)"
+---
+
 # Documentación del Dominio: Jerarquía de Work Items (Work Item Hierarchy)
 
 > **Bounded Context:** Work Item Hierarchy  
@@ -277,7 +283,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Dominio transversal de estados:** [[domain-state-management]]
 * **Principios aplicables:** [[constitution]] (patrón 14; regla 9)
-* **Decisión de arquitectura:** [[ADR-0003]] — rationale de los workflows canónicos de story y epic
+* **Decisión de arquitectura:** [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
 
 ---
 
@@ -288,4 +294,4 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * [[domain-epic-lifecycle]] — Ciclo de vida del nivel L2
 * [[domain-story-lifecycle]] — Ciclo de vida del nivel L1
 * [[constitution]] — Constitución del proyecto
-* [[ADR-0003]] — Workflow canónico de story y epic
+* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic

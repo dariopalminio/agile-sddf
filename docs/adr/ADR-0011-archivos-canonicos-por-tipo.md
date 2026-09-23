@@ -22,7 +22,7 @@ La pregunta que motiva este ADR es: **¿debería SDDF alinearse con la convenci�
 Esta decisión se relaciona con:
 
 - La estructura del sistema de memoria descrita en [[memory-system]].
-- La decisión previa sobre la ubicación de `specs/` en [[ADR-0009]].
+- La decisión previa sobre la ubicación de `specs/` en [[perfiles-runtimes-e-instalacion-explicita]].
 - El modelo de tres niveles (Project → Epic → Story) definido en [[domain-work-item-hierarchy]].
 - La identidad de SDDF como **alternativa profesional a Speckit y OpenSpec**, no como clon.
 
@@ -102,7 +102,7 @@ Además, la decisión respeta los principios de la constitución:
 
 ## Referencias
 
-- [[ADR-0009]] — `specs/` dentro de `docs/` (decisión hermana sobre layout)
+- [[perfiles-runtimes-e-instalacion-explicita]] — `specs/` dentro de `docs/` (decisión hermana sobre layout)
 - [[memory-system]] — Sistema de memoria y árbol canónico
 - [[domain-work-item-hierarchy]] — Estructura Project → Epic → Story
 - [[domain-knowledge-artifacts]] — Modelo de artefactos y tipos

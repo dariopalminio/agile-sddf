@@ -1,3 +1,9 @@
+---
+type: guardrail
+slug: gr-skill-creation-checklist
+title: "Guardrail: Agent Skill creation"
+---
+
 # Guardrail: Agent Skill creation
 
 > **SDDF runtime contract:** package installation derives its supported skill destinations solely from

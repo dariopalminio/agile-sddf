@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-01-refactor-release-to-epic
+title: "PLAN: Renombrar el nivel L2 de `release` a `epic`"
+---
+
 # PLAN: Renombrar el nivel L2 de `release` a `epic`
 
 ## Context

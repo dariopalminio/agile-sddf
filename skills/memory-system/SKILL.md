@@ -1,12 +1,12 @@
 ---
 name: memory-system
 description: >-
-  Gestiona la memoria del proyecto (docs/ como wiki LLM): ensure (por defecto) crea las once capas
-  que falten e indexa; scaffold solo crea lo faltante; rebuild --force regenera las semillas; index
-  regenera docs/index.md con wikilinks [[slug]] y detecta el harness (sddf, speckit, openspec,
-  generic). Usar para crear, completar o reindexar la memoria; sustituye a docs-wiki-builder.
-  Invocar para "memory-system", "capas de memoria", "índice de documentación", "wiki de docs",
-  "wikilinks" o "LLM wiki".
+  Memoria del proyecto (docs/ como wiki LLM): ensure (por defecto) crea las capas que falten e
+  indexa; scaffold solo lo faltante; rebuild --force regenera semillas; index regenera
+  docs/index.md con wikilinks [[slug]]; check valida capas, frontmatter y wikilinks con exit code
+  para CI. Usar para crear, completar, reindexar o verificar la memoria; sustituye a
+  docs-wiki-builder. Invocar para "memory-system", "capas de memoria", "índice de documentación",
+  "wiki de docs", "wikilinks" o "LLM wiki".
 ---
 
 # Skill: `/memory-system`
@@ -14,8 +14,10 @@ description: >-
 **Cuándo usar este skill:**
 Cuando haya que dejar la memoria del proyecto completa y consistente (`ensure`, modo por defecto),
 crear solo las capas y archivos que falten (`scaffold`), regenerar los archivos semilla desde cero
-(`rebuild --force`) o regenerar `$SPECS_BASE/index.md` (`index`), el mapa de la wiki que los LLMs
-leen antes que cualquier otro nodo. Invocar también cuando el usuario mencione "memory-system",
+(`rebuild --force`), regenerar `$SPECS_BASE/index.md` (`index`), el mapa de la wiki que los LLMs
+leen antes que cualquier otro nodo, o **verificar** que la memoria es consistente sin tocar nada
+(`check`, el gate que un pipeline de CI ejecuta en una línea y lee con `jq`). Invocar también
+cuando el usuario mencione "memory-system",
 "capas de memoria", "índice de documentación", "wiki de docs", "wikilinks", "LLM wiki" o el skill
 deprecado `docs-wiki-builder`.
 
@@ -39,6 +41,10 @@ Ser el único punto de entrada para la memoria del proyecto (ver
   determinista `scripts/memory-system.js` (Node ≥ 18, sin dependencias): dos ejecuciones seguidas
   producen el mismo archivo salvo `updated`. Los wikilinks sin destino se marcan como nodos
   pendientes sin bloquear.
+- `check [--json] [--harness h]`: verificación en **solo lectura** de cuatro familias de problemas
+  (`missing-layer`, `orphan`, `invalid-frontmatter`, `broken-wikilink`). Informe textual agrupado
+  por familia o, con `--json`, un único objeto para CI. Exit 0 sin problemas, 1 con al menos uno,
+  2 ante error técnico. A diferencia de `index`, aquí un wikilink sin destino **sí** bloquea.
 
 **Qué NO hace este skill:**
 - No elimina archivos en ningún modo, ni siquiera `rebuild --force`.
@@ -47,7 +53,11 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 - No añade frontmatter por sí mismo: `ensure --fix-frontmatter` delega en `/header-aggregation`,
   que permanece como utilidad independiente (este skill solo lee su esquema `slug`/`title`).
 - No escribe fuera de `$SPECS_BASE` (las raíces externas de OpenSpec/Spec-kit son de solo lectura).
-- No adapta el scaffold por harness (`check` llega con STORY-097; `migrate` con STORY-098).
+- No corrige lo que `check` encuentra: `check` solo informa. La corrección es `ensure`,
+  `ensure --fix-frontmatter` o una edición manual del artefacto.
+- No valida el YAML completo ni el contenido semántico: `check` exige el subconjunto de campos de
+  `REQUIRED_FIELDS` (`references/memory-rules.md` §6), no el esquema entero.
+- No adapta el scaffold por harness (`migrate` llega con STORY-098).
 
 ## Entrada
 
@@ -57,8 +67,9 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 - `assets/scaffold/**` — árbol semilla (espejo del destino; `{date}` como único placeholder).
 - `<CLI_ROOT>/skills/<dueño>/assets/<plantilla>` — origen de las cinco plantillas compartidas.
 - `assets/index-template.md` — template del índice (solo lectura; el motor lo lee en runtime).
-- `references/memory-rules.md` — reglas de slug/título/capa/exclusiones, tabla de harness y
-  archivos gestionados por el scaffold. Léelo solo en la degradación inline (Paso 5).
+- `references/memory-rules.md` — reglas de slug/título/capa/exclusiones, extracción de wikilinks,
+  tabla de harness, archivos gestionados por el scaffold y campos obligatorios de `check`
+  (`REQUIRED_FIELDS`, §6). Léelo solo en la degradación inline (Paso 5).
 
 ## Parámetros
 
@@ -69,12 +80,13 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 | `scaffold [--dry-run] [--harness h]` | Solo crea lo faltante; no toca `index.md`. `--dry-run` imprime el plan sin escribir. |
 | `rebuild [--force]` | Sin `--force` se detiene. Con `--force`: `scaffold --force` + `index`. |
 | `index [--harness h] [--dry-run]` | Regenera `$SPECS_BASE/index.md`. `--dry-run` imprime el índice por consola sin escribir. |
+| `check [--json] [--harness h]` | Verifica la memoria en solo lectura y propaga el exit code del motor (0 / 1 / 2). Con `--json`, stdout lleva un único objeto y nada más. |
 | `--harness <sddf\|speckit\|openspec\|generic>` | Fuerza el harness en lugar de detectarlo. |
 
 ## Precondiciones
 
 - `$SPECS_BASE/` debe existir, o al menos su directorio padre (bootstrap de `scaffold`/`ensure`).
-  `index` exige que exista (exit 2 si no).
+  `index` y `check` exigen que exista (exit 2 si no).
 - `node` (≥ 18) en PATH para la ejecución reproducible; sin él, ver la degradación del Paso 5.
 - `assets/scaffold/` debe existir dentro del skill (exit 2 nombrando la ruta si falta).
 
@@ -95,6 +107,8 @@ Ser el único punto de entrada para la memoria del proyecto (ver
   confirmación porque ningún modo sobrescribe salvo `rebuild --force`, que se confirma con el flag.
 - **Automático** (invocado por `/docs-wiki-builder`, `sddf-init` u otro skill): mismo comportamiento.
 - **Simulación** (`scaffold --dry-run`, `index --dry-run`): imprime el plan o el índice, no escribe.
+- **Gate de CI** (`check`, `check --json`): solo lectura y exit code propagado; no pide nada y no
+  escribe. Un pipeline invoca el motor directamente (ver `docs/guides/sddf-commands-pipeline.md`).
 
 ## Restricciones / Reglas
 
@@ -105,6 +119,11 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 - **Nunca se elimina nada:** ningún modo borra archivos ni directorios.
 - **Regeneración completa del índice:** `index.md` no se fusiona con el anterior; el template es la
   fuente de verdad de las secciones y el motor solo rellena placeholders.
+- **`check` es solo lectura y su salida es del motor:** no crea, modifica ni borra nada (tampoco
+  regenera `index.md`), reenvía el stdout del motor **tal cual** y termina con su mismo exit code.
+  Con `--json` no se añade ni una línea a stdout: el pipeline lo consume con `jq`.
+- **Exit 1 de `check` no es un fallo de la herramienta:** significa "memoria con problemas". El
+  error técnico es exit 2 y su mensaje va a stderr.
 - **Fail-fast sin escrituras:** un modo no reconocido, un `--harness` no admitido, una raíz sin
   padre, `assets/scaffold/` ausente o un template desalineado detienen el skill con el mensaje del
   motor y sin escribir.
@@ -142,8 +161,9 @@ Lee los argumentos del usuario y decide con esta tabla antes de tocar nada:
 | `rebuild` (sin `--force`) | Muestra exactamente `❌ rebuild es destructivo. Añade --force para confirmar.` y termina: no invoques el motor, no escribas nada, no muestres marcas ni resúmenes. |
 | `rebuild --force` | Paso 2 y secuencia 3.3. |
 | `index [--harness h] [--dry-run]` | Paso 2 y secuencia 3.4. |
-| `check`, `migrate` | Muestra `ℹ️ Modo <m> aún no disponible en esta versión (llega con STORY-097/098). Modos disponibles: ensure, scaffold, rebuild, index.` y termina con éxito. |
-| Otro valor | Muestra `❌ Modo no reconocido: <valor>. Modos disponibles: ensure, scaffold, rebuild, index.` y termina sin invocar el motor ni escribir. |
+| `check [--json] [--harness h]` | Paso 2 y secuencia 3.5. |
+| `migrate` | Muestra `ℹ️ Modo migrate aún no disponible en esta versión (llega con STORY-098). Modos disponibles: ensure, scaffold, rebuild, index, check.` y termina con éxito. |
+| Otro valor | Muestra `❌ Modo no reconocido: <valor>. Modos disponibles: ensure, scaffold, rebuild, index, check.` y termina sin invocar el motor ni escribir. |
 
 El gate de `rebuild` vive aquí, y no en el motor, porque la confirmación es interacción: el motor
 solo conoce `scaffold --force`.
@@ -166,18 +186,19 @@ Subcomandos del motor y sus flags:
 | `detect` | `[--harness h]` | Una línea: `sddf`, `speckit`, `openspec` o `generic`. |
 | `scaffold` | `--cli-root <CLI_ROOT> [--harness h] [--dry-run] [--force]` | `harness: <h>`, `capas faltantes: …`, una línea por archivo (`[CREADO]`, `[PRESERVADO]`, `[SOBRESCRITO]`; con `--dry-run`: `[CREARÍA]`, `[PRESERVARÍA]`, `[SOBRESCRIBIRÍA]`), `[WARNING] template no copiado: …` si procede y última línea `creados: N · sobrescritos: S · preservados: M · omitidos por harness: K`. |
 | `index` | `[--harness h] [--dry-run]` | `harness: <h>`, `índice escrito: …` (o el índice completo con `--dry-run`) y última línea `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. |
+| `check` | `[--harness h] [--json]` | Sin `--json`: cabecera `── memory-system check ── harness: <h> · root: <root>`, una línea `[<familia>]` por problema, una regla `─` y última línea `problemas: N (<familia> n · …)`. Con `--json`: un único objeto `{ harness, root, ok, summary, problems }` y nada más en stdout. |
 
 Pasa siempre `--cli-root <CLI_ROOT>` a `scaffold`: es como el motor localiza los skills dueños de
-las plantillas compartidas (`<CLI_ROOT>/skills/<dueño>/assets/<plantilla>`). Muestra al usuario la
-salida del motor tal cual; no la resumas ni la inventes.
+las plantillas compartidas (`<CLI_ROOT>/skills/<dueño>/assets/<plantilla>`). `check` no lo necesita:
+no copia nada. Muestra al usuario la salida del motor tal cual; no la resumas ni la inventes.
 
 Exit codes (comunes a todos los subcomandos):
 
 | Exit | Situación | Qué hacer |
 |---|---|---|
-| 0 | Éxito | Continuar la secuencia y mostrar el informe. |
-| 2 | `--harness` no admitido, raíz inexistente (o sin padre), `assets/scaffold/` ausente, template desalineado | Mostrar el mensaje del motor (por ejemplo `valor no admitido para --harness: foo (admitidos: sddf, speckit, openspec, generic)`) y detenerse: nada se ha escrito y no se muestra informe. |
-| 1 | Error inesperado | Mostrar el mensaje y detenerse sin escribir. |
+| 0 | Éxito (en `check`: `problemas: 0`) | Continuar la secuencia y mostrar el informe. |
+| 2 | `--harness` no admitido, raíz inexistente (o sin padre), `assets/scaffold/` ausente, template desalineado, Node < 18 | Mostrar el mensaje del motor (por ejemplo `valor no admitido para --harness: foo (admitidos: sddf, speckit, openspec, generic)` o `raíz inexistente: no-existe (no existe o no es un directorio)`) y detenerse: nada se ha escrito y no se muestra informe. |
+| 1 | Error inesperado — **excepto en `check`**, donde 1 significa "al menos un problema" y es el resultado normal del gate | En `check`: mostrar el informe del motor y propagar el 1. En los demás modos: mostrar el mensaje y detenerse sin escribir. |
 
 ### Paso 3 — Ejecutar la secuencia del modo
 
@@ -248,6 +269,56 @@ Con exit 0, sugiere `/header-aggregation <ruta>` (o `ensure --fix-frontmatter`) 
 `⚠️ sin frontmatter`. Si no puedes ejecutar `node` (entorno de solo lectura, sin shell, o una
 simulación del skill), no inventes la salida del motor: pasa al Paso 5 y genera el índice inline.
 
+#### 3.5 `check` — verificar sin escribir y propagar el exit code
+
+Invoca `check --root <SPECS_BASE> [--harness h] [--json]`. El motor detecta el harness (misma
+precedencia que `index`), escanea `SPECS_BASE` una sola vez con las mismas exclusiones y ejecuta
+cuatro evaluadores puros sobre los nodos:
+
+| Familia | Regla |
+|---|---|
+| `missing-layer` | Una de las once capas (o `constitution.md`) no existe en la raíz y el perfil del harness no la omite (`skipLayers`). |
+| `orphan` | Nodo sin bloque de frontmatter (`---` inicial ausente o sin cerrar). |
+| `invalid-frontmatter` | Frontmatter **declarado** sin `type`, `slug` o `title`; además sin `id` o `status` cuando `type ∈ {project, epic, story}`. Un problema por campo ausente. |
+| `broken-wikilink` | Cada ocurrencia de `[[slug]]` cuyo slug no resuelve contra el conjunto de slugs derivados. |
+
+Se evalúa el campo **declarado**, no el derivado: un archivo cuyo `slug` deduce el motor por su
+nombre sigue siendo `invalid-frontmatter` porque no lo declara. Las reglas completas (campos
+obligatorios y extracción de wikilinks) están en `references/memory-rules.md` §6 y §2.
+
+Reglas de esta secuencia:
+
+1. **No ejecutes `detect` por separado**: `check` ya imprime el harness en su cabecera (o en la
+   clave `harness` del JSON). Una línea `harness: <h>` extra contaminaría el stdout de `--json`.
+2. **Reenvía el stdout del motor tal cual**, sin resumir, reordenar ni traducir.
+3. **Con `--json`, stdout es exclusivamente el objeto del motor**: ni cabeceras, ni informe del
+   Paso 4, ni sugerencias, ni una línea en blanco de más. Es el contrato con `jq`.
+4. **Propaga el exit code** del motor: 0 sin problemas, 1 con al menos uno, 2 ante error técnico.
+   Sin `--json`, cierra con una última línea `exit code: <N>` para que la propagación sea visible;
+   con `--json`, no la imprimas.
+5. **Exit 2**: muestra el mensaje de stderr del motor (`❌ raíz inexistente: no-existe (no existe o
+   no es un directorio)`) y detente. No imprimas ningún informe de problemas, ni `problemas: 0`,
+   ni `problemas: N`; con `--json` el propio motor ya ha puesto `{ "ok": false, "error": "…" }` en
+   stdout, así que tampoco añadas nada.
+6. **No corrijas nada**: `check` informa. Con exit 1 y problemas `orphan`, sugiere
+   `/memory-system ensure --fix-frontmatter` (o `/header-aggregation <ruta>`); con `missing-layer`,
+   `/memory-system scaffold`; con `broken-wikilink` o `invalid-frontmatter`, edición manual del
+   artefacto. Nunca lo hagas en la misma invocación.
+
+Salida de referencia (texto):
+
+```
+── memory-system check ── harness: sddf · root: docs
+[missing-layer]        product/ — capa ausente
+[orphan]               guides/notas.md — sin frontmatter
+[invalid-frontmatter]  adr/ADR-0003-x.md — falta title
+[broken-wikilink]      guides/sdd.md — [[no-existe]] no resuelve
+────────────────────────────────────────────────
+problemas: 4 (missing-layer 1 · orphan 1 · invalid-frontmatter 1 · broken-wikilink 1)
+```
+
+Si no puedes ejecutar `node`, no inventes la salida del motor: pasa al Paso 5.
+
 ### Paso 4 — Informe final
 
 Cierra cada modo con estas líneas, después de la salida íntegra del motor:
@@ -258,6 +329,7 @@ Cierra cada modo con estas líneas, después de la salida íntegra del motor:
 | `scaffold` | `✅ memory-system scaffold — harness: <h> — <SPECS_BASE>` y en la última línea el resumen del motor `creados: N · sobrescritos: 0 · preservados: M · omitidos por harness: K`. Con `--dry-run`, antepón `ℹ️ --dry-run: plan impreso por consola, no se escribió ningún archivo`. |
 | `rebuild --force` | `✅ memory-system rebuild — harness: <h> — <SPECS_BASE>` y en la última línea `creados: N · sobrescritos: S · índice regenerado: sí`. |
 | `index` | `✅ memory-system index — harness: <h> — <SPECS_BASE>/index.md regenerado` y en la última línea `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. Con `--dry-run`, la línea `ℹ️ --dry-run: índice impreso por consola, no se escribió ningún archivo` va ANTES del índice y la salida cierra con el resumen. |
+| `check` | **Sin informe propio**: la salida es la del motor. Sin `--json`, añade como única línea final `exit code: <N>`; con `--json`, no añadas nada a stdout. `check` no escribe, así que no hay línea de creados, sobrescritos ni índice. |
 
 `N`, `M` y `S` son las cifras de la última línea del motor; no las recalcules.
 
@@ -295,7 +367,23 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
 4. Si el usuario pasó `--dry-run` a `index`, emite primero
    `ℹ️ --dry-run: índice impreso por consola, no se escribió ningún archivo` y a continuación el
    índice completo; si no, escribe `<SPECS_BASE>/index.md`.
-5. Termina con el informe del Paso 4 del modo correspondiente.
+5. **`check` inline**: aplica a mano las cuatro reglas de `references/memory-rules.md` (§6 los
+   campos obligatorios, §2 la extracción de wikilinks y las exclusiones, §1 el `skipLayers` del
+   perfil). Comprueba con la herramienta de lectura qué capas y qué `constitution.md` existen,
+   **lee cada `.md` candidato** antes de clasificarlo (no deduzcas nada del nombre), construye el
+   conjunto de slugs derivados y evalúa cada `[[slug]]` contra él. Imprime el informe textual con
+   el formato exacto del Paso 3.5 (cabecera, una línea `[<familia>]` por problema en el orden
+   `missing-layer` → `orphan` → `invalid-frontmatter` → `broken-wikilink`, regla y última línea
+   `problemas: N (…)`) y añade después, literalmente:
+
+   ```
+   ⚠️ node no disponible — sin exit code; no usar en CI
+   ```
+
+   No emitas la línea `exit code: <N>` (no hay proceso del que propagarlo) y no intentes servir
+   `--json`: un objeto producido a mano no es reproducible y contaminaría el gate. Si el usuario
+   pidió `--json`, dilo y ofrece el informe textual.
+6. Termina con el informe del Paso 4 del modo correspondiente (`check` no tiene informe propio).
 
 ## Salida
 
@@ -305,7 +393,10 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
   (`rebuild --force`).
 - `$SPECS_BASE/index.md` — índice completo de la wiki con wikilinks `[[slug]]` por capa, sección
   "Estado del grafo" y, si procede, "Nodos pendientes" (`ensure`, `rebuild --force`, `index`).
-- Informe final del Paso 4 con las cifras del motor.
+- `check`: **ningún archivo**. Solo stdout — informe textual agrupado por familia con su línea
+  `problemas: N (…)`, o el objeto `{ harness, root, ok, summary, problems }` con `--json` — y el
+  exit code 0 / 1 / 2.
+- Informe final del Paso 4 con las cifras del motor (`check` no añade informe propio).
 
 ## Deprecación de `docs-wiki-builder`
 

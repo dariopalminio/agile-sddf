@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-01-decouple-security-audit
+title: "Desacoplar `story-code-review` del skill `security-audit`"
+---
+
 # Desacoplar `story-code-review` del skill `security-audit`
 
 ## Context

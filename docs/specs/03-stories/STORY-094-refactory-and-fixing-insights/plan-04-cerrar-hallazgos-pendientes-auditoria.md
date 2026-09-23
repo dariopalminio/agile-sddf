@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-04-cerrar-hallazgos-pendientes-auditoria
+title: Plan 04 — Cerrar los hallazgos pendientes de la auditoría
+---
+
 # Plan 04 — Cerrar los hallazgos pendientes de la auditoría
 
 ## Objetivo

@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-04-fix-security-insights
+title: "Cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`"
+---
+
 # Cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`
 
 ## Context

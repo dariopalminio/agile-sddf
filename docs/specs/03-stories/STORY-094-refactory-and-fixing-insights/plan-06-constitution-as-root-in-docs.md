@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-06-constitution-as-root-in-docs
+title: "Constitución como raíz: mover `docs/policies/constitution.md` → `docs/constitution.md`"
+---
+
 # Constitución como raíz: mover `docs/policies/constitution.md` → `docs/constitution.md`
 
 ## Contexto

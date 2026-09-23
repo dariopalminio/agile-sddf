@@ -1,3 +1,9 @@
+---
+type: guardrail
+slug: gr-ai-security-checklist
+title: "Guardrail: AI security check for agent-facing artefacts"
+---
+
 # Guardrail: AI security check for agent-facing artefacts
 
 Applies to what this repository tells an agent to do — every `SKILL.md`, its `references/`,

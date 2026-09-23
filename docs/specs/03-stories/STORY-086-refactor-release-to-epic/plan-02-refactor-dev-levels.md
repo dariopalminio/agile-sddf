@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-02-refactor-dev-levels
+title: "PLAN: Reestructurar `docs/specs/` a niveles numerados (`01-projects/`, `02-epics/`, `03-stories/`)"
+---
+
 # PLAN: Reestructurar `docs/specs/` a niveles numerados (`01-projects/`, `02-epics/`, `03-stories/`)
 
 ## Context

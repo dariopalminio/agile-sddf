@@ -1,9 +1,10 @@
 # Reglas de memoria (memory-system)
 
 Fuente de verdad de las reglas que aplica `scripts/memory-system.js` en los modos `index`
-(decisiones D-2, D-3 y D-4 de STORY-095) y `scaffold` (D-1, D-2 y D-4 de STORY-096). `SKILL.md`
-las aplica a mano cuando `node` no está en PATH (degradación inline) y STORY-097 (`check`) las
-reutiliza sin duplicarlas.
+(decisiones D-2, D-3 y D-4 de STORY-095), `scaffold` (D-1, D-2 y D-4 de STORY-096) y `check`
+(D-1, D-2 y D-3 de STORY-097, §6 de este documento). `SKILL.md` las aplica a mano cuando `node` no
+está en PATH (degradación inline). `check` no define reglas propias de slug, capa ni exclusión:
+reutiliza las de §2, y cualquier ajuste se hace aquí una sola vez y lo heredan los tres modos.
 
 ## 1. Perfiles de harness (`HARNESS_PROFILES`)
 
@@ -25,8 +26,9 @@ Las raíces externas se leen en modo solo lectura: `index` nunca escribe fuera d
 ## 2. Nodo indexable
 
 Un nodo es un archivo `.md` bajo `SPECS_BASE` (más las raíces externas del perfil) que no cae en
-las exclusiones. Esquema: `{ path, relPath, layer, slug, title, hasFrontmatter, wikilinks[] }`;
-`relPath` es relativa a `SPECS_BASE` con `/` (los nodos externos empiezan por `../`).
+las exclusiones. Esquema: `{ path, relPath, layer, slug, title, hasFrontmatter, slugPlaceholder, wikilinks[], declared }`;
+`relPath` es relativa a `SPECS_BASE` con `/` (los nodos externos empiezan por `../`) y `declared` es
+el frontmatter tal cual lo declara el archivo (`{}` si no hay bloque), que es lo que evalúa `check` (§6).
 
 ### Exclusiones
 
@@ -70,9 +72,27 @@ inicial, o con `---` sin cierre, se marca `hasFrontmatter=false` y se enlaza sol
 
 ### Wikilinks
 
-Se extraen del cuerpo (no del frontmatter) ignorando bloques de código, código inline, el alias
-(`[[slug|Alias]]` → `slug`) y el anchor (`[[slug#seccion]]` → `slug`). Un wikilink cuyo slug no
-coincide con el de ningún nodo (ni con `index`) es un **nodo pendiente**.
+Se extraen del cuerpo, nunca del frontmatter. El orden de los cuatro pasos es normativo
+(STORY-097 D-2): `check` los convierte en bloqueantes, así que una variación cambia el veredicto
+del gate.
+
+1. **Primero los fences, después el código inline.** Se eliminan del cuerpo los bloques cercados
+   ```` ``` ```` y `~~~` (apertura y cierre a principio de línea) y **solo entonces** las
+   secuencias de código inline `` `…` ``. El orden importa: limpiar el inline primero rompería un
+   fence que contuviera backticks sueltos y dejaría visible su contenido.
+2. **Captura y normalización.** Sobre el resto se capturan las ocurrencias de `[[…]]`; de cada
+   captura se toma el texto **antes del primer `|`** (alias: `[[slug|Alias]]` → `slug`) y **antes
+   del primer `#`** (anchor: `[[slug#seccion]]` → `slug`), recortado por ambos extremos.
+3. **Descartes.** Una captura vacía (`[[]]`, `[[ ]]`) o que contenga `<` o `>` se descarta: es un
+   placeholder de plantilla (`[[<slug>]]`, `[[<STORY-ID>]]`), no un enlace a un nodo real. Sin esta
+   regla cada plantilla suelta produciría un `broken-wikilink` falso.
+4. **Nodos no escaneados.** Los nodos de `templates/` y los demás excluidos (§2, *Exclusiones*) no
+   se escanean, de modo que sus wikilinks no existen para `index` ni para `check`. Un nodo con
+   `slug` placeholder (`<slug-kebab>`) tampoco aporta wikilinks.
+
+Un wikilink cuyo slug no coincide con el de ningún nodo (ni con `index`) es un **nodo pendiente**
+para `index` (informativo, no bloquea) y un problema `broken-wikilink` para `check` (bloquea, una
+ocurrencia = un problema).
 
 ## 3. Formato del índice
 
@@ -180,3 +200,73 @@ creados: N · sobrescritos: S · preservados: M · omitidos por harness: K
 
 `ensure` la combina con el índice en `creados: N · preservados: M · índice regenerado: sí|no`;
 `rebuild --force` en `creados: N · sobrescritos: S · índice regenerado: sí`.
+
+## 6. Campos obligatorios de `check` (`REQUIRED_FIELDS`)
+
+`check` no valida el esquema canónico completo de `header-aggregation`, sino un subconjunto
+declarado en `REQUIRED_FIELDS` del motor (STORY-097 D-3):
+
+```js
+const REQUIRED_FIELDS = { all: ['type', 'slug', 'title'], specs: ['id', 'status'] };
+```
+
+| Conjunto | Campos | A qué nodos se exige |
+|---|---|---|
+| `all` | `type`, `slug`, `title` | A todo nodo indexable con frontmatter. |
+| `specs` | `id`, `status` | Además de `all`, a los nodos cuyo `type` declarado es `project`, `epic` o `story`. |
+
+Reglas de evaluación:
+
+- Se mira el frontmatter **declarado**, no el derivado. Un artefacto cuyo `slug` deduce el motor
+  del nombre del archivo (§2, regla de slug) sigue siendo `invalid-frontmatter` si no lo declara:
+  el derivado sirve para enlazar, no para certificar trazabilidad.
+- Un campo presente pero vacío (`title:` o `title: "   "`) cuenta como ausente.
+- **Un problema por campo ausente**, con `detail: "falta <campo>"`. Un nodo al que le faltan `slug`
+  y `title` produce dos problemas.
+- Un nodo sin bloque de frontmatter no se evalúa aquí: ya es `orphan`, y reportarlo dos veces
+  duplicaría el mismo defecto.
+
+### Por qué no se exigen `date`, `created`, `updated`, `substatus` ni `parent`
+
+- `date` **no existe** en el esquema canónico de `header-aggregation`, que usa `created` y
+  `updated`. Exigirlo contradiría al skill dueño del esquema (el invariante 2 de
+  `docs/architecture/memory-system.md` lo pedía por error; CR-001 de STORY-097 lo corrige).
+- `created` y `updated` los **deriva** `header-aggregation` en el momento de escribir: son
+  metadatos de mantenimiento, no trazabilidad. Un artefacto correcto escrito a mano no los tiene,
+  y un `check` que los exigiera obligaría a pasar `ensure --fix-frontmatter` antes de cada gate.
+- `substatus` y `parent` solo tienen sentido en artefactos dentro de un flujo (una historia dentro
+  de una épica). Guías, ADRs, runbooks y policies no tienen padre ni subestado.
+- `id` solo aplica a specs: un `guides/sdd.md` no tiene identificador de backlog.
+
+El criterio es el mismo en los cuatro casos: `check` es un gate de CI, y un gate que marca en rojo
+decenas de artefactos legítimos se desactiva el primer día. Los campos exigidos son los que hacen
+que un nodo sea **localizable** (`slug`), **clasificable** (`type`), **legible** (`title`) y, en
+specs, **trazable** (`id`, `status`). El esquema completo sigue siendo el de `header-aggregation`;
+ampliar `REQUIRED_FIELDS` es una decisión de esta tabla, no del código.
+
+## 7. Familias de problemas de `check`
+
+| Familia (`kind`) | Regla | `detail` |
+|---|---|---|
+| `missing-layer` | Una de las once capas de §5 no existe como directorio de la raíz, o falta `constitution.md`, y el perfil del harness no la omite (`skipLayers`, §1). | `capa ausente` |
+| `orphan` | Nodo indexable con `hasFrontmatter=false` (§2, *Frontmatter*). | `sin frontmatter` |
+| `invalid-frontmatter` | Campo de `REQUIRED_FIELDS` ausente del frontmatter declarado (§6). | `falta <campo>` |
+| `broken-wikilink` | Ocurrencia de `[[slug]]` cuyo slug no está en el conjunto de slugs derivados (§2, incluidas las raíces externas del perfil). | `[[slug]] no resuelve` |
+
+`path` es `<capa>/` para `missing-layer` y la `relPath` del nodo en las demás familias, siempre
+relativa a `SPECS_BASE` y con `/`. Los problemas se ordenan por `(kind, path, detail)` con
+comparación ordinal; el informe textual los agrupa en el orden de la tabla. `check` no escribe
+nada: ni `index.md`, ni frontmatter, ni directorios.
+
+### Resumen
+
+Última línea de `check` (texto):
+
+```
+problemas: N (missing-layer n · orphan n · invalid-frontmatter n · broken-wikilink n)
+```
+
+Solo aparecen entre paréntesis las familias con al menos un problema; sin problemas la línea es
+`problemas: 0`. Con `--json`, el mismo resultado es
+`{ harness, root, ok, summary, problems }` y stdout no lleva nada más. Exit 0 sin problemas, 1 con
+al menos uno, 2 ante error técnico (raíz inexistente, `--harness` no admitido, Node < 18).

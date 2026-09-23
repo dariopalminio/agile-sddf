@@ -51,7 +51,7 @@ Existían 13 acoplamientos cross-skill por rutas relativas: skills que leían te
 
 ## Referencias
 
-- [[EPIC-17-remediating-and-improvement]] — hallazgo A3
+- [[remediating-and-improvement]] — hallazgo A3
 - [[EPIC-11-centralizar-templates]] — STORY-055, decisión original sin implementar
 - `docs/specs/releases/EPIC-17-remediating-and-improvement/plan-06-detach-shared-templates.md`
 - `.claude/skills/sddf-init/SKILL.md` — Paso 2b (copia idempotente)

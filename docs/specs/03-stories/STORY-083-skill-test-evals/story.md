@@ -14,7 +14,7 @@ related:
   - EPIC-14-fabrica-de-skills
   - STORY-078-implement-tdd-fase-red
 ---
-[[EPIC-14-fabrica-de-skills]]
+[[fabrica-de-skills]]
 
 # 📖 Historia: skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente
 

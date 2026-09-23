@@ -1,3 +1,9 @@
+---
+type: guide
+slug: agent-harness-guide
+title: Guía de Agent Harness
+---
+
 # Guía de Agent Harness
 
 ## 1. ¿Qué es un Agent Harness?

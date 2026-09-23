@@ -1,3 +1,9 @@
+---
+type: domain
+slug: domain-project-lifecycle
+title: "Documentación del Dominio: Ciclo de Vida de Project (Project Lifecycle)"
+---
+
 # Documentación del Dominio: Ciclo de Vida de Project (Project Lifecycle)
 
 > **Bounded Context:** Project Lifecycle  
@@ -184,7 +190,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Dominio transversal:** [[domain-state-management]]
 * **Principios aplicables:** [[constitution]] (patrón 14; regla 9)
-* **Decisión de arquitectura:** [[ADR-0003]] — rationale de los workflows canónicos de story y epic
+* **Decisión de arquitectura:** [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
 
 ---
 
@@ -194,4 +200,4 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * [[domain-epic-lifecycle]] — Ciclo de vida de Epic (derivado del plan del proyecto)
 * [[domain-story-lifecycle]] — Ciclo de vida de Story (derivado de las épicas)
 * [[constitution]] — Constitución del proyecto
-* [[ADR-0003]] — Workflow canónico de story y epic
+* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic

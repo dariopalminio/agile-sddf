@@ -13,7 +13,7 @@ updated: 2026-05-15
 related: []
 ---
 <!-- Referencias -->
-[[EPIC-13-quality-gates-con-dod-en-story-workflow]]
+[[quality-gates-con-dod-en-story-workflow]]
 [[STORY-064-revision-codigo-multi-agente]]
 [[dod-code-review-en-story-code-review]]
 

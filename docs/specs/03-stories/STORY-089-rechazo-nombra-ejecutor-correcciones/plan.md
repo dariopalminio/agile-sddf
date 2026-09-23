@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan
+title: STORY-089 — Análisis y propuesta de cambio
+---
+
 # STORY-089 — Análisis y propuesta de cambio
 
 ## Contexto

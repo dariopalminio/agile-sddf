@@ -76,22 +76,22 @@ related:
 
 <!-- Generado automáticamente por story-testcases. Actualizado por story-implement en fase GREEN.
      [x] = test pasó | [ ] = pendiente | [!] = test falló -->
-- [ ] E2E-001: check determinista reporta los problemas sin escribir
-- [ ] E2E-002: Salida JSON para CI y re-chequeo tras corregir
-- [ ] UT-001: Evaluador missingLayers
-- [ ] UT-002: missingLayers respeta skipLayers del harness
-- [ ] UT-003: Evaluador orphans
-- [ ] UT-004: Evaluador invalidFrontmatter: campos por tipo
-- [ ] UT-005: Evaluador brokenWikilinks contra slugSet con raíces externas
-- [ ] UT-006: Extracción de wikilinks: código, alias, anclas y placeholders
-- [ ] UT-007: templates/ y excluidos no se evalúan
-- [ ] UT-008: Salida JSON estable y ordenada
-- [ ] UT-009: Solo lectura
-- [ ] UT-010: Errores técnicos → exit 2
-- [ ] UT-011: Rendimiento sobre este repositorio
+- [x] E2E-001: check determinista reporta los problemas sin escribir
+- [x] E2E-002: Salida JSON para CI y re-chequeo tras corregir
+- [x] UT-001: Evaluador missingLayers
+- [x] UT-002: missingLayers respeta skipLayers del harness
+- [x] UT-003: Evaluador orphans
+- [x] UT-004: Evaluador invalidFrontmatter: campos por tipo
+- [x] UT-005: Evaluador brokenWikilinks contra slugSet con raíces externas
+- [x] UT-006: Extracción de wikilinks: código, alias, anclas y placeholders
+- [x] UT-007: templates/ y excluidos no se evalúan
+- [x] UT-008: Salida JSON estable y ordenada
+- [x] UT-009: Solo lectura
+- [x] UT-010: Errores técnicos → exit 2
+- [x] UT-011: Rendimiento sobre este repositorio
 - [ ] IT-001: SKILL.md propaga stdout y exit code
 - [ ] IT-002: Degradación sin node en PATH
-- [ ] EV-001: memory-system check con problemas
-- [ ] EV-002: memory-system check --json
-- [ ] EV-003: memory-system check sano
-- [ ] EV-004: memory-system check fail-fast raíz inexistente
+- [x] EV-001: memory-system check con problemas
+- [x] EV-002: memory-system check --json
+- [x] EV-003: memory-system check sano
+- [x] EV-004: memory-system check fail-fast raíz inexistente

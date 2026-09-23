@@ -16,10 +16,10 @@ related:
   - STORY-070-dod-code-review-en-story-code-review
 ---
 <!-- Referencias -->
-[[EPIC-13-quality-gates-con-dod-en-story-workflow]]
-[[STORY-068-dod-plan-en-story-analyze]]
-[[STORY-069-dod-IMPLEMENT-en-story-implement]]
-[[STORY-070-dod-code-review-en-story-code-review]]
+[[quality-gates-con-dod-en-story-workflow]]
+[[dod-plan-en-story-analyze]]
+[[dod-IMPLEMENT-en-story-implement]]
+[[dod-code-review-en-story-code-review]]
 
 # 📖 Historia: Skill story-verify: Orquestar la fase VERIFY de pruebas de una historia
 

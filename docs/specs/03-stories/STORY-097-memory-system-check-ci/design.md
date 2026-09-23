@@ -315,3 +315,24 @@ Sin preguntas abiertas.
 - **Descripción**: `scripts/check-doc-links.js` (`npm run verify:links`) valida enlaces Markdown relativos en el repositorio del framework; `check` no lo sustituye ni lo duplica: cubre wikilinks y frontmatter, que aquel no revisa.
 - **Documento afectado**: design.md
 - **Acción requerida**: documentar en `sddf-commands-pipeline.md` que ambos son complementarios.
+
+### CR-004
+- **Tipo**: ambigüedad
+- **Descripción**: `testcases.md` (EV-003, E2E-001) usaba `examples/sddf/` como "fixture sano" con `problemas: 0`, pero ese fixture es inalcanzable para `check`: su `guides/sdd.md` **omite `slug` a propósito** para ejercitar la derivación por nombre de archivo de `index` (con tests de STORY-095 que dependen de ello) y le faltan capas de `LAYERS`. Completarlo habría roto esos tests; debilitar `missingLayers` o `REQUIRED_FIELDS` habría vaciado la regla de D-1/D-3.
+- **Decisión tomada**: se crea un fixture nuevo `skills/memory-system/examples/sane/` (once capas, `constitution.md`, frontmatter completo y wikilinks que resuelven) y `examples/sddf/` queda intacto. El caso de eval TC-013 apunta a `sane`.
+- **Documento afectado**: design.md, testcases.md
+- **Acción requerida**: ninguna; registrado.
+
+### CR-005
+- **Tipo**: dependencia
+- **Descripción**: `invalidFrontmatter` debe evaluar el campo `slug` **declarado** en el frontmatter, pero `deriveNode` ya normalizaba `slug` al valor derivado por `deriveSlug`, con lo que un artefacto sin `slug` declarado era indistinguible de uno que sí lo declara.
+- **Decisión tomada**: `deriveNode` devuelve un campo adicional `declared` con el frontmatter crudo. El contrato previo (`path, relPath, layer, slug, title, hasFrontmatter, slugPlaceholder, wikilinks`) no cambia, `index` conserva su comportamiento y se evita una segunda lectura por archivo (NFR-2). Alternativas descartadas: reparsear dentro de `check` y dejar `slug` sin normalizar.
+- **Documento afectado**: design.md, `references/memory-rules.md` §2
+- **Acción requerida**: ninguna; registrado.
+
+### CR-006
+- **Tipo**: ambigüedad
+- **Descripción**: el caso de eval TC-012 (EV-002) exigía la subcadena literal `"ok": false` **con espacio**. El motor la emite (`JSON.stringify(…, null, 2)`), pero el runner de evals transcribe la salida mediante un agente y puede devolver JSON compacto, lo que producía un falso negativo. AC-2 exige un único objeto con `ok: false`, no un espaciado concreto.
+- **Decisión tomada**: la aserción pasa a `"ok"` + `false` (independiente del formato) y `not_contains` cubre ambas grafías de `ok: true`, de modo que una salida con `ok` verdadero sigue sin poder pasar. El formato exacto y la estabilidad byte a byte los verifica UT-008 de forma determinista.
+- **Documento afectado**: `skills/memory-system/evals/evals.json`
+- **Acción requerida**: ninguna; registrado.

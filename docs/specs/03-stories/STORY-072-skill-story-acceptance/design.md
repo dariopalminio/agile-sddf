@@ -18,7 +18,7 @@ related:
 <!-- Referencias -->
 [[STORY-072-skill-story-acceptance]]
 [[STORY-071-skill-story-verify]]
-[[STORY-070-dod-code-review-en-story-code-review]]
+[[dod-code-review-en-story-code-review]]
 
 ## Context
 

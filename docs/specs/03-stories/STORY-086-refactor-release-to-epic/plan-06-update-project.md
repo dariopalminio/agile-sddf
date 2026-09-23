@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-06-update-project
+title: "Plan — Reescribir `project.md` contra la realidad + runbook del proceso"
+---
+
 # Plan — Reescribir `project.md` contra la realidad + runbook del proceso
 
 ## Context

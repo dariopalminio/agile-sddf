@@ -1,3 +1,9 @@
+---
+type: architecture
+slug: sddf-architecture
+title: Arquitectura del Framework SDDF
+---
+
 # Arquitectura del Framework SDDF
 
 > **Tipo:** architecture · **ID:** ARCH-SDDF · **Estado:** active  
@@ -140,7 +146,7 @@ agile-sddf/
 | [[domain-work-item-hierarchy]] | Project → Epic → Story |
 | [[domain-state-management]] | Estados, subestados, transiciones |
 | [[constitution]] | Principios supremos |
-| [[ADR-0009]] | `specs/` dentro de `docs/` |
-| [[ADR-0004]] | Documentación en capas |
+| [[perfiles-runtimes-e-instalacion-explicita]] | `specs/` dentro de `docs/` |
+| [[nivel-l2-epic-y-directorios-numerados]] | Documentación en capas |
 
 ---

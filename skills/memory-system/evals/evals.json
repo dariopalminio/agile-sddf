@@ -1,7 +1,7 @@
 {
   "skill": "memory-system",
-  "version": "1.1.0",
-  "description": "Casos de prueba para memory-system. STORY-095 (TC-001..TC-004): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido. STORY-096 (TC-005..TC-010): ensure por defecto sobre examples/sddf-partial (crea solo lo faltante y regenera el índice), ensure idempotente, scaffold sobre examples/empty sin tocar index.md, rebuild sin --force (fail-fast sin escrituras), rebuild --force (advertencia literal y sobrescritura de semillas) y ensure --fix-frontmatter sobre examples/no-frontmatter (header-aggregation en batch con 'Saltar todos los conflictos').",
+  "version": "1.2.0",
+  "description": "Casos de prueba para memory-system. STORY-095 (TC-001..TC-004): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido. STORY-096 (TC-005..TC-010): ensure por defecto sobre examples/sddf-partial (crea solo lo faltante y regenera el índice), ensure idempotente, scaffold sobre examples/empty sin tocar index.md, rebuild sin --force (fail-fast sin escrituras), rebuild --force (advertencia literal y sobrescritura de semillas) y ensure --fix-frontmatter sobre examples/no-frontmatter (header-aggregation en batch con 'Saltar todos los conflictos'). STORY-097 (TC-011..TC-014): modo check sobre el fixture examples/broken (informe textual con las cuatro familias y 'problemas: 4', exit 1), check --json (objeto único con ok/summary/problems para CI), check sobre un fixture sano ('problemas: 0', exit 0) y fail-fast ante --root inexistente (stderr 'raíz inexistente', exit 2, sin escrituras).",
   "cases": [
     {
       "id": "TC-001",
@@ -387,6 +387,179 @@
         ]
       },
       "threshold": 0.9
+    },
+    {
+      "id": "TC-011",
+      "name": "check-reporta-cuatro-familias-fixture-broken",
+      "type": "happy-path",
+      "description": "EV-001 — memory-system check con problemas (Origen: EV-001 de testcases.md; AC-1, AC-3, AC-4, D-1, D-4, T001). Proyecto SDDF cuyo REPO_ROOT es examples/broken: contiene sddf.config.yaml (root: docs) y un docs/ deliberadamente inconsistente con un problema por cada familia — NO existe docs/product/ (capa ausente), guides/notas.md no tiene bloque de frontmatter (huérfano), adr/ADR-0003-x.md tiene frontmatter con type y slug pero sin title (frontmatter inválido) y guides/sdd.md enlaza [[no-existe]] (wikilink roto). El fixture incluye además falsos positivos que NO deben reportarse: [[en-código]] en código inline, [[en-fence]] dentro de un fence, [[<slug>]] en templates/story-template.md y un derivado de historia con wikilinks. node está en PATH y detect devuelve sddf. El usuario invoca /memory-system check sin --json. El skill debe invocar el motor en modo solo lectura y reenviar su stdout tal cual: cabecera '── memory-system check ── harness: sddf · root: docs', una línea por problema con el prefijo de familia entre corchetes ([missing-layer] product/ — capa ausente, [orphan] guides/notas.md — sin frontmatter, [invalid-frontmatter] adr/ADR-0003-x.md — falta title, [broken-wikilink] guides/sdd.md — [[no-existe]] no resuelve) y el cierre 'problemas: 4 (missing-layer 1 · orphan 1 · invalid-frontmatter 1 · broken-wikilink 1)'. Termina con exit 1 propagado desde el motor y no escribe ni modifica ningún archivo (ningún [CREADO], ningún [SOBRESCRITO], no se regenera docs/index.md).",
+      "input": {
+        "input_path": "examples/broken",
+        "mode": "check",
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "cli_root": ".claude",
+          "harness": "sddf",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "missing_paths": [
+            "docs/product/"
+          ],
+          "files_without_frontmatter": [
+            "docs/guides/notas.md"
+          ],
+          "invalid_frontmatter": [
+            "docs/adr/ADR-0003-x.md"
+          ],
+          "broken_wikilinks": [
+            "docs/guides/sdd.md -> [[no-existe]]"
+          ],
+          "expected_exit_code": 1
+        }
+      },
+      "expected": {
+        "contains": [
+          "memory-system check",
+          "[missing-layer]",
+          "[orphan]",
+          "[invalid-frontmatter]",
+          "[broken-wikilink]",
+          "problemas: 4"
+        ],
+        "not_contains": [
+          "problemas: 0",
+          "=== FILE:",
+          "[CREADO]",
+          "[SOBRESCRITO]",
+          "índice regenerado",
+          "Modo no reconocido",
+          "Entorno inválido",
+          "[[en-codigo]] no resuelve",
+          "[[en-fence]] no resuelve",
+          "[[<slug>]] no resuelve"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-012",
+      "name": "check-json-salida-unica-para-ci",
+      "type": "edge-case",
+      "description": "EV-002 — memory-system check --json (Origen: EV-002 de testcases.md; AC-2, NFR-1, D-4, F-1, T001). Mismo fixture que TC-011 (REPO_ROOT examples/broken, sddf.config.yaml con root: docs, un problema por familia incluido el wikilink roto [[no-existe]] en guides/sdd.md). node está en PATH y detect devuelve sddf. El usuario invoca /memory-system check --json. El skill debe reenviar el stdout del motor sin añadir texto alguno: un único objeto JSON parseable con las claves en el orden harness, root, ok, summary, problems — { \"harness\": \"sddf\", \"root\": \"docs\", \"ok\": false, \"summary\": { \"missing-layer\": 1, \"orphan\": 1, \"invalid-frontmatter\": 1, \"broken-wikilink\": 1 }, \"problems\": [ { \"kind\": \"broken-wikilink\", \"path\": \"guides/sdd.md\", \"detail\": \"[[no-existe]] no resuelve\" }, ... ] } — con problems ordenado por (kind, path, detail) y cada path relativo a SPECS_BASE con separador '/'. No debe aparecer el informe textual agrupado por familia ni ningún log adicional en stdout. Exit 1. Solo lectura: ningún archivo se crea ni se modifica.",
+      "input": {
+        "input_path": "examples/broken",
+        "mode": "check",
+        "flags": [
+          "--json"
+        ],
+        "environment": {
+          "specs_base": "docs",
+          "cli_root": ".claude",
+          "harness": "sddf",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "expected_exit_code": 1
+        }
+      },
+      "expected": {
+        "contains": [
+          "\"harness\"",
+          "\"root\"",
+          "\"ok\"",
+          "false",
+          "\"summary\"",
+          "\"problems\"",
+          "\"broken-wikilink\""
+        ],
+        "not_contains": [
+          "\"ok\": true",
+          "\"ok\":true",
+          "[missing-layer]",
+          "problemas: 4",
+          "=== FILE:",
+          "[CREADO]",
+          "índice regenerado",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-013",
+      "name": "check-fixture-sano-sin-problemas",
+      "type": "happy-path",
+      "description": "EV-003 — memory-system check sano (Origen: EV-003 de testcases.md; AC-1, D-1, D-4, T001). Proyecto SDDF cuyo REPO_ROOT es examples/sane, en estado sano para las cuatro familias de check: sddf.config.yaml (root: docs), presentes las once capas y constitution.md, todo nodo indexable con bloque de frontmatter y con type, slug y title (más id y status en project|epic|story) y todos los wikilinks resolviendo contra el conjunto de slugs derivados (incluido [[STORY-001-a]] desde guides/sdd.md). Los wikilinks placeholder [[<slug>]] de templates/story-template.md, el código inline y los fences están excluidos del escaneo y no cuentan. node está en PATH y detect devuelve sddf. El usuario invoca /memory-system check. El skill debe reenviar la cabecera '── memory-system check ── harness: sddf · root: docs' y el cierre 'problemas: 0', sin ninguna línea de familia, y terminar con exit 0 sin escribir nada.",
+      "input": {
+        "input_path": "examples/sane",
+        "mode": "check",
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "cli_root": ".claude",
+          "harness": "sddf",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "expected_exit_code": 0
+        }
+      },
+      "expected": {
+        "contains": [
+          "memory-system check",
+          "problemas: 0"
+        ],
+        "not_contains": [
+          "[missing-layer]",
+          "[orphan]",
+          "[invalid-frontmatter]",
+          "[broken-wikilink]",
+          "\"ok\": false",
+          "=== FILE:",
+          "[CREADO]",
+          "índice regenerado",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-014",
+      "name": "fail-fast-check-raiz-inexistente",
+      "type": "fail-fast",
+      "description": "EV-004 — memory-system check fail-fast raíz inexistente (Origen: EV-004 de testcases.md; AC-4, D-4, F-3, T001). Proyecto cuyo REPO_ROOT no contiene el directorio indicado como raíz: la ruta no-existe no existe. node está en PATH. El usuario invoca /memory-system check --root no-existe. El motor detecta el error técnico antes de escanear: escribe en stderr 'raíz inexistente: no-existe' y termina con exit 2 (no 1: exit 2 significa herramienta mal invocada, no memoria rota). El skill muestra ese mensaje y se detiene: no imprime informe de problemas, no imprime 'problemas: 0' ni 'problemas: N', no emite el objeto JSON de resultado y no escribe ni crea ningún archivo.",
+      "input": {
+        "input_path": "examples/broken",
+        "mode": "check",
+        "flags": [
+          "--root",
+          "no-existe"
+        ],
+        "environment": {
+          "specs_base": "no-existe",
+          "node_in_path": true,
+          "engine_result": {
+            "exit_code": 2,
+            "stderr": "raíz inexistente: no-existe"
+          }
+        }
+      },
+      "expected": {
+        "contains": [
+          "raíz inexistente",
+          "no-existe"
+        ],
+        "not_contains": [
+          "problemas: 0",
+          "problemas: 4",
+          "[missing-layer]",
+          "[broken-wikilink]",
+          "\"ok\": true",
+          "=== FILE:",
+          "[CREADO]",
+          "índice regenerado"
+        ]
+      },
+      "threshold": 1
     }
   ]
 }

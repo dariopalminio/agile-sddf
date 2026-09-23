@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-01-fix-ci-security-audit
+title: Plan 01 — Corregir la cobertura y el fallo de la CI de seguridad
+---
+
 # Plan 01 — Corregir la cobertura y el fallo de la CI de seguridad
 
 ## Contexto

@@ -1,3 +1,9 @@
+---
+type: guide
+slug: custom-skill-creation-guide
+title: Guía de Creación de Skills Personalizados
+---
+
 # Guía de Creación de Skills Personalizados
 
 > **Contrato de runtime SDDF:** para instalar skills distribuidos por este paquete, consulta

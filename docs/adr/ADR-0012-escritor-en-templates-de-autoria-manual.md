@@ -11,8 +11,8 @@ superseded-by: null
 
 <!-- Referencias -->
 [[constitution]]
-[[ADR-0001-centralizar-templates-compartidos]]
-[[ADR-0007-templates-como-capa-propia]]
+[[centralizar-templates-compartidos]]
+[[templates-como-capa-propia]]
 [[STORY-096-memory-system-scaffold-ensure-rebuild]]
 [[memory-system]]
 
@@ -72,7 +72,7 @@ Un template cuyos campos no escribe ningún skill **satisface el principio 13 an
 ## Referencias
 
 - [[constitution]] — principio 13
-- [[ADR-0001-centralizar-templates-compartidos]] — un dueño por template
-- [[ADR-0007-templates-como-capa-propia]] — `templates/` como capa de memoria
+- [[centralizar-templates-compartidos]] — un dueño por template
+- [[templates-como-capa-propia]] — `templates/` como capa de memoria
 - [[STORY-096-memory-system-scaffold-ensure-rebuild]] — historia que distribuye la plantilla
 - [[memory-system]] — §5 de `references/memory-rules.md`

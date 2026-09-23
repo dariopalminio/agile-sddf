@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-05-move-dod-story
+title: "Mover `dod-story.md` de `policies/` a `guardrails/dod-story-checklist.md`"
+---
+
 # Mover `dod-story.md` de `policies/` a `guardrails/dod-story-checklist.md`
 
 ## Contexto

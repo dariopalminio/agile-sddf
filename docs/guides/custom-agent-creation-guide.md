@@ -1,3 +1,9 @@
+---
+type: guide
+slug: custom-agent-creation-guide
+title: Guía de Creación de Custom Agents
+---
+
 # Guía de Creación de Custom Agents
 
 > **Contrato de runtime SDDF:** para instalar agentes distribuidos por este paquete, consulta

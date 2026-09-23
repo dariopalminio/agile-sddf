@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-01
+title: "Plan: Crear el skill skill-verify"
+---
+
 # Plan: Crear el skill skill-verify
 
 ## Context

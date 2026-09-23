@@ -1,9 +1,10 @@
 'use strict';
 
 /**
- * Tests del motor `skills/memory-system/scripts/memory-system.js` (STORY-095, STORY-096).
- * Cubre UT-001…UT-010 e IT-002 de STORY-095 y, con prefijo `S096-`, UT-001…UT-008 de
- * STORY-096 (subcomando `scaffold`) sobre los fixtures de `skills/memory-system/examples/`.
+ * Tests del motor `skills/memory-system/scripts/memory-system.js` (STORY-095, STORY-096, STORY-097).
+ * Cubre UT-001…UT-010 e IT-002 de STORY-095; con prefijo `S096-`, UT-001…UT-008 de STORY-096
+ * (subcomando `scaffold`); y con prefijo `S097-`, UT-001…UT-011 y E2E-001/E2E-002 de STORY-097
+ * (subcomando `check`), todos sobre los fixtures de `skills/memory-system/examples/`.
  * Los casos que escriben copian el fixture a un directorio temporal para no ensuciar los
  * ejemplos.
  */
@@ -551,4 +552,243 @@ test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
     else assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
   }
   assert.deepEqual(engine.SHARED_TEMPLATES.map((template) => template.name).concat('adr-template.md'), SIX_TEMPLATES);
+});
+
+// ---------------------------------------------------------------------------
+// STORY-097 — check (UT-001…UT-011 y E2E-001/E2E-002 de testcases.md, prefijo S097-)
+// Contratos de verificación V-1…V-10 de design.md.
+// ---------------------------------------------------------------------------
+
+const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink'];
+
+// Contexto de evaluación mínimo: `root` lo usa solo `missingLayers`.
+function checkCtx({ root = os.tmpdir(), nodes = [], profile = { skipLayers: [] }, slugSet = new Set() } = {}) {
+  return { root, nodes, layers: engine.LAYERS, profile, slugSet };
+}
+
+// Nodo sintético con los campos que consumen los evaluadores.
+function fakeNode(relPath, { declared = null, wikilinks = [] } = {}) {
+  return { relPath, hasFrontmatter: declared !== null, declared: declared || {}, wikilinks, slugPlaceholder: false, slug: relPath };
+}
+
+// Raíz con las once capas menos las de `omit`; `constitution` crea también constitution.md.
+function layerTree(t, { omit = [], constitution = true } = {}) {
+  const root = tempDir(t, 'memory-check-');
+  for (const layer of engine.LAYERS) {
+    if (!omit.includes(layer)) fs.mkdirSync(path.join(root, layer), { recursive: true });
+  }
+  if (constitution) fs.writeFileSync(path.join(root, 'constitution.md'), '---\ntype: constitution\nslug: constitution\ntitle: "C"\n---\n# C\n');
+  return root;
+}
+
+const kindLines = (stdout) => stdout.split('\n').filter((line) => line.startsWith('['));
+
+test('S097-UT-001 missingLayers: capa ausente y constitution.md ausente (V-1)', (t) => {
+  const root = layerTree(t, { omit: ['product'], constitution: false });
+  assert.deepEqual(engine.missingLayers(checkCtx({ root })), [
+    { kind: 'missing-layer', path: 'constitution.md', detail: 'capa ausente' },
+    { kind: 'missing-layer', path: 'product/', detail: 'capa ausente' },
+  ]);
+  // Con el árbol completo no hay ningún problema.
+  assert.deepEqual(engine.missingLayers(checkCtx({ root: layerTree(t) })), []);
+});
+
+test('S097-UT-002 missingLayers: skipLayers del harness no genera missing-layer (V-7)', (t) => {
+  const root = layerTree(t, { omit: ['specs'] });
+  assert.deepEqual(engine.missingLayers(checkCtx({ root, profile: { skipLayers: ['specs'] } })), []);
+  assert.deepEqual(engine.missingLayers(checkCtx({ root })), [
+    { kind: 'missing-layer', path: 'specs/', detail: 'capa ausente' },
+  ]);
+});
+
+test('S097-UT-003 orphans: un problema por nodo sin frontmatter', () => {
+  const nodes = [
+    fakeNode('guides/notas.md'),
+    fakeNode('guides/sdd.md', { declared: { type: 'guide', slug: 'sdd', title: 'Guía' } }),
+    fakeNode('adr/otra.md'),
+  ];
+  assert.deepEqual(engine.orphans(checkCtx({ nodes })), [
+    { kind: 'orphan', path: 'adr/otra.md', detail: 'sin frontmatter' },
+    { kind: 'orphan', path: 'guides/notas.md', detail: 'sin frontmatter' },
+  ]);
+});
+
+test('S097-UT-004 invalidFrontmatter: campos obligatorios por tipo (V-6)', () => {
+  assert.deepEqual(engine.REQUIRED_FIELDS, { all: ['type', 'slug', 'title'], specs: ['id', 'status'] });
+  const nodes = [
+    fakeNode('guides/sdd.md', { declared: { type: 'guide', slug: 'sdd', title: 'Guía sin id' } }),
+    fakeNode('specs/03-stories/STORY-001-a/story.md', { declared: { type: 'story', id: 'STORY-001', slug: 'STORY-001-a', title: 'H' } }),
+    fakeNode('adr/ADR-0003-x.md', { declared: { type: 'adr', slug: 'ADR-0003-x' } }),
+    fakeNode('specs/02-epics/EPIC-01-x/epic.md', { declared: { type: 'epic', slug: 'EPIC-01-x', title: '  ' } }),
+    fakeNode('guides/huerfana.md'),
+  ];
+  assert.deepEqual(engine.invalidFrontmatter(checkCtx({ nodes })), [
+    { kind: 'invalid-frontmatter', path: 'adr/ADR-0003-x.md', detail: 'falta title' },
+    { kind: 'invalid-frontmatter', path: 'specs/02-epics/EPIC-01-x/epic.md', detail: 'falta id' },
+    { kind: 'invalid-frontmatter', path: 'specs/02-epics/EPIC-01-x/epic.md', detail: 'falta status' },
+    { kind: 'invalid-frontmatter', path: 'specs/02-epics/EPIC-01-x/epic.md', detail: 'falta title' },
+    { kind: 'invalid-frontmatter', path: 'specs/03-stories/STORY-001-a/story.md', detail: 'falta status' },
+  ]);
+});
+
+test('S097-UT-005 brokenWikilinks: resuelve contra el slugSet con raíces externas', () => {
+  const docs = path.join(EXAMPLES, 'openspec', 'docs');
+  const scanned = engine.scanNodes(docs, 'openspec');
+  const slugs = engine.slugSetOf(scanned);
+  for (const slug of ['intro', 'auth', 'add-login', 'index']) assert.ok(slugs.has(slug), slug);
+
+  const nodes = [...scanned, fakeNode('guides/enlaces.md', {
+    declared: { type: 'guide', slug: 'enlaces', title: 'Enlaces' },
+    wikilinks: ['intro', 'no-existe', 'auth'],
+  })];
+  assert.deepEqual(engine.brokenWikilinks(checkCtx({ nodes, slugSet: engine.slugSetOf(nodes) })), [
+    { kind: 'broken-wikilink', path: 'guides/enlaces.md', detail: '[[no-existe]] no resuelve' },
+  ]);
+});
+
+test('S097-UT-006 extractWikilinks: código, fence, alias, ancla y placeholder (V-5)', () => {
+  const body = [
+    'Inline: `[[en-codigo]]`.',
+    '',
+    '```markdown',
+    '[[en-fence]]',
+    '```',
+    '',
+    'Alias [[sdd|Alias]] y ancla [[sdd#seccion]] y placeholder [[<slug>]] y vacío [[ ]].',
+  ].join('\n');
+  assert.deepEqual(engine.extractWikilinks(body), ['sdd', 'sdd']);
+});
+
+test('S097-UT-007 check: templates/ y derivados de historia no se evalúan (V-5)', (t) => {
+  const docs = path.join(copyFixture(t, 'broken'), 'docs');
+  const rels = engine.scanNodes(docs, 'sddf').map((node) => node.relPath);
+  assert.ok(!rels.some((rel) => rel.startsWith('templates/')), 'templates/ excluido');
+  assert.ok(!rels.includes('specs/03-stories/STORY-001-a/design.md'), 'derivado excluido');
+
+  const result = engine.checkMemory(docs, 'sddf');
+  assert.equal(result.summary['broken-wikilink'], 1);
+  for (const entry of result.problems) {
+    assert.ok(!entry.path.startsWith('templates/'), entry.path);
+    assert.ok(!entry.path.endsWith('design.md'), entry.path);
+    assert.ok(!/en-codigo|en-fence|<slug>|\[\[x\]\]|\[\[real\]\]/.test(entry.detail), entry.detail);
+  }
+});
+
+test('S097-UT-008 check --json: objeto único, claves ordenadas y byte a byte reproducible (V-3, V-8)', () => {
+  const root = 'skills/memory-system/examples/broken/docs';
+  const first = run(['check', '--root', root, '--json']);
+  const second = run(['check', '--root', root, '--json']);
+  assert.equal(first.status, 1);
+  assert.equal(first.stdout, second.stdout, 'dos ejecuciones idénticas');
+  assert.equal(first.stderr, '');
+
+  const parsed = JSON.parse(first.stdout);
+  assert.deepEqual(Object.keys(parsed), ['harness', 'root', 'ok', 'summary', 'problems']);
+  assert.deepEqual(Object.keys(parsed.summary), CHECK_KINDS);
+  assert.deepEqual([parsed.harness, parsed.root, parsed.ok], ['sddf', root, false]);
+  assert.deepEqual(parsed.summary, { 'missing-layer': 1, orphan: 1, 'invalid-frontmatter': 1, 'broken-wikilink': 1 });
+
+  // Orden canónico (kind, path, detail) y `path` siempre con `/` (NFR-4).
+  const keys = parsed.problems.map((entry) => `${entry.kind}\u0000${entry.path}\u0000${entry.detail}`);
+  assert.deepEqual(keys, [...keys].sort());
+  for (const entry of parsed.problems) {
+    assert.ok(CHECK_KINDS.includes(entry.kind), entry.kind);
+    assert.ok(!entry.path.includes('\\'), entry.path);
+  }
+});
+
+test('S097-UT-009 check: solo lectura, ningún hash cambia ni aparecen archivos nuevos (V-1)', (t) => {
+  const repo = copyFixture(t, 'broken');
+  const before = hashTree(repo);
+  for (const flags of [[], ['--json']]) {
+    const result = run(['check', '--root', path.join(repo, 'docs'), ...flags]);
+    assert.equal(result.status, 1, result.stderr);
+  }
+  const after = hashTree(repo);
+  assert.deepEqual(after, before);
+  assert.equal(Object.keys(after).length, Object.keys(before).length);
+});
+
+test('S097-UT-010 check: errores técnicos terminan con exit 2 (V-9)', (t) => {
+  const missing = run(['check', '--root', path.join(tempDir(t), 'no-existe')]);
+  assert.equal(missing.status, 2);
+  assert.match(missing.stderr, /raíz inexistente/);
+  assert.equal(missing.stdout, '');
+
+  const missingJson = run(['check', '--root', 'no-existe', '--json']);
+  assert.equal(missingJson.status, 2);
+  assert.match(missingJson.stderr, /raíz inexistente/);
+  assert.deepEqual(JSON.parse(missingJson.stdout), { ok: false, error: 'raíz inexistente: no-existe (no existe o no es un directorio)' });
+  assert.equal(missingJson.stdout.trim().split('\n').length, 1, 'un único objeto en stdout');
+
+  const root = 'skills/memory-system/examples/sane/docs';
+  const badHarness = run(['check', '--root', root, '--harness', 'foo']);
+  assert.equal(badHarness.status, 2);
+  assert.match(badHarness.stderr, /valor no admitido para --harness: foo/);
+  assert.equal(badHarness.stdout, '');
+
+  const badHarnessJson = run(['check', '--root', root, '--harness', 'foo', '--json']);
+  assert.equal(badHarnessJson.status, 2);
+  const parsed = JSON.parse(badHarnessJson.stdout);
+  assert.equal(parsed.ok, false);
+  assert.match(parsed.error, /--harness: foo/);
+});
+
+test('S097-UT-011 check: docs/ de este repositorio en menos de 5 s (V-10)', () => {
+  const started = Date.now();
+  const result = run(['check', '--root', 'docs', '--json']);
+  const elapsed = Date.now() - started;
+  assert.ok([0, 1].includes(result.status), `exit inesperado: ${result.status} ${result.stderr}`);
+  const parsed = JSON.parse(result.stdout);
+  assert.equal(parsed.harness, 'sddf');
+  assert.deepEqual(Object.keys(parsed), ['harness', 'root', 'ok', 'summary', 'problems']);
+  assert.ok(elapsed < 5000, `check tardó ${elapsed} ms`);
+});
+
+test('S097-E2E-001 check: informe con las cuatro familias sin escribir; fixture sano sin problemas (V-1, V-2)', (t) => {
+  const repo = copyFixture(t, 'broken');
+  const before = hashTree(repo);
+  const broken = run(['check', '--root', path.join(repo, 'docs')]);
+  assert.equal(broken.status, 1, broken.stderr);
+  assert.match(broken.stdout.split('\n')[0], /^── memory-system check ── harness: sddf · root: .+$/);
+  assert.deepEqual(kindLines(broken.stdout), [
+    '[missing-layer]        product/ — capa ausente',
+    '[orphan]               guides/notas.md — sin frontmatter',
+    '[invalid-frontmatter]  adr/ADR-0003-x.md — falta title',
+    '[broken-wikilink]      guides/sdd.md — [[no-existe]] no resuelve',
+  ]);
+  assert.equal(lastLine(broken.stdout), 'problemas: 4 (missing-layer 1 · orphan 1 · invalid-frontmatter 1 · broken-wikilink 1)');
+  assert.deepEqual(hashTree(repo), before);
+
+  const sane = run(['check', '--root', 'skills/memory-system/examples/sane/docs']);
+  assert.equal(sane.status, 0, sane.stderr);
+  assert.deepEqual(kindLines(sane.stdout), []);
+  assert.equal(lastLine(sane.stdout), 'problemas: 0');
+});
+
+test('S097-E2E-002 check --json: gate de CI y re-chequeo tras corregir el wikilink (V-3, V-4)', (t) => {
+  const docs = path.join(copyFixture(t, 'broken'), 'docs');
+  // Se dejan corregidas las otras tres familias: solo queda el wikilink roto.
+  fs.mkdirSync(path.join(docs, 'product'));
+  fs.writeFileSync(path.join(docs, 'guides', 'notas.md'), '---\ntype: guide\nslug: notas\ntitle: "Notas"\n---\n# Notas\n');
+  fs.writeFileSync(path.join(docs, 'adr', 'ADR-0003-x.md'), '---\ntype: adr\nslug: ADR-0003-x\ntitle: "ADR-0003"\n---\n# ADR-0003\n');
+
+  const first = run(['check', '--root', docs, '--json']);
+  assert.equal(first.status, 1, first.stderr);
+  const before = JSON.parse(first.stdout);
+  assert.equal(before.ok, false);
+  assert.deepEqual(before.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 1 });
+  assert.deepEqual(before.problems, [
+    { kind: 'broken-wikilink', path: 'guides/sdd.md', detail: '[[no-existe]] no resuelve' },
+  ]);
+
+  const sdd = path.join(docs, 'guides', 'sdd.md');
+  fs.writeFileSync(sdd, fs.readFileSync(sdd, 'utf8').replace('[[no-existe]]', '[[real]]'));
+
+  const second = run(['check', '--root', docs, '--json']);
+  assert.equal(second.status, 0, second.stderr);
+  const after = JSON.parse(second.stdout);
+  assert.equal(after.ok, true);
+  assert.deepEqual(after.problems, []);
+  assert.deepEqual(after.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 0 });
 });

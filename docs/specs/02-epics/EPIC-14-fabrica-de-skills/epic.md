@@ -13,7 +13,7 @@ related:
   - PROJ-01-agile-sddf
 ---
 
-[[STORY-078, STORY-079, STORY-080, STORY-081]]
+[[STORY-078-implement-tdd-fase-red]], [[STORY-079-story-testcases]], [[STORY-080-skills-master]], [[STORY-081-implement-tdd-fase-green-refactor]]
 
 
 # Release/Epic: Caso de uso de Fábrica de Skills

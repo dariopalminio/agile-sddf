@@ -1105,7 +1105,7 @@ las convenciones de presentación de cada proyecto y no con el pipeline SDD.
 - [[PROJ-01-agile-sddf-project-intent]] — intención inicial del proyecto
 - [[project-plan]] — plan de épicas y backlog · [[story-map]] — mapa de historias
 - [[constitution]] — principios técnicos inamovibles, stack y estándares de construcción de skills
-- [[definition-of-done]] — Definition of Done por estado del workflow de historia
+- [[dod-story-checklist]] — Definition of Done por estado del workflow de historia
 - [[state-machine]] — máquina de estados canónica (proyecto, épica, historia)
 - [[specs-and-workflows]] — contratos, trazabilidad, `status` y `substatus`
 - [[sddf-commands-pipeline]] — qué skill corre en cada fase

@@ -67,7 +67,7 @@ Los cinco templates de `$SPECS_BASE/specs/templates/` deben quedar anotados con 
 
 ## 📎 Notas / contexto adicional
 
-**Origen.** Auditoría derivada de [[STORY-089-story-fix-post-code-review]]. El campo FINVEST del cuerpo de `story.md` no lo rellena nadie porque el skill que conoce el valor (`story-evaluation`) tiene prohibido tocar el cuerpo del archivo, y los tres skills que sí escriben el campo lo hacen al crear la historia, cuando el valor todavía no existe.
+**Origen.** Auditoría derivada de [[STORY-089-rechazo-nombra-ejecutor-correcciones]]. El campo FINVEST del cuerpo de `story.md` no lo rellena nadie porque el skill que conoce el valor (`story-evaluation`) tiene prohibido tocar el cuerpo del archivo, y los tres skills que sí escriben el campo lo hacen al crear la historia, cuando el valor todavía no existe.
 
 **Evidencia medida sobre el repositorio.** De 78 historias, 37 contienen la línea y solo una tiene un número real. Las otras 36 se reparten en **diez grafías distintas de "vacío"** —desde `—` y `pendiente` hasta el placeholder crudo `[FINVEST Score]` sin sustituir y una frase completa de prosa—, que es la firma de un campo cuya escritura ninguna instrucción define.
 

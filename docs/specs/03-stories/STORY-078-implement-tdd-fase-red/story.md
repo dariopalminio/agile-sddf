@@ -15,7 +15,7 @@ related:
   - STORY-081
   - STORY-082
 ---
-[[EPIC-14-fabrica-de-skills]]
+[[fabrica-de-skills]]
 
 # 📖 Historia: story-implement — Fase RED: validar configuración y generar pruebas
 

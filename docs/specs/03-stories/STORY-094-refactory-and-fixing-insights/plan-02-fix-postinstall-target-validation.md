@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-02-fix-postinstall-target-validation
+title: "Plan 02 — Cerrar el traversal de `SDDF_TARGET` en `postinstall`"
+---
+
 # Plan 02 — Cerrar el traversal de `SDDF_TARGET` en `postinstall`
 
 ## Contexto

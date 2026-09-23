@@ -110,7 +110,7 @@ ni ejecute código de extensiones remotas.
 
 ## Referencias
 
-- [[STORY-094-fixing-insights]]
+- [[STORY-094-refactory-and-fixing-insights]]
 - [Claude Code: skills](https://code.claude.com/docs/en/skills)
 - [Claude Code: subagents](https://code.claude.com/docs/en/subagents)
 - [OpenCode: skills](https://opencode.ai/docs/skills)

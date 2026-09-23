@@ -13,7 +13,7 @@ updated: 2026-05-29
 related:
   - EPIC-14-fabrica-de-skills
 ---
-[[EPIC-14-fabrica-de-skills]]
+[[fabrica-de-skills]]
 
 # 📖 Historia: story-testcases — generación de testcases.md desde story.md y design.md
 

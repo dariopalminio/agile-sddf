@@ -58,7 +58,7 @@ Entonces el skill marca los wikilinks rotos con un indicador visual (ej. [[slug]
 ```
 
 ### Requirement: Links internos con wikilinks
-Los links internos usan la sintaxis [[slug]] (wikilinks). 
+Los links internos usan la sintaxis `[[slug]]` (wikilinks). 
 
 ### Requirement: ï¿½ndice como mapa de la documentaciï¿½n
 El ï¿½ndice (index.md) es el cursor principal para los LLMs: se lee primero en cada operaciï¿½n para decidir quï¿½ nodos abrir, haciendo la recuperaciï¿½n O(ï¿½ndice) y no O(todos-los-archivos).
@@ -125,6 +125,6 @@ Visualizaciï¿½n del grafo con Foam: Para ver el grafo visual de tu wiki, instalï
 Este skill implementa el patrï¿½n LLM Wiki - Karpathy: una base de conocimiento persistente y auto-compilada donde el LLM es tanto el escritor (el humano tambiï¿½n escribe) como el lector. La clave estï¿½ en que Claude lee el ï¿½ndice primero en cada operaciï¿½n, haciendo que la recuperaciï¿½n sea O(ï¿½ndice) y no O(todos-los-archivos). Las referencias cruzadas son bidireccionales y se verifican en cada ingest.
 Ventajas para LLMs (Claude, Copilot, etc.)
 El ï¿½ndice (index.md) es el primer archivo que el LLM debe leer (se lo puedes pasar directamente o configurar como entrada inicial). El LLM obtiene el mapa completo sin tener que escanear todo el docs/.
-Los wikilinks [[slug]] permiten al LLM decidir quï¿½ nodos abrir a continuaciï¿½n (similar a cï¿½mo navega un humano).
+Los wikilinks `[[slug]]` permiten al LLM decidir quï¿½ nodos abrir a continuaciï¿½n (similar a cï¿½mo navega un humano).
 Cada nodo tiene metadatos estructurados (frontmatter) que el LLM puede interpretar fï¿½cilmente para filtrar por tipo, estado, etc.
 La separaciï¿½n specs/ (artefactos SDDF) y wiki/ (conocimiento) evita mezclar especificaciones operativas con documentaciï¿½n teï¿½rica, pero ambas son igualmente accesibles.

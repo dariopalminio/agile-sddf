@@ -5,9 +5,8 @@ slug: memory-system
 title: "Sistema de Memoria del Framework SDDF"
 date: 2026-09-20
 status: active
-related:
-
-—
+related: []
+---
 
 
 # Sistema de Memoria SDDF
@@ -204,7 +203,8 @@ docs/constitution.md          # principios supremos (fuera de policies/)
 ## 7. Invariantes del sistema
 
 1. **Una raíz única**: todo bajo `docs/` (configurable vía `sddf.config.yaml`).
-2. **Frontmatter obligatorio**: `type`, `id`, `title`, `date`, `status`.
+2. **Frontmatter obligatorio**: `type`, `slug`, `title` (+ `id`, `status` en specs); esquema completo
+   en `header-aggregation`.
 3. **IDs únicos globalmente**: `FR-001`, `STORY-042`, `ADR-0003` no se repiten.
 4. **Sin duplicación**: una regla vive en un solo lugar; se enlaza, no se copia.
 5. **Bidireccionalidad**: todo enlace es navegable en ambas direcciones.
@@ -231,18 +231,18 @@ docs/constitution.md          # principios supremos (fuera de policies/)
 
 | Documento | Propósito |
 |-----------|-----------|
-| [[docs/domains/domain-knowledge-artifacts]] | Modelo completo de artefactos, tipos y TraceLinks |
-| [[docs/domains/domain-work-item-hierarchy]] | Estructura Project → Epic → Story |
-| [[docs/domains/domain-state-management]] | Estados, subestados, transiciones |
-| [[sddf.config.yaml]] | Configuración del framework |
+| [[domain-knowledge-artifacts]] | Modelo completo de artefactos, tipos y TraceLinks |
+| [[domain-work-item-hierarchy]] | Estructura Project → Epic → Story |
+| [[domain-state-management]] | Estados, subestados, transiciones |
+| `sddf.config.yaml` | Configuración del framework |
 
 ---
 
 ## 10. Herramienta: skill `memory-system`
 
-El skill `memory-system` (`skills/memory-system/`, STORY-095 y STORY-096) es el único punto de
-entrada operativo de este sistema. Expone los modos `ensure` (por defecto), `scaffold`, `rebuild`
-e `index`; `check` y `migrate` llegan con las historias hermanas de EPIC-20.
+El skill `memory-system` (`skills/memory-system/`, STORY-095, STORY-096 y STORY-097) es el único
+punto de entrada operativo de este sistema. Expone los modos `ensure` (por defecto), `scaffold`,
+`rebuild`, `index` y `check`; `migrate` llega con la historia hermana STORY-098 de EPIC-20.
 
 ### 10.1 Modos
 
@@ -252,14 +252,14 @@ e `index`; `check` y `migrate` llegan con las historias hermanas de EPIC-20.
 | `scaffold [--dry-run] [--harness h]` | STORY-096 | `detect → scaffold`: copia-si-falta del árbol semilla y de las seis plantillas; no toca `index.md`. `--dry-run` imprime `[CREARÍA]`/`[PRESERVARÍA]` sin escribir. |
 | `rebuild [--force]` | STORY-096 | Sin `--force`: `❌ rebuild es destructivo. Añade --force para confirmar.` y ningún cambio. Con `--force`: advertencia `⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.`, `scaffold --force` (sobrescribe solo los archivos gestionados, §10.3) e `index`. Nunca borra. |
 | `index [--harness h] [--dry-run]` | STORY-095 | Regenera `docs/index.md` completo desde `assets/index-template.md`: una entrada `[[slug]]` por artefacto, agrupada por capa, más "Estado del grafo" y "Nodos pendientes". `--dry-run` imprime sin escribir. |
-| `check` | STORY-097 | Verificar invariantes con exit code para CI. |
+| `check [--json] [--harness h]` | STORY-097 | Verificación en **solo lectura** de cuatro familias de problemas, con exit code para CI (§10.4). No corrige nada y no regenera `index.md`. |
 | `migrate` | STORY-098 | Adaptar el scaffolding a OpenSpec/Spec-kit (`skipLayers`, `mappings`). |
 
 ### 10.2 Arquitectura
 
 - `SKILL.md` resuelve la raíz (contrato `SDDF-ROOT-RESOLUTION: v1`), interpreta el modo y delega en
   `scripts/memory-system.js`, un motor Node ≥ 18 sin dependencias (solo `node:fs`, `node:path`,
-  `node:process`) con los subcomandos `detect`, `scaffold` e `index`, que produce el mismo
+  `node:process`) con los subcomandos `detect`, `scaffold`, `index` y `check`, que produce el mismo
   `index.md` en cada ejecución salvo `updated`. Sin `node` en PATH el skill aplica scaffold e índice
   inline con `references/memory-rules.md`, avisando de que la reproducibilidad byte a byte no está
   garantizada. El gate `--force` de `rebuild` vive en `SKILL.md` (es interacción); el motor solo
@@ -295,9 +295,13 @@ e `index`; `check` y `migrate` llegan con las historias hermanas de EPIC-20.
 - **Template como fuente de verdad**: `assets/index-template.md` fija las secciones; el motor solo
   sustituye `{layer:<capa>}`, `{stats}` y `{date}`, y falla (exit 2, sin escribir) si un placeholder
   no corresponde a una capa conocida o una capa con nodos carece de placeholder.
-- **Nodos sin frontmatter** se enlazan solo por ruta con `⚠️ sin frontmatter`; los wikilinks que no
-  resuelven se listan como `⚠️ nodo pendiente` sin bloquear (la invariante 8 se reporta, no se
-  impone, hasta que `check` exista).
+- **Nodos sin frontmatter** se enlazan solo por ruta con `⚠️ sin frontmatter`; en `index` los
+  wikilinks que no resuelven se listan como `⚠️ nodo pendiente` sin bloquear. `check` es quien
+  impone las invariantes 2, 7 y 8: el mismo hecho es informativo en `index` y bloqueante en `check`.
+- **Evaluadores puros** (`check`): el subcomando reutiliza el escáner, el parser de frontmatter y
+  las reglas de slug de `index` sin duplicarlos, y añade solo cuatro funciones
+  `(ctx) → Problem[]` sin efectos, donde `ctx = { root, nodes, layers, profile, slugSet }`. Añadir
+  una familia (bidireccionalidad, relaciones tipadas) no toca el escaneo ni la salida.
 
 ### 10.3 Archivos gestionados por el scaffold (alcance de `rebuild --force`)
 
@@ -317,7 +321,76 @@ ningún modo los toca ni los elimina:
 Un proyecto real recupera una constitución personalizada desde git tras `rebuild --force`; por eso
 el modo exige el flag y emite la advertencia literal antes de escribir.
 
-### 10.4 Deprecación de `docs-wiki-builder`
+### 10.4 Modo `check`: el gate de consistencia (STORY-097)
+
+`check` es la primera verificación estructural de la memoria y el único modo con exit code
+significativo. Es **solo lectura**: no crea, no modifica, no borra y no regenera `index.md`.
+
+**Las cuatro familias de problemas.** Un único recorrido del árbol (el mismo escáner y las mismas
+exclusiones de `index`) alimenta cuatro evaluadores puros:
+
+| Familia (`kind`) | Regla | Invariante que impone |
+|---|---|---|
+| `missing-layer` | Falta una de las once capas como directorio de la raíz, o falta `constitution.md`, y el perfil del harness no la omite (`skipLayers`). | §3, §7.1 |
+| `orphan` | Nodo indexable sin bloque de frontmatter (`---` inicial ausente o sin cerrar). | §7.2 |
+| `invalid-frontmatter` | Falta `type`, `slug` o `title` en el frontmatter **declarado**; además `id` o `status` cuando `type ∈ {project, epic, story}`. Un problema por campo ausente. | §7.2, §7.3 |
+| `broken-wikilink` | Ocurrencia de un wikilink que no resuelve contra el conjunto de slugs derivados. | §7.8 |
+
+Se evalúa el campo **declarado**, no el derivado: un artefacto cuyo `slug` deduce el motor de su
+nombre de archivo se indexa igual, pero `check` lo marca. El conjunto exigido es `REQUIRED_FIELDS`
+= `{ all: [type, slug, title], specs: [id, status] }`, un subconjunto deliberado del esquema
+canónico de `header-aggregation`: `date` no existe en ese esquema, `created`/`updated` los deriva la
+herramienta y `substatus`/`parent` solo aplican dentro de un flujo. Exigirlos convertiría el primer
+`check` de un repositorio real en decenas de falsos positivos. El razonamiento completo está en
+`skills/memory-system/references/memory-rules.md` §6, que es la fuente de verdad ampliable.
+
+**Falsos positivos que `check` no reporta**, por las reglas de extracción de wikilinks
+(`memory-rules.md` §2): un wikilink dentro de un fence o de código inline, los placeholders de
+plantilla con `<`/`>`, los nodos de `templates/` y los demás excluidos, y el alias y el anchor de
+`[[destino|Alias]]` / `[[destino#seccion]]`, que se normalizan al destino.
+
+**Esquema JSON** (`--json`, un único objeto en stdout y nada más, con las claves en este orden):
+
+```json
+{
+  "harness": "sddf",
+  "root": "docs",
+  "ok": false,
+  "summary": { "missing-layer": 1, "orphan": 1, "invalid-frontmatter": 1, "broken-wikilink": 1 },
+  "problems": [
+    { "kind": "missing-layer", "path": "product/", "detail": "capa ausente" },
+    { "kind": "orphan", "path": "guides/notas.md", "detail": "sin frontmatter" },
+    { "kind": "invalid-frontmatter", "path": "adr/ADR-0003-x.md", "detail": "falta title" },
+    { "kind": "broken-wikilink", "path": "guides/sdd.md", "detail": "[[no-existe]] no resuelve" }
+  ]
+}
+```
+
+`path` es siempre relativa a la raíz y con `/` (portabilidad); `problems` va ordenado por
+`(kind, path, detail)` con comparación ordinal, de modo que dos ejecuciones producen la misma salida
+byte a byte. Sin `--json` el informe es textual, agrupado por familia, y su última línea es
+`problemas: N (missing-layer n · orphan n · invalid-frontmatter n · broken-wikilink n)`.
+
+**Los tres exit codes** son lo que hace el modo utilizable en CI:
+
+| Exit | Significado | Salida |
+|---|---|---|
+| `0` | Memoria consistente | `problemas: 0` (o `"ok": true`) en stdout. |
+| `1` | Al menos un problema — resultado normal del gate, no un fallo de la herramienta | El informe o el objeto JSON en stdout, sin mensaje de error. |
+| `2` | Error técnico: raíz inexistente, `--harness` no admitido, Node < 18 | Mensaje en stderr (`❌ raíz inexistente: … (no existe o no es un directorio)`); con `--json`, stdout lleva `{ "ok": false, "error": "…" }` y nada más. |
+
+Distinguir `1` de `2` es deliberado: un pipeline no debe confundir "memoria rota" con "herramienta
+mal invocada". Un gate de CI se escribe con el motor directamente, sin pasar por el agente:
+`node .claude/skills/memory-system/scripts/memory-system.js check --root docs --json`
+(ejemplo completo en [sddf-commands-pipeline.md](../guides/sddf-commands-pipeline.md) §0). `check` y
+`npm run verify:links` (`scripts/check-doc-links.js`) son complementarios: aquel valida enlaces
+Markdown relativos, `check` valida wikilinks y frontmatter.
+
+Sin `node` en PATH el skill aplica las cuatro reglas inline y añade
+`⚠️ node no disponible — sin exit code; no usar en CI`: el informe sirve como diagnóstico, no como
+gate.
+
+### 10.5 Deprecación de `docs-wiki-builder`
 
 `docs-wiki-builder` (STORY-044) queda como alias desde 3.3.0: emite
 `⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.`, mapea `--update` → `index` y

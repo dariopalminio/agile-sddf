@@ -15,7 +15,7 @@ related:
   - STORY-078
   - STORY-082
 ---
-[[EPIC-14-fabrica-de-skills]]
+[[fabrica-de-skills]]
 
 # 📖 Historia: story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar
 

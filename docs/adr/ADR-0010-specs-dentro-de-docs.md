@@ -80,7 +80,7 @@ La decisión se sostiene en cinco argumentos:
 
 - [[memory-system]] — Sistema de memoria del framework SDDF
 - [[domain-knowledge-artifacts]] — Modelo de artefactos de conocimiento y capas
-- [[ADR-0004]] — Documentación en capas (decisión hermana sobre la estructura de `docs/`)
-- [[sddf-config]] — Configuración del framework (raíz configurable)
+- [[nivel-l2-epic-y-directorios-numerados]] — Documentación en capas (decisión hermana sobre la estructura de `docs/`)
+- `sddf.config.yaml` — Configuración del framework (raíz configurable)
 
 

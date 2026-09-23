@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-03-refactor-feat-to-story
+title: "PLAN: Renombrar el prefijo de historias de `FEAT-NNN` a `STORY-NNN`"
+---
+
 # PLAN: Renombrar el prefijo de historias de `FEAT-NNN` a `STORY-NNN`
 
 ## Context

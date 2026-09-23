@@ -16,7 +16,7 @@ related:
   - STORY-079-story-testcases
 ---
 
-[[EPIC-14-fabrica-de-skills]]
+[[fabrica-de-skills]]
 
 ---
 

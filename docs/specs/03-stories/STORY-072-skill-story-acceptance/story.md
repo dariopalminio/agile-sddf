@@ -16,9 +16,9 @@ related:
   - STORY-068-dod-plan-en-story-analyze
 ---
 <!-- Referencias -->
-[[EPIC-13-quality-gates-con-dod-en-story-workflow]]
+[[quality-gates-con-dod-en-story-workflow]]
 [[STORY-071-skill-story-verify]]
-[[STORY-070-dod-code-review-en-story-code-review]]
+[[dod-code-review-en-story-code-review]]
 
 # 📖 Historia: Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER
 

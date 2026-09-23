@@ -1,3 +1,9 @@
+---
+type: architecture
+slug: tech-stack
+title: Stack Tecnológico SDDF
+---
+
 # Stack Tecnológico SDDF
 
 > **ID:** ARCH-TECH-STACK · **Detalle:** [[sddf-architecture]], [[memory-system]]

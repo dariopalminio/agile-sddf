@@ -1,3 +1,9 @@
+---
+type: domain
+slug: domain-state-management
+title: "Documentación del Dominio: Gestión de Estados (State Management)"
+---
+
 # Documentación del Dominio: Gestión de Estados (State Management)
 
 > **Bounded Context:** State Management  
@@ -149,7 +155,7 @@ Independientemente del nivel, existen cuatro tipos de transición:
 * **Máquina de estados completa:** [[state-machine]]
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Principios aplicables:** [[constitution]] (patrones 8, 14; reglas 9 y 15)
-* **Decisión de arquitectura:** [[ADR-0003]] — rationale de los workflows canónicos de story y epic
+* **Decisión de arquitectura:** [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
 
 ---
 
@@ -161,7 +167,7 @@ Independientemente del nivel, existen cuatro tipos de transición:
 * [[domain-epic-lifecycle]] — Ciclo de vida de Epic (L2)
 * [[domain-project-lifecycle]] — Ciclo de vida de Project (L3)
 * [[constitution]] — Constitución del proyecto
-* [[ADR-0003]] — Workflow canónico de story y epic
+* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic
 
 ---
 

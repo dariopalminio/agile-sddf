@@ -1,3 +1,9 @@
+---
+type: guardrail
+slug: gr-agent-creation-checklist
+title: "Guardrail: Custom agent creation"
+---
+
 # Guardrail: Custom agent creation
 
 > **SDDF runtime contract:** package installation derives its supported agent destinations solely from

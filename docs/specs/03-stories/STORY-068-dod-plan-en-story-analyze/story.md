@@ -14,7 +14,7 @@ related:
   - EPIC-13-quality-gates-con-dod-en-story-workflow
 ---
 <!-- Referencias -->
-[[EPIC-13-quality-gates-con-dod-en-story-workflow]]
+[[quality-gates-con-dod-en-story-workflow]]
 
 # 📖 Historia: DoD PLAN en story-analyze
 

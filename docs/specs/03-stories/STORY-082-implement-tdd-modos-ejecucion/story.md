@@ -15,7 +15,7 @@ related:
   - STORY-078
   - STORY-081
 ---
-[[EPIC-14-fabrica-de-skills]]
+[[fabrica-de-skills]]
 
 # 📖 Historia: story-implement — modos interactivo y automático de ejecución del ciclo TDD
 

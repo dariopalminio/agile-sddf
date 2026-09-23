@@ -1,3 +1,9 @@
+---
+type: guide
+slug: custom-system-prompt-guide
+title: Guía para la creación de System Prompts (AGENTS.md, CLAUDE.md, etc.)
+---
+
 # Guía para la creación de System Prompts (AGENTS.md, CLAUDE.md, etc.)
 
 > **Contrato de runtime SDDF:** las rutas de skills o agentes de esta guía describen plataformas. La

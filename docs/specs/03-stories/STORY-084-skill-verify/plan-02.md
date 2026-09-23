@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-02
+title: "Plan: Añadir modo benchmark a skill-verify"
+---
+
 # Plan: Añadir modo benchmark a skill-verify
 
 ## Context

@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-04-fix-insights
+title: "Cierre de la migración release→epic / FEAT→STORY: alinear gate, evals y documentación normativa"
+---
+
 # Cierre de la migración release→epic / FEAT→STORY: alinear gate, evals y documentación normativa
 
 ## Contexto

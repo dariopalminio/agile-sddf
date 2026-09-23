@@ -165,7 +165,7 @@ Recomendación: `/story-implement-tasks STORY-089` — las 31 tareas ya llevan e
 
 | Criterio | Estado | Detalle |
 |---|---|---|
-| Historia listada en la épica | ⚠️ | Listada (`epic.md` l. 26, `[ ]`) pero con el título anterior ("Ciclo de corrección con dueño…"), el texto "deja la historia en un estado propio" y el wikilink al slug antiguo `[[STORY-089-story-fix-post-code-review]]` (directorio eliminado en el working tree; el actual es `STORY-089-rechazo-nombra-ejecutor-correcciones`) |
+| Historia listada en la épica | ⚠️ | Listada (`epic.md` l. 26, `[ ]`) pero con el título anterior ("Ciclo de corrección con dueño…"), el texto "deja la historia en un estado propio" y el wikilink al slug antiguo `[[STORY-089-rechazo-nombra-ejecutor-correcciones]]` (directorio eliminado en el working tree; el actual es `STORY-089-rechazo-nombra-ejecutor-correcciones`) |
 | Objetivo de la historia alineado con la épica | ✓ | El "Para" de la historia (saber el siguiente paso tras un rechazo, sin estado nuevo, sin editar el frontmatter, sin depender de `tasks.md`) cumple el objetivo de la épica "el ciclo de corrección tiene dueño" (l. 20) y el criterio de éxito 4 (l. 110: `needs-changes` → `approved` sin edición manual del frontmatter), que ya está formulado sin estado nuevo |
 | Restricciones de la épica respetadas | ⚠️ | Escenario 3 (l. 45), dependencia crítica (l. 96) y riesgo (l. 104) exigen el estado `NEEDS-CHANGES` y la ruta `docs/knowledge/guides/state-machine.md`; la historia descarta ese estado con argumentación explícita (Notas › "Por qué no existe un estado de corrección") y la ruta no existe. La contradicción es conocida y su resolución forma parte del alcance de la historia (NFR-3, D8, T-6.3, IT-007) |
 

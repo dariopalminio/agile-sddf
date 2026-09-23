@@ -14,7 +14,7 @@ superseded-by: null
 [[STORY-089-rechazo-nombra-ejecutor-correcciones]]
 [[STORY-091-story-implement-modo-rework]]
 [[STORY-092-reglas-robustez-modo-rework]]
-[[ADR-0003-workflow-canonico-story-y-epic]]
+[[workflow-canonico-story-y-epic]]
 [[domain-story-lifecycle]]
 
 # ADR-0008: Rework sin estado propio: la señal es el artefacto de fallo
@@ -35,7 +35,7 @@ La decisión afecta a tres skills (`story-code-review`, `story-implement-tasks` 
 
 `fix-directives.md` lleva en su frontmatter el campo `round: N` (ejecuciones de `story-code-review` cerradas en `needs-changes`; ronda previa + 1 si el archivo existe, `1` si no). Su escritor único es `story-code-review`. Los ejecutores de correcciones (`story-implement`, `story-implement-tasks`) detectan el rework **por la existencia del archivo**, no por un estado, un substatus, un campo en `story.md` ni una tarea en `tasks.md`. `story-code-review` deja de escribir en `tasks.md` y nombra al ejecutor en su mensaje de cierre (`/story-implement`; `/story-implement-tasks` como alternativa solo si existe `tasks.md`).
 
-Este ADR **no supersede** a [[ADR-0003-workflow-canonico-story-y-epic]] ni a ADR-0006: el workflow canónico de story conserva los mismos estados y las mismas transiciones. Solo restringe cómo se señala el rework dentro de ese workflow.
+Este ADR **no supersede** a [[workflow-canonico-story-y-epic]] ni a ADR-0006: el workflow canónico de story conserva los mismos estados y las mismas transiciones. Solo restringe cómo se señala el rework dentro de ese workflow.
 
 ## Rationale
 
@@ -84,7 +84,7 @@ Y a favor de mantener `READY-FOR-IMPLEMENT/DONE` como destino y del artefacto co
 - [[STORY-089-rechazo-nombra-ejecutor-correcciones]] — historia que implementa la decisión (emisor del rechazo, `round`, ejecutor nombrado)
 - [[STORY-091-story-implement-modo-rework]] — `story-implement` en modo rework, consumidor del contrato de señal
 - [[STORY-092-reglas-robustez-modo-rework]] — reglas de robustez del modo rework
-- [[ADR-0003-workflow-canonico-story-y-epic]] — workflow canónico de story; **no queda superado** por este ADR
+- [[workflow-canonico-story-y-epic]] — workflow canónico de story; **no queda superado** por este ADR
 - [[domain-story-lifecycle]] — glosario "Rework" e invariante 6 (destino de los retrocesos)
 - `docs/domains/domain-state-management.md` — §5.3 transiciones de retroceso
 - `skills/story-code-review/SKILL.md` — Pasos 4f, 4g y 7 (escritor de `fix-directives.md` y de `round`)

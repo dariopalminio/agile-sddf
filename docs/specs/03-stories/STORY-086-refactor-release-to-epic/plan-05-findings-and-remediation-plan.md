@@ -1,3 +1,9 @@
+---
+type: plan
+slug: plan-05-findings-and-remediation-plan
+title: Revisión de STORY-086 — hallazgos y plan de remediación
+---
+
 # Revisión de STORY-086 — hallazgos y plan de remediación
 
 ## Contexto

@@ -2,12 +2,13 @@
 'use strict';
 
 /**
- * memory-system.js — motor determinista del skill `memory-system` (STORY-095, STORY-096).
+ * memory-system.js — motor determinista del skill `memory-system` (STORY-095, STORY-096, STORY-097).
  *
  * Subcomandos:
  *   detect   --root <SPECS_BASE> [--harness h]
  *   index    --root <SPECS_BASE> [--harness h] [--dry-run] [--template <ruta>] [--date YYYY-MM-DD]
  *   scaffold --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--date YYYY-MM-DD]
+ *   check    --root <SPECS_BASE> [--harness h] [--json]
  *
  * Solo usa módulos nativos (`node:fs`, `node:path`, `node:process`) para funcionar en
  * proyectos consumidores sin `package.json` (NFR-2). Node >= 18. Las rutas se normalizan
@@ -15,7 +16,8 @@
  * Windows, macOS y Linux.
  *
  * Exit codes: 0 éxito · 2 error de uso, raíz inexistente, harness no admitido o template
- * desalineado (nunca escribe en esos casos) · 1 error inesperado.
+ * desalineado (nunca escribe en esos casos) · 1 error inesperado. `check` usa el 1 para
+ * "memoria con problemas" (gate de CI) y reserva el 2 para el error técnico (D-4).
  */
 
 const fs = require('node:fs');
@@ -104,11 +106,11 @@ const SCAFFOLD_LABELS = {
 
 // Línea de comandos: subcomandos, flags con valor y flags booleanos. `--template` y `--date`
 // son flags de prueba (reproducibilidad); no se exponen en SKILL.md.
-const COMMANDS = ['detect', 'index', 'scaffold'];
+const COMMANDS = ['detect', 'index', 'scaffold', 'check'];
 const VALUE_FLAGS = { '--root': 'root', '--cli-root': 'cliRoot', '--harness': 'harness', '--template': 'template', '--date': 'date' };
-const BOOL_FLAGS = { '--dry-run': 'dryRun', '--force': 'force' };
+const BOOL_FLAGS = { '--dry-run': 'dryRun', '--force': 'force', '--json': 'json' };
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const USAGE = 'uso: memory-system.js <detect|index|scaffold> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force]';
+const USAGE = 'uso: memory-system.js <detect|index|scaffold|check> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json]';
 
 // Error de uso o de datos: se informa por stderr y termina con exit 2 sin escribir.
 class UsageError extends Error {}
@@ -163,7 +165,7 @@ function profileOf(harness) {
 // ---------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const args = { command: null, root: null, cliRoot: null, harness: null, dryRun: false, force: false, template: null, date: null };
+  const args = { command: null, root: null, cliRoot: null, harness: null, dryRun: false, force: false, json: false, template: null, date: null };
   const rest = [...argv];
   while (rest.length) {
     const token = rest.shift();
@@ -186,7 +188,7 @@ function parseArgs(argv) {
 
 function resolveRoot(root) {
   const specsBase = path.resolve(process.cwd(), root);
-  if (!isDirectory(specsBase)) throw new UsageError(`la raíz no existe o no es un directorio: ${root}`);
+  if (!isDirectory(specsBase)) throw new UsageError(`raíz inexistente: ${root} (no existe o no es un directorio)`);
   return specsBase;
 }
 
@@ -265,7 +267,8 @@ function firstHeading(body) {
   return match ? match[1].trim() : null;
 }
 
-// Wikilinks del cuerpo ignorando fences, código inline, `|alias` y `#anchor`.
+// Wikilinks del cuerpo ignorando fences, código inline, `|alias`, `#anchor` y los
+// placeholders de plantilla `[[<slug>]]` (STORY-097 D-2, punto 3).
 function extractWikilinks(body) {
   const visible = body
     .replace(/^```[^\n]*\n[\s\S]*?^```[ \t]*$/gm, '')
@@ -274,7 +277,7 @@ function extractWikilinks(body) {
   const links = [];
   for (const match of visible.matchAll(/(?<!!)\[\[([^\]\n]+)\]\]/g)) {
     const target = match[1].split('|', 1)[0].split('#', 1)[0].trim();
-    if (target) links.push(target);
+    if (target && !/[<>]/.test(target)) links.push(target);
   }
   return links;
 }
@@ -298,8 +301,11 @@ function deriveSlug(relPath, data) {
 }
 
 /**
- * Deriva un nodo indexable: { path, relPath, layer, slug, title, hasFrontmatter, slugPlaceholder, wikilinks }.
+ * Deriva un nodo indexable: { path, relPath, layer, slug, title, hasFrontmatter, slugPlaceholder,
+ * wikilinks, declared }.
  * `relPath` siempre es relativa a SPECS_BASE con `/` (los nodos externos empiezan por `../`).
+ * `declared` es el frontmatter crudo (`{}` sin bloque): `slug`/`title` ya vienen derivados en el
+ * nodo, y `check` necesita saber qué campos declara el archivo (STORY-097 D-3).
  */
 function deriveNode(filePath, specsBase, options = {}) {
   const parsed = parseFrontmatter(readText(filePath));
@@ -316,6 +322,7 @@ function deriveNode(filePath, specsBase, options = {}) {
     hasFrontmatter: parsed.hasFrontmatter,
     slugPlaceholder,
     wikilinks: slugPlaceholder ? [] : extractWikilinks(parsed.body),
+    declared: data,
   };
 }
 
@@ -415,9 +422,15 @@ function validateLayers(template, byLayer) {
   }
 }
 
+// Slugs resolubles: los de los nodos escaneados (sin placeholders) más el del propio índice.
+// Es el conjunto contra el que resuelven los wikilinks, tanto en `index` como en `check`.
+function slugSetOf(nodes) {
+  return new Set(['index', ...nodes.filter((n) => !n.slugPlaceholder).map((n) => n.slug)]);
+}
+
 // Slugs referenciados por wikilink que no resuelven a ningún nodo (ni al propio índice).
 function collectPending(nodes) {
-  const known = new Set(['index', ...nodes.filter((n) => !n.slugPlaceholder).map((n) => n.slug)]);
+  const known = slugSetOf(nodes);
   const pending = new Set(nodes.flatMap((n) => n.wikilinks).filter((slug) => !known.has(slug)));
   return [...pending].sort(ordinalCompare);
 }
@@ -465,6 +478,130 @@ function renderIndex(template, nodes, options = {}) {
 
 function summaryLine(summary) {
   return `nodos indexados: ${summary.indexed} · sin frontmatter: ${summary.withoutFrontmatter} · nodos pendientes: ${summary.pending}`;
+}
+
+// ---------------------------------------------------------------------------
+// STORY-097 D-1/D-3/D-4 — check: evaluadores de consistencia (solo lectura)
+// ---------------------------------------------------------------------------
+
+// Campos obligatorios del frontmatter (D-3): subconjunto del esquema canónico de
+// `header-aggregation`. `specs` se exige solo a los tipos de spec; `date`, `created`,
+// `updated`, `substatus` y `parent` no se exigen.
+const REQUIRED_FIELDS = { all: ['type', 'slug', 'title'], specs: ['id', 'status'] };
+const SPEC_TYPES = new Set(['project', 'epic', 'story']);
+
+// Entrada de la raíz que `check` exige además de las once capas de `LAYERS`.
+const ROOT_FILE = 'constitution.md';
+
+// Familias de problemas, en el orden de presentación del informe textual (D-4).
+const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink'];
+// Ancho de la columna `[kind]` del informe textual: la familia más larga, más los corchetes y
+// dos espacios de separación. Derivado para que añadir una familia no descuadre el informe.
+const KIND_WIDTH = Math.max(...CHECK_KINDS.map((kind) => kind.length)) + 4;
+const CHECK_RULE = '─'.repeat(48);
+const MIN_NODE_MAJOR = 18;
+
+function problem(kind, relPath, detail) {
+  return { kind, path: relPath, detail };
+}
+
+// Orden canónico de los problemas (NFR-1): (kind, path, detail) con comparación ordinal.
+function sortProblems(problems) {
+  return problems.sort((a, b) => ordinalCompare(a.kind, b.kind) || ordinalCompare(a.path, b.path) || ordinalCompare(a.detail, b.detail));
+}
+
+// Problemas agrupados por familia, en el orden de `CHECK_KINDS` y con todas las familias
+// presentes aunque estén vacías: el mismo recorrido sirve al resumen y al informe textual.
+function groupByKind(problems) {
+  const byKind = new Map(CHECK_KINDS.map((kind) => [kind, []]));
+  for (const entry of problems) byKind.get(entry.kind)?.push(entry);
+  return byKind;
+}
+
+// Un campo declarado cuenta como presente si no está vacío (cadena en blanco = ausente).
+function hasDeclaredField(declared, field) {
+  const value = declared[field];
+  if (typeof value === 'string') return value.trim() !== '';
+  return value !== undefined && value !== null;
+}
+
+/**
+ * Evaluador: capas de `LAYERS` (más `constitution.md`) ausentes de la raíz y no omitidas por
+ * el perfil del harness. Es el único evaluador que mira el disco, por eso el contexto lleva
+ * `root` además de `{ nodes, layers, profile, slugSet }`.
+ */
+function missingLayers(ctx) {
+  const skip = new Set(ctx.profile.skipLayers);
+  const problems = ctx.layers
+    .filter((layer) => !skip.has(layer) && !isDirectory(path.join(ctx.root, layer)))
+    .map((layer) => problem('missing-layer', `${layer}/`, 'capa ausente'));
+  if (!skip.has(ROOT_FILE) && !fs.existsSync(path.join(ctx.root, ROOT_FILE))) {
+    problems.push(problem('missing-layer', ROOT_FILE, 'capa ausente'));
+  }
+  return sortProblems(problems);
+}
+
+/** Evaluador: nodos sin bloque de frontmatter. */
+function orphans(ctx) {
+  return sortProblems(ctx.nodes.filter((node) => !node.hasFrontmatter).map((node) => problem('orphan', node.relPath, 'sin frontmatter')));
+}
+
+/** Evaluador: campos de `REQUIRED_FIELDS` ausentes del frontmatter declarado (uno por campo). */
+function invalidFrontmatter(ctx) {
+  const problems = [];
+  for (const node of ctx.nodes) {
+    if (!node.hasFrontmatter) continue; // ya reportado como huérfano
+    const declared = node.declared || {};
+    const isSpec = typeof declared.type === 'string' && SPEC_TYPES.has(declared.type.trim());
+    for (const field of [...REQUIRED_FIELDS.all, ...(isSpec ? REQUIRED_FIELDS.specs : [])]) {
+      if (!hasDeclaredField(declared, field)) problems.push(problem('invalid-frontmatter', node.relPath, `falta ${field}`));
+    }
+  }
+  return sortProblems(problems);
+}
+
+/** Evaluador: cada ocurrencia de `[[slug]]` cuyo slug no está en `ctx.slugSet`. */
+function brokenWikilinks(ctx) {
+  const problems = [];
+  for (const node of ctx.nodes) {
+    for (const slug of node.wikilinks) {
+      if (!ctx.slugSet.has(slug)) problems.push(problem('broken-wikilink', node.relPath, `[[${slug}]] no resuelve`));
+    }
+  }
+  return sortProblems(problems);
+}
+
+const EVALUATORS = [missingLayers, orphans, invalidFrontmatter, brokenWikilinks];
+
+function assertRuntime() {
+  const major = Number.parseInt(process.versions.node.split('.')[0], 10);
+  if (Number.isFinite(major) && major < MIN_NODE_MAJOR) {
+    throw new UsageError(`runtime incompatible: se requiere Node >= ${MIN_NODE_MAJOR} (actual: ${process.versions.node})`);
+  }
+}
+
+/**
+ * Escanea la raíz una sola vez y ejecuta los cuatro evaluadores (D-1). No escribe nada.
+ * Devuelve `{ ok, summary, problems }` con `problems` en orden canónico.
+ */
+function checkMemory(specsBase, harness) {
+  const nodes = scanNodes(specsBase, harness);
+  const ctx = { root: specsBase, nodes, layers: LAYERS, profile: profileOf(harness), slugSet: slugSetOf(nodes) };
+  const problems = sortProblems(EVALUATORS.flatMap((evaluate) => evaluate(ctx)));
+  const summary = {};
+  for (const [kind, entries] of groupByKind(problems)) summary[kind] = entries.length;
+  return { ok: problems.length === 0, summary, problems };
+}
+
+// Informe textual agrupado por familia (D-4); el orden dentro de cada familia es (path, detail).
+function renderCheckText(result) {
+  const lines = [`── memory-system check ── harness: ${result.harness} · root: ${result.root}`];
+  for (const [kind, entries] of groupByKind(result.problems)) {
+    for (const entry of entries) lines.push(`${`[${kind}]`.padEnd(KIND_WIDTH)}${entry.path} — ${entry.detail}`);
+  }
+  const detail = CHECK_KINDS.filter((kind) => result.summary[kind] > 0).map((kind) => `${kind} ${result.summary[kind]}`).join(' · ');
+  lines.push(CHECK_RULE, `problemas: ${result.problems.length}${detail ? ` (${detail})` : ''}`);
+  return `${lines.join('\n')}\n`;
 }
 
 // ---------------------------------------------------------------------------
@@ -624,10 +761,36 @@ function runIndex(args) {
   return 0;
 }
 
+/**
+ * `check`: gate de CI en solo lectura. Exit 0 sin problemas, 1 con al menos uno (sin mensaje de
+ * error) y 2 ante error técnico, que se propaga a `main` para que lo informe por stderr; con
+ * `--json` stdout lleva entonces el objeto de error y nada más (D-4).
+ */
+function runCheck(args) {
+  try {
+    assertRuntime();
+    const specsBase = resolveRoot(args.root);
+    const harness = detectHarness(path.dirname(specsBase), args.harness);
+    const evaluated = checkMemory(specsBase, harness);
+    const result = {
+      harness,
+      root: toPosix(args.root),
+      ok: evaluated.ok,
+      summary: evaluated.summary,
+      problems: evaluated.problems,
+    };
+    process.stdout.write(args.json ? `${JSON.stringify(result, null, 2)}\n` : renderCheckText(result));
+    return result.ok ? 0 : 1;
+  } catch (error) {
+    if (args.json) process.stdout.write(`{ "ok": false, "error": ${JSON.stringify(error.message)} }\n`);
+    throw error;
+  }
+}
+
 function main(argv = process.argv.slice(2)) {
   try {
     const args = parseArgs(argv);
-    const runners = { detect: runDetect, index: runIndex, scaffold: runScaffold };
+    const runners = { detect: runDetect, index: runIndex, scaffold: runScaffold, check: runCheck };
     return runners[args.command](args);
   } catch (error) {
     const usage = error instanceof UsageError;
@@ -642,6 +805,8 @@ module.exports = {
   HARNESS_PROFILES,
   LAYERS,
   KNOWN_LAYERS,
+  REQUIRED_FIELDS,
+  CHECK_KINDS,
   SCAFFOLD_DIR,
   SHARED_TEMPLATES,
   parseArgs,
@@ -652,6 +817,13 @@ module.exports = {
   detectHarness,
   renderIndex,
   summaryLine,
+  slugSetOf,
+  missingLayers,
+  orphans,
+  invalidFrontmatter,
+  brokenWikilinks,
+  checkMemory,
+  renderCheckText,
   scaffold,
   scaffoldSummaryLine,
   main,

@@ -1,3 +1,9 @@
+---
+type: runbook
+slug: docker-dev-container-with-security-scann
+title: Integrar Skill Shielder en Dockerfile.dev
+---
+
 # Integrar Skill Shielder en Dockerfile.dev
 
 > **Nota histórica actualizada:** este documento conserva el contexto de la integración. La fuente operativa es [`Dockerfile.dev`](../../Dockerfile.dev), que fija Skill Shielder a `b204cecb2d26fccaca0e4121eae94e352e210126` y comprueba que `HEAD` coincide antes de exponer `shield`.

@@ -15,8 +15,8 @@ related:
 
 <!-- Referencias -->
 [[STORY-071-skill-story-verify]]
-[[STORY-070-dod-code-review-en-story-code-review]]
-[[EPIC-13-quality-gates-con-dod-en-story-workflow]]
+[[dod-code-review-en-story-code-review]]
+[[quality-gates-con-dod-en-story-workflow]]
 
 ## Context
 
