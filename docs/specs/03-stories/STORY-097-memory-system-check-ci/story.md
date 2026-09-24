@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-097-memory-system-check-ci
 title: "Verificar la consistencia de la memoria con un modo check apto para CI"
 status: VERIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-20-memory-system
 created: 2026-09-20
 updated: 2026-09-23
