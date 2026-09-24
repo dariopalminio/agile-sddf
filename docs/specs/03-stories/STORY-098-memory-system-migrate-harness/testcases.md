@@ -5,7 +5,7 @@ slug: STORY-098-memory-system-migrate-harness-testcases
 title: "Test Cases: Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate"
 story: STORY-098
 created: 2026-09-21
-updated: 2026-09-21
+updated: 2026-09-23
 related:
   - STORY-098-memory-system-migrate-harness
 ---
@@ -77,21 +77,21 @@ related:
 
 <!-- Generado automáticamente por story-testcases. Actualizado por story-implement en fase GREEN.
      [x] = test pasó | [ ] = pendiente | [!] = test falló -->
-- [ ] E2E-001: migrate detecta Speckit y propone antes de escribir
-- [ ] E2E-002: ensure --harness openspec respeta openspec/ e indexa sus artefactos
-- [ ] UT-001: Perfiles de harness completos
-- [ ] UT-002: scaffold omite capas del perfil
-- [ ] UT-003: scaffold mapea constitution.md si existe en el harness
-- [ ] UT-004: scaffold crea la semilla si el harness no tiene equivalente
-- [ ] UT-005: scaffold --dry-run produce el plan con las variantes condicionales
-- [ ] UT-006: Idempotencia del scaffold adaptado
-- [ ] UT-007: Guardia de escritura fuera de la raíz
-- [ ] UT-008: index agrupa nodos externos y mapeados
-- [ ] UT-009: Colisión de slug externo con nodo de docs/
+- [x] E2E-001: migrate detecta Speckit y propone antes de escribir
+- [x] E2E-002: ensure --harness openspec respeta openspec/ e indexa sus artefactos
+- [x] UT-001: Perfiles de harness completos
+- [x] UT-002: scaffold omite capas del perfil
+- [x] UT-003: scaffold mapea constitution.md si existe en el harness
+- [x] UT-004: scaffold crea la semilla si el harness no tiene equivalente
+- [x] UT-005: scaffold --dry-run produce el plan con las variantes condicionales
+- [x] UT-006: Idempotencia del scaffold adaptado
+- [x] UT-007: Guardia de escritura fuera de la raíz
+- [x] UT-008: index agrupa nodos externos y mapeados
+- [x] UT-009: Colisión de slug externo con nodo de docs/
 - [ ] IT-001: migrate = detect → plan → confirmación → scaffold
 - [ ] IT-002: migrate cancelado no escribe
-- [ ] IT-003: check respeta skipLayers del harness
-- [ ] EV-001: memory-system migrate propone sin escribir
-- [ ] EV-002: memory-system migrate --yes
-- [ ] EV-003: memory-system migrate en proyecto SDDF
-- [ ] EV-004: memory-system ensure --harness openspec
+- [x] IT-003: check respeta skipLayers del harness
+- [x] EV-001: memory-system migrate propone sin escribir
+- [x] EV-002: memory-system migrate --yes
+- [x] EV-003: memory-system migrate en proyecto SDDF
+- [x] EV-004: memory-system ensure --harness openspec

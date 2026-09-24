@@ -243,9 +243,9 @@ docs/constitution.md          # principios supremos (fuera de policies/)
 
 ## 10. Herramienta: skill `memory-system`
 
-El skill `memory-system` (`skills/memory-system/`, STORY-095, STORY-096 y STORY-097) es el único
-punto de entrada operativo de este sistema. Expone los modos `ensure` (por defecto), `scaffold`,
-`rebuild`, `index` y `check`; `migrate` llega con la historia hermana STORY-098 de EPIC-20.
+El skill `memory-system` (`skills/memory-system/`, STORY-095, STORY-096, STORY-097 y STORY-098) es
+el único punto de entrada operativo de este sistema. Expone los modos `ensure` (por defecto),
+`scaffold`, `rebuild`, `index`, `check` y `migrate`.
 
 ### 10.1 Modos
 
@@ -256,7 +256,7 @@ punto de entrada operativo de este sistema. Expone los modos `ensure` (por defec
 | `rebuild [--force]` | STORY-096 | Sin `--force`: `❌ rebuild es destructivo. Añade --force para confirmar.` y ningún cambio. Con `--force`: advertencia `⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.`, `scaffold --force` (sobrescribe solo los archivos gestionados, §10.3) e `index`. Nunca borra. |
 | `index [--harness h] [--dry-run]` | STORY-095 | Regenera `docs/index.md` completo desde `assets/index-template.md`: una entrada `[[slug]]` por artefacto, agrupada por capa, más "Estado del grafo" y "Nodos pendientes". `--dry-run` imprime sin escribir. |
 | `check [--json] [--harness h]` | STORY-097 | Verificación en **solo lectura** de cuatro familias de problemas, con exit code para CI (§10.4). No corrige nada y no regenera `index.md`. |
-| `migrate` | STORY-098 | Adaptar el scaffolding a OpenSpec/Spec-kit (`skipLayers`, `mappings`). |
+| `migrate [--harness h] [--yes]` | STORY-098 | Adopta la memoria en un proyecto Speckit u OpenSpec: `detect → scaffold --dry-run` (plan `📋 Plan de migración (<h>)`) `→ confirmación → scaffold` adaptado al perfil del harness (§10.5). `--yes` asume la confirmación; con `no` no escribe nada. No transforma artefactos ni invoca `index`. En un proyecto `sddf` informa `El proyecto ya es SDDF` y remite a `ensure`. |
 
 ### 10.2 Arquitectura
 
@@ -284,12 +284,13 @@ punto de entrada operativo de este sistema. Expone los modos `ensure` (por defec
   y continúa con exit 0.
 - **Copia-si-falta y no-eliminación**: por archivo, destino ausente → `[CREADO]`; presente →
   `[PRESERVADO]`; solo con `--force` → `[SOBRESCRITO]`. Ningún modo elimina archivos ni directorios.
-  Última línea: `creados: N · sobrescritos: S · preservados: M · omitidos por harness: K` (`K` = 0
-  hasta que STORY-098 rellene `skipLayers`).
+  Última línea: `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`
+  (`X` y `K` según el perfil del harness, §10.5).
 - **Detección de harness** (`detect`): `--harness` > `sddf.config.yaml` > `.specify/` > `openspec/`
   > `generic`. La tabla `HARNESS_PROFILES` declara por harness el marcador y las raíces externas
   indexadas en solo lectura (`specs/*/spec.md` y `plan.md` en Spec-kit; `openspec/specs/**/spec.md`
-  y `openspec/changes/*/proposal.md` en OpenSpec), y reserva `skipLayers`/`mappings` para STORY-098.
+  y `openspec/changes/*/proposal.md` en OpenSpec), las capas que el harness ya modela
+  (`skipLayers`) y las semillas con equivalente en el harness (`mappings`); ver §10.5.
 - **Reglas de nodo** (`references/memory-rules.md`): slug = `frontmatter.slug`, o el directorio para
   `story.md`/`epic.md`/`project.md`/`spec.md`/`proposal.md`/`plan.md`, o `<dir>-index` para
   `README.md`, o el nombre del archivo; título = `frontmatter.title` o primer `#`; capa = primer
@@ -398,7 +399,39 @@ Sin `node` en PATH el skill aplica las cuatro reglas inline y añade
 `⚠️ node no disponible — sin exit code; no usar en CI`: el informe sirve como diagnóstico, no como
 gate.
 
-### 10.5 Deprecación de `docs-wiki-builder`
+### 10.5 Perfiles de harness y modo `migrate` (STORY-098)
+
+La memoria se adapta al harness detectado sin duplicar lo que el harness ya modela. Los perfiles
+son una tabla de datos (`HARNESS_PROFILES` del motor, `references/memory-rules.md` §1 y §8):
+
+| Harness | `skipLayers` | `mappings` (semilla → equivalente del harness) | `externalRoots` (solo lectura) |
+|---|---|---|---|
+| `sddf` | — | — | — |
+| `generic` | — | — | — |
+| `speckit` | `specs` | `constitution.md` → `.specify/memory/constitution.md` | `specs/*/spec.md`, `specs/*/plan.md` |
+| `openspec` | `specs` | — | `openspec/specs/**/spec.md`, `openspec/changes/*/proposal.md` |
+
+- **`skipLayers`**: `scaffold` no crea la capa (`[OMITIDO] specs/ — gestionado por el harness <h>`,
+  una línea por capa), `check` no la reporta como `missing-layer` y el índice la muestra como
+  `_(gestionado por el harness)_`. `sddf` y `generic` crean las once capas.
+- **`mappings`**: si el equivalente existe, `scaffold` no crea la semilla
+  (`[MAPEADO] constitution.md → .specify/memory/constitution.md`), `check` no la exige e `index`
+  enlaza el equivalente como nodo externo con el slug de la semilla (`[[constitution]]`). Si no
+  existe (proyectos Speckit antiguos), se crea la semilla.
+- **`externalRoots`**: `index` enlaza esos artefactos en "Artefactos externos" con un subtítulo por
+  origen (`OpenSpec — specs`, `OpenSpec — changes`, `Speckit — features`, `Mapeados desde el
+  harness`). `check` los usa como destino de wikilinks pero no evalúa su frontmatter.
+- **Los directorios del harness son de solo lectura**: `openspec/`, `.specify/` y `specs/` nunca
+  reciben un destino de escritura. El motor valida todo el plan contra `SPECS_BASE` antes de
+  escribir y aborta con exit 2 (`destino fuera de la raíz: <ruta>`) sin haber escrito nada.
+- **Colisión de slug**: si un nodo externo tiene el mismo slug que un nodo de `docs/`, gana el de
+  `docs/`; el externo se indexa como `[[<slug>-external]]` y `index` avisa por stderr.
+- **`migrate`** es una secuencia del `SKILL.md`, no lógica del motor: el plan es la salida de
+  `scaffold --dry-run` (`[OMITIRÍA]`, `[MAPEARÍA]`, `[CREARÍA]`), la confirmación es interacción
+  y el scaffolding es `scaffold` con el mismo perfil. Idempotente: una segunda migración confirmada
+  termina con `creados: 0`. No transforma, mueve ni reescribe artefactos del harness.
+
+### 10.6 Deprecación de `docs-wiki-builder`
 
 `docs-wiki-builder` (STORY-044) queda como alias desde 3.3.0: emite
 `⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.`, mapea `--update` → `index` y

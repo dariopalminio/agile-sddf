@@ -327,3 +327,15 @@ Sin preguntas abiertas.
 - **Descripción**: `migrate` no tiene sentido sin `scaffold` (STORY-096) ni `index` externo (STORY-095); a diferencia de las otras hermanas, esta historia no define degradación.
 - **Documento afectado**: story.md
 - **Acción requerida**: ninguna nueva — la historia ya declara el orden 095 → 096 → 098; se registra para el `analyze`.
+
+### CR-004
+- **Tipo**: decisión de implementación no prevista
+- **Descripción**: para que `check --harness openspec` dé exit 0 sobre un fixture sano (IT-003, V-7), los nodos externos del harness solo actúan como destino de wikilinks: `check` no les aplica `orphan`, `invalid-frontmatter` ni `broken-wikilink` (los artefactos de OpenSpec/Speckit no declaran frontmatter SDDF), y no exige `constitution.md` cuando su `mapping` existe en el harness. Amplía el contrato de `check` de STORY-097 solo para perfiles con `externalRoots`/`mappings`; `sddf` y `generic` no cambian.
+- **Documento afectado**: skills/memory-system/references/memory-rules.md §8, docs/architecture/memory-system.md §10
+- **Acción requerida**: ninguna — detectado en IMPLEMENT (Fase GREEN) y registrado aquí.
+
+### CR-005
+- **Tipo**: ajuste de flujo detectado en IMPLEMENT
+- **Descripción**: en D-3 el paso 1 de `migrate` era `detect`, pero `detect` termina con exit 2 si `SPECS_BASE` no existe (contrato de STORY-095, UT-003b), que es el caso típico de un proyecto por migrar. `migrate` toma el harness de la primera línea (`harness: <h>`) de `scaffold --dry-run`, que acepta una raíz aún inexistente y no escribe nada; la secuencia observable (plan → confirmación → scaffold) no cambia.
+- **Documento afectado**: skills/memory-system/SKILL.md §3.6
+- **Acción requerida**: ninguna. Nota: el modo `ensure` (STORY-096) arranca también con `detect` y tiene la misma limitación en un proyecto sin `docs/`; queda fuera del alcance de esta historia.

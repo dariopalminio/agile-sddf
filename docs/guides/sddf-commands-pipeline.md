@@ -32,14 +32,31 @@ Todos los skills resuelven localmente `SPECS_BASE` una vez por invocación.
 export SDDF_ROOT="artefactos-ci"
 ```
 
+### Niveles de `sddf-init`
+
+`/sddf-init [--level minimal|standard|full]` (default `standard`). Un valor no admitido se
+detiene con `❌ --level no admitido: <valor>. Valores válidos: minimal, standard, full.` sin
+escribir nada.
+
+| Nivel | Qué hace | Cuándo usarlo |
+|---|---|---|
+| `minimal` | Raíz, directorios base, `sddf.config.yaml` y `.env.template`; sin templates ni pregunta de políticas (`[OMITIDO] project-policies-generation (nivel minimal)`) | CI o bootstrap no interactivo |
+| `standard` | Comportamiento sin `--level`: añade los cinco templates compartidos y la pregunta opcional de políticas | Uso habitual |
+| `full` | `standard` + `memory-system scaffold --yes` al final (orden 5 → 5b: primero la pregunta de políticas, después el scaffold), con su informe en un bloque `── memory-system scaffold (nivel full) ──` | **Recomendado para proyectos nuevos** |
+
+`full` conserva la pregunta interactiva de políticas: en CI usa `minimal`. Si `memory-system` no
+está instalado, `full` avisa y termina como `standard`.
+
 ---
 
 ## 0. Memoria del proyecto
 
 ```
+sddf-init --level full                (proyecto nuevo: standard + memory-system scaffold)
 sddf-init → memory-system            (ensure: scaffold + index)
 memory-system index                  (solo reindexar)
 memory-system check [--json]         (verificar; exit code para CI)
+memory-system migrate [--yes]        (proyecto Speckit u OpenSpec: plan → confirmación → scaffold)
 ```
 
 | Skill | Input | Output |
@@ -48,8 +65,12 @@ memory-system check [--json]         (verificar; exit code para CI)
 | `memory-system scaffold [--dry-run] [--harness h]` | Igual que `ensure` | Solo crea lo faltante (`[CREADO]`/`[PRESERVADO]`); no toca `index.md` |
 | `memory-system rebuild --force` | Memoria existente | `⚠️` advertencia, sobrescribe únicamente los archivos gestionados por el scaffold (`[SOBRESCRITO]`) y regenera `index.md`; sin `--force` se detiene con `❌ rebuild es destructivo. Añade --force para confirmar.` |
 | `memory-system index [--harness h] [--dry-run]` | `$SPECS_BASE/` (artefactos con frontmatter `slug`/`title`) y, según el harness detectado, las raíces externas de Spec-kit/OpenSpec | `$SPECS_BASE/index.md` regenerado con wikilinks `[[slug]]` por capa; resumen `nodos indexados: N · sin frontmatter: M · nodos pendientes: K` |
+| `memory-system migrate [--harness h] [--yes]` | Proyecto no SDDF con `.specify/` (Speckit) u `openspec/` (OpenSpec) | Entrada para proyectos no SDDF: muestra `📋 Plan de migración (<h>)` (salida de `scaffold --dry-run`: `[OMITIRÍA] specs/`, `[MAPEARÍA] constitution.md → .specify/memory/constitution.md`, `[CREARÍA] …`), pide confirmación (`--yes` la asume) y ejecuta `scaffold` adaptado al harness; los directorios del harness no se tocan. En un proyecto `sddf` remite a `ensure`. Siguiente paso: `/memory-system index` |
 | `memory-system check [--json] [--harness h]` | `$SPECS_BASE/` en solo lectura | Informe de las cuatro familias de problemas (`missing-layer`, `orphan`, `invalid-frontmatter`, `broken-wikilink`) y cierre `problemas: N (…)`; con `--json`, un único objeto `{ harness, root, ok, summary, problems }`. No escribe nada. Exit 0 sin problemas, 1 con al menos uno, 2 ante error técnico |
 
+> En un proyecto nuevo, `/sddf-init --level full` equivale a `/sddf-init` seguido de
+> `/memory-system scaffold` en un solo comando (el scaffold corre después de la pregunta de
+> políticas; niveles en [Configuración](#niveles-de-sddf-init)); luego ejecuta `/memory-system index`.
 > Ejecuta `/memory-system` justo después de `/sddf-init`: deja la memoria completa sin crear nada
 > a mano y sin riesgo para lo existente (ningún modo borra; solo `rebuild --force` sobrescribe, y
 > solo semillas y plantillas). Regenera el índice tras añadir o mover artefactos: es el mapa que

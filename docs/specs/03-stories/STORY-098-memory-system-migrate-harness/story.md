@@ -5,11 +5,11 @@ id: STORY-098
 kind: feat
 slug: STORY-098-memory-system-migrate-harness
 title: "Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate"
-status: READY-FOR-IMPLEMENT
+status: VERIFY
 substatus: DONE
 parent: EPIC-20-memory-system
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-24
 related:
   - EPIC-20-memory-system
   - STORY-095-memory-system-index-alias
@@ -60,7 +60,7 @@ La estructura de memoria se adapta por harness: `sddf` y `generic` crean las onc
 
 ### Requerimiento: `migrate` no convierte artefactos
 
-`migrate` solo hace scaffolding adaptado tras confirmación; no transforma ni mueve artefactos entre harness. En modo automático (`--yes`) la confirmación se asume.
+`migrate` solo hace scaffolding adaptado tras confirmación; no transforma ni mueve artefactos entre harness. En modo automático (`--yes`) la confirmación se asume. En un proyecto que ya es `sddf`, `migrate` informa `El proyecto ya es SDDF` y remite a `/memory-system ensure`, sin escribir nada (CR-001 de design.md).
 
 ## ⚙️ Criterios no funcionales
 
@@ -78,7 +78,7 @@ La estructura de memoria se adapta por harness: `sddf` y `generic` crean las onc
 
 ## 📎 Notas / contexto adicional
 
-**Origen del split:** historia hermana de la división de la STORY-095 original; agrupa todo lo que depende del harness externo. Depende de [[STORY-095-memory-system-index-alias]] (detección de harness e índice) y de [[STORY-096-memory-system-scaffold-ensure-rebuild]] (scaffolding), por lo que se sugiere implementarla después de ambas.
+**Origen del split:** historia hermana de la división de la STORY-095 original; agrupa todo lo que depende del harness externo. Depende de [[STORY-095-memory-system-index-alias]] (detección de harness e índice) y de [[STORY-096-memory-system-scaffold-ensure-rebuild]] (scaffolding), por lo que se sugiere implementarla después de ambas. La dependencia es dura (CR-003 de design.md): `migrate` no define degradación sin `scaffold` (STORY-096) ni sin el índice de nodos externos (STORY-095); orden 095 → 096 → 098.
 
 **Decisión heredada del diseño previo** (`STORY-095-memory-system-index-alias/pre-split/design.md`, D-2): los perfiles de harness son una tabla de datos (capas omitidas, mapeos, raíces externas indexadas) y no condicionales dispersos; precedencia de detección `--harness` > `sddf.config.yaml` > `.specify/` > `openspec/` > `generic`.
 

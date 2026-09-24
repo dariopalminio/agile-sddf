@@ -1,7 +1,7 @@
 {
   "skill": "memory-system",
-  "version": "1.2.0",
-  "description": "Casos de prueba para memory-system. STORY-095 (TC-001..TC-004): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido. STORY-096 (TC-005..TC-010): ensure por defecto sobre examples/sddf-partial (crea solo lo faltante y regenera el índice), ensure idempotente, scaffold sobre examples/empty sin tocar index.md, rebuild sin --force (fail-fast sin escrituras), rebuild --force (advertencia literal y sobrescritura de semillas) y ensure --fix-frontmatter sobre examples/no-frontmatter (header-aggregation en batch con 'Saltar todos los conflictos'). STORY-097 (TC-011..TC-014): modo check sobre el fixture examples/broken (informe textual con las cuatro familias y 'problemas: 4', exit 1), check --json (objeto único con ok/summary/problems para CI), check sobre un fixture sano ('problemas: 0', exit 0) y fail-fast ante --root inexistente (stderr 'raíz inexistente', exit 2, sin escrituras).",
+  "version": "1.3.0",
+  "description": "Casos de prueba para memory-system. STORY-095 (TC-001..TC-004): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido. STORY-096 (TC-005..TC-010): ensure por defecto sobre examples/sddf-partial (crea solo lo faltante y regenera el índice), ensure idempotente, scaffold sobre examples/empty sin tocar index.md, rebuild sin --force (fail-fast sin escrituras), rebuild --force (advertencia literal y sobrescritura de semillas) y ensure --fix-frontmatter sobre examples/no-frontmatter (header-aggregation en batch con 'Saltar todos los conflictos'). STORY-097 (TC-011..TC-014): modo check sobre el fixture examples/broken (informe textual con las cuatro familias y 'problemas: 4', exit 1), check --json (objeto único con ok/summary/problems para CI), check sobre un fixture sano ('problemas: 0', exit 0) y fail-fast ante --root inexistente (stderr 'raíz inexistente', exit 2, sin escrituras). STORY-098 (TC-015..TC-018): migrate sobre examples/speckit sin --yes (plan '📋 Plan de migración (speckit)' con [OMITIRÍA]/[MAPEARÍA]/[CREARÍA] y pregunta de confirmación, sin escrituras), migrate --yes (scaffold adaptado al perfil: 'mapeados: 1' y 'omitidos por harness: 1'), migrate sobre examples/sddf ('El proyecto ya es SDDF', remite a ensure, sin escrituras) y ensure --harness openspec --yes sobre examples/openspec (sin docs/specs/, openspec/ intacto e índice con [[auth]] y [[add-login]] bajo subtítulos OpenSpec).",
   "cases": [
     {
       "id": "TC-001",
@@ -195,7 +195,7 @@
       "id": "TC-006",
       "name": "ensure-idempotente-segunda-ejecucion",
       "type": "edge-case",
-      "description": "Origen: EV-002 (AC-7, NFR-1, D-3, F-1, T001). Misma raíz que TC-005 (examples/sddf-partial, sddf.config.yaml con root: docs, harness sddf) tras una primera ejecución exitosa de ensure: docs/ ya contiene constitution.md, las once capas con su README.md, product/{vision,stakeholders,objectives}.md, requirements/README.md, las nueve plantillas en templates/ y docs/index.md regenerado. Ningún archivo falta. node está en PATH y CLI_ROOT es .claude. El usuario vuelve a invocar /memory-system sin modo ni flags. El skill debe ejecutar detect, scaffold (todos los archivos marcados [PRESERVADO]; no crea ni sobrescribe nada: la línea de resumen del motor es 'creados: 0 · sobrescritos: 0 · preservados: N · omitidos por harness: 0') e index (regenera docs/index.md con el mismo contenido), y cerrar con el informe 'creados: 0 · preservados: N · índice regenerado: sí' sin reportar ningún error ni mostrar marcas [CREADO] o [SOBRESCRITO].",
+      "description": "Origen: EV-002 (AC-7, NFR-1, D-3, F-1, T001). Misma raíz que TC-005 (examples/sddf-partial, sddf.config.yaml con root: docs, harness sddf) tras una primera ejecución exitosa de ensure: docs/ ya contiene constitution.md, las once capas con su README.md, product/{vision,stakeholders,objectives}.md, requirements/README.md, las nueve plantillas en templates/ y docs/index.md regenerado. Ningún archivo falta. node está en PATH y CLI_ROOT es .claude. El usuario vuelve a invocar /memory-system sin modo ni flags. El skill debe ejecutar detect, scaffold (todos los archivos marcados [PRESERVADO]; no crea ni sobrescribe nada: la línea de resumen del motor es 'creados: 0 · sobrescritos: 0 · preservados: N · mapeados: 0 · omitidos por harness: 0') e index (regenera docs/index.md con el mismo contenido), y cerrar con el informe 'creados: 0 · preservados: N · índice regenerado: sí' sin reportar ningún error ni mostrar marcas [CREADO] o [SOBRESCRITO].",
       "input": {
         "input_path": "examples/sddf-partial",
         "mode": null,
@@ -229,7 +229,7 @@
       "id": "TC-007",
       "name": "scaffold-fixture-empty-sin-indexar",
       "type": "happy-path",
-      "description": "Origen: EV-003 (AC-2, AC-5, AC-6, D-1, D-2, F-2, T001). Proyecto cuyo REPO_ROOT es examples/empty: contiene sddf.config.yaml (root: docs) y un directorio docs/ vacío (solo .gitkeep). No existe constitution.md, ninguna de las once capas, ninguna plantilla ni index.md. node está en PATH, CLI_ROOT es .claude con los skills dueños story-creation, epic-creation, project-discovery, project-begin y project-planning instalados (sus templates existen), scripts/memory-system.js detect devuelve sddf y assets/scaffold/ existe. El usuario invoca /memory-system scaffold. El skill debe ejecutar detect y luego scaffold (sin --force ni --dry-run): el motor imprime una línea [CREADO] por cada archivo del árbol semilla (constitution.md, product/README.md, product/vision.md, product/stakeholders.md, product/objectives.md, requirements/README.md, specs/README.md, domains/README.md, architecture/README.md, adr/README.md, policies/README.md, guardrails/README.md, guides/README.md, runbooks/README.md, templates/README.md, templates/adr-template.md) y por las cinco plantillas compartidas copiadas desde su skill dueño (story-template.md, epic-template.md, project-template.md, project-intent-template.md, project-plan-template.md), y termina con 'creados: N · sobrescritos: 0 · preservados: 0 · omitidos por harness: 0'. El modo scaffold NO invoca index ni header-aggregation: docs/index.md no se crea ni se escribe y el informe no incluye la línea de índice regenerado.",
+      "description": "Origen: EV-003 (AC-2, AC-5, AC-6, D-1, D-2, F-2, T001). Proyecto cuyo REPO_ROOT es examples/empty: contiene sddf.config.yaml (root: docs) y un directorio docs/ vacío (solo .gitkeep). No existe constitution.md, ninguna de las once capas, ninguna plantilla ni index.md. node está en PATH, CLI_ROOT es .claude con los skills dueños story-creation, epic-creation, project-discovery, project-begin y project-planning instalados (sus templates existen), scripts/memory-system.js detect devuelve sddf y assets/scaffold/ existe. El usuario invoca /memory-system scaffold. El skill debe ejecutar detect y luego scaffold (sin --force ni --dry-run): el motor imprime una línea [CREADO] por cada archivo del árbol semilla (constitution.md, product/README.md, product/vision.md, product/stakeholders.md, product/objectives.md, requirements/README.md, specs/README.md, domains/README.md, architecture/README.md, adr/README.md, policies/README.md, guardrails/README.md, guides/README.md, runbooks/README.md, templates/README.md, templates/adr-template.md) y por las cinco plantillas compartidas copiadas desde su skill dueño (story-template.md, epic-template.md, project-template.md, project-intent-template.md, project-plan-template.md), y termina con 'creados: N · sobrescritos: 0 · preservados: 0 · mapeados: 0 · omitidos por harness: 0'. El modo scaffold NO invoca index ni header-aggregation: docs/index.md no se crea ni se escribe y el informe no incluye la línea de índice regenerado.",
       "input": {
         "input_path": "examples/empty",
         "mode": "scaffold",
@@ -303,7 +303,7 @@
       "id": "TC-009",
       "name": "rebuild-force-sobrescribe-semillas",
       "type": "edge-case",
-      "description": "Origen: EV-005 (AC-4, AC-7, D-4, F-3, T001). Proyecto SDDF con memoria existente cuyo REPO_ROOT es examples/sddf-partial ya scaffoldeado: sddf.config.yaml con root: docs; docs/ con constitution.md editado a mano (línea 'Regla local: ...'), README.md en las once capas, product/{vision,stakeholders,objectives}.md, las nueve plantillas en templates/, los artefactos de autor adr/ADR-0001-x.md, guides/sdd.md y specs/03-stories/STORY-001-a/story.md, e index.md. node está en PATH, CLI_ROOT es .claude (skills dueños instalados), detect devuelve sddf. El usuario invoca /memory-system rebuild --force. El skill debe mostrar exactamente '⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.', ejecutar detect, luego scaffold --force (el motor marca [SOBRESCRITO] únicamente los archivos gestionados por el scaffold: constitution.md, product/*.md, el README.md de cada capa, templates/README.md, las cuatro plantillas de autoría manual y las cinco compartidas; ADR-0001-x.md, sdd.md y story.md no aparecen ni se tocan; ningún archivo se elimina; línea de resumen 'creados: 0 · sobrescritos: S · preservados: 0 · omitidos por harness: 0') y luego index (regenera docs/index.md). Informe final con 'sobrescritos:' e 'índice regenerado: sí'. No aparece el mensaje de gate '❌ rebuild es destructivo'.",
+      "description": "Origen: EV-005 (AC-4, AC-7, D-4, F-3, T001). Proyecto SDDF con memoria existente cuyo REPO_ROOT es examples/sddf-partial ya scaffoldeado: sddf.config.yaml con root: docs; docs/ con constitution.md editado a mano (línea 'Regla local: ...'), README.md en las once capas, product/{vision,stakeholders,objectives}.md, las nueve plantillas en templates/, los artefactos de autor adr/ADR-0001-x.md, guides/sdd.md y specs/03-stories/STORY-001-a/story.md, e index.md. node está en PATH, CLI_ROOT es .claude (skills dueños instalados), detect devuelve sddf. El usuario invoca /memory-system rebuild --force. El skill debe mostrar exactamente '⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.', ejecutar detect, luego scaffold --force (el motor marca [SOBRESCRITO] únicamente los archivos gestionados por el scaffold: constitution.md, product/*.md, el README.md de cada capa, templates/README.md, las cuatro plantillas de autoría manual y las cinco compartidas; ADR-0001-x.md, sdd.md y story.md no aparecen ni se tocan; ningún archivo se elimina; línea de resumen 'creados: 0 · sobrescritos: S · preservados: 0 · mapeados: 0 · omitidos por harness: 0') y luego index (regenera docs/index.md). Informe final con 'sobrescritos:' e 'índice regenerado: sí'. No aparece el mensaje de gate '❌ rebuild es destructivo'.",
       "input": {
         "input_path": "examples/sddf-partial",
         "mode": "rebuild",
@@ -560,6 +560,170 @@
         ]
       },
       "threshold": 1
+    },
+    {
+      "id": "TC-015",
+      "name": "migrate-speckit-propone-plan-sin-escribir",
+      "type": "happy-path",
+      "description": "EV-001 — memory-system migrate propone sin escribir (Origen: EV-001 de testcases.md; AC-1, AC-4, D-2, D-3, T001). Proyecto Speckit cuyo REPO_ROOT es examples/speckit: contiene .specify/memory/constitution.md y specs/001-login/{spec.md,plan.md} (además de specs/001-feature/), y NO contiene sddf.config.yaml. node está en PATH y scripts/memory-system.js detect devuelve speckit. El usuario invoca /memory-system migrate (sin --yes). El skill debe reportar el harness detectado, ejecutar el motor con scaffold --dry-run --harness speckit y mostrar su salida bajo la cabecera '📋 Plan de migración (speckit)': la capa specs/ aparece como '[OMITIRÍA] specs/' (gestionada por el harness), la semilla constitution.md como '[MAPEARÍA] constitution.md → .specify/memory/constitution.md' y el resto de capas/semillas como [CREARÍA]. Luego pregunta '¿Confirmas el plan de migración?' y se detiene esperando respuesta: no ejecuta el scaffold real, no crea docs/constitution.md ni ninguna capa, no regenera el índice y no modifica .specify/ ni specs/.",
+      "input": {
+        "input_path": "examples/speckit",
+        "mode": "migrate",
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "speckit",
+          "harness_dirs": [
+            ".specify/",
+            "specs/"
+          ],
+          "sddf_config": false,
+          "user_confirmation": "pendiente"
+        }
+      },
+      "expected": {
+        "contains": [
+          "📋 Plan de migración (speckit)",
+          "[OMITIRÍA] specs/",
+          "[MAPEARÍA] constitution.md → .specify/memory/constitution.md",
+          "[CREARÍA]",
+          "¿Confirmas el plan de migración?"
+        ],
+        "not_contains": [
+          "[CREADO]",
+          "[MAPEADO]",
+          "[OMITIDO]",
+          "[CREARÍA] constitution.md",
+          "[CREARÍA] specs/",
+          "índice regenerado",
+          "El proyecto ya es SDDF",
+          "Migración cancelada",
+          "no admitido",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-016",
+      "name": "migrate-speckit-yes-scaffold-adaptado",
+      "type": "happy-path",
+      "description": "EV-002 — memory-system migrate --yes (Origen: EV-002 de testcases.md; AC-1, AC-3, D-2, D-3, T001). Mismo proyecto Speckit que TC-015 (REPO_ROOT examples/speckit con .specify/memory/constitution.md y specs/001-login/, sin sddf.config.yaml). node está en PATH y detect devuelve speckit. El usuario invoca /memory-system migrate --yes. El skill muestra el plan '📋 Plan de migración (speckit)', asume la confirmación por --yes sin preguntar y ejecuta scaffold --harness speckit: crea bajo docs/ las capas del perfil excepto specs/ ('[OMITIDO] specs/ — gestionado por el harness speckit'), no crea docs/constitution.md sino que la mapea ('[MAPEADO] constitution.md → .specify/memory/constitution.md') y deja intactos .specify/ y specs/. Reenvía el resumen del motor con 'mapeados: 1' y 'omitidos por harness: 1' y sugiere ejecutar /memory-system index a continuación (migrate no invoca index).",
+      "input": {
+        "input_path": "examples/speckit",
+        "mode": "migrate",
+        "flags": [
+          "--yes"
+        ],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "speckit",
+          "harness_dirs": [
+            ".specify/",
+            "specs/"
+          ],
+          "sddf_config": false
+        }
+      },
+      "expected": {
+        "contains": [
+          "📋 Plan de migración (speckit)",
+          "[MAPEADO] constitution.md → .specify/memory/constitution.md",
+          "[OMITIDO] specs/",
+          "mapeados: 1",
+          "omitidos por harness: 1",
+          "/memory-system index"
+        ],
+        "not_contains": [
+          "¿Confirmas el plan de migración?",
+          "[CREADO] constitution.md",
+          "[CREADO] specs/",
+          "Migración cancelada",
+          "El proyecto ya es SDDF",
+          "destino fuera de la raíz",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-017",
+      "name": "migrate-proyecto-sddf-remite-a-ensure",
+      "type": "edge-case",
+      "description": "EV-003 — memory-system migrate en proyecto SDDF (Origen: EV-003 de testcases.md; AC-4, D-3, F-3, CR-001, T001). Proyecto que ya es SDDF: REPO_ROOT examples/sddf con sddf.config.yaml (root: docs) y docs/ con constitution.md, adr/, guides/, specs/03-stories/STORY-001-a/ y policies/. node está en PATH y detect devuelve sddf. El usuario invoca /memory-system migrate. migrate no convierte ni reinicializa un proyecto SDDF: el skill informa 'El proyecto ya es SDDF' y remite a /memory-system ensure, sin mostrar plan de migración, sin preguntar confirmación y sin escribir ni modificar ningún archivo.",
+      "input": {
+        "input_path": "examples/sddf",
+        "mode": "migrate",
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "sddf_config": true
+        }
+      },
+      "expected": {
+        "contains": [
+          "El proyecto ya es SDDF",
+          "ensure"
+        ],
+        "not_contains": [
+          "📋 Plan de migración",
+          "¿Confirmas el plan de migración?",
+          "[CREARÍA]",
+          "[CREADO]",
+          "[MAPEADO]",
+          "[OMITIDO]",
+          "índice regenerado",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-018",
+      "name": "ensure-harness-openspec-respeta-openspec-e-indexa",
+      "type": "happy-path",
+      "description": "EV-004 — memory-system ensure --harness openspec (Origen: EV-004 de testcases.md; AC-2, AC-3, D-1, D-4, T001). Proyecto OpenSpec cuyo REPO_ROOT es examples/openspec: contiene openspec/specs/auth/spec.md (title 'Auth capability'), openspec/changes/add-login/proposal.md (title 'Add login') y docs/guides/intro.md (slug: intro); no contiene sddf.config.yaml. node está en PATH. El usuario invoca /memory-system ensure --harness openspec --yes. El skill ejecuta scaffold --harness openspec (la capa specs/ se omite: '[OMITIDO] specs/ — gestionado por el harness openspec', informe con 'omitidos por harness: 1'; docs/specs/ no se crea) y después regenera docs/index.md, que indexa los artefactos de openspec/ como nodos externos de solo lectura bajo los subtítulos '### OpenSpec — specs' ([[auth]]) y '### OpenSpec — changes' ([[add-login]]). Ningún archivo bajo openspec/ se modifica.",
+      "input": {
+        "input_path": "examples/openspec",
+        "mode": "ensure",
+        "flags": [
+          "--harness",
+          "openspec",
+          "--yes"
+        ],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "openspec",
+          "harness_dirs": [
+            "openspec/"
+          ],
+          "sddf_config": false
+        }
+      },
+      "expected": {
+        "contains": [
+          "omitidos por harness: 1",
+          "[OMITIDO] specs/",
+          "[[auth",
+          "[[add-login]]",
+          "OpenSpec — specs",
+          "OpenSpec — changes",
+          "nodos indexados:"
+        ],
+        "not_contains": [
+          "[CREADO] specs/",
+          "📋 Plan de migración",
+          "destino fuera de la raíz",
+          "no admitido",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
     }
   ]
 }

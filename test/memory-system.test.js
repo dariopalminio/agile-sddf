@@ -4,7 +4,9 @@
  * Tests del motor `skills/memory-system/scripts/memory-system.js` (STORY-095, STORY-096, STORY-097).
  * Cubre UT-001…UT-010 e IT-002 de STORY-095; con prefijo `S096-`, UT-001…UT-008 de STORY-096
  * (subcomando `scaffold`); y con prefijo `S097-`, UT-001…UT-012 y E2E-001/E2E-002 de STORY-097
- * (subcomando `check`), todos sobre los fixtures de `skills/memory-system/examples/`.
+ * (subcomando `check`); y con prefijo `S098-`, UT-001…UT-009, IT-003 y E2E-001/E2E-002 de
+ * STORY-098 (perfiles de harness, scaffold adaptado, índice externo y guardia de escritura), todos
+ * sobre los fixtures de `skills/memory-system/examples/`.
  * Los casos que escriben copian el fixture a un directorio temporal para no ensuciar los
  * ejemplos.
  */
@@ -303,21 +305,11 @@ test('IT-002b index speckit: specs/*/spec.md y plan.md como nodos externos', (t)
   assert.match(result.stdout, /\[\[001-feature\]\] — \[plan\.md\]\(\.\.\/specs\/001-feature\/plan\.md\)/);
 });
 
-test('UT-002b HARNESS_PROFILES: claves reservadas para STORY-098 (D-2)', () => {
-  for (const name of ['sddf', 'speckit', 'openspec', 'generic']) {
-    const profile = engine.HARNESS_PROFILES[name];
-    assert.ok('marker' in profile);
-    assert.deepEqual(profile.skipLayers, []);
-    assert.deepEqual(profile.mappings, {});
-    assert.ok(Array.isArray(profile.externalRoots));
-  }
-});
-
 // ---------------------------------------------------------------------------
 // STORY-096 — scaffold (UT-001…UT-008 de testcases.md, prefijo S096-)
 // ---------------------------------------------------------------------------
 
-const SCAFFOLD_SUMMARY = /^creados: (\d+) · sobrescritos: (\d+) · preservados: (\d+) · omitidos por harness: (\d+)$/;
+const SCAFFOLD_SUMMARY = /^creados: (\d+) · sobrescritos: (\d+) · preservados: (\d+) · mapeados: (\d+) · omitidos por harness: (\d+)$/;
 
 // Las once capas y las nueve plantillas que scaffold garantiza (AC-5, AC-6).
 const LAYER_DIRS = ['product', 'requirements', 'specs', 'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
@@ -329,7 +321,7 @@ const NINE_TEMPLATES = ['story-template.md', 'epic-template.md', 'project-templa
 const summaryOf = (stdout) => {
   const match = lastLine(stdout).match(SCAFFOLD_SUMMARY);
   assert.ok(match, `resumen inesperado: ${lastLine(stdout)}`);
-  return { created: +match[1], overwritten: +match[2], preserved: +match[3], skipped: +match[4] };
+  return { created: +match[1], overwritten: +match[2], preserved: +match[3], mapped: +match[4], skipped: +match[5] };
 };
 
 // `--cli-root` real del repo: los cinco skills dueños están instalados en `skills/`.
@@ -853,4 +845,214 @@ test('S097-E2E-002 check --json: gate de CI y re-chequeo tras corregir el wikili
   assert.equal(after.ok, true);
   assert.deepEqual(after.problems, []);
   assert.deepEqual(after.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 0 });
+});
+
+// ---------------------------------------------------------------------------
+// STORY-098 — perfiles de harness, scaffold adaptado, índice externo y guardia de escritura
+// (UT-001…UT-009, IT-003 y E2E-001/E2E-002 de testcases.md a nivel motor, prefijo S098-).
+// IT-001/IT-002 (secuencia de SKILL.md) se cubren con los evals TC-015…TC-017.
+// ---------------------------------------------------------------------------
+
+// Copia el fixture a un tmp y, si `withoutDocs`, borra su `docs/` (los fixtures speckit/openspec
+// conservan `docs/guides/intro.md` porque los tests de STORY-095 lo usan).
+function harnessRepo(t, name, { withoutDocs = false } = {}) {
+  const repo = copyFixture(t, name);
+  if (withoutDocs) fs.rmSync(path.join(repo, 'docs'), { recursive: true, force: true });
+  return { repo, docs: path.join(repo, 'docs') };
+}
+
+// Hashes de los directorios del harness que memory-system nunca debe tocar (NFR-1).
+function harnessHashes(repo, dirs) {
+  return Object.fromEntries(dirs.map((dir) => [dir, hashTree(path.join(repo, dir))]));
+}
+
+const actionLines = (stdout) => stdout.split('\n').filter((line) => line.startsWith('['));
+
+test('S098-UT-001 HARNESS_PROFILES: skipLayers y mappings completos (D-1)', () => {
+  const { sddf, generic, speckit, openspec } = engine.HARNESS_PROFILES;
+  assert.deepEqual(speckit.skipLayers, ['specs']);
+  assert.deepEqual(speckit.mappings, { 'constitution.md': '.specify/memory/constitution.md' });
+  assert.deepEqual(openspec.skipLayers, ['specs']);
+  assert.deepEqual(openspec.mappings, {});
+  for (const profile of [sddf, generic]) {
+    assert.deepEqual(profile.skipLayers, []);
+    assert.deepEqual(profile.mappings, {});
+    assert.deepEqual(profile.externalRoots, []);
+  }
+  // externalRoots sin cambios respecto a STORY-095.
+  assert.deepEqual(speckit.externalRoots, ['specs/*/spec.md', 'specs/*/plan.md']);
+  assert.deepEqual(openspec.externalRoots, ['openspec/specs/**/spec.md', 'openspec/changes/*/proposal.md']);
+});
+
+test('S098-UT-002 scaffold --harness openspec: omite specs/ con una sola línea y la cuenta', (t) => {
+  const { docs } = harnessRepo(t, 'openspec', { withoutDocs: true });
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'openspec']);
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(result.stdout.includes('[OMITIDO] specs/ — gestionado por el harness openspec'));
+  assert.ok(!actionLines(result.stdout).some((line) => /\] specs\/\S/.test(line)), 'ningún archivo de specs/ se lista');
+  assert.ok(!fs.existsSync(path.join(docs, 'specs')));
+  assert.ok(fs.existsSync(path.join(docs, 'constitution.md')), 'openspec no mapea la constitución');
+  const summary = summaryOf(result.stdout);
+  assert.equal(summary.skipped, 1);
+  assert.equal(summary.mapped, 0);
+});
+
+test('S098-UT-003 scaffold --harness speckit: mapea constitution.md sin crearla ni tocar el harness', (t) => {
+  const { repo, docs } = harnessRepo(t, 'speckit', { withoutDocs: true });
+  const before = harnessHashes(repo, ['.specify', 'specs']);
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'speckit']);
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(result.stdout.includes('[MAPEADO] constitution.md → .specify/memory/constitution.md'));
+  assert.ok(!result.stdout.includes('[CREADO] constitution.md'));
+  assert.ok(!fs.existsSync(path.join(docs, 'constitution.md')));
+  assert.equal(summaryOf(result.stdout).mapped, 1);
+  assert.deepEqual(harnessHashes(repo, ['.specify', 'specs']), before);
+});
+
+test('S098-UT-004 scaffold --harness speckit sin constitución del harness: crea la semilla', (t) => {
+  const { docs } = harnessRepo(t, 'speckit-sin-constitution');
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'speckit']);
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(result.stdout.includes('[CREADO] constitution.md'));
+  assert.ok(fs.existsSync(path.join(docs, 'constitution.md')));
+  assert.ok(!result.stdout.includes('[MAPEADO]'));
+  const summary = summaryOf(result.stdout);
+  assert.equal(summary.mapped, 0);
+  assert.equal(summary.skipped, 1);
+});
+
+test('S098-UT-005 scaffold --dry-run --harness speckit: plan con [OMITIRÍA]/[MAPEARÍA]/[CREARÍA] sin escribir', (t) => {
+  const { repo, docs } = harnessRepo(t, 'speckit', { withoutDocs: true });
+  const before = hashTree(repo);
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'speckit', '--dry-run']);
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(result.stdout.includes('[OMITIRÍA] specs/ — gestionado por el harness speckit'));
+  assert.ok(result.stdout.includes('[MAPEARÍA] constitution.md → .specify/memory/constitution.md'));
+  assert.ok(result.stdout.includes('[CREARÍA] product/vision.md'));
+  assert.ok(!result.stdout.includes('[CREARÍA] constitution.md'));
+  assert.ok(!/\[(CREADO|MAPEADO|OMITIDO)\]/.test(result.stdout));
+  const summary = summaryOf(result.stdout);
+  assert.deepEqual([summary.mapped, summary.skipped], [1, 1]);
+  assert.ok(summary.created > 0);
+  assert.ok(!fs.existsSync(docs), 'docs/ no se crea con --dry-run');
+  assert.deepEqual(hashTree(repo), before);
+});
+
+test('S098-UT-006 scaffold --harness speckit: idempotente (creados: 0 en la segunda corrida)', (t) => {
+  const { repo, docs } = harnessRepo(t, 'speckit', { withoutDocs: true });
+  const args = ['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'speckit'];
+  assert.equal(run(args).status, 0);
+  const after = hashTree(repo);
+  const second = run(args);
+  assert.equal(second.status, 0, second.stderr);
+  for (const line of actionLines(second.stdout)) assert.match(line, /^\[(PRESERVADO|MAPEADO|OMITIDO)\] /, line);
+  const summary = summaryOf(second.stdout);
+  assert.deepEqual([summary.created, summary.overwritten, summary.mapped, summary.skipped], [0, 0, 1, 1]);
+  assert.deepEqual(hashTree(repo), after);
+});
+
+test('S098-UT-007 guardia de escritura: un destino fuera de la raíz aborta (exit 2) sin escribir', (t) => {
+  const { repo, docs } = harnessRepo(t, 'openspec', { withoutDocs: true });
+  const before = hashTree(repo);
+  // Perfil de prueba mal configurado: la clave de un mapping es un destino de semilla y apunta a openspec/.
+  const profile = { ...engine.HARNESS_PROFILES.openspec, mappings: { '../openspec/specs/auth/spec.md': 'no-existe.md' } };
+  assert.throws(
+    () => engine.scaffold({ root: docs, harness: 'openspec', profile }),
+    (error) => error instanceof engine.UsageError && /^destino fuera de la raíz: .*openspec\/specs\/auth\/spec\.md$/.test(error.message),
+  );
+  assert.deepEqual(hashTree(repo), before);
+  assert.ok(!fs.existsSync(docs), 'la guardia actúa antes del bootstrap de la raíz');
+  // La guardia es la misma función para scaffold e index; un UsageError es exit 2 en la CLI.
+  assert.throws(() => engine.assertInsideRoot(docs, path.join(repo, 'openspec', 'x.md')), engine.UsageError);
+  assert.doesNotThrow(() => engine.assertInsideRoot(docs, path.join(docs, 'adr', 'README.md')));
+});
+
+test('S098-UT-008 index: externalGroup, nodo mapeado y capa gestionada por el harness', (t) => {
+  const { docs: openDocs } = harnessRepo(t, 'openspec');
+  const groups = engine.scanNodes(openDocs, 'openspec').filter((n) => n.layer === 'external').map((n) => [n.slug, n.externalGroup]);
+  assert.deepEqual(groups, [['add-login', 'openspec-changes'], ['auth', 'openspec-specs']]);
+
+  const { repo, docs } = harnessRepo(t, 'speckit');
+  const nodes = engine.scanNodes(docs, 'speckit');
+  const mapped = nodes.find((n) => n.externalGroup === 'mapped');
+  assert.equal(mapped.slug, 'constitution');
+  assert.equal(mapped.relPath, '../.specify/memory/constitution.md');
+  assert.ok(nodes.filter((n) => n.relPath.startsWith('../specs/')).every((n) => n.externalGroup === 'speckit-features'));
+
+  const result = run(['index', '--root', docs, '--harness', 'speckit']);
+  assert.equal(result.status, 0, result.stderr);
+  const index = readUtf8(docs, 'index.md');
+  assert.match(index, /### Speckit — features/);
+  assert.match(index, /### Mapeados desde el harness\n\n- \[\[constitution\]\] — \[constitution\.md\]\(\.\.\/\.specify\/memory\/constitution\.md\)/);
+  const specsSection = index.slice(index.indexOf('## 🗂️ Especificaciones'), index.indexOf('## 🧭 Dominio'));
+  assert.match(specsSection, /_\(gestionado por el harness\)_/);
+  assert.ok(!specsSection.includes('_(sin artefactos)_'));
+  assert.ok(fs.existsSync(path.join(repo, '.specify', 'memory', 'constitution.md')));
+  // Sin nodos externos, la sección lo dice explícitamente.
+  const { content } = engine.renderIndex('{layer:external}\n{stats}\n', [], { date: '2026-01-01' });
+  assert.match(content, /_\(sin artefactos externos\)_/);
+});
+
+test('S098-UT-009 index: colisión de slug externo con nodo de docs/ → sufijo -external y aviso', (t) => {
+  const { docs } = harnessRepo(t, 'openspec');
+  fs.writeFileSync(path.join(docs, 'guides', 'auth.md'), '---\ntype: guide\nslug: auth\ntitle: "Auth guía"\n---\n# Auth guía\n');
+  const result = run(['index', '--root', docs, '--harness', 'openspec']);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stderr, /colisión de slug: auth/);
+  const index = readUtf8(docs, 'index.md');
+  assert.match(index, /- \[\[auth\]\] — \[auth\.md\]\(guides\/auth\.md\) — Auth guía/);
+  assert.match(index, /- \[\[auth-external\]\] — \[spec\.md\]\(\.\.\/openspec\/specs\/auth\/spec\.md\)/);
+});
+
+test('S098-IT-003 check: skipLayers y mappings del harness no generan missing-layer', (t) => {
+  const { docs } = harnessRepo(t, 'openspec', { withoutDocs: true });
+  assert.equal(run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'openspec']).status, 0);
+  assert.equal(run(['index', '--root', docs, '--harness', 'openspec']).status, 0);
+  const result = run(['check', '--root', docs, '--harness', 'openspec']);
+  assert.ok(!/\[missing-layer\]\s+specs\//.test(result.stdout), result.stdout);
+  assert.equal(result.status, 0, result.stdout);
+  assert.match(lastLine(result.stdout), /^problemas: 0$/);
+  // Speckit: la constitución mapeada tampoco es missing-layer.
+  const speck = harnessRepo(t, 'speckit', { withoutDocs: true });
+  assert.equal(run(['scaffold', '--root', speck.docs, '--cli-root', CLI_ROOT, '--harness', 'speckit']).status, 0);
+  const checked = run(['check', '--root', speck.docs, '--harness', 'speckit']);
+  assert.ok(!checked.stdout.includes('constitution.md — capa ausente'), checked.stdout);
+  assert.equal(checked.status, 0, checked.stdout);
+});
+
+test('S098-E2E-001 migrate a nivel motor sobre speckit: plan sin escrituras y scaffold adaptado con harness intacto', (t) => {
+  const { repo, docs } = harnessRepo(t, 'speckit', { withoutDocs: true });
+  const before = harnessHashes(repo, ['.specify', 'specs']);
+  // Sin --harness: el motor detecta speckit por `.specify/` (no hay sddf.config.yaml).
+  const plan = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--dry-run']);
+  assert.equal(plan.status, 0, plan.stderr);
+  assert.match(plan.stdout, /^harness: speckit$/m);
+  assert.ok(plan.stdout.includes('[OMITIRÍA] specs/'));
+  assert.ok(plan.stdout.includes('[MAPEARÍA] constitution.md → .specify/memory/constitution.md'));
+  assert.ok(plan.stdout.includes('[CREARÍA] '));
+  assert.ok(!fs.existsSync(docs), 'antes de confirmar no existe nada bajo docs/');
+
+  const applied = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]);
+  assert.equal(applied.status, 0, applied.stderr);
+  const layers = fs.readdirSync(docs, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name).sort();
+  assert.deepEqual(layers, LAYER_DIRS.filter((layer) => layer !== 'specs').sort());
+  assert.ok(!fs.existsSync(path.join(docs, 'constitution.md')));
+  assert.deepEqual(harnessHashes(repo, ['.specify', 'specs']), before);
+  const summary = summaryOf(applied.stdout);
+  assert.deepEqual([summary.mapped, summary.skipped], [1, 1]);
+});
+
+test('S098-E2E-002 ensure --harness openspec a nivel motor: openspec/ intacto e índice con subtítulos OpenSpec', (t) => {
+  const { repo, docs } = harnessRepo(t, 'openspec');
+  const before = hashTree(path.join(repo, 'openspec'));
+  const scaffolded = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'openspec']);
+  assert.equal(scaffolded.status, 0, scaffolded.stderr);
+  assert.equal(summaryOf(scaffolded.stdout).skipped, 1);
+  const indexed = run(['index', '--root', docs, '--harness', 'openspec']);
+  assert.equal(indexed.status, 0, indexed.stderr);
+  assert.ok(!fs.existsSync(path.join(docs, 'specs')));
+  assert.deepEqual(hashTree(path.join(repo, 'openspec')), before);
+  const index = readUtf8(docs, 'index.md');
+  assert.match(index, /### OpenSpec — specs\n\n- \[\[auth\]\] — \[spec\.md\]\(\.\.\/openspec\/specs\/auth\/spec\.md\) — Auth capability/);
+  assert.match(index, /### OpenSpec — changes\n\n- \[\[add-login\]\] — \[proposal\.md\]\(\.\.\/openspec\/changes\/add-login\/proposal\.md\) — Add login/);
 });

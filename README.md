@@ -16,7 +16,7 @@ El framework instala skills en el runtime que elijas y conserva la fuente de ver
 |---|---|
 | Instalar el paquete | `npm install agile-sddf` |
 | Instalar skills en un runtime | `npx agile-sddf install --target claude-code` |
-| Preparar un repositorio | `/sddf-init` |
+| Preparar un repositorio | `/sddf-init [--level minimal\|standard\|full]` |
 | Empezar una iniciativa | `/project-flow` |
 | Entender código existente | `/reverse-engineering` |
 | Completar e indexar la memoria del proyecto (`docs/`) | `/memory-system` (`ensure`; `scaffold`, `rebuild --force`, `index`) |
@@ -98,6 +98,8 @@ Abre el repositorio con tu runtime de IA e invoca:
 ```
 
 Es idempotente: prepara `specs/`, templates compartidos, `sddf.config.yaml` y `.env.template` sin sobrescribir lo que ya existe. También puede inicializar las políticas del proyecto si decides hacerlo.
+
+Con `--level` eliges el alcance: `minimal` (solo directorios base, `sddf.config.yaml` y `.env.template`, sin preguntas; útil en CI), `standard` (el valor por defecto, descrito arriba) o `full` (recomendado para proyectos nuevos: `standard` más `/memory-system scaffold`, que completa las capas de la memoria del proyecto en el mismo comando).
 
 ### 3. Elige el punto de entrada que se parece a tu situación
 
@@ -244,6 +246,13 @@ El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT �
 No todos los reportes existen desde el comienzo: aparecen cuando el flujo llega a su fase. El árbol también puede incluir `analyze.md`, `finvest-evaluation-report.md`, `story-improvement-log.md` y `fix-directives.md`.
 
 `/memory-system` (modo `ensure`, recomendado tras `/sddf-init`) crea las once capas de esa memoria que falten (`constitution.md`, `product/*`, un `README.md` por capa y las seis plantillas de `templates/`) sin sobrescribir nada y regenera el índice; `scaffold` solo crea lo faltante, `rebuild --force` restaura los archivos semilla (única operación que sobrescribe, y solo esos archivos; nunca borra) e `index` regenera únicamente `<SPECS_BASE>/index.md`, el mapa de la memoria, con un wikilink `[[slug]]` por artefacto agrupado por capa (idempotente; `--dry-run` solo imprime). `check [--json]` no escribe nada: verifica capas ausentes, nodos sin frontmatter, frontmatter incompleto (`type`, `slug`, `title`; más `id` y `status` en specs) y wikilinks que no resuelven, e informa por texto o con un único objeto JSON, terminando con exit 0 si la memoria está sana, 1 si hay problemas y 2 ante un error técnico — el gate que un pipeline de CI ejecuta en una línea (ejemplo en `docs/guides/sddf-commands-pipeline.md` §0; complementa `npm run verify:links`, no lo sustituye). `docs-wiki-builder` queda como alias deprecado desde 3.3.0 y se elimina en 4.0.0.
+
+**Compatibilidad con OpenSpec y Speckit.** Si tu proyecto ya usa Speckit (`.specify/`) u OpenSpec (`openspec/`), `memory-system` adapta la memoria al harness en lugar de duplicarlo: no crea `docs/specs/` (el harness ya modela las especificaciones), reutiliza `.specify/memory/constitution.md` en lugar de crear `docs/constitution.md` si existe, y enlaza los artefactos del harness desde `docs/index.md` en una sección de artefactos externos. Los directorios del harness son de solo lectura. Para adoptarla:
+
+```text
+/memory-system migrate --harness speckit     # propone el plan y escribe solo tras confirmar
+/memory-system ensure --harness openspec     # crea las capas bajo docs/ sin tocar openspec/ e indexa sus specs y changes
+```
 
 ## Qué decide SDDF y qué decides tú
 

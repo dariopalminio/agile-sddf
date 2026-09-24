@@ -1,7 +1,8 @@
 {
   "skill": "sddf-init",
-  "version": "2.0.0",
-  "description": "Evalúa el bootstrap idempotente de la raíz versionada SDDF y el manejo seguro de overrides explícitos.",
+  "version": "2.1.0",
+  "description": "Evalúa el bootstrap idempotente de la raíz versionada SDDF, el manejo seguro de overrides explícitos y el parámetro --level minimal|standard|full (STORY-099), incluido el scaffolding de memory-system en nivel full.",
+  "story": "STORY-099",
   "cases": [
     {
       "id": "TC-001",
@@ -62,6 +63,96 @@
         "not_contains": ["[CREADO]", "Entorno SDDF inicializado correctamente"]
       },
       "threshold": 1.0
+    },
+    {
+      "id": "TC-005",
+      "name": "sin-flags-no-invoca-memory-system",
+      "type": "happy-path",
+      "description": "Regresión (EV-001, STORY-099): sin --level el comportamiento es el de standard (versión anterior) y no se invoca el scaffolding de memory-system.",
+      "input": {
+        "context": "Proyecto nuevo: no existen docs, sddf.config.yaml ni .env.template. SDDF_ROOT no está definida. memory-system está instalado.",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["sddf.config.yaml", ".env.template", "Entorno SDDF inicializado correctamente"],
+        "not_contains": ["memory-system scaffold", "[ERROR]"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-006",
+      "name": "level-minimal-solo-base-y-config",
+      "type": "edge-case",
+      "description": "--level minimal (EV-002, STORY-099): crea solo directorios base, sddf.config.yaml y .env.template; no copia templates ni pregunta por políticas.",
+      "input": {
+        "context": "Proyecto nuevo: no existen docs, sddf.config.yaml ni .env.template. SDDF_ROOT no está definida.",
+        "flags": ["--level", "minimal"]
+      },
+      "expected": {
+        "contains": ["[OMITIDO] project-policies-generation (nivel minimal)", "sddf.config.yaml", ".env.template"],
+        "not_contains": ["templates/story-template.md", "¿Deseas inicializar los documentos de políticas"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-007",
+      "name": "level-full-invoca-memory-system-scaffold",
+      "type": "happy-path",
+      "description": "--level full (EV-003, STORY-099): tras los pasos de standard invoca /memory-system scaffold --yes y concatena su informe bajo el encabezado del bloque; los templates compartidos figuran [PRESERVADO] en el bloque de scaffold.",
+      "input": {
+        "context": "Proyecto nuevo: no existen docs, sddf.config.yaml ni .env.template. SDDF_ROOT no está definida. El skill memory-system está instalado en $CLI_ROOT/skills/memory-system/. El usuario responde no a la pregunta de políticas.",
+        "flags": ["--level", "full"]
+      },
+      "expected": {
+        "contains": ["── memory-system scaffold (nivel full) ──", "creados:", "[PRESERVADO] docs/templates/story-template.md"],
+        "not_contains": ["[ERROR]"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-008",
+      "name": "level-full-sin-memory-system-degrada-a-standard",
+      "type": "error-handling",
+      "description": "--level full sin memory-system instalado (EV-004, STORY-099): completa los pasos de standard, avisa y no incluye bloque de scaffold.",
+      "input": {
+        "context": "Proyecto nuevo: no existen docs, sddf.config.yaml ni .env.template. SDDF_ROOT no está definida. El directorio $CLI_ROOT/skills/memory-system/ no existe.",
+        "flags": ["--level", "full"]
+      },
+      "expected": {
+        "contains": ["memory-system no está instalado — nivel full termina como standard"],
+        "not_contains": ["creados:", "[ERROR]"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-009",
+      "name": "level-no-admitido-fail-fast",
+      "type": "fail-fast",
+      "description": "--level foo (EV-005, STORY-099): valor no admitido detiene antes de cualquier escritura.",
+      "input": {
+        "context": "Proyecto nuevo: no existen docs, sddf.config.yaml ni .env.template. SDDF_ROOT no está definida.",
+        "flags": ["--level", "foo"]
+      },
+      "expected": {
+        "contains": ["--level no admitido: foo"],
+        "not_contains": ["[CREADO]", "Entorno SDDF inicializado correctamente"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-010",
+      "name": "level-full-idempotente",
+      "type": "edge-case",
+      "description": "--level full ejecutado por segunda vez (EV-006, STORY-099): todo ya existe; sddf-init informa [YA EXISTÍA] y el scaffold no crea nada.",
+      "input": {
+        "context": "Proyecto ya inicializado previamente con sddf-init --level full: existen docs, sddf.config.yaml, .env.template, templates y las capas de memoria. memory-system está instalado.",
+        "flags": ["--level", "full"]
+      },
+      "expected": {
+        "contains": ["[YA EXISTÍA]", "creados: 0"],
+        "not_contains": ["[ERROR]"]
+      },
+      "threshold": 0.95
     }
   ]
 }

@@ -106,6 +106,9 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 ## 🔗 Artefactos externos
 
 Nodos de otros harnesses (OpenSpec, Spec-kit) indexados en modo solo lectura; sus rutas son relativas a este directorio.
+El motor los agrupa con un subtítulo por origen (`OpenSpec — specs`, `OpenSpec — changes`, `Speckit — features`,
+`Mapeados desde el harness`). Un slug externo que coincide con el de un nodo propio se indexa con sufijo `-external`.
+Las capas que el harness ya modela (p. ej. `specs/` en Speckit y OpenSpec) aparecen como `_(gestionado por el harness)_`.
 
 {layer:external}
 

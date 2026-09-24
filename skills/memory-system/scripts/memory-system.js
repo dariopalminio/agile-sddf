@@ -2,7 +2,8 @@
 'use strict';
 
 /**
- * memory-system.js — motor determinista del skill `memory-system` (STORY-095, STORY-096, STORY-097).
+ * memory-system.js — motor determinista del skill `memory-system` (STORY-095, STORY-096, STORY-097,
+ * STORY-098).
  *
  * Subcomandos:
  *   detect   --root <SPECS_BASE> [--harness h]
@@ -16,9 +17,9 @@
  * Windows, macOS y Linux.
  *
  * Exit codes: 0 éxito · 2 error de uso, raíz inexistente, harness no admitido o template
- * desalineado (nunca escribe en esos casos) · 1 error inesperado. En `check` el 1 significa
- * exclusivamente "memoria con problemas" (gate de CI) y **todo** error, incluido el inesperado,
- * sale con 2 (D-4, CR-008).
+ * desalineado o destino de escritura fuera de la raíz (nunca escribe en esos casos) · 1 error
+ * inesperado. En `check` el 1 significa exclusivamente "memoria con problemas" (gate de CI) y
+ * **todo** error, incluido el inesperado, sale con 2 (D-4, CR-008).
  */
 
 const fs = require('node:fs');
@@ -29,18 +30,41 @@ const process = require('node:process');
 // Constantes (D-2, D-3, D-4)
 // ---------------------------------------------------------------------------
 
-// Perfiles de harness. `skipLayers` y `mappings` quedan vacíos: los rellena STORY-098.
+// Perfiles de harness (STORY-098 D-1), como datos:
+// - `skipLayers`: capas que el harness ya modela; `scaffold` no las crea y `check` no las exige.
+// - `mappings`: semilla (relativa a SPECS_BASE) → equivalente del harness (relativo a REPO_ROOT). Si
+//   el equivalente existe, `scaffold` no crea la semilla e `index` enlaza el equivalente.
+// - `externalRoots`: patrones (relativos a REPO_ROOT) que `index` escanea en solo lectura.
+// Los equivalentes de `mappings` y las `externalRoots` nunca reciben un destino de escritura (D-5).
 const HARNESS_PROFILES = {
   sddf: { marker: 'sddf.config.yaml', externalRoots: [], skipLayers: [], mappings: {} },
-  speckit: { marker: '.specify/', externalRoots: ['specs/*/spec.md', 'specs/*/plan.md'], skipLayers: [], mappings: {} },
+  speckit: {
+    marker: '.specify/',
+    externalRoots: ['specs/*/spec.md', 'specs/*/plan.md'],
+    skipLayers: ['specs'],
+    mappings: { 'constitution.md': '.specify/memory/constitution.md' },
+  },
   openspec: {
     marker: 'openspec/',
     externalRoots: ['openspec/specs/**/spec.md', 'openspec/changes/*/proposal.md'],
-    skipLayers: [],
+    skipLayers: ['specs'],
     mappings: {},
   },
   generic: { marker: null, externalRoots: [], skipLayers: [], mappings: {} },
 };
+
+// Grupo de cada raíz externa (D-4): subtítulo bajo "Artefactos externos" en el índice. `mapped`
+// agrupa los equivalentes de `mappings`. El orden de esta tabla es el orden de los subtítulos.
+const EXTERNAL_GROUPS = {
+  'openspec-specs': { title: 'OpenSpec — specs', patterns: ['openspec/specs/**/spec.md'] },
+  'openspec-changes': { title: 'OpenSpec — changes', patterns: ['openspec/changes/*/proposal.md'] },
+  'speckit-features': { title: 'Speckit — features', patterns: ['specs/*/spec.md', 'specs/*/plan.md'] },
+  mapped: { title: 'Mapeados desde el harness', patterns: [] },
+};
+// Grupo de reserva para un patrón externo sin grupo declarado (no ocurre con los perfiles actuales).
+const OTHER_EXTERNAL_GROUP = { key: 'external', title: 'Otros artefactos externos' };
+// Sufijo del slug de un nodo externo que colisiona con uno de SPECS_BASE (CR-002).
+const EXTERNAL_SUFFIX = '-external';
 
 // Orden de precedencia de los marcadores (después de `--harness` explícito).
 const HARNESS_ORDER = ['sddf', 'speckit', 'openspec', 'generic'];
@@ -102,6 +126,7 @@ const SCAFFOLD_LABELS = {
   created: ['CREADO', 'CREARÍA'],
   overwritten: ['SOBRESCRITO', 'SOBRESCRIBIRÍA'],
   preserved: ['PRESERVADO', 'PRESERVARÍA'],
+  mapped: ['MAPEADO', 'MAPEARÍA'],
   skipped: ['OMITIDO', 'OMITIRÍA'],
 };
 
@@ -159,6 +184,24 @@ function isDirectory(target) {
 
 function profileOf(harness) {
   return HARNESS_PROFILES[harness] || HARNESS_PROFILES.generic;
+}
+
+// Ruta absoluta de `relPath` (con `/`) bajo `base`.
+function under(base, relPath) {
+  return path.join(base, ...relPath.split('/'));
+}
+
+/**
+ * Guardia de escritura (STORY-098 D-5): `target` debe quedar bajo `root` (SPECS_BASE) una vez
+ * normalizado. Si no, lanza UsageError (exit 2) antes de escribir nada. Es la puerta de escritura
+ * de `scaffold` e `index`: los directorios del harness quedan fuera por construcción.
+ */
+function assertInsideRoot(root, target) {
+  const rel = path.relative(path.resolve(root), path.resolve(target));
+  if (path.isAbsolute(rel) || rel.split(path.sep)[0] === '..') {
+    throw new UsageError(`destino fuera de la raíz: ${displayPath(path.resolve(target))}`);
+  }
+  return target;
 }
 
 // ---------------------------------------------------------------------------
@@ -376,13 +419,48 @@ function expandGlob(repoRoot, pattern) {
   return found;
 }
 
+// Grupo (D-4) del patrón de `externalRoots` que originó un nodo externo.
+function externalGroupOf(pattern) {
+  const entry = Object.entries(EXTERNAL_GROUPS).find(([, group]) => group.patterns.includes(pattern));
+  return entry ? entry[0] : OTHER_EXTERNAL_GROUP.key;
+}
+
+/**
+ * Nodos externos del perfil (solo lectura): los de `externalRoots`, anotados con `externalGroup`,
+ * y los equivalentes existentes de `mappings` (grupo `mapped`, con el slug de la semilla mapeada
+ * para que los `[[constitution]]` internos resuelvan). Un slug que colisiona con uno de
+ * SPECS_BASE recibe el sufijo `-external` y guarda el original en `collidesWith` (CR-002).
+ */
+function scanExternalNodes(specsBase, profile, internalSlugs) {
+  const repoRoot = path.dirname(specsBase);
+  const seen = new Set();
+  const external = [];
+  for (const pattern of profile.externalRoots) {
+    for (const file of expandGlob(repoRoot, pattern)) {
+      if (seen.has(file)) continue;
+      seen.add(file);
+      external.push({ ...deriveNode(file, specsBase, { external: true }), externalGroup: externalGroupOf(pattern) });
+    }
+  }
+  for (const [seed, target] of Object.entries(profile.mappings)) {
+    const file = under(repoRoot, target);
+    if (seen.has(file) || !fs.existsSync(file)) continue;
+    seen.add(file);
+    external.push({ ...deriveNode(file, specsBase, { external: true }), slug: deriveSlug(seed, {}), externalGroup: 'mapped' });
+  }
+  for (const node of external) {
+    if (node.slugPlaceholder || !internalSlugs.has(node.slug)) continue;
+    node.collidesWith = node.slug;
+    node.slug = `${node.slug}${EXTERNAL_SUFFIX}`;
+  }
+  return external;
+}
+
 /** Escanea SPECS_BASE y las raíces externas del perfil; devuelve los nodos ordenados por ruta. */
 function scanNodes(specsBase, harness = 'generic') {
-  const repoRoot = path.dirname(specsBase);
-  const profile = profileOf(harness);
   const nodes = walk(specsBase, specsBase).map((file) => deriveNode(file, specsBase));
-  const external = new Set(profile.externalRoots.flatMap((pattern) => expandGlob(repoRoot, pattern)));
-  for (const file of external) nodes.push(deriveNode(file, specsBase, { external: true }));
+  const internalSlugs = new Set(nodes.filter((n) => !n.slugPlaceholder).map((n) => n.slug));
+  nodes.push(...scanExternalNodes(specsBase, profileOf(harness), internalSlugs));
   return nodes.sort((a, b) => ordinalCompare(a.relPath, b.relPath));
 }
 
@@ -395,6 +473,26 @@ function renderEntry(node) {
   if (!node.hasFrontmatter) return `- [${file}](${node.relPath}) — ${node.title} ⚠️ sin frontmatter`;
   if (node.slugPlaceholder) return `- [${file}](${node.relPath}) — ${node.title} ⚠️ slug placeholder`;
   return `- [[${node.slug}]] — [${file}](${node.relPath}) — ${node.title}`;
+}
+
+// Sección "Artefactos externos" (D-4): un subtítulo `###` por `externalGroup`, en el orden de
+// `EXTERNAL_GROUPS`; sin nodos externos, `_(sin artefactos externos)_`.
+function renderExternal(entries) {
+  if (!entries.length) return '_(sin artefactos externos)_';
+  const groups = [
+    ...Object.entries(EXTERNAL_GROUPS).map(([key, group]) => [key, group.title]),
+    [OTHER_EXTERNAL_GROUP.key, OTHER_EXTERNAL_GROUP.title],
+  ];
+  return groups
+    .map(([key, title]) => [title, entries.filter((node) => (node.externalGroup || OTHER_EXTERNAL_GROUP.key) === key)])
+    .filter(([, nodes]) => nodes.length)
+    .map(([title, nodes]) => `### ${title}\n\n${nodes.map(renderEntry).join('\n')}`)
+    .join('\n\n');
+}
+
+// Una capa (o su desglose `specs-*`) omitida por el perfil del harness.
+function isSkippedLayer(layer, skipLayers) {
+  return skipLayers.some((skipped) => layer === skipped || layer.startsWith(`${skipped}-`));
 }
 
 function groupByLayer(nodes) {
@@ -453,7 +551,8 @@ function renderPendingSection(pending) {
 
 /**
  * Sustituye `{layer:<capa>}`, `{stats}` y `{date}` en el template y añade la sección de
- * nodos pendientes si los hay. Devuelve `{ content, summary }`.
+ * nodos pendientes si los hay. `options.skipLayers` (perfil del harness) marca las capas vacías
+ * que el harness gestiona como `_(gestionado por el harness)_`. Devuelve `{ content, summary }`.
  */
 function renderIndex(template, nodes, options = {}) {
   const byLayer = groupByLayer(nodes);
@@ -468,7 +567,9 @@ function renderIndex(template, nodes, options = {}) {
   const filled = template
     .replace(LAYER_PLACEHOLDER, (_, layer) => {
       const entries = (byLayer.get(layer) || []).sort((a, b) => ordinalCompare(a.relPath, b.relPath));
-      return entries.length ? entries.map(renderEntry).join('\n') : '_(sin artefactos)_';
+      if (layer === 'external') return renderExternal(entries);
+      if (entries.length) return entries.map(renderEntry).join('\n');
+      return isSkippedLayer(layer, options.skipLayers || []) ? '_(gestionado por el harness)_' : '_(sin artefactos)_';
     })
     .replace(/\{stats\}/g, renderStats(summary))
     .replace(/\{date\}/g, options.date || todayIso());
@@ -526,9 +627,16 @@ function hasDeclaredField(declared, field) {
   return value !== undefined && value !== null;
 }
 
+// Nodos propios de SPECS_BASE: los externos (harness, solo lectura) solo sirven como destino de
+// wikilinks; memory-system no puede corregirlos, así que `check` no los evalúa (STORY-098 D-1).
+function ownNodes(ctx) {
+  return ctx.nodes.filter((node) => node.layer !== 'external');
+}
+
 /**
  * Evaluador: capas de `LAYERS` (más `constitution.md`) ausentes de la raíz y no omitidas por
- * el perfil del harness. Es el único evaluador que mira el disco, por eso el contexto lleva
+ * el perfil del harness (`skipLayers`; `constitution.md` tampoco si su equivalente de
+ * `mappings` existe en el harness). Es el único evaluador que mira el disco, por eso el contexto lleva
  * `root` además de `{ nodes, layers, profile, slugSet }`.
  */
 function missingLayers(ctx) {
@@ -536,7 +644,9 @@ function missingLayers(ctx) {
   const problems = ctx.layers
     .filter((layer) => !skip.has(layer) && !isDirectory(path.join(ctx.root, layer)))
     .map((layer) => problem('missing-layer', `${layer}/`, 'capa ausente'));
-  if (!skip.has(ROOT_FILE) && !fs.existsSync(path.join(ctx.root, ROOT_FILE))) {
+  const mapped = (ctx.profile.mappings || {})[ROOT_FILE];
+  const mappedExists = Boolean(mapped) && fs.existsSync(under(path.dirname(ctx.root), mapped));
+  if (!skip.has(ROOT_FILE) && !mappedExists && !fs.existsSync(path.join(ctx.root, ROOT_FILE))) {
     problems.push(problem('missing-layer', ROOT_FILE, 'capa ausente'));
   }
   return sortProblems(problems);
@@ -544,13 +654,13 @@ function missingLayers(ctx) {
 
 /** Evaluador: nodos sin bloque de frontmatter. */
 function orphans(ctx) {
-  return sortProblems(ctx.nodes.filter((node) => !node.hasFrontmatter).map((node) => problem('orphan', node.relPath, 'sin frontmatter')));
+  return sortProblems(ownNodes(ctx).filter((node) => !node.hasFrontmatter).map((node) => problem('orphan', node.relPath, 'sin frontmatter')));
 }
 
 /** Evaluador: campos de `REQUIRED_FIELDS` ausentes del frontmatter declarado (uno por campo). */
 function invalidFrontmatter(ctx) {
   const problems = [];
-  for (const node of ctx.nodes) {
+  for (const node of ownNodes(ctx)) {
     if (!node.hasFrontmatter) continue; // ya reportado como huérfano
     const declared = node.declared || {};
     const isSpec = typeof declared.type === 'string' && SPEC_TYPES.has(declared.type.trim());
@@ -564,7 +674,7 @@ function invalidFrontmatter(ctx) {
 /** Evaluador: cada ocurrencia de `[[slug]]` cuyo slug no está en `ctx.slugSet`. */
 function brokenWikilinks(ctx) {
   const problems = [];
-  for (const node of ctx.nodes) {
+  for (const node of ownNodes(ctx)) {
     for (const slug of node.wikilinks) {
       if (!ctx.slugSet.has(slug)) problems.push(problem('broken-wikilink', node.relPath, `[[${slug}]] no resuelve`));
     }
@@ -609,14 +719,15 @@ function renderCheckText(result) {
 // STORY-096 D-1/D-2/D-4 — Scaffold: árbol semilla y plantillas compartidas
 // ---------------------------------------------------------------------------
 
-// Raíz del scaffold: existe, o se crea (bootstrap) si al menos existe su directorio padre.
-function resolveScaffoldRoot(root, dryRun) {
+// Raíz del scaffold: existe, o se podrá crear (bootstrap) si al menos existe su directorio padre.
+// Solo valida: la creación ocurre después de la guardia de escritura (D-5), para no escribir nada
+// si el plan tiene un destino fuera de la raíz.
+function resolveScaffoldRoot(root) {
   const specsBase = path.resolve(process.cwd(), root);
   if (isDirectory(specsBase)) return specsBase;
   if (fs.existsSync(specsBase) || !isDirectory(path.dirname(specsBase))) {
     throw new UsageError(`la raíz no existe y su directorio padre tampoco: ${root}`);
   }
-  if (!dryRun) fs.mkdirSync(specsBase);
   return specsBase;
 }
 
@@ -657,8 +768,15 @@ function placeFile(source, target, { force = false, dryRun = false, render = nul
 }
 
 /**
- * Copia el árbol semilla y las plantillas compartidas sobre `options.root` (D-1, D-2, D-4).
- * Una capa en `skipLayers` del harness se marca `skipped`. Nunca elimina nada.
+ * Copia el árbol semilla y las plantillas compartidas sobre `options.root` aplicando el perfil del
+ * harness (STORY-096 D-1/D-2/D-4, STORY-098 D-2):
+ *   - una capa en `skipLayers` → una sola entrada `skipped` (`<capa>/`), sin crear nada;
+ *   - una semilla de `mappings` cuyo equivalente existe en el harness → `mapped`, sin crear ni tocar;
+ *   - el resto → copia-si-falta (`created` | `preserved` | `overwritten` con `force`).
+ * Antes de escribir nada, la guardia (D-5) comprueba que todos los destinos del plan (semillas,
+ * plantillas compartidas y claves de `mappings`) quedan bajo SPECS_BASE. Nunca elimina nada.
+ * `options.profile` sustituye al perfil del harness: gancho programático para probar la guardia con
+ * un perfil mal configurado; la CLI no lo expone.
  * Devuelve { root, harness, missingLayers, entries[], warnings[], summary }.
  */
 function scaffold(options) {
@@ -666,25 +784,55 @@ function scaffold(options) {
   const scaffoldDir = options.scaffoldDir || SCAFFOLD_DIR;
   if (!isDirectory(scaffoldDir)) throw new UsageError(`no se encuentra el árbol semilla del scaffold: ${displayPath(scaffoldDir)}`);
 
-  const specsBase = resolveScaffoldRoot(options.root, dryRun);
-  const harness = detectHarness(path.dirname(specsBase), options.harness);
-  const skipLayers = new Set(profileOf(harness).skipLayers);
+  const specsBase = resolveScaffoldRoot(options.root);
+  const repoRoot = path.dirname(specsBase);
+  const harness = detectHarness(repoRoot, options.harness);
+  const profile = options.profile || profileOf(harness);
+  const skipLayers = new Set(profile.skipLayers);
   const seeds = listSeeds(scaffoldDir);
   assertSeedsCoverLayers(seeds, scaffoldDir);
+
+  const cliRoot = options.cliRoot ? path.resolve(process.cwd(), options.cliRoot) : null;
+  const shared = SHARED_TEMPLATES.map(({ name, owner }) => ({
+    name,
+    owner,
+    relPath: `${TEMPLATES_LAYER}/${name}`,
+    source: cliRoot && path.join(cliRoot, 'skills', owner, 'assets', name),
+  }));
+
+  // D-5: guardia sobre todo el plan antes del bootstrap de la raíz y de cualquier escritura.
+  for (const rel of [...seeds, ...shared.map((template) => template.relPath), ...Object.keys(profile.mappings)]) {
+    assertInsideRoot(specsBase, under(specsBase, rel));
+  }
+  if (!dryRun && !isDirectory(specsBase)) fs.mkdirSync(specsBase);
 
   const result = {
     root: specsBase,
     harness,
-    missingLayers: LAYERS.filter((layer) => !isDirectory(path.join(specsBase, layer))),
+    missingLayers: LAYERS.filter((layer) => !skipLayers.has(layer) && !isDirectory(path.join(specsBase, layer))),
     entries: [],
     warnings: [],
-    summary: { created: 0, overwritten: 0, preserved: 0, skippedByHarness: 0 },
+    summary: { created: 0, overwritten: 0, preserved: 0, mapped: 0, skippedByHarness: 0 },
+  };
+  const record = (relPath, kind, action, note = '') => {
+    result.entries.push({ relPath, kind, action, note });
+    result.summary[action === 'skipped' ? 'skippedByHarness' : action] += 1;
   };
   const place = (relPath, kind, source, render) => {
-    const target = path.join(specsBase, ...relPath.split('/'));
-    const action = skipLayers.has(scaffoldLayer(relPath)) ? 'skipped' : placeFile(source, target, { force, dryRun, render });
-    result.entries.push({ relPath, kind, action });
-    result.summary[action === 'skipped' ? 'skippedByHarness' : action] += 1;
+    const layer = scaffoldLayer(relPath);
+    if (skipLayers.has(layer)) {
+      // Una línea por capa omitida, no por archivo: el harness gestiona la capa entera.
+      if (!result.entries.some((entry) => entry.action === 'skipped' && entry.relPath === `${layer}/`)) {
+        record(`${layer}/`, 'layer', 'skipped', ` — gestionado por el harness ${harness}`);
+      }
+      return;
+    }
+    const equivalent = profile.mappings[relPath];
+    if (equivalent && fs.existsSync(under(repoRoot, equivalent))) {
+      record(relPath, kind, 'mapped', ` → ${equivalent}`);
+      return;
+    }
+    record(relPath, kind, placeFile(source, assertInsideRoot(specsBase, under(specsBase, relPath)), { force, dryRun, render }));
   };
 
   // Semillas: `{date}` es el único placeholder. Un `.gitkeep` solo materializa un directorio
@@ -693,21 +841,19 @@ function scaffold(options) {
   const renderSeed = (text) => text.replace(/\{date\}/g, date);
   for (const rel of seeds) {
     if (path.basename(rel) === '.gitkeep' && isDirectory(path.join(specsBase, path.dirname(rel)))) continue;
-    place(rel, 'seed', path.join(scaffoldDir, ...rel.split('/')), /\.md$/i.test(rel) ? renderSeed : null);
+    place(rel, 'seed', under(scaffoldDir, rel), /\.md$/i.test(rel) ? renderSeed : null);
   }
 
   // Directorios de capa aunque una semilla no los cree (mismo catálogo que el índice).
   if (!dryRun) {
     for (const layer of LAYERS) {
-      if (!skipLayers.has(layer)) fs.mkdirSync(path.join(specsBase, layer), { recursive: true });
+      if (!skipLayers.has(layer)) fs.mkdirSync(assertInsideRoot(specsBase, path.join(specsBase, layer)), { recursive: true });
     }
   }
 
   // Plantillas compartidas: byte a byte desde el skill dueño; dueño ausente → aviso, no error.
-  const cliRoot = options.cliRoot ? path.resolve(process.cwd(), options.cliRoot) : null;
-  for (const { name, owner } of SHARED_TEMPLATES) {
-    const source = cliRoot && path.join(cliRoot, 'skills', owner, 'assets', name);
-    if (source && fs.existsSync(source)) place(`${TEMPLATES_LAYER}/${name}`, 'shared-template', source, null);
+  for (const { name, owner, relPath, source } of shared) {
+    if (source && fs.existsSync(source)) place(relPath, 'shared-template', source, null);
     else result.warnings.push(`template no copiado: ${name} (skill ${owner} no instalado)`);
   }
 
@@ -715,7 +861,7 @@ function scaffold(options) {
 }
 
 function scaffoldSummaryLine(summary) {
-  return `creados: ${summary.created} · sobrescritos: ${summary.overwritten} · preservados: ${summary.preserved} · omitidos por harness: ${summary.skippedByHarness}`;
+  return `creados: ${summary.created} · sobrescritos: ${summary.overwritten} · preservados: ${summary.preserved} · mapeados: ${summary.mapped} · omitidos por harness: ${summary.skippedByHarness}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -728,7 +874,7 @@ function runScaffold(args) {
   const lines = [
     `harness: ${result.harness}`,
     `capas faltantes: ${result.missingLayers.length ? result.missingLayers.join(', ') : 'ninguna'}`,
-    ...result.entries.map((entry) => `[${label(entry.action)}] ${entry.relPath}`),
+    ...result.entries.map((entry) => `[${label(entry.action)}] ${entry.relPath}${entry.note}`),
     ...result.warnings.map((warning) => `[WARNING] ${warning}`),
     scaffoldSummaryLine(result.summary),
   ];
@@ -748,9 +894,14 @@ function runIndex(args) {
   const templatePath = args.template ? path.resolve(process.cwd(), args.template) : DEFAULT_TEMPLATE;
   if (!fs.existsSync(templatePath)) throw new UsageError(`no se encuentra el template del índice: ${displayPath(templatePath)}`);
 
-  const { content, summary } = renderIndex(readText(templatePath), scanNodes(specsBase, harness), { date: args.date });
-  const target = path.join(specsBase, INDEX_FILE);
+  const nodes = scanNodes(specsBase, harness);
+  const { content, summary } = renderIndex(readText(templatePath), nodes, { date: args.date, skipLayers: profileOf(harness).skipLayers });
+  const target = assertInsideRoot(specsBase, path.join(specsBase, INDEX_FILE));
 
+  // Colisiones de slug (CR-002): gana el nodo de SPECS_BASE; el externo se indexa con sufijo.
+  for (const node of nodes.filter((n) => n.collidesWith)) {
+    process.stderr.write(`⚠️ colisión de slug: ${node.collidesWith} — ${node.relPath} se indexa como [[${node.slug}]]; [[${node.collidesWith}]] queda para el nodo de ${toPosix(path.basename(specsBase))}/\n`);
+  }
   process.stdout.write(`harness: ${harness}\n`);
   if (args.dryRun) {
     process.stdout.write(`--- ${displayPath(target)} (dry-run, no se escribe) ---\n${content}--- fin del índice ---\n`);
@@ -807,6 +958,7 @@ if (require.main === module) process.exitCode = main();
 
 module.exports = {
   HARNESS_PROFILES,
+  EXTERNAL_GROUPS,
   LAYERS,
   KNOWN_LAYERS,
   REQUIRED_FIELDS,
@@ -830,5 +982,7 @@ module.exports = {
   renderCheckText,
   scaffold,
   scaffoldSummaryLine,
+  assertInsideRoot,
+  UsageError,
   main,
 };

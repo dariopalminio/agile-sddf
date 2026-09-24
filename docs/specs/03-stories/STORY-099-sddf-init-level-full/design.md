@@ -295,3 +295,9 @@ Sin preguntas abiertas.
 - **Descripción**: el nivel `full` depende de `memory-system scaffold --yes` (STORY-096). La historia ya define la degradación (aviso y terminar como `standard`); el diseño la implementa en el Paso 5b.
 - **Documento afectado**: design.md
 - **Acción requerida**: ninguna; el eval V-7 la cubre.
+
+### CR-004
+- **Tipo**: desviación (fase REFACTOR de story-implement)
+- **Descripción**: (a) NFR-1 prevalece sobre la interfaz "línea de cierre con `(nivel <n>)`": el sufijo solo se añade cuando `--level` se pasa explícitamente (muestra el nivel efectivo; `full` sin `memory-system` cierra con `(nivel standard)`); sin argumentos la línea es idéntica a la anterior. (b) El motor de `memory-system` emite rutas relativas a `SPECS_BASE` (`[PRESERVADO] templates/story-template.md`); `sddf-init` antepone `{SPECS_BASE}/` al concatenar el bloque del Paso 5b. (c) Las cifras del ejemplo de D-2 eran ilustrativas; las reales en un proyecto vacío son `creados: 19 · preservados: 5` (segunda corrida `preservados: 24`), con las líneas `capas faltantes: …` y `✅ memory-system scaffold — harness: sddf — docs`.
+- **Documento afectado**: design.md (D-2, Interfaces), skills/sddf-init/SKILL.md
+- **Acción requerida**: ninguna; el SKILL.md ya refleja (a)–(c) y la E2E real lo verificó.

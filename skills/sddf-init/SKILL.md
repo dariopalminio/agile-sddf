@@ -1,7 +1,8 @@
 ---
 name: sddf-init
 description: >-
-  Inicializa el entorno SDDF: crea directorios base, sddf.config.yaml y .env.template. Idempotente.
+  Inicializa el entorno SDDF: crea directorios base, sddf.config.yaml y .env.template. Idempotente;
+  --level minimal|standard|full (full añade el scaffold de memory-system).
   Usar como primer paso antes de cualquier skill SDDF cuando el entorno no está configurado.
   Invocar para "inicializar SDDF", "sddf-init", "configurar entorno SDDF" o "primer paso del framework".
 ---
@@ -27,6 +28,26 @@ sddf-init → [cualquier skill SDDF con resolución local]
 - No inicializa repositorio git
 - No instala dependencias
 - Una fuente de raíz explícita inválida detiene el bootstrap antes de cualquier escritura.
+
+---
+
+## Parámetros
+
+`--level minimal|standard|full` (default `standard`) decide qué pasos del protocolo se ejecutan;
+el contenido de cada paso es el mismo en todos los niveles.
+
+| Nivel | Pasos ejecutados | Uso típico |
+|---|---|---|
+| `minimal` | 1, 2, 3, 4, 6 — sin 2b (templates) ni 5 (pregunta de políticas) | CI o bootstrap no interactivo |
+| `standard` | 1, 2, 2b, 3, 4, 5, 6 — idéntico a invocar sin `--level`; no invoca `memory-system` | Uso habitual |
+| `full` | `standard` + 5b (`memory-system scaffold --yes`, tras el Paso 5) | Proyecto nuevo completo en un solo comando |
+
+**Validación (antes del Paso 1):** un valor distinto de los tres admitidos emite exactamente lo
+siguiente y termina sin crear archivos ni directorios:
+
+```
+❌ --level no admitido: <valor>. Valores válidos: minimal, standard, full.
+```
 
 ---
 
@@ -124,6 +145,10 @@ Verificar si `.env.template` existe en la raíz del proyecto:
 
 ### Paso 5 — Inicializar políticas del proyecto (opcional)
 
+**Nivel `minimal`:** omitir este paso sin preguntar y registrar
+`[OMITIDO] project-policies-generation (nivel minimal)` en el informe final. En `standard` y
+`full` el paso se ejecuta tal como sigue.
+
 Preguntar al usuario:
 
 ```
@@ -138,6 +163,26 @@ Preguntar al usuario:
 - **Si el usuario responde `n` / `no`:** omitir este paso y continuar directamente al Paso 6. Registrar `[OMITIDO] project-policies-generation` en el informe final.
 
 > Las políticas pueden inicializarse en cualquier momento ejecutando `/project-policies-generation` de forma independiente.
+
+### Paso 5b — Scaffolding de memoria (solo nivel `full`)
+
+Corre después del Paso 5, para que una constitución generada por `project-policies-generation`
+prevalezca sobre la semilla del scaffold.
+
+1. Si no existe `$CLI_ROOT/skills/memory-system/SKILL.md`, emitir
+   `⚠️ memory-system no está instalado — nivel full termina como standard` y pasar al Paso 6 sin
+   bloque de scaffold (no es un error).
+2. Si existe, leer ese `SKILL.md` y ejecutar su modo `scaffold --yes` (composición inline, sin
+   preguntas ni más argumentos): `memory-system` resuelve la misma `SPECS_BASE` porque
+   `sddf.config.yaml` ya existe tras el Paso 3.
+3. Capturar su salida completa sin reinterpretarla (`harness:`, `capas faltantes:`, líneas
+   `[CREADO]`/`[PRESERVADO]`/`[MAPEADO]`/`[OMITIDO]`/`[WARNING]`, su línea `✅` y el resumen
+   `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`). El
+   motor emite rutas relativas a `SPECS_BASE`; al concatenarlas, anteponer `{SPECS_BASE}/` para
+   que ambos bloques usen rutas desde `REPO_ROOT`.
+
+Los cinco templates compartidos figuran `[CREADO]` (o `[YA EXISTÍA]`) en el bloque de `sddf-init`
+y `[PRESERVADO]` en el de scaffold: el Paso 2b ya los copió; no es una duplicación.
 
 ### Paso 6 — Informe final
 
@@ -170,6 +215,59 @@ Emitir el informe consolidado con todos los artefactos verificados:
 ```
 ✓ Entorno ya inicializado — sin cambios necesarios
 ```
+
+Sin `--level` el informe es exactamente el anterior. Con `--level` explícito, la línea de éxito
+añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente en {SPECS_BASE}/ (nivel <n>)`.
+
+**`minimal`:** el bloque omite los templates y registra
+`[OMITIDO] project-policies-generation (nivel minimal)`:
+
+```
+── sddf-init ────────────────────────────────────
+[CREADO]     docs/specs/01-projects/
+[CREADO]     docs/specs/02-epics/
+[CREADO]     docs/specs/03-stories/
+[CREADO]     docs/templates/
+[CREADO]     sddf.config.yaml
+[CREADO]     .env.template
+[OMITIDO] project-policies-generation (nivel minimal)
+─────────────────────────────────────────────────
+✓ Entorno SDDF inicializado correctamente en docs/ (nivel minimal)
+```
+
+**`full`:** la salida capturada en el Paso 5b va en su propio bloque, tras el de `sddf-init`
+(ejemplo: proyecto nuevo, respuesta `n` en el Paso 5):
+
+```
+── sddf-init ────────────────────────────────────
+[CREADO]     docs/specs/01-projects/
+…
+[CREADO]     docs/templates/story-template.md
+…
+[CREADO]     .env.template
+[OMITIDO] project-policies-generation
+── memory-system scaffold (nivel full) ──────────
+harness: sddf
+capas faltantes: product, requirements, domains, architecture, adr, policies, guardrails, guides, runbooks
+[CREADO] docs/adr/README.md
+[CREADO] docs/constitution.md
+…
+[PRESERVADO] docs/templates/story-template.md
+[PRESERVADO] docs/templates/epic-template.md
+[PRESERVADO] docs/templates/project-template.md
+[PRESERVADO] docs/templates/project-intent-template.md
+[PRESERVADO] docs/templates/project-plan-template.md
+✅ memory-system scaffold — harness: sddf — docs
+creados: 19 · sobrescritos: 0 · preservados: 5 · mapeados: 0 · omitidos por harness: 0
+─────────────────────────────────────────────────
+✓ Entorno SDDF inicializado correctamente en docs/ (nivel full)
+```
+
+Sin `memory-system` instalado, `full` muestra el bloque de `standard`, el aviso del Paso 5b, ningún
+bloque de scaffold y cierra con `(nivel standard)`. En una segunda ejecución de `full` nada se crea
+ni se sobrescribe: `sddf-init` informa `[YA EXISTÍA]`, el scaffold todo `[PRESERVADO]` con
+`creados: 0 · sobrescritos: 0 · preservados: 24 · mapeados: 0 · omitidos por harness: 0`, y el
+cierre es `✓ Entorno ya inicializado — sin cambios necesarios`.
 
 Terminar la ejecución. El diagnóstico explícito está disponible en `/skill-preflight`;
 el usuario también puede continuar directamente con cualquier skill SDDF.

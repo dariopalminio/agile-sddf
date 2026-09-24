@@ -2,9 +2,17 @@
 
 Fuente de verdad de las reglas que aplica `scripts/memory-system.js` en los modos `index`
 (decisiones D-2, D-3 y D-4 de STORY-095), `scaffold` (D-1, D-2 y D-4 de STORY-096) y `check`
-(D-1, D-2 y D-3 de STORY-097, §6 de este documento). `SKILL.md` las aplica a mano cuando `node` no
+(D-1, D-2 y D-3 de STORY-097, §6 de este documento), más la adaptación por harness y `migrate`
+(D-1 a D-5 de STORY-098, §8). `SKILL.md` las aplica a mano cuando `node` no
 está en PATH (degradación inline). `check` no define reglas propias de slug, capa ni exclusión:
 reutiliza las de §2, y cualquier ajuste se hace aquí una sola vez y lo heredan los tres modos.
+
+**Contenido:** [1. Perfiles de harness](#1-perfiles-de-harness-harness_profiles) ·
+[2. Nodo indexable](#2-nodo-indexable) · [3. Formato del índice](#3-formato-del-índice) ·
+[4. Resumen](#4-resumen) · [5. Scaffold](#5-scaffold-y-archivos-gestionados) ·
+[6. Campos de `check`](#6-campos-obligatorios-de-check-required_fields) ·
+[7. Familias de `check`](#7-familias-de-problemas-de-check) ·
+[8. Harness](#8-harness-omisión-mapeo-solo-lectura-y-colisiones)
 
 ## 1. Perfiles de harness (`HARNESS_PROFILES`)
 
@@ -16,14 +24,14 @@ Precedencia de detección: `--harness` explícito > `sddf.config.yaml` > `.speci
 | Harness | Marcador (`marker`) | Raíces externas indexadas (`externalRoots`, relativas a `REPO_ROOT`) | `skipLayers` | `mappings` |
 |---|---|---|---|---|
 | `sddf` | `sddf.config.yaml` | — | `[]` | `{}` |
-| `speckit` | `.specify/` | `specs/*/spec.md`, `specs/*/plan.md` | `[]` | `{}` |
-| `openspec` | `openspec/` | `openspec/specs/**/spec.md`, `openspec/changes/*/proposal.md` | `[]` | `{}` |
+| `speckit` | `.specify/` | `specs/*/spec.md`, `specs/*/plan.md` | `['specs']` | `{ 'constitution.md': '.specify/memory/constitution.md' }` |
+| `openspec` | `openspec/` | `openspec/specs/**/spec.md`, `openspec/changes/*/proposal.md` | `['specs']` | `{}` |
 | `generic` | ninguno | — | `[]` | `{}` |
 
 Las raíces externas se leen en modo solo lectura: `index` nunca escribe fuera de `SPECS_BASE`.
-`skipLayers` y `mappings` están reservadas para STORY-098 (adaptación del scaffolding por harness).
-`skipLayers` admite, además de las once capas, el valor `constitution.md`: `check` lo consulta
-también para el archivo raíz, que no es una capa pero sí una entrada esperada de la memoria (§7).
+La semántica de `skipLayers` y `mappings` (STORY-098) está en §8. `skipLayers` admite, además de
+las once capas, el valor `constitution.md`: `check` lo consulta también para el archivo raíz, que
+no es una capa pero sí una entrada esperada de la memoria (§7).
 
 ## 2. Nodo indexable
 
@@ -102,7 +110,8 @@ El motor lee `assets/index-template.md` en runtime y sustituye:
 
 | Placeholder | Sustitución |
 |---|---|
-| `{layer:<capa>}` | Entradas de esa capa ordenadas por `relPath` (comparación ordinal, mismo orden en todos los SO); capa vacía → `_(sin artefactos)_` |
+| `{layer:<capa>}` | Entradas de esa capa ordenadas por `relPath` (comparación ordinal, mismo orden en todos los SO); capa vacía → `_(sin artefactos)_`, o `_(gestionado por el harness)_` si el perfil la omite (`skipLayers`, también su desglose `specs-*`) |
+| `{layer:external}` | Un subtítulo `### <grupo>` por `externalGroup` (§8) con sus entradas; sin nodos externos → `_(sin artefactos externos)_` |
 | `{stats}` | Filas de la tabla "Estado del grafo": nodos indexados, con frontmatter, sin frontmatter, wikilinks pendientes |
 | `{date}` | Fecha de ejecución `YYYY-MM-DD` (solo en `updated:` del frontmatter: es lo único que cambia entre dos ejecuciones) |
 
@@ -194,15 +203,18 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
 - **Directorios:** se crean los intermedios que hagan falta y los once de capa aunque el harness
   omita sus semillas. Raíz ausente con padre existente → se crea (bootstrap); sin padre → exit 2.
   `assets/scaffold/` ausente → exit 2 nombrando la ruta.
-- **Harness:** `skipLayers` del perfil marca `[OMITIDO]` los archivos de esa capa (vacío hasta
-  STORY-098, por eso `omitidos por harness: 0`).
+- **Harness:** una capa de `skipLayers` se informa con una sola línea
+  `[OMITIDO] <capa>/ — gestionado por el harness <h>` (cuenta 1 en `omitidos por harness`) y no se
+  crea ni su directorio ni sus semillas; una semilla de `mappings` cuyo equivalente existe se
+  informa `[MAPEADO] <semilla> → <ruta del harness>` y no se crea (§8). Con `--dry-run`:
+  `[OMITIRÍA]` y `[MAPEARÍA]`.
 
 ### Resumen
 
 Última línea de `scaffold`:
 
 ```
-creados: N · sobrescritos: S · preservados: M · omitidos por harness: K
+creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K
 ```
 
 `ensure` la combina con el índice en `creados: N · preservados: M · índice regenerado: sí|no`;
@@ -255,7 +267,7 @@ ampliar `REQUIRED_FIELDS` es una decisión de esta tabla, no del código.
 
 | Familia (`kind`) | Regla | `detail` |
 |---|---|---|
-| `missing-layer` | Una de las once capas de §5 no existe como directorio de la raíz, o falta `constitution.md`, y el perfil del harness no la omite (`skipLayers`, §1). | `capa ausente` |
+| `missing-layer` | Una de las once capas de §5 no existe como directorio de la raíz, o falta `constitution.md`, y el perfil del harness no la omite (`skipLayers`, §1) ni, para `constitution.md`, la mapea a un equivalente existente (`mappings`, §8). | `capa ausente` |
 | `orphan` | Nodo indexable con `hasFrontmatter=false` (§2, *Frontmatter*). | `sin frontmatter` |
 | `invalid-frontmatter` | Campo de `REQUIRED_FIELDS` ausente del frontmatter declarado (§6). | `falta <campo>` |
 | `broken-wikilink` | Ocurrencia de `[[slug]]` cuyo slug no está en el conjunto de slugs derivados (§2, incluidas las raíces externas del perfil). | `[[slug]] no resuelve` |
@@ -265,6 +277,10 @@ barra final, por ser un archivo y no un directorio— y la `relPath` del nodo en
 siempre relativa a `SPECS_BASE` y con `/`. Los problemas se ordenan por `(kind, path, detail)` con
 comparación ordinal; el informe textual los agrupa en el orden de la tabla. `check` no escribe
 nada: ni `index.md`, ni frontmatter, ni directorios.
+
+Los nodos externos (capa `external`, §8) solo cuentan como **destino** de wikilinks: `orphan`,
+`invalid-frontmatter` y `broken-wikilink` no los evalúan, porque son artefactos del harness que
+`memory-system` no puede corregir y siguen las convenciones de su propio harness.
 
 ### Resumen
 
@@ -282,3 +298,30 @@ mal formados y **cualquier error inesperado durante el chequeo** (CR-008). En `c
 exclusivamente "memoria con problemas", que es lo que hace el gate legible en CI. Con `--json`,
 todo exit 2 deja `{ "ok": false, "error": "…" }` en stdout, incluidos los errores de parseo de
 argumentos, que se detectan antes de entrar al subcomando.
+
+## 8. Harness: omisión, mapeo, solo lectura y colisiones
+
+Reglas de STORY-098 para adoptar la memoria SDDF en un proyecto Speckit u OpenSpec. Los perfiles
+son datos (§1): actualizar un layout de harness es editar una fila, no el código.
+
+| Clave | Semántica |
+|---|---|
+| `skipLayers` | Capas que el harness ya modela. `scaffold` no crea su directorio ni sus semillas y lo informa con una sola línea `[OMITIDO] <capa>/ — gestionado por el harness <h>`; `check` no las reporta como `missing-layer`; el índice las muestra como `_(gestionado por el harness)_`. |
+| `mappings` | Semilla (relativa a `SPECS_BASE`) → equivalente del harness (relativo a `REPO_ROOT`). Si el equivalente **existe**, `scaffold` no crea la semilla (`[MAPEADO] <semilla> → <ruta>`), `check` no la exige y `index` enlaza el equivalente como nodo externo con el slug de la semilla (`[[constitution]]`). Si no existe, se crea la semilla como siempre. |
+| `externalRoots` | Patrones que `index` escanea en solo lectura (`*` = un segmento, `**` = cero o más). |
+
+- **Solo lectura:** `openspec/`, `.specify/` y `specs/` del harness nunca reciben un destino de
+  escritura. El motor valida **todo el plan** de `scaffold` (semillas, plantillas compartidas y
+  claves de `mappings`) y el `index.md` de `index` contra `SPECS_BASE` antes de escribir: un
+  destino fuera de la raíz termina con exit 2 y `destino fuera de la raíz: <ruta>`, sin haber
+  escrito nada (ni siquiera la raíz del bootstrap).
+- **Grupos del índice (`externalGroup`):** cada nodo externo se anota con el grupo del patrón que
+  lo originó y se lista bajo su subtítulo, en este orden: `openspec-specs` → `### OpenSpec — specs`,
+  `openspec-changes` → `### OpenSpec — changes`, `speckit-features` → `### Speckit — features`,
+  `mapped` → `### Mapeados desde el harness`. Las rutas son relativas a `SPECS_BASE` (`../…`).
+- **Colisión de slug (CR-002):** si el slug de un nodo externo coincide con el de un nodo de
+  `SPECS_BASE`, gana el de `SPECS_BASE`; el externo se indexa como `[[<slug>-external]]` y `index`
+  emite por stderr `⚠️ colisión de slug: <slug> — …`, sin cambiar el exit code.
+- **`migrate`:** es `scaffold --dry-run` (plan) → confirmación → `scaffold`, siempre con el perfil
+  del harness. No transforma ni mueve artefactos y no invoca `index`. En un proyecto `sddf`
+  informa `El proyecto ya es SDDF` y remite a `ensure`.

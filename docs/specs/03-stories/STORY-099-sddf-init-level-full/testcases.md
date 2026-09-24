@@ -71,14 +71,14 @@ related:
 
 <!-- Generado automáticamente por story-testcases. Actualizado por story-implement en fase GREEN.
      [x] = test pasó | [ ] = pendiente | [!] = test falló -->
-- [ ] E2E-001: sddf-init --level full invoca memory-system scaffold
-- [ ] E2E-002: minimal y standard no invocan el scaffolding
-- [ ] IT-001: Paso 5b captura y concatena el informe de scaffold
+- [x] E2E-001: sddf-init --level full invoca memory-system scaffold
+- [x] E2E-002: minimal y standard no invocan el scaffolding
+- [x] IT-001: Paso 5b captura y concatena el informe de scaffold
 - [ ] IT-002: Degradación sin memory-system instalado
-- [ ] IT-003: Orden 5 → 5b preserva la constitución de políticas
-- [ ] EV-001: sddf-init sin flags (regresión)
-- [ ] EV-002: sddf-init --level minimal
-- [ ] EV-003: sddf-init --level full
-- [ ] EV-004: sddf-init --level full sin memory-system
-- [ ] EV-005: sddf-init --level foo (fail-fast)
-- [ ] EV-006: sddf-init --level full idempotente
+- [x] IT-003: Orden 5 → 5b preserva la constitución de políticas
+- [x] EV-001: sddf-init sin flags (regresión)
+- [x] EV-002: sddf-init --level minimal
+- [x] EV-003: sddf-init --level full
+- [x] EV-004: sddf-init --level full sin memory-system
+- [x] EV-005: sddf-init --level foo (fail-fast)
+- [x] EV-006: sddf-init --level full idempotente

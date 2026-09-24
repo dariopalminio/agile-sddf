@@ -5,11 +5,11 @@ id: STORY-099
 kind: feat
 slug: STORY-099-sddf-init-level-full
 title: "Inicializar la memoria completa desde sddf-init con el parámetro --level"
-status: READY-FOR-IMPLEMENT
+status: VERIFY
 substatus: DONE
 parent: EPIC-20-memory-system
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-24
 related:
   - EPIC-20-memory-system
   - STORY-095-memory-system-index-alias
@@ -57,7 +57,7 @@ Entonces el comportamiento es el mismo que antes de introducir el parámetro (di
 
 ### Requerimiento: Niveles de `sddf-init`
 
-`--level` acepta `minimal`, `standard` (valor por defecto) y `full`. `minimal` ejecuta únicamente la resolución de raíz, los directorios base, `sddf.config.yaml` y `.env.template`. `standard` es el comportamiento actual completo. `full` es `standard` más la invocación final a `memory-system scaffold`. Un valor no admitido detiene la ejecución con mensaje y sin escrituras.
+`--level` acepta `minimal`, `standard` (valor por defecto) y `full`. `minimal` ejecuta únicamente la resolución de raíz, los directorios base, `sddf.config.yaml` y `.env.template`. `standard` es el comportamiento actual completo. `full` es `standard` más la invocación final a `memory-system scaffold`, que se ejecuta después de la pregunta de políticas (CR-002). Un valor no admitido detiene la ejecución con mensaje y sin escrituras.
 
 ### Requerimiento: Cambio mínimo en `sddf-init`
 
