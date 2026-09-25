@@ -15,7 +15,7 @@ updated: {date}
 > Formato de cada entrada: wikilink + link markdown a la ruta relativa + título.
 > El slug del wikilink es el declarado en el frontmatter del documento (convención SDDF) o, si no lo
 > declara, el derivado del nombre del archivo o del directorio. Cuando un archivo no tiene frontmatter,
-> se enlaza solo por ruta. Usa [Foam](https://foambubble.github.io/foam/) para visualizar el grafo.
+> se enlaza solo por ruta. Usa foam (foambubble.github.io/foam) para visualizar el grafo.
 >
 > Generado por `memory-system index`: no edites las entradas a mano, regenera con `/memory-system index`.
 

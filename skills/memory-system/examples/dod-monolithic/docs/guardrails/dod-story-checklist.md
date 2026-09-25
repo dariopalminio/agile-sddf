@@ -158,7 +158,7 @@ No aplica al contenido del repositorio — eso lo gobiernan los guardrails `gr-*
 - [ ] No hay secrets ni credenciales expuestos en el código ni en los archivos publicados
 - [ ] La versión en `package.json` se incrementó siguiendo SemVer (patch / minor / major según el impacto)
 - [ ] El `CHANGELOG.md` incluye la entrada correspondiente a la versión publicada
-- [ ] El archivo `.npmignore` (o el campo `files` en `package.json`) excluye correctamente archivos de desarrollo (tests, scripts internos, `.env`)
+- [ ] El archivo `.npmignore` (o el campo `files` en `package.json`) excluye correctamente archivos de desarrollo (tests, scripts internos, archivos de Variables de Entorno)
 - [ ] `npm pack --dry-run` no incluye archivos inesperados en el paquete
 - [ ] El paquete publicado puede instalarse limpiamente con `npm install agile-sddf` y ejecutarse sin errores
 
