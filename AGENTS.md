@@ -32,7 +32,7 @@ agile-sddf/
 │   ├── requirements/                                       # Requisitos del producto
 │   ├── adr/                                                # Decisiones puntuales e inmutables (ADR-NNNN, inmutables)
 │   ├── architecture/                                       # Arquitectura del sistema, estructura técnica (Diagramas C4, stack, visión de sistema, vistas de componentes)
-│   ├── guardrails/                                         # Restricciones verificables: gr-*-checklist.md (contenido) y dod-story-checklist.md (transiciones)
+│   ├── guardrails/                                         # Restricciones verificables: gr-*-checklist.md (contenido) y dod-story-<etapa>.md (DoD por etapa, transiciones)
 │   ├── policies/                                           # Reglas de gobernanza derivadas de la constitución (README índice; hoy sin policies)
 │   ├── guides/                                             # guías de referencia, how-to-guides (ver docs/index.md)
 │   ├── knowledge/                                          # Conocimiento general, investigación, lecciones aprendidas y documentación didáctica
@@ -85,4 +85,7 @@ Cada subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el contro
 # Políticas del Proyecto
 
 @docs/constitution.md
-@docs/guardrails/dod-story-checklist.md
+
+El Definition of Done de historia **no** se importa aquí: está dividido en un guardrail por etapa
+(`docs/guardrails/dod-story-<etapa>.md`) y cada skill del pipeline carga solo el suyo (sección
+`## DoD aplicable`). Índice en `docs/guardrails/README.md`.

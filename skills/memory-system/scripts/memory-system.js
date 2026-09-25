@@ -3,13 +3,14 @@
 
 /**
  * memory-system.js — motor determinista del skill `memory-system` (STORY-095, STORY-096, STORY-097,
- * STORY-098).
+ * STORY-098, STORY-101).
  *
  * Subcomandos:
  *   detect   --root <SPECS_BASE> [--harness h]
  *   index    --root <SPECS_BASE> [--harness h] [--dry-run] [--template <ruta>] [--date YYYY-MM-DD]
  *   scaffold --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--date YYYY-MM-DD]
- *   check    --root <SPECS_BASE> [--harness h] [--json]
+ *   check    --root <SPECS_BASE> [--harness h] [--json] [--skills-dir <ruta>] [--cli-root <CLI_ROOT>]
+ *   migrate  --root <SPECS_BASE> --from dod-monolithic [--dry-run] [--force] [--date YYYY-MM-DD]
  *
  * Solo usa módulos nativos (`node:fs`, `node:path`, `node:process`) para funcionar en
  * proyectos consumidores sin `package.json` (NFR-2). Node >= 18. Las rutas se normalizan
@@ -18,13 +19,15 @@
  *
  * Exit codes: 0 éxito · 2 error de uso, raíz inexistente, harness no admitido o template
  * desalineado o destino de escritura fuera de la raíz (nunca escribe en esos casos) · 1 error
- * inesperado. En `check` el 1 significa exclusivamente "memoria con problemas" (gate de CI) y
+ * inesperado. `migrate` sale con 1 si queda alguna etapa `[SIN ORIGEN]` o un bloque `[NO MIGRADO]`.
+ * En `check` el 1 significa exclusivamente "memoria con problemas" (gate de CI) y
  * **todo** error, incluido el inesperado, sale con 2 (D-4, CR-008).
  */
 
 const fs = require('node:fs');
 const path = require('node:path');
 const process = require('node:process');
+const dodStory = require('./dod-story.js');
 
 // ---------------------------------------------------------------------------
 // Constantes (D-2, D-3, D-4)
@@ -132,11 +135,17 @@ const SCAFFOLD_LABELS = {
 
 // Línea de comandos: subcomandos, flags con valor y flags booleanos. `--template` y `--date`
 // son flags de prueba (reproducibilidad); no se exponen en SKILL.md.
-const COMMANDS = ['detect', 'index', 'scaffold', 'check'];
-const VALUE_FLAGS = { '--root': 'root', '--cli-root': 'cliRoot', '--harness': 'harness', '--template': 'template', '--date': 'date' };
+const COMMANDS = ['detect', 'index', 'scaffold', 'check', 'migrate'];
+const VALUE_FLAGS = {
+  '--root': 'root', '--cli-root': 'cliRoot', '--harness': 'harness', '--template': 'template', '--date': 'date',
+  '--from': 'from', '--skills-dir': 'skillsDir',
+};
+// Orígenes admitidos por `migrate --from` (STORY-101 D-3). La migración de harness no es un
+// subcomando del motor: es una secuencia del SKILL.md sobre `scaffold` (STORY-098 D-3).
+const MIGRATE_SOURCES = ['dod-monolithic'];
 const BOOL_FLAGS = { '--dry-run': 'dryRun', '--force': 'force', '--json': 'json' };
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const USAGE = 'uso: memory-system.js <detect|index|scaffold|check> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json]';
+const USAGE = 'uso: memory-system.js <detect|index|scaffold|check|migrate> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json] [--skills-dir <ruta>] [--from dod-monolithic]';
 
 // Error de uso o de datos: se informa por stderr y termina con exit 2 sin escribir.
 class UsageError extends Error {}
@@ -209,7 +218,7 @@ function assertInsideRoot(root, target) {
 // ---------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const args = { command: null, root: null, cliRoot: null, harness: null, dryRun: false, force: false, json: false, template: null, date: null };
+  const args = { command: null, root: null, cliRoot: null, harness: null, dryRun: false, force: false, json: false, template: null, date: null, from: null, skillsDir: null };
   const rest = [...argv];
   while (rest.length) {
     const token = rest.shift();
@@ -226,6 +235,10 @@ function parseArgs(argv) {
     throw new UsageError(`subcomando no admitido: ${args.command} (admitidos: ${COMMANDS.join(', ')})`);
   }
   if (!args.root) throw new UsageError(`falta --root <SPECS_BASE>\n${USAGE}`);
+  if (args.command === 'migrate') {
+    if (!args.from) throw new UsageError(`falta --from <origen> (admitidos: ${MIGRATE_SOURCES.join(', ')})`);
+    if (!MIGRATE_SOURCES.includes(args.from)) throw new UsageError(`valor no admitido para --from: ${args.from} (admitidos: ${MIGRATE_SOURCES.join(', ')})`);
+  }
   if (args.date !== null && !ISO_DATE.test(args.date)) throw new UsageError(`valor no admitido para --date: ${args.date} (formato YYYY-MM-DD)`);
   return args;
 }
@@ -596,7 +609,7 @@ const SPEC_TYPES = new Set(['project', 'epic', 'story']);
 const ROOT_FILE = 'constitution.md';
 
 // Familias de problemas, en el orden de presentación del informe textual (D-4).
-const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink'];
+const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink', dodStory.DOD_KIND];
 // Ancho de la columna `[kind]` del informe textual: la familia más larga, más los corchetes y
 // dos espacios de separación. Derivado para que añadir una familia no descuadre el informe.
 const KIND_WIDTH = Math.max(...CHECK_KINDS.map((kind) => kind.length)) + 4;
@@ -682,7 +695,8 @@ function brokenWikilinks(ctx) {
   return sortProblems(problems);
 }
 
-const EVALUATORS = [missingLayers, orphans, invalidFrontmatter, brokenWikilinks];
+// `dod-guardrail` (STORY-101 D-6) vive en `dod-story.js`: conocimiento propio del DoD por etapa.
+const EVALUATORS = [missingLayers, orphans, invalidFrontmatter, brokenWikilinks, dodStory.dodGuardrails];
 
 function assertRuntime() {
   const major = Number.parseInt(process.versions.node.split('.')[0], 10);
@@ -695,9 +709,15 @@ function assertRuntime() {
  * Escanea la raíz una sola vez y ejecuta los cuatro evaluadores (D-1). No escribe nada.
  * Devuelve `{ ok, summary, problems }` con `problems` en orden canónico.
  */
-function checkMemory(specsBase, harness) {
+function checkMemory(specsBase, harness, options = {}) {
   const nodes = scanNodes(specsBase, harness);
-  const ctx = { root: specsBase, nodes, layers: LAYERS, profile: profileOf(harness), slugSet: slugSetOf(nodes) };
+  const repoRoot = path.dirname(specsBase);
+  const configFile = path.join(repoRoot, 'sddf.config.yaml');
+  const dodMapping = fs.existsSync(configFile) ? dodStory.readDodMapping(readText(configFile)) : new Map();
+  const ctx = {
+    root: specsBase, repoRoot, nodes, layers: LAYERS, profile: profileOf(harness), slugSet: slugSetOf(nodes),
+    skillsDir: options.skillsDir || null, dodMapping,
+  };
   const problems = sortProblems(EVALUATORS.flatMap((evaluate) => evaluate(ctx)));
   const summary = {};
   for (const [kind, entries] of groupByKind(problems)) summary[kind] = entries.length;
@@ -706,7 +726,7 @@ function checkMemory(specsBase, harness) {
 
 // Informe textual agrupado por familia (D-4); el orden dentro de cada familia es (path, detail).
 function renderCheckText(result) {
-  const lines = [`── memory-system check ── harness: ${result.harness} · root: ${result.root}`];
+  const lines = [`── memory-system check ── harness: ${result.harness} · root: ${result.root} · skills: ${result.skills || '—'}`];
   for (const [kind, entries] of groupByKind(result.problems)) {
     for (const entry of entries) lines.push(`${`[${kind}]`.padEnd(KIND_WIDTH)}${entry.path} — ${entry.detail}`);
   }
@@ -922,7 +942,8 @@ function runCheck(args) {
   assertRuntime();
   const specsBase = resolveRoot(args.root);
   const harness = detectHarness(path.dirname(specsBase), args.harness);
-  const evaluated = checkMemory(specsBase, harness);
+  const skillsDir = resolveSkillsDir(args, path.dirname(specsBase));
+  const evaluated = checkMemory(specsBase, harness, { skillsDir });
   const result = {
     harness,
     root: toPosix(args.root),
@@ -930,8 +951,34 @@ function runCheck(args) {
     summary: evaluated.summary,
     problems: evaluated.problems,
   };
-  process.stdout.write(args.json ? `${JSON.stringify(result, null, 2)}\n` : renderCheckText(result));
+  process.stdout.write(args.json ? `${JSON.stringify(result, null, 2)}\n` : renderCheckText({ ...result, skills: skillsDir && displayPath(skillsDir) }));
   return result.ok ? 0 : 1;
+}
+
+/**
+ * Directorio de skills para las reglas R6/R7 de `dod-guardrail` (STORY-101 D-6): `--skills-dir`
+ * explícito → `<REPO_ROOT>/skills` (fuente del framework) → `<REPO_ROOT>/<--cli-root>/skills`
+ * (instalación en un consumidor) → `null` (reglas no aplicables). No asume ningún runtime.
+ */
+function resolveSkillsDir(args, repoRoot) {
+  if (args.skillsDir) {
+    const explicit = path.resolve(process.cwd(), args.skillsDir);
+    if (!isDirectory(explicit)) throw new UsageError(`--skills-dir inexistente: ${args.skillsDir}`);
+    return explicit;
+  }
+  const own = path.join(repoRoot, 'skills');
+  if (isDirectory(own)) return own;
+  const installed = args.cliRoot ? path.resolve(repoRoot, args.cliRoot, 'skills') : null;
+  return installed && isDirectory(installed) ? installed : null;
+}
+
+/** `migrate --from dod-monolithic`: divide el DoD de historia en un guardrail por etapa (STORY-101). */
+function runMigrate(args) {
+  assertRuntime();
+  const specsBase = resolveRoot(args.root);
+  const result = dodStory.migrateDod(specsBase, { dryRun: args.dryRun, force: args.force, date: args.date, displayRoot: toPosix(args.root) });
+  process.stdout.write(`${result.lines.join('\n')}\n`);
+  return result.exitCode;
 }
 
 function main(argv = process.argv.slice(2)) {
@@ -939,7 +986,7 @@ function main(argv = process.argv.slice(2)) {
   try {
     const args = parseArgs(argv);
     command = args.command;
-    const runners = { detect: runDetect, index: runIndex, scaffold: runScaffold, check: runCheck };
+    const runners = { detect: runDetect, index: runIndex, scaffold: runScaffold, check: runCheck, migrate: runMigrate };
     return runners[args.command](args);
   } catch (error) {
     // El sobre JSON se emite aquí y no en `runCheck` para cubrir también los errores de
@@ -954,7 +1001,6 @@ function main(argv = process.argv.slice(2)) {
   }
 }
 
-if (require.main === module) process.exitCode = main();
 
 module.exports = {
   HARNESS_PROFILES,
@@ -983,6 +1029,12 @@ module.exports = {
   scaffold,
   scaffoldSummaryLine,
   assertInsideRoot,
+  under,
+  readText,
+  todayIso,
+  toPosix,
   UsageError,
   main,
 };
+
+if (require.main === module) process.exitCode = main();

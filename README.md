@@ -218,7 +218,7 @@ El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT �
 ├── templates/
 ├── guardrails/
 │   ├── gr-*-checklist.md
-│   └── dod-story-checklist.md
+│   └── dod-story-<etapa>.md        # DoD por etapa (specify … acceptance, release)
 ├── policies/
 │   └── README.md
 └── specs/
@@ -260,7 +260,7 @@ No todos los reportes existen desde el comienzo: aparecen cuando el flujo llega 
 |---|---|
 | Convenciones de artefactos, estados, trazabilidad y gates. | El problema, el dominio, las prioridades y los criterios de aceptación. |
 | Un camino para proyecto, épicas e historias. | El stack, la arquitectura y los comandos reales de prueba. |
-| Políticas versionadas y control WIP por nivel de flujo. | El contenido de `constitution.md` y `dod-story-checklist.md`. |
+| Políticas versionadas y control WIP por nivel de flujo. | El contenido de `constitution.md` y del DoD por etapa (`dod-story-<etapa>.md`). |
 | Orquestación de TDD configurable por workers. | Qué workers instalar y declarar en `sddf.config.yaml`. |
 
 Genera o actualiza las políticas cuando el equipo las necesite:
@@ -428,7 +428,7 @@ npm run verify:runtimes
 npm run verify:links
 ```
 
-Mantén la documentación, los contratos y los tests alineados con cualquier cambio de comportamiento. Antes de abrir un Pull Request, revisa también la [constitución del proyecto](docs/constitution.md) y el [Definition of Done](docs/guardrails/dod-story-checklist.md).
+Mantén la documentación, los contratos y los tests alineados con cualquier cambio de comportamiento. Antes de abrir un Pull Request, revisa también la [constitución del proyecto](docs/constitution.md) y el [Definition of Done por etapa](docs/guardrails/README.md#transition-guardrails): cada skill de historia carga solo el `dod-story-<etapa>.md` de su etapa.
 
 ## Seguridad
 

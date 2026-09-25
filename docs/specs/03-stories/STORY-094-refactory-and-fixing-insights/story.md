@@ -5,8 +5,8 @@ id: STORY-094
 kind: chore
 slug: STORY-094-refactory-and-fixing-insights
 title: "Fix insight and Verificación de la instalación en Windows, macOS y Linux"
-status: IN-PROGRESS
-substatus: IN-PROGRESS
+status: COMPLETED
+substatus: DONE
 parent: EPIC-19-framework-consistency
 created: 2026-09-13
 updated: 2026-09-13

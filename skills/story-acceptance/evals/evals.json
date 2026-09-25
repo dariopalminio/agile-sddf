@@ -104,31 +104,36 @@
     },
     {
       "id": "TC-004",
-      "name": "dod-sin-seccion-acceptance-usa-solo-gherkin",
+      "name": "dod-acceptance-ausente-usa-solo-gherkin",
       "type": "edge-case",
-      "description": "Historia en VERIFY/DONE. El archivo dod-story-checklist.md no contiene sección ACCEPTANCE. El skill debe emitir un aviso y continuar la sesión usando únicamente los criterios Gherkin de story.md como criterios a validar.",
+      "description": "EV-005 (STORY-101, D-8) — Historia en VERIFY/DONE. No existe el DoD de la etapa acceptance: ni sddf.config.yaml › guardrails.dod.story.acceptance ni $SPECS_BASE/guardrails/dod-story-acceptance.md. El skill emite el aviso accionable de la sección DoD aplicable y continúa la sesión usando únicamente los criterios Gherkin de story.md como criterios a validar.",
       "input": {
         "story_id": "STORY-080",
         "story_status": "VERIFY",
         "story_substatus": "DONE",
-        "dod_has_acceptance_section": false,
+        "dod_acceptance_file_exists": false,
         "gherkin_criterios": 2,
-        "responses": ["p", "p"]
+        "responses": [
+          "p",
+          "p"
+        ]
       },
       "expected": {
         "contains": [
-          "No se encontró sección ACCEPTANCE en el DoD",
-          "criterios de story.md",
+          "DoD de la etapa acceptance no encontrado",
+          "migrate --from=dod-monolithic",
+          "criterios de aceptación de story.md",
           "ACCEPTANCE-APPROVED",
           "acceptance-report.md"
         ],
         "not_contains": [
           "Entorno inválido",
           "ACCEPTANCE-REJECTED",
-          "BLOCKED"
+          "ACCEPTANCE/BLOCKED",
+          "dod-story-checklist"
         ]
       },
-      "threshold": 0.90
+      "threshold": 0.9
     },
     {
       "id": "TC-005",

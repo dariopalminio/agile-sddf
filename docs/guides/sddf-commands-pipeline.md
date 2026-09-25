@@ -57,6 +57,7 @@ sddf-init → memory-system            (ensure: scaffold + index)
 memory-system index                  (solo reindexar)
 memory-system check [--json]         (verificar; exit code para CI)
 memory-system migrate [--yes]        (proyecto Speckit u OpenSpec: plan → confirmación → scaffold)
+memory-system migrate --from=dod-monolithic   (dividir el DoD de historia en un archivo por etapa)
 ```
 
 | Skill | Input | Output |
@@ -66,7 +67,8 @@ memory-system migrate [--yes]        (proyecto Speckit u OpenSpec: plan → conf
 | `memory-system rebuild --force` | Memoria existente | `⚠️` advertencia, sobrescribe únicamente los archivos gestionados por el scaffold (`[SOBRESCRITO]`) y regenera `index.md`; sin `--force` se detiene con `❌ rebuild es destructivo. Añade --force para confirmar.` |
 | `memory-system index [--harness h] [--dry-run]` | `$SPECS_BASE/` (artefactos con frontmatter `slug`/`title`) y, según el harness detectado, las raíces externas de Spec-kit/OpenSpec | `$SPECS_BASE/index.md` regenerado con wikilinks `[[slug]]` por capa; resumen `nodos indexados: N · sin frontmatter: M · nodos pendientes: K` |
 | `memory-system migrate [--harness h] [--yes]` | Proyecto no SDDF con `.specify/` (Speckit) u `openspec/` (OpenSpec) | Entrada para proyectos no SDDF: muestra `📋 Plan de migración (<h>)` (salida de `scaffold --dry-run`: `[OMITIRÍA] specs/`, `[MAPEARÍA] constitution.md → .specify/memory/constitution.md`, `[CREARÍA] …`), pide confirmación (`--yes` la asume) y ejecuta `scaffold` adaptado al harness; los directorios del harness no se tocan. En un proyecto `sddf` remite a `ensure`. Siguiente paso: `/memory-system index` |
-| `memory-system check [--json] [--harness h]` | `$SPECS_BASE/` en solo lectura | Informe de las cuatro familias de problemas (`missing-layer`, `orphan`, `invalid-frontmatter`, `broken-wikilink`) y cierre `problemas: N (…)`; con `--json`, un único objeto `{ harness, root, ok, summary, problems }`. No escribe nada. Exit 0 sin problemas, 1 con al menos uno, 2 ante error técnico |
+| `memory-system migrate --from=dod-monolithic [--dry-run] [--force]` | `$SPECS_BASE/guardrails/dod-story-checklist.md` (o el heredado `policies/dod-story.md`) | Un `guardrails/dod-story-<etapa>.md` por etapa (`[CREADO]`) y el original como índice deprecado (`[REEMPLAZADO]`); resumen `creados: N · sobrescritos: S · preservados: M · reemplazados: R`. Idempotente: nunca sobrescribe sin `--force` |
+| `memory-system check [--json] [--harness h] [--skills-dir <ruta>]` | `$SPECS_BASE/` en solo lectura | Informe de las cinco familias de problemas (`missing-layer`, `orphan`, `invalid-frontmatter`, `broken-wikilink`, `dod-guardrail`) y cierre `problemas: N (…)`; con `--json`, un único objeto `{ harness, root, ok, summary, problems }`. No escribe nada. Exit 0 sin problemas, 1 con al menos uno, 2 ante error técnico |
 
 > En un proyecto nuevo, `/sddf-init --level full` equivale a `/sddf-init` seguido de
 > `/memory-system scaffold` en un solo comando (el scaffold corre después de la pregunta de
@@ -124,6 +126,37 @@ runtime que tengas instalado. En el repositorio del framework el motor vive en
 > aquel no mira: los **wikilinks** `[[destino]]` contra el conjunto de slugs derivados y el
 > **frontmatter** de cada nodo. Un repositorio puede pasar uno y fallar el otro, así que en CI se
 > ejecutan los dos.
+
+### DoD de historia por etapa
+
+El Definition of Done de historia es un guardrail **por etapa** en `$SPECS_BASE/guardrails/`:
+
+| Etapa | Archivo | `from` → `to` | Lo carga |
+|---|---|---|---|
+| `specify` | `dod-story-specify.md` (`enforcement: warn`) | `SPECIFY/IN-PROGRESS` → `SPECIFY/DONE` | `story-specify` |
+| `plan` | `dod-story-plan.md` | `PLAN/IN-PROGRESS` → `PLAN/DONE` | `story-analyze` (gate, invocado por `story-plan`), `story-design` |
+| `implement` | `dod-story-implement.md` | `IMPLEMENT/IN-PROGRESS` → `IMPLEMENT/DONE` | `story-implement`, `story-implement-tasks` |
+| `code-review` | `dod-story-code-review.md` | `CODE-REVIEW/IN-PROGRESS` → `CODE-REVIEW/DONE` | `story-code-review` |
+| `verify` | `dod-story-verify.md` | `VERIFY/IN-PROGRESS` → `VERIFY/DONE` | `story-verify` |
+| `acceptance` | `dod-story-acceptance.md` | `ACCEPTANCE/IN-PROGRESS` → `ACCEPTANCE/DONE` | `story-acceptance` |
+| `deliver` | `dod-story-deliver.md` (`kind: content`) | — | revisión humana antes de publicar (sin skill por ahora) |
+
+Cada skill declara su etapa en la sección `## DoD aplicable` de su `SKILL.md` y carga **solo** ese
+archivo, con esta precedencia: `sddf.config.yaml › guardrails.dod.story.<etapa>` → convención
+`dod-story-<etapa>.md` → aviso accionable (el skill continúa sin validación DoD). Un proyecto
+consumidor cambia el DoD de una etapa sin tocar los skills:
+
+```yaml
+guardrails:
+  dod:
+    story:
+      implement: dod-story-implement-acme   # → $SPECS_BASE/guardrails/dod-story-implement-acme.md
+```
+
+`/memory-system check` verifica que cada DoD declare la transición de su etapa (`from`/`to`), que cada entrada del mapeo exista y que los skills
+referencien su etapa (familia `dod-guardrail`). Un proyecto con el DoD en un único archivo lo divide con
+`/memory-system migrate --from=dod-monolithic` (`--dry-run` para ver el plan); el original queda como
+índice deprecado hasta 4.0.0.
 
 > ⚠️ `docs-wiki-builder` está deprecado desde 3.3.0 (se elimina en 4.0.0): es un alias que
 > delega en `/memory-system index` (`--update` → `index`, `--dry-run` → `index --dry-run`).

@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-09-23
+updated: 2026-09-24
 ---
 
 # 📚 Índice de documentación
@@ -36,7 +36,14 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 ### Guardrails (guardrails/)
 
 - [[guardrails-index]] — [README.md](guardrails/README.md) — Índice de Guardrails
-- [[dod-story-checklist]] — [dod-story-checklist.md](guardrails/dod-story-checklist.md) — Definition of Done — Story (transition guardrail)
+- [[dod-story-acceptance]] — [dod-story-acceptance.md](guardrails/dod-story-acceptance.md) — DoD ACCEPTANCE — Story (transition guardrail)
+- [[dod-story-checklist]] — [dod-story-checklist.md](guardrails/dod-story-checklist.md) — DoD Story (deprecado)
+- [[dod-story-code-review]] — [dod-story-code-review.md](guardrails/dod-story-code-review.md) — DoD CODE-REVIEW — Story (transition guardrail)
+- [[dod-story-deliver]] — [dod-story-deliver.md](guardrails/dod-story-deliver.md) — Criterios de despliegue en producción (content guardrail)
+- [[dod-story-implement]] — [dod-story-implement.md](guardrails/dod-story-implement.md) — DoD IMPLEMENT — Story (transition guardrail)
+- [[dod-story-plan]] — [dod-story-plan.md](guardrails/dod-story-plan.md) — DoD PLAN — Story (transition guardrail)
+- [[dod-story-specify]] — [dod-story-specify.md](guardrails/dod-story-specify.md) — DoD SPECIFY — Story (transition guardrail)
+- [[dod-story-verify]] — [dod-story-verify.md](guardrails/dod-story-verify.md) — DoD VERIFY — Story (transition guardrail)
 - [[gr-agent-creation-checklist]] — [gr-agent-creation-checklist.md](guardrails/gr-agent-creation-checklist.md) — Guardrail: Custom agent creation
 - [[gr-ai-security-checklist]] — [gr-ai-security-checklist.md](guardrails/gr-ai-security-checklist.md) — Guardrail: AI security check for agent-facing artefacts
 - [[gr-code-security-checklist]] — [gr-code-security-checklist.md](guardrails/gr-code-security-checklist.md) — Guardrail: Code security check
@@ -247,6 +254,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-098-memory-system-migrate-harness]] — [story.md](specs/03-stories/STORY-098-memory-system-migrate-harness/story.md) — Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate
 - [[STORY-099-sddf-init-level-full]] — [story.md](specs/03-stories/STORY-099-sddf-init-level-full/story.md) — Inicializar la memoria completa desde sddf-init con el parámetro --level
 - [[STORY-100-restaurar-documentos-canonicos-estados]] — [story.md](specs/03-stories/STORY-100-restaurar-documentos-canonicos-estados/story.md) — Restaurar los documentos canónicos de la máquina de estados borrados sin repuntar sus citas
+- [[STORY-101-dod-story-por-etapa]] — [story.md](specs/03-stories/STORY-101-dod-story-por-etapa/story.md) — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill
 
 ---
 
@@ -333,8 +341,11 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 ## 🔗 Artefactos externos
 
 Nodos de otros harnesses (OpenSpec, Spec-kit) indexados en modo solo lectura; sus rutas son relativas a este directorio.
+El motor los agrupa con un subtítulo por origen (`OpenSpec — specs`, `OpenSpec — changes`, `Speckit — features`,
+`Mapeados desde el harness`). Un slug externo que coincide con el de un nodo propio se indexa con sufijo `-external`.
+Las capas que el harness ya modela (p. ej. `specs/` en Speckit y OpenSpec) aparecen como `_(gestionado por el harness)_`.
 
-_(sin artefactos)_
+_(sin artefactos externos)_
 
 ---
 
@@ -342,10 +353,10 @@ _(sin artefactos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 241 |
-| Nodos con frontmatter | 236 |
+| Nodos indexados | 249 |
+| Nodos con frontmatter | 244 |
 | Nodos sin frontmatter | 5 |
-| Wikilinks pendientes | 5 |
+| Wikilinks pendientes | 6 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |
 
@@ -361,6 +372,7 @@ _(sin artefactos)_
 
 Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artefacto:
 
+- [[STORY-100-slug]] ⚠️ nodo pendiente
 - [[project-template]] ⚠️ nodo pendiente
 - [[release-spec-template]] ⚠️ nodo pendiente
 - [[security-checklist]] ⚠️ nodo pendiente

@@ -102,7 +102,8 @@ agile-sddf/
     │
     ├── guardrails/                    # restricciones verificables
     │   ├── README.md
-    │   ├── dod-story-checklist.md     # transition guardrail
+    │   ├── dod-story-<etapa>.md       # transition guardrail: DoD de una etapa de historia
+    │   ├── dod-story-deliver.md       # content guardrail: despliegue en producción
     │   └── <guardrail-name>-checklist.md      # content guardrail
     │
     ├── guides/                        # documentación didáctica
@@ -223,7 +224,8 @@ docs/constitution.md          # principios supremos (fuera de policies/)
 - ❌ Duplicar un requirement en la story.
 - ❌ Editar un ADR aceptado.
 - ❌ Mezclar visión y requisitos bajo el mismo nombre.
-- ❌ Poner `dod-story-checklist.md` en `policies/` (es un transition guardrail).
+- ❌ Poner el DoD de historia en `policies/` (es un transition guardrail), o volver a juntar sus etapas en
+  un solo archivo que cada skill cargue entero.
 - ❌ Indexar todo en un archivo monolítico.
 - ❌ Enlazar sin bidireccionalidad.
 - ❌ Usar `docs/specs/templates/` en lugar de `docs/templates/`.
@@ -255,8 +257,9 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
 | `scaffold [--dry-run] [--harness h]` | STORY-096 | `detect → scaffold`: copia-si-falta del árbol semilla y de las nueve plantillas; no toca `index.md`. `--dry-run` imprime `[CREARÍA]`/`[PRESERVARÍA]` sin escribir. |
 | `rebuild [--force]` | STORY-096 | Sin `--force`: `❌ rebuild es destructivo. Añade --force para confirmar.` y ningún cambio. Con `--force`: advertencia `⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.`, `scaffold --force` (sobrescribe solo los archivos gestionados, §10.3) e `index`. Nunca borra. |
 | `index [--harness h] [--dry-run]` | STORY-095 | Regenera `docs/index.md` completo desde `assets/index-template.md`: una entrada `[[slug]]` por artefacto, agrupada por capa, más "Estado del grafo" y "Nodos pendientes". `--dry-run` imprime sin escribir. |
-| `check [--json] [--harness h]` | STORY-097 | Verificación en **solo lectura** de cuatro familias de problemas, con exit code para CI (§10.4). No corrige nada y no regenera `index.md`. |
+| `check [--json] [--harness h]` | STORY-097 | Verificación en **solo lectura** de cinco familias de problemas (la quinta, `dod-guardrail`, de STORY-101), con exit code para CI (§10.4). No corrige nada y no regenera `index.md`. |
 | `migrate [--harness h] [--yes]` | STORY-098 | Adopta la memoria en un proyecto Speckit u OpenSpec: `detect → scaffold --dry-run` (plan `📋 Plan de migración (<h>)`) `→ confirmación → scaffold` adaptado al perfil del harness (§10.5). `--yes` asume la confirmación; con `no` no escribe nada. No transforma artefactos ni invoca `index`. En un proyecto `sddf` informa `El proyecto ya es SDDF` y remite a `ensure`. |
+| `migrate --from=dod-monolithic [--dry-run] [--force]` | STORY-101 | Divide el DoD de historia en un guardrail por etapa y deja el original como índice deprecado (§10.7). Es un subcomando del motor, sin plan ni confirmación: nunca sobrescribe sin `--force`. |
 
 ### 10.2 Arquitectura
 
@@ -333,8 +336,8 @@ el modo exige el flag y emite la advertencia literal antes de escribir.
 `check` es la primera verificación estructural de la memoria y el único modo con exit code
 significativo. Es **solo lectura**: no crea, no modifica, no borra y no regenera `index.md`.
 
-**Las cuatro familias de problemas.** Un único recorrido del árbol (el mismo escáner y las mismas
-exclusiones de `index`) alimenta cuatro evaluadores puros:
+**Las cinco familias de problemas.** Un único recorrido del árbol (el mismo escáner y las mismas
+exclusiones de `index`) alimenta cinco evaluadores puros:
 
 | Familia (`kind`) | Regla | Invariante que impone |
 |---|---|---|
@@ -342,6 +345,7 @@ exclusiones de `index`) alimenta cuatro evaluadores puros:
 | `orphan` | Nodo indexable sin bloque de frontmatter (`---` inicial ausente o sin cerrar). | §7.2 |
 | `invalid-frontmatter` | Falta `type`, `slug` o `title` en el frontmatter **declarado**; además `id` o `status` cuando `type ∈ {project, epic, story}`. Un problema por campo ausente. | §7.2, §7.3 |
 | `broken-wikilink` | Ocurrencia de un wikilink que no resuelve contra el conjunto de slugs derivados. | §7.8 |
+| `dod-guardrail` | DoD de historia por etapa: frontmatter y cadena `from`/`to`, mapeo de `sddf.config.yaml`, DoD monolítico sin migrar y sección `## DoD aplicable` de los skills (§10.7). Solo si el proyecto tiene DoD. | §6 |
 
 Se evalúa el campo **declarado**, no el derivado: un artefacto cuyo `slug` deduce el motor de su
 nombre de archivo se indexa igual, pero `check` lo marca. El conjunto exigido es `REQUIRED_FIELDS`
@@ -363,7 +367,7 @@ plantilla con `<`/`>`, los nodos de `templates/` y los demás excluidos, y el al
   "harness": "sddf",
   "root": "docs",
   "ok": false,
-  "summary": { "missing-layer": 1, "orphan": 1, "invalid-frontmatter": 1, "broken-wikilink": 1 },
+  "summary": { "missing-layer": 1, "orphan": 1, "invalid-frontmatter": 1, "broken-wikilink": 1, "dod-guardrail": 0 },
   "problems": [
     { "kind": "missing-layer", "path": "product/", "detail": "capa ausente" },
     { "kind": "orphan", "path": "guides/notas.md", "detail": "sin frontmatter" },
@@ -376,7 +380,7 @@ plantilla con `<`/`>`, los nodos de `templates/` y los demás excluidos, y el al
 `path` es siempre relativa a la raíz y con `/` (portabilidad); `problems` va ordenado por
 `(kind, path, detail)` con comparación ordinal, de modo que dos ejecuciones producen la misma salida
 byte a byte. Sin `--json` el informe es textual, agrupado por familia, y su última línea es
-`problemas: N (missing-layer n · orphan n · invalid-frontmatter n · broken-wikilink n)`.
+`problemas: N (missing-layer n · orphan n · invalid-frontmatter n · broken-wikilink n · dod-guardrail n)`.
 
 **Los tres exit codes** son lo que hace el modo utilizable en CI:
 
@@ -438,3 +442,21 @@ son una tabla de datos (`HARNESS_PROFILES` del motor, `references/memory-rules.m
 `--dry-run` → `index --dry-run`, y no conserva lógica propia ni template. Se elimina en 4.0.0.
 `header-aggregation` no se fusiona: `memory-system` lee su esquema (`slug`, `title`) con un parser
 propio y el skill sigue siendo invocable de forma independiente.
+
+### 10.7 DoD de historia por etapa (STORY-101)
+
+El Definition of Done de historia es un transition guardrail **por etapa**:
+`guardrails/dod-story-{specify,plan,implement,code-review,verify,acceptance}.md`, más el content guardrail
+`dod-story-deliver.md`. Cada archivo de etapa declara la transición que protege (`from: <ETAPA>/IN-PROGRESS`,
+`to: <ETAPA>/DONE`; etapas en el orden `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE`),
+`applies-to` y `enforcement` (`error` bloquea; `warn` informa). Cada
+skill de historia lo referencia en su sección `## DoD aplicable` y carga solo el suyo; la resolución es
+`sddf.config.yaml › guardrails.dod.story.<etapa>` → convención `dod-story-<etapa>.md` → aviso.
+
+- **Módulo propio**: la tabla de etapas (`DOD_STAGES`), la división y el evaluador `dod-guardrail` viven en
+  `scripts/dod-story.js`, separados del motor genérico; el motor solo despacha.
+- **`migrate --from=dod-monolithic`** divide un DoD monolítico (formato de este repositorio o de la antigua
+  plantilla de `project-policies-generation`) y reemplaza el original por un índice `status: deprecated`
+  que se elimina en 4.0.0. Idempotente; nunca borra el heredado `policies/dod-story.md`.
+- Reglas completas: `skills/memory-system/references/dod-rules.md`.
+

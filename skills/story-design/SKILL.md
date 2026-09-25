@@ -49,7 +49,7 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 
 - `story.md` — historia de usuario con criterios de aceptación numerados (AC-1, AC-2 … AC-N)
 - `$SPECS_BASE/constitution.md` — stack, convenciones y restricciones técnicas del proyecto (opcional)
-- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios de calidad mínimos (opcional)
+- DoD de la etapa `plan` (`$SPECS_BASE/guardrails/dod-story-plan.md`, ver `## DoD aplicable`) — criterios de calidad mínimos (opcional)
 - Archivo de dependencias del proyecto: `package.json`, `requirements.txt`, `go.mod` o `pom.xml` (opcional)
 - Template de diseño: `assets/design-template.md` (opcional, hay fallback interno)
 
@@ -77,6 +77,23 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 - Herramientas: ninguna externa requerida
 
 ---
+
+## DoD aplicable
+
+| Elemento | Valor |
+|---|---|
+| Etapa | `plan` |
+| Archivo | `$SPECS_BASE/guardrails/dod-story-plan.md` (en este repositorio, `docs/guardrails/dod-story-plan.md`) |
+| Override | `sddf.config.yaml › guardrails.dod.story.plan` |
+| Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
+
+Resolución (primera coincidencia):
+
+1. `sddf.config.yaml › guardrails.dod.story.plan` → `$SPECS_BASE/guardrails/<slug>.md`
+2. Convención: `$SPECS_BASE/guardrails/dod-story-plan.md`
+3. Ninguno existe → emitir `⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin criterios de calidad del DoD.
+
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se carga como contexto de calidad en el Paso 3 (el diseño contribuye a la etapa PLAN); `story-design` no bloquea por él.
 
 ## Modos de ejecución
 
@@ -194,14 +211,10 @@ Construir el contexto técnico que se usará al generar el diseño. Leer todas l
        El diseño se generará sin restricciones técnicas explícitas del proyecto.
        Para definir políticas del proyecto, ejecuta /project-policies-generation.
     ```
-- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios de calidad mínimos (transition guardrail)
-  - Si no existe, buscar la ruta heredada `$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir:
+- DoD de la etapa `plan` — criterios de calidad mínimos (transition guardrail), resuelto según `## DoD aplicable`
+  - Si no se resuelve ningún archivo: emitir advertencia y continuar
     ```
-    ⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md
-    ```
-  - Si no existe ninguna: emitir advertencia y continuar
-    ```
-    ⚠️ No se encontró $SPECS_BASE/guardrails/dod-story-checklist.md
+    ⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic
        El diseño se generará sin criterios de calidad explícitos del proyecto.
        Para definir la Definition of Done del proyecto, ejecuta /project-policies-generation.
     ```
@@ -480,7 +493,7 @@ Preguntar: "¿La solución técnica refleja correctamente la historia? ¿Necesit
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
 | `constitution.md` ausente | `⚠️ No se encontró constitution.md` | Advertir y continuar |
-| `dod-story-checklist.md` ausente | `⚠️ No se encontró dod-story-checklist.md` | Advertir y continuar |
+| DoD de la etapa plan ausente | `⚠️ DoD de la etapa plan no encontrado …` | Advertir y continuar |
 
 ---
 

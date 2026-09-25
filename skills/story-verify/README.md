@@ -65,9 +65,9 @@ Si el template cambia, el skill lo refleja automáticamente sin modificaciones.
 
 ## DoD VERIFY
 
-Los criterios evaluados se leen en runtime de `$SPECS_BASE/guardrails/dod-story-checklist.md`, sección VERIFY. Para añadir un nuevo criterio, editar ese archivo — el skill lo detecta automáticamente en la siguiente ejecución.
+Los criterios evaluados se leen en runtime del DoD de la etapa verify: `$SPECS_BASE/guardrails/dod-story-verify.md`, o el slug que declare `sddf.config.yaml › guardrails.dod.story.verify` (ver `
 
-Si la sección VERIFY no existe, el skill usa criterios mínimos genéricos:
+Si ese archivo no existe, el skill usa criterios mínimos genéricos:
 1. Todos los tests del proyecto pasan
 2. Sin defectos CRITICAL o HIGH sin resolver
 

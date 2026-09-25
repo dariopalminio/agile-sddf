@@ -72,6 +72,23 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 
 ---
 
+## DoD aplicable
+
+| Elemento | Valor |
+|---|---|
+| Etapa | `specify` |
+| Archivo | `$SPECS_BASE/guardrails/dod-story-specify.md` (en este repositorio, `docs/guardrails/dod-story-specify.md`) |
+| Override | `sddf.config.yaml › guardrails.dod.story.specify` |
+| Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
+
+Resolución (primera coincidencia):
+
+1. `sddf.config.yaml › guardrails.dod.story.specify` → `$SPECS_BASE/guardrails/<slug>.md`
+2. Convención: `$SPECS_BASE/guardrails/dod-story-specify.md`
+3. Ninguno existe → emitir `⚠️ DoD de la etapa specify no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin verificación DoD SPECIFY.
+
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se verifica en el Paso de verificación DoD SPECIFY, antes de escribir `SPECIFY/DONE`. Su `enforcement` es `warn`: los criterios incumplidos se informan sin bloquear la transición.
+
 ## Modos de ejecución
 
 - **Manual** (`/story-specify`): interactivo, guía al usuario paso a paso, muestra backlog en tiempo real y pide confirmación antes de cada ciclo de especificación
@@ -164,9 +181,15 @@ Para la historia activa:
 4. Mostrar al usuario un resumen corto de la evaluación
 
 **Si la decisión es `APROBADA`:**
-1. Editar el frontmatter del archivo: establecer `status: SPECIFY` / `substatus: DONE`
-2. Actualizar el registro con `Estado = SPECIFY/DONE`
-3. Continuar con la siguiente historia pendiente
+1. **Verificación DoD SPECIFY:** resolver el DoD de la etapa `specify` según `## DoD aplicable` y evaluar
+   cada criterio `- [ ]` contra la historia (`✓` / `❌` / `⚠️` ante duda). Mostrar
+   `📋 DoD SPECIFY: <N>/<Total> criterios ✓` y listar los `❌`. Con `enforcement: warn` (el valor
+   por defecto) los `❌` se informan y **no** impiden el paso 2; con `enforcement: error`, la historia
+   queda en `SPECIFY/IN-PROGRESS` con nota `DoD SPECIFY incumplido` y se continúa con la siguiente.
+   Si el DoD no se resuelve, emitir el aviso de `## DoD aplicable` y seguir sin verificación.
+2. Editar el frontmatter del archivo: establecer `status: SPECIFY` / `substatus: DONE`
+3. Actualizar el registro con `Estado = SPECIFY/DONE`
+4. Continuar con la siguiente historia pendiente
 
 ---
 

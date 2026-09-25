@@ -200,7 +200,7 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
 | `docs/domains/domain-story-lifecycle.md` | Pipeline, rework y gates del nivel L1. |
 | `docs/domains/domain-knowledge-artifacts.md` | Modelo de artefactos, trazabilidad, policies, guardrails, DoD y templates. |
 | `docs/constitution.md` | Principios técnicos y reglas vigentes (documento supremo de gobernanza). |
-| `docs/guardrails/dod-story-checklist.md` | Criterios de terminado por fase de historia (transition guardrail). |
+| `docs/guardrails/dod-story-<etapa>.md` | Criterios de terminado de cada etapa de historia: un transition guardrail por etapa (`specify` … `acceptance`) más `dod-story-release.md` (despliegue). |
 
 ## Open Questions
 

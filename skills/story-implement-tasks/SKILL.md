@@ -67,7 +67,7 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 | `design.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/design.md` | ✓ obligatorio |
 | `tasks.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/tasks.md` | ✓ obligatorio |
 | `fix-directives.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (`needs-changes`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
-| `dod-story-checklist.md` | `$SPECS_BASE/guardrails/dod-story-checklist.md` | opcional |
+| DoD de la etapa `implement` | `$SPECS_BASE/guardrails/dod-story-implement.md` (ver `## DoD aplicable`) | opcional |
 
 ---
 
@@ -103,6 +103,23 @@ Cualquier otro estado detiene la ejecución con error descriptivo.
 | `story-code-review` | Skill downstream que consume `implement-report.md` para revisar la implementación |
 
 ---
+
+## DoD aplicable
+
+| Elemento | Valor |
+|---|---|
+| Etapa | `implement` |
+| Archivo | `$SPECS_BASE/guardrails/dod-story-implement.md` (en este repositorio, `docs/guardrails/dod-story-implement.md`) |
+| Override | `sddf.config.yaml › guardrails.dod.story.implement` |
+| Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
+
+Resolución (primera coincidencia):
+
+1. `sddf.config.yaml › guardrails.dod.story.implement` → `$SPECS_BASE/guardrails/<slug>.md`
+2. Convención: `$SPECS_BASE/guardrails/dod-story-implement.md`
+3. Ninguno existe → emitir `⚠️ DoD de la etapa implement no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin validación DoD IMPLEMENT.
+
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate antes de escribir `IMPLEMENT/DONE`.
 
 ## Modos de ejecución
 
@@ -380,25 +397,16 @@ Al terminar todas las filas (incluso si alguna fue omitida por archivo inexisten
 
 #### 2g. Cargar criterios DoD IMPLEMENT
 
-Intentar localizar `$SPECS_BASE/guardrails/dod-story-checklist.md`. Si no existe, buscar la ruta heredada
-`$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir
-`⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`.
+Resolver el DoD de la etapa `implement` según `## DoD aplicable` (config → convención).
 
-**Si ninguno de los dos archivos existe:**
+**Si no se resuelve ningún archivo:**
 ```
-⚠️ dod-story-checklist.md no encontrado en $SPECS_BASE/guardrails/ — se omitirá la validación DoD IMPLEMENT
+⚠️ DoD de la etapa implement no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic
+   Se omitirá la validación DoD IMPLEMENT
 ```
 Registrar internamente `$DOD_IMPLEMENT_CRITERIA = []` y continuar.
 
-**Si el archivo existe:**
-1. Buscar el primer encabezado h3 (`###`) cuyo texto contenga, case-insensitive, alguno de los términos: `IMPLEMENT`, `IMPLEMENTANDO` o `IMPLEMENTACIÓN`
-2. Registrar en log el encabezado encontrado
-3. **Si no se encuentra ningún encabezado coincidente:**
-   ```
-   ⚠️ Sección IMPLEMENT no encontrada en DoD — se omitirá la validación DoD IMPLEMENT
-   ```
-   Registrar internamente `$DOD_IMPLEMENT_CRITERIA = []` y continuar.
-4. **Si se encontró la sección:** extraer todas las líneas `- [ ] <texto>` y `- [x] <texto>` dentro de esa sección como lista de criterios planos; registrar internamente como `$DOD_IMPLEMENT_CRITERIA`
+**Si el archivo existe:** extraer todas sus líneas `- [ ] <texto>` y `- [x] <texto>` como lista de criterios planos; registrar internamente como `$DOD_IMPLEMENT_CRITERIA` y registrar su `enforcement` (`error` bloquea `IMPLEMENT/DONE`; `warn` solo informa).
 
 Mostrar resumen de carga DoD:
 ```
@@ -609,7 +617,7 @@ Si `N_completadas = 0` (ejecución inicial), omitir las filas de "ejecución ant
 **Si `$DOD_IMPLEMENT_CRITERIA` está vacío:**
 ```
 ⚠️ DoD IMPLEMENT no encontrado — se omitió la validación.
-   Verifica que $SPECS_BASE/guardrails/dod-story-checklist.md contiene la sección "IMPLEMENT".
+   Verifica que existe el DoD de la etapa implement (ver `## DoD aplicable`).
 ```
 
 **Si hay criterios evaluados**, incluir la siguiente tabla con los resultados del sub-paso 4g:
@@ -748,7 +756,7 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 | Hallazgo con archivo inexistente (pre-paso 2f) | `⚠️ archivo no encontrado: <ruta>` | Registrar en `$FIX_SKIPPED` y continuar con el siguiente hallazgo |
 | Tarea legada `Implementar fix-directives.md` sin `fix-directives.md` en `$STORY_DIR` | `[T] ⚠️ bloqueada — fix-directives.md no encontrado en <ruta>` | Marcar `[~]` en `tasks.md` y continuar sin error fatal |
 | Tarea con componente no definido en `design.md` | `[T] ⚠️ bloqueada — componente "<nombre>" no definido en design.md` | Marcar `[~]` y continuar |
-| `dod-story-checklist.md` ausente o sin sección IMPLEMENT | `⚠️ dod-story-checklist.md no encontrado …` / `⚠️ Sección IMPLEMENT no encontrada en DoD …` | Advertir y continuar sin validación DoD |
+| DoD de la etapa implement ausente | `⚠️ DoD de la etapa implement no encontrado …` | Advertir y continuar sin validación DoD |
 | Épica padre no encontrada | `⚠️ No se pudo actualizar el checklist de la épica: <razón>` | Advertir y continuar; la transición de estado ya fue aplicada |
 
 ---

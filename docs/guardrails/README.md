@@ -107,7 +107,26 @@ Los dos primeros son las mitades complementarias de la política de seguridad de
 
 | Archivo | Ámbito | Verificado por |
 |---------|--------|----------------|
-| [dod-story-checklist.md](dod-story-checklist.md) | Definition of Done de una historia: criterios por estado (SPECIFY, PLAN, IMPLEMENT, CODE-REVIEW, VERIFY, ACCEPTANCE) que bloquean la transición al siguiente | Los skills del pipeline de historia, al cerrar cada estado |
+| [dod-story-specify.md](dod-story-specify.md) | DoD SPECIFY (`SPECIFY/IN-PROGRESS` → `SPECIFY/DONE`, `enforcement: warn`) | `story-specify` |
+| [dod-story-plan.md](dod-story-plan.md) | DoD PLAN (`PLAN/IN-PROGRESS` → `PLAN/DONE`) | `story-analyze` (quality gate), `story-design` (contexto) |
+| [dod-story-implement.md](dod-story-implement.md) | DoD IMPLEMENT (`IMPLEMENT/IN-PROGRESS` → `IMPLEMENT/DONE`) | `story-implement`, `story-implement-tasks` |
+| [dod-story-code-review.md](dod-story-code-review.md) | DoD CODE-REVIEW (`CODE-REVIEW/IN-PROGRESS` → `CODE-REVIEW/DONE`) | `story-code-review` |
+| [dod-story-verify.md](dod-story-verify.md) | DoD VERIFY (`VERIFY/IN-PROGRESS` → `VERIFY/DONE`) | `story-verify` |
+| [dod-story-acceptance.md](dod-story-acceptance.md) | DoD ACCEPTANCE (`ACCEPTANCE/IN-PROGRESS` → `ACCEPTANCE/DONE`) | `story-acceptance` |
 
-Lo genera `/project-policies-generation` desde su template; un `policies/dod-story.md` heredado sigue
-siendo leído por los skills con aviso de deprecación hasta que se mueva aquí.
+Cada DoD es la condición para **cerrar** su etapa: protege la transición `<ETAPA>/IN-PROGRESS` → `<ETAPA>/DONE`.
+El DoD de historia es un guardrail por etapa: cada skill declara el suyo en su sección `## DoD aplicable`
+y carga solo ese archivo. `sddf.config.yaml › guardrails.dod.story.<etapa>` puede apuntar una etapa a
+otro slug sin tocar los skills. `memory-system check` verifica la cadena `from`/`to`, el mapeo y las
+referencias de los skills (familia `dod-guardrail`).
+
+[dod-story-checklist.md](dod-story-checklist.md) es el **índice deprecado** del antiguo DoD monolítico:
+se conserva durante la minor 3.3.x y se elimina en 4.0.0. Un proyecto con el DoD en un solo archivo lo
+divide con `/memory-system migrate --from=dod-monolithic`. `/project-policies-generation` genera las
+seis etapas desde sus plantillas.
+
+### Content guardrails del DoD
+
+| Archivo | Ámbito | Verificado por |
+|---------|--------|----------------|
+| [dod-story-deliver.md](dod-story-deliver.md) | Criterios de despliegue en producción (publicación en npm; `kind: content`, `applies-to: deliver`; sin skill por ahora) | Revisión humana antes de publicar; ver [deployment-to-npm.md](../runbooks/deployment-to-npm.md) |

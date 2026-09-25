@@ -71,7 +71,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - `design.md` — diseño técnico con componentes, interfaces y decisiones (obligatorio)
 - `testcases.md` — casos de prueba por criterio de aceptación (opcional; requerido si tasks.md ausente)
 - `tasks.md` — plan de tareas de implementación (opcional; requerido si testcases.md ausente)
-- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios DoD fase PLAN (opcional)
+- DoD de la etapa `plan` (`$SPECS_BASE/guardrails/dod-story-plan.md`, ver `## DoD aplicable`) — opcional
 - `$SPECS_BASE/specs/02-epics/{parent}-*/epic.md` — épica padre para verificar alineación (opcional)
 - Template del reporte: `assets/analyze-report-template.md` (opcional, hay fallback interno)
 
@@ -103,6 +103,23 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - Herramientas: ninguna externa requerida
 
 ---
+
+## DoD aplicable
+
+| Elemento | Valor |
+|---|---|
+| Etapa | `plan` |
+| Archivo | `$SPECS_BASE/guardrails/dod-story-plan.md` (en este repositorio, `docs/guardrails/dod-story-plan.md`) |
+| Override | `sddf.config.yaml › guardrails.dod.story.plan` |
+| Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
+
+Resolución (primera coincidencia):
+
+1. `sddf.config.yaml › guardrails.dod.story.plan` → `$SPECS_BASE/guardrails/<slug>.md`
+2. Convención: `$SPECS_BASE/guardrails/dod-story-plan.md`
+3. Ninguno existe → emitir `⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin validación DoD PLAN.
+
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate de la Correlación 5 antes de escribir `READY-FOR-IMPLEMENT/DONE`.
 
 ## Modos de ejecución
 
@@ -178,19 +195,14 @@ El archivo analyze.md ya existe en: <ruta>
 
 #### 1d. Cargar criterios DoD — Fase PLAN
 
-Intentar localizar `$SPECS_BASE/guardrails/dod-story-checklist.md`. Si no existe, buscar la ruta heredada
-`$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir
-`⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`.
+Resolver el DoD de la etapa `plan` según `## DoD aplicable` (config → convención).
 
-**Si ninguno de los dos archivos existe:**
-- Emitir: `⚠️ dod-story-checklist.md no encontrado — se omitirá la validación DoD PLAN`
+**Si no se resuelve ningún archivo:**
+- Emitir: `⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic`
 - Registrar internamente: `$DOD_PLAN_CRITERIA = []`
 - Continuar (no detener la ejecución)
 
-**Si el archivo existe:**
-- Buscar el primer encabezado `###` cuyo texto contenga, case-insensitive, alguno de: `PLAN`, `PLANNING`, `PLANIFICACIÓN`
-- **Si no hay coincidencia:** emitir `⚠️ Sección PLAN no encontrada en DoD — se omitirá la validación DoD PLAN`; registrar `$DOD_PLAN_CRITERIA = []`
-- **Si se encontró:** extraer todas las líneas de checkbox (`- [ ]` y `- [x]`) como lista de criterios planos; registrar `$DOD_PLAN_CRITERIA`; emitir `✓ DoD PLAN cargado: <N> criterios encontrados`
+**Si el archivo existe:** extraer todas sus líneas de checkbox (`- [ ]` y `- [x]`) como lista de criterios planos; registrar `$DOD_PLAN_CRITERIA` y su `enforcement` (`error`: un criterio `❌` es ERROR TIPO E; `warn`: se informa como WARNING); emitir `✓ DoD PLAN cargado: <N> criterios encontrados`
 
 ---
 
@@ -539,8 +551,7 @@ Si solo hay WARNINGs o está todo OK:
 | `testcases.md` ausente (tasks.md presente) | `⚠️ testcases.md no encontrado — cobertura de pruebas omitida` | Advertir y continuar |
 | `tasks.md` ausente (testcases.md presente) | `⚠️ No se encontró tasks.md en: <ruta> — análisis de tareas omitido` | Advertir y continuar. Informar que `/story-tasking {story_id}` habilita el análisis completo |
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
-| `dod-story-checklist.md` ausente | `⚠️ dod-story-checklist.md no encontrado` | Advertir y continuar sin validación DoD |
-| Sección PLAN no encontrada en DoD | `⚠️ Sección PLAN no encontrada en DoD` | Advertir y continuar sin validación DoD |
+| DoD de la etapa plan ausente | `⚠️ DoD de la etapa plan no encontrado …` | Advertir y continuar sin validación DoD |
 | Épica padre no encontrada | `⚠️ No se encontró epic.md para: <parent>` | Advertir y continuar sin verificación de épica |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
 
@@ -666,7 +677,7 @@ updated: {date}
 ## Cumplimiento DoD — Fase PLAN
 
 <!-- Si $DOD_PLAN_CRITERIA estuvo vacío al ejecutar Correlación 5, mostrar el texto de aviso a continuación y omitir la tabla. -->
-<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que $SPECS_BASE/guardrails/dod-story-checklist.md contiene una sección con el término "PLAN". -->
+<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que existe el DoD de la etapa plan ($SPECS_BASE/guardrails/dod-story-plan.md o su override en sddf.config.yaml). -->
 
 | Criterio DoD | Estado | Severidad | Evidencia |
 |---|---|---|---|

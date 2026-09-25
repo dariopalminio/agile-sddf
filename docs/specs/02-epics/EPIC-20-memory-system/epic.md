@@ -34,7 +34,7 @@ La memoria del proyecto (`docs/`) está definida en `docs/architecture/memory-sy
 - [x] **STORY-098 — Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate:** perfiles de harness (capas omitidas, mapeos, raíces externas indexadas); `migrate` propone un plan y pide confirmación antes de escribir; nunca toca los directorios del harness. — [[STORY-098-memory-system-migrate-harness]]
 - [x] **STORY-099 — Inicializar la memoria completa desde sddf-init con el parámetro --level:** niveles `minimal | standard | full`; solo `full` invoca `memory-system scaffold`; el comportamiento por defecto no cambia. — [[STORY-099-sddf-init-level-full]]
 - [ ] **STORY-100 — Descripción de la historia 100:** breve descripción de la historia 100. — [[STORY-100-slug]]
-- [ ] **STORY-101 — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill:** dividir `dod-story-checklist.md` en un archivo por etapa, referencia explícita desde cada `SKILL.md` y mapeo opcional en `sddf.config.yaml`. — [[STORY-101-dod-story-por-etapa]]
+- [x] **STORY-101 — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill:** dividir `dod-story-checklist.md` en un archivo por etapa, referencia explícita desde cada `SKILL.md` y mapeo opcional en `sddf.config.yaml`. — [[STORY-101-dod-story-por-etapa]]
 
 ## Flujos Críticos / Smoke Tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*

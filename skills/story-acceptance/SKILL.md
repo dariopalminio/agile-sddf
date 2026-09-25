@@ -47,7 +47,7 @@ story-acceptance  → validación humana final              ← aquí
 ## Entrada
 
 - `$SPECS_BASE/specs/03-stories/<story-id>/story.md` — historia a validar (precondición de estado)
-- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios DoD sección ACCEPTANCE (opcional)
+- DoD de la etapa `acceptance` (`$SPECS_BASE/guardrails/dod-story-acceptance.md`, ver `## DoD aplicable`) — opcional
 - `$SPECS_BASE/specs/03-stories/<story-id>/acceptance-report.md` — si existe, detección de sesión previa
 
 ## Parámetros
@@ -59,7 +59,24 @@ story-acceptance  → validación humana final              ← aquí
 
 ## Dependencias
 
-- Archivos de entrada: `$SPECS_BASE/guardrails/dod-story-checklist.md`, `assets/acceptance-report-template.md`
+- Archivos de entrada: DoD de la etapa `acceptance` (ver `## DoD aplicable`), `assets/acceptance-report-template.md`
+
+## DoD aplicable
+
+| Elemento | Valor |
+|---|---|
+| Etapa | `acceptance` |
+| Archivo | `$SPECS_BASE/guardrails/dod-story-acceptance.md` (en este repositorio, `docs/guardrails/dod-story-acceptance.md`) |
+| Override | `sddf.config.yaml › guardrails.dod.story.acceptance` |
+| Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
+
+Resolución (primera coincidencia):
+
+1. `sddf.config.yaml › guardrails.dod.story.acceptance` → `$SPECS_BASE/guardrails/<slug>.md`
+2. Convención: `$SPECS_BASE/guardrails/dod-story-acceptance.md`
+3. Ninguno existe → emitir `⚠️ DoD de la etapa acceptance no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar solo con los criterios Gherkin de `story.md`.
+
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Sus criterios se añaden a los Gherkin de `story.md` en la sesión de validación.
 
 ## Modos de ejecución
 
@@ -179,21 +196,19 @@ Leer `story.md` y extraer todos los escenarios Gherkin de la sección `## ✅ Cr
 
 Registrar internamente como `$GHERKIN_CRITERIOS`.
 
-#### 2b. Leer DoD sección ACCEPTANCE
+#### 2b. Leer el DoD de la etapa acceptance
 
-Buscar `$SPECS_BASE/guardrails/dod-story-checklist.md`. Si no existe, buscar la ruta heredada
-`$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir
-`⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`.
+Resolver el DoD de la etapa `acceptance` según `## DoD aplicable` (config → convención).
 
-**Si ninguno de los dos archivos existe o no tiene sección ACCEPTANCE:**
+**Si no se resuelve ningún archivo, o no contiene ninguna línea `- [ ]`:**
 ```
-⚠️ No se encontró sección ACCEPTANCE en el DoD.
+⚠️ DoD de la etapa acceptance no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic
    Se usarán los criterios de aceptación de story.md como lista de validación.
 ```
 Registrar `$DOD_CRITERIOS = []`.
 
-**Si existe la sección ACCEPTANCE:**
-Extraer todas las líneas `- [ ] <texto>` como lista de criterios DoD.
+**Si el archivo existe:**
+Extraer todas sus líneas `- [ ] <texto>` como lista de criterios DoD.
 Registrar internamente como `$DOD_CRITERIOS`.
 
 Mostrar:
@@ -476,7 +491,7 @@ o bien (si ACCEPTANCE-BLOCKED):
 
 ### Caso 1 — Happy path (todos APPROVED)
 
-**Input:** Historia `STORY-NNN` con `status: VERIFY / substatus: DONE`, 2 escenarios Gherkin, sección ACCEPTANCE en DoD
+**Input:** Historia `STORY-NNN` con `status: VERIFY / substatus: DONE`, 2 escenarios Gherkin, DoD de la etapa acceptance presente
 **Acción:** Ejecutar `/story-acceptance STORY-NNN`, responder PASS a todos los criterios
 **Output esperado:**
 - `acceptance-report.md` con `final-status: ACCEPTANCE-APPROVED`, `session-status: complete`
@@ -500,12 +515,12 @@ o bien (si ACCEPTANCE-BLOCKED):
 - Mensaje de error con estado actual y estados válidos requeridos
 - Ningún archivo modificado
 
-### Caso 4 — DoD sin sección ACCEPTANCE
+### Caso 4 — DoD de la etapa acceptance ausente
 
-**Input:** Historia en `VERIFY/DONE`, `dod-story-checklist.md` sin sección ACCEPTANCE
+**Input:** Historia en `VERIFY/DONE`, sin `dod-story-acceptance.md` ni override en `sddf.config.yaml`
 **Acción:** Ejecutar `/story-acceptance STORY-NNN`
 **Output esperado:**
-- Aviso: "No se encontró sección ACCEPTANCE en el DoD. Se usarán los criterios de story.md"
+- Aviso: "DoD de la etapa acceptance no encontrado … Se usarán los criterios de aceptación de story.md"
 - Sesión continúa usando solo criterios Gherkin
 
 ### Caso 5 — Sesión interrumpida y reanudada

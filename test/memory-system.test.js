@@ -589,7 +589,7 @@ test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
 // Contratos de verificación V-1…V-10 de design.md.
 // ---------------------------------------------------------------------------
 
-const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink'];
+const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink', 'dod-guardrail'];
 
 // Contexto de evaluación mínimo: `root` lo usa solo `missingLayers`.
 function checkCtx({ root = os.tmpdir(), nodes = [], profile = { skipLayers: [] }, slugSet = new Set() } = {}) {
@@ -716,7 +716,7 @@ test('S097-UT-008 check --json: objeto único, claves ordenadas y byte a byte re
   assert.deepEqual(Object.keys(parsed), ['harness', 'root', 'ok', 'summary', 'problems']);
   assert.deepEqual(Object.keys(parsed.summary), CHECK_KINDS);
   assert.deepEqual([parsed.harness, parsed.root, parsed.ok], ['sddf', root, false]);
-  assert.deepEqual(parsed.summary, { 'missing-layer': 1, orphan: 1, 'invalid-frontmatter': 1, 'broken-wikilink': 1 });
+  assert.deepEqual(parsed.summary, { 'missing-layer': 1, orphan: 1, 'invalid-frontmatter': 1, 'broken-wikilink': 1, 'dod-guardrail': 0 });
 
   // Orden canónico (kind, path, detail) y `path` siempre con `/` (NFR-4).
   const keys = parsed.problems.map((entry) => `${entry.kind}\u0000${entry.path}\u0000${entry.detail}`);
@@ -831,7 +831,7 @@ test('S097-E2E-002 check --json: gate de CI y re-chequeo tras corregir el wikili
   assert.equal(first.status, 1, first.stderr);
   const before = JSON.parse(first.stdout);
   assert.equal(before.ok, false);
-  assert.deepEqual(before.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 1 });
+  assert.deepEqual(before.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 1, 'dod-guardrail': 0 });
   assert.deepEqual(before.problems, [
     { kind: 'broken-wikilink', path: 'guides/sdd.md', detail: '[[no-existe]] no resuelve' },
   ]);
@@ -844,7 +844,7 @@ test('S097-E2E-002 check --json: gate de CI y re-chequeo tras corregir el wikili
   const after = JSON.parse(second.stdout);
   assert.equal(after.ok, true);
   assert.deepEqual(after.problems, []);
-  assert.deepEqual(after.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 0 });
+  assert.deepEqual(after.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 0, 'dod-guardrail': 0 });
 });
 
 // ---------------------------------------------------------------------------

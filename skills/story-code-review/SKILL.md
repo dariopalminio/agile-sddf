@@ -72,7 +72,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 | `testcases.md` | Opcional | Especificación canónica de casos de prueba producida por `/story-testcases`; si existe, se incorpora al análisis de cobertura de ACs y trazabilidad de diseño |
 | `tasks.md` | Opcional | El Tech-Lead-Reviewer puede revisar calidad sin lista de tareas; su presencia solo decide si se ofrece `/story-implement-tasks` como ejecutor alternativo (Paso 4g). Este skill nunca escribe en él |
 | `constitution.md` | Opcional | Mejora la revisión pero no la bloquea si no existe |
-| `dod-story-checklist.md` | Opcional | Mismo caso que `constitution.md` |
+| DoD de la etapa `code-review` (`dod-story-code-review.md`) | Opcional | Mismo caso que `constitution.md` |
 
 > Para actualizar esta lista en el futuro, editar únicamente esta sección sin modificar el cuerpo del Paso 1.
 
@@ -99,6 +99,23 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 - Agentes locales: [`agents/tech-lead-reviewer.agent.md`, `agents/product-owner-reviewer.agent.md`, `agents/integration-reviewer.agent.md`, `agents/security-reviewer.agent.md`]
 
 ---
+
+## DoD aplicable
+
+| Elemento | Valor |
+|---|---|
+| Etapa | `code-review` |
+| Archivo | `$SPECS_BASE/guardrails/dod-story-code-review.md` (en este repositorio, `docs/guardrails/dod-story-code-review.md`) |
+| Override | `sddf.config.yaml › guardrails.dod.story.code-review` |
+| Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
+
+Resolución (primera coincidencia):
+
+1. `sddf.config.yaml › guardrails.dod.story.code-review` → `$SPECS_BASE/guardrails/<slug>.md`
+2. Convención: `$SPECS_BASE/guardrails/dod-story-code-review.md`
+3. Ninguno existe → emitir `⚠️ DoD de la etapa code-review no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin validación DoD CODE-REVIEW.
+
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate de la revisión antes de escribir `CODE-REVIEW/DONE`; su ruta resuelta es `$DOD_PATH` para los agentes revisores.
 
 ## Modos de ejecución
 
@@ -249,7 +266,7 @@ Extraer y registrar internamente:
 
 Buscar los siguientes archivos en el repositorio:
 - `docs/constitution.md` (o ruta alternativa detectada). Si no existe, buscar la ruta heredada `docs/policies/constitution.md`; si existe, usarla y emitir `⚠️ policies/constitution.md está deprecado — muévelo a la raíz de docs/ (constitution.md)`
-- `docs/guardrails/dod-story-checklist.md` (o ruta alternativa detectada). Si no existe, buscar la ruta heredada `docs/policies/dod-story.md`; si existe, usarla y emitir `⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`
+- El DoD de la etapa `code-review`, resuelto según `## DoD aplicable` (config → convención; por defecto `docs/guardrails/dod-story-code-review.md`)
 
 Registrar las rutas resueltas como `$CONSTITUTION_PATH` y `$DOD_PATH`.
 
@@ -257,19 +274,12 @@ Registrar las rutas resueltas como `$CONSTITUTION_PATH` y `$DOD_PATH`.
 
 **Si `$DOD_PATH` está vacío o el archivo no existe:**
 ```
-⚠️ dod-story-checklist.md no encontrado — se omitirá la validación DoD CODE-REVIEW
+⚠️ DoD de la etapa code-review no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic
+   Se omitirá la validación DoD CODE-REVIEW
 ```
 Registrar internamente `$DOD_CODE_REVIEW_CRITERIA = []` y continuar.
 
-**Si el archivo existe:**
-1. Buscar el primer encabezado h3 (`###`) cuyo texto contenga, case-insensitive, alguno de los términos: `CODE-REVIEW`, `CODE REVIEW`, `REVISIÓN DE CÓDIGO` o `REVISION DE CODIGO`
-2. Registrar en log el encabezado encontrado
-3. **Si no se encuentra ningún encabezado coincidente:**
-   ```
-   ⚠️ Sección CODE-REVIEW no encontrada en DoD — se omitirá la validación DoD CODE-REVIEW
-   ```
-   Registrar internamente `$DOD_CODE_REVIEW_CRITERIA = []` y continuar.
-4. **Si se encontró la sección:** extraer todas las líneas `- [ ] <texto>` y `- [x] <texto>` dentro de esa sección, con su número de línea en el archivo, como lista de criterios planos; registrar internamente como `$DOD_CODE_REVIEW_CRITERIA`
+**Si el archivo existe:** extraer todas sus líneas `- [ ] <texto>` y `- [x] <texto>`, con su número de línea en el archivo, como lista de criterios planos; registrar internamente como `$DOD_CODE_REVIEW_CRITERIA` y registrar su `enforcement` (`error` bloquea la aprobación; `warn` solo informa). Un criterio `Se cumple [[dod-story-implement]]` se evalúa contra el DoD de la etapa `implement`, resuelto con la misma precedencia.
 
 #### 2e. Leer testcases.md (si disponible)
 
@@ -288,7 +298,7 @@ Mostrar resumen de carga:
    implement-report.md:      ✓ (<N> archivos implementados) | ⏭️ no disponible
    testcases.md:             ✓ (<N> casos de prueba) | ⏭️ no disponible
    constitution.md:          <ruta>
-   dod-story-checklist.md:    <ruta>
+   DoD code-review:          <ruta>
    DoD CODE-REVIEW: <N criterios cargados | ⚠️ no encontrado>
 ```
 
@@ -310,7 +320,7 @@ Lanzar simultáneamente los siguientes subagentes, pasando a cada agente:
 - `$STORY_DIR`: ruta del directorio de la historia
 - `$REPO_PATH`: ruta raíz del repositorio (`$REPO_ROOT`)
 - `$CONSTITUTION_PATH`: ruta a constitution.md
-- `$DOD_PATH`: ruta a dod-story-checklist.md
+- `$DOD_PATH`: ruta al DoD de la etapa code-review (`dod-story-code-review.md` o el override de `sddf.config.yaml`)
 - `$IMPL_REPORT_AVAILABLE`: flag booleano de disponibilidad de implement-report.md
 - `$TESTCASES_AVAILABLE`: flag booleano de disponibilidad de testcases.md
 - `$IMPL_FILES`: lista de archivos implementados (extraída en el Paso 2c; puede estar vacía)
@@ -411,7 +421,7 @@ Clasificar cada criterio como:
 
 **Para cada hallazgo `❌`**, añadir a la tabla consolidada interna con:
 - `Dimensión`: `DoD-CODE-REVIEW`
-- `Archivo:Línea`: `docs/guardrails/dod-story-checklist.md:<número_de_línea>`
+- `Archivo:Línea`: `<$DOD_PATH>:<número_de_línea>` (p. ej. `docs/guardrails/dod-story-code-review.md:14`)
 - `Severidad`: valor asignado (HIGH/MEDIUM/LOW)
 - `Hallazgo`: texto del criterio DoD
 - `Acción requerida`: acción concreta derivada semánticamente del criterio
@@ -476,7 +486,7 @@ Completar el template con:
 - Sección "Resumen de bloqueantes": título de la historia, severidad máxima, total de hallazgos HIGH/MEDIUM (incluyendo hallazgos DoD si los hay), `Ronda: $ROUND`
 - Tabla "Instrucciones de corrección": una fila por hallazgo bloqueante (HIGH o MEDIUM) numeradas correlativamente, con columnas `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`
   - Hallazgos de agentes: `Dimensión` = dimensión del agente (code-quality, requirements-coverage, integration-architecture, security)
-  - Hallazgos DoD: `Dimensión` = `DoD-CODE-REVIEW`, `Archivo:Línea` = `docs/guardrails/dod-story-checklist.md:<número_de_línea>`
+  - Hallazgos DoD: `Dimensión` = `DoD-CODE-REVIEW`, `Archivo:Línea` = `<$DOD_PATH>:<número_de_línea>` (p. ej. `docs/guardrails/dod-story-code-review.md:14`)
   - Todos los hallazgos se numeran correlativamente sin IDs duplicados (agentes → DoD)
 - Sección "Lista blanca de archivos permitidos": una línea por archivo de `$WHITELIST` con sus referencias de hallazgo
 
@@ -536,7 +546,7 @@ Completar el template con:
 - Sección `### Nota de Tamaño de Cambio` — `{{CHANGE_SIZE_NOTE}}`: contenido de `$CHANGE_SIZE_NOTE` calculado en el Paso 4c.2; si está vacío, dejar la sección sin contenido visible (no mostrar el placeholder literal)
 - Sección Decisión final: `$REVIEW_STATUS` con justificación
 - Sección "Cumplimiento DoD — Fase CODE-REVIEW":
-  - **Si `$DOD_CODE_REVIEW_CRITERIA` estaba vacío:** mostrar `⚠️ DoD CODE-REVIEW no encontrado — se omitió la validación. Verifica que $SPECS_BASE/guardrails/dod-story-checklist.md contiene la sección "CODE-REVIEW".`
+  - **Si `$DOD_CODE_REVIEW_CRITERIA` estaba vacío:** mostrar `⚠️ DoD CODE-REVIEW no encontrado — se omitió la validación. Verifica que existe el DoD de la etapa code-review (ver `## DoD aplicable`).`
   - **Si hay criterios evaluados:** completar tabla `| # | Criterio | Estado | Severidad | Evidencia |` con los resultados de `$DOD_CODE_REVIEW_RESULT` y línea de resumen `**Resumen:** N/Total criterios ✓`
 
 Guardar en `$STORY_DIR/code-review-report.md`.
@@ -637,7 +647,7 @@ La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`: n
 | `story.md` y/o `design.md` ausentes | `❌ Artefactos requeridos no encontrados en: <$STORY_DIR>/` (un único mensaje con la lista de faltantes) | Detener sin modificar ningún archivo |
 | `story.md` no está en `IMPLEMENT/DONE` (incluida una historia ya encolada en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`) | `❌ La historia <story_id> no está en estado IMPLEMENT/DONE.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
 | `implement-report.md` o `testcases.md` ausentes | — (se registran como `⏭️` en el informe) | Continuar sin ese contexto |
-| `dod-story-checklist.md` ausente o sin sección CODE-REVIEW | `⚠️ dod-story-checklist.md no encontrado …` / `⚠️ Sección CODE-REVIEW no encontrada en DoD …` | Advertir y continuar sin validación DoD |
+| DoD de la etapa code-review ausente | `⚠️ DoD de la etapa code-review no encontrado …` | Advertir y continuar sin validación DoD |
 | Hallazgo bloqueante sin `Archivo:Línea` (Paso 4e) | — (se anota `[archivo no especificado]`) | Excluirlo de la lista blanca y continuar |
 | `fix-directives.md` previo con `round` ausente o ilegible (Paso 4f.1) | — (sin error ni advertencia: archivo legado) | `$PREV_ROUND = 0`: la cuenta de rondas se reinicia en 1 |
 

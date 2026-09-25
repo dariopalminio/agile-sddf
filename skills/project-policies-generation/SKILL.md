@@ -1,7 +1,7 @@
 ---
 name: project-policies-generation
 description: >-
-  Inicializa o actualiza constitution.md y guardrails/dod-story-checklist.md registrando referencias en CLAUDE.md.
+  Inicializa o actualiza constitution.md y el DoD de historia por etapa (guardrails/dod-story-*.md) registrando la constitución en CLAUDE.md.
   Usar para establecer reglas técnicas y criterios de calidad del proyecto.
   Invocar para "generar políticas", "actualizar constitución",
   "definition of done" o "project-policies-generation".
@@ -30,12 +30,12 @@ Markdown y registra sus referencias en `CLAUDE.md` / `AGENTS.md` para que todos 
 agentes IA los lean automáticamente antes de cualquier acción:
 
 - `$SPECS_BASE/constitution.md` — documento supremo: principios técnicos inamovibles del proyecto (stack, convenciones, metodologías). Vive en la raíz de `docs/`, un nivel por encima de `policies/` y `guardrails/`, porque ambas capas derivan de él
-- `$SPECS_BASE/guardrails/dod-story-checklist.md` — transition guardrail: criterios de calidad que una historia debe cumplir para avanzar de estado
+- `$SPECS_BASE/guardrails/dod-story-<etapa>.md` — transition guardrails: un archivo por etapa con los criterios que una historia debe cumplir para avanzar de estado
 
 **Qué hace este skill:**
 - Crea o actualiza `constitution.md` desde el template, con confirmación del usuario si ya existe
-- Crea o actualiza `dod-story-checklist.md` desde el template, con confirmación del usuario si ya existe
-- Ofrece mover un `policies/constitution.md` o `policies/dod-story.md` heredados a su ubicación actual (`docs/` y `guardrails/` respectivamente)
+- Crea los archivos `dod-story-<etapa>.md` que falten desde las plantillas de `assets/dod-story/` (nunca sobrescribe)
+- Ofrece mover un `policies/constitution.md` heredado a la raíz de `docs/`; para un DoD de historia sin dividir, remite a `/memory-system migrate --from=dod-monolithic`
 - Crea `policies/README.md` (índice de la capa) si no existe
 - Registra referencias a las políticas en `CLAUDE.md` o `AGENTS.md`
 
@@ -46,7 +46,7 @@ agentes IA los lean automáticamente antes de cualquier acción:
 ## Entrada
 
 - `assets/project-constitution-template.md` — template fuente para constitution (solo lectura)
-- `assets/dod-story-checklist-template.md` — template fuente para DoD (solo lectura)
+- `assets/dod-story/dod-story-<etapa>.md` — seis plantillas fuente del DoD por etapa (solo lectura)
 - `CLAUDE.md` o `AGENTS.md` en la raíz del repositorio — archivo de entrada del agente donde se registran las referencias
 
 ## Parámetros
@@ -57,11 +57,12 @@ agentes IA los lean automáticamente antes de cualquier acción:
 
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 - `assets/project-constitution-template.md` debe existir
-- `assets/dod-story-checklist-template.md` debe existir
+- Las seis plantillas de `assets/dod-story/` deben existir
 
 ## Dependencias
 
-- Archivos: [`assets/project-constitution-template.md`, `assets/dod-story-checklist-template.md`]
+- Archivos: [`assets/project-constitution-template.md`, `assets/dod-story/*.md`]
+- Skills: `memory-system` (opcional; solo se sugiere `migrate --from=dod-monolithic` para un DoD heredado)
 
 ## Modos de ejecución
 
@@ -244,73 +245,82 @@ Revisa el archivo generado y completa los campos [TBD] con la información espec
 
 Continuar con el Paso 3.
 
-### Paso 3 — Generar dod-story-checklist.md
+### Paso 3 — Generar el DoD de historia por etapa
 
 El DoD es un **transition guardrail** (checklist que bloquea transiciones de estado de una historia), por
-eso vive en `$SPECS_BASE/guardrails/`, no en `policies/`.
+eso vive en `$SPECS_BASE/guardrails/`, no en `policies/`. Está dividido en un archivo por etapa: cada
+skill del pipeline carga solo el suyo (sección `## DoD aplicable` de su `SKILL.md`).
 
-#### 3a. Leer el template
+| Plantilla | Destino | Etapa |
+|---|---|---|
+| `assets/dod-story/dod-story-specify.md` | `$SPECS_BASE/guardrails/dod-story-specify.md` | SPECIFY (`enforcement: warn`) |
+| `assets/dod-story/dod-story-plan.md` | `$SPECS_BASE/guardrails/dod-story-plan.md` | PLAN |
+| `assets/dod-story/dod-story-implement.md` | `$SPECS_BASE/guardrails/dod-story-implement.md` | IMPLEMENT |
+| `assets/dod-story/dod-story-code-review.md` | `$SPECS_BASE/guardrails/dod-story-code-review.md` | CODE-REVIEW |
+| `assets/dod-story/dod-story-verify.md` | `$SPECS_BASE/guardrails/dod-story-verify.md` | VERIFY |
+| `assets/dod-story/dod-story-acceptance.md` | `$SPECS_BASE/guardrails/dod-story-acceptance.md` | ACCEPTANCE |
 
-Leer el archivo `assets/dod-story-checklist-template.md`.
+Si `sddf.config.yaml › guardrails.dod.story.<etapa>` declara otro slug para una etapa, el destino de esa
+etapa es `$SPECS_BASE/guardrails/<slug>.md`. El checklist de despliegue (`deliver`) es propio de cada
+proyecto y no tiene plantilla.
 
-La estructura del output la define íntegramente el template.
+#### 3a. DoD heredado sin dividir
 
-#### 3b. Migrar un DoD heredado
-
-Si `$SPECS_BASE/guardrails/dod-story-checklist.md` **no existe** pero `$SPECS_BASE/policies/dod-story.md` **sí**, preguntar al usuario:
-
-```
-⚠️ policies/dod-story.md está deprecado: el DoD es un transition guardrail y ahora vive en guardrails/.
-  (m) Mover policies/dod-story.md → guardrails/dod-story-checklist.md conservando su contenido (Recomendado)
-  (n) No mover — continuar y crear uno nuevo desde el template
-```
-
-- `m` / `mover`: mover el archivo (con `git mv` si el repositorio está versionado), actualizar en su frontmatter `type: guardrail`, `kind: transition`, `enforcement: error`, `slug: dod-story-checklist` y `updated` (fecha actual). Informar `✅ Movido: $SPECS_BASE/guardrails/dod-story-checklist.md` y continuar con el **Paso 3c** tratando el archivo como existente.
-- `n` / `no`: continuar con el **Paso 3c** sin tocar el archivo heredado.
-
-#### 3c. Verificar existencia previa
-
-Si `$SPECS_BASE/guardrails/dod-story-checklist.md` **no existe**, preguntar al usuario:
+Si **no existe ningún** `dod-story-<etapa>.md` pero el proyecto tiene un DoD de historia heredado de una
+versión anterior (un único archivo con todas las etapas en `guardrails/`, o el antiguo `dod-story.md` en
+`policies/`), **no** generar las plantillas por encima: mostrar
 
 ```
-$SPECS_BASE/policies/definition-of-done-story.md no existe. ¿Cómo deseas crearlo?
-  (a) Auto-completar — completar las notas adicionales con criterios específicos del stack detectado (Recomendado)
-  (b) Template en blanco — crear con los placeholders sin completar
+⚠️ Este proyecto tiene un DoD de historia sin dividir por etapa.
+   Divídelo conservando tu contenido: /memory-system migrate --from=dod-monolithic
+   (añade --dry-run para ver el plan antes de escribir)
+```
+
+y continuar con el Paso 4 sin crear archivos de DoD.
+
+#### 3b. Verificar existencia previa
+
+Si **ninguno** de los archivos de la tabla existe, preguntar al usuario:
+
+```
+El DoD de historia por etapa no existe en $SPECS_BASE/guardrails/. ¿Cómo deseas crearlo?
+  (a) Auto-completar — añadir al DoD IMPLEMENT criterios específicos del stack detectado (Recomendado)
+  (b) Plantillas en blanco — crear los seis archivos tal como están en assets/dod-story/
 ```
 
 Esperar respuesta antes de continuar:
-- `a` / `auto-completar`: ejecutar el **Paso 3d** (Auto-completado)
-- `b` / `blanco`: crear el archivo con el contenido del template, completando el frontmatter con `created` y `updated` (fecha actual). Informar: `✅ Creado: $SPECS_BASE/guardrails/dod-story-checklist.md`
+- `a` / `auto-completar`: crear los seis archivos (como en `b`) y ejecutar el **Paso 3c**
+- `b` / `blanco`: copiar cada plantilla a su destino completando `created` y `updated` (fecha actual).
+  Informar una línea `✅ Creado: <ruta>` por archivo.
 
-Si `$SPECS_BASE/guardrails/dod-story-checklist.md` **ya existe**, preguntar al usuario:
+Si **alguno** existe, crear solo los que faltan (copia-si-falta, sin preguntar por archivo) e informar
+`✅ Creado: <ruta>` / `ℹ️ Ya existía: <ruta>` por archivo. Después preguntar:
 
 ```
-El archivo $SPECS_BASE/guardrails/dod-story-checklist.md ya existe.
+El DoD de historia por etapa ya existe en $SPECS_BASE/guardrails/.
 ¿Qué deseas hacer?
-  (a) Auto-completar — completar las notas adicionales con criterios específicos del stack detectado
+  (a) Auto-completar — añadir al DoD IMPLEMENT criterios específicos del stack detectado
   (e) Editar el contenido existente
-  (s) Sobreescribir con el template en blanco
-  (n) Saltar este archivo
+  (n) Saltar
 ```
 
-Esperar respuesta antes de continuar:
-- `a` / `auto-completar`: ejecutar el **Paso 3d** (Auto-completado)
-- `e` / `editar`: abrir el archivo para que el usuario lo edite; no modificar su contenido
-- `s` / `sobreescribir`: reemplazar el contenido con el template y actualizar el campo `updated`
-- `n` / `saltar`: no modificar el archivo y continuar con el Paso 4
+- `a` / `auto-completar`: ejecutar el **Paso 3c**
+- `e` / `editar`: indicar las rutas para que el usuario las edite; no modificar su contenido
+- `n` / `saltar`: no modificar ningún archivo y continuar con el Paso 4
 
-### Paso 3d — Auto-completar dod-story-checklist.md
+Ningún archivo existente se sobrescribe desde este paso.
 
-Este paso se ejecuta cuando el usuario elige la opción `(a)` en el Paso 3c.
+### Paso 3c — Auto-completar el DoD IMPLEMENT
 
-El template de DoD contiene checkboxes predefinidos y no tiene placeholders de contenido significativos, salvo la sección **Notas adicionales** (`[Por completar]`) y el frontmatter. El auto-completado se enfoca en esas dos partes.
+Este paso se ejecuta cuando el usuario elige la opción `(a)` en el Paso 3b. Solo modifica
+`$SPECS_BASE/guardrails/dod-story-implement.md` (o el slug que declare el mapeo de configuración).
 
 #### Recopilación de contexto de testing
 
 Leer `package.json` (raíz y paquetes) para detectar las herramientas de testing presentes:
 
-| Paquete detectado | Criterio adicional a agregar en Notas adicionales |
-|-------------------|---------------------------------------------------|
+| Paquete detectado | Criterio adicional |
+|-------------------|--------------------|
 | `vitest` / `jest` | Los tests unitarios deben ejecutarse con `pnpm test` sin errores |
 | `@playwright/test` | Los tests E2E deben pasar en el proyecto `apps/demo` o equivalente |
 | `cypress` | Los tests E2E Cypress deben ejecutarse sin fallos en los flujos críticos |
@@ -320,21 +330,20 @@ Leer `package.json` (raíz y paquetes) para detectar las herramientas de testing
 
 #### Completado
 
-1. Reemplazar `[Por completar]` en la sección "Notas adicionales" con la lista de criterios específicos detectados.
-2. Si no se detecta ninguna herramienta adicional, reemplazar `[Por completar]` con: `Sin criterios adicionales identificados para este proyecto.`
-3. Completar el frontmatter con `created` y `updated` = fecha actual (`YYYY-MM-DD`).
+1. Añadir al final de `dod-story-implement.md` un subgrupo `## 🧩 Criterios del stack` con un
+   `- [ ] <criterio>` por herramienta detectada. Si el subgrupo ya existe, añadir solo los criterios que falten.
+2. Si no se detecta ninguna herramienta adicional, no añadir el subgrupo.
+3. Actualizar `updated` = fecha actual (`YYYY-MM-DD`) en el frontmatter.
 
 #### Guardar y reportar
 
-Guardar el archivo en `$SPECS_BASE/guardrails/dod-story-checklist.md` (UTF-8 sin BOM).
-
-Informar al usuario:
+Guardar el archivo (UTF-8 sin BOM) e informar:
 
 ```
-✅ Auto-completado: $SPECS_BASE/guardrails/dod-story-checklist.md
+✅ Auto-completado: $SPECS_BASE/guardrails/dod-story-implement.md
 
 Herramientas detectadas: [lista]
-Criterios adicionales generados en "Notas adicionales": N
+Criterios añadidos en "Criterios del stack": N
 
 Revisa el archivo y ajusta los criterios según el contexto específico de tu proyecto.
 ```
@@ -356,18 +365,20 @@ Verificar en la raíz del repositorio:
 Agrega las siguientes líneas manualmente a tu archivo de entrada del agente:
 
 @docs/constitution.md
-@docs/guardrails/dod-story-checklist.md
 ```
 
 #### 4b. Verificar referencias existentes
 
 Buscar en el archivo detectado si ya contiene referencias a los archivos de políticas:
 - `@$SPECS_BASE/constitution.md` (o la ruta relativa equivalente)
-- `@$SPECS_BASE/guardrails/dod-story-checklist.md`
 
-Si el archivo contiene una referencia heredada (`@$SPECS_BASE/policies/constitution.md` o `@$SPECS_BASE/policies/dod-story.md`) y el documento ya vive en su ubicación actual, reemplazarla por la nueva ruta en lugar de añadir una segunda línea.
+El DoD de historia **no** se registra con `@`: importarlo cargaría todas las etapas en cada sesión, y cada
+skill del pipeline ya carga solo el de su etapa. Si el archivo contiene un import heredado del DoD
+(cualquier línea `@…` que apunte a un DoD de historia en `guardrails/` o en `policies/`), eliminar esa línea e informarlo.
 
-Si **ambas referencias ya existen**: informar que no es necesario modificar el archivo:
+Si el archivo contiene la referencia heredada `@$SPECS_BASE/policies/constitution.md` y el documento ya vive en su ubicación actual, reemplazarla por la nueva ruta en lugar de añadir una segunda línea.
+
+Si **la referencia ya existe**: informar que no es necesario modificar el archivo:
 ```
 ℹ️ Las referencias a las políticas ya están registradas en CLAUDE.md — sin cambios.
 ```
@@ -386,14 +397,12 @@ Si el formato del archivo es no estándar o no se puede determinar la sección c
 Agrega las siguientes líneas manualmente:
 
 @docs/constitution.md
-@docs/guardrails/dod-story-checklist.md
 ```
 
 Si se insertaron las referencias exitosamente:
 ```
 ✅ Referencias agregadas en CLAUDE.md:
    @docs/constitution.md
-   @docs/guardrails/dod-story-checklist.md
 ```
 
 ### Paso 5 — Resumen
@@ -405,7 +414,7 @@ Mostrar el resumen de la ejecución:
 
 📄 Archivos de políticas:
 - $SPECS_BASE/constitution.md                     [creado | movido | auto-completado | actualizado | saltado]
-- $SPECS_BASE/guardrails/dod-story-checklist.md   [creado | movido | auto-completado | actualizado | saltado]
+- $SPECS_BASE/guardrails/dod-story-<etapa>.md    [creados N | ya existían M | auto-completado | migración sugerida | saltado]
 
 🔗 Referencias en CLAUDE.md:
 - [registradas | ya existían | requieren acción manual]
@@ -419,5 +428,5 @@ Luego ejecuta `/story-design` para comenzar a diseñar la implementación de una
 
 - `$SPECS_BASE/constitution.md` — constitución del proyecto: documento supremo con los principios técnicos inamovibles.
 - `$SPECS_BASE/policies/README.md` — índice de la capa de policies (creado si no existía).
-- `$SPECS_BASE/guardrails/dod-story-checklist.md` — transition guardrail con los criterios DoD por estado de una historia.
+- `$SPECS_BASE/guardrails/dod-story-{specify,plan,implement,code-review,verify,acceptance}.md` — transition guardrails con los criterios DoD de cada etapa de una historia.
 - Actualizaciones en `CLAUDE.md` o `AGENTS.md` con referencias `@` a los archivos de políticas generados.

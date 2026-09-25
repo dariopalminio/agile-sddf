@@ -724,6 +724,145 @@
         ]
       },
       "threshold": 0.9
+    },
+    {
+      "id": "TC-019",
+      "name": "migrate-from-dod-monolithic-divide-el-dod",
+      "type": "happy-path",
+      "description": "EV-001 — memory-system migrate --from=dod-monolithic (Origen: EV-001 de testcases.md de STORY-101; AC-1, AC-7, D-3, T046). Proyecto con docs/guardrails/dod-story-checklist.md monolítico sin migrar (fixture examples/dod-monolithic). El usuario invoca /memory-system migrate --from=dod-monolithic. El skill normaliza --from=valor a --from valor, NO ejecuta la secuencia de harness (sin plan de migración ni pregunta), invoca el motor migrate --root docs --from dod-monolithic y reenvía su salida tal cual: siete [CREADO] guardrails/dod-story-<etapa>.md, [REEMPLAZADO] guardrails/dod-story-checklist.md — índice deprecado y el resumen creados: 7 · sobrescritos: 0 · preservados: 0 · reemplazados: 1.",
+      "input": {
+        "input_path": "examples/dod-monolithic",
+        "mode": "migrate",
+        "flags": [
+          "--from=dod-monolithic"
+        ],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "sddf_config": false
+        }
+      },
+      "expected": {
+        "contains": [
+          "[CREADO]",
+          "guardrails/dod-story-implement.md",
+          "guardrails/dod-story-deliver.md",
+          "[REEMPLAZADO]",
+          "índice deprecado",
+          "creados: 7",
+          "reemplazados: 1"
+        ],
+        "not_contains": [
+          "📋 Plan de migración",
+          "¿Confirmas el plan de migración?",
+          "no admitido",
+          "Entorno inválido"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-020",
+      "name": "fail-fast-migrate-from-no-admitido",
+      "type": "fail-fast",
+      "description": "EV-002 — memory-system migrate --from=otro (Origen: EV-002 de testcases.md de STORY-101; D-3, T046). El motor rechaza cualquier --from distinto de dod-monolithic con exit 2 antes de escribir. El skill muestra el error del motor, no escribe nada y no ejecuta la migración de harness.",
+      "input": {
+        "input_path": "examples/dod-monolithic",
+        "mode": "migrate",
+        "flags": [
+          "--from=otro"
+        ],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "sddf_config": false,
+          "engine_result": {
+            "exit_code": 2,
+            "stderr": "❌ valor no admitido para --from: otro (admitidos: dod-monolithic)"
+          }
+        }
+      },
+      "expected": {
+        "contains": [
+          "no admitido",
+          "--from",
+          "dod-monolithic"
+        ],
+        "not_contains": [
+          "[CREADO]",
+          "📋 Plan de migración",
+          "creados: 7"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-021",
+      "name": "migrate-sin-from-conserva-flujo-de-harness",
+      "type": "edge-case",
+      "description": "EV-003 — memory-system migrate --yes sin --from en un proyecto Speckit (Origen: EV-003 de testcases.md de STORY-101; D-3). Sin --from el modo migrate conserva la secuencia de harness de STORY-098 (scaffold adaptado) y no toca ningún DoD.",
+      "input": {
+        "input_path": "examples/speckit",
+        "mode": "migrate",
+        "flags": [
+          "--yes"
+        ],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "speckit",
+          "harness_dirs": [
+            ".specify/"
+          ],
+          "sddf_config": false
+        }
+      },
+      "expected": {
+        "contains": [
+          "📋 Plan de migración",
+          "--yes: confirmación asumida",
+          "[OMITIDO] specs/"
+        ],
+        "not_contains": [
+          "dod-story-",
+          "índice deprecado",
+          "reemplazados:"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-022",
+      "name": "check-reporta-dod-monolitico-sin-migrar",
+      "type": "edge-case",
+      "description": "EV-004 — memory-system check en un proyecto con el DoD monolítico sin migrar (Origen: EV-004 de testcases.md de STORY-101; D-6 R5, T046). El motor reporta la familia dod-guardrail; el skill reenvía la salida tal cual, propaga exit 1, sugiere /memory-system migrate --from=dod-monolithic y no corrige nada.",
+      "input": {
+        "input_path": "examples/dod-monolithic",
+        "mode": "check",
+        "flags": [],
+        "environment": {
+          "specs_base": "docs",
+          "node_in_path": true,
+          "detect_result": "sddf",
+          "sddf_config": false
+        }
+      },
+      "expected": {
+        "contains": [
+          "[dod-guardrail]",
+          "DoD monolítico sin migrar",
+          "/memory-system migrate --from=dod-monolithic",
+          "exit code: 1"
+        ],
+        "not_contains": [
+          "[CREADO]",
+          "[REEMPLAZADO]",
+          "problemas: 0"
+        ]
+      },
+      "threshold": 0.9
     }
   ]
 }

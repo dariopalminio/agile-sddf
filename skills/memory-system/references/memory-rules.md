@@ -271,6 +271,7 @@ ampliar `REQUIRED_FIELDS` es una decisión de esta tabla, no del código.
 | `orphan` | Nodo indexable con `hasFrontmatter=false` (§2, *Frontmatter*). | `sin frontmatter` |
 | `invalid-frontmatter` | Campo de `REQUIRED_FIELDS` ausente del frontmatter declarado (§6). | `falta <campo>` |
 | `broken-wikilink` | Ocurrencia de `[[slug]]` cuyo slug no está en el conjunto de slugs derivados (§2, incluidas las raíces externas del perfil). | `[[slug]] no resuelve` |
+| `dod-guardrail` | DoD de historia por etapa: reglas R1–R7 de `references/dod-rules.md` §4 (solo si el proyecto tiene DoD). | según la regla |
 
 `path` es `<capa>/` para `missing-layer` —excepto `constitution.md`, que se reporta tal cual, sin
 barra final, por ser un archivo y no un directorio— y la `relPath` del nodo en las demás familias,
@@ -287,7 +288,7 @@ Los nodos externos (capa `external`, §8) solo cuentan como **destino** de wikil
 Última línea de `check` (texto):
 
 ```
-problemas: N (missing-layer n · orphan n · invalid-frontmatter n · broken-wikilink n)
+problemas: N (missing-layer n · orphan n · invalid-frontmatter n · broken-wikilink n · dod-guardrail n)
 ```
 
 Solo aparecen entre paréntesis las familias con al menos un problema; sin problemas la línea es

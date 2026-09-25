@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "skill-master": {
+      "source": "dariopalminio/agile-sddf-extension",
+      "sourceType": "github",
+      "skillPath": "skills/skill-master/SKILL.md",
+      "computedHash": "6fa8e2381fd2511976574dbe61c3ee9c6f61dd5ee5a4c4e14ef9b73e55a175d9"
+    },
+    "skill-test-evals": {
+      "source": "dariopalminio/agile-sddf-extension",
+      "sourceType": "github",
+      "skillPath": "skills/skill-test-evals/SKILL.md",
+      "computedHash": "49915f40f91e7246f0c2a211ea9f42fbc815270ea9b48f4b84dcc96bbb0c1a6e"
+    }
+  }
+}

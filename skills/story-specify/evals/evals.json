@@ -127,6 +127,37 @@
         ]
       },
       "threshold": 0.90
+    },
+    {
+      "id": "TC-006",
+      "name": "dod-specify-warn-no-bloquea-specify-done",
+      "type": "edge-case",
+      "description": "EV-007 (STORY-101, D-8, INC-005 de analyze) — Historia nueva aprobada por story-evaluation. Existe docs/guardrails/dod-story-specify.md con enforcement: warn y un criterio incumplido (la historia no referencia historias hermanas). Antes de escribir SPECIFY/DONE el orquestador resuelve el DoD de la etapa specify, muestra \"DoD SPECIFY: N/Total criterios\" y lista el criterio incumplido, pero como el enforcement es warn NO bloquea: la historia queda en SPECIFY/DONE.",
+      "input": {
+        "context": "Un vendedor de una empresa SaaS quiere exportar su lista de clientes activos a CSV para compartirla con su gerente antes de la reunión mensual de pipeline.",
+        "environment": {
+          "dod_specify_file": "docs/guardrails/dod-story-specify.md",
+          "dod_specify_enforcement": "warn",
+          "dod_specify_unmet": [
+            "La historia tiene referencias a historias relacionadas cercanas"
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "DoD SPECIFY",
+          "APROBADA",
+          "SPECIFY",
+          "DONE",
+          "Refinamiento finalizado"
+        ],
+        "not_contains": [
+          "Entorno inválido",
+          "DoD SPECIFY incumplido",
+          "dod-story-checklist"
+        ]
+      },
+      "threshold": 0.9
     }
   ]
 }

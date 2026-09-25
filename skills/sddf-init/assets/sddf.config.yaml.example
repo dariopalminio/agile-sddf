@@ -73,3 +73,17 @@ implement:
     - layer: database
       skill: none
       required: false
+
+# DoD de historia por etapa (STORY-101): etapa → slug del guardrail en $SPECS_BASE/guardrails/<slug>.md.
+# Opcional: sin esta sección cada skill usa la convención dod-story-<etapa>.md. Un proyecto
+# consumidor sobrescribe aquí una etapa (p. ej. implement: dod-story-implement-acme) sin tocar skills.
+guardrails:
+  dod:
+    story:
+      specify: dod-story-specify
+      plan: dod-story-plan
+      implement: dod-story-implement
+      code-review: dod-story-code-review
+      verify: dod-story-verify
+      acceptance: dod-story-acceptance
+      deliver: dod-story-deliver

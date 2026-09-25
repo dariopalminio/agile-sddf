@@ -99,6 +99,23 @@ La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, i
 
 ---
 
+## DoD aplicable
+
+| Elemento | Valor |
+|---|---|
+| Etapa | `plan` |
+| Archivo | `$SPECS_BASE/guardrails/dod-story-plan.md` (en este repositorio, `docs/guardrails/dod-story-plan.md`) |
+| Override | `sddf.config.yaml › guardrails.dod.story.plan` |
+| Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
+
+Resolución (primera coincidencia):
+
+1. `sddf.config.yaml › guardrails.dod.story.plan` → `$SPECS_BASE/guardrails/<slug>.md`
+2. Convención: `$SPECS_BASE/guardrails/dod-story-plan.md`
+3. Ninguno existe → emitir `⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y `story-analyze` continúa sin validación DoD PLAN.
+
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. `story-plan` **no** carga este archivo: lo evalúa `story-analyze` en el Paso 5, que es quien escribe `READY-FOR-IMPLEMENT/DONE`. Se declara aquí para que la etapa del orquestador sea explícita.
+
 ## Modos de ejecución
 
 | Modo | Flags | Pipeline | Pasos |

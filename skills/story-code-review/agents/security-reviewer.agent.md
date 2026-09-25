@@ -23,7 +23,7 @@ El orquestador te pasa como contexto:
 - `$STORY_DIR`: ruta al directorio de la historia
 - `$REPO_PATH`: ruta raíz del repositorio auditado
 - `$CONSTITUTION_PATH`: ruta a `constitution.md`
-- `$DOD_PATH`: ruta a `dod-story-checklist.md`
+- `$DOD_PATH`: ruta al DoD de la etapa code-review (`dod-story-code-review.md`), resuelta por el skill
 - `$IMPL_REPORT_AVAILABLE`: `true` si existe `implement-report.md`, `false` si no existe
 - `$IMPL_FILES`: lista de archivos implementados por la historia (puede venir vacía)
 

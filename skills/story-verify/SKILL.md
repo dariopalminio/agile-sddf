@@ -36,7 +36,7 @@ story-verify    ← aquí
 ## Entrada
 
 - `$SPECS_BASE/specs/03-stories/<story-id>/story.md` — historia a verificar (precondición de estado)
-- `$SPECS_BASE/guardrails/dod-story-checklist.md` — criterios DoD sección VERIFY (opcional; usa fallback genérico si no existe)
+- DoD de la etapa `verify` (`$SPECS_BASE/guardrails/dod-story-verify.md`, ver `## DoD aplicable`) — opcional; usa fallback genérico si no existe
 - `<REPO_ROOT>/sddf.config.yaml` — configuración de pruebas del proyecto (opcional; si existe y contiene tests `required: true`, tiene prioridad sobre la detección automática)
 - Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático (fallback cuando sddf.config.yaml no existe)
 - `.tmp/story-verify/{story_id}/qa-input.json` / `qa-output.json` — canal de comunicación con el agente QA (solo modo manual)
@@ -54,7 +54,24 @@ story-verify    ← aquí
 
 - Agentes: [`agents/qa-engineer.agent.md`] (modo manual y e2e-assessment)
 - Herramientas de testing (según modo detectado): `pytest`, `jest`, `vitest`, `go test`, `npx playwright`, `npx cypress`, `npx cucumber-js`
-- Archivos de entrada: `$SPECS_BASE/guardrails/dod-story-checklist.md`, `assets/verify-report-template.md`
+- Archivos de entrada: DoD de la etapa `verify` (ver `## DoD aplicable`), `assets/verify-report-template.md`
+
+## DoD aplicable
+
+| Elemento | Valor |
+|---|---|
+| Etapa | `verify` |
+| Archivo | `$SPECS_BASE/guardrails/dod-story-verify.md` (en este repositorio, `docs/guardrails/dod-story-verify.md`) |
+| Override | `sddf.config.yaml › guardrails.dod.story.verify` |
+| Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
+
+Resolución (primera coincidencia):
+
+1. `sddf.config.yaml › guardrails.dod.story.verify` → `$SPECS_BASE/guardrails/<slug>.md`
+2. Convención: `$SPECS_BASE/guardrails/dod-story-verify.md`
+3. Ninguno existe → emitir `⚠️ DoD de la etapa verify no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y usar los criterios mínimos genéricos del Paso 3.
+
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate del Paso 3 antes de escribir `VERIFY/DONE`.
 
 ## Modos de ejecución
 
@@ -177,25 +194,20 @@ Actualizar el frontmatter de `story.md`:
 
 ### Paso 3 — Cargar DoD VERIFY
 
-Buscar `$SPECS_BASE/guardrails/dod-story-checklist.md`. Si no existe, buscar la ruta heredada
-`$SPECS_BASE/policies/dod-story.md`; si existe, usarla y emitir
-`⚠️ policies/dod-story.md está deprecado — muévelo a guardrails/dod-story-checklist.md`.
+Resolver el DoD de la etapa `verify` según `## DoD aplicable` (config → convención).
 
-**Si ninguno de los dos archivos existe:**
+**Si no se resuelve ningún archivo:**
 ```
-⚠️ dod-story-checklist.md no encontrado — usando criterios mínimos genéricos:
+⚠️ DoD de la etapa verify no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic
+   Usando criterios mínimos genéricos:
    1. Todos los tests del proyecto pasan
    2. Sin defectos CRITICAL o HIGH sin resolver
 ```
 Registrar `$DOD_VERIFY_CRITERIA = ["Todos los tests del proyecto pasan", "Sin defectos CRITICAL o HIGH sin resolver"]`.
 
-**Si el archivo existe:**
-1. Buscar el primer encabezado `###` cuyo texto contenga `VERIFY` (case-insensitive)
-2. Si no se encuentra:
-   ```
-   ⚠️ Sección VERIFY no encontrada en DoD — usando criterios mínimos genéricos
-   ```
-3. Si se encuentra: extraer todas las líneas `- [ ] <texto>` como lista de criterios → `$DOD_VERIFY_CRITERIA`
+**Si el archivo existe:** extraer todas sus líneas `- [ ] <texto>` como lista de criterios → `$DOD_VERIFY_CRITERIA`
+y registrar su `enforcement` (`error` bloquea la transición a `VERIFY/DONE`; `warn` solo informa). Si el
+archivo no contiene ninguna línea `- [ ]`, emitir `⚠️ DoD de la etapa verify sin criterios — usando criterios mínimos genéricos`.
 
 Mostrar:
 ```
@@ -408,7 +420,7 @@ Completar los placeholders del template con los valores recopilados:
 | `{story_title}` | Título de la historia |
 | `{date}` | Fecha actual (YYYY-MM-DD) |
 | `{mode}` | Modo de ejecución detectado |
-| `{dod_version}` | Fecha de la sección VERIFY del DoD |
+| `{dod_version}` | Campo `updated` del DoD de la etapa verify |
 | `{total_tests}` | Total de tests ejecutados |
 | `{passed}` | Tests que pasaron |
 | `{failed}` | Tests que fallaron |

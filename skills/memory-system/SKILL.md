@@ -1,12 +1,11 @@
 ---
 name: memory-system
 description: >-
-  Memoria del proyecto (docs/ como wiki LLM): ensure (por defecto) crea capas faltantes e
-  indexa; scaffold solo lo faltante; rebuild --force regenera semillas; index regenera
-  docs/index.md; check valida con exit code para CI; migrate la adopta en Speckit u OpenSpec.
-  Usar para crear, completar, reindexar, verificar o migrar la memoria; sustituye a
-  docs-wiki-builder. Invocar para "memory-system", "capas de memoria", "índice de documentación",
-  "wiki de docs", "wikilinks" o "LLM wiki".
+  Memoria del proyecto (docs/ como wiki LLM): ensure (defecto) crea capas e indexa; scaffold
+  solo lo faltante; rebuild --force regenera semillas; index regenera docs/index.md; check valida
+  para CI; migrate adopta Speckit/OpenSpec o, con --from=dod-monolithic, divide el DoD por etapa.
+  Sustituye a docs-wiki-builder. Invocar para "memory-system", "capas de memoria", "índice de
+  documentación", "wiki de docs", "wikilinks", "LLM wiki" o "dividir el DoD".
 ---
 
 # Skill: `/memory-system`
@@ -80,6 +79,8 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 - `references/memory-rules.md` — reglas de slug/título/capa/exclusiones, extracción de wikilinks,
   tabla de harness, archivos gestionados por el scaffold y campos obligatorios de `check`
   (`REQUIRED_FIELDS`, §6). Léelo solo en la degradación inline (Paso 5).
+- `references/dod-rules.md` — DoD de historia por etapa: `DOD_STAGES`, división del monolítico
+  (`migrate --from=dod-monolithic`) y reglas R1–R7 de la familia `dod-guardrail` de `check`.
 
 ## Parámetros
 
@@ -90,8 +91,9 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 | `scaffold [--dry-run] [--harness h]` | Solo crea lo faltante; no toca `index.md`. `--dry-run` imprime el plan sin escribir. |
 | `rebuild [--force]` | Sin `--force` se detiene. Con `--force`: `scaffold --force` + `index`. |
 | `index [--harness h] [--dry-run]` | Regenera `$SPECS_BASE/index.md`. `--dry-run` imprime el índice por consola sin escribir. |
-| `check [--json] [--harness h]` | Verifica la memoria en solo lectura y propaga el exit code del motor (0 / 1 / 2). Con `--json`, stdout lleva un único objeto y nada más. |
+| `check [--json] [--harness h] [--skills-dir <ruta>]` | Verifica la memoria en solo lectura y propaga el exit code del motor (0 / 1 / 2). Con `--json`, stdout lleva un único objeto y nada más. `--skills-dir` fija dónde buscar los `SKILL.md` que la familia `dod-guardrail` verifica. |
 | `migrate [--harness h] [--yes]` | Muestra el plan de migración, pide confirmación (`--yes` la asume) y ejecuta `scaffold` adaptado al harness. No invoca `index`. |
+| `migrate --from=dod-monolithic [--dry-run] [--force]` | Divide el DoD de historia en un guardrail por etapa y deja el original como índice deprecado (secuencia 3.7). Sin pregunta: no sobrescribe sin `--force`. |
 | `--harness <sddf\|speckit\|openspec\|generic>` | Fuerza el harness en lugar de detectarlo. |
 
 ## Precondiciones
@@ -103,8 +105,8 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 
 ## Dependencias
 
-- Archivos del skill: `scripts/memory-system.js`, `assets/scaffold/**`, `assets/index-template.md`,
-  `references/memory-rules.md`.
+- Archivos del skill: `scripts/memory-system.js`, `scripts/dod-story.js`, `assets/scaffold/**`,
+  `assets/index-template.md`, `references/memory-rules.md`, `references/dod-rules.md`.
 - Herramientas: `node` ≥ 18 (solo módulos nativos; no requiere `package.json` en el proyecto consumidor).
 - Skills: `header-aggregation` (solo con `ensure --fix-frontmatter`, composición skill → skill en la
   misma sesión); `skill-preflight` (opcional, diagnóstico bajo demanda). No lanza subagentes.
@@ -175,8 +177,9 @@ Lee los argumentos del usuario y decide con esta tabla antes de tocar nada:
 | `rebuild` (sin `--force`) | Muestra exactamente `❌ rebuild es destructivo. Añade --force para confirmar.` y termina: no invoques el motor, no escribas nada, no muestres marcas ni resúmenes. |
 | `rebuild --force` | Paso 2 y secuencia 3.3. |
 | `index [--harness h] [--dry-run]` | Paso 2 y secuencia 3.4. |
-| `check [--json] [--harness h]` | Paso 2 y secuencia 3.5. |
-| `migrate [--harness h] [--yes]` | Paso 2 y secuencia 3.6. |
+| `check [--json] [--harness h] [--skills-dir <ruta>]` | Paso 2 y secuencia 3.5. |
+| `migrate --from=<origen> [--dry-run] [--force]` | Paso 2 y secuencia 3.7. Normaliza `--from=valor` a `--from valor` (el motor no admite `=`). |
+| `migrate [--harness h] [--yes]` (sin `--from`) | Paso 2 y secuencia 3.6. |
 | Otro valor | Muestra `❌ Modo no reconocido: <valor>. Modos disponibles: ensure, scaffold, rebuild, index, check, migrate.` y termina sin invocar el motor ni escribir. |
 
 `--yes` se acepta en cualquier modo; solo `migrate` lo usa (asume la confirmación).
@@ -202,7 +205,8 @@ Subcomandos del motor y sus flags:
 | `detect` | `[--harness h]` | Una línea: `sddf`, `speckit`, `openspec` o `generic`. |
 | `scaffold` | `--cli-root <CLI_ROOT> [--harness h] [--dry-run] [--force]` | `harness: <h>`, `capas faltantes: …`, una línea por archivo (`[CREADO]`, `[PRESERVADO]`, `[SOBRESCRITO]`, `[MAPEADO] <semilla> → <ruta del harness>`; con `--dry-run`: `[CREARÍA]`, `[PRESERVARÍA]`, `[SOBRESCRIBIRÍA]`, `[MAPEARÍA]`), una línea por capa omitida (`[OMITIDO] <capa>/ — gestionado por el harness <h>`, o `[OMITIRÍA]`), `[WARNING] template no copiado: …` si procede y última línea `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`. |
 | `index` | `[--harness h] [--dry-run]` | `harness: <h>`, `índice escrito: …` (o el índice completo con `--dry-run`) y última línea `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. |
-| `check` | `[--harness h] [--json]` | Sin `--json`: cabecera `── memory-system check ── harness: <h> · root: <root>`, una línea `[<familia>]` por problema, una regla `─` y última línea `problemas: N (<familia> n · …)`. Con `--json`: un único objeto `{ harness, root, ok, summary, problems }` y nada más en stdout. |
+| `migrate` | `--from dod-monolithic [--dry-run] [--force]` | Cabecera `── memory-system migrate ── from: dod-monolithic · root: <root>`, una línea por archivo (`[CREADO]`, `[PRESERVADO]`, `[SOBRESCRITO]`, `[REEMPLAZADO] … — índice deprecado`, `[SIN ORIGEN]`, `[OMITIDO]`, `[NO MIGRADO]`; en `--dry-run`, las formas en condicional), una regla `─` y `creados: N · sobrescritos: S · preservados: M · reemplazados: R` (más `cambios pendientes: P` con `--dry-run`). Exit 1 si queda `[SIN ORIGEN]` o `[NO MIGRADO]`. |
+| `check` | `[--harness h] [--json] [--skills-dir <ruta>] [--cli-root <CLI_ROOT>]` | Sin `--json`: cabecera `── memory-system check ── harness: <h> · root: <root> · skills: <ruta|—>`, una línea `[<familia>]` por problema, una regla `─` y última línea `problemas: N (<familia> n · …)`. Con `--json`: un único objeto `{ harness, root, ok, summary, problems }` y nada más en stdout. |
 
 Pasa siempre `--cli-root <CLI_ROOT>` a `scaffold`: es como el motor localiza los skills dueños de
 las plantillas compartidas (`<CLI_ROOT>/skills/<dueño>/assets/<plantilla>`). `check` no lo necesita:
@@ -289,7 +293,7 @@ simulación del skill), no inventes la salida del motor: pasa al Paso 5 y genera
 
 Invoca `check --root <SPECS_BASE> [--harness h] [--json]`. El motor detecta el harness (misma
 precedencia que `index`), escanea `SPECS_BASE` una sola vez con las mismas exclusiones y ejecuta
-cuatro evaluadores puros sobre los nodos:
+cinco evaluadores puros sobre los nodos:
 
 | Familia | Regla |
 |---|---|
@@ -297,6 +301,7 @@ cuatro evaluadores puros sobre los nodos:
 | `orphan` | Nodo sin bloque de frontmatter (`---` inicial ausente o sin cerrar). |
 | `invalid-frontmatter` | Frontmatter **declarado** sin `type`, `slug` o `title`; además sin `id` o `status` cuando `type ∈ {project, epic, story}`. Un problema por campo ausente. |
 | `broken-wikilink` | Cada ocurrencia de `[[slug]]` cuyo slug no resuelve contra el conjunto de slugs derivados. |
+| `dod-guardrail` | Solo si el proyecto tiene DoD de historia: frontmatter y cadena `from`/`to` de cada `dod-story-<etapa>.md`, mapeo `guardrails.dod.story` de `sddf.config.yaml`, DoD monolítico o heredado sin migrar y, si hay directorio de skills (`--skills-dir` → `<REPO_ROOT>/skills` → `<REPO_ROOT>/<--cli-root>/skills`), la sección `## DoD aplicable` de cada skill de historia. Reglas R1–R7 en `references/dod-rules.md`. |
 
 Se evalúa el campo **declarado**, no el derivado: un archivo cuyo `slug` deduce el motor por su
 nombre sigue siendo `invalid-frontmatter` porque no lo declara. Las reglas completas (campos
@@ -321,7 +326,8 @@ Reglas de esta secuencia:
 6. **No corrijas nada**: `check` informa. Con exit 1 y problemas `orphan`, sugiere
    `/memory-system ensure --fix-frontmatter` (o `/header-aggregation <ruta>`); con `missing-layer`,
    `/memory-system scaffold`; con `broken-wikilink` o `invalid-frontmatter`, edición manual del
-   artefacto. Nunca lo hagas en la misma invocación.
+   artefacto; con `dod-guardrail`, la acción que nombra su `detail` (p. ej.
+   `/memory-system migrate --from=dod-monolithic`). Nunca lo hagas en la misma invocación.
 
 Salida de referencia (texto):
 
@@ -367,6 +373,18 @@ scaffolding adaptado: no transforma, mueve ni reescribe artefactos del harness, 
 Idempotencia: una segunda migración confirmada muestra un plan con todo
 `[PRESERVARÍA]`/`[MAPEARÍA]`/`[OMITIRÍA]` y termina con `creados: 0`.
 
+#### 3.7 `migrate --from=dod-monolithic` — dividir el DoD de historia por etapa
+
+No es una migración de harness: no ejecuta `scaffold`, no muestra plan ni pregunta. Invoca
+`migrate --root <SPECS_BASE> --from dod-monolithic [--dry-run] [--force]` y reenvía su salida tal cual.
+El motor lee `guardrails/dod-story-checklist.md` (o el heredado `policies/dod-story.md`), crea un
+`guardrails/dod-story-<etapa>.md` por etapa y reemplaza el original por un índice deprecado; el
+heredado de `policies/` se conserva. Nunca sobrescribe un destino existente sin `--force`, así que
+repetirlo informa `creados: 0`. Propaga el exit code: con `[NO MIGRADO]` (bloque del original que no
+es de ninguna etapa) el original **no** se reemplaza; sugiere moverlo a su etapa y repetir. Tras
+migrar, sugiere `/memory-system check` y `/memory-system index`. Reglas de la división en
+`references/dod-rules.md`.
+
 ### Paso 4 — Informe final
 
 Cierra cada modo con estas líneas, después de la salida íntegra del motor:
@@ -377,6 +395,7 @@ Cierra cada modo con estas líneas, después de la salida íntegra del motor:
 | `scaffold` | `✅ memory-system scaffold — harness: <h> — <SPECS_BASE>` y en la última línea el resumen del motor `creados: N · sobrescritos: 0 · preservados: M · mapeados: X · omitidos por harness: K`. Con `--dry-run`, antepón `ℹ️ --dry-run: plan impreso por consola, no se escribió ningún archivo`. |
 | `rebuild --force` | `✅ memory-system rebuild — harness: <h> — <SPECS_BASE>` y en la última línea `creados: N · sobrescritos: S · índice regenerado: sí`. |
 | `index` | `✅ memory-system index — harness: <h> — <SPECS_BASE>/index.md regenerado` y en la última línea `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. Con `--dry-run`, la línea `ℹ️ --dry-run: índice impreso por consola, no se escribió ningún archivo` va ANTES del índice y la salida cierra con el resumen. |
+| `migrate --from=dod-monolithic` | `✅ memory-system migrate --from=dod-monolithic — <SPECS_BASE>` y en la última línea el resumen del motor (con `--dry-run`, `cambios pendientes: P`). Con exit 1, `⚠️` en lugar de `✅`. |
 | `migrate` | `✅ memory-system migrate — harness: <h> — <SPECS_BASE>`, la línea `Siguiente paso: /memory-system index` y en la última línea el resumen del motor. Sin informe si el proyecto ya es SDDF o si se canceló. |
 | `check` | **Sin informe propio**: la salida es la del motor. Sin `--json`, añade como única línea final `exit code: <N>`; con `--json`, no añadas nada a stdout. `check` no escribe, así que no hay línea de creados, sobrescritos ni índice. |
 
