@@ -12,6 +12,8 @@ Agile SDDF convierte una idea —o un repositorio que ya existe— en especifica
 
 El framework instala skills en el runtime que elijas y conserva la fuente de verdad en tu repositorio. Tú marcas las decisiones y los gates importantes; SDDF estructura el recorrido y deja evidencia de cada fase.
 
+![Blueprint de Agile SDDF: modelo Flight Levels, distribución, skills, agentes, memory-system y flujo SPECIFY → PLAN → IMPLEMENT → VERIFY → DELIVER.](assets/agile-sddf-blueprint.png)
+
 | De un vistazo | Empieza por aquí |
 |---|---|
 | Instalar el paquete | `npm install agile-sddf` |
