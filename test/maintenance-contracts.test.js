@@ -107,4 +107,24 @@ test('el gate de release alinea package, lockfile y changelog', (t) => {
 
   write(root, 'CHANGELOG.md', '# Changelog\n\n## [3.0.0]\n');
   assert.match(verifyRelease(root).errors.join('\n'), /YYYY-MM-DD/);
+
+  const selfTarball = 'file:.tmp/test-consumer/fixture-3.0.0.tgz';
+  write(root, 'package.json', JSON.stringify({
+    name: 'fixture',
+    version: '3.0.0',
+    dependencies: { fixture: selfTarball },
+  }));
+  write(root, 'package-lock.json', JSON.stringify({
+    name: 'fixture',
+    version: '3.0.0',
+    packages: {
+      '': { version: '3.0.0', dependencies: { fixture: selfTarball } },
+      'node_modules/fixture': { version: '3.0.0', resolved: selfTarball },
+    },
+  }));
+  write(root, 'CHANGELOG.md', '# Changelog\n\n## [3.0.0] — 2026-09-13\n');
+  const selfDependencyErrors = verifyRelease(root).errors.join('\n');
+  assert.match(selfDependencyErrors, /package\.json: fixture no puede depender de sí mismo/);
+  assert.match(selfDependencyErrors, /package-lock\.json \(paquete raíz\): fixture no puede depender de sí mismo/);
+  assert.match(selfDependencyErrors, /node_modules\/fixture/);
 });

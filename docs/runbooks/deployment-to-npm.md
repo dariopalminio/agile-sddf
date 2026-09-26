@@ -16,6 +16,17 @@ Este procedimiento prepara una publicación; nunca publica sin la aprobación ex
 
 1. El árbol de trabajo está revisado y la versión objetivo sigue SemVer. La eliminación de la copia automática de `postinstall` corresponde a `3.0.0` (major).
 2. `CHANGELOG.md` contiene una sola sección `## [<versión>] — <YYYY-MM-DD>` para la versión objetivo.
+
+Para Actualizar CHANGELOG.md:
+```bash
+# 1. Actualizar CHANGELOG.md
+#    - Mover las entradas de [Unreleased] a [X.Y.Z] - YYYY-MM-DD
+#    - Añadir nueva sección [Unreleased] vacía
+#    - Commit
+git add CHANGELOG.md
+git commit -m "docs(changelog): prepare release vX.Y.Z"
+```
+
 3. Las verificaciones deterministas pasan sin ejecutar lifecycle scripts ni evaluaciones LLM:
 
    ```bash

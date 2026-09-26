@@ -17,6 +17,32 @@ function readJson(file, errors, label) {
   }
 }
 
+function verifyNoSelfDependency(packageJson, lockfile, errors) {
+  const packageName = packageJson.name;
+  if (typeof packageName !== 'string' || packageName.length === 0) return;
+
+  const manifests = [
+    ['package.json', packageJson],
+    ['package-lock.json (paquete raíz)', lockfile.packages && lockfile.packages['']],
+  ];
+  const dependencyFields = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies'];
+
+  for (const [label, manifest] of manifests) {
+    if (!manifest || typeof manifest !== 'object') continue;
+    for (const field of dependencyFields) {
+      const dependencies = manifest[field];
+      if (dependencies && typeof dependencies === 'object'
+        && Object.prototype.hasOwnProperty.call(dependencies, packageName)) {
+        errors.push(`${label}: ${packageName} no puede depender de sí mismo (${field}).`);
+      }
+    }
+  }
+
+  if (lockfile.packages && lockfile.packages[`node_modules/${packageName}`]) {
+    errors.push(`package-lock.json: contiene una instalación autocontenida en node_modules/${packageName}.`);
+  }
+}
+
 function verifyRelease(repoRoot = REPO_ROOT) {
   const errors = [];
   const packageJson = readJson(path.join(repoRoot, 'package.json'), errors, 'package.json');
@@ -38,6 +64,7 @@ function verifyRelease(repoRoot = REPO_ROOT) {
   if (lockfile.name !== packageJson.name) {
     errors.push(`package-lock.json: nombre ${String(lockfile.name)} no coincide con package.json ${String(packageJson.name)}`);
   }
+  verifyNoSelfDependency(packageJson, lockfile, errors);
 
   const changelogPath = path.join(repoRoot, 'CHANGELOG.md');
   let changelog = '';

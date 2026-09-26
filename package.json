@@ -54,7 +54,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "agile-sddf": "file:.tmp/test-consumer/agile-sddf-3.3.0.tgz",
     "fs-extra": "^11.3.4"
   }
 }

@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+## [3.3.1] — 2026-09-26
+
+### Fixed
+
+- **Distribución npm y CI** — se elimina la autodependencia a un tarball temporal que impedía instalar o validar el paquete en un checkout limpio.
+
 ## [3.3.0] — 2026-09-26
 
 ### Added
