@@ -35,7 +35,9 @@ La memoria del proyecto (`docs/`) está definida en `docs/architecture/memory-sy
 - [x] **STORY-099 — Inicializar la memoria completa desde sddf-init con el parámetro --level:** niveles `minimal | standard | full`; solo `full` invoca `memory-system scaffold`; el comportamiento por defecto no cambia. — [[STORY-099-sddf-init-level-full]]
 - [x] **STORY-100 — Restaurar documentos canónicos de la máquina de estados:** Restaurar los documentos canónicos de la máquina de estados borrados sin repuntar sus citas. — [[STORY-100-slug]]
 - [x] **STORY-101 — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill:** dividir `dod-story-checklist.md` en un archivo por etapa, referencia explícita desde cada `SKILL.md` y mapeo opcional en `sddf.config.yaml`. — [[STORY-101-dod-story-por-etapa]]
-- [ ] **STORY-102 — Renombrar el skill sddf-constitution:** actualizar referencias y documentación para reflejar el nuevo nombre del skill. — [[STORY-102-renombrar-skill-sddf-constitution]]
+- [x] **STORY-102 — Renombrar el skill sddf-constitution:** actualizar referencias y documentación para reflejar el nuevo nombre del skill. — [[STORY-102-renombrar-skill-sddf-constitution]]
+- [x] **Deuda técnica — "npm run test:eval"**: Actualmente los tests de evaluación se ejecutan exclusivamente para Claude y si se usan con Codex fallan o fallan si Claude se queda sin créditos. Actualizar los tests de evaluación para que se ejecuten correctamente con el comando `npm run test:eval -- sddf-init --only TC-001 --eval-runner codex`. Incluir en alcance de historia STORY-102 para poder probar la historia STORY-102.
+- [ ] **Deuda técnica — Agregar README a skills sin documentación:** Hay 25 skills fuente sin README propio. Agrega todos los readme que faltan en los skills sin readme siguiendo el template de skill-master. No necesita crearse un historia, se implementa incluido en otra o en tarea independiente.
 
 ## Flujos Críticos / Smoke Tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*

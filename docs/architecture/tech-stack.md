@@ -74,7 +74,20 @@ Los skills de creación y benchmarking de skills **no están en el paquete core*
 
 ---
 
-## 4. Decisiones de diseño
+## 4. Dependencias de CI
+
+| Herramienta | Fuente | Revisión | Propósito |
+|-------------|--------|----------|-----------|
+| `skill-shielder` | [github.com/p3nchan/skill-shielder](https://github.com/p3nchan/skill-shielder) | `b204cecb2d26fccaca0e4121eae94e352e210126` | Auditoría de seguridad de skills |
+| `actions/checkout` | [github.com/actions/checkout](https://github.com/actions/checkout) | `11bd71901bbe5b1630ceea73d27597364c9af683` (v4.2.2) | Checkout del repositorio |
+| `actions/setup-node` | [github.com/actions/setup-node](https://github.com/actions/setup-node) | `49933ea5288caeca8642d1e84afbd3f7d6820020` (v4.4.0) | Configuración de Node.js |
+| `actions/upload-artifact` | [github.com/actions/upload-artifact](https://github.com/actions/upload-artifact) | `ea165f8d65b6e75b540449e92b4886f43607fa02` (v4.6.2) | Subir el reporte de auditoría |
+
+Estas dependencias pertenecen exclusivamente a los workflows de GitHub Actions. Se documentan aquí para trazabilidad y no forman parte de `skills-lock.json`.
+
+---
+
+## 5. Decisiones de diseño
 
 | Decisión | Rationale |
 |----------|-----------|
@@ -88,7 +101,7 @@ Los skills de creación y benchmarking de skills **no están en el paquete core*
 
 ---
 
-## 5. Distribución
+## 6. Distribución
 
 **Paquete npm (`files`):**
 ```
@@ -101,12 +114,12 @@ agents/  skills/  config/  scripts/  sddf.config.yaml  README.md  LICENSE
 
 ---
 
-## 6. NO usa
+## 7. NO usa
 
 TypeScript · Commander.js · Jest/Vitest/Mocha · ESLint/Prettier · js-yaml · simple-git · glob · bundlers.
 
 ---
 
-## 7. Referencias
+## 8. Referencias
 
 [[sddf-architecture]] · [[memory-system]] · [[domain-knowledge-artifacts]] · `package.json` · `sddf.config.yaml` · `agile-sddf-extension`
