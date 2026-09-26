@@ -2,12 +2,20 @@
 
 const assert = require('node:assert/strict');
 const { spawnSync } = require('node:child_process');
+const { EventEmitter } = require('node:events');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
-const { main, resolveContainedPath } = require('../scripts/run-evals.js');
+const {
+  buildClaudeArgs,
+  buildCodexArgs,
+  main,
+  parseArgs,
+  resolveContainedPath,
+  runCodex,
+} = require('../scripts/run-evals.js');
 
 function createFixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'agile-sddf-run-evals-'));
@@ -71,9 +79,10 @@ function initializeGit(fixture) {
   return commitAll(fixture, 'fixture inicial');
 }
 
-async function runRunner(fixture, args, { runClaude, tmpRoot } = {}) {
+async function runRunner(fixture, args, { runClaude, runCodex: runCodexStub, tmpRoot } = {}) {
   const messages = [];
   const claudeCalls = [];
+  const codexCalls = [];
   const capture = (...values) => {
     messages.push(values.map((value) => String(value)).join(' '));
   };
@@ -86,6 +95,7 @@ async function runRunner(fixture, args, { runClaude, tmpRoot } = {}) {
     timedOut: false,
   });
   const selectedRunClaude = runClaude || fakeClaude;
+  const selectedRunCodex = runCodexStub || fakeClaude;
   const selectedTmpRoot = tmpRoot === undefined
     ? path.join(fixture.root, '.tmp', 'skill-test-evals')
     : tmpRoot;
@@ -99,8 +109,12 @@ async function runRunner(fixture, args, { runClaude, tmpRoot } = {}) {
       claudeCalls.push(values);
       return selectedRunClaude(...values);
     },
+    runCodex: async (...values) => {
+      codexCalls.push(values);
+      return selectedRunCodex(...values);
+    },
   });
-  return { code, output: messages.join('\n'), claudeCalls };
+  return { code, output: messages.join('\n'), claudeCalls, codexCalls };
 }
 
 function assertExit(result, expectedStatus) {
@@ -115,6 +129,219 @@ function assertPreflightFailure(result) {
 function assertNoRunArtifacts(fixture, tmpRoot = path.join(fixture.root, '.tmp', 'skill-test-evals')) {
   assert.equal(fs.existsSync(tmpRoot), false, `No deben crearse artefactos temporales en ${tmpRoot}`);
 }
+
+test('parsea el selector de runner y aplica modelos predeterminados por ejecutor', () => {
+  const claude = parseArgs([], {});
+  assert.equal(claude.evalRunner, 'claude');
+  assert.equal(claude.model, 'sonnet');
+
+  const codex = parseArgs(['--eval-runner', 'codex'], {});
+  assert.equal(codex.evalRunner, 'codex');
+  assert.equal(codex.model, null, 'Codex no debe recibir el modelo por defecto de Claude');
+
+  const codexFromEnv = parseArgs([], {
+    SDDF_EVAL_RUNNER: 'codex',
+    SDDF_EVAL_CODEX_MODEL: 'modelo-codex-prueba',
+  });
+  assert.equal(codexFromEnv.evalRunner, 'codex');
+  assert.equal(codexFromEnv.model, 'modelo-codex-prueba');
+
+  const cliWinsOverEnvironment = parseArgs(['--eval-runner', 'claude'], {
+    SDDF_EVAL_RUNNER: 'codex',
+    SDDF_EVAL_MODEL: 'modelo-claude-prueba',
+  });
+  assert.equal(cliWinsOverEnvironment.evalRunner, 'claude');
+  assert.equal(cliWinsOverEnvironment.model, 'modelo-claude-prueba');
+
+  const explicitModel = parseArgs(['--eval-runner', 'codex', '--model', 'modelo-explicito'], {});
+  assert.equal(explicitModel.model, 'modelo-explicito');
+
+  assert.throws(() => parseArgs(['--eval-runner'], {}), /falta valor/i);
+  assert.throws(() => parseArgs(['--eval-runner', 'otro'], {}), /runner.*admitido|válidos/i);
+  assert.throws(() => parseArgs(['--eval-runner', 'claude', '--eval-runner', 'codex'], {}), /solo puede/i);
+  assert.throws(() => parseArgs([], { SDDF_EVAL_RUNNER: 'otro' }), /runner.*admitido|válidos/i);
+  assert.equal(parseArgs(['--help'], { SDDF_EVAL_RUNNER: 'otro' }).help, true);
+});
+
+test('los adaptadores construyen invocaciones restringidas para Claude y Codex', () => {
+  assert.deepEqual(buildClaudeArgs('prompt de prueba', { model: 'modelo-claude' }), [
+    '-p',
+    'prompt de prueba',
+    '--model',
+    'modelo-claude',
+    '--output-format',
+    'text',
+    '--permission-mode',
+    'plan',
+    '--allowedTools',
+    'Read,Glob,Grep',
+  ]);
+  assert.deepEqual(buildCodexArgs({ model: null }, 'salida.txt'), [
+    'exec',
+    '--sandbox',
+    'read-only',
+    '--ephemeral',
+    '--color',
+    'never',
+    '--output-last-message',
+    'salida.txt',
+    '-',
+  ]);
+  assert.deepEqual(buildCodexArgs({ model: 'modelo-codex' }, 'salida.txt'), [
+    'exec',
+    '--sandbox',
+    'read-only',
+    '--ephemeral',
+    '--color',
+    'never',
+    '--output-last-message',
+    'salida.txt',
+    '--model',
+    'modelo-codex',
+    '-',
+  ]);
+});
+
+test('el adaptador Codex envía el prompt por stdin y usa la última respuesta como salida', async (t) => {
+  const fixture = createFixture(t);
+  const tmpRoot = path.join(fixture.root, '.tmp', 'skill-test-evals');
+  const outputFile = path.join(tmpRoot, 'alpha', 'runs', 'TC-001.txt');
+  fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+  const invocation = {};
+  let stdin = '';
+
+  const result = await runCodex('prompt de prueba', { model: null, timeout: 1 }, {
+    repoRoot: fixture.root,
+    tmpRoot,
+    codexOutputFile: outputFile,
+    spawn(command, args, options) {
+      invocation.command = command;
+      invocation.args = args;
+      invocation.options = options;
+      const child = new EventEmitter();
+      child.stdout = new EventEmitter();
+      child.stderr = new EventEmitter();
+      child.stdin = new EventEmitter();
+      child.stdin.end = (value) => {
+        stdin = value;
+        process.nextTick(() => {
+          fs.writeFileSync(outputFile, '=== CONSOLE ===\nrespuesta de Codex\n=== END ===');
+          child.emit('close', 0);
+        });
+      };
+      child.kill = () => true;
+      return child;
+    },
+  });
+
+  assert.equal(result.ok, true, result.stderr);
+  assert.equal(result.stdout, '=== CONSOLE ===\nrespuesta de Codex\n=== END ===');
+  assert.equal(stdin, 'prompt de prueba');
+  assert.equal(invocation.command, 'codex');
+  assert.equal(invocation.options.cwd, fixture.root);
+  assert.deepEqual(invocation.options.stdio, ['pipe', 'pipe', 'pipe']);
+  assert.deepEqual(invocation.args, buildCodexArgs({ model: null }, outputFile));
+});
+
+test('el adaptador Codex rechaza un archivo temporal fuera de su raíz', (t) => {
+  const fixture = createFixture(t);
+  const tmpRoot = path.join(fixture.root, '.tmp', 'skill-test-evals');
+  const outsideFile = path.join(fixture.root, 'no-tocar.txt');
+  fs.writeFileSync(outsideFile, 'conservar');
+
+  assert.throws(
+    () => runCodex('prompt de prueba', { model: null, timeout: 1 }, {
+      repoRoot: fixture.root,
+      tmpRoot,
+      codexOutputFile: outsideFile,
+    }),
+    /contenido bajo/i,
+  );
+  assert.equal(fs.readFileSync(outsideFile, 'utf8'), 'conservar');
+});
+
+test('el adaptador Codex falla cerrado si no puede enviar el prompt por stdin', async (t) => {
+  const fixture = createFixture(t);
+  const tmpRoot = path.join(fixture.root, '.tmp', 'skill-test-evals');
+  const outputFile = path.join(tmpRoot, 'alpha', 'runs', 'TC-001.txt');
+  fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+
+  const result = await runCodex('prompt de prueba', { model: null, timeout: 1 }, {
+    repoRoot: fixture.root,
+    tmpRoot,
+    codexOutputFile: outputFile,
+    spawn() {
+      const child = new EventEmitter();
+      child.stdout = new EventEmitter();
+      child.stderr = new EventEmitter();
+      child.stdin = new EventEmitter();
+      child.stdin.end = () => {
+        process.nextTick(() => {
+          child.stdin.emit('error', new Error('stdin no disponible'));
+          child.emit('close', 0);
+        });
+      };
+      child.kill = () => true;
+      return child;
+    },
+  });
+
+  assert.equal(result.ok, false);
+  assert.equal(result.code, 0);
+  assert.match(result.stderr, /stdin no disponible/);
+});
+
+test('Codex se selecciona sin invocar Claude y queda registrado en el informe', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'codex']);
+
+  assertExit(result, 0);
+  assert.equal(result.claudeCalls.length, 0);
+  assert.equal(result.codexCalls.length, 1);
+  assert.equal(result.codexCalls[0][1].evalRunner, 'codex');
+  assert.match(result.output, /Ejecutor de eval: codex/);
+  assert.match(result.output, /\*\*Ejecutor:\*\* codex/);
+});
+
+test('Claude sigue siendo el runner predeterminado', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+
+  const result = await runRunner(fixture, ['alpha']);
+
+  assertExit(result, 0);
+  assert.equal(result.claudeCalls.length, 1);
+  assert.equal(result.codexCalls.length, 0);
+  assert.equal(result.claudeCalls[0][1].evalRunner, 'claude');
+});
+
+test('un runner inválido falla antes de ejecutar o crear artefactos', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'otro']);
+
+  assertPreflightFailure(result);
+  assert.match(result.output, /runner.*admitido|válidos/i);
+  assert.equal(result.claudeCalls.length, 0);
+  assert.equal(result.codexCalls.length, 0);
+  assertNoRunArtifacts(fixture);
+});
+
+test('dry-run con Codex no invoca ningún runner ni crea artefactos', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+
+  const result = await runRunner(fixture, ['--all', '--eval-runner', 'codex', '--dry-run']);
+
+  assertExit(result, 0);
+  assert.equal(result.claudeCalls.length, 0);
+  assert.equal(result.codexCalls.length, 0);
+  assert.match(result.output, /Ejecutor de eval: codex/);
+  assertNoRunArtifacts(fixture);
+});
 
 test('el helper de contencion rechaza raices vacias, rutas absolutas y escapes lexicos', () => {
   assert.throws(() => resolveContainedPath('', 'alpha'), /ra[ií]z|root/i);
@@ -420,6 +647,27 @@ test('un error de Claude con stdout no puede convertirse en PASS', async (t) => 
 
   assertExit(result, 1);
   assert.equal(result.claudeCalls.length, 1);
+});
+
+test('un error de Codex con stdout no puede convertirse en PASS', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'codex'], {
+    runCodex: async () => ({
+      ok: false,
+      code: 1,
+      stdout: '=== CONSOLE ===\nrespuesta que pareceria aprobar\n=== END ===',
+      stderr: 'fallo del proceso',
+      durationMs: 0,
+      timedOut: false,
+    }),
+  });
+
+  assertExit(result, 1);
+  assert.equal(result.claudeCalls.length, 0);
+  assert.equal(result.codexCalls.length, 1);
+  assert.match(result.output, /codex exit 1/i);
 });
 
 test('los selectores explicitos son mutuamente excluyentes', async (t) => {

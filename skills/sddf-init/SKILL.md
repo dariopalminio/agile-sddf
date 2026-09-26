@@ -146,7 +146,7 @@ Verificar si `.env.template` existe en la raíz del proyecto:
 ### Paso 5 — Inicializar políticas del proyecto (opcional)
 
 **Nivel `minimal`:** omitir este paso sin preguntar y registrar
-`[OMITIDO] project-policies-generation (nivel minimal)` en el informe final. En `standard` y
+`[OMITIDO] sddf-constitution (nivel minimal)` en el informe final. En `standard` y
 `full` el paso se ejecuta tal como sigue.
 
 Preguntar al usuario:
@@ -155,18 +155,18 @@ Preguntar al usuario:
 ¿Deseas inicializar los documentos de políticas del proyecto?
 ($SPECS_BASE/constitution.md y el DoD de historia por etapa $SPECS_BASE/guardrails/dod-story-<etapa>.md)
 
-  (s) Sí — ejecutar project-policies-generation ahora
+  (s) Sí — ejecutar sddf-constitution ahora
   (n) No — omitir este paso
 ```
 
-- **Si el usuario responde `s` / `sí`:** invocar el skill `project-policies-generation` y esperar a que complete su ejecución antes de continuar al Paso 6.
-- **Si el usuario responde `n` / `no`:** omitir este paso y continuar directamente al Paso 6. Registrar `[OMITIDO] project-policies-generation` en el informe final.
+- **Si el usuario responde `s` / `sí`:** invocar el skill `sddf-constitution` y esperar a que complete su ejecución antes de continuar al Paso 6.
+- **Si el usuario responde `n` / `no`:** omitir este paso y continuar directamente al Paso 6. Registrar `[OMITIDO] sddf-constitution` en el informe final.
 
-> Las políticas pueden inicializarse en cualquier momento ejecutando `/project-policies-generation` de forma independiente.
+> Las políticas pueden inicializarse en cualquier momento ejecutando `/sddf-constitution` de forma independiente.
 
 ### Paso 5b — Scaffolding de memoria (solo nivel `full`)
 
-Corre después del Paso 5, para que una constitución generada por `project-policies-generation`
+Corre después del Paso 5, para que una constitución generada por `sddf-constitution`
 prevalezca sobre la semilla del scaffold.
 
 1. Si no existe `$CLI_ROOT/skills/memory-system/SKILL.md`, emitir
@@ -220,7 +220,7 @@ Sin `--level` el informe es exactamente el anterior. Con `--level` explícito, l
 añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente en {SPECS_BASE}/ (nivel <n>)`.
 
 **`minimal`:** el bloque omite los templates y registra
-`[OMITIDO] project-policies-generation (nivel minimal)`:
+`[OMITIDO] sddf-constitution (nivel minimal)`:
 
 ```
 ── sddf-init ────────────────────────────────────
@@ -230,7 +230,7 @@ añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente en {SPECS
 [CREADO]     docs/templates/
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
-[OMITIDO] project-policies-generation (nivel minimal)
+[OMITIDO] sddf-constitution (nivel minimal)
 ─────────────────────────────────────────────────
 ✓ Entorno SDDF inicializado correctamente en docs/ (nivel minimal)
 ```
@@ -245,7 +245,7 @@ añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente en {SPECS
 [CREADO]     docs/templates/story-template.md
 …
 [CREADO]     .env.template
-[OMITIDO] project-policies-generation
+[OMITIDO] sddf-constitution
 ── memory-system scaffold (nivel full) ──────────
 harness: sddf
 capas faltantes: product, requirements, domains, architecture, adr, policies, guardrails, guides, runbooks

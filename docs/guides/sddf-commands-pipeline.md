@@ -40,7 +40,7 @@ escribir nada.
 
 | Nivel | Qué hace | Cuándo usarlo |
 |---|---|---|
-| `minimal` | Raíz, directorios base, `sddf.config.yaml` y `.env.template`; sin templates ni pregunta de políticas (`[OMITIDO] project-policies-generation (nivel minimal)`) | CI o bootstrap no interactivo |
+| `minimal` | Raíz, directorios base, `sddf.config.yaml` y `.env.template`; sin templates ni pregunta de políticas (`[OMITIDO] sddf-constitution (nivel minimal)`) | CI o bootstrap no interactivo |
 | `standard` | Comportamiento sin `--level`: añade los cinco templates compartidos y la pregunta opcional de políticas | Uso habitual |
 | `full` | `standard` + `memory-system scaffold --yes` al final (orden 5 → 5b: primero la pregunta de políticas, después el scaffold), con su informe en un bloque `── memory-system scaffold (nivel full) ──` | **Recomendado para proyectos nuevos** |
 

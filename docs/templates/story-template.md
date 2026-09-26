@@ -24,8 +24,11 @@ related:   # escritor: story-creation · epic-generate-stories · epic-generate-
 **Para** [beneficio o valor]
 
 ## ✅ Criterios de aceptación <!-- escritor: defecto · story-improve (aplica recomendaciones FINVEST) · story-split (reparte escenarios entre core y hermanas) -->
+<!-- Los escenarios Gherkin SON los criterios de aceptación funcionales.
+     No se duplican en una sección separada. Si hay reglas transversales,
+     exprésalas con "Regla:" o como comentario. -->
 
-### Escenario principal – [título descriptivo]
+### AC-1 — Escenario principal – [título descriptivo]
 ```gherkin
 Dado [contexto inicial]
   Y [otra condición si aplica]
@@ -33,7 +36,7 @@ Cuando [acción del usuario]
 Entonces [resultado esperado]
   Y [otro resultado]
 ```
-### Escenario alternativo / error – [título]
+### AC-2 — Escenario alternativo / error – [título]
 ```gherkin
 Dado [contexto]
 Cuando [acción inválida o límite]
@@ -41,7 +44,7 @@ Entonces [mensaje de error o comportamiento alternativo]
   Pero [excepción si aplica]
 ```
 
-### Escenario con datos (Scenario Outline) – opcional
+### AC-3 — Escenario con datos (Scenario Outline) – opcional
 ```gherkin
 Escenario: [título]
   Dado que el usuario tiene el rol "<rol>"
@@ -54,17 +57,7 @@ Ejemplos:
   | admin     | /admin    | "Panel de control"    |
 ```
 
-## 📋 Requerimientos <!-- sección opcional · escritor: defecto · story-improve (aplica recomendaciones FINVEST) -->
-
-### Criterios funcionales
-<!-- Listado de requerimiento específicos (como regla de negocio) relacionado con la historia, si aplica. Cada requerimiento tiene un identificador interno a la historia. -->
-
-- **CF-[n] — [Nombre de requerimiento]:** [Descripción del requerimiento funcional asociado a la historia.]
-
-- **CF-[n+1] — [Nombre de requerimiento]:** [Descripción del requerimiento funcional asociado a la historia.]
-
-
-## ⚙️ Criterios no funcionales
+## ⚙️ Criterios no funcionales específicos <!-- sección opcional · escritor: defecto · story-improve (aplica recomendaciones FINVEST) -->
 
 - **CNF-[n] — [Nombre de requerimiento no funcional]:** [Descripción del requerimiento no funcional asociado a la historia.]
 
@@ -75,4 +68,6 @@ Ejemplos:
 
 ## 📎 Notas / contexto adicional <!-- sección opcional · escritor: defecto · story-improve (dimensiones I y E) · story-split (contexto del split) -->
 [Información relevante para el equipo de desarrollo o QA]
+
+
 

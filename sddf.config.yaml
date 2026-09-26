@@ -41,7 +41,7 @@ verify:
     command: "npm run test:performance"
     required: false
   eval:
-    command: "npm run test:eval"
+    command: "npm run test:eval" # npm run test:eval -- sddf-init --only TC-001 --eval-runner codex
     required: false
 
 implement:

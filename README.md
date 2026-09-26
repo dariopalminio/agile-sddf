@@ -268,7 +268,7 @@ No todos los reportes existen desde el comienzo: aparecen cuando el flujo llega 
 Genera o actualiza las políticas cuando el equipo las necesite:
 
 ```text
-/project-policies-generation
+/sddf-constitution
 ```
 
 ---
@@ -416,6 +416,33 @@ Después de renombrar los directorios y referencias internas:
 La motivación y el historial completo están en [CHANGELOG](CHANGELOG.md) y en los ADR [0004](docs/adr/ADR-0004-nivel-l2-epic-y-directorios-numerados.md) y [0005](docs/adr/ADR-0005-prefijo-story-para-el-nivel-l1.md).
 
 </details>
+
+## Ejecutar evals con Claude o Codex
+
+`npm run test:eval` conserva Claude como runner predeterminado. Para seleccionar el ejecutor por
+invocación, usa `--eval-runner`:
+
+```bash
+npm run test:eval -- --eval-runner claude
+npm run test:eval -- --eval-runner codex
+npm run test:eval -- sddf-init --eval-runner codex --model <modelo>
+```
+
+También puedes persistir la elección en el entorno con `SDDF_EVAL_RUNNER=claude|codex`; el flag
+siempre prevalece. Claude usa `sonnet` por defecto (u `SDDF_EVAL_MODEL`), mientras que Codex usa su
+configuración local salvo que se indique `--model` o `SDDF_EVAL_CODEX_MODEL`. El runner de Codex se
+ejecuta con una sesión efímera; las herramientas shell que use Codex quedan en sandbox de solo
+lectura y el runner guarda sus artefactos temporales bajo `.tmp/`. `--dry-run` valida la selección y
+genera el plan sin requerir que ninguno de los dos CLIs esté instalado.
+
+En un proyecto que quiera fijar Codex para el gate de evals, configura su comando sin cambiar el
+contrato de runtimes de instalación:
+
+```yaml
+verify:
+  eval:
+    command: "npm run test:eval -- --eval-runner codex"
+```
 
 ## Contribuir
 

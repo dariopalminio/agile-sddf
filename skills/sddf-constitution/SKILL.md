@@ -1,27 +1,20 @@
 ---
-name: project-policies-generation
+name: sddf-constitution
 description: >-
   Inicializa o actualiza constitution.md y el DoD de historia por etapa (guardrails/dod-story-*.md) registrando la constitución en CLAUDE.md.
   Usar para establecer reglas técnicas y criterios de calidad del proyecto.
   Invocar para "generar políticas", "actualizar constitución",
-  "definition of done" o "project-policies-generation".
-triggers:
-  - project-policies-generation
-  - /project-policies-generation
-  - generar políticas del proyecto
-  - actualizar políticas
-  - constitution.md
-  - definition of done
+  "definition of done" o "sddf-constitution".
 ---
 
-# Skill: `/project-policies-generation`
+# Skill: `/sddf-constitution`
 
 **Cuándo usar este skill:**
 Usar cuando se configura un proyecto SDDF por primera vez y se necesitan documentos de
 políticas, cuando se quiere actualizar las políticas existentes (stack tecnológico, criterios
 de DoD, etc.), o cuando se quiere asegurar que los agentes IA operen con las mismas reglas
 y estándares. Invocar también cuando el usuario mencione "generar políticas", "actualizar
-constitución", "definition of done", "project-policies-generation" o equivalentes.
+constitución", "definition of done", "sddf-constitution" o equivalentes.
 
 ## Objetivo
 
@@ -66,7 +59,7 @@ agentes IA los lean automáticamente antes de cualquier acción:
 
 ## Modos de ejecución
 
-- **Manual** (`/project-policies-generation`): interactivo — pide confirmación antes de sobreescribir archivos existentes.
+- **Manual** (`/sddf-constitution`): interactivo — pide confirmación antes de sobreescribir archivos existentes.
 - **Automático**: invocado por `sddf-init` como parte de la inicialización — reporta resultado sin interacción adicional.
 
 ## Restricciones / Reglas

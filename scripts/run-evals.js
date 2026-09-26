@@ -5,7 +5,8 @@
  * run-evals.js — runner headless de los casos TC-NNN de `skills/<name>/evals/evals.json`.
  *
  * Reproduce el modo `evals` del skill `skill-test-evals` (Pasos E1–E6) sin sesión interactiva:
- * por cada caso construye el prompt de escenario, ejecuta `claude -p` en modo solo lectura,
+ * por cada caso construye el prompt de escenario y lo ejecuta mediante un runner de eval
+ * (`claude` o `codex`) en modo solo lectura,
  * captura la salida y la califica con `expected.contains` / `not_contains` / `output_contains`
  * y `threshold`. Exit code 0 si todo pasa, 1 si algún caso falla — es lo que `story-implement`
  * (Pasos 5, 9b y 10) interpreta como rojo/verde a través de `verify.eval.command` en
@@ -19,12 +20,13 @@
  *
  * Flags:
  *   --only TC-023,TC-029   solo esos casos
- *   --model <m>            modelo para `claude -p` (default: sonnet; env SDDF_EVAL_MODEL)
+ *   --eval-runner <name>   runner: claude o codex (default: claude; env SDDF_EVAL_RUNNER)
+ *   --model <m>            modelo del runner elegido
  *   --concurrency N        casos en paralelo (default: 4)
  *   --timeout <s>          segundos por caso (default: 900)
  *   --report               guarda el informe en .tmp/skill-test-evals/<skill>/report-YYYYMMDD.md
  *   --skills-dir <dir>     directorio de skills fuente (default: skills/)
- *   --dry-run              imprime el prompt de cada caso sin ejecutar `claude`
+ *   --dry-run              imprime el prompt de cada caso sin ejecutar un runner
  */
 
 const path = require('path');
@@ -35,6 +37,7 @@ const REPO_ROOT = path.join(__dirname, '..');
 const END_MARKER = '=== END ===';
 const SKILL_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CASE_ID_PATTERN = /^TC-\d{3,}$/;
+const EVAL_RUNNERS = new Set(['claude', 'codex']);
 
 // ---------------------------------------------------------------------------
 // Rutas e identificadores no confiables
@@ -96,6 +99,22 @@ function validateCaseId(id, source = 'manifest') {
   return id;
 }
 
+function validateEvalRunner(value, source = '--eval-runner') {
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new Error(`❌ ${source} requiere uno de estos valores: claude, codex.`);
+  }
+  const runner = value.trim();
+  if (!EVAL_RUNNERS.has(runner)) {
+    throw new Error(`❌ Runner de eval no admitido en ${source}: ${JSON.stringify(value)}. Valores válidos: claude, codex.`);
+  }
+  return runner;
+}
+
+function defaultModelForRunner(evalRunner, env = process.env) {
+  if (evalRunner === 'claude') return env.SDDF_EVAL_MODEL || 'sonnet';
+  return env.SDDF_EVAL_CODEX_MODEL || null;
+}
+
 function resolveSkillsDir(repoRoot, skillsDir) {
   if (typeof skillsDir !== 'string' || !skillsDir.trim()) {
     throw new Error('❌ La opción --skills-dir requiere una ruta relativa no vacía contenida bajo repoRoot.');
@@ -123,17 +142,23 @@ Options:
   --all                 Ejecuta todos los skills que tienen evals/evals.json
   --changed-from <ref>  Ejecuta skills modificados entre <ref> y HEAD
   --only TC-001,TC-002  Ejecuta solo esos casos
-  --model <model>       Modelo para claude -p (default: sonnet; env SDDF_EVAL_MODEL)
+  --eval-runner <name>  Runner de eval: claude o codex (default: claude; env SDDF_EVAL_RUNNER)
+  --model <model>       Modelo del runner elegido (--model prevalece sobre variables de entorno)
   --concurrency <n>     Casos en paralelo (default: 4)
   --timeout <seconds>   Timeout por caso (default: 900)
   --report              Guarda el informe en .tmp/skill-test-evals/<skill>/report-YYYYMMDD.md
   --skills-dir <dir>    Directorio de skills fuente (default: skills)
-  --dry-run             Muestra el prompt de cada caso sin invocar claude
+  --dry-run             Muestra el prompt de cada caso sin invocar un runner
   -h, --help            Muestra esta ayuda
+
+Claude usa sonnet por defecto (o SDDF_EVAL_MODEL). Codex usa su configuración local por defecto
+(o SDDF_EVAL_CODEX_MODEL). --model prevalece sobre ambos valores.
 
 Examples:
   npm run test:eval
   npm run test:eval -- story-implement
+  npm run test:eval -- story-implement --eval-runner codex
+  npm run test:eval -- --all --eval-runner claude
   npm run test:eval -- story-implement --only TC-023,TC-029 --report
   npm run test:eval -- --all --concurrency 2
   npm run test:eval -- --changed-from origin/main --dry-run
@@ -143,13 +168,17 @@ Examples:
 // CLI
 // ---------------------------------------------------------------------------
 
-function parseArgs(argv) {
+function parseArgs(argv, env = process.env) {
+  const requestedHelp = argv.includes('-h') || argv.includes('--help');
   const opts = {
     skills: [],
     all: false,
     changedFrom: null,
     only: null,
-    model: process.env.SDDF_EVAL_MODEL || 'sonnet',
+    evalRunner: requestedHelp ? 'claude' : validateEvalRunner(env.SDDF_EVAL_RUNNER || 'claude', 'SDDF_EVAL_RUNNER'),
+    evalRunnerExplicit: false,
+    model: null,
+    modelExplicit: false,
     concurrency: 4,
     timeout: 900,
     report: false,
@@ -176,7 +205,16 @@ function parseArgs(argv) {
       if (only.length === 0) throw new Error('La opción --only requiere al menos un ID de caso.');
       opts.only = [...new Set(only.map((id) => validateCaseId(id, '--only')))];
     }
-    else if (a === '--model') opts.model = next();
+    else if (a === '--eval-runner') {
+      if (opts.evalRunnerExplicit) throw new Error('La opción --eval-runner solo puede indicarse una vez.');
+      opts.evalRunner = validateEvalRunner(next());
+      opts.evalRunnerExplicit = true;
+    } else if (a === '--model') {
+      const model = next().trim();
+      if (!model) throw new Error('La opción --model requiere un nombre de modelo no vacío.');
+      opts.model = model;
+      opts.modelExplicit = true;
+    }
     else if (a === '--concurrency') opts.concurrency = Math.max(1, parseInt(next(), 10) || 1);
     else if (a === '--timeout') opts.timeout = Math.max(1, parseInt(next(), 10) || 900);
     else if (a === '--report') opts.report = true;
@@ -189,6 +227,7 @@ function parseArgs(argv) {
   if (selectors > 1) {
     throw new Error('Los selectores de skills posicionales, --all y --changed-from son mutuamente excluyentes.');
   }
+  if (!opts.modelExplicit) opts.model = defaultModelForRunner(opts.evalRunner, env);
   return opts;
 }
 
@@ -442,50 +481,164 @@ function buildPrompt(skillName, skillMdRel, testCase) {
 }
 
 // ---------------------------------------------------------------------------
-// Paso E3b — Invocar claude -p
+// Paso E3b — Invocar el runner de eval en modo de solo lectura
 // ---------------------------------------------------------------------------
 
-function runClaude(prompt, opts, runtime = {}) {
-  const repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
-  return new Promise((resolve) => {
-    const args = [
-      '-p',
-      prompt,
-      '--model',
-      opts.model,
-      '--output-format',
-      'text',
-      '--permission-mode',
-      'plan',
-      '--allowedTools',
-      'Read,Glob,Grep',
-    ];
-    // Quitar CLAUDECODE permite anidar `claude -p` dentro de una sesión de Claude Code
-    // (mismo patrón que skill-master/scripts/run_eval.py).
-    const env = { ...process.env };
-    delete env.CLAUDECODE;
+function buildClaudeArgs(prompt, opts) {
+  return [
+    '-p',
+    prompt,
+    '--model',
+    opts.model,
+    '--output-format',
+    'text',
+    '--permission-mode',
+    'plan',
+    '--allowedTools',
+    'Read,Glob,Grep',
+  ];
+}
 
+function buildCodexArgs(opts, outputFile) {
+  const args = [
+    'exec',
+    '--sandbox',
+    'read-only',
+    '--ephemeral',
+    '--color',
+    'never',
+    '--output-last-message',
+    outputFile,
+  ];
+  if (opts.model) args.push('--model', opts.model);
+  args.push('-');
+  return args;
+}
+
+function resolveCodexOutputFile(repoRoot, runtime = {}) {
+  if (!Object.prototype.hasOwnProperty.call(runtime, 'codexOutputFile')) {
+    throw new Error('❌ Falta el archivo temporal para capturar la respuesta final de Codex.');
+  }
+  const tmpRoot = resolveInjectedTmpRoot(repoRoot, runtime);
+  const outputFile = resolveRoot(runtime.codexOutputFile, 'archivo temporal de Codex');
+  const relative = path.relative(tmpRoot, outputFile);
+  if (!relative || relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
+    throw new Error('❌ El archivo temporal de Codex debe quedar contenido bajo .tmp/skill-test-evals.');
+  }
+  return outputFile;
+}
+
+function runProcess(command, args, opts, runtime = {}, input) {
+  const repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
+  const spawnFn = runtime.spawn || spawn;
+  const env = runtime.env || process.env;
+  return new Promise((resolve) => {
     const started = Date.now();
     let stdout = '';
     let stderr = '';
     let timedOut = false;
-    const child = spawn('claude', args, { cwd: repoRoot, env, stdio: ['ignore', 'pipe', 'pipe'] });
-    const timer = setTimeout(() => {
+    let inputFailed = false;
+    let timer = null;
+    let settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      resolve(result);
+    };
+
+    let child;
+    try {
+      child = spawnFn(command, args, {
+        cwd: repoRoot,
+        env,
+        stdio: input === undefined ? ['ignore', 'pipe', 'pipe'] : ['pipe', 'pipe', 'pipe'],
+      });
+    } catch (err) {
+      finish({ ok: false, code: null, stdout, stderr: err.message, durationMs: Date.now() - started, timedOut });
+      return;
+    }
+
+    timer = setTimeout(() => {
       timedOut = true;
-      child.kill();
+      try {
+        child.kill();
+      } catch (err) {
+        stderr += `\n${err.message}`;
+      }
     }, opts.timeout * 1000);
 
     child.stdout.on('data', (d) => (stdout += d));
     child.stderr.on('data', (d) => (stderr += d));
     child.on('error', (err) => {
-      clearTimeout(timer);
-      resolve({ ok: false, stdout, stderr: `${stderr}\n${err.message}`, durationMs: Date.now() - started, timedOut });
+      finish({ ok: false, code: null, stdout, stderr: `${stderr}\n${err.message}`, durationMs: Date.now() - started, timedOut });
     });
     child.on('close', (code) => {
-      clearTimeout(timer);
-      resolve({ ok: !timedOut && code === 0, code, stdout, stderr, durationMs: Date.now() - started, timedOut });
+      finish({ ok: !timedOut && !inputFailed && code === 0, code, stdout, stderr, durationMs: Date.now() - started, timedOut });
     });
+
+    if (input !== undefined) {
+      if (!child.stdin || typeof child.stdin.end !== 'function') {
+        finish({ ok: false, code: null, stdout, stderr: `${stderr}\nNo se pudo abrir stdin para ${command}.`, durationMs: Date.now() - started, timedOut });
+        return;
+      }
+      if (typeof child.stdin.on === 'function') {
+        child.stdin.on('error', (err) => {
+          inputFailed = true;
+          stderr += `\n${err.message}`;
+        });
+      }
+      child.stdin.end(input);
+    }
   });
+}
+
+function runClaude(prompt, opts, runtime = {}) {
+  // Quitar CLAUDECODE permite anidar `claude -p` dentro de una sesión de Claude Code
+  // (mismo patrón que skill-master/scripts/run_eval.py).
+  const env = { ...(runtime.env || process.env) };
+  delete env.CLAUDECODE;
+  return runProcess('claude', buildClaudeArgs(prompt, opts), opts, { ...runtime, env });
+}
+
+function runCodex(prompt, opts, runtime = {}) {
+  const repoRoot = resolveRoot(runtime.repoRoot || REPO_ROOT, 'repoRoot');
+  const outputFile = resolveCodexOutputFile(repoRoot, runtime);
+  try {
+    fs.rmSync(outputFile, { force: true });
+  } catch (err) {
+    return Promise.resolve({
+      ok: false,
+      code: null,
+      stdout: '',
+      stderr: `No se pudo preparar el archivo temporal de Codex: ${err.message}`,
+      durationMs: 0,
+      timedOut: false,
+    });
+  }
+
+  return runProcess('codex', buildCodexArgs(opts, outputFile), opts, runtime, prompt).then((run) => {
+    if (!run.ok) return run;
+    try {
+      const stdout = fs.readFileSync(outputFile, 'utf8');
+      if (!stdout.trim()) {
+        return { ...run, ok: false, stderr: `${run.stderr}\nCodex terminó sin una respuesta final.`.trim() };
+      }
+      return { ...run, stdout };
+    } catch (err) {
+      return {
+        ...run,
+        ok: false,
+        stderr: `${run.stderr}\nNo se pudo leer la respuesta final de Codex: ${err.message}`.trim(),
+      };
+    }
+  });
+}
+
+function runEvalRunner(prompt, opts, runtime = {}) {
+  const evalRunner = validateEvalRunner(opts.evalRunner);
+  if (evalRunner === 'claude') return (runtime.runClaude || runClaude)(prompt, opts, runtime);
+  return (runtime.runCodex || runCodex)(prompt, opts, runtime);
 }
 
 // ---------------------------------------------------------------------------
@@ -534,7 +687,6 @@ async function runSkill(planSkill, opts, runtime = {}) {
   const tmpRoot = resolveInjectedTmpRoot(repoRoot, runtime);
   const log = runtime.log || console.log;
   const write = runtime.write || process.stdout.write.bind(process.stdout);
-  const runClaudeFn = runtime.runClaude || runClaude;
   const skillMdRel = path.relative(repoRoot, skillFilePath(skillsDir, skillName, 'SKILL.md')).split(path.sep).join('/');
   const runsDir = resolveContainedPath(tmpRoot, skillName, 'runs');
   if (!opts.dryRun) fs.mkdirSync(runsDir, { recursive: true });
@@ -549,14 +701,18 @@ async function runSkill(planSkill, opts, runtime = {}) {
       return { tc, status: 'DRY', grade: null, durationMs: 0 };
     }
     write(`[${tc.id}] ejecutando…\n`);
-    const run = await runClaudeFn(prompt, opts, runtime);
-    fs.writeFileSync(resolveContainedPath(runsDir, `${testCaseId}.txt`), run.stdout);
+    const outputFile = resolveContainedPath(runsDir, `${testCaseId}.txt`);
+    const run = await runEvalRunner(prompt, opts, { ...runtime, codexOutputFile: outputFile });
+    fs.writeFileSync(outputFile, run.stdout);
     if (run.stderr && run.stderr.trim()) {
       fs.writeFileSync(resolveContainedPath(runsDir, `${testCaseId}.stderr.txt`), run.stderr);
     }
 
     if (!run.ok) {
-      const reason = run.timedOut ? `timeout tras ${opts.timeout}s` : `claude exit ${run.code}: ${run.stderr.trim().split('\n').pop() || 'sin salida'}`;
+      const exit = typeof run.code === 'number' ? `exit ${run.code}` : 'no pudo iniciarse';
+      const reason = run.timedOut
+        ? `${opts.evalRunner} timeout tras ${opts.timeout}s`
+        : `${opts.evalRunner} ${exit}: ${run.stderr.trim().split('\n').pop() || 'sin salida'}`;
       log(`[${tc.id}] ❌ ERROR — ${reason}`);
       return { tc, status: 'ERROR', grade: null, reason, durationMs: run.durationMs };
     }
@@ -572,7 +728,7 @@ async function runSkill(planSkill, opts, runtime = {}) {
 // Paso E5/E6 — Informe
 // ---------------------------------------------------------------------------
 
-function renderReport(skillName, results) {
+function renderReport(skillName, results, opts = {}) {
   const total = results.length;
   const passed = results.filter((r) => r.status === 'PASS').length;
   const failed = total - passed;
@@ -628,6 +784,7 @@ function renderReport(skillName, results) {
       `# Eval Report: ${skillName}`,
       ``,
       `**Fecha:** ${date} | **Total:** ${total} | ✅ Passed: ${passed} | ❌ Failed: ${failed} | **Pass rate:** ${passRate}%`,
+      `**Ejecutor:** ${opts.evalRunner || 'claude'}${opts.model ? ` | **Modelo:** ${opts.model}` : ''}`,
       ``,
       `| ID | Nombre | Tipo | Threshold | Estado | Notas |`,
       `|---|---|---|---|---|---|`,
@@ -679,7 +836,7 @@ async function main(argv = process.argv.slice(2), runtime = {}) {
   for (const skill of executionPlan.skills) {
     log(`[INFO]   ${skill.name}: ${skill.cases.length} caso(s)`);
   }
-  log(`[INFO] Modelo: ${opts.model} · concurrencia: ${opts.concurrency} · timeout: ${opts.timeout}s${opts.dryRun ? ' · dry-run' : ''}`);
+  log(`[INFO] Ejecutor de eval: ${opts.evalRunner} · modelo: ${opts.model || 'predeterminado del runner'} · concurrencia: ${opts.concurrency} · timeout: ${opts.timeout}s${opts.dryRun ? ' · dry-run' : ''}`);
 
   let anyFailure = false;
   for (const skill of executionPlan.skills) {
@@ -693,7 +850,7 @@ async function main(argv = process.argv.slice(2), runtime = {}) {
     }
     if (opts.dryRun) continue;
 
-    const report = renderReport(skill.name, outcome.results);
+    const report = renderReport(skill.name, outcome.results, opts);
     log(`\n${report.markdown}`);
     if (opts.report) {
       const dir = resolveContainedPath(tmpRoot, validateSkillName(skill.name));
@@ -720,6 +877,9 @@ if (require.main === module) {
 module.exports = {
   resolveContainedPath,
   parseArgs,
+  buildClaudeArgs,
+  buildCodexArgs,
+  runCodex,
   changedSkills,
   resolveSkills,
   loadCases,

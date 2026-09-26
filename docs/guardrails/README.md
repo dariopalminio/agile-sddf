@@ -122,7 +122,7 @@ referencias de los skills (familia `dod-guardrail`).
 
 [dod-story-checklist.md](dod-story-checklist.md) es el **índice deprecado** del antiguo DoD monolítico:
 se conserva durante la minor 3.3.x y se elimina en 4.0.0. Un proyecto con el DoD en un solo archivo lo
-divide con `/memory-system migrate --from=dod-monolithic`. `/project-policies-generation` genera las
+divide con `/memory-system migrate --from=dod-monolithic`. `/sddf-constitution` genera las
 seis etapas desde sus plantillas.
 
 ### Content guardrails del DoD

@@ -209,14 +209,14 @@ Construir el contexto técnico que se usará al generar el diseño. Leer todas l
     ```
     ⚠️ No se encontró $SPECS_BASE/constitution.md
        El diseño se generará sin restricciones técnicas explícitas del proyecto.
-       Para definir políticas del proyecto, ejecuta /project-policies-generation.
+       Para definir políticas del proyecto, ejecuta /sddf-constitution.
     ```
 - DoD de la etapa `plan` — criterios de calidad mínimos (transition guardrail), resuelto según `## DoD aplicable`
   - Si no se resuelve ningún archivo: emitir advertencia y continuar
     ```
     ⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic
        El diseño se generará sin criterios de calidad explícitos del proyecto.
-       Para definir la Definition of Done del proyecto, ejecuta /project-policies-generation.
+       Para definir la Definition of Done del proyecto, ejecuta /sddf-constitution.
     ```
 
 **Inspección del código existente:**

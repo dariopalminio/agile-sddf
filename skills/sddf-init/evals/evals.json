@@ -89,7 +89,7 @@
         "flags": ["--level", "minimal"]
       },
       "expected": {
-        "contains": ["[OMITIDO] project-policies-generation (nivel minimal)", "sddf.config.yaml", ".env.template"],
+        "contains": ["[OMITIDO] sddf-constitution (nivel minimal)", "sddf.config.yaml", ".env.template"],
         "not_contains": ["templates/story-template.md", "¿Deseas inicializar los documentos de políticas"]
       },
       "threshold": 1.0
