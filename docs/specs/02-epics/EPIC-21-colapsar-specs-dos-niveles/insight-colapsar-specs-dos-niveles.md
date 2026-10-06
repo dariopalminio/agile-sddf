@@ -117,4 +117,6 @@ Es más limpio y sigue siendo fiel a Flight Levels.
 
 **Acción prioritaria:** Refactorizar para eliminar 01-projects/ y migrar su contenido a `product/` y `requirements/`.
 
+## Referencias
 
+[ADR-0013: Eliminar `specs/01-projects/`](../../../adr/ADR-0013-eliminar-specs-01-projects.md)
