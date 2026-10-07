@@ -5,7 +5,7 @@ id: STORY-119
 kind: feat
 slug: STORY-119-story-plan-un-subagente-por-paso
 title: "Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-07
