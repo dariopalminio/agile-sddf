@@ -122,6 +122,34 @@
         ]
       },
       "threshold": 0.90
+    },
+    {
+      "id": "TC-006",
+      "name": "skip-existing-conserva-tasks",
+      "type": "edge-case",
+      "description": "tasks.md ya existe y se invoca con --skip-existing: el skill no pregunta, conserva tasks.md sin escribirlo y termina con éxito.",
+      "input": {
+        "input_path": "examples/input",
+        "flags": [
+          "--skip-existing"
+        ],
+        "existing_artifacts": [
+          "design.md",
+          "tasks.md"
+        ]
+      },
+      "expected": {
+        "contains": [
+          "tasks.md existente conservado (--skip-existing)"
+        ],
+        "not_contains": [
+          "(r) Regenerar",
+          "(n) No modificar",
+          "=== FILE:",
+          "mutuamente excluyentes"
+        ]
+      },
+      "threshold": 1
     }
   ]
 }

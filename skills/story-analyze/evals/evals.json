@@ -142,6 +142,37 @@
         ]
       },
       "threshold": 0.92
+    },
+    {
+      "id": "TC-006",
+      "name": "force-regenera-analyze",
+      "type": "edge-case",
+      "description": "analyze.md ya existe y se invoca con --force: el skill no pregunta, vuelve a auditar los artefactos y regenera analyze.md.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "STORY-099",
+        "flags": [
+          "--force"
+        ],
+        "existing_artifacts": [
+          "design.md",
+          "tasks.md",
+          "analyze.md"
+        ]
+      },
+      "expected": {
+        "contains": [
+          "analyze.md sobreescrito con --force",
+          "type: analyze",
+          "Resumen Ejecutivo"
+        ],
+        "not_contains": [
+          "(r) Regenerar",
+          "(n) No modificar",
+          "mutuamente excluyentes"
+        ]
+      },
+      "threshold": 0.92
     }
   ]
 }

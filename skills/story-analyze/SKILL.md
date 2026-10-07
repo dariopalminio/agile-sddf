@@ -82,6 +82,10 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - `{story_id}` — identificador de la historia (ej. `STORY-059`)
 - `{story_path}` — ruta explícita al directorio de la historia (opcional)
 - `--output {path}` — ruta de salida del reporte (opcional)
+- `--force` — sobreescribir `analyze.md` existente sin pedir confirmación
+- `--skip-existing` — conservar `analyze.md` existente sin pedir confirmación y terminar sin escribir
+
+> ⚠️ `--force` y `--skip-existing` son mutuamente excluyentes. Sin ninguno de los dos se conserva la pregunta interactiva del Paso 1c.
 
 ---
 
@@ -183,15 +187,27 @@ Proporciona el ID (ej. STORY-059) o la ruta completa al directorio.
 1. Ruta explícita `--output {path}` si se proporcionó
 2. `{directorio_historia}/analyze.md`
 
-Si `analyze.md` ya existe en la ruta de salida, preguntar al usuario:
+Si se pasaron `--force` y `--skip-existing` a la vez:
 ```
-El archivo analyze.md ya existe en: <ruta>
-¿Qué deseas hacer?
-  (r) Regenerar — reemplazar el reporte existente
-  (n) No modificar — saltar el análisis
+❌ Los flags --force y --skip-existing son mutuamente excluyentes.
 ```
-- `n` / `no modificar`: informar que se saltó y terminar
-- `r` / `regenerar`: continuar
+Detener sin escribir ningún archivo.
+
+Si `analyze.md` ya existe en la ruta de salida:
+
+- **Con `--force`:** no preguntar; re-auditar y emitir al guardar (Paso 9): `[INFO] analyze.md sobreescrito con --force`
+- **Con `--skip-existing`:** no preguntar; emitir `[INFO] analyze.md existente conservado (--skip-existing)` y terminar con éxito sin escribir `analyze.md` **ni** actualizar `story.md` (el Paso 9a no se ejecuta, porque no hubo re-auditoría)
+- **Sin flags:** preguntar al usuario:
+  ```
+  El archivo analyze.md ya existe en: <ruta>
+  ¿Qué deseas hacer?
+    (r) Regenerar — reemplazar el reporte existente
+    (n) No modificar — saltar el análisis
+  ```
+  - `n` / `no modificar`: informar que se saltó y terminar
+  - `r` / `regenerar`: continuar
+
+Si `analyze.md` no existe, los flags no aplican: analizar normalmente.
 
 #### 1d. Cargar criterios DoD — Fase PLAN
 
@@ -475,6 +491,8 @@ Guardar el reporte en la ruta resuelta en el Paso 1.
 
 Si el directorio no existe, crearlo.
 
+Si se reemplazó un `analyze.md` existente por `--force`, emitir: `[INFO] analyze.md sobreescrito con --force`
+
 #### 9a. Actualizar frontmatter de story.md
 
 Después de guardar `analyze.md`, evaluar si hay inconsistencias de tipo ERROR (TIPO A, B o E):
@@ -551,6 +569,7 @@ Si solo hay WARNINGs o está todo OK:
 | `testcases.md` ausente (tasks.md presente) | `⚠️ testcases.md no encontrado — cobertura de pruebas omitida` | Advertir y continuar |
 | `tasks.md` ausente (testcases.md presente) | `⚠️ No se encontró tasks.md en: <ruta> — análisis de tareas omitido` | Advertir y continuar. Informar que `/story-tasking {story_id}` habilita el análisis completo |
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
+| `--force` y `--skip-existing` simultáneos | `❌ Los flags --force y --skip-existing son mutuamente excluyentes.` | Detener sin escribir archivos |
 | DoD de la etapa plan ausente | `⚠️ DoD de la etapa plan no encontrado …` | Advertir y continuar sin validación DoD |
 | Épica padre no encontrada | `⚠️ No se encontró epic.md para: <parent>` | Advertir y continuar sin verificación de épica |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
