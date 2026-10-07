@@ -1,12 +1,29 @@
-# Testing de STORY-119: 
+# Testing de STORY-119: Prueba 1
+
+## Testcase
 
 Fecha: 07-10-2026 19:00
 
-## Prueba: Ejecución de '/story-plan STORY-109 --only-tasks'
+**Objetivo**: verificar si el `story-plan` refactorizado (que delega sub-skills a subagentes) reduce el consumo de tokens respecto a la versión antigua (que los ejecutaba inline).
+
+**Método**:
+1. Usar Claude con `/clear` antes de cada invocación (sesión fresca).
+2. Ejecutar `/story-plan STORY-NNN --only-tasks`.
+3. Ejecutar `/context` y leer la categoría **Messages**.
+
+**Resultado esperado**:
+
+| Versión | Messages |
+| :--- | ---: |
+| Antigua (inline) | ~111-153k |
+| Refactorizada (subagentes) | **~30k** |
+| **Reducción** | **~76%** |
+
+## Testcase Ejecución: Ejecución de '/story-plan STORY-109 --only-tasks'
 
 Steps:
-1. /clear
-2. /story-creation # Optimizar `/story-plan` para consumir menos tokens: un subagente aislado por paso
+1. Iniciar Claude y/o ejecutar /clear
+2. /story-plan STORY-109 --only-tasks # Optimizar `/story-plan` para consumir menos tokens: un subagente aislado por paso
 3. /context
 4. Results (Context usage Metrics):
 

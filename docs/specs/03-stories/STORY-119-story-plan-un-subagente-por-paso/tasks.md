@@ -74,6 +74,8 @@ Cada caso usa el formato de TC-004 (`input` con `input_path: "examples/input"`, 
 - [x] T027 Ejecutar `npm run test:eval -- story-design story-tasking story-analyze --only <IDs nuevos de T009-T011>` y después la suite completa de los tres workers (sin flags se conserva la pregunta) — AC-5
 - [x] T028 [P] CNF-3/CNF-5: revisar que el bloque de prompt en `story-plan/SKILL.md` contiene solo ruta del worker + contexto + reglas; `grep -nE "Agent|subagente" skills/story-{design,tasking,testcases,analyze}/SKILL.md` no muestra lanzamientos de subagentes — CNF-3, CNF-5
 - [x] T029 [P] Ejecutar `npm run test:eval -- story-plan --dry-run`, `node scripts/verify-eval-inventory.js` y `npm test`; comparar con `baseline.txt` — CNF-6
+- [x]  Verificar si el story-plan refactorizado (que delega sub-skills a subagentes) reduce el consumo de tokens respecto a la versión antigua (que los ejecutaba inline). --> Evidencia:testing-report-01.md
+- [x] Verificar si el story-plan refactorizado (que delega sub-skills a subagentes) reduce el consumo de tokens respecto a la versión antigua (que los ejecutaba inline). --> Evidencia: testing-report-02.md
 
 ## 8. Medición CNF-1 / CNF-2
 

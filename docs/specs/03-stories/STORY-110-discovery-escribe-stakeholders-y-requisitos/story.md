@@ -5,8 +5,8 @@ id: STORY-110
 kind: feat
 slug: STORY-110-discovery-escribe-stakeholders-y-requisitos
 title: "project-discovery y reverse-engineering escriben stakeholders y requisitos individuales"
-status: SPECIFY
-substatus: IN-PROGRESS
+status: READY-FOR-IMPLEMENT
+substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
 updated: 2026-10-05
