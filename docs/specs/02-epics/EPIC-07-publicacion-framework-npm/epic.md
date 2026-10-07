@@ -3,7 +3,8 @@ type: epic
 id: EPIC-07
 slug: EPIC-07-publicacion-framework-npm
 title: "Release 07 — Publicación del Framework SDDF como Paquete NPM"
-date: 2026-04-20
+created: 2026-04-20
+updated: 2026-04-20
 status: COMPLETED
 substatus: DONE
 parent: PROJ-01-agile-sddf
@@ -15,15 +16,27 @@ related:
 
 # Release 07 — Publicación del Framework SDDF como Paquete NPM
 
-## Descripción
+## Alcance
 Permite la distribución del framework Agile Spec-Driven-Development (SDDF) como un paquete NPM público, facilitando la instalación global de todos los skills, agentes y templates del framework.
 
 ## Historias
-- [x] **STORY-038: Copiar los templates a los skills correspondientes** — Reorganizar los templates de `$SPECS_BASE/specs/templates/` a los directorios `templates/` de los skills que los utilizan. _(deps: —)_
-- [x] **STORY-039: Publicar framework en npm** — (package structure + npm publish manual) Empaquetar y publicar todos los skills, agentes y templates del framework en NPM para instalación global con npm install -g @sddf/core. _(deps: STORY-038)_
-- [x] **STORY-040: Instalar skills via postinstall (script)** — Configurar el script `postinstall` para copiar automáticamente los skills y agentes a `~/.claude/` tras la instalación global. Implica crear un script Node.js (scripts/postinstall.js) que npm ejecuta automáticamente al hacer npm install -g.  _(deps: STORY-039)_
+- [x] **STORY-038** — Copiar los templates a los skills correspondientes: Reorganizar los templates de `$SPECS_BASE/specs/templates/` a los directorios `templates/` de los skills que los utilizan. _(deps: —)_
+- [x] **STORY-039** — Publicar framework en npm: (package structure + npm publish manual) Empaquetar y publicar todos los skills, agentes y templates del framework en NPM para instalación global con npm install -g @sddf/core. _(deps: STORY-038)_
+- [x] **STORY-040** — Instalar skills via postinstall (script): Configurar el script `postinstall` para copiar automáticamente los skills y agentes a `~/.claude/` tras la instalación global. Implica crear un script Node.js (scripts/postinstall.js) que npm ejecuta automáticamente al hacer npm install -g.  _(deps: STORY-039)_
 
-## Notas:
+## Criterios de salida
+- [ ] [Por completar]
+
+## Smoke tests
+### SMOKE-1 — [Por completar]
+```gherkin
+Escenario: [Por completar]
+  Dado [Por completar]
+  Cuando [Por completar]
+  Entonces [Por completar]
+```
+
+## Notas
 
 Implementar STORY-039:
 - Reorganizar la estructura del proyecto para que cada skill, agente y template tenga su propio package.json con la configuración adecuada para npm.

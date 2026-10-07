@@ -1,6 +1,6 @@
-# Test Case 01 — Épica mínimo (modo --quick)
+# Test Case 01 — Épica mínima (modo --quick)
 
-**Descripción:** El usuario invoca el skill con `--quick`. Solo se completan las secciones obligatorias. Las secciones opcionales se omiten sin preguntar.
+**Descripción:** El usuario invoca el skill con `--quick`. Se completan las cinco secciones obligatorias del template v2; la sección de clave `notas` es opcional en contenido y el usuario responde "ninguna".
 
 ---
 
@@ -19,15 +19,14 @@
 - Prompt: "¿Cómo se llama la épica?"
 - Usuario responde: `"Autenticación básica"`
 - Slug derivado: `autenticacion-basica`
-- Prompt: "¿Identificador de épica?" (se sugiere `EPIC-01` si no hay épicas previas)
-- Usuario acepta: `EPIC-01`
+- Se sugiere `EPIC-01` (no hay épicas previas); el usuario acepta
 - Ruta de salida: `$SPECS_BASE/specs/02-epics/EPIC-01-autenticacion-basica/epic.md`
 - El directorio no existe → continuar
 
 ### Fase 1 — Leer template
 - Se lee `$SPECS_BASE/templates/epic-template.md`
-- Secciones obligatorias extraídas: `Descripción`, `Historias`, `Flujos Críticos / Smoke Tests`
-- Secciones opcionales extraídas: `Requerimiento`, `Impacto en Procesos Claves`, `Dependencias Críticas`, `Riesgos`, `Criterios de éxito`, `Notas adicionales`
+- Contrato extraído (título · clave), todas obligatorias: `Alcance · alcance`, `Historias · historias`, `Criterios de salida · criterios-salida`, `Smoke tests · smoke-tests`, `Notas · notas` (contenido opcional)
+- Secciones opcionales: ninguna
 
 ### Fase 2 — Frontmatter
 | Campo | Valor ingresado |
@@ -35,45 +34,42 @@
 | type | `epic` (fijo) |
 | id | `EPIC-01` (del Paso 1) |
 | title | "Autenticación básica" (aceptado) |
-| status | BACKLOG (default aceptado) |
-| substatus | IN-PROGRESS (default aceptado) |
+| status | `DEFINE` (default aceptado) |
+| substatus | `TODO` (default aceptado) |
 | created | 2026-05-01 (fecha de hoy, aceptada) |
 | updated | 2026-05-01 (igual a `created` en la creación inicial) |
-| slug | `autenticacion-basica` (confirmado) |
+| slug | `EPIC-01-autenticacion-basica` (confirmado) |
 
-### Fase 3 — Secciones obligatorias
-- **Descripción:** "Implementa el sistema de login y registro de usuarios con email y contraseña. Resuelve la necesidad de autenticación segura como base del sistema."
-- **Historias:**
-  - `STORY-001 - Registro de usuario: Permite crear cuenta con email y contraseña`
-  - `STORY-002 - Login: Permite iniciar sesión con credenciales válidas`
-  - `STORY-003 - Logout: Permite cerrar sesión activa`
-- **Flujos Críticos / Smoke Tests:**
-  - Escenario 1: Login exitoso — DADO usuario registrado / CUANDO intenta hacer login con credenciales correctas / ENTONCES accede al sistema
+### Fase 3 — Secciones obligatorias (una pregunta por sección con su título y su guía)
+- **Alcance:** "Login y registro de usuarios con email y contraseña."
+- **Historias** (clave `historias`, se escriben en F1, sin IDs):
+  - `Registro de usuario: permite crear cuenta con email y contraseña`
+  - `Login: permite iniciar sesión con credenciales válidas`
+  - `Logout: permite cerrar la sesión activa`
+- **Criterios de salida:** "Los tres flujos tienen tests automatizados en verde"
+- **Smoke tests** (clave `smoke-tests`): `Login exitoso` — Dado un usuario registrado / Cuando inicia sesión con credenciales correctas / Entonces accede al sistema
+- **Notas:** "ninguna" → queda solo el encabezado
 
-### Fase 4 — Secciones opcionales
-- **OMITIDAS** (QUICK_MODE=true) — no se formulan preguntas
-
-### Fase 5 — Archivo generado
+### Fase 4 — Archivo generado
 ```
 docs/specs/02-epics/EPIC-01-autenticacion-basica/epic.md
 ```
 
-### Fase 6 — Validación
+### Fase 5 — Validación
 - `epic-format-validation` retorna **APROBADO**
 
 ---
 
 ## Output esperado del archivo
 
-```markdown
+````markdown
 ---
-alwaysApply: false
 type: epic
 id: EPIC-01
-slug: autenticacion-basica
+slug: EPIC-01-autenticacion-basica
 title: "Autenticación básica"
-status: BACKLOG
-substatus: IN-PROGRESS
+status: DEFINE
+substatus: TODO
 parent: null
 created: 2026-05-01
 updated: 2026-05-01
@@ -82,28 +78,34 @@ related: []
 
 # Épica: Autenticación básica
 
-## Descripción
-Implementa el sistema de login y registro de usuarios con email y contraseña. Resuelve la necesidad de autenticación segura como base del sistema.
+## Alcance
+Login y registro de usuarios con email y contraseña.
 
 ## Historias
-- [ ] STORY-001 - **Registro de usuario:** Permite crear cuenta con email y contraseña
-- [ ] STORY-002 - **Login:** Permite iniciar sesión con credenciales válidas
-- [ ] STORY-003 - **Logout:** Permite cerrar sesión activa
+- Registro de usuario: permite crear cuenta con email y contraseña
+- Login: permite iniciar sesión con credenciales válidas
+- Logout: permite cerrar la sesión activa
 
-## Flujos Críticos / Smoke Tests
-*Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
+## Criterios de salida
+- [ ] Los tres flujos tienen tests automatizados en verde
 
-### Escenario 1: Login exitoso
-**DADO** usuario registrado  
-**CUANDO** intenta hacer login con credenciales correctas  
-**ENTONCES** accede al sistema
+## Smoke tests
+### SMOKE-1 — Login exitoso
+```gherkin
+Escenario: Login exitoso
+  Dado un usuario registrado
+  Cuando inicia sesión con credenciales correctas
+  Entonces accede al sistema
 ```
+
+## Notas
+````
 
 ---
 
 ## Criterios de éxito del test
 
-- [ ] El skill no formuló preguntas sobre secciones opcionales
-- [ ] El archivo generado contiene frontmatter completo
-- [ ] El archivo contiene las 3 secciones obligatorias con contenido
+- [ ] El skill no pidió IDs de historia y escribió las historias en F1 (sin checkbox ni `STORY-NNN`)
+- [ ] El smoke test quedó como `### SMOKE-1 — …` con bloque `gherkin`
+- [ ] Los encabezados no llevan los comentarios `<!-- sección … -->` del template
 - [ ] `epic-format-validation` retorna APROBADO sin refinamiento

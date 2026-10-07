@@ -3,7 +3,7 @@
 
 /**
  * memory-system.js — motor determinista del skill `memory-system` (STORY-095, STORY-096, STORY-097,
- * STORY-098, STORY-101).
+ * STORY-098, STORY-101, STORY-103).
  *
  * Subcomandos:
  *   detect   --root <SPECS_BASE> [--harness h]
@@ -11,6 +11,7 @@
  *   scaffold --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--date YYYY-MM-DD]
  *   check    --root <SPECS_BASE> [--harness h] [--json] [--skills-dir <ruta>] [--cli-root <CLI_ROOT>]
  *   migrate  --root <SPECS_BASE> --from dod-monolithic [--dry-run] [--force] [--date YYYY-MM-DD]
+ *   migrate  --root <SPECS_BASE> --from epic-template-v1 [--dry-run]
  *
  * Solo usa módulos nativos (`node:fs`, `node:path`, `node:process`) para funcionar en
  * proyectos consumidores sin `package.json` (NFR-2). Node >= 18. Las rutas se normalizan
@@ -19,7 +20,8 @@
  *
  * Exit codes: 0 éxito · 2 error de uso, raíz inexistente, harness no admitido o template
  * desalineado o destino de escritura fuera de la raíz (nunca escribe en esos casos) · 1 error
- * inesperado. `migrate` sale con 1 si queda alguna etapa `[SIN ORIGEN]` o un bloque `[NO MIGRADO]`.
+ * inesperado. `migrate` sale con 1 si queda alguna etapa `[SIN ORIGEN]`, un bloque `[NO MIGRADO]` o un
+ * hallazgo `[REVISAR]` (`epic-template-v1`).
  * En `check` el 1 significa exclusivamente "memoria con problemas" (gate de CI) y
  * **todo** error, incluido el inesperado, sale con 2 (D-4, CR-008).
  */
@@ -28,6 +30,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const process = require('node:process');
 const dodStory = require('./dod-story.js');
+const epicTemplate = require('./epic-template.js');
 
 // ---------------------------------------------------------------------------
 // Constantes (D-2, D-3, D-4)
@@ -140,12 +143,12 @@ const VALUE_FLAGS = {
   '--root': 'root', '--cli-root': 'cliRoot', '--harness': 'harness', '--template': 'template', '--date': 'date',
   '--from': 'from', '--skills-dir': 'skillsDir',
 };
-// Orígenes admitidos por `migrate --from` (STORY-101 D-3). La migración de harness no es un
-// subcomando del motor: es una secuencia del SKILL.md sobre `scaffold` (STORY-098 D-3).
-const MIGRATE_SOURCES = ['dod-monolithic'];
+// Orígenes admitidos por `migrate --from` (STORY-101 D-3, STORY-103 D-7). La migración de harness no
+// es un subcomando del motor: es una secuencia del SKILL.md sobre `scaffold` (STORY-098 D-3).
+const MIGRATE_SOURCES = ['dod-monolithic', 'epic-template-v1'];
 const BOOL_FLAGS = { '--dry-run': 'dryRun', '--force': 'force', '--json': 'json' };
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const USAGE = 'uso: memory-system.js <detect|index|scaffold|check|migrate> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json] [--skills-dir <ruta>] [--from dod-monolithic]';
+const USAGE = 'uso: memory-system.js <detect|index|scaffold|check|migrate> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json] [--skills-dir <ruta>] [--from dod-monolithic|epic-template-v1]';
 
 // Error de uso o de datos: se informa por stderr y termina con exit 2 sin escribir.
 class UsageError extends Error {}
@@ -972,11 +975,18 @@ function resolveSkillsDir(args, repoRoot) {
   return installed && isDirectory(installed) ? installed : null;
 }
 
-/** `migrate --from dod-monolithic`: divide el DoD de historia en un guardrail por etapa (STORY-101). */
+/**
+ * `migrate --from <origen>`: `dod-monolithic` divide el DoD de historia en un guardrail por etapa
+ * (STORY-101); `epic-template-v1` migra las épicas al template v2 (STORY-103). Para este último
+ * `--force` y `--date` se ignoran: la transformación es determinista y no toca el frontmatter.
+ */
 function runMigrate(args) {
   assertRuntime();
   const specsBase = resolveRoot(args.root);
-  const result = dodStory.migrateDod(specsBase, { dryRun: args.dryRun, force: args.force, date: args.date, displayRoot: toPosix(args.root) });
+  const displayRoot = toPosix(args.root);
+  const result = args.from === 'epic-template-v1'
+    ? epicTemplate.migrateEpics(specsBase, { dryRun: args.dryRun, displayRoot })
+    : dodStory.migrateDod(specsBase, { dryRun: args.dryRun, force: args.force, date: args.date, displayRoot });
   process.stdout.write(`${result.lines.join('\n')}\n`);
   return result.exitCode;
 }

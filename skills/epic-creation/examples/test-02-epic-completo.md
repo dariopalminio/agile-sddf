@@ -1,6 +1,6 @@
-# Test Case 02 — Épica completo (todas las secciones opcionales respondidas)
+# Test Case 02 — Épica completa (todas las secciones con contenido)
 
-**Descripción:** El usuario invoca el skill sin `--quick` y responde "sí" a todas las secciones opcionales. El archivo final incluye todas las secciones del template.
+**Descripción:** El usuario invoca el skill sin `--quick` y responde con contenido a las cinco secciones del template v2, incluida la de clave `notas` (opcional en contenido). El archivo final incluye todas las secciones en el orden del template.
 
 ---
 
@@ -25,8 +25,8 @@
 
 ### Fase 1 — Leer template
 - Se lee `$SPECS_BASE/templates/epic-template.md`
-- Secciones obligatorias: `Descripción`, `Historias`, `Flujos Críticos / Smoke Tests`
-- Secciones opcionales: `Requerimiento`, `Impacto en Procesos Claves`, `Dependencias Críticas`, `Riesgos`, `Criterios de éxito`, `Notas adicionales`
+- Contrato extraído (título · clave): `Alcance · alcance`, `Historias · historias`, `Criterios de salida · criterios-salida`, `Smoke tests · smoke-tests`, `Notas · notas`
+- Secciones opcionales: ninguna (el Paso 5 no pregunta nada)
 
 ### Fase 2 — Frontmatter
 | Campo | Valor ingresado |
@@ -34,61 +34,92 @@
 | type | `epic` (fijo) |
 | id | `EPIC-02` (del Paso 1) |
 | title | "Sistema de pagos" (aceptado) |
-| status | BACKLOG (default aceptado) |
-| substatus | IN-PROGRESS (default aceptado) |
+| status | `DEFINE` (default aceptado) |
+| substatus | `TODO` (default aceptado) |
 | created | 2026-05-15 (usuario modifica la fecha sugerida) |
 | updated | 2026-05-15 (igual a `created` en la creación inicial) |
-| slug | `sistema-de-pagos` (confirmado) |
+| slug | `EPIC-02-sistema-de-pagos` (confirmado) |
 
-### Fase 3 — Secciones obligatorias
-- **Descripción:** "Integra la pasarela de pagos para permitir que usuarios realicen compras con tarjeta de crédito/débito. Resuelve la falta de monetización directa en la plataforma."
-- **Historias:**
-  - `STORY-001 - Pago con tarjeta: Procesar pagos con tarjeta Visa/Mastercard vía Stripe`
-  - `STORY-002 - Historial de transacciones: Ver pagos realizados con fecha, monto y estado`
-  - `STORY-003 - Reembolsos: Solicitar devolución de pago dentro de 30 días`
-- **Flujos Críticos / Smoke Tests:**
-  - Escenario 1: Pago exitoso — DADO usuario con tarjeta válida / CUANDO realiza pago / ENTONCES transacción aprobada y saldo debitado
-  - Escenario 2: Pago rechazado — DADO usuario con fondos insuficientes / CUANDO intenta pagar / ENTONCES transacción rechazada sin cargo
+### Fase 3 — Secciones (una pregunta por sección con su título y su guía)
+- **Alcance:** "Pasarela de pagos con tarjeta de crédito/débito integrada con Stripe."
+- **Historias** (F1, sin IDs):
+  - `Pago con tarjeta: procesar pagos Visa/Mastercard vía Stripe`
+  - `Historial de transacciones: ver pagos con fecha, monto y estado`
+  - `Reembolsos: solicitar la devolución de un pago dentro de 30 días`
+- **Criterios de salida:**
+  - `Los webhooks de Stripe se procesan de forma idempotente`
+  - `Ningún dato de tarjeta se persiste en servidores propios (PCI DSS)`
+- **Smoke tests:**
+  - `Pago exitoso` — Dado un usuario con tarjeta válida / Cuando realiza el pago / Entonces la transacción queda aprobada
+  - `Pago rechazado` — Dado un usuario con fondos insuficientes / Cuando intenta pagar / Entonces la transacción se rechaza sin cargo
+- **Notas:** "Coordinar con marketing el comunicado de lanzamiento."
 
-### Fase 4 — Secciones opcionales (usuario responde "sí" a todas)
-
-**Requerimiento:** "Las transacciones deben cumplir PCI DSS nivel 1. No almacenar datos de tarjeta en los servidores propios."
-
-**Impacto en Procesos Claves:**
-- Proceso de ventas: Habilita ventas directas en plataforma sin redirección a terceros
-- Proceso de soporte: Agrega flujo de gestión de disputas y reembolsos
-- Proceso contable: Requiere reconciliación automática con Stripe Dashboard
-
-**Dependencias Críticas:**
-- Integración con API de Stripe — Dueño: equipo backend — Fecha compromiso: 2026-05-10
-- Certificación PCI DSS — Dueño: equipo de seguridad — Fecha compromiso: 2026-05-12
-
-**Riesgos:**
-- Riesgo: Rechazo de transacciones por proveedor antifraude — Mitigación: Testear con tarjetas de prueba y revisar reglas de Stripe Radar antes del lanzamiento
-- Riesgo: Fallo en webhook de confirmación — Mitigación: Implementar sistema de reintentos con idempotencia
-
-**Criterios de éxito:**
-- [ ] Tasa de aprobación de pagos ≥ 95% en las primeras 48 horas
-- [ ] Tiempo de procesamiento < 3 segundos por transacción
-- [ ] Cero incidentes de seguridad en primer mes
-
-**Notas adicionales:** "Coordinar con marketing para comunicado de lanzamiento de la funcionalidad de pagos."
-
-### Fase 5 — Archivo generado
+### Fase 4 — Archivo generado
 ```
 docs/specs/02-epics/EPIC-02-sistema-de-pagos/epic.md
 ```
-(Contiene todas las secciones del template)
 
-### Fase 6 — Validación
+### Fase 5 — Validación
 - `epic-format-validation` retorna **APROBADO**
+
+---
+
+## Output esperado del archivo
+
+````markdown
+---
+type: epic
+id: EPIC-02
+slug: EPIC-02-sistema-de-pagos
+title: "Sistema de pagos"
+status: DEFINE
+substatus: TODO
+parent: null
+created: 2026-05-15
+updated: 2026-05-15
+related: []
+---
+
+# Épica: Sistema de pagos
+
+## Alcance
+Pasarela de pagos con tarjeta de crédito/débito integrada con Stripe.
+
+## Historias
+- Pago con tarjeta: procesar pagos Visa/Mastercard vía Stripe
+- Historial de transacciones: ver pagos con fecha, monto y estado
+- Reembolsos: solicitar la devolución de un pago dentro de 30 días
+
+## Criterios de salida
+- [ ] Los webhooks de Stripe se procesan de forma idempotente
+- [ ] Ningún dato de tarjeta se persiste en servidores propios (PCI DSS)
+
+## Smoke tests
+### SMOKE-1 — Pago exitoso
+```gherkin
+Escenario: Pago exitoso
+  Dado un usuario con tarjeta válida
+  Cuando realiza el pago
+  Entonces la transacción queda aprobada
+```
+
+### SMOKE-2 — Pago rechazado
+```gherkin
+Escenario: Pago rechazado
+  Dado un usuario con fondos insuficientes
+  Cuando intenta pagar
+  Entonces la transacción se rechaza sin cargo
+```
+
+## Notas
+Coordinar con marketing el comunicado de lanzamiento.
+````
 
 ---
 
 ## Criterios de éxito del test
 
-- [ ] El skill preguntó por cada sección opcional individualmente
-- [ ] El archivo generado contiene frontmatter completo
-- [ ] El archivo contiene las 3 secciones obligatorias con contenido
-- [ ] El archivo contiene las 6 secciones opcionales con contenido respondido
+- [ ] Cada pregunta usó el título y el comentario guía de la sección del template
+- [ ] Las historias quedaron en F1 y los smoke tests como `SMOKE-1`/`SMOKE-2` con bloque `gherkin`
+- [ ] Las secciones aparecen en el orden del template, sin los marcadores `<!-- sección … -->`
 - [ ] `epic-format-validation` retorna APROBADO sin refinamiento

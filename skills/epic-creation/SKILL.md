@@ -24,7 +24,7 @@ Conduce al usuario a través de la creación de un archivo de épica completa me
 **Qué hace este skill:**
 - Guía la creación de una épica de forma interactiva, sección por sección, extrayendo estructura del template en tiempo de ejecución
 - Soporta modo rápido (`--quick`) para omitir secciones opcionales sin preguntar individualmente
-- Calcula automáticamente el siguiente ID de features disponible sin pedir IDs al usuario
+- Escribe las historias como planificadas (formato F1, sin ID) y los smoke tests como `SMOKE-N` + bloque `gherkin`
 - Valida la épica generada invocando `epic-format-validation` al finalizar
 - Ofrece corrección interactiva si la validación devuelve REFINAR
 
@@ -59,7 +59,20 @@ Conduce al usuario a través de la creación de un archivo de épica completa me
 ## Dependencias
 
 - Skills: [`epic-format-validation`]
-- Archivos: [`assets/epic-template.md`]
+- Archivos: [`assets/epic-template.md`], [`$SPECS_BASE/templates/epic-template.md`] (si existe)
+
+---
+
+## DoD aplicable
+
+| Elemento | Valor |
+|---|---|
+| Etapa | `DEFINE` de Epic (transición `DEFINE → PLAN`) |
+| Guardrail DoD | **ninguno vigente**: no existe un guardrail DoD de Epic |
+| Gate | "Gate de formato" `DEFINE → PLAN` de `domain-epic-lifecycle` §8, ejecutado por `epic-format-validation` en el Paso 7 |
+| Override | no aplica |
+
+La épica creada debe obtener `APROBADO` del gate antes de pasar a `PLAN`; un `REFINAR` se corrige en el Paso 7.
 
 ---
 
@@ -75,7 +88,9 @@ Conduce al usuario a través de la creación de un archivo de épica completa me
 
 - El template `epic-template.md` es la **única fuente de estructura** — nunca hardcodear nombres de secciones; extraerlos dinámicamente en tiempo de ejecución
 - El template es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
-- No pedir IDs de features al usuario — calcularlos automáticamente leyendo los directorios existentes en `$SPECS_BASE/specs/03-stories/`
+- No pedir ni asignar IDs de historia (`STORY-NNN`): las historias se escriben como planificadas (F1) y el ID lo asigna `/epic-generate-stories` (F1 → F2)
+- Las secciones se identifican por su `clave:` en el template, nunca por su título: este skill no contiene títulos de sección
+- Los formatos de línea F1/F2/F3 y el patrón `SMOKE-N` son contrato de dominio (`domain-epic-lifecycle` §9, "Estructura de `epic.md`")
 - En modo rápido (`--quick`), las secciones opcionales se omiten sin preguntar
 - Si el directorio destino ya existe, preguntar al usuario antes de sobreescribir
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
@@ -146,12 +161,16 @@ Leer `$SPECS_BASE/templates/epic-template.md` (fuente de verdad del proyecto, pu
 > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 
 - Si ninguno de los dos archivos existe: detener la ejecución (ver Manejo de errores).
-- Si el archivo **existe**: extraer dinámicamente:
-  - **Secciones obligatorias**: líneas que empiecen con `##` y contengan `<!-- sección obligatoria`
-  - **Secciones opcionales**: líneas que empiecen con `##` y contengan `<!-- sección opcional`
-  - **Campos de frontmatter obligatorios**: las claves YAML del bloque `---` del template, **menos** la allowlist de opcionales `alwaysApply`, `parent` y `related` (claves nullables o de configuración del documento, no del contrato). Es la misma derivación que aplica el gate `epic-format-validation` (Paso 3b): no hardcodear la lista aquí, para que una clave nueva en el template no desincronice productor y gate. Con el template actual resulta: `type`, `id`, `slug`, `title`, `status`, `substatus`, `created`, `updated`
+- Si el archivo **existe**: extraer dinámicamente, en el orden del template, cada línea que empiece con `## ` (fuera de bloques de código):
+  - **título**: el texto del encabezado sin el comentario HTML;
+  - **obligatoria / opcional**: el comentario contiene `sección obligatoria` o `sección opcional`;
+  - **clave**: el valor de `clave: <clave>` del comentario (si lo declara); si dos secciones declaran la misma clave → `❌ Template inválido: clave <clave> duplicada` y detener;
+  - **guía**: el comentario `<!-- … -->` de la línea siguiente al encabezado (si existe) y si declara la sección opcional **en contenido** (`contenido opcional` o una guía que empiece por "Opcional");
+  - **ejemplo**: el contenido de ejemplo del template bajo el encabezado (solo como referencia de forma; no se copia).
+  - **Campos de frontmatter obligatorios**: las claves YAML del bloque `---` del template, **menos** la allowlist de opcionales `alwaysApply`, `parent` y `related` (claves nullables o de configuración del documento, no del contrato). Es la misma derivación que aplica el gate `epic-format-validation` (Paso 3b): no hardcodear la lista aquí, para que una clave nueva en el template no desincronice productor y gate.
 
-Guardar la lista de secciones para guiar los Pasos 3, 4 y 5.
+Guardar la lista `{ título, clave, obligatoria, guía }` para guiar los Pasos 3 a 6. Con el template v2 no hay
+secciones opcionales y el Paso 5 no pregunta nada; se mantiene por si el proyecto personaliza el template.
 
 ---
 
@@ -170,7 +189,7 @@ Preguntar los campos del frontmatter con valores sugeridos. Para cada campo, mos
 | `updated` | — | El mismo valor de `created` en la creación inicial |
 | `slug` | — | Derivado automáticamente del nombre (mostrar al usuario, permitir corrección) |
 
-Los campos opcionales del template (`alwaysApply`, `parent`, `related`) se completan con el valor del template o con `null` / `[]` si no aplican; no se preguntan al usuario.
+Los campos opcionales del template (`parent`, `related`) se completan con el valor del template o con `null` / `[]` si no aplican; no se preguntan al usuario. Escribir solo las claves que declara el template (no añadir claves retiradas como `alwaysApply`, `deliveryModel` o `children`).
 
 Confirmar el slug con el usuario antes de continuar. El slug determinará el nombre del directorio y del archivo.
 
@@ -178,36 +197,44 @@ Confirmar el slug con el usuario antes de continuar. El slug determinará el nom
 
 ### Paso 4 — Completar secciones obligatorias
 
-Para cada sección obligatoria extraída en el Paso 2, formular una pregunta clara con contexto del template. **No se permite saltar secciones obligatorias.**
+Para cada sección obligatoria extraída en el Paso 2, en el orden del template, formular **una pregunta** construida en runtime con su **título** y su **comentario guía**:
 
-#### Guía de preguntas por sección del template actual
+> "**<título>** — <guía del template>. ¿Qué quieres registrar aquí?"
 
-> Estas preguntas son una guía basada en la estructura actual del template. Si el template cambia, adaptar las preguntas a las secciones reales extraídas.
+**No se permite saltar secciones obligatorias**, salvo las que la guía declara opcionales en contenido: en ellas se acepta "ninguna" y se deja solo el encabezado.
 
-##### Descripción
-> "Describe la épica en 2-4 líneas: ¿qué valor de negocio entrega, qué problema resuelve y en qué contexto?"
+Solo dos claves tienen un manejo especial de entrada/salida (contrato de dominio, D-2b); el resto escribe la respuesta tal cual bajo su título:
 
-##### Historias
-Preguntar de forma iterativa:
-> "¿Cuáles son las features principales de esta épica? Lista cada una con formato:
-> `Nombre: descripción breve`
-> (Escribe 'listo' cuando termines)"
+#### Clave `historias`
 
-Acepta múltiples features en un mismo mensaje o una por una. **No pedir IDs al usuario** — los IDs se asignan al generar las historias con `/epic-generate-stories`, no durante la creación de la épica. El formato final en el archivo será:
+Preguntar de forma iterativa, usando el título del template:
+> "¿Qué historias (features) incluye **<título>**? Lista cada una con formato `Nombre: descripción breve` (escribe 'listo' cuando termines)."
+
+Acepta varias en un mismo mensaje o una por una. **No pedir ni asignar IDs**: cada respuesta se escribe como **F1 (planificada)**, sin checkbox y sin `STORY-NNN`:
+
 ```
-- [ ] **{Nombre}:** {descripción}
+- {Nombre}: {descripción}
 ```
-> Los IDs de historia se asignan al ejecutar `/epic-generate-stories`. No se pre-asignan en la épica para evitar colisiones con otras épicas en definición simultánea.
 
-##### Flujos Críticos / Smoke Tests
-> "Define al menos un flujo crítico que, si falla, debe detener el despliegue. Para cada escenario, describe:
-> - **DADO** (contexto inicial)
-> - **CUANDO** (acción que desencadena el flujo)
-> - **ENTONCES** (resultado esperado crítico)
->
-> ¿Cuántos escenarios críticos quieres definir?"
+Los IDs se asignan al ejecutar `/epic-generate-stories` (F1 → F2); no se pre-asignan para evitar colisiones con otras épicas en definición simultánea.
 
-Solicitar cada escenario por separado si el usuario prefiere. Continuar hasta que el usuario indique que terminó.
+#### Clave `smoke-tests`
+
+> "Define al menos un flujo crítico que, si falla, debe detener el despliegue. Para cada escenario indica su nombre y los pasos **Dado** (contexto), **Cuando** (acción) y **Entonces** (resultado esperado)."
+
+Escribir cada escenario como `### SMOKE-N — <nombre>`, numerando desde 1 en el orden dado, seguido de un bloque `gherkin`:
+
+```
+### SMOKE-1 — {nombre}
+```gherkin
+Escenario: {nombre}
+  Dado {contexto}
+  Cuando {acción}
+  Entonces {resultado esperado}
+```
+```
+
+Continuar hasta que el usuario indique que terminó. Los IDs `SMOKE-N` son estables: no se renumeran.
 
 ---
 
@@ -215,33 +242,13 @@ Solicitar cada escenario por separado si el usuario prefiere. Continuar hasta qu
 
 Si `QUICK_MODE=true`: saltar toda esta fase, continuar al Paso 6.
 
-De lo contrario, para cada sección opcional extraída en el Paso 2, preguntar:
+De lo contrario, para cada sección opcional extraída en el Paso 2 (si el template declara alguna), preguntar:
 
-> "¿Quieres completar la sección **[nombre de sección]**? (sí / no / saltar todas)"
+> "¿Quieres completar la sección **<título>**? (sí / no / saltar todas)"
 
-- Si "sí": formular la pregunta específica de la sección (ver guía abajo) y registrar la respuesta.
+- Si "sí": formular la pregunta con el título y el comentario guía de la sección (como en el Paso 4) y registrar la respuesta.
 - Si "no": omitir la sección del archivo final.
 - Si "saltar todas": omitir todas las secciones opcionales restantes sin preguntar más.
-
-#### Guía de preguntas para secciones opcionales del template actual
-
-##### Requerimiento
-> "¿Hay alguna regla de negocio específica que aplique a esta épica? Descríbela brevemente."
-
-##### Impacto en Procesos Claves
-> "¿Qué procesos del negocio se ven afectados por esta épica? Lista cada proceso y cómo se ve impactado."
-
-##### Dependencias Críticas
-> "¿Hay dependencias externas críticas? Para cada una, indica: descripción, dueño responsable y fecha de compromiso."
-
-##### Riesgos
-> "¿Qué riesgos identificas? Para cada riesgo, indica la descripción y la mitigación propuesta."
-
-##### Criterios de éxito
-> "¿Cuáles son los criterios de éxito medibles para esta épica? Lista cada uno como un ítem verificable."
-
-##### Notas adicionales
-> "¿Hay algún comentario adicional relevante para el equipo de desarrollo o stakeholders?"
 
 ---
 
@@ -249,11 +256,10 @@ De lo contrario, para cada sección opcional extraída en el Paso 2, preguntar:
 
 Con todas las respuestas recopiladas, construir el archivo `epic.md` completo:
 
-1. Construir el bloque frontmatter YAML con los valores del Paso 3
+1. Construir el bloque frontmatter YAML con los valores del Paso 3 (sin los comentarios `# escritor:` del template)
 2. Añadir el encabezado `# Épica: {título}`
-3. Para cada sección obligatoria: insertar el encabezado `## {nombre sección}` y el contenido respondido
-4. Para cada sección opcional que el usuario completó: insertar el encabezado y el contenido
-5. Omitir las secciones opcionales que el usuario saltó
+3. Para cada sección, **en el orden del template**: insertar `## {título}` **sin** el comentario `<!-- sección … -->` (pertenece al template) y el contenido respondido, sin copiar los comentarios guía ni el contenido de ejemplo del template
+4. Las secciones obligatorias van siempre (las opcionales en contenido, aunque estén vacías, como encabezado); las opcionales solo si el usuario las completó
 
 #### Crear el directorio y escribir el archivo
 
@@ -288,13 +294,13 @@ Siguiente paso: ejecuta /epic-generate-stories para generar las historias de usu
 
 #### Si el resultado es REFINAR
 
-Mostrar las secciones faltantes y ofrecer completarlas:
+Mostrar las secciones faltantes y los ítems de formato inválido y ofrecer completarlos:
 
 ```
 ⚠️ REFINAR
 
-Las siguientes secciones están incompletas o ausentes:
-- [lista de secciones]
+Las siguientes secciones están incompletas, ausentes o con formato inválido:
+- [lista de secciones e ítems de formato]
 
 ¿Quieres completarlas ahora de forma interactiva? (sí / no)
 ```
@@ -320,7 +326,8 @@ Si el usuario responde "sí": volver al Paso 4 o Paso 5 según corresponda para 
 
 ### Referencias
 
-- **Template canónico:** `assets/epic-template.md`
+- **Template canónico:** `assets/epic-template.md` (copia central: `$SPECS_BASE/templates/epic-template.md`)
+- **Contrato de `epic.md` (claves, F1/F2/F3, `SMOKE-N`):** `domain-epic-lifecycle` §9
 - **Validación de épicas:** `/epic-format-validation`
 - **Generación de stories:** `/epic-generate-stories`
 - **Generación desde plan:** `/epic-from-project-plan`

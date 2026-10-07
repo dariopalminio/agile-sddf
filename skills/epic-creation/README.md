@@ -8,11 +8,11 @@
 
 ## What it does
 
-Crea una especificación `epic.md` de forma interactiva, sección por sección, a partir del template de épica vigente. Permite iniciar una épica sin requerir un `project-plan.md` previo.
+Crea una especificación `epic.md` de forma interactiva, sección por sección, a partir del template de épica vigente (v2: cinco secciones output-oriented identificadas por `clave:`). Cada pregunta se construye con el título y la guía de la sección del template. Permite iniciar una épica sin requerir un `project-plan.md` previo.
 
 **Produces:**
 
-- `$SPECS_BASE/specs/02-epics/EPIC-NN-nombre/epic.md`.
+- `$SPECS_BASE/specs/02-epics/EPIC-NN-nombre/epic.md`, con las historias como planificadas (F1, sin ID) y los smoke tests como `### SMOKE-N — nombre` + bloque `gherkin`.
 - Un resultado de validación de estructura para la épica creada.
 
 **Does not do:**

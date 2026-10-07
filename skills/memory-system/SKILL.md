@@ -3,9 +3,10 @@ name: memory-system
 description: >-
   Memoria del proyecto (docs/ como wiki LLM): ensure (defecto) crea capas e indexa; scaffold
   solo lo faltante; rebuild --force regenera semillas; index regenera docs/index.md; check valida
-  para CI; migrate adopta Speckit/OpenSpec o, con --from=dod-monolithic, divide el DoD por etapa.
-  Sustituye a docs-wiki-builder. Invocar para "memory-system", "capas de memoria", "índice de
-  documentación", "wiki de docs", "wikilinks", "LLM wiki" o "dividir el DoD".
+  para CI; migrate adopta Speckit/OpenSpec, divide el DoD (--from=dod-monolithic) o migra
+  épicas (--from=epic-template-v1). Sustituye a docs-wiki-builder. Invocar para "memory-system",
+  "capas de memoria", "índice de documentación", "wiki de docs", "wikilinks", "LLM wiki",
+  "dividir el DoD" o "migrar épicas".
 ---
 
 # Skill: `/memory-system`
@@ -81,6 +82,8 @@ Ser el único punto de entrada para la memoria del proyecto (ver
   (`REQUIRED_FIELDS`, §6). Léelo solo en la degradación inline (Paso 5).
 - `references/dod-rules.md` — DoD de historia por etapa: `DOD_STAGES`, división del monolítico
   (`migrate --from=dod-monolithic`) y reglas R1–R7 de la familia `dod-guardrail` de `check`.
+- `scripts/epic-template.js` — migración de épicas al template v2 (`migrate --from=epic-template-v1`):
+  contrato por claves del template y reglas R1–R11 (STORY-103 D-7).
 
 ## Parámetros
 
@@ -94,6 +97,7 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 | `check [--json] [--harness h] [--skills-dir <ruta>]` | Verifica la memoria en solo lectura y propaga el exit code del motor (0 / 1 / 2). Con `--json`, stdout lleva un único objeto y nada más. `--skills-dir` fija dónde buscar los `SKILL.md` que la familia `dod-guardrail` verifica. |
 | `migrate [--harness h] [--yes]` | Muestra el plan de migración, pide confirmación (`--yes` la asume) y ejecuta `scaffold` adaptado al harness. No invoca `index`. |
 | `migrate --from=dod-monolithic [--dry-run] [--force]` | Divide el DoD de historia en un guardrail por etapa y deja el original como índice deprecado (secuencia 3.7). Sin pregunta: no sobrescribe sin `--force`. |
+| `migrate --from=epic-template-v1 [--dry-run]` | Migra cada `specs/*/EPIC-*/epic.md` al template de épica vigente (v2), localizando las secciones por su `clave:` (secuencia 3.8). Sin pregunta; idempotente; `--force` se ignora. |
 | `--harness <sddf\|speckit\|openspec\|generic>` | Fuerza el harness en lugar de detectarlo. |
 
 ## Precondiciones
@@ -105,7 +109,7 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 
 ## Dependencias
 
-- Archivos del skill: `scripts/memory-system.js`, `scripts/dod-story.js`, `assets/scaffold/**`,
+- Archivos del skill: `scripts/memory-system.js`, `scripts/dod-story.js`, `scripts/epic-template.js`, `assets/scaffold/**`,
   `assets/index-template.md`, `references/memory-rules.md`, `references/dod-rules.md`.
 - Herramientas: `node` ≥ 18 (solo módulos nativos; no requiere `package.json` en el proyecto consumidor).
 - Skills: `header-aggregation` (solo con `ensure --fix-frontmatter`, composición skill → skill en la
@@ -178,7 +182,7 @@ Lee los argumentos del usuario y decide con esta tabla antes de tocar nada:
 | `rebuild --force` | Paso 2 y secuencia 3.3. |
 | `index [--harness h] [--dry-run]` | Paso 2 y secuencia 3.4. |
 | `check [--json] [--harness h] [--skills-dir <ruta>]` | Paso 2 y secuencia 3.5. |
-| `migrate --from=<origen> [--dry-run] [--force]` | Paso 2 y secuencia 3.7. Normaliza `--from=valor` a `--from valor` (el motor no admite `=`). |
+| `migrate --from=<origen> [--dry-run] [--force]` | Paso 2 y secuencia 3.7 (`dod-monolithic`) o 3.8 (`epic-template-v1`). Normaliza `--from=valor` a `--from valor` (el motor no admite `=`). |
 | `migrate [--harness h] [--yes]` (sin `--from`) | Paso 2 y secuencia 3.6. |
 | Otro valor | Muestra `❌ Modo no reconocido: <valor>. Modos disponibles: ensure, scaffold, rebuild, index, check, migrate.` y termina sin invocar el motor ni escribir. |
 
@@ -206,6 +210,7 @@ Subcomandos del motor y sus flags:
 | `scaffold` | `--cli-root <CLI_ROOT> [--harness h] [--dry-run] [--force]` | `harness: <h>`, `capas faltantes: …`, una línea por archivo (`[CREADO]`, `[PRESERVADO]`, `[SOBRESCRITO]`, `[MAPEADO] <semilla> → <ruta del harness>`; con `--dry-run`: `[CREARÍA]`, `[PRESERVARÍA]`, `[SOBRESCRIBIRÍA]`, `[MAPEARÍA]`), una línea por capa omitida (`[OMITIDO] <capa>/ — gestionado por el harness <h>`, o `[OMITIRÍA]`), `[WARNING] template no copiado: …` si procede y última línea `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`. |
 | `index` | `[--harness h] [--dry-run]` | `harness: <h>`, `índice escrito: …` (o el índice completo con `--dry-run`) y última línea `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. |
 | `migrate` | `--from dod-monolithic [--dry-run] [--force]` | Cabecera `── memory-system migrate ── from: dod-monolithic · root: <root>`, una línea por archivo (`[CREADO]`, `[PRESERVADO]`, `[SOBRESCRITO]`, `[REEMPLAZADO] … — índice deprecado`, `[SIN ORIGEN]`, `[OMITIDO]`, `[NO MIGRADO]`; en `--dry-run`, las formas en condicional), una regla `─` y `creados: N · sobrescritos: S · preservados: M · reemplazados: R` (más `cambios pendientes: P` con `--dry-run`). Exit 1 si queda `[SIN ORIGEN]` o `[NO MIGRADO]`. |
+| `migrate` | `--from epic-template-v1 [--dry-run]` | Cabecera `── memory-system migrate ── from: epic-template-v1 · root: <root>`, una línea por épica (`[MIGRADO]` / `[MIGRARÍA]` con `--dry-run`, `[SIN CAMBIOS]`), una línea `[REVISAR] <ruta>:<línea> — <motivo>` por hallazgo, una regla `─` y `migrados: N · sin cambios: M · a revisar: R` (más `cambios pendientes: P` con `--dry-run`). Exit 1 si hay algún `[REVISAR]`. |
 | `check` | `[--harness h] [--json] [--skills-dir <ruta>] [--cli-root <CLI_ROOT>]` | Sin `--json`: cabecera `── memory-system check ── harness: <h> · root: <root> · skills: <ruta|—>`, una línea `[<familia>]` por problema, una regla `─` y última línea `problemas: N (<familia> n · …)`. Con `--json`: un único objeto `{ harness, root, ok, summary, problems }` y nada más en stdout. |
 
 Pasa siempre `--cli-root <CLI_ROOT>` a `scaffold`: es como el motor localiza los skills dueños de
@@ -385,6 +390,18 @@ es de ninguna etapa) el original **no** se reemplaza; sugiere moverlo a su etapa
 migrar, sugiere `/memory-system check` y `/memory-system index`. Reglas de la división en
 `references/dod-rules.md`.
 
+#### 3.8 `migrate --from=epic-template-v1` — migrar épicas al template v2
+
+No es una migración de harness: no ejecuta `scaffold`, no muestra plan ni pregunta. Invoca
+`migrate --root <SPECS_BASE> --from epic-template-v1 [--dry-run]` y reenvía su salida tal cual.
+El motor migra cada `specs/*/EPIC-*/epic.md` al contrato por claves del template de épica
+(`templates/epic-template.md`; si no existe, el seed de `epic-creation`; si no declara ninguna
+`clave:`, avisa `[REVISAR] templates/epic-template.md`, no lo sobrescribe y usa el seed) con las
+reglas R1–R11 de `scripts/epic-template.js`. No toca frontmatter ni preámbulo, no inventa IDs y
+conserva tal cual lo que no reconoce, reportándolo `[REVISAR] <ruta>:<línea>`. Propaga el exit code
+(1 con algún `[REVISAR]`). Recomienda `--dry-run` primero, resolver a mano cada `[REVISAR]` y
+repetir `--dry-run` hasta `cambios pendientes: 0`; después, `/epic-format-validation`.
+
 ### Paso 4 — Informe final
 
 Cierra cada modo con estas líneas, después de la salida íntegra del motor:
@@ -396,6 +413,7 @@ Cierra cada modo con estas líneas, después de la salida íntegra del motor:
 | `rebuild --force` | `✅ memory-system rebuild — harness: <h> — <SPECS_BASE>` y en la última línea `creados: N · sobrescritos: S · índice regenerado: sí`. |
 | `index` | `✅ memory-system index — harness: <h> — <SPECS_BASE>/index.md regenerado` y en la última línea `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. Con `--dry-run`, la línea `ℹ️ --dry-run: índice impreso por consola, no se escribió ningún archivo` va ANTES del índice y la salida cierra con el resumen. |
 | `migrate --from=dod-monolithic` | `✅ memory-system migrate --from=dod-monolithic — <SPECS_BASE>` y en la última línea el resumen del motor (con `--dry-run`, `cambios pendientes: P`). Con exit 1, `⚠️` en lugar de `✅`. |
+| `migrate --from=epic-template-v1` | `✅ memory-system migrate --from=epic-template-v1 — <SPECS_BASE>` y en la última línea el resumen del motor `migrados: N · sin cambios: M · a revisar: R` (con `--dry-run`, `cambios pendientes: P`). Con exit 1, `⚠️` en lugar de `✅`. |
 | `migrate` | `✅ memory-system migrate — harness: <h> — <SPECS_BASE>`, la línea `Siguiente paso: /memory-system index` y en la última línea el resumen del motor. Sin informe si el proyecto ya es SDDF o si se canceló. |
 | `check` | **Sin informe propio**: la salida es la del motor. Sin `--json`, añade como única línea final `exit code: <N>`; con `--json`, no añadas nada a stdout. `check` no escribe, así que no hay línea de creados, sobrescritos ni índice. |
 
@@ -403,7 +421,9 @@ Cierra cada modo con estas líneas, después de la salida íntegra del motor:
 
 ### Paso 5 — Degradación sin `node` en PATH
 
-Si `node` no está disponible, avisa:
+`migrate --from=epic-template-v1` **no tiene degradación inline**: sin `node` muestra exactamente
+`❌ migrate --from=epic-template-v1 requiere node` y termina sin escribir nada. Para los demás
+modos, si `node` no está disponible, avisa:
 
 ```
 ⚠️ node no está en PATH: el scaffold y el índice se generan inline. La reproducibilidad byte a byte no está garantizada; instala Node ≥ 18 para obtenerla.

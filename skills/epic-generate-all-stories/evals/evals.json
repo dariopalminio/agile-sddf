@@ -1,7 +1,7 @@
 {
   "skill": "epic-generate-all-stories",
-  "version": "1.0.0",
-  "description": "Casos de prueba para el skill epic-generate-all-stories. Verifica: happy-path con procesamiento batch de multiples épicas sin conflictos, deteccion anticipada de conflictos con resolucion 'saltar todos', fail-fast ante directorio de épicas vacio, y manejo de épica sin seccion Historias que no interrumpe el batch.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para el skill epic-generate-all-stories. Verifica: happy-path con procesamiento batch de multiples épicas sin conflictos, deteccion anticipada de conflictos con resolucion 'saltar todos', fail-fast ante directorio de épicas vacio, manejo de épica sin seccion Historias que no interrumpe el batch y (STORY-103) backfill F1 → F2 con contador global de IDs.",
   "cases": [
     {
       "id": "TC-001",
@@ -20,13 +20,13 @@
           "STORY-010",
           "Historias generadas",
           "Épicas procesados",
-          "story-evaluation"
+          "story-evaluation",
+          "**Historias saltadas:** 0"
         ],
         "not_contains": [
           "Entorno invalido",
           "No se encontraron directorios de épica",
-          "No se encontro el template",
-          "saltadas"
+          "No se encontro el template"
         ]
       },
       "threshold": 0.85
@@ -106,6 +106,31 @@
         ]
       },
       "threshold": 0.85
+    },
+    {
+      "id": "TC-005",
+      "name": "EV-013: backfill F1 en batch con contador global sin IDs duplicados",
+      "type": "edge-case",
+      "description": "[EV-013 · STORY-103] Dos épicas v2 con líneas F1 en la sección con clave historias. El skill aplica por referencia los Pasos 2 y 2b de epic-generate-stories con un contador NNN global al batch: EPIC-01 recibe STORY-041 y STORY-042, EPIC-02 recibe STORY-043. Ningún STORY-NNN se asigna a dos líneas.",
+      "input": {
+        "context": "Entorno SDDF válido. Template story-template.md existe. $SPECS_BASE/templates/epic-template.md es el template v2. El mayor STORY-NNN en uso es STORY-040. $SPECS_BASE/specs/02-epics/ contiene EPIC-01-autenticacion/epic.md con \"## Historias\" → \"- Login: acceso con email\" y \"- Registro: alta de cuenta\", y EPIC-02-dashboard/epic.md con \"## Historias\" → \"- Panel: resumen de actividad\"."
+      },
+      "expected": {
+        "contains": [
+          "- [ ] **STORY-041** — Login: acceso con email",
+          "- [ ] **STORY-042** — Registro: alta de cuenta",
+          "- [ ] **STORY-043** — Panel: resumen de actividad",
+          "Historias generadas",
+          "**Épicas sin historias:** 0"
+        ],
+        "not_contains": [
+          "**STORY-041** — Panel",
+          "**STORY-040** —",
+          "formato no reconocido"
+        ],
+        "unique_story_ids": true
+      },
+      "threshold": 0.9
     }
   ]
 }

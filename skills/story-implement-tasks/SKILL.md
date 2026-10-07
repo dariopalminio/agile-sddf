@@ -698,12 +698,14 @@ Leer el campo `parent` del frontmatter de `story.md` (ej. `EPIC-12-story-sdd-wor
 
 Buscar el archivo `epic.md` correspondiente en: `$SPECS_BASE/specs/02-epics/<parent>-*/epic.md`
 
-**Si se encuentra `epic.md`:**
-- Localizar la línea que contiene el `story_id` (patrón `STORY-NNN`) en el checklist de la épica
-- Cambiar `- [ ]` por `- [x]` en esa línea
+**Si se encuentra `epic.md`** (transición F2 → F3 de la historia; formatos en `domain-epic-lifecycle` §9):
+- Resolver del template de épica (`$SPECS_BASE/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`) el **título** de la sección cuyo marcador declara `clave: historias` (las secciones se localizan por clave, nunca por un título fijo; contrato en `domain-epic-lifecycle` §9).
+- Si el template no declara esa clave o la épica no tiene un encabezado `## <título>`: emitir `[WARN] epic.md sin la sección "<título>" → si se creó con una versión anterior del template: /memory-system migrate --from=epic-template-v1; omitiendo actualización` y continuar (no bloquea el cierre de la historia).
+- **Solo dentro de esa sección**, localizar la línea de **nivel superior** (empieza por `- `) que contenga el token exacto `**{story_id}**` en negrita (`**STORY-103**` no casa `**STORY-1030**`; menciones en otras secciones no cuentan)
+- Cambiar `- [ ]` por `- [x]` solo en esa línea y actualizar `updated:` del frontmatter de la épica
 - Registrar: `Checklist de épica: ✓ actualizado en <ruta>/epic.md`
 
-**Si NO se encuentra `epic.md` o la historia no está en el checklist:**
+**Si NO se encuentra `epic.md` o la historia no está en esa sección:**
 - Emitir WARNING en consola: `⚠️ No se pudo actualizar el checklist de la épica: <razón>`
 - Agregar en `implement-report.md` una sección de advertencia:
   ```

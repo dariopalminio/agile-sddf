@@ -96,6 +96,22 @@ Aplican a **todo `WorkItem`**, independientemente de su nivel:
 
 ---
 
+## Fases compartidas entre niveles
+
+| Fase | Story | Epic |
+|------|-------|------|
+| DEFINITION | SPECIFY | DEFINE |
+| PLANNING | PLAN | PLAN |
+| BUFFER | READY-FOR-IMPLEMENT | READY-FOR-DEV |
+| EXECUTION | IMPLEMENT | DEVELOP |
+| QUALITY | CODE-REVIEW → VERIFY → ACCEPTANCE | VALIDATE (+ gates opcionales) |
+| RELEASE | DELIVER | SHIP |
+| CLOSURE | COMPLETED | COMPLETED |
+
+Los nombres difieren porque los conceptos difieren, pero la estructura es la misma. Las herramientas pueden operar por `phase_type` para uniformidad.
+
+---
+
 ## 5. Tipos de Transición (patrones transversales)
 
 Independientemente del nivel, existen cuatro tipos de transición:

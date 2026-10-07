@@ -1,7 +1,7 @@
 {
   "skill": "epic-from-project-plan",
-  "version": "1.0.0",
-  "description": "Casos de prueba para epic-from-project-plan: generacion batch de directorios de epica en $SPECS_BASE/specs/02-epics/ a partir de la seccion '## Propuesta de Epicas' de project-plan.md. Cubre los dos separadores vigentes del encabezado '### Epica' (em dash y dos puntos), el bloque Walking Skeleton sin numero, el frontmatter canonico que exige el gate epic-format-validation, el fail-fast por plan ausente y el fail-fast por seccion sin bloques.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para epic-from-project-plan: generacion batch de directorios de epica en $SPECS_BASE/specs/02-epics/ a partir de la seccion '## Propuesta de Epicas' de project-plan.md. Cubre los dos separadores vigentes del encabezado '### Epica' (em dash y dos puntos), el bloque Walking Skeleton sin numero, el frontmatter canonico que exige el gate epic-format-validation, el fail-fast por plan ausente, el fail-fast por seccion sin bloques y (STORY-103) el mapeo plan → claves del template v2 con validacion en la Fase 3e.",
   "cases": [
     {
       "id": "TC-001",
@@ -22,8 +22,8 @@
           "epic-format-validation"
         ],
         "not_contains": [
-          "No se encontraron epicas planificadas",
-          "No se encontro",
+          "No se encontraron épicas planificadas",
+          "No se encontró",
           "EPIC-2-reportes",
           "release"
         ]
@@ -46,7 +46,7 @@
           "epic.md"
         ],
         "not_contains": [
-          "No se encontraron epicas planificadas",
+          "No se encontraron épicas planificadas",
           "EPIC-1-catalogo-de-productos"
         ]
       },
@@ -68,7 +68,7 @@
           "epic.md"
         ],
         "not_contains": [
-          "No se encontraron epicas planificadas",
+          "No se encontraron épicas planificadas",
           "EPIC-01-mvp",
           "EPIC-NN"
         ]
@@ -79,7 +79,7 @@
       "id": "TC-004",
       "name": "regresion de contrato: el epic.md generado pasa el gate epic-format-validation",
       "type": "regression",
-      "description": "Cierre del bucle productor-gate. El frontmatter escrito debe cubrir las claves canonicas que epic-format-validation deriva del template (type, id, slug, title, status, substatus, created, updated) y no el campo legacy 'date'. Las secciones deben ser las del template vigente. Si el productor volviera al contrato antiguo, este caso falla.",
+      "description": "Cierre del bucle productor-gate. El frontmatter escrito debe cubrir las claves canonicas que epic-format-validation deriva del template (type, id, slug, title, status, substatus, created, updated) y no el campo legacy 'date'. Las secciones deben ser las 5 del template v2 (Alcance, Historias, Criterios de salida, Smoke tests, Notas), actualizado por STORY-103. Si el productor volviera al contrato antiguo (v1), este caso falla.",
       "input": {
         "context": "Entorno SDDF valido. PROJ_DIR resuelto. El project-plan.md contiene un unico bloque '### Epica 01 — Onboarding' con objetivo y criterios de exito. Tras generar el archivo se valida con /epic-format-validation.",
         "flags": []
@@ -91,14 +91,19 @@
           "status: DEFINE",
           "created",
           "updated",
-          "## Descripcion",
+          "## Alcance",
           "## Historias",
-          "## Flujos Criticos"
+          "## Criterios de salida",
+          "## Smoke tests",
+          "## Notas"
         ],
         "not_contains": [
           "date:",
           "type: release",
           "## Features",
+          "## Descripcion",
+          "## Flujos Criticos",
+          "deliveryModel",
           "REFINAR"
         ]
       },
@@ -115,7 +120,7 @@
       },
       "expected": {
         "contains": [
-          "No se encontro",
+          "No se encontró",
           "project-plan.md",
           "project-planning"
         ],
@@ -138,8 +143,8 @@
       },
       "expected": {
         "contains": [
-          "No se encontraron epicas planificadas",
-          "Propuesta de Epicas"
+          "No se encontraron épicas planificadas",
+          "Propuesta de Épicas"
         ],
         "not_contains": [
           "epic.md",
@@ -164,7 +169,44 @@
           "EPIC-02-reportes"
         ],
         "not_contains": [
-          "No se encontraron epicas planificadas"
+          "No se encontraron épicas planificadas"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-008",
+      "name": "EV-010: genera épica v2 válida y la Fase 3e reporta APROBADO",
+      "type": "regression",
+      "description": "[EV-010 · STORY-103] Ejecutar epic-from-project-plan sobre un plan con una épica que tiene objetivo, dos criterios de éxito y dos historias (una con ID y otra sin ID). El mapeo plan → clave usa el template v2: objetivo → alcance; \"- [ ] STORY-010 - Login\" → F2 y \"- Registro\" → F1 en historias; criterios de éxito → Criterios de salida; un \"### SMOKE-N — …\" + gherkin por criterio en smoke-tests; Notas presente. La Fase 3e invoca epic-format-validation y el resumen de la Fase 4 lista APROBADO para la épica.",
+      "input": {
+        "context": "Entorno SDDF válido. PROJ_DIR resuelto. $SPECS_BASE/templates/epic-template.md es el template v2. El project-plan.md contiene \"## Propuesta de Epicas\" con \"### Epica 01 — Autenticacion\", \"**Objetivo:** permitir el acceso seguro\", \"**Criterios de exito:**\" con \"- El login responde en menos de 1 s\" y \"- Las sesiones expiran a los 30 min\", y las historias \"- [ ] STORY-010 - Login\" y \"- Registro\". El directorio $SPECS_BASE/specs/02-epics/ está vacío.",
+        "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Historias <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "EPIC-01-autenticacion",
+          "## Alcance",
+          "## Historias",
+          "- [ ] **STORY-010** — Login",
+          "- Registro",
+          "## Criterios de salida",
+          "## Smoke tests",
+          "### SMOKE-1 — ",
+          "### SMOKE-2 — ",
+          "```gherkin",
+          "## Notas",
+          "epic-format-validation",
+          "APROBADO"
+        ],
+        "not_contains": [
+          "## Descripcion",
+          "## Descripción",
+          "## Flujos Criticos",
+          "deliveryModel",
+          "alwaysApply",
+          "REFINAR"
         ]
       },
       "threshold": 0.9

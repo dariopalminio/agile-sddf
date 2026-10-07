@@ -8,12 +8,12 @@
 
 ## What it does
 
-Valida que una especificación de épica cumple el contrato estructural del template `epic-template.md`, incluidos el frontmatter y las secciones obligatorias. Informa una decisión `APROBADO`, `REFINAR` o `RECHAZADO` con los elementos faltantes.
+Valida que una especificación de épica cumple el contrato estructural del template `epic-template.md`, incluidos el frontmatter, las secciones obligatorias y la forma de las dos secciones que leen otros skills: las historias (formatos F1/F2/F3) y los smoke tests (`### SMOKE-N — nombre` + bloque `gherkin`). Las secciones se localizan por su `clave:` en el template, así que renombrar o reordenar secciones no exige tocar el skill. Informa una decisión `APROBADO`, `REFINAR` o `RECHAZADO`.
 
 **Produces:**
 
 - Un diagnóstico de validez de la épica solicitada.
-- Una lista de campos o secciones faltantes cuando la decisión es `REFINAR`.
+- Cuando la decisión es `REFINAR`: la lista de campos o secciones faltantes, el bloque `Formato inválido:` (línea, texto y forma esperada) y, si faltan secciones, el comando de migración `/memory-system migrate --from=epic-template-v1`.
 
 **Does not do:**
 

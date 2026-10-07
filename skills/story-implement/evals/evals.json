@@ -1,7 +1,7 @@
 {
   "skill": "story-implement",
-  "version": "1.2.0",
-  "description": "Casos de prueba para el skill story-implement: gate de estado (Paso 0c: READY-FOR-IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS, escritura de IMPLEMENT/IN-PROGRESS al arrancar), modo rework por presencia de fix-directives.md (ronda, lista blanca, campos rework_round/fix_directives_path/whitelist en los bundles, sección \"Ciclo de corrección\" del reporte), reglas de robustez del rework (gate de evidencia en RED: 0 tests + requirements-coverage ⇒ error, otras dimensiones ⇒ advertencia, rework_evidence en red-phase-status.json; barrera de lista blanca por fase: confirmación (s/n) en interactivo, [WARN] y registro en --auto, entradas \"solo lectura\" excluidas, subsección \"Archivos fuera de lista blanca\" del reporte), orquestación del ciclo TDD RED → GREEN → REFACTOR, DoD IMPLEMENT y sugerencia final de /story-code-review para historias SDDF",
+  "version": "1.3.0",
+  "description": "Casos de prueba para el skill story-implement: gate de estado (Paso 0c: READY-FOR-IMPLEMENT/DONE o IMPLEMENT/IN-PROGRESS, escritura de IMPLEMENT/IN-PROGRESS al arrancar), modo rework por presencia de fix-directives.md (ronda, lista blanca, campos rework_round/fix_directives_path/whitelist en los bundles, sección \"Ciclo de corrección\" del reporte), reglas de robustez del rework (gate de evidencia en RED: 0 tests + requirements-coverage ⇒ error, otras dimensiones ⇒ advertencia, rework_evidence en red-phase-status.json; barrera de lista blanca por fase: confirmación (s/n) en interactivo, [WARN] y registro en --auto, entradas \"solo lectura\" excluidas, subsección \"Archivos fuera de lista blanca\" del reporte), orquestación del ciclo TDD RED → GREEN → REFACTOR, DoD IMPLEMENT y sugerencia final de /story-code-review para historias SDDF; paso 11d (STORY-103): marcado F2 → F3 solo en la sección de clave historias leída del template, con coincidencia exacta del token STORY-NNN",
   "cases": [
     {
       "id": "TC-001",
@@ -3644,6 +3644,92 @@
         "story_status": "IMPLEMENT",
         "story_substatus": "DONE",
         "exit_gracefully": false
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-036",
+      "name": "EV-014: paso 11d marca F3 solo en la sección historias con token exacto",
+      "type": "happy-path",
+      "description": "[EV-014 · STORY-103] Al completar STORY-103 (paso 11d) la épica padre tiene la línea F2 de STORY-103 y la de STORY-1030 en la sección con clave historias, y además cita **STORY-103** en una línea con checkbox de la sección notas. Solo la línea F2 de STORY-103 en la sección historias pasa a \"- [x]\"; STORY-1030 (token parecido) y la cita en notas no se tocan.",
+      "input": {
+        "story_id": "STORY-103",
+        "story_frontmatter": {
+          "parent": "EPIC-21-colapsar-specs"
+        },
+        "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Historias <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
+        "epic_path": "$SPECS_BASE/specs/02-epics/EPIC-21-colapsar-specs/epic.md",
+        "epic_content": "---\ntype: epic\nid: EPIC-21\nslug: EPIC-21-colapsar-specs\ntitle: \"Colapsar specs\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Colapsar specs\n\n## Alcance\nTemplate v2.\n\n## Historias\n- [ ] **STORY-103** — Template v2: reemplazar el template de épica\n- [ ] **STORY-1030** — Otra: historia con ID parecido\n\n## Criterios de salida\n- [ ] Gate actualizado\n\n## Smoke tests\n### SMOKE-1 — Validar épica\n```gherkin\nEscenario: Validar épica\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n- [ ] Revisar **STORY-103** con el PO\n",
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true,
+        "step": "11d"
+      },
+      "expected": {
+        "contains": [
+          "[INFO] epic.md actualizado",
+          "STORY-103",
+          "IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "STORY-1030] marcado",
+          "omitiendo actualización",
+          "- [x] **STORY-1030**",
+          "- [x] Revisar **STORY-103**"
+        ],
+        "output_file": "$SPECS_BASE/specs/02-epics/EPIC-21-colapsar-specs/epic.md",
+        "output_contains": [
+          "## Historias",
+          "- [x] **STORY-103** — Template v2: reemplazar el template de épica",
+          "- [ ] **STORY-1030** — Otra: historia con ID parecido",
+          "- [ ] Revisar **STORY-103** con el PO"
+        ],
+        "output_not_contains": [
+          "- [x] **STORY-1030**",
+          "- [x] Revisar **STORY-103**"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-037",
+      "name": "EV-017: paso 11d con título renombrado Features marca F3 por clave",
+      "type": "happy-path",
+      "description": "[EV-017 · STORY-103] El template titula \"## Features\" la sección con clave historias y la épica padre usa \"## Features\" con STORY-103 en F2. El paso 11d resuelve el título por clave desde el template y pasa la línea a F3 dentro de ## Features.",
+      "input": {
+        "story_id": "STORY-103",
+        "story_frontmatter": {
+          "parent": "EPIC-21-colapsar-specs"
+        },
+        "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Features <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
+        "epic_path": "$SPECS_BASE/specs/02-epics/EPIC-21-colapsar-specs/epic.md",
+        "epic_content": "---\ntype: epic\nid: EPIC-21\nslug: EPIC-21-colapsar-specs\ntitle: \"Colapsar specs\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Colapsar specs\n\n## Alcance\nTemplate v2.\n\n## Features\n- [ ] **STORY-103** — Template v2: reemplazar el template de épica\n- [ ] **STORY-1030** — Otra: historia con ID parecido\n\n## Criterios de salida\n- [ ] Gate actualizado\n\n## Smoke tests\n### SMOKE-1 — Validar épica\n```gherkin\nEscenario: Validar épica\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n- [ ] Revisar **STORY-103** con el PO\n",
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true,
+        "step": "11d"
+      },
+      "expected": {
+        "contains": [
+          "[INFO] epic.md actualizado",
+          "STORY-103",
+          "IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "STORY-1030] marcado",
+          "omitiendo actualización",
+          "- [x] **STORY-1030**",
+          "- [x] Revisar **STORY-103**"
+        ],
+        "output_file": "$SPECS_BASE/specs/02-epics/EPIC-21-colapsar-specs/epic.md",
+        "output_contains": [
+          "## Features",
+          "- [x] **STORY-103** — Template v2: reemplazar el template de épica",
+          "- [ ] **STORY-1030** — Otra: historia con ID parecido",
+          "- [ ] Revisar **STORY-103** con el PO"
+        ],
+        "output_not_contains": [
+          "- [x] **STORY-1030**",
+          "- [x] Revisar **STORY-103**"
+        ]
       },
       "threshold": 1
     }

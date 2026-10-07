@@ -1077,15 +1077,20 @@ updated: <YYYY-MM-DD>
 
 #### 11d — Actualizar `epic.md` (si existe épica padre)
 
+Transición F2 → F3 de la historia en la épica padre (formatos del dominio: F2 `- [ ] **STORY-NNN** — <Nombre>: <desc>`, F3 `- [x] **STORY-NNN** — <Nombre>: <desc>`).
+
 1. Leer campo `parent` del frontmatter de `story.md`
 2. Si `parent` existe, resolver ruta: `$SPECS_BASE/specs/02-epics/<parent>/epic.md`
-3. **Si el archivo existe:**
-   - Buscar la línea del checklist que contenga el id o slug de la historia (ej. `STORY-NNN`)
-   - Cambiar `- [ ]` → `- [x]` en esa línea
-   - Emitir: `[INFO] epic.md actualizado: [{story_id}] marcado como completado`
-4. **Si no existe o `parent` está vacío:**
+3. **Si no existe o `parent` está vacío:**
    - Emitir: `[INFO] epic.md no encontrado o sin parent declarado — omitiendo actualización`
    - No es condición de error.
+4. **Si el archivo existe:**
+   Resolver del template de épica (`$SPECS_BASE/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`) el **título** de la sección cuyo marcador declara `clave: historias` (las secciones se localizan por clave, nunca por un título fijo; contrato en `domain-epic-lifecycle` §9).
+   - Si el template no declara esa clave o la épica no tiene un encabezado `## <título>`: emitir `[WARN] epic.md sin la sección "<título>" → si se creó con una versión anterior del template: /memory-system migrate --from=epic-template-v1; omitiendo actualización` y continuar (no bloquea el cierre de la historia).
+   - **Solo dentro de esa sección** (desde `## <título>` hasta el siguiente `## `), buscar la línea de **nivel superior** (empieza por `- `, sin indentación) que contenga el token exacto `**{story_id}**` en negrita. Coincidencia exacta: `**STORY-103**` no casa `**STORY-1030**`; una mención del ID en otra sección (notas, smoke tests) o sin negrita no cuenta.
+   - Cambiar `- [ ]` → `- [x]` **solo en esa línea** y actualizar `updated:` del frontmatter de la épica a la fecha de hoy; el resto del archivo queda igual.
+   - Emitir: `[INFO] epic.md actualizado: [{story_id}] marcado como completado`
+   - Sin coincidencia (o la línea ya está en `- [x]`): emitir `[INFO] {story_id} no figura como creada en la sección "<título>" de epic.md — omitiendo actualización` (no es error).
 
 #### 11e — Escribir `cycle-status.json` y mostrar resumen final
 

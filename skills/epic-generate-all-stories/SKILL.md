@@ -65,8 +65,10 @@ Sin parámetros — el skill no expone flags ni argumentos posicionales.
 ## Restricciones / Reglas
 
 - El skill **no valida** calidad FINVEST — en flujo batch la validación INVEST se delega al paso posterior `/story-evaluation` para no bloquear la generación masiva de historias; ejecutar `/story-evaluation` sobre cada historia generada como siguiente paso obligatorio
-- El skill **no modifica** los archivos de épica
-- El skill procesa **todas** las features de cada épica (pendientes `[ ]` y completadas `[x]`)
+- El skill **solo modifica** los archivos de épica para asignar IDs a las historias planificadas (F1 → F2), con las mismas reglas que `epic-generate-stories` (Pasos 1b, 2 y 2b, aplicados por referencia): solo se reescriben esas líneas de la sección de clave `historias` y `updated:` del frontmatter
+- Los IDs `STORY-NNN` se asignan con un **contador global al batch**: dos épicas nunca reciben el mismo ID
+- El skill procesa **todas** las historias de cada épica (F1, F2 y F3)
+- Las secciones de la épica se localizan por su `clave:` en el template de épica, nunca por su título
 - El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
 - Si dos features en distintos épicas generan el mismo nombre de directorio (mismo ID y slug), el segundo se nombra con sufijo `-bis` (ej. `STORY-027-nombre-bis/`) e informa al usuario en el resumen
 - Las secciones opcionales de cada historia se incluyen con placeholder `[Por completar]` para facilitar la edición posterior
@@ -123,7 +125,7 @@ Procesando en orden alfabético.
 
 Antes de procesar ningún épica, verificar qué historias ya existen en `$SPECS_BASE/specs/03-stories/` que serían generadas en este batch.
 
-Para ello, leer la sección `## Historias` de cada `epic.md` descubierto en el Paso 1 y calcular los nombres de directorio que se generarían (`STORY-[NNN]-[nombre-kebab]/`). Verificar cuáles de esos directorios ya existen en `$SPECS_BASE/specs/03-stories/`.
+Para ello, resolver una vez el título de la sección con `clave: historias` del template de épica (Paso 1b de `epic-generate-stories`), leer esa sección de cada `epic.md` descubierto en el Paso 1 y calcular los nombres de directorio que se generarían (`STORY-[NNN]-[nombre-kebab]/`) **solo para las líneas que ya tienen ID** (F2/F3). Las historias planificadas (F1) no pueden colisionar con un directorio existente porque su ID será nuevo. Verificar cuáles de esos directorios ya existen en `$SPECS_BASE/specs/03-stories/`.
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios.
 > Para verificar si ya existe una historia, usar el patrón de archivo anidado:
@@ -163,18 +165,17 @@ Si no existe, crearlo antes de continuar.
 
 Iterar sobre cada archivo de épica en el orden alfabético establecido en el Paso 1. Para cada épica, ejecutar los siguientes sub-pasos:
 
-#### 4a. Extraer features de la épica
+#### 4a. Extraer historias y asignar IDs (por referencia a `epic-generate-stories`)
 
-Leer la sección `## Historias` del archivo de épica. Extraer cada línea de feature con el formato:
-- `- [ ] STORY-NNN — Nombre: descripción` (pendiente)
-- `- [x] STORY-NNN — Nombre: descripción` (completada)
-- Variantes con `**` (bold), guion largo `—`, doble guión `--` o dos puntos como separador
+Aplicar a la épica, **por referencia** (composición inline, sin duplicar sus reglas), los pasos de `epic-generate-stories`:
 
-Capturar para cada feature: **ID** (ej. `STORY-027`), **Nombre** (texto después del ID hasta el separador), **Descripción** (texto después del separador, si existe).
+- **Paso 1b** — título de la sección con `clave: historias` leído del template (resuelto una vez para todo el batch).
+- **Paso 2** — extraer las líneas de nivel superior de esa sección con los formatos F1/F2/F3 del dominio; capturar **ID**, **Nombre**, **Descripción** y **Estado**.
+- **Paso 2b** — asignar `STORY-NNN` a cada F1 y reescribirla como F2 `- [ ] **STORY-NNN** — <Nombre>: <desc>` en esa épica (resto del archivo intacto salvo `updated:`), con una diferencia: `MAX_ID` se calcula **una sola vez** al inicio del batch y el contador es **global**: cada ID asignado se suma al contador antes de pasar a la siguiente historia o épica, de modo que ningún `STORY-NNN` se repite entre épicas.
 
-**Si la sección `## Historias` no existe o está vacía:**
-- Registrar: `[nombre-epica] — saltada (sin historias)`
-- Continuar con el siguiente épica **sin interrumpir el batch**
+**Si la épica no tiene la sección de clave `historias` o no contiene historias reconocibles:**
+- Registrar: `[nombre-epica] — saltada (sin historias)`; si falta la sección, añadir `→ si se creó con una versión anterior del template: /memory-system migrate --from=epic-template-v1`
+- Continuar con la siguiente épica **sin interrumpir el batch**
 
 #### 4b. Generar archivo de historia por feature
 
@@ -319,7 +320,8 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
 | `$SPECS_BASE/specs/02-epics/` vacío o sin `epic.md` | `No se encontraron directorios de épica en $SPECS_BASE/specs/02-epics/` | Mostrar mensaje de orientación y detener |
 | Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/templates/story-template.md` | Detener la ejecución del batch |
-| Épica sin sección `## Historias` | — | Registrar como `[nombre-epica] — saltada (sin historias)` y continuar con la siguiente épica |
+| Template sin `clave: historias` | `❌ El template no declara una sección con clave historias` | Detener el batch sin escribir |
+| Épica sin la sección de clave `historias` | — | Registrar como `[nombre-epica] — saltada (sin historias)` con la nota de migración y continuar con la siguiente épica |
 
 ---
 

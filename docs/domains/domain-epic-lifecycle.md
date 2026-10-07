@@ -164,7 +164,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 
 ## 9. Trazabilidad y Persistencia
 
-* **Frontmatter de `epic.md`** con `status`, `substatus`, `parent`, `deliveryModel`.
+* **Frontmatter de `epic.md`** con `status`, `substatus`, `parent` (ver la estructura completa abajo).
 * **`TransitionHistory`** inmutable con cada cambio de estado (fecha, origen, destino, actor, motivo).
 * **`StoryRef`** — trazabilidad bidireccional: cada historia apunta a su épica y la épica lista sus historias.
 * **`ReleaseArtifact`** — registra el artefacto publicado (npm, Docker, APK), versión y fecha.
@@ -173,6 +173,53 @@ Además de las invariantes transversales de [[domain-state-management]]:
   * `release-notes.md` (opcional) — generado en `SHIP`.
 * **Reapertura:** solo desde `COMPLETED` con acción explícita y registro del motivo.
 * **Convención de guion:** ASCII U+002D `-`.
+
+### Estructura de `epic.md`
+
+El template `templates/epic-template.md` (seed en `epic-creation/assets/`) define la estructura de
+cada `epic.md`. Los skills la leen en runtime: **la estructura es libre, el formato de línea es fijo**.
+
+**Contrato por claves.** Cada sección `##` del template lleva en su marcador una clave estable
+(`<!-- sección obligatoria · clave: <clave> -->`). Los skills localizan las secciones **por clave** y
+leen su título del template; nunca escriben un título fijo.
+
+| Clave | Sección v2 (título por defecto) | Regla de máquina |
+|---|---|---|
+| `alcance` | Alcance | — (output-oriented; el valor de negocio vive en `product/vision.md` o `requirements/`) |
+| `historias` | Historias | Formatos F1/F2/F3 (abajo) |
+| `criterios-salida` | Criterios de salida | — (criterios técnicos verificables) |
+| `smoke-tests` | Smoke tests | Patrón `SMOKE-N` + `gherkin` (abajo) |
+| `notas` | Notas | — (encabezado obligatorio, contenido opcional) |
+
+| El usuario puede cambiar en el template | Es contrato fijo |
+|---|---|
+| Títulos de las secciones, su orden, añadir o quitar secciones, comentarios guía, obligatoriedad, claves de frontmatter | La `clave:` de cada sección que conserve · el formato F1/F2/F3 de `historias` · el patrón `SMOKE-N` + `gherkin` de `smoke-tests` |
+
+**Lectura del template** (procedimiento único): resolver primero el template —
+`$SPECS_BASE/templates/epic-template.md`; si no existe, el seed `epic-creation/assets/epic-template.md`;
+si no existe ninguno, el skill se detiene sin escribir—. Después, para cada línea `## ` del template, fuera de bloques
+de código, extraer el título (sin el comentario), la obligatoriedad (`sección obligatoria`) y la
+`clave:`. Resultado: lista ordenada `{ título, clave, obligatoria }`. Una clave repetida invalida el
+template; una clave desconocida se acepta sin regla; una clave con regla ausente del template
+desactiva esa regla. Implementación de referencia: `readTemplateContract` en
+`memory-system/scripts/epic-template.js`.
+
+**Formatos de línea de `historias`** (líneas de nivel superior; los sub-ítems indentados no son historias):
+
+| ID | Estado | Forma | Transición y responsable |
+|---|---|---|---|
+| F1 | planificada, sin ID | `- <Nombre>: <descripción>` (sin checkbox ni `STORY-NNN`; `- [Por completar]` es F1 válido) | la escriben `epic-creation` y `epic-from-project-plan` |
+| F2 | creada | `- [ ] **STORY-NNN** — <Nombre>: <descripción>` | F1 → F2: `epic-generate-stories`, `epic-generate-all-stories` (asignan el ID) |
+| F3 | completada | `- [x] **STORY-NNN** — <Nombre>: <descripción>` | F2 → F3: `story-implement` (11d), `story-implement-tasks` (4c) |
+
+`STORY-NNN` usa guion ASCII; el separador tras `**STORY-NNN**` es la raya `—` (U+2014).
+
+**Smoke tests:** cada escenario es un encabezado `### SMOKE-N — <nombre>` seguido de un bloque
+`gherkin` con `Escenario:`, `Dado`, `Cuando` y `Entonces`. Los IDs `SMOKE-N` son estables: no se
+renumeran al insertar o eliminar escenarios. Con un único escenario la numeración es opcional.
+
+`epic-format-validation` verifica este contrato (Gate de formato, §8). Las épicas creadas con el
+template anterior (v1) se migran con `/memory-system migrate --from=epic-template-v1`.
 
 ---
 
@@ -183,7 +230,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Dominio transversal:** [[domain-state-management]]
 * **Principios aplicables:** [[constitution]] (patrones 8, 14; reglas 9 y 15)
-* **Decisión de arquitectura:** [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
+* **Decisión de arquitectura:** [[ADR-0003-workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
 
 ---
 
@@ -193,4 +240,4 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * [[domain-story-lifecycle]] — Ciclo de vida de Story (contenido de la Epic)
 * [[domain-project-lifecycle]] — Ciclo de vida de Project (contenedor de Epic)
 * [[constitution]] — Constitución del proyecto
-* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic
+* [[ADR-0003-workflow-canonico-story-y-epic]] — Workflow canónico de story y epic

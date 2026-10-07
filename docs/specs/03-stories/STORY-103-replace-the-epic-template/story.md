@@ -3,14 +3,17 @@ type: story
 id: STORY-103
 slug: STORY-103-replace-the-epic-template
 title: "Reemplazar el template de Epic por la versión minimalista y output-oriented"
-status: SPECIFY
+status: IMPLEMENT
 substatus: IN-PROGRESS
 kind: feat
-parent: EPIC-103-framework-consistency
+parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-09-27
-updated: 2026-09-27
-related: null
+updated: 2026-10-06
+related: 
+  - EPIC-21-colapsar-specs-dos-niveles
 ---
+<!-- Referencias -->
+[[EPIC-21-colapsar-specs-dos-niveles]]
 
 # 📖 Historia: Reemplazar el template de Epic por la versión minimalista y output-oriented
 
@@ -116,14 +119,9 @@ Entonces contiene los campos mínimos:
  Y el estado inicial es `DEFINE` (no `<ESTADO_INICIAL>`)
 ```
 
-### AC-8 — Skills de creación de Epic actualizados
+### AC-8 — Genera Epics desde `project-plan.md`
 
 ```gherkin
-Dado el skill `epic-creation`
-Cuando genera un Epic a partir del template
-Entonces usa el template nuevo
- Y su sección "## DoD aplicable" referencia el guardrail de transición de Epic correspondiente
-
 Dado el skill `epic-from-project-plan`
 Cuando genera Epics desde `project-plan.md`
 Entonces usa el template nuevo
@@ -180,7 +178,7 @@ Entonces verifica la presencia de las cinco secciones obligatorias
 - **CNF-1 — Token efficiency:** el template nuevo debe ocupar ≤ 40 líneas (vs. ~60 del actual), reduciendo el coste de carga en cada Epic generado.
 - **CNF-2 — Documentación:** actualizar `docs/domains/domain-epic-lifecycle.md` (sección de estados y secciones del Epic), `docs/templates/README.md` (si existe) y `docs/guides/how-to-write-epics.md` (si existe).
 - **CNF-3 — CHANGELOG:** registrar el cambio como `Changed` en `[Unreleased]`.
-- **CNF-4 — Compatibilidad:** el template anterior debe seguir siendo válido durante una versión minor; el guardrail de validación acepta ambos formatos hasta la siguiente major.
+- **CNF-4 — Compatibilidad:** la historia se publica con EPIC-21 en 4.0.0, así que el formato anterior se retira en esa major (breaking change) sin compatibilidad en tiempo de ejecución. A cambio, la migración es automática (`/memory-system migrate --from=epic-template-v1`) y los skills que reciben una épica en el formato anterior responden con un mensaje que nombra ese comando.
 - **CNF-5 — Convención de guion:** ASCII U+002D `-` en todos los slugs y IDs.
 
 ---

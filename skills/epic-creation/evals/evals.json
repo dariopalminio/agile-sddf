@@ -1,7 +1,7 @@
 {
   "skill": "epic-creation",
-  "version": "1.0.0",
-  "description": "Casos de prueba para el skill epic-creation. Verifica: happy-path creacion interactiva completa, modo --quick omitiendo secciones opcionales, fail-fast ante template ausente, y manejo de slug con caracteres especiales.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para el skill epic-creation. Verifica: happy-path creacion interactiva completa, modo --quick omitiendo secciones opcionales, fail-fast ante template ausente, manejo de slug con caracteres especiales y (STORY-103) preguntas derivadas del template v2 con escritura F1/SMOKE-N gherkin y bloque DoD aplicable.",
   "cases": [
     {
       "id": "TC-001",
@@ -9,7 +9,7 @@
       "type": "functional",
       "description": "Ejecutar epic-creation con nombre 'Sistema de pagos'. El skill debe resolver localmente una raíz válida, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo epic.md en $SPECS_BASE/specs/02-epics/EPIC-NN-sistema-de-pagos/, invocar epic-format-validation y mostrar APROBADO con la ruta del archivo y el siguiente paso sugerido.",
       "input": {
-        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en $SPECS_BASE/specs/02-epics/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa descripcion, lista 2 features y define un flujo critico. Acepta las secciones opcionales o las salta.",
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en $SPECS_BASE/specs/02-epics/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa Alcance, lista 2 historias (Nombre: descripción), un criterio de salida y un smoke test (Dado/Cuando/Entonces) y deja Notas vacía. Acepta las secciones opcionales o las salta.",
         "flags": []
       },
       "expected": {
@@ -104,6 +104,69 @@
         ]
       },
       "threshold": 0.85
+    },
+    {
+      "id": "TC-005",
+      "name": "EV-008: happy-path v2 escribe F1 en historias y SMOKE-1 gherkin",
+      "type": "happy-path",
+      "description": "[EV-008 · STORY-103] Ejecutar epic-creation con el template v2 (5 secciones con clave:). Cada pregunta se construye en runtime con el título y el comentario guía de la sección del template (sin guía hardcodeada por título). La sección con clave historias pide \"Nombre: descripción\" y escribe líneas F1 sin ID; la sección con clave smoke-tests pide Dado/Cuando/Entonces y escribe \"### SMOKE-1 — <nombre>\" + bloque gherkin. Notas acepta \"ninguna\" y deja solo el encabezado. El gate epic-format-validation (Paso 7) devuelve APROBADO.",
+      "input": {
+        "context": "Entorno SDDF válido. $SPECS_BASE/templates/epic-template.md es el template v2 (Alcance, Historias, Criterios de salida, Smoke tests, Notas; todas <!-- sección obligatoria · clave: ... -->). Existen EPIC-01 y EPIC-02. El usuario crea la épica \"Sistema de pagos\" respondiendo una pregunta por sección.",
+        "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Historias <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
+        "user_responses": [
+          "Sistema de pagos",
+          "Integración de pasarela de pago y consulta del historial",
+          "Pasarela de pago: integración con Stripe; Historial de pagos: consulta de pagos pasados",
+          "Un pago de prueba queda registrado en el historial",
+          "Pago aprobado | Dado un carrito con un producto | Cuando el usuario paga con tarjeta | Entonces el pago queda registrado",
+          "ninguna"
+        ],
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "EPIC-03",
+          "sistema-de-pagos",
+          "## Alcance",
+          "## Historias",
+          "- Pasarela de pago: integración con Stripe",
+          "## Criterios de salida",
+          "### SMOKE-1 — Pago aprobado",
+          "```gherkin",
+          "Escenario: Pago aprobado",
+          "## Notas",
+          "APROBADO"
+        ],
+        "not_contains": [
+          "STORY-",
+          "## Descripción",
+          "## Flujos Críticos",
+          "alwaysApply",
+          "deliveryModel",
+          "- [ ] Pasarela de pago",
+          "REFINAR"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-006",
+      "name": "EV-009: SKILL.md declara DoD aplicable con el gate de formato DEFINE → PLAN",
+      "type": "regression",
+      "description": "[EV-009 · STORY-103] Escenario de inspección (no se crea ninguna épica): leer skills/epic-creation/SKILL.md y reproducir en consola, tal cual, su sección ## DoD aplicable. El SKILL.md debe tener la sección \"## DoD aplicable\" (estructura del bloque de STORY-101) que declara la etapa DEFINE de Epic, sin guardrail vigente, y cita como gate de la transición DEFINE → PLAN el Gate de formato ejecutado por epic-format-validation.",
+      "input": {
+        "inspect_file": "skills/epic-creation/SKILL.md"
+      },
+      "expected": {
+        "contains": [
+          "## DoD aplicable",
+          "DEFINE → PLAN",
+          "Gate de formato",
+          "epic-format-validation"
+        ],
+        "not_contains": []
+      },
+      "threshold": 1
     }
   ]
 }

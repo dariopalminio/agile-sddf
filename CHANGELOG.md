@@ -8,6 +8,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING — Template de épica v2, minimalista y output-oriented** (STORY-103, EPIC-21) — `epic-template.md` (central `docs/templates/` y seed `skills/epic-creation/assets/`, idénticos) pasa de nueve secciones a cinco obligatorias, en este orden: `Alcance` (qué se construye; el valor de negocio vive en `product/vision.md` o `requirements/`), `Historias`, `Criterios de salida` (criterios técnicos verificables), `Smoke tests` (`### SMOKE-N — nombre` + bloque `gherkin`; IDs estables, sin renumerar) y `Notas` (encabezado obligatorio, contenido opcional). Desaparecen `Descripción`, `Requerimiento`, `Impacto en Procesos Claves`, `Dependencias Críticas`, `Riesgos`, `**Criterios de éxito:**`, `Notas adicionales` y `Flujos Críticos / Smoke Tests`. El frontmatter queda mínimo (`status: DEFINE` inicial; sin `alwaysApply`, `deliveryModel` ni `children`). Las historias usan tres formatos de línea fijos: F1 planificada `- Nombre: desc`, F2 creada `- [ ] **STORY-NNN** — Nombre: desc` y F3 completada `- [x] **STORY-NNN** — Nombre: desc`, definidos en `domain-epic-lifecycle` §9 ("Estructura de `epic.md`").
+- **BREAKING — Skills de épica sobre el contrato v2** (STORY-103) — `epic-format-validation` verifica, además de frontmatter y secciones, los formatos F1/F2/F3 y el patrón `SMOKE-N` + `gherkin` (bloque `Formato inválido:` con línea, texto y forma esperada); `epic-creation` pregunta cada sección con su título y su guía del template, escribe F1 y `SMOKE-N` y declara `## DoD aplicable` (Gate de formato `DEFINE → PLAN`); `epic-from-project-plan` mapea el plan por clave y valida cada épica generada (Fase 3e); `epic-generate-stories` y `epic-generate-all-stories` reescriben solo F1 → F2 (contador de IDs global en el batch); `story-implement` (11d) y `story-implement-tasks` (4c) marcan F2 → F3 solo dentro de la sección de historias y con el token exacto `**STORY-NNN**`. **El formato v1 deja de aceptarse**: una épica sin migrar recibe `REFINAR` (o el aviso correspondiente) con el comando de migración.
+
+### Added
+
+- **`/memory-system migrate --from=epic-template-v1 [--dry-run]`** (STORY-103) — migra cada `specs/*/EPIC-*/epic.md` al template de épica vigente (módulo nuevo `skills/memory-system/scripts/epic-template.js`): títulos v1 → clave, escenarios `**DADO**/**CUANDO**/**ENTONCES**` → `SMOKE-N` en `gherkin`, líneas de historias heredadas → F1/F2/F3, secciones situacionales → `###` dentro de `Notas`, obligatorias ausentes con placeholder y orden del template. Idempotente (punto fijo; `[SIN CAMBIOS]` en la segunda pasada), no toca frontmatter ni preámbulo y no inventa IDs: lo irreconocible se conserva y se reporta `[REVISAR] <ruta>:<línea> — <motivo>` (exit 1). Un template central sin claves se reporta sin sobrescribirlo. Tests en `test/epic-template.test.js` sobre las fixtures `skills/memory-system/examples/epic-template-v1/`. Las 22 épicas de este repositorio se migraron con este modo.
+- **Atributo `clave:` en los marcadores de sección del template de épica** (STORY-103) — `<!-- sección obligatoria · clave: historias -->`: los skills localizan las secciones por clave (`alcance`, `historias`, `criterios-salida`, `smoke-tests`, `notas`) y leen su título del template, así que un proyecto puede renombrar, reordenar, añadir o quitar secciones sin tocar los skills; solo los formatos de línea F1/F2/F3 y `SMOKE-N` son fijos.
+
+### Guía de actualización a 4.0.0 — épicas
+
+1. Reinstala los skills: `npx agile-sddf install --force`.
+2. Reemplaza el template central de épica por el v2 (`/sddf-init --force` o `/memory-system rebuild --force`), o añade `clave:` a los marcadores de tu template personalizado.
+3. Planifica la migración: `/memory-system migrate --from=epic-template-v1 --dry-run`.
+4. Migra: `/memory-system migrate --from=epic-template-v1`; resuelve a mano cada `[REVISAR]` y repite `--dry-run` hasta `cambios pendientes: 0`.
+5. Valida cada épica con `/epic-format-validation`.
+
 ## [3.3.1] — 2026-09-26
 
 ### Fixed

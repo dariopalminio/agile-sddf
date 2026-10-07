@@ -3,7 +3,8 @@ type: epic
 id: EPIC-00
 slug: EPIC-00-estructura-base-y-mecanismo-de-templates
 title: "Release 00 — Estructura Base y Mecanismo de Templates"
-date: 2026-04-09
+created: 2026-04-09
+updated: 2026-04-09
 status: COMPLETED
 substatus: DONE
 parent: PROJ-01-agile-sddf
@@ -31,4 +32,22 @@ related:
 - [x] Modificar un comentario `<!-- -->` o header `##` en un template produce un cambio observable en las preguntas generadas por el agente sin modificar el SKILL.md del agente.
 - [x] El entorno Docker permite reproducir el entorno de desarrollo sin dependencias locales.
 
+## Alcance
+[Por completar]
 
+## Historias
+[Por completar]
+
+## Criterios de salida
+- [ ] [Por completar]
+
+## Smoke tests
+### SMOKE-1 — [Por completar]
+```gherkin
+Escenario: [Por completar]
+  Dado [Por completar]
+  Cuando [Por completar]
+  Entonces [Por completar]
+```
+
+## Notas

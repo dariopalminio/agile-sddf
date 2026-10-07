@@ -1,6 +1,6 @@
 ---
 name: epic-format-validation
-description: "Valida que un archivo de especificación de épica cumple la estructura obligatoria del template epic-template.md. Produce resultado APROBADO, REFINAR (con lista de secciones faltantes) o RECHAZADO (archivo no encontrado)."
+description: "Valida que una épica cumple el contrato del template epic-template.md: frontmatter, secciones obligatorias, formato F1/F2/F3 de las historias y smoke tests SMOKE-N en gherkin. Produce APROBADO, REFINAR (faltantes y formato inválido, con la corrección esperada) o RECHAZADO (archivo no encontrado)."
 triggers:
   - epic-format-validation
   - /epic-format-validation
@@ -20,18 +20,20 @@ Invocar también cuando el usuario mencione "validar épica", "verificar estruct
 
 ## Objetivo
 
-Valida que un archivo de especificación de épica contiene todas las secciones obligatorias
-del template `epic-template.md`. Produce resultado **APROBADO**, **REFINAR**
-(con lista de secciones faltantes) o **RECHAZADO** (archivo no encontrado).
+Valida que un archivo de especificación de épica cumple el contrato del template
+`epic-template.md`: frontmatter, secciones obligatorias y la **forma** de las dos secciones que
+leen otros skills (la de clave `historias` y la de clave `smoke-tests`). Produce resultado
+**APROBADO**, **REFINAR** (faltantes y formato inválido) o **RECHAZADO** (archivo no encontrado).
 
 **Qué hace este skill:**
-- Lee el template en runtime y extrae dinámicamente las secciones obligatorias
+- Lee el template en runtime y extrae dinámicamente las secciones obligatorias y el contrato por claves
 - Valida presencia de campos de frontmatter requeridos y encabezados de sección
-- Produce un resultado con diagnóstico accionable
+- Valida el formato de línea de las historias (F1/F2/F3) y de los smoke tests (`SMOKE-N` + `gherkin`)
+- Produce un resultado con diagnóstico accionable (línea, texto y forma esperada)
 
 **Qué NO hace este skill:**
-- No valida el contenido semántico de las secciones, solo su presencia
-- No corrige ni genera contenido en el archivo de épica
+- No valida el contenido semántico de las secciones, solo su presencia y su forma
+- No corrige ni migra el archivo de épica (la migración es `/memory-system migrate --from=epic-template-v1`)
 
 ## Entrada
 
@@ -61,8 +63,10 @@ del template `epic-template.md`. Produce resultado **APROBADO**, **REFINAR**
 ## Restricciones / Reglas
 
 - **Solo lectura:** no escribe ni modifica ningún archivo.
-- **Validación estructural, no semántica:** verifica presencia de secciones por encabezado `##`, no el contenido.
-- **Extracción dinámica:** las secciones obligatorias se derivan en runtime del template mediante el comentario `<!-- sección obligatoria -->`; si el template cambia, el skill se adapta automáticamente.
+- **Validación estructural, no semántica:** verifica presencia de secciones por encabezado `##` y la forma de línea de dos secciones, no el sentido del contenido.
+- **Extracción dinámica:** las secciones obligatorias y sus claves se derivan en runtime del template (comentario `<!-- sección obligatoria · clave: <clave> -->`); si el template cambia (títulos, orden, secciones), el skill se adapta automáticamente.
+- **Sin títulos de sección en este skill:** las reglas de forma se aplican a la sección cuya `clave:` corresponde y su título se lee del template. En la salida, cita las secciones solo por el título que trae el template (D-2b).
+- **Contrato fijo de dominio:** los formatos F1/F2/F3 y el patrón `SMOKE-N` se definen en `domain-epic-lifecycle` §9 ("Estructura de `epic.md`"); este skill los aplica, no los redefine.
 - **Sin corrección:** la generación o corrección de contenido están fuera del scope de este skill.
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
 - NO genere código; estas validando, no implementando los artefactos técnicos
@@ -140,18 +144,30 @@ Lee el archivo de plantilla `$SPECS_BASE/templates/epic-template.md`.
 
 ### Paso 3 — Extraer el contrato obligatorio del template
 
-El contrato tiene dos partes, y **ambas se derivan del template en runtime**: las secciones obligatorias y las claves de frontmatter.
+El contrato tiene tres partes y **todas se derivan del template en runtime**: las secciones
+obligatorias, las claves de sección y las claves de frontmatter.
 
-#### 3a. Secciones obligatorias
+#### 3a. Secciones obligatorias y contrato por claves
 
-Extraer dinámicamente los encabezados de las secciones que contengan el comentario `<!-- sección obligatoria` (con o sin espacio antes de `-->`).
+Para cada línea del template que empiece con `## ` (encabezado de nivel 2), fuera de bloques de código:
 
-**Método de extracción:** Para cada línea que empiece con `##` (encabezado de nivel 2) y que contenga `<!-- sección obligatoria`, extraer el texto del encabezado limpiando el comentario HTML y los espacios sobrantes.
+- **título**: el texto del encabezado sin el comentario HTML ni espacios sobrantes;
+- **obligatoria**: el comentario contiene `sección obligatoria` (con o sin espacio antes de `-->`);
+- **clave**: el valor de `clave: <clave>` dentro del comentario, si lo declara.
 
-**Resultado esperado a partir del template actual:**
-- `Descripción`
-- `Historias`
-- `Flujos Críticos / Smoke Tests`
+Resultado: una lista ordenada `{ título, clave, obligatoria }`. Las obligatorias son las que se
+exigen en el Paso 4b. Si dos secciones declaran la **misma clave**, el template es inválido: muestra
+exactamente
+
+```
+❌ Template inválido: clave <clave> duplicada
+```
+
+y **termina sin resultado** (ni APROBADO, ni REFINAR, ni RECHAZADO).
+
+De la lista, toma el título de la sección con clave `historias` y el de la sección con clave
+`smoke-tests`. Si el template no declara una de esas claves, la regla de forma correspondiente
+(Paso 4c o 4d) **no se aplica** y no se menciona en la salida.
 
 #### 3b. Claves de frontmatter obligatorias
 
@@ -167,9 +183,6 @@ De esas claves, **exigir todas menos** las de esta allowlist de opcionales:
 
 La allowlist es la única parte codificada en este skill, y solo enumera claves nullables o de configuración. Cualquier clave nueva que se agregue al template pasa a ser obligatoria automáticamente, sin editar este skill.
 
-**Resultado esperado a partir del template actual:**
-`type`, `id`, `slug`, `title`, `status`, `substatus`, `created`, `updated`
-
 ---
 
 ### Paso 4 — Validar el archivo de épica
@@ -180,21 +193,55 @@ Leer el archivo de épica resuelta en Paso 1.
 
 Verificar que el bloque frontmatter del archivo de épica (el contenido entre el primer par de `---`) contiene una clave YAML `<clave>:` al inicio de línea por cada clave obligatoria derivada en el Paso 3b.
 
-Buscar claves YAML (`created:`), **no** patrones Markdown (`**Fecha**:`). Una clave presente pero con valor vacío cuenta como presente: este skill valida estructura, no contenido.
+Buscar claves YAML (`created:`), **no** patrones Markdown (`**Fecha**:`). Una clave presente pero con valor vacío cuenta como presente. Las claves extra que el template no exige se aceptan.
 
 Registrar cuáles están ausentes.
 
 #### 4b. Validar secciones obligatorias
 
-Para cada sección obligatoria extraída en Paso 3, verificar que el archivo de épica contiene un encabezado `##` cuyo texto (ignorando espacios y comentarios HTML) coincida con el nombre de la sección.
+Para cada sección obligatoria extraída en el Paso 3a, verificar que el archivo de épica contiene un encabezado `##` cuyo texto (ignorando espacios y comentarios HTML) coincida con su título.
 
 Registrar cuáles están ausentes.
+
+#### 4c. Regla de forma de la sección con clave `historias`
+
+Solo si el template declara la clave `historias` y la épica tiene esa sección. Dentro de ella,
+analizar **solo las líneas de nivel superior que empiezan por `- `** (las líneas indentadas son
+sub-ítems y se ignoran). Cada una debe casar con uno de los tres formatos del dominio:
+
+| Formato | Estado | Forma |
+|---|---|---|
+| F1 | planificada, sin ID | `- <Nombre>: <descripción>` — sin checkbox y sin `STORY-NNN` (el placeholder `- [Por completar]` es un F1 válido) |
+| F2 | creada | `- [ ] **STORY-NNN** — <Nombre>: <descripción>` |
+| F3 | completada | `- [x] **STORY-NNN** — <Nombre>: <descripción>` |
+
+`STORY-NNN` usa guion ASCII (`-`) y al menos tres dígitos; el separador tras `**STORY-NNN**` es la
+raya `—`. Una línea con checkbox pero sin `**STORY-NNN**` (p. ej. `- [ ] Nombre: desc`), con el ID
+fuera de la negrita o con otro separador **no** casa con ningún formato. Cada incumplimiento es un
+ítem de `Formato inválido:` con su número de línea, el texto literal de la línea y la forma esperada.
+
+#### 4d. Regla de forma de la sección con clave `smoke-tests`
+
+Solo si el template declara la clave `smoke-tests` y la épica tiene esa sección. Dentro de ella,
+tomar los encabezados `###` (fuera de bloques de código):
+
+1. Debe haber **al menos uno**.
+2. Si hay **dos o más**, todos deben casar `### SMOKE-<N> — <nombre>` (N entero; no se exige que
+   sean contiguos: los IDs son estables y no se renumeran). Si hay **uno solo**, se acepta con o sin
+   `SMOKE-<N> — `.
+3. Un mismo `SMOKE-<N>` repetido es inválido.
+4. Cada `###` debe ir seguido de un bloque de código `gherkin` que contenga `Escenario:`, `Dado`,
+   `Cuando` y `Entonces`. Los pasos en negrita (`**DADO**`…) fuera de un bloque `gherkin` no cuentan.
+
+Cada incumplimiento es un ítem de `Formato inválido:` con su número de línea, el texto literal del
+encabezado y la corrección esperada (`### SMOKE-N — <nombre>` o "bloque `gherkin` con
+Escenario/Dado/Cuando/Entonces").
 
 ---
 
 ### Paso 5 — Producir resultado
 
-#### Si no hay secciones ni campos faltantes → APROBADO
+#### Si no hay faltantes ni formato inválido → APROBADO
 
 ```
 APROBADO
@@ -204,7 +251,9 @@ El archivo cumple la estructura obligatoria del template epic-template.md.
 Archivo validado: <ruta del archivo>
 ```
 
-#### Si hay campos o secciones faltantes → REFINAR
+#### Si hay faltantes o formato inválido → REFINAR
+
+Incluir solo los bloques que tengan ítems. Los títulos de sección que se citen salen del template.
 
 ```
 REFINAR
@@ -214,18 +263,29 @@ El archivo no cumple la estructura obligatoria del template epic-template.md.
 Archivo validado: <ruta del archivo>
 
 Secciones/campos faltantes:
-- <nombre exacto del campo o encabezado faltante 1>
-- <nombre exacto del campo o encabezado faltante 2>
-...
+- <nombre exacto del campo o título de la sección faltante>
+
+Formato inválido:
+- Línea <n> (<título de la sección>): `<texto literal>` → se esperaba F1 `- <Nombre>: <descripción>`, F2 `- [ ] **STORY-NNN** — <Nombre>: <descripción>` o F3 `- [x] **STORY-NNN** — <Nombre>: <descripción>`
+- Línea <n> (<título de la sección>): `<encabezado>` → se esperaba `### SMOKE-N — <nombre>` seguido de un bloque gherkin con Escenario/Dado/Cuando/Entonces
 
 Revisa el template en $SPECS_BASE/templates/epic-template.md para completar las secciones indicadas.
 ```
+
+Si el bloque `Secciones/campos faltantes:` lista alguna **sección**, añadir al final esta nota:
+
+```
+Si la épica se creó con una versión anterior del template → /memory-system migrate --from=epic-template-v1
+```
+
+No detectes la versión de la épica por sus títulos: la lista de secciones faltantes más esta nota da
+la misma información y funciona también con templates personalizados.
 
 ---
 
 ## Salida
 
 - **APROBADO**: el archivo cumple la estructura completa del template.
-- **REFINAR**: el archivo existe pero le faltan secciones o campos de frontmatter; incluye lista accionable.
+- **REFINAR**: el archivo existe pero le faltan secciones o campos de frontmatter, o alguna línea de historias o de smoke tests no tiene la forma del contrato; incluye lista accionable y, si faltan secciones, el comando de migración.
 - **RECHAZADO**: el archivo no fue encontrado.
 - No genera ni modifica archivos en disco.

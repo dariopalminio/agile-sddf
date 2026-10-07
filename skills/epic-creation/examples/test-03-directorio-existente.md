@@ -41,7 +41,7 @@ El skill muestra:
 
 ### Fases 2–4 — Completar contenido
 - El usuario completa el frontmatter y las secciones (flujo normal)
-- En este test solo se completan obligatorias (usuario responde "saltar todas" en opcionales)
+- El usuario responde las secciones del template (flujo normal; ver test-01)
 
 ### Fase 5 — Vista previa y confirmación
 

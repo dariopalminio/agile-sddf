@@ -27,11 +27,27 @@ related: [
 
 # Release/Epic: enhancement and security improvements for skills (Safe Enhancement & Fortify Skills)
 
-## Descripción
+## Alcance
 
 Agregar selección de root folder de skills al instalador, ampliar las capacidades del skill de implementación y specify, mejorar seguridad y auditoría de skills.
 
 ## Historias
+*Esta épica se completó sin IDs de historia: sus ítems están en «Notas › Ítems completados sin ID de historia».*
+
+## Criterios de salida
+- [ ] [Por completar]
+
+## Smoke tests
+### SMOKE-1 — [Por completar]
+```gherkin
+Escenario: [Por completar]
+  Dado [Por completar]
+  Cuando [Por completar]
+  Entonces [Por completar]
+```
+
+## Notas
+### Ítems completados sin ID de historia
 
 - [x] **Integrar Skill Shielder en Dockerfile.dev**: Clonar el repositorio de Skill Shielder durante el build de la imagen de desarrollo, hacer ejecutables los scripts y exponer el comando shield en el PATH del sistema para permitir auditorías de seguridad de skills bajo demanda desde dentro del contenedor. Esto permite auditar la seguridad de los skills en el entorno de desarrollo, facilitando la identificación y corrección de vulnerabilidades antes de la integración.
 - [x] **Skill Security Audit en el pipeline de CI**: Agregar un nuevo job en el pipeline de CI que ejecute el comando shield audit en cada push a main y en cada PR. 
