@@ -122,7 +122,9 @@ instalan los agentes y no si la sesión puede lanzar uno. En modo inline, el orq
 
 ---
 
-## Cómo medir el antes y el después con `/context`
+## Cómo medir el antes y el después 
+
+### En Claude se mide el uso de contexto con `/context`
 
 `/context` desglosa la ventana de contexto por categoría. La categoría que el patrón reduce es **Messages**. El
 resto (system prompt, tools, archivos de memoria, skills, agentes y el buffer de autocompactación) es un
@@ -166,8 +168,7 @@ Medición registrada en [testing-report.md](../specs/03-stories/STORY-119-story-
 ## Cómo detectar y resolver el shadowing de skills
 
 **Shadowing** es cuando hay dos copias de un skill con el mismo nombre y el runtime carga una que no es la que
-editaste. En STORY-119, la primera medición después de la refactorización no mostró ningún ahorro (la fila
-STORY-109 inline de la tabla). El motivo era una copia **global vieja** que tapaba la copia nueva del proyecto.
+editaste. En una prueba, la primera medición después de la refactorización puede no mostrar ningún ahorro (la fila story-NNN inline de la tabla). El motivo puede ser una copia **global vieja** que tapaba la copia nueva del proyecto.
 
 ### Por qué ocurre
 
