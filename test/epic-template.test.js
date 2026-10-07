@@ -236,6 +236,32 @@ test('UT-007: R7 conserva verbatim una historia completada sin ID y emite comple
   assert.ok(findings.some((f) => f.reason === 'historia-irreconocible' && f.line === lineOf(input, 'STORY-081 es')), JSON.stringify(findings));
 });
 
+test('UT-007b: R7 conserva verbatim y emite historia-irreconocible si la línea resultante no es F1, F2 ni F3', () => {
+  const unrecognized = [
+    '- [ ] Solo nombre',
+    '- [ ] **Solo nombre**',
+    '- Solo nombre sin descripción',
+    '- Paraguas: cubre STORY-109 a 113',
+    '- [ ]',
+  ];
+  const epic = [
+    '---', 'type: epic', '---', '', '# Épica: X', '', '## Historias',
+    ...unrecognized,
+    '- [ ] **Válida:** sigue migrando a F1',
+    '- [Por completar]',
+    '',
+  ].join('\n');
+  const { content, findings } = epicTemplate.planEpicMigration(epic, v2Contract());
+  const exactLineOf = (text, line) => text.split('\n').indexOf(line) + 1;
+  for (const line of unrecognized) {
+    assert.ok(content.split('\n').includes(line), `no se conservó verbatim: ${line}`);
+    assert.ok(findings.some((f) => f.reason === 'historia-irreconocible' && f.line === exactLineOf(epic, line)), `${line}\n${JSON.stringify(findings)}`);
+  }
+  assert.equal(findings.length, unrecognized.length, JSON.stringify(findings));
+  assert.ok(content.includes('\n- Válida: sigue migrando a F1\n'));
+  assert.ok(content.includes('\n- [Por completar]\n'));
+});
+
 test('UT-008: R2/R4 convierten Escenario N + DADO/CUANDO/ENTONCES/Y en SMOKE-N gherkin conservando el párrafo', () => {
   const { content, findings } = epicTemplate.planEpicMigration(fixture('EPIC-01-v1-completa'), v2Contract());
   assert.deepEqual(findings, []);

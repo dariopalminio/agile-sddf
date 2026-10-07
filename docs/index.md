@@ -332,7 +332,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 - [[runbooks-index]] — [README.md](runbooks/README.md) — Runbooks
 - [[runbook-actualizar-spec-de-proyecto]] — [actualizar-spec-de-proyecto.md](runbooks/actualizar-spec-de-proyecto.md) — Runbook para actualizar la especificación de proyecto (project.md)
-- [[runbook-deployment-to-npm]] — [deployment-to-npm.md](runbooks/deployment-to-npm.md) — Runbook para despliegue en npm
+- [[runbook-deployment-to-npm]] — [runbook-deployment-to-npm.md](runbooks/runbook-deployment-to-npm.md) — Runbook para despliegue en npm
 - [[docker-dev-container-with-security-scann]] — [docker-dev-container-with-security-scann.md](runbooks/docker-dev-container-with-security-scann.md) — Integrar Skill Shielder en Dockerfile.dev
 - [[docker-dev-container]] — [docker-dev-container.md](runbooks/docker-dev-container.md) — Guía Completa: Entorno de Desarrollo React con Docker + VSCode Dev Containers
 

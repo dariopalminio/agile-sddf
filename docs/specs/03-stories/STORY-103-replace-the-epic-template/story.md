@@ -3,12 +3,12 @@ type: story
 id: STORY-103
 slug: STORY-103-replace-the-epic-template
 title: "Reemplazar el template de Epic por la versión minimalista y output-oriented"
-status: IMPLEMENT
-substatus: IN-PROGRESS
+status: COMPLETED
+substatus: DONE
 kind: feat
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-09-27
-updated: 2026-10-06
+updated: 2026-10-07
 related: 
   - EPIC-21-colapsar-specs-dos-niveles
 ---

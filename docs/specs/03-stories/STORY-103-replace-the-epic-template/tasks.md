@@ -82,5 +82,6 @@ related:
 - [x] T032 Resolver a mano cada `[REVISAR]` reportado (p. ej. EPIC-14 smoke no-gherkin, EPIC-16 `[x]` sin ID) sin perder contenido y re-ejecutar `--dry-run` hasta `cambios pendientes: 0` y exit 0 — F-4, AC-10
 - [x] T033 Ejecutar `epic-format-validation` sobre las 22 épicas migradas y sobre una épica generada por `epic-creation`; todas `APROBADO` — AC-8, AC-10, AC-11
 - [x] T034 Ejecutar `npm test` (incluye `test/epic-template.test.js`, `memory-system.test.js`, `dod-story.test.js`) y `npm run verify:links`; todo en verde — AC-1…AC-11, CNF-2
-- [x] T035 Ejecutar `npm run test:eval -- --dry-run` sobre los skills modificados (plan no vacío) y, si hay runner disponible, `npm run test:eval` de `epic-format-validation`, `epic-creation`, `epic-generate-stories`, `epic-from-project-plan` — AC-8, AC-9, AC-11 · **Parcial (2026-10-06):** `npm run test:eval -- --dry-run` OK (plan de 106 casos, exit 0); pendiente ejecutar los evals reales con LLM
-- [ ] Run EVs (npm run test:eval) TC-036 and TC-037 from skill `story-implement`.
+- [x] T035 Ejecutar `npm run test:eval -- --dry-run` sobre los skills modificados (plan no vacío) y, si hay runner disponible, `npm run test:eval` de `epic-format-validation`, `epic-creation`, `epic-generate-stories`, `epic-from-project-plan` — AC-8, AC-9, AC-11 · **Completada (2026-10-07):** `--dry-run` OK (plan de 106 casos, exit 0); evals reales con LLM en verde para los casos de la historia en los 6 skills
+- [x] Ejecutar los EV reales (`npm run test:eval`) TC-036 y TC-037 de `story-implement` — 2/2 PASS (2026-10-07)
+- [x] Implementar fix-directives.md

@@ -43,6 +43,8 @@ const V1_TITLES = [
 const CRITERIA_PARAGRAPH = /^\*\*Criterios de [eé]xito:?\*\*:?\s*(?:<!--[\s\S]*?-->\s*)?$/i;
 const FENCE = /^\s*(?:```|~~~)/;
 const STORY_LINE = /^- \[[ xX]\] \*\*STORY-\d{3,}\*\* — \S/;
+// F1: `- Nombre: desc` sin checkbox ni `STORY-NNN`; el placeholder `- [Por completar]` también es F1.
+const PLANNED_LINE = /^- (?!\[[ xX]\])(?!.*\bSTORY-\d)\S.*?: \S|^- \[Por completar\]\s*$/;
 const STEP = /^\*\*(DADO|CUANDO|ENTONCES|Y)\*\*:?\s+(.*?)\s*$/i;
 const STEP_WORDS = { dado: 'Dado', cuando: 'Cuando', entonces: 'Entonces', y: 'Y' };
 
@@ -65,7 +67,7 @@ const REASONS = {
   'seccion-sin-destino': 'el template no declara la clave notas: la sección se conservó al final sin migrar',
 };
 
-const normalize = (text) => String(text).replace(/^﻿/, '').replace(/\r\n?/g, '\n');
+const normalize = (text) => String(text).replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
 const isBlank = (line) => !line.trim();
 const stripComments = (text) => text.replace(/<!--[\s\S]*?-->/g, '');
 const cleanHeading = (raw) => stripComments(raw).trim();
@@ -155,16 +157,19 @@ function plannedText(rest) {
 
 /** R7 sobre una línea de nivel superior: `{ line, reason? }`; con `reason` la línea se conserva verbatim. */
 function migrateStoryLine(line) {
-  if (STORY_LINE.test(line)) return { line };
+  if (STORY_LINE.test(line) || PLANNED_LINE.test(line)) return { line };
+  const unrecognized = { line, reason: 'historia-irreconocible' };
   const box = line.match(/^- \[([ xX])\]\s+(.*?)\s*$/);
-  if (!box || !box[2]) return { line };
+  if (!box || !box[2]) return unrecognized;
   const checked = box[1] !== ' ';
   const rest = box[2];
   const parsed = parseWithId(rest);
   if (parsed) return { line: `- [${checked ? 'x' : ' '}] **${parsed.id}** — ${parsed.name}: ${parsed.desc}` };
-  if (/^\*{0,2}\s*STORY-\d/i.test(rest)) return { line, reason: 'historia-irreconocible' };
+  if (/^\*{0,2}\s*STORY-\d/i.test(rest)) return unrecognized;
   if (checked) return { line, reason: 'completada-sin-id' };
-  return { line: `- ${plannedText(rest)}` };
+  // D-7: una línea que no queda en F1 (p. ej. sin `: desc`) no se entrega fuera de contrato.
+  const planned = `- ${plannedText(rest)}`;
+  return PLANNED_LINE.test(planned) ? { line: planned } : unrecognized;
 }
 
 function migrateStories(part, findings) {

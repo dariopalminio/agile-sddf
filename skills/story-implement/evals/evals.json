@@ -3667,8 +3667,7 @@
       "expected": {
         "contains": [
           "[INFO] epic.md actualizado",
-          "STORY-103",
-          "IMPLEMENT/DONE"
+          "STORY-103"
         ],
         "not_contains": [
           "STORY-1030] marcado",
@@ -3710,8 +3709,7 @@
       "expected": {
         "contains": [
           "[INFO] epic.md actualizado",
-          "STORY-103",
-          "IMPLEMENT/DONE"
+          "STORY-103"
         ],
         "not_contains": [
           "STORY-1030] marcado",

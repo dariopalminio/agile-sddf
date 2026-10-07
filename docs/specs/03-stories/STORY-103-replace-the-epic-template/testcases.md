@@ -5,7 +5,7 @@ slug: STORY-103-replace-the-epic-template-testcases
 title: "Test Cases: Reemplazar el template de Epic por la versión minimalista y output-oriented"
 story: STORY-103
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 related:
   - STORY-103-replace-the-epic-template
 ---
@@ -48,6 +48,7 @@ related:
 | UT-005 | Unit | Migración R1/R3/R5 (títulos v1 → clave) | fixture (a) v1 completa y contrato v2 | `planEpicMigration` | `Descripción`→clave `alcance` (título `Alcance`), `**Criterios de éxito:**`→`criterios-salida`, `Notas adicionales`→`notas`; salida igual a `expected.md` | D-7, T005 |
 | UT-006 | Unit | Migración R7 (líneas de Historias) | líneas `STORY-NNN - **N:** d`, `**STORY-NNN — N:** d`, `- [ ] **N:** d`, `- [x] STORY-NNN …` | `planEpicMigration` | se convierten a F2/F3/F1 conservando el checkbox; las líneas indentadas quedan intactas | D-7, T006 |
 | UT-007 | Unit | Migración R7 error: `[x]` sin ID | fixture (e) con `- [x] **Nombre**: desc` | `planEpicMigration` | la línea se conserva verbatim y se emite hallazgo `completada-sin-id` con su número de línea | D-7, T006 |
+| UT-007b | Unit | Migración R7 error: línea fuera de F1/F2/F3 | `- [ ] Solo nombre`, `- Solo nombre sin descripción`, `- Paraguas: cubre STORY-109 a 113`, `- [ ]` | `planEpicMigration` | cada línea se conserva verbatim y emite `historia-irreconocible` con su número; `- [ ] **Válida:** …` sigue migrando a F1 y `- [Por completar]` no se marca | D-7, code review ronda 1 |
 | UT-008 | Unit | Migración R2/R4 (smoke tests) | `### Escenario 2: T` + `**DADO**/**CUANDO**/**ENTONCES**/**Y**` | `planEpicMigration` | produce `### SMOKE-2 — T` + bloque `gherkin` con Escenario/Dado/Cuando/Entonces/Y y conserva el párrafo introductorio | D-7, T007 |
 | UT-009 | Unit | Migración R4 error: smoke no-gherkin | fixture (e) con lista anidada bajo Flujos Críticos | `planEpicMigration` | el cuerpo se conserva verbatim bajo `### SMOKE-N — …` y se emite hallazgo `smoke-sin-gherkin` | D-7, T007 |
 | UT-010 | Unit | Migración R6 (secciones situacionales) | fixture (d) con `## Requerimiento: x`, `## Objetivo`, `## Riesgos` vacío | `planEpicMigration` | `Requerimiento: x` y `Objetivo` pasan a `###` dentro de la sección `notas` (sus `###` bajan a `####`); `Riesgos` vacío se elimina | D-7, T008 |
@@ -100,43 +101,6 @@ related:
 
 <!-- Generado automáticamente por story-testcases. Actualizado por story-implement en fase GREEN.
      [x] = test pasó | [ ] = pendiente | [!] = test falló -->
-- [ ] E2E-001: Template reducido a cinco secciones
-- [ ] E2E-002: Alcance reemplaza a Descripción
-- [ ] E2E-003: Historias con tres formatos
-- [ ] E2E-004: Criterios de salida reemplaza a Criterios de éxito
-- [ ] E2E-005: Smoke tests SMOKE-N en gherkin
-- [ ] E2E-006: Notas al final
-- [ ] E2E-007: Frontmatter simplificado
-- [ ] E2E-008: Skills de creación usan el template nuevo
-- [ ] E2E-009: Skills que editan el Epic
-- [ ] E2E-010: Épicas existentes migradas
-- [ ] E2E-011: Gate de formato actualizado
-- [ ] UT-001: Template: ≤ 40 líneas
-- [ ] UT-002: Template central idéntico al seed
-- [ ] UT-003: Template: marcadores y claves en las 5 secciones
-- [ ] UT-004: Template: guion ASCII en IDs y slugs
-- [ ] UT-005: Migración R1/R3/R5 (títulos v1 → clave)
-- [ ] UT-006: Migración R7 (líneas de Historias)
-- [ ] UT-007: Migración R7 error: `[x]` sin ID
-- [ ] UT-008: Migración R2/R4 (smoke tests)
-- [ ] UT-009: Migración R4 error: smoke no-gherkin
-- [ ] UT-010: Migración R6 (secciones situacionales)
-- [ ] UT-011: Migración R8/R9 (faltantes y orden del contrato)
-- [ ] UT-012: Migración R10 (preámbulo)
-- [ ] UT-013: Migración: frontmatter intacto
-- [ ] UT-014: Idempotencia (punto fijo)
-- [ ] UT-015: `migrateEpics` en `--dry-run`
-- [ ] UT-016: `migrateEpics` exit codes
-- [ ] UT-017: `parseArgs` acepta el nuevo origen
-- [ ] UT-018: `migrateEpics` no sale de la raíz
-- [ ] UT-019: `migrateEpics` avisa del template central sin claves
-- [ ] UT-020: `readTemplateContract` happy path
-- [ ] UT-021: `readTemplateContract` errores y bordes
-- [ ] UT-022: Migración hacia un template personalizado
-- [ ] IT-001: Motor despacha a `migrateEpics`
-- [ ] IT-002: Migración real del repo + gate
-- [ ] IT-003: Suite completa sin regresiones
-- [ ] IT-004: Productor + gate
 - [x] EV-001: `epic-format-validation`: v2 válido
 - [x] EV-002: `epic-format-validation`: épica de una versión anterior del template
 - [x] EV-003: `epic-format-validation`: falta Notas (fail-fast)
@@ -146,13 +110,13 @@ related:
 - [x] EV-007: `epic-format-validation`: smoke sin bloque gherkin
 - [x] EV-008: `epic-creation` happy path
 - [x] EV-009: `epic-creation` DoD aplicable
-- [ ] EV-010: `epic-from-project-plan` genera v2 válido
-- [ ] EV-011: `epic-generate-stories` F1 → F2
-- [ ] EV-012: `epic-generate-stories`: épica sin la sección `historias` (fail-fast)
-- [ ] EV-013: `epic-generate-all-stories` IDs únicos
-- [ ] EV-014: `story-implement` marca F3 solo en la sección `historias`
-- [ ] EV-015: `epic-generate-stories` con título renombrado
+- [x] EV-010: `epic-from-project-plan` genera v2 válido
+- [x] EV-011: `epic-generate-stories` F1 → F2
+- [x] EV-012: `epic-generate-stories`: épica sin la sección `historias` (fail-fast)
+- [x] EV-013: `epic-generate-all-stories` IDs únicos
+- [x] EV-014: `story-implement` marca F3 solo en la sección `historias`
+- [x] EV-015: `epic-generate-stories` con título renombrado
 - [x] EV-016: `epic-format-validation` con título renombrado
-- [ ] EV-017: `story-implement` con título renombrado
+- [x] EV-017: `story-implement` con título renombrado
 - [x] EV-018: `epic-format-validation`: template sin `smoke-tests`
 - [x] EV-019: `epic-format-validation`: clave duplicada en el template (fail-fast)

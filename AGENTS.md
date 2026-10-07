@@ -82,10 +82,3 @@ Cada subagente escribe su resultado en `.tmp/<skill-name>/` y devuelve el contro
 
 ---
 
-# Políticas del Proyecto
-
-@docs/constitution.md
-
-El Definition of Done de historia **no** se importa aquí: está dividido en un guardrail por etapa
-(`docs/guardrails/dod-story-<etapa>.md`) y cada skill del pipeline carga solo el suyo (sección
-`## DoD aplicable`). Índice en `docs/guardrails/README.md`.

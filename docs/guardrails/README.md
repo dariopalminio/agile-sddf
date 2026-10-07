@@ -129,4 +129,4 @@ seis etapas desde sus plantillas.
 
 | Archivo | Ámbito | Verificado por |
 |---------|--------|----------------|
-| [dod-story-deliver.md](dod-story-deliver.md) | Criterios de despliegue en producción (publicación en npm; `kind: content`, `applies-to: deliver`; sin skill por ahora) | Revisión humana antes de publicar; ver [deployment-to-npm.md](../runbooks/deployment-to-npm.md) |
+| [dod-story-deliver.md](dod-story-deliver.md) | Criterios de despliegue en producción (publicación en npm; `kind: content`, `applies-to: deliver`; sin skill por ahora) | Revisión humana antes de publicar; ver [runbook-deployment-to-npm.md](../runbooks/runbook-deployment-to-npm.md) |
