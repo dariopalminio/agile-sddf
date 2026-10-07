@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-09-24
+updated: 2026-10-07
 ---
 
 # 📚 Índice de documentación
@@ -15,7 +15,7 @@ updated: 2026-09-24
 > Formato de cada entrada: wikilink + link markdown a la ruta relativa + título.
 > El slug del wikilink es el declarado en el frontmatter del documento (convención SDDF) o, si no lo
 > declara, el derivado del nombre del archivo o del directorio. Cuando un archivo no tiene frontmatter,
-> se enlaza solo por ruta. Usa [Foam](https://foambubble.github.io/foam/) para visualizar el grafo.
+> se enlaza solo por ruta. Usa foam (foambubble.github.io/foam) para visualizar el grafo.
 >
 > Generado por `memory-system index`: no edites las entradas a mano, regenera con `/memory-system index`.
 
@@ -131,6 +131,8 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[plan-08-move-skills-to-the-root]] — [plan-08-move-skills-to-the-root.md](specs/02-epics/EPIC-18-workflow-hardening/plan-08-move-skills-to-the-root.md) — Actualizar rutas de origen tras mover `skills/` y `agents/` a la raíz
 - [[EPIC-19-framework-consistency]] — [epic.md](specs/02-epics/EPIC-19-framework-consistency/epic.md) — Framework Consistency — Coherencia de vocabulario, instalación, seguridad y ciclo de corrección
 - [[EPIC-20-memory-system]] — [epic.md](specs/02-epics/EPIC-20-memory-system/epic.md) — Memory System — Sistema de memoria unificado y agnóstico al harness
+- [[EPIC-21-colapsar-specs-dos-niveles]] — [epic.md](specs/02-epics/EPIC-21-colapsar-specs-dos-niveles/epic.md) — Colapsar specs/ a dos niveles y eliminar 01-projects/
+- [insight-colapsar-specs-dos-niveles.md](specs/02-epics/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — 📊 Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects ⚠️ sin frontmatter
 
 ### L1 — Historias de usuario (specs/03-stories/)
 
@@ -255,6 +257,25 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-099-sddf-init-level-full]] — [story.md](specs/03-stories/STORY-099-sddf-init-level-full/story.md) — Inicializar la memoria completa desde sddf-init con el parámetro --level
 - [[STORY-100-restaurar-documentos-canonicos-estados]] — [story.md](specs/03-stories/STORY-100-restaurar-documentos-canonicos-estados/story.md) — Restaurar los documentos canónicos de la máquina de estados borrados sin repuntar sus citas
 - [[STORY-101-dod-story-por-etapa]] — [story.md](specs/03-stories/STORY-101-dod-story-por-etapa/story.md) — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill
+- [[STORY-102-renombrar-skill-sddf-constitution]] — [story.md](specs/03-stories/STORY-102-renombrar-skill-sddf-constitution/story.md) — Renombrar el skill project-policies-generation como sddf-constitution
+- [[<nombre-del-directorio-de-la-epica>   # escritor: epic-creation · epic-from-project-plan]] — [epic-template.md](specs/03-stories/STORY-103-replace-the-epic-template/epic-template.md) — "<título de la épica>"   # escritor: epic-creation · epic-from-project-plan
+- [[STORY-103-replace-the-epic-template]] — [story.md](specs/03-stories/STORY-103-replace-the-epic-template/story.md) — Reemplazar el template de Epic por la versión minimalista y output-oriented
+- [[STORY-104-migrar-project-intent-a-vision]] — [story.md](specs/03-stories/STORY-104-migrar-project-intent-a-vision/story.md) — Migrar project-intent.md a product/vision.md
+- [[STORY-105-migrar-stakeholders-y-requisitos]] — [story.md](specs/03-stories/STORY-105-migrar-stakeholders-y-requisitos/story.md) — Migrar project.md a product/stakeholders.md y requirements/
+- [[STORY-106-migrar-plan-a-roadmap]] — [story.md](specs/03-stories/STORY-106-migrar-plan-a-roadmap/story.md) — Migrar project-plan.md a product/roadmap.md
+- [[STORY-107-migrar-story-map-y-diagrama-contexto]] — [story.md](specs/03-stories/STORY-107-migrar-story-map-y-diagrama-contexto/story.md) — Migrar story-map.md y context-diagram.puml
+- [[STORY-108-renombrar-specs-sin-prefijos]] — [story.md](specs/03-stories/STORY-108-renombrar-specs-sin-prefijos/story.md) — Renombrar specs/02-epics/ → specs/epics/ y specs/03-stories/ → specs/stories/
+- [[STORY-109-project-begin-escribe-vision]] — [story.md](specs/03-stories/STORY-109-project-begin-escribe-vision/story.md) — project-begin escribe la intención en product/vision.md
+- [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] — [story.md](specs/03-stories/STORY-110-discovery-escribe-stakeholders-y-requisitos/story.md) — project-discovery y reverse-engineering escriben stakeholders y requisitos individuales
+- [[STORY-111-planning-escribe-roadmap]] — [story.md](specs/03-stories/STORY-111-planning-escribe-roadmap/story.md) — project-planning escribe en product/roadmap.md y epic-from-project-plan lee de allí
+- [[STORY-112-story-map-y-diagrama-en-sus-capas]] — [story.md](specs/03-stories/STORY-112-story-map-y-diagrama-en-sus-capas/story.md) — project-story-mapping y project-context-diagram escriben en product/ y architecture/c4/
+- [[STORY-113-project-flow-sin-01-projects]] — [story.md](specs/03-stories/STORY-113-project-flow-sin-01-projects/story.md) — project-flow, sddf-init y header-aggregation sin specs/01-projects/
+- [[STORY-114-migrate-specs-3-levels]] — [story.md](specs/03-stories/STORY-114-migrate-specs-3-levels/story.md) — Implementar memory-system migrate --from=specs-3-levels
+- [[STORY-115-scaffold-dos-niveles-y-capas-destino]] — [story.md](specs/03-stories/STORY-115-scaffold-dos-niveles-y-capas-destino/story.md) — Actualizar scaffolding de memory-system a specs/ de dos niveles
+- [[STORY-116-documentar-modelo-dos-niveles]] — [story.md](specs/03-stories/STORY-116-documentar-modelo-dos-niveles/story.md) — Actualizar documentación canónica al modelo de dos niveles
+- [[STORY-117-verificar-cierre-epic-21]] — [story.md](specs/03-stories/STORY-117-verificar-cierre-epic-21/story.md) — Verificar sddf.config.yaml y los modos SDD sobre la estructura de dos niveles
+- [[STORY-118-requirements-srs-unico-primero]] — [story.md](specs/03-stories/STORY-118-requirements-srs-unico-primero/story.md) — Adoptar la estrategia 'SRS único primero, fragmentación cuando duela' en requirements/
+- [[STORY-119-story-plan-un-subagente-por-paso]] — [story.md](specs/03-stories/STORY-119-story-plan-un-subagente-por-paso/story.md) — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens
 
 ---
 
@@ -295,6 +316,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[specs-dentro-de-docs]] — [ADR-0010-specs-dentro-de-docs.md](adr/ADR-0010-specs-dentro-de-docs.md) — Mantener specs/ dentro de docs/ en lugar de la raíz
 - [[archivos-canonicos-por-tipo]] — [ADR-0011-archivos-canonicos-por-tipo.md](adr/ADR-0011-archivos-canonicos-por-tipo.md) — Los archivos canónicos de work items se nombran por tipo (story.md, epic.md, project.md)
 - [[escritor-en-templates-de-autoria-manual]] — [ADR-0012-escritor-en-templates-de-autoria-manual.md](adr/ADR-0012-escritor-en-templates-de-autoria-manual.md) — Los templates de autoría manual anotan `escritor: autoría manual` en línea completa
+- [[eliminar-specs-01-projects]] — [ADR-0013-eliminar-specs-01-projects.md](adr/ADR-0013-eliminar-specs-01-projects.md) — Eliminar `specs/01-projects/` y migrar su contenido a `product/` y `requirements/`
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
 - [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
@@ -321,6 +343,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[flight-leves-model]] — [flight-leves-model.md](guides/flight-leves-model.md) — Modelo de Niveles de Vuelo (Flight Levels Model)
 - [[harness-engineering]] — [harness-eng-agents-orchestration.md](guides/harness-eng-agents-orchestration.md) — Harness Engineering: Orquestación de Skills y Agentes en Claude Code
 - [[harness-engineering-guide]] — [harness-engineering-guide.md](guides/harness-engineering-guide.md) — Guía de Harness Engineering
+- [[orchestrator-subagent-pattern]] — [orchestrator-subagent-pattern.md](guides/orchestrator-subagent-pattern.md) — Patrón orquestador con un subagente por paso
 - [[organization-of-artifacts]] — [organization-of-artifacts.md](guides/organization-of-artifacts.md) — Reglas de la estrategia de organización de artefactos (SDDF)
 - [[root-folder-practices]] — [root-folder-practices.md](guides/root-folder-practices.md) — Prácticas para resolver la raíz de artefactos SDDF
 - [[sdd]] — [sdd.md](guides/sdd.md) — Spec Driven Development (SDD)
@@ -332,9 +355,9 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 - [[runbooks-index]] — [README.md](runbooks/README.md) — Runbooks
 - [[runbook-actualizar-spec-de-proyecto]] — [actualizar-spec-de-proyecto.md](runbooks/actualizar-spec-de-proyecto.md) — Runbook para actualizar la especificación de proyecto (project.md)
-- [[runbook-deployment-to-npm]] — [runbook-deployment-to-npm.md](runbooks/runbook-deployment-to-npm.md) — Runbook para despliegue en npm
 - [[docker-dev-container-with-security-scann]] — [docker-dev-container-with-security-scann.md](runbooks/docker-dev-container-with-security-scann.md) — Integrar Skill Shielder en Dockerfile.dev
 - [[docker-dev-container]] — [docker-dev-container.md](runbooks/docker-dev-container.md) — Guía Completa: Entorno de Desarrollo React con Docker + VSCode Dev Containers
+- [[runbook-deployment-to-npm]] — [runbook-deployment-to-npm.md](runbooks/runbook-deployment-to-npm.md) — Runbook para despliegue en npm
 
 ---
 
@@ -353,10 +376,10 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 249 |
-| Nodos con frontmatter | 244 |
-| Nodos sin frontmatter | 5 |
-| Wikilinks pendientes | 6 |
+| Nodos indexados | 272 |
+| Nodos con frontmatter | 266 |
+| Nodos sin frontmatter | 6 |
+| Wikilinks pendientes | 15 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |
 
@@ -372,6 +395,15 @@ _(sin artefactos externos)_
 
 Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artefacto:
 
+- [[ADR-0001]] ⚠️ nodo pendiente
+- [[ADR-0003-workflow-canonico-story-y-epic]] ⚠️ nodo pendiente
+- [[ADR-0007]] ⚠️ nodo pendiente
+- [[ADR-0007-templates-como-capa-propia]] ⚠️ nodo pendiente
+- [[ADR-0010]] ⚠️ nodo pendiente
+- [[ADR-0010-specs-dentro-de-docs]] ⚠️ nodo pendiente
+- [[ADR-0011]] ⚠️ nodo pendiente
+- [[ADR-0011-archivos-canonicos-por-tipo]] ⚠️ nodo pendiente
+- [[ADR-0013-eliminar-specs-01-projects]] ⚠️ nodo pendiente
 - [[STORY-100-slug]] ⚠️ nodo pendiente
 - [[project-template]] ⚠️ nodo pendiente
 - [[release-spec-template]] ⚠️ nodo pendiente
