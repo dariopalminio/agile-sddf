@@ -5,11 +5,11 @@ id: STORY-109
 kind: feat
 slug: STORY-109-project-begin-escribe-vision
 title: "project-begin escribe la intención en product/vision.md"
-status: SPECIFY
-substatus: IN-PROGRESS
+status: READY-FOR-IMPLEMENT
+substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-07
 related:
   - EPIC-21-colapsar-specs-dos-niveles
   - ADR-0013-eliminar-specs-01-projects
