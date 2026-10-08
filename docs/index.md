@@ -133,6 +133,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[EPIC-20-memory-system]] — [epic.md](specs/02-epics/EPIC-20-memory-system/epic.md) — Memory System — Sistema de memoria unificado y agnóstico al harness
 - [[EPIC-21-colapsar-specs-dos-niveles]] — [epic.md](specs/02-epics/EPIC-21-colapsar-specs-dos-niveles/epic.md) — Colapsar specs/ a dos niveles y eliminar 01-projects/
 - [insight-colapsar-specs-dos-niveles.md](specs/02-epics/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — 📊 Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects ⚠️ sin frontmatter
+- [[EPIC-22-epic-analyze]] — [epic.md](specs/02-epics/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
 
 ### L1 — Historias de usuario (specs/03-stories/)
 
@@ -276,6 +277,9 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-117-verificar-cierre-epic-21]] — [story.md](specs/03-stories/STORY-117-verificar-cierre-epic-21/story.md) — Verificar sddf.config.yaml y los modos SDD sobre la estructura de dos niveles
 - [[STORY-118-requirements-srs-unico-primero]] — [story.md](specs/03-stories/STORY-118-requirements-srs-unico-primero/story.md) — Adoptar la estrategia 'SRS único primero, fragmentación cuando duela' en requirements/
 - [[STORY-119-story-plan-un-subagente-por-paso]] — [story.md](specs/03-stories/STORY-119-story-plan-un-subagente-por-paso/story.md) — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens
+- [[STORY-120-epic-analyze-integridad-historias]] — [story.md](specs/03-stories/STORY-120-epic-analyze-integridad-historias/story.md) — Detectar historias faltantes, huérfanas o duplicadas de una épica antes de aprobarla para desarrollo
+- [[STORY-121-epic-analyze-cobertura-criterios-salida]] — [story.md](specs/03-stories/STORY-121-epic-analyze-cobertura-criterios-salida/story.md) — Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias
+- [[STORY-122-epic-analyze-madurez-historias-hijas]] — [story.md](specs/03-stories/STORY-122-epic-analyze-madurez-historias-hijas/story.md) — Señalar historias hijas no especificadas o con referencias rotas al analizar una épica
 
 ---
 

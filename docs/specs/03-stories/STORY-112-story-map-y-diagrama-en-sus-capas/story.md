@@ -5,19 +5,19 @@ id: STORY-112
 kind: feat
 slug: STORY-112-story-map-y-diagrama-en-sus-capas
 title: "project-story-mapping y project-context-diagram escriben en product/ y architecture/c4/"
-status: SPECIFY
-substatus: IN-PROGRESS
+status: READY-FOR-IMPLEMENT
+substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
 updated: 2026-10-05
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - eliminar-specs-01-projects
   - STORY-107-migrar-story-map-y-diagrama-contexto
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[eliminar-specs-01-projects]]
 
 # 📖 Historia: `project-story-mapping` y `project-context-diagram` escriben en `product/` y `architecture/c4/`
 
@@ -54,7 +54,7 @@ Entonces el skill pide confirmación antes de sobrescribirlo
 
 ## ⚙️ Criterios no funcionales específicos
 
-- **CNF-1 — Sin rutas del modelo de proyectos:** "01-projects", "project-intent.md", "project.md" (como entrada) y "PROJ-" no aparecen en `skills/project-story-mapping/`, `skills/project-context-diagram/` ni en `agents/project-story-mapper.agent.md`; los evals de ambos skills pasan con `npm run test:eval`.
+- **CNF-1 — Sin rutas del modelo de proyectos:** "01-projects", "project-intent.md", "project.md" (como entrada) y "PROJ-" no aparecen en `skills/project-story-mapping/`, `skills/project-context-diagram/` ni en `agents/project-story-mapper.agent.md` (salvo en `evals/`, donde solo figuran como aserciones `not_contains` que verifican su ausencia); los evals de ambos skills pasan con `npm run test:eval`.
 - **CNF-2 — Convención de la capa de arquitectura:** el `.puml` respeta lo que fija `docs/architecture/README.md` (fuente PlantUML en `c4/`, nombre `context-diagram` para C4 L1).
 - **CNF-3 — Encoding:** los archivos escritos quedan en UTF-8 sin BOM.
 

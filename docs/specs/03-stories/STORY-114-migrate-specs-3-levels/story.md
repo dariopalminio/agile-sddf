@@ -5,8 +5,8 @@ id: STORY-114
 kind: feat
 slug: STORY-114-migrate-specs-3-levels
 title: "Implementar memory-system migrate --from=specs-3-levels"
-status: SPECIFY
-substatus: IN-PROGRESS
+status: READY-FOR-IMPLEMENT
+substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
 updated: 2026-10-05

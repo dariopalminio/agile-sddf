@@ -8,26 +8,34 @@ status: DEFINE
 substatus: IN-PROGRESS
 parent: null
 created: 2026-10-05
-updated: 2026-10-07
+updated: 2026-10-08
 related:
   - EPIC-20-memory-system
   - EPIC-19-framework-consistency
+  - EPIC-22-epic-analyze
 ---
 <!-- Referencias -->
 [[EPIC-20-memory-system]]
 [[EPIC-19-framework-consistency]]
+[[EPIC-22-epic-analyze]]
 
 # Épica: Colapsar `specs/` a dos niveles y eliminar `01-projects/`
 
 ## Alcance
 Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirements/` y `architecture/`, y quitar los prefijos numéricos de `specs/`, dejando solo `specs/epics/` y `specs/stories/`. Se elimina así la duplicación entre `specs/01-projects/` y `product/`, con una única fuente de verdad para la visión y el plan del producto. Incluye actualizar skills, documentación y scaffolding de `memory-system`, y ofrecer migración automática para repos existentes: es un breaking change que exige major version bump.
+Además se aprovecha a hacer una pequeña mejora en el nivel de story, optimizando la planeación de las historias (`story-plan`).
 
 ## Historias
+
+### Optimizar skill `story-plan` para comenzar a optimizar nivel de story
+- [x] **STORY-119 - Story-plan un subagente por paso** — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens.
+
+### Historias específicas para colapsar `specs/` a dos niveles y eliminar `01-projects/`
 - [x] **STORY-103** — Reemplazar el template de Epic por la versión minimalista y output-oriented: asegurar que los nuevos Epics sigan el formato simplificado y enfocado en resultados.
 - [ ] **STORY-104** — Migrar `project-intent.md` a `product/vision.md`: consolidar la intención del proyecto en la visión de producto existente, sin pérdida semántica (objetivo, visión, intención) y con wikilinks actualizados.
 - [ ] **STORY-105** — Migrar `project.md` a `product/stakeholders.md` y `requirements/`: repartir stakeholders y requisitos funcionales/no funcionales en sus nuevos hogares, sin pérdida semántica.
 - [ ] **STORY-106** — Migrar `project-plan.md` a `product/roadmap.md`: trasladar el plan de épicas al roadmap de producto, sin pérdida semántica.
-- [ ] **STORY-107** — Migrar `story-map.md` y `context-diagram.puml`: mover `story-map.md` a `docs/product/story-map.md` y `context-diagram.puml` a `docs/architecture/context-diagram.puml`, actualizando referencias.
+- [ ] **STORY-107** — Migrar `story-map.md` y `context-diagram.puml`: mover `story-map.md` a `docs/product/story-map.md` y `context-diagram.puml` a `docs/architecture/c4/context-diagram.puml`, actualizando referencias.
 - [ ] **STORY-108** — Renombrar `specs/02-epics/` → `specs/epics/` y `specs/03-stories/` → `specs/stories/`: eliminar prefijos numéricos y actualizar referencias, dejando `01-projects/` eliminado.
 - [ ] **STORY-109** — project-begin + project-pm → vision.md: El substatus de vision.md reemplaza al "proyecto activo" PROJ-NN: TODO hace la entrevista completa, IN-PROGRESS retoma, DONE ofrece Actualizar o Cancelar.
 - [ ] **STORY-110** — project-discovery + reverse-engineering + 3 agentes → stakeholders.md + un archivo por FR/NFR: Los IDs nuevos continúan la secuencia (FR-055…) sin sobrescribir los existentes. Si vision.md no está en DONE, se detiene y pide correr /project-begin.
@@ -40,12 +48,13 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [ ] **STORY-117** — Actualizar `sddf.config.yaml` y verificar los tres modos SDD: eliminar rutas a `02-epics/` o `03-stories/` si existen y comprobar que Intent-First, Spec-Anchored y Spec-as-Source funcionan con la nueva estructura.
 - [ ] **STORY-118** — Adoptar la estrategia "SRS único primero, fragmentación cuando duela" en `requirements/`: implementar la estrategia en el framework, actualizar documentación y scaffolding, y ofrecer migración automática para proyectos existentes.
 
+
 ## Criterios de salida
 - [ ] `docs/specs/01-projects/` no existe en el repositorio del framework.
 - [ ] `docs/specs/` contiene exactamente dos carpetas de artefactos: `epics/` y `stories/` (más `README.md`).
 - [ ] `docs/product/` contiene `vision.md`, `stakeholders.md`, `roadmap.md` y `story-map.md`.
-- [ ] `docs/architecture/` contiene `context-diagram.puml`.
-- [ ] `docs/requirements/` contiene `functional/` y `non-functional/` poblados.
+- [ ] `docs/architecture/c4/` contiene `context-diagram.puml`.
+- [ ] `docs/requirements/` contiene `functional/` y `non-functional/` poblados o un documento srs de especificación de requerimientos.
 - [ ] Ningún skill ni agente referencia `specs/01-projects/`, `specs/02-epics/` ni `specs/03-stories/`.
 - [ ] `memory-system migrate --from=specs-3-levels --dry-run` reporta "0 cambios pendientes" tras la migración.
 - [ ] `memory-system check` devuelve exit code 0.
@@ -86,6 +95,7 @@ Escenario: Navegabilidad intacta tras el colapso
 - **Caso multi-proyecto:** se asume el caso común (un solo proyecto por raíz `docs/`). El caso multi-proyecto se abordará en un ADR separado si surge la necesidad.
 - **Orden de implementación sugerido:** primero skills y scaffolding, luego migración, luego documentación, de modo que cada historia deje el repo en estado consistente.
 - **Actualizar skills que referencian rutas de `specs/`:** `project-*`, `memory-system`, `epic-*`, `story-*`, `skill-preflight`, `sddf-init` y cualquier skill o agente que use rutas de `01-projects/`, `02-epics/` o `03-stories/`. Son las 5 historias STORY-109 a STORY-113, cada una con su flujo de skill + agente + template, simplificando el mecanismo de proyecto activo WIP por el uso del substatus del documento destino para decidir entre retomar o empezar.
+- **Historias trasladadas:** STORY-120 a STORY-122 (`epic-analyze`) se movieron a [[EPIC-22-epic-analyze]] para aumentar la cohesión.
 - **Autorreferencia:** esta propia épica vive en `02-epics/` y será movida por la historia de renombrado; los wikilinks por slug no dependen de la ruta.
 - **Dependencias entre historias:**
 
@@ -101,3 +111,4 @@ Escenario: Navegabilidad intacta tras el colapso
 | 8 | Actualizar scaffolding de `memory-system` | 5 |
 | 9 | Actualizar documentación canónica | 6, 7, 8 |
 | 10 | Actualizar `sddf.config.yaml` y verificar los tres modos SDD | 6, 7, 8 |
+| 11 | STORY-119 | — |
