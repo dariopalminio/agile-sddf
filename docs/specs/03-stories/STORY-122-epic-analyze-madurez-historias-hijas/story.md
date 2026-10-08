@@ -11,7 +11,7 @@ parent: EPIC-22-epic-analyze
 created: 2026-10-08
 updated: 2026-10-08
 related:
-  - EPIC-19-framework-consistency
+  - EPIC-22-epic-analyze
   - STORY-120-epic-analyze-integridad-historias
   - STORY-121-epic-analyze-cobertura-criterios-salida
 ---

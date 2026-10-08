@@ -6,20 +6,20 @@ slug: STORY-121-epic-analyze-cobertura-criterios-salida-design
 title: "Design: Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias"
 status: PLAN
 substatus: IN-PROGRESS
-parent: EPIC-19-framework-consistency
+parent: EPIC-22-epic-analyze
 story: STORY-121
 created: 2026-10-08
 updated: 2026-10-08
 related:
   - STORY-121-epic-analyze-cobertura-criterios-salida
-  - EPIC-19-framework-consistency
+  - EPIC-22-epic-analyze
   - STORY-120-epic-analyze-integridad-historias
   - STORY-122-epic-analyze-madurez-historias-hijas
   - domain-epic-lifecycle
 ---
 
 <!-- Referencias -->
-[[STORY-121-epic-analyze-cobertura-criterios-salida]] · [[EPIC-19-framework-consistency]] · [[STORY-120-epic-analyze-integridad-historias]] · [[STORY-122-epic-analyze-madurez-historias-hijas]] · [[domain-epic-lifecycle]]
+[[STORY-121-epic-analyze-cobertura-criterios-salida]] · [[EPIC-22-epic-analyze]] · [[STORY-120-epic-analyze-integridad-historias]] · [[STORY-122-epic-analyze-madurez-historias-hijas]] · [[domain-epic-lifecycle]]
 
 # Diseño técnico: `/epic-analyze` — cobertura del contrato de salida de una épica
 
@@ -43,7 +43,7 @@ Estado actual (medido el 2026-10-08 sobre el filesystem):
 | `epic-format-validation` §4d | Valida la **forma** de `smoke-tests` (≥ 1 `###`, `SMOKE-N` obligatorio con ≥ 2, sin repetidos, `gherkin` con Escenario/Dado/Cuando/Entonces). No valida `criterios-salida` más allá de la presencia de la sección. |
 | Template de historia | `docs/templates/story-template.md`: secciones **sin** `clave:`; `### AC-n — …` dentro de `## ✅ Criterios de aceptación`, cada uno con bloque `gherkin`; sección opcional `## Fuera de alcance (Non-Goals)`. |
 | Propuesta de origen | `.tmp/propuestas-de-mejoras/mejora-004-epc-analyze.md`, checks 3 (criterio cubierto, ERROR), 4 (`SMOKE-N` traza a historia, WARNING), 10 (épica con ≥ 1 smoke y ≥ 1 criterio, ERROR). |
-| Evals de STORY-120 | D-13 de STORY-120: TC-001…TC-010 describen el "mundo" en `input`; sus épicas de ejemplo no declaran criterios de salida ni smoke tests (ver CR-002). |
+| Evals de STORY-120 | D-13 de STORY-120: TC-001…TC-010, TC-026 y TC-027 describen el "mundo" en `input`; sus épicas de ejemplo no declaran criterios de salida ni smoke tests (ver CR-002). |
 | FINVEST de STORY-121 | E = 3: "fijar la regla de evidencia (mención explícita vs. AC que verifica) con un ejemplo positivo y uno negativo". Resuelto en D-4. |
 
 ## Goals / Non-Goals
@@ -116,7 +116,7 @@ introductorio de la sección (cursiva o texto antes del primer `###`) no es esce
 Las historias que pueden cubrir un elemento son las de la épica según las dos vías de STORY-120 (D-4/D-5):
 `universo = { RegistroHistoria listado en el índice con story.md existente } ∪ { RegistroHistoria con pertenece = true }`,
 excluyendo las de `status: CANCELED` (una historia cancelada no entregará el criterio). Para ellas, y solo para ellas, la
-Vía B pasa a leer además del frontmatter `status` y el **cuerpo** de `story.md` (no se lee el cuerpo de las 117
+Vía B pasa a leer además del frontmatter `status` y el **cuerpo** de `story.md` (no se lee el cuerpo de todas las
 historias del repositorio).
 
 - Las líneas F1 (planificadas sin `story.md`) no pueden aportar evidencia: no hay archivo que citar. La acción de
@@ -206,7 +206,7 @@ contrato de salida"), entre `indice-historias` y `hallazgos`. Contenido: una tab
 | Ampliar la tabla `indice-historias` con columnas por criterio | Mezcla dos familias en una sección y crece en anchura con cada criterio; I-6 prevé una clave por familia. |
 | Dos secciones (criterios / smokes) | Una sola tabla basta para ambos tipos y mantiene una clave por familia. |
 
-### D-7 — Contenido de `story.md` como datos // satisface: CNF-2, CNF-3
+### D-7 — Contenido de `story.md` como datos // satisface: AC-1, CNF-2, CNF-3
 
 La cláusula `ai-untrusted-content-clause` de STORY-120 › D-10 se amplía: ahora el skill lee el **cuerpo** de los
 `story.md` del universo. De ese cuerpo solo se extraen líneas (para E1) y los pasos de los `### AC-n` (para E2); un texto
@@ -231,15 +231,18 @@ modificar `SKILL.md` y el template seed.
 
 En todos: `not_contains` de bloques `=== FILE:` para `epic.md` y `story.md` (CNF-2).
 
-**Mundos de TC-001…TC-010 (CR-002):** sus `input` se completan con una sección de criterios y un `SMOKE-1` cubiertos por
+**Mundos de TC-001…TC-010, TC-026 y TC-027 (CR-002):** sus `input` se completan con una sección de criterios y un `SMOKE-1` cubiertos por
 E1 en las historias del ejemplo, para que la familia `SAL-` no altere sus veredictos esperados. Solo cambia el `input`;
-sus aserciones (`contains`/`not_contains`) no se tocan. TC-007 y TC-009 (fallan antes del análisis) no requieren cambio.
+sus aserciones (`contains`/`not_contains`) no se tocan. TC-007 y TC-009 (fallan antes del análisis) no requieren cambio. TC-026 y TC-027 conservan su `BLOCKED` por
+INT-04/INT-06; el contrato de salida evita hallazgos `SAL-` ajenos a lo que prueban. En TC-027 el universo sale
+solo de la Vía B (no hay índice), así que su mundo incluye al menos una historia con `parent` → la épica que aporte la
+evidencia E1.
 
-### D-9 — Documentación // satisface: CNF-2
+### D-9 — Documentación // satisface: AC-1, AC-2, CNF-2
 
 | Destino | Cambio |
 |---|---|
-| `CHANGELOG.md` | `## [Unreleased] › ### Added`: en la entrada de `/epic-analyze` de STORY-120 (o una entrada propia si ya se publicó), la familia `SAL-01…SAL-04`, la tabla de cobertura y la regla de evidencia E1/E2 (STORY-121, EPIC-19). |
+| `CHANGELOG.md` | `## [Unreleased] › ### Added`: en la entrada de `/epic-analyze` de STORY-120 (o una entrada propia si ya se publicó), la familia `SAL-01…SAL-04`, la tabla de cobertura y la regla de evidencia E1/E2 (STORY-121, EPIC-22). |
 | `docs/domains/domain-epic-lifecycle.md` §8 | La fila `Gate de integridad de historias` que añade STORY-120 amplía su "Qué valida" con "y cobertura de criterios de salida y smoke tests por las historias". |
 | `docs/guides/sddf-commands-pipeline.md`, `docs/domains/domain-skills-map.md` | Sin cambio: la fila de STORY-120 (`epic.md + story.md con parent` → `epic-analyze-report.md`) sigue siendo exacta. |
 | `package.json` | Sin cambio (`"skills/"` ya publica el skill; CR-002 de STORY-120). |
@@ -251,7 +254,7 @@ La copia en `.claude/skills/` es salida de `agile-sddf install`.
 
 | Componente | Acción | Ubicación | AC / CNF que satisface |
 |---|---|---|---|
-| Casos de eval | modificar (antes que `SKILL.md`): TC-011…TC-018 + `input` de TC-001…TC-010 | `skills/epic-analyze/evals/evals.json` | AC-1, AC-2, CNF-1, CNF-3 // satisface: AC-1, AC-2 |
+| Casos de eval | modificar (antes que `SKILL.md`): TC-011…TC-018 + `input` de TC-001…TC-010, TC-026 y TC-027 | `skills/epic-analyze/evals/evals.json` | AC-1, AC-2, CNF-1, CNF-3 // satisface: AC-1, AC-2 |
 | Template seed del reporte | modificar: sección `cobertura-salida` y conteo en `resumen` | `skills/epic-analyze/assets/epic-analyze-report-template.md` | AC-1, CNF-1 // satisface: AC-1 |
 | Contrato del skill | modificar: paso de la familia SAL (D-2…D-5), Vía B con `status` y cuerpo para el universo (D-3), cláusula de datos ampliada (D-7), catálogo y orden, disparadores de `description` (`criterios de salida`, `smoke tests`) | `skills/epic-analyze/SKILL.md` | AC-1, AC-2, CNF-1, CNF-2, CNF-3 // satisface: AC-1, AC-2 |
 | Changelog | modificar | `CHANGELOG.md` | CNF-2 // satisface: AC-1, AC-2 (comunica el comportamiento) |
@@ -269,7 +272,7 @@ No se modifica: `epic.md` ni `story.md` (ninguno), `epic-template.md` (central n
 | I-3 | Evaluación de cobertura | Entrada: `ElementoSalida[]` + `universo` (D-3). Salida: `Cobertura[]` (una por elemento) (D-4) | AC-1, CNF-1 |
 | I-4 | Hallazgo | Sin cambio de forma (STORY-120 › I-5): `codigo ∈ SAL-01…SAL-04` | AC-2, CNF-2 |
 | I-5 | Template del reporte | Clave nueva `cobertura-salida`; `resumen` admite el conteo `Contrato de salida: <c>/<t> cubiertos` (D-6) | AC-1 |
-| I-6 | Retorno en modo Agent | Sin cambio (STORY-120 › I-3): los `SAL-` ya se reflejan en `VEREDICTO` y `HALLAZGOS` | CNF-2 |
+| I-6 | Retorno en modo Agent | Sin cambio (STORY-120 › I-3): los `SAL-` ya se reflejan en `VEREDICTO` y `HALLAZGOS` | AC-2, CNF-2 |
 
 ## Esquema de datos
 
@@ -317,7 +320,7 @@ Igual que F-1 hasta el paso 2; D-4 no encuentra evidencia (o solo `parcial`) par
 - **Etiqueta `CS-n` posicional:** hace referenciables los criterios dentro del reporte sin tocar `epic.md`; es estable
   mientras la épica no cambie (lo que CNF-3 pide).
 - **Universo = unión de las dos vías:** una línea de regla evita que un defecto de índice cuente dos veces.
-- **Lectura del cuerpo solo para el universo:** mantiene lineal y acotado el coste (las historias de una épica, no las 117).
+- **Lectura del cuerpo solo para el universo:** mantiene lineal y acotado el coste (las historias de una épica, no todas las del repositorio).
 - Lo que **no** se añade: unión de parciales entre historias, umbrales de similitud, IDs de criterio en `epic.md`, flags
   para activar la familia, propuesta automática de historias. Ninguno lo exige un AC o CNF.
 
@@ -330,8 +333,8 @@ Igual que F-1 hasta el paso 2; D-4 no encuentra evidencia (o solo `parcial`) par
 | 3 | Toda asociación cita historia, tipo de evidencia y `story.md:<línea>` / `AC-n` | TC-011 (fragmentos `AC-`, `story.md:`) + revisión de D-4 en `SKILL.md` | CNF-1 |
 | 4 | Los límites de E1/E2 se respetan (tema ≠ resultado; mención en "Fuera de alcance") | TC-016 | CNF-1 |
 | 5 | `SAL-` cuenta para el veredicto y no se escribe `epic.md`/`story.md` | TC-012 (`BLOCKED`), TC-013 (`APPROVED`); `not_contains` de bloques FILE de fuentes en TC-011…TC-018 | CNF-2 |
-| 6 | Mismo input → misma tabla y hallazgos | TC-018 + segunda ejecución real sobre EPIC-19 con `git diff --no-index` (solo difiere `updated:`) | CNF-3 |
-| 7 | Los mundos de STORY-120 conservan sus veredictos | `npm run test:eval -- epic-analyze` con TC-001…TC-018 aprobados | AC-1, AC-2 |
+| 6 | Mismo input → misma tabla y hallazgos | TC-018 + segunda ejecución real sobre EPIC-22 con `git diff --no-index` (solo difiere `updated:`) | CNF-3 |
+| 7 | Los mundos de STORY-120 conservan sus veredictos | `npm run test:eval -- epic-analyze` con TC-001…TC-018, TC-026 y TC-027 aprobados | AC-1, AC-2 |
 | 8 | Checklist de skills sigue cumpliéndose | `gr-skill-creation-checklist › How to run the validation` con `SKILL=skills/epic-analyze` (`SKILL.md` < 500 líneas), `node scripts/verify-eval-inventory.js`, `grep -nE "^## (Cobertura del contrato de salida\|Criterios de salida\|Smoke tests)" skills/epic-analyze/SKILL.md` vacío | CNF-2 |
 
 ## Risks / Trade-offs
@@ -342,8 +345,8 @@ Igual que F-1 hasta el paso 2; D-4 no encuentra evidencia (o solo `parcial`) par
   historia posterior.
 - [Falsos huecos por coberturas compartidas entre historias (`parcial`)] → el reporte muestra las parciales en la
   evidencia del hallazgo; la acción sugiere citar el elemento explícitamente (E1).
-- [Una épica real hoy (EPIC-19) saldrá con varios `SAL-01`: sus historias no citan los criterios] → comportamiento
-  esperado; la primera ejecución real es además la verificación del contrato #6.
+- [La primera ejecución real (EPIC-22) puede dar `SAL-01` si sus historias no citan (E1) ni cubren por AC (E2) algún
+  criterio de salida] → comportamiento esperado, no un defecto; la ejecución es además la verificación del contrato #6.
 - [`SKILL.md` crece con una segunda familia (límite de 500 líneas)] → la tabla de ejemplos de D-4 y el catálogo de D-5 son
   tablas compactas; si el límite se acerca, los ejemplos pasan a `references/` del skill.
 - [El título "Fuera de alcance" se compara por prefijo de texto (el template de historia no tiene claves)] → riesgo
@@ -363,18 +366,20 @@ Ninguna: las ambigüedades detectadas se resolvieron en D-1…D-9 o se registran
 
 ### CR-002
 - **Tipo**: dependencia
-- **Descripción**: Los mundos de TC-001…TC-010 de STORY-120 no declaran criterios de salida ni smoke tests; con la familia `SAL-` sus épicas recibirían `SAL-03`/`SAL-04` y TC-001, TC-005 y TC-006 dejarían de dar `APPROVED`/`NEEDS-REFINEMENT`. La historia no lo menciona.
+- **Descripción**: Los mundos de TC-001…TC-010, TC-026 y TC-027 de STORY-120 no declaran criterios de salida ni smoke tests; con la familia `SAL-` sus épicas recibirían `SAL-03`/`SAL-04` y TC-001, TC-005 y TC-006 dejarían de dar `APPROVED`/`NEEDS-REFINEMENT`. La historia no lo menciona.
 - **Documento afectado**: design.md
-- **Acción requerida**: Completar el `input` de esos casos con un contrato de salida cubierto por E1 (D-8) sin tocar sus aserciones. STORY-122 deberá aplicar la misma regla a sus mundos.
+- **Acción requerida**: Completar el `input` de esos casos con un contrato de salida cubierto por E1 (D-8) sin tocar sus aserciones. STORY-122, que se implementa después (EPIC-22 › Notas), aplica la misma regla a sus mundos TC-019…TC-025 (STORY-122 › D-8).
 
 ### CR-003
 - **Tipo**: ambigüedad
 - **Descripción**: AC-2 define "sección vacía o ausente" en `epic.md`, pero no qué ocurre si es el **template** del proyecto el que no declara `criterios-salida` o `smoke-tests`, ni si un placeholder (`[Criterio técnico verificable]`, `[Por completar]`) cuenta como contenido. El diseño trata el placeholder como sección vacía (ERROR) y la clave ausente del template como regla desactivada con nota (no ERROR), siguiendo `domain-epic-lifecycle` §9. Difiere de INT-06 de STORY-120, que da ERROR si el template no declara `historias`, porque sin índice no hay nada que analizar, mientras que un proyecto puede retirar legítimamente estas secciones de su contrato.
 - **Documento afectado**: story.md
-- **Acción requerida**: El Product Owner confirma ambas reglas; opcionalmente se añade a AC-2 una fila para el placeholder. Hasta entonces el diseño las mantiene y `story-testcases` cubre el placeholder (TC-014) como caso adicional.
+- **Acción requerida**: Ninguna pendiente: ambas reglas confirmadas; el placeholder se cubre con TC-014 sin ampliar AC-2.
+- **Estado**: confirmado por el PO (2026-10-08)
 
 ### CR-004
 - **Tipo**: ambigüedad
 - **Descripción**: La historia no dice si una historia `CANCELED` puede cubrir un elemento ni si un criterio ya marcado `[x]` necesita cobertura. El diseño excluye las canceladas del universo (con nota) y evalúa los `[x]` igual que los `[ ]` (D-2, D-3).
 - **Documento afectado**: story.md
-- **Acción requerida**: El Product Owner confirma ambas reglas; si prefiere eximir los `[x]`, el cambio queda en D-2 (una línea) y en TC-011.
+- **Acción requerida**: Ninguna pendiente: exclusión de `CANCELED` y evaluación de los `[x]` igual que los `[ ]` confirmadas (D-2, D-3; TC-017).
+- **Estado**: confirmado por el PO (2026-10-08)

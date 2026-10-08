@@ -23,9 +23,9 @@ related:
 Crear el skill `/epic-analyze <EPIC-ID>`, que escribe `epic-analyze-report.md` en el directorio de la épica con hallazgos por severidad y un veredicto, para que el Product Owner decida si una épica en `PLAN` pasa a `READY-FOR-DEV`. Cubre la integridad del índice de historias, la cobertura del contrato de salida (criterios de salida y smoke tests) y la madurez de las historias hijas.
 
 ## Historias
-- [ ] **STORY-120 (`epic-analyze` - Integridad de historias)** — Detectar historias faltantes, huérfanas o duplicadas de una épica antes de aprobarla para desarrollo.
-- [ ] **STORY-121 (`epic-analyze` - Cobertura de criterios de salida)** — Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias.
-- [ ] **STORY-122 (`epic-analyze` - Madurez de historias hijas)** — Señalar historias hijas no especificadas o con referencias rotas al analizar una épica.
+- [ ] **STORY-120** — Integridad de historias (`epic-analyze`): Detectar historias faltantes, huérfanas o duplicadas de una épica antes de aprobarla para desarrollo.
+- [ ] **STORY-121** — Cobertura de criterios de salida (`epic-analyze`): Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias.
+- [ ] **STORY-122** — Madurez de historias hijas (`epic-analyze`): Señalar historias hijas no especificadas o con referencias rotas al analizar una épica.
 
 ## Criterios de salida
 - [ ] `skills/epic-analyze/SKILL.md` existe, resuelve `REPO_ROOT`/`SPECS_BASE` con la precedencia `SDDF_ROOT` → `sddf.config.yaml.root` → `docs` y tiene `evals/evals.json`.

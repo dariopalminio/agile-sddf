@@ -6,20 +6,20 @@ slug: STORY-122-epic-analyze-madurez-historias-hijas-design
 title: "Design: Señalar historias hijas no especificadas o con referencias rotas al analizar una épica"
 status: PLAN
 substatus: IN-PROGRESS
-parent: EPIC-19-framework-consistency
+parent: EPIC-22-epic-analyze
 story: STORY-122
 created: 2026-10-08
 updated: 2026-10-08
 related:
   - STORY-122-epic-analyze-madurez-historias-hijas
-  - EPIC-19-framework-consistency
+  - EPIC-22-epic-analyze
   - STORY-120-epic-analyze-integridad-historias
   - STORY-121-epic-analyze-cobertura-criterios-salida
   - domain-story-lifecycle
 ---
 
 <!-- Referencias -->
-[[STORY-122-epic-analyze-madurez-historias-hijas]] · [[EPIC-19-framework-consistency]] · [[STORY-120-epic-analyze-integridad-historias]] · [[STORY-121-epic-analyze-cobertura-criterios-salida]] · [[domain-story-lifecycle]]
+[[STORY-122-epic-analyze-madurez-historias-hijas]] · [[EPIC-22-epic-analyze]] · [[STORY-120-epic-analyze-integridad-historias]] · [[STORY-121-epic-analyze-cobertura-criterios-salida]] · [[domain-story-lifecycle]]
 
 # Diseño técnico: `/epic-analyze` — madurez de las historias hijas
 
@@ -43,9 +43,9 @@ Estado actual (medido el 2026-10-08 sobre el filesystem):
 | `related` real de `story.md` | Lista YAML en bloque (`  - <valor>`) o en línea (`related: []`). Valores: 109 con prefijo `STORY-`, 56 `EPIC-`, 13 `ADR-`, 1 slug libre (`eliminar-specs-01-projects`). Formas `STORY-064` (solo ID) y `STORY-086-<slug>` (directorio completo) conviven. Una referencia rota real: `STORY-118 › related: STORY-XXX-epic-template-minimalista` (placeholder sin ID numérico). |
 | Resolución de IDs en STORY-120 | D-5: `<STORY-NNN>` → glob `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md` (guion obligatorio). D-2 regla 3: `<EPIC-NN>` → glob `$SPECS_BASE/specs/02-epics/<EPIC-NN>-*/epic.md`. |
 | Universo de STORY-121 | D-3: listadas en el índice con `story.md` existente ∪ `pertenece = true`, excluidas las `CANCELED`; Vía B lee `status` del frontmatter solo para ellas. |
-| Evals de STORY-120/121 | TC-001…TC-018 describen el "mundo" en `input`; no fijan `status` ni `related` de las historias de ejemplo (ver CR-002). |
+| Evals de STORY-120/121 | TC-001…TC-018, TC-026 y TC-027 describen el "mundo" en `input`; no fijan `status` ni `related` de las historias de ejemplo (ver CR-002). |
 | Propuesta de origen | `.tmp/propuestas-de-mejoras/mejora-004-epc-analyze.md`, checks 8 (historia hija no especificada) y 9 (`related` roto). |
-| FINVEST de STORY-122 | I = 2 (depende de STORY-120; independiente de STORY-121). Resuelto en D-3 y D-8 (universo y rango de evals válidos en cualquier orden respecto a STORY-121). |
+| FINVEST de STORY-122 | I = 2 (depende de STORY-120; independiente de STORY-121). Resuelto por el orden de EPIC-22 › Notas (120 → 121 → 122): el universo de D-2 reutiliza el de STORY-121 y el rango de evals de D-8 no colisiona con los existentes (CR-001). |
 
 ## Goals / Non-Goals
 
@@ -66,8 +66,8 @@ Estado actual (medido el 2026-10-08 sobre el filesystem):
 ### D-1 — Familia `MAD-` dentro del skill de STORY-120 // satisface: AC-1, AC-2, CNF-2
 
 La madurez se implementa como una familia más de `skills/epic-analyze/SKILL.md` (punto de extensión I-6 de STORY-120),
-en un paso nuevo entre la Vía B (Paso 4 de STORY-120) y el veredicto (Paso 6 de STORY-120); si STORY-121 ya está
-implementada, el paso va después del de la familia `SAL-`. El prefijo es `MAD-` (**mad**urez), el que anticipa
+en un paso nuevo después del paso de la familia `SAL-` (STORY-121) y antes del veredicto (Paso 6 de STORY-120).
+El prefijo es `MAD-` (**mad**urez), el que anticipa
 STORY-120 › D-6. El veredicto (D-7) no se toca: ya suma todas las familias.
 
 | Alternativa | Rechazo |
@@ -83,8 +83,8 @@ historias:
 
 `universo = { RegistroHistoria listado en el índice (F2/F3) con story.md existente } ∪ { RegistroHistoria con pertenece = true }`, excluidas las de `status: CANCELED`.
 
-- Si STORY-121 ya está implementada, el paso `MAD-` **reutiliza** su universo (no lo recalcula). Si STORY-122 se implementa
-  antes, introduce ella el cálculo del universo con esta definición y STORY-121 lo reutilizará (ver CR-001).
+- El paso `MAD-` **reutiliza** el universo que calcula STORY-121 (no lo recalcula): STORY-121 se implementa antes
+  (EPIC-22 › Notas, CR-001).
 - La Vía B (Paso 4 de STORY-120) ya lee el frontmatter de cada `story.md` para `parent`; para el universo extrae además
   `status`, `substatus` y `related`, cada uno con su **número de línea** en `story.md`. **No** se lee el cuerpo
   (non-goal; la lectura del cuerpo es exclusiva de `SAL-`).
@@ -194,7 +194,7 @@ resolubles) → ningún `MAD-`.
 | Ampliar la tabla `indice-historias` con una columna `status` | Mezcla dos familias en una sección; I-6 prevé que cada familia aporte sus propios datos. |
 | Sin conteo en `resumen` | El PO no distinguiría "historias listas" de "comprobación no ejecutada" cuando no hay hallazgos `MAD-` (AC-1). |
 
-### D-7 — Frontmatter de `story.md` como datos // satisface: CNF-2, CNF-3
+### D-7 — Frontmatter de `story.md` como datos // satisface: AC-2, CNF-2, CNF-3
 
 La cláusula `ai-untrusted-content-clause` de STORY-120 › D-10 cubre también los campos nuevos: de `status`,
 `substatus` y `related` solo se extraen valores escalares; un valor que parezca una instrucción no se sigue, no cambia la
@@ -205,7 +205,7 @@ clasificación de D-3/D-4 (se clasifica como cualquier otro valor) y, si contien
 
 TDD de skills (constitución principio 11): los casos se añaden a `skills/epic-analyze/evals/evals.json` **antes** de
 modificar `SKILL.md` y el template seed. Se usa el rango **TC-019…TC-025**, posterior al de STORY-121 (TC-011…TC-018),
-para que ambos órdenes de implementación eviten colisiones de ID.
+para no colisionar con los IDs existentes.
 
 | Caso | Tipo | Escenario | Fragmentos esperados |
 |---|---|---|---|
@@ -219,17 +219,22 @@ para que ambos órdenes de implementación eviten colisiones de ID.
 
 En todos: `not_contains` de bloques `=== FILE:` para `epic.md` y `story.md` (CNF-2).
 
-**Mundos de TC-001…TC-018 (CR-002):** sus `input` se completan con `status: SPECIFY`, `substatus: DONE` (o un estado
-posterior) y un `related` vacío o resoluble en cada historia de ejemplo, para que la familia `MAD-` no altere sus
-veredictos esperados. Solo cambia el `input`; las aserciones no se tocan. Los casos que fallan antes del análisis
-(TC-007, TC-009) no requieren cambio. Si STORY-121 aún no está implementada, solo se completan TC-001…TC-010 y
-STORY-121 aplicará la misma regla a TC-011…TC-018 al implementarse.
+**Mundos de TC-001…TC-018, TC-026 y TC-027 (CR-002):** sus `input` se completan con `status: SPECIFY`,
+`substatus: DONE` (o un estado posterior) y un `related` vacío o resoluble en cada historia de ejemplo, para que la
+familia `MAD-` no altere sus veredictos esperados. Solo cambia el `input`; las aserciones no se tocan. Los casos que
+fallan antes del análisis (TC-007, TC-009) no requieren cambio. STORY-121 ya está implementada cuando empieza esta
+historia (CR-001), así que la regla se aplica a todos esos casos sin condición.
+
+**Mundos de TC-019…TC-025 (STORY-121 › CR-002):** cada mundo incluye en `epic.md` una sección `criterios-salida` con al
+menos un `- [ ] <texto>` y una sección `smoke-tests` con `### SMOKE-1 — <nombre>` + bloque `gherkin`, y en sus historias
+una línea que cite el texto del criterio y `SMOKE-1` fuera de "Fuera de alcance" (evidencia E1). Así la familia `SAL-`
+no convierte los `APPROVED`/`NEEDS-REFINEMENT` esperados en `BLOCKED` por `SAL-03`/`SAL-04`.
 
 ### D-9 — Documentación // satisface: CNF-2
 
 | Destino | Cambio |
 |---|---|
-| `CHANGELOG.md` | `## [Unreleased] › ### Added`: en la entrada de `/epic-analyze` (o una propia si ya se publicó), la familia `MAD-01…MAD-03`, el umbral `SPECIFY/DONE` y la resolución de `related` por ID (STORY-122, EPIC-19). |
+| `CHANGELOG.md` | `## [Unreleased] › ### Added`: en la entrada de `/epic-analyze` (o una propia si ya se publicó), la familia `MAD-01…MAD-03`, el umbral `SPECIFY/DONE` y la resolución de `related` por ID (STORY-122, EPIC-22). |
 | `docs/domains/domain-epic-lifecycle.md` §8 | La fila `Gate de integridad de historias` que añade STORY-120 amplía su "Qué valida" con "y madurez de las historias hijas (estado ≥ `SPECIFY/DONE`, `related` resolubles)". |
 | `docs/domains/domain-story-lifecycle.md` | Sin cambio: es la fuente del orden de estados, no se modifica. |
 | `docs/guides/sddf-commands-pipeline.md`, `docs/domains/domain-skills-map.md`, `package.json` | Sin cambio: la fila de STORY-120 sigue siendo exacta y `"skills/"` ya publica el skill. |
@@ -259,7 +264,7 @@ No se modifica: ningún `epic.md` ni `story.md`, `epic-template.md`, `story-temp
 | I-3 | Resolución de referencia | Entrada: valor normalizado de `related`. Salida: `historia` \| `epica` \| `fuera-de-alcance` × `resuelve` (bool) (D-4) | AC-2 |
 | I-4 | Hallazgo | Sin cambio de forma (STORY-120 › I-5): `codigo ∈ MAD-01…MAD-03`, `severidad = WARNING` | AC-2, CNF-2 |
 | I-5 | Template del reporte | `resumen` admite `Madurez de historias hijas: <l>/<t> listas`; sin clave nueva (D-6) | AC-1 |
-| I-6 | Retorno en modo Agent | Sin cambio (STORY-120 › I-3): los `MAD-` se reflejan en `VEREDICTO` y `HALLAZGOS` | CNF-2 |
+| I-6 | Retorno en modo Agent | Sin cambio (STORY-120 › I-3): los `MAD-` se reflejan en `VEREDICTO` y `HALLAZGOS` | AC-2, CNF-2 |
 
 ## Esquema de datos
 
@@ -320,7 +325,7 @@ resuelve `STORY-999` en el `related` de `STORY-201` → `MAD-02`. D-7 de STORY-1
 | 4 | `CANCELED` y estados posteriores no generan `MAD-` | TC-022 | CNF-1 |
 | 5 | Solo `STORY-`/`EPIC-` se resuelven, por ID; placeholders sin ID son rotos | TC-023 | AC-2 |
 | 6 | Los `MAD-` cuentan para el veredicto (> 3 WARNING → `NEEDS-REFINEMENT`) y no se escribe `epic.md`/`story.md` | TC-024; `not_contains` de bloques FILE de fuentes en TC-019…TC-025 | CNF-2 |
-| 7 | Mismo input → mismos hallazgos; sin acumulación del reporte previo | TC-025 + segunda ejecución real sobre EPIC-19 con `git diff --no-index` (solo difiere `updated:`) | CNF-3 |
+| 7 | Mismo input → mismos hallazgos; sin acumulación del reporte previo | TC-025 + segunda ejecución real sobre EPIC-22 con `git diff --no-index` (solo difiere `updated:`) | CNF-3 |
 | 8 | Los mundos previos conservan sus veredictos | `npm run test:eval -- epic-analyze` con todos los TC aprobados | AC-1, AC-2 |
 | 9 | Checklist de skills sigue cumpliéndose | `gr-skill-creation-checklist › How to run the validation` con `SKILL=skills/epic-analyze` (`SKILL.md` < 500 líneas), `node scripts/verify-eval-inventory.js`, `grep` de `ai-untrusted-content-clause` | CNF-2 |
 
@@ -328,10 +333,11 @@ resuelve `STORY-999` en el `related` de `STORY-201` → `MAD-02`. D-7 de STORY-1
 
 - [La lista de estados en `SKILL.md` diverge de `domain-story-lifecycle` si el dominio cambia] → cita explícita a §4.1
   en `SKILL.md`; un estado nuevo no previsto aparece como `MAD-03`, nunca como "lista" por error.
-- [Una épica real (EPIC-19) puede pasar a `NEEDS-REFINEMENT` por varias historias en `SPECIFY` o con estados heredados]
-  → comportamiento esperado: es la señal que la historia pide dar al PO.
-- [Implementación en orden distinto al previsto (STORY-122 antes que STORY-121)] → universo con la misma definición y
-  rango de evals separado (D-2, D-8); CR-001 indica qué revisar.
+- [Una épica real puede pasar a `NEEDS-REFINEMENT` por varias historias en `SPECIFY` o con estados heredados]
+  → comportamiento esperado: es la señal que la historia pide dar al PO. En la primera ejecución real (EPIC-22) no se
+  esperan `MAD-`: sus tres historias están en `READY-FOR-IMPLEMENT` o posterior y sus `related` resuelven.
+- [Implementación fuera del orden de EPIC-22 (STORY-122 antes que STORY-121)] → T001 lo detecta y detiene (CR-001);
+  el rango de evals separado (D-8) evita además colisiones de ID.
 - [`SKILL.md` crece con una tercera familia (límite de 500 líneas)] → catálogo y reglas en tablas compactas; si el
   límite se acerca, las tablas de reglas de las familias pasan a `references/` del skill.
 
@@ -345,22 +351,24 @@ Ninguna: las ambigüedades detectadas se resolvieron en D-1…D-9 o se registran
 - **Tipo**: dependencia
 - **Descripción**: `skills/epic-analyze/` no existe todavía; STORY-120 y STORY-121 están en `READY-FOR-IMPLEMENT/DONE`. Este diseño modifica archivos que crea STORY-120 (`SKILL.md`, template seed, `evals.json`), se apoya en sus D-5, D-6, D-7, D-8 y D-10, y comparte con STORY-121 la definición del universo (su D-3).
 - **Documento afectado**: story.md / design.md
-- **Acción requerida**: Implementar STORY-122 después de STORY-120 (al menos `story-implement`). Si se implementa antes que STORY-121, introduce el cálculo del universo (D-2) y STORY-121 lo reutiliza en lugar de recalcularlo. Si el contrato de STORY-120 cambia durante su implementación (pasos, orden de hallazgos, campos de `resumen`), revisar D-1, D-5 y D-6 antes de implementar.
+- **Acción requerida**: Implementar STORY-122 después de STORY-120 y STORY-121 (al menos `story-implement`; orden fijado en EPIC-22 › Notas y comprobado por T001). Reutiliza el universo que introduce STORY-121 (su D-3) en lugar de recalcularlo. Si el contrato de STORY-120 cambia durante su implementación (pasos, orden de hallazgos, campos de `resumen`), revisar D-1, D-5 y D-6 antes de implementar.
 
 ### CR-002
 - **Tipo**: dependencia
-- **Descripción**: Los mundos de TC-001…TC-018 (STORY-120/121) no fijan `status` ni `related` de sus historias de ejemplo; con la familia `MAD-` podrían recibir `MAD-01`/`MAD-03` y cambiar sus veredictos esperados (p. ej. TC-005 con 1 WARNING pasaría a 2+, y TC-006 ya está en el umbral). La historia no lo menciona.
+- **Descripción**: Los mundos de TC-001…TC-018, TC-026 y TC-027 (STORY-120/121) no fijan `status` ni `related` de sus historias de ejemplo; con la familia `MAD-` podrían recibir `MAD-01`/`MAD-03` y cambiar sus veredictos esperados (p. ej. TC-005 con 1 WARNING pasaría a 2+, y TC-006 ya está en el umbral). La historia no lo menciona.
 - **Documento afectado**: design.md
-- **Acción requerida**: Completar el `input` de esos casos con historias en `SPECIFY/DONE` o posterior y `related` resoluble (D-8), sin tocar sus aserciones. Misma regla que CR-002 de STORY-121.
+- **Acción requerida**: Completar el `input` de esos casos con historias en `SPECIFY/DONE` o posterior y `related` resoluble (D-8), sin tocar sus aserciones. Misma regla que CR-002 de STORY-121, que además obliga a la inversa: los mundos nuevos TC-019…TC-025 incluyen un contrato de salida cubierto por E1 (D-8).
 
 ### CR-003
 - **Tipo**: ambigüedad
 - **Descripción**: CNF-1 dice que `CANCELED` "no genera hallazgo de madurez", pero no si una historia cancelada con una referencia `related` rota genera `MAD-02`. El diseño excluye las canceladas de ambas comprobaciones (D-2).
 - **Documento afectado**: story.md
-- **Acción requerida**: El Product Owner confirma la exclusión; si prefiere evaluar `related` también en las canceladas, el cambio queda en D-2 (una línea) y en TC-022.
+- **Acción requerida**: Ninguna pendiente: exclusión de las `CANCELED` de ambas comprobaciones confirmada (D-2; TC-022).
+- **Estado**: confirmado por el PO (2026-10-08)
 
 ### CR-004
 - **Tipo**: ambigüedad
 - **Descripción**: La historia no define qué ocurre con un `status` ausente o fuera del vocabulario de `domain-story-lifecycle` (en el repositorio hay `BACKLOG`, `READY-FOR-VERIFY` y `READY-FOR-CODE-REVIEW`). El diseño añade `MAD-03` (WARNING, acción "normalizar status/substatus") en lugar de asignarlos a `MAD-01` o a notas (D-3).
 - **Documento afectado**: story.md
-- **Acción requerida**: El Product Owner confirma `MAD-03`; opcionalmente se añade una fila a la tabla de ejemplos de AC-2. Hasta entonces el diseño lo mantiene y `story-testcases` lo cubre (TC-024) como caso adicional.
+- **Acción requerida**: Ninguna pendiente: `MAD-03` confirmado; se cubre con TC-024 sin ampliar AC-2.
+- **Estado**: confirmado por el PO (2026-10-08)

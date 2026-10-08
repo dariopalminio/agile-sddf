@@ -6,20 +6,20 @@ slug: STORY-120-epic-analyze-integridad-historias-design
 title: "Design: Detectar historias faltantes, huérfanas o duplicadas de una épica antes de aprobarla para desarrollo"
 status: PLAN
 substatus: IN-PROGRESS
-parent: EPIC-19-framework-consistency
+parent: EPIC-22-epic-analyze
 story: STORY-120
 created: 2026-10-08
 updated: 2026-10-08
 related:
   - STORY-120-epic-analyze-integridad-historias
-  - EPIC-19-framework-consistency
+  - EPIC-22-epic-analyze
   - STORY-121-epic-analyze-cobertura-criterios-salida
   - STORY-122-epic-analyze-madurez-historias-hijas
   - domain-epic-lifecycle
 ---
 
 <!-- Referencias -->
-[[STORY-120-epic-analyze-integridad-historias]] · [[EPIC-19-framework-consistency]] · [[STORY-121-epic-analyze-cobertura-criterios-salida]] · [[STORY-122-epic-analyze-madurez-historias-hijas]] · [[domain-epic-lifecycle]]
+[[STORY-120-epic-analyze-integridad-historias]] · [[EPIC-22-epic-analyze]] · [[STORY-121-epic-analyze-cobertura-criterios-salida]] · [[STORY-122-epic-analyze-madurez-historias-hijas]] · [[domain-epic-lifecycle]]
 
 # Diseño técnico: `/epic-analyze` — integridad del índice de historias de una épica
 
@@ -174,7 +174,7 @@ línea F2/F3 (p. ej. `— [[STORY-086-…]]`) se ignora.
 - Un ID duplicado produce **un** INT-03 (no uno por línea) y sus demás comprobaciones se evalúan una sola vez por ID.
 - Un ID listado pero inexistente (INT-01) no se evalúa además con INT-04.
 - AC-2 fila 4 (1 F1 → 1 WARNING → `APPROVED`) y fila 5 (4 F1 → 4 WARNING → `NEEDS-REFINEMENT`) se siguen de "un hallazgo por línea" + D-7.
-- INT-04 e INT-06 no figuran en los ejemplos de AC-2: ver CR-001.
+- INT-04 e INT-06 no figuran en los ejemplos de AC-2: severidad confirmada en CR-001 y cubierta por TC-026/TC-027 (D-13).
 - El prefijo de familia (`INT-`) es el punto de extensión: STORY-121 añade otra familia (p. ej. `SAL-`) y STORY-122
   otra (p. ej. `MAD-`) con sus propias filas, sin tocar INT ni D-7.
 
@@ -192,7 +192,7 @@ línea F2/F3 (p. ej. `— [[STORY-086-…]]`) se ignora.
 Los conteos suman **todas** las familias del reporte (hoy solo INT). Las notas del análisis no cuentan. El veredicto es
 informativo: el skill no escribe `status`/`substatus` en `epic.md` ni en ningún `story.md`.
 
-### D-8 — Template del reporte en runtime, sin estructura embebida // satisface: CNF-4, CNF-3
+### D-8 — Template del reporte en runtime, sin estructura embebida // satisface: AC-1, CNF-4, CNF-3
 
 - Nombre: `epic-analyze-report-template.md` (convención `-template.md` de `docs/templates/README.md`).
 - Precedencia: `$SPECS_BASE/templates/epic-analyze-report-template.md` → seed `assets/epic-analyze-report-template.md`
@@ -250,7 +250,7 @@ related:
 | `--force` / `--skip-existing` como `story-analyze` | YAGNI: `story-analyze` los necesita porque además cambia el estado de `story.md`; aquí la sobrescritura no tiene efectos laterales. |
 | Reporte con sufijo de fecha (histórico) | Contradice CNF-3 ("se sobrescribe") y llena el directorio de la épica. |
 
-### D-10 — Solo lectura y contenido como datos // satisface: CNF-2, CNF-7
+### D-10 — Solo lectura y contenido como datos // satisface: AC-1, CNF-2, CNF-7
 
 - Regla explícita en `SKILL.md` (`ai-untrusted-content-clause`): el contenido de `epic.md`, `story.md` y de los
   templates es **dato**. El skill extrae solo campos estructurados (líneas del índice, `parent` del frontmatter,
@@ -260,7 +260,7 @@ related:
   (`` ` ``), nunca como Markdown activo, para que un nombre con `[[...]]` o `<!-- -->` no altere el reporte.
 - Sin `allowed-tools` en el frontmatter (la herencia por defecto basta; si se declara, lista explícita sin shell ni red).
 
-### D-11 — Modos de ejecución // satisface: CNF-5
+### D-11 — Modos de ejecución // satisface: AC-3, CNF-5
 
 | Modo | Activación | Preguntas | Salida |
 |---|---|---|---|
@@ -286,7 +286,7 @@ casos describen el "mundo" en `input` (el runner simula en seco; no se crean fix
 
 | Caso | Tipo | Escenario | Fragmentos esperados (`contains`) |
 |---|---|---|---|
-| TC-001 | happy-path | AC-1: 201 y 202 listadas, ambos `parent`, sin huérfanas | `epic-analyze-report.md`, `APPROVED`, `ERROR: 0` (o conteo equivalente del template) |
+| TC-001 | happy-path | AC-1: 201 y 202 listadas, ambos `parent`, sin huérfanas | `epic-analyze-report.md`, `APPROVED`, `errors: 0` (frontmatter del reporte, D-9) |
 | TC-002 | error-handling | AC-2 fila 1: `STORY-203` sin directorio | `INT-01`, `STORY-203`, `BLOCKED` |
 | TC-003 | error-handling | AC-2 fila 2: `STORY-204` huérfana | `INT-02`, `STORY-204`, `BLOCKED` |
 | TC-004 | error-handling | AC-2 fila 3: `STORY-201` en dos líneas | `INT-03`, `STORY-201`, ambas líneas, `BLOCKED` |
@@ -296,8 +296,12 @@ casos describen el "mundo" en `input` (el runner simula en seco; no se crean fix
 | TC-008 | happy-path | CNF-3: reporte previo con hallazgos obsoletos | reporte nuevo sin los hallazgos previos; mismo veredicto que el cálculo actual |
 | TC-009 | fail-fast | CNF-4: sin template central ni seed | `epic-analyze-report-template.md`, sin bloque FILE |
 | TC-010 | happy-path | CNF-5: modo Agent | bloque de retorno `VEREDICTO:` sin preguntas |
+| TC-026 | error-handling | CR-001 (INT-04): `STORY-201` listada con `parent: EPIC-31-otra` | `INT-04`, `STORY-201`, `EPIC-31-otra`, `BLOCKED` |
+| TC-027 | error-handling | CR-001 (INT-06): `epic.md` sin sección de historias | `INT-06`, `BLOCKED` |
 
 `not_contains` en todos los casos con fuentes: ningún bloque `=== FILE:` para `epic.md` ni `story.md` (CNF-2).
+
+TC-026 y TC-027 usan un rango posterior a TC-011…TC-025 (reservado para STORY-121 y STORY-122) para evitar colisiones de ID.
 
 ### D-14 — Distribución y documentación // satisface: CNF-8, CNF-6
 
@@ -307,7 +311,7 @@ casos describen el "mundo" en `input` (el runner simula en seco; no se crean fix
 | `docs/domains/domain-skills-map.md` | Hoy vacío (CR-003). Se escribe frontmatter mínimo (`type: domain`, `slug: domain-skills-map`, `title`) y una sección `## Épica (L2)` con la tabla `Skill │ Momento │ Lee │ Escribe │ Cambia estado` y la fila de `epic-analyze` (`—` en "Cambia estado"). El resto del mapa queda fuera de alcance. |
 | `docs/domains/domain-epic-lifecycle.md` | §8: fila `Gate de integridad de historias │ PLAN → READY-FOR-DEV (informativo) │ /epic-analyze: índice de historias ↔ parent de los story.md; veredicto sin cambio de estado`. §9 › Reportes asociados: `epic-analyze-report.md` — generado en `PLAN`. §9 › tras la frase de `epic-format-validation`: una frase que distingue forma (`epic-format-validation`) de consistencia (`epic-analyze`). |
 | `docs/guides/sddf-commands-pipeline.md` §2 | Diagrama `epic-from-project-plan → epic-generate-stories → epic-analyze` y fila de tabla `epic-analyze │ epic.md + story.md con parent │ <EPIC_DIR>/epic-analyze-report.md`. |
-| `CHANGELOG.md` | `## [Unreleased] › ### Added`: entrada `**/epic-analyze <EPIC-ID>**` (STORY-120, EPIC-19) con las seis comprobaciones INT, la regla de veredicto y el carácter de solo lectura. |
+| `CHANGELOG.md` | `## [Unreleased] › ### Added`: entrada `**/epic-analyze <EPIC-ID>**` (STORY-120, EPIC-22) con las seis comprobaciones INT, la regla de veredicto y el carácter de solo lectura. |
 | `AGENTS.md` / `CLAUDE.md` | Sin cambio (AGENTS.md prohíbe enumerar el catálogo de skills). |
 
 Autoría: `skill-master` (worker `monolithic` de `sddf.config.yaml › implement.code_generators`) para `SKILL.md` y
@@ -321,10 +325,10 @@ edita a mano.
 | Contrato del skill `epic-analyze` | crear | `skills/epic-analyze/SKILL.md` | AC-1, AC-2, AC-3, CNF-1…CNF-7 // satisface: AC-1, AC-2, AC-3 |
 | Template seed del reporte | crear | `skills/epic-analyze/assets/epic-analyze-report-template.md` | CNF-4 // satisface: AC-1, CNF-4 |
 | Casos de eval | crear (antes que `SKILL.md`) | `skills/epic-analyze/evals/evals.json` | CNF-6 // satisface: AC-1, AC-2, AC-3 |
-| Mapa de skills | modificar (primer contenido) | `docs/domains/domain-skills-map.md` | CNF-8 |
-| Ciclo de vida de épica | modificar (§8, §9) | `docs/domains/domain-epic-lifecycle.md` | CNF-8 |
-| Guía de pipeline | modificar (§2) | `docs/guides/sddf-commands-pipeline.md` | CNF-8 |
-| Changelog | modificar (`[Unreleased] › Added`) | `CHANGELOG.md` | CNF-8 |
+| Mapa de skills | modificar (primer contenido) | `docs/domains/domain-skills-map.md` | CNF-8 // satisface: CNF-8 |
+| Ciclo de vida de épica | modificar (§8, §9) | `docs/domains/domain-epic-lifecycle.md` | CNF-8 // satisface: CNF-8 |
+| Guía de pipeline | modificar (§2) | `docs/guides/sddf-commands-pipeline.md` | CNF-8 // satisface: CNF-8 |
+| Changelog | modificar (`[Unreleased] › Added`) | `CHANGELOG.md` | CNF-8 // satisface: CNF-8 |
 
 No se modifica: `epic-format-validation`, `epic-template.md` (central ni seed), `sddf-init`, `package.json`, ningún
 `epic.md` ni `story.md`.
@@ -401,8 +405,8 @@ lee ningún template ni se escribe ningún archivo.
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
 | 1 | Índice consistente → reporte con `APPROVED` y 0 ERROR | TC-001 | AC-1 |
-| 2 | `epic.md` y `story.md` sin cambios tras ejecutar | `not_contains` de bloques FILE de fuentes en todos los TC; en ejecución real `git status` limpio salvo el reporte | AC-1, CNF-2 |
-| 3 | Cada fila de AC-2 produce su severidad, elemento y veredicto | TC-002…TC-006 | AC-2 |
+| 2 | `epic.md` y `story.md` sin cambios tras ejecutar | `not_contains` de bloques FILE de fuentes en todos los TC; en ejecución real (`/epic-analyze EPIC-22 --auto`, T025) `git status` limpio salvo el reporte | AC-1, CNF-2 |
+| 3 | Cada fila de AC-2 produce su severidad, elemento y veredicto; INT-04 e INT-06 dan ERROR (CR-001) | TC-002…TC-006, TC-026, TC-027 | AC-2 |
 | 4 | Épica no resuelta → mensaje con ruta y sin reporte | TC-007 | AC-3 |
 | 5 | Regla de veredicto en los bordes (3 → `APPROVED`, 4 → `NEEDS-REFINEMENT`) | TC-005/TC-006 + revisión de D-7 en `SKILL.md` | CNF-1 |
 | 6 | Sobrescritura sin acumular | TC-008 | CNF-3 |
@@ -421,8 +425,9 @@ lee ningún template ni se escribe ningún archivo.
   la nota recomienda `/epic-format-validation`; el Gate de formato es previo (`DEFINE → PLAN`).
 - [Inventario de todas las historias en cada ejecución (hoy 117 `story.md`)] → solo se lee el frontmatter; coste lineal aceptable.
 - [Template central personalizado sin las claves nuevas] → secciones omitidas con `⚠️`, veredicto intacto (D-8).
-- [EPIC-19 real no lista STORY-120…122 → la primera ejecución sobre EPIC-19 dará `BLOCKED` por INT-02] → comportamiento
-  correcto, no un defecto; se corrige actualizando el índice de EPIC-19, fuera de esta historia.
+- [Primera ejecución real sobre EPIC-22, la épica de esta historia] → con su índice en F2 canónico y las tres historias
+  con `parent: EPIC-22-epic-analyze` no se esperan hallazgos INT; un `BLOCKED` por INT-02 o líneas no reconocidas indicaría
+  que el índice dejó de ser canónico: comportamiento correcto del skill, se corrige en la épica, fuera de esta historia.
 
 ## Open Questions
 
@@ -434,7 +439,8 @@ Ninguna: las ambigüedades detectadas se resolvieron en D-1…D-14 o se registra
 - **Tipo**: ambigüedad
 - **Descripción**: AC-2 no ejemplifica dos situaciones que el diseño trata como ERROR para que "las dos vías coincidan": historia listada cuyo `story.md` declara otra épica o no declara `parent` (INT-04), y épica sin sección de historias (INT-06, coherente con la invariante 2 de `domain-epic-lifecycle` §7).
 - **Documento afectado**: story.md
-- **Acción requerida**: Product Owner confirma la severidad ERROR de INT-04 e INT-06; opcionalmente se añaden dos filas a la tabla de ejemplos de AC-2. Hasta entonces el diseño las mantiene y `story-testcases` puede cubrirlas como casos adicionales.
+- **Acción requerida**: Ninguna pendiente: severidad ERROR de INT-04 e INT-06 confirmada; se cubren con TC-026 y TC-027 (D-13). La tabla de ejemplos de AC-2 no se amplía.
+- **Estado**: confirmado por el PO (2026-10-08)
 
 ### CR-002
 - **Tipo**: reutilización
