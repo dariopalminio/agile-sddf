@@ -143,6 +143,13 @@ Protocolo:
 acumulada del hilo principal y en el margen frente a la autocompactación, no en que el trabajo de cada paso deje
 de costar.
 
+> ⚠️ **Contexto no es cuota.** Los subagentes reducen el contexto del hilo principal, pero no hacen gratis el
+> trabajo: cada subagente ejecuta sus propias peticiones al modelo y sus tokens se suman al mismo límite de uso
+> (en los planes de suscripción, también al límite semanal; con API, a la facturación). El consumo total puede
+> incluso subir, porque cada subagente arranca en frío y vuelve a cargar su system prompt, el `SKILL.md` y los
+> artefactos que lee. Solo baja si lo que el hilo principal deja de reenviar en cada turno posterior supera ese
+> costo de arranque. `/context` no muestra el consumo de los subagentes; para comparar la cuota hay que sumarlo.
+
 ### Caso de estudio: STORY-119
 
 Medición registrada en [testing-report.md](../specs/03-stories/STORY-119-story-plan-un-subagente-por-paso/testing-report.md):
@@ -158,7 +165,8 @@ Medición registrada en [testing-report.md](../specs/03-stories/STORY-119-story-
 - **Messages:** de ~125k (promedio inline) a 30.1k, un **−76 %**.
 - **Total:** un **−58 %**, menos que Messages porque el baseline no cambia.
 - **Skills:** de 3.7k a 3.6k; el `SKILL.md` nuevo no encarece el arranque.
-- **Costo estimado por historia (Opus):** de ~$1.55 a ~$0.45.
+- **Costo estimado por historia (Opus):** de ~$1.55 a ~$0.45, calculado solo con la categoría Messages del hilo
+  principal; no incluye los tokens de los subagentes.
 
 > ⚠️ Es una sola corrida de la versión refactorizada y los costos son estimaciones a partir de tokens, no
 > facturación medida. Tómalo como orden de magnitud y repite la medición antes de usarlo como argumento.
@@ -211,8 +219,4 @@ Reinstalar el skill en el proyecto no sirve de nada mientras siga existiendo una
 
 ---
 
-## Próximos candidatos
 
-El siguiente orquestador con el mismo perfil es `story-implement-tasks`, que hoy consume unos 155k tokens en el
-hilo principal. Se le puede aplicar la misma receta: workers no interactivos, decisiones al inicio, prompt mínimo,
-archivo de resultado y fallback inline.

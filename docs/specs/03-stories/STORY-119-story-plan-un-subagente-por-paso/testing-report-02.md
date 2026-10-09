@@ -182,8 +182,34 @@ Una vez que todos los orquestadores deleguen a subagentes, Graphify reduciría *
 
 Lo que comenzó como un análisis de consumo de tokens ha derivado en un **patrón arquitectónico validado**: los orquestadores deben delegar a subagentes, no ejecutar todo inline. El impacto es enorme (~3-4x de reducción por comando) y el esfuerzo de aplicar el patrón es moderado (modificar un `SKILL.md` + verificar con `/context`).
 
-La disciplina correcta ahora es:
-1. **Aplicar el patrón a `story-implement-tasks`** (mayor ahorro absoluto).
-2. **Verificar con una story compleja** que el suelo determinista se mantiene.
-3. **Documentar el patrón** para que sea replicable.
-4. **Mantener la vigilancia** sobre el shadowing (nombres únicos por scope, verificación del `Base directory`).
+## El hallazgo más contraintuitivo
+
+**El hallazgo más contraintuitivo:** los subagentes, que se introdujeron para optimizar contexto, empeoraron la eficiencia de cuota. El refactor de story-plan redujo su consumo de contexto de 125k a 30k, pero sus subagentes consumen 16% de la cuota semanal, totalizando 19% frente al 8% anterior.
+
+El refactor a subagentes es una victoria para desarrollo local (donde el contexto es la restricción) y una regresión para Claude Pro (donde la cuota es la restricción). Pero hay matices importantes.
+
+Los subagentes optimizan una dimensión (contexto) a costa de otra (número de peticiones). La decisión depende de cuál es tu restricción.
+
+El refactor de story-plan fue una optimización correcta para el objetivo equivocado. Optimizó contexto cuando tu restricción real era cuota. Para desarrollo local, habría sido exactamente la decisión correcta. Para Claude Pro, es un trade-off que empeora la eficiencia de cuota a cambio de un contexto más manejable.
+
+La lección de ingeniería: antes de optimizar, identifica cuál es tu restricción real. Contexto, cuota, latencia, RAM, coste — cada una lleva a una arquitectura distinta.
+
+El orquestador con subagentes es más caro que hacerlo manual (llamar a los skills directamente). La diferencia es de ~110K tokens por invocación (~60% más caro). Y también más caro que inline (~135K vs ~290K).
+El diseño actual es el peor en eficiencia de cuota. No porque los subagentes sean malos en abstracto, sino porque en este contexto específico (Pro + orquestador con 4 subagentes + caché no compartida) el coste se multiplica.
+
+## 🔬 Lo que sí es sólido del análisis
+
+| Hallazgo | Confianza |
+| :--- | :--- |
+| Los subagentes pagan su propio prefijo (~30-35K) en cada invocación | ✅ Alto |
+| Ese prefijo NO se cachea entre subagentes distintos | ✅ Alto |
+| En Pro, cada subagente cuenta como petición contra la cuota | ✅ Alto |
+| El refactor redujo el contexto del hilo principal | ✅ Alto (125k → 30k) |
+| El refactor aumentó el número de peticiones | ✅ Alto |
+| **El refactor empeoró la cuota total** | ⚠️ **Probable pero no medido limpiamente** |
+
+
+En términos de cuota, el orquestador con subagentes es el peor diseño posible para Claude Pro (o suscripción similar). 
+En términos de experiencia de usuario, es el mejor.
+
+
