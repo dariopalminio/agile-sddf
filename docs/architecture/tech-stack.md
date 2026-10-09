@@ -74,7 +74,35 @@ Los skills de creación y benchmarking de skills **no están en el paquete core*
 
 ---
 
-## 4. Dependencias de CI
+## 4. CI y validación
+
+No hay build ni lint genéricos: la validación es determinista y vive en `scripts/` y `test/`.
+
+### 4.1 Comandos
+
+| Comando | Propósito |
+|---------|-----------|
+| `npm run verify:repository` | Gate determinista completo (sintaxis, resolución de raíces, perfiles, runtimes, config, inventario de evals, enlaces, supply chain, release, smoke del tarball). |
+| `npm test` | Pruebas `node --test` de `test/`. |
+| `npm run test:eval:runner` | Suite determinista del runner `scripts/run-evals.js`. |
+| `npm run test:eval -- [opciones]` | Ejecuta o planifica los casos de `skills/<skill>/evals/evals.json`. Una selección inválida o vacía falla cerrada; `--dry-run` solo aprueba con un plan no vacío. |
+| `npx agile-sddf install [--global] [--target <runtime>] [--force]` | Instalación explícita en otro proyecto; IDs admitidos en `config/runtimes.json`. `npm install` no crea directorios de runtime ni copia nada. |
+
+### 4.2 Perfiles y stacks
+
+`config/profiles.json` separa `core` (predeterminado, sin extensiones externas) de `dogfood` (este repositorio, con workers de autoría fijados). Un perfil selecciona un `stack`; no es otra forma de instalación. Se valida con `node scripts/verify-profiles.js`; para comprobar dogfood instalado: `--profile dogfood --extensions-dir <dir>`.
+
+### 4.3 Workflows (`.github/workflows/`)
+
+| Workflow | Qué ejecuta |
+|----------|-------------|
+| `quality.yml` | `npm run verify:repository` en Windows, macOS y Linux, sin secretos ni lifecycle scripts. |
+| `evals.yml` | `test:eval:runner` y, cuando cambian skills, la selección desde el SHA base en `--dry-run`. Las evaluaciones LLM reales no corren en PRs no confiables. |
+| `installer-security.yml` | Regresión de seguridad del instalador y `npm pack --dry-run`. |
+| `skill-security-audit.yml` | Skill Shielder y verificación determinista de documentos de seguridad. |
+| `docker-security.yml` | Escaneo de la imagen Docker con Trivy. |
+
+### 4.4 Dependencias de CI
 
 | Herramienta | Fuente | Revisión | Propósito |
 |-------------|--------|----------|-----------|

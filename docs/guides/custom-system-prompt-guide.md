@@ -168,9 +168,10 @@ Basado en la experiencia de equipos que han optimizado sus prompts, estas son la
 
 ### 5.1 Sé breve (concisión es clave)
 
-- **Ideal**: menos de 200-300 líneas.
-- **Límite**: no sobrepases las 150-200 instrucciones.
+- **Ideal**: menos de 100-150 líneas.
+- **Límite**: no sobrepases las 150 instrucciones.
 - Si tu archivo es muy largo, la IA perderá el foco y el costo de token aumentará innecesariamente.
+- La recomendación más agresiva apunta a mantener el archivo raíz en 15-40 líneas como un mapa de punteros, no como un manual.
 
 ### 5.2 Define el proyecto en una frase
 

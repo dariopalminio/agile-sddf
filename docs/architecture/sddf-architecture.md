@@ -117,22 +117,34 @@ El agente no es el sistema; el sistema es SDDF y el agente es el proceso que se 
 
 ```
 agile-sddf/
-├── AGENTS.md                  # entry point IA
-├── sddf.config.yaml           # configuración
-├── CHANGELOG.md
-├── README.md
+├── AGENTS.md                  # entry point IA (CLAUDE.md lo importa)
+├── sddf.config.yaml           # raíz de artefactos (root) y skills activos por fase del pipeline TDD
+├── CHANGELOG.md · README.md · SECURITY.md
 │
 ├── docs/                      # Memory System (ver [[memory-system]])
-│   ├── index.md
-│   ├── constitution.md
-│   └── {product,requirements,specs,domains,architecture,
-│        adr,policies,guardrails,guides,runbooks,templates}/
+│   ├── index.md               # punto de entrada wiki (wikilinks [[slug]])
+│   ├── constitution.md        # documento supremo de gobernanza
+│   ├── specs/{01-projects,02-epics,03-stories}/  # specs y artefactos de los skills SDD
+│   ├── product/               # visión de producto
+│   ├── requirements/          # requisitos del producto
+│   ├── domains/               # modelo de dominio y reglas de negocio (DDD)
+│   ├── architecture/          # C4, stack, visión de sistema, vistas de componentes
+│   ├── adr/                   # decisiones inmutables (ADR-NNNN)
+│   ├── policies/              # reglas derivadas de la constitución
+│   ├── guardrails/            # gr-*-checklist.md y dod-story-<etapa>.md
+│   ├── guides/                # guías de referencia y how-to
+│   ├── knowledge/             # investigación, lecciones aprendidas, material didáctico
+│   ├── runbooks/              # procedimientos operativos (deploy npm, docker)
+│   └── templates/             # plantillas de generación (meta-artefactos)
 │
-├── .claude/                   # Harness Runtime (Claude Code)
-├── .agents/                   # Harness Runtime (estándar abierto)
-├── .github/                   # Harness Runtime (Copilot) + workflows
-├── scripts/                   # utilidades deterministas
-└── src/                       # código del framework
+├── skills/                    # fuente única: skills SDD (uno por carpeta)
+├── agents/                    # fuente única: subagentes (*.agent.md)
+├── config/                    # contratos de perfiles, stacks y runtimes
+├── scripts/                   # CLI, instalador, runner de evals y verificadores deterministas
+├── test/                      # pruebas node --test
+├── .github/workflows/         # CI: quality, evals y seguridad
+└── .claude/ · .agents/        # salida local de `agile-sddf install` (ignorada por git;
+                               #   destinos según config/runtimes.json)
 ```
 
 ---
