@@ -86,3 +86,5 @@ Entonces el skill informa que "EPIC-77" no se encontró e indica la ruta buscada
 - Momento de uso: después de `epic-generate-stories` / `epic-generate-all-stories` y antes de aprobar la épica para `READY-FOR-DEV`.
 - La relación épica → historia se resuelve por dos vías que deben coincidir: las entradas de la sección "Historias" de `epic.md` (planificada `- [Nombre]: ...` · creada `- [ ] **STORY-NNN** — ...` · completada `- [x] **STORY-NNN** — ...`) y el `parent` (nombre del directorio de la épica) de cada `story.md`.
 - Historia core del split de la especificación original (≈15 casos). STORY-121 y STORY-122 amplían este skill con nuevas comprobaciones sobre el mismo reporte; esta historia entrega el skill, el reporte y el veredicto.
+- Cubre el criterio de salida de EPIC-22: `skills/epic-analyze/SKILL.md` existe, resuelve `REPO_ROOT`/`SPECS_BASE` con la precedencia `SDDF_ROOT` → `sddf.config.yaml.root` → `docs` y tiene `evals/evals.json`.
+- Cubre el criterio de salida de EPIC-22: `skills/epic-analyze/` está incluido en el arreglo `files` de `package.json`.

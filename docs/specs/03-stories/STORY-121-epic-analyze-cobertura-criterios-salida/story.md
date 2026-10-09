@@ -67,3 +67,4 @@ Ejemplos:
 - Se apoya en las secciones obligatorias "Criterios de salida" y "Smoke tests" del template de épica v2 (STORY-103); los IDs `SMOKE-N` son estables, por lo que el reporte los cita por ID.
 - Requiere que exista el skill `epic-analyze` de STORY-120; amplía sus comprobaciones sobre el mismo reporte.
 - La cobertura es un juicio sobre texto (criterios en lenguaje natural): por eso CNF-1 exige citar la evidencia en vez de afirmar la cobertura sin respaldo.
+- Cubre el criterio de salida de EPIC-22: El reporte incluye una tabla de cobertura de criterios de salida y smoke tests, con un hallazgo por cada elemento sin cubrir (STORY-121).

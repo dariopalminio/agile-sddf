@@ -64,6 +64,7 @@ related:
 
 - [x] T016 [P] En `CHANGELOG.md`, `## [Unreleased] › ### Added`, ampliar la entrada de `/epic-analyze` (o crear una propia si ya se publicó) con la familia `MAD-01…MAD-03`, el umbral `SPECIFY/DONE` y la resolución de `related` por ID (STORY-122, EPIC-22) — D-9, CNF-2
 - [x] T017 [P] En `docs/domains/domain-epic-lifecycle.md` §8 ampliar el "Qué valida" de la fila `Gate de integridad de historias` añadida por STORY-120 con "y madurez de las historias hijas (estado ≥ `SPECIFY/DONE`, `related` resolubles)"; no tocar `docs/domains/domain-story-lifecycle.md`, `docs/guides/sddf-commands-pipeline.md`, `docs/domains/domain-skills-map.md` ni `package.json` — D-9, CNF-2
+- [x] Implementar **CNF-4 — Cobertura de README:**: Crear archivo README.md siguiendo el template de skill-master (\skills\skill-master\assets\readme-template.md).
 
 ## 6. Verificación
 

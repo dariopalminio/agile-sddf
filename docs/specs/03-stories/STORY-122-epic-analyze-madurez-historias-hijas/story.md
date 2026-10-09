@@ -51,6 +51,7 @@ Ejemplos:
 - **CNF-1 — Estado mínimo:** una historia hija se considera lista cuando su estado es `SPECIFY/DONE` o cualquier estado posterior del pipeline de historia; `CANCELED` no genera hallazgo de madurez.
 - **CNF-2 — Mismo reporte y veredicto:** los hallazgos se añaden al `epic-analyze-report.md` y cuentan para el veredicto con la regla definida en STORY-120; el skill sigue sin modificar `epic.md` ni los `story.md`.
 - **CNF-3 — Idempotencia:** sin cambios en la épica ni en sus historias, dos ejecuciones producen los mismos hallazgos.
+- **CNF-4 — Cobertura de README:** se espera que exista un README.md siguiendo el template de skill-master, describiendo el propósito y uso del skill `epic-analyze`.
 
 ## Fuera de alcance (Non-Goals)
 
