@@ -11,7 +11,7 @@ created: 2026-10-07
 updated: 2026-10-07
 related:
   - STORY-096-memory-system-scaffold-ensure-rebuild
-  - STORY-XXX-epic-template-minimalista
+  - STORY-103-replace-the-epic-template
 ---
 
 # 📖 Historia: Estrategia "SRS único primero" en `requirements/`

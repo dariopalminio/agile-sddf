@@ -9,7 +9,7 @@ status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-09
 related:
   - EPIC-21-colapsar-specs-dos-niveles
   - ADR-0013-eliminar-specs-01-projects
@@ -78,6 +78,11 @@ Entonces "verify-report.md" la registra como "FAIL" con la evidencia y la histor
 ## 📎 Notas / contexto adicional
 
 - **Origen:** criterios de salida y smoke tests 1–3 de [[EPIC-21-colapsar-specs-dos-niveles]], incluido "Los tres modos SDD funcionan con la nueva estructura", y [[ADR-0013-eliminar-specs-01-projects]] (rationale 6, compatibilidad con los modos SDD).
+- **Criterios de salida que se entregan entre varias historias:** AC-1 los verifica completos en este repositorio, porque ninguna historia de la épica los entrega por sí sola:
+  - `docs/specs/` contiene exactamente dos carpetas de artefactos: `epics/` y `stories/` (más `README.md`) (lo entregan STORY-108 y STORY-123).
+  - `docs/product/` contiene `vision.md`, `stakeholders.md`, `roadmap.md` y `story-map.md` (lo entregan STORY-104 a STORY-107).
+  - Ningún skill ni agente referencia `specs/01-projects/`, `specs/02-epics/` ni `specs/03-stories/` (lo entregan STORY-108 y STORY-113).
+  - Los modos SDD Spec-First y Spec-Anchored funcionan con la nueva estructura (AC-2, filas Spec-First y Spec-Anchored).
 - **Reformulación:** la línea original de la épica pedía "actualizar `sddf.config.yaml` y verificar los tres modos SDD". Como la config no tiene rutas que cambiar y los modos no son configuraciones ejecutables sino niveles de madurez (`docs/guides/sdd.md`, `docs/constitution.md`), esta historia pasa a ser la verificación de cierre de la épica.
 - **Terminología:** la épica y ADR-0013 dicen "Intent-First"; `docs/guides/sdd.md` y `docs/constitution.md` llaman a ese nivel **Spec-First** ("intent-first" es el enfoque general). Esta historia usa Spec-First. Conviene alinear el término en la épica y en el ADR (lo puede recoger STORY-116).
 - **Infraestructura existente:** `npm run test:e2e:smoke` y los fixtures de `skills/memory-system/examples/` pueden servir de base para automatizar AC-2; si se automatiza, se decide en diseño.

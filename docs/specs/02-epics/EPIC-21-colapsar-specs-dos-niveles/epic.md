@@ -8,7 +8,7 @@ status: DEFINE
 substatus: IN-PROGRESS
 parent: null
 created: 2026-10-05
-updated: 2026-10-08
+updated: 2026-10-09
 related:
   - EPIC-20-memory-system
   - EPIC-19-framework-consistency
@@ -28,7 +28,7 @@ Además se aprovecha a hacer una pequeña mejora en el nivel de story, optimizan
 ## Historias
 
 ### Optimizar skill `story-plan` para comenzar a optimizar nivel de story
-- [x] **STORY-119 - Story-plan un subagente por paso** — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens.
+- [x] **STORY-119** — Story-plan un subagente por paso: ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens.
 
 ### Historias específicas para colapsar `specs/` a dos niveles y eliminar `01-projects/`
 - [x] **STORY-103** — Reemplazar el template de Epic por la versión minimalista y output-oriented: asegurar que los nuevos Epics sigan el formato simplificado y enfocado en resultados.
@@ -47,6 +47,7 @@ Además se aprovecha a hacer una pequeña mejora en el nivel de story, optimizan
 - [ ] **STORY-116** — Actualizar documentación canónica: `memory-system.md`, `sddf-architecture.md`, `domain-*`, `docs/specs/README.md`, `README` y `CHANGELOG` (breaking change con guía de migración).
 - [ ] **STORY-117** — Actualizar `sddf.config.yaml` y verificar los tres modos SDD: eliminar rutas a `02-epics/` o `03-stories/` si existen y comprobar que Intent-First, Spec-Anchored y Spec-as-Source funcionan con la nueva estructura.
 - [ ] **STORY-118** — Adoptar la estrategia "SRS único primero, fragmentación cuando duela" en `requirements/`: implementar la estrategia en el framework, actualizar documentación y scaffolding, y ofrecer migración automática para proyectos existentes.
+- [ ] **STORY-123** — Reubicar las secciones restantes de `project.md` y eliminarlo: trasladar las secciones que ADR-0013 no asigna (§1.1–1.7, §2.3, §3, §4, §11, §12 y apéndices) a su capa y eliminar `project.md`, dejando `docs/specs/01-projects/` vacía y eliminada.
 
 
 ## Criterios de salida
@@ -60,7 +61,7 @@ Además se aprovecha a hacer una pequeña mejora en el nivel de story, optimizan
 - [ ] `memory-system check` devuelve exit code 0.
 - [ ] Todas las épicas e historias existentes siguen siendo navegables por wikilinks.
 - [ ] `CHANGELOG.md` documenta el breaking change con guía de migración.
-- [ ] Los tres modos SDD (Intent-First, Spec-Anchored, Spec-as-Source) funcionan con la nueva estructura.
+- [ ] Los modos SDD Spec-First y Spec-Anchored funcionan con la nueva estructura.
 
 ## Smoke tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
@@ -95,6 +96,7 @@ Escenario: Navegabilidad intacta tras el colapso
 - **Caso multi-proyecto:** se asume el caso común (un solo proyecto por raíz `docs/`). El caso multi-proyecto se abordará en un ADR separado si surge la necesidad.
 - **Orden de implementación sugerido:** primero skills y scaffolding, luego migración, luego documentación, de modo que cada historia deje el repo en estado consistente.
 - **Actualizar skills que referencian rutas de `specs/`:** `project-*`, `memory-system`, `epic-*`, `story-*`, `skill-preflight`, `sddf-init` y cualquier skill o agente que use rutas de `01-projects/`, `02-epics/` o `03-stories/`. Son las 5 historias STORY-109 a STORY-113, cada una con su flujo de skill + agente + template, simplificando el mecanismo de proyecto activo WIP por el uso del substatus del documento destino para decidir entre retomar o empezar.
+- **Modos SDD verificables:** Spec-as-Source queda fuera del criterio de salida porque el framework no ofrece un flujo que edite solo la especificación y regenere el código; su compatibilidad estructural se analiza en el insight de la épica (ver STORY-117). "Spec-First" es el término de `docs/guides/sdd.md` y `docs/constitution.md` para lo que antes se llamaba "Intent-First".
 - **Historias trasladadas:** STORY-120 a STORY-122 (`epic-analyze`) se movieron a [[EPIC-22-epic-analyze]] para aumentar la cohesión.
 - **Autorreferencia:** esta propia épica vive en `02-epics/` y será movida por la historia de renombrado; los wikilinks por slug no dependen de la ruta.
 - **Dependencias entre historias:**
@@ -105,10 +107,11 @@ Escenario: Navegabilidad intacta tras el colapso
 | 2 | Migrar `project.md` a `product/stakeholders.md` y `requirements/` | — |
 | 3 | Migrar `project-plan.md` a `product/roadmap.md` | — |
 | 4 | Migrar `story-map.md` y `context-diagram.puml` | — |
-| 5 | Renombrar `02-epics/` y `03-stories/` | 1, 2, 3, 4 |
+| 5 | Renombrar `02-epics/` y `03-stories/` | 1, 2, 3, 4, 12 |
 | 6 | Actualizar skills que referencian rutas de `specs/` | 5 |
 | 7 | Implementar `memory-system migrate --from=specs-3-levels` | 5 |
 | 8 | Actualizar scaffolding de `memory-system` | 5 |
 | 9 | Actualizar documentación canónica | 6, 7, 8 |
 | 10 | Actualizar `sddf.config.yaml` y verificar los tres modos SDD | 6, 7, 8 |
 | 11 | STORY-119 | — |
+| 12 | Reubicar las secciones restantes de `project.md` y eliminarlo | 2 |

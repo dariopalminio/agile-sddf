@@ -1,0 +1,73 @@
+---
+alwaysApply: false
+type: story
+id: STORY-123
+kind: chore
+slug: STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo
+title: "Reubicar las secciones restantes de project.md y eliminarlo"
+status: SPECIFY
+substatus: IN-PROGRESS
+parent: EPIC-21-colapsar-specs-dos-niveles
+created: 2026-10-09
+updated: 2026-10-09
+related:
+  - EPIC-21-colapsar-specs-dos-niveles
+  - ADR-0013-eliminar-specs-01-projects
+  - STORY-105-migrar-stakeholders-y-requisitos
+  - STORY-108-renombrar-specs-sin-prefijos
+---
+<!-- Referencias -->
+[[EPIC-21-colapsar-specs-dos-niveles]]
+[[ADR-0013-eliminar-specs-01-projects]]
+
+# 📖 Historia: Reubicar las secciones restantes de `project.md` y eliminarlo
+
+**Como** mantenedor de SDDF que colapsa `specs/` a dos niveles  
+**Quiero** trasladar a su capa las secciones de `project.md` que ADR-0013 no asigna y después eliminar `project.md` y `docs/specs/01-projects/`  
+**Para** que el repositorio del framework no conserve una segunda fuente de verdad del proyecto y STORY-108 encuentre `01-projects/` vacía al renombrar `specs/`
+
+## ✅ Criterios de aceptación
+
+### AC-1 — Escenario principal – Secciones reubicadas y `01-projects/` eliminada
+```gherkin
+Dado que STORY-104 a STORY-107 están aplicadas
+  Y "docs/specs/01-projects/PROJ-01-agile-sddf/" solo contiene "project.md"
+Cuando el mantenedor reubica las secciones restantes de "project.md" y lo elimina
+Entonces "docs/specs/01-projects/" ya no existe
+  Y cada sección restante de "project.md" queda en un documento de "docs/product/", "docs/requirements/", "docs/architecture/" o "docs/domains/", o figura en el informe de la historia como descartada por duplicar contenido que ya vive en una capa
+```
+
+### AC-2 — Escenario de cierre – Sin wikilinks rotos
+```gherkin
+Dado que "docs/index.md" y otros documentos vivos referencian "[[PROJ-01-agile-sddf-project]]" o el slug de "project.md"
+Cuando el mantenedor elimina "project.md"
+Entonces ningún archivo de "docs/" fuera de "docs/specs/03-stories/" contiene un wikilink al slug de "project.md"
+  Y "memory-system check" no reporta wikilinks rotos
+```
+
+### AC-3 — Escenario de error – Sección sin hogar
+```gherkin
+Dado que una sección de "project.md" no tiene una capa de destino ni un equivalente en otra capa
+Cuando el mantenedor intenta eliminar "project.md"
+Entonces "project.md" no se elimina
+  Y el informe de la historia lista la sección sin hogar para que el PO decida su destino
+```
+
+## ⚙️ Criterios no funcionales específicos
+
+- **CNF-1 — Sin pérdida semántica:** ningún ítem de una sección reubicada se resume ni se omite; el informe enumera cada sección de origen con su destino.
+
+## Fuera de alcance (Non-Goals)
+
+- Migrar §1.8 y §2.1–2.2 (perfiles de usuario, FR y NFR): ya los traslada STORY-105.
+- Renombrar `specs/02-epics/` y `specs/03-stories/`: STORY-108.
+
+## 📎 Notas / contexto adicional
+
+Generado automáticamente desde la épica: [[EPIC-21-colapsar-specs-dos-niveles]]
+Feature origen: STORY-123 — Reubicar las secciones restantes de `project.md` y eliminarlo
+
+- **Origen:** las Notas de STORY-105 piden esta historia explícitamente ("Reubicar las secciones restantes de `project.md` y eliminarlo"); sin ella, STORY-108 AC-3 conserva `01-projects/` porque `project.md` sigue ahí.
+- **Criterio de salida que cubre:** `docs/specs/01-projects/` no existe en el repositorio del framework.
+- **Secciones a reubicar** (las que ADR-0013 no asigna): §1.1–1.7, §2.3, §3 (UI/UX: design vibe, inspiración visual, mapas de navegación, wireframe), §4.1 stack tecnológico, §11 referencias, §12 definiciones y acrónimos, apéndices A y B. Destinos candidatos, a decidir en diseño: §1.2–1.7 ya están en `product/vision.md` por STORY-104; §4.1 → `docs/architecture/tech-stack.md`; el apéndice A (inventario de épicas e historias) lo sustituye `docs/index.md`.
+- **Dependencias:** depende de STORY-105 (que reemplaza §1.8 y §2 por enlaces) y debe aplicarse antes de STORY-108.
