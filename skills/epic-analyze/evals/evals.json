@@ -1,0 +1,407 @@
+{
+  "skill": "epic-analyze",
+  "version": "1.0.0",
+  "description": "Casos de prueba para epic-analyze (STORY-120): cruza la sección de historias de epic.md (localizada por la clave 'historias' del template de épica) con los story.md que declaran la épica como parent, escribe <EPIC_DIR>/epic-analyze-report.md desde un template leído en runtime (central → seed) con hallazgos INT-01…INT-06 y un veredicto APPROVED / NEEDS-REFINEMENT / BLOCKED, nunca modifica epic.md ni story.md y se detiene sin escribir ante una épica no resuelta o un template ausente.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "indice-consistente-veredicto-approved",
+      "type": "happy-path",
+      "description": "AC-1: la sección de historias de EPIC-30-ejemplo lista STORY-201 y STORY-202 en formato F2; ambos story.md existen con parent: EPIC-30-ejemplo y ningún otro story.md declara EPIC-30 (STORY-305 declara EPIC-300-otra, que no es EPIC-30). El skill escribe epic-analyze-report.md con veredicto APPROVED, 0 ERROR y sin hallazgos, sin tocar epic.md ni los story.md.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "env": { "SDDF_ROOT": null },
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/", "docs/specs/02-epics/EPIC-300-otra/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: slug: EPIC-30-ejemplo", "5: title: \"Épica de ejemplo\"",
+          "6: status: PLAN", "7: substatus: IN-PROGRESS", "8: created: 2026-10-01", "9: updated: 2026-10-01", "10: ---",
+          "11: ", "12: # Épica: Épica de ejemplo", "13: ", "14: ## Alcance", "15: Gestionar el listado de clientes.", "16: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias · escritor: epic-creation (F1) -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: ", "21: ## Criterios de salida", "22: - [ ] El listado y el filtro funcionan."
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" },
+          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo" },
+          { "path": "docs/specs/03-stories/STORY-305-otra-cosa/story.md", "parent": "EPIC-300-otra" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' una sola vez",
+          "docs/templates/epic-analyze-report-template.md": "no existe",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "previous_report": null,
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["epic-analyze-report.md", "APPROVED", "verdict: APPROVED", "errors: 0", "Sin hallazgos."],
+        "not_contains": ["epic.md ===", "story.md ===", "H-001", "INT-02"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-002",
+      "name": "historia-listada-sin-directorio-int-01",
+      "type": "error-handling",
+      "description": "AC-2 fila 1: la sección de historias lista STORY-201 (línea 18) y STORY-203 (línea 19), pero no existe ningún directorio STORY-203-*. STORY-201 existe con parent: EPIC-30-ejemplo. Se espera un hallazgo ERROR INT-01 que cita STORY-203 y veredicto BLOCKED.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-203** — Exportar clientes: descarga el listado.",
+          "20: ", "21: ## Criterios de salida"
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["INT-01", "STORY-203", "ERROR", "epic.md:19", "BLOCKED", "verdict: BLOCKED", "errors: 1"],
+        "not_contains": ["epic.md ===", "story.md ===", "verdict: APPROVED"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "historia-huerfana-int-02",
+      "type": "error-handling",
+      "description": "AC-2 fila 2: la sección de historias lista STORY-201 y STORY-202, que existen con parent: EPIC-30-ejemplo; además existe docs/specs/03-stories/STORY-204-auditar-clientes/story.md con parent: EPIC-30-ejemplo que no figura en el índice. Se espera un hallazgo ERROR INT-02 que cita STORY-204 y su story.md, y veredicto BLOCKED.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [x] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: ", "21: ## Criterios de salida"
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" },
+          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo" },
+          { "path": "docs/specs/03-stories/STORY-204-auditar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["INT-02", "STORY-204", "STORY-204-auditar-clientes/story.md", "BLOCKED", "verdict: BLOCKED"],
+        "not_contains": ["epic.md ===", "story.md ===", "verdict: APPROVED"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "historia-duplicada-int-03",
+      "type": "error-handling",
+      "description": "AC-2 fila 3: STORY-201 aparece dos veces en la sección de historias (líneas 18 y 20); STORY-202 en la línea 19. Ambas historias existen con parent: EPIC-30-ejemplo. Se espera un único hallazgo ERROR INT-03 que cita STORY-201 y ambas líneas, y veredicto BLOCKED.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "21: ", "22: ## Criterios de salida"
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" },
+          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["INT-03", "STORY-201", "epic.md:18", "epic.md:20", "BLOCKED", "errors: 1"],
+        "not_contains": ["epic.md ===", "story.md ===", "H-002", "verdict: APPROVED"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-005",
+      "name": "una-historia-planificada-warning-approved",
+      "type": "happy-path",
+      "description": "AC-2 fila 4: la sección de historias lista STORY-201 y STORY-202 (F2, existentes con parent: EPIC-30-ejemplo) y una línea F1 planificada sin ID en la línea 20: '- Exportar CSV: exporta el listado en CSV.'. Se espera un hallazgo WARNING INT-05 que cita Exportar CSV y veredicto APPROVED (0 ERROR, 1 WARNING ≤ 3).",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: - Exportar CSV: exporta el listado en CSV.",
+          "21: ", "22: ## Criterios de salida"
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" },
+          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["INT-05", "WARNING", "Exportar CSV", "epic.md:20", "verdict: APPROVED", "errors: 0", "warnings: 1"],
+        "not_contains": ["epic.md ===", "story.md ===", "BLOCKED", "NEEDS-REFINEMENT"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-006",
+      "name": "cuatro-historias-planificadas-needs-refinement",
+      "type": "happy-path",
+      "description": "AC-2 fila 5 y borde de CNF-1: la sección de historias contiene solo cuatro líneas F1 planificadas sin ID (líneas 18–21) y ningún story.md declara parent EPIC-30. Se esperan cuatro hallazgos WARNING INT-05 (uno por línea, H-001…H-004) y veredicto NEEDS-REFINEMENT (0 ERROR, 4 WARNING > 3).",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - Listar clientes: muestra el listado paginado.",
+          "19: - Filtrar clientes: filtra el listado por estado.",
+          "20: - Exportar CSV: exporta el listado en CSV.",
+          "21: - Auditar accesos: registra quién consulta el listado.",
+          "22: ", "23: ## Criterios de salida"
+        ],
+        "stories": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["INT-05", "H-004", "Auditar accesos", "NEEDS-REFINEMENT", "verdict: NEEDS-REFINEMENT", "errors: 0", "warnings: 4"],
+        "not_contains": ["epic.md ===", "story.md ===", "H-005", "verdict: APPROVED", "verdict: BLOCKED"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-007",
+      "name": "epica-no-encontrada-sin-reporte",
+      "type": "fail-fast",
+      "description": "AC-3: no existe ningún directorio EPIC-77-* con epic.md bajo docs/specs/02-epics/ (solo existen EPIC-30-ejemplo y EPIC-770-otra). El skill informa que EPIC-77 no se encontró, indica la ruta buscada y no escribe ningún archivo.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-77",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/", "docs/specs/02-epics/EPIC-770-otra/"],
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["No se encontró la épica", "EPIC-77", "specs/02-epics/EPIC-77-*"],
+        "not_contains": ["=== FILE:", "EPIC-770-otra/epic-analyze-report.md", "VEREDICTO: APPROVED"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-008",
+      "name": "sobrescritura-idempotente-sin-acumular",
+      "type": "happy-path",
+      "description": "CNF-3: existe un epic-analyze-report.md previo (created: 2026-09-01, verdict: BLOCKED, hallazgo H-001 [ERROR] — INT-01 sobre STORY-299) generado antes de corregir la épica. Hoy el índice lista STORY-201 y STORY-202, ambas existentes con parent: EPIC-30-ejemplo y sin huérfanas. El reporte se sobrescribe por completo sin los hallazgos previos, conserva created del reporte previo y el veredicto es APPROVED.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: ", "21: ## Criterios de salida"
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" },
+          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "previous_report": {
+          "path": "docs/specs/02-epics/EPIC-30-ejemplo/epic-analyze-report.md",
+          "frontmatter": { "created": "2026-09-01", "updated": "2026-09-01", "verdict": "BLOCKED", "errors": 1, "warnings": 0 },
+          "body_excerpt": "### H-001 [ERROR] — INT-01: historia listada sin directorio\n**Elemento:** `STORY-299`"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["epic-analyze-report.md", "created: 2026-09-01", "updated: 2026-10-08", "verdict: APPROVED", "errors: 0"],
+        "not_contains": ["epic.md ===", "story.md ===", "STORY-299", "INT-01", "verdict: BLOCKED"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-009",
+      "name": "template-de-reporte-ausente-sin-escritura",
+      "type": "fail-fast",
+      "description": "CNF-4: la épica EPIC-30-ejemplo se resuelve y su índice es consistente, pero no existe docs/templates/epic-analyze-report-template.md ni el seed skills/epic-analyze/assets/epic-analyze-report-template.md. El skill se detiene con ❌ indicando las rutas probadas y no escribe ningún archivo (no usa una estructura de reporte embebida).",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: ", "20: ## Criterios de salida"
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "docs/templates/epic-analyze-report-template.md": "no existe",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "no existe (seed eliminado en este escenario)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["❌", "epic-analyze-report-template.md", "no encontrado", "probado"],
+        "not_contains": ["=== FILE:", "verdict:"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-010",
+      "name": "modo-agent-retorno-sin-preguntas",
+      "type": "happy-path",
+      "description": "CNF-5: invocado en modo Agent con --auto sobre EPIC-30-ejemplo con índice consistente (STORY-201 y STORY-202 existentes con parent: EPIC-30-ejemplo). El skill no hace ninguna pregunta, escribe el reporte y devuelve el bloque de retorno de cuatro líneas STATUS / VEREDICTO / HALLAZGOS / REPORTE.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30 --auto",
+        "mode": "agent",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: ", "21: ## Criterios de salida"
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" },
+          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["STATUS: OK", "VEREDICTO: APPROVED", "HALLAZGOS: ERROR 0 · WARNING 0", "REPORTE: docs/specs/02-epics/EPIC-30-ejemplo/epic-analyze-report.md"],
+        "not_contains": ["¿", "epic.md ===", "story.md ===", "STATUS: FAIL"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-026",
+      "name": "historia-listada-con-parent-de-otra-epica-int-04",
+      "type": "error-handling",
+      "description": "CR-001 (INT-04): la sección de historias lista STORY-201 (línea 18) y STORY-202 (línea 19); STORY-202 tiene parent: EPIC-30-ejemplo, pero el story.md de STORY-201 declara parent: EPIC-31-otra. Se espera un hallazgo ERROR INT-04 que cita STORY-201 y el parent encontrado EPIC-31-otra, y veredicto BLOCKED.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/", "docs/specs/02-epics/EPIC-31-otra/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: ", "21: ## Criterios de salida"
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-31-otra" },
+          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["INT-04", "STORY-201", "EPIC-31-otra", "epic.md:18", "BLOCKED", "verdict: BLOCKED"],
+        "not_contains": ["epic.md ===", "story.md ===", "INT-01", "verdict: APPROVED"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-027",
+      "name": "epica-sin-seccion-de-historias-int-06",
+      "type": "error-handling",
+      "description": "CR-001 (INT-06): el template de épica declara la sección con clave 'historias' (título 'Historias'), pero epic.md de EPIC-30-ejemplo no tiene ese encabezado. STORY-201 tiene parent: EPIC-30-ejemplo. Se espera un hallazgo ERROR INT-06 (no hay índice que analizar), la Vía B se evalúa igual (STORY-201 aparece como huérfana INT-02) y el veredicto es BLOCKED.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "sddf_config_root": "docs",
+        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
+          "7: # Épica: Épica de ejemplo", "8: ", "9: ## Alcance", "10: Gestionar el listado de clientes.", "11: ",
+          "12: ## Criterios de salida", "13: - [ ] El listado funciona."
+        ],
+        "stories": [
+          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": ["INT-06", "INT-02", "STORY-201", "BLOCKED", "verdict: BLOCKED"],
+        "not_contains": ["epic.md ===", "story.md ===", "verdict: APPROVED"]
+      },
+      "threshold": 1.0
+    }
+  ]
+}
