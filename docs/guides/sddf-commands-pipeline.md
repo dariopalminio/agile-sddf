@@ -183,15 +183,18 @@ project-begin → project-discovery → project-planning
 ## 2. Pipeline de generación de épicas e historias
 
 ```
-epic-from-project-plan → epic-generate-stories
+epic-from-project-plan → epic-generate-stories → epic-analyze
 ```
 
 | Skill | Input | Output |
 |---|---|---|
 | `epic-from-project-plan` | `project-plan.md` | `$SPECS_BASE/specs/02-epics/épica-[ID]-[Nombre].md` (uno por épica) |
 | `epic-generate-stories` | Un archivo `epic.md` | `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre]/story.md` (una por feature) |
+| `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
 
-> `epic-generate-all-stories` procesa todas las épicas en batch.
+> `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
+> con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT` / `BLOCKED`) antes
+> de aprobar la épica para `READY-FOR-DEV`; no cambia ningún estado.
 
 ---
 

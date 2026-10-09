@@ -667,3 +667,176 @@ La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`: n
 Estado final de `story.md`:
 - `CODE-REVIEW/DONE` si la revisión es aprobada
 - `READY-FOR-IMPLEMENT/DONE` si hay hallazgos criticos (severidad HIGH o MEDIUM)
+
+## 📊 Segundo Anàlisis, Análisis Corregido: `/story-code-review` con el SKILL.md Real
+
+El SKILL.md cambia por completo mi diagnóstico anterior. **Los subagentes ya existen y se lanzan correctamente** (Paso 3b: "creando un subagente `general-purpose`"). El problema no es la invocación; es la **fase de consolidación** donde el orquestador lee los 4 reportes completos.
+
+### 🔍 Dónde se acumulan los 99.1k tokens
+
+| Paso | Acción | Tokens estimados |
+| :--- | :--- | ---: |
+| Paso 2 | Lee story.md, design.md, implement-report.md, testcases.md, constitution.md, DoD | ~15-25k |
+| **Paso 4a** | **Lee los 4 reportes completos desde `.tmp/`** | **~50-70k** |
+| Paso 4c/4c.1 | Consolida hallazgos, evalúa DoD, calcula severidad | ~8-12k |
+| Paso 5 | Genera `code-review-report.md` desde el template | ~10-15k |
+| Overhead | Mensajes del sistema | ~5-8k |
+| **Total** | | **~99k** |
+
+#### **El Paso 4a es el culpable principal.** El SKILL.md dice explícitamente:
+
+> "Leer los archivos de `.tmp/story-code-review/{story_id}/`: tech-lead-report.md, product-owner-report.md, integration-report.md, security-report.md"
+
+El orquestador carga los 4 reportes completos en su contexto para consolidarlos. `security-report.md` evalúa **26 reglas**, y el reporte de `product-owner-reviewer` verifica **7 escenarios Gherkin** — cada uno con detalle de archivo:línea, severidad y recomendación. Sumados, son fácilmente 50-70k tokens.
+
+### 🎯 El rediseño correcto (diferente al que propuse antes)
+
+Mi propuesta anterior (convertir subagentes a `Task`) **no aplica** porque ya usan `Task`. La refactorización correcta ataca la consolidación:
+
+### Cambio 1 — Subagentes devuelven resúmenes compactos
+
+Modificar el Paso 3b para que cada subagente devuelva al orquestador **solo un JSON estructurado** (~500-800 tokens) además de escribir el reporte completo en disco:
+
+```json
+{
+  "dimension": "security",
+  "max_severity": "LOW",
+  "findings_count": 2,
+  "blocking_findings": [],
+  "rules_evaluated": 26,
+  "report_path": ".tmp/story-code-review/STORY-120/security-report.md"
+}
+```
+
+El orquestador acumula ~2-4k (4 resúmenes) en lugar de ~60-70k (4 reportes completos).
+
+#### Cambio 2 — Nuevo subagente "report-consolidator"
+
+El Paso 5 (generar `code-review-report.md`) se delega a un 5º subagente cuyo único trabajo es:
+
+1. Leer los 4 reportes completos de `.tmp/`.
+2. Leer el template `assets/code-review-report-template.md`.
+3. Consolidar los hallazgos (deduplicar, calcular severidad máxima, aplicar el arbitraje del Paso 4c).
+4. Escribir `code-review-report.md` en `$STORY_DIR`.
+
+Ese subagente consume ~60-70k tokens **en su propio contexto aislado**, no en el del orquestador. Cuando termina, devuelve un resumen de 2-3 líneas.
+
+#### Cambio 3 — El orquestador solo gestiona estado
+
+Con los cambios 1 y 2, el orquestador quedaría reducido a:
+
+| Paso | Acción del orquestador | Tokens |
+| :--- | :--- | ---: |
+| Paso 0-1 | Resolver contexto, validar precondiciones, actualizar story.md | ~3-5k |
+| Paso 2 | Leer story.md, design.md, constitution.md, DoD (no los reportes) | ~10-15k |
+| Paso 3 | Lanzar 4 subagentes, recibir 4 resúmenes | ~3-5k |
+| Paso 4 | Calcular severidad máxima desde los resúmenes | ~1-2k |
+| Paso 5 | Lanzar subagente consolidador, recibir confirmación | ~1-2k |
+| Paso 6-7 | Actualizar frontmatter, mostrar resumen final | ~2-3k |
+| **Total estimado** | | **~20-30k** |
+
+## 📊 Proyección de ahorro
+
+| Escenario | Messages | Ahorro |
+| :--- | ---: | ---: |
+| Actual (consolidación en orquestador) | ~99k | — |
+| Con resúmenes + subagente consolidador | **~20-30k** | **~70-80%** |
+| **Ahorro absoluto por review** | | **~70k tokens** |
+
+## 🧩 Por qué este caso es diferente a `story-plan`
+
+| Aspecto | `story-plan` | `story-code-review` |
+| :--- | :--- | :--- |
+| Subagentes ya existen | ❌ No (había que crearlos) | ✅ **Sí** |
+| Fase problemática | Ejecución inline de sub-skills | **Consolidación de reportes** |
+| Solución | Convertir a `Task` | **Delegar consolidación a un subagente** |
+| Complejidad del cambio | Media (rediseño del SKILL.md) | **Baja** (añadir un 5º subagente + resúmenes) |
+
+### 🛠️ Cambios concretos en el SKILL.md
+
+#### En el Paso 3b
+
+Añadir al contrato de invocación de cada subagente:
+
+```markdown
+Además de escribir tu reporte completo en `<output>.md`, devuelve al orquestador
+un bloque JSON con esta forma exacta:
+
+{
+  "dimension": "<nombre>",
+  "max_severity": "<HIGH|MEDIUM|LOW|none>",
+  "findings_count": <N>,
+  "blocking_findings": [<lista de {file, line, severity}>],
+  "report_path": "<ruta>"
+}
+```
+
+#### En el Paso 4a
+
+Reemplazar:
+
+```markdown
+Leer los archivos de `.tmp/story-code-review/{story_id}/`
+```
+
+por:
+
+```markdown
+Recibir los 4 bloques JSON devueltos por los subagentes. NO leer los reportes
+completos — el detalle vive en los archivos y solo el subagente consolidador
+los necesita.
+```
+
+#### En el Paso 5
+
+Reemplazar el paso entero por:
+
+```markdown
+Lanzar un subagente `general-purpose` llamado `report-consolidator` cuyo prompt
+incluya:
+- Las rutas de los 4 reportes en `.tmp/story-code-review/{story_id}/`
+- El template `assets/code-review-report-template.md`
+- El valor de `$MAX_SEVERITY` y `$REVIEW_STATUS` (calculados en Paso 4c)
+- Las reglas de consolidación del Paso 4c
+
+El subagente debe:
+1. Leer los 4 reportes completos.
+2. Consolidar los hallazgos (deduplicar, clasificar por dimensión).
+3. Aplicar el template y escribir `$STORY_DIR/code-review-report.md`.
+4. Devolver al orquestador solo la confirmación y el conteo final.
+
+El orquestador NO lee los reportes completos.
+```
+
+### 💰 Impacto económico
+
+| Métrica | Valor |
+| :--- | ---: |
+| Messages actual | 99.1k |
+| Messages proyectado | ~25k |
+| **Ahorro por review** | **~74k tokens (~75%)** |
+| Coste actual (Opus 5.5) | ~$1.60 |
+| Coste proyectado | ~$0.45 |
+| **Ahorro en 100 reviews** | **~$115** |
+
+### 📋 Recomendaciones
+
+#### Inmediatas
+
+1. **`/clear`** — la sesión tiene 99.1k acumulados.
+2. **Documentar el diagnóstico corregido**: el problema no es la invocación de subagentes (ya es correcta), sino la consolidación inline.
+
+#### Estratégicas
+
+1. **Aplicar los 3 cambios al SKILL.md** — el esfuerzo es bajo porque los subagentes ya existen.
+2. **Prioridad**: `story-code-review` es ahora #1 junto con `story-implement-tasks`, porque el cambio es **más simple** que en otros orquestadores.
+3. **Verificar el patrón** con una story compleja (como STORY-120 con 26 tareas) para confirmar que el subagente consolidador no pierde detalle al comprimir.
+4. **Considerar el mismo patrón para `story-specify`** — probablemente tiene la misma estructura (subagentes que devuelven output completo al orquestador).
+
+### 💎 Conclusión
+
+El SKILL.md revela que **`story-code-review` ya está bien diseñado en la fase de ejecución** (4 subagentes en paralelo), pero **no en la fase de consolidación** (el orquestador lee los 4 reportes completos). El consumo de 99.1k no viene de la ejecución paralela, sino del **Paso 4a + Paso 5**.
+
+La corrección es elegante: **añadir un 5º subagente consolidador** que absorba la lectura de los reportes, y **hacer que los 4 revisores devuelvan resúmenes JSON** en lugar de que el orquestador los lea completos. El ahorro proyectado es del ~75% (~74k tokens por review), con un esfuerzo de implementación bajo porque la infraestructura de subagentes ya existe.
+
+Este caso también sugiere un **patrón general** para todos los orquestadores de `agile-sddf`: **los subagentes escriben detalle en disco y devuelven resúmenes compactos; el orquestador nunca lee los archivos de detalle**. Los únicos que deben leer detalle son los consolidadores, que también son subagentes.

@@ -453,3 +453,9 @@ Ninguna: las ambigüedades detectadas se resolvieron en D-1…D-14 o se registra
 - **Descripción**: `docs/domains/domain-skills-map.md` existe vacío (0 bytes, placeholder "próximamente" en `docs/domains/README.md`); CNF-8 asume un mapa al que añadir una entrada.
 - **Documento afectado**: design.md
 - **Acción requerida**: Se escribe el contenido mínimo descrito en D-14 (frontmatter + sección L2 con la fila de `epic-analyze`); el mapa completo de skills queda fuera de alcance y puede abrirse como historia propia.
+
+### CR-004
+- **Tipo**: ajuste de implementación
+- **Descripción**: (1) En I-3, el retorno `FAIL` del modo Agent conserva las cuatro líneas con `HALLAZGOS: —` además de `VEREDICTO: —` y `REPORTE: —`, más la quinta línea `MOTIVO`, para que un orquestador parsee siempre las mismas claves. (2) `scripts/run-evals.js` exige que exista `SKILL.md` para planificar un skill, así que el `--dry-run` de T004 falla cerrado en RED ("No se encontró el skill"); el plan de 12 casos se verificó tras crear `SKILL.md` (T016) y el orden evals → `SKILL.md` lo demuestra el historial git (T021).
+- **Documento afectado**: design.md (I-3, D-13)
+- **Acción requerida**: Ninguna; registrado en implement-report.md.

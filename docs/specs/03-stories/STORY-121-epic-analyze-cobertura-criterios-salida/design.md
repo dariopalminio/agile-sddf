@@ -383,3 +383,9 @@ Ninguna: las ambigüedades detectadas se resolvieron en D-1…D-9 o se registran
 - **Documento afectado**: story.md
 - **Acción requerida**: Ninguna pendiente: exclusión de `CANCELED` y evaluación de los `[x]` igual que los `[ ]` confirmadas (D-2, D-3; TC-017).
 - **Estado**: confirmado por el PO (2026-10-08)
+
+### CR-005
+- **Tipo**: decisión de implementación
+- **Descripción**: Dos ajustes a D-8 detectados al escribir las evals. (1) El mundo de TC-006 no tiene ningún `story.md` (cuatro líneas F1), así que el universo es vacío y ningún contrato de salida puede quedar cubierto por E1 como pide CR-002: con las claves activas recibiría `SAL-01`/`SAL-02` y perdería su `NEEDS-REFINEMENT`. Su `input` declara en cambio un template de épica sin las claves `criterios-salida` ni `smoke-tests` (regla desactivada de D-5), que conserva sus aserciones sin tocarlas. (2) TC-014 cubría dos mundos (sección ausente y solo placeholder); un caso de eval simula un solo mundo, así que el placeholder pasa a un caso propio, TC-028 (los IDs TC-019…TC-025 están reservados para STORY-122). El inventario queda en 21 casos.
+- **Documento afectado**: design.md (D-8)
+- **Acción requerida**: Ninguna; registrado en la implementación (2026-10-08).

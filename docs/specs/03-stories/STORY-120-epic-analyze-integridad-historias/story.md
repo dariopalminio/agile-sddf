@@ -5,7 +5,7 @@ id: STORY-120
 kind: feat
 slug: STORY-120-epic-analyze-integridad-historias
 title: "Detectar historias faltantes, huérfanas o duplicadas de una épica antes de aprobarla para desarrollo"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-22-epic-analyze
 created: 2026-10-08

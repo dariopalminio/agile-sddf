@@ -19,7 +19,7 @@ related:
 
 # 📖 Historia: Un subagente aislado por paso en `/story-plan`
 
-**Como** mantenedor que planifica historias con `/story-plan` y luego sigue implementando en la misma sesión  
+**Como** Product Owner y mantenedor, que planifica historias con `/story-plan` y luego sigue implementando en la misma sesión  
 **Quiero** que cada paso del pipeline (design → tasking → testcases → analyze) se ejecute en un contexto aislado que lea sus insumos del disco y devuelva solo un estado breve  
 **Para** reducir la entrada acumulada de tokens del planning y terminar el plan con un hilo principal liviano, sin perder calidad ni el orden de los artefactos
 

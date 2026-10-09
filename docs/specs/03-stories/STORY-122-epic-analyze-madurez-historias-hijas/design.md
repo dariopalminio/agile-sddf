@@ -9,7 +9,7 @@ substatus: IN-PROGRESS
 parent: EPIC-22-epic-analyze
 story: STORY-122
 created: 2026-10-08
-updated: 2026-10-08
+updated: 2026-10-09
 related:
   - STORY-122-epic-analyze-madurez-historias-hijas
   - EPIC-22-epic-analyze
@@ -372,3 +372,10 @@ Ninguna: las ambigüedades detectadas se resolvieron en D-1…D-9 o se registran
 - **Documento afectado**: story.md
 - **Acción requerida**: Ninguna pendiente: `MAD-03` confirmado; se cubre con TC-024 sin ampliar AC-2.
 - **Estado**: confirmado por el PO (2026-10-08)
+
+### CR-005
+- **Tipo**: desviación de implementación
+- **Descripción**: D-8 enumera los mundos previos TC-001…TC-018, TC-026 y TC-027, pero STORY-121 añadió después TC-028 (`criterios-de-salida-solo-placeholder-sal-03`). Además, varios `story.md` de ejemplo mostraban en `body_lines` un frontmatter con solo `parent`, que un ejecutor leería como `status` ausente (`MAD-03`).
+- **Documento afectado**: design.md
+- **Acción requerida**: Ninguna pendiente: TC-028 recibe el mismo ajuste de CR-002, y el frontmatter de `body_lines` declara `status`, `substatus` y `related` (renumerando el cuerpo; ninguna aserción depende de esos números de línea). Los mundos nuevos TC-019…TC-025 añaden `stories_note` para fijar qué historias y épicas existen.
+- **Estado**: aplicado en story-implement-tasks (2026-10-09)
