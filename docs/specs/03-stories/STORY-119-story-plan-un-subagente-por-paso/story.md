@@ -117,3 +117,27 @@ Ejemplos:
 
 **Hechos verificados al crear la historia:** solo `story-testcases` tiene hoy `--force`; `story-design`, `story-tasking` y `story-analyze` preguntan "(r) Regenerar" si el artefacto existe; ninguno de los 4 workers lanza subagentes; `codex` declara `agentsDirectory: null` en `config/runtimes.json`; `sddf.config.yaml` no declara delegates para la fase plan.
 
+## ❌Nota de Cancelación
+
+**El hallazgo más contraintuitivo:** El uso de los subagentes, que se introducen para optimizar contexto, empeoran la eficiencia de cuota. El refactor de story-plan reduce su consumo de contexto de 125k a 30k, pero sus subagentes consumen 16% de la cuota semanal, totalizando 19% frente al 8% anterior.
+El refactor a subagentes es una victoria para desarrollo local (donde el contexto es la restricción) y una regresión para Claude Pro (donde la cuota es la restricción). Pero hay matices importantes.
+Los subagentes optimizan una dimensión (contexto) a costa de otra (número de peticiones). La decisión depende de cuál es tu restricción.
+El refactor de story-plan es una optimización correcta para el objetivo equivocado. Optimiza contexto cuando tu restricción real era cuota. Para desarrollo local, habría sido exactamente la decisión correcta. Para Claude Pro, es un trade-off que empeora la eficiencia de cuota a cambio de un contexto más manejable.
+
+La lección de ingeniería: antes de optimizar, identifica cuál es tu restricción real. Contexto, cuota, latencia, RAM, coste — cada una lleva a una arquitectura distinta.
+
+El orquestador con subagentes es más caro que hacerlo manual (llamar a los skills directamente). La diferencia es de ~110K tokens por invocación (~60% más caro). Y también más caro que inline (~135K vs ~290K).
+El diseño actual es el peor en eficiencia de cuota. No porque los subagentes sean malos en abstracto, sino porque en este contexto específico (Pro + orquestador con 4 subagentes + caché no compartida) el coste se multiplica.
+
+### Lo que sí es sólido del análisis
+
+| Hallazgo | Confianza |
+| :--- | :--- |
+| Los subagentes pagan su propio prefijo (~30-35K) en cada invocación | Alto |
+| Ese prefijo NO se cachea entre subagentes distintos | Alto |
+| En Pro, cada subagente cuenta como petición contra la cuota | Alto |
+| El refactor redujo el contexto del hilo principal | Alto (125k → 30k) |
+| El refactor aumentó el número de peticiones | Alto |
+| **El refactor empeoró la cuota total** | **Probable pero no medido limpiamente** |
+En términos de cuota, el orquestador con subagentes es el peor diseño posible para Claude Pro (o suscripción similar). 
+En términos de experiencia de usuario, es el mejor.
