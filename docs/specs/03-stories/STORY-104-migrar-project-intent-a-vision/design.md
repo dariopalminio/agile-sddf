@@ -8,7 +8,7 @@ substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 story: STORY-104
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-10
 related:
   - STORY-104-migrar-project-intent-a-vision
   - eliminar-specs-01-projects
@@ -330,3 +330,12 @@ Ninguna. Las ambigüedades detectadas se resolvieron en el diseño y quedan regi
   visión. La historia no lo menciona, pero el borrado lo vuelve falso.
 - **Documento afectado**: story.md
 - **Acción requerida**: incluido en el diseño (D-5, contrato #13). Opcional: añadir la mención a `story.md` (Notas).
+
+### CR-004
+- **Tipo**: ampliación de alcance autorizada
+- **Descripción**: el validador de enlaces activos detectó 16 wikilinks con slugs heredados de `03-stories.bak` y una entrada de
+  plantilla con un slug placeholder en `docs/index.md`. Los archivos de plan vigentes existen bajo `docs/specs/03-stories/`, pero
+  el índice no los resolvía.
+- **Documento afectado**: docs/index.md
+- **Acción requerida**: a petición del usuario, reemplazar cada slug heredado por el slug vigente de su frontmatter y retirar la
+  entrada de `epic-template.md`, que es una plantilla y no un nodo indexable. No se regenera el resto del índice.

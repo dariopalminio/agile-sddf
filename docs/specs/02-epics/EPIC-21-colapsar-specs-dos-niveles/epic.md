@@ -28,7 +28,7 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 
 ### Historias específicas para colapsar `specs/` a dos niveles y eliminar `01-projects/`
 - [x] **STORY-103** — Reemplazar el template de Epic por la versión minimalista y output-oriented: asegurar que los nuevos Epics sigan el formato simplificado y enfocado en resultados.
-- [ ] **STORY-104** — Migrar `project-intent.md` a `product/vision.md`: consolidar la intención del proyecto en la visión de producto existente, sin pérdida semántica (objetivo, visión, intención) y con wikilinks actualizados.
+- [x] **STORY-104** — Migrar `project-intent.md` a `product/vision.md`: consolidar la intención del proyecto en la visión de producto existente, sin pérdida semántica (objetivo, visión, intención) y con wikilinks actualizados.
 - [ ] **STORY-105** — Migrar `project.md` a `product/stakeholders.md` y `requirements/`: repartir stakeholders y requisitos funcionales/no funcionales en sus nuevos hogares, sin pérdida semántica.
 - [ ] **STORY-106** — Migrar `project-plan.md` a `product/roadmap.md`: trasladar el plan de épicas al roadmap de producto, sin pérdida semántica.
 - [ ] **STORY-107** — Migrar `story-map.md` y `context-diagram.puml`: mover `story-map.md` a `docs/product/story-map.md` y `context-diagram.puml` a `docs/architecture/c4/context-diagram.puml`, actualizando referencias.

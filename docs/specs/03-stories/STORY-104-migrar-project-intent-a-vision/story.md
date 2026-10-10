@@ -5,11 +5,11 @@ id: STORY-104
 kind: chore
 slug: STORY-104-migrar-project-intent-a-vision
 title: "Migrar project-intent.md a product/vision.md"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
-updated: 2026-10-07
+updated: 2026-10-10
 related:
   - EPIC-21-colapsar-specs-dos-niveles
   - ADR-0013-eliminar-specs-01-projects
@@ -20,7 +20,7 @@ related:
 
 # 📖 Historia: Migrar `project-intent.md` a `product/vision.md`
 
-**Como** mantenedor del framework SDDF que consulta o actualiza la visión del producto  
+**Como** developers y mantenedores del framework SDDF que consultan o actualizan la visión del producto  
 **Quiero** encontrar el problema, la visión, los beneficios, los criterios de éxito, las restricciones y los non-goals del proyecto en un único documento `docs/product/vision.md`  
 **Para** dejar de mantener dos fuentes de verdad que divergen (`project-intent.md` y `vision.md`) y que humanos y agentes lean siempre la misma visión
 

@@ -9,13 +9,13 @@ parent: null
 created: 2026-04-19
 updated: 2026-08-30
 related:
-  - PROJ-01-agile-sddf-project-intent
+  - vision
   - project-plan
   - story-map
 ---
 
 <!-- Referencias -->
-[[PROJ-01-agile-sddf-project-intent]] · [[project-plan]] · [[story-map]]
+[[vision]] · [[project-plan]] · [[story-map]]
 
 > **Nota de vigencia.** La primera versión de este documento (2026-04-19) fue generada por
 > `/reverse-engineering` sobre el repositorio de entonces. Esta revisión (2026-08-30) es una
@@ -1102,7 +1102,7 @@ las convenciones de presentación de cada proyecto y no con el pipeline SDD.
 ## 11. Referencias
 
 - [[index]] — `docs/index.md`, cursor de entrada a toda la documentación del repositorio
-- [[PROJ-01-agile-sddf-project-intent]] — intención inicial del proyecto
+- [[vision]] — visión del producto (antes project-intent.md)
 - [[project-plan]] — plan de épicas y backlog · [[story-map]] — mapa de historias
 - [[constitution]] — principios técnicos inamovibles, stack y estándares de construcción de skills
 - [[dod-story-checklist]] — Definition of Done por estado del workflow de historia
