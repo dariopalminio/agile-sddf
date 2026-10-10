@@ -10,12 +10,12 @@ created: 2026-04-19
 updated: 2026-08-30
 related:
   - vision
-  - project-plan
+  - roadmap
   - story-map
 ---
 
 <!-- Referencias -->
-[[vision]] · [[project-plan]] · [[story-map]]
+[[vision]] · [[roadmap]] · [[story-map]]
 
 > **Nota de vigencia.** La primera versión de este documento (2026-04-19) fue generada por
 > `/reverse-engineering` sobre el repositorio de entonces. Esta revisión (2026-08-30) es una
@@ -356,7 +356,7 @@ las convenciones de presentación de cada proyecto y no con el pipeline SDD.
 
 - [[index]] — `docs/index.md`, cursor de entrada a toda la documentación del repositorio
 - [[vision]] — visión del producto (antes project-intent.md)
-- [[project-plan]] — plan de épicas y backlog · [[story-map]] — mapa de historias
+- [[roadmap]] — roadmap de épicas y plan original (antes project-plan.md) · [[story-map]] — mapa de historias
 - [[constitution]] — principios técnicos inamovibles, stack y estándares de construcción de skills
 - [[dod-story-checklist]] — Definition of Done por estado del workflow de historia
 - [[state-machine]] — máquina de estados canónica (proyecto, épica, historia)

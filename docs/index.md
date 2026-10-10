@@ -57,6 +57,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 - [[product-index]] — [README.md](product/README.md) — Producto
 - [[objectives]] — [objectives.md](product/objectives.md) — Objetivos
+- [[roadmap]] — [roadmap.md](product/roadmap.md) — Roadmap del producto
 - [[stakeholders]] — [stakeholders.md](product/stakeholders.md) — Stakeholders
 - [[vision]] — [vision.md](product/vision.md) — Visión del producto
 
@@ -149,7 +150,6 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ### L3 — Proyecto (specs/01-projects/)
 
-- [[project-plan]] — [project-plan.md](specs/01-projects/PROJ-01-agile-sddf/project-plan.md) — Project Plan
 - [[PROJ-01-agile-sddf]] — [project.md](specs/01-projects/PROJ-01-agile-sddf/project.md) — Especificación de Requisitos — Agile SDDF
 - [[story-map]] — [story-map.md](specs/01-projects/PROJ-01-agile-sddf/story-map.md) — Story Map — Agile SDDF (Spec-Driven Development Framework)
 

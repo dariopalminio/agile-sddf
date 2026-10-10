@@ -420,3 +420,11 @@ Ninguna. Las ambigüedades detectadas se resolvieron en el diseño y quedan regi
 - **Documento afectado**: story.md
 - **Acción requerida**: el diseño retira la entrada de `L3` y da de alta `[[roadmap]]` en `### Producto (product/)` (D-6). Sin cambio
   necesario en la historia.
+
+### CR-005
+- **Tipo**: cambio de inventario
+- **Descripción**: al implementar, `docs/specs/02-epics/` contiene 23 épicas (`EPIC-00` a `EPIC-22`), no las 22 (`EPIC-00` a
+  `EPIC-21`) registradas al diseñar la historia.
+- **Documento afectado**: story.md / design.md / tasks.md
+- **Acción requerida**: `roadmap.md` refleja las 23 épicas efectivamente presentes y sus frontmatters, para no ocultar EPIC-22. Los
+  comparadores validan el inventario dinámico; la discrepancia queda registrada en `implement-report.md`.

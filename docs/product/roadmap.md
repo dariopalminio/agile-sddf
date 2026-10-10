@@ -1,27 +1,54 @@
 ---
-type: project
-id: PROJ-01
-slug: project-plan
-title: "Project Plan"
-date: 2026-04-20
+type: product
+slug: roadmap
+title: "Roadmap del producto"
 status: IN-PROGRESS
-substatus: IN-PROGRESS
+substatus: TODO
 parent: null
-related:
-  - project-requirement-spec
-  - story-map
+created: 2026-10-10
+updated: 2026-10-10
 ---
 
-<!-- Referencias -->
-[[PROJ-01-agile-sddf]]
+# Roadmap del producto
 
-## Objetivo
+> Origen: plan de épicas de `project-plan.md` (PROJ-01, eliminado), migrado por [[eliminar-specs-01-projects]]. El objetivo de negocio vive en [[objectives]].
+> La lista de épicas es una foto a la fecha de migración; no se sincroniza sola con el estado de cada épica.
 
-Automatizar el ciclo completo de especificación de proyectos software — desde la intención inicial hasta el backlog planificado de historias de usuario — mediante un framework CLI multiagente declarativo basado exclusivamente en archivos Markdown, con control de WIP, trazabilidad completa y compatibilidad con múltiples runtimes de IA.
+## Épicas
 
----
+Foto del 2026-10-10: 23 épicas. Valores copiados del frontmatter de cada epic.md.
 
-## Backlog de Historias
+| ID | Épica | Título | Status | Substatus |
+|---|---|---|---|---|
+| EPIC-00 | [[EPIC-00-estructura-base-y-mecanismo-de-templates]] | Release 00 — Estructura Base y Mecanismo de Templates | COMPLETED | DONE |
+| EPIC-01 | [[EPIC-01-features-spec-builder]] | Release 01 — Features Spec Builder | COMPLETED | DONE |
+| EPIC-02 | [[EPIC-02-project-spec-builder]] | Release 02 — Project Spec Builder (Pipeline de proyecto) | COMPLETED | DONE |
+| EPIC-03 | [[EPIC-03-reverse-engineering]] | Release 03 — Reverse Engineering (Ingeniería inversa) | COMPLETED | DONE |
+| EPIC-04 | [[EPIC-04-refactor-features-spec-builder]] | Release 04 — Refactor Features Spec Builder (Consolidación y calidad) | COMPLETED | DONE |
+| EPIC-05 | [[EPIC-05-enhance-project-spec]] | Release 05 — Enhance Project Spec (Expansión project spec) | COMPLETED | DONE |
+| EPIC-06 | [[EPIC-06-release-and-story-generator]] | Release 06 — Release & Story Generator | COMPLETED | DONE |
+| EPIC-07 | [[EPIC-07-publicacion-framework-npm]] | Release 07 — Publicación del Framework SDDF como Paquete NPM | COMPLETED | DONE |
+| EPIC-08 | [[EPIC-08-npm-install-locally]] | Release 08 — Npm Install locally | COMPLETED | DONE |
+| EPIC-09 | [[EPIC-09-docs-and-wiki-builders]] | Release 09 — Docs and Wiki builders | COMPLETED | DONE |
+| EPIC-10 | [[EPIC-10-mejora-estructura-artefactos-nuevos-skills]] | Mejora en estructura de artefactos y nuevos skills | COMPLETED | DONE |
+| EPIC-11 | [[EPIC-11-centralizar-templates]] | Centralizar templates de spec en directorio compartido | COMPLETED | DONE |
+| EPIC-12 | [[EPIC-12-story-sdd-workflow]] | Story SDD Workflow - comandos del flujo de story | COMPLETED | DONE |
+| EPIC-13 | [[quality-gates-con-dod-en-story-workflow]] | Quality Gates con DoD en Story Workflow | DEFINE | IN-PROGRESS |
+| EPIC-14 | [[fabrica-de-skills]] | Fábrica de Skills | COMPLETED | DONE |
+| EPIC-15 | [[e2e-capability]] | Skills de Testing Especializado y E2E Capability | COMPLETED | DONE |
+| EPIC-16 | [[EPIC-16-enhancement-and-security]] | enhancement and security improvements for skills (Safe Enhancement & Fortify Skills) | COMPLETED | DONE |
+| EPIC-17 | [[remediating-and-improvement]] | Remediating and Improvement | DEVELOP | DONE |
+| EPIC-18 | [[workflow-hardening]] | Workflow Hardening — Robustecer el flujo de Story y Release | COMPLETED | DONE |
+| EPIC-19 | [[EPIC-19-framework-consistency]] | Framework Consistency — Coherencia de vocabulario, instalación, seguridad y ciclo de corrección | DEVELOP | IN-PROGRESS |
+| EPIC-20 | [[EPIC-20-memory-system]] | Memory System — Sistema de memoria unificado y agnóstico al harness | DEFINE | TODO |
+| EPIC-21 | [[EPIC-21-colapsar-specs-dos-niveles]] | Colapsar specs/ a dos niveles y eliminar 01-projects/ | DEFINE | IN-PROGRESS |
+| EPIC-22 | [[EPIC-22-epic-analyze]] | Skill `epic-analyze`: análisis de una épica antes de desarrollarla | DEVELOP | DONE |
+
+## Plan original (2026-04-20)
+
+> Histórico. Plan de épicas aprobado el 2026-04-20; no refleja el estado actual. Las épicas vigentes están en [Épicas](#épicas).
+
+### Backlog de historias
 
 - [ ] **STORY-001: Captura de Intención Inicial** — El sistema conduce una entrevista guiada para capturar nombre, problema, visión, criterios de éxito y restricciones del proyecto, escribiendo el resultado en `project-intent.md`. _(deps: —)_
 - [ ] **STORY-002: Extracción Dinámica de Templates** — Los agentes leen los headers `##` y comentarios `<!-- -->` de los templates en runtime para derivar preguntas y completar secciones, sin lógica hardcodeada. _(deps: —)_
@@ -81,12 +108,9 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] **Skill de Code Review:** La capacidad /story-code-review (en fase post IMPLEMENT de story) implementa una revisión de código automatizada mediante un equipo de tres agentes especializados (Calidad, Requisitos e Integración + un árbitro), garantizando que la implementación de una historia de usuario cumple con los criterios de aceptación (Gherkin), los estándares técnicos y la coherencia arquitectónica.
 
 
----
 
-
-## Propuesta de Épicas
-
-### Épica 00 — Estructura Base y Mecanismo de Templates
+#### Propuesta de épicas
+#### Épica 00 — Estructura Base y Mecanismo de Templates
 
 **Objetivo:** Establecer la estructura fundacional del framework: convenciones de directorios, configuración de entornos reproducibles y el mecanismo de extracción dinámica de templates que habilita a todos los agentes a generar preguntas contextuales en runtime sin lógica hardcodeada.
 
@@ -102,9 +126,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] Modificar un comentario `<!-- -->` o header `##` en un template produce un cambio observable en las preguntas generadas por el agente sin modificar el SKILL.md del agente.
 - [ ] El entorno Docker permite reproducir el entorno de desarrollo sin dependencias locales.
 
----
-
-### Épica 01 — Features Spec Builder
+#### Épica 01 — Features Spec Builder
 
 **Estado:** Ready | **Fecha:** 2026-04-09
 
@@ -123,9 +145,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] El skill `story-evaluation` aplica la rúbrica FINVEST y produce una decisión (APROBADA / REFINAR / RECHAZAR / DIVIDIR) con score numérico Likert 1-5 por dimensión.
 - [ ] El skill `story-split` divide una historia grande en historias más pequeñas aplicando uno de los 8 patrones de splitting.
 
----
-
-### Épica 02 — Project Spec Builder
+#### Épica 02 — Project Spec Builder
 
 **Estado:** Ready | **Fecha:** 2026-04-16
 
@@ -147,9 +167,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] El pipeline ProjectSpecFactory produce los 3 documentos canónicos (`project-intent.md`, `requirement-spec.md`, `project-plan.md`) en una sesión continua sin errores, con `Estado: Ready` en cada documento al finalizar.
 - [ ] El control WIP=1 impide la creación de múltiples proyectos activos sin confirmación explícita; ante un documento con `Estado: IN-PROGRESS`, el sistema presenta exactamente las opciones "Sobrescribir" y "Retomar".
 
----
-
-### Épica 03 — Reverse Engineering
+#### Épica 03 — Reverse Engineering
 
 **Estado:** Ready | **Fecha:** 2026-04-16
 
@@ -174,9 +192,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] El flag `--focus <path>` limita el análisis al subdirectorio especificado.
 - [ ] El flag `--update` re-analiza únicamente las secciones marcadas como `<!-- PENDING MANUAL REVIEW -->` y preserva verbatim el resto del documento existente.
 
----
-
-### Épica 04 — Refactor Features Spec Builder
+#### Épica 04 — Refactor Features Spec Builder
 
 **Estado:** Ready | **Fecha:** 2026-04-17
 
@@ -194,9 +210,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] El skill `story-evaluation` rechaza imágenes adjuntas con un mensaje explícito solicitando el texto de la historia.
 - [ ] Los tres skills de historia (`story-creation`, `story-evaluation`, `story-split`) producen resultados idénticos independientemente del runtime usado (Claude Code, GitHub Copilot, Codex/Cursor).
 
----
-
-### Épica 05 — Enhance Project Spec
+#### Épica 05 — Enhance Project Spec
 
 **Estado:** Ready | **Fecha:** 2026-04-18
 
@@ -218,9 +232,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] El skill `project-story-mapping` produce `story-map.md` con backbone, walking skeleton y al menos 2 release slices a partir de `requirement-spec.md`.
 - [ ] El skill `story-refine` orquesta el ciclo creación → evaluación → split → mejora y activa el gate anti-bucle antes de cada iteración adicional, ofreciendo las tres salidas explícitas al usuario.
 
----
-
-### Épica 06 — Release & Story Generator & Soporte Atlassian Rovo
+#### Épica 06 — Release & Story Generator & Soporte Atlassian Rovo
 
 **Estado:** IN-PROGRESS | **Fecha:** 2026-04-20
 
@@ -235,9 +247,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] El skill `generate-release` produce un `release-[ID]-[Nombre].md` válido que supera la validación de formato a partir de la información de `project-plan.md`.
 - [ ] El skill `generate-stories` produce al menos una `story-[ID]-[Nombre].md` por feature del release, con formato Como/Quiero/Para y criterios Gherkin, que supera la evaluación FINVEST con decisión APROBADA.
 
----
-
-### Épica 07 — Robustez y Trazabilidad (Planificado)
+#### Épica 07 — Robustez y Trazabilidad (Planificado)
 
 **Objetivo:** Completar la resiliencia del pipeline ante interrupciones, añadir búsqueda de historias por término y establecer trazabilidad bidireccional del backlog con IDs únicos ST-00X.
 
@@ -250,9 +260,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] El sistema encuentra el archivo de historia correcto con un término corto y solicita selección cuando hay múltiples coincidencias.
 - [ ] El backlog de sesión mantiene IDs únicos ST-00X con origen (original / split), estado y decisión FINVEST para cada historia.
 
----
-
-### Épica 08 — Meta-Framework y Distribución (Planificado)
+#### Épica 08 — Meta-Framework y Distribución (Planificado)
 
 **Objetivo:** Incorporar las herramientas para crear, benchmarkear y distribuir nuevas skills, convirtiendo al framework en un meta-framework extensible por la comunidad.
 
@@ -265,9 +273,7 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 - [ ] El benchmarking ejecuta casos de prueba en paralelo (con skill vs sin skill) y genera un viewer HTML con comparación cualitativa y cuantitativa.
 - [ ] Una skill empaquetada como `.skill` puede instalarse en otro entorno con un único comando.
 
----
-
-## Resumen
+### Resumen
 
 | Métrica | Valor |
 |---------|-------|
@@ -282,3 +288,6 @@ Automatizar el ciclo completo de especificación de proyectos software — desde
 | Features en Épica 07 | 3 |
 | Features en Épica 08 | 3 |
 | Épicas planificadas | 9 |
+
+Volver al mapa: [[index]].
+
