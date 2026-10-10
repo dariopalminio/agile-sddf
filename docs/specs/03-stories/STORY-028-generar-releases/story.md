@@ -17,15 +17,15 @@ parent: EPIC-06-release-and-story-generator
 
 ## ?? Historia: Generar releases desde project-plan
 
-**Como** desarrollador que ha completado la planificaci�n de un proyecto SDDF con releases definidos en `project-plan.md`
-**Quiero** ejecutar el skill `releases-from-project-plan` para generar autom�ticamente un archivo `release-[ID]-[Nombre].md` por cada release planificado
-**Para** obtener especificaciones de release estructuradas seg�n el template `release-spec-template.md` listas para completar, sin crearlas manualmente desde cero
+**Como** desarrollador que ha completado la planificaciï¿½n de un proyecto SDDF con releases definidos en `project-plan.md`
+**Quiero** ejecutar el skill `releases-from-project-plan` para generar automï¿½ticamente un archivo `release-[ID]-[Nombre].md` por cada release planificado
+**Para** obtener especificaciones de release estructuradas segï¿½n el template `release-spec-template.md` listas para completar, sin crearlas manualmente desde cero
 
-## ? Criterios de aceptaci�n
+## ? Criterios de aceptaciï¿½n
 
-### Escenario principal � Generaci�n exitosa de archivos de release
+### Escenario principal ï¿½ Generaciï¿½n exitosa de archivos de release
 ```gherkin
-Dado que existe "docs/specs/projects/project-plan.md" con al menos una secci�n "### Release NN � Nombre" bajo "## Propuesta de Releases"
+Dado que existe "docs/specs/projects/project-plan.md" con al menos una secciï¿½n "### Release NN ï¿½ Nombre" bajo "## Propuesta de Releases"
   Y el directorio "docs/specs/releases/" existe o puede ser creado
 Cuando el desarrollador ejecuta el skill "releases-from-project-plan"
 Entonces el skill genera un archivo "release-[ID]-[Nombre-kebab].md" por cada release encontrado
@@ -33,21 +33,21 @@ Entonces el skill genera un archivo "release-[ID]-[Nombre-kebab].md" por cada re
   Y los archivos se guardan en "docs/specs/releases/"
 ```
 
-### Escenario alternativo / error � project-plan.md no existe
+### Escenario alternativo / error ï¿½ project-plan.md no existe
 ```gherkin
 Dado que el archivo "docs/specs/projects/project-plan.md" no existe
 Cuando el desarrollador ejecuta el skill "releases-from-project-plan"
-Entonces el skill muestra "No se encontr� docspecs/projects/t/project-plan.md"
-  Pero no genera ning�n archivo de release
+Entonces el skill muestra "No se encontrï¿½ docspecs/projects/t/project-plan.md"
+  Pero no genera ningï¿½n archivo de release
 ```
 
-### Escenario alternativo / error � Plan sin releases planificados
+### Escenario alternativo / error ï¿½ Plan sin releases planificados
 ```gherkin
 Dado que "docs/specs/projects/project-plan.md" existe
-  Y no contiene ninguna secci�n "### Release" bajo "## Propuesta de Releases"
+  Y no contiene ninguna secciï¿½n "### Release" bajo "## Propuesta de Releases"
 Cuando el desarrollador ejecuta el skill "releases-from-project-plan"
 Entonces el skill muestra "No se encontraron releases planificados en project-plan.md"
-  Pero no genera ning�n archivo de release
+  Pero no genera ningï¿½n archivo de release
 ```
 
 ## ?? Criterios no funcionales
@@ -56,5 +56,5 @@ Entonces el skill muestra "No se encontraron releases planificados en project-pl
 
 ## ?? Notas / contexto adicional
 
-Generado autom�ticamente desde el release: release-06-release-and-story-generator.md
-Feature origen: STORY-028 � Generar releases
+Generado automï¿½ticamente desde el release: release-06-release-and-story-generator.md
+Feature origen: STORY-028 ï¿½ Generar releases

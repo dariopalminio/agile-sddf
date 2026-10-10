@@ -21,22 +21,22 @@ parent: EPIC-03-reverse-engineering
 **Quiero** que el agente `reverse-engineer-product-discovery` analice rutas, componentes UI y endpoints para extraer features desde la perspectiva del usuario
 **Para** obtener `.tmp/rfc-features.md` con el inventario de funcionalidades agrupadas por dominio, como input para el sintetizador
 
-## ? Criterios de aceptación
+## ? Criterios de aceptaciÃ³n
 
-### Escenario principal – Extracción exitosa de features desde código
+### Escenario principal â€“ ExtracciÃ³n exitosa de features desde cÃ³digo
 ```gherkin
 Dado que el repositorio contiene definiciones de rutas, componentes de interfaz y endpoints REST
 Cuando el agente "reverse-engineer-product-discovery" analiza el repositorio
 Entonces genera ".tmp/rfc-features.md" con las features agrupadas por dominio funcional
-  Y cada feature incluye nombre, descripción inferida y referencias a los archivos fuente
+  Y cada feature incluye nombre, descripciÃ³n inferida y referencias a los archivos fuente
 ```
 
-### Escenario alternativo / error – Repositorio sin componentes de interfaz o endpoints
+### Escenario alternativo / error â€“ Repositorio sin componentes de interfaz o endpoints
 ```gherkin
-Dado que el repositorio es una librería de utilidades sin rutas ni endpoints
+Dado que el repositorio es una librerÃ­a de utilidades sin rutas ni endpoints
 Cuando el agente intenta extraer features de usuario
-Entonces genera ".tmp/rfc-features.md" con el inventario vacío o mínimo
-  Y añade "<!-- PENDING MANUAL REVIEW -->" indicando que no se detectaron componentes de interfaz
+Entonces genera ".tmp/rfc-features.md" con el inventario vacÃ­o o mÃ­nimo
+  Y aÃ±ade "<!-- PENDING MANUAL REVIEW -->" indicando que no se detectaron componentes de interfaz
 ```
 
 ## ?? Criterios no funcionales
@@ -45,5 +45,5 @@ Entonces genera ".tmp/rfc-features.md" con el inventario vacío o mínimo
 
 ## ?? Notas / contexto adicional
 
-Generado automáticamente desde el release: release-03-reverse-engineering.md
-Feature origen: STORY-019 — Agente reverse-engineer-product-discovery
+Generado automÃ¡ticamente desde el release: release-03-reverse-engineering.md
+Feature origen: STORY-019 â€” Agente reverse-engineer-product-discovery

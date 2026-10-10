@@ -3,7 +3,7 @@ type: story
 id: STORY-023
 kind: feat
 slug: STORY-023-scope-acotado-focus
-title: "Scope acotado ó Flag --focus para reverse-engineering"
+title: "Scope acotado ‚Äî Flag --focus para reverse-engineering"
 date: 2026-04-22
 status: COMPLETED
 substatus: READY
@@ -15,28 +15,28 @@ parent: EPIC-03-reverse-engineering
 
 # Historia de Usuario
 
-## ?? Historia: Scope acotado ó Flag --focus para reverse-engineering
+## ?? Historia: Scope acotado ‚Äî Flag --focus para reverse-engineering
 
-**Como** developer que ejecuta ingenierÌa inversa sobre un repositorio grande con m˙ltiples mÛdulos
-**Quiero** usar el flag `--focus <path>` con el skill `reverse-engineering` para limitar el an·lisis a una ruta especÌfica del repositorio
-**Para** obtener resultados m·s precisos y r·pidos sobre el mÛdulo de interÈs, sin analizar cÛdigo irrelevante al contexto actual
+**Como** developer que ejecuta ingenier√≠a inversa sobre un repositorio grande con m√∫ltiples m√≥dulos
+**Quiero** usar el flag `--focus <path>` con el skill `reverse-engineering` para limitar el an√°lisis a una ruta espec√≠fica del repositorio
+**Para** obtener resultados m√°s precisos y r√°pidos sobre el m√≥dulo de inter√©s, sin analizar c√≥digo irrelevante al contexto actual
 
-## ? Criterios de aceptaciÛn
+## ? Criterios de aceptaci√≥n
 
-### Escenario principal ñ An·lisis acotado a un path especÌfico
+### Escenario principal ‚Äì An√°lisis acotado a un path espec√≠fico
 ```gherkin
-Dado que el repositorio tiene los mÛdulos "src/auth/", "src/billing/" y "src/admin/"
+Dado que el repositorio tiene los m√≥dulos "src/auth/", "src/billing/" y "src/admin/"
 Cuando el desarrollador ejecuta "/reverse-engineering --focus src/auth/"
-Entonces los cuatro agentes limitan su an·lisis al contenido de "src/auth/"
-  Y el "requirement-spec.md" generado refleja ˙nicamente las features, reglas y navegaciÛn de ese mÛdulo
+Entonces los cuatro agentes limitan su an√°lisis al contenido de "src/auth/"
+  Y el "requirement-spec.md" generado refleja √∫nicamente las features, reglas y navegaci√≥n de ese m√≥dulo
 ```
 
-### Escenario alternativo / error ñ Path indicado no existe
+### Escenario alternativo / error ‚Äì Path indicado no existe
 ```gherkin
 Dado que el desarrollador indica "--focus src/inexistente/"
-Cuando el skill intenta acotar el an·lisis
+Cuando el skill intenta acotar el an√°lisis
 Entonces muestra "El path 'src/inexistente/' no existe en el repositorio"
-  Pero no inicia el an·lisis con un scope inv·lido
+  Pero no inicia el an√°lisis con un scope inv√°lido
 ```
 
 ## ?? Criterios no funcionales
@@ -45,5 +45,5 @@ Entonces muestra "El path 'src/inexistente/' no existe en el repositorio"
 
 ## ?? Notas / contexto adicional
 
-Generado autom·ticamente desde el release: release-03-reverse-engineering.md
-Feature origen: STORY-023 ó Scope acotado (--focus)
+Generado autom√°ticamente desde el release: release-03-reverse-engineering.md
+Feature origen: STORY-023 ‚Äî Scope acotado (--focus)

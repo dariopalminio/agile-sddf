@@ -3,7 +3,7 @@ type: story
 id: STORY-006
 kind: feat
 slug: STORY-006-story-creation
-title: "story-creation — Crear historias de usuario"
+title: "story-creation â€” Crear historias de usuario"
 date: 2026-04-22
 status: COMPLETED
 substatus: READY
@@ -15,29 +15,29 @@ parent: EPIC-01-features-spec-builder
 
 # Historia de Usuario
 
-## ?? Historia: story-creation — Crear historias de usuario
+## ?? Historia: story-creation â€” Crear historias de usuario
 
 **Como** desarrollador o PM que necesita redactar una historia de usuario para sprint planning
 **Quiero** ejecutar el skill `story-creation` describiendo una necesidad o feature en lenguaje natural
-**Para** obtener una historia completa en formato Como/Quiero/Para con criterios de aceptación Gherkin lista para evaluarse con FINVEST, sin redactarla desde cero
+**Para** obtener una historia completa en formato Como/Quiero/Para con criterios de aceptaciÃ³n Gherkin lista para evaluarse con FINVEST, sin redactarla desde cero
 
-## ? Criterios de aceptación
+## ? Criterios de aceptaciÃ³n
 
-### Escenario principal – Creación exitosa desde descripción en texto libre
+### Escenario principal â€“ CreaciÃ³n exitosa desde descripciÃ³n en texto libre
 ```gherkin
-Dado que el desarrollador describe una necesidad: "El usuario quiere recuperar su contraseña por email"
-Cuando ejecuta el skill "story-creation" con esa descripción
+Dado que el desarrollador describe una necesidad: "El usuario quiere recuperar su contraseÃ±a por email"
+Cuando ejecuta el skill "story-creation" con esa descripciÃ³n
 Entonces el skill genera un archivo "story-{slug}.md" en "docs/specs/stories/"
-  Y el archivo contiene las secciones Como/Quiero/Para con rol específico, acción concreta y beneficio medible
+  Y el archivo contiene las secciones Como/Quiero/Para con rol especÃ­fico, acciÃ³n concreta y beneficio medible
   Y el archivo incluye al menos un escenario Gherkin principal y uno alternativo/error en bloques ```gherkin```
 ```
 
-### Escenario alternativo / error – Historia demasiado grande (épica)
+### Escenario alternativo / error â€“ Historia demasiado grande (Ã©pica)
 ```gherkin
-Dado que la descripción cubre tres funcionalidades distintas
-Cuando el skill evalúa el alcance
+Dado que la descripciÃ³n cubre tres funcionalidades distintas
+Cuando el skill evalÃºa el alcance
 Entonces el skill genera la historia pero sugiere ejecutar "/story-split" para dividirla
-  Pero no divide automáticamente sin instrucción explícita
+  Pero no divide automÃ¡ticamente sin instrucciÃ³n explÃ­cita
 ```
 
 ## ?? Criterios no funcionales
@@ -46,5 +46,5 @@ Entonces el skill genera la historia pero sugiere ejecutar "/story-split" para d
 
 ## ?? Notas / contexto adicional
 
-Generado automáticamente desde el release: release-01-features-spec-builder.md
-Feature origen: STORY-006 — story-creation
+Generado automÃ¡ticamente desde el release: release-01-features-spec-builder.md
+Feature origen: STORY-006 â€” story-creation

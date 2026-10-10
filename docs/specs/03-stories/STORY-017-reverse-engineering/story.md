@@ -3,7 +3,7 @@ type: story
 id: STORY-017
 kind: feat
 slug: STORY-017-reverse-engineering
-title: "reverse-engineering � Skill orquestador de ingenier�a inversa"
+title: "reverse-engineering ï¿½ Skill orquestador de ingenierï¿½a inversa"
 date: 2026-04-22
 status: COMPLETED
 substatus: READY
@@ -15,29 +15,29 @@ parent: EPIC-03-reverse-engineering
 
 # Historia de Usuario
 
-## ?? Historia: reverse-engineering � Skill orquestador de ingenier�a inversa
+## ?? Historia: reverse-engineering ï¿½ Skill orquestador de ingenierï¿½a inversa
 
-**Como** developer o architect que trabaja con un repositorio existente sin documentaci�n de requisitos
-**Quiero** ejecutar el skill `reverse-engineering` sobre ese repositorio para que cuatro agentes analicen en paralelo el c�digo fuente
-**Para** obtener `$SPECS_BASE/specs/projects/project.md` generado autom�ticamente desde el c�digo, sin tener que documentar los requisitos desde cero
+**Como** developer o architect que trabaja con un repositorio existente sin documentaciï¿½n de requisitos
+**Quiero** ejecutar el skill `reverse-engineering` sobre ese repositorio para que cuatro agentes analicen en paralelo el cï¿½digo fuente
+**Para** obtener `$SPECS_BASE/specs/projects/project.md` generado automï¿½ticamente desde el cï¿½digo, sin tener que documentar los requisitos desde cero
 
-## ? Criterios de aceptaci�n
+## ? Criterios de aceptaciï¿½n
 
-### Escenario principal � Generaci�n exitosa de requirement-spec.md desde c�digo
+### Escenario principal ï¿½ Generaciï¿½n exitosa de requirement-spec.md desde cï¿½digo
 ```gherkin
-Dado que el desarrollador est� en la ra�z de un repositorio con c�digo fuente
+Dado que el desarrollador estï¿½ en la raï¿½z de un repositorio con cï¿½digo fuente
 Cuando ejecuta el skill "reverse-engineering"
 Entonces el skill lanza 4 agentes en paralelo (architect, product-discovery, business-analyst, ux-flow-mapper)
   Y al finalizar el sintetizador fusiona los outputs en "docs/specs/projects/project.md"
-  Y el documento incluye stack, features, reglas de negocio y mapa de navegaci�n inferidos del c�digo
+  Y el documento incluye stack, features, reglas de negocio y mapa de navegaciï¿½n inferidos del cï¿½digo
 ```
 
-### Escenario alternativo / error � Repositorio sin c�digo fuente reconocible
+### Escenario alternativo / error ï¿½ Repositorio sin cï¿½digo fuente reconocible
 ```gherkin
-Dado que el directorio solo contiene archivos de configuraci�n sin l�gica de negocio
+Dado que el directorio solo contiene archivos de configuraciï¿½n sin lï¿½gica de negocio
 Cuando el skill analiza el repositorio
 Entonces los agentes generan outputs con secciones marcadas como "<!-- PENDING MANUAL REVIEW -->"
-  Y el sintetizador informa qu� secciones no pudieron inferirse del c�digo disponible
+  Y el sintetizador informa quï¿½ secciones no pudieron inferirse del cï¿½digo disponible
 ```
 
 ## ?? Criterios no funcionales
@@ -46,5 +46,5 @@ Entonces los agentes generan outputs con secciones marcadas como "<!-- PENDING M
 
 ## ?? Notas / contexto adicional
 
-Generado autom�ticamente desde el release: release-03-reverse-engineering.md
-Feature origen: STORY-017 � reverse-engineering (skill orquestador)
+Generado automï¿½ticamente desde el release: release-03-reverse-engineering.md
+Feature origen: STORY-017 ï¿½ reverse-engineering (skill orquestador)

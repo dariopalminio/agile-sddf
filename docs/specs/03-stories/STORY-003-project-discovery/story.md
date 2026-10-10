@@ -3,7 +3,7 @@ type: story
 id: STORY-003
 kind: feat
 slug: STORY-003-project-discovery
-title: "project-discovery � Discovery de usuarios y especificaci�n de requisitos"
+title: "project-discovery ï¿½ Discovery de usuarios y especificaciï¿½n de requisitos"
 date: 2026-04-22
 status: COMPLETED
 substatus: READY
@@ -15,29 +15,29 @@ parent: EPIC-02-project-spec-builder
 
 # Historia de Usuario
 
-## ?? Historia: project-discovery � Discovery de usuarios y especificaci�n de requisitos
+## ?? Historia: project-discovery ï¿½ Discovery de usuarios y especificaciï¿½n de requisitos
 
 **Como** developer que tiene `project-intent.md` aprobado y necesita detallar los requisitos del sistema
-**Quiero** ejecutar el skill `project-discovery` para completar la entrevista de especificaci�n con el agente architect
+**Quiero** ejecutar el skill `project-discovery` para completar la entrevista de especificaciï¿½n con el agente architect
 **Para** obtener `$SPECS_BASE/specs/projects/project.md` con usuarios, flujos, requisitos funcionales y no funcionales documentados, listo para la fase de planning
 
-## ? Criterios de aceptaci�n
+## ? Criterios de aceptaciï¿½n
 
-### Escenario principal � Generaci�n exitosa de requirement-spec.md
+### Escenario principal ï¿½ Generaciï¿½n exitosa de requirement-spec.md
 ```gherkin
 Dado que existe "docs/specs/projects/project-intent.md" con Estado: Ready
 Cuando el desarrollador ejecuta el skill "project-discovery"
-Entonces el agente conduce la entrevista de discovery secci�n por secci�n usando project-intent.md como contexto
-  Y genera "docs/specs/projects/project.md" con Estado: Ready tras confirmaci�n del usuario
+Entonces el agente conduce la entrevista de discovery secciï¿½n por secciï¿½n usando project-intent.md como contexto
+  Y genera "docs/specs/projects/project.md" con Estado: Ready tras confirmaciï¿½n del usuario
   Y el documento incluye perfiles de usuario, flujos principales, requisitos funcionales (FR) y no funcionales (NFR)
 ```
 
-### Escenario alternativo / error � project-intent.md no existe
+### Escenario alternativo / error ï¿½ project-intent.md no existe
 ```gherkin
 Dado que "docs/specs/projects/project-intent.md" no existe
 Cuando el desarrollador ejecuta el skill "project-discovery"
-Entonces el skill muestra "No se encontr� project-intent.md. Ejecuta /project-begin primero."
-  Pero no genera ning�n documento de requisitos
+Entonces el skill muestra "No se encontrï¿½ project-intent.md. Ejecuta /project-begin primero."
+  Pero no genera ningï¿½n documento de requisitos
 ```
 
 ## ?? Criterios no funcionales
@@ -46,5 +46,5 @@ Entonces el skill muestra "No se encontr� project-intent.md. Ejecuta /project-
 
 ## ?? Notas / contexto adicional
 
-Generado autom�ticamente desde el release: release-02-project-spec-builder.md
-Feature origen: STORY-003 � project-discovery
+Generado automï¿½ticamente desde el release: release-02-project-spec-builder.md
+Feature origen: STORY-003 ï¿½ project-discovery

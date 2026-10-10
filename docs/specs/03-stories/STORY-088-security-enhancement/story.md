@@ -16,7 +16,7 @@ related:
 <!-- Referencias -->
 [[EPIC-19-framework-consistency]]
 
-# 📖 Historia: Mejoras de seguridad
+# ðŸ“– Historia: Mejoras de seguridad
 
 - Desacoplar `story-code-review` del skill `security-audit`
 - Implementar SECURITY.md

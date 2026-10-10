@@ -3,7 +3,7 @@ type: story
 id: STORY-013
 kind: feat
 slug: STORY-013-story-refine
-title: "story-refine — Refinamiento iterativo de historias de usuario"
+title: "story-refine â€” Refinamiento iterativo de historias de usuario"
 date: 2026-04-22
 status: COMPLETED
 substatus: READY
@@ -15,36 +15,36 @@ parent: EPIC-05-enhance-project-spec
 
 # Historia de Usuario
 
-## ?? Historia: story-refine — Refinamiento iterativo de historias de usuario
+## ?? Historia: story-refine â€” Refinamiento iterativo de historias de usuario
 
-**Como** developer o PM que tiene una historia de usuario que no supera la evaluación FINVEST
-**Quiero** ejecutar el skill `story-refine` para que el agente story-product-owner evalúe, sugiera mejoras y las aplique en ciclos controlados
-**Para** obtener una historia APROBADA por FINVEST sin hacer múltiples rondas manuales de edición y evaluación
+**Como** developer o PM que tiene una historia de usuario que no supera la evaluaciÃ³n FINVEST
+**Quiero** ejecutar el skill `story-refine` para que el agente story-product-owner evalÃºe, sugiera mejoras y las aplique en ciclos controlados
+**Para** obtener una historia APROBADA por FINVEST sin hacer mÃºltiples rondas manuales de ediciÃ³n y evaluaciÃ³n
 
-## ? Criterios de aceptación
+## ? Criterios de aceptaciÃ³n
 
-### Escenario principal – Refinamiento exitoso hasta aprobación
+### Escenario principal â€“ Refinamiento exitoso hasta aprobaciÃ³n
 ```gherkin
 Dado que existe una historia con score FINVEST "REFINAR" en "docs/specs/stories/"
 Cuando el desarrollador ejecuta el skill "story-refine" sobre esa historia
-Entonces el agente story-product-owner evalúa la historia e identifica las dimensiones a mejorar
-  Y propone mejoras específicas y las aplica con confirmación del usuario
-  Y re-evalúa hasta obtener decisión "APROBADA" o hasta el límite de iteraciones configurado
+Entonces el agente story-product-owner evalÃºa la historia e identifica las dimensiones a mejorar
+  Y propone mejoras especÃ­ficas y las aplica con confirmaciÃ³n del usuario
+  Y re-evalÃºa hasta obtener decisiÃ³n "APROBADA" o hasta el lÃ­mite de iteraciones configurado
 ```
 
-### Escenario alternativo / error – Historia ya aprobada
+### Escenario alternativo / error â€“ Historia ya aprobada
 ```gherkin
-Dado que la historia ya tiene decisión "APROBADA" en su frontmatter
+Dado que la historia ya tiene decisiÃ³n "APROBADA" en su frontmatter
 Cuando el desarrollador ejecuta el skill "story-refine"
-Entonces el skill informa que la historia ya está aprobada y no requiere refinamiento
-  Pero ofrece iniciar un ciclo de refinamiento opcional si el usuario lo solicita explícitamente
+Entonces el skill informa que la historia ya estÃ¡ aprobada y no requiere refinamiento
+  Pero ofrece iniciar un ciclo de refinamiento opcional si el usuario lo solicita explÃ­citamente
 ```
 
 ## ?? Criterios no funcionales
 
-* Anti-bucle: el skill limita el número de ciclos de refinamiento para evitar iteraciones infinitas
+* Anti-bucle: el skill limita el nÃºmero de ciclos de refinamiento para evitar iteraciones infinitas
 
 ## ?? Notas / contexto adicional
 
-Generado automáticamente desde el release: release-05-enhance-project-spec.md
-Feature origen: STORY-013 — story-refine
+Generado automÃ¡ticamente desde el release: release-05-enhance-project-spec.md
+Feature origen: STORY-013 â€” story-refine

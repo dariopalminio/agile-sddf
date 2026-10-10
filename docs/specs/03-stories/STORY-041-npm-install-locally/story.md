@@ -15,45 +15,45 @@ parent: EPIC-08-npm-install-locally
 
 ## ?? Historia: Npm Install locally
 
-**Como** desarrollador que trabaja en un proyecto específico que usa Claude Code
+**Como** desarrollador que trabaja en un proyecto especÃ­fico que usa Claude Code
 **Quiero** instalar `agile-sddf` localmente con `npm install agile-sddf` y que los skills se copien al `.claude/` del proyecto
-**Para** tener los skills del framework disponibles solo en ese proyecto sin afectar ni depender de mi configuración global `~/.claude/`
+**Para** tener los skills del framework disponibles solo en ese proyecto sin afectar ni depender de mi configuraciÃ³n global `~/.claude/`
 
-## ? Criterios de aceptación
+## ? Criterios de aceptaciÃ³n
 
-### Escenario principal – Instalación local copia al directorio del proyecto
+### Escenario principal â€“ InstalaciÃ³n local copia al directorio del proyecto
 ```gherkin
-Dado que el usuario está en el directorio raíz de un proyecto con `package.json`
+Dado que el usuario estÃ¡ en el directorio raÃ­z de un proyecto con `package.json`
   Y no existe previamente `.claude/skills/` en ese directorio
 Cuando ejecuta "npm install agile-sddf"
-Entonces el script postinstall detecta que es una instalación local
+Entonces el script postinstall detecta que es una instalaciÃ³n local
   Y copia el contenido de `.claude/skills/` del paquete a `./.claude/skills/` del proyecto
   Y copia el contenido de `.claude/agents/` del paquete a `./.claude/agents/` del proyecto
-  Y no modifica ningún archivo en "~/.claude/"
+  Y no modifica ningÃºn archivo en "~/.claude/"
   Y muestra el resumen: "SDDF installed (local): X skills, Y agents (Z skipped)"
 ```
 
-### Escenario alternativo – La instalación global sigue copiando a ~/.claude/
+### Escenario alternativo â€“ La instalaciÃ³n global sigue copiando a ~/.claude/
 ```gherkin
 Dado que el usuario ejecuta "npm install -g agile-sddf"
 Cuando el script postinstall se ejecuta
-Entonces detecta que es una instalación global (`npm_config_global === 'true'`)
+Entonces detecta que es una instalaciÃ³n global (`npm_config_global === 'true'`)
   Y copia los skills y agentes a "~/.claude/skills/" y "~/.claude/agents/"
-  Y no modifica ningún archivo en el directorio de trabajo actual
+  Y no modifica ningÃºn archivo en el directorio de trabajo actual
 ```
 
-### Escenario alternativo / error – Skill ya existe en el destino local
+### Escenario alternativo / error â€“ Skill ya existe en el destino local
 ```gherkin
 Dado que el directorio ".claude/skills/story-creation/" ya existe en el proyecto
 Cuando el usuario ejecuta "npm install agile-sddf" sin flag de fuerza
 Entonces el script omite ese directorio sin sobrescribirlo
   Y muestra el aviso: "Skipped (already exists): .claude/skills/story-creation/"
-  Pero continúa instalando los demás skills sin interrumpir el proceso
+  Pero continÃºa instalando los demÃ¡s skills sin interrumpir el proceso
 ```
 
-### Escenario alternativo / error – `.claude` existe pero no es un directorio
+### Escenario alternativo / error â€“ `.claude` existe pero no es un directorio
 ```gherkin
-Dado que existe un archivo llamado ".claude" (no directorio) en la raíz del proyecto
+Dado que existe un archivo llamado ".claude" (no directorio) en la raÃ­z del proyecto
 Cuando el script postinstall intenta copiar los skills
 Entonces muestra el error: "SDDF error: .claude exists but is not a directory"
   Y termina con exit code 1
@@ -61,20 +61,20 @@ Entonces muestra el error: "SDDF error: .claude exists but is not a directory"
 ```
 
 ### Requerimiento
-El script SHALL detectar el modo de instalación mediante la variable de entorno estándar de npm: `process.env.npm_config_global !== 'true'` indica instalación local. No se deben usar heurísticas de paths ni flags propios.
+El script SHALL detectar el modo de instalaciÃ³n mediante la variable de entorno estÃ¡ndar de npm: `process.env.npm_config_global !== 'true'` indica instalaciÃ³n local. No se deben usar heurÃ­sticas de paths ni flags propios.
 
 ## ?? Criterios no funcionales
 
 * Compatibilidad: debe funcionar en macOS, Linux y Windows usando `process.cwd()` para resolver el directorio del proyecto
-* Rendimiento: la detección del modo de instalación no debe agregar latencia perceptible al proceso de instalación
-* Sin efectos secundarios: una instalación local no debe nunca escribir en `~/.claude/`
+* Rendimiento: la detecciÃ³n del modo de instalaciÃ³n no debe agregar latencia perceptible al proceso de instalaciÃ³n
+* Sin efectos secundarios: una instalaciÃ³n local no debe nunca escribir en `~/.claude/`
 
 ## ?? Notas / contexto adicional
 
-La detección del modo se basa en `process.env.npm_config_global` (variable estándar que npm inyecta en scripts). Cuando es `'true'`, la instalación es global; en cualquier otro caso, se trata como local.
+La detecciÃ³n del modo se basa en `process.env.npm_config_global` (variable estÃ¡ndar que npm inyecta en scripts). Cuando es `'true'`, la instalaciÃ³n es global; en cualquier otro caso, se trata como local.
 
-El directorio destino en instalación local es `path.join(process.cwd(), '.claude')`. En instalación global es `path.join(os.homedir(), '.claude')`.
+El directorio destino en instalaciÃ³n local es `path.join(process.cwd(), '.claude')`. En instalaciÃ³n global es `path.join(os.homedir(), '.claude')`.
 
-El flag `--force` para sobrescritura queda fuera del scope de esta historia. La instalación con `pnpm` o `yarn` queda fuera del scope de esta historia (requiere validación de las variables de entorno equivalentes).
+El flag `--force` para sobrescritura queda fuera del scope de esta historia. La instalaciÃ³n con `pnpm` o `yarn` queda fuera del scope de esta historia (requiere validaciÃ³n de las variables de entorno equivalentes).
 
 Depende de: `story-STORY-040-instalar-skills-via-postinstall.md` (script postinstall base).

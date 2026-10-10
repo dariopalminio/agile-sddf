@@ -3,7 +3,7 @@ type: story
 id: STORY-008
 kind: feat
 slug: STORY-008-control-wip
-title: "Control WIP=1 � Detecci�n de proyecto activo"
+title: "Control WIP=1 ï¿½ Detecciï¿½n de proyecto activo"
 date: 2026-04-22
 status: COMPLETED
 substatus: READY
@@ -15,26 +15,26 @@ parent: EPIC-02-project-spec-builder
 
 # Historia de Usuario
 
-## ?? Historia: Control WIP=1 � Detecci�n de proyecto activo
+## ?? Historia: Control WIP=1 ï¿½ Detecciï¿½n de proyecto activo
 
 **Como** developer que usa el framework SDDF para gestionar proyectos de software
-**Quiero** que el framework detecte autom�ticamente si ya existe un proyecto en estado IN‑PROGRESS antes de iniciar uno nuevo
-**Para** evitar tener m�ltiples proyectos activos simult�neos y mantener el foco en un �nico proyecto a la vez
+**Quiero** que el framework detecte automï¿½ticamente si ya existe un proyecto en estado INâ€‘PROGRESS antes de iniciar uno nuevo
+**Para** evitar tener mï¿½ltiples proyectos activos simultï¿½neos y mantener el foco en un ï¿½nico proyecto a la vez
 
-## ? Criterios de aceptaci�n
+## ? Criterios de aceptaciï¿½n
 
-### Escenario principal � Bloqueo al intentar iniciar un segundo proyecto activo
+### Escenario principal ï¿½ Bloqueo al intentar iniciar un segundo proyecto activo
 ```gherkin
-Dado que existe "docs/specs/projects/project-intent.md" con Estado: IN‑PROGRESS
+Dado que existe "docs/specs/projects/project-intent.md" con Estado: INâ€‘PROGRESS
 Cuando el desarrollador ejecuta el skill "project-begin" para iniciar un nuevo proyecto
-Entonces el skill detecta el Estado: IN‑PROGRESS en el archivo existente
+Entonces el skill detecta el Estado: INâ€‘PROGRESS en el archivo existente
   Y muestra el mensaje de conflicto WIP indicando que ya hay un proyecto activo
   Pero no sobrescribe ni modifica el proyecto existente
 ```
 
-### Escenario alternativo / error � No hay proyecto activo
+### Escenario alternativo / error ï¿½ No hay proyecto activo
 ```gherkin
-Dado que no existe ning�n archivo con Estado: IN‑PROGRESS en "docspecs/projects/t/"
+Dado que no existe ningï¿½n archivo con Estado: INâ€‘PROGRESS en "docspecs/projects/t/"
 Cuando el desarrollador ejecuta el skill "project-begin"
 Entonces el skill procede normalmente sin mostrar advertencia de WIP
 ```
@@ -45,5 +45,5 @@ Entonces el skill procede normalmente sin mostrar advertencia de WIP
 
 ## ?? Notas / contexto adicional
 
-Generado autom�ticamente desde el release: release-02-project-spec-builder.md
-Feature origen: STORY-008 � Control WIP=1
+Generado automï¿½ticamente desde el release: release-02-project-spec-builder.md
+Feature origen: STORY-008 ï¿½ Control WIP=1

@@ -18,25 +18,25 @@ parent: EPIC-03-reverse-engineering
 ## ?? Historia: Agente reverse-engineer-ux-flow-mapper
 
 **Como** developer que ejecuta el skill `reverse-engineering` sobre un repositorio existente
-**Quiero** que el agente `reverse-engineer-ux-flow-mapper` reconstruya el mapa de navegación y flujos de usuario a partir de la configuración de ruteo y guardas
-**Para** obtener `.tmp/rfc-navigation.md` con el árbol de navegación ASCII y los flujos principales, como input para el sintetizador
+**Quiero** que el agente `reverse-engineer-ux-flow-mapper` reconstruya el mapa de navegaciÃ³n y flujos de usuario a partir de la configuraciÃ³n de ruteo y guardas
+**Para** obtener `.tmp/rfc-navigation.md` con el Ã¡rbol de navegaciÃ³n ASCII y los flujos principales, como input para el sintetizador
 
-## ? Criterios de aceptación
+## ? Criterios de aceptaciÃ³n
 
-### Escenario principal – Reconstrucción exitosa del mapa de navegación
+### Escenario principal â€“ ReconstrucciÃ³n exitosa del mapa de navegaciÃ³n
 ```gherkin
-Dado que el repositorio contiene configuración de rutas (router.js, AppRoutes.tsx o equivalente) y guardas de autenticación
+Dado que el repositorio contiene configuraciÃ³n de rutas (router.js, AppRoutes.tsx o equivalente) y guardas de autenticaciÃ³n
 Cuando el agente "reverse-engineer-ux-flow-mapper" analiza el repositorio
-Entonces genera ".tmp/rfc-navigation.md" con el árbol de navegación en formato ASCII
-  Y el árbol muestra rutas públicas vs protegidas y los flujos de acceso principales
+Entonces genera ".tmp/rfc-navigation.md" con el Ã¡rbol de navegaciÃ³n en formato ASCII
+  Y el Ã¡rbol muestra rutas pÃºblicas vs protegidas y los flujos de acceso principales
 ```
 
-### Escenario alternativo / error – Sin configuración de rutas detectada
+### Escenario alternativo / error â€“ Sin configuraciÃ³n de rutas detectada
 ```gherkin
-Dado que el repositorio no contiene configuración de rutas reconocible
-Cuando el agente intenta reconstruir el mapa de navegación
-Entonces genera ".tmp/rfc-navigation.md" con el árbol vacío
-  Y añade "<!-- PENDING MANUAL REVIEW -->" indicando que no se detectó configuración de ruteo
+Dado que el repositorio no contiene configuraciÃ³n de rutas reconocible
+Cuando el agente intenta reconstruir el mapa de navegaciÃ³n
+Entonces genera ".tmp/rfc-navigation.md" con el Ã¡rbol vacÃ­o
+  Y aÃ±ade "<!-- PENDING MANUAL REVIEW -->" indicando que no se detectÃ³ configuraciÃ³n de ruteo
 ```
 
 ## ?? Criterios no funcionales
@@ -45,5 +45,5 @@ Entonces genera ".tmp/rfc-navigation.md" con el árbol vacío
 
 ## ?? Notas / contexto adicional
 
-Generado automáticamente desde el release: release-03-reverse-engineering.md
-Feature origen: STORY-021 — Agente reverse-engineer-ux-flow-mapper
+Generado automÃ¡ticamente desde el release: release-03-reverse-engineering.md
+Feature origen: STORY-021 â€” Agente reverse-engineer-ux-flow-mapper

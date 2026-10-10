@@ -4,7 +4,7 @@ type: story
 id: STORY-057
 kind: feat
 slug: STORY-057-skill-para-diseno
-title: "Skill para Diseño (story-design)"
+title: "Skill para DiseÃ±o (story-design)"
 status: COMPLETED
 substatus: DONE
 parent: EPIC-12-story-sdd-workflow
@@ -16,35 +16,35 @@ related:
 <!-- Referencias -->
 [[EPIC-12-story-sdd-workflow]]
 
-# 📖 Historia: Skill para Diseño (story-design)
+# ðŸ“– Historia: Skill para DiseÃ±o (story-design)
 
-**Como** desarrollador SDDF que debe planificar la solución técnica de una historia  
+**Como** desarrollador SDDF que debe planificar la soluciÃ³n tÃ©cnica de una historia  
 **Quiero** ejecutar el skill `story-design` apuntando a un `story.md` para generar un archivo `design.md` estructurado  
-**Para** documentar cómo se planea implementar la solución antes de escribir código, asegurando que el "qué" de la especificación se traduzca en el "cómo" técnico
+**Para** documentar cÃ³mo se planea implementar la soluciÃ³n antes de escribir cÃ³digo, asegurando que el "quÃ©" de la especificaciÃ³n se traduzca en el "cÃ³mo" tÃ©cnico
 
-## ✅ Criterios de aceptación
+## âœ… Criterios de aceptaciÃ³n
 
-### Escenario principal – Generación exitosa de design.md
+### Escenario principal â€“ GeneraciÃ³n exitosa de design.md
 ```gherkin
-Dado que existe un archivo story.md válido en el directorio de la historia objetivo
+Dado que existe un archivo story.md vÃ¡lido en el directorio de la historia objetivo
   Y existe el template $SPECS_BASE/specs/templates/story-design-template.md
-  Y existen las políticas del proyecto en $SPECS_BASE/policies/
+  Y existen las polÃ­ticas del proyecto en $SPECS_BASE/policies/
 Cuando ejecuto el skill `story-design` con la ruta del directorio de la historia
-Entonces el skill lee story.md para comprender los criterios de aceptación
+Entonces el skill lee story.md para comprender los criterios de aceptaciÃ³n
   Y genera design.md en el mismo directorio de la historia siguiendo la estructura del template
-  Y el design.md contiene un frontmatter válido vinculado a la historia
-  Y el contenido técnico se extrae del contexto del proyecto, no se inventa
+  Y el design.md contiene un frontmatter vÃ¡lido vinculado a la historia
+  Y el contenido tÃ©cnico se extrae del contexto del proyecto, no se inventa
 ```
 
-### Escenario alternativo / error – Template de diseño no encontrado
+### Escenario alternativo / error â€“ Template de diseÃ±o no encontrado
 ```gherkin
 Dado que el archivo $SPECS_BASE/specs/templates/story-design-template.md no existe
 Cuando ejecuto el skill `story-design`
 Entonces el skill muestra un mensaje de error indicando la ruta del template faltante
-  Y no genera ningún archivo design.md
+  Y no genera ningÃºn archivo design.md
 ```
 
-### Escenario alternativo / error – story.md no encontrado
+### Escenario alternativo / error â€“ story.md no encontrado
 ```gherkin
 Dado que el directorio de la historia no contiene un archivo story.md
 Cuando ejecuto el skill `story-design` apuntando a ese directorio
@@ -53,23 +53,23 @@ Entonces el skill muestra un mensaje de error indicando que story.md no fue enco
 ```
 
 ### Requirement: Fase de Research
-El diseño debe incluir una fase de investigación de alternativas técnicas donde el skill documenta las opciones consideradas y la decisión tomada, respetando las políticas y constitución del proyecto.
+El diseÃ±o debe incluir una fase de investigaciÃ³n de alternativas tÃ©cnicas donde el skill documenta las opciones consideradas y la decisiÃ³n tomada, respetando las polÃ­ticas y constituciÃ³n del proyecto.
 
 ## Requerimiento: Patrones estructurales de Skills (Skill Structural patterns)
 Se debe seguir y respetar los lineamientos estructurales de skills definido en `docs\knowledge\guides\skill-structural-pattern.md`.
 
 ## Requerimiento: skill-master
-Usar en la creación del skill el skill `skill-master` para asegurar que el nuevo skill siga los estándares de estructura, documentación y funcionalidad definidos para los skills en SDDF. Esto incluye la generación de un README.md con la descripción del skill, sus comandos, ejemplos de uso y cualquier configuración necesaria. Además, el skill debe incluir pruebas unitarias para validar su correcto funcionamiento y manejo de errores. El uso de `skill-master` garantiza que el skill `project-policies-generation` esté bien diseñado, documentado y sea fácil de mantener a largo plazo.
+Usar en la creaciÃ³n del skill el skill `skill-master` para asegurar que el nuevo skill siga los estÃ¡ndares de estructura, documentaciÃ³n y funcionalidad definidos para los skills en SDDF. Esto incluye la generaciÃ³n de un README.md con la descripciÃ³n del skill, sus comandos, ejemplos de uso y cualquier configuraciÃ³n necesaria. AdemÃ¡s, el skill debe incluir pruebas unitarias para validar su correcto funcionamiento y manejo de errores. El uso de `skill-master` garantiza que el skill `project-policies-generation` estÃ© bien diseÃ±ado, documentado y sea fÃ¡cil de mantener a largo plazo.
 
-## ⚙️ Criterios no funcionales
+## âš™ï¸ Criterios no funcionales
 
-* Neutralidad tecnológica: el skill no prescribe ninguna metodología, arquitectura ni patrón — la estructura la define el template
+* Neutralidad tecnolÃ³gica: el skill no prescribe ninguna metodologÃ­a, arquitectura ni patrÃ³n â€” la estructura la define el template
 * Trazabilidad: design.md debe referenciar el ID de la historia origen en su frontmatter
-* Coherencia: el contenido técnico debe alinearse con lo definido en `$SPECS_BASE/policies/constitution.md`
+* Coherencia: el contenido tÃ©cnico debe alinearse con lo definido en `$SPECS_BASE/policies/constitution.md`
 
-## 📎 Notas / contexto adicional
+## ðŸ“Ž Notas / contexto adicional
 
-Generado automáticamente desde el release: EPIC-12-story-sdd-workflow  
-Feature origen: STORY-057 — Skill para Diseño
+Generado automÃ¡ticamente desde el release: EPIC-12-story-sdd-workflow  
+Feature origen: STORY-057 â€” Skill para DiseÃ±o
 
-Equivalente conceptual a `speckit.plan` de SpecKit o al `design.md` de OpenSpec. El artefacto clave `design.md` es el documento que explica el "cómo" se planea implementar la solución.
+Equivalente conceptual a `speckit.plan` de SpecKit o al `design.md` de OpenSpec. El artefacto clave `design.md` es el documento que explica el "cÃ³mo" se planea implementar la soluciÃ³n.

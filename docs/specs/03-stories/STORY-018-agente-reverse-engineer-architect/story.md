@@ -18,25 +18,25 @@ parent: EPIC-03-reverse-engineering
 ## ?? Historia: Agente reverse-engineer-architect
 
 **Como** developer que ejecuta el skill `reverse-engineering` sobre un repositorio existente
-**Quiero** que el agente `reverse-engineer-architect` analice el stack tecnológico, dependencias y patrones arquitectónicos del código
-**Para** obtener `.tmp/rfc-architecture.md` con el stack, frameworks, patrones de arquitectura y puntos de integración inferidos del repositorio, como input para el sintetizador
+**Quiero** que el agente `reverse-engineer-architect` analice el stack tecnolÃ³gico, dependencias y patrones arquitectÃ³nicos del cÃ³digo
+**Para** obtener `.tmp/rfc-architecture.md` con el stack, frameworks, patrones de arquitectura y puntos de integraciÃ³n inferidos del repositorio, como input para el sintetizador
 
-## ? Criterios de aceptación
+## ? Criterios de aceptaciÃ³n
 
-### Escenario principal – Análisis arquitectónico exitoso
+### Escenario principal â€“ AnÃ¡lisis arquitectÃ³nico exitoso
 ```gherkin
-Dado que el repositorio contiene "package.json", código fuente TypeScript y archivos de configuración
+Dado que el repositorio contiene "package.json", cÃ³digo fuente TypeScript y archivos de configuraciÃ³n
 Cuando el agente "reverse-engineer-architect" analiza el repositorio
-Entonces genera ".tmp/rfc-architecture.md" con stack detectado, frameworks, dependencias principales y patrones arquitectónicos
-  Y clasifica cada hallazgo como [DIRECT], [INFERRED] o [SUGGESTED] según el nivel de certeza
+Entonces genera ".tmp/rfc-architecture.md" con stack detectado, frameworks, dependencias principales y patrones arquitectÃ³nicos
+  Y clasifica cada hallazgo como [DIRECT], [INFERRED] o [SUGGESTED] segÃºn el nivel de certeza
 ```
 
-### Escenario alternativo / error – Repositorio sin manifiestos de dependencias reconocibles
+### Escenario alternativo / error â€“ Repositorio sin manifiestos de dependencias reconocibles
 ```gherkin
-Dado que el repositorio no contiene package.json, requirements.txt ni ningún manifiesto de dependencias
+Dado que el repositorio no contiene package.json, requirements.txt ni ningÃºn manifiesto de dependencias
 Cuando el agente intenta inferir el stack
-Entonces genera ".tmp/rfc-architecture.md" con la sección de stack marcada como "[SUGGESTED]"
-  Y añade una nota "<!-- PENDING MANUAL REVIEW -->" en las secciones no inferibles
+Entonces genera ".tmp/rfc-architecture.md" con la secciÃ³n de stack marcada como "[SUGGESTED]"
+  Y aÃ±ade una nota "<!-- PENDING MANUAL REVIEW -->" en las secciones no inferibles
 ```
 
 ## ?? Criterios no funcionales
@@ -45,5 +45,5 @@ Entonces genera ".tmp/rfc-architecture.md" con la sección de stack marcada como 
 
 ## ?? Notas / contexto adicional
 
-Generado automáticamente desde el release: release-03-reverse-engineering.md
-Feature origen: STORY-018 — Agente reverse-engineer-architect
+Generado automÃ¡ticamente desde el release: release-03-reverse-engineering.md
+Feature origen: STORY-018 â€” Agente reverse-engineer-architect

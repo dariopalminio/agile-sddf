@@ -19,33 +19,33 @@ parent: EPIC-06-release-and-story-generator
 
 **Como** PM o Scrum Master que tiene Epics e Issues ya definidos en Jira
 **Quiero** invocar el agente `release-reverse-generator` en Rovo para generar un archivo de release SDDF a partir de las Epics e Issues hijos existentes en Jira
-**Para** documentar en formato SDDF releases que ya están en Jira sin reescribir manualmente toda la información
+**Para** documentar en formato SDDF releases que ya estÃ¡n en Jira sin reescribir manualmente toda la informaciÃ³n
 
-## ? Criterios de aceptación
+## ? Criterios de aceptaciÃ³n
 
-### Escenario principal – Generación de release desde Epic e Issues en Jira
+### Escenario principal â€“ GeneraciÃ³n de release desde Epic e Issues en Jira
 ```gherkin
 Dado que existe una Epic con Issues hijos en Jira
-  Y el agente "release-reverse-generator" está disponible en el runtime de Atlassian Rovo
+  Y el agente "release-reverse-generator" estÃ¡ disponible en el runtime de Atlassian Rovo
 Cuando el PM invoca el agente indicando el ID de la Epic en Jira
-Entonces el agente extrae el nombre, descripción e Issues hijos de la Epic
+Entonces el agente extrae el nombre, descripciÃ³n e Issues hijos de la Epic
   Y genera un archivo de release en "docs/specs/releases/" siguiendo la estructura de "release-spec-template.md"
   Y retorna la ruta del archivo generado y un resumen de las features incluidas
 ```
 
-### Escenario alternativo / error – Epic no encontrada en Jira
+### Escenario alternativo / error â€“ Epic no encontrada en Jira
 ```gherkin
 Dado que el PM indica un ID de Epic que no existe en Jira
 Cuando el agente intenta acceder a la Epic
 Entonces el agente retorna el mensaje "Epic no encontrada: <ID>"
-  Pero no genera ningún archivo de release
+  Pero no genera ningÃºn archivo de release
 ```
 
-### Escenario alternativo / error – Epic sin Issues hijos
+### Escenario alternativo / error â€“ Epic sin Issues hijos
 ```gherkin
 Dado que la Epic indicada existe en Jira pero no tiene Issues hijos
 Cuando el agente intenta extraer las features
-Entonces el agente genera el archivo de release con la sección "## Features" vacía con placeholder "[Por completar]"
+Entonces el agente genera el archivo de release con la secciÃ³n "## Features" vacÃ­a con placeholder "[Por completar]"
   Y advierte al usuario que no se encontraron Issues hijos asociados
 ```
 
@@ -56,5 +56,5 @@ Entonces el agente genera el archivo de release con la sección "## Features" vac
 
 ## ?? Notas / contexto adicional
 
-Generado automáticamente desde el release: release-06-release-and-story-generator.md
-Feature origen: STORY-034 — Rovo Agent: Release Reverse Generator from children
+Generado automÃ¡ticamente desde el release: release-06-release-and-story-generator.md
+Feature origen: STORY-034 â€” Rovo Agent: Release Reverse Generator from children
