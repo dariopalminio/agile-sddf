@@ -6,7 +6,7 @@ status: IN-PROGRESS
 substatus: TODO
 parent: null
 created: 2026-09-22
-updated: 2026-09-22
+updated: 2026-10-10
 ---
 
 # Requisitos (`requirements/`)
@@ -195,5 +195,148 @@ docs/requirements/
 las crea el propio usuario al fragmentar, o la migración `--from=srs-single` las genera.
 
 ---
+## Índice de requisitos
 
+Migrados desde project.md (§2.1 y §2.2) por [[eliminar-specs-01-projects]]; el hueco FR-049 se conserva.
 
+> **Convención de fuente.** Cada requisito referencia el skill que lo implementa (bajo `skills/` en
+> la raíz del repositorio, que es la fuente única de verdad), la historia que lo especificó y la
+> épica que lo agrupa.
+
+### Requisitos funcionales
+
+#### 2.1.1 Infraestructura y protocolo de entorno
+
+- [[FR-001-inicializacion-del-entorno-sddf]] — Inicialización del entorno SDDF
+- [[FR-002-protocolo-de-verificacion-de-entorno-como-paso-0]] — Protocolo de verificación de entorno como Paso 0
+- [[FR-003-raiz-de-artefactos-configurable]] — Raíz de artefactos configurable
+- [[FR-004-organizacion-de-artefactos-por-work-item]] — Organización de artefactos por work item
+- [[FR-005-templates-centralizados-como-fuente-unica]] — Templates centralizados como fuente única
+- [[FR-006-extraccion-dinamica-de-secciones-de-templates-en]] — Extracción dinámica de secciones de templates en runtime
+- [[FR-007-configuracion-operacional-por-stack-tecnologico]] — Configuración operacional por stack tecnológico
+
+#### 2.1.2 Pipeline de especificación de proyecto (nivel L3)
+
+- [[FR-008-captura-de-intencion-inicial-del-proyecto]] — Captura de intención inicial del proyecto
+- [[FR-009-discovery-de-usuarios-y-especificacion-de]] — Discovery de usuarios y especificación de requisitos
+- [[FR-010-planificacion-de-proyecto-con-epicas-y-backlog]] — Planificación de proyecto con épicas y backlog
+- [[FR-011-ejecucion-del-pipeline-de-proyecto-en-una-sola]] — Ejecución del pipeline de proyecto en una sola sesión
+- [[FR-012-sesion-interactiva-de-user-story-mapping]] — Sesión interactiva de User Story Mapping
+- [[FR-013-integracion-del-story-map-como-guia-de]] — Integración del story map como guía de planificación
+- [[FR-014-generacion-del-diagrama-de-contexto-c4]] — Generación del diagrama de contexto C4
+- [[FR-015-generacion-de-politicas-de-proyecto]] — Generación de políticas de proyecto
+- [[FR-016-control-de-work-in-progress-wip-1-por-nivel]] — Control de Work-In-Progress (WIP = 1) por nivel
+- [[FR-017-gates-de-revision-humana-entre-fases]] — Gates de revisión humana entre fases
+
+#### 2.1.3 Ingeniería inversa de repositorios
+
+- [[FR-018-generacion-de-la-especificacion-desde-codigo]] — Generación de la especificación desde código existente
+- [[FR-019-analisis-de-arquitectura-tecnica-del-repositorio]] — Análisis de arquitectura técnica del repositorio
+- [[FR-020-extraccion-de-features-desde-la-perspectiva-del]] — Extracción de features desde la perspectiva del usuario
+- [[FR-021-extraccion-de-reglas-de-negocio-desde-el-codigo]] — Extracción de reglas de negocio desde el código
+- [[FR-022-reconstruccion-del-mapa-de-navegacion-y-flujos-de]] — Reconstrucción del mapa de navegación y flujos de usuario
+- [[FR-023-analisis-con-scope-acotado]] — Análisis con scope acotado
+- [[FR-024-modo-incremental-de-actualizacion]] — Modo incremental de actualización
+
+#### 2.1.4 Gestión de épicas (nivel L2)
+
+- [[FR-025-creacion-interactiva-de-una-epica]] — Creación interactiva de una épica
+- [[FR-026-generacion-de-epicas-desde-el-plan-de-proyecto]] — Generación de épicas desde el plan de proyecto
+- [[FR-027-validacion-de-formato-de-epica-gate]] — Validación de formato de épica (gate)
+- [[FR-028-generacion-de-historias-desde-una-epica]] — Generación de historias desde una épica
+- [[FR-029-generacion-de-historias-de-todas-las-epicas-en]] — Generación de historias de todas las épicas en batch
+
+#### 2.1.5 Especificación de historias (nivel L1 · fase SPECIFY)
+
+- [[FR-030-creacion-de-historias-de-usuario]] — Creación de historias de usuario
+- [[FR-031-evaluacion-de-calidad-con-rubrica-finvest]] — Evaluación de calidad con rúbrica FINVEST
+- [[FR-032-division-de-historias-grandes-story-splitting]] — División de historias grandes (story splitting)
+- [[FR-033-mejora-automatica-de-una-historia-desde-su-reporte]] — Mejora automática de una historia desde su reporte de evaluación
+- [[FR-034-orquestacion-del-ciclo-de-especificacion-con-gate]] — Orquestación del ciclo de especificación con gate anti-bucle
+
+#### 2.1.6 Planificación de historia (nivel L1 · fase PLAN)
+
+- [[FR-035-diseno-tecnico-de-la-historia]] — Diseño técnico de la historia
+- [[FR-036-descomposicion-en-tareas-atomicas]] — Descomposición en tareas atómicas
+- [[FR-037-generacion-de-casos-de-prueba-tipificados]] — Generación de casos de prueba tipificados
+- [[FR-038-analisis-transversal-de-coherencia-gate-del-dod]] — Análisis transversal de coherencia (gate del DoD PLAN)
+- [[FR-039-orquestacion-de-la-fase-de-planning]] — Orquestación de la fase de planning
+
+#### 2.1.7 Implementación y quality gates (nivel L1 · IMPLEMENT → ACCEPTANCE)
+
+- [[FR-040-implementacion-guiada-por-tdd]] — Implementación guiada por TDD
+- [[FR-041-modos-de-ejecucion-y-reanudacion-de-la]] — Modos de ejecución y reanudación de la implementación
+- [[FR-042-implementacion-tarea-por-tarea]] — Implementación tarea por tarea
+- [[FR-043-revision-de-codigo-multi-agente-gate-del-dod-code]] — Revisión de código multi-agente (gate del DoD CODE-REVIEW)
+- [[FR-044-verificacion-por-ejecucion-de-pruebas-fase-verify]] — Verificación por ejecución de pruebas (fase VERIFY)
+- [[FR-045-aceptacion-humana-final-fase-acceptance]] — Aceptación humana final (fase ACCEPTANCE)
+- [[FR-046-gestion-de-estados-a-lo-largo-del-workflow]] — Gestión de estados a lo largo del workflow
+
+#### 2.1.8 Documentación, metadatos y seguridad
+
+- [[FR-047-estandarizacion-de-frontmatter-en-documentos-de]] — Estandarización de frontmatter en documentos de spec
+- [[FR-048-generacion-del-indice-wiki-de-documentacion]] — Generación del índice wiki de documentación
+- [[FR-050-auditoria-de-seguridad-condicional]] — Auditoría de seguridad condicional
+
+#### 2.1.9 Distribución e instalación multi-runtime
+
+- [[FR-051-distribucion-del-framework-como-paquete-npm]] — Distribución del framework como paquete npm
+- [[FR-052-instalacion-automatica-tras-npm-install]] — Instalación automática tras `npm install`
+- [[FR-053-instalacion-interactiva-con-seleccion-de-runtime]] — Instalación interactiva con selección de runtime
+- [[FR-054-publicacion-automatizada-desde-ci]] — Publicación automatizada desde CI
+
+### Requisitos no funcionales
+
+#### 2.2.1 Plataforma y compatibilidad de runtimes
+
+- [[NFR-001-compatibilidad-multi-runtime-por-instalacion-no]] — Compatibilidad multi-runtime por instalación, no por duplicación
+- [[NFR-002-independencia-del-cliente-de-ia-en-el-texto-de-los]] — Independencia del cliente de IA en el texto de los skills
+
+#### 2.2.2 Formato declarativo y superficie ejecutable
+
+- [[NFR-003-markdown-como-lenguaje-de-definicion]] — Markdown como lenguaje de definición
+- [[NFR-004-superficie-ejecutable-minima-en-node-js]] — Superficie ejecutable mínima en Node.js
+
+#### 2.2.3 Almacenamiento y persistencia
+
+- [[NFR-005-sistema-de-archivos-como-unica-capa-de]] — Sistema de archivos como única capa de persistencia
+
+#### 2.2.4 Máquina de estados y control de flujo
+
+- [[NFR-006-control-de-ciclo-de-vida-con-status-substatus]] — Control de ciclo de vida con `status` + `substatus`
+- [[NFR-007-limite-de-trabajo-en-curso-por-nivel]] — Límite de trabajo en curso por nivel
+- [[NFR-008-gates-secuenciales-con-precondiciones-explicitas]] — Gates secuenciales con precondiciones explícitas
+
+#### 2.2.5 Trazabilidad y auditoría
+
+- [[NFR-009-metadatos-de-trazabilidad-en-todos-los-documentos]] — Metadatos de trazabilidad en todos los documentos generados
+- [[NFR-010-navegacion-por-indice-y-wikilinks]] — Navegación por índice y wikilinks
+- [[NFR-011-niveles-de-confianza-explicitos-en-contenido]] — Niveles de confianza explícitos en contenido inferido
+- [[NFR-012-output-parcial-ante-datos-insuficientes]] — Output parcial ante datos insuficientes
+
+#### 2.2.6 Arquitectura de agentes y gestión de contexto
+
+- [[NFR-013-composicion-inline-y-un-solo-salto-de-delegacion]] — Composición inline y un solo salto de delegación
+- [[NFR-014-contrato-tmp-skill-name-contra-el-telefono]] — Contrato `.tmp/<skill-name>/` contra el «teléfono descompuesto»
+- [[NFR-015-templates-y-assets-como-contrato-de-interfaz]] — Templates y assets como contrato de interfaz
+
+#### 2.2.7 Calidad y verificación
+
+- [[NFR-016-casos-de-prueba-declarados-por-skill]] — Casos de prueba declarados por skill
+- [[NFR-017-definition-of-done-como-gate-ejecutable]] — Definition of Done como gate ejecutable
+- [[NFR-018-verificacion-demostrada-no-declarada]] — Verificación demostrada, no declarada
+
+#### 2.2.8 Seguridad
+
+- [[NFR-019-escaneo-de-seguridad-de-skills-en-ci]] — Escaneo de seguridad de skills en CI
+- [[NFR-020-ausencia-de-secretos-en-el-paquete-distribuido]] — Ausencia de secretos en el paquete distribuido
+
+#### 2.2.9 Usabilidad y experiencia del desarrollador
+
+- [[NFR-021-limite-de-preguntas-por-ronda-de-entrevista]] — Límite de preguntas por ronda de entrevista
+- [[NFR-022-flags-para-modos-alternativos-de-ejecucion]] — Flags para modos alternativos de ejecución
+- [[NFR-023-idempotencia-declarada-de-los-skills-de]] — Idempotencia declarada de los skills de inicialización
+
+#### 2.2.10 Entorno de desarrollo
+
+- [[NFR-024-entorno-de-desarrollo-reproducible-con-docker]] — Entorno de desarrollo reproducible con Docker

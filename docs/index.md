@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-07
+updated: 2026-10-10
 ---
 
 # 📚 Índice de documentación
@@ -63,6 +63,83 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 ### Requisitos (requirements/)
 
 - [[requirements-index]] — [README.md](requirements/README.md) — Requisitos
+- [[FR-001-inicializacion-del-entorno-sddf]] — [FR-001-inicializacion-del-entorno-sddf.md](requirements/functional/FR-001-inicializacion-del-entorno-sddf.md) — Inicialización del entorno SDDF
+- [[FR-002-protocolo-de-verificacion-de-entorno-como-paso-0]] — [FR-002-protocolo-de-verificacion-de-entorno-como-paso-0.md](requirements/functional/FR-002-protocolo-de-verificacion-de-entorno-como-paso-0.md) — Protocolo de verificación de entorno como Paso 0
+- [[FR-003-raiz-de-artefactos-configurable]] — [FR-003-raiz-de-artefactos-configurable.md](requirements/functional/FR-003-raiz-de-artefactos-configurable.md) — Raíz de artefactos configurable
+- [[FR-004-organizacion-de-artefactos-por-work-item]] — [FR-004-organizacion-de-artefactos-por-work-item.md](requirements/functional/FR-004-organizacion-de-artefactos-por-work-item.md) — Organización de artefactos por work item
+- [[FR-005-templates-centralizados-como-fuente-unica]] — [FR-005-templates-centralizados-como-fuente-unica.md](requirements/functional/FR-005-templates-centralizados-como-fuente-unica.md) — Templates centralizados como fuente única
+- [[FR-006-extraccion-dinamica-de-secciones-de-templates-en]] — [FR-006-extraccion-dinamica-de-secciones-de-templates-en.md](requirements/functional/FR-006-extraccion-dinamica-de-secciones-de-templates-en.md) — Extracción dinámica de secciones de templates en runtime
+- [[FR-007-configuracion-operacional-por-stack-tecnologico]] — [FR-007-configuracion-operacional-por-stack-tecnologico.md](requirements/functional/FR-007-configuracion-operacional-por-stack-tecnologico.md) — Configuración operacional por stack tecnológico
+- [[FR-008-captura-de-intencion-inicial-del-proyecto]] — [FR-008-captura-de-intencion-inicial-del-proyecto.md](requirements/functional/FR-008-captura-de-intencion-inicial-del-proyecto.md) — Captura de intención inicial del proyecto
+- [[FR-009-discovery-de-usuarios-y-especificacion-de]] — [FR-009-discovery-de-usuarios-y-especificacion-de.md](requirements/functional/FR-009-discovery-de-usuarios-y-especificacion-de.md) — Discovery de usuarios y especificación de requisitos
+- [[FR-010-planificacion-de-proyecto-con-epicas-y-backlog]] — [FR-010-planificacion-de-proyecto-con-epicas-y-backlog.md](requirements/functional/FR-010-planificacion-de-proyecto-con-epicas-y-backlog.md) — Planificación de proyecto con épicas y backlog
+- [[FR-011-ejecucion-del-pipeline-de-proyecto-en-una-sola]] — [FR-011-ejecucion-del-pipeline-de-proyecto-en-una-sola.md](requirements/functional/FR-011-ejecucion-del-pipeline-de-proyecto-en-una-sola.md) — Ejecución del pipeline de proyecto en una sola sesión
+- [[FR-012-sesion-interactiva-de-user-story-mapping]] — [FR-012-sesion-interactiva-de-user-story-mapping.md](requirements/functional/FR-012-sesion-interactiva-de-user-story-mapping.md) — Sesión interactiva de User Story Mapping
+- [[FR-013-integracion-del-story-map-como-guia-de]] — [FR-013-integracion-del-story-map-como-guia-de.md](requirements/functional/FR-013-integracion-del-story-map-como-guia-de.md) — Integración del story map como guía de planificación
+- [[FR-014-generacion-del-diagrama-de-contexto-c4]] — [FR-014-generacion-del-diagrama-de-contexto-c4.md](requirements/functional/FR-014-generacion-del-diagrama-de-contexto-c4.md) — Generación del diagrama de contexto C4
+- [[FR-015-generacion-de-politicas-de-proyecto]] — [FR-015-generacion-de-politicas-de-proyecto.md](requirements/functional/FR-015-generacion-de-politicas-de-proyecto.md) — Generación de políticas de proyecto
+- [[FR-016-control-de-work-in-progress-wip-1-por-nivel]] — [FR-016-control-de-work-in-progress-wip-1-por-nivel.md](requirements/functional/FR-016-control-de-work-in-progress-wip-1-por-nivel.md) — Control de Work-In-Progress (WIP = 1) por nivel
+- [[FR-017-gates-de-revision-humana-entre-fases]] — [FR-017-gates-de-revision-humana-entre-fases.md](requirements/functional/FR-017-gates-de-revision-humana-entre-fases.md) — Gates de revisión humana entre fases
+- [[FR-018-generacion-de-la-especificacion-desde-codigo]] — [FR-018-generacion-de-la-especificacion-desde-codigo.md](requirements/functional/FR-018-generacion-de-la-especificacion-desde-codigo.md) — Generación de la especificación desde código existente
+- [[FR-019-analisis-de-arquitectura-tecnica-del-repositorio]] — [FR-019-analisis-de-arquitectura-tecnica-del-repositorio.md](requirements/functional/FR-019-analisis-de-arquitectura-tecnica-del-repositorio.md) — Análisis de arquitectura técnica del repositorio
+- [[FR-020-extraccion-de-features-desde-la-perspectiva-del]] — [FR-020-extraccion-de-features-desde-la-perspectiva-del.md](requirements/functional/FR-020-extraccion-de-features-desde-la-perspectiva-del.md) — Extracción de features desde la perspectiva del usuario
+- [[FR-021-extraccion-de-reglas-de-negocio-desde-el-codigo]] — [FR-021-extraccion-de-reglas-de-negocio-desde-el-codigo.md](requirements/functional/FR-021-extraccion-de-reglas-de-negocio-desde-el-codigo.md) — Extracción de reglas de negocio desde el código
+- [[FR-022-reconstruccion-del-mapa-de-navegacion-y-flujos-de]] — [FR-022-reconstruccion-del-mapa-de-navegacion-y-flujos-de.md](requirements/functional/FR-022-reconstruccion-del-mapa-de-navegacion-y-flujos-de.md) — Reconstrucción del mapa de navegación y flujos de usuario
+- [[FR-023-analisis-con-scope-acotado]] — [FR-023-analisis-con-scope-acotado.md](requirements/functional/FR-023-analisis-con-scope-acotado.md) — Análisis con scope acotado
+- [[FR-024-modo-incremental-de-actualizacion]] — [FR-024-modo-incremental-de-actualizacion.md](requirements/functional/FR-024-modo-incremental-de-actualizacion.md) — Modo incremental de actualización
+- [[FR-025-creacion-interactiva-de-una-epica]] — [FR-025-creacion-interactiva-de-una-epica.md](requirements/functional/FR-025-creacion-interactiva-de-una-epica.md) — Creación interactiva de una épica
+- [[FR-026-generacion-de-epicas-desde-el-plan-de-proyecto]] — [FR-026-generacion-de-epicas-desde-el-plan-de-proyecto.md](requirements/functional/FR-026-generacion-de-epicas-desde-el-plan-de-proyecto.md) — Generación de épicas desde el plan de proyecto
+- [[FR-027-validacion-de-formato-de-epica-gate]] — [FR-027-validacion-de-formato-de-epica-gate.md](requirements/functional/FR-027-validacion-de-formato-de-epica-gate.md) — Validación de formato de épica (gate)
+- [[FR-028-generacion-de-historias-desde-una-epica]] — [FR-028-generacion-de-historias-desde-una-epica.md](requirements/functional/FR-028-generacion-de-historias-desde-una-epica.md) — Generación de historias desde una épica
+- [[FR-029-generacion-de-historias-de-todas-las-epicas-en]] — [FR-029-generacion-de-historias-de-todas-las-epicas-en.md](requirements/functional/FR-029-generacion-de-historias-de-todas-las-epicas-en.md) — Generación de historias de todas las épicas en batch
+- [[FR-030-creacion-de-historias-de-usuario]] — [FR-030-creacion-de-historias-de-usuario.md](requirements/functional/FR-030-creacion-de-historias-de-usuario.md) — Creación de historias de usuario
+- [[FR-031-evaluacion-de-calidad-con-rubrica-finvest]] — [FR-031-evaluacion-de-calidad-con-rubrica-finvest.md](requirements/functional/FR-031-evaluacion-de-calidad-con-rubrica-finvest.md) — Evaluación de calidad con rúbrica FINVEST
+- [[FR-032-division-de-historias-grandes-story-splitting]] — [FR-032-division-de-historias-grandes-story-splitting.md](requirements/functional/FR-032-division-de-historias-grandes-story-splitting.md) — División de historias grandes (story splitting)
+- [[FR-033-mejora-automatica-de-una-historia-desde-su-reporte]] — [FR-033-mejora-automatica-de-una-historia-desde-su-reporte.md](requirements/functional/FR-033-mejora-automatica-de-una-historia-desde-su-reporte.md) — Mejora automática de una historia desde su reporte de evaluación
+- [[FR-034-orquestacion-del-ciclo-de-especificacion-con-gate]] — [FR-034-orquestacion-del-ciclo-de-especificacion-con-gate.md](requirements/functional/FR-034-orquestacion-del-ciclo-de-especificacion-con-gate.md) — Orquestación del ciclo de especificación con gate anti-bucle
+- [[FR-035-diseno-tecnico-de-la-historia]] — [FR-035-diseno-tecnico-de-la-historia.md](requirements/functional/FR-035-diseno-tecnico-de-la-historia.md) — Diseño técnico de la historia
+- [[FR-036-descomposicion-en-tareas-atomicas]] — [FR-036-descomposicion-en-tareas-atomicas.md](requirements/functional/FR-036-descomposicion-en-tareas-atomicas.md) — Descomposición en tareas atómicas
+- [[FR-037-generacion-de-casos-de-prueba-tipificados]] — [FR-037-generacion-de-casos-de-prueba-tipificados.md](requirements/functional/FR-037-generacion-de-casos-de-prueba-tipificados.md) — Generación de casos de prueba tipificados
+- [[FR-038-analisis-transversal-de-coherencia-gate-del-dod]] — [FR-038-analisis-transversal-de-coherencia-gate-del-dod.md](requirements/functional/FR-038-analisis-transversal-de-coherencia-gate-del-dod.md) — Análisis transversal de coherencia (gate del DoD PLAN)
+- [[FR-039-orquestacion-de-la-fase-de-planning]] — [FR-039-orquestacion-de-la-fase-de-planning.md](requirements/functional/FR-039-orquestacion-de-la-fase-de-planning.md) — Orquestación de la fase de planning
+- [[FR-040-implementacion-guiada-por-tdd]] — [FR-040-implementacion-guiada-por-tdd.md](requirements/functional/FR-040-implementacion-guiada-por-tdd.md) — Implementación guiada por TDD
+- [[FR-041-modos-de-ejecucion-y-reanudacion-de-la]] — [FR-041-modos-de-ejecucion-y-reanudacion-de-la.md](requirements/functional/FR-041-modos-de-ejecucion-y-reanudacion-de-la.md) — Modos de ejecución y reanudación de la implementación
+- [[FR-042-implementacion-tarea-por-tarea]] — [FR-042-implementacion-tarea-por-tarea.md](requirements/functional/FR-042-implementacion-tarea-por-tarea.md) — Implementación tarea por tarea
+- [[FR-043-revision-de-codigo-multi-agente-gate-del-dod-code]] — [FR-043-revision-de-codigo-multi-agente-gate-del-dod-code.md](requirements/functional/FR-043-revision-de-codigo-multi-agente-gate-del-dod-code.md) — Revisión de código multi-agente (gate del DoD CODE-REVIEW)
+- [[FR-044-verificacion-por-ejecucion-de-pruebas-fase-verify]] — [FR-044-verificacion-por-ejecucion-de-pruebas-fase-verify.md](requirements/functional/FR-044-verificacion-por-ejecucion-de-pruebas-fase-verify.md) — Verificación por ejecución de pruebas (fase VERIFY)
+- [[FR-045-aceptacion-humana-final-fase-acceptance]] — [FR-045-aceptacion-humana-final-fase-acceptance.md](requirements/functional/FR-045-aceptacion-humana-final-fase-acceptance.md) — Aceptación humana final (fase ACCEPTANCE)
+- [[FR-046-gestion-de-estados-a-lo-largo-del-workflow]] — [FR-046-gestion-de-estados-a-lo-largo-del-workflow.md](requirements/functional/FR-046-gestion-de-estados-a-lo-largo-del-workflow.md) — Gestión de estados a lo largo del workflow
+- [[FR-047-estandarizacion-de-frontmatter-en-documentos-de]] — [FR-047-estandarizacion-de-frontmatter-en-documentos-de.md](requirements/functional/FR-047-estandarizacion-de-frontmatter-en-documentos-de.md) — Estandarización de frontmatter en documentos de spec
+- [[FR-048-generacion-del-indice-wiki-de-documentacion]] — [FR-048-generacion-del-indice-wiki-de-documentacion.md](requirements/functional/FR-048-generacion-del-indice-wiki-de-documentacion.md) — Generación del índice wiki de documentación
+- [[FR-050-auditoria-de-seguridad-condicional]] — [FR-050-auditoria-de-seguridad-condicional.md](requirements/functional/FR-050-auditoria-de-seguridad-condicional.md) — Auditoría de seguridad condicional
+- [[FR-051-distribucion-del-framework-como-paquete-npm]] — [FR-051-distribucion-del-framework-como-paquete-npm.md](requirements/functional/FR-051-distribucion-del-framework-como-paquete-npm.md) — Distribución del framework como paquete npm
+- [[FR-052-instalacion-automatica-tras-npm-install]] — [FR-052-instalacion-automatica-tras-npm-install.md](requirements/functional/FR-052-instalacion-automatica-tras-npm-install.md) — Instalación automática tras `npm install`
+- [[FR-053-instalacion-interactiva-con-seleccion-de-runtime]] — [FR-053-instalacion-interactiva-con-seleccion-de-runtime.md](requirements/functional/FR-053-instalacion-interactiva-con-seleccion-de-runtime.md) — Instalación interactiva con selección de runtime
+- [[FR-054-publicacion-automatizada-desde-ci]] — [FR-054-publicacion-automatizada-desde-ci.md](requirements/functional/FR-054-publicacion-automatizada-desde-ci.md) — Publicación automatizada desde CI
+- [[NFR-001-compatibilidad-multi-runtime-por-instalacion-no]] — [NFR-001-compatibilidad-multi-runtime-por-instalacion-no.md](requirements/non-functional/NFR-001-compatibilidad-multi-runtime-por-instalacion-no.md) — Compatibilidad multi-runtime por instalación, no por duplicación
+- [[NFR-002-independencia-del-cliente-de-ia-en-el-texto-de-los]] — [NFR-002-independencia-del-cliente-de-ia-en-el-texto-de-los.md](requirements/non-functional/NFR-002-independencia-del-cliente-de-ia-en-el-texto-de-los.md) — Independencia del cliente de IA en el texto de los skills
+- [[NFR-003-markdown-como-lenguaje-de-definicion]] — [NFR-003-markdown-como-lenguaje-de-definicion.md](requirements/non-functional/NFR-003-markdown-como-lenguaje-de-definicion.md) — Markdown como lenguaje de definición
+- [[NFR-004-superficie-ejecutable-minima-en-node-js]] — [NFR-004-superficie-ejecutable-minima-en-node-js.md](requirements/non-functional/NFR-004-superficie-ejecutable-minima-en-node-js.md) — Superficie ejecutable mínima en Node.js
+- [[NFR-005-sistema-de-archivos-como-unica-capa-de]] — [NFR-005-sistema-de-archivos-como-unica-capa-de.md](requirements/non-functional/NFR-005-sistema-de-archivos-como-unica-capa-de.md) — Sistema de archivos como única capa de persistencia
+- [[NFR-006-control-de-ciclo-de-vida-con-status-substatus]] — [NFR-006-control-de-ciclo-de-vida-con-status-substatus.md](requirements/non-functional/NFR-006-control-de-ciclo-de-vida-con-status-substatus.md) — Control de ciclo de vida con `status` + `substatus`
+- [[NFR-007-limite-de-trabajo-en-curso-por-nivel]] — [NFR-007-limite-de-trabajo-en-curso-por-nivel.md](requirements/non-functional/NFR-007-limite-de-trabajo-en-curso-por-nivel.md) — Límite de trabajo en curso por nivel
+- [[NFR-008-gates-secuenciales-con-precondiciones-explicitas]] — [NFR-008-gates-secuenciales-con-precondiciones-explicitas.md](requirements/non-functional/NFR-008-gates-secuenciales-con-precondiciones-explicitas.md) — Gates secuenciales con precondiciones explícitas
+- [[NFR-009-metadatos-de-trazabilidad-en-todos-los-documentos]] — [NFR-009-metadatos-de-trazabilidad-en-todos-los-documentos.md](requirements/non-functional/NFR-009-metadatos-de-trazabilidad-en-todos-los-documentos.md) — Metadatos de trazabilidad en todos los documentos generados
+- [[NFR-010-navegacion-por-indice-y-wikilinks]] — [NFR-010-navegacion-por-indice-y-wikilinks.md](requirements/non-functional/NFR-010-navegacion-por-indice-y-wikilinks.md) — Navegación por índice y wikilinks
+- [[NFR-011-niveles-de-confianza-explicitos-en-contenido]] — [NFR-011-niveles-de-confianza-explicitos-en-contenido.md](requirements/non-functional/NFR-011-niveles-de-confianza-explicitos-en-contenido.md) — Niveles de confianza explícitos en contenido inferido
+- [[NFR-012-output-parcial-ante-datos-insuficientes]] — [NFR-012-output-parcial-ante-datos-insuficientes.md](requirements/non-functional/NFR-012-output-parcial-ante-datos-insuficientes.md) — Output parcial ante datos insuficientes
+- [[NFR-013-composicion-inline-y-un-solo-salto-de-delegacion]] — [NFR-013-composicion-inline-y-un-solo-salto-de-delegacion.md](requirements/non-functional/NFR-013-composicion-inline-y-un-solo-salto-de-delegacion.md) — Composición inline y un solo salto de delegación
+- [[NFR-014-contrato-tmp-skill-name-contra-el-telefono]] — [NFR-014-contrato-tmp-skill-name-contra-el-telefono.md](requirements/non-functional/NFR-014-contrato-tmp-skill-name-contra-el-telefono.md) — Contrato `.tmp/<skill-name>/` contra el «teléfono descompuesto»
+- [[NFR-015-templates-y-assets-como-contrato-de-interfaz]] — [NFR-015-templates-y-assets-como-contrato-de-interfaz.md](requirements/non-functional/NFR-015-templates-y-assets-como-contrato-de-interfaz.md) — Templates y assets como contrato de interfaz
+- [[NFR-016-casos-de-prueba-declarados-por-skill]] — [NFR-016-casos-de-prueba-declarados-por-skill.md](requirements/non-functional/NFR-016-casos-de-prueba-declarados-por-skill.md) — Casos de prueba declarados por skill
+- [[NFR-017-definition-of-done-como-gate-ejecutable]] — [NFR-017-definition-of-done-como-gate-ejecutable.md](requirements/non-functional/NFR-017-definition-of-done-como-gate-ejecutable.md) — Definition of Done como gate ejecutable
+- [[NFR-018-verificacion-demostrada-no-declarada]] — [NFR-018-verificacion-demostrada-no-declarada.md](requirements/non-functional/NFR-018-verificacion-demostrada-no-declarada.md) — Verificación demostrada, no declarada
+- [[NFR-019-escaneo-de-seguridad-de-skills-en-ci]] — [NFR-019-escaneo-de-seguridad-de-skills-en-ci.md](requirements/non-functional/NFR-019-escaneo-de-seguridad-de-skills-en-ci.md) — Escaneo de seguridad de skills en CI
+- [[NFR-020-ausencia-de-secretos-en-el-paquete-distribuido]] — [NFR-020-ausencia-de-secretos-en-el-paquete-distribuido.md](requirements/non-functional/NFR-020-ausencia-de-secretos-en-el-paquete-distribuido.md) — Ausencia de secretos en el paquete distribuido
+- [[NFR-021-limite-de-preguntas-por-ronda-de-entrevista]] — [NFR-021-limite-de-preguntas-por-ronda-de-entrevista.md](requirements/non-functional/NFR-021-limite-de-preguntas-por-ronda-de-entrevista.md) — Límite de preguntas por ronda de entrevista
+- [[NFR-022-flags-para-modos-alternativos-de-ejecucion]] — [NFR-022-flags-para-modos-alternativos-de-ejecucion.md](requirements/non-functional/NFR-022-flags-para-modos-alternativos-de-ejecucion.md) — Flags para modos alternativos de ejecución
+- [[NFR-023-idempotencia-declarada-de-los-skills-de]] — [NFR-023-idempotencia-declarada-de-los-skills-de.md](requirements/non-functional/NFR-023-idempotencia-declarada-de-los-skills-de.md) — Idempotencia declarada de los skills de inicialización
+- [[NFR-024-entorno-de-desarrollo-reproducible-con-docker]] — [NFR-024-entorno-de-desarrollo-reproducible-con-docker.md](requirements/non-functional/NFR-024-entorno-de-desarrollo-reproducible-con-docker.md) — Entorno de desarrollo reproducible con Docker
 
 ---
 
@@ -142,36 +219,36 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 > enumeran aquí: se leen desde el directorio de la historia. Los templates (`templates/`) tampoco se
 > listan porque sus wikilinks son placeholders.
 
-- [[STORY-001-project-begin]] — [story.md](specs/03-stories/STORY-001-project-begin/story.md) — project-begin � Captura de intenci�n inicial del proyecto
-- [[STORY-003-project-discovery]] — [story.md](specs/03-stories/STORY-003-project-discovery/story.md) — project-discovery � Discovery de usuarios y especificaci�n de requisitos
-- [[STORY-004-project-planning]] — [story.md](specs/03-stories/STORY-004-project-planning/story.md) — project-planning � Planificaci�n de releases y backlog
-- [[STORY-005-project-story-mapping]] — [story.md](specs/03-stories/STORY-005-project-story-mapping/story.md) — project-story-mapping � User Story Mapping seg�n Jeff Patton
-- [[STORY-006-story-creation]] — [story.md](specs/03-stories/STORY-006-story-creation/story.md) — story-creation � Crear historias de usuario
+- [[STORY-001-project-begin]] — [story.md](specs/03-stories/STORY-001-project-begin/story.md) — project-begin — Captura de intención inicial del proyecto
+- [[STORY-003-project-discovery]] — [story.md](specs/03-stories/STORY-003-project-discovery/story.md) — project-discovery — Discovery de usuarios y especificación de requisitos
+- [[STORY-004-project-planning]] — [story.md](specs/03-stories/STORY-004-project-planning/story.md) — project-planning — Planificación de releases y backlog
+- [[STORY-005-project-story-mapping]] — [story.md](specs/03-stories/STORY-005-project-story-mapping/story.md) — project-story-mapping — User Story Mapping según Jeff Patton
+- [[STORY-006-story-creation]] — [story.md](specs/03-stories/STORY-006-story-creation/story.md) — story-creation — Crear historias de usuario
 - [[STORY-007-story-evaluation]] — [story.md](specs/03-stories/STORY-007-story-evaluation/story.md) — story-evaluation ó Evaluación FINVEST de historias
-- [[STORY-008-control-wip]] — [story.md](specs/03-stories/STORY-008-control-wip/story.md) — Control WIP=1 � Detecci�n de proyecto activo
-- [[STORY-010-gates-de-revision]] — [story.md](specs/03-stories/STORY-010-gates-de-revision/story.md) — Gates de Revisi�n Humana entre fases del pipeline
-- [[STORY-011-project-planning-mejorado]] — [story.md](specs/03-stories/STORY-011-project-planning-mejorado/story.md) — project-planning mejorado � Integraci�n con story mapping
+- [[STORY-008-control-wip]] — [story.md](specs/03-stories/STORY-008-control-wip/story.md) — Control WIP=1 — Detección de proyecto activo
+- [[STORY-010-gates-de-revision]] — [story.md](specs/03-stories/STORY-010-gates-de-revision/story.md) — Gates de Revisión Humana entre fases del pipeline
+- [[STORY-011-project-planning-mejorado]] — [story.md](specs/03-stories/STORY-011-project-planning-mejorado/story.md) — project-planning mejorado — Integración con story mapping
 - [[STORY-012-story-split]] — [story.md](specs/03-stories/STORY-012-story-split/story.md) — story-split ó Dividir ópicas en historias pequeóas
-- [[STORY-013-story-refine]] — [story.md](specs/03-stories/STORY-013-story-refine/story.md) — story-refine � Refinamiento iterativo de historias de usuario
-- [[STORY-015-project-flow]] — [story.md](specs/03-stories/STORY-015-project-flow/story.md) — project-flow � Orquestador del pipeline completo ProjectSpecFactory
-- [[STORY-017-reverse-engineering]] — [story.md](specs/03-stories/STORY-017-reverse-engineering/story.md) — reverse-engineering � Skill orquestador de ingenier�a inversa
+- [[STORY-013-story-refine]] — [story.md](specs/03-stories/STORY-013-story-refine/story.md) — story-refine — Refinamiento iterativo de historias de usuario
+- [[STORY-015-project-flow]] — [story.md](specs/03-stories/STORY-015-project-flow/story.md) — project-flow — Orquestador del pipeline completo ProjectSpecFactory
+- [[STORY-017-reverse-engineering]] — [story.md](specs/03-stories/STORY-017-reverse-engineering/story.md) — reverse-engineering — Skill orquestador de ingeniería inversa
 - [[STORY-018-agente-reverse-engineer-architect]] — [story.md](specs/03-stories/STORY-018-agente-reverse-engineer-architect/story.md) — Agente reverse-engineer-architect
 - [[STORY-019-agente-reverse-engineer-product-discovery]] — [story.md](specs/03-stories/STORY-019-agente-reverse-engineer-product-discovery/story.md) — Agente reverse-engineer-product-discovery
 - [[STORY-020-agente-reverse-engineer-business-analyst]] — [story.md](specs/03-stories/STORY-020-agente-reverse-engineer-business-analyst/story.md) — Agente reverse-engineer-business-analyst
 - [[STORY-021-agente-reverse-engineer-ux-flow-mapper]] — [story.md](specs/03-stories/STORY-021-agente-reverse-engineer-ux-flow-mapper/story.md) — Agente reverse-engineer-ux-flow-mapper
 - [[STORY-022-agente-reverse-engineer-synthesizer]] — [story.md](specs/03-stories/STORY-022-agente-reverse-engineer-synthesizer/story.md) — Agente reverse-engineer-synthesizer
-- [[STORY-023-scope-acotado-focus]] — [story.md](specs/03-stories/STORY-023-scope-acotado-focus/story.md) — Scope acotado � Flag --focus para reverse-engineering
-- [[STORY-024-modo-incremental-update]] — [story.md](specs/03-stories/STORY-024-modo-incremental-update/story.md) — Modo incremental � Flag --update para reverse-engineering
-- [[STORY-027-validacion-de-formato-de-release]] — [story.md](specs/03-stories/STORY-027-validacion-de-formato-de-release/story.md) — Validaci�n de formato de Release
+- [[STORY-023-scope-acotado-focus]] — [story.md](specs/03-stories/STORY-023-scope-acotado-focus/story.md) — Scope acotado — Flag --focus para reverse-engineering
+- [[STORY-024-modo-incremental-update]] — [story.md](specs/03-stories/STORY-024-modo-incremental-update/story.md) — Modo incremental — Flag --update para reverse-engineering
+- [[STORY-027-validacion-de-formato-de-release]] — [story.md](specs/03-stories/STORY-027-validacion-de-formato-de-release/story.md) — Validación de formato de Release
 - [[STORY-028-generar-releases]] — [story.md](specs/03-stories/STORY-028-generar-releases/story.md) — Generar releases desde project-plan
 - [[STORY-029-generar-stories]] — [story.md](specs/03-stories/STORY-029-generar-stories/story.md) — Generar stories desde archivo de release
-- [[STORY-030-soporte-atlassian-rovo]] — [story.md](specs/03-stories/STORY-030-soporte-atlassian-rovo/story.md) — Soporte Atlassian Rovo � Agente story-creator
+- [[STORY-030-soporte-atlassian-rovo]] — [story.md](specs/03-stories/STORY-030-soporte-atlassian-rovo/story.md) — Soporte Atlassian Rovo — Agente story-creator
 - [[STORY-032-soporte-atlassian-rovo-para-validar-release]] — [story.md](specs/03-stories/STORY-032-soporte-atlassian-rovo-para-validar-release/story.md) — Soporte Atlassian Rovo para Validar Release
 - [[STORY-033-soporte-atlassian-rovo-para-crear-epic-release]] — [story.md](specs/03-stories/STORY-033-soporte-atlassian-rovo-para-crear-epic-release/story.md) — Soporte Atlassian Rovo para crear Epic Release
 - [[STORY-034-rovo-agent-release-reverse-generator]] — [story.md](specs/03-stories/STORY-034-rovo-agent-release-reverse-generator/story.md) — Rovo Agent Release Reverse Generator from children
 - [[STORY-035-generar-stories-todos-releases]] — [story.md](specs/03-stories/STORY-035-generar-stories-todos-releases/story.md) — Generar stories de todos los releases en batch
-- [[STORY-036-openspec-init-config]] — [story.md](specs/03-stories/STORY-036-openspec-init-config/story.md) — Inicializar configuraci�n de OpenSpec autom�ticamente
-- [[STORY-037-generar-baseline-openspec-inversa]] — [story.md](specs/03-stories/STORY-037-generar-baseline-openspec-inversa/story.md) — Generar l�nea base de OpenSpec mediante ingenier�a inversa
+- [[STORY-036-openspec-init-config]] — [story.md](specs/03-stories/STORY-036-openspec-init-config/story.md) — Inicializar configuración de OpenSpec automáticamente
+- [[STORY-037-generar-baseline-openspec-inversa]] — [story.md](specs/03-stories/STORY-037-generar-baseline-openspec-inversa/story.md) — Generar línea base de OpenSpec mediante ingeniería inversa
 - [[STORY-038-copy-templates-to-skills]] — [story.md](specs/03-stories/STORY-038-copy-templates-to-skills/story.md) — Copiar los templates a los skills correspondientes
 - [[STORY-039-publicar-framework-en-npm]] — [story.md](specs/03-stories/STORY-039-publicar-framework-en-npm/story.md) — Publicar framework en npm
 - [[STORY-040-instalar-skills-via-postinstall]] — [story.md](specs/03-stories/STORY-040-instalar-skills-via-postinstall/story.md) — Instalar skills via postinstall (script)
@@ -181,7 +258,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-044-directorio-docs-tipo-wiki]] — [story.md](specs/03-stories/STORY-044-directorio-docs-tipo-wiki/story.md) — Directorio docs tipo wiki
 - [[STORY-046-publicar-npm-con-github-actions]] — [story.md](specs/03-stories/STORY-046-publicar-npm-con-github-actions/story.md) — GitHub Actions CI/CD
 - [[STORY-047-skills-multicliente-rutas-relativas]] — [story.md](specs/03-stories/STORY-047-skills-multicliente-rutas-relativas/story.md) — Skills con templates Multicliente
-- [[STORY-048-refactor-migrates-templates-to-assets]] — [story.md](specs/03-stories/STORY-048-refactor-migrates-templates-to-assets/story.md) — Refactoring - Migraci�n de templates a assets en Skills
+- [[STORY-048-refactor-migrates-templates-to-assets]] — [story.md](specs/03-stories/STORY-048-refactor-migrates-templates-to-assets/story.md) — Refactoring - Migración de templates a assets en Skills
 - [[STORY-049-reading-of-sddf-root]] — [story.md](specs/03-stories/STORY-049-reading-of-sddf-root/story.md) — Lectura de SDDF_ROOT como ruta base de artefactos en skills SDDF
 - [[STORY-050-organizar-artefactos-en-directorio-propio]] — [story.md](specs/03-stories/STORY-050-organizar-artefactos-en-directorio-propio/story.md) — Organizar artefactos de spec en directorios propios por workitem
 - [[STORY-051-crear-release-por-preguntas-guiadas]] — [story.md](specs/03-stories/STORY-051-crear-release-por-preguntas-guiadas/story.md) — Crear un release.md válido respondiendo preguntas guiadas por el template
@@ -231,7 +308,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[plan-05-findings-and-remediation-plan]] — [plan-05-findings-and-remediation-plan.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-05-findings-and-remediation-plan.md) — Revisión de STORY-086 — hallazgos y plan de remediación
 - [[plan-06-update-project]] — [plan-06-update-project.md](specs/03-stories/STORY-086-refactor-release-to-epic/plan-06-update-project.md) — Plan — Reescribir `project.md` contra la realidad + runbook del proceso
 - [[STORY-086-refactor-release-to-epic]] — [story.md](specs/03-stories/STORY-086-refactor-release-to-epic/story.md) — Renombrar el nivel L2 de release a épica y numerar los directorios de specs
-- [[STORY-087-error-in-npm-install-locally]] — [story.md](specs/03-stories/STORY-087-error-in-npm-install-locally/story.md) — Error en instalaci�n local de npm install agile-sddf en Windows 11
+- [[STORY-087-error-in-npm-install-locally]] — [story.md](specs/03-stories/STORY-087-error-in-npm-install-locally/story.md) — Error en instalación local de npm install agile-sddf en Windows 11
 - [[plan-01-decouple-security-audit]] — [plan-01-decouple-security-audit.md](specs/03-stories/STORY-088-security-enhancement/plan-01-decouple-security-audit.md) — Desacoplar `story-code-review` del skill `security-audit`
 - [plan-02-security.md](specs/03-stories/STORY-088-security-enhancement/plan-02-security.md) — plan-02-security ⚠️ sin frontmatter
 - [[plan-04-fix-security-insights]] — [plan-04-fix-security-insights.md](specs/03-stories/STORY-088-security-enhancement/plan-04-fix-security-insights.md) — Cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`
@@ -258,6 +335,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-100-restaurar-documentos-canonicos-estados]] — [story.md](specs/03-stories/STORY-100-restaurar-documentos-canonicos-estados/story.md) — Restaurar los documentos canónicos de la máquina de estados borrados sin repuntar sus citas
 - [[STORY-101-dod-story-por-etapa]] — [story.md](specs/03-stories/STORY-101-dod-story-por-etapa/story.md) — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill
 - [[STORY-102-renombrar-skill-sddf-constitution]] — [story.md](specs/03-stories/STORY-102-renombrar-skill-sddf-constitution/story.md) — Renombrar el skill project-policies-generation como sddf-constitution
+- [epic-template.md](specs/03-stories/STORY-103-replace-the-epic-template/epic-template.md) — <título de la épica> ⚠️ slug placeholder
 - [[STORY-103-replace-the-epic-template]] — [story.md](specs/03-stories/STORY-103-replace-the-epic-template/story.md) — Reemplazar el template de Epic por la versión minimalista y output-oriented
 - [[STORY-104-migrar-project-intent-a-vision]] — [story.md](specs/03-stories/STORY-104-migrar-project-intent-a-vision/story.md) — Migrar project-intent.md a product/vision.md
 - [[STORY-105-migrar-stakeholders-y-requisitos]] — [story.md](specs/03-stories/STORY-105-migrar-stakeholders-y-requisitos/story.md) — Migrar project.md a product/stakeholders.md y requirements/
@@ -275,9 +353,12 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-117-verificar-cierre-epic-21]] — [story.md](specs/03-stories/STORY-117-verificar-cierre-epic-21/story.md) — Verificar sddf.config.yaml y los modos SDD sobre la estructura de dos niveles
 - [[STORY-118-requirements-srs-unico-primero]] — [story.md](specs/03-stories/STORY-118-requirements-srs-unico-primero/story.md) — Adoptar la estrategia 'SRS único primero, fragmentación cuando duela' en requirements/
 - [[STORY-119-story-plan-un-subagente-por-paso]] — [story.md](specs/03-stories/STORY-119-story-plan-un-subagente-por-paso/story.md) — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens
+- [testing-report-01.md](specs/03-stories/STORY-119-story-plan-un-subagente-por-paso/testing-report-01.md) — Testing de STORY-119: Prueba 1 ⚠️ sin frontmatter
+- [testing-report-02.md](specs/03-stories/STORY-119-story-plan-un-subagente-por-paso/testing-report-02.md) — Testing de STORY-119: Prueba 2 ⚠️ sin frontmatter
 - [[STORY-120-epic-analyze-integridad-historias]] — [story.md](specs/03-stories/STORY-120-epic-analyze-integridad-historias/story.md) — Detectar historias faltantes, huérfanas o duplicadas de una épica antes de aprobarla para desarrollo
 - [[STORY-121-epic-analyze-cobertura-criterios-salida]] — [story.md](specs/03-stories/STORY-121-epic-analyze-cobertura-criterios-salida/story.md) — Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias
 - [[STORY-122-epic-analyze-madurez-historias-hijas]] — [story.md](specs/03-stories/STORY-122-epic-analyze-madurez-historias-hijas/story.md) — Señalar historias hijas no especificadas o con referencias rotas al analizar una épica
+- [[STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo]] — [story.md](specs/03-stories/STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo/story.md) — Reubicar las secciones restantes de project.md y eliminarlo
 
 ---
 
@@ -289,7 +370,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[domain-epic-lifecycle]] — [domain-epic-lifecycle.md](domains/domain-epic-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle)
 - [[domain-knowledge-artifacts]] — [domain-knowledge-artifacts.md](domains/domain-knowledge-artifacts.md) — Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifacts)
 - [[domain-project-lifecycle]] — [domain-project-lifecycle.md](domains/domain-project-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Project (Project Lifecycle)
-- [domain-skills-map.md](domains/domain-skills-map.md) — domain-skills-map ⚠️ sin frontmatter
+- [[domain-skills-map]] — [domain-skills-map.md](domains/domain-skills-map.md) — Mapa de skills por nivel del pipeline
 - [[domain-state-management]] — [domain-state-management.md](domains/domain-state-management.md) — Documentación del Dominio: Gestión de Estados (State Management)
 - [[domain-story-lifecycle]] — [domain-story-lifecycle.md](domains/domain-story-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Story (Story Lifecycle)
 - [[domain-work-item-hierarchy]] — [domain-work-item-hierarchy.md](domains/domain-work-item-hierarchy.md) — Documentación del Dominio: Jerarquía de Work Items (Work Item Hierarchy)
@@ -358,7 +439,9 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[runbook-actualizar-spec-de-proyecto]] — [actualizar-spec-de-proyecto.md](runbooks/actualizar-spec-de-proyecto.md) — Runbook para actualizar la especificación de proyecto (project.md)
 - [[docker-dev-container-with-security-scann]] — [docker-dev-container-with-security-scann.md](runbooks/docker-dev-container-with-security-scann.md) — Integrar Skill Shielder en Dockerfile.dev
 - [[docker-dev-container]] — [docker-dev-container.md](runbooks/docker-dev-container.md) — Guía Completa: Entorno de Desarrollo React con Docker + VSCode Dev Containers
+- [graphify.md](runbooks/graphify.md) — Runbook: Graphify ⚠️ sin frontmatter
 - [[runbook-deployment-to-npm]] — [runbook-deployment-to-npm.md](runbooks/runbook-deployment-to-npm.md) — Runbook para despliegue en npm
+- [tokenmeter.md](runbooks/tokenmeter.md) — Runbook: Tokenmeter ⚠️ sin frontmatter
 
 ---
 
@@ -377,9 +460,9 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 272 |
-| Nodos con frontmatter | 266 |
-| Nodos sin frontmatter | 6 |
+| Nodos indexados | 356 |
+| Nodos con frontmatter | 347 |
+| Nodos sin frontmatter | 9 |
 | Wikilinks pendientes | 15 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |

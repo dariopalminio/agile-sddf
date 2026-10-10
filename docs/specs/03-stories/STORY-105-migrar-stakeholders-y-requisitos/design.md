@@ -8,7 +8,7 @@ substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 story: STORY-105
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-10
 related:
   - STORY-105-migrar-stakeholders-y-requisitos
   - eliminar-specs-01-projects
@@ -389,3 +389,12 @@ Ninguna. Las ambigüedades se resolvieron en el diseño y quedan registradas com
 - **Documento afectado**: design.md / skill `memory-system`
 - **Acción requerida**: esta historia aplica la mitigación mínima de D-8. Recomendado: historia aparte para que el parser de
   `memory-system` descarte los comentarios `#` en línea de los escalares sin comillas, con caso de eval.
+
+
+### CR-004
+- **Tipo**: corrección de inventario
+- **Descripción**: §2.1 contiene una nota en blockquote que documenta la retirada de FR-049 entre FR-048 y FR-050. No es un requisito
+  ni un campo de requisito; por tanto contradice la afirmación de Context de que no había líneas fuera del patrón.
+- **Documento afectado**: design.md / migrador desechable.
+- **Acción requerida**: el migrador acepta exclusivamente los blockquotes de «Convención de fuente» y «FR-049 retirado», pero no crea
+  ningún archivo FR-049. Cualquier otro blockquote o línea ajena al formato sigue abortando la migración.
