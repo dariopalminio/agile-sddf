@@ -55,10 +55,6 @@ tasks.md   → When: tareas de implementación, orden, seguimiento  ← aquí
 - `{story_id}` — identificador de la historia (ej. `STORY-058`)
 - `{story_path}` — ruta explícita al directorio de la historia (opcional)
 - `--output {path}` — ruta de salida del documento (opcional)
-- `--force` — sobreescribir `tasks.md` existente sin pedir confirmación
-- `--skip-existing` — conservar `tasks.md` existente sin pedir confirmación y terminar sin escribir
-
-> ⚠️ `--force` y `--skip-existing` son mutuamente excluyentes. Sin ninguno de los dos se conserva la pregunta interactiva del Paso 1f.
 
 ---
 
@@ -186,27 +182,15 @@ Informar qué template se está usando:
 1. Ruta explícita `--output {path}` si se proporcionó
 2. `{directorio_historia}/tasks.md`
 
-Si se pasaron `--force` y `--skip-existing` a la vez:
+Si `tasks.md` **ya existe** en la ruta de salida, preguntar al usuario:
 ```
-❌ Los flags --force y --skip-existing son mutuamente excluyentes.
+El archivo tasks.md ya existe en: <ruta>
+¿Qué deseas hacer?
+  (r) Regenerar — reemplazar el contenido existente
+  (n) No modificar — saltar la generación
 ```
-Detener sin escribir ningún archivo.
-
-Si `tasks.md` **ya existe** en la ruta de salida:
-
-- **Con `--force`:** no preguntar; continuar y emitir al guardar (Paso 7): `[INFO] tasks.md sobreescrito con --force`
-- **Con `--skip-existing`:** no preguntar; emitir `[INFO] tasks.md existente conservado (--skip-existing)` y terminar con éxito sin escribir nada
-- **Sin flags:** preguntar al usuario:
-  ```
-  El archivo tasks.md ya existe en: <ruta>
-  ¿Qué deseas hacer?
-    (r) Regenerar — reemplazar el contenido existente
-    (n) No modificar — saltar la generación
-  ```
-  - `n` / `no modificar`: informar que se saltó y terminar
-  - `r` / `regenerar`: continuar
-
-Si `tasks.md` no existe, los flags no aplican: generar normalmente.
+- `n` / `no modificar`: informar que se saltó y terminar
+- `r` / `regenerar`: continuar
 
 ---
 
@@ -331,8 +315,6 @@ Distribuir las tareas del Paso 5 en los grupos del template, usando encabezados 
 Guardar el documento completado en la ruta de salida resuelta en el Paso 1.
 
 Si el directorio no existe, crearlo.
-
-Si se reemplazó un `tasks.md` existente por `--force`, emitir: `[INFO] tasks.md sobreescrito con --force`
 
 ---
 

@@ -30,7 +30,7 @@ story-design → story-tasking → story-testcases → story-analyze → story-i
 - Clasifica automáticamente cada caso por tipo según reglas semánticas
 - Enriquece la cobertura con `tasks.md` si está disponible (opcional)
 - Integra referencias de la fase `plan` desde `sddf.config.yaml`
-- Soporta `--force` para sobreescritura sin interacción (útil en CI) y `--skip-existing` para conservar un `testcases.md` existente sin preguntar
+- Soporta `--force` para sobreescritura sin interacción (útil en CI)
 
 ---
 
@@ -57,9 +57,6 @@ testcases.md   → casos de prueba tipificados y trazables  ← aquí
 - `{story_id}` — ID de la historia (ej. `STORY-057`)
 - `{story_path}` — ruta explícita al directorio (opcional)
 - `--force` — sobreescribir `testcases.md` existente sin pedir confirmación
-- `--skip-existing` — conservar `testcases.md` existente sin pedir confirmación y terminar sin escribir
-
-> ⚠️ `--force` y `--skip-existing` son mutuamente excluyentes. Sin ninguno de los dos se conserva la pregunta interactiva del Paso 1d.
 
 ## Salida
 
@@ -156,15 +153,9 @@ Detener.
 
 #### 1d. Idempotencia — ¿testcases.md ya existe?
 
-Si se pasaron `--force` y `--skip-existing` a la vez:
-```
-❌ Los flags --force y --skip-existing son mutuamente excluyentes.
-```
-Detener sin escribir ningún archivo.
-
 Si `testcases.md` ya existe en el directorio:
 
-- **Sin flags:** preguntar:
+- **Sin `--force`:** preguntar:
   ```
   El archivo testcases.md ya existe en: <ruta>
   ¿Qué deseas hacer?
@@ -175,9 +166,6 @@ Si `testcases.md` ya existe en el directorio:
   - `r`: continuar
 
 - **Con `--force`:** continuar directamente y emitir al guardar: `[INFO] testcases.md sobreescrito con --force`
-- **Con `--skip-existing`:** no preguntar; emitir `[INFO] testcases.md existente conservado (--skip-existing)` y terminar con éxito sin escribir nada
-
-Si `testcases.md` no existe, los flags no aplican: generar normalmente.
 
 ---
 
@@ -310,7 +298,6 @@ Próximo paso: /story-analyze {story_id}
 | Condición | Mensaje | Acción |
 |-----------|---------|--------|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| `--force` y `--skip-existing` simultáneos | `❌ Los flags --force y --skip-existing son mutuamente excluyentes.` | Detener sin escribir archivos |
 | Historia no encontrada | `❌ No se encontró la historia {story_id}` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener |
 | `design.md` ausente | `❌ No se encontró design.md en: <ruta>` | Detener. Sugerir `/story-design` |

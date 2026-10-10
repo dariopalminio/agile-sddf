@@ -37,34 +37,6 @@ Skill orquestador que ejecuta el pipeline completo de planning de una historia S
 
 En cualquier modo, `--skip-analyze` elimina el paso `story-analyze` y reduce el total en 1.
 
-## Modo de ejecución: subagentes o inline
-
-Cada paso se ejecuta en un **subagente aislado** cuando la sesión dispone de una herramienta para lanzarlos (en Claude Code, `Agent`). El subagente recibe solo la ruta del `SKILL.md` del worker y el contexto resuelto (`REPO_ROOT`, `SPECS_BASE`, `ROOT_SOURCE`, historia, flag de sobrescritura), lee sus insumos del disco y devuelve un estado breve. Así el hilo principal termina el plan liviano.
-
-| Situación | Ejecución | Banner |
-|---|---|---|
-| Runtime con subagentes | un subagente por paso | `Ejecución: subagentes (un contexto aislado por paso)` |
-| Runtime sin subagentes (p. ej. `codex`) | composición inline en la sesión principal | `Ejecución: inline (el runtime no admite subagentes)` |
-| `--inline` | composición inline forzada | `Ejecución: inline (--inline)` |
-
-Los artefactos, los mensajes de progreso y el resumen son iguales en ambos modos. Ningún subagente lanza otro subagente.
-
-### Archivos de resultado
-
-Cada paso deja `.tmp/story-plan/<STORY-ID>/<paso>.result.md` (`design`, `tasking`, `testcases`, `analyze`): primera línea `STATUS: OK`, `STATUS: WARN` o `STATUS: FAIL` y como máximo 5 líneas de resumen. El fail-fast y el resumen final se deciden leyendo solo esos archivos; un archivo ausente o ilegible cuenta como `FAIL`. El directorio se recrea en cada corrida y no se versiona.
-
-### Artefactos existentes: una sola pregunta
-
-Si alguno de los artefactos del modo ya existe, `story-plan` pregunta **una vez**, antes de escribir nada:
-
-| Respuesta | Efecto |
-|---|---|
-| `(t)` Regenerar todos | todos los workers reciben `--force` |
-| `(f)` Solo los que faltan | los workers de artefactos existentes reciben `--skip-existing`; el resto, `--force` |
-| `(c)` Cancelar | no se lanza ningún paso y ningún archivo cambia |
-
-Los workers (`story-design`, `story-tasking`, `story-testcases`, `story-analyze`) aceptan `--force` y `--skip-existing` también por separado; sin flags conservan su pregunta `(r) Regenerar / (n) No modificar`.
-
 ## Parámetros
 
 | Parámetro | Tipo | Descripción |
@@ -74,7 +46,6 @@ Los workers (`story-design`, `story-tasking`, `story-testcases`, `story-analyze`
 | `--only-tasks` | opcional | Ejecuta solo design → tasking → analyze; no genera `testcases.md` |
 | `--only-testcases` | opcional | Ejecuta solo design → testcases → analyze; no genera `tasks.md` |
 | `--skip-analyze` | opcional | Omite `story-analyze` en cualquier modo |
-| `--inline` | opcional | Fuerza la composición inline de los workers aunque el runtime admita subagentes |
 
 > `--only-tasks` y `--only-testcases` son mutuamente excluyentes. Usarlos juntos produce un error inmediato sin invocar ningún sub-skill.
 
@@ -112,9 +83,6 @@ Los workers (`story-design`, `story-tasking`, `story-testcases`, `story-analyze`
 
 # Solo tareas sin analyze: design.md + tasks.md
 /story-plan STORY-057 --only-tasks --skip-analyze
-
-# Forzar ejecución inline (sin subagentes), p. ej. para comparar consumo de tokens
-/story-plan STORY-057 --inline
 
 # Ruta explícita al directorio de la historia
 /story-plan STORY-057 docs/specs/03-stories/STORY-057-mi-historia/

@@ -51,7 +51,6 @@ parent: null
 | [agent-harness-guide.md](agent-harness-guide.md) | Qué es un Agent Harness (Agente = Modelo + Harness) y por qué los agentes lo necesitan |
 | [harness-engineering-guide.md](harness-engineering-guide.md) | Harness Engineering: diseñar el entorno de ejecución (reglas, feedback loops, compuertas) de un agente autónomo |
 | [harness-eng-agents-orchestration.md](harness-eng-agents-orchestration.md) | Orquestación de skills y agentes en Claude Code |
-| [orchestrator-subagent-pattern.md](orchestrator-subagent-pattern.md) | Convertir un orquestador inline a un subagente por paso, medir el ahorro con `/context` y evitar el shadowing de skills |
 
 ### Buenas prácticas
 

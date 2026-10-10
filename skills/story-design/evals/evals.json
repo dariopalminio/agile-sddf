@@ -124,34 +124,6 @@
         ]
       },
       "threshold": 1.0
-    },
-    {
-      "id": "TC-006",
-      "name": "force-sobrescribe-sin-preguntar",
-      "type": "edge-case",
-      "description": "design.md ya existe y se invoca con --force: el skill no muestra la pregunta (r)/(n), regenera design.md y lo informa al guardar.",
-      "input": {
-        "input_path": "skills/story-design/examples/input/story.md",
-        "story_id": "STORY-057",
-        "flags": [
-          "--force"
-        ],
-        "existing_artifacts": [
-          "design.md"
-        ]
-      },
-      "expected": {
-        "contains": [
-          "design.md sobreescrito con --force",
-          "type: design"
-        ],
-        "not_contains": [
-          "(r) Regenerar",
-          "(n) No modificar",
-          "mutuamente excluyentes"
-        ]
-      },
-      "threshold": 1
     }
   ]
 }

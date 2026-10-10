@@ -61,10 +61,6 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 - `{story_path}` — ruta explícita al directorio de la historia (opcional)
 - `--template {path}` — ruta al template de diseño (opcional)
 - `--output {path}` — ruta de salida del documento (opcional)
-- `--force` — sobreescribir `design.md` existente sin pedir confirmación
-- `--skip-existing` — conservar `design.md` existente sin pedir confirmación y terminar sin escribir
-
-> ⚠️ `--force` y `--skip-existing` son mutuamente excluyentes. Sin ninguno de los dos se conserva la pregunta interactiva del Paso 1d.
 
 ---
 
@@ -170,27 +166,15 @@ Informar qué template se está usando:
 1. Ruta explícita `--output {path}` si se proporcionó
 2. `{directorio_historia}/design.md`
 
-Si se pasaron `--force` y `--skip-existing` a la vez:
+Si `design.md` **ya existe** en la ruta de salida, preguntar al usuario:
 ```
-❌ Los flags --force y --skip-existing son mutuamente excluyentes.
+El archivo design.md ya existe en: <ruta>
+¿Qué deseas hacer?
+  (r) Regenerar — reemplazar el contenido existente
+  (n) No modificar — saltar la generación
 ```
-Detener sin escribir ningún archivo.
-
-Si `design.md` **ya existe** en la ruta de salida:
-
-- **Con `--force`:** no preguntar; continuar y emitir al guardar (Paso 8): `[INFO] design.md sobreescrito con --force`
-- **Con `--skip-existing`:** no preguntar; emitir `[INFO] design.md existente conservado (--skip-existing)` y terminar con éxito sin escribir nada
-- **Sin flags:** preguntar al usuario:
-  ```
-  El archivo design.md ya existe en: <ruta>
-  ¿Qué deseas hacer?
-    (r) Regenerar — reemplazar el contenido existente
-    (n) No modificar — saltar la generación
-  ```
-  - `n` / `no modificar`: informar que se saltó y terminar
-  - `r` / `regenerar`: continuar
-
-Si `design.md` no existe, los flags no aplican: generar normalmente.
+- `n` / `no modificar`: informar que se saltó y terminar
+- `r` / `regenerar`: continuar
 
 ---
 
@@ -468,8 +452,6 @@ Guardar el documento completado en la ruta de salida resuelta en el Paso 1.
 
 Si el directorio no existe, crearlo.
 
-Si se reemplazó un `design.md` existente por `--force`, emitir: `[INFO] design.md sobreescrito con --force`
-
 Si el documento supera las 1000 líneas, notificar al usuario que considere dividirlo.
 
 ---
@@ -509,7 +491,6 @@ Preguntar: "¿La solución técnica refleja correctamente la historia? ¿Necesit
 | Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente en el directorio | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/epic-generate-stories` |
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
-| `--force` y `--skip-existing` simultáneos | `❌ Los flags --force y --skip-existing son mutuamente excluyentes.` | Detener sin escribir archivos |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
 | `constitution.md` ausente | `⚠️ No se encontró constitution.md` | Advertir y continuar |
 | DoD de la etapa plan ausente | `⚠️ DoD de la etapa plan no encontrado …` | Advertir y continuar |

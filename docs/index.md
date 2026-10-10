@@ -347,7 +347,6 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[flight-leves-model]] — [flight-leves-model.md](guides/flight-leves-model.md) — Modelo de Niveles de Vuelo (Flight Levels Model)
 - [[harness-engineering]] — [harness-eng-agents-orchestration.md](guides/harness-eng-agents-orchestration.md) — Harness Engineering: Orquestación de Skills y Agentes en Claude Code
 - [[harness-engineering-guide]] — [harness-engineering-guide.md](guides/harness-engineering-guide.md) — Guía de Harness Engineering
-- [[orchestrator-subagent-pattern]] — [orchestrator-subagent-pattern.md](guides/orchestrator-subagent-pattern.md) — Patrón orquestador con un subagente por paso
 - [[organization-of-artifacts]] — [organization-of-artifacts.md](guides/organization-of-artifacts.md) — Reglas de la estrategia de organización de artefactos (SDDF)
 - [[root-folder-practices]] — [root-folder-practices.md](guides/root-folder-practices.md) — Prácticas para resolver la raíz de artefactos SDDF
 - [[sdd]] — [sdd.md](guides/sdd.md) — Spec Driven Development (SDD)

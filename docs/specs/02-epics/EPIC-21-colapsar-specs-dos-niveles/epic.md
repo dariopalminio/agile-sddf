@@ -8,7 +8,7 @@ status: DEFINE
 substatus: IN-PROGRESS
 parent: null
 created: 2026-10-05
-updated: 2026-10-09
+updated: 2026-10-10
 related:
   - EPIC-20-memory-system
   - EPIC-19-framework-consistency
@@ -23,12 +23,8 @@ related:
 
 ## Alcance
 Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirements/` y `architecture/`, y quitar los prefijos numéricos de `specs/`, dejando solo `specs/epics/` y `specs/stories/`. Se elimina así la duplicación entre `specs/01-projects/` y `product/`, con una única fuente de verdad para la visión y el plan del producto. Incluye actualizar skills, documentación y scaffolding de `memory-system`, y ofrecer migración automática para repos existentes: es un breaking change que exige major version bump.
-Además se aprovecha a hacer una pequeña mejora en el nivel de story, optimizando la planeación de las historias (`story-plan`).
 
 ## Historias
-
-### Optimizar skill `story-plan` para comenzar a optimizar nivel de story
-- [x] **STORY-119** — Story-plan un subagente por paso: ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens.
 
 ### Historias específicas para colapsar `specs/` a dos niveles y eliminar `01-projects/`
 - [x] **STORY-103** — Reemplazar el template de Epic por la versión minimalista y output-oriented: asegurar que los nuevos Epics sigan el formato simplificado y enfocado en resultados.
@@ -113,5 +109,4 @@ Escenario: Navegabilidad intacta tras el colapso
 | 8 | Actualizar scaffolding de `memory-system` | 5 |
 | 9 | Actualizar documentación canónica | 6, 7, 8 |
 | 10 | Actualizar `sddf.config.yaml` y verificar los tres modos SDD | 6, 7, 8 |
-| 11 | STORY-119 | — |
-| 12 | Reubicar las secciones restantes de `project.md` y eliminarlo | 2 |
+| 11 | Reubicar las secciones restantes de `project.md` y eliminarlo | 2 |
