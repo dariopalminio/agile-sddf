@@ -1,5 +1,5 @@
 ---
-type: wiki
+type: product
 slug: story-map
 title: "Story Map — Agile SDDF (Spec-Driven Development Framework)"
 date: 2026-04-20

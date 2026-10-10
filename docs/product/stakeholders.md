@@ -13,8 +13,8 @@ updated: 2026-10-10
 
 ## Usuarios y roles
 
-- **US-001**: Desarrollador / Builder Individual
-    - **Descripción**: Desarrollador o freelancer que usa un runtime de IA para crear software.
+- **US-001**: Desarrollador (Cloud) / Developer (Cloud)
+    - **Descripción**: Desarrollador o freelancer que usa un runtime de IA para crear software con suscripción (Claude, Codex, Github Copilot).
       Necesita estructurar su proceso sin overhead metodológico. Invoca skills directamente desde el
       CLI del agente de IA y trabaja normalmente una historia a la vez.
 

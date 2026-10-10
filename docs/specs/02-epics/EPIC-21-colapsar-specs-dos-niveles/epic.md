@@ -31,7 +31,7 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [x] **STORY-104** — Migrar `project-intent.md` a `product/vision.md`: consolidar la intención del proyecto en la visión de producto existente, sin pérdida semántica (objetivo, visión, intención) y con wikilinks actualizados.
 - [x] **STORY-105** — Migrar `project.md` a `product/stakeholders.md` y `requirements/`: repartir stakeholders y requisitos funcionales/no funcionales en sus nuevos hogares, sin pérdida semántica.
 - [x] **STORY-106** — Migrar `project-plan.md` a `product/roadmap.md`: trasladar el plan de épicas al roadmap de producto, sin pérdida semántica.
-- [ ] **STORY-107** — Migrar `story-map.md` y `context-diagram.puml`: mover `story-map.md` a `docs/product/story-map.md` y `context-diagram.puml` a `docs/architecture/c4/context-diagram.puml`, actualizando referencias.
+- [x] **STORY-107** — Migrar `story-map.md` y `context-diagram.puml`: mover `story-map.md` a `docs/product/story-map.md` y `context-diagram.puml` a `docs/architecture/c4/context-diagram.puml`, actualizando referencias.
 - [ ] **STORY-108** — Renombrar `specs/02-epics/` → `specs/epics/` y `specs/03-stories/` → `specs/stories/`: eliminar prefijos numéricos y actualizar referencias, dejando `01-projects/` eliminado.
 - [ ] **STORY-109** — project-begin + project-pm → vision.md: El substatus de vision.md reemplaza al "proyecto activo" PROJ-NN: TODO hace la entrevista completa, IN-PROGRESS retoma, DONE ofrece Actualizar o Cancelar.
 - [ ] **STORY-110** — project-discovery + reverse-engineering + 3 agentes → stakeholders.md + un archivo por FR/NFR: Los IDs nuevos continúan la secuencia (FR-055…) sin sobrescribir los existentes. Si vision.md no está en DONE, se detiene y pide correr /project-begin.
@@ -50,7 +50,7 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [ ] `docs/specs/01-projects/` no existe en el repositorio del framework.
 - [ ] `docs/specs/` contiene exactamente dos carpetas de artefactos: `epics/` y `stories/` (más `README.md`).
 - [ ] `docs/product/` contiene `vision.md`, `stakeholders.md`, `roadmap.md` y `story-map.md`.
-- [ ] `docs/architecture/c4/` contiene `context-diagram.puml`.
+- [ ] `docs/architecture/c4/` contiene `context-diagram.puml` y su render `context-diagram.png`.
 - [ ] `docs/requirements/` contiene `functional/` y `non-functional/` poblados o un documento srs de especificación de requerimientos.
 - [ ] Ningún skill ni agente referencia `specs/01-projects/`, `specs/02-epics/` ni `specs/03-stories/`.
 - [ ] `memory-system migrate --from=specs-3-levels --dry-run` reporta "0 cambios pendientes" tras la migración.
