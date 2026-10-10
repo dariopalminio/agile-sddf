@@ -15,36 +15,36 @@ parent: EPIC-03-reverse-engineering
 
 # Historia de Usuario
 
-## ?? Historia: Agente reverse-engineer-synthesizer
+## 📖 Historia: Agente reverse-engineer-synthesizer
 
-**Como** developer que ha ejecutado el skill `reverse-engineering` y tiene los cuatro outputs de anï¿½lisis en `.tmp/`
-**Quiero** que el agente `reverse-engineer-synthesizer` fusione los cuatro archivos intermedios en un ï¿½nico documento de requisitos
-**Para** obtener `$SPECS_BASE/specs/projects/project.md` completo y estructurado siguiendo el template canï¿½nico del framework SDDF
+**Como** developer que ha ejecutado el skill `reverse-engineering` y tiene los cuatro outputs de análisis en `.tmp/`
+**Quiero** que el agente `reverse-engineer-synthesizer` fusione los cuatro archivos intermedios en un único documento de requisitos
+**Para** obtener `$SPECS_BASE/specs/projects/project.md` completo y estructurado siguiendo el template canónico del framework SDDF
 
-## ? Criterios de aceptaciï¿½n
+## ✅ Criterios de aceptación
 
-### Escenario principal ï¿½ Sï¿½ntesis exitosa de los cuatro outputs
+### Escenario principal – Síntesis exitosa de los cuatro outputs
 ```gherkin
 Dado que existen ".tmp/rfc-architecture.md", ".tmp/rfc-features.md", ".tmp/rfc-business-rules.md" y ".tmp/rfc-navigation.md"
 Cuando el agente "reverse-engineer-synthesizer" procesa los cuatro archivos
-Entonces genera "docs/specs/projects/project.md" siguiendo la estructura del template canï¿½nico
+Entonces genera "docs/specs/projects/project.md" siguiendo la estructura del template canónico
   Y las secciones no inferibles quedan marcadas con "<!-- PENDING MANUAL REVIEW -->"
   Y los hallazgos se clasifican con nivel de confianza [DIRECT], [INFERRED] o [SUGGESTED]
 ```
 
-### Escenario alternativo / error ï¿½ Algï¿½n output intermedio estï¿½ incompleto o vacï¿½o
+### Escenario alternativo / error – Algún output intermedio está incompleto o vacío
 ```gherkin
-Dado que ".tmp/rfc-business-rules.md" estï¿½ vacï¿½o porque no se detectaron reglas de negocio
+Dado que ".tmp/rfc-business-rules.md" está vacío porque no se detectaron reglas de negocio
 Cuando el sintetizador fusiona los archivos
-Entonces genera "requirement-spec.md" con la secciï¿½n de requisitos funcionales parcialmente completa
-  Y marca la secciï¿½n afectada con "<!-- PENDING MANUAL REVIEW -->" y una nota explicativa
+Entonces genera "requirement-spec.md" con la sección de requisitos funcionales parcialmente completa
+  Y marca la sección afectada con "<!-- PENDING MANUAL REVIEW -->" y una nota explicativa
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 [Por completar]
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
-Generado automï¿½ticamente desde el release: release-03-reverse-engineering.md
-Feature origen: STORY-022 ï¿½ Agente reverse-engineer-synthesizer
+Generado automáticamente desde el release: release-03-reverse-engineering.md
+Feature origen: STORY-022 — Agente reverse-engineer-synthesizer

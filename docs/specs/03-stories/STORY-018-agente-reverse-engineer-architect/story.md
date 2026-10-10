@@ -15,13 +15,13 @@ parent: EPIC-03-reverse-engineering
 
 # Historia de Usuario
 
-## ?? Historia: Agente reverse-engineer-architect
+## 📖 Historia: Agente reverse-engineer-architect
 
 **Como** developer que ejecuta el skill `reverse-engineering` sobre un repositorio existente
 **Quiero** que el agente `reverse-engineer-architect` analice el stack tecnológico, dependencias y patrones arquitectónicos del código
 **Para** obtener `.tmp/rfc-architecture.md` con el stack, frameworks, patrones de arquitectura y puntos de integración inferidos del repositorio, como input para el sintetizador
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Análisis arquitectónico exitoso
 ```gherkin
@@ -39,11 +39,11 @@ Entonces genera ".tmp/rfc-architecture.md" con la sección de stack marcada como
   Y añade una nota "<!-- PENDING MANUAL REVIEW -->" en las secciones no inferibles
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 [Por completar]
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 Generado automáticamente desde el release: release-03-reverse-engineering.md
 Feature origen: STORY-018 — Agente reverse-engineer-architect

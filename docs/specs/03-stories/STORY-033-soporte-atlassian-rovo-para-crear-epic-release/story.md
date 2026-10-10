@@ -15,38 +15,38 @@ parent: EPIC-06-release-and-story-generator
 
 # Historia de Usuario
 
-## ?? Historia: Soporte Atlassian Rovo para crear Epic Release
+## 📖 Historia: Soporte Atlassian Rovo para crear Epic Release
 
 **Como** PM o Scrum Master que usa Atlassian Rovo y gestiona el backlog en Jira
 **Quiero** invocar el agente `release-creator-agent` en Rovo para crear una Epic en Jira a partir de un archivo de release del framework SDDF
-**Para** sincronizar el plan de releases SDDF con el backlog de Jira sin transcribir manualmente la informaciï¿½n de features y objetivos
+**Para** sincronizar el plan de releases SDDF con el backlog de Jira sin transcribir manualmente la información de features y objetivos
 
-## ? Criterios de aceptaciï¿½n
+## ✅ Criterios de aceptación
 
-### Escenario principal ï¿½ Creaciï¿½n de Epic desde archivo de release en Rovo
+### Escenario principal – Creación de Epic desde archivo de release en Rovo
 ```gherkin
-Dado que el agente "release-creator-agent" estï¿½ disponible en el runtime de Atlassian Rovo
-  Y existe un archivo de release vï¿½lido en "docs/specs/releases/"
+Dado que el agente "release-creator-agent" está disponible en el runtime de Atlassian Rovo
+  Y existe un archivo de release válido en "docs/specs/releases/"
 Cuando el PM invoca el agente en Rovo indicando el archivo de release
 Entonces el agente lee las features y el objetivo del release
-  Y crea una Epic en Jira con el nombre, descripciï¿½n y features del release como Issues hijos
+  Y crea una Epic en Jira con el nombre, descripción y features del release como Issues hijos
   Y retorna un resumen con el ID de la Epic creada y las Issues asociadas
 ```
 
-### Escenario alternativo / error ï¿½ Archivo de release invï¿½lido o con formato incorrecto
+### Escenario alternativo / error – Archivo de release inválido o con formato incorrecto
 ```gherkin
-Dado que el archivo de release indicado no supera la validaciï¿½n de formato (STORY-027)
+Dado que el archivo de release indicado no supera la validación de formato (STORY-027)
 Cuando el agente intenta crear la Epic
 Entonces el agente retorna un error descriptivo con las secciones faltantes
   Pero no crea ninguna Epic en Jira
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 * Compatibilidad: el agente debe funcionar en el runtime Atlassian Rovo con acceso a la API de Jira
 * Dependencias: requiere STORY-027 (release-format-validation) y STORY-030 como prerequisitos
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
-Generado automï¿½ticamente desde el release: release-06-release-and-story-generator.md
-Feature origen: STORY-033 ï¿½ Soporte Atlassian Rovo para crear Epic Release
+Generado automáticamente desde el release: release-06-release-and-story-generator.md
+Feature origen: STORY-033 — Soporte Atlassian Rovo para crear Epic Release

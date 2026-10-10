@@ -15,13 +15,13 @@ parent: EPIC-03-reverse-engineering
 
 # Historia de Usuario
 
-## ?? Historia: Agente reverse-engineer-ux-flow-mapper
+## 📖 Historia: Agente reverse-engineer-ux-flow-mapper
 
 **Como** developer que ejecuta el skill `reverse-engineering` sobre un repositorio existente
 **Quiero** que el agente `reverse-engineer-ux-flow-mapper` reconstruya el mapa de navegación y flujos de usuario a partir de la configuración de ruteo y guardas
 **Para** obtener `.tmp/rfc-navigation.md` con el árbol de navegación ASCII y los flujos principales, como input para el sintetizador
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Reconstrucción exitosa del mapa de navegación
 ```gherkin
@@ -39,11 +39,11 @@ Entonces genera ".tmp/rfc-navigation.md" con el árbol vacío
   Y añade "<!-- PENDING MANUAL REVIEW -->" indicando que no se detectó configuración de ruteo
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 [Por completar]
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 Generado automáticamente desde el release: release-03-reverse-engineering.md
 Feature origen: STORY-021 — Agente reverse-engineer-ux-flow-mapper

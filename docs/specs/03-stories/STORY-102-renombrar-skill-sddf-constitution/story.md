@@ -18,48 +18,48 @@ related:
 [[EPIC-12-story-sdd-workflow]]
 [[STORY-056-project-policies]]
 
-# ðŸ“– Historia: Renombrar el skill project-policies-generation como sddf-constitution
+# 📖 Historia: Renombrar el skill project-policies-generation como sddf-constitution
 
 **Como** mantenedor del framework Agile SDDF que configura la gobernanza de nuevos proyectos  
-**Quiero** encontrar e invocar el skill de bootstrap de constituciÃ³n como `sddf-constitution`  
-**Para** identificar inequÃ­vocamente la herramienta responsable de establecer la constituciÃ³n, las polÃ­ticas derivadas y los guardrails del proyecto
+**Quiero** encontrar e invocar el skill de bootstrap de constitución como `sddf-constitution`  
+**Para** identificar inequívocamente la herramienta responsable de establecer la constitución, las políticas derivadas y los guardrails del proyecto
 
-## âœ… Criterios de aceptaciÃ³n
+## ✅ Criterios de aceptación
 
-### AC-1 â€” Escenario principal â€“ El skill adopta su identidad de constituciÃ³n
+### AC-1 — Escenario principal – El skill adopta su identidad de constitución
 
 ```gherkin
 Dado que el repositorio contiene el skill de bootstrap de gobernanza en `skills/project-policies-generation/`
 Cuando se aplica el renombre solicitado
-Entonces el catÃ¡logo fuente contiene `skills/sddf-constitution/` como Ãºnica ubicaciÃ³n canÃ³nica
-  Y su nombre e invocaciÃ³n pÃºblica son `sddf-constitution` y `/sddf-constitution`
-  Y conserva la capacidad de preparar o actualizar la constituciÃ³n, las polÃ­ticas derivadas y los guardrails DoD del proyecto
+Entonces el catálogo fuente contiene `skills/sddf-constitution/` como única ubicación canónica
+  Y su nombre e invocación pública son `sddf-constitution` y `/sddf-constitution`
+  Y conserva la capacidad de preparar o actualizar la constitución, las políticas derivadas y los guardrails DoD del proyecto
 ```
 
-### AC-2 â€” Escenario alternativo / error â€“ Las integraciones no ofrecen el nombre retirado
+### AC-2 — Escenario alternativo / error – Las integraciones no ofrecen el nombre retirado
 
 ```gherkin
-Dado que los flujos activos de inicializaciÃ³n, diseÃ±o y documentaciÃ³n recomiendan el skill de gobernanza
-Cuando una persona mantenedora consulta esas referencias despuÃ©s del renombre
+Dado que los flujos activos de inicialización, diseño y documentación recomiendan el skill de gobernanza
+Cuando una persona mantenedora consulta esas referencias después del renombre
 Entonces todas orientan a `sddf-constitution`
   Y `project-policies-generation` no se ofrece como skill activo ni como alias compatible
-  Pero las historias y entradas de changelog cerradas conservan la denominaciÃ³n histÃ³rica cuando documenta decisiones pasadas
+  Pero las historias y entradas de changelog cerradas conservan la denominación histórica cuando documenta decisiones pasadas
 ```
 
-## âš™ï¸ Criterios no funcionales especÃ­ficos
+## ⚙️ Criterios no funcionales específicos
 
-- **CNF-01 â€” Trazabilidad:** las referencias operativas se actualizan de manera consistente; los documentos histÃ³ricos no se reescriben solo por este renombre.
+- **CNF-01 — Trazabilidad:** las referencias operativas se actualizan de manera consistente; los documentos históricos no se reescriben solo por este renombre.
 
-- **CNF-02 â€” Integridad funcional:** el renombre no elimina los templates, ejemplos ni protecciones de escritura que ya ofrece el skill.
+- **CNF-02 — Integridad funcional:** el renombre no elimina los templates, ejemplos ni protecciones de escritura que ya ofrece el skill.
 
 ## Fuera de alcance (Non-Goals)
 
 - Mantener `/project-policies-generation` como alias o skill duplicado.
 - Reescribir el historial cerrado de specs y CHANGELOG.
-- Limpiar automÃ¡ticamente copias previamente instaladas en runtimes externos; esas copias se gestionan mediante una instalaciÃ³n explÃ­cita.
+- Limpiar automáticamente copias previamente instaladas en runtimes externos; esas copias se gestionan mediante una instalación explícita.
 
-## ðŸ“Ž Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
-La historia original [[STORY-056-project-policies]] creÃ³ el skill con el nombre anterior dentro de [[EPIC-12-story-sdd-workflow]]. El nuevo nombre debe reflejar que su responsabilidad principal es establecer la constituciÃ³n como fuente suprema de gobernanza, de la cual derivan las polÃ­ticas y los guardrails.
+La historia original [[STORY-056-project-policies]] creó el skill con el nombre anterior dentro de [[EPIC-12-story-sdd-workflow]]. El nuevo nombre debe reflejar que su responsabilidad principal es establecer la constitución como fuente suprema de gobernanza, de la cual derivan las políticas y los guardrails.
 
-El directorio `skills/` es la fuente de verdad. Las referencias activas que orientan a la persona mantenedora deben adoptar el nuevo identificador, mientras que las referencias histÃ³ricas permanecen como evidencia de la evoluciÃ³n del framework.
+El directorio `skills/` es la fuente de verdad. Las referencias activas que orientan a la persona mantenedora deben adoptar el nuevo identificador, mientras que las referencias históricas permanecen como evidencia de la evolución del framework.

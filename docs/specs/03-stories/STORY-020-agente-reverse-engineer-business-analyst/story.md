@@ -15,13 +15,13 @@ parent: EPIC-03-reverse-engineering
 
 # Historia de Usuario
 
-## ?? Historia: Agente reverse-engineer-business-analyst
+## 📖 Historia: Agente reverse-engineer-business-analyst
 
 **Como** developer que ejecuta el skill `reverse-engineering` sobre un repositorio existente
 **Quiero** que el agente `reverse-engineer-business-analyst` identifique reglas de negocio, validaciones y workflows del código fuente
 **Para** obtener `.tmp/rfc-business-rules.md` con las reglas en formato DADO/CUANDO/ENTONCES referenciadas a su código fuente, como input para el sintetizador
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Identificación exitosa de reglas de negocio
 ```gherkin
@@ -39,11 +39,11 @@ Entonces genera ".tmp/rfc-business-rules.md" con la sección de reglas vacía
   Y añade "<!-- PENDING MANUAL REVIEW -->" indicando que no se detectaron reglas de negocio
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 [Por completar]
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 Generado automáticamente desde el release: release-03-reverse-engineering.md
 Feature origen: STORY-020 — Agente reverse-engineer-business-analyst

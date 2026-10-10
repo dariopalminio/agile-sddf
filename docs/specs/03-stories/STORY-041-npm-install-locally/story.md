@@ -13,13 +13,13 @@ parent: EPIC-08-npm-install-locally
 <!-- Referencias -->
 [[EPIC-08-npm-install-locally]]
 
-## ?? Historia: Npm Install locally
+## 📖 Historia: Npm Install locally
 
 **Como** desarrollador que trabaja en un proyecto específico que usa Claude Code
 **Quiero** instalar `agile-sddf` localmente con `npm install agile-sddf` y que los skills se copien al `.claude/` del proyecto
 **Para** tener los skills del framework disponibles solo en ese proyecto sin afectar ni depender de mi configuración global `~/.claude/`
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Instalación local copia al directorio del proyecto
 ```gherkin
@@ -63,13 +63,13 @@ Entonces muestra el error: "SDDF error: .claude exists but is not a directory"
 ### Requerimiento
 El script SHALL detectar el modo de instalación mediante la variable de entorno estándar de npm: `process.env.npm_config_global !== 'true'` indica instalación local. No se deben usar heurísticas de paths ni flags propios.
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 * Compatibilidad: debe funcionar en macOS, Linux y Windows usando `process.cwd()` para resolver el directorio del proyecto
 * Rendimiento: la detección del modo de instalación no debe agregar latencia perceptible al proceso de instalación
 * Sin efectos secundarios: una instalación local no debe nunca escribir en `~/.claude/`
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 La detección del modo se basa en `process.env.npm_config_global` (variable estándar que npm inyecta en scripts). Cuando es `'true'`, la instalación es global; en cualquier otro caso, se trata como local.
 

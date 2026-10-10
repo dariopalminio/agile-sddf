@@ -13,13 +13,13 @@ parent: EPIC-07-publicacion-framework-npm
 <!-- Referencias -->
 [[EPIC-07-publicacion-framework-npm]]
 
-## ?? Historia: Instalar skills via postinstall (script)
+## 📖 Historia: Instalar skills via postinstall (script)
 
 **Como** desarrollador que adopta el framework SDDF
 **Quiero** que al ejecutar `npm install -g @sddf/core` los skills y agentes se copien automáticamente a `~/.claude/`
 **Para** tener el pipeline SDDF disponible en Claude Code sin pasos de configuración manual adicionales
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Instalación limpia en macOS/Linux
 ```gherkin
@@ -52,12 +52,12 @@ Entonces el script omite el archivo existente sin sobreescribirlo
 ### Requerimiento
 El script `postinstall` no debe usar comandos de shell nativos del SO directamente. Debe usar `fs-extra` para compatibilidad cross-platform. El comportamiento `--force` (sobrescritura) queda fuera del scope de esta historia.
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 * El script debe completar la instalación en menos de 10 segundos en una máquina estándar
 * No debe requerir permisos de administrador/root adicionales a los que ya otorga `npm install -g`
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 **Prerequisito técnico (TAD):** antes de implementar, verificar que Claude Code carga skills desde `~/.claude/skills/` globalmente (no solo desde el directorio del proyecto activo). Si esto no aplica, el mecanismo de instalación central debe rediseñarse.
 

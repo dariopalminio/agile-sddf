@@ -4,7 +4,7 @@ type: story
 id: STORY-083
 kind: feat
 slug: STORY-083-skill-test-evals
-title: "skill-test-evals â€” generaciÃ³n de evals/evals.json para skills desde cualquier fuente"
+title: "skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente"
 status: CANCELED
 substatus: DONE
 parent: EPIC-14-fabrica-de-skills
@@ -16,15 +16,15 @@ related:
 ---
 [[fabrica-de-skills]]
 
-# ðŸ“– Historia: skill-test-evals â€” generaciÃ³n de evals/evals.json para skills desde cualquier fuente
+# 📖 Historia: skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente
 
-**Como** practitioner de SDDF que estÃ¡ iniciando el ciclo TDD para construir o modificar un skill,  
-**Quiero** que `skill-test-evals` genere el archivo `evals/evals.json` a partir de la fuente de especificaciÃ³n disponible (`testcases.md`, `story.md`/`design.md` o un `SKILL.md` existente),  
-**Para** establecer la fase RED del ciclo TDD antes de escribir o modificar el `SKILL.md`, garantizando que los casos de prueba definan el comportamiento esperado antes del cÃ³digo.
+**Como** practitioner de SDDF que está iniciando el ciclo TDD para construir o modificar un skill,  
+**Quiero** que `skill-test-evals` genere el archivo `evals/evals.json` a partir de la fuente de especificación disponible (`testcases.md`, `story.md`/`design.md` o un `SKILL.md` existente),  
+**Para** establecer la fase RED del ciclo TDD antes de escribir o modificar el `SKILL.md`, garantizando que los casos de prueba definan el comportamiento esperado antes del código.
 
-## âœ… Criterios de aceptaciÃ³n
+## ✅ Criterios de aceptación
 
-### Escenario principal â€“ GeneraciÃ³n desde testcases.md: evals.json con un caso por escenario
+### Escenario principal – Generación desde testcases.md: evals.json con un caso por escenario
 ```gherkin
 Dado que existe un archivo testcases.md con casos de prueba para el skill a construir
   Y skill-test-evals es invocado con el story_id de la historia asociada
@@ -34,42 +34,42 @@ Entonces genera .claude/skills/{slug}/evals/evals.json
   Y cada caso incluye los campos id, name, description, input, expected y threshold
 ```
 
-### Escenario alternativo â€“ Fallback a story.md y design.md cuando testcases.md no existe
+### Escenario alternativo – Fallback a story.md y design.md cuando testcases.md no existe
 ```gherkin
 Dado que testcases.md no existe en el directorio de la historia
-  Y existen story.md y design.md con criterios de aceptaciÃ³n definidos
+  Y existen story.md y design.md con criterios de aceptación definidos
 Cuando skill-test-evals es invocado
-Entonces emite âš ï¸ "testcases.md no encontrado â€” generando evals desde story.md y design.md"
-  Y genera evals/evals.json derivando un caso por cada criterio de aceptaciÃ³n de story.md
-  Pero no detiene la ejecuciÃ³n por la ausencia de testcases.md
+Entonces emite ⚠️ "testcases.md no encontrado — generando evals desde story.md y design.md"
+  Y genera evals/evals.json derivando un caso por cada criterio de aceptación de story.md
+  Pero no detiene la ejecución por la ausencia de testcases.md
 ```
 
-### Escenario alternativo â€“ GeneraciÃ³n desde SKILL.md existente para modificaciÃ³n de skill
+### Escenario alternativo – Generación desde SKILL.md existente para modificación de skill
 ```gherkin
 Dado que existe un SKILL.md en .claude/skills/{slug}/ de un skill que se quiere modificar
   Y skill-test-evals es invocado con el skill_id del skill existente
 Cuando el skill procesa el SKILL.md
 Entonces genera evals/evals.json con casos de prueba que cubren el flujo principal del SKILL.md
-  Y los casos incluyen al menos un happy path y un escenario de error por secciÃ³n "Manejo de errores"
+  Y los casos incluyen al menos un happy path y un escenario de error por sección "Manejo de errores"
 ```
 
-### Requerimiento: declarado en sddf-config.yaml para invocaciÃ³n agnÃ³stica
+### Requerimiento: declarado en sddf-config.yaml para invocación agnóstica
 
-`skill-test-evals` debe estar declarado en `docs/policies/sddf-config.yaml` bajo la secciÃ³n `IMPLEMENT.test_generators` con `type: eval`. Esto permite que `story-implement` lo descubra e invoque sin acoplamiento directo: cambiar el skill de generaciÃ³n de evals solo requiere actualizar la configuraciÃ³n, no modificar el orquestador.
+`skill-test-evals` debe estar declarado en `docs/policies/sddf-config.yaml` bajo la sección `IMPLEMENT.test_generators` con `type: eval`. Esto permite que `story-implement` lo descubra e invoque sin acoplamiento directo: cambiar el skill de generación de evals solo requiere actualizar la configuración, no modificar el orquestador.
 
-## âš™ï¸ Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
-* **AgnÃ³sticidad:** el skill genera evals para cualquier tipo de skill SDDF independientemente de su dominio (skills de planning, implementaciÃ³n, verificaciÃ³n, etc.)
-* **Calidad mÃ­nima:** los casos generados deben tener threshold â‰¥ 0.9 para happy paths y 1.0 para casos de fail-fast, siguiendo el esquema estÃ¡ndar de evals.json del proyecto
+* **Agnósticidad:** el skill genera evals para cualquier tipo de skill SDDF independientemente de su dominio (skills de planning, implementación, verificación, etc.)
+* **Calidad mínima:** los casos generados deben tener threshold ≥ 0.9 para happy paths y 1.0 para casos de fail-fast, siguiendo el esquema estándar de evals.json del proyecto
 * **Idempotencia:** si `evals/evals.json` ya existe, el skill pregunta al usuario antes de sobreescribir; nunca sobreescribe silenciosamente
 
-## ðŸ“Ž Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
-- **PosiciÃ³n en el pipeline:** `story-implement` invoca `skill-test-evals` durante la Fase RED para que los evals queden establecidos antes de generar o modificar `SKILL.md`
-- **InvocaciÃ³n:** el skill recibe del orquestador el bundle `{story_id, testcases_path, story_path, design_path}` vÃ­a el patrÃ³n un solo nivel de delegaciÃ³n
-- **Fuentes de entrada en orden de prioridad:** (1) `testcases.md` â†’ (2) `story.md` + `design.md` â†’ (3) `SKILL.md` existente
+- **Posición en el pipeline:** `story-implement` invoca `skill-test-evals` durante la Fase RED para que los evals queden establecidos antes de generar o modificar `SKILL.md`
+- **Invocación:** el skill recibe del orquestador el bundle `{story_id, testcases_path, story_path, design_path}` vía el patrón un solo nivel de delegación
+- **Fuentes de entrada en orden de prioridad:** (1) `testcases.md` → (2) `story.md` + `design.md` → (3) `SKILL.md` existente
 - **Historias relacionadas:** STORY-078 (Fase RED donde se invoca este skill), STORY-079 (story-testcases que genera el testcases.md que este skill consume)
-- **ConfiguraciÃ³n esperada en sddf-config.yaml:**
+- **Configuración esperada en sddf-config.yaml:**
   ```yaml
   IMPLEMENT:
     test_generators:
@@ -78,4 +78,4 @@ Entonces genera evals/evals.json con casos de prueba que cubren el flujo princip
         required: true
   ```
 
-Nota de cancelaciÃ³n: esta historia se cancelÃ³ en este repositorio porque se implementa en otro repositorio externo: agile-sddf-extension
+Nota de cancelación: esta historia se canceló en este repositorio porque se implementa en otro repositorio externo: agile-sddf-extension

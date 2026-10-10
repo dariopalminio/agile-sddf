@@ -3,7 +3,7 @@ type: story
 id: STORY-048
 kind: feat
 slug: STORY-048-refactor-migrates-templates-to-assets
-title: "Refactoring - Migraciï¿½n de templates a assets en Skills"
+title: "Refactoring - Migración de templates a assets en Skills"
 date: 2026-04-27
 status: COMPLETED
 substatus: READY
@@ -13,13 +13,13 @@ parent: EPIC-09-docs-and-wiki-builders
 <!-- Referencias -->
 [[EPIC-09-docs-and-wiki-builders]]
 
-# ?? Historia de Usuario: Refactoring - Migraciï¿½n de templates a assets en Skills (cumplimiento del estï¿½ndar Agent Skills)
+# 📖 Historia de Usuario: Refactoring - Migración de templates a assets en Skills (cumplimiento del estándar Agent Skills)
 
-**Como** mantenedor del framework SDDF que sigue el estï¿½ndar Agent Skills,
+**Como** mantenedor del framework SDDF que sigue el estándar Agent Skills,
 **Quiero** renombrar todas las carpetas templates/ dentro de mis skills a assets/, y actualizar las referencias a esas rutas relativas en los archivos SKILL.md correspondientes,
-**Para** que mis skills sean compatibles con el estï¿½ndar oficial, aprovechen el reconocimiento ï¿½out-of-the-boxï¿½ por parte de herramientas de validaciï¿½n (skills-ref validate, etc.) y faciliten la interoperabilidad con otros agentes y ecosistemas.
+**Para** que mis skills sean compatibles con el estándar oficial, aprovechen el reconocimiento “out-of-the-box” por parte de herramientas de validación (skills-ref validate, etc.) y faciliten la interoperabilidad con otros agentes y ecosistemas.
 
-## ? Criterios de aceptaciï¿½n
+## ✅ Criterios de aceptación
 
 ### Requirement: Cada skill contiene sus propios templates
 Cada skill en `.claude/skills/` que requiera un template para operar SHALL tener ese template en su propio directorio `.claude/skills/<skill>/assets/`. No SHALL depender de templates en `$SPECS_BASE/specs/templates/` para funcionar.
@@ -33,24 +33,24 @@ Cada skill en `.claude/skills/` que requiera un template para operar SHALL tener
 - **THEN** no contiene referencias a rutas bajo `$SPECS_BASE/specs/templates/`
 
 ### Requirement: Templates duplicados por skill cuando son compartidos
-Cuando un mismo template es necesario en mï¿½ltiples skills, cada skill SHALL tener su propia copia local del template en su directorio `assets/`.
+Cuando un mismo template es necesario en múltiples skills, cada skill SHALL tener su propia copia local del template en su directorio `assets/`.
 
 #### Scenario: Mismo template usado por dos skills distintos
 - **WHEN** dos skills (`story-creation` y `story-evaluation`) requieren el mismo template `story-template.md`
 - **THEN** cada uno tiene una copia en `.claude/skills/story-creation/assets/story-template.md` y `.claude/skills/story-evaluation/assets/story-template.md` respectivamente
 
 ### Requirement: Referencias actualizadas en SKILL.md y agentes
-Todos los archivos `SKILL.md` SHALL referenciar templates usando rutas relativas al directorio del skill (`assets/<template>.md`) en lugar de rutas absolutas con prefijo de cliente (`.claude/skills/<skill>/assets/<template>.md`). Como alternativa para clientes que requieren rutas absolutas explï¿½citas, se acepta el formato con variable de entorno `{{SKILL_ROOT}}/assets/<template>.md`. Ningï¿½n SKILL.md SHALL hardcodear un prefijo de cliente (`.claude/`, `.github/`, `.opencode/`, etc.) en rutas a sus templates, ya que eso ata el skill a una plataforma especï¿½fica.
+Todos los archivos `SKILL.md` SHALL referenciar templates usando rutas relativas al directorio del skill (`assets/<template>.md`) en lugar de rutas absolutas con prefijo de cliente (`.claude/skills/<skill>/assets/<template>.md`). Como alternativa para clientes que requieren rutas absolutas explícitas, se acepta el formato con variable de entorno `{{SKILL_ROOT}}/assets/<template>.md`. Ningún SKILL.md SHALL hardcodear un prefijo de cliente (`.claude/`, `.github/`, `.opencode/`, etc.) en rutas a sus templates, ya que eso ata el skill a una plataforma específica.
 
 #### Scenario: SKILL.md referencia template con ruta relativa al skill
 - **WHEN** un SKILL.md menciona un template
 - **THEN** la ruta es `assets/<nombre>.md` (relativa al directorio del skill activo)
 
 #### Scenario: SKILL.md no hardcodea prefijo de cliente en ruta de template
-- **WHEN** se busca el patrï¿½n `.claude/skills/<cualquier-skill>/assets/` en un SKILL.md
-- **THEN** no hay coincidencias ï¿½ ninguna referencia a template usa rutas absolutas con prefijo de cliente
+- **WHEN** se busca el patrón `.claude/skills/<cualquier-skill>/assets/` en un SKILL.md
+- **THEN** no hay coincidencias — ninguna referencia a template usa rutas absolutas con prefijo de cliente
 
-#### Scenario: Ningï¿½n agente referencia el directorio compartido antiguo
-- **WHEN** se hace bï¿½squeda de `$SPECS_BASE/specs/templates/` en `.claude/agents/`
+#### Scenario: Ningún agente referencia el directorio compartido antiguo
+- **WHEN** se hace búsqueda de `$SPECS_BASE/specs/templates/` en `.claude/agents/`
 - **THEN** no hay resultados en archivos activos
 

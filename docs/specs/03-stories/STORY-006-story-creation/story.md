@@ -15,13 +15,13 @@ parent: EPIC-01-features-spec-builder
 
 # Historia de Usuario
 
-## ?? Historia: story-creation — Crear historias de usuario
+## 📖 Historia: story-creation — Crear historias de usuario
 
 **Como** desarrollador o PM que necesita redactar una historia de usuario para sprint planning
 **Quiero** ejecutar el skill `story-creation` describiendo una necesidad o feature en lenguaje natural
 **Para** obtener una historia completa en formato Como/Quiero/Para con criterios de aceptación Gherkin lista para evaluarse con FINVEST, sin redactarla desde cero
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Creación exitosa desde descripción en texto libre
 ```gherkin
@@ -40,11 +40,11 @@ Entonces el skill genera la historia pero sugiere ejecutar "/story-split" para d
   Pero no divide automáticamente sin instrucción explícita
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 [Por completar]
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 Generado automáticamente desde el release: release-01-features-spec-builder.md
 Feature origen: STORY-006 — story-creation

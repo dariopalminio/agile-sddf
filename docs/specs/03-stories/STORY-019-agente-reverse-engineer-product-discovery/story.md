@@ -15,13 +15,13 @@ parent: EPIC-03-reverse-engineering
 
 # Historia de Usuario
 
-## ?? Historia: Agente reverse-engineer-product-discovery
+## 📖 Historia: Agente reverse-engineer-product-discovery
 
 **Como** developer que ejecuta el skill `reverse-engineering` sobre un repositorio existente
 **Quiero** que el agente `reverse-engineer-product-discovery` analice rutas, componentes UI y endpoints para extraer features desde la perspectiva del usuario
 **Para** obtener `.tmp/rfc-features.md` con el inventario de funcionalidades agrupadas por dominio, como input para el sintetizador
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Extracción exitosa de features desde código
 ```gherkin
@@ -39,11 +39,11 @@ Entonces genera ".tmp/rfc-features.md" con el inventario vacío o mínimo
   Y añade "<!-- PENDING MANUAL REVIEW -->" indicando que no se detectaron componentes de interfaz
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 [Por completar]
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 Generado automáticamente desde el release: release-03-reverse-engineering.md
 Feature origen: STORY-019 — Agente reverse-engineer-product-discovery

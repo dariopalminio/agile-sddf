@@ -3,7 +3,7 @@ type: story
 id: STORY-005
 kind: feat
 slug: STORY-005-project-story-mapping
-title: "project-story-mapping ï¿½ User Story Mapping segï¿½n Jeff Patton"
+title: "project-story-mapping — User Story Mapping según Jeff Patton"
 date: 2026-04-22
 status: COMPLETED
 substatus: READY
@@ -15,36 +15,36 @@ parent: EPIC-05-enhance-project-spec
 
 # Historia de Usuario
 
-## ?? Historia: project-story-mapping ï¿½ User Story Mapping segï¿½n Jeff Patton
+## 📖 Historia: project-story-mapping — User Story Mapping según Jeff Patton
 
-**Como** developer o PM que ha completado la especificaciï¿½n de requisitos y quiere visualizar el alcance del proyecto
+**Como** developer o PM que ha completado la especificación de requisitos y quiere visualizar el alcance del proyecto
 **Quiero** ejecutar el skill `project-story-mapping` para construir un story map con backbone, walking skeleton y release slices
-**Para** obtener `$SPECS_BASE/specs/projects/story-map.md` con la visualizaciï¿½n del journey del usuario organizada en actividades, flujo mï¿½nimo y releases incrementales
+**Para** obtener `$SPECS_BASE/specs/projects/story-map.md` con la visualización del journey del usuario organizada en actividades, flujo mínimo y releases incrementales
 
-## ? Criterios de aceptaciï¿½n
+## ✅ Criterios de aceptación
 
-### Escenario principal ï¿½ Generaciï¿½n exitosa del story map desde requirement-spec.md
+### Escenario principal – Generación exitosa del story map desde requirement-spec.md
 ```gherkin
 Dado que existe "docs/specs/projects/project.md" con perfiles de usuario y requisitos funcionales
 Cuando el desarrollador ejecuta el skill "project-story-mapping"
-Entonces el agente project-story-mapper conduce una sesiï¿½n interactiva de mapeo
+Entonces el agente project-story-mapper conduce una sesión interactiva de mapeo
   Y genera "docs/specs/projects/story-map.md" con backbone (actividades), walking skeleton y release slices
-  Y el mapa puede usarse como guï¿½a de agrupaciï¿½n para el skill "project-planning"
+  Y el mapa puede usarse como guía de agrupación para el skill "project-planning"
 ```
 
-### Escenario alternativo ï¿½ Operaciï¿½n con input libre sin documentos previos
+### Escenario alternativo – Operación con input libre sin documentos previos
 ```gherkin
-Dado que no existe ningï¿½n documento previo en "docs/specs/projects/"
+Dado que no existe ningún documento previo en "docs/specs/projects/"
 Cuando el desarrollador ejecuta el skill "project-story-mapping"
-Entonces el agente opera con input libre solicitando la descripciï¿½n del proyecto directamente al usuario
-  Y genera el story-map.md basï¿½ndose en las respuestas de la sesiï¿½n interactiva
+Entonces el agente opera con input libre solicitando la descripción del proyecto directamente al usuario
+  Y genera el story-map.md basándose en las respuestas de la sesión interactiva
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 [Por completar]
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
-Generado automï¿½ticamente desde el release: release-05-enhance-project-spec.md
-Feature origen: STORY-005 ï¿½ project-story-mapping
+Generado automáticamente desde el release: release-05-enhance-project-spec.md
+Feature origen: STORY-005 — project-story-mapping

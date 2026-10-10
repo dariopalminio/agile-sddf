@@ -15,13 +15,13 @@ parent: EPIC-06-release-and-story-generator
 
 # Historia de Usuario
 
-## ?? Historia: Rovo Agent Release Reverse Generator from children
+## 📖 Historia: Rovo Agent Release Reverse Generator from children
 
 **Como** PM o Scrum Master que tiene Epics e Issues ya definidos en Jira
 **Quiero** invocar el agente `release-reverse-generator` en Rovo para generar un archivo de release SDDF a partir de las Epics e Issues hijos existentes en Jira
 **Para** documentar en formato SDDF releases que ya están en Jira sin reescribir manualmente toda la información
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Generación de release desde Epic e Issues en Jira
 ```gherkin
@@ -49,12 +49,12 @@ Entonces el agente genera el archivo de release con la sección "## Features" va
   Y advierte al usuario que no se encontraron Issues hijos asociados
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 * Compatibilidad: el agente debe funcionar en el runtime Atlassian Rovo con acceso de lectura a la API de Jira
 * Dependencias: requiere STORY-027 (release-format-validation) y STORY-030 como prerequisitos
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 Generado automáticamente desde el release: release-06-release-and-story-generator.md
 Feature origen: STORY-034 — Rovo Agent: Release Reverse Generator from children

@@ -15,13 +15,13 @@ parent: EPIC-03-reverse-engineering
 
 # Historia de Usuario
 
-## ?? Historia: Scope acotado — Flag --focus para reverse-engineering
+## 📖 Historia: Scope acotado — Flag --focus para reverse-engineering
 
 **Como** developer que ejecuta ingeniería inversa sobre un repositorio grande con múltiples módulos
 **Quiero** usar el flag `--focus <path>` con el skill `reverse-engineering` para limitar el análisis a una ruta específica del repositorio
 **Para** obtener resultados más precisos y rápidos sobre el módulo de interés, sin analizar código irrelevante al contexto actual
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Análisis acotado a un path específico
 ```gherkin
@@ -39,11 +39,11 @@ Entonces muestra "El path 'src/inexistente/' no existe en el repositorio"
   Pero no inicia el análisis con un scope inválido
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 [Por completar]
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 Generado automáticamente desde el release: release-03-reverse-engineering.md
 Feature origen: STORY-023 — Scope acotado (--focus)

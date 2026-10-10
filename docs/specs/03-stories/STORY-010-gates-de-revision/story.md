@@ -15,13 +15,13 @@ parent: EPIC-02-project-spec-builder
 
 # Historia de Usuario
 
-## ?? Historia: Gates de Revisión Humana entre fases del pipeline
+## 📖 Historia: Gates de Revisión Humana entre fases del pipeline
 
 **Como** developer que usa el pipeline ProjectSpecFactory para especificar un proyecto
 **Quiero** que el framework presente un resumen del documento generado y solicite mi confirmación antes de avanzar a la siguiente fase
 **Para** mantener control sobre la calidad de cada artefacto y poder corregir antes de que el error se propague a las fases siguientes
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Gate de revisión al finalizar project-begin
 ```gherkin
@@ -41,11 +41,11 @@ Entonces el agente solicita las correcciones necesarias
   Pero no avanza el Estado a Ready hasta recibir confirmación explícita
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 [Por completar]
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 Generado automáticamente desde el release: release-02-project-spec-builder.md
 Feature origen: STORY-010 — Gates de Revisión Humana

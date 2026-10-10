@@ -15,13 +15,13 @@ parent: EPIC-05-enhance-project-spec
 
 # Historia de Usuario
 
-## ?? Historia: story-refine — Refinamiento iterativo de historias de usuario
+## 📖 Historia: story-refine — Refinamiento iterativo de historias de usuario
 
 **Como** developer o PM que tiene una historia de usuario que no supera la evaluación FINVEST
 **Quiero** ejecutar el skill `story-refine` para que el agente story-product-owner evalúe, sugiera mejoras y las aplique en ciclos controlados
 **Para** obtener una historia APROBADA por FINVEST sin hacer múltiples rondas manuales de edición y evaluación
 
-## ? Criterios de aceptación
+## ✅ Criterios de aceptación
 
 ### Escenario principal – Refinamiento exitoso hasta aprobación
 ```gherkin
@@ -40,11 +40,11 @@ Entonces el skill informa que la historia ya está aprobada y no requiere refina
   Pero ofrece iniciar un ciclo de refinamiento opcional si el usuario lo solicita explícitamente
 ```
 
-## ?? Criterios no funcionales
+## ⚙️ Criterios no funcionales
 
 * Anti-bucle: el skill limita el número de ciclos de refinamiento para evitar iteraciones infinitas
 
-## ?? Notas / contexto adicional
+## 📎 Notas / contexto adicional
 
 Generado automáticamente desde el release: release-05-enhance-project-spec.md
 Feature origen: STORY-013 — story-refine
