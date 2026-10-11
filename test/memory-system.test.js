@@ -313,10 +313,10 @@ const SCAFFOLD_SUMMARY = /^creados: (\d+) · sobrescritos: (\d+) · preservados:
 
 // Las once capas y las nueve plantillas que scaffold garantiza (AC-5, AC-6).
 const LAYER_DIRS = ['product', 'requirements', 'specs', 'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
-// Las cinco que se copian desde su skill dueño, más las cuatro de autoría manual que viajan en la
+// Las seis que se copian desde su skill dueño, más las cuatro de autoría manual que viajan en la
 // semilla porque no tienen dueño (ADR-0012).
 const MANUAL_TEMPLATES = ['adr-template.md', 'domain-template.md', 'guardrail-template.md', 'policy-template.md'];
-const NINE_TEMPLATES = ['story-template.md', 'epic-template.md', 'project-template.md', 'vision-template.md', 'project-plan-template.md', ...MANUAL_TEMPLATES];
+const TEN_TEMPLATES = ['story-template.md', 'epic-template.md', 'stakeholders-template.md', 'requirement-template.md', 'vision-template.md', 'project-plan-template.md', ...MANUAL_TEMPLATES];
 
 const summaryOf = (stdout) => {
   const match = lastLine(stdout).match(SCAFFOLD_SUMMARY);
@@ -340,7 +340,7 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   for (const layer of LAYER_DIRS) {
     assert.ok(fs.existsSync(path.join(docs, layer, 'README.md')), `README de ${layer}`);
   }
-  for (const name of NINE_TEMPLATES) {
+  for (const name of TEN_TEMPLATES) {
     assert.ok(fs.existsSync(path.join(docs, 'templates', name)), name);
   }
   for (const sub of ['01-projects', 'epics', 'stories']) {
@@ -581,7 +581,7 @@ test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
     if (layer === 'templates') assert.ok(!engine.KNOWN_LAYERS.includes(layer));
     else assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
   }
-  assert.deepEqual(engine.SHARED_TEMPLATES.map((template) => template.name).concat(MANUAL_TEMPLATES), NINE_TEMPLATES);
+  assert.deepEqual(engine.SHARED_TEMPLATES.map((template) => template.name).concat(MANUAL_TEMPLATES), TEN_TEMPLATES);
 });
 
 // ---------------------------------------------------------------------------

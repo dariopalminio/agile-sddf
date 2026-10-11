@@ -107,7 +107,8 @@ Copiar los templates compartidos desde el `assets/` de su skill dueño. Esta tab
 |----------|---------------------|
 | `story-template.md` | `$CLI_ROOT/skills/story-creation/assets/` |
 | `epic-template.md` | `$CLI_ROOT/skills/epic-creation/assets/` |
-| `project-template.md` | `$CLI_ROOT/skills/project-discovery/assets/` |
+| `stakeholders-template.md` | `$CLI_ROOT/skills/project-discovery/assets/` |
+| `requirement-template.md` | `$CLI_ROOT/skills/project-discovery/assets/` |
 | `vision-template.md` | `$CLI_ROOT/skills/project-begin/assets/` |
 | `project-plan-template.md` | `$CLI_ROOT/skills/project-planning/assets/` |
 
@@ -196,7 +197,8 @@ Emitir el informe consolidado con todos los artefactos verificados:
 [CREADO]     {SPECS_BASE}/templates/
 [CREADO]     {SPECS_BASE}/templates/story-template.md
 [CREADO]     {SPECS_BASE}/templates/epic-template.md
-[CREADO]     {SPECS_BASE}/templates/project-template.md
+[CREADO]     {SPECS_BASE}/templates/stakeholders-template.md
+[CREADO]     {SPECS_BASE}/templates/requirement-template.md
 [CREADO]     {SPECS_BASE}/templates/vision-template.md
 [CREADO]     {SPECS_BASE}/templates/project-plan-template.md
 [CREADO]     sddf.config.yaml
@@ -254,7 +256,8 @@ capas faltantes: product, requirements, domains, architecture, adr, policies, gu
 …
 [PRESERVADO] docs/templates/story-template.md
 [PRESERVADO] docs/templates/epic-template.md
-[PRESERVADO] docs/templates/project-template.md
+[PRESERVADO] docs/templates/stakeholders-template.md
+[PRESERVADO] docs/templates/requirement-template.md
 [PRESERVADO] docs/templates/vision-template.md
 [PRESERVADO] docs/templates/project-plan-template.md
 ✅ memory-system scaffold — harness: sddf — docs

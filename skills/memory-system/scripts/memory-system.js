@@ -122,7 +122,8 @@ const TEMPLATES_LAYER = 'templates';
 const SHARED_TEMPLATES = [
   { name: 'story-template.md', owner: 'story-creation' },
   { name: 'epic-template.md', owner: 'epic-creation' },
-  { name: 'project-template.md', owner: 'project-discovery' },
+  { name: 'stakeholders-template.md', owner: 'project-discovery' },
+  { name: 'requirement-template.md', owner: 'project-discovery' },
   { name: 'vision-template.md', owner: 'project-begin' },
   { name: 'project-plan-template.md', owner: 'project-planning' },
 ];

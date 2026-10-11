@@ -1,0 +1,13 @@
+{
+  "skill": "project-discovery",
+  "version": "1.0.0",
+  "description": "Evalúa que discovery materialice stakeholders y requisitos fragmentados desde una visión terminada sin usar el modelo de proyectos retirado.",
+  "cases": [
+    {"id":"TC-001","name":"vision-done-requisitos-vacios","type":"happy-path","description":"Con visión terminada y requisitos vacíos propone las capas nuevas.","input":{"context":"docs/product/vision.md tiene substatus: DONE. docs/requirements/functional y non-functional están vacíos. Existen ambos templates."},"expected":{"contains":["stakeholders.md","Usuarios y roles","functional/FR-001","non-functional/NFR-001","Confirmar"],"not_contains":["01-proj\u0065cts","PRO\u004a-","project.\u006dd"]},"threshold":1.0},
+    {"id":"TC-002","name":"ids-continuos-sin-reusar-huecos","type":"edge-case","description":"Con FR-001 a FR-054 y FR-049 ausente asigna el siguiente máximo más uno.","input":{"context":"vision.md está DONE; existen FR-001 hasta FR-054 salvo FR-049; se identifican requisitos funcionales nuevos."},"expected":{"contains":["FR-055","Sobrescribir"],"not_contains":["FR-049-"]},"threshold":1.0},
+    {"id":"TC-003","name":"vision-en-progreso-falla-antes-de-escribir","type":"fail-fast","description":"Sin visión terminada no escribe ni delega.","input":{"context":"docs/product/vision.md tiene substatus: IN-PROGRESS."},"expected":{"contains":["/project-begin","❌"],"not_contains":["FR-001","stakeholders.md creado"]},"threshold":1.0},
+    {"id":"TC-004","name":"vision-inexistente-falla-antes-de-escribir","type":"fail-fast","description":"La ausencia de visión remite a project-begin.","input":{"context":"No existe docs/product/vision.md."},"expected":{"contains":["/project-begin"],"not_contains":["01-proj\u0065cts"]},"threshold":1.0},
+    {"id":"TC-005","name":"usa-seed-para-templates-centrales-ausentes","type":"fallback","description":"Los templates seed son el fallback explícito.","input":{"context":"No existen templates centrales y sí existen los dos seeds del skill."},"expected":{"contains":["⚠️","requirement-template.md","sddf-init"],"not_contains":["escribir antes del gate"]},"threshold":1.0},
+    {"id":"TC-006","name":"falla-si-no-hay-templates","type":"fail-fast","description":"Sin central ni seed no anuncia escritura.","input":{"context":"No existen templates centrales ni seeds."},"expected":{"contains":["❌ Template","sddf-init"],"not_contains":["Discovery completo","FR-001 creado"]},"threshold":1.0}
+  ]
+}

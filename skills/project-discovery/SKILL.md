@@ -1,202 +1,103 @@
 ---
 name: project-discovery
 description: >-
-  Produce project.md (paso 2 de ProjectSpecFactory) delegando discovery y requisitos a agentes especializados.
-  Usar a partir de project-intent.md para iniciar la fase de discovery.
-  Invocar para "discovery del proyecto", "especificación de requisitos" o "project-discovery".
-triggers:
-  - project-discovery
-  - /project-discovery
-  - discovery del proyecto
-  - especificación de requisitos
-  - project spec
+  Descubre usuarios y requisitos desde una visión terminada, proponiendo
+  product/stakeholders.md y un archivo por requisito funcional y no funcional.
+  Úsalo para iniciar la especificación de requisitos tras project-begin.
 ---
-
-# Skill: `/project-discovery`
-
-**Cuándo usar este skill:**
-Usar como segundo paso del pipeline de ProjectSpecFactory, después de completar
-`/project-begin`. Requiere que `project-intent.md` exista con `substatus: DONE`.
-Invocar también cuando el usuario mencione "discovery del proyecto", "especificación de
-requisitos", "project-discovery" o equivalentes.
 
 ## Objetivo
 
-Orquesta el estado **Discovery** del pipeline de ProjectSpecFactory: conduce el discovery
-de usuarios con el agente `project-pm` y la especificación de requisitos con
-`project-architect`, produciendo `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`.
-
-**Qué hace este skill:**
-- Valida que `project-intent.md` esté completo (`substatus: DONE`) antes de iniciar
-- Delega el discovery de usuarios al agente `project-pm`
-- Delega la especificación de requisitos al agente `project-architect` (apoyado por `project-ux`)
-- Confirma la existencia del documento generado al finalizar
-
-**Qué NO hace este skill:**
-- No genera `project.md` directamente — esa responsabilidad es del agente `project-architect`
-- No avanza al siguiente estado del pipeline (`project-planning`)
+Convierte una visión confirmada en perfiles de usuario y requisitos trazables. El resultado se propone en staging y solo se materializa tras la confirmación explícita del usuario.
 
 ## Entrada
 
-- `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` — input principal (precondición: `substatus: DONE`)
-- `$SPECS_BASE/templates/project-template.md` — fuente de verdad estructural (solo lectura); si no existe, el seed `assets/project-template.md` del skill
-- `$SPECS_BASE/specs/01-projects/` — directorio para resolver el proyecto activo
-
-## Parámetros
-
-- Ninguno — el skill opera de forma completamente interactiva mediante los agentes `project-pm` y `project-architect`
+- `$SPECS_BASE/product/vision.md`, con `substatus: DONE`.
+- Templates `stakeholders-template.md` y `requirement-template.md`, preferentemente en `$SPECS_BASE/templates/`.
+- `$SPECS_BASE/product/stakeholders.md` y `$SPECS_BASE/requirements/`, opcionales.
 
 ## Precondiciones
 
-- La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
-- `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` debe existir con `substatus: DONE`
-- `project-template.md` debe existir, sea el central en `$SPECS_BASE/templates/` o el seed `assets/project-template.md`
+- La visión debe existir y estar en `DONE`.
+- Antes de activar esta historia, verificar WIP=1 del nivel correspondiente.
+- No se escribe en `$SPECS_BASE` antes del gate global.
 
 ## Dependencias
 
-- Agentes: [`project-pm`, `project-architect`, `project-ux`]
-- Archivos: [`$SPECS_BASE/templates/project-template.md`, `assets/project-template.md` (seed)]
+- Agentes `project-pm`, `project-ux` y `project-architect`, invocados secuencialmente por esta sesión.
+- `references/layer-materialization.md`, que define inventario, validación y escrituras.
 
-## Modos de ejecución
+## Restricciones
 
-- **Manual** (`/project-discovery`): siempre interactivo — conduce discovery y especificación con el usuario.
-- **Retoma**: si `project.md` existe con `substatus: IN-PROGRESS`, el agente `project-architect`
-  continúa solo las secciones incompletas sin reiniciar desde cero.
+- Los templates se leen, nunca se escriben.
+- La propuesta vive exclusivamente en `.tmp/project-discovery/proposal/`.
+- Los documentos materializados se guardan en UTF-8 sin BOM.
+- Los agentes reciben rutas ya resueltas; ninguno resuelve la raíz ni delega en otro agente.
 
-## Restricciones / Reglas
-
-- **Precondición de entrada obligatoria:** `project-intent.md` con `substatus: DONE` es requerido; cualquier otro estado detiene la ejecución.
-- **Template de solo lectura:** `project-template.md` nunca se modifica ni se usa como ruta de salida.
-- **Extracción dinámica:** las secciones del documento se derivan en runtime del template; si el template cambia, el output se actualiza automáticamente.
-- **Sin avance automático:** el skill no invoca `project-planning` — el usuario decide cuándo continuar.
-- NO modifique ningún archivo existente en el código fuente (estamos en etapa de descubrimiento y especificación, no de implementación)
-- NO genere código; estas en descubrimiento, no implementando los artefactos técnicos
-- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
-  Do not use Latin-1, CP-1252, or any other encoding. 
-  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
-  
-## Flujo de ejecución
+## Flujo
 
 ### Paso 0 — Resolver contexto local
 
 <!-- SDDF-ROOT-RESOLUTION: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+1. Si `SDDF_ROOT` está definida, debe ser un directorio accesible; úsala como `$SPECS_BASE`.
+2. Si no está definida, lee `sddf.config.yaml`; si `root` existe, debe resolver a un directorio accesible relativo al repositorio.
+3. Sin una fuente explícita, usa `docs` relativo al repositorio.
+4. Si una fuente explícita es inválida, informa el valor y termina sin escribir.
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+### Paso 1 — Validar visión
 
-El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
+Define `$VISION_PATH = $SPECS_BASE/product/vision.md`.
 
+- Si no existe: `❌ La visión del producto no está terminada ($VISION_PATH no existe). Ejecuta primero /project-begin.` y termina sin escribir en `product/`, `requirements/` ni `.tmp/`.
+- Si `substatus` no es `DONE` o está ausente: `❌ La visión del producto no está terminada ($VISION_PATH: substatus <valor>). Ejecuta primero /project-begin.` y termina con las mismas garantías.
+- Solo con `substatus: DONE` continúa.
 
-### Paso 0b — Resolver directorio del proyecto activo (`PROJ_DIR`)
+### Paso 2 — Resolver templates
 
-1. Listar todos los subdirectorios de `$SPECS_BASE/specs/01-projects/`.
-2. Para cada subdirectorio, leer `project-intent.md` y verificar si `substatus` es `DONE`.
-3. Si se encuentra exactamente uno con `substatus: DONE` → usar ese directorio como `$PROJ_DIR`.
-4. Si se encuentran varios → mostrar la lista y pedir al usuario que elija antes de continuar.
-5. Si no se encuentra ninguno → mostrar error y detener:
-   > ❌ No se encontró ningún proyecto activo en `$SPECS_BASE/specs/01-projects/`.
-   > Ejecuta `/project-begin` primero.
+Para cada template, intenta primero `$SPECS_BASE/templates/<nombre>` y luego `assets/<nombre>` del skill.
 
-La ruta completa del proyecto activo es: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`
+- Al usar un seed: `⚠️ Usando template seed <nombre> del skill. Ejecuta sddf-init para centralizarlo en $SPECS_BASE/templates/.`.
+- Si no existe central ni seed: `❌ Template <nombre> no encontrado. Ejecuta sddf-init.` y termina sin escribir.
 
-### Paso 1 — Verificar precondición de entrada (`project-intent.md`)
+Registra `$STAKEHOLDERS_TEMPLATE_PATH` y `$REQUIREMENT_TEMPLATE_PATH`.
 
-Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`.
+### Paso 3 — Inventario y staging
 
-- Si el archivo **no existe**: informa al usuario y deten la ejecucion:
+Aplica `references/layer-materialization.md` para obtener `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR` y `$NEXT_US`. Define `$STAKEHOLDERS_PATH = $SPECS_BASE/product/stakeholders.md` y limpia `$STAGING_DIR = .tmp/project-discovery/proposal/` antes de delegar.
 
-  > ❌ No se encontró `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`.
-  > Debes completar primero la fase Begin Intention ejecutando `/project-begin`.
+### Paso 4 — Discovery de producto
 
-- Si el archivo **existe** pero `substatus` es `IN-PROGRESS`: informa al usuario y deten la ejecucion.
+Invoca a `project-pm` en estado Discovery con `$VISION_PATH`, `$STAKEHOLDERS_PATH` y `$OUTPUT_PATH = .tmp/project-discovery/discovery-summary.md`. El agente escribe solo el resumen y no invoca otros agentes.
 
-  > ❌ `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` aun esta en `Estado: IN-PROGRESS`.
-  > Debes completar Begin Intention y dejar el documento en `Estado: Ready` antes de ejecutar `/project-discovery`.
+### Paso 5 — Hallazgos UX
 
-- Si el archivo **existe** con `substatus: DONE`: continua al Paso 2.
+Invoca a `project-ux` con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH` y `$OUTPUT_PATH = .tmp/project-discovery/ux-findings.md`.
 
-### Paso 2 — Verificar estado del documento de output
+### Paso 6 — Propuesta de requisitos
 
-Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` (si existe) y detecta el valor de `substatus:`.
+Invoca a `project-architect` en estado Discovery con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH`, `$UX_FINDINGS_PATH`, `$STAKEHOLDERS_PATH`, `$STAKEHOLDERS_TEMPLATE_PATH`, `$REQUIREMENT_TEMPLATE_PATH`, `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US` y `$STAGING_DIR`.
 
-- Si el archivo **no existe**: continua al Paso 3 (primera ejecucion).
-- Si existe con `substatus: IN-PROGRESS`: activa flujo de retoma y continua al Paso 3.
-- Si existe con `substatus: DONE`: informa que el documento ya esta completo y pide confirmacion antes de sobrescribir.
-  - Si el usuario confirma sobrescribir: continua al Paso 3.
-  - Si el usuario cancela: deten la ejecucion sin modificar el archivo.
+El agente deja `manifest.md` y los archivos propuestos en staging. Si cualquier agente falla o falta el manifiesto, informa el fallo, recomienda reejecutar y termina sin tocar `$SPECS_BASE`.
 
-### Paso 3 — Verificar que el template existe
+### Paso 7 — Gate global
 
-El archivo de plantilla es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca codifique directamente los nombres o la estructura de las secciones en esta habilidad; siempre derívelos de la plantilla en tiempo de ejecución. Si la plantilla cambia, el output generado se actualizará automáticamente.
+Valida la propuesta con la referencia y muestra los perfiles bajo `Usuarios y roles` y cada requisito `ID — título`, clasificado como `nuevo` o `modifica`. Pregunta `Confirmar` o `Cancelar`.
 
-El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
+- `Confirmar` habilita la materialización.
+- `Cancelar` o falta de respuesta termina sin escribir en `$SPECS_BASE`.
 
-Lee el archivo de plantilla `$SPECS_BASE/templates/project-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
+### Paso 8 — Materializar y cerrar
 
-- Si el archivo central **no existe**: usar el seed `assets/project-template.md` y emitir:
+Aplica los pasos 1–6 de `references/layer-materialization.md` con el gate ya aprobado. Para cada destino `modify`, ofrece `Sobrescribir <ID>` o `Conservar`; sin respuesta conserva el existente. Al completar, deja `stakeholders.md` en `substatus: DONE` y actualiza `updated`.
 
-  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
+Para una retoma, recalcula siempre el inventario; si stakeholders está en `IN-PROGRESS`, completa solo las secciones que aún contienen `[Por completar`.
 
-- Si tampoco existe el seed: informar al usuario y detener la ejecución:
-
-  > ❌ Template `project-template.md` no encontrado. Ejecuta `sddf-init`.
-
-- Si alguno de los dos **existe**: continua.
-
-Guardar la ruta del template efectivamente resuelto (central o seed) como `$TEMPLATE_PATH`: es la que se le pasa al `project-architect` en el Paso 5. El agente no debe reconstruir la ruta por su cuenta — hacerlo lo acoplaría a una plataforma de instalación concreta (`.claude/`, `.agents/` o `.github/`).
-
-### Paso 4 — Fase Discovery: delegar al project-pm
-
-Invoca al agente `project-pm` con la siguiente instrucción:
-
-> Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`. Conduce el discovery de usuarios con el usuario:
-> - Identifica los perfiles de usuario del sistema (quiénes son, qué necesitan, cuál es su contexto de uso)
-> - Descubre los flujos de uso principales y los puntos de dolor actuales
-> - Identifica restricciones de negocio, integraciones externas y contexto del ecosistema
-> Usa máx 3-4 preguntas por ronda. Infiere lo que sea posible desde `project-intent.md` y pregunta solo lo que falta.
-> Al terminar, entrega un resumen estructurado del discovery para que el project-architect lo use en la siguiente fase.
-> Si necesitas apoyo para los flujos de usuario y usabilidad, invoca al agente `project-ux`.
-> Si no puedes obtener respuesta del usuario, aplica tu Protocolo de Resiliencia: degrada a inferencia, marca con `[inferido: sin respuesta del usuario]` y lista las inferencias al final.
-
-### Paso 5 — Fase SPECIFY: delegar al project-architect
-
-Una vez completado el discovery, invoca al agente `project-architect` con la siguiente instrucción, **sustituyendo `$SPECS_BASE`, `$PROJ_DIR` y `$TEMPLATE_PATH` por los valores ya resueltos** (el agente no los resuelve por su cuenta):
-
-> Trabajás sobre el proyecto activo `$PROJ_DIR` en `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`.
->
-> Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` y el resumen del discovery de la fase anterior. Lee tambien el template `$TEMPLATE_PATH`.
->
-> Si estas en flujo de retoma (documento existente en `Estado: IN-PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
->
-> Extrae las secciones del template en runtime y conduce la entrevista de especificación de requisitos con el usuario por secciones (máx 3-4 preguntas por ronda).
-> Pre-rellena con la información ya disponible del discovery y el project-intent. Infiere contenido faltante marcándolo con `[inferido]`.
-> Para secciones de experiencia de usuario y usabilidad, puedes apoyarte en el agente `project-ux`.
-> Al completar el frontmatter del documento generado, usar `status: DISCOVERY` — estado inicial de todo proyecto en etapa de descubrimiento de requisitos.
-> Escribe el documento final en `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`.
-
-El `project-architect` se encargará de:
-- Pre-rellenar secciones con información del discovery y project-intent
-- Conducir la entrevista de especificación por secciones (máx 3-4 preguntas por ronda)
-- Apoyarse en `project-ux` para requisitos de experiencia de usuario
-- Inferir contenido faltante marcándolo con `[inferido]`
-- Escribir el documento final con metadatos de generación
-
-### Paso 6 — Confirmar output
-
-Cuando el `project-architect` termine:
-
-1. Verifica que `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` existe leyendo el archivo
-2. Si existe, confirma al usuario:
-  > ✅ Documento generado correctamente.
-  > Path: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`
-  > Siguiente comando: `/project-planning`.
-3. Si no existe, informa al usuario que algo salió mal y sugiere ejecutar `/project-discovery` nuevamente.
+Informa: `✅ Discovery completo: <n> perfiles en $SPECS_BASE/product/stakeholders.md · <x> FR y <y> NFR en $SPECS_BASE/requirements/ · Siguiente comando: /project-planning`.
 
 ## Salida
 
-- `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` — documento de especificación de requisitos
-  generado por `project-architect`, con `status: DISCOVERY` al completarse.
+- `$SPECS_BASE/product/stakeholders.md`.
+- `$SPECS_BASE/requirements/functional/FR-NNN-<slug>.md`.
+- `$SPECS_BASE/requirements/non-functional/NFR-NNN-<slug>.md`.
+- Propuesta auditable en `.tmp/project-discovery/proposal/`.

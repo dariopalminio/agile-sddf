@@ -1,0 +1,11 @@
+{
+  "skill": "reverse-engineering",
+  "version": "1.0.0",
+  "description": "Evalúa que reverse-engineering proponga y materialice stakeholders y requisitos fragmentados sin rutas del modelo de proyectos retirado.",
+  "cases": [
+    {"id":"TC-001","name":"repositorio-sin-requisitos","type":"happy-path","description":"El modo normal sin inventario parte de los primeros IDs.","input":{"context":"El repositorio no tiene requisitos y ambos templates existen."},"expected":{"contains":["product/stakeholders.md","requirements/functional/FR-001"],"not_contains":["01-proj\u0065cts","PRO\u004a-","project.\u006dd"]},"threshold":1.0},
+    {"id":"TC-002","name":"update-asigna-siguiente-id-y-confirma-modify","type":"edge-case","description":"Update continúa la numeración y protege requisitos existentes.","input":{"context":"--update; existen requisitos hasta FR-054; el análisis descubre requisitos nuevos y uno con PENDING MANUAL REVIEW."},"expected":{"contains":["FR-055","Sobrescribir"],"not_contains":["sobrescribir automáticamente"]},"threshold":1.0},
+    {"id":"TC-003","name":"inventario-existente-advierte-en-modo-normal","type":"edge-case","description":"El modo normal con inventario exige continuar o cancelar.","input":{"context":"Se ejecuta sin --update y ya existen requisitos."},"expected":{"contains":["--update","Continuar","Cancelar"],"not_contains":["crear proyecto"]},"threshold":1.0},
+    {"id":"TC-004","name":"sin-template-falla-sin-escribir","type":"fail-fast","description":"No hay materialización si no se puede resolver un template.","input":{"context":"No existen templates centrales ni seeds."},"expected":{"contains":["❌ Template","sddf-init"],"not_contains":["materialización completa"]},"threshold":1.0}
+  ]
+}

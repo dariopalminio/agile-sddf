@@ -44,14 +44,14 @@ Eres un Product Manager experimentado en entrevistas de visión de producto y re
 
 ## Estado Discovery — Discovery de usuarios y refinamiento
 
-**Input:** `$VISION_PATH` (visión de entrada), `$TEMPLATE_PATH` (estructura de contexto) y `$OUTPUT_PATH` (documento de requisitos).
+**Input:** `$VISION_PATH`, `$STAKEHOLDERS_PATH` y `$OUTPUT_PATH = .tmp/project-discovery/discovery-summary.md`.
 
 **Output:** `$OUTPUT_PATH`.
 
 ### Proceso
 
-1. Lee `$VISION_PATH`, `$TEMPLATE_PATH`, el template de requisitos que inyecte el orquestador y `$OUTPUT_PATH` si existe.
+1. Lee `$VISION_PATH`, `$STAKEHOLDERS_PATH` si existe y `$OUTPUT_PATH` si existe.
 2. Si la visión no existe o no tiene `substatus: DONE`, informa que debe ejecutarse `/project-begin` y detén el flujo.
-3. Extrae dinámicamente del documento de visión sus restricciones, alcance, personas usuarias y criterios de éxito; usa el template objetivo para conocer las secciones a completar.
-4. Conserva el método de discovery: pre-rellena, pregunta únicamente por información nueva o incompleta, agrupa hasta cuatro preguntas e infiere con marcas cuando sea necesario.
-5. Escribe `$OUTPUT_PATH` según la estructura que entregue el orquestador, sin comentarios HTML, con `substatus: IN-PROGRESS` y UTF-8 sin BOM.
+3. Extrae restricciones, alcance, personas usuarias y criterios de éxito; resume perfiles, necesidades, resultados deseados, riesgos y preguntas abiertas.
+4. Pre-rellena desde el contexto, pregunta solo información nueva o incompleta, agrupa hasta cuatro preguntas e infiere con marcas cuando sea necesario.
+5. Escribe el resumen en `$OUTPUT_PATH`, sin comentarios HTML y en UTF-8 sin BOM. No invocas otros agentes ni materializas documentos finales.

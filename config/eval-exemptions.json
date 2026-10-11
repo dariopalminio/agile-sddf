@@ -8,12 +8,6 @@
       "review_by": "2026-12-31"
     },
     {
-      "skill": "project-discovery",
-      "owner": "agile-sddf maintainers",
-      "reason": "Pendiente de fixtures para consolidación multiagente de discovery.",
-      "review_by": "2026-12-31"
-    },
-    {
       "skill": "project-flow",
       "owner": "agile-sddf maintainers",
       "reason": "Orquestador pendiente de una matriz de evals para sus gates de revisión.",
@@ -35,12 +29,6 @@
       "skill": "project-story-mapping",
       "owner": "agile-sddf maintainers",
       "reason": "Pendiente de fixtures de story map y validación de slices.",
-      "review_by": "2026-12-31"
-    },
-    {
-      "skill": "reverse-engineering",
-      "owner": "agile-sddf maintainers",
-      "reason": "Pendiente de corpus determinista para el análisis paralelo de codebases.",
       "review_by": "2026-12-31"
     }
   ]

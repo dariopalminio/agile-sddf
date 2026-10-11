@@ -1,211 +1,71 @@
 ---
-description: >-
-  Generates project.md by reverse-engineering an existing codebase: launches 4 parallel analysis
-  agents and a synthesizer. Supports --focus <path>, --update, --verbose. Use when the user wants
-  to document an existing codebase, extract requirements from code, or generate a requirement-spec
-  from a project they didn't write.
 name: reverse-engineering
----
-Eres el orquestador del comando `/reverse-engineering`. Tu responsabilidad es coordinar 4 agentes de análisis en paralelo y luego un agente sintetizador para generar automáticamente `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` a partir del código fuente del repositorio actual.
-
----
-
-## Restricciones / Reglas
-
-- NO omita la exploración exhaustiva del código fuente: el análisis DEBE basarse en el estado real del código fuente.
-- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
-- NO genere código; solo estamos analizando el código existente
-- El output es exclusivamente archivos de especificación en formato Markdown (`.md`)
-- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
-  Do not use Latin-1, CP-1252, or any other encoding. 
-  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
-
+description: >-
+  Extrae stakeholders y requisitos fragmentados desde un repositorio existente.
+  Lanza cuatro análisis, sintetiza una propuesta y materializa archivos trazables.
 ---
 
-## Paso 0 — Resolver contexto local
+## Objetivo
+
+Coordina cuatro análisis del código fuente y una síntesis posterior para producir perfiles y requisitos verificables. El análisis no requiere una visión previa.
+
+## Entrada
+
+- Repositorio objetivo o `--focus <ruta>`.
+- `--update` para enriquecer solo requisitos pendientes de revisión manual.
+- Templates de stakeholders y requisito, centralizados o disponibles como seed del skill de discovery.
+
+## Reglas
+
+- Los cuatro agentes de análisis escriben únicamente en `.tmp/reverse-engineering/`.
+- El sintetizador escribe una propuesta y `gaps.md`; no materializa capas finales.
+- Cada archivo existente que se modifique exige confirmación individual.
+- Todo documento escrito debe ser UTF-8 sin BOM.
+
+## Fase 0 — Resolver contexto, templates e inventario
 
 <!-- SDDF-ROOT-RESOLUTION: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve `$SPECS_BASE` con la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`. Una fuente explícita inválida detiene el flujo sin escribir.
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `$STAKEHOLDERS_TEMPLATE_PATH` y `$REQUIREMENT_TEMPLATE_PATH`: primero `$SPECS_BASE/templates/`, después `$CLI_ROOT/skills/project-discovery/assets/`.
 
-El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
+- Al usar seed, muestra `⚠️ Usando template seed del skill. Ejecuta sddf-init para centralizarlo en $SPECS_BASE/templates/.`.
+- Si falta cualquiera: `❌ Template <nombre> no encontrado. Ejecuta sddf-init.` y termina sin escribir.
 
+Localiza `$CLI_ROOT/skills/project-discovery/references/layer-materialization.md`, calcula el inventario y `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US` según esa referencia, y define `$STAKEHOLDERS_PATH = $SPECS_BASE/product/stakeholders.md`. Con inventario vacío, el primer destino previsto es `product/stakeholders.md` y el primer requisito funcional es `requirements/functional/FR-001-<slug>.md`.
 
----
+En modo normal con inventario vacío, continúa sin preguntas. Con inventario no vacío, muestra `⚠️ Ya existen <n> requisitos; los nuevos se numerarán desde <FR-…>/<NFR-…>. Usa --update para un análisis incremental.` y pregunta `Continuar` o `Cancelar` antes de escribir.
 
-## Configuración 0b — Resolver o crear directorio del proyecto (`PROJ_DIR`)
+Con inventario vacío, muestra el plan inicial antes de los análisis:
 
-1. Listar todos los subdirectorios de `$SPECS_BASE/specs/01-projects/`.
-2. Para cada subdirectorio, leer `project-intent.md` y verificar si `substatus` es `DONE` o `IN-PROGRESS`.
-3. Si se encuentra exactamente uno → usar ese directorio como `$PROJ_DIR`.
-4. Si se encuentran varios → mostrar la lista y pedir al usuario que elija.
-5. Si no se encuentra ninguno → **derivar el ID desde el nombre del repositorio**:
-   - Obtener el nombre del directorio raíz del repositorio (ej. `my-project`).
-   - Convertir a kebab-case: `PROJ-01-my-project`.
-   - Crear el directorio `$SPECS_BASE/specs/01-projects/PROJ-01-my-project/` si no existe.
-   - Usar `PROJ-01-my-project` como `$PROJ_DIR`.
-   - Informar al usuario: `ℹ️ No se encontró proyecto activo. Se creará en: $SPECS_BASE/specs/01-projects/$PROJ_DIR/`
-
-La ruta completa del proyecto es: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`
-
----
-
-## Fase 0 — Setup
-
-### 1. Parsear flags
-
-Extrae los flags del input del usuario:
-- `--focus <path>`: ruta relativa para limitar el análisis (ej: `src/auth`). Si no se provee, usar la raíz del repositorio.
-- `--update`: modo incremental — solo re-analizar secciones marcadas como `<!-- PENDING MANUAL REVIEW -->` en el output existente.
-- `--verbose`: al final, mostrar resumen detallado de cada agente.
-
-### 2. Verificar que el template existe y leerlo
-
-El archivo de plantilla es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca codifique directamente los nombres o la estructura de las secciones en esta habilidad; siempre derréglelos de la plantilla en tiempo de ejecución. Si la plantilla cambia, el output generado se actualizará automáticamente.
-
-El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
-
-Lee el archivo de plantilla `$SPECS_BASE/templates/project-template.md`.
-
-- Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/project-discovery/assets/project-template.md` y emitir:
-
-  > ⚠️ Usando template del skill project-discovery. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
-
-- Si tampoco existe el fallback: informar al usuario y detener la ejecución:
-
-  > ❌ Template `project-template.md` no encontrado. Ejecuta `sddf-init`.
-
-- Si alguno de los dos **existe**: continua.
-
-### 3. Verificar modo --update
-
-Si `--update` está activo:
-1. Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` si existe
-2. Verifica el campo `substatus`:
-   - `IN-PROGRESS`: continúa en modo incremental
-   - `DONE`: informa al usuario que el documento ya está completo y pide confirmación antes de continuar
-   - No existe: ejecuta en modo normal (primera ejecución)
-
-### 4. Mostrar plan al usuario
-
-Informa brevemente qué vas a hacer:
 ```
-Iniciando análisis de ingeniería inversa...
-Template: [TEMPLATE_PATH]
-Scope: [FOCUS_PATH o "raíz del repositorio"]
-Modo: [Normal | Incremental (--update) | Verbose]
-
-Fase 1: Análisis paralelo (4 agentes)
-  → reverse-engineer-architect   → .tmp/rfc-architecture.md
-  → reverse-engineer-product-discovery       → .tmp/rfc-features.md
-  → reverse-engineer-business-analyst  → .tmp/rfc-business-rules.md
-  → reverse-engineer-ux-flow-mapper          → .tmp/rfc-navigation.md
-
-Fase 2: Síntesis
-  → reverse-engineer-synthesizer → $SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md
+Destino de stakeholders: product/stakeholders.md
+Primer requisito funcional: requirements/functional/FR-001-<slug>.md
+Primer requisito no funcional: requirements/non-functional/NFR-001-<slug>.md
 ```
 
----
+En `--update`, propone `create` solo si ningún requisito cubre el mismo comportamiento observable ni la misma `Fuente`; solo propone `modify` para requisitos que contienen `<!-- PENDING MANUAL REVIEW -->`.
 
 ## Fase 1 — Análisis paralelo
 
-Invoca los 4 agentes **simultáneamente en el mismo turn** usando llamadas paralelas al Agent tool. No esperes que uno termine antes de iniciar el siguiente.
-
-### Agente reverse-engineer-architect
-
-> Analiza la arquitectura técnica del repositorio.
->
-> - Scope de análisis: [FOCUS_PATH si se proveyó, de lo contrario "raíz del repositorio"]
-> - Template path: [TEMPLATE_PATH]
-> - Verbose: [true/false]
-> - Update mode: [true/false]
->
-> Escribe tus hallazgos en `.tmp/rfc-architecture.md` siguiendo el formato estructurado de tu definición.
-> Escribe el archivo aunque el análisis sea parcial.
-
-### Agente reverse-engineer-product-discovery
-
-> Extrae las features y funcionalidades del repositorio desde la perspectiva del usuario.
->
-> - Scope de análisis: [FOCUS_PATH si se proveyó, de lo contrario "raíz del repositorio"]
-> - Template path: [TEMPLATE_PATH]
-> - Verbose: [true/false]
-> - Update mode: [true/false]
->
-> Escribe tus hallazgos en `.tmp/rfc-features.md` siguiendo el formato estructurado de tu definición.
-> Escribe el archivo aunque el análisis sea parcial.
-
-### Agente reverse-engineer-business-analyst
-
-> Extrae las reglas de negocio, validaciones, permisos y workflows del repositorio.
->
-> - Scope de análisis: [FOCUS_PATH si se proveyó, de lo contrario "raíz del repositorio"]
-> - Template path: [TEMPLATE_PATH]
-> - Verbose: [true/false]
-> - Update mode: [true/false]
->
-> Escribe tus hallazgos en `.tmp/rfc-business-rules.md` siguiendo el formato estructurado de tu definición.
-> Escribe el archivo aunque el análisis sea parcial.
-
-### Agente reverse-engineer-ux-flow-mapper
-
-> Reconstruye el mapa de navegación y flujos de usuario del repositorio.
->
-> - Scope de análisis: [FOCUS_PATH si se proveyó, de lo contrario "raíz del repositorio"]
-> - Template path: [TEMPLATE_PATH]
-> - Verbose: [true/false]
-> - Update mode: [true/false]
->
-> Escribe tus hallazgos en `.tmp/rfc-navigation.md` siguiendo el formato estructurado de tu definición.
-> Escribe el archivo aunque el análisis sea parcial.
-
----
+Lanza, desde la sesión orquestadora, `reverse-engineer-architect`, `reverse-engineer-product-discovery`, `reverse-engineer-business-analyst` y `reverse-engineer-ux-flow-mapper`. Cada uno recibe la ruta objetivo y escribe su resultado en `.tmp/reverse-engineering/rfc-*.md`. Pásales `$REQUIREMENT_TEMPLATE_PATH` cuando necesiten el contrato de requisito.
 
 ## Fase 2 — Síntesis
 
-Después de que los 4 agentes de Fase 1 hayan completado:
+Define `$STAGING_DIR = .tmp/reverse-engineering/proposal/` e invoca al sintetizador con los cuatro intermedios, `$STAKEHOLDERS_TEMPLATE_PATH`, `$REQUIREMENT_TEMPLATE_PATH`, `$STAKEHOLDERS_PATH`, `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US`, `$UPDATE_MODE` y `$STAGING_DIR`.
 
-### 1. Verificar archivos intermedios
+El sintetizador deja la propuesta, `manifest.md` y `.tmp/reverse-engineering/gaps.md`.
 
-Verifica la existencia de cada archivo `.tmp/rfc-*.md`. Si alguno falta, advierte al usuario pero **continúa** — el synthesizer puede trabajar con inputs incompletos.
+## Fase 3 — Materialización e informe
 
-### 2. Invocar reverse-engineer-synthesizer
+Aplica `layer-materialization.md` sin gate global: valida, reclasifica, solicita `Sobrescribir <ID>` o `Conservar` para cada `modify`, escribe los destinos aprobados e informa creados, sobrescritos, conservados y descartados.
 
-> Fusiona los outputs de los agentes de análisis y genera el documento final.
->
-> - Template path: [TEMPLATE_PATH]
-> - Intermediate files:
->   - `.tmp/rfc-architecture.md` (existe: [sí/no])
->   - `.tmp/rfc-features.md` (existe: [sí/no])
->   - `.tmp/rfc-business-rules.md` (existe: [sí/no])
->   - `.tmp/rfc-navigation.md` (existe: [sí/no])
-> - Output path: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`
-> - Update mode: [true/false] — si true, también lee el documento existente y preserva secciones ya completas.
->
-> Al completar el frontmatter del documento generado, usar `status: DISCOVERY` — estado inicial de todo proyecto generado por ingeniería inversa (descubrimiento de requisitos desde código).
-> Genera el documento aunque algunas secciones queden como `<!-- PENDING MANUAL REVIEW -->`.
+Si stakeholders es nuevo o está en `TODO`, déjalo con `substatus: IN-PROGRESS` porque el contenido inferido requiere revisión humana. Informa los requisitos con `PENDING MANUAL REVIEW` y un resumen de `gaps.md`.
 
----
+## Salida
 
-## Fase 3 — Confirmación
-
-1. Verifica que `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` existe leyendo el archivo
-2. Cuenta las ocurrencias de `<!-- PENDING MANUAL REVIEW -->` en el output
-3. Reporta al usuario:
-   ```
-   ✅ Especificación generada correctamente.
-   Path: $SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md
-   Secciones completadas: [N]
-   Secciones pendientes de revisión: [M] (<!-- PENDING MANUAL REVIEW -->)
-   
-   Gaps identificados: ver sección "## Gaps & Next Steps" al final del documento.
-   Siguiente paso: revisar manualmente las secciones marcadas y cambiar **Estado** a "Ready" cuando esté completo.
-   ```
-4. Si `--verbose`: muestra un resumen de cada archivo `.tmp/rfc-*.md` (primeras 20 líneas de cada uno)
-5. Si el archivo no existe: informa que algo falló y sugiere revisar los logs de los agentes y re-ejecutar
-
+- `$SPECS_BASE/product/stakeholders.md`.
+- `$SPECS_BASE/requirements/functional/FR-NNN-<slug>.md`.
+- `$SPECS_BASE/requirements/non-functional/NFR-NNN-<slug>.md`.
+- `.tmp/reverse-engineering/gaps.md` y propuesta preservada para auditoría.

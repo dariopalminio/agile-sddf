@@ -103,7 +103,8 @@ Solo con `SPECS_BASE` válida, verificar el conjunto fijo de templates centrales
 
 - `story-template.md`
 - `epic-template.md`
-- `project-template.md`
+- `stakeholders-template.md`
+- `requirement-template.md`
 - `vision-template.md`
 - `project-plan-template.md`
 
