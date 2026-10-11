@@ -20,7 +20,7 @@ related:
 
 # 📖 Historia: Hacer ejecutables y bloqueantes los contratos operativos del framework SDDF (harden-sddf-ci-install-and-evals)
 
-**Como** mantenedor del framework SDDF,  
+**Como** Mantenedor del Harness (dogfood),  
 **Quiero** que la CI, el instalador y el runner de evals hagan cumplir de forma bloqueante los contratos que el repositorio ya declara,  
 **Para** que ni un PR ni una instalación limpia puedan quedar en verde sin evidencia real, y el onboarding refleje capacidades reales.
 

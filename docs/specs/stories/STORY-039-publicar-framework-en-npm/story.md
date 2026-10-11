@@ -14,7 +14,7 @@ parent: EPIC-07-publicacion-framework-npm
 [[EPIC-07-publicacion-framework-npm]]
 ## 📖 Historia: Publicar framework en npm
 
-**Como** mantenedor del framework SDDF
+**Como** Mantenedor del Harness (dogfood)
 **Quiero** publicar el framework en el registro público de npm con `npm publish --access public`
 **Para** que cualquier desarrollador pueda instalarlo con `npm install -g @sddf/core` y el paquete sea descubrible en npmjs.com
 

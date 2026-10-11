@@ -15,7 +15,7 @@ parent: null
 
 ## 📖 Historia: GitHub Actions CI/CD
 
-**Como** mantenedor del framework SDDF
+**Como** Mantenedor del Harness (dogfood)
 **Quiero** que al crear un release en GitHub se publique automáticamente la nueva versión en npm
 **Para** distribuir cada versión del framework sin pasos manuales de publicación
 

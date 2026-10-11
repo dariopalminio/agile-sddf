@@ -20,7 +20,7 @@ related:
 
 # 📖 Historia: Restaurar los documentos canónicos de la máquina de estados borrados sin repuntar sus citas
 
-**Como** mantenedor del framework SDDF
+**Como** Mantenedor del Harness (dogfood)
 **Quiero** que `[[state-machine]]` y `[[specs-and-workflows]]` vuelvan a resolver a documentos reales
 **Para** que los ADR, los documentos de dominio y el índice apunten a la fuente de verdad de estados y transiciones en lugar de a un destino inexistente
 

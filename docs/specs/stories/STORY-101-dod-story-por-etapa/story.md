@@ -18,7 +18,7 @@ related: none
 
 ## 📖 Historia
 
-**Como** mantenedor del framework SDDF que quiere un DoD eficiente y mantenible,  
+**Como** Mantenedor del Harness (dogfood) que quiere un DoD eficiente y mantenible,  
 **Quiero** dividir `dod-story-checklist.md` en un archivo `dod-story-<stage>.md` por etapa, con **referencia explícita desde el SKILL.md de cada skill** (Opción A) y un **mapeo opcional en `sddf.config.yaml`** que permita overrides por proyecto (Opción C),  
 **Para** reducir el consumo de tokens, aislar el mantenimiento por etapa, permitir `enforcement` granular, corregir el orden del pipeline y alinear el DoD con el patrón `guardrails/` (un guardrail por archivo, per ADR-0001/0007).
 

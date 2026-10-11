@@ -24,7 +24,7 @@ related:
 
 # 📖 Historia: Resolver una raíz configurable y usar preflight como diagnóstico
 
-**Como** mantenedor del framework SDDF que trabaja en repositorios y entornos de CI con estructuras documentales distintas
+**Como** Mantenedor del Harness (dogfood) que trabaja en repositorios y entornos de CI con estructuras documentales distintas
 
 **Quiero** declarar una única raíz de artefactos en configuración versionada, con `SDDF_ROOT` como override, y ejecutar la validación de entorno sólo cuando la solicito
 

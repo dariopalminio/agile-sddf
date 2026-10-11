@@ -16,7 +16,7 @@ related:
 
 # 📖 Historia: Estrategia "SRS único primero" en `requirements/`
 
-**Como** mantenedor del framework SDDF  
+**Como** Mantenedor del Harness (dogfood)  
 **Quiero** adoptar la estrategia "documento único primero, fragmentación cuando duela" en `docs/requirements/`, con un umbral explícito de 15 requisitos o 500 líneas, y un resolver de wikilinks que funcione en ambas disposiciones,  
 **Para** evitar fragmentación prematura en proyectos pequeños sin renunciar a la escalabilidad en proyectos grandes, manteniendo `implements: [FR-NNN]` simple en las historias y sin duplicar contenido.
 

@@ -15,7 +15,7 @@ parent: EPIC-09-docs-and-wiki-builders
 
 # 📖 Historia de Usuario: Refactoring - Migración de templates a assets en Skills (cumplimiento del estándar Agent Skills)
 
-**Como** mantenedor del framework SDDF que sigue el estándar Agent Skills,
+**Como** Mantenedor del Harness (dogfood) que sigue el estándar Agent Skills,
 **Quiero** renombrar todas las carpetas templates/ dentro de mis skills a assets/, y actualizar las referencias a esas rutas relativas en los archivos SKILL.md correspondientes,
 **Para** que mis skills sean compatibles con el estándar oficial, aprovechen el reconocimiento “out-of-the-box” por parte de herramientas de validación (skills-ref validate, etc.) y faciliten la interoperabilidad con otros agentes y ecosistemas.
 

@@ -19,7 +19,7 @@ related:
 
 # 📖 Historia: Todo campo declarado en un template nombra a su escritor
 
-**Como** mantenedor del framework SDDF que audita la coherencia entre templates y skills
+**Como** Mantenedor del Harness (dogfood) que audita la coherencia entre templates y skills
 **Quiero** que ningún template declare un campo sin anotar qué skill lo escribe, empezando por retirar el campo FINVEST de `story.md` que hoy nadie lee
 **Para** detectar los campos huérfanos leyendo el template, en vez de descubrirlos auditando las 78 historias del repositorio
 

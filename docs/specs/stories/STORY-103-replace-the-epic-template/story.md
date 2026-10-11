@@ -17,7 +17,7 @@ related:
 
 # 📖 Historia: Reemplazar el template de Epic por la versión minimalista y output-oriented
 
-**Como** mantenedor del framework SDDF  
+**Como** Mantenedor del Harness (dogfood)  
 **Quiero** reemplazar el template actual de Epic (`docs/templates/epic-template.md`) por una versión minimalista, output-oriented y viva, alineada con el template de Story refinado,  
 **Para** que los Epics sean artefactos que evolucionan con las Stories, sin secciones que queden vacías en la mayoría de casos, con trazabilidad explícita desde el estado "sin ID" hasta "completada", y con smoke tests numerados referenciables desde runbooks y pipelines.
 

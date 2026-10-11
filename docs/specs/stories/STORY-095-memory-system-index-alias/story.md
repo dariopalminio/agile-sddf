@@ -31,7 +31,7 @@ related:
 
 # 📖 Historia: Crear el skill memory-system con el modo index y deprecar docs-wiki-builder
 
-**Como** mantenedor del framework SDDF que quiere un único punto de entrada para la memoria del proyecto
+**Como** Mantenedor del Harness (dogfood) que quiere un único punto de entrada para la memoria del proyecto
 **Quiero** un skill `memory-system` cuyo modo `index` regenere `docs/index.md` con wikilinks, detecte el harness del proyecto y reemplace a `docs-wiki-builder` mediante un alias deprecado, sin fusionar `header-aggregation`
 **Para** que el indexado deje de vivir en un skill aislado y exista la base sobre la que se añaden los demás modos (`scaffold`, `ensure`, `check`, `migrate`, `rebuild`) sin duplicar lógica
 
