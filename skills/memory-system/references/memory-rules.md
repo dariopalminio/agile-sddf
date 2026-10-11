@@ -171,7 +171,7 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
 | `templates/stakeholders-template.md` | `<CLI_ROOT>/skills/project-discovery/assets/` | template |
 | `templates/requirement-template.md` | `<CLI_ROOT>/skills/project-discovery/assets/` | template |
 | `templates/vision-template.md` | `<CLI_ROOT>/skills/project-begin/assets/` | template |
-| `templates/project-plan-template.md` | `<CLI_ROOT>/skills/project-planning/assets/` | template |
+| `templates/roadmap-template.md` | `<CLI_ROOT>/skills/project-planning/assets/` | template |
 
 ### Reglas
 

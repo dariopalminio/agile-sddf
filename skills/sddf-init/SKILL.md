@@ -110,7 +110,7 @@ Copiar los templates compartidos desde el `assets/` de su skill dueño. Esta tab
 | `stakeholders-template.md` | `$CLI_ROOT/skills/project-discovery/assets/` |
 | `requirement-template.md` | `$CLI_ROOT/skills/project-discovery/assets/` |
 | `vision-template.md` | `$CLI_ROOT/skills/project-begin/assets/` |
-| `project-plan-template.md` | `$CLI_ROOT/skills/project-planning/assets/` |
+| `roadmap-template.md` | `$CLI_ROOT/skills/project-planning/assets/` |
 
 Para cada template:
 - **No existe en `SPECS_BASE/templates/`:** copiarlo desde el origen y registrar `[CREADO]  <ruta destino>`
@@ -200,7 +200,7 @@ Emitir el informe consolidado con todos los artefactos verificados:
 [CREADO]     {SPECS_BASE}/templates/stakeholders-template.md
 [CREADO]     {SPECS_BASE}/templates/requirement-template.md
 [CREADO]     {SPECS_BASE}/templates/vision-template.md
-[CREADO]     {SPECS_BASE}/templates/project-plan-template.md
+[CREADO]     {SPECS_BASE}/templates/roadmap-template.md
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 [CREADO]     docs/constitution.md
@@ -259,7 +259,7 @@ capas faltantes: product, requirements, domains, architecture, adr, policies, gu
 [PRESERVADO] docs/templates/stakeholders-template.md
 [PRESERVADO] docs/templates/requirement-template.md
 [PRESERVADO] docs/templates/vision-template.md
-[PRESERVADO] docs/templates/project-plan-template.md
+[PRESERVADO] docs/templates/roadmap-template.md
 ✅ memory-system scaffold — harness: sddf — docs
 creados: 19 · sobrescritos: 0 · preservados: 5 · mapeados: 0 · omitidos por harness: 0
 ─────────────────────────────────────────────────

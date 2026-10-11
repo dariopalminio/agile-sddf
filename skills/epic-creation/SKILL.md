@@ -3,7 +3,7 @@ name: epic-creation
 description: >-
   Crea epic.md interactivamente, sección por sección, siguiendo el template
   epic-template.md en tiempo de ejecución. Usar para crear una épica
-  sin necesitar project-plan.md previo.
+  sin requerir un roadmap previo.
   Invocar también cuando el usuario mencione "epic-creation", "crear épica",
   "nueva épica", "crear epic", "épica interactiva" o "épica desde cero".
 triggers:
@@ -29,7 +29,7 @@ Conduce al usuario a través de la creación de un archivo de épica completa me
 - Ofrece corrección interactiva si la validación devuelve REFINAR
 
 **Qué NO hace este skill:**
-- Crear una épica a partir de un `project-plan.md` existente → usar `epic-from-project-plan`
+- Crear épicas desde `product/roadmap.md` → usar `epic-from-project-plan`
 - Validar una épica ya existente → usar `epic-format-validation`
 - Generar historias de usuario de la épica → usar `epic-generate-stories`
 

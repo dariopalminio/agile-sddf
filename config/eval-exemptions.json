@@ -14,12 +14,6 @@
       "review_by": "2026-12-31"
     },
     {
-      "skill": "project-planning",
-      "owner": "agile-sddf maintainers",
-      "reason": "Pendiente de fixtures deterministas de backlog y planificación de épicas.",
-      "review_by": "2026-12-31"
-    },
-    {
       "skill": "sddf-constitution",
       "owner": "agile-sddf maintainers",
       "reason": "Pendiente de fixtures para políticas y Definition of Done generados.",

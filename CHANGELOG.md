@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- **BREAKING — STORY-111:** `/project-planning` exige al menos un requisito funcional, prepara una propuesta de épicas en staging y, tras `Confirmar`, la agrega como sección fechada append-only a `product/roadmap.md`. `/epic-from-project-plan` ahora consume la última propuesta del roadmap, asigna IDs desde el mayor `EPIC-NN` existente, comprueba colisiones por slug y deja `parent: null`; las historias propuestas no llevan `STORY-NNN`. `project-plan-template.md` se reemplaza por `roadmap-template.md` y ambos skills incorporan evals. Los proyectos inicializados deben ejecutar `/memory-system scaffold` o `sddf-init` para obtener la nueva plantilla; `project-flow` conserva temporalmente su integración heredada hasta STORY-113.
+
 ### Changed
 
 - **BREAKING — STORY-110:** `/project-discovery` ahora exige `product/vision.md` en `DONE` y, tras el gate `Confirmar`, materializa `product/stakeholders.md` y un archivo por requisito funcional o no funcional. `/reverse-engineering` escribe las mismas capas, avisa y pide `Continuar`/`Cancelar` cuando ya hay requisitos, y limita `--update` a requisitos pendientes de revisión manual. `project-template.md` se reemplaza por `stakeholders-template.md` y `requirement-template.md`; los agentes reciben rutas inyectadas sin delegación anidada y ambos skills incorporan evals. Los proyectos existentes deben ejecutar `/memory-system scaffold` o `sddf-init` para obtener los templates nuevos; `project-planning` y `project-flow` conservan su integración pendiente de STORY-111 y STORY-113.

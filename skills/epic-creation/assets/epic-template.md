@@ -5,7 +5,7 @@ slug: <nombre-del-directorio-de-la-epica>   # escritor: epic-creation · epic-fr
 title: "<título de la épica>"   # escritor: epic-creation · epic-from-project-plan
 status: DEFINE            # escritor: epic-creation · epic-from-project-plan (inicial)
 substatus: IN-PROGRESS    # escritor: epic-creation (TODO por WIP=1) · epic-from-project-plan (inicial)
-parent: null              # escritor: epic-creation (valor del template) · epic-from-project-plan (PROJ-NN o null)
+parent: null              # escritor: epic-creation (valor del template) · epic-from-project-plan (null)
 created: <YYYY-MM-DD>     # escritor: epic-creation · epic-from-project-plan
 updated: <YYYY-MM-DD>     # escritor: todo skill que edite el archivo
 related: []               # escritor: epic-creation · epic-from-project-plan

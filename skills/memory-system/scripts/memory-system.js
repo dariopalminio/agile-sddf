@@ -125,7 +125,7 @@ const SHARED_TEMPLATES = [
   { name: 'stakeholders-template.md', owner: 'project-discovery' },
   { name: 'requirement-template.md', owner: 'project-discovery' },
   { name: 'vision-template.md', owner: 'project-begin' },
-  { name: 'project-plan-template.md', owner: 'project-planning' },
+  { name: 'roadmap-template.md', owner: 'project-planning' },
 ];
 
 // Etiqueta de cada acción del scaffold: [ejecución real, --dry-run].

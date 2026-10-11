@@ -1,238 +1,85 @@
 ---
 name: epic-from-project-plan
-description: "Genera especificaciones de épica (directorio `EPIC-NN-nombre/epic.md`) a partir de las épicas planificadas en `<SPECS_BASE>/specs/01-projects/<PROJ-ID>-<nombre>/project-plan.md`, usando el template `epic-template.md`, y valida cada épica generada con `epic-format-validation`."
----
-# Skill: /epic-from-project-plan
-
-Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md` y genera automáticamente un directorio `EPIC-[ID]-[nombre-kebab]/` con un archivo `epic.md` por cada épica planificada en la sección "Propuesta de Épicas". Cada archivo generado sigue exactamente la estructura de `$SPECS_BASE/templates/epic-template.md` (títulos y orden leídos del template; contenido mapeado por la `clave:` de cada sección) y se valida con `/epic-format-validation` antes del resumen.
-
-**Usar cuando:**
-- Se quiere materializar las épicas de un `project-plan.md` como archivos de especificación listos para editar
-- Como paso previo a ejecutar `/epic-format-validation` o `/story-creation` sobre una épica específica
-- Para asegurar consistencia de formato entre todas las épicas de un proyecto
-
+description: >-
+  Genera especificaciones EPIC-NN-nombre/epic.md desde la última propuesta de
+  product/roadmap.md y valida cada épica con epic-format-validation.
+triggers:
+  - epic-from-project-plan
+  - /epic-from-project-plan
+  - generar épicas del roadmap
+  - crear épicas planificadas
 ---
 
-## Restricciones / Reglas
+# Skill: `/epic-from-project-plan`
 
-- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
-- Las secciones de la épica se identifican por su `clave:` en el template, nunca por su título: este skill no contiene títulos de sección de la épica
-- Los formatos de línea F1/F2/F3 de las historias y el patrón `SMOKE-N` son contrato de dominio (`domain-epic-lifecycle` §9, "Estructura de `epic.md`")
-- NO genere código; estas especificando, no implementando los artefactos técnicos
-- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
-  Do not use Latin-1, CP-1252, or any other encoding. 
-  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
+Lee la última propuesta de `$SPECS_BASE/product/roadmap.md` y materializa una especificación `epic.md` por cada épica planificada. El skill no modifica el roadmap.
 
----
+## Restricciones
+
+- Las secciones de la épica se identifican por `clave:` en el template, no por título.
+- Los formatos F1/F2/F3 y `SMOKE-N` siguen siendo el contrato de `domain-epic-lifecycle` §9.
+- Todo `epic.md` nuevo se guarda UTF-8 sin BOM.
 
 ## Paso 0 — Resolver contexto local
 
 <!-- SDDF-ROOT-RESOLUTION: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+1. Una variable `SDDF_ROOT` explícita debe ser un directorio accesible; si es inválida, detener antes de escribir.
+2. Si no existe, usar `root` válido de `sddf.config.yaml`; una raíz explícita inválida bloquea el flujo.
+3. Sin fuente explícita, usar `docs` relativo a `REPO_ROOT`.
+4. Resolver `CLI_ROOT` separadamente solo para acceder al template seed.
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+## Fase 0 — Verificar roadmap
 
-El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
+Fijar `$ROADMAP_PATH = $SPECS_BASE/product/roadmap.md`. Si no existe, mostrar:
 
+`❌ No se encontró $SPECS_BASE/product/roadmap.md. Ejecuta /project-planning para planificar las épicas antes de usar este skill.`
 
----
+Terminar sin crear directorios ni archivos.
 
-## Configuración 0b — Resolver directorio del proyecto activo (`PROJ_DIR`)
+## Fase 1 — Extraer la última propuesta
 
-1. Listar todos los subdirectorios de `$SPECS_BASE/specs/01-projects/`.
-2. Para cada subdirectorio, leer `project-intent.md` y verificar si `substatus` es `DONE`.
-3. Si se encuentra exactamente uno con `substatus: DONE` → usar ese directorio como `$PROJ_DIR`.
-4. Si se encuentran varios → mostrar la lista y pedir al usuario que elija antes de continuar.
-5. Si no se encuentra ninguno → mostrar error y detener:
-   > ❌ No se encontró ningún proyecto activo en `$SPECS_BASE/specs/01-projects/`.
-   > Ejecuta `/project-begin` primero.
+Leer `$ROADMAP_PATH` y seleccionar la última sección cuyo encabezado cumpla `## Propuesta (AAAA-MM-DD[ #n])`. Ignorar `## Épicas`, `## Plan original …` y cualquier otra sección. Si no existe una propuesta válida, mostrar:
 
-La ruta completa del proyecto activo es: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`
+`❌ $SPECS_BASE/product/roadmap.md no contiene ninguna sección "## Propuesta (AAAA-MM-DD)". Ejecuta /project-planning.`
 
----
+Cada bloque comienza con `### Épica <etiqueta><separador><Nombre>`, donde el separador es `:` o `—`; la etiqueta se ignora. Un bloque termina en el siguiente `###` o `##`; `### Resumen` no es una épica. Extraer `**Objetivo:**`, `**Historias:**`, `**Requisitos:**`, `**Dependencias:**`, `**Riesgos:**` y `**Criterios de éxito:**`. Las historias F1 son `- <Nombre>: <descripción>`; seguir aceptando historias con ID mediante el mapeo F2/F3 vigente.
 
-## Fase 0 — Verificar input
+Si no hay bloques, mostrar `No se encontraron épicas planificadas en la propuesta <encabezado>.` y terminar sin generar archivos.
 
-Verificar que el archivo `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md` existe.
+## Fase 2 — Preparar destino e IDs
 
-**Si no existe**, mostrar el siguiente mensaje y terminar sin generar ningún archivo:
+Usar `$EPICS_DIR = $SPECS_BASE/specs/epics/` si existe; en caso contrario usar la ruta vigente `$SPECS_BASE/specs/02-epics/`. Crearlo si no existe.
 
-```
-No se encontró $SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md
+Calcular `$MAX_EPIC` como el mayor `NN` de `$EPICS_DIR/EPIC-<NN>-*/`; si no existe ninguno, usar `-1`. Las épicas nuevas reciben `$MAX_EPIC + 1` en el orden de la propuesta, rellenado a dos dígitos hasta 99 y a tres desde 100. El número de su encabezado no determina su ID.
 
-Asegúrate de haber ejecutado el skill /project-planning antes de usar este skill.
-```
+Convertir el nombre a kebab-case con las reglas vigentes. Si un slug se repite dentro de la propuesta, añadir `-bis` al segundo y sucesivos.
 
----
+Si ya existe `EPIC-<cualquier NN>-<slug>`, preguntar si se sobrescribe; sin respuesta es `n`. Ante `n`, registrar `saltado (ya existía)` y continuar con la siguiente épica.
 
-## Fase 1 — Extraer épicas del plan
+## Fase 3 — Generar y validar
 
-Leer `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-plan.md`.
+Resolver el template central `$SPECS_BASE/templates/epic-template.md`; si falta, usar `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` e informar el fallback. Si tampoco existe, informar `❌ Template epic-template.md no encontrado. Ejecuta sddf-init.` y detener.
 
-Localizar la sección `## Propuesta de Épicas`. Solo analizar el contenido dentro de esa sección (ignorar todo lo que esté antes o pertenezca a otras secciones `##`).
+Para cada épica nueva, crear `EPIC-NN-<slug>/epic.md` tomando títulos y orden del template. El mapeo por clave es:
 
-Dentro de esa sección, extraer cada bloque delimitado por un encabezado `### Épica ...` y el siguiente separador `---` o el siguiente `###`.
-
-El separador entre el identificador y el nombre puede ser **em dash (`—`) o dos puntos (`:`)** — ambas formas están vigentes: el template genera `### Épica 1: [Nombre]` y los planes existentes usan `### Épica 01 — Nombre`. Aceptar las dos.
-
-Para cada bloque, capturar:
-
-- **ID**: el número que sigue a `### Épica `, normalizado a dos dígitos (`1` → `01`, `06` → `06`).
-  **Caso especial — bloque sin número:** el template define un bloque inicial `### Épica Walking Skeleton: MVP`. Ese bloque recibe el ID `00` (es el MVP, siempre la primera épica). Si además existe un bloque numerado `00`, aplicar la regla de duplicados de las Notas de implementación.
-- **Nombre**: el texto después del separador en la misma línea (ej. `Estructura Base y Mecanismo de Templates`). Para el bloque Walking Skeleton, el nombre es el texto después de los dos puntos (`MVP`).
-- **substatus**: el valor del campo `substatus:` si existe en el bloque (ej. `DONE`, `IN-PROGRESS`); si no existe, usar `IN-PROGRESS`
-- **Objetivo**: el párrafo que sigue a `**Objetivo:**`
-- **Historias del plan**: las líneas de lista del bloque que representan historias: con ID (`- [ ] STORY-NNN - Nombre[: descripción]`, `- [x] STORY-NNN - Nombre[: descripción]`) o sin ID (`- Nombre[: descripción]`, `- [ ] Nombre[: descripción]`)
-- **Requisitos, dependencias y riesgos**: los párrafos o listas del bloque bajo esas etiquetas, si existen
-- **Criterios de éxito**: las líneas que siguen a `**Criterios de éxito:**` dentro del bloque
-
-Las fechas del frontmatter (`created` / `updated`) no se extraen del plan: se usa la fecha actual en formato YYYY-MM-DD.
-
-**Si no se encuentra ningún bloque `### Épica`** dentro de la sección, mostrar el siguiente mensaje y terminar:
-
-```
-No se encontraron épicas planificadas en project-plan.md
-
-Verifica que el archivo contiene una sección "## Propuesta de Épicas" con bloques "### Épica NN — Nombre" o "### Épica N: Nombre".
-```
-
----
-
-## Fase 2 — Preparar directorio de destino
-
-Verificar si el directorio `$SPECS_BASE/specs/epics/` existe.
-
-Si no existe, crearlo antes de continuar.
-
----
-
-## Fase 3 — Generar archivos de épica
-
-Para cada épica extraída en Fase 1, ejecutar los siguientes pasos:
-
-### 3a. Construir el nombre del directorio
-
-Convertir el nombre de la épica a kebab-case siguiendo estas reglas:
-1. Convertir a minúsculas
-2. Normalizar caracteres acentuados: á→a, é→e, í→i, ó→o, ú→u, ü→u, ñ→n (y sus mayúsculas)
-3. Reemplazar espacios y cualquier carácter que no sea letra o número por un guion `-`
-4. Eliminar guiones consecutivos (reemplazar `--` por `-`)
-5. Eliminar guiones al inicio o al final
-
-Nombre de directorio resultante: `EPIC-[ID]-[nombre-kebab]`
-
-Ruta del archivo de salida: `$SPECS_BASE/specs/epics/EPIC-[ID]-[nombre-kebab]/epic.md`
-
-**Ejemplo:** `### Épica 00 — Estructura Base y Mecanismo de Templates` → directorio `EPIC-00-estructura-base-y-mecanismo-de-templates/` con archivo `epic.md`
-
-### 3b. Verificar existencia previa
-
-Si ya existe el **directorio** `$SPECS_BASE/specs/epics/EPIC-[ID]-[nombre-kebab]/`, informar al usuario:
-
-```
-El directorio $SPECS_BASE/specs/epics/EPIC-[ID]-[nombre-kebab]/ ya existe.
-¿Deseas sobreescribir epic.md? (s/n)
-```
-
-Esperar confirmación antes de continuar. Si el usuario responde `n` o `no`, saltar esta épica y continuar con la siguiente.
-
-### 3c. Verificar que el template de épica existe y leerlo
-
-El archivo de plantilla es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca codifique directamente los nombres o la estructura de las secciones en esta habilidad; siempre derréglelos de la plantilla en tiempo de ejecución. Si la plantilla cambia, el output generado se actualizará automáticamente.
-
-El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
-
-Lee el archivo de plantilla `$SPECS_BASE/templates/epic-template.md`.
-
-- Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` y emitir:
-
-  > ⚠️ Usando template del skill epic-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
-
-- Si tampoco existe el fallback: informar al usuario y detener la ejecución:
-
-  > ❌ Template `epic-template.md` no encontrado. Ejecuta `sddf-init`.
-
-- Si alguno de los dos **existe**: continua.
-
-### 3d. Escribir el archivo de épica
-
-Crear el directorio `$SPECS_BASE/specs/epics/EPIC-[ID]-[nombre-kebab]/` si no existe y escribir dentro `epic.md` completando el template leído en 3c.
-
-**Estructura (del template, en runtime):** para cada línea `## ` del template, en su orden, tomar su **título** (sin el comentario HTML) y su **clave** (`clave: <clave>` del comentario). Escribir cada sección como `## <título>` **sin** el comentario `<!-- sección … -->`, sin los comentarios guía y sin el contenido de ejemplo del template. Nunca se escribe un título que no venga del template.
-
-**Mapeo plan → clave** (el contenido de cada sección depende solo de su clave):
-
-| Clave | Contenido desde el bloque de la épica |
+| Clave | Contenido |
 |---|---|
-| `alcance` | El objetivo/descripción de la épica (2-4 líneas, output-oriented) |
-| `historias` | Una línea por historia del plan: con ID y `[ ]` → **F2** `- [ ] **STORY-NNN** — <Nombre>: <descripción>`; con ID y `[x]` → **F3** `- [x] **STORY-NNN** — <Nombre>: <descripción>`; sin ID → **F1** `- <Nombre>: <descripción>` (sin checkbox). Si el plan no trae descripción, usar `[Por completar]` como descripción. Sin historias → `- [Por completar]` |
-| `criterios-salida` | Los criterios de éxito del plan como `- [ ] <criterio>`. Sin criterios → `- [ ] [Por completar]` |
-| `smoke-tests` | Un smoke test por criterio de éxito, numerados desde 1: `### SMOKE-N — <nombre derivado del criterio>` + bloque `gherkin` con `Escenario:`, `Dado`, `Cuando`, `Entonces`. Sin criterios → `### SMOKE-1 — Verificación de entrega` con Dado "la épica está desplegada", Cuando "se verifican las historias incluidas", Entonces "todas funcionan según lo especificado" |
-| `notas` | Requisitos, dependencias y riesgos del plan, cada grupo como subsección `### <Requisitos/Dependencias/Riesgos>`; los grupos sin dato se omiten. Sin ninguno → solo el encabezado |
-| otra clave o sin clave | `[Por completar]` |
+| `alcance` | Objetivo de la propuesta. |
+| `historias` | Historias F1; una historia con ID mantiene su conversión F2/F3. |
+| `criterios-salida` | Criterios de éxito como `- [ ]`. |
+| `smoke-tests` | Un escenario Gherkin `SMOKE-N` por criterio. |
+| `notas` | Subsecciones `### Requisitos`, `### Dependencias` y `### Riesgos` cuando haya datos. |
 
-Formato de un smoke test:
+El frontmatter deriva las claves del template: `type: epic`, ID, slug, título, `status: DEFINE`, `substatus: IN-PROGRESS`, `parent: null`, fechas actuales y `related: []`. `DEFINE` es el estado inicial de toda épica generada desde el roadmap.
 
-```
-### SMOKE-1 — <nombre>
-```gherkin
-Escenario: <nombre>
-  Dado <precondición implícita del criterio>
-  Cuando <acción que verifica el criterio>
-  Entonces <resultado esperado según el criterio>
-```
-```
-
-**Frontmatter:** derivar las claves del bloque frontmatter del template (sin sus comentarios `# escritor:`) y completarlas con:
-- `type: epic` y `id: EPIC-[ID]` — contrato canónico del nivel L2
-- `slug`: el nombre del directorio de la épica; `title`: el nombre completo de la épica
-- `status: DEFINE` — estado inicial de toda épica generada desde un project-plan (en etapa de definición de alcance)
-- `substatus`: el extraído del bloque o `IN-PROGRESS`
-- `parent`: el `PROJ-NN` del proyecto o `null`; `related: []`
-- `created` y `updated` con la fecha actual en formato YYYY-MM-DD
-
-No escribir claves que el template no declare (p. ej. `date`, `alwaysApply`, `deliveryModel` o `children`). El frontmatter debe cubrir todas las claves obligatorias que valida `/epic-format-validation` (las del template menos la allowlist `alwaysApply`, `parent`, `related`).
-
-### 3e. Validar cada épica generada
-
-Después de escribir cada `epic.md`, invocar `epic-format-validation` en **modo automático** (sin confirmación) sobre el archivo y registrar su resultado (`APROBADO` / `REFINAR` con sus ítems). Un `REFINAR` **no detiene el batch**: se registra y se continúa con la siguiente épica.
-
----
+Invocar `epic-format-validation` automáticamente para cada archivo. Un resultado `REFINAR` se registra, pero no detiene el lote.
 
 ## Fase 4 — Resumen
 
-Al terminar de generar todos los archivos, mostrar un resumen en pantalla:
+Mostrar los archivos creados o saltados bajo `$EPICS_DIR`, con el resultado de `epic-format-validation`. Si todos aprueban, sugerir `/epic-generate-stories`; si alguno requiere refinamiento, pedir corregirlo antes de generar sus historias.
 
-```
-## Épicas generados
+## Notas
 
-Se generaron [N] directorios de épica en $SPECS_BASE/specs/epics/:
-
-- $SPECS_BASE/specs/epics/EPIC-00-nombre/epic.md — epic-format-validation: APROBADO
-- $SPECS_BASE/specs/epics/EPIC-01-nombre/epic.md — epic-format-validation: REFINAR (<ítems>)
-...
-
-{línea de siguiente paso}
-```
-
-La línea de siguiente paso depende de los resultados de la Fase 3e (no mencionar `REFINAR` si ninguna épica lo obtuvo):
-- Todas `APROBADO`: `**Siguiente paso:** ejecuta /epic-generate-stories sobre las épicas generadas.`
-- Alguna `REFINAR`: `**Siguiente paso:** corrige las épicas en REFINAR y ejecuta /epic-generate-stories sobre las aprobadas.`
-
-Si alguna épica fue saltada (usuario eligió no sobreescribir), listarla como:
-```
-- $SPECS_BASE/specs/epics/EPIC-XX-nombre/ — saltado (ya existía)
-```
-
----
-
-## Notas de implementación
-
-- El skill valida cada archivo generado delegando en `/epic-format-validation` (Fase 3e); no reimplementa sus reglas.
-- El skill **no modifica** `project-plan.md`.
-- Si el plan contiene épicas con el mismo ID (duplicados), generar ambos archivos añadiendo sufijo `-bis` al segundo (ej. `EPIC-01-nombre-bis/`) e informar al usuario.
-- Las secciones del template sin dato en el plan siempre se incluyen (con el placeholder de su clave) para facilitar la edición posterior y asegurar que el archivo tiene estructura completa.
+- El skill no modifica `roadmap.md`.
+- La existencia se evalúa por slug, no por el número asignado en esta ejecución.

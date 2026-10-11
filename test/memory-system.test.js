@@ -316,7 +316,7 @@ const LAYER_DIRS = ['product', 'requirements', 'specs', 'domains', 'architecture
 // Las seis que se copian desde su skill dueño, más las cuatro de autoría manual que viajan en la
 // semilla porque no tienen dueño (ADR-0012).
 const MANUAL_TEMPLATES = ['adr-template.md', 'domain-template.md', 'guardrail-template.md', 'policy-template.md'];
-const TEN_TEMPLATES = ['story-template.md', 'epic-template.md', 'stakeholders-template.md', 'requirement-template.md', 'vision-template.md', 'project-plan-template.md', ...MANUAL_TEMPLATES];
+const TEN_TEMPLATES = ['story-template.md', 'epic-template.md', 'stakeholders-template.md', 'requirement-template.md', 'vision-template.md', 'roadmap-template.md', ...MANUAL_TEMPLATES];
 
 const summaryOf = (stdout) => {
   const match = lastLine(stdout).match(SCAFFOLD_SUMMARY);

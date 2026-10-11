@@ -106,7 +106,7 @@ Solo con `SPECS_BASE` válida, verificar el conjunto fijo de templates centrales
 - `stakeholders-template.md`
 - `requirement-template.md`
 - `vision-template.md`
-- `project-plan-template.md`
+- `roadmap-template.md`
 
 Para cada `<template>` bajo `SPECS_BASE/templates/`, emitir `[OK] Template presente:` o
 `[WARNING] Template no encontrado:`. La invocación independiente no necesita conocer un

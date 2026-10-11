@@ -1,0 +1,14 @@
+{
+  "skill": "project-planning",
+  "version": "1.0.0",
+  "description": "Evalúa el planning basado en requisitos y propuestas append-only del roadmap.",
+  "cases": [
+    {"id":"TC-001","name":"crea propuesta inicial","type":"functional","description":"Hay FR-001 a FR-003, no hay roadmap ni épicas; el agente entrega dos épicas válidas y el usuario confirma.","input":{"context":"FR-001, FR-002 y FR-003 disponibles; template central disponible; no existe roadmap; respuesta Confirmar.","flags":[]},"expected":{"contains":["product/roadmap.md","## Épicas","## Propuesta (","**Objetivo:**","**Criterios de éxito:**","/epic-from-project-plan"],"not_contains":["01\u002dprojects","project\u002dplan.md","PROJ\u002d","STORY-0"]},"threshold":0.9},
+    {"id":"TC-002","name":"preserva roadmap existente","type":"functional","description":"El roadmap contiene épicas reales e historial; se confirma una propuesta nueva.","input":{"context":"roadmap existente con ## Épicas de 22 filas y ## Plan original (2026-04-20); respuesta Confirmar.","flags":[]},"expected":{"contains":["## Propuesta (","sin modificar el resto","Plan original (2026-04-20)"],"not_contains":["sobrescrib"]},"threshold":0.9},
+    {"id":"TC-003","name":"sufijo para propuesta del mismo día","type":"edge-case","description":"Ya hay una propuesta con la fecha actual.","input":{"context":"El roadmap ya contiene Propuesta de hoy; respuesta Confirmar.","flags":[]},"expected":{"contains":["#2)"],"not_contains":[]},"threshold":0.9},
+    {"id":"TC-004","name":"falla sin FR","type":"fail-fast","description":"No hay requisitos funcionales.","input":{"context":"requirements sin FR; no existe staging.","flags":[]},"expected":{"contains":["❌","/project-discovery"],"not_contains":["✅"]},"threshold":1},
+    {"id":"TC-005","name":"cancelar no escribe","type":"edge-case","description":"La propuesta pasa staging y el usuario cancela.","input":{"context":"FR disponible; staging válido; respuesta Cancelar.","flags":[]},"expected":{"contains":["no se modificó"],"not_contains":["✅ Propuesta"]},"threshold":1},
+    {"id":"TC-006","name":"usa template seed","type":"fallback","description":"Falta template central pero existe seed.","input":{"context":"FR disponible; falta template central; existe seed.","flags":[]},"expected":{"contains":["⚠️","roadmap-template.md"],"not_contains":[]},"threshold":0.9},
+    {"id":"TC-007","name":"falla sin template","type":"fail-fast","description":"No existe ninguna copia del template.","input":{"context":"FR disponible; faltan template central y seed.","flags":[]},"expected":{"contains":["❌ Template roadmap-template.md"],"not_contains":["✅"]},"threshold":1}
+  ]
+}

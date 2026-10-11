@@ -8,7 +8,7 @@
 
 ## What it does
 
-Crea una especificación `epic.md` de forma interactiva, sección por sección, a partir del template de épica vigente (v2: cinco secciones output-oriented identificadas por `clave:`). Cada pregunta se construye con el título y la guía de la sección del template. Permite iniciar una épica sin requerir un `project-plan.md` previo.
+Crea una especificación `epic.md` de forma interactiva, sección por sección, a partir del template de épica vigente (v2: cinco secciones output-oriented identificadas por `clave:`). Cada pregunta se construye con el título y la guía de la sección del template. Permite iniciar una épica sin requerir un `product/roadmap.md` previo.
 
 **Produces:**
 
@@ -17,7 +17,7 @@ Crea una especificación `epic.md` de forma interactiva, sección por sección, 
 
 **Does not do:**
 
-- No genera las épicas ya planificadas en un `project-plan.md`.
+- No genera las épicas ya planificadas en un `product/roadmap.md`.
 
 ---
 
