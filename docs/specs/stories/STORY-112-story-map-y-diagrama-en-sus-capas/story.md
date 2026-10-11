@@ -5,11 +5,11 @@ id: STORY-112
 kind: feat
 slug: STORY-112-story-map-y-diagrama-en-sus-capas
 title: "project-story-mapping y project-context-diagram escriben en product/ y architecture/c4/"
-status: READY-FOR-IMPLEMENT
-substatus: DONE
+status: IMPLEMENT
+substatus: IN-PROGRESS
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-11
 related:
   - EPIC-21-colapsar-specs-dos-niveles
   - eliminar-specs-01-projects

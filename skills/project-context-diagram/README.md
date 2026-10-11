@@ -4,48 +4,23 @@
 > **Location:** `skills/project-context-diagram/SKILL.md`  
 > **Status:** stable
 
----
+## Qué hace
 
-## What it does
-
-Genera un diagrama de contexto C4 de nivel 1 en PlantUML para el proyecto activo. Puede recopilar la información en una entrevista o inferirla desde archivos, y solicita confirmación antes de escribir el resultado.
+Genera un diagrama de contexto C4 de Nivel 1 en PlantUML para el producto. Puede entrevistar al usuario o inferir actores, sistemas y relaciones desde las capas de producto y requisitos.
 
 **Produces:**
 
-- `$SPECS_BASE/specs/01-projects/PROJ-slug/context-diagram.puml`.
-- Un preview del diagrama antes de guardarlo en modo interactivo.
+- `$SPECS_BASE/architecture/c4/context-diagram.puml`.
+- Un preview en modo manual y confirmación de sobrescritura en todos los modos.
 
-**Does not do:**
+No genera diagramas de componentes ni modifica `context-diagram.png`.
 
-- No genera diagramas de componentes ni reemplaza la especificación de requisitos.
+## Uso
 
----
+Usa `/project-context-diagram` para una entrevista o `/project-context-diagram --from-files` para inferirlo desde archivos.
 
-## When to use
-
-**Use it when:**
-
-- Necesites comunicar el alcance, actores y sistemas externos de un proyecto.
-- Quieras documentar la arquitectura de contexto con C4 y PlantUML.
-- The user mentions: `"project-context-diagram"`, `"diagrama de contexto"`, `"C4 context"`.
-
-**Do NOT use it when:**
-
-- Debas descubrir o especificar requisitos del proyecto → use `[[project-discovery]]` instead.
-- Necesites un diseño técnico de una historia concreta → use `[[story-design]]` instead.
-
----
-
-## Installation
-
-**Core (included in `agile-sddf`):**
+## Instalación
 
 ```bash
 npx agile-sddf install --target claude-code
 ```
-
-Para otro runtime compatible, sustituye `claude-code` por un identificador declarado como `supported` en `config/runtimes.json`.
-
-### Invocation
-
-Usa `/project-context-diagram` o `/project-context-diagram --from-files`.

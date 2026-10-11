@@ -1,0 +1,14 @@
+{
+  "skill": "project-context-diagram",
+  "version": "1.0.0",
+  "description": "Verifica el diagrama C4 desde capas y la protección de sobrescritura en todos los modos.",
+  "cases": [
+    { "id": "TC-001", "name": "from-files-desde-capas", "type": "happy-path", "description": "Capas con dos usuarios, integración Stripe y NFR tecnológico.", "input": { "context": "--from-files; stakeholders tiene US-001 y US-002; un FR integra Stripe; existe un NFR de Tecnología; no existe diagrama." }, "expected": { "contains": ["architecture/c4/context-diagram.puml", "Person(", "System_Ext(", "Stripe"], "not_contains": ["01-projects", "PROJ-", "project.md", "En qué proyecto"] }, "threshold": 1.0 },
+    { "id": "TC-002", "name": "modo-interactivo", "type": "happy-path", "description": "La entrevista proporciona todos los elementos del diagrama.", "input": { "context": "--interactive; el usuario entrega sistema, actores, sistemas externos y relaciones; el diagrama no existe." }, "expected": { "contains": ["architecture/c4/context-diagram.puml"], "not_contains": ["PROJ-", "En qué proyecto"] }, "threshold": 1.0 },
+    { "id": "TC-003", "name": "existente-no", "type": "safety", "description": "No conserva ambos artefactos existentes.", "input": { "context": "El .puml y context-diagram.png existen; el usuario responde No." }, "expected": { "contains": ["Ya existe", "Sin cambios", "context-diagram.png"], "not_contains": ["✅ Diagrama de contexto C4 generado"] }, "threshold": 1.0 },
+    { "id": "TC-004", "name": "existente-si", "type": "happy-path", "description": "Sí sobrescribe solo el archivo fuente.", "input": { "context": "El .puml y el PNG existen; el usuario responde Sí." }, "expected": { "contains": ["sobrescrib", "no se regeneró"], "not_contains": [] }, "threshold": 1.0 },
+    { "id": "TC-005", "name": "automatico-sin-respuesta", "type": "safety", "description": "El modo automático conserva el diagrama ante ausencia de respuesta.", "input": { "context": "Invocado automáticamente; el diagrama existe y no hay respuesta." }, "expected": { "contains": ["Ya existe", "Sin cambios"], "not_contains": ["✅ Diagrama"] }, "threshold": 1.0 },
+    { "id": "TC-006", "name": "ruta-inexistente", "type": "fallback", "description": "Una ruta fuente inexistente ofrece los dos modos vigentes.", "input": { "context": "Se indica una ruta inexistente." }, "expected": { "contains": ["No se encontró", "--from-files", "--interactive"], "not_contains": ["01-projects", "PROJ-"] }, "threshold": 1.0 },
+    { "id": "TC-007", "name": "automatico-sin-contexto", "type": "fail-fast", "description": "Las semillas TODO sin requisitos no producen un diagrama automático.", "input": { "context": "--from-files automático; vision y stakeholders están TODO; no hay requisitos ni README." }, "expected": { "contains": ["❌", "/project-discovery"], "not_contains": ["✅ Diagrama"] }, "threshold": 1.0 }
+  ]
+}

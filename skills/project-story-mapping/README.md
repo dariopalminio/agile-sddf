@@ -4,48 +4,23 @@
 > **Location:** `skills/project-story-mapping/SKILL.md`  
 > **Status:** stable
 
----
+## Qué hace
 
-## What it does
-
-Conduce una sesión de User Story Mapping mediante el agente especializado y añade el frontmatter canónico al resultado. Organiza requisitos en backbone, walking skeleton y slices de épicas para apoyar decisiones de MVP.
+Conduce una sesión de User Story Mapping con el agente especializado. Toma contexto de `product/` y `requirements/`, valida un staging y materializa el resultado solo tras esa validación.
 
 **Produces:**
 
-- `$SPECS_BASE/specs/01-projects/PROJ-DIR/story-map.md`.
-- Frontmatter YAML de trazabilidad en el mapa generado.
+- `$SPECS_BASE/product/story-map.md`.
+- Personas, backbone, walking skeleton y release slices.
 
-**Does not do:**
+No reemplaza la planificación formal ni crea tareas de implementación.
 
-- No reemplaza el plan de proyecto ni crea tareas de implementación.
+## Uso
 
----
+Ejecuta `/project-story-mapping` para organizar requisitos en incrementos entregables o definir el MVP. Si ya existe el story map, el skill pide elegir `Sobrescribir` o `Cancelar` antes de la sesión.
 
-## When to use
-
-**Use it when:**
-
-- Necesites organizar requisitos en incrementos entregables o definir el MVP.
-- Quieras facilitar el paso de requisitos a planificación con un walking skeleton.
-- The user mentions: `"project-story-mapping"`, `"story mapping"`, `"walking skeleton"`.
-
-**Do NOT use it when:**
-
-- Debas construir el backlog y las épicas formales → use `[[project-planning]]` instead.
-- Necesites descomponer tareas técnicas de una historia → use `[[story-tasking]]` instead.
-
----
-
-## Installation
-
-**Core (included in `agile-sddf`):**
+## Instalación
 
 ```bash
 npx agile-sddf install --target claude-code
 ```
-
-Para otro runtime compatible, sustituye `claude-code` por un identificador declarado como `supported` en `config/runtimes.json`.
-
-### Invocation
-
-Usa `/project-story-mapping` para el proyecto activo.

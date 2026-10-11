@@ -1,10 +1,9 @@
 ---
 name: project-story-mapping
 description: >-
-  Produce story-map.md (backbone, walking skeleton, slices de épicas) via sesión interactiva de User Story Mapping.
-  Usar para organizar requisitos en incrementos entregables o definir el MVP.
-  Invocar para "story mapping", "user story map", "backbone",
-  "walking skeleton", "slices de épicas" o "project-story-mapping".
+  Produce product/story-map.md desde product/ y requirements/ mediante una sesión
+  interactiva de User Story Mapping. Úsalo para organizar requisitos en incrementos
+  entregables o definir el MVP.
 triggers:
   - project-story-mapping
   - /project-story-mapping
@@ -17,70 +16,35 @@ triggers:
 
 # Skill: `/project-story-mapping`
 
-**Cuándo usar este skill:**
-Usar cuando el usuario quiere organizar requisitos en incrementos entregables, definir el
-alcance del MVP desde un conjunto grande de requisitos, visualizar el journey del usuario
-a través de las funcionalidades, planificar épicas con valor claro, dividirlas en
-historias entregables, o comunicar la visión del producto a stakeholders.
-Invocar también cuando el usuario mencione "story mapping", "user story map", "backbone",
-"walking skeleton", "slices de épicas", "project-story-mapping" o equivalentes.
-
 ## Objetivo
 
-Orquesta una sesión de User Story Mapping (técnica de Jeff Patton) para el proyecto activo
-en SDDF: prepara el contexto desde los documentos del proyecto y delega la sesión completa
-al agente `project-story-mapper`, produciendo
-`$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md`.
-
-Se ubica entre la fase de discovery y la planificación del proyecto:
-```
-project-begin → project-discovery → [project-story-mapping] → project-planning
-```
-
-**Qué hace este skill:**
-- Resuelve el proyecto activo y lee los documentos disponibles (`project-intent.md`, `project.md`)
-- Delega la sesión interactiva completa al agente `project-story-mapper` con el contexto preparado
-- Añade el frontmatter YAML al documento generado por el agente
-
-**Qué NO hace este skill:**
-- No conduce el story mapping directamente — esa responsabilidad es del agente `project-story-mapper`
-- No modifica el contenido narrativo del `story-map.md` generado (solo añade frontmatter)
+Orquesta una sesión de User Story Mapping y materializa un mapa validado en `$SPECS_BASE/product/story-map.md`. Prepara el contexto de `product/` y `requirements/`, delega la conversación al agente `project-story-mapper` y solo escribe la capa de producto tras validar su staging.
 
 ## Entrada
 
-- `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` — contexto del proyecto (opcional)
-- `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md` — especificación de requisitos (opcional)
-- Si no hay documentos disponibles, el agente `project-story-mapper` recopila el contexto interactivamente
-
-## Parámetros
-
-- Ninguno — el skill opera de forma completamente interactiva mediante el agente `project-story-mapper`
+| Insumo | Uso |
+|---|---|
+| `$SPECS_BASE/product/vision.md` | Problema, propuesta de valor y alcance. |
+| `$SPECS_BASE/product/stakeholders.md` | Perfiles `US-NNN` para personas. |
+| `$SPECS_BASE/product/objectives.md` | Objetivos de negocio opcionales. |
+| `$SPECS_BASE/requirements/functional/FR-*.md` y `requirements/srs-*.md` | Inventario de requisitos funcionales. |
+| `$STORY_MAP_PATH` existente | Solo si el usuario autoriza sobrescribirlo. |
 
 ## Precondiciones
 
-- La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
-- No hay precondición de estado: el skill puede ejecutarse con o sin documentos previos del proyecto
+No hay precondiciones bloqueantes de contenido: si las capas no aportan contexto, el agente lo recopila de forma interactiva.
 
 ## Dependencias
 
-- Agentes: [`project-story-mapper`]
-
-## Modos de ejecución
-
-- **Manual** (`/project-story-mapping`): siempre interactivo — el agente `project-story-mapper` conduce la sesión con el usuario.
-- **Invocado desde `project-planning`**: el skill recibe contexto de los documentos del proyecto y lo pasa al agente automáticamente.
+- Agente: `project-story-mapper`.
 
 ## Restricciones / Reglas
 
-- **Solo frontmatter:** el skill no modifica el contenido del `story-map.md` generado; solo prepende el bloque de frontmatter YAML.
-- **Contexto opcional:** si no se encuentran documentos del proyecto, el agente recopila el contexto interactivamente — la ausencia de documentos no es un error bloqueante.
-- **Frontmatter derivado dinámicamente:** `title` se extrae del primer `#` heading del documento; `date` es la fecha actual; `substatus` por defecto es `IN-PROGRESS`.
-- NO modifique ningún archivo existente en el código fuente (estamos en etapa de planeación y especificación, no de implementación)
-- NO genere código; estas especificando, no implementando los artefactos técnicos
-- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
-  Do not use Latin-1, CP-1252, or any other encoding. 
-  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
-  
+- El agente escribe únicamente en staging; nunca se escribe en `product/` sin staging validado.
+- Nunca se lee ni crea el nivel de proyectos retirado por ADR-0013.
+- `$STORY_MAP_PATH` se deriva de `SPECS_BASE`, no de una ruta literal.
+- `story-map.md` se guarda en UTF-8 sin BOM.
+
 ## Flujo de ejecución
 
 ### Paso 0 — Resolver contexto local
@@ -96,69 +60,58 @@ Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir a
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
+### Paso 1 — Preparar destino y decisión de sobrescritura
 
-### Paso 0b — Resolver directorio del proyecto activo (`PROJ_DIR`)
+Define `$STORY_MAP_PATH = $SPECS_BASE/product/story-map.md` y `$STAGING_PATH = .tmp/project-story-mapping/story-map.md`.
 
-1. Listar todos los subdirectorios de `$SPECS_BASE/specs/01-projects/`.
-2. Para cada subdirectorio, leer `project-intent.md` y verificar si `substatus` es `DONE`.
-3. Si se encuentra exactamente uno con `substatus: DONE` → usar ese directorio como `$PROJ_DIR`.
-4. Si se encuentran varios → mostrar la lista y pedir al usuario que elija antes de continuar.
-5. Si no se encuentra ninguno → proceder sin contexto de proyecto (el agente recopilará la información interactivamente).
+Si `$STORY_MAP_PATH` existe, pregunta: `Ya existe $SPECS_BASE/product/story-map.md. ¿Rehacer el story map?` con `Sobrescribir` o `Cancelar`. `Cancelar` es el valor por defecto, también sin respuesta: `Story mapping cancelado: no se modificó $SPECS_BASE/product/story-map.md.` y finaliza. Si se elige sobrescribir, conserva el campo `created` (o `date`) del archivo como `$CREATED_AT` e inclúyelo como insumo.
 
-La ruta completa del proyecto activo es: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`
+Si no existe, `$CREATED_AT` es la fecha actual. Vacía `.tmp/project-story-mapping/` antes de delegar.
 
-### Paso 1 — Leer documentos del proyecto
+### Paso 2 — Reunir insumos
 
-Antes de invocar al agente, lee los siguientes archivos si existen:
+Construye `$INPUT_PATHS` solo con documentos de `product/` que existan y tengan `substatus` distinto de `TODO`. Para cada documento ausente o semilla, emite `⚠️ <ruta> sin contenido (semilla o ausente); se omite como contexto.`
 
-1. `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`
-2. `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project.md`
+Construye `$REQUIREMENTS_INVENTORY` con líneas `FR-NNN — título — ruta` desde `requirements/functional/FR-*.md` y encabezados `### FR-NNN` de `requirements/srs-*.md`. No incluyas requisitos no funcionales. Si se autorizó sobrescribir, añade el mapa existente a `$INPUT_PATHS`.
 
-Si existen, extrae y resume:
-- Nombre del proyecto
-- Problema que resuelve
-- Usuarios/personas identificadas
-- Funcionalidades clave
+Aunque ambos resultados estén vacíos, continúa con la delegación.
 
-Este resumen será el contexto inicial que se pasará al agente.
+### Paso 3 — Delegar la sesión
 
-### Paso 2 — Invocar al agente project-story-mapper
+Lee las instrucciones de `project-story-mapper` y ejecútalo con `$INPUT_PATHS`, `$REQUIREMENTS_INVENTORY` y `$STAGING_PATH`. El agente conduce la sesión y escribe solo el cuerpo del mapa en staging.
 
-Delega la sesión completa al agente `project-story-mapper` con el siguiente briefing:
+### Paso 4 — Validar staging
 
-> Inicia una sesión de User Story Mapping para el proyecto [nombre del proyecto si se conoce].
-> [Si hay documentos disponibles]: He leído los documentos del proyecto. El contexto es: [resumen].
-> [Si no hay documentos]: No hay documentos de proyecto disponibles aún; recopila el contexto interactivamente.
-> Produce el documento completo en `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md`.
+Verifica que `$STAGING_PATH` exista, que su primera línea empiece por `# `, no contenga frontmatter y tenga encabezados cuyo prefijo sea `## Personas`, `## Backbone`, `## Walking Skeleton` y `## Release slices`.
 
-El agente conduce toda la sesión de forma interactiva con el usuario y escribe el documento de salida.
+- Si no existe: `⚠️ La sesión terminó sin story map: no se modificó $SPECS_BASE/product/story-map.md.` y finaliza.
+- Si falta un encabezado: `❌ El story map generado no contiene <sección>; no se escribió $SPECS_BASE/product/story-map.md.` y finaliza, conservando el staging para inspección.
 
-### Paso 3 — Añadir frontmatter al documento generado
+### Paso 5 — Materializar
 
-Una vez que el agente `project-story-mapper` haya escrito `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md`, antepón o completa si existe el siguiente bloque YAML al inicio del archivo (antes de cualquier otro contenido):
+Crea `$SPECS_BASE/product/` si falta. Escribe `$STORY_MAP_PATH` en UTF-8 sin BOM con:
 
 ```yaml
 ---
-type: spec
-slug: <nombre-del-directorio-del-proyecto-story-map | story-map si es el primer documento>
-title: "[primer # heading del documento generado]"
-date: [YYYY-MM-DD]
-status: BACKLOG
-substatus: IN-PROGRESS
+type: product
+slug: story-map
+title: <primer encabezado # del cuerpo>
+status: IN-PROGRESS
+substatus: DONE
 parent: null
+created: <CREATED_AT>
+updated: <fecha actual>
 related:
-  - <slug de project.md o project-plan.md relacionado (si existe)>
+  - <slug de cada documento product leído>
 ---
-<!-- Referencias -->
-[[nombre-del-directorio-del-proyecto-project o slug de project-plan relacionado (si existe)]]
 ```
 
-Reglas de derivación:
-- `title`: extrae el primer `#` heading del documento
-- `date`: fecha actual en formato YYYY-MM-DD
-- `substatus`: `IN-PROGRESS` por defecto; `DONE` si el documento está completado
+Omite `related` si no hubo documentos leídos. Tras el frontmatter, agrega `<!-- Referencias -->` con wikilinks de los documentos leídos, el cuerpo del staging y `Volver al mapa: [[index]].` si el cuerpo no incluye ya ese pie.
+
+### Paso 6 — Confirmar resultado
+
+Informa: `✅ Story map escrito en $SPECS_BASE/product/story-map.md (<n> personas · <a> actividades · <s> release slices). Siguiente paso sugerido: /project-planning`.
 
 ## Salida
 
-- `$SPECS_BASE/specs/01-projects/$PROJ_DIR/story-map.md` — mapa de historias con backbone,
-  walking skeleton y slices de épicas, generado por `project-story-mapper` con frontmatter YAML añadido.
+- `$SPECS_BASE/product/story-map.md`: mapa de producto validado con personas, backbone, walking skeleton y release slices.

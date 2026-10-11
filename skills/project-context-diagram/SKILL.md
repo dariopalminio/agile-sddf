@@ -1,10 +1,9 @@
 ---
 name: project-context-diagram
 description: >-
-  Genera context-diagram.puml (C4 Nivel 1 en PlantUML) para el proyecto activo, con modos
-  --interactive y --from-files. Usar para documentar la arquitectura de contexto o comunicar
-  el scope a stakeholders. Invocar también cuando el usuario mencione "diagrama de contexto",
-  "C4 context", "context-diagram", "project-context-diagram" o equivalentes.
+  Genera architecture/c4/context-diagram.puml (C4 Nivel 1 en PlantUML) desde
+  las capas del producto, requisitos o una entrevista. Úsalo para comunicar el
+  alcance a stakeholders.
 triggers:
   - /project-context-diagram
   - /context-diagram
@@ -13,81 +12,43 @@ triggers:
   - C4 context
 ---
 
-# Skill: /project-context-diagram
-
-**Cuándo usar este skill:**
-Usar cuando se quiera documentar la arquitectura de contexto de un proyecto junto al resto
-de los artefactos de specs, comunicar a stakeholders el scope del sistema y sus integraciones
-externas, o complementar `/project-planning` al comenzar la especificación de un proyecto.
-Invocar también cuando el usuario mencione "diagrama de contexto", "C4 context",
-"context-diagram", "project-context-diagram" o equivalentes.
+# Skill: `/project-context-diagram`
 
 ## Objetivo
 
-Genera un **diagrama de contexto C4 Nivel 1** (System Context) en formato PlantUML para
-el proyecto activo en SDDF, describiendo cómo el sistema principal interactúa con actores
-externos (personas/roles) y sistemas adyacentes. Escribe el resultado en
-`$SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml`.
-
-**Qué hace este skill:**
-- Guía al usuario con preguntas estructuradas (modo `--interactive`) o infiere los elementos
-  desde los documentos de specs y código fuente (modo `--from-files`)
-- Genera el archivo `.puml` siguiendo semántica C4 estricta (solo Nivel 1)
-- Muestra preview del diagrama y pide confirmación antes de escribir
-- Verifica conflictos de sobreescritura antes de guardar
-
-**Qué NO hace este skill:**
-- No genera diagramas de niveles C4 superiores (Nivel 2 Container, Nivel 3 Component)
-- No renderiza el `.puml` a imagen — el usuario debe usar la extensión PlantUML de VS Code
-  o el servidor en línea de PlantUML
+Genera un diagrama de contexto C4 de Nivel 1 en `$SPECS_BASE/architecture/c4/context-diagram.puml`, siguiendo la convención de `docs/architecture/README.md` para fuente PlantUML L1.
 
 ## Entrada
 
-- Argumentos opcionales: `--interactive`, `--from-files`, o ruta a un archivo de specs
-- `assets/c4-context-template.puml` — template base del diagrama (solo lectura)
-- `$SPECS_BASE/specs/01-projects/` — directorio de proyectos para modo `--from-files` y selección de destino
-- Archivos del proyecto (modo `--from-files`): `project.md`, `README.md`, `package.json`,
-  `pyproject.toml`, archivos de código fuente
-
-## Parámetros
-
-- `--interactive` (por defecto): conduce una entrevista guiada sobre actores, sistemas y relaciones
-- `--from-files`: infiere el diagrama automáticamente desde documentos de specs y código fuente
-- `<ruta>`: ruta a un archivo de specs específico para usar como fuente en modo `--from-files`
+- `product/vision.md`, `product/stakeholders.md` y `requirements/` para `--from-files`.
+- `README.md`, manifiestos e imports como complemento de inferencia.
+- `assets/c4-context-template.puml`, solo lectura.
+- Argumentos: `--interactive`, `--from-files` o una ruta explícita usada como fuente principal.
 
 ## Precondiciones
 
-- La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
-- `assets/c4-context-template.puml` debe existir en el directorio del skill
-- En modo `--from-files`, debe existir al menos un proyecto en `$SPECS_BASE/specs/01-projects/`
-
-## Dependencias
-
-- Archivos: [`assets/c4-context-template.puml`]
-- Librería de referencia: C4-PlantUML (`github.com/plantuml-stdlib/C4-PlantUML`)
+- La raíz se resuelve con el contrato local.
+- Debe existir `assets/c4-context-template.puml`.
 
 ## Modos de ejecución
 
-| Modo | Señal de activación | Comportamiento |
-|---|---|---|
-| **`--interactive`** (por defecto) | Sin argumentos o con `--interactive` | Entrevista guiada: nombre del sistema, actores, sistemas externos y relaciones |
-| **`--from-files`** | Flag `--from-files` o ruta de archivo | Inferencia automática desde `project.md`, `README.md`, código fuente e imports |
-| **Fallback interactivo** | Ruta proporcionada pero el archivo no existe | Muestra error, lista proyectos disponibles y ofrece elegir modo |
+| Modo | Comportamiento |
+|---|---|
+| `--interactive` (predeterminado) | Entrevista guiada sobre sistema, actores, sistemas externos y relaciones. |
+| `--from-files` | Infiere los elementos desde capas, README y código. |
+| Ruta explícita | La ruta existente es fuente principal y se completa con las capas. |
+| Ruta inexistente | Ofrece continuar con `--from-files` o `--interactive`; sin respuesta usa `--from-files`. |
 
-- **Manual** (`/project-context-diagram`): siempre muestra preview y pide confirmación antes de escribir.
-- **Automático**: invocado por otro skill — no pide confirmación de preview.
+El modo automático omite solo el preview; nunca omite la confirmación de sobrescritura.
 
 ## Restricciones / Reglas
 
-- **Template de solo lectura:** `assets/c4-context-template.puml` nunca se modifica ni se usa como ruta de salida.
-- **Semántica C4 estricta Nivel 1:** solo se usan `Person()`, `System()`, `System_Ext()` y `Rel()`. Nunca `Container()`, `Component()` ni elementos de niveles superiores.
-- **Un único `System()` principal:** el sistema en foco es siempre exactamente uno.
-- **Relaciones con etiqueta obligatoria:** cada `Rel()` debe incluir una etiqueta descriptiva.
-- **`Person()` solo para humanos/roles:** los sistemas técnicos externos siempre van en `System_Ext()`.
-- **Preview obligatorio:** siempre mostrar el diagrama generado al usuario y pedir confirmación antes de escribir el archivo.
-- **Verificación de sobreescritura:** si `context-diagram.puml` ya existe, pedir confirmación antes de sobreescribir.
-- NO modifique ningún archivo existente en el código fuente (estamos diagramando, no implementando)
-- NO genere código; estas diagramando, no implementando los artefactos técnicos
+- El template es de solo lectura.
+- Usa solo `Person()`, `System()`, `System_Ext()` y `Rel()`; hay un único `System()` principal y toda relación tiene etiqueta.
+- `Person()` representa humanos o roles; los sistemas técnicos usan `System_Ext()`.
+- El skill nunca escribe, mueve ni borra `context-diagram.png`.
+- La confirmación de sobrescritura aplica a todos los modos.
+- El `.puml` se guarda en UTF-8 sin BOM.
 
 ## Flujo de ejecución
 
@@ -104,151 +65,56 @@ Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir a
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
+### Paso 1 — Validar template
 
-### Paso 1 — Leer y validar el template PlantUML
+Lee `assets/c4-context-template.puml`. Si no existe, detén el flujo con `❌ No se encontró el template requerido en assets/c4-context-template.puml.`
 
-Lee el archivo `assets/c4-context-template.puml` de este skill.
+### Paso 2 — Detectar modo
 
-- Si el archivo **no existe** → detener la ejecución con:
-  > ❌ No se encontró el template requerido en `assets/c4-context-template.puml`.  
-  > Por favor verifica que el archivo existe antes de continuar.
+- Sin argumentos o con `--interactive`: entrevista.
+- Con `--from-files`: escaneo de capas.
+- Con ruta explícita existente: úsala como fuente principal y completa con las capas.
+- Con ruta explícita inexistente: informa `❌ No se encontró el archivo indicado: <ruta>`; ofrece **A)** `--from-files` sobre las capas y **B)** `--interactive`. Sin respuesta, usa A.
 
-- Si el archivo **existe** → continuar. El template es la guía estructural del diagrama de salida.
+### Paso 3 — Recopilar datos
 
-### Paso 2 — Detectar modo de operación
+#### Modo interactivo
 
-El skill acepta tres formas de invocación:
+Recaba nombre y descripción del sistema; luego actores, sistemas externos, protocolo y relaciones. Pregunta hasta que el usuario indique que no hay más elementos.
 
-#### Modo A — `--interactive` (por defecto)
-**Señal:** No se pasan argumentos, o se pasa explícitamente `--interactive`.  
-**Acción:** Continuar al **Paso 3 — Modo interactivo**.
+#### Modo from-files
 
-#### Modo B — `--from-files` sin ruta
-**Señal:** Se pasa `--from-files` sin ninguna ruta adicional.  
-**Acción:** Continuar al **Paso 3 — Modo from-files** (escaneo del proyecto activo).
+Escanea en este orden y deduplica por nombre normalizado (minúsculas y sin acentos); ante conflicto gana la fuente de menor número:
 
-#### Modo C — Ruta de archivo explícita
-**Señal:** El argumento contiene `/`, `\` o termina en `.md` (parece una ruta).  
-**Acción:** Verificar si el archivo existe:
-- **Existe** → leerlo y continuar al **Paso 3 — Modo from-files** con ese documento como input.
-- **No existe** → mostrar error y continuar al **Paso 3 — Fallback interactivo**:
-  > ❌ No se encontró el archivo de especificaciones indicado: `<ruta>`
+| # | Fuente | Aporta |
+|---|---|---|
+| 1 | `$SPECS_BASE/product/vision.md` | `System()`: `**Nuestro producto:**` y `**Que provee:**`, o la primera frase del problema. |
+| 2 | `$SPECS_BASE/product/stakeholders.md` en `## Usuarios y roles` | Un `Person()` por perfil `US-NNN` y su descripción. Patrocinadores no generan personas. |
+| 3 | `$SPECS_BASE/requirements/` | `System_Ext()` y `Rel()` desde requisitos funcionales, no funcionales y SRS; el NFR de tecnología aporta protocolo. |
+| 4 | README, manifiestos, imports y código | Nombre faltante, protocolos y sistemas complementarios. |
 
-### Paso 3 — Recopilar datos según modo
+Vision y stakeholders cuentan solo si existen y su `substatus` no es `TODO`. En las relaciones, usa los FR cuyo `**Usuario**` referencia cada `US-NNN`. Genera IDs en minúsculas, sin acentos y con secuencias no alfanuméricas convertidas a `_`.
 
-#### Modo interactivo (`--interactive`)
+Si falta nombre de sistema o no hay `Person()`, muestra `⚠️ No se encontraron <elementos> en product/ ni requirements/.` En modo interactivo completa lo faltante; en modo automático termina con `❌ No hay contexto suficiente para el diagrama; ejecuta /project-discovery o usa --interactive.` sin escribir.
 
-Formular las siguientes preguntas al usuario en orden. No omitir ninguna:
+### Paso 4 — Generar PlantUML
 
-**1. Sistema principal**
-- **Nombre del sistema:** ¿Cómo se llama el sistema que estás documentando?
-- **Descripción breve:** ¿Qué hace este sistema en una frase?
+Usa el template como estructura. Incluye un `System()` principal, cada `Person()` y `System_Ext()` inferido, y relaciones `Rel()` con etiqueta y protocolo.
 
-**2. Actores** (personas o roles que interactúan con el sistema)
-Preguntar en loop hasta que el usuario indique que no hay más actores:
-- **Nombre del actor:** ¿Cómo se llama este actor o rol?
-- **Descripción:** ¿Cuál es su rol o cómo interactúa con el sistema?
-- *(Preguntar: ¿Hay otro actor? Sí / No)*
+### Paso 5 — Preview
 
-**3. Sistemas externos**
-Preguntar en loop hasta que el usuario indique que no hay más sistemas externos:
-- **Nombre del sistema externo:** ¿Cómo se llama el sistema externo?
-- **Descripción:** ¿Qué hace ese sistema? ¿Qué provee o consume?
-- **Protocolo de comunicación:** ¿Qué protocolo o tecnología usa la integración? (ej: REST API, SMTP, WebSocket, SDK, etc.)
-- *(Preguntar: ¿Hay otro sistema externo? Sí / No)*
+En modo manual muestra el PlantUML completo y permite corregirlo antes de continuar. El modo automático omite solo este preview.
 
-**4. Relaciones**
-Para cada actor y sistema externo recopilado, preguntar:
-- **¿Qué hace `<actor/sistema_ext>` con el sistema `<nombre_sistema>`?** Describe la interacción en una frase corta.
-- El sentido de la relación puede ser: actor → sistema, sistema → sistema_ext, o sistema_ext → sistema.
+### Paso 6 — Confirmar y escribir
 
-#### Modo from-files (`--from-files`)
+Define `$DIAGRAM_PATH = $SPECS_BASE/architecture/c4/context-diagram.puml`. Si ya existe, pregunta en todos los modos: `⚠️ Ya existe $SPECS_BASE/architecture/c4/context-diagram.puml. ¿Deseas sobrescribirlo? (Sí / No)`.
 
-Escanear los siguientes archivos en orden de prioridad para inferir los elementos del diagrama:
-
-1. **`$SPECS_BASE/specs/01-projects/*/project.md`** — leer si existe; extraer nombre del sistema, actores mencionados ("Como un..."), sistemas externos e integraciones.
-2. **`README.md`** — extraer nombre del sistema, descripción y sistemas mencionados.
-3. **`package.json` / `pyproject.toml` / `*.csproj`** — inferir stack tecnológico como hint para protocolos.
-4. **Imports del código fuente** — buscar imports de servicios conocidos (Stripe, SendGrid, AWS SDK, Firebase, etc.) para inferir sistemas externos.
-5. **Código fuente** — analizar comentarios o strings para deducir actores (ej: "Como un admin...") o integraciones.
-
-Construir los elementos `Person`, `System`, `System_Ext` y `Rel` a partir de la información recopilada.
-
-#### Fallback interactivo (cuando el archivo indicado no existe)
-
-1. Mostrar: `❌ No se encontró el archivo de especificaciones indicado: <ruta>`
-2. Listar los proyectos disponibles en `$SPECS_BASE/specs/01-projects/` (mostrar nombres de directorios).
-3. Ofrecer al usuario:
-   - **Opción A:** Seleccionar uno de los proyectos listados y continuar en modo `--from-files` con su `project.md`.
-   - **Opción B:** Continuar en modo `--interactive` con preguntas guiadas.
-
-### Paso 4 — Generar el diagrama PlantUML
-
-Con los datos recopilados (interactivo o inferidos), construir el contenido PlantUML usando `assets/c4-context-template.puml` como estructura base:
-
-1. Sustituir los placeholders del template con los datos reales.
-2. Añadir un elemento `Person(id, "Nombre", "Descripción")` por cada actor.
-3. Añadir el elemento `System(id, "Nombre", "Descripción")` para el sistema principal.
-4. Añadir un elemento `System_Ext(id, "Nombre", "Descripción")` por cada sistema externo.
-5. Añadir un elemento `Rel(origen, destino, "etiqueta", "protocolo")` por cada relación.
-6. Añadir el `title` con el nombre del sistema.
-
-### Paso 5 — Preview y confirmación
-
-Mostrar en la conversación el diagrama PlantUML generado completo:
-
-```
-Vista previa del diagrama:
-
-[contenido del diagrama PlantUML]
-```
-
-Luego preguntar:
-> ¿El diagrama está correcto? (Sí / No / Editar)
-- **Sí** → continuar al Paso 6.
-- **No / Editar** → volver al paso correspondiente para corregir actores, sistemas o relaciones, luego regenerar.
-
-### Paso 6 — Determinar ruta de salida y escribir el archivo
-
-#### 6.1 — Identificar el proyecto destino
-
-Si se está en modo `--from-files` con un documento específico, usar el slug del directorio de ese documento.
-
-Si se está en modo `--interactive`, preguntar:
-> ¿En qué proyecto deseas guardar el diagrama?
-Listar los directorios disponibles en `$SPECS_BASE/specs/01-projects/` y pedir al usuario que elija uno.
-
-Si el directorio del proyecto no existe → mostrar:
-> ❌ El proyecto `<PROJ-slug>` no existe en `$SPECS_BASE/specs/01-projects/`. Lista de proyectos disponibles: [...]
-
-#### 6.2 — Verificar si el archivo ya existe
-
-Comprobar si `$SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml` ya existe:
-- **No existe** → escribir el archivo directamente.
-- **Ya existe** → preguntar al usuario:
-  > ⚠️ Ya existe un `context-diagram.puml` en `$SPECS_BASE/specs/01-projects/<PROJ-slug>/`. ¿Deseas sobreescribirlo? (Sí / No)
-  - **Sí** → sobreescribir.
-  - **No** → detener sin escribir.
-
-#### 6.3 — Escribir el archivo
-
-Escribir el contenido PlantUML generado en `$SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml`.
+La respuesta predeterminada, incluida la ausencia de respuesta, es `No`: `Sin cambios: se conservan context-diagram.puml y context-diagram.png.` y finaliza sin escribir. Con `Sí`, o si no existe, crea `architecture/c4/` si falta y escribe el `.puml` en UTF-8 sin BOM. Si existe el PNG, informa `⚠️ context-diagram.png no se regeneró: renderízalo desde el .puml para que coincidan.`
 
 ### Paso 7 — Confirmar resultado
 
-Mostrar:
-
-```
-✅ Diagrama de contexto C4 generado:
-   $SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml
-
-Para renderizarlo localmente, instala la extensión PlantUML en VS Code
-(ext: jebbs.plantuml) o visita https://www.plantuml.com/plantuml
-
-Siguiente paso sugerido: /project-planning
-```
+Informa la ruta de `$DIAGRAM_PATH`, cómo renderizar el diagrama y sugiere `/project-planning`.
 
 ## Salida
 
-- `$SPECS_BASE/specs/01-projects/<PROJ-slug>/context-diagram.puml` — diagrama de contexto C4
-  Nivel 1 en formato PlantUML, listo para renderizar con la extensión PlantUML de VS Code.
+- `$SPECS_BASE/architecture/c4/context-diagram.puml`: diagrama C4 Nivel 1 en PlantUML.

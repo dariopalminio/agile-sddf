@@ -1,0 +1,13 @@
+{
+  "skill": "project-story-mapping",
+  "version": "1.0.0",
+  "description": "Verifica que el story map se componga desde las capas y se materialice solo tras validar staging.",
+  "cases": [
+    { "id": "TC-001", "name": "capas-con-contenido", "type": "happy-path", "description": "Visión y stakeholders completos con requisitos funcionales y staging válido.", "input": { "context": "vision.md y stakeholders.md están DONE con dos perfiles US; existen FR-001 a FR-004; no existe story map y el agente deja staging completo." }, "expected": { "contains": ["product/story-map.md", "Personas", "Backbone", "Walking Skeleton", "Release slices", "/project-planning"], "not_contains": ["01-projects", "PROJ-", "project.md", "project-intent.md"] }, "threshold": 1.0 },
+    { "id": "TC-002", "name": "semillas-sin-contexto", "type": "edge-case", "description": "Las capas son semillas TODO y no hay requisitos.", "input": { "context": "vision.md, stakeholders.md y objectives.md están TODO; no hay requisitos; el agente recopila contexto interactivamente." }, "expected": { "contains": ["⚠️", "sin contenido", "product/story-map.md"], "not_contains": ["01-projects"] }, "threshold": 1.0 },
+    { "id": "TC-003", "name": "requisitos-srs", "type": "happy-path", "description": "El inventario incorpora requisitos de un SRS único.", "input": { "context": "requirements/srs-mi-app.md contiene ### FR-001 y ### FR-002; el agente deja staging completo." }, "expected": { "contains": ["FR-001", "srs-mi-app.md"], "not_contains": ["01-projects"] }, "threshold": 1.0 },
+    { "id": "TC-004", "name": "mapa-existente-cancelar", "type": "safety", "description": "Cancelar no modifica un mapa existente.", "input": { "context": "product/story-map.md existe y el usuario responde Cancelar." }, "expected": { "contains": ["no se modificó"], "not_contains": ["✅ Story map escrito"] }, "threshold": 1.0 },
+    { "id": "TC-005", "name": "mapa-existente-sobrescribir", "type": "happy-path", "description": "Sobrescribir conserva created y materializa un staging válido.", "input": { "context": "product/story-map.md existe con created; el usuario responde Sobrescribir y el staging es válido." }, "expected": { "contains": ["Sobrescribir", "created", "✅ Story map escrito"], "not_contains": [] }, "threshold": 1.0 },
+    { "id": "TC-006", "name": "staging-incompleto", "type": "fail-fast", "description": "El staging sin Walking Skeleton no se materializa.", "input": { "context": "El agente deja staging sin el encabezado ## Walking Skeleton." }, "expected": { "contains": ["❌", "Walking Skeleton", "no se escribió"], "not_contains": [] }, "threshold": 1.0 }
+  ]
+}

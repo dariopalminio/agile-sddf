@@ -2,12 +2,6 @@
   "version": 1,
   "exemptions": [
     {
-      "skill": "project-context-diagram",
-      "owner": "agile-sddf maintainers",
-      "reason": "Pendiente de fixtures deterministas de PlantUML y contrato de renderizado.",
-      "review_by": "2026-12-31"
-    },
-    {
       "skill": "project-flow",
       "owner": "agile-sddf maintainers",
       "reason": "Orquestador pendiente de una matriz de evals para sus gates de revisión.",
@@ -17,12 +11,6 @@
       "skill": "sddf-constitution",
       "owner": "agile-sddf maintainers",
       "reason": "Pendiente de fixtures para políticas y Definition of Done generados.",
-      "review_by": "2026-12-31"
-    },
-    {
-      "skill": "project-story-mapping",
-      "owner": "agile-sddf maintainers",
-      "reason": "Pendiente de fixtures de story map y validación de slices.",
       "review_by": "2026-12-31"
     }
   ]

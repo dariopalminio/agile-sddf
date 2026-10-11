@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- **BREAKING — STORY-112:** `/project-story-mapping` ahora lee `product/` y `requirements/` y escribe `product/story-map.md` (`type: product`, `slug: story-map`) mediante staging validado y la confirmación `Sobrescribir`/`Cancelar`. El agente `project-story-mapper` recibe variables inyectadas y usa `## Release slices (épicas)`. `/project-context-diagram` escribe `architecture/c4/context-diagram.puml` sin elegir destino, `--from-files` lee las capas y la sobrescritura se confirma en todo modo sin tocar el PNG. Ambos skills incorporan evals y salen de las exenciones.
+
 - **BREAKING — STORY-111:** `/project-planning` exige al menos un requisito funcional, prepara una propuesta de épicas en staging y, tras `Confirmar`, la agrega como sección fechada append-only a `product/roadmap.md`. `/epic-from-project-plan` ahora consume la última propuesta del roadmap, asigna IDs desde el mayor `EPIC-NN` existente, comprueba colisiones por slug y deja `parent: null`; las historias propuestas no llevan `STORY-NNN`. `project-plan-template.md` se reemplaza por `roadmap-template.md` y ambos skills incorporan evals. Los proyectos inicializados deben ejecutar `/memory-system scaffold` o `sddf-init` para obtener la nueva plantilla; `project-flow` conserva temporalmente su integración heredada hasta STORY-113.
 
 ### Changed
