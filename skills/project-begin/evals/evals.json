@@ -1,0 +1,61 @@
+{
+  "skill": "project-begin",
+  "version": "1.0.0",
+  "description": "Evalúa que project-begin complete product/vision.md desde vision-template.md, respete el estado de la visión y no use el modelo retirado de proyectos.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "semilla-completa-vision-confirmada",
+      "type": "happy-path",
+      "description": "Una visión semilla con marcadores se completa y confirma sin crear estructura de proyectos.",
+      "input": { "context": "docs/product/vision.md contiene solo marcadores [Por completar]. Existe docs/templates/vision-template.md. El desarrollador completa la entrevista y elige Confirmar." },
+      "expected": { "contains": ["product/vision.md", "Criterios de éxito", "substatus: DONE", "/project-discovery"], "not_contains": ["modelo de proyectos retirado"] },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-002",
+      "name": "estado-todo-entrevista-completa",
+      "type": "happy-path",
+      "description": "Una visión con substatus TODO conduce la entrevista completa.",
+      "input": { "context": "docs/product/vision.md existe con substatus: TODO y marcadores. Existe vision-template.md." },
+      "expected": { "contains": ["full", "todas las secciones hoja", "vision.md"], "not_contains": ["WIP=1"] },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-003",
+      "name": "retoma-solo-secciones-pendientes",
+      "type": "edge-case",
+      "description": "Una visión IN-PROGRESS conserva lo completo y entrevista solo Criterios de éxito y Restricciones pendientes.",
+      "input": { "context": "docs/product/vision.md tiene substatus: IN-PROGRESS. Solo Criterios de éxito y Restricciones contienen [Por completar]. Existe vision-template.md." },
+      "expected": { "contains": ["resume", "Criterios de éxito", "Restricciones", "PENDING_SECTIONS"], "not_contains": ["sobrescribir las secciones completas"] },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "vision-completa-ofrece-actualizar-o-cancelar",
+      "type": "edge-case",
+      "description": "Una visión DONE no se modifica antes de elegir Actualizar o Cancelar.",
+      "input": { "context": "docs/product/vision.md tiene substatus: DONE. Existe vision-template.md." },
+      "expected": { "contains": ["Actualizar", "Cancelar", "no modificar"], "not_contains": ["escribir antes de la elección"] },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-005",
+      "name": "usa-seed-cuando-falta-template-central",
+      "type": "fallback",
+      "description": "Sin template central, usa el seed de vision y avisa cómo centralizarlo.",
+      "input": { "context": "No existe docs/templates/vision-template.md. Existe skills/project-begin/assets/vision-template.md." },
+      "expected": { "contains": ["vision-template.md", "template seed", "sddf-init"], "not_contains": ["template de intención retirado"] },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-006",
+      "name": "falla-sin-template-sin-escribir",
+      "type": "fail-fast",
+      "description": "Sin template central ni seed, detiene el flujo antes de escribir la visión.",
+      "input": { "context": "No existe docs/templates/vision-template.md ni skills/project-begin/assets/vision-template.md." },
+      "expected": { "contains": ["Template vision-template.md no encontrado", "sddf-init"], "not_contains": ["vision.md creado", "substatus: DONE"] },
+      "threshold": 1.0
+    }
+  ]
+}

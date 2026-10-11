@@ -1,186 +1,118 @@
 ---
 name: project-begin
 description: >-
-  Produce project-intent.md (paso 1 de ProjectSpecFactory) entrevistando al usuario
-  mediante el agente project-pm. Usar para iniciar un nuevo proyecto o capturar la intención inicial.
-  Invocar también cuando el usuario mencione "comenzar proyecto", "iniciar proyecto",
-  "capturar intención", "project-begin" o equivalentes.
+  Produce product/vision.md mediante una entrevista de intención con project-pm. Usar para iniciar un proyecto, capturar o actualizar su visión de producto. Invocar también cuando el usuario mencione "comenzar proyecto", "iniciar proyecto", "capturar intención", "visión del producto" o "project-begin".
 triggers:
   - project-begin
   - /project-begin
   - comenzar proyecto
   - iniciar proyecto
-  - capturar intención de proyecto
+  - capturar intención
+  - visión del producto
 ---
 
 # Skill: `/project-begin`
 
-**Cuándo usar este skill:**
-Usar como primer paso del pipeline de ProjectSpecFactory, cuando el usuario quiera iniciar
-un nuevo proyecto, capturar la intención inicial o generar el artefacto `project-intent.md`.
-Invocar también cuando el usuario mencione "comenzar proyecto", "iniciar proyecto",
-"capturar intención", "project-begin" o equivalentes.
-
 ## Objetivo
 
-Orquesta el estado **Begin Intention** del pipeline de ProjectSpecFactory: conduce una
-entrevista estructurada con el usuario a través del agente `project-pm` para capturar y
-refinar la intención del proyecto, produciendo
-`$SPECS_BASE/specs/01-projects/<PROJ-ID>-<nombre>/project-intent.md` en una sola sesión.
+Orquesta una entrevista estructurada con el agente `project-pm` para completar la visión del producto en `$SPECS_BASE/product/vision.md`.
 
-**Qué hace este skill:**
-- Verifica el entorno y la regla WIP=1 antes de iniciar
-- Resuelve o crea el directorio del proyecto activo
-- Delega la entrevista de dos fases (captura + refinamiento) al agente `project-pm`
-- Confirma la existencia del documento generado al finalizar
+Qué hace:
 
-**Qué NO hace este skill:**
-- No genera el documento directamente — esa responsabilidad es del agente `project-pm`
-- No avanza al siguiente estado del pipeline (`project-discovery`)
+- Resuelve el template de visión y el estado de `vision.md`.
+- Deriva las secciones pendientes del template en runtime.
+- Delega la entrevista y la escritura inicial a `project-pm`.
+- Pide confirmación antes de llevar la visión a `substatus: DONE`.
+
+No hace discovery ni planificación del proyecto.
 
 ## Entrada
 
-- No se requiere input explícito — el skill inicia una entrevista interactiva
-- `$SPECS_BASE/templates/project-intent-template.md` — fuente de verdad estructural del documento de salida (solo lectura); si no existe, el seed `assets/project-intent-template.md` del skill
-- `$SPECS_BASE/specs/01-projects/` — directorio donde se detectan proyectos activos (WIP=1)
-
-## Parámetros
-
-- Ninguno — el skill opera de forma completamente interactiva mediante el agente `project-pm`
+- `$SPECS_BASE/templates/vision-template.md`, o el seed `assets/vision-template.md`.
+- `$SPECS_BASE/product/vision.md`, opcional.
 
 ## Precondiciones
 
-- La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
-- `project-intent-template.md` debe existir, sea el central en `$SPECS_BASE/templates/` o el seed `assets/project-intent-template.md`
-- No debe existir ningún proyecto con `substatus: IN-PROGRESS` en `$SPECS_BASE/specs/01-projects/`
-  (regla WIP=1), salvo que el usuario elija retomar o sobrescribir el activo
+- La raíz se resuelve antes de escribir mediante `SDDF_ROOT` válido, `sddf.config.yaml.root` válido o `docs`.
+- Debe existir el template central o el seed del skill.
 
 ## Dependencias
 
-- Agentes: [`project-pm`]
-- Archivos: [`$SPECS_BASE/templates/project-intent-template.md`, `assets/project-intent-template.md` (seed)]
+- Agente: `project-pm`.
 
 ## Modos de ejecución
 
-- **Manual** (`/project-begin`): siempre interactivo — conduce la entrevista con el usuario.
-- **Retoma**: si existe un `project-intent.md` con `substatus: IN-PROGRESS`, el agente
-  `project-pm` continúa solo las secciones incompletas sin reiniciar desde cero.
+| Estado de `vision.md` | Modo | Comportamiento |
+|---|---|---|
+| No existe o `TODO` | `full` | Entrevista todas las secciones hoja. |
+| `IN-PROGRESS` | `resume` | Entrevista solo las secciones pendientes. |
+| `DONE` | — | Ofrece `Actualizar` o `Cancelar`; no escribe antes de elegir. |
+| Otro o ausente | `full` | Advierte y lo trata como `TODO`. |
 
-## Restricciones / Reglas
+## Restricciones
 
-- **WIP=1:** solo puede haber un proyecto activo (`substatus: IN-PROGRESS`) a la vez;
-  si ya existe uno, el skill ofrece Retomar o Sobrescribir antes de continuar.
-- **Template de solo lectura:** `assets/project-intent-template.md` nunca se modifica ni
-  se usa como ruta de salida.
-- **Extracción dinámica:** las secciones del documento se derivan en runtime del template;
-  si el template cambia, el output se actualiza automáticamente.
-- **Sin avance automático:** el skill no invoca `project-discovery` — el usuario decide cuándo continuar.
-- NO modifique ningún archivo existente en el código fuente (estamos en etapa de  inicial, no de implementación)
-- NO genere código; estas iniciando la especificación, no implementando los artefactos técnicos
-- **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
-  Do not use Latin-1, CP-1252, or any other encoding. 
-  If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
-  
+- El template es de solo lectura y la única fuente de estructura.
+- No se crea ningún directorio de proyecto ni se deriva un ID de proyecto.
+- `vision.md` se escribe en UTF-8 sin BOM.
+- El cierre de la visión requiere una confirmación explícita del desarrollador.
+
 ## Flujo de ejecución
 
 ### Paso 0 — Resolver contexto local
 
 <!-- SDDF-ROOT-RESOLUTION: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve una sola vez `REPO_ROOT` y `SPECS_BASE`:
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+1. Si `SDDF_ROOT` está definida, debe ser un directorio accesible; úsala como `SPECS_BASE`. Una fuente explícita inválida detiene el flujo sin escribir.
+2. Si no hay `SDDF_ROOT`, lee `sddf.config.yaml`; su `root` no vacío debe resolver a un directorio accesible, relativo a `REPO_ROOT` cuando corresponda.
+3. Si no hay fuente explícita, usa `docs` relativo a `REPO_ROOT`.
 
-El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
+El diagnóstico se solicita explícitamente con `/skill-preflight`; no se ejecuta en este flujo.
 
+### Paso 1 — Resolver el template de visión
 
-### Paso 0b — Resolver o crear directorio del proyecto (`PROJ_DIR`)
+Busca `$SPECS_BASE/templates/vision-template.md` como fuente de verdad. Si no existe, usa `assets/vision-template.md` y muestra:
 
-Antes de iniciar la entrevista, determinar el directorio del proyecto activo:
+> ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
 
-1. Listar todos los subdirectorios de `$SPECS_BASE/specs/01-projects/`.
-2. Para cada subdirectorio encontrado, leer `project-intent.md` y verificar si `substatus` es `IN-PROGRESS`.
-3. Si se encuentra exactamente uno con `substatus: IN-PROGRESS` → usar ese directorio como `$PROJ_DIR`. Ejemplo: `PROJ-01-mi-proyecto`.
-4. Si no se encuentra ninguno → `$PROJ_DIR` se determinará durante la entrevista (ver Paso 4): el `project-pm` derivará el ID desde el título del proyecto (formato `PROJ-NN-nombre-kebab`) y lo confirmará con el usuario antes de crear el directorio.
-5. Si se encuentran varios con `substatus: IN-PROGRESS` → mostrar la lista y pedir al usuario que elija uno antes de continuar.
+Si ninguno existe, informa y termina sin escribir:
 
-La ruta completa del proyecto será: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/`
+> ❌ Template `vision-template.md` no encontrado. Ejecuta `sddf-init`.
 
-### Paso 1 — Verificar WIP=1
+Conserva la ruta resuelta como `$TEMPLATE_PATH`; el agente no la reconstruye.
 
-Antes de iniciar, escanea `$SPECS_BASE/specs/01-projects/` y detecta si existe algún subdirectorio con `project-intent.md` que tenga `substatus: IN-PROGRESS`.
+### Paso 2 — Determinar el estado de la visión
 
-- Si **no** existe ningun documento en substatus `IN-PROGRESS`: continua al Paso 2.
-- Si **existe** al menos uno en substatus `IN-PROGRESS`: notifica el conflicto WIP=1 e indica que ya hay un proyecto activo. Muestra cual documento esta en substatus `IN-PROGRESS` y ofrece solo estas opciones:
-  - `Sobrescribir`: iniciar de cero y continuar con el flujo normal.
-  - `Retomar`: continuar el proyecto activo aplicando flujo de retoma sobre el documento en substatus `IN-PROGRESS`.
+Define `$VISION_PATH = $SPECS_BASE/product/vision.md`. No lo escribas antes de completar esta decisión.
 
-Si el usuario elige retomar, activa el flujo de retoma del Paso 4 sin reiniciar desde cero.
+- Si no existe, usa `$MODE = full`.
+- Si tiene `substatus: TODO`, usa `$MODE = full` y ofrece el contenido existente como pre-relleno.
+- Si tiene `substatus: IN-PROGRESS`, usa `$MODE = resume`.
+- Si tiene `substatus: DONE`, usa `AskUserQuestion` con `Actualizar` y `Cancelar`. Con `Cancelar`, termina sin modificar el archivo; con `Actualizar`, usa `$MODE = full`.
+- Para un valor no reconocido, muestra `⚠️ substatus no reconocido en vision.md: <valor>; se trata como TODO` y usa `$MODE = full`.
 
-### Paso 2 — Verificar estado del documento de output
+En modo `resume`, calcula `$PENDING_SECTIONS` en el orden del template. La unidad es una sección hoja: un `##` sin `###` hijas o un `###`. Una sección está pendiente si no existe, contiene `[Por completar` o conserva una línea placeholder idéntica a la del template. Si la lista queda vacía, salta al Paso 4.
 
-Lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` (si existe) y detecta el valor de `**Estado**:`.
+### Paso 3 — Delegar a `project-pm`
 
-- Si el archivo **no existe**: continua al Paso 3 (primera ejecucion).
-- Si existe con `substatus: IN-PROGRESS`: activa flujo de retoma y continua al Paso 3.
-- Si existe con `substatus: DONE`: informa que el documento ya esta completo y pide confirmacion antes de sobrescribir.
-  - Si el usuario confirma sobrescribir: continua al Paso 3.
-  - Si el usuario cancela: deten la ejecucion sin modificar el archivo.
+Invoca a `project-pm` sustituyendo las variables ya resueltas:
 
-### Paso 3 — Verificar que el template existe
-
-El archivo de plantilla es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca codifique directamente los nombres o la estructura de las secciones en esta habilidad; siempre derívelos de la plantilla en tiempo de ejecución. Si la plantilla cambia, el output generado se actualizará automáticamente.
-
-El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
-
-Lee el archivo de plantilla `$SPECS_BASE/templates/project-intent-template.md` (fuente de verdad del proyecto, puede contener personalizaciones).
-
-- Si el archivo central **no existe**: usar el seed `assets/project-intent-template.md` y emitir:
-  > ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
-- Si tampoco existe el seed: informar al usuario y detener la ejecución:
-  > ❌ Template `project-intent-template.md` no encontrado. Ejecuta `sddf-init`.
-- Si alguno de los dos **existe**: continua.
-
-Guardar la ruta del template efectivamente resuelto (central o seed) como `$TEMPLATE_PATH`: es la que se le pasa al `project-pm` en el Paso 4. El agente no debe reconstruir la ruta por su cuenta — hacerlo lo acoplaría a una plataforma de instalación concreta (`.claude/`, `.agents/` o `.github/`).
-
-### Paso 4 — Delegar al project-pm
-
-Invoca al agente `project-pm` con la siguiente instrucción, **sustituyendo `$SPECS_BASE`, `$PROJ_DIR` y `$TEMPLATE_PATH` por los valores ya resueltos** (el agente no los resuelve por su cuenta):
-
-> Lee el template en `$TEMPLATE_PATH`. Extrae las secciones del template en runtime.
+> Lee `$TEMPLATE_PATH` y `$VISION_PATH` si existe. Recibe `$MODE` (`full` o `resume`) y `$PENDING_SECTIONS` para el modo de retoma.
 >
-> Si estas en flujo de retoma (documento existente en `Estado: IN-PROGRESS`), primero lee `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`, identifica secciones incompletas con placeholders como `[...]` o valores sin reemplazar, y continua solo con esas secciones. No vuelvas a preguntar ni sobrescribas secciones ya completas.
+> Conduce la entrevista en dos fases: captura (máximo 3–4 preguntas abiertas) y refinamiento por secciones hoja en el orden del template (máximo 3–4 preguntas por ronda). Deriva cada pregunta de los comentarios HTML del template, pre-rellena con el contenido existente y marca como `[inferido]` la información que debas deducir.
 >
-> Conduce la entrevista de intencion de proyecto con el usuario en dos fases dentro de la misma sesion:
->
-> **Fase 1 — Captura de intención:** Pregunta al usuario por la idea general del proyecto (qué quiere construir, para quién, qué problema resuelve). Usa máx 3-4 preguntas abiertas para entender el contexto.
->
-> **Fase 2 — Refinamiento:** A partir de las respuestas de la Fase 1, profundiza sección por sección del template (máx 3-4 preguntas por ronda). Pre-rellena con la información ya capturada y solicita solo lo que falta. Infiere el contenido faltante marcándolo con `[inferido]`.
->
-> Escribe el resultado completo en `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`.
-> Si no puedes obtener respuesta del usuario, aplica tu Protocolo de Resiliencia: degrada a inferencia, marca con `[inferido: sin respuesta del usuario]` y lista las inferencias al final.
+> En `full`, completa todas las secciones hoja; en `resume`, pregunta y modifica solo `$PENDING_SECTIONS`, sin sobrescribir el resto. Escribe `$VISION_PATH` con la estructura del template, `substatus: IN-PROGRESS` y UTF-8 sin BOM. Si no hay respuesta tras el protocolo de resiliencia, marca `[inferido: sin respuesta del usuario]` y lista las inferencias antes de devolver el control.
 
-El `project-pm` se encargará de:
-- Capturar la intención inicial del proyecto en la Fase 1
-- Refinar y completar todas las secciones del template en la Fase 2
-- Inferir contenido faltante marcándolo con `[inferido]`
-- Escribir el documento final con metadatos de generación
+### Paso 4 — Gate de confirmación
 
-### Paso 5 — Confirmar output
+Verifica que `$VISION_PATH` existe. Si no existe, informa el error y sugiere ejecutar `/project-begin` nuevamente.
 
-Cuando el `project-pm` termine:
+Lee la visión, muestra un resumen por sección y usa `AskUserQuestion` con `Confirmar` y `Dejar en revisión`.
 
-1. Verifica que `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md` existe leyendo el archivo
-2. Si existe, confirma al usuario:
-  > ✅ Documento generado correctamente.
-  > Path: `$SPECS_BASE/specs/01-projects/$PROJ_DIR/project-intent.md`
-  > Siguiente comando: `/project-discovery`.
-3. Si no existe, informa al usuario que algo salió mal y sugiere ejecutar `/project-begin` nuevamente.
+- Con `Confirmar`, edita solo `substatus: DONE` y `updated` con la fecha actual; muestra `✅ Visión del producto completa: $VISION_PATH · Siguiente comando: /project-discovery`.
+- Con `Dejar en revisión` o sin respuesta, conserva `substatus: IN-PROGRESS` y finaliza sin otros cambios.
 
 ## Salida
 
-- `$SPECS_BASE/specs/01-projects/<PROJ-ID>-<nombre>/project-intent.md` — documento de intención
-  del proyecto generado por `project-pm`, con `substatus: DONE` al completarse.
+- `$SPECS_BASE/product/vision.md`, con la estructura de `vision-template.md`; queda en `DONE` solo después de confirmar.

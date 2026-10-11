@@ -123,7 +123,7 @@ const SHARED_TEMPLATES = [
   { name: 'story-template.md', owner: 'story-creation' },
   { name: 'epic-template.md', owner: 'epic-creation' },
   { name: 'project-template.md', owner: 'project-discovery' },
-  { name: 'project-intent-template.md', owner: 'project-begin' },
+  { name: 'vision-template.md', owner: 'project-begin' },
   { name: 'project-plan-template.md', owner: 'project-planning' },
 ];
 

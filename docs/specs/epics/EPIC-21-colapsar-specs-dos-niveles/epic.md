@@ -33,7 +33,7 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [x] **STORY-106** — Migrar `project-plan.md` a `product/roadmap.md`: trasladar el plan de épicas al roadmap de producto, sin pérdida semántica.
 - [x] **STORY-107** — Migrar `story-map.md` y `context-diagram.puml`: mover `story-map.md` a `docs/product/story-map.md` y `context-diagram.puml` a `docs/architecture/c4/context-diagram.puml`, actualizando referencias.
 - [x] **STORY-108** — Renombrar `specs/epics/` y `specs/stories/`: eliminar prefijos numéricos y actualizar referencias, dejando `01-projects/` eliminado.
-- [ ] **STORY-109** — project-begin + project-pm → vision.md: El substatus de vision.md reemplaza al "proyecto activo" PROJ-NN: TODO hace la entrevista completa, IN-PROGRESS retoma, DONE ofrece Actualizar o Cancelar.
+- [x] **STORY-109** — project-begin + project-pm → vision.md: El substatus de vision.md reemplaza al "proyecto activo" PROJ-NN: TODO hace la entrevista completa, IN-PROGRESS retoma, DONE ofrece Actualizar o Cancelar.
 - [ ] **STORY-110** — project-discovery + reverse-engineering + 3 agentes → stakeholders.md + un archivo por FR/NFR: Los IDs nuevos continúan la secuencia (FR-055…) sin sobrescribir los existentes. Si vision.md no está en DONE, se detiene y pide correr /project-begin.
 - [ ] **STORY-111** — project-planning → roadmap.md; epic-from-project-plan lee de allí: Replanificar agrega una propuesta nueva sin tocar la lista de épicas reales ni el plan original.
 - [ ] **STORY-112** — project-story-mapping → product/; project-context-diagram → architecture/c4/: --from-files lee las capas en vez de project.md. Si el diagrama ya existe, pide confirmación antes de sobrescribir.
@@ -45,6 +45,9 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [ ] **STORY-118** — Adoptar la estrategia "SRS único primero, fragmentación cuando duela" en `requirements/`: implementar la estrategia en el framework, actualizar documentación y scaffolding, y ofrecer migración automática para proyectos existentes.
 - [ ] **STORY-123** — Reubicar las secciones restantes de `project.md` y eliminarlo: trasladar las secciones que ADR-0013 no asigna (§1.1–1.7, §2.3, §3, §4, §11, §12 y apéndices) a su capa y eliminar `project.md`, dejando `docs/specs/01-projects/` vacía y eliminada.
 
+## Seguimiento pendiente
+
+- [ ] Repetir `npm run test:eval -- project-begin --eval-runner codex` y confirmar los seis casos de STORY-109 cuando se repare el YAML inválido que el runner carga desde un ejemplo ajeno de `security-audit`. Esta verificación se cierra por excepción aprobada en STORY-109 el 2026-10-10.
 
 ## Criterios de salida
 - [ ] `docs/specs/01-projects/` no existe en el repositorio del framework.

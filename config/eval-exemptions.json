@@ -2,12 +2,6 @@
   "version": 1,
   "exemptions": [
     {
-      "skill": "project-begin",
-      "owner": "agile-sddf maintainers",
-      "reason": "Pendiente de fixtures deterministas para la entrevista inicial de proyecto.",
-      "review_by": "2026-12-31"
-    },
-    {
       "skill": "project-context-diagram",
       "owner": "agile-sddf maintainers",
       "reason": "Pendiente de fixtures deterministas de PlantUML y contrato de renderizado.",

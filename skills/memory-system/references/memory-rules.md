@@ -169,7 +169,7 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
 | `templates/story-template.md` | `<CLI_ROOT>/skills/story-creation/assets/` | template |
 | `templates/epic-template.md` | `<CLI_ROOT>/skills/epic-creation/assets/` | template |
 | `templates/project-template.md` | `<CLI_ROOT>/skills/project-discovery/assets/` | template |
-| `templates/project-intent-template.md` | `<CLI_ROOT>/skills/project-begin/assets/` | template |
+| `templates/vision-template.md` | `<CLI_ROOT>/skills/project-begin/assets/` | template |
 | `templates/project-plan-template.md` | `<CLI_ROOT>/skills/project-planning/assets/` | template |
 
 ### Reglas

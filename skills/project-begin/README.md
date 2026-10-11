@@ -1,51 +1,27 @@
 # project-begin
 
-> **Type:** skill · **Category:** orchestrator  
-> **Location:** `skills/project-begin/SKILL.md`  
-> **Status:** stable
+> **Tipo:** skill · **Categoría:** orquestador
+> **Ubicación:** `skills/project-begin/SKILL.md`
+> **Estado:** estable
 
----
+## Qué hace
 
-## What it does
+Orquesta la captura o actualización de la visión del producto con el agente `project-pm`. Usa el template de visión vigente y deja el punto de partida listo para discovery.
 
-Orquesta la captura de la intención inicial de un proyecto mediante el agente `project-pm`. Resuelve el proyecto activo, respeta el límite WIP=1 y utiliza el template vigente para dejar el punto de partida listo para discovery.
+Produce `$SPECS_BASE/product/vision.md`, que queda con `substatus: DONE` únicamente después de la confirmación del desarrollador.
 
-**Produces:**
+No realiza discovery de requisitos ni genera el backlog del proyecto.
 
-- `$SPECS_BASE/specs/01-projects/PROJ-ID-nombre/project-intent.md`.
-- El documento de intención con `substatus: DONE` tras la confirmación correspondiente.
+## Cuándo usarlo
 
-**Does not do:**
+Úsalo para iniciar un proyecto SDDF, capturar su visión de producto o retomar una visión incompleta. Si la visión ya está completa, permite actualizarla o cancelar sin modificarla.
 
-- No realiza discovery de requisitos ni genera el backlog del proyecto.
+No lo uses para discovery de requisitos: usa `[[project-discovery]]`. Para el ciclo completo de especificación, usa `[[project-flow]]`.
 
----
-
-## When to use
-
-**Use it when:**
-
-- Necesites iniciar un proyecto SDDF o capturar su problema, visión e intención.
-- Quieras retomar y completar una intención de proyecto incompleta.
-- The user mentions: `"project-begin"`, `"comenzar proyecto"`, `"capturar intención"`.
-
-**Do NOT use it when:**
-
-- La intención ya está lista y necesitas descubrir requisitos → use `[[project-discovery]]` instead.
-- Quieras ejecutar el ciclo completo de especificación → use `[[project-flow]]` instead.
-
----
-
-## Installation
-
-**Core (included in `agile-sddf`):**
+## Instalación e invocación
 
 ```bash
 npx agile-sddf install --target claude-code
 ```
-
-Para otro runtime compatible, sustituye `claude-code` por un identificador declarado como `supported` en `config/runtimes.json`.
-
-### Invocation
 
 Usa `/project-begin` desde la raíz del proyecto destino.
