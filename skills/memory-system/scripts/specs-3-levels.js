@@ -11,6 +11,22 @@ const path = require('node:path');
 function engine() { return require('./memory-system.js'); }
 
 const LEGACY_LEVELS = Object.freeze({ projects: '01-projects', epics: '02-epics', stories: '03-stories' });
+
+/**
+ * Detecta niveles retirados directamente bajo `specs/`, sin inspeccionar su contenido.
+ * La ausencia o inaccesibilidad de la ruta es una condición normal del scaffold.
+ */
+function detectLegacyLevels(specsBase) {
+  const specs = path.join(specsBase, 'specs');
+  try {
+    if (!fs.statSync(specs).isDirectory()) return [];
+  } catch {
+    return [];
+  }
+  return Object.values(LEGACY_LEVELS).filter((level) => {
+    try { return fs.statSync(path.join(specs, level)).isDirectory(); } catch { return false; }
+  });
+}
 const FENCE = /^\s*(?:```|~~~)/;
 const ACTIONS = {
   create: ['CREADO', 'CREARÍA'], overwritten: ['SOBRESCRITO', 'SOBRESCRIBIRÍA'],
@@ -190,7 +206,9 @@ function seedFor(name, date) {
 }
 function bodyForHeading(text, heading) {
   const doc = splitDocument(text); const hit = doc.sections.find((section) => normalizeHeading(section.heading) === normalizeHeading(heading));
-  return hit ? trim(hit.body) : [];
+  if (!hit) return [];
+  const footer = hit.body.findIndex((line) => /^Volver al mapa:/.test(line));
+  return trim(footer < 0 ? hit.body : hit.body.slice(0, footer));
 }
 function setHeading(text, heading, value) {
   const lines = normalize(text).split('\n'); const target = normalizeHeading(heading); let start = -1; let level = 2;
@@ -428,4 +446,4 @@ function migrateSpecs(specsBase, options = {}) {
   return { lines, summary, exitCode: summary.unmigrated ? 1 : 0 };
 }
 
-module.exports = { LEGACY_LEVELS, normalizeHeading, isEmptyBody, requirementSlug, parseRequirements, renderRequirement, fillDocument, rewriteWikilinks, splitDocument, classifyProjectSections, planSpecsMigration, migrateSpecs };
+module.exports = { LEGACY_LEVELS, detectLegacyLevels, normalizeHeading, isEmptyBody, requirementSlug, parseRequirements, renderRequirement, fillDocument, rewriteWikilinks, splitDocument, classifyProjectSections, planSpecsMigration, migrateSpecs };

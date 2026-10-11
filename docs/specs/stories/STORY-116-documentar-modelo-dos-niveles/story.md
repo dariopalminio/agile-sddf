@@ -5,8 +5,8 @@ id: STORY-116
 kind: chore
 slug: STORY-116-documentar-modelo-dos-niveles
 title: "Actualizar documentación canónica al modelo de dos niveles"
-status: READY-FOR-IMPLEMENT
-substatus: DONE
+status: IMPLEMENT
+substatus: IN-PROGRESS
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
 updated: 2026-10-05

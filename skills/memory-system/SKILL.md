@@ -33,13 +33,16 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 
 **Qué hace este skill:**
 - Detecta el harness del proyecto (`sddf | speckit | openspec | generic`) y decide qué raíces se indexan.
-- `scaffold`: copia-si-falta del árbol semilla de `assets/scaffold/` (constitución, `product/*`,
+- `scaffold`: copia-si-falta del árbol semilla de `assets/scaffold/` (constitución,
+  `product/{README,vision,stakeholders,objectives,roadmap}.md`,
+  `requirements/{functional,non-functional}/`, `specs/{epics,stories}/`,
   un `README.md` por capa, `templates/README.md` y las cuatro plantillas de autoría manual
   `adr-template.md`, `domain-template.md`, `guardrail-template.md`, `policy-template.md`) y de las cinco plantillas
   compartidas desde su skill dueño. `[CREADO]` lo nuevo, `[PRESERVADO]` lo existente. Aplica el
   perfil del harness: `[OMITIDO]` las capas que el harness ya modela (`specs/` en Speckit y
   OpenSpec) y `[MAPEADO]` las semillas con equivalente en el harness
   (`constitution.md → .specify/memory/constitution.md`).
+  Si detecta niveles retirados, emite `[WARNING] estructura de specs/ de tres niveles detectada (…): ejecuta /memory-system migrate --from=specs-3-levels` sin bloquear ni tocarlos.
 - `migrate`: plan (`scaffold --dry-run`) → confirmación → `scaffold` adaptado al harness, para
   adoptar la memoria en un proyecto Speckit u OpenSpec. No transforma ni mueve artefactos.
 - `ensure` (por defecto): `scaffold` + `index` en un solo paso; con `--fix-frontmatter` normaliza
@@ -153,6 +156,9 @@ Ser el único punto de entrada para la memoria del proyecto (ver
   motor y sin escribir.
 - **Plantilla sin dueño instalado:** no bloquea; el motor emite `[WARNING] template no copiado:
   <nombre> (skill <dueño> no instalado)` y sigue (misma regla que `sddf-init` Paso 2b).
+- **Estructura de tres niveles:** si existe `specs/01-projects/`, `specs/02-epics/` o
+  `specs/03-stories/` y el harness no omite `specs`, el scaffold reenvía el aviso de migración
+  sin alterar esos directorios.
 - **Rutas relativas y portabilidad:** el motor normaliza rutas con `/` y ordena con comparación
   ordinal, por lo que el resultado es idéntico en Windows, macOS y Linux.
 - **Encoding:** todo lo escrito va en UTF-8 sin BOM y con saltos `\n`; las plantillas compartidas
@@ -211,7 +217,7 @@ Subcomandos del motor y sus flags:
 | Subcomando | Flags | Salida |
 |---|---|---|
 | `detect` | `[--harness h]` | Una línea: `sddf`, `speckit`, `openspec` o `generic`. |
-| `scaffold` | `--cli-root <CLI_ROOT> [--harness h] [--dry-run] [--force]` | `harness: <h>`, `capas faltantes: …`, una línea por archivo (`[CREADO]`, `[PRESERVADO]`, `[SOBRESCRITO]`, `[MAPEADO] <semilla> → <ruta del harness>`; con `--dry-run`: `[CREARÍA]`, `[PRESERVARÍA]`, `[SOBRESCRIBIRÍA]`, `[MAPEARÍA]`), una línea por capa omitida (`[OMITIDO] <capa>/ — gestionado por el harness <h>`, o `[OMITIRÍA]`), `[WARNING] template no copiado: …` si procede y última línea `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`. |
+| `scaffold` | `--cli-root <CLI_ROOT> [--harness h] [--dry-run] [--force]` | `harness: <h>`, `capas faltantes: …`, una línea por archivo (`[CREADO]`, `[PRESERVADO]`, `[SOBRESCRITO]`, `[MAPEADO] <semilla> → <ruta del harness>`; con `--dry-run`: `[CREARÍA]`, `[PRESERVARÍA]`, `[SOBRESCRIBIRÍA]`, `[MAPEARÍA]`), una línea por capa omitida (`[OMITIDO] <capa>/ — gestionado por el harness <h>`, o `[OMITIRÍA]`), `[WARNING] template no copiado: …` y, si aplica, `[WARNING] estructura de specs/ de tres niveles detectada (…): ejecuta /memory-system migrate --from=specs-3-levels`, antes del resumen final. |
 | `index` | `[--harness h] [--dry-run]` | `harness: <h>`, `índice escrito: …` (o el índice completo con `--dry-run`) y última línea `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. |
 | `migrate` | `--from dod-monolithic [--dry-run] [--force]` | Cabecera `── memory-system migrate ── from: dod-monolithic · root: <root>`, una línea por archivo (`[CREADO]`, `[PRESERVADO]`, `[SOBRESCRITO]`, `[REEMPLAZADO] … — índice deprecado`, `[SIN ORIGEN]`, `[OMITIDO]`, `[NO MIGRADO]`; en `--dry-run`, las formas en condicional), una regla `─` y `creados: N · sobrescritos: S · preservados: M · reemplazados: R` (más `cambios pendientes: P` con `--dry-run`). Exit 1 si queda `[SIN ORIGEN]` o `[NO MIGRADO]`. |
 | `migrate` | `--from epic-template-v1 [--dry-run]` | Cabecera `── memory-system migrate ── from: epic-template-v1 · root: <root>`, una línea por épica (`[MIGRADO]` / `[MIGRARÍA]` con `--dry-run`, `[SIN CAMBIOS]`), una línea `[REVISAR] <ruta>:<línea> — <motivo>` por hallazgo, una regla `─` y `migrados: N · sin cambios: M · a revisar: R` (más `cambios pendientes: P` con `--dry-run`). Exit 1 si hay algún `[REVISAR]`. |
@@ -467,7 +473,8 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
    `[PRESERVADO] <ruta>` (con `rebuild --force`, sobrescribe y registra `[SOBRESCRITO]`). Copia
    las cinco plantillas compartidas desde `<CLI_ROOT>/skills/<dueño>/assets/` tal cual; si el
    origen no existe, `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`. Crea
-   los directorios de capa y `specs/01-projects/`, `epics/`, `stories/` (con `.gitkeep` solo
+   los directorios de capa y `requirements/functional/`, `requirements/non-functional/`,
+   `specs/epics/`, `specs/stories/` (con `.gitkeep` solo
    si el directorio no existía). No borres nada. Con `--dry-run` solo lista `[CREARÍA]`/`[PRESERVARÍA]`/`[MAPEARÍA]`/`[OMITIRÍA]`. Cierra
    con `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`.
 3. **Índice inline** (`ensure`, `rebuild --force`, `index`): lista los `.md` de `SPECS_BASE` (y las
@@ -501,8 +508,8 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
 
 ## Salida
 
-- `$SPECS_BASE/constitution.md`, `product/{README,vision,stakeholders,objectives}.md`, un
-  `README.md` por capa, `specs/01-projects/`, `epics/`, `stories/` y las nueve plantillas de
+- `$SPECS_BASE/constitution.md`, `product/{README,vision,stakeholders,objectives,roadmap}.md`, un
+  `README.md` por capa, `requirements/{functional,non-functional}/`, `specs/{epics,stories}/` y las nueve plantillas de
   `templates/` — solo los que faltaban (`scaffold`, `ensure`, `migrate`) o todos los gestionados
   (`rebuild --force`), salvo las capas y semillas que el perfil del harness omite o mapea.
 - En Speckit/OpenSpec, `index.md` enlaza los artefactos del harness en "Artefactos externos" con

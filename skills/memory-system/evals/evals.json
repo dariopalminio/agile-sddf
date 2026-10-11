@@ -1,6 +1,6 @@
 {
   "skill": "memory-system",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Casos de prueba para memory-system. STORY-095 (TC-001..TC-004): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido. STORY-096 (TC-005..TC-010): ensure por defecto sobre examples/sddf-partial (crea solo lo faltante y regenera el índice), ensure idempotente, scaffold sobre examples/empty sin tocar index.md, rebuild sin --force (fail-fast sin escrituras), rebuild --force (advertencia literal y sobrescritura de semillas) y ensure --fix-frontmatter sobre examples/no-frontmatter (header-aggregation en batch con 'Saltar todos los conflictos'). STORY-097 (TC-011..TC-014): modo check sobre el fixture examples/broken (informe textual con las cuatro familias y 'problemas: 4', exit 1), check --json (objeto único con ok/summary/problems para CI), check sobre un fixture sano ('problemas: 0', exit 0) y fail-fast ante --root inexistente (stderr 'raíz inexistente', exit 2, sin escrituras). STORY-098 (TC-015..TC-018): migrate sobre examples/speckit sin --yes (plan '📋 Plan de migración (speckit)' con [OMITIRÍA]/[MAPEARÍA]/[CREARÍA] y pregunta de confirmación, sin escrituras), migrate --yes (scaffold adaptado al perfil: 'mapeados: 1' y 'omitidos por harness: 1'), migrate sobre examples/sddf ('El proyecto ya es SDDF', remite a ensure, sin escrituras) y ensure --harness openspec --yes sobre examples/openspec (sin docs/specs/, openspec/ intacto e índice con [[auth]] y [[add-login]] bajo subtítulos OpenSpec).",
   "cases": [
     {
@@ -180,12 +180,14 @@
           "índice regenerado: sí",
           "[CREADO]",
           "product/vision.md",
+          "product/roadmap.md",
           "requirements/README.md"
         ],
         "not_contains": [
           "Modo ensure aún no disponible",
           "rebuild es destructivo",
           "[SOBRESCRITO]",
+          "specs/01-projects",
           "Entorno inválido"
         ]
       },
@@ -880,6 +882,15 @@
       "description": "STORY-114: dos proyectos heredados se reportan como NO MIGRADO y no se escriben archivos.",
       "input": { "input_path": "examples/specs-3-levels", "mode": "migrate", "flags": ["--from=specs-3-levels"], "environment": { "specs_base": "docs", "node_in_path": true, "fixture_mutation": "crear specs/01-projects/PROJ-02-b" } },
       "expected": { "contains": ["[NO MIGRADO] specs/01-projects/", "exit code: 1"], "not_contains": ["[CREADO]", "[MOVIDO]"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-025",
+      "name": "scaffold-advierte-layout-specs-tres-niveles",
+      "type": "edge-case",
+      "description": "STORY-115: scaffold sobre examples/specs-3-levels conserva los niveles heredados y avisa que se debe ejecutar migrate --from=specs-3-levels.",
+      "input": { "input_path": "examples/specs-3-levels", "mode": "scaffold", "flags": [], "environment": { "specs_base": "docs", "node_in_path": true } },
+      "expected": { "contains": ["[WARNING] estructura de specs/ de tres niveles detectada", "migrate --from=specs-3-levels"], "not_contains": ["[SOBRESCRITO]", "Entorno invÃ¡lido"] },
       "threshold": 0.9
     }
   ]

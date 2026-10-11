@@ -3,9 +3,9 @@ type: adr
 id: ADR-0013
 slug: eliminar-specs-01-projects
 title: "Eliminar `specs/01-projects/` y migrar su contenido a `product/` y `requirements/`"
-status: PROPOSED
+status: ACCEPTED
 date: 2026-10-05
-supersedes: null
+supersedes: ADR-0004
 superseded-by: null
 ---
 
@@ -83,7 +83,7 @@ Operativo    →  specs/stories/           (work item)
 5. **Simplificación del scaffolding.** El skill `memory-system` ya no necesita crear `specs/01-projects/`. El skill `project-flow` ya no necesita gestionar los tres documentos fundacionales como work items. Se reduce complejidad.
 
 6. **Compatibilidad con los tres modos SDD:**
-   - **Intent-First:** la intención vive en `product/vision.md` (única fuente).
+   - **Spec-First:** la intención vive en `product/vision.md` (única fuente).
    - **Spec-Anchored:** las specs (Epic, Story) son el ancla; `product/` y `requirements/` son soporte.
    - **Spec-as-Source:** las specs son el artefacto principal; la estructura no cambia.
 
@@ -119,8 +119,8 @@ Operativo    →  specs/stories/           (work item)
 - Menos tokens en la resolución de rutas de los skills (`SPECS_BASE/specs/01-projects/` desaparece).
 
 **Negativas / trade-offs:**
-- **Migración de contenido:** los repos existentes con `specs/01-projects/PROJ-NN/` necesitan migrar su contenido a `product/` y `requirements/`. El skill `memory-system migrate` debe implementar esta migración (optativo).
-- **Renumeración de `specs/`:** si se decide renumerar `02-epics/` → `epics/` y `03-stories/` → `stories/`, los skills que referencian rutas absolutas deben actualizarse.
+- **Migración de contenido:** los repos existentes con `specs/01-projects/PROJ-NN/` necesitan migrar su contenido a `product/` y `requirements/`. La implementa `memory-system migrate --from=specs-3-levels`.
+- **Renumeración de `specs/`:** el renombrado de `02-epics/` → `epics/` y `03-stories/` → `stories/` obliga a actualizar los skills con rutas.
 - **Pérdida de la noción de "proyecto" como entidad:** en un repo multi-proyecto, la estructura actual (`docs/specs/01-projects/PROJ-NN/`) permitía tener múltiples proyectos en un mismo `docs/`. Al eliminar `01-projects/`, un repo multi-proyecto necesita una estructura alternativa (por ejemplo, un `docs/` por proyecto). Este ADR asume el caso común: **single-project per `docs/` root** o mono repo o repositorio `host`. El caso multi-proyecto complejos se abordará en un ADR separado si surge la necesidad.
 - **Actualización de skills:** `project-flow`, `project-pm`, `project-architect`, `project-ux`, `project-story-mapping`, `memory-system`, y cualquier skill que referencie `specs/01-projects/` deben actualizarse.
 - **Actualización de documentación:** `docs/domains/domain-project-lifecycle.md` (si existe), `docs/architecture/memory-system.md`, `docs/architecture/sddf-architecture.md`, `docs/guides/sddf-commands-pipeline.md`, `README.md` y `CHANGELOG.md`.
@@ -129,12 +129,12 @@ Operativo    →  specs/stories/           (work item)
 ## Referencias
 
 - [[memory-system]] — Estructura de capas y árbol canónico de la memoria
-- [[domain-work-item-hierarchy]] — Relación Project → Epic → Story (a actualizar)
+- [[domain-work-item-hierarchy]] — Jerarquía de work items
 - [[domain-knowledge-artifacts]] — Modelo de artefactos y TraceLinks
-- [[ADR-0001]] — Centralizar templates compartidos (precedente de DRY)
-- [[ADR-0007]] — Templates como capa propia (precedente de capa única)
-- [[ADR-0010]] — `specs/` dentro de `docs/` (decisión hermana sobre layout)
-- [[ADR-0011]] — Archivos canónicos por tipo (decisión hermana sobre naming)
+- [[centralizar-templates-compartidos]] — Centralizar templates compartidos (precedente de DRY)
+- [[templates-como-capa-propia]] — Templates como capa propia (precedente de capa única)
+- [[specs-dentro-de-docs]] — `specs/` dentro de `docs/` (decisión hermana sobre layout)
+- [[archivos-canonicos-por-tipo]] — Archivos canónicos por tipo (decisión hermana sobre naming)
 - [[constitution]] — Principios aplicables (KISS, DRY, repositorio-como-sistema)
 
 
@@ -147,6 +147,4 @@ Operativo    →  specs/stories/           (work item)
 | ¿Estructura final de specs? | `specs/epics/` + `specs/stories/` |
 | ¿Coherencia? | ✅ Con `docs/` (sin prefijos) |
 | ¿Coste? | Medio: renombrar dos carpetas, actualizar referencias en skills y asegurar  que los skills que generan project-intent.md, project.md, project-plan.md reubiquen sus output folders|
-
-Tu observación cierra el círculo del ADR. La eliminación de `01-projects/` no es solo quitar una carpeta: es **colapsar el sistema de tres niveles a dos**, y con ello eliminar todo lo que existía solo para sostener esa jerarquía (prefijos numéricos incluidos).
 

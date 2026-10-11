@@ -68,9 +68,10 @@ se enlaza solo por ruta con `⚠️ slug placeholder` y sus wikilinks no cuentan
 Primer segmento de `relPath` (`adr`, `guides`, `policies`, …). Reglas especiales:
 
 - Archivo en la raíz de `SPECS_BASE` (`constitution.md`) → `root`.
-- `specs/01-projects/` → `specs-projects`; `specs/epics/` → `specs-epics`;
-  `specs/stories/` → `specs-stories`; otro subdirectorio `specs/<x>/` → `specs-<x>` (sin
-  placeholder en el template: exit 2, a propósito); un archivo suelto directamente en `specs/`
+- `specs/epics/` → `specs-epics`; `specs/stories/` → `specs-stories`; otro subdirectorio
+  `specs/<x>/` → `specs-<x>` (sin placeholder en el template: exit 2, a propósito). Los niveles
+  retirados de tres niveles entran por ese fallback; `scaffold` los detecta y avisa. Un archivo
+  suelto directamente en `specs/`
   (su `README.md` semilla) → capa `specs`.
 - Nodos de raíces externas → `external`.
 
@@ -128,7 +129,7 @@ Si hay nodos pendientes, el índice termina con la sección `## ⚠️ Nodos pen
 `scripts/check-doc-links.js` del framework ignora los wikilinks marcados así.
 
 Protección del template (exit 2 sin escribir): un `{layer:<capa>}` que no sea una capa conocida
-(`root`, `product`, `requirements`, `specs`, `specs-projects`, `specs-epics`, `specs-stories`, `domains`,
+(`root`, `product`, `requirements`, `specs`, `specs-epics`, `specs-stories`, `domains`,
 `architecture`, `adr`, `policies`, `guardrails`, `guides`, `runbooks`, `external`) ni una capa con
 nodos, o una capa con nodos sin placeholder. El mensaje nombra la capa.
 
@@ -159,9 +160,9 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
 |---|---|---|
 | `constitution.md` | semilla | `constitution` / `constitution` |
 | `product/README.md` | semilla | `wiki` / `product-index` |
-| `product/vision.md`, `product/stakeholders.md`, `product/objectives.md` | semilla | `product` / `vision`, `stakeholders`, `objectives` |
+| `product/vision.md`, `product/stakeholders.md`, `product/objectives.md`, `product/roadmap.md` | semilla | `product` / `vision`, `stakeholders`, `objectives`, `roadmap` |
 | `requirements/README.md`, `specs/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla | `wiki` / `<capa>-index` |
-| `specs/01-projects/.gitkeep`, `specs/epics/.gitkeep`, `specs/stories/.gitkeep` | semilla | solo si el directorio no existe; nunca se listan ni se sobrescriben si ya existe |
+| `specs/epics/.gitkeep`, `specs/stories/.gitkeep`, `requirements/functional/.gitkeep`, `requirements/non-functional/.gitkeep` | semilla | solo si el directorio no existe; nunca se listan ni se sobrescriben si ya existe |
 | `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md` del framework) | template |
 | `templates/domain-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
 | `templates/guardrail-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
@@ -209,6 +210,10 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
   crea ni su directorio ni sus semillas; una semilla de `mappings` cuyo equivalente existe se
   informa `[MAPEADO] <semilla> → <ruta del harness>` y no se crea (§8). Con `--dry-run`:
   `[OMITIRÍA]` y `[MAPEARÍA]`.
+- **Estructura de tres niveles:** si `specs/01-projects/`, `specs/02-epics/` o
+  `specs/03-stories/` existe y el harness no omite `specs`, `scaffold` emite
+  `[WARNING] estructura de specs/ de tres niveles detectada (…): ejecuta /memory-system migrate --from=specs-3-levels`.
+  No bloquea, conserva exit 0 y no crea, modifica, mueve ni elimina nada bajo esos niveles.
 
 ### Resumen
 

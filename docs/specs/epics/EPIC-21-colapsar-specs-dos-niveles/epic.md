@@ -39,13 +39,13 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [x] **STORY-112** — project-story-mapping → product/; project-context-diagram → architecture/c4/: --from-files lee las capas en vez de project.md. Si el diagrama ya existe, pide confirmación antes de sobrescribir.
 - [x] **STORY-113** — project-flow, sddf-init, header-aggregation: retoma por etapa según el estado de las capas. Cierre: "01-projects" solo queda en la lógica de migración de memory-system.
 - [x] **STORY-114** — Implementar `memory-system migrate --from=specs-3-levels`: modo de migración que automatiza el colapso en repos existentes, idempotente y con `--dry-run`.
-- [ ] **STORY-115** — Actualizar scaffolding de `memory-system`: crear `specs/epics/` y `specs/stories/` en lugar de los tres niveles numerados.
+- [x] **STORY-115** — Actualizar scaffolding de `memory-system`: crear `specs/epics/` y `specs/stories/` en lugar de los tres niveles numerados.
 - [ ] **STORY-116** — Actualizar documentación canónica: `memory-system.md`, `sddf-architecture.md`, `domain-*`, `docs/specs/README.md`, `README` y `CHANGELOG` (breaking change con guía de migración).
 - [ ] **STORY-117** — Actualizar `sddf.config.yaml` y verificar los tres modos SDD: eliminar rutas a `02-epics/` o `03-stories/` si existen y comprobar que Intent-First, Spec-Anchored y Spec-as-Source funcionan con la nueva estructura.
 - [ ] **STORY-118** — Adoptar la estrategia "SRS único primero, fragmentación cuando duela" en `requirements/`: implementar la estrategia en el framework, actualizar documentación y scaffolding, y ofrecer migración automática para proyectos existentes.
 - [ ] **STORY-123** — Reubicar las secciones restantes de `project.md` y eliminarlo: trasladar las secciones que ADR-0013 no asigna (§1.1–1.7, §2.3, §3, §4, §11, §12 y apéndices) a su capa y eliminar `project.md`, dejando `docs/specs/01-projects/` vacía y eliminada.
 
-## Seguimiento pendiente
+## Seguimiento pendiente para VALIDATE (fase QUALITY)
 
 - [ ] Repetir `npm run test:eval -- project-begin --eval-runner codex` y confirmar los seis casos de STORY-109 cuando se repare el YAML inválido que el runner carga desde un ejemplo ajeno de `security-audit`. Esta verificación se cierra por excepción aprobada en STORY-109 el 2026-10-10.
 - [ ] Ejecutar TC-007…TC-011 de `epic-from-project-plan` cuando se autorice enviar prompts al runner externo; STORY-111 implementó y validó los seis casos iniciales.

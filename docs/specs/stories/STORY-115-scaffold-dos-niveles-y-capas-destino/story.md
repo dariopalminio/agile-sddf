@@ -5,11 +5,11 @@ id: STORY-115
 kind: feat
 slug: STORY-115-scaffold-dos-niveles-y-capas-destino
 title: "Actualizar scaffolding de memory-system a specs/ de dos niveles"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-11
 related:
   - EPIC-21-colapsar-specs-dos-niveles
   - ADR-0013-eliminar-specs-01-projects

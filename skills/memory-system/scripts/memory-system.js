@@ -32,6 +32,7 @@ const path = require('node:path');
 const process = require('node:process');
 const dodStory = require('./dod-story.js');
 const epicTemplate = require('./epic-template.js');
+const { detectLegacyLevels } = require('./specs-3-levels.js');
 
 // ---------------------------------------------------------------------------
 // Constantes (D-2, D-3, D-4)
@@ -84,7 +85,7 @@ const LAYERS = [
 ];
 
 // Subdirectorios de `specs/` con nombre de capa propio.
-const SPECS_LAYERS = { '01-projects': 'specs-projects', epics: 'specs-epics', stories: 'specs-stories' };
+const SPECS_LAYERS = { epics: 'specs-epics', stories: 'specs-stories' };
 
 // Directorios excluidos del índice (D-3): caché, templates (wikilinks placeholder) y pre-split.
 const EXCLUDED_DIRS = new Set(['.cache', 'templates', 'pre-split']);
@@ -839,6 +840,12 @@ function scaffold(options) {
     warnings: [],
     summary: { created: 0, overwritten: 0, preserved: 0, mapped: 0, skippedByHarness: 0 },
   };
+  if (!skipLayers.has('specs')) {
+    const legacyLevels = detectLegacyLevels(specsBase);
+    if (legacyLevels.length) {
+      result.warnings.push(`estructura de specs/ de tres niveles detectada (${legacyLevels.map((level) => `${level}/`).join(', ')}): ejecuta /memory-system migrate --from=specs-3-levels`);
+    }
+  }
   const record = (relPath, kind, action, note = '') => {
     result.entries.push({ relPath, kind, action, note });
     result.summary[action === 'skipped' ? 'skippedByHarness' : action] += 1;

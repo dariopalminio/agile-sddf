@@ -72,12 +72,12 @@ Mapa de la memoria: [[index]].
 
 ## Jerarquía de desarrollo
 
-Un proyecto (project) contiene varias épicas (epic), y cada épica contiene varias historias (story).
+Una épica (epic) contiene varias historias (story). El contexto del producto vive en `product/` y
+`requirements/`.
 
 ```
-project (specs/01-projects/<PROJ-NN>-<slug>/project.md)
-    └── epic (specs/epics/<EPIC-NN>-<slug>/epic.md)
-        └── story (specs/stories/<STORY-NNN>-<slug>/story.md)
+epic (specs/epics/<EPIC-NN>-<slug>/epic.md)
+    └── story (specs/stories/<STORY-NNN>-<slug>/story.md)
 ```
 
 ---

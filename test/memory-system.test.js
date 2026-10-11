@@ -335,7 +335,7 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   assert.equal(result.status, 0, result.stderr);
 
   assert.ok(fs.existsSync(path.join(docs, 'constitution.md')));
-  for (const name of ['vision', 'stakeholders', 'objectives']) {
+  for (const name of ['vision', 'stakeholders', 'objectives', 'roadmap']) {
     assert.ok(fs.existsSync(path.join(docs, 'product', `${name}.md`)), name);
   }
   for (const layer of LAYER_DIRS) {
@@ -344,8 +344,14 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   for (const name of TEN_TEMPLATES) {
     assert.ok(fs.existsSync(path.join(docs, 'templates', name)), name);
   }
-  for (const sub of ['01-projects', 'epics', 'stories']) {
+  for (const sub of ['epics', 'stories']) {
     assert.ok(fs.existsSync(path.join(docs, 'specs', sub, '.gitkeep')), sub);
+  }
+  for (const legacy of Object.values(specs3Levels.LEGACY_LEVELS)) {
+    assert.ok(!fs.existsSync(path.join(docs, 'specs', legacy)), legacy);
+  }
+  for (const kind of ['functional', 'non-functional']) {
+    assert.ok(fs.existsSync(path.join(docs, 'requirements', kind)), kind);
   }
   assert.ok(!fs.existsSync(path.join(docs, 'index.md')), 'scaffold no crea index.md');
 
@@ -557,12 +563,14 @@ test('S096-UT-001c assets/scaffold: el árbol semilla es exactamente el declarad
     'policies/README.md',
     'product/README.md',
     'product/objectives.md',
+    'product/roadmap.md',
     'product/stakeholders.md',
     'product/vision.md',
     'requirements/README.md',
+    'requirements/functional/.gitkeep',
+    'requirements/non-functional/.gitkeep',
     'runbooks/README.md',
     'specs/README.md',
-    'specs/01-projects/.gitkeep',
     'specs/epics/.gitkeep',
     'specs/stories/.gitkeep',
     'templates/README.md',
@@ -583,6 +591,98 @@ test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
     else assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
   }
   assert.deepEqual(engine.SHARED_TEMPLATES.map((template) => template.name).concat(MANUAL_TEMPLATES), TEN_TEMPLATES);
+  assert.ok(!engine.KNOWN_LAYERS.includes('specs-projects'));
+});
+
+// ---------------------------------------------------------------------------
+// STORY-115 — scaffold de specs en dos niveles
+// ---------------------------------------------------------------------------
+
+function legacyFixture(t, levels = Object.values(specs3Levels.LEGACY_LEVELS)) {
+  const repo = copyFixture(t, 'sane');
+  const specs = path.join(repo, 'docs', 'specs');
+  for (const level of levels) {
+    const kind = level === specs3Levels.LEGACY_LEVELS.projects ? 'PROJ-01-demo/project.md'
+      : level === specs3Levels.LEGACY_LEVELS.epics ? 'EPIC-01-demo/epic.md' : 'STORY-001-demo/story.md';
+    const target = path.join(specs, level, kind);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, `# ${level}\n`);
+  }
+  return { repo, docs: path.join(repo, 'docs'), specs };
+}
+
+test('S115-UT-001 scaffold avisa y conserva los tres niveles heredados', (t) => {
+  const { docs, specs } = legacyFixture(t);
+  const before = hashTree(specs);
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /\[WARNING\] estructura de specs\/ de tres niveles detectada \(01-projects\/, 02-epics\/, 03-stories\/\): ejecuta \/memory-system migrate --from=specs-3-levels/);
+  assert.match(lastLine(result.stdout), SCAFFOLD_SUMMARY);
+  for (const level of Object.values(specs3Levels.LEGACY_LEVELS)) {
+    const beforeLevel = Object.fromEntries(Object.entries(before).filter(([file]) => file.startsWith(`${level}/`)));
+    const afterLevel = Object.fromEntries(Object.entries(hashTree(specs)).filter(([file]) => file.startsWith(`${level}/`)));
+    assert.deepEqual(afterLevel, beforeLevel, level);
+  }
+});
+
+test('S115-UT-002 scaffold detecta solo 01-projects también en dry-run', (t) => {
+  const { docs, specs } = legacyFixture(t, [specs3Levels.LEGACY_LEVELS.projects]);
+  const before = hashTree(specs);
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--dry-run']);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /\[WARNING\] estructura de specs\/ de tres niveles detectada \(01-projects\/\)/);
+  assert.deepEqual(hashTree(specs), before);
+});
+
+test('S115-UT-003 scaffold openspec no avisa por specs heredado omitido', (t) => {
+  const { docs } = harnessRepo(t, 'openspec', { withoutDocs: true });
+  fs.mkdirSync(path.join(docs, 'specs', specs3Levels.LEGACY_LEVELS.projects), { recursive: true });
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'openspec']);
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(!result.stdout.includes('estructura de specs/ de tres niveles detectada'));
+});
+
+test('S115-UT-004 scaffold conserva roadmap editado en la segunda ejecución', (t) => {
+  const repo = copyFixture(t, 'empty');
+  const docs = path.join(repo, 'docs');
+  assert.equal(run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]).status, 0);
+  const roadmap = path.join(docs, 'product', 'roadmap.md');
+  fs.writeFileSync(roadmap, '# Roadmap propio\n');
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(lastLine(result.stdout), /^creados: 0 · sobrescritos: 0/);
+  assert.ok(result.stdout.includes('[PRESERVADO] product/roadmap.md'));
+  assert.equal(fs.readFileSync(roadmap, 'utf8'), '# Roadmap propio\n');
+});
+
+test('S115-UT-005 semilla roadmap conserva los encabezados fijos del template', () => {
+  const seed = readUtf8(SKILL_DIR, 'assets', 'scaffold', 'product', 'roadmap.md');
+  assert.match(seed, /^type: product$/m);
+  assert.match(seed, /^slug: roadmap$/m);
+  assert.match(seed, /^# Roadmap del producto$/m);
+  assert.match(seed, /^## Épicas$/m);
+  assert.ok(!seed.includes('## Propuesta ('));
+  assert.match(seed, /Volver al mapa: \[\[index\]\]\./);
+});
+
+test('S115-UT-006 semillas markdown UTF-8 sin BOM ni mojibake', () => {
+  for (const [rel, digest] of Object.entries(hashTree(path.join(SKILL_DIR, 'assets', 'scaffold')))) {
+    if (!rel.endsWith('.md')) continue;
+    const source = fs.readFileSync(path.join(SKILL_DIR, 'assets', 'scaffold', rel));
+    assert.notEqual(source.subarray(0, 3).toString('hex'), 'efbbbf', `${rel} BOM`);
+    const text = source.toString('utf8');
+    assert.ok(!text.includes('Ãƒ') && !text.includes('Ã°Å¸'), `${rel} mojibake`);
+    assert.ok(digest, `${rel} hash`);
+  }
+});
+
+test('S115-UT-007 index rechaza specs/01-projects como capa no declarada sin escribir', (t) => {
+  const { docs } = legacyFixture(t, [specs3Levels.LEGACY_LEVELS.projects]);
+  const before = hashTree(docs);
+  const result = run(['index', '--root', docs, '--dry-run']);
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /specs-01-projects/);
+  assert.deepEqual(hashTree(docs), before);
 });
 
 // ---------------------------------------------------------------------------

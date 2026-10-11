@@ -55,10 +55,6 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 {layer:specs}
 
-### L3 — Proyecto (specs/01-projects/)
-
-{layer:specs-projects}
-
 ### L2 — Épicas (specs/epics/)
 
 {layer:specs-epics}
