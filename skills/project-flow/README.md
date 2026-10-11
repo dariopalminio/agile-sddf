@@ -8,16 +8,20 @@
 
 ## What it does
 
-Orquesta el pipeline completo de ProjectSpecFactory en una sola sesión: begin, discovery y planning. Detecta el punto de reanudación, aplica gates de revisión entre fases y solo avanza cuando cada documento queda listo.
+Orquesta Begin, Discovery y Planning en una sesión. Detecta la primera etapa pendiente a partir de las capas y compone el skill propietario de cada una.
 
 **Produces:**
 
-- `project-intent.md`, `project.md` y `project-plan.md` en el proyecto activo.
-- Las transiciones de `substatus` asociadas a los gates de cada fase.
+- `product/vision.md` mediante `/project-begin`.
+- `product/stakeholders.md` y `requirements/` mediante `/project-discovery`.
+- `product/roadmap.md` mediante `/project-planning`.
+
+Cada etapa conserva su propio gate de documento. Tras cerrarla, `project-flow` ofrece el gate de avance `Continuar con` o `Detener aquí`.
 
 **Does not do:**
 
-- No sustituye el trabajo de implementación ni crea código de producto.
+- No escribe directamente en las capas ni sustituye a los skills de etapa.
+- No implementa historias ni crea código de producto.
 
 ---
 
@@ -26,13 +30,13 @@ Orquesta el pipeline completo de ProjectSpecFactory en una sola sesión: begin, 
 **Use it when:**
 
 - Quieras completar o retomar de extremo a extremo la especificación de un proyecto.
-- Necesites que las fases de intención, discovery y planificación mantengan sus gates de revisión.
+- Necesites conservar gates entre la intención, discovery y planificación.
 - The user mentions: `"project-flow"`, `"pipeline completo"`, `"ProjectSpecFactory"`.
 
 **Do NOT use it when:**
 
-- Solo debas ejecutar una fase aislada → use `[[project-begin]]`, `[[project-discovery]]` o `[[project-planning]]` instead.
-- Quieras planificar una historia individual → use `[[story-plan]]` instead.
+- Solo debas ejecutar una fase aislada: usa `[[project-begin]]`, `[[project-discovery]]` o `[[project-planning]]`.
+- Quieras planificar una historia individual: usa `[[story-plan]]`.
 
 ---
 
@@ -48,4 +52,4 @@ Para otro runtime compatible, sustituye `claude-code` por un identificador decla
 
 ### Invocation
 
-Usa `/project-flow`; el skill detecta la primera fase pendiente o retoma la que esté en progreso.
+Usa `/project-flow`; el skill detecta la primera etapa pendiente o retoma la que esté en progreso.

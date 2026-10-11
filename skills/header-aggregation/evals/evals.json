@@ -1,6 +1,6 @@
 {
   "skill": "header-aggregation",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Casos de prueba para header-aggregation: adición y actualización de frontmatter YAML en archivos de specs SDDF. Usan fixtures propios bajo examples/ y expectativas basadas en los literales del SKILL.md (sin cadenas genéricas como 'error' o '❌', que colisionan con el contenido de los archivos que el skill reproduce).",
   "cases": [
     {
@@ -101,6 +101,46 @@
           "No se encontró el directorio",
           "Frontmatter aplicado: skills/header-aggregation/examples/batch/docs/specs/epics/EPIC-92-fixture-c/notas.md"
         ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-004",
+      "name": "capa-product-deriva-frontmatter-propio",
+      "type": "happy-path",
+      "description": "Una visión sin frontmatter en product recibe solo los campos aplicables a product.",
+      "input": {
+        "input_path": "skills/header-aggregation/examples/capas/docs/product/vision.md",
+        "context": "Añade frontmatter a la visión de la capa product.",
+        "environment": {
+          "repo_root": "skills/header-aggregation/examples/capas",
+          "specs_base": "docs",
+          "file_has_frontmatter": false
+        }
+      },
+      "expected": {
+        "contains": ["Frontmatter aplicado", "product", "vision"],
+        "not_contains": ["PROJ-", "alwaysApply", "type:    wiki"]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-005",
+      "name": "requisito-funcional-deriva-id-y-kind",
+      "type": "happy-path",
+      "description": "Un requisito funcional sin frontmatter recibe requirement, FR-001 y campos propios.",
+      "input": {
+        "input_path": "skills/header-aggregation/examples/capas/docs/requirements/functional/FR-001-fixture-requisito.md",
+        "context": "Añade frontmatter al requisito funcional de fixture.",
+        "environment": {
+          "repo_root": "skills/header-aggregation/examples/capas",
+          "specs_base": "docs",
+          "file_has_frontmatter": false
+        }
+      },
+      "expected": {
+        "contains": ["requirement", "FR-001", "functional", "active"],
+        "not_contains": ["PROJ-", "substatus"]
       },
       "threshold": 0.9
     }

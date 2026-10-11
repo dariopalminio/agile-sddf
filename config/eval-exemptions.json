@@ -2,12 +2,6 @@
   "version": 1,
   "exemptions": [
     {
-      "skill": "project-flow",
-      "owner": "agile-sddf maintainers",
-      "reason": "Orquestador pendiente de una matriz de evals para sus gates de revisión.",
-      "review_by": "2026-12-31"
-    },
-    {
       "skill": "sddf-constitution",
       "owner": "agile-sddf maintainers",
       "reason": "Pendiente de fixtures para políticas y Definition of Done generados.",

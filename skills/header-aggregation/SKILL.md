@@ -9,45 +9,35 @@ description: >-
 
 # Skill: /header-aggregation
 
-Aplica un bloque YAML frontmatter estandarizado a archivos Markdown de especificación del proyecto SDDF. El objetivo es habilitar el patrón LLM Wiki: cada archivo de spec tiene metadatos suficientes para que un índice pueda referenciar nodos sin abrir el contenido completo.
-
-> **Relación con `memory-system`:** `memory-system index` lee el `slug` y `title` de este esquema para
-> indexar; `header-aggregation` sigue siendo una utilidad independiente y no depende de `memory-system`.
-> Desde STORY-096, `memory-system ensure --fix-frontmatter` lo invoca en modo batch (Paso 4) sobre
-> `$SPECS_BASE` con la estrategia "Saltar todos los conflictos" y confirmación global, de modo que
-> solo procesa archivos sin frontmatter; los literales de esas dos preguntas son un acoplamiento
-> conocido con `memory-system`.
-
----
+Aplica frontmatter YAML a archivos Markdown de especificación. El esquema se deriva de la ruta relativa a `$SPECS_BASE`, para que las capas de producto y requisitos mantengan sus contratos propios sin campos de work item ajenos.
 
 ## Esquema canónico de frontmatter
 
-Este esquema es la fuente de verdad del skill. Nunca lo hardcodees en otro lugar — si cambia aquí, el comportamiento del skill cambia automáticamente.
+Los campos se omiten cuando no aplican al tipo.
 
 ```yaml
 ---
-alwaysApply: false                         # OBLIGATORIO — siempre false en archivos spec
-type: <project | epic | story | wiki>   # OBLIGATORIO
-id: <PROJ-NN | EPIC-NN | STORY-NNN>         # OBLIGATORIO (según type)
-kind: <feat | fix | chore | hotfix>        # OBLIGATORIO solo si type = story
-slug: <nombre-del-directorio>              # OBLIGATORIO
-title: "<Título legible del documento>"    # OBLIGATORIO
-status: <BACKLOG | BEGINNING | DISCOVERY | PLANNING | SPECIFY | READY-FOR-IMPLEMENT | IN-PROGRESS | IN-DEVELOPMENT | DEVELOPING | TESTING | ACCEPTANCE | DELIVER | DEFINE | PLAN | READY-FOR-DEV | DEVELOP | VALIDATE | SHIP | COMPLETED | MEASURING-VALUE | FINISHED | CANCELED> # OBLIGATORIO
-substatus: <null | TODO | IN-PROGRESS | DONE | BLOCKED>    # OBLIGATORIO
-parent: <null | PROJ-NN | EPIC-NN>         # OBLIGATORIO
-created: <YYYY-MM-DD>                      # OBLIGATORIO
-updated: <YYYY-MM-DD>                      # OBLIGATORIO
-tags: []                                   # opcional
-related:                                   # opcional
-  - <id de nodo relacionado>
-sources:                                   # opcional
-  - <clave>: <valor>
+alwaysApply: false                         # solo story, epic y wiki
+type: <epic | story | product | requirement | srs | wiki>
+id: <EPIC-NN | STORY-NNN | FR-NNN | NFR-NNN>
+kind: <feat | fix | chore | hotfix | functional | non-functional>
+slug: <nombre-kebab>
+title: "<Título legible del documento>"
+status: <valor según tipo>
+substatus: <null | TODO | IN-PROGRESS | DONE | BLOCKED>
+parent: <null | EPIC-NN>
+created: <YYYY-MM-DD>
+updated: <YYYY-MM-DD>
+related: []
 ---
 ```
 
-Omite los campos opcionales del bloque generado si no tienen valor relevante.
-
----
+| `type` | Campos obligatorios | Valores derivados si faltan |
+|---|---|---|
+| `story`, `epic`, `wiki` | esquema histórico aplicable | sin cambios; `parent` de epic es `null` |
+| `product` | `type`, `slug`, `title`, `status`, `substatus`, `parent`, `created`, `updated` | `IN-PROGRESS`, `TODO`, `null` |
+| `requirement` | `type`, `kind`, `id`, `slug`, `title`, `status`, `created`, `updated`, `related` | `active`, `[]` |
+| `srs` | `type`, `slug`, `title`, `status`, `substatus`, `parent`, `created`, `updated` | `IN-PROGRESS`, `IN-PROGRESS`, `null` |
 
 ## Paso 0 — Resolver contexto local
 
@@ -62,164 +52,105 @@ Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir a
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
+## Paso 1 — Resolver el input
 
----
+El skill acepta una ruta relativa o absoluta, un nombre corto o ningún argumento.
 
-## Paso 1: Resolver el input
+Para un nombre corto, busca en este orden:
 
-El skill acepta tres formas de input:
+- `$SPECS_BASE/specs/stories/*/story.md`
+- `$SPECS_BASE/specs/epics/*/epic.md`
+- `$SPECS_BASE/product/<término>.md`
+- `$SPECS_BASE/requirements/**/<término>*.md`
 
-**A) Nombre corto de directorio o archivo** (ej. `STORY-043-header-aggregation` o `project-intent`):
-- Busca el archivo canónico en este orden:
-  - `$SPECS_BASE/specs/stories/*/story.md` (busca directorio que coincida con el término)
-  - `$SPECS_BASE/specs/epics/*/epic.md` (busca directorio que coincida)
-  - `$SPECS_BASE/specs/01-projects/*/` (busca en todos los archivos del directorio del proyecto)
-- Si hay exactamente un resultado → úsalo directamente
-- Si hay múltiples resultados → muestra la lista y pide selección al usuario
-- Si no hay resultado → trata el input como texto libre e informa al usuario
+Por ejemplo, `vision` resuelve la visión de producto. Un resultado único se usa directamente; resultados múltiples se presentan para elegir. Si no hay resultado, trata el input como texto libre e informa al usuario.
 
-**B) Ruta relativa o absoluta** (ej. `$SPECS_BASE/specs/stories/STORY-043-nombre/story.md` o directorio `$SPECS_BASE/specs/stories/`):
-- Usa la ruta directamente sin búsqueda adicional
-- Si es un directorio → activa el modo batch (ver Paso 4)
+Una ruta de directorio activa el modo batch. Sin input, pregunta si se procesará un archivo individual o todos los archivos de un directorio.
 
-**C) Sin input**:
-- Pregunta al usuario: "¿Deseas procesar un archivo individual o todos los archivos de un directorio?"
-- Solicita la ruta correspondiente según la elección
+## Paso 2 — Derivar campos
 
----
+La primera coincidencia de esta tabla decide `type`, `id`, `kind` y `slug` a partir de la ruta relativa a `$SPECS_BASE`:
 
-## Paso 2: Derivar los campos del frontmatter
+| Ruta | `type` | `id` / `kind` | `slug` |
+|---|---|---|---|
+| `product/README.md`, `requirements/README.md` | `wiki` | — | `<capa>-index` |
+| `product/<nombre>.md` | `product` | — | `<nombre>` |
+| `requirements/functional/FR-NNN-*.md` | `requirement` | `FR-NNN` / `functional` | nombre sin extensión |
+| `requirements/non-functional/NFR-NNN-*.md` | `requirement` | `NFR-NNN` / `non-functional` | nombre sin extensión |
+| `requirements/srs-*.md` | `srs` | — | nombre sin extensión |
+| otro archivo bajo `requirements/` | `wiki` | — | nombre sin extensión |
+| directorio `STORY-*` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio |
+| directorio `EPIC-*` | `epic` | `EPIC-NN` | nombre del directorio |
+| resto | `wiki` | — | regla histórica |
 
-Para cada archivo a procesar, deriva automáticamente los campos obligatorios:
+Reglas complementarias:
 
-| Campo | Regla de derivación |
-|-------|---------------------|
-| `alwaysApply` | false |
-| `id` | Extraer del frontmatter existente si tiene. Si no: prefijo del nombre de directorio → `STORY-NNN` para stories, `EPIC-NN` para épicas, `PROJ-NN` para projects |
-| `slug` | Nombre del **directorio** contenedor en kebab-case (ej. `STORY-043-header-aggregation`, `EPIC-01-nombre`, `PROJ-01-nombre`) |
-| `type` | Prefijo del nombre de directorio: `STORY-*` → `story`, `EPIC-*` → `epic`, `PROJ-*` → `project`, archivos fuera de estas convenciones → `wiki` |
-| `kind` | Solo para `type: story`. Preservar del frontmatter existente; si no existe → `feat` |
-| `title` | Primer heading `#` del contenido del archivo. Si no hay heading `#`, usar el nombre del directorio formateado (guiones → espacios, capitalizar) |
-| `status` | Buscar `**substatus**: IN-PROGRESS` en el contenido → `IN-PROGRESS`; `**substatus**: DONE` → `COMPLETED`; ausente o desconocido → `BACKLOG` |
-| `substatus` | no es un archivo spec → null; si es un archivo de spec → derivar según contenido; ausente o desconocido → null |
-| `parent` | Para stories: extraer nombre del directorio de la épica padre del frontmatter existente o de la sección del documento o el slug del archivo `epic.md` padre (ej. `EPIC-01-nombre`). Para épicas: extraer nombre del directorio del proyecto padre o slug del archivo padre project.md (ej. `PROJ-01-nombre`). Para projects u otros archivos: `null` |
-| `created` | Preservar del frontmatter existente (`created` o `date`). Si no existe → fecha actual `YYYY-MM-DD` |
-| `updated` | Fecha actual `YYYY-MM-DD` siempre que se haga un merge/update |
-| `related` | Lista de slug de elementos relacionados (ej. `EPIC-01-nombre`) incluida el parent |
+- `title` usa el primer heading `#`; para `requirement`, quita el prefijo `<ID> — `.
+- `created` preserva `created` o `date`; si no existe, usa la fecha actual. `updated` usa la fecha actual al actualizar.
+- Los campos existentes se preservan. Solo se proponen los obligatorios que falten para el tipo derivado.
+- `related` conserva las referencias existentes; para un requisito nuevo se deriva como `[]`.
+- El bloque de referencias de wikilinks se añade solo cuando `related` contiene valores.
 
-Se agrega una referencias inmediatamente despues del frontmatter con el formato `[[slug-de-la-épica-o-proyecto]]` con el listado de `related` para facilitar la navegación y trazabilidad.
+Muestra los valores derivados antes de escribir y permite correcciones.
 
-Muestra los valores derivados al usuario antes de escribir y permite correcciones.
+## Paso 3 — Archivo individual
 
----
+Un archivo tiene frontmatter si inicia exactamente con `---` en la primera línea.
 
-## Paso 3: Aplicar frontmatter a un archivo individual
+### Sin frontmatter
 
-### 3.1 Detección de frontmatter existente
+1. Deriva los campos del Paso 2 y valida las referencias del Paso 5.
+2. Antepone el bloque YAML sin alterar el contenido posterior.
+3. Escribe el archivo y muestra el resumen de salida.
 
-Lee el archivo. El archivo tiene frontmatter YAML si comienza exactamente con `---` en la primera línea (antes de cualquier otro contenido).
+### Con frontmatter
 
-### 3.2 Archivo sin frontmatter
+1. Preserva todos los campos existentes.
+2. Construye una propuesta con solo los obligatorios ausentes del tipo derivado.
+3. Muestra `Campos añadidos:` y `Campos existentes:`.
+4. Ofrece `Sobrescribir con propuesta`, `Mantener el existente` o `Cancelar`.
+5. Solo escribe si se elige `Sobrescribir con propuesta`.
 
-1. Deriva los campos (Paso 2)
-2. Valida referencias si aplica (Paso 5)
-3. Genera el bloque YAML con los campos derivados
-4. Antepone el bloque al contenido existente (sin modificar el contenido debajo)
-5. Escribe el archivo
-6. Muestra resumen: qué campos fueron añadidos y sus valores
+## Paso 4 — Modo batch
 
-### 3.3 Archivo con frontmatter existente — merge con confirmación
+### 4.1 Conjunto de archivos
 
-1. Lee los campos del bloque YAML existente
-2. Construye un frontmatter propuesto:
-   - Preserva todos los campos que ya existen con sus valores actuales
-   - Añade los campos obligatorios del esquema canónico que falten, con valores derivados
-3. Muestra el diff al usuario:
-   ```
-   Campos añadidos:   type, status
-   Campos existentes: slug, title, date (sin cambios)
-   ```
-4. Pregunta al usuario qué hacer:
-   - **Sobrescribir con propuesta** — reemplaza el bloque YAML con el propuesto
-   - **Mantener el existente** — no modifica el archivo
-   - **Cancelar** — sale sin escribir nada
-5. Solo modifica el archivo si el usuario elige "Sobrescribir con propuesta"
+Si se recibe `$SPECS_BASE`, un directorio padre o `$SPECS_BASE/specs/`, escanea:
 
----
+- `$SPECS_BASE/product/**/*.md`
+- `$SPECS_BASE/requirements/**/*.md`, incluidos `functional/` y `non-functional/`
+- `$SPECS_BASE/specs/epics/*/epic.md`
+- `$SPECS_BASE/specs/stories/*/story.md`
 
-## Paso 4: Modo batch (directorio)
-
-Cuando el input es un directorio, el skill adapta el escaneo según el tipo de directorio recibido:
-
-### 4.1 Resolución del conjunto de archivos a procesar
-
-**Si el directorio es `$SPECS_BASE/specs/` o cualquier directorio padre equivalente:**
-- Escanea los tres subdirectorios de artefactos en profundidad:
-  - `$SPECS_BASE/specs/01-projects/*/project-intent.md` (y cualquier otro `.md` dentro de cada `PROJ-*-*/`)
-  - `$SPECS_BASE/specs/epics/*/epic.md`
-  - `$SPECS_BASE/specs/stories/*/story.md`
-
-**Si el directorio es uno de los tres tipos de artefacto** (ej. `$SPECS_BASE/specs/stories/`):
-- Lista todos los **subdirectorios** directamente dentro (no recursivo en el segundo nivel)
-- Busca el archivo canónico en cada subdirectorio:
-  - Para `stories/`: busca `story.md`
-  - Para `epics/`: busca `epic.md`
-  - Para `01-projects/`: busca `project-intent.md`
-- Ignora subdirectorios que no contengan el archivo canónico esperado
-
-**Si el directorio es un subdirectorio de artefacto** (ej. `$SPECS_BASE/specs/stories/STORY-043-header-aggregation/`):
-- Lista todos los archivos `.md` directamente dentro de ese directorio
+Para `product/` y `requirements/`, procesa los Markdown recursivamente. Para `epics/` y `stories/`, conserva el escaneo de archivos canónicos por subdirectorio. Si se recibe un subdirectorio de artefactos, procesa los Markdown que correspondan a ese directorio.
 
 ### 4.2 Clasificación y confirmación
 
-1. Clasifica cada archivo resuelto en 4.1:
-   - **Sin frontmatter**: será modificado
-   - **Con frontmatter existente**: conflicto potencial
-2. Muestra el resumen anticipado antes de proceder:
-   ```
-   Archivos a modificar (sin frontmatter): 12
-   Archivos con conflicto (frontmatter existente): 3
-   ```
-3. Para los archivos con conflicto, pregunta la estrategia:
-   - **Proponer merge en todos** — aplica la lógica del Paso 3.3 en todos
-   - **Saltar todos los conflictos** — procesa solo los archivos sin frontmatter
-   - **Decidir uno por uno** — aplica el flujo interactivo del Paso 3.3 para cada conflicto
-4. Solicita confirmación global antes de proceder: "¿Confirmas el procesamiento de N archivos?"
-5. Procesa los archivos en secuencia y muestra el progreso con un resumen final
+1. Clasifica los archivos en sin frontmatter y con frontmatter existente.
+2. Muestra el resumen anticipado.
+3. Para conflictos, ofrece `Proponer merge en todos`, `Saltar todos los conflictos` o `Decidir uno por uno`.
+4. Pregunta `¿Confirmas el procesamiento de N archivos?`.
+5. Procesa en secuencia y muestra el resumen final.
 
----
+## Paso 5 — Validar referencias cruzadas
 
-## Paso 5: Validación de referencias cruzadas
-
-Para cada slug referenciado en los campos `related` y `parent` del frontmatter propuesto:
-
-1. Busca ese slug en todos los archivos `.md` del repositorio (busca en los frontmatters existentes o en los nombres de archivo)
-2. Si el slug **existe** → inclúyelo en el frontmatter normalmente
-3. Si el slug **no existe** → márcalo como `[pendiente]` en el frontmatter generado:
-   ```yaml
-   related:
-     - "[pendiente] slug-que-no-existe"
-   ```
-4. Incluye todos los avisos de referencias inválidas en el resumen final de la operación
-5. No canceles ni falles la operación — genera el frontmatter con las marcas y avisa al usuario
-
----
+Para cada valor de `related` o `parent`, busca el slug en los Markdown del repositorio. Si no existe, guárdalo como `[pendiente] <slug>`, informa el aviso y continúa; una referencia pendiente no cancela la operación.
 
 ## Resumen de salida
 
-Al terminar (archivo individual o batch), muestra siempre:
+Al terminar, muestra:
 
-```
+```text
 ✓ Frontmatter aplicado: <ruta-del-archivo>
-  type:    story
-  id:      STORY-043
-  slug:    STORY-043-header-aggregation
-  title:   "Encabezado de archivos spec con metadata de estado"
-  status:  IN-PROGRESS
-  created: 2026-04-26
-  updated: 2026-05-01
+  type:    <type derivado>
+  id:      <id si aplica>
+  slug:    <slug>
+  title:   "<título>"
+  status:  <status>
+  created: <fecha>
+  updated: <fecha>
 
-⚠ Referencias marcadas como [pendiente]: 0
+⚠ Referencias marcadas como [pendiente]: <n>
 ```
 
-Para batch, añade contadores totales: archivos procesados / saltados / con error.
+En batch añade los contadores de procesados, saltados y errores.

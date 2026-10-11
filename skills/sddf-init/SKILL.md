@@ -86,7 +86,6 @@ instalados; nunca se deriva de `SPECS_BASE`.
 ### Paso 2 — Crear directorios base
 
 Para cada uno de los siguientes directorios bajo `SPECS_BASE`:
-- `specs/01-projects/`
 - `specs/epics/`
 - `specs/stories/`
 - `templates/`
@@ -191,7 +190,6 @@ Emitir el informe consolidado con todos los artefactos verificados:
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     {SPECS_BASE}/specs/01-projects/
 [CREADO]     {SPECS_BASE}/specs/epics/
 [YA EXISTÍA] {SPECS_BASE}/specs/stories/
 [CREADO]     {SPECS_BASE}/templates/
@@ -226,7 +224,6 @@ añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente en {SPECS
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     docs/specs/01-projects/
 [CREADO]     docs/specs/epics/
 [CREADO]     docs/specs/stories/
 [CREADO]     docs/templates/
@@ -242,7 +239,6 @@ añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente en {SPECS
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     docs/specs/01-projects/
 …
 [CREADO]     docs/templates/story-template.md
 …

@@ -1,6 +1,6 @@
 {
   "skill": "sddf-init",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Evalúa el bootstrap idempotente de la raíz versionada SDDF, el manejo seguro de overrides explícitos y el parámetro --level minimal|standard|full (STORY-099), incluido el scaffolding de memory-system en nivel full.",
   "story": "STORY-099",
   "cases": [
@@ -14,8 +14,8 @@
         "flags": []
       },
       "expected": {
-        "contains": ["docs/specs/01-projects", "sddf.config.yaml", "root: docs", ".env.template", "Entorno SDDF inicializado correctamente"],
-        "not_contains": ["SDDF_ROOT=docs", "[ERROR]"]
+        "contains": ["docs/templates", "sddf.config.yaml", "root: docs", ".env.template", "Entorno SDDF inicializado correctamente"],
+        "not_contains": ["SDDF_ROOT=docs", "01-projects", "[ERROR]"]
       },
       "threshold": 0.95
     },
@@ -90,7 +90,7 @@
       },
       "expected": {
         "contains": ["[OMITIDO] sddf-constitution (nivel minimal)", "sddf.config.yaml", ".env.template"],
-        "not_contains": ["templates/story-template.md", "¿Deseas inicializar los documentos de políticas"]
+        "not_contains": ["templates/story-template.md", "01-projects", "¿Deseas inicializar los documentos de políticas"]
       },
       "threshold": 1.0
     },

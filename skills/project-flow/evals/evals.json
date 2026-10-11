@@ -1,0 +1,79 @@
+{
+  "skill": "project-flow",
+  "version": "1.0.0",
+  "description": "Evalúa la detección por capas, la composición de etapas y los gates de avance de project-flow.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "vision-semilla-inicia-begin",
+      "type": "happy-path",
+      "description": "Una visión pendiente sin requisitos ni roadmap inicia Begin.",
+      "input": { "context": "vision.md existe con substatus TODO; no hay FR ni roadmap; el usuario no responde a gates." },
+      "expected": { "contains": ["Begin", "/project-begin", "product/vision.md"], "not_contains": ["01-projects", "project-intent", "PROJ-"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-002",
+      "name": "vision-en-progreso-retoma-begin",
+      "type": "edge-case",
+      "description": "Una visión en progreso mantiene Begin como primera etapa.",
+      "input": { "context": "vision.md tiene substatus IN-PROGRESS; no hay FR ni roadmap." },
+      "expected": { "contains": ["Begin", "/project-begin"], "not_contains": ["/project-discovery como etapa en ejecución"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-003",
+      "name": "sin-fr-inicia-discovery",
+      "type": "happy-path",
+      "description": "Una visión cerrada sin requisitos funcionales inicia Discovery.",
+      "input": { "context": "vision.md está DONE y requirements/functional/ está vacío." },
+      "expected": { "contains": ["Discovery", "/project-discovery"], "not_contains": ["/project-begin como etapa a ejecutar"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-004",
+      "name": "sin-roadmap-inicia-planning",
+      "type": "happy-path",
+      "description": "Una visión cerrada con FR-001 a FR-003 y sin roadmap inicia Planning.",
+      "input": { "context": "vision.md está DONE; existen FR-001, FR-002 y FR-003; no existe roadmap.md." },
+      "expected": { "contains": ["Planning", "/project-planning"], "not_contains": ["project-plan.md"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-005",
+      "name": "roadmap-semilla-aun-requiere-planning",
+      "type": "edge-case",
+      "description": "Un roadmap sin propuesta ni épicas no cierra el pipeline.",
+      "input": { "context": "vision.md está DONE; existe FR-001; roadmap.md es una semilla sin ## Propuesta ( ni épicas." },
+      "expected": { "contains": ["Planning", "/project-planning"], "not_contains": ["ya está completo"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-006",
+      "name": "pipeline-completo-ofrece-replanificar",
+      "type": "happy-path",
+      "description": "Un roadmap con propuesta permite replanificar o cancelar.",
+      "input": { "context": "vision.md está DONE; existe FR-001; roadmap.md contiene ## Propuesta (2026-10-01)." },
+      "expected": { "contains": ["ya está completo", "Replanificar", "Cancelar"], "not_contains": ["Reiniciar desde el principio"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-007",
+      "name": "etapa-sin-cierre-se-detiene",
+      "type": "error-handling",
+      "description": "Sin cierre del skill compuesto, el gate ofrece detener o reintentar.",
+      "input": { "context": "La etapa compuesta no cierra su capa y no hay respuesta al gate de project-flow." },
+      "expected": { "contains": ["⏸", "Reintentar", "/project-flow"], "not_contains": ["Continuar con"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-008",
+      "name": "skill-de-discovery-ausente",
+      "type": "error-handling",
+      "description": "Discovery falla de forma segura si no está instalado su skill.",
+      "input": { "context": "vision.md está DONE, no hay FR y $CLI_ROOT/skills/project-discovery/ no existe." },
+      "expected": { "contains": ["❌", "npx agile-sddf install"], "not_contains": ["Escribe el resultado"] },
+      "threshold": 0.95
+    }
+  ]
+}
