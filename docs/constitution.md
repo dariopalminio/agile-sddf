@@ -84,26 +84,25 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 
 ### Proceso de desarrollo
 
-- **Metodología:** SDD (Spec-Driven Development) con tres niveles de workflow: project, epic y story.
+- **Metodología:** SDD con dos niveles de work item, epic y story, sobre la documentación fundacional de `product/` y `requirements/`.
 
 ---
 ## Jerarquía de desarrollo
 
-Un proyecto (project) contiene varias épicas (epic), y cada épica contiene varias historias (story).
+La documentación fundacional (`$SPECS_BASE/product/`, `$SPECS_BASE/requirements/`) orienta las épicas; cada épica contiene varias historias.
 
-project (`$SPECS_BASE/specs/01-projects/<PROJECT-NAME>/project.md`)
-    └── epic (`$SPECS_BASE/specs/epics/<EPIC-NAME>/epic.md`)
-        └── story (`$SPECS_BASE/specs/stories/<STORY-NAME>/story.md`)
+epic (`$SPECS_BASE/specs/epics/<EPIC-NAME>/epic.md`)
+    └── story (`$SPECS_BASE/specs/stories/<STORY-NAME>/story.md`)
 
 
 ---
 ## Reglas de framework
 
-- **Estructura de directorios:** Seguir la jerarquía `project → epic → story` y la convención de nombres kebab-case.
-- **project.md debe mantenerse actualizado:** Reflejar siempre el estado actual del proyecto (documento vivo), incluyendo las épicas y sus historias asociadas.
+- **Estructura de directorios:** Seguir la jerarquía `epic → story` y la convención de nombres kebab-case.
+- **`product/` y `requirements/` deben mantenerse actualizados:** Son documentos vivos; la visión, stakeholders, requisitos y roadmap reflejan el estado actual del producto.
 - **epic.md debe mantenerse actualizado:** Reflejar siempre el estado actual de la épica antes de ser completada, incluyendo sus historias asociadas. Una vez completada se freeza.
 - **story.md debe mantenerse actualizado:** Reflejar siempre el estado actual de la historia antes de ser completada, incluyendo sus tareas y subcomponentes asociados. Una vez completada se freeza.
-- **Mantener estructura de directorios consistente:** Asegurarse de que la jerarquía `project → epic → story` se respete en todo momento y que los nombres de los directorios sigan la convención kebab-case.
+- **Mantener estructura de directorios consistente:** Asegurarse de que la jerarquía `epic → story` se respete en todo momento y que los nombres de los directorios sigan la convención kebab-case.
 - **Mantener constitution.md actualizado:** Asegurarse de que las políticas y convenciones del framework reflejadas en este documento estén siempre al día con las prácticas actuales del equipo y del proyecto.
 
 
@@ -165,10 +164,13 @@ La lógica de dominio vive en los templates (estructura) y en los agentes (crite
 ### Patrones de nomenclatura
 
 #### 7. IDs jerárquicos
-Nivel	Patrón	Ejemplo
-Proyecto	PROJ-NN-kebab	PROJ-01-mi-app
-Épica	EPIC-NN-kebab	EPIC-12-story-sdd-workflow
-Historia	STORY-NNN-kebab	STORY-042-login
+
+| Nivel | Patrón | Ejemplo |
+|---|---|---|
+| Épica | `EPIC-NN-kebab` | `EPIC-12-story-sdd-workflow` |
+| Historia | `STORY-NNN-kebab` | `STORY-042-login` |
+
+Los requisitos usan `FR-NNN`/`NFR-NNN` y no son work items.
 
 El prefijo del ID nombra el **nivel**, nunca el tipo de trabajo. El tipo de una historia
 (`feat` / `fix` / `chore` / `hotfix`) vive en el campo `kind` del frontmatter y en el prefijo
@@ -176,22 +178,28 @@ de su rama. No se admiten prefijos de ID por tipo (`BUG-`, `CHORE-`): rompen el 
 
 #### 8. Frontmatter YAML en documentos generados
 
+```yaml
 ---
-type: project | epic | story
-id: EPIC-NN
-kind: feat | fix | chore | hotfix   # solo si type = story
+type: epic | story | product | requirement | srs | wiki
+id: EPIC-NN | STORY-NNN | FR-NNN | NFR-NNN
+kind: feat | fix | chore | hotfix             # solo si type = story
+kind: functional | non-functional             # solo si type = requirement
 slug: nombre-kebab
 status: BACKLOG | DISCOVERY | PLANNING | ...
 substatus: TODO | IN-PROGRESS | DONE
-parent: PROJ-NN
+parent: null | EPIC-NN
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
+```
+
+Los campos obligatorios por `type` los fija `header-aggregation`.
 
 ### Reglas de comportamiento
 
-#### 9. Control WIP = 1 en el nivel de proyecto
-Solo un documento puede tener substatus: IN-PROGRESS a la vez por nivel del pipeline de proyecto. El skill debe verificar esto antes de activar un nuevo ítem.
+#### 9. Control WIP = 1 por nivel de work item
+
+Solo una épica y una historia pueden tener `substatus: IN-PROGRESS` a la vez en su nivel. La documentación fundacional no tiene WIP: su avance lo decide el estado de las capas. El skill debe verificarlo antes de activar un nuevo ítem.
 
 #### 10. Gates secuenciales con precondiciones
 Cada skill verifica que el artefacto del paso anterior existe y está válido antes de ejecutar. Ejemplo: epic-generate-stories requiere que epic-format-validation haya pasado.
@@ -206,9 +214,13 @@ Los skills exponen flags para variantes de comportamiento: --quick, --update, --
 
 #### 13. Rutas de output predecibles
 
-$SPECS_BASE/specs/01-projects/<PROJ-NN>-<slug>/project.md  → artefactos de proyecto
-$SPECS_BASE/specs/epics/<EPIC-NN>-<slug>/epic.md        → épicas
-$SPECS_BASE/specs/stories/<STORY-NNN>-<slug>/story.md   → historias
+$SPECS_BASE/product/vision.md                            → documentación fundacional
+$SPECS_BASE/product/stakeholders.md                      → documentación fundacional
+$SPECS_BASE/product/roadmap.md                           → documentación fundacional
+$SPECS_BASE/requirements/functional/FR-NNN-<slug>.md     → requisitos funcionales
+$SPECS_BASE/requirements/non-functional/NFR-NNN-<slug>.md → requisitos no funcionales
+$SPECS_BASE/specs/epics/<EPIC-NN>-<slug>/epic.md         → épicas
+$SPECS_BASE/specs/stories/<STORY-NNN>-<slug>/story.md    → historias
 
 #### 14. Versionado mediante substatus
 

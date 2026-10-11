@@ -31,7 +31,7 @@
 - **Criterio de éxito:** Termina una historia completa usando skills individuales o el
   orquestador `pipeline`, sin desbordar VRAM, logrando trabajar con ventanas de contexto de 32728 tokens (ctx_size máximo objetivo).
 
-## US-005 — Harness Maintainer (dogfood) / Mantenedor del Framework/Harness
+## US-005 —  Mantenedor del Harness (dogfood) / Harness Maintainer (dogfood)
 
 - **Quién es:** Desarrollador Mantenedor que evoluciona el propio framework SDDF. Actúa a la
   vez como diseñador del framework, consumidor del mismo (dogfooding) y publicador de versiones.

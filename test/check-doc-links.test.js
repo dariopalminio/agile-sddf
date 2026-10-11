@@ -6,7 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
-const { checkDocumentation } = require('../scripts/check-doc-links.js');
+const { checkDocumentation, slugIndex } = require('../scripts/check-doc-links.js');
 
 function fixture(t, readme) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'agile-sddf-links-'));
@@ -60,4 +60,22 @@ test('ignores wikilinks flagged as pending nodes by memory-system index', (t) =>
   const result = checkDocumentation({ repoRoot: root, files: [path.join(root, 'README.md')] });
   assert.equal(result.errors.length, 1);
   assert.match(result.errors[0], /Missing wikilink target: \[\[other-missing\]\]/);
+});
+
+test('slugIndex prefiere epic.md/story.md ante slugs duplicados y no trata project.md como canónico', (t) => {
+  const root = fixture(t, '# Readme\n');
+  const write = (relativePath, slug) => {
+    const target = path.join(root, relativePath);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, `---\nslug: ${slug}\n---\n`, 'utf8');
+    return target;
+  };
+  const epic = write('docs/specs/epics/EPIC-01-a/epic.md', 'duplicado-epic');
+  const epicNotes = write('docs/specs/epics/EPIC-01-a/notes.md', 'duplicado-epic');
+  const project = write('docs/legacy/project.md', 'duplicado-project');
+  const notes = write('docs/legacy/notes.md', 'duplicado-project');
+
+  const index = slugIndex([epic, epicNotes, project, notes]);
+  assert.deepEqual(index.get('duplicado-epic'), [epic]);
+  assert.deepEqual(index.get('duplicado-project'), [project, notes]);
 });

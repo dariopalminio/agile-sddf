@@ -25,7 +25,7 @@ title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifa
   * **Agentes IA** — Leen y escriben artefactos siguiendo las convenciones del dominio.
   * **Sistema SDDF** — Valida invariantes, trazabilidad y coherencia entre capas.
 * **Bounded Contexts relacionados:**
-  * **Work Item Hierarchy** — Los specs (Project, Epic, Story) son un tipo de artefacto.
+  * **Work Item Hierarchy** — Los specs Epic y Story son work items; `product/` es documentación fundacional.
   * **State Management** — Los artefactos tienen estados y subestados, y son gobernados por transiciones.
 * **Alcance de este documento:** el modelo de artefactos de conocimiento: tipos, capas, relaciones, invariantes y convenciones. **No** describe ciclos de vida ni transiciones (eso vive en [[domain-state-management]]).
 
@@ -41,7 +41,7 @@ title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifa
 * **Requirement:** Artefacto que describe qué debe hacer el sistema. Puede ser funcional (`FR-`) o no funcional (`NFR-`).
 * **ADR (Architecture Decision Record):** Artefacto inmutable que registra una decisión arquitectónica con su contexto, alternativas y consecuencias.
 * **RFC (Request for Comments):** Artefacto que propone un cambio grande que atraviesa múltiples áreas, con un período de revisión.
-* **Spec:** Artefacto de especificación de un work item (Project, Epic, Story). Ver [[domain-work-item-hierarchy]].
+* **Spec:** Artefacto de especificación de un work item (Epic o Story). Ver [[domain-work-item-hierarchy]].
 * **Domain document:** Artefacto DDD que modela un bounded context del proyecto.
 * **Guardrail:** Artefacto que define **restricciones operativas o técnicas verificables** que un agente IA (o un humano) no debe violar. Se expresa como checklist con niveles de severidad (`error`, `warn`) y se comprueba mediante comandos deterministas (grep, git ls-files, linters). Es **ejecutable** y su incumplimiento **bloquea**.
 * **Policy:** Artefacto que define **reglas de gobernanza** del proyecto (convenciones, estándares, principios). Puede ser declarativo y no siempre verificable automáticamente. Su incumplimiento puede requerir juicio humano.
@@ -96,7 +96,7 @@ title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifa
 | **Requirement** | `FR-`, `NFR-` | `requirements/` | ❌ Evoluciona | Qué debe hacer el sistema. |
 | **ADR** | `ADR-` | `adr/` | ✅ Inmutable | Decisión arquitectónica con rationale. |
 | **RFC** | `RFC-` | `rfcs/` | ✅ Inmutable tras aprobación | Propuesta de cambio grande. |
-| **Spec (Project)** | `PROJ-` | `specs/01-projects/` | ❌ Evoluciona | Documentación fundacional del proyecto. |
+| **Product** | — | `product/` | ❌ Evoluciona | Visión, stakeholders, objetivos, roadmap y story map. |
 | **Spec (Epic)** | `EPIC-` | `specs/epics/` | ❌ Evoluciona | Entregable o release. |
 | **Spec (Story)** | `STORY-` | `specs/stories/` | ❌ Evoluciona | Historia de usuario atómica. |
 | **Domain** | `DOMAIN-` (implícito) | `domains/` | ❌ Evoluciona (lento) | Modelo DDD de un bounded context. |
@@ -124,8 +124,8 @@ docs/
 │   └── non-functional/
 ├── adr/              # Decisiones arquitectónicas (inmutables)
 ├── rfcs/             # Propuestas de cambio grandes
-├── specs/            # Work items (Project, Epic, Story)
-│   ├── 01-projects/
+├── product/          # Documentación fundacional
+├── specs/            # Work items (Epic, Story)
 │   ├── epics/
 │   └── stories/
 ├── guardrails/       # Restricciones operativas verificables
@@ -182,7 +182,7 @@ Aunque ambos son artefactos normativos, cumplen funciones distintas:
 ### Ejemplo de relación
 
 ```yaml
-# docs/guardrails/security-checklist.md
+# docs/guardrails/gr-code-security-checklist.md
 ---
 type: guardrail
 id: GR-SEC-001
@@ -239,7 +239,7 @@ enforced-by:
 5. Todo `Artifact` tiene **frontmatter YAML** con campos obligatorios: `type`, `id`, `title`, `date`, `status`.
 6. Todo `Artifact` tiene **exactamente un archivo `.md`** como cuerpo principal.
 7. Los artefactos de tipo `requirement` viven en `requirements/functional/` o `requirements/non-functional/`.
-8. Los artefactos de tipo `spec` viven en `specs/01-projects/`, `specs/epics/` o `specs/stories/` según su nivel.
+8. Los artefactos de tipo `spec` viven en `specs/epics/` o `specs/stories/` según su nivel.
 9. Los artefactos de tipo `guardrail` viven en `guardrails/` y usan checklist con severidades.
 10. Los artefactos de tipo `policy` viven en `policies/` y declaran un `scope`.
 11. Los artefactos de tipo `template` viven en `templates/` y usan el sufijo `-template.md`. Su seed vive en el `assets/` del skill dueño; ambas copias deben ser idénticas.
@@ -248,7 +248,7 @@ enforced-by:
 
 12. Todo `Requirement` debe tener **al menos un `verified-by`** que apunte a una `Story` existente.
 13. Toda `Story` debe tener **al menos un `implements`** que apunte a un `Requirement` existente.
-14. Las relaciones `parent` son **obligatorias** para `Epic` y `Story`, y **prohibidas** para `Project`.
+14. Las relaciones `parent` son obligatorias para `Story` y `null` para `Epic`.
 15. Las relaciones `supersedes` y `superseded-by` son **bidireccionales**: si A supersede a B, B debe declarar superseded-by A.
 16. Las relaciones `originates-from` y `enforced-by` son **bidireccionales**: si un guardrail origina de una policy, la policy debe listar el guardrail en `enforced-by`.
 
@@ -263,7 +263,7 @@ enforced-by:
 
 21. Los `ADR` son **inmutables** una vez aceptados. Si cambia la decisión, se crea un nuevo ADR que `supersedes` al anterior.
 22. Los `RFC` son **inmutables** tras su aprobación. Si cambia la propuesta, se crea un nuevo RFC.
-23. Los `Spec` (Project, Epic, Story) **evolucionan** con el proyecto.
+23. Los `Spec` (Epic, Story) y los documentos de `product/` **evolucionan** con el producto.
 24. Los `Guardrail` y `Policy` **evolucionan** lentamente con el harness del proyecto.
 
 ### 8.6 Invariantes de estado
@@ -299,7 +299,7 @@ enforced-by:
   * `ADR-0003-workflow-canonico.md`
   * `RFC-001-wiki-docs.md`
   * `domain-work-item-hierarchy.md`
-  * `security-checklist.md` (guardrail)
+  * `gr-code-security-checklist.md` (guardrail)
   * `security-policy.md` (policy)
   * `how-to-write-requirements.md`
 
@@ -445,13 +445,13 @@ Toda relación debe poder navegarse en ambas direcciones:
 
 ## 12. Referencias Cruzadas
 
-* [[domain-work-item-hierarchy]] — Estructura de work items (Project, Epic, Story)
+* [[domain-work-item-hierarchy]] — Estructura de work items (Epic, Story)
 * [[domain-state-management]] — Modelo transversal de estados y transiciones
-* [[domain-project-lifecycle]] — Ciclo de vida del nivel L3
+* [[domain-foundational-docs-lifecycle]] — Ciclo de vida del nivel estratégico
 * [[domain-epic-lifecycle]] — Ciclo de vida del nivel L2
 * [[domain-story-lifecycle]] — Ciclo de vida del nivel L1
 * [[constitution]] — Constitución del proyecto (documento supremo, raíz de policies y guardrails)
-* [[security-checklist]] — Ejemplo de guardrail (GR-SEC-001)
+* [[gr-code-security-checklist]] — Ejemplo de guardrail (GR-SEC-001)
 * [[nivel-l2-epic-y-directorios-numerados]] — Documentación en capas
 * [[templates-como-capa-propia]] — Los templates son una capa propia, hermana de `specs/`
 

@@ -25,29 +25,31 @@ La documentación está diseñada para ser **navegable por humanos y agentes IA*
 | Documento | Bounded Context | Nivel | Alcance |
 |-----------|-----------------|-------|---------|
 | [[domain]] | Conceptos Generales | **Transversal** | Definición de términos, principios y conceptos fundamentales del framework SDDF. |
-| [[domain-work-item-hierarchy]] | Jerarquía de Work Items | **Transversal** | Estructura Project → Epic → Story, reglas de parentesco, nomenclatura, mapeos con Flight Levels y estructura de carpetas. |
-| [[domain-state-management]] | Gestión de Estados (State Management) | **Transversal** | Conceptos, modelo táctico, invariantes y tipos de transición que aplican a los tres niveles (Project, Epic, Story). |
-| [[domain-project-lifecycle]] | Ciclo de Vida de Project | **L3** | Fases, documentos fundacionales, subestados y gates humanos específicos del nivel proyecto. |
+| [[domain-work-item-hierarchy]] | Jerarquía de Work Items | **Transversal** | Estructura Epic → Story y su trazabilidad con el nivel estratégico. |
+| [[domain-state-management]] | Gestión de Estados (State Management) | **Transversal** | Conceptos, modelo táctico, invariantes y tipos de transición de Epic y Story. |
+| [[domain-foundational-docs-lifecycle]] | Foundational Docs Lifecycle | **Estratégico** | Visión, stakeholders, requisitos y roadmap; no es un work item. |
 | [[domain-epic-lifecycle]] | Ciclo de Vida de Epic | **L2** | Estados, pipeline, máquina de estados, invariantes y gates específicos de épicas/entregables. |
 | [[domain-story-lifecycle]] | Ciclo de Vida de Story | **L1** | Estados, pipeline, máquina de estados, invariantes y gates específicos de historias de usuario. |
+
+**Reemplazado:** [[domain-project-lifecycle]] → [[domain-foundational-docs-lifecycle]].
 
 ---
 
 ## 🧭 Jerarquía de niveles
 
 ```
-Project (L3)         ──► Documentación fundacional del proyecto
+product/ + requirements/  ──► documentación fundacional estratégica
     │
-    └── Epic (L2)    ──► Entregable o release que agrupa historias
+    └── Epic (L2)    ──► coordinación
             │
-            └── Story (L1) ──► Historia de usuario atómica
+            └── Story (L1) ──► entrega operativa
 ```
 
 **Mapeos conceptuales:**
 
 | Nivel | Flight Level | Carpeta | Prefijo |
 |-------|--------------|---------|---------|
-| **Project (L3)** | Estratégico | `01-projects/` | `PROJ-` |
+| **Estratégico** | Estratégico | `product/` + `requirements/` | `FR-NNN` / `NFR-NNN` |
 | **Epic (L2)** | Coordinación | `epics/` | `EPIC-` |
 | **Story (L1)** | Operativo | `stories/` | `STORY-` |
 
@@ -55,10 +57,9 @@ Project (L3)         ──► Documentación fundacional del proyecto
 
 **Relación entre dominios:**
 
-- **Work Item Hierarchy** define la estructura transversal (Project → Epic → Story) y sus reglas de parentesco.
-- **State Management** define el modelo transversal de estados (WorkItem, Status, Substatus, Transición, WIP, Gate).
-- **Project Lifecycle**, **Epic Lifecycle** y **Story Lifecycle** extienden ese modelo con reglas y pipelines específicos.
-- Cada nivel referencia a sus niveles inferiores y superiores mediante wikilinks.
+- **Work Item Hierarchy** define la estructura Epic → Story y su trazabilidad estratégica.
+- **State Management** define el modelo transversal de estados, transiciones, WIP y gates de work items.
+- **Foundational Docs Lifecycle**, **Epic Lifecycle** y **Story Lifecycle** cubren documentación estratégica, L2 y L1.
 
 ---
 
@@ -84,7 +85,7 @@ Esta carpeta de dominios **no duplica** la información canónica que vive en ot
 3. **Trazabilidad**: cada documento usa wikilinks `[[slug]]` para navegar entre dominios y documentos canónicos.
 4. **Autocontenido**: cada documento es legible de forma independiente, sin necesidad de leer toda la carpeta.
 5. **Estable y versionable**: los documentos de dominio cambian poco; los detalles operativos evolucionan por separado.
-6. **Sin mezcla de niveles**: cada documento describe un solo nivel (o es explícitamente transversal). No se mezclan reglas de Project con reglas de Story.
+6. **Sin mezcla de niveles**: cada documento describe un solo nivel (o es explícitamente transversal). No se mezclan reglas de documentación fundacional con reglas de Story.
 
 ---
 
@@ -104,7 +105,7 @@ Esta carpeta de dominios **no duplica** la información canónica que vive en ot
 Esta carpeta **no contiene**:
 
 - Detalles operativos de skills (viven en `.claude/skills/*/SKILL.md`).
-- Máquina de estados completa (vive en [[domain-story-lifecycle]], [[domain-epic-lifecycle]] y [[domain-project-lifecycle]], una por nivel).
+- Ciclo de vida completo de cada área (vive en [[domain-foundational-docs-lifecycle]], [[domain-epic-lifecycle]] y [[domain-story-lifecycle]]).
 - Workflow narrativo (vive en [[specs-and-workflows]]).
 - Principios y reglas transversales del proyecto (viven en [[constitution]]).
 - Decisiones de arquitectura (viven en `docs/adr/`).
@@ -127,9 +128,9 @@ Si buscas cómo **ejecutar** una transición, consulta la sección "Posicionamie
 
 Si es tu primera vez en esta carpeta, lee en este orden:
 
-1. [[domain-work-item-hierarchy]] — para entender la estructura Project → Epic → Story y sus mapeos (Flight Levels, carpetas).
+1. [[domain-work-item-hierarchy]] — para entender la estructura Epic → Story y sus mapeos.
 2. [[domain-state-management]] — para entender los conceptos transversales de estados y transiciones.
-3. [[domain-project-lifecycle]] — para entender el nivel superior (L3).
+3. [[domain-foundational-docs-lifecycle]] — para entender el nivel estratégico documental.
 4. [[domain-epic-lifecycle]] — para entender cómo se agrupan las historias (L2).
 5. [[domain-story-lifecycle]] — para entender el nivel más común (L1).
 
@@ -143,23 +144,22 @@ Para detalles operativos (skills, comandos), consulta `.claude/skills/*/SKILL.md
 graph TD
     H[domain-work-item-hierarchy<br/>Transversal]
     SM[domain-state-management<br/>Transversal]
-    PL[domain-project-lifecycle<br/>L3]
+    FD[domain-foundational-docs-lifecycle<br/>Estratégico]
     EL[domain-epic-lifecycle<br/>L2]
     SL[domain-story-lifecycle<br/>L1]
 
-    H -->|estructura| PL
+    H -. trazabilidad .-> FD
     H -->|estructura| EL
     H -->|estructura| SL
-    SM -->|estados| PL
     SM -->|estados| EL
     SM -->|estados| SL
 
-    PL -->|contiene| EL
+    FD -. roadmap y requisitos .-> EL
     EL -->|contiene| SL
 
     style H fill:#f9f,stroke:#333,stroke-width:2px
     style SM fill:#f9f,stroke:#333,stroke-width:2px
-    style PL fill:#bbf,stroke:#333
+    style FD fill:#bbf,stroke:#333
     style EL fill:#bbf,stroke:#333
     style SL fill:#bbf,stroke:#333
 ```

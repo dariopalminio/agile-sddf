@@ -169,7 +169,7 @@ function slugIndex(files) {
   }
   for (const [slug, matches] of result) {
     if (matches.length < 2) continue;
-    const canonical = matches.filter((filePath) => /(?:^|[\\/])(story|epic|project|project-intent|project-plan)\.md$/i.test(filePath));
+    const canonical = matches.filter((filePath) => /(?:^|[\\/])(story|epic)\.md$/i.test(filePath));
     if (canonical.length === 1) result.set(slug, canonical);
   }
   return result;
@@ -297,4 +297,5 @@ module.exports = {
   activeMarkdownFiles,
   checkDocumentation,
   githubAnchor,
+  slugIndex,
 };

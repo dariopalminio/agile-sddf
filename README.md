@@ -111,14 +111,14 @@ Con `--level` eliges el alcance: `minimal` (solo directorios base, `sddf.config.
 |---|---|---|
 | Una iniciativa nueva | `/project-flow` | Intención, discovery de requisitos y plan de épicas con gates entre fases. |
 | Un repositorio con código | `/reverse-engineering` | Una especificación de proyecto basada en análisis paralelo del código y la documentación existente. |
-| Un plan ya aprobado | `/epic-from-project-plan` | Directorios de épica a partir de `project-plan.md`. |
+| Un roadmap aprobado | `/epic-from-project-plan` | Directorios de épica a partir de `product/roadmap.md`. |
 | Una necesidad puntual | `/story-specify` | Una historia refinada con criterios Gherkin y evaluación FINVEST. |
 
 > `/skill-preflight` es un diagnóstico explícito y de solo lectura. Úsalo bajo demanda para inspeccionar la raíz efectiva, la estructura y los templates; no forma parte de los flujos normales.
 
 ## Tu primera historia (flujo completo)
 
-Cuando ya existe un `project-plan.md`, el camino habitual es este:
+Cuando ya existe un `product/roadmap.md`, el camino habitual es este:
 
 ```text
 /epic-from-project-plan
@@ -203,13 +203,20 @@ flowchart LR
 
 | Nivel | Objetivo | Entrada frecuente | Salidas observables |
 |---|---|---|---|
-| Proyecto (L3) | Entender qué se construye y por qué (Producto/proyecto). | `/project-flow` | `project-intent.md`, `project.md`, `project-plan.md`. |
+| Producto (estratégico) | Entender qué se construye y por qué. | `/project-flow` | `product/vision.md`, `product/stakeholders.md`, `requirements/`, `product/roadmap.md`. |
 | Épica (L2) | Agrupar una parte entregable del plan (conjunto de historias). | `/epic-from-project-plan` | `epic.md`. |
 | Historia (L1) | Definir, planificar, construir y validar un cambio pequeño. | `/story-specify` | Historia, diseño, tareas, tests, reportes y aceptación. |
 
 El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`. `DELIVER` es una transición de entrega humana o de CI; no corresponde a un skill independiente. Los estados y subestados canónicos están documentados en el [ciclo de vida de historias](docs/domains/domain-story-lifecycle.md).
 
 ## Artefactos que deja el flujo (Memoria)
+
+<details>
+<summary>Migración a 4.0.0 (specs de dos niveles)</summary>
+
+`specs/01-projects/` fue reemplazado por `product/` y `requirements/`; las épicas e historias viven en `specs/epics/` y `specs/stories/`.
+Sigue la [guía de migración](docs/guides/artifact-directory-migration.md), primero con `--dry-run` y luego sin él.
+</details>
 
 `SPECS_BASE` se resuelve con esta precedencia: `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`. Una fuente explícita inválida no cae silenciosamente en `docs`: detiene la escritura para proteger el proyecto.
 
@@ -394,7 +401,7 @@ La versión 2.0.0 cambió el nivel intermedio de `release` a `epic`, numeró los
 
 | Antes (1.x) | Ruta actual |
 |---|---|
-| `docs/specs/projects/` | `docs/specs/01-projects/` |
+| `docs/specs/projects/` | `docs/product/` + `docs/requirements/` (ver guía de migración) |
 | `docs/specs/releases/` | `docs/specs/epics/` |
 | `docs/specs/stories/` | `docs/specs/stories/` |
 | `release.md` / `type: release` | `epic.md` / `type: epic` |

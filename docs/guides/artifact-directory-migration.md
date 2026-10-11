@@ -1,7 +1,7 @@
 ---
 type: guide
 slug: artifact-directory-migration
-title: "Guía de migración — nueva estructura de directorios de artefactos SDDF"
+title: "Guía de migración de la estructura de artefactos SDDF"
 date: 2026-05-01
 status: null
 substatus: null
@@ -10,7 +10,37 @@ related:
   - organization-of-artifacts
 ---
 
-## Guía de migración — nueva estructura de directorios de artefactos SDDF
+## Guía de migración de la estructura de artefactos SDDF
+
+## Migración a 4.0.0 — specs/ de dos niveles
+
+La versión 4.0.0 elimina `specs/01-projects/`. La documentación estratégica pasa a `product/` y `requirements/`; los únicos work items son Epic y Story.
+
+| Origen 3.x | Destino 4.0.0 |
+|---|---|
+| `project-intent.md` | `product/vision.md` |
+| `project.md` | `product/stakeholders.md` y `requirements/{functional,non-functional}/` |
+| `project-plan.md` | `product/roadmap.md` y `product/objectives.md` |
+| `story-map.md` | `product/story-map.md` |
+| `*.puml` | `architecture/c4/` |
+| `specs/02-epics/` | `specs/epics/` |
+| `specs/03-stories/` | `specs/stories/` |
+
+1. Crea un commit de respaldo.
+2. Ejecuta `npx agile-sddf install --force`.
+3. Ejecuta `/memory-system migrate --from=specs-3-levels --dry-run` y revisa cada `[MOVERÍA]`, `[CREARÍA]` y `[NO MIGRADO]`.
+4. Resuelve las secciones sin destino o los varios `PROJ-*` que se informen como `[NO MIGRADO]`.
+5. Ejecuta `/memory-system migrate --from=specs-3-levels` sin `--dry-run`.
+6. Repite el dry run hasta obtener `cambios pendientes: 0`.
+7. Elimina manualmente los templates centrales retirados y crea los nuevos con `/sddf-init`.
+8. Ejecuta `/memory-system check`.
+9. Si también migras épicas v1, continúa con su guía de migración.
+
+Un repositorio con varios proyectos no está soportado: el migrador lo informa como `[NO MIGRADO]` y no escribe.
+
+## Migración histórica 1.x → 2.x
+
+> Su destino `01-projects/` quedó reemplazado en 4.0.0; tras aplicar la sección anterior, sigue esta sección solo si migras desde 1.x.
 
 Esta guía explica cómo migrar artefactos existentes (proyectos, épicas, historias) de la estructura plana anterior a la estructura vigente de directorios por workitem con niveles numerados.
 

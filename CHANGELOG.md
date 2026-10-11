@@ -8,6 +8,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### BREAKING — specs/ de dos niveles (requiere 4.0.0)
+
+ADR-0013 y EPIC-21 eliminan `specs/01-projects/` y los prefijos numéricos de `specs/`. Este cambio requiere la versión major **4.0.0**.
+
+**Rutas:** `specs/02-epics/` pasa a `specs/epics/` y `specs/03-stories/` a `specs/stories/`.
+
+**Nuevos hogares:** `project-intent.md` → `product/vision.md`; `project.md` → `product/stakeholders.md` y `requirements/`; `project-plan.md` → `product/roadmap.md`; `story-map.md` → `product/story-map.md`; los diagramas → `architecture/c4/`.
+
+**Templates:** `project-intent-template.md` → `vision-template.md`; `project-template.md` → `stakeholders-template.md` y `requirement-template.md`; `project-plan-template.md` → `roadmap-template.md`.
+
+**Skills cuyo output cambió:** `/project-begin`, `/project-discovery`, `/reverse-engineering`, `/project-planning`, `/epic-from-project-plan`, `/project-story-mapping`, `/project-context-diagram`, `/project-flow`, `/sddf-init`, `/header-aggregation` y `/memory-system`.
+
+**Guía:** migra con la [guía de migración a 4.0.0](docs/guides/artifact-directory-migration.md): primero `/memory-system migrate --from=specs-3-levels --dry-run`, luego sin `--dry-run`.
+
 ### Added
 
 - **`/memory-system migrate --from=specs-3-levels`** (STORY-114) — colapsa `specs/01-projects/` en `product/`, requisitos FR/NFR fragmentados y `architecture/c4/`; mueve épicas e historias a `specs/epics/` y `specs/stories/`, reescribe wikilinks afectados, admite `--dry-run` y `--force`, es idempotente y informa `[NO MIGRADO]` (exit 1) cuando no puede decidir con seguridad.

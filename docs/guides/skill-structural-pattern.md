@@ -68,35 +68,43 @@ La lógica de dominio vive en los templates (estructura) y en los agentes (crite
 ## Patrones de nomenclatura
 
 ### 7. IDs jerárquicos
-Nivel	Patrón	Ejemplo
-Proyecto	PROJ-NN-kebab	PROJ-01-mi-app
-Épica/Épica	EPIC-NN-kebab	EPIC-12-story-sdd-workflow
-Feature/Historia	STORY-NNN-kebab	STORY-042-login
+
+| Nivel | Patrón | Ejemplo |
+|---|---|---|
+| Épica | `EPIC-NN-kebab` | `EPIC-12-story-sdd-workflow` |
+| Historia | `STORY-NNN-kebab` | `STORY-042-login` |
+
+Los requisitos usan `FR-NNN`/`NFR-NNN` y no son work items.
+
+El prefijo del ID nombra el **nivel**, nunca el tipo de trabajo. El tipo de una historia
+(`feat` / `fix` / `chore` / `hotfix`) vive en el campo `kind` del frontmatter y en el prefijo
+de su rama. No se admiten prefijos de ID por tipo (`BUG-`, `CHORE-`): rompen el globbing por nivel.
 
 ### 8. Frontmatter YAML en documentos generados
 
+```yaml
 ---
-type: project | epic | story
-id: EPIC-NN
+type: epic | story | product | requirement | srs | wiki
+id: EPIC-NN | STORY-NNN | FR-NNN | NFR-NNN
+kind: feat | fix | chore | hotfix             # solo si type = story
+kind: functional | non-functional             # solo si type = requirement
 slug: nombre-kebab
-status: BACKLOG | BEGINNING | DISCOVERY | PLANNING | SPECIFY | READY-FOR-IMPLEMENT | IMPLEMENT | CODE-REVIEW | VERIFY | ACCEPTANCE | DELIVER | DEFINE | PLAN | READY-FOR-DEV | DEVELOP | VALIDATE | SHIP | COMPLETED | MEASURING-VALUE | FINISHED | CANCELED
+status: BACKLOG | DISCOVERY | PLANNING | ...
 substatus: TODO | IN-PROGRESS | DONE
-parent: PROJ-NN
+parent: null | EPIC-NN
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-related:
-  - STORY-071-skill-story-verify
-  - STORY-070-dod-code-review-en-story-code-review
-  - STORY-068-dod-plan-en-story-analyze
 ---
-<!-- Referencias -->
-`[[slug-de-documento-relacionado]]`
+```
+
+Los campos obligatorios por `type` los fija `header-aggregation`.
 
 
 ## Reglas de comportamiento
 
-### 9. Control WIP = 1
-Solo un documento puede tener substatus: IN-PROGRESS a la vez por nivel del pipeline. El skill debe verificar esto antes de activar un nuevo ítem.
+### 9. Control WIP = 1 por nivel de work item
+
+Solo una épica y una historia pueden tener `substatus: IN-PROGRESS` a la vez en su nivel. La documentación fundacional no tiene WIP: su avance lo decide el estado de las capas. El skill debe verificarlo antes de activar un nuevo ítem.
 
 ### 10. Gates secuenciales con precondiciones
 Cada skill verifica que el artefacto del paso anterior existe y está válido antes de ejecutar. Ejemplo: epic-generate-stories requiere que epic-format-validation haya pasado.
@@ -115,9 +123,13 @@ Si los comandos de prueba tardan mucho, el skill debe mostrar progreso periódic
 
 ### 14. Rutas de output predecibles
 
-$SPECS_BASE/specs/01-projects/<PROJ-ID>/  → artefactos de proyecto
-$SPECS_BASE/specs/epics/<EPIC-NN>/  → épicas
-$SPECS_BASE/specs/stories/<STORY-NNN>/ → historias
+$SPECS_BASE/product/vision.md                            → documentación fundacional
+$SPECS_BASE/product/stakeholders.md                      → documentación fundacional
+$SPECS_BASE/product/roadmap.md                           → documentación fundacional
+$SPECS_BASE/requirements/functional/FR-NNN-<slug>.md     → requisitos funcionales
+$SPECS_BASE/requirements/non-functional/NFR-NNN-<slug>.md → requisitos no funcionales
+$SPECS_BASE/specs/epics/<EPIC-NN>-<slug>/epic.md         → épicas
+$SPECS_BASE/specs/stories/<STORY-NNN>-<slug>/story.md    → historias
 
 ### 15. Versionado mediante substatus
 

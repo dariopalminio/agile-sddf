@@ -27,7 +27,7 @@ title: "Documentación del Dominio: Ciclo de Vida de Story (Story Lifecycle)"
 * **Bounded Contexts relacionados:**
   * **State Management** — Modelo transversal de estados, subestados y transiciones.
   * **Epic Lifecycle** — Contenedor de la historia (una historia pertenece a una épica).
-  * **Project Lifecycle** — Nivel superior del proyecto.
+  * **Foundational Docs Lifecycle** — Nivel estratégico documental.
 * **Alcance de este documento:** estados específicos, subestados, pipeline, máquina de estados, invariantes, gates y trazabilidad **exclusivos del nivel Story**.
 
 ---
@@ -208,7 +208,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 
 * [[domain-state-management]] — Modelo transversal de estados y transiciones
 * [[domain-epic-lifecycle]] — Ciclo de vida de Epic (contenedor de Story)
-* [[domain-project-lifecycle]] — Ciclo de vida de Project
+* [[domain-foundational-docs-lifecycle]] — Ciclo de vida de la documentación fundacional
 * [[constitution]] — Constitución del proyecto
 * [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic
 

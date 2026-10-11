@@ -155,10 +155,11 @@ agile-sddf/
 |-----------|-----------|
 | [[memory-system]] | Capas, árbol e invariantes de la memoria |
 | [[domain-knowledge-artifacts]] | Modelo de artefactos y TraceLinks |
-| [[domain-work-item-hierarchy]] | Project → Epic → Story |
+| [[domain-work-item-hierarchy]] | `product/` + `requirements/` → Epic → Story |
 | [[domain-state-management]] | Estados, subestados, transiciones |
 | [[constitution]] | Principios supremos |
 | [[perfiles-runtimes-e-instalacion-explicita]] | `specs/` dentro de `docs/` |
-| [[nivel-l2-epic-y-directorios-numerados]] | Documentación en capas |
+| [[nivel-l2-epic-y-directorios-numerados]] | Épica como nivel L2 (directorios numerados reemplazados por ADR-0013) |
+| [[eliminar-specs-01-projects]] | `specs/` de dos niveles; nivel estratégico en `product/` y `requirements/` |
 
 ---

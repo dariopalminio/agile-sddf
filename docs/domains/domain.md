@@ -69,8 +69,8 @@ work items como estado actual sin verificarlos en el filesystem.
 | Término | Definición |
 |---|---|
 | **SDD / SDDF** | Spec-Driven Development / su framework ágil de soporte. |
-| **Work item** | Unidad de trabajo identificable: Project, Epic o Story. |
-| **L3 / L2 / L1** | Niveles Project / Epic / Story; estratégico, coordinación y operativo. |
+| **Work item** | Unidad de trabajo identificable: Epic o Story. |
+| **L2 / L1** | Niveles de coordinación y operativo; el nivel estratégico es documentación. |
 | **Skill** | Instrucción Markdown especializada que orquesta una capacidad. |
 | **Worker** | Skill sin interacción ni delegación, especializado por stack. |
 | **Agente** | Procesador especializado en contexto aislado; un subagente no delega a otro. |
@@ -88,8 +88,8 @@ work items como estado actual sin verificarlos en el filesystem.
 
 | Entidad | Qué es | Atributos o relaciones esenciales |
 |---|---|---|
-| **Project** | Work item L3 y contexto fundacional. | `PROJ-*`; agrupa épicas; `project-intent.md`, `project.md`, `project-plan.md`. |
-| **Epic** | Work item L2 que agrupa historias para un entregable. | `EPIC-*`; parent Project; `epic.md`. |
+| **Documentación fundacional** | Contexto estratégico. | `product/` + `requirements/`; visión, requisitos y roadmap. |
+| **Epic** | Work item L2 que agrupa historias para un entregable. | `EPIC-*`; parent `null`; `epic.md`. |
 | **Story** | Work item L1 atómico que aporta valor. | `STORY-*`; parent Epic; `kind`; `story.md` y artefactos derivados. |
 | **Artifact** | Unidad de conocimiento persistida en el repositorio. | Tipo, ruta, frontmatter y enlaces de trazabilidad. |
 | **Skill** | Orquestador de una operación del framework. | Lee contexto/template, aplica precondiciones y produce artefactos. |
@@ -100,9 +100,9 @@ work items como estado actual sin verificarlos en el filesystem.
 
 ## State Models
 
-- **Jerarquía documentada:** `Project (L3) → Epic (L2) → Story (L1)`.
+- **Jerarquía documentada:** `product/` + `requirements/` → Epic (L2) → Story (L1).
 - **Proyecto (flujo documentado):** `INTENT → REQUIREMENT → PLAN`, materializado por
-  `project-intent.md → project.md → project-plan.md` y gates humanos.
+  `product/vision.md` → `product/stakeholders.md` + `requirements/` → `product/roadmap.md` y gates humanos.
 - **Épica (flujo documentado):** `DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED`.
 - **Historia (flujo documentado):** `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`.
 - **Substatus documentados:** `TODO`, `IN-PROGRESS`, `DONE`, `BLOCKED`. `BLOCKED` mantiene la etapa
@@ -116,7 +116,7 @@ work items como estado actual sin verificarlos en el filesystem.
 
 | Desde | Relación | Hacia | Notas |
 |---|---|---|---|
-| Project | agrupa | Epic | Una épica debe referenciar un Project padre. |
+| Roadmap | orienta | Epic | La épica es raíz (`parent: null`) y se vincula desde `product/roadmap.md`. |
 | Epic | agrupa | Story | Una historia debe referenciar una Epic padre. |
 | Work item | materializa | Artifact | Su directorio conserva la spec y los outputs de cada fase. |
 | Skill | lee y produce | Artifact | Respeta template, precondiciones y estado de entrada. |
@@ -153,7 +153,7 @@ work items como estado actual sin verificarlos en el filesystem.
 |---|---|---|
 | BR-001 | El repositorio versionado contiene la memoria operativa, specs, políticas y decisiones. | Todo el framework. |
 | BR-002 | Todo skill aplica la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`; una fuente explícita inválida impide escribir. `skill-preflight` es diagnóstico bajo demanda. | Skills. |
-| BR-003 | Las relaciones de nivel son Project → Epic → Story; no se permiten saltos de nivel en el modelo canónico. | Work items. |
+| BR-003 | Las relaciones de nivel son Epic → Story; no se permiten saltos de nivel en el modelo canónico. | Work items. |
 | BR-004 | Debe verificarse WIP=1 antes de activar un nuevo ítem por nivel; los buffers de Epic y Story documentan además límites configurables. | Work items. |
 | BR-005 | Los gates exigen precondiciones y DoD antes de una transición; rechazo o fallo produce bloqueo o rework. | Pipelines. |
 | BR-006 | `DELIVER`, `SHIP` y `COMPLETED` no los escribe automáticamente un skill; son manuales o de CI/CD. | Transiciones terminales. |
@@ -193,9 +193,9 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
 
 | Archivo | Contenido a cargar bajo demanda |
 |---|---|
-| `docs/domains/domain-work-item-hierarchy.md` | Modelo, parentesco e invariantes de Project/Epic/Story. |
+| `docs/domains/domain-work-item-hierarchy.md` | Modelo, parentesco e invariantes de Epic/Story. |
 | `docs/domains/domain-state-management.md` | Conceptos transversales de estados, transiciones, WIP y gates. |
-| `docs/domains/domain-project-lifecycle.md` | Pipeline y gates del nivel L3. |
+| `docs/domains/domain-foundational-docs-lifecycle.md` | Pipeline y gates de la documentación fundacional. |
 | `docs/domains/domain-epic-lifecycle.md` | Pipeline y gates del nivel L2. |
 | `docs/domains/domain-story-lifecycle.md` | Pipeline, rework y gates del nivel L1. |
 | `docs/domains/domain-knowledge-artifacts.md` | Modelo de artefactos, trazabilidad, policies, guardrails, DoD y templates. |
@@ -206,9 +206,9 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
 
 - [ ] ¿Cuál es la fuente canónica única para transiciones y valores de `status`/`substatus`? Los
   documentos de dominio y los artefactos existentes muestran variaciones históricas. — 2026-09-12
-- [ ] ¿Debe aplicarse WIP=1 estrictamente a todos los niveles o sólo al nivel Project, dejando los
+- [x] WIP=1 aplica por nivel de work item (Epic y Story); ADR-0013 resuelve que la documentación fundacional no tiene WIP.
   buffers L2/L1 configurables? — 2026-09-12
-- [ ] ¿Qué norma de padding de IDs es vigente? Hay modelos con `PROJ-NNN` y uso real `PROJ-01`. — 2026-09-12
+- [x] Los identificadores vigentes son `EPIC-NN`, `STORY-NNN`, `FR-NNN` y `NFR-NNN`; ADR-0013 retiró `PROJ-`. — 2026-10-11
 - [ ] ¿La ubicación activa de templates es definitivamente `$SPECS_BASE/templates/`? ADR-0007 y el
   filesystem apuntan allí, mientras documentos históricos citan `$SPECS_BASE/specs/templates/`. — 2026-09-12
 - [ ] ¿OpenSpec es legado retirado o capacidad soportada? README y documentos históricos difieren
@@ -220,3 +220,4 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
 | Fecha | Resumen | Entidades añadidas | Reglas añadidas |
 |---|---|---|---|
 | 2026-09-12 | Bootstrap desde fuentes versionadas; se registraron divergencias para revisión. | Project, Epic, Story, Artifact, Skill, Agent, Template, Policy/DoD/ADR, Configuración. | BR-001 a BR-010. |
+| 2026-10-11 | Modelo de dos niveles aplicado. | Documentación fundacional, Epic, Story. | ADR-0013. |

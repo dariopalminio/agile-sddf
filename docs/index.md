@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-10
+updated: 2026-10-11
 ---
 
 # 📚 Índice de documentación
@@ -57,6 +57,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 - [[product-index]] — [README.md](product/README.md) — Producto
 - [[objectives]] — [objectives.md](product/objectives.md) — Objetivos
+- [person-user.md](product/person-user.md) — User Persona ⚠️ sin frontmatter
 - [[roadmap]] — [roadmap.md](product/roadmap.md) — Roadmap del producto
 - [[stakeholders]] — [stakeholders.md](product/stakeholders.md) — Stakeholders
 - [[story-map]] — [story-map.md](product/story-map.md) — Story Map — Agile SDDF (Spec-Driven Development Framework)
@@ -148,10 +149,6 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 ## 🗂️ Especificaciones (specs/)
 
 - [[specs-index]] — [README.md](specs/README.md) — Especificaciones
-
-### L3 — Proyecto (specs/01-projects/)
-
-- [[PROJ-01-agile-sddf]] — [project.md](specs/01-projects/PROJ-01-agile-sddf/project.md) — Especificación de Requisitos — Agile SDDF
 
 ### L2 — Épicas (specs/epics/)
 
@@ -302,7 +299,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[plan-integrar-config-sddf-init]] — [plan.md](specs/stories/STORY-085-integrar-config-sddf-init/plan.md) — Plan: Integrar sddf.config.yaml en el skill sddf-init
 - [[STORY-085-integrar-config-sddf-init]] — [story.md](specs/stories/STORY-085-integrar-config-sddf-init/story.md) — Mejora de experiencia de inicialización
 - [[plan-01-refactor-release-to-epic]] — [plan-01-refactor-release-to-epic.md](specs/stories/STORY-086-refactor-release-to-epic/plan-01-refactor-release-to-epic.md) — PLAN: Renombrar el nivel L2 de `release` a `epic`
-- [[plan-02-refactor-dev-levels]] — [plan-02-refactor-dev-levels.md](specs/stories/STORY-086-refactor-release-to-epic/plan-02-refactor-dev-levels.md) — PLAN: Reestructurar `docs/specs/` a niveles numerados (`01-projects/`, `epics/`, `stories/`)
+- [[plan-02-refactor-dev-levels]] — [plan-02-refactor-dev-levels.md](specs/stories/STORY-086-refactor-release-to-epic/plan-02-refactor-dev-levels.md) — PLAN: Reestructurar `docs/specs/` a niveles numerados (`01-projects/`, `02-epics/`, `03-stories/`)
 - [[plan-03-refactor-feat-to-story]] — [plan-03-refactor-feat-to-story.md](specs/stories/STORY-086-refactor-release-to-epic/plan-03-refactor-feat-to-story.md) — PLAN: Renombrar el prefijo de historias de `FEAT-NNN` a `STORY-NNN`
 - [[plan-04-fix-insights]] — [plan-04-fix-insights.md](specs/stories/STORY-086-refactor-release-to-epic/plan-04-fix-insights.md) — Cierre de la migración release→epic / FEAT→STORY: alinear gate, evals y documentación normativa
 - [[plan-05-findings-and-remediation-plan]] — [plan-05-findings-and-remediation-plan.md](specs/stories/STORY-086-refactor-release-to-epic/plan-05-findings-and-remediation-plan.md) — Revisión de STORY-086 — hallazgos y plan de remediación
@@ -341,7 +338,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-105-migrar-stakeholders-y-requisitos]] — [story.md](specs/stories/STORY-105-migrar-stakeholders-y-requisitos/story.md) — Migrar project.md a product/stakeholders.md y requirements/
 - [[STORY-106-migrar-plan-a-roadmap]] — [story.md](specs/stories/STORY-106-migrar-plan-a-roadmap/story.md) — Migrar project-plan.md a product/roadmap.md
 - [[STORY-107-migrar-story-map-y-diagrama-contexto]] — [story.md](specs/stories/STORY-107-migrar-story-map-y-diagrama-contexto/story.md) — Migrar story-map.md y context-diagram.puml
-- [[STORY-108-renombrar-specs-sin-prefijos]] — [story.md](specs/stories/STORY-108-renombrar-specs-sin-prefijos/story.md) — Renombrar specs/epics/ → specs/epics/ y specs/stories/ → specs/stories/
+- [[STORY-108-renombrar-specs-sin-prefijos]] — [story.md](specs/stories/STORY-108-renombrar-specs-sin-prefijos/story.md) — Renombrar specs/02-epics/ → specs/epics/ y specs/03-stories/ → specs/stories/
 - [[STORY-109-project-begin-escribe-vision]] — [story.md](specs/stories/STORY-109-project-begin-escribe-vision/story.md) — project-begin escribe la intención en product/vision.md
 - [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] — [story.md](specs/stories/STORY-110-discovery-escribe-stakeholders-y-requisitos/story.md) — project-discovery y reverse-engineering escriben stakeholders y requisitos individuales
 - [[STORY-111-planning-escribe-roadmap]] — [story.md](specs/stories/STORY-111-planning-escribe-roadmap/story.md) — project-planning escribe en product/roadmap.md y epic-from-project-plan lee de allí
@@ -368,12 +365,13 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 - [[domains-index]] — [README.md](domains/README.md) — Documentación de Dominios — Framework SDDF
 - [[domain-epic-lifecycle]] — [domain-epic-lifecycle.md](domains/domain-epic-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle)
+- [[domain-foundational-docs-lifecycle]] — [domain-foundational-docs-lifecycle.md](domains/domain-foundational-docs-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de la Documentación Fundacional (Foundational Docs Lifecycle)
 - [[domain-knowledge-artifacts]] — [domain-knowledge-artifacts.md](domains/domain-knowledge-artifacts.md) — Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifacts)
 - [[domain-project-lifecycle]] — [domain-project-lifecycle.md](domains/domain-project-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Project (Project Lifecycle)
 - [[domain-skills-map]] — [domain-skills-map.md](domains/domain-skills-map.md) — Mapa de skills por nivel del pipeline
 - [[domain-state-management]] — [domain-state-management.md](domains/domain-state-management.md) — Documentación del Dominio: Gestión de Estados (State Management)
 - [[domain-story-lifecycle]] — [domain-story-lifecycle.md](domains/domain-story-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Story (Story Lifecycle)
-- [[domain-work-item-hierarchy]] — [domain-work-item-hierarchy.md](domains/domain-work-item-hierarchy.md) — Documentación del Dominio: Jerarquía de Work Items (Work Item Hierarchy)
+- [[domain-work-item-hierarchy]] — [domain-work-item-hierarchy.md](domains/domain-work-item-hierarchy.md) — Documentación del Dominio: Jerarquía de Work Items
 - [[domain]] — [domain.md](domains/domain.md) — Agile SDDF — Contexto de dominio
 
 ### Arquitectura (architecture/)
@@ -460,10 +458,10 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 356 |
+| Nodos indexados | 357 |
 | Nodos con frontmatter | 347 |
-| Nodos sin frontmatter | 9 |
-| Wikilinks pendientes | 15 |
+| Nodos sin frontmatter | 10 |
+| Wikilinks pendientes | 12 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |
 
@@ -480,17 +478,14 @@ _(sin artefactos externos)_
 Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artefacto:
 
 - [[ADR-0001]] ⚠️ nodo pendiente
-- [[ADR-0003-workflow-canonico-story-y-epic]] ⚠️ nodo pendiente
 - [[ADR-0007]] ⚠️ nodo pendiente
 - [[ADR-0007-templates-como-capa-propia]] ⚠️ nodo pendiente
-- [[ADR-0010]] ⚠️ nodo pendiente
 - [[ADR-0010-specs-dentro-de-docs]] ⚠️ nodo pendiente
-- [[ADR-0011]] ⚠️ nodo pendiente
 - [[ADR-0011-archivos-canonicos-por-tipo]] ⚠️ nodo pendiente
 - [[ADR-0013-eliminar-specs-01-projects]] ⚠️ nodo pendiente
+- [[PROJ-01-agile-sddf]] ⚠️ nodo pendiente
 - [[STORY-100-slug]] ⚠️ nodo pendiente
 - [[project-template]] ⚠️ nodo pendiente
 - [[release-spec-template]] ⚠️ nodo pendiente
-- [[security-checklist]] ⚠️ nodo pendiente
 - [[skill-preflight]] ⚠️ nodo pendiente
 - [[story-template]] ⚠️ nodo pendiente

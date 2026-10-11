@@ -8,7 +8,7 @@ updated: 2026-09-23
 
 # Máquina de estados del framework SDDF
 
-> Documento canónico de estados, subestados y transiciones del pipeline SDDF. Es la fuente de verdad para los skills que actualizan `story.md`, `epic.md` y los documentos de proyecto.
+> Documento canónico de estados, subestados y transiciones del pipeline SDDF. Es la fuente de verdad para los skills que actualizan `story.md`, `epic.md` y `product/vision.md`.
 
 ## Modelo general
 
@@ -109,23 +109,28 @@ Los sub-skills `story-design`, `story-tasking` y `story-testcases` son invocados
 
 ---
 
-## Nivel PROJECT
+## Documentación fundacional (sin work item)
 
-Opera únicamente con **substatus** (el campo `status` no se usa a nivel de proyecto). Consta de 3 documentos secuenciales con gate humano entre fases.
+No es un work item: no tiene `status` de pipeline ni WIP. El avance se detecta por el estado de las capas y por los gates humanos.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> PI
-    PI --> P : substatus DONE → gate humano
-    P --> PP : substatus DONE → gate humano
-    PP --> [*]
-
-    state "project-intent.md" as PI
-    state "project.md (requirement-spec)" as P
-    state "project-plan.md" as PP
+    [*] --> B
+    B --> D : gate humano
+    D --> P : gate humano
+    P --> [*]
+    state "Begin: product/vision.md" as B
+    state "Discovery: product/stakeholders.md + requirements/" as D
+    state "Planning: product/roadmap.md" as P
 ```
 
-Cada documento transita `substatus: IN-PROGRESS → DONE` dentro de su fase. Regla de la constitución (regla 9): **WIP = 1** — solo un documento puede tener `substatus: IN-PROGRESS` a la vez. El skill `project-flow` coordina las transiciones.
+| Fase | Entrada | Salida |
+|---|---|---|
+| Begin | intención | `product/vision.md` |
+| Discovery | visión aprobada | `product/stakeholders.md` y `requirements/` |
+| Planning | requisitos | `product/roadmap.md` |
+
+Cada skill de etapa escribe su documento y su gate; `/project-flow` compone las etapas, pregunta antes de avanzar y **no escribe `substatus`**.
 
 ---
 
@@ -180,3 +185,4 @@ Gate de calidad: `epic-format-validation` valida la estructura del `epic.md` com
 - Workflow narrativo: [[specs-and-workflows]] (descripción de estados y subestados)
 - Principios aplicables: [[constitution]] patrones 8, 14 y regla 9
 - Decisión de arquitectura: [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
+- [[eliminar-specs-01-projects]] — decisión del modelo de dos niveles

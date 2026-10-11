@@ -40,7 +40,7 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [x] **STORY-113** — project-flow, sddf-init, header-aggregation: retoma por etapa según el estado de las capas. Cierre: "01-projects" solo queda en la lógica de migración de memory-system.
 - [x] **STORY-114** — Implementar `memory-system migrate --from=specs-3-levels`: modo de migración que automatiza el colapso en repos existentes, idempotente y con `--dry-run`.
 - [x] **STORY-115** — Actualizar scaffolding de `memory-system`: crear `specs/epics/` y `specs/stories/` en lugar de los tres niveles numerados.
-- [ ] **STORY-116** — Actualizar documentación canónica: `memory-system.md`, `sddf-architecture.md`, `domain-*`, `docs/specs/README.md`, `README` y `CHANGELOG` (breaking change con guía de migración).
+- [x] **STORY-116** — Actualizar documentación canónica: `memory-system.md`, `sddf-architecture.md`, `domain-*`, `docs/specs/README.md`, `README` y `CHANGELOG` (breaking change con guía de migración).
 - [ ] **STORY-117** — Actualizar `sddf.config.yaml` y verificar los tres modos SDD: eliminar rutas a `02-epics/` o `03-stories/` si existen y comprobar que Intent-First, Spec-Anchored y Spec-as-Source funcionan con la nueva estructura.
 - [ ] **STORY-118** — Adoptar la estrategia "SRS único primero, fragmentación cuando duela" en `requirements/`: implementar la estrategia en el framework, actualizar documentación y scaffolding, y ofrecer migración automática para proyectos existentes.
 - [ ] **STORY-123** — Reubicar las secciones restantes de `project.md` y eliminarlo: trasladar las secciones que ADR-0013 no asigna (§1.1–1.7, §2.3, §3, §4, §11, §12 y apéndices) a su capa y eliminar `project.md`, dejando `docs/specs/01-projects/` vacía y eliminada.
@@ -54,6 +54,7 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 
 - [ ] QA de EPIC-21 — ejecutar los 23 evals de `project-flow`, `sddf-init` y `header-aggregation` con `npm run test:eval -- <skill>` y registrar el resultado por caso. Origen: T024 de STORY-113; requiere un runner local operativo.
 - [ ] QA de EPIC-21 — ejecutar la prueba E2E interactiva de `/sddf-init` seguido de `/project-flow` en un repositorio temporal y confirmar que no se crea `01-projects/`, pero sí `product/`, `requirements/` y `product/roadmap.md`. Origen: T027 de STORY-113; requiere entrevista de intención y confirmación humana de los gates.
+- [ ] QUALITY-STORY-116 — Registrar la validación manual de los flujos F-1 a F-3: recorrer `README.md` → `[[domain-work-item-hierarchy]]` → `[[domain-foundational-docs-lifecycle]]` → `[[state-machine]]` y registrar la confirmación de un único modelo de dos niveles, y de que `[[domain-project-lifecycle]]` remite al sucesor (AC-1); recorrer `CHANGELOG.md › [Unreleased] › BREAKING` → guía de migración y registrar rutas, hogares, skills, 4.0.0 y la secuencia `--dry-run` → ejecución real (AC-3); registrar que ADR-0004 y ADR-0013 se cambian en el mismo commit (AC-2). Trasladada desde T038 de [[STORY-116-documentar-modelo-dos-niveles]].
 
 ## Criterios de salida
 - [ ] `docs/specs/01-projects/` no existe en el repositorio del framework.

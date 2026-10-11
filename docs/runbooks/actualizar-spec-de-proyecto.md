@@ -2,20 +2,23 @@
 type: runbook
 slug: runbook-actualizar-spec-de-proyecto
 title: "Runbook para actualizar la especificación de proyecto (project.md)"
-status: COMPLETED
+status: superseded
 substatus: DONE
 parent: null
+superseded-by: domain-foundational-docs-lifecycle
 created: 2026-08-30
 updated: 2026-08-30
 related:
-  - PROJ-01-agile-sddf
+  - eliminar-specs-01-projects
   - index
 ---
 
 <!-- Referencias -->
-[[PROJ-01-agile-sddf]] · [[index]]
+[[eliminar-specs-01-projects]] · [[index]]
 
 # 📘 Runbook para actualizar la especificación de proyecto
+
+> **Reemplazado por [[domain-foundational-docs-lifecycle]]:** `project.md` ya no existe (ADR-0013). Para resincronizar requisitos con el código usa `/reverse-engineering` o `/project-discovery`, que escriben `requirements/` de forma incremental. Las lecciones de este runbook siguen siendo válidas.
 
 > **Contrato de runtime SDDF:** las rutas de instalación vigentes se derivan de
 > [`config/runtimes.json`](../../config/runtimes.json). Las referencias de migración de este runbook no

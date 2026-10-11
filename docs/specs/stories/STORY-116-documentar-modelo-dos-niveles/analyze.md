@@ -162,7 +162,7 @@ Nota AC-1: D-5 conserva en `memory-system.md` `project.md` como archivo canónic
 ### INC-002 [WARNING]
 
 - **Tipo:** D (alcance no reflejado en la historia)
-- **Descripción:** CR-001 amplía el alcance a `scripts/check-doc-links.js` + `test/check-doc-links.test.js`, constitución §8/§9, `AGENTS.md`, `docs/product/README.md`, `docs/adr/README.md` (filas 0010-0012) y `orchestrator-subagent-pattern.md`, pero "📎 Notas / contexto adicional" de story.md aún no lista esas piezas. La aceptación podría tratarlas como fuera de alcance.
+- **Descripción:** CR-001 amplía el alcance a `scripts/check-doc-links.js` + `test/check-doc-links.test.js`, constitución §8/§9, `AGENTS.md`, `docs/product/README.md`, `docs/adr/README.md` (filas 0010-0012), pero "📎 Notas / contexto adicional" de story.md aún no lista esas piezas. La aceptación podría tratarlas como fuera de alcance.
 - **Archivo afectado:** story.md — sección "📎 Notas / contexto adicional"; design.md — CR-001
 - **Acción requerida:** añadir a las notas de story.md la lista de piezas extra de D-6, D-7, D-9 y D-11 según CR-001.
 
@@ -192,7 +192,7 @@ Nota AC-1: D-5 conserva en `memory-system.md` `project.md` como archivo canónic
 ## Recomendaciones
 
 1. **INC-001:** en story.md › "⚙️ Criterios no funcionales específicos", reescribir CNF-1 como "`npm run verify:links` exit 0 y `memory-system check` sin `broken-wikilink` nuevos ni con origen en los archivos modificados (línea base D-12)", y anotar en STORY-117 la decisión pendiente sobre el criterio de salida l. 51 de EPIC-21.
-2. **INC-002:** en story.md › "📎 Notas / contexto adicional", añadir el bullet "Alcance ampliado por diseño (CR-001)" con `check-doc-links.js` y su prueba, `AGENTS.md`, `docs/product/README.md`, `docs/adr/README.md` (0010-0012) y `orchestrator-subagent-pattern.md`.
+2. **INC-002:** en story.md › "📎 Notas / contexto adicional", añadir el bullet "Alcance ampliado por diseño (CR-001)" con `check-doc-links.js` y su prueba, `AGENTS.md`, `docs/product/README.md`, `docs/adr/README.md` (0010-0012)
 3. **INC-003:** en story.md, sustituir `ADR-0013-eliminar-specs-01-projects` por `eliminar-specs-01-projects` en `related`, en el bloque de referencias (l. 21) y en la nota "Origen" (l. 73).
 4. **INC-004:** en tasks.md, ampliar T030 con "exportar `slugIndex` en `module.exports` sin cambiar su firma" y limitar el RED esperado al subcaso `project.md`/`notes.md`; dejar en T031 solo el cambio de regex.
 5. **INC-005:** secuenciar la implementación después de STORY-104…115; en el momento de implementar, T001 es el gate que lo confirma.

@@ -7,17 +7,17 @@ title: "Documentación del Dominio: Gestión de Estados (State Management)"
 # Documentación del Dominio: Gestión de Estados (State Management)
 
 > **Bounded Context:** State Management  
-> **Nivel:** Transversal — aplica a Story, Epic y Project  
+> **Nivel:** Transversal — aplica a Story y Epic; la documentación fundacional solo usa `substatus` sin pipeline.  
 > **Fuente canónica de transiciones:** [[state-machine]]  
 > **Workflow narrativo:** [[specs-and-workflows]]  
-> **Dominios específicos:** [[domain-story-lifecycle]], [[domain-epic-lifecycle]], [[domain-project-lifecycle]]
+> **Dominios específicos:** [[domain-story-lifecycle]], [[domain-epic-lifecycle]], [[domain-foundational-docs-lifecycle]]
 
 ---
 
 ## 1. Visión General
 
 * **Nombre del dominio:** Gestión de Estados y Transiciones (State Management)
-* **Objetivo del sistema:** Proveer el modelo conceptual, las reglas y los invariantes que gobiernan el ciclo de vida de cualquier `WorkItem` del framework SDDF, independientemente de su nivel (Project, Epic, Story).
+* **Objetivo del sistema:** Proveer el modelo conceptual, las reglas y los invariantes que gobiernan el ciclo de vida de los work items Epic y Story.
 * **Principales actores:**
   * **PO / PM** — Define el estado de especificación y aceptación.
   * **Equipo de desarrollo** — Ejecuta transiciones de planificación, implementación y verificación.
@@ -27,7 +27,7 @@ title: "Documentación del Dominio: Gestión de Estados (State Management)"
 * **Bounded Contexts que extienden este dominio:**
   * **Story Lifecycle** — Ciclo de vida de una historia de usuario (L1).
   * **Epic Lifecycle** — Ciclo de vida de un entregable/release (L2).
-  * **Project Lifecycle** — Ciclo de vida de la documentación de proyecto (L3, solo subestados).
+  * **Foundational Docs Lifecycle** — ciclo de visión, requisitos y roadmap; no es un work item.
 
 > **Alcance de este documento:** conceptos, modelo táctico e invariantes transversales. Los pipelines específicos, los estados concretos, las máquinas de estado y las tablas de transiciones por skill viven en los dominios de cada nivel.
 
@@ -35,7 +35,7 @@ title: "Documentación del Dominio: Gestión de Estados (State Management)"
 
 ## 2. Lenguaje Ubicuo (Glosario)
 
-* **WorkItem:** Unidad de trabajo `spec` gestionada por el framework (`project`, `epic` o `story`). Tiene identidad única (`STORY-001`, `EPIC-001`).
+* **WorkItem:** Unidad de trabajo `spec` gestionada por el framework (`epic` o `story`). Tiene identidad única (`STORY-001`, `EPIC-001`).
 * **Status:** Etapa del pipeline. Representa una **acción** que el equipo debe realizar (nombrado con verbos en infinitivo: `SPECIFY`, `IMPLEMENT`, `VERIFY`).
 * **Substatus:** Nivel de avance dentro de un status. Conjunto cerrado: `TODO`, `IN-PROGRESS`, `DONE`, `BLOCKED`.
 * **Transición:** Cambio válido de un `status` a otro, gobernado por un skill, un gate humano o CI/CD.
@@ -92,7 +92,7 @@ Aplican a **todo `WorkItem`**, independientemente de su nivel:
 8. Los nombres de `status` usan **verbos en infinitivo** (ADR-0003) para reflejar acción, no concepto estático.
 9. El conjunto de `status` válidos es **específico por nivel** y se define en el dominio de cada nivel.
 
-> **Nota:** los estados terminales exactos y los pipelines concretos se definen en `domain-story-lifecycle.md`, `domain-epic-lifecycle.md` y `domain-project-lifecycle.md`.
+> **Nota:** los estados terminales y pipelines concretos se definen en [[domain-story-lifecycle]] y [[domain-epic-lifecycle]]. La documentación estratégica se describe en [[domain-foundational-docs-lifecycle]].
 
 ---
 
@@ -149,7 +149,7 @@ Independientemente del nivel, existen cuatro tipos de transición:
 | **Gate de calidad automático** | Validación ejecutada por CI/CD (compilación, tests, linters). | CI en el PR, CI post-merge. |
 | **Gate de revisión humana** | Validación de un artefacto por una persona (diseño, seguridad, estándares). | Revisión por pares, aceptación del PO. |
 | **Gate de formato** | Validación estructural de un artefacto contra un template o esquema. | `epic-format-validation`. |
-| **Gate de capacidad (WIP)** | Control del número máximo de work items en un buffer. | WIP limit en `READY-FOR-IMPLEMENT`, WIP = 1 en Project. |
+| **Gate de capacidad (WIP)** | Control del número máximo de work items en un buffer. | WIP = 1 por nivel de work item. |
 | **Gate de aceptación de negocio** | Confirmación de que el valor de negocio se cumple. | Aceptación del PO en `ACCEPTANCE`. |
 
 > Los gates concretos y sus condiciones específicas se definen en el dominio de cada nivel.
@@ -181,7 +181,7 @@ Independientemente del nivel, existen cuatro tipos de transición:
 * [[specs-and-workflows]] — Specs y workflows narrativos
 * [[domain-story-lifecycle]] — Ciclo de vida de Story (L1)
 * [[domain-epic-lifecycle]] — Ciclo de vida de Epic (L2)
-* [[domain-project-lifecycle]] — Ciclo de vida de Project (L3)
+* [[domain-foundational-docs-lifecycle]] — Ciclo de vida de la documentación fundacional
 * [[constitution]] — Constitución del proyecto
 * [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic
 

@@ -8,13 +8,14 @@ substatus: null
 parent: null
 related:
   - root-folder-practices
+  - eliminar-specs-01-projects
 ---
 <!-- Referencias -->
 [[root-folder-practices]]
 
 ## 📁 Reglas de la estrategia de organización de artefactos (SDDF)
 
-Este documento define las reglas para organizar los artefactos de especificación (proyectos, épicas, historias) en un repositorio que sigue el framework SDDF. La estrategia está inspirada en OpenSpec y SpecKit, pero adaptada para manejar tres niveles jerárquicos con máxima flexibilidad.
+Este documento define las reglas para organizar los artefactos de especificación de un repositorio SDDF. Los únicos work items son las épicas y las historias; el nivel estratégico se documenta en `product/` y `requirements/`, no como un work item.
 
 ---
 
@@ -26,40 +27,38 @@ Todos los artefactos se guardan bajo un directorio raíz configurable. Por defec
 docs/specs/
 ```
 
-Puedes cambiarlo, pero esta documentación asume `$SPECS_BASE/specs/`. A partir de aquí, se representa como `{SPECS_ROOT}`.
+Puedes cambiarlo, pero esta documentación asume `$SPECS_BASE/specs/`. A partir de aquí, se representa como `{SPECS_ROOT}`. La visión, stakeholders, objetivos, roadmap y story map viven en `$SPECS_BASE/product/`; los requisitos viven en `$SPECS_BASE/requirements/`.
 
 ---
 
-### 2. Tipos de workitem y sus carpetas
+### 2. Tipos de work item y sus carpetas
 
-Existen tres tipos de workitem: **Project**, **Épica** y **Story**. Cada tipo tiene su propia carpeta contenedora dentro de `{SPECS_ROOT}`:
-
-```
-{SPECS_ROOT}/
-├── projects/      # Contiene todos los proyectos
-├── epics/    # Contiene todas las épicas
-└── stories/       # Contiene todas las historias (user stories)
-```
-
-Dentro de cada carpeta de tipo, cada workitem individual se guarda en su **propio directorio**, cuyo nombre es el identificador único (ID) del workitem.
+Existen dos tipos de work item: **Épica** y **Story**. Cada tipo tiene su propia carpeta contenedora dentro de `{SPECS_ROOT}`:
 
 ```
 {SPECS_ROOT}/
-├── projects/
-│   └── PROJ-001-nombre-project/          # directorio del proyecto PROJ-001
+├── epics/      # Contiene todas las épicas
+└── stories/    # Contiene todas las historias de usuario
+```
+
+Dentro de cada carpeta de tipo, cada work item se guarda en su **propio directorio**, cuyo nombre comienza con su identificador único:
+
+```
+{SPECS_ROOT}/
 ├── epics/
 │   └── EPIC-001-nombre-epica/       # directorio de la épica EPIC-001
 └── stories/
-    └── STORY-001-nombre-story/         # directorio de la historia STORY-001
+    └── STORY-001-nombre-story/      # directorio de la historia STORY-001
 ```
 
 Por ejemplo:
-docs\specs\01-projects\PROJ-01-nombre-project\project.md 
-docs\specs\01-projects\PROJ-01-nombre-project\project-intent.md
-docs\specs\01-projects\PROJ-01-nombre-project\project-plan.md
-docs\specs\01-projects\PROJ-01-nombre-project\story-map.md
-docs\specs\epics\EPIC-01-nombre-epica\epic.md
-docs\specs\stories\STORY-001-nombre-story\story.md
+
+```
+docs/specs/epics/EPIC-001-nombre-epica/epic.md
+docs/specs/stories/STORY-001-nombre-story/story.md
+```
+
+El modelo histórico de tres niveles está retirado; para migrarlo se usa `/memory-system migrate --from=specs-3-levels`. Véase [[eliminar-specs-01-projects]].
 
 
 ---
@@ -67,25 +66,26 @@ docs\specs\stories\STORY-001-nombre-story\story.md
 ### 3. Identificadores (IDs)
 
 - **Formato:** solo caracteres alfanuméricos, guiones (`-`) y guiones bajos (`_`). Sin espacios.
-- **Unicidad:** Los IDs deben ser únicos **globalmente** en todo el `{SPECS_ROOT}`, independientemente del tipo. Por ejemplo, no puede haber un proyecto `PROJ-001` y una épica `PROJ-001` al mismo tiempo.
-- **Recomendación:** Usar prefijos claros: `PROJ-`, `EPIC-`, `STORY-`. Los números pueden ser secuenciales o basados en un sistema externo (Jira, GitHub).
+- **Unicidad:** los IDs de work items deben ser únicos **globalmente** en todo `{SPECS_ROOT}`.
+- **Work items:** usar los prefijos `EPIC-` y `STORY-`. Los números pueden ser secuenciales o basados en un sistema externo (Jira, GitHub).
+- **Requisitos:** `FR-` y `NFR-` identifican requisitos funcionales y no funcionales en `requirements/`; no son work items ni se almacenan bajo `{SPECS_ROOT}`.
 
 Ejemplos válidos:
-- `PROJ-001`
 - `EPIC-001`
 - `STORY-001`
+- `FR-001`
+- `NFR-001`
 
 ---
 
-### 4. Contenido de cada directorio de workitem
+### 4. Contenido de cada directorio de work item
 
-Dentro de cada directorio de workitem se guardan todos los artefactos relacionados con ese workitem: especificación, plan, tareas, pruebas, etc. No hay restricción sobre los nombres de archivo, pero se recomienda seguir estas convenciones:
+Dentro de cada directorio de work item se guardan todos los artefactos relacionados con ese trabajo: especificación, diseño, tareas, pruebas e informes. Los archivos canónicos son:
 
-| Tipo de workitem | Archivo principal | Archivos comunes |
+| Tipo de work item | Archivo principal | Archivos comunes |
 |------------------|-------------------|------------------|
-| **Project** | `project.md` | `plan.md`, `constitution.md` |
-| **Épica** | `epic.md` | `plan.md`, `notes.md` |
-| **Story** | `story.md` | `tasks.md`, `tests.md`, `design.md` |
+| **Épica** | `epic.md` | `notes.md`, informes de análisis |
+| **Story** | `story.md` | `design.md`, `tasks.md`, `testcases.md`, informes |
 
 Cada archivo que contenga información relevante para el trabajo debe **comenzar con un bloque frontmatter YAML** (ver sección 5).
 
@@ -93,84 +93,79 @@ Cada archivo que contenga información relevante para el trabajo debe **comenzar
 
 ### 5. Frontmatter obligatorio
 
-Todos los archivos `.md` dentro de los directorios de workitem deben incluir frontmatter YAML. Campos mínimos requeridos:
+Todos los archivos principales de work item deben incluir frontmatter YAML. Campos mínimos requeridos:
 
 ```yaml
 ---
-type: project | epic | story
-id: string            # mismo que el nombre del directorio
-title: string         # título legible
-status: BACKLOG | IN_PROGRESS | COMPLETED | ARCHIVED
-parent: string | null   # ID del workitem padre (ver sección 6)
+type: epic | story
+id: string              # mismo ID que identifica el directorio
+title: string           # título legible
+status: string          # etapa del ciclo SDDF
+parent: string | null   # ID de la épica padre (ver sección 6)
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
 ```
 
 **Campos opcionales pero recomendados:**
-- `tags: [tag1, tag2]`
-- `priority: alta | media | baja`
+
+- `kind: feat | fix | chore | hotfix` para historias.
+- `tags: [tag1, tag2]`.
+- `priority: alta | media | baja`.
 
 ---
 
 ### 6. Relaciones jerárquicas (padre-hijo)
 
-La jerarquía entre workitems se define **únicamente mediante el campo `parent` en el frontmatter**. No se utiliza el anidamiento de directorios.
+La jerarquía entre work items se define **únicamente mediante el campo `parent` en el frontmatter**. No se utiliza el anidamiento de directorios.
 
 **Reglas:**
-- Un **Project** no tiene padre (`parent: null`).
-- Un **Épica** debe tener como padre un **Project** válido (`parent: PROJ-001`).
-- Una **Story** puede tener como padre una **Épica** válida (`parent: EPIC-001`). Opcionalmente, puede tener como padre un **Project** (`parent: PROJ-001`) si aún no está asignada a una épica concreta.
 
-**Ejemplo de frontmatter para una story no asignada aún a una épica:**
+- Una **Épica** no tiene padre (`parent: null`).
+- Una **Story** tiene como padre una **Épica** válida (`parent: EPIC-001`).
+
+**Ejemplo de frontmatter para una story:**
 ```yaml
 ---
 type: story
 id: STORY-001
 title: "Mejorar rendimiento del login"
-status: BACKLOG
-parent: PROJ-001   # padre es el proyecto, no una épica
+status: SPECIFY
+parent: EPIC-001
 created: 2025-05-01
 updated: 2025-05-01
 ---
 ```
 
-Cuando la story se asigne a una épica, bastará con cambiar el `parent` al ID de la épica y, opcionalmente, mover el directorio (no obligatorio). La estructura de directorios puede permanecer plana.
+La estructura de directorios permanece plana: el vínculo padre-hijo se expresa en el frontmatter y se refleja bidireccionalmente en la documentación de la épica y de la story.
 
 ---
 
-### 7. Resolución de rutas y búsqueda de workitems
+### 7. Resolución de rutas y búsqueda de work items
 
-Dado que todos los workitems están en carpetas separadas por tipo, para encontrar un workitem por su ID se debe buscar en las tres carpetas (`01-projects/`, `epics/`, `stories/`). **Orden de búsqueda recomendado para IAs:**
+Dado que todos los work items están en carpetas separadas por tipo, para encontrar uno por su ID se debe buscar en las dos carpetas (`epics/` y `stories/`). **Orden de búsqueda recomendado para IAs:**
 
 1. Buscar en `stories/` (por ser el nivel más bajo y numeroso).
 2. Si no se encuentra, buscar en `epics/`.
-3. Si no se encuentra, buscar en `projects/`.
-
-Para facilitar la búsqueda, se puede mantener un archivo de índice `{SPECS_ROOT}/index.md` que liste todos los workitems con sus rutas y metadatos. Este índice puede generarse automáticamente mediante un script o skill.
+Para facilitar la navegación, `docs/index.md` contiene el índice generado de artefactos y metadatos; se regenera con `/memory-system index`.
 
 ---
 
-### 8. Enlaces entre workitems (wikilinks)
+### 8. Enlaces entre work items (wikilinks)
 
-- Usa la sintaxis `[[ID]]` para enlazar a otro workitem.
-- El enlace debe resolverse al archivo principal del workitem (por ejemplo, `project.md` para un proyecto, `epic.md` para una épica, `story.md` para una historia). Si dentro del directorio hay varios archivos, el archivo principal se determina por el tipo (ver sección 4).
+- Usa la sintaxis `[[ID]]` para enlazar a otro work item.
+- El enlace debe resolverse al archivo canónico: `epic.md` para una épica y `story.md` para una historia.
 
-**Ejemplo:** Desde una historia, para enlazar a su épica, escribir `[[EPIC-001]]`. El enlace apuntará a `{SPECS_ROOT}/epics/EPIC-001/epic.md`.
+**Ejemplo:** desde una historia, para enlazar a su épica, escribir `[[EPIC-001]]`. El enlace apunta a `{SPECS_ROOT}/epics/EPIC-001-nombre-epica/epic.md`.
 
 **Resolución para IAs:**  
-Dado un ID, buscar en los directorios de tipo según el orden de la sección 7. Si hay ambigüedad (mismo ID en dos tipos), se resuelve según la prioridad: primero `stories/`, luego `epics/`, luego `01-projects/`. Para evitar ambigüedades, se recomienda usar IDs únicos globalmente.
+Dado un ID, buscar en los directorios de tipo según el orden de la sección 7. Si se detecta el mismo ID en dos directorios, es un error de integridad que debe corregirse, no una ambigüedad que se resuelva por prioridad.
 
 ---
 
-### 9. Índice central (opcional pero recomendado)
+### 9. Índice central
 
-Para acelerar la navegación tanto humana como de IAs, se puede generar un archivo `{SPECS_ROOT}/index.md` que contenga:
-
-- Una tabla o lista con todos los workitems, su tipo, estado, padre y ruta.
-- Un mapa de la jerarquía (por ejemplo, usando listas anidadas generadas a partir de los campos `parent`).
-
-Este índice debe **actualizarse automáticamente** cada vez que se crea, modifica o elimina un workitem.
+Para acelerar la navegación humana y de IAs, `docs/index.md` lista los work items con su tipo, estado, padre y ruta, además de las capas fundacionales. Lo genera `memory-system`; no se mantiene a mano como fuente de verdad.
 
 ---
 
@@ -178,40 +173,38 @@ Este índice debe **actualizarse automáticamente** cada vez que se crea, modifi
 
 | Regla | Verificación |
 |-------|--------------|
-| ¿Todo workitem está dentro de `01-projects/`, `epics/` o `stories/`? | ⬜ |
-| ¿El nombre del directorio coincide con el campo `id` del frontmatter? | ⬜ |
-| ¿Cada archivo `.md` principal comienza con frontmatter YAML? | ⬜ |
+| ¿Todo work item está dentro de `epics/` o `stories/`? | ⬜ |
+| ¿El nombre del directorio comienza con el campo `id` del frontmatter? | ⬜ |
+| ¿Cada archivo principal (`epic.md` o `story.md`) comienza con frontmatter YAML? | ⬜ |
 | ¿Los campos obligatorios (`type`, `id`, `title`, `status`, `parent`, `created`, `updated`) están presentes? | ⬜ |
 | ¿El formato de fechas es `YYYY-MM-DD`? | ⬜ |
-| ¿El `parent` existe (si no es null) y es del tipo adecuado (proyecto para épica, épica o proyecto para story)? | ⬜ |
-| ¿Los IDs son únicos globalmente? | ⬜ |
-| ¿Los wikilinks `[[ID]]` apuntan a workitems existentes? | ⬜ |
+| ¿Una épica tiene `parent: null` y toda story referencia una épica existente? | ⬜ |
+| ¿Los IDs de épicas e historias son únicos globalmente? | ⬜ |
+| ¿Los wikilinks `[[ID]]` apuntan a work items existentes? | ⬜ |
 
 ---
 
 ### 11. Resumen visual de la estrategia
 
-```
-docs/specs/
-├── 01-projects/
-│   └── PROJ-001/
-│       ├── project.md          (frontmatter: type=project, parent=null)
-│       └── plan.md (opcional)
-├── epics/
-│   └── EPIC-001/
-│       ├── epic.md          (frontmatter: type=epic, parent=PROJ-001)
-│       └── notes.md
-└── stories/
-    ├── STORY-001/
-    │   ├── story.md            (frontmatter: type=story, parent=EPIC-001)
-    │   ├── tasks.md
-    │   └── tests.md
-    └── STORY-002/
-        └── story.md            (frontmatter: type=story, parent=PROJ-001)
+```text
+docs/
+├── product/                         # visión, stakeholders, objetivos y roadmap
+├── requirements/                    # FR-* y NFR-*; no son work items
+└── specs/
+    ├── epics/
+    │   └── EPIC-001-nombre-epica/
+    │       ├── epic.md              (frontmatter: type=epic, parent=null)
+    │       └── notes.md
+    └── stories/
+        └── STORY-001-nombre-story/
+            ├── story.md             (frontmatter: type=story, parent=EPIC-001)
+            ├── design.md
+            ├── tasks.md
+            └── testcases.md
 ```
 
 ---
 
 ## ✅ Conclusión
 
-Esta estrategia combina la **flexibilidad de OpenSpec y SpecKit** (directorio por workitem, metadatos para relaciones) con la **claridad de separar tipos** en carpetas distintas. Es ideal para equipos que trabajan con múltiples niveles jerárquicos (proyecto → épica → story) y necesitan poder refinar historias sin asignarlas a una épica concreta. La estructura es fácil de entender para humanos y de procesar para IAs, especialmente si se complementa con un índice central generado automáticamente.
+Esta estrategia separa el contexto estratégico del trabajo entregable: `product/` y `requirements/` orientan las épicas, y cada épica agrupa las historias que la materializan. La estructura de dos niveles es simple para equipos e IAs y conserva trazabilidad mediante frontmatter, wikilinks e índice generado.

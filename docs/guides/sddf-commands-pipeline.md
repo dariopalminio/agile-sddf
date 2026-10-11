@@ -171,11 +171,11 @@ project-begin → project-discovery → project-planning
 
 | Skill | Input | Output |
 |---|---|---|
-| `project-begin` | Intención del usuario (conversación) | `$SPECS_BASE/specs/01-projects/project-intent.md` |
-| `project-discovery` | `project-intent.md` | `$SPECS_BASE/specs/01-projects/project.md` |
-| `project-planning` | `requirement-spec.md` | `$SPECS_BASE/specs/01-projects/project-plan.md` |
+| `project-begin` | Intención del usuario (conversación) | `$SPECS_BASE/product/vision.md` |
+| `project-discovery` | `product/vision.md` | `$SPECS_BASE/product/stakeholders.md` y `$SPECS_BASE/requirements/` |
+| `project-planning` | Requisitos funcionales | `$SPECS_BASE/product/roadmap.md` |
 
-> `project-flow` orquesta los 3 pasos en una sola sesión con gates de revisión entre etapas.
+> `project-flow` detecta la etapa por el estado de las capas y compone los tres skills; no escribe `substatus`.
 > `$SPECS_BASE` procede de `SDDF_ROOT` válida, de `sddf.config.yaml.root` válida o de `docs` si no hay fuente explícita.
 
 ---
@@ -188,7 +188,7 @@ epic-from-project-plan → epic-generate-stories → epic-analyze
 
 | Skill | Input | Output |
 |---|---|---|
-| `epic-from-project-plan` | `project-plan.md` | `$SPECS_BASE/specs/epics/épica-[ID]-[Nombre].md` (uno por épica) |
+| `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `$SPECS_BASE/specs/epics/EPIC-NN-<slug>/epic.md` (uno por épica) |
 | `epic-generate-stories` | Un archivo `epic.md` | `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
 

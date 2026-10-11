@@ -27,7 +27,7 @@ title: "Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle)"
 * **Bounded Contexts relacionados:**
   * **State Management** — Modelo transversal de estados, subestados y transiciones.
   * **Story Lifecycle** — Una épica contiene múltiples historias de usuario.
-  * **Project Lifecycle** — Nivel superior del proyecto.
+  * **Foundational Docs Lifecycle** — Nivel estratégico: visión, requisitos y roadmap.
 * **Alcance de este documento:** estados específicos, subestados, pipeline, máquina de estados, invariantes, gates y trazabilidad **exclusivos del nivel Epic**.
 
 ---
@@ -56,7 +56,6 @@ title: "Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle)"
 | `EpicSubstatus` | Objeto de Valor | Inmutable. Heredado del dominio transversal: `TODO`, `IN-PROGRESS`, `DONE`, `BLOCKED`. |
 | `StoryRef` | Objeto de Valor | Inmutable. Referencia a una historia contenida (`STORY-NNN`). |
 | `ReleaseArtifact` | Objeto de Valor | Inmutable. Se define por nombre, versión y destino (npm, Docker, etc.). |
-| `EpicParent` | Objeto de Valor | Inmutable. Referencia al `Project` contenedor (`PROJ-NNN`). |
 
 ### Agregado y Aggregate Root (AR)
 
@@ -67,7 +66,6 @@ title: "Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle)"
   * `EpicArtifact` (Entidad) — `epic.md` como artefacto principal
   * `StoryRef` (VO) — colección de historias que componen la épica
   * `ReleaseArtifact` (VO) — artefacto publicado en `SHIP`
-  * `EpicParent` (VO) — referencia al proyecto contenedor
   * `WipLimit` (VO) — aplicable solo en `READY-FOR-DEV`
 
 ---
@@ -137,7 +135,7 @@ stateDiagram-v2
 
 Además de las invariantes transversales de [[domain-state-management]]:
 
-1. Una `Epic` **siempre pertenece a un `Project`** (`parent: PROJ-NNN` en el frontmatter).
+1. Una `Epic` es la raíz de la jerarquía de work items (`parent: null`); su vínculo estratégico se mantiene en `product/roadmap.md`.
 2. Una `Epic` contiene **una o más historias** (`StoryRef`). Una épica sin historias no puede pasar de `PLAN` a `READY-FOR-DEV`.
 3. El estado `DEVELOP` no puede completarse hasta que **todas las historias de la épica estén en `DELIVER`**.
 4. El estado `VALIDATE` solo puede alcanzarse cuando todas las historias están entregadas; en caso de fallo, las historias problemáticas regresan a su pipeline y la épica vuelve a `DEVELOP`.
@@ -210,7 +208,7 @@ desactiva esa regla. Implementación de referencia: `readTemplateContract` en
 
 | ID | Estado | Forma | Transición y responsable |
 |---|---|---|---|
-| F1 | planificada, sin ID | `- <Nombre>: <descripción>` (sin checkbox ni `STORY-NNN`; `- [Por completar]` es F1 válido) | la escriben `epic-creation` y `epic-from-project-plan` |
+| F1 | planificada, sin ID | `- <Nombre>: <descripción>` (sin checkbox ni `STORY-NNN`; `- [Por completar]` es F1 válido) | la escriben `epic-creation` y `epic-from-project-plan` desde `product/roadmap.md` |
 | F2 | creada | `- [ ] **STORY-NNN** — <Nombre>: <descripción>` | F1 → F2: `epic-generate-stories`, `epic-generate-all-stories` (asignan el ID) |
 | F3 | completada | `- [x] **STORY-NNN** — <Nombre>: <descripción>` | F2 → F3: `story-implement` (11d), `story-implement-tasks` (4c) |
 
@@ -235,7 +233,7 @@ template anterior (v1) se migran con `/memory-system migrate --from=epic-templat
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Dominio transversal:** [[domain-state-management]]
 * **Principios aplicables:** [[constitution]] (patrones 8, 14; reglas 9 y 15)
-* **Decisión de arquitectura:** [[ADR-0003-workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
+* **Decisión de arquitectura:** [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
 
 ---
 
@@ -243,6 +241,6 @@ template anterior (v1) se migran con `/memory-system migrate --from=epic-templat
 
 * [[domain-state-management]] — Modelo transversal de estados y transiciones
 * [[domain-story-lifecycle]] — Ciclo de vida de Story (contenido de la Epic)
-* [[domain-project-lifecycle]] — Ciclo de vida de Project (contenedor de Epic)
+* [[domain-foundational-docs-lifecycle]] — Ciclo de vida de la documentación fundacional
 * [[constitution]] — Constitución del proyecto
-* [[ADR-0003-workflow-canonico-story-y-epic]] — Workflow canónico de story y epic
+* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic

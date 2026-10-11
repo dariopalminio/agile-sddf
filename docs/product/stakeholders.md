@@ -35,7 +35,7 @@ updated: 2026-10-10
       negocio → dependencias → riesgo técnico → esfuerzo). También consume `story-design` y
       `project-context-diagram`.
 
-- **US-005**: Harness Maintainer (dogfood) / Mantenedor del Framework/Harness
+- **US-005**: Mantenedor del Harness (dogfood) / Harness Maintainer (dogfood)
     - **Descripción**: Quien evoluciona el propio SDDF. Usa el framework sobre sí mismo
       (*dogfooding*): las capacidades nuevas del framework se especifican como historias en
       `docs/specs/stories/` y se implementan con `story-implement`. Necesita además `security-audit`,

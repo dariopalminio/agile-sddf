@@ -61,6 +61,8 @@ agile-sddf/
     │   ├── vision.md
     │   ├── stakeholders.md
     │   └── objectives.md
+    │   ├── roadmap.md
+    │   └── story-map.md
     │
     ├── requirements/                  # capa 2: contrato funcional (persistente)
     │   ├── README.md
@@ -70,9 +72,6 @@ agile-sddf/
     │       └── NFR-NNN-*.md
     │
     ├── specs/                         # capa 3: construcción por incremento
-    │   ├── 01-projects/               # L3 — documentación fundacional
-    │   │   └── PROJ-NNN-*/
-    │   │       └── project.md
     │   ├── epics/                  # L2 — entregables
     │   │   └── EPIC-NNN-*/
     │   │       └── epic.md
@@ -90,7 +89,7 @@ agile-sddf/
     │   ├── README.md
     │   ├── system-overview.md
     │   ├── tech-stack.md
-    │   └── c4/                        # diagramas c4
+    │   └── c4/context-diagram.puml    # diagramas C4
     │
     ├── adr/                           # decisiones inmutables
     │   ├── README.md
@@ -119,13 +118,14 @@ agile-sddf/
     │   ├── README.md                  #   no forma parte de las once capas ni la crea el scaffold
     │   └── rfc-<topic>.md
     │
-    └── templates/                     # meta-artefactos (las nueve plantillas base)
+    └── templates/                     # meta-artefactos
         ├── README.md
         ├── story-template.md          # dueño: story-creation
         ├── epic-template.md           # dueño: epic-creation
-        ├── project-template.md        # dueño: project-discovery
-        ├── project-intent-template.md # dueño: project-begin
-        ├── project-plan-template.md   # dueño: project-planning
+        ├── stakeholders-template.md   # dueño: project-discovery
+        ├── requirement-template.md    # dueño: project-discovery
+        ├── vision-template.md         # dueño: project-begin
+        ├── roadmap-template.md        # dueño: project-planning
         ├── adr-template.md            # autoría manual, semilla de memory-system
         ├── domain-template.md         # autoría manual, semilla de memory-system
         ├── guardrail-template.md      # autoría manual, semilla de memory-system
@@ -134,8 +134,8 @@ agile-sddf/
 
 Las once capas de memoria son `product/`, `requirements/`, `specs/`, `domains/`, `architecture/`,
 `adr/`, `policies/`, `guardrails/`, `guides/`, `runbooks/` y `templates/`, más `constitution.md`
-en la raíz. `rfcs/` es opcional y no la gestiona ningún skill. No existe `requirement-template.md`:
-ningún skill escribe ese template (principio 13 de la constitución), así que no se distribuye.
+en la raíz. `rfcs/` es opcional y no la gestiona ningún skill. Las seis plantillas compartidas se
+declaran en `SHARED_TEMPLATES` del motor; las de ADR, dominio, guardrail y policy son de autoría manual.
 
 ### Reglas del árbol
 
@@ -143,8 +143,8 @@ ningún skill escribe ese template (principio 13 de la constitución), así que 
 |-------|---------|
 | **Raíz única** | Todo bajo `docs/`; el nombre es configurable vía `sddf.config.yaml` (`root:`). |
 | **Un nivel, una responsabilidad** | Cada carpeta de primer nivel agrupa un tipo de artefacto distinto. |
-| **Sin anidamiento profundo** | Máximo 2–3 niveles por debajo de `docs/` (excepto `specs/`, que tiene 3 por su jerarquía L3→L2→L1). |
-| **Prefijos numéricos** | Solo en `specs/` (`01-`, `02-`, `03-`) para reflejar el orden L3→L2→L1. |
+| **Sin anidamiento profundo** | Máximo 2–3 niveles por debajo de `docs/`; `specs/` contiene solo `epics/` y `stories/`. |
+| **Prefijos numéricos** | Ninguna capa usa prefijos numéricos (ADR-0013). |
 | **`.cache/` no versionado** | Los índices derivados viven en `.cache/` y se regeneran on-demand. |
 | **Templates fuera de specs** | `docs/templates/` es meta-artefacto; no vive dentro de `specs/`. |
 | **Constitution fuera de policies** | `docs/constitution.md` está un nivel por encima para reflejar jerarquía. |
@@ -237,7 +237,9 @@ docs/constitution.md          # principios supremos (fuera de policies/)
 | Documento | Propósito |
 |-----------|-----------|
 | [[domain-knowledge-artifacts]] | Modelo completo de artefactos, tipos y TraceLinks |
-| [[domain-work-item-hierarchy]] | Estructura Project → Epic → Story |
+| [[domain-work-item-hierarchy]] | Estructura Epic → Story y nivel estratégico |
+| [[domain-foundational-docs-lifecycle]] | Ciclo de vida de visión, requisitos y roadmap |
+| [[eliminar-specs-01-projects]] | Decisión del modelo de dos niveles |
 | [[domain-state-management]] | Estados, subestados, transiciones |
 | `sddf.config.yaml` | Configuración del framework |
 
@@ -254,12 +256,13 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
 | Modo | Estado | Qué hace |
 |------|--------|----------|
 | `ensure [--fix-frontmatter] [--harness h]` (= sin modo) | STORY-096 | `detect → scaffold → [header-aggregation] → index`: crea solo lo que falta de las once capas, regenera `index.md` y reporta `creados: N · preservados: M · índice regenerado: sí`. Con `--fix-frontmatter` invoca `header-aggregation` en batch con "Saltar todos los conflictos" (solo archivos sin frontmatter). Idempotente: la segunda ejecución reporta `creados: 0`. |
-| `scaffold [--dry-run] [--harness h]` | STORY-096 | `detect → scaffold`: copia-si-falta del árbol semilla y de las nueve plantillas; no toca `index.md`. `--dry-run` imprime `[CREARÍA]`/`[PRESERVARÍA]` sin escribir. |
+| `scaffold [--dry-run] [--harness h]` | STORY-096 | `detect → scaffold`: copia-si-falta del árbol semilla y de las plantillas compartidas; no toca `index.md`. `--dry-run` imprime `[CREARÍA]`/`[PRESERVARÍA]` sin escribir. |
 | `rebuild [--force]` | STORY-096 | Sin `--force`: `❌ rebuild es destructivo. Añade --force para confirmar.` y ningún cambio. Con `--force`: advertencia `⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.`, `scaffold --force` (sobrescribe solo los archivos gestionados, §10.3) e `index`. Nunca borra. |
 | `index [--harness h] [--dry-run]` | STORY-095 | Regenera `docs/index.md` completo desde `assets/index-template.md`: una entrada `[[slug]]` por artefacto, agrupada por capa, más "Estado del grafo" y "Nodos pendientes". `--dry-run` imprime sin escribir. |
 | `check [--json] [--harness h]` | STORY-097 | Verificación en **solo lectura** de cinco familias de problemas (la quinta, `dod-guardrail`, de STORY-101), con exit code para CI (§10.4). No corrige nada y no regenera `index.md`. |
 | `migrate [--harness h] [--yes]` | STORY-098 | Adopta la memoria en un proyecto Speckit u OpenSpec: `detect → scaffold --dry-run` (plan `📋 Plan de migración (<h>)`) `→ confirmación → scaffold` adaptado al perfil del harness (§10.5). `--yes` asume la confirmación; con `no` no escribe nada. No transforma artefactos ni invoca `index`. En un proyecto `sddf` informa `El proyecto ya es SDDF` y remite a `ensure`. |
 | `migrate --from=dod-monolithic [--dry-run] [--force]` | STORY-101 | Divide el DoD de historia en un guardrail por etapa y deja el original como índice deprecado (§10.7). Es un subcomando del motor, sin plan ni confirmación: nunca sobrescribe sin `--force`. |
+| `migrate --from=specs-3-levels [--dry-run] [--force]` | STORY-116 | Migra el layout histórico `specs/{01-projects,02-epics,03-stories}` al modelo de dos niveles: consolida el contexto de proyecto en las capas fundacionales, mueve épicas e historias a `specs/{epics,stories}/` y reescribe wikilinks. Informa cada hallazgo `[NO MIGRADO]`; `--dry-run` no escribe y `--force` permite resolver colisiones de destino. |
 
 ### 10.2 Arquitectura
 
@@ -272,11 +275,11 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
   conoce `scaffold --force`.
 - **Catálogo único de capas** (`LAYERS`): las once capas se declaran una vez en el motor; `scaffold`
   las usa para detectar capas faltantes y el índice deriva de ellas sus placeholders (`specs` más
-  su desglose `specs-projects|epics|stories`, `templates` excluida, más `root` y `external`).
+  su desglose `specs-epics|specs-stories`, `templates` excluida, más `root` y `external`).
 - **Árbol semilla** (`assets/scaffold/**`, espejo del destino): `constitution.md` (secciones de la
-  constitución del framework con `[Por completar]`), `product/{README,vision,stakeholders,objectives}.md`,
+  constitución del framework con `[Por completar]`), `product/{README,vision,stakeholders,objectives,roadmap}.md`,
   un `README.md` por capa con propósito, convención de nombres y wikilink `[[index]]`,
-  `specs/01-projects/`, `epics/`, `stories/` (con `.gitkeep` solo si el directorio no existe),
+  `specs/{epics,stories}/` (con `.gitkeep` solo si el directorio no existe),
   `templates/README.md`, `templates/adr-template.md` y las semillas de autoría manual sin skill
   dueño `templates/{domain,guardrail,policy}-template.md` (ADR-0012). Frontmatter canónico de
   `header-aggregation` con `created`/`updated` = `{date}`, el único placeholder que el motor
@@ -289,15 +292,19 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
   `[PRESERVADO]`; solo con `--force` → `[SOBRESCRITO]`. Ningún modo elimina archivos ni directorios.
   Última línea: `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`
   (`X` y `K` según el perfil del harness, §10.5).
+- **Layout retirado**: si `scaffold` detecta `01-projects/`, `02-epics/` o `03-stories/` bajo
+  `specs/`, no los considera capas del modelo actual y emite
+  `[WARNING] estructura de specs/ de tres niveles detectada (<niveles>): ejecuta /memory-system migrate --from=specs-3-levels`.
+  El subcomando es el único que transforma ese layout histórico.
 - **Detección de harness** (`detect`): `--harness` > `sddf.config.yaml` > `.specify/` > `openspec/`
   > `generic`. La tabla `HARNESS_PROFILES` declara por harness el marcador y las raíces externas
   indexadas en solo lectura (`specs/*/spec.md` y `plan.md` en Spec-kit; `openspec/specs/**/spec.md`
   y `openspec/changes/*/proposal.md` en OpenSpec), las capas que el harness ya modela
   (`skipLayers`) y las semillas con equivalente en el harness (`mappings`); ver §10.5.
 - **Reglas de nodo** (`references/memory-rules.md`): slug = `frontmatter.slug`, o el directorio para
-  `story.md`/`epic.md`/`project.md`/`spec.md`/`proposal.md`/`plan.md`, o `<dir>-index` para
+  `story.md`/`epic.md`/`project.md` (solo repositorios sin migrar)/`spec.md`/`proposal.md`/`plan.md`, o `<dir>-index` para
   `README.md`, o el nombre del archivo; título = `frontmatter.title` o primer `#`; capa = primer
-  segmento de la ruta (`specs/` se divide en `specs-projects|epics|stories`, raíz = `root`, raíces
+  segmento de la ruta (`specs/` se divide en `specs-epics|specs-stories`, raíz = `root`, raíces
   externas = `external`). Se excluyen `index.md`, `specs/.cache/`, `templates/`, `pre-split/` y los
   derivados de historia (`design.md`, `tasks.md`, `testcases.md`, `analyze.md`, `*-report.md`,
   `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`).
@@ -322,11 +329,11 @@ ningún modo los toca ni los elimina:
 | Gestionado | Origen |
 |---|---|
 | `constitution.md` | semilla |
-| `product/README.md`, `product/vision.md`, `product/stakeholders.md`, `product/objectives.md` | semilla |
+| `product/README.md`, `product/vision.md`, `product/stakeholders.md`, `product/objectives.md`, `product/roadmap.md` | semilla |
 | `requirements/README.md`, `specs/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla |
 | `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md`) |
 | `templates/domain-template.md`, `guardrail-template.md`, `policy-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) |
-| `templates/story-template.md`, `epic-template.md`, `project-template.md`, `project-intent-template.md`, `project-plan-template.md` | skill dueño (`story-creation`, `epic-creation`, `project-discovery`, `project-begin`, `project-planning`) |
+| `templates/story-template.md`, `epic-template.md`, `stakeholders-template.md`, `requirement-template.md`, `vision-template.md`, `roadmap-template.md` | skill dueño (`story-creation`, `epic-creation`, `project-discovery`, `project-discovery`, `project-begin`, `project-planning`) |
 
 Un proyecto real recupera una constitución personalizada desde git tras `rebuild --force`; por eso
 el modo exige el flag y emite la advertencia literal antes de escribir.
@@ -343,7 +350,7 @@ exclusiones de `index`) alimenta cinco evaluadores puros:
 |---|---|---|
 | `missing-layer` | Falta una de las once capas como directorio de la raíz, o falta `constitution.md`, y el perfil del harness no la omite (`skipLayers`). | §3, §7.1 |
 | `orphan` | Nodo indexable sin bloque de frontmatter (`---` inicial ausente o sin cerrar). | §7.2 |
-| `invalid-frontmatter` | Falta `type`, `slug` o `title` en el frontmatter **declarado**; además `id` o `status` cuando `type ∈ {project, epic, story}`. Un problema por campo ausente. | §7.2, §7.3 |
+| `invalid-frontmatter` | Falta `type`, `slug` o `title` en el frontmatter **declarado**; además `id` o `status` cuando `type ∈ {project, epic, story}` (`project` solo aparece en repositorios sin migrar). Un problema por campo ausente. | §7.2, §7.3 |
 | `broken-wikilink` | Ocurrencia de un wikilink que no resuelve contra el conjunto de slugs derivados. | §7.8 |
 | `dod-guardrail` | DoD de historia por etapa: frontmatter y cadena `from`/`to`, mapeo de `sddf.config.yaml`, DoD monolítico sin migrar y sección `## DoD aplicable` de los skills (§10.7). Solo si el proyecto tiene DoD. | §6 |
 
@@ -354,6 +361,10 @@ canónico de `header-aggregation`: `date` no existe en ese esquema, `created`/`u
 herramienta y `substatus`/`parent` solo aplican dentro de un flujo. Exigirlos convertiría el primer
 `check` de un repositorio real en decenas de falsos positivos. El razonamiento completo está en
 `skills/memory-system/references/memory-rules.md` §6, que es la fuente de verdad ampliable.
+
+El valor `type: project` se conserva solo para indexar y migrar repositorios sin migrar. En el modelo
+vigente no se crean proyectos bajo `specs/`: el contexto estratégico vive en `product/`, los requisitos
+en `requirements/` y el trabajo entregable en épicas e historias.
 
 **Falsos positivos que `check` no reporta**, por las reglas de extracción de wikilinks
 (`memory-rules.md` §2): un wikilink dentro de un fence o de código inline, los placeholders de
@@ -434,6 +445,11 @@ son una tabla de datos (`HARNESS_PROFILES` del motor, `references/memory-rules.m
   `scaffold --dry-run` (`[OMITIRÍA]`, `[MAPEARÍA]`, `[CREARÍA]`), la confirmación es interacción
   y el scaffolding es `scaffold` con el mismo perfil. Idempotente: una segunda migración confirmada
   termina con `creados: 0`. No transforma, mueve ni reescribe artefactos del harness.
+- **`migrate --from=specs-3-levels`** sí es una migración de contenido del motor: planifica y ejecuta
+  la retirada de `01-projects/`, `02-epics/` y `03-stories/`, conserva los hallazgos sin destino como
+  `[NO MIGRADO]` y actualiza los wikilinks que apuntaban al layout anterior. La guía
+  [artifact-directory-migration.md](../guides/artifact-directory-migration.md) describe el proceso
+  seguro con `--dry-run`, resolución de hallazgos y ejecución final.
 
 ### 10.6 Deprecación de `docs-wiki-builder`
 
