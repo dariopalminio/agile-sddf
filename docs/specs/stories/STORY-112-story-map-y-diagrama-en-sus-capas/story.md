@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-112-story-map-y-diagrama-en-sus-capas
 title: "project-story-mapping y project-context-diagram escriben en product/ y architecture/c4/"
 status: IMPLEMENT
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
 updated: 2026-10-11

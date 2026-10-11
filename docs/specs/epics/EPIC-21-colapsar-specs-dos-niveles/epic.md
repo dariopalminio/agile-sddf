@@ -36,7 +36,7 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [x] **STORY-109** — project-begin + project-pm → vision.md: El substatus de vision.md reemplaza al "proyecto activo" PROJ-NN: TODO hace la entrevista completa, IN-PROGRESS retoma, DONE ofrece Actualizar o Cancelar.
 - [x] **STORY-110** — project-discovery + reverse-engineering + 3 agentes → stakeholders.md + un archivo por FR/NFR: Los IDs nuevos continúan la secuencia (FR-055…) sin sobrescribir los existentes. Si vision.md no está en DONE, se detiene y pide correr /project-begin.
 - [x] **STORY-111** — project-planning → roadmap.md; epic-from-project-plan lee de allí: Replanificar agrega una propuesta nueva sin tocar la lista de épicas reales ni el plan original.
-- [ ] **STORY-112** — project-story-mapping → product/; project-context-diagram → architecture/c4/: --from-files lee las capas en vez de project.md. Si el diagrama ya existe, pide confirmación antes de sobrescribir.
+- [x] **STORY-112** — project-story-mapping → product/; project-context-diagram → architecture/c4/: --from-files lee las capas en vez de project.md. Si el diagrama ya existe, pide confirmación antes de sobrescribir.
 - [ ] **STORY-113** — project-flow, sddf-init, header-aggregation: retoma por etapa según el estado de las capas. Cierre: "01-projects" solo queda en la lógica de migración de memory-system.
 - [ ] **STORY-114** — Implementar `memory-system migrate --from=specs-3-levels`: modo de migración que automatiza el colapso en repos existentes, idempotente y con `--dry-run`.
 - [ ] **STORY-115** — Actualizar scaffolding de `memory-system`: crear `specs/epics/` y `specs/stories/` en lugar de los tres niveles numerados.
@@ -49,6 +49,7 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 
 - [ ] Repetir `npm run test:eval -- project-begin --eval-runner codex` y confirmar los seis casos de STORY-109 cuando se repare el YAML inválido que el runner carga desde un ejemplo ajeno de `security-audit`. Esta verificación se cierra por excepción aprobada en STORY-109 el 2026-10-10.
 - [ ] Ejecutar TC-007…TC-011 de `epic-from-project-plan` cuando se autorice enviar prompts al runner externo; STORY-111 implementó y validó los seis casos iniciales.
+- [ ] Ejecutar `npm run test:eval -- project-story-mapping` y `npm run test:eval -- project-context-diagram`, confirmar exit 0 con todos los casos aprobados y, si alguno falla, ajustar el skill o el agente (no las aserciones) y repetir. Validación futura trasladada desde STORY-112 (contrato #7, AC-1, AC-2, AC-3, CNF-1).
 
 ## Criterios de salida
 - [ ] `docs/specs/01-projects/` no existe en el repositorio del framework.
