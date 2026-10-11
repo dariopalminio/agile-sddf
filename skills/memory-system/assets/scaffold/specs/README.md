@@ -19,8 +19,8 @@ semanas y la usan el equipo y los agentes IA.
 ```
 specs/
 ├── 01-projects/PROJ-NN-<slug>/project.md     # L3 — documentación fundacional
-├── 02-epics/EPIC-NN-<slug>/epic.md           # L2 — entregables
-└── 03-stories/STORY-NNN-<slug>/story.md      # L1 — historias atómicas
+├── epics/EPIC-NN-<slug>/epic.md           # L2 — entregables
+└── stories/STORY-NNN-<slug>/story.md      # L1 — historias atómicas
 ```
 
 Cada directorio de historia puede contener además sus derivados (`design.md`, `tasks.md`,

@@ -395,7 +395,7 @@ function planEpicMigration(text, contract) {
 // Ejecución sobre SPECS_BASE (D-7)
 // ---------------------------------------------------------------------------
 
-// `specs/*/EPIC-*/epic.md`, sin hardcodear el nombre del nivel (sobrevive al renombrado de `02-epics`).
+// `specs/*/EPIC-*/epic.md`, sin hardcodear el nombre del nivel (sobrevive a renombrados del directorio de épicas).
 function discoverEpics(root) {
   const specs = path.join(root, 'specs');
   if (!fs.existsSync(specs) || !fs.statSync(specs).isDirectory()) return [];

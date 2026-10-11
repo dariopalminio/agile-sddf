@@ -10,7 +10,7 @@ Cuando se ejecuta `/story-code-review STORY-000` con solo `story.md` presente
 (faltan `design.md` e `implement-report.md`), el skill debe emitir **exactamente**:
 
 ```
-❌ Artefactos requeridos no encontrados en: docs/specs/03-stories/STORY-000-missing-artifacts/
+❌ Artefactos requeridos no encontrados en: docs/specs/stories/STORY-000-missing-artifacts/
 
    Faltantes:
    · design.md

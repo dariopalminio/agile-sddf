@@ -72,7 +72,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - `testcases.md` — casos de prueba por criterio de aceptación (opcional; requerido si tasks.md ausente)
 - `tasks.md` — plan de tareas de implementación (opcional; requerido si testcases.md ausente)
 - DoD de la etapa `plan` (`$SPECS_BASE/guardrails/dod-story-plan.md`, ver `## DoD aplicable`) — opcional
-- `$SPECS_BASE/specs/02-epics/{parent}-*/epic.md` — épica padre para verificar alineación (opcional)
+- `$SPECS_BASE/specs/epics/{parent}-*/epic.md` — épica padre para verificar alineación (opcional)
 - Template del reporte: `assets/analyze-report-template.md` (opcional, hay fallback interno)
 
 ---
@@ -87,7 +87,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `$SPECS_BASE/specs/03-stories/`
+- El directorio de la historia existe bajo `$SPECS_BASE/specs/stories/`
 - `story.md` existe en el directorio de la historia
 - `design.md` existe en el directorio de la historia (requiere haber ejecutado `/story-design`)
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
@@ -175,7 +175,7 @@ Proporciona el ID (ej. STORY-059) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
+2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
 3. Si no se encuentra: notificar y detener (ver sección Manejo de errores)
 
 #### 1c. Resolución de la ruta de salida
@@ -307,7 +307,7 @@ Si `$TASKS_AVAILABLE = false` Y `$TESTCASES_AVAILABLE = false`:
 
 Buscar el ID de la épica en el frontmatter `parent:` de story.md (ej. `EPIC-12-story-sdd-workflow`).
 
-Intentar encontrar `$SPECS_BASE/specs/02-epics/{parent}-*/epic.md`.
+Intentar encontrar `$SPECS_BASE/specs/epics/{parent}-*/epic.md`.
 
 Si no existe: emitir advertencia y continuar sin verificación de épica:
 ```
@@ -544,7 +544,7 @@ Si solo hay WARNINGs o está todo OK:
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/epic-generate-stories` |
 | `design.md` ausente | `❌ No se encontró design.md en: <ruta>` | Detener. Sugerir `/story-design {story_id}` |
 | `testcases.md` y `tasks.md` ambos ausentes | `❌ Análisis rechazado: sin artefacto de implementación` | Detener. Sugerir `/story-testcases {story_id}` o `/story-tasking {story_id}` |

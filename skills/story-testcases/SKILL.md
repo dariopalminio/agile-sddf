@@ -132,8 +132,8 @@ Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 #### 1b. Resolución del directorio (primera coincidencia)
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/`
-3. Si no se encuentra: `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` → detener
+2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/`
+3. Si no se encuentra: `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` → detener
 
 #### 1c. Verificar artefactos obligatorios
 

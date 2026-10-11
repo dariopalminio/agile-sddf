@@ -174,10 +174,10 @@ Proporciona el ID (ej. STORY-064) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
+2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
 3. Si no se encuentra:
    ```
-   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/
+   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
    Verifica el ID o ejecuta /epic-generate-stories para generarla.
    ```
    Detener la ejecución.
@@ -643,7 +643,7 @@ La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`: n
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` y/o `design.md` ausentes | `❌ Artefactos requeridos no encontrados en: <$STORY_DIR>/` (un único mensaje con la lista de faltantes) | Detener sin modificar ningún archivo |
 | `story.md` no está en `IMPLEMENT/DONE` (incluida una historia ya encolada en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`) | `❌ La historia <story_id> no está en estado IMPLEMENT/DONE.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
 | `implement-report.md` o `testcases.md` ausentes | — (se registran como `⏭️` en el informe) | Continuar sin ese contexto |
@@ -657,8 +657,8 @@ La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`: n
 
 | Artefacto | Condición |
 |-----------|-----------|
-| `$SPECS_BASE/specs/03-stories/STORY-NNN/code-review-report.md` | Siempre |
-| `$SPECS_BASE/specs/03-stories/STORY-NNN/fix-directives.md` | Solo si `needs-changes`; incluye `round` (escritor único: este skill); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Se elimina en `approved` |
+| `$SPECS_BASE/specs/stories/STORY-NNN/code-review-report.md` | Siempre |
+| `$SPECS_BASE/specs/stories/STORY-NNN/fix-directives.md` | Solo si `needs-changes`; incluye `round` (escritor único: este skill); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Se elimina en `approved` |
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |

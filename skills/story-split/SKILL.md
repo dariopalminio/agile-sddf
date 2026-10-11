@@ -41,7 +41,7 @@ El skill acepta tres tipos de input:
 
 - **Tipo A — Texto libre**: historia completa o descripción de feature en lenguaje natural
 - **Tipo B — Ruta de archivo**: ruta relativa o absoluta a un archivo `.md` con el contenido de la historia
-- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia en `$SPECS_BASE/specs/03-stories/`
+- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia en `$SPECS_BASE/specs/stories/`
 
 Fuente estructural del output: `$SPECS_BASE/templates/story-template.md` (leído en tiempo de ejecución)
 
@@ -58,7 +58,7 @@ Fuente estructural del output: `$SPECS_BASE/templates/story-template.md` (leído
 
 ## Precondiciones
 
-- La historia a dividir existe bajo `$SPECS_BASE/specs/03-stories/` o fue provista como texto libre o ruta de archivo
+- La historia a dividir existe bajo `$SPECS_BASE/specs/stories/` o fue provista como texto libre o ruta de archivo
 - El archivo `$SPECS_BASE/templates/story-template.md` existe
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 
@@ -145,7 +145,7 @@ Detectar el tipo de input proporcionado:
 #### Tipo C — Término de búsqueda
 **Señal:** El input es una palabra o frase corta que no parece texto de historia ni ruta explícita.
 **Acción:**
-1. Buscar en `$SPECS_BASE/specs/03-stories/` archivos cuyo nombre contenga el término (sin distinguir mayúsculas)
+1. Buscar en `$SPECS_BASE/specs/stories/` archivos cuyo nombre contenga el término (sin distinguir mayúsculas)
 2. Si hay exactamente 1 coincidencia → leerlo y usarlo como historia a dividir. Continuar al Paso 3.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que elija antes de continuar.
 4. Si no hay coincidencias → tratar el input como Tipo A (texto libre).
@@ -361,13 +361,13 @@ La **historia core** conserva el ID de la historia original — no se le asigna 
 Las **historias adicionales** reciben IDs nuevos consecutivos:
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
-> `specs/03-stories/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> `specs/stories/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
 > el patrón de archivo anidado descrito a continuación.
 
-1. Usar Glob con el patrón `$SPECS_BASE/specs/03-stories/STORY-*/story.md` para localizar todas las
+1. Usar Glob con el patrón `$SPECS_BASE/specs/stories/STORY-*/story.md` para localizar todas las
    historias existentes. De cada ruta retornada, extraer el número `NNN` del segmento `STORY-NNN-*`
-   (directorio padre inmediato). Ejemplo: de `docs/specs/03-stories/STORY-074-integrar-.../story.md` → `74`.
-   Si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/03-stories/ | grep -E "^STORY-[0-9]+"`)
+   (directorio padre inmediato). Ejemplo: de `docs/specs/stories/STORY-074-integrar-.../story.md` → `74`.
+   Si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/stories/ | grep -E "^STORY-[0-9]+"`)
    antes de asumir que no hay historias previas.
 2. Extraer los números de todos los prefijos `STORY-NNN` encontrados
 3. Tomar el número más alto y asignar IDs desde ese punto: `STORY-(N+1)`, `STORY-(N+2)`, etc.
@@ -388,7 +388,7 @@ Las **historias adicionales** reciben IDs nuevos consecutivos:
 
 #### Guardar cada historia adicional
 
-Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/03-stories/`:
+Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/stories/`:
 - **Directorio:** `STORY-{NNN}-{slug}/`
 - **Archivo:** `story.md` con la historia completa en formato del template
 - **Frontmatter:** `id: STORY-{NNN}`, `kind:` heredado de la historia madre, `slug: STORY-{NNN}-{slug}`, `status: SPECIFY`, campo `related:` con el ID de la core y las demás historias hermanas
@@ -405,11 +405,11 @@ Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/03-stories/`:
 ## Historias resultantes
 
 ### Historia 1 — {título corto}
-**Archivo:** `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug}/story.md`
+**Archivo:** `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug}/story.md`
 [Historia completa en formato story-template.md]
 
 ### Historia 2 — {título corto}
-**Archivo:** `$SPECS_BASE/specs/03-stories/STORY-{NNN+1}-{slug}/story.md`
+**Archivo:** `$SPECS_BASE/specs/stories/STORY-{NNN+1}-{slug}/story.md`
 [Historia completa en formato story-template.md]
 
 ...
@@ -418,9 +418,9 @@ Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/03-stories/`:
 [Qué quedó fuera de scope, dependencias entre historias si las hay, orden de implementación sugerido]
 
 ## Archivos generados
-- `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug-core}/story.md` ← repurposed (era `STORY-{NNN}-{slug-original}/`)
-- `$SPECS_BASE/specs/03-stories/STORY-{N+1}-{slug-2}/story.md` ← nuevo
-- `$SPECS_BASE/specs/03-stories/STORY-{N+2}-{slug-3}/story.md` ← nuevo
+- `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug-core}/story.md` ← repurposed (era `STORY-{NNN}-{slug-original}/`)
+- `$SPECS_BASE/specs/stories/STORY-{N+1}-{slug-2}/story.md` ← nuevo
+- `$SPECS_BASE/specs/stories/STORY-{N+2}-{slug-3}/story.md` ← nuevo
 
 > ⚠️ El directorio `STORY-{NNN}-{slug-original}/` fue renombrado a `STORY-{NNN}-{slug-core}/`.
 > Actualiza manualmente cualquier referencia al slug anterior en `epic.md` u otros documentos.
@@ -436,7 +436,7 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
 | Template no encontrado | `❌ No se encontró el template en $SPECS_BASE/templates/story-template.md` | Detener. Pedir verificar que el archivo existe |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
 | Más de 1 coincidencia (Tipo C) | Mostrar lista de coincidencias | Pedir al usuario que elija antes de continuar |
 | Directorio de historia adicional ya existe | Informar al usuario del conflicto | No sobreescribir; continuar con las demás |
 | Directorio original ya renombrado | Detectar por diferencia de slug | Omitir el renombrado sin error; continuar |
@@ -445,8 +445,8 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 
 ## Salida
 
-- `$SPECS_BASE/specs/03-stories/STORY-{NNN}-{slug-core}/story.md` — historia core (directorio repurposed del original)
-- `$SPECS_BASE/specs/03-stories/STORY-{N+1}-{slug}/story.md` … — historias adicionales (nuevas)
+- `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug-core}/story.md` — historia core (directorio repurposed del original)
+- `$SPECS_BASE/specs/stories/STORY-{N+1}-{slug}/story.md` … — historias adicionales (nuevas)
 - Estado de todas las historias resultantes: `SPECIFY` (pendiente de re-evaluación con `/story-evaluation`)
 
 ### Referencias

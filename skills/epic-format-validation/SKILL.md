@@ -38,7 +38,7 @@ leen otros skills (la de clave `historias` y la de clave `smoke-tests`). Produce
 ## Entrada
 
 - Argumento posicional: ruta relativa, nombre (con o sin `.md`) o término de búsqueda del archivo de épica
-- `$SPECS_BASE/specs/02-epics/` — directorio donde se buscan los archivos de épica
+- `$SPECS_BASE/specs/epics/` — directorio donde se buscan los archivos de épica
 - `$SPECS_BASE/templates/epic-template.md` — fuente de verdad estructural (solo lectura)
 
 ## Parámetros
@@ -101,7 +101,7 @@ El skill acepta tres formas de input. Detectar cuál aplica antes de continuar:
 #### Tipo B — Nombre con o sin extensión `.md`
 **Señal:** El input es una palabra o frase corta que no contiene separadores de ruta.
 **Acción:**
-1. Buscar en `$SPECS_BASE/specs/02-epics/` archivos cuyo nombre contenga el término (sin distinguir mayúsculas/minúsculas), incluyendo los que tengan o no extensión `.md`
+1. Buscar en `$SPECS_BASE/specs/epics/` archivos cuyo nombre contenga el término (sin distinguir mayúsculas/minúsculas), incluyendo los que tengan o no extensión `.md`
 2. Si hay exactamente 1 coincidencia → usar ese archivo. Continuar a Paso 2.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que elija antes de continuar.
 4. Si no hay coincidencias → ir a **manejo de archivo no encontrado**.
@@ -113,7 +113,7 @@ RECHAZADO
 
 Archivo no encontrado: <ruta o término proporcionado>
 
-No se encontró ninguna épica en docs/specs/02-epics/ que coincida con el input proporcionado.
+No se encontró ninguna épica en docs/specs/epics/ que coincida con el input proporcionado.
 
 Verifica que el nombre o ruta sea correcto e inténtalo de nuevo.
 ```

@@ -1163,7 +1163,7 @@
               "accion_requerida": "Resolver el hallazgo #1 y volver a ejecutar /story-code-review"
             }
           ],
-          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\n- `src/feat-test.ts` — hallazgo #1\n- `docs/guardrails/dod-story-implement.md` — hallazgo #2 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `tests/unit/feat-test.spec.ts` — hallazgo #1 (test del AC-2)\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #1 (registrar CR)\n"
+          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\n- `src/feat-test.ts` — hallazgo #1\n- `docs/guardrails/dod-story-implement.md` — hallazgo #2 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `tests/unit/feat-test.spec.ts` — hallazgo #1 (test del AC-2)\n- `docs/specs/stories/STORY-TEST/design.md` — hallazgo #1 (registrar CR)\n"
         },
         "sddf_config": {
           "IMPLEMENT": {
@@ -1364,7 +1364,7 @@
               "accion_requerida": "Registrar CR-002 en design.md y actualizar UT-004"
             }
           ],
-          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\nArchivos derivados de los hallazgos:\n\n- `docs/specs/03-stories/STORY-TEST/evals/story-creation.evals.json` — hallazgo #1\n- `docs/specs/03-stories/STORY-TEST/evals/story-improve.evals.json` — hallazgo #1\n- `scripts/migrate-field.js` — hallazgo #2\n- `docs/guardrails/dod-story-implement.md` — hallazgos #3, #4, #5 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `docs/specs/03-stories/STORY-TEST/design.md` — hallazgo #2 (registrar `CR-002`)\n- `docs/specs/03-stories/STORY-TEST/testcases.md` — hallazgo #2 (actualizar `UT-004`)\n- `skills/story-creation/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `skills/story-improve/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `docs/specs/03-stories/STORY-TEST/implement-report.md` — hallazgo #1 (alternativa: corregir el comando declarado)\n- `CHANGELOG.md` — hallazgo #1 (entrada de la historia)\n\n## Ciclo de corrección\n"
+          "whitelist_section_markdown": "## Lista blanca de archivos permitidos para modificar\n\nArchivos derivados de los hallazgos:\n\n- `docs/specs/stories/STORY-TEST/evals/story-creation.evals.json` — hallazgo #1\n- `docs/specs/stories/STORY-TEST/evals/story-improve.evals.json` — hallazgo #1\n- `scripts/migrate-field.js` — hallazgo #2\n- `docs/guardrails/dod-story-implement.md` — hallazgos #3, #4, #5 · **solo lectura**: es el origen de los criterios, no el objeto de la corrección; no editar\n\nDestino de las acciones requeridas:\n\n- `docs/specs/stories/STORY-TEST/design.md` — hallazgo #2 (registrar `CR-002`)\n- `docs/specs/stories/STORY-TEST/testcases.md` — hallazgo #2 (actualizar `UT-004`)\n- `skills/story-creation/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `skills/story-improve/evals/evals.json` — hallazgo #1 (fusión con renumeración de IDs)\n- `docs/specs/stories/STORY-TEST/implement-report.md` — hallazgo #1 (alternativa: corregir el comando declarado)\n- `CHANGELOG.md` — hallazgo #1 (entrada de la historia)\n\n## Ciclo de corrección\n"
         },
         "sddf_config": {
           "IMPLEMENT": {
@@ -1398,7 +1398,7 @@
           "status": "ok",
           "files_modified": [
             "scripts/migrate-field.js",
-            "docs/specs/03-stories/STORY-TEST/design.md"
+            "docs/specs/stories/STORY-TEST/design.md"
           ]
         },
         "code_generator_refactor_result": {
@@ -2934,7 +2934,7 @@
           "registrado (--auto)",
           "❌"
         ],
-        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_file": "docs/specs/stories/STORY-TEST/implement-report.md",
         "output_contains": [
           "## Ciclo de corrección — ronda 1",
           "### Archivos fuera de lista blanca",
@@ -3083,7 +3083,7 @@
           "confirmado (interactivo)",
           "❌"
         ],
-        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_file": "docs/specs/stories/STORY-TEST/implement-report.md",
         "output_contains": [
           "## Ciclo de corrección — ronda 1",
           "### Archivos fuera de lista blanca",
@@ -3240,7 +3240,7 @@
           "⚠️ Rework sin tests nuevos",
           "❌"
         ],
-        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_file": "docs/specs/stories/STORY-TEST/implement-report.md",
         "output_contains": [
           "## Ciclo de corrección — ronda 1",
           "### Archivos fuera de lista blanca",
@@ -3504,7 +3504,7 @@
           "🛑 Ciclo TDD detenido",
           "❌"
         ],
-        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_file": "docs/specs/stories/STORY-TEST/implement-report.md",
         "output_contains": [
           "### Archivos fuera de lista blanca",
           "| GREEN | docs/guardrails/dod-story-implement.md | skill-master/monolithic | registrado (--auto) |"
@@ -3635,7 +3635,7 @@
           "❌",
           "fatal: not a git repository"
         ],
-        "output_file": "docs/specs/03-stories/STORY-TEST/implement-report.md",
+        "output_file": "docs/specs/stories/STORY-TEST/implement-report.md",
         "output_contains": [
           "### Archivos fuera de lista blanca",
           "| GREEN | README.md | skill-master/monolithic | registrado (--auto) |"
@@ -3658,7 +3658,7 @@
           "parent": "EPIC-21-colapsar-specs"
         },
         "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Historias <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
-        "epic_path": "$SPECS_BASE/specs/02-epics/EPIC-21-colapsar-specs/epic.md",
+        "epic_path": "$SPECS_BASE/specs/epics/EPIC-21-colapsar-specs/epic.md",
         "epic_content": "---\ntype: epic\nid: EPIC-21\nslug: EPIC-21-colapsar-specs\ntitle: \"Colapsar specs\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Colapsar specs\n\n## Alcance\nTemplate v2.\n\n## Historias\n- [ ] **STORY-103** — Template v2: reemplazar el template de épica\n- [ ] **STORY-1030** — Otra: historia con ID parecido\n\n## Criterios de salida\n- [ ] Gate actualizado\n\n## Smoke tests\n### SMOKE-1 — Validar épica\n```gherkin\nEscenario: Validar épica\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n- [ ] Revisar **STORY-103** con el PO\n",
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true,
@@ -3675,7 +3675,7 @@
           "- [x] **STORY-1030**",
           "- [x] Revisar **STORY-103**"
         ],
-        "output_file": "$SPECS_BASE/specs/02-epics/EPIC-21-colapsar-specs/epic.md",
+        "output_file": "$SPECS_BASE/specs/epics/EPIC-21-colapsar-specs/epic.md",
         "output_contains": [
           "## Historias",
           "- [x] **STORY-103** — Template v2: reemplazar el template de épica",
@@ -3700,7 +3700,7 @@
           "parent": "EPIC-21-colapsar-specs"
         },
         "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Features <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
-        "epic_path": "$SPECS_BASE/specs/02-epics/EPIC-21-colapsar-specs/epic.md",
+        "epic_path": "$SPECS_BASE/specs/epics/EPIC-21-colapsar-specs/epic.md",
         "epic_content": "---\ntype: epic\nid: EPIC-21\nslug: EPIC-21-colapsar-specs\ntitle: \"Colapsar specs\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Colapsar specs\n\n## Alcance\nTemplate v2.\n\n## Features\n- [ ] **STORY-103** — Template v2: reemplazar el template de épica\n- [ ] **STORY-1030** — Otra: historia con ID parecido\n\n## Criterios de salida\n- [ ] Gate actualizado\n\n## Smoke tests\n### SMOKE-1 — Validar épica\n```gherkin\nEscenario: Validar épica\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n- [ ] Revisar **STORY-103** con el PO\n",
         "tests_pass_after_green": true,
         "tests_pass_after_refactor": true,
@@ -3717,7 +3717,7 @@
           "- [x] **STORY-1030**",
           "- [x] Revisar **STORY-103**"
         ],
-        "output_file": "$SPECS_BASE/specs/02-epics/EPIC-21-colapsar-specs/epic.md",
+        "output_file": "$SPECS_BASE/specs/epics/EPIC-21-colapsar-specs/epic.md",
         "output_contains": [
           "## Features",
           "- [x] **STORY-103** — Template v2: reemplazar el template de épica",

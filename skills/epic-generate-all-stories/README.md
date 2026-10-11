@@ -12,7 +12,7 @@ Procesa todas las épicas existentes en orden alfabético y deriva una historia 
 
 **Produces:**
 
-- Directorios `$SPECS_BASE/specs/03-stories/STORY-NNN-nombre/`.
+- Directorios `$SPECS_BASE/specs/stories/STORY-NNN-nombre/`.
 - Un `story.md` por feature extraída y un resumen consolidado del lote.
 
 **Does not do:**

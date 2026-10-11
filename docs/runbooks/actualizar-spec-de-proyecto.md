@@ -79,21 +79,21 @@ Antes de leer un solo documento de contenido, obtener las cifras. Este bloque es
 la que se escribe todo lo demás:
 
 ```bash
-echo "epic dirs:      $(ls -d docs/specs/02-epics/*/ | wc -l)"
-echo "epic.md:        $(ls docs/specs/02-epics/*/epic.md | wc -l)"
-echo "plan-NN.md:     $(ls docs/specs/02-epics/*/plan-*.md | wc -l)"
-echo "story dirs:     $(ls -d docs/specs/03-stories/*/ | wc -l)"
-echo "story.md:       $(ls docs/specs/03-stories/*/story.md | wc -l)"
+echo "epic dirs:      $(ls -d docs/specs/epics/*/ | wc -l)"
+echo "epic.md:        $(ls docs/specs/epics/*/epic.md | wc -l)"
+echo "plan-NN.md:     $(ls docs/specs/epics/*/plan-*.md | wc -l)"
+echo "story dirs:     $(ls -d docs/specs/stories/*/ | wc -l)"
+echo "story.md:       $(ls docs/specs/stories/*/story.md | wc -l)"
 echo "skills:         $(ls -d skills/*/ | wc -l)"
 echo "agents raiz:    $(ls agents/*.agent.md | wc -l)"
 echo "agents locales: $(ls skills/*/agents/*.md | wc -l)"
 echo "skills c/evals: $(ls -d skills/*/evals | wc -l)"
 
-grep -h "^status:"    docs/specs/02-epics/*/epic.md   | sort | uniq -c
-grep -h "^substatus:" docs/specs/02-epics/*/epic.md   | sort | uniq -c
-grep -h "^status:"    docs/specs/03-stories/*/story.md | sort | uniq -c
-grep -h "^substatus:" docs/specs/03-stories/*/story.md | sort | uniq -c
-grep -h "^kind:"      docs/specs/03-stories/*/story.md | sort | uniq -c
+grep -h "^status:"    docs/specs/epics/*/epic.md   | sort | uniq -c
+grep -h "^substatus:" docs/specs/epics/*/epic.md   | sort | uniq -c
+grep -h "^status:"    docs/specs/stories/*/story.md | sort | uniq -c
+grep -h "^substatus:" docs/specs/stories/*/story.md | sort | uniq -c
+grep -h "^kind:"      docs/specs/stories/*/story.md | sort | uniq -c
 ```
 
 Dos avisos que la ejecución de referencia hizo evidentes:
@@ -112,8 +112,8 @@ subagentes de exploración en paralelo**, uno por eje:
 
 | Subagente | Alcance | Qué debe devolver |
 |---|---|---|
-| 1 | `docs/specs/02-epics/` | Por épica: frontmatter, objetivo en 1-2 líneas, historias hijas, capacidad aportada. Cierra con tabla resumen y agrupamiento temático |
-| 2 | `docs/specs/03-stories/` | Por historia: **solo frontmatter** + título. Cierra con tabla, conteos por estado y por épica padre, e IDs faltantes en la secuencia |
+| 1 | `docs/specs/epics/` | Por épica: frontmatter, objetivo en 1-2 líneas, historias hijas, capacidad aportada. Cierra con tabla resumen y agrupamiento temático |
+| 2 | `docs/specs/stories/` | Por historia: **solo frontmatter** + título. Cierra con tabla, conteos por estado y por épica padre, e IDs faltantes en la secuencia |
 | 3 | `skills/`, `agents/`, `sddf.config.yaml`, `package.json`, `scripts/` | Por skill: descripción, precondición/gate, output, flags, subagentes que invoca. Cierra con tabla skill → fase → output y agrupamiento en pipelines |
 
 Reglas para el prompt de cada subagente:

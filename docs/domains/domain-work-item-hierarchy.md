@@ -59,7 +59,7 @@ title: "Documentación del Dominio: Jerarquía de Work Items (Work Item Hierarch
 | `ParentRef` | Objeto de Valor | Inmutable. Referencia al `WorkItemId` del parent. Puede ser `null` para el nivel L3. |
 | `ChildrenRef` | Objeto de Valor | Inmutable. Colección de referencias a `WorkItemId` de los children. |
 | `Slug` | Objeto de Valor | Inmutable. Cadena en kebab-case que acompaña al ID en la carpeta. |
-| `FolderSegment` | Objeto de Valor | Inmutable. Segmento de ruta que ubica al work item en el repositorio (`01-projects`, `02-epics`, `03-stories`). |
+| `FolderSegment` | Objeto de Valor | Inmutable. Segmento de ruta que ubica al work item en el repositorio (`01-projects`, `epics`, `stories`). |
 
 ### Agregado y Aggregate Root (AR)
 
@@ -172,8 +172,8 @@ parent: EPIC-003
 | Nivel | ID | Carpeta |
 |-------|----|---------|
 | Project | `PROJ-001` | `01-projects/PROJ-001-sddf-framework/` |
-| Epic | `EPIC-003` | `02-epics/EPIC-003-payment-gateway/` |
-| Story | `STORY-042` | `03-stories/STORY-042-add-login-button/` |
+| Epic | `EPIC-003` | `epics/EPIC-003-payment-gateway/` |
+| Story | `STORY-042` | `stories/STORY-042-add-login-button/` |
 
 ---
 
@@ -197,13 +197,13 @@ El framework SDDF alinea su jerarquía con el modelo de **Flight Levels**, que d
 
 ### 7.2 Estructura de carpetas del repositorio
 
-La jerarquía se refleja en el repositorio mediante **carpetas ordenadas por nivel**, con un prefijo numérico que preserva el orden lógico (L3 → L2 → L1):
+La jerarquía se refleja en el repositorio mediante **carpetas ordenadas por nivel**; el nivel preserva el orden lógico (L3 → L2 → L1), no el nombre de la carpeta.
 
 | Nivel | Segmento de carpeta | Orden |
 |-------|---------------------|-------|
 | **Project (L3)** | `01-projects/` | 1 |
-| **Epic (L2)** | `02-epics/` | 2 |
-| **Story (L1)** | `03-stories/` | 3 |
+| **Epic (L2)** | `epics/` | 2 |
+| **Story (L1)** | `stories/` | 3 |
 
 **Ejemplo de árbol:**
 
@@ -212,17 +212,17 @@ docs/specs/
 ├── 01-projects/
 │   └── PROJ-001-sddf-framework/
 │       └── project.md
-├── 02-epics/
+├── epics/
 │   └── EPIC-003-payment-gateway/
 │       └── epic.md
-└── 03-stories/
+└── stories/
     └── STORY-042-add-login-button/
         └── story.md
 ```
 
 **Notas sobre el orden:**
 
-* El prefijo numérico (`01`, `02`, `03`) ordena las carpetas de mayor a menor nivel de abstracción, reflejando la jerarquía.
+* El nivel ordena las carpetas de mayor a menor nivel de abstracción, reflejando la jerarquía.
 * El orden **no** implica dependencia física; las relaciones padre-hijo se modelan por referencias (`parent`, `children`), no por anidamiento de carpetas.
 * Un work item puede moverse entre releases o proyectos actualizando su `parent`, sin necesidad de mover físicamente su carpeta.
 
@@ -231,8 +231,8 @@ docs/specs/
 | Concepto | Nivel | Flight Level | Carpeta |
 |----------|-------|--------------|---------|
 | **Project** | L3 | Flight Level 3 (Estratégico) | `01-projects/` |
-| **Epic** | L2 | Flight Level 2 (Coordinación) | `02-epics/` |
-| **Story** | L1 | Flight Level 1 (Operativo) | `03-stories/` |
+| **Epic** | L2 | Flight Level 2 (Coordinación) | `epics/` |
+| **Story** | L1 | Flight Level 1 (Operativo) | `stories/` |
 
 ---
 
@@ -255,7 +255,7 @@ docs/specs/
 El sistema resuelve un `WorkItemId` a su archivo correspondiente mediante:
 
 1. **Lectura del índice central** (`docs/specs/index.md`) que mapea IDs a rutas.
-2. **Búsqueda por ID** en el segmento de carpeta del nivel correspondiente (`01-projects/`, `02-epics/`, `03-stories/`).
+2. **Búsqueda por ID** en el segmento de carpeta del nivel correspondiente (`01-projects/`, `epics/`, `stories/`).
 3. **Fallback**: si el ID no se encuentra, error explícito.
 
 ---

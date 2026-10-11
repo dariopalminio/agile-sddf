@@ -13,8 +13,8 @@
         "mode": "manual",
         "env": { "SDDF_ROOT": null },
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/", "docs/specs/02-epics/EPIC-300-otra/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/", "docs/specs/epics/EPIC-300-otra/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: slug: EPIC-30-ejemplo", "5: title: \"Épica de ejemplo\"",
           "6: status: PLAN", "7: substatus: IN-PROGRESS", "8: created: 2026-10-01", "9: updated: 2026-10-01", "10: ---",
@@ -26,9 +26,9 @@
         ],
         "stories_body_note": "Los story.md sin body_lines no mencionan criterios de salida ni SMOKE-N y sus AC no afirman esos resultados; ninguno tiene status CANCELED.",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado y el filtro funcionan.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] },
-          { "path": "docs/specs/03-stories/STORY-305-otra-cosa/story.md", "parent": "EPIC-300-otra", "status": "SPECIFY", "substatus": "DONE", "related": [] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado y el filtro funcionan.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] },
+          { "path": "docs/specs/stories/STORY-305-otra-cosa/story.md", "parent": "EPIC-300-otra", "status": "SPECIFY", "substatus": "DONE", "related": [] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -53,8 +53,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -64,7 +64,7 @@
         ],
         "stories_body_note": "Los story.md sin body_lines no mencionan criterios de salida ni SMOKE-N y sus AC no afirman esos resultados; ninguno tiene status CANCELED.",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -82,13 +82,13 @@
       "id": "TC-003",
       "name": "historia-huerfana-int-02",
       "type": "error-handling",
-      "description": "AC-2 fila 2: la sección de historias lista STORY-201 y STORY-202, que existen con parent: EPIC-30-ejemplo; además existe docs/specs/03-stories/STORY-204-auditar-clientes/story.md con parent: EPIC-30-ejemplo que no figura en el índice. Se espera un hallazgo ERROR INT-02 que cita STORY-204 y su story.md, y veredicto BLOCKED.",
+      "description": "AC-2 fila 2: la sección de historias lista STORY-201 y STORY-202, que existen con parent: EPIC-30-ejemplo; además existe docs/specs/stories/STORY-204-auditar-clientes/story.md con parent: EPIC-30-ejemplo que no figura en el índice. Se espera un hallazgo ERROR INT-02 que cita STORY-204 y su story.md, y veredicto BLOCKED.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -98,9 +98,9 @@
         ],
         "stories_body_note": "Los story.md sin body_lines no mencionan criterios de salida ni SMOKE-N y sus AC no afirman esos resultados; ninguno tiene status CANCELED.",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] },
-          { "path": "docs/specs/03-stories/STORY-204-auditar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] },
+          { "path": "docs/specs/stories/STORY-204-auditar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -123,8 +123,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -135,8 +135,8 @@
         ],
         "stories_body_note": "Los story.md sin body_lines no mencionan criterios de salida ni SMOKE-N y sus AC no afirman esos resultados; ninguno tiene status CANCELED.",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -159,8 +159,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -171,8 +171,8 @@
         ],
         "stories_body_note": "Los story.md sin body_lines no mencionan criterios de salida ni SMOKE-N y sus AC no afirman esos resultados; ninguno tiene status CANCELED.",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -195,8 +195,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -223,16 +223,16 @@
       "id": "TC-007",
       "name": "epica-no-encontrada-sin-reporte",
       "type": "fail-fast",
-      "description": "AC-3: no existe ningún directorio EPIC-77-* con epic.md bajo docs/specs/02-epics/ (solo existen EPIC-30-ejemplo y EPIC-770-otra). El skill informa que EPIC-77 no se encontró, indica la ruta buscada y no escribe ningún archivo.",
+      "description": "AC-3: no existe ningún directorio EPIC-77-* con epic.md bajo docs/specs/epics/ (solo existen EPIC-30-ejemplo y EPIC-770-otra). El skill informa que EPIC-77 no se encontró, indica la ruta buscada y no escribe ningún archivo.",
       "input": {
         "invocation": "/epic-analyze EPIC-77",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/", "docs/specs/02-epics/EPIC-770-otra/"],
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/", "docs/specs/epics/EPIC-770-otra/"],
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["No se encontró la épica", "EPIC-77", "specs/02-epics/EPIC-77-*"],
+        "contains": ["No se encontró la épica", "EPIC-77", "specs/epics/EPIC-77-*"],
         "not_contains": ["=== FILE:", "EPIC-770-otra/epic-analyze-report.md", "VEREDICTO: APPROVED"]
       },
       "threshold": 1.0
@@ -246,8 +246,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -257,15 +257,15 @@
         ],
         "stories_body_note": "Los story.md sin body_lines no mencionan criterios de salida ni SMOKE-N y sus AC no afirman esos resultados; ninguno tiene status CANCELED.",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
           "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
         },
         "previous_report": {
-          "path": "docs/specs/02-epics/EPIC-30-ejemplo/epic-analyze-report.md",
+          "path": "docs/specs/epics/EPIC-30-ejemplo/epic-analyze-report.md",
           "frontmatter": { "created": "2026-09-01", "updated": "2026-09-01", "verdict": "BLOCKED", "errors": 1, "warnings": 0 },
           "body_excerpt": "### H-001 [ERROR] — INT-01: historia listada sin directorio\n**Elemento:** `STORY-299`"
         },
@@ -286,8 +286,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -295,7 +295,7 @@
           "19: ", "20: ## Criterios de salida"
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo" }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
@@ -319,8 +319,8 @@
         "invocation": "/epic-analyze EPIC-30 --auto",
         "mode": "agent",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -330,8 +330,8 @@
         ],
         "stories_body_note": "Los story.md sin body_lines no mencionan criterios de salida ni SMOKE-N y sus AC no afirman esos resultados; ninguno tiene status CANCELED.",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -340,7 +340,7 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["STATUS: OK", "VEREDICTO: APPROVED", "HALLAZGOS: ERROR 0 · WARNING 0", "REPORTE: docs/specs/02-epics/EPIC-30-ejemplo/epic-analyze-report.md"],
+        "contains": ["STATUS: OK", "VEREDICTO: APPROVED", "HALLAZGOS: ERROR 0 · WARNING 0", "REPORTE: docs/specs/epics/EPIC-30-ejemplo/epic-analyze-report.md"],
         "not_contains": ["¿", "epic.md ===", "story.md ===", "STATUS: FAIL"]
       },
       "threshold": 1.0
@@ -354,8 +354,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -366,8 +366,8 @@
           "25: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->", "26: ### SMOKE-1 — Reporte generado", "27: ```gherkin", "28: Escenario: Reporte generado", "29:   Dado una épica con índice consistente", "30:   Cuando se ejecuta /epic-analyze", "31:   Entonces existe epic-analyze-report.md", "32: ```"
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-escribir-reporte/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Escribir reporte", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Reporte escrito", "10: ```gherkin", "11: Dado la épica \"EPIC-30-ejemplo\"", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces se escribe \"epic-analyze-report.md\" en el directorio de \"EPIC-30-ejemplo\"", "14: ```", "15: ## 📎 Notas", "16: - Cubre SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-calcular-veredicto/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Calcular veredicto", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Veredicto aprobado", "10: ```gherkin", "11: Dado una épica sin hallazgos", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces el reporte declara el veredicto \"APPROVED\"", "14: ```"] }
+          { "path": "docs/specs/stories/STORY-201-escribir-reporte/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Escribir reporte", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Reporte escrito", "10: ```gherkin", "11: Dado la épica \"EPIC-30-ejemplo\"", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces se escribe \"epic-analyze-report.md\" en el directorio de \"EPIC-30-ejemplo\"", "14: ```", "15: ## 📎 Notas", "16: - Cubre SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-calcular-veredicto/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Calcular veredicto", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Veredicto aprobado", "10: ```gherkin", "11: Dado una épica sin hallazgos", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces el reporte declara el veredicto \"APPROVED\"", "14: ```"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -390,8 +390,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -402,8 +402,8 @@
           "25: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->", "26: ### SMOKE-1 — Reporte generado", "27: ```gherkin", "28: Escenario: Reporte generado", "29:   Dado una épica con índice consistente", "30:   Cuando se ejecuta /epic-analyze", "31:   Entonces existe epic-analyze-report.md", "32: ```"
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-escribir-reporte/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Escribir reporte", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Reporte escrito", "10: ```gherkin", "11: Dado la épica \"EPIC-30-ejemplo\"", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces se escribe \"epic-analyze-report.md\" en el directorio de \"EPIC-30-ejemplo\"", "14: ```", "15: ## 📎 Notas", "16: - Cubre SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-calcular-veredicto/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Calcular veredicto", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Orden del índice", "10: ```gherkin", "11: Dado una épica con tres historias", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces la tabla del índice lista las historias ordenadas por ID", "14: ```"] }
+          { "path": "docs/specs/stories/STORY-201-escribir-reporte/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Escribir reporte", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Reporte escrito", "10: ```gherkin", "11: Dado la épica \"EPIC-30-ejemplo\"", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces se escribe \"epic-analyze-report.md\" en el directorio de \"EPIC-30-ejemplo\"", "14: ```", "15: ## 📎 Notas", "16: - Cubre SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-calcular-veredicto/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Calcular veredicto", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Orden del índice", "10: ```gherkin", "11: Dado una épica con tres historias", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces la tabla del índice lista las historias ordenadas por ID", "14: ```"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -426,8 +426,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -438,8 +438,8 @@
           "24: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->", "25: ### SMOKE-1 — Listado visible", "26: ```gherkin", "27: Escenario: Listado visible", "28:   Dado clientes registrados", "29:   Cuando el usuario abre el listado", "30:   Entonces ve los clientes paginados", "31: ```", "32: ", "33: ### SMOKE-2 — Exportación CSV", "34: ```gherkin", "35: Escenario: Exportación CSV", "36:   Dado clientes registrados", "37:   Cuando el usuario pulsa Exportar", "38:   Entonces se descarga un archivo CSV con los clientes", "39: ```"
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Filtro por estado", "10: ```gherkin", "11: Dado clientes activos e inactivos", "12: Cuando el usuario filtra por \"activo\"", "13: Entonces el listado muestra solo los clientes activos", "14: ```"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Filtro por estado", "10: ```gherkin", "11: Dado clientes activos e inactivos", "12: Cuando el usuario filtra por \"activo\"", "13: Entonces el listado muestra solo los clientes activos", "14: ```"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -462,8 +462,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -473,8 +473,8 @@
           "21: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->", "22: ### SMOKE-1 — Listado visible", "23: ```gherkin", "24: Escenario: Listado visible", "25:   Dado clientes registrados", "26:   Cuando el usuario abre el listado", "27:   Entonces ve los clientes paginados", "28: ```"
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -497,8 +497,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -509,8 +509,8 @@
           "24: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->", "25: <!-- Si uno falla: detener el despliegue o rollback. -->", "26: "
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -533,8 +533,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -546,9 +546,9 @@
           "25: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->", "26: ### SMOKE-1 — Reporte generado", "27: ```gherkin", "28: Escenario: Reporte generado", "29:   Dado una épica con índice consistente", "30:   Cuando se ejecuta /epic-analyze", "31:   Entonces existe epic-analyze-report.md", "32: ```", "33: ", "34: ### SMOKE-2 — Notas visibles", "35: ```gherkin", "36: Escenario: Notas visibles", "37:   Dado una épica con líneas no reconocidas", "38:   Cuando se ejecuta /epic-analyze", "39:   Entonces el reporte lista cada línea en Notas del análisis", "40: ```"
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-escribir-reporte/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Escribir reporte", "8: ## 📎 Notas", "9: - Cubre SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-calcular-veredicto/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Calcular veredicto", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Veredicto aprobado", "10: ```gherkin", "11: Dado una épica sin hallazgos", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces el reporte declara el veredicto \"APPROVED\"", "14: ```"] },
-          { "path": "docs/specs/03-stories/STORY-203-notas-analisis/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Notas del análisis", "8: ## Fuera de alcance (Non-Goals)", "9: - El flujo de SMOKE-2 → STORY-205."] }
+          { "path": "docs/specs/stories/STORY-201-escribir-reporte/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Escribir reporte", "8: ## 📎 Notas", "9: - Cubre SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-calcular-veredicto/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Calcular veredicto", "8: ## ✅ Criterios de aceptación", "9: ### AC-1 — Veredicto aprobado", "10: ```gherkin", "11: Dado una épica sin hallazgos", "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"", "13: Entonces el reporte declara el veredicto \"APPROVED\"", "14: ```"] },
+          { "path": "docs/specs/stories/STORY-203-notas-analisis/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Notas del análisis", "8: ## Fuera de alcance (Non-Goals)", "9: - El flujo de SMOKE-2 → STORY-205."] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -571,8 +571,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -583,8 +583,8 @@
           "24: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->", "25: ### SMOKE-1 — Listado visible", "26: ```gherkin", "27: Escenario: Listado visible", "28:   Dado clientes registrados", "29:   Cuando el usuario abre el listado", "30:   Entonces ve los clientes paginados", "31: ```"
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: status: SPECIFY", "3: substatus: DONE", "4: parent: EPIC-30-ejemplo", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "CANCELED", "related": [], "body_lines": ["1: ---", "2: status: CANCELED", "3: parent: EPIC-30-ejemplo", "4: ---", "5: # Historia: Filtrar clientes", "6: ## 📎 Notas", "7: - Cubre el criterio de salida `El listado funciona.` de la épica."] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: status: SPECIFY", "3: substatus: DONE", "4: parent: EPIC-30-ejemplo", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "CANCELED", "related": [], "body_lines": ["1: ---", "2: status: CANCELED", "3: parent: EPIC-30-ejemplo", "4: ---", "5: # Historia: Filtrar clientes", "6: ## 📎 Notas", "7: - Cubre el criterio de salida `El listado funciona.` de la épica."] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -607,8 +607,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -619,15 +619,15 @@
           "24: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->", "25: ### SMOKE-1 — Listado visible", "26: ```gherkin", "27: Escenario: Listado visible", "28:   Dado clientes registrados", "29:   Cuando el usuario abre el listado", "30:   Entonces ve los clientes paginados", "31: ```"
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
           "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
         },
         "previous_report": {
-          "path": "docs/specs/02-epics/EPIC-30-ejemplo/epic-analyze-report.md",
+          "path": "docs/specs/epics/EPIC-30-ejemplo/epic-analyze-report.md",
           "frontmatter": { "created": "2026-09-01", "updated": "2026-09-01", "verdict": "APPROVED", "errors": 0, "warnings": 1 },
           "body_excerpt": "## Cobertura del contrato de salida\n| CS-1 | `Exportar a PDF` | 22 | STORY-299 | mención · story.md:9 | ✓ |\n| SMOKE-1 | `Listado visible` | 25 | — | — | SAL-02 |"
         },
@@ -648,8 +648,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---",
           "2: type: epic",
@@ -673,10 +673,10 @@
           "30:   Entonces ve los clientes paginados",
           "31: ```"
         ],
-        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/03-stories/ y las épicas de epics_dirs las únicas bajo docs/specs/02-epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/stories/ y las épicas de epics_dirs las únicas bajo docs/specs/epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["EPIC-30-ejemplo", "STORY-202"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related:", "6:   - EPIC-30-ejemplo", "7:   - STORY-202", "8: ---", "9: # Historia: Listar clientes", "10: ## 📎 Notas", "11: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["EPIC-30-ejemplo", "STORY-201"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: [EPIC-30-ejemplo, STORY-201]", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["EPIC-30-ejemplo", "STORY-202"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related:", "6:   - EPIC-30-ejemplo", "7:   - STORY-202", "8: ---", "9: # Historia: Listar clientes", "10: ## 📎 Notas", "11: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["EPIC-30-ejemplo", "STORY-201"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: [EPIC-30-ejemplo, STORY-201]", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -699,8 +699,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---",
           "2: type: epic",
@@ -724,10 +724,10 @@
           "30:   Entonces ve los clientes paginados",
           "31: ```"
         ],
-        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/03-stories/ y las épicas de epics_dirs las únicas bajo docs/specs/02-epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/stories/ y las épicas de epics_dirs las únicas bajo docs/specs/epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["EPIC-30-ejemplo"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related:", "6:   - EPIC-30-ejemplo", "7: ---", "8: # Historia: Listar clientes", "9: ## 📎 Notas", "10: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "IN-PROGRESS", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: IN-PROGRESS", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["EPIC-30-ejemplo"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related:", "6:   - EPIC-30-ejemplo", "7: ---", "8: # Historia: Listar clientes", "9: ## 📎 Notas", "10: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "IN-PROGRESS", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: IN-PROGRESS", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -750,8 +750,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---",
           "2: type: epic",
@@ -775,10 +775,10 @@
           "30:   Entonces ve los clientes paginados",
           "31: ```"
         ],
-        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/03-stories/ y las épicas de epics_dirs las únicas bajo docs/specs/02-epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/stories/ y las épicas de epics_dirs las únicas bajo docs/specs/epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["EPIC-30-ejemplo", "STORY-999"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related:", "6:   - EPIC-30-ejemplo", "7:   - STORY-999", "8: ---", "9: # Historia: Listar clientes", "10: ## 📎 Notas", "11: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["EPIC-30-ejemplo", "STORY-999"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related:", "6:   - EPIC-30-ejemplo", "7:   - STORY-999", "8: ---", "9: # Historia: Listar clientes", "10: ## 📎 Notas", "11: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -801,8 +801,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---",
           "2: type: epic",
@@ -826,10 +826,10 @@
           "30:   Entonces ve los clientes paginados",
           "31: ```"
         ],
-        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/03-stories/ y las épicas de epics_dirs las únicas bajo docs/specs/02-epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/stories/ y las épicas de epics_dirs las únicas bajo docs/specs/epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "COMPLETED", "substatus": "READY", "related": ["EPIC-30-ejemplo"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: COMPLETED", "4: substatus: READY", "5: related:", "6:   - EPIC-30-ejemplo", "7: ---", "8: # Historia: Listar clientes", "9: ## 📎 Notas", "10: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "CANCELED", "related": ["STORY-999"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: CANCELED", "4: related:", "5:   - STORY-999", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "COMPLETED", "substatus": "READY", "related": ["EPIC-30-ejemplo"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: COMPLETED", "4: substatus: READY", "5: related:", "6:   - EPIC-30-ejemplo", "7: ---", "8: # Historia: Listar clientes", "9: ## 📎 Notas", "10: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "CANCELED", "related": ["STORY-999"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: CANCELED", "4: related:", "5:   - STORY-999", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -852,8 +852,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---",
           "2: type: epic",
@@ -877,10 +877,10 @@
           "30:   Entonces ve los clientes paginados",
           "31: ```"
         ],
-        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/03-stories/ y las épicas de epics_dirs las únicas bajo docs/specs/02-epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/stories/ y las épicas de epics_dirs las únicas bajo docs/specs/epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["ADR-0008", "domain-story-lifecycle", "STORY-202", "STORY-XXX-placeholder"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related:", "6:   - ADR-0008", "7:   - domain-story-lifecycle", "8:   - STORY-202", "9:   - STORY-XXX-placeholder", "10: ---", "11: # Historia: Listar clientes", "12: ## 📎 Notas", "13: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": ["ADR-0008", "domain-story-lifecycle", "STORY-202", "STORY-XXX-placeholder"], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related:", "6:   - ADR-0008", "7:   - domain-story-lifecycle", "8:   - STORY-202", "9:   - STORY-XXX-placeholder", "10: ---", "11: # Historia: Listar clientes", "12: ## 📎 Notas", "13: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -903,8 +903,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---",
           "2: type: epic",
@@ -931,13 +931,13 @@
           "33:   Entonces ve los clientes paginados",
           "34: ```"
         ],
-        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/03-stories/ y las épicas de epics_dirs las únicas bajo docs/specs/02-epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/stories/ y las épicas de epics_dirs las únicas bajo docs/specs/epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "TODO", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: TODO", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "TODO", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: TODO", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] },
-          { "path": "docs/specs/03-stories/STORY-203-exportar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "TODO", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: TODO", "5: related: []", "6: ---", "7: # Historia: Exportar clientes"] },
-          { "path": "docs/specs/03-stories/STORY-204-auditar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "TODO", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: TODO", "5: related: []", "6: ---", "7: # Historia: Auditar clientes"] },
-          { "path": "docs/specs/03-stories/STORY-205-ordenar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "BACKLOG", "substatus": "READY", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: BACKLOG", "4: substatus: READY", "5: related: []", "6: ---", "7: # Historia: Ordenar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "TODO", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: TODO", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "TODO", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: TODO", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] },
+          { "path": "docs/specs/stories/STORY-203-exportar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "TODO", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: TODO", "5: related: []", "6: ---", "7: # Historia: Exportar clientes"] },
+          { "path": "docs/specs/stories/STORY-204-auditar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "TODO", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: TODO", "5: related: []", "6: ---", "7: # Historia: Auditar clientes"] },
+          { "path": "docs/specs/stories/STORY-205-ordenar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "BACKLOG", "substatus": "READY", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: BACKLOG", "4: substatus: READY", "5: related: []", "6: ---", "7: # Historia: Ordenar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -960,8 +960,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---",
           "2: type: epic",
@@ -985,17 +985,17 @@
           "30:   Entonces ve los clientes paginados",
           "31: ```"
         ],
-        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/03-stories/ y las épicas de epics_dirs las únicas bajo docs/specs/02-epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo docs/specs/stories/ y las épicas de epics_dirs las únicas bajo docs/specs/epics/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
           "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
         },
         "previous_report": {
-          "path": "docs/specs/02-epics/EPIC-30-ejemplo/epic-analyze-report.md",
+          "path": "docs/specs/epics/EPIC-30-ejemplo/epic-analyze-report.md",
           "frontmatter": { "created": "2026-09-01", "updated": "2026-09-01", "verdict": "APPROVED", "errors": 0, "warnings": 1 },
           "body_excerpt": "### H-001 [WARNING] — MAD-01: historia hija no especificada\n- **Elemento:** `STORY-202` (`SPECIFY/IN-PROGRESS`)"
         },
@@ -1016,8 +1016,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/", "docs/specs/02-epics/EPIC-31-otra/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/", "docs/specs/epics/EPIC-31-otra/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -1027,8 +1027,8 @@
         ],
         "stories_body_note": "Los story.md sin body_lines no mencionan criterios de salida ni SMOKE-N y sus AC no afirman esos resultados; ninguno tiene status CANCELED.",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-31-otra", "status": "SPECIFY", "substatus": "DONE", "related": [] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-31-otra", "status": "SPECIFY", "substatus": "DONE", "related": [] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -1051,8 +1051,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "7: # Épica: Épica de ejemplo", "8: ", "9: ## Alcance", "10: Gestionar el listado de clientes.", "11: ",
@@ -1060,7 +1060,7 @@
         ],
         "stories_body_note": "Los story.md sin body_lines no mencionan criterios de salida ni SMOKE-N y sus AC no afirman esos resultados; ninguno tiene status CANCELED.",
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
@@ -1083,8 +1083,8 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "sddf_config_root": "docs",
-        "epics_dirs": ["docs/specs/02-epics/EPIC-30-ejemplo/"],
-        "epic_md_path": "docs/specs/02-epics/EPIC-30-ejemplo/epic.md",
+        "epics_dirs": ["docs/specs/epics/EPIC-30-ejemplo/"],
+        "epic_md_path": "docs/specs/epics/EPIC-30-ejemplo/epic.md",
         "epic_md_lines": [
           "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---", "6: ",
           "17: ## Historias <!-- sección obligatoria · clave: historias -->",
@@ -1095,8 +1095,8 @@
           "24: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->", "25: ### SMOKE-1 — Listado visible", "26: ```gherkin", "27: Escenario: Listado visible", "28:   Dado clientes registrados", "29:   Cuando el usuario abre el listado", "30:   Entonces ve los clientes paginados", "31: ```"
         ],
         "stories": [
-          { "path": "docs/specs/03-stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre SMOKE-1 de la épica."] },
-          { "path": "docs/specs/03-stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
+          { "path": "docs/specs/stories/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre SMOKE-1 de la épica."] },
+          { "path": "docs/specs/stories/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
         ],
         "templates": {
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",

@@ -7,9 +7,9 @@
       "id": "TC-001",
       "name": "happy-path: creacion interactiva completa de épica",
       "type": "functional",
-      "description": "Ejecutar epic-creation con nombre 'Sistema de pagos'. El skill debe resolver localmente una raíz válida, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo epic.md en $SPECS_BASE/specs/02-epics/EPIC-NN-sistema-de-pagos/, invocar epic-format-validation y mostrar APROBADO con la ruta del archivo y el siguiente paso sugerido.",
+      "description": "Ejecutar epic-creation con nombre 'Sistema de pagos'. El skill debe resolver localmente una raíz válida, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo epic.md en $SPECS_BASE/specs/epics/EPIC-NN-sistema-de-pagos/, invocar epic-format-validation y mostrar APROBADO con la ruta del archivo y el siguiente paso sugerido.",
       "input": {
-        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en $SPECS_BASE/specs/02-epics/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa Alcance, lista 2 historias (Nombre: descripción), un criterio de salida y un smoke test (Dado/Cuando/Entonces) y deja Notas vacía. Acepta las secciones opcionales o las salta.",
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en $SPECS_BASE/specs/epics/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa Alcance, lista 2 historias (Nombre: descripción), un criterio de salida y un smoke test (Dado/Cuando/Entonces) y deja Notas vacía. Acepta las secciones opcionales o las salta.",
         "flags": []
       },
       "expected": {
@@ -37,7 +37,7 @@
       "type": "edge-case",
       "description": "Ejecutar epic-creation --quick con nombre 'Onboarding v2'. El skill debe completar frontmatter y secciones obligatorias sin mostrar preguntas por las secciones opcionales. El epic.md generado debe contener solo secciones obligatorias. La validacion debe pasar y no debe aparecer ninguna pregunta del tipo '¿Quieres completar la seccion?'.",
       "input": {
-        "context": "Entorno SDDF valido. Template disponible con al menos 2 secciones opcionales marcadas como '<!-- seccion opcional'. No hay épicas previas en $SPECS_BASE/specs/02-epics/. El usuario provee nombre 'Onboarding v2', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
+        "context": "Entorno SDDF valido. Template disponible con al menos 2 secciones opcionales marcadas como '<!-- seccion opcional'. No hay épicas previas en $SPECS_BASE/specs/epics/. El usuario provee nombre 'Onboarding v2', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
         "flags": ["--quick"]
       },
       "expected": {

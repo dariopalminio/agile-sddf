@@ -38,7 +38,7 @@ updated: 2026-10-10
 - **US-005**: Mantenedor del Framework
     - **Descripción**: Quien evoluciona el propio SDDF. Usa el framework sobre sí mismo
       (*dogfooding*): las capacidades nuevas del framework se especifican como historias en
-      `docs/specs/03-stories/` y se implementan con `story-implement`. Necesita además `security-audit`,
+      `docs/specs/stories/` y se implementan con `story-implement`. Necesita además `security-audit`,
       los `evals/evals.json` de cada skill y el runbook de publicación en npm.
 
 - **US-006**: Agente de IA consumidor

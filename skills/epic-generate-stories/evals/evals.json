@@ -7,9 +7,9 @@
       "id": "TC-001",
       "name": "happy-path: genera historias desde épica con multiples historias",
       "type": "functional",
-      "description": "Ejecutar epic-generate-stories con un nombre de épica que contiene 3 historias en la seccion ## Historias. El skill debe invocar preflight, resolver el directorio de la épica, extraer las 3 historias, leer el story-template.md, generar un story.md por historia en $SPECS_BASE/specs/03-stories/STORY-NNN-nombre/ y mostrar el resumen con los 3 archivos creados y el siguiente paso sugerido.",
+      "description": "Ejecutar epic-generate-stories con un nombre de épica que contiene 3 historias en la seccion ## Historias. El skill debe invocar preflight, resolver el directorio de la épica, extraer las 3 historias, leer el story-template.md, generar un story.md por historia en $SPECS_BASE/specs/stories/STORY-NNN-nombre/ y mostrar el resumen con los 3 archivos creados y el siguiente paso sugerido.",
       "input": {
-        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/story-template.md existe. El directorio $SPECS_BASE/specs/02-epics/EPIC-01-autenticacion/ contiene epic.md con 3 historias en su seccion ## Historias: '- [ ] **STORY-001** — Login de usuario: permite autenticarse con email y password', '- [ ] **STORY-002** — Registro de usuario: crea cuenta nueva', '- [x] **STORY-003** — Recuperacion de password: flujo de reset via email' (formatos F2/F3 del template v2). No existen historias previas en $SPECS_BASE/specs/03-stories/.",
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/story-template.md existe. El directorio $SPECS_BASE/specs/epics/EPIC-01-autenticacion/ contiene epic.md con 3 historias en su seccion ## Historias: '- [ ] **STORY-001** — Login de usuario: permite autenticarse con email y password', '- [ ] **STORY-002** — Registro de usuario: crea cuenta nueva', '- [x] **STORY-003** — Recuperacion de password: flujo de reset via email' (formatos F2/F3 del template v2). No existen historias previas en $SPECS_BASE/specs/stories/.",
         "epic_input": "EPIC-01-autenticacion"
       },
       "expected": {
@@ -34,15 +34,15 @@
       "id": "TC-002",
       "name": "fail-fast: épica inexistente detiene la ejecucion sin generar archivos",
       "type": "fail-fast",
-      "description": "Ejecutar epic-generate-stories con un nombre de directorio que no existe en $SPECS_BASE/specs/02-epics/. El skill debe fallar en el Paso 1 con el mensaje de error correspondiente y terminar sin crear ningun directorio ni archivo de historia.",
+      "description": "Ejecutar epic-generate-stories con un nombre de directorio que no existe en $SPECS_BASE/specs/epics/. El skill debe fallar en el Paso 1 con el mensaje de error correspondiente y terminar sin crear ningun directorio ni archivo de historia.",
       "input": {
-        "context": "Entorno SDDF valido. SDDF_ROOT definido. El directorio $SPECS_BASE/specs/02-epics/ existe pero no contiene ningun subdirectorio que coincida con el termino indicado.",
+        "context": "Entorno SDDF valido. SDDF_ROOT definido. El directorio $SPECS_BASE/specs/epics/ existe pero no contiene ningun subdirectorio que coincida con el termino indicado.",
         "epic_input": "epica-inexistente"
       },
       "expected": {
         "contains": [
           "epica-inexistente",
-          "specs/02-epics"
+          "specs/epics"
         ],
         "not_contains": [
           "story.md",
@@ -59,7 +59,7 @@
       "type": "fail-fast",
       "description": "[EV-012 · STORY-103] Ejecutar epic-generate-stories con un epic.md que no contiene la sección cuyo título asigna el template v2 a la clave historias (## Historias). El skill debe detectarlo en el Paso 1b, emitir el error con el título leído del template y la nota de migración, y terminar sin escribir ningún archivo.",
       "input": {
-        "context": "Entorno SDDF valido. El directorio $SPECS_BASE/specs/02-epics/EPIC-02-sin-historias/ existe y contiene epic.md con frontmatter y seccion ## Descripcion pero sin seccion ## Historias.",
+        "context": "Entorno SDDF valido. El directorio $SPECS_BASE/specs/epics/EPIC-02-sin-historias/ existe y contiene epic.md con frontmatter y seccion ## Descripcion pero sin seccion ## Historias.",
         "epic_input": "EPIC-02-sin-historias"
       },
       "expected": {
@@ -81,7 +81,7 @@
       "type": "edge-case",
       "description": "Ejecutar epic-generate-stories con una épica que tiene 2 historias, donde la primera (STORY-010) ya tiene story.md existente y la segunda (STORY-011) es nueva. El skill debe detectar el conflicto en la primera, preguntar al usuario si desea sobreescribir, y al responder 'n' (no), saltar STORY-010 y generar solo STORY-011. El resumen debe mostrar STORY-010 como saltada y STORY-011 como generada.",
       "input": {
-        "context": "Entorno SDDF valido. El directorio $SPECS_BASE/specs/02-epics/EPIC-03-pagos/ contiene epic.md con 2 historias: STORY-010 y STORY-011. Ya existe $SPECS_BASE/specs/03-stories/STORY-010-checkout/story.md. El usuario responde 'n' cuando se le pregunta si desea sobreescribir STORY-010.",
+        "context": "Entorno SDDF valido. El directorio $SPECS_BASE/specs/epics/EPIC-03-pagos/ contiene epic.md con 2 historias: STORY-010 y STORY-011. Ya existe $SPECS_BASE/specs/stories/STORY-010-checkout/story.md. El usuario responde 'n' cuando se le pregunta si desea sobreescribir STORY-010.",
         "epic_input": "EPIC-03-pagos",
         "user_responses": ["n"]
       },
@@ -106,7 +106,7 @@
       "type": "happy-path",
       "description": "Ejecutar epic-generate-stories con un epic.md que tiene historias en formato F1 del template v2 (sin checkbox ni STORY-NNN). El skill debe activar el Paso 2b: calcular el maximo ID en uso desde filesystem + otras épicas, asignar IDs secuenciales, hacer backfill en epic.md reescribiendo las lineas F1 de la seccion ## Historias a F2 (- [ ] **STORY-NNN** — Nombre: desc), y luego generar los story.md con esos IDs.",
       "input": {
-        "context": "Entorno SDDF valido. La épica $SPECS_BASE/specs/02-epics/EPIC-05-pagos/epic.md tiene 2 historias en formato F1 (sin ID): '- Pasarela de pago: integracion con Stripe' y '- Historial de transacciones: consulta de pagos pasados'. El mayor STORY-NNN existente en $SPECS_BASE/specs/03-stories/ es STORY-004 (4 historias previas). Ninguna otra épica tiene IDs de historia asignados en su seccion ## Historias. Template story-template.md existe.",
+        "context": "Entorno SDDF valido. La épica $SPECS_BASE/specs/epics/EPIC-05-pagos/epic.md tiene 2 historias en formato F1 (sin ID): '- Pasarela de pago: integracion con Stripe' y '- Historial de transacciones: consulta de pagos pasados'. El mayor STORY-NNN existente en $SPECS_BASE/specs/stories/ es STORY-004 (4 historias previas). Ninguna otra épica tiene IDs de historia asignados en su seccion ## Historias. Template story-template.md existe.",
         "epic_input": "EPIC-05-pagos"
       },
       "expected": {
@@ -135,7 +135,7 @@
       "type": "happy-path",
       "description": "[EV-011 · STORY-103] Épica v2 cuya sección con clave historias tiene 2 líneas F1 y una F2 (STORY-020). El skill asigna IDs a las F1 (STORY-021, STORY-022) reescribiéndolas a F2 \"- [ ] **STORY-NNN** — Nombre: desc\"; la línea F2 y las demás secciones (Alcance, Criterios de salida, Smoke tests, Notas) quedan byte a byte iguales salvo updated: del frontmatter.",
       "input": {
-        "context": "Entorno SDDF válido. Template story-template.md existe. $SPECS_BASE/templates/epic-template.md es el template v2. El mayor STORY-NNN en $SPECS_BASE/specs/03-stories/ y en las demás épicas es STORY-020.",
+        "context": "Entorno SDDF válido. Template story-template.md existe. $SPECS_BASE/templates/epic-template.md es el template v2. El mayor STORY-NNN en $SPECS_BASE/specs/stories/ y en las demás épicas es STORY-020.",
         "epic_input": "EPIC-06-reportes",
         "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Historias <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
         "epic_content": "---\ntype: epic\nid: EPIC-06\nslug: EPIC-06-reportes\ntitle: \"Reportes\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Reportes\n\n## Alcance\nReportes de ventas.\n\n## Historias\n- [ ] **STORY-020** — Ventas diarias: reporte por día\n- Exportar CSV: descarga del reporte\n- Filtros: filtrado por fecha\n\n## Criterios de salida\n- [ ] Los reportes cargan en menos de 2 s\n\n## Smoke tests\n### SMOKE-1 — Ver reporte\n```gherkin\nEscenario: Ver reporte\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n- Ver STORY-020 para el formato base\n"
@@ -153,7 +153,7 @@
           "No se encontraron historias",
           "La épica no tiene la sección"
         ],
-        "output_file": "$SPECS_BASE/specs/02-epics/EPIC-06-reportes/epic.md",
+        "output_file": "$SPECS_BASE/specs/epics/EPIC-06-reportes/epic.md",
         "output_contains": [
           "- [ ] **STORY-021** — Exportar CSV",
           "- [ ] **STORY-022** — Filtros",
@@ -170,7 +170,7 @@
       "type": "edge-case",
       "description": "[EV-015 · STORY-103] El template titula \"## Features\" la sección con clave historias. La épica tiene \"## Features\" con dos líneas F1. El skill resuelve el título por clave desde el template (Paso 1b) y asigna IDs F1 → F2 dentro de ## Features, sin exigir una sección Historias (verificación complementaria por inspección: el SKILL.md no hardcodea el título \"Historias\").",
       "input": {
-        "context": "Entorno SDDF válido. Template story-template.md existe. $SPECS_BASE/templates/epic-template.md es el template v2. El mayor STORY-NNN en $SPECS_BASE/specs/03-stories/ y en las demás épicas es STORY-030.",
+        "context": "Entorno SDDF válido. Template story-template.md existe. $SPECS_BASE/templates/epic-template.md es el template v2. El mayor STORY-NNN en $SPECS_BASE/specs/stories/ y en las demás épicas es STORY-030.",
         "epic_input": "EPIC-07-catalogo",
         "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Features <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
         "epic_content": "---\ntype: epic\nid: EPIC-07\nslug: EPIC-07-catalogo\ntitle: \"Catalogo\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Catalogo\n\n## Alcance\nCatálogo de productos.\n\n## Features\n- Listado: muestra productos\n- Búsqueda: busca por nombre\n\n## Criterios de salida\n- [ ] El listado pagina de 20 en 20\n\n## Smoke tests\n### SMOKE-1 — Ver listado\n```gherkin\nEscenario: Ver listado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"

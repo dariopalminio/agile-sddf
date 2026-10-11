@@ -76,8 +76,8 @@ Un proyecto (project) contiene varias épicas (epic), y cada épica contiene var
 
 ```
 project (specs/01-projects/<PROJ-NN>-<slug>/project.md)
-    └── epic (specs/02-epics/<EPIC-NN>-<slug>/epic.md)
-        └── story (specs/03-stories/<STORY-NNN>-<slug>/story.md)
+    └── epic (specs/epics/<EPIC-NN>-<slug>/epic.md)
+        └── story (specs/stories/<STORY-NNN>-<slug>/story.md)
 ```
 
 ---

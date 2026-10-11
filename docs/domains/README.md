@@ -48,8 +48,8 @@ Project (L3)         ──► Documentación fundacional del proyecto
 | Nivel | Flight Level | Carpeta | Prefijo |
 |-------|--------------|---------|---------|
 | **Project (L3)** | Estratégico | `01-projects/` | `PROJ-` |
-| **Epic (L2)** | Coordinación | `02-epics/` | `EPIC-` |
-| **Story (L1)** | Operativo | `03-stories/` | `STORY-` |
+| **Epic (L2)** | Coordinación | `epics/` | `EPIC-` |
+| **Story (L1)** | Operativo | `stories/` | `STORY-` |
 
 > Para más detalle, ver [[domain-work-item-hierarchy]].
 

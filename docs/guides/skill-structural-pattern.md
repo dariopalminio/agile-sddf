@@ -116,8 +116,8 @@ Si los comandos de prueba tardan mucho, el skill debe mostrar progreso periódic
 ### 14. Rutas de output predecibles
 
 $SPECS_BASE/specs/01-projects/<PROJ-ID>/  → artefactos de proyecto
-$SPECS_BASE/specs/02-epics/<EPIC-NN>/  → épicas
-$SPECS_BASE/specs/03-stories/<STORY-NNN>/ → historias
+$SPECS_BASE/specs/epics/<EPIC-NN>/  → épicas
+$SPECS_BASE/specs/stories/<STORY-NNN>/ → historias
 
 ### 15. Versionado mediante substatus
 

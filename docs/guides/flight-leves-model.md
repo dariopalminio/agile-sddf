@@ -22,7 +22,7 @@ Este framework propone y soporta flujos de trabajo a diferentes niveles de granu
 * **L2 - Épica:** Aquí vive el flujo de trabajo de entregables (Epic) dentro de un proyecto.
 * **L1 - Story:** Aquí vive el flujo de trabajo de historias de usuario (User Story) dentro de un entregable o épica.
 
-> **Nota de terminología:** hasta la v1.x este nivel se llamaba *Release* y sus artefactos vivían en `specs/releases/`. Se renombró a **Épica** (`specs/02-epics/`) porque «release» se confundía con el sentido CI/CD del término y porque la relación entre ambos es **N:M**: una épica puede abarcar varias releases y una release puede contener varias épicas. En SDDF, **«release» queda reservado exclusivamente para el sentido de CI/CD**; el work-item de nivel L2 es siempre una **épica** (`EPIC-NN`). Ver [[nivel-l2-epic-y-directorios-numerados]].
+> **Nota de terminología:** hasta la v1.x este nivel se llamaba *Release* y sus artefactos vivían en `specs/releases/`. Se renombró a **Épica** (`specs/epics/`) porque «release» se confundía con el sentido CI/CD del término y porque la relación entre ambos es **N:M**: una épica puede abarcar varias releases y una release puede contener varias épicas. En SDDF, **«release» queda reservado exclusivamente para el sentido de CI/CD**; el work-item de nivel L2 es siempre una **épica** (`EPIC-NN`). Ver [[nivel-l2-epic-y-directorios-numerados]].
 
 Estos niveles tienen cierta semejanza con la jerarquía tradicional de proyectos ágiles (Project --> Epic --> Story), con el modelo "Flight Levels" de Klaus Leopold (L3 -estratégico- --> L2 -coordinación- --> L1 -táctico-) y con los tres niveles que se suelen utilizar en herramientas como Jira software (Initiative --> Epic --> Story).
 
@@ -53,20 +53,20 @@ El modelo jerárquico de elementos de trabajo (Work-items) se organiza en tres n
 
 ```
 Project (01-projects)
-    └── Épica (02-epics/ — Epics)
-        └── Story (03-stories/ — Stories)
+    └── Épica (epics/ — Epics)
+        └── Story (stories/ — Stories)
 ```
 
 ## Jerarquía Flight Levels
 
 01-projects/    📄 (Visión global de proyecto o iniciativa - L3)  ← Alto nivel
-02-epics/      📂 (Entregables - L2)       ← Nivel intermedio
-03-stories/    📂 (Historias y Tareas - L1)         ← Bajo nivel
+epics/      📂 (Entregables - L2)       ← Nivel intermedio
+stories/    📂 (Historias y Tareas - L1)         ← Bajo nivel
 
 ## Documentos de especificaciones
 
 La documentación generada por el framework se organiza en tres carpetas principales, cada una correspondiente a un nivel de flujo de trabajo:
 
 * **L3 - Project:** `docs\specs\01-projects` — para documentos relacionados con la visión general del proyecto, como la intención del proyecto, el plan de proyecto y la especificación de requerimientos a nivel de proyecto.
-* **L2 - Épica:** `docs\specs\02-epics` — para documentos relacionados con entregables específicos o épicas dentro del proyecto. El artefacto canónico dentro de cada `EPIC-NN-*/` es `epic.md`.
-* **L1 - Story:** `docs\specs\03-stories` — para documentos relacionados con historias de usuario individuales, como la historia de usuario en formato gherkin, criterios de aceptación, y evaluaciones de calidad de la historia.
+* **L2 - Épica:** `docs\specs\epics` — para documentos relacionados con entregables específicos o épicas dentro del proyecto. El artefacto canónico dentro de cada `EPIC-NN-*/` es `epic.md`.
+* **L1 - Story:** `docs\specs\stories` — para documentos relacionados con historias de usuario individuales, como la historia de usuario en formato gherkin, criterios de aceptación, y evaluaciones de calidad de la historia.

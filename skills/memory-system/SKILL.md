@@ -445,7 +445,7 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
    `[PRESERVADO] <ruta>` (con `rebuild --force`, sobrescribe y registra `[SOBRESCRITO]`). Copia
    las cinco plantillas compartidas desde `<CLI_ROOT>/skills/<dueño>/assets/` tal cual; si el
    origen no existe, `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`. Crea
-   los directorios de capa y `specs/01-projects/`, `02-epics/`, `03-stories/` (con `.gitkeep` solo
+   los directorios de capa y `specs/01-projects/`, `epics/`, `stories/` (con `.gitkeep` solo
    si el directorio no existía). No borres nada. Con `--dry-run` solo lista `[CREARÍA]`/`[PRESERVARÍA]`/`[MAPEARÍA]`/`[OMITIRÍA]`. Cierra
    con `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`.
 3. **Índice inline** (`ensure`, `rebuild --force`, `index`): lista los `.md` de `SPECS_BASE` (y las
@@ -480,7 +480,7 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
 ## Salida
 
 - `$SPECS_BASE/constitution.md`, `product/{README,vision,stakeholders,objectives}.md`, un
-  `README.md` por capa, `specs/01-projects/`, `02-epics/`, `03-stories/` y las nueve plantillas de
+  `README.md` por capa, `specs/01-projects/`, `epics/`, `stories/` y las nueve plantillas de
   `templates/` — solo los que faltaban (`scaffold`, `ensure`, `migrate`) o todos los gestionados
   (`rebuild --force`), salvo las capas y semillas que el perfil del harness omite o mapea.
 - En Speckit/OpenSpec, `index.md` enlaza los artefactos del harness en "Artefactos externos" con

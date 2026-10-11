@@ -92,8 +92,8 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 Un proyecto (project) contiene varias épicas (epic), y cada épica contiene varias historias (story).
 
 project (`$SPECS_BASE/specs/01-projects/<PROJECT-NAME>/project.md`)
-    └── epic (`$SPECS_BASE/specs/02-epics/<EPIC-NAME>/epic.md`)
-        └── story (`$SPECS_BASE/specs/03-stories/<STORY-NAME>/story.md`)
+    └── epic (`$SPECS_BASE/specs/epics/<EPIC-NAME>/epic.md`)
+        └── story (`$SPECS_BASE/specs/stories/<STORY-NAME>/story.md`)
 
 
 ---
@@ -207,8 +207,8 @@ Los skills exponen flags para variantes de comportamiento: --quick, --update, --
 #### 13. Rutas de output predecibles
 
 $SPECS_BASE/specs/01-projects/<PROJ-NN>-<slug>/project.md  → artefactos de proyecto
-$SPECS_BASE/specs/02-epics/<EPIC-NN>-<slug>/epic.md        → épicas
-$SPECS_BASE/specs/03-stories/<STORY-NNN>-<slug>/story.md   → historias
+$SPECS_BASE/specs/epics/<EPIC-NN>-<slug>/epic.md        → épicas
+$SPECS_BASE/specs/stories/<STORY-NNN>-<slug>/story.md   → historias
 
 #### 14. Versionado mediante substatus
 
@@ -222,7 +222,7 @@ Existe un skill de validación explícito (epic-format-validation) que actúa co
 
 Las decisiones se registran en el nivel que corresponde a su alcance:
 
-- **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`$SPECS_BASE/specs/03-stories/STORY-NNN/design.md`)
+- **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`$SPECS_BASE/specs/stories/STORY-NNN/design.md`)
 - **Decisiones de un cambio OpenSpec** → `design.md` del change (`openspec/changes/`)
 - **Decisiones transversales de arquitectura** → `docs/adr/ADR-NNNN-slug.md` siguiendo `docs/adr/adr-template.md`
 

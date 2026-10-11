@@ -132,18 +132,18 @@ Si el usuario no proporcionó un nombre de épica junto con el comando, pregunta
 Con el nombre provisto:
 - Derivar el **slug kebab-case**: minúsculas, palabras separadas por guiones, sin caracteres especiales (Ej: `"Sistema de pagos"` → `sistema-de-pagos`)
 - Construir el **ID de directorio**: proponer el siguiente ID disponible buscando con Glob el
-  patrón `$SPECS_BASE/specs/02-epics/EPIC-*/epic.md`. La herramienta Glob solo encuentra
+  patrón `$SPECS_BASE/specs/epics/EPIC-*/epic.md`. La herramienta Glob solo encuentra
   archivos, no directorios — usar siempre este patrón de archivo anidado. De cada ruta retornada,
   extraer el número `NN` del segmento `EPIC-NN-*` (directorio padre). Tomar el número más alto
-  y sumarle 1; si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/02-epics/ |
+  y sumarle 1; si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/epics/ |
   grep -E "^EPIC-"`) antes de asumir que no hay épicas previas.
   Formato final: `EPIC-NN-<slug>` con NN de 2 dígitos (Ej: `EPIC-14-mi-epica`).
   Si el usuario prefiere asignar el ID manualmente, aceptarlo sin objeción.
-- Definir la **ruta de salida**: `$SPECS_BASE/specs/02-epics/<EPIC-NN-slug>/epic.md`
+- Definir la **ruta de salida**: `$SPECS_BASE/specs/epics/<EPIC-NN-slug>/epic.md`
 
 #### Verificar conflicto de directorio
 
-Si el directorio `$SPECS_BASE/specs/02-epics/<EPIC-NN-slug>/` ya existe, preguntar:
+Si el directorio `$SPECS_BASE/specs/epics/<EPIC-NN-slug>/` ya existe, preguntar:
 
 > "El directorio `<ruta>` ya existe. ¿Qué deseas hacer?
 > 1. Sobreescribir el archivo existente
@@ -264,7 +264,7 @@ Con todas las respuestas recopiladas, construir el archivo `epic.md` completo:
 #### Crear el directorio y escribir el archivo
 
 ```
-$SPECS_BASE/specs/02-epics/<EPIC-NN-slug>/epic.md
+$SPECS_BASE/specs/epics/<EPIC-NN-slug>/epic.md
 ```
 
 Verificar que el directorio existe; si no, crearlo.
@@ -287,7 +287,7 @@ Mostrar:
 ```
 ✅ APROBADO
 
-Archivo creado: $SPECS_BASE/specs/02-epics/<EPIC-NN-slug>/epic.md
+Archivo creado: $SPECS_BASE/specs/epics/<EPIC-NN-slug>/epic.md
 
 Siguiente paso: ejecuta /epic-generate-stories para generar las historias de usuario de esta épica.
 ```
@@ -322,7 +322,7 @@ Si el usuario responde "sí": volver al Paso 4 o Paso 5 según corresponda para 
 
 ## Salida
 
-- `$SPECS_BASE/specs/02-epics/<EPIC-NN-slug>/epic.md` — épica creada y validado, listo para `/epic-generate-stories`
+- `$SPECS_BASE/specs/epics/<EPIC-NN-slug>/epic.md` — épica creada y validado, listo para `/epic-generate-stories`
 
 ### Referencias
 

@@ -37,7 +37,7 @@ Existen tres tipos de workitem: **Project**, **Épica** y **Story**. Cada tipo t
 ```
 {SPECS_ROOT}/
 ├── projects/      # Contiene todos los proyectos
-├── 02-epics/    # Contiene todas las épicas
+├── epics/    # Contiene todas las épicas
 └── stories/       # Contiene todas las historias (user stories)
 ```
 
@@ -47,7 +47,7 @@ Dentro de cada carpeta de tipo, cada workitem individual se guarda en su **propi
 {SPECS_ROOT}/
 ├── projects/
 │   └── PROJ-001-nombre-project/          # directorio del proyecto PROJ-001
-├── 02-epics/
+├── epics/
 │   └── EPIC-001-nombre-epica/       # directorio de la épica EPIC-001
 └── stories/
     └── STORY-001-nombre-story/         # directorio de la historia STORY-001
@@ -58,8 +58,8 @@ docs\specs\01-projects\PROJ-01-nombre-project\project.md
 docs\specs\01-projects\PROJ-01-nombre-project\project-intent.md
 docs\specs\01-projects\PROJ-01-nombre-project\project-plan.md
 docs\specs\01-projects\PROJ-01-nombre-project\story-map.md
-docs\specs\02-epics\EPIC-01-nombre-epica\epic.md 
-docs\specs\03-stories\STORY-001-nombre-story\story.md 
+docs\specs\epics\EPIC-01-nombre-epica\epic.md
+docs\specs\stories\STORY-001-nombre-story\story.md
 
 
 ---
@@ -141,10 +141,10 @@ Cuando la story se asigne a una épica, bastará con cambiar el `parent` al ID d
 
 ### 7. Resolución de rutas y búsqueda de workitems
 
-Dado que todos los workitems están en carpetas separadas por tipo, para encontrar un workitem por su ID se debe buscar en las tres carpetas (`01-projects/`, `02-epics/`, `03-stories/`). **Orden de búsqueda recomendado para IAs:**
+Dado que todos los workitems están en carpetas separadas por tipo, para encontrar un workitem por su ID se debe buscar en las tres carpetas (`01-projects/`, `epics/`, `stories/`). **Orden de búsqueda recomendado para IAs:**
 
 1. Buscar en `stories/` (por ser el nivel más bajo y numeroso).
-2. Si no se encuentra, buscar en `02-epics/`.
+2. Si no se encuentra, buscar en `epics/`.
 3. Si no se encuentra, buscar en `projects/`.
 
 Para facilitar la búsqueda, se puede mantener un archivo de índice `{SPECS_ROOT}/index.md` que liste todos los workitems con sus rutas y metadatos. Este índice puede generarse automáticamente mediante un script o skill.
@@ -156,10 +156,10 @@ Para facilitar la búsqueda, se puede mantener un archivo de índice `{SPECS_ROO
 - Usa la sintaxis `[[ID]]` para enlazar a otro workitem.
 - El enlace debe resolverse al archivo principal del workitem (por ejemplo, `project.md` para un proyecto, `epic.md` para una épica, `story.md` para una historia). Si dentro del directorio hay varios archivos, el archivo principal se determina por el tipo (ver sección 4).
 
-**Ejemplo:** Desde una historia, para enlazar a su épica, escribir `[[EPIC-001]]`. El enlace apuntará a `{SPECS_ROOT}/02-epics/EPIC-001/epic.md`.
+**Ejemplo:** Desde una historia, para enlazar a su épica, escribir `[[EPIC-001]]`. El enlace apuntará a `{SPECS_ROOT}/epics/EPIC-001/epic.md`.
 
 **Resolución para IAs:**  
-Dado un ID, buscar en los directorios de tipo según el orden de la sección 7. Si hay ambigüedad (mismo ID en dos tipos), se resuelve según la prioridad: primero `03-stories/`, luego `02-epics/`, luego `01-projects/`. Para evitar ambigüedades, se recomienda usar IDs únicos globalmente.
+Dado un ID, buscar en los directorios de tipo según el orden de la sección 7. Si hay ambigüedad (mismo ID en dos tipos), se resuelve según la prioridad: primero `stories/`, luego `epics/`, luego `01-projects/`. Para evitar ambigüedades, se recomienda usar IDs únicos globalmente.
 
 ---
 
@@ -178,7 +178,7 @@ Este índice debe **actualizarse automáticamente** cada vez que se crea, modifi
 
 | Regla | Verificación |
 |-------|--------------|
-| ¿Todo workitem está dentro de `01-projects/`, `02-epics/` o `03-stories/`? | ⬜ |
+| ¿Todo workitem está dentro de `01-projects/`, `epics/` o `stories/`? | ⬜ |
 | ¿El nombre del directorio coincide con el campo `id` del frontmatter? | ⬜ |
 | ¿Cada archivo `.md` principal comienza con frontmatter YAML? | ⬜ |
 | ¿Los campos obligatorios (`type`, `id`, `title`, `status`, `parent`, `created`, `updated`) están presentes? | ⬜ |
@@ -197,11 +197,11 @@ docs/specs/
 │   └── PROJ-001/
 │       ├── project.md          (frontmatter: type=project, parent=null)
 │       └── plan.md (opcional)
-├── 02-epics/
+├── epics/
 │   └── EPIC-001/
 │       ├── epic.md          (frontmatter: type=epic, parent=PROJ-001)
 │       └── notes.md
-└── 03-stories/
+└── stories/
     ├── STORY-001/
     │   ├── story.md            (frontmatter: type=story, parent=EPIC-001)
     │   ├── tasks.md

@@ -63,6 +63,6 @@ En los niveles `standard` y `full`, el skill pregunta si debe inicializar los do
 
 El skill informa cada resultado como `[CREADO]`, `[YA EXISTÍA]` u `[OMITIDO]` y cierra con un informe consolidado.
 
-Puede crear los directorios `$SPECS_BASE/specs/01-projects/`, `02-epics/`, `03-stories/` y `templates/`; hasta cinco templates compartidos; `sddf.config.yaml`; y `.env.template`. Si se aceptan las políticas, también genera sus artefactos, incluida la constitución y los guardrails DoD. El nivel `full` puede añadir el scaffold de memoria.
+Puede crear los directorios `$SPECS_BASE/specs/01-projects/`, `epics/`, `stories/` y `templates/`; hasta cinco templates compartidos; `sddf.config.yaml`; y `.env.template`. Si se aceptan las políticas, también genera sus artefactos, incluida la constitución y los guardrails DoD. El nivel `full` puede añadir el scaffold de memoria.
 
 Los archivos y directorios existentes se preservan: una ejecución posterior informa que el entorno ya estaba inicializado y no requiere cambios.

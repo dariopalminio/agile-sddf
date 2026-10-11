@@ -124,7 +124,7 @@ agile-sddf/
 ├── docs/                      # Memory System (ver [[memory-system]])
 │   ├── index.md               # punto de entrada wiki (wikilinks [[slug]])
 │   ├── constitution.md        # documento supremo de gobernanza
-│   ├── specs/{01-projects,02-epics,03-stories}/  # specs y artefactos de los skills SDD
+│   ├── specs/{01-projects,epics,stories}/  # specs y artefactos de los skills SDD
 │   ├── product/               # visión de producto
 │   ├── requirements/          # requisitos del producto
 │   ├── domains/               # modelo de dominio y reglas de negocio (DDD)

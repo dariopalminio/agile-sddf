@@ -71,14 +71,14 @@ El skill acepta tres formas de input:
 
 **A) Nombre corto de directorio o archivo** (ej. `STORY-043-header-aggregation` o `project-intent`):
 - Busca el archivo canónico en este orden:
-  - `$SPECS_BASE/specs/03-stories/*/story.md` (busca directorio que coincida con el término)
-  - `$SPECS_BASE/specs/02-epics/*/epic.md` (busca directorio que coincida)
+  - `$SPECS_BASE/specs/stories/*/story.md` (busca directorio que coincida con el término)
+  - `$SPECS_BASE/specs/epics/*/epic.md` (busca directorio que coincida)
   - `$SPECS_BASE/specs/01-projects/*/` (busca en todos los archivos del directorio del proyecto)
 - Si hay exactamente un resultado → úsalo directamente
 - Si hay múltiples resultados → muestra la lista y pide selección al usuario
 - Si no hay resultado → trata el input como texto libre e informa al usuario
 
-**B) Ruta relativa o absoluta** (ej. `$SPECS_BASE/specs/03-stories/STORY-043-nombre/story.md` o directorio `$SPECS_BASE/specs/03-stories/`):
+**B) Ruta relativa o absoluta** (ej. `$SPECS_BASE/specs/stories/STORY-043-nombre/story.md` o directorio `$SPECS_BASE/specs/stories/`):
 - Usa la ruta directamente sin búsqueda adicional
 - Si es un directorio → activa el modo batch (ver Paso 4)
 
@@ -156,18 +156,18 @@ Cuando el input es un directorio, el skill adapta el escaneo según el tipo de d
 **Si el directorio es `$SPECS_BASE/specs/` o cualquier directorio padre equivalente:**
 - Escanea los tres subdirectorios de artefactos en profundidad:
   - `$SPECS_BASE/specs/01-projects/*/project-intent.md` (y cualquier otro `.md` dentro de cada `PROJ-*-*/`)
-  - `$SPECS_BASE/specs/02-epics/*/epic.md`
-  - `$SPECS_BASE/specs/03-stories/*/story.md`
+  - `$SPECS_BASE/specs/epics/*/epic.md`
+  - `$SPECS_BASE/specs/stories/*/story.md`
 
-**Si el directorio es uno de los tres tipos de artefacto** (ej. `$SPECS_BASE/specs/03-stories/`):
+**Si el directorio es uno de los tres tipos de artefacto** (ej. `$SPECS_BASE/specs/stories/`):
 - Lista todos los **subdirectorios** directamente dentro (no recursivo en el segundo nivel)
 - Busca el archivo canónico en cada subdirectorio:
-  - Para `03-stories/`: busca `story.md`
-  - Para `02-epics/`: busca `epic.md`
+  - Para `stories/`: busca `story.md`
+  - Para `epics/`: busca `epic.md`
   - Para `01-projects/`: busca `project-intent.md`
 - Ignora subdirectorios que no contengan el archivo canónico esperado
 
-**Si el directorio es un subdirectorio de artefacto** (ej. `$SPECS_BASE/specs/03-stories/STORY-043-header-aggregation/`):
+**Si el directorio es un subdirectorio de artefacto** (ej. `$SPECS_BASE/specs/stories/STORY-043-header-aggregation/`):
 - Lista todos los archivos `.md` directamente dentro de ese directorio
 
 ### 4.2 Clasificación y confirmación

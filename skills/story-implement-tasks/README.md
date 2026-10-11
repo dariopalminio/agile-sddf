@@ -54,7 +54,7 @@ Al alcanzar `IMPLEMENT/DONE`, el skill también actualiza el checklist en el `ep
 
 ```
 /story-implement-tasks STORY-059
-/story-implement-tasks STORY-059 --path docs/specs/03-stories/STORY-059-mi-historia/
+/story-implement-tasks STORY-059 --path docs/specs/stories/STORY-059-mi-historia/
 ```
 
 ## Contenido de este directorio

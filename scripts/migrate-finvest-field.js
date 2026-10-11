@@ -26,7 +26,7 @@
  * da 0 MIGRADA.
  *
  * Uso: node scripts/migrate-finvest-field.js [--dry-run] [--stories-dir <ruta>]
- *   --stories-dir  directorio de historias (defecto: docs/specs/03-stories)
+ *   --stories-dir  directorio de historias (defecto: docs/specs/stories)
  *   --dry-run      muestra la tabla sin escribir nada
  *
  * Exit code: 0 si no hubo REQUIERE DECISIÓN, FORMA INESPERADA ni ERROR LECTURA; 1 en caso contrario.
@@ -66,7 +66,7 @@ function resolveStoriesDir(argv) {
     console.error('[ERROR] --stories-dir requiere una ruta');
     process.exit(1);
   }
-  return path.resolve(process.cwd(), value || path.join('docs', 'specs', '03-stories'));
+  return path.resolve(process.cwd(), value || path.join('docs', 'specs', 'stories'));
 }
 
 function isEmptyValue(raw) {

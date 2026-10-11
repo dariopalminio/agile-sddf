@@ -52,8 +52,8 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 
 | Artefacto | Ubicación | Requerido |
 |---|---|---|
-| `finvest-evaluation-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/finvest-evaluation-report.md` | ✓ obligatorio |
-| `story.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md` | ✓ obligatorio |
+| `finvest-evaluation-report.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/finvest-evaluation-report.md` | ✓ obligatorio |
+| `story.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` | ✓ obligatorio |
 | `assets/improvement-log-template.md` | `$CLI_ROOT/skills/story-improve/assets/improvement-log-template.md` | ✓ obligatorio |
 
 ## Parámetros
@@ -62,7 +62,7 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 
 ## Precondiciones
 
-- La historia identificada por `--story-id` existe bajo `$SPECS_BASE/specs/03-stories/`
+- La historia identificada por `--story-id` existe bajo `$SPECS_BASE/specs/stories/`
 - El directorio de la historia contiene `finvest-evaluation-report.md` con frontmatter YAML válido
 - El directorio de la historia contiene `story.md`
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
@@ -122,13 +122,13 @@ Proporciona el ID (ej. STORY-075).
 
 Buscar el directorio usando Glob con el patrón:
 ```
-$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md
+$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md
 ```
 Extraer el directorio padre de la primera coincidencia cuyo nombre comienza con el ID.
 
 **Si no se encuentra:**
 ```
-❌ No se encontró la historia <STORY-NNN> bajo $SPECS_BASE/specs/03-stories/
+❌ No se encontró la historia <STORY-NNN> bajo $SPECS_BASE/specs/stories/
 Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
 ```
 Detener la ejecución.
@@ -207,7 +207,7 @@ Este contenido es la base sobre la que se aplicarán las mejoras en el Paso 6.
 
 Si I tiene score ≤ 3:
 1. Leer el frontmatter de `story.md` para obtener `parent:` y `related:`
-2. Buscar historias en `$SPECS_BASE/specs/03-stories/` con el mismo `parent:` o con IDs que aparezcan en `related:`
+2. Buscar historias en `$SPECS_BASE/specs/stories/` con el mismo `parent:` o con IDs que aparezcan en `related:`
 3. Leer el frontmatter y la sección `Como/Quiero/Para` de cada historia hermana encontrada
 4. Registrar internamente qué funcionalidades ya están cubiertas por las hermanas para evitar introducir dependencias redundantes
 
@@ -327,8 +327,8 @@ Confirmar:
 
 | Artefacto | Ubicación | Condición |
 |---|---|---|
-| `story.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md` | Siempre (cuando decision ≠ APROBADA) |
-| `story.md.bak` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md.bak` | Siempre (cuando decision ≠ APROBADA) |
-| `story-improvement-log.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story-improvement-log.md` | Siempre (cuando decision ≠ APROBADA) |
+| `story.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` | Siempre (cuando decision ≠ APROBADA) |
+| `story.md.bak` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md.bak` | Siempre (cuando decision ≠ APROBADA) |
+| `story-improvement-log.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story-improvement-log.md` | Siempre (cuando decision ≠ APROBADA) |
 
 Cuando `decision: APROBADA`: ningún archivo se crea ni modifica.

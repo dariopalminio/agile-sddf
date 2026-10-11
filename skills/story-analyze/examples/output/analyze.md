@@ -85,7 +85,7 @@ updated: 2026-05-07
 
 | Criterio | Estado | Detalle |
 |---|---|---|
-| Historia listada en release | ⚠️ | No verificado — epic.md no encontrado en `docs/specs/02-epics/EPIC-10-data-management*/` |
+| Historia listada en release | ⚠️ | No verificado — epic.md no encontrado en `docs/specs/epics/EPIC-10-data-management*/` |
 | Objetivo alineado con la épica | ⚠️ | No verificado — epic.md no encontrado |
 | Restricciones de la épica respetadas | ⚠️ | No verificado — epic.md no encontrado |
 
@@ -104,7 +104,7 @@ updated: 2026-05-07
 
 ## Recomendaciones
 
-1. **Verificar alineación con release**: El archivo `epic.md` para `EPIC-10-data-management` no fue encontrado. Ejecuta `/epic-from-project-plan` para generarlo o verifica que el directorio `docs/specs/02-epics/EPIC-10-data-management-*/` existe. Una vez disponible, vuelve a ejecutar `/story-analyze STORY-099` para completar la verificación de alineación.
+1. **Verificar alineación con release**: El archivo `epic.md` para `EPIC-10-data-management` no fue encontrado. Ejecuta `/epic-from-project-plan` para generarlo o verifica que el directorio `docs/specs/epics/EPIC-10-data-management-*/` existe. Una vez disponible, vuelve a ejecutar `/story-analyze STORY-099` para completar la verificación de alineación.
 2. **Corregir criterio DoD PLAN — tasks.md**: Reordenar las tareas en `tasks.md` de modo que queden agrupadas por dependencia lógica (setup → componentes core → soporte → tests → verificación).
 
 ---

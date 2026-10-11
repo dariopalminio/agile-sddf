@@ -12,7 +12,7 @@ Extrae las features de una épica y genera historias de usuario con criterios Gh
 
 **Produces:**
 
-- Directorios `$SPECS_BASE/specs/03-stories/STORY-NNN-nombre/`.
+- Directorios `$SPECS_BASE/specs/stories/STORY-NNN-nombre/`.
 - Un `story.md` por feature y un resumen de la generación.
 
 **Does not do:**

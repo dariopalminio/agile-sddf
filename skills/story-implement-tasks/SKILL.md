@@ -63,10 +63,10 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 
 | Artefacto | Ubicación | Requerido |
 |---|---|---|
-| `story.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/story.md` | ✓ obligatorio |
-| `design.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/design.md` | ✓ obligatorio |
-| `tasks.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/tasks.md` | ✓ obligatorio |
-| `fix-directives.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (`needs-changes`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
+| `story.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/story.md` | ✓ obligatorio |
+| `design.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/design.md` | ✓ obligatorio |
+| `tasks.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/tasks.md` | ✓ obligatorio |
+| `fix-directives.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (`needs-changes`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
 | DoD de la etapa `implement` | `$SPECS_BASE/guardrails/dod-story-implement.md` (ver `## DoD aplicable`) | opcional |
 
 ---
@@ -185,10 +185,10 @@ Proporciona el ID (ej. STORY-059) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/03-stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
+2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
 3. Si no se encuentra ninguno:
    ```
-   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/
+   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
 
    Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
    ```
@@ -696,7 +696,7 @@ Completar la sección "Cumplimiento DoD — Fase IMPLEMENT" en `implement-report
 
 Leer el campo `parent` del frontmatter de `story.md` (ej. `EPIC-12-story-sdd-workflow`).
 
-Buscar el archivo `epic.md` correspondiente en: `$SPECS_BASE/specs/02-epics/<parent>-*/epic.md`
+Buscar el archivo `epic.md` correspondiente en: `$SPECS_BASE/specs/epics/<parent>-*/epic.md`
 
 **Si se encuentra `epic.md`** (transición F2 → F3 de la historia; formatos en `domain-epic-lifecycle` §9):
 - Resolver del template de épica (`$SPECS_BASE/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`) el **título** de la sección cuyo marcador declara `clave: historias` (las secciones se localizan por clave, nunca por un título fijo; contrato en `domain-epic-lifecycle` §9).
@@ -748,7 +748,7 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md`, `design.md` o `tasks.md` ausente | `❌ No se encontró <artefacto> en: <ruta>` | Detener sin implementar ninguna tarea |
 | Estado de `story.md` no válido | `❌ La historia <story_id> no está en un estado válido para implementar.` | Detener sin implementar ninguna tarea |
 | Sin tareas pendientes y sin `fix-directives.md` | `ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.` | Terminar sin modificar ningún archivo (gate 2c) |
@@ -769,10 +769,10 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 
 | Artefacto | Ruta | Descripción |
 |---|---|---|
-| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
+| `implement-report.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
 | `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs) |
 | `tasks.md` (actualizado) | mismo directorio | Tareas marcadas `[x]` (completadas) o `[~]` (bloqueadas) |
-| `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
+| `epic.md` (actualizado) | `$SPECS_BASE/specs/epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
 | Archivos de test | según stack del proyecto | Tests generados por ciclo TDD (uno por tarea completada) |
 | Archivos de producción | según stack del proyecto | Código de producción generado por ciclo TDD |
 

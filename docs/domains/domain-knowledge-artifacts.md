@@ -97,8 +97,8 @@ title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifa
 | **ADR** | `ADR-` | `adr/` | ✅ Inmutable | Decisión arquitectónica con rationale. |
 | **RFC** | `RFC-` | `rfcs/` | ✅ Inmutable tras aprobación | Propuesta de cambio grande. |
 | **Spec (Project)** | `PROJ-` | `specs/01-projects/` | ❌ Evoluciona | Documentación fundacional del proyecto. |
-| **Spec (Epic)** | `EPIC-` | `specs/02-epics/` | ❌ Evoluciona | Entregable o release. |
-| **Spec (Story)** | `STORY-` | `specs/03-stories/` | ❌ Evoluciona | Historia de usuario atómica. |
+| **Spec (Epic)** | `EPIC-` | `specs/epics/` | ❌ Evoluciona | Entregable o release. |
+| **Spec (Story)** | `STORY-` | `specs/stories/` | ❌ Evoluciona | Historia de usuario atómica. |
 | **Domain** | `DOMAIN-` (implícito) | `domains/` | ❌ Evoluciona (lento) | Modelo DDD de un bounded context. |
 | **Constitution** | — | raíz de `docs/` | ❌ Evoluciona (lento, con aprobación) | Documento supremo del que derivan policies y guardrails. |
 | **Guardrail** | `GR-` (opcional) | `guardrails/` | ❌ Evoluciona | Restricción operativa verificable que bloquea el avance. |
@@ -126,8 +126,8 @@ docs/
 ├── rfcs/             # Propuestas de cambio grandes
 ├── specs/            # Work items (Project, Epic, Story)
 │   ├── 01-projects/
-│   ├── 02-epics/
-│   └── 03-stories/
+│   ├── epics/
+│   └── stories/
 ├── guardrails/       # Restricciones operativas verificables
 ├── policies/         # Reglas de gobernanza
 ├── guides/           # Guías didácticas
@@ -239,7 +239,7 @@ enforced-by:
 5. Todo `Artifact` tiene **frontmatter YAML** con campos obligatorios: `type`, `id`, `title`, `date`, `status`.
 6. Todo `Artifact` tiene **exactamente un archivo `.md`** como cuerpo principal.
 7. Los artefactos de tipo `requirement` viven en `requirements/functional/` o `requirements/non-functional/`.
-8. Los artefactos de tipo `spec` viven en `specs/01-projects/`, `specs/02-epics/` o `specs/03-stories/` según su nivel.
+8. Los artefactos de tipo `spec` viven en `specs/01-projects/`, `specs/epics/` o `specs/stories/` según su nivel.
 9. Los artefactos de tipo `guardrail` viven en `guardrails/` y usan checklist con severidades.
 10. Los artefactos de tipo `policy` viven en `policies/` y declaran un `scope`.
 11. Los artefactos de tipo `template` viven en `templates/` y usan el sufijo `-template.md`. Su seed vive en el `assets/` del skill dueño; ambas copias deben ser idénticas.

@@ -7,7 +7,7 @@
       "id": "TC-001",
       "name": "alias-sin-argumentos-aviso-y-delegacion",
       "type": "happy-path",
-      "description": "Origen: EV-005 (AC-2, AC-6, T003). Proyecto SDDF con docs/ que contiene artefactos (constitution.md, adr/, guides/, specs/03-stories/STORY-001-a/story.md); el skill memory-system está instalado y responde con éxito. El usuario invoca /docs-wiki-builder sin argumentos. El alias debe mostrar exactamente el aviso '⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.', mapear la ausencia de argumentos al modo index e invocar /memory-system index (sin --dry-run). No aplica ninguna lógica propia de generación de estructura wiki ni de reorganización de archivos.",
+      "description": "Origen: EV-005 (AC-2, AC-6, T003). Proyecto SDDF con docs/ que contiene artefactos (constitution.md, adr/, guides/, specs/stories/STORY-001-a/story.md); el skill memory-system está instalado y responde con éxito. El usuario invoca /docs-wiki-builder sin argumentos. El alias debe mostrar exactamente el aviso '⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.', mapear la ausencia de argumentos al modo index e invocar /memory-system index (sin --dry-run). No aplica ninguna lógica propia de generación de estructura wiki ni de reorganización de archivos.",
       "input": {
         "input_path": "../memory-system/examples/sddf",
         "flags": [],

@@ -78,9 +78,9 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 |---|---|---|
 | Archivos de prueba | según skill generador | Tests en Fase RED (deben fallar) |
 | Archivos de producción | según skill generador | Código generado en Fases GREEN y REFACTOR |
-| `implement-report.md` | `$SPECS_BASE/specs/03-stories/<STORY-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENT, estado por fase + sección `## Ciclo de corrección — ronda N` (con la subsección `### Archivos fuera de lista blanca`) solo en modo rework |
+| `implement-report.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/implement-report.md` | Ciclo TDD, DoD IMPLEMENT, estado por fase + sección `## Ciclo de corrección — ronda N` (con la subsección `### Archivos fuera de lista blanca`) solo en modo rework |
 | `story.md` (actualizado) | mismo directorio | Frontmatter: `IMPLEMENT/IN-PROGRESS` al arrancar (0c.4); `IMPLEMENT/DONE` al terminar, o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs (11c) |
-| `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada |
+| `epic.md` (actualizado) | `$SPECS_BASE/specs/epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada |
 | `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de Fase RED — precondición para GREEN; incluye `files_generated`, `files_modified`, `rework_round` (`null` fuera de rework) y `rework_evidence` (`ok`/`warning`/`error`; `n/a` fuera de rework) |
 | `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD; incluye `rework_round` (`null` fuera de rework) y `out_of_scope_files` (`0` fuera de rework) |
 | `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente: `{status, message?, files_generated, files_modified?}` — `files_generated` = archivos creados; `files_modified` = archivos existentes editados (opcional; ausente ⇒ `[]`) |

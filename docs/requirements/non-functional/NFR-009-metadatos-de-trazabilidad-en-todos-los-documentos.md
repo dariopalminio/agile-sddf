@@ -22,8 +22,8 @@ Todo documento de spec generado SHALL incluir el frontmatter canónico con
 
 ## Criterios de verificación
 
-Ningún directorio de `03-stories/` usa un prefijo distinto de
-`STORY-`; el glob `03-stories/STORY-*/story.md` alcanza todas las historias.
+Ningún directorio de `stories/` usa un prefijo distinto de
+`STORY-`; el glob `stories/STORY-*/story.md` alcanza todas las historias.
 
 ## Atributos
 

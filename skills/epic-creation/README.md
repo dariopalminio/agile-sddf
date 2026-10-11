@@ -12,7 +12,7 @@ Crea una especificación `epic.md` de forma interactiva, sección por sección, 
 
 **Produces:**
 
-- `$SPECS_BASE/specs/02-epics/EPIC-NN-nombre/epic.md`, con las historias como planificadas (F1, sin ID) y los smoke tests como `### SMOKE-N — nombre` + bloque `gherkin`.
+- `$SPECS_BASE/specs/epics/EPIC-NN-nombre/epic.md`, con las historias como planificadas (F1, sin ID) y los smoke tests como `### SMOKE-N — nombre` + bloque `gherkin`.
 - Un resultado de validación de estructura para la épica creada.
 
 **Does not do:**

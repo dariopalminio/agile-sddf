@@ -12,7 +12,7 @@ Convierte una necesidad, feature o texto de entrada en una historia de usuario c
 
 **Produces:**
 
-- `$SPECS_BASE/specs/03-stories/STORY-NNN-slug/story.md`.
+- `$SPECS_BASE/specs/stories/STORY-NNN-slug/story.md`.
 - Una historia inicial en la etapa `SPECIFY` con criterios de aceptación trazables.
 
 **Does not do:**

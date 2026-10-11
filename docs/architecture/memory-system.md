@@ -73,10 +73,10 @@ agile-sddf/
     │   ├── 01-projects/               # L3 — documentación fundacional
     │   │   └── PROJ-NNN-*/
     │   │       └── project.md
-    │   ├── 02-epics/                  # L2 — entregables
+    │   ├── epics/                  # L2 — entregables
     │   │   └── EPIC-NNN-*/
     │   │       └── epic.md
-    │   ├── 03-stories/                # L1 — historias atómicas
+    │   ├── stories/                # L1 — historias atómicas
     │   │   └── STORY-NNN-*/
     │   │       └── story.md
     │   └── .cache/                    # caché regenerable (NO versionado)
@@ -177,7 +177,7 @@ product/vision.md
     ↓ informs
 requirements/FR-001.md
     ↓ verified-by
-specs/03-stories/STORY-042/story.md
+specs/stories/STORY-042/story.md
     ↓ implements
 requirements/FR-001.md
 ```
@@ -276,7 +276,7 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
 - **Árbol semilla** (`assets/scaffold/**`, espejo del destino): `constitution.md` (secciones de la
   constitución del framework con `[Por completar]`), `product/{README,vision,stakeholders,objectives}.md`,
   un `README.md` por capa con propósito, convención de nombres y wikilink `[[index]]`,
-  `specs/01-projects/`, `02-epics/`, `03-stories/` (con `.gitkeep` solo si el directorio no existe),
+  `specs/01-projects/`, `epics/`, `stories/` (con `.gitkeep` solo si el directorio no existe),
   `templates/README.md`, `templates/adr-template.md` y las semillas de autoría manual sin skill
   dueño `templates/{domain,guardrail,policy}-template.md` (ADR-0012). Frontmatter canónico de
   `header-aggregation` con `created`/`updated` = `{date}`, el único placeholder que el motor

@@ -188,8 +188,8 @@ epic-from-project-plan → epic-generate-stories → epic-analyze
 
 | Skill | Input | Output |
 |---|---|---|
-| `epic-from-project-plan` | `project-plan.md` | `$SPECS_BASE/specs/02-epics/épica-[ID]-[Nombre].md` (uno por épica) |
-| `epic-generate-stories` | Un archivo `epic.md` | `$SPECS_BASE/specs/03-stories/STORY-[NNN]-[nombre]/story.md` (una por feature) |
+| `epic-from-project-plan` | `project-plan.md` | `$SPECS_BASE/specs/epics/épica-[ID]-[Nombre].md` (uno por épica) |
+| `epic-generate-stories` | Un archivo `epic.md` | `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
 
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica

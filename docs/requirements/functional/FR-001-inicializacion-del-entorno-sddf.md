@@ -15,7 +15,7 @@ related: []
 ## Descripción
 
 El sistema SHALL crear la estructura base de artefactos
-(`$SPECS_BASE/specs/01-projects/`, `02-epics/`, `03-stories/`, `templates/`), el archivo de
+(`$SPECS_BASE/specs/01-projects/`, `epics/`, `stories/`, `templates/`), el archivo de
 configuración `sddf.config.yaml`, el `.env.template` y los templates centrales, delegando la
 generación de políticas a `project-policies-generation`. La operación SHALL ser idempotente: no
 sobrescribe archivos existentes.

@@ -9,7 +9,7 @@
       "type": "happy-path",
       "description": "Sin SDDF_ROOT y con sddf.config.yaml.root válido, el diagnóstico informa REPO_ROOT, SPECS_BASE y ROOT_SOURCE = sddf.config.yaml sin modificar archivos.",
       "input": {
-        "context": "SDDF_ROOT no está definida. sddf.config.yaml declara root: docs-personalizada y el directorio existe con specs/01-projects, specs/02-epics, specs/03-stories y los cinco templates centrales.",
+        "context": "SDDF_ROOT no está definida. sddf.config.yaml declara root: docs-personalizada y el directorio existe con specs/01-projects, specs/epics, specs/stories y los cinco templates centrales.",
         "flags": []
       },
       "expected": {
@@ -54,11 +54,11 @@
       "type": "edge-case",
       "description": "Sin override ni clave root, se usa docs y los directorios o templates faltantes son advertencias no mutantes.",
       "input": {
-        "context": "SDDF_ROOT no está definida. sddf.config.yaml no declara root. docs existe, pero falta specs/02-epics y project-plan-template.md.",
+        "context": "SDDF_ROOT no está definida. sddf.config.yaml no declara root. docs existe, pero falta specs/epics y project-plan-template.md.",
         "flags": []
       },
       "expected": {
-        "contains": ["ROOT_SOURCE = default", "docs", "[WARNING]", "specs/02-epics", "project-plan-template.md", "sin cambios"],
+        "contains": ["ROOT_SOURCE = default", "docs", "[WARNING]", "specs/epics", "project-plan-template.md", "sin cambios"],
         "not_contains": ["[CREADO]", "openspec/config.yaml"]
       },
       "threshold": 0.95

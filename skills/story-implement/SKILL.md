@@ -251,11 +251,11 @@ Este paso se ejecuta **antes** de leer `sddf.config.yaml` (Pasos 1–2): la hist
 
 #### 0c.1 — Resolver `$STORY_DIR`
 
-Resolver el directorio de la historia con Glob: `$SPECS_BASE/specs/03-stories/{story_id}*/`.
+Resolver el directorio de la historia con Glob: `$SPECS_BASE/specs/stories/{story_id}*/`.
 
 **Si no hay coincidencia:**
 ```
-❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/
+❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
 
 Verifica el ID o ejecuta /epic-generate-stories para generar la historia desde su épica.
 ```
@@ -1080,7 +1080,7 @@ updated: <YYYY-MM-DD>
 Transición F2 → F3 de la historia en la épica padre (formatos del dominio: F2 `- [ ] **STORY-NNN** — <Nombre>: <desc>`, F3 `- [x] **STORY-NNN** — <Nombre>: <desc>`).
 
 1. Leer campo `parent` del frontmatter de `story.md`
-2. Si `parent` existe, resolver ruta: `$SPECS_BASE/specs/02-epics/<parent>/epic.md`
+2. Si `parent` existe, resolver ruta: `$SPECS_BASE/specs/epics/<parent>/epic.md`
 3. **Si no existe o `parent` está vacío:**
    - Emitir: `[INFO] epic.md no encontrado o sin parent declarado — omitiendo actualización`
    - No es condición de error.
@@ -1168,7 +1168,7 @@ Reglas comunes a ambos formatos:
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada (0c.1) | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/03-stories/` | Detener ejecución |
+| Historia no encontrada (0c.1) | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener ejecución |
 | Estado de `story.md` no admitido (0c.2) | `❌ La historia {story_id} no está en un estado válido para implementar` | Detener sin modificar archivos (ni `story.md` ni `.tmp/`) ni invocar subagentes |
 | `fix-directives.md` sin sección de lista blanca (0c.3) | `[WARN] fix-directives.md sin lista blanca — los generators recibirán whitelist vacía` | Continuar con `whitelist: []` |
 | `fix-directives.md` con tabla "Instrucciones de corrección" ausente o ilegible (0c.3) | `[WARN] fix-directives.md sin tabla de hallazgos legible — continuando con 0 hallazgo(s)` | Continuar con hallazgos vacíos (`H = 0`) |
@@ -1252,7 +1252,7 @@ La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md �
 | Archivos de producción | según skill de generación | Código generado en Fases GREEN/REFACTOR |
 | `implement-report.md` | `$STORY_DIR/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase + sección `## Ciclo de corrección — ronda N` (con la subsección `### Archivos fuera de lista blanca`) solo en modo rework |
 | `story.md` (actualizado) | `$STORY_DIR/story.md` | Frontmatter: 0c.4 → `IMPLEMENT/IN-PROGRESS` al arrancar; 11c → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
-| `epic.md` (actualizado) | `$SPECS_BASE/specs/02-epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
+| `epic.md` (actualizado) | `$SPECS_BASE/specs/epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
 | `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN; incluye `files_generated`, `files_modified`, `rework_round` (`null` fuera de rework) y `rework_evidence` (`ok`/`warning`/`error`; `n/a` fuera de rework) |
 | `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD completo; incluye `rework_round` (`null` fuera de rework) y `out_of_scope_files` (`0` fuera de rework) |
 | `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente: `{status, message?, files_generated, files_modified?}` |

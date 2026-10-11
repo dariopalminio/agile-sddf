@@ -5,11 +5,11 @@ id: STORY-108
 kind: chore
 slug: STORY-108-renombrar-specs-sin-prefijos
 title: "Renombrar specs/02-epics/ → specs/epics/ y specs/03-stories/ → specs/stories/"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
-updated: 2026-10-07
+updated: 2026-10-10
 related:
   - EPIC-21-colapsar-specs-dos-niveles
   - ADR-0013-eliminar-specs-01-projects

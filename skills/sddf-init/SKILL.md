@@ -87,8 +87,8 @@ instalados; nunca se deriva de `SPECS_BASE`.
 
 Para cada uno de los siguientes directorios bajo `SPECS_BASE`:
 - `specs/01-projects/`
-- `specs/02-epics/`
-- `specs/03-stories/`
+- `specs/epics/`
+- `specs/stories/`
 - `templates/`
 
 Verificar si el directorio existe:
@@ -191,8 +191,8 @@ Emitir el informe consolidado con todos los artefactos verificados:
 ```
 ── sddf-init ────────────────────────────────────
 [CREADO]     {SPECS_BASE}/specs/01-projects/
-[CREADO]     {SPECS_BASE}/specs/02-epics/
-[YA EXISTÍA] {SPECS_BASE}/specs/03-stories/
+[CREADO]     {SPECS_BASE}/specs/epics/
+[YA EXISTÍA] {SPECS_BASE}/specs/stories/
 [CREADO]     {SPECS_BASE}/templates/
 [CREADO]     {SPECS_BASE}/templates/story-template.md
 [CREADO]     {SPECS_BASE}/templates/epic-template.md
@@ -225,8 +225,8 @@ añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente en {SPECS
 ```
 ── sddf-init ────────────────────────────────────
 [CREADO]     docs/specs/01-projects/
-[CREADO]     docs/specs/02-epics/
-[CREADO]     docs/specs/03-stories/
+[CREADO]     docs/specs/epics/
+[CREADO]     docs/specs/stories/
 [CREADO]     docs/templates/
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template

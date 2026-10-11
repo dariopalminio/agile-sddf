@@ -91,8 +91,8 @@ diagnóstico puede seguir mostrando `REPO_ROOT`, pero no inventa una raíz alter
 Solo con `SPECS_BASE` válida, verificar:
 
 - `specs/01-projects/`
-- `specs/02-epics/`
-- `specs/03-stories/`
+- `specs/epics/`
+- `specs/stories/`
 
 Para cada ruta, emitir `[OK] <ruta> existe` o `[WARNING] <ruta> no encontrado`. Son
 advertencias operativas; este skill no crea directorios para corregirlas.

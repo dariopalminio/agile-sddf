@@ -83,7 +83,7 @@ const LAYERS = [
 ];
 
 // Subdirectorios de `specs/` con nombre de capa propio.
-const SPECS_LAYERS = { '01-projects': 'specs-projects', '02-epics': 'specs-epics', '03-stories': 'specs-stories' };
+const SPECS_LAYERS = { '01-projects': 'specs-projects', epics: 'specs-epics', stories: 'specs-stories' };
 
 // Directorios excluidos del índice (D-3): caché, templates (wikilinks placeholder) y pre-split.
 const EXCLUDED_DIRS = new Set(['.cache', 'templates', 'pre-split']);

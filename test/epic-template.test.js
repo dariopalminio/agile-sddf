@@ -21,7 +21,7 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 const SKILL_DIR = path.join(REPO_ROOT, 'skills', 'memory-system');
 const ENGINE = path.join(SKILL_DIR, 'scripts', 'memory-system.js');
 const FIXTURES = path.join(SKILL_DIR, 'examples', 'epic-template-v1');
-const EPICS = path.join(FIXTURES, 'docs', 'specs', '02-epics');
+const EPICS = path.join(FIXTURES, 'docs', 'specs', 'epics');
 const CENTRAL = path.join(REPO_ROOT, 'docs', 'templates', 'epic-template.md');
 const SEED = path.join(REPO_ROOT, 'skills', 'epic-creation', 'assets', 'epic-template.md');
 const CUSTOM_TEMPLATE = path.join(FIXTURES, 'templates', 'epic-template-custom.md');
@@ -59,13 +59,13 @@ function write(file, content) {
 }
 
 // Raíz temporal `<tmp>/docs` con las fixtures indicadas (solo su `epic.md`) bajo `specs/<level>/`.
-function docsWith(t, names, level = '02-epics') {
+function docsWith(t, names, level = 'epics') {
   const docs = path.join(tempDir(t), 'docs');
   for (const name of names) write(path.join(docs, 'specs', level, name, 'epic.md'), fixture(name));
   return docs;
 }
 
-const epicOf = (docs, name, level = '02-epics') => read(path.join(docs, 'specs', level, name, 'epic.md'));
+const epicOf = (docs, name, level = 'epics') => read(path.join(docs, 'specs', level, name, 'epic.md'));
 const lineOf = (text, needle) => text.split('\n').findIndex((line) => line.includes(needle)) + 1;
 const frontmatter = (text) => text.match(/^---\n[\s\S]*?\n---\n/)[0];
 const h2Titles = (text) => text.split('\n').filter((line) => line.startsWith('## ')).map((line) => line.slice(3));
@@ -340,7 +340,7 @@ test('UT-015: migrateEpics en --dry-run no escribe y reporta [MIGRARÍA] y cambi
   const result = epicTemplate.migrateEpics(docs, { dryRun: true, displayRoot: 'docs' });
   assert.deepEqual(FIXTURE_NAMES.map((name) => epicOf(docs, name)), before);
   assert.equal(result.lines[0], '── memory-system migrate ── from: epic-template-v1 · root: docs');
-  assert.ok(result.lines.includes('[MIGRARÍA] specs/02-epics/EPIC-01-v1-completa/epic.md'), result.lines.join('\n'));
+  assert.ok(result.lines.includes('[MIGRARÍA] specs/epics/EPIC-01-v1-completa/epic.md'), result.lines.join('\n'));
   assert.ok(result.lines.includes('cambios pendientes: 5'), result.lines.join('\n'));
   assert.ok(!result.lines.some((line) => line.startsWith('[MIGRADO]')));
 });
@@ -350,7 +350,7 @@ test('UT-016: exit 1 con [REVISAR] <ruta>:<línea> — <motivo>; exit 0 sin hall
   const review = epicTemplate.migrateEpics(withReview, {});
   assert.equal(review.exitCode, 1);
   const line = lineOf(fixture('EPIC-05-revisar'), '**Integrar escáner**');
-  assert.ok(review.lines.some((l) => l.startsWith(`[REVISAR] specs/02-epics/EPIC-05-revisar/epic.md:${line} — completada-sin-id`)), review.lines.join('\n'));
+  assert.ok(review.lines.some((l) => l.startsWith(`[REVISAR] specs/epics/EPIC-05-revisar/epic.md:${line} — completada-sin-id`)), review.lines.join('\n'));
   assert.ok(review.lines.some((l) => /^\[REVISAR\] .*:\d+ — smoke-sin-gherkin/.test(l)));
   assert.equal(epicOf(withReview, 'EPIC-05-revisar'), fixture('EPIC-05-revisar', 'expected.md'), 'los hallazgos no bloquean la escritura');
   assert.equal(review.summary.review, 3);
@@ -358,24 +358,24 @@ test('UT-016: exit 1 con [REVISAR] <ruta>:<línea> — <motivo>; exit 0 sin hall
   const clean = docsWith(t, ['EPIC-01-v1-completa']);
   const first = epicTemplate.migrateEpics(clean, {});
   assert.equal(first.exitCode, 0, first.lines.join('\n'));
-  assert.ok(first.lines.some((l) => l.startsWith('[MIGRADO] specs/02-epics/EPIC-01-v1-completa/epic.md')));
+  assert.ok(first.lines.some((l) => l.startsWith('[MIGRADO] specs/epics/EPIC-01-v1-completa/epic.md')));
   assert.ok(first.lines.includes('migrados: 1 · sin cambios: 0 · a revisar: 0'), first.lines.join('\n'));
   assert.equal(epicOf(clean, 'EPIC-01-v1-completa'), fixture('EPIC-01-v1-completa', 'expected.md'));
   const second = epicTemplate.migrateEpics(clean, {});
-  assert.ok(second.lines.includes('[SIN CAMBIOS] specs/02-epics/EPIC-01-v1-completa/epic.md'), second.lines.join('\n'));
+  assert.ok(second.lines.includes('[SIN CAMBIOS] specs/epics/EPIC-01-v1-completa/epic.md'), second.lines.join('\n'));
   assert.ok(second.lines.includes('migrados: 0 · sin cambios: 1 · a revisar: 0'));
   assert.equal(second.exitCode, 0);
 });
 
-test('UT-018: migrateEpics descubre solo specs/*/EPIC-*/epic.md (02-epics y epics)', (t) => {
+test('UT-018: migrateEpics descubre solo specs/*/EPIC-*/epic.md con cualquier nivel', (t) => {
   const docs = docsWith(t, ['EPIC-02-v1-minima'], 'epics');
-  write(path.join(docs, 'specs', '02-epics', 'EPIC-09-otra', 'epic.md'), fixture('EPIC-04-situacionales'));
-  write(path.join(docs, 'specs', '03-stories', 'STORY-001-x', 'epic.md'), fixture('EPIC-01-v1-completa'));
+  write(path.join(docs, 'specs', 'otro-nivel', 'EPIC-09-otra', 'epic.md'), fixture('EPIC-04-situacionales'));
+  write(path.join(docs, 'specs', 'stories', 'STORY-001-x', 'epic.md'), fixture('EPIC-01-v1-completa'));
   write(path.join(docs, 'specs', 'epics', 'NOTAS', 'epic.md'), fixture('EPIC-01-v1-completa'));
   write(path.join(docs, 'templates', 'EPIC-01', 'epic.md'), fixture('EPIC-01-v1-completa'));
   const result = epicTemplate.migrateEpics(docs, { dryRun: true });
   const files = result.lines.filter((line) => line.startsWith('[MIGRARÍA]')).map((line) => line.split(' ')[1]);
-  assert.deepEqual(files, ['specs/02-epics/EPIC-09-otra/epic.md', 'specs/epics/EPIC-02-v1-minima/epic.md']);
+  assert.deepEqual(files, ['specs/epics/EPIC-02-v1-minima/epic.md', 'specs/otro-nivel/EPIC-09-otra/epic.md']);
 });
 
 test('UT-019: un template central sin claves se reporta, no se modifica y se usa el seed como contrato', (t) => {

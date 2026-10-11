@@ -36,8 +36,8 @@ Audita la **consistencia** entre la sección de historias de `epic.md` y los `st
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `$SPECS_BASE/specs/02-epics/<EPIC-NN-nombre>/epic.md` | Índice de historias (Vía A), criterios de salida, smoke tests y título |
-| `story.md` | `$SPECS_BASE/specs/03-stories/STORY-*/story.md` | El frontmatter `parent` (Vía B); solo para el universo de la épica, además `status`, `substatus`, `related` y el cuerpo (Paso 4.6) |
+| `epic.md` | `$SPECS_BASE/specs/epics/<EPIC-NN-nombre>/epic.md` | Índice de historias (Vía A), criterios de salida, smoke tests y título |
+| `story.md` | `$SPECS_BASE/specs/stories/STORY-*/story.md` | El frontmatter `parent` (Vía B); solo para el universo de la épica, además `status`, `substatus`, `related` y el cuerpo (Paso 4.6) |
 | Template de épica | `$SPECS_BASE/templates/epic-template.md` → seed `epic-template.md` de `$CLI_ROOT/skills/epic-creation/assets/` | Títulos de las secciones con `clave: historias`, `criterios-salida` y `smoke-tests` |
 | Template del reporte | `$SPECS_BASE/templates/epic-analyze-report-template.md` → seed [assets/epic-analyze-report-template.md](assets/epic-analyze-report-template.md) | Estructura del reporte |
 | Reporte previo | `<EPIC_DIR>/epic-analyze-report.md` | Solo su `created` |
@@ -104,12 +104,12 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 Interpretar `<epica>` en este orden; la primera forma aplicable decide:
 
 1. **Ruta** (contiene `/` o `\`): directorio de la épica, o su `epic.md`. `EPIC_DIR` = ese directorio.
-2. **Nombre de directorio** (`EPIC-NN-<slug>`): `$SPECS_BASE/specs/02-epics/<nombre>/epic.md`.
-3. **ID** (`EPIC-NN`): glob `$SPECS_BASE/specs/02-epics/<ID>-*/epic.md`. El guion tras el ID es parte del patrón, así que `EPIC-30` no casa `EPIC-300-x`: un ID debe resolver a una sola épica de forma predecible.
+2. **Nombre de directorio** (`EPIC-NN-<slug>`): `$SPECS_BASE/specs/epics/<nombre>/epic.md`.
+3. **ID** (`EPIC-NN`): glob `$SPECS_BASE/specs/epics/<ID>-*/epic.md`. El guion tras el ID es parte del patrón, así que `EPIC-30` no casa `EPIC-300-x`: un ID debe resolver a una sola épica de forma predecible.
 
 | Resultado | Comportamiento |
 |---|---|
-| 0 coincidencias, o el directorio existe sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>`, donde `<ruta-buscada>` es el patrón probado relativo a `REPO_ROOT` (p. ej. `docs/specs/02-epics/EPIC-77-*/epic.md`). Fin **sin escribir**. |
+| 0 coincidencias, o el directorio existe sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>`, donde `<ruta-buscada>` es el patrón probado relativo a `REPO_ROOT` (p. ej. `docs/specs/epics/EPIC-77-*/epic.md`). Fin **sin escribir**. |
 | 1 coincidencia | Continuar. |
 | > 1 coincidencias | Manual: listar los directorios y pedir al usuario que elija uno. Agent: `❌ El argumento <arg> es ambiguo: <lista>` y fin sin escribir. |
 | Sin argumento | Manual: preguntar `¿Qué épica deseas analizar? Indica el ID (ej. EPIC-30), el nombre de su directorio o su ruta.` Agent: `❌ Falta el argumento <epica>` y fin sin escribir. |
@@ -140,10 +140,10 @@ Las líneas no reconocidas no afectan el veredicto porque su detección pertenec
 
 ### Paso 4 — Vía B: inventario de historias
 
-1. Glob `$SPECS_BASE/specs/03-stories/STORY-*/story.md`. Si `specs/03-stories/` no existe, el inventario es vacío.
+1. Glob `$SPECS_BASE/specs/stories/STORY-*/story.md`. Si `specs/stories/` no existe, el inventario es vacío.
 2. De cada `story.md` leer **solo el frontmatter** y su clave `parent` (el universo del punto 6 lee algo más). El ID de la historia es el prefijo `STORY-NNN` del nombre de su directorio.
 3. **Pertenencia:** la historia declara la épica si el prefijo `EPIC-NN` de su `parent` es igual a `EPIC_ID` (`EPIC-30-ejemplo` y `EPIC-30` cuentan para `EPIC-30`; `EPIC-300-x` no). Se compara el prefijo y no la cadena completa para que renombrar el slug de una épica no vuelva huérfanas a todas sus historias.
-4. **Resolución de un ID listado:** glob `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md` (guion obligatorio). Existe si hay al menos un directorio con `story.md`; con varios, se usa el primero en orden alfabético y los demás se anotan en `notas-analisis`.
+4. **Resolución de un ID listado:** glob `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` (guion obligatorio). Existe si hay al menos un directorio con `story.md`; con varios, se usa el primero en orden alfabético y los demás se anotan en `notas-analisis`.
 5. Frontmatter ilegible o sin `parent`: si la historia **no** está listada, nota `<ruta>: historia no evaluable (frontmatter ilegible o sin parent)`; si **está** listada, se evalúa como `parent` ausente (INT-04). Nunca se aborta el análisis por una historia.
 6. **Universo de la épica (Pasos 5b y 5c):** historias listadas en el índice (F2/F3) con `story.md` existente ∪ historias con pertenencia verdadera. Solo de ellas —nunca de todas las del repositorio— se leen además, del frontmatter, `status`, `substatus` y `related` con el número de línea absoluto de cada uno (y de cada entrada de `related`), y el **cuerpo** con números de línea absolutos (el cuerpo solo lo usa el Paso 5b). Ambas familias usan este mismo universo, calculado una vez.
    - Se excluyen las de `status: CANCELED`: una historia cancelada no entregará el criterio ni se planificará. Si tendría evidencia para un elemento, nota `STORY-NNN cancelada: no cuenta como cobertura de <etiqueta>`.
@@ -242,15 +242,15 @@ Comprueba que cada historia del universo (Paso 4.6, sin recalcularlo) puede plan
 
 | Valor normalizado | Resolución | Resultado |
 |---|---|---|
-| `STORY-` + ≥ 3 dígitos (`STORY-064`, `STORY-086-slug`) | Glob `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md` con el prefijo `STORY-NNN` (guion obligatorio) | Existe → sin hallazgo; no → MAD-02 |
-| `EPIC-` + ≥ 2 dígitos (`EPIC-19`, `EPIC-19-slug`) | Glob `$SPECS_BASE/specs/02-epics/<EPIC-NN>-*/epic.md` | Existe → sin hallazgo; no → MAD-02 |
+| `STORY-` + ≥ 3 dígitos (`STORY-064`, `STORY-086-slug`) | Glob `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` con el prefijo `STORY-NNN` (guion obligatorio) | Existe → sin hallazgo; no → MAD-02 |
+| `EPIC-` + ≥ 2 dígitos (`EPIC-19`, `EPIC-19-slug`) | Glob `$SPECS_BASE/specs/epics/<EPIC-NN>-*/epic.md` | Existe → sin hallazgo; no → MAD-02 |
 | `STORY-` o `EPIC-` sin ID numérico (`STORY-XXX-…`) | No hay ID que buscar | MAD-02 |
 | Cualquier otro (`ADR-0008`, `domain-…`, slug libre) | Fuera de alcance | Sin hallazgo ni nota |
 
 - La resolución es **por ID**, no por slug: un slug desactualizado no es una referencia rota. Una historia que se referencia a sí misma o a su épica resuelve normalmente.
 - Un valor repetido en el `related` de una historia produce **un** resultado con todas sus líneas; el mismo valor roto en dos historias produce un MAD-02 por historia (la corrección se hace en cada `story.md`).
 - `related` ausente o vacío: sin hallazgo (el campo es opcional). En una forma no reconocida o ilegible: sin MAD-02 para esa historia y nota `<ruta del story.md>:<línea>: related no reconocido`.
-- Si `specs/03-stories/` o `specs/02-epics/` no existe, toda referencia del tipo correspondiente no resuelve.
+- Si `specs/stories/` o `specs/epics/` no existe, toda referencia del tipo correspondiente no resuelve.
 
 **3. Catálogo MAD** (todos WARNING: cuentan para el umbral de `NEEDS-REFINEMENT` del Paso 6 y nunca producen `BLOCKED` por sí solos):
 

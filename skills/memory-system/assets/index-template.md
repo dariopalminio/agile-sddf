@@ -59,11 +59,11 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 {layer:specs-projects}
 
-### L2 — Épicas (specs/02-epics/)
+### L2 — Épicas (specs/epics/)
 
 {layer:specs-epics}
 
-### L1 — Historias de usuario (specs/03-stories/)
+### L1 — Historias de usuario (specs/stories/)
 
 > **Convención de directorio:** cada `STORY-NNN-*/` contiene `story.md` como nodo principal y, según la
 > fase alcanzada, puede contener además `analyze.md`, `design.md`, `tasks.md`, `testcases.md`,

@@ -229,10 +229,10 @@ El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT �
     │        ├── project-intent.md
     │        ├── project.md
     │        └── project-plan.md
-    ├── 02-epics/
+    ├── epics/
     │   └── EPIC-01-mi-epica/
     │       └── epic.md
-    └── 03-stories/
+    └── stories/
         └── STORY-001-mi-historia/
             ├── story.md
             ├── design.md
@@ -390,11 +390,11 @@ Usa `--force` si necesitas sobrescribir una instalación previa.
 
 La versión 2.0.0 cambió el nivel intermedio de `release` a `epic`, numeró los directorios de specs y normalizó el prefijo de historias. Si partes desde 1.x, haz un commit de respaldo antes de modificar el árbol.
 
-| Antes (1.x) | Después (2.x+) |
+| Antes (1.x) | Ruta actual |
 |---|---|
 | `docs/specs/projects/` | `docs/specs/01-projects/` |
-| `docs/specs/releases/` | `docs/specs/02-epics/` |
-| `docs/specs/stories/` | `docs/specs/03-stories/` |
+| `docs/specs/releases/` | `docs/specs/epics/` |
+| `docs/specs/stories/` | `docs/specs/stories/` |
 | `release.md` / `type: release` | `epic.md` / `type: epic` |
 | `FEAT-NNN-<slug>/` | `STORY-NNN-<slug>/` |
 

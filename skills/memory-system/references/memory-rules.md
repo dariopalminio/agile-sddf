@@ -68,8 +68,8 @@ se enlaza solo por ruta con `⚠️ slug placeholder` y sus wikilinks no cuentan
 Primer segmento de `relPath` (`adr`, `guides`, `policies`, …). Reglas especiales:
 
 - Archivo en la raíz de `SPECS_BASE` (`constitution.md`) → `root`.
-- `specs/01-projects/` → `specs-projects`; `specs/02-epics/` → `specs-epics`;
-  `specs/03-stories/` → `specs-stories`; otro subdirectorio `specs/<x>/` → `specs-<x>` (sin
+- `specs/01-projects/` → `specs-projects`; `specs/epics/` → `specs-epics`;
+  `specs/stories/` → `specs-stories`; otro subdirectorio `specs/<x>/` → `specs-<x>` (sin
   placeholder en el template: exit 2, a propósito); un archivo suelto directamente en `specs/`
   (su `README.md` semilla) → capa `specs`.
 - Nodos de raíces externas → `external`.
@@ -161,7 +161,7 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
 | `product/README.md` | semilla | `wiki` / `product-index` |
 | `product/vision.md`, `product/stakeholders.md`, `product/objectives.md` | semilla | `product` / `vision`, `stakeholders`, `objectives` |
 | `requirements/README.md`, `specs/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla | `wiki` / `<capa>-index` |
-| `specs/01-projects/.gitkeep`, `specs/02-epics/.gitkeep`, `specs/03-stories/.gitkeep` | semilla | solo si el directorio no existe; nunca se listan ni se sobrescriben si ya existe |
+| `specs/01-projects/.gitkeep`, `specs/epics/.gitkeep`, `specs/stories/.gitkeep` | semilla | solo si el directorio no existe; nunca se listan ni se sobrescriben si ya existe |
 | `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md` del framework) | template |
 | `templates/domain-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
 | `templates/guardrail-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |

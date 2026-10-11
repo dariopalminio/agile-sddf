@@ -16,7 +16,7 @@ related: []
 
 El sistema SHALL crear un directorio `STORY-NNN-slug/` con su `story.md` por
 cada ítem de la sección `## Historias` de una épica dada, calculando el siguiente ID libre
-mediante el glob `03-stories/STORY-*/`.
+mediante el glob `stories/STORY-*/`.
 
 ## Atributos
 

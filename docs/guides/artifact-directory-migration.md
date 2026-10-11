@@ -22,8 +22,8 @@ Esta guía explica cómo migrar artefactos existentes (proyectos, épicas, histo
 | requirement-spec.md | `$SPECS_BASE/specs/projects/project.md` | `$SPECS_BASE/specs/01-projects/PROJ-01-nombre/project.md` |
 | project-plan.md | `$SPECS_BASE/specs/projects/project-plan.md` | `$SPECS_BASE/specs/01-projects/PROJ-01-nombre/project-plan.md` |
 | story-map.md | `$SPECS_BASE/specs/projects/story-map.md` | `$SPECS_BASE/specs/01-projects/PROJ-01-nombre/story-map.md` |
-| release-01-nombre.md | `$SPECS_BASE/specs/releases/release-01-nombre.md` | `$SPECS_BASE/specs/02-epics/EPIC-01-nombre/epic.md` |
-| story-STORY-001-nombre.md | `$SPECS_BASE/specs/stories/story-STORY-001-nombre.md` | `$SPECS_BASE/specs/03-stories/STORY-001-nombre/story.md` |
+| release-01-nombre.md | `$SPECS_BASE/specs/releases/release-01-nombre.md` | `$SPECS_BASE/specs/epics/EPIC-01-nombre/epic.md` |
+| story-STORY-001-nombre.md | `$SPECS_BASE/specs/stories/story-STORY-001-nombre.md` | `$SPECS_BASE/specs/stories/STORY-001-nombre/story.md` |
 
 ---
 
@@ -51,9 +51,9 @@ Por cada archivo `release-NN-nombre.md` en `$SPECS_BASE/specs/releases/`:
 
 ```bash
 # Ejemplo para release-01-features-spec-builder.md
-mkdir -p docs/specs/02-epics/EPIC-01-features-spec-builder
+mkdir -p docs/specs/epics/EPIC-01-features-spec-builder
 mv docs/specs/releases/release-01-features-spec-builder.md \
-   docs/specs/02-epics/EPIC-01-features-spec-builder/epic.md
+   docs/specs/epics/EPIC-01-features-spec-builder/epic.md
 ```
 
 #### 3. Migrar historias
@@ -62,9 +62,9 @@ Por cada archivo `story-STORY-NNN-nombre.md` en `$SPECS_BASE/specs/stories/`:
 
 ```bash
 # Ejemplo para story-STORY-001-project-begin.md
-mkdir -p docs/specs/03-stories/STORY-001-project-begin
+mkdir -p docs/specs/stories/STORY-001-project-begin
 mv docs/specs/stories/story-STORY-001-project-begin.md \
-   docs/specs/03-stories/STORY-001-project-begin/story.md
+   docs/specs/stories/STORY-001-project-begin/story.md
 ```
 
 ---

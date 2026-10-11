@@ -48,7 +48,7 @@ de entrada recomendado.
 - **Qué no va aquí:**
   - Decisiones y sus alternativas → [[adr-index]] (`docs/adr/ADR-NNNN-*.md`).
   - Diseño de una historia concreta → `design.md` de la historia
-    (`docs/specs/03-stories/STORY-NNN-*/design.md`).
+    (`docs/specs/stories/STORY-NNN-*/design.md`).
   - Modelo de dominio (entidades, invariantes de negocio) → [domains/README.md](../domains/README.md)
     y [[domain]].
   - Reglas de gobernanza y restricciones verificables → `policies/` y `guardrails/`.

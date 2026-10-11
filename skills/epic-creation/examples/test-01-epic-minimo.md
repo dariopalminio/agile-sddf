@@ -20,7 +20,7 @@
 - Usuario responde: `"Autenticación básica"`
 - Slug derivado: `autenticacion-basica`
 - Se sugiere `EPIC-01` (no hay épicas previas); el usuario acepta
-- Ruta de salida: `$SPECS_BASE/specs/02-epics/EPIC-01-autenticacion-basica/epic.md`
+- Ruta de salida: `$SPECS_BASE/specs/epics/EPIC-01-autenticacion-basica/epic.md`
 - El directorio no existe → continuar
 
 ### Fase 1 — Leer template
@@ -52,7 +52,7 @@
 
 ### Fase 4 — Archivo generado
 ```
-docs/specs/02-epics/EPIC-01-autenticacion-basica/epic.md
+docs/specs/epics/EPIC-01-autenticacion-basica/epic.md
 ```
 
 ### Fase 5 — Validación

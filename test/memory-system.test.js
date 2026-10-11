@@ -154,7 +154,7 @@ test('UT-006 deriveNode: slug, capa y título según D-3', () => {
   assert.deepEqual([adr.slug, adr.layer, adr.title], ['ADR-0001-x', 'adr', 'ADR-0001: Decisión de ejemplo X']);
   const guide = node('guides/sdd.md');
   assert.deepEqual([guide.slug, guide.layer, guide.title], ['sdd', 'guides', 'Guía SDD de ejemplo']);
-  const story = node('specs/03-stories/STORY-001-a/story.md');
+  const story = node('specs/stories/STORY-001-a/story.md');
   assert.deepEqual([story.slug, story.layer], ['STORY-001-a', 'specs-stories']);
   const policies = node('policies/README.md');
   assert.deepEqual([policies.slug, policies.layer], ['policies-index', 'policies']);
@@ -179,7 +179,7 @@ test('UT-007 scanNodes: excluye index.md, .cache, templates, derivados y pre-spl
   fs.mkdirSync(path.join(docs, 'specs', '.cache'), { recursive: true });
   fs.writeFileSync(path.join(docs, 'specs', '.cache', 'index.json'), '{}');
   fs.writeFileSync(path.join(docs, 'specs', '.cache', 'index.md'), '# cache\n');
-  const story = path.join(docs, 'specs', '03-stories', 'STORY-001-a');
+  const story = path.join(docs, 'specs', 'stories', 'STORY-001-a');
   fs.mkdirSync(path.join(story, 'pre-split'));
   fs.writeFileSync(path.join(story, 'pre-split', 'story.md'), '---\nslug: STORY-001-a-old\n---\n# vieja\n');
   fs.writeFileSync(path.join(story, 'implement-report.md'), '# reporte\n');
@@ -189,7 +189,7 @@ test('UT-007 scanNodes: excluye index.md, .cache, templates, derivados y pre-spl
     'constitution.md',
     'guides/sdd.md',
     'policies/README.md',
-    'specs/03-stories/STORY-001-a/story.md',
+    'specs/stories/STORY-001-a/story.md',
   ]);
 });
 
@@ -343,7 +343,7 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   for (const name of NINE_TEMPLATES) {
     assert.ok(fs.existsSync(path.join(docs, 'templates', name)), name);
   }
-  for (const sub of ['01-projects', '02-epics', '03-stories']) {
+  for (const sub of ['01-projects', 'epics', 'stories']) {
     assert.ok(fs.existsSync(path.join(docs, 'specs', sub, '.gitkeep')), sub);
   }
   assert.ok(!fs.existsSync(path.join(docs, 'index.md')), 'scaffold no crea index.md');
@@ -375,7 +375,7 @@ test('S096-UT-002 scaffold: idempotente, la segunda corrida preserva todo con cr
   assert.ok(first.stdout.includes('[CREADO] product/vision.md'));
   assert.ok(first.stdout.includes('[CREADO] requirements/README.md'));
   assert.ok(first.stdout.includes('[PRESERVADO] constitution.md'));
-  assert.ok(!first.stdout.includes('specs/03-stories/.gitkeep'), 'un directorio con contenido no recibe .gitkeep');
+  assert.ok(!first.stdout.includes('specs/stories/.gitkeep'), 'un directorio con contenido no recibe .gitkeep');
   assert.match(readUtf8(docs, 'constitution.md'), /Regla local:/);
   const after = hashTree(docs);
 
@@ -466,7 +466,7 @@ test('S096-UT-006 scaffold --force: restaura solo semillas y plantillas, conserv
   assert.ok(!result.stdout.includes('[PRESERVADO]'));
 
   const restored = hashTree(docs);
-  for (const author of ['adr/ADR-0001-x.md', 'guides/sdd.md', 'specs/03-stories/STORY-001-a/story.md']) {
+  for (const author of ['adr/ADR-0001-x.md', 'guides/sdd.md', 'specs/stories/STORY-001-a/story.md']) {
     assert.equal(restored[author], pristine[author], `${author} intacto`);
   }
   assert.ok(!readUtf8(docs, 'constitution.md').includes('Regla local'));
@@ -562,8 +562,8 @@ test('S096-UT-001c assets/scaffold: el árbol semilla es exactamente el declarad
     'runbooks/README.md',
     'specs/README.md',
     'specs/01-projects/.gitkeep',
-    'specs/02-epics/.gitkeep',
-    'specs/03-stories/.gitkeep',
+    'specs/epics/.gitkeep',
+    'specs/stories/.gitkeep',
     'templates/README.md',
     ...MANUAL_TEMPLATES.map((name) => `templates/${name}`),
   ].sort();
@@ -647,17 +647,17 @@ test('S097-UT-004 invalidFrontmatter: campos obligatorios por tipo (V-6)', () =>
   assert.deepEqual(engine.REQUIRED_FIELDS, { all: ['type', 'slug', 'title'], specs: ['id', 'status'] });
   const nodes = [
     fakeNode('guides/sdd.md', { declared: { type: 'guide', slug: 'sdd', title: 'Guía sin id' } }),
-    fakeNode('specs/03-stories/STORY-001-a/story.md', { declared: { type: 'story', id: 'STORY-001', slug: 'STORY-001-a', title: 'H' } }),
+    fakeNode('specs/stories/STORY-001-a/story.md', { declared: { type: 'story', id: 'STORY-001', slug: 'STORY-001-a', title: 'H' } }),
     fakeNode('adr/ADR-0003-x.md', { declared: { type: 'adr', slug: 'ADR-0003-x' } }),
-    fakeNode('specs/02-epics/EPIC-01-x/epic.md', { declared: { type: 'epic', slug: 'EPIC-01-x', title: '  ' } }),
+    fakeNode('specs/epics/EPIC-01-x/epic.md', { declared: { type: 'epic', slug: 'EPIC-01-x', title: '  ' } }),
     fakeNode('guides/huerfana.md'),
   ];
   assert.deepEqual(engine.invalidFrontmatter(checkCtx({ nodes })), [
     { kind: 'invalid-frontmatter', path: 'adr/ADR-0003-x.md', detail: 'falta title' },
-    { kind: 'invalid-frontmatter', path: 'specs/02-epics/EPIC-01-x/epic.md', detail: 'falta id' },
-    { kind: 'invalid-frontmatter', path: 'specs/02-epics/EPIC-01-x/epic.md', detail: 'falta status' },
-    { kind: 'invalid-frontmatter', path: 'specs/02-epics/EPIC-01-x/epic.md', detail: 'falta title' },
-    { kind: 'invalid-frontmatter', path: 'specs/03-stories/STORY-001-a/story.md', detail: 'falta status' },
+    { kind: 'invalid-frontmatter', path: 'specs/epics/EPIC-01-x/epic.md', detail: 'falta id' },
+    { kind: 'invalid-frontmatter', path: 'specs/epics/EPIC-01-x/epic.md', detail: 'falta status' },
+    { kind: 'invalid-frontmatter', path: 'specs/epics/EPIC-01-x/epic.md', detail: 'falta title' },
+    { kind: 'invalid-frontmatter', path: 'specs/stories/STORY-001-a/story.md', detail: 'falta status' },
   ]);
 });
 
@@ -693,7 +693,7 @@ test('S097-UT-007 check: templates/ y derivados de historia no se evalúan (V-5)
   const docs = path.join(copyFixture(t, 'broken'), 'docs');
   const rels = engine.scanNodes(docs, 'sddf').map((node) => node.relPath);
   assert.ok(!rels.some((rel) => rel.startsWith('templates/')), 'templates/ excluido');
-  assert.ok(!rels.includes('specs/03-stories/STORY-001-a/design.md'), 'derivado excluido');
+  assert.ok(!rels.includes('specs/stories/STORY-001-a/design.md'), 'derivado excluido');
 
   const result = engine.checkMemory(docs, 'sddf');
   assert.equal(result.summary['broken-wikilink'], 1);

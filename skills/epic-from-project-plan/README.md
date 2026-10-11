@@ -12,7 +12,7 @@ Extrae las épicas planificadas en `project-plan.md` y materializa una especific
 
 **Produces:**
 
-- Directorios `$SPECS_BASE/specs/02-epics/EPIC-NN-nombre/`.
+- Directorios `$SPECS_BASE/specs/epics/EPIC-NN-nombre/`.
 - Un archivo `epic.md` por cada épica planificada, creado o sobrescrito solo tras la decisión correspondiente, con el contenido del plan mapeado por la `clave:` de cada sección del template (historias en F1/F2/F3, smoke tests `SMOKE-N` en gherkin).
 - El resultado de `epic-format-validation` para cada épica generada, listado en el resumen (un `REFINAR` no detiene el batch).
 

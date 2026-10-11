@@ -104,7 +104,7 @@ Verifica que el archivo contiene una sección "## Propuesta de Épicas" con bloq
 
 ## Fase 2 — Preparar directorio de destino
 
-Verificar si el directorio `$SPECS_BASE/specs/02-epics/` existe.
+Verificar si el directorio `$SPECS_BASE/specs/epics/` existe.
 
 Si no existe, crearlo antes de continuar.
 
@@ -125,16 +125,16 @@ Convertir el nombre de la épica a kebab-case siguiendo estas reglas:
 
 Nombre de directorio resultante: `EPIC-[ID]-[nombre-kebab]`
 
-Ruta del archivo de salida: `$SPECS_BASE/specs/02-epics/EPIC-[ID]-[nombre-kebab]/epic.md`
+Ruta del archivo de salida: `$SPECS_BASE/specs/epics/EPIC-[ID]-[nombre-kebab]/epic.md`
 
 **Ejemplo:** `### Épica 00 — Estructura Base y Mecanismo de Templates` → directorio `EPIC-00-estructura-base-y-mecanismo-de-templates/` con archivo `epic.md`
 
 ### 3b. Verificar existencia previa
 
-Si ya existe el **directorio** `$SPECS_BASE/specs/02-epics/EPIC-[ID]-[nombre-kebab]/`, informar al usuario:
+Si ya existe el **directorio** `$SPECS_BASE/specs/epics/EPIC-[ID]-[nombre-kebab]/`, informar al usuario:
 
 ```
-El directorio $SPECS_BASE/specs/02-epics/EPIC-[ID]-[nombre-kebab]/ ya existe.
+El directorio $SPECS_BASE/specs/epics/EPIC-[ID]-[nombre-kebab]/ ya existe.
 ¿Deseas sobreescribir epic.md? (s/n)
 ```
 
@@ -160,7 +160,7 @@ Lee el archivo de plantilla `$SPECS_BASE/templates/epic-template.md`.
 
 ### 3d. Escribir el archivo de épica
 
-Crear el directorio `$SPECS_BASE/specs/02-epics/EPIC-[ID]-[nombre-kebab]/` si no existe y escribir dentro `epic.md` completando el template leído en 3c.
+Crear el directorio `$SPECS_BASE/specs/epics/EPIC-[ID]-[nombre-kebab]/` si no existe y escribir dentro `epic.md` completando el template leído en 3c.
 
 **Estructura (del template, en runtime):** para cada línea `## ` del template, en su orden, tomar su **título** (sin el comentario HTML) y su **clave** (`clave: <clave>` del comentario). Escribir cada sección como `## <título>` **sin** el comentario `<!-- sección … -->`, sin los comentarios guía y sin el contenido de ejemplo del template. Nunca se escribe un título que no venga del template.
 
@@ -210,10 +210,10 @@ Al terminar de generar todos los archivos, mostrar un resumen en pantalla:
 ```
 ## Épicas generados
 
-Se generaron [N] directorios de épica en $SPECS_BASE/specs/02-epics/:
+Se generaron [N] directorios de épica en $SPECS_BASE/specs/epics/:
 
-- $SPECS_BASE/specs/02-epics/EPIC-00-nombre/epic.md — epic-format-validation: APROBADO
-- $SPECS_BASE/specs/02-epics/EPIC-01-nombre/epic.md — epic-format-validation: REFINAR (<ítems>)
+- $SPECS_BASE/specs/epics/EPIC-00-nombre/epic.md — epic-format-validation: APROBADO
+- $SPECS_BASE/specs/epics/EPIC-01-nombre/epic.md — epic-format-validation: REFINAR (<ítems>)
 ...
 
 {línea de siguiente paso}
@@ -225,7 +225,7 @@ La línea de siguiente paso depende de los resultados de la Fase 3e (no menciona
 
 Si alguna épica fue saltada (usuario eligió no sobreescribir), listarla como:
 ```
-- $SPECS_BASE/specs/02-epics/EPIC-XX-nombre/ — saltado (ya existía)
+- $SPECS_BASE/specs/epics/EPIC-XX-nombre/ — saltado (ya existía)
 ```
 
 ---
