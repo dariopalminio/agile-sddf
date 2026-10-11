@@ -24,7 +24,7 @@ related:
 
 # 📖 Historia: Verificar `sddf.config.yaml` y los modos SDD sobre la estructura de dos niveles
 
-**Como** mantenedor de SDDF que va a cerrar EPIC-21 y publicar la versión major  
+**Como** Mantenedor del Harness (dogfood) que va a cerrar EPIC-21 y publicar la versión major  
 **Quiero** comprobar con evidencia ejecutada que se cumplen los criterios de salida y los smoke tests de la épica, y que los flujos Spec-First y Spec-Anchored funcionan de punta a punta sobre la nueva estructura  
 **Para** publicar el breaking change sabiendo que ningún flujo del framework sigue dependiendo de `specs/01-projects/` ni de las rutas numeradas, en lugar de descubrirlo por reportes de usuarios
 

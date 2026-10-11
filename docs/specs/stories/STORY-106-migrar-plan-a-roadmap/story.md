@@ -22,7 +22,7 @@ related:
 
 # 📖 Historia: Migrar `project-plan.md` a `product/roadmap.md`
 
-**Como** mantenedor de SDDF que decide qué épica abordar a continuación  
+**Como** Mantenedor del Harness (dogfood) que decide qué épica abordar a continuación  
 **Quiero** consultar en `docs/product/roadmap.md` todas las épicas reales del framework con su estado, junto con el plan original del que partieron  
 **Para** priorizar sobre datos actuales en lugar de sobre un plan de abril de 2026 que solo cubre 9 de las 22 épicas, sin perder el registro de lo que se planificó
 

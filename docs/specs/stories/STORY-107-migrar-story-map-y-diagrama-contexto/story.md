@@ -21,7 +21,7 @@ related:
 
 # 📖 Historia: Migrar `story-map.md` y `context-diagram.puml`
 
-**Como** mantenedor de SDDF que consulta el mapa de historias o el diagrama de contexto del framework  
+**Como** Mantenedor del Harness (dogfood) que consulta el mapa de historias o el diagrama de contexto del framework  
 **Quiero** encontrar el story map en la capa `docs/product/` y un único diagrama de contexto C4 en `docs/architecture/c4/`  
 **Para** no tener que adivinar cuál de dos copias es la vigente y dejar `specs/01-projects/` sin artefactos que pertenecen a otras capas
 

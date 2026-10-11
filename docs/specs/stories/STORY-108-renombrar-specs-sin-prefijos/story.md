@@ -24,7 +24,7 @@ related:
 
 # 📖 Historia: Renombrar `specs/02-epics/` → `specs/epics/` y `specs/03-stories/` → `specs/stories/`
 
-**Como** mantenedor de SDDF que navega, crea o referencia épicas e historias  
+**Como** Mantenedor del Harness (dogfood) que navega, crea o referencia épicas e historias  
 **Quiero** que las épicas vivan en `docs/specs/epics/` y las historias en `docs/specs/stories/`, y que todo skill, agente, test y documento vivo del framework use esas rutas  
 **Para** que `specs/` sea consistente con el resto de capas de `docs/` (sin prefijos numéricos, que perdieron su ancla al desaparecer `01-projects/`) sin dejar en ningún momento un skill apuntando a una carpeta inexistente
 

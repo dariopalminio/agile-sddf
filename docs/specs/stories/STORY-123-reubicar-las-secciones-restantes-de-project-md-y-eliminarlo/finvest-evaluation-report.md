@@ -10,7 +10,7 @@ evaluated: 2026-10-09
 
 ## Historia evaluada
 
-> **Como** mantenedor de SDDF que colapsa `specs/` a dos niveles
+> **Como** Mantenedor del Harness (dogfood) que colapsa `specs/` a dos niveles
 > **Quiero** trasladar a su capa las secciones de `project.md` que ADR-0013 no asigna y después eliminar `project.md` y `docs/specs/01-projects/`
 > **Para** que el repositorio del framework cumpla el criterio de salida de EPIC-21 (`docs/specs/01-projects/` no existe), sin una segunda fuente de verdad del proyecto, y STORY-108 encuentre `01-projects/` vacía al renombrar `specs/`
 

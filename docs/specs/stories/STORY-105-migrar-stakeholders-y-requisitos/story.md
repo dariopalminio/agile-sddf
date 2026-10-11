@@ -22,7 +22,7 @@ related:
 
 # 📖 Historia: Migrar `project.md` a `product/stakeholders.md` y `requirements/`
 
-**Como** Product Owner o mantenedor de SDDF que consulta, cita o actualiza un requisito del framework  
+**Como** Product Owner o Mantenedor del Harness (dogfood) que consulta, cita o actualiza un requisito del framework  
 **Quiero** encontrar los perfiles de usuario en `docs/product/stakeholders.md` y cada requisito funcional y no funcional como documento propio en `docs/requirements/`  
 **Para** que una historia pueda declarar `implements: [FR-NNN]` apuntando a un requisito concreto en lugar de a un documento de 1264 líneas, y que cada requisito tenga una única fuente de verdad
 
