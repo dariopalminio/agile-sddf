@@ -17,7 +17,7 @@ parent: EPIC-01-features-spec-builder
 
 ## 📖 Historia: story-evaluation — Evaluación FINVEST de historias
 
-**Como** desarrollador o PM que ha redactado una historia de usuario
+**Como** Desarrollador (Cloud) y Product Owner que ha redactado una historia de usuario
 **Quiero** ejecutar el skill `story-evaluation` sobre esa historia para obtener una evaluación de calidad
 **Para** recibir un score Likert 1ó5 por cada dimensión FINVEST, una decisión accionable (APROBADA / REFINAR / RECHAZAR) y recomendaciones concretas para mejorarla
 

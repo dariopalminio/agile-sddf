@@ -17,7 +17,7 @@ parent: EPIC-06-release-and-story-generator
 
 ## 📖 Historia: Validación de formato de Release
 
-**Como** desarrollador o PM que ha generado o editado un archivo de release en `$SPECS_BASE/specs/releases/`
+**Como** Desarrollador (Cloud) y Product Owner que ha generado o editado un archivo de release en `$SPECS_BASE/specs/releases/`
 **Quiero** ejecutar el skill `release-format-validation` sobre ese archivo para obtener un resultado de validación de su estructura
 **Para** detectar secciones faltantes o malformadas antes de usarlo como input en la generación de stories o como base de un sprint
 

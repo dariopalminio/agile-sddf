@@ -17,7 +17,7 @@ parent: EPIC-01-features-spec-builder
 
 ## 📖 Historia: story-creation — Crear historias de usuario
 
-**Como** desarrollador o PM que necesita redactar una historia de usuario para sprint planning
+**Como** Desarrollador (Cloud) y Product Owner que necesita redactar una historia de usuario para sprint planning
 **Quiero** ejecutar el skill `story-creation` describiendo una necesidad o feature en lenguaje natural
 **Para** obtener una historia completa en formato Como/Quiero/Para con criterios de aceptación Gherkin lista para evaluarse con FINVEST, sin redactarla desde cero
 

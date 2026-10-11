@@ -15,7 +15,7 @@ parent: EPIC-09-docs-and-wiki-builders
 
 # 📖 Historia: Directorio docs tipo wiki
 
-**Como** desarrollador o PM que mantiene la documentación de un proyecto usando SDDF
+**Como** Desarrollador (Cloud) y Product Owner que mantiene la documentación de un proyecto usando SDDF
 **Quiero** un SKILL para reorganizar el directorio `docs/` como una wiki navegable con un índice central y wikilinks internos
 **Para** que tanto el equipo como los LLMs (Claude, Copilot, Opencode) puedan acceder a la documentación de forma eficiente sin leer todos los archivos a la vez y mantener un esquema común a todos.
 

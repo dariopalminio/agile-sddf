@@ -17,7 +17,7 @@ parent: EPIC-01-features-spec-builder
 
 ## 📖 Historia: story-split — Dividir épicas en historias pequeñas
 
-**Como** desarrollador o PM que tiene una historia de usuario demasiado grande para estimar o entregar en un sprint
+**Como** Desarrollador (Cloud) y Product Owner que tiene una historia de usuario demasiado grande para estimar o entregar en un sprint
 **Quiero** ejecutar el skill `story-split` sobre esa historia para obtener historias mós pequeóas e independientes
 **Para** conseguir unidades de trabajo estimables, entregables de forma incremental y que cumplan el criterio S (Small) de INVEST
 
