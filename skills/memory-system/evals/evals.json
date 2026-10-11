@@ -1,6 +1,6 @@
 {
   "skill": "memory-system",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Casos de prueba para memory-system. STORY-095 (TC-001..TC-004): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido. STORY-096 (TC-005..TC-010): ensure por defecto sobre examples/sddf-partial (crea solo lo faltante y regenera el índice), ensure idempotente, scaffold sobre examples/empty sin tocar index.md, rebuild sin --force (fail-fast sin escrituras), rebuild --force (advertencia literal y sobrescritura de semillas) y ensure --fix-frontmatter sobre examples/no-frontmatter (header-aggregation en batch con 'Saltar todos los conflictos'). STORY-097 (TC-011..TC-014): modo check sobre el fixture examples/broken (informe textual con las cuatro familias y 'problemas: 4', exit 1), check --json (objeto único con ok/summary/problems para CI), check sobre un fixture sano ('problemas: 0', exit 0) y fail-fast ante --root inexistente (stderr 'raíz inexistente', exit 2, sin escrituras). STORY-098 (TC-015..TC-018): migrate sobre examples/speckit sin --yes (plan '📋 Plan de migración (speckit)' con [OMITIRÍA]/[MAPEARÍA]/[CREARÍA] y pregunta de confirmación, sin escrituras), migrate --yes (scaffold adaptado al perfil: 'mapeados: 1' y 'omitidos por harness: 1'), migrate sobre examples/sddf ('El proyecto ya es SDDF', remite a ensure, sin escrituras) y ensure --harness openspec --yes sobre examples/openspec (sin docs/specs/, openspec/ intacto e índice con [[auth]] y [[add-login]] bajo subtítulos OpenSpec).",
   "cases": [
     {
@@ -862,6 +862,24 @@
           "problemas: 0"
         ]
       },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-023",
+      "name": "migrate-specs-3-levels-dry-run",
+      "type": "happy-path",
+      "description": "STORY-114: el dry-run de specs-3-levels informa el plan sin escribir en la fixture heredada.",
+      "input": { "input_path": "examples/specs-3-levels", "mode": "migrate", "flags": ["--from=specs-3-levels", "--dry-run"], "environment": { "specs_base": "docs", "node_in_path": true } },
+      "expected": { "contains": ["from: specs-3-levels", "[MOVERÍA]", "[CREARÍA]", "cambios pendientes:"], "not_contains": ["[MOVIDO]", "[CREADO]"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-024",
+      "name": "migrate-specs-3-levels-rechaza-multiproyecto",
+      "type": "fail-fast",
+      "description": "STORY-114: dos proyectos heredados se reportan como NO MIGRADO y no se escriben archivos.",
+      "input": { "input_path": "examples/specs-3-levels", "mode": "migrate", "flags": ["--from=specs-3-levels"], "environment": { "specs_base": "docs", "node_in_path": true, "fixture_mutation": "crear specs/01-projects/PROJ-02-b" } },
+      "expected": { "contains": ["[NO MIGRADO] specs/01-projects/", "exit code: 1"], "not_contains": ["[CREADO]", "[MOVIDO]"] },
       "threshold": 0.9
     }
   ]

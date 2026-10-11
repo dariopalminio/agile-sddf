@@ -25,6 +25,7 @@ const ENGINE = path.join(SKILL_DIR, 'scripts', 'memory-system.js');
 const EXAMPLES = path.join(SKILL_DIR, 'examples');
 
 const engine = require(ENGINE);
+const specs3Levels = require(path.join(SKILL_DIR, 'scripts', 'specs-3-levels.js'));
 
 // Ejecuta el motor desde REPO_ROOT y devuelve { status, stdout, stderr }.
 function run(args) {
@@ -1055,4 +1056,153 @@ test('S098-E2E-002 ensure --harness openspec a nivel motor: openspec/ intacto e 
   const index = readUtf8(docs, 'index.md');
   assert.match(index, /### OpenSpec — specs\n\n- \[\[auth\]\] — \[spec\.md\]\(\.\.\/openspec\/specs\/auth\/spec\.md\) — Auth capability/);
   assert.match(index, /### OpenSpec — changes\n\n- \[\[add-login\]\] — \[proposal\.md\]\(\.\.\/openspec\/changes\/add-login\/proposal\.md\) — Add login/);
+});
+
+// ---------------------------------------------------------------------------
+// STORY-114 — migración specs de tres a dos niveles
+// ---------------------------------------------------------------------------
+
+test('S114-UT-001 funciones puras de specs-3-levels conservan contratos de contenido', () => {
+  assert.equal(specs3Levels.isEmptyBody(['<!-- comentario -->', '- **Stack**: [Por completar]']), true);
+  assert.equal(specs3Levels.isEmptyBody(['[enlace](https://example.test)']), false);
+  assert.equal(specs3Levels.requirementSlug('Título con Ñ y símbolos!'), 'titulo-con-n-y-simbolos');
+  const parsed = specs3Levels.parseRequirements([{ heading: 'Funcionales', body: ['- **FR-001**: Crear migración', '  - **Descripción**: Migra de forma segura.'] }]);
+  assert.equal(parsed.findings.length, 0);
+  assert.match(specs3Levels.renderRequirement(parsed.requirements[0], { date: '2026-10-11' }).content, /# FR-001 — Crear migración/);
+  const rewritten = specs3Levels.rewriteWikilinks('[[proyecto|Demo]]\n`[[proyecto]]`\n![[proyecto]]', { proyecto: 'vision' });
+  assert.match(rewritten.text, /\[\[vision\|Demo\]\]/);
+  assert.match(rewritten.text, /!\[\[proyecto\]\]/);
+});
+
+test('S114-IT-001 migrate specs-3-levels: dry-run, aplicación e idempotencia', (t) => {
+  const repo = copyFixture(t, 'specs-3-levels');
+  const docs = path.join(repo, 'docs');
+  const before = hashTree(repo);
+  const dry = run(['migrate', '--root', docs, '--from', 'specs-3-levels', '--dry-run', '--date', '2026-10-11']);
+  assert.equal(dry.status, 0, dry.stderr);
+  assert.match(dry.stdout, /from: specs-3-levels/);
+  assert.match(dry.stdout, /\[CREARÍA\]/);
+  assert.match(lastLine(dry.stdout), /^cambios pendientes: [1-9]/);
+  assert.deepEqual(hashTree(repo), before);
+  const applied = run(['migrate', '--root', docs, '--from', 'specs-3-levels', '--date', '2026-10-11']);
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.ok(fs.existsSync(path.join(docs, 'product', 'vision.md')));
+  assert.ok(fs.existsSync(path.join(docs, 'requirements', 'functional', 'FR-001-migrar-proyectos.md')));
+  assert.ok(!fs.existsSync(path.join(docs, 'specs', specs3Levels.LEGACY_LEVELS.projects)));
+  assert.match(readUtf8(docs, 'specs', 'epics', 'EPIC-00-demo', 'epic.md'), /\[\[vision\]\]/);
+  const repeat = run(['migrate', '--root', docs, '--from', 'specs-3-levels', '--dry-run', '--date', '2026-10-11']);
+  assert.equal(repeat.status, 0, repeat.stderr);
+  assert.equal(lastLine(repeat.stdout), 'cambios pendientes: 0');
+});
+
+test('S114-IT-002 migrate specs-3-levels rechaza repositorios multiproyecto sin escribir', (t) => {
+  const repo = copyFixture(t, 'specs-3-levels');
+  const docs = path.join(repo, 'docs');
+  fs.mkdirSync(path.join(docs, 'specs', specs3Levels.LEGACY_LEVELS.projects, 'PROJ-02-b'));
+  const before = hashTree(repo);
+  const result = run(['migrate', '--root', docs, '--from', 'specs-3-levels']);
+  assert.equal(result.status, 1, result.stderr);
+  assert.match(result.stdout, /\[NO MIGRADO\] specs\/01-projects\//);
+  assert.deepEqual(hashTree(repo), before);
+});
+
+test('S114-UT-002 parser estricto: árbol, placeholders, categorías y enlaces en código', () => {
+  const doc = specs3Levels.splitDocument(`Preambulo\n# Proyecto\n\n## Requisitos\n\n### Categoría\n\n- **FR-001**: Crear\n  - **Descripción**: Una línea\n\n## Apéndice A\n\n[Por completar: nada]\n`);
+  const category = doc.sections.find((section) => section.heading === 'Categoría');
+  assert.equal(category.parent.heading, 'Requisitos');
+  assert.equal(specs3Levels.isEmptyBody(['<!--\n comentario\n-->', '- [ ] **Technical**: [Stack…]']), true);
+  assert.equal(specs3Levels.isEmptyBody(['[un enlace](https://example.test)']), false);
+  const classified = specs3Levels.classifyProjectSections(doc);
+  assert.equal(classified.categories.length, 1);
+  assert.ok(classified.findings.some((finding) => finding.kind === 'omitted'));
+  const links = specs3Levels.rewriteWikilinks('`código [[viejo]]` y [[viejo#ancla]]\n```\n[[viejo]]\n```\n![[viejo]]', { viejo: 'nuevo' });
+  assert.match(links.text, /`código \[\[viejo\]\]`/);
+  assert.match(links.text, /\[\[nuevo#ancla\]\]/);
+  assert.match(links.text, /!\[\[viejo\]\]/);
+});
+
+test('S114-UT-003 requisitos, colisiones de relleno y --force conservan secciones ajenas', () => {
+  const parsed = specs3Levels.parseRequirements([{ heading: 'Categoría', body: [
+    '- **FR-001**: Título', '  - **Descripción**: Primera', '    continuación', '- **FR-001**: Duplicado', 'texto libre',
+  ] }]);
+  assert.equal(parsed.requirements[0].fields[0][1], 'Primera\ncontinuación');
+  assert.ok(parsed.findings.some((finding) => /ID duplicado/.test(finding.detail)));
+  assert.ok(parsed.findings.some((finding) => /fuera del patrón/.test(finding.detail)));
+  const existing = '---\nupdated: 2020-01-01\n---\n# Documento\n\n## Destino\n\nTexto propio\n\n## Ajena\n\nNo tocar\n';
+  const conflict = specs3Levels.fillDocument(existing, [], { Destino: ['Migrado'] }, { date: '2026-10-11' });
+  assert.equal(conflict.action, 'conflict');
+  const forced = specs3Levels.fillDocument(existing, [], { Destino: ['Migrado'] }, { force: true, date: '2026-10-11' });
+  assert.equal(forced.action, 'fill');
+  assert.match(forced.content, /## Ajena\n\nNo tocar/);
+});
+
+test('S114-IT-003 migración completa: roadmap, snapshot, renders y check', (t) => {
+  const repo = copyFixture(t, 'specs-3-levels'); const docs = path.join(repo, 'docs');
+  const legacy = path.join(docs, 'specs', specs3Levels.LEGACY_LEVELS.projects, 'PROJ-01-demo');
+  fs.writeFileSync(path.join(legacy, 'context-diagram.svg'), '<svg/>\n');
+  fs.writeFileSync(path.join(legacy, 'context-diagram.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+  const result = run(['migrate', '--root', docs, '--from', 'specs-3-levels', '--date', '2026-10-11']);
+  assert.equal(result.status, 0, result.stderr);
+  for (const file of ['context-diagram.puml', 'context-diagram.svg', 'context-diagram.png']) assert.ok(fs.existsSync(path.join(docs, 'architecture', 'c4', file)), file);
+  const roadmap = readUtf8(docs, 'product', 'roadmap.md');
+  assert.match(roadmap, /## Épicas[\s\S]*Foto del 2026-10-01: 1 épicas/);
+  assert.match(roadmap, /## Plan original \(2026-10-01\)/);
+  assert.match(readUtf8(docs, 'product', 'vision.md'), /### Visión \(elevator pitch\)/);
+  assert.equal(run(['check', '--root', docs]).status, 0);
+});
+
+test('S114-IT-004 bloqueos de proyecto no impiden unidades seguras; fuerza solo el destino permitido', (t) => {
+  const repo = copyFixture(t, 'specs-3-levels'); const docs = path.join(repo, 'docs');
+  const legacy = path.join(docs, 'specs', specs3Levels.LEGACY_LEVELS.projects, 'PROJ-01-demo');
+  fs.mkdirSync(path.join(docs, 'product'), { recursive: true });
+  fs.writeFileSync(path.join(docs, 'product', 'vision.md'), '---\ntype: product\nslug: vision\ntitle: "Visión"\n---\n# Visión\n\n## Problema que resolvemos\n\nPropio\n');
+  const blocked = run(['migrate', '--root', docs, '--from', 'specs-3-levels', '--date', '2026-10-11']);
+  assert.equal(blocked.status, 1);
+  assert.match(blocked.stdout, /\[NO MIGRADO\].*project-intent\.md/);
+  assert.ok(fs.existsSync(path.join(docs, 'product', 'roadmap.md')), 'project-plan seguro sí migra');
+  assert.ok(fs.existsSync(path.join(legacy, 'project-intent.md')));
+  const forced = run(['migrate', '--root', docs, '--from', 'specs-3-levels', '--force', '--date', '2026-10-11']);
+  assert.equal(forced.status, 0, forced.stderr);
+  assert.match(readUtf8(docs, 'product', 'vision.md'), /problema del demo/i);
+});
+
+test('S114-IT-005 colisión de requisito, SRS y secciones no reconocidas bloquean solo project.md', (t) => {
+  const repo = copyFixture(t, 'specs-3-levels'); const docs = path.join(repo, 'docs');
+  const project = path.join(docs, 'specs', specs3Levels.LEGACY_LEVELS.projects, 'PROJ-01-demo', 'project.md');
+  fs.mkdirSync(path.join(docs, 'requirements', 'functional'), { recursive: true });
+  fs.writeFileSync(path.join(docs, 'requirements', 'functional', 'FR-001-otro.md'), '# distinto\n');
+  fs.writeFileSync(path.join(docs, 'requirements', 'srs-demo.md'), '### FR-999\n');
+  fs.appendFileSync(project, '\n## Apéndice A\n\nContenido no migrable\n');
+  const result = run(['migrate', '--root', docs, '--from', 'specs-3-levels']);
+  assert.equal(result.status, 1);
+  assert.match(result.stdout, /\[WARNING\] requirements\/srs-demo\.md/);
+  assert.match(result.stdout, /Apéndice A/);
+  assert.ok(fs.existsSync(project));
+  assert.ok(!fs.existsSync(path.join(docs, 'requirements', 'functional', 'FR-002-simular-cambios.md')));
+  assert.ok(fs.existsSync(path.join(docs, 'product', 'roadmap.md')));
+});
+
+test('S114-IT-006 informe exacto y error de E/S al mover no pierde el origen', (t) => {
+  const repo = copyFixture(t, 'specs-3-levels'); const docs = path.join(repo, 'docs');
+  const dry = run(['migrate', '--root', docs, '--from', 'specs-3-levels', '--dry-run', '--date', '2026-10-11']);
+  assert.match(dry.stdout, /^── memory-system migrate ── from: specs-3-levels · root: .+$/m);
+  assert.match(dry.stdout, /^─{48}$/m);
+  assert.match(dry.stdout, /^creados: \d+ · sobrescritos: \d+ · preservados: \d+ · movidos: \d+ · actualizados: \d+ · eliminados: \d+$/m);
+  const originalRename = fs.renameSync;
+  t.mock.method(fs, 'renameSync', (source, target) => { if (String(source).includes('EPIC-00-demo')) { const error = new Error('bloqueado'); error.code = 'EPERM'; throw error; } return originalRename(source, target); });
+  const direct = specs3Levels.migrateSpecs(docs, { date: '2026-10-11' });
+  assert.equal(direct.exitCode, 1);
+  assert.ok(direct.lines.some((line) => /no se pudo mover: EPERM/.test(line)));
+  assert.ok(fs.existsSync(path.join(docs, 'specs', specs3Levels.LEGACY_LEVELS.epics, 'EPIC-00-demo')));
+});
+
+test('S114-IT-007 git detecta los movimientos de épicas e historias como renombrados', (t) => {
+  if (spawnSync('git', ['--version'], { encoding: 'utf8' }).status !== 0) return t.skip('git no está disponible');
+  const repo = copyFixture(t, 'specs-3-levels'); const docs = path.join(repo, 'docs');
+  for (const args of [['init'], ['config', 'core.autocrlf', 'false'], ['config', 'user.email', 'test@example.test'], ['config', 'user.name', 'Test'], ['add', '.'], ['commit', '-m', 'base']]) assert.equal(spawnSync('git', args, { cwd: repo, encoding: 'utf8' }).status, 0);
+  assert.equal(run(['migrate', '--root', docs, '--from', 'specs-3-levels', '--date', '2026-10-11']).status, 0);
+  assert.equal(spawnSync('git', ['add', '-A'], { cwd: repo, encoding: 'utf8' }).status, 0);
+  const status = spawnSync('git', ['status', '--porcelain'], { cwd: repo, encoding: 'utf8' }).stdout;
+  assert.match(status, /^R\s+.*EPIC-00-demo[\s\S]*EPIC-00-demo/m);
+  assert.match(status, /^R\s+.*STORY-001-a[\s\S]*STORY-001-a/m);
 });

@@ -5,11 +5,11 @@ id: STORY-114
 kind: feat
 slug: STORY-114-migrate-specs-3-levels
 title: "Implementar memory-system migrate --from=specs-3-levels"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-11
 related:
   - EPIC-21-colapsar-specs-dos-niveles
   - ADR-0013-eliminar-specs-01-projects

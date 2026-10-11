@@ -12,6 +12,7 @@
  *   check    --root <SPECS_BASE> [--harness h] [--json] [--skills-dir <ruta>] [--cli-root <CLI_ROOT>]
  *   migrate  --root <SPECS_BASE> --from dod-monolithic [--dry-run] [--force] [--date YYYY-MM-DD]
  *   migrate  --root <SPECS_BASE> --from epic-template-v1 [--dry-run]
+ *   migrate  --root <SPECS_BASE> --from specs-3-levels [--dry-run] [--force] [--date YYYY-MM-DD]
  *
  * Solo usa módulos nativos (`node:fs`, `node:path`, `node:process`) para funcionar en
  * proyectos consumidores sin `package.json` (NFR-2). Node >= 18. Las rutas se normalizan
@@ -146,10 +147,10 @@ const VALUE_FLAGS = {
 };
 // Orígenes admitidos por `migrate --from` (STORY-101 D-3, STORY-103 D-7). La migración de harness no
 // es un subcomando del motor: es una secuencia del SKILL.md sobre `scaffold` (STORY-098 D-3).
-const MIGRATE_SOURCES = ['dod-monolithic', 'epic-template-v1'];
+const MIGRATE_SOURCES = ['dod-monolithic', 'epic-template-v1', 'specs-3-levels'];
 const BOOL_FLAGS = { '--dry-run': 'dryRun', '--force': 'force', '--json': 'json' };
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const USAGE = 'uso: memory-system.js <detect|index|scaffold|check|migrate> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json] [--skills-dir <ruta>] [--from dod-monolithic|epic-template-v1]';
+const USAGE = 'uso: memory-system.js <detect|index|scaffold|check|migrate> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json] [--skills-dir <ruta>] [--from dod-monolithic|epic-template-v1|specs-3-levels]';
 
 // Error de uso o de datos: se informa por stderr y termina con exit 2 sin escribir.
 class UsageError extends Error {}
@@ -985,9 +986,12 @@ function runMigrate(args) {
   assertRuntime();
   const specsBase = resolveRoot(args.root);
   const displayRoot = toPosix(args.root);
-  const result = args.from === 'epic-template-v1'
-    ? epicTemplate.migrateEpics(specsBase, { dryRun: args.dryRun, displayRoot })
-    : dodStory.migrateDod(specsBase, { dryRun: args.dryRun, force: args.force, date: args.date, displayRoot });
+  const migrators = {
+    'dod-monolithic': () => dodStory.migrateDod(specsBase, { dryRun: args.dryRun, force: args.force, date: args.date, displayRoot }),
+    'epic-template-v1': () => epicTemplate.migrateEpics(specsBase, { dryRun: args.dryRun, displayRoot }),
+    'specs-3-levels': () => require('./specs-3-levels.js').migrateSpecs(specsBase, { dryRun: args.dryRun, force: args.force, date: args.date, displayRoot }),
+  };
+  const result = migrators[args.from]();
   process.stdout.write(`${result.lines.join('\n')}\n`);
   return result.exitCode;
 }

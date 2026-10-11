@@ -1,0 +1,3 @@
+@startuml
+System(Demo, "Demo")
+@enduml

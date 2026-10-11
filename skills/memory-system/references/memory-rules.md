@@ -178,7 +178,7 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
 - **Copia-si-falta:** destino ausente → `[CREADO]`; presente → `[PRESERVADO]`, sin comparar
   contenido. Con `--force` un destino presente → `[SOBRESCRITO]`. Con `--dry-run` se imprime el
   plan (`[CREARÍA]`, `[PRESERVARÍA]`, `[SOBRESCRIBIRÍA]`) y no se escribe nada.
-- **Nunca se elimina nada**, ni archivos ni directorios, en ningún modo.
+- Ningún modo elimina archivos ni directorios, salvo `migrate --from=specs-3-levels`, que mueve y elimina únicamente orígenes cuyo contenido ya quedó en su destino.
 - **`{date}`** es el único placeholder de las semillas: se sustituye por la fecha de ejecución
   (`YYYY-MM-DD`, o `--date`) en `created`/`updated` al copiar. Las plantillas compartidas se
   copian byte a byte, sin sustituciones.

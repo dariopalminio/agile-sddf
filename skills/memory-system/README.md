@@ -28,6 +28,7 @@ No elimina archivos. Solo `rebuild --force` puede sobrescribir archivos gestiona
 | `migrate` | Adopta el scaffold en un proyecto Speckit u OpenSpec. | Sí, tras confirmar o con `--yes`. |
 | `migrate --from=dod-monolithic` | Divide el DoD de historia en guardrails por etapa. | Sí; no sobrescribe destinos sin `--force`. |
 | `migrate --from=epic-template-v1` | Migra las épicas (`specs/*/EPIC-*/epic.md`) al template de épica v2 por `clave:` de sección; reporta `[REVISAR]` lo que no reconoce. | Sí; idempotente, sin frontmatter tocado. |
+| `migrate --from=specs-3-levels` | Colapsa `specs/01-projects/` en `product/`, `requirements/` y `architecture/c4/`; mueve épicas e historias a los niveles actuales. | Sí; primero ejecuta `--dry-run`; `[NO MIGRADO]` conserva el origen. |
 
 `scaffold --dry-run` e `index --dry-run` muestran el plan o el índice sin escribir. `check --json` entrega un único objeto JSON apto para CI.
 
@@ -64,6 +65,7 @@ No elimina archivos. Solo `rebuild --force` puede sobrescribir archivos gestiona
 
 # Planificar la división del DoD monolítico
 /memory-system migrate --from=dod-monolithic --dry-run
+/memory-system migrate --from=specs-3-levels --dry-run
 ```
 
 ## Output
