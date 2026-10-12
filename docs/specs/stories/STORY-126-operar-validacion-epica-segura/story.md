@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-126-operar-validacion-epica-segura
 title: "Operar la validación de épicas de manera segura"
 status: SPECIFY
-substatus: READY
+substatus: DONE
 parent: EPIC-23-skill-epic-validate
 created: 2026-10-12
 updated: 2026-10-12

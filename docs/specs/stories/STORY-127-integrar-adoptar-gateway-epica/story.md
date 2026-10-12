@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-127-integrar-adoptar-gateway-epica
 title: "Integrar y documentar el gateway de validación de épicas"
 status: SPECIFY
-substatus: READY
+substatus: DONE
 parent: EPIC-23-skill-epic-validate
 created: 2026-10-12
 updated: 2026-10-12

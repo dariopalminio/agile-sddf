@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-125-validar-evidencia-operativa-epica
 title: "Validar la evidencia operativa de una épica"
 status: SPECIFY
-substatus: READY
+substatus: DONE
 parent: EPIC-23-skill-epic-validate
 created: 2026-10-12
 updated: 2026-10-12

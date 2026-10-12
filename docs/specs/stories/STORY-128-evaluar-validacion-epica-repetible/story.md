@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-128-evaluar-validacion-epica-repetible
 title: "Evaluar la validación de épicas de forma repetible"
 status: SPECIFY
-substatus: READY
+substatus: DONE
 parent: EPIC-23-skill-epic-validate
 created: 2026-10-12
 updated: 2026-10-12

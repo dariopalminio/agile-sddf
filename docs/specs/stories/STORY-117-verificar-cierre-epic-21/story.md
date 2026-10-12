@@ -5,11 +5,11 @@ id: STORY-117
 kind: chore
 slug: STORY-117-verificar-cierre-epic-21
 title: "Verificar sddf.config.yaml y los modos SDD sobre la estructura de dos niveles"
-status: READY-FOR-IMPLEMENT
-substatus: DONE
+status: IMPLEMENT
+substatus: IN-PROGRESS
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
-updated: 2026-10-09
+updated: 2026-10-12
 related:
   - EPIC-21-colapsar-specs-dos-niveles
   - ADR-0013-eliminar-specs-01-projects

@@ -19,6 +19,7 @@
 temp_constitution.txt
 *.tmp
 .tmp
+.temp
 
 # Logs
 logs

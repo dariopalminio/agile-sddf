@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-124-validar-preparacion-estructural-epica
 title: "Validar la preparación estructural de una épica"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-23-skill-epic-validate
 created: 2026-10-12
 updated: 2026-10-12
