@@ -5,7 +5,7 @@ id: STORY-115
 kind: feat
 slug: STORY-115-scaffold-dos-niveles-y-capas-destino
 title: "Actualizar scaffolding de memory-system a specs/ de dos niveles"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05

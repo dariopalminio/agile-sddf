@@ -5,7 +5,7 @@ id: STORY-113
 kind: feat
 slug: STORY-113-project-flow-sin-01-projects
 title: "project-flow, sddf-init y header-aggregation sin specs/01-projects/"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05

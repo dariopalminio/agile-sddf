@@ -5,7 +5,7 @@ id: STORY-106
 kind: chore
 slug: STORY-106-migrar-plan-a-roadmap
 title: "Migrar project-plan.md a product/roadmap.md"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05

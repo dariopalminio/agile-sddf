@@ -5,7 +5,7 @@ id: STORY-104
 kind: chore
 slug: STORY-104-migrar-project-intent-a-vision
 title: "Migrar project-intent.md a product/vision.md"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05

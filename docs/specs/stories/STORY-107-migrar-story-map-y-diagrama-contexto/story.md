@@ -5,7 +5,7 @@ id: STORY-107
 kind: chore
 slug: STORY-107-migrar-story-map-y-diagrama-contexto
 title: "Migrar story-map.md y context-diagram.puml"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05

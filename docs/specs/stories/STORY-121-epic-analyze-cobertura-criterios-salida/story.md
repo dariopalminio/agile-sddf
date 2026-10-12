@@ -5,7 +5,7 @@ id: STORY-121
 kind: feat
 slug: STORY-121-epic-analyze-cobertura-criterios-salida
 title: "Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias"
-status: CODE-REVIEW
+status: COMPLETED
 substatus: DONE
 parent: EPIC-22-epic-analyze
 created: 2026-10-08

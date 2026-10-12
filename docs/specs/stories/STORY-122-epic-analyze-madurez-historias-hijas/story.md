@@ -5,7 +5,7 @@ id: STORY-122
 kind: feat
 slug: STORY-122-epic-analyze-madurez-historias-hijas
 title: "Señalar historias hijas no especificadas o con referencias rotas al analizar una épica"
-status: CODE-REVIEW
+status: COMPLETED
 substatus: DONE
 parent: EPIC-22-epic-analyze
 created: 2026-10-08

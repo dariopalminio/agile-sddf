@@ -5,7 +5,7 @@ id: STORY-105
 kind: chore
 slug: STORY-105-migrar-stakeholders-y-requisitos
 title: "Migrar project.md a product/stakeholders.md y requirements/"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05

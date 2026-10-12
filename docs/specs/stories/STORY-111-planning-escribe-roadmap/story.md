@@ -5,7 +5,7 @@ id: STORY-111
 kind: feat
 slug: STORY-111-planning-escribe-roadmap
 title: "project-planning escribe en product/roadmap.md y epic-from-project-plan lee de allí"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
