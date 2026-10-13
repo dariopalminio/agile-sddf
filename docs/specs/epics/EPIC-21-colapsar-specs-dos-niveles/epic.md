@@ -4,8 +4,8 @@ type: epic
 id: EPIC-21
 slug: EPIC-21-colapsar-specs-dos-niveles
 title: "Colapsar specs/ a dos niveles y eliminar 01-projects/"
-status: VALIDATE
-substatus: DONE
+status: SHIP
+substatus: IN-PROGRESS
 parent: null
 created: 2026-10-05
 updated: 2026-10-13
