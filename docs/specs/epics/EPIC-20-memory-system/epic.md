@@ -37,15 +37,15 @@ La memoria del proyecto (`docs/`) está definida en `docs/architecture/memory-sy
 - [x] **STORY-102** — Renombrar el skill sddf-constitution: actualizar referencias y documentación para reflejar el nuevo nombre del skill. — [[STORY-102-renombrar-skill-sddf-constitution]]
 
 ## Criterios de salida
-- [ ] `grep -rn "docs-wiki-builder" skills/` devuelve solo el alias deprecado en `skills/docs-wiki-builder/SKILL.md`.
-- [ ] `/memory-system ensure` en un proyecto vacío crea las 11 capas, `constitution.md`, 6 plantillas e `index.md`; repetido reporta `creados 0`.
-- [ ] `/memory-system check` en ese proyecto devuelve exit code 0; tras romper un wikilink devuelve 1 y lo reporta en `--json`.
-- [ ] `/docs-wiki-builder` produce el mismo `index.md` que `/memory-system index`, con aviso.
-- [ ] `/sddf-init --level full` produce la misma estructura que `/sddf-init` + `/memory-system scaffold`; sin `--level` no hay cambios.
-- [ ] `/memory-system migrate --harness speckit` en un proyecto con `.specify/` propone un plan sin escribir.
-- [ ] `/memory-system ensure --harness openspec` no modifica nada bajo `openspec/` e indexa sus artefactos.
-- [ ] `header-aggregation` sigue siendo invocable de forma independiente.
-- [ ] `docs/index.md` de este repositorio regenerado con `/memory-system index` y `npm run verify:links` en verde.
+- [x] `grep -rn "docs-wiki-builder" skills/` devuelve solo el alias deprecado en `skills/docs-wiki-builder/SKILL.md`.
+- [x] `/memory-system ensure` en un proyecto vacío crea las 11 capas, `constitution.md`, 6 plantillas e `index.md`; repetido reporta `creados 0`.
+- [x] `/memory-system check` en ese proyecto devuelve exit code 0; tras romper un wikilink devuelve 1 y lo reporta en `--json`.
+- [x] `/docs-wiki-builder` produce el mismo `index.md` que `/memory-system index`, con aviso.
+- [x] `/sddf-init --level full` produce la misma estructura que `/sddf-init` + `/memory-system scaffold`; sin `--level` no hay cambios.
+- [x] `/memory-system migrate --harness speckit` en un proyecto con `.specify/` propone un plan sin escribir.
+- [x] `/memory-system ensure --harness openspec` no modifica nada bajo `openspec/` e indexa sus artefactos.
+- [x] `header-aggregation` sigue siendo invocable de forma independiente.
+- [x] `docs/index.md` de este repositorio regenerado con `/memory-system index` y `npm run verify:links` en verde.
 
 ## Smoke tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*

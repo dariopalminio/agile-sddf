@@ -4,8 +4,8 @@ type: epic
 id: EPIC-22
 slug: EPIC-22-epic-analyze
 title: "Skill `epic-analyze`: análisis de una épica antes de desarrollarla"
-status: DEVELOP
-substatus: DONE
+status: SHIP
+substatus: IN-PROGRESS
 parent: null
 created: 2026-10-08
 updated: 2026-10-09
@@ -28,12 +28,12 @@ Crear el skill `/epic-analyze <EPIC-ID>`, que escribe `epic-analyze-report.md` e
 - [x] **STORY-122** — Editar skill, para madurez de historias hijas (`epic-analyze`): Señalar historias hijas no especificadas o con referencias rotas al analizar una épica.
 
 ## Criterios de salida
-- [ ] `skills/epic-analyze/SKILL.md` existe, resuelve `REPO_ROOT`/`SPECS_BASE` con la precedencia `SDDF_ROOT` → `sddf.config.yaml.root` → `docs` y tiene `evals/evals.json`.
-- [ ] El reporte detecta historias faltantes, huérfanas y duplicadas entre la sección "Historias" de `epic.md` y los `story.md` que la declaran como `parent` (STORY-120).
-- [ ] El reporte incluye una tabla de cobertura de criterios de salida y smoke tests, con un hallazgo por cada elemento sin cubrir (STORY-121).
-- [ ] El reporte señala con WARNING las historias hijas no especificadas o con referencias rotas (STORY-122).
-- [ ] Ante una épica inexistente, el skill informa la ruta buscada y no escribe reporte.
-- [ ] `skills/epic-analyze/` está incluido en el arreglo `files` de `package.json`.
+- [x] `skills/epic-analyze/SKILL.md` existe, resuelve `REPO_ROOT`/`SPECS_BASE` con la precedencia `SDDF_ROOT` → `sddf.config.yaml.root` → `docs` y tiene `evals/evals.json`.
+- [x] El reporte detecta historias faltantes, huérfanas y duplicadas entre la sección "Historias" de `epic.md` y los `story.md` que la declaran como `parent` (STORY-120).
+- [x] El reporte incluye una tabla de cobertura de criterios de salida y smoke tests, con un hallazgo por cada elemento sin cubrir (STORY-121).
+- [x] El reporte señala con WARNING las historias hijas no especificadas o con referencias rotas (STORY-122).
+- [x] Ante una épica inexistente, el skill informa la ruta buscada y no escribe reporte.
+- [x] `skills/epic-analyze/` está incluido en el arreglo `files` de `package.json`.
 
 ## Smoke tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*
