@@ -425,7 +425,7 @@ repetir `--dry-run` hasta `cambios pendientes: 0`; después, `/epic-format-valid
 No es una migración de harness: no ejecuta `scaffold`, no pregunta y reenvía tal cual la salida de
 `migrate --root <SPECS_BASE> --from specs-3-levels [--dry-run] [--force]`. Recomienda ejecutar
 primero `--dry-run`. Con exit 0 y sin `--dry-run`, ejecuta `index` y sugiere `/memory-system check`;
-con exit 1 no regenera el índice: resuelve cada `[NO MIGRADO]` y repite. Las reglas detalladas están
+con exit 1 no regenera el índice: resuelve cada `[NO MIGRADO]`, muestra como última línea `exit code: 1` y repite. Las reglas detalladas están
 en `references/specs-3-levels-rules.md`. Sin `node`, muestra exactamente
 `❌ migrate --from=specs-3-levels requiere node` y termina sin escribir.
 

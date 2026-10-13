@@ -4,11 +4,11 @@ id: STORY-118
 slug: STORY-118-requirements-srs-unico-primero
 title: "Adoptar la estrategia 'SRS único primero, fragmentación cuando duela' en requirements/"
 status: IMPLEMENT
-substatus: IN-PROGRESS
+substatus: DONE
 kind: feat
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-13
 related:
   - STORY-096-memory-system-scaffold-ensure-rebuild
   - STORY-103-replace-the-epic-template
