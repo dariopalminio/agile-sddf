@@ -6,7 +6,7 @@ slug: EPIC-12-story-sdd-workflow
 title: "Story SDD Workflow - comandos del flujo de story"
 status: COMPLETED
 substatus: DONE
-parent: PROJ-01-agile-sddf
+parent: null
 created: 2026-05-05
 updated: 2026-08-30
 related:                              

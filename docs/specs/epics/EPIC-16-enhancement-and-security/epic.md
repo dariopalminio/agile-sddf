@@ -6,7 +6,7 @@ slug: EPIC-16-enhancement-and-security
 title: "enhancement and security improvements for skills (Safe Enhancement & Fortify Skills)"
 status: COMPLETED
 substatus: DONE
-parent: PROJ-01-agile-sddf
+parent: null
 created: 2026-06-05
 updated: 2026-06-05
 related: [

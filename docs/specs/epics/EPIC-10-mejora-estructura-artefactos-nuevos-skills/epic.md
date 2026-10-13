@@ -6,7 +6,7 @@ slug: EPIC-10-mejora-estructura-artefactos-nuevos-skills
 title: "Mejora en estructura de artefactos y nuevos skills"
 status: COMPLETED
 substatus: DONE
-parent: PROJ-01-agile-sddf
+parent: null
 created: 2026-05-01
 updated: 2026-08-30
 related:                              

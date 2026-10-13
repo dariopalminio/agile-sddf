@@ -6,7 +6,7 @@ slug: EPIC-20-memory-system
 title: "Memory System — Sistema de memoria unificado y agnóstico al harness"
 status: DEFINE
 substatus: TODO
-parent: PROJ-01-agile-sddf
+parent: null
 created: 2026-09-20
 updated: 2026-09-20
 related:

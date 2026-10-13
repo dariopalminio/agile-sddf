@@ -6,7 +6,7 @@ slug: fabrica-de-skills
 title: "Fábrica de Skills"
 status: COMPLETED
 substatus: DONE
-parent: PROJ-01-agile-sddf
+parent: null
 created: 2026-05-28
 updated: 2026-05-28
 related:                              

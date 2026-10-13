@@ -7,7 +7,7 @@ created: 2026-04-18
 updated: 2026-04-18
 status: COMPLETED
 substatus: DONE
-parent: PROJ-01-agile-sddf
+parent: null
 related:                              
   - project-plan
 ---
