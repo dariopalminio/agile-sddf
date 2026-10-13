@@ -179,7 +179,8 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
 - **Copia-si-falta:** destino ausente → `[CREADO]`; presente → `[PRESERVADO]`, sin comparar
   contenido. Con `--force` un destino presente → `[SOBRESCRITO]`. Con `--dry-run` se imprime el
   plan (`[CREARÍA]`, `[PRESERVARÍA]`, `[SOBRESCRIBIRÍA]`) y no se escribe nada.
-- Ningún modo elimina archivos ni directorios, salvo `migrate --from=specs-3-levels`, que mueve y elimina únicamente orígenes cuyo contenido ya quedó en su destino.
+- Ningún modo elimina archivos ni directorios, salvo `migrate --from=specs-3-levels`, `migrate --from=srs-single` y `migrate --from=requirements-fragmented`, que eliminan únicamente orígenes cuyo contenido ya quedó en su destino y admiten `--dry-run`.
+- `scaffold` crea `requirements/srs-<project-slug>.md` solo cuando la capa no tiene disposición; nunca lo sobrescribe, ni con `--force`. La semilla vive en `assets/scaffold/templates/srs-template.md`.
 - **`{date}`** es el único placeholder de las semillas: se sustituye por la fecha de ejecución
   (`YYYY-MM-DD`, o `--date`) en `created`/`updated` al copiar. Las plantillas compartidas se
   copian byte a byte, sin sustituciones.
@@ -306,7 +307,22 @@ exclusivamente "memoria con problemas", que es lo que hace el gate legible en CI
 todo exit 2 deja `{ "ok": false, "error": "…" }` en stdout, incluidos los errores de parseo de
 argumentos, que se detectan antes de entrar al subcomando.
 
-## 8. Harness: omisión, mapeo, solo lectura y colisiones
+## 8. Requisitos: disposiciones, resolver y catálogo
+
+La capa `requirements/` admite dos disposiciones: un SRS `srs-<proyecto>.md` con secciones
+`### FR-NNN`/`### NFR-NNN`, o fragmentos en `functional/` y `non-functional/`. El resolver
+prefiere un fragmento; si no existe, usa la primera sección del SRS. Los alias `[[FR-NNN]]` y
+los valores `implements: [FR-NNN]` siguen esa misma precedencia.
+
+En disposición fragmentada, `requirements/index.md` es un catálogo generado y debe listar todos
+los IDs. `check` informa la familia `requirement` para una disposición mixta, IDs duplicados,
+`implements:` inválidos o irresolubles, frontmatter de fragmento inválido y catálogo ausente o
+incompleto. El umbral de 15 requisitos o 500 líneas orienta la migración, pero no bloquea `check`.
+
+Las migraciones `srs-single` y `requirements-fragmented` calculan el plan completo, recomiendan
+`--dry-run`, reescriben enlaces visibles y solo eliminan el origen después de escribir el destino.
+
+## 9. Harness: omisión, mapeo, solo lectura y colisiones
 
 Reglas de STORY-098 para adoptar la memoria SDDF en un proyecto Speckit u OpenSpec. Los perfiles
 son datos (§1): actualizar un layout de harness es editar una fila, no el código.

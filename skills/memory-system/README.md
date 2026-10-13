@@ -9,6 +9,7 @@ Punto de entrada para crear, mantener y verificar la memoria documental del proy
 - Regenera `$SPECS_BASE/index.md` con wikilinks `[[slug]]` para los artefactos documentales.
 - Verifica en solo lectura capas ausentes, archivos sin frontmatter, frontmatter inválido y wikilinks rotos.
 - Adopta la memoria SDDF en proyectos Speckit u OpenSpec, o divide un DoD monolítico en guardrails por etapa.
+- Mantiene requisitos como SRS único o fragmentos FR/NFR, con migración reversible y catálogo generado.
 
 No elimina archivos. Solo `rebuild --force` puede sobrescribir archivos gestionados por el scaffold.
 
@@ -29,6 +30,8 @@ No elimina archivos. Solo `rebuild --force` puede sobrescribir archivos gestiona
 | `migrate --from=dod-monolithic` | Divide el DoD de historia en guardrails por etapa. | Sí; no sobrescribe destinos sin `--force`. |
 | `migrate --from=epic-template-v1` | Migra las épicas (`specs/*/EPIC-*/epic.md`) al template de épica v2 por `clave:` de sección; reporta `[REVISAR]` lo que no reconoce. | Sí; idempotente, sin frontmatter tocado. |
 | `migrate --from=specs-3-levels` | Colapsa el layout heredado de tres niveles en `product/`, `requirements/` y `architecture/c4/`; mueve épicas e historias a los niveles actuales. | Sí; primero ejecuta `--dry-run`; `[NO MIGRADO]` conserva el origen. |
+| `migrate --from=srs-single` | Fragmenta un SRS en archivos FR/NFR y actualiza el catálogo. | Sí; idempotente. |
+| `migrate --from=requirements-fragmented` | Consolida requisitos fragmentados en un SRS. | Sí; idempotente. |
 
 `scaffold --dry-run` e `index --dry-run` muestran el plan o el índice sin escribir. `check --json` entrega un único objeto JSON apto para CI.
 
@@ -66,6 +69,7 @@ No elimina archivos. Solo `rebuild --force` puede sobrescribir archivos gestiona
 # Planificar la división del DoD monolítico
 /memory-system migrate --from=dod-monolithic --dry-run
 /memory-system migrate --from=specs-3-levels --dry-run
+/memory-system migrate --from=srs-single --dry-run
 ```
 
 ## Output

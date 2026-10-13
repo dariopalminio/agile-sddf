@@ -13,7 +13,7 @@ updated: 2026-10-10
 
 ## Usuarios y roles
 
-- **US-001**: Desarrollador (Cloud) / Developer (Cloud)
+- **US-001**: Solo Builder (Cloud)
     - **Descripción**: Desarrollador o freelancer que usa un runtime de IA para crear software con suscripción (Claude, Codex, Github Copilot).
       Necesita estructurar su proceso sin overhead metodológico. Invoca skills directamente desde el
       CLI del agente de IA y trabaja normalmente una historia a la vez.
@@ -46,6 +46,11 @@ updated: 2026-10-10
       `docs/index.md` como cursor de entrada, abre solo los nodos que necesita y escribe artefactos
       conformes al template activo. Es el usuario para el que están escritos el frontmatter, los
       wikilinks y el contrato `.tmp/<skill-name>/`.
+
+- **US-007**: Local Builder
+    - **Descripción**: Desarrollador o Constructor que usa un runtime de IA local para crear software. Necesita gestionar la VRAM y el contexto del modelo para completar historias sin desbordar los recursos disponibles. Invoca skills directamente desde el CLI del agente de IA y trabaja normalmente una historia a la vez.
+    - **Necesidades**: Acceso a un runtime de IA local con suficiente VRAM, herramientas para monitorizar el uso de memoria y contexto, y documentación clara sobre cómo invocar y usar los skills desde el CLI del agente de IA.
+
 
 ## Patrocinadores y decisores
 

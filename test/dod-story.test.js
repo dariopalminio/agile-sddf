@@ -506,7 +506,7 @@ test('IT-007 check integra la familia dod-guardrail', (t) => {
   const { docs } = saneDodRepo(t);
   const clean = run(['check', '--root', docs, '--json']);
   const parsed = JSON.parse(clean.stdout);
-  assert.deepEqual(Object.keys(parsed.summary), ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink', 'dod-guardrail']);
+  assert.deepEqual(Object.keys(parsed.summary), ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink', 'dod-guardrail', 'requirement']);
   assert.equal(parsed.summary['dod-guardrail'], 0);
   const file = path.join(docs, 'guardrails', 'dod-story-verify.md');
   write(file, fs.readFileSync(file, 'utf8').replace('to: VERIFY/DONE', 'to: VERIFY'));

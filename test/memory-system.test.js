@@ -316,7 +316,7 @@ const SCAFFOLD_SUMMARY = /^creados: (\d+) · sobrescritos: (\d+) · preservados:
 const LAYER_DIRS = ['product', 'requirements', 'specs', 'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
 // Las seis que se copian desde su skill dueño, más las cuatro de autoría manual que viajan en la
 // semilla porque no tienen dueño (ADR-0012).
-const MANUAL_TEMPLATES = ['adr-template.md', 'domain-template.md', 'guardrail-template.md', 'policy-template.md'];
+const MANUAL_TEMPLATES = ['adr-template.md', 'domain-template.md', 'guardrail-template.md', 'policy-template.md', 'srs-template.md'];
 const TEN_TEMPLATES = ['story-template.md', 'epic-template.md', 'stakeholders-template.md', 'requirement-template.md', 'vision-template.md', 'roadmap-template.md', ...MANUAL_TEMPLATES];
 
 const summaryOf = (stdout) => {
@@ -350,9 +350,8 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   for (const legacy of Object.values(specs3Levels.LEGACY_LEVELS)) {
     assert.ok(!fs.existsSync(path.join(docs, 'specs', legacy)), legacy);
   }
-  for (const kind of ['functional', 'non-functional']) {
-    assert.ok(fs.existsSync(path.join(docs, 'requirements', kind)), kind);
-  }
+  for (const kind of ['functional', 'non-functional']) assert.ok(!fs.existsSync(path.join(docs, 'requirements', kind)), kind);
+  assert.equal(fs.readdirSync(path.join(docs, 'requirements')).filter((name) => /^srs-.*\.md$/.test(name)).length, 1);
   assert.ok(!fs.existsSync(path.join(docs, 'index.md')), 'scaffold no crea index.md');
 
   const vision = readUtf8(docs, 'product', 'vision.md');
@@ -366,6 +365,7 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   assert.ok(created.includes('[CREADO] constitution.md'));
   assert.ok(created.includes('[CREADO] product/vision.md'));
   assert.ok(created.includes('[CREADO] templates/adr-template.md'));
+  assert.ok(created.some((line) => /^\[CREADO\] requirements\/srs-.*\.md$/.test(line)));
   assert.ok(!result.stdout.includes('[PRESERVADO]'));
   assert.ok(!result.stdout.includes('[WARNING]'));
   const summary = summaryOf(result.stdout);
@@ -470,7 +470,7 @@ test('S096-UT-006 scaffold --force: restaura solo semillas y plantillas, conserv
   assert.ok(!result.stdout.includes('ADR-0001-x.md'));
   assert.ok(!result.stdout.includes('guides/sdd.md'));
   assert.ok(!result.stdout.includes('[CREADO]'));
-  assert.ok(!result.stdout.includes('[PRESERVADO]'));
+  assert.ok(result.stdout.includes('[PRESERVADO] requirements/srs-'));
 
   const restored = hashTree(docs);
   for (const author of ['adr/ADR-0001-x.md', 'guides/sdd.md', 'specs/stories/STORY-001-a/story.md']) {
@@ -487,7 +487,7 @@ test('S096-UT-006 scaffold --force: restaura solo semillas y plantillas, conserv
   const managed = (result.stdout.match(/^\[SOBRESCRITO\] /gm) || []).length;
   assert.equal(summary.overwritten, managed);
   assert.ok(managed >= 3);
-  assert.deepEqual([summary.created, summary.preserved, summary.skipped], [0, 0, 0]);
+  assert.deepEqual([summary.created, summary.preserved, summary.skipped], [0, 1, 0]);
 });
 
 test('S096-UT-007 scaffold: ningún modo elimina archivos', (t) => {
@@ -690,7 +690,7 @@ test('S115-UT-007 index rechaza specs/01-projects como capa no declarada sin esc
 // Contratos de verificación V-1…V-10 de design.md.
 // ---------------------------------------------------------------------------
 
-const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink', 'dod-guardrail'];
+const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink', 'dod-guardrail', 'requirement'];
 
 // Contexto de evaluación mínimo: `root` lo usa solo `missingLayers`.
 function checkCtx({ root = os.tmpdir(), nodes = [], profile = { skipLayers: [] }, slugSet = new Set() } = {}) {
@@ -817,7 +817,7 @@ test('S097-UT-008 check --json: objeto único, claves ordenadas y byte a byte re
   assert.deepEqual(Object.keys(parsed), ['harness', 'root', 'ok', 'summary', 'problems']);
   assert.deepEqual(Object.keys(parsed.summary), CHECK_KINDS);
   assert.deepEqual([parsed.harness, parsed.root, parsed.ok], ['sddf', root, false]);
-  assert.deepEqual(parsed.summary, { 'missing-layer': 1, orphan: 1, 'invalid-frontmatter': 1, 'broken-wikilink': 1, 'dod-guardrail': 0 });
+  assert.deepEqual(parsed.summary, { 'missing-layer': 1, orphan: 1, 'invalid-frontmatter': 1, 'broken-wikilink': 1, 'dod-guardrail': 0, requirement: 0 });
 
   // Orden canónico (kind, path, detail) y `path` siempre con `/` (NFR-4).
   const keys = parsed.problems.map((entry) => `${entry.kind}\u0000${entry.path}\u0000${entry.detail}`);
@@ -932,7 +932,7 @@ test('S097-E2E-002 check --json: gate de CI y re-chequeo tras corregir el wikili
   assert.equal(first.status, 1, first.stderr);
   const before = JSON.parse(first.stdout);
   assert.equal(before.ok, false);
-  assert.deepEqual(before.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 1, 'dod-guardrail': 0 });
+  assert.deepEqual(before.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 1, 'dod-guardrail': 0, requirement: 0 });
   assert.deepEqual(before.problems, [
     { kind: 'broken-wikilink', path: 'guides/sdd.md', detail: '[[no-existe]] no resuelve' },
   ]);
@@ -945,7 +945,7 @@ test('S097-E2E-002 check --json: gate de CI y re-chequeo tras corregir el wikili
   const after = JSON.parse(second.stdout);
   assert.equal(after.ok, true);
   assert.deepEqual(after.problems, []);
-  assert.deepEqual(after.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 0, 'dod-guardrail': 0 });
+  assert.deepEqual(after.summary, { 'missing-layer': 0, orphan: 0, 'invalid-frontmatter': 0, 'broken-wikilink': 0, 'dod-guardrail': 0, requirement: 0 });
 });
 
 // ---------------------------------------------------------------------------

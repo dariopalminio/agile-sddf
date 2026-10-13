@@ -51,6 +51,10 @@ está instalado, `full` avisa y termina como `standard`.
 
 ## 0. Memoria del proyecto
 
+Para requisitos, el punto de partida es un SRS único. Usa
+`/memory-system migrate --from=srs-single --dry-run` para planificar la fragmentación y
+`/memory-system migrate --from=requirements-fragmented --dry-run` para planificar la consolidación.
+
 ```
 sddf-init --level full                (proyecto nuevo: standard + memory-system scaffold)
 sddf-init → memory-system            (ensure: scaffold + index)

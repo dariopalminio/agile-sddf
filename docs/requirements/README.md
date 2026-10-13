@@ -3,7 +3,7 @@ type: wiki
 slug: requirements-index
 title: "Requisitos"
 status: IN-PROGRESS
-substatus: TODO
+substatus: DONE
 parent: null
 created: 2026-09-22
 updated: 2026-10-10
@@ -178,7 +178,7 @@ su sintaxis. La diferencia de disposición física es transparente para el resto
 | SRS único → fragmentado | `/memory-system migrate --from=srs-single` | Al superar el umbral |
 | Fragmentado → SRS único | `/memory-system migrate --from=requirements-fragmented` | Solo si el proyecto reduce su alcance drásticamente (raro) |
 
-La migración es **idempotente**: ejecutarla dos veces no duplica ni pierde contenido.
+La migración es **idempotente**: ejecutarla dos veces no duplica ni pierde contenido. Ejecuta primero cada comando con `--dry-run`.
 
 ---
 

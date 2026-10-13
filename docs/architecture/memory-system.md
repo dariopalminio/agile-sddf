@@ -151,6 +151,16 @@ declaran en `SHARED_TEMPLATES` del motor; las de ADR, dominio, guardrail y polic
 
 ---
 
+## 3.1 Requisitos: SRS único primero
+
+La capa `requirements/` empieza con `srs-<project-slug>.md`. Cada requisito ocupa una sección
+`### FR-NNN` o `### NFR-NNN`; al superar **15 requisitos** o **500 líneas** se puede ejecutar
+`/memory-system migrate --from=srs-single --dry-run` para crear archivos fragmentados. En la
+disposición fragmentada, `requirements/index.md` es un catálogo regenerado por `memory-system index`.
+El resolver acepta `[[FR-NNN]]` e `implements: [FR-NNN]`: archivo fragmentado → sección del SRS →
+error accionable. La migración inversa (`--from=requirements-fragmented`) también es explícita e
+idempotente.
+
 ## 4. Regla de decisión: ¿dónde va esto?
 
 | Si es... | Va en... |

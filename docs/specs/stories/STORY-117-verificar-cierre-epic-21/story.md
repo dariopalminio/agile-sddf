@@ -5,8 +5,8 @@ id: STORY-117
 kind: chore
 slug: STORY-117-verificar-cierre-epic-21
 title: "Verificar sddf.config.yaml y los modos SDD sobre la estructura de dos niveles"
-status: IMPLEMENT
-substatus: IN-PROGRESS
+status: CANCELED
+substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-05
 updated: 2026-10-12
@@ -87,3 +87,7 @@ Entonces "verify-report.md" la registra como "FAIL" con la evidencia y la histor
 - **Terminología:** la épica y ADR-0013 dicen "Intent-First"; `docs/guides/sdd.md` y `docs/constitution.md` llaman a ese nivel **Spec-First** ("intent-first" es el enfoque general). Esta historia usa Spec-First. Conviene alinear el término en la épica y en el ADR (lo puede recoger STORY-116).
 - **Infraestructura existente:** `npm run test:e2e:smoke` y los fixtures de `skills/memory-system/examples/` pueden servir de base para automatizar AC-2; si se automatiza, se decide en diseño.
 - **Dependencia:** es la última historia de la épica y depende de STORY-104 a STORY-116 por definición.
+
+## Nota final
+
+Se cancela porque es una historia de testing y no requiere implementación de cambios de producto. Es mala práctica hacer una historia de testing. Probar las tareas en la fase de QUALITY de la épica (status VALIDATE).

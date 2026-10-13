@@ -35,7 +35,7 @@ title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifa
 
 * **Artifact:** Unidad de conocimiento persistida en el repositorio con identidad única, tipo, capa y frontmatter.
 * **ArtifactId:** Identificador único global del artefacto (`FR-001`, `ADR-0003`, `STORY-042`).
-* **ArtifactType:** Tipo del artefacto. Conjunto cerrado: `constitution`, `requirement`, `adr`, `rfc`, `spec`, `domain`, `guardrail`, `policy`, `guide`, `how-to`, `runbook`, `knowledge`, `template`.
+* **ArtifactType:** Tipo del artefacto. Conjunto cerrado: `constitution`, `requirement`, `srs`, `adr`, `rfc`, `spec`, `domain`, `guardrail`, `policy`, `guide`, `how-to`, `runbook`, `knowledge`, `template`.
 * **Constitution:** Artefacto único y supremo de gobernanza (`docs/constitution.md`). No pertenece a ninguna capa: vive en la raíz de `docs/` porque las policies derivan de él (`derives-from`) y los guardrails lo hacen verificable. Ante conflicto, prevalece sobre cualquier policy o guardrail.
 * **Layer:** Capa de organización del artefacto dentro de `docs/`. Conjunto cerrado: `domains`, `requirements`, `adr`, `rfcs`, `specs`, `guardrails`, `policies`, `guides`, `how-to`, `runbooks`, `knowledge`, `templates`.
 * **Requirement:** Artefacto que describe qué debe hacer el sistema. Puede ser funcional (`FR-`) o no funcional (`NFR-`).
@@ -94,6 +94,7 @@ title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifa
 | Tipo | Prefijo | Capa | ¿Inmutable? | Propósito |
 |------|---------|------|-------------|-----------|
 | **Requirement** | `FR-`, `NFR-` | `requirements/` | ❌ Evoluciona | Qué debe hacer el sistema. |
+| **SRS** | `srs-` | `requirements/` | ❌ Evoluciona | Requisitos agrupados en un único documento. |
 | **ADR** | `ADR-` | `adr/` | ✅ Inmutable | Decisión arquitectónica con rationale. |
 | **RFC** | `RFC-` | `rfcs/` | ✅ Inmutable tras aprobación | Propuesta de cambio grande. |
 | **Product** | — | `product/` | ❌ Evoluciona | Visión, stakeholders, objetivos, roadmap y story map. |
@@ -120,6 +121,7 @@ title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifa
 docs/
 ├── domains/          # Modelo DDD (estable)
 ├── requirements/     # Catálogo de requisitos (vivo)
+│   ├── srs-<proyecto>.md  # Disposición inicial: requisitos por sección ###
 │   ├── functional/
 │   └── non-functional/
 ├── adr/              # Decisiones arquitectónicas (inmutables)

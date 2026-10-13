@@ -1,6 +1,6 @@
 # User Persona
 
-## US-001 — Desarrollador (Cloud) / Developer (Cloud)
+## US-001 — Solo Builder (Cloud)
 
 - **Quién es:** Desarrollador, freelancer o builder técnico que construye software individualmente, sin equipo ni jerarquía.
 - **Contexto:** Proyectos propios, side projects o encargos pequeños. Usa un runtime de IA con
@@ -16,7 +16,7 @@
 - **Criterio de éxito:** Termina una historia completa (SPECIFY → DELIVER) usando skills
   individuales, sin superar la cuota, sin abandonar el proceso a mitad de la historia, sin alucinaciones del agente.
 
-## US-007 — Desarrollador (Local) / Developer (Local)
+## US-007 — Local Builder
 
 - **Quién es:** Desarrollador o investigador con hardware propio (GPU) que prefiere correr LLM
   localmente para tener control total, privacidad o evitar cuotas.

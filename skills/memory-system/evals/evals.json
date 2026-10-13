@@ -1,6 +1,6 @@
 {
   "skill": "memory-system",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Casos de prueba para memory-system. STORY-095 (TC-001..TC-004): modo index sobre el fixture examples/sddf (índice con wikilinks y resumen), index --dry-run sin escritura, invocación sin modo (mensaje informativo AC-7) y fail-fast ante --harness no admitido. STORY-096 (TC-005..TC-010): ensure por defecto sobre examples/sddf-partial (crea solo lo faltante y regenera el índice), ensure idempotente, scaffold sobre examples/empty sin tocar index.md, rebuild sin --force (fail-fast sin escrituras), rebuild --force (advertencia literal y sobrescritura de semillas) y ensure --fix-frontmatter sobre examples/no-frontmatter (header-aggregation en batch con 'Saltar todos los conflictos'). STORY-097 (TC-011..TC-014): modo check sobre el fixture examples/broken (informe textual con las cuatro familias y 'problemas: 4', exit 1), check --json (objeto único con ok/summary/problems para CI), check sobre un fixture sano ('problemas: 0', exit 0) y fail-fast ante --root inexistente (stderr 'raíz inexistente', exit 2, sin escrituras). STORY-098 (TC-015..TC-018): migrate sobre examples/speckit sin --yes (plan '📋 Plan de migración (speckit)' con [OMITIRÍA]/[MAPEARÍA]/[CREARÍA] y pregunta de confirmación, sin escrituras), migrate --yes (scaffold adaptado al perfil: 'mapeados: 1' y 'omitidos por harness: 1'), migrate sobre examples/sddf ('El proyecto ya es SDDF', remite a ensure, sin escrituras) y ensure --harness openspec --yes sobre examples/openspec (sin docs/specs/, openspec/ intacto e índice con [[auth]] y [[add-login]] bajo subtítulos OpenSpec).",
   "cases": [
     {
@@ -891,6 +891,42 @@
       "description": "STORY-115: scaffold sobre examples/specs-3-levels conserva los niveles heredados y avisa que se debe ejecutar migrate --from=specs-3-levels.",
       "input": { "input_path": "examples/specs-3-levels", "mode": "scaffold", "flags": [], "environment": { "specs_base": "docs", "node_in_path": true } },
       "expected": { "contains": ["[WARNING] estructura de specs/ de tres niveles detectada", "migrate --from=specs-3-levels"], "not_contains": ["[SOBRESCRITO]", "Entorno invÃ¡lido"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-026",
+      "name": "scaffold-crea-srs-unico",
+      "type": "happy-path",
+      "description": "STORY-118: en una raíz vacía, scaffold crea requirements/srs-<slug>.md sin crear carpetas functional o non-functional.",
+      "input": { "input_path": "examples/empty", "mode": "scaffold", "flags": [], "environment": { "specs_base": "docs", "node_in_path": true } },
+      "expected": { "contains": ["requirements/srs-", "[CREADO]"], "not_contains": ["[CREADO] requirements/functional/", "[CREADO] requirements/non-functional/"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-027",
+      "name": "check-resuelve-requisito-srs",
+      "type": "happy-path",
+      "description": "STORY-118: check acepta implements: [FR-001] cuando el requisito existe como sección de un SRS.",
+      "input": { "input_path": "examples/srs-single", "mode": "check", "flags": [], "environment": { "specs_base": "docs", "node_in_path": true } },
+      "expected": { "contains": ["problemas: 0"], "not_contains": ["[requirement]", "[broken-wikilink]"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-028",
+      "name": "migrate-srs-single-dry-run",
+      "type": "happy-path",
+      "description": "STORY-118: la migración SRS a fragmentos recomienda y respeta --dry-run.",
+      "input": { "input_path": "examples/srs-single", "mode": "migrate", "flags": ["--from=srs-single", "--dry-run"], "environment": { "specs_base": "docs", "node_in_path": true } },
+      "expected": { "contains": ["from: srs-single", "[CREARÍA]", "cambios pendientes:"], "not_contains": ["[ELIMINADO]"] },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-029",
+      "name": "migrate-requirements-fragmented-dry-run",
+      "type": "happy-path",
+      "description": "STORY-118: la consolidación de requisitos fragmentados en SRS admite --dry-run.",
+      "input": { "input_path": "examples/requirements-fragmented", "mode": "migrate", "flags": ["--from=requirements-fragmented", "--dry-run"], "environment": { "specs_base": "docs", "node_in_path": true } },
+      "expected": { "contains": ["from: requirements-fragmented", "[CREARÍA]", "cambios pendientes:"], "not_contains": ["[ELIMINADO]"] },
       "threshold": 0.9
     }
   ]

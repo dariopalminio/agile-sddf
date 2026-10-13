@@ -4,7 +4,7 @@ description: >-
   Memoria del proyecto (docs/ como wiki LLM): ensure (defecto) crea capas e indexa; scaffold
   solo lo faltante; rebuild --force regenera semillas; index regenera docs/index.md; check valida
   para CI; migrate adopta Speckit/OpenSpec, divide el DoD (--from=dod-monolithic) o migra
-  épicas (--from=epic-template-v1). Sustituye a docs-wiki-builder. Invocar para "memory-system",
+  épicas (--from=epic-template-v1) y requisitos SRS/fragmentados. Sustituye a docs-wiki-builder. Invocar para "memory-system",
   "capas de memoria", "índice de documentación", "wiki de docs", "wikilinks", "LLM wiki",
   "dividir el DoD" o "migrar épicas".
 ---
@@ -35,7 +35,7 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 - Detecta el harness del proyecto (`sddf | speckit | openspec | generic`) y decide qué raíces se indexan.
 - `scaffold`: copia-si-falta del árbol semilla de `assets/scaffold/` (constitución,
   `product/{README,vision,stakeholders,objectives,roadmap}.md`,
-  `requirements/{functional,non-functional}/`, `specs/{epics,stories}/`,
+  `requirements/srs-<project-slug>.md` cuando la capa está vacía, `specs/{epics,stories}/`,
   un `README.md` por capa, `templates/README.md` y las cuatro plantillas de autoría manual
   `adr-template.md`, `domain-template.md`, `guardrail-template.md`, `policy-template.md`) y de las cinco plantillas
   compartidas desde su skill dueño. `[CREADO]` lo nuevo, `[PRESERVADO]` lo existente. Aplica el
@@ -52,8 +52,8 @@ Ser el único punto de entrada para la memoria del proyecto (ver
   determinista `scripts/memory-system.js` (Node ≥ 18, sin dependencias): dos ejecuciones seguidas
   producen el mismo archivo salvo `updated`. Los wikilinks sin destino se marcan como nodos
   pendientes sin bloquear.
-- `check [--json] [--harness h]`: verificación en **solo lectura** de cuatro familias de problemas
-  (`missing-layer`, `orphan`, `invalid-frontmatter`, `broken-wikilink`). Informe textual agrupado
+- `check [--json] [--harness h]`: verificación en **solo lectura** de cinco familias de problemas
+  (`missing-layer`, `orphan`, `invalid-frontmatter`, `broken-wikilink`, `requirement`). Informe textual agrupado
   por familia o, con `--json`, un único objeto para CI. Exit 0 sin problemas, 1 con al menos uno,
   2 ante error técnico. A diferencia de `index`, aquí un wikilink sin destino **sí** bloquea.
 
@@ -105,6 +105,8 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 | `migrate --from=dod-monolithic [--dry-run] [--force]` | Divide el DoD de historia en un guardrail por etapa y deja el original como índice deprecado (secuencia 3.7). Sin pregunta: no sobrescribe sin `--force`. |
 | `migrate --from=epic-template-v1 [--dry-run]` | Migra cada `specs/*/EPIC-*/epic.md` al template de épica vigente (v2), localizando las secciones por su `clave:` (secuencia 3.8). Sin pregunta; idempotente; `--force` se ignora. |
 | `migrate --from=specs-3-levels [--dry-run] [--force]` | Colapsa el layout heredado en dos niveles (secuencia 3.9). Sin pregunta; recomienda `--dry-run`; conserva y reporta `[NO MIGRADO]` lo ambiguo. |
+| `migrate --from=srs-single [--dry-run]` | Fragmenta un SRS en archivos FR/NFR y genera el catálogo (secuencia 3.10). Sin pregunta; idempotente. |
+| `migrate --from=requirements-fragmented [--dry-run]` | Consolida los archivos FR/NFR en un SRS (secuencia 3.10). Sin pregunta; idempotente. |
 | `--harness <sddf\|speckit\|openspec\|generic>` | Fuerza el harness en lugar de detectarlo. |
 
 ## Precondiciones
@@ -143,7 +145,7 @@ Ser el único punto de entrada para la memoria del proyecto (ver
   cualquier modo dos veces produce el mismo resultado (`creados: 0` en la segunda) sin errores.
 - **Solo `rebuild --force` sobrescribe**, y solo los archivos gestionados por el scaffold. Los
   artefactos de autor (ADRs, historias, guías, runbooks, policies concretas) nunca se tocan.
-- **Conservación:** ningún modo borra archivos ni directorios, salvo `migrate --from=specs-3-levels`, que mueve y elimina solo orígenes cuyo contenido ya está en su destino.
+- **Conservación:** ningún modo borra archivos ni directorios, salvo `migrate --from=specs-3-levels`, `migrate --from=srs-single` y `migrate --from=requirements-fragmented`, que eliminan exclusivamente orígenes ya escritos en su destino.
 - **Regeneración completa del índice:** `index.md` no se fusiona con el anterior; el template es la
   fuente de verdad de las secciones y el motor solo rellena placeholders.
 - **`check` es solo lectura y su salida es del motor:** no crea, modifica ni borra nada (tampoco
@@ -192,7 +194,7 @@ Lee los argumentos del usuario y decide con esta tabla antes de tocar nada:
 | `rebuild --force` | Paso 2 y secuencia 3.3. |
 | `index [--harness h] [--dry-run]` | Paso 2 y secuencia 3.4. |
 | `check [--json] [--harness h] [--skills-dir <ruta>]` | Paso 2 y secuencia 3.5. |
-| `migrate --from=<origen> [--dry-run] [--force]` | Paso 2 y secuencia 3.7 (`dod-monolithic`), 3.8 (`epic-template-v1`) o 3.9 (`specs-3-levels`). Normaliza `--from=valor` a `--from valor` (el motor no admite `=`). |
+| `migrate --from=<origen> [--dry-run] [--force]` | Paso 2 y secuencia 3.7 (`dod-monolithic`), 3.8 (`epic-template-v1`), 3.9 (`specs-3-levels`) o 3.10 (`srs-single`, `requirements-fragmented`). Normaliza `--from=valor` a `--from valor` (el motor no admite `=`). |
 | `migrate [--harness h] [--yes]` (sin `--from`) | Paso 2 y secuencia 3.6. |
 | Otro valor | Muestra `❌ Modo no reconocido: <valor>. Modos disponibles: ensure, scaffold, rebuild, index, check, migrate.` y termina sin invocar el motor ni escribir. |
 
@@ -263,7 +265,7 @@ y vuelve a regenerar el índice sin ningún error.
 
 #### 3.2 `scaffold` — `detect → scaffold`
 
-1. `detect` → `harness: <h>`.
+1. `detect` → `harness: <h>`. Una raíz de destino ausente **no es un error** en `scaffold`: si existe su directorio padre, el motor crea `$SPECS_BASE` y continúa. Solo informa `❌ raíz inexistente` si también falta el padre.
 2. `scaffold --root <SPECS_BASE> --cli-root <CLI_ROOT> [--harness h] [--dry-run]` → muestra su
    salida completa y cierra con su resumen `creados: N · sobrescritos: 0 · preservados: M ·
    mapeados: X · omitidos por harness: K`.
@@ -271,6 +273,11 @@ y vuelve a regenerar el índice sin ningún error.
 No invoques `index` ni `header-aggregation`: `index.md` no se crea ni se modifica, y el informe no
 incluye ninguna línea sobre el índice. Con `--dry-run` las marcas son `[CREARÍA]`/`[PRESERVARÍA]`/`[MAPEARÍA]`/`[OMITIRÍA]`
 y nada se escribe.
+
+En una raíz vacía, `scaffold` crea `requirements/srs-<project-slug>.md` y registra
+`[CREADO] requirements/srs-<project-slug>.md`; no crea `requirements/functional/` ni
+`requirements/non-functional/`. Si ya hay fragmentos, preserva la disposición existente y no crea
+un SRS.
 
 #### 3.3 `rebuild --force` — `advertencia → detect → scaffold --force → index`
 
@@ -429,6 +436,24 @@ del motor contiene `from: specs-3-levels`, al menos una acción `[CREARÍA]`, al
 el motor termina con exit 1 y muestra `[NO MIGRADO] specs/01-projects/` (sin `[CREADO]` ni
 `[MOVIDO]`); el informe final usa `⚠️` y no regenera el índice.
 
+#### 3.10 `migrate --from=srs-single|requirements-fragmented` — cambiar la disposición de requisitos
+
+No es una migración de harness: no ejecuta `scaffold`, no pregunta y reenvía íntegra la salida de
+`migrate --root <SPECS_BASE> --from <origen> [--dry-run]`. Recomienda siempre `--dry-run` primero
+y propaga el exit code. `srs-single` extrae cada sección visible `### FR-NNN`/`### NFR-NNN` a su
+fragmento, genera `requirements/index.md`, reescribe los wikilinks visibles y elimina el SRS solo
+después de escribir sus destinos. `requirements-fragmented` hace la transformación inversa, borra
+el catálogo y los fragmentos solo después de escribir el SRS. Ambos son idempotentes.
+
+Con `--dry-run`, el motor incluye `from: <origen>`, acciones condicionales como `[CREARÍA]`,
+`[REESCRIBIRÍA]` o `[ELIMINARÍA]`, y `cambios pendientes: <N>` con `N > 0`; no escribe ni muestra
+acciones reales de creación o eliminación. Si aparece `[NO MIGRADO]`, no escribe nada: corrige el
+detalle indicado y repite. Tras una migración real exitosa, sugiere `/memory-system check`.
+
+Para `requirements-fragmented --dry-run`, el destino propuesto es
+`requirements/srs-<project-slug>.md`; la salida contiene `from: requirements-fragmented`,
+`[CREARÍA] requirements/srs-<project-slug>.md` y `cambios pendientes: <N>`, sin `[ELIMINADO]`.
+
 ### Paso 4 — Informe final
 
 Cierra cada modo con estas líneas, después de la salida íntegra del motor:
@@ -442,6 +467,8 @@ Cierra cada modo con estas líneas, después de la salida íntegra del motor:
 | `migrate --from=dod-monolithic` | `✅ memory-system migrate --from=dod-monolithic — <SPECS_BASE>` y en la última línea el resumen del motor (con `--dry-run`, `cambios pendientes: P`). Con exit 1, `⚠️` en lugar de `✅`. |
 | `migrate --from=epic-template-v1` | `✅ memory-system migrate --from=epic-template-v1 — <SPECS_BASE>` y en la última línea el resumen del motor `migrados: N · sin cambios: M · a revisar: R` (con `--dry-run`, `cambios pendientes: P`). Con exit 1, `⚠️` en lugar de `✅`. |
 | `migrate --from=specs-3-levels` | `✅ memory-system migrate --from=specs-3-levels — <SPECS_BASE>` y el resumen del motor; con exit 1, `⚠️`, sin regenerar el índice. |
+| `migrate --from=srs-single` | `✅ memory-system migrate --from=srs-single — <SPECS_BASE>` y el resumen `creados: N · preservados: M · reescritos: R · eliminados: E`; con `--dry-run`, también `cambios pendientes: P`. Con exit 1, `⚠️`. |
+| `migrate --from=requirements-fragmented` | `✅ memory-system migrate --from=requirements-fragmented — <SPECS_BASE>` y el mismo resumen; con `--dry-run`, también `cambios pendientes: P`. Con exit 1, `⚠️`. |
 | `migrate` | `✅ memory-system migrate — harness: <h> — <SPECS_BASE>`, la línea `Siguiente paso: /memory-system index` y en la última línea el resumen del motor. Sin informe si el proyecto ya es SDDF o si se canceló. |
 | `check` | **Sin informe propio**: la salida es la del motor. Sin `--json`, añade como única línea final `exit code: <N>`; con `--json`, no añadas nada a stdout. `check` no escribe, así que no hay línea de creados, sobrescritos ni índice. |
 
@@ -449,8 +476,7 @@ Cierra cada modo con estas líneas, después de la salida íntegra del motor:
 
 ### Paso 5 — Degradación sin `node` en PATH
 
-`migrate --from=epic-template-v1` **no tiene degradación inline**: sin `node` muestra exactamente
-`❌ migrate --from=epic-template-v1 requiere node` y termina sin escribir nada. Para los demás
+`migrate --from=epic-template-v1`, `migrate --from=srs-single` y `migrate --from=requirements-fragmented` **no tienen degradación inline**: sin `node` muestran `❌ migrate --from=<origen> requiere node` y terminan sin escribir nada. Para los demás
 modos, si `node` no está disponible, avisa:
 
 ```
@@ -509,7 +535,7 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
 ## Salida
 
 - `$SPECS_BASE/constitution.md`, `product/{README,vision,stakeholders,objectives,roadmap}.md`, un
-  `README.md` por capa, `requirements/{functional,non-functional}/`, `specs/{epics,stories}/` y las nueve plantillas de
+  `README.md` por capa, `requirements/srs-<project-slug>.md` cuando falta una disposición, `specs/{epics,stories}/` y las once plantillas de
   `templates/` — solo los que faltaban (`scaffold`, `ensure`, `migrate`) o todos los gestionados
   (`rebuild --force`), salvo las capas y semillas que el perfil del harness omite o mapea.
 - En Speckit/OpenSpec, `index.md` enlaza los artefactos del harness en "Artefactos externos" con

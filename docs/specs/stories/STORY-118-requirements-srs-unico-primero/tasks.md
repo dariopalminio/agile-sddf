@@ -9,7 +9,7 @@ parent: EPIC-21-colapsar-specs-dos-niveles
 story: STORY-118
 design: STORY-118
 created: 2026-10-08
-updated: 2026-10-08
+updated: 2026-10-12
 related:
   - STORY-118-requirements-srs-unico-primero
   - STORY-118-requirements-srs-unico-primero-design
@@ -27,14 +27,24 @@ related:
 > historias y no son tareas de implementación; CR-006 se materializa en T032/T033. Todo archivo `.md`/`.json`/`.js` tocado se guarda
 > en UTF-8 sin BOM con saltos `\n`; ningún paso añade dependencias a `package.json` (CNF-6, CR-002).
 
+## Estado de ejecución — 2026-10-12
+
+| Estado | Tareas | Evidencia |
+|---|---|---|
+| Completadas | T002, T003, T009–T023, T032, T034–T039 | SRS y semilla, módulo y registro en el motor, migraciones, documentación canónica y changelog. |
+| En validación | T004–T006, T024–T030, T031, T033, T040–T043 | Fixtures, cobertura ampliada, evals y gates. `npm test` (241 pruebas), `verify:repository`, enlaces, sintaxis e inventario están en verde. Los casos nuevos TC-026–TC-029 produjeron las salidas esperadas con Codex. |
+| Pendientes | T001, T007, T008, T044, T045 | Baseline persistida, fixtures de degradación y validaciones manuales/dogfood. |
+
+> Las casillas conservan el detalle atómico del plan. Se marcarán `[x]` por tarea tras completar su evidencia específica; la historia sigue en `IMPLEMENT/IN-PROGRESS` hasta concluir los pendientes y el cierre de evals.
+
 ## 1. Preparación — línea base
 
 - [ ] T001 Ejecutar `npm test`, `npm run verify:eval-inventory`, `npm run verify:links` y `node scripts/audit-root-resolution.js` y guardar las salidas en `.tmp/story-implement/STORY-118/baseline.txt`; registrar en el mismo archivo: valores de `MIGRATE_SOURCES` y `CHECK_KINDS` y si existe la tabla `MIGRATORS` en `skills/memory-system/scripts/memory-system.js`; el último `TC-NNN` de `skills/memory-system/evals/evals.json`; el último número de secuencia `3.N` del Paso 3 de `skills/memory-system/SKILL.md`; el contenido de `docs/requirements/` (¿existen `functional/`/`non-functional/` de STORY-105?) y si existe `docs/templates/requirement-template.md` (STORY-110) — D-1, D-11, Riesgos, CR-005
 
 ## 2. Template SRS
 
-- [ ] T002 Crear `skills/memory-system/assets/scaffold/templates/srs-template.md` según la tabla de D-6: frontmatter `type: srs`, `slug: srs-<project-slug>`, `title: "SRS — <Nombre del proyecto>"`, `status: IN-PROGRESS`, `substatus: TODO`, `parent: null`, `created: <YYYY-MM-DD>`, `updated: <YYYY-MM-DD>`, cada clave precedida de un comentario `# escritor: autoría manual — …`; `# SRS — <Nombre del proyecto>`; `<!-- escritor: autoría manual -->` y comentario de estrategia (un requisito por `###` con el ID como prefijo, IDs que no se renumeran ni reutilizan, umbral > 15 requisitos o > 500 líneas → `/memory-system migrate --from=srs-single`); `## Requisitos funcionales` y `## Requisitos no funcionales`, cada una con su ejemplo `### FR-001 — <nombre>` / `### NFR-001 — <nombre>` **dentro de un comentario** (descripción "El sistema debe…" y `**Criterios de verificación:**` con `- [ ]`); pie `Volver al mapa: [[index]].`; sin secciones de diseño, implementación ni decisiones — D-6, AC-2, CNF-5
-- [ ] T003 Reemplazar `docs/templates/srs-template.md` por una copia byte a byte idéntica de la semilla de T002 — D-6, D-10, AC-2
+- [x] T002 Crear `skills/memory-system/assets/scaffold/templates/srs-template.md` según la tabla de D-6: frontmatter `type: srs`, `slug: srs-<project-slug>`, `title: "SRS — <Nombre del proyecto>"`, `status: IN-PROGRESS`, `substatus: TODO`, `parent: null`, `created: <YYYY-MM-DD>`, `updated: <YYYY-MM-DD>`, cada clave precedida de un comentario `# escritor: autoría manual — …`; `# SRS — <Nombre del proyecto>`; `<!-- escritor: autoría manual -->` y comentario de estrategia (un requisito por `###` con el ID como prefijo, IDs que no se renumeran ni reutilizan, umbral > 15 requisitos o > 500 líneas → `/memory-system migrate --from=srs-single`); `## Requisitos funcionales` y `## Requisitos no funcionales`, cada una con su ejemplo `### FR-001 — <nombre>` / `### NFR-001 — <nombre>` **dentro de un comentario** (descripción "El sistema debe…" y `**Criterios de verificación:**` con `- [ ]`); pie `Volver al mapa: [[index]].`; sin secciones de diseño, implementación ni decisiones — D-6, AC-2, CNF-5
+- [x] T003 Reemplazar `docs/templates/srs-template.md` por una copia byte a byte idéntica de la semilla de T002 — D-6, D-10, AC-2
 - [ ] T004 [P] En `skills/memory-system/assets/scaffold/templates/README.md` y `docs/templates/README.md` añadir `srs-template.md` a las plantillas de autoría manual (cinco de autoría manual, diez plantillas base) y corregir los recuentos "cuatro plantillas de autoría manual" / "nueve plantillas" que aparezcan en esos archivos — D-10, AC-2
 
 ## 3. Fixtures en `skills/memory-system/examples/`
@@ -46,7 +56,7 @@ related:
 
 ## 4. Módulo `skills/memory-system/scripts/requirements.js`
 
-- [ ] T009 Crear `skills/memory-system/scripts/requirements.js` con el patrón de `dod-story.js`/`epic-template.js`: solo `node:fs` y `node:path`, `engine()` que hace `require('./memory-system.js')` en tiempo de llamada (para `parseFrontmatter`, `readText`, `toPosix`, `assertInsideRoot`, `under`, `todayIso`, `UsageError`), la constante exportada `REQUIREMENT_ID = /^(FR|NFR)-\d{3,}$/` y el esqueleto exportado de todas las funciones de la tabla de Interfaces — D-1, Interfaces, CNF-6
+- [x] T009 Crear `skills/memory-system/scripts/requirements.js` con el patrón de `dod-story.js`/`epic-template.js`: solo `node:fs` y `node:path`, `engine()` que hace `require('./memory-system.js')` en tiempo de llamada (para `parseFrontmatter`, `readText`, `toPosix`, `assertInsideRoot`, `under`, `todayIso`, `UsageError`), la constante exportada `REQUIREMENT_ID = /^(FR|NFR)-\d{3,}$/` y el esqueleto exportado de todas las funciones de la tabla de Interfaces — D-1, Interfaces, CNF-6
 - [ ] T010 Implementar `slugify(text, max = 50)` (NFD sin diacríticos → minúsculas → `[^a-z0-9]+` → `-` → sin guiones extremos → recorte ≤ `max` en el último `-`, solo U+002D), `projectSlug(repoRoot)` (`slugify(basename)` o `proyecto` si queda vacío) y `parseIdList(value)` (array de bloque o cadena en línea `"[FR-001, NFR-002]"`; `[]` si no hay valor) — D-3, D-5, Interfaces, AC-3, AC-4, CNF-5
 - [ ] T011 Implementar `inventoryRequirements(specsBase)` de D-2: una sola lectura de `requirements/`; `srsFiles` (`srs-*.md` de primer nivel, orden ordinal); `sections` sobre el texto visible (sin frontmatter, comentarios `<!-- … -->` ni bloques con fences, la misma regla que `extractWikilinks`), encabezado `### <ID>` con separador `—`/`–`/`-`/`:`, cada una `{ id, title, relPath, line, bodyLines }` con cuerpo hasta el siguiente `###`/`##` o el final; `fragments` de `functional/` y `non-functional/` cuyo nombre cumple `^(FR|NFR)-\d{3,}(-.+)?\.md$`; `catalog` (`requirements/index.md` si existe); `layout` según la tabla `mixed`/`fragmented`/`srs`/`empty` (un SRS sin secciones visibles se ignora si hay fragmentos) — D-2, AC-4, AC-7, AC-9
 - [ ] T012 Implementar `resolveRequirement(inventory, id)` con la precedencia de D-5 (primer fragmento en orden ordinal de `functional/` o `non-functional/` → `{ kind: 'file', relPath, slug, target }`; primera sección `### <id>` de cualquier `srs-*.md` → `{ kind: 'section', relPath, anchor, target: '<srs>.md#<id>' }`; si no, `null`) y `requirementAliases(inventory)` (IDs que resuelven) — D-5, AC-4, AC-9, CNF-4

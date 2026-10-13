@@ -215,6 +215,7 @@ El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT �
 <summary>Migración a 4.0.0 (specs de dos niveles)</summary>
 
 `specs/01-projects/` fue reemplazado por `product/` y `requirements/`; las épicas e historias viven en `specs/epics/` y `specs/stories/`.
+`requirements/` empieza con un SRS único y se fragmenta al superar 15 requisitos o 500 líneas.
 Sigue la [guía de migración](docs/guides/artifact-directory-migration.md), primero con `--dry-run` y luego sin él.
 </details>
 

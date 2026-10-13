@@ -148,10 +148,10 @@ const VALUE_FLAGS = {
 };
 // Orígenes admitidos por `migrate --from` (STORY-101 D-3, STORY-103 D-7). La migración de harness no
 // es un subcomando del motor: es una secuencia del SKILL.md sobre `scaffold` (STORY-098 D-3).
-const MIGRATE_SOURCES = ['dod-monolithic', 'epic-template-v1', 'specs-3-levels'];
+const MIGRATE_SOURCES = ['dod-monolithic', 'epic-template-v1', 'specs-3-levels', 'srs-single', 'requirements-fragmented'];
 const BOOL_FLAGS = { '--dry-run': 'dryRun', '--force': 'force', '--json': 'json' };
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const USAGE = 'uso: memory-system.js <detect|index|scaffold|check|migrate> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json] [--skills-dir <ruta>] [--from dod-monolithic|epic-template-v1|specs-3-levels]';
+const USAGE = 'uso: memory-system.js <detect|index|scaffold|check|migrate> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json] [--skills-dir <ruta>] [--from dod-monolithic|epic-template-v1|specs-3-levels|srs-single|requirements-fragmented]';
 
 // Error de uso o de datos: se informa por stderr y termina con exit 2 sin escribir.
 class UsageError extends Error {}
@@ -542,8 +542,8 @@ function validateLayers(template, byLayer) {
 
 // Slugs resolubles: los de los nodos escaneados (sin placeholders) más el del propio índice.
 // Es el conjunto contra el que resuelven los wikilinks, tanto en `index` como en `check`.
-function slugSetOf(nodes) {
-  return new Set(['index', ...nodes.filter((n) => !n.slugPlaceholder).map((n) => n.slug)]);
+function slugSetOf(nodes, aliases = []) {
+  return new Set(['index', ...nodes.filter((n) => !n.slugPlaceholder).map((n) => n.slug), ...aliases]);
 }
 
 // Slugs referenciados por wikilink que no resuelven a ningún nodo (ni al propio índice).
@@ -615,7 +615,7 @@ const SPEC_TYPES = new Set(['project', 'epic', 'story']);
 const ROOT_FILE = 'constitution.md';
 
 // Familias de problemas, en el orden de presentación del informe textual (D-4).
-const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink', dodStory.DOD_KIND];
+const CHECK_KINDS = ['missing-layer', 'orphan', 'invalid-frontmatter', 'broken-wikilink', dodStory.DOD_KIND, 'requirement'];
 // Ancho de la columna `[kind]` del informe textual: la familia más larga, más los corchetes y
 // dos espacios de separación. Derivado para que añadir una familia no descuadre el informe.
 const KIND_WIDTH = Math.max(...CHECK_KINDS.map((kind) => kind.length)) + 4;
@@ -702,7 +702,7 @@ function brokenWikilinks(ctx) {
 }
 
 // `dod-guardrail` (STORY-101 D-6) vive en `dod-story.js`: conocimiento propio del DoD por etapa.
-const EVALUATORS = [missingLayers, orphans, invalidFrontmatter, brokenWikilinks, dodStory.dodGuardrails];
+const EVALUATORS = [missingLayers, orphans, invalidFrontmatter, brokenWikilinks, dodStory.dodGuardrails, (ctx) => require('./requirements.js').requirementProblems(ctx)];
 
 function assertRuntime() {
   const major = Number.parseInt(process.versions.node.split('.')[0], 10);
@@ -717,11 +717,13 @@ function assertRuntime() {
  */
 function checkMemory(specsBase, harness, options = {}) {
   const nodes = scanNodes(specsBase, harness);
+  const requirements = require('./requirements.js').inventoryRequirements(specsBase);
   const repoRoot = path.dirname(specsBase);
   const configFile = path.join(repoRoot, 'sddf.config.yaml');
   const dodMapping = fs.existsSync(configFile) ? dodStory.readDodMapping(readText(configFile)) : new Map();
   const ctx = {
-    root: specsBase, repoRoot, nodes, layers: LAYERS, profile: profileOf(harness), slugSet: slugSetOf(nodes),
+    root: specsBase, repoRoot, nodes, layers: LAYERS, profile: profileOf(harness), requirements,
+    slugSet: slugSetOf(nodes, require('./requirements.js').requirementAliases(requirements)),
     skillsDir: options.skillsDir || null, dodMapping,
   };
   const problems = sortProblems(EVALUATORS.flatMap((evaluate) => evaluate(ctx)));
@@ -816,6 +818,9 @@ function scaffold(options) {
   const profile = options.profile || profileOf(harness);
   const skipLayers = new Set(profile.skipLayers);
   const seeds = listSeeds(scaffoldDir);
+  // SRS único es la disposición inicial: los directorios de fragmentos solo se conservan cuando
+  // ya existían. Evita que un scaffold nuevo materialice una segunda disposición vacía.
+  const initialRequirements = require('./requirements.js').inventoryRequirements(specsBase);
   assertSeedsCoverLayers(seeds, scaffoldDir);
 
   const cliRoot = options.cliRoot ? path.resolve(process.cwd(), options.cliRoot) : null;
@@ -872,6 +877,7 @@ function scaffold(options) {
   const date = options.date || todayIso();
   const renderSeed = (text) => text.replace(/\{date\}/g, date);
   for (const rel of seeds) {
+    if (initialRequirements.layout === 'empty' && /^(requirements\/functional|requirements\/non-functional)\/\.gitkeep$/.test(rel)) continue;
     if (path.basename(rel) === '.gitkeep' && isDirectory(path.join(specsBase, path.dirname(rel)))) continue;
     place(rel, 'seed', under(scaffoldDir, rel), /\.md$/i.test(rel) ? renderSeed : null);
   }
@@ -888,6 +894,12 @@ function scaffold(options) {
     if (source && fs.existsSync(source)) place(relPath, 'shared-template', source, null);
     else result.warnings.push(`template no copiado: ${name} (skill ${owner} no instalado)`);
   }
+
+  const srs = require('./requirements.js').scaffoldSrs({
+    specsBase, repoRoot, seedTemplate: path.join(scaffoldDir, 'templates', 'srs-template.md'),
+    dryRun, date, skipLayers: profile.skipLayers,
+  });
+  if (srs) record(srs.relPath, 'srs', srs.action, srs.note);
 
   return result;
 }
@@ -923,6 +935,7 @@ function runDetect(args) {
 function runIndex(args) {
   const specsBase = resolveRoot(args.root);
   const harness = detectHarness(path.dirname(specsBase), args.harness);
+  const catalog = require('./requirements.js').writeCatalog(specsBase, { dryRun: args.dryRun, date: args.date || todayIso() });
   const templatePath = args.template ? path.resolve(process.cwd(), args.template) : DEFAULT_TEMPLATE;
   if (!fs.existsSync(templatePath)) throw new UsageError(`no se encuentra el template del índice: ${displayPath(templatePath)}`);
 
@@ -935,6 +948,7 @@ function runIndex(args) {
     process.stderr.write(`⚠️ colisión de slug: ${node.collidesWith} — ${node.relPath} se indexa como [[${node.slug}]]; [[${node.collidesWith}]] queda para el nodo de ${toPosix(path.basename(specsBase))}/\n`);
   }
   process.stdout.write(`harness: ${harness}\n`);
+  if (catalog) process.stdout.write(`catálogo de requisitos: requirements/index.md (${catalog.count} requisitos)\n`);
   if (args.dryRun) {
     process.stdout.write(`--- ${displayPath(target)} (dry-run, no se escribe) ---\n${content}--- fin del índice ---\n`);
   } else {
@@ -997,8 +1011,14 @@ function runMigrate(args) {
     'dod-monolithic': () => dodStory.migrateDod(specsBase, { dryRun: args.dryRun, force: args.force, date: args.date, displayRoot }),
     'epic-template-v1': () => epicTemplate.migrateEpics(specsBase, { dryRun: args.dryRun, displayRoot }),
     'specs-3-levels': () => require('./specs-3-levels.js').migrateSpecs(specsBase, { dryRun: args.dryRun, force: args.force, date: args.date, displayRoot }),
+    'srs-single': () => require('./requirements.js').migrateSrsSingle(specsBase, { dryRun: args.dryRun, date: args.date || todayIso(), displayRoot }),
+    'requirements-fragmented': () => require('./requirements.js').migrateFragmented(specsBase, { dryRun: args.dryRun, date: args.date || todayIso(), displayRoot }),
   };
   const result = migrators[args.from]();
+  if (args.from === 'specs-3-levels' && result.exitCode === 0 && !args.dryRun) {
+    const catalog = require('./requirements.js').writeCatalog(specsBase, { date: args.date || todayIso() });
+    if (catalog) result.lines.splice(-2, 0, `[ACTUALIZADO] requirements/index.md — catálogo de requisitos (${catalog.count})`);
+  }
   process.stdout.write(`${result.lines.join('\n')}\n`);
   return result.exitCode;
 }

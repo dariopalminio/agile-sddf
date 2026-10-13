@@ -5,6 +5,7 @@ Los archivos de plantilla usan el sufijo `-template.md`:
 - `story-template.md`
 - `vision-template.md`
 - `epic-template.md`
+- `srs-template.md`
 
 Esta convención aplica tanto a `*/templates/<name>-template.md` como a `*/SKILL/<skill>/assets/<name>-template.md`.
 
