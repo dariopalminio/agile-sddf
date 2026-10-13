@@ -74,3 +74,4 @@ Entonces "[[story-map]]" resuelve a "docs/product/story-map.md"
 - **Capa `product/`:** `product/README.md` admite documentos de contexto adicionales en kebab-case, así que `story-map.md` entra sin cambiar el README.
 - **Wikilinks:** el slug `story-map` no cambia, así que `[[story-map]]` sigue resolviendo por slug. Solo cambia la ruta que muestra `docs/index.md` (1 entrada); `project.md` lo referencia 2 veces.
 - **Independencia:** no depende de STORY-104, STORY-105 ni STORY-106.
+- **Criterio de salida de EPIC-21 que cubre:** `docs/product/` contiene `vision.md`, `stakeholders.md`, `roadmap.md` y `story-map.md`. Lo entregan STORY-104 a STORY-107; esta historia aporta `story-map.md` y cierra la capa.

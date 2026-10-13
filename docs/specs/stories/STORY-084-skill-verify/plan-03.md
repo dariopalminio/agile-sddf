@@ -1,3 +1,9 @@
+---
+type: plan
+slug: STORY-084-plan-03
+title: "Plan: Unificar skill-verify en skill-test-evals"
+---
+
 Plan: Unificar skill-verify en skill-test-evals
 Contexto
 skill-verify y skill-test-evals forman un par TDD (RED/VALIDATE) que actualmente obliga al usuario a recordar y alternar entre dos skills distintos. El usuario quiere un único punto de entrada (skill-test-evals) que cubra el ciclo completo: generar evals → ejecutarlos → benchmarkarlos. skill-verify se elimina tras la migración.

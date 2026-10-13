@@ -1,3 +1,9 @@
+---
+type: insight
+slug: insight-colapsar-specs-dos-niveles
+title: "Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects"
+---
+
 # 📊 Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
 
 ## Solapamiento entre `specs/01-projects/` y `product/` + `requirements/`**

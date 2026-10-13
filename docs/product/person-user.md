@@ -1,3 +1,9 @@
+---
+type: product
+slug: person-user
+title: "Persona de usuario"
+---
+
 # User Persona
 
 ## US-001 — Solo Builder (Cloud)

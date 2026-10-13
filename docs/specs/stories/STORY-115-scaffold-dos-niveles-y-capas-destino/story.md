@@ -35,7 +35,7 @@ Dado un directorio de proyecto sin "docs/"
 Cuando el usuario ejecuta "/memory-system scaffold"
 Entonces existen "docs/specs/epics/" y "docs/specs/stories/"
   Y existen "docs/product/vision.md", "docs/product/stakeholders.md", "docs/product/objectives.md" y "docs/product/roadmap.md"
-  Y existen "docs/requirements/functional/" y "docs/requirements/non-functional/"
+  Y existe "docs/requirements/srs-<project-slug>.md" y no existen "docs/requirements/functional/" ni "docs/requirements/non-functional/" (disposición de SRS único que fija STORY-118)
   Pero no existen "docs/specs/01-projects/", "docs/specs/02-epics/" ni "docs/specs/03-stories/"
 ```
 
@@ -79,3 +79,4 @@ Entonces la última línea del informe empieza con "creados: 0 · sobrescritos: 
 - **Reparto con STORY-108:** su AC-2 exige que no quede "02-epics"/"03-stories" en `skills/`, lo que ya obliga a renombrar estas semillas. Por eso esta historia se queda con lo que no es renombrado: retirar `01-projects`, sembrar `roadmap.md` y `requirements/{functional,non-functional}/`, y avisar de la estructura antigua.
 - **`product/README.md`:** su convención fija tres documentos (`vision`, `stakeholders`, `objectives`). Si `roadmap.md` pasa a sembrarse siempre, conviene incluirlo como cuarto documento fijo en la semilla del README; se decide en diseño.
 - **Independencia:** CNF-2 se apoya en el template de STORY-111. Si esta historia va antes, la semilla define la estructura y STORY-111 debe respetarla.
+- **Smoke test de EPIC-21:** AC-1 verifica SMOKE-1. La disposición de `requirements/` se actualizó tras STORY-118: el scaffold crea el SRS único y no las carpetas `functional/` ni `non-functional/` vacías.

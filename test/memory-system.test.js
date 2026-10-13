@@ -777,6 +777,14 @@ test('S097-UT-005 brokenWikilinks: resuelve contra el slugSet con raíces extern
   ]);
 });
 
+test('UT-ADR-ALIAS slugSetOf: un ADR resuelve por nombre de archivo y por ID, no por prefijos ajenos', () => {
+  const adr = { ...fakeNode('adr/ADR-0013-eliminar-specs-01-projects.md', { declared: { type: 'adr', slug: 'eliminar-specs-01-projects', title: 'A' } }), layer: 'adr', slug: 'eliminar-specs-01-projects' };
+  const guide = { ...fakeNode('guides/ADR-0099-nota.md', { declared: { type: 'guide', slug: 'nota', title: 'N' } }), layer: 'guides', slug: 'nota' };
+  const slugs = engine.slugSetOf([adr, guide]);
+  for (const slug of ['eliminar-specs-01-projects', 'ADR-0013-eliminar-specs-01-projects', 'ADR-0013']) assert.ok(slugs.has(slug), slug);
+  for (const slug of ['ADR-0099-nota', 'ADR-0099', 'ADR-0014']) assert.ok(!slugs.has(slug), slug);
+});
+
 test('S097-UT-006 extractWikilinks: código, fence, alias, ancla y placeholder (V-5)', () => {
   const body = [
     'Inline: `[[en-codigo]]`.',

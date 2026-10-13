@@ -42,7 +42,8 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [x] **STORY-115** — Actualizar scaffolding de `memory-system`: crear `specs/epics/` y `specs/stories/` en lugar de los tres niveles numerados.
 - [x] **STORY-116** — Actualizar documentación canónica: `memory-system.md`, `sddf-architecture.md`, `domain-*`, `docs/specs/README.md`, `README` y `CHANGELOG` (breaking change con guía de migración).
 - [x] **STORY-117** — Actualizar `sddf.config.yaml` y verificar los tres modos SDD: eliminar rutas a `02-epics/` o `03-stories/` si existen y comprobar que Intent-First, Spec-Anchored y Spec-as-Source funcionan con la nueva estructura.
-- [x] **STORY-123** — Reubicar las secciones restantes de `project.md` y eliminarlo: trasladar las secciones que ADR-0013 no asigna (§1.1–1.7, §2.3, §3, §4, §11, §12 y apéndices) a su capa y eliminar `project.md`, dejando `docs/specs/01-projects/` vacía y eliminada. CANCELED (Ya se aplicó antes)
+- [x] **STORY-123** — Reubicar las secciones restantes de `project.md` y eliminarlo: trasladar las secciones que ADR-0013 no asigna (§1.1–1.7, §2.3, §3, §4, §11, §12 y apéndices) a su capa y eliminar `project.md`, dejando `docs/specs/01-projects/` vacía y eliminada.
+- [x] **STORY-119** — Story-plan con un subagente por paso: cancelada el 2026-10-10 por decisión del usuario; sus cambios de implementación se revirtieron.
 - [x] **STORY-118** — Adoptar la estrategia "SRS único primero, fragmentación cuando duela" en `requirements/`: implementar la estrategia en el framework, actualizar documentación y scaffolding, y ofrecer migración automática para proyectos existentes.
 
 ## Seguimiento pendiente para VALIDATE (fase QUALITY)
@@ -67,7 +68,6 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 - [ ] `memory-system check` devuelve exit code 0.
 - [ ] Todas las épicas e historias existentes siguen siendo navegables por wikilinks.
 - [ ] `CHANGELOG.md` documenta el breaking change con guía de migración.
-- [ ] Los modos SDD Spec-First y Spec-Anchored funcionan con la nueva estructura.
 
 ## Smoke tests
 *Si alguno de estos falla, se debe detener el despliegue (o se debe hacer rollback automático).*

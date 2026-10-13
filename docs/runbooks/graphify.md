@@ -1,3 +1,9 @@
+---
+type: runbook
+slug: runbook-graphify
+title: "Runbook: Graphify"
+---
+
 # Runbook: Graphify
 
 > Instalación, arranque y uso diario de Graphify CLI, skill y MCP server.

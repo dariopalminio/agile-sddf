@@ -37,10 +37,11 @@ related:
 Dado un repositorio con un único proyecto en "docs/specs/01-projects/PROJ-01-demo/" que contiene "project-intent.md", "project.md", "project-plan.md" y "story-map.md" generados con los templates de SDDF
   Y épicas en "docs/specs/02-epics/" e historias en "docs/specs/03-stories/"
 Cuando el usuario ejecuta "/memory-system migrate --from=specs-3-levels"
-Entonces el contenido de "01-projects/" queda en "docs/product/" y "docs/requirements/" según ADR-0013, con un archivo por FR y NFR
+Entonces el contenido de "01-projects/" queda en "docs/product/", "docs/requirements/" y "docs/architecture/c4/" según ADR-0013, con un archivo por FR y NFR
   Y "02-epics/" pasa a "docs/specs/epics/" y "03-stories/" a "docs/specs/stories/" con el mismo número de archivos
   Y "docs/specs/01-projects/" ya no existe
   Y "memory-system check" devuelve exit code 0 sin wikilinks rotos
+  Y los frontmatters conservan sus referencias "parent" y "related", y "memory-system index" regenera "docs/index.md" sin nodos pendientes
 ```
 
 ### AC-2 — Escenario alternativo – Simulación e idempotencia
@@ -94,3 +95,4 @@ Ejemplos:
 - **Mapa de destino:** es el que fijan STORY-104 (`project-intent.md` → `vision.md`), STORY-105 (§1.8 → `stakeholders.md`; FR/NFR → un archivo por requisito, conservando IDs y huecos), STORY-106 (`project-plan.md` → `roadmap.md`; "Objetivo" → `objectives.md`), STORY-107 (`story-map.md` → `product/`; `.puml` → `architecture/c4/`) y STORY-108 (renombrado). Esta historia no redefine ese mapa.
 - **Dependencia de decisión:** las secciones de `project.md` que ADR-0013 no asigna (UI/UX, stack, glosario, referencias, apéndices) dependen de la historia pendiente "Reubicar las secciones restantes de `project.md`". Hasta que exista esa decisión, la migración las marca `[NO MIGRADO]`, lo que impide eliminar `01-projects/` (AC-3).
 - **Determinista vs. asistido:** reconocer secciones por los encabezados de los templates y los requisitos por el patrón `- **FR-NNN**:` permite un motor determinista. Lo que no encaje cae en `[NO MIGRADO]` en lugar de interpretarse. El reparto exacto entre motor e instrucciones del `SKILL.md` se decide en diseño.
+- **Smoke tests de EPIC-21:** AC-1 verifica SMOKE-2 y SMOKE-3 (el índice se regenera con `memory-system index` tras migrar; el migrador no lo escribe).

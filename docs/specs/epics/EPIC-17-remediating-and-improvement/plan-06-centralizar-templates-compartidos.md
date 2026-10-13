@@ -136,6 +136,6 @@ constitution.md — nuevo patrón #16 "Registro de decisiones en tres niveles": 
 index.md:90 — sección "Decisiones de arquitectura" con el wikilink a ADR-0001.
 Esto materializa la convención que project-constitution-template.md:77 ya prometía a los usuarios del framework sin que existiera en el propio repo.
 
-Una nota: las advertencias de Foam en docs/index.md (líneas 85-87) aparecieron porque los wikilinks [[story-template]], [[release-spec-template]] y [[project-template]] ahora resuelven a dos archivos (seed en .claude/skills/ y copia central en docs/specs/templates/) tras el dogfooding de plan-06. Es cosmético; si quieres eliminarlas, puedo cambiar esos wikilinks por links con ruta explícita al template central.
+Una nota: las advertencias de Foam en docs/index.md (líneas 85-87) aparecieron porque los wikilinks `story-template`, `release-spec-template` y `project-template` ahora resuelven a dos archivos (seed en .claude/skills/ y copia central en docs/specs/templates/) tras el dogfooding de plan-06. Es cosmético; si quieres eliminarlas, puedo cambiar esos wikilinks por links con ruta explícita al template central.
 
 

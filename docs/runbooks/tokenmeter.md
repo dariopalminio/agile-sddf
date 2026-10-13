@@ -1,3 +1,9 @@
+---
+type: runbook
+slug: runbook-tokenmeter
+title: "Runbook: Tokenmeter"
+---
+
 # Runbook: Tokenmeter
 
 > Dashboard local de consumo de tokens y costos para Claude Code, Codex y Copilot CLI.

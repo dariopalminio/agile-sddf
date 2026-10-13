@@ -1,3 +1,9 @@
+---
+type: plan
+slug: STORY-080-plan
+title: "Plan: Renombrar skill-creator a skill-master"
+---
+
 Renombrar skill-creato a skill-master (.claude/skills/skill-master/)
 
 Archivos internos del skill a actualizar (6):

@@ -1,3 +1,9 @@
+---
+type: testing-report
+slug: STORY-119-testing-report-01
+title: "Testing de STORY-119: Prueba 1"
+---
+
 # Testing de STORY-119: Prueba 1
 
 ## Testcase

@@ -542,8 +542,20 @@ function validateLayers(template, byLayer) {
 
 // Slugs resolubles: los de los nodos escaneados (sin placeholders) más el del propio índice.
 // Es el conjunto contra el que resuelven los wikilinks, tanto en `index` como en `check`.
+// Los ADR también se enlazan por nombre de archivo (`[[ADR-0013-slug]]`, la forma de `related`) o por ID
+// (`[[ADR-0013]]`): ambas resuelven al ADR aunque su `slug` declarado omita el prefijo.
+const ADR_FILE = /^(ADR-\d+)-.+\.md$/;
+function adrAliases(nodes) {
+  const aliases = [];
+  for (const node of nodes) {
+    const match = node.layer === 'adr' && !node.slugPlaceholder ? ADR_FILE.exec(path.basename(node.relPath)) : null;
+    if (match) aliases.push(path.basename(node.relPath, '.md'), match[1]);
+  }
+  return aliases;
+}
+
 function slugSetOf(nodes, aliases = []) {
-  return new Set(['index', ...nodes.filter((n) => !n.slugPlaceholder).map((n) => n.slug), ...aliases]);
+  return new Set(['index', ...nodes.filter((n) => !n.slugPlaceholder).map((n) => n.slug), ...adrAliases(nodes), ...aliases]);
 }
 
 // Slugs referenciados por wikilink que no resuelven a ningún nodo (ni al propio índice).

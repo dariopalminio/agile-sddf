@@ -55,9 +55,10 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ### Producto (product/)
 
+- [[PROJ-01-agile-sddf]] — [PROJ-01-agile-sddf.md](product/PROJ-01-agile-sddf.md) — Redirección de PROJ-01-agile-sddf
 - [[product-index]] — [README.md](product/README.md) — Producto
 - [[objectives]] — [objectives.md](product/objectives.md) — Objetivos
-- [person-user.md](product/person-user.md) — User Persona ⚠️ sin frontmatter
+- [[person-user]] — [person-user.md](product/person-user.md) — Persona de usuario
 - [[roadmap]] — [roadmap.md](product/roadmap.md) — Roadmap del producto
 - [[stakeholders]] — [stakeholders.md](product/stakeholders.md) — Stakeholders
 - [[story-map]] — [story-map.md](product/story-map.md) — Story Map — Agile SDDF (Spec-Driven Development Framework)
@@ -206,7 +207,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[EPIC-19-framework-consistency]] — [epic.md](specs/epics/EPIC-19-framework-consistency/epic.md) — Framework Consistency — Coherencia de vocabulario, instalación, seguridad y ciclo de corrección
 - [[EPIC-20-memory-system]] — [epic.md](specs/epics/EPIC-20-memory-system/epic.md) — Memory System — Sistema de memoria unificado y agnóstico al harness
 - [[EPIC-21-colapsar-specs-dos-niveles]] — [epic.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/epic.md) — Colapsar specs/ a dos niveles y eliminar 01-projects/
-- [insight-colapsar-specs-dos-niveles.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — 📊 Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects ⚠️ sin frontmatter
+- [[insight-colapsar-specs-dos-niveles]] — [insight-colapsar-specs-dos-niveles.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
 - [[EPIC-22-epic-analyze]] — [epic.md](specs/epics/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
 - [[EPIC-23-skill-epic-validate]] — [epic.md](specs/epics/EPIC-23-skill-epic-validate/epic.md) — Skill epic-validate
 
@@ -289,14 +290,14 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-077-mejorar-historia-desde-reporte]] — [story.md](specs/stories/STORY-077-mejorar-historia-desde-reporte/story.md) — story-improve: Mejora automática de historia desde reporte FINVEST
 - [[STORY-078-implement-tdd-fase-red]] — [story.md](specs/stories/STORY-078-implement-tdd-fase-red/story.md) — story-implement — Fase RED: validar configuración y generar pruebas
 - [[STORY-079-story-testcases]] — [story.md](specs/stories/STORY-079-story-testcases/story.md) — story-testcases — generación de testcases.md desde story.md y design.md
-- [plan.md](specs/stories/STORY-080-skills-master/plan.md) — plan ⚠️ sin frontmatter
+- [[STORY-080-plan]] — [plan.md](specs/stories/STORY-080-skills-master/plan.md) — Plan: Renombrar skill-creator a skill-master
 - [[STORY-080-skills-master]] — [story.md](specs/stories/STORY-080-skills-master/story.md) — skill-master — refactorización de skill-tester-eval: modos plan/build, detección de lenguaje natural e independencia SDDF
 - [[STORY-081-implement-tdd-fase-green-refactor]] — [story.md](specs/stories/STORY-081-implement-tdd-fase-green-refactor/story.md) — story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar
 - [[STORY-082-implement-tdd-modos-ejecucion]] — [story.md](specs/stories/STORY-082-implement-tdd-modos-ejecucion/story.md) — story-implement — modos interactivo y automático de ejecución del ciclo TDD
 - [[STORY-083-skill-test-evals]] — [story.md](specs/stories/STORY-083-skill-test-evals/story.md) — skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente
 - [[plan-01]] — [plan-01.md](specs/stories/STORY-084-skill-verify/plan-01.md) — Plan: Crear el skill skill-verify
 - [[plan-02]] — [plan-02.md](specs/stories/STORY-084-skill-verify/plan-02.md) — Plan: Añadir modo benchmark a skill-verify
-- [plan-03.md](specs/stories/STORY-084-skill-verify/plan-03.md) — plan-03 ⚠️ sin frontmatter
+- [[STORY-084-plan-03]] — [plan-03.md](specs/stories/STORY-084-skill-verify/plan-03.md) — Plan: Unificar skill-verify en skill-test-evals
 - [[STORY-084-skill-verify]] — [story.md](specs/stories/STORY-084-skill-verify/story.md) — Unificar generación, ejecución y benchmark de evals en `skill-test-evals`
 - [[plan-integrar-config-sddf-init]] — [plan.md](specs/stories/STORY-085-integrar-config-sddf-init/plan.md) — Plan: Integrar sddf.config.yaml en el skill sddf-init
 - [[STORY-085-integrar-config-sddf-init]] — [story.md](specs/stories/STORY-085-integrar-config-sddf-init/story.md) — Mejora de experiencia de inicialización
@@ -309,7 +310,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-086-refactor-release-to-epic]] — [story.md](specs/stories/STORY-086-refactor-release-to-epic/story.md) — Renombrar el nivel L2 de release a épica y numerar los directorios de specs
 - [[STORY-087-error-in-npm-install-locally]] — [story.md](specs/stories/STORY-087-error-in-npm-install-locally/story.md) — Error en instalación local de npm install agile-sddf en Windows 11
 - [[plan-01-decouple-security-audit]] — [plan-01-decouple-security-audit.md](specs/stories/STORY-088-security-enhancement/plan-01-decouple-security-audit.md) — Desacoplar `story-code-review` del skill `security-audit`
-- [plan-02-security.md](specs/stories/STORY-088-security-enhancement/plan-02-security.md) — plan-02-security ⚠️ sin frontmatter
+- [[STORY-088-plan-02-security]] — [plan-02-security.md](specs/stories/STORY-088-security-enhancement/plan-02-security.md) — Plan: Implementar SECURITY.md
 - [[plan-04-fix-security-insights]] — [plan-04-fix-security-insights.md](specs/stories/STORY-088-security-enhancement/plan-04-fix-security-insights.md) — Cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`
 - [[STORY-088-security-enhancement]] — [story.md](specs/stories/STORY-088-security-enhancement/story.md) — Mejoras de seguridad
 - [[plan-rechazo-nombra-ejecutor-correcciones]] — [plan.md](specs/stories/STORY-089-rechazo-nombra-ejecutor-correcciones/plan.md) — STORY-089 — Análisis y propuesta de cambio
@@ -318,7 +319,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-091-story-implement-modo-rework]] — [story.md](specs/stories/STORY-091-story-implement-modo-rework/story.md) — story-implement toma de la cola una historia rechazada y corrige en modo rework
 - [[STORY-092-reglas-robustez-modo-rework]] — [story.md](specs/stories/STORY-092-reglas-robustez-modo-rework/story.md) — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro
 - [[STORY-093-raiz-configurable-preflight-diagnostico]] — [story.md](specs/stories/STORY-093-raiz-configurable-preflight-diagnostico/story.md) — Resolver una raíz configurable y usar preflight como diagnóstico
-- [insights.md](specs/stories/STORY-094-refactory-and-fixing-insights/insights.md) — insights ⚠️ sin frontmatter
+- [[STORY-094-insights]] — [insights.md](specs/stories/STORY-094-refactory-and-fixing-insights/insights.md) — Insights de refactorización y correcciones
 - [[plan-01-fix-ci-security-audit]] — [plan-01-fix-ci-security-audit.md](specs/stories/STORY-094-refactory-and-fixing-insights/plan-01-fix-ci-security-audit.md) — Plan 01 — Corregir la cobertura y el fallo de la CI de seguridad
 - [[plan-02-fix-postinstall-target-validation]] — [plan-02-fix-postinstall-target-validation.md](specs/stories/STORY-094-refactory-and-fixing-insights/plan-02-fix-postinstall-target-validation.md) — Plan 02 — Cerrar el traversal de `SDDF_TARGET` en `postinstall`
 - [[plan-03-fix-evals-runner-false-greens]] — [plan-03-fix-evals-runner-false-greens.md](specs/stories/STORY-094-refactory-and-fixing-insights/plan-03-fix-evals-runner-false-greens.md) — Plan 03 — Cerrar falsos verdes del runner de evals
@@ -352,8 +353,8 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-117-verificar-cierre-epic-21]] — [story.md](specs/stories/STORY-117-verificar-cierre-epic-21/story.md) — Verificar sddf.config.yaml y los modos SDD sobre la estructura de dos niveles
 - [[STORY-118-requirements-srs-unico-primero]] — [story.md](specs/stories/STORY-118-requirements-srs-unico-primero/story.md) — Adoptar la estrategia 'SRS único primero, fragmentación cuando duela' en requirements/
 - [[STORY-119-story-plan-un-subagente-por-paso]] — [story.md](specs/stories/STORY-119-story-plan-un-subagente-por-paso/story.md) — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens
-- [testing-report-01.md](specs/stories/STORY-119-story-plan-un-subagente-por-paso/testing-report-01.md) — Testing de STORY-119: Prueba 1 ⚠️ sin frontmatter
-- [testing-report-02.md](specs/stories/STORY-119-story-plan-un-subagente-por-paso/testing-report-02.md) — Testing de STORY-119: Prueba 2 ⚠️ sin frontmatter
+- [[STORY-119-testing-report-01]] — [testing-report-01.md](specs/stories/STORY-119-story-plan-un-subagente-por-paso/testing-report-01.md) — Testing de STORY-119: Prueba 1
+- [[STORY-119-testing-report-02]] — [testing-report-02.md](specs/stories/STORY-119-story-plan-un-subagente-por-paso/testing-report-02.md) — Testing de STORY-119: Prueba 2
 - [[STORY-120-epic-analyze-integridad-historias]] — [story.md](specs/stories/STORY-120-epic-analyze-integridad-historias/story.md) — Detectar historias faltantes, huérfanas o duplicadas de una épica antes de aprobarla para desarrollo
 - [[STORY-121-epic-analyze-cobertura-criterios-salida]] — [story.md](specs/stories/STORY-121-epic-analyze-cobertura-criterios-salida/story.md) — Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias
 - [[STORY-122-epic-analyze-madurez-historias-hijas]] — [story.md](specs/stories/STORY-122-epic-analyze-madurez-historias-hijas/story.md) — Señalar historias hijas no especificadas o con referencias rotas al analizar una épica
@@ -444,9 +445,9 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[runbook-actualizar-spec-de-proyecto]] — [actualizar-spec-de-proyecto.md](runbooks/actualizar-spec-de-proyecto.md) — Runbook para actualizar la especificación de proyecto (project.md)
 - [[docker-dev-container-with-security-scann]] — [docker-dev-container-with-security-scann.md](runbooks/docker-dev-container-with-security-scann.md) — Integrar Skill Shielder en Dockerfile.dev
 - [[docker-dev-container]] — [docker-dev-container.md](runbooks/docker-dev-container.md) — Guía Completa: Entorno de Desarrollo React con Docker + VSCode Dev Containers
-- [graphify.md](runbooks/graphify.md) — Runbook: Graphify ⚠️ sin frontmatter
+- [[runbook-graphify]] — [graphify.md](runbooks/graphify.md) — Runbook: Graphify
 - [[runbook-deployment-to-npm]] — [runbook-deployment-to-npm.md](runbooks/runbook-deployment-to-npm.md) — Runbook para despliegue en npm
-- [tokenmeter.md](runbooks/tokenmeter.md) — Runbook: Tokenmeter ⚠️ sin frontmatter
+- [[runbook-tokenmeter]] — [tokenmeter.md](runbooks/tokenmeter.md) — Runbook: Tokenmeter
 
 ---
 
@@ -465,10 +466,10 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 364 |
-| Nodos con frontmatter | 354 |
-| Nodos sin frontmatter | 10 |
-| Wikilinks pendientes | 12 |
+| Nodos indexados | 365 |
+| Nodos con frontmatter | 365 |
+| Nodos sin frontmatter | 0 |
+| Wikilinks pendientes | 0 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |
 
@@ -477,22 +478,3 @@ _(sin artefactos externos)_
 ---
 
 *Generado por el skill `memory-system`. Regenera con `/memory-system index`.*
-
----
-
-## ⚠️ Nodos pendientes
-
-Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artefacto:
-
-- [[ADR-0001]] ⚠️ nodo pendiente
-- [[ADR-0007]] ⚠️ nodo pendiente
-- [[ADR-0007-templates-como-capa-propia]] ⚠️ nodo pendiente
-- [[ADR-0010-specs-dentro-de-docs]] ⚠️ nodo pendiente
-- [[ADR-0011-archivos-canonicos-por-tipo]] ⚠️ nodo pendiente
-- [[ADR-0013-eliminar-specs-01-projects]] ⚠️ nodo pendiente
-- [[PROJ-01-agile-sddf]] ⚠️ nodo pendiente
-- [[STORY-100-slug]] ⚠️ nodo pendiente
-- [[project-template]] ⚠️ nodo pendiente
-- [[release-spec-template]] ⚠️ nodo pendiente
-- [[skill-preflight]] ⚠️ nodo pendiente
-- [[story-template]] ⚠️ nodo pendiente

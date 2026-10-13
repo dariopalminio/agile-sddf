@@ -12,7 +12,7 @@ created: 2026-05-02
 updated: 2026-05-02
 ---
 <!-- Referencias -->
-[[skill-preflight]]
+`skill-preflight`
 
 
 # 📖 Historia: Centralizar la validación de entorno SDDF con skill-preflight

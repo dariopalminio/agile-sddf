@@ -1,3 +1,9 @@
+---
+type: insight
+slug: STORY-094-insights
+title: "Insights de refactorización y correcciones"
+---
+
 El repositorio tiene una base sólida — separación clara entre `skills/`, `agents/`, specs y contratos de raíz; el auditor de raíz y la sintaxis Node pasan—, pero hoy la garantía operativa queda por detrás de lo que el framework declara. No modifiqué archivos.
 
 | Prioridad | Hallazgo | Riesgo / propuesta |
