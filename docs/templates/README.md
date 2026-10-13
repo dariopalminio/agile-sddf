@@ -11,6 +11,9 @@ Esta convención aplica tanto a `*/templates/<name>-template.md` como a `*/SKILL
 
 Excepción: `README.md` en la carpeta de templates no lleva sufijo (es documentación, no plantilla).
 
+Las once plantillas base incluyen cinco de autoría manual: `adr-template.md`,
+`domain-template.md`, `guardrail-template.md`, `policy-template.md` y `srs-template.md`.
+
 ---
 
 Esta capa es hermana de `specs/`, no un subdirectorio suyo: los templates son meta-artefactos que

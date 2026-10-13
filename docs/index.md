@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-11
+updated: 2026-10-13
 ---
 
 # 📚 Índice de documentación
@@ -119,6 +119,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[FR-052-instalacion-automatica-tras-npm-install]] — [FR-052-instalacion-automatica-tras-npm-install.md](requirements/functional/FR-052-instalacion-automatica-tras-npm-install.md) — Instalación automática tras `npm install`
 - [[FR-053-instalacion-interactiva-con-seleccion-de-runtime]] — [FR-053-instalacion-interactiva-con-seleccion-de-runtime.md](requirements/functional/FR-053-instalacion-interactiva-con-seleccion-de-runtime.md) — Instalación interactiva con selección de runtime
 - [[FR-054-publicacion-automatizada-desde-ci]] — [FR-054-publicacion-automatizada-desde-ci.md](requirements/functional/FR-054-publicacion-automatizada-desde-ci.md) — Publicación automatizada desde CI
+- [[requirements-catalog]] — [index.md](requirements/index.md) — Catálogo de requisitos
 - [[NFR-001-compatibilidad-multi-runtime-por-instalacion-no]] — [NFR-001-compatibilidad-multi-runtime-por-instalacion-no.md](requirements/non-functional/NFR-001-compatibilidad-multi-runtime-por-instalacion-no.md) — Compatibilidad multi-runtime por instalación, no por duplicación
 - [[NFR-002-independencia-del-cliente-de-ia-en-el-texto-de-los]] — [NFR-002-independencia-del-cliente-de-ia-en-el-texto-de-los.md](requirements/non-functional/NFR-002-independencia-del-cliente-de-ia-en-el-texto-de-los.md) — Independencia del cliente de IA en el texto de los skills
 - [[NFR-003-markdown-como-lenguaje-de-definicion]] — [NFR-003-markdown-como-lenguaje-de-definicion.md](requirements/non-functional/NFR-003-markdown-como-lenguaje-de-definicion.md) — Markdown como lenguaje de definición
@@ -207,6 +208,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[EPIC-21-colapsar-specs-dos-niveles]] — [epic.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/epic.md) — Colapsar specs/ a dos niveles y eliminar 01-projects/
 - [insight-colapsar-specs-dos-niveles.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — 📊 Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects ⚠️ sin frontmatter
 - [[EPIC-22-epic-analyze]] — [epic.md](specs/epics/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
+- [[EPIC-23-skill-epic-validate]] — [epic.md](specs/epics/EPIC-23-skill-epic-validate/epic.md) — Skill epic-validate
 
 ### L1 — Historias de usuario (specs/stories/)
 
@@ -356,6 +358,11 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-121-epic-analyze-cobertura-criterios-salida]] — [story.md](specs/stories/STORY-121-epic-analyze-cobertura-criterios-salida/story.md) — Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias
 - [[STORY-122-epic-analyze-madurez-historias-hijas]] — [story.md](specs/stories/STORY-122-epic-analyze-madurez-historias-hijas/story.md) — Señalar historias hijas no especificadas o con referencias rotas al analizar una épica
 - [[STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo]] — [story.md](specs/stories/STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo/story.md) — Reubicar las secciones restantes de project.md y eliminarlo
+- [[STORY-124-validar-preparacion-estructural-epica]] — [story.md](specs/stories/STORY-124-validar-preparacion-estructural-epica/story.md) — Validar la preparación estructural de una épica
+- [[STORY-125-validar-evidencia-operativa-epica]] — [story.md](specs/stories/STORY-125-validar-evidencia-operativa-epica/story.md) — Validar la evidencia operativa de una épica
+- [[STORY-126-operar-validacion-epica-segura]] — [story.md](specs/stories/STORY-126-operar-validacion-epica-segura/story.md) — Operar la validación de épicas de manera segura
+- [[STORY-127-integrar-adoptar-gateway-epica]] — [story.md](specs/stories/STORY-127-integrar-adoptar-gateway-epica/story.md) — Integrar y documentar el gateway de validación de épicas
+- [[STORY-128-evaluar-validacion-epica-repetible]] — [story.md](specs/stories/STORY-128-evaluar-validacion-epica-repetible/story.md) — Evaluar la validación de épicas de forma repetible
 
 ---
 
@@ -409,7 +416,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 - [[guides-index]] — [README.md](guides/README.md) — Índice de Guías
 - [[agent-harness-guide]] — [agent-harness-guide.md](guides/agent-harness-guide.md) — Guía de Agent Harness
-- [[artifact-directory-migration]] — [artifact-directory-migration.md](guides/artifact-directory-migration.md) — Guía de migración — nueva estructura de directorios de artefactos SDDF
+- [[artifact-directory-migration]] — [artifact-directory-migration.md](guides/artifact-directory-migration.md) — Guía de migración de la estructura de artefactos SDDF
 - [[best-practices-for-agents]] — [best-practices-for-agents.md](guides/best-practices-for-agents.md) — Buenas prácticas para Agentes
 - [[best-practices-for-commands]] — [best-practices-for-commands.md](guides/best-practices-for-commands.md) — Buenas prácticas para LLM Clients: Comandos
 - [[best-practices-for-skill-testing]] — [best-practices-for-skill-testing.md](guides/best-practices-for-skill-testing.md) — Pruebas de skills
@@ -458,8 +465,8 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 357 |
-| Nodos con frontmatter | 347 |
+| Nodos indexados | 364 |
+| Nodos con frontmatter | 354 |
 | Nodos sin frontmatter | 10 |
 | Wikilinks pendientes | 12 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |

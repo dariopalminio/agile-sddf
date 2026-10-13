@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -29,6 +30,9 @@ function treeHash(dir) {
     }
   }
   visit(dir); return rows.sort().join('\n');
+}
+function runCli(root, args) {
+  return spawnSync(process.execPath, [path.join(__dirname, '..', 'skills', 'memory-system', 'scripts', 'memory-system.js'), ...args, '--root', root, '--cli-root', path.join(__dirname, '..')], { encoding: 'utf8' });
 }
 
 test('S118-UT-001 inventario y resolver prefieren el fragmento sobre la sección', () => {
@@ -79,3 +83,74 @@ test('S118-IT-003 bloquea una migración insegura sin escribir', () => {
   const result = requirements.migrateSrsSingle(dir, { date: '2026-10-12', displayRoot: 'docs' });
   assert.equal(result.exitCode, 1); assert.match(result.lines.join('\n'), /\[NO MIGRADO\].*contenido fuera de un requisito/); assert.equal(treeHash(dir), before);
 });
+
+test('S118-UT-002 utilidades, layouts y el template conservan los contratos SRS', () => {
+  assert.equal(requirements.slugify('Árbol: un título útil'), 'arbol-un-titulo-util');
+  assert.equal(requirements.slugify('palabra-muy-larga-para-recortar', 18), 'palabra-muy-larga');
+  assert.equal(requirements.projectSlug(path.parse(path.resolve(path.sep)).root), 'proyecto');
+  assert.deepEqual(requirements.parseIdList('[FR-001, NFR-002]'), ['FR-001', 'NFR-002']);
+  assert.deepEqual(requirements.parseIdList(['FR-001', ' NFR-002 ']), ['FR-001', 'NFR-002']);
+  assert.deepEqual(requirements.parseIdList(''), []);
+
+  for (const [name, layout] of [['srs-single', 'srs'], ['requirements-fragmented', 'fragmented'], ['requirements-legacy', 'fragmented'], ['requirements-mixed', 'mixed']]) {
+    assert.equal(requirements.inventoryRequirements(fixture(name)).layout, layout, name);
+  }
+  const template = fs.readFileSync(path.join(__dirname, '..', 'skills', 'memory-system', 'assets', 'scaffold', 'templates', 'srs-template.md'), 'utf8');
+  const rendered = requirements.renderSrs(template, { slug: 'demo', name: 'Demo', date: '2026-10-13' });
+  assert.ok(!rendered.includes('escritor:'));
+  assert.match(rendered, /srs-demo/);
+  assert.match(rendered, /<nombre>/);
+  assert.match(rendered, /no se renumeran ni se reutilizan/);
+
+  const inventory = requirements.inventoryRequirements(fixture('srs-single'));
+  assert.equal(inventory.sections.find((item) => item.id === 'FR-003').bodyLines.some((line) => /^## Requisitos no funcionales/.test(line)), false);
+  assert.equal(requirements.resolveRequirement(inventory, 'FR-999'), null);
+});
+
+test('S118-IT-004 scaffold crea solo el SRS y el legacy se repara con index', () => {
+  const empty = fs.mkdtempSync(path.join(os.tmpdir(), 's118-scaffold-'));
+  const scaffold = runCli(empty, ['scaffold']);
+  assert.equal(scaffold.status, 0, scaffold.stderr);
+  assert.match(scaffold.stdout, /\[CREADO\] requirements\/srs-/);
+  assert.ok(fs.readdirSync(path.join(empty, 'requirements')).some((name) => /^srs-.*\.md$/.test(name)));
+  assert.ok(!fs.existsSync(path.join(empty, 'requirements', 'functional')));
+  assert.ok(!fs.existsSync(path.join(empty, 'requirements', 'non-functional')));
+  assert.equal(runCli(empty, ['check']).status, 0);
+
+  const legacy = fixture('requirements-legacy');
+  const before = runCli(legacy, ['check', '--json']);
+  assert.equal(before.status, 1);
+  assert.match(before.stdout, /falta el catálogo/);
+  const indexed = runCli(legacy, ['index', '--date', '2026-10-13']);
+  assert.equal(indexed.status, 0, indexed.stderr);
+  assert.match(indexed.stdout, /catálogo de requisitos: requirements\/index\.md \(5 requisitos\)/);
+  assert.equal(runCli(legacy, ['check']).status, 0);
+});
+
+test('S118-IT-005 la migración inversa bloquea fragmentos inválidos y los archivos generados son UTF-8 limpio', () => {
+  const invalid = fixture('requirements-fragmented');
+  const target = path.join(invalid, 'requirements', 'functional', 'FR-001-crear-cuenta.md');
+  fs.writeFileSync(target, fs.readFileSync(target, 'utf8').replace('related: []', 'related: [FR-002]'), 'utf8');
+  const before = treeHash(invalid);
+  const blocked = requirements.migrateFragmented(invalid, { date: '2026-10-13' });
+  assert.equal(blocked.exitCode, 1);
+  assert.match(blocked.lines.join('\n'), /related debe estar vacío/);
+  assert.equal(treeHash(invalid), before);
+
+  const migrated = fixture('srs-single');
+  assert.equal(requirements.migrateSrsSingle(migrated, { date: '2026-10-13' }).exitCode, 0);
+  for (const file of Object.keys(walk(migrated))) {
+    const content = fs.readFileSync(file);
+    assert.notDeepEqual([...content.subarray(0, 3)], [0xef, 0xbb, 0xbf]);
+    assert.equal(fs.readFileSync(file, 'utf8').includes('\r\n'), false);
+  }
+});
+
+function walk(dir, found = {}) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(full, found);
+    else found[full] = true;
+  }
+  return found;
+}

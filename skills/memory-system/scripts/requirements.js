@@ -84,11 +84,14 @@ function inventoryRequirements(specsBase) {
   for (const file of srsFiles) {
     const text = read(file); const body = engine().parseFrontmatter(text).body; const bodyLines = body.split('\n'); const visible = visibleLines(text); const heads = [];
     for (const row of visible) { const found = heading(row.line); if (found) heads.push({ ...found, index: row.index }); }
+    const bodyPrefix = text.slice(0, text.length - body.length);
+    const bodyStartLine = bodyPrefix.split('\n').length - 1;
     for (let i = 0; i < heads.length; i += 1) {
-      const current = heads[i]; const next = heads[i + 1];
-      const bodyEnd = next ? next.index : bodyLines.length;
+      const current = heads[i];
+      const boundary = visible.find((row) => row.index > current.index && (/^##\s/.test(row.line) || heading(row.line)));
+      const bodyEnd = boundary ? boundary.index : bodyLines.length;
       const contentLines = bodyLines.slice(current.index + 1, bodyEnd);
-      sections.push({ ...current, relPath: posix(path.relative(specsBase, file)), line: current.index + 1, bodyLines: contentLines, file });
+      sections.push({ ...current, relPath: posix(path.relative(specsBase, file)), line: bodyStartLine + current.index + 1, bodyLines: contentLines, file });
     }
   }
   const fragments = [];

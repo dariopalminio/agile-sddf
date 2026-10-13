@@ -129,13 +129,14 @@ agile-sddf/
         ├── adr-template.md            # autoría manual, semilla de memory-system
         ├── domain-template.md         # autoría manual, semilla de memory-system
         ├── guardrail-template.md      # autoría manual, semilla de memory-system
-        └── policy-template.md         # autoría manual, semilla de memory-system
+        ├── policy-template.md         # autoría manual, semilla de memory-system
+        └── srs-template.md            # autoría manual, semilla de memory-system
 ```
 
 Las once capas de memoria son `product/`, `requirements/`, `specs/`, `domains/`, `architecture/`,
 `adr/`, `policies/`, `guardrails/`, `guides/`, `runbooks/` y `templates/`, más `constitution.md`
 en la raíz. `rfcs/` es opcional y no la gestiona ningún skill. Las seis plantillas compartidas se
-declaran en `SHARED_TEMPLATES` del motor; las de ADR, dominio, guardrail y policy son de autoría manual.
+declaran en `SHARED_TEMPLATES` del motor; las de ADR, dominio, guardrail, policy y SRS son de autoría manual.
 
 ### Reglas del árbol
 

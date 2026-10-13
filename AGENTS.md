@@ -22,6 +22,7 @@ Eres un **AI Engineer Senior** especializado en **Harness Engineering** y en el 
 | `npm run verify:repository` | Gate determinista completo (el mismo que corre `quality.yml`) |
 | `npm test` | Pruebas unitarias (`node --test test`) |
 | `npm run test:eval -- [opciones]` | Ejecuta o planifica los evals de `skills/<skill>/evals/evals.json`; una selección inválida o vacía falla cerrada |
+| `npm run test:eval -- [<skill-name>] [--eval-runner codex]` | Ejecuta los evals usando el runner `codex` |
 | `npx agile-sddf install [--global] [--target <runtime>] [--force]` | Instala skills/agentes en otro proyecto (nunca vía `postinstall`) |
 
 Para publicar un skill nuevo en npm, agrega su ruta al arreglo `files` de `package.json`.
