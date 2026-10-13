@@ -62,7 +62,11 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 ### Paso 1 — Preparar destino y decisión de sobrescritura
 
-Define `$STORY_MAP_PATH = $SPECS_BASE/product/story-map.md` y `$STAGING_PATH = .tmp/project-story-mapping/story-map.md`.
+Define `$STORY_MAP_PATH = $SPECS_BASE/product/story-map.md` y `$STAGING_PATH = .tmp/project-story-mapping/story-map.md`. Informa siempre el destino:
+
+```text
+🗺️ Destino: $SPECS_BASE/product/story-map.md
+```
 
 Si `$STORY_MAP_PATH` existe, pregunta: `Ya existe $SPECS_BASE/product/story-map.md. ¿Rehacer el story map?` con `Sobrescribir` o `Cancelar`. `Cancelar` es el valor por defecto, también sin respuesta: `Story mapping cancelado: no se modificó $SPECS_BASE/product/story-map.md.` y finaliza. Si se elige sobrescribir, conserva el campo `created` (o `date`) del archivo como `$CREATED_AT` e inclúyelo como insumo.
 
@@ -73,6 +77,15 @@ Si no existe, `$CREATED_AT` es la fecha actual. Vacía `.tmp/project-story-mappi
 Construye `$INPUT_PATHS` solo con documentos de `product/` que existan y tengan `substatus` distinto de `TODO`. Para cada documento ausente o semilla, emite `⚠️ <ruta> sin contenido (semilla o ausente); se omite como contexto.`
 
 Construye `$REQUIREMENTS_INVENTORY` con líneas `FR-NNN — título — ruta` desde `requirements/functional/FR-*.md` y encabezados `### FR-NNN` de `requirements/srs-*.md`. No incluyas requisitos no funcionales. Si se autorizó sobrescribir, añade el mapa existente a `$INPUT_PATHS`.
+
+Informa siempre el inventario, con una línea por requisito y la ruta relativa a `$SPECS_BASE` del archivo de origen:
+
+```text
+📋 Inventario de requisitos: <n> FR
+  - FR-NNN — <título> — <ruta>
+```
+
+Si el inventario está vacío, informa solo `📋 Inventario de requisitos: 0 FR`.
 
 Aunque ambos resultados estén vacíos, continúa con la delegación.
 

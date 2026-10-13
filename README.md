@@ -207,6 +207,8 @@ flowchart LR
 | Épica (L2) | Agrupar una parte entregable del plan (conjunto de historias). | `/epic-from-project-plan` | `epic.md`. |
 | Historia (L1) | Definir, planificar, construir y validar un cambio pequeño. | `/story-specify` | Historia, diseño, tareas, tests, reportes y aceptación. |
 
+Los únicos work items son Épica e Historia; la documentación de producto los orienta, pero no tiene ciclo de work item. El modelo está en la [jerarquía de work items](docs/domains/domain-work-item-hierarchy.md).
+
 El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`. `DELIVER` es una transición de entrega humana o de CI; no corresponde a un skill independiente. Los estados y subestados canónicos están documentados en el [ciclo de vida de historias](docs/domains/domain-story-lifecycle.md).
 
 ## Artefactos que deja el flujo (Memoria)
@@ -223,10 +225,23 @@ Sigue la [guía de migración](docs/guides/artifact-directory-migration.md), pri
 
 ```text
 <SPECS_BASE>/
+├── index.md                        # mapa de la memoria (/memory-system index)
 ├── constitution.md
-├── adr/
+├── product/                        # documentación estratégica, no work item
+│   ├── vision.md
+│   ├── stakeholders.md
+│   ├── objectives.md
+│   ├── roadmap.md
+│   └── story-map.md
+├── requirements/
+│   └── srs-<proyecto>.md           # SRS único; se fragmenta en functional/ y non-functional/
 ├── architecture/
-├── domain/
+│   └── c4/
+│       └── context-diagram.puml
+├── adr/
+├── domains/
+├── guides/
+├── runbooks/
 ├── templates/
 ├── guardrails/
 │   ├── gr-*-checklist.md
@@ -234,11 +249,6 @@ Sigue la [guía de migración](docs/guides/artifact-directory-migration.md), pri
 ├── policies/
 │   └── README.md
 └── specs/
-    ├── 01-projects/
-    │    └── PROJ-01-mi-proyecto/
-    │        ├── project-intent.md
-    │        ├── project.md
-    │        └── project-plan.md
     ├── epics/
     │   └── EPIC-01-mi-epica/
     │       └── epic.md

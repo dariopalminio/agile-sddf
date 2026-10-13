@@ -127,9 +127,18 @@ Para `product/` y `requirements/`, procesa los Markdown recursivamente. Para `ep
 ### 4.2 Clasificación y confirmación
 
 1. Clasifica los archivos en sin frontmatter y con frontmatter existente.
-2. Muestra el resumen anticipado.
+2. Muestra el resumen anticipado con la ruta de cada archivo:
+
+   ```text
+   Archivos a modificar (sin frontmatter): <n>
+     - <ruta>
+   Archivos con conflicto (frontmatter existente): <m>
+     - <ruta>
+   ```
+
+   Omite la lista de un grupo vacío y conserva su línea con el contador en `0`.
 3. Para conflictos, ofrece `Proponer merge en todos`, `Saltar todos los conflictos` o `Decidir uno por uno`.
-4. Pregunta `¿Confirmas el procesamiento de N archivos?`.
+4. Pregunta `¿Confirmas el procesamiento de N archivos?`, donde `N` cuenta solo los archivos que se procesarán con la estrategia elegida (los conflictos saltados no cuentan).
 5. Procesa en secuencia y muestra el resumen final.
 
 ## Paso 5 — Validar referencias cruzadas

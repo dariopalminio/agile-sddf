@@ -98,8 +98,15 @@ Etapas a ejecutar: <lista desde la etapa detectada>
 Mientras exista una etapa pendiente:
 
 1. Localiza `$CLI_ROOT/skills/<skill>/SKILL.md`. Si falta, aplica la degradación indicada en `## Precondiciones`.
-2. Lee ese archivo y compón el skill en esta sesión, sin argumentos. El skill propietario resuelve su raíz, realiza su entrevista y decide cuándo escribir su capa.
-3. Ejecuta de nuevo exactamente la detección del Paso 1, sin conservar estado de etapa en memoria.
+2. Antes de componer, informa siempre la etapa, el skill y su capa (columnas de la tabla de `## Objetivo`):
+
+   ```text
+   ▶ Etapa <Etapa>: componiendo /<skill> → <capa que escribe el skill compuesto>
+   ```
+
+   Ejemplo: `▶ Etapa Begin: componiendo /project-begin → docs/product/vision.md`.
+3. Lee ese archivo y compón el skill en esta sesión, sin argumentos. El skill propietario resuelve su raíz, realiza su entrevista y decide cuándo escribir su capa.
+4. Ejecuta de nuevo exactamente la detección del Paso 1, sin conservar estado de etapa en memoria.
 
 ### Etapa no cerrada
 
