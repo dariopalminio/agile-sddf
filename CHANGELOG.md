@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-### BREAKING — specs/ de dos niveles (requiere 4.0.0)
+###  [4.0.0] — 2026-10-13 - specs/ de dos niveles
 
 ADR-0013 y EPIC-21 eliminan `specs/01-projects/` y los prefijos numéricos de `specs/`. Este cambio requiere la versión major **4.0.0**.
 
@@ -34,6 +34,8 @@ ADR-0013 y EPIC-21 eliminan `specs/01-projects/` y los prefijos numéricos de `s
 
 ### Changed
 
+- **EPIC-21 (QUALITY):** los skills del pipeline de producto informan de forma fija lo que hacen. `/project-flow` emite `▶ Etapa <Etapa>: componiendo /<skill> → <capa>` antes de componer cada etapa. `/project-story-mapping` muestra `🗺️ Destino: …/product/story-map.md` y `📋 Inventario de requisitos: <n> FR`, con una línea por requisito y su archivo de origen (incluidos los `### FR-NNN` de `srs-*.md`). En modo batch, `/header-aggregation` lista la ruta de cada archivo a modificar y de cada archivo con conflicto en el resumen anticipado.
+
 - **STORY-118:** `memory-system scaffold` crea un SRS único cuando `requirements/` no tiene disposición e `index` regenera el catálogo en la disposición fragmentada.
 
 - **BREAKING — STORY-115:** `/memory-system scaffold` deja de crear `specs/01-projects/`, siembra `product/roadmap.md` y `requirements/{functional,non-functional}/`, y avisa con `[WARNING]` —sin cambiar su exit code— cuando detecta el layout de tres niveles, remitiendo a `migrate --from=specs-3-levels`. La capa de índice `specs-projects` se retira de `index` y `check`.
@@ -48,6 +50,12 @@ ADR-0013 y EPIC-21 eliminan `specs/01-projects/` y los prefijos numéricos de `s
 
 - **BREAKING — Template de épica v2, minimalista y output-oriented** (STORY-103, EPIC-21) — `epic-template.md` (central `docs/templates/` y seed `skills/epic-creation/assets/`, idénticos) pasa de nueve secciones a cinco obligatorias, en este orden: `Alcance` (qué se construye; el valor de negocio vive en `product/vision.md` o `requirements/`), `Historias`, `Criterios de salida` (criterios técnicos verificables), `Smoke tests` (`### SMOKE-N — nombre` + bloque `gherkin`; IDs estables, sin renumerar) y `Notas` (encabezado obligatorio, contenido opcional). Desaparecen `Descripción`, `Requerimiento`, `Impacto en Procesos Claves`, `Dependencias Críticas`, `Riesgos`, `**Criterios de éxito:**`, `Notas adicionales` y `Flujos Críticos / Smoke Tests`. El frontmatter queda mínimo (`status: DEFINE` inicial; sin `alwaysApply`, `deliveryModel` ni `children`). Las historias usan tres formatos de línea fijos: F1 planificada `- Nombre: desc`, F2 creada `- [ ] **STORY-NNN** — Nombre: desc` y F3 completada `- [x] **STORY-NNN** — Nombre: desc`, definidos en `domain-epic-lifecycle` §9 ("Estructura de `epic.md`").
 - **BREAKING — Skills de épica sobre el contrato v2** (STORY-103) — `epic-format-validation` verifica, además de frontmatter y secciones, los formatos F1/F2/F3 y el patrón `SMOKE-N` + `gherkin` (bloque `Formato inválido:` con línea, texto y forma esperada); `epic-creation` pregunta cada sección con su título y su guía del template, escribe F1 y `SMOKE-N` y declara `## DoD aplicable` (Gate de formato `DEFINE → PLAN`); `epic-from-project-plan` mapea el plan por clave y valida cada épica generada (Fase 3e); `epic-generate-stories` y `epic-generate-all-stories` reescriben solo F1 → F2 (contador de IDs global en el batch); `story-implement` (11d) y `story-implement-tasks` (4c) marcan F2 → F3 solo dentro de la sección de historias y con el token exacto `**STORY-NNN**`. **El formato v1 deja de aceptarse**: una épica sin migrar recibe `REFINAR` (o el aviso correspondiente) con el comando de migración.
+
+### Fixed
+
+- **EPIC-21 (QUALITY):** en modo batch, `/header-aggregation` pedía confirmar el procesamiento de N archivos contando también los conflictos que se iban a saltar; ahora `N` cuenta solo los archivos que se procesarán con la estrategia elegida.
+
+- **EPIC-21 (QUALITY):** el árbol de artefactos de `README.md` todavía mostraba `specs/01-projects/` (con `project-intent.md`, `project.md` y `project-plan.md`) y `domain/`. Ahora refleja las capas de 4.0.0 (`product/`, `requirements/`, `architecture/c4/`, `domains/`, `guides/`, `runbooks/` e `index.md`) y enlaza la [jerarquía de work items](docs/domains/domain-work-item-hierarchy.md).
 
 ### Added
 
