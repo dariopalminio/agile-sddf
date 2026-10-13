@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-###  [4.0.0] — 2026-10-13 - specs/ de dos niveles
+## [4.0.0] — 2026-10-13
+
+### BREAKING — specs/ de dos niveles (requiere 4.0.0)
 
 ADR-0013 y EPIC-21 eliminan `specs/01-projects/` y los prefijos numéricos de `specs/`. Este cambio requiere la versión major **4.0.0**.
 
