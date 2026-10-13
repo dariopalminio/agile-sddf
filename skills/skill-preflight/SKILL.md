@@ -90,7 +90,6 @@ diagnóstico puede seguir mostrando `REPO_ROOT`, pero no inventa una raíz alter
 
 Solo con `SPECS_BASE` válida, verificar:
 
-- `specs/01-projects/`
 - `specs/epics/`
 - `specs/stories/`
 

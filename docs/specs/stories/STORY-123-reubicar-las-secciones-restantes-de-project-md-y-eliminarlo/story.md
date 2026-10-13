@@ -5,7 +5,7 @@ id: STORY-123
 kind: chore
 slug: STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo
 title: "Reubicar las secciones restantes de project.md y eliminarlo"
-status: CANCELED
+status: COMPLETED
 substatus: DONE
 parent: EPIC-21-colapsar-specs-dos-niveles
 created: 2026-10-09

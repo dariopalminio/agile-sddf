@@ -9,7 +9,7 @@
       "type": "happy-path",
       "description": "Sin SDDF_ROOT y con sddf.config.yaml.root válido, el diagnóstico informa REPO_ROOT, SPECS_BASE y ROOT_SOURCE = sddf.config.yaml sin modificar archivos.",
       "input": {
-        "context": "SDDF_ROOT no está definida. sddf.config.yaml declara root: docs-personalizada y el directorio existe con specs/01-projects, specs/epics, specs/stories y los cinco templates centrales.",
+        "context": "SDDF_ROOT no está definida. sddf.config.yaml declara root: docs-personalizada y el directorio existe con specs/epics, specs/stories y los cinco templates centrales.",
         "flags": []
       },
       "expected": {

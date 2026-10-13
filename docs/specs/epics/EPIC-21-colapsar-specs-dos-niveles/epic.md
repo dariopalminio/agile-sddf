@@ -4,8 +4,8 @@ type: epic
 id: EPIC-21
 slug: EPIC-21-colapsar-specs-dos-niveles
 title: "Colapsar specs/ a dos niveles y eliminar 01-projects/"
-status: DEFINE
-substatus: IN-PROGRESS
+status: DEVELOP
+substatus: DONE
 parent: null
 created: 2026-10-05
 updated: 2026-10-13
@@ -77,7 +77,7 @@ Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirem
 Escenario: Scaffolding limpio crea solo dos niveles en `specs/`
   Dado un proyecto vacío sin `docs/`
   Cuando ejecuto `/memory-system scaffold`
-  Entonces se crean `docs/specs/epics/` y `docs/specs/stories/`, NO se crean `docs/specs/01-projects/`, `02-epics/` ni `03-stories/`, se crean `docs/product/{vision,stakeholders,roadmap}.md` y se crean `docs/requirements/{functional,non-functional}/`
+  Entonces se crean `docs/specs/epics/` y `docs/specs/stories/`, NO se crean `docs/specs/01-projects/`, `02-epics/` ni `03-stories/`, se crean `docs/product/{vision,stakeholders,roadmap}.md` y se crea `docs/requirements/srs-<project-slug>.md` (SRS único, sin carpetas `functional/` ni `non-functional/` vacías)
 ```
 
 ### SMOKE-2 — Migración de un repo de tres niveles

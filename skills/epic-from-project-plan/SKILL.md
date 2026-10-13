@@ -49,7 +49,7 @@ Si no hay bloques, mostrar `No se encontraron épicas planificadas en la propues
 
 ## Fase 2 — Preparar destino e IDs
 
-Usar `$EPICS_DIR = $SPECS_BASE/specs/epics/` si existe; en caso contrario usar la ruta vigente `$SPECS_BASE/specs/02-epics/`. Crearlo si no existe.
+Usar `$EPICS_DIR = $SPECS_BASE/specs/epics/`. Crearlo si no existe.
 
 Calcular `$MAX_EPIC` como el mayor `NN` de `$EPICS_DIR/EPIC-<NN>-*/`; si no existe ninguno, usar `-1`. Las épicas nuevas reciben `$MAX_EPIC + 1` en el orden de la propuesta, rellenado a dos dígitos hasta 99 y a tres desde 100. El número de su encabezado no determina su ID.
 

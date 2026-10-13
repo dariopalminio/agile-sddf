@@ -16,8 +16,8 @@ updated: 2026-10-13
 |---|---:|
 | Historia | STORY-118 |
 | Total de tareas | 45 |
-| Tareas completadas en esta ejecución | 4 (T040–T043) |
-| Tareas omitidas por estar ya completadas | 41 |
+| Tareas completadas en esta ejecución | 0 (rework: correcciones de fix-directives.md, ronda 1) |
+| Tareas omitidas por estar ya completadas | 45 |
 | Tareas bloqueadas | 0 |
 | Fecha | 2026-10-13 |
 
@@ -37,7 +37,7 @@ La historia deja disponibles las dos disposiciones de requisitos, el resolver co
 | T024–T030 | ✓ ejecución anterior | `test/requirements.test.js` y cobertura S118 de migración, scaffold, UTF-8 y validación. |
 | T031–T033 | ✓ ejecución anterior | Evals TC-024…TC-029, SKILL y reglas de `memory-system` actualizados. |
 | T034–T039 | ✓ ejecución anterior | Documentación canónica, semillas y `CHANGELOG.md`. |
-| T040 | ✓ completada | `npm test`: 244/244 pruebas aprobadas, incluidas S118 y S096/S114. |
+| T040 | ✓ completada | `npm test`: 249/249 pruebas aprobadas (tras la ronda 1 de correcciones), incluidas S118 y S096/S114. |
 | T041 | ✓ completada | JSON válido, inventario válido y TC-007/TC-024…TC-029 aprobados. TC-024 motivó una corrección del skill para mostrar `exit code: 1` al bloquear `specs-3-levels`; se reejecutó sin modificar su aserción. |
 | T042 | ✓ completada | `verify:repository`, enlaces, sintaxis y auditoría de raíces aprobados; 1.048 archivos analizados sin BOM ni mojibake; sin dependencias nuevas. |
 | T043 | ✓ completada | Contratos SRS, migraciones, dominio, arquitectura y changelog comprobados. |
@@ -50,11 +50,30 @@ La historia deja disponibles las dos disposiciones de requisitos, el resolver co
 - El skill de `memory-system` ahora deja explícito `exit code: 1` cuando `migrate --from=specs-3-levels` queda bloqueada por `[NO MIGRADO]`.
 - Se actualizan las plantillas, fixtures, pruebas, evals, documentación y changelog asociados.
 
+## Correcciones de fix-directives.md (ronda 1)
+
+| # | Archivo:Línea | Severidad | Resultado |
+|---:|---|---|---|
+| 1 | `skills/memory-system/scripts/requirements.js:273` | MEDIUM | 💻 corregido: `migrateSrsSingle` excluye `requirements/index.md` de la reescritura de enlaces; el catálogo generado ya no se sobrescribe (S118-IT-009). |
+| 2 | `test/requirements.test.js:38` | MEDIUM | 💻 corregido: S118-IT-006 ejecuta `check` sobre `srs-single` y `requirements-fragmented` (`implements` resuelve). |
+| 3 | `test/requirements.test.js:64` | MEDIUM | 💻 corregido: S118-IT-007 repite `migrateFragmented` (`[SIN CAMBIOS]`, SRS intacto) y ejecuta `check` sobre los IDs migrados. |
+| 4 | `test/requirements.test.js:110` | MEDIUM | 💻 corregido: S118-IT-008 cubre ID duplicado, frontmatter inválido, `implements` (no resuelve/mal formado), catálogo desfasado y `mixed`. |
+| 5 | `skills/memory-system/scripts/memory-system.js:550,943` | MEDIUM | 💻 corregido: `runIndex` propaga los aliases de requisitos a `renderIndex`/`collectPending` (S118-IT-010). |
+| 6 | `skills/memory-system/scripts/requirements.js:172` | MEDIUM | 💻 corregido: `requirementProblems` valida `kind` contra la carpeta y el prefijo del ID con un detalle accionable. |
+| 7–10 | `docs/guardrails/dod-story-code-review.md` | HIGH/MEDIUM | Sin edición del guardrail (evidencia de gate): se resuelven con los hallazgos 1–6; pendiente reejecutar `/story-code-review STORY-118`. |
+
+**Archivos corregidos:** `skills/memory-system/scripts/requirements.js`, `skills/memory-system/scripts/memory-system.js`, `test/requirements.test.js`
+**Hallazgos omitidos por archivo inexistente:** ninguno
+
+Las pruebas S118-IT-008, IT-009 e IT-010 fallan sin las correcciones y pasan con ellas. `npm test` (249/249) y `npm run verify:repository` aprobados.
+
+---
+
 ## Cumplimiento DoD — Fase IMPLEMENT
 
 | # | Criterio | Estado | Evidencia / justificación |
 |---:|---|:---:|---|
-| 1 | Escenarios Gherkin pasan | ✓ | `npm test` aprobó 244 pruebas; los casos S118 cubren los escenarios de SRS, migración, scaffold y check. |
+| 1 | Escenarios Gherkin pasan | ✓ | `npm test` aprobó 249 pruebas; los casos S118 cubren los escenarios de SRS, migración, scaffold y check. |
 | 2 | Criterios no funcionales verificados | ✓ | Pruebas de idempotencia, dry-run, compatibilidad, UTF-8 y ausencia de dependencias. |
 | 3 | Coincide con `design.md` | ✓ | Las tareas T009–T023 implementan los contratos D-1…D-9; pruebas y evals los ejercitan. |
 | 4 | Sin regresiones | ✓ | Suite completa y `verify:repository` aprobados. |
@@ -77,7 +96,7 @@ La historia deja disponibles las dos disposiciones de requisitos, el resolver co
 ## Verificaciones ejecutadas
 
 ```text
-npm test                                      # 244 pass, 0 fail
+npm test                                      # 249 pass, 0 fail
 npm run verify:eval-inventory                 # válido
 npm run test:eval -- memory-system --only TC-007,TC-024,TC-025,TC-026,TC-027,TC-028,TC-029 --eval-runner codex
 npm run verify:repository                     # aprobado

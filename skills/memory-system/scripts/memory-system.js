@@ -547,8 +547,8 @@ function slugSetOf(nodes, aliases = []) {
 }
 
 // Slugs referenciados por wikilink que no resuelven a ningún nodo (ni al propio índice).
-function collectPending(nodes) {
-  const known = slugSetOf(nodes);
+function collectPending(nodes, aliases = []) {
+  const known = slugSetOf(nodes, aliases);
   const pending = new Set(nodes.flatMap((n) => n.wikilinks).filter((slug) => !known.has(slug)));
   return [...pending].sort(ordinalCompare);
 }
@@ -576,7 +576,7 @@ function renderPendingSection(pending) {
 function renderIndex(template, nodes, options = {}) {
   const byLayer = groupByLayer(nodes);
   validateLayers(template, byLayer);
-  const pending = collectPending(nodes);
+  const pending = collectPending(nodes, options.aliases || []);
   const summary = {
     indexed: nodes.length,
     withoutFrontmatter: nodes.filter((n) => !n.hasFrontmatter).length,
@@ -940,7 +940,9 @@ function runIndex(args) {
   if (!fs.existsSync(templatePath)) throw new UsageError(`no se encuentra el template del índice: ${displayPath(templatePath)}`);
 
   const nodes = scanNodes(specsBase, harness);
-  const { content, summary } = renderIndex(readText(templatePath), nodes, { date: args.date, skipLayers: profileOf(harness).skipLayers });
+  const requirementsModule = require('./requirements.js');
+  const aliases = requirementsModule.requirementAliases(requirementsModule.inventoryRequirements(specsBase));
+  const { content, summary } = renderIndex(readText(templatePath), nodes, { date: args.date, skipLayers: profileOf(harness).skipLayers, aliases });
   const target = assertInsideRoot(specsBase, path.join(specsBase, INDEX_FILE));
 
   // Colisiones de slug (CR-002): gana el nodo de SPECS_BASE; el externo se indexa con sufijo.

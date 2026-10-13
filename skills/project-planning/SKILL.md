@@ -75,7 +75,7 @@ Guardar la ruta como `$TEMPLATE_PATH`.
 
 ### Paso 3 — Contexto para la propuesta
 
-Usar `$EPICS_DIR = $SPECS_BASE/specs/epics/` si existe; de lo contrario, usar la ruta vigente `$SPECS_BASE/specs/02-epics/`. Construir `$EPICS_INVENTORY` como `EPIC-NN — <title> — <slug>` desde cada `EPIC-*/epic.md`; si falta frontmatter, usar el nombre del directorio e informar `⚠️ <ruta>: frontmatter incompleto`.
+Usar `$EPICS_DIR = $SPECS_BASE/specs/epics/`. Construir `$EPICS_INVENTORY` como `EPIC-NN — <title> — <slug>` desde cada `EPIC-*/epic.md`; si falta frontmatter, usar el nombre del directorio e informar `⚠️ <ruta>: frontmatter incompleto`.
 
 Calcular `$PROPOSAL_HEADING` como `Propuesta (<hoy>)`; si ya existe, usar consecutivamente `Propuesta (<hoy> #2)`, `#3`, etc. Vaciar `.tmp/project-planning/` y fijar `$STAGING_PATH = .tmp/project-planning/proposal.md`.
 

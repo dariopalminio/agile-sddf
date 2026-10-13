@@ -7,17 +7,13 @@ slug: STORY-119-story-plan-un-subagente-por-paso
 title: "Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens"
 status: CANCELED
 substatus: DONE
-parent: EPIC-21-colapsar-specs-dos-niveles
+parent: null
 created: 2026-10-07
 updated: 2026-10-10
-related:
-  - EPIC-21-colapsar-specs-dos-niveles
-  - EPIC-12-story-sdd-workflow
+related: null
 ---
 > **Cancelada el 2026-10-10 por decisión del usuario.** Se revirtieron los cambios de implementación de STORY-119: `/story-plan` vuelve a la composición inline anterior y se retiran los flags y evals agregados por esta historia. Los documentos de planificación y los reportes se conservan como historial; sus resultados describen la implementación anterior a esta reversión.
 
-<!-- Referencias: colocar referencias solo si existe épica relacionada -->
-[[EPIC-21-colapsar-specs-dos-niveles]]
 
 # 📖 Historia: Un subagente aislado por paso en `/story-plan`
 

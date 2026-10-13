@@ -146,6 +146,102 @@ test('S118-IT-005 la migración inversa bloquea fragmentos inválidos y los arch
   }
 });
 
+test('S118-IT-006 check resuelve implements en SRS único y fragmentado', () => {
+  for (const name of ['srs-single', 'requirements-fragmented']) {
+    const dir = fixture(name);
+    const result = runCli(dir, ['check', '--json']);
+    assert.equal(result.status, 0, `${name}: ${result.stdout}`);
+    const report = JSON.parse(result.stdout);
+    assert.equal(report.summary.requirement, 0, name);
+    assert.equal(report.summary['broken-wikilink'], 0, name);
+    assert.deepEqual(report.problems, [], name);
+  }
+});
+
+test('S118-IT-007 la migración fragmentado → SRS es idempotente y los IDs siguen resolviendo', () => {
+  const dir = fixture('requirements-fragmented');
+  const first = requirements.migrateFragmented(dir, { date: '2026-10-13', displayRoot: 'docs' });
+  assert.equal(first.exitCode, 0);
+  const srsFile = requirements.inventoryRequirements(dir).srsFiles[0];
+  const document = fs.readFileSync(srsFile, 'utf8');
+  const repeat = requirements.migrateFragmented(dir, { date: '2026-10-13', displayRoot: 'docs' });
+  assert.equal(repeat.exitCode, 0);
+  assert.match(repeat.lines.join('\n'), /\[SIN CAMBIOS\]/);
+  assert.equal(fs.readFileSync(srsFile, 'utf8'), document);
+  const inventory = requirements.inventoryRequirements(dir);
+  assert.equal(inventory.layout, 'srs');
+  assert.deepEqual(requirements.requirementAliases(inventory), ['FR-001', 'FR-002', 'FR-003', 'NFR-001', 'NFR-002']);
+  const check = JSON.parse(runCli(dir, ['check', '--json']).stdout);
+  assert.equal(check.ok, true);
+  assert.equal(check.summary.requirement, 0);
+});
+
+test('S118-IT-008 check informa cada regla de requisitos en ambas disposiciones', () => {
+  const details = (dir) => JSON.parse(runCli(dir, ['check', '--json']).stdout).problems.filter((item) => item.kind === 'requirement').map((item) => item.detail);
+
+  // implements que no resuelve o mal formado (SRS único y fragmentado)
+  for (const name of ['srs-single', 'requirements-fragmented']) {
+    const dir = fixture(name);
+    const story = path.join(dir, 'specs', 'stories', 'STORY-001-prueba', 'story.md');
+    fs.writeFileSync(story, fs.readFileSync(story, 'utf8').replace('implements: [FR-001, NFR-002]', 'implements: [FR-099, mal]'), 'utf8');
+    const found = details(dir);
+    assert.ok(found.some((detail) => /implements: FR-099 no resuelve/.test(detail)), `${name}: ${found}`);
+    assert.ok(found.some((detail) => /implements: mal no es un ID FR-NNN\/NFR-NNN/.test(detail)), `${name}: ${found}`);
+  }
+
+  // ID duplicado en un SRS
+  const duplicated = fixture('srs-single');
+  const srsFile = requirements.inventoryRequirements(duplicated).srsFiles[0];
+  fs.appendFileSync(srsFile, '\n### FR-001 — Repetido\n\nOtra vez.\n', 'utf8');
+  assert.ok(details(duplicated).some((detail) => /ID duplicado FR-001/.test(detail)));
+
+  // frontmatter de fragmento inválido y kind incompatible con la carpeta
+  const fragmented = fixture('requirements-fragmented');
+  const fragment = path.join(fragmented, 'requirements', 'functional', 'FR-001-crear-cuenta.md');
+  fs.writeFileSync(fragment, fs.readFileSync(fragment, 'utf8').replace('type: requirement', 'type: wiki').replace('kind: functional', 'kind: non-functional').replace('title: "Crear cuenta"', 'title: ""'), 'utf8');
+  const invalid = details(fragmented);
+  assert.ok(invalid.some((detail) => /frontmatter de requisito: type debe ser requirement/.test(detail)), invalid.join('\n'));
+  assert.ok(invalid.some((detail) => /frontmatter de requisito: kind debe ser functional y coincidir con la carpeta functional\//.test(detail)), invalid.join('\n'));
+  assert.ok(invalid.some((detail) => /frontmatter de requisito: title vacío/.test(detail)), invalid.join('\n'));
+
+  // catálogo que no lista un ID o lista uno inexistente
+  const stale = fixture('requirements-fragmented');
+  const catalog = path.join(stale, 'requirements', 'index.md');
+  fs.writeFileSync(catalog, fs.readFileSync(catalog, 'utf8').replace('- [[FR-003-eliminar-cuenta]] — FR-003 — Eliminar cuenta', '- [[FR-009-fantasma]] — FR-009 — Fantasma'), 'utf8');
+  const drift = details(stale);
+  assert.ok(drift.some((detail) => /no lista FR-003/.test(detail)), drift.join('\n'));
+  assert.ok(drift.some((detail) => /lista FR-009, que no existe/.test(detail)), drift.join('\n'));
+
+  // disposición mixta
+  assert.ok(details(fixture('requirements-mixed')).some((detail) => /dos disposiciones/.test(detail)));
+});
+
+test('S118-IT-009 la migración a fragmentos conserva el catálogo aunque un index.md previo enlace al SRS', () => {
+  const dir = fixture('srs-single');
+  const slug = path.basename(requirements.inventoryRequirements(dir).srsFiles[0], '.md');
+  fs.writeFileSync(path.join(dir, 'requirements', 'index.md'), `---\ntype: wiki\nslug: indice-previo\ntitle: Índice previo\nstatus: IN-PROGRESS\nsubstatus: DONE\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\n---\n\n# Índice previo\n\n- [[${slug}#FR-001]]\n- [[${slug}]]\n`, 'utf8');
+  const result = requirements.migrateSrsSingle(dir, { date: '2026-10-13', displayRoot: 'docs' });
+  assert.equal(result.exitCode, 0, result.lines.join('\n'));
+  const catalog = fs.readFileSync(path.join(dir, 'requirements', 'index.md'), 'utf8');
+  assert.match(catalog, /slug: requirements-catalog/);
+  for (const id of ['FR-001', 'FR-002', 'FR-003', 'NFR-001', 'NFR-002']) assert.match(catalog, new RegExp(id));
+  assert.equal(catalog.includes(`[[${slug}`), false);
+  assert.equal(JSON.parse(runCli(dir, ['check', '--json']).stdout).summary.requirement, 0);
+});
+
+test('S118-IT-010 index reconoce los IDs de requisitos como wikilinks resolubles', () => {
+  for (const name of ['srs-single', 'requirements-fragmented']) {
+    const dir = fixture(name);
+    const guide = path.join(dir, 'guides', 'enlaces.md');
+    assert.ok(fs.existsSync(guide), name);
+    const indexed = runCli(dir, ['index', '--date', '2026-10-13']);
+    assert.equal(indexed.status, 0, indexed.stderr);
+    const index = fs.readFileSync(path.join(dir, 'index.md'), 'utf8');
+    assert.equal(/nodo pendiente/.test(index), false, `${name}: ${index}`);
+    assert.match(indexed.stdout, /Wikilinks pendientes: 0|pendientes: 0/);
+  }
+});
+
 function walk(dir, found = {}) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
