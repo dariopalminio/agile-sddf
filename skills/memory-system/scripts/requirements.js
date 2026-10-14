@@ -119,7 +119,7 @@ function resolveRequirement(inventory, id) {
 function requirementAliases(inventory) { return [...new Set([...inventory.fragments, ...inventory.sections].map((item) => item.id).filter((id) => REQUIREMENT_ID.test(id)))].sort(compare); }
 
 function renderSrs(templateText, { slug, name, date }) {
-  return String(templateText).replace(/^\s*# escritor:.*\n/gmi, '').replace(/<!--\s*escritor:[\s\S]*?-->/gi, '')
+  return String(templateText).replace(/^﻿/, '').replace(/\r\n?/g, '\n').replace(/^\s*# escritor:.*\n/gmi, '').replace(/<!--\s*escritor:[\s\S]*?-->/gi, '')
     .replace(/<project-slug>/g, slug).replace(/<Nombre del proyecto>/g, name).replace(/<YYYY-MM-DD>/g, date);
 }
 function srsTemplate(specsBase, seedTemplate) {

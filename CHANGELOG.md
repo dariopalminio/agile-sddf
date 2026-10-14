@@ -55,6 +55,8 @@ ADR-0013 y EPIC-21 eliminan `specs/01-projects/` y los prefijos numéricos de `s
 
 ### Fixed
 
+- **Finales de línea en Windows:** `npm run verify:repository` fallaba en checkouts de Windows, incluido el job `windows-latest` de `quality.yml`, porque el repositorio no fijaba LF y con `core.autocrlf=true` los archivos llegaban en CRLF. Se añade `.gitattributes` (`* text=auto eol=lf`, imágenes y PDF como `binary`), y `renderSrs` de `memory-system` normaliza CRLF y BOM en su entrada, de modo que un `srs-template.md` editado en Windows ya no deja pasar los comentarios `escritor:`.
+
 - **EPIC-21 (QUALITY):** en modo batch, `/header-aggregation` pedía confirmar el procesamiento de N archivos contando también los conflictos que se iban a saltar; ahora `N` cuenta solo los archivos que se procesarán con la estrategia elegida.
 
 - **EPIC-21 (QUALITY):** el árbol de artefactos de `README.md` todavía mostraba `specs/01-projects/` (con `project-intent.md`, `project.md` y `project-plan.md`) y `domain/`. Ahora refleja las capas de 4.0.0 (`product/`, `requirements/`, `architecture/c4/`, `domains/`, `guides/`, `runbooks/` e `index.md`) y enlaza la [jerarquía de work items](docs/domains/domain-work-item-hierarchy.md).

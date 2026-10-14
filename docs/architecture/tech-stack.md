@@ -102,6 +102,8 @@ No hay build ni lint genéricos: la validación es determinista y vive en `scrip
 | `skill-security-audit.yml` | Skill Shielder y verificación determinista de documentos de seguridad. |
 | `docker-security.yml` | Escaneo de la imagen Docker con Trivy. |
 
+`.gitattributes` fija LF (`* text=auto eol=lf`) para todos los archivos de texto, de modo que el checkout es idéntico en los tres sistemas operativos de la matriz de `quality.yml`, con independencia de `core.autocrlf`.
+
 ### 4.4 Dependencias de CI
 
 | Herramienta | Fuente | Revisión | Propósito |

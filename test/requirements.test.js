@@ -107,6 +107,17 @@ test('S118-UT-002 utilidades, layouts y el template conservan los contratos SRS'
   assert.equal(requirements.resolveRequirement(inventory, 'FR-999'), null);
 });
 
+test('S118-UT-003 renderSrs normaliza CRLF y BOM de un template editado en Windows', () => {
+  const lf = fs.readFileSync(path.join(__dirname, '..', 'skills', 'memory-system', 'assets', 'scaffold', 'templates', 'srs-template.md'), 'utf8').replace(/\r\n/g, '\n');
+  const values = { slug: 'demo', name: 'Demo', date: '2026-10-13' };
+  const expected = requirements.renderSrs(lf, values);
+  const rendered = requirements.renderSrs(`﻿${lf.replace(/\n/g, '\r\n')}`, values);
+  assert.ok(!rendered.includes('escritor:'));
+  assert.ok(!rendered.includes('\r'));
+  assert.ok(!rendered.startsWith('﻿'));
+  assert.equal(rendered, expected);
+});
+
 test('S118-IT-004 scaffold crea solo el SRS y el legacy se repara con index', () => {
   const empty = fs.mkdtempSync(path.join(os.tmpdir(), 's118-scaffold-'));
   const scaffold = runCli(empty, ['scaffold']);
