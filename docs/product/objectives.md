@@ -133,32 +133,44 @@ sesión sin reiniciar el modelo.
 ## Métricas de éxito (Medidas de Éxito)
 
 ### 1. Interoperabilidad
-- Objetivos relacionados: OBJ-3
-- Indicador: Runtimes soportados
-- Meta: ≥ 4 (Claude Code, Codex, Copilot, llama.cpp)
-- Cómo se mide: Documentación + tests manuales
+- **Objetivos relacionados:** OBJ-3
+- **Pregunta:** ¿En cuántos runtimes distintos puede ejecutarse el harness agile‑sddf sin reescribir sus skills, agentes y gates?
+- **Indicador:** Runtimes soportados
+- **Meta:** ≥ 4 (Claude Code, Codex, Copilot, llama.cpp)
+- **Cómo se mide:** Documentación + tests manuales
 
 ### 2. Eficiencia Claude (Desarrollador Cloud) 
-- Objetivos relacionados: OBJ-11
-- Indicador: Porcentaje de cuota mensual consumida por historia
-- Meta: ≤ 15%
-- Cómo se mide: tokens/story ÷ tokens/mes
+- **Objetivos relacionados:** OBJ-11
+- **Pregunta:** De todo el presupuesto mensual de la suscripción (Claude) que tengo contratado, ¿qué fracción se va en cerrar una historia de usuario?
+- **Indicador:** Porcentaje de cuota mensual consumida por historia
+- **Meta:** ≤ 15%
+- **Cómo se mide:** tokens/story ÷ tokens/mes
 
 ### 3. Eficiencia Local-first (Local Builder)
-- Objetivos relacionados: OBJ-12
-- Indicador: Ventana de contexto de la IA local
-- Meta: <= 131k tokens
-- Cómo se mide: `/usage` + `token-cost` en sesiones de referencia
+- **Objetivos relacionados:** OBJ-12
+- **Pregunta:** ¿Cuánto contexto máximo necesita un skill o tarea del harness para ejecutarse de principio a fin en una sesión de usuario, expresado en tokens?
+- **Indicador:** Ventana de contexto de la IA local
+- **Meta:** <= 131k tokens
+- **Cómo se mide:** `/usage` + `token-cost` en sesiones de referencia
 
-### 4. Tokens por historia completadas
-- Objetivos relacionados: OBJ-11 y OBJ-12
-- Indicador: Tokens por historia completada
-- Meta: <= 200k
-- Cómo se mide: `/usage` + `token-cost` en sesiones de referencia
+### 4. Tokens Máximos por historia completadas
+- **Objetivos relacionados:** OBJ-11 y OBJ-12
+- **Pregunta:** ¿cuánto cuesta en total completar una historia medido en tokens?
+- **Indicador:** Tokens Máximos por historia completada
+- **Meta:** <= 200k
+- **Cómo se mide:** `/usage` + `token-cost` en sesiones de referencia
 
-### 5. Adopción 
-- Objetivos relacionados: OBJ-1 y OBJ-3
-- Indicador: Descargas mensuales en npm
-- Meta:  ≥ 500 en los primeros 6 meses
-- Cómo se mide: `npm view agile-sddf` + analytics de npm
+### 5. Tokens Promedio por historia completadas
+- **Objetivos relacionados:** OBJ-11 y OBJ-12
+- **Pregunta:** ¿cuánto cuesta en promedio completar una historia medido en tokens?
+- **Indicador:** Tokens Promedio por historia completada
+- **Meta:** <= 150k
+- **Cómo se mide:** `/usage` + `token-cost` en sesiones de referencia
+
+### 6. Adopción (Downloads)
+- **Objetivos relacionados:** OBJ-1 y OBJ-3
+- **Pregunta:** ¿Cuántas descargas tiene desde npm cada mes?
+- **Indicador:** Descargas mensuales en npm (promedio de la ventana estabilizada)
+- **Meta:**  ≥ 500 en los primeros 6 meses
+- **Cómo se mide:** analytics de npm + https://api.npmjs.org/downloads/range/<inicio>:<fin>/agile-sddf, agregado por mes
 
