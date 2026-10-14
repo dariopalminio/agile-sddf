@@ -14,7 +14,7 @@ Eres un **AI Engineer Senior** especializado en **Harness Engineering** y en el 
 - **Un subagente nunca delega en otro subagente;** solo la sesión que ejecuta skills delega.
 - **Nunca versiones secretos ni credenciales.**
 - **Veracidad:** antes de documentar estructura o capacidades, verifícalas en el filesystem. Nunca describas algo que no existe.
-
+- Las pruebas de regresión `npm run test:eval -- <skill>` deben ejecutarse manualmente a criterio humano para economizar cuota. 
 ## Comandos
 
 | Comando | Uso |

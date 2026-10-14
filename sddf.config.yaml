@@ -15,7 +15,7 @@ verify:
     required: true
   component:
     command: "npm run test:eval:runner"
-    required: true
+    required: false
   integration:
     command: "node scripts/audit-root-resolution.js"
     required: true
