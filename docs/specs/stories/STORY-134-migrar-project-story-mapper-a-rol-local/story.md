@@ -6,10 +6,10 @@ kind: feat
 slug: STORY-134-migrar-project-story-mapper-a-rol-local
 title: "Migrar project-story-mapper a rol local"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-24-agentes-locales-por-skill
 created: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-15
 related:
   - EPIC-24-agentes-locales-por-skill
 ---
@@ -17,7 +17,7 @@ related:
 
 # 📖 Historia: Migrar project-story-mapper a rol local
 
-**Como** practitioner que construye el story map con `/project-story-mapping`  
+**Como** Solo Builder y Product Owner que construye el story map con `/project-story-mapping`  
 **Quiero** que `project-story-mapper` sea un archivo de rol de `project-story-mapping` leído por la sesión del skill  
 **Para** conducir la sesión de User Story Mapping con preguntas al usuario en cualquier runtime, sin la carpeta global `agents/`
 
@@ -50,3 +50,10 @@ Generado automáticamente desde la épica: EPIC-24-agentes-locales-por-skill/epi
 Historia origen: STORY-134 — Migrar project-story-mapper a rol local
 
 - Hoy `skills/project-story-mapping/SKILL.md` declara `project-story-mapper` en Dependencias y lo ejecuta con `$INPUT_PATHS`, `$REQUIREMENTS_INVENTORY` y `$STAGING_PATH`; el rol local debe recibir las mismas entradas.
+- Cubre, para `project-story-mapping`, el criterio de salida de la épica «Cada skill que invocaba un agente global tiene sus roles o subagentes locales en `skills/<skill>/assets/agents/`».
+- Cubre, para el entrevistador `story-mapper`, el criterio de salida de la épica «Los agentes entrevistadores (`pm`, `architect`, `ux`, `story-mapper`, `product-owner`) son archivos de rol que lee la sesión del skill, no subagentes invocados».
+- Cubre, para `project-story-mapping`, los criterios de salida transversales de la épica:
+  - «Ningún `SKILL.md` de `skills/` referencia `agents/` ni a un agente global fuera de su sección "Dependencias"».
+  - «Los `evals/evals.json` de los skills afectados están actualizados y pasan con `npm run test:eval`».
+  - «`npm run verify:repository` pasa».
+  - «Los skills migrados funcionan en el runtime `codex` (`agentsDirectory: null` en `config/runtimes.json`)».

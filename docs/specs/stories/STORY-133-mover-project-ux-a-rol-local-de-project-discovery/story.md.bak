@@ -1,0 +1,54 @@
+---
+alwaysApply: false
+type: story
+id: STORY-133
+kind: feat
+slug: STORY-133-mover-project-ux-a-rol-local-de-project-discovery
+title: "Mover project-ux a rol local de project-discovery"
+status: SPECIFY
+substatus: IN-PROGRESS
+parent: EPIC-24-agentes-locales-por-skill
+created: 2026-10-14
+updated: 2026-10-14
+related:
+  - EPIC-24-agentes-locales-por-skill
+---
+[[EPIC-24-agentes-locales-por-skill]]
+
+# 📖 Historia: Mover project-ux a rol local de project-discovery
+
+**Como** Solo Builder y Product Owner que ejecuta `/project-discovery` desde Codex
+**Quiero** que la sesión del skill asuma el rol UX leyendo un rol local en lugar de delegar en el agente global `project-ux`
+**Para** obtener los hallazgos UX del discovery aunque mi runtime no soporte subagentes
+
+## ✅ Criterios de aceptación
+
+### AC-1 — Escenario principal – La sesión del skill asume el rol UX
+```gherkin
+Dado que existe skills/project-discovery/assets/agents/discovery-ux.md
+  Y agents/project-ux.agent.md ya no existe
+Cuando ejecuto /project-discovery y el flujo llega al refinamiento UX
+Entonces la sesión del skill lee discovery-ux.md y refina perfiles, journeys y navegación con el usuario
+  Y los hallazgos se escriben en la ruta inyectada que usaba project-ux
+```
+
+### AC-2 — Escenario alternativo / error – Sin delegación anidada
+```gherkin
+Dado el flujo de /project-discovery migrado
+Cuando reviso las instrucciones del skill y de sus roles locales
+Entonces ninguna instrucción pide a un subagente que invoque a otro subagente
+  Pero el refinamiento UX sigue ocurriendo dentro de la misma sesión
+```
+
+## ⚙️ Criterios no funcionales específicos
+
+- **CNF-1 — Un solo nivel de delegación:** se cumple ADR-0002 en todo el flujo de `project-discovery`.
+
+## 📎 Notas / contexto adicional
+
+Generado automáticamente desde la épica: EPIC-24-agentes-locales-por-skill/epic.md
+Historia origen: STORY-133 — Mover project-ux a rol local de project-discovery
+
+- **Nombre del rol:** `skills/project-discovery/assets/agents/` recibe tres roles. Para evitar colisiones, los archivos se nombran por origen (convención acordada el 2026-10-14 y registrada en ADR-0014): `discovery-pm.md` (STORY-131), `discovery-architect.md` (STORY-132) y `discovery-ux.md` (esta historia).
+- Cubre el criterio de salida "Ningún subagente delega en otro subagente" de la épica.
+- Al especificar, ubicar con precisión dónde ocurre hoy la delegación anidada: `agents/project-ux.agent.md` declara "no delegas trabajo", así que el anidamiento está en quien lo invoca.

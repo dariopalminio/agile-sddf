@@ -60,3 +60,4 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0011](ADR-0011-archivos-canonicos-por-tipo.md) | Los archivos canónicos de work items se nombran por tipo (story.md, epic.md, project.md) | PROPOSED | 2026-09-22 |
 | [ADR-0012](ADR-0012-escritor-en-templates-de-autoria-manual.md) | Los templates de autoría manual anotan `escritor: autoría manual` en línea completa | PROPOSED | 2026-09-22 |
 | [ADR-0013](ADR-0013-eliminar-specs-01-projects.md) | Eliminar `specs/01-projects/` y migrar su contenido a `product/` y `requirements/` | ACCEPTED | 2026-10-05 |
+| [ADR-0014](ADR-0014-skills-independientes.md) | Independencia de skills y agentes: sin dependencia de skills hacia `agents/` | ACCEPTED | 2026-10-14 |

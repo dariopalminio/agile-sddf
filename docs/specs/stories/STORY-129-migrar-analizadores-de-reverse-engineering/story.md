@@ -6,10 +6,10 @@ kind: feat
 slug: STORY-129-migrar-analizadores-de-reverse-engineering
 title: "Migrar analizadores de reverse-engineering"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-24-agentes-locales-por-skill
 created: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-15
 related:
   - EPIC-24-agentes-locales-por-skill
 ---
@@ -17,7 +17,7 @@ related:
 
 # 📖 Historia: Migrar analizadores de reverse-engineering
 
-**Como** mantenedor de Agile-SDDF que distribuye el skill `reverse-engineering`  
+**Como** Solo Builder que distribuye el skill `reverse-engineering`  
 **Quiero** que los cinco analizadores `reverse-engineer-*` vivan como subagentes locales en `skills/reverse-engineering/assets/agents/`  
 **Para** que el skill funcione de forma autocontenida, sin depender de la carpeta global `agents/`
 
@@ -52,3 +52,8 @@ Historia origen: STORY-129 — Migrar analizadores de reverse-engineering
 
 - Primera historia del orden sugerido por la épica (menor riesgo).
 - Actualizar `skills/reverse-engineering/evals/evals.json` si referencia rutas de `agents/`.
+- Cubre, para `reverse-engineering`, el criterio de salida de la épica «Cada skill que invocaba un agente global tiene sus roles o subagentes locales en `skills/<skill>/assets/agents/`».
+- Cubre, para `reverse-engineering`, los criterios de salida transversales de la épica:
+  - «Ningún `SKILL.md` de `skills/` referencia `agents/` ni a un agente global fuera de su sección "Dependencias"».
+  - «Los `evals/evals.json` de los skills afectados están actualizados y pasan con `npm run test:eval`».
+  - «`npm run verify:repository` pasa».
