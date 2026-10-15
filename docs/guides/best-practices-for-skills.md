@@ -194,14 +194,14 @@ Cuando un skill orquesta múltiples subagentes en paralelo, cada subagente debe 
 ### Ejemplo: skill `reverse-engineering`
 
 ```
-.tmp/
-└── rfc-architecture.md       # escrito por reverse-engineer-architect
-└── rfc-features.md           # escrito por reverse-engineer-product-discovery
-└── rfc-business-rules.md     # escrito por reverse-engineer-business-analyst
-└── rfc-navigation.md         # escrito por reverse-engineer-ux-flow-mapper
+.tmp/reverse-engineering/
+├── rfc-architecture.md       # escrito por el subagente local architect
+├── rfc-features.md           # escrito por el subagente local product-discovery
+├── rfc-business-rules.md     # escrito por el subagente local business-analyst
+└── rfc-navigation.md         # escrito por el subagente local ux-flow-mapper
 ```
 
-El agente `reverse-engineer-synthesizer` lee solo esos cuatro archivos para generar el artefacto final, sin acceder al contexto de la sesión principal.
+El subagente local `synthesizer` (`skills/reverse-engineering/assets/agents/synthesizer.md`) lee solo esos cuatro archivos para generar la propuesta, sin acceder al contexto de la sesión principal.
 
 ## Patrón de invocación de agentes locales (`<skill>/agents/`)
 
@@ -223,7 +223,7 @@ Para lanzar `agents/<nombre>.agent.md`, el skill orquestador (sesión principal)
 3. El subagente **escribe su resultado** en la ruta declarada en el frontmatter `output:` del agente (bajo `.tmp/<skill-name>/`) y devuelve el control.
 4. El orquestador **lee solo los outputs** de `.tmp/<skill-name>/` para consolidar.
 
-Este patrón de invocación y el patrón de comunicación `.tmp/<skill>/` (sección anterior) son las dos mitades del mismo contrato.
+Este patrón de invocación y el patrón de comunicación `.tmp/<skill-name>/` (sección anterior) son las dos mitades del mismo contrato.
 
 ### Formato del archivo agente local
 

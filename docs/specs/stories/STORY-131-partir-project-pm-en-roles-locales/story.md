@@ -5,7 +5,7 @@ id: STORY-131
 kind: feat
 slug: STORY-131-partir-project-pm-en-roles-locales
 title: "Partir project-pm en roles locales"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-24-agentes-locales-por-skill
 created: 2026-10-14
@@ -66,7 +66,7 @@ Historia origen: STORY-131 — Partir project-pm en roles locales
 - La sección "Begin Intention" de la épica corresponde a "Estado Visión — Capturar y refinar la visión del producto" de `agents/project-pm.agent.md`; es el contenido que pasa a `begin-intent.md`.
 - Los entrevistadores son archivos de rol y no subagentes, porque no está garantizado que un subagente pueda preguntar al usuario (ADR-0014).
 - **Nombre del rol de discovery:** los roles de PM, arquitecto y UX quedan juntos en `skills/project-discovery/assets/agents/`. Para que STORY-131, STORY-132 y STORY-133 no escriban el mismo archivo, se nombran por origen (convención acordada el 2026-10-14 y registrada en ADR-0014): `discovery-pm.md` (esta historia), `discovery-architect.md` (STORY-132) y `discovery-ux.md` (STORY-133).
-- **Alcance:** además de los `SKILL.md` de `project-begin` y `project-discovery`, se actualizan las menciones a `project-pm` en `skills/project-begin/README.md` y en los comentarios `# escritor:` de `skills/project-begin/assets/vision-template.md`, para que no apunten a un agente que ya no existe.
+- **Alcance:** además de los `SKILL.md` de `project-begin` y `project-discovery`, se actualizan las menciones a `project-pm` en `skills/project-begin/README.md`, en los comentarios `# escritor:` de `skills/project-begin/assets/vision-template.md` y de su copia central `docs/templates/vision-template.md` (que siguen idénticas, CR-001), y en el párrafo «Excepción documentada — Subagente interactivo» de `docs/guides/harness-eng-agents-orchestration.md:182` (CR-002), para que no apunten a un agente que ya no existe.
 - Cubre, para `project-begin` y `project-discovery`, el criterio de salida de la épica «Cada skill que invocaba un agente global tiene sus roles o subagentes locales en `skills/<skill>/assets/agents/`».
 - Cubre, para el entrevistador `pm`, el criterio de salida de la épica «Los agentes entrevistadores (`pm`, `architect`, `ux`, `story-mapper`, `product-owner`) son archivos de rol que lee la sesión del skill, no subagentes invocados».
 - Cubre, para `project-begin` y `project-discovery`, los criterios de salida transversales de la épica:
