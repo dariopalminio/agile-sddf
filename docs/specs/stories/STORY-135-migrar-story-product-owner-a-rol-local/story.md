@@ -40,6 +40,16 @@ Entonces el skill se detiene e informa la ruta del rol que falta
   Pero no modifica el story.md en curso
 ```
 
+### AC-3 — Escenario de cierre – Retiro de la carpeta global agents/
+```gherkin
+Dado que STORY-129 y STORY-131 a STORY-134 están implementadas
+  Y tras migrar story-product-owner, git ls-files "agents/*.agent.md" no lista ningún archivo
+Cuando retiro la carpeta agents/ del paquete
+Entonces agents/ no existe en el repositorio y "agents/" no figura en package.json → files
+  Y npx agile-sddf install --target termina con código 0 para cada runtime de config/runtimes.json
+  Y npm run verify:repository pasa
+```
+
 ## ⚙️ Criterios no funcionales específicos
 
 - **CNF-1 — Interacción garantizada:** el rol se ejecuta en la sesión del skill, que puede preguntar al usuario (ADR-0014, trade-offs).
@@ -50,6 +60,8 @@ Generado automáticamente desde la épica: EPIC-24-agentes-locales-por-skill/epi
 Historia origen: STORY-135 — Migrar story-product-owner a rol local
 
 - `skills/story-specify/SKILL.md` menciona `story-product-owner` en varios puntos (orquestación, Dependencias y pasos de invocación); todos deben apuntar al rol local.
+- **Cierre de la épica (AC-3):** como última migración del orden sugerido, esta historia asume el retiro de `agents/`, que la épica había dejado como chore sin historia propia. El retiro consiste en eliminar `agents/`, quitar `"agents/"` de `package.json` → `files` y adaptar las pruebas que exigen la carpeta: `test/install.test.js:126`, que lee `agents/` del repo, y `assertSameTree` en `scripts/smoke-package-install.js:226,236`. El instalador ya omite la copia cuando falta la fuente (`copyDir` en `scripts/install.js:104`), así que `agentsDirectory: "agents"` se mantiene en `config/runtimes.json`. Se implementa después de STORY-129 y STORY-131 a STORY-134.
+- Cubre, como cierre de la épica, el criterio de salida «La carpeta `agents/` queda vacía y se elimina como consecuencia de la migración (ADR-0014, Regla 2), `package.json` → `files` no incluye `agents/`, y `npx agile-sddf install --target <runtime>` termina con código 0 para cada runtime de `config/runtimes.json`».
 - Cubre, para `story-specify`, el criterio de salida de la épica «Cada skill que invocaba un agente global tiene sus roles o subagentes locales en `skills/<skill>/assets/agents/`».
 - Cubre, para el entrevistador `product-owner`, el criterio de salida de la épica «Los agentes entrevistadores (`pm`, `architect`, `ux`, `story-mapper`, `product-owner`) son archivos de rol que lee la sesión del skill, no subagentes invocados».
 - Cubre, para `story-specify`, los criterios de salida transversales de la épica:
