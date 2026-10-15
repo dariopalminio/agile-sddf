@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [4.0.1] — 2026-10-15
+
+### Fixed
+
+- **`/story-code-review`:** `skills/story-code-review/SKILL.md` contenía texto basura añadido por error entre las líneas 671 y 842; se eliminan esas líneas.
+
 ## [4.0.0] — 2026-10-13
 
 ### BREAKING — specs/ de dos niveles (requiere 4.0.0)
