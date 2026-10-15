@@ -165,14 +165,7 @@ Cada etapa produce algo que se puede leer y revisar:
 
 SDDF separa el kit distribuido, la instalación del runtime y los artefactos de cada proyecto. La conversación activa ayuda a avanzar, pero los archivos versionados son la fuente de verdad que heredan las siguientes sesiones.
 
-```mermaid
-flowchart LR
-  Idea[Idea o código existente] --> Runtime[Runtime de IA]
-  Runtime --> Skills[Skills Agile SDDF]
-  Skills --> Specs[Artefactos versionados<br/>en el proyecto]
-  Specs --> Decision[Revisión humana<br/>y siguiente decisión]
-  Decision --> Runtime
-```
+![Modelo Mental de Agile SDDF](assets/mental-model.png)
 
 | Capa | Responsabilidad | Fuente de verdad |
 |---|---|---|
