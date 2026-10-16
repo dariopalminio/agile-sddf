@@ -3,8 +3,8 @@ type: epic
 id: EPIC-24
 slug: EPIC-24-agentes-locales-por-skill
 title: "Mover agentes globales a agentes locales por skill"
-status: DEFINE
-substatus: TODO
+status: DEVELOP
+substatus: IN-PROGRESS
 parent: null
 created: 2026-10-14
 updated: 2026-10-15
