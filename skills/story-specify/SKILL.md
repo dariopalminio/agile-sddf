@@ -130,6 +130,10 @@ Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir a
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
+Si una raíz explícita (`SDDF_ROOT` o `root` de `sddf.config.yaml`) es inválida, muestra el siguiente mensaje y termina:
+
+> ✗ Entorno inválido: raíz explícita `<ROOT_SOURCE>` = `<valor>` no es un directorio accesible; no se modificó ningún archivo.
+
 Con `SPECS_BASE` resuelto, comprueba que existe el rol local `assets/agents/product-owner.md` (relativo al directorio de este skill). Si falta, muestra el siguiente mensaje y termina sin detectar backlog, preguntar, invocar sub-skills ni crear o modificar ningún `story.md`; no se buscan roles fuera del directorio de este skill:
 
 > ❌ Rol local no encontrado: assets/agents/product-owner.md (skill story-specify). Reinstala el skill; no se modificó ningún archivo.
@@ -137,10 +141,16 @@ Con `SPECS_BASE` resuelto, comprueba que existe el rol local `assets/agents/prod
 
 ### Paso 1 — Crear o normalizar la historia activa
 
+Antes de crear nada, busca en `$SPECS_BASE/specs/stories/` historias con `status: SPECIFY` / `substatus: IN-PROGRESS`. Si hay alguna, lístalas (`<STORY-NNN> — <ruta> — SPECIFY/IN-PROGRESS`) y pregunta:
+
+> 📂 Backlog existente: <N> historia(s) en SPECIFY/IN-PROGRESS. ¿Deseas retomar el backlog o crear una historia nueva?
+
+Opciones: `Retomar backlog` → Caso B con la primera historia de la cola; `Crear historia nueva` → Caso A. Si no hay ninguna, continúa con el Caso A sin preguntar.
+
 #### Caso A — Historia nueva
 
-1. Si el input del usuario es incompleto, leer `assets/agents/product-owner.md` (relativo al directorio de este skill) y seguir sus instrucciones en esta sesión para aclarar con el usuario usuario, necesidad, valor, contexto y restricciones. No lances un subagente. Al terminar el rol, continúa con el ítem 2.
-2. Invocar el skill `story-creation` con el contexto refinado
+1. Si el input del usuario es incompleto, mostrar `> 📋 Rol local: assets/agents/product-owner.md — conduce esta sesión, sin subagente.` y luego leer `assets/agents/product-owner.md` (relativo al directorio de este skill) y seguir sus instrucciones en esta sesión para aclarar con el usuario usuario, necesidad, valor, contexto y restricciones. No lances un subagente. Al terminar el rol, muestra `✓ Contexto aclarado: usuario, necesidad, valor, contexto y restricciones.` y continúa con el ítem 2.
+2. Mostrar `▶ Invocando story-creation con el contexto refinado.` e invocar el skill `story-creation` con el contexto refinado
 3. Cuando `story-creation` genere el archivo en `$SPECS_BASE/specs/stories/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN-PROGRESS`; si los campos no existen, agregarlos
 4. Registrar la historia en la tabla de backlog con `Estado = SPECIFY/IN-PROGRESS` y `Decision FINVEST = Pendiente`
 
@@ -175,7 +185,7 @@ Backlog actual: [resumen corto]
 
 Para la historia activa:
 
-1. Invocar `story-evaluation` usando el archivo de la historia actual
+1. Mostrar `▶ Invocando story-evaluation sobre <STORY-NNN>.` e invocar `story-evaluation` usando el archivo de la historia actual
 2. Extraer del resultado:
    - `FINVEST Score`
    - `Decision`
@@ -199,7 +209,7 @@ Para la historia activa:
 
 ### Paso 4 — Intentar split después de evaluación no aprobada
 
-Si la decisión es `DIVIDIR` o `RECHAZAR` con recomendación de división, ejecutar `story-split` después de mostrar el resumen de la evaluación.
+Si la decisión es `DIVIDIR` o `RECHAZAR` con recomendación de división, ejecutar `story-split` después de mostrar el resumen de la evaluación. Antes de invocarlo, mostrar `▶ Invocando story-split sobre <STORY-NNN>.`
 
 **Si `story-split` devuelve historias derivadas útiles:**
 1. Registrar cada historia hija con un nuevo ID (`ST-00X`)
@@ -217,7 +227,7 @@ Conservar la historia actual como ítem activo y continuar al Paso 5A.
 
 Si la decisión no es `APROBADA` y la historia sigue activa tras el split (o el split no aplica):
 
-Invocar el skill `story-improve` en modo Agent:
+Mostrar `▶ Invocando story-improve --story-id <STORY-NNN> (modo Agent).` e invocar el skill `story-improve` en modo Agent:
 - `--story-id <STORY-NNN>` con el ID de la historia activa
 - Modo Agent: automático, sin confirmación interactiva
 
@@ -241,7 +251,7 @@ Invocar el skill `story-improve` en modo Agent:
 
 Si la decisión es `REFINAR` o `RECHAZAR`, si la historia sigue activa después del Paso 5A, o si el usuario quiere mejorar una historia derivada:
 
-1. Leer `assets/agents/product-owner.md` y seguir sus instrucciones en esta sesión. No lances un subagente.
+1. Mostrar `> 📋 Rol local: assets/agents/product-owner.md — conduce esta sesión, sin subagente.` y luego leer `assets/agents/product-owner.md` y seguir sus instrucciones en esta sesión. No lances un subagente.
 2. Usar como contexto del rol:
    - El contenido actual de la historia (ya mejorado por `story-improve` si ejecutó en 5A)
    - El resultado de `story-evaluation`
@@ -298,7 +308,7 @@ Historias derivadas creadas: [lista]
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
+| Raíz explícita inválida (Paso 0) | `✗ Entorno inválido: raíz explícita <ROOT_SOURCE> = <valor> no es un directorio accesible` | Detener sin fallback ni escrituras |
 | `$SPECS_BASE/specs/stories/` no existe | — | Crear el directorio y continuar |
 | `story-creation` falla | Informar el error al usuario | No registrar la historia en el backlog; preguntar si reintentar |
 | `story-evaluation` falla | Informar el error al usuario | Conservar `Decision FINVEST = Pendiente`; ofrecer reintentar |

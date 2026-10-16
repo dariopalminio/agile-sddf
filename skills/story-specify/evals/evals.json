@@ -93,7 +93,7 @@
           "historias derivadas",
           "SPECIFY",
           "IN-PROGRESS",
-          "backlog"
+          "Backlog actual"
         ],
         "not_contains": [
           "Entorno inválido",
@@ -123,7 +123,8 @@
         "not_contains": [
           "Entorno inválido",
           "Refinamiento finalizado",
-          "APROBADA"
+          "Decision FINVEST = APROBADA",
+          "ya tiene decisión APROBADA"
         ]
       },
       "threshold": 0.90
