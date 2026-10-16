@@ -65,6 +65,12 @@ $TARGET_PATH: <raíz del repositorio objetivo o valor de --focus>
 $REQUIREMENT_TEMPLATE_PATH: <ruta resuelta en Fase 0>
 ```
 
+Antes de lanzarlos, muestra una línea por analizador con la forma `▶ Subagente local assets/agents/<rol>.md → <intermedio>`; por ejemplo:
+
+```
+▶ Subagente local assets/agents/architect.md → .tmp/reverse-engineering/rfc-architecture.md
+```
+
 Lanza los cuatro en el mismo turno para que corran en paralelo. Cada uno escribe la ruta declarada en su `output:` y devuelve el control:
 
 | Subagente local | Intermedio |
@@ -80,7 +86,7 @@ Al terminar, comprueba que existe el `output:` de cada analizador. Si falta algu
 
 ## Fase 2 — Síntesis
 
-Define `$STAGING_DIR = .tmp/reverse-engineering/proposal/`, lee `assets/agents/synthesizer.md` y lánzalo del mismo modo que los analizadores (subagente genérico o, sin esa herramienta, ejecución en la sesión), con un bloque de contexto que contiene los cuatro intermedios, `$STAKEHOLDERS_TEMPLATE_PATH`, `$REQUIREMENT_TEMPLATE_PATH`, `$STAKEHOLDERS_PATH`, `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US`, `$UPDATE_MODE` y `$STAGING_DIR`.
+Define `$STAGING_DIR = .tmp/reverse-engineering/proposal/`, muestra `▶ Subagente local assets/agents/synthesizer.md → .tmp/reverse-engineering/proposal/`, lee `assets/agents/synthesizer.md` y lánzalo del mismo modo que los analizadores (subagente genérico o, sin esa herramienta, ejecución en la sesión), con un bloque de contexto que contiene los cuatro intermedios, `$STAKEHOLDERS_TEMPLATE_PATH`, `$REQUIREMENT_TEMPLATE_PATH`, `$STAKEHOLDERS_PATH`, `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US`, `$UPDATE_MODE` y `$STAGING_DIR`.
 
 El sintetizador deja la propuesta, `manifest.md` y `.tmp/reverse-engineering/gaps.md`.
 

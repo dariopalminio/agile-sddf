@@ -78,11 +78,11 @@ Con `SPECS_BASE` resuelto, comprueba que existe el rol local `assets/agents/begi
 
 Busca `$SPECS_BASE/templates/vision-template.md` como fuente de verdad. Si no existe, usa `assets/vision-template.md` y muestra:
 
-> ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
+> ⚠️ Usando template seed del skill (assets/vision-template.md). Ejecuta sddf-init para centralizarlo en $SPECS_BASE/templates/.
 
 Si ninguno existe, informa y termina sin escribir:
 
-> ❌ Template `vision-template.md` no encontrado. Ejecuta `sddf-init`.
+> ❌ Template vision-template.md no encontrado. Ejecuta sddf-init.
 
 Conserva la ruta resuelta como `$TEMPLATE_PATH`; el rol no la reconstruye.
 
@@ -93,14 +93,23 @@ Define `$VISION_PATH = $SPECS_BASE/product/vision.md`. No lo escribas antes de c
 - Si no existe, usa `$MODE = full`.
 - Si tiene `substatus: TODO`, usa `$MODE = full` y ofrece el contenido existente como pre-relleno.
 - Si tiene `substatus: IN-PROGRESS`, usa `$MODE = resume`.
-- Si tiene `substatus: DONE`, usa `AskUserQuestion` con `Actualizar` y `Cancelar`. Con `Cancelar`, termina sin modificar el archivo; con `Actualizar`, usa `$MODE = full`.
+- Si tiene `substatus: DONE`, usa `AskUserQuestion` con la pregunta `vision.md ya está en DONE. ¿Actualizar (reabre la entrevista) o Cancelar (no modificar el archivo)?` y las opciones `Actualizar` y `Cancelar`. Con `Cancelar`, termina sin modificar el archivo; con `Actualizar`, usa `$MODE = full`.
 - Para un valor no reconocido, muestra `⚠️ substatus no reconocido en vision.md: <valor>; se trata como TODO` y usa `$MODE = full`.
 
 En modo `resume`, calcula `$PENDING_SECTIONS` en el orden del template. La unidad es una sección hoja: un `##` sin `###` hijas o un `###`. Una sección está pendiente si no existe, contiene `[Por completar` o conserva una línea placeholder idéntica a la del template. Si la lista queda vacía, salta al Paso 4.
 
+Con el modo fijado, muestra:
+
+- En `full`: `📋 Modo full: entrevista de todas las secciones hoja.`
+- En `resume`: `📋 Modo resume: PENDING_SECTIONS = <secciones pendientes en orden del template>.`
+
 ### Paso 3 — Entrevista con el rol `begin-intent`
 
-Lee `assets/agents/begin-intent.md` y sigue su `## Estado Visión` con `$TEMPLATE_PATH`, `$VISION_PATH`, `$MODE` y `$PENDING_SECTIONS` ya resueltos. Esta sesión conduce la entrevista; no lances un subagente para este paso. Parametriza el rol así:
+Muestra:
+
+> 📋 Rol local: assets/agents/begin-intent.md — conduce esta sesión, sin subagente.
+
+Luego lee `assets/agents/begin-intent.md` y sigue su `## Estado Visión` con `$TEMPLATE_PATH`, `$VISION_PATH`, `$MODE` y `$PENDING_SECTIONS` ya resueltos. Esta sesión conduce la entrevista; no lances un subagente para este paso. Parametriza el rol así:
 
 > Lee `$TEMPLATE_PATH` y `$VISION_PATH` si existe. Recibe `$MODE` (`full` o `resume`) y `$PENDING_SECTIONS` para el modo de retoma.
 >

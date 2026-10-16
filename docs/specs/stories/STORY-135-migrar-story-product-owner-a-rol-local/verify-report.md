@@ -107,6 +107,9 @@ Trazabilidad de los criterios de aceptación:
 
 ## Historial de Ejecuciones Anteriores
 
+npm run verify:repository en verde (incluye la auditoría de raíz y npm test).
+node -e "JSON.parse(require('fs').readFileSync('skills/story-specify/evals/evals.json','utf8'))".
+
 ### Ejecución 1 — 2026-10-16
 - **Modo**: manual
 - **Resultado**: VERIFY-PASSED

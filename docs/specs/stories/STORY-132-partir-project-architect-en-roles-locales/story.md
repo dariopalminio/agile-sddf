@@ -5,11 +5,11 @@ id: STORY-132
 kind: feat
 slug: STORY-132-partir-project-architect-en-roles-locales
 title: "Partir project-architect en roles locales"
-status: CODE-REVIEW
+status: VERIFY
 substatus: DONE
 parent: EPIC-24-agentes-locales-por-skill
 created: 2026-10-14
-updated: 2026-10-15
+updated: 2026-10-16
 related:
   - EPIC-24-agentes-locales-por-skill
 ---

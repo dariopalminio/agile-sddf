@@ -72,7 +72,7 @@ Recopilar en `$INPUT_PATHS` los insumos existentes: inventario FR y NFR, visión
 Resolver `roadmap-template.md` en este orden:
 
 1. `$SPECS_BASE/templates/roadmap-template.md`.
-2. `assets/roadmap-template.md`, mostrando `⚠️ Usando template seed del skill. Ejecuta sddf-init para centralizarlo en $SPECS_BASE/templates/.`
+2. `assets/roadmap-template.md`, mostrando `⚠️ Usando template seed del skill (assets/roadmap-template.md). Ejecuta sddf-init para centralizarlo en $SPECS_BASE/templates/.`
 3. Si ninguno existe, mostrar `❌ Template roadmap-template.md no encontrado. Ejecuta sddf-init.` y terminar sin escribir.
 
 Guardar la ruta como `$TEMPLATE_PATH`.
@@ -96,7 +96,11 @@ Sin respuesta, elegir 2. Con 1, componer `/project-story-mapping` inline; si al 
 
 ### Paso 5 — Propuesta con el rol `planning` y validación del staging
 
-Leer `assets/agents/planning.md` y seguir su `## Estado Planning` con `$INPUT_PATHS`, `$EPICS_INVENTORY`, `$TEMPLATE_PATH`, `$PROPOSAL_HEADING` y `$STAGING_PATH` ya resueltos, escribiendo solamente el staging. Esta sesión redacta la propuesta; no lances un subagente para este paso.
+Mostrar:
+
+> 📋 Rol local: assets/agents/planning.md — conduce esta sesión, sin subagente.
+
+Luego leer `assets/agents/planning.md` y seguir su `## Estado Planning` con `$INPUT_PATHS`, `$EPICS_INVENTORY`, `$TEMPLATE_PATH`, `$PROPOSAL_HEADING` y `$STAGING_PATH` ya resueltos, escribiendo solamente el staging. Esta sesión redacta la propuesta; no lances un subagente para este paso.
 
 Validar que el staging:
 
@@ -109,7 +113,7 @@ Si falta el staging o incumple el contrato, mostrar `❌ La propuesta generada n
 
 ### Paso 6 — Gate humano
 
-Mostrar `<k> épicas · <h> historias` y una línea `Épica N: <Nombre> — <h> historias — <FR…>` por épica. Si ya hay roadmap, agregar `Se agregará como "<heading>" sin modificar el resto del roadmap.`
+Mostrar `<k> épicas · <h> historias` y una línea `Épica N: <Nombre> — <h> historias — <FR…>` por épica. Si ya hay roadmap, agregar `Se agregará como "<heading>" sin modificar el resto del roadmap.` y `Secciones existentes que se preservan: <encabezados ## del roadmap, en orden>.`
 
 Preguntar mediante `AskUserQuestion`: `Confirmar` o `Cancelar`; sin respuesta equivale a `Cancelar`. Al cancelar, informar `Planificación cancelada: no se modificó $SPECS_BASE/product/roadmap.md.` y terminar.
 
