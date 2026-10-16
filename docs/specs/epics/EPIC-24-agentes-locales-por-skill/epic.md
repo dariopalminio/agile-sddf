@@ -24,7 +24,7 @@ Aplicar ADR-0014 moviendo cada agente de `agents/` al skill que lo invoca, en `s
 - [x] **STORY-129** — Migrar analizadores de reverse-engineering: mover los cinco `reverse-engineer-*` (`architect`, `product-discovery`, `business-analyst`, `ux-flow-mapper`, `synthesizer`) a subagentes locales en `skills/reverse-engineering/assets/agents/`, invocados por el skill y conservando el contrato de `.tmp/`.
 - [x] **STORY-131** — Partir project-pm en roles locales: separar la sección Begin Intention en el rol `begin-intent` de `project-begin`, y la sección Discovery en el rol `discovery-pm` de `project-discovery`. Ambos son archivos de rol leídos por la sesión del skill.
 - [x] **STORY-132** — Partir project-architect en roles locales: separar la sección Discovery en el rol `discovery-architect` de `project-discovery` y la sección Planning en el rol `planning` de `project-planning`. Ambos son archivos de rol leídos por la sesión del skill.
-- [ ] **STORY-133** — Mover project-ux a rol local de project-discovery: convertir `project-ux` en el archivo de rol `discovery-ux` que lee la sesión de `project-discovery`. Así deja de haber delegación de subagente a subagente.
+- [x] **STORY-133** — Mover project-ux a rol local de project-discovery: convertir `project-ux` en el archivo de rol `discovery-ux` que lee la sesión de `project-discovery`. Así deja de haber delegación de subagente a subagente.
 - [ ] **STORY-134** — Migrar project-story-mapper a rol local: convertir `project-story-mapper` en un archivo de rol de `project-story-mapping` leído por la sesión del skill.
 - [ ] **STORY-135** — Migrar story-product-owner a rol local: convertir `story-product-owner` en un archivo de rol de `story-specify` leído por la sesión del skill.
 

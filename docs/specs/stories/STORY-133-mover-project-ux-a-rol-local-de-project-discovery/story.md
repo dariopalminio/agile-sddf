@@ -5,7 +5,7 @@ id: STORY-133
 kind: feat
 slug: STORY-133-mover-project-ux-a-rol-local-de-project-discovery
 title: "Mover project-ux a rol local de project-discovery"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-24-agentes-locales-por-skill
 created: 2026-10-14
