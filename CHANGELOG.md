@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [4.1.0] — 2026-10-16
+
 ### BREAKING — agentes locales por skill (EPIC-24)
 
 ADR-0014 y EPIC-24 eliminan la carpeta `agents/` del paquete. Cada uno de los diez agentes globales pasa a vivir dentro del skill que lo usa, en `skills/<skill>/assets/agents/`, y se instala con él. `npx agile-sddf install` ya no copia agentes en ningún runtime (`0 agents`). Quien invocaba uno de estos agentes por su nombre debe usar el skill correspondiente.
