@@ -82,15 +82,27 @@ Aplica `references/layer-materialization.md` para obtener `$REQUIREMENTS_INVENTO
 
 ### Paso 4 — Discovery de producto
 
-Define `$DISCOVERY_SUMMARY_PATH = .tmp/project-discovery/discovery-summary.md`. Lee `assets/agents/discovery-pm.md` y sigue su `## Estado Discovery` con `$VISION_PATH`, `$STAKEHOLDERS_PATH` y `$OUTPUT_PATH = $DISCOVERY_SUMMARY_PATH`. Esta sesión conduce la entrevista; no lances un subagente para este paso. El rol escribe solo el resumen y no lanza subagentes.
+Define `$DISCOVERY_SUMMARY_PATH = .tmp/project-discovery/discovery-summary.md`. Muestra:
+
+> 📋 Rol local: assets/agents/discovery-pm.md — conduce esta sesión, sin subagente.
+
+Luego lee `assets/agents/discovery-pm.md` y sigue su `## Estado Discovery` con `$VISION_PATH`, `$STAKEHOLDERS_PATH` y `$OUTPUT_PATH = $DISCOVERY_SUMMARY_PATH`. Esta sesión conduce la entrevista; no lances un subagente para este paso. El rol escribe solo el resumen y no lanza subagentes.
 
 ### Paso 5 — Hallazgos UX con el rol `discovery-ux`
 
-Lee `assets/agents/discovery-ux.md` y sigue sus instrucciones con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH` y `$OUTPUT_PATH = $UX_FINDINGS_PATH = .tmp/project-discovery/ux-findings.md`, refinando con el usuario perfiles, journeys y navegación. Esta sesión conduce el refinamiento UX con el usuario; no lances un subagente para este paso.
+Muestra:
+
+> 📋 Rol local: assets/agents/discovery-ux.md — conduce esta sesión, sin subagente.
+
+Luego lee `assets/agents/discovery-ux.md` y sigue sus instrucciones con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH` y `$OUTPUT_PATH = $UX_FINDINGS_PATH = .tmp/project-discovery/ux-findings.md`, refinando con el usuario perfiles, journeys y navegación. Esta sesión conduce el refinamiento UX con el usuario; no lances un subagente para este paso.
 
 ### Paso 6 — Propuesta de requisitos con el rol `discovery-architect`
 
-Lee `assets/agents/discovery-architect.md` y sigue su `## Estado Discovery` con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH`, `$UX_FINDINGS_PATH`, `$STAKEHOLDERS_PATH`, `$STAKEHOLDERS_TEMPLATE_PATH`, `$REQUIREMENT_TEMPLATE_PATH`, `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US` y `$STAGING_DIR`. Esta sesión redacta la propuesta; no lances un subagente para este paso.
+Muestra:
+
+> 📋 Rol local: assets/agents/discovery-architect.md — conduce esta sesión, sin subagente.
+
+Luego lee `assets/agents/discovery-architect.md` y sigue su `## Estado Discovery` con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH`, `$UX_FINDINGS_PATH`, `$STAKEHOLDERS_PATH`, `$STAKEHOLDERS_TEMPLATE_PATH`, `$REQUIREMENT_TEMPLATE_PATH`, `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US` y `$STAGING_DIR`. Esta sesión redacta la propuesta; no lances un subagente para este paso.
 
 El rol deja `manifest.md` y los archivos propuestos en staging. Si algún rol falla o falta el manifiesto, informa el fallo, recomienda reejecutar y termina sin tocar `$SPECS_BASE`.
 
