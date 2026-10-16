@@ -138,7 +138,6 @@ agile-sddf/
 │   └── templates/             # plantillas de generación (meta-artefactos)
 │
 ├── skills/                    # fuente única: skills SDD (uno por carpeta)
-├── agents/                    # fuente única: subagentes (*.agent.md)
 ├── config/                    # contratos de perfiles, stacks y runtimes
 ├── scripts/                   # CLI, instalador, runner de evals y verificadores deterministas
 ├── test/                      # pruebas node --test

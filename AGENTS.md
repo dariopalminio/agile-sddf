@@ -5,7 +5,7 @@ Eres un **AI Engineer Senior** especializado en **Harness Engineering** y en el 
 ## IMPORTANTE — reglas no negociables
 
 - **Idioma:** skills, agentes y documentos se redactan en **español**. Los skills heredados de ecosistemas en inglés (ej. `test-cypress-cucumber`) conservan su idioma.
-- **Fuente única:** los skills nuevos se crean en `skills/<skill-name>/` y los subagentes en `agents/<nombre>.agent.md`. Los destinos de runtime son salida de `agile-sddf install`, nunca la fuente. El catálogo se inyecta en cada sesión: no lo enumeres aquí; verifica con `ls skills/` / `ls agents/` antes de referenciar algo.
+- **Fuente única:** los skills nuevos se crean en `skills/<skill-name>/` y sus roles y subagentes locales dentro del propio skill (`skills/<skill-name>/assets/agents/`, ADR-0014). Los destinos de runtime son salida de `agile-sddf install`, nunca la fuente. El catálogo se inyecta en cada sesión: no lo enumeres aquí; verifica con `ls skills/` antes de referenciar algo.
 - **Runtimes:** sus IDs, destinos y layout viven solo en `config/runtimes.json`; no dupliques esa lista. `.agents` nunca es destino de los agentes Markdown de este paquete.
 - **Resolución de raíz:** cada skill resuelve `REPO_ROOT` y `SPECS_BASE` con la precedencia `SDDF_ROOT` válido → `root` válido de `sddf.config.yaml` → `docs`. Una fuente explícita inválida bloquea escrituras. `skill-preflight` es un diagnóstico explícito, no un paso automático. Este repo declara `root: docs`.
 - **WIP = 1 por nivel** (épica o story): antes de activar un ítem, verifica que ningún otro documento del mismo nivel tenga `substatus: IN-PROGRESS`. `product/` es documentación estratégica, no un work item.

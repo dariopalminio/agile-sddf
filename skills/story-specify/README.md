@@ -12,7 +12,7 @@ Skill orquestador del flujo completo de especificación de historias SDD: guía 
     ├── /story-evaluation   → Evalúa con rúbrica FINVEST → APROBADA/REFINAR/RECHAZAR/DIVIDIR
     ├── /story-split        → Divide historias grandes en partes independientes
     ├── /story-improve      → Aplica mejoras automáticas por dimensión FINVEST (Paso 5A)
-    └── story-product-owner → Refinamiento conversacional: discovery y gaps de contexto (Paso 5B)
+    └── rol product-owner → Refinamiento conversacional en esta sesión: discovery y gaps de contexto (pasos 1 y 5B)
     ↓ [story.md: SPECIFY/DONE]
 /story-plan                            [story.md: PLANNING/IN-PROGRESS → READY-FOR-IMPLEMENT/DONE]
 ```
@@ -51,7 +51,7 @@ story-evaluation (FINVEST score)
             ├── Mejoras aplicadas  → story-improvement-log.md + continúa a 5B
             └── Fallo/sin reporte  → ⚠️ non-blocking, continúa a 5B
             ↓
-        Paso 5B: story-product-owner (conversacional)
+        Paso 5B: rol product-owner (conversacional)
             → discovery, redacción, testabilidad
             ↓
         Gate anti-bucle (decisión del usuario)
@@ -64,7 +64,7 @@ story-evaluation (FINVEST score)
 
 | Artefacto | Generado por | Condición |
 |---|---|---|
-| `story.md` | `story-creation` / `story-product-owner` | Siempre |
+| `story.md` | `story-creation` / rol `product-owner` | Siempre |
 | `finvest-evaluation-report.md` | `story-evaluation` | Por cada ciclo de evaluación |
 | `story.md.bak` | `story-improve` (Paso 5A) | Solo cuando decision ≠ APROBADA |
 | `story-improvement-log.md` | `story-improve` (Paso 5A) | Solo cuando decision ≠ APROBADA |

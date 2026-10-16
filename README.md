@@ -74,7 +74,7 @@ No es:
 | Pieza | Dónde vive | Para qué sirve |
 |---|---|---|
 | Skills del framework | `skills/` | Guían los flujos de proyecto, épicas, historias, planificación, implementación y verificación. |
-| Agentes declarativos | `agents/` | Aportan especialización cuando el runtime destino admite agentes Markdown. |
+| Roles y subagentes locales | dentro de cada skill, en `skills/<skill>/` | Especializan un paso del skill y se instalan con él. |
 | Instalador y contratos | `scripts/` y `config/` | Copian solo los artefactos admitidos en el runtime elegido y validan sus contratos. |
 | Configuración del proyecto | `sddf.config.yaml` | Define la raíz de artefactos, perfil, stack, comandos de verificación y workers opcionales. |
 | Memoria | `<SPECS_BASE>` | Generalmente docs. Dominio, historial y otros artefactos generados por el flujo. |
@@ -304,7 +304,7 @@ npx agile-sddf install --target claude-code
 | Codex | `codex` | `.agents/` | `~/.agents/` |
 <!-- runtime-contract:end -->
 
-Claude Code, OpenCode y GitHub Copilot reciben skills y agentes que admite su contrato. Para nuevas instalaciones usa los IDs canónicos; los aliases de migración `.claude`, `.opencode` y `.github` siguen aceptándose, pero no son destinos adicionales.
+Claude Code, OpenCode y GitHub Copilot reciben skills; su contrato admite también agentes Markdown, pero el paquete no publica agentes globales. Para nuevas instalaciones usa los IDs canónicos; los aliases de migración `.claude`, `.opencode` y `.github` siguen aceptándose, pero no son destinos adicionales.
 
 ### Codex: solo skills
 
@@ -312,7 +312,7 @@ Claude Code, OpenCode y GitHub Copilot reciben skills y agentes que admite su co
 npx agile-sddf install --target codex
 ```
 
-Codex recibe solo skills en `.agents/skills`. El instalador no copia ni convierte los archivos de `agents/` a subagentes de Codex; si los necesitas, defínelos y regístralos por separado según la configuración de Codex.
+Codex recibe solo skills en `.agents/skills`. Los roles y subagentes locales viajan dentro de cada skill, así que llegan con él; el instalador no los registra como subagentes de Codex.
 
 Usa `--target codex`, no `--target .agents`: `.agents` es un destino y `--target .agents` no es un target válido.
 

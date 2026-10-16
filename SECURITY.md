@@ -2,8 +2,8 @@
 
 ## Scope
 
-This repository ships **instructions that AI agents execute** — the skills under `skills/`, the
-subagents under `agents/`, the constitution, policies and guardrails an agent reads (`docs/constitution.md`,
+This repository ships **instructions that AI agents execute** — the skills under `skills/`
+(including the roles and local subagents they package), the constitution, policies and guardrails an agent reads (`docs/constitution.md`,
 `docs/policies/` and `docs/guardrails/`), and the Node helper scripts under `scripts/`. It is consumed by installing those files
 into someone else's working directory, where an agent then acts on them.
 

@@ -123,7 +123,9 @@ test('el mapa de runtimes es la única fuente de targets instalables', () => {
 test('installSDDF copia el inventario fuente al destino canónico de cada runtime', { concurrency: false }, async (t) => {
   const { projectDir } = createFixture(t);
   const sourceSkills = topLevelEntries(path.join(REPO_ROOT, 'skills'));
-  const sourceAgents = topLevelEntries(path.join(REPO_ROOT, 'agents'));
+  const sourceAgentsDir = path.join(REPO_ROOT, 'agents');
+  const hasSourceAgents = fs.existsSync(sourceAgentsDir);
+  const sourceAgents = hasSourceAgents ? topLevelEntries(sourceAgentsDir) : [];
 
   await withInitCwd(projectDir, () => withoutInstallLogs(async () => {
     for (const runtime of RUNTIMES) {
@@ -132,7 +134,10 @@ test('installSDDF copia el inventario fuente al destino canónico de cada runtim
       assert.equal(result.runtime, runtime.id);
       assert.equal(result.destination, runtimeRoot);
       assert.deepEqual(topLevelEntries(path.join(runtimeRoot, runtime.layout.skillsDirectory)), sourceSkills);
-      if (installsAgents(runtime)) {
+      if (installsAgents(runtime) && !hasSourceAgents) {
+        assert.deepEqual(result.agents, { installed: 0, skipped: 0 });
+        assert.equal(fs.existsSync(path.join(runtimeRoot, runtime.layout.agentsDirectory)), false);
+      } else if (installsAgents(runtime)) {
         assert.deepEqual(topLevelEntries(path.join(runtimeRoot, runtime.layout.agentsDirectory)), sourceAgents);
       } else {
         assert.deepEqual(result.agents, { installed: 0, skipped: 0 });
@@ -144,12 +149,16 @@ test('installSDDF copia el inventario fuente al destino canónico de cada runtim
 
 test('installSDDF resuelve destinos globales desde el mapa y no desde un alias de carpeta', { concurrency: false }, async (t) => {
   const { homeDir } = createFixture(t);
+  const hasSourceAgents = fs.existsSync(path.join(REPO_ROOT, 'agents'));
   await withoutInstallLogs(async () => {
     for (const runtime of RUNTIMES) {
       const result = await installSDDF({ target: runtime.id, global: true, homeDir });
       assert.equal(result.destination, destination(homeDir, runtime, 'global'));
       assert.equal(fs.existsSync(path.join(result.destination, runtime.layout.skillsDirectory)), true);
-      if (installsAgents(runtime)) {
+      if (installsAgents(runtime) && !hasSourceAgents) {
+        assert.deepEqual(result.agents, { installed: 0, skipped: 0 });
+        assert.equal(fs.existsSync(path.join(result.destination, runtime.layout.agentsDirectory)), false);
+      } else if (installsAgents(runtime)) {
         assert.equal(fs.existsSync(path.join(result.destination, runtime.layout.agentsDirectory)), true);
       } else {
         assert.deepEqual(result.agents, { installed: 0, skipped: 0 });

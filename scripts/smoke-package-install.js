@@ -217,13 +217,17 @@ function verifyExplicitRuntimeInstalls({ consumerDir, homeDir, packageDir, runti
   assert.notEqual(legacy.status, 0, 'La ruta .agents no debe ser instalable como ID de runtime.');
   assert.equal(fs.existsSync(path.join(consumerDir, '.agents')), false, 'El rechazo de .agents no debe escribir nada.');
 
+  const packageAgents = path.join(packageDir, 'agents');
+  const hasPackageAgents = fs.existsSync(packageAgents);
   for (const runtime of runtimes) {
     const local = runExplicitInstall(cliPath, consumerDir, homeDir, runtime.id);
     assertInstallSucceeded(local, runtime, 'local');
     const localRoot = destination(consumerDir, runtime, 'local');
     assertSameTree(path.join(packageDir, 'skills'), path.join(localRoot, runtime.layout.skillsDirectory), `${runtime.id} local skills`);
-    if (installsAgents(runtime)) {
-      assertSameTree(path.join(packageDir, 'agents'), path.join(localRoot, runtime.layout.agentsDirectory), `${runtime.id} local agents`);
+    if (installsAgents(runtime) && hasPackageAgents) {
+      assertSameTree(packageAgents, path.join(localRoot, runtime.layout.agentsDirectory), `${runtime.id} local agents`);
+    } else if (installsAgents(runtime)) {
+      assert.equal(fs.existsSync(path.join(localRoot, runtime.layout.agentsDirectory)), false, `${runtime.id} no debe crear agentes sin fuente`);
     } else {
       assert.equal(fs.existsSync(path.join(localRoot, 'agents')), false, `${runtime.id} no debe crear agentes Markdown.`);
     }
@@ -232,8 +236,10 @@ function verifyExplicitRuntimeInstalls({ consumerDir, homeDir, packageDir, runti
     assertInstallSucceeded(global, runtime, 'global');
     const globalRoot = destination(homeDir, runtime, 'global');
     assertSameTree(path.join(packageDir, 'skills'), path.join(globalRoot, runtime.layout.skillsDirectory), `${runtime.id} global skills`);
-    if (installsAgents(runtime)) {
-      assertSameTree(path.join(packageDir, 'agents'), path.join(globalRoot, runtime.layout.agentsDirectory), `${runtime.id} global agents`);
+    if (installsAgents(runtime) && hasPackageAgents) {
+      assertSameTree(packageAgents, path.join(globalRoot, runtime.layout.agentsDirectory), `${runtime.id} global agents`);
+    } else if (installsAgents(runtime)) {
+      assert.equal(fs.existsSync(path.join(globalRoot, runtime.layout.agentsDirectory)), false, `${runtime.id} no debe crear agentes sin fuente`);
     } else {
       assert.equal(fs.existsSync(path.join(globalRoot, 'agents')), false, `${runtime.id} no debe crear agentes Markdown globales.`);
     }

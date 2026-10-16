@@ -135,7 +135,7 @@ Estas dependencias pertenecen exclusivamente a los workflows de GitHub Actions. 
 
 **Paquete npm (`files`):**
 ```
-agents/  skills/  config/  scripts/  sddf.config.yaml  README.md  LICENSE
+skills/  config/  scripts/  sddf.config.yaml  README.md  LICENSE
 ```
 
 **No incluido:** skills de extensión (`skill-master`, `skill-test-evals`, workers por stack) — se instalan desde `agile-sddf-extension`.

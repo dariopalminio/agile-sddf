@@ -340,3 +340,9 @@ Ninguna. El nombre y la ruta del rol los fija la historia; el momento de la comp
 - **Descripción**: el retiro de `agents/` deja falsas ocho frases que describen la carpeta como fuente actual (`AGENTS.md:8`, `README.md:77,312,315`, `SECURITY.md:6`, `sddf-architecture.md:141`, `tech-stack.md:138`, `constitution.md:259`). La historia no las menciona y la épica deja la documentación para el chore de cierre, salvo lo que la propia migración deja falso.
 - **Documento afectado**: story.md (Notas) / design.md
 - **Acción requerida**: D-10 las incluye en el alcance por la excepción de la épica. Confirmar con el PO que la corrección de `AGENTS.md` y `docs/constitution.md` entra en esta historia; si no, mover D-10 al chore y aceptar que esas frases queden falsas hasta entonces.
+
+### CR-003
+- **Tipo**: ajuste de implementación
+- **Descripción**: (1) la `description` de `product-owner.md` contiene `: ` y como escalar plano en una línea sería YAML inválido; se escribe entre comillas dobles, en una línea, como pedía T004. (2) En `### Manejo de errores` de `SKILL.md`, la columna «Mensaje» muestra `❌ Rol local no encontrado: assets/agents/product-owner.md` en lugar de «I-3», que es un identificador interno de este diseño y no significa nada para quien lee el skill.
+- **Documento afectado**: design.md (D-2, D-6, Esquema de datos)
+- **Acción requerida**: ninguna; el contrato I-1 e I-3 no cambia.

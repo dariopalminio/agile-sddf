@@ -22,11 +22,11 @@ Orquestador del flujo completo de especificación de historias. Guía al usuario
 El flujo base es: **story-creation → story-evaluation → story-split**.
 
 **Qué hace este skill:**
-- Orquesta `story-creation → story-evaluation → story-split → story-improve → story-product-owner` en ciclo interactivo
+- Orquesta `story-creation → story-evaluation → story-split → story-improve` y el rol local `product-owner` en ciclo interactivo
 - Gestiona un backlog de sesión con registro de todas las historias activas y derivadas
 - Mantiene trazabilidad de historias originales y sus splits durante toda la sesión
 - Aplica mejoras automáticas por dimensión FINVEST con `story-improve` antes del refinamiento conversacional
-- Invoca al agente `story-product-owner` para atender discovery y gaps de contexto que la automatización no puede resolver
+- Conduce en esta sesión, con el rol local `product-owner`, el discovery y los gaps de contexto que la automatización no puede resolver
 - Actualiza el frontmatter de cada historia conforme avanza el ciclo
 - Implementa un gate anti-bucle que requiere decisión explícita del usuario antes de iterar
 
@@ -68,7 +68,7 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 ## Dependencias
 
 - Skills: [`story-creation`, `story-evaluation`, `story-split`, `story-improve`]
-- Agentes: [`story-product-owner`]
+- Rol local: `assets/agents/product-owner.md` (entrevistador, lo lee esta sesión).
 
 ---
 
@@ -104,7 +104,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se v
 - Toda historia activa debe tener `status: SPECIFY` / `substatus: IN-PROGRESS` en su frontmatter
 - Una historia pasa automáticamente a `status: SPECIFY` / `substatus: DONE` cuando `story-evaluation` devuelve `Decision: APROBADA`
 - Si la decisión es `REFINAR` o `RECHAZAR`, nunca entrar en bucle infinito — siempre pedir al usuario una decisión explícita antes de iterar (gate anti-bucle, Paso 6)
-- Para indagar, analizar el problema, enriquecer la redacción o proponer mejoras, usar el agente `story-product-owner`
+- Para indagar, analizar el problema, enriquecer la redacción o proponer mejoras, seguir el rol local `product-owner` en esta sesión, sin lanzar subagentes
 - Mantener la interactividad con el usuario en todo momento — nunca avanzar en silencio
 - Conservar la esencia y el formato de los skills originales sin reescribir su lógica
 - Nunca perder trazabilidad de historias derivadas — toda historia del split se registra inmediatamente
@@ -130,12 +130,16 @@ Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir a
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
+Con `SPECS_BASE` resuelto, comprueba que existe el rol local `assets/agents/product-owner.md` (relativo al directorio de este skill). Si falta, muestra el siguiente mensaje y termina sin detectar backlog, preguntar, invocar sub-skills ni crear o modificar ningún `story.md`; no se buscan roles fuera del directorio de este skill:
+
+> ❌ Rol local no encontrado: assets/agents/product-owner.md (skill story-specify). Reinstala el skill; no se modificó ningún archivo.
+
 
 ### Paso 1 — Crear o normalizar la historia activa
 
 #### Caso A — Historia nueva
 
-1. Si el input del usuario es incompleto, invocar al agente `story-product-owner` para aclarar usuario, necesidad, valor, contexto y restricciones
+1. Si el input del usuario es incompleto, leer `assets/agents/product-owner.md` (relativo al directorio de este skill) y seguir sus instrucciones en esta sesión para aclarar con el usuario usuario, necesidad, valor, contexto y restricciones. No lances un subagente. Al terminar el rol, continúa con el ítem 2.
 2. Invocar el skill `story-creation` con el contexto refinado
 3. Cuando `story-creation` genere el archivo en `$SPECS_BASE/specs/stories/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN-PROGRESS`; si los campos no existen, agregarlos
 4. Registrar la historia en la tabla de backlog con `Estado = SPECIFY/IN-PROGRESS` y `Decision FINVEST = Pendiente`
@@ -233,17 +237,17 @@ Invocar el skill `story-improve` en modo Agent:
 
 ---
 
-### Paso 5B — Refinar historias no aprobadas con ayuda del Product Owner
+### Paso 5B — Refinar historias no aprobadas con el rol `product-owner`
 
 Si la decisión es `REFINAR` o `RECHAZAR`, si la historia sigue activa después del Paso 5A, o si el usuario quiere mejorar una historia derivada:
 
-1. Invocar al agente `story-product-owner`
-2. Proveer como contexto:
+1. Leer `assets/agents/product-owner.md` y seguir sus instrucciones en esta sesión. No lances un subagente.
+2. Usar como contexto del rol:
    - El contenido actual de la historia (ya mejorado por `story-improve` si ejecutó en 5A)
    - El resultado de `story-evaluation`
    - Si existió, el diagnóstico de `story-split`
    - Si existió, el `story-improvement-log.md` generado en el Paso 5A
-3. El agente debe:
+3. El rol debe:
    - Hacer preguntas adicionales si falta información relevante
    - Proponer mejoras de redacción y claridad
    - Fortalecer valor, claridad y testabilidad
@@ -301,6 +305,7 @@ Historias derivadas creadas: [lista]
 | `story-split` falla o no aplica | Informar al usuario | Conservar historia como activa; continuar al Paso 5A |
 | `story-improve` falla o no encuentra reporte | `⚠️ story-improve — no ejecutado` | Non-blocking; registrar en backlog y continuar al Paso 5B |
 | Frontmatter de `story.md` sin campos `status`/`substatus` | — | Agregarlos con `SPECIFY/IN-PROGRESS` y continuar |
+| Rol local `product-owner` ausente | `❌ Rol local no encontrado: assets/agents/product-owner.md` | Detener en el Paso 0, sin crear ni modificar historias |
 
 ---
 
