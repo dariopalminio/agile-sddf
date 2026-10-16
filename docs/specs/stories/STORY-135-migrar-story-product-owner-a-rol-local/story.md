@@ -5,7 +5,7 @@ id: STORY-135
 kind: feat
 slug: STORY-135-migrar-story-product-owner-a-rol-local
 title: "Migrar story-product-owner a rol local"
-status: VERIFY
+status: COMPLETED
 substatus: DONE
 parent: EPIC-24-agentes-locales-por-skill
 created: 2026-10-14

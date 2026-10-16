@@ -8,6 +8,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### BREAKING — agentes locales por skill (EPIC-24)
+
+ADR-0014 y EPIC-24 eliminan la carpeta `agents/` del paquete. Cada uno de los diez agentes globales pasa a vivir dentro del skill que lo usa, en `skills/<skill>/assets/agents/`, y se instala con él. `npx agile-sddf install` ya no copia agentes en ningún runtime (`0 agents`). Quien invocaba uno de estos agentes por su nombre debe usar el skill correspondiente.
+
+**Nuevos hogares:**
+
+- `project-pm` → `begin-intent` (`/project-begin`) y `discovery-pm` (`/project-discovery`).
+- `project-architect` → `discovery-architect` (`/project-discovery`) y `planning` (`/project-planning`).
+- `project-ux` → `discovery-ux` (`/project-discovery`).
+- `project-story-mapper` → `story-mapper` (`/project-story-mapping`).
+- `story-product-owner` → `product-owner` (`/story-specify`).
+- `reverse-engineer-architect`, `-product-discovery`, `-business-analyst`, `-ux-flow-mapper` y `-synthesizer` → `architect`, `product-discovery`, `business-analyst`, `ux-flow-mapper` y `synthesizer` (`/reverse-engineering`).
+
+**Actualización:** reinstala con `npx agile-sddf install --force`. El instalador no borra los agentes que copió en versiones anteriores (`.claude/agents/`, `.opencode/agents/`, `.github/agents/`). Ningún skill los usa ya, así que puedes eliminarlos.
+
+### Changed
+
+- **Entrevistadores como roles locales** (STORY-131 a STORY-135): `/project-begin`, `/project-discovery`, `/project-planning`, `/project-story-mapping` y `/story-specify` leen su rol local y conducen la entrevista en la misma sesión, sin lanzar un subagente. Antes de cada rol muestran `📋 Rol local: assets/agents/<rol>.md — conduce esta sesión, sin subagente.`. Si falta un rol, terminan en el Paso 0 con `❌ Rol local no encontrado: assets/agents/<rol>.md (skill <skill>). Reinstala el skill; no se modificó ningún archivo.`, sin buscar roles fuera del directorio del skill.
+- **`/reverse-engineering` con subagentes locales** (STORY-129): lanza los cuatro analizadores locales en paralelo y luego el `synthesizer`, cada uno como subagente genérico (`general-purpose` en Claude Code), y conserva el contrato de `.tmp/reverse-engineering/`. Anuncia cada uno con `▶ Subagente local assets/agents/<rol>.md → <intermedio>`. Si falta alguno, termina con `❌ Subagente local no encontrado: assets/agents/<rol>.md (skill reverse-engineering).` sin escribir nada.
+- **Runtime `codex`:** como los roles viajan dentro de cada skill, los skills migrados funcionan en `codex` (`agentsDirectory: null`). Antes dependían de agentes que el instalador no copiaba a ese runtime.
+
+### Removed
+
+- **`agents/`** (EPIC-24): se elimina la carpeta del repositorio y su entrada en `package.json` → `files`. El instalador y el smoke del tarball aceptan un paquete sin agentes globales.
+
 ## [4.0.1] — 2026-10-15
 
 ### Fixed

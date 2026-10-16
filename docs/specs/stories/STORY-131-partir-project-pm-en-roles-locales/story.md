@@ -5,7 +5,7 @@ id: STORY-131
 kind: feat
 slug: STORY-131-partir-project-pm-en-roles-locales
 title: "Partir project-pm en roles locales"
-status: VERIFY
+status: COMPLETED
 substatus: DONE
 parent: EPIC-24-agentes-locales-por-skill
 created: 2026-10-14

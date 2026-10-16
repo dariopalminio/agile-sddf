@@ -5,7 +5,7 @@ id: STORY-129
 kind: feat
 slug: STORY-129-migrar-analizadores-de-reverse-engineering
 title: "Migrar analizadores de reverse-engineering"
-status: VERIFY
+status: COMPLETED
 substatus: DONE
 parent: EPIC-24-agentes-locales-por-skill
 created: 2026-10-14
