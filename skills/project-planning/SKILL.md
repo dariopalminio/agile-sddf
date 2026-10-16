@@ -2,7 +2,7 @@
 name: project-planning
 description: >-
   Propone épicas a partir de requisitos funcionales y agrega, tras confirmación,
-  una propuesta fechada append-only en product/roadmap.md mediante project-architect.
+  una propuesta fechada append-only en product/roadmap.md con su rol local planning.
 triggers:
   - project-planning
   - /project-planning
@@ -14,7 +14,7 @@ triggers:
 
 ## Objetivo
 
-Convierte los requisitos funcionales disponibles en una propuesta incremental de épicas. El agente `project-architect` prepara la propuesta en staging y este skill la valida, la presenta para confirmación y recién entonces la agrega a `$SPECS_BASE/product/roadmap.md`.
+Convierte los requisitos funcionales disponibles en una propuesta incremental de épicas. La sesión del skill prepara la propuesta en staging siguiendo el rol local `assets/agents/planning.md`; después la valida, la presenta para confirmación y recién entonces la agrega a `$SPECS_BASE/product/roadmap.md`.
 
 ## Entrada
 
@@ -32,12 +32,12 @@ Convierte los requisitos funcionales disponibles en una propuesta incremental de
 
 ## Dependencias
 
-- Agente `project-architect` en estado *Planning*.
+- Rol local `assets/agents/planning.md` (lo lee esta sesión).
 - `/project-story-mapping`, solo si el usuario elige generarlo.
 
 ## Restricciones
 
-- El template es de solo lectura y el agente nunca escribe en `$SPECS_BASE`.
+- El template es de solo lectura y el rol `planning` nunca escribe en `$SPECS_BASE`; solo el Paso 7 escribe, tras `Confirmar`.
 - No se escribe en el roadmap antes del gate `Confirmar`.
 - Cada propuesta es append-only: no se reescriben `## Épicas`, `## Plan original (...)` ni propuestas anteriores.
 - Todo `roadmap.md` se escribe como UTF-8 sin BOM.
@@ -52,6 +52,10 @@ Convierte los requisitos funcionales disponibles en una propuesta incremental de
 2. Si no está definida, leer `sddf.config.yaml`; una clave `root` explícita debe resolver a un directorio accesible o detener el flujo.
 3. Sin fuente explícita, usar `docs` relativo a `REPO_ROOT`.
 4. Resolver `CLI_ROOT` por separado únicamente para skills o agentes.
+
+Con `$SPECS_BASE` resuelto, comprobar que existe el rol local `assets/agents/planning.md` (ruta relativa al directorio del skill). Si falta, mostrar el siguiente mensaje y terminar sin inventariar requisitos, vaciar ni crear `.tmp/project-planning/`, preguntar por el story map ni tocar `product/roadmap.md`; no se buscan roles fuera del directorio de este skill:
+
+> ❌ Rol local no encontrado: assets/agents/planning.md (skill project-planning). Reinstala el skill; no se modificó ningún archivo.
 
 ### Paso 1 — Inventario y precondición
 
@@ -90,9 +94,9 @@ Si no existe, ofrecer:
 
 Sin respuesta, elegir 2. Con 1, componer `/project-story-mapping` inline; si al volver sigue ausente, informar `⚠️ /project-story-mapping no dejó $SPECS_BASE/product/story-map.md; se continúa sin story map.`
 
-### Paso 5 — Delegar y validar staging
+### Paso 5 — Propuesta con el rol `planning` y validación del staging
 
-Invocar `project-architect` con `$INPUT_PATHS`, `$EPICS_INVENTORY`, `$TEMPLATE_PATH`, `$PROPOSAL_HEADING` y `$STAGING_PATH` ya resueltos. El agente escribe solamente el staging.
+Leer `assets/agents/planning.md` y seguir su `## Estado Planning` con `$INPUT_PATHS`, `$EPICS_INVENTORY`, `$TEMPLATE_PATH`, `$PROPOSAL_HEADING` y `$STAGING_PATH` ya resueltos, escribiendo solamente el staging. Esta sesión redacta la propuesta; no lances un subagente para este paso.
 
 Validar que el staging:
 

@@ -24,7 +24,7 @@ Convierte una visión confirmada en perfiles de usuario y requisitos trazables. 
 
 ## Dependencias
 
-- Rol local `assets/agents/discovery-pm.md` (entrevistador, lo lee esta sesión). Agentes `project-ux` y `project-architect`, invocados secuencialmente por esta sesión.
+- Roles locales `assets/agents/discovery-pm.md` y `assets/agents/discovery-architect.md` (los lee esta sesión). Agente `project-ux`, invocado por esta sesión.
 - `references/layer-materialization.md`, que define inventario, validación y escrituras.
 
 ## Restricciones
@@ -32,7 +32,7 @@ Convierte una visión confirmada en perfiles de usuario y requisitos trazables. 
 - Los templates se leen, nunca se escriben.
 - La propuesta vive exclusivamente en `.tmp/project-discovery/proposal/`.
 - Los documentos materializados se guardan en UTF-8 sin BOM.
-- El rol y los agentes reciben rutas ya resueltas; ninguno resuelve la raíz ni delega en otro agente.
+- Los roles y el agente reciben rutas ya resueltas; ninguno resuelve la raíz ni delega en otro agente.
 
 ## Flujo
 
@@ -48,10 +48,13 @@ Convierte una visión confirmada en perfiles de usuario y requisitos trazables. 
 Con `$SPECS_BASE` resuelto, comprueba que existen los roles locales de este skill (rutas relativas al directorio del skill):
 
 - `assets/agents/discovery-pm.md`
+- `assets/agents/discovery-architect.md`
 
-Si falta alguno, muestra el siguiente mensaje con la ruta del rol ausente y termina sin validar la visión, limpiar `.tmp/project-discovery/proposal/`, preguntar ni escribir; no se buscan roles fuera del directorio de este skill:
+Si falta alguno, muestra el siguiente mensaje con la ruta del rol ausente (una línea por cada rol que falte) y termina sin validar la visión, limpiar `.tmp/project-discovery/proposal/`, preguntar ni escribir; no se buscan roles fuera del directorio de este skill:
 
 > ❌ Rol local no encontrado: assets/agents/discovery-pm.md (skill project-discovery). Reinstala el skill; no se modificó ningún archivo.
+>
+> ❌ Rol local no encontrado: assets/agents/discovery-architect.md (skill project-discovery). Reinstala el skill; no se modificó ningún archivo.
 
 ### Paso 1 — Validar visión
 
@@ -80,13 +83,13 @@ Define `$DISCOVERY_SUMMARY_PATH = .tmp/project-discovery/discovery-summary.md`. 
 
 ### Paso 5 — Hallazgos UX
 
-Invoca a `project-ux` con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH` y `$OUTPUT_PATH = .tmp/project-discovery/ux-findings.md`.
+Invoca a `project-ux` con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH` y `$OUTPUT_PATH = $UX_FINDINGS_PATH = .tmp/project-discovery/ux-findings.md`.
 
-### Paso 6 — Propuesta de requisitos
+### Paso 6 — Propuesta de requisitos con el rol `discovery-architect`
 
-Invoca a `project-architect` en estado Discovery con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH`, `$UX_FINDINGS_PATH`, `$STAKEHOLDERS_PATH`, `$STAKEHOLDERS_TEMPLATE_PATH`, `$REQUIREMENT_TEMPLATE_PATH`, `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US` y `$STAGING_DIR`.
+Lee `assets/agents/discovery-architect.md` y sigue su `## Estado Discovery` con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH`, `$UX_FINDINGS_PATH`, `$STAKEHOLDERS_PATH`, `$STAKEHOLDERS_TEMPLATE_PATH`, `$REQUIREMENT_TEMPLATE_PATH`, `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US` y `$STAGING_DIR`. Esta sesión redacta la propuesta; no lances un subagente para este paso.
 
-El agente deja `manifest.md` y los archivos propuestos en staging. Si cualquier agente falla o falta el manifiesto, informa el fallo, recomienda reejecutar y termina sin tocar `$SPECS_BASE`.
+El rol deja `manifest.md` y los archivos propuestos en staging. Si el rol o el agente de UX fallan, o falta el manifiesto, informa el fallo, recomienda reejecutar y termina sin tocar `$SPECS_BASE`.
 
 ### Paso 7 — Gate global
 
