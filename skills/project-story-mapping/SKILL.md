@@ -18,7 +18,7 @@ triggers:
 
 ## Objetivo
 
-Orquesta una sesión de User Story Mapping y materializa un mapa validado en `$SPECS_BASE/product/story-map.md`. Prepara el contexto de `product/` y `requirements/`, delega la conversación al agente `project-story-mapper` y solo escribe la capa de producto tras validar su staging.
+Orquesta una sesión de User Story Mapping y materializa un mapa validado en `$SPECS_BASE/product/story-map.md`. Prepara el contexto de `product/` y `requirements/`, conduce la conversación en esta sesión con el rol local `story-mapper` y solo escribe la capa de producto tras validar su staging.
 
 ## Entrada
 
@@ -32,15 +32,16 @@ Orquesta una sesión de User Story Mapping y materializa un mapa validado en `$S
 
 ## Precondiciones
 
-No hay precondiciones bloqueantes de contenido: si las capas no aportan contexto, el agente lo recopila de forma interactiva.
+No hay precondiciones bloqueantes de contenido: si las capas no aportan contexto, el rol `story-mapper` lo recopila de forma interactiva.
 
 ## Dependencias
 
-- Agente: `project-story-mapper`.
+- Rol local: `assets/agents/story-mapper.md` (entrevistador, lo lee esta sesión).
 
 ## Restricciones / Reglas
 
-- El agente escribe únicamente en staging; nunca se escribe en `product/` sin staging validado.
+- El rol escribe únicamente en staging; nunca se escribe en `product/` sin staging validado.
+- El rol recibe rutas ya resueltas; no resuelve la raíz ni lanza subagentes.
 - Nunca se lee ni crea el nivel de proyectos retirado por ADR-0013.
 - `$STORY_MAP_PATH` se deriva de `SPECS_BASE`, no de una ruta literal.
 - `story-map.md` se guarda en UTF-8 sin BOM.
@@ -60,6 +61,10 @@ Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir a
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
+Con `SPECS_BASE` resuelto, comprueba que existe el rol local `assets/agents/story-mapper.md` (relativo al directorio de este skill). Si falta, muestra el siguiente mensaje y termina sin informar el destino, preguntar `Sobrescribir`/`Cancelar`, vaciar ni crear `.tmp/project-story-mapping/` ni escribir `product/story-map.md`; no se buscan roles fuera del directorio de este skill:
+
+> ❌ Rol local no encontrado: assets/agents/story-mapper.md (skill project-story-mapping). Reinstala el skill; no se modificó ningún archivo.
+
 ### Paso 1 — Preparar destino y decisión de sobrescritura
 
 Define `$STORY_MAP_PATH = $SPECS_BASE/product/story-map.md` y `$STAGING_PATH = .tmp/project-story-mapping/story-map.md`. Informa siempre el destino:
@@ -70,7 +75,7 @@ Define `$STORY_MAP_PATH = $SPECS_BASE/product/story-map.md` y `$STAGING_PATH = .
 
 Si `$STORY_MAP_PATH` existe, pregunta: `Ya existe $SPECS_BASE/product/story-map.md. ¿Rehacer el story map?` con `Sobrescribir` o `Cancelar`. `Cancelar` es el valor por defecto, también sin respuesta: `Story mapping cancelado: no se modificó $SPECS_BASE/product/story-map.md.` y finaliza. Si se elige sobrescribir, conserva el campo `created` (o `date`) del archivo como `$CREATED_AT` e inclúyelo como insumo.
 
-Si no existe, `$CREATED_AT` es la fecha actual. Vacía `.tmp/project-story-mapping/` antes de delegar.
+Si no existe, `$CREATED_AT` es la fecha actual. Vacía `.tmp/project-story-mapping/` antes de la sesión de mapeo.
 
 ### Paso 2 — Reunir insumos
 
@@ -87,11 +92,11 @@ Informa siempre el inventario, con una línea por requisito y la ruta relativa a
 
 Si el inventario está vacío, informa solo `📋 Inventario de requisitos: 0 FR`.
 
-Aunque ambos resultados estén vacíos, continúa con la delegación.
+Aunque ambos resultados estén vacíos, continúa con la sesión de mapeo.
 
-### Paso 3 — Delegar la sesión
+### Paso 3 — Sesión de mapeo con el rol `story-mapper`
 
-Lee las instrucciones de `project-story-mapper` y ejecútalo con `$INPUT_PATHS`, `$REQUIREMENTS_INVENTORY` y `$STAGING_PATH`. El agente conduce la sesión y escribe solo el cuerpo del mapa en staging.
+Lee `assets/agents/story-mapper.md` (relativo al directorio de este skill) y sigue sus instrucciones con `$INPUT_PATHS`, `$REQUIREMENTS_INVENTORY` y `$STAGING_PATH`. Esta sesión conduce la entrevista con el usuario y el rol escribe solo el cuerpo del mapa en staging. No lances un subagente para este paso. Las fases del rol son internas a este paso: al terminar la Fase 7, continúa con el Paso 4.
 
 ### Paso 4 — Validar staging
 

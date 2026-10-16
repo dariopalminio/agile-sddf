@@ -6,7 +6,7 @@
 
 ## Qué hace
 
-Conduce una sesión de User Story Mapping con el agente especializado. Toma contexto de `product/` y `requirements/`, valida un staging y materializa el resultado solo tras esa validación.
+Conduce una sesión de User Story Mapping con su rol local `story-mapper`, que conduce la propia sesión del skill. Toma contexto de `product/` y `requirements/`, valida un staging y materializa el resultado solo tras esa validación.
 
 **Produces:**
 
