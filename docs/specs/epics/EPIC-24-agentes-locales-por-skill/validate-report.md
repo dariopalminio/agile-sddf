@@ -20,11 +20,13 @@ updated: 2026-10-16
 
 ## Sign-off
 
-- [ ] Se cumplen Criterios de salida de la épica
+- [ ] Todas las historias hijas están `COMPLETED` o `DELIVER/DONE`
+- [ ] epic-analyze-report.md con Veredicto APPROVED.
+- [ ] Los Criterios de salida de la épica se cumplen
 - [ ] Smoke tests de la épica pasan
 - [x] npm run test
 - [x] npm run verify:repository
-- [x] evals
+- [x] Los evals de los skills modificados pasan
 - [x] npm publish --dry-run --access public
 - [ ] Instalación funciona: Smoke desde el tarball.
 
