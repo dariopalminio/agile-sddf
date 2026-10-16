@@ -6,17 +6,18 @@ title: "Validate Report: agentes-locales-por-skill"
 epic: EPIC-24
 date: 2026-10-16
 mode: manual
-verdict: READY-TO-SHIP
+verdict: APPROVED
 created: 2026-10-16
 updated: 2026-10-16
 ---
+
 
 # Test Report: agentes-locales-por-skill
 
 **Date**: 2026-10-16
 **Epic**: EPIC-24
 **Mode**: manual
-**Veredicto**: ✅ READY-TO-SHIP
+**Veredicto**: ✅ APPROVED
 
 ## Sign-off
 
@@ -26,8 +27,8 @@ updated: 2026-10-16
 - [x] Condición 4 — El gate determinista del repositorio pasa: `npm run verify:repository` (incluye `npm run test`)
 - [x] Condición 5 — Los evals con LLM de los skills modificados pasan
 - [x] Condición 6 — La simulación de publicación (sin modificar versión) pasa: `npm publish --dry-run --access public`
-- [ ] Condición 7 — La instalación funciona: instalación manual + Smoke desde el tarball (ejecución manual).
-- [ ] Condición 8 — CHANGELOG.md actualizado con los cambios de la épica
+- [x] Condición 7 — La instalación funciona (SMOKE 2): instalación manual + Smoke desde el tarball (ejecución manual).
+- [x] Condición 8 — CHANGELOG.md actualizado con los cambios de la épica
 
 > El smoke automatizado del tarball (`verify:repository`) aprobó los 4 runtimes. La ejecución manual desde el tarball sigue pendiente, a criterio humano. No forma parte de las tres condiciones del veredicto.
 

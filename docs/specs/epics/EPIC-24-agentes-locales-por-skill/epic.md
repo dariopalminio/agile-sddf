@@ -4,7 +4,7 @@ id: EPIC-24
 slug: EPIC-24-agentes-locales-por-skill
 title: "Mover agentes globales a agentes locales por skill"
 status: VALIDATE
-substatus: IN-PROGRESS
+substatus: DONE
 parent: null
 created: 2026-10-14
 updated: 2026-10-15
@@ -30,15 +30,15 @@ Aplicar ADR-0014 moviendo cada agente de `agents/` al skill que lo invoca, en `s
 
 ## Criterios de salida
 
-- [ ] Ningún `SKILL.md` de `skills/` referencia `agents/` ni a un agente global fuera de su sección "Dependencias"
-- [ ] La carpeta `agents/` queda vacía y se elimina como consecuencia de la migración (ADR-0014, Regla 2), `package.json` → `files` no incluye `agents/`, y `npx agile-sddf install --target <runtime>` termina con código 0 para cada runtime de `config/runtimes.json`
-- [ ] Cada skill que invocaba un agente global tiene sus roles o subagentes locales en `skills/<skill>/assets/agents/`
-- [ ] Los agentes entrevistadores (`pm`, `architect`, `ux`, `story-mapper`, `product-owner`) son archivos de rol que lee la sesión del skill, no subagentes invocados
-- [ ] Los agentes analizadores (`reverse-engineer-*`) son subagentes locales que invoca `reverse-engineering`
-- [ ] Ningún subagente local invoca a otro subagente (ADR-0002)
-- [ ] Los `evals/evals.json` de los skills afectados están actualizados y pasan con `npm run test:eval`
-- [ ] `npm run verify:repository` pasa
-- [ ] Los skills migrados funcionan en el runtime `codex` (`agentsDirectory: null` en `config/runtimes.json`)
+- [x] Ningún `SKILL.md` de `skills/` referencia `agents/` ni a un agente global fuera de su sección "Dependencias"
+- [x] La carpeta `agents/` queda vacía y se elimina como consecuencia de la migración (ADR-0014, Regla 2), `package.json` → `files` no incluye `agents/`, y `npx agile-sddf install --target <runtime>` termina con código 0 para cada runtime de `config/runtimes.json`
+- [x] Cada skill que invocaba un agente global tiene sus roles o subagentes locales en `skills/<skill>/assets/agents/`
+- [x] Los agentes entrevistadores (`pm`, `architect`, `ux`, `story-mapper`, `product-owner`) son archivos de rol que lee la sesión del skill, no subagentes invocados
+- [x] Los agentes analizadores (`reverse-engineer-*`) son subagentes locales que invoca `reverse-engineering`
+- [x] Ningún subagente local invoca a otro subagente (ADR-0002)
+- [x] Los `evals/evals.json` de los skills afectados están actualizados y pasan con `npm run test:eval`
+- [x] `npm run verify:repository` pasa
+- [x] Los skills migrados funcionan en el runtime `codex` (`agentsDirectory: null` en `config/runtimes.json`)
 
 ## Smoke tests
 
@@ -51,6 +51,16 @@ Escenario: Skill con rol local funciona en runtime sin carpeta agents/
   Cuando ejecuto /project-discovery en el runtime codex, que no soporta agents/
   Entonces el skill lee su rol local, conduce la entrevista y genera el documento de discovery
     Y no busca ningún archivo en agents/
+```
+
+### SMOKE-2 — Instalación manual + Smoke desde el tarball
+
+```gherkin
+Escenario: instalación manual + Smoke desde el tarball  
+  Dado instalo el paquete en .tmp\test-consumer\  
+  Cuando ejecuto script de copiado de archivos del paquete `npx agile-sddf install --target claude-code`  
+  Entonces se encuentran todos los skills en .tmp\test-consumer\.claude\skills\  
+  Y no hay ningún archivo en agents/
 ```
 
 ## Notas
