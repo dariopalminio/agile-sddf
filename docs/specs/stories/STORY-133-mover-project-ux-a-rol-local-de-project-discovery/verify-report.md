@@ -108,7 +108,7 @@ Trazabilidad escenario → evidencia:
 ### Ejecución 2 — 2026-10-16
 - **Modo**: manual
 - **Resultado**: VERIFY-PASSED
-- **Tests**: 4/4 pasados, 0 fallados (soporte: 11/11 installer, 251/251 `npm test`, 12/12 evals)
+- **Tests**: 12/12 pasados, 0 fallados (`npm run test:eval -- project-discovery`, 12/12 evals)
 - **Findings**: 0 defectos (0 CRITICAL, 0 HIGH)
 
 npm run test:eval -- project-discovery
