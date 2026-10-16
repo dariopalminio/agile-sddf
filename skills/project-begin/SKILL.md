@@ -1,7 +1,7 @@
 ---
 name: project-begin
 description: >-
-  Produce product/vision.md mediante una entrevista de intención con project-pm. Usar para iniciar un proyecto, capturar o actualizar su visión de producto. Invocar también cuando el usuario mencione "comenzar proyecto", "iniciar proyecto", "capturar intención", "visión del producto" o "project-begin".
+  Produce product/vision.md mediante una entrevista de intención que conduce la sesión con su rol local begin-intent. Usar para iniciar un proyecto, capturar o actualizar su visión de producto. Invocar también cuando el usuario mencione "comenzar proyecto", "iniciar proyecto", "capturar intención", "visión del producto" o "project-begin".
 triggers:
   - project-begin
   - /project-begin
@@ -15,13 +15,13 @@ triggers:
 
 ## Objetivo
 
-Orquesta una entrevista estructurada con el agente `project-pm` para completar la visión del producto en `$SPECS_BASE/product/vision.md`.
+Orquesta una entrevista estructurada siguiendo el rol local `assets/agents/begin-intent.md` para completar la visión del producto en `$SPECS_BASE/product/vision.md`.
 
 Qué hace:
 
 - Resuelve el template de visión y el estado de `vision.md`.
 - Deriva las secciones pendientes del template en runtime.
-- Delega la entrevista y la escritura inicial a `project-pm`.
+- Conduce la entrevista y la escritura inicial con el rol `begin-intent`.
 - Pide confirmación antes de llevar la visión a `substatus: DONE`.
 
 No hace discovery ni planificación del proyecto.
@@ -38,7 +38,7 @@ No hace discovery ni planificación del proyecto.
 
 ## Dependencias
 
-- Agente: `project-pm`.
+- Rol local: `assets/agents/begin-intent.md` (entrevistador, lo lee esta sesión).
 
 ## Modos de ejecución
 
@@ -70,6 +70,10 @@ Resuelve una sola vez `REPO_ROOT` y `SPECS_BASE`:
 
 El diagnóstico se solicita explícitamente con `/skill-preflight`; no se ejecuta en este flujo.
 
+Con `SPECS_BASE` resuelto, comprueba que existe el rol local `assets/agents/begin-intent.md` (relativo al directorio de este skill). Si falta, muestra el siguiente mensaje y termina sin resolver el template, preguntar, escribir ni crear `.tmp/`; no se buscan roles fuera del directorio de este skill:
+
+> ❌ Rol local no encontrado: assets/agents/begin-intent.md (skill project-begin). Reinstala el skill; no se modificó ningún archivo.
+
 ### Paso 1 — Resolver el template de visión
 
 Busca `$SPECS_BASE/templates/vision-template.md` como fuente de verdad. Si no existe, usa `assets/vision-template.md` y muestra:
@@ -80,7 +84,7 @@ Si ninguno existe, informa y termina sin escribir:
 
 > ❌ Template `vision-template.md` no encontrado. Ejecuta `sddf-init`.
 
-Conserva la ruta resuelta como `$TEMPLATE_PATH`; el agente no la reconstruye.
+Conserva la ruta resuelta como `$TEMPLATE_PATH`; el rol no la reconstruye.
 
 ### Paso 2 — Determinar el estado de la visión
 
@@ -94,9 +98,9 @@ Define `$VISION_PATH = $SPECS_BASE/product/vision.md`. No lo escribas antes de c
 
 En modo `resume`, calcula `$PENDING_SECTIONS` en el orden del template. La unidad es una sección hoja: un `##` sin `###` hijas o un `###`. Una sección está pendiente si no existe, contiene `[Por completar` o conserva una línea placeholder idéntica a la del template. Si la lista queda vacía, salta al Paso 4.
 
-### Paso 3 — Delegar a `project-pm`
+### Paso 3 — Entrevista con el rol `begin-intent`
 
-Invoca a `project-pm` sustituyendo las variables ya resueltas:
+Lee `assets/agents/begin-intent.md` y sigue su `## Estado Visión` con `$TEMPLATE_PATH`, `$VISION_PATH`, `$MODE` y `$PENDING_SECTIONS` ya resueltos. Esta sesión conduce la entrevista; no lances un subagente para este paso. Parametriza el rol así:
 
 > Lee `$TEMPLATE_PATH` y `$VISION_PATH` si existe. Recibe `$MODE` (`full` o `resume`) y `$PENDING_SECTIONS` para el modo de retoma.
 >

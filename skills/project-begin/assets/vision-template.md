@@ -1,11 +1,11 @@
 ---
-type: product # escritor: project-begin (project-pm) (valor fijo)
-slug: vision # escritor: project-begin (project-pm) (valor fijo)
-title: "Visión del producto" # escritor: project-begin (project-pm) (valor fijo)
-status: IN-PROGRESS # escritor: project-begin (project-pm) (valor fijo)
-substatus: TODO # escritor: project-pm (IN-PROGRESS) · project-begin (DONE tras confirmar)
-parent: null # escritor: project-begin (project-pm) (valor fijo)
-created: <YYYY-MM-DD> # escritor: project-begin (project-pm) si el archivo no existe
+type: product # escritor: project-begin (rol begin-intent) (valor fijo)
+slug: vision # escritor: project-begin (rol begin-intent) (valor fijo)
+title: "Visión del producto" # escritor: project-begin (rol begin-intent) (valor fijo)
+status: IN-PROGRESS # escritor: project-begin (rol begin-intent) (valor fijo)
+substatus: TODO # escritor: project-begin (rol begin-intent: IN-PROGRESS · DONE tras confirmar)
+parent: null # escritor: project-begin (rol begin-intent) (valor fijo)
+created: <YYYY-MM-DD> # escritor: project-begin (rol begin-intent) si el archivo no existe
 updated: <YYYY-MM-DD> # escritor: todo skill que edite el archivo
 ---
 

@@ -6,7 +6,7 @@
 
 ## Qué hace
 
-Orquesta la captura o actualización de la visión del producto con el agente `project-pm`. Usa el template de visión vigente y deja el punto de partida listo para discovery.
+Orquesta la captura o actualización de la visión del producto con su rol local de entrevista `begin-intent`, que conduce la propia sesión del skill. Usa el template de visión vigente y deja el punto de partida listo para discovery.
 
 Produce `$SPECS_BASE/product/vision.md`, que queda con `substatus: DONE` únicamente después de la confirmación del desarrollador.
 

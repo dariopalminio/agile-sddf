@@ -26,7 +26,7 @@ related:
 
 ## 1. Línea base
 
-- [ ] T001 Verificar el estado de partida (Risks «Orden» y Context de `design.md`): STORY-131 está integrada, es decir, `git ls-files skills/project-discovery/assets/agents/discovery-pm.md` lista el archivo, `git ls-files agents/project-pm.agent.md` no devuelve nada y el Paso 0 de `skills/project-discovery/SKILL.md` tiene la lista de roles locales con `discovery-pm.md`; además, `git ls-files agents/project-architect.agent.md` lista el archivo y `wc -l` da 59, y `git ls-files skills/project-planning/assets/agents` no devuelve nada; si algo difiere, detener la historia e informar qué pieza no coincide (WIP = 1, orden 131 → 132 → 133) — D-1, D-5, AC-1
+- [x] T001 Verificar el estado de partida (Risks «Orden» y Context de `design.md`): STORY-131 está integrada, es decir, `git ls-files skills/project-discovery/assets/agents/discovery-pm.md` lista el archivo, `git ls-files agents/project-pm.agent.md` no devuelve nada y el Paso 0 de `skills/project-discovery/SKILL.md` tiene la lista de roles locales con `discovery-pm.md`; además, `git ls-files agents/project-architect.agent.md` lista el archivo y `wc -l` da 59, y `git ls-files skills/project-planning/assets/agents` no devuelve nada; si algo difiere, detener la historia e informar qué pieza no coincide (WIP = 1, orden 131 → 132 → 133) — D-1, D-5, AC-1
 
 ## 2. Roles locales
 

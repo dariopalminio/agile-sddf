@@ -56,6 +56,24 @@
       "input": { "context": "No existe docs/templates/vision-template.md ni skills/project-begin/assets/vision-template.md." },
       "expected": { "contains": ["Template vision-template.md no encontrado", "sddf-init"], "not_contains": ["vision.md creado", "substatus: DONE"] },
       "threshold": 1.0
+    },
+    {
+      "id": "TC-007",
+      "name": "falla-sin-rol-local-begin-intent",
+      "type": "fail-fast",
+      "description": "Sin el rol local begin-intent, se detiene antes de preguntar o escribir e informa la ruta del rol, sin recurrir al agente global.",
+      "input": { "context": "Existen docs/templates/vision-template.md y docs/product/vision.md con substatus: TODO. No existe skills/project-begin/assets/agents/begin-intent.md." },
+      "expected": { "contains": ["❌ Rol local no encontrado", "assets/agents/begin-intent.md"], "not_contains": ["agents/project-p\u006d", "substatus: IN-PROGRESS"] },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-008",
+      "name": "entrevista-con-rol-local-begin-intent",
+      "type": "happy-path",
+      "description": "La sesión lee su rol local begin-intent, conduce la entrevista y cierra la visión tras confirmar, sin invocar el agente global.",
+      "input": { "context": "No existe docs/product/vision.md. Existen docs/templates/vision-template.md y skills/project-begin/assets/agents/begin-intent.md. No existe la carpeta agents/. El desarrollador responde la entrevista y elige Confirmar." },
+      "expected": { "contains": ["begin-intent.md", "substatus: DONE", "/project-discovery"], "not_contains": ["agents/project-p\u006d", "project-p\u006d.agent.md"] },
+      "threshold": 1.0
     }
   ]
 }

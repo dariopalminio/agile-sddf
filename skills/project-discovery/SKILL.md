@@ -24,7 +24,7 @@ Convierte una visión confirmada en perfiles de usuario y requisitos trazables. 
 
 ## Dependencias
 
-- Agentes `project-pm`, `project-ux` y `project-architect`, invocados secuencialmente por esta sesión.
+- Rol local `assets/agents/discovery-pm.md` (entrevistador, lo lee esta sesión). Agentes `project-ux` y `project-architect`, invocados secuencialmente por esta sesión.
 - `references/layer-materialization.md`, que define inventario, validación y escrituras.
 
 ## Restricciones
@@ -32,7 +32,7 @@ Convierte una visión confirmada en perfiles de usuario y requisitos trazables. 
 - Los templates se leen, nunca se escriben.
 - La propuesta vive exclusivamente en `.tmp/project-discovery/proposal/`.
 - Los documentos materializados se guardan en UTF-8 sin BOM.
-- Los agentes reciben rutas ya resueltas; ninguno resuelve la raíz ni delega en otro agente.
+- El rol y los agentes reciben rutas ya resueltas; ninguno resuelve la raíz ni delega en otro agente.
 
 ## Flujo
 
@@ -44,6 +44,14 @@ Convierte una visión confirmada en perfiles de usuario y requisitos trazables. 
 2. Si no está definida, lee `sddf.config.yaml`; si `root` existe, debe resolver a un directorio accesible relativo al repositorio.
 3. Sin una fuente explícita, usa `docs` relativo al repositorio.
 4. Si una fuente explícita es inválida, informa el valor y termina sin escribir.
+
+Con `$SPECS_BASE` resuelto, comprueba que existen los roles locales de este skill (rutas relativas al directorio del skill):
+
+- `assets/agents/discovery-pm.md`
+
+Si falta alguno, muestra el siguiente mensaje con la ruta del rol ausente y termina sin validar la visión, limpiar `.tmp/project-discovery/proposal/`, preguntar ni escribir; no se buscan roles fuera del directorio de este skill:
+
+> ❌ Rol local no encontrado: assets/agents/discovery-pm.md (skill project-discovery). Reinstala el skill; no se modificó ningún archivo.
 
 ### Paso 1 — Validar visión
 
@@ -68,7 +76,7 @@ Aplica `references/layer-materialization.md` para obtener `$REQUIREMENTS_INVENTO
 
 ### Paso 4 — Discovery de producto
 
-Invoca a `project-pm` en estado Discovery con `$VISION_PATH`, `$STAKEHOLDERS_PATH` y `$OUTPUT_PATH = .tmp/project-discovery/discovery-summary.md`. El agente escribe solo el resumen y no invoca otros agentes.
+Define `$DISCOVERY_SUMMARY_PATH = .tmp/project-discovery/discovery-summary.md`. Lee `assets/agents/discovery-pm.md` y sigue su `## Estado Discovery` con `$VISION_PATH`, `$STAKEHOLDERS_PATH` y `$OUTPUT_PATH = $DISCOVERY_SUMMARY_PATH`. Esta sesión conduce la entrevista; no lances un subagente para este paso. El rol escribe solo el resumen y no invoca otros agentes.
 
 ### Paso 5 — Hallazgos UX
 

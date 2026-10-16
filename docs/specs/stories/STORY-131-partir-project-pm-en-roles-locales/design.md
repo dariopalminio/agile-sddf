@@ -285,3 +285,11 @@ Ninguna. Las dos decisiones de alcance (copia central del template y guía de or
 - **Documento afectado**: design.md (D-8) y tasks.md (T014, T015)
 - **Acción requerida**: escribir esas cadenas con el escape `project-p\u006d` (regla de escape de D-8). El contexto y las aserciones no cambian para el runner.
 - **Estado**: aplicado el 2026-10-15 a petición del usuario. `analyze.md` es anterior a este cambio: conviene reejecutar `/story-analyze STORY-131`.
+
+### CR-004
+
+- **Tipo**: inconsistencia interna
+- **Descripción**: detectado al implementar T013. El texto literal de D-7 nombra `` `project-pm` `` («`project-pm` ya se partió en…»), pero el contrato 3 (T017) exige que `git grep -n "project-pm"` sobre `docs/guides/harness-eng-agents-orchestration.md` no devuelva nada. Ambos no pueden cumplirse a la vez.
+- **Documento afectado**: design.md (D-7) y la guía de orquestación
+- **Acción requerida**: en el párrafo de la guía, el sujeto `` `project-pm` `` se sustituye por «El antiguo agente de PM». El resto del texto de D-7 se conserva literal; el contrato 3 no cambia.
+- **Estado**: aplicado el 2026-10-15 durante `/story-implement-tasks STORY-131`.
