@@ -5,11 +5,11 @@ id: STORY-134
 kind: feat
 slug: STORY-134-migrar-project-story-mapper-a-rol-local
 title: "Migrar project-story-mapper a rol local"
-status: CODE-REVIEW
+status: VERIFY
 substatus: DONE
 parent: EPIC-24-agentes-locales-por-skill
 created: 2026-10-14
-updated: 2026-10-15
+updated: 2026-10-16
 related:
   - EPIC-24-agentes-locales-por-skill
 ---

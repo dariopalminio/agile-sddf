@@ -96,7 +96,11 @@ Aunque ambos resultados estén vacíos, continúa con la sesión de mapeo.
 
 ### Paso 3 — Sesión de mapeo con el rol `story-mapper`
 
-Lee `assets/agents/story-mapper.md` (relativo al directorio de este skill) y sigue sus instrucciones con `$INPUT_PATHS`, `$REQUIREMENTS_INVENTORY` y `$STAGING_PATH`. Esta sesión conduce la entrevista con el usuario y el rol escribe solo el cuerpo del mapa en staging. No lances un subagente para este paso. Las fases del rol son internas a este paso: al terminar la Fase 7, continúa con el Paso 4.
+Muestra:
+
+> 📋 Rol local: assets/agents/story-mapper.md — conduce esta sesión, sin subagente.
+
+Luego lee `assets/agents/story-mapper.md` (relativo al directorio de este skill) y sigue sus instrucciones con `$INPUT_PATHS`, `$REQUIREMENTS_INVENTORY` y `$STAGING_PATH`. Esta sesión conduce la entrevista con el usuario y el rol escribe solo el cuerpo del mapa en staging. No lances un subagente para este paso. Las fases del rol son internas a este paso: al terminar la Fase 7, continúa con el Paso 4.
 
 ### Paso 4 — Validar staging
 
