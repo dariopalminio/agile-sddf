@@ -6,7 +6,7 @@ kind: chore
 slug: STORY-143-validacion-end-to-end
 title: "Validación end-to-end"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
 updated: 2026-10-17

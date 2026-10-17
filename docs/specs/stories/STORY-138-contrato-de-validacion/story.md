@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-138-contrato-de-validacion
 title: "Contrato de validación"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
 updated: 2026-10-17
@@ -62,6 +62,8 @@ Entonces cada rama es un valor permitido para el skill que la precede
 
 - **CNF-1 — Fuente única:** la política es la única definición del vocabulario. Skills, templates y README la enlazan y no repiten la lista de valores con otra redacción.
 - **CNF-2 — Formato del valor:** todos los valores van en mayúsculas, separados con guion ASCII (`-`), y en inglés.
+- **CNF-3 — Debe ser ejecutiva:** la política debe ser comprensible y aplicable por los Product Owners y miembros del equipo sin necesidad de interpretación adicional.
+- **CNF-4 — Debe ser breve:** la política debe ser concisa y directa, evitando información redundante o innecesaria.
 
 ## Fuera de alcance (Non-Goals)
 

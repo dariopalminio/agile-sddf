@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-145-alinear-story-acceptance
 title: "Alinear story-acceptance"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
 updated: 2026-10-17

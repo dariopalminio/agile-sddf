@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-141-alinear-story-code-review
 title: "Alinear story-code-review"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
 updated: 2026-10-17
