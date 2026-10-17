@@ -9,7 +9,7 @@ status: SPECIFY
 substatus: DONE
 parent: EPIC-23-skill-epic-validate
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-17
 related:
   - EPIC-23-skill-epic-validate
   - STORY-124
@@ -21,29 +21,32 @@ related:
 
 # 📖 Historia: Validar la evidencia operativa de una épica
 
-**Como** mantenedor de Agile-SDDF que debe confirmar que una épica funciona antes de liberarla  
+**Como** Solo Builder y mantenedor de Agile-SDDF que debe confirmar que una épica funciona antes de liberarla  
 **Quiero** incorporar al veredicto la evidencia de smoke tests, verificación de release y DoD aplicable  
 **Para** evitar liberar una épica cuyo comportamiento operativo o controles de calidad fallan
 
 ## ✅ Criterios de aceptación
 
-### AC-1 — Escenario principal — Smoke tests aprobados
+### AC-1 — Escenario principal — Evidencia operativa aprobada
 ```gherkin
-Dado una épica que declara smoke tests ejecutables
-Cuando se validan y todos pasan
-Entonces el reporte los registra como aprobados sin bloquear el veredicto
+Dado una épica con historias terminales y análisis APPROVED
+  Y con smoke tests y verificación de release (verify:release) aprobados
+Cuando se valida la épica
+Entonces se escribe epic-validate-report.md con APPROVED
+  Y registra cada smoke test como aprobado
+  Y no hay motivos de bloqueo
 ```
 
 ### AC-2 — Escenario alternativo — Evidencia operativa fallida
 ```gherkin
-Dado un smoke test o comando de verificación configurado que falla
+Dado un smoke test, el comando verify:release o un criterio del DoD de épica que falla
 Cuando se valida la épica
 Entonces el reporte queda BLOCKED e identifica la comprobación y su resultado
 ```
 
 ### AC-3 — Escenario alternativo — Control opcional no configurado
 ```gherkin
-Dado que falta el comando de verificación o no existe un DoD de épica
+Dado que falta el comando verify:release o no existe un DoD de épica
 Cuando se valida la épica
 Entonces el reporte registra la comprobación como omitida sin bloquear por su ausencia
 ```
@@ -63,3 +66,5 @@ Entonces el reporte registra la comprobación como omitida sin bloquear por su a
 
 - Amplía el veredicto estructural entregado por STORY-124.
 - La falta de una comprobación opcional se comunica como advertencia; un fallo de una comprobación configurada bloquea la liberación.
+- Cubre el criterio de salida de EPIC-23: **CS-4** — Se verifican los smoke tests, `verify:release` y el DoD de épica cuando exista.
+- Cubre SMOKE-1 de EPIC-23 (AC-1).

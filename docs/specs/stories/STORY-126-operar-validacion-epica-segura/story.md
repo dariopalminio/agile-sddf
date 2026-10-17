@@ -9,7 +9,7 @@ status: SPECIFY
 substatus: DONE
 parent: EPIC-23-skill-epic-validate
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-17
 related:
   - EPIC-23-skill-epic-validate
   - STORY-124
@@ -21,7 +21,7 @@ related:
 
 # 📖 Historia: Operar la validación de épicas de manera segura
 
-**Como** mantenedor de Agile-SDDF que revisa la preparación de una épica  
+**Como** Solo Builder y mantenedor de Agile-SDDF que revisa la preparación de una épica  
 **Quiero** ejecutar la validación en modos manual, automático y de previsualización sin efectos inesperados  
 **Para** elegir una operación reproducible que se adapte a una revisión humana o a una automatización
 
@@ -62,3 +62,4 @@ Entonces el reporte conserva el mismo contenido lógico y no se modifican fuente
 ## 📎 Notas / contexto adicional
 
 - Los modos concretos de invocación y sus códigos de salida se decidirán durante el diseño, manteniendo la semántica verificable de estos escenarios.
+- Cubre el criterio de salida de EPIC-23: **CS-7** — El skill solo escribe `epic-validate-report.md`; no modifica código, fuentes ni otros documentos.

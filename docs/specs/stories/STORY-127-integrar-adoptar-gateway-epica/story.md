@@ -9,7 +9,7 @@ status: SPECIFY
 substatus: DONE
 parent: EPIC-23-skill-epic-validate
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-17
 related:
   - EPIC-23-skill-epic-validate
   - STORY-124
@@ -21,7 +21,7 @@ related:
 
 # 📖 Historia: Integrar y documentar el gateway de validación de épicas
 
-**Como** responsable del ciclo de vida de épicas en Agile-SDDF  
+**Como** Solo Builder y responsable del ciclo de vida de épicas en Agile-SDDF  
 **Quiero** que el gateway de validación se aplique antes de la transición correspondiente y esté disponible y documentado para los runtimes soportados  
 **Para** que el equipo use una única regla de liberación comprensible y ejecutable
 
@@ -31,7 +31,7 @@ related:
 ```gherkin
 Dado una épica en DEVELOP lista según su validación automática
 Cuando intenta avanzar a VALIDATE
-Entonces la transición continúa y conserva la evidencia del veredicto READY-TO-SHIP
+Entonces la transición continúa y conserva la evidencia del veredicto APPROVED
 ```
 
 ### AC-2 — Escenario alternativo — Transición bloqueada
@@ -45,7 +45,9 @@ Entonces la transición se detiene y muestra los impedimentos que debe resolver 
 ```gherkin
 Dado una instalación explícita del framework en un runtime soportado
 Cuando el mantenedor consulta la guía del pipeline de épicas
-Entonces encuentra el gateway instalado, su uso y su posición antes de VALIDATE
+Entonces skills/epic-validate/ figura en el arreglo files de package.json
+  Y el gateway queda instalado
+  Y la guía explica su uso y su posición antes de VALIDATE
 ```
 
 ## ⚙️ Criterios no funcionales específicos
@@ -63,3 +65,4 @@ Entonces encuentra el gateway instalado, su uso y su posición antes de VALIDATE
 
 - Esta historia consume el contrato de validación de STORY-124, STORY-125 y STORY-126.
 - La fuente del framework permanece en `skills/`; la instalación explícita genera los destinos de runtime.
+- Cubre el criterio de salida de EPIC-23: **CS-8** — `skills/epic-validate/` figura en el arreglo `files` de `package.json`.

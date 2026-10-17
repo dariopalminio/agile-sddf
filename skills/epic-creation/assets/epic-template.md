@@ -24,7 +24,7 @@ related: []               # escritor: epic-creation · epic-from-project-plan
 
 ## Criterios de salida <!-- sección obligatoria · clave: criterios-salida · escritor: epic-creation · epic-from-project-plan · memory-system (migrate --from=epic-template-v1) -->
 <!-- Criterios técnicos verificables de "épica terminada". No son criterios de éxito de negocio. -->
-- [ ] [Criterio técnico verificable]
+- [ ] **CS-N** — [Criterio técnico verificable]
 
 ## Smoke tests <!-- sección obligatoria · clave: smoke-tests · escritor: epic-creation · epic-from-project-plan · memory-system (migrate --from=epic-template-v1) -->
 <!-- Si uno falla: detener el despliegue o rollback. IDs SMOKE-N estables: no renumerar al insertar o eliminar. Con un único escenario la numeración es opcional. -->
