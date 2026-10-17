@@ -26,6 +26,7 @@ El skill solo lee artefactos de entrada y, fuera de una previsualización, escri
 - [ ] **STORY-126** — Operar la validación de épicas de manera segura: ofrecer modos manual, automático y de previsualización sin efectos inesperados.
 - [ ] **STORY-127** — Integrar y documentar el gateway de validación de épicas: aplicar el gateway antes de la transición y hacerlo disponible en los runtimes soportados.
 - [ ] **STORY-128** — Evaluar la validación de épicas de forma repetible: cubrir resultados APPROVED y BLOCKED contra regresiones.
+- [ ] **STORY-137** — Controlar el detalle y los límites de la ejecución de la validación de épicas: `--verbose` y rechazo de `--mode auto` sin pruebas configuradas.
 
 ## Criterios de salida
 
@@ -38,6 +39,7 @@ El skill solo lee artefactos de entrada y, fuera de una previsualización, escri
 - [ ] **CS-7** — El skill solo escribe `epic-validate-report.md`; no modifica código, fuentes ni otros documentos.
 - [ ] **CS-8** — `skills/epic-validate/` figura en el arreglo `files` de `package.json`.
 - [ ] **CS-9** — `skills/epic-validate/evals/evals.json` incluye al menos una épica consistente que resulte APPROVED y una inconsistente que resulte BLOCKED.
+- [ ] **CS-10** — Se reconocen y manejan correctamente los flags `--mode manual`, `--mode auto`, `--dry-run` y `--verbose`.
 
 ## Smoke tests
 
@@ -72,4 +74,18 @@ Escenario: Épica con historia no terminal
 - La épica se crea en `DEFINE/TODO` para no activar otro ítem de nivel épica mientras existen épicas en progreso.
 - Las historias ya existían al crear esta épica; se registran como F2 y se vinculan a `EPIC-23` sin asignarles nuevos IDs.
 - Los IDs `CS-N` de los criterios de salida son estables, como los `SMOKE-N`: no se renumeran al insertar o eliminar criterios.
-- Cada criterio de salida y cada smoke test tiene una historia dueña que lo cita en sus notas: STORY-124 (CS-1, CS-2, CS-3, CS-5, CS-6; SMOKE-2, SMOKE-3), STORY-125 (CS-4; SMOKE-1), STORY-126 (CS-7), STORY-127 (CS-8) y STORY-128 (CS-9).
+- Cada criterio de salida y cada smoke test tiene una historia dueña que lo cita en sus notas: STORY-124 (CS-1, CS-2, CS-3, CS-5, CS-6; SMOKE-2, SMOKE-3), STORY-125 (CS-4; SMOKE-1), STORY-126 (CS-7), STORY-127 (CS-8), STORY-128 (CS-9) y STORY-137 (CS-10, junto con STORY-126 para `--mode` y `--dry-run`).
+- Los flags disponibles para `/epic-validate` se describen en la siguiente tabla:
+| Flag | Descripción |
+|------|-------------|
+| `--mode manual` | Fuerza el modo interactivo aunque existan tests automáticos |
+| `--mode auto` | Fuerza ejecución automática (falla si no hay tests configurados) |
+| `--dry-run` | Simula sin escribir archivos ni ejecutar tests |
+| `--verbose` | Muestra salida completa de los comandos de prueba |
+- Los modos de uso del skill deben ser como sigue:
+```bash
+/epic-validate EPIC-23
+/epic-validate EPIC-23 --mode manual
+/epic-validate EPIC-23 --dry-run
+/epic-validate EPIC-23 --verbose
+```
