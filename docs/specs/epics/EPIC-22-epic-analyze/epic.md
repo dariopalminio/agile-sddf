@@ -4,7 +4,7 @@ type: epic
 id: EPIC-22
 slug: EPIC-22-epic-analyze
 title: "Skill `epic-analyze`: análisis de una épica antes de desarrollarla"
-status: SHIP
+status: DEVELOP
 substatus: IN-PROGRESS
 parent: null
 created: 2026-10-08

@@ -1,0 +1,10 @@
+flowchart TD
+  A(START)--> B[story-design]
+  B --> C[story-testcases]
+  B --> D[story-tasking]
+  C --> E[story-analyze]
+  D --> E[story-analyze]
+  E --> F{verdict}
+  F-->|NEEDS-CHANGES| H[story-fix-changes]
+  H --> E[story-analyze]
+  F-->|APPROVED| G(END)

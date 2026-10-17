@@ -1,0 +1,9 @@
+flowchart TD
+  A(START)--> B[story-creation]
+  B --> C[story-evaluation]
+  C --> D{verdict}
+  D -->|SPLIT| E[story-split]
+  D -->|NEEDS-REFINEMENT| G[story-refine]
+  D-->|APPROVED| F(END)
+  E --> C
+  G --> C

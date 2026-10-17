@@ -1,0 +1,13 @@
+flowchart TD
+  A(START)--> B[story-implement or story-implement-tasks]
+  B --> C[story-code-review]
+  C --> E{verdict}
+  E -->|NEEDS-CHANGES| B
+  E -->|APPROVED| H[story-verify]
+  H --> I{verdict}
+  I -->|NEEDS-CHANGES| B
+  I -->|APPROVED| J[story-acceptance]
+  J--> K{verdict}
+  K -->|NEEDS-CHANGES| B
+  K -->|APPROVED| L(END)
+
