@@ -5,11 +5,11 @@ id: STORY-142
 kind: feat
 slug: STORY-142-alinear-story-verify
 title: "Alinear story-verify"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
-updated: 2026-10-17
+updated: 2026-10-18
 related:
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
   - STORY-138

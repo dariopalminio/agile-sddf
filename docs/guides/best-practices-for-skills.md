@@ -37,6 +37,7 @@ my-skill-name/
  ├── references/          # documentación de referencia extensa, opcional
  ├── scripts/             # funciones auxiliares opcionales
  ├── assets/              # plantillas, fragmentos de código
+ ├── agents/              # subagentes locales que el skill invoca
  └── evals/               # pruebas del skill, opcional
 ```
 

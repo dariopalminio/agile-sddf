@@ -48,8 +48,9 @@ stateDiagram-v2
     CR --> VERIFY : APPROVED
     CR --> RFI : NEEDS-CHANGES
     CR --> IMPLEMENT : BLOCKED (repetir revisión)
-    VERIFY --> ACCEPTANCE : DoD ✓
-    VERIFY --> RFI : DoD ✗
+    VERIFY --> ACCEPTANCE : APPROVED
+    VERIFY --> RFI : NEEDS-CHANGES
+    VERIFY --> VERIFY : BLOCKED
     ACCEPTANCE --> DELIVER : all APPROVED
     ACCEPTANCE --> RFI : ≥1 REJECTED
     ACCEPTANCE --> ACCEPTANCE : ≥1 BLOCKED
@@ -101,7 +102,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 | `story-analyze` | Invocado por `story-plan` | — | `READY-FOR-IMPLEMENT/DONE` (sin ERRORs) | — |
 | `story-implement` | `READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS` (reanudación) | `IMPLEMENT/IN-PROGRESS` | `IMPLEMENT/DONE` | — |
 | `story-code-review` | `IMPLEMENT/DONE` | `CODE-REVIEW/IN-PROGRESS` | `CODE-REVIEW/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `IMPLEMENT/DONE` (`BLOCKED`) |
-| `story-verify` | `CODE-REVIEW/DONE` (camino normal) o `IMPLEMENT/DONE` (mínimo aceptable) | `VERIFY/IN-PROGRESS` | `VERIFY/DONE` | `READY-FOR-IMPLEMENT/DONE` (DoD ✗) |
+| `story-verify` | `CODE-REVIEW/DONE` (camino normal), `IMPLEMENT/DONE` (mínimo aceptable) o `VERIFY/BLOCKED` (reintento) | `VERIFY/IN-PROGRESS` | `VERIFY/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `VERIFY/BLOCKED` (`BLOCKED`) |
 | `story-acceptance` | `VERIFY/DONE` (camino normal) o `ACCEPTANCE/IN-PROGRESS` (sesión en curso) | `ACCEPTANCE/IN-PROGRESS` | `ACCEPTANCE/DONE` | `READY-FOR-IMPLEMENT/DONE` (≥1 REJECTED) o `ACCEPTANCE/BLOCKED` (≥1 BLOCKED sin REJECTED) |
 
 **DELIVER y COMPLETED son transiciones manuales** — ningún skill los escribe. DELIVER significa que el incremento está listo para producción (potencialmente entregable) o ya desplegado (entregado), según el modelo de entrega del equipo (batch vs. continuous). Lo marca el humano o CI/CD.

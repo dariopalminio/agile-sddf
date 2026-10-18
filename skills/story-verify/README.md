@@ -5,7 +5,7 @@ Orquesta la fase VERIFY del pipeline SDD: ejecuta pruebas, evalúa los criterios
 ## Posición en el pipeline
 
 ```
-story-code-review → [READY-FOR-VERIFY/DONE] → story-verify → [VERIFY/DONE | VERIFY/REJECTED]
+story-code-review → [CODE-REVIEW/DONE] → story-verify → [APPROVED → VERIFY/DONE | NEEDS-CHANGES → READY-FOR-IMPLEMENT/DONE | BLOCKED → VERIFY/BLOCKED]
 ```
 
 ## Precondiciones
@@ -14,8 +14,9 @@ La historia debe tener uno de estos estados antes de ejecutar:
 
 | status | substatus | Fuente |
 |--------|-----------|--------|
-| `READY-FOR-VERIFY` | `DONE` | Camino normal desde `story-code-review` |
+| `CODE-REVIEW` | `DONE` | Camino normal desde `story-code-review` |
 | `IMPLEMENT` | `DONE` | Mínimo aceptable (historia sin code review) |
+| `VERIFY` | `BLOCKED` | Reintento tras resolver el bloqueo |
 
 Cualquier otro estado genera un error descriptivo sin modificar archivos.
 
@@ -44,7 +45,7 @@ El skill detecta automáticamente el modo en este orden:
 | Flag | Descripción |
 |------|-------------|
 | `--mode manual` | Fuerza el modo interactivo aunque existan tests automáticos |
-| `--mode auto` | Fuerza ejecución automática (falla si no hay tests configurados) |
+| `--mode auto` | Fuerza ejecución automática; sin tests configurados emite `BLOCKED` |
 | `--dry-run` | Simula sin escribir archivos ni ejecutar tests |
 | `--verbose` | Muestra salida completa de los comandos de prueba |
 
@@ -53,7 +54,17 @@ El skill detecta automáticamente el modo en este orden:
 | Archivo | Descripción |
 |---------|-------------|
 | `$SPECS_BASE/specs/stories/<ID>/verify-report.md` | Reporte completo de verificación |
-| `story.md` frontmatter | `status: VERIFY`, `substatus: DONE | REJECTED` |
+| `story.md` frontmatter | Estado según el `verdict` del reporte (ver Posición en el pipeline) |
+
+## Veredicto
+
+| Veredicto | Condición | Estado de `story.md` |
+|---|---|---|
+| `APPROVED` | Sin criterios DoD VERIFY fallidos ni defectos CRITICAL o HIGH abiertos, y sin ejecuciones bloqueadas | `VERIFY/DONE` |
+| `NEEDS-CHANGES` | Criterio DoD fallido o defecto CRITICAL o HIGH abierto, incluso si hay bloqueos | `READY-FOR-IMPLEMENT/DONE` |
+| `BLOCKED` | Ejecución no realizable, sin evidencia de fallo | `VERIFY/BLOCKED` |
+
+El vocabulario y la precedencia siguen `docs/policies/validation-contract-policy.md`.
 
 ## Template del reporte
 

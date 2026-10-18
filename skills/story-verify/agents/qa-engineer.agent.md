@@ -51,11 +51,14 @@ Cuando `mode == "manual"`:
    Observaciones (opcional): ___________________________
    ```
 3. Registrar el resultado y las observaciones del usuario.
-4. Si el resultado es FAIL o BLOCKED, solicitar detalles adicionales:
+4. Si el resultado es FAIL, solicitar detalles adicionales:
    - Descripción del defecto
    - Pasos para reproducir
    - Comportamiento esperado vs. actual
    - Severidad estimada (CRITICAL / HIGH / MEDIUM / LOW)
+   Registrar un elemento en `findings[]` para ese defecto.
+   Si el resultado es BLOCKED, solicitar solo el motivo del bloqueo (obligatorio),
+   guardarlo en `observations` del escenario con `status: BLOCKED` y no crear un finding.
 5. Al finalizar todos los escenarios, escribir el resultado en `.tmp/story-verify/qa-output.json`:
 
 ```json

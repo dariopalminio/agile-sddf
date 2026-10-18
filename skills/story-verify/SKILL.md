@@ -17,17 +17,19 @@ triggers:
 
 ## Objetivo
 
-Orquesta la fase VERIFY del pipeline SDD: detecta el modo de ejecución (delegado, automatico-e2e, automatico-unit, manual), ejecuta o guía las pruebas, evalúa los criterios del DoD VERIFY, genera `verify-report.md` y actualiza el frontmatter de `story.md`.
+Orquesta la fase VERIFY del pipeline SDD: detecta el modo de ejecución (delegado, automatico-e2e, automatico-unit, manual), ejecuta o guía las pruebas, evalúa los criterios del DoD VERIFY, genera `verify-report.md` con un veredicto (`APPROVED` | `NEEDS-CHANGES` | `BLOCKED`) y actualiza el frontmatter de `story.md`.
 
 ## Posicionamiento
 
 ```
 [story.md: CODE-REVIEW/DONE]          ← viene de story-code-review
+[story.md: VERIFY/BLOCKED]           ← reintento tras resolver un bloqueo
      ↓
 story-verify    ← aquí
      │   Al iniciar: story.md → VERIFY/IN-PROGRESS
-     │   Si todos los criterios DoD pasan: → VERIFY/DONE
-     │   Si criterios DoD fallan: → READY-FOR-IMPLEMENT/DONE
+     │   APPROVED: → VERIFY/DONE
+     │   NEEDS-CHANGES: → READY-FOR-IMPLEMENT/DONE
+     │   BLOCKED: → VERIFY/BLOCKED
      │   Si estado incorrecto: → error, sin cambio
      ↓
 [story.md: VERIFY/DONE]
@@ -46,7 +48,7 @@ story-verify    ← aquí
 
 - `--story <ID>` o primer argumento posicional: ID de la historia a verificar
 - `--mode manual`: forzar modo interactivo aunque existan tests automáticos
-- `--mode auto`: forzar ejecución automática (falla si no hay tests configurados)
+- `--mode auto`: forzar ejecución automática; sin tests configurados emite veredicto `BLOCKED`
 - `--dry-run`: simula la ejecución sin escribir archivos ni ejecutar tests
 - `--verbose`: muestra salida completa de los comandos de prueba
 
@@ -94,7 +96,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 - **No revisa código:** eso corresponde a `story-code-review`.
 - **No despliega:** el despliegue corresponde a `story-deploy`.
 - **Idempotente:** ejecutable múltiples veces; sobreescribe `verify-report.md` preservando el historial de ejecuciones anteriores.
-- **Precondición de estado:** solo ejecuta si `story.md` tiene `status: CODE-REVIEW/DONE` o `IMPLEMENT/DONE`; cualquier otro estado detiene la ejecución con error descriptivo sin modificar archivos.
+- **Precondición de estado:** solo ejecuta si `story.md` tiene `CODE-REVIEW/DONE`, `IMPLEMENT/DONE` o `VERIFY/BLOCKED` (reintento); cualquier otro estado detiene la ejecución con error descriptivo sin modificar archivos.
 - **DoD dinámico:** los criterios VERIFY se leen en runtime desde el DoD; nunca están hardcodeados en el skill.
 - NO modifique ningún archivo existente en el código fuente (estamos verificando la implementación, no implementando los artefactos técnicos)
 - NO genere código; estamos verificando la implementación, no implementando los artefactos técnicos
@@ -156,6 +158,8 @@ Precondición válida si:
   (status: CODE-REVIEW  AND substatus: DONE)            ← camino normal desde story-code-review
   OR
   (status: IMPLEMENT      AND substatus: DONE)       ← mínimo aceptable (AC-4)
+  OR
+  (status: VERIFY         AND substatus: BLOCKED)    ← reintento tras resolver el bloqueo
 ```
 
 Si la precondición NO se cumple:
@@ -167,6 +171,7 @@ Si la precondición NO se cumple:
    story-verify requiere uno de los siguientes estados:
    · CODE-REVIEW/DONE       → camino normal desde story-code-review
    · IMPLEMENT/DONE      → mínimo aceptable
+   · VERIFY/BLOCKED      → reintento tras resolver el bloqueo
 
    La historia {story_id} tiene status {status}/{substatus}.
    Ejecuta story-code-review antes de continuar.
@@ -296,6 +301,10 @@ Mostrar:
 
 ### Paso 6 — Ejecutar pruebas según el modo
 
+Inicializar `$BLOCKED_EXECUTIONS = []` como lista de pares `{origen, motivo}`. Una ejecución bloqueada es una prueba que no pudo iniciarse por falta de ejecutable, intérprete o dependencia, o cuyo comando termina con código distinto de 0 sin reportar ningún resultado de prueba. No confundirla con una prueba ejecutada que reporta fallos: esta última suma en `$FAILED`. Conservar los resultados y continuar con las demás ejecuciones. Registrar el origen y el motivo concretos en cada bloqueo.
+
+Si se pidió `--mode auto` y no hay pruebas configuradas ni detectadas, registrar `{origen: "--mode auto", motivo: "sin pruebas configuradas"}`; fijar `$MODO = automatico-unit` solo cuando se detectó un framework unitario, y en ausencia de framework conservar `auto` como modo descriptivo. Continuar directamente al Paso 7 con contadores en cero. No invocar el modo manual en este caso.
+
 #### Modo: config-driven
 
 Ejecutar cada test en `$TEST_EXECUTION_LIST` en el orden en que aparecen en la sección `verify` del config:
@@ -313,7 +322,7 @@ Recopilar resultados acumulados de todas las ejecuciones:
 - `$COVERAGE` — si algún runner lo reporta; usar el último valor disponible
 - `$TEST_OUTPUT` — salida completa concatenada por tipo
 
-Si un comando retorna código de error distinto de 0, registrar ese tipo como fallido pero continuar ejecutando los tipos restantes de `$TEST_EXECUTION_LIST`.
+Si un comando no puede iniciarse, o devuelve código distinto de 0 sin resultados de prueba, agregar `{origen: tipo de prueba, motivo: causa observada}` a `$BLOCKED_EXECUTIONS` y continuar con los demás tipos. Si devuelve código distinto de 0 **con** resultados, registrar ese tipo como fallido, sumar los fallos en `$FAILED` y continuar. No inferir bloqueo de un código de salida concreto.
 
 #### Modo: automatico-unit
 
@@ -340,6 +349,8 @@ Recopilar resultados:
 - `$COVERAGE` (si el runner lo reporta)
 - `$TEST_OUTPUT` (salida completa del runner)
 
+Si el comando no puede iniciarse o termina con código distinto de 0 sin resultados, agregar `{origen: $FRAMEWORK_UNIT, motivo: causa observada}` a `$BLOCKED_EXECUTIONS`. Si hay resultados con fallos, sumarlos en `$FAILED`.
+
 #### Modo: automatico-e2e
 
 Detectar el comando E2E:
@@ -356,21 +367,21 @@ Mapear resultados a escenarios Gherkin de `story.md`:
 - Si el nombre del test coincide con el título del AC → PASS/FAIL según resultado
 - Si el AC no tiene test E2E correspondiente → registrar como SKIP con nota: "Sin cobertura E2E directa"
 
+Si el comando no puede iniciarse o termina con código distinto de 0 sin resultados, agregar `{origen: $FRAMEWORK_E2E, motivo: causa observada}` a `$BLOCKED_EXECUTIONS`. Si reporta resultados con fallos, sumarlos en `$FAILED`.
+
 #### Modo: delegado
 
 Invocar el skill de testing detectado: `/skill-name {story_id}`
 
 Leer el output del skill invocado para construir los resultados.
 
+Si el skill termina sin producir resultados, agregar `{origen: $SKILL_TESTING, motivo: causa observada}` a `$BLOCKED_EXECUTIONS`. Los resultados producidos con fallos siguen sumando en `$FAILED`.
+
 #### Modo: manual
 
 Preparar el directorio `.tmp/story-verify/{story_id}/` y verificar que puede crearse.
 
-Si no puede crearse:
-```
-❌ No se puede crear el directorio .tmp/story-verify/{story_id}/ — verifique permisos.
-   Abortando la ejecución del modo manual.
-```
+Si no puede crearse, agregar `{origen: "modo manual", motivo: "no se pudo crear .tmp/story-verify/{story_id}/"}` a `$BLOCKED_EXECUTIONS` y continuar directamente al Paso 7 con contadores en cero. No invocar el agente QA.
 
 Si el directorio existe, proceder:
 
@@ -390,6 +401,9 @@ Si el directorio existe, proceder:
    > **Mecanismo de invocación:** el agente local se lanza leyendo su archivo `agents/qa-engineer.agent.md` y creando un subagente `general-purpose` cuyo prompt es el contenido del archivo más el bloque de contexto con las variables resueltas. El subagente escribe en el `output:` declarado en su frontmatter y devuelve el control. Ver contrato completo en `docs/guides/best-practices-for-skills.md` (ADR-0002).
 
 4. Leer `.tmp/story-verify/{story_id}/qa-output.json` una vez el agente complete
+5. Por cada elemento de `scenario_results[]` con `status: BLOCKED`, agregar `{origen: scenario_id, motivo: observations}` a `$BLOCKED_EXECUTIONS`. Si `observations` está vacío, usar `sin motivo informado`. Estos escenarios no crean findings ni suman en `$FAILED`. Los escenarios `FAIL` con resultados sí generan findings y fallos.
+
+Después del Paso 2, todo camino de ejecución continúa hasta escribir `verify-report.md`; una prueba no ejecutable se expresa con `BLOCKED` en el reporte. Los errores anteriores al Paso 2 y `--dry-run` conservan su salida sin reporte.
 
 ---
 
@@ -398,8 +412,8 @@ Si el directorio existe, proceder:
 #### 6a. Verificar si verify-report.md ya existe (idempotencia — AC-7)
 
 Si `$STORY_DIR/verify-report.md` existe:
-- Extraer el contenido de la sección `## Historial de Ejecuciones Anteriores`
-- Registrar internamente como `$HISTORY_CONTENT`
+- Intentar leer el frontmatter, `## Summary`, `## Findings` y el contenido de `## Historial de Ejecuciones Anteriores`; registrar si el frontmatter trae `verdict` (reporte alineado) o no (heredado). Un reporte ilegible no impide continuar: usar historial vacío.
+- Registrar la sección histórica como `$HISTORY_CONTENT`. Reescribir cada línea heredada `- **Resultado**: <valor>` como ``- **Veredicto emitido**: `<canónico>` `` usando las equivalencias de `story-verify` en §5 de `docs/policies/validation-contract-policy.md`. Si el valor no está allí, escribir `` `desconocido` ``. No copiar el literal heredado al nuevo reporte.
 
 Si no existe: `$HISTORY_CONTENT = "(sin ejecuciones anteriores)"`
 
@@ -408,7 +422,7 @@ Si no existe: `$HISTORY_CONTENT = "(sin ejecuciones anteriores)"`
 Buscar en este orden:
 1. `assets/verify-report-template.md` — ubicación canónica
 
-Si ninguno existe, usar una estructura mínima integrada.
+Si ninguno existe, usar una estructura mínima integrada con frontmatter `type: verify-report`, `story` y `verdict`; `# Test Report: …`; `## Veredicto` como primer encabezado de nivel 2; `## Summary`; `## Findings`; `## DoD VERIFY Criteria`; y `## Historial de Ejecuciones Anteriores`. Aplicar la misma línea de motivo y los mismos placeholders de 6c.
 
 #### 6c. Construir el contenido del reporte
 
@@ -418,6 +432,9 @@ Completar los placeholders del template con los valores recopilados:
 |---|---|
 | `{story_id}` | ID de la historia |
 | `{story_title}` | Título de la historia |
+| `{verdict}` | `$VERDICT`, calculado en 6e antes de sustituir el template |
+| `{verdict_reason}` | Motivo determinista de 6e según el veredicto |
+| `{verdict_details}` | Si hay bloqueos, una línea `- {origen}: {motivo}` por ejecución de `$BLOCKED_EXECUTIONS`; si no, cadena vacía. Incluirla también si el veredicto es `NEEDS-CHANGES`. No incluir bloqueos en `## Findings`. |
 | `{date}` | Fecha actual (YYYY-MM-DD) |
 | `{mode}` | Modo de ejecución detectado |
 | `{dod_version}` | Campo `updated` del DoD de la etapa verify |
@@ -442,6 +459,8 @@ Completar los placeholders del template con los valores recopilados:
 | `{sign_off_performance}` | `[ ]` (requiere evaluación manual) |
 | `{history}` | `$HISTORY_CONTENT` |
 
+Las filas `Story`, `Date`, `Mode` y `DoD Version` de `## Summary` reutilizan `{story_id}`, `{date}`, `{mode}` y `{dod_version}`. Sustituir los placeholders después de evaluar 6e y construir 6f.
+
 #### 6d. Construcción de findings
 
 Formato de cada finding (CRITICAL/HIGH/MEDIUM/LOW):
@@ -459,25 +478,45 @@ Formato de cada finding (CRITICAL/HIGH/MEDIUM/LOW):
 
 Si no hay findings: incluir `> Sin defectos encontrados en esta ejecución.`
 
-#### 6e. Evaluación de criterios DoD VERIFY
+#### 6e. Evaluación de criterios DoD VERIFY y veredicto
 
 Para cada criterio en `$DOD_VERIFY_CRITERIA`, evaluar contra los resultados:
 - `✓` — evidencia clara de cumplimiento (ej. todos los tests pasan)
 - `❌` — evidencia clara de incumplimiento (ej. tests fallidos, defecto CRITICAL sin resolver)
 - `⚠️` — no evaluable desde los artefactos o requiere verificación manual
 
+Si la evidencia de un criterio depende de una ejecución bloqueada, marcarlo `⚠️` con evidencia `Bloqueado: <origen> — <motivo>`. Marcar `❌` solo cuando exista evidencia de fallo; si también hay un bloqueo, conservar ambas evidencias. La ausencia de resultados por bloqueo no es fallo del código.
+
 Calcular:
 - `$DOD_OK` = criterios con `✓`
 - `$DOD_ERROR` = criterios con `❌`
-- `$VERIFY_RECHAZADO = true` si `$DOD_ERROR > 0` o si hay defectos CRITICAL o HIGH sin resolver
+- `$N_CRITICAL_HIGH` = findings CRITICAL o HIGH abiertos de esta ejecución
 
-#### 6f. Añadir entrada al historial
+Derivar `$VERDICT` en este orden (precedencia G-05 de `docs/policies/validation-contract-policy.md`):
 
-Añadir al final del `$HISTORY_CONTENT` la entrada de esta ejecución:
+1. Si `$DOD_ERROR > 0` o `$N_CRITICAL_HIGH > 0`: `NEEDS-CHANGES`.
+2. Si `$BLOCKED_EXECUTIONS` no está vacía: `BLOCKED`.
+3. En otro caso: `APPROVED`.
+
+Un criterio `⚠️` por sí solo no cambia el veredicto. Construir `{verdict_reason}` exactamente así:
+
+| Veredicto | Motivo |
+|---|---|
+| `APPROVED` | `Sin criterios DoD VERIFY fallidos ni defectos CRITICAL o HIGH abiertos ({dod_passed}/{dod_total} criterios ✓).` |
+| `NEEDS-CHANGES` | `{dod_error} criterio(s) DoD VERIFY fallido(s) y {n_critical_high} defecto(s) CRITICAL o HIGH abierto(s).` |
+| `BLOCKED` | `{n_blocked} ejecución(es) de prueba no ejecutable(s) en el entorno.` |
+
+`{dod_error}` = `$DOD_ERROR`, `{n_critical_high}` = `$N_CRITICAL_HIGH`, `{n_blocked}` = longitud de `$BLOCKED_EXECUTIONS`.
+
+#### 6f. Construir el historial
+
+El historial solo describe ejecuciones anteriores. Si el reporte previo tiene `verdict` en su frontmatter, añadir a `$HISTORY_CONTENT` una entrada construida **desde ese reporte previo**. `N` es el número de encabezados `### Ejecución` en `$HISTORY_CONTENT` más 1; `date`, `mode` y `verdict` salen del frontmatter previo; `passed`, `total` y `failed` de sus filas `## Summary`; y el número y severidad de findings de sus encabezados `### [SEVERITY]` en `## Findings`. Usar `N/A` para datos ausentes. Si el reporte previo es heredado o ilegible, no añadir entrada, porque el formato heredado ya incluía la ejecución anterior. Nunca añadir la ejecución actual.
+
+Formato de la entrada previa:
 ```markdown
 ### Ejecución {N} — {date}
-- **Modo**: {modo}
-- **Resultado**: VERIFY-PASSED / VERIFY-REJECTED
+- **Modo**: {mode}
+- **Veredicto emitido**: `{verdict}`
 - **Tests**: {passed}/{total} pasados, {failed} fallados
 - **Findings**: {N} defectos ({CRITICAL} CRITICAL, {HIGH} HIGH)
 ```
@@ -492,23 +531,35 @@ Escribir `$STORY_DIR/verify-report.md` con el contenido construido.
 
 #### 7a. Actualizar frontmatter de story.md
 
-**Si `$VERIFY_RECHAZADO = false`** (todos los criterios DoD VERIFY pasan):
+**Si `$VERDICT = APPROVED`**:
 ```
 status: VERIFY
 substatus: DONE
 updated: {fecha}
 ```
 
-**Si `$VERIFY_RECHAZADO = true`** (hay criterios DoD fallidos o defectos CRITICAL/HIGH):
+**Si `$VERDICT = NEEDS-CHANGES`**:
 ```
 status: READY-FOR-IMPLEMENT
 substatus: DONE
 updated: {fecha}
 ```
 
-Mostrar en pantalla si hay rechazo:
+Mostrar en pantalla:
 ```
-⚠️ VERIFY RECHAZADO: se encontraron {N} defectos. Revisa verify-report.md para detalles.
+⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} Revisa verify-report.md para detalles.
+```
+
+**Si `$VERDICT = BLOCKED`**:
+```
+status: VERIFY
+substatus: BLOCKED
+updated: {fecha}
+```
+
+Mostrar en pantalla:
+```
+⛔ Veredicto: BLOCKED — {verdict_reason} Resuelve el bloqueo y vuelve a ejecutar /story-verify.
 ```
 
 #### 7b. Mostrar resumen final
@@ -523,19 +574,23 @@ Mostrar en pantalla si hay rechazo:
  Findings: {N_critical} CRITICAL | {N_high} HIGH | {N_medium} MEDIUM | {N_low} LOW
 ─────────────────────────────────────────────────────────────
  DoD VERIFY: {dod_ok}/{dod_total} criterios ✓
+ Veredicto: {verdict}
 ─────────────────────────────────────────────────────────────
 
-📄 Reporte: {$STORY_DIR}/verify-report.md
-📋 Estado story.md: VERIFY/DONE ✓         (si no bloqueado)
-📋 Estado story.md: READY-FOR-IMPLEMENT/DONE (REJECTED) ⚠️     (si rechazado)
+📄 Reporte: {$STORY_DIR}/verify-report.md (verdict: {verdict})
+📋 Estado story.md: VERIFY/DONE ✓                         (si APPROVED)
+📋 Estado story.md: READY-FOR-IMPLEMENT/DONE (NEEDS-CHANGES) ⚠️ (si NEEDS-CHANGES)
+📋 Estado story.md: VERIFY/BLOCKED ⛔                      (si BLOCKED)
 
-✅ Verificación completa                  (si no rechazado)
-⚠️ VERIFY RECHAZADO: N defectos          (si rechazado)
+✅ Verificación completa                   (si APPROVED)
+⚠️ Verificación con cambios requeridos    (si NEEDS-CHANGES)
+⛔ Verificación bloqueada                  (si BLOCKED)
 ```
 
 ## Salida
 
-- `$SPECS_BASE/specs/stories/<story-id>/verify-report.md` — reporte de verificación con summary, findings por severidad, criterios DoD evaluados e historial de ejecuciones.
+- `$SPECS_BASE/specs/stories/<story-id>/verify-report.md` — reporte de verificación con `verdict`, sección `## Veredicto`, summary, findings por severidad, criterios DoD evaluados e historial de ejecuciones.
 - `story.md` frontmatter actualizado:
-  - `status: VERIFY / substatus: DONE` — si todos los criterios DoD VERIFY pasan
-  - `status: READY-FOR-IMPLEMENT / substatus: DONE` — si hay criterios fallidos o defectos CRITICAL/HIGH sin resolver (REJECTED)
+  - `status: VERIFY / substatus: DONE` — si el veredicto es `APPROVED`
+  - `status: READY-FOR-IMPLEMENT / substatus: DONE` — si el veredicto es `NEEDS-CHANGES`
+  - `status: VERIFY / substatus: BLOCKED` — si el veredicto es `BLOCKED`

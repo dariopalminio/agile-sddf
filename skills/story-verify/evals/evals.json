@@ -1,7 +1,7 @@
 {
   "skill": "story-verify",
-  "version": "1.0.0",
-  "description": "Casos de prueba para story-verify: verifica deteccion de modo, precondicion de estado, generacion de verify-report.md y transicion de estado de story.md.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para story-verify: verifica deteccion de modo, precondicion de estado, generacion de verify-report.md, veredicto APPROVED / NEEDS-CHANGES / BLOCKED y transicion de estado de story.md.",
   "cases": [
     {
       "id": "TC-001",
@@ -22,13 +22,16 @@
           "automatico-unit",
           "jest",
           "verify-report.md",
-          "VERIFY/DONE"
+          "VERIFY/DONE",
+          "(verdict: APPROVED)",
+          "Veredicto: APPROVED"
         ],
         "not_contains": [
           "Entorno invalido",
           "no esta en un estado valido",
           "No se encontro la historia",
-          "VERIFY RECHAZADO"
+          "(verdict: NEEDS-CHANGES)",
+          "(verdict: BLOCKED)"
         ]
       },
       "threshold": 0.85
@@ -63,7 +66,8 @@
           "VERIFY/IN-PROGRESS",
           "automatico-unit",
           "automatico-e2e",
-          "manual"
+          "manual",
+          "(verdict: "
         ]
       },
       "threshold": 1.0
@@ -83,7 +87,8 @@
           "Iniciando verificacion para: STORY-052",
           "manual",
           "qa-engineer",
-          "verify-report.md"
+          "verify-report.md",
+          "(verdict: "
         ],
         "not_contains": [
           "Entorno invalido",
@@ -101,9 +106,9 @@
     },
     {
       "id": "TC-004",
-      "name": "happy-path-automatico-e2e-pytest-verify-rechazado",
+      "name": "verify-needs-changes-automatico-unit-pytest",
       "type": "edge-case",
-      "description": "Historia en CODE-REVIEW/DONE con pytest.ini presente pero los tests fallan (hay tests fallidos). El skill debe detectar modo automatico-unit (pytest), generar verify-report.md con findings, y actualizar story.md a READY-FOR-IMPLEMENT/DONE (REJECTED) por criterios DoD fallidos.",
+      "description": "Historia en CODE-REVIEW/DONE con pytest.ini presente pero los tests fallan. El skill debe detectar modo automatico-unit (pytest), generar verify-report.md con findings, y actualizar story.md a READY-FOR-IMPLEMENT/DONE con veredicto NEEDS-CHANGES por criterios DoD fallidos.",
       "input": {
         "input_path": "examples/pytest-project",
         "story_id": "STORY-053",
@@ -116,14 +121,62 @@
           "automatico-unit",
           "pytest",
           "verify-report.md",
-          "VERIFY RECHAZADO",
+          "(verdict: NEEDS-CHANGES)",
+          "Veredicto: NEEDS-CHANGES",
+          "defecto(s) CRITICAL o HIGH",
           "READY-FOR-IMPLEMENT"
         ],
         "not_contains": [
           "Entorno invalido",
           "no esta en un estado valido",
-          "VERIFY/DONE"
+          "VERIFY/DONE",
+          "RECHAZADO",
+          "REJECTED",
+          "RECHAZAR",
+          "(verdict: APPROVED)"
         ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-005",
+      "name": "verify-blocked-runner-no-disponible",
+      "type": "edge-case",
+      "description": "Historia con pytest configurado cuyo runner no está disponible; genera reporte BLOCKED y deja la historia en VERIFY/BLOCKED.",
+      "input": {
+        "input_path": "examples/pytest-project",
+        "story_id": "STORY-054",
+        "flags": [],
+        "simulate_runner_unavailable": true
+      },
+      "expected": {
+        "contains": ["automatico-unit", "pytest", "(verdict: BLOCKED)", "Veredicto: BLOCKED", "no ejecutable(s) en el entorno", "VERIFY/BLOCKED"],
+        "not_contains": ["(verdict: NEEDS-CHANGES)", "(verdict: APPROVED)", "READY-FOR-IMPLEMENT", "VERIFY/DONE"]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-006",
+      "name": "verify-precedencia-fallo-y-bloqueo",
+      "type": "edge-case",
+      "description": "En modo manual coexisten un defecto HIGH y un escenario BLOCKED; gana NEEDS-CHANGES y el bloqueo queda visible en el reporte.",
+      "input": {
+        "input_path": "examples/no-tests-project",
+        "story_id": "STORY-055",
+        "flags": [],
+        "simulate_qa_results": {
+          "scenario_results": [
+            {"scenario_id": "AC-1", "status": "FAIL", "observations": "Fallo reproducible"},
+            {"scenario_id": "AC-2", "status": "BLOCKED", "observations": "Dependencia no disponible"}
+          ],
+          "findings": [
+            {"scenario_id": "AC-1", "severity": "HIGH", "title": "Fallo reproducible", "location": "src/auth.py", "steps_to_reproduce": "1. Ejecutar el escenario AC-1", "expected": "El escenario pasa", "actual": "El escenario falla", "fix": "Corregir el comportamiento observado"}
+          ]
+        }
+      },
+      "expected": {
+        "contains": ["manual", "(verdict: NEEDS-CHANGES)", "Veredicto: NEEDS-CHANGES"],
+        "not_contains": ["(verdict: BLOCKED)", "RECHAZADO", "REJECTED"]
       },
       "threshold": 0.85
     }

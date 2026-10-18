@@ -4,6 +4,7 @@ id: {story_id}
 slug: {story_id}-verify-report
 title: "Verify Report: {story_title}"
 story: {story_id}
+verdict: {verdict}
 date: {date}
 mode: {mode}
 dod_version: {dod_version}
@@ -13,15 +14,20 @@ updated: {date}
 
 # Test Report: {story_title}
 
-**Date**: {date}
-**Story**: {story_id}
-**Mode**: {mode}
-**DoD Version**: {dod_version}
+## Veredicto
+
+**Veredicto:** `{verdict}` — {verdict_reason}
+
+{verdict_details}
 
 ## Summary
 
 | Metric | Value |
 |--------|-------|
+| Story | {story_id} |
+| Date | {date} |
+| Mode | {mode} |
+| DoD Version | {dod_version} |
 | Total Tests | {total_tests} |
 | Passed | {passed} |
 | Failed | {failed} |
