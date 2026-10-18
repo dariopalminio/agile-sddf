@@ -1,0 +1,510 @@
+---
+alwaysApply: false
+type: design
+id: STORY-143
+slug: STORY-143-validacion-end-to-end-design
+title: "Design: Validación end-to-end"
+status: PLAN
+substatus: IN-PROGRESS
+parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
+story: STORY-143
+created: 2026-10-17
+updated: 2026-10-17
+related:
+  - STORY-143-validacion-end-to-end
+  - STORY-138-contrato-de-validacion
+  - EPIC-25-unificar-contrato-de-validaciones-en-skills
+---
+
+<!-- Referencias -->
+[[STORY-143-validacion-end-to-end]] · [[STORY-138-contrato-de-validacion]] · [[EPIC-25-unificar-contrato-de-validaciones-en-skills]]
+
+# Diseño técnico: validación end-to-end
+
+## Context
+
+EPIC-25 alinea seis skills de validación con el contrato que publica STORY-138 en
+`docs/policies/validation-contract-policy.md`. Esta historia es la última de la épica. No cambia ningún skill: verifica
+que los seis cumplen el contrato, que no quedan variantes heredadas y que el README enlaza la policy. Es la dueña de
+CS-2, CS-3, CS-10 y CS-11, y de SMOKE-1 y SMOKE-3. Aplica el contrato tal como lo fija el diseño de STORY-138: reglas
+G-01…G-06, tabla §4 (columnas `Skill · Reporte · Fase · Valores permitidos · Flowchart · Valores sin rama`), tabla §5 de
+equivalencias, §6 «Excepciones» y la regla D-7 sobre reportes heredados.
+
+**Estado medido el 2026-10-17** (`git ls-files`, `grep`, lectura de archivos):
+
+| Elemento | Estado actual |
+|---|---|
+| Gate determinista | `scripts/verify-repository.js` ejecuta 13 pasos, uno por script `scripts/verify-*.js` o equivalente. `test/verify-repository.test.js` fija la lista de rótulos con `deepEqual`. Ningún paso comprueba el contrato de validación. |
+| Precedente de alcance documental (P3) | `scripts/check-doc-links.js` declara `ACTIVE_ROOTS` y `HISTORICAL_EXCLUSIONS` (`CHANGELOG.md`, `docs/adr`, `docs/specs`): los ADR y las specs «preservan el contexto en que se escribieron». |
+| Precedente de excepciones versionadas (P3) | `scripts/verify-eval-inventory.js` falla si una excepción ya no hace falta («ya tiene evals y no debe seguir exento»). |
+| Dependencias | `package.json` solo declara `fs-extra`. No hay parser YAML ni motor de globs. Los scripts del gate usan `fs`, `path` y expresiones regulares. |
+| Templates de los seis skills | `epic-analyze-report-template.md`, `evaluation-output-template.md` (`story-evaluation`), `analyze-report-template.md` (`story-analyze`), `code-review-report-template.md`, `verify-report-template.md`, `acceptance-report-template.md`, todos en `skills/<skill>/assets/`. |
+| Formas de placeholder de `verdict` previstas | `{verdict}` (STORY-140, STORY-142) y la enumeración `{APPROVED \| NEEDS-REFINEMENT}` (STORY-139). El template de `epic-analyze` lleva marcadores HTML en sus encabezados: `## Veredicto <!-- sección obligatoria · … -->` (STORY-139 D-2). |
+| Ejemplos de reporte propios | `skills/story-acceptance/examples/{example-approved,example-partial,example-rejected}/acceptance-report.md`, `skills/story-analyze/examples/output/analyze.md`, `skills/story-code-review/examples/example-approved/code-review-report.md`. `epic-analyze`, `story-evaluation` y `story-verify` no tienen ejemplos de reporte. |
+| Reportes de validación en fixtures de otros skills | `skills/story-fix-plan/examples/*/analyze.md` (tres; `verdict: APPROVED` sin `## Veredicto`) y `skills/story-improve/examples/*/finvest-evaluation-report.md` (dos; los alinea STORY-140). |
+| Variantes heredadas fuera de `docs/specs/` (hoy) | 27 archivos con `APROBADA`, `Aprobada` o `review-status`, y unos 20 con `approved` como valor. Todos están en el inventario de STORY-139…142, salvo las versiones publicadas de `CHANGELOG.md` y: `docs/adr/ADR-0008-rework-sin-estado-propio.md` (l.34, l.56), `docs/product/roadmap.md` (l.59, l.145, l.248), `docs/product/story-map.md` (l.43, l.107) y `skills/memory-system/examples/dod-{custom,legacy,monolithic,template}/` («Review status approved»). |
+| `approved` como palabra inglesa | `docs/templates/domain-template.md` y su copia en `skills/memory-system/assets/scaffold/templates/` (l.31, l.179-180: «an approved English rendering», «explicitly approved»). Los `name` de evals usan `approved` en kebab-case (`happy-path-todos-approved`, `indice-consistente-veredicto-approved`). |
+| CRs de otras historias dirigidos a esta | STORY-140 CR-002 (`docs/product/`), STORY-141 CR-002 (subagentes de `story-code-review` y fixtures `dod-*` de `memory-system`) y STORY-142 CR-003 (aristas `BLOCKED` del flowchart). |
+| Destinos de runtime versionados | `.github/skills`, `.github/agents`, `.codex/skills`. Son salida de `agile-sddf install`, no fuente (AGENTS.md). |
+| `CHANGELOG.md` | `## [Unreleased]` en l.9, vacío. Las versiones publicadas empiezan en `## [4.1.0] — 2026-10-16` (l.11). |
+| `README.md` (481 líneas) | No nombra la policy. «Flujo y evidencia» (l.176-205) describe el ciclo de vida. «Referencia para profundizar» (l.371-387) es una tabla `Si quieres… · Consulta`. |
+| `docs/architecture/tech-stack.md` | l.85 enumera los pasos de `npm run verify:repository`. |
+| `docs/policies/validation-contract-policy.md` | Todavía no existe. Lo crea STORY-138 (ver D-10). |
+
+## Goals / Non-Goals
+
+**Goals:**
+
+- Un paso nuevo del gate determinista comprueba que los templates y los ejemplos propios de los seis skills cumplen
+  G-01…G-04 con los valores de §4. // satisface: AC-1
+- El mismo script valida, a petición, los reportes que generan los skills sobre artefactos de ejemplo (SMOKE-1).
+  // satisface: AC-1
+- El gate falla ante `APROBADA`, `Aprobada`, `review-status` o `approved` en posición de valor en skills, templates y
+  documentación vigente, con exclusiones cerradas y justificadas. // satisface: AC-2, CNF-1
+- El README enlaza la policy como fuente de verdad del contrato, y el gate lo comprueba. // satisface: AC-3
+
+**Non-Goals:**
+
+- Cambiar skills, templates de reporte, evals o ejemplos de los seis skills (Fuera de alcance de la historia). Si el
+  gate falla por uno de ellos, el defecto es de la historia de alineación de ese skill.
+- Migrar reportes históricos de `docs/specs/` (Fuera de alcance; D-7 de STORY-138).
+- Verificar la invariante de AC-3 de STORY-138 (valores permitidos − valores sin rama = ramas del flowchart). Ningún AC
+  de esta historia la pide (ver CR-003).
+- Ejecutar evals LLM dentro del gate: AGENTS.md reserva `npm run test:eval` a la decisión humana.
+- Añadir una entrada al CHANGELOG: la escribe `/doc-release-notes` al publicar.
+
+## Decisions
+
+### D-1 — Comprobación determinista en el gate, no evals por skill // satisface: AC-1, AC-2, CNF-1
+
+Las Notas de la historia dejan al diseño elegir entre un chequeo `scripts/verify-*.js` y evals por skill. Se crea
+`scripts/verify-validation-contract.js`, que corre como paso del gate `npm run verify:repository` y como
+`npm run verify:validation-contract`. Comprueba tres cosas, cada una con su propio prefijo de regla en los mensajes:
+
+| Comprobación | Reglas | Cubre |
+|---|---|---|
+| Estructura de templates y ejemplos propios | `G-01`…`G-04` (los IDs de la policy), `S-3` | AC-1, CS-2, CS-3, SMOKE-1, SMOKE-3 |
+| Variantes heredadas | `L-1`…`L-4` (D-4) | AC-2, CS-10, SMOKE-3 |
+| Enlace del README | `R-1` (D-7) | AC-3, CS-11 |
+
+La generación real de reportes exige un LLM. Para esa parte de AC-1 («cuando se generan sus reportes») el script ofrece
+el modo `--report` (D-3), que el mantenedor aplica a los reportes que producen los skills (F-3).
+
+| Alternativa | Motivo del rechazo |
+|---|---|
+| Evals por skill (`npm run test:eval`) | Solo ven la consola y dependen de cuota LLM. AGENTS.md exige ejecutarlas a criterio humano: no serían repetibles en CI (CNF-1). Las seis historias de alineación ya añaden evals con `(verdict: <VALOR>)`. |
+| Tres scripts (estructura, variantes, README) | Tres pasos del gate que parsean la misma policy. Los tres cambian por la misma razón: el contrato. |
+| Ampliar `check-doc-links.js` | Ese script verifica que los enlaces resuelvan, no qué contienen los reportes. Mezclar responsabilidades viola P11. |
+| Guardrail en `docs/guardrails/` | Un guardrail es un checklist que un agente evalúa con juicio. CNF-1 pide una comprobación sin juicio humano. |
+
+### D-2 — Los valores permitidos se leen de §4 de la policy // satisface: AC-1
+
+El script no copia el vocabulario. Lee `docs/policies/validation-contract-policy.md` y extrae la tabla de §4:
+
+- Delimitación: desde el encabezado que empieza por `## 4.` hasta el siguiente `## `.
+- Columnas: se ubican por el nombre de la cabecera (`Skill`, `Reporte`, `Valores permitidos`), no por posición.
+- Celdas: el skill y el reporte son el primer token entre comillas invertidas de su celda. Los valores son todos los
+  tokens entre comillas invertidas de su celda.
+- Formato: cada valor cumple `^[A-Z]+(-[A-Z]+)*$` (regla de formato de §2). Si no, es un error de la policy.
+- Filas sin skill instalado: una fila cuyo `skills/<skill>/SKILL.md` no existe (`epic-validate`, previsto en EPIC-23)
+  se omite. `parsePolicyContract` la devuelve como las demás, porque solo lee texto; la omite `verifyValidationContract`,
+  que consulta el filesystem. Si el skill existe y no tiene template registrado (D-3), es un error.
+
+**Cierre ante fallo (P7, G-06):** si la policy no existe, falta §4, falta una columna o falta alguno de los seis skills,
+el script informa el error y termina con código 1. Nunca da por buena una estructura sin la tabla.
+
+| Alternativa | Motivo del rechazo |
+|---|---|
+| Lista de valores dentro del script | Dos fuentes del vocabulario. Contradice CNF-1 de STORY-138, y un cambio en §4 no se reflejaría en el gate. |
+| Leer los valores de los ejemplos de §7 | §7 ilustra un valor por skill, no el conjunto permitido. |
+| Archivo de configuración JSON con el vocabulario | Otra fuente más que mantener sincronizada con la policy. |
+
+### D-3 — Validación estructural de reportes (G-01…G-04) // satisface: AC-1
+
+**Qué se valida en el gate:**
+
+1. **Templates.** Un mapa fijo `REPORT_TEMPLATES` asocia cada skill a su template: los seis archivos de la tabla de
+   Context. El mapa y §4 se cruzan: un skill del mapa sin fila en §4 es un error, y también lo es una fila de §4 con skill
+   instalado y sin entrada en el mapa.
+2. **Ejemplos propios.** Todo archivo bajo `skills/<skill>/examples/` cuyo nombre coincide con la columna «Reporte» de
+   la fila de ese skill. Hoy son cinco (Context). Los reportes que viven como fixtures de otros skills no se validan aquí
+   (ver CR-002).
+3. **`S-3`.** `skills/<skill>/SKILL.md` contiene `APPROVED` en cada uno de los seis skills (segunda cláusula de
+   SMOKE-3).
+
+**Reglas que aplica `checkReport`** (el modo cambia solo G-01 y G-03):
+
+| Regla | Comprobación | Template | Reporte concreto |
+|---|---|---|---|
+| G-01 | El frontmatter (entre las dos primeras líneas `---`) tiene exactamente una clave `verdict` de primer nivel | ✓ | ✓ |
+| G-03 | El valor de `verdict` es válido para el skill | Un valor permitido; un placeholder `{snake_case}`; o una enumeración `{A \| B …}` o `<A \| B …>` cuyos elementos son todos valores permitidos | Exactamente un valor permitido |
+| G-02 | El primer `##` tras el primer `#` (fuera de bloques de código) es `## Veredicto`, que puede ir seguido de un comentario HTML. Entre ambos solo hay líneas en blanco o comentarios HTML. La primera línea no vacía de la sección, sin contar comentarios, empieza por `**Veredicto:**` | ✓ | ✓, y además el primer token entre comillas invertidas de esa línea es igual a `verdict` |
+| G-04 | El frontmatter no tiene `decision`, `review-status` ni `final-status` | ✓ | ✓ |
+
+**Modo `--report <ruta>…`:** valida reportes concretos generados por los skills. El skill se deduce del nombre del
+archivo con la columna «Reporte» de §4. Un nombre que no figura en §4 es un error («reporte no reconocido»). Este modo no
+ejecuta las comprobaciones de variantes ni del README.
+
+| Alternativa | Motivo del rechazo |
+|---|---|
+| Validar solo templates | Un placeholder no demuestra que el valor emitido sea uno permitido (segunda cláusula de AC-1). |
+| Validar los reportes de `docs/specs/` | Son históricos (AC-2 y D-7 de STORY-138). Fallarían siempre. |
+| Deducir el template buscando en `assets/` por `type` | Los templates no comparten convención de nombre ni de `type`. Un mapa de seis entradas, cruzado con §4, es más simple y falla de forma explícita. |
+| Parser YAML (`js-yaml`) | Añade una dependencia a un paquete que solo tiene `fs-extra` (supply chain). Bastan las claves escalares de primer nivel. |
+
+### D-4 — Criterio de búsqueda de variantes heredadas // satisface: AC-2, CNF-1
+
+Cuatro reglas, todas sensibles a mayúsculas. Se informa cada coincidencia con su archivo y su línea:
+
+| Regla | Variante | Patrón | Por qué así |
+|---|---|---|---|
+| L-1 | `APROBADA` | subcadena `APROBADA` | Es la forma de AC-2 tal cual. Así también se detectan `APROBADAS` y `decision: APROBADA` en cualquier contexto. |
+| L-2 | `Aprobada` | subcadena `Aprobada` | Ídem. No coincide con la prosa en minúsculas («Revisión de código aprobada»). |
+| L-3 | `review-status` | subcadena `review-status` | Nombre de campo, sin uso legítimo fuera de §5 y §6. |
+| L-4 | `approved` como valor de veredicto | `approved` precedido (ignorando espacios y `*`) por un delimitador de valor (`` ` `` `:` `=` `\|` `[` `{` `(` `"` `'` `→`) o por la palabra `status`/`Status`, y no seguido de letra, dígito, `_` ni `-` | Las Notas de la historia piden apuntar al uso como valor, no a la palabra suelta |
+
+Resultado de L-4 contra el inventario medido:
+
+| Ocurrencia | ¿Coincide? |
+|---|---|
+| `status: approved \| needs-changes`, `review-status = approved`, `` `approved` ``, `[approved]`, `{approved \| …}`, `"approved",`, `CR --> VERIFY : approved`, `→ approved`, «Review status approved» | Sí: son valores de veredicto |
+| «an approved English rendering», «explicitly approved.» (`domain-template.md`) | No: va precedido de una palabra |
+| `happy-path-todos-approved` y otros `name` kebab-case | No: va precedido de `-` |
+| `APPROVED` | No: L-4 distingue mayúsculas |
+
+| Alternativa | Motivo del rechazo |
+|---|---|
+| `\bapproved\b` sin contexto | Marca la prosa inglesa de `domain-template.md` y los `name` kebab-case: obligaría a editar textos legítimos o a acumular excepciones. |
+| Solo `(verdict\|review-status\|status): approved` | No detecta las otras formas que hoy existen (`` `approved` ``, `→ approved`, `[approved]`, `: approved` en Mermaid). |
+| Búsqueda sin distinguir mayúsculas | `APPROVED` es el valor canónico y está en todas partes. |
+| Ampliar la lista a `REFINAR`, `RECHAZAR`, `needs-changes`… | AC-2 y CS-10 fijan cuatro variantes. Cada historia de alineación ya prueba las suyas (sus V-1). |
+
+### D-5 — Alcance de la búsqueda // satisface: AC-2
+
+**Se incluye** (archivos `.md`, `.json`, `.yaml`, `.yml`, `.js`, `.mermaid`, `.puml` y `.txt`; se omiten
+`node_modules` y los directorios que empiezan por `.`):
+
+| Raíz | Qué representa en AC-2 |
+|---|---|
+| `skills/` | Skills, sus templates, agentes, evals y ejemplos |
+| `docs/` | Documentación vigente y templates de `docs/templates/` |
+| `*.md` de la raíz del repositorio | `README.md`, `AGENTS.md`, `CLAUDE.md`, `SECURITY.md` y, con alcance parcial, `CHANGELOG.md` |
+
+**Se excluye**, con este motivo:
+
+| Exclusión | Motivo | Origen |
+|---|---|---|
+| `docs/specs/` | Artefactos históricos | AC-2 (`Pero`) |
+| `CHANGELOG.md`, toda sección `## [<versión>]` salvo `## [Unreleased]` | Versiones publicadas | AC-2 (`Pero`) |
+| `docs/adr/` | Los ADR aceptados son inmutables (AGENTS.md). `ADR-0008` cita `approved` y no se puede editar. `check-doc-links.js` ya lo trata como histórico | CR-001 |
+| `docs/product/roadmap.md` | Propuestas fechadas en modo append-only (`project-planning`). Reescribirlas falsea el registro | Resuelve STORY-140 CR-002 · CR-001 |
+| `docs/product/story-map.md` | `status: COMPLETED` y fecha 2026-04-20. Es una instantánea de planificación cerrada | Resuelve STORY-140 CR-002 · CR-001 |
+| Policy, secciones `## 5.` y `## 6.` | §5 traduce los valores heredados y §6 nombra los elementos conservados: citarlos es su función | CR-001 |
+| Destinos de runtime (`.claude/`, `.github/skills/`, `.codex/skills/`…) | Salida de `agile-sddf install`, no fuente. Quedan fuera por construcción, ya que no están en las raíces incluidas | AGENTS.md |
+| `scripts/`, `test/` | No son skills, templates ni documentación. Además, el verificador y sus pruebas contienen los patrones | — |
+
+El resto de `docs/product/` (por ejemplo `vision.md`) sí entra: es documentación vigente.
+
+| Alternativa | Motivo del rechazo |
+|---|---|
+| Excluir todo `CHANGELOG.md` | AC-2 solo excluye las versiones publicadas. |
+| Excluir toda la policy | Un `APROBADA` en §1-§4 o §7 pasaría inadvertido, y esas secciones son el contrato vigente. |
+| Excluir todo `docs/product/` | `vision.md` y los demás documentos vigentes quedarían sin revisar. Solo dos archivos son registros cerrados. |
+| Editar `roadmap.md`, `story-map.md` y `ADR-0008` | Rompe la inmutabilidad de los ADR y el append-only del roadmap. Sería, además, migrar artefactos históricos (Fuera de alcance). |
+| Recorrer con `git ls-files` | El gate corre también sobre el tarball (`smoke:package`), donde no hay git. `check-doc-links.js` recorre con `fs`. |
+
+### D-6 — Excepciones registradas en §6, con cruce y detección de obsoletas // satisface: AC-2, CNF-1
+
+Las excepciones viven en una constante `LEGACY_EXCEPTIONS` del script. Cada entrada declara el skill, una expresión
+regular sobre la ruta POSIX relativa, las reglas que exime y la historia que la creó:
+
+| Skill | Rutas | Reglas | Historia | Motivo |
+|---|---|---|---|---|
+| `story-code-review` | `skills/story-code-review/agents/*.agent.md` y `skills/story-code-review/examples/*/{tech-lead,product-owner,integration,security}-report.md` | L-4 | STORY-141 (D-10) | Informes parciales de subagentes en `.tmp/`. El árbitro no los copia al reporte |
+| `memory-system` | `skills/memory-system/examples/dod-{custom,legacy,monolithic,template}/**` | L-4 | STORY-143 | Copian el DoD monolítico antiguo de proyectos consumidores: son la entrada que `migrate --from=dod-monolithic` debe saber migrar (`test/dod-story.test.js`, UT-018c) |
+
+- **Cruce con la policy:** cada skill de `LEGACY_EXCEPTIONS` debe tener una fila en la tabla de §6 cuya primera celda
+  sea `` `<skill>` ``. Si no la tiene, el gate falla con «excepción no registrada en §6». La policy explica el porqué;
+  el script, el dónde.
+- **Excepción obsoleta:** si ninguna ruta de la entrada existe, o si los archivos que cubre ya no contienen
+  coincidencias de sus reglas, el gate falla con «excepción obsoleta: retírala del verificador y de §6». Es el mismo
+  criterio que `verify-eval-inventory.js` aplica a las excepciones de evals.
+- La exención es por regla: un `APROBADA` (L-1) dentro de un archivo exento de L-4 sigue fallando.
+- La nueva fila `memory-system` de §6 la añade esta historia (D-9). La de `story-code-review` la añade STORY-141.
+
+| Alternativa | Motivo del rechazo |
+|---|---|
+| Parsear las rutas de las celdas de §6 | Las celdas están redactadas para personas («`agents/*.agent.md`, `examples/*/*-report.md`»), con rutas relativas al skill. Un patrón como `*-report.md` también eximiría `code-review-report.md`. |
+| Exención por archivo completo | Un `APROBADA` nuevo en un agente exento pasaría inadvertido. |
+| Editar los fixtures `dod-*` | Dejarían de modelar el DoD heredado que la migración debe reconocer. |
+| Excepciones sin cruce con §6 | El gate admitiría excepciones que la policy no explica. Contradice CNF-1 de STORY-138. |
+
+### D-7 — README como punto de entrada del contrato // satisface: AC-3
+
+Dos cambios en `README.md`, sin nombrar ninguna variante heredada (el README está en el alcance de D-5):
+
+| Lugar | Cambio |
+|---|---|
+| «Flujo y evidencia», tras el párrafo del ciclo de vida (l.205) | Párrafo nuevo: los gates de validación (`epic-analyze`, `story-evaluation`, `story-analyze`, `story-code-review`, `story-verify`, `story-acceptance`) dejan un reporte con el campo `verdict` en el frontmatter y una sección `## Veredicto` como primera sección. Solo `APPROVED` habilita el avance. Los valores de cada gate, su significado y la traducción de los reportes generados antes de este contrato están en la [política de contrato de validación](docs/policies/validation-contract-policy.md), la fuente de verdad del contrato. |
+| «Referencia para profundizar», tabla (tras l.381) | Fila nueva: `Leer el resultado (veredicto) de un gate de validación` · `[Política de contrato de validación](docs/policies/validation-contract-policy.md)` |
+
+**Comprobación `R-1`:** `README.md` contiene al menos un enlace Markdown cuyo destino es exactamente
+`docs/policies/validation-contract-policy.md`. Que el destino exista lo comprueba ya `check-doc-links.js` (README es
+raíz activa). El párrafo también mitiga el riesgo de la épica («documentar el cambio … en el README») remitiendo a §5 en
+lugar de enumerar los valores antiguos.
+
+| Alternativa | Motivo del rechazo |
+|---|---|
+| Solo la fila de referencia | Un lector de «Flujo y evidencia» no sabría que existe un contrato común de veredictos. |
+| Subsección en «Actualizar desde versiones anteriores» con la lista de campos antiguos | Nombraría `review-status` y `APROBADA` en el README, lo que haría fallar L-1 y L-3. La versión que publica el cambio aún no está fijada. |
+| Copiar la tabla §4 en el README | Dos fuentes del vocabulario (CNF-1 de STORY-138). |
+
+### D-8 — Integración en el gate // satisface: CNF-1
+
+| Archivo | Cambio |
+|---|---|
+| `scripts/verify-repository.js` | Paso nuevo `{ label: 'contrato de validación', command: process.execPath, args: ['scripts/verify-validation-contract.js'] }` tras `inventario de evals` y antes de `enlaces activos` |
+| `test/verify-repository.test.js` | La lista de rótulos esperada incluye `'contrato de validación'` en esa posición |
+| `package.json` › `scripts` | `"verify:validation-contract": "node scripts/verify-validation-contract.js"` |
+| `test/verify-validation-contract.test.js` | Nuevo. Pruebas `node:test` con fixtures en `os.tmpdir()`, como `test/verify-security-documents.test.js` |
+| `docs/architecture/tech-stack.md` | l.85: «…inventario de evals, contrato de validación, enlaces…» |
+
+**Salida del script** (como `verify-eval-inventory.js`):
+
+- Éxito: `[OK] Contrato de validación verificado: <n> templates, <m> ejemplos, <k> archivos revisados.` y código 0.
+- Fallo: `[ERROR] Contrato de validación incumplido:` seguido de una línea `- <ruta>:<línea>: <regla> <detalle>` por
+  violación, y código 1.
+
+`scripts/` ya está en `files` de `package.json`, así que el script se publica como el resto de verificadores. No hace
+falta otro cambio.
+
+| Alternativa | Motivo del rechazo |
+|---|---|
+| Solo script npm, fuera de `verify:repository` | CNF-1 pide que la comprobación sea repetible en el gate que corre `quality.yml`. |
+| Paso al final del gate | Los pasos de contenido van antes de los de empaquetado. Un error de contrato debe aparecer antes del smoke del tarball. |
+
+### D-9 — Cambios en la policy // satisface: AC-2, AC-3
+
+| Sección | Cambio |
+|---|---|
+| §3, tras «Acción ante violación» | Una línea: «`npm run verify:repository` (paso «contrato de validación») comprueba G-01…G-04 en los templates y ejemplos de los skills de §4 y la ausencia de variantes heredadas fuera de §5 y §6.» |
+| §6 | Fila `memory-system` · `Review status approved en los fixtures examples/dod-{custom,legacy,monolithic,template}/` · `Copian el DoD monolítico antiguo de proyectos consumidores; son la entrada de migrate --from=dod-monolithic` · `STORY-143` |
+| Cabecera e «Historial de cambios» | Versión menor siguiente, fecha de implementación y fila «Verificación automática y excepción de fixtures DoD (STORY-143)» |
+
+El frontmatter **no** añade `enforced-by`: según `docs/policies/README.md` ese campo lista slugs de guardrails, y esta
+historia no crea ninguno (D-1 de STORY-138 lo prevé solo «si crea uno»).
+
+| Alternativa | Motivo del rechazo |
+|---|---|
+| `enforced-by: verify-validation-contract` | Rompe la convención de `docs/policies/README.md`: el campo apunta a guardrails, y el guardrail apunta de vuelta. |
+| No mencionar el gate en la policy | Un autor de skill no sabría que el contrato se comprueba automáticamente ni dónde mirar el fallo. |
+
+### D-10 — Secuencia y precondiciones // satisface: AC-1, AC-2, AC-3
+
+La implementación empieza cuando STORY-138, STORY-139, STORY-140, STORY-141, STORY-142, STORY-144 y STORY-145 están en
+`DONE` (Notas de la historia) y existe `docs/policies/validation-contract-policy.md`. La primera tarea lo comprueba. Si
+la policy publicada difiere del diseño de STORY-138 (nombres de columna de §4, numeración `## 4.`/`## 5.`/`## 6.`), se
+aplica la versión publicada y la diferencia se anota en `implement-report.md`.
+
+Si el gate falla por un archivo que pertenece al inventario de otra historia, no se corrige aquí (Non-Goals): se
+registra como defecto de esa historia. Las únicas excepciones son los archivos que no tienen historia dueña (CR-001) y
+las filas nuevas de §6 (D-6).
+
+## Componentes afectados
+
+| Componente | Acción | Ubicación | Satisface |
+|---|---|---|---|
+| Verificador del contrato de validación | crear | `scripts/verify-validation-contract.js` | AC-1, AC-2, AC-3, CNF-1 |
+| Pruebas del verificador | crear | `test/verify-validation-contract.test.js` | CNF-1 |
+| Gate determinista | modificar | `scripts/verify-repository.js` | CNF-1 |
+| Prueba del gate | modificar | `test/verify-repository.test.js` | CNF-1 |
+| Scripts npm | modificar | `package.json` | CNF-1 |
+| README del framework | modificar | `README.md` | AC-3 |
+| Policy del contrato | modificar | `docs/policies/validation-contract-policy.md` (§3, §6, versión) | AC-2, AC-3 |
+| Documentación del stack | modificar | `docs/architecture/tech-stack.md` | CNF-1 |
+
+No se tocan: `skills/**`, `config/**`, los flowcharts, `docs/adr/**`, `docs/product/**`, `docs/specs/**` ni
+`CHANGELOG.md`.
+
+## Interfaces
+
+| Interfaz | Contrato | Productor → consumidor | Satisface |
+|---|---|---|---|
+| CLI, modo gate | `node scripts/verify-validation-contract.js` → código 0 (`[OK] …`) o 1 (`[ERROR] …` y una línea por violación) | script → `verify-repository.js`, `quality.yml`, mantenedor | AC-1, AC-2, AC-3, CNF-1 |
+| CLI, modo reporte | `node scripts/verify-validation-contract.js --report <ruta> [<ruta>…]` → mismo formato de salida; solo G-01…G-04 en modo «reporte concreto» | script → mantenedor (SMOKE-1) | AC-1 |
+| `parsePolicyContract(policyText)` | → `{ skills: Map<skill, { report, values: Set<string> }>, exceptionSkills: Set<string>, errors: string[] }` | script (función pura) | AC-1, AC-2 |
+| `checkReport(text, allowedValues, mode)` | `mode ∈ {'template', 'report'}` → `Violation[]` | script (función pura) | AC-1 |
+| `findLegacyVariants(text)` | → `Match[]` con `{ rule: 'L-1'…'L-4', line, excerpt }` | script (función pura) | AC-2 |
+| `verifyValidationContract(repoRoot, options?)` | `options.legacyExceptions` (opcional; por defecto `LEGACY_EXCEPTIONS`, para inyectar excepciones en las pruebas) → `{ errors: string[], counts: { templates, examples, files } }` | script → `main()`, pruebas | AC-1, AC-2, AC-3 |
+| `verifyReports(paths, repoRoot)` | → `{ errors: string[] }` | script → `main()` en modo `--report`, pruebas | AC-1 |
+| Tabla §4 de la policy | Columnas `Skill`, `Reporte` y `Valores permitidos` localizables por nombre bajo `## 4.` | STORY-138 → script | AC-1 |
+| Tabla §6 de la policy | Primera celda `` `<skill>` `` por excepción, bajo `## 6.` | STORY-141, STORY-143 → script | AC-2 |
+| Enlace del README | `[…](docs/policies/validation-contract-policy.md)` | README → consumidores, `R-1` | AC-3 |
+
+Las funciones se exportan con `module.exports`, como en los demás verificadores, para que las pruebas las usen sin
+lanzar procesos.
+
+## Esquema de datos // satisface: AC-1, AC-2
+
+Forma abstracta de los registros internos (sin lógica):
+
+| Registro | Campos |
+|---|---|
+| `Violation` | `rule` (`G-01`…`G-04`, `S-3`, `L-1`…`L-4`, `R-1`, `E-1` excepción no registrada, `E-2` excepción obsoleta, `P-1` policy ilegible), `file` (ruta POSIX relativa), `line` (entero ≥ 1 o `null`), `detail` (texto) |
+| `LegacyException` | `skill`, `pattern` (expresión regular sobre la ruta POSIX), `rules` (subconjunto de `L-1`…`L-4`), `story` |
+| `REPORT_TEMPLATES` | `skill` → ruta del template (seis entradas) |
+
+Ejemplo de salida ante una variante detectada:
+
+```text
+[ERROR] Contrato de validación incumplido:
+- docs/guides/sddf-commands-pipeline.md:214: L-1 variante heredada «APROBADA»
+- skills/story-verify/assets/verify-report-template.md:14: G-02 el primer «##» tras el título es «## Summary», no «## Veredicto»
+```
+
+## Flujos clave
+
+### F-1 — Gate verde tras la épica // AC-1, AC-2, AC-3, CNF-1
+
+`npm run verify:repository` llega al paso «contrato de validación» → el script lee la policy y obtiene seis skills con
+sus valores (D-2) → valida seis templates y cinco ejemplos propios (D-3) → comprueba `S-3` → recorre `skills/`, `docs/` y
+los `*.md` de la raíz con las exclusiones de D-5 → no encuentra variantes fuera de las excepciones de D-6, que además
+están en §6 y siguen haciendo falta → encuentra el enlace del README (R-1) → `[OK] …`, código 0 → el gate continúa con
+«enlaces activos».
+
+### F-2 — Variante reintroducida // AC-2, CNF-1
+
+Un autor escribe `decision: APROBADA` en `skills/story-improve/README.md` → L-1 coincide → el gate termina con código 1
+y la línea `- skills/story-improve/README.md:<n>: L-1 variante heredada «APROBADA»` → `quality.yml` falla en los tres
+sistemas operativos. No interviene ningún juicio humano.
+
+### F-3 — Reportes generados sobre artefactos de ejemplo (SMOKE-1) // AC-1
+
+Antes de cerrar la épica, el mantenedor decide ejecutar los seis skills sobre artefactos de ejemplo, ya sea con
+`npm run test:eval -- <skill>` o con una invocación directa sobre un fixture. Cada skill imprime la ruta de su reporte
+con `(verdict: <VALOR>)`. El mantenedor pasa las seis rutas a `node scripts/verify-validation-contract.js --report …` →
+el script deduce el skill por el nombre del archivo (§4) y exige un valor permitido en `verdict`, `## Veredicto` primero y
+el mismo valor en la línea → anota el resultado en `verify-report.md` de esta historia y descarta los reportes generados
+que no deban versionarse.
+
+### F-4 — Degradación // P7
+
+- **Policy ausente o §4 ilegible:** `P-1` y código 1. Nunca se valida con un vocabulario vacío.
+- **Template ausente:** `G-01` con «template no encontrado» para ese skill. Los demás skills se siguen validando y todos
+  los errores se informan juntos.
+- **Archivo no legible como UTF-8 o binario con extensión de texto:** se informa como violación `P-1` de ese archivo y
+  el recorrido continúa.
+- **Skill nuevo en §4 sin template en el mapa** (`epic-validate` al crearse): error explícito que obliga a registrarlo.
+- **Excepción que ya no hace falta:** `E-2` (D-6). La lista no crece en silencio.
+
+### F-5 — Puntos de cambio // P6
+
+- Un valor nuevo en §4 entra en el gate sin tocar el script (D-2).
+- Un skill de validación nuevo exige una entrada en `REPORT_TEMPLATES` (D-3).
+- Una variante prohibida nueva es una fila más en la tabla de reglas `L-n` (D-4).
+- Una exclusión histórica nueva es una línea en la constante de exclusiones (D-5).
+
+## Decisiones de complejidad justificada
+
+| Elemento | Por qué no basta algo más simple | Satisface |
+|---|---|---|
+| Parseo de §4 en lugar de una lista fija (D-2) | Una lista en el script sería una segunda fuente del vocabulario, contra CNF-1 de STORY-138 | AC-1 |
+| Dos modos de `checkReport` (D-3) | Un template lleva placeholders y un reporte lleva un valor. Un solo criterio rechazaría los templates o aceptaría reportes con placeholders | AC-1 |
+| L-4 con contexto de valor (D-4) | `\bapproved\b` marca prosa inglesa legítima y nombres kebab-case. Las Notas de la historia lo advierten | AC-2 |
+| Alcance parcial de `CHANGELOG.md` y de la policy (D-5) | AC-2 excluye solo las versiones publicadas. §5 y §6 citan los valores heredados por diseño | AC-2 |
+| Cruce de excepciones con §6 y detección de obsoletas (D-6) | Sin el cruce, el gate admitiría excepciones sin motivo documentado. Sin la detección, la lista crecería sin control | AC-2, CNF-1 |
+| Modo `--report` (D-3) | AC-1 habla de reportes generados. Sin él, SMOKE-1 sería una revisión visual de seis archivos | AC-1 |
+
+## Contratos de verificación
+
+| # | Criterio | Método de verificación | Origen |
+|---|---|---|---|
+| V-1 | `parsePolicyContract` obtiene skill, reporte y valores de una tabla §4 válida, aunque las columnas estén en otro orden; falla con §4 ausente, una columna ausente o un valor fuera de `^[A-Z]+(-[A-Z]+)*$`; devuelve también las filas de skills no instalados (las omite `verifyValidationContract`, D-2) | `test/verify-validation-contract.test.js` | AC-1 |
+| V-2 | `checkReport` acepta un template conforme con `{verdict}`, con enumeración y con `## Veredicto <!-- … -->`; rechaza texto entre `#` y `## Veredicto` (G-02), `verdict` ausente o duplicado (G-01), una enumeración con un valor no permitido (G-03) y `decision:` en el frontmatter (G-04) | Pruebas unitarias | AC-1 |
+| V-3 | En modo reporte, rechaza un placeholder, un valor de otro skill y una línea `**Veredicto:**` con un valor distinto de `verdict` | Pruebas unitarias | AC-1 |
+| V-4 | `findLegacyVariants` detecta todos los casos positivos de la tabla de D-4 y ninguno de los negativos | Pruebas unitarias con cada fila de la tabla | AC-2 |
+| V-5 | El alcance excluye `docs/specs/`, `docs/adr/`, los dos archivos de `docs/product/`, las versiones publicadas del CHANGELOG y §5-§6 de la policy, e incluye `## [Unreleased]`, `docs/product/vision.md`, `skills/` y los `*.md` de la raíz | Pruebas con un repositorio fixture que siembra `APROBADA` en cada ubicación | AC-2 |
+| V-6 | Una excepción sin fila en §6 produce `E-1`; una excepción sin coincidencias produce `E-2`; un `APROBADA` en un archivo exento solo de L-4 falla | Pruebas unitarias | AC-2 |
+| V-7 | Sin el enlace a la policy, el README produce `R-1` | Prueba unitaria | AC-3 |
+| V-8 | `--report` acepta los reportes conformes y rechaza un nombre de archivo que no figura en §4 | Pruebas unitarias | AC-1 |
+| V-9 | El repositorio cumple el contrato | `npm run verify:validation-contract` → código 0 tras STORY-138…145 | AC-1, AC-2, AC-3 |
+| V-10 | El gate incluye el paso y su prueba pasa | `npm test` y `npm run verify:repository` | CNF-1 |
+| V-11 | Comprobación literal independiente de AC-2: solo quedan las coincidencias de las excepciones de D-6 | `git grep -n -E "APROBADA\|Aprobada\|review-status" -- skills docs README.md AGENTS.md SECURITY.md ':!docs/specs' ':!docs/adr' ':!docs/product/roadmap.md' ':!docs/product/story-map.md'` (y lectura de §5-§6 de la policy) | AC-2 |
+| V-12 | SMOKE-1: los seis reportes generados sobre artefactos de ejemplo pasan `--report` | F-3, ejecución manual a criterio humano (AGENTS.md); resultado en `verify-report.md` | AC-1 |
+| V-13 | El README enlaza la policy en «Flujo y evidencia» y en «Referencia para profundizar», y `verify:links` resuelve ambos enlaces | Lectura y `npm run verify:links` | AC-3 |
+| V-14 | §3 y §6 de la policy tienen la línea y la fila de D-9, y la versión subió | Lectura de la policy | AC-2, AC-3 |
+
+## Risks / Trade-offs
+
+- **[El gate falla por defectos de otra historia de la épica]** → es el propósito de la validación end-to-end. D-10
+  exige las seis historias en `DONE` antes de empezar, y el mensaje identifica el archivo y la regla.
+- **[L-4 deja pasar una forma nueva de escribir el valor]** (por ejemplo, `approved` tras una palabra) → la tabla de
+  delimitadores de D-4 cubre todas las formas medidas. Ampliarla es un cambio de una fila con su prueba (F-5).
+- **[Falso positivo de L-1/L-2 en prosa futura]** («Aprobadas por el PO») → el autor reformula o registra una excepción
+  en §6. Las reglas son literales a propósito (AC-2).
+- **[Una nota de release en `## [Unreleased]` nombra los campos antiguos]** → L-1/L-3 fallarían. `/doc-release-notes`
+  debe remitir a §5 de la policy o escribir directamente la sección de la versión publicada, que queda excluida. Es el
+  mismo criterio que D-7 aplica al README.
+- **[Excluir `docs/product/roadmap.md` y `story-map.md`]** → si alguien los reactiva como documentos vivos, el gate no
+  vería sus variantes. Mitigación: la exclusión es por archivo y está justificada en D-5. CR-001 la deja visible al PO.
+- **[La policy publicada difiere del diseño de STORY-138]** → D-10 aplica la versión publicada. El parseo por nombre de
+  columna (D-2) tolera cambios de orden.
+- **[`docs/index.md` regenerado con títulos de historias]** → los títulos de EPIC-25 no usan las variantes. Si alguno
+  lo hiciera, el gate lo detectaría (`docs/index.md` está en el alcance) y se corregiría el título.
+
+## Open Questions
+
+Ninguna. La forma de la comprobación (D-1), la fuente de los valores (D-2), el criterio para `approved` (D-4), el alcance
+y las exclusiones (D-5), las excepciones (D-6) y el lugar del enlace en el README (D-7) quedan resueltos. Las exclusiones
+que amplían el `Pero` de AC-2 y las dependencias con otras historias están en CR-001…CR-003.
+
+## Autoevaluación (P9, P10)
+
+- **Omisiones:** AC-1 (D-2, D-3, F-1, F-3, V-1…V-3, V-8, V-12), AC-2 (D-4…D-6, F-2, V-4…V-6, V-11), AC-3 (D-7, V-7, V-13)
+  y CNF-1 (D-1, D-8, V-9, V-10) tienen decisión, flujo y verificación. Las Notas están cubiertas: la decisión script/evals
+  (D-1), el riesgo de falsos positivos de `approved` (D-4) y CS-2, CS-3, CS-10, CS-11, SMOKE-1 y SMOKE-3 (tabla de D-1).
+  Los CR de STORY-140, STORY-141 y STORY-142 dirigidos a esta historia tienen respuesta (D-5, D-6, CR-003).
+- **Ambigüedad:** «valor de veredicto `approved`» queda definido en D-4; «documentación vigente», en D-5; «artefactos de
+  ejemplo», en D-3 (ejemplos propios en el gate, reportes generados con `--report`).
+- **Nombres:** «variante heredada» designa siempre una coincidencia de L-1…L-4; «excepción», una entrada de
+  `LEGACY_EXCEPTIONS` con fila en §6; «exclusión», una ruta fuera del alcance de D-5. Las reglas estructurales usan los
+  IDs de la policy (G-0N).
+- **Estructura:** sin dependencias cíclicas. La policy alimenta al script, el script al gate y el gate a CI. Cada función
+  tiene una responsabilidad: leer la policy, validar un reporte, buscar variantes, recorrer el alcance u orquestar. Las
+  funciones dependen de datos (texto, mapas), no unas de otras, salvo el orquestador.
+
+## Registro de Cambios (CR)
+
+### CR-001
+- **Tipo**: ambigüedad
+- **Descripción**: el `Pero` de AC-2 excluye solo `docs/specs/` y las versiones publicadas del CHANGELOG. Para que la
+  búsqueda sea repetible y no exija editar registros inmutables, el diseño también excluye `docs/adr/` (ADR aceptados
+  inmutables; `ADR-0008` cita `approved`), `docs/product/roadmap.md` (append-only) y `docs/product/story-map.md`
+  (`COMPLETED`), además de §5-§6 de la policy, que citan los valores heredados por diseño. Exime de L-4 las excepciones
+  registradas en §6. Así responde a STORY-140 CR-002 y STORY-141 CR-002.
+- **Documento afectado**: story.md (`Pero` de AC-2)
+- **Acción requerida**: opcional. Si el PO lo confirma, ampliar el `Pero` con «los ADR, los registros cerrados de
+  `docs/product/` y las excepciones registradas en la política». El diseño no cambia.
+
+### CR-002
+- **Tipo**: dependencia
+- **Descripción**: el gate valida los ejemplos propios de los skills (D-3). Hoy `skills/story-analyze/examples/output/analyze.md`
+  y los tres `skills/story-acceptance/examples/*/acceptance-report.md` no cumplen G-01, G-02 ni G-04 (`final-status`,
+  bloque `>` entre el título y la primera sección). STORY-144 y STORY-145 todavía no tienen diseño. Además, los tres
+  `skills/story-fix-plan/examples/*/analyze.md` declaran `verdict: APPROVED` sin `## Veredicto`. Son fixtures de otro
+  skill y el gate no los valida estructuralmente, pero no cumplen G-02.
+- **Documento afectado**: STORY-144, STORY-145 (sus diseños)
+- **Acción requerida**: que STORY-144 incluya en su inventario `skills/story-analyze/examples/output/analyze.md` y los
+  fixtures `analyze.md` de `story-fix-plan`, y que STORY-145 incluya sus tres ejemplos. Si no, el paso del gate de esta
+  historia fallará.
+
+### CR-003
+- **Tipo**: dependencia
+- **Descripción**: STORY-142 CR-003 nombra a esta historia para la invariante de AC-3 de STORY-138 (valores permitidos −
+  valores sin rama = ramas del flowchart). `flowchart-story-excecution-qa.mermaid` dibuja aristas `BLOCKED` en
+  `story-code-review`, `story-verify` y `story-acceptance`. Ningún AC de STORY-143 pide verificar los flowcharts, y
+  automatizar la invariante exigiría decidir antes si un autolazo `BLOCKED` cuenta como rama.
+- **Documento afectado**: STORY-138 (§4 y su V-7)
+- **Acción requerida**: que STORY-138 fije el criterio sobre los autolazos `BLOCKED`, o que se retiren esas aristas del
+  flowchart. Si se quiere comprobar en el gate, una historia futura añade una regla al verificador de esta historia
+  (F-5).

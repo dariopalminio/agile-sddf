@@ -5,7 +5,7 @@ id: STORY-144
 kind: feat
 slug: STORY-144-alinear-story-analyze
 title: "Alinear story-analyze"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
@@ -53,7 +53,7 @@ Entonces story.md no pasa a READY-FOR-IMPLEMENT
 
 ## Fuera de alcance (Non-Goals)
 
-- Crear `story-fix-changes`, el bucle `NEEDS-CHANGES` del flowchart de planificación.
+- Crear `story-fix-plan`, el bucle `NEEDS-CHANGES` del flowchart de planificación.
 - Reescribir los `analyze.md` históricos de `docs/specs/stories/`.
 
 ## 📎 Notas / contexto adicional

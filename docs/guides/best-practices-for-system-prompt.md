@@ -115,7 +115,10 @@ Gemini (global) --> ~/.gemini/GEMINI.md En tu directorio de trabajo o cualquier 
 
 ## Recomendaciones para escribir archivos de instrucciones de sistema
 
-1. **Mantener concisión (sé breve)**: Es fundamental que tu archivo sea lo más corto posible, manteniendo un límite ideal que no supere las 200 o 300 líneas y no sobrepase las 150-200 instrucciones.
+1. **Mantener concisión (sé breve)**: Es fundamental que tu archivo sea lo más corto posible, manteniendo un límite ideal que no supere las 200 o 300 líneas y no sobrepase las 150-200 instrucciones. Aproximadamente lo siguiente:
+   - **CLAUDE.md** <200 líneas.
+   - **AGENTES.md** Cadena de <32 KiB (valor predeterminado del Codex).
+   - **copilot-instructions.md** ~100 líneas.
 2. **Define la descripción del proyecto concisamente**: Comienza siempre describiendo el proyecto en una sola frase que detalle el tipo de aplicación y el stack tecnológico principal (por ejemplo: "Esta es una aplicación web creada en Next.js...").
 3. **Comandos críticos**: Lista solo los comandos de uso diario más importantes, como aquellos requeridos para hacer testeos o compilaciones (builds) del proyecto.
 4. **Advertencias y particularidades (Caveats)**: Define explícitamente los casos especiales de tu proyecto que la IA no podría adivinar con solo leer el código; por ejemplo, "nunca modifiques directamente el schema de Prisma" o "no ejecutes un build tras cada modificación pequeña".
