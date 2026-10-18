@@ -1,7 +1,7 @@
 {
   "skill": "epic-analyze",
-  "version": "1.2.0",
-  "description": "Casos de prueba para epic-analyze (STORY-120): cruza la sección de historias de epic.md (localizada por la clave 'historias' del template de épica) con los story.md que declaran la épica como parent, escribe <EPIC_DIR>/epic-analyze-report.md desde un template leído en runtime (central → seed) con hallazgos INT-01…INT-06 y un veredicto APPROVED / NEEDS-REFINEMENT / BLOCKED; desde STORY-121 añade la familia SAL-01…SAL-04 (cobertura de criterios de salida y smoke tests por las historias, con evidencia E1 mención explícita / E2 AC que verifica) y la tabla de cobertura del contrato de salida; desde STORY-122 añade la familia MAD-01…MAD-03 (madurez de las historias hijas: estado mínimo SPECIFY/DONE y referencias related a historias o épicas resolubles por ID), todos WARNING; nunca modifica epic.md ni story.md y se detiene sin escribir ante una épica no resuelta o un template ausente.",
+  "version": "1.3.0",
+  "description": "Casos de prueba para epic-analyze (STORY-120): cruza la sección de historias de epic.md (localizada por la clave 'historias' del template de épica) con los story.md que declaran la épica como parent, escribe <EPIC_DIR>/epic-analyze-report.md desde un template leído en runtime (central → seed) con hallazgos INT-01…INT-06 y un veredicto APPROVED / NEEDS-REFINEMENT; desde STORY-121 añade la familia SAL-01…SAL-04 (cobertura de criterios de salida y smoke tests por las historias, con evidencia E1 mención explícita / E2 AC que verifica) y la tabla de cobertura del contrato de salida; desde STORY-122 añade la familia MAD-01…MAD-03 (madurez de las historias hijas: estado mínimo SPECIFY/DONE y referencias related a historias o épicas resolubles por ID), todos WARNING; nunca modifica epic.md ni story.md y se detiene sin escribir ante una épica no resuelta o un template ausente.",
   "cases": [
     {
       "id": "TC-001",
@@ -39,8 +39,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["epic-analyze-report.md", "APPROVED", "verdict: APPROVED", "errors: 0", "Sin hallazgos."],
-        "not_contains": ["epic.md ===", "story.md ===", "H-001", "INT-02"]
+        "contains": ["epic-analyze-report.md", "APPROVED", "verdict: APPROVED", "errors: 0", "Sin hallazgos.", "## Veredicto", "**Veredicto:** `APPROVED`"],
+        "not_contains": ["epic.md ===", "story.md ===", "H-001", "INT-02", "| Veredicto |"]
       },
       "threshold": 1.0
     },
@@ -48,7 +48,7 @@
       "id": "TC-002",
       "name": "historia-listada-sin-directorio-int-01",
       "type": "error-handling",
-      "description": "AC-2 fila 1: la sección de historias lista STORY-201 (línea 18) y STORY-203 (línea 19), pero no existe ningún directorio STORY-203-*. STORY-201 existe con parent: EPIC-30-ejemplo. Se espera un hallazgo ERROR INT-01 que cita STORY-203 y veredicto BLOCKED.",
+      "description": "AC-2 fila 1: la sección de historias lista STORY-201 (línea 18) y STORY-203 (línea 19), pero no existe ningún directorio STORY-203-*. STORY-201 existe con parent: EPIC-30-ejemplo. Se espera un hallazgo ERROR INT-01 que cita STORY-203 y veredicto NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -73,8 +73,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["INT-01", "STORY-203", "ERROR", "epic.md:19", "BLOCKED", "verdict: BLOCKED", "errors: 1"],
-        "not_contains": ["epic.md ===", "story.md ===", "verdict: APPROVED"]
+        "contains": ["INT-01", "STORY-203", "ERROR", "epic.md:19", "errors: 1", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["epic.md ===", "story.md ===", "verdict: APPROVED", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -82,7 +82,7 @@
       "id": "TC-003",
       "name": "historia-huerfana-int-02",
       "type": "error-handling",
-      "description": "AC-2 fila 2: la sección de historias lista STORY-201 y STORY-202, que existen con parent: EPIC-30-ejemplo; además existe docs/specs/stories/STORY-204-auditar-clientes/story.md con parent: EPIC-30-ejemplo que no figura en el índice. Se espera un hallazgo ERROR INT-02 que cita STORY-204 y su story.md, y veredicto BLOCKED.",
+      "description": "AC-2 fila 2: la sección de historias lista STORY-201 y STORY-202, que existen con parent: EPIC-30-ejemplo; además existe docs/specs/stories/STORY-204-auditar-clientes/story.md con parent: EPIC-30-ejemplo que no figura en el índice. Se espera un hallazgo ERROR INT-02 que cita STORY-204 y su story.md, y veredicto NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -109,8 +109,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["INT-02", "STORY-204", "STORY-204-auditar-clientes/story.md", "BLOCKED", "verdict: BLOCKED"],
-        "not_contains": ["epic.md ===", "story.md ===", "verdict: APPROVED"]
+        "contains": ["INT-02", "STORY-204", "STORY-204-auditar-clientes/story.md", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["epic.md ===", "story.md ===", "verdict: APPROVED", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -118,7 +118,7 @@
       "id": "TC-004",
       "name": "historia-duplicada-int-03",
       "type": "error-handling",
-      "description": "AC-2 fila 3: STORY-201 aparece dos veces en la sección de historias (líneas 18 y 20); STORY-202 en la línea 19. Ambas historias existen con parent: EPIC-30-ejemplo. Se espera un único hallazgo ERROR INT-03 que cita STORY-201 y ambas líneas, y veredicto BLOCKED.",
+      "description": "AC-2 fila 3: STORY-201 aparece dos veces en la sección de historias (líneas 18 y 20); STORY-202 en la línea 19. Ambas historias existen con parent: EPIC-30-ejemplo. Se espera un único hallazgo ERROR INT-03 que cita STORY-201 y ambas líneas, y veredicto NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -145,8 +145,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["INT-03", "STORY-201", "epic.md:18", "epic.md:20", "BLOCKED", "errors: 1"],
-        "not_contains": ["epic.md ===", "story.md ===", "H-002", "verdict: APPROVED"]
+        "contains": ["INT-03", "STORY-201", "epic.md:18", "epic.md:20", "errors: 1", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["epic.md ===", "story.md ===", "H-002", "verdict: APPROVED", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -182,7 +182,7 @@
       },
       "expected": {
         "contains": ["INT-05", "WARNING", "Exportar CSV", "epic.md:20", "verdict: APPROVED", "errors: 0", "warnings: 1"],
-        "not_contains": ["epic.md ===", "story.md ===", "BLOCKED", "NEEDS-REFINEMENT"]
+        "not_contains": ["epic.md ===", "story.md ===", "verdict: BLOCKED", "NEEDS-REFINEMENT"]
       },
       "threshold": 1.0
     },
@@ -214,7 +214,7 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["INT-05", "H-004", "Auditar accesos", "NEEDS-REFINEMENT", "verdict: NEEDS-REFINEMENT", "errors: 0", "warnings: 4"],
+        "contains": ["INT-05", "H-004", "Auditar accesos", "NEEDS-REFINEMENT", "verdict: NEEDS-REFINEMENT", "errors: 0", "warnings: 4", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
         "not_contains": ["epic.md ===", "story.md ===", "H-005", "verdict: APPROVED", "verdict: BLOCKED"]
       },
       "threshold": 1.0
@@ -385,7 +385,7 @@
       "id": "TC-012",
       "name": "criterio-de-salida-sin-cobertura-sal-01",
       "type": "error-handling",
-      "description": "STORY-121 AC-2 fila 1: mismo contrato que TC-011, pero el único AC de STORY-202 afirma el orden de la tabla del índice, no el veredicto; ninguna historia cubre el segundo criterio (línea 23). Se espera un hallazgo ERROR SAL-01 que cita el texto literal del criterio y epic.md:23, y veredicto BLOCKED.",
+      "description": "STORY-121 AC-2 fila 1: mismo contrato que TC-011, pero el único AC de STORY-202 afirma el orden de la tabla del índice, no el veredicto; ninguna historia cubre el segundo criterio (línea 23). Se espera un hallazgo ERROR SAL-01 que cita el texto literal del criterio y epic.md:23, y veredicto NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -412,8 +412,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["SAL-01", "El reporte declara el veredicto", "epic.md:23", "ERROR", "BLOCKED", "verdict: BLOCKED", "errors: 1"],
-        "not_contains": ["SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ==="]
+        "contains": ["SAL-01", "El reporte declara el veredicto", "epic.md:23", "ERROR", "errors: 1", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ===", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -449,7 +449,7 @@
       },
       "expected": {
         "contains": ["SAL-02", "SMOKE-2", "WARNING", "verdict: APPROVED", "errors: 0", "warnings: 1"],
-        "not_contains": ["SAL-01", "BLOCKED", "epic.md ===", "story.md ==="]
+        "not_contains": ["SAL-01", "verdict: BLOCKED", "epic.md ===", "story.md ==="]
       },
       "threshold": 1.0
     },
@@ -457,7 +457,7 @@
       "id": "TC-014",
       "name": "seccion-criterios-de-salida-ausente-sal-03",
       "type": "error-handling",
-      "description": "STORY-121 AC-2 fila 3 (sección ausente): epic.md de EPIC-30-ejemplo no tiene la sección de criterios de salida; tiene SMOKE-1, que STORY-201 cita. Se espera un hallazgo ERROR SAL-03 que cita el título de la sección leído del template (Criterios de salida), ningún SAL-01 y veredicto BLOCKED.",
+      "description": "STORY-121 AC-2 fila 3 (sección ausente): epic.md de EPIC-30-ejemplo no tiene la sección de criterios de salida; tiene SMOKE-1, que STORY-201 cita. Se espera un hallazgo ERROR SAL-03 que cita el título de la sección leído del template (Criterios de salida), ningún SAL-01 y veredicto NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -483,8 +483,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["SAL-03", "Criterios de salida", "ERROR", "BLOCKED", "verdict: BLOCKED", "errors: 1"],
-        "not_contains": ["SAL-01", "SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ==="]
+        "contains": ["SAL-03", "Criterios de salida", "ERROR", "errors: 1", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["SAL-01", "SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ===", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -492,7 +492,7 @@
       "id": "TC-015",
       "name": "seccion-smoke-tests-vacia-sal-04",
       "type": "error-handling",
-      "description": "STORY-121 AC-2 fila 4: la sección de smoke tests de EPIC-30-ejemplo existe pero solo contiene un comentario, sin ningún encabezado ###; el único criterio de salida está citado por STORY-201. Se espera un hallazgo ERROR SAL-04 que cita el título de la sección (Smoke tests), ningún SAL-02 y veredicto BLOCKED.",
+      "description": "STORY-121 AC-2 fila 4: la sección de smoke tests de EPIC-30-ejemplo existe pero solo contiene un comentario, sin ningún encabezado ###; el único criterio de salida está citado por STORY-201. Se espera un hallazgo ERROR SAL-04 que cita el título de la sección (Smoke tests), ningún SAL-02 y veredicto NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -519,8 +519,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["SAL-04", "Smoke tests", "ERROR", "BLOCKED", "verdict: BLOCKED", "errors: 1"],
-        "not_contains": ["SAL-01", "SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ==="]
+        "contains": ["SAL-04", "Smoke tests", "ERROR", "errors: 1", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["SAL-01", "SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ===", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -557,8 +557,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["SAL-01", "SAL-02", "SMOKE-2", "Contrato de salida: 1/3 cubiertos", "BLOCKED", "errors: 1", "warnings: 1"],
-        "not_contains": ["Contrato de salida: 2/3", "Contrato de salida: 3/3", "verdict: APPROVED", "epic.md ===", "story.md ==="]
+        "contains": ["SAL-01", "SAL-02", "SMOKE-2", "Contrato de salida: 1/3 cubiertos", "errors: 1", "warnings: 1", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["Contrato de salida: 2/3", "Contrato de salida: 3/3", "verdict: APPROVED", "epic.md ===", "story.md ===", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -566,7 +566,7 @@
       "id": "TC-017",
       "name": "evidencia-solo-en-historia-cancelada",
       "type": "happy-path",
-      "description": "STORY-121 D-3 (CR-004): la única historia que cita el criterio de salida es STORY-202, con status: CANCELED; STORY-201 cita solo SMOKE-1. Una historia cancelada no entregará el criterio: se espera un hallazgo ERROR SAL-01 sobre el criterio, una nota indicando que STORY-202 está cancelada y no cuenta como cobertura, y veredicto BLOCKED.",
+      "description": "STORY-121 D-3 (CR-004): la única historia que cita el criterio de salida es STORY-202, con status: CANCELED; STORY-201 cita solo SMOKE-1. Una historia cancelada no entregará el criterio: se espera un hallazgo ERROR SAL-01 sobre el criterio, una nota indicando que STORY-202 está cancelada y no cuenta como cobertura, y veredicto NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -593,8 +593,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["SAL-01", "El listado funciona", "cancelada", "STORY-202", "BLOCKED", "verdict: BLOCKED"],
-        "not_contains": ["SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ==="]
+        "contains": ["SAL-01", "El listado funciona", "cancelada", "STORY-202", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ===", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -946,7 +946,7 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["MAD-01", "MAD-03", "STORY-205", "BACKLOG", "NEEDS-REFINEMENT", "verdict: NEEDS-REFINEMENT", "errors: 0", "warnings: 5", "Madurez de historias hijas: 0/5"],
+        "contains": ["MAD-01", "MAD-03", "STORY-205", "BACKLOG", "NEEDS-REFINEMENT", "verdict: NEEDS-REFINEMENT", "errors: 0", "warnings: 5", "Madurez de historias hijas: 0/5", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
         "not_contains": ["MAD-02", "H-006", "verdict: APPROVED", "verdict: BLOCKED", "epic.md ===", "story.md ==="]
       },
       "threshold": 1.0
@@ -1011,7 +1011,7 @@
       "id": "TC-026",
       "name": "historia-listada-con-parent-de-otra-epica-int-04",
       "type": "error-handling",
-      "description": "CR-001 (INT-04): la sección de historias lista STORY-201 (línea 18) y STORY-202 (línea 19); STORY-202 tiene parent: EPIC-30-ejemplo, pero el story.md de STORY-201 declara parent: EPIC-31-otra. Se espera un hallazgo ERROR INT-04 que cita STORY-201 y el parent encontrado EPIC-31-otra, y veredicto BLOCKED.",
+      "description": "CR-001 (INT-04): la sección de historias lista STORY-201 (línea 18) y STORY-202 (línea 19); STORY-202 tiene parent: EPIC-30-ejemplo, pero el story.md de STORY-201 declara parent: EPIC-31-otra. Se espera un hallazgo ERROR INT-04 que cita STORY-201 y el parent encontrado EPIC-31-otra, y veredicto NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -1037,8 +1037,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["INT-04", "STORY-201", "EPIC-31-otra", "epic.md:18", "BLOCKED", "verdict: BLOCKED"],
-        "not_contains": ["epic.md ===", "story.md ===", "INT-01", "verdict: APPROVED"]
+        "contains": ["INT-04", "STORY-201", "EPIC-31-otra", "epic.md:18", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["epic.md ===", "story.md ===", "INT-01", "verdict: APPROVED", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -1046,7 +1046,7 @@
       "id": "TC-027",
       "name": "epica-sin-seccion-de-historias-int-06",
       "type": "error-handling",
-      "description": "CR-001 (INT-06): el template de épica declara la sección con clave 'historias' (título 'Historias'), pero epic.md de EPIC-30-ejemplo no tiene ese encabezado. STORY-201 tiene parent: EPIC-30-ejemplo. Se espera un hallazgo ERROR INT-06 (no hay índice que analizar), la Vía B se evalúa igual (STORY-201 aparece como huérfana INT-02) y el veredicto es BLOCKED.",
+      "description": "CR-001 (INT-06): el template de épica declara la sección con clave 'historias' (título 'Historias'), pero epic.md de EPIC-30-ejemplo no tiene ese encabezado. STORY-201 tiene parent: EPIC-30-ejemplo. Se espera un hallazgo ERROR INT-06 (no hay índice que analizar), la Vía B se evalúa igual (STORY-201 aparece como huérfana INT-02) y el veredicto es NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -1069,8 +1069,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["INT-06", "INT-02", "STORY-201", "BLOCKED", "verdict: BLOCKED"],
-        "not_contains": ["epic.md ===", "story.md ===", "verdict: APPROVED"]
+        "contains": ["INT-06", "INT-02", "STORY-201", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["epic.md ===", "story.md ===", "verdict: APPROVED", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     },
@@ -1078,7 +1078,7 @@
       "id": "TC-028",
       "name": "criterios-de-salida-solo-placeholder-sal-03",
       "type": "error-handling",
-      "description": "STORY-121 AC-2 fila 3 (sección vacía, CR-003): la sección de criterios de salida de EPIC-30-ejemplo existe pero su única línea es el placeholder del template `- [ ] [Criterio técnico verificable]`, que no es un criterio. SMOKE-1 está citado por STORY-201. Se espera un hallazgo ERROR SAL-03 que cita Criterios de salida, ningún SAL-01 sobre el placeholder y veredicto BLOCKED.",
+      "description": "STORY-121 AC-2 fila 3 (sección vacía, CR-003): la sección de criterios de salida de EPIC-30-ejemplo existe pero su única línea es el placeholder del template `- [ ] [Criterio técnico verificable]`, que no es un criterio. SMOKE-1 está citado por STORY-201. Se espera un hallazgo ERROR SAL-03 que cita Criterios de salida, ningún SAL-01 sobre el placeholder y veredicto NEEDS-REFINEMENT.",
       "input": {
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
@@ -1105,8 +1105,8 @@
         "today": "2026-10-08"
       },
       "expected": {
-        "contains": ["SAL-03", "Criterios de salida", "ERROR", "BLOCKED", "verdict: BLOCKED", "errors: 1"],
-        "not_contains": ["SAL-01", "SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ==="]
+        "contains": ["SAL-03", "Criterios de salida", "ERROR", "errors: 1", "verdict: NEEDS-REFINEMENT", "## Veredicto", "**Veredicto:** `NEEDS-REFINEMENT`"],
+        "not_contains": ["SAL-01", "SAL-02", "verdict: APPROVED", "epic.md ===", "story.md ===", "verdict: BLOCKED", "**Veredicto:** `BLOCKED`"]
       },
       "threshold": 1.0
     }

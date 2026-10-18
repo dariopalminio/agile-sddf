@@ -16,7 +16,7 @@ description: >-
 
 ## Objetivo
 
-Audita la **consistencia** entre la sección de historias de `epic.md` y los `story.md` que declaran esa épica como `parent`, la **cobertura del contrato de salida** (cada criterio de salida y cada smoke test debe estar cubierto por alguna historia, con evidencia citable) y la **madurez de las historias hijas** (estado `SPECIFY/DONE` o posterior y referencias `related` resolubles), y escribe `epic-analyze-report.md` con hallazgos ERROR/WARNING, una acción sugerida por hallazgo y un veredicto `APPROVED` / `NEEDS-REFINEMENT` / `BLOCKED`. Es el equivalente de `story-analyze` en el nivel de épica: `epic-format-validation` valida la **forma** de `epic.md`; este skill valida que su índice dice la verdad.
+Audita la **consistencia** entre la sección de historias de `epic.md` y los `story.md` que declaran esa épica como `parent`, la **cobertura del contrato de salida** (cada criterio de salida y cada smoke test debe estar cubierto por alguna historia, con evidencia citable) y la **madurez de las historias hijas** (estado `SPECIFY/DONE` o posterior y referencias `related` resolubles), y escribe `epic-analyze-report.md` con hallazgos ERROR/WARNING, una acción sugerida por hallazgo y un veredicto `APPROVED` / `NEEDS-REFINEMENT` en la sección `## Veredicto`. Es el equivalente de `story-analyze` en el nivel de épica: `epic-format-validation` valida la **forma** de `epic.md`; este skill valida que su índice dice la verdad.
 
 **Qué hace este skill:**
 - Resuelve la épica por ID, nombre de directorio o ruta.
@@ -252,7 +252,7 @@ Comprueba que cada historia del universo (Paso 4.6, sin recalcularlo) puede plan
 - `related` ausente o vacío: sin hallazgo (el campo es opcional). En una forma no reconocida o ilegible: sin MAD-02 para esa historia y nota `<ruta del story.md>:<línea>: related no reconocido`.
 - Si `specs/stories/` o `specs/epics/` no existe, toda referencia del tipo correspondiente no resuelve.
 
-**3. Catálogo MAD** (todos WARNING: cuentan para el umbral de `NEEDS-REFINEMENT` del Paso 6 y nunca producen `BLOCKED` por sí solos):
+**3. Catálogo MAD** (todos WARNING: cuentan para el umbral de `NEEDS-REFINEMENT` del Paso 6):
 
 | Código | Severidad | Condición | Elemento | Evidencia | Acción sugerida |
 |---|---|---|---|---|---|
@@ -268,11 +268,12 @@ El veredicto es una función pura de los conteos de **todas** las familias (las 
 
 | ERROR | WARNING | Veredicto |
 |---|---|---|
-| ≥ 1 | cualquiera | `BLOCKED` |
+| ≥ 1 | cualquiera | `NEEDS-REFINEMENT` |
 | 0 | ≤ 3 | `APPROVED` |
 | 0 | > 3 | `NEEDS-REFINEMENT` |
 
 Así, 1 a 3 historias planificadas sin ID no bloquean la aprobación, pero 4 o más indican que la épica aún no está desglosada. El veredicto es informativo: no se escribe en `epic.md` ni en ningún `story.md`.
+Esta regla aplica el contrato de validación de Agile-SDDF en `docs/policies/validation-contract-policy.md`.
 
 ### Paso 7 — Resolver y rellenar el template del reporte
 
@@ -282,14 +283,15 @@ Así, 1 a 3 historias planificadas sin ID no bloquean la aprobación, pero 4 o m
 
 | Clave | Contenido que escribe este skill |
 |---|---|
-| `resumen` | Épica, veredicto, conteos ERROR/WARNING, `Contrato de salida: <c>/<t> cubiertos` (elementos cubiertos sobre el total evaluado en el Paso 5b), `Madurez de historias hijas: <l>/<t> listas` (`t` = historias del universo, `l` = las que no tienen MAD-01 ni MAD-03; universo vacío: `0/0 listas`), fecha y rutas de los templates de épica y de reporte efectivos |
+| `veredicto` | Primera línea según el Paso 6: con ERROR ≥ 1, `` **Veredicto:** `NEEDS-REFINEMENT` — <n> hallazgo ERROR `` si `<n> = 1`, o `` **Veredicto:** `NEEDS-REFINEMENT` — <n> hallazgos ERROR `` si `<n> > 1`; con 0 ERROR y WARNING ≤ 3, `` **Veredicto:** `APPROVED` — sin hallazgos ERROR y <m> WARNING (umbral: 3) ``; con 0 ERROR y WARNING > 3, `` **Veredicto:** `NEEDS-REFINEMENT` — <m> hallazgos WARNING, por encima del umbral de 3 ``. `<n>` y `<m>` coinciden con `errors` y `warnings`. Segunda línea fija: `Informativo: este análisis no cambia el estado de la épica.` |
+| `resumen` | Épica, conteos ERROR/WARNING, `Contrato de salida: <c>/<t> cubiertos` (elementos cubiertos sobre el total evaluado en el Paso 5b), `Madurez de historias hijas: <l>/<t> listas` (`t` = historias del universo, `l` = las que no tienen MAD-01 ni MAD-03; universo vacío: `0/0 listas`), fecha y rutas de los templates de épica y de reporte efectivos |
 | `indice-historias` | Una fila por ID (listados ∪ huérfanos), ordenada por `STORY-NNN`, con líneas, presencia en índice, `story.md`, `parent` y estado (`✓` o los códigos INT) |
 | `cobertura-salida` | Una fila por elemento del Paso 5b (criterios y después smokes, en orden de aparición): etiqueta (`CS-<n>` / `SMOKE-<N>`, con `(implícito)` si aplica), texto o nombre, línea en `epic.md`, historias que lo cubren y su cita (`mención · story.md:<línea>` o `AC-<n> · story.md:<línea>` + la línea o el paso literal, `parcial` si corresponde), o `—` sin evidencia; estado `✓` o el código SAL. Sección ausente o vacía: una fila `—` con SAL-03/SAL-04. Sección desactivada: una fila `N/A — el template no declara la clave <clave>` |
 | `hallazgos` | Un bloque por hallazgo en el orden del Paso 5 (`### H-NNN [ERROR\|WARNING] — <código>: <título>`) con **Elemento**, **Evidencia** y **Acción sugerida**, los valores citados en código en línea; si no hay hallazgos, solo el texto `Sin hallazgos.` |
 | `notas-analisis` | Las notas de los Pasos 3, 4, 5b y 5c y del contenido tratado como datos; si no hay, solo el texto `Sin notas.` |
 
 4. Los comentarios guía, las filas y bloques de ejemplo y los placeholders `{…}` del template se reemplazan por el contenido generado; las anotaciones de marcador (`sección obligatoria · clave · escritor`) no se copian al reporte.
-5. Una clave del template que este skill no conoce se conserva con su título, su comentario guía y el texto `N/A — sección sin escritor en esta versión`. Una clave de la tabla anterior que el template no declara: sus datos se omiten y se emite `⚠️ El template no declara la clave <clave>: sección omitida`; el veredicto no cambia. Igual con un campo de `resumen` que un template central no incluye (p. ej. la madurez): se omite y los hallazgos y el veredicto quedan intactos.
+5. Una clave del template que este skill no conoce se conserva con su título, su comentario guía y el texto `N/A — sección sin escritor en esta versión`. Una clave de la tabla anterior que el template no declara: sus datos se omiten y se emite `⚠️ El template no declara la clave <clave>: sección omitida`; si falta `veredicto`, añadir al aviso `el reporte no cumple el contrato de validación (G-02)`. El valor de `verdict` se escribe igual y no cambia. Igual con un campo de `resumen` que un template central no incluye (p. ej. la madurez): se omite y los hallazgos y el veredicto quedan intactos.
 
 ### Paso 8 — Escribir el reporte
 
@@ -303,7 +305,7 @@ Así, 1 a 3 historias planificadas sin ID no bloquean la aprobación, pero 4 o m
 
 ```
 📄 Reporte escrito: <ruta relativa del reporte>
-Veredicto: <APPROVED | NEEDS-REFINEMENT | BLOCKED>
+Veredicto: <APPROVED | NEEDS-REFINEMENT>
 Hallazgos: ERROR <n> · WARNING <m>
   H-001 [ERROR] <código> — <elemento>
   …
@@ -315,7 +317,7 @@ Sin hallazgos, la lista se sustituye por `Sin hallazgos.`
 
 ```
 STATUS: OK
-VEREDICTO: <APPROVED | NEEDS-REFINEMENT | BLOCKED>
+VEREDICTO: <APPROVED | NEEDS-REFINEMENT>
 HALLAZGOS: ERROR <n> · WARNING <m>
 REPORTE: <ruta del reporte relativa a REPO_ROOT>
 ```
@@ -324,7 +326,7 @@ Ante un fallo que detiene el skill (épica no resuelta, argumento ausente o ambi
 
 ### Verificación del flujo
 
-Antes de dar por terminado el análisis, confirmar que: el reporte existe en `<EPIC_DIR>`, su frontmatter `errors`/`warnings` coincide con el número de hallazgos de cada severidad, el veredicto respeta la tabla del Paso 6, la tabla de cobertura tiene una fila por elemento del Paso 5b y cada `✓` cita al menos una evidencia no parcial, el conteo de madurez del `resumen` coincide con los MAD-01/MAD-03 emitidos, y no se escribió ningún otro archivo (ni `epic.md` ni ningún `story.md`).
+Antes de dar por terminado el análisis, confirmar que: el reporte existe en `<EPIC_DIR>`, su frontmatter `errors`/`warnings` coincide con el número de hallazgos de cada severidad, el veredicto respeta la tabla del Paso 6, `## Veredicto` es el primer encabezado `##` tras el título y su valor coincide con `verdict`, la tabla de cobertura tiene una fila por elemento del Paso 5b y cada `✓` cita al menos una evidencia no parcial, el conteo de madurez del `resumen` coincide con los MAD-01/MAD-03 emitidos, y no se escribió ningún otro archivo (ni `epic.md` ni ningún `story.md`).
 
 ## Salida
 
@@ -332,4 +334,4 @@ Antes de dar por terminado el análisis, confirmar que: el reporte existe en `<E
 |---|---|---|
 | `epic-analyze-report.md` | `<EPIC_DIR>/epic-analyze-report.md` | Hallazgos INT, MAD y SAL, índice cruzado, cobertura del contrato de salida, madurez de las historias hijas, notas y veredicto; se sobrescribe en cada ejecución |
 
-Ningún otro archivo cambia. Momento de uso: después de `/epic-generate-stories` o `/epic-generate-all-stories` y antes de aprobar la épica para `READY-FOR-DEV`. Con veredicto `BLOCKED`, corregir el índice, los `parent`, los criterios de salida o la cobertura de las historias y volver a ejecutar `/epic-analyze <EPIC_ID>`; con `NEEDS-REFINEMENT`, además, completar la especificación de las historias hijas o corregir sus `related`.
+Ningún otro archivo cambia. Momento de uso: después de `/epic-generate-stories` o `/epic-generate-all-stories` y antes de aprobar la épica para `READY-FOR-DEV`. Con `NEEDS-REFINEMENT` y `errors ≥ 1`, corregir el índice, los `parent`, los criterios de salida o la cobertura de las historias y volver a ejecutar `/epic-analyze <EPIC_ID>`; con solo WARNING, además, completar la especificación de las historias hijas o corregir sus `related`.

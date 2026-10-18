@@ -4,7 +4,7 @@ id: {EPIC_ID}
 slug: {nombre-directorio-epica}-analyze-report
 title: "Epic analyze: {título}"
 epic: {EPIC_ID}
-verdict: {APPROVED | NEEDS-REFINEMENT | BLOCKED}
+verdict: {APPROVED | NEEDS-REFINEMENT}
 errors: {n}
 warnings: {n}
 created: {YYYY-MM-DD}
@@ -17,13 +17,17 @@ related:
 
 # Análisis de épica: {título}
 
+## Veredicto <!-- sección obligatoria · clave: veredicto · escritor: epic-analyze -->
+<!-- La primera línea declara el veredicto y su motivo según el Paso 7; la segunda aclara que el análisis es informativo. -->
+**Veredicto:** `{veredicto}` — {motivo}
+Informativo: este análisis no cambia el estado de la épica.
+
 ## Resumen <!-- sección obligatoria · clave: resumen · escritor: epic-analyze -->
-<!-- Tabla de dos columnas (Métrica │ Valor) con: Épica ({EPIC_ID} y ruta de epic.md), Veredicto, Hallazgos ERROR, Hallazgos WARNING, Contrato de salida (elementos cubiertos sobre el total), Madurez de historias hijas (historias listas sobre el total evaluado), Fecha, Template de épica efectivo y Template de reporte efectivo. Debajo, una línea: "**Veredicto:** <veredicto> — informativo; este análisis no cambia el estado de la épica." -->
+<!-- Tabla de dos columnas (Métrica │ Valor) con: Épica ({EPIC_ID} y ruta de epic.md), Hallazgos ERROR, Hallazgos WARNING, Contrato de salida (elementos cubiertos sobre el total), Madurez de historias hijas (historias listas sobre el total evaluado), Fecha, Template de épica efectivo y Template de reporte efectivo. -->
 
 | Métrica | Valor |
 |---|---|
 | Épica | {EPIC_ID} (`{ruta de epic.md}`) |
-| Veredicto | {veredicto} |
 | Hallazgos ERROR | {n} |
 | Hallazgos WARNING | {n} |
 | Contrato de salida | Contrato de salida: {c}/{t} cubiertos |

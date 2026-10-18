@@ -7,6 +7,7 @@
 !.github/workflows/
 !.github/workflows/**
 .agents
+.codex
 
 #skills-lock.json
 

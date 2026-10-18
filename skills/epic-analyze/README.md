@@ -8,7 +8,7 @@
 
 ## What it does
 
-Audita una épica cruzando su índice de historias en `epic.md` con los `story.md` que la declaran como `parent`, comprueba que cada criterio de salida y cada smoke test está cubierto por alguna historia con evidencia citable, y verifica la madurez de las historias hijas (especificación terminada y referencias `related` resolubles). Escribe `epic-analyze-report.md` con hallazgos ERROR/WARNING de las familias INT (integridad del índice), SAL (contrato de salida) y MAD (madurez), una acción sugerida por hallazgo y un veredicto `APPROVED`, `NEEDS-REFINEMENT` o `BLOCKED`. Es el equivalente de `story-analyze` en el nivel de épica.
+Audita una épica cruzando su índice de historias en `epic.md` con los `story.md` que la declaran como `parent`, comprueba que cada criterio de salida y cada smoke test está cubierto por alguna historia con evidencia citable, y verifica la madurez de las historias hijas (especificación terminada y referencias `related` resolubles). Escribe `epic-analyze-report.md` con hallazgos ERROR/WARNING de las familias INT (integridad del índice), SAL (contrato de salida) y MAD (madurez), una acción sugerida por hallazgo y un veredicto `APPROVED` o `NEEDS-REFINEMENT` en la sección `## Veredicto`, según el contrato de validación. Es el equivalente de `story-analyze` en el nivel de épica.
 
 **Produces:**
 

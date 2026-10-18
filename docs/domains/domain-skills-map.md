@@ -16,4 +16,4 @@ updated: 2026-10-08
 
 | Skill | Momento | Lee | Escribe | Cambia estado |
 |---|---|---|---|---|
-| `epic-analyze` | `PLAN`, después de `epic-generate-stories` / `epic-generate-all-stories` y antes de aprobar `READY-FOR-DEV` | `epic.md` (sección con clave `historias`), `parent` de los `story.md`, template de épica y `epic-analyze-report-template.md` | `<EPIC_DIR>/epic-analyze-report.md` | — (veredicto informativo `APPROVED` / `NEEDS-REFINEMENT` / `BLOCKED`) |
+| `epic-analyze` | `PLAN`, después de `epic-generate-stories` / `epic-generate-all-stories` y antes de aprobar `READY-FOR-DEV` | `epic.md` (sección con clave `historias`), `parent` de los `story.md`, template de épica y `epic-analyze-report-template.md` | `<EPIC_DIR>/epic-analyze-report.md` | — (veredicto informativo `APPROVED` / `NEEDS-REFINEMENT`) |
