@@ -9,7 +9,7 @@ status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
-updated: 2026-10-17
+updated: 2026-10-18
 related:
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
 ---
@@ -55,7 +55,7 @@ Ejemplos:
 Dado la política publicada y los flowcharts de especificación, planificación y ejecución/QA
 Cuando se compara la tabla de valores permitidos por skill con las ramas "verdict" de cada flowchart
 Entonces cada rama es un valor permitido para el skill que la precede
-  Y ningún skill que aparece en un flowchart tiene valores permitidos fuera de sus ramas, salvo BLOCKED y PENDING, que detienen el flujo sin rama de retorno
+  Y ningún skill que aparece en un flowchart tiene valores permitidos fuera de sus ramas, salvo PENDING, que detiene el flujo sin rama de retorno
 ```
 
 ## ⚙️ Criterios no funcionales específicos
@@ -77,19 +77,20 @@ Entonces cada rama es un valor permitido para el skill que la precede
 - **Fuente del vocabulario:** las ramas `verdict` de `docs/architecture/diagrams/flowchart-story-specify.mermaid`, `flowchart-story-plan.mermaid` y `flowchart-story-excecution-qa.mermaid`. La política incluye la tabla de valores permitidos por skill:
   - `epic-analyze`: `APPROVED`, `NEEDS-REFINEMENT` (no tiene flowchart).
   - `story-evaluation`: `APPROVED`, `NEEDS-REFINEMENT`, `SPLIT`.
-  - `story-analyze` y `story-code-review`: `APPROVED`, `NEEDS-CHANGES`.
-  - `story-verify`: `APPROVED`, `NEEDS-CHANGES`, `BLOCKED`.
+  - `story-analyze`: `APPROVED`, `NEEDS-CHANGES`.
+  - `story-code-review` y `story-verify`: `APPROVED`, `NEEDS-CHANGES`, `BLOCKED`.
   - `story-acceptance`: `APPROVED`, `NEEDS-CHANGES`, `BLOCKED`, `PENDING`.
 - **Semántica:**
   - `NEEDS-REFINEMENT`: un artefacto de especificación debe refinarse.
   - `NEEDS-CHANGES`: un artefacto de planificación o de implementación fue rechazado o sus pruebas fallaron; debe corregirse, y el flujo vuelve al paso que lo produjo.
-  - `BLOCKED`: un bloqueo impide completar el proceso. Por ejemplo, las pruebas no se pueden ejecutar o un criterio de aceptación queda bloqueado. No tiene rama en los flowcharts: detiene el flujo hasta que se resuelva.
-  - `PENDING`: la validación aún no terminó (`story-acceptance` con `session-status: partial`). Tampoco tiene rama en los flowcharts.
+  - `BLOCKED`: un bloqueo impide completar el proceso. Por ejemplo, las pruebas no se pueden ejecutar o un criterio de aceptación queda bloqueado. En el flowchart de ejecución y QA su rama vuelve al mismo gate: el flujo se detiene y, una vez despejado el bloqueo, se vuelve a ejecutar ese gate.
+  - `PENDING`: la validación aún no terminó (`story-acceptance` con `session-status: partial`). No tiene rama en los flowcharts.
 - **Decisiones del PO (2026-10-17):**
   - Lo que falla o se rechaza es `NEEDS-CHANGES`; lo que no se pudo evaluar por un bloqueo es `BLOCKED`.
   - Si en un mismo reporte hay a la vez algo rechazado y algo bloqueado, gana `NEEDS-CHANGES`.
   - `story-acceptance` declara `PENDING` mientras la sesión es `partial`.
   - Un hallazgo ERROR de `epic-analyze` es un defecto de la épica, no un bloqueo del proceso, así que su veredicto es `NEEDS-REFINEMENT`; `epic-analyze` deja de emitir `BLOCKED`.
+- **Decisión del PO (2026-10-18):** el flowchart de ejecución y QA es la referencia vigente. Da a `BLOCKED` una rama hacia el mismo gate en `story-code-review`, `story-verify` y `story-acceptance`: significa «detente y vuelve a ejecutar el mismo gate una vez despejado el bloqueo». Por eso `story-code-review` admite `BLOCKED`, y `PENDING` es el único valor sin rama.
 - **Tabla de equivalencias completa** (la política cubre todos los valores heredados):
   - `epic-analyze`: `BLOCKED`.
   - `story-evaluation`: `APROBADA`, `REFINAR`, `RECHAZAR` y `DIVIDIR`.

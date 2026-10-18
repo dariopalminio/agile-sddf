@@ -9,7 +9,7 @@ substatus: IN-PROGRESS
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 story: STORY-138
 created: 2026-10-17
-updated: 2026-10-17
+updated: 2026-10-18
 related:
   - STORY-138-contrato-de-validacion
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
@@ -36,7 +36,7 @@ STORY-145) lo enlazan en lugar de repetirlo. Es la primera policy del repositori
 | `docs/templates/policy-template.md` | Plantilla de autoría manual (ADR-0012) con 10 secciones numeradas y la cabecera Versión / Estado / Última actualización / Propietario. |
 | Convención de `docs/policies/README.md` | `<ámbito>-policy.md`; frontmatter con `type: policy`, `slug` igual al nombre del archivo, `derives-from: constitution` y `enforced-by` si hay guardrails. Se registra en la tabla «Índice de policies». |
 | `scripts/check-doc-links.js` | Revisa `docs/policies` como raíz activa (enlaces relativos y wikilinks). Corre en `npm run verify:repository`. |
-| Flowcharts | `flowchart-story-specify.mermaid` (`story-evaluation` → `SPLIT` / `NEEDS-REFINEMENT` / `APPROVED`), `flowchart-story-plan.mermaid` (`story-analyze` → `NEEDS-CHANGES` / `APPROVED`) y `flowchart-story-excecution-qa.mermaid` (`story-code-review`, `story-verify`, `story-acceptance` → `NEEDS-CHANGES` / `APPROVED`). El nombre del archivo lleva la errata `excecution`, y se enlaza tal cual. |
+| Flowcharts | `flowchart-story-specify.mermaid` (`story-evaluation` → `SPLIT` / `NEEDS-REFINEMENT` / `APPROVED`), `flowchart-story-plan.mermaid` (`story-analyze` → `NEEDS-CHANGES` / `APPROVED`) y `flowchart-story-excecution-qa.mermaid` (`story-code-review`, `story-verify`, `story-acceptance` → `NEEDS-CHANGES` / `BLOCKED` / `APPROVED`; la rama `BLOCKED` vuelve al mismo skill, medido de nuevo el 2026-10-18 tras `58f2e99`, ver CR-002). El nombre del archivo lleva la errata `excecution`, y se enlaza tal cual. |
 
 **Veredictos heredados por skill** (fuente: templates en `skills/<skill>/assets/` y `SKILL.md`):
 
@@ -152,7 +152,7 @@ patrón `^[A-Z]+(-[A-Z]+)*$`.
 | `APPROVED` | Todas | El artefacto supera el gate. | Avanza al paso siguiente. |
 | `NEEDS-REFINEMENT` | Especificación | Un artefacto de especificación (épica o historia) debe refinarse. | Vuelve a refinar y se reevalúa. |
 | `NEEDS-CHANGES` | Planificación, ejecución y QA | Un artefacto de planificación o de implementación fue rechazado o sus pruebas fallaron. | Vuelve al paso que lo produjo. |
-| `BLOCKED` | Cualquiera con bloqueo | Un bloqueo impide completar el proceso. No es un defecto del artefacto. | Detiene el flujo hasta que se resuelva. No tiene rama en los flowcharts. |
+| `BLOCKED` | Cualquiera con bloqueo | Un bloqueo impide completar el proceso. No es un defecto del artefacto. | Detiene el flujo y, una vez despejado el bloqueo, se vuelve a ejecutar el mismo gate. |
 | `SPLIT` | Extensión local de `story-evaluation` | La historia es demasiado grande. | Se divide y se reevalúa. |
 | `PENDING` | Extensión local de `story-acceptance` | La sesión de validación sigue `partial`. | Detiene el flujo hasta completar la sesión. No tiene rama en los flowcharts. |
 
@@ -168,9 +168,9 @@ nombre no obliga a editar la policy (P6).
 | `epic-analyze` | `epic-analyze-report.md` | Especificación | `APPROVED`, `NEEDS-REFINEMENT` | — (sin flowchart) | — |
 | `story-evaluation` | `finvest-evaluation-report.md` | Especificación | `APPROVED`, `NEEDS-REFINEMENT`, `SPLIT` | specify | — |
 | `story-analyze` | `analyze.md` | Planificación | `APPROVED`, `NEEDS-CHANGES` | plan | — |
-| `story-code-review` | `code-review-report.md` | Ejecución y QA | `APPROVED`, `NEEDS-CHANGES` | ejecución y QA | — |
-| `story-verify` | `verify-report.md` | Ejecución y QA | `APPROVED`, `NEEDS-CHANGES`, `BLOCKED` | ejecución y QA | `BLOCKED` |
-| `story-acceptance` | `acceptance-report.md` | Ejecución y QA | `APPROVED`, `NEEDS-CHANGES`, `BLOCKED`, `PENDING` | ejecución y QA | `BLOCKED`, `PENDING` |
+| `story-code-review` | `code-review-report.md` | Ejecución y QA | `APPROVED`, `NEEDS-CHANGES`, `BLOCKED` | ejecución y QA | — |
+| `story-verify` | `verify-report.md` | Ejecución y QA | `APPROVED`, `NEEDS-CHANGES`, `BLOCKED` | ejecución y QA | — |
+| `story-acceptance` | `acceptance-report.md` | Ejecución y QA | `APPROVED`, `NEEDS-CHANGES`, `BLOCKED`, `PENDING` | ejecución y QA | `PENDING` |
 | `epic-validate` (previsto, EPIC-23) | `epic-validate-report.md` | QA de épica | `APPROVED`, `NEEDS-CHANGES`, `BLOCKED` | — (sin flowchart) | — |
 
 - La columna «Flowchart» es un enlace relativo al `.mermaid`
@@ -178,10 +178,10 @@ nombre no obliga a editar la policy (P6).
   `verify:links` comprueba que el diagrama existe.
 - `epic-validate` se nombra **sin enlace**, porque el skill no existe y un enlace roto haría fallar `verify:links`.
 - **Invariante de AC-3**, enunciada bajo la tabla: para cada fila con flowchart, los valores permitidos menos los
-  valores sin rama coinciden exactamente con las ramas `verdict` que salen del skill en su diagrama. Solo `BLOCKED` y
-  `PENDING` pueden figurar en «Valores sin rama». Comprobación con los flowcharts actuales: specify
+  valores sin rama coinciden exactamente con las ramas `verdict` que salen del skill en su diagrama. Solo `PENDING` puede
+  figurar en «Valores sin rama». Comprobación con los flowcharts actuales: specify
   {SPLIT, NEEDS-REFINEMENT, APPROVED} = `story-evaluation`; plan {NEEDS-CHANGES, APPROVED} = `story-analyze`; ejecución y
-  QA {NEEDS-CHANGES, APPROVED} = `story-code-review`, `story-verify` − {BLOCKED} y `story-acceptance` − {BLOCKED, PENDING}.
+  QA {NEEDS-CHANGES, BLOCKED, APPROVED} = `story-code-review`, `story-verify` y `story-acceptance` − {PENDING}.
 
 | Alternativa | Motivo del rechazo |
 |---|---|
@@ -387,8 +387,8 @@ verdict: <VALOR permitido en §4>
 ### F-2 — CI o un orquestador consumen un reporte // AC-1 (G-06)
 
 Leen `verdict` del frontmatter y comprueban que figura en §4 para el skill. Con `APPROVED`, avanzan. Con cualquier otro
-valor, se detienen o siguen la rama del flowchart (`NEEDS-*`, `SPLIT`). Con `BLOCKED` o `PENDING`, se detienen sin
-rama.
+valor, se detienen o siguen la rama del flowchart (`NEEDS-*`, `SPLIT`). Con `BLOCKED`, se detienen y vuelven a ejecutar
+el mismo gate cuando se despeja el bloqueo. Con `PENDING`, se detienen sin rama.
 
 ### F-3 — Lectura de un reporte heredado // AC-2 (D-7)
 
@@ -425,7 +425,7 @@ Si no, aplica G-06 (no aprobado).
 | V-4 | §2 lista los seis valores con su fase, y todos cumplen `^[A-Z]+(-[A-Z]+)*$` | Lectura de §2 y regex sobre los valores entre comillas invertidas | AC-1, CNF-2 |
 | V-5 | §4 tiene las siete filas de D-4 con esos valores | Comparación con las Notas de story.md | AC-1 |
 | V-6 | §5 contiene las 18 filas de D-5, incluidos los 7 ejemplos de AC-2 | Comparación fila a fila con la tabla de Ejemplos de AC-2 | AC-2 |
-| V-7 | Para cada fila con flowchart, los valores permitidos menos los valores sin rama coinciden con las ramas que salen del skill en el `.mermaid`, y en «Valores sin rama» solo aparecen `BLOCKED` y `PENDING` | `grep -n -- '-->|' docs/architecture/diagrams/flowchart-story-*.mermaid` y comparación con §4 | AC-3 |
+| V-7 | Para cada fila con flowchart, los valores permitidos menos los valores sin rama coinciden con las ramas que salen del skill en el `.mermaid`, y en «Valores sin rama» solo aparece `PENDING` | `grep -n -- '-->|' docs/architecture/diagrams/flowchart-story-*.mermaid` y comparación con §4 | AC-3 |
 | V-8 | §7 tiene seis ejemplos. En cada uno, `verdict` coincide con la línea de `## Veredicto`, el valor está permitido para su skill y `## Veredicto` es el primer `##` tras el `#` | Lectura de §7 | AC-1 |
 | V-9 | La policy tiene como máximo 200 líneas y ninguna regla se repite entre secciones | `wc -l` y lectura | CNF-4 |
 | V-10 | Un PO puede responder, solo con la policy, qué valor emite `story-verify` cuando no puede ejecutar las pruebas y qué significa `ACCEPTANCE-BLOCKED` | Revisión del PO en ACCEPTANCE | CNF-3 |
@@ -472,3 +472,14 @@ Ninguna. La necesidad del ADR se resolvió con el PO (CR-001).
 - **Documento afectado**: design.md
 - **Acción requerida**: resuelta. El PO eligió incluir ADR-0015 en esta historia (2026-10-17), y queda diseñado en D-10
   y verificado en V-11. `story.md` no requiere cambios.
+
+### CR-002
+
+- **Tipo**: cambio de requisito
+- **Descripción**: el commit `58f2e99` añadió a `flowchart-story-excecution-qa.mermaid` una rama `BLOCKED` que vuelve
+  al mismo skill en `story-code-review`, `story-verify` y `story-acceptance`. T001 detectó que el diseño describía el
+  diagrama anterior, sin esas ramas. El PO decidió el 2026-10-18 que el flowchart nuevo es correcto: `BLOCKED` significa
+  «detente y vuelve a ejecutar el mismo gate una vez despejado el bloqueo».
+- **Documento afectado**: story.md (AC-3 y Notas), design.md (Context, D-4, F-2, V-7) y tasks.md (T015)
+- **Acción requerida**: resuelta. `story-code-review` admite `BLOCKED`, `BLOCKED` deja de ser un valor sin rama y
+  `PENDING` queda como el único valor sin rama de la invariante de AC-3.

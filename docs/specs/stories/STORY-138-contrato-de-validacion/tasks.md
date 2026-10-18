@@ -9,7 +9,7 @@ parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 story: STORY-138
 design: STORY-138
 created: 2026-10-17
-updated: 2026-10-17
+updated: 2026-10-18
 related:
   - STORY-138-contrato-de-validacion
   - STORY-138-contrato-de-validacion-design
@@ -45,7 +45,7 @@ related:
 - [ ] T012 [P] V-1 y V-2: el frontmatter coincide con D-1 y `grep -n -E '^## ([0-9]+\. |Historial)' docs/policies/validation-contract-policy.md` devuelve exactamente los encabezados de D-2 en ese orden. Los `##` de §7 van dentro de bloques cercados y no cuentan (requiere T011) — AC-1, CNF-1
 - [ ] T013 [P] V-3 y V-4: §3 exige `verdict` (G-01) y `## Veredicto` como primer `##` tras el título (G-02). Los seis valores de §2 cumplen `^[A-Z]+(-[A-Z]+)*$`, comprobado extrayendo los valores entre comillas invertidas de la columna «Valor» (requiere T011) — AC-1, CNF-2
 - [ ] T014 [P] V-5 y V-6: §4 tiene las siete filas con los valores de las Notas de `story.md` (incluida `epic-validate`). §5 tiene las 18 filas de D-5, y cada una de las 7 filas de Ejemplos de AC-2 aparece con el mismo par (skill, valor heredado) y el mismo valor canónico (requiere T011) — AC-1, AC-2
-- [ ] T015 [P] V-7: para cada `.mermaid`, listar las ramas `-->|…|` que salen del nodo `{verdict}` de cada skill y comprobar que coinciden exactamente con los valores permitidos menos los valores sin rama de su fila en §4. Comprobar también que «Valores sin rama» solo contiene `BLOCKED` o `PENDING`. Registrar la comparación en `implement-report.md` (requiere T011) — AC-3
+- [ ] T015 [P] V-7: para cada `.mermaid`, listar las ramas `-->|…|` que salen del nodo `{verdict}` de cada skill y comprobar que coinciden exactamente con los valores permitidos menos los valores sin rama de su fila en §4. Comprobar también que «Valores sin rama» solo contiene `PENDING` y que la rama `BLOCKED` de `story-code-review`, `story-verify` y `story-acceptance` vuelve al mismo skill (CR-002). Registrar la comparación en `implement-report.md` (requiere T011) — AC-3
 - [ ] T016 [P] V-8: §7 tiene seis ejemplos. En cada uno, `verdict` coincide con el valor de la línea `**Veredicto:**`, el valor está permitido para su skill según §4 y `## Veredicto` es el primer `##` tras el `#`. Entre los seis aparecen los seis valores del vocabulario (requiere T011) — AC-1
 - [ ] T017 [P] V-9 y CNF-1: `wc -l docs/policies/validation-contract-policy.md` da 200 líneas o menos, y ninguna regla ni lista de valores se enuncia dos veces entre secciones. Si falla, compactar la redacción en la sección afectada sin cambiar el contenido normativo y repetir T012–T016 (requiere T011) — CNF-1, CNF-4
 
