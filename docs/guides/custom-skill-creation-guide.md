@@ -260,6 +260,8 @@ Para más detalles sobre estrategias de despliegue, consulta `references/deploym
 2. **Mantenlo enfocado:** Cada skill debe tener un propósito único y bien definido.
 3. **Incluye ejemplos:** Muestra al asistente cómo usar el skill correctamente.
 4. **Versiona tus skills:** Usa el campo `metadata` para almacenar la versión.
+5. **Pequeño y manejable:** Mantén cada skill lo suficientemente pequeño para que sea fácil de entender y mantener. El SKILL.md body DEBE tener menos de 500 líneas recomendadas. Si un skill crece demasiado, considera dividirlo en varios skills más específicos o modularizarlo con archivos de referencia.
+6. **Divulgación progresiva:** usa referencias a archivos de referencia para mayor detalle y evita sobrecargar el cuerpo principal del skill con información extensa.
 
 ### 8.2 Recursos y dependencias
 
