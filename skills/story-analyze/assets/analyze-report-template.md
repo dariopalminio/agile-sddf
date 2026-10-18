@@ -6,6 +6,7 @@ title: "Analyze: {story_title}"
 story: {story_id}
 design: {story_id}
 tasks: {story_id}
+verdict: {APPROVED | NEEDS-CHANGES}
 created: {date}
 updated: {date}
 ---
@@ -14,6 +15,11 @@ updated: {date}
 [[{story_id}]]
 
 # Reporte de Coherencia: {story_title}
+
+## Veredicto
+<!-- Línea según la regla de Veredicto del Paso 6. -->
+
+**Veredicto:** `{verdict}` — {motivo}
 
 ## Resumen Ejecutivo
 
@@ -24,9 +30,6 @@ updated: {date}
 | Cobertura diseño → tareas | {design_coverage_status} | {design_covered_n}/{design_total} elementos con tarea |
 | Alineación con la épica {parent} | {epic_status} | {epic_detail} |
 | Cumplimiento DoD — Fase PLAN | {dod_status} | {dod_n}/{dod_total} criterios ✓ |
-
-**Estado general:** {overall_status}
-<!-- overall_status: ✓ Coherente | ⚠️ Advertencias | ❌ Inconsistencias bloqueantes -->
 
 ---
 
@@ -78,7 +81,7 @@ updated: {date}
 
 ### INC-001 [{ERROR / WARNING}]
 
-- **Tipo:** {A: AC sin cobertura / B: tarea sin diseño / C: diseño sin tarea / D: desalineación con la épica}
+- **Tipo:** {A: AC sin cobertura / B: tarea sin diseño / C: diseño sin tarea / D: desalineación con la épica / E: criterio DoD PLAN no cumplido / F: AC sin caso de prueba}
 - **Descripción:** {descripción_concreta}
 - **Archivo afectado:** {filename} — sección "{section_name}"
 - **Acción requerida:** {accion_concreta}

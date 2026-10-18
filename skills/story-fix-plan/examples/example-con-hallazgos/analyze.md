@@ -13,6 +13,10 @@ related:
 
 # Reporte de Coherencia: Exportar reporte CSV
 
+## Veredicto
+
+**Veredicto:** `NEEDS-CHANGES` — ERROR de tipo A, B; WARNING de tipo D, E
+
 ## Resumen Ejecutivo
 
 | Métrica | Estado | Detalle |
@@ -22,8 +26,6 @@ related:
 | Cobertura diseño → tareas | ✓ | 3/3 elementos con tarea |
 | Alineación con la épica EPIC-30-reportes | ⚠️ | Estado de la épica incoherente |
 | Cumplimiento DoD — Fase PLAN | ⚠️ | 5/6 criterios ✓ |
-
-**Estado general:** ❌ Inconsistencias bloqueantes
 
 ---
 

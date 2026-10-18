@@ -99,7 +99,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 |-------|------------------------|-------------------|--------------|-----------|
 | `story-specify` | Sin precondición de estado | `SPECIFY/IN-PROGRESS` | `SPECIFY/DONE` | — |
 | `story-plan` | `SPECIFY/DONE` | `PLAN/IN-PROGRESS` | delegado a `story-analyze` | — |
-| `story-analyze` | Invocado por `story-plan` | — | `READY-FOR-IMPLEMENT/DONE` (sin ERRORs) | — |
+| `story-analyze` | Invocado por `story-plan` | — | `READY-FOR-IMPLEMENT/DONE` (`verdict: APPROVED`) | — |
 | `story-implement` | `READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS` (reanudación) | `IMPLEMENT/IN-PROGRESS` | `IMPLEMENT/DONE` | — |
 | `story-code-review` | `IMPLEMENT/DONE` | `CODE-REVIEW/IN-PROGRESS` | `CODE-REVIEW/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `IMPLEMENT/DONE` (`BLOCKED`) |
 | `story-verify` | `CODE-REVIEW/DONE` (camino normal), `IMPLEMENT/DONE` (mínimo aceptable) o `VERIFY/BLOCKED` (reintento) | `VERIFY/IN-PROGRESS` | `VERIFY/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `VERIFY/BLOCKED` (`BLOCKED`) |

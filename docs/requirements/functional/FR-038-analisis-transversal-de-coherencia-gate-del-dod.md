@@ -6,7 +6,7 @@ slug: FR-038-analisis-transversal-de-coherencia-gate-del-dod
 title: "Análisis transversal de coherencia (gate del DoD PLAN)"
 status: active
 created: 2026-10-10
-updated: 2026-10-10
+updated: 2026-10-18
 related: []
 ---
 
@@ -16,8 +16,9 @@ related: []
 
 El sistema SHALL auditar la coherencia entre `story.md`, `design.md`,
 `testcases.md` y `tasks.md`, detectando inconsistencias, omisiones y ambigüedades técnicas no
-resueltas, y verificando el cumplimiento del DoD del estado PLAN. Produce `analyze.md`. Sin
-hallazgos de severidad `ERROR`, SHALL promover la historia a `READY-FOR-IMPLEMENT/DONE`.
+resueltas, y verificando el cumplimiento del DoD del estado PLAN. Produce `analyze.md`.
+Declara el veredicto `APPROVED` o `NEEDS-CHANGES` en `verdict` y en `## Veredicto`.
+Con `APPROVED` (sin hallazgos `ERROR`) SHALL promover la historia a `READY-FOR-IMPLEMENT/DONE`.
 
 ## Atributos
 

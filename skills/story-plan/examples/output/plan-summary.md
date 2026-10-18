@@ -20,7 +20,7 @@ Este documento muestra el resumen final que `story-plan` produce al completar el
 [2/3] ✓ story-tasking — tasks.md generado
 
 [3/3] → story-analyze...
-[3/3] ✓ story-analyze — analyze.md generado, sin inconsistencias
+[3/3] ✓ story-analyze — analyze.md generado (verdict: APPROVED)
 ```
 
 ## Resumen final — caso exitoso
@@ -39,11 +39,15 @@ Este documento muestra el resumen final que `story-plan` produce al completar el
 ✅ Planning completo
 
 Todos los artefactos están listos. La historia puede pasar a implementación.
+Veredicto de story-analyze: APPROVED — sin inconsistencias
+Estado de story.md: READY-FOR-IMPLEMENT/DONE ✓
 ```
 
 ---
 
-## Resumen final — caso con inconsistencias en analyze
+## Resumen final — caso con veredicto NEEDS-CHANGES
+
+Línea de progreso previa: `[3/3] ⚠️ story-analyze — analyze.md generado (verdict: NEEDS-CHANGES)`.
 
 ```
 ─────────────────────────────────────────────────────────────────────
@@ -58,10 +62,11 @@ Todos los artefactos están listos. La historia puede pasar a implementación.
 
 ⚠️ Planning completado — requiere revisión
 
-Se detectaron inconsistencias entre los artefactos. Revisa antes de implementar:
+Veredicto de story-analyze: NEEDS-CHANGES — ERROR de tipo A
 → docs/specs/stories/STORY-099-exportar-reporte-pdf/analyze.md
 
-Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés listo.
+Estado de story.md: PLAN/IN-PROGRESS (veredicto NEEDS-CHANGES)
+Corrige el plan con /story-fix-plan STORY-099 y vuelve a ejecutar /story-analyze STORY-099.
 ```
 
 ---

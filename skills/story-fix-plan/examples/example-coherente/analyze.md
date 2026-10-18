@@ -13,6 +13,10 @@ related:
 
 # Reporte de Coherencia: Filtrar reporte por fecha
 
+## Veredicto
+
+**Veredicto:** `APPROVED` — sin inconsistencias
+
 ## Resumen Ejecutivo
 
 | Métrica | Estado | Detalle |
@@ -22,8 +26,6 @@ related:
 | Cobertura diseño → tareas | ✓ | 2/2 elementos con tarea |
 | Alineación con la épica EPIC-30-reportes | ✓ | Listada y alineada |
 | Cumplimiento DoD — Fase PLAN | ✓ | 6/6 criterios ✓ |
-
-**Estado general:** ✓ Coherente
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "skill": "story-plan",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Casos de prueba para story-plan: verifica el comportamiento del orquestador (mensajes de progreso, artefactos generados, fail-fast y modos alternativos) sin evaluar el contenido interno de cada sub-skill.",
   "cases": [
     {
@@ -32,7 +32,9 @@
           "testcases.md",
           "analyze.md",
           "Planning completo",
-          "READY-FOR-IMPLEMENT"
+          "READY-FOR-IMPLEMENT",
+          "(verdict: APPROVED)",
+          "Veredicto de story-analyze: APPROVED"
         ],
         "not_contains": [
           "Pipeline interrumpido",
@@ -41,7 +43,7 @@
           "Entorno inválido"
         ]
       },
-      "threshold": 0.90
+      "threshold": 0.9
     },
     {
       "id": "TC-002",
@@ -67,7 +69,7 @@
           "READY-FOR-IMPLEMENT"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-003",
@@ -77,7 +79,10 @@
       "input": {
         "input_path": "examples/input",
         "story_id": "STORY-099",
-        "flags": ["--only-tasks", "--only-testcases"]
+        "flags": [
+          "--only-tasks",
+          "--only-testcases"
+        ]
       },
       "expected": {
         "contains": [
@@ -93,7 +98,7 @@
           "Planning completo"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-004",
@@ -103,7 +108,9 @@
       "input": {
         "input_path": "examples/input",
         "story_id": "STORY-099",
-        "flags": ["--only-tasks"]
+        "flags": [
+          "--only-tasks"
+        ]
       },
       "expected": {
         "contains": [
@@ -125,7 +132,7 @@
           "Pipeline interrumpido"
         ]
       },
-      "threshold": 0.90
+      "threshold": 0.9
     },
     {
       "id": "TC-005",
@@ -135,7 +142,9 @@
       "input": {
         "input_path": "examples/input",
         "story_id": "STORY-099",
-        "flags": ["--skip-analyze"]
+        "flags": [
+          "--skip-analyze"
+        ]
       },
       "expected": {
         "contains": [
@@ -149,7 +158,8 @@
           "[3/3] ✓ story-testcases — testcases.md generado",
           "design.md",
           "tasks.md",
-          "testcases.md"
+          "testcases.md",
+          "Sin veredicto"
         ],
         "not_contains": [
           "story-analyze",
@@ -159,7 +169,55 @@
           "Flags mutuamente excluyentes"
         ]
       },
-      "threshold": 0.90
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-006",
+      "name": "veredicto-needs-changes-detiene-transicion",
+      "type": "edge-case",
+      "description": "story-analyze genera analyze.md con verdict NEEDS-CHANGES por INC-001 ERROR tipo A; la historia queda en PLAN/IN-PROGRESS.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "STORY-099",
+        "flags": [],
+        "context": "Tras el planning, story-analyze genera analyze.md con verdict: NEEDS-CHANGES e INC-001 [ERROR] tipo A."
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "Veredicto de story-analyze: NEEDS-CHANGES",
+          "PLAN/IN-PROGRESS",
+          "/story-fix-plan"
+        ],
+        "not_contains": [
+          "READY-FOR-IMPLEMENT",
+          "Planning completo"
+        ]
+      },
+      "threshold": 0.92
+    },
+    {
+      "id": "TC-007",
+      "name": "warning-aprobado-permite-implementacion",
+      "type": "edge-case",
+      "description": "story-analyze genera analyze.md con verdict APPROVED y un WARNING tipo C; la historia avanza a READY-FOR-IMPLEMENT/DONE.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "STORY-099",
+        "flags": [],
+        "context": "Tras el planning, story-analyze genera analyze.md con verdict: APPROVED y un WARNING tipo C, sin ERROR."
+      },
+      "expected": {
+        "contains": [
+          "(verdict: APPROVED)",
+          "READY-FOR-IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "requiere revisión",
+          "hay ERROREs pendientes"
+        ]
+      },
+      "threshold": 0.92
     }
   ]
 }

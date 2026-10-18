@@ -44,7 +44,7 @@ story-plan   → Entry point: orquesta design → tasking → testcases → anal
   story-design    → design.md
   story-tasking   → tasks.md            (omitido con --only-testcases)
   story-testcases → testcases.md        (omitido con --only-tasks)
-  story-analyze   → analyze.md + story.md → READY-FOR-IMPLEMENT/DONE (si sin ERROREs)
+  story-analyze   → analyze.md + story.md → READY-FOR-IMPLEMENT/DONE con verdict APPROVED
      ↓
 [story.md: READY-FOR-IMPLEMENT/DONE]   → listo para story-implement-tasks
 ──────────────────────────────────────────────────────────────
@@ -60,7 +60,7 @@ analyze.md    → Check: coherencia entre los tres artefactos
 | Evento | status | substatus |
 |---|---|---|
 | Inicio del pipeline (siempre, sin condición) | `PLAN` | `IN-PROGRESS` |
-| `story-analyze` finaliza sin ERROREs | `READY-FOR-IMPLEMENT` | `DONE` (gestionado por `story-analyze`) |
+| `story-analyze` emite verdict APPROVED | `READY-FOR-IMPLEMENT` | `DONE` (gestionado por `story-analyze`) |
 
 La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, independientemente del estado previo de la historia. Esto permite re-ejecutar el pipeline sobre historias en cualquier estado.
 
@@ -310,25 +310,24 @@ Invocar el skill `story-analyze` en modo Agent:
 - Directorio de la historia: la ruta resuelta en el Paso 1
 - Modo: Agent (automático, sin confirmación interactiva)
 
-**Si `story-analyze` completa sin inconsistencias:**
-- Registrar estado: `✓`
-- Mostrar: `[<paso_actual>/<total_pasos>] ✓ story-analyze — analyze.md generado, sin inconsistencias`
+Tras invocar `story-analyze`, leer `verdict` del frontmatter de `<directorio>/analyze.md` (G-06). Leer la línea `**Veredicto:**` solo para mostrar el motivo, nunca para inferir el valor. Registrar el resultado según esta tabla:
 
-**Si `story-analyze` detecta inconsistencias (ERRORs o WARNINGs):**
-- Registrar estado: `⚠️`
-- Mostrar: `[<paso_actual>/<total_pasos>] ⚠️ story-analyze — inconsistencias detectadas (ver analyze.md)`
-- **No detener la cadena** — continuar al resumen final
+| Resultado | Estado | Línea de progreso |
+|---|---|---|
+| `verdict: APPROVED` | `✓` | `[<paso_actual>/<total_pasos>] ✓ story-analyze — analyze.md generado (verdict: APPROVED)` |
+| `verdict: NEEDS-CHANGES` | `⚠️` | `[<paso_actual>/<total_pasos>] ⚠️ story-analyze — analyze.md generado (verdict: NEEDS-CHANGES)` |
+| `verdict` ausente o fuera de `APPROVED \| NEEDS-CHANGES` | `✗` | `[<paso_actual>/<total_pasos>] ✗ story-analyze — analyze.md sin verdict válido` |
+| `analyze.md` no generado | `✗` | `[<paso_actual>/<total_pasos>] ✗ story-analyze — error técnico` |
 
-**Si `story-analyze` falla con error técnico (no puede ejecutarse):**
-- Registrar estado: `✗`
-- Mostrar: `[<paso_actual>/<total_pasos>] ✗ story-analyze — error técnico`
-- Continuar al resumen final (el plan no se bloquea por este fallo)
+Antes del resumen, si el veredicto no es `APPROVED` y `story.md` quedó en `READY-FOR-IMPLEMENT`, restaurar `status: PLAN` / `substatus: IN-PROGRESS` y emitir `⚠️ story.md estaba en READY-FOR-IMPLEMENT sin verdict APPROVED — restaurado a PLAN/IN-PROGRESS`. `story-plan` nunca escribe `READY-FOR-IMPLEMENT`; solo aplica esta guardia ante un fallo del gate. Continuar al resumen final en todos los casos.
 
 ---
 
 ### Paso 6 — Resumen final
 
 Mostrar la tabla de estado acumulada según el modo activo:
+
+Con `--skip-analyze`, omitir la fila del gate de coherencia de cualquiera de las tablas siguientes y ajustar el total de pasos al número efectivamente ejecutado.
 
 **Modo default:**
 ```
@@ -370,26 +369,37 @@ Mostrar la tabla de estado acumulada según el modo activo:
 ─────────────────────────────────────────────────────────
 ```
 
-Leyenda de estados: `✓` completado · `⚠️` con inconsistencias · `✗` fallido · `—` no ejecutado
+Leyenda de estados: `✓` completado (APPROVED) · `⚠️` veredicto NEEDS-CHANGES · `✗` fallido · `—` no ejecutado
 
-**Si todos los pasos completaron sin errores ni inconsistencias:**
+Elegir la rama por el veredicto leído en el Paso 5. La línea `Estado de story.md` muestra siempre el `status`/`substatus` leído del archivo tras ese paso.
+
+**Si `verdict: APPROVED`:**
 ```
 ✅ Planning completo
 
 Todos los artefactos están listos. La historia puede pasar a implementación.
-Estado de story.md: READY-FOR-IMPLEMENT/DONE ✓
+Veredicto de story-analyze: APPROVED — <motivo>
+Estado de story.md: <estado leído, normalmente READY-FOR-IMPLEMENT/DONE ✓>
 ```
 
-**Si `story-analyze` reportó inconsistencias (⚠️):**
+**Si `verdict: NEEDS-CHANGES`:**
 ```
 ⚠️ Planning completado — requiere revisión
 
-Se detectaron inconsistencias entre los artefactos. Revisa antes de implementar:
+Veredicto de story-analyze: NEEDS-CHANGES — <motivo>
 → <ruta_directorio>/analyze.md
 
-Estado de story.md: PLAN/IN-PROGRESS (no actualizado — hay ERROREs pendientes)
+Estado de story.md: <estado leído, normalmente PLAN/IN-PROGRESS> (veredicto NEEDS-CHANGES)
 
-Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés listo.
+Corrige el plan con /story-fix-plan <story_id> y vuelve a ejecutar /story-analyze <story_id>.
+```
+
+**Si se usó `--skip-analyze` y no hubo fallos:**
+```
+✅ Planning completo (sin gate de coherencia)
+
+ℹ️ Sin veredicto: se omitió el gate con --skip-analyze
+Estado de story.md: <estado leído, normalmente PLAN/IN-PROGRESS>
 ```
 
 **Si algún paso falló (✗):**
@@ -397,7 +407,7 @@ Puedes ajustar design.md o tasks.md y re-ejecutar /story-analyze cuando estés l
 ✗ Pipeline interrumpido en: <nombre_del_paso>
 
 Los artefactos generados antes del fallo están disponibles en: <ruta_directorio>
-Estado de story.md: PLAN/IN-PROGRESS (no completado)
+Estado de story.md: <estado leído tras el Paso 5> (no completado)
 Corrige el problema indicado arriba y re-ejecuta /story-plan <story_id>.
 
 Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los artefactos existentes.
@@ -417,6 +427,7 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 | Fallo en `story-tasking` | `[2/<N>] ✗ story-tasking — FALLO` | Registrar pasos restantes como `—`. Ir a resumen |
 | Fallo en `story-testcases` | `[<N>/<N>] ✗ story-testcases — FALLO` | Registrar `story-analyze → —`. Ir a resumen |
 | Error técnico en `story-analyze` | `[<N>/<N>] ✗ story-analyze — error técnico` | No bloquear. Continuar a resumen |
+| `analyze.md` sin `verdict` o con valor no permitido | `[<N>/<N>] ✗ story-analyze — analyze.md sin verdict válido` | Aplicar la guardia de cierre del Paso 5 y mostrar «Pipeline interrumpido» |
 
 ---
 
@@ -427,5 +438,6 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 - `{directorio_historia}/testcases.md` — casos de prueba tipificados y trazables (generado por `story-testcases`; omitido con `--only-tasks`)
 - `{directorio_historia}/analyze.md` — reporte de coherencia entre artefactos (generado por `story-analyze`, omitido con `--skip-analyze`)
 - Estado del workitem actualizado en `story.md`:
-  - `READY-FOR-IMPLEMENT / DONE` si el pipeline completa sin ERROREs
-  - `PLAN / IN-PROGRESS` si hay fallos o inconsistencias bloqueantes
+  - `READY-FOR-IMPLEMENT / DONE` solo con `verdict: APPROVED` de `analyze.md`
+  - Estado previo, normalmente `PLAN / IN-PROGRESS`, con `NEEDS-CHANGES` o `--skip-analyze`
+  - `PLAN / IN-PROGRESS` restaurado por la guardia si falta un veredicto válido y la historia quedó en `READY-FOR-IMPLEMENT`

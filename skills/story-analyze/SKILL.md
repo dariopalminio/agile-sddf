@@ -32,8 +32,8 @@ El skill nunca modifica los artefactos que analiza. Solo lee, correlaciona y gen
 - Informa la vía de implementación disponible (`/story-implement` o `/story-implement-tasks`)
 - Detecta objetivos de la historia desalineados con la épica padre
 - Valida el cumplimiento del DoD para la fase PLAN
-- Genera `analyze.md` con el reporte de coherencia y recomendaciones accionables
-- Actualiza el estado de `story.md` a `READY-FOR-IMPLEMENT/DONE` si no hay ERROREs
+- Genera `analyze.md` con un veredicto `APPROVED` o `NEEDS-CHANGES` en `## Veredicto` y en `verdict`, más recomendaciones accionables
+- Actualiza `story.md` a `READY-FOR-IMPLEMENT/DONE` con veredicto `APPROVED`
 
 **Qué NO hace este skill:**
 - Modificar ningún artefacto analizado (story.md, design.md, tasks.md, testcases.md)
@@ -51,15 +51,16 @@ testcases.md  → Test: escenarios de prueba por AC (habilita /story-implement)
 tasks.md      → When: tareas de implementación, orden, seguimiento (habilita /story-implement-tasks)
 analyze.md    → Check: coherencia entre los artefactos ← aquí (ejecutar después de story-design, story-testcases o story-tasking)
      ↓
-[story.md: READY-FOR-IMPLEMENT/DONE]    ← seteado por story-analyze si no hay ERROREs
+[story.md: READY-FOR-IMPLEMENT/DONE]    ← seteado por story-analyze con verdict: APPROVED
+[story.md: PLAN/IN-PROGRESS]            ← sin cambio con verdict: NEEDS-CHANGES
 ```
 
 ### Ciclo de vida de estados
 
 | Condición al finalizar | status | substatus |
 |---|---|---|
-| Sin inconsistencias ERROR-level | `READY-FOR-IMPLEMENT` | `DONE` |
-| Con inconsistencias ERROR-level | `PLANNING` | `IN-PROGRESS` (sin cambio — dejar como está) |
+| `verdict: APPROVED` | `READY-FOR-IMPLEMENT` | `DONE` |
+| `verdict: NEEDS-CHANGES` | Sin cambio | Sin cambio |
 
 La actualización de estado ocurre tanto en modo manual como en modo Agent (invocado por `story-plan`).
 
@@ -135,7 +136,8 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 - Sin al menos uno de `testcases.md` o `tasks.md`, la ejecución se detiene (análisis rechazado)
 - Si `tasks.md` está ausente pero `testcases.md` presente: las correlaciones tarea↔diseño se omiten con `⚠️`
 - Si `testcases.md` está ausente pero `tasks.md` presente: la cobertura de ACs en testcases se omite con `⚠️`
-- Los hallazgos de tipo ERROR (TIPO A, B o E) bloquean la transición a `READY-FOR-IMPLEMENT`
+- Un hallazgo ERROR (tipo A, B o E) determina el veredicto `NEEDS-CHANGES` (Paso 6), que bloquea la transición a `READY-FOR-IMPLEMENT`.
+- Aplicar el contrato de `docs/policies/validation-contract-policy.md` de Agile-SDDF.
 - Ante incertidumbre en la evaluación DoD, usar `⚠️` en lugar de `❌` (regla de duda — no bloquear indebidamente)
 - El reporte debe referenciar secciones y líneas específicas de los archivos afectados — no se admiten mensajes genéricos
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de plan de especificación, no de implementación)
@@ -419,6 +421,19 @@ Registrar ACs sin caso de prueba como inconsistencia **TIPO F** (WARNING, no blo
 | E | Criterio DoD PLAN no cumplido | ERROR |
 | F | AC sin caso de prueba en testcases.md | WARNING |
 
+#### Veredicto
+
+Evaluar las siguientes reglas en orden y registrar el resultado una sola vez en `$VERDICT`. Los Pasos 8, 9 y 10 leen ese valor sin recalcularlo.
+
+| Orden | Condición | `$VERDICT` |
+|---|---|---|
+| 1 | Existe al menos un hallazgo ERROR de tipo A, B o E (este último con `enforcement: error`) | `NEEDS-CHANGES` |
+| 2 | No hay hallazgos ERROR: ningún hallazgo o solo WARNING | `APPROVED` |
+
+Una correlación omitida por falta de `tasks.md` o `testcases.md`, la épica no encontrada y el DoD no disponible son avisos de cobertura, no hallazgos. No alteran `$VERDICT`.
+
+El motivo de `## Veredicto` usa una de estas formas: `sin inconsistencias` si no hay hallazgos; `sin ERROR; WARNING de tipo <tipos>` si solo hay WARNING; `ERROR de tipo <tipos ERROR>` y, cuando corresponda, `; WARNING de tipo <tipos WARNING>` si hay ERROR. Cada `<tipos>` es el conjunto de tipos de esa severidad, ordenado A-F y separado por `, `. Un criterio DoD `❌` o `⚠️` aporta el tipo E a su severidad.
+
 ---
 
 ### Paso 7 — Leer el template en tiempo de ejecución
@@ -448,6 +463,7 @@ story: <STORY-NNN>
 design: <STORY-NNN>
 testcases: <STORY-NNN>  # omitir este campo si $TESTCASES_AVAILABLE = false
 tasks: <STORY-NNN>      # omitir este campo si $TASKS_AVAILABLE = false
+verdict: <$VERDICT>    # APPROVED | NEEDS-CHANGES (Paso 6, Veredicto)
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 related:
@@ -456,7 +472,8 @@ related:
 
 Completar el reporte con los resultados de la correlación del Paso 6:
 
-- **Resumen ejecutivo**: estado general (✓ Coherente / ⚠️ Advertencias / ❌ Inconsistencias). Completar la fila `Cumplimiento DoD — Fase PLAN` con `{dod_status}` = ✓ / ⚠️ / ❌ según los resultados de Correlación 5, y `{dod_n}/{dod_total}` con el conteo de criterios ✓. Si `$DOD_PLAN_CRITERIA` estuvo vacío, usar `{dod_status}` = `⚠️` y `{dod_n}/{dod_total}` = `—`
+- **Veredicto**: la sección `## Veredicto` es el primer `##` tras el título y contiene la línea de la regla de Veredicto del Paso 6 con `$VERDICT` y su motivo.
+- **Resumen ejecutivo**: completar la fila `Cumplimiento DoD — Fase PLAN` con `{dod_status}` = ✓ / ⚠️ / ❌ según los resultados de Correlación 5, y `{dod_n}/{dod_total}` con el conteo de criterios ✓. Si `$DOD_PLAN_CRITERIA` estuvo vacío, usar `{dod_status}` = `⚠️` y `{dod_n}/{dod_total}` = `—`
 - **Tabla de cobertura de ACs**: cada AC + estado + elemento de diseño que lo cubre
 - **Tabla de alineación tareas ↔ diseño**: cada tarea + estado + justificación (si `$TASKS_AVAILABLE = false`: reemplazar con nota `⚠️ tasks.md no presente — análisis de tareas omitido`)
 - **Tabla de cobertura diseño → tareas**: cada componente/interfaz + estado (si `$TASKS_AVAILABLE = false`: reemplazar con nota `⚠️ tasks.md no presente — análisis de tareas omitido`)
@@ -477,16 +494,20 @@ Si el directorio no existe, crearlo.
 
 #### 9a. Actualizar frontmatter de story.md
 
-Después de guardar `analyze.md`, evaluar si hay inconsistencias de tipo ERROR (TIPO A, B o E):
+Después de guardar `analyze.md`, usar el `$VERDICT` registrado en el Paso 6:
 
-**Si no hay ERROREs (solo WARNINGs o todo OK):**
+**Si `$VERDICT = APPROVED`:**
 - Actualizar el frontmatter de `story.md`: `status: READY-FOR-IMPLEMENT` / `substatus: DONE`
 - Esta actualización ocurre tanto en modo manual como en modo Agent
 
-**Si hay ERROREs (inconsistencias bloqueantes — TIPO A, B o E):**
+**Si `$VERDICT = NEEDS-CHANGES`:**
 - NO actualizar el frontmatter de `story.md`
 - El estado permanece en `PLAN/IN-PROGRESS` (o el que tuviera antes)
-- Registrar internamente: `Estado story.md: PLAN/IN-PROGRESS (no actualizado — hay ERROREs)`
+- Registrar internamente el estado real de `story.md` sin alterarlo
+
+#### 9b. Confirmar guardado en ambos modos
+
+Después de guardar el reporte y aplicar 9a, emitir `✓ Análisis guardado: <ruta>/analyze.md (verdict: <VALOR>)`.
 
 ---
 
@@ -495,10 +516,9 @@ Después de guardar `analyze.md`, evaluar si hay inconsistencias de tipo ERROR (
 Mostrar al usuario:
 
 ```
-✅ Análisis guardado: <ruta>/analyze.md
-
 📊 Resumen de coherencia:
    Historia: <STORY-NNN> — <título>
+   Veredicto: <VALOR> — <motivo>
 
    Cobertura de ACs:     <N>/<Total> criterios cubiertos en design.md
    Alineación tareas:    <N>/<Total> tareas con diseño asociado  |  ⚠️ no evaluada — tasks.md no presente
@@ -516,23 +536,23 @@ Mostrar al usuario:
    · <N> ERROR(ES) — requieren corrección antes de implementar
    · <N> WARNING(S) — revisar pero no bloquean
 
-   Estado story.md: <READY-FOR-IMPLEMENT/DONE ✓ | PLAN/IN-PROGRESS — hay ERROREs pendientes>
+   Estado story.md: <estado real tras el Paso 9a>
 ```
 
 Cuando `$TASKS_AVAILABLE = false`, mostrar las líneas `Alineación tareas` y `Cobertura de diseño` con el valor `⚠️ no evaluada — tasks.md no presente` en lugar de los conteos.
 
 Cuando `$TESTCASES_AVAILABLE = false`, mostrar la línea `Cobertura testcases` con el valor `⚠️ no evaluada — testcases.md no presente` en lugar del conteo.
 
-Si hay ERROREs:
+Si `$VERDICT = NEEDS-CHANGES`:
 ```
 ⛔ Se encontraron <N> inconsistencias bloqueantes.
-   Corrige los ERROREs en design.md o tasks.md antes de comenzar la implementación.
+   Veredicto NEEDS-CHANGES — corrige el plan con /story-fix-plan <STORY-NNN> y vuelve a ejecutar /story-analyze <STORY-NNN>.
    Sugerencias en: <ruta>/analyze.md → sección "Recomendaciones"
 
-   Estado story.md: PLAN/IN-PROGRESS (no se actualizó a READY-FOR-IMPLEMENT — hay ERROREs)
+   Estado story.md: PLAN/IN-PROGRESS (no se actualizó a READY-FOR-IMPLEMENT — veredicto NEEDS-CHANGES)
 ```
 
-Si solo hay WARNINGs o está todo OK:
+Si `$VERDICT = APPROVED`:
 ```
 ✅ Sin inconsistencias bloqueantes. Puedes proceder con la implementación.
    Estado story.md: READY-FOR-IMPLEMENT/DONE ✓
@@ -561,8 +581,8 @@ Si solo hay WARNINGs o está todo OK:
 
 - `{directorio_historia}/analyze.md` — reporte de coherencia entre story.md, design.md, testcases.md (si existe) y tasks.md (si existe)
 - Estado del workitem actualizado en `story.md`:
-  - `READY-FOR-IMPLEMENT / DONE` si no hay ERROREs
-  - Sin cambio si hay ERROREs bloqueantes
+  - `READY-FOR-IMPLEMENT / DONE` con `verdict: APPROVED`
+  - Sin cambio con `verdict: NEEDS-CHANGES`
 
 ### Template de Fallback
 
@@ -577,11 +597,17 @@ title: "Analyze: {story_title}"
 story: {story_id}
 design: {story_id}
 tasks: {story_id}
+verdict: {verdict}
 created: {date}
 updated: {date}
 ---
 
 # Reporte de Coherencia: {story_title}
+
+## Veredicto
+<!-- Línea según la regla de Veredicto del Paso 6. -->
+
+**Veredicto:** `{verdict}` — {motivo}
 
 ## Resumen Ejecutivo
 
@@ -593,8 +619,6 @@ updated: {date}
 | Cobertura diseño → tareas | {design_coverage_status} | {design_covered_N}/{design_total} elementos con tarea |
 | Alineación con la épica {parent} | {epic_status} | {epic_detail} |
 | Cumplimiento DoD — Fase PLAN | {dod_status} | {dod_n}/{dod_total} criterios ✓ |
-
-**Estado general:** {overall_status}
 
 ---
 

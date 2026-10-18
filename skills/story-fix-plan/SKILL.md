@@ -135,7 +135,7 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 ### Paso 2 — Gate de veredicto de `analyze.md`
 
-Leer el frontmatter de `analyze.md` y registrar `$VERDICT` con el valor del campo `verdict` (canónico según el contrato de validación). Si `verdict` no existe, aceptar `veredict` como alias. Registrar también el `updated:` del frontmatter y la línea `**Estado general:**` del cuerpo, que se usan en el resumen y en el reporte.
+Leer el frontmatter de `analyze.md` y registrar `$VERDICT` con el valor del campo `verdict` (canónico según el contrato de validación). Si `verdict` no existe, aceptar `veredict` como alias. Registrar también el `updated:` del frontmatter y el motivo de la línea `**Veredicto:**` (texto tras `— `) para el resumen y el reporte. Si no hay línea de veredicto en un reporte heredado, registrar `—` como motivo.
 
 | `$VERDICT` | Acción |
 |---|---|
@@ -145,7 +145,7 @@ Leer el frontmatter de `analyze.md` y registrar `$VERDICT` con el valor del camp
 | Campo ausente | Emitir `ℹ️ <STORY-NNN>: analyze.md no declara verdict: NEEDS-CHANGES en su frontmatter — no hay cambios encontrados para aplicar` y terminar |
 | Cualquier otro valor | Emitir `ℹ️ <STORY-NNN>: analyze.md declara verdict: <valor>, no NEEDS-CHANGES — no hay cambios encontrados para aplicar` y terminar |
 
-El veredicto manda sobre `**Estado general:**`: no se infiere un veredicto a partir del cuerpo. El modo advertencias no cambia las dos últimas filas: sin `verdict` o con otro valor, el skill termina igual. Al terminar en este paso no se crea ni modifica ningún archivo.
+El veredicto se lee solo del frontmatter: no se infiere del cuerpo del reporte. El modo advertencias no cambia las dos últimas filas: sin `verdict` o con otro valor, el skill termina igual. Al terminar en este paso no se crea ni modifica ningún archivo.
 
 ### Paso 3 — Extraer hallazgos de `analyze.md`
 
@@ -250,7 +250,7 @@ Leer `assets/fix-plan-report-template.md` en tiempo de ejecución y completarlo 
 ──────────────────────────────────────────────────
  story-fix-plan: <STORY-NNN>
 ──────────────────────────────────────────────────
- Estado previo (analyze.md): verdict <$VERDICT> · <estado general>
+ Estado previo (analyze.md): verdict <$VERDICT> · <motivo del veredicto>
  Modo: <estándar | corrige advertencias>
  Archivos del plan: <$PLAN_FILES>
  Hallazgos: <total> · aplicados <N> · ya resueltos <N> · fuera de alcance <N>

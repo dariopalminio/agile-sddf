@@ -1,13 +1,13 @@
 {
   "skill": "story-analyze",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Casos de prueba para story-analyze: auditoria de coherencia entre story.md, design.md y testcases.md/tasks.md antes de implementar",
   "cases": [
     {
       "id": "TC-001",
       "name": "happy-path-artefactos-completos-coherentes",
       "type": "happy-path",
-      "description": "Todos los artefactos presentes (story.md, design.md, tasks.md) con cobertura completa de ACs, tareas alineadas al diseno y sin inconsistencias ERROR. El skill debe generar analyze.md con estado general OK y actualizar story.md a READY-FOR-IMPLEMENT/DONE.",
+      "description": "Todos los artefactos presentes (story.md, design.md, tasks.md) con cobertura completa de ACs, tareas alineadas al diseno y sin inconsistencias ERROR. El skill debe generar analyze.md con veredicto APPROVED y actualizar story.md a READY-FOR-IMPLEMENT/DONE.",
       "input": {
         "input_path": "examples/input",
         "story_id": "STORY-099",
@@ -26,11 +26,15 @@
           "Recomendaciones",
           "Via de Implementacion Disponible",
           "Cumplimiento DoD",
-          "READY-FOR-IMPLEMENT"
+          "READY-FOR-IMPLEMENT",
+          "## Veredicto",
+          "(verdict: APPROVED)"
         ],
         "not_contains": [
           "Analisis rechazado",
-          "Entorno invalido"
+          "Entorno invalido",
+          "Estado general",
+          "NEEDS-CHANGES"
         ]
       },
       "threshold": 0.9
@@ -54,10 +58,11 @@
         "not_contains": [
           "type: analyze",
           "Resumen Ejecutivo",
-          "analyze.md"
+          "analyze.md",
+          "## Veredicto"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-003",
@@ -81,10 +86,11 @@
         "not_contains": [
           "type: analyze",
           "Resumen Ejecutivo",
-          "READY-FOR-IMPLEMENT"
+          "READY-FOR-IMPLEMENT",
+          "## Veredicto"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-004",
@@ -107,11 +113,16 @@
           "AC-3",
           "Cobertura de Criterios de Aceptacion",
           "Recomendaciones",
-          "PLAN"
+          "PLAN",
+          "(verdict: NEEDS-CHANGES)",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "ERROR de tipo A"
         ],
         "not_contains": [
           "READY-FOR-IMPLEMENT",
-          "Sin inconsistencias bloqueantes"
+          "Sin inconsistencias bloqueantes",
+          "(verdict: APPROVED)",
+          "Estado general"
         ]
       },
       "threshold": 0.92
@@ -134,11 +145,36 @@
           "Cobertura de ACs en Testcases",
           "tasks.md no presente",
           "story-implement",
-          "Via de Implementacion Disponible"
+          "Via de Implementacion Disponible",
+          "(verdict: APPROVED)"
         ],
         "not_contains": [
           "Analisis rechazado",
           "story-implement-tasks"
+        ]
+      },
+      "threshold": 0.92
+    },
+    {
+      "id": "TC-006",
+      "name": "solo-warning-conserva-aprobacion",
+      "type": "edge-case",
+      "description": "Con artefactos completos, un componente de design.md sin tarea produce WARNING tipo C y ningún ERROR. El veredicto sigue siendo APPROVED.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "STORY-099",
+        "flags": [],
+        "context": "Artefactos completos. Añadir un componente al diseño sin tarea asociada, sin crear otros hallazgos. Esperar WARNING tipo C."
+      },
+      "expected": {
+        "contains": [
+          "(verdict: APPROVED)",
+          "WARNING de tipo C",
+          "READY-FOR-IMPLEMENT"
+        ],
+        "not_contains": [
+          "NEEDS-CHANGES",
+          "Estado general"
         ]
       },
       "threshold": 0.92

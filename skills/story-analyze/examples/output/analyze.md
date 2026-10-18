@@ -7,6 +7,7 @@ title: "Analyze Report: Exportar datos en CSV"
 story: STORY-099
 design: STORY-099
 tasks: STORY-099
+verdict: NEEDS-CHANGES
 created: 2026-05-07
 updated: 2026-05-07
 ---
@@ -15,6 +16,10 @@ updated: 2026-05-07
 [[STORY-099-exportar-datos-csv]]
 
 # Reporte de Coherencia: Exportar datos en CSV
+
+## Veredicto
+
+**Veredicto:** `NEEDS-CHANGES` — ERROR de tipo E
 
 ## Resumen Ejecutivo
 
@@ -25,8 +30,6 @@ updated: 2026-05-07
 | Cobertura diseño → tareas | ✓ | 3/3 componentes con tarea |
 | Alineación con la épica EPIC-10-data-management | ⚠️ | epic.md no encontrado — verificación omitida |
 | Cumplimiento DoD — Fase PLAN | ❌ | 1/3 criterios ✓ |
-
-**Estado general:** ❌ Inconsistencias bloqueantes — corrige los ERROREs antes de implementar.
 
 ---
 

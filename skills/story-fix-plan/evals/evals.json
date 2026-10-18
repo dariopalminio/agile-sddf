@@ -1,6 +1,6 @@
 {
   "skill": "story-fix-plan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Casos de prueba para story-fix-plan: corrige design.md y tasks.md según los hallazgos de analyze.md",
   "cases": [
     {
@@ -10,7 +10,9 @@
       "description": "STORY-201 con analyze.md ❌ (INC-001 tipo A, INC-002 tipo B, INC-003 incoherencia design↔tasks, INC-004 tipo D sobre epic.md) y una fila DoD ⚠️ de trazabilidad. Modo manual; el usuario responde 's' al plan. El skill debe mostrar el plan de cambios, crear los .bak, añadir D-3 con // satisface: AC-2 y su tarea, eliminar T005, alinear T003 con el separador ';', dejar INC-004 fuera de alcance y generar fix-plan-report.md. Usar los archivos de skills/story-fix-plan/examples/example-con-hallazgos/ como directorio docs/specs/stories/STORY-201-exportar-reporte-csv/.",
       "input": {
         "input_path": "skills/story-fix-plan/examples/example-con-hallazgos/",
-        "flags": ["STORY-201"],
+        "flags": [
+          "STORY-201"
+        ],
         "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-201-exportar-reporte-csv/ contiene analyze.md, design.md y tasks.md iguales a los del input_path. Respuesta del usuario al plan: s."
       },
       "expected": {
@@ -35,10 +37,12 @@
       "id": "TC-002",
       "name": "gate-analyze-coherente-no-escribe",
       "type": "fail-fast",
-      "description": "STORY-202 con analyze.md cuyo frontmatter declara verdict: APPROVED ('✓ Coherente', sin inconsistencias, DoD 6/6 ✓). El gate de veredicto debe emitir el mensaje ℹ️ de que no hay cambios encontrados para aplicar y terminar sin crear ni modificar archivos. Usar skills/story-fix-plan/examples/example-coherente/ como directorio de la historia.",
+      "description": "STORY-202 con analyze.md cuyo frontmatter declara verdict: APPROVED con línea **Veredicto:** `APPROVED` — sin inconsistencias, DoD 6/6 ✓. El gate de veredicto debe emitir el mensaje ℹ️ de que no hay cambios encontrados para aplicar y terminar sin crear ni modificar archivos. Usar skills/story-fix-plan/examples/example-coherente/ como directorio de la historia.",
       "input": {
         "input_path": "skills/story-fix-plan/examples/example-coherente/",
-        "flags": ["STORY-202"],
+        "flags": [
+          "STORY-202"
+        ],
         "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-202-filtrar-reporte-por-fecha/ contiene analyze.md, design.md y tasks.md iguales a los del input_path."
       },
       "expected": {
@@ -53,7 +57,7 @@
           "=== FILE:"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-003",
@@ -61,7 +65,9 @@
       "type": "error-handling",
       "description": "STORY-203 tiene design.md y tasks.md pero no analyze.md. El skill debe emitir ❌ nombrando analyze.md, sugerir /story-analyze y detenerse sin escribir.",
       "input": {
-        "flags": ["STORY-203"],
+        "flags": [
+          "STORY-203"
+        ],
         "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-203-alta-de-usuario/ con story.md, design.md y tasks.md válidos; no existe analyze.md."
       },
       "expected": {
@@ -76,7 +82,7 @@
           "fix-plan-report.md"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-004",
@@ -84,8 +90,10 @@
       "type": "error-handling",
       "description": "STORY-204 tiene analyze.md con inconsistencias y design.md, pero no existe ni tasks.md ni testcases.md. El skill debe emitir ❌ nombrando ambos archivos, sugerir /story-tasking o /story-testcases y detenerse sin escribir.",
       "input": {
-        "flags": ["STORY-204"],
-        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-204-baja-de-usuario/ con story.md, analyze.md (Estado general ❌, INC-001 [ERROR] tipo A) y design.md; no existen tasks.md ni testcases.md."
+        "flags": [
+          "STORY-204"
+        ],
+        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-204-baja-de-usuario/ con story.md, analyze.md (**Veredicto:** `NEEDS-CHANGES` — ERROR de tipo A, B, INC-001 [ERROR] tipo A) y design.md; no existen tasks.md ni testcases.md."
       },
       "expected": {
         "contains": [
@@ -99,7 +107,7 @@
           "Plan de cambios"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-005",
@@ -107,7 +115,10 @@
       "type": "edge-case",
       "description": "STORY-205 con analyze.md ⚠️ cuyos únicos hallazgos son INC-001 [WARNING] tipo D (estado de epic.md) y una recomendación REC sobre story.md (reformular el «Para»); DoD todo ✓. Existen design.md y tasks.md, no testcases.md. Ningún hallazgo se resuelve en los archivos del plan: el skill debe emitir el ℹ️ correspondiente, listar ambos con su responsable (PO, /story-improve) y no escribir ningún archivo.",
       "input": {
-        "flags": ["STORY-205", "--auto"],
+        "flags": [
+          "STORY-205",
+          "--auto"
+        ],
         "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-205-editar-perfil/ con story.md, analyze.md, design.md y tasks.md; no existe testcases.md. analyze.md: frontmatter con verdict: NEEDS-CHANGES; INC-001 [WARNING] Tipo D, Archivo afectado: docs/specs/epics/EPIC-31-perfil/epic.md — frontmatter; Recomendaciones: 1. INC-001: revisar el estado de la épica con el PO. 2. Reformular el «Para» de story.md para que exprese un beneficio medible."
       },
       "expected": {
@@ -122,7 +133,7 @@
           "=== FILE:"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-006",
@@ -131,7 +142,9 @@
       "description": "Mismo escenario que TC-001 (STORY-201, example-con-hallazgos) en modo manual, pero el usuario responde 'n' al plan de cambios. El skill debe mostrar el plan, preguntar y terminar sin crear backups, sin modificar design.md ni tasks.md y sin generar fix-plan-report.md.",
       "input": {
         "input_path": "skills/story-fix-plan/examples/example-con-hallazgos/",
-        "flags": ["STORY-201"],
+        "flags": [
+          "STORY-201"
+        ],
         "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-201-exportar-reporte-csv/ contiene los archivos del input_path. Respuesta del usuario al plan: n."
       },
       "expected": {
@@ -144,7 +157,7 @@
           "=== FILE:"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-007",
@@ -153,7 +166,10 @@
       "description": "Mismo escenario que TC-001 (STORY-201) con --auto. Al eliminar T005, la dependencia de T006 '(requiere T004, T005)' debe quedar '(requiere T004)' sin renumerar tareas. El frontmatter de design.md y tasks.md conserva status: PLAN y substatus: IN-PROGRESS (solo cambia updated:). No debe pedirse confirmación.",
       "input": {
         "input_path": "skills/story-fix-plan/examples/example-con-hallazgos/",
-        "flags": ["STORY-201", "--auto"],
+        "flags": [
+          "STORY-201",
+          "--auto"
+        ],
         "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-201-exportar-reporte-csv/ contiene los archivos del input_path."
       },
       "expected": {
@@ -171,7 +187,7 @@
           "(requiere T004, T005)"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-008",
@@ -190,7 +206,7 @@
           "✓ Backup creado"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-009",
@@ -199,7 +215,10 @@
       "description": "STORY-206 tiene analyze.md con verdict: NEEDS-CHANGES, design.md y testcases.md, pero no tasks.md. INC-001 tipo F (AC-2 sin caso) e INC-002 (API-002 contradice el límite de 1 MB de D-3) se resuelven en testcases.md; la fila DoD ❌ (D-3 sin // satisface:) se resuelve en design.md; la recomendación 3 (generar tasks.md) queda fuera de alcance con /story-tasking. Modo --auto. El skill debe añadir API-003 con Ref AC-2, corregir API-002 a 1 MB, recalcular el Resumen de cobertura, añadir API-003 a la checklist de progreso y no crear tasks.md. Usar skills/story-fix-plan/examples/example-solo-testcases/ como directorio de la historia.",
       "input": {
         "input_path": "skills/story-fix-plan/examples/example-solo-testcases/",
-        "flags": ["STORY-206", "--auto"],
+        "flags": [
+          "STORY-206",
+          "--auto"
+        ],
         "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-206-importar-usuarios-csv/ contiene analyze.md, design.md y testcases.md iguales a los del input_path; no existe tasks.md."
       },
       "expected": {
@@ -228,7 +247,10 @@
       "type": "edge-case",
       "description": "STORY-207 tiene design.md, tasks.md y testcases.md. analyze.md reporta INC-001 [ERROR] tipo A: AC-3 («el export incluye la fecha en el nombre del archivo») no tiene elemento de diseño. Modo --auto. El skill debe añadir el elemento de diseño con // satisface: AC-3 en design.md, la tarea que lo implementa en tasks.md y el caso que lo verifica en testcases.md, y confirmar los tres archivos actualizados.",
       "input": {
-        "flags": ["STORY-207", "--auto"],
+        "flags": [
+          "STORY-207",
+          "--auto"
+        ],
         "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-207-nombre-de-export/ con story.md (AC-1…AC-3), analyze.md, design.md (D-1 y D-2, solo AC-1 y AC-2), tasks.md (T001–T004) y testcases.md (UT-001, API-001, API-002). analyze.md: frontmatter con el alias veredict: NEEDS-CHANGES (sin campo verdict); INC-001 [ERROR] Tipo A, Archivo afectado: design.md — Decisions, Acción requerida: añadir una decisión para AC-3 con su tarea y su caso de prueba."
       },
       "expected": {
@@ -255,7 +277,10 @@
       "type": "fail-fast",
       "description": "STORY-208 tiene analyze.md heredado sin campo verdict ni veredict en el frontmatter, aunque el cuerpo dice '**Estado general:** ❌ Inconsistencias bloqueantes' y lista INC-001 [ERROR]. Existen design.md y tasks.md. El gate de veredicto no infiere el veredicto desde el cuerpo: debe emitir el mensaje ℹ️ de que analyze.md no declara verdict: NEEDS-CHANGES y terminar sin escribir archivos.",
       "input": {
-        "flags": ["STORY-208", "--auto"],
+        "flags": [
+          "STORY-208",
+          "--auto"
+        ],
         "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-208-cambiar-contrasena/ con story.md, analyze.md, design.md y tasks.md. Frontmatter de analyze.md: type, id, slug, title, story, created, updated (sin verdict ni veredict). Cuerpo: Estado general ❌ Inconsistencias bloqueantes; INC-001 [ERROR] Tipo B sobre T004 de tasks.md."
       },
       "expected": {
@@ -270,16 +295,19 @@
           "=== FILE:"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-012",
       "name": "modo-advertencias-corrige-warnings-con-approved",
       "type": "happy-path",
-      "description": "Invocación en lenguaje natural 'story-fix-plan STORY-209 corrige advertencias'. analyze.md declara verdict: APPROVED ('⚠️ Advertencias') con INC-001 [WARNING] Tipo C: D-2 («los reportes se ordenan por fecha descendente») no tiene tarea en tasks.md. Existen design.md y tasks.md (T001–T003). El usuario responde 's' al plan. El modo advertencias debe dejar pasar el gate APPROVED, añadir T004 trazada a D-2 en tasks.md y generar fix-plan-report.md.",
+      "description": "Invocación en lenguaje natural 'story-fix-plan STORY-209 corrige advertencias'. analyze.md declara verdict: APPROVED con línea **Veredicto:** `APPROVED` — sin ERROR; WARNING de tipo C con INC-001 [WARNING] Tipo C: D-2 («los reportes se ordenan por fecha descendente») no tiene tarea en tasks.md. Existen design.md y tasks.md (T001–T003). El usuario responde 's' al plan. El modo advertencias debe dejar pasar el gate APPROVED, añadir T004 trazada a D-2 en tasks.md y generar fix-plan-report.md.",
       "input": {
-        "flags": ["STORY-209", "corrige advertencias"],
-        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-209-ordenar-reportes/ con story.md, analyze.md, design.md (D-1, D-2) y tasks.md (T001–T003, ninguna cita D-2). Frontmatter de analyze.md: verdict: APPROVED. Cuerpo: Estado general ⚠️ Advertencias; INC-001 [WARNING] Tipo C, Archivo afectado: tasks.md, Acción requerida: añadir la tarea que implementa D-2. Respuesta del usuario al plan: s."
+        "flags": [
+          "STORY-209",
+          "corrige advertencias"
+        ],
+        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-209-ordenar-reportes/ con story.md, analyze.md, design.md (D-1, D-2) y tasks.md (T001–T003, ninguna cita D-2). Frontmatter de analyze.md: verdict: APPROVED. Cuerpo: **Veredicto:** `APPROVED` — sin ERROR; WARNING de tipo C; INC-001 [WARNING] Tipo C, Archivo afectado: tasks.md, Acción requerida: añadir la tarea que implementa D-2. Respuesta del usuario al plan: s."
       },
       "expected": {
         "contains": [
@@ -305,7 +333,10 @@
       "description": "Invocación 'story-fix-plan STORY-202 corrige warnings' sobre example-coherente: verdict: APPROVED y ningún hallazgo. El modo advertencias deja pasar el gate de veredicto, pero el gate sin hallazgos (Paso 4) debe terminar con el mensaje ℹ️ sin escribir archivos.",
       "input": {
         "input_path": "skills/story-fix-plan/examples/example-coherente/",
-        "flags": ["STORY-202", "corrige warnings"],
+        "flags": [
+          "STORY-202",
+          "corrige warnings"
+        ],
         "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-202-filtrar-reporte-por-fecha/ contiene analyze.md, design.md y tasks.md iguales a los del input_path."
       },
       "expected": {
@@ -319,7 +350,7 @@
           "=== FILE:"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     }
   ]
 }

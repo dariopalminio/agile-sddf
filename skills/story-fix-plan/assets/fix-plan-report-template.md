@@ -7,7 +7,7 @@ story: <STORY-NNN>
 analyze-updated: <YYYY-MM-DD>
 analyze-verdict: <NEEDS-CHANGES | APPROVED>
 mode: <estándar | advertencias>
-analyze-status: "<estado general de analyze.md>"
+analyze-status: "<motivo del veredicto de analyze.md>"
 plan-files: [design.md, <tasks.md>, <testcases.md>]
 files-modified: [<archivos de plan-files que el plan modificó>]
 findings-total: <N>
@@ -26,7 +26,7 @@ related:
 
 | Métrica | Valor |
 |---|---|
-| Estado previo (analyze.md) | verdict `<NEEDS-CHANGES | APPROVED>` · <estado general> |
+| Estado previo (analyze.md) | verdict `<NEEDS-CHANGES | APPROVED>` · <motivo del veredicto> |
 | Modo | <estándar | corrige advertencias> |
 | Archivos del plan | <design.md, tasks.md, testcases.md — los que existen> |
 | Hallazgos extraídos | <N> (INC <n> · HAL <n> · REC <n> · DOD <n>) |

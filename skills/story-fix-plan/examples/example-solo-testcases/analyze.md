@@ -13,6 +13,10 @@ related:
 
 # Reporte de Coherencia: Importar usuarios desde CSV
 
+## Veredicto
+
+**Veredicto:** `NEEDS-CHANGES` — ERROR de tipo E; WARNING de tipo F
+
 ## Resumen Ejecutivo
 
 | Métrica | Estado | Detalle |
@@ -22,8 +26,6 @@ related:
 | Cobertura diseño → tareas | ⚠️ | tasks.md no presente — correlación omitida |
 | Cobertura de ACs en testcases.md | ⚠️ | 1/2 criterios con caso de prueba |
 | Cumplimiento DoD — Fase PLAN | ❌ | 5/6 criterios ✓ |
-
-**Estado general:** ❌ Inconsistencias bloqueantes
 
 ---
 
