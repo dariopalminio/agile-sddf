@@ -349,7 +349,7 @@ lectores de reportes (agentes, orquestadores y CI).
 | Tabla §6 | Columnas `Skill · Elemento conservado · Motivo · Historia`; ancla `#6-excepciones` | STORY-139…145 | CNF-1 |
 | Reglas `G-01…G-06` | IDs estables citables (`G-0N`) | Skills, code review, STORY-143 | AC-1 |
 
-## Esquema de datos
+## Esquema de datos // satisface: AC-1, CNF-1
 
 Frontmatter de la policy:
 
@@ -407,20 +407,20 @@ Si no, aplica G-06 (no aprobado).
 
 ## Decisiones de complejidad justificada
 
-| Elemento | Por qué no basta algo más simple |
-|---|---|
-| Columna «Valores sin rama» en §4 | Sin ella, AC-3 exigiría deducir qué valores son excepción. Con ella, la invariante se comprueba con una resta de conjuntos. |
-| Tabla §5 con una fila por valor (18 filas) | Agrupar valores por skill acortaría la tabla, pero AC-2 consulta pares (skill, valor). Una fila por par permite consultarla sin interpretar. |
-| Sección §6 vacía | Es una línea. Evita que STORY-139 y siguientes inventen ubicaciones distintas para las excepciones. |
-| ADR además de la policy | Lo exige la constitución (regla 16). Ambos documentos tienen papeles distintos: el ADR explica el porqué y es inmutable, la policy fija el qué y es versionada. |
-| G-06 | Es una línea, y sin ella el contrato no le dice a CI qué hacer ante un reporte roto. |
+| Elemento | Por qué no basta algo más simple | Satisface |
+|---|---|---|
+| Columna «Valores sin rama» en §4 | Sin ella, AC-3 exigiría deducir qué valores son excepción. Con ella, la invariante se comprueba con una resta de conjuntos. | AC-3 |
+| Tabla §5 con una fila por valor (18 filas) | Agrupar valores por skill acortaría la tabla, pero AC-2 consulta pares (skill, valor). Una fila por par permite consultarla sin interpretar. | AC-2 |
+| Sección §6 vacía | Es una línea. Evita que STORY-139 y siguientes inventen ubicaciones distintas para las excepciones. | CNF-1 |
+| ADR además de la policy | Lo exige la constitución (regla 16). Ambos documentos tienen papeles distintos: el ADR explica el porqué y es inmutable, la policy fija el qué y es versionada. | CNF-1, CR-001 |
+| G-06 | Es una línea, y sin ella el contrato no le dice a CI qué hacer ante un reporte roto. | AC-1 |
 
 ## Contratos de verificación
 
 | # | Criterio | Método de verificación | Origen |
 |---|---|---|---|
 | V-1 | La policy existe con el frontmatter de D-1, y `slug` coincide con el nombre del archivo | Lectura del archivo | AC-1, CNF-1 |
-| V-2 | Los encabezados `##` son exactamente los de D-2 y están en ese orden | `grep -n '^## ' docs/policies/validation-contract-policy.md` | AC-1 |
+| V-2 | Los encabezados `##` fuera de bloques cercados son exactamente los de D-2 y están en ese orden | `grep -n -E '^## ([0-9]+\. \|Historial)' docs/policies/validation-contract-policy.md`. Los `##` de §7 van dentro de bloques cercados | AC-1 |
 | V-3 | G-02 exige `## Veredicto` como primera sección tras el título, y G-01 exige `verdict` | Lectura de §3 | AC-1 |
 | V-4 | §2 lista los seis valores con su fase, y todos cumplen `^[A-Z]+(-[A-Z]+)*$` | Lectura de §2 y regex sobre los valores entre comillas invertidas | AC-1, CNF-2 |
 | V-5 | §4 tiene las siete filas de D-4 con esos valores | Comparación con las Notas de story.md | AC-1 |

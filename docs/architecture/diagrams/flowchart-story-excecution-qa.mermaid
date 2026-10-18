@@ -3,11 +3,15 @@ flowchart TD
   B --> C[story-code-review]
   C --> E{verdict}
   E -->|NEEDS-CHANGES| B
+  E -->|BLOCKED| C
   E -->|APPROVED| H[story-verify]
   H --> I{verdict}
   I -->|NEEDS-CHANGES| B
+  I -->|BLOCKED| H
   I -->|APPROVED| J[story-acceptance]
   J--> K{verdict}
   K -->|NEEDS-CHANGES| B
+  K -->|BLOCKED| J
   K -->|APPROVED| L(END)
+  
 

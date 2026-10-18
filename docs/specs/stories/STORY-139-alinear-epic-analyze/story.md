@@ -5,7 +5,7 @@ id: STORY-139
 kind: feat
 slug: STORY-139-alinear-epic-analyze
 title: "Alinear epic-analyze"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
