@@ -14,11 +14,16 @@ related: []
 
 ## Descripción
 
-El sistema SHALL auditar la coherencia entre `story.md`, `design.md`,
-`testcases.md` y `tasks.md`, detectando inconsistencias, omisiones y ambigüedades técnicas no
-resueltas, y verificando el cumplimiento del DoD del estado PLAN. Produce `analyze.md`.
-Declara el veredicto `APPROVED` o `NEEDS-CHANGES` en `verdict` y en `## Veredicto`.
-Con `APPROVED` (sin hallazgos `ERROR`) SHALL promover la historia a `READY-FOR-IMPLEMENT/DONE`.
+El sistema SHALL auditar la coherencia, completitud y ausencia de ambigüedades no resueltas 
+entre los artefactos de planificación de una historia, verificando el cumplimiento del DoD 
+vigente para la fase PLAN. El sistema SHALL producir un informe de análisis persistido y emitir 
+un veredicto (`verdict`) explícito de aprobación o rechazo con necesidad de cambios (`APPROVED` 
+o `NEEDS-CHANGES`), expuesto tanto de forma estructurada como en el propio informe.
+Cuando el veredicto sea aprobado (`APPROVED`) y no existan hallazgos de severidad error, 
+el sistema SHALL promover la historia al siguiente estado habilitado del flujo.
+
+Los nombres canónicos de artefactos, campos, valores de estado y formato del informe 
+se especifican en el Contrato de Artefactos de Planificación.
 
 ## Atributos
 
