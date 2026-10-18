@@ -22,4 +22,4 @@ updated: <YYYY-MM-DD>
 - [ ] Sin tareas pendientes en `tasks.md`
 - [ ] Metadatos frontmatter de `story.md` están completos y correctos con status y substatus actualizados
 - [ ] El reporte de revisión de código (`code-review-report.md`) está creado o actualizado
-- [ ] Revisión de código aprobada (Review status approved en `code-review-report.md`)
+- [ ] Revisión de código aprobada (`verdict: APPROVED` en `code-review-report.md`)

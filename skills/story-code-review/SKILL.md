@@ -19,15 +19,16 @@ triggers:
 
 ## Objetivo
 
-Quality gate formal entre la implementación y la marca final de Done. Compatible con `/story-implement` (TDD completo) y `/story-implement-tasks` (tarea a tarea). Lanza cuatro subagentes revisores en paralelo, consolida sus hallazgos y genera `code-review-report.md` con la decisión final.
+Quality gate formal entre la implementación y la marca final de Done. Compatible con `/story-implement` (TDD completo) y `/story-implement-tasks` (tarea a tarea). Lanza cuatro subagentes revisores en paralelo, consolida sus hallazgos y genera `code-review-report.md` con el veredicto.
 
 **Qué hace este skill:**
 - Verifica precondiciones antes de revisar (fail-fast ante artefactos faltantes)
 - Limpia `.tmp/story-code-review/{story_id}/` para garantizar idempotencia
 - Lanza cuatro subagentes revisores en paralelo con responsabilidades exclusivas
 - Consolida los informes parciales y calcula la severidad máxima
-- **Si `approved`**: genera `code-review-report.md`, elimina `fix-directives.md` (si existe) y marca `story.md` como `CODE-REVIEW/DONE`
-- **Si `needs-changes`**: genera `fix-directives.md` con `round: N` (ronda previa + 1), retrocede `story.md` a `READY-FOR-IMPLEMENT/DONE` y nombra al ejecutor de correcciones (`/story-implement`; `/story-implement-tasks` como alternativa si existe `tasks.md`)
+- **Si `APPROVED`**: genera `code-review-report.md`, elimina `fix-directives.md` (si existe) y marca `story.md` como `CODE-REVIEW/DONE`
+- **Si `NEEDS-CHANGES`**: genera `fix-directives.md` con `round: N` (ronda previa + 1), retrocede `story.md` a `READY-FOR-IMPLEMENT/DONE` y nombra al ejecutor de correcciones (`/story-implement`; `/story-implement-tasks` como alternativa si existe `tasks.md`)
+- **Si `BLOCKED`**: genera el reporte, identifica a los revisores sin informe válido y deja `story.md` en `IMPLEMENT/DONE` para repetir la revisión; no genera `fix-directives.md`
 
 **Qué NO hace este skill:**
 - Ejecutar ni compilar código (opera sobre Markdown y texto plano únicamente)
@@ -43,8 +44,9 @@ Quality gate formal entre la implementación y la marca final de Done. Compatibl
      ↓
 story-code-review  → Quality gate: revisión multi-agente del código  ← aquí
      │   Al iniciar: story.md → CODE-REVIEW/IN-PROGRESS
-     │   Al finalizar (approved): story.md → CODE-REVIEW/DONE
-     │   Al finalizar (needs-changes): story.md → READY-FOR-IMPLEMENT/DONE
+     │   Al finalizar (APPROVED): story.md → CODE-REVIEW/DONE
+     │   Al finalizar (NEEDS-CHANGES): story.md → READY-FOR-IMPLEMENT/DONE
+     │   Al finalizar (BLOCKED): story.md → IMPLEMENT/DONE
      │       fix-directives.md (round N) = señal de rework → ejecutor: /story-implement
      │       (alternativa si existe tasks.md: /story-implement-tasks)
      ↓
@@ -54,8 +56,8 @@ story.md              → What: requisitos, criterios de aceptación, escenarios
 design.md             → How: arquitectura, componentes, interfaces, decisiones técnicas [Requerido]
 testcases.md          → Spec: tabla canónica de casos de prueba por tipo               [Opcional]
 implement-report.md   → Done: código generado, archivos, estado por tarea              [Opcional]
-code-review-report.md → Review: hallazgos por dimensión, decisión final  ← aquí
-fix-directives.md     → Rework: instrucciones de corrección + ronda (señal de rework)  ← aquí (solo needs-changes)
+code-review-report.md → Review: veredicto y hallazgos por dimensión  ← aquí
+fix-directives.md     → Rework: instrucciones de corrección + ronda (señal de rework)  ← aquí (solo NEEDS-CHANGES)
 ```
 
 ---
@@ -366,38 +368,41 @@ Leer los archivos de `.tmp/story-code-review/{story_id}/`:
 - `integration-report.md`
 - `security-report.md`
 
-**Si algún informe de agente falta o tiene frontmatter inválido:**
-Asumir `max-severity: HIGH` para ese agente (fail-safe).
+**Si algún informe de agente falta o tiene frontmatter inválido:** registrar el nombre del revisor en `$REVIEWERS_BLOCKED`. Ese informe no aporta severidad ni hallazgos. Un informe válido conserva sus hallazgos aunque otro revisor esté bloqueado. El frontmatter válido tiene delimitadores `---`, YAML legible, `status` conforme al contrato local del revisor y `max-severity` en `HIGH`, `MEDIUM`, `LOW`, `ninguna`. El informe de seguridad requiere además `checklist-sources` y `rules-evaluated` según su contrato. No inferir severidad de un informe inválido.
 
-Del `security-report.md`, registrar además los campos `checklist-sources` y `rules-evaluated` de su frontmatter para el reporte final.
+Del `security-report.md` válido, registrar además los campos `checklist-sources` y `rules-evaluated` de su frontmatter para el reporte final. Si está bloqueado, mostrar `no disponible` y `0` respectivamente, sin inventar evidencia de seguridad.
 
 #### 4b. Calcular severidad máxima
 
-Para cada informe de agente, leer el campo `max-severity` del frontmatter.
+Para cada informe válido de agente, leer el campo `max-severity` del frontmatter.
 
 Orden de severidad: `HIGH > MEDIUM > LOW > ninguna`
 
 ```
-max_severity = máxima severidad entre los cuatro agentes
+max_severity = máxima severidad entre los informes válidos (o `ninguna` si no hay ninguno)
 ```
 
-#### 4c. Derivar review-status
+#### 4c. Derivar el veredicto
 
-```
-review-status = approved      si max_severity ∈ {LOW, ninguna}
-review-status = needs-changes  si max_severity ∈ {HIGH, MEDIUM}
-```
+Hallazgo bloqueante = severidad `HIGH` o `MEDIUM`, según la misma regla de 4e y `{{TOTAL_BLOCKING}}`. Aplicar la precedencia G-05 de `docs/policies/validation-contract-policy.md`:
+
+| Condición | `$VERDICT` |
+|---|---|
+| Algún hallazgo bloqueante en los informes válidos | `NEEDS-CHANGES` |
+| Sin hallazgos bloqueantes y `$REVIEWERS_BLOCKED` no vacío | `BLOCKED` |
+| Sin hallazgos bloqueantes y cuatro informes válidos | `APPROVED` |
 
 Registrar internamente:
-- `$REVIEW_STATUS`: `approved` o `needs-changes`
-- `$MAX_SEVERITY`: valor calculado (considera los cuatro agentes)
+- `$VERDICT`: `APPROVED`, `NEEDS-CHANGES` o `BLOCKED`
+- `$MAX_SEVERITY`: valor calculado solo de informes válidos
+- `$REVIEWERS_BLOCKED`: revisores sin informe válido
 - Hallazgos consolidados por dimensión (tabla con columnas: #, Archivo:Línea, Dimensión, Severidad, Hallazgo, Recomendación)
 
 #### 4c.1. Evaluar criterios DoD CODE-REVIEW
 
 **Si `$DOD_CODE_REVIEW_CRITERIA` está vacío** (no se cargó en el Paso 2d):
 - Registrar `$DOD_CODE_REVIEW_RESULT = []`
-- No modificar `$MAX_SEVERITY` ni `$REVIEW_STATUS`
+- No modificar `$MAX_SEVERITY` ni `$VERDICT`
 - Continuar al paso 4d
 
 **Si `$DOD_CODE_REVIEW_CRITERIA` tiene criterios:**
@@ -428,18 +433,19 @@ Clasificar cada criterio como:
 
 Registrar internamente `$DOD_CODE_REVIEW_RESULT` (tabla de criterio | resultado | severidad | evidencia).
 
-**Recalcular `$MAX_SEVERITY` y `$REVIEW_STATUS`** considerando todos los hallazgos (agentes + DoD):
+**Recalcular `$MAX_SEVERITY` y `$VERDICT`** considerando todos los hallazgos (agentes válidos + DoD):
 ```
 max_severity = máxima severidad entre hallazgos de agentes y hallazgos DoD
-review-status = approved      si max_severity ∈ {LOW, ninguna}
-review-status = needs-changes  si max_severity ∈ {HIGH, MEDIUM}
+verdict = NEEDS-CHANGES si max_severity ∈ {HIGH, MEDIUM}
+verdict = BLOCKED       si max_severity ∈ {LOW, ninguna} y $REVIEWERS_BLOCKED no está vacío
+verdict = APPROVED      si max_severity ∈ {LOW, ninguna} y $REVIEWERS_BLOCKED está vacío
 ```
 
-Registrar los valores actualizados como `$MAX_SEVERITY` y `$REVIEW_STATUS`.
+Registrar los valores actualizados como `$MAX_SEVERITY` y `$VERDICT`. Un hallazgo bloqueante tiene precedencia sobre revisores incompletos.
 
 #### 4c.2. Verificación informativa de tamaño de cambio (no bloqueante)
 
-Esta verificación es puramente informativa: **no participa en el cálculo de `$MAX_SEVERITY` ni `$REVIEW_STATUS`** (ya cerrados en 4b/4c/4c.1).
+Esta verificación es puramente informativa: **no participa en el cálculo de `$MAX_SEVERITY` ni `$VERDICT`** (ya cerrados en 4b/4c/4c.1).
 
 1. Contar el número de archivos distintos en `$IMPL_FILES` (extraído en el Paso 2c desde `implement-report.md`). Registrar como `$CHANGED_FILES_COUNT`.
 2. Si `$IMPL_FILES` está vacío (porque `implement-report.md` no estaba disponible), omitir esta verificación y registrar `$CHANGE_SIZE_NOTE = ""`.
@@ -452,11 +458,13 @@ No se invoca `git diff` ni ningún comando nuevo: el conteo reutiliza `$IMPL_FIL
 
 #### 4d. Bifurcación post-árbitro
 
-**Si `$REVIEW_STATUS = needs-changes`:** ejecutar los pasos 4e–4g y después el Paso 5, luego saltar al Paso 7.
+**Si `$VERDICT = NEEDS-CHANGES`:** ejecutar los pasos 4e–4g y después el Paso 5, luego saltar al Paso 7.
 
-**Si `$REVIEW_STATUS = approved`:** ejecutar el Paso 4h, después los Pasos 5–6, luego el Paso 7.
+**Si `$VERDICT = APPROVED`:** ejecutar el Paso 4h, después los Pasos 5–6, luego el Paso 7.
 
-#### 4e. [needs-changes] Construir lista blanca de archivos
+**Si `$VERDICT = BLOCKED`:** no ejecutar 4e–4h ni modificar `fix-directives.md`; generar el reporte en el Paso 5, restaurar `story.md` a `IMPLEMENT/DONE` en el Paso 6 y mostrar el resumen del Paso 7. La revisión se repite cuando estén disponibles los cuatro informes válidos.
+
+#### 4e. [NEEDS-CHANGES] Construir lista blanca de archivos
 
 Iterar los hallazgos consolidados filtrando solo los de `Severidad ∈ {HIGH, MEDIUM}`:
 
@@ -467,7 +475,7 @@ Iterar los hallazgos consolidados filtrando solo los de `Severidad ∈ {HIGH, ME
 
 Registrar internamente como `$WHITELIST`: lista de `(archivo, [hallazgos])`.
 
-#### 4f. [needs-changes] Calcular ronda y generar `fix-directives.md`
+#### 4f. [NEEDS-CHANGES] Calcular ronda y generar `fix-directives.md`
 
 **4f.1 — Calcular la ronda de corrección (antes de instanciar el template):**
 
@@ -475,7 +483,7 @@ Registrar internamente como `$WHITELIST`: lista de `(archivo, [hallazgos])`.
 2. `$PREV_ROUND` = ese valor si es un entero ≥ 1; en cualquier otro caso (archivo inexistente, campo ausente, valor no entero como `abc`, `null` o `0`) → `$PREV_ROUND = 0`. No emitir error ni advertencia bloqueante: es una degradación controlada (archivos legados sin `round`).
 3. `$ROUND = $PREV_ROUND + 1`.
 
-> `story-code-review` es el **escritor único** de `round`: ningún otro skill lo crea, lo modifica ni lo completa. `round` cuenta las ejecuciones de este skill cerradas en `needs-changes` para la historia, sin más semántica.
+> `story-code-review` es el **escritor único** de `round`: ningún otro skill lo crea, lo modifica ni lo completa. `round` cuenta las ejecuciones de este skill cerradas en `NEEDS-CHANGES` para la historia, sin más semántica.
 
 **4f.2 — Instanciar el template:**
 
@@ -497,7 +505,7 @@ Mostrar:
 📋 Fix directives: <ruta>/fix-directives.md (ronda <N>)
 ```
 
-#### 4g. [needs-changes] Retroceder story.md y determinar ejecutor
+#### 4g. [NEEDS-CHANGES] Retroceder story.md y determinar ejecutor
 
 Actualizar el frontmatter de `story.md`:
 - `status: READY-FOR-IMPLEMENT`
@@ -507,7 +515,7 @@ Calcular `$TASKS_EXISTS = true` si existe `$STORY_DIR/tasks.md`, `false` si no. 
 
 Mostrar:
 ```
-⚠️  Review: needs-changes — story.md → READY-FOR-IMPLEMENT/DONE
+⚠️  Veredicto: NEEDS-CHANGES — story.md → READY-FOR-IMPLEMENT/DONE
 🔁 Ronda de corrección: <N>
 → Ejecuta /story-implement <story_id>
    Alternativa (tasks.md presente): /story-implement-tasks <story_id>      (solo si $TASKS_EXISTS = true)
@@ -515,7 +523,7 @@ Mostrar:
 
 Ningún ejecutor se invoca automáticamente: la historia queda encolada en `READY-FOR-IMPLEMENT`.
 
-#### 4h. [approved] Limpiar fix-directives.md residual
+#### 4h. [APPROVED] Limpiar fix-directives.md residual
 
 Si existe `$STORY_DIR/fix-directives.md` (de una revisión anterior con bloqueantes), eliminarlo antes de continuar.
 
@@ -535,16 +543,21 @@ Leer `assets/code-review-report-template.md` como fuente de verdad de la estruct
 #### 5b. Completar y guardar
 
 Completar el template con:
-- Frontmatter: `story_id`, `$REVIEW_STATUS`, fecha actual, `$MAX_SEVERITY`
+- Frontmatter: `story_id`, `$VERDICT`, fecha actual, `$MAX_SEVERITY`
+- Sección `## Veredicto`: primera sección tras el título. La línea `` **Veredicto:** `{{VERDICT}}` — {{VERDICT_REASON}} `` usa estos motivos:
+  - `APPROVED`: `Sin hallazgos bloqueantes (severidad máxima: <LOW | ninguna>).`
+  - `NEEDS-CHANGES`: `<N> hallazgo(s) bloqueante(s) (severidad máxima: <HIGH | MEDIUM>).` `<N>` cuenta los hallazgos `HIGH`/`MEDIUM` de agentes válidos y DoD.
+  - `BLOCKED`: `Revisión incompleta: <nombres de los revisores sin informe válido>.`
+  - `{{DECISION_RATIONALE}}` explica el resultado en una o dos frases, incluido el revisor bloqueado y la precedencia de `NEEDS-CHANGES` cuando corresponda.
 - Sección Resumen: título de la historia, revisores (los cuatro), severidad máxima
   - `{{TESTCASES_STATUS}}`: `✓ analizado (<N> casos — UT:<N>/CT:<N>/IT:<N>/API:<N>/E2E:<N>/EV:<N>)` si `$TESTCASES_AVAILABLE = true`; o `⏭️ no encontrado — ejecuta /story-testcases para generar la especificación canónica` si `$TESTCASES_AVAILABLE = false`
-- Sección Hallazgos por dimensión: contenido de cada informe parcial
+- Sección Hallazgos por dimensión: insertar **solo** la tabla de `## Hallazgos` de cada informe parcial válido en `{{TECH_LEAD_FINDINGS}}`, `{{PRODUCT_OWNER_FINDINGS}}`, `{{INTEGRATION_FINDINGS}}` y `{{SECURITY_FINDINGS}}`; nunca copiar su frontmatter ni `## Veredicto`. Para un revisor bloqueado, indicar `⚠️ Informe no disponible o frontmatter inválido: <revisor>` en su dimensión.
 - Sección `### Seguridad (Security-Reviewer)` — `{{SECURITY_FINDINGS}}`: contenido de la sección "Hallazgos" de `security-report.md`, precedido por una línea `**Fuentes de checklist:** <checklist-sources> (<rules-evaluated> reglas evaluadas)` con los valores leídos en el Paso 4a
 - Sección `### Cobertura de Casos de Prueba (testcases.md)` — `{{TESTCASES_COVERAGE_SECTION}}`:
   - **Si `$TESTCASES_AVAILABLE = false`:** `⏭️ testcases.md no encontrado — análisis de cobertura omitido. Considera ejecutar /story-testcases para generar la especificación canónica de pruebas.`
   - **Si `$TESTCASES_AVAILABLE = true`:** extraer y mostrar los hallazgos de la sección "Hallazgos — Cobertura en testcases.md" del `product-owner-report.md` y los hallazgos de la sección "Hallazgos — Trazabilidad de diseño en testcases.md" del `integration-report.md`
+  - Si alguno de esos informes está en `$REVIEWERS_BLOCKED`, indicar que su cobertura no pudo evaluarse; no atribuirle cobertura completa.
 - Sección `### Nota de Tamaño de Cambio` — `{{CHANGE_SIZE_NOTE}}`: contenido de `$CHANGE_SIZE_NOTE` calculado en el Paso 4c.2; si está vacío, dejar la sección sin contenido visible (no mostrar el placeholder literal)
-- Sección Decisión final: `$REVIEW_STATUS` con justificación
 - Sección "Cumplimiento DoD — Fase CODE-REVIEW":
   - **Si `$DOD_CODE_REVIEW_CRITERIA` estaba vacío:** mostrar `⚠️ DoD CODE-REVIEW no encontrado — se omitió la validación. Verifica que existe el DoD de la etapa code-review (ver `## DoD aplicable`).`
   - **Si hay criterios evaluados:** completar tabla `| # | Criterio | Estado | Severidad | Evidencia |` con los resultados de `$DOD_CODE_REVIEW_RESULT` y línea de resumen `**Resumen:** N/Total criterios ✓`
@@ -553,14 +566,14 @@ Guardar en `$STORY_DIR/code-review-report.md`.
 
 Mostrar:
 ```
-📄 Reporte generado: <ruta>/code-review-report.md
+📄 Reporte generado: <ruta>/code-review-report.md (verdict: <VERDICT>)
 ```
 
 ---
 
 ### Paso 6 — Actualizar frontmatter de `story.md`
 
-**Solo si `$REVIEW_STATUS = approved`:**
+**Solo si `$VERDICT = APPROVED`:**
 
 Actualizar el frontmatter de `story.md`:
 - `status: CODE-REVIEW`
@@ -571,7 +584,9 @@ Mostrar:
 📋 Estado story.md: CODE-REVIEW/DONE ✓
 ```
 
-**Si `$REVIEW_STATUS = needs-changes`:** el frontmatter ya fue actualizado a `READY-FOR-IMPLEMENT/DONE` en el Paso 4g. No ejecutar este paso.
+**Si `$VERDICT = NEEDS-CHANGES`:** el frontmatter ya fue actualizado a `READY-FOR-IMPLEMENT/DONE` en el Paso 4g. No ejecutar este paso.
+
+**Si `$VERDICT = BLOCKED`:** actualizar el frontmatter a `IMPLEMENT/DONE` (restaurar el estado previo al Paso 1e). No crear `fix-directives.md` ni eliminar uno preexistente. Mostrar `📋 Estado story.md: IMPLEMENT/DONE — revisión bloqueada; vuelve a ejecutar /story-code-review <story_id> cuando se despeje el bloqueo`.
 
 ---
 
@@ -591,7 +606,7 @@ Mostrar:
  📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
- Review status:   <review_status>
+ Veredicto:       APPROVED
 ─────────────────────────────────────────────────────────────────────
 
 📄 Reporte: <ruta>/code-review-report.md
@@ -619,7 +634,7 @@ O si hay hallazgos criticos:
  📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
- Review status:   needs-changes
+ Veredicto:       NEEDS-CHANGES
 ─────────────────────────────────────────────────────────────────────
 
 📋 Fix directives: <ruta>/fix-directives.md (ronda <N>)
@@ -638,6 +653,8 @@ Consulta fix-directives.md para las instrucciones de corrección.
 
 La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`: no se menciona `/story-implement-tasks` para historias sin `tasks.md`. Al aprobar tras las correcciones, `/story-code-review` elimina `fix-directives.md` (Paso 4h).
 
+Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de `$REVIEWERS_BLOCKED`, indicar `story.md → IMPLEMENT/DONE` y sugerir `/story-code-review <story_id>` una vez despejado el bloqueo. No mostrar instrucciones de corrección.
+
 ### Manejo de errores
 
 | Condición | Mensaje | Acción |
@@ -648,6 +665,7 @@ La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`: n
 | `story.md` no está en `IMPLEMENT/DONE` (incluida una historia ya encolada en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`) | `❌ La historia <story_id> no está en estado IMPLEMENT/DONE.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
 | `implement-report.md` o `testcases.md` ausentes | — (se registran como `⏭️` en el informe) | Continuar sin ese contexto |
 | DoD de la etapa code-review ausente | `⚠️ DoD de la etapa code-review no encontrado …` | Advertir y continuar sin validación DoD |
+| Informe de revisor ausente o con frontmatter inválido, sin otros hallazgos bloqueantes | `Veredicto: BLOCKED` con el nombre del revisor | Generar reporte y restaurar `IMPLEMENT/DONE`; no generar `fix-directives.md` |
 | Hallazgo bloqueante sin `Archivo:Línea` (Paso 4e) | — (se anota `[archivo no especificado]`) | Excluirlo de la lista blanca y continuar |
 | `fix-directives.md` previo con `round` ausente o ilegible (Paso 4f.1) | — (sin error ni advertencia: archivo legado) | `$PREV_ROUND = 0`: la cuenta de rondas se reinicia en 1 |
 
@@ -658,7 +676,7 @@ La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`: n
 | Artefacto | Condición |
 |-----------|-----------|
 | `$SPECS_BASE/specs/stories/STORY-NNN/code-review-report.md` | Siempre |
-| `$SPECS_BASE/specs/stories/STORY-NNN/fix-directives.md` | Solo si `needs-changes`; incluye `round` (escritor único: este skill); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Se elimina en `approved` |
+| `$SPECS_BASE/specs/stories/STORY-NNN/fix-directives.md` | Solo si `NEEDS-CHANGES`; incluye `round` (escritor único: este skill); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Se elimina en `APPROVED` |
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |
@@ -667,4 +685,5 @@ La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`: n
 Estado final de `story.md`:
 - `CODE-REVIEW/DONE` si la revisión es aprobada
 - `READY-FOR-IMPLEMENT/DONE` si hay hallazgos criticos (severidad HIGH o MEDIUM)
+- `IMPLEMENT/DONE` si la revisión queda `BLOCKED` por un informe ausente o inválido, sin hallazgos bloqueantes
 

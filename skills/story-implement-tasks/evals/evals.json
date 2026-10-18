@@ -1,6 +1,6 @@
 {
   "skill": "story-implement-tasks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Casos de prueba para story-implement-tasks centrados en el ciclo de correccion post code review (STORY-089): el skill aplica las correcciones de fix-directives.md como pre-paso 2f por presencia del archivo (sin depender de la tarea literal 'Implementar fix-directives.md' en tasks.md), reporta la ronda leida del frontmatter (ronda 1 si el campo round no existe, sin escribirlo nunca: el escritor unico es story-code-review), conserva el gate de salida anticipada cuando no hay fix-directives.md, mantiene la compatibilidad con tasks.md legados que aun contienen el literal (marcado [x] con nota 'aplicado en pre-paso 2f' o bloqueo [~] si el archivo no existe) y no aborta las correcciones restantes cuando un hallazgo apunta a un archivo inexistente. Los casos que no tocan fix-directives.md quedan fuera de alcance de este archivo.",
   "cases": [
     {
@@ -137,7 +137,7 @@
       "id": "TC-004",
       "name": "literal-legado-sin-fix-directives-bloquea-tarea",
       "type": "error-handling",
-      "description": "tasks.md legado con la linea '- [ ] Implementar fix-directives.md' pendiente (ademas de otra tarea TDD pendiente), pero fix-directives.md ya no existe en el directorio de la historia (por ejemplo, fue eliminado por un approved posterior). story.md en READY-FOR-IMPLEMENT/DONE. El pre-paso 2f no se ejecuta (no hay archivo). Al procesar la tarea legada, el skill debe marcarla [~] en tasks.md con la razon 'fix-directives.md no encontrado en <ruta del directorio>' y continuar con las demas tareas sin error fatal, generando implement-report.md con la seccion Tareas Bloqueadas.",
+      "description": "tasks.md legado con la linea '- [ ] Implementar fix-directives.md' pendiente (ademas de otra tarea TDD pendiente), pero fix-directives.md ya no existe en el directorio de la historia (por ejemplo, fue eliminado tras un veredicto APPROVED posterior). story.md en READY-FOR-IMPLEMENT/DONE. El pre-paso 2f no se ejecuta (no hay archivo). Al procesar la tarea legada, el skill debe marcarla [~] en tasks.md con la razon 'fix-directives.md no encontrado en <ruta del directorio>' y continuar con las demas tareas sin error fatal, generando implement-report.md con la seccion Tareas Bloqueadas.",
       "input": {
         "story_id": "STORY-240",
         "story_status": "READY-FOR-IMPLEMENT",

@@ -7,9 +7,9 @@ derives-from: constitution
 
 # Política de contrato de validación
 
-**Versión:** 1.0.0
+**Versión:** 1.1.0
 **Estado:** Aprobado
-**Última actualización:** 2026-10-17
+**Última actualización:** 2026-10-18
 **Propietario:** Mantenedores de Agile-SDDF
 
 ## 1. Propósito y alcance
@@ -94,7 +94,7 @@ Todo valor de esta tabla es no conforme (G-03). La columna «Valor canónico» i
 | Skill | Elemento conservado | Motivo | Historia |
 |---|---|---|---|
 
-Sin excepciones vigentes.
+| `story-code-review` | `status: approved \| needs-changes` y `## Veredicto` en informes parciales de revisores (`agents/*.agent.md` y `examples/*/{tech-lead,product-owner,integration,security}-report.md`) | Son intermedios de `.tmp/`; el árbitro valida su frontmatter y consume severidad y hallazgos sin copiar su veredicto al reporte consolidado. La alineación de subagentes queda fuera del alcance. | STORY-141 |
 
 ## 7. Ejemplos de reportes conformes
 
@@ -196,3 +196,4 @@ verdict: PENDING
 | Versión | Fecha | Cambios | Autor |
 |---|---|---|---|
 | 1.0.0 | 2026-10-17 | Creación inicial (STORY-138) | Dario Palminio |
+| 1.1.0 | 2026-10-18 | Excepción acotada para informes parciales de `story-code-review` (STORY-141) | Mantenedores de Agile-SDDF |

@@ -18,7 +18,7 @@ Skill orquestador que ejecuta el ciclo TDD completo (RED → GREEN → REFACTOR)
     ├── Fase GREEN    → invoca code_generators de sddf.config.yaml  → código de producción
     └── Fase REFACTOR → invoca code_generators con phase:REFACTOR   → código mejorado
     ↓ [story.md: IMPLEMENT/DONE]
-/story-code-review                     [approved: → CODE-REVIEW/DONE | rechazo: → READY-FOR-IMPLEMENT/DONE + fix-directives.md → vuelve a /story-implement]
+/story-code-review                     [APPROVED: → CODE-REVIEW/DONE | NEEDS-CHANGES: → READY-FOR-IMPLEMENT/DONE + fix-directives.md → vuelve a /story-implement | BLOCKED: → IMPLEMENT/DONE → repetir revisión]
 ```
 
 Leyenda de artefactos de entrada:

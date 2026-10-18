@@ -221,14 +221,16 @@ story-creation → story-evaluation → story-split
 ## 4. Pipeline de implementación y ciclo de corrección post-review
 
 ```
-story-implement | story-implement-tasks → story-code-review → approved
-                                              └─ needs-changes → story-implement | story-implement-tasks → story-code-review → …
+story-implement | story-implement-tasks → story-code-review → APPROVED
+                                              ├─ NEEDS-CHANGES → story-implement | story-implement-tasks → story-code-review → …
+                                              └─ BLOCKED → story-code-review (al despejar el bloqueo)
 ```
 
 | Skill | Precondición (`story.md`) | Resultado |
 |---|---|---|
 | `story-implement` o `story-implement-tasks` | `READY-FOR-IMPLEMENT/DONE` (ejecución inicial o rework encolado) | `IMPLEMENT/DONE` + `implement-report.md`; si existe `fix-directives.md`, aplica sus correcciones |
-| `story-code-review` → `approved` | `IMPLEMENT/DONE` | `CODE-REVIEW/DONE` + `code-review-report.md`; `fix-directives.md` eliminado si existía |
-| `story-code-review` → `needs-changes` | `IMPLEMENT/DONE` | `READY-FOR-IMPLEMENT/DONE` + `code-review-report.md` + `fix-directives.md` con `round: N` (ronda previa + 1); mensaje `→ Ejecuta /story-implement <id>` (alternativa `/story-implement-tasks <id>` si existe `tasks.md`) |
+| `story-code-review` → `APPROVED` | `IMPLEMENT/DONE` | `CODE-REVIEW/DONE` + `code-review-report.md` con `verdict: APPROVED`; `fix-directives.md` eliminado si existía |
+| `story-code-review` → `NEEDS-CHANGES` | `IMPLEMENT/DONE` | `READY-FOR-IMPLEMENT/DONE` + `code-review-report.md` con `verdict: NEEDS-CHANGES` + `fix-directives.md` con `round: N` (ronda previa + 1); mensaje `→ Ejecuta /story-implement <id>` (alternativa `/story-implement-tasks <id>` si existe `tasks.md`) |
+| `story-code-review` → `BLOCKED` | `IMPLEMENT/DONE` | `IMPLEMENT/DONE` + `code-review-report.md` con `verdict: BLOCKED`; repetir la revisión cuando el revisor incompleto pueda terminar |
 
-> La señal de rework es la presencia de `fix-directives.md` en el directorio de la historia: lo crea o sobreescribe `story-code-review` en `needs-changes` (escritor único de `round`) y lo elimina en `approved`. No existe estado ni substatus de rework; el ciclo `needs-changes → ejecutor → story-code-review` se repite sin editar el frontmatter a mano hasta obtener `approved` (ver [[rework-sin-estado-propio]], ADR-0008).
+> La señal de rework es la presencia de `fix-directives.md` en el directorio de la historia: lo crea o sobreescribe `story-code-review` en `NEEDS-CHANGES` (escritor único de `round`) y lo elimina en `APPROVED`. No existe estado ni substatus de rework; el ciclo `NEEDS-CHANGES → ejecutor → story-code-review` se repite sin editar el frontmatter a mano hasta obtener `APPROVED` (ver [[rework-sin-estado-propio]], ADR-0008).

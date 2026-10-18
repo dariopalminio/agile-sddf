@@ -1,13 +1,13 @@
 {
   "skill": "story-code-review",
-  "version": "1.0.0",
-  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo happy path aprobado, needs-changes con fix-directives.md numerado por ronda (campo round en el frontmatter: ronda previa + 1, escritor unico story-code-review; ausente o ilegible se trata como 0), ejecutor de correcciones nombrado en el mensaje de cierre (siempre /story-implement; /story-implement-tasks solo si existe tasks.md), ausencia total de escritura en tasks.md, limpieza del fix-directives.md previo al aprobar, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias y fallback del Security-Reviewer al baseline embebido, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo veredicto APPROVED, veredicto NEEDS-CHANGES y BLOCKED con fix-directives.md numerado por ronda (campo round en el frontmatter: ronda previa + 1, escritor unico story-code-review; ausente o ilegible se trata como 0), ejecutor de correcciones nombrado en el mensaje de cierre (siempre /story-implement; /story-implement-tasks solo si existe tasks.md), ausencia total de escritura en tasks.md, limpieza del fix-directives.md previo al aprobar, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias y fallback del Security-Reviewer al baseline embebido, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
   "cases": [
     {
       "id": "TC-001",
       "name": "happy-path-revision-aprobada",
       "type": "happy-path",
-      "description": "Flujo completo con historia en IMPLEMENT/DONE, story.md y design.md presentes, implement-report.md y testcases.md disponibles. Los cuatro agentes revisores no reportan hallazgos de severidad HIGH ni MEDIUM. El skill debe generar code-review-report.md con review-status approved, actualizar story.md a CODE-REVIEW/DONE y no generar fix-directives.md.",
+      "description": "Flujo completo con historia en IMPLEMENT/DONE, story.md y design.md presentes, implement-report.md y testcases.md disponibles. Los cuatro agentes revisores no reportan hallazgos de severidad HIGH ni MEDIUM. El skill debe generar code-review-report.md con verdict APPROVED, actualizar story.md a CODE-REVIEW/DONE y no generar fix-directives.md.",
       "input": {
         "story_id": "STORY-010",
         "story_status": "IMPLEMENT",
@@ -22,15 +22,17 @@
       },
       "expected": {
         "contains": [
-          "approved",
+          "(verdict: APPROVED)",
           "code-review-report.md",
           "CODE-REVIEW",
           "DONE",
           "ninguna",
-          "Revision aprobada"
+          "Revision aprobada",
+          "Veredicto:",
+          "Sin hallazgos bloqueantes"
         ],
         "not_contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "READY-FOR-IMPLEMENT",
           "Entorno invalido",
@@ -69,7 +71,7 @@
       },
       "expected": {
         "contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "round: 1",
           "READY-FOR-IMPLEMENT",
@@ -77,11 +79,13 @@
           "HIGH",
           "code-review-report.md",
           "→ Ejecuta /story-implement",
-          "hallazgos criticos"
+          "hallazgos criticos",
+          "Veredicto:",
+          "hallazgo(s) bloqueante(s)"
         ],
         "not_contains": [
           "Implementar fix-directives.md",
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/DONE",
           "Revision aprobada",
           "Entorno invalido",
@@ -111,10 +115,11 @@
         "not_contains": [
           "code-review-report.md",
           "fix-directives.md",
-          "approved",
-          "needs-changes",
+          "(verdict: APPROVED)",
+          "(verdict: NEEDS-CHANGES)",
           "CODE-REVIEW/IN-PROGRESS",
-          "Entorno invalido"
+          "Entorno invalido",
+          "(verdict: "
         ]
       },
       "threshold": 1.0
@@ -140,11 +145,12 @@
         "not_contains": [
           "code-review-report.md",
           "fix-directives.md",
-          "approved",
-          "needs-changes",
+          "(verdict: APPROVED)",
+          "(verdict: NEEDS-CHANGES)",
           "CODE-REVIEW/IN-PROGRESS",
           "Entorno invalido",
-          "Iniciando revision"
+          "Iniciando revision",
+          "(verdict: "
         ]
       },
       "threshold": 1.0
@@ -177,14 +183,15 @@
       },
       "expected": {
         "contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "READY-FOR-IMPLEMENT",
           "MEDIUM",
-          "N+1"
+          "N+1",
+          "Veredicto:"
         ],
         "not_contains": [
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/DONE",
           "Revision aprobada"
         ]
@@ -193,9 +200,9 @@
     },
     {
       "id": "TC-006",
-      "name": "advertencia-tamano-cambio-no-afecta-approved",
+      "name": "advertencia-tamano-cambio-no-afecta-veredicto",
       "type": "happy-path",
-      "description": "Historia en IMPLEMENT/DONE con implement-report.md que lista 15 archivos generados, pero ninguno de los cuatro agentes reporta severidad HIGH/MEDIUM. El skill debe mostrar la nota informativa de tamano de cambio (Paso 4c.2) sugiriendo /story-split, sin que esto afecte el calculo de max-severity ni review-status: debe seguir siendo approved y story.md debe avanzar a CODE-REVIEW/DONE.",
+      "description": "Historia en IMPLEMENT/DONE con implement-report.md que lista 15 archivos generados, pero ninguno de los cuatro agentes reporta severidad HIGH/MEDIUM. El skill debe mostrar la nota informativa de tamano de cambio (Paso 4c.2) sugiriendo /story-split, sin que esto afecte el calculo de max-severity ni verdict: debe seguir siendo APPROVED y story.md debe avanzar a CODE-REVIEW/DONE.",
       "input": {
         "story_id": "STORY-060",
         "story_status": "IMPLEMENT",
@@ -211,14 +218,15 @@
       },
       "expected": {
         "contains": [
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW",
           "DONE",
           "story-split",
-          "informativa"
+          "informativa",
+          "Veredicto:"
         ],
         "not_contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "READY-FOR-IMPLEMENT"
         ]
@@ -229,7 +237,7 @@
       "id": "TC-007",
       "name": "dependencia-nueva-sin-justificacion-detectada",
       "type": "fail-path",
-      "description": "El Tech-Lead-Reviewer detecta una dependencia nueva agregada al manifest de paquetes (package.json) sin justificacion visible en design.md ni implement-report.md. Debe reportarse como hallazgo MEDIUM bajo el checklist de disciplina de dependencias, generando needs-changes y fix-directives.md.",
+      "description": "El Tech-Lead-Reviewer detecta una dependencia nueva agregada al manifest de paquetes (package.json) sin justificacion visible en design.md ni implement-report.md. Debe reportarse como hallazgo MEDIUM bajo el checklist de disciplina de dependencias, generando NEEDS-CHANGES y fix-directives.md.",
       "input": {
         "story_id": "STORY-070",
         "story_status": "IMPLEMENT",
@@ -253,13 +261,14 @@
       },
       "expected": {
         "contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "Dependencia nueva",
-          "package.json"
+          "package.json",
+          "Veredicto:"
         ],
         "not_contains": [
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/DONE"
         ]
       },
@@ -287,16 +296,17 @@
       },
       "expected": {
         "contains": [
-          "approved",
+          "(verdict: APPROVED)",
           "baseline",
           "security-reviewer",
           "Seguridad",
           "CODE-REVIEW",
-          "DONE"
+          "DONE",
+          "Veredicto:"
         ],
         "not_contains": [
           "security-audit",
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "READY-FOR-IMPLEMENT"
         ]
@@ -332,18 +342,19 @@
       },
       "expected": {
         "contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "round: 2",
           "READY-FOR-IMPLEMENT",
           "→ Ejecuta /story-implement",
-          "/story-implement-tasks"
+          "/story-implement-tasks",
+          "Veredicto:"
         ],
         "not_contains": [
           "round: 1",
           "Implementar fix-directives.md",
           "Tarea agregada",
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/DONE",
           "Revision aprobada"
         ]
@@ -379,18 +390,19 @@
       },
       "expected": {
         "contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "round: 1",
           "READY-FOR-IMPLEMENT",
-          "→ Ejecuta /story-implement"
+          "→ Ejecuta /story-implement",
+          "Veredicto:"
         ],
         "not_contains": [
           "/story-implement-tasks",
           "Implementar fix-directives.md",
           "Tarea agregada",
           "Artefactos requeridos no encontrados",
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/DONE"
         ]
       },
@@ -398,9 +410,9 @@
     },
     {
       "id": "TC-011",
-      "name": "approved-elimina-fix-directives-previo",
+      "name": "aprobacion-elimina-fix-directives-previo",
       "type": "happy-path",
-      "description": "Historia en IMPLEMENT/DONE que vuelve a revision tras una ronda de correcciones: existe fix-directives.md previo con round: 1. Los cuatro agentes revisores no reportan hallazgos HIGH ni MEDIUM. El skill debe cerrar en approved, eliminar el fix-directives.md residual mostrando 'fix-directives.md eliminado (revision anterior superada)', generar code-review-report.md y avanzar story.md a CODE-REVIEW/DONE. No debe retroceder a READY-FOR-IMPLEMENT ni generar una nueva ronda (round: 2).",
+      "description": "Historia en IMPLEMENT/DONE que vuelve a revision tras una ronda de correcciones: existe fix-directives.md previo con round: 1. Los cuatro agentes revisores no reportan hallazgos HIGH ni MEDIUM. El skill debe cerrar en APPROVED, eliminar el fix-directives.md residual mostrando 'fix-directives.md eliminado (revision anterior superada)', generar code-review-report.md y avanzar story.md a CODE-REVIEW/DONE. No debe retroceder a READY-FOR-IMPLEMENT ni generar una nueva ronda (round: 2).",
       "input": {
         "story_id": "STORY-130",
         "story_status": "IMPLEMENT",
@@ -416,14 +428,15 @@
       },
       "expected": {
         "contains": [
-          "approved",
+          "(verdict: APPROVED)",
           "fix-directives.md eliminado",
           "code-review-report.md",
           "CODE-REVIEW",
-          "DONE"
+          "DONE",
+          "Veredicto:"
         ],
         "not_contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "READY-FOR-IMPLEMENT",
           "round: 2",
           "→ Ejecuta /story-implement",
@@ -462,18 +475,19 @@
       },
       "expected": {
         "contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "round: 1",
           "READY-FOR-IMPLEMENT",
-          "→ Ejecuta /story-implement"
+          "→ Ejecuta /story-implement",
+          "Veredicto:"
         ],
         "not_contains": [
           "round: 0",
           "round: 2",
           "Implementar fix-directives.md",
           "Tarea agregada",
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/DONE"
         ]
       },
@@ -508,18 +522,19 @@
       },
       "expected": {
         "contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "round: 1",
           "READY-FOR-IMPLEMENT",
-          "→ Ejecuta /story-implement"
+          "→ Ejecuta /story-implement",
+          "Veredicto:"
         ],
         "not_contains": [
           "round: abc",
           "round: NaN",
           "round: 2",
           "Implementar fix-directives.md",
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/DONE"
         ]
       },
@@ -529,7 +544,7 @@
       "id": "TC-014",
       "name": "needs-changes-no-escribe-en-tasks-md",
       "type": "fail-path",
-      "description": "Historia en IMPLEMENT/DONE con tasks.md presente (12 lineas, todas las tareas marcadas [x]) y sin fix-directives.md previo. El Tech-Lead-Reviewer reporta un hallazgo HIGH. El skill debe cerrar en needs-changes, generar fix-directives.md con round: 1 y retroceder story.md a READY-FOR-IMPLEMENT/DONE, pero tasks.md debe conservar exactamente sus 12 lineas y el mismo contenido: el output no debe anunciar ninguna tarea agregada ('📝 Tarea agregada') ni la tarea 'Implementar fix-directives.md', y tasks.md no debe figurar entre los archivos modificados.",
+      "description": "Historia en IMPLEMENT/DONE con tasks.md presente (12 lineas, todas las tareas marcadas [x]) y sin fix-directives.md previo. El Tech-Lead-Reviewer reporta un hallazgo HIGH. El skill debe cerrar en NEEDS-CHANGES, generar fix-directives.md con round: 1 y retroceder story.md a READY-FOR-IMPLEMENT/DONE, pero tasks.md debe conservar exactamente sus 12 lineas y el mismo contenido: el output no debe anunciar ninguna tarea agregada ('📝 Tarea agregada') ni la tarea 'Implementar fix-directives.md', y tasks.md no debe figurar entre los archivos modificados.",
       "input": {
         "story_id": "STORY-160",
         "story_status": "IMPLEMENT",
@@ -556,18 +571,19 @@
       },
       "expected": {
         "contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "round: 1",
           "READY-FOR-IMPLEMENT",
-          "→ Ejecuta /story-implement"
+          "→ Ejecuta /story-implement",
+          "Veredicto:"
         ],
         "not_contains": [
           "📝 Tarea agregada",
           "Tarea agregada en tasks.md",
           "Implementar fix-directives.md",
           "tasks.md (actualizado)",
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/DONE"
         ]
       },
@@ -577,7 +593,7 @@
       "id": "TC-015",
       "name": "needs-changes-reejecucion-idempotente-incrementa-solo-round",
       "type": "edge-case",
-      "description": "Historia ya rechazada (fix-directives.md con round: 1) sobre la que no se ha cambiado ninguna linea de codigo, y cuyo story.md fue devuelto a IMPLEMENT/DONE para volver a revisar. El skill se ejecuta dos veces consecutivas y en ambas el Tech-Lead-Reviewer reporta el mismo hallazgo MEDIUM. Cada ejecucion debe cerrar en needs-changes y sobreescribir fix-directives.md incrementando solo la ronda (round: 2 en la primera, round: 3 en la segunda), regenerar code-review-report.md y retroceder story.md a READY-FOR-IMPLEMENT/DONE. Ningun otro archivo del directorio debe cambiar: sin tarea agregada en tasks.md, sin lineas acumuladas entre ejecuciones y sin saltar a round: 4.",
+      "description": "Historia ya rechazada (fix-directives.md con round: 1) sobre la que no se ha cambiado ninguna linea de codigo, y cuyo story.md fue devuelto a IMPLEMENT/DONE para volver a revisar. El skill se ejecuta dos veces consecutivas y en ambas el Tech-Lead-Reviewer reporta el mismo hallazgo MEDIUM. Cada ejecucion debe cerrar en NEEDS-CHANGES y sobreescribir fix-directives.md incrementando solo la ronda (round: 2 en la primera, round: 3 en la segunda), regenerar code-review-report.md y retroceder story.md a READY-FOR-IMPLEMENT/DONE. Ningun otro archivo del directorio debe cambiar: sin tarea agregada en tasks.md, sin lineas acumuladas entre ejecuciones y sin saltar a round: 4.",
       "input": {
         "story_id": "STORY-170",
         "story_status": "IMPLEMENT",
@@ -604,20 +620,21 @@
       },
       "expected": {
         "contains": [
-          "needs-changes",
+          "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "round: 2",
           "round: 3",
           "code-review-report.md",
           "READY-FOR-IMPLEMENT",
-          "→ Ejecuta /story-implement"
+          "→ Ejecuta /story-implement",
+          "Veredicto:"
         ],
         "not_contains": [
           "round: 4",
           "📝 Tarea agregada",
           "Implementar fix-directives.md",
           "tasks.md (actualizado)",
-          "approved",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/DONE"
         ]
       },
@@ -645,13 +662,97 @@
           "round: 2",
           "fix-directives.md eliminado",
           "code-review-report.md",
-          "needs-changes",
-          "approved",
+          "(verdict: NEEDS-CHANGES)",
+          "(verdict: APPROVED)",
           "CODE-REVIEW/IN-PROGRESS",
-          "Entorno invalido"
+          "Entorno invalido",
+          "(verdict: "
         ]
       },
       "threshold": 1.0
+    },
+    {
+      "id": "TC-017",
+      "name": "blocked-revisor-sin-informe-valido",
+      "type": "edge-case",
+      "description": "Un revisor no completa su informe y los otros tres no reportan hallazgos bloqueantes. El veredicto BLOCKED nombra al revisor, restaura IMPLEMENT/DONE y no genera fix-directives.md.",
+      "input": {
+        "story_id": "STORY-190",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "missing_agent_report": "integration-report.md",
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "LOW",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: BLOCKED)",
+          "Veredicto:",
+          "integration-reviewer",
+          "IMPLEMENT/DONE",
+          "code-review-report.md"
+        ],
+        "not_contains": [
+          "fix-directives.md (ronda",
+          "READY-FOR-IMPLEMENT/DONE",
+          "CODE-REVIEW/DONE",
+          "(verdict: APPROVED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-018",
+      "name": "needs-changes-prevalece-sobre-revisor-bloqueado",
+      "type": "edge-case",
+      "description": "Un revisor no completa su informe, pero otro entrega un hallazgo HIGH. La precedencia G-05 exige NEEDS-CHANGES con fix-directives.md y vuelta a READY-FOR-IMPLEMENT/DONE.",
+      "input": {
+        "story_id": "STORY-191",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "missing_agent_report": "integration-report.md",
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/auth.ts:42",
+              "dimension": "code-quality",
+              "severity": "HIGH",
+              "finding": "Token expuesto",
+              "action": "Eliminar el token"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "Veredicto:",
+          "fix-directives.md",
+          "READY-FOR-IMPLEMENT/DONE",
+          "integration-reviewer"
+        ],
+        "not_contains": [
+          "(verdict: BLOCKED)",
+          "CODE-REVIEW/DONE"
+        ]
+      },
+      "threshold": 0.9
     }
   ]
 }

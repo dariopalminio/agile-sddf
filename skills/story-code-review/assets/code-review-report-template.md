@@ -2,7 +2,7 @@
 type: code-review-report
 story: {{STORY_ID}}
 title: "Code Review Report: {{STORY_TITLE}}"
-review-status: {{REVIEW_STATUS}}
+verdict: {{VERDICT}}
 date: {{DATE}}
 max-severity: {{MAX_SEVERITY}}
 reviewers:
@@ -14,12 +14,17 @@ reviewers:
 
 # Code Review Report: {{STORY_ID}}
 
+## Veredicto
+
+**Veredicto:** `{{VERDICT}}` — {{VERDICT_REASON}}
+
+{{DECISION_RATIONALE}}
+
 ## Resumen
 
 | Campo | Valor |
 |-------|-------|
 | Historia | {{STORY_ID}} — {{STORY_TITLE}} |
-| Review status | {{REVIEW_STATUS}} |
 | Severidad máxima detectada | {{MAX_SEVERITY}} |
 | Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer, Security-Reviewer |
 | testcases.md | {{TESTCASES_STATUS}} |
@@ -62,14 +67,6 @@ reviewers:
 ### Cobertura de Casos de Prueba (testcases.md)
 
 {{TESTCASES_COVERAGE_SECTION}}
-
----
-
-## Decisión final
-
-**review-status: {{REVIEW_STATUS}}**
-
-{{DECISION_RATIONALE}}
 
 ---
 

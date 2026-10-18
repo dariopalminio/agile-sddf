@@ -45,8 +45,9 @@ stateDiagram-v2
     PLAN --> RFI
     RFI --> IMPLEMENT
     IMPLEMENT --> CR
-    CR --> VERIFY : approved
-    CR --> RFI : needs-changes
+    CR --> VERIFY : APPROVED
+    CR --> RFI : NEEDS-CHANGES
+    CR --> IMPLEMENT : BLOCKED (repetir revisión)
     VERIFY --> ACCEPTANCE : DoD ✓
     VERIFY --> RFI : DoD ✗
     ACCEPTANCE --> DELIVER : all APPROVED
@@ -99,7 +100,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 | `story-plan` | `SPECIFY/DONE` | `PLAN/IN-PROGRESS` | delegado a `story-analyze` | — |
 | `story-analyze` | Invocado por `story-plan` | — | `READY-FOR-IMPLEMENT/DONE` (sin ERRORs) | — |
 | `story-implement` | `READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS` (reanudación) | `IMPLEMENT/IN-PROGRESS` | `IMPLEMENT/DONE` | — |
-| `story-code-review` | `IMPLEMENT/DONE` | `CODE-REVIEW/IN-PROGRESS` | `CODE-REVIEW/DONE` | `READY-FOR-IMPLEMENT/DONE` (needs-changes) |
+| `story-code-review` | `IMPLEMENT/DONE` | `CODE-REVIEW/IN-PROGRESS` | `CODE-REVIEW/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `IMPLEMENT/DONE` (`BLOCKED`) |
 | `story-verify` | `CODE-REVIEW/DONE` (camino normal) o `IMPLEMENT/DONE` (mínimo aceptable) | `VERIFY/IN-PROGRESS` | `VERIFY/DONE` | `READY-FOR-IMPLEMENT/DONE` (DoD ✗) |
 | `story-acceptance` | `VERIFY/DONE` (camino normal) o `ACCEPTANCE/IN-PROGRESS` (sesión en curso) | `ACCEPTANCE/IN-PROGRESS` | `ACCEPTANCE/DONE` | `READY-FOR-IMPLEMENT/DONE` (≥1 REJECTED) o `ACCEPTANCE/BLOCKED` (≥1 BLOCKED sin REJECTED) |
 

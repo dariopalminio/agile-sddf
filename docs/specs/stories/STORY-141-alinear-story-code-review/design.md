@@ -9,7 +9,7 @@ substatus: IN-PROGRESS
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 story: STORY-141
 created: 2026-10-17
-updated: 2026-10-17
+updated: 2026-10-18
 related:
   - STORY-141-alinear-story-code-review
   - STORY-138-contrato-de-validacion
@@ -37,7 +37,7 @@ de §4 (`APPROVED`, `NEEDS-CHANGES`, sin valores sin rama), equivalencias de §5
 | `skills/story-code-review/assets/code-review-report-template.md` (87 líneas) | Frontmatter con `review-status: {{REVIEW_STATUS}}` (l.5) y `max-severity` (l.7). Tras `# Code Review Report: {{STORY_ID}}` (l.15), el primer `##` es `## Resumen` (l.17), con la fila `Review status` (l.22). La decisión está al final, en `## Decisión final` (l.68), como `**review-status: {{REVIEW_STATUS}}**` (l.70) seguido de `{{DECISION_RATIONALE}}` (l.72). Después vienen `## Siguiente acción` (l.76) y `## Cumplimiento DoD — Fase CODE-REVIEW` (l.82). |
 | `skills/story-code-review/assets/fix-directives-template.md` (41 líneas) | `review-status: needs-changes` fijo en el frontmatter (l.5), `- **Review status:** needs-changes` (l.17) y el paso 4 del ciclo: «Si el resultado es `approved`…» (l.41). |
 | `skills/story-code-review/SKILL.md` (670 líneas) | La regla vive en 4c (l.384-392) y se recalcula en 4c.1 (l.431-438): `approved` si `max_severity ∈ {LOW, ninguna}`, `needs-changes` si `∈ {HIGH, MEDIUM}`. La variable es `$REVIEW_STATUS`. Hay valores heredados en l.29-30, l.46-47, l.57-58, l.400, l.442, l.455-459, l.470, l.478, l.500, l.510, l.518, l.538, l.547, l.563, l.574, l.594, l.622 y l.661. El Paso 5b (l.542) inserta «contenido de cada informe parcial» en `## Hallazgos por dimensión`. |
-| Subagentes (`skills/story-code-review/agents/*.agent.md`) | Cada informe parcial de `.tmp/` declara `status: approved \| needs-changes` y cierra con su propio `## Veredicto` `{approved \| needs-changes}: …`. El árbitro solo lee `max-severity` (4a-4b). |
+| Subagentes (`skills/story-code-review/agents/*.agent.md`) | Cada informe parcial de `.tmp/` declara `status: approved \| needs-changes` y cierra con su propio `## Veredicto` `{approved \| needs-changes}: …`. El árbitro valida su frontmatter y lee `max-severity` (4a-4b), sin copiar `status` al reporte. |
 | `skills/story-code-review/examples/` | `example-approved/code-review-report.md` (l.5, l.21, l.54-56), `example-needs-changes/fix-directives.md` y `example-needs-changes-medium/fix-directives.md` (l.5, l.17, l.40 y l.40-42). Los `*-report.md` de los ejemplos modelan informes de subagentes. |
 | `skills/story-code-review/evals/evals.json` | `version: 1.0.0`, 16 casos. Todos afirman `approved` o `needs-changes` en minúsculas en `contains` o `not_contains`. Las `description` de TC-001, TC-006, TC-007, TC-011, TC-014 y TC-015 los citan. Los `name` de TC-006 y TC-011 contienen `approved`. |
 | `skills/story-code-review/README.md` | l.16: «solo cuando la decisión es `needs-changes`». |
@@ -73,7 +73,7 @@ de §4 (`APPROVED`, `NEEDS-CHANGES`, sin valores sin rama), equivalencias de §5
 
 ## Decisions
 
-### D-1 — Regla de veredicto sin cambio de criterio // satisface: AC-1, CNF-1
+### D-1 — Regla de veredicto y bloqueo de revisión // satisface: AC-1, AC-3, CNF-1
 
 La variable `$REVIEW_STATUS` se renombra `$VERDICT` en todo `SKILL.md`. El paso 4c se titula «4c. Derivar el veredicto».
 Su regla, y la del recálculo de 4c.1, quedan así:
@@ -82,17 +82,19 @@ Su regla, y la del recálculo de 4c.1, quedan así:
 |---|---|---|
 | `LOW` o `ninguna` | `APPROVED` | ningún hallazgo bloqueante |
 | `HIGH` o `MEDIUM` | `NEEDS-CHANGES` | al menos uno bloqueante |
+| `LOW` o `ninguna` con informe de revisor ausente o frontmatter inválido | `BLOCKED` | AC-3 |
 
 - **Hallazgo bloqueante** = severidad `HIGH` o `MEDIUM`. Es la misma definición que ya usa 4e para la lista blanca y que
   cuenta `{{TOTAL_BLOCKING}}`. 4c la enuncia en una línea, para que AC-1 y `fix-directives.md` usen el mismo término.
-- **Sin cambios:** el orden `HIGH > MEDIUM > LOW > ninguna` (4b), el fail-safe de 4a (un informe ausente o con
-  frontmatter inválido cuenta como `HIGH`) y la severidad de los criterios DoD (4c.1). Por eso un informe roto produce
-  `NEEDS-CHANGES`, nunca `APPROVED`.
+- **Sin cambios:** el orden `HIGH > MEDIUM > LOW > ninguna` (4b), el umbral bloqueante y la severidad de los criterios DoD (4c.1).
+  **Excepción de AC-3:** 4a registra un informe ausente o con frontmatter inválido como revisor incompleto, sin atribuirle
+  severidad `HIGH`. Con hallazgos bloqueantes de informes válidos o DoD prevalece `NEEDS-CHANGES` (G-05); sin ellos emite
+  `BLOCKED`, conserva `IMPLEMENT/DONE` y no crea `fix-directives.md`.
 - Las ramas `[needs-changes]` y `[approved]` de los encabezados 4e-4h pasan a `[NEEDS-CHANGES]` y `[APPROVED]`.
 
 | Alternativa | Motivo del rechazo |
 |---|---|
-| Emitir `BLOCKED` cuando falta un informe de subagente | Cambia el criterio vigente (CNF-1). Además, §4 de la policy no permite `BLOCKED` a `story-code-review` y el flowchart no tiene esa rama. |
+| Tratar un informe de subagente incompleto como hallazgo `HIGH` | Atribuye un defecto al código sin evidencia y contradice AC-3 y §4 de la policy publicada. |
 | Conservar `$REVIEW_STATUS` con minúsculas y traducir solo al escribir | El mismo concepto tendría dos nombres y dos grafías dentro del skill (P4). Cada traducción es un punto donde se puede escapar `approved`. |
 
 ### D-2 — Frontmatter: `verdict` en lugar de `review-status` // satisface: AC-1, AC-2
@@ -126,6 +128,7 @@ porque G-02 admite motivos breves tras la línea de veredicto.
 |---|---|
 | `APPROVED` | `Sin hallazgos bloqueantes (severidad máxima: <LOW \| ninguna>).` |
 | `NEEDS-CHANGES` | `<N> hallazgo(s) bloqueante(s) (severidad máxima: <HIGH \| MEDIUM>).` |
+| `BLOCKED` | `Revisión incompleta: <nombres de los revisores sin informe válido>.` |
 
 `<N>` es el mismo total de hallazgos `HIGH`/`MEDIUM` (agentes + DoD) que `{{TOTAL_BLOCKING}}` de `fix-directives.md`.
 `{{DECISION_RATIONALE}}` sigue siendo la justificación libre de hoy, en una o dos frases.
@@ -278,7 +281,7 @@ en `skills/`. Por eso se añade una fila a §6 «Excepciones» de la policy:
 
 | Skill | Elemento conservado | Motivo | Historia |
 |---|---|---|---|
-| `story-code-review` | `status: approved \| needs-changes` y `## Veredicto` en los informes parciales de los subagentes (`agents/*.agent.md`, `examples/*/*-report.md`) | Son intermedios de `.tmp/`. El árbitro solo lee `max-severity` y no los copia al reporte (D-4). Alinear los subagentes queda fuera del alcance de STORY-141 | STORY-141 |
+| `story-code-review` | `status: approved \| needs-changes` y `## Veredicto` en los informes parciales de los subagentes (`agents/*.agent.md`, `examples/*/{tech-lead,product-owner,integration,security}-report.md`) | Son intermedios de `.tmp/`. El árbitro valida el frontmatter, consume severidad y hallazgos y no copia su veredicto al reporte (D-4). Alinear los subagentes queda fuera del alcance de STORY-141 | STORY-141 |
 
 La fila reemplaza `Sin excepciones vigentes.` si sigue siendo la única. La policy sube a la siguiente versión menor y
 añade una fila en «Historial de cambios». Así se sigue F-1, paso 4, del diseño de STORY-138.
@@ -294,10 +297,10 @@ añade una fila en «Historial de cambios». Así se sigue F-1, paso 4, del dise
 |---|---|---|
 | C-1 | G-01: `verdict` con un solo valor | D-2 |
 | C-2 | G-02: `## Veredicto` es el primer `##` tras el `#`, con `` **Veredicto:** `<VALOR>` — <motivo> `` | D-3 |
-| C-3 | G-03 y §4: solo `APPROVED`, `NEEDS-CHANGES` | D-1 |
+| C-3 | G-03 y §4: `APPROVED`, `NEEDS-CHANGES`, `BLOCKED` | D-1 |
 | C-4 | G-04: ningún otro campo o línea del reporte declara el veredicto | D-2 (`review-status`), D-3 (fila `Review status`, `## Decisión final`) y D-4 (informes parciales) |
-| C-5 | G-06: lectura cerrada ante fallo | D-1 (fail-safe a `NEEDS-CHANGES`) y D-7 (señal por presencia, sin cambios) |
-| C-6 | §7.4: `type: code-review-report`, `# Code Review Report: …`, siguiente `##` = `## Resumen` | D-3 |
+| C-5 | G-05 y G-06: lectura cerrada y precedencia de `NEEDS-CHANGES` sobre `BLOCKED` | D-1 y D-7 (señal de rework por presencia, sin cambios) |
+| C-6 | §7.4: `type: code-review-report`, `# Code Review Report: …`, primer `##` = `## Veredicto` | D-3 |
 | C-7 | §6: divergencias registradas | D-10 |
 
 La implementación empieza cuando `docs/policies/validation-contract-policy.md` existe (lo comprueba la primera tarea),
@@ -321,7 +324,7 @@ diseño de STORY-138, se aplica la versión publicada y la diferencia se anota e
 | Excepciones de la policy | modificar | `docs/policies/validation-contract-policy.md` §6 e «Historial de cambios» | AC-2 |
 
 No se tocan: `skills/story-code-review/agents/*.agent.md`, los `*-report.md` de `examples/`, la lógica de
-`story-implement` y `story-implement-tasks`, los flowcharts, `docs/specs/**` ni `skills/memory-system/examples/**`.
+`story-implement` y `story-implement-tasks`, los flowcharts, otras historias en `docs/specs/**` ni `skills/memory-system/examples/**`.
 
 ## Interfaces
 
@@ -382,9 +385,8 @@ mismo en su Paso 0c. Al volver a `/story-code-review`, F-1 elimina el archivo.
 
 ### F-3 — Degradación // P7
 
-- **Falta un informe de subagente o tiene frontmatter inválido:** cuenta como `HIGH` (4a) → `NEEDS-CHANGES`. Nunca se
-  aprueba en silencio.
-- **Un subagente escribe su veredicto con otra grafía:** no importa, porque el árbitro no lo lee ni lo copia (D-4).
+- **Falta un informe de subagente o tiene frontmatter inválido:** se registra el revisor incompleto; sin hallazgos bloqueantes de los demás revisores o del DoD → `BLOCKED`, con ellos → `NEEDS-CHANGES`.
+- **Un subagente escribe `status` con una grafía inválida:** su frontmatter se trata como inválido y el informe no aporta severidad ni hallazgos; su `## Veredicto` nunca se copia (D-4).
 - **`fix-directives.md` heredado con `review-status`:** los consumidores lo ignoran como hoy. La siguiente ronda lo
   sobrescribe con la forma de D-5.
 - **`code-review-report.md` heredado con `review-status`:** se lee con la tabla §5 de la policy (D-7 de STORY-138). Ningún
@@ -409,12 +411,12 @@ mismo en su Paso 0c. Al volver a `/story-code-review`, F-1 elimina el archivo.
 
 | # | Criterio | Método de verificación | Origen |
 |---|---|---|---|
-| V-1 | Ningún valor heredado en los archivos alcanzados, salvo la excepción de D-10 | `grep -rn -E "review-status\|Review status\|REVIEW_STATUS\|\bapproved\b\|needs-changes\|Decisión final" skills/story-code-review skills/story-implement skills/story-implement-tasks skills/sddf-constitution/assets/dod-story docs/guardrails/dod-story-code-review.md docs/guides/sddf-commands-pipeline.md docs/architecture/state-machine.md docs/domains/domain-story-lifecycle.md` solo devuelve líneas de `agents/*.agent.md`, `examples/*/*-report.md` y los `name` de evals con `needs-changes` | AC-1, AC-2 |
+| V-1 | Ningún valor heredado en los archivos alcanzados, salvo la excepción de D-10 | `grep -rn -E "review-status\|Review status\|REVIEW_STATUS\|\bapproved\b\|needs-changes\|Decisión final" skills/story-code-review skills/story-implement skills/story-implement-tasks skills/sddf-constitution/assets/dod-story docs/guardrails/dod-story-code-review.md docs/guides/sddf-commands-pipeline.md docs/architecture/state-machine.md docs/domains/domain-story-lifecycle.md` solo devuelve líneas de `agents/*.agent.md`, `examples/*/{tech-lead,product-owner,integration,security}-report.md` y los `name` de evals con `needs-changes`; nunca el reporte consolidado de ejemplo | AC-1, AC-2 |
 | V-2 | El template declara `verdict` y no `review-status` | `grep -n -E '^(verdict\|review-status):' skills/story-code-review/assets/code-review-report-template.md` → solo `verdict` | AC-1, AC-2 |
 | V-3 | El primer `##` tras el `#` es `## Veredicto` y le sigue `## Resumen` | `grep -n '^#' skills/story-code-review/assets/code-review-report-template.md` (orden `#`, `## Veredicto`, `## Resumen`) | AC-1 |
 | V-4 | Solo `## Veredicto` declara el valor en el reporte | `grep -c '{{VERDICT}}' …/code-review-report-template.md` = 2 (frontmatter y línea de veredicto) | AC-1 |
 | V-5 | `fix-directives-template.md` no tiene `review-status` ni `approved` y conserva `round`, la tabla y la lista blanca | `grep -n -E 'review-status\|approved' …/fix-directives-template.md` vacío; lectura de las secciones | AC-2 |
-| V-6 | 4c y 4c.1 emiten `APPROVED` con `{LOW, ninguna}` y `NEEDS-CHANGES` con `{HIGH, MEDIUM}`; 4a, 4b y la severidad del DoD no cambian | `git diff` de `SKILL.md` limitado a nombres y valores en esos pasos | AC-1, CNF-1 |
+| V-6 | 4c y 4c.1 emiten `APPROVED` con `{LOW, ninguna}` y cuatro informes válidos, `BLOCKED` con un revisor incompleto sin bloqueantes, y `NEEDS-CHANGES` con `{HIGH, MEDIUM}`; 4a cambia solo el fail-safe y se conservan 4b y la severidad DoD | `git diff` de `SKILL.md` y casos TC-017/TC-018 | AC-1, AC-3, CNF-1 |
 | V-7 | El Paso 5b inserta solo la tabla `## Hallazgos` de cada informe | Lectura del Paso 5b | AC-2 |
 | V-8 | `story-implement` y `story-implement-tasks` no cambian su lógica de rework | `git diff --stat` de los dos `SKILL.md`: solo l.69 de `story-implement-tasks` | AC-2 |
 | V-9 | La fila de D-10 figura en §6 y la versión de la policy subió | Lectura de la policy | AC-2 |

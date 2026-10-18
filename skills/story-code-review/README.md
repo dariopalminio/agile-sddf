@@ -8,12 +8,12 @@
 
 ## What it does
 
-Ejecuta el quality gate posterior a la implementación mediante cuatro revisores paralelos: código, requisitos, integración y seguridad. Arbitra sus hallazgos, evalúa el DoD de CODE-REVIEW y deja una decisión consolidada para la historia.
+Ejecuta el quality gate posterior a la implementación mediante cuatro revisores paralelos: código, requisitos, integración y seguridad. Arbitra sus hallazgos, evalúa el DoD de CODE-REVIEW y deja un veredicto consolidado (`APPROVED`, `NEEDS-CHANGES` o `BLOCKED`) para la historia.
 
 **Produces:**
 
 - `<directorio-historia>/code-review-report.md` en todas las ejecuciones válidas.
-- `<directorio-historia>/fix-directives.md` solo cuando la decisión es `needs-changes`.
+- `<directorio-historia>/fix-directives.md` solo cuando el veredicto es `NEEDS-CHANGES`.
 - Actualizaciones de estado de `story.md` y reportes temporales de los revisores.
 
 **Does not do:**

@@ -94,8 +94,9 @@ stateDiagram-v2
     PLAN --> RFI
     RFI --> IMPLEMENT
     IMPLEMENT --> CR
-    CR --> VERIFY : approved
-    CR --> RFI : needs-changes
+    CR --> VERIFY : APPROVED
+    CR --> RFI : NEEDS-CHANGES
+    CR --> IMPLEMENT : BLOCKED (repetir revisión)
     VERIFY --> ACCEPTANCE : DoD ✓
     VERIFY --> RFI : DoD ✗
     ACCEPTANCE --> DELIVER : all APPROVED
@@ -113,7 +114,8 @@ stateDiagram-v2
 | Ruta | Descripción |
 |------|-------------|
 | **Happy path** | `SPECIFY → PLAN → RFI → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` |
-| **Rework por revisión** | `CODE-REVIEW → READY-FOR-IMPLEMENT` (needs-changes) |
+| **Rework por revisión** | `CODE-REVIEW → READY-FOR-IMPLEMENT` (`NEEDS-CHANGES`) |
+| **Revisión incompleta** | `CODE-REVIEW → IMPLEMENT/DONE` (`BLOCKED`; repetir `story-code-review`) |
 | **Rework por verificación** | `VERIFY → READY-FOR-IMPLEMENT` (DoD ✗) |
 | **Rework por aceptación** | `ACCEPTANCE → READY-FOR-IMPLEMENT` (≥1 REJECTED) |
 | **Bloqueo en aceptación** | `ACCEPTANCE → ACCEPTANCE` (≥1 BLOCKED, sin REJECTED) |

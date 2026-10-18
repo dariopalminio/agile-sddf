@@ -66,7 +66,7 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 | `story.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/story.md` | ✓ obligatorio |
 | `design.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/design.md` | ✓ obligatorio |
 | `tasks.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/tasks.md` | ✓ obligatorio |
-| `fix-directives.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (`needs-changes`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
+| `fix-directives.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (veredicto `NEEDS-CHANGES`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
 | DoD de la etapa `implement` | `$SPECS_BASE/guardrails/dod-story-implement.md` (ver `## DoD aplicable`) | opcional |
 
 ---

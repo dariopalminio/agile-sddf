@@ -2,7 +2,7 @@
 type: code-review-report
 story: STORY-000
 title: "Code Review Report: STORY-000"
-review-status: approved
+verdict: APPROVED
 date: 2026-05-09
 max-severity: ninguna
 reviewers:
@@ -13,12 +13,18 @@ reviewers:
 
 # Code Review Report: STORY-000
 
+## Veredicto
+
+**Veredicto:** `APPROVED` — Sin hallazgos bloqueantes (severidad máxima: ninguna).
+
+La implementación cumple todos los criterios de aceptación de `story.md` y la arquitectura de `design.md`.
+No se detectaron hallazgos de severidad HIGH o MEDIUM en ninguna de las tres dimensiones.
+
 ## Resumen
 
 | Campo | Valor |
 |-------|-------|
 | Historia | STORY-000 — Ejemplo de revisión aprobada |
-| Review status | approved |
 | Severidad máxima detectada | ninguna |
 | Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer |
 | Fecha | 2026-05-09 |
@@ -48,15 +54,6 @@ reviewers:
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
 | — | — | Arquitectura consistente con design.md | — |
-
----
-
-## Decisión final
-
-**review-status: approved**
-
-La implementación cumple todos los criterios de aceptación de `story.md` y la arquitectura de `design.md`.
-No se detectaron hallazgos de severidad HIGH o MEDIUM en ninguna de las tres dimensiones.
 
 ---
 

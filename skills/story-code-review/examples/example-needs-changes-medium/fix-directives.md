@@ -2,7 +2,6 @@
 type: fix-directives
 story: STORY-000
 title: "Fix Directives: STORY-000 (MEDIUM)"
-review-status: needs-changes
 date: 2026-05-09
 max-severity: MEDIUM
 round: 1
@@ -14,7 +13,7 @@ based-on: code-review-report.md
 ## Resumen de bloqueantes
 
 - **Story:** STORY-000 — Ejemplo de historia con hallazgo de severidad MEDIUM
-- **Review status:** needs-changes
+- **Veredicto de origen:** `NEEDS-CHANGES` (`code-review-report.md`)
 - **Severidad máxima:** MEDIUM
 - **Total de hallazgos bloqueantes:** 2
 - **Ronda:** 1
@@ -39,7 +38,7 @@ No deben modificarse archivos fuera de esta lista sin previa aprobación.
 1. Ejecuta `/story-implement STORY-000` (o `/story-implement-tasks STORY-000` si la historia tiene `tasks.md`) para aplicar las correcciones de la tabla de instrucciones.
 2. Limita los cambios a los archivos de la lista blanca.
 3. Re-ejecuta `/story-code-review STORY-000`.
-4. Si el resultado es `approved`, este archivo se elimina y la historia queda en `CODE-REVIEW/DONE`.
+4. Si el veredicto es `APPROVED`, este archivo se elimina y la historia queda en `CODE-REVIEW/DONE`.
 
 ---
-> Nota: Este ejemplo cubre el Scenario Outline AC-2 de STORY-065: severidad MEDIUM → needs-changes + fix-directives.md.
+> Nota: Este ejemplo cubre el Scenario Outline AC-2 de STORY-065: severidad MEDIUM → `NEEDS-CHANGES` + fix-directives.md.
