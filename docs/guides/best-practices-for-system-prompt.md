@@ -116,9 +116,9 @@ Gemini (global) --> ~/.gemini/GEMINI.md En tu directorio de trabajo o cualquier 
 ## Recomendaciones para escribir archivos de instrucciones de sistema
 
 1. **Mantener concisión (sé breve)**: Es fundamental que tu archivo sea lo más corto posible, manteniendo un límite ideal que no supere las 200 o 300 líneas y no sobrepase las 150-200 instrucciones. Aproximadamente lo siguiente:
-   - **CLAUDE.md** <200 líneas.
-   - **AGENTES.md** Cadena de <32 KiB (valor predeterminado del Codex).
-   - **copilot-instructions.md** ~100 líneas.
+   - CLAUDE.md DEBE tener menos de 200 líneas (el rango recomendado por Anthropic).
+   - AGENTS.md DEBE tener menos de 200 líneas y la cadena combinada se encuentra dentro del presupuesto predeterminado de 32 KiB del Codex.
+   - El archivo copilot-instructions.md DEBE tener menos de 150 líneas.
 2. **Define la descripción del proyecto concisamente**: Comienza siempre describiendo el proyecto en una sola frase que detalle el tipo de aplicación y el stack tecnológico principal (por ejemplo: "Esta es una aplicación web creada en Next.js...").
 3. **Comandos críticos**: Lista solo los comandos de uso diario más importantes, como aquellos requeridos para hacer testeos o compilaciones (builds) del proyecto.
 4. **Advertencias y particularidades (Caveats)**: Define explícitamente los casos especiales de tu proyecto que la IA no podría adivinar con solo leer el código; por ejemplo, "nunca modifiques directamente el schema de Prisma" o "no ejecutes un build tras cada modificación pequeña".
@@ -126,6 +126,7 @@ Gemini (global) --> ~/.gemini/GEMINI.md En tu directorio de trabajo o cualquier 
 6. **No confíes a ciegas en la auto-generación (comandos init)**: Dejar que la IA cree el archivo de sistema usando comandos como /init suele resultar en un documento demasiado largo, verboso e inundado de información innecesaria.
 7. **Evita reglas de estilo y formato**: No desperdicies espacio con instrucciones sobre si usar comillas simples, tabulaciones o espacios. En lugar de eso, delega el formateo a linters y formateadores automáticos (como Biome) empleando comandos CLI o hooks de la herramienta.
 8. **Omitir información redundante**: Si la información ya está detallada de forma natural en el proyecto, no la incluyas. Ejemplos de esto son comandos listados en el package.json, variables documentadas en .env.example, o descripciones de arquitectura que cambian constantemente; la IA es capaz de buscar y leer estos archivos en tiempo real de ser necesario.
+   - Más del 80% del contenido DEBE ser esencial.
 9. **Mejora la organización mediante referencias y "Habilidades"**
    - **Revelación progresiva de información**: No juntes todo en el archivo principal. Mueve la información detallada, como las guías de arquitectura o modelos de base de datos, a una carpeta como doc/ y simplemente haz una referencia en el prompt principal (ej. "lee docs/schema.md al modificar modelos").
    - **Uso de Skills (habilidades)**: Puedes configurar archivos especializados para tareas concretas (como diseño de UI, compilaciones, tareas de backend o frontend) dentro de carpetas como .claude/skills/. De esta forma, la IA invocará esas instrucciones bajo demanda únicamente cuando requiera realizar esas acciones específicas.
