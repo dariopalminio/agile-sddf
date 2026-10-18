@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-13
+updated: 2026-10-18
 ---
 
 # 📚 Índice de documentación
@@ -32,6 +32,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 ### Policies (policies/)
 
 - [[policies-index]] — [README.md](policies/README.md) — Índice de Policies
+- [[validation-contract-policy]] — [validation-contract-policy.md](policies/validation-contract-policy.md) — Política de contrato de validación
 
 ### Guardrails (guardrails/)
 
@@ -208,8 +209,11 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[EPIC-20-memory-system]] — [epic.md](specs/epics/EPIC-20-memory-system/epic.md) — Memory System — Sistema de memoria unificado y agnóstico al harness
 - [[EPIC-21-colapsar-specs-dos-niveles]] — [epic.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/epic.md) — Colapsar specs/ a dos niveles y eliminar 01-projects/
 - [[insight-colapsar-specs-dos-niveles]] — [insight-colapsar-specs-dos-niveles.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
+- [[EPIC-21-colapsar-specs-dos-niveles-test-cases]] — [test-cases.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/test-cases.md) — Test Cases: Colapsar specs/ a dos niveles y eliminar 01-projects/
 - [[EPIC-22-epic-analyze]] — [epic.md](specs/epics/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
 - [[EPIC-23-skill-epic-validate]] — [epic.md](specs/epics/EPIC-23-skill-epic-validate/epic.md) — Skill epic-validate
+- [[EPIC-24-agentes-locales-por-skill]] — [epic.md](specs/epics/EPIC-24-agentes-locales-por-skill/epic.md) — Mover agentes globales a agentes locales por skill
+- [[EPIC-25-unificar-contrato-de-validaciones-en-skills]] — [epic.md](specs/epics/EPIC-25-unificar-contrato-de-validaciones-en-skills/epic.md) — Unificar contrato de validaciones en skills
 
 ### L1 — Historias de usuario (specs/stories/)
 
@@ -364,6 +368,24 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-126-operar-validacion-epica-segura]] — [story.md](specs/stories/STORY-126-operar-validacion-epica-segura/story.md) — Operar la validación de épicas de manera segura
 - [[STORY-127-integrar-adoptar-gateway-epica]] — [story.md](specs/stories/STORY-127-integrar-adoptar-gateway-epica/story.md) — Integrar y documentar el gateway de validación de épicas
 - [[STORY-128-evaluar-validacion-epica-repetible]] — [story.md](specs/stories/STORY-128-evaluar-validacion-epica-repetible/story.md) — Evaluar la validación de épicas de forma repetible
+- [[STORY-129-migrar-analizadores-de-reverse-engineering]] — [story.md](specs/stories/STORY-129-migrar-analizadores-de-reverse-engineering/story.md) — Migrar analizadores de reverse-engineering
+- [plan.md](specs/stories/STORY-130-renombrar-skill-story-improve-a-story-refine/plan.md) — Plan — Renombrar el skill `story-improve` a `story-refine` ⚠️ sin frontmatter
+- [[STORY-130-renombrar-skill-story-improve-a-story-refine]] — [story.md](specs/stories/STORY-130-renombrar-skill-story-improve-a-story-refine/story.md) — Renombrar skill `story-improve` a `story-refine`
+- [[STORY-131-partir-project-pm-en-roles-locales]] — [story.md](specs/stories/STORY-131-partir-project-pm-en-roles-locales/story.md) — Partir project-pm en roles locales
+- [[STORY-132-partir-project-architect-en-roles-locales]] — [story.md](specs/stories/STORY-132-partir-project-architect-en-roles-locales/story.md) — Partir project-architect en roles locales
+- [[STORY-133-mover-project-ux-a-rol-local-de-project-discovery]] — [story.md](specs/stories/STORY-133-mover-project-ux-a-rol-local-de-project-discovery/story.md) — Mover project-ux a rol local de project-discovery
+- [[STORY-134-migrar-project-story-mapper-a-rol-local]] — [story.md](specs/stories/STORY-134-migrar-project-story-mapper-a-rol-local/story.md) — Migrar project-story-mapper a rol local
+- [[STORY-135-migrar-story-product-owner-a-rol-local]] — [story.md](specs/stories/STORY-135-migrar-story-product-owner-a-rol-local/story.md) — Migrar story-product-owner a rol local
+- [[STORY-137-controlar-detalle-ejecucion-validacion-epica]] — [story.md](specs/stories/STORY-137-controlar-detalle-ejecucion-validacion-epica/story.md) — Controlar el detalle y los límites de la ejecución de la validación de épicas
+- [[STORY-138-contrato-de-validacion]] — [story.md](specs/stories/STORY-138-contrato-de-validacion/story.md) — Contrato de validación
+- [[STORY-139-alinear-epic-analyze]] — [story.md](specs/stories/STORY-139-alinear-epic-analyze/story.md) — Alinear epic-analyze
+- [[STORY-140-alinear-story-evaluation]] — [story.md](specs/stories/STORY-140-alinear-story-evaluation/story.md) — Alinear story-evaluation
+- [[STORY-141-alinear-story-code-review]] — [story.md](specs/stories/STORY-141-alinear-story-code-review/story.md) — Alinear story-code-review
+- [[STORY-142-alinear-story-verify]] — [story.md](specs/stories/STORY-142-alinear-story-verify/story.md) — Alinear story-verify
+- [[STORY-143-validacion-end-to-end]] — [story.md](specs/stories/STORY-143-validacion-end-to-end/story.md) — Validación end-to-end
+- [[STORY-144-alinear-story-analyze]] — [story.md](specs/stories/STORY-144-alinear-story-analyze/story.md) — Alinear story-analyze
+- [[STORY-145-alinear-story-acceptance]] — [story.md](specs/stories/STORY-145-alinear-story-acceptance/story.md) — Alinear story-acceptance
+- [[STORY-146-skill-story-fix-plan]] — [story.md](specs/stories/STORY-146-skill-story-fix-plan/story.md) — Skill `story-fix-plan`: corregir el plan de una historia desde `analyze.md`
 
 ---
 
@@ -406,6 +428,8 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[archivos-canonicos-por-tipo]] — [ADR-0011-archivos-canonicos-por-tipo.md](adr/ADR-0011-archivos-canonicos-por-tipo.md) — Los archivos canónicos de work items se nombran por tipo (story.md, epic.md, project.md)
 - [[escritor-en-templates-de-autoria-manual]] — [ADR-0012-escritor-en-templates-de-autoria-manual.md](adr/ADR-0012-escritor-en-templates-de-autoria-manual.md) — Los templates de autoría manual anotan `escritor: autoría manual` en línea completa
 - [[eliminar-specs-01-projects]] — [ADR-0013-eliminar-specs-01-projects.md](adr/ADR-0013-eliminar-specs-01-projects.md) — Eliminar `specs/01-projects/` y migrar su contenido a `product/` y `requirements/`
+- [[skills-independientes]] — [ADR-0014-skills-independientes.md](adr/ADR-0014-skills-independientes.md) — Independencia de skills y agentes: sin dependencia de skills hacia `agents/`
+- [[contrato-de-validacion]] — [ADR-0015-contrato-de-validacion.md](adr/ADR-0015-contrato-de-validacion.md) — Contrato común de validación para los skills de gate
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
 - [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
@@ -466,9 +490,9 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 365 |
-| Nodos con frontmatter | 365 |
-| Nodos sin frontmatter | 0 |
+| Nodos indexados | 389 |
+| Nodos con frontmatter | 388 |
+| Nodos sin frontmatter | 1 |
 | Wikilinks pendientes | 0 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |

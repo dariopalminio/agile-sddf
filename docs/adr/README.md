@@ -61,3 +61,4 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0012](ADR-0012-escritor-en-templates-de-autoria-manual.md) | Los templates de autoría manual anotan `escritor: autoría manual` en línea completa | PROPOSED | 2026-09-22 |
 | [ADR-0013](ADR-0013-eliminar-specs-01-projects.md) | Eliminar `specs/01-projects/` y migrar su contenido a `product/` y `requirements/` | ACCEPTED | 2026-10-05 |
 | [ADR-0014](ADR-0014-skills-independientes.md) | Independencia de skills y agentes: sin dependencia de skills hacia `agents/` | ACCEPTED | 2026-10-14 |
+| [ADR-0015](ADR-0015-contrato-de-validacion.md) | Contrato común de validación para los skills de gate | ACCEPTED | 2026-10-17 |

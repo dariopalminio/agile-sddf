@@ -59,4 +59,4 @@ el índice de guardrails en [guardrails/README.md](../guardrails/README.md).
 
 | Archivo | Ámbito | Guardrails que la hacen cumplir |
 |---------|--------|--------------------------------|
-| — | Todavía no hay policies; las reglas transversales viven en [../constitution.md](../constitution.md) | — |
+| [validation-contract-policy.md](validation-contract-policy.md) | Veredicto y vocabulario de los reportes de validación | — |
