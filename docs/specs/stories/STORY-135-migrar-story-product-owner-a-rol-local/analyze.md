@@ -6,6 +6,7 @@ title: "Analyze: Migrar story-product-owner a rol local"
 story: STORY-135
 design: STORY-135
 tasks: STORY-135
+veredict: APPROVED
 created: 2026-10-15
 updated: 2026-10-15
 related:

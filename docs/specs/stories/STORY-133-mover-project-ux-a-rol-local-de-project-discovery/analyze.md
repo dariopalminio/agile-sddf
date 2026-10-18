@@ -6,6 +6,7 @@ title: "Analyze: Mover project-ux a rol local de project-discovery"
 story: STORY-133
 design: STORY-133
 tasks: STORY-133
+veredict: APPROVED
 created: 2026-10-15
 updated: 2026-10-15
 related:

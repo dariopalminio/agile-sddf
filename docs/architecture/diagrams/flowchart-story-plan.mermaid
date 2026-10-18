@@ -5,6 +5,6 @@ flowchart TD
   C --> E[story-analyze]
   D --> E[story-analyze]
   E --> F{verdict}
-  F-->|NEEDS-CHANGES| H[story-fix-changes]
+  F-->|NEEDS-CHANGES| H[story-fix-plan]
   H --> E[story-analyze]
   F-->|APPROVED| G(END)

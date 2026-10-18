@@ -6,6 +6,7 @@ title: "Analyze: Partir project-pm en roles locales"
 story: STORY-131
 design: STORY-131
 tasks: STORY-131
+veredict: APPROVED
 created: 2026-10-15
 updated: 2026-10-15
 related:
