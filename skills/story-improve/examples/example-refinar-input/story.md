@@ -13,10 +13,6 @@ related:
   - STORY-074
   - STORY-076
 ---
-**FINVEST Score:** 3.94
-**FINVEST Decisión:** REFINAR
----
-
 # 📖 Historia: story-integrate — Modos de ejecución (manual y dry-run)
 
 **Como** desarrollador que opera story-integrate en entornos con distintos niveles de automatización

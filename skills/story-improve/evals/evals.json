@@ -1,13 +1,13 @@
 {
   "skill": "story-improve",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Casos de prueba para story-improve: aplica recomendaciones FINVEST a story.md",
   "cases": [
     {
       "id": "TC-001",
-      "name": "happy-path-refinar-applies-improvements",
+      "name": "happy-path-needs-refinement-applies-improvements",
       "type": "happy-path",
-      "description": "Historia STORY-075 con decision REFINAR (I=2, N=3, E=3) — el skill debe aplicar mejoras en las 3 dimensiones con score ≤ 3, crear story.md.bak, actualizar story.md y generar story-improvement-log.md. Usar los archivos de examples/example-refinar-input/ como contexto de entrada.",
+      "description": "Historia STORY-075 con verdict: NEEDS-REFINEMENT (I=2, N=3, E=3) — el skill debe aplicar mejoras en las 3 dimensiones con score ≤ 3, crear story.md.bak, actualizar story.md y generar story-improvement-log.md. Usar los archivos de examples/example-refinar-input/ como contexto de entrada.",
       "input": {
         "input_path": "examples/example-refinar-input/",
         "flags": ["--story-id STORY-075"]
@@ -28,9 +28,9 @@
     },
     {
       "id": "TC-002",
-      "name": "gate-aprobada-no-files-written",
+      "name": "gate-approved-no-files-written",
       "type": "fail-fast",
-      "description": "Historia STORY-074 con decision APROBADA (score 4.19) — el skill debe emitir el mensaje ℹ️ y terminar inmediatamente sin crear ni modificar ningún archivo. Usar los archivos de examples/example-aprobada-input/.",
+      "description": "Historia STORY-074 con verdict: APPROVED (score 4.19) — el skill debe emitir el mensaje ℹ️ y terminar inmediatamente sin crear ni modificar ningún archivo. Usar los archivos de examples/example-aprobada-input/.",
       "input": {
         "input_path": "examples/example-aprobada-input/",
         "flags": ["--story-id STORY-074"]
@@ -38,7 +38,7 @@
       "expected": {
         "contains": [
           "ℹ️",
-          "APROBADA"
+          "ya tiene veredicto APPROVED"
         ],
         "not_contains": [
           "✓ story.md.bak",
@@ -92,12 +92,12 @@
     },
     {
       "id": "TC-005",
-      "name": "edge-case-rechazar-multiple-low-dimensions",
+      "name": "edge-case-needs-refinement-multiple-low-dimensions",
       "type": "edge-case",
-      "description": "Historia con decision RECHAZAR y cuatro dimensiones con score ≤ 3 (I=1, N=2, E=2, S=3). El skill debe mejorar todas las dimensiones afectadas, crear el backup y generar el log con todas las dimensiones listadas en dimensions-improved. La decision RECHAZAR no activa el gate APROBADA.",
+      "description": "Historia con verdict: NEEDS-REFINEMENT y cuatro dimensiones con score ≤ 3 (I=1, N=2, E=2, S=3). El skill debe mejorar todas las dimensiones afectadas, crear el backup y generar el log con todas las dimensiones listadas en dimensions-improved. No activa el gate APPROVED.",
       "input": {
         "flags": ["--story-id STORY-REJ"],
-        "context": "Historia con finvest-evaluation-report.md que tiene decision: RECHAZAR, scores I=1, N=2, E=2, S=3 y recomendaciones explícitas para cada dimensión"
+        "context": "Historia con finvest-evaluation-report.md que tiene verdict: NEEDS-REFINEMENT, scores I=1, N=2, E=2, S=3 y recomendaciones explícitas para cada dimensión"
       },
       "expected": {
         "contains": [
@@ -106,11 +106,26 @@
           "Dimensiones mejoradas"
         ],
         "not_contains": [
-          "ya tiene decisión APROBADA",
+          "ya tiene veredicto APPROVED",
           "ℹ️"
         ]
       },
       "threshold": 0.90
+    },
+    {
+      "id": "TC-006",
+      "name": "reporte-sin-verdict-no-escribe",
+      "type": "fail-fast",
+      "description": "Reporte FINVEST heredado sin verdict: story-improve pide regenerarlo y no escribe archivos.",
+      "input": {
+        "flags": ["--story-id STORY-075"],
+        "context": "Existe finvest-evaluation-report.md de STORY-075 con frontmatter válido pero sin campo verdict; existe story.md."
+      },
+      "expected": {
+        "contains": ["sin campo verdict", "/story-evaluation"],
+        "not_contains": ["story.md.bak"]
+      },
+      "threshold": 1.0
     }
   ]
 }

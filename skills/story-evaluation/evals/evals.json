@@ -1,13 +1,13 @@
 {
   "skill": "story-evaluation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Casos de prueba para story-evaluation: evalúa historias de usuario con rúbrica FINVEST y genera finvest-evaluation-report.md",
   "cases": [
     {
       "id": "TC-001",
       "name": "evaluacion-historia-feat-nnn-genera-reporte",
       "type": "happy-path",
-      "description": "Invocar con STORY-075 (historia existente con story.md y template disponible). El skill debe evaluar las 7 dimensiones FINVEST, mostrar el reporte completo con scores y decisión, y confirmar que guardó finvest-evaluation-report.md en el directorio de la historia.",
+      "description": "Invocar con STORY-075 (historia existente con story.md y template disponible). El skill debe evaluar las 7 dimensiones FINVEST, mostrar scores y veredicto, y confirmar que guardó finvest-evaluation-report.md en el directorio de la historia.",
       "input": {
         "flags": ["STORY-075"],
         "context": "La historia STORY-075 existe en docs/specs/stories/STORY-075-integrar-historia-modo-manual-dryrun/story.md y el template docs/templates/story-template.md existe"
@@ -16,11 +16,15 @@
         "contains": [
           "FINVEST",
           "✓ Reporte guardado",
-          "Decisión",
+          "## Veredicto",
+          "**Veredicto:**",
+          "(verdict: ",
           "F –"
         ],
         "not_contains": [
-          "No se encontró el template"
+          "No se encontró el template",
+          "decision:",
+          "FINVEST Decisión"
         ]
       },
       "threshold": 0.90
@@ -42,53 +46,53 @@
         ],
         "not_contains": [
           "✓ Reporte guardado",
-          "APROBADA",
-          "REFINAR"
+          "**Veredicto:**",
+          "(verdict: "
         ]
       },
       "threshold": 1.0
     },
     {
       "id": "TC-003",
-      "name": "edge-case-formato-insuficiente-rechazar-sin-invest",
+      "name": "edge-case-formato-insuficiente-needs-refinement-sin-invest",
       "type": "edge-case",
-      "description": "Historia sin estructura INVEST: texto libre sin Como/Quiero/Para ni Gherkin formal. El F_score debe ser < 2.5 → RECHAZAR inmediato sin calcular INVEST_Score ni evaluar dimensiones I, N, V, E, S, T.",
+      "description": "Historia sin estructura: texto libre sin Como/Quiero/Para ni Gherkin formal. El F_score debe ser < 2.5 → NEEDS-REFINEMENT inmediato sin calcular INVEST_Score ni evaluar dimensiones I, N, V, E, S, T.",
       "input": {
         "flags": [],
         "context": "El usuario proporciona este texto libre como historia: 'Necesito que el sistema haga login. El usuario entra sus datos y accede. Debe funcionar bien.'"
       },
       "expected": {
         "contains": [
-          "RECHAZAR",
-          "Formato",
+          "**Veredicto:** `NEEDS-REFINEMENT`",
+          "formato insuficiente",
           "F_score"
         ],
         "not_contains": [
-          "APROBADA",
           "INVEST_Score =",
-          "DIVIDIR"
+          "RECHAZAR",
+          "DIVIDIR",
+          "SPLIT"
         ]
       },
       "threshold": 0.90
     },
     {
       "id": "TC-004",
-      "name": "edge-case-small-score-1-decision-dividir",
+      "name": "edge-case-small-score-1-verdict-split",
       "type": "edge-case",
-      "description": "Historia con formato correcto (F_score ≥ 2.5) pero con ≥6 escenarios Gherkin distintos que llevan S – Small a score 1. El skill debe emitir DIVIDIR automáticamente independientemente del score total FINVEST.",
+      "description": "Historia con formato correcto (F_score ≥ 2.5) y ≥6 escenarios Gherkin distintos que llevan S – Small a score 1, sin otra dimensión crítica. El skill debe emitir SPLIT independientemente del score total FINVEST.",
       "input": {
         "flags": [],
         "context": "Historia bien formada con Como/Quiero/Para completo, sección de criterios de aceptación y 7 escenarios Gherkin distintos con múltiples pasos cada uno"
       },
       "expected": {
         "contains": [
-          "DIVIDIR",
-          "S",
-          "1"
+          "**Veredicto:** `SPLIT`",
+          "S – Small = 1"
         ],
         "not_contains": [
-          "Decision: APROBADA",
-          "Decisión: RECHAZAR"
+          "DIVIDIR",
+          "`APPROVED`"
         ]
       },
       "threshold": 0.90
@@ -105,7 +109,7 @@
       "expected": {
         "contains": [
           "FINVEST",
-          "Decision"
+          "## Veredicto"
         ],
         "not_contains": [
           "✓ Reporte guardado",
@@ -113,6 +117,51 @@
         ]
       },
       "threshold": 1.0
+    },
+    {
+      "id": "TC-006",
+      "name": "texto-libre-example-ready-approved",
+      "type": "happy-path",
+      "description": "Evaluar como texto libre la historia de examples/example-ready.md, sin ruta de archivo ni persistencia.",
+      "input": {
+        "flags": [],
+        "context": "El usuario pega como texto libre la historia de skills/story-evaluation/examples/example-ready.md. No se proporciona ruta ni ID."
+      },
+      "expected": {
+        "contains": ["**Veredicto:** `APPROVED`"],
+        "not_contains": ["✓ Reporte guardado"]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-007",
+      "name": "texto-libre-example-refinar-needs-refinement",
+      "type": "edge-case",
+      "description": "Evaluar como texto libre la historia de examples/example-refinar.md, sin ruta de archivo ni persistencia.",
+      "input": {
+        "flags": [],
+        "context": "El usuario pega como texto libre la historia de skills/story-evaluation/examples/example-refinar.md. No se proporciona ruta ni ID."
+      },
+      "expected": {
+        "contains": ["**Veredicto:** `NEEDS-REFINEMENT`", "entre 3.0 y 4.0"],
+        "not_contains": ["REFINAR", "✓ Reporte guardado"]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-008",
+      "name": "texto-libre-example-rechazar-caso-b-precedencia",
+      "type": "edge-case",
+      "description": "Evaluar como texto libre el caso B de examples/example-rechazar.md con I, E y S = 1; gana la dimensión INVEST distinta de S.",
+      "input": {
+        "flags": [],
+        "context": "El usuario pega como texto libre solo la historia del caso B de skills/story-evaluation/examples/example-rechazar.md, con I=1, E=1 y S=1. No se proporciona ruta ni ID."
+      },
+      "expected": {
+        "contains": ["**Veredicto:** `NEEDS-REFINEMENT`", "dimensión crítica"],
+        "not_contains": ["`SPLIT`", "RECHAZAR", "✓ Reporte guardado"]
+      },
+      "threshold": 0.90
     }
   ]
 }

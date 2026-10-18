@@ -40,7 +40,7 @@ El flujo base es: **story-creation → story-evaluation → story-split**.
 | Evento | status | substatus |
 |---|---|---|
 | Historia nueva o retomada para refinamiento | `SPECIFY` | `IN-PROGRESS` |
-| `story-evaluation` retorna `APROBADA` | `SPECIFY` | `DONE` |
+| `story-evaluation` retorna `APPROVED` | `SPECIFY` | `DONE` |
 | Usuario pausa sin aprobación | `SPECIFY` | `IN-PROGRESS` (sin cambio) |
 
 ---
@@ -102,8 +102,8 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se v
 - No modificar los skills existentes `story-creation`, `story-evaluation` ni `story-split`
 - Usar `$SPECS_BASE/specs/stories/` como único directorio de salida para historias
 - Toda historia activa debe tener `status: SPECIFY` / `substatus: IN-PROGRESS` en su frontmatter
-- Una historia pasa automáticamente a `status: SPECIFY` / `substatus: DONE` cuando `story-evaluation` devuelve `Decision: APROBADA`
-- Si la decisión es `REFINAR` o `RECHAZAR`, nunca entrar en bucle infinito — siempre pedir al usuario una decisión explícita antes de iterar (gate anti-bucle, Paso 6)
+- Una historia pasa automáticamente a `status: SPECIFY` / `substatus: DONE` cuando `story-evaluation` devuelve `verdict: APPROVED`
+- Si el veredicto es `NEEDS-REFINEMENT`, nunca entrar en bucle infinito — siempre pedir al usuario una decisión explícita antes de iterar (gate anti-bucle, Paso 6)
 - Para indagar, analizar el problema, enriquecer la redacción o proponer mejoras, seguir el rol local `product-owner` en esta sesión, sin lanzar subagentes
 - Mantener la interactividad con el usuario en todo momento — nunca avanzar en silencio
 - Conservar la esencia y el formato de los skills originales sin reescribir su lógica
@@ -152,7 +152,7 @@ Opciones: `Retomar backlog` → Caso B con la primera historia de la cola; `Crea
 1. Si el input del usuario es incompleto, mostrar `> 📋 Rol local: assets/agents/product-owner.md — conduce esta sesión, sin subagente.` y luego leer `assets/agents/product-owner.md` (relativo al directorio de este skill) y seguir sus instrucciones en esta sesión para aclarar con el usuario usuario, necesidad, valor, contexto y restricciones. No lances un subagente. Al terminar el rol, muestra `✓ Contexto aclarado: usuario, necesidad, valor, contexto y restricciones.` y continúa con el ítem 2.
 2. Mostrar `▶ Invocando story-creation con el contexto refinado.` e invocar el skill `story-creation` con el contexto refinado
 3. Cuando `story-creation` genere el archivo en `$SPECS_BASE/specs/stories/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN-PROGRESS`; si los campos no existen, agregarlos
-4. Registrar la historia en la tabla de backlog con `Estado = SPECIFY/IN-PROGRESS` y `Decision FINVEST = Pendiente`
+4. Registrar la historia en la tabla de backlog con `Estado = SPECIFY/IN-PROGRESS` y `Veredicto FINVEST = Pendiente`
 
 #### Caso B — Historia existente en refinamiento
 
@@ -188,13 +188,13 @@ Para la historia activa:
 1. Mostrar `▶ Invocando story-evaluation sobre <STORY-NNN>.` e invocar `story-evaluation` usando el archivo de la historia actual
 2. Extraer del resultado:
    - `FINVEST Score`
-   - `Decision`
+   - `verdict` del frontmatter del `finvest-evaluation-report.md` recién generado
    - Dimensiones débiles
    - Recomendaciones accionables
-3. Actualizar la tabla de backlog con la decisión obtenida
+3. Actualizar la tabla de backlog con el veredicto obtenido
 4. Mostrar al usuario un resumen corto de la evaluación
 
-**Si la decisión es `APROBADA`:**
+**Si el veredicto es `APPROVED`:**
 1. **Verificación DoD SPECIFY:** resolver el DoD de la etapa `specify` según `## DoD aplicable` y evaluar
    cada criterio `- [ ]` contra la historia (`✓` / `❌` / `⚠️` ante duda). Mostrar
    `📋 DoD SPECIFY: <N>/<Total> criterios ✓` y listar los `❌`. Con `enforcement: warn` (el valor
@@ -209,7 +209,7 @@ Para la historia activa:
 
 ### Paso 4 — Intentar split después de evaluación no aprobada
 
-Si la decisión es `DIVIDIR` o `RECHAZAR` con recomendación de división, ejecutar `story-split` después de mostrar el resumen de la evaluación. Antes de invocarlo, mostrar `▶ Invocando story-split sobre <STORY-NNN>.`
+Si el veredicto es `SPLIT`, o es `NEEDS-REFINEMENT` y `## Resultado Final` del reporte contiene `**S – Small:** 1 / 5`, ejecutar `story-split` después de mostrar el resumen de la evaluación. Antes de invocarlo, mostrar `▶ Invocando story-split sobre <STORY-NNN>.`
 
 **Si `story-split` devuelve historias derivadas útiles:**
 1. Registrar cada historia hija con un nuevo ID (`ST-00X`)
@@ -225,15 +225,15 @@ Conservar la historia actual como ítem activo y continuar al Paso 5A.
 
 ### Paso 5A — Aplicar mejoras automáticas FINVEST (`story-improve`, modo Agent)
 
-Si la decisión no es `APROBADA` y la historia sigue activa tras el split (o el split no aplica):
+Si el veredicto no es `APPROVED` y la historia sigue activa tras el split (o el split no aplica):
 
 Mostrar `▶ Invocando story-improve --story-id <STORY-NNN> (modo Agent).` e invocar el skill `story-improve` en modo Agent:
 - `--story-id <STORY-NNN>` con el ID de la historia activa
 - Modo Agent: automático, sin confirmación interactiva
 
-**Si `story-improve` informa que la decisión ya es `APROBADA` (gate interno del skill):**
-- Mostrar: `ℹ️ <STORY-NNN> ya tiene decisión APROBADA — avanzando al gate`
-- Actualizar el registro con `Decision FINVEST = APROBADA`
+**Si `story-improve` informa que el veredicto ya es `APPROVED` (gate interno del skill):**
+- Mostrar: `ℹ️ <STORY-NNN> ya tiene veredicto APPROVED — avanzando al gate`
+- Actualizar el registro con `Veredicto FINVEST = APPROVED`
 - Ir directamente al Paso 6 (omitir Paso 5B)
 
 **Si `story-improve` completa con mejoras aplicadas:**
@@ -249,7 +249,7 @@ Mostrar `▶ Invocando story-improve --story-id <STORY-NNN> (modo Agent).` e inv
 
 ### Paso 5B — Refinar historias no aprobadas con el rol `product-owner`
 
-Si la decisión es `REFINAR` o `RECHAZAR`, si la historia sigue activa después del Paso 5A, o si el usuario quiere mejorar una historia derivada:
+Si el veredicto es `NEEDS-REFINEMENT`, si la historia sigue activa después del Paso 5A, o si el usuario quiere mejorar una historia derivada:
 
 1. Mostrar `> 📋 Rol local: assets/agents/product-owner.md — conduce esta sesión, sin subagente.` y luego leer `assets/agents/product-owner.md` y seguir sus instrucciones en esta sesión. No lances un subagente.
 2. Usar como contexto del rol:
@@ -268,11 +268,11 @@ Si la decisión es `REFINAR` o `RECHAZAR`, si la historia sigue activa después 
 
 ### Paso 6 — Gate anti-bucle para decisiones no aprobadas
 
-Después de cada ciclo con decisión `REFINAR` o `RECHAZAR`, preguntar explícitamente al usuario qué desea hacer con esa historia.
+Después de cada ciclo con veredicto `NEEDS-REFINEMENT`, preguntar explícitamente al usuario qué desea hacer con esa historia.
 
 Opciones:
 - `Seguir iterando ahora`: volver al Paso 3 para una nueva evaluación después del refinamiento
-- `Cerrar manualmente en READY`: establecer `status: SPECIFY` / `substatus: DONE` en el archivo aunque la historia no tenga `APROBADA`
+- `Cerrar manualmente en READY`: establecer `status: SPECIFY` / `substatus: DONE` en el archivo aunque la historia no tenga `APPROVED`
 - `Dejar en IN-PROGRESS para retomar luego`: conservar `status: SPECIFY` / `substatus: IN-PROGRESS` y terminar el trabajo sobre esa historia por ahora
 
 Reglas:
@@ -311,7 +311,7 @@ Historias derivadas creadas: [lista]
 | Raíz explícita inválida (Paso 0) | `✗ Entorno inválido: raíz explícita <ROOT_SOURCE> = <valor> no es un directorio accesible` | Detener sin fallback ni escrituras |
 | `$SPECS_BASE/specs/stories/` no existe | — | Crear el directorio y continuar |
 | `story-creation` falla | Informar el error al usuario | No registrar la historia en el backlog; preguntar si reintentar |
-| `story-evaluation` falla | Informar el error al usuario | Conservar `Decision FINVEST = Pendiente`; ofrecer reintentar |
+| `story-evaluation` falla | Informar el error al usuario | Conservar `Veredicto FINVEST = Pendiente`; ofrecer reintentar |
 | `story-split` falla o no aplica | Informar al usuario | Conservar historia como activa; continuar al Paso 5A |
 | `story-improve` falla o no encuentra reporte | `⚠️ story-improve — no ejecutado` | Non-blocking; registrar en backlog y continuar al Paso 5B |
 | Frontmatter de `story.md` sin campos `status`/`substatus` | — | Agregarlos con `SPECIFY/IN-PROGRESS` y continuar |

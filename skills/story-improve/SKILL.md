@@ -2,7 +2,7 @@
 name: story-improve
 description: >-
   Aplica recomendaciones FINVEST (score ≤ 3) sobre story.md, generando backup y log de cambios.
-  Usar para corregir una historia con decisión REFINAR o RECHAZAR.
+  Usar para corregir una historia con veredicto NEEDS-REFINEMENT o SPLIT.
   Invocar para "mejorar historia", "aplicar recomendaciones FINVEST" o "story-improve".
 triggers:
   - "/story-improve"
@@ -23,7 +23,7 @@ flags:
 # Skill: `/story-improve`
 
 **Cuándo usar este skill:**
-- Cuando una historia tiene `decision: REFINAR` o `decision: RECHAZAR` en su `finvest-evaluation-report.md` y se quiere mejorar automáticamente siguiendo las recomendaciones del reporte.
+- Cuando una historia tiene `verdict: NEEDS-REFINEMENT` o `verdict: SPLIT` en su `finvest-evaluation-report.md` y se quiere mejorar automáticamente siguiendo las recomendaciones del reporte.
 - Cuando el usuario dice "mejorar historia STORY-NNN", "aplicar recomendaciones del reporte FINVEST", "story-improve".
 - Cuando se quiere reducir el número de ciclos manuales de refinamiento antes de volver a ejecutar `/story-evaluation`.
 
@@ -32,8 +32,8 @@ flags:
 Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimensión con score ≤ 3 directamente sobre `story.md`, preservando el original en `story.md.bak` y documentando los cambios en `story-improvement-log.md`.
 
 **Qué hace este skill:**
-- Extrae `decision:`, tabla de scores y sección "Comentarios y Recomendaciones" del reporte FINVEST
-- Verifica el gate de decisión: si `decision: APROBADA`, informa y termina sin modificar ningún archivo
+- Extrae `verdict:`, tabla de scores y sección "Comentarios y Recomendaciones" del reporte FINVEST
+- Verifica el gate de veredicto: si `verdict: APPROVED`, informa y termina sin modificar ningún archivo
 - Lee `story.md` completa (frontmatter, Como/Quiero/Para, criterios Gherkin)
 - Carga historias hermanas condicionalmente (solo si dimensión I tiene score ≤ 3) para contextualizar independencia
 - Crea `story.md.bak` con el contenido original antes de cualquier escritura
@@ -85,7 +85,7 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 - **Guía semántica, no reemplazo mecánico:** las recomendaciones del reporte se usan como guía para comprender qué mejorar; los cambios requieren comprensión del contexto, no sustitución literal de texto
 - **Revisión integral antes de escribir:** revisar todas las dimensiones con score ≤ 3 en un único ciclo antes de escribir `story.md`; no escribir cambios parciales por dimensión
 - **Preservar intención original:** aplicar el mínimo cambio necesario para satisfacer la recomendación; no reescribir secciones válidas
-- **Gate APROBADA es definitivo:** si `decision: APROBADA`, terminar inmediatamente sin escribir ningún archivo
+- **Gate APPROVED es definitivo:** si `verdict: APPROVED`, terminar inmediatamente sin escribir ningún archivo
 - **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
   Do not use Latin-1, CP-1252, or any other encoding. 
   If you see characters like `Ã³` or `ðŸ“–`, that indicates an encoding error — fix it.
@@ -162,7 +162,7 @@ Leer el archivo `finvest-evaluation-report.md` del directorio de la historia.
 Extraer y registrar internamente:
 
 1. **Frontmatter YAML:**
-   - `decision:` → valor `APROBADA | REFINAR | RECHAZAR | DIVIDIR`
+   - `verdict:` → valor `APPROVED | NEEDS-REFINEMENT | SPLIT`
    - `finvest-score:` → score global
 
 2. **Tabla de scores del cuerpo Markdown:**
@@ -175,15 +175,17 @@ Extraer y registrar internamente:
    Para cada subsección `### <dimensión>`, extraer el texto de recomendación.
    Construir el mapeo: `{ dimensión → texto_recomendación }`
 
-#### Gate de decisión APROBADA
+#### Gate de veredicto APPROVED
 
-Si `decision: APROBADA`:
+Si `verdict: APPROVED`:
 ```
-ℹ️ <STORY-NNN> ya tiene decisión APROBADA — no se realizan cambios
+ℹ️ <STORY-NNN> ya tiene veredicto APPROVED — no se realizan cambios
 ```
 Terminar la ejecución sin escribir ni modificar ningún archivo.
 
-Si `decision: REFINAR` o `decision: RECHAZAR` o `decision: DIVIDIR`, continuar al Paso 3.
+Si `verdict: NEEDS-REFINEMENT` o `verdict: SPLIT`, continuar al Paso 3.
+
+Si falta `verdict`, emitir `⚠️ finvest-evaluation-report.md sin campo verdict (formato anterior al contrato de validación) — ejecuta /story-evaluation <STORY-NNN> para regenerarlo` y terminar sin escribir. Si existe pero no pertenece a los tres valores permitidos, emitir el mismo aviso con `valor no permitido` en lugar de `sin campo verdict` y terminar sin escribir. Un reporte heredado requiere regeneración antes de mejorar la historia.
 
 ---
 
@@ -299,7 +301,7 @@ Confirmar:
 ──────────────────────────────────────────────────
  story-improve: <STORY-NNN>
 ──────────────────────────────────────────────────
- Decisión previa:    REFINAR (FINVEST <score>)
+ Veredicto previo:   NEEDS-REFINEMENT (FINVEST <score>)
  Dimensiones mejoradas: <lista ej. I, E>
 ──────────────────────────────────────────────────
  Archivos generados / modificados:
@@ -308,7 +310,7 @@ Confirmar:
    ✓ story-improvement-log.md — log de cambios
 ──────────────────────────────────────────────────
  Siguiente paso: ejecuta /story-evaluation <STORY-NNN>
- para verificar si la historia supera el umbral APROBADA.
+ para verificar si la historia supera el umbral de `APPROVED`.
 ──────────────────────────────────────────────────
 ```
 
@@ -323,12 +325,21 @@ Confirmar:
 
 ---
 
+## Manejo de errores
+
+| Condición | Mensaje | Acción |
+|---|---|---|
+| Reporte sin `verdict` | `⚠️ finvest-evaluation-report.md sin campo verdict (formato anterior al contrato de validación) — ejecuta /story-evaluation <STORY-NNN> para regenerarlo` | Detener sin escribir |
+| `verdict` fuera de `APPROVED`, `NEEDS-REFINEMENT`, `SPLIT` | `⚠️ finvest-evaluation-report.md valor no permitido (formato anterior al contrato de validación) — ejecuta /story-evaluation <STORY-NNN> para regenerarlo` | Detener sin escribir |
+
+---
+
 ## Salida
 
 | Artefacto | Ubicación | Condición |
 |---|---|---|
-| `story.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` | Siempre (cuando decision ≠ APROBADA) |
-| `story.md.bak` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md.bak` | Siempre (cuando decision ≠ APROBADA) |
-| `story-improvement-log.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story-improvement-log.md` | Siempre (cuando decision ≠ APROBADA) |
+| `story.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` | Cuando `verdict` es `NEEDS-REFINEMENT` o `SPLIT` |
+| `story.md.bak` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md.bak` | Cuando `verdict` es `NEEDS-REFINEMENT` o `SPLIT` |
+| `story-improvement-log.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story-improvement-log.md` | Cuando `verdict` es `NEEDS-REFINEMENT` o `SPLIT` |
 
-Cuando `decision: APROBADA`: ningún archivo se crea ni modifica.
+Cuando `verdict: APPROVED`, falta `verdict` o su valor no es permitido: ningún archivo se crea ni modifica.

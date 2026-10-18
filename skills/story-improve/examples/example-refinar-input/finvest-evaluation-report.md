@@ -2,11 +2,15 @@
 type: finvest-evaluation
 story-id: STORY-075
 finvest-score: 3.94
-decision: REFINAR
+verdict: NEEDS-REFINEMENT
 evaluated: 2026-05-17
 ---
 
 # Reporte FINVEST — STORY-075
+
+## Veredicto
+
+**Veredicto:** `NEEDS-REFINEMENT` — FINVEST 3.94 entre 3.0 y 4.0
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -15,7 +19,6 @@ evaluated: 2026-05-17
 │  F_score     │  4.70                                             │
 │  INVEST_Score│  3.17                                             │
 │  FINVEST     │  3.94                                             │
-│  Decisión    │  ⚠️ REFINAR                                       │
 └──────────────┴───────────────────────────────────────────────────┘
 ```
 
@@ -74,7 +77,3 @@ Definir en las "Notas / contexto adicional" de esta historia el contrato mínimo
 ### E – Estimable
 
 Agregar en "Notas / contexto adicional" el comportamiento esperado del modo `--dry-run`: qué acciones se simulan, qué output produce (ej. lista de operaciones que se ejecutarían), y el límite de lo que excluye (ej. no escribe archivos, no ejecuta git). Con esa acotación, el equipo puede estimar el esfuerzo sin incertidumbre sobre el alcance del modo.
-
-## Decisión
-
-**⚠️ REFINAR** — FINVEST Score 3.94 < 4.0. La historia tiene formato sólido (F=4.70) y es testeable (T=4), pero la dependencia explícita con STORY-074 reduce I a 2 y limita la estimabilidad (E=3). Aplicar las recomendaciones de I y E para superar el umbral APROBADA.

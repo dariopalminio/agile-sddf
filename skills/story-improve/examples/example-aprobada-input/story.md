@@ -13,10 +13,6 @@ related:
   - STORY-075
   - STORY-076
 ---
-**FINVEST Score:** 4.19
-**FINVEST Decisión:** APROBADA
----
-
 # 📖 Historia: story-integrate — Integración batch configurable
 
 **Como** desarrollador que trabaja con modelos de entrega batch (releases periódicos)

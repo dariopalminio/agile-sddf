@@ -9,7 +9,7 @@ Skill orquestador del flujo completo de especificación de historias SDD: guía 
     ↓
 /story-specify                         [story.md: SPECIFY/IN-PROGRESS → SPECIFY/DONE]  ← aquí
     ├── /story-creation     → Crea o normaliza story.md (Como/Quiero/Para + Gherkin)
-    ├── /story-evaluation   → Evalúa con rúbrica FINVEST → APROBADA/REFINAR/RECHAZAR/DIVIDIR
+    ├── /story-evaluation   → Evalúa con rúbrica FINVEST → APPROVED/NEEDS-REFINEMENT/SPLIT
     ├── /story-split        → Divide historias grandes en partes independientes
     ├── /story-improve      → Aplica mejoras automáticas por dimensión FINVEST (Paso 5A)
     └── rol product-owner → Refinamiento conversacional en esta sesión: discovery y gaps de contexto (pasos 1 y 5B)
@@ -42,12 +42,13 @@ Sin parámetros posicionales — el skill es **completamente interactivo** y det
 story-creation (crear/normalizar)
     ↓
 story-evaluation (FINVEST score)
-    ├── APROBADA → SPECIFY/DONE ✓ (siguiente historia)
-    ├── DIVIDIR  → story-split → historias hijas al backlog
-    └── REFINAR/RECHAZAR
+    ├── APPROVED → SPECIFY/DONE ✓ (siguiente historia)
+    ├── SPLIT o NEEDS-REFINEMENT con S = 1 → story-split → historias hijas al backlog
+    │                                     └── si no aplica → Paso 5A
+    └── NEEDS-REFINEMENT
             ↓
         Paso 5A: story-improve (automático, modo Agent)
-            ├── APROBADA detectada → gate (omitir 5B)
+            ├── APPROVED detectada → gate (omitir 5B)
             ├── Mejoras aplicadas  → story-improvement-log.md + continúa a 5B
             └── Fallo/sin reporte  → ⚠️ non-blocking, continúa a 5B
             ↓
@@ -66,15 +67,15 @@ story-evaluation (FINVEST score)
 |---|---|---|
 | `story.md` | `story-creation` / rol `product-owner` | Siempre |
 | `finvest-evaluation-report.md` | `story-evaluation` | Por cada ciclo de evaluación |
-| `story.md.bak` | `story-improve` (Paso 5A) | Solo cuando decision ≠ APROBADA |
-| `story-improvement-log.md` | `story-improve` (Paso 5A) | Solo cuando decision ≠ APROBADA |
+| `story.md.bak` | `story-improve` (Paso 5A) | Solo cuando verdict ≠ APPROVED |
+| `story-improvement-log.md` | `story-improve` (Paso 5A) | Solo cuando verdict ≠ APPROVED |
 
 ## Transiciones de estado
 
 | Evento | status | substatus |
 |---|---|---|
 | Historia nueva o retomada | `SPECIFY` | `IN-PROGRESS` |
-| `story-evaluation` retorna `APROBADA` | `SPECIFY` | `DONE` |
+| `story-evaluation` retorna `APPROVED` | `SPECIFY` | `DONE` |
 | Usuario cierra manualmente | `SPECIFY` | `DONE` |
 | Usuario pausa sin aprobación | `SPECIFY` | `IN-PROGRESS` (sin cambio) |
 

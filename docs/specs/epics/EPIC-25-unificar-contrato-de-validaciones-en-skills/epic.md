@@ -21,7 +21,7 @@ Alinear los seis skills de validación del framework (`epic-analyze`, `story-eva
 
 - [x] **STORY-138** — Contrato de validación: Definir `docs/policies/validation-contract-policy.md` con la estructura común de reporte y el vocabulario controlado por fase
 - [x] **STORY-139** — Alinear epic-analyze: Añadir la sección `## Veredicto` al reporte y emitir `NEEDS-REFINEMENT` en lugar de `BLOCKED`
-- [ ] **STORY-140** — Alinear story-evaluation: Mover el veredicto al inicio, declarar `verdict` y normalizar los valores a `APPROVED` / `NEEDS-REFINEMENT` / `SPLIT`
+- [x] **STORY-140** — Alinear story-evaluation: Mover el veredicto al inicio, declarar `verdict` y normalizar los valores a `APPROVED` / `NEEDS-REFINEMENT` / `SPLIT`
 - [ ] **STORY-141** — Alinear story-code-review: Reemplazar `review-status` por `verdict` y normalizar los valores a `APPROVED` / `NEEDS-CHANGES`
 - [ ] **STORY-142** — Alinear story-verify: Añadir veredicto y `verdict`, y reemplazar `RECHAZAR` por `NEEDS-CHANGES`
 - [ ] **STORY-143** — Validación end-to-end: Verificar los seis reportes contra el contrato y documentarlo en el README

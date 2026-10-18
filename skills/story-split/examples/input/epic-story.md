@@ -9,9 +9,6 @@ parent: EPIC-05-tienda-online
 created: 2026-01-10
 updated: 2026-01-10
 ---
-**FINVEST Score:** 2.8 / 5.0
-**FINVEST Decisión:** DIVIDIR
-
 # 📖 Historia: Gestionar carrito de compras
 
 **Como** comprador registrado en la tienda  

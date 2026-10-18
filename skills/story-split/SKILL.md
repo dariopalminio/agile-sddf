@@ -169,13 +169,13 @@ Identificar el **patrón de splitting más apropiado** (ver Paso 4). Si aplican 
 Si el directorio de la historia contiene `finvest-evaluation-report.md`:
 
 1. Leer el archivo usando Glob con el patrón `<directorio-historia>/finvest-evaluation-report.md`.
-2. Verificar el frontmatter YAML: si `decision: DIVIDIR`, continuar; si no, ignorar el archivo.
+2. Verificar el frontmatter YAML: solo si `verdict: SPLIT`, continuar; si falta `verdict` o tiene otro valor, ignorar el archivo.
 3. Buscar en el cuerpo la sección `## Plan de división sugerido` o `### Plan de división sugerido`.
 4. Si la sección existe, extraer la tabla de división: para cada fila capturar la historia hija
    propuesta (ej. `STORY-074a`), los escenarios asignados y el foco.
 5. Guardar este plan como `plan_finvest` para usarlo en el Paso 4.
 
-Si el archivo no existe, si `decision` ≠ `DIVIDIR`, o si no contiene la sección de plan,
+Si el archivo no existe, si `verdict` ≠ `SPLIT`, o si no contiene la sección de plan,
 `plan_finvest` queda vacío y el Paso 4 continúa con la detección automática de patrones.
 
 ---

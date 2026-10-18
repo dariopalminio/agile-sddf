@@ -13,7 +13,7 @@ Aplica a `story.md` las recomendaciones FINVEST de las dimensiones con puntuaci√
 **Produces:**
 
 - Una versi√≥n mejorada de `<directorio-historia>/story.md`.
-- `<directorio-historia>/story.md.bak` y `story-improvement-log.md` cuando la decisi√≥n FINVEST no es `APROBADA`.
+- `<directorio-historia>/story.md.bak` y `story-improvement-log.md` cuando el veredicto FINVEST es `NEEDS-REFINEMENT` o `SPLIT`.
 
 **Does not do:**
 
@@ -25,7 +25,7 @@ Aplica a `story.md` las recomendaciones FINVEST de las dimensiones con puntuaci√
 
 **Use it when:**
 
-- Exista un `finvest-evaluation-report.md` con decisi√≥n `REFINAR` o `RECHAZAR`.
+- Exista un `finvest-evaluation-report.md` con veredicto `NEEDS-REFINEMENT` o `SPLIT`.
 - Quieras aplicar de forma trazable las recomendaciones antes de reevaluar la historia.
 - The user mentions: `"story-improve"`, `"mejorar historia"`, `"aplicar recomendaciones FINVEST"`.
 

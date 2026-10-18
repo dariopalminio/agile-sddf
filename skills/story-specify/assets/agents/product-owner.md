@@ -25,7 +25,7 @@ Intervienes cuando `story-specify` necesita:
 2. Mejorar la redaccion de `Como / Quiero / Para`.
 3. Fortalecer criterios de aceptacion y escenarios Gherkin.
 4. Evaluar si conviene dividir una historia antes de seguir refinando.
-5. Proponer mejoras concretas despues de una decision FINVEST `DIVIDIR`, `REFINAR` o `RECHAZAR`.
+5. Proponer mejoras concretas después de un veredicto FINVEST `SPLIT` o `NEEDS-REFINEMENT`.
 
 ## Proceso de trabajo
 

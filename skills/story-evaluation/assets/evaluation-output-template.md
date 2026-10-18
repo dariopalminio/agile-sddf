@@ -1,4 +1,16 @@
+---
+type: finvest-evaluation
+story-id: {story_id}
+finvest-score: {FINVEST_score}
+verdict: {APPROVED | NEEDS-REFINEMENT | SPLIT}
+evaluated: {YYYY-MM-DD}
+---
 # Evaluación FINVEST
+
+## Veredicto
+
+**Veredicto:** `{verdict}` — {motivo}
+<!-- Usar la línea de la primera fila coincidente del Paso 4; retirar este comentario al generar el reporte. -->
 
 ## Historia evaluada
 
@@ -16,7 +28,7 @@
 
 **F_score = ({F1} × 0.4) + ({F2} × 0.3) + ({F3} × 0.3) = {F_score} / 5.0**
 
-{gateway_decision}
+{gateway_resultado}
 
 ---
 
@@ -48,7 +60,6 @@ _(Solo se completa si F_score ≥ 2.5)_
 **T – Testeable:** {T} / 5
 
 **FINVEST Score:** {FINVEST_score} / 5.0
-**FINVEST Decisión:** {decision}
 
 ---
 

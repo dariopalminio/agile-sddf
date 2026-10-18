@@ -211,7 +211,7 @@ story-creation → story-evaluation → story-split
 | Skill | Propósito |
 |---|---|
 | `story-creation` | Redacta la historia (Como/Quiero/Para + Gherkin) |
-| `story-evaluation` | Evalúa calidad con rúbrica FINVEST (1–5 por dimensión) → `APROBADA / REFINAR / RECHAZAR` |
+| `story-evaluation` | Evalúa calidad con rúbrica FINVEST (1–5 por dimensión) → `APPROVED / NEEDS-REFINEMENT / SPLIT` |
 | `story-split` | Divide historias grandes usando 8 patrones de splitting |
 
 > `story-specify` orquesta el ciclo completo con control de backlog por archivo (`substatus: IN-PROGRESS / READY`).

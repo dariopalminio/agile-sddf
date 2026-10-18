@@ -5,11 +5,11 @@ id: STORY-140
 kind: feat
 slug: STORY-140-alinear-story-evaluation
 title: "Alinear story-evaluation"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
-updated: 2026-10-17
+updated: 2026-10-18
 related:
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
   - STORY-138
@@ -37,7 +37,7 @@ Ejemplos:
   | FINVEST ≥ 4.0                                                   | APPROVED         |
   | 3.0 ≤ FINVEST < 4.0                                             | NEEDS-REFINEMENT |
   | F_score < 2.5, FINVEST < 3.0 o una dimensión INVEST distinta de S = 1 | NEEDS-REFINEMENT |
-  | S – Small = 1                                                   | SPLIT            |
+  | S – Small = 1 y ninguna otra dimensión INVEST = 1              | SPLIT            |
 ```
 
 ### AC-2 — Escenario alternativo — story-specify enruta según el veredicto
@@ -48,7 +48,8 @@ Esquema del escenario: Siguiente paso según el veredicto
   Entonces <siguiente paso>
 Ejemplos:
   | verdict          | siguiente paso                                                                       |
-  | NEEDS-REFINEMENT | invoca story-improve con el mismo gate anti-bucle que hoy aplica a REFINAR y RECHAZAR |
+  | NEEDS-REFINEMENT con S – Small = 1 | invoca story-split; si no produce historias derivadas, invoca story-improve |
+  | NEEDS-REFINEMENT | invoca story-improve con el mismo gate anti-bucle existente |
   | SPLIT            | invoca story-split como hoy con DIVIDIR                                              |
   | APPROVED         | la historia pasa a status SPECIFY y substatus DONE                                   |
 ```

@@ -13,7 +13,7 @@ previous-score: <X.XX>
 - **Fecha:** <YYYY-MM-DD>
 - **Dimensiones mejoradas:** <lista ej. I, E>
 - **Score previo (FINVEST):** <X.XX>
-- **Decisión previa:** <REFINAR | RECHAZAR>
+- **Veredicto previo:** <NEEDS-REFINEMENT | SPLIT>
 
 ## Cambios por dimensión
 

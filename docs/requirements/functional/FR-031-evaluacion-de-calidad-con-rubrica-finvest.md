@@ -6,7 +6,7 @@ slug: FR-031-evaluacion-de-calidad-con-rubrica-finvest
 title: "Evaluación de calidad con rúbrica FINVEST"
 status: active
 created: 2026-10-10
-updated: 2026-10-10
+updated: 2026-10-18
 related: []
 ---
 
@@ -15,10 +15,12 @@ related: []
 ## Descripción
 
 El sistema SHALL evaluar historias aplicando la rúbrica FINVEST (Formato +
-INVEST) con scores Likert 1-5 por dimensión, produciendo `finvest-evaluation-report.md`. La
-decisión SHALL ser una de: `APROBADA` (FINVEST ≥ 4.0), `REFINAR` (3.0 ≤ FINVEST < 4.0),
-`RECHAZAR` (FINVEST < 3.0 o dimensión crítica = 1), `DIVIDIR` (S = 1). Si `F_score` < 2.5, el
-sistema SHALL rechazar sin evaluar INVEST.
+INVEST) con scores Likert 1-5 por dimensión, produciendo `finvest-evaluation-report.md`. El
+veredicto SHALL declararse en `verdict` y en la primera sección `## Veredicto`, con uno de los
+valores `APPROVED`, `NEEDS-REFINEMENT` o `SPLIT`. Se evalúa en orden y gana la primera
+condición: `F_score < 2.5` → `NEEDS-REFINEMENT` sin evaluar INVEST; dimensión INVEST distinta
+de S con score 1 → `NEEDS-REFINEMENT`; S = 1 → `SPLIT`; FINVEST ≥ 4.0 → `APPROVED`;
+3.0 ≤ FINVEST < 4.0 → `NEEDS-REFINEMENT`; FINVEST < 3.0 → `NEEDS-REFINEMENT`.
 
 ## Atributos
 

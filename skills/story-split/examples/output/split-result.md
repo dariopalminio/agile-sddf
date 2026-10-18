@@ -2,7 +2,7 @@
 
 ## Historia original
 
-STORY-099 — "Gestionar carrito de compras" — FINVEST Decisión: DIVIDIR (S=1, 6 escenarios, 18+ pasos totales)
+STORY-099 — "Gestionar carrito de compras" — Veredicto FINVEST: `SPLIT` (S=1, 6 escenarios, 18+ pasos totales)
 
 ## Diagnóstico
 

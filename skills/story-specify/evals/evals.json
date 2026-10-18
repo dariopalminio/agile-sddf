@@ -1,13 +1,13 @@
 {
   "skill": "story-specify",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Casos de prueba para story-specify: verifica el comportamiento del orquestador (flujo completo, detección de backlog, fail-fast de raíz explícita, split automático y gate anti-bucle) sin evaluar el contenido interno de cada sub-skill invocado.",
   "cases": [
     {
       "id": "TC-001",
       "name": "ciclo-completo-historia-nueva-aprobada",
       "type": "happy-path",
-      "description": "Flujo completo con historia nueva: el contrato local resuelve una raíz válida → story-creation → story-evaluation devuelve APROBADA → el orquestador actualiza el frontmatter a SPECIFY/DONE y muestra el resumen final con ruta del archivo generado. No se invocan story-split ni story-improve.",
+      "description": "Flujo completo con historia nueva: el contrato local resuelve una raíz válida → story-creation → story-evaluation devuelve APPROVED → el orquestador actualiza el frontmatter a SPECIFY/DONE y muestra el resumen final con ruta del archivo generado. No se invocan story-split ni story-improve.",
       "input": {
         "context": "Un vendedor de una empresa SaaS quiere exportar su lista de clientes activos a CSV para compartirla con su gerente antes de la reunión mensual de pipeline."
       },
@@ -15,7 +15,7 @@
         "contains": [
           "story-creation",
           "story-evaluation",
-          "APROBADA",
+          "APPROVED",
           "SPECIFY",
           "DONE",
           "specs/stories/",
@@ -26,9 +26,8 @@
           "Entorno inválido",
           "story-split",
           "story-improve",
-          "REFINAR",
-          "RECHAZAR",
-          "DIVIDIR"
+          "NEEDS-REFINEMENT",
+          "SPLIT"
         ]
       },
       "threshold": 0.90
@@ -80,15 +79,15 @@
     },
     {
       "id": "TC-004",
-      "name": "split-automatico-tras-decision-dividir",
+      "name": "split-automatico-tras-verdict-split",
       "type": "edge-case",
-      "description": "story-evaluation devuelve decision DIVIDIR para la historia activa. El orquestador debe invocar story-split, registrar las historias hijas con ID ST-00X, actualizar su frontmatter a SPECIFY/IN-PROGRESS, marcar la historia origen como 'dividida en historias derivadas' y agregar las hijas a la cola del backlog para continuar refinándolas.",
+      "description": "story-evaluation devuelve verdict SPLIT para la historia activa. El orquestador debe invocar story-split, registrar las historias hijas con ID ST-00X, actualizar su frontmatter a SPECIFY/IN-PROGRESS, marcar la historia origen como 'dividida en historias derivadas' y agregar las hijas a la cola del backlog para continuar refinándolas.",
       "input": {
-        "context": "Historia STORY-020 con alcance muy amplio (módulo completo de autenticación con registro, login, 2FA y recuperación de contraseña). story-evaluation retorna decision: DIVIDIR con recomendación de dividir en al menos 3 historias independientes."
+        "context": "Historia STORY-020 con alcance muy amplio (módulo completo de autenticación con registro, login, 2FA y recuperación de contraseña). story-evaluation retorna verdict: SPLIT con recomendación de dividir en al menos 3 historias independientes."
       },
       "expected": {
         "contains": [
-          "DIVIDIR",
+          "SPLIT",
           "story-split",
           "historias derivadas",
           "SPECIFY",
@@ -98,22 +97,22 @@
         "not_contains": [
           "Entorno inválido",
           "Refinamiento finalizado",
-          "APROBADA"
+          "APPROVED"
         ]
       },
       "threshold": 0.90
     },
     {
       "id": "TC-005",
-      "name": "gate-antibucle-decision-refinar",
+      "name": "gate-antibucle-verdict-needs-refinement",
       "type": "edge-case",
-      "description": "story-evaluation devuelve decision REFINAR. El orquestador ejecuta story-improve (Paso 5A) y luego el rol product-owner (Paso 5B). Tras el refinamiento, el gate anti-bucle (Paso 6) debe presentar al usuario exactamente tres opciones explícitas sin volver automáticamente al Paso 3.",
+      "description": "story-evaluation devuelve verdict NEEDS-REFINEMENT. El orquestador ejecuta story-improve (Paso 5A) y luego el rol product-owner (Paso 5B). Tras el refinamiento, el gate anti-bucle (Paso 6) debe presentar al usuario exactamente tres opciones explícitas sin volver automáticamente al Paso 3.",
       "input": {
-        "context": "Historia STORY-030 con scores I=2, N=3, E=3 en el reporte FINVEST. story-evaluation retorna decision: REFINAR. story-improve aplica mejoras y genera story-improvement-log.md."
+        "context": "Historia STORY-030 con scores I=2, N=3, E=3 en el reporte FINVEST. story-evaluation retorna verdict: NEEDS-REFINEMENT. story-improve aplica mejoras y genera story-improvement-log.md."
       },
       "expected": {
         "contains": [
-          "REFINAR",
+          "NEEDS-REFINEMENT",
           "story-improve",
           "product-owner",
           "Seguir iterando",
@@ -123,8 +122,8 @@
         "not_contains": [
           "Entorno inválido",
           "Refinamiento finalizado",
-          "Decision FINVEST = APROBADA",
-          "ya tiene decisión APROBADA"
+          "Veredicto FINVEST = APPROVED",
+          "ya tiene veredicto APPROVED"
         ]
       },
       "threshold": 0.90
@@ -147,7 +146,7 @@
       "expected": {
         "contains": [
           "DoD SPECIFY",
-          "APROBADA",
+          "APPROVED",
           "SPECIFY",
           "DONE",
           "Refinamiento finalizado"
@@ -166,7 +165,7 @@
       "type": "happy-path",
       "description": "STORY-135 AC-1 — Con un input incompleto, la sesión del skill lee el rol local product-owner, pregunta al usuario por usuario, necesidad, valor, contexto y restricciones, y continúa con story-creation y story-evaluation sin lanzar subagentes.",
       "input": {
-        "context": "El usuario pide especificar una historia con un input incompleto: «quiero exportar clientes». Existe skills/story-specify/assets/agents/product-owner.md; no existe agents/story-product-owne\u0072.agent.md. El usuario responde las preguntas del rol y story-evaluation retorna APROBADA."
+        "context": "El usuario pide especificar una historia con un input incompleto: «quiero exportar clientes». Existe skills/story-specify/assets/agents/product-owner.md; no existe agents/story-product-owne\u0072.agent.md. El usuario responde las preguntas del rol y story-evaluation retorna APPROVED."
       },
       "expected": {
         "contains": [
@@ -204,6 +203,20 @@
         ]
       },
       "threshold": 1
+    },
+    {
+      "id": "TC-009",
+      "name": "needs-refinement-con-small-critico-invoca-split",
+      "type": "edge-case",
+      "description": "Con I = 1 y S = 1, story-evaluation devuelve NEEDS-REFINEMENT por la precedencia FINVEST; story-specify conserva el camino a story-split leyendo S en Resultado Final.",
+      "input": {
+        "context": "Historia STORY-040 con reporte recién generado: verdict: NEEDS-REFINEMENT; en ## Resultado Final figura **I – Independencia:** 1 / 5 y **S – Small:** 1 / 5."
+      },
+      "expected": {
+        "contains": ["story-split", "NEEDS-REFINEMENT", "S – Small"],
+        "not_contains": ["ya tiene veredicto APPROVED"]
+      },
+      "threshold": 0.90
     }
   ]
 }

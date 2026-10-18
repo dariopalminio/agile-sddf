@@ -1,6 +1,6 @@
 ---
 name: story-evaluation
-description: "Evalúa la calidad de una historia de usuario aplicando la rúbrica FINVEST (Formato + INVEST) con escala Likert 1–5. Produce un score por dimensión, score global, decisión (APROBADA / REFINAR / RECHAZAR / DIVIDIR) y recomendaciones accionables."
+description: "Evalúa una historia con FINVEST (Formato + INVEST) y emite el veredicto APPROVED / NEEDS-REFINEMENT / SPLIT en ## Veredicto y verdict, junto con scores y recomendaciones."
 triggers:
   - "story-evaluation"
   - "evaluar historia"
@@ -14,15 +14,15 @@ triggers:
 
 ## Objetivo
 
-Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** (Formato + INVEST) con escala Likert 1–5. Produce un score por dimensión, score global, decisión (APROBADA / REFINAR / RECHAZAR / DIVIDIR) y recomendaciones accionables.
+Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** (Formato + INVEST) con escala Likert 1–5. Produce un score por dimensión, score global, veredicto (`APPROVED` / `NEEDS-REFINEMENT` / `SPLIT`) en `## Veredicto` y `verdict`, y recomendaciones accionables.
 
 **Qué hace este skill:**
 - Evalúa el formato de la historia contra el template canónico `story-template.md` (dimensión F)
 - Aplica las 6 dimensiones INVEST con rúbricas Likert 1–5
 - Calcula F_score, INVEST_Score y FINVEST_Score
-- Emite una decisión (APROBADA / REFINAR / RECHAZAR / DIVIDIR) con recomendaciones accionables
+- Emite un veredicto (`APPROVED` / `NEEDS-REFINEMENT` / `SPLIT`) con recomendaciones accionables
 - Genera el reporte en `finvest-evaluation-report.md` dentro del directorio de la historia (si el input fue ID o ruta de archivo)
-- Si la decisión es `APROBADA` y el input fue una ruta de archivo, actualiza el frontmatter de `story.md` con `status: SPECIFY` / `substatus: DONE`
+- Si el veredicto es `APPROVED` y el input fue una ruta de archivo, actualiza el frontmatter de `story.md` con `status: SPECIFY` / `substatus: DONE`
 
 **Qué NO hace este skill:**
 - Generar diseño, tasks ni artefactos de planning
@@ -61,8 +61,8 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 
 ## Modos de ejecución
 
-- **Modo manual** (`/story-evaluation`): el usuario proporciona el texto, identificador o ruta de la historia; el skill muestra el reporte completo con scores, decisión y recomendaciones
-- **Modo Agent** (invocado por `story-specify` u orquestador): automático, recibe la historia como contexto, retorna la decisión y el reporte; si la decisión es `APROBADA` y el input fue una ruta de archivo, actualiza el frontmatter de `story.md` directamente
+- **Modo manual** (`/story-evaluation`): el usuario proporciona el texto, identificador o ruta de la historia; el skill muestra el reporte completo con scores, veredicto y recomendaciones
+- **Modo Agent** (invocado por `story-specify` u orquestador): automático, recibe la historia como contexto, retorna el veredicto y el reporte; si el veredicto es `APPROVED` y el input fue una ruta de archivo, actualiza el frontmatter de `story.md` directamente
 
 ---
 
@@ -70,7 +70,7 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 
 - Este skill resuelve localmente la raíz de artefactos y no requiere un diagnóstico adicional para producir su resultado.
 - El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida.
-- Si `F_score < 2.5`, no evaluar dimensiones INVEST — emitir `RECHAZAR` directamente por formato insuficiente.
+- Si `F_score < 2.5`, no evaluar dimensiones INVEST — emitir `NEEDS-REFINEMENT` (fila 1 del Paso 4) por formato insuficiente.
 - **Imágenes adjuntas:** si el input incluye imágenes adjuntas (wireframes, screenshots u otros archivos binarios de imagen), ignorarlas completamente. Evaluar únicamente el contenido en texto (Markdown) de la historia de usuario. Si el usuario adjunta solo una imagen sin texto de historia, indicar que el skill requiere texto para evaluar.
 - Responder siempre en el mismo idioma que la historia de entrada.
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
@@ -120,7 +120,7 @@ Evaluar tres componentes de forma independiente en escala 0–5, luego calcular 
 F_score = (puntaje_historia × 0.4) + (puntaje_criterios × 0.3) + (puntaje_gherkin × 0.3)
 ```
 
-**Si F_score < 2.5 → RECHAZAR sin evaluar INVEST. Indicar el motivo y recomendaciones de formato.**
+**Si F_score < 2.5 → emitir `NEEDS-REFINEMENT` (fila 1 del Paso 4) sin evaluar INVEST. Indicar el motivo y recomendaciones de formato.**
 
 **Si F_score ≥ 2.5 → Continuar con el Paso 3.**
 
@@ -136,21 +136,23 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 ```
 
 **Reglas críticas:**
-1. Si la dimensión S – Small (Tamaño) es 1 → Decisión automática **DIVIDIR**, independientemente del score total — Tamaño muy grande para una historia única.
-2. Si cualquier dimensión INVEST (excepto S) tiene score = 1 → Decisión automática **RECHAZAR**, independientemente del score total.
+1. Si cualquier dimensión INVEST distinta de S tiene score = 1, aplica la fila 2 del Paso 4. Con S = 1 y otra dimensión = 1, gana esa fila.
+2. Si S – Small = 1 y ninguna otra dimensión INVEST = 1, aplica la fila 3 del Paso 4 antes que cualquier fila de score.
 
 ---
 
-### Paso 4 — Aplicar tabla de decisión
+### Paso 4 — Aplicar tabla de veredicto
 
-| Condición | Decisión |
-|-----------|----------|
-| F_score < 2.5 | **RECHAZAR** — Formato insuficiente |
-| F_score ≥ 2.5 y alguna dimensión INVEST = 1 | **RECHAZAR** — Dimensión crítica |
-| F_score ≥ 2.5 y FINVEST_Score ≥ 4.0 | **APROBADA** |
-| F_score ≥ 2.5 y 3.0 ≤ FINVEST_Score < 4.0 | **REFINAR** |
-| F_score ≥ 2.5 y FINVEST_Score < 3.0 | **RECHAZAR** — Score insuficiente |
-| S – Small (Tamaño) = 1 | **DIVIDIR** — Tamaño muy grande |
+Se evalúa en orden; gana la primera condición que coincide. Esta tabla aplica el contrato de validación `docs/policies/validation-contract-policy.md` de Agile-SDDF.
+
+| Fila | Condición | Veredicto |
+|---|---|---|
+| 1 | `F_score < 2.5` (INVEST no se evalúa) | `NEEDS-REFINEMENT` |
+| 2 | Alguna dimensión INVEST distinta de S = 1 | `NEEDS-REFINEMENT` |
+| 3 | S – Small = 1 | `SPLIT` |
+| 4 | `FINVEST_Score ≥ 4.0` | `APPROVED` |
+| 5 | `3.0 ≤ FINVEST_Score < 4.0` | `NEEDS-REFINEMENT` |
+| 6 | `FINVEST_Score < 3.0` | `NEEDS-REFINEMENT` |
 
 ---
 
@@ -158,11 +160,24 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 
 1. Usar la estructura del template en `assets/evaluation-output-template.md`.
 2. Calcular F_score con dos decimales de precisión.
-3. Si F_score < 2.5, detenerse en el Paso 2 y no calcular INVEST.
+3. Si F_score < 2.5, omitir el Paso 3 y no calcular INVEST; continuar con la fila 1 del Paso 4.
 4. Para cada dimensión con score ≤ 3, incluir al menos 1 recomendación concreta y accionable en la sección "Comentarios".
 5. Marcar con ⚠️ las dimensiones con score = 1 (críticas).
 6. Si la historia no sigue el formato del template, indicar qué secciones faltan o están incorrectas y mostrar el fragmento del template correspondiente como guía.
 7. Responder en el mismo idioma que la historia de entrada.
+8. Escribir `## Veredicto` como primera sección después del título, con la línea de la primera fila coincidente del Paso 4:
+
+   | Fila | Línea literal |
+   |---|---|
+   | 1 | `` **Veredicto:** `NEEDS-REFINEMENT` — formato insuficiente: F_score <f> < 2.5; no se evalúa INVEST `` |
+   | 2 | `` **Veredicto:** `NEEDS-REFINEMENT` — dimensión crítica: <dims> = 1 `` |
+   | 3 | `` **Veredicto:** `SPLIT` — S – Small = 1: historia demasiado grande para una sola entrega `` |
+   | 4 | `` **Veredicto:** `APPROVED` — FINVEST <x> ≥ 4.0, sin dimensiones críticas `` |
+   | 5 | `` **Veredicto:** `NEEDS-REFINEMENT` — FINVEST <x> entre 3.0 y 4.0 `` |
+   | 6 | `` **Veredicto:** `NEEDS-REFINEMENT` — FINVEST <x> < 3.0 `` |
+
+   `<dims>` enumera todas las dimensiones con score 1 en orden I, N, V, E, S, T. Con una sola dimensión se escribe «dimensión crítica: X = 1». `<f>` y `<x>` tienen dos decimales.
+9. Sustituir `{gateway_resultado}` por uno de los dos textos fijos: `✅ F_score ≥ 2.5 — se evalúa INVEST.` o `❌ F_score < 2.5 — no se evalúa INVEST.`
 
 ---
 
@@ -173,29 +188,19 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 1. Resolver la ruta del directorio de la historia:
    - Si el input fue un ID → buscar el directorio `$SPECS_BASE/specs/stories/STORY-NNN-*/` usando Glob con el patrón `$SPECS_BASE/specs/stories/STORY-NNN-*/story.md` y extraer el directorio padre.
    - Si el input fue una ruta de archivo → usar el directorio que contiene ese archivo.
-2. Escribir el reporte completo (el mismo contenido mostrado en conversación) en:
+2. Escribir el reporte completo en:
    `<directorio-de-la-historia>/finvest-evaluation-report.md`
-3. El archivo usa frontmatter mínimo:
-   ```yaml
-   ---
-   type: finvest-evaluation
-   story-id: <STORY-NNN>
-   finvest-score: <score>
-   decision: <APROBADA|REFINAR|RECHAZAR|DIVIDIR>
-   evaluated: <YYYY-MM-DD>
-   ---
-   ```
-   seguido del reporte completo en Markdown.
+3. El archivo usa el frontmatter de `assets/evaluation-output-template.md`, seguido del cuerpo Markdown. En la conversación mostrar solo el cuerpo desde `# Evaluación FINVEST`; con texto libre no escribir frontmatter ni archivo.
 4. Si el archivo ya existe, sobreescribirlo (la evaluación más reciente siempre reemplaza la anterior).
-5. Confirmar en el output: `✓ Reporte guardado: <ruta>/finvest-evaluation-report.md`
+5. Confirmar en el output: `✓ Reporte guardado: <ruta>/finvest-evaluation-report.md (verdict: <VALOR>)`
 6. Si el directorio no es accesible, emitir advertencia y continuar sin bloquear:
    `⚠️ No se pudo guardar el reporte en: <ruta> — verifica permisos`
 
 ---
 
-### Paso 7 — Actualizar frontmatter si APROBADA
+### Paso 7 — Actualizar frontmatter si APPROVED
 
-**Condición:** decisión = `APROBADA` Y el input fue proporcionado como ruta de archivo (no como texto libre) o ID de story (ubicada en un archivo).
+**Condición:** veredicto = `APPROVED` Y el input fue proporcionado como ruta de archivo (no como texto libre) o ID de story (ubicada en un archivo).
 
 1. Verificar que el archivo existe en la ruta proporcionada o con el `{story ID}` proporcionado.
 2. Actualizar únicamente los campos `status` y `substatus` en el frontmatter YAML del archivo:
@@ -207,7 +212,7 @@ FINVEST_Score = (F_score + INVEST_Score) / 2
 6. Si el archivo no es accesible o no tiene frontmatter YAML válido, emitir advertencia y continuar sin bloquear:
    `⚠️ No se pudo actualizar el frontmatter de: <ruta> — verifica permisos y formato`
 
-> La transición a `status: SPECIFY` / `substatus: DONE` es la **única huella de la aprobación en `story.md`** (equivale a decisión `APROBADA`); el score y la decisión viven exclusivamente en el frontmatter de `finvest-evaluation-report.md` (`finvest-score`, `decision`, `evaluated`) — el cuerpo de `story.md` no lleva ningún campo FINVEST (STORY-090).
+> La transición a `status: SPECIFY` / `substatus: DONE` es la **única huella de la aprobación en `story.md`**; el score y el veredicto viven en `finvest-score` y `verdict` de `finvest-evaluation-report.md` — el cuerpo de `story.md` no lleva ningún campo FINVEST (STORY-090).
 
 ---
 
@@ -333,7 +338,7 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 | Template no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/templates/story-template.md. Por favor verifica que el archivo existe antes de continuar.` | Detener la ejecución |
 | Archivo de historia no accesible (input fue ruta) | `⚠️ No se pudo leer el archivo: <ruta>` | Notificar y detener |
 | Input es solo imagen sin texto de historia | `ℹ️ El skill requiere el texto de la historia para evaluar. Las imágenes adjuntas no pueden procesarse.` | Solicitar texto y detener |
-| Frontmatter no actualizable (APROBADA + ruta) | `⚠️ No se pudo actualizar el frontmatter de: <ruta> — verifica permisos y formato` | Emitir advertencia y continuar sin bloquear |
+| Frontmatter no actualizable (APPROVED + ruta) | `⚠️ No se pudo actualizar el frontmatter de: <ruta> — verifica permisos y formato` | Emitir advertencia y continuar sin bloquear |
 
 ---
 
@@ -341,14 +346,14 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 
 - Reporte mostrado en conversación con la estructura de `assets/evaluation-output-template.md`
 - `<directorio-historia>/finvest-evaluation-report.md` — reporte persistido en disco (si el input fue ID o ruta de archivo)
-- Frontmatter de `story.md` actualizado (únicamente si decisión = `APROBADA` y el input fue ID o ruta de archivo): `status: SPECIFY` / `substatus: DONE`
+- Frontmatter de `story.md` actualizado (únicamente si veredicto = `APPROVED` y el input fue ID o ruta de archivo): `status: SPECIFY` / `substatus: DONE`
 
 ### Ejemplos de referencia
 
-Los 3 ejemplos muestran historias escritas con el template `story-template.md`:
+Los tres ejemplos ilustran los caminos principales de FINVEST:
 
-- `examples/example-ready.md` — Historia con secciones completas → F_score 5.0, FINVEST Score 4.4 → **APROBADA**
-- `examples/example-refinar.md` — Historia sin encabezados de sección ni bloques gherkin → F_score 2.5, FINVEST Score 3.0 → **REFINAR**
+- `examples/example-ready.md` — Historia con secciones completas → F_score 5.0, FINVEST Score 4.50 → `APPROVED` (fila 4)
+- `examples/example-refinar.md` — Historia con criterios y un escenario Gherkin, pero con dimensiones débiles → F_score 3.40, FINVEST Score 3.28 → `NEEDS-REFINEMENT` (fila 5)
 - `examples/example-rechazar.md` — Dos casos:
-  - Caso A: Sin secciones ni Gherkin formal → F_score 1.4 → **RECHAZAR** por formato insuficiente
-  - Caso B: Secciones completas pero dimensiones INVEST críticas → **RECHAZAR** por I, E, S = 1
+  - Caso A: Sin secciones ni Gherkin formal → F_score 1.00 → `NEEDS-REFINEMENT` (fila 1)
+  - Caso B: Secciones completas pero dimensiones INVEST críticas → `NEEDS-REFINEMENT` (fila 2: I, E, S = 1)

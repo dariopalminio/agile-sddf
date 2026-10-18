@@ -1,4 +1,4 @@
-# Ejemplo: Decisión Ready
+# Ejemplo: veredicto APPROVED
 
 ## Historia evaluada
 
@@ -49,6 +49,10 @@ Flujo de recuperación vía email. SMS queda fuera de scope de esta historia.
 
 ## Evaluación FINVEST
 
+### Veredicto
+
+**Veredicto:** `APPROVED` — FINVEST 4.50 ≥ 4.0, sin dimensiones críticas
+
 ### Fase 1: Evaluación de Formato (F — Gateway)
 
 | Componente | Score (1–5) | Observación |
@@ -59,7 +63,7 @@ Flujo de recuperación vía email. SMS queda fuera de scope de esta historia.
 
 **F_score = (5 × 0.4) + (5 × 0.3) + (5 × 0.3) = 2.0 + 1.5 + 1.5 = 5.0 / 5.0**
 
-✅ F_score = 5.0 ≥ 2.5 — Continúa a evaluación INVEST
+✅ F_score ≥ 2.5 — se evalúa INVEST.
 
 ### Fase 2: Evaluación INVEST
 
@@ -85,7 +89,6 @@ Flujo de recuperación vía email. SMS queda fuera de scope de esta historia.
 **T – Testeable:** 5 / 5
 
 **FINVEST Score:** (5.0 + 4.0) / 2 = **4.5 / 5.0**
-**FINVEST Decisión:** ✅ **Ready**
 
 ### Comentarios y Recomendaciones
 

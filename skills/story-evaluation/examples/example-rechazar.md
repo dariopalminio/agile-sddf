@@ -1,10 +1,10 @@
-# Ejemplo: Decisión Rechazar
+# Ejemplo: veredicto NEEDS-REFINEMENT (formato insuficiente y dimensiones críticas)
 
-Dos sub-casos: (A) rechazado por formato insuficiente (sin template), (B) rechazado por dimensiones INVEST críticas (con template correcto).
+Dos subcasos: (A) formato insuficiente (sin template), (B) dimensiones INVEST críticas (con template correcto).
 
 ---
 
-## Caso A — Rechazar por formato insuficiente (F_score < 2.5)
+## Caso A — Formato insuficiente (F_score < 2.5)
 
 ### Historia evaluada
 
@@ -22,6 +22,10 @@ Dos sub-casos: (A) rechazado por formato insuficiente (sin template), (B) rechaz
 
 ### Evaluación
 
+#### Veredicto
+
+**Veredicto:** `NEEDS-REFINEMENT` — formato insuficiente: F_score 1.00 < 2.5; no se evalúa INVEST
+
 #### Fase 1: Evaluación de Formato (F — Gateway)
 
 | Componente | Score (1–5) | Observación |
@@ -32,7 +36,7 @@ Dos sub-casos: (A) rechazado por formato insuficiente (sin template), (B) rechaz
 
 **F_score = (1 × 0.4) + (1 × 0.3) + (1 × 0.3) = 0.4 + 0.3 + 0.3 = 1.0 / 5.0**
 
-❌ F_score = 1.0 < 2.5 — **RECHAZADA. No se evalúa INVEST.**
+❌ F_score < 2.5 — no se evalúa INVEST.
 
 #### Resultado Final
 
@@ -45,7 +49,6 @@ Dos sub-casos: (A) rechazado por formato insuficiente (sin template), (B) rechaz
 **T – Testeable:** — (no evaluado)
 
 **FINVEST Score:** null
-**FINVEST Decisión:** 🔴 **Rechazar — Formato insuficiente**
 
 #### Comentarios y Recomendaciones
 
@@ -77,7 +80,7 @@ Entonces veo "Credenciales inválidas. Intenta de nuevo"
 
 ---
 
-## Caso B — Rechazar por dimensiones INVEST críticas (F correcto, INVEST fallido)
+## Caso B — Dimensiones INVEST críticas (F correcto, INVEST fallido)
 
 ### Historia evaluada
 
@@ -131,6 +134,10 @@ Ejemplos:
 
 ### Evaluación
 
+#### Veredicto
+
+**Veredicto:** `NEEDS-REFINEMENT` — dimensión crítica: I, E, S = 1
+
 #### Fase 1: Evaluación de Formato (F — Gateway)
 
 | Componente | Score (1–5) | Observación |
@@ -141,7 +148,7 @@ Ejemplos:
 
 **F_score = (4 × 0.4) + (5 × 0.3) + (5 × 0.3) = 1.6 + 1.5 + 1.5 = 4.6 / 5.0**
 
-✅ F_score = 4.6 ≥ 2.5 — Continúa a evaluación INVEST
+✅ F_score ≥ 2.5 — se evalúa INVEST.
 
 #### Fase 2: Evaluación INVEST
 
@@ -167,7 +174,6 @@ Ejemplos:
 **T – Testeable:** 2 / 5
 
 **FINVEST Score:** (4.6 + 1.67) / 2 = **3.1 / 5.0** (pero 3 dimensiones con score = 1 → veto automático)
-**FINVEST Decisión:** 🔴 **Rechazar — Dimensiones críticas (I, E, S = 1)**
 
 #### Comentarios y Recomendaciones
 

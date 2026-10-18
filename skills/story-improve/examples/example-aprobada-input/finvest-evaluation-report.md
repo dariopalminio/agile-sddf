@@ -2,11 +2,15 @@
 type: finvest-evaluation
 story-id: STORY-074
 finvest-score: 4.19
-decision: APROBADA
+verdict: APPROVED
 evaluated: 2026-05-17
 ---
 
 # Reporte FINVEST — STORY-074
+
+## Veredicto
+
+**Veredicto:** `APPROVED` — FINVEST 4.19 ≥ 4.0, sin dimensiones críticas
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -15,7 +19,6 @@ evaluated: 2026-05-17
 │  F_score     │  4.70                                             │
 │  INVEST_Score│  3.67                                             │
 │  FINVEST     │  4.19                                             │
-│  Decisión    │  ✅ APROBADA                                      │
 └──────────────┴───────────────────────────────────────────────────┘
 ```
 
@@ -30,7 +33,3 @@ evaluated: 2026-05-17
 | E – Estimable     | 3     | ⚠️     |
 | S – Small         | 3     | ✅     |
 | T – Testeable     | 4     | ✅     |
-
-## Decisión
-
-**✅ APROBADA** — FINVEST Score 4.19 ≥ 4.0. Ninguna dimensión con score 1. La historia puede pasar a planificación.

@@ -1,4 +1,4 @@
-# Ejemplo: Decisión Refinar
+# Ejemplo: veredicto NEEDS-REFINEMENT (score entre 3.0 y 4.0)
 
 Este ejemplo muestra una historia que usa parcialmente el template — tiene las secciones principales y un escenario Gherkin en bloque de código, pero le faltan escenarios alternativos, el beneficio no es medible y la testeabilidad es limitada.
 
@@ -29,6 +29,10 @@ Entonces veo una lista con los 3 leads
 
 ## Evaluación FINVEST
 
+### Veredicto
+
+**Veredicto:** `NEEDS-REFINEMENT` — FINVEST 3.28 entre 3.0 y 4.0
+
 ### Fase 1: Evaluación de Formato (F — Gateway)
 
 | Componente | Score (1–5) | Observación |
@@ -39,7 +43,7 @@ Entonces veo una lista con los 3 leads
 
 **F_score = (4 × 0.4) + (3 × 0.3) + (3 × 0.3) = 1.60 + 0.90 + 0.90 = 3.40 / 5.0**
 
-✅ F_score = 3.40 ≥ 2.5 — Continúa a evaluación INVEST
+✅ F_score ≥ 2.5 — se evalúa INVEST.
 
 ### Fase 2: Evaluación INVEST
 
@@ -65,7 +69,6 @@ Entonces veo una lista con los 3 leads
 **T – Testeable:** 3 / 5
 
 **FINVEST Score:** (3.40 + 3.17) / 2 = **3.28 / 5.0**
-**FINVEST Decisión:** 🟡 **Refinar**
 
 ### Comentarios y Recomendaciones
 

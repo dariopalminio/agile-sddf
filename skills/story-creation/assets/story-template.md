@@ -5,7 +5,7 @@ id: <STORY-NNN>   # escritor: story-creation · epic-generate-stories · epic-ge
 kind: <feat | fix | chore | hotfix>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories · story-split (hereda de la historia madre) — tipo de historia; determina el prefijo de rama
 slug: <nombre-del-directorio-de-historia>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories · story-split (renombra la core)
 title: "<primer # heading del documento>"   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories
-status: <ESTADO_INICIAL>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories (inicial) · story-evaluation (→ SPECIFY/DONE solo con decisión APROBADA — señal de un vistazo; el score vive en finvest-evaluation-report.md) · story-plan, story-implement, story-implement-tasks, story-code-review, story-verify, story-acceptance (transiciones)
+status: <ESTADO_INICIAL>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories (inicial) · story-evaluation (→ SPECIFY/DONE solo con veredicto APPROVED — señal de un vistazo; el score vive en finvest-evaluation-report.md) · story-plan, story-implement, story-implement-tasks, story-code-review, story-verify, story-acceptance (transiciones)
 substatus: IN-PROGRESS   # escritor: los mismos que status (story-evaluation lo lleva a DONE junto con status: SPECIFY)
 parent: <nombre-del-directorio-de-la-epica>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories
 created: <YYYY-MM-DD>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories

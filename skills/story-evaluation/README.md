@@ -8,13 +8,13 @@
 
 ## What it does
 
-Evalúa una historia con la rúbrica FINVEST (Formato + INVEST), asigna puntuaciones Likert por dimensión y emite una decisión `APROBADA`, `REFINAR`, `RECHAZAR` o `DIVIDIR` con recomendaciones accionables.
+Evalúa una historia con la rúbrica FINVEST (Formato + INVEST), asigna puntuaciones Likert por dimensión y emite un veredicto `APPROVED`, `NEEDS-REFINEMENT` o `SPLIT` con recomendaciones accionables.
 
 **Produces:**
 
-- Un informe de evaluación con puntuaciones, decisión y recomendaciones.
+- Un informe de evaluación con puntuaciones, `## Veredicto`, `verdict` y recomendaciones.
 - `<directorio-historia>/finvest-evaluation-report.md` cuando el input identifica una historia o ruta existente.
-- La actualización de `story.md` a `SPECIFY/DONE` cuando corresponde una decisión `APROBADA` sobre un archivo.
+- La actualización de `story.md` a `SPECIFY/DONE` cuando corresponde un veredicto `APPROVED` sobre un archivo.
 
 **Does not do:**
 
@@ -27,13 +27,13 @@ Evalúa una historia con la rúbrica FINVEST (Formato + INVEST), asigna puntuaci
 **Use it when:**
 
 - Necesites evaluar la calidad y el tamaño de una historia antes de planificarla.
-- Quieras decidir si la historia debe aprobarse, refinarse, rechazarse o dividirse.
+- Quieras decidir si la historia debe aprobarse, refinarse o dividirse.
 - The user mentions: `"story-evaluation"`, `"FINVEST"`, `"evaluar historia"`.
 
 **Do NOT use it when:**
 
 - Debas aplicar las recomendaciones de un reporte existente → use `[[story-improve]]` instead.
-- La decisión sea dividir una historia grande → use `[[story-split]]` instead.
+- El veredicto sea dividir una historia grande → use `[[story-split]]` instead.
 
 ---
 
