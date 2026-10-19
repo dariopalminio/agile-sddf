@@ -204,6 +204,8 @@ Los únicos work items son Épica e Historia; la documentación de producto los 
 
 El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`. `DELIVER` es una transición de entrega humana o de CI; no corresponde a un skill independiente. Los estados y subestados canónicos están documentados en el [ciclo de vida de historias](docs/domains/domain-story-lifecycle.md).
 
+Los gates de validación `epic-analyze`, `story-evaluation`, `story-analyze`, `story-code-review`, `story-verify` y `story-acceptance` dejan un reporte con el campo `verdict` en el frontmatter y `## Veredicto` como primera sección. Solo `APPROVED` habilita el avance. Los valores de cada gate, su significado y la traducción de reportes anteriores están en la [política de contrato de validación](docs/policies/validation-contract-policy.md), fuente de verdad del contrato.
+
 ## Artefactos que deja el flujo (Memoria)
 
 <details>
@@ -379,6 +381,7 @@ El README te orienta; la documentación versionada contiene el detalle operativo
 | Ver los flujos y comandos principales | [Guía de pipeline SDDF](docs/guides/sddf-commands-pipeline.md) |
 | Entender la raíz de artefactos | [Prácticas de resolución de raíz](docs/guides/root-folder-practices.md) |
 | Consultar estados, gates y rework | [Ciclo de vida de historias](docs/domains/domain-story-lifecycle.md) |
+| Leer el resultado (veredicto) de un gate de validación | [Política de contrato de validación](docs/policies/validation-contract-policy.md) |
 | Diseñar habilidades o delegación entre agentes | [Buenas prácticas para skills](docs/guides/best-practices-for-skills.md) |
 | Ver cambios de versión | [CHANGELOG](CHANGELOG.md) |
 

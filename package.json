@@ -43,6 +43,7 @@
     "verify:runtimes": "node scripts/verify-runtime-documentation.js",
     "verify:config": "node scripts/verify-config-contract.js",
     "verify:eval-inventory": "node scripts/verify-eval-inventory.js",
+    "verify:validation-contract": "node scripts/verify-validation-contract.js",
     "verify:links": "node scripts/check-doc-links.js",
     "verify:supply-chain": "node scripts/verify-supply-chain.js",
     "verify:release": "node scripts/verify-release.js",

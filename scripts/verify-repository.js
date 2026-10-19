@@ -21,6 +21,7 @@ function steps() {
     { label: 'runtimes documentados', command: process.execPath, args: ['scripts/verify-runtime-documentation.js'] },
     { label: 'configuración YAML', command: process.execPath, args: ['scripts/verify-config-contract.js'] },
     { label: 'inventario de evals', command: process.execPath, args: ['scripts/verify-eval-inventory.js'] },
+    { label: 'contrato de validación', command: process.execPath, args: ['scripts/verify-validation-contract.js'] },
     { label: 'enlaces activos', command: process.execPath, args: ['scripts/check-doc-links.js'] },
     { label: 'cadena de suministro', command: process.execPath, args: ['scripts/verify-supply-chain.js'] },
     { label: 'workflow de seguridad de skills', command: process.execPath, args: ['scripts/verify-skill-security-workflow.js'] },

@@ -16,6 +16,7 @@ test('el gate enumera las verificaciones deterministas requeridas y no invoca ev
     'runtimes documentados',
     'configuración YAML',
     'inventario de evals',
+    'contrato de validación',
     'enlaces activos',
     'cadena de suministro',
     'workflow de seguridad de skills',

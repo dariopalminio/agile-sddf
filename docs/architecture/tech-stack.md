@@ -82,7 +82,7 @@ No hay build ni lint genéricos: la validación es determinista y vive en `scrip
 
 | Comando | Propósito |
 |---------|-----------|
-| `npm run verify:repository` | Gate determinista completo (sintaxis, resolución de raíces, perfiles, runtimes, config, inventario de evals, enlaces, supply chain, release, smoke del tarball). |
+| `npm run verify:repository` | Gate determinista completo (sintaxis, resolución de raíces, perfiles, runtimes, config, inventario de evals, contrato de validación, enlaces, supply chain, release, smoke del tarball). |
 | `npm test` | Pruebas `node --test` de `test/`. |
 | `npm run test:eval:runner` | Suite determinista del runner `scripts/run-evals.js`. |
 | `npm run test:eval -- [opciones]` | Ejecuta o planifica los casos de `skills/<skill>/evals/evals.json`. Una selección inválida o vacía falla cerrada; `--dry-run` solo aprueba con un plan no vacío. |

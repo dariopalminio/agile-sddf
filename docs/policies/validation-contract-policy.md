@@ -7,9 +7,9 @@ derives-from: constitution
 
 # Política de contrato de validación
 
-**Versión:** 1.1.0
+**Versión:** 1.2.0
 **Estado:** Aprobado
-**Última actualización:** 2026-10-18
+**Última actualización:** 2026-10-19
 **Propietario:** Mantenedores de Agile-SDDF
 
 ## 1. Propósito y alcance
@@ -42,11 +42,13 @@ derives-from: constitution
 - **G-01 — Campo `verdict`:** el frontmatter del reporte declara `verdict` con exactamente un valor.
 - **G-02 — Sección `## Veredicto`:** es el primer encabezado `##` tras el título `#`. Entre ambos solo puede haber líneas en blanco o comentarios HTML. Su primera línea es `` **Veredicto:** `<VALOR>` — <motivo en una frase> ``, con el mismo valor que `verdict`. Pueden seguirle motivos breves; el detalle vive en las secciones propias del skill.
 - **G-03 — Vocabulario cerrado:** el valor es uno de los permitidos para el skill en §4. Cualquier otro valor no es conforme, ya sea heredado, en minúsculas, en español o de otro skill.
-- **G-04 — Fuente única en el reporte:** ningún otro campo ni línea declara el veredicto (`decision`, `review-status`, `final-status`, `**Estado general:**`, línea «Resultado»). Los campos que no son veredicto se mantienen (`errors`, `warnings`, `max-severity`, `session-status`).
+- **G-04 — Fuente única en el reporte:** ningún otro campo ni línea declara el veredicto (por ejemplo, `decision`, `final-status`, `**Estado general:**` o la línea «Resultado»). Los campos que no son veredicto se mantienen (`errors`, `warnings`, `max-severity`, `session-status`). Los nombres heredados se documentan en §5.
 - **G-05 — Precedencia:** si en un reporte coexisten algo rechazado y algo bloqueado, gana `NEEDS-CHANGES`. Mientras la sesión de `story-acceptance` sea `partial`, el veredicto es `PENDING`. Fuera de estos dos casos, cada skill aplica su propia regla de decisión.
 - **G-06 — Lectura cerrada ante fallo:** un consumidor (agente, orquestador o CI) lee `verdict` del frontmatter. Solo `APPROVED` habilita el avance. Un valor ausente, no permitido para el skill o heredado sin traducir (§5) se trata como no aprobado.
 
 **Acción ante violación:** un reporte no conforme es un defecto del skill que lo emite y se corrige en ese skill. Sus consumidores aplican G-06.
+
+`npm run verify:repository` (paso «contrato de validación») comprueba G-01…G-04 en los templates y ejemplos de los skills de §4 y la ausencia de variantes heredadas fuera de §5 y §6.
 
 ## 4. Valores permitidos por skill
 
@@ -93,8 +95,8 @@ Todo valor de esta tabla es no conforme (G-03). La columna «Valor canónico» i
 
 | Skill | Elemento conservado | Motivo | Historia |
 |---|---|---|---|
-
 | `story-code-review` | `status: approved \| needs-changes` y `## Veredicto` en informes parciales de revisores (`agents/*.agent.md` y `examples/*/{tech-lead,product-owner,integration,security}-report.md`) | Son intermedios de `.tmp/`; el árbitro valida su frontmatter y consume severidad y hallazgos sin copiar su veredicto al reporte consolidado. La alineación de subagentes queda fuera del alcance. | STORY-141 |
+| `memory-system` | Review status approved en los fixtures `examples/dod-{custom,legacy,monolithic,template}/` | Copian el DoD monolítico antiguo de proyectos consumidores; son la entrada de `migrate --from=dod-monolithic`. | STORY-143 |
 
 ## 7. Ejemplos de reportes conformes
 
@@ -197,3 +199,4 @@ verdict: PENDING
 |---|---|---|---|
 | 1.0.0 | 2026-10-17 | Creación inicial (STORY-138) | Dario Palminio |
 | 1.1.0 | 2026-10-18 | Excepción acotada para informes parciales de `story-code-review` (STORY-141) | Mantenedores de Agile-SDDF |
+| 1.2.0 | 2026-10-19 | Verificación automática y excepción de fixtures DoD (STORY-143) | Mantenedores de Agile-SDDF |

@@ -312,6 +312,12 @@ las filas nuevas de §6 (D-6).
 
 ## Componentes afectados
 
+### Ajustes comprobados al implementar (2026-10-19)
+
+- El template publicado de `story-code-review` usa `{{VERDICT}}` y el de `epic-analyze` usa `{veredicto}`. El verificador admite ambos como placeholders de template; en reportes concretos exige siempre un valor de §4. Esto amplía la forma de placeholder prevista en D-3 sin ampliar el vocabulario de veredictos.
+- La policy 1.1.0 aún citaba un nombre de campo heredado en §3, que queda dentro del alcance vigente de D-5. La versión 1.2.0 remite a §5 para ese nombre y mantiene G-04; el gate puede aplicar L-3 sin excluir toda la sección.
+- La línea base de `npm test` y `verify:repository` en el shell restringido registró 64 fallos de 251 pruebas antes de editar código. La comparación final se hará con el mismo entorno y, si es posible, con el shell de Git Bash.
+
 | Componente | Acción | Ubicación | Satisface |
 |---|---|---|---|
 | Verificador del contrato de validación | crear | `scripts/verify-validation-contract.js` | AC-1, AC-2, AC-3, CNF-1 |
