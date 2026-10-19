@@ -8,6 +8,8 @@
 !.github/workflows/**
 .agents
 .codex
+.opencode
+opencode.json
 
 #skills-lock.json
 

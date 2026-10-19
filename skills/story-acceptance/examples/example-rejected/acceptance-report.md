@@ -6,10 +6,16 @@ date: 2026-05-16
 validator: "Darío Palminio"
 dod-version: "2026-05-15"
 session-status: complete
-final-status: ACCEPTANCE-REJECTED
+verdict: NEEDS-CHANGES
 ---
 
 # Acceptance Report: STORY-060 — Recuperación de contraseña por email
+
+## Veredicto
+
+**Veredicto:** `NEEDS-CHANGES` — 1 criterio(s) rechazado(s) y 0 bloqueado(s).
+
+- Criterio 2 — REJECTED: Escenario alternativo – Email no registrado
 
 ## Resumen ejecutivo
 
@@ -38,14 +44,10 @@ final-status: ACCEPTANCE-REJECTED
 | Criterios no funcionales validados | ✓ cumplido |
 | Comportamiento coincide con valor de negocio | ✗ no cumplido |
 | Sin defectos bloqueantes | ✗ no cumplido |
-| acceptance-report.md generado con ACCEPTANCE-APPROVED | ✗ no cumplido |
+| acceptance-report.md generado con `verdict: APPROVED` | ✗ no cumplido |
 | Todos los criterios registrados con observaciones | ✓ cumplido |
 | story.md actualizado con ACCEPTANCE/DONE | ✗ no cumplido |
 | Validador humano confirmó la aprobación | ✗ no cumplido |
-
-## Estado final
-
-**ACCEPTANCE BLOQUEADO: 1 criterio no aprobado** — La historia regresa a la cola de implementación (READY-FOR-IMPLEMENT) para corrección.
 
 ## Historial de sesiones anteriores
 

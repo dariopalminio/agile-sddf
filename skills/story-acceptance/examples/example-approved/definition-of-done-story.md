@@ -17,7 +17,7 @@ title: "Definition of Done (ejemplo para story-acceptance)"
 
 #### ✅ Criterios de Documentación y Trazabilidad
 
-- [ ] `acceptance-report.md` generado con resultado final `ACCEPTANCE-APPROVED`
+- [ ] `acceptance-report.md` generado con `verdict: APPROVED`
 - [ ] Todos los criterios del reporte tienen resultado registrado con observaciones
 - [ ] `story.md` actualizado con `status: ACCEPTANCE / substatus: DONE`
 - [ ] El validador humano ha confirmado explícitamente la aprobación de la historia

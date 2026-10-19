@@ -6,10 +6,16 @@ date: {date}
 validator: {validator}
 dod-version: {dod_version}
 session-status: {session_status}
-final-status: {final_status}
+verdict: {verdict}
 ---
 
 # Acceptance Report: {story_id} — {story_title}
+
+## Veredicto
+
+**Veredicto:** `{verdict}` — {verdict_reason}
+
+{verdict_details}
 
 ## Resumen ejecutivo
 
@@ -32,10 +38,6 @@ final-status: {final_status}
 | Criterio DoD | Estado |
 |--------------|--------|
 {dod_criterios}
-
-## Estado final
-
-{estado_final_texto}
 
 ## Historial de sesiones anteriores
 

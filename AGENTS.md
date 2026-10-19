@@ -15,6 +15,7 @@ Eres un **AI Engineer Senior** especializado en **Harness Engineering** y en el 
 - **Nunca versiones secretos ni credenciales.**
 - **Veracidad:** antes de documentar estructura o capacidades, verifícalas en el filesystem. Nunca describas algo que no existe.
 - Las pruebas de regresión `npm run test:eval -- <skill>` deben ejecutarse manualmente a criterio humano para economizar cuota. 
+- **Repositorio github**: Nunca haces push, PR o merge a repositorio.
 ## Comandos
 
 | Comando | Uso |

@@ -1,7 +1,7 @@
 ---
 name: story-acceptance
 description: >-
-  Genera acceptance-report.md guiando la validación manual de criterios de aceptación criterio por criterio.
+  Genera acceptance-report.md con un veredicto (APPROVED / NEEDS-CHANGES / BLOCKED / PENDING) guiando la validación manual de criterios de aceptación criterio por criterio.
   Usar para el gate de aceptación antes de DELIVER.
   Invocar para "story-acceptance", "acceptance", "validación final",
   "gate de acceptance" o "aprobar historia".
@@ -21,7 +21,7 @@ outputs:
 
 ## Objetivo
 
-Orquesta la fase ACCEPTANCE del pipeline SDD: guía al validador humano a través de cada criterio de aceptación uno por vez, recopila el resultado (PASS/FAIL/BLOCKED) con observaciones, genera `acceptance-report.md` con trazabilidad completa y actualiza el frontmatter de `story.md`.
+Orquesta la fase ACCEPTANCE del pipeline SDD: guía al validador humano a través de cada criterio de aceptación uno por vez, recopila el resultado (PASS/FAIL/BLOCKED) con observaciones, genera `acceptance-report.md` con un veredicto (APPROVED / NEEDS-CHANGES / BLOCKED / PENDING) y trazabilidad completa, y actualiza el frontmatter de `story.md` según el veredicto.
 
 ## Posicionamiento
 
@@ -29,12 +29,13 @@ Orquesta la fase ACCEPTANCE del pipeline SDD: guía al validador humano a travé
 [story.md: VERIFY/DONE]              ← viene de story-verify
      ↓
 story-acceptance    ← aquí
-     │   Al iniciar sesión nueva:       story.md → ACCEPTANCE/IN-PROGRESS
-     │   Todos APPROVED:                story.md → ACCEPTANCE/DONE
-     │   ≥1 REJECTED (sin BLOCKED):      story.md → READY-FOR-IMPLEMENT/DONE
-     │   ≥1 BLOCKED (sin REJECTED):      story.md → ACCEPTANCE/BLOCKED
-     │   ≥1 REJECTED + ≥1 BLOCKED:       story.md → READY-FOR-IMPLEMENT/DONE
-     │   Estado incorrecto:             → error sin modificar archivos
+      │   Entradas válidas:               VERIFY/DONE · ACCEPTANCE/IN-PROGRESS · ACCEPTANCE/BLOCKED (reintento)
+      │   Al iniciar sesión nueva:         story.md → ACCEPTANCE/IN-PROGRESS
+      │   Veredicto APPROVED:              story.md → ACCEPTANCE/DONE
+      │   Veredicto NEEDS-CHANGES:         story.md → READY-FOR-IMPLEMENT/DONE
+      │   Veredicto BLOCKED:               story.md → ACCEPTANCE/BLOCKED
+      │   Veredicto PENDING:               story.md se mantiene en ACCEPTANCE/IN-PROGRESS
+      │   Estado incorrecto:              → error sin modificar archivos
      ↓
 [story.md: ACCEPTANCE/DONE]
 ──────────────────────────────────────────────────────────────────────────────────────
@@ -89,7 +90,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Sus 
 - **No ejecuta pruebas automáticas:** eso corresponde a `story-verify`
 - **No revisa código:** eso corresponde a `story-code-review`
 - **Idempotente:** ejecutable múltiples veces; preserva historial en `acceptance-report.md`
-- **Precondición de estado:** solo ejecuta si `story.md` tiene `status: VERIFY/DONE` o `ACCEPTANCE/IN-PROGRESS`
+- **Precondición de estado:** solo ejecuta si `story.md` tiene `status: VERIFY/DONE`, `ACCEPTANCE/IN-PROGRESS` o `ACCEPTANCE/BLOCKED` (reintento tras resolver el impedimento)
 - **FAIL/BLOCKED requieren observación:** el skill rechaza respuestas sin texto de observación no vacío
 - **DoD dinámico:** los criterios ACCEPTANCE se leen en runtime; nunca están hardcodeados
 - NO modifique ningún archivo existente en el código fuente (estamos aceptando la implementación, no implementando los artefactos técnicos)
@@ -162,6 +163,8 @@ Precondición válida si:
   (status: VERIFY        AND substatus: DONE)         ← camino normal
   OR
   (status: ACCEPTANCE    AND substatus: IN-PROGRESS)  ← sesión en curso
+  OR
+  (status: ACCEPTANCE    AND substatus: BLOCKED)      ← reintento tras resolver el impedimento
 ```
 
 Si la precondición NO se cumple:
@@ -173,6 +176,7 @@ Si la precondición NO se cumple:
    story-acceptance requiere uno de los siguientes estados:
    · VERIFY/DONE           → camino normal desde story-verify
    · ACCEPTANCE/IN-PROGRESS → sesión de acceptance en curso
+   · ACCEPTANCE/BLOCKED → reintento tras resolver el impedimento
 
    La historia {story_id} tiene status {status}/{substatus}.
    Completa primero story-code-review y story-verify antes de ejecutar story-acceptance.
@@ -255,10 +259,19 @@ Condición: `session-status: complete` en el frontmatter del `acceptance-report.
 
 **Si se pasó `--restart`:** continuar al Paso 4 (reinicio forzado).
 
-**Si no se pasó `--restart`:**
-```
-Se encontró un acceptance-report.md completo con resultado {final-status}.
+**Si no se pasó `--restart`:** leer `verdict` del frontmatter del reporte existente y mostrar el aviso (el valor mostrado es informativo; ninguna opción depende de él):
 
+- Si el frontmatter declara `verdict`:
+```
+Se encontró un acceptance-report.md completo con veredicto {verdict}.
+```
+- Si el frontmatter no declara `verdict` (reporte heredado, anterior al contrato de validación):
+```
+Se encontró un acceptance-report.md completo sin veredicto (reporte anterior al contrato de validación).
+```
+
+Luego:
+```
 ¿Qué deseas hacer?
   (r) Reiniciar  — iniciar nueva sesión (el historial anterior se preserva)
   (v) Ver report — mostrar el resultado anterior sin modificar nada
@@ -337,10 +350,10 @@ Por cada criterio pendiente (en orden: Gherkin primero, DoD después):
   ```
   Resultado: `BLOCKED`
 - `[Q]` / `QUIT` / `q` → guardar sesión parcial:
-  1. Generar `acceptance-report.md` con `session-status: partial` incluyendo los criterios evaluados hasta el momento
-  2. Mantener `story.md` en `ACCEPTANCE/IN-PROGRESS`
-  3. Mostrar: `💾 Sesión guardada. Ejecuta /story-acceptance {story_id} para reanudar.`
-  4. Terminar el skill
+   1. Generar `acceptance-report.md` con el mismo template y la misma tabla de placeholders de 7d, con `{session_status}` = `partial` y `{verdict}` = `PENDING`, incluyendo los criterios evaluados hasta el momento; la forma de la tabla de detalle no cambia (`PENDIENTE` para los criterios sin evaluar)
+   2. Mantener `story.md` en `ACCEPTANCE/IN-PROGRESS`
+   3. Mostrar: `💾 Sesión guardada (verdict: PENDING). Ejecuta /story-acceptance {story_id} para reanudar.`
+   4. Terminar el skill
 
 Registrar por cada criterio: `{id, texto, resultado, observación, timestamp}`.
 
@@ -362,19 +375,25 @@ Al completar todos los criterios de la sesión:
 #### 7a. Calcular totales
 
 ```
-$TOTAL_CRITERIOS = total de criterios evaluados en esta sesión + ejecuciones anteriores (si reanudación)
+$TOTAL_CRITERIOS = todos los criterios a validar (Gherkin + DoD), más las filas de sesiones anteriores (si reanudación)
 $TOTAL_APPROVED  = criterios con APPROVED
 $TOTAL_REJECTED  = criterios con REJECTED
 $TOTAL_BLOCKED   = criterios con BLOCKED
+$N_EVALUADOS     = $TOTAL_APPROVED + $TOTAL_REJECTED + $TOTAL_BLOCKED
 ```
 
-#### 7b. Determinar resultado final
+#### 7b. Determinar el veredicto
 
-```
-si $TOTAL_REJECTED = 0 AND $TOTAL_BLOCKED = 0  → $FINAL_STATUS = ACCEPTANCE-APPROVED
-si $TOTAL_REJECTED > 0                         → $FINAL_STATUS = ACCEPTANCE-REJECTED
-si $TOTAL_REJECTED = 0 AND $TOTAL_BLOCKED > 0  → $FINAL_STATUS = ACCEPTANCE-BLOCKED
-```
+Deriva `$VERDICT` evaluando esta tabla **en orden** (primera fila que se cumple):
+
+| # | Condición | `$VERDICT` |
+|---|---|---|
+| 1 | La sesión termina con `[Q]` (`session-status: partial`) | `PENDING` |
+| 2 | `$TOTAL_REJECTED > 0` | `NEEDS-CHANGES` |
+| 3 | `$TOTAL_BLOCKED > 0` | `BLOCKED` |
+| 4 | En otro caso | `APPROVED` |
+
+El orden aplica la precedencia G-05 de `docs/policies/validation-contract-policy.md`: con rechazo y bloqueo gana `NEEDS-CHANGES`, y mientras la sesión es `partial` el veredicto es `PENDING`. Al completar una sesión reanudada, 7a ya suma las filas de la sesión anterior, así que el veredicto se recalcula con ellas.
 
 #### 7c. Preservar historial si existe acceptance-report.md previo
 
@@ -393,15 +412,17 @@ Leer `assets/acceptance-report-template.md` y completar todos los placeholders:
 | `{date}` | Fecha actual (YYYY-MM-DD) |
 | `{validator}` | `$VALIDATOR_NAME` |
 | `{dod_version}` | Fecha de modificación del DoD leído, o "no disponible" |
-| `{session_status}` | `complete` |
-| `{final_status}` | `ACCEPTANCE-APPROVED`, `ACCEPTANCE-REJECTED` o `ACCEPTANCE-BLOCKED` |
-| `{total_criterios}` | Total de criterios evaluados |
+| `{session_status}` | `complete` al terminar la sesión; `partial` en el camino `[Q]` |
+| `{verdict}` | `$VERDICT` según la regla de 7b |
+| `{verdict_reason}` | `APPROVED`: `{total_approved} de {total_criterios} criterios aprobados.` · `NEEDS-CHANGES`: `{total_rejected} criterio(s) rechazado(s) y {total_blocked} bloqueado(s).` · `BLOCKED`: `{total_blocked} criterio(s) bloqueado(s) sin evaluar; ninguno rechazado.` · `PENDING`: `Sesión parcial: {n_evaluados} de {total_criterios} criterios evaluados.` |
+| `{verdict_details}` | `APPROVED`: cadena vacía · `NEEDS-CHANGES` / `BLOCKED`: una línea por criterio `REJECTED` o `BLOCKED`, en orden: `- Criterio {N} — {RESULTADO}: {título del criterio}` · `PENDING`: `Ejecuta /story-acceptance {story_id} para reanudar.` |
+| `{total_criterios}` | Total de criterios a validar |
 | `{total_approved}` | Criterios APPROVED |
 | `{total_rejected}` | Criterios REJECTED |
 | `{total_blocked}` | Criterios BLOCKED |
+| `{n_evaluados}` | `$N_EVALUADOS` |
 | `{criterios_detalle}` | Tabla con filas: `\| N \| texto \| RESULTADO \| observación \| HH:MM \|` |
 | `{dod_criterios}` | Filas: `\| texto criterio DoD \| ✓ cumplido / ✗ no cumplido \|` según resultados |
-| `{estado_final_texto}` | `**ACCEPTANCE APROBADO**`, `**ACCEPTANCE RECHAZADO: N criterios no aprobados**` o `**ACCEPTANCE BLOQUEADO: N criterios sin evaluar**` |
 | `{historial_sesiones}` | Historial de sesiones previas o `<!-- Sin sesiones anteriores -->` |
 
 Escribir el archivo en `$STORY_DIR/acceptance-report.md`.
@@ -417,31 +438,33 @@ Para cada criterio en `$DOD_CRITERIOS`:
 
 ### Paso 8 — Actualizar frontmatter de story.md y mostrar resultado
 
-#### 8a. Actualizar frontmatter según resultado
+#### 8a. Actualizar frontmatter según el veredicto
 
-**Si `$FINAL_STATUS = ACCEPTANCE-APPROVED`:**
+**Si `$VERDICT = APPROVED`:**
 ```yaml
 status: ACCEPTANCE
 substatus: DONE
 updated: {fecha}
 ```
-Mostrar: `✅ ACCEPTANCE APROBADO: historia {story_id} lista para DELIVER`
+Mostrar: `✅ Veredicto: APPROVED — historia {story_id} lista para DELIVER`
 
-**Si `$FINAL_STATUS = ACCEPTANCE-REJECTED`:**
+**Si `$VERDICT = NEEDS-CHANGES`:**
 ```yaml
 status: READY-FOR-IMPLEMENT
 substatus: DONE
 updated: {fecha}
 ```
-Mostrar: `⚠️ ACCEPTANCE RECHAZADO: {N} criterio(s) no cumplen los criterios de aceptación. La historia regresa a READY-FOR-IMPLEMENT/DONE.`
+Mostrar: `⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} La historia regresa a READY-FOR-IMPLEMENT/DONE.`
 
-**Si `$FINAL_STATUS = ACCEPTANCE-BLOCKED`:**
+**Si `$VERDICT = BLOCKED`:**
 ```yaml
 status: ACCEPTANCE
 substatus: BLOCKED
 updated: {fecha}
 ```
-Mostrar: `⚠️ ACCEPTANCE BLOQUEADO: {N} criterio(s) no pudieron evaluarse. La historia permanece en ACCEPTANCE. Resuelve el impedimento y re-ejecuta /story-acceptance.`
+Mostrar: `⛔ Veredicto: BLOCKED — {verdict_reason} La historia permanece en ACCEPTANCE/BLOCKED. Resuelve el impedimento y vuelve a ejecutar /story-acceptance.`
+
+**Si `$VERDICT = PENDING`:** no llega a 8a — el camino `[Q]` del Paso 5 termina el skill y `story.md` se mantiene en `ACCEPTANCE/IN-PROGRESS`.
 
 #### 8b. Mostrar resumen final
 
@@ -456,24 +479,25 @@ Mostrar: `⚠️ ACCEPTANCE BLOQUEADO: {N} criterio(s) no pudieron evaluarse. La
  DoD-1    │ APPROVED  │ —
 ─────────────────────────────────────────────────────────────
  Total: {N} criterios │ {N_approved} APPROVED │ {N_rejected} REJECTED │ {N_blocked} BLOCKED
+ Veredicto: {verdict}
 ─────────────────────────────────────────────────────────────
 
-📄 Reporte generado: {$STORY_DIR}/acceptance-report.md
-📋 Estado story.md: ACCEPTANCE/DONE ✓                        (si ACCEPTANCE-APPROVED)
-📋 Estado story.md: READY-FOR-IMPLEMENT/DONE ⚠️               (si ACCEPTANCE-REJECTED)
-📋 Estado story.md: ACCEPTANCE/BLOCKED ⚠️                     (si ACCEPTANCE-BLOCKED)
+📄 Reporte generado: {$STORY_DIR}/acceptance-report.md (verdict: {verdict})
+📋 Estado story.md: ACCEPTANCE/DONE ✓                        (si APPROVED)
+📋 Estado story.md: READY-FOR-IMPLEMENT/DONE ⚠️               (si NEEDS-CHANGES)
+📋 Estado story.md: ACCEPTANCE/BLOCKED ⚠️                     (si BLOCKED)
 
-✅ ACCEPTANCE APROBADO: historia {story_id} lista para DELIVER
+✅ Veredicto: APPROVED — historia {story_id} lista para DELIVER
 ```
 o bien:
 ```
-⚠️ ACCEPTANCE RECHAZADO: {N} criterio(s) no cumplen los criterios de aceptación.
+⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} La historia regresa a READY-FOR-IMPLEMENT/DONE.
    La historia regresa a READY-FOR-IMPLEMENT/DONE para corrección.
    Revisa acceptance-report.md para detalles de los criterios rechazados.
 ```
-o bien (si ACCEPTANCE-BLOCKED):
+o bien (si BLOCKED):
 ```
-⚠️ ACCEPTANCE BLOQUEADO: {N} criterio(s) no pudieron evaluarse.
+⛔ Veredicto: BLOCKED — {verdict_reason} La historia permanece en ACCEPTANCE/BLOCKED. Resuelve el impedimento y vuelve a ejecutar /story-acceptance.
    La historia permanece en ACCEPTANCE/BLOCKED. Resuelve el impedimento y re-ejecuta /story-acceptance.
 ```
 
@@ -481,11 +505,12 @@ o bien (si ACCEPTANCE-BLOCKED):
 
 ## Salida
 
-- `$SPECS_BASE/specs/stories/<story-id>/acceptance-report.md` — reporte de validación con trazabilidad por criterio, resumen ejecutivo, historial de sesiones e historial de versiones anteriores
-- `story.md` frontmatter actualizado:
-  - `status: ACCEPTANCE / substatus: DONE` — si todos los criterios APPROVED (ACCEPTANCE-APPROVED)
-  - `status: READY-FOR-IMPLEMENT / substatus: DONE` — si ≥1 criterio REJECTED (ACCEPTANCE-REJECTED)
-  - `status: ACCEPTANCE / substatus: BLOCKED` — si ≥1 criterio BLOCKED sin ningún REJECTED (ACCEPTANCE-BLOCKED)
+- `$SPECS_BASE/specs/stories/<story-id>/acceptance-report.md` — reporte de validación con `verdict` en el frontmatter, `## Veredicto` como primera sección, trazabilidad por criterio, resumen ejecutivo e historial de sesiones
+- `story.md` frontmatter actualizado según el veredicto:
+  - `status: ACCEPTANCE / substatus: DONE` — veredicto `APPROVED`
+  - `status: READY-FOR-IMPLEMENT / substatus: DONE` — veredicto `NEEDS-CHANGES`
+  - `status: ACCEPTANCE / substatus: BLOCKED` — veredicto `BLOCKED`
+  - `status: ACCEPTANCE / substatus: IN-PROGRESS` — veredicto `PENDING` (se mantiene; sesión por reanudar)
 
 ## Test Cases
 
@@ -494,18 +519,18 @@ o bien (si ACCEPTANCE-BLOCKED):
 **Input:** Historia `STORY-NNN` con `status: VERIFY / substatus: DONE`, 2 escenarios Gherkin, DoD de la etapa acceptance presente
 **Acción:** Ejecutar `/story-acceptance STORY-NNN`, responder PASS a todos los criterios
 **Output esperado:**
-- `acceptance-report.md` con `final-status: ACCEPTANCE-APPROVED`, `session-status: complete`
+- `acceptance-report.md` con `verdict: APPROVED`, `session-status: complete`
 - `story.md` actualizado a `status: ACCEPTANCE / substatus: DONE`
-- Mensaje: "ACCEPTANCE APROBADO: historia STORY-NNN lista para DELIVER"
+- Mensaje: "Veredicto: APPROVED — historia STORY-NNN lista para DELIVER"
 
 ### Caso 2 — Criterio rechazado
 
 **Input:** Historia `STORY-NNN` con `status: VERIFY / substatus: DONE`
 **Acción:** Responder FAIL con observación "No muestra mensaje de error" al segundo criterio
 **Output esperado:**
-- `acceptance-report.md` con `final-status: ACCEPTANCE-REJECTED`, criterio 2 como REJECTED con observación
+- `acceptance-report.md` con `verdict: NEEDS-CHANGES`, criterio 2 como REJECTED con observación
 - `story.md` actualizado a `status: READY-FOR-IMPLEMENT / substatus: DONE`
-- Mensaje: "ACCEPTANCE RECHAZADO: 1 criterio(s) no cumplen los criterios de aceptación. La historia regresa a READY-FOR-IMPLEMENT/DONE."
+- Mensaje: "Veredicto: NEEDS-CHANGES — 1 criterio(s) rechazado(s) y 0 bloqueado(s). La historia regresa a READY-FOR-IMPLEMENT/DONE."
 
 ### Caso 3 — Estado incorrecto
 

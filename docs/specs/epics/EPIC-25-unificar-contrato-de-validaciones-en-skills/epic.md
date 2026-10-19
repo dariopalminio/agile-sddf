@@ -26,7 +26,7 @@ Alinear los seis skills de validación del framework (`epic-analyze`, `story-eva
 - [x] **STORY-142** — Alinear story-verify: Añadir veredicto y `verdict`, y reemplazar `RECHAZAR` por `NEEDS-CHANGES`
 - [ ] **STORY-143** — Validación end-to-end: Verificar los seis reportes contra el contrato y documentarlo en el README
 - [x] **STORY-144** — Alinear story-analyze: Añadir veredicto y `verdict` (`APPROVED` / `NEEDS-CHANGES`) al reporte de coherencia
-- [ ] **STORY-145** — Alinear story-acceptance: Reemplazar `final-status` por `verdict` (`APPROVED` / `NEEDS-CHANGES` / `BLOCKED` / `PENDING`) y mover el veredicto al inicio
+- [x] **STORY-145** — Alinear story-acceptance: Reemplazar `final-status` por `verdict` (`APPROVED` / `NEEDS-CHANGES` / `BLOCKED` / `PENDING`) y mover el veredicto al inicio
 - [x] **STORY-146** — Crear y alinear story-fix-plan para que corrija automáticamente los hallazgos de `analyze.md` siguiendo el contrato de validación y registre los cambios en `fix-plan-report.md`
 
 ## Criterios de salida

@@ -100,9 +100,9 @@ stateDiagram-v2
     VERIFY --> ACCEPTANCE : APPROVED
     VERIFY --> RFI : NEEDS-CHANGES
     VERIFY --> VERIFY : BLOCKED
-    ACCEPTANCE --> DELIVER : all APPROVED
-    ACCEPTANCE --> RFI : ≥1 REJECTED
-    ACCEPTANCE --> ACCEPTANCE : ≥1 BLOCKED
+    ACCEPTANCE --> DELIVER : APPROVED
+    ACCEPTANCE --> RFI : NEEDS-CHANGES
+    ACCEPTANCE --> ACCEPTANCE : BLOCKED
     DELIVER --> COMPLETED
     COMPLETED --> [*]
 
@@ -118,8 +118,8 @@ stateDiagram-v2
 | **Rework por revisión** | `CODE-REVIEW → READY-FOR-IMPLEMENT` (`NEEDS-CHANGES`) |
 | **Revisión incompleta** | `CODE-REVIEW → IMPLEMENT/DONE` (`BLOCKED`; repetir `story-code-review`) |
 | **Rework por verificación** | `VERIFY → READY-FOR-IMPLEMENT` (`NEEDS-CHANGES`) |
-| **Rework por aceptación** | `ACCEPTANCE → READY-FOR-IMPLEMENT` (≥1 REJECTED) |
-| **Bloqueo en aceptación** | `ACCEPTANCE → ACCEPTANCE` (≥1 BLOCKED, sin REJECTED) |
+| **Rework por aceptación** | `ACCEPTANCE → READY-FOR-IMPLEMENT` (`NEEDS-CHANGES`) |
+| **Bloqueo en aceptación** | `ACCEPTANCE → ACCEPTANCE` (`BLOCKED`) |
 | **Bloqueo en verificación** | `VERIFY → VERIFY` (`BLOCKED`) |
 | **Cancelación** | `* → CANCELED` (desde cualquier estado activo) |
 

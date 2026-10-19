@@ -6,12 +6,16 @@ date: 2026-05-16
 validator: "Darío Palminio"
 dod-version: "2026-05-15"
 session-status: partial
-final-status: IN-PROGRESS
+verdict: PENDING
 ---
 
 # Acceptance Report: STORY-062 — Edición de perfil de usuario
 
-> **Sesión parcial** — 1 de 2 criterios evaluados. Ejecuta `/story-acceptance STORY-062` para continuar.
+## Veredicto
+
+**Veredicto:** `PENDING` — Sesión parcial: 1 de 2 criterios evaluados.
+
+Ejecuta /story-acceptance STORY-062 para reanudar.
 
 ## Resumen ejecutivo
 
@@ -38,10 +42,6 @@ final-status: IN-PROGRESS
 | Criterios no funcionales validados | — no evaluado |
 | Comportamiento coincide con valor de negocio | — no evaluado |
 | Sin defectos bloqueantes | — no evaluado |
-
-## Estado final
-
-**EN PROGRESO** — Sesión interrumpida. Reanudar con `/story-acceptance STORY-062`.
 
 ## Historial de sesiones anteriores
 

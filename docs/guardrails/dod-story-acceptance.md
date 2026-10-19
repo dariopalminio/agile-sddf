@@ -9,7 +9,7 @@ applies-to: story
 slug: dod-story-acceptance
 title: "DoD ACCEPTANCE — Story (transition guardrail)"
 created: 2026-09-24
-updated: 2026-09-24
+updated: 2026-10-17
 ---
 
 # DoD ACCEPTANCE — Story
@@ -23,7 +23,7 @@ updated: 2026-09-24
 
 ## ✅ Criterios de Documentación y Trazabilidad
 
-- [ ] `acceptance-report.md` generado con resultado final `ACCEPTANCE-APPROVED`
+- [ ] `acceptance-report.md` generado con `verdict: APPROVED`
 - [ ] Todos los criterios del reporte tienen resultado registrado (APPROVED/REJECTED/BLOCKED) con observaciones
 - [ ] `story.md` actualizado con `status: ACCEPTANCE / substatus: DONE`
 - [ ] El validador humano ha confirmado explícitamente la aprobación de la historia

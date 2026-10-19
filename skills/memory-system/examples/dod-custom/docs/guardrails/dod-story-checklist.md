@@ -116,7 +116,7 @@ No aplica al contenido del repositorio — eso lo gobiernan los guardrails `gr-*
 
 <!-- Evidencia que debe quedar registrada antes de cerrar el acceptance. -->
 
-- [ ] `acceptance-report.md` generado con resultado final `ACCEPTANCE-APPROVED`
+- [ ] `acceptance-report.md` generado con `verdict: APPROVED`
 - [ ] Todos los criterios del reporte tienen resultado registrado (APPROVED/REJECTED/BLOCKED) con observaciones
 - [ ] `story.md` actualizado con `status: ACCEPTANCE / substatus: DONE`
 - [ ] El validador humano ha confirmado explícitamente la aprobación de la historia

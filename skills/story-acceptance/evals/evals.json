@@ -1,13 +1,13 @@
 {
   "skill": "story-acceptance",
-  "version": "1.0.0",
-  "description": "Casos de prueba para story-acceptance: verifica el comportamiento del skill en los flujos de validación manual (happy path, rechazo, estado inválido, sesión parcial, DoD ausente, modo --dry-run y flag --restart), asegurando la correcta generación de acceptance-report.md y actualización del frontmatter de story.md.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para story-acceptance: verifica el comportamiento del skill en los flujos de validación manual (happy path, rechazo, estado inválido, sesión parcial, DoD ausente, modo --dry-run y flag --restart), asegurando la correcta generación de acceptance-report.md con veredicto APPROVED / NEEDS-CHANGES / BLOCKED / PENDING y actualización del frontmatter de story.md.",
   "cases": [
     {
       "id": "TC-001",
       "name": "happy-path-todos-approved",
       "type": "happy-path",
-      "description": "Flujo completo con historia en VERIFY/DONE, 2 escenarios Gherkin y sección ACCEPTANCE en el DoD. El validador responde PASS a todos los criterios. El skill debe generar acceptance-report.md con final-status ACCEPTANCE-APPROVED, session-status complete, y actualizar story.md a ACCEPTANCE/DONE.",
+      "description": "Flujo completo con historia en VERIFY/DONE, 2 escenarios Gherkin y sección ACCEPTANCE en el DoD. El validador responde PASS a todos los criterios. El skill debe generar acceptance-report.md con verdict APPROVED, session-status complete, y actualizar story.md a ACCEPTANCE/DONE.",
       "input": {
         "story_id": "STORY-055",
         "story_status": "VERIFY",
@@ -19,7 +19,8 @@
       },
       "expected": {
         "contains": [
-          "ACCEPTANCE-APPROVED",
+          "(verdict: APPROVED)",
+          "Veredicto: APPROVED",
           "session-status: complete",
           "ACCEPTANCE",
           "DONE",
@@ -28,10 +29,11 @@
           "APPROVED"
         ],
         "not_contains": [
-          "ACCEPTANCE-REJECTED",
-          "ACCEPTANCE-BLOCKED",
-          "REJECTED",
-          "BLOCKED",
+          "(verdict: NEEDS-CHANGES)",
+          "(verdict: BLOCKED)",
+          "(verdict: PENDING)",
+          "ACCEPTANCE-APPROVED",
+          "final-status",
           "READY-FOR-IMPLEMENT",
           "Entorno inválido"
         ]
@@ -42,7 +44,7 @@
       "id": "TC-002",
       "name": "criterio-rechazado-historia-regresa-a-implement",
       "type": "fail-path",
-      "description": "Historia en VERIFY/DONE. El validador responde FAIL con observación al segundo criterio Gherkin. El skill debe generar acceptance-report.md con final-status ACCEPTANCE-REJECTED, y actualizar story.md a READY-FOR-IMPLEMENT/DONE. El criterio FAIL debe contener la observación registrada.",
+      "description": "Historia en VERIFY/DONE. El validador responde FAIL con observación al segundo criterio Gherkin. El skill debe generar acceptance-report.md con verdict NEEDS-CHANGES, y actualizar story.md a READY-FOR-IMPLEMENT/DONE. El criterio FAIL debe contener la observación registrada.",
       "input": {
         "story_id": "STORY-060",
         "story_status": "VERIFY",
@@ -56,7 +58,8 @@
       },
       "expected": {
         "contains": [
-          "ACCEPTANCE-REJECTED",
+          "(verdict: NEEDS-CHANGES)",
+          "Veredicto: NEEDS-CHANGES",
           "REJECTED",
           "READY-FOR-IMPLEMENT",
           "DONE",
@@ -65,8 +68,10 @@
           "regresa a READY-FOR-IMPLEMENT"
         ],
         "not_contains": [
-          "ACCEPTANCE-APPROVED",
-          "ACCEPTANCE-BLOCKED",
+          "(verdict: APPROVED)",
+          "(verdict: BLOCKED)",
+          "ACCEPTANCE-REJECTED",
+          "final-status",
           "lista para DELIVER",
           "Entorno inválido"
         ]
@@ -94,8 +99,7 @@
         ],
         "not_contains": [
           "acceptance-report.md",
-          "ACCEPTANCE-APPROVED",
-          "ACCEPTANCE-REJECTED",
+          "(verdict: ",
           "Iniciando acceptance",
           "Entorno inválido"
         ]
@@ -123,12 +127,12 @@
           "DoD de la etapa acceptance no encontrado",
           "migrate --from=dod-monolithic",
           "criterios de aceptación de story.md",
-          "ACCEPTANCE-APPROVED",
+          "(verdict: APPROVED)",
           "acceptance-report.md"
         ],
         "not_contains": [
           "Entorno inválido",
-          "ACCEPTANCE-REJECTED",
+          "(verdict: NEEDS-CHANGES)",
           "ACCEPTANCE/BLOCKED",
           "dod-story-checklist"
         ]
@@ -156,14 +160,14 @@
           "sesión de acceptance parcial",
           "Continuar",
           "Criterio 2",
-          "ACCEPTANCE-APPROVED",
+          "(verdict: APPROVED)",
           "session-status: complete",
           "acceptance-report.md"
         ],
         "not_contains": [
           "Criterio 1",
           "Entorno inválido",
-          "ACCEPTANCE-REJECTED"
+          "(verdict: NEEDS-CHANGES)"
         ]
       },
       "threshold": 0.90
@@ -172,7 +176,7 @@
       "id": "TC-006",
       "name": "criterio-bloqueado-sin-rechazados-historia-queda-blocked",
       "type": "edge-case",
-      "description": "Historia en VERIFY/DONE. El validador responde BLOCKED con razón al primer criterio y APPROVED al resto. El skill debe generar acceptance-report.md con final-status ACCEPTANCE-BLOCKED y actualizar story.md a ACCEPTANCE/BLOCKED.",
+      "description": "Historia en VERIFY/DONE. El validador responde BLOCKED con razón al primer criterio y APPROVED al resto. El skill debe generar acceptance-report.md con verdict BLOCKED y actualizar story.md a ACCEPTANCE/BLOCKED.",
       "input": {
         "story_id": "STORY-085",
         "story_status": "VERIFY",
@@ -185,7 +189,8 @@
       },
       "expected": {
         "contains": [
-          "ACCEPTANCE-BLOCKED",
+          "(verdict: BLOCKED)",
+          "Veredicto: BLOCKED",
           "BLOCKED",
           "ACCEPTANCE",
           "El entorno de staging no está disponible",
@@ -193,8 +198,9 @@
           "Resuelve el impedimento"
         ],
         "not_contains": [
-          "ACCEPTANCE-APPROVED",
-          "ACCEPTANCE-REJECTED",
+          "(verdict: APPROVED)",
+          "(verdict: NEEDS-CHANGES)",
+          "ACCEPTANCE-BLOCKED",
           "READY-FOR-IMPLEMENT",
           "lista para DELIVER",
           "Entorno inválido"
@@ -224,8 +230,7 @@
         ],
         "not_contains": [
           "acceptance-report.md generado",
-          "ACCEPTANCE-APPROVED",
-          "ACCEPTANCE-REJECTED",
+          "(verdict: ",
           "ACCEPTANCE/IN-PROGRESS",
           "Entorno inválido"
         ]
@@ -253,7 +258,7 @@
         "contains": [
           "Criterio 1",
           "Criterio 2",
-          "ACCEPTANCE-APPROVED",
+          "(verdict: APPROVED)",
           "session-status: complete",
           "acceptance-report.md"
         ],
@@ -270,7 +275,7 @@
       "id": "TC-009",
       "name": "fail-blocked-mixto-historia-regresa-a-implement",
       "type": "edge-case",
-      "description": "Historia en VERIFY/DONE con 3 criterios. El validador responde FAIL al criterio 1 y BLOCKED al criterio 2, APPROVED al criterio 3. Según la regla: si hay ≥1 REJECTED + ≥1 BLOCKED → final-status ACCEPTANCE-REJECTED, story.md regresa a READY-FOR-IMPLEMENT/DONE.",
+      "description": "Historia en VERIFY/DONE con 3 criterios. El validador responde FAIL al criterio 1 y BLOCKED al criterio 2, APPROVED al criterio 3. Según la regla: si hay ≥1 REJECTED + ≥1 BLOCKED → verdict NEEDS-CHANGES, story.md regresa a READY-FOR-IMPLEMENT/DONE.",
       "input": {
         "story_id": "STORY-090",
         "story_status": "VERIFY",
@@ -284,7 +289,8 @@
       },
       "expected": {
         "contains": [
-          "ACCEPTANCE-REJECTED",
+          "(verdict: NEEDS-CHANGES)",
+          "Veredicto: NEEDS-CHANGES",
           "REJECTED",
           "BLOCKED",
           "READY-FOR-IMPLEMENT",
@@ -292,8 +298,8 @@
           "acceptance-report.md"
         ],
         "not_contains": [
-          "ACCEPTANCE-APPROVED",
-          "ACCEPTANCE-BLOCKED",
+          "(verdict: APPROVED)",
+          "(verdict: BLOCKED)",
           "lista para DELIVER",
           "Entorno inválido"
         ]
@@ -317,8 +323,7 @@
         "not_contains": [
           "Iniciando acceptance",
           "acceptance-report.md",
-          "ACCEPTANCE-APPROVED",
-          "ACCEPTANCE-REJECTED",
+          "(verdict: ",
           "VERIFY",
           "ACCEPTANCE/IN-PROGRESS"
         ]
@@ -348,7 +353,7 @@
           "El botón de submit no responde"
         ],
         "not_contains": [
-          "ACCEPTANCE-APPROVED",
+          "(verdict: APPROVED)",
           "Entorno inválido"
         ]
       },
@@ -375,13 +380,67 @@
           "session-status: partial",
           "Sesión guardada",
           "ACCEPTANCE/IN-PROGRESS",
-          "acceptance-report.md"
+          "acceptance-report.md",
+          "(verdict: PENDING)"
         ],
         "not_contains": [
-          "ACCEPTANCE-APPROVED",
-          "ACCEPTANCE-REJECTED",
+          "(verdict: APPROVED)",
+          "(verdict: NEEDS-CHANGES)",
           "session-status: complete",
           "Entorno inválido"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-013",
+      "name": "reporte-completo-existente-leido-por-verdict",
+      "type": "edge-case",
+      "description": "Existe un acceptance-report.md completo con verdict NEEDS-CHANGES. Al ejecutar el skill y responder 'v', el aviso del Estado C debe mostrar el veredicto leído del campo verdict sin leer final-status.",
+      "input": {
+        "story_id": "STORY-060",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "existing_report": {
+          "session-status": "complete",
+          "verdict": "NEEDS-CHANGES"
+        },
+        "responses": ["v"]
+      },
+      "expected": {
+        "contains": [
+          "acceptance-report.md completo con veredicto NEEDS-CHANGES"
+        ],
+        "not_contains": [
+          "final-status",
+          "ACCEPTANCE-REJECTED",
+          "(verdict: "
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-014",
+      "name": "reporte-completo-heredado-sin-verdict",
+      "type": "edge-case",
+      "description": "Existe un acceptance-report.md completo heredado (session-status complete, final-status ACCEPTANCE-REJECTED) sin campo verdict. Al ejecutar el skill y responder 'v', el aviso del Estado C debe identificar el reporte como anterior al contrato de validación sin leer final-status.",
+      "input": {
+        "story_id": "STORY-060",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "existing_report": {
+          "session-status": "complete",
+          "final-status": "ACCEPTANCE-REJECTED"
+        },
+        "responses": ["v"]
+      },
+      "expected": {
+        "contains": [
+          "sin veredicto (reporte anterior al contrato de validación)"
+        ],
+        "not_contains": [
+          "con veredicto",
+          "(verdict: "
         ]
       },
       "threshold": 0.90

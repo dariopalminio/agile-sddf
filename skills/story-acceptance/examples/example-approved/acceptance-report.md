@@ -6,10 +6,14 @@ date: 2026-05-16
 validator: "Darío Palminio"
 dod-version: "2026-05-15"
 session-status: complete
-final-status: ACCEPTANCE-APPROVED
+verdict: APPROVED
 ---
 
 # Acceptance Report: STORY-055 — Login de usuario con email y contraseña
+
+## Veredicto
+
+**Veredicto:** `APPROVED` — 6 de 6 criterios aprobados.
 
 ## Resumen ejecutivo
 
@@ -40,14 +44,10 @@ final-status: ACCEPTANCE-APPROVED
 | Criterios no funcionales validados | ✓ cumplido |
 | Comportamiento coincide con valor de negocio | ✓ cumplido |
 | Sin defectos bloqueantes | ✓ cumplido |
-| acceptance-report.md generado con ACCEPTANCE-APPROVED | ✓ cumplido |
+| acceptance-report.md generado con `verdict: APPROVED` | ✓ cumplido |
 | Todos los criterios registrados con observaciones | ✓ cumplido |
 | story.md actualizado con ACCEPTANCE/DONE | ✓ cumplido |
 | Validador humano confirmó la aprobación | ✓ cumplido |
-
-## Estado final
-
-**ACCEPTANCE APROBADO** — Historia STORY-055 lista para DELIVER
 
 ## Historial de sesiones anteriores
 

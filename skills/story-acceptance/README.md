@@ -8,16 +8,29 @@
 
 ## What it does
 
-Guía una validación humana, criterio por criterio, para la etapa ACCEPTANCE del pipeline SDD. Recopila resultados `PASS`, `FAIL` o `BLOCKED`, conserva el historial de la sesión y actualiza el estado de la historia según el resultado.
+Guía una validación humana, criterio por criterio, para la etapa ACCEPTANCE del pipeline SDD. Recopila resultados `PASS`, `FAIL` o `BLOCKED`, conserva el historial de la sesión y actualiza el estado de la historia según el veredicto.
 
 **Produces:**
 
 - `<directorio-historia>/acceptance-report.md` con trazabilidad de la validación.
-- El frontmatter de `story.md` actualizado de forma condicional tras la aceptación, rechazo o bloqueo.
+- El frontmatter de `story.md` actualizado de forma condicional según el veredicto.
 
 **Does not do:**
 
 - No ejecuta pruebas automáticas ni revisa código fuente.
+
+## Veredicto
+
+El reporte declara `verdict` en el frontmatter y en la sección `## Veredicto` (primer `##` tras el título). Regla evaluada en orden (primera fila que se cumple):
+
+| Veredicto | Condición | Estado de `story.md` |
+|---|---|---|
+| `PENDING` | La sesión termina con `[Q]` (`session-status: partial`) | `ACCEPTANCE/IN-PROGRESS` (se mantiene) |
+| `NEEDS-CHANGES` | `≥ 1` criterio `REJECTED`, con o sin bloqueados | `READY-FOR-IMPLEMENT/DONE` |
+| `BLOCKED` | `≥ 1` criterio `BLOCKED` y ninguno `REJECTED` | `ACCEPTANCE/BLOCKED` |
+| `APPROVED` | En otro caso | `ACCEPTANCE/DONE` |
+
+El vocabulario y la precedencia siguen `docs/policies/validation-contract-policy.md`.
 
 ---
 
