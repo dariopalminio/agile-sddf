@@ -113,7 +113,7 @@
       "id": "TC-005",
       "name": "edge-solo-hallazgos-fuera-de-alcance",
       "type": "edge-case",
-      "description": "STORY-205 con analyze.md ⚠️ cuyos únicos hallazgos son INC-001 [WARNING] tipo D (estado de epic.md) y una recomendación REC sobre story.md (reformular el «Para»); DoD todo ✓. Existen design.md y tasks.md, no testcases.md. Ningún hallazgo se resuelve en los archivos del plan: el skill debe emitir el ℹ️ correspondiente, listar ambos con su responsable (PO, /story-improve) y no escribir ningún archivo.",
+      "description": "STORY-205 con analyze.md ⚠️ cuyos únicos hallazgos son INC-001 [WARNING] tipo D (estado de epic.md) y una recomendación REC sobre story.md (reformular el «Para»); DoD todo ✓. Existen design.md y tasks.md, no testcases.md. Ningún hallazgo se resuelve en los archivos del plan: el skill debe emitir el ℹ️ correspondiente, listar ambos con su responsable (PO, /story-refine) y no escribir ningún archivo.",
       "input": {
         "flags": [
           "STORY-205",
@@ -126,7 +126,7 @@
           "ℹ️",
           "ningún hallazgo se resuelve en los archivos del plan",
           "epic.md",
-          "/story-improve"
+          "/story-refine"
         ],
         "not_contains": [
           "✓ Backup creado",

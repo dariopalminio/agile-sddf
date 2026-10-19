@@ -178,7 +178,7 @@ Terminar sin escribir ningún archivo.
    |---|---|
    | **Aplicable — <archivos>** | La acción requerida o la recomendación se resuelve editando uno o más archivos de `$PLAN_FILES` |
    | **Ya resuelto** | La evidencia citada (tarea, caso, fila, línea, texto) ya no existe o ya cumple lo pedido en el archivo actual |
-   | **Fuera de alcance** | La acción exige tocar un archivo que no está en `$PLAN_FILES`. Responsable sugerido: `story.md` → `/story-improve` o PO; `tasks.md` ausente → `/story-tasking`; `testcases.md` ausente → `/story-testcases`; `epic.md` → PO o skills de épica; otro archivo → responsable humano |
+   | **Fuera de alcance** | La acción exige tocar un archivo que no está en `$PLAN_FILES`. Responsable sugerido: `story.md` → `/story-refine` o PO; `tasks.md` ausente → `/story-tasking`; `testcases.md` ausente → `/story-testcases`; `epic.md` → PO o skills de épica; otro archivo → responsable humano |
 
    Un hallazgo que afecta a varios archivos se aplica en los que existen; la parte que exige un archivo ausente se registra además como fuera de alcance (por ejemplo, tipo A sin `tasks.md`: se añade el elemento de diseño y el caso de prueba, y la tarea queda pendiente para `/story-tasking`).
 

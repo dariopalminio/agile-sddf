@@ -104,7 +104,7 @@ const CANONICAL_FILES = new Set(['story.md', 'epic.md', 'project.md', 'spec.md',
 // Exclusiones (D-3): derivados de historia, directorios de templates/caché y pre-split.
 const EXCLUDED_FILES = new Set([
   'design.md', 'tasks.md', 'testcases.md', 'analyze.md', 'fix-directives.md',
-  'finvest-evaluation-report.md', 'story-improvement-log.md',
+  'finvest-evaluation-report.md', 'story-improvement-log.md', 'story-refinement-log.md',
 ]);
 
 // Un slug declarado como `<placeholder>` pertenece a un template suelto (p. ej. adr-template.md):

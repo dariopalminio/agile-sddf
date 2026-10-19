@@ -32,7 +32,7 @@ Evalúa una historia con la rúbrica FINVEST (Formato + INVEST), asigna puntuaci
 
 **Do NOT use it when:**
 
-- Debas aplicar las recomendaciones de un reporte existente → use `[[story-improve]]` instead.
+- Debas aplicar las recomendaciones de un reporte existente → use `[[story-refine]]` instead.
 - El veredicto sea dividir una historia grande → use `[[story-split]]` instead.
 
 ---

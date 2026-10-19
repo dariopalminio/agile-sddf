@@ -1,5 +1,5 @@
 ---
-type: improvement-log
+type: refinement-log
 story-id: <STORY-NNN>
 improved: <YYYY-MM-DD>
 dimensions-improved: [<lista-de-dimensiones>]

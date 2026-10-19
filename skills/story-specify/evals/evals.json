@@ -7,7 +7,7 @@
       "id": "TC-001",
       "name": "ciclo-completo-historia-nueva-aprobada",
       "type": "happy-path",
-      "description": "Flujo completo con historia nueva: el contrato local resuelve una raíz válida → story-creation → story-evaluation devuelve APPROVED → el orquestador actualiza el frontmatter a SPECIFY/DONE y muestra el resumen final con ruta del archivo generado. No se invocan story-split ni story-improve.",
+      "description": "Flujo completo con historia nueva: el contrato local resuelve una raíz válida → story-creation → story-evaluation devuelve APPROVED → el orquestador actualiza el frontmatter a SPECIFY/DONE y muestra el resumen final con ruta del archivo generado. No se invocan story-split ni story-refine.",
       "input": {
         "context": "Un vendedor de una empresa SaaS quiere exportar su lista de clientes activos a CSV para compartirla con su gerente antes de la reunión mensual de pipeline."
       },
@@ -25,7 +25,7 @@
         "not_contains": [
           "Entorno inválido",
           "story-split",
-          "story-improve",
+          "story-refine",
           "NEEDS-REFINEMENT",
           "SPLIT"
         ]
@@ -70,7 +70,7 @@
           "story-creation",
           "story-evaluation",
           "story-split",
-          "story-improve",
+          "story-refine",
           "SPECIFY",
           "Refinamiento finalizado"
         ]
@@ -106,14 +106,14 @@
       "id": "TC-005",
       "name": "gate-antibucle-verdict-needs-refinement",
       "type": "edge-case",
-      "description": "story-evaluation devuelve verdict NEEDS-REFINEMENT. El orquestador ejecuta story-improve (Paso 5A) y luego el rol product-owner (Paso 5B). Tras el refinamiento, el gate anti-bucle (Paso 6) debe presentar al usuario exactamente tres opciones explícitas sin volver automáticamente al Paso 3.",
+      "description": "story-evaluation devuelve verdict NEEDS-REFINEMENT. El orquestador ejecuta story-refine (Paso 5A) y luego el rol product-owner (Paso 5B). Tras el refinamiento, el gate anti-bucle (Paso 6) debe presentar al usuario exactamente tres opciones explícitas sin volver automáticamente al Paso 3.",
       "input": {
-        "context": "Historia STORY-030 con scores I=2, N=3, E=3 en el reporte FINVEST. story-evaluation retorna verdict: NEEDS-REFINEMENT. story-improve aplica mejoras y genera story-improvement-log.md."
+        "context": "Historia STORY-030 con scores I=2, N=3, E=3 en el reporte FINVEST. story-evaluation retorna verdict: NEEDS-REFINEMENT. story-refine aplica mejoras y genera story-refinement-log.md."
       },
       "expected": {
         "contains": [
           "NEEDS-REFINEMENT",
-          "story-improve",
+          "story-refine",
           "product-owner",
           "Seguir iterando",
           "Cerrar manualmente",

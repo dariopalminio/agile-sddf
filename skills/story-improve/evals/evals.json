@@ -1,129 +1,49 @@
 {
   "skill": "story-improve",
-  "version": "1.1.0",
-  "description": "Casos de prueba para story-improve: aplica recomendaciones FINVEST a story.md",
+  "version": "1.0.0",
+  "description": "Compatibilidad del alias deprecado story-improve con story-refine",
   "cases": [
     {
       "id": "TC-001",
-      "name": "happy-path-needs-refinement-applies-improvements",
+      "name": "aviso-y-delegacion-con-story-id",
       "type": "happy-path",
-      "description": "Historia STORY-075 con verdict: NEEDS-REFINEMENT (I=2, N=3, E=3) — el skill debe aplicar mejoras en las 3 dimensiones con score ≤ 3, crear story.md.bak, actualizar story.md y generar story-improvement-log.md. Usar los archivos de examples/example-refinar-input/ como contexto de entrada.",
+      "description": "Con la fixture aprobada STORY-074, /story-improve --story-id STORY-074 emite el aviso literal de deprecación y la línea de delegación antes de ejecutar /story-refine --story-id STORY-074. El veredicto APPROVED termina sin escrituras.",
       "input": {
-        "input_path": "examples/example-refinar-input/",
-        "flags": ["--story-id STORY-075"]
-      },
-      "expected": {
-        "contains": [
-          "✓ story.md.bak",
-          "✓ story-improvement-log.md",
-          "Dimensiones mejoradas",
-          "Siguiente paso"
-        ],
-        "not_contains": [
-          "ℹ️",
-          "❌"
-        ]
-      },
-      "threshold": 0.90
-    },
-    {
-      "id": "TC-002",
-      "name": "gate-approved-no-files-written",
-      "type": "fail-fast",
-      "description": "Historia STORY-074 con verdict: APPROVED (score 4.19) — el skill debe emitir el mensaje ℹ️ y terminar inmediatamente sin crear ni modificar ningún archivo. Usar los archivos de examples/example-aprobada-input/.",
-      "input": {
-        "input_path": "examples/example-aprobada-input/",
+        "input_path": "../story-refine/examples/example-aprobada-input/",
         "flags": ["--story-id STORY-074"]
       },
       "expected": {
         "contains": [
-          "ℹ️",
+          "⚠️ story-improve está deprecado. Usa /story-refine.",
+          "→ delegando en /story-refine --story-id STORY-074",
           "ya tiene veredicto APPROVED"
         ],
         "not_contains": [
-          "✓ story.md.bak",
-          "story-improvement-log.md",
-          "Dimensiones mejoradas"
-        ]
-      },
-      "threshold": 1.0
-    },
-    {
-      "id": "TC-003",
-      "name": "error-handling-missing-finvest-report",
-      "type": "error-handling",
-      "description": "Historia STORY-099 cuyo directorio tiene story.md pero no finvest-evaluation-report.md. El skill debe emitir ❌ con el nombre del archivo faltante y sugerir ejecutar /story-evaluation para generarlo.",
-      "input": {
-        "flags": ["--story-id STORY-099"],
-        "context": "Directorio docs/specs/stories/STORY-099-test/ existe con story.md válido pero sin finvest-evaluation-report.md"
-      },
-      "expected": {
-        "contains": [
-          "❌",
-          "finvest-evaluation-report.md",
-          "story-evaluation"
-        ],
-        "not_contains": [
           "story.md.bak",
-          "story-improvement-log.md"
+          "story-refinement-log.md"
         ]
       },
       "threshold": 1.0
     },
     {
-      "id": "TC-004",
-      "name": "fail-fast-no-story-id-prompts-user",
-      "type": "fail-fast",
-      "description": "El skill se invoca sin el parámetro --story-id. En modo manual debe solicitar el ID de la historia al usuario con la pregunta definida en el SKILL.md, sin escribir ningún archivo ni emitir error.",
+      "id": "TC-002",
+      "name": "sin-story-id-delega-la-solicitud-de-id",
+      "type": "edge-case",
+      "description": "Sin --story-id, el alias emite el aviso y delega en /story-refine sin argumentos; la salida posterior solicita el ID según el contrato del skill canónico, sin escribir archivos.",
       "input": {
+        "input_path": "../story-refine/examples/example-aprobada-input/",
         "flags": []
       },
       "expected": {
         "contains": [
-          "¿Qué historia",
-          "STORY-"
+          "⚠️ story-improve está deprecado. Usa /story-refine.",
+          "→ delegando en /story-refine",
+          "¿Qué historia deseas mejorar?"
         ],
         "not_contains": [
-          "❌",
-          "story.md.bak"
+          "story.md.bak",
+          "❌"
         ]
-      },
-      "threshold": 1.0
-    },
-    {
-      "id": "TC-005",
-      "name": "edge-case-needs-refinement-multiple-low-dimensions",
-      "type": "edge-case",
-      "description": "Historia con verdict: NEEDS-REFINEMENT y cuatro dimensiones con score ≤ 3 (I=1, N=2, E=2, S=3). El skill debe mejorar todas las dimensiones afectadas, crear el backup y generar el log con todas las dimensiones listadas en dimensions-improved. No activa el gate APPROVED.",
-      "input": {
-        "flags": ["--story-id STORY-REJ"],
-        "context": "Historia con finvest-evaluation-report.md que tiene verdict: NEEDS-REFINEMENT, scores I=1, N=2, E=2, S=3 y recomendaciones explícitas para cada dimensión"
-      },
-      "expected": {
-        "contains": [
-          "✓ story.md.bak",
-          "story-improvement-log.md",
-          "Dimensiones mejoradas"
-        ],
-        "not_contains": [
-          "ya tiene veredicto APPROVED",
-          "ℹ️"
-        ]
-      },
-      "threshold": 0.90
-    },
-    {
-      "id": "TC-006",
-      "name": "reporte-sin-verdict-no-escribe",
-      "type": "fail-fast",
-      "description": "Reporte FINVEST heredado sin verdict: story-improve pide regenerarlo y no escribe archivos.",
-      "input": {
-        "flags": ["--story-id STORY-075"],
-        "context": "Existe finvest-evaluation-report.md de STORY-075 con frontmatter válido pero sin campo verdict; existe story.md."
-      },
-      "expected": {
-        "contains": ["sin campo verdict", "/story-evaluation"],
-        "not_contains": ["story.md.bak"]
       },
       "threshold": 1.0
     }

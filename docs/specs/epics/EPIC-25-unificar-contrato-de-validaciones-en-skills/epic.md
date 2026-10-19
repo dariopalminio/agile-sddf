@@ -28,6 +28,7 @@ Alinear los seis skills de validación del framework (`epic-analyze`, `story-eva
 - [x] **STORY-145** — Alinear story-acceptance: Reemplazar `final-status` por `verdict` (`APPROVED` / `NEEDS-CHANGES` / `BLOCKED` / `PENDING`) y mover el veredicto al inicio
 - [x] **STORY-146** — Crear y alinear story-fix-plan para que corrija automáticamente los hallazgos de `analyze.md` siguiendo el contrato de validación y registre los cambios en `fix-plan-report.md`
 - [x] **STORY-143** — Validación end-to-end: Verificar los seis reportes contra el contrato y documentarlo en el README
+- [x] **STORY-130** — Renombrar skill `story-improve` a `story-refine`. Se aprovecha esta oportunidad para alinear el skill con el contrato de validación unificado y nombres consistentes al flujo. El skill canónico debe ser `story-refine` y `story-improve` queda como alias deprecado. Renombrar el log y su plantilla, actualizar los consumidores activos, las exclusiones de memory-system y el CHANGELOG.
 
 ## Criterios de salida
 

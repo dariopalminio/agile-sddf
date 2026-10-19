@@ -1,7 +1,7 @@
 ---
 name: story-specify
 description: >-
-  Orquesta el flujo de especificación (story-creation → story-evaluation → story-split → story-improve)
+  Orquesta el flujo de especificación (story-creation → story-evaluation → story-split → story-refine)
   produciendo historias SPECIFY/DONE listas para el pipeline de planning.
   Invocar para "story-specify", "especificar historia" o "ciclo de especificación".
 triggers:
@@ -22,10 +22,10 @@ Orquestador del flujo completo de especificación de historias. Guía al usuario
 El flujo base es: **story-creation → story-evaluation → story-split**.
 
 **Qué hace este skill:**
-- Orquesta `story-creation → story-evaluation → story-split → story-improve` y el rol local `product-owner` en ciclo interactivo
+- Orquesta `story-creation → story-evaluation → story-split → story-refine` y el rol local `product-owner` en ciclo interactivo
 - Gestiona un backlog de sesión con registro de todas las historias activas y derivadas
 - Mantiene trazabilidad de historias originales y sus splits durante toda la sesión
-- Aplica mejoras automáticas por dimensión FINVEST con `story-improve` antes del refinamiento conversacional
+- Aplica mejoras automáticas por dimensión FINVEST con `story-refine` antes del refinamiento conversacional
 - Conduce en esta sesión, con el rol local `product-owner`, el discovery y los gaps de contexto que la automatización no puede resolver
 - Actualiza el frontmatter de cada historia conforme avanza el ciclo
 - Implementa un gate anti-bucle que requiere decisión explícita del usuario antes de iterar
@@ -67,7 +67,7 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 
 ## Dependencias
 
-- Skills: [`story-creation`, `story-evaluation`, `story-split`, `story-improve`]
+- Skills: [`story-creation`, `story-evaluation`, `story-split`, `story-refine`]
 - Rol local: `assets/agents/product-owner.md` (entrevistador, lo lee esta sesión).
 
 ---
@@ -223,26 +223,26 @@ Conservar la historia actual como ítem activo y continuar al Paso 5A.
 
 ---
 
-### Paso 5A — Aplicar mejoras automáticas FINVEST (`story-improve`, modo Agent)
+### Paso 5A — Aplicar mejoras automáticas FINVEST (`story-refine`, modo Agent)
 
 Si el veredicto no es `APPROVED` y la historia sigue activa tras el split (o el split no aplica):
 
-Mostrar `▶ Invocando story-improve --story-id <STORY-NNN> (modo Agent).` e invocar el skill `story-improve` en modo Agent:
+Mostrar `▶ Invocando story-refine --story-id <STORY-NNN> (modo Agent).` e invocar el skill `story-refine` en modo Agent:
 - `--story-id <STORY-NNN>` con el ID de la historia activa
 - Modo Agent: automático, sin confirmación interactiva
 
-**Si `story-improve` informa que el veredicto ya es `APPROVED` (gate interno del skill):**
+**Si `story-refine` informa que el veredicto ya es `APPROVED` (gate interno del skill):**
 - Mostrar: `ℹ️ <STORY-NNN> ya tiene veredicto APPROVED — avanzando al gate`
 - Actualizar el registro con `Veredicto FINVEST = APPROVED`
 - Ir directamente al Paso 6 (omitir Paso 5B)
 
-**Si `story-improve` completa con mejoras aplicadas:**
-- Registrar en el backlog: `story-improvement-log.md generado`
+**Si `story-refine` completa con mejoras aplicadas:**
+- Registrar en el backlog: `story-refinement-log.md generado`
 - Mostrar resumen breve de dimensiones mejoradas
 - Continuar al Paso 5B para atender gaps de discovery o contexto que la automatización no resolvió
 
-**Si `story-improve` falla con error técnico o no encuentra `finvest-evaluation-report.md`:**
-- Registrar en el backlog: `⚠️ story-improve — no ejecutado`
+**Si `story-refine` falla con error técnico o no encuentra `finvest-evaluation-report.md`:**
+- Registrar en el backlog: `⚠️ story-refine — no ejecutado`
 - Continuar al Paso 5B sin bloquear el flujo
 
 ---
@@ -253,10 +253,10 @@ Si el veredicto es `NEEDS-REFINEMENT`, si la historia sigue activa después del 
 
 1. Mostrar `> 📋 Rol local: assets/agents/product-owner.md — conduce esta sesión, sin subagente.` y luego leer `assets/agents/product-owner.md` y seguir sus instrucciones en esta sesión. No lances un subagente.
 2. Usar como contexto del rol:
-   - El contenido actual de la historia (ya mejorado por `story-improve` si ejecutó en 5A)
+   - El contenido actual de la historia (ya mejorado por `story-refine` si ejecutó en 5A)
    - El resultado de `story-evaluation`
    - Si existió, el diagnóstico de `story-split`
-   - Si existió, el `story-improvement-log.md` generado en el Paso 5A
+   - Si existió, el `story-refinement-log.md` generado en el Paso 5A
 3. El rol debe:
    - Hacer preguntas adicionales si falta información relevante
    - Proponer mejoras de redacción y claridad
@@ -313,7 +313,7 @@ Historias derivadas creadas: [lista]
 | `story-creation` falla | Informar el error al usuario | No registrar la historia en el backlog; preguntar si reintentar |
 | `story-evaluation` falla | Informar el error al usuario | Conservar `Veredicto FINVEST = Pendiente`; ofrecer reintentar |
 | `story-split` falla o no aplica | Informar al usuario | Conservar historia como activa; continuar al Paso 5A |
-| `story-improve` falla o no encuentra reporte | `⚠️ story-improve — no ejecutado` | Non-blocking; registrar en backlog y continuar al Paso 5B |
+| `story-refine` falla o no encuentra reporte | `⚠️ story-refine — no ejecutado` | Non-blocking; registrar en backlog y continuar al Paso 5B |
 | Frontmatter de `story.md` sin campos `status`/`substatus` | — | Agregarlos con `SPECIFY/IN-PROGRESS` y continuar |
 | Rol local `product-owner` ausente | `❌ Rol local no encontrado: assets/agents/product-owner.md` | Detener en el Paso 0, sin crear ni modificar historias |
 
@@ -322,8 +322,8 @@ Historias derivadas creadas: [lista]
 ## Salida
 
 - Archivos `story.md` en `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug}/` — creados o actualizados durante el ciclo
-- `story.md.bak` — backup del original antes de aplicar mejoras automáticas (generado por `story-improve` en Paso 5A, cuando aplica)
-- `story-improvement-log.md` — log de cambios por dimensión FINVEST (generado por `story-improve` en Paso 5A, cuando aplica)
+- `story.md.bak` — backup del original antes de aplicar mejoras automáticas (generado por `story-refine` en Paso 5A, cuando aplica)
+- `story-refinement-log.md` — log de cambios por dimensión FINVEST (generado por `story-refine` en Paso 5A, cuando aplica)
 - Estado final de cada historia:
   - `SPECIFY / DONE` — aprobada por `story-evaluation` o cerrada manualmente
   - `SPECIFY / IN-PROGRESS` — pausada para retomar en sesión futura

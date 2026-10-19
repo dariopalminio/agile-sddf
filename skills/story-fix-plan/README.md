@@ -37,7 +37,7 @@ Corrige los archivos de planning de una historia a partir de los hallazgos de su
 
 - Aún no exista `analyze.md` → use `[[story-analyze]]` instead.
 - No exista `design.md`, o no exista ni `tasks.md` ni `testcases.md` → use `[[story-design]]`, `[[story-tasking]]` o `[[story-testcases]]` instead.
-- Los hallazgos afecten a la historia en sí (Como/Quiero/Para, criterios Gherkin) → use `[[story-improve]]` instead.
+- Los hallazgos afecten a la historia en sí (Como/Quiero/Para, criterios Gherkin) → use `[[story-refine]]` instead.
 
 ---
 

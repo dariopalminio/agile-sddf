@@ -318,7 +318,8 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
   segmento de la ruta (`specs/` se divide en `specs-epics|specs-stories`, raíz = `root`, raíces
   externas = `external`). Se excluyen `index.md`, `specs/.cache/`, `templates/`, `pre-split/` y los
   derivados de historia (`design.md`, `tasks.md`, `testcases.md`, `analyze.md`, `*-report.md`,
-  `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`).
+  `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`,
+  `story-refinement-log.md`).
 - **Template como fuente de verdad**: `assets/index-template.md` fija las secciones; el motor solo
   sustituye `{layer:<capa>}`, `{stats}` y `{date}`, y falla (exit 2, sin escribir) si un placeholder
   no corresponde a una capa conocida o una capa con nodos carece de placeholder.

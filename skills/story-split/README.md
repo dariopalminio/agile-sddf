@@ -31,7 +31,7 @@ Divide una historia demasiado amplia en historias más pequeñas e independiente
 
 **Do NOT use it when:**
 
-- Solo debas refinar la redacción de una historia que sigue siendo una unidad de valor → use `[[story-improve]]` instead.
+- Solo debas refinar la redacción de una historia que sigue siendo una unidad de valor → use `[[story-refine]]` instead.
 - Necesites crear tareas técnicas para una historia acotada → use `[[story-tasking]]` instead.
 
 ---

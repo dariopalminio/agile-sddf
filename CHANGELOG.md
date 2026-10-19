@@ -8,6 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- `story-improve` pasa a llamarse `story-refine`. El log generado ahora es `story-refinement-log.md` y su plantilla es `refinement-log-template.md`, con `type: refinement-log`. `story-specify` invoca el nombre nuevo.
+
+### Deprecated
+
+- `story-improve` permanece como alias de `/story-refine` desde 4.2.0 y se eliminará en 5.0.0.
+
+### Nota de actualización
+
+Si conservas un `story-refine` instalado de la serie 1.x (antiguo nombre de `story-specify`), borra ese directorio del runtime antes de ejecutar `npx agile-sddf install --force`. Sin `--force`, el instalador omite el directorio existente; con `--force`, sobrescribe los archivos coincidentes, pero deja archivos antiguos que el nuevo skill no incluye.
+
 ## [4.1.0] — 2026-10-16
 
 ### BREAKING — agentes locales por skill (EPIC-24)

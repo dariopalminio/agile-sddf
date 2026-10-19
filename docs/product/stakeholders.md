@@ -6,7 +6,7 @@ status: IN-PROGRESS
 substatus: TODO
 parent: null
 created: 2026-09-22
-updated: 2026-10-10
+updated: 2026-10-19
 ---
 
 # Stakeholders
@@ -25,7 +25,7 @@ updated: 2026-10-10
 
 - **US-003**: Product Owner / Analista de Negocio
     - **Descripción**: Responsable de la calidad de las historias. Usa `story-specify`,
-      `story-evaluation`, `story-split` e `story-improve` para garantizar que las historias cumplen
+      `story-evaluation`, `story-split` e `story-refine` para garantizar que las historias cumplen
       la rúbrica FINVEST antes de entrar a planning, y `story-acceptance` para la validación humana
       final.
 

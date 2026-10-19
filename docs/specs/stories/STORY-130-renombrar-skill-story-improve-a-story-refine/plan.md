@@ -1,3 +1,19 @@
+
+---
+type: plan
+id: plan-07
+slug: plan-07-renombrar-skill-story-improve-a-story-refine
+title: "Renombrar el skill `story-improve` a `story-refine`"
+status: COMPLETED
+substatus: DONE
+created: 2026-06-13
+updated: 2026-06-13
+related:
+  - STORY-130-renombrar-skill-story-improve-a-story-refine
+---
+<!-- Referencias -->
+[[STORY-130-renombrar-skill-story-improve-a-story-refine]]
+
 # Plan — Renombrar el skill `story-improve` a `story-refine`
 
 ## Contexto

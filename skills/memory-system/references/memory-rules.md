@@ -45,7 +45,8 @@ el frontmatter tal cual lo declara el archivo (`{}` si no hay bloque), que es lo
 - `index.md` en la raíz de `SPECS_BASE` (es el archivo que se genera).
 - Directorios `.cache/`, `templates/` (sus wikilinks son placeholders) y `pre-split/`, a cualquier profundidad.
 - Derivados de historia: `design.md`, `tasks.md`, `testcases.md`, `analyze.md`, `*-report.md`,
-  `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`.
+  `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`,
+  `story-refinement-log.md`.
 - Cualquier archivo que no sea `.md`.
 
 ### Slug

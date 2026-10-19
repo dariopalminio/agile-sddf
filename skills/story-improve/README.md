@@ -2,50 +2,26 @@
 
 > **Type:** skill · **Category:** worker  
 > **Location:** `skills/story-improve/SKILL.md`  
-> **Status:** stable
+> **Status:** stable (deprecado desde 4.2.0; se elimina en 5.0.0)
 
 ---
 
 ## What it does
 
-Aplica a `story.md` las recomendaciones FINVEST de las dimensiones con puntuación menor o igual que 3. Preserva el contenido previo antes de modificar la historia y documenta las mejoras aplicadas.
+Conserva la invocación histórica `/story-improve` y delega en `/story-refine` con
+los mismos argumentos. Muestra un aviso de deprecación antes de delegar.
 
-**Produces:**
-
-- Una versión mejorada de `<directorio-historia>/story.md`.
-- `<directorio-historia>/story.md.bak` y `story-improvement-log.md` cuando el veredicto FINVEST es `NEEDS-REFINEMENT` o `SPLIT`.
-
-**Does not do:**
-
-- No modifica el reporte FINVEST ni ejecuta una nueva evaluación automáticamente.
-
----
+**Produces:** la salida de `story-refine`, incluidos sus artefactos cuando corresponda.
 
 ## When to use
 
-**Use it when:**
-
-- Exista un `finvest-evaluation-report.md` con veredicto `NEEDS-REFINEMENT` o `SPLIT`.
-- Quieras aplicar de forma trazable las recomendaciones antes de reevaluar la historia.
-- The user mentions: `"story-improve"`, `"mejorar historia"`, `"aplicar recomendaciones FINVEST"`.
-
-**Do NOT use it when:**
-
-- Necesites decidir primero la calidad de la historia → use `[[story-evaluation]]` instead.
-- La historia deba descomponerse en varias historias → use `[[story-split]]` instead.
-
----
+Solo para automatizaciones que aún invoquen `/story-improve`. Para trabajo nuevo,
+usa `[[story-refine]]` directamente.
 
 ## Installation
 
-**Core (included in `agile-sddf`):**
-
-```bash
-npx agile-sddf install --target claude-code
-```
-
-Para otro runtime compatible, sustituye `claude-code` por un identificador declarado como `supported` en `config/runtimes.json`.
+El alias se incluye en `agile-sddf` durante la ventana de compatibilidad.
 
 ### Invocation
 
-Usa `/story-improve --story-id STORY-NNN`.
+`/story-improve --story-id STORY-NNN` delega en `/story-refine --story-id STORY-NNN`.

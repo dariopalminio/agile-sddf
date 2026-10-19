@@ -9,7 +9,7 @@ status: <ESTADO_INICIAL>   # escritor: story-creation · epic-generate-stories �
 substatus: IN-PROGRESS   # escritor: los mismos que status (story-evaluation lo lleva a DONE junto con status: SPECIFY)
 parent: <nombre-del-directorio-de-la-epica>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories
 created: <YYYY-MM-DD>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories
-updated: <YYYY-MM-DD>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories (inicial) · todo skill que edite el archivo (story-improve, story-split y los que transicionan status)
+updated: <YYYY-MM-DD>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories (inicial) · todo skill que edite el archivo (story-refine, story-split y los que transicionan status)
 related:   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories · story-split (añade la core y las hermanas)
   - <nombre-del-directorio-de-la-epica o slug de la épica relacionada (si existe)> <!-- Colocar referencias solo si existe épica relacionada o historia relacionada -->
 ---
@@ -17,13 +17,13 @@ related:   # escritor: story-creation · epic-generate-stories · epic-generate-
 <!-- Referencias: colocar referencias solo si existe épica relacionada -->
 [[<nombre-del-directorio-de-la-epica o slug de la épica relacionada (si existe)>]]
 
-# 📖 Historia: [Título de la historia o nombre de historia] <!-- escritor: defecto · story-improve (aplica recomendaciones FINVEST) · story-split (reescribe la historia core) -->
+# 📖 Historia: [Título de la historia o nombre de historia] <!-- escritor: defecto · story-refine (aplica recomendaciones FINVEST) · story-split (reescribe la historia core) -->
 
 **Como** [rol o persona]  
 **Quiero** [acción o funcionalidad]  
 **Para** [beneficio o valor]
 
-## ✅ Criterios de aceptación <!-- escritor: defecto · story-improve (aplica recomendaciones FINVEST) · story-split (reparte escenarios entre core y hermanas) -->
+## ✅ Criterios de aceptación <!-- escritor: defecto · story-refine (aplica recomendaciones FINVEST) · story-split (reparte escenarios entre core y hermanas) -->
 <!-- Los escenarios Gherkin SON los criterios de aceptación funcionales.
      No se duplican en una sección separada. Si hay reglas transversales,
      exprésalas con "Regla:" o como comentario. -->
@@ -57,7 +57,7 @@ Ejemplos:
   | admin     | /admin    | "Panel de control"    |
 ```
 
-## ⚙️ Criterios no funcionales específicos <!-- sección opcional · escritor: defecto · story-improve (aplica recomendaciones FINVEST) -->
+## ⚙️ Criterios no funcionales específicos <!-- sección opcional · escritor: defecto · story-refine (aplica recomendaciones FINVEST) -->
 
 - **CNF-[n] — [Nombre de requerimiento no funcional]:** [Descripción del requerimiento no funcional asociado a la historia.]
 
@@ -66,7 +66,7 @@ Ejemplos:
 ## Fuera de alcance (Non-Goals)  <!-- sección opcional solo si es necesario indicar qué no se abordará -->
 [Aspectos que no serán abordados por esta historia, para evitar malentendidos]
 
-## 📎 Notas / contexto adicional <!-- sección opcional · escritor: defecto · story-improve (dimensiones I y E) · story-split (contexto del split) -->
+## 📎 Notas / contexto adicional <!-- sección opcional · escritor: defecto · story-refine (dimensiones I y E) · story-split (contexto del split) -->
 [Información relevante para el equipo de desarrollo o QA]
 
 
