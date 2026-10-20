@@ -26,7 +26,13 @@ Reducir el contexto que consume una sesión del harness, que hoy está entre 125
 - **Limpieza del catálogo**: Eliminar las instalaciones obsoletas `.claude/skills/project-policies-generation` y `.claude/skills/story-fix`, retirar `docs-wiki-builder` de `skills/` (lo sustituye `memory-system`), planificar el retiro del alias `story-improve` según su deprecación y documentar `skillOverrides: name-only` como decisión explícita
 - **Lectura acotada de archivos grandes**: AGENTS.md prohíbe leer `graphify-out/GRAPH_REPORT.md` completo (solo `graphify query`/`path`/`explain`) y fija leer por `offset`/`limit` los archivos de más de 300 líneas
 - **Núcleo de story-implement**: Dividir `story-implement/SKILL.md` (1260 líneas) en un núcleo de 120 líneas o menos con `references/red.md`, `green.md`, `refactor.md`, `rework.md` y `report.md`, que se cargan solo al entrar en cada fase
-- **División de skills de más de 500 líneas**: Aplicar el patrón de núcleo más `references/` a `story-implement-tasks`, `story-analyze`, `story-code-review`, `story-verify`, `story-design`, `story-acceptance` y `memory-system`
+- **Núcleo de story-implement-tasks**: Dividir `story-implement-tasks/SKILL.md` (828 líneas) en un núcleo de 120 líneas o menos con `references/context.md` (resolución de entrada y carga del contexto de planning), `references/tdd-loop.md` (implementación de tareas en orden TDD) y `references/report.md`, y mover la plantilla de `implement-report.md`, hoy incrustada en el SKILL.md, a `assets/`
+- **Núcleo de story-analyze**: Dividir `story-analyze/SKILL.md` (709 líneas) en un núcleo de 120 líneas o menos más `references/` por fase; el núcleo remite a `assets/analyze-report-template.md` sin repetir su estructura
+- **Núcleo de story-code-review**: Dividir `story-code-review/SKILL.md` (697 líneas) en un núcleo de 120 líneas o menos más `references/` para la delegación en subagentes, el rework y el reporte; el núcleo remite a sus plantillas de `assets/` sin repetir su estructura
+- **Núcleo de story-verify**: Dividir `story-verify/SKILL.md` (596 líneas) en un núcleo de 120 líneas o menos más `references/` por modo de verificación (unit, e2e, manual); el núcleo remite a `assets/verify-report-template.md` sin repetir su estructura
+- **Núcleo de story-acceptance**: Dividir `story-acceptance/SKILL.md` (557 líneas) en un núcleo de 120 líneas o menos más `references/` para la sesión de validación y el reporte; el núcleo remite a `assets/acceptance-report-template.md` sin repetir su estructura
+- **Núcleo de story-design**: Dividir `story-design/SKILL.md` (565 líneas) en un núcleo de 120 líneas o menos más `references/` por fase, alineado con el tope de 200 líneas de design.md
+- **Núcleo de memory-system**: Dividir `memory-system/SKILL.md` (554 líneas) en un núcleo de 120 líneas o menos más un archivo de `references/` por modo (`ensure`, `scaffold`, `rebuild`, `index`, `check`, `migrate`), junto a las reglas que ya viven en `references/`
 - **Tope de design.md y lectura por sección**: Limitar design.md a 200 líneas, con un resumen inicial y secciones con ancla. Los skills que lo consumen leen primero el resumen y después solo las secciones que necesitan
 - **Script de resolución de raíz**: Script determinista que devuelve `SPECS_BASE` y `ROOT_SOURCE` en JSON y sustituye el bloque `SDDF-ROOT-RESOLUTION` copiado en cada SKILL.md por una línea de referencia, manteniendo coherente `audit-root-resolution.js`
 - **Índices compactos**: `docs/index.md` de 80 líneas o menos con índices por capa, y `README.md` reducido que delega el detalle en `docs/`
@@ -42,7 +48,7 @@ Reducir el contexto que consume una sesión del harness, que hoy está entre 125
 - [ ] **CS-3** — Meta 2: la sesión estimada de `/story-implement` consume menos de 65K tokens.
 - [ ] **CS-4** — Hay un ADR aceptado que reemplaza a ADR-0002, y ADR-0002 declara `status: SUPERSEDED` y `superseded-by`.
 - [ ] **CS-5** — Ningún orquestador incluye el contenido de un SKILL.md en el prompt de un subagente; solo le pasa `skill_path`.
-- [ ] **CS-6** — `story-implement/SKILL.md` tiene 120 líneas o menos, y ningún SKILL.md supera 500 líneas.
+- [ ] **CS-6** — Los ocho SKILL.md divididos (`story-implement`, `story-implement-tasks`, `story-analyze`, `story-code-review`, `story-verify`, `story-acceptance`, `story-design` y `memory-system`) tienen 120 líneas o menos cada uno, y ningún SKILL.md supera 500 líneas.
 - [ ] **CS-7** — `npm run verify:repository` falla si un SKILL.md supera el umbral de error, si un `references/*.md` supera 500 líneas, si un párrafo largo se repite en 3 o más SKILL.md, si hay más de un `IN-PROGRESS` por nivel o si un ADR `ACCEPTED` cambia fuera de lo permitido.
 - [ ] **CS-8** — El catálogo no contiene `project-policies-generation`, `story-fix` ni `docs-wiki-builder`, y la decisión sobre `skillOverrides: name-only` está documentada.
 - [ ] **CS-9** — AGENTS.md prohíbe la lectura completa de `GRAPH_REPORT.md` y la de archivos de más de 300 líneas sin `offset`/`limit`.
@@ -90,7 +96,9 @@ Escenario: verify:repository rechaza dos historias en curso a la vez
 
 ## Notas
 
-- **Origen:** `.temp/propuestas-de-mejoras/optimization-report.md` (no versionado). Cifras verificadas el 2026-10-20: 21 SKILL.md superan 300 líneas y 8 superan 500 (también `story-acceptance`, con 557, y `memory-system`, con 554). `README.md` tiene 484 líneas, `docs/index.md` 504 y `GRAPH_REPORT.md` unos 380 KB.
+- **Origen:** `docs\specs\epics\EPIC-26-optimizacion-consumo-de-contexto\context-optimization-report.md` (no versionado). 
+- **Problema a resolver:** el consumo de contexto excesivo en las sesiones de algunos skills (como `/story-implement` e `/story-implement-tasks`) limita el desarrollo con LLMs locales, aumenta el costo de cuota de suscripciones y aumeta la probabilidad de compactaciones de sesiones, afectando la eficiencia y escalabilidad del desarrollo con este harness.
+- **Cifras verificadas el 2026-10-20:** 21 SKILL.md superan 300 líneas y 8 superan 500 (también `story-acceptance`, con 557, y `memory-system`, con 554). `README.md` tiene 484 líneas, `docs/index.md` 504 y `GRAPH_REPORT.md` unos 380 KB.
 - **Decisión: reglas solo como gates.** Las reglas deterministas (tamaño, duplicación, WIP = 1, ADR inmutables) se implementan como scripts multi-runtime en `verify:repository`. No se configuran hooks `PreToolUse` porque acoplarían el harness al runtime Claude. La prohibición de lecturas grandes queda como regla en AGENTS.md.
 - **Umbral de 300 líneas con baseline (ratchet):** si el error entrara en vigor de golpe, rompería el gate en 21 skills. El linter parte de una baseline con los incumplimientos actuales que solo puede reducirse; un skill nuevo o uno que crezca falla.
 - **ADR inmutables:** el gate debe permitir los cambios que `docs/adr/README.md` autoriza en un ADR `ACCEPTED` (`status`, `superseded-by` y la nota de reemplazo bajo el título), porque el reemplazo de ADR-0002 los necesita.
