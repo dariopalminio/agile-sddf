@@ -4,8 +4,8 @@ type: epic
 id: EPIC-19
 slug: EPIC-19-framework-consistency
 title: "Framework Consistency — Coherencia de vocabulario, instalación, seguridad y ciclo de corrección"
-status: DEVELOP
-substatus: IN-PROGRESS
+status: COMPLETED
+substatus: DONE
 parent: nulll
 created: 2026-06-14
 updated: 2026-09-12

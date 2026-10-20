@@ -4,8 +4,8 @@ type: epic
 id: EPIC-20
 slug: EPIC-20-memory-system
 title: "Memory System — Sistema de memoria unificado y agnóstico al harness"
-status: DEFINE
-substatus: TODO
+status: COMPLETED
+substatus: DONE
 parent: null
 created: 2026-09-20
 updated: 2026-09-20
