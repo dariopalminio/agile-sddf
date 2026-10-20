@@ -1,7 +1,7 @@
 {
   "skill": "story-code-review",
   "version": "1.1.0",
-  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo veredicto APPROVED, veredicto NEEDS-CHANGES y BLOCKED con fix-directives.md numerado por ronda (campo round en el frontmatter: ronda previa + 1, escritor unico story-code-review; ausente o ilegible se trata como 0), ejecutor de correcciones nombrado en el mensaje de cierre (siempre /story-implement; /story-implement-tasks solo si existe tasks.md), ausencia total de escritura en tasks.md, limpieza del fix-directives.md previo al aprobar, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias y fallback del Security-Reviewer al baseline embebido, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
+  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo inicio desde IMPLEMENT/DONE, reanudacion desde CODE-REVIEW/IN-PROGRESS con informes temporales nuevos, veredictos APPROVED, NEEDS-CHANGES y BLOCKED, fix-directives.md numerado por ronda (campo round en el frontmatter: ronda previa + 1, escritor unico story-code-review; ausente o ilegible se trata como 0), ejecutor de correcciones nombrado en el mensaje de cierre (siempre /story-implement; /story-implement-tasks solo si existe tasks.md), ausencia total de escritura en tasks.md, limpieza del fix-directives.md previo al aprobar, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias y fallback del Security-Reviewer al baseline embebido, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
   "cases": [
     {
       "id": "TC-001",
@@ -98,7 +98,7 @@
       "id": "TC-003",
       "name": "fail-fast-precondicion-estado-invalido",
       "type": "fail-fast",
-      "description": "La historia tiene status PLAN y substatus DONE (no cumple la precondicion IMPLEMENT/DONE). El skill debe mostrar un mensaje de error descriptivo con el estado actual y el estado requerido, y no modificar ningun archivo ni crear code-review-report.md.",
+      "description": "La historia tiene status PLAN y substatus DONE (no cumple las precondiciones IMPLEMENT/DONE ni CODE-REVIEW/IN-PROGRESS). El skill debe mostrar un mensaje de error descriptivo con el estado actual y los estados admitidos, y no modificar ningun archivo ni crear code-review-report.md.",
       "input": {
         "story_id": "STORY-030",
         "story_status": "PLAN",
@@ -110,14 +110,13 @@
           "IMPLEMENT",
           "DONE",
           "PLAN",
-          "story-code-review requiere"
+          "Estados admitidos"
         ],
         "not_contains": [
           "code-review-report.md",
           "fix-directives.md",
           "(verdict: APPROVED)",
           "(verdict: NEEDS-CHANGES)",
-          "CODE-REVIEW/IN-PROGRESS",
           "Entorno invalido",
           "(verdict: "
         ]
@@ -644,7 +643,7 @@
       "id": "TC-016",
       "name": "precondicion-ready-for-implement-con-fix-directives-detiene",
       "type": "fail-fast",
-      "description": "Historia encolada tras un rechazo: story.md esta en READY-FOR-IMPLEMENT/DONE y fix-directives.md (round: 1) esta presente en el directorio, es decir, nadie ha ejecutado aun las correcciones. Se invoca /story-code-review directamente. El skill debe detenerse en la precondicion de estado existente ('no esta en estado IMPLEMENT/DONE' / 'story-code-review requiere que /story-implement o /story-implement-tasks haya completado') sin modificar ningun archivo: no debe tocar fix-directives.md ni su round, no debe eliminarlo, no debe generar code-review-report.md ni cambiar story.md.",
+      "description": "Historia encolada tras un rechazo: story.md esta en READY-FOR-IMPLEMENT/DONE y fix-directives.md (round: 1) esta presente en el directorio, es decir, nadie ha ejecutado aun las correcciones. Se invoca /story-code-review directamente. El skill debe detenerse porque el estado no es IMPLEMENT/DONE ni CODE-REVIEW/IN-PROGRESS, sin modificar ningun archivo: no debe tocar fix-directives.md ni su round, no debe eliminarlo, no debe generar code-review-report.md ni cambiar story.md.",
       "input": {
         "story_id": "STORY-180",
         "story_status": "READY-FOR-IMPLEMENT",
@@ -654,9 +653,9 @@
       },
       "expected": {
         "contains": [
-          "no está en estado IMPLEMENT/DONE",
+          "no está en un estado válido para revisar",
           "READY-FOR-IMPLEMENT",
-          "story-code-review requiere"
+          "Estados admitidos"
         ],
         "not_contains": [
           "round: 2",
@@ -664,7 +663,6 @@
           "code-review-report.md",
           "(verdict: NEEDS-CHANGES)",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/IN-PROGRESS",
           "Entorno invalido",
           "(verdict: "
         ]
@@ -753,6 +751,96 @@
         ]
       },
       "threshold": 0.9
+    },
+    {
+      "id": "TC-019",
+      "name": "reanudacion-aprobada-regenera-informes-parciales",
+      "type": "edge-case",
+      "description": "La revision anterior quedo en CODE-REVIEW/IN-PROGRESS tras generar cuatro informes temporales, sin reporte final. Al volver a invocar el skill, conserva el estado de entrada, limpia .tmp/story-code-review/STORY-192/, vuelve a lanzar los cuatro revisores y usa solo sus informes nuevos. Los cuatro resultados nuevos no tienen hallazgos bloqueantes: crea code-review-report.md con APPROVED y deja story.md en CODE-REVIEW/DONE.",
+      "input": {
+        "story_id": "STORY-192",
+        "story_status": "CODE-REVIEW",
+        "story_substatus": "IN-PROGRESS",
+        "artifacts_present": ["story.md", "design.md", "implement-report.md"],
+        "existing_partial_reports": ["tech-lead-report.md", "product-owner-report.md", "integration-report.md", "security-report.md"],
+        "existing_partial_finding": "Hallazgo obsoleto de una revision anterior",
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": ["Reanudando revisión", "CODE-REVIEW/IN-PROGRESS", "Agentes lanzados en paralelo", "(verdict: APPROVED)", "CODE-REVIEW/DONE", "code-review-report.md"],
+        "not_contains": ["Hallazgo obsoleto de una revision anterior", "fix-directives.md (ronda", "no está en un estado válido para revisar"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-020",
+      "name": "reanudacion-con-hallazgo-bloqueante",
+      "type": "edge-case",
+      "description": "La historia esta en CODE-REVIEW/IN-PROGRESS sin informe final. La revision completa repetida encuentra un hallazgo MEDIUM nuevo. El skill aplica la rama habitual NEEDS-CHANGES: crea code-review-report.md y fix-directives.md con round: 1 y deja story.md en READY-FOR-IMPLEMENT/DONE.",
+      "input": {
+        "story_id": "STORY-193",
+        "story_status": "CODE-REVIEW",
+        "story_substatus": "IN-PROGRESS",
+        "artifacts_present": ["story.md", "design.md", "tasks.md"],
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [{"file_line": "src/review.js:21", "dimension": "code-quality", "severity": "MEDIUM", "finding": "Error de validacion", "action": "Corregir la validacion"}],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": ["Reanudando revisión", "(verdict: NEEDS-CHANGES)", "fix-directives.md", "round: 1", "READY-FOR-IMPLEMENT/DONE"],
+        "not_contains": ["(verdict: APPROVED)", "CODE-REVIEW/DONE"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-021",
+      "name": "reanudacion-bloqueada-por-revisor",
+      "type": "edge-case",
+      "description": "La historia esta en CODE-REVIEW/IN-PROGRESS. Tras repetir la revision completa, falta el informe valido del revisor de integracion y los otros tres no reportan hallazgos bloqueantes. El skill emite BLOCKED, identifica al revisor y devuelve story.md a IMPLEMENT/DONE para un nuevo intento.",
+      "input": {
+        "story_id": "STORY-194",
+        "story_status": "CODE-REVIEW",
+        "story_substatus": "IN-PROGRESS",
+        "artifacts_present": ["story.md", "design.md"],
+        "missing_agent_report": "integration-report.md",
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": ["Reanudando revisión", "(verdict: BLOCKED)", "integration-reviewer", "IMPLEMENT/DONE", "code-review-report.md"],
+        "not_contains": ["fix-directives.md (ronda", "CODE-REVIEW/DONE", "READY-FOR-IMPLEMENT/DONE"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-022",
+      "name": "reanudacion-sin-design-detiene-sin-escrituras",
+      "type": "fail-fast",
+      "description": "La historia esta en CODE-REVIEW/IN-PROGRESS pero design.md ya no existe. El gate de artefactos requeridos se aplica antes de limpiar .tmp o escribir story.md: informa el faltante y deja intactos el estado y los informes parciales.",
+      "input": {
+        "story_id": "STORY-195",
+        "story_status": "CODE-REVIEW",
+        "story_substatus": "IN-PROGRESS",
+        "artifacts_present": ["story.md"],
+        "existing_partial_reports": ["tech-lead-report.md"]
+      },
+      "expected": {
+        "contains": ["Artefactos requeridos no encontrados", "design.md", "Faltantes"],
+        "not_contains": ["Reanudando revisión", "Agentes lanzados en paralelo", "code-review-report.md", "(verdict: "]
+      },
+      "threshold": 1.0
     }
   ]
 }

@@ -40,7 +40,8 @@ Quality gate formal entre la implementación y la marca final de Done. Compatibl
 ### Posicionamiento
 
 ```
-[story.md: IMPLEMENT/DONE]   ← precondición requerida (viene de /story-implement o /story-implement-tasks)
+[story.md: IMPLEMENT/DONE]              ← inicio (viene de /story-implement o /story-implement-tasks)
+[story.md: CODE-REVIEW/IN-PROGRESS]     ← reanudación tras una interrupción
      ↓
 story-code-review  → Quality gate: revisión multi-agente del código  ← aquí
      │   Al iniciar: story.md → CODE-REVIEW/IN-PROGRESS
@@ -90,7 +91,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 
 ## Precondiciones
 
-- `story.md` debe tener `status: IMPLEMENT` y `substatus: DONE`
+- `story.md` debe estar en `IMPLEMENT/DONE` (inicio) o `CODE-REVIEW/IN-PROGRESS` (reanudación)
 - `story.md` y `design.md` deben existir en `$STORY_DIR`
 - `implement-report.md` y `testcases.md` son opcionales: si no existen, el skill continúa sin bloquear
 
@@ -132,13 +133,14 @@ El flujo por defecto es siempre el equipo de cuatro agentes. El flag `--single-a
 
 | Evento | status | substatus |
 |--------|--------|-----------|
-| Precondición requerida para ejecutar | `IMPLEMENT` | `DONE` |
+| Precondición de inicio | `IMPLEMENT` | `DONE` |
+| Precondición de reanudación | `CODE-REVIEW` | `IN-PROGRESS` |
 | Al iniciar la revisión (Paso 1) | `CODE-REVIEW` | `IN-PROGRESS` |
 | Finalización aprobada (Paso 6) | `CODE-REVIEW` | `DONE` |
 | Finalización con bloqueantes (Paso 4g) | `READY-FOR-IMPLEMENT` | `DONE` |
 
 - La ejecución es idempotente: `.tmp/story-code-review/{story_id}/` se limpia al inicio de cada ejecución
-- `story-code-review` solo puede ejecutarse si `story.md` tiene `status: IMPLEMENT` + `substatus: DONE`. Si la precondición no se cumple, la ejecución se detiene con error descriptivo.
+- `story-code-review` solo puede ejecutarse si `story.md` está en `IMPLEMENT/DONE` o `CODE-REVIEW/IN-PROGRESS`. Cualquier otro estado detiene la ejecución sin escrituras.
 - NO modifique ningún archivo existente en el código fuente (estamos revisando el código de la implementación, no implementando los artefactos técnicos)
 - NO genere código; estamos revisando la implementación, no implementando los artefactos técnicos
 - **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
@@ -210,32 +212,38 @@ Si los artefactos requeridos están presentes, continuar al paso 1d.
 
 #### 1d. Verificar precondición de estado
 
-Leer el frontmatter de `story.md` y verificar `status: IMPLEMENT` y `substatus: DONE`.
+Leer el frontmatter de `story.md` y admitir exactamente estas dos combinaciones:
+
+- `IMPLEMENT/DONE`: inicio de una revisión.
+- `CODE-REVIEW/IN-PROGRESS`: reanudación de una revisión interrumpida. Registrar `$REVIEW_ENTRY = resume` y repetir la revisión completa desde el Paso 2. Los informes parciales existentes no prueban que el código y el contexto sigan siendo los mismos.
+
+Para `IMPLEMENT/DONE`, registrar `$REVIEW_ENTRY = start`.
 
 **Si la precondición NO se cumple:**
 ```
-❌ La historia <story_id> no está en estado IMPLEMENT/DONE.
+❌ La historia <story_id> no está en un estado válido para revisar.
 
    Estado actual: status: <valor_actual> / substatus: <valor_actual>
+   Estados admitidos: IMPLEMENT/DONE o CODE-REVIEW/IN-PROGRESS.
 
-   story-code-review requiere que /story-implement o /story-implement-tasks haya completado exitosamente.
-   Sugerencia: ejecuta /story-implement {story_id} o /story-implement-tasks {story_id} para completar la implementación.
+   Si la implementación está pendiente, ejecuta /story-implement {story_id}
+   o /story-implement-tasks {story_id} si existe tasks.md.
 ```
 Detener la ejecución **sin modificar ningún archivo**.
 
 #### 1e. Actualizar frontmatter a CODE-REVIEW/IN-PROGRESS
 
-Solo después de que los pasos 1c y 1d han pasado sin error, actualizar el frontmatter de `story.md`:
-- `status: CODE-REVIEW`
-- `substatus: IN-PROGRESS`
+Solo después de que los pasos 1c y 1d han pasado sin error:
+- Si `$REVIEW_ENTRY = start`, actualizar el frontmatter de `story.md` a `status: CODE-REVIEW` y `substatus: IN-PROGRESS`.
+- Si `$REVIEW_ENTRY = resume`, conservar `CODE-REVIEW/IN-PROGRESS` sin reescribir el frontmatter. Continuar con el Paso 2.
 
 Mostrar confirmación de inicio:
 ```
-🔍 Iniciando revisión de código para: <story_id>
+🔍 <Iniciando | Reanudando> revisión de código para: <story_id>
    Directorio: <ruta_directorio>
    Artefactos requeridos: story.md ✓ | design.md ✓
    Artefactos opcionales: implement-report.md ✓/⏭️ | testcases.md ✓/⏭️
-   Estado: IMPLEMENT/DONE ✓
+   Estado: <IMPLEMENT/DONE | CODE-REVIEW/IN-PROGRESS> ✓
 ```
 
 ---
@@ -310,9 +318,9 @@ Mostrar resumen de carga:
 
 #### 3a. Limpiar directorio temporal (idempotencia)
 
-Eliminar el directorio `.tmp/story-code-review/{story_id}/` si existe y recrearlo vacío.
+Eliminar el directorio `.tmp/story-code-review/{story_id}/` si existe y recrearlo vacío, tanto al iniciar como al reanudar. Lanzar de nuevo los cuatro revisores; no reutilizar informes parciales de la ejecución interrumpida.
 
-Esto garantiza que ejecuciones repetidas del skill producen el mismo resultado (NF-2).
+Esto impide que un informe anterior, aunque parezca válido, se consolide con evidencia de una ejecución nueva (NF-2).
 
 #### 3b. Lanzar cuatro agentes en paralelo
 
@@ -586,7 +594,7 @@ Mostrar:
 
 **Si `$VERDICT = NEEDS-CHANGES`:** el frontmatter ya fue actualizado a `READY-FOR-IMPLEMENT/DONE` en el Paso 4g. No ejecutar este paso.
 
-**Si `$VERDICT = BLOCKED`:** actualizar el frontmatter a `IMPLEMENT/DONE` (restaurar el estado previo al Paso 1e). No crear `fix-directives.md` ni eliminar uno preexistente. Mostrar `📋 Estado story.md: IMPLEMENT/DONE — revisión bloqueada; vuelve a ejecutar /story-code-review <story_id> cuando se despeje el bloqueo`.
+**Si `$VERDICT = BLOCKED`:** actualizar el frontmatter a `IMPLEMENT/DONE` (volver al estado desde el que se inicia una revisión, también si esta ejecución era una reanudación). No crear `fix-directives.md` ni eliminar uno preexistente. Mostrar `📋 Estado story.md: IMPLEMENT/DONE — revisión bloqueada; vuelve a ejecutar /story-code-review <story_id> cuando se despeje el bloqueo`.
 
 ---
 
@@ -662,7 +670,7 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
 | Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` y/o `design.md` ausentes | `❌ Artefactos requeridos no encontrados en: <$STORY_DIR>/` (un único mensaje con la lista de faltantes) | Detener sin modificar ningún archivo |
-| `story.md` no está en `IMPLEMENT/DONE` (incluida una historia ya encolada en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`) | `❌ La historia <story_id> no está en estado IMPLEMENT/DONE.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
+| `story.md` no está en `IMPLEMENT/DONE` ni `CODE-REVIEW/IN-PROGRESS` (incluida una historia ya encolada en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`) | `❌ La historia <story_id> no está en un estado válido para revisar.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
 | `implement-report.md` o `testcases.md` ausentes | — (se registran como `⏭️` en el informe) | Continuar sin ese contexto |
 | DoD de la etapa code-review ausente | `⚠️ DoD de la etapa code-review no encontrado …` | Advertir y continuar sin validación DoD |
 | Informe de revisor ausente o con frontmatter inválido, sin otros hallazgos bloqueantes | `Veredicto: BLOCKED` con el nombre del revisor | Generar reporte y restaurar `IMPLEMENT/DONE`; no generar `fix-directives.md` |

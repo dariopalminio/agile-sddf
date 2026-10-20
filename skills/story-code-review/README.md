@@ -26,7 +26,8 @@ Ejecuta el quality gate posterior a la implementación mediante cuatro revisores
 
 **Use it when:**
 
-- La historia ya se implementó y necesitas revisar su calidad antes de verificarla.
+- La historia está en `IMPLEMENT/DONE` y necesitas revisar su calidad antes de verificarla.
+- Una revisión quedó en `CODE-REVIEW/IN-PROGRESS` y necesitas reanudarla; el skill vuelve a ejecutar los cuatro revisores con informes temporales nuevos.
 - Quieras reunir revisión de código, requisitos, integración y seguridad en un único gate.
 - The user mentions: `"story-code-review"`, `"revisar código"`, `"quality gate post-implement"`.
 
@@ -49,4 +50,4 @@ Para otro runtime compatible, sustituye `claude-code` por un identificador decla
 
 ### Invocation
 
-Usa `/story-code-review STORY-NNN` después de `story-implement`.
+Usa `/story-code-review STORY-NNN` después de `story-implement` o para reanudar una revisión interrumpida. En la reanudación, los informes parciales de `.tmp/story-code-review/STORY-NNN/` se descartan y se repite la revisión completa.
