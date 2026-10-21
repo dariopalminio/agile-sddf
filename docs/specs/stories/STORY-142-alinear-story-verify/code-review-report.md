@@ -55,5 +55,5 @@ No se encontraron vulnerabilidades ni prácticas de seguridad deficientes en el 
 
 ## Estado final
 
-📄 Reporte: /home/daro/Projects/agile-sddf/docs/specs/stories/STORY-142-alinear-story-verify/code-review-report.md
+📄 Reporte: docs/specs/stories/STORY-142-alinear-story-verify/code-review-report.md
 📋 Estado: STORY-142 → CODE-REVIEW/DONE
