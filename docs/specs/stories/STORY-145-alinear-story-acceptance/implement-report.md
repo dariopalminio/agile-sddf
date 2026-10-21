@@ -5,7 +5,7 @@ slug: STORY-145-alinear-story-acceptance-implement-report
 title: "Implement Report: Alinear story-acceptance"
 story: STORY-145
 created: 2026-10-19
-updated: 2026-10-19
+updated: 2026-10-20
 ---
 
 # Reporte de implementación: Alinear story-acceptance
@@ -15,6 +15,30 @@ updated: 2026-10-19
 Las 35 tareas de `tasks.md` quedaron atendidas. `story-acceptance` emite `APPROVED`, `NEEDS-CHANGES`, `BLOCKED` o `PENDING` en el campo `verdict` del frontmatter y en `## Veredicto`, la primera sección de `acceptance-report.md`. El camino `[Q]` escribe `verdict: PENDING` con `session-status: partial`, y el skill admite `ACCEPTANCE/BLOCKED` como reentrada tras resolver el impedimento.
 
 Se actualizaron el template, `SKILL.md` (7a, 7b, 7d, `[Q]`, 8a, 8b, precondiciones, Salida y Test Cases), los tres ejemplos, el DoD de ejemplo, el README, `evals.json` (14 casos, versión 1.1.0), el guardrail `dod-story-acceptance.md`, los tres fixtures de `memory-system`, la máquina de estados y el dominio de historia. La validación criterio por criterio, `session-status` y la reanudación quedaron sin cambios; los reportes históricos de `docs/specs/**` no se reescribieron.
+
+## Correcciones de fix-directives.md (ronda 1)
+
+Rework tras `story-code-review` (veredicto `NEEDS-CHANGES`, severidad máxima MEDIUM). No quedaban tareas pendientes en `tasks.md` (35/35 `[x]`); las correcciones se aplicaron en el pre-paso 2f sin tocar `tasks.md` ni `fix-directives.md`.
+
+| # | Archivo:Línea | Severidad | Resultado |
+|---|---|---|---|
+| 1 | `skills/story-acceptance/SKILL.md:378` | MEDIUM | 💻 corregido: `skills/story-acceptance/SKILL.md` — 7a: `$TOTAL_CRITERIOS` cuenta todos los criterios a validar sin sumar filas previas; `$TOTAL_APPROVED`, `$TOTAL_REJECTED` y `$TOTAL_BLOCKED` suman los resultados de la sesión actual y los de la sesión parcial reanudada. La frase de 7b (l.396) remite ahora a esos tres totales. |
+| 2 | `docs/guardrails/dod-story-code-review.md:21` | MEDIUM | Sin edición (solo lectura): se cumple al resolver el #1; se confirma en la próxima `/story-code-review`. |
+| 3 | `docs/guardrails/dod-story-code-review.md:25` | MEDIUM | Sin edición (solo lectura): se cumple cuando la próxima `/story-code-review` cierre en `APPROVED`. |
+
+Acciones complementarias de la lista blanca:
+
+- `skills/story-acceptance/examples/example-partial/acceptance-report.md:25`: `**Total criterios:** 2 (1 evaluado, 1 pendiente)` → `**Total criterios:** 2`, alineado con `{total_criterios}` del template (LOW relacionado con #1).
+- `skills/story-acceptance/evals/evals.json:85`: la descripción de TC-003 incluye `ACCEPTANCE/BLOCKED en reintento` entre los estados válidos (LOW). No se añadió un caso nuevo de reentrada; el archivo sigue siendo JSON válido con 14 casos.
+
+Comprobación del #1: `example-partial` → `$N_EVALUADOS` = 1, `$TOTAL_CRITERIOS` = 2 → «Sesión parcial: 1 de 2 criterios evaluados.»; reanudación 1+1 sobre 2 criterios → `$TOTAL_APPROVED` = 2, `$TOTAL_CRITERIOS` = 2 → «2 de 2 criterios aprobados.».
+
+Gates tras la corrección: `npm run verify:repository` aprobado (exit 0) y `npm test` 259/259 aprobadas, 0 fallidas.
+
+**Archivos corregidos:** `skills/story-acceptance/SKILL.md`, `skills/story-acceptance/examples/example-partial/acceptance-report.md`, `skills/story-acceptance/evals/evals.json`
+**Hallazgos omitidos por archivo inexistente:** ninguno
+
+Los hallazgos LOW restantes de `code-review-report.md` (`SKILL.md` l.288, l.353, l.488, l.494-501, l.32-38) no forman parte de la tabla de correcciones y quedan sin aplicar en esta ronda.
 
 ## Diferencias entre el diseño y la policy publicada (D-10)
 
@@ -54,6 +78,24 @@ Se actualizaron el template, `SKILL.md` (7a, 7b, 7d, `[Q]`, 8a, 8b, precondicion
 | V-13 (T035) | Pendiente de criterio humano; ver «Evals manuales pendientes». |
 
 Cambios preexistentes ajenos a la historia, conservados tal cual: `.gitignore` (línea `.opencode`), `AGENTS.md` (regla de no push) y el archivo sin versionar `opencode.json`.
+
+## Cumplimiento DoD — Fase IMPLEMENT (ronda 1)
+
+DoD: `docs/guardrails/dod-story-implement.md` (`enforcement: error`).
+
+| # | Criterio | Estado | Evidencia / Justificación |
+|---|---|---|---|
+| 1 | Todos los escenarios Gherkin definidos en `story.md` pasan exitosamente | ⚠️ | Requiere ejecución de tests — no evaluable por story-implement (evals de V-13 pendientes de criterio humano). |
+| 2 | Los criterios no funcionales de `story.md` están verificados | ⚠️ | CNF-1 verificado por lectura (V-9); la corrección de 7a no altera la validación criterio por criterio, `session-status` ni la reanudación. Sin evidencia conductual. |
+| 3 | El comportamiento coincide con lo especificado en `design.md` | ✓ | 7a queda alineado con D-1 («`$TOTAL_CRITERIOS` cuenta todos los criterios a validar») y con los motivos deterministas de D-2. |
+| 4 | No hay regresiones en las funcionalidades previamente trabajadas | ✓ | `npm test` 259/259 y `npm run verify:repository` aprobado. |
+| 5 | El código sigue las convenciones de `constitution.md` | ✓ | Cambios en Markdown/JSON en español, UTF-8, mismo estilo de la sección. |
+| 6 | No hay código comentado ni `TODO` sin issue asociado | ✓ | Ninguno introducido. |
+| 7 | No hay variables, imports ni funciones sin usar | ✓ | No aplica a cambios de Markdown/JSON; ningún placeholder huérfano. |
+| 8 | El código pasa el linter y el formateador sin errores ni warnings | ✓ | `npm run verify:repository` aprobado. |
+| 9 | No se introducen dependencias nuevas sin aprobación | ✓ | `package.json` sin cambios. |
+
+**Resumen:** 7/9 criterios ✓ · 2 ⚠️ · 0 ❌
 
 ## Evals manuales pendientes
 

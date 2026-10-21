@@ -82,7 +82,7 @@
       "id": "TC-003",
       "name": "estado-invalido-detiene-ejecucion",
       "type": "fail-fast",
-      "description": "La historia tiene status IMPLEMENT y substatus IN-PROGRESS (no cumple la precondición). El skill debe mostrar el error con el estado actual y los estados válidos requeridos (VERIFY/DONE o ACCEPTANCE/IN-PROGRESS) y no modificar ningún archivo.",
+      "description": "La historia tiene status IMPLEMENT y substatus IN-PROGRESS (no cumple la precondición). El skill debe mostrar el error con el estado actual y los estados válidos requeridos (VERIFY/DONE, ACCEPTANCE/IN-PROGRESS o ACCEPTANCE/BLOCKED en reintento) y no modificar ningún archivo.",
       "input": {
         "story_id": "STORY-070",
         "story_status": "IMPLEMENT",

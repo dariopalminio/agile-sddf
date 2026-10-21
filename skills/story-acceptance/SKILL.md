@@ -375,10 +375,10 @@ Al completar todos los criterios de la sesión:
 #### 7a. Calcular totales
 
 ```
-$TOTAL_CRITERIOS = todos los criterios a validar (Gherkin + DoD), más las filas de sesiones anteriores (si reanudación)
-$TOTAL_APPROVED  = criterios con APPROVED
-$TOTAL_REJECTED  = criterios con REJECTED
-$TOTAL_BLOCKED   = criterios con BLOCKED
+$TOTAL_CRITERIOS = todos los criterios a validar (Gherkin + DoD), sin sumar filas de sesiones anteriores
+$TOTAL_APPROVED  = criterios con APPROVED en esta sesión + los cargados de la sesión parcial reanudada (si reanudación)
+$TOTAL_REJECTED  = criterios con REJECTED en esta sesión + los cargados de la sesión parcial reanudada (si reanudación)
+$TOTAL_BLOCKED   = criterios con BLOCKED en esta sesión + los cargados de la sesión parcial reanudada (si reanudación)
 $N_EVALUADOS     = $TOTAL_APPROVED + $TOTAL_REJECTED + $TOTAL_BLOCKED
 ```
 
@@ -393,7 +393,7 @@ Deriva `$VERDICT` evaluando esta tabla **en orden** (primera fila que se cumple)
 | 3 | `$TOTAL_BLOCKED > 0` | `BLOCKED` |
 | 4 | En otro caso | `APPROVED` |
 
-El orden aplica la precedencia G-05 de `docs/policies/validation-contract-policy.md`: con rechazo y bloqueo gana `NEEDS-CHANGES`, y mientras la sesión es `partial` el veredicto es `PENDING`. Al completar una sesión reanudada, 7a ya suma las filas de la sesión anterior, así que el veredicto se recalcula con ellas.
+El orden aplica la precedencia G-05 de `docs/policies/validation-contract-policy.md`: con rechazo y bloqueo gana `NEEDS-CHANGES`, y mientras la sesión es `partial` el veredicto es `PENDING`. Al completar una sesión reanudada, `$TOTAL_APPROVED`, `$TOTAL_REJECTED` y `$TOTAL_BLOCKED` de 7a ya incluyen los resultados de la sesión parcial anterior, así que el veredicto se recalcula con ellos.
 
 #### 7c. Preservar historial si existe acceptance-report.md previo
 

@@ -22,7 +22,7 @@ Ejecuta /story-acceptance STORY-062 para reanudar.
 - **Historia:** STORY-062 — Edición de perfil de usuario
 - **Fecha:** 2026-05-16
 - **Validador:** Darío Palminio
-- **Total criterios:** 2 (1 evaluado, 1 pendiente)
+- **Total criterios:** 2
 - **Aprobados (APPROVED):** 1
 - **Rechazados (REJECTED):** 0
 - **Bloqueados (BLOCKED):** 0
