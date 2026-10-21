@@ -15,7 +15,7 @@ related: []
 
 ## Alcance
 
-Reducir el contexto que consume una sesión del harness, que hoy está entre 125K y 140K tokens en `/story-implement`. La primera meta es bajar de 125K (unos 85K estimados) y la segunda, de 65K. Los subagentes pasarán a recibir la ruta del skill en lugar de su contenido. Los SKILL.md grandes primero se comprimirán, eliminando texto redundante, plantillas y reglas globales repetidas y resumiendo la prosa en listas o tablas, y después se dividirán en un núcleo más `references/` por fase; la meta es reducir el tamaño total del skill, no solo el de su núcleo. Los artefactos y los índices tendrán un tamaño máximo y la resolución de raíz pasará a un script. Para que el problema no vuelva, se añaden linters y gates deterministas a `verify:repository`. Origen: informe de optimización del consumo de contexto (`.temp/propuestas-de-mejoras/optimization-report.md`).
+Reducir el contexto que consume una sesión del harness, que hoy está entre 125K y 140K tokens en `/story-implement`. La primera meta es bajar de 120K (unos 85K estimados) y la segunda, de 65K. Los subagentes pasarán a recibir la ruta del skill en lugar de su contenido. Los SKILL.md grandes primero se comprimirán, eliminando texto redundante, plantillas y reglas globales repetidas y resumiendo la prosa en listas o tablas, y después se dividirán en un núcleo más `references/` por fase; la meta es reducir el tamaño total del skill, no solo el de su núcleo. Los artefactos y los índices tendrán un tamaño máximo y la resolución de raíz pasará a un script. Para que el problema no vuelva, se añaden linters y gates deterministas a `verify:repository`. Origen: informe de optimización del consumo de contexto (`.temp/propuestas-de-mejoras/optimization-report.md`).
 
 ## Historias
 
@@ -67,7 +67,7 @@ Reducir el contexto que consume una sesión del harness, que hoy está entre 125
 Escenario: La sesión estimada de story-implement queda por debajo de la meta de contexto
   Dado el framework con las historias de esta épica implementadas
   Cuando se ejecuta el script de medición del presupuesto de contexto sobre una sesión de /story-implement
-  Entonces el total estimado es menor de 125K tokens
+  Entonces el total estimado es menor de 120K tokens
   Y ningún componente individual supera 25K tokens
 ```
 

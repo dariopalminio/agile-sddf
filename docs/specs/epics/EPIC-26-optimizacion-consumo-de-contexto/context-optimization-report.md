@@ -10,9 +10,9 @@ related:
 
 # Informe de Optimización del Consumo de Contexto
 
-**Problema: el problema de contexto viene sobre todo de los SKILL.md demasiado largos y de cómo los orquestadores invocan a otros skills, no de AGENTS.md.** Con las mediciones actuales, una sesión de `/story-implement` en este repo consume unos **125–140K tokens**, por encima de la meta **<= 125K tokens**.
+**Problema: el problema de contexto viene sobre todo de los SKILL.md demasiado largos y de cómo los orquestadores invocan a otros skills, no de AGENTS.md.** Con las mediciones actuales, una sesión de `/story-implement` en este repo consume unos **125–140K tokens**, por encima de la meta **<= 120K tokens**.
 
-**Objetivo**: El objetivo es optimizar este repositorio y harness en cuanto al consumo de contexto, es decir, lograr bajar el contexto de sesiones a que sean menores a 125 K tokens como primera meta. Con dos cambios estructurales baja a unos 85K, y la segunda meta (65K) se alcanza con tres más. 
+**Objetivo**: El objetivo es optimizar este repositorio y harness en cuanto al consumo de contexto, es decir, lograr bajar el contexto de sesiones a que sean menores a 120 K tokens como primera meta. Con dos cambios estructurales baja a unos 85K, y la segunda meta màs ambiciosa (65K) se alcanza con tres más. 
 
 ---
 
@@ -84,7 +84,7 @@ Es una estimación hecha con el tamaño de los archivos a razón de unos 3,7 byt
 
 ## 4. Plan por metas
 
-**Meta 1 (menos de 125K), unos 85K estimados:**
+**Meta 1 (menos de 120K), unos 85K estimados:**
 - Pasar a los subagentes la ruta del skill en vez de su contenido, con un ADR nuevo (hallazgo 1).
 - Limpiar el catálogo y las instalaciones obsoletas (hallazgo 11).
 - Prohibir la lectura completa de GRAPH_REPORT.md (hallazgo 4).
