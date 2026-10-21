@@ -5,7 +5,7 @@ id: STORY-140
 kind: feat
 slug: STORY-140-alinear-story-evaluation
 title: "Alinear story-evaluation"
-status: IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17

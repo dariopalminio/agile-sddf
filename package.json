@@ -54,6 +54,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "fs-extra": "^11.3.4"
+    "fs-extra": "^11.4.1"
   }
 }
