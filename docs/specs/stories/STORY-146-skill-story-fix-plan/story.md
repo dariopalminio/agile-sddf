@@ -5,7 +5,7 @@ id: STORY-146
 kind: feat
 slug: STORY-146-skill-story-fix-plan
 title: "Skill `story-fix-plan`: corregir el plan de una historia desde `analyze.md`"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: null
 created: 2026-10-17

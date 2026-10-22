@@ -5,7 +5,7 @@ id: STORY-144
 kind: feat
 slug: STORY-144-alinear-story-analyze
 title: "Alinear story-analyze"
-status: IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17

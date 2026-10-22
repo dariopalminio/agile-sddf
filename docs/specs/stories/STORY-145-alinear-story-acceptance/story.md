@@ -5,7 +5,7 @@ id: STORY-145
 kind: feat
 slug: STORY-145-alinear-story-acceptance
 title: "Alinear story-acceptance"
-status: CODE-REVIEW
+status: COMPLETED
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17

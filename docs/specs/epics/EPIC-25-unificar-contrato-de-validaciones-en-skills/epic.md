@@ -3,8 +3,8 @@ type: epic
 id: EPIC-25
 slug: EPIC-25-unificar-contrato-de-validaciones-en-skills
 title: "Unificar contrato de validaciones en skills"
-status: DEFINE
-substatus: TODO
+status: COMPLETED
+substatus: DONE
 parent: null
 created: 2026-10-14
 updated: 2026-10-19

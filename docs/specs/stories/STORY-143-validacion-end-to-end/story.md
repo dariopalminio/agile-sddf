@@ -5,7 +5,7 @@ id: STORY-143
 kind: chore
 slug: STORY-143-validacion-end-to-end
 title: "Validación end-to-end"
-status: CODE-REVIEW
+status: COMPLETED
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17

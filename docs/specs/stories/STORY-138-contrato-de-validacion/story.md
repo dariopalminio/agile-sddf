@@ -5,7 +5,7 @@ id: STORY-138
 kind: feat
 slug: STORY-138-contrato-de-validacion
 title: "Contrato de validación"
-status: CODE-REVIEW
+status: COMPLETED
 substatus: DONE
 parent: EPIC-25-unificar-contrato-de-validaciones-en-skills
 created: 2026-10-17
