@@ -190,15 +190,24 @@ project-begin → project-discovery → project-planning
 epic-from-project-plan → epic-generate-stories → epic-analyze
 ```
 
+<!-- TODO:
+epic-from-project-plan → epic-generate-stories → epic-analyze ⇄ epic-refine
+-->
+
 | Skill | Input | Output |
 |---|---|---|
 | `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `$SPECS_BASE/specs/epics/EPIC-NN-<slug>/epic.md` (uno por épica) |
 | `epic-generate-stories` | Un archivo `epic.md` | `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
-
+<!-- TODO: | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`) y `<EPIC_DIR>/epic-refine-report.md` |
+-->
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
 > con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT` / `BLOCKED`) antes
-> de aprobar la épica para `READY-FOR-DEV`; no cambia ningún estado.
+<!-- TODO:
+> de aprobar la épica para `READY-FOR-DEV`; no cambia ningún estado. Con `NEEDS-REFINEMENT`, `epic-refine` corrige el
+-->
+> índice, la cobertura del contrato de salida y las referencias de las historias, y se vuelve a ejecutar `epic-analyze`
+> hasta obtener `APPROVED`.
 
 ---
 

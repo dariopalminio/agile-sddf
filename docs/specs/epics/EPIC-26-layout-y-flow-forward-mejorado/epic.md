@@ -7,7 +7,7 @@ status: DEFINE
 substatus: TODO
 parent: null
 created: 2026-10-21
-updated: 2026-10-21
+updated: 2026-10-22
 related: []
 ---
 
@@ -21,12 +21,16 @@ Separar conocimiento de estado fijando tres raíces hermanas en la raíz del rep
 
 - [ ] **STORY-147** — ADR del layout fijo de tres raíces: Crear un ADR que fija `docs/`, `specs/` (`flow/`, `flow/archive/`, `living/`) y `workflow/` como raíces hermanas en la raíz del repo, retira `SDDF_ROOT` / `root` / `SPECS_BASE` y reemplaza a ADR-0010 (`superseded-by`)
 - [ ] **STORY-148** — Contrato de rutas fijas y gate determinista: Sustituir el bloque `SDDF-ROOT-RESOLUTION: v1` por un contrato de layout fijo que solo resuelve `REPO_ROOT`, y adaptar `scripts/audit-root-resolution.js` (o su reemplazo) y `verify:repository` para validarlo en todos los skills
-- [ ] **STORY-149** — sddf-init crea el nuevo layout: `/sddf-init` crea `specs/flow/`, `specs/flow/archive/`, `specs/living/` (vacío) y `workflow/` en `REPO_ROOT`, mantiene los templates en `docs/templates/` y deja de escribir la clave `root` en `sddf.config.yaml`; si ya existe `docs/specs/`, emite un aviso de deprecación, no crea `specs/flow/` en paralelo y remite a la guía de migración
-- [ ] **STORY-150** — Migrar los skills de historia a specs/flow: `story-*` (incluidos `story-specify`, `story-plan`, `story-implement` y sus subagentes) dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
-- [ ] **STORY-151** — Migrar los skills de épica a specs/flow: `epic-creation`, `epic-format-validation`, `epic-from-project-plan`, `epic-generate-stories`, `epic-generate-all-stories` y `epic-analyze` dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/EPIC-NN-<slug>/`; la búsqueda de stories hijas cubre `specs/flow/` y `specs/flow/archive/`; se actualizan sus evals
+- [ ] **STORY-149** — sddf-init crea el nuevo layout: `/sddf-init` crea `specs/flow/`, `specs/flow/archive/`, `specs/living/` (vacío) y `workflow/` en `REPO_ROOT`, mantiene los templates en `docs/templates/`, deja de escribir la clave `root` en `sddf.config.yaml` y deja de usar `SPECS_BASE`/`SDDF_ROOT` en su skill, assets y evals; si ya existe `docs/specs/`, emite un aviso de deprecación, no crea `specs/flow/` en paralelo y remite a la guía de migración
+- [ ] **STORY-150** — Migrar los skills de especificación a specs/flow: `story-creation`, `story-evaluation`, `story-refine`, `story-improve`, `story-split` y `story-specify` (con sus subagentes) dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
+- [ ] **STORY-151** — Migrar los skills de épica a specs/flow: `epic-creation`, `epic-format-validation`, `epic-from-project-plan`, `epic-generate-stories`, `epic-generate-all-stories`, `epic-analyze` y `epic-refine` dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/EPIC-NN-<slug>/`; la búsqueda de stories hijas cubre `specs/flow/` y `specs/flow/archive/`; se actualizan sus evals
 - [ ] **STORY-152** — Migrar los skills de proyecto y transversales: `project-*`, `memory-system`, `header-aggregation`, `reverse-engineering`, `sddf-constitution` y `skill-preflight` usan rutas fijas; `skill-preflight` diagnostica el layout legado (`docs/specs/`, `root`, `SDDF_ROOT`) y apunta a la guía de migración; el alias deprecado `docs-wiki-builder` se elimina en lugar de migrarse
-- [ ] **STORY-153** — Migración única de work items del repo: Script reproducible de un solo uso (con `--dry-run`, idempotente) que hace `git mv` de las épicas a `specs/flow/EPIC-*/`, de las stories no `COMPLETED` a `specs/flow/STORY-*/` y de las `COMPLETED` a `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`, elimina `docs/specs/` y corrige los enlaces rotos; sin eventos ni log
+- [ ] **STORY-153** — Migrar y archivar los work items a specs/flow: Script reproducible de un solo uso (con `--dry-run`, idempotente) que hace `git mv` de las épicas a `specs/flow/EPIC-*/`, de las stories no `COMPLETED` a `specs/flow/STORY-*/` y de las `COMPLETED` a `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` y elimina `docs/specs/`; sin eventos ni log
 - [ ] **STORY-154** — Documentar el nuevo layout: Actualizar `AGENTS.md` (layout fijo, convención `<YYYY-MM-DD>-STORY-NNN-<slug>/` de `archive/`, nota de que `docs/requirements/` migrará a `specs/living/` en la épica de Living Spec), `docs/architecture/sddf-architecture.md`, `docs/index.md`, las guías afectadas, el CHANGELOG (cambio incompatible, versión mayor) y una sección nueva de migración en `docs/guides/artifact-directory-migration.md` para proyectos que usan `root: docs` o `docs/specs/`
+- [ ] **STORY-155** — Migrar los skills de planning a specs/flow: `story-design`, `story-tasking`, `story-testcases`, `story-analyze`, `story-fix-plan` y `story-plan` (con sus subagentes) dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
+- [ ] **STORY-156** — Migrar los skills de implementación a specs/flow: `story-implement` y `story-implement-tasks` dejan de usar `SPECS_BASE` y escriben `implement-report.md` en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
+- [ ] **STORY-157** — Reparar enlaces y validar el gate tras la migración: Reescribir los enlaces y wikilinks hacia las rutas movidas de `docs/specs/`, verificar el historial con `git log --follow` y cerrar la épica comprobando el contrato de salida global (grep de raíz legada sobre `skills/`, lista transitoria del gate vacía, `npm test` y `verify:repository` en verde)
+- [ ] **STORY-158** — Migrar los skills de revisión, verificación y aceptación a specs/flow: `story-code-review`, `story-verify` y `story-acceptance` (con sus agentes locales) dejan de usar `SPECS_BASE` y escriben sus informes en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
 
 ## Criterios de salida
 

@@ -6,7 +6,7 @@ kind: chore
 slug: STORY-154-documentar-el-nuevo-layout
 title: "Documentar el nuevo layout"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21
 updated: 2026-10-21

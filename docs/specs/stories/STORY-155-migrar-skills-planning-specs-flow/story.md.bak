@@ -1,0 +1,70 @@
+---
+alwaysApply: false
+type: story
+id: STORY-155
+kind: feat
+slug: STORY-155-migrar-skills-planning-specs-flow
+title: "Migrar los skills de planning a specs/flow"
+status: SPECIFY
+substatus: IN-PROGRESS
+parent: EPIC-26-layout-y-flow-forward-mejorado
+created: 2026-10-22
+updated: 2026-10-22
+related:
+  - EPIC-26-layout-y-flow-forward-mejorado
+  - STORY-148-contrato-de-rutas-fijas-y-gate-determinista
+  - STORY-150-migrar-skills-especificacion-specs-flow
+  - STORY-156-migrar-skills-implementacion-verificacion-specs-flow
+---
+[[EPIC-26-layout-y-flow-forward-mejorado]]
+
+# 📖 Historia: Migrar los skills de planning a specs/flow
+
+**Como** practitioner que planifica historias con SDDF
+**Quiero** que la fase de planning de una historia lea y escriba sus artefactos en `specs/flow/STORY-NNN-<slug>/`
+**Para** que un repo recién inicializado planifique una historia sin `sddf.config.yaml` ni `SDDF_ROOT`
+
+## ✅ Criterios de aceptación
+
+### AC-1 — Escenario principal – artefactos de planning
+```gherkin
+Dado una historia en "specs/flow/STORY-NNN-<slug>/story.md" con su épica padre en "specs/flow/EPIC-NN-<slug>/epic.md"
+Cuando el usuario ejecuta "/story-plan" sobre ella
+Entonces "design.md", "tasks.md", "testcases.md" y "analyze.md" se escriben en "specs/flow/STORY-NNN-<slug>/"
+  Y la épica padre se lee desde "specs/flow/EPIC-NN-<slug>/epic.md"
+```
+
+### AC-2 — Escenario alternativo – historia no encontrada
+```gherkin
+Dado que no existe "specs/flow/STORY-999-*/"
+Cuando el usuario ejecuta "/story-plan STORY-999"
+Entonces el skill informa que la historia no existe en "specs/flow/"
+  Pero no busca ni crea nada en "docs/specs/"
+```
+
+### AC-3 — Escenario alternativo / error – sin referencias legadas
+```gherkin
+Dado los skills de planning y sus "assets/agents/" migrados
+Cuando se ejecuta grep -rnE "SPECS_BASE|SDDF_ROOT" sobre ellos
+Entonces no hay coincidencias
+  Y "npm run verify:repository" termina en verde
+```
+
+## ⚙️ Criterios no funcionales específicos
+
+- **CNF-1 — Evals actualizados:** los `evals/evals.json` de los skills de esta historia usan rutas `specs/flow/`; su ejecución (`npm run test:eval`) queda a criterio humano.
+- **CNF-2 — Contrato:** todos los skills migrados declaran el contrato de layout fijo de STORY-148.
+
+## Fuera de alcance (Non-Goals)
+
+- Skills de especificación (STORY-150) y de implementación y verificación (STORY-156).
+- Buscar historias en `specs/flow/archive/` (las historias archivadas están cerradas).
+- Skills `epic-*` (STORY-151) y transversales (STORY-152).
+
+## 📎 Notas / contexto adicional
+
+Feature origen: STORY-150 — Migrar los skills de historia a specs/flow (dividida con `/story-split`, patrón 1 — pasos del flujo de trabajo).
+
+Alcance: `story-design`, `story-tasking`, `story-testcases`, `story-analyze`, `story-fix-plan` y `story-plan`, más sus `assets/agents/` y `evals/evals.json`. Cubre la parte de planning de CS-2 y SMOKE-1. Depende de STORY-148.
+
+Para probar la lectura de la épica padre sin esperar a STORY-151 se usa una épica fixture en `specs/flow/EPIC-NN-<slug>/epic.md`.

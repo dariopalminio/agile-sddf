@@ -6,10 +6,10 @@ kind: feat
 slug: STORY-149-sddf-init-crea-el-nuevo-layout
 title: "sddf-init crea el nuevo layout"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21
-updated: 2026-10-21
+updated: 2026-10-22
 related:
   - EPIC-26-layout-y-flow-forward-mejorado
 ---
@@ -50,10 +50,20 @@ Entonces no se sobrescriben archivos existentes en "specs/" ni en "workflow/"
   Y el resultado informa que el layout ya existe
 ```
 
+### AC-4 — Escenario alternativo / error – sddf-init sin resolución legada
+```gherkin
+Dado "skills/sddf-init/" migrado al contrato de layout fijo de STORY-148
+Cuando se ejecuta grep -rnE "SPECS_BASE|SDDF_ROOT" sobre "skills/sddf-init/"
+Entonces no hay coincidencias
+  Y "assets/sddf.config.yaml.template" y "assets/sddf.config.yaml.example" no declaran la clave "root"
+  Y el ".env.template" que genera "/sddf-init" no declara "SDDF_ROOT"
+```
+
 ## ⚙️ Criterios no funcionales específicos
 
 - **CNF-1 — Sin escritura en layout legado:** ante `docs/specs/`, el skill no crea ni modifica ningún archivo de work items.
-- **CNF-2 — Evals:** los evals de `skills/sddf-init/evals/evals.json` cubren AC-1 y AC-2.
+- **CNF-2 — Evals:** los evals de `skills/sddf-init/evals/evals.json` cubren AC-1 y AC-2, y los que hoy prueban `SDDF_ROOT` o `root: docs` se reescriben o retiran.
+- **CNF-3 — Contrato:** `skills/sddf-init/SKILL.md` declara el contrato de layout fijo de STORY-148 y sale de la lista transitoria de pendientes del gate.
 
 ## Fuera de alcance (Non-Goals)
 
@@ -64,4 +74,8 @@ Entonces no se sobrescriben archivos existentes en "specs/" ni en "workflow/"
 
 Generado automáticamente desde la épica: `EPIC-26-layout-y-flow-forward-mejorado/epic.md`
 Feature origen: STORY-149 — sddf-init crea el nuevo layout
-Cubre CS-3 (parte de `sddf-init`), CS-8, CS-13 y SMOKE-3, SMOKE-6. La guía de migración a la que remite el aviso la completa STORY-154.
+Cubre CS-3 (parte de `sddf-init`), la parte de `sddf-init` de CS-2, CS-8, CS-13 y SMOKE-3, SMOKE-6. La guía de migración a la que remite el aviso la completa STORY-154.
+
+**Inventario inicial (2026-10-22):** 5 archivos de `skills/sddf-init/` contienen `SPECS_BASE` o `SDDF_ROOT` (`SKILL.md`, `README.md`, `evals/evals.json`, `assets/sddf.config.yaml.template` y `assets/sddf.config.yaml.example`); los dos assets declaran además `root: docs`. Ninguna otra historia de EPIC-26 migra este skill.
+
+**Dependencia:** `depends-on: STORY-148` para AC-4 (contrato de layout fijo y gate); AC-1 a AC-3 pueden desarrollarse contra el contrato documentado en STORY-148.

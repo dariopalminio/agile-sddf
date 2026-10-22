@@ -6,10 +6,10 @@ kind: chore
 slug: STORY-147-adr-del-layout-fijo-de-tres-raices
 title: "ADR del layout fijo de tres raíces"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21
-updated: 2026-10-21
+updated: 2026-10-22
 related:
   - EPIC-26-layout-y-flow-forward-mejorado
 ---
@@ -65,4 +65,8 @@ Entonces el ADR declara explícitamente si los directorios de "specs/flow/" cons
 
 Generado automáticamente desde la épica: `EPIC-26-layout-y-flow-forward-mejorado/epic.md`
 Feature origen: STORY-147 — ADR del layout fijo de tres raíces
-Cubre CS-1 de la épica. Debe completarse antes de las demás historias de EPIC-26 porque fija la decisión que todas aplican.
+Debe completarse antes de las demás historias de EPIC-26 porque fija la decisión que todas aplican.
+
+**Criterio de salida de la épica que cubre** (AC-1 y AC-2 lo verifican juntos; cita literal para la trazabilidad de `/epic-analyze`):
+
+- **CS-1** — Existe un ADR nuevo `ACCEPTED` del layout fijo y ADR-0010 queda reemplazado (`superseded-by`) sin editarse su contenido.

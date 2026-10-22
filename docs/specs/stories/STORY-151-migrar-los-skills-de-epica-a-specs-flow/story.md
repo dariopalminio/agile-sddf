@@ -6,10 +6,10 @@ kind: feat
 slug: STORY-151-migrar-los-skills-de-epica-a-specs-flow
 title: "Migrar los skills de épica a specs/flow"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21
-updated: 2026-10-21
+updated: 2026-10-22
 related:
   - EPIC-26-layout-y-flow-forward-mejorado
 ---
@@ -69,3 +69,5 @@ Entonces no hay coincidencias
 Generado automáticamente desde la épica: `EPIC-26-layout-y-flow-forward-mejorado/epic.md`
 Feature origen: STORY-151 — Migrar los skills de épica a specs/flow
 Cubre parte de CS-2 y SMOKE-2. Depende de STORY-148.
+
+**Ampliación de alcance (2026-10-22):** incluye también `epic-refine`, creado después de especificar esta historia con el contrato `SDDF-ROOT-RESOLUTION: v1`. Su `SKILL.md` resuelve `SPECS_BASE` y sus evals usan `docs/specs/epics/`; AC-4 ya lo alcanza porque busca sobre `skills/epic-*`.
