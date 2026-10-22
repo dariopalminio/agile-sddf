@@ -4,7 +4,7 @@ id: EPIC-26
 slug: EPIC-26-layout-y-flow-forward-mejorado
 title: "Layout y flow-forward mejorado"
 status: DEFINE
-substatus: TODO
+substatus: DONE
 parent: null
 created: 2026-10-21
 updated: 2026-10-22
