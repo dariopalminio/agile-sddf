@@ -12,7 +12,7 @@ created: 2026-10-08
 updated: 2026-10-08
 related:
   - STORY-113-project-flow-sin-01-projects
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-109-project-begin-escribe-vision
   - STORY-110-discovery-escribe-stakeholders-y-requisitos
   - STORY-111-planning-escribe-roadmap
@@ -21,13 +21,13 @@ related:
 ---
 
 <!-- Referencias -->
-[[STORY-113-project-flow-sin-01-projects]] · [[eliminar-specs-01-projects]] · [[STORY-109-project-begin-escribe-vision]] · [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] · [[STORY-111-planning-escribe-roadmap]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-115-scaffold-dos-niveles-y-capas-destino]]
+[[STORY-113-project-flow-sin-01-projects]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[STORY-109-project-begin-escribe-vision]] · [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] · [[STORY-111-planning-escribe-roadmap]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-115-scaffold-dos-niveles-y-capas-destino]]
 
 # Diseño técnico: `project-flow`, `sddf-init` y `header-aggregation` sin `specs/01-projects/`
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) reparte `01-projects/` en capas: la visión va a `product/vision.md` (STORY-109), los
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) reparte `01-projects/` en capas: la visión va a `product/vision.md` (STORY-109), los
 stakeholders y requisitos a `product/stakeholders.md` + `requirements/` (STORY-110) y el plan de épicas a `product/roadmap.md`
 (STORY-111). Esta historia cierra el bloque de skills: el **orquestador** del pipeline de proyecto, el **bootstrap** y el
 **normalizador de frontmatter**.

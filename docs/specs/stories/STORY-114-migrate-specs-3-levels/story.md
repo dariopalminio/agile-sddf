@@ -12,7 +12,7 @@ created: 2026-10-05
 updated: 2026-10-11
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-101-dod-story-por-etapa
   - STORY-104-migrar-project-intent-a-vision
   - STORY-105-migrar-stakeholders-y-requisitos
@@ -22,7 +22,7 @@ related:
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: Implementar `memory-system migrate --from=specs-3-levels`
 
@@ -83,14 +83,14 @@ Ejemplos:
 ## Fuera de alcance (Non-Goals)
 
 - **Reconciliar el roadmap con las épicas reales**, como hizo a mano STORY-106: la migración traslada el plan tal como está, y el usuario puede reconciliarlo después.
-- **Repositorios multi-proyecto:** se rechazan (AC-3). [[ADR-0013-eliminar-specs-01-projects]] deja ese caso para un ADR futuro.
+- **Repositorios multi-proyecto:** se rechazan (AC-3). [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] deja ese caso para un ADR futuro.
 - **Reescribir menciones textuales a las rutas viejas** dentro de épicas e historias del usuario: son registro histórico. Solo se ajustan los wikilinks cuyo slug cambia (por ejemplo, el de `project-intent.md` pasa a `[[vision]]`).
 - **Migrar el repositorio del propio framework:** lo hacen STORY-104 a STORY-108 a mano. Esta historia automatiza el mismo resultado para terceros.
 - **Que `scaffold` deje de crear `01-projects/`:** "Actualizar scaffolding de `memory-system`".
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]], consecuencia "Migración de contenido: el skill `memory-system migrate` debe implementar esta migración". Cubre el smoke test 2 de EPIC-21 y su criterio de salida "`migrate --from=specs-3-levels --dry-run` reporta 0 cambios pendientes tras la migración".
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]], consecuencia "Migración de contenido: el skill `memory-system migrate` debe implementar esta migración". Cubre el smoke test 2 de EPIC-21 y su criterio de salida "`migrate --from=specs-3-levels --dry-run` reporta 0 cambios pendientes tras la migración".
 - **Precedente:** `migrate --from=dod-monolithic` (STORY-101) ya resuelve dry-run, `--force`, idempotencia y `[NO MIGRADO]` con exit 1 de forma determinista en `skills/memory-system/scripts/memory-system.js`. El motor normaliza `--from=valor` a `--from valor`.
 - **Mapa de destino:** es el que fijan STORY-104 (`project-intent.md` → `vision.md`), STORY-105 (§1.8 → `stakeholders.md`; FR/NFR → un archivo por requisito, conservando IDs y huecos), STORY-106 (`project-plan.md` → `roadmap.md`; "Objetivo" → `objectives.md`), STORY-107 (`story-map.md` → `product/`; `.puml` → `architecture/c4/`) y STORY-108 (renombrado). Esta historia no redefine ese mapa.
 - **Dependencia de decisión:** las secciones de `project.md` que ADR-0013 no asigna (UI/UX, stack, glosario, referencias, apéndices) dependen de la historia pendiente "Reubicar las secciones restantes de `project.md`". Hasta que exista esa decisión, la migración las marca `[NO MIGRADO]`, lo que impide eliminar `01-projects/` (AC-3).

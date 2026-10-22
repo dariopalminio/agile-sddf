@@ -9,10 +9,10 @@ updated: 2026-10-11
 related:
   - STORY-116-documentar-modelo-dos-niveles
   - EPIC-21-colapsar-specs-dos-niveles
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
 ---
 <!-- Referencias -->
-[[STORY-116-documentar-modelo-dos-niveles]] · [[EPIC-21-colapsar-specs-dos-niveles]] · [[eliminar-specs-01-projects]]
+[[STORY-116-documentar-modelo-dos-niveles]] · [[EPIC-21-colapsar-specs-dos-niveles]] · [[asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # Reporte de Implementación: Actualizar documentación canónica al modelo de dos niveles
 

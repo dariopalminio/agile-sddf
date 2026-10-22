@@ -13,7 +13,7 @@ updated: 2026-10-08
 related:
   - STORY-117-verificar-cierre-epic-21
   - EPIC-21-colapsar-specs-dos-niveles
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-113-project-flow-sin-01-projects
   - STORY-114-migrate-specs-3-levels
   - STORY-115-scaffold-dos-niveles-y-capas-destino
@@ -21,7 +21,7 @@ related:
 ---
 
 <!-- Referencias -->
-[[STORY-117-verificar-cierre-epic-21]] · [[EPIC-21-colapsar-specs-dos-niveles]] · [[eliminar-specs-01-projects]] · [[STORY-113-project-flow-sin-01-projects]] · [[STORY-114-migrate-specs-3-levels]] · [[STORY-115-scaffold-dos-niveles-y-capas-destino]] · [[STORY-116-documentar-modelo-dos-niveles]]
+[[STORY-117-verificar-cierre-epic-21]] · [[EPIC-21-colapsar-specs-dos-niveles]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[STORY-113-project-flow-sin-01-projects]] · [[STORY-114-migrate-specs-3-levels]] · [[STORY-115-scaffold-dos-niveles-y-capas-destino]] · [[STORY-116-documentar-modelo-dos-niveles]]
 
 # Diseño técnico: verificación de cierre de EPIC-21
 
@@ -39,7 +39,7 @@ fallo**. El orden lo fija `tasks.md`.
 | Precondición | STORY-104…107 y 109…116 en `READY-FOR-IMPLEMENT/DONE`; STORY-108 en `PLAN/IN-PROGRESS`. Ninguna está aceptada. STORY-118 pertenece a la épica pero queda fuera del rango del "Dado" de AC-1. |
 | `sddf.config.yaml` versionados | 10 (`git ls-files '*sddf.config.yaml'`): el de la raíz y los de las fixtures de `header-aggregation` y `memory-system`. Ninguno contiene `01-projects`, `02-epics` ni `03-stories` (`grep` sin coincidencias). |
 | Motor de memoria | `skills/memory-system/scripts/memory-system.js`: `scaffold` crea la raíz si existe su padre; `check` sale con 1 si hay problemas y con 2 ante cualquier error; `check --json` emite `summary` por tipo y `problems[{kind, path, detail}]`. `migrate --from` hoy admite `dod-monolithic` y `epic-template-v1`; STORY-114 añade `specs-3-levels` (informe D-13: con `--dry-run` la última línea es `cambios pendientes: N`; exit 1 con `[NO MIGRADO]`). |
-| `check --root docs` | Exit 1, `problemas: 56 (orphan 8 · broken-wikilink 48)`. 31 son `[[ADR-0013-eliminar-specs-01-projects]]` en historias de EPIC-21 (el slug real del ADR es `eliminar-specs-01-projects`; la propia `story.md` de esta historia lo contiene, en el cuerpo y en `related`); el resto son preexistentes: `[[STORY-100-slug]]` en EPIC-20, 3 templates en EPIC-17, `[[skill-preflight]]` en STORY-053, 3 ADR en STORY-103, 2 en STORY-118, 3 en `domains/`, 4 en ADR-0013 (los corrige STORY-116 D-9). Ningún ADR `ACCEPTED` tiene wikilinks rotos. Los 8 `orphan` son archivos sin frontmatter (incluido el insight de EPIC-21). |
+| `check --root docs` | Exit 1, `problemas: 56 (orphan 8 · broken-wikilink 48)`. 31 son `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` en historias de EPIC-21 (el slug real del ADR es `asegurar-dos-niveles-de-flujo-epics-stories`; la propia `story.md` de esta historia lo contiene, en el cuerpo y en `related`); el resto son preexistentes: `[[STORY-100-slug]]` en EPIC-20, 3 templates en EPIC-17, `[[skill-preflight]]` en STORY-053, 3 ADR en STORY-103, 2 en STORY-118, 3 en `domains/`, 4 en ADR-0013 (los corrige STORY-116 D-9). Ningún ADR `ACCEPTED` tiene wikilinks rotos. Los 8 `orphan` son archivos sin frontmatter (incluido el insight de EPIC-21). |
 | Referencias en `skills/` y `agents/` | 88 archivos con `specs/0N-…` (STORY-108…115 las retiran). La excepción legítima la definen STORY-114 CR-005 (lógica de migración) y STORY-115 contrato 6 (aviso de detección). |
 | Infraestructura de pruebas | `package.json` **no tiene** `test:e2e:smoke` (la nota de la historia lo da por existente; solo lo nombra `verify.e2e*` de `sddf.config.yaml` con `required: false`). Sí existen `smoke:package` (`npm pack` + instalación con lifecycle desactivado), `test/memory-system.test.js` (fixtures copiadas a `mkdtemp`) y las fixtures `skills/memory-system/examples/empty` y, tras STORY-114, `examples/specs-3-levels`. Ver CR-004. |
 | `story-verify` | Con `verify` configurado en `sddf.config.yaml` usa el modo config-driven (ejecuta `test:installer`, `test:eval:runner`, `audit-root-resolution`); `--mode manual` fuerza el modo guiado. Precondición: `IMPLEMENT/DONE` o `CODE-REVIEW/DONE`. El template del reporte tiene `Summary`, `Findings`, `Coverage Analysis`, `DoD VERIFY Criteria`, `Recommendations` e `Historial de Ejecuciones Anteriores`. |
@@ -137,7 +137,7 @@ solo `COMPLETED` (lo marca el humano tras DELIVER; bloquearía la verificación 
 ### D-5 — Búsqueda de rutas numeradas en `skills/` y `agents/` con lista de excepciones // satisface: AC-1
 
 **Patrón:** `git grep -nE '(^|[^-[:alnum:]])(01-projects|02-epics|03-stories)' -- skills agents`. Detecta la carpeta en cualquier
-forma (`specs/01-projects/`, `` `03-stories/STORY-…` ``, `'02-epics'`) y no confunde el slug del ADR `eliminar-specs-01-projects`
+forma (`specs/01-projects/`, `` `03-stories/STORY-…` ``, `'02-epics'`) y no confunde el slug del ADR `asegurar-dos-niveles-de-flujo-epics-stories`
 (precedido por `-`). Solo archivos versionados (`git grep`): excluye las copias instaladas (`.claude/` ignorado; `.github/skills` es
 un enlace simbólico que `git grep` no sigue).
 
@@ -246,7 +246,7 @@ comportamiento que no existe); omitir la subfila (ocultaría que el criterio tie
 - **El criterio es absoluto:** V-08 es `PASS` solo con exit 0 sobre todo `docs/`. No se excluyen registros históricos ni se añade un
   mecanismo de exclusión al motor.
 - **Si falla**, cada problema se atribuye por la regla de D-12 y la vía de corrección recomendada es **corregir el registro**:
-  reescribir el wikilink al slug vigente (`[[ADR-0013-eliminar-specs-01-projects]]` → `[[eliminar-specs-01-projects]]`) o añadir
+  reescribir el wikilink al slug vigente (`[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` → `[[asegurar-dos-niveles-de-flujo-epics-stories]]`) o añadir
   el frontmatter que falta. Corregir un slug no altera el contenido decidido del registro. La única restricción de inmutabilidad
   del repo es la de los ADR `ACCEPTED`, y hoy ninguno tiene wikilinks rotos; si alguno apareciera, la corrección es un ADR nuevo o la
   reescritura del enlace en el documento que lo cita, nunca la edición del ADR.
@@ -456,9 +456,9 @@ Ninguna. Las ambigüedades se resolvieron en las decisiones y quedan registradas
 - **Tipo**: dependencia
 - **Descripción**: con la línea base de 2026-10-08, V-08 y V-09 fallarían por 48 `broken-wikilink` y 8 `orphan`, la mayoría ajenos a
   EPIC-21 (EPIC-17, EPIC-20 `[[STORY-100-slug]]`, STORY-053, STORY-103, STORY-118, `domains/`, archivos sin frontmatter). Además, la
-  propia `story.md` de esta historia enlaza `[[ADR-0013-eliminar-specs-01-projects]]` (cuerpo y `related`), que no resuelve: el slug
-  del ADR es `eliminar-specs-01-projects`.
+  propia `story.md` de esta historia enlaza `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` (cuerpo y `related`), que no resuelve: el slug
+  del ADR es `asegurar-dos-niveles-de-flujo-epics-stories`.
 - **Documento afectado**: story.md, epic.md (EPIC-21)
-- **Acción requerida**: (1) en story.md, reescribir el wikilink y la entrada de `related` a `eliminar-specs-01-projects`; (2) añadir a
+- **Acción requerida**: (1) en story.md, reescribir el wikilink y la entrada de `related` a `asegurar-dos-niveles-de-flujo-epics-stories`; (2) añadir a
   EPIC-21 una historia de saneamiento de memoria (wikilinks a slugs vigentes y frontmatter en los huérfanos, por D-11) para ejecutarla
   antes de esta verificación. Sin ella, V-08 y V-09 serán `FAIL` atribuidas a esa historia nueva y la épica no podrá cerrarse.

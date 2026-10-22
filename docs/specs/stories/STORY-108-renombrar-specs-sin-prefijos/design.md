@@ -11,18 +11,18 @@ created: 2026-10-07
 updated: 2026-10-07
 related:
   - STORY-108-renombrar-specs-sin-prefijos
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - EPIC-21-colapsar-specs-dos-niveles
 ---
 
 <!-- Referencias -->
-[[STORY-108-renombrar-specs-sin-prefijos]] · [[eliminar-specs-01-projects]] · [[EPIC-21-colapsar-specs-dos-niveles]]
+[[STORY-108-renombrar-specs-sin-prefijos]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[EPIC-21-colapsar-specs-dos-niveles]]
 
 # Diseño técnico: renombrar `specs/02-epics/` → `specs/epics/` y `specs/03-stories/` → `specs/stories/`
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013, `status: PROPOSED`) decide `specs/epics/` + `specs/stories/` sin prefijos numéricos. La
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013, `status: PROPOSED`) decide `specs/epics/` + `specs/stories/` sin prefijos numéricos. La
 historia hace el renombrado físico y actualiza en el mismo cambio toda referencia viva a las rutas viejas.
 
 **Estado medido (2026-10-07):**

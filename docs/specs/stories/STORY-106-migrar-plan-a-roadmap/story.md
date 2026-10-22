@@ -12,13 +12,13 @@ created: 2026-10-05
 updated: 2026-10-10
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-104-migrar-project-intent-a-vision
   - STORY-105-migrar-stakeholders-y-requisitos
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: Migrar `project-plan.md` a `product/roadmap.md`
 
@@ -60,7 +60,7 @@ Entonces "Objetivos de negocio" de "docs/product/objectives.md" contiene el obje
 ## ⚙️ Criterios no funcionales específicos
 
 - **CNF-1 — Sin pérdida semántica:** todo ítem de `project-plan.md` (las 29 features del backlog, objetivos, ítems de soporte, criterios de éxito y métricas del resumen) aparece en `roadmap.md` o en `objectives.md`; nada se resume ni se descarta.
-- **CNF-2 — Trazabilidad:** `roadmap.md` declara que el plan original proviene de `project-plan.md` y que la migración la decide [[ADR-0013-eliminar-specs-01-projects]], y enlaza a [[objectives]].
+- **CNF-2 — Trazabilidad:** `roadmap.md` declara que el plan original proviene de `project-plan.md` y que la migración la decide [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]], y enlaza a [[objectives]].
 - **CNF-3 — Encoding:** los archivos creados o modificados quedan en UTF-8 sin BOM, sin caracteres corruptos (`Ã³`, `ðŸ“–`).
 
 ## Fuera de alcance (Non-Goals)
@@ -73,7 +73,7 @@ Entonces "Objetivos de negocio" de "docs/product/objectives.md" contiene el obje
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]] decide "`project-plan.md` (epic slicing) → `docs/product/roadmap.md` (nuevo archivo en la capa `product/`)" y que "el roadmap lista los Epics planificados".
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] decide "`project-plan.md` (epic slicing) → `docs/product/roadmap.md` (nuevo archivo en la capa `product/`)" y que "el roadmap lista los Epics planificados".
 - **Desfase detectado (2026-10-05):** el plan cubre las épicas 00–08 y 29 features; el repo tiene 22 épicas (EPIC-00 a EPIC-21) y 97 historias. Las épicas 07 y 08 del plan ("Robustez y Trazabilidad", "Meta-Framework y Distribución") no corresponden a las reales EPIC-07 (`publicacion-framework-npm`) y EPIC-08 (`npm-install-locally`). Por eso el roadmap combina las épicas reales (AC-1) con el plan original conservado (AC-2), en lugar de copiarlo literalmente.
 - **Capa `product/`:** `product/README.md` fija tres documentos (`vision.md`, `stakeholders.md`, `objectives.md`) y admite otros documentos de contexto en kebab-case; `roadmap.md` entra en esa regla sin cambiar el README.
 - **Referencias actuales a `[[project-plan]]`:** `docs/index.md` (1) y `project.md` (2, más la entrada `project-plan` en su `related`). Mientras `project.md` exista no debe quedar con un wikilink roto.

@@ -8,7 +8,7 @@ substatus: null
 parent: null
 related:
   - root-folder-practices
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
 ---
 <!-- Referencias -->
 [[root-folder-practices]]
@@ -58,7 +58,7 @@ docs/specs/epics/EPIC-001-nombre-epica/epic.md
 docs/specs/stories/STORY-001-nombre-story/story.md
 ```
 
-El modelo histórico de tres niveles está retirado; para migrarlo se usa `/memory-system migrate --from=specs-3-levels`. Véase [[eliminar-specs-01-projects]].
+El modelo histórico de tres niveles está retirado; para migrarlo se usa `/memory-system migrate --from=specs-3-levels`. Véase [[asegurar-dos-niveles-de-flujo-epics-stories]].
 
 
 ---

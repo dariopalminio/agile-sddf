@@ -146,7 +146,7 @@ related:
 1. **INC-001:** agregar una nota en `story.md` de STORY-113 (cambiar `project-flow` a `vision-template.md` o delegar su etapa Begin en `/project-begin`), de STORY-115 (alinear la semilla de `vision.md` con los encabezados de `vision-template.md`) y de STORY-116 (arquitectura, constitución y `check-doc-links.js`).
 2. **INC-002:** implementar con `/story-implement-tasks STORY-109`. T019 y T026 materializan los escenarios de AC-1/AC-2/AC-3 como evals.
 3. **Observación (no bloqueante):** D-4 amplía la regla de AC-2 para `IN-PROGRESS` y trata como pendientes también las secciones del template que faltan en el archivo. Es coherente con AC-1 ("todas las secciones del template"); si se quiere que el AC lo diga, precisar la fila `IN-PROGRESS` en `story.md`.
-4. **Observación (no bloqueante):** `story.md` enlaza `[[ADR-0013-eliminar-specs-01-projects]]`, que no resuelve (el slug real es `eliminar-specs-01-projects`; ver CR-002 de STORY-104). `design.md` y `tasks.md` usan el slug correcto.
+4. **Observación (no bloqueante):** `story.md` enlaza `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`, que no resuelve (el slug real es `asegurar-dos-niveles-de-flujo-epics-stories`; ver CR-002 de STORY-104). `design.md` y `tasks.md` usan el slug correcto.
 
 ---
 

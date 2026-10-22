@@ -110,7 +110,7 @@ related:
 ### INC-002 [WARNING]
 
 - **Tipo:** D (criterio no alcanzable en absoluto)
-- **Descripción:** AC-3 exige que "`memory-system check` no reporta wikilinks rotos", pero la línea base ya tiene 49 `broken-wikilink` ajenos, tres de ellos en la propia `story.md` (`[[ADR-0013-eliminar-specs-01-projects]]`, cuyo slug real es `eliminar-specs-01-projects`). `design.md` lo resuelve verificando por delta (D-8, CR-002; tarea T015).
+- **Descripción:** AC-3 exige que "`memory-system check` no reporta wikilinks rotos", pero la línea base ya tiene 49 `broken-wikilink` ajenos, tres de ellos en la propia `story.md` (`[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`, cuyo slug real es `asegurar-dos-niveles-de-flujo-epics-stories`). `design.md` lo resuelve verificando por delta (D-8, CR-002; tarea T015).
 - **Archivo afectado:** `story.md` — sección "AC-3", línea `Y "memory-system check" no reporta wikilinks rotos`; `design.md` — "D-8"
 - **Acción requerida:** aceptar el criterio por delta en la fase de verificación; abrir una historia aparte para corregir el wikilink al ADR en las historias de EPIC-21.
 
@@ -121,7 +121,7 @@ related:
 ## Recomendaciones
 
 1. **INC-001:** en `story.md` › AC-1, cambiar `"[[EPIC-NN-<slug>]]"` por `"[[<slug>]]" declarado en su frontmatter` (o aceptar explícitamente CR-001 de `design.md` en `/story-acceptance`).
-2. **INC-002:** en `/story-verify` y `/story-acceptance`, evaluar AC-3 con el criterio por delta de D-8 frente a `.tmp/story-implement/STORY-106/check-before.txt`; registrar como deuda la corrección de `[[ADR-0013-eliminar-specs-01-projects]]` en las historias de EPIC-21.
+2. **INC-002:** en `/story-verify` y `/story-acceptance`, evaluar AC-3 con el criterio por delta de D-8 frente a `.tmp/story-implement/STORY-106/check-before.txt`; registrar como deuda la corrección de `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` en las historias de EPIC-21.
 3. **Coordinación con STORY-104/105:** quien implemente en segundo lugar debe reaplicar las ediciones de `index.md` y `project.md:18` por contenido (D-6, D-7, F-3), no por número de línea.
 
 ---

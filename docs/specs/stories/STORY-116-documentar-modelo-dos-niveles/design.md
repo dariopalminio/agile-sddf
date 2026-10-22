@@ -12,7 +12,7 @@ created: 2026-10-08
 updated: 2026-10-08
 related:
   - STORY-116-documentar-modelo-dos-niveles
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - nivel-l2-epic-y-directorios-numerados
   - STORY-108-renombrar-specs-sin-prefijos
   - STORY-113-project-flow-sin-01-projects
@@ -21,13 +21,13 @@ related:
 ---
 
 <!-- Referencias -->
-[[STORY-116-documentar-modelo-dos-niveles]] · [[eliminar-specs-01-projects]] · [[nivel-l2-epic-y-directorios-numerados]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-113-project-flow-sin-01-projects]] · [[STORY-114-migrate-specs-3-levels]] · [[STORY-115-scaffold-dos-niveles-y-capas-destino]]
+[[STORY-116-documentar-modelo-dos-niveles]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[nivel-l2-epic-y-directorios-numerados]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-113-project-flow-sin-01-projects]] · [[STORY-114-migrate-specs-3-levels]] · [[STORY-115-scaffold-dos-niveles-y-capas-destino]]
 
 # Diseño técnico: documentación canónica del modelo de dos niveles
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013, consecuencias "Actualización de documentación" y "Breaking change") retira el nivel
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013, consecuencias "Actualización de documentación" y "Breaking change") retira el nivel
 Project como work item: el contenido estratégico vive en `product/` y `requirements/`, y `specs/` queda con `epics/` y `stories/`.
 Las historias STORY-104…115 cambian el contenido, los skills, el scaffold y la migración; esta historia reescribe los documentos
 que **describen el modelo** y cierra el ciclo del ADR y del CHANGELOG. Es una historia `chore` solo de documentación, con una
@@ -44,7 +44,7 @@ excepción de código acotada (D-11).
 | Raíz | `constitution.md` ("tres niveles de workflow", "Jerarquía de desarrollo", reglas `project → epic → story` y "project.md debe mantenerse actualizado", §7 fila `PROJ-NN`, §8 `type: project \| epic \| story` y `parent: PROJ-NN`, §9 "WIP = 1 en el nivel de proyecto", §13 ruta `01-projects`). `README.md` (tabla de niveles l. 204, árbol l. 216-240 con `domain/` en lugar de `domains/`, l. 112/119 `project-plan.md`, bloque "Migración histórica desde 1.x"). `AGENTS.md` (árbol sin `product/`; WIP "(project, épica o story)"). `docs/specs/README.md` y `docs/product/README.md` de este repo (tres niveles; tres documentos fijos). |
 | ADR | `ADR-0013` `status: PROPOSED`, `supersedes: null`; referencias `[[ADR-0001]]`, `[[ADR-0007]]`, `[[ADR-0010]]`, `[[ADR-0011]]` rotas (los slugs de ADR no llevan prefijo); rationale 6 dice "Intent-First" (la guía `sdd.md` y la constitución dicen Spec-First); consecuencias con "(optativo)" y "si se decide renumerar"; cierre conversacional ("Tu observación cierra el círculo…"). `ADR-0004` `ACCEPTED`, `superseded-by: null`. `adr/README.md`: índice hasta ADR-0009 (faltan 0010-0013) y convención "se actualiza `superseded-by` (único cambio permitido)". Precedente de reemplazo parcial: ADR-0001 (`SUPERSEDED` + nota `> **Superado por …**` que enumera lo que sigue vigente). |
 | CHANGELOG | `[Unreleased]` con entradas `**BREAKING — …**` de STORY-103 bajo `### Changed` y una "Guía de actualización a 4.0.0 — épicas". STORY-109…115 añaden sus propias entradas (T019-T031 de sus `tasks.md`); ninguna redacta el resumen de ruptura ni la guía de migración global. |
-| Enlaces | `npm run verify:links` (`scripts/check-doc-links.js`, raíces activas: `README.md`, `docs/index.md`, `constitution.md`, `policies/`, `guardrails/`, `guides/`, `runbooks/`; excluye `CHANGELOG.md`, `docs/adr`, `docs/specs`): 2 errores (el enlace de `orchestrator-subagent-pattern.md` -este archivo fue eliminado por otra historia, ya no es necesario- y el wikilink placeholder de `docs/index.md` causado por `STORY-103/epic-template.md`, que corrige STORY-105 como prerrequisito). `memory-system check --root docs`: `problemas: 56 (orphan 8 · broken-wikilink 48)`; 31 son `[[ADR-0013-eliminar-specs-01-projects]]` en historias de EPIC-21, 1 `[[ADR-0003-workflow-canonico-story-y-epic]]` en `domain-epic-lifecycle.md`, 1 `[[security-checklist]]` en `domain-knowledge-artifacts.md`, 4 en ADR-0013. `check-doc-links.js:172` regex `canonical` con `project\|project-intent\|project-plan`. |
+| Enlaces | `npm run verify:links` (`scripts/check-doc-links.js`, raíces activas: `README.md`, `docs/index.md`, `constitution.md`, `policies/`, `guardrails/`, `guides/`, `runbooks/`; excluye `CHANGELOG.md`, `docs/adr`, `docs/specs`): 2 errores (el enlace de `orchestrator-subagent-pattern.md` -este archivo fue eliminado por otra historia, ya no es necesario- y el wikilink placeholder de `docs/index.md` causado por `STORY-103/epic-template.md`, que corrige STORY-105 como prerrequisito). `memory-system check --root docs`: `problemas: 56 (orphan 8 · broken-wikilink 48)`; 31 son `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` en historias de EPIC-21, 1 `[[ADR-0003-workflow-canonico-story-y-epic]]` en `domain-epic-lifecycle.md`, 1 `[[security-checklist]]` en `domain-knowledge-artifacts.md`, 4 en ADR-0013. `check-doc-links.js:172` regex `canonical` con `project\|project-intent\|project-plan`. |
 | Motor de memoria | `CANONICAL_FILES` incluye `project.md` y `SPEC_TYPES` incluye `project` (`memory-system.js` l. 100 y 609); ninguna historia de EPIC-21 los retira: siguen indexando y validando nodos de repositorios sin migrar. |
 
 **CRs heredados que asignan trabajo a esta historia:** STORY-109 CR-003 (`memory-system.md`, constitución §7/§13,
@@ -113,7 +113,7 @@ Reglas que derivan de la tabla y que todos los documentos repiten igual:
 - **Trazabilidad ascendente:** la historia declara `implements: [FR-NNN]`; la épica se vincula al nivel estratégico por
   `product/roadmap.md` (`## Épicas` y `## Propuesta (<fecha>)`, STORY-111 D-1) y por `related`.
 - **Frase corta** para documentos que solo mencionan la jerarquía: "`product/` + `requirements/` → Epic → Story".
-- **Mención del modelo anterior:** solo en una nota de una línea que cita `[[eliminar-specs-01-projects]]`
+- **Mención del modelo anterior:** solo en una nota de una línea que cita `[[asegurar-dos-niveles-de-flujo-epics-stories]]`
   ("Hasta 3.x existía un nivel Project en `specs/01-projects/`; ver …"). Ninguna otra línea viva nombra `PROJ-` ni
   `01-projects` (contrato #1).
 
@@ -142,7 +142,7 @@ mismas 11 secciones.
 | §6 Nomenclatura y Flight Levels | Tabla de prefijos sin `PROJ-`; tabla de mapeo = tabla canónica de D-1; "Coordinación entre niveles": las decisiones estratégicas (visión, requisitos, roadmap) se traducen en épicas (L2) e historias (L1). |
 | §7 Estructura de carpetas | "Dos carpetas por nivel de work item, sin prefijo numérico (ADR-0013)"; árbol `specs/epics/…`, `specs/stories/…`; nota de una línea del modelo anterior (D-1). |
 | §8-§9 Resolución y validación | Búsqueda por ID en `epics/` y `stories/`; reglas "parent del nivel correcto" y "sin saltos" solo para Story → Epic; nomenclatura `EPIC-`, `STORY-`. |
-| §11 Referencias | `[[domain-project-lifecycle]]` → `[[domain-foundational-docs-lifecycle]]`; se añade `[[eliminar-specs-01-projects]]`. |
+| §11 Referencias | `[[domain-project-lifecycle]]` → `[[domain-foundational-docs-lifecycle]]`; se añade `[[asegurar-dos-niveles-de-flujo-epics-stories]]`. |
 
 **Alternativa rechazada:** *marcarlo `superseded` y crear `domain-two-level-hierarchy.md`:* el concepto (jerarquía de work
 items) no desaparece; un sucesor obligaría a repuntar ~10 wikilinks sin ganancia y CNF-2 aplica solo a documentos que dejan
@@ -158,7 +158,7 @@ Documento retirado (`docs/domains/domain-project-lifecycle.md`):
 
 - Frontmatter: se añaden `status: superseded` y `superseded-by: domain-foundational-docs-lifecycle` (se conservan `type`,
   `slug`, `title`).
-- Bajo el `#`, nota visible: `> **Reemplazado por [[domain-foundational-docs-lifecycle]] (ADR-0013, [[eliminar-specs-01-projects]]):**
+- Bajo el `#`, nota visible: `> **Reemplazado por [[domain-foundational-docs-lifecycle]] (ADR-0013, [[asegurar-dos-niveles-de-flujo-epics-stories]]):**
   el nivel Project y su directorio `specs/01-projects/` ya no existen; el pipeline Begin → Discovery → Planning escribe
   `product/` y `requirements/`. Este documento describe el modelo hasta 3.x.` El cuerpo no se modifica.
 
@@ -216,7 +216,7 @@ STORY-113 D-2)"; Mermaid `Begin → Discovery → Planning` con estados nombrado
 `product/stakeholders.md + requirements/`, `product/roadmap.md`); la tabla de fases de D-3; la frase "Cada skill de etapa
 escribe su documento y su gate; `/project-flow` compone las etapas, pregunta antes de avanzar y **no escribe `substatus`**". La
 cita "es la fuente de verdad para los skills que actualizan `story.md`, `epic.md` y los documentos de proyecto" →
-"… y `product/vision.md`". "Fuentes de verdad" añade `[[eliminar-specs-01-projects]]`.
+"… y `product/vision.md`". "Fuentes de verdad" añade `[[asegurar-dos-niveles-de-flujo-epics-stories]]`.
 
 **`memory-system.md`:**
 
@@ -224,14 +224,14 @@ cita "es la fuente de verdad para los skills que actualizan `story.md`, `epic.md
 |---|---|
 | Árbol §3 | `product/` lista `vision`, `stakeholders`, `objectives`, `roadmap`, `story-map`; `specs/` con `epics/` y `stories/` sin comentarios L3; `architecture/c4/` con `context-diagram.puml`; `templates/` con los templates vigentes (`story`, `epic`, `vision`, `stakeholders`, `requirement`, `roadmap` con su dueño, más los cuatro de autoría manual). El conteo "nueve plantillas" y la frase "No existe `requirement-template.md` …" se reescriben con el número y la lista que declare `SHARED_TEMPLATES` en `memory-system.js` al implementar (fuente única; contrato #6). |
 | Reglas del árbol | "Sin anidamiento profundo": `specs/` tiene dos niveles (`epics/`, `stories/`). "Prefijos numéricos": "Ninguna capa usa prefijos numéricos (ADR-0013)". |
-| §9 Referencias | `[[domain-work-item-hierarchy]]` → "Jerarquía Epic → Story y nivel estratégico"; se añade `[[domain-foundational-docs-lifecycle]]` y `[[eliminar-specs-01-projects]]`. |
+| §9 Referencias | `[[domain-work-item-hierarchy]]` → "Jerarquía Epic → Story y nivel estratégico"; se añade `[[domain-foundational-docs-lifecycle]]` y `[[asegurar-dos-niveles-de-flujo-epics-stories]]`. |
 | §10.2 | Placeholders `specs-epics\|specs-stories`; semilla con `product/{README,vision,stakeholders,objectives,roadmap}.md`, `requirements/{functional,non-functional}/`, `specs/{epics,stories}/`; aviso `[WARNING] estructura de specs/ de tres niveles detectada (…)` (STORY-115 D-5); reglas de nodo: se mantiene `project.md` en la lista de archivos canónicos con la aclaración "(solo repositorios sin migrar)". |
 | §10.3 | Fila de `product/` con `roadmap.md`; fila de templates de skill dueño con los nombres vigentes; "proyectos" desaparece de la lista de artefactos de autor (pasa a "documentos de `product/` y `requirements/` escritos por los skills de proyecto"). |
 | §10.4 | `type ∈ {project, epic, story}` se conserva (describe el motor) con "(`project` solo aparece en repositorios sin migrar)". |
 | §10.5 | Nuevo párrafo `migrate --from=specs-3-levels` (STORY-114): colapsa `specs/01-projects/` en `product/`, `requirements/` y `architecture/c4/`, mueve `02-epics/`/`03-stories/`, admite `--dry-run` y es idempotente; es el único modo que mueve y elimina orígenes ya migrados. Enlace a la guía de D-8. |
 
 **`sddf-architecture.md`:** l. 146 `Project → Epic → Story` → "`product/` + `requirements/` → Epic → Story"; fila nueva
-`[[eliminar-specs-01-projects]]` | "`specs/` de dos niveles; nivel estratégico en `product/` y `requirements/`"; la fila de
+`[[asegurar-dos-niveles-de-flujo-epics-stories]]` | "`specs/` de dos niveles; nivel estratégico en `product/` y `requirements/`"; la fila de
 `[[nivel-l2-epic-y-directorios-numerados]]` pasa a "Épica como nivel L2 (directorios numerados reemplazados por ADR-0013)".
 
 **Alternativa rechazada:** *mantener la sección "Nivel PROJECT" con una nota de obsolescencia:* `state-machine.md` es un
@@ -247,7 +247,7 @@ afirmación de AC-1.
 | `sddf-commands-pipeline.md` | §1 tabla con la tabla de fases de D-3 (Input/Output) y la nota "`project-flow` detecta la etapa por el estado de las capas y compone los tres skills; no escribe `substatus`" (sustituye a l. 178); §2 `epic-from-project-plan` lee `product/roadmap.md` (última propuesta) y escribe `specs/epics/EPIC-NN-<slug>/epic.md`. |
 | `skill-structural-pattern.md` | §7, §8, §9 y §14 con el mismo texto que la constitución (D-7) para que la copia no diverja. |
 | `artifact-directory-migration.md` | Guía de migración (D-8). |
-| `runbooks/actualizar-spec-de-proyecto.md` | CNF-2: `status: superseded`, `superseded-by: domain-foundational-docs-lifecycle`; `related` y la línea de referencias pasan de `[[PROJ-01-agile-sddf]]` a `[[eliminar-specs-01-projects]]`; nota visible bajo el `#`: "Reemplazado: `project.md` ya no existe (ADR-0013). Para resincronizar requisitos con el código usa `/reverse-engineering` o `/project-discovery`, que escriben `requirements/` de forma incremental; ver [[domain-foundational-docs-lifecycle]]. Las lecciones de este runbook (contar, no recordar; verificar antes de afirmar) siguen siendo válidas." El cuerpo no se modifica. |
+| `runbooks/actualizar-spec-de-proyecto.md` | CNF-2: `status: superseded`, `superseded-by: domain-foundational-docs-lifecycle`; `related` y la línea de referencias pasan de `[[PROJ-01-agile-sddf]]` a `[[asegurar-dos-niveles-de-flujo-epics-stories]]`; nota visible bajo el `#`: "Reemplazado: `project.md` ya no existe (ADR-0013). Para resincronizar requisitos con el código usa `/reverse-engineering` o `/project-discovery`, que escriben `requirements/` de forma incremental; ver [[domain-foundational-docs-lifecycle]]. Las lecciones de este runbook (contar, no recordar; verificar antes de afirmar) siguen siendo válidas." El cuerpo no se modifica. |
 
 **Alternativa rechazada (runbook):** *reescribirlo para `requirements/`:* sería un procedimiento nuevo sin ejecución real de
 referencia (su valor es "escrito a partir de la ejecución del 2026-08-30"); el proceso vigente ya está en los skills.
@@ -340,7 +340,7 @@ y no las repite.
 **ADR-0004** (`ACCEPTED`): cambios permitidos por la convención (D-9, `adr/README.md`) y por el precedente ADR-0001:
 
 - Frontmatter: `status: SUPERSEDED`, `superseded-by: ADR-0013`.
-- Nota visible bajo el `#`: `> **Superado parcialmente por [ADR-0013](ADR-0013-eliminar-specs-01-projects.md) (<fecha>):** los
+- Nota visible bajo el `#`: `> **Superado parcialmente por [ADR-0013](ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) (<fecha>):** los
   directorios numerados (`01-projects/`, `02-epics/`, `03-stories/`) se reemplazan por `specs/epics/` y `specs/stories/`, y el
   nivel Project deja de ser work item. Siguen vigentes sin cambios: el nivel L2 se llama **épica** (`EPIC-NN`, `epic.md`,
   skills `epic-*`) y «release» queda reservado para CI/CD.` El cuerpo no cambia.
@@ -357,8 +357,8 @@ y no las repite.
 - *ADR-0004 `ACCEPTED` con `superseded-by: ADR-0013`:* el README define `superseded-by` solo para `SUPERSEDED`; el precedente
   ADR-0001 (reemplazo parcial) usa `SUPERSEDED` + nota de lo vigente.
 - *Nuevo ADR solo para "el L2 es épica":* duplica una decisión que nadie cuestiona; la nota la mantiene visible.
-- *Cambiar el slug de ADR-0013 a `ADR-0013-eliminar-specs-01-projects`* (para resolver los wikilinks rotos de las historias):
-  rompe la convención de slugs de ADR y los `[[eliminar-specs-01-projects]]` ya escritos (STORY-104 D-2, diseños hermanos).
+- *Cambiar el slug de ADR-0013 a `ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories`* (para resolver los wikilinks rotos de las historias):
+  rompe la convención de slugs de ADR y los `[[asegurar-dos-niveles-de-flujo-epics-stories]]` ya escritos (STORY-104 D-2, diseños hermanos).
 - *Añadir solo la fila de ADR-0013 al índice:* dejaría un hueco 0010-0012 en un índice que se presenta como completo.
 
 ### D-10 — Wikilinks hacia los nodos reemplazados // satisface: CNF-1, CNF-2
@@ -412,7 +412,7 @@ STORY-111; *eliminar la preferencia de canónicos:* cambia la resolución de dup
 | READMEs de capa (este repo) | modificar | `docs/specs/README.md`, `docs/product/README.md` | AC-1 |
 | README y AGENTS | modificar | `README.md`, `AGENTS.md` | AC-1, AC-3 |
 | CHANGELOG | modificar (`[Unreleased]`) | `CHANGELOG.md` | AC-3 |
-| ADR-0013 | modificar y aceptar | `docs/adr/ADR-0013-eliminar-specs-01-projects.md` | AC-2, CNF-1 |
+| ADR-0013 | modificar y aceptar | `docs/adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md` | AC-2, CNF-1 |
 | ADR-0004 | marcar `SUPERSEDED` + nota | `docs/adr/ADR-0004-nivel-l2-epic-y-directorios-numerados.md` | AC-2 |
 | Índice de ADRs | modificar | `docs/adr/README.md` | AC-2 |
 | Verificador de enlaces | modificar | `scripts/check-doc-links.js` (regex `canonical`) | CNF-1 |
@@ -492,7 +492,7 @@ para que nunca exista un ADR-0004 reemplazado por un ADR aún `PROPOSED`.
 
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
-| 1 | Sin Project como work item | `git grep -n -E "PROJ-\|01-projects\|Project \(L3\)\|work item de nivel L3" -- docs/domains docs/architecture/state-machine.md docs/architecture/memory-system.md docs/architecture/sddf-architecture.md docs/guides/flight-leves-model.md docs/guides/organization-of-artifacts.md docs/guides/sddf-commands-pipeline.md docs/guides/skill-structural-pattern.md docs/constitution.md README.md AGENTS.md docs/specs/README.md ':!docs/domains/domain-project-lifecycle.md'` → toda coincidencia contiene `eliminar-specs-01-projects`, `ADR-0013`, `migrate --from=specs-3-levels` o `sin migrar` | AC-1 |
+| 1 | Sin Project como work item | `git grep -n -E "PROJ-\|01-projects\|Project \(L3\)\|work item de nivel L3" -- docs/domains docs/architecture/state-machine.md docs/architecture/memory-system.md docs/architecture/sddf-architecture.md docs/guides/flight-leves-model.md docs/guides/organization-of-artifacts.md docs/guides/sddf-commands-pipeline.md docs/guides/skill-structural-pattern.md docs/constitution.md README.md AGENTS.md docs/specs/README.md ':!docs/domains/domain-project-lifecycle.md'` → toda coincidencia contiene `asegurar-dos-niveles-de-flujo-epics-stories`, `ADR-0013`, `migrate --from=specs-3-levels` o `sin migrar` | AC-1 |
 | 2 | Jerarquía documentada | Los seis documentos de AC-1 contienen `product/` + `requirements/`, `specs/epics/` y `specs/stories/` (`grep -c`); `domain-project-lifecycle.md` tiene `status: superseded` | AC-1, CNF-2 |
 | 3 | Tabla de fases | `grep -n "product/vision.md" ` + `stakeholders.md` + `requirements/` + `product/roadmap.md` en la tabla de `domain-foundational-docs-lifecycle.md` §5, `state-machine.md` y `sddf-commands-pipeline.md` §1 | AC-1 |
 | 4 | ADR | `grep -E "^(status\|supersedes\|superseded-by):"` en ADR-0013 → `ACCEPTED`, `ADR-0004`; en ADR-0004 → `SUPERSEDED`, `ADR-0013`; ADR-0004 contiene la nota `Superado parcialmente por`; `adr/README.md` tiene filas ADR-0004 (`SUPERSEDED → ADR-0013`) y ADR-0013 (`ACCEPTED`) | AC-2 |
@@ -508,7 +508,7 @@ para que nunca exista un ADR-0004 reemplazado por un ADR aún `PROPOSED`.
 - [El motor conserva `project.md` en `CANONICAL_FILES` y `project` en `SPEC_TYPES`] → `memory-system.md` lo describe como
   soporte de repos sin migrar (texto verdadero). Retirarlo es una decisión del motor, no de documentación; si STORY-117 lo
   exige para su grep de cierre, se abre una historia.
-- [Los wikilinks `[[ADR-0013-eliminar-specs-01-projects]]` de las historias de EPIC-21 siguen rotos] → Son registros que estarán
+- [Los wikilinks `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` de las historias de EPIC-21 siguen rotos] → Son registros que estarán
   cerrados al implementar (Non-Goal); verificación por línea base (CR-002).
 - [Dos textos paralelos: constitución y `skill-structural-pattern.md`] → Se copian literalmente en el mismo commit; divergencia
   futura posible (preexistente).
@@ -534,7 +534,7 @@ Ninguna. Las ambigüedades se resolvieron en las decisiones y quedan registradas
 ### CR-002
 - **Tipo**: ambigüedad
 - **Descripción**: CNF-1 ("`memory-system check` termina sin enlaces ni wikilinks rotos") no es alcanzable en términos absolutos
-  sin reescribir registros históricos: la línea base tiene 48 `broken-wikilink`, 31 de ellos `[[ADR-0013-eliminar-specs-01-projects]]`
+  sin reescribir registros históricos: la línea base tiene 48 `broken-wikilink`, 31 de ellos `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`
   en historias de EPIC-21 que estarán cerradas al implementar, más los de EPIC-17, EPIC-20, STORY-053, STORY-103 y ADR-0006
   (`[[PROJ-01-agile-sddf]]`, roto tras eliminar `01-projects/`).
 - **Documento afectado**: story.md (y criterio de salida de EPIC-21 "`memory-system check` devuelve exit code 0", verificado

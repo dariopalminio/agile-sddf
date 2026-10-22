@@ -12,12 +12,12 @@ created: 2026-10-05
 updated: 2026-10-11
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-107-migrar-story-map-y-diagrama-contexto
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[eliminar-specs-01-projects]]
+[[asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: `project-story-mapping` y `project-context-diagram` escriben en `product/` y `architecture/c4/`
 

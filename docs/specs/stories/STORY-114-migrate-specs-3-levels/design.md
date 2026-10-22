@@ -12,7 +12,7 @@ created: 2026-10-08
 updated: 2026-10-08
 related:
   - STORY-114-migrate-specs-3-levels
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-101-dod-story-por-etapa
   - STORY-104-migrar-project-intent-a-vision
   - STORY-105-migrar-stakeholders-y-requisitos
@@ -26,13 +26,13 @@ related:
 ---
 
 <!-- Referencias -->
-[[STORY-114-migrate-specs-3-levels]] · [[eliminar-specs-01-projects]] · [[STORY-101-dod-story-por-etapa]] · [[STORY-104-migrar-project-intent-a-vision]] · [[STORY-105-migrar-stakeholders-y-requisitos]] · [[STORY-106-migrar-plan-a-roadmap]] · [[STORY-107-migrar-story-map-y-diagrama-contexto]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-109-project-begin-escribe-vision]] · [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] · [[STORY-111-planning-escribe-roadmap]] · [[STORY-115-scaffold-dos-niveles-y-capas-destino]]
+[[STORY-114-migrate-specs-3-levels]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[STORY-101-dod-story-por-etapa]] · [[STORY-104-migrar-project-intent-a-vision]] · [[STORY-105-migrar-stakeholders-y-requisitos]] · [[STORY-106-migrar-plan-a-roadmap]] · [[STORY-107-migrar-story-map-y-diagrama-contexto]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-109-project-begin-escribe-vision]] · [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] · [[STORY-111-planning-escribe-roadmap]] · [[STORY-115-scaffold-dos-niveles-y-capas-destino]]
 
 # Diseño técnico: `memory-system migrate --from=specs-3-levels`
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) colapsa `specs/` a dos niveles y reparte `01-projects/` en `product/`, `requirements/`
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) colapsa `specs/` a dos niveles y reparte `01-projects/` en `product/`, `requirements/`
 y `architecture/`. En este repositorio la migración se hace a mano (STORY-104…108); esta historia la automatiza para repos de
 terceros como un origen más de `memory-system migrate`.
 

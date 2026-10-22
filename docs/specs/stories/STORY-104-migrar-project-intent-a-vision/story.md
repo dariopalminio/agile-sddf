@@ -12,11 +12,11 @@ created: 2026-10-05
 updated: 2026-10-10
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: Migrar `project-intent.md` a `product/vision.md`
 
@@ -56,7 +56,7 @@ Entonces ningún archivo de "docs/" fuera de "docs/specs/03-stories/" contiene e
 
 ## ⚙️ Criterios no funcionales específicos
 
-- **CNF-1 — Trazabilidad:** `docs/product/vision.md` declara que su contenido fue consolidado desde `project-intent.md` por [[ADR-0013-eliminar-specs-01-projects]], para que un lector sepa de dónde viene la visión.
+- **CNF-1 — Trazabilidad:** `docs/product/vision.md` declara que su contenido fue consolidado desde `project-intent.md` por [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]], para que un lector sepa de dónde viene la visión.
 - **CNF-2 — Encoding:** `docs/product/vision.md` queda guardado en UTF-8 sin BOM, sin caracteres corruptos (`Ã³`, `ðŸ“–`).
 
 ## Fuera de alcance (Non-Goals)
@@ -68,7 +68,7 @@ Entonces ningún archivo de "docs/" fuera de "docs/specs/03-stories/" contiene e
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]] decide `project-intent.md → docs/product/vision.md`.
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] decide `project-intent.md → docs/product/vision.md`.
 - **Correspondencia orientativa de secciones** (se decide en diseño): "Definición del Problema" → "Problema que resolvemos"; "Visión (elevator pitch)" + "Beneficios Clave" → "Propuesta de valor"; "Restricciones" + "Fuera de alcance (Non-Goals)" → "Alcance y límites"; "Criterios de Éxito" → sección nueva.
 - **Referencias actuales al wikilink:** `docs/index.md` (línea del índice de `01-projects/`) y `docs/specs/01-projects/PROJ-01-agile-sddf/project.md` (2 apariciones). `project.md` se migra en otra historia, pero mientras exista no debe quedar con un wikilink roto.
 - **Independencia:** la historia no depende de otras de EPIC-21. Tras eliminar el original, `project-discovery` ya no encontrará `project-intent.md` en este repo; se acepta porque PROJ-01 está `COMPLETED` y la historia de skills corrige la ruta.

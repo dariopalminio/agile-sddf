@@ -250,7 +250,7 @@ docs/constitution.md          # principios supremos (fuera de policies/)
 | [[domain-knowledge-artifacts]] | Modelo completo de artefactos, tipos y TraceLinks |
 | [[domain-work-item-hierarchy]] | Estructura Epic → Story y nivel estratégico |
 | [[domain-foundational-docs-lifecycle]] | Ciclo de vida de visión, requisitos y roadmap |
-| [[eliminar-specs-01-projects]] | Decisión del modelo de dos niveles |
+| [[asegurar-dos-niveles-de-flujo-epics-stories]] | Decisión del modelo de dos niveles |
 | [[domain-state-management]] | Estados, subestados, transiciones |
 | `sddf.config.yaml` | Configuración del framework |
 

@@ -12,20 +12,20 @@ created: 2026-10-08
 updated: 2026-10-08
 related:
   - STORY-112-story-map-y-diagrama-en-sus-capas
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-107-migrar-story-map-y-diagrama-contexto
   - STORY-110-discovery-escribe-stakeholders-y-requisitos
   - STORY-111-planning-escribe-roadmap
 ---
 
 <!-- Referencias -->
-[[STORY-112-story-map-y-diagrama-en-sus-capas]] · [[eliminar-specs-01-projects]] · [[STORY-107-migrar-story-map-y-diagrama-contexto]] · [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] · [[STORY-111-planning-escribe-roadmap]]
+[[STORY-112-story-map-y-diagrama-en-sus-capas]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[STORY-107-migrar-story-map-y-diagrama-contexto]] · [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] · [[STORY-111-planning-escribe-roadmap]]
 
 # Diseño técnico: `project-story-mapping` y `project-context-diagram` escriben en `product/` y `architecture/c4/`
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) elimina `specs/01-projects/`. STORY-107 fija los destinos de los dos artefactos que ADR-0013
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) elimina `specs/01-projects/`. STORY-107 fija los destinos de los dos artefactos que ADR-0013
 dejó sin hogar: `docs/product/story-map.md` y `docs/architecture/c4/context-diagram.puml` (Interfaces de STORY-107: "contrato para
 STORY-112"). Esta historia cambia a sus **escritores**: `/project-story-mapping` (+ agente `project-story-mapper`) y
 `/project-context-diagram`.
@@ -395,10 +395,10 @@ Ninguna. Las ambigüedades se resolvieron en el diseño y quedan registradas com
 
 ### CR-001
 - **Tipo**: ambigüedad
-- **Descripción**: `story.md` enlaza `[[ADR-0013-eliminar-specs-01-projects]]` y lo declara en `related`, pero el slug real del ADR es
-  `eliminar-specs-01-projects`; `memory-system check` lo reporta como `broken-wikilink` (ya registrado en STORY-107 CR-002).
+- **Descripción**: `story.md` enlaza `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` y lo declara en `related`, pero el slug real del ADR es
+  `asegurar-dos-niveles-de-flujo-epics-stories`; `memory-system check` lo reporta como `broken-wikilink` (ya registrado en STORY-107 CR-002).
 - **Documento afectado**: story.md
-- **Acción requerida**: corregir el wikilink y la entrada de `related` a `eliminar-specs-01-projects` (fuera del alcance de este
+- **Acción requerida**: corregir el wikilink y la entrada de `related` a `asegurar-dos-niveles-de-flujo-epics-stories` (fuera del alcance de este
   diseño; no bloquea la implementación).
 - **Resolución (2026-10-08)**: aplicada en `story.md` (`related` y bloque `<!-- Referencias -->`).
 

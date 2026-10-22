@@ -11,7 +11,7 @@ created: 2026-10-07
 updated: 2026-10-10
 related:
   - STORY-105-migrar-stakeholders-y-requisitos
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - stakeholders
   - requirements-index
   - STORY-104-migrar-project-intent-a-vision
@@ -19,13 +19,13 @@ related:
 ---
 
 <!-- Referencias -->
-[[STORY-105-migrar-stakeholders-y-requisitos]] · [[eliminar-specs-01-projects]] · [[stakeholders]] · [[requirements-index]] · [[STORY-104-migrar-project-intent-a-vision]] · [[STORY-118-requirements-srs-unico-primero]]
+[[STORY-105-migrar-stakeholders-y-requisitos]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[stakeholders]] · [[requirements-index]] · [[STORY-104-migrar-project-intent-a-vision]] · [[STORY-118-requirements-srs-unico-primero]]
 
 # Diseño técnico: migrar `project.md` a `product/stakeholders.md` y `requirements/`
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) asigna los perfiles de usuario de `project.md` a `docs/product/stakeholders.md` y sus
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) asigna los perfiles de usuario de `project.md` a `docs/product/stakeholders.md` y sus
 FR/NFR a `docs/requirements/functional/FR-NNN-*.md` y `docs/requirements/non-functional/NFR-NNN-*.md`.
 
 **Origen** (`docs/specs/01-projects/PROJ-01-agile-sddf/project.md`, 1264 líneas), inventariado con un parser de las líneas 161–885:
@@ -180,7 +180,7 @@ origen) y un archivo por perfil (ADR-0013 asigna los perfiles a un único `stake
 
 Se añade al final del README una sección `## Índice de requisitos` con:
 
-1. Una línea de procedencia: `Migrados desde project.md (§2.1 y §2.2) por [[eliminar-specs-01-projects]]; el hueco FR-049 se conserva.`
+1. Una línea de procedencia: `Migrados desde project.md (§2.1 y §2.2) por [[asegurar-dos-niveles-de-flujo-epics-stories]]; el hueco FR-049 se conserva.`
 2. La nota "Convención de fuente" de §2.1, literal (deja de existir en `project.md`, D-7).
 3. `### Requisitos funcionales` y `### Requisitos no funcionales`, cada una con una subsección `####` por categoría de origen
    (9 + 10, mismo título que en `project.md`) y una línea por requisito en orden de ID: `- [[<slug>]] — <título>`.

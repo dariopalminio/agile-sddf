@@ -8,7 +8,7 @@ superseded-by: domain-foundational-docs-lifecycle
 
 # Documentación del Dominio: Ciclo de Vida de Project (Project Lifecycle)
 
-> **Reemplazado por [[domain-foundational-docs-lifecycle]] (ADR-0013, [[eliminar-specs-01-projects]]):** el nivel Project y su directorio `specs/01-projects/` ya no existen; el pipeline Begin → Discovery → Planning escribe `product/` y `requirements/`. Este documento describe el modelo hasta 3.x.
+> **Reemplazado por [[domain-foundational-docs-lifecycle]] (ADR-0013, [[asegurar-dos-niveles-de-flujo-epics-stories]]):** el nivel Project y su directorio `specs/01-projects/` ya no existen; el pipeline Begin → Discovery → Planning escribe `product/` y `requirements/`. Este documento describe el modelo hasta 3.x.
 
 > **Bounded Context:** Project Lifecycle  
 > **Nivel:** L3 — Documentación del proyecto  

@@ -159,6 +159,6 @@ agile-sddf/
 | [[constitution]] | Principios supremos |
 | [[perfiles-runtimes-e-instalacion-explicita]] | `specs/` dentro de `docs/` |
 | [[nivel-l2-epic-y-directorios-numerados]] | Épica como nivel L2 (directorios numerados reemplazados por ADR-0013) |
-| [[eliminar-specs-01-projects]] | `specs/` de dos niveles; nivel estratégico en `product/` y `requirements/` |
+| [[asegurar-dos-niveles-de-flujo-epics-stories]] | `specs/` de dos niveles; nivel estratégico en `product/` y `requirements/` |
 
 ---

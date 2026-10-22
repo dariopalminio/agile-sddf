@@ -31,7 +31,7 @@ related:
 
 **Estado general:** ⚠️ Advertencias (0 ERROR · 4 WARNING)
 
-Verificaciones hechas sobre el repositorio el 2026-10-09: los encabezados de `project.md` (líneas 25–1232, 1264 líneas) coinciden con las 19 filas de la tabla del Context de design.md; `memory-system check --root docs` devuelve `problemas: 56 (orphan 7 · broken-wikilink 49)`, igual que la línea base de design.md; los slugs `vision`, `tech-stack`, `domain`, `stakeholders`, `requirements-index`, `sddf-architecture`, `state-machine`, `index` y `eliminar-specs-01-projects` existen; `roadmap` (STORY-106) y `ux-ui` (esta historia) aún no.
+Verificaciones hechas sobre el repositorio el 2026-10-09: los encabezados de `project.md` (líneas 25–1232, 1264 líneas) coinciden con las 19 filas de la tabla del Context de design.md; `memory-system check --root docs` devuelve `problemas: 56 (orphan 7 · broken-wikilink 49)`, igual que la línea base de design.md; los slugs `vision`, `tech-stack`, `domain`, `stakeholders`, `requirements-index`, `sddf-architecture`, `state-machine`, `index` y `asegurar-dos-niveles-de-flujo-epics-stories` existen; `roadmap` (STORY-106) y `ux-ui` (esta historia) aún no.
 
 ---
 
@@ -120,7 +120,7 @@ Verificaciones hechas sobre el repositorio el 2026-10-09: los encabezados de `pr
 ### INC-001 [WARNING]
 
 - **Tipo:** A (AC cubierto con reinterpretación; degradado a WARNING por regla de duda)
-- **Descripción:** AC-2 exige literalmente que `memory-system check` "no reporte `broken-wikilink`". La línea base medida hoy es `broken-wikilink 49`, ajenos a la historia, y uno de ellos está en el propio `story.md` (línea 21, `[[ADR-0013-eliminar-specs-01-projects]]`; el slug real es `eliminar-specs-01-projects`). El diseño lo cubre con la interpretación V-7 (0 rotos atribuibles y total ≤ línea base), registrada como CR-002, pero story.md no se ha reformulado.
+- **Descripción:** AC-2 exige literalmente que `memory-system check` "no reporte `broken-wikilink`". La línea base medida hoy es `broken-wikilink 49`, ajenos a la historia, y uno de ellos está en el propio `story.md` (línea 21, `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`; el slug real es `asegurar-dos-niveles-de-flujo-epics-stories`). El diseño lo cubre con la interpretación V-7 (0 rotos atribuibles y total ≤ línea base), registrada como CR-002, pero story.md no se ha reformulado.
 - **Archivo afectado:** story.md — sección "AC-2 — Escenario de cierre"; design.md — "Registro de Cambios (CR)" › CR-002
 - **Acción requerida:** decisión del PO: reformular el último `Y` de AC-2 según V-7, o hacer que la corrección de los wikilinks a ADR-0013 (incluido el de story.md línea 21) preceda a esta historia.
 
@@ -149,10 +149,10 @@ Verificaciones hechas sobre el repositorio el 2026-10-09: los encabezados de `pr
 
 ## Recomendaciones
 
-1. (INC-001) Pedir al PO que reformule en story.md AC-2 el paso `Y "memory-system check" no reporta "broken-wikilink"` como "no reporta `broken-wikilink` hacia slugs retirados ni en los documentos tocados, y el total no supera la línea base", o planificar antes la corrección de los 36 wikilinks `[[ADR-0013-eliminar-specs-01-projects]]`; en este último caso, bajar a 0 el umbral de V-7, T023 e IT-002.
+1. (INC-001) Pedir al PO que reformule en story.md AC-2 el paso `Y "memory-system check" no reporta "broken-wikilink"` como "no reporta `broken-wikilink` hacia slugs retirados ni en los documentos tocados, y el total no supera la línea base", o planificar antes la corrección de los 36 wikilinks `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`; en este último caso, bajar a 0 el umbral de V-7, T023 e IT-002.
 2. (INC-002) Añadir `domains/` a la frase de destinos de `epic.md` › "Alcance".
 3. (INC-003) Editar story.md › Notas › "Secciones a reubicar": §1.2–1.7 se reubican en `vision.md` como vigente y el Apéndice A va a `roadmap.md` (CR-001).
-4. (INC-004) Mantener el orden STORY-104…107 → STORY-123 → STORY-108 y no iniciar la implementación hasta que T001 pase. Al implementar, recalcular líneas e ítems (T004) y la línea base (T002); hoy `check` registra 36 líneas `[[ADR-0013-eliminar-specs-01-projects]]`, frente a las 32 que cita design.md.
+4. (INC-004) Mantener el orden STORY-104…107 → STORY-123 → STORY-108 y no iniciar la implementación hasta que T001 pase. Al implementar, recalcular líneas e ítems (T004) y la línea base (T002); hoy `check` registra 36 líneas `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`, frente a las 32 que cita design.md.
 
 ---
 

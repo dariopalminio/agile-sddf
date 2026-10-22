@@ -109,7 +109,7 @@ related:
 ### INC-002 [WARNING]
 
 - **Tipo:** D (criterio no alcanzable al pie de la letra)
-- **Descripción:** AC-3 exige que "`memory-system check` no reporta wikilinks rotos", pero la línea base ya tiene 49 `broken-wikilink` ajenos a esta historia, dos de ellos en la propia `story.md` (`[[ADR-0013-eliminar-specs-01-projects]]`, cuyo slug real es `eliminar-specs-01-projects`). `design.md` lo resuelve verificando por delta (D-5, CR-002; tarea T014).
+- **Descripción:** AC-3 exige que "`memory-system check` no reporta wikilinks rotos", pero la línea base ya tiene 49 `broken-wikilink` ajenos a esta historia, dos de ellos en la propia `story.md` (`[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`, cuyo slug real es `asegurar-dos-niveles-de-flujo-epics-stories`). `design.md` lo resuelve verificando por delta (D-5, CR-002; tarea T014).
 - **Archivo afectado:** `story.md` — sección "AC-3", línea `Y "memory-system check" no reporta wikilinks rotos`; `design.md` — "D-5"
 - **Acción requerida:** evaluar AC-3 por delta en la verificación; registrar como deuda la corrección del wikilink al ADR en las historias de EPIC-21.
 
@@ -118,7 +118,7 @@ related:
 ## Recomendaciones
 
 1. **INC-001:** implementar T009–T010 y, si se quiere que la verificación lo cubra, añadir a AC-2 de `story.md` la línea `Y "epic.md" de EPIC-21 nombra "docs/architecture/c4/context-diagram.puml" como destino` (o aceptar explícitamente CR-001 en `/story-acceptance`).
-2. **INC-002:** en `/story-verify` y `/story-acceptance`, evaluar AC-3 con el criterio por delta de D-5 frente a `.tmp/story-implement/STORY-107/check-before.txt`; corregir `[[ADR-0013-eliminar-specs-01-projects]]` → `[[eliminar-specs-01-projects]]` en las historias de EPIC-21 en una historia aparte.
+2. **INC-002:** en `/story-verify` y `/story-acceptance`, evaluar AC-3 con el criterio por delta de D-5 frente a `.tmp/story-implement/STORY-107/check-before.txt`; corregir `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` → `[[asegurar-dos-niveles-de-flujo-epics-stories]]` en las historias de EPIC-21 en una historia aparte.
 3. **Coordinación con STORY-104/105/106:** quien implemente en segundo lugar reaplica la edición de `docs/index.md` por contenido (D-3, F-3), no por número de línea, y no duplica la entrada `[[story-map]]` si el índice ya fue regenerado.
 
 ---

@@ -125,4 +125,4 @@ Es más limpio y sigue siendo fiel a Flight Levels.
 
 ## Referencias
 
-[ADR-0013: Eliminar `specs/01-projects/`](../../../adr/ADR-0013-eliminar-specs-01-projects.md)
+[ADR-0013: Eliminar `specs/01-projects/`](../../../adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md)

@@ -77,7 +77,7 @@ Las historias declaran `implements: [FR-NNN]`; el roadmap vincula las épicas al
 
 - [[state-machine]]
 - `header-aggregation/SKILL.md`
-- [[eliminar-specs-01-projects]]
+- [[asegurar-dos-niveles-de-flujo-epics-stories]]
 
 ## 11. Referencias Cruzadas
 

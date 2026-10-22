@@ -169,9 +169,9 @@ Nota AC-1: D-5 conserva en `memory-system.md` `project.md` como archivo canónic
 ### INC-003 [WARNING]
 
 - **Tipo:** D (trazabilidad de referencias)
-- **Descripción:** story.md usa `ADR-0013-eliminar-specs-01-projects` como slug en `related` (frontmatter l. 15) y como wikilink (l. 21 y l. 73), pero el slug real de ADR-0013 es `eliminar-specs-01-projects` (los slugs de ADR no llevan prefijo, como fija la interfaz "Wikilinks a ADR" del diseño). Es uno de los 31 `broken-wikilink` de la línea base de D-12. design.md ya usa el slug correcto.
+- **Descripción:** story.md usa `ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories` como slug en `related` (frontmatter l. 15) y como wikilink (l. 21 y l. 73), pero el slug real de ADR-0013 es `asegurar-dos-niveles-de-flujo-epics-stories` (los slugs de ADR no llevan prefijo, como fija la interfaz "Wikilinks a ADR" del diseño). Es uno de los 31 `broken-wikilink` de la línea base de D-12. design.md ya usa el slug correcto.
 - **Archivo afectado:** story.md — frontmatter `related` y bloque "Referencias"; sección "📎 Notas / contexto adicional" (Origen)
-- **Acción requerida:** repuntar en story.md a `[[eliminar-specs-01-projects]]`, o asumirlo explícitamente como parte de la línea base de CR-002.
+- **Acción requerida:** repuntar en story.md a `[[asegurar-dos-niveles-de-flujo-epics-stories]]`, o asumirlo explícitamente como parte de la línea base de CR-002.
 
 ### INC-004 [WARNING]
 
@@ -193,7 +193,7 @@ Nota AC-1: D-5 conserva en `memory-system.md` `project.md` como archivo canónic
 
 1. **INC-001:** en story.md › "⚙️ Criterios no funcionales específicos", reescribir CNF-1 como "`npm run verify:links` exit 0 y `memory-system check` sin `broken-wikilink` nuevos ni con origen en los archivos modificados (línea base D-12)", y anotar en STORY-117 la decisión pendiente sobre el criterio de salida l. 51 de EPIC-21.
 2. **INC-002:** en story.md › "📎 Notas / contexto adicional", añadir el bullet "Alcance ampliado por diseño (CR-001)" con `check-doc-links.js` y su prueba, `AGENTS.md`, `docs/product/README.md`, `docs/adr/README.md` (0010-0012)
-3. **INC-003:** en story.md, sustituir `ADR-0013-eliminar-specs-01-projects` por `eliminar-specs-01-projects` en `related`, en el bloque de referencias (l. 21) y en la nota "Origen" (l. 73).
+3. **INC-003:** en story.md, sustituir `ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories` por `asegurar-dos-niveles-de-flujo-epics-stories` en `related`, en el bloque de referencias (l. 21) y en la nota "Origen" (l. 73).
 4. **INC-004:** en tasks.md, ampliar T030 con "exportar `slugIndex` en `module.exports` sin cambiar su firma" y limitar el RED esperado al subcaso `project.md`/`notes.md`; dejar en T031 solo el cambio de regex.
 5. **INC-005:** secuenciar la implementación después de STORY-104…115; en el momento de implementar, T001 es el gate que lo confirma.
 

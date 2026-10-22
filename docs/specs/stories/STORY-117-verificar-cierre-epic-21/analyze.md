@@ -144,9 +144,9 @@ related:
 ### INC-005 [WARNING]
 
 - **Tipo:** D (riesgo de cierre conocido)
-- **Descripción:** `story.md` enlaza `[[ADR-0013-eliminar-specs-01-projects]]` (línea 23) y lo lista en `related` (línea 15), pero el slug real del ADR es `eliminar-specs-01-projects`: es un wikilink roto en la propia historia. Además, con la línea base medida en D-11/CR-005 (56 problemas en `check`), V-08 y V-09 serán `FAIL` mientras no exista en EPIC-21 una historia de saneamiento de memoria, que hoy no figura en `epic.md`.
+- **Descripción:** `story.md` enlaza `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` (línea 23) y lo lista en `related` (línea 15), pero el slug real del ADR es `asegurar-dos-niveles-de-flujo-epics-stories`: es un wikilink roto en la propia historia. Además, con la línea base medida en D-11/CR-005 (56 problemas en `check`), V-08 y V-09 serán `FAIL` mientras no exista en EPIC-21 una historia de saneamiento de memoria, que hoy no figura en `epic.md`.
 - **Archivo afectado:** `story.md`, frontmatter `related` y bloque "Referencias"; `epic.md`, sección "Historias"; `design.md`, CR-005
-- **Acción requerida:** reescribir el wikilink y la entrada de `related` a `eliminar-specs-01-projects`, y añadir a EPIC-21 la historia de saneamiento antes de ejecutar VERIFY (CR-005).
+- **Acción requerida:** reescribir el wikilink y la entrada de `related` a `asegurar-dos-niveles-de-flujo-epics-stories`, y añadir a EPIC-21 la historia de saneamiento antes de ejecutar VERIFY (CR-005).
 
 ---
 
@@ -156,7 +156,7 @@ related:
 2. **INC-002:** en `epic.md`, reformular el 11.º criterio de salida y la línea de STORY-117 de "Historias" con el término Spec-First y Spec-as-Source como compatibilidad estructural (CR-002).
 3. **INC-003:** ejecutar `/story-testcases STORY-117`, o sustituir en `design.md` (D-1, D-9) y `tasks.md` (T021) "transcrito en `testcases.md`" por "definido en D-9".
 4. **INC-004:** en `story.md`, precisar el "Dado" de AC-1 (`ACCEPTANCE/DONE`, `DELIVER`, `COMPLETED` o `CANCELED`; STORY-118 fuera) y corregir la nota de `test:e2e:smoke` (CR-003, CR-004).
-5. **INC-005:** en `story.md`, corregir `[[ADR-0013-eliminar-specs-01-projects]]` → `[[eliminar-specs-01-projects]]` (cuerpo y `related`), y crear en EPIC-21 la historia de saneamiento de memoria antes de VERIFY (CR-005).
+5. **INC-005:** en `story.md`, corregir `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` → `[[asegurar-dos-niveles-de-flujo-epics-stories]]` (cuerpo y `related`), y crear en EPIC-21 la historia de saneamiento de memoria antes de VERIFY (CR-005).
 6. **Granularidad (DoD, criterio 6):** si se quiere que las tareas sean más atómicas, dividir T021 (cuatro skills encadenados en una sesión) y T019 (migración, informe, seco y `check`) en subtareas de ejecución y de comprobación.
 
 ---

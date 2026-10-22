@@ -12,7 +12,7 @@ created: 2026-10-05
 updated: 2026-10-12
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-108-renombrar-specs-sin-prefijos
   - STORY-113-project-flow-sin-01-projects
   - STORY-114-migrate-specs-3-levels
@@ -20,7 +20,7 @@ related:
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: Verificar `sddf.config.yaml` y los modos SDD sobre la estructura de dos niveles
 
@@ -77,7 +77,7 @@ Entonces "verify-report.md" la registra como "FAIL" con la evidencia y la histor
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** criterios de salida y smoke tests 1–3 de [[EPIC-21-colapsar-specs-dos-niveles]], incluido "Los tres modos SDD funcionan con la nueva estructura", y [[ADR-0013-eliminar-specs-01-projects]] (rationale 6, compatibilidad con los modos SDD).
+- **Origen:** criterios de salida y smoke tests 1–3 de [[EPIC-21-colapsar-specs-dos-niveles]], incluido "Los tres modos SDD funcionan con la nueva estructura", y [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] (rationale 6, compatibilidad con los modos SDD).
 - **Criterios de salida que se entregan entre varias historias:** AC-1 los verifica completos en este repositorio, porque ninguna historia de la épica los entrega por sí sola:
   - `docs/specs/` contiene exactamente dos carpetas de artefactos: `epics/` y `stories/` (más `README.md`) (lo entregan STORY-108 y STORY-123).
   - `docs/product/` contiene `vision.md`, `stakeholders.md`, `roadmap.md` y `story-map.md` (lo entregan STORY-104 a STORY-107).

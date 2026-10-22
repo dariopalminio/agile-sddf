@@ -19,7 +19,7 @@ related:
 
 > Re-auditoría con `--force` (2026-10-08). Respecto del reporte anterior: INC-001 (contrato #1 ↔ evals/T006) quedó resuelto por
 > design.md › CR-003; INC-002 (ruta del diagrama en la épica) quedó resuelto (`epic.md` l. 30 y l. 47 ya citan `architecture/c4/`);
-> INC-004 (wikilink del ADR) quedó resuelto por CR-001 (`story.md` l. 15 y l. 20 usan `eliminar-specs-01-projects`).
+> INC-004 (wikilink del ADR) quedó resuelto por CR-001 (`story.md` l. 15 y l. 20 usan `asegurar-dos-niveles-de-flujo-epics-stories`).
 
 ## Resumen Ejecutivo
 

@@ -71,7 +71,7 @@ product/ + requirements/
 
 `specs/` contiene `epics/` y `stories/`, sin prefijos numéricos.
 
-> Hasta 3.x existía un nivel Project en `specs/01-projects/`; ver [[eliminar-specs-01-projects]].
+> Hasta 3.x existía un nivel Project en `specs/01-projects/`; ver [[asegurar-dos-niveles-de-flujo-epics-stories]].
 
 ## 8. Resolución
 
@@ -91,4 +91,4 @@ Se validan prefijos, archivo canónico y que `Story.parent` resuelva a una Epic.
 ## 11. Referencias Cruzadas
 
 - [[domain-foundational-docs-lifecycle]]
-- [[eliminar-specs-01-projects]]
+- [[asegurar-dos-niveles-de-flujo-epics-stories]]

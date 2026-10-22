@@ -11,18 +11,18 @@ created: 2026-10-07
 updated: 2026-10-07
 related:
   - STORY-107-migrar-story-map-y-diagrama-contexto
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - story-map
 ---
 
 <!-- Referencias -->
-[[STORY-107-migrar-story-map-y-diagrama-contexto]] · [[eliminar-specs-01-projects]] · [[story-map]]
+[[STORY-107-migrar-story-map-y-diagrama-contexto]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[story-map]]
 
 # Diseño técnico: migrar `story-map.md` y `context-diagram.puml`
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) elimina `specs/01-projects/` sin asignar destino a `story-map.md` ni a
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) elimina `specs/01-projects/` sin asignar destino a `story-map.md` ni a
 `context-diagram.puml`. EPIC-21 fija los destinos: story map → `docs/product/`, diagrama → `docs/architecture/`. La historia
 corrige el segundo a `docs/architecture/c4/`, donde `docs/architecture/README.md` (línea 57) ubica la fuente PlantUML junto a su
 render.
@@ -58,8 +58,8 @@ Referencias vivas (`grep -rn "\[\[story-map\]\]"`, excluido `03-stories/`):
 
 **Línea base de `memory-system check`** (`node skills/memory-system/scripts/memory-system.js check --root docs`, 2026-10-07):
 exit 1, `problemas: 55 (orphan 6 · broken-wikilink 49)`. Ninguno involucra `story-map`, `product/`, `architecture/`, `index.md` ni
-`project.md`; tres son `[[ADR-0013-eliminar-specs-01-projects]]` en `story.md` de STORY-107 (×2) y STORY-112 (el slug real del ADR es
-`eliminar-specs-01-projects`). `node scripts/check-doc-links.js` → `[OK] Checked 46 active Markdown files`.
+`project.md`; tres son `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` en `story.md` de STORY-107 (×2) y STORY-112 (el slug real del ADR es
+`asegurar-dos-niveles-de-flujo-epics-stories`). `node scripts/check-doc-links.js` → `[OK] Checked 46 active Markdown files`.
 
 **EPIC-21 desalineado.** `epic.md` declara el destino `docs/architecture/context-diagram.puml` en la línea de STORY-107 (línea 30) y en
 el criterio de salida "`docs/architecture/` contiene `context-diagram.puml`." (línea 47). Las notas de la historia piden alinear ambos
@@ -92,7 +92,7 @@ usan `git`, `grep`, `diff`, `memory-system.js check` y `scripts/check-doc-links.
 - Reemplazar `related: project-plan` ni `[[PROJ-01-agile-sddf]]` del story map (dependen de STORY-106 y de la eliminación de
   `project.md`).
 - Reescribir las menciones a `context-diagram.puml` o `story-map.md` en la prosa de `project.md`, `docs/guides/` o `CHANGELOG.md`.
-- Corregir los 55 problemas preexistentes de `check`, incluido `[[ADR-0013-eliminar-specs-01-projects]]` en `story.md`.
+- Corregir los 55 problemas preexistentes de `check`, incluido `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` en `story.md`.
 - Regenerar `docs/index.md` completo o tocar otras secciones (p. ej. `Estado del grafo`).
 - Borrar `docs/specs/01-projects/PROJ-01-agile-sddf/` (sigue conteniendo `project-intent.md`, `project.md` y `project-plan.md`).
 
@@ -296,8 +296,8 @@ Ninguna. Las ambigüedades detectadas se resolvieron en el diseño y quedan regi
 ### CR-002
 - **Tipo**: ambigüedad
 - **Descripción**: AC-3 exige que "`memory-system check` no reporta wikilinks rotos", pero la línea base ya tiene 49
-  `broken-wikilink` ajenos a esta historia (dos de ellos en el propio `story.md`: `[[ADR-0013-eliminar-specs-01-projects]]`). Leído
+  `broken-wikilink` ajenos a esta historia (dos de ellos en el propio `story.md`: `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`). Leído
   literal, el AC es incumplible sin salir del alcance.
 - **Documento afectado**: story.md
 - **Acción requerida**: el diseño verifica por delta (D-5). Opcional: precisar AC-3 como "no reporta wikilinks rotos nuevos ni
-  referidos a `story-map`" y corregir el wikilink del ADR en `story.md` a `[[eliminar-specs-01-projects]]`.
+  referidos a `story-map`" y corregir el wikilink del ADR en `story.md` a `[[asegurar-dos-niveles-de-flujo-epics-stories]]`.

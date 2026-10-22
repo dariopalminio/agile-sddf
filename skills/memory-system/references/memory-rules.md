@@ -106,7 +106,7 @@ Un wikilink cuyo slug no coincide con el de ningún nodo (ni con `index`) es un 
 para `index` (informativo, no bloquea) y un problema `broken-wikilink` para `check` (bloquea, una
 ocurrencia = un problema).
 
-Los ADR resuelven además por nombre de archivo (`[[ADR-0013-eliminar-specs-01-projects]]`, la forma
+Los ADR resuelven además por nombre de archivo (`[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`, la forma
 de `related`) y por ID (`[[ADR-0013]]`), aunque su `slug` declarado omita el prefijo. Solo aplica a
 los nodos de la capa `adr/` cuyo archivo se llama `ADR-<NNNN>-<slug>.md`.
 

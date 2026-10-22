@@ -12,7 +12,7 @@ created: 2026-10-07
 updated: 2026-10-07
 related:
   - STORY-110-discovery-escribe-stakeholders-y-requisitos
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - stakeholders
   - requirements-index
   - STORY-105-migrar-stakeholders-y-requisitos
@@ -21,13 +21,13 @@ related:
 ---
 
 <!-- Referencias -->
-[[STORY-110-discovery-escribe-stakeholders-y-requisitos]] · [[eliminar-specs-01-projects]] · [[stakeholders]] · [[requirements-index]] · [[STORY-105-migrar-stakeholders-y-requisitos]] · [[STORY-109-project-begin-escribe-vision]] · [[STORY-118-requirements-srs-unico-primero]]
+[[STORY-110-discovery-escribe-stakeholders-y-requisitos]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[stakeholders]] · [[requirements-index]] · [[STORY-105-migrar-stakeholders-y-requisitos]] · [[STORY-109-project-begin-escribe-vision]] · [[STORY-118-requirements-srs-unico-primero]]
 
 # Diseño técnico: `project-discovery` y `reverse-engineering` escriben stakeholders y requisitos individuales
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) reparte `project.md` en `docs/product/stakeholders.md` (perfiles) y un archivo por
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) reparte `project.md` en `docs/product/stakeholders.md` (perfiles) y un archivo por
 requisito en `docs/requirements/functional/` y `docs/requirements/non-functional/`. STORY-105 migra el contenido de este
 repositorio; esta historia cambia los **escritores**: `/project-discovery`, `/reverse-engineering` y sus agentes.
 

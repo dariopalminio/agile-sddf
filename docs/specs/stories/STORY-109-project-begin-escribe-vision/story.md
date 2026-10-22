@@ -12,12 +12,12 @@ created: 2026-10-05
 updated: 2026-10-10
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-104-migrar-project-intent-a-vision
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: `project-begin` escribe la intención en `product/vision.md`
 
@@ -70,7 +70,7 @@ Entonces no aparece ninguna coincidencia
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]] (`project-intent.md` → `product/vision.md`) y la decisión de STORY-108 de dejar en esta historia solo la reubicación semántica de los outputs de `project-*`.
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] (`project-intent.md` → `product/vision.md`) y la decisión de STORY-108 de dejar en esta historia solo la reubicación semántica de los outputs de `project-*`.
 - **Template de visión:** `docs/templates/project-intent-template.md` (y su seed `skills/project-begin/assets/project-intent-template.md`) se reemplaza por un template de visión. Su estructura debe coincidir con la que STORY-104 deja en `vision.md` y con la semilla de `memory-system`, para no reintroducir dos estructuras de visión. El nombre exacto del template se decide en diseño.
 - **Desaparece la resolución de proyecto activo:** hoy `project-begin` busca en `01-projects/` un `PROJ-NN` con `substatus: IN-PROGRESS` (WIP=1) o deriva uno nuevo del título. Con un solo proyecto por raíz `docs/`, el `substatus` de `vision.md` cumple ese papel (AC-2).
 - **Agente afectado:** `project-pm` (12 referencias a `01-projects`).

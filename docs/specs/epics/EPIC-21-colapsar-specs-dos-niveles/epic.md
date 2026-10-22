@@ -98,7 +98,7 @@ Escenario: Navegabilidad intacta tras el colapso
 
 ## Notas
 - **Breaking change:** requiere major version bump (`3.x.x → 4.0.0`; versión actual `3.3.1`).
-- **Precedente:** `ADR-0013-eliminar-specs-01-projects` debe documentar la decisión y el rationale (hoy el archivo existe pero está vacío; completarlo antes de iniciar la épica).
+- **Precedente:** `ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories` debe documentar la decisión y el rationale (hoy el archivo existe pero está vacío; completarlo antes de iniciar la épica).
 - **Caso multi-proyecto:** se asume el caso común (un solo proyecto por raíz `docs/`). El caso multi-proyecto se abordará en un ADR separado si surge la necesidad.
 - **Orden de implementación sugerido:** primero skills y scaffolding, luego migración, luego documentación, de modo que cada historia deje el repo en estado consistente.
 - **Actualizar skills que referencian rutas de `specs/`:** `project-*`, `memory-system`, `epic-*`, `story-*`, `skill-preflight`, `sddf-init` y cualquier skill o agente que use rutas de `01-projects/`. STORY-108 ya actualiza las rutas de épicas e historias. Son las 5 historias STORY-109 a STORY-113, cada una con su flujo de skill + agente + template, simplificando el mecanismo de proyecto activo WIP por el uso del substatus del documento destino para decidir entre retomar o empezar.

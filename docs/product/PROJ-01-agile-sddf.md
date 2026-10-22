@@ -11,7 +11,7 @@ updated: 2026-10-13
 
 # Redirección de `PROJ-01-agile-sddf`
 
-> Página de redirección. El proyecto `PROJ-01-agile-sddf` y su directorio `specs/01-projects/` ya no existen ([[eliminar-specs-01-projects]]). Esta página no es una fuente de verdad: solo mapea cada documento antiguo a su hogar actual, para que los wikilinks históricos `[[PROJ-01-agile-sddf]]` (ADR aceptados, que son inmutables, y las épicas) sigan resolviendo.
+> Página de redirección. El proyecto `PROJ-01-agile-sddf` y su directorio `specs/01-projects/` ya no existen ([[asegurar-dos-niveles-de-flujo-epics-stories]]). Esta página no es una fuente de verdad: solo mapea cada documento antiguo a su hogar actual, para que los wikilinks históricos `[[PROJ-01-agile-sddf]]` (ADR aceptados, que son inmutables, y las épicas) sigan resolviendo.
 
 | Documento antiguo | Hogar actual |
 |---|---|

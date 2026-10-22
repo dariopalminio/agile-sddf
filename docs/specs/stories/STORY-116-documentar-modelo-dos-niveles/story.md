@@ -12,13 +12,13 @@ created: 2026-10-05
 updated: 2026-10-11
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-108-renombrar-specs-sin-prefijos
   - STORY-114-migrate-specs-3-levels
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: Actualizar documentación canónica al modelo de dos niveles
 
@@ -70,7 +70,7 @@ Entonces encuentra una sección "BREAKING" que enumera los cambios de ruta, los 
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]], consecuencias "Actualización de documentación" y "Breaking change: ... documentarse en el CHANGELOG con guía de migración". Cubre el criterio de salida de EPIC-21 "`CHANGELOG.md` documenta el breaking change con guía de migración".
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]], consecuencias "Actualización de documentación" y "Breaking change: ... documentarse en el CHANGELOG con guía de migración". Cubre el criterio de salida de EPIC-21 "`CHANGELOG.md` documenta el breaking change con guía de migración".
 - **Documentos con el modelo de proyecto (2026-10-05):** `domains/domain-project-lifecycle.md`, `domain-work-item-hierarchy.md`, `domain-knowledge-artifacts.md`, `domain-state-management.md`, `domain-epic-lifecycle.md`, `domain.md`, `domains/README.md`; `architecture/state-machine.md` (sección "Nivel PROJECT"), `memory-system.md`, `sddf-architecture.md`; `guides/flight-leves-model.md`, `organization-of-artifacts.md`, `sddf-commands-pipeline.md`, `skill-structural-pattern.md`, `artifact-directory-migration.md`; `runbooks/actualizar-spec-de-proyecto.md`; `constitution.md`; `README.md`.
 - **`domain-project-lifecycle.md`:** el pipeline `project-begin → project-discovery → project-planning` sigue existiendo (STORY-113), pero ya no como agregado `PROJ-NN`. Reescribirlo como ciclo de vida de los documentos fundacionales o marcarlo `superseded` con un sucesor nuevo se decide en diseño (CNF-2).
 - **Guía de migración:** `guides/artifact-directory-migration.md` ya documenta la migración anterior (`projects/` → `01-projects/`), y `README.md` (líneas 395–397) incluye la misma tabla. La nueva guía puede ser una sección de esa guía; la tabla del README debe actualizarse o remitir a ella.

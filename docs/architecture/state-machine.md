@@ -187,4 +187,4 @@ Gate de calidad: `epic-format-validation` valida la estructura del `epic.md` com
 - Workflow narrativo: [[specs-and-workflows]] (descripción de estados y subestados)
 - Principios aplicables: [[constitution]] patrones 8, 14 y regla 9
 - Decisión de arquitectura: [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
-- [[eliminar-specs-01-projects]] — decisión del modelo de dos niveles
+- [[asegurar-dos-niveles-de-flujo-epics-stories]] — decisión del modelo de dos niveles

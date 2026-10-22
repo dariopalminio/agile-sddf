@@ -12,14 +12,14 @@ created: 2026-10-05
 updated: 2026-10-11
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-108-renombrar-specs-sin-prefijos
   - STORY-111-planning-escribe-roadmap
   - STORY-114-migrate-specs-3-levels
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: Actualizar scaffolding de `memory-system` a `specs/` de dos niveles
 
@@ -74,7 +74,7 @@ Entonces la última línea del informe empieza con "creados: 0 · sobrescritos: 
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]] ("Simplificación del scaffolding: `memory-system` ya no necesita crear `specs/01-projects/`") y el smoke test 1 de EPIC-21.
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] ("Simplificación del scaffolding: `memory-system` ya no necesita crear `specs/01-projects/`") y el smoke test 1 de EPIC-21.
 - **Estado actual (2026-10-05):** el árbol semilla tiene `specs/01-projects/.gitkeep`, `specs/02-epics/.gitkeep`, `specs/03-stories/.gitkeep` y `product/{vision,stakeholders,objectives}.md`; no tiene `roadmap.md` ni subcarpetas en `requirements/`. El motor mapea `01-projects` a la capa `specs-projects`.
 - **Reparto con STORY-108:** su AC-2 exige que no quede "02-epics"/"03-stories" en `skills/`, lo que ya obliga a renombrar estas semillas. Por eso esta historia se queda con lo que no es renombrado: retirar `01-projects`, sembrar `roadmap.md` y `requirements/{functional,non-functional}/`, y avisar de la estructura antigua.
 - **`product/README.md`:** su convención fija tres documentos (`vision`, `stakeholders`, `objectives`). Si `roadmap.md` pasa a sembrarse siempre, conviene incluirlo como cuarto documento fijo en la semilla del README; se decide en diseño.

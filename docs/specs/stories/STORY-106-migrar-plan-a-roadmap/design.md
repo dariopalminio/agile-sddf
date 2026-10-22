@@ -11,18 +11,18 @@ created: 2026-10-07
 updated: 2026-10-07
 related:
   - STORY-106-migrar-plan-a-roadmap
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - objectives
 ---
 
 <!-- Referencias -->
-[[STORY-106-migrar-plan-a-roadmap]] · [[eliminar-specs-01-projects]] · [[objectives]]
+[[STORY-106-migrar-plan-a-roadmap]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[objectives]]
 
 # Diseño técnico: migrar `project-plan.md` a `product/roadmap.md`
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) decide que `project-plan.md` (epic slicing) pasa a
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) decide que `project-plan.md` (epic slicing) pasa a
 `docs/product/roadmap.md`, un archivo nuevo de la capa `product/`, y que "el roadmap lista los Epics planificados".
 La historia pide además que el roadmap refleje las épicas **reales**, porque el plan está desfasado.
 
@@ -62,8 +62,8 @@ y en `README.md` son texto plano que describe el pipeline genérico o el histori
 
 **Línea base de `memory-system check`** (`node skills/memory-system/scripts/memory-system.js check --root docs`, 2026-10-07):
 exit 1, `problemas: 55 (orphan 6 · broken-wikilink 49)`. Ninguno involucra `project-plan`, `roadmap`, `objectives`,
-`index.md` ni `project.md`; la mayoría son `[[ADR-0013-eliminar-specs-01-projects]]` (el slug real del ADR es
-`eliminar-specs-01-projects`). `node scripts/check-doc-links.js` → `[OK]` (46 archivos activos).
+`index.md` ni `project.md`; la mayoría son `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` (el slug real del ADR es
+`asegurar-dos-niveles-de-flujo-epics-stories`). `node scripts/check-doc-links.js` → `[OK]` (46 archivos activos).
 
 **Historias hermanas que tocan los mismos archivos:** STORY-104 (línea 75 de `index.md` y línea 18 de `project.md`) y
 STORY-105 (regenera `index.md` con `memory-system index` y reescribe secciones de `project.md` sin borrarlo). Ninguna está
@@ -201,10 +201,10 @@ Frontmatter (misma convención que las semillas de `product/`):
 
 Debajo de `# Roadmap del producto` va un bloque de cita de dos líneas:
 
-1. `> Origen: plan de épicas de \`project-plan.md\` (PROJ-01, eliminado), migrado por [[eliminar-specs-01-projects]]. El objetivo de negocio vive en [[objectives]].`
+1. `> Origen: plan de épicas de \`project-plan.md\` (PROJ-01, eliminado), migrado por [[asegurar-dos-niveles-de-flujo-epics-stories]]. El objetivo de negocio vive en [[objectives]].`
 2. `> La lista de épicas es una foto a la fecha de migración; no se sincroniza sola con el estado de cada épica.`
 
-- El wikilink al ADR usa el slug real `eliminar-specs-01-projects`, no `[[ADR-0013-eliminar-specs-01-projects]]` (forma de la
+- El wikilink al ADR usa el slug real `asegurar-dos-niveles-de-flujo-epics-stories`, no `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` (forma de la
   historia, que hoy no resuelve).
 - `project-plan.md` se nombra como código, no como wikilink, porque su slug deja de existir.
 - El archivo termina con `Volver al mapa: [[index]].`, como los demás documentos de `product/`.
@@ -296,7 +296,7 @@ convención de las semillas de `product/` (P3). `docs/product/README.md` no camb
 | Sección `## Épicas` | Tabla `ID │ Épica │ Título │ Status │ Substatus`, una fila por épica real, orden por ID. Contrato para STORY-111. | AC-1 |
 | Sección `## Plan original (2026-04-20)` | Histórico inmutable: ningún escritor futuro la modifica. Contrato para STORY-111. | AC-2 |
 | Wikilink de épica | `[[<slug declarado en epic.md>]]`. | AC-1, AC-3 |
-| Wikilinks de trazabilidad | `[[eliminar-specs-01-projects]]` y `[[objectives]]` en `roadmap.md`; `[[roadmap]]` en `objectives.md`. | CNF-2, AC-3 |
+| Wikilinks de trazabilidad | `[[asegurar-dos-niveles-de-flujo-epics-stories]]` y `[[objectives]]` en `roadmap.md`; `[[roadmap]]` en `objectives.md`. | CNF-2, AC-3 |
 | `memory-system check --root docs` | Verificador de solo lectura; criterio por delta (D-8). | AC-3 |
 
 ## Esquema de datos
@@ -366,7 +366,7 @@ El mantenedor llega a `roadmap.md` desde `docs/index.md` (`### Producto`), desde
 | 9 | Sin `[[project-plan]]` fuera de `03-stories/` | `grep -rn "\[\[project-plan\]\]" docs \| grep -v "docs/specs/03-stories/"` → vacío | AC-3 |
 | 10 | Referencias redirigidas | `index.md` contiene `[[roadmap]]` bajo `### Producto (product/)` una vez; `project.md` contiene `[[roadmap]]` dos veces y `  - roadmap` en `related:` | AC-3 |
 | 11 | Sin wikilinks rotos nuevos | `memory-system check --root docs` cumple D-8 frente a `check-before.txt`; `node scripts/check-doc-links.js` → `[OK]` | AC-3 |
-| 12 | Trazabilidad | `roadmap.md` contiene `project-plan.md`, `[[eliminar-specs-01-projects]]` y `[[objectives]]` en la nota de origen | CNF-2 |
+| 12 | Trazabilidad | `roadmap.md` contiene `project-plan.md`, `[[asegurar-dos-niveles-de-flujo-epics-stories]]` y `[[objectives]]` en la nota de origen | CNF-2 |
 | 13 | Encoding | Los primeros 3 bytes de `roadmap.md`, `objectives.md`, `index.md` y `project.md` ≠ `EF BB BF`; `grep -lE "Ã\|ðŸ"` sobre ellos → vacío | CNF-3 |
 
 ## Risks / Trade-offs
@@ -400,7 +400,7 @@ Ninguna. Las ambigüedades detectadas se resolvieron en el diseño y quedan regi
 ### CR-002
 - **Tipo**: ambigüedad
 - **Descripción**: "`memory-system check` no reporta wikilinks rotos" no es alcanzable en absoluto: la línea base tiene 49
-  `broken-wikilink` ajenos, incluidos tres en la propia `story.md` (`[[ADR-0013-eliminar-specs-01-projects]]`).
+  `broken-wikilink` ajenos, incluidos tres en la propia `story.md` (`[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`).
 - **Documento afectado**: story.md / design.md
 - **Acción requerida**: verificación por delta (D-8, contrato #11) y uso del slug real del ADR en `roadmap.md` (D-4). Recomendado:
   corregir el wikilink al ADR en las historias de EPIC-21 en una historia aparte.

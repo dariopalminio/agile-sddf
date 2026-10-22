@@ -12,13 +12,13 @@ created: 2026-10-05
 updated: 2026-10-10
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-105-migrar-stakeholders-y-requisitos
   - STORY-109-project-begin-escribe-vision
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: `project-discovery` y `reverse-engineering` escriben stakeholders y requisitos individuales
 
@@ -69,8 +69,8 @@ Entonces el skill se detiene sin escribir en "docs/product/" ni en "docs/require
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]] (stakeholders → `product/stakeholders.md`; FR/NFR → `requirements/functional/` y `requirements/non-functional/`). La convención de nombres e IDs únicos ya está en `docs/requirements/README.md`.
-- **Decisión abierta — secciones de `project.md` sin hogar:** hoy discovery (con `project-ux`) y el sintetizador de `reverse-engineering` también producen UI/UX (design vibe, mapas de navegación, wireframes), stack técnico, glosario y referencias. [[ADR-0013-eliminar-specs-01-projects]] no les asigna destino; es la misma decisión que necesita la historia pendiente "Reubicar las secciones restantes de `project.md` y eliminarlo". Hay que cerrarla antes de pasar esta historia a PLAN.
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] (stakeholders → `product/stakeholders.md`; FR/NFR → `requirements/functional/` y `requirements/non-functional/`). La convención de nombres e IDs únicos ya está en `docs/requirements/README.md`.
+- **Decisión abierta — secciones de `project.md` sin hogar:** hoy discovery (con `project-ux`) y el sintetizador de `reverse-engineering` también producen UI/UX (design vibe, mapas de navegación, wireframes), stack técnico, glosario y referencias. [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] no les asigna destino; es la misma decisión que necesita la historia pendiente "Reubicar las secciones restantes de `project.md` y eliminarlo". Hay que cerrarla antes de pasar esta historia a PLAN.
 - **Mayor cambio de formato del pipeline:** de un documento a N archivos. `reverse-engineering` sintetiza hoy con `reverse-engineer-synthesizer` rellenando el template sección por sección; ahora debe emitir un archivo por requisito.
 - **Resolución de proyecto:** desaparece la búsqueda de `PROJ-NN` activo en `01-projects/` (en `reverse-engineering`, la creación automática de `PROJ-01-<nombre>`).
 - **Independencia:** se apoya en `vision.md` como precondición, no en STORY-109. Funciona con cualquier `vision.md` en `DONE`, incluido el que deja STORY-104.

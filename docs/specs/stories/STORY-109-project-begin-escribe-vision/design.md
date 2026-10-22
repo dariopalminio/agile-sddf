@@ -12,18 +12,18 @@ updated: 2026-10-07
 related:
   - STORY-109-project-begin-escribe-vision
   - STORY-104-migrar-project-intent-a-vision
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - vision
 ---
 
 <!-- Referencias -->
-[[STORY-109-project-begin-escribe-vision]] · [[STORY-104-migrar-project-intent-a-vision]] · [[eliminar-specs-01-projects]] · [[vision]]
+[[STORY-109-project-begin-escribe-vision]] · [[STORY-104-migrar-project-intent-a-vision]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[vision]]
 
 # Diseño técnico: `project-begin` escribe la intención en `product/vision.md`
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) mueve `project-intent.md` a `docs/product/vision.md`. STORY-104 migra el contenido
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) mueve `project-intent.md` a `docs/product/vision.md`. STORY-104 migra el contenido
 de este repositorio; esta historia cambia el **escritor**: `/project-begin` y su agente `project-pm`.
 
 Estado actual (medido el 2026-10-07):

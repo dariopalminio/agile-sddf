@@ -12,12 +12,12 @@ created: 2026-10-05
 updated: 2026-10-11
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-106-migrar-plan-a-roadmap
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: `project-planning` escribe en `product/roadmap.md` y `epic-from-project-plan` lee de allí
 
@@ -66,7 +66,7 @@ Entonces se crean 3 directorios "EPIC-NN-<slug>/" con su "epic.md", numerados a 
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]]: "`project-plan.md` (epic slicing) → `docs/product/roadmap.md`" y "el roadmap en `product/roadmap.md` lista los Epics planificados".
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]: "`project-plan.md` (epic slicing) → `docs/product/roadmap.md`" y "el roadmap en `product/roadmap.md` lista los Epics planificados".
 - **Entradas de `project-planning`:** hoy lee `project.md` (precondición `substatus: DONE`), `project-intent.md` y, si existe, `story-map.md`. Pasa a leer `requirements/`, `product/vision.md` y `product/story-map.md`. La precondición pasa a ser "existe al menos un FR".
 - **Rutas de épicas:** AC-3 usa `docs/specs/epics/` porque STORY-108 hace el renombrado; si esta historia se ejecuta antes, aplica igual sobre `02-epics/`.
 - **Resolución de proyecto:** desaparece la búsqueda de `PROJ-NN` activo en `01-projects/` en ambos skills.

@@ -9,12 +9,12 @@ superseded-by: domain-foundational-docs-lifecycle
 created: 2026-08-30
 updated: 2026-08-30
 related:
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - index
 ---
 
 <!-- Referencias -->
-[[eliminar-specs-01-projects]] · [[index]]
+[[asegurar-dos-niveles-de-flujo-epics-stories]] · [[index]]
 
 # 📘 Runbook para actualizar la especificación de proyecto
 

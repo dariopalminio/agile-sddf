@@ -82,4 +82,4 @@ Sin hallazgos.
 
 - `STORY-117` cancelada: no cuenta como cobertura de `SMOKE-1`, `SMOKE-2` ni `SMOKE-3` (`docs/specs/stories/STORY-117-verificar-cierre-epic-21/story.md:50-52`), ni del contrato de salida (`story.md:33`, `### AC-1`).
 - `STORY-119` cancelada: excluida del universo de cobertura y madurez (Paso 4.6); su `parent` apunta a esta épica, por lo que el índice es consistente.
-- Referencias `related` fuera de alcance (`ADR-…`, slug libre `eliminar-specs-01-projects` en `STORY-112`) no se evaluaron. Todas las referencias `STORY-NNN` y `EPIC-NN` del universo resuelven.
+- Referencias `related` fuera de alcance (`ADR-…`, slug libre `asegurar-dos-niveles-de-flujo-epics-stories` en `STORY-112`) no se evaluaron. Todas las referencias `STORY-NNN` y `EPIC-NN` del universo resuelven.

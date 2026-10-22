@@ -12,7 +12,7 @@ created: 2026-10-09
 updated: 2026-10-09
 related:
   - STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - vision
   - roadmap
   - tech-stack
@@ -20,13 +20,13 @@ related:
 ---
 
 <!-- Referencias -->
-[[STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo]] · [[eliminar-specs-01-projects]] · [[vision]] · [[tech-stack]] · [[domain]]
+[[STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[vision]] · [[tech-stack]] · [[domain]]
 
 # Diseño técnico: reubicar las secciones restantes de `project.md` y eliminarlo
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) elimina `docs/specs/01-projects/` y asigna destino solo a `project-intent.md`
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) elimina `docs/specs/01-projects/` y asigna destino solo a `project-intent.md`
 (STORY-104), a §1.8 y §2.1–2.2 de `project.md` (STORY-105), a `project-plan.md` (STORY-106) y a `story-map.md` y
 `context-diagram.puml` (STORY-107). Esta historia trata **lo que queda**: las secciones de `project.md` sin destino
 asignado. Después borra `project.md`, el runbook que solo servía para resincronizarlo y la carpeta `01-projects/`.
@@ -91,7 +91,7 @@ Al `[[runbook-actualizar-spec-de-proyecto]]` solo lo enlazan `project.md` (×2) 
 
 **Línea base de `memory-system check`** (`node skills/memory-system/scripts/memory-system.js check --root docs`, 2026-10-09):
 exit 1, `problemas: 56 (orphan 7 · broken-wikilink 49)`. Ninguno involucra a `PROJ-01-agile-sddf` ni al runbook: 32 son
-`[[ADR-0013-eliminar-specs-01-projects]]` (el slug real es `eliminar-specs-01-projects`), incluido el `story.md` de esta
+`[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` (el slug real es `asegurar-dos-niveles-de-flujo-epics-stories`), incluido el `story.md` de esta
 historia. AC-2 pide literalmente "no reporta `broken-wikilink`", lo que hoy es inalcanzable por causas ajenas (CR-002).
 
 **Escaneo de `memory-system`** (`walk` + `isExcludedFile`): se excluyen `design.md`, `tasks.md`, `testcases.md`,
@@ -160,7 +160,7 @@ La documentación del destino no debe quedar con dos versiones vigentes contradi
 | El contenido es una foto fechada por naturaleza (recuentos, deuda verificada) | Como sección **histórica** fechada |
 
 Cada bloque trasladado empieza con una nota de cita de una línea:
-`> Trasladado desde project.md §<n> (revisión 2026-08-30, PROJ-01, eliminado) por STORY-123 — [[eliminar-specs-01-projects]].`
+`> Trasladado desde project.md §<n> (revisión 2026-08-30, PROJ-01, eliminado) por STORY-123 — [[asegurar-dos-niveles-de-flujo-epics-stories]].`
 Las secciones históricas añaden: `Registro histórico: no describe el estado actual.` El nombre `project.md` va como
 texto, no como wikilink. Esta nota absorbe la "Nota de vigencia" del origen: fecha de revisión y procedencia.
 
@@ -483,8 +483,8 @@ Ninguna. Las ambigüedades se resolvieron en D-1…D-8 o quedan como CR.
 ### CR-002
 - **Tipo**: inviabilidad
 - **Descripción**: AC-2 exige que `memory-system check` "no reporte `broken-wikilink`", pero la línea base del 2026-10-09
-  ya tiene 49, ajenos a esta historia. 32 son `[[ADR-0013-eliminar-specs-01-projects]]` (el slug real es
-  `eliminar-specs-01-projects`), incluido el propio `story.md` de STORY-123. Tomado literalmente, el AC no puede cumplirse
+  ya tiene 49, ajenos a esta historia. 32 son `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` (el slug real es
+  `asegurar-dos-niveles-de-flujo-epics-stories`), incluido el propio `story.md` de STORY-123. Tomado literalmente, el AC no puede cumplirse
   sin salirse del alcance.
 - **Documento afectado**: story.md (AC-2)
 - **Acción requerida**: el diseño lo verifica como V-7: cero `broken-wikilink` hacia slugs retirados o documentos tocados, y

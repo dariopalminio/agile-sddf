@@ -12,12 +12,12 @@ created: 2026-10-05
 updated: 2026-10-10
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-106-migrar-plan-a-roadmap
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: Migrar `story-map.md` y `context-diagram.puml`
 
@@ -69,7 +69,7 @@ Entonces "[[story-map]]" resuelve a "docs/product/story-map.md"
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]] elimina `specs/01-projects/` pero no asigna destino a `story-map.md` ni a `context-diagram.puml`. El destino lo decidió el mantenedor al crear EPIC-21 (story map → `product/`, diagrama → `architecture/`).
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] elimina `specs/01-projects/` pero no asigna destino a `story-map.md` ni a `context-diagram.puml`. El destino lo decidió el mantenedor al crear EPIC-21 (story map → `product/`, diagrama → `architecture/`).
 - **Destino corregido del diagrama:** EPIC-21 indica `docs/architecture/context-diagram.puml`, pero `docs/architecture/README.md` fija que los diagramas PlantUML viven en `c4/` junto a su render, y `docs/architecture/c4/context-diagram.puml` ya existe idéntico (comprobado con `diff`, 2026-10-05). Hay que alinear la línea de historias y el criterio de éxito de la épica con `docs/architecture/c4/context-diagram.puml`.
 - **Capa `product/`:** `product/README.md` admite documentos de contexto adicionales en kebab-case, así que `story-map.md` entra sin cambiar el README.
 - **Wikilinks:** el slug `story-map` no cambia, así que `[[story-map]]` sigue resolviendo por slug. Solo cambia la ruta que muestra `docs/index.md` (1 entrada); `project.md` lo referencia 2 veces.

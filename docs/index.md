@@ -427,7 +427,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[specs-dentro-de-docs]] — [ADR-0010-specs-dentro-de-docs.md](adr/ADR-0010-specs-dentro-de-docs.md) — Mantener specs/ dentro de docs/ en lugar de la raíz
 - [[archivos-canonicos-por-tipo]] — [ADR-0011-archivos-canonicos-por-tipo.md](adr/ADR-0011-archivos-canonicos-por-tipo.md) — Los archivos canónicos de work items se nombran por tipo (story.md, epic.md, project.md)
 - [[escritor-en-templates-de-autoria-manual]] — [ADR-0012-escritor-en-templates-de-autoria-manual.md](adr/ADR-0012-escritor-en-templates-de-autoria-manual.md) — Los templates de autoría manual anotan `escritor: autoría manual` en línea completa
-- [[eliminar-specs-01-projects]] — [ADR-0013-eliminar-specs-01-projects.md](adr/ADR-0013-eliminar-specs-01-projects.md) — Eliminar `specs/01-projects/` y migrar su contenido a `product/` y `requirements/`
+- [[asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md](adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) — Asegurar dos niveles de flujo como epics y stories
 - [[skills-independientes]] — [ADR-0014-skills-independientes.md](adr/ADR-0014-skills-independientes.md) — Independencia de skills y agentes: sin dependencia de skills hacia `agents/`
 - [[contrato-de-validacion]] — [ADR-0015-contrato-de-validacion.md](adr/ADR-0015-contrato-de-validacion.md) — Contrato común de validación para los skills de gate
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)

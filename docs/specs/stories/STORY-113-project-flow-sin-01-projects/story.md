@@ -12,14 +12,14 @@ created: 2026-10-05
 updated: 2026-10-11
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-109-project-begin-escribe-vision
   - STORY-110-discovery-escribe-stakeholders-y-requisitos
   - STORY-111-planning-escribe-roadmap
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: `project-flow`, `sddf-init` y `header-aggregation` sin `specs/01-projects/`
 
@@ -72,7 +72,7 @@ Entonces solo aparece en la lógica de migración de "memory-system" que detecta
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]], consecuencia "Simplificación del scaffolding... `project-flow` ya no necesita gestionar los tres documentos fundacionales como work items".
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]], consecuencia "Simplificación del scaffolding... `project-flow` ya no necesita gestionar los tres documentos fundacionales como work items".
 - **Estado actual de `project-flow`:** detecta la etapa leyendo el `substatus` de `01-projects/project-intent.md`, `project.md` y `project-plan.md` (27 referencias a `01-projects`). La tabla de AC-2 lo reemplaza por el estado de las capas.
 - **Dependencia:** AC-1 y AC-3 requieren STORY-109 a STORY-112, porque `project-flow` invoca esas etapas. Es la historia de cierre del bloque de skills; la parte de `sddf-init` y `header-aggregation` es independiente.
 - **`header-aggregation`:** hoy infiere `type: project` por la ruta `01-projects/`; debe inferir `type: product` en `product/` y el tipo que defina la capa `requirements/` para FR/NFR.

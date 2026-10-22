@@ -12,7 +12,7 @@ created: 2026-10-05
 updated: 2026-10-10
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-104-migrar-project-intent-a-vision
   - STORY-105-migrar-stakeholders-y-requisitos
   - STORY-106-migrar-plan-a-roadmap
@@ -20,7 +20,7 @@ related:
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: Renombrar `specs/02-epics/` → `specs/epics/` y `specs/03-stories/` → `specs/stories/`
 
@@ -77,7 +77,7 @@ Ejemplos:
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]] decide `specs/epics/` + `specs/stories/` sin prefijos y reemplaza la decisión de directorios numerados de `ADR-0004`.
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] decide `specs/epics/` + `specs/stories/` sin prefijos y reemplaza la decisión de directorios numerados de `ADR-0004`.
 - **Volumen (2026-10-05):** archivos que mencionan `02-epics` / `03-stories`: `skills/` 32 / 56, `docs/` 50 / 68 (la mayoría registros históricos), más `test/memory-system.test.js`, `scripts/migrate-finvest-field.js`, `README.md` y `AGENTS.md`. `sddf.config.yaml` no contiene rutas de `specs/`.
 - **Documentos vivos de `docs/`:** todo lo que está fuera de `specs/epics/*/`, `specs/stories/*/` y de los ADRs aceptados. Incluye `constitution.md`, `index.md`, `specs/README.md`, `architecture/`, `domains/`, `guides/`, `guardrails/`, `runbooks/` y `adr/README.md`.
 - **Cambio de alcance respecto de EPIC-21:** al hacer el renombrado atómico, esta historia absorbe la parte de ruta de "Actualizar skills que referencian rutas de `specs/`", que queda solo con la reubicación semántica de los outputs de `project-*`. Conviene ajustar la descripción de esa línea en la épica.

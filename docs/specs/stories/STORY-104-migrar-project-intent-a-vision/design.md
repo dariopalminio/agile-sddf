@@ -11,18 +11,18 @@ created: 2026-10-07
 updated: 2026-10-10
 related:
   - STORY-104-migrar-project-intent-a-vision
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - vision
 ---
 
 <!-- Referencias -->
-[[STORY-104-migrar-project-intent-a-vision]] · [[eliminar-specs-01-projects]] · [[vision]]
+[[STORY-104-migrar-project-intent-a-vision]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[vision]]
 
 # Diseño técnico: migrar `project-intent.md` a `product/vision.md`
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) decide que `docs/specs/01-projects/PROJ-01-agile-sddf/project-intent.md`
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) decide que `docs/specs/01-projects/PROJ-01-agile-sddf/project-intent.md`
 pasa a vivir en `docs/product/vision.md`. Hoy conviven dos documentos con el mismo propósito:
 
 | Documento | Estado actual |
@@ -47,7 +47,7 @@ lo que viola la regla de veracidad del propio `AGENTS.md` (ver D-5 y CR-003).
 **Línea base de `memory-system check`** (`node skills/memory-system/scripts/memory-system.js check --root docs`, 2026-10-07):
 exit 1, `problemas: 55 (orphan 6 · broken-wikilink 49)`. Ninguno de esos problemas involucra a `project-intent.md`,
 `vision.md`, `index.md` ni `project.md`. La mayoría proviene de historias de EPIC-21 que enlazan
-`[[ADR-0013-eliminar-specs-01-projects]]`, mientras que el slug real del ADR es `eliminar-specs-01-projects`.
+`[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`, mientras que el slug real del ADR es `asegurar-dos-niveles-de-flujo-epics-stories`.
 
 `index.md` está desactualizado respecto del motor: una regeneración de prueba sobre una copia de `docs/` (`memory-system index
 --root <copia>`) produce 44 líneas de diff ajenas a esta historia (entradas de EPIC-21 y STORY-102…118, cambio del enlace a Foam
@@ -114,9 +114,9 @@ Regla de copia: el texto de los ítems se traslada **sin parafrasear, resumir ni
 - Se conservan sin cambios `type: product`, `slug: vision`, `title`, `status`, `substatus`, `parent` y `created`.
   Solo cambia `updated` a la fecha de la implementación. No se agregan claves nuevas al frontmatter.
 - Inmediatamente después del título `# Visión del producto` se agrega una nota de cita:
-  `> Consolidada desde project-intent.md (PROJ-01, eliminado) por [[eliminar-specs-01-projects]].` — el nombre del archivo
+  `> Consolidada desde project-intent.md (PROJ-01, eliminado) por [[asegurar-dos-niveles-de-flujo-epics-stories]].` — el nombre del archivo
   original va como texto en código, no como wikilink, porque su slug deja de existir.
-- El wikilink al ADR usa el slug real `eliminar-specs-01-projects` (frontmatter del ADR), **no** `ADR-0013-eliminar-specs-01-projects`
+- El wikilink al ADR usa el slug real `asegurar-dos-niveles-de-flujo-epics-stories` (frontmatter del ADR), **no** `ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories`
   (forma usada en `story.md`), porque esta última no resuelve en `memory-system check` (ver CR-002).
 - Se conserva el pie `Volver al mapa: [[index]].`
 
@@ -126,7 +126,7 @@ Regla de copia: el texto de los ítems se traslada **sin parafrasear, resumir ni
   scaffold es una decisión de convención que no pide la historia (YAGNI).
 - *Declarar el origen en un campo `related:` o `source:` del frontmatter:* CNF-1 pide que **un lector** sepa de dónde viene la
   visión; una nota visible cumple eso sin añadir claves que ningún consumidor lee.
-- *Usar `[[ADR-0013-eliminar-specs-01-projects]]` como en la historia:* añadiría un `broken-wikilink` nuevo a `check`.
+- *Usar `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` como en la historia:* añadiría un `broken-wikilink` nuevo a `check`.
 
 ### D-3 — `docs/index.md`: retirar la entrada a mano, sin regenerar // satisface: AC-3
 
@@ -204,7 +204,7 @@ No se crean archivos nuevos ni componentes ejecutables. Se reutilizan el motor `
 |---|---|---|
 | Slug `vision` | Único slug por el que otros nodos referencian la visión del producto: `[[vision]]`. No cambia. | AC-1, AC-3 |
 | Secciones `##` de `vision.md` | `Problema que resolvemos`, `Propuesta de valor`, `Criterios de éxito`, `Alcance y límites`, en ese orden. Las tres del scaffold mantienen su título literal para los escritores futuros (STORY-109). | AC-1, AC-2 |
-| Wikilink de trazabilidad | `[[eliminar-specs-01-projects]]` (slug real de ADR-0013). | CNF-1 |
+| Wikilink de trazabilidad | `[[asegurar-dos-niveles-de-flujo-epics-stories]]` (slug real de ADR-0013). | CNF-1 |
 | `memory-system check --root docs` | Verificador de solo lectura; criterio de aceptación por delta (D-6). | AC-3 |
 
 ## Esquema de datos
@@ -226,7 +226,7 @@ Esqueleto del cuerpo:
 
 ```
 # Visión del producto
-> Consolidada desde `project-intent.md` (PROJ-01, eliminado) por [[eliminar-specs-01-projects]].
+> Consolidada desde `project-intent.md` (PROJ-01, eliminado) por [[asegurar-dos-niveles-de-flujo-epics-stories]].
 ## Problema que resolvemos            ← Definición del Problema
 ## Propuesta de valor
 ### Visión (elevator pitch)           ← Visión (elevator pitch)
@@ -285,7 +285,7 @@ compatibilidad (enlace simbólico, archivo stub) porque reintroduciría la doble
 | 8 | Referencias redirigidas | `project.md` contiene `[[vision]]` en líneas de referencias (2 apariciones) y `- vision` en `related:`; `index.md` conserva la entrada `[[vision]]` | AC-3 |
 | 9 | Sin wikilinks rotos nuevos | `memory-system check --root docs`: ninguna línea `[broken-wikilink]` sobre los archivos tocados o el slug eliminado; `problemas` ≤ 55, `broken-wikilink` ≤ 49 | AC-3 |
 | 10 | Enlaces de documentación activa | `node scripts/check-doc-links.js` → `[OK]` | AC-3 |
-| 11 | Trazabilidad visible | `vision.md` contiene `[[eliminar-specs-01-projects]]` y la mención `project-intent.md` en la nota de origen | CNF-1 |
+| 11 | Trazabilidad visible | `vision.md` contiene `[[asegurar-dos-niveles-de-flujo-epics-stories]]` y la mención `project-intent.md` en la nota de origen | CNF-1 |
 | 12 | Encoding | primeros 3 bytes de `vision.md` ≠ `EF BB BF`; `grep -cE "Ã|ðŸ" docs/product/vision.md` → `0` | CNF-2 |
 | 13 | Puntero raíz actualizado | `grep -n "project-intent.md" AGENTS.md` → vacío; `AGENTS.md` menciona `docs/product/vision.md` | AC-3 (consecuencia) |
 
@@ -318,8 +318,8 @@ Ninguna. Las ambigüedades detectadas se resolvieron en el diseño y quedan regi
 ### CR-002
 - **Tipo**: ambigüedad
 - **Descripción**: "`memory-system check` no reporta wikilinks rotos" no es alcanzable en términos absolutos: la línea base ya
-  tiene 49 `broken-wikilink` ajenos a la historia (casi todos `[[ADR-0013-eliminar-specs-01-projects]]`, que no coincide con el
-  slug real `eliminar-specs-01-projects` del ADR). La propia `story.md` usa esa forma rota.
+  tiene 49 `broken-wikilink` ajenos a la historia (casi todos `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`, que no coincide con el
+  slug real `asegurar-dos-niveles-de-flujo-epics-stories` del ADR). La propia `story.md` usa esa forma rota.
 - **Documento afectado**: story.md / design.md
 - **Acción requerida**: el diseño verifica por delta (D-6, contrato #9) y usa el slug real en `vision.md` (D-2). Recomendado:
   corregir el wikilink al ADR en las historias de EPIC-21 (o el slug del ADR) en una historia aparte.

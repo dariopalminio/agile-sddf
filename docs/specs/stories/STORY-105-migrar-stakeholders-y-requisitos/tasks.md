@@ -37,7 +37,7 @@ related:
 
 ## 4. Índice de requisitos en `docs/requirements/README.md`
 
-- [x] T006 [P] Añadir al final del README la sección `## Índice de requisitos` con la línea de procedencia (`… por [[eliminar-specs-01-projects]]; el hueco FR-049 se conserva.`), la nota "Convención de fuente" de §2.1 literal, y `### Requisitos funcionales` / `### Requisitos no funcionales` con una `####` por cada una de las 19 categorías de origen y una línea `- [[<slug>]] — <título>` por requisito en orden de ID (puede generarse desde el inventario de T002); no tocar el resto del README salvo `updated` — D-6, CNF-2
+- [x] T006 [P] Añadir al final del README la sección `## Índice de requisitos` con la línea de procedencia (`… por [[asegurar-dos-niveles-de-flujo-epics-stories]]; el hueco FR-049 se conserva.`), la nota "Convención de fuente" de §2.1 literal, y `### Requisitos funcionales` / `### Requisitos no funcionales` con una `####` por cada una de las 19 categorías de origen y una línea `- [[<slug>]] — <título>` por requisito en orden de ID (puede generarse desde el inventario de T002); no tocar el resto del README salvo `updated` — D-6, CNF-2
 
 ## 5. Sustitución en `project.md`
 

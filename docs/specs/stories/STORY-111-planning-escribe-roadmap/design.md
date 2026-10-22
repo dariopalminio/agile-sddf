@@ -12,20 +12,20 @@ created: 2026-10-08
 updated: 2026-10-08
 related:
   - STORY-111-planning-escribe-roadmap
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-106-migrar-plan-a-roadmap
   - STORY-108-renombrar-specs-sin-prefijos
   - STORY-110-discovery-escribe-stakeholders-y-requisitos
 ---
 
 <!-- Referencias -->
-[[STORY-111-planning-escribe-roadmap]] · [[eliminar-specs-01-projects]] · [[STORY-106-migrar-plan-a-roadmap]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-110-discovery-escribe-stakeholders-y-requisitos]]
+[[STORY-111-planning-escribe-roadmap]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[STORY-106-migrar-plan-a-roadmap]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-110-discovery-escribe-stakeholders-y-requisitos]]
 
 # Diseño técnico: `project-planning` escribe en `product/roadmap.md` y `epic-from-project-plan` lee de allí
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013) mueve el plan de épicas (`project-plan.md`) a `docs/product/roadmap.md`, y establece
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013) mueve el plan de épicas (`project-plan.md`) a `docs/product/roadmap.md`, y establece
 que "el roadmap en `product/roadmap.md` lista los Epics planificados". STORY-106 migra el contenido de este repositorio; esta
 historia cambia el **escritor** (`/project-planning` + agente `project-architect`) y el **lector** (`/epic-from-project-plan`).
 

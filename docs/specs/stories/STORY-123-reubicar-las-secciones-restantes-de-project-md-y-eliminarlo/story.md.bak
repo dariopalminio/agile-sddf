@@ -12,13 +12,13 @@ created: 2026-10-09
 updated: 2026-10-09
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-105-migrar-stakeholders-y-requisitos
   - STORY-108-renombrar-specs-sin-prefijos
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 
 # 📖 Historia: Reubicar las secciones restantes de `project.md` y eliminarlo
 

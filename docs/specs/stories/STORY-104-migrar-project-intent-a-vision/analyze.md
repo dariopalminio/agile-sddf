@@ -39,7 +39,7 @@ related:
 | AC-1 | La visión consolida las seis secciones de origen, sin `[Por completar`, conservando `type: product` y `slug: vision` | ✓ | D-1 (correspondencia de secciones), D-2 (frontmatter), Esquema de datos, contratos #1–#4 |
 | AC-2 | `Criterios de Éxito` en sección propia; ningún ítem de criterios, restricciones ni non-goals omitido o resumido | ✓ | D-1 (sección nueva `## Criterios de éxito`, regla de copia literal), contratos #4–#5 |
 | AC-3 | Original eliminado, sin `[[PROJ-01-agile-sddf-project-intent]]` fuera de `03-stories/`, referencias a `[[vision]]`, `check` sin wikilinks rotos | ✓ | D-3 (`index.md`), D-4 (`project.md`), D-6 (orden y criterio por delta), contratos #6–#10; interpretaciones registradas en CR-001 y CR-002 |
-| CNF-1 | `vision.md` declara su origen en ADR-0013 | ✓ | D-2 (nota de trazabilidad con `[[eliminar-specs-01-projects]]`), contrato #11 |
+| CNF-1 | `vision.md` declara su origen en ADR-0013 | ✓ | D-2 (nota de trazabilidad con `[[asegurar-dos-niveles-de-flujo-epics-stories]]`), contrato #11 |
 | CNF-2 | UTF-8 sin BOM, sin mojibake | ✓ | Componentes afectados, contrato #12 |
 
 ---
@@ -77,7 +77,7 @@ related:
 | Instrucciones raíz (`AGENTS.md`) | Componentes afectados, D-5 | T009 | ✓ |
 | Slug `vision` | Interfaces | T002, T013 | ✓ |
 | Secciones `##` de `vision.md` | Interfaces | T003–T006, T011 | ✓ |
-| Wikilink de trazabilidad `[[eliminar-specs-01-projects]]` | Interfaces | T002, T015 | ✓ |
+| Wikilink de trazabilidad `[[asegurar-dos-niveles-de-flujo-epics-stories]]` | Interfaces | T002, T015 | ✓ |
 | `memory-system check --root docs` (criterio por delta) | Interfaces | T001, T014 | ✓ |
 
 ---
@@ -116,7 +116,7 @@ related:
 
 1. **INC-001:** en `design.md` › D-2 cambiar la decisión a `substatus: DONE` (manteniendo `status` y el resto del frontmatter) y moverla de "alternativas rechazadas" a la decisión; actualizar T002 de `tasks.md` y el "Esquema de datos" en consecuencia. Añadir en las Notas de STORY-109 (o STORY-115) que la estructura de `vision.md` tras STORY-104 tiene cuatro secciones `##`, incluida `Criterios de éxito`.
 2. **INC-002:** opcional — `/story-testcases STORY-104` para habilitar `/story-implement`; con `tasks.md` ya está habilitado `/story-implement-tasks`.
-3. **CR-001 / CR-002 de `design.md`** (no bloqueantes, ya registrados): precisar en `story.md` › AC-3 que en `index.md` basta retirar la entrada (la de `[[vision]]` ya existe) y que "sin wikilinks rotos" se mide respecto de la línea base; abrir una historia o tarea aparte para corregir `[[ADR-0013-eliminar-specs-01-projects]]` → `[[eliminar-specs-01-projects]]` en las historias de EPIC-21.
+3. **CR-001 / CR-002 de `design.md`** (no bloqueantes, ya registrados): precisar en `story.md` › AC-3 que en `index.md` basta retirar la entrada (la de `[[vision]]` ya existe) y que "sin wikilinks rotos" se mide respecto de la línea base; abrir una historia o tarea aparte para corregir `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` → `[[asegurar-dos-niveles-de-flujo-epics-stories]]` en las historias de EPIC-21.
 
 ---
 

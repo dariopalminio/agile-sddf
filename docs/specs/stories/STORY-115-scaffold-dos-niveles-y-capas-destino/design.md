@@ -12,7 +12,7 @@ created: 2026-10-08
 updated: 2026-10-08
 related:
   - STORY-115-scaffold-dos-niveles-y-capas-destino
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-108-renombrar-specs-sin-prefijos
   - STORY-111-planning-escribe-roadmap
   - STORY-113-project-flow-sin-01-projects
@@ -20,13 +20,13 @@ related:
 ---
 
 <!-- Referencias -->
-[[STORY-115-scaffold-dos-niveles-y-capas-destino]] · [[eliminar-specs-01-projects]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-111-planning-escribe-roadmap]] · [[STORY-113-project-flow-sin-01-projects]] · [[STORY-114-migrate-specs-3-levels]]
+[[STORY-115-scaffold-dos-niveles-y-capas-destino]] · [[asegurar-dos-niveles-de-flujo-epics-stories]] · [[STORY-108-renombrar-specs-sin-prefijos]] · [[STORY-111-planning-escribe-roadmap]] · [[STORY-113-project-flow-sin-01-projects]] · [[STORY-114-migrate-specs-3-levels]]
 
 # Diseño técnico: scaffolding de `memory-system` con `specs/` de dos niveles
 
 ## Context
 
-[[eliminar-specs-01-projects]] (ADR-0013, consecuencia 5) establece que `memory-system` ya no crea `specs/01-projects/`. El
+[[asegurar-dos-niveles-de-flujo-epics-stories]] (ADR-0013, consecuencia 5) establece que `memory-system` ya no crea `specs/01-projects/`. El
 contenido de proyecto vive ahora en `product/` (visión, stakeholders, objetivos, roadmap) y `requirements/` (FR/NFR). Esta historia
 ajusta el **scaffold**: deja de sembrar `01-projects/`, siembra `product/roadmap.md` y `requirements/{functional,non-functional}/`, y
 avisa cuando encuentra la estructura antigua.
@@ -400,10 +400,10 @@ Ninguna. Las ambigüedades se resolvieron en las decisiones y quedan registradas
 
 ### CR-003
 - **Tipo**: ambigüedad
-- **Descripción**: `story.md` enlaza `[[ADR-0013-eliminar-specs-01-projects]]` (referencias y `related`), pero el slug declarado del
-  ADR es `eliminar-specs-01-projects`; `memory-system check` informa el wikilink como `broken-wikilink`.
+- **Descripción**: `story.md` enlaza `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` (referencias y `related`), pero el slug declarado del
+  ADR es `asegurar-dos-niveles-de-flujo-epics-stories`; `memory-system check` informa el wikilink como `broken-wikilink`.
 - **Documento afectado**: story.md
-- **Acción requerida**: sustituir el wikilink por `[[eliminar-specs-01-projects]]` (como hacen los diseños de STORY-111 y STORY-114).
+- **Acción requerida**: sustituir el wikilink por `[[asegurar-dos-niveles-de-flujo-epics-stories]]` (como hacen los diseños de STORY-111 y STORY-114).
 
 ### CR-004
 - **Tipo**: dependencia

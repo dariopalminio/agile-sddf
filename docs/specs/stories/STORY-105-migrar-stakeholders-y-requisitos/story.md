@@ -12,12 +12,12 @@ created: 2026-10-05
 updated: 2026-10-10
 related:
   - EPIC-21-colapsar-specs-dos-niveles
-  - ADR-0013-eliminar-specs-01-projects
+  - ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
   - STORY-104-migrar-project-intent-a-vision
 ---
 <!-- Referencias -->
 [[EPIC-21-colapsar-specs-dos-niveles]]
-[[ADR-0013-eliminar-specs-01-projects]]
+[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]
 [[STORY-104-migrar-project-intent-a-vision]]
 
 # 📖 Historia: Migrar `project.md` a `product/stakeholders.md` y `requirements/`
@@ -65,14 +65,14 @@ Entonces las secciones "1.8. Características de los Usuarios", "2.1 Requisitos 
 
 ## Fuera de alcance (Non-Goals)
 
-- **Eliminar `project.md`** y reubicar las secciones que [[ADR-0013-eliminar-specs-01-projects]] no asigna (§1.1–1.7, §2.3, §3 UI/UX, §4 stack tecnológico, §11 referencias, §12 glosario, Apéndices A y B). Requiere una nueva historia de EPIC-21 ("Reubicar las secciones restantes de `project.md` y eliminarlo"), que no está en el listado actual de la épica.
+- **Eliminar `project.md`** y reubicar las secciones que [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] no asigna (§1.1–1.7, §2.3, §3 UI/UX, §4 stack tecnológico, §11 referencias, §12 glosario, Apéndices A y B). Requiere una nueva historia de EPIC-21 ("Reubicar las secciones restantes de `project.md` y eliminarlo"), que no está en el listado actual de la épica.
 - Reescribir los requisitos para reflejar la estructura de dos niveles (por ejemplo, FR-001 menciona `01-projects/`): se actualizan en las historias de skills y documentación de EPIC-21.
 - Agregar `implements: [FR-NNN]` a épicas o historias existentes.
 - Crear un template de requisito en `docs/templates/` o cambiar skills (`project-discovery`, `reverse-engineering`) para que escriban en `requirements/`: lo cubre "Actualizar skills que referencian rutas de `specs/`".
 
 ## 📎 Notas / contexto adicional
 
-- **Origen:** [[ADR-0013-eliminar-specs-01-projects]] decide "stakeholders de `project.md` → `docs/product/stakeholders.md`" y "FR/NFR → `requirements/functional/FR-NNN-*.md` + `requirements/non-functional/NFR-NNN-*.md`". `docs/requirements/README.md` ya fija esa convención de nombres y la regla de IDs únicos.
+- **Origen:** [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] decide "stakeholders de `project.md` → `docs/product/stakeholders.md`" y "FR/NFR → `requirements/functional/FR-NNN-*.md` + `requirements/non-functional/NFR-NNN-*.md`". `docs/requirements/README.md` ya fija esa convención de nombres y la regla de IDs únicos.
 - **Formato de origen:** cada requisito es un ítem `- **FR-NNN**: <título>` con los campos `Descripción`, `Prioridad`, `Usuario` (IDs US-NNN) y `Fuente` (skill · STORY · EPIC), agrupados en 9 subsecciones funcionales (2.1.1–2.1.9) y 10 no funcionales (2.2.1–2.2.10).
 - **Hueco en la numeración:** FR-049 no existe en `project.md`. Se conserva el hueco: renumerar rompería las referencias `FR-NNN` en `docs/architecture/memory-system.md`, `docs/domains/domain-knowledge-artifacts.md` y en historias anteriores.
 - **Relación con STORY-104:** son independientes. STORY-104 trabaja con `project-intent.md` y la línea `related`/wikilink de `project.md` hacia él; esta historia trabaja con §1.8 y §2. Ambas tocan `project.md`, pero en secciones distintas.
