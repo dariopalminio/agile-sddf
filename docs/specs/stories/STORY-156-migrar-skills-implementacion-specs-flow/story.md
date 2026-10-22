@@ -5,7 +5,7 @@ id: STORY-156
 kind: feat
 slug: STORY-156-migrar-skills-implementacion-specs-flow
 title: "Migrar los skills de implementación a specs/flow"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-22

@@ -5,7 +5,7 @@ id: STORY-147
 kind: chore
 slug: STORY-147-adr-del-layout-fijo-de-tres-raices
 title: "ADR del layout fijo de tres raíces"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21

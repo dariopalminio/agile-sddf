@@ -5,7 +5,7 @@ id: STORY-151
 kind: feat
 slug: STORY-151-migrar-los-skills-de-epica-a-specs-flow
 title: "Migrar los skills de épica a specs/flow"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21

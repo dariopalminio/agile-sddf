@@ -5,7 +5,7 @@ id: STORY-148
 kind: feat
 slug: STORY-148-contrato-de-rutas-fijas-y-gate-determinista
 title: "Contrato de rutas fijas y gate determinista"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21

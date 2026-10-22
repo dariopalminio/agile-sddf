@@ -5,7 +5,7 @@ id: STORY-150
 kind: feat
 slug: STORY-150-migrar-skills-especificacion-specs-flow
 title: "Migrar los skills de especificación a specs/flow"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21

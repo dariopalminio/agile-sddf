@@ -5,7 +5,7 @@ id: STORY-152
 kind: feat
 slug: STORY-152-migrar-los-skills-de-proyecto-y-transversales
 title: "Migrar los skills de proyecto y transversales"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21

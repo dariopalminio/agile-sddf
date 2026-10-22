@@ -5,7 +5,7 @@ id: STORY-158
 kind: feat
 slug: STORY-158-migrar-skills-verificacion-specs-flow
 title: "Migrar los skills de revisión, verificación y aceptación a specs/flow"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-22

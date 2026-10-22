@@ -5,7 +5,7 @@ id: STORY-157
 kind: chore
 slug: STORY-157-reparar-enlaces-tras-migracion
 title: "Reparar enlaces y validar el gate tras la migración"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-22
