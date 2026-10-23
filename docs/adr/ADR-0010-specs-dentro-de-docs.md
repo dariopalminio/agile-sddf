@@ -3,13 +3,15 @@ type: adr
 id: ADR-0010
 slug: specs-dentro-de-docs
 title: "Mantener specs/ dentro de docs/ en lugar de la raíz"
-status: PROPOSED
+status: SUPERSEDED
 date: 2026-09-20
 supersedes: ADR-0009
-superseded-by: null
+superseded-by: ADR-0016
 ---
 
 # ADR-0010: Mantener specs/ dentro de docs/ en lugar de la raíz
+
+> **Superado por [ADR-0016](ADR-0016-layout-fijo-de-tres-raices.md) (2026-10-23):** `specs/` sale de `docs/` y el layout deja de ser configurable.
 
 ## Contexto y problema
 

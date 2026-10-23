@@ -7,7 +7,7 @@ status: DEFINE
 substatus: DONE
 parent: null
 created: 2026-10-21
-updated: 2026-10-22
+updated: 2026-10-23
 related: []
 ---
 
@@ -24,7 +24,7 @@ Separar conocimiento de estado fijando tres raíces hermanas en la raíz del rep
 
 ## Historias
 
-- [ ] **STORY-147** — ADR del layout fijo de tres raíces: Crear un ADR que fija `docs/`, `specs/` (`flow/`, `flow/archive/`, `living/`) y `workflow/` como raíces hermanas en la raíz del repo, retira `SDDF_ROOT` / `root` / `SPECS_BASE` y reemplaza a ADR-0010 (`superseded-by`)
+- [x] **STORY-147** — ADR del layout fijo de tres raíces: Crear un ADR que fija `docs/`, `specs/` (`flow/`, `flow/archive/`, `living/`) y `workflow/` como raíces hermanas en la raíz del repo, retira `SDDF_ROOT` / `root` / `SPECS_BASE` y reemplaza a ADR-0010 (`superseded-by`)
 - [ ] **STORY-148** — Contrato de rutas fijas y gate determinista: Sustituir el bloque `SDDF-ROOT-RESOLUTION: v1` por un contrato de layout fijo que solo resuelve `REPO_ROOT`, y adaptar `scripts/audit-root-resolution.js` (o su reemplazo) y `verify:repository` para validarlo en todos los skills
 - [ ] **STORY-149** — sddf-init crea el nuevo layout: `/sddf-init` crea `specs/flow/`, `specs/flow/archive/`, `specs/living/` (vacío) y `workflow/` en `REPO_ROOT`, mantiene los templates en `docs/templates/`, deja de escribir la clave `root` en `sddf.config.yaml` y deja de usar `SPECS_BASE`/`SDDF_ROOT` en su skill, assets y evals; si ya existe `docs/specs/`, emite un aviso de deprecación, no crea `specs/flow/` en paralelo y remite a la guía de migración
 - [ ] **STORY-150** — Migrar los skills de especificación a specs/flow: `story-creation`, `story-evaluation`, `story-refine`, `story-improve`, `story-split` y `story-specify` (con sus subagentes) dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals

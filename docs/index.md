@@ -430,6 +430,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md](adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) — Asegurar dos niveles de flujo como epics y stories
 - [[skills-independientes]] — [ADR-0014-skills-independientes.md](adr/ADR-0014-skills-independientes.md) — Independencia de skills y agentes: sin dependencia de skills hacia `agents/`
 - [[contrato-de-validacion]] — [ADR-0015-contrato-de-validacion.md](adr/ADR-0015-contrato-de-validacion.md) — Contrato común de validación para los skills de gate
+- [[layout-fijo-de-tres-raices]] — [ADR-0016-layout-fijo-de-tres-raices.md](adr/ADR-0016-layout-fijo-de-tres-raices.md) — Layout fijo de tres raíces: docs/, specs/ y workflow/
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
 - [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
