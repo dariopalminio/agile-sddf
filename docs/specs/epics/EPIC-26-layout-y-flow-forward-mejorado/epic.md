@@ -13,6 +13,11 @@ related: []
 
 # Épica: Layout y flow-forward mejorado
 
+
+## Objetivo
+
+Separar el conocimiento (docs/) de las especificaciones y estado de los work items (specs/) con un layout fijo y no configurable, como base para consolidar la capacidad de flow-forward y habilitar posteriormente Living Spec.
+
 ## Alcance
 
 Separar conocimiento de estado fijando tres raíces hermanas en la raíz del repositorio: `docs/` (conocimiento), `specs/` (estado: `specs/flow/` plano y `specs/living/` reservado) y `workflow/` (proceso, reservado). El layout deja de ser configurable: se retiran `SDDF_ROOT`, la clave `root` de `sddf.config.yaml` y la variable `SPECS_BASE`. Todos los skills pasan a leer y escribir en rutas fijas (`specs/flow/EPIC-NN-<slug>/`, `specs/flow/STORY-NNN-<slug>/`, `docs/templates/`, `docs/guardrails/`). `/sddf-init` crea el nuevo layout y, si detecta el layout legado (`docs/specs/`), no crea una estructura paralela: emite un aviso de deprecación y remite a la guía de migración. Una migración única y reproducible mueve con `git mv` el contenido de `docs/specs/` a `specs/flow/` y envía las stories `COMPLETED` a `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. La épica deja preparado el terreno para la épica de Workflow (archivado) y la épica de Living Spec, sin implementarlas.

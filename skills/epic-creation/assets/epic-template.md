@@ -13,6 +13,9 @@ related: []               # escritor: epic-creation · epic-from-project-plan
 
 # Épica: [Nombre]
 
+## Objetivo <!-- sección obligatoria · clave: objetivo · escritor: epic-creation · epic-from-project-plan · memory-system (migrate --from=epic-template-v1) -->
+<!-- El objetivo resumido en una oración precisa y concisa, que explique qué se busca lograr con esta épica (el porqué, no el cómo). -->
+
 ## Alcance <!-- sección obligatoria · clave: alcance · escritor: epic-creation · epic-from-project-plan · memory-system (migrate --from=epic-template-v1) -->
 <!-- Output-oriented: qué se construye (2-4 líneas). El valor de negocio vive en product/vision.md o requirements/. -->
 
