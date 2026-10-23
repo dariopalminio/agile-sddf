@@ -13,6 +13,10 @@ related: []
 
 # Épica: Mover agentes globales a agentes locales por skill
 
+## Objetivo
+
+Mover los agentes globales a agentes locales por skill, asegurando que cada skill gestione sus propios agentes y roles, y eliminando la dependencia de la carpeta global `agents/`.
+
 ## Alcance
 
 Aplicar ADR-0014 moviendo cada agente de `agents/` al skill que lo invoca, en `skills/<skill>/assets/agents/`. Los agentes **entrevistadores** (hacen preguntas al usuario) pasan a ser archivos de rol que lee la sesión del skill. Los **analizadores** (trabajan aislados y escriben en `.tmp/`) pasan a ser subagentes locales del skill.

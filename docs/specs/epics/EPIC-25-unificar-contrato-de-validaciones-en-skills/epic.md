@@ -13,6 +13,10 @@ related: []
 
 # Épica: Unificar contrato de validaciones en skills
 
+## Objetivo
+
+Unificar el contrato de validaciones en los seis skills del framework, estableciendo un vocabulario controlado y una estructura de reporte homogénea que facilite la interpretación consistente por agentes, orquestadores y pipelines CI.
+
 ## Alcance
 
 Alinear los seis skills de validación del framework (`epic-analyze`, `story-evaluation`, `story-analyze`, `story-code-review`, `story-verify`, `story-acceptance`) bajo un contrato común de reporte: el veredicto va en una sección `## Veredicto` al inicio y en el campo `verdict` del frontmatter, con un vocabulario controlado único en inglés. El vocabulario sigue las ramas de los flowcharts del ciclo de historia. Los gates de especificación (`epic-analyze`, `story-evaluation`) emiten `APPROVED` o `NEEDS-REFINEMENT`. Los gates de planificación, ejecución y QA (`story-analyze`, `story-code-review`, `story-verify`, `story-acceptance`) emiten `APPROVED` o `NEEDS-CHANGES`. `BLOCKED` indica que un bloqueo impide completar el proceso (`story-code-review`, `story-verify`, `story-acceptance`): el flujo se detiene y, despejado el bloqueo, se vuelve a ejecutar el mismo gate. `SPLIT` (`story-evaluation`) y `PENDING` (`story-acceptance` con la sesión a medias) son extensiones locales. El resultado es un gate homogéneo que agentes, orquestadores y pipelines CI leen de la misma forma.

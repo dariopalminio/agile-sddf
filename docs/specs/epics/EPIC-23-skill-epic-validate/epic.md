@@ -14,6 +14,10 @@ related:
 
 # Épica: Skill `epic-validate`
 
+## Objetivo
+
+Crear un skill `epic-validate` que actúe como gateway de calidad para la transición `DEVELOP → VALIDATE` de una épica, verificando evidencia estructural y operativa y generando un reporte con veredicto claro y consistente.
+
 ## Alcance
 
 Crear `/epic-validate <EPIC-ID>` como gateway de calidad para la transición `DEVELOP → VALIDATE` de una épica. Verifica evidencia estructural y operativa y escribe `epic-validate-report.md` con veredicto `APPROVED`, `NEEDS-CHANGES` o `BLOCKED`, según el contrato de validación de EPIC-25.

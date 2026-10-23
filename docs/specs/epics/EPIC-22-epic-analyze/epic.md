@@ -19,6 +19,10 @@ related:
 
 # Épica: Skill `epic-analyze`: análisis de una épica antes de desarrollarla
 
+## Objetivo
+
+Crear un skill `epic-analyze` que permita analizar una épica antes de desarrollarla, evaluando la integridad de su índice de historias, la cobertura del contrato de salida y la madurez de las historias hijas, para que el Product Owner pueda decidir si la épica está lista para ser desarrollada.
+
 ## Alcance
 Crear el skill `/epic-analyze <EPIC-ID>`, que escribe `epic-analyze-report.md` en el directorio de la épica con hallazgos por severidad y un veredicto, para que el Product Owner decida si una épica en `PLAN` pasa a `READY-FOR-DEV`. Cubre la integridad del índice de historias, la cobertura del contrato de salida (criterios de salida y smoke tests) y la madurez de las historias hijas.
 

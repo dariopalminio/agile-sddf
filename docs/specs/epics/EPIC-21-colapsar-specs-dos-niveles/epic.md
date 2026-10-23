@@ -21,6 +21,10 @@ related:
 
 # Épica: Colapsar `specs/` a dos niveles y eliminar `01-projects/`
 
+## Objetivo
+
+Colapsar la estructura de `specs/` a dos niveles y eliminar `01-projects/`, asegurando que la información se migre correctamente a `product/`, `requirements/` y `architecture/`, y que los skills, documentación y scaffolding se actualicen para reflejar la nueva organización.  
+
 ## Alcance
 Eliminar `docs/specs/01-projects/` migrando su contenido a `product/`, `requirements/` y `architecture/`, y quitar los prefijos numéricos de `specs/`, dejando solo `specs/epics/` y `specs/stories/`. Se elimina así la duplicación entre `specs/01-projects/` y `product/`, con una única fuente de verdad para la visión y el plan del producto. Incluye actualizar skills, documentación y scaffolding de `memory-system`, y ofrecer migración automática para repos existentes: es un breaking change que exige major version bump.
 

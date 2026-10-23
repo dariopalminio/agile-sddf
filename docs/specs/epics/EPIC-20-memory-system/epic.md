@@ -22,6 +22,10 @@ related:
 
 # Épica: Memory System — Sistema de memoria unificado y agnóstico al harness
 
+## Objetivo
+
+Unificar y estandarizar la gestión de la memoria del proyecto mediante el skill `memory-system`, asegurando que todas las capas de memoria estén correctamente indexadas, scaffoldeadas, verificadas y mantenidas, independientemente del harness utilizado.
+
 ## Alcance
 
 La memoria del proyecto (`docs/`) está definida en `docs/architecture/memory-system.md` como once capas más `constitution.md`, pero ninguna herramienta la materializa ni la verifica: el indexado vive en `docs-wiki-builder` (inline, no reproducible y con un template obsoleto), el scaffolding de capas no existe, `sddf-init` solo crea `specs/` y `templates/`, y no hay forma determinista de detectar capas faltantes, frontmatters inválidos o wikilinks rotos. El objetivo de esta épica es reemplazar esa fragmentación por un único skill `memory-system` con modos (`index`, `scaffold`, `ensure`, `rebuild`, `check`, `migrate`) que funciona en cualquier harness (`sddf`, `speckit`, `openspec`, `generic`), deprecando `docs-wiki-builder` con retirada gradual y conectando el onboarding vía `sddf-init --level full`. `header-aggregation` se mantiene como utilidad independiente.
