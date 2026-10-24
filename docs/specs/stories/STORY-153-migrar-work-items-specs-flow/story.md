@@ -68,7 +68,7 @@ Cubre CS-4, CS-5, CS-6, CS-7, CS-10, CS-11 y SMOKE-4.
 - **CS-11** — No se crea ningún skill ni script de archivado reutilizable; el único script nuevo de movimiento es la migración de un solo uso.
 
 **Precondiciones:**
-- Ejecutar después de las historias de migración de skills (STORY-149 a STORY-152, STORY-155, STORY-156 y STORY-158), para que los skills ya apunten a `specs/flow/`.
+- Ejecutar después de implementar las historias de migración de skills (STORY-149 a STORY-152, STORY-155, STORY-156 y STORY-158), para que los skills ya apunten a `specs/flow/`.
 - La historia se entrega antes que STORY-157: tras mover los work items los enlaces quedan por reescribir.
 
 **Inventario aproximado al 2026-10-22:** 27 épicas y 147 directorios de stories bajo `docs/specs/` (alrededor de 98 con `status: COMPLETED` y 11 `CANCELED`, que no se archivan). EPIC-26 vive hoy en `docs/specs/epics/` y será movida por el propio script.
