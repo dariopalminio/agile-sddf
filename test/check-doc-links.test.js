@@ -48,6 +48,26 @@ test('reports missing local targets and anchors', (t) => {
   assert.match(result.errors[1], /Missing anchor/);
 });
 
+test('reports a guide linking to a removed docs/specs path, naming the guide', (t) => {
+  const root = fixture(t, '# Readme\n');
+  const guide = path.join(root, 'docs/guides/legacy.md');
+  fs.writeFileSync(guide, '# Legacy\n[story](../specs/stories/STORY-001-x/story.md)\n', 'utf8');
+  const result = checkDocumentation({ repoRoot: root, files: [guide] });
+  assert.equal(result.errors.length, 1);
+  assert.match(result.errors[0], /^docs\/guides\/legacy\.md:\d+: Missing local target: docs\/specs\/stories\/STORY-001-x\/story\.md$/);
+});
+
+test('resolves wikilinks to work items under specs/flow/', (t) => {
+  const root = fixture(t, '# Readme\n');
+  const story = path.join(root, 'specs/flow/STORY-001-x/story.md');
+  fs.mkdirSync(path.dirname(story), { recursive: true });
+  fs.writeFileSync(story, '---\nslug: STORY-001-x\n---\n', 'utf8');
+  const index = path.join(root, 'docs/index.md');
+  fs.writeFileSync(index, '# Index\n- [[STORY-001-x]]\n', 'utf8');
+  const result = checkDocumentation({ repoRoot: root, files: [index] });
+  assert.deepEqual(result.errors, []);
+});
+
 test('reports unresolved wikilinks but ignores inline-code examples', (t) => {
   const root = fixture(t, '# Readme\n[[missing-page]]\n`[[placeholder]]`\n');
   const result = checkDocumentation({ repoRoot: root, files: [path.join(root, 'README.md')] });

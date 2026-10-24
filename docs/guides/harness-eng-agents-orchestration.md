@@ -33,7 +33,7 @@ Este enfoque se basa en varios principios clave:
 * **Mantenlo simple con las herramientas (KISS):** otorgarle a la IA herramientas muy sencillas del ecosistema y dejar que la IA deduzca cómo resolver los problemas.
 * **Gestión estricta de la memoria y el contexto:** la IA no debe acumular todo en su contexto; debe tener un sistema de memoria externa (ficheros locales o bases de datos) donde lea y escriba solo lo que necesita en cada momento.
 * **Evita el "teléfono descompuesto":** cuando el agente padre crea subagentes, no debe pasarles todo su contexto heredado, en su lugar, los subagentes deben escribir sus resultados de forma independiente en un directorio `.tmp/<skill-name>/` para que otros agentes lean exclusivamente lo que necesiten. Ver patrón detallado en `[[best-practices-for-skills]]`.
-* **Resolución segura de contexto:** cada workflow resuelve `REPO_ROOT` y `SPECS_BASE` una vez antes de escribir: `SDDF_ROOT` válida prevalece sobre `sddf.config.yaml.root`, y sin fuente explícita se usa `docs`. Se detiene ante una fuente explícita inválida. `skill-preflight` es un diagnóstico no mutante solicitado bajo demanda, no una dependencia implícita.
+* **Layout fijo:** cada workflow resuelve `REPO_ROOT` una vez antes de escribir y usa rutas fijas relativas a él (`specs/flow/`, `docs/templates/`, `docs/guardrails/`; ADR-0016). `skill-preflight` es un diagnóstico no mutante solicitado bajo demanda, no una dependencia implícita.
 * **Mantener buenas prácticas y estándares homogéneos:** El código base debe estar bien estructurado y definimos buenas prácticas y reglas claras para que los patrones de resultado esperado sean predecibles.
 
 
@@ -167,7 +167,7 @@ En agile-sddf hoy esto solo aplicaría a los agentes locales lanzados como gener
 
 Aquí está el detalle interesante: un skill worker no necesita la Skill tool para ser "usado". Un SKILL.md es solo un archivo de instrucciones, y casi todos tus agentes tienen Read. El skill orquestador puede decirle al subagente en su prompt:
 
-"Lee .claude/skills/story-creation/SKILL.md y sigue sus instrucciones para generar la historia en $STORY_DIR, usando estos valores: SPECS_BASE=docs, …"
+"Lee .claude/skills/story-creation/SKILL.md y sigue sus instrucciones para generar la historia en $STORY_DIR, usando estos valores: REPO_ROOT=<ruta>, …"
 
 Funcionalmente es lo mismo que invocarlo — el subagente carga las instrucciones en su contexto y las sigue — pero sin depender de que el harness le haya dado la herramienta. De hecho, esta es la forma que yo recomendaría documentar en SDDF, porque mantiene las listas de tools de los agentes mínimas (la garantía verificable de la que hablamos) y hace explícito qué skill usa cada subagente.
 
@@ -177,7 +177,7 @@ Que el skill sea "worker" significa que cumple esto, y conviene escribirlo como 
 
 1. **El skill no interactúa con el usuario** — el subagente no puede sostener una entrevista ni pedir confirmaciones. Si el skill tiene pasos con AskUserQuestion, debe poder correr en el equivalente a tu "modo Agent" (defaults, sin preguntas).
 2. **El skill no lanza subagentes** — si sus instrucciones disparan un spawn, el subagente que lo adopta crearía la cadena subagente → subagente, el caso prohibido. El subagente fue lanzado por el skill orquestador de la sesión principal. Una vez que el subagente está corriendo, adopta el skill-worker leyendo su SKILL.md. Si ese SKILL.md contiene instrucciones del tipo "ahora lanzá un subagente para hacer X", quien ejecutaría ese spawn sería el subagente mismo — creando subagente → subagente (nuevo), que es el caso prohibido.
-3. **El skill no depende de contexto conversacional** que el subagente no tiene. El subagente arranca con contexto vacío; el orquestador debe pasarle `REPO_ROOT`, `SPECS_BASE`, `ROOT_SOURCE` y las rutas de entrada resueltas en el bundle, o el worker debe aplicar el mismo contrato local.
+3. **El skill no depende de contexto conversacional** que el subagente no tiene. El subagente arranca con contexto vacío; el orquestador debe pasarle `REPO_ROOT` y las rutas de entrada ya resueltas en el bundle, o el worker debe aplicar el mismo contrato de layout fijo.
 
 > **Excepción en retirada — Subagentes interactivos:** algunos entrevistadores se crearon como subagentes, en contra de la condición #1. ADR-0014 los convierte en archivos de rol que lee la sesión del skill, que sí puede preguntar al usuario. El antiguo agente de PM ya se partió en `begin-intent` (`project-begin`) y `discovery-pm` (`project-discovery`). Los entrevistadores que siguen en `agents/` violan la condición #1 hasta su migración (EPIC-24) y degradan a inferencia con su **Protocolo de Resiliencia** cuando no hay respuesta.
 

@@ -40,9 +40,9 @@ parent: null
 
 | Guía | Contenido |
 |------|-----------|
-| [organization-of-artifacts.md](organization-of-artifacts.md) | Reglas para organizar proyectos, épicas e historias bajo `SPECS_BASE` (inspirado en OpenSpec y SpecKit) |
-| [root-folder-practices.md](root-folder-practices.md) | Las tres raíces no intercambiables (`REPO_ROOT`, `SPECS_BASE`, `CLI_ROOT`) y cómo resolverlas |
-| [artifact-directory-migration.md](artifact-directory-migration.md) | Migración de la estructura plana anterior a directorios por workitem con niveles numerados |
+| [organization-of-artifacts.md](organization-of-artifacts.md) | Reglas para organizar épicas e historias en `specs/flow/` (inspirado en OpenSpec y SpecKit) |
+| [root-folder-practices.md](root-folder-practices.md) | Las raíces no intercambiables (`REPO_ROOT`, `CLI_ROOT`) y el layout fijo `docs/` · `specs/` · `workflow/` |
+| [artifact-directory-migration.md](artifact-directory-migration.md) | Migraciones de la estructura de artefactos, de la más reciente ([5.0.0 — layout fijo de tres raíces](artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices)) a la más antigua |
 
 ### Harness engineering
 

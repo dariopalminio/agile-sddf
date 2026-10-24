@@ -4,7 +4,7 @@ type: constitution
 slug: constitution
 title: "Constitución del Proyecto"
 created: 2026-05-06
-updated: 2026-09-20
+updated: 2026-10-24
 ---
 
 # Constitución del Proyecto
@@ -89,10 +89,10 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 ---
 ## Jerarquía de desarrollo
 
-La documentación fundacional (`$SPECS_BASE/product/`, `$SPECS_BASE/requirements/`) orienta las épicas; cada épica contiene varias historias.
+La documentación fundacional (`docs/product/`, `docs/requirements/`) orienta las épicas; cada épica contiene varias historias.
 
-epic (`$SPECS_BASE/specs/epics/<EPIC-NAME>/epic.md`)
-    └── story (`$SPECS_BASE/specs/stories/<STORY-NAME>/story.md`)
+epic (`specs/flow/<EPIC-NAME>/epic.md`)
+    └── story (`specs/flow/<STORY-NAME>/story.md`; archivada en `specs/flow/archive/<YYYY-MM-DD>-<STORY-NAME>/` al completarse)
 
 
 ---
@@ -131,12 +131,13 @@ skill-name/
 
 Todos los skills arrancan con frontmatter YAML estandarizado (campos: name, description, triggers, outputs, etc.).
 
-#### 3. Resolución local de raíz
+#### 3. Layout fijo
 
-Todo skill resuelve una vez `REPO_ROOT`, `SPECS_BASE` y la fuente efectiva antes de ejecutar
-su lógica: `SDDF_ROOT` válida, luego `sddf.config.yaml.root` válida y finalmente `docs`.
-Una fuente explícita inválida bloquea escrituras. `skill-preflight` se reserva para el
-diagnóstico explícito y no forma parte del hot path.
+Todo skill resuelve una vez `REPO_ROOT` y usa el layout fijo de ADR-0016: conocimiento en
+`docs/`, work items en `specs/flow/` y proceso en `workflow/`. No hay raíz de artefactos
+configurable (`SDDF_ROOT`, la clave `root` de `sddf.config.yaml` y `SPECS_BASE` están
+retirados). `skill-preflight` se reserva para el diagnóstico explícito y no forma parte del
+hot path.
 
 ### Patrones de arquitectura
 
@@ -214,13 +215,14 @@ Los skills exponen flags para variantes de comportamiento: --quick, --update, --
 
 #### 13. Rutas de output predecibles
 
-$SPECS_BASE/product/vision.md                            → documentación fundacional
-$SPECS_BASE/product/stakeholders.md                      → documentación fundacional
-$SPECS_BASE/product/roadmap.md                           → documentación fundacional
-$SPECS_BASE/requirements/functional/FR-NNN-<slug>.md     → requisitos funcionales
-$SPECS_BASE/requirements/non-functional/NFR-NNN-<slug>.md → requisitos no funcionales
-$SPECS_BASE/specs/epics/<EPIC-NN>-<slug>/epic.md         → épicas
-$SPECS_BASE/specs/stories/<STORY-NNN>-<slug>/story.md    → historias
+docs/product/vision.md                                   → documentación fundacional
+docs/product/stakeholders.md                             → documentación fundacional
+docs/product/roadmap.md                                  → documentación fundacional
+docs/requirements/functional/FR-NNN-<slug>.md            → requisitos funcionales
+docs/requirements/non-functional/NFR-NNN-<slug>.md       → requisitos no funcionales
+specs/flow/<EPIC-NN>-<slug>/epic.md                      → épicas
+specs/flow/<STORY-NNN>-<slug>/story.md                   → historias
+specs/flow/archive/<YYYY-MM-DD>-<STORY-NNN>-<slug>/      → historias COMPLETED archivadas
 
 #### 14. Versionado mediante substatus
 
@@ -234,7 +236,7 @@ Existe un skill de validación explícito (epic-format-validation) que actúa co
 
 Las decisiones se registran en el nivel que corresponde a su alcance:
 
-- **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`$SPECS_BASE/specs/stories/STORY-NNN/design.md`)
+- **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`specs/flow/STORY-NNN-<slug>/design.md`)
 - **Decisiones de un cambio OpenSpec** → `design.md` del change (`openspec/changes/`)
 - **Decisiones transversales de arquitectura** → `docs/adr/ADR-NNNN-slug.md` siguiendo `docs/adr/adr-template.md`
 
@@ -257,7 +259,7 @@ Lista los principios que NO pueden violarse bajo ninguna circunstancia.
 10. **Spec-anchored:** La spec se mantiene después de completar la tarea y se usa para evolución y mantenimiento del feature.
 11. TDD (Test-Driven Development) para skills: Define primero los casos de prueba (`evals/evals.json`) **antes** del `SKILL.md`.
 12. **Veracidad de CLAUDE.md/AGENTS.md:** CLAUDE.md solo describe estructura verificable con el filesystem en el momento de la edición. Antes de actualizar la sección de estructura de directorios o la lista de agentes, verificar con `ls skills/` (la fuente de skills, con sus roles y subagentes locales, vive en la raíz, no en `.claude/`). Nunca listar archivos que no existen ni omitir directorios relevantes que sí existen.
-13. **Todo campo declarado nombra a su escritor:** ningún template de `$SPECS_BASE/templates/` puede declarar un campo (clave de frontmatter, línea de dato o sección) sin anotar junto a él qué skill lo escribe. Un campo cuyo escritor no existe se retira del template o se anota con el skill que pasará a escribirlo en la misma historia. La anotación usa la clave `escritor:` como comentario inline (YAML en frontmatter, HTML en el cuerpo) y no se copia a los documentos generados.
+13. **Todo campo declarado nombra a su escritor:** ningún template de `docs/templates/` puede declarar un campo (clave de frontmatter, línea de dato o sección) sin anotar junto a él qué skill lo escribe. Un campo cuyo escritor no existe se retira del template o se anota con el skill que pasará a escribirlo en la misma historia. La anotación usa la clave `escritor:` como comentario inline (YAML en frontmatter, HTML en el cuerpo) y no se copia a los documentos generados.
 14. **Pruebas de regresión manuales:** Las pruebas de regresión deben ejecutarse manualmente para cada cambio que afecte a un skill, asegurando que las modificaciones no rompan funcionalidades existentes. No se ejecutan automáticamente porque consumen mucha cuota de suscripción. El **coste real por historia es muy sensible al runner de evals LLM** por lo que prohibe correr automáticamente las pruebas de regresión.
 
 ---

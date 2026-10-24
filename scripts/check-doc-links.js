@@ -243,6 +243,8 @@ function checkDocumentation({ repoRoot = REPO_ROOT, files = activeMarkdownFiles(
   const errors = [];
   const allMarkdown = [];
   walkMarkdown(path.join(repoRoot, 'docs'), allMarkdown);
+  const specsRoot = path.join(repoRoot, 'specs');
+  if (fs.existsSync(specsRoot)) walkMarkdown(specsRoot, allMarkdown);
   for (const rootFile of ['README.md', 'SECURITY.md']) {
     const candidate = path.join(repoRoot, rootFile);
     if (fs.existsSync(candidate)) allMarkdown.push(candidate);

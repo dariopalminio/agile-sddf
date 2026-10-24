@@ -27,9 +27,9 @@ SDDF está compuesto por estos componentes:
 │                         SDDF FRAMEWORK                               │
 ├────────────────────────────────┬─────────────────────────────────────┤
 │   MEMORY SYSTEM                │   HARNESS RUNTIME                   │
-│   (docs/)                      │   (.claude/, .agents/, .github/)    │
+│   (docs/ + specs/)             │   (.claude/, .agents/, .github/)    │
 │                                │                                     │
-│   12 capas de conocimiento     │   · Skills (Markdown)               │
+│   10 capas de conocimiento     │   · Skills (Markdown)               │
 │   versionadas en Git           │   · Subagents (aislados)            │
 │                                │   · Scripts (deterministas)         │
 │   Ver: [[memory-system]]       │   · Config: sddf.config.yaml        │
@@ -91,7 +91,7 @@ El agente no es el sistema; el sistema es SDDF y el agente es el proceso que se 
 ```
 1. Arranque       AGENTS.md → constitution.md → index.md
 2. Asignación     /story-implement STORY-042
-3. Lectura        specs/, requirements/, domains/
+3. Lectura        specs/flow/, docs/requirements/, docs/domains/
 4. Producción     src/, tests/, implement-report.md
 5. Validación     code-review → verify → acceptance → integrate
 6. Registro       frontmatter actualizado, ADR si aplica, requirements si cambia el contrato
@@ -102,7 +102,7 @@ El agente no es el sistema; el sistema es SDDF y el agente es el proceso que se 
 ## 6. Principios arquitectónicos
 
 1. **El repositorio es el sistema** (Harness Engineering).
-2. **Una raíz única** para la memoria (`SDDF_ROOT`).
+2. **Layout fijo de tres raíces**: `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso), sin configuración de raíz (ADR-0016).
 3. **Sin duplicación**: se enlaza, no se copia.
 4. **Trazabilidad bidireccional**.
 5. **Agnóstico al LLM y al harness SDD**.
@@ -118,13 +118,12 @@ El agente no es el sistema; el sistema es SDDF y el agente es el proceso que se 
 ```
 agile-sddf/
 ├── AGENTS.md                  # entry point IA (CLAUDE.md lo importa)
-├── sddf.config.yaml           # raíz de artefactos (root) y skills activos por fase del pipeline TDD
+├── sddf.config.yaml           # perfil, stack y skills activos por fase del pipeline TDD
 ├── CHANGELOG.md · README.md · SECURITY.md
 │
 ├── docs/                      # Memory System (ver [[memory-system]])
 │   ├── index.md               # punto de entrada wiki (wikilinks [[slug]])
 │   ├── constitution.md        # documento supremo de gobernanza
-│   ├── specs/{01-projects,epics,stories}/  # specs y artefactos de los skills SDD
 │   ├── product/               # visión de producto
 │   ├── requirements/          # requisitos del producto
 │   ├── domains/               # modelo de dominio y reglas de negocio (DDD)
@@ -136,6 +135,12 @@ agile-sddf/
 │   ├── knowledge/             # investigación, lecciones aprendidas, material didáctico
 │   ├── runbooks/              # procedimientos operativos (deploy npm, docker)
 │   └── templates/             # plantillas de generación (meta-artefactos)
+│
+├── specs/                     # estado: work items (ADR-0016)
+│   ├── flow/                  # EPIC-NN-<slug>/ y STORY-NNN-<slug>/ hermanos, sin subniveles
+│   │   └── archive/           # <YYYY-MM-DD>-STORY-NNN-<slug>/ de las stories COMPLETED
+│   └── living/                # reservado: especificación viva (épica de Living Spec)
+├── workflow/                  # reservado: proceso
 │
 ├── skills/                    # fuente única: skills SDD (uno por carpeta)
 ├── config/                    # contratos de perfiles, stacks y runtimes
@@ -157,7 +162,8 @@ agile-sddf/
 | [[domain-work-item-hierarchy]] | `product/` + `requirements/` → Epic → Story |
 | [[domain-state-management]] | Estados, subestados, transiciones |
 | [[constitution]] | Principios supremos |
-| [[perfiles-runtimes-e-instalacion-explicita]] | `specs/` dentro de `docs/` |
+| [[perfiles-runtimes-e-instalacion-explicita]] | Perfiles reproducibles, runtimes canónicos e instalación explícita |
+| [[layout-fijo-de-tres-raices]] | Layout fijo de tres raíces; reemplaza a ADR-0010 (`specs/` dentro de `docs/`) |
 | [[nivel-l2-epic-y-directorios-numerados]] | Épica como nivel L2 (directorios numerados reemplazados por ADR-0013) |
 | [[asegurar-dos-niveles-de-flujo-epics-stories]] | `specs/` de dos niveles; nivel estratégico en `product/` y `requirements/` |
 

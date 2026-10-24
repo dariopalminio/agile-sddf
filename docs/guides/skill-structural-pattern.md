@@ -34,17 +34,17 @@ skill-name/
 
 Todos los skills arrancan con frontmatter YAML estandarizado (campos: name, description, triggers, outputs, etc.).
 
-### 3. Resolución local de contexto
+### 3. Layout fijo
 
-Todos los skills resuelven una vez `REPO_ROOT`, `SPECS_BASE` y la fuente efectiva antes de
-ejecutar lógica de negocio. La precedencia es `SDDF_ROOT` válida →
-`sddf.config.yaml.root` válida → `docs`; una fuente explícita inválida detiene las
-escrituras. `skill-preflight` es un diagnóstico explícito, no un paso automático.
+Todos los skills resuelven una vez `REPO_ROOT` antes de ejecutar lógica de negocio y usan
+rutas fijas relativas a él; no hay raíz de artefactos configurable. `skill-preflight` es un
+diagnóstico explícito, no un paso automático.
 
 ### 3.1 Contrato de layout fijo
 
-[ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md) retira la resolución anterior: durante EPIC-26 cada
-skill migra a un paso 0 que solo resuelve `REPO_ROOT` y usa rutas fijas. El bloque canónico es:
+[ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md) retiró la resolución de raíz anterior (`SDDF_ROOT`, la clave
+`root` de `sddf.config.yaml` y `SPECS_BASE`): cada skill tiene un paso 0 que solo resuelve `REPO_ROOT` y usa rutas
+fijas. El bloque canónico es:
 
 ```markdown
 ### Paso 0 — Resolver contexto local
@@ -88,7 +88,7 @@ El skill es siempre el punto de entrada. Los agentes especializados son subagent
 
 Los skills no hardcodean la estructura del output. En runtime leen el template correspondiente y extraen secciones, campos y preguntas dinámicamente. Si el template evoluciona, el skill se adapta solo.
 
-Los templates globales y reusables están en `$SPECS_BASE/templates/`. Los skills leen desde ahí para mantener una fuente de verdad única.
+Los templates globales y reusables están en `docs/templates/`. Los skills leen desde ahí para mantener una fuente de verdad única.
 
 Los templates locales y particulares de un skill están en `skill-name/assets/` y el skill los lee desde ahí. Esto permite que cada skill tenga su propia versión del template sin afectar a otros skills.
 
@@ -154,13 +154,14 @@ Si los comandos de prueba tardan mucho, el skill debe mostrar progreso periódic
 
 ### 14. Rutas de output predecibles
 
-$SPECS_BASE/product/vision.md                            → documentación fundacional
-$SPECS_BASE/product/stakeholders.md                      → documentación fundacional
-$SPECS_BASE/product/roadmap.md                           → documentación fundacional
-$SPECS_BASE/requirements/functional/FR-NNN-<slug>.md     → requisitos funcionales
-$SPECS_BASE/requirements/non-functional/NFR-NNN-<slug>.md → requisitos no funcionales
-$SPECS_BASE/specs/epics/<EPIC-NN>-<slug>/epic.md         → épicas
-$SPECS_BASE/specs/stories/<STORY-NNN>-<slug>/story.md    → historias
+docs/product/vision.md                                   → documentación fundacional
+docs/product/stakeholders.md                             → documentación fundacional
+docs/product/roadmap.md                                  → documentación fundacional
+docs/requirements/functional/FR-NNN-<slug>.md            → requisitos funcionales
+docs/requirements/non-functional/NFR-NNN-<slug>.md       → requisitos no funcionales
+specs/flow/<EPIC-NN>-<slug>/epic.md                      → épicas
+specs/flow/<STORY-NNN>-<slug>/story.md                   → historias
+specs/flow/archive/<YYYY-MM-DD>-<STORY-NNN>-<slug>/      → historias COMPLETED archivadas
 
 ### 15. Versionado mediante substatus
 

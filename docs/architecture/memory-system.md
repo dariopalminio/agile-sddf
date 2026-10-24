@@ -138,9 +138,9 @@ declaran en `SHARED_TEMPLATES` del motor; las de ADR, dominio, guardrail, policy
 
 | Regla | Detalle |
 |-------|---------|
-| **Raíz única** | Todo bajo `docs/`; el nombre es configurable vía `sddf.config.yaml` (`root:`). |
+| **Raíz fija** | Todo el conocimiento bajo `docs/`; los work items en `specs/flow/` (ADR-0016). Ninguna de las dos rutas es configurable. |
 | **Un nivel, una responsabilidad** | Cada carpeta de primer nivel agrupa un tipo de artefacto distinto. |
-| **Sin anidamiento profundo** | Máximo 2–3 niveles por debajo de `docs/`; `specs/` contiene solo `epics/` y `stories/`. |
+| **Sin anidamiento profundo** | Máximo 2–3 niveles por debajo de `docs/`; `specs/flow/` es plano (épicas e historias hermanas) más `archive/`. |
 | **Prefijos numéricos** | Ninguna capa usa prefijos numéricos (ADR-0013). |
 | **`.cache/` no versionado** | Los índices derivados viven en `.cache/` y se regeneran on-demand. |
 | **Templates fuera de specs** | `docs/templates/` es meta-artefacto; no vive dentro de `specs/`. |
@@ -452,7 +452,7 @@ son una tabla de datos (`HARNESS_PROFILES` del motor, `references/memory-rules.m
   origen (`OpenSpec — specs`, `OpenSpec — changes`, `Speckit — features`, `Mapeados desde el
   harness`). `check` los usa como destino de wikilinks pero no evalúa su frontmatter.
 - **Los directorios del harness son de solo lectura**: `openspec/`, `.specify/` y `specs/` nunca
-  reciben un destino de escritura. El motor valida todo el plan contra `SPECS_BASE` antes de
+  reciben un destino de escritura. El motor valida todo el plan contra la raíz de conocimiento `docs/` antes de
   escribir y aborta con exit 2 (`destino fuera de la raíz: <ruta>`) sin haber escrito nada.
 - **Colisión de slug**: si un nodo externo tiene el mismo slug que un nodo de `docs/`, gana el de
   `docs/`; el externo se indexa como `[[<slug>-external]]` y `index` avisa por stderr.

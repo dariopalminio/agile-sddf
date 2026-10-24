@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### BREAKING — layout fijo de tres raíces (EPIC-26, requiere 5.0.0)
+
+ADR-0016 y EPIC-26 fijan `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso) como raíces hermanas en la raíz del repositorio y retiran `SDDF_ROOT`, la clave `root` de `sddf.config.yaml` y `SPECS_BASE`. Este cambio requiere la versión major **5.0.0**.
+
+**Rutas:** `docs/specs/epics/` y `docs/specs/stories/` pasan a `specs/flow/`, plano (épicas e historias hermanas); las historias `COMPLETED` se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. `specs/living/` y `workflow/` quedan reservados. `docs/requirements/` y el resto de capas de `docs/` no cambian.
+
+**Skills cuyo comportamiento cambió:** `/sddf-init` crea `specs/flow/`, `specs/flow/archive/`, `specs/living/` y `workflow/` con `.gitkeep`, deja de escribir `root` y, si encuentra `docs/specs/`, avisa y no escribe nada; `/skill-preflight` diagnostica el layout legado (`docs/specs/`, `root`, `SDDF_ROOT`) y remite a la guía de migración; `/memory-system` pasa de once a diez capas (`specs` deja de ser una capa de `docs/`) e indexa los work items en `## 🗂️ Work items (specs/flow/)`; el resto de skills resuelve solo `REPO_ROOT` y usa rutas fijas (contrato `<!-- SDDF-FIXED-LAYOUT: v1 -->`, validado por `verify:repository`). Se elimina además el alias `docs-wiki-builder` (ver **Removed**).
+
+**Guía:** migra con la [guía de migración a 5.0.0](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices).
+
 ### Changed
 
 - `story-improve` pasa a llamarse `story-refine`. El log generado ahora es `story-refinement-log.md` y su plantilla es `refinement-log-template.md`, con `type: refinement-log`. `story-specify` invoca el nombre nuevo.
