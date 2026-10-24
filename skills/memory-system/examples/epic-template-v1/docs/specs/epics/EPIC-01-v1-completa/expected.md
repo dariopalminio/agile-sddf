@@ -16,6 +16,9 @@ related: []
 
 # Épica: Pagos en línea
 
+## Objetivo
+[Por completar]
+
 ## Alcance
 Permitir a los clientes pagar sus pedidos en línea con tarjeta.
 

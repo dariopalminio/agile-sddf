@@ -15,6 +15,10 @@ related:
 
 # Épica: Framework Consistency — Coherencia de vocabulario, instalación, seguridad y ciclo de corrección
 
+## Objetivo
+
+Cerrar las brechas expuestas tras el hardening del workflow (EPIC-18) —vocabulario L2/release, instalación multiplataforma de skills y agentes, acoplamientos y hallazgos de seguridad en story-code-review, estado y responsable de corrección tras un review rechazado, y campos de templates sin escritor— para que el framework sea coherente consigo mismo en vocabulario, instalación, seguridad, ciclo de corrección y templates.
+
 ## Alcance
 
 Tras el hardening del workflow (EPIC-18) quedaron brechas que el propio uso del framework fue exponiendo: el nivel L2 se seguía llamando *release* y colisionaba con el sentido CI/CD del término; `npm install` no instalaba skills ni agentes en Windows; `story-code-review` arrastraba acoplamientos y hallazgos abiertos del checklist de seguridad; un review rechazado dejaba la historia sin estado ni ejecutor de correcciones; y los templates declaraban campos que ningún skill escribe. Esta épica cierra esas brechas para que el framework sea coherente consigo mismo: el vocabulario coincide con la estructura del filesystem, la instalación funciona en las tres plataformas, la seguridad está documentada y verificada, el ciclo de corrección tiene dueño, y todo campo declarado en un template nombra a su escritor.

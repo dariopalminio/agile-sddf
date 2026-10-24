@@ -20,7 +20,10 @@ related:
   - plan-08-move-skills-to-the-root
 ---
 
-# Release/Epic: Workflow Hardening — Robustecer el flujo de Story y Release
+# Release/Epic: Workflow Hardening — Robustecer el flujo de Story y Release/epic
+
+## Objetivo
+Robustecer y completar el workflow de punta a punta de story y release mediante refinamientos y correcciones estructurales en estados, workflows canónicos, asignación de FEAT IDs, aislamiento por historia, story-code-review, code_generators en story-implement y la reubicación de skills/agentes para desacoplar el framework del CLI/LLM.
 
 ## Alcance
 Este release robustece y completa el workflow de punta a punta de story y release mediante una serie de refinamientos y correcciones estructurales: renombra estados del workflow (INTEGRATION → DELIVER), define el workflow canónico de épica/release, mueve la asignación de FEAT IDs al momento de creación (lazy), aísla el espacio de trabajo por historia para habilitar trabajo en paralelo, incorpora mejoras a `story-code-review`, corrige la desincronización de `code_generators` en `story-implement`, y mueve los skills y agentes a la raíz del repo para desacoplar el framework del CLI/LLM.

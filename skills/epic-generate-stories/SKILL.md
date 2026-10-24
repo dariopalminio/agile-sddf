@@ -1,6 +1,6 @@
 ---
 name: epic-generate-stories
-description: "Genera historias de usuario (directorio `<SPECS_BASE>/specs/stories/STORY-NNN-nombre/story.md`) a partir de las features definidas en el epic.md de un directorio de épica, usando el template story-template.md. El usuario puede indicar el nombre del directorio de la épica."
+description: "Genera historias de usuario (directorio `specs/flow/STORY-NNN-nombre/story.md`) a partir de las features definidas en el epic.md de un directorio de épica, usando el template story-template.md. El usuario puede indicar el nombre del directorio de la épica."
 triggers:
   - "epic-generate-stories"
   - "generar historias"
@@ -20,7 +20,7 @@ features definidas en un `epic.md`. Invocar también cuando el usuario mencione
 
 ## Objetivo
 
-Lee `epic.md` de un directorio de la épica en `$SPECS_BASE/specs/epics/` y genera automáticamente un directorio `STORY-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada historia de la sección de clave `historias` de la épica (su título se lee del template de épica). Cada archivo generado sigue exactamente la estructura de `$SPECS_BASE/templates/story-template.md`.
+Lee `epic.md` de un directorio de la épica en `specs/flow/` y genera automáticamente un directorio `STORY-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada historia de la sección de clave `historias` de la épica (su título se lee del template de épica). Cada archivo generado sigue exactamente la estructura de `docs/templates/story-template.md`.
 
 **Qué hace este skill:**
 - Resuelve la épica a procesar por nombre de directorio (parcial o completo) o por ruta explícita
@@ -44,13 +44,13 @@ Lee `epic.md` de un directorio de la épica en `$SPECS_BASE/specs/epics/` y gene
 
 ## Precondiciones
 
-- El directorio de la épica indicada debe existir en `$SPECS_BASE/specs/epics/` y contener `epic.md`
-- `$SPECS_BASE/templates/story-template.md` debe existir
-- La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
+- El directorio de la épica indicada debe existir en `specs/flow/` y contener `epic.md`
+- `docs/templates/story-template.md` debe existir
+- `REPO_ROOT` debe resolverse según el contrato de layout fijo antes de continuar.
 
 ## Dependencias
 
-- Archivos: [`$SPECS_BASE/templates/story-template.md`], [`$SPECS_BASE/templates/epic-template.md`] (o el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`)
+- Archivos: [`docs/templates/story-template.md`], [`docs/templates/epic-template.md`] (o el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`)
 
 ## Modos de ejecución
 
@@ -78,14 +78,13 @@ Lee `epic.md` de un directorio de la épica en `$SPECS_BASE/specs/epics/` y gene
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -99,14 +98,14 @@ El skill acepta dos formatos de input:
 **Señal:** el input no contiene separadores de directorio (`/` o `\`) o es un nombre de directorio sin `epic.md`.
 
 **Acción:**
-1. Buscar en `$SPECS_BASE/specs/epics/` **subdirectorios** cuyo nombre contenga el término (sin distinguir mayúsculas).
+1. Buscar entre los directorios de `specs/flow/EPIC-*/epic.md` aquellos cuyo nombre contenga el término (sin distinguir mayúsculas). El directorio plano también contiene `STORY-*`: nunca son candidatos a épica ni se consulta `specs/flow/archive/`.
 2. Si hay exactamente 1 coincidencia → usar ese directorio y leer `epic.md` dentro. Continuar al Paso 2.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que especifique cuál usar antes de continuar.
 4. Si no hay ninguna coincidencia → mostrar el mensaje de error y terminar (ver Manejo de errores).
 
 #### Formato B — Ruta relativa completa al directorio o al archivo `epic.md`
 
-**Señal:** el input contiene separadores de directorio (`/` o `\`) o empieza con `$SPECS_BASE/`.
+**Señal:** el input contiene separadores de directorio (`/` o `\`) o empieza con `specs/flow/`.
 
 **Acción:** resolver la ruta al archivo `epic.md` del directorio indicado. Si el archivo no existe, mostrar el mensaje de error y terminar (ver Manejo de errores).
 
@@ -116,7 +115,7 @@ El skill acepta dos formatos de input:
 
 ### Paso 1b — Resolver la sección de historias desde el template
 
-Leer el template de épica: `$SPECS_BASE/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`. Si ninguno existe → `❌ Template epic-template.md no encontrado. Ejecuta sddf-init.` y detener.
+Leer el template de épica: `docs/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`. Si ninguno existe → `❌ Template epic-template.md no encontrado. Ejecuta sddf-init.` y detener.
 
 Para cada línea del template que empiece con `## `, leer la `clave: <clave>` de su comentario. Tomar el **título** (texto del encabezado sin el comentario) de la sección con `clave: historias`; en adelante `<título>`.
 
@@ -155,8 +154,8 @@ Si **ninguna** historia es F1 → saltar este paso.
 Si **alguna** historia es F1:
 
 1. **Calcular el máximo ID en uso desde dos fuentes:**
-   - **Fuente A — Filesystem:** usar Glob `$SPECS_BASE/specs/stories/STORY-*/story.md`. De cada ruta extraer el número `NNN` del segmento `STORY-NNN-*`. Tomar el mayor.
-   - **Fuente B — Épicas existentes:** leer todos los archivos `$SPECS_BASE/specs/epics/*/epic.md` y extraer cualquier `STORY-NNN` presente en ellos. Tomar el mayor.
+   - **Fuente A — Filesystem (activas ∪ archivadas):** usar Glob `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md`. De cada ruta extraer el número `NNN` del segmento `STORY-NNN-*` del directorio; en las archivadas, el `STORY-NNN` que sigue al prefijo de fecha `<YYYY-MM-DD>-`. Si `specs/flow/archive/` no existe, ese origen se omite sin nota. Tomar el mayor.
+   - **Fuente B — Épicas existentes:** leer todos los archivos `specs/flow/EPIC-*/epic.md` y extraer cualquier `STORY-NNN` presente en ellos. Tomar el mayor.
    - `MAX_ID = máximo entre Fuente A y Fuente B` (o `0` si ambas están vacías).
 
 2. **Asignar IDs secuencialmente** a las historias F1, en orden de aparición:
@@ -181,9 +180,9 @@ Si **alguna** historia es F1:
 
 ### Paso 3 — Preparar directorio de destino
 
-Verificar si el directorio `$SPECS_BASE/specs/stories/` existe.
+Verificar si el directorio `specs/flow/` existe.
 
-Si no existe, crearlo antes de continuar.
+Si no existe, crearlo antes de continuar. Nunca se crea el layout anterior ni `specs/flow/archive/`.
 
 ---
 
@@ -202,7 +201,7 @@ Convertir el nombre de la feature a kebab-case siguiendo estas reglas:
 
 Nombre de directorio resultante: `STORY-[NNN]-[nombre-kebab]`
 
-Ruta del archivo de salida: `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre-kebab]/story.md`
+Ruta del archivo de salida: `specs/flow/STORY-[NNN]-[nombre-kebab]/story.md`
 
 **Ejemplo:** `- [ ] **STORY-029** — Generar stories: …` → directorio `STORY-029-generar-stories/` con archivo `story.md`
 
@@ -210,15 +209,17 @@ Ruta del archivo de salida: `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre-kebab
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. Para
 > verificar si ya existe la historia, usar el patrón de archivo anidado:
-> `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre-kebab]/story.md`.
+> `specs/flow/STORY-[NNN]-[nombre-kebab]/story.md`.
 > Si Glob retorna ese archivo, el directorio existe. Si retorna vacío, no existe.
 > Nunca usar el patrón de directorio desnudo (`STORY-[NNN]-[nombre-kebab]/`) — retornará
 > vacío aunque el directorio exista, causando sobreescritura silenciosa sin confirmación.
 
-Si ya existe `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre-kebab]/story.md`, informar al usuario:
+**Historia archivada:** antes de la comprobación anterior, buscar con Glob `specs/flow/archive/*-STORY-[NNN]-*/story.md`. Si existe, la feature se **salta sin preguntar** y se registra en el resumen como `- specs/flow/archive/<dir>/ — saltada (archivada)`; nunca se crea `specs/flow/STORY-[NNN]-*/` para un ID archivado.
+
+Si ya existe `specs/flow/STORY-[NNN]-[nombre-kebab]/story.md`, informar al usuario:
 
 ```
-El directorio $SPECS_BASE/specs/stories/STORY-[NNN]-[nombre-kebab]/ ya existe.
+El directorio specs/flow/STORY-[NNN]-[nombre-kebab]/ ya existe.
 ¿Deseas sobreescribir story.md? (s/n)
 ```
 
@@ -228,10 +229,10 @@ Esperar confirmación antes de continuar. Si el usuario responde `n` o `no`, sal
 
 El archivo de plantilla es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. El template es de **solo lectura**.
 
-Leer el archivo `$SPECS_BASE/templates/story-template.md`.
+Leer el archivo `docs/templates/story-template.md`.
 
 - Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/story-creation/assets/story-template.md` y emitir:
-  > ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
+  > ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `docs/templates/`.
 - Si tampoco existe el fallback: detener la ejecución (ver Manejo de errores).
 - Si alguno de los dos **existe**: continuar.
 
@@ -253,7 +254,7 @@ Las secciones opcionales (`⚙️ Criterios no funcionales`, `📎 Notas`) se in
 
 #### 4e. Escribir el archivo de historia
 
-Crear el directorio `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `$SPECS_BASE/templates/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
+Crear el directorio `specs/flow/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear el archivo `story.md` dentro de ese directorio con la estructura del template `docs/templates/story-template.md`. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
 - `status: SPECIFY` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento)
@@ -322,10 +323,10 @@ Al terminar de procesar todas las features, mostrar un resumen en pantalla:
 ```
 ## Historias generadas
 
-Se generaron [N] directorios de historia en $SPECS_BASE/specs/stories/:
+Se generaron [N] directorios de historia en specs/flow/:
 
-- $SPECS_BASE/specs/stories/STORY-NNN-nombre/story.md
-- $SPECS_BASE/specs/stories/STORY-NNN-nombre/story.md
+- specs/flow/STORY-NNN-nombre/story.md
+- specs/flow/STORY-NNN-nombre/story.md
 ...
 
 **Siguiente paso:** Ejecuta `/story-evaluation` para verificar la calidad de cada historia generada, o `/story-specify` para especificarlas de forma interactiva.
@@ -333,7 +334,12 @@ Se generaron [N] directorios de historia en $SPECS_BASE/specs/stories/:
 
 Si alguna feature fue saltada (usuario eligió no sobreescribir), listarla como:
 ```
-- $SPECS_BASE/specs/stories/STORY-NNN-nombre/ — saltada (ya existía)
+- specs/flow/STORY-NNN-nombre/ — saltada (ya existía)
+```
+
+Si alguna feature corresponde a una historia ya archivada, listarla como:
+```
+- specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-nombre/ — saltada (archivada)
 ```
 
 Si alguna feature no pudo procesarse por formato inesperado, listarla como:
@@ -348,16 +354,16 @@ Si alguna feature no pudo procesarse por formato inesperado, listarla como:
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| Épica no encontrado (Formato A, sin coincidencias) | `No se encontró el directorio de la épica: <término>. Asegúrate de que el directorio existe en $SPECS_BASE/specs/epics/ y vuelve a intentarlo.` | Detener sin generar archivos |
+| Épica no encontrado (Formato A, sin coincidencias) | `No se encontró el directorio de la épica: <término>. Asegúrate de que el directorio existe en specs/flow/ y vuelve a intentarlo.` | Detener sin generar archivos |
 | Épica no encontrado (Formato B, ruta inválida) | `No se encontró epic.md en: <ruta>. Asegúrate de que la ruta es correcta y vuelve a intentarlo.` | Detener sin generar archivos |
 | Template sin `clave: historias` | `❌ El template no declara una sección con clave historias` | Detener sin escribir |
 | Épica sin la sección de clave `historias` | `❌ La épica no tiene la sección "<título>". Si se creó con una versión anterior del template → /memory-system migrate --from=epic-template-v1` | Detener sin escribir ningún archivo |
 | Sección de historias sin historias reconocibles | `No se encontraron historias en el archivo de épica indicada.` | Mostrar orientación y detener |
-| Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/templates/story-template.md.` | Detener la ejecución |
+| Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en docs/templates/story-template.md.` | Detener la ejecución |
 
 ---
 
 ## Salida
 
-- Directorios `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre-kebab]/story.md` creados — uno por feature de la épica
+- Directorios `specs/flow/STORY-[NNN]-[nombre-kebab]/story.md` creados — uno por feature de la épica
 - Resumen con: historias generadas, historias saltadas (por conflicto), features con formato no reconocido

@@ -52,14 +52,14 @@ Conduce al usuario a través de la creación de un archivo de épica completa me
 ## Precondiciones
 
 - `assets/epic-template.md` debe existir
-- La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
+- `REPO_ROOT` debe resolverse según el contrato de layout fijo antes de continuar.
 
 ---
 
 ## Dependencias
 
 - Skills: [`epic-format-validation`]
-- Archivos: [`assets/epic-template.md`], [`$SPECS_BASE/templates/epic-template.md`] (si existe)
+- Archivos: [`assets/epic-template.md`], [`docs/templates/epic-template.md`] (si existe)
 
 ---
 
@@ -105,14 +105,11 @@ La épica creada debe obtener `APROBADO` del gate antes de pasar a `PLAN`; un `R
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -132,18 +129,19 @@ Si el usuario no proporcionó un nombre de épica junto con el comando, pregunta
 Con el nombre provisto:
 - Derivar el **slug kebab-case**: minúsculas, palabras separadas por guiones, sin caracteres especiales (Ej: `"Sistema de pagos"` → `sistema-de-pagos`)
 - Construir el **ID de directorio**: proponer el siguiente ID disponible buscando con Glob el
-  patrón `$SPECS_BASE/specs/epics/EPIC-*/epic.md`. La herramienta Glob solo encuentra
+  patrón `specs/flow/EPIC-*/epic.md`. La herramienta Glob solo encuentra
   archivos, no directorios — usar siempre este patrón de archivo anidado. De cada ruta retornada,
   extraer el número `NN` del segmento `EPIC-NN-*` (directorio padre). Tomar el número más alto
-  y sumarle 1; si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/epics/ |
-  grep -E "^EPIC-"`) antes de asumir que no hay épicas previas.
+  y sumarle 1; si Glob retorna vacío, verificar con Bash (`ls specs/flow/ |
+  grep -E "^EPIC-"`) antes de asumir que no hay épicas previas. Las épicas no se archivan: no se consulta `specs/flow/archive/`.
+  Sin épicas previas (repo recién inicializado), el primer ID es `EPIC-01`.
   Formato final: `EPIC-NN-<slug>` con NN de 2 dígitos (Ej: `EPIC-14-mi-epica`).
   Si el usuario prefiere asignar el ID manualmente, aceptarlo sin objeción.
-- Definir la **ruta de salida**: `$SPECS_BASE/specs/epics/<EPIC-NN-slug>/epic.md`
+- Definir la **ruta de salida**: `specs/flow/<EPIC-NN-slug>/epic.md`
 
 #### Verificar conflicto de directorio
 
-Si el directorio `$SPECS_BASE/specs/epics/<EPIC-NN-slug>/` ya existe, preguntar:
+Si el directorio `specs/flow/<EPIC-NN-slug>/` ya existe, preguntar:
 
 > "El directorio `<ruta>` ya existe. ¿Qué deseas hacer?
 > 1. Sobreescribir el archivo existente
@@ -157,8 +155,8 @@ Si elige "2", volver al inicio del Paso 1 para pedir un nombre diferente.
 
 El archivo de plantilla es la **única fuente de información estructural**. Nunca hardcodear nombres de secciones.
 
-Leer `$SPECS_BASE/templates/epic-template.md` (fuente de verdad del proyecto, puede contener personalizaciones). Si no existe, usar el seed `assets/epic-template.md` y emitir:
-> ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
+Leer `docs/templates/epic-template.md` (fuente de verdad del proyecto, puede contener personalizaciones). Si no existe, usar el seed `assets/epic-template.md` y emitir:
+> ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `docs/templates/`.
 
 - Si ninguno de los dos archivos existe: detener la ejecución (ver Manejo de errores).
 - Si el archivo **existe**: extraer dinámicamente, en el orden del template, cada línea que empiece con `## ` (fuera de bloques de código):
@@ -264,10 +262,10 @@ Con todas las respuestas recopiladas, construir el archivo `epic.md` completo:
 #### Crear el directorio y escribir el archivo
 
 ```
-$SPECS_BASE/specs/epics/<EPIC-NN-slug>/epic.md
+specs/flow/<EPIC-NN-slug>/epic.md
 ```
 
-Verificar que el directorio existe; si no, crearlo.
+Verificar que el directorio existe; si no, crearlo (incluido `specs/flow/` si falta). Nunca se escribe en el layout anterior.
 
 Mostrar al usuario una vista previa del archivo antes de escribirlo:
 
@@ -287,7 +285,7 @@ Mostrar:
 ```
 ✅ APROBADO
 
-Archivo creado: $SPECS_BASE/specs/epics/<EPIC-NN-slug>/epic.md
+Archivo creado: specs/flow/<EPIC-NN-slug>/epic.md
 
 Siguiente paso: ejecuta /epic-generate-stories para generar las historias de usuario de esta épica.
 ```
@@ -322,11 +320,11 @@ Si el usuario responde "sí": volver al Paso 4 o Paso 5 según corresponda para 
 
 ## Salida
 
-- `$SPECS_BASE/specs/epics/<EPIC-NN-slug>/epic.md` — épica creada y validado, listo para `/epic-generate-stories`
+- `specs/flow/<EPIC-NN-slug>/epic.md` — épica creada y validado, listo para `/epic-generate-stories`
 
 ### Referencias
 
-- **Template canónico:** `assets/epic-template.md` (copia central: `$SPECS_BASE/templates/epic-template.md`)
+- **Template canónico:** `assets/epic-template.md` (copia central: `docs/templates/epic-template.md`)
 - **Contrato de `epic.md` (claves, F1/F2/F3, `SMOKE-N`):** `domain-epic-lifecycle` §9
 - **Validación de épicas:** `/epic-format-validation`
 - **Generación de stories:** `/epic-generate-stories`

@@ -11,7 +11,7 @@
  *   v1 es conocimiento fijo (versión cerrada) y se expresa como *título v1 → clave*; el destino
  *   (títulos, orden y secciones a insertar) sale del contrato, así que también migra hacia un
  *   template personalizado.
- * - `migrateEpics` aplica la transformación a `<SPECS_BASE>/specs/*\/EPIC-*\/epic.md`.
+ * - `migrateEpics` aplica la transformación a `docs/specs/*\/EPIC-*\/epic.md` (layout legado).
  *
  * Formatos de línea (contrato de dominio, `domain-epic-lifecycle` §9): F1 `- Nombre: desc`,
  * F2 `- [ ] **STORY-NNN** — Nombre: desc`, F3 `- [x] **STORY-NNN** — Nombre: desc`; smoke tests
@@ -392,10 +392,10 @@ function planEpicMigration(text, contract) {
 }
 
 // ---------------------------------------------------------------------------
-// Ejecución sobre SPECS_BASE (D-7)
+// Ejecución sobre DOCS_DIR (D-7)
 // ---------------------------------------------------------------------------
 
-// `specs/*/EPIC-*/epic.md`, sin hardcodear el nombre del nivel (sobrevive a renombrados del directorio de épicas).
+// `docs/specs/*/EPIC-*/epic.md` (layout legado), sin hardcodear el nombre del nivel (sobrevive a renombrados del directorio de épicas).
 function discoverEpics(root) {
   const specs = path.join(root, 'specs');
   if (!fs.existsSync(specs) || !fs.statSync(specs).isDirectory()) return [];

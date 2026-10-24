@@ -51,15 +51,15 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ---
 
-## 🗂️ Especificaciones (specs/)
+## 🗂️ Work items (specs/flow/)
 
 {layer:specs}
 
-### L2 — Épicas (specs/epics/)
+### Épicas
 
 {layer:specs-epics}
 
-### L1 — Historias de usuario (specs/stories/)
+### Historias de usuario
 
 > **Convención de directorio:** cada `STORY-NNN-*/` contiene `story.md` como nodo principal y, según la
 > fase alcanzada, puede contener además `analyze.md`, `design.md`, `tasks.md`, `testcases.md`,
@@ -68,6 +68,10 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 > listan porque sus wikilinks son placeholders.
 
 {layer:specs-stories}
+
+### Historias archivadas (archive/)
+
+{layer:specs-archive}
 
 ---
 

@@ -46,6 +46,7 @@
     "verify:validation-contract": "node scripts/verify-validation-contract.js",
     "verify:links": "node scripts/check-doc-links.js",
     "verify:supply-chain": "node scripts/verify-supply-chain.js",
+    "verify:layout": "node scripts/verify-fixed-layout.js",
     "verify:release": "node scripts/verify-release.js",
     "smoke:package": "node scripts/smoke-package-install.js",
     "verify:repository": "node scripts/verify-repository.js"

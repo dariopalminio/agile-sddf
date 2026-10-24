@@ -1,13 +1,13 @@
 {
   "skill": "story-specify",
   "version": "1.1.0",
-  "description": "Casos de prueba para story-specify: verifica el comportamiento del orquestador (flujo completo, detección de backlog, fail-fast de raíz explícita, split automático y gate anti-bucle) sin evaluar el contenido interno de cada sub-skill invocado.",
+  "description": "Casos de prueba para story-specify: verifica el comportamiento del orquestador (flujo completo, detección de backlog, layout fijo en specs/flow/, split automático y gate anti-bucle) sin evaluar el contenido interno de cada sub-skill invocado.",
   "cases": [
     {
       "id": "TC-001",
       "name": "ciclo-completo-historia-nueva-aprobada",
       "type": "happy-path",
-      "description": "Flujo completo con historia nueva: el contrato local resuelve una raíz válida → story-creation → story-evaluation devuelve APPROVED → el orquestador actualiza el frontmatter a SPECIFY/DONE y muestra el resumen final con ruta del archivo generado. No se invocan story-split ni story-refine.",
+      "description": "Flujo completo con historia nueva: el contrato de layout fijo resuelve REPO_ROOT → story-creation → story-evaluation devuelve APPROVED → el orquestador actualiza el frontmatter a SPECIFY/DONE y muestra el resumen final con ruta del archivo generado. No se invocan story-split ni story-refine.",
       "input": {
         "context": "Un vendedor de una empresa SaaS quiere exportar su lista de clientes activos a CSV para compartirla con su gerente antes de la reunión mensual de pipeline."
       },
@@ -18,12 +18,13 @@
           "APPROVED",
           "SPECIFY",
           "DONE",
-          "specs/stories/",
+          "specs/flow/",
           "story.md",
           "Refinamiento finalizado"
         ],
         "not_contains": [
           "Entorno inválido",
+          "docs/specs",
           "story-split",
           "story-refine",
           "NEEDS-REFINEMENT",
@@ -36,9 +37,9 @@
       "id": "TC-002",
       "name": "deteccion-backlog-existente-retomar",
       "type": "happy-path",
-      "description": "El skill detecta al inicio que existe al menos una historia con status SPECIFY / substatus IN-PROGRESS en $SPECS_BASE/specs/stories/. Debe ofrecer al usuario la opción de retomar el backlog o crear una historia nueva, sin iniciar story-creation de forma automática.",
+      "description": "El skill detecta al inicio que existe al menos una historia con status SPECIFY / substatus IN-PROGRESS en specs/flow/. Debe ofrecer al usuario la opción de retomar el backlog o crear una historia nueva, sin iniciar story-creation de forma automática.",
       "input": {
-        "context": "Existe docs/specs/stories/STORY-010-login-usuario/story.md con frontmatter status: SPECIFY y substatus: IN-PROGRESS creado en una sesión anterior."
+        "context": "Existe specs/flow/STORY-010-login-usuario/story.md con frontmatter status: SPECIFY y substatus: IN-PROGRESS creado en una sesión anterior."
       },
       "expected": {
         "contains": [
@@ -56,26 +57,22 @@
     },
     {
       "id": "TC-003",
-      "name": "raiz-explicita-invalida-detiene-ejecucion",
-      "type": "fail-fast",
-      "description": "SDDF_ROOT es una fuente explícita inválida. El orquestador debe detenerse inmediatamente durante la resolución local, sin invocar story-creation, story-evaluation ni ningún otro sub-skill.",
+      "name": "layout-fijo-repo-limpio-escribe-en-specs-flow",
+      "type": "happy-path",
+      "description": "En un repositorio limpio inicializado con /sddf-init, sin specs/flow/STORY-*, el orquestador crea la primera historia en specs/flow/STORY-001-<slug>/story.md y no crea ni referencia el layout legado.",
       "input": {
-        "context": "SDDF_ROOT está definido con una ruta inexistente; no hay escrituras ni sub-skills permitidos."
+        "context": "Repositorio limpio inicializado con /sddf-init: existen specs/flow/, docs/templates/ y docs/guardrails/, sin ninguna historia previa. El usuario ejecuta /story-specify para una historia nueva."
       },
       "expected": {
         "contains": [
-          "inválido"
+          "specs/flow/STORY-001-",
+          "story.md"
         ],
         "not_contains": [
-          "story-creation",
-          "story-evaluation",
-          "story-split",
-          "story-refine",
-          "SPECIFY",
-          "Refinamiento finalizado"
+          "docs/specs"
         ]
       },
-      "threshold": 1.0
+      "threshold": 0.90
     },
     {
       "id": "TC-004",
@@ -188,7 +185,7 @@
       "type": "fail-fast",
       "description": "STORY-135 AC-2 — Sin el rol local product-owner, el skill se detiene en el Paso 0, informa la ruta del rol ausente y no detecta backlog ni invoca sub-skills, de modo que el story.md en curso no se modifica.",
       "input": {
-        "context": "No existe skills/story-specify/assets/agents/product-owner.md. Existe docs/specs/stories/STORY-040-exportar-clientes/story.md con status: SPECIFY y substatus: IN-PROGRESS. El usuario ejecuta /story-specify con un input incompleto."
+        "context": "No existe skills/story-specify/assets/agents/product-owner.md. Existe specs/flow/STORY-040-exportar-clientes/story.md con status: SPECIFY y substatus: IN-PROGRESS. El usuario ejecuta /story-specify con un input incompleto."
       },
       "expected": {
         "contains": [

@@ -4,7 +4,7 @@ description: >-
   Memoria del proyecto (docs/ como wiki LLM): ensure (defecto) crea capas e indexa; scaffold
   solo lo faltante; rebuild --force regenera semillas; index regenera docs/index.md; check valida
   para CI; migrate adopta Speckit/OpenSpec, divide el DoD (--from=dod-monolithic) o migra
-  épicas (--from=epic-template-v1) y requisitos SRS/fragmentados. Sustituye a docs-wiki-builder. Invocar para "memory-system",
+  épicas (--from=epic-template-v1) y requisitos SRS/fragmentados. Invocar para "memory-system",
   "capas de memoria", "índice de documentación", "wiki de docs", "wikilinks", "LLM wiki",
   "dividir el DoD" o "migrar épicas".
 ---
@@ -14,33 +14,33 @@ description: >-
 **Cuándo usar este skill:**
 Cuando haya que dejar la memoria del proyecto completa y consistente (`ensure`, modo por defecto),
 crear solo las capas y archivos que falten (`scaffold`), regenerar los archivos semilla desde cero
-(`rebuild --force`), regenerar `$SPECS_BASE/index.md` (`index`), el mapa de la wiki que los LLMs
+(`rebuild --force`), regenerar `docs/index.md` (`index`), el mapa de la wiki que los LLMs
 leen antes que cualquier otro nodo, o **verificar** que la memoria es consistente sin tocar nada
 (`check`, el gate que un pipeline de CI ejecuta en una línea y lee con `jq`), o adoptar la memoria
 en un proyecto Speckit u OpenSpec sin tocar su harness (`migrate`). Invocar también
 cuando el usuario mencione "memory-system",
-"capas de memoria", "índice de documentación", "wiki de docs", "wikilinks", "LLM wiki" o el skill
-deprecado `docs-wiki-builder`.
+"capas de memoria", "índice de documentación", "wiki de docs", "wikilinks" o "LLM wiki".
 
 ## Objetivo
 
 Ser el único punto de entrada para la memoria del proyecto (ver
-`docs/architecture/memory-system.md` en el repositorio del framework): once capas (`product`,
-`requirements`, `specs`, `domains`, `architecture`, `adr`, `policies`, `guardrails`, `guides`,
-`runbooks`, `templates`) más `constitution.md` en la raíz, y un `index.md` con una entrada
-`[[slug]]` por artefacto. Todo lo que escribe es reproducible; la única excepción a no borrar es
+`docs/architecture/memory-system.md` en el repositorio del framework): diez capas (`product`,
+`requirements`, `domains`, `architecture`, `adr`, `policies`, `guardrails`, `guides`,
+`runbooks`, `templates`) más `constitution.md` en la raíz de `docs/`, y un `index.md` con una
+entrada `[[slug]]` por artefacto, incluidos los work items de `specs/flow/`. Todo lo que escribe es reproducible; la única excepción a no borrar es
 `migrate --from=specs-3-levels`, que elimina exclusivamente orígenes ya migrados.
 
 **Qué hace este skill:**
 - Detecta el harness del proyecto (`sddf | speckit | openspec | generic`) y decide qué raíces se indexan.
 - `scaffold`: copia-si-falta del árbol semilla de `assets/scaffold/` (constitución,
   `product/{README,vision,stakeholders,objectives,roadmap}.md`,
-  `requirements/srs-<project-slug>.md` cuando la capa está vacía, `specs/{epics,stories}/`,
+  `requirements/srs-<project-slug>.md` cuando la capa está vacía,
   un `README.md` por capa, `templates/README.md` y las cuatro plantillas de autoría manual
   `adr-template.md`, `domain-template.md`, `guardrail-template.md`, `policy-template.md`) y de las cinco plantillas
-  compartidas desde su skill dueño. `[CREADO]` lo nuevo, `[PRESERVADO]` lo existente. Aplica el
-  perfil del harness: `[OMITIDO]` las capas que el harness ya modela (`specs/` en Speckit y
-  OpenSpec) y `[MAPEADO]` las semillas con equivalente en el harness
+  compartidas desde su skill dueño. `[CREADO]` lo nuevo, `[PRESERVADO]` lo existente. No crea
+  `docs/specs/` ni `specs/flow/`: los directorios de work items los crea `/sddf-init`. Aplica el
+  perfil del harness: `[OMITIDO]` las capas que el harness ya modela y `[MAPEADO]` las semillas
+  con equivalente en el harness
   (`constitution.md → .specify/memory/constitution.md`).
   Si detecta niveles retirados, emite `[WARNING] estructura de specs/ de tres niveles detectada (…): ejecuta /memory-system migrate --from=specs-3-levels` sin bloquear ni tocarlos.
 - `migrate`: plan (`scaffold --dry-run`) → confirmación → `scaffold` adaptado al harness, para
@@ -48,7 +48,8 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 - `ensure` (por defecto): `scaffold` + `index` en un solo paso; con `--fix-frontmatter` normaliza
   antes los archivos sin frontmatter mediante `/header-aggregation` en batch.
 - `rebuild --force`: `scaffold --force` (sobrescribe solo los archivos gestionados) + `index`.
-- `index`: regenera `$SPECS_BASE/index.md` desde `assets/index-template.md` con el motor
+- `index`: regenera `docs/index.md` (nodos de `docs/` y work items de `specs/flow/`, enlazados como
+  `../specs/flow/…`; los archivados en su propia sección) desde `assets/index-template.md` con el motor
   determinista `scripts/memory-system.js` (Node ≥ 18, sin dependencias): dos ejecuciones seguidas
   producen el mismo archivo salvo `updated`. Los wikilinks sin destino se marcan como nodos
   pendientes sin bloquear.
@@ -63,7 +64,7 @@ Ser el único punto de entrada para la memoria del proyecto (ver
   gestionados por el scaffold (lista en `references/memory-rules.md` §5).
 - No añade frontmatter por sí mismo: `ensure --fix-frontmatter` delega en `/header-aggregation`,
   que permanece como utilidad independiente (este skill solo lee su esquema `slug`/`title`).
-- No escribe fuera de `$SPECS_BASE`: `openspec/`, `.specify/` y `specs/` del harness son de solo
+- No escribe fuera de `docs/`: `specs/flow/`, `openspec/`, `.specify/` y `specs/` del harness son de solo
   lectura, y el motor aborta con exit 2 (`destino fuera de la raíz: <ruta>`) antes de escribir si
   un destino cae fuera.
 - No corrige lo que `check` encuentra: `check` solo informa. La corrección es `ensure`,
@@ -75,8 +76,8 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 
 ## Entrada
 
-- `$SPECS_BASE/` — raíz de artefactos resuelta en el Paso 0 (si no existe pero sí su directorio
-  padre, `scaffold` la crea).
+- `docs/` — raíz de conocimiento, ruta fija relativa a `REPO_ROOT` (si no existe, `scaffold` la crea).
+- `specs/flow/` — work items del layout fijo (ADR-0016); `index` y `check` los leen, nunca los escriben.
 - `<REPO_ROOT>/sddf.config.yaml`, `.specify/`, `openspec/` — marcadores de harness (opcionales).
 - `assets/scaffold/**` — árbol semilla (espejo del destino; `{date}` como único placeholder).
 - `<CLI_ROOT>/skills/<dueño>/assets/<plantilla>` — origen de las cinco plantillas compartidas.
@@ -99,11 +100,11 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 | `ensure [--fix-frontmatter] [--harness h]` | `scaffold` + `index`; con `--fix-frontmatter`, `header-aggregation` en batch entre ambos. |
 | `scaffold [--dry-run] [--harness h]` | Solo crea lo faltante; no toca `index.md`. `--dry-run` imprime el plan sin escribir. |
 | `rebuild [--force]` | Sin `--force` se detiene. Con `--force`: `scaffold --force` + `index`. |
-| `index [--harness h] [--dry-run]` | Regenera `$SPECS_BASE/index.md`. `--dry-run` imprime el índice por consola sin escribir. |
+| `index [--harness h] [--dry-run]` | Regenera `docs/index.md`. `--dry-run` imprime el índice por consola sin escribir. |
 | `check [--json] [--harness h] [--skills-dir <ruta>]` | Verifica la memoria en solo lectura y propaga el exit code del motor (0 / 1 / 2). Con `--json`, stdout lleva un único objeto y nada más. `--skills-dir` fija dónde buscar los `SKILL.md` que la familia `dod-guardrail` verifica. |
 | `migrate [--harness h] [--yes]` | Muestra el plan de migración, pide confirmación (`--yes` la asume) y ejecuta `scaffold` adaptado al harness. No invoca `index`. |
 | `migrate --from=dod-monolithic [--dry-run] [--force]` | Divide el DoD de historia en un guardrail por etapa y deja el original como índice deprecado (secuencia 3.7). Sin pregunta: no sobrescribe sin `--force`. |
-| `migrate --from=epic-template-v1 [--dry-run]` | Migra cada `specs/*/EPIC-*/epic.md` al template de épica vigente (v2), localizando las secciones por su `clave:` (secuencia 3.8). Sin pregunta; idempotente; `--force` se ignora. |
+| `migrate --from=epic-template-v1 [--dry-run]` | Migra cada `docs/specs/*/EPIC-*/epic.md` (layout legado) al template de épica vigente (v2), localizando las secciones por su `clave:` (secuencia 3.8). Sin pregunta; idempotente; `--force` se ignora. |
 | `migrate --from=specs-3-levels [--dry-run] [--force]` | Colapsa el layout heredado en dos niveles (secuencia 3.9). Sin pregunta; recomienda `--dry-run`; conserva y reporta `[NO MIGRADO]` lo ambiguo. |
 | `migrate --from=srs-single [--dry-run]` | Fragmenta un SRS en archivos FR/NFR y genera el catálogo (secuencia 3.10). Sin pregunta; idempotente. |
 | `migrate --from=requirements-fragmented [--dry-run]` | Consolida los archivos FR/NFR en un SRS (secuencia 3.10). Sin pregunta; idempotente. |
@@ -111,7 +112,7 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 
 ## Precondiciones
 
-- `$SPECS_BASE/` debe existir, o al menos su directorio padre (bootstrap de `scaffold`/`ensure`).
+- `docs/` debe existir, o al menos `REPO_ROOT` (bootstrap de `scaffold`/`ensure`).
   `index` y `check` exigen que exista (exit 2 si no).
 - `node` (≥ 18) en PATH para la ejecución reproducible; sin él, ver la degradación del Paso 5.
 - `assets/scaffold/` debe existir dentro del skill (exit 2 nombrando la ruta si falta).
@@ -134,7 +135,7 @@ Ser el único punto de entrada para la memoria del proyecto (ver
   La excepción es `migrate`, que muestra el plan y pregunta antes de escribir.
 - **Sin preguntas** (`--yes`): `migrate` asume la confirmación. Los demás modos lo aceptan sin
   efecto, porque no preguntan nada (`ensure --harness openspec --yes` equivale a `ensure --harness openspec`).
-- **Automático** (invocado por `/docs-wiki-builder`, `sddf-init` u otro skill): mismo comportamiento.
+- **Automático** (invocado por `sddf-init` u otro skill): mismo comportamiento.
 - **Simulación** (`scaffold --dry-run`, `index --dry-run`): imprime el plan o el índice, no escribe.
 - **Gate de CI** (`check`, `check --json`): solo lectura y exit code propagado; no pide nada y no
   escribe. Un pipeline invoca el motor directamente (ver `docs/guides/sddf-commands-pipeline.md`).
@@ -170,14 +171,18 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras. Excepción: en `scaffold`/`ensure` una raíz declarada que todavía no existe es válida si su directorio padre existe (el motor la crea).
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+La raíz de conocimiento es siempre `docs/` (relativa a `REPO_ROOT`) y el motor se invoca con
+`--root docs`. Bootstrap: en `scaffold`/`ensure`, si `docs/` todavía no existe pero `REPO_ROOT` sí,
+el motor lo crea.
+
+Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para las plantillas compartidas y
+el flag `--cli-root`; nunca lo derives de `REPO_ROOT`.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -211,7 +216,7 @@ Resuelve `CLI_ROOT` y localiza `scripts/memory-system.js` dentro de este skill
 desde `REPO_ROOT` con la forma:
 
 ```
-node <CLI_ROOT>/skills/memory-system/scripts/memory-system.js <subcomando> --root <SPECS_BASE> [flags]
+node <CLI_ROOT>/skills/memory-system/scripts/memory-system.js <subcomando> --root docs [flags]
 ```
 
 Subcomandos del motor y sus flags:
@@ -243,18 +248,19 @@ Exit codes (comunes a todos los subcomandos):
 #### 3.1 `ensure` (por defecto) — `detect → scaffold → [header-aggregation] → index`
 
 1. `detect` → muestra `harness: <h>`.
-2. `scaffold --root <SPECS_BASE> --cli-root <CLI_ROOT> [--harness h]` → muestra su salida completa
+2. `scaffold --root docs --cli-root <CLI_ROOT> [--harness h]` → muestra su salida completa
    (marcas `[CREADO]`/`[PRESERVADO]`, avisos `[WARNING]` y su resumen). Guarda `N` (creados) y
    `M` (preservados) para el informe final.
-3. Solo si el usuario pasó `--fix-frontmatter`: invoca el skill `header-aggregation` con el
-   directorio `<SPECS_BASE>` como input (activa su modo batch, Paso 4 de ese skill). Responde a
+3. Solo si el usuario pasó `--fix-frontmatter`: invoca el skill `header-aggregation` con
+   `REPO_ROOT` como input (activa su modo batch, Paso 4 de ese skill: `docs/product/`,
+   `docs/requirements/` y los canónicos de `specs/flow/`). Responde a
    sus dos preguntas sin abrir diálogos de merge: a la estrategia para los archivos con
    conflicto, **"Saltar todos los conflictos"** (procesa solo los archivos sin frontmatter); a
    "¿Confirmas el procesamiento de N archivos?", **"s"**. Muestra la invocación, la estrategia
    elegida y la lista de archivos que recibieron frontmatter (por ejemplo `guides/a.md`,
    `guides/b.md`); los que ya tenían frontmatter no se tocan. Sin el flag no invoques
    `header-aggregation` ni lo menciones como ejecutado.
-4. `index --root <SPECS_BASE> [--harness h]` → muestra su salida y su resumen
+4. `index --root docs [--harness h]` → muestra su salida y su resumen
    `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. Si el motor no expone `index`
    (exit 2 con `subcomando no admitido: index`), muestra
    `⚠️ modo index no disponible — índice no regenerado` y continúa.
@@ -265,8 +271,8 @@ y vuelve a regenerar el índice sin ningún error.
 
 #### 3.2 `scaffold` — `detect → scaffold`
 
-1. `detect` → `harness: <h>`. Una raíz de destino ausente **no es un error** en `scaffold`: si existe su directorio padre, el motor crea `$SPECS_BASE` y continúa. Solo informa `❌ raíz inexistente` si también falta el padre.
-2. `scaffold --root <SPECS_BASE> --cli-root <CLI_ROOT> [--harness h] [--dry-run]` → muestra su
+1. `detect` → `harness: <h>`. Una raíz de destino ausente **no es un error** en `scaffold`: si existe `REPO_ROOT`, el motor crea `docs/` y continúa. Solo informa `❌ raíz inexistente` si también falta el padre.
+2. `scaffold --root docs --cli-root <CLI_ROOT> [--harness h] [--dry-run]` → muestra su
    salida completa y cierra con su resumen `creados: N · sobrescritos: 0 · preservados: M ·
    mapeados: X · omitidos por harness: K`.
 
@@ -283,20 +289,21 @@ un SRS.
 
 1. Muestra exactamente `⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.`
 2. `detect` → `harness: <h>`.
-3. `scaffold --root <SPECS_BASE> --cli-root <CLI_ROOT> --force` → el motor marca `[SOBRESCRITO]`
+3. `scaffold --root docs --cli-root <CLI_ROOT> --force` → el motor marca `[SOBRESCRITO]`
    únicamente los archivos gestionados (constitución, `product/*.md`, `README.md` de cada capa,
    `templates/README.md`, las cuatro plantillas de autoría manual y las cinco compartidas) y `[CREADO]` los
    que faltaban; los artefactos de autor no aparecen ni se tocan; nada se elimina. Resumen
    `creados: N · sobrescritos: S · preservados: 0 · mapeados: X · omitidos por harness: K`.
-4. `index --root <SPECS_BASE>` → regenera `index.md` y muestra su resumen.
+4. `index --root docs` → regenera `index.md` y muestra su resumen.
 5. Informe final (Paso 4) con `sobrescritos: S` e `índice regenerado: sí`.
 
 #### 3.4 `index` — solo el índice
 
-Invoca `index --root <SPECS_BASE> [--harness h] [--dry-run]`. El motor detecta el harness
+Invoca `index --root docs [--harness h] [--dry-run]`. El motor detecta el harness
 (precedencia `--harness` > `sddf.config.yaml` > `.specify/` > `openspec/` > `generic`), escanea
-`SPECS_BASE` y las raíces externas del perfil, deriva slug, título y capa de cada nodo según
-`references/memory-rules.md`, rellena `assets/index-template.md` y escribe `<SPECS_BASE>/index.md`.
+`docs/`, el origen flow (`specs/flow/`, salvo que el harness gestione `specs/`) y las raíces
+externas del perfil, deriva slug, título y capa de cada nodo según
+`references/memory-rules.md`, rellena `assets/index-template.md` y escribe `docs/index.md`.
 Con `--dry-run` imprime el índice por stdout y no escribe: en ese caso emite
 `ℹ️ --dry-run: índice impreso por consola, no se escribió ningún archivo` antes de mostrar la
 salida del motor.
@@ -314,18 +321,19 @@ simulación del skill), no inventes la salida del motor: pasa al Paso 5 y genera
 
 #### 3.5 `check` — verificar sin escribir y propagar el exit code
 
-Invoca `check --root <SPECS_BASE> [--harness h] [--json]`. El motor detecta el harness (misma
-precedencia que `index`), escanea `SPECS_BASE` una sola vez con las mismas exclusiones y ejecuta
+Invoca `check --root docs [--harness h] [--json]`. El motor detecta el harness (misma
+precedencia que `index`), escanea `docs/` y `specs/flow/` una sola vez con las mismas exclusiones y ejecuta
 cinco evaluadores puros sobre los nodos:
 
 | Familia | Regla |
 |---|---|
-| `missing-layer` | Una de las once capas (o `constitution.md`) no existe en la raíz y el perfil del harness no la omite (`skipLayers`). |
+| `missing-layer` | Una de las diez capas (o `constitution.md`) no existe en la raíz y el perfil del harness no la omite (`skipLayers`). |
 | `orphan` | Nodo sin bloque de frontmatter (`---` inicial ausente o sin cerrar). |
 | `invalid-frontmatter` | Frontmatter **declarado** sin `type`, `slug` o `title`; además sin `id` o `status` cuando `type ∈ {project, epic, story}`. Un problema por campo ausente. |
 | `broken-wikilink` | Cada ocurrencia de `[[slug]]` cuyo slug no resuelve contra el conjunto de slugs derivados. |
-| `dod-guardrail` | Solo si el proyecto tiene DoD de historia: frontmatter y cadena `from`/`to` de cada `dod-story-<etapa>.md`, mapeo `guardrails.dod.story` de `sddf.config.yaml`, DoD monolítico o heredado sin migrar y, si hay directorio de skills (`--skills-dir` → `<REPO_ROOT>/skills` → `<REPO_ROOT>/<--cli-root>/skills`), la sección `## DoD aplicable` de cada skill de historia. Reglas R1–R7 en `references/dod-rules.md`. |
+| `dod-guardrail` | Solo si el proyecto tiene DoD de historia: frontmatter y cadena `from`/`to` de cada `dod-story-<etapa>.md`, mapeo `guardrails.dod.story` de `sddf.config.yaml`, DoD monolítico o heredado sin migrar y, si hay directorio de skills (`--skills-dir` → `<REPO_ROOT>/skills` → `<CLI_ROOT>/skills`), la sección `## DoD aplicable` de cada skill de historia. Reglas R1–R7 en `references/dod-rules.md`. |
 
+Los work items de `specs/flow/` son nodos propios: `check` los evalúa igual que los de `docs/`.
 Se evalúa el campo **declarado**, no el derivado: un archivo cuyo `slug` deduce el motor por su
 nombre sigue siendo `invalid-frontmatter` porque no lo declara. Las reglas completas (campos
 obligatorios y extracción de wikilinks) están en `references/memory-rules.md` §6 y §2.
@@ -371,15 +379,14 @@ Si no puedes ejecutar `node`, no inventes la salida del motor: pasa al Paso 5.
 Adopta la memoria SDDF en un proyecto Speckit u OpenSpec sin tocar su harness. Es solo
 scaffolding adaptado: no transforma, mueve ni reescribe artefactos del harness, y no invoca `index`.
 
-1. **Detección** — no ejecutes `detect` por separado: en un proyecto por migrar `SPECS_BASE`
+1. **Detección** — no ejecutes `detect` por separado: en un proyecto por migrar `docs/`
    aún no suele existir y `detect` terminaría con exit 2 (raíz inexistente). Ejecuta
-   `scaffold --root <SPECS_BASE> --cli-root <CLI_ROOT> [--harness h] --dry-run` (no escribe
+   `scaffold --root docs --cli-root <CLI_ROOT> [--harness h] --dry-run` (no escribe
    nada) y toma el harness de su primera línea `harness: <h>`. Si es `sddf`, muestra
    exactamente `ℹ️ El proyecto ya es SDDF; usa /memory-system ensure.` y termina con éxito:
    sin plan, sin pregunta y sin escribir nada.
 2. **Plan** — la salida de ese `scaffold --dry-run` es el plan. Muestra la cabecera `📋 Plan de migración (<h>)` y, debajo, la salida del motor **tal cual**:
-   es el plan (`[OMITIRÍA] specs/ — gestionado por el harness <h>`,
-   `[MAPEARÍA] constitution.md → .specify/memory/constitution.md` si ese archivo existe,
+   es el plan (`[MAPEARÍA] constitution.md → .specify/memory/constitution.md` si ese archivo existe,
    `[CREARÍA]`/`[PRESERVARÍA]` para el resto y la línea de resumen). No lo resumas ni lo recalcules.
 3. **Confirmación** — depende de `--yes`:
    - **Con `--yes`**: la pregunta **no** aparece en la salida (ni citada ni como referencia),
@@ -387,7 +394,7 @@ scaffolding adaptado: no transforma, mueve ni reescribe artefactos del harness, 
    - **Sin `--yes`**: pregunta `¿Confirmas el plan de migración? (sí/no)` y espera la respuesta.
      Con `no` (o cualquier respuesta distinta de `sí`), muestra `Migración cancelada — no se
      escribió ningún archivo.` y termina.
-4. **Scaffold** — `scaffold --root <SPECS_BASE> --cli-root <CLI_ROOT> --harness <h>` → muestra su
+4. **Scaffold** — `scaffold --root docs --cli-root <CLI_ROOT> --harness <h>` → muestra su
    salida completa (`[CREADO]`, `[PRESERVADO]`, `[MAPEADO]`, `[OMITIDO]`) y su resumen
    `creados: N · sobrescritos: 0 · preservados: M · mapeados: X · omitidos por harness: K`.
 5. Informe final (Paso 4) y sugerencia del siguiente paso: `/memory-system index` para enlazar los
@@ -399,7 +406,7 @@ Idempotencia: una segunda migración confirmada muestra un plan con todo
 #### 3.7 `migrate --from=dod-monolithic` — dividir el DoD de historia por etapa
 
 No es una migración de harness: no ejecuta `scaffold`, no muestra plan ni pregunta. Invoca
-`migrate --root <SPECS_BASE> --from dod-monolithic [--dry-run] [--force]` y reenvía su salida tal cual.
+`migrate --root docs --from dod-monolithic [--dry-run] [--force]` y reenvía su salida tal cual.
 El motor lee `guardrails/dod-story-checklist.md` (o el heredado `policies/dod-story.md`), crea un
 `guardrails/dod-story-<etapa>.md` por etapa y reemplaza el original por un índice deprecado; el
 heredado de `policies/` se conserva. Nunca sobrescribe un destino existente sin `--force`, así que
@@ -411,8 +418,8 @@ migrar, sugiere `/memory-system check` y `/memory-system index`. Reglas de la di
 #### 3.8 `migrate --from=epic-template-v1` — migrar épicas al template v2
 
 No es una migración de harness: no ejecuta `scaffold`, no muestra plan ni pregunta. Invoca
-`migrate --root <SPECS_BASE> --from epic-template-v1 [--dry-run]` y reenvía su salida tal cual.
-El motor migra cada `specs/*/EPIC-*/epic.md` al contrato por claves del template de épica
+`migrate --root docs --from epic-template-v1 [--dry-run]` y reenvía su salida tal cual.
+El motor migra cada `docs/specs/*/EPIC-*/epic.md` (layout legado) al contrato por claves del template de épica
 (`templates/epic-template.md`; si no existe, el seed de `epic-creation`; si no declara ninguna
 `clave:`, avisa `[REVISAR] templates/epic-template.md`, no lo sobrescribe y usa el seed) con las
 reglas R1–R11 de `scripts/epic-template.js`. No toca frontmatter ni preámbulo, no inventa IDs y
@@ -423,7 +430,7 @@ repetir `--dry-run` hasta `cambios pendientes: 0`; después, `/epic-format-valid
 #### 3.9 `migrate --from=specs-3-levels` — colapsar la estructura heredada
 
 No es una migración de harness: no ejecuta `scaffold`, no pregunta y reenvía tal cual la salida de
-`migrate --root <SPECS_BASE> --from specs-3-levels [--dry-run] [--force]`. Recomienda ejecutar
+`migrate --root docs --from specs-3-levels [--dry-run] [--force]`. Recomienda ejecutar
 primero `--dry-run`. Con exit 0 y sin `--dry-run`, ejecuta `index` y sugiere `/memory-system check`;
 con exit 1 no regenera el índice: resuelve cada `[NO MIGRADO]`, muestra como última línea `exit code: 1` y repite. Las reglas detalladas están
 en `references/specs-3-levels-rules.md`. Sin `node`, muestra exactamente
@@ -439,7 +446,7 @@ el motor termina con exit 1 y muestra `[NO MIGRADO] specs/01-projects/` (sin `[C
 #### 3.10 `migrate --from=srs-single|requirements-fragmented` — cambiar la disposición de requisitos
 
 No es una migración de harness: no ejecuta `scaffold`, no pregunta y reenvía íntegra la salida de
-`migrate --root <SPECS_BASE> --from <origen> [--dry-run]`. Recomienda siempre `--dry-run` primero
+`migrate --root docs --from <origen> [--dry-run]`. Recomienda siempre `--dry-run` primero
 y propaga el exit code. `srs-single` extrae cada sección visible `### FR-NNN`/`### NFR-NNN` a su
 fragmento, genera `requirements/index.md`, reescribe los wikilinks visibles y elimina el SRS solo
 después de escribir sus destinos. `requirements-fragmented` hace la transformación inversa, borra
@@ -460,16 +467,16 @@ Cierra cada modo con estas líneas, después de la salida íntegra del motor:
 
 | Modo | Informe |
 |---|---|
-| `ensure` | `✅ memory-system ensure — harness: <h> — <SPECS_BASE>` y en la última línea `creados: N · preservados: M · índice regenerado: sí` (o `no`). |
-| `scaffold` | `✅ memory-system scaffold — harness: <h> — <SPECS_BASE>` y en la última línea el resumen del motor `creados: N · sobrescritos: 0 · preservados: M · mapeados: X · omitidos por harness: K`. Con `--dry-run`, antepón `ℹ️ --dry-run: plan impreso por consola, no se escribió ningún archivo`. |
-| `rebuild --force` | `✅ memory-system rebuild — harness: <h> — <SPECS_BASE>` y en la última línea `creados: N · sobrescritos: S · índice regenerado: sí`. |
-| `index` | `✅ memory-system index — harness: <h> — <SPECS_BASE>/index.md regenerado` y en la última línea `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. Con `--dry-run`, la línea `ℹ️ --dry-run: índice impreso por consola, no se escribió ningún archivo` va ANTES del índice y la salida cierra con el resumen. |
-| `migrate --from=dod-monolithic` | `✅ memory-system migrate --from=dod-monolithic — <SPECS_BASE>` y en la última línea el resumen del motor (con `--dry-run`, `cambios pendientes: P`). Con exit 1, `⚠️` en lugar de `✅`. |
-| `migrate --from=epic-template-v1` | `✅ memory-system migrate --from=epic-template-v1 — <SPECS_BASE>` y en la última línea el resumen del motor `migrados: N · sin cambios: M · a revisar: R` (con `--dry-run`, `cambios pendientes: P`). Con exit 1, `⚠️` en lugar de `✅`. |
-| `migrate --from=specs-3-levels` | `✅ memory-system migrate --from=specs-3-levels — <SPECS_BASE>` y el resumen del motor; con exit 1, `⚠️`, sin regenerar el índice. |
-| `migrate --from=srs-single` | `✅ memory-system migrate --from=srs-single — <SPECS_BASE>` y el resumen `creados: N · preservados: M · reescritos: R · eliminados: E`; con `--dry-run`, también `cambios pendientes: P`. Con exit 1, `⚠️`. |
-| `migrate --from=requirements-fragmented` | `✅ memory-system migrate --from=requirements-fragmented — <SPECS_BASE>` y el mismo resumen; con `--dry-run`, también `cambios pendientes: P`. Con exit 1, `⚠️`. |
-| `migrate` | `✅ memory-system migrate — harness: <h> — <SPECS_BASE>`, la línea `Siguiente paso: /memory-system index` y en la última línea el resumen del motor. Sin informe si el proyecto ya es SDDF o si se canceló. |
+| `ensure` | `✅ memory-system ensure — harness: <h> — docs/` y en la última línea `creados: N · preservados: M · índice regenerado: sí` (o `no`). |
+| `scaffold` | `✅ memory-system scaffold — harness: <h> — docs/` y en la última línea el resumen del motor `creados: N · sobrescritos: 0 · preservados: M · mapeados: X · omitidos por harness: K`. Con `--dry-run`, antepón `ℹ️ --dry-run: plan impreso por consola, no se escribió ningún archivo`. |
+| `rebuild --force` | `✅ memory-system rebuild — harness: <h> — docs/` y en la última línea `creados: N · sobrescritos: S · índice regenerado: sí`. |
+| `index` | `✅ memory-system index — harness: <h> — docs/index.md regenerado` y en la última línea `nodos indexados: N · sin frontmatter: M · nodos pendientes: K`. Con `--dry-run`, la línea `ℹ️ --dry-run: índice impreso por consola, no se escribió ningún archivo` va ANTES del índice y la salida cierra con el resumen. |
+| `migrate --from=dod-monolithic` | `✅ memory-system migrate --from=dod-monolithic — docs/` y en la última línea el resumen del motor (con `--dry-run`, `cambios pendientes: P`). Con exit 1, `⚠️` en lugar de `✅`. |
+| `migrate --from=epic-template-v1` | `✅ memory-system migrate --from=epic-template-v1 — docs/` y en la última línea el resumen del motor `migrados: N · sin cambios: M · a revisar: R` (con `--dry-run`, `cambios pendientes: P`). Con exit 1, `⚠️` en lugar de `✅`. |
+| `migrate --from=specs-3-levels` | `✅ memory-system migrate --from=specs-3-levels — docs/` y el resumen del motor; con exit 1, `⚠️`, sin regenerar el índice. |
+| `migrate --from=srs-single` | `✅ memory-system migrate --from=srs-single — docs/` y el resumen `creados: N · preservados: M · reescritos: R · eliminados: E`; con `--dry-run`, también `cambios pendientes: P`. Con exit 1, `⚠️`. |
+| `migrate --from=requirements-fragmented` | `✅ memory-system migrate --from=requirements-fragmented — docs/` y el mismo resumen; con `--dry-run`, también `cambios pendientes: P`. Con exit 1, `⚠️`. |
+| `migrate` | `✅ memory-system migrate — harness: <h> — docs/`, la línea `Siguiente paso: /memory-system index` y en la última línea el resumen del motor. Sin informe si el proyecto ya es SDDF o si se canceló. |
 | `check` | **Sin informe propio**: la salida es la del motor. Sin `--json`, añade como única línea final `exit code: <N>`; con `--json`, no añadas nada a stdout. `check` no escribe, así que no hay línea de creados, sobrescritos ni índice. |
 
 `N`, `M`, `S`, `X` y `K` son las cifras de la última línea del motor; no las recalcules.
@@ -485,26 +492,27 @@ modos, si `node` no está disponible, avisa:
 
 Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los archivos reales:
 
-1. Resuelve las rutas relativas al `REPO_ROOT` indicado (o al directorio de trabajo): `SPECS_BASE`
-   es `<REPO_ROOT>/<root>` y los marcadores de harness se buscan en `REPO_ROOT`. Determina el
+1. Resuelve las rutas relativas al `REPO_ROOT` indicado (o al directorio de trabajo): la raíz de
+   conocimiento es `<REPO_ROOT>/docs`, los work items están en `<REPO_ROOT>/specs/flow/` y los
+   marcadores de harness se buscan en `REPO_ROOT`. Determina el
    harness con la tabla de perfiles.
 2. **Scaffold inline** (`ensure`, `scaffold`, `rebuild --force`, `migrate`): recorre la lista de archivos
    gestionados de `memory-rules.md` §5 aplicando antes el perfil del harness (§1): una capa de
    `skipLayers` se registra una sola vez como `[OMITIDO] <capa>/ — gestionado por el harness <h>`
    y no se crea; una semilla de `mappings` cuyo equivalente existe se registra
-   `[MAPEADO] <semilla> → <ruta>` y no se crea. Nunca escribas fuera de `SPECS_BASE`. Por cada
+   `[MAPEADO] <semilla> → <ruta>` y no se crea. Nunca escribas fuera de `docs/`. Por cada
    archivo restante, comprueba con la herramienta de lectura si el
    destino existe: si no existe, copia la semilla desde `assets/scaffold/<ruta>` sustituyendo
    `{date}` por la fecha de hoy y registra `[CREADO] <ruta>`; si existe, registra
    `[PRESERVADO] <ruta>` (con `rebuild --force`, sobrescribe y registra `[SOBRESCRITO]`). Copia
    las cinco plantillas compartidas desde `<CLI_ROOT>/skills/<dueño>/assets/` tal cual; si el
    origen no existe, `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`. Crea
-   los directorios de capa y `requirements/functional/`, `requirements/non-functional/`,
-   `specs/epics/`, `specs/stories/` (con `.gitkeep` solo
-   si el directorio no existía). No borres nada. Con `--dry-run` solo lista `[CREARÍA]`/`[PRESERVARÍA]`/`[MAPEARÍA]`/`[OMITIRÍA]`. Cierra
+   los directorios de capa y `requirements/functional/`, `requirements/non-functional/` (con
+   `.gitkeep` solo si el directorio no existía). No crea `docs/specs/` ni `specs/flow/`. No borres nada. Con `--dry-run` solo lista `[CREARÍA]`/`[PRESERVARÍA]`/`[MAPEARÍA]`/`[OMITIRÍA]`. Cierra
    con `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`.
-3. **Índice inline** (`ensure`, `rebuild --force`, `index`): lista los `.md` de `SPECS_BASE` (y las
-   raíces externas del perfil) descartando las exclusiones. **Lee cada `.md` candidato con la
+3. **Índice inline** (`ensure`, `rebuild --force`, `index`): lista los `.md` de `docs/`, los de
+   `specs/flow/` (origen flow, `memory-rules.md` §2) y los de las raíces externas del perfil,
+   descartando las exclusiones. **Lee cada `.md` candidato con la
    herramienta de lectura antes de clasificarlo.** Un nodo solo se marca `⚠️ sin frontmatter` si
    su primera línea no es `---` (o el bloque no cierra); en caso contrario toma `slug` y `title`
    del bloque leído y, si faltan, deriva el slug del nombre del archivo/directorio y el título
@@ -513,7 +521,7 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
    a partir de los wikilinks leídos.
 4. Si el usuario pasó `--dry-run` a `index`, emite primero
    `ℹ️ --dry-run: índice impreso por consola, no se escribió ningún archivo` y a continuación el
-   índice completo; si no, escribe `<SPECS_BASE>/index.md`.
+   índice completo; si no, escribe `docs/index.md`.
 5. **`check` inline**: aplica a mano las cuatro reglas de `references/memory-rules.md` (§6 los
    campos obligatorios, §2 la extracción de wikilinks y las exclusiones, §1 el `skipLayers` del
    perfil). Comprueba con la herramienta de lectura qué capas y qué `constitution.md` existen,
@@ -534,21 +542,16 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
 
 ## Salida
 
-- `$SPECS_BASE/constitution.md`, `product/{README,vision,stakeholders,objectives,roadmap}.md`, un
-  `README.md` por capa, `requirements/srs-<project-slug>.md` cuando falta una disposición, `specs/{epics,stories}/` y las once plantillas de
+- `docs/constitution.md`, `product/{README,vision,stakeholders,objectives,roadmap}.md`, un
+  `README.md` por capa, `requirements/srs-<project-slug>.md` cuando falta una disposición y las once plantillas de
   `templates/` — solo los que faltaban (`scaffold`, `ensure`, `migrate`) o todos los gestionados
   (`rebuild --force`), salvo las capas y semillas que el perfil del harness omite o mapea.
 - En Speckit/OpenSpec, `index.md` enlaza los artefactos del harness en "Artefactos externos" con
   un subtítulo por origen; ningún archivo del harness se escribe.
-- `$SPECS_BASE/index.md` — índice completo de la wiki con wikilinks `[[slug]]` por capa, sección
+- `docs/index.md` — índice completo de la wiki con wikilinks `[[slug]]` por capa, sección
   "Estado del grafo" y, si procede, "Nodos pendientes" (`ensure`, `rebuild --force`, `index`).
 - `check`: **ningún archivo**. Solo stdout — informe textual agrupado por familia con su línea
   `problemas: N (…)`, o el objeto `{ harness, root, ok, summary, problems }` con `--json` — y el
   exit code 0 / 1 / 2.
 - Informe final del Paso 4 con las cifras del motor (`check` no añade informe propio).
 
-## Deprecación de `docs-wiki-builder`
-
-`/docs-wiki-builder [--update|--dry-run]` es desde 3.3.0 un alias que emite
-`⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.` y delega en este skill
-(`--update` → `index`, `--dry-run` → `index --dry-run`). Se elimina en 4.0.0.

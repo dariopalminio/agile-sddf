@@ -12,6 +12,9 @@ updated: 2026-01-02
 
 # Release/Epic: Catálogo
 
+## Objetivo
+[Por completar]
+
 ## Alcance
 
 Catálogo navegable de productos.

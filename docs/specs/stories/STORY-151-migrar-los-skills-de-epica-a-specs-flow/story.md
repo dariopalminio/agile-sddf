@@ -9,7 +9,7 @@ status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21
-updated: 2026-10-22
+updated: 2026-10-23
 related:
   - EPIC-26-layout-y-flow-forward-mejorado
 ---

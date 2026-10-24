@@ -162,9 +162,6 @@ referencien su etapa (familia `dod-guardrail`). Un proyecto con el DoD en un ún
 `/memory-system migrate --from=dod-monolithic` (`--dry-run` para ver el plan); el original queda como
 índice deprecado hasta 4.0.0.
 
-> ⚠️ `docs-wiki-builder` está deprecado desde 3.3.0 (se elimina en 4.0.0): es un alias que
-> delega en `/memory-system index` (`--update` → `index`, `--dry-run` → `index --dry-run`).
-
 ---
 
 ## 1. Pipeline de especificación de proyecto

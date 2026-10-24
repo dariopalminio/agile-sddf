@@ -3,8 +3,8 @@
 /**
  * Tests de STORY-103: template de épica v2 (minimalista, output-oriented) y migración
  * `memory-system migrate --from epic-template-v1`.
- * Cubre UT-001…UT-022 e IT-001 de `testcases.md`: contrato del template (central == seed, ≤ 40
- * líneas, 5 secciones con `clave:`), `readTemplateContract`, reglas R1–R11 de `planEpicMigration`
+ * Cubre UT-001…UT-022 e IT-001 de `testcases.md`: contrato del template (central == seed, ≤ 45
+ * líneas, 6 secciones con `clave:`), `readTemplateContract`, reglas R1–R11 de `planEpicMigration`
  * sobre las fixtures de `skills/memory-system/examples/epic-template-v1/` (cada `epic.md` junto a
  * su oráculo `expected.md`), idempotencia, `migrateEpics` (dry-run, exit codes, descubrimiento,
  * template central sin claves) y el despacho del motor. Los casos que escriben usan una copia temporal.
@@ -30,8 +30,8 @@ const KEYLESS_TEMPLATE = path.join(FIXTURES, 'templates', 'epic-template-sin-cla
 const engine = require(ENGINE);
 const epicTemplate = require(path.join(SKILL_DIR, 'scripts', 'epic-template.js'));
 
-const V2_HEADINGS = ['Alcance', 'Historias', 'Criterios de salida', 'Smoke tests', 'Notas'];
-const V2_CLAVES = ['alcance', 'historias', 'criterios-salida', 'smoke-tests', 'notas'];
+const V2_HEADINGS = ['Objetivo', 'Alcance', 'Historias', 'Criterios de salida', 'Smoke tests', 'Notas'];
+const V2_CLAVES = ['objetivo', 'alcance', 'historias', 'criterios-salida', 'smoke-tests', 'notas'];
 const REMOVED_SECTIONS = [
   'Descripción', 'Requerimiento', 'Impacto en Procesos Claves', 'Dependencias Críticas',
   'Riesgos', 'Criterios de éxito', 'Notas adicionales', 'Flujos Críticos',
@@ -74,19 +74,19 @@ const h2Titles = (text) => text.split('\n').filter((line) => line.startsWith('##
 // Template v2 (UT-001…UT-004, T028)
 // ---------------------------------------------------------------------------
 
-test('UT-001: el template de épica tiene como máximo 40 líneas', () => {
+test('UT-001: el template de épica tiene como máximo 45 líneas', () => {
   const lines = read(CENTRAL).replace(/\n$/, '').split('\n');
-  assert.ok(lines.length <= 40, `el template tiene ${lines.length} líneas`);
+  assert.ok(lines.length <= 45, `el template tiene ${lines.length} líneas`);
 });
 
 test('UT-002: el template central y el seed de epic-creation son idénticos byte a byte', () => {
   assert.ok(fs.readFileSync(CENTRAL).equals(fs.readFileSync(SEED)), 'docs/templates/epic-template.md difiere del seed');
 });
 
-test('UT-003: exactamente 5 secciones obligatorias en orden, con claves únicas y sin opcionales', () => {
+test('UT-003: exactamente 6 secciones obligatorias en orden, con claves únicas y sin opcionales', () => {
   const text = read(CENTRAL);
   const headings = text.split('\n').filter((line) => line.startsWith('## '));
-  assert.equal(headings.length, 5, headings.join('\n'));
+  assert.equal(headings.length, 6, headings.join('\n'));
   for (const heading of headings) assert.ok(heading.includes('<!-- sección obligatoria'), heading);
   assert.ok(!text.includes('<!-- sección opcional'));
   const contract = v2Contract();
@@ -107,7 +107,9 @@ test('UT-003b: guías de AC-2…AC-6 presentes y ejemplo de Historias en F1', ()
     const next = rest.search(/^## /m);
     return next < 0 ? rest : rest.slice(0, next);
   };
-  assert.ok(text.indexOf('## Alcance') < text.indexOf('## Historias'), 'Alcance debe ser la primera sección');
+  assert.ok(text.indexOf('## Objetivo') < text.indexOf('## Alcance'), 'Objetivo debe ser la primera sección');
+  assert.ok(text.indexOf('## Alcance') < text.indexOf('## Historias'), 'Alcance debe preceder a Historias');
+  assert.match(block('Objetivo'), /una oración/);
   assert.match(block('Alcance'), /Output-oriented/);
   assert.match(block('Alcance'), /product\/vision\.md/);
   assert.match(block('Alcance'), /requirements\//);
@@ -156,7 +158,7 @@ test('UT-004: IDs y slugs con guion ASCII; el raya U+2014 solo separa **STORY-NN
 // readTemplateContract (UT-020, UT-021)
 // ---------------------------------------------------------------------------
 
-test('UT-020: readTemplateContract devuelve las 5 entradas en el orden del template', () => {
+test('UT-020: readTemplateContract devuelve las 6 entradas en el orden del template', () => {
   assert.deepEqual(v2Contract(), V2_HEADINGS.map((heading, i) => ({ heading, clave: V2_CLAVES[i], obligatoria: true })));
   const custom = customContract();
   assert.deepEqual(custom.map((entry) => entry.heading), ['Objetivo técnico', 'Features', 'Bitácora', 'Pruebas de humo', 'Definición de terminado']);
@@ -280,11 +282,12 @@ test('UT-009: R4 conserva verbatim un smoke test no gherkin bajo SMOKE-N y emite
 test('UT-010: R6 mueve las secciones situacionales a Notas como ### y elimina las vacías', () => {
   const { content } = epicTemplate.planEpicMigration(fixture('EPIC-04-situacionales'), v2Contract());
   const notas = content.slice(content.indexOf('## Notas'));
-  assert.match(notas, /^### Objetivo$/m);
+  assert.match(content, /^## Objetivo\nDar visibilidad del negocio\.$/m, 'el Objetivo v1 pasa a la sección obligatoria Objetivo');
+  assert.doesNotMatch(notas, /^### Objetivo$/m);
   assert.match(notas, /^### Requerimiento: exportación$/m);
   assert.match(notas, /^#### Formato$/m);
   assert.ok(!content.includes('Riesgos'), 'la sección Riesgos vacía debe eliminarse');
-  assert.ok(!/^## (Objetivo|Requerimiento)/m.test(content));
+  assert.ok(!/^## Requerimiento/m.test(content));
 });
 
 test('UT-011: R8/R9 insertan las obligatorias ausentes con su placeholder en el orden del template', () => {
@@ -295,7 +298,7 @@ test('UT-011: R8/R9 insertan las obligatorias ausentes con su placeholder en el 
   assert.match(content, /## Notas\n$/);
 });
 
-test('UT-012: R10 conserva el preámbulo de una épica sin ## y añade las 5 secciones', () => {
+test('UT-012: R10 conserva el preámbulo de una épica sin ## y añade las 6 secciones', () => {
   const input = fixture('EPIC-03-sin-secciones');
   const { content } = epicTemplate.planEpicMigration(input, v2Contract());
   assert.ok(content.startsWith(input.trimEnd()), 'el preámbulo debe conservarse');

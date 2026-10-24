@@ -458,3 +458,9 @@ Ninguna. Las ambigüedades de la historia se resuelven en D-4 (cómo listar `spe
 - **Descripción**: la guía `docs/guides/artifact-directory-migration.md` debe indicar que se borren a mano las copias instaladas de `docs-wiki-builder` y que se elimine `root` de `sddf.config.yaml`. El resto de guías aún citan `$SPECS_BASE` (por ejemplo, `docs/guides/sddf-commands-pipeline.md:69`), y el CHANGELOG debe registrar como incompatible el cambio de capas de `memory-system` (diez capas, índice con `specs/flow/`).
 - **Documento afectado**: story.md de STORY-154
 - **Acción requerida**: STORY-154 incluye esos puntos en su alcance documental. Esta historia solo edita las líneas de D-10 y D-14.
+
+### CR-004
+- **Tipo**: desviación menor de implementación
+- **Descripción**: durante `story-implement-tasks` (2026-10-23) se tomaron cuatro decisiones de detalle no previstas literalmente: (1) en `memory-system/SKILL.md` la fila `dod-guardrail` no se partió en dos frases (R4): se sustituyó la notación `<REPO_ROOT>/<--cli-root>/skills` por `<CLI_ROOT>/skills`, porque una celda de tabla no admite dos líneas; (2) `test/requirements.test.js › fixture()` copia el repo completo del fixture y devuelve su `docs/`, para que los work items de `specs/flow/` viajen con la copia; (3) en TC-004 de `skill-preflight` el `not_contains` usa `ROOT_SOURCE` en lugar de `SPECS_BASE` para cumplir el contrato de verificación 2; (4) `header-aggregation` evalúa la fila de `specs/flow/archive/` antes que la de `specs/flow/STORY-*`.
+- **Documento afectado**: design.md (D-1, D-7, D-12, D-13)
+- **Acción requerida**: ninguna; el comportamiento y los contratos de verificación se mantienen.

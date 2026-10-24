@@ -14,9 +14,13 @@ related: []
 
 # Release/Epic: Skills de Testing Especializado y E2E Capability
 
+## Objetivo
+
+Habilitar la generación automática de pruebas ejecutables para componentes React y escenarios E2E en proyectos reales, cerrando el ciclo TDD desde la especificación hasta la validación automatizada en un stack frontend moderno.
+
 ## Alcance
 
-Amplía las capacidades del framework SDDF con skills especializados de testing: implementación de componentes de librerías React, tests de componentes con React Testing Library, y tests E2E con Cypress+Cucumber y Playwright+Cucumber. El objetivo es que los agentes puedan generar pruebas reales ejecutables en proyectos reales, cerrando el ciclo TDD desde la especificación hasta la validación automatizada en un stack frontend moderno.
+Amplía las capacidades del framework SDDF con skills especializados de testing: implementación de componentes de librerías React, tests de componentes con React Testing Library, y tests E2E con Cypress+Cucumber y Playwright+Cucumber. 
 
 ## Historias
 

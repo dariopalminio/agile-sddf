@@ -12,15 +12,15 @@ Convierte una visión confirmada en perfiles de usuario y requisitos trazables. 
 
 ## Entrada
 
-- `$SPECS_BASE/product/vision.md`, con `substatus: DONE`.
-- Templates `stakeholders-template.md` y `requirement-template.md`, preferentemente en `$SPECS_BASE/templates/`.
-- `$SPECS_BASE/product/stakeholders.md` y `$SPECS_BASE/requirements/`, opcionales.
+- `docs/product/vision.md`, con `substatus: DONE`.
+- Templates `stakeholders-template.md` y `requirement-template.md`, preferentemente en `docs/templates/`.
+- `docs/product/stakeholders.md` y `docs/requirements/`, opcionales.
 
 ## Precondiciones
 
 - La visión debe existir y estar en `DONE`.
 - Antes de activar esta historia, verificar WIP=1 del nivel correspondiente.
-- No se escribe en `$SPECS_BASE` antes del gate global.
+- No se escribe en `docs/` antes del gate global.
 
 ## Dependencias
 
@@ -38,14 +38,13 @@ Convierte una visión confirmada en perfiles de usuario y requisitos trazables. 
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-1. Si `SDDF_ROOT` está definida, debe ser un directorio accesible; úsala como `$SPECS_BASE`.
-2. Si no está definida, lee `sddf.config.yaml`; si `root` existe, debe resolver a un directorio accesible relativo al repositorio.
-3. Sin una fuente explícita, usa `docs` relativo al repositorio.
-4. Si una fuente explícita es inválida, informa el valor y termina sin escribir.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-Con `$SPECS_BASE` resuelto, comprueba que existen los roles locales de este skill (rutas relativas al directorio del skill):
+Con `REPO_ROOT` resuelto, comprueba que existen los roles locales de este skill (rutas relativas al directorio del skill):
 
 - `assets/agents/discovery-pm.md`
 - `assets/agents/discovery-architect.md`
@@ -61,7 +60,7 @@ Si falta alguno, muestra el siguiente mensaje con la ruta del rol ausente (una l
 
 ### Paso 1 — Validar visión
 
-Define `$VISION_PATH = $SPECS_BASE/product/vision.md`.
+Define `$VISION_PATH = docs/product/vision.md`.
 
 - Si no existe: `❌ La visión del producto no está terminada ($VISION_PATH no existe). Ejecuta primero /project-begin.` y termina sin escribir en `product/`, `requirements/` ni `.tmp/`.
 - Si `substatus` no es `DONE` o está ausente: `❌ La visión del producto no está terminada ($VISION_PATH: substatus <valor>). Ejecuta primero /project-begin.` y termina con las mismas garantías.
@@ -69,16 +68,16 @@ Define `$VISION_PATH = $SPECS_BASE/product/vision.md`.
 
 ### Paso 2 — Resolver templates
 
-Para cada template, intenta primero `$SPECS_BASE/templates/<nombre>` y luego `assets/<nombre>` del skill.
+Para cada template, intenta primero `docs/templates/<nombre>` y luego `assets/<nombre>` del skill.
 
-- Al usar un seed: `⚠️ Usando template seed <nombre> del skill. Ejecuta sddf-init para centralizarlo en $SPECS_BASE/templates/.`.
+- Al usar un seed: `⚠️ Usando template seed <nombre> del skill. Ejecuta sddf-init para centralizarlo en docs/templates/.`.
 - Si no existe central ni seed: `❌ Template <nombre> no encontrado. Ejecuta sddf-init.` y termina sin escribir.
 
 Registra `$STAKEHOLDERS_TEMPLATE_PATH` y `$REQUIREMENT_TEMPLATE_PATH`.
 
 ### Paso 3 — Inventario y staging
 
-Aplica `references/layer-materialization.md` para obtener `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR` y `$NEXT_US`. Define `$STAKEHOLDERS_PATH = $SPECS_BASE/product/stakeholders.md` y limpia `$STAGING_DIR = .tmp/project-discovery/proposal/` antes de delegar.
+Aplica `references/layer-materialization.md` para obtener `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR` y `$NEXT_US`. Define `$STAKEHOLDERS_PATH = docs/product/stakeholders.md` y limpia `$STAGING_DIR = .tmp/project-discovery/proposal/` antes de delegar.
 
 ### Paso 4 — Discovery de producto
 
@@ -104,14 +103,14 @@ Muestra:
 
 Luego lee `assets/agents/discovery-architect.md` y sigue su `## Estado Discovery` con `$VISION_PATH`, `$DISCOVERY_SUMMARY_PATH`, `$UX_FINDINGS_PATH`, `$STAKEHOLDERS_PATH`, `$STAKEHOLDERS_TEMPLATE_PATH`, `$REQUIREMENT_TEMPLATE_PATH`, `$REQUIREMENTS_INVENTORY`, `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US` y `$STAGING_DIR`. Esta sesión redacta la propuesta; no lances un subagente para este paso.
 
-El rol deja `manifest.md` y los archivos propuestos en staging. Si algún rol falla o falta el manifiesto, informa el fallo, recomienda reejecutar y termina sin tocar `$SPECS_BASE`.
+El rol deja `manifest.md` y los archivos propuestos en staging. Si algún rol falla o falta el manifiesto, informa el fallo, recomienda reejecutar y termina sin tocar `docs/`.
 
 ### Paso 7 — Gate global
 
 Valida la propuesta con la referencia y muestra los perfiles bajo `Usuarios y roles` y cada requisito `ID — título`, clasificado como `nuevo` o `modifica`. Pregunta `Confirmar` o `Cancelar`.
 
 - `Confirmar` habilita la materialización.
-- `Cancelar` o falta de respuesta termina sin escribir en `$SPECS_BASE`.
+- `Cancelar` o falta de respuesta termina sin escribir en `docs/`.
 
 ### Paso 8 — Materializar y cerrar
 
@@ -119,11 +118,11 @@ Aplica los pasos 1–6 de `references/layer-materialization.md` con el gate ya a
 
 Para una retoma, recalcula siempre el inventario; si stakeholders está en `IN-PROGRESS`, completa solo las secciones que aún contienen `[Por completar`.
 
-Informa: `✅ Discovery completo: <n> perfiles en $SPECS_BASE/product/stakeholders.md · <x> FR y <y> NFR en $SPECS_BASE/requirements/ · Siguiente comando: /project-planning`.
+Informa: `✅ Discovery completo: <n> perfiles en docs/product/stakeholders.md · <x> FR y <y> NFR en docs/requirements/ · Siguiente comando: /project-planning`.
 
 ## Salida
 
-- `$SPECS_BASE/product/stakeholders.md`.
-- `$SPECS_BASE/requirements/functional/FR-NNN-<slug>.md`.
-- `$SPECS_BASE/requirements/non-functional/NFR-NNN-<slug>.md`.
+- `docs/product/stakeholders.md`.
+- `docs/requirements/functional/FR-NNN-<slug>.md`.
+- `docs/requirements/non-functional/NFR-NNN-<slug>.md`.
 - Propuesta auditable en `.tmp/project-discovery/proposal/`.

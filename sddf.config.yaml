@@ -17,7 +17,7 @@ verify:
     command: "npm run test:eval:runner"
     required: false
   integration:
-    command: "node scripts/audit-root-resolution.js"
+    command: "node scripts/verify-fixed-layout.js"
     required: true
   contract:
     command: "npm run test:contract"

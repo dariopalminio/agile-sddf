@@ -22,7 +22,7 @@ related: []
 |------|----------|------|-----------|
 | `product/` | ¿Por qué existe? | Años | PO, negocio |
 | `requirements/` | ¿Qué debe hacer? | Meses | PO, equipo, QA |
-| `specs/` | ¿Cómo lo construimos ahora? | Días/semanas | Equipo, IA |
+| `specs/flow/` (raíz del repositorio, fuera de `docs/`) | ¿Cómo lo construimos ahora? | Días/semanas | Equipo, IA |
 
 **Regla dura:** un requirement describe **comportamiento del producto**; una story describe **un incremento que lo materializa** y declara `implements: [FR-NNN]`. No duplicar el "qué".
 
@@ -52,6 +52,11 @@ agile-sddf/
 ├── CLAUDE.md                          # (opcional) punto de entrada para Claude Code
 ├── sddf.config.yaml                   # configuración: skills activos por fase
 │
+├── specs/flow/                        # work items del layout fijo (ADR-0016), fuera de docs/
+│   ├── EPIC-NN-*/epic.md              #   épicas (entregables)
+│   ├── STORY-NNN-*/story.md           #   historias atómicas
+│   └── archive/<fecha>-STORY-NNN-*/   #   historias archivadas
+│
 └── docs/                              # raíz única de la memoria (configurable)
     ├── index.md                       # cursor principal wiki (wikilinks [[slug]])
     ├── constitution.md                # principios supremos (raíz de gobernanza)
@@ -70,16 +75,6 @@ agile-sddf/
     │   │   └── FR-NNN-*.md
     │   └── non-functional/
     │       └── NFR-NNN-*.md
-    │
-    ├── specs/                         # capa 3: construcción por incremento
-    │   ├── epics/                  # L2 — entregables
-    │   │   └── EPIC-NNN-*/
-    │   │       └── epic.md
-    │   ├── stories/                # L1 — historias atómicas
-    │   │   └── STORY-NNN-*/
-    │   │       └── story.md
-    │   └── .cache/                    # caché regenerable (NO versionado)
-    │       └── index.json
     │
     ├── domains/                       # modelo DDD del sistema
     │   ├── README.md
@@ -115,7 +110,7 @@ agile-sddf/
     │   └── runbook-<topic>.md
     │
     ├── rfcs/                          # (opcional) solicitudes de cambio de arquitectura;
-    │   ├── README.md                  #   no forma parte de las once capas ni la crea el scaffold
+    │   ├── README.md                  #   no forma parte de las diez capas ni la crea el scaffold
     │   └── rfc-<topic>.md
     │
     └── templates/                     # meta-artefactos
@@ -133,9 +128,10 @@ agile-sddf/
         └── srs-template.md            # autoría manual, semilla de memory-system
 ```
 
-Las once capas de memoria son `product/`, `requirements/`, `specs/`, `domains/`, `architecture/`,
+Las diez capas de memoria son `product/`, `requirements/`, `domains/`, `architecture/`,
 `adr/`, `policies/`, `guardrails/`, `guides/`, `runbooks/` y `templates/`, más `constitution.md`
-en la raíz. `rfcs/` es opcional y no la gestiona ningún skill. Las seis plantillas compartidas se
+en la raíz de `docs/`. Los work items no son una capa de `docs/`: viven en `specs/flow/`, los crea
+`/sddf-init` y `memory-system index` los indexa como origen flow (§10.2, STORY-152). `rfcs/` es opcional y no la gestiona ningún skill. Las seis plantillas compartidas se
 declaran en `SHARED_TEMPLATES` del motor; las de ADR, dominio, guardrail, policy y SRS son de autoría manual.
 
 ### Reglas del árbol
@@ -188,7 +184,7 @@ product/vision.md
     ↓ informs
 requirements/FR-001.md
     ↓ verified-by
-specs/stories/STORY-042/story.md
+specs/flow/STORY-042/story.md
     ↓ implements
 requirements/FR-001.md
 ```
@@ -266,7 +262,7 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
 
 | Modo | Estado | Qué hace |
 |------|--------|----------|
-| `ensure [--fix-frontmatter] [--harness h]` (= sin modo) | STORY-096 | `detect → scaffold → [header-aggregation] → index`: crea solo lo que falta de las once capas, regenera `index.md` y reporta `creados: N · preservados: M · índice regenerado: sí`. Con `--fix-frontmatter` invoca `header-aggregation` en batch con "Saltar todos los conflictos" (solo archivos sin frontmatter). Idempotente: la segunda ejecución reporta `creados: 0`. |
+| `ensure [--fix-frontmatter] [--harness h]` (= sin modo) | STORY-096 | `detect → scaffold → [header-aggregation] → index`: crea solo lo que falta de las diez capas, regenera `index.md` y reporta `creados: N · preservados: M · índice regenerado: sí`. Con `--fix-frontmatter` invoca `header-aggregation` en batch con "Saltar todos los conflictos" (solo archivos sin frontmatter). Idempotente: la segunda ejecución reporta `creados: 0`. |
 | `scaffold [--dry-run] [--harness h]` | STORY-096 | `detect → scaffold`: copia-si-falta del árbol semilla y de las plantillas compartidas; no toca `index.md`. `--dry-run` imprime `[CREARÍA]`/`[PRESERVARÍA]` sin escribir. |
 | `rebuild [--force]` | STORY-096 | Sin `--force`: `❌ rebuild es destructivo. Añade --force para confirmar.` y ningún cambio. Con `--force`: advertencia `⚠️ Los cambios manuales en archivos gestionados por el scaffold se perderán.`, `scaffold --force` (sobrescribe solo los archivos gestionados, §10.3) e `index`. Nunca borra. |
 | `index [--harness h] [--dry-run]` | STORY-095 | Regenera `docs/index.md` completo desde `assets/index-template.md`: una entrada `[[slug]]` por artefacto, agrupada por capa, más "Estado del grafo" y "Nodos pendientes". `--dry-run` imprime sin escribir. |
@@ -277,20 +273,20 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
 
 ### 10.2 Arquitectura
 
-- `SKILL.md` resuelve la raíz (contrato `SDDF-ROOT-RESOLUTION: v1`), interpreta el modo y delega en
+- `SKILL.md` aplica el contrato de layout fijo (`SDDF-FIXED-LAYOUT: v1`; raíz de conocimiento `docs/`, `--root docs`), interpreta el modo y delega en
   `scripts/memory-system.js`, un motor Node ≥ 18 sin dependencias (solo `node:fs`, `node:path`,
   `node:process`) con los subcomandos `detect`, `scaffold`, `index` y `check`, que produce el mismo
   `index.md` en cada ejecución salvo `updated`. Sin `node` en PATH el skill aplica scaffold e índice
   inline con `references/memory-rules.md`, avisando de que la reproducibilidad byte a byte no está
   garantizada. El gate `--force` de `rebuild` vive en `SKILL.md` (es interacción); el motor solo
   conoce `scaffold --force`.
-- **Catálogo único de capas** (`LAYERS`): las once capas se declaran una vez en el motor; `scaffold`
-  las usa para detectar capas faltantes y el índice deriva de ellas sus placeholders (`specs` más
-  su desglose `specs-epics|specs-stories`, `templates` excluida, más `root` y `external`).
+- **Catálogo único de capas** (`LAYERS`): las diez capas se declaran una vez en el motor; `scaffold`
+  las usa para detectar capas faltantes y el índice deriva de ellas sus placeholders (`templates`
+  excluida), más `root`, las capas de work items `specs|specs-epics|specs-stories|specs-archive` y
+  `external`. `scaffold` no crea `docs/specs/` ni `specs/flow/` (STORY-152 D-5).
 - **Árbol semilla** (`assets/scaffold/**`, espejo del destino): `constitution.md` (secciones de la
   constitución del framework con `[Por completar]`), `product/{README,vision,stakeholders,objectives,roadmap}.md`,
   un `README.md` por capa con propósito, convención de nombres y wikilink `[[index]]`,
-  `specs/{epics,stories}/` (con `.gitkeep` solo si el directorio no existe),
   `templates/README.md`, `templates/adr-template.md` y las semillas de autoría manual sin skill
   dueño `templates/{domain,guardrail,policy}-template.md` (ADR-0012). Frontmatter canónico de
   `header-aggregation` con `created`/`updated` = `{date}`, el único placeholder que el motor
@@ -315,11 +311,17 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
 - **Reglas de nodo** (`references/memory-rules.md`): slug = `frontmatter.slug`, o el directorio para
   `story.md`/`epic.md`/`project.md` (solo repositorios sin migrar)/`spec.md`/`proposal.md`/`plan.md`, o `<dir>-index` para
   `README.md`, o el nombre del archivo; título = `frontmatter.title` o primer `#`; capa = primer
-  segmento de la ruta (`specs/` se divide en `specs-epics|specs-stories`, raíz = `root`, raíces
-  externas = `external`). Se excluyen `index.md`, `specs/.cache/`, `templates/`, `pre-split/` y los
+  segmento de la ruta (en el layout legado, `docs/specs/` se divide en `specs-epics|specs-stories`;
+  raíz = `root`, raíces externas = `external`). Se excluyen `index.md`, `.cache/`, `templates/`, `pre-split/` y los
   derivados de historia (`design.md`, `tasks.md`, `testcases.md`, `analyze.md`, `*-report.md`,
   `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`,
   `story-refinement-log.md`).
+- **Origen flow** (STORY-152 D-4): `index` y `check` recorren también `<REPO_ROOT>/specs/flow/` con
+  el mismo recorrido y las mismas exclusiones. Sus nodos son propios (`check` los evalúa), su ruta
+  es relativa a `docs/` (`../specs/flow/…`) y su capa sale de la ruta bajo `specs/flow/`:
+  `archive/**` → `specs-archive`, `EPIC-*` → `specs-epics`, `STORY-*` → `specs-stories`, otro →
+  `specs`. Si el harness gestiona `specs/` (`skipLayers`), el origen no se recorre; sin
+  `specs/flow/`, queda vacío. Un repo sin migrar sigue indexando `docs/specs/` en las mismas capas.
 - **Template como fuente de verdad**: `assets/index-template.md` fija las secciones; el motor solo
   sustituye `{layer:<capa>}`, `{stats}` y `{date}`, y falla (exit 2, sin escribir) si un placeholder
   no corresponde a una capa conocida o una capa con nodos carece de placeholder.
@@ -360,7 +362,7 @@ exclusiones de `index`) alimenta cinco evaluadores puros:
 
 | Familia (`kind`) | Regla | Invariante que impone |
 |---|---|---|
-| `missing-layer` | Falta una de las once capas como directorio de la raíz, o falta `constitution.md`, y el perfil del harness no la omite (`skipLayers`). | §3, §7.1 |
+| `missing-layer` | Falta una de las diez capas como directorio de la raíz, o falta `constitution.md`, y el perfil del harness no la omite (`skipLayers`). | §3, §7.1 |
 | `orphan` | Nodo indexable sin bloque de frontmatter (`---` inicial ausente o sin cerrar). | §7.2 |
 | `invalid-frontmatter` | Falta `type`, `slug` o `title` en el frontmatter **declarado**; además `id` o `status` cuando `type ∈ {project, epic, story}` (`project` solo aparece en repositorios sin migrar). Un problema por campo ausente. | §7.2, §7.3 |
 | `broken-wikilink` | Ocurrencia de un wikilink que no resuelve contra el conjunto de slugs derivados. | §7.8 |
@@ -438,9 +440,10 @@ son una tabla de datos (`HARNESS_PROFILES` del motor, `references/memory-rules.m
 | `speckit` | `specs` | `constitution.md` → `.specify/memory/constitution.md` | `specs/*/spec.md`, `specs/*/plan.md` |
 | `openspec` | `specs` | — | `openspec/specs/**/spec.md`, `openspec/changes/*/proposal.md` |
 
-- **`skipLayers`**: `scaffold` no crea la capa (`[OMITIDO] specs/ — gestionado por el harness <h>`,
+- **`skipLayers`**: `scaffold` no crea la capa (`[OMITIDO] <capa>/ — gestionado por el harness <h>`,
   una línea por capa), `check` no la reporta como `missing-layer` y el índice la muestra como
-  `_(gestionado por el harness)_`. `sddf` y `generic` crean las once capas.
+  `_(gestionado por el harness)_`. `specs` ya no es capa del scaffold: en Speckit y OpenSpec solo
+  desactiva el origen flow del índice. `sddf` y `generic` crean las diez capas.
 - **`mappings`**: si el equivalente existe, `scaffold` no crea la semilla
   (`[MAPEADO] constitution.md → .specify/memory/constitution.md`), `check` no la exige e `index`
   enlaza el equivalente como nodo externo con el slug de la semilla (`[[constitution]]`). Si no
@@ -463,11 +466,11 @@ son una tabla de datos (`HARNESS_PROFILES` del motor, `references/memory-rules.m
   [artifact-directory-migration.md](../guides/artifact-directory-migration.md) describe el proceso
   seguro con `--dry-run`, resolución de hallazgos y ejecución final.
 
-### 10.6 Deprecación de `docs-wiki-builder`
+### 10.6 Alias histórico del modo index (eliminado)
 
-`docs-wiki-builder` (STORY-044) queda como alias desde 3.3.0: emite
-`⚠️ docs-wiki-builder está deprecado. Usa /memory-system index.`, mapea `--update` → `index` y
-`--dry-run` → `index --dry-run`, y no conserva lógica propia ni template. Se elimina en 4.0.0.
+El alias del modo index creado en STORY-044, deprecado desde 3.3.0, se eliminó en la versión mayor
+de EPIC-26 (STORY-152). El índice se regenera con `/memory-system index` (`--dry-run` para
+imprimirlo sin escribir).
 `header-aggregation` no se fusiona: `memory-system` lee su esquema (`slug`, `title`) con un parser
 propio y el skill sigue siendo invocable de forma independiente.
 

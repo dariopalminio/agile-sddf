@@ -1,15 +1,15 @@
 {
   "skill": "epic-creation",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Casos de prueba para el skill epic-creation. Verifica: happy-path creacion interactiva completa, modo --quick omitiendo secciones opcionales, fail-fast ante template ausente, manejo de slug con caracteres especiales y (STORY-103) preguntas derivadas del template v2 con escritura F1/SMOKE-N gherkin y bloque DoD aplicable.",
   "cases": [
     {
       "id": "TC-001",
       "name": "happy-path: creacion interactiva completa de épica",
       "type": "functional",
-      "description": "Ejecutar epic-creation con nombre 'Sistema de pagos'. El skill debe resolver localmente una raíz válida, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo epic.md en $SPECS_BASE/specs/epics/EPIC-NN-sistema-de-pagos/, invocar epic-format-validation y mostrar APROBADO con la ruta del archivo y el siguiente paso sugerido.",
+      "description": "Ejecutar epic-creation con nombre 'Sistema de pagos'. El skill debe resolver REPO_ROOT con el layout fijo, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo epic.md en specs/flow/EPIC-NN-sistema-de-pagos/, invocar epic-format-validation y mostrar APROBADO con la ruta del archivo y el siguiente paso sugerido.",
       "input": {
-        "context": "Entorno SDDF valido. SDDF_ROOT definido. Template $SPECS_BASE/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en $SPECS_BASE/specs/epics/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa Alcance, lista 2 historias (Nombre: descripción), un criterio de salida y un smoke test (Dado/Cuando/Entonces) y deja Notas vacía. Acepta las secciones opcionales o las salta.",
+        "context": "Entorno SDDF válido con layout fijo. Template docs/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en specs/flow/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa Alcance, lista 2 historias (Nombre: descripción), un criterio de salida y un smoke test (Dado/Cuando/Entonces) y deja Notas vacía. Acepta las secciones opcionales o las salta.",
         "flags": []
       },
       "expected": {
@@ -37,7 +37,7 @@
       "type": "edge-case",
       "description": "Ejecutar epic-creation --quick con nombre 'Onboarding v2'. El skill debe completar frontmatter y secciones obligatorias sin mostrar preguntas por las secciones opcionales. El epic.md generado debe contener solo secciones obligatorias. La validacion debe pasar y no debe aparecer ninguna pregunta del tipo '¿Quieres completar la seccion?'.",
       "input": {
-        "context": "Entorno SDDF valido. Template disponible con al menos 2 secciones opcionales marcadas como '<!-- seccion opcional'. No hay épicas previas en $SPECS_BASE/specs/epics/. El usuario provee nombre 'Onboarding v2', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
+        "context": "Entorno SDDF valido. Template disponible con al menos 2 secciones opcionales marcadas como '<!-- seccion opcional'. No hay épicas previas en specs/flow/. El usuario provee nombre 'Onboarding v2', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
         "flags": ["--quick"]
       },
       "expected": {
@@ -62,9 +62,9 @@
       "id": "TC-003",
       "name": "fail-fast: template ausente detiene la ejecucion",
       "type": "fail-fast",
-      "description": "Ejecutar epic-creation cuando ni $SPECS_BASE/templates/epic-template.md ni assets/epic-template.md existen. El skill debe detectar la ausencia del template en el Paso 2, emitir el mensaje de error indicado en la documentacion y detener la ejecucion sin crear ningun directorio ni archivo.",
+      "description": "Ejecutar epic-creation cuando ni docs/templates/epic-template.md ni assets/epic-template.md existen. El skill debe detectar la ausencia del template en el Paso 2, emitir el mensaje de error indicado en la documentacion y detener la ejecucion sin crear ningun directorio ni archivo.",
       "input": {
-        "context": "La resolución local produce una raíz válida. El archivo $SPECS_BASE/templates/epic-template.md NO existe. El archivo assets/epic-template.md tampoco existe. El usuario intenta crear una épica llamada 'Feature flags'.",
+        "context": "La resolución local produce una raíz válida. El archivo docs/templates/epic-template.md NO existe. El archivo assets/epic-template.md tampoco existe. El usuario intenta crear una épica llamada 'Feature flags'.",
         "flags": []
       },
       "expected": {
@@ -111,7 +111,7 @@
       "type": "happy-path",
       "description": "[EV-008 · STORY-103] Ejecutar epic-creation con el template v2 (5 secciones con clave:). Cada pregunta se construye en runtime con el título y el comentario guía de la sección del template (sin guía hardcodeada por título). La sección con clave historias pide \"Nombre: descripción\" y escribe líneas F1 sin ID; la sección con clave smoke-tests pide Dado/Cuando/Entonces y escribe \"### SMOKE-1 — <nombre>\" + bloque gherkin. Notas acepta \"ninguna\" y deja solo el encabezado. El gate epic-format-validation (Paso 7) devuelve APROBADO.",
       "input": {
-        "context": "Entorno SDDF válido. $SPECS_BASE/templates/epic-template.md es el template v2 (Alcance, Historias, Criterios de salida, Smoke tests, Notas; todas <!-- sección obligatoria · clave: ... -->). Existen EPIC-01 y EPIC-02. El usuario crea la épica \"Sistema de pagos\" respondiendo una pregunta por sección.",
+        "context": "Entorno SDDF válido. docs/templates/epic-template.md es el template v2 (Alcance, Historias, Criterios de salida, Smoke tests, Notas; todas <!-- sección obligatoria · clave: ... -->). Existen EPIC-01 y EPIC-02. El usuario crea la épica \"Sistema de pagos\" respondiendo una pregunta por sección.",
         "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Historias <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
         "user_responses": [
           "Sistema de pagos",
@@ -167,6 +167,28 @@
         "not_contains": []
       },
       "threshold": 1
+    },
+    {
+      "name": "repo-limpio-escribe-en-specs-flow",
+      "type": "functional",
+      "description": "AC-1 de STORY-151: en un repo recién inicializado con /sddf-init, sin épicas previas, epic-creation con nombre 'Sistema de pagos' calcula EPIC-01, crea specs/flow/ si falta y escribe specs/flow/EPIC-01-sistema-de-pagos/epic.md sin tocar ni crear el layout anterior.",
+      "input": {
+        "context": "Repo recién inicializado con /sddf-init (layout fijo). Template docs/templates/epic-template.md existe. specs/flow/ no contiene ninguna épica. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
+        "flags": [
+          "--quick"
+        ]
+      },
+      "expected": {
+        "contains": [
+          "specs/flow/EPIC-01-",
+          "epic.md"
+        ],
+        "not_contains": [
+          "docs/specs"
+        ]
+      },
+      "threshold": 0.9,
+      "id": "TC-007"
     }
   ]
 }

@@ -12,6 +12,9 @@ updated: 2026-08-30
 
 # Release/Epic: Quality Gates con DoD en Story Workflow
 
+## Objetivo
+Integrar la lectura y validación en runtime de las secciones PLAN, IMPLEMENT y CODE-REVIEW del DoD en los skills del pipeline SDD para convertirlo en un quality gate ejecutable que condicione las transiciones según los criterios cumplidos.
+
 ## Alcance
 Integra la lectura y validación del Definition of Done en los tres skills del pipeline de historias SDD. Cada skill leerá su sección correspondiente del archivo `$SPECS_BASE/policies/dod-story.md` (PLAN, IMPLEMENT, CODE-REVIEW) y validará que los criterios de esa fase estén cumplidos antes de avanzar al siguiente estado. Convierte el DoD en un quality gate ejecutable dentro del flujo automatizado.
 

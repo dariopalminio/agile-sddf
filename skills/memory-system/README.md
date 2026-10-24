@@ -6,7 +6,7 @@ Punto de entrada para crear, mantener y verificar la memoria documental del proy
 
 - Detecta el harness del proyecto: `sddf`, `speckit`, `openspec` o `generic`.
 - Crea las capas de memoria que falten, junto con `constitution.md` y las plantillas gestionadas.
-- Regenera `$SPECS_BASE/index.md` con wikilinks `[[slug]]` para los artefactos documentales.
+- Regenera `docs/index.md` con wikilinks `[[slug]]` para los artefactos documentales y los work items de `specs/flow/`.
 - Verifica en solo lectura capas ausentes, archivos sin frontmatter, frontmatter inválido y wikilinks rotos.
 - Adopta la memoria SDDF en proyectos Speckit u OpenSpec, o divide un DoD monolítico en guardrails por etapa.
 - Mantiene requisitos como SRS único o fragmentos FR/NFR, con migración reversible y catálogo generado.
@@ -28,7 +28,7 @@ No elimina archivos. Solo `rebuild --force` puede sobrescribir archivos gestiona
 | `check` | Valida la memoria y propaga el resultado para CI. | No. |
 | `migrate` | Adopta el scaffold en un proyecto Speckit u OpenSpec. | Sí, tras confirmar o con `--yes`. |
 | `migrate --from=dod-monolithic` | Divide el DoD de historia en guardrails por etapa. | Sí; no sobrescribe destinos sin `--force`. |
-| `migrate --from=epic-template-v1` | Migra las épicas (`specs/*/EPIC-*/epic.md`) al template de épica v2 por `clave:` de sección; reporta `[REVISAR]` lo que no reconoce. | Sí; idempotente, sin frontmatter tocado. |
+| `migrate --from=epic-template-v1` | Migra las épicas del layout legado (`docs/specs/*/EPIC-*/epic.md`) al template de épica v2 por `clave:` de sección; reporta `[REVISAR]` lo que no reconoce. | Sí; idempotente, sin frontmatter tocado. |
 | `migrate --from=specs-3-levels` | Colapsa el layout heredado de tres niveles en `product/`, `requirements/` y `architecture/c4/`; mueve épicas e historias a los niveles actuales. | Sí; primero ejecuta `--dry-run`; `[NO MIGRADO]` conserva el origen. |
 | `migrate --from=srs-single` | Fragmenta un SRS en archivos FR/NFR y actualiza el catálogo. | Sí; idempotente. |
 | `migrate --from=requirements-fragmented` | Consolida requisitos fragmentados en un SRS. | Sí; idempotente. |
@@ -39,7 +39,7 @@ No elimina archivos. Solo `rebuild --force` puede sobrescribir archivos gestiona
 
 | Entrada | Uso |
 |---|---|
-| `$SPECS_BASE` | Raíz de los artefactos. Se resuelve mediante `SDDF_ROOT`, `sddf.config.yaml.root` o `docs`. |
+| `docs/` y `specs/flow/` | Rutas fijas (ADR-0016), relativas a la raíz del repositorio: la memoria vive en `docs/` y los work items que indexa `index`, en `specs/flow/`. |
 | `sddf.config.yaml`, `.specify/`, `openspec/` | Marcadores opcionales para detectar el harness. |
 | Argumentos y flags | Seleccionan el modo, `--harness`, `--dry-run`, `--json`, `--fix-frontmatter`, `--yes` o `--force`. |
 | `assets/scaffold/` y plantillas compartidas | Semillas y plantillas que el skill copia cuando corresponda. |
@@ -74,7 +74,7 @@ No elimina archivos. Solo `rebuild --force` puede sobrescribir archivos gestiona
 
 ## Output
 
-Los modos de escritura pueden crear `constitution.md`, las capas documentales faltantes, plantillas gestionadas y, cuando corresponde, `$SPECS_BASE/index.md`. En Speckit y OpenSpec respetan las rutas que ya administra el harness y no escriben en ellas.
+Los modos de escritura pueden crear `constitution.md`, las capas documentales faltantes, plantillas gestionadas y, cuando corresponde, `docs/index.md`. En Speckit y OpenSpec respetan las rutas que ya administra el harness y no escriben en ellas.
 
 `check` no crea ni modifica archivos: devuelve un informe agrupado por problema, o un objeto JSON con `--json`. Sus códigos de salida son `0` sin problemas, `1` cuando encuentra problemas y `2` ante un error técnico.
 

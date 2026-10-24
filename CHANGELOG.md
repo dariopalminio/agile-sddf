@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - `story-improve` pasa a llamarse `story-refine`. El log generado ahora es `story-refinement-log.md` y su plantilla es `refinement-log-template.md`, con `type: refinement-log`. `story-specify` invoca el nombre nuevo.
 
+### Removed
+
+- **BREAKING** — se elimina el alias deprecado `docs-wiki-builder` (anunciado para 4.0.0). Usa `/memory-system index` (`--update` → `index`, `--dry-run` → `index --dry-run`).
+
 ### Deprecated
 
 - `story-improve` permanece como alias de `/story-refine` desde 4.2.0 y se eliminará en 5.0.0.

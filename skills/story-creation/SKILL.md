@@ -37,7 +37,7 @@ El skill acepta tres tipos de input:
 
 - **Tipo A — Texto libre**: descripción de una necesidad o feature en lenguaje natural
 - **Tipo B — Ruta de archivo**: ruta relativa o absoluta a un archivo `.md` existente con contenido de historia incompleto
-- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia existente en `$SPECS_BASE/specs/stories/`
+- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia existente en `specs/flow/`
 
 Fuente estructural del output: `assets/story-template.md` (leído en tiempo de ejecución)
 
@@ -92,22 +92,19 @@ Fuente estructural del output: `assets/story-template.md` (leído en tiempo de e
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
 
 ### Paso 1 — Leer template canónico
 
-Leer el archivo `$SPECS_BASE/templates/story-template.md` (fuente de verdad del proyecto, puede contener personalizaciones). Si no existe, usar el seed `assets/story-template.md` y emitir:
-> ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
+Leer el archivo `docs/templates/story-template.md` (fuente de verdad del proyecto, puede contener personalizaciones). Si no existe, usar el seed `assets/story-template.md` y emitir:
+> ⚠️ Usando template seed del skill. Ejecuta `sddf-init` para centralizarlo en `docs/templates/`.
 
 El template es la **única fuente de información estructural** para generar el output. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. Si el template cambia, el output generado se actualizará automáticamente.
 
@@ -135,7 +132,7 @@ Detectar el tipo de input proporcionado:
 #### Tipo C — Término de búsqueda
 **Señal:** El input es una palabra o frase corta que no parece texto de historia ni ruta explícita.
 **Acción:**
-1. Buscar en `$SPECS_BASE/specs/stories/` archivos cuyo nombre contenga el término (sin distinguir mayúsculas)
+1. Buscar en `specs/flow/STORY-*/` directorios cuyo nombre contenga el término (sin distinguir mayúsculas)
 2. Si hay exactamente 1 coincidencia → leerlo y usarlo como base. Continuar al Paso 3.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que elija antes de continuar.
 4. Si no hay coincidencias → tratar el input como Tipo A (texto libre).
@@ -219,19 +216,20 @@ Si alguna dimensión falla, ajustar la historia antes de continuar. Si `S` es de
 #### Derivar el siguiente ID (STORY-NNN)
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
-> `specs/stories/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> `specs/flow/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
 > el patrón de archivo anidado descrito a continuación.
 
-1. Usar Glob con el patrón `$SPECS_BASE/specs/stories/STORY-*/story.md` para localizar todos los
-   archivos `story.md` dentro de directorios `STORY-NNN-*`. A partir de cada ruta retornada,
-   extraer el segmento `STORY-NNN` del nombre del directorio padre inmediato.
-   Ejemplo: de `docs/specs/stories/STORY-073-skill-security-audit-condicional/story.md` → `73`.
+1. Usar Glob con dos patrones para localizar los `story.md` existentes y archivados:
+   - `specs/flow/STORY-*/story.md` → NNN del directorio padre `STORY-NNN-<slug>`
+   - `specs/flow/archive/*-STORY-*/story.md` → NNN del directorio `<YYYY-MM-DD>-STORY-NNN-<slug>` (historias archivadas, ADR-0016)
+   Ejemplo: de `specs/flow/STORY-073-skill-security-audit-condicional/story.md` → `73`.
    Si Glob retorna vacío, usar como fallback:
-   - Bash: `ls $SPECS_BASE/specs/stories/ | grep -E "^STORY-[0-9]+"`
-   - PowerShell: `Get-ChildItem $SPECS_BASE/specs/stories -Directory | Where-Object { $_.Name -match "^STORY-" }`
+   - Bash: `ls specs/flow/ specs/flow/archive/ | grep -E "STORY-[0-9]+"`
+   - PowerShell: `Get-ChildItem specs/flow, specs/flow/archive -Directory | Where-Object { $_.Name -match "STORY-" }`
    Nunca asumir que "sin resultados de Glob" significa "no hay historias previas".
-2. Extraer los números de todos los prefijos `STORY-NNN` encontrados
-3. Tomar el número más alto y sumarle 1. Solo comenzar en `STORY-001` si ambos mecanismos (Glob + fallback) confirman que no existe ningún directorio `STORY-*`
+2. Extraer los números de todos los prefijos `STORY-NNN` encontrados en la unión de ambos directorios
+3. Tomar el número más alto y sumarle 1. Solo comenzar en `STORY-001` si ambos mecanismos (Glob + fallback) confirman que no existe ningún directorio `STORY-*` en `specs/flow/` ni en `specs/flow/archive/`
+   Si `specs/flow/` no existe, crearlo junto con `STORY-{NNN}-{slug}/` al guardar; no se crea ningún otro directorio de work items
 4. Formatear con ceros a la izquierda hasta 3 dígitos: `STORY-001`, `STORY-053`, etc.
 
 #### Reglas de nomenclatura
@@ -239,7 +237,7 @@ Si alguna dimensión falla, ajustar la historia antes de continuar. Si `S` es de
 - **Directorio:** `STORY-{NNN}-{slug}/`
 - **Archivo:** `story.md` dentro de ese directorio
 - El `{slug}` se deriva del `Quiero` de la historia: minúsculas, palabras separadas por guiones, máximo 5 palabras significativas, sin acentos ni caracteres especiales
-- Ruta final: `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug}/story.md`
+- Ruta final: `specs/flow/STORY-{NNN}-{slug}/story.md`
 
 Si el directorio `STORY-{NNN}-{slug}/` ya existe, incrementar NNN hasta encontrar uno disponible.
 
@@ -256,7 +254,7 @@ En el archivo `story.md`, completar los campos del frontmatter con los valores r
 Después de guardar, mostrar en la conversación:
 
 ```
-**Archivo generado:** `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug}/story.md`
+**Archivo generado:** `specs/flow/STORY-{NNN}-{slug}/story.md`
 
 [Historia completa en formato story-template.md]
 
@@ -281,7 +279,7 @@ Si la historia fue simplificada para cumplir INVEST, explicar brevemente qué se
 
 ## Salida
 
-- `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug}/story.md` — historia de usuario generada
+- `specs/flow/STORY-{NNN}-{slug}/story.md` — historia de usuario generada
 - Estado del workitem: `SPECIFY` (estado inicial; pendiente de evaluación con `/story-evaluation`)
 
 ### Ejemplo de output

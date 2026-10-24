@@ -5,11 +5,11 @@ id: STORY-150
 kind: feat
 slug: STORY-150-migrar-skills-especificacion-specs-flow
 title: "Migrar los skills de especificación a specs/flow"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21
-updated: 2026-10-22
+updated: 2026-10-23
 related:
   - EPIC-26-layout-y-flow-forward-mejorado
   - STORY-148-contrato-de-rutas-fijas-y-gate-determinista
@@ -50,6 +50,8 @@ Cuando se ejecuta grep -rnE "SPECS_BASE|SDDF_ROOT" sobre ellos
 Entonces no hay coincidencias
   Y "npm run verify:repository" termina en verde
 ```
+
+> **Excepción registrada (code-review ronda 1, 2026-10-23):** la segunda cláusula depende de la migración de plantilla de épica, ajena a esta historia. `npm run verify:repository` falla únicamente en el paso `pruebas deterministas` por 15 tests preexistentes (UT-001, UT-003, UT-005…UT-012, UT-014, UT-016, UT-019, UT-020, IT-001), idénticos a la línea base previa a esta historia. Para esta historia la cláusula se cumple cuando el paso de contrato de layout fijo (`npm run verify:layout`) pasa y no se introduce ningún fallo nuevo; la luz verde completa queda como dependencia de la historia que cierre la migración de plantilla de épica.
 
 ## ⚙️ Criterios no funcionales específicos
 

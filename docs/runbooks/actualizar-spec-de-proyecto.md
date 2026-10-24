@@ -225,8 +225,8 @@ diff <(grep -oE '^#+ [0-9]+\.?[0-9]*\.?' "$P") \
 - **Un documento generado por ingeniería inversa envejece peor que uno escrito a mano**, porque nadie
   lo revisa: parece autoritativo por su formato exhaustivo y su tabla de niveles de confianza, pero
   es una foto con fecha. Conviene dejar una nota de vigencia visible al inicio.
-- **`docs/index.md` es mejor punto de partida que `project.md`.** Lo mantiene un skill
-  (`docs-wiki-builder`) que se reejecuta con frecuencia, así que refleja el filesystem mucho mejor
+- **`docs/index.md` es mejor punto de partida que `project.md`.** Lo regenera `/memory-system index`,
+  que se reejecuta con frecuencia, así que refleja el filesystem mucho mejor
   que un documento de spec editado a mano.
 - **El `CHANGELOG.md` es la única fuente del *porqué*.** Sin él, un renombrado masivo parece un error
   de nomenclatura en vez de una decisión deliberada con su ADR detrás.

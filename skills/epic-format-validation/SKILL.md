@@ -38,8 +38,8 @@ leen otros skills (la de clave `historias` y la de clave `smoke-tests`). Produce
 ## Entrada
 
 - Argumento posicional: ruta relativa, nombre (con o sin `.md`) o término de búsqueda del archivo de épica
-- `$SPECS_BASE/specs/epics/` — directorio donde se buscan los archivos de épica
-- `$SPECS_BASE/templates/epic-template.md` — fuente de verdad estructural (solo lectura)
+- `specs/flow/EPIC-*/epic.md` — archivos de épica donde se busca por término
+- `docs/templates/epic-template.md` — fuente de verdad estructural (solo lectura)
 
 ## Parámetros
 
@@ -47,13 +47,13 @@ leen otros skills (la de clave `historias` y la de clave `smoke-tests`). Produce
 
 ## Precondiciones
 
-- La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
-- `$SPECS_BASE/templates/epic-template.md` debe existir
+- `REPO_ROOT` debe resolverse según el contrato de layout fijo antes de continuar.
+- `docs/templates/epic-template.md` debe existir
 - Debe proporcionarse al menos un argumento para identificar el archivo a validar
 
 ## Dependencias
 
-- Archivos: `$SPECS_BASE/templates/epic-template.md`
+- Archivos: `docs/templates/epic-template.md`
 
 ## Modos de ejecución
 
@@ -78,14 +78,13 @@ leen otros skills (la de clave `historias` y la de clave `smoke-tests`). Produce
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -101,7 +100,7 @@ El skill acepta tres formas de input. Detectar cuál aplica antes de continuar:
 #### Tipo B — Nombre con o sin extensión `.md`
 **Señal:** El input es una palabra o frase corta que no contiene separadores de ruta.
 **Acción:**
-1. Buscar en `$SPECS_BASE/specs/epics/` archivos cuyo nombre contenga el término (sin distinguir mayúsculas/minúsculas), incluyendo los que tengan o no extensión `.md`
+1. Buscar entre las rutas `specs/flow/EPIC-*/epic.md` aquellas cuyo nombre de directorio contenga el término (sin distinguir mayúsculas/minúsculas). El directorio plano también contiene `STORY-*`: nunca se consideran como épicas ni se consulta `specs/flow/archive/`
 2. Si hay exactamente 1 coincidencia → usar ese archivo. Continuar a Paso 2.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que elija antes de continuar.
 4. Si no hay coincidencias → ir a **manejo de archivo no encontrado**.
@@ -113,7 +112,7 @@ RECHAZADO
 
 Archivo no encontrado: <ruta o término proporcionado>
 
-No se encontró ninguna épica en docs/specs/epics/ que coincida con el input proporcionado.
+No se encontró ninguna épica en specs/flow/ que coincida con el input proporcionado.
 
 Verifica que el nombre o ruta sea correcto e inténtalo de nuevo.
 ```
@@ -128,11 +127,11 @@ El archivo de plantilla es la **única fuente de información estructural** para
 
 El archivo de plantilla es de **solo lectura**. Nunca escriba en él, lo modifique ni lo use como ruta de salida.
 
-Lee el archivo de plantilla `$SPECS_BASE/templates/epic-template.md`.
+Lee el archivo de plantilla `docs/templates/epic-template.md`.
 
 - Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` y emitir:
 
-  > ⚠️ Usando template del skill epic-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
+  > ⚠️ Usando template del skill epic-creation. Ejecuta `sddf-init` para centralizarlo en `docs/templates/`.
 
 - Si tampoco existe el fallback: informar al usuario y detener la ejecución:
 
@@ -269,7 +268,7 @@ Formato inválido:
 - Línea <n> (<título de la sección>): `<texto literal>` → se esperaba F1 `- <Nombre>: <descripción>`, F2 `- [ ] **STORY-NNN** — <Nombre>: <descripción>` o F3 `- [x] **STORY-NNN** — <Nombre>: <descripción>`
 - Línea <n> (<título de la sección>): `<encabezado>` → se esperaba `### SMOKE-N — <nombre>` seguido de un bloque gherkin con Escenario/Dado/Cuando/Entonces
 
-Revisa el template en $SPECS_BASE/templates/epic-template.md para completar las secciones indicadas.
+Revisa el template en docs/templates/epic-template.md para completar las secciones indicadas.
 ```
 
 Si el bloque `Secciones/campos faltantes:` lista alguna **sección**, añadir al final esta nota:

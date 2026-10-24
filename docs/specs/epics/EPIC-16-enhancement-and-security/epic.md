@@ -27,6 +27,10 @@ related: [
 
 # Release/Epic: enhancement and security improvements for skills (Safe Enhancement & Fortify Skills)
 
+## Objetivo
+
+Mejorar la seguridad y la auditoría de los skills, así como la experiencia de desarrollo y la integración continua mediante la selección de root folder, la generación de casos de prueba y la unificación de flujos de trabajo relacionados con la especificación y la implementación de historias.
+
 ## Alcance
 
 Agregar selección de root folder de skills al instalador, ampliar las capacidades del skill de implementación y specify, mejorar seguridad y auditoría de skills.

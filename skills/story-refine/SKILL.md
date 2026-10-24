@@ -53,9 +53,9 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 
 | Artefacto | Ubicación | Requerido |
 |---|---|---|
-| `finvest-evaluation-report.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/finvest-evaluation-report.md` | ✓ obligatorio |
-| `story.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` | ✓ obligatorio |
-| `assets/refinement-log-template.md` | `$CLI_ROOT/skills/story-refine/assets/refinement-log-template.md` | ✓ obligatorio |
+| `finvest-evaluation-report.md` | `specs/flow/<STORY-NNN>-*/finvest-evaluation-report.md` | ✓ obligatorio |
+| `story.md` | `specs/flow/<STORY-NNN>-*/story.md` | ✓ obligatorio |
+| `assets/refinement-log-template.md` | `assets/refinement-log-template.md` (relativo al directorio de este skill) | ✓ obligatorio |
 
 ## Parámetros
 
@@ -63,7 +63,7 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 
 ## Precondiciones
 
-- La historia identificada por `--story-id` existe bajo `$SPECS_BASE/specs/stories/`
+- La historia identificada por `--story-id` existe en `specs/flow/`
 - El directorio de la historia contiene `finvest-evaluation-report.md` con frontmatter YAML válido
 - El directorio de la historia contiene `story.md`
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
@@ -97,14 +97,11 @@ Lee el reporte FINVEST de la historia y aplica las recomendaciones de cada dimen
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -123,13 +120,13 @@ Proporciona el ID (ej. STORY-075).
 
 Buscar el directorio usando Glob con el patrón:
 ```
-$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md
+specs/flow/<STORY-NNN>-*/story.md
 ```
 Extraer el directorio padre de la primera coincidencia cuyo nombre comienza con el ID.
 
 **Si no se encuentra:**
 ```
-❌ No se encontró la historia <STORY-NNN> bajo $SPECS_BASE/specs/stories/
+❌ No se encontró la historia <STORY-NNN> en specs/flow/
 Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
 ```
 Detener la ejecución.
@@ -210,7 +207,7 @@ Este contenido es la base sobre la que se aplicarán las mejoras en el Paso 6.
 
 Si I tiene score ≤ 3:
 1. Leer el frontmatter de `story.md` para obtener `parent:` y `related:`
-2. Buscar historias en `$SPECS_BASE/specs/stories/` con el mismo `parent:` o con IDs que aparezcan en `related:`
+2. Buscar historias en `specs/flow/STORY-*/story.md` con el mismo `parent:` o con IDs que aparezcan en `related:`
 3. Leer el frontmatter y la sección `Como/Quiero/Para` de cada historia hermana encontrada
 4. Registrar internamente qué funcionalidades ya están cubiertas por las hermanas para evitar introducir dependencias redundantes
 
@@ -339,8 +336,8 @@ Confirmar:
 
 | Artefacto | Ubicación | Condición |
 |---|---|---|
-| `story.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` | Cuando `verdict` es `NEEDS-REFINEMENT` o `SPLIT` |
-| `story.md.bak` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md.bak` | Cuando `verdict` es `NEEDS-REFINEMENT` o `SPLIT` |
-| `story-refinement-log.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story-refinement-log.md` | Cuando `verdict` es `NEEDS-REFINEMENT` o `SPLIT` |
+| `story.md` | `specs/flow/<STORY-NNN>-*/story.md` | Cuando `verdict` es `NEEDS-REFINEMENT` o `SPLIT` |
+| `story.md.bak` | `specs/flow/<STORY-NNN>-*/story.md.bak` | Cuando `verdict` es `NEEDS-REFINEMENT` o `SPLIT` |
+| `story-refinement-log.md` | `specs/flow/<STORY-NNN>-*/story-refinement-log.md` | Cuando `verdict` es `NEEDS-REFINEMENT` o `SPLIT` |
 
 Cuando `verdict: APPROVED`, falta `verdict` o su valor no es permitido: ningún archivo se crea ni modifica.

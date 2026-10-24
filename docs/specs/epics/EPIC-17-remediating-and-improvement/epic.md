@@ -14,6 +14,10 @@ related: []
 
 # Release/Epic: Remediating and Improvement (Reducción de deuda técnica y mejoras de estabilidad)
 
+## Objetivo
+
+Reducir la deuda técnica del framework y mejorar su estabilidad y mantenibilidad mediante la remediación de violaciones a la constitución, la unificación de esquemas de evals y la verificación automática de la estructura y documentación del repositorio.
+
 ## Alcance
 El framework tiene una arquitectura agéntica sólida con patrones probados
 (preflight centralizado, anti-teléfono-descompuesto, template-as-source-of-truth),

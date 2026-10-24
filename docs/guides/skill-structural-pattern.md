@@ -41,6 +41,37 @@ ejecutar lógica de negocio. La precedencia es `SDDF_ROOT` válida →
 `sddf.config.yaml.root` válida → `docs`; una fuente explícita inválida detiene las
 escrituras. `skill-preflight` es un diagnóstico explícito, no un paso automático.
 
+### 3.1 Contrato de layout fijo
+
+[ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md) retira la resolución anterior: durante EPIC-26 cada
+skill migra a un paso 0 que solo resuelve `REPO_ROOT` y usa rutas fijas. El bloque canónico es:
+
+```markdown
+### Paso 0 — Resolver contexto local
+
+<!-- SDDF-FIXED-LAYOUT: v1 -->
+
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
+```
+
+`npm run verify:layout` (paso «contrato de layout fijo» de `verify:repository`) exige en cada `skills/*/SKILL.md`:
+
+| Regla | Condición |
+|---|---|
+| R1 | la línea exacta `<!-- SDDF-FIXED-LAYOUT: v1 -->` |
+| R2 | el bloque, desde el marcador hasta el siguiente encabezado, nombra `REPO_ROOT`, `specs/flow/`, `docs/templates/` y `docs/guardrails/` |
+| R3 | ninguna línea contiene `SDDF-ROOT-RESOLUTION: v1`, `SPECS_BASE` ni `SDDF_ROOT` |
+| R4 | ninguna línea nombra a la vez la clave `root` y `sddf.config.yaml` |
+
+Solo `skill-preflight` puede mencionar el layout legado para diagnosticarlo, y solo entre
+`<!-- SDDF-LEGACY-DIAGNOSTIC:start -->` y `<!-- SDDF-LEGACY-DIAGNOSTIC:end -->`; esas líneas quedan fuera de R3 y R4.
+
+Los skills aún no migrados figuran en `PENDING_MIGRATION` (`scripts/verify-fixed-layout.js`). Cada historia de
+migración añade el bloque y retira el skill de la lista en el mismo cambio: el gate falla si un skill de la lista ya
+cumple el contrato o no existe. La lista debe quedar vacía al cerrar EPIC-26.
+
 ## Patrones de arquitectura
 
 ### 4. Un solo nivel de delegación

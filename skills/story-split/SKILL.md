@@ -18,7 +18,7 @@ triggers:
 
 ## Objetivo
 
-Toma una historia grande, épica o feature demasiado amplio y lo divide en historias más pequeñas e independientes. Cada historia resultante sigue **estrictamente** el template `$SPECS_BASE/templates/story-template.md`.
+Toma una historia grande, épica o feature demasiado amplio y lo divide en historias más pequeñas e independientes. Cada historia resultante sigue **estrictamente** el template `docs/templates/story-template.md`.
 
 **Qué hace este skill:**
 - Divide historias grandes en historias más pequeñas aplicando los 8 patrones de splitting de Richard Lawrence
@@ -41,9 +41,9 @@ El skill acepta tres tipos de input:
 
 - **Tipo A — Texto libre**: historia completa o descripción de feature en lenguaje natural
 - **Tipo B — Ruta de archivo**: ruta relativa o absoluta a un archivo `.md` con el contenido de la historia
-- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia en `$SPECS_BASE/specs/stories/`
+- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia en `specs/flow/`
 
-Fuente estructural del output: `$SPECS_BASE/templates/story-template.md` (leído en tiempo de ejecución)
+Fuente estructural del output: `docs/templates/story-template.md` (leído en tiempo de ejecución)
 
 ---
 
@@ -58,15 +58,15 @@ Fuente estructural del output: `$SPECS_BASE/templates/story-template.md` (leído
 
 ## Precondiciones
 
-- La historia a dividir existe bajo `$SPECS_BASE/specs/stories/` o fue provista como texto libre o ruta de archivo
-- El archivo `$SPECS_BASE/templates/story-template.md` existe
+- La historia a dividir existe en `specs/flow/` o fue provista como texto libre o ruta de archivo
+- El archivo `docs/templates/story-template.md` existe
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 
 ---
 
 ## Dependencias
 
-- Archivos: [`$SPECS_BASE/templates/story-template.md`]
+- Archivos: [`docs/templates/story-template.md`]
 
 ---
 
@@ -105,26 +105,23 @@ Fuente estructural del output: `$SPECS_BASE/templates/story-template.md` (leído
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
 
 ### Paso 1 — Leer template canónico
 
-Leer el archivo `$SPECS_BASE/templates/story-template.md`.
+Leer el archivo `docs/templates/story-template.md`.
 
 El template es la **única fuente de información estructural** para generar el output. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución.
 
-Si el archivo central **no existe**, usar el fallback `$CLI_ROOT/skills/story-creation/assets/story-template.md` y emitir:
-> ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
+Si el archivo central **no existe**, usar como fallback el seed `assets/story-template.md` del skill `story-creation` y emitir:
+> ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `docs/templates/`.
 
 Si tampoco existe el fallback, detener y notificar (ver sección Manejo de errores).
 
@@ -145,7 +142,7 @@ Detectar el tipo de input proporcionado:
 #### Tipo C — Término de búsqueda
 **Señal:** El input es una palabra o frase corta que no parece texto de historia ni ruta explícita.
 **Acción:**
-1. Buscar en `$SPECS_BASE/specs/stories/` archivos cuyo nombre contenga el término (sin distinguir mayúsculas)
+1. Buscar en `specs/flow/STORY-*/` directorios cuyo nombre contenga el término (sin distinguir mayúsculas)
 2. Si hay exactamente 1 coincidencia → leerlo y usarlo como historia a dividir. Continuar al Paso 3.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que elija antes de continuar.
 4. Si no hay coincidencias → tratar el input como Tipo A (texto libre).
@@ -361,15 +358,16 @@ La **historia core** conserva el ID de la historia original — no se le asigna 
 Las **historias adicionales** reciben IDs nuevos consecutivos:
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
-> `specs/stories/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> `specs/flow/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
 > el patrón de archivo anidado descrito a continuación.
 
-1. Usar Glob con el patrón `$SPECS_BASE/specs/stories/STORY-*/story.md` para localizar todas las
-   historias existentes. De cada ruta retornada, extraer el número `NNN` del segmento `STORY-NNN-*`
-   (directorio padre inmediato). Ejemplo: de `docs/specs/stories/STORY-074-integrar-.../story.md` → `74`.
-   Si Glob retorna vacío, verificar con Bash (`ls $SPECS_BASE/specs/stories/ | grep -E "^STORY-[0-9]+"`)
+1. Usar Glob con dos patrones para localizar las historias existentes y archivadas:
+   - `specs/flow/STORY-*/story.md` → número `NNN` del segmento `STORY-NNN-*` (directorio padre inmediato)
+   - `specs/flow/archive/*-STORY-*/story.md` → número `NNN` del directorio `<YYYY-MM-DD>-STORY-NNN-<slug>` (ADR-0016)
+   Ejemplo: de `specs/flow/STORY-074-integrar-.../story.md` → `74`.
+   Si Glob retorna vacío, verificar con Bash (`ls specs/flow/ specs/flow/archive/ | grep -E "STORY-[0-9]+"`)
    antes de asumir que no hay historias previas.
-2. Extraer los números de todos los prefijos `STORY-NNN` encontrados
+2. Extraer los números de todos los prefijos `STORY-NNN` encontrados en la unión de ambos directorios
 3. Tomar el número más alto y asignar IDs desde ese punto: `STORY-(N+1)`, `STORY-(N+2)`, etc.
 4. Solo comenzar en `STORY-002` si ambos mecanismos (Glob + fallback Bash) confirman que no existe ningún `STORY-*`
 5. Formatear con ceros a la izquierda hasta 3 dígitos
@@ -388,7 +386,7 @@ Las **historias adicionales** reciben IDs nuevos consecutivos:
 
 #### Guardar cada historia adicional
 
-Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/stories/`:
+Por cada historia adicional (no-core), crear en `specs/flow/`:
 - **Directorio:** `STORY-{NNN}-{slug}/`
 - **Archivo:** `story.md` con la historia completa en formato del template
 - **Frontmatter:** `id: STORY-{NNN}`, `kind:` heredado de la historia madre, `slug: STORY-{NNN}-{slug}`, `status: SPECIFY`, campo `related:` con el ID de la core y las demás historias hermanas
@@ -405,11 +403,11 @@ Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/stories/`:
 ## Historias resultantes
 
 ### Historia 1 — {título corto}
-**Archivo:** `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug}/story.md`
+**Archivo:** `specs/flow/STORY-{NNN}-{slug}/story.md`
 [Historia completa en formato story-template.md]
 
 ### Historia 2 — {título corto}
-**Archivo:** `$SPECS_BASE/specs/stories/STORY-{NNN+1}-{slug}/story.md`
+**Archivo:** `specs/flow/STORY-{NNN+1}-{slug}/story.md`
 [Historia completa en formato story-template.md]
 
 ...
@@ -418,9 +416,9 @@ Por cada historia adicional (no-core), crear en `$SPECS_BASE/specs/stories/`:
 [Qué quedó fuera de scope, dependencias entre historias si las hay, orden de implementación sugerido]
 
 ## Archivos generados
-- `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug-core}/story.md` ← repurposed (era `STORY-{NNN}-{slug-original}/`)
-- `$SPECS_BASE/specs/stories/STORY-{N+1}-{slug-2}/story.md` ← nuevo
-- `$SPECS_BASE/specs/stories/STORY-{N+2}-{slug-3}/story.md` ← nuevo
+- `specs/flow/STORY-{NNN}-{slug-core}/story.md` ← repurposed (era `STORY-{NNN}-{slug-original}/`)
+- `specs/flow/STORY-{N+1}-{slug-2}/story.md` ← nuevo
+- `specs/flow/STORY-{N+2}-{slug-3}/story.md` ← nuevo
 
 > ⚠️ El directorio `STORY-{NNN}-{slug-original}/` fue renombrado a `STORY-{NNN}-{slug-core}/`.
 > Actualiza manualmente cualquier referencia al slug anterior en `epic.md` u otros documentos.
@@ -435,8 +433,8 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| Template no encontrado | `❌ No se encontró el template en $SPECS_BASE/templates/story-template.md` | Detener. Pedir verificar que el archivo existe |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Template no encontrado | `❌ No se encontró el template en docs/templates/story-template.md` | Detener. Pedir verificar que el archivo existe |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
 | Más de 1 coincidencia (Tipo C) | Mostrar lista de coincidencias | Pedir al usuario que elija antes de continuar |
 | Directorio de historia adicional ya existe | Informar al usuario del conflicto | No sobreescribir; continuar con las demás |
 | Directorio original ya renombrado | Detectar por diferencia de slug | Omitir el renombrado sin error; continuar |
@@ -445,13 +443,13 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 
 ## Salida
 
-- `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug-core}/story.md` — historia core (directorio repurposed del original)
-- `$SPECS_BASE/specs/stories/STORY-{N+1}-{slug}/story.md` … — historias adicionales (nuevas)
+- `specs/flow/STORY-{NNN}-{slug-core}/story.md` — historia core (directorio repurposed del original)
+- `specs/flow/STORY-{N+1}-{slug}/story.md` … — historias adicionales (nuevas)
 - Estado de todas las historias resultantes: `SPECIFY` (pendiente de re-evaluación con `/story-evaluation`)
 
 ### Referencias
 
-- **Template canónico:** `$SPECS_BASE/templates/story-template.md`
+- **Template canónico:** `docs/templates/story-template.md`
 - **Creación de historias:** `/story-creation`
 - **Evaluación de calidad:** `/story-evaluation`
 - Richard Lawrence & Peter Green, *Humanizing Work Guide to Splitting User Stories* — origen de los 8 patrones

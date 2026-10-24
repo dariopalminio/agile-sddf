@@ -12,6 +12,9 @@ updated: 2026-03-01
 
 # Épica: Seguridad
 
+## Objetivo
+[Por completar]
+
 ## Alcance
 Endurecer la seguridad del pipeline.
 

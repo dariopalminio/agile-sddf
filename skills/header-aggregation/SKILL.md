@@ -9,7 +9,7 @@ description: >-
 
 # Skill: /header-aggregation
 
-Aplica frontmatter YAML a archivos Markdown de especificación. El esquema se deriva de la ruta relativa a `$SPECS_BASE`, para que las capas de producto y requisitos mantengan sus contratos propios sin campos de work item ajenos.
+Aplica frontmatter YAML a archivos Markdown de especificación. El esquema se deriva de la ruta relativa a `REPO_ROOT`, para que las capas de producto y requisitos mantengan sus contratos propios sin campos de work item ajenos.
 
 ## Esquema canónico de frontmatter
 
@@ -41,14 +41,11 @@ related: []
 
 ## Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -58,10 +55,10 @@ El skill acepta una ruta relativa o absoluta, un nombre corto o ningún argument
 
 Para un nombre corto, busca en este orden:
 
-- `$SPECS_BASE/specs/stories/*/story.md`
-- `$SPECS_BASE/specs/epics/*/epic.md`
-- `$SPECS_BASE/product/<término>.md`
-- `$SPECS_BASE/requirements/**/<término>*.md`
+- `specs/flow/STORY-*/story.md`
+- `specs/flow/EPIC-*/epic.md`
+- `docs/product/<término>.md`
+- `docs/requirements/**/<término>*.md`
 
 Por ejemplo, `vision` resuelve la visión de producto. Un resultado único se usa directamente; resultados múltiples se presentan para elegir. Si no hay resultado, trata el input como texto libre e informa al usuario.
 
@@ -69,18 +66,19 @@ Una ruta de directorio activa el modo batch. Sin input, pregunta si se procesar�
 
 ## Paso 2 — Derivar campos
 
-La primera coincidencia de esta tabla decide `type`, `id`, `kind` y `slug` a partir de la ruta relativa a `$SPECS_BASE`:
+La primera coincidencia de esta tabla decide `type`, `id`, `kind` y `slug` a partir de la ruta relativa a `REPO_ROOT`:
 
 | Ruta | `type` | `id` / `kind` | `slug` |
 |---|---|---|---|
-| `product/README.md`, `requirements/README.md` | `wiki` | — | `<capa>-index` |
-| `product/<nombre>.md` | `product` | — | `<nombre>` |
-| `requirements/functional/FR-NNN-*.md` | `requirement` | `FR-NNN` / `functional` | nombre sin extensión |
-| `requirements/non-functional/NFR-NNN-*.md` | `requirement` | `NFR-NNN` / `non-functional` | nombre sin extensión |
-| `requirements/srs-*.md` | `srs` | — | nombre sin extensión |
-| otro archivo bajo `requirements/` | `wiki` | — | nombre sin extensión |
-| directorio `STORY-*` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio |
-| directorio `EPIC-*` | `epic` | `EPIC-NN` | nombre del directorio |
+| `docs/product/README.md`, `docs/requirements/README.md` | `wiki` | — | `<capa>-index` |
+| `docs/product/<nombre>.md` | `product` | — | `<nombre>` |
+| `docs/requirements/functional/FR-NNN-*.md` | `requirement` | `FR-NNN` / `functional` | nombre sin extensión |
+| `docs/requirements/non-functional/NFR-NNN-*.md` | `requirement` | `NFR-NNN` / `non-functional` | nombre sin extensión |
+| `docs/requirements/srs-*.md` | `srs` | — | nombre sin extensión |
+| otro archivo bajo `docs/requirements/` | `wiki` | — | nombre sin extensión |
+| directorio `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio sin el prefijo de fecha |
+| directorio `specs/flow/STORY-*` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio |
+| directorio `specs/flow/EPIC-*` | `epic` | `EPIC-NN` | nombre del directorio |
 | resto | `wiki` | — | regla histórica |
 
 Reglas complementarias:
@@ -115,14 +113,16 @@ Un archivo tiene frontmatter si inicia exactamente con `---` en la primera líne
 
 ### 4.1 Conjunto de archivos
 
-Si se recibe `$SPECS_BASE`, un directorio padre o `$SPECS_BASE/specs/`, escanea:
+El conjunto depende del directorio recibido:
 
-- `$SPECS_BASE/product/**/*.md`
-- `$SPECS_BASE/requirements/**/*.md`, incluidos `functional/` y `non-functional/`
-- `$SPECS_BASE/specs/epics/*/epic.md`
-- `$SPECS_BASE/specs/stories/*/story.md`
+| Input | Archivos escaneados |
+|---|---|
+| `REPO_ROOT` (o `.`) | `docs/product/**/*.md`, `docs/requirements/**/*.md` (incluidos `functional/` y `non-functional/`), `specs/flow/EPIC-*/epic.md` y `specs/flow/STORY-*/story.md` |
+| `docs/` | solo `docs/product/**/*.md` y `docs/requirements/**/*.md` |
+| `specs/flow/` | solo los canónicos `specs/flow/EPIC-*/epic.md` y `specs/flow/STORY-*/story.md` |
+| otro subdirectorio | los Markdown de ese directorio |
 
-Para `product/` y `requirements/`, procesa los Markdown recursivamente. Para `epics/` y `stories/`, conserva el escaneo de archivos canónicos por subdirectorio. Si se recibe un subdirectorio de artefactos, procesa los Markdown que correspondan a ese directorio.
+Para `product/` y `requirements/`, procesa los Markdown recursivamente. Para las épicas y las historias, conserva el escaneo de archivos canónicos por subdirectorio. `specs/flow/archive/` solo se procesa si se recibe de forma explícita como subdirectorio.
 
 ### 4.2 Clasificación y confirmación
 

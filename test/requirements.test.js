@@ -16,10 +16,11 @@ function root() {
 function srs(dir) {
   fs.writeFileSync(path.join(dir, 'requirements', 'srs-demo.md'), `---\ntype: srs\nslug: srs-demo\ntitle: Demo\nstatus: IN-PROGRESS\nsubstatus: DONE\ncreated: 2026-10-12\nupdated: 2026-10-12\n---\n\n# Demo\n\n## Requisitos funcionales\n\n### FR-001 — Crear cuenta\n\nEl sistema debe crear cuentas.\n\n#### Criterios\n\n- [ ] válido\n\n## Requisitos no funcionales\n\n### NFR-001 — Latencia\n\nDebe responder rápido.\n`);
 }
+// Copia el repo del fixture completo (docs/ y specs/flow/) y devuelve su docs/.
 function fixture(name) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 's118-fixture-'));
-  fs.cpSync(path.join(__dirname, '..', 'skills', 'memory-system', 'examples', name, 'docs'), dir, { recursive: true });
-  return dir;
+  const repo = fs.mkdtempSync(path.join(os.tmpdir(), 's118-fixture-'));
+  fs.cpSync(path.join(__dirname, '..', 'skills', 'memory-system', 'examples', name), repo, { recursive: true });
+  return path.join(repo, 'docs');
 }
 function treeHash(dir) {
   const rows = [];
@@ -193,7 +194,7 @@ test('S118-IT-008 check informa cada regla de requisitos en ambas disposiciones'
   // implements que no resuelve o mal formado (SRS único y fragmentado)
   for (const name of ['srs-single', 'requirements-fragmented']) {
     const dir = fixture(name);
-    const story = path.join(dir, 'specs', 'stories', 'STORY-001-prueba', 'story.md');
+    const story = path.join(dir, '..', 'specs', 'flow', 'STORY-001-prueba', 'story.md');
     fs.writeFileSync(story, fs.readFileSync(story, 'utf8').replace('implements: [FR-001, NFR-002]', 'implements: [FR-099, mal]'), 'utf8');
     const found = details(dir);
     assert.ok(found.some((detail) => /implements: FR-099 no resuelve/.test(detail)), `${name}: ${found}`);

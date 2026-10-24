@@ -8,12 +8,18 @@
 
 ## What it does
 
-Diagnostica en modo de solo lectura la resolución efectiva de `REPO_ROOT`, `SPECS_BASE` y `ROOT_SOURCE`, además de la estructura, los templates y el runtime de un entorno SDDF. Expone errores y advertencias sin realizar escrituras.
+Diagnostica en modo de solo lectura el layout fijo de un repositorio SDDF (ADR-0016) —`specs/flow/`, `specs/flow/archive/`, `specs/living/`, `workflow/` y `docs/templates/`, relativos a `REPO_ROOT`—, las señales del layout legado, los templates centrales y el runtime. Expone advertencias sin realizar escrituras.
 
 **Produces:**
 
-- Un informe de diagnóstico en la conversación con las raíces y comprobaciones efectuadas.
-- Avisos sobre configuración, directorios, templates o runtime faltantes.
+- Un informe de diagnóstico en la conversación con `REPO_ROOT` y las comprobaciones efectuadas.
+- Avisos sobre directorios del layout, templates o runtime faltantes, y una línea por cada señal legada presente.
+
+**Señales de layout legado** (solo se informan las presentes, como `[WARNING]`, con remisión a `docs/guides/artifact-directory-migration.md` del repositorio de agile-sddf):
+
+- El directorio `docs/specs/` existe.
+- `sddf.config.yaml` declara la clave `root`.
+- La variable de entorno `SDDF_ROOT` está definida.
 
 **Does not do:**
 
@@ -25,9 +31,9 @@ Diagnostica en modo de solo lectura la resolución efectiva de `REPO_ROOT`, `SPE
 
 **Use it when:**
 
-- Necesites investigar cómo se resuelve la raíz de artefactos antes de ejecutar un workflow.
-- Quieras comprobar la estructura o los templates SDDF sin alterar el repositorio.
-- The user mentions: `"skill-preflight"`, `"diagnosticar entorno SDDF"`, `"SDDF_ROOT"`.
+- Necesites comprobar el layout fijo antes de ejecutar un workflow.
+- Quieras saber si un proyecto conserva señales del layout legado sin alterar el repositorio.
+- The user mentions: `"skill-preflight"`, `"diagnosticar entorno SDDF"`, `"diagnosticar layout legado"`.
 
 **Do NOT use it when:**
 
