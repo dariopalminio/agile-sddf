@@ -24,8 +24,7 @@ Skill orquestador que ejecuta el pipeline completo de planning de una historia S
 | Precondición | Descripción |
 |---|---|
 | `story.md` presente | Historia con criterios de aceptación en formato Gherkin |
-| Directorio bajo `$SPECS_BASE/specs/stories/` | Resuelto por `skill-preflight` |
-| `skill-preflight` retorna OK | Entorno válido (SDDF_ROOT, subdirectorios de specs) |
+| Directorio bajo `specs/flow/` | Resuelto por glob del ID |
 
 ## Modos de ejecución
 
@@ -85,5 +84,5 @@ En cualquier modo, `--skip-analyze` elimina el paso `story-analyze` y reduce el 
 /story-plan STORY-057 --only-tasks --skip-analyze
 
 # Ruta explícita al directorio de la historia
-/story-plan STORY-057 docs/specs/stories/STORY-057-mi-historia/
+/story-plan STORY-057 specs/flow/STORY-057-mi-historia/
 ```

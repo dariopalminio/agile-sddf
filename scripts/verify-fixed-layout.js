@@ -25,15 +25,7 @@ const REGION_END = '<!-- SDDF-LEGACY-DIAGNOSTIC:end -->';
 // migra; STORY-157 verifica que quede vacía al cerrar la épica.
 const PENDING_MIGRATION = [
   'story-acceptance',
-  'story-analyze',
   'story-code-review',
-  'story-design',
-  'story-fix-plan',
-  'story-implement',
-  'story-implement-tasks',
-  'story-plan',
-  'story-tasking',
-  'story-testcases',
   'story-verify',
 ];
 

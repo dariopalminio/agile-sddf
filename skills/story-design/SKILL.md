@@ -48,8 +48,8 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 ## Entrada
 
 - `story.md` — historia de usuario con criterios de aceptación numerados (AC-1, AC-2 … AC-N)
-- `$SPECS_BASE/constitution.md` — stack, convenciones y restricciones técnicas del proyecto (opcional)
-- DoD de la etapa `plan` (`$SPECS_BASE/guardrails/dod-story-plan.md`, ver `## DoD aplicable`) — criterios de calidad mínimos (opcional)
+- `docs/constitution.md` — stack, convenciones y restricciones técnicas del proyecto (opcional)
+- DoD de la etapa `plan` (`docs/guardrails/dod-story-plan.md`, ver `## DoD aplicable`) — criterios de calidad mínimos (opcional)
 - Archivo de dependencias del proyecto: `package.json`, `requirements.txt`, `go.mod` o `pom.xml` (opcional)
 - Template de diseño: `assets/design-template.md` (opcional, hay fallback interno)
 
@@ -66,7 +66,7 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `$SPECS_BASE/specs/stories/`
+- El directorio de la historia existe bajo `specs/flow/`
 - `story.md` existe en el directorio de la historia con criterios de aceptación definidos
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 
@@ -83,14 +83,14 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 | Elemento | Valor |
 |---|---|
 | Etapa | `plan` |
-| Archivo | `$SPECS_BASE/guardrails/dod-story-plan.md` (en este repositorio, `docs/guardrails/dod-story-plan.md`) |
+| Archivo | `docs/guardrails/dod-story-plan.md` |
 | Override | `sddf.config.yaml › guardrails.dod.story.plan` |
 | Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
 
 Resolución (primera coincidencia):
 
-1. `sddf.config.yaml › guardrails.dod.story.plan` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-plan.md`
+1. `sddf.config.yaml › guardrails.dod.story.plan` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-plan.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin criterios de calidad del DoD.
 
 Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se carga como contexto de calidad en el Paso 3 (el diseño contribuye a la etapa PLAN); `story-design` no bloquea por él.
@@ -122,14 +122,11 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se c
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -147,7 +144,7 @@ Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia (primera coincidencia)
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
+2. Glob `specs/flow/{story_id}-*/` — directorio cuyo nombre comienza con el ID
 3. Si no se encuentra ninguno: notificar y detener
 
 #### 1c. Resolución del template (primera coincidencia)
@@ -200,14 +197,14 @@ Si existen casos de prueba asociados a la historia (ej. archivos en el mismo dir
 Construir el contexto técnico que se usará al generar el diseño. Leer todas las fuentes disponibles:
 
 **Documentos de configuración del proyecto:**
-- `$SPECS_BASE/constitution.md` — stack, convenciones, principios técnicos inamovibles, restricciones de diseño
-  - Si no existe, buscar la ruta heredada `$SPECS_BASE/policies/constitution.md`; si existe, usarla y emitir:
+- `docs/constitution.md` — stack, convenciones, principios técnicos inamovibles, restricciones de diseño
+  - Si no existe, buscar la ruta heredada `docs/policies/constitution.md`; si existe, usarla y emitir:
     ```
     ⚠️ policies/constitution.md está deprecado — muévelo a la raíz de docs/ (constitution.md)
     ```
   - Si no existe ninguna: emitir advertencia y continuar
     ```
-    ⚠️ No se encontró $SPECS_BASE/constitution.md
+    ⚠️ No se encontró docs/constitution.md
        El diseño se generará sin restricciones técnicas explícitas del proyecto.
        Para definir políticas del proyecto, ejecuta /sddf-constitution.
     ```
@@ -488,9 +485,8 @@ Preguntar: "¿La solución técnica refleja correctamente la historia? ¿Necesit
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente en el directorio | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/epic-generate-stories` |
-| Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
 | `constitution.md` ausente | `⚠️ No se encontró constitution.md` | Advertir y continuar |
 | DoD de la etapa plan ausente | `⚠️ DoD de la etapa plan no encontrado …` | Advertir y continuar |

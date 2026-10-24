@@ -56,7 +56,7 @@ related:
 
 - **Tipo:** D (desalineación con la épica: estado)
 - **Descripción:** `epic.md` declara `status: DEFINE`, aunque la épica ya tiene historias en PLAN.
-- **Archivo afectado:** `docs/specs/epics/EPIC-30-reportes/epic.md` — frontmatter
+- **Archivo afectado:** `specs/flow/EPIC-30-reportes/epic.md` — frontmatter
 - **Acción requerida:** actualizar el estado de la épica (fuera del alcance de esta historia).
 
 ---

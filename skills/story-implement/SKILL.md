@@ -29,7 +29,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 ```
 
 **Qué hace este skill:**
-- Resuelve `REPO_ROOT`, `SPECS_BASE` y `CLI_ROOT` localmente como Paso 0
+- Resuelve `REPO_ROOT` y `CLI_ROOT` localmente como Paso 0 (layout fijo, ADR-0016)
 - **Paso 0c:** gate de estado (`READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS`), detección del modo rework por presencia de `fix-directives.md` (ronda, hallazgos y lista blanca) y transición de `story.md` a `IMPLEMENT/IN-PROGRESS` antes de leer `sddf.config.yaml`
 - **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden con un bundle que lleva siempre `rework_round`, `fix_directives_path` y `whitelist` (`null` fuera de rework); confirma estado rojo; escribe `red-phase-status.json` (con `files_modified`, `rework_round` y `rework_evidence`)
 - **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"`, `layer:"{layer}"` y los mismos tres campos de rework en el bundle; consolida resultados (`files_generated` y `files_modified`); confirma que los tests pasan
@@ -86,14 +86,14 @@ Si no se proporciona argumento, solicitar interactivamente.
 | Elemento | Valor |
 |---|---|
 | Etapa | `implement` |
-| Archivo | `$SPECS_BASE/guardrails/dod-story-implement.md` (en este repositorio, `docs/guardrails/dod-story-implement.md`) |
+| Archivo | `docs/guardrails/dod-story-implement.md` |
 | Override | `sddf.config.yaml › guardrails.dod.story.implement` |
 | Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
 
 Resolución (primera coincidencia):
 
-1. `sddf.config.yaml › guardrails.dod.story.implement` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-implement.md`
+1. `sddf.config.yaml › guardrails.dod.story.implement` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-implement.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa implement no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin validación DoD IMPLEMENT.
 
 Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate del Paso 11a antes de escribir `IMPLEMENT/DONE`.
@@ -220,14 +220,13 @@ y por cada archivo: `$OUT_OF_SCOPE_LOG += {fase, archivo, origen, resolución: "
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `CLI_ROOT` (directorio de skills del runtime) solo para localizar los generadores declarados y el seed del template de épica.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -251,11 +250,11 @@ Este paso se ejecuta **antes** de leer `sddf.config.yaml` (Pasos 1–2): la hist
 
 #### 0c.1 — Resolver `$STORY_DIR`
 
-Resolver el directorio de la historia con Glob: `$SPECS_BASE/specs/stories/{story_id}*/`.
+Resolver el directorio de la historia con Glob: `specs/flow/{story_id}-*/story.md` (con guion: `STORY-15` no casa `STORY-150-…`); la primera coincidencia da `$STORY_DIR`. Nunca se consulta el layout legado ni `specs/flow/archive/`.
 
 **Si no hay coincidencia:**
 ```
-❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
+❌ No se encontró la historia {story_id} en specs/flow/
 
 Verifica el ID o ejecuta /epic-generate-stories para generar la historia desde su épica.
 ```
@@ -1080,12 +1079,12 @@ updated: <YYYY-MM-DD>
 Transición F2 → F3 de la historia en la épica padre (formatos del dominio: F2 `- [ ] **STORY-NNN** — <Nombre>: <desc>`, F3 `- [x] **STORY-NNN** — <Nombre>: <desc>`).
 
 1. Leer campo `parent` del frontmatter de `story.md`
-2. Si `parent` existe, resolver ruta: `$SPECS_BASE/specs/epics/<parent>/epic.md`
+2. Si `parent` existe, resolver ruta: `specs/flow/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NN`, Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia). No se consulta `specs/flow/archive/`.
 3. **Si no existe o `parent` está vacío:**
    - Emitir: `[INFO] epic.md no encontrado o sin parent declarado — omitiendo actualización`
    - No es condición de error.
 4. **Si el archivo existe:**
-   Resolver del template de épica (`$SPECS_BASE/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`) el **título** de la sección cuyo marcador declara `clave: historias` (las secciones se localizan por clave, nunca por un título fijo; contrato en `domain-epic-lifecycle` §9).
+   Resolver del template de épica (`docs/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`) el **título** de la sección cuyo marcador declara `clave: historias` (las secciones se localizan por clave, nunca por un título fijo; contrato en `domain-epic-lifecycle` §9).
    - Si el template no declara esa clave o la épica no tiene un encabezado `## <título>`: emitir `[WARN] epic.md sin la sección "<título>" → si se creó con una versión anterior del template: /memory-system migrate --from=epic-template-v1; omitiendo actualización` y continuar (no bloquea el cierre de la historia).
    - **Solo dentro de esa sección** (desde `## <título>` hasta el siguiente `## `), buscar la línea de **nivel superior** (empieza por `- `, sin indentación) que contenga el token exacto `**{story_id}**` en negrita. Coincidencia exacta: `**STORY-103**` no casa `**STORY-1030**`; una mención del ID en otra sección (notas, smoke tests) o sin negrita no cuenta.
    - Cambiar `- [ ]` → `- [x]` **solo en esa línea** y actualizar `updated:` del frontmatter de la épica a la fecha de hoy; el resto del archivo queda igual.
@@ -1168,7 +1167,7 @@ Reglas comunes a ambos formatos:
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada (0c.1) | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener ejecución |
+| Historia no encontrada (0c.1) | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener ejecución |
 | Estado de `story.md` no admitido (0c.2) | `❌ La historia {story_id} no está en un estado válido para implementar` | Detener sin modificar archivos (ni `story.md` ni `.tmp/`) ni invocar subagentes |
 | `fix-directives.md` sin sección de lista blanca (0c.3) | `[WARN] fix-directives.md sin lista blanca — los generators recibirán whitelist vacía` | Continuar con `whitelist: []` |
 | `fix-directives.md` con tabla "Instrucciones de corrección" ausente o ilegible (0c.3) | `[WARN] fix-directives.md sin tabla de hallazgos legible — continuando con 0 hallazgo(s)` | Continuar con hallazgos vacíos (`H = 0`) |
@@ -1252,7 +1251,7 @@ La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md �
 | Archivos de producción | según skill de generación | Código generado en Fases GREEN/REFACTOR |
 | `implement-report.md` | `$STORY_DIR/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase + sección `## Ciclo de corrección — ronda N` (con la subsección `### Archivos fuera de lista blanca`) solo en modo rework |
 | `story.md` (actualizado) | `$STORY_DIR/story.md` | Frontmatter: 0c.4 → `IMPLEMENT/IN-PROGRESS` al arrancar; 11c → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
-| `epic.md` (actualizado) | `$SPECS_BASE/specs/epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
+| `epic.md` (actualizado) | `specs/flow/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
 | `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN; incluye `files_generated`, `files_modified`, `rework_round` (`null` fuera de rework) y `rework_evidence` (`ok`/`warning`/`error`; `n/a` fuera de rework) |
 | `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD completo; incluye `rework_round` (`null` fuera de rework) y `out_of_scope_files` (`0` fuera de rework) |
 | `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente: `{status, message?, files_generated, files_modified?}` |

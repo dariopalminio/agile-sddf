@@ -3,7 +3,7 @@
 El template canónico del reporte de coherencia se ubica en la ruta estándar de templates del proyecto:
 
 ```
-$SPECS_BASE/templates/analyze-report-template.md
+docs/templates/analyze-report-template.md
 ```
 
 El skill lo lee dinámicamente en runtime. Si no existe, usa `assets/analyze-report-template.md`

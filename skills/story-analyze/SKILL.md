@@ -72,8 +72,8 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - `design.md` — diseño técnico con componentes, interfaces y decisiones (obligatorio)
 - `testcases.md` — casos de prueba por criterio de aceptación (opcional; requerido si tasks.md ausente)
 - `tasks.md` — plan de tareas de implementación (opcional; requerido si testcases.md ausente)
-- DoD de la etapa `plan` (`$SPECS_BASE/guardrails/dod-story-plan.md`, ver `## DoD aplicable`) — opcional
-- `$SPECS_BASE/specs/epics/{parent}-*/epic.md` — épica padre para verificar alineación (opcional)
+- DoD de la etapa `plan` (`docs/guardrails/dod-story-plan.md`, ver `## DoD aplicable`) — opcional
+- `specs/flow/{parent}/epic.md` (o `specs/flow/{parent}-*/epic.md`, ver Paso 5a) — épica padre para verificar alineación (opcional)
 - Template del reporte: `assets/analyze-report-template.md` (opcional, hay fallback interno)
 
 ---
@@ -88,7 +88,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `$SPECS_BASE/specs/stories/`
+- El directorio de la historia existe bajo `specs/flow/`
 - `story.md` existe en el directorio de la historia
 - `design.md` existe en el directorio de la historia (requiere haber ejecutado `/story-design`)
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
@@ -110,14 +110,14 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 | Elemento | Valor |
 |---|---|
 | Etapa | `plan` |
-| Archivo | `$SPECS_BASE/guardrails/dod-story-plan.md` (en este repositorio, `docs/guardrails/dod-story-plan.md`) |
+| Archivo | `docs/guardrails/dod-story-plan.md` |
 | Override | `sddf.config.yaml › guardrails.dod.story.plan` |
 | Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
 
 Resolución (primera coincidencia):
 
-1. `sddf.config.yaml › guardrails.dod.story.plan` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-plan.md`
+1. `sddf.config.yaml › guardrails.dod.story.plan` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-plan.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin validación DoD PLAN.
 
 Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate de la Correlación 5 antes de escribir `READY-FOR-IMPLEMENT/DONE`.
@@ -152,14 +152,11 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -177,7 +174,7 @@ Proporciona el ID (ej. STORY-059) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — directorio cuyo nombre comienza con el ID
+2. Glob `specs/flow/{story_id}-*/` — directorio cuyo nombre comienza con el ID
 3. Si no se encuentra: notificar y detener (ver sección Manejo de errores)
 
 #### 1c. Resolución de la ruta de salida
@@ -309,7 +306,10 @@ Si `$TASKS_AVAILABLE = false` Y `$TESTCASES_AVAILABLE = false`:
 
 Buscar el ID de la épica en el frontmatter `parent:` de story.md (ej. `EPIC-12-story-sdd-workflow`).
 
-Intentar encontrar `$SPECS_BASE/specs/epics/{parent}-*/epic.md`.
+Resolver `epic.md` en este orden (primera coincidencia), solo dentro de `specs/flow/` y nunca en `specs/flow/archive/`:
+
+1. `specs/flow/{parent}/epic.md` — `parent` con el slug completo (ej. `EPIC-12-story-sdd-workflow`)
+2. `specs/flow/{parent}-*/epic.md` — `parent` con solo el ID (ej. `EPIC-12`); el guion evita que `EPIC-1` coincida con `EPIC-12-…`
 
 Si no existe: emitir advertencia y continuar sin verificación de épica:
 ```
@@ -564,13 +564,12 @@ Si `$VERDICT = APPROVED`:
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/epic-generate-stories` |
 | `design.md` ausente | `❌ No se encontró design.md en: <ruta>` | Detener. Sugerir `/story-design {story_id}` |
 | `testcases.md` y `tasks.md` ambos ausentes | `❌ Análisis rechazado: sin artefacto de implementación` | Detener. Sugerir `/story-testcases {story_id}` o `/story-tasking {story_id}` |
 | `testcases.md` ausente (tasks.md presente) | `⚠️ testcases.md no encontrado — cobertura de pruebas omitida` | Advertir y continuar |
 | `tasks.md` ausente (testcases.md presente) | `⚠️ No se encontró tasks.md en: <ruta> — análisis de tareas omitido` | Advertir y continuar. Informar que `/story-tasking {story_id}` habilita el análisis completo |
-| Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
 | DoD de la etapa plan ausente | `⚠️ DoD de la etapa plan no encontrado …` | Advertir y continuar sin validación DoD |
 | Épica padre no encontrada | `⚠️ No se encontró epic.md para: <parent>` | Advertir y continuar sin verificación de épica |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
@@ -701,7 +700,7 @@ updated: {date}
 ## Cumplimiento DoD — Fase PLAN
 
 <!-- Si $DOD_PLAN_CRITERIA estuvo vacío al ejecutar Correlación 5, mostrar el texto de aviso a continuación y omitir la tabla. -->
-<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que existe el DoD de la etapa plan ($SPECS_BASE/guardrails/dod-story-plan.md o su override en sddf.config.yaml). -->
+<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que existe el DoD de la etapa plan (docs/guardrails/dod-story-plan.md o su override en sddf.config.yaml). -->
 
 | Criterio DoD | Estado | Severidad | Evidencia |
 |---|---|---|---|
