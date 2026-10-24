@@ -7,7 +7,7 @@ status: DEFINE
 substatus: DONE
 parent: null
 created: 2026-10-21
-updated: 2026-10-23
+updated: 2026-10-24
 related: []
 ---
 
@@ -30,7 +30,7 @@ Separar conocimiento de estado fijando tres raíces hermanas en la raíz del rep
 - [x] **STORY-150** — Migrar los skills de especificación a specs/flow: `story-creation`, `story-evaluation`, `story-refine`, `story-improve`, `story-split` y `story-specify` (con sus subagentes) dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
 - [x] **STORY-151** — Migrar los skills de épica a specs/flow: `epic-creation`, `epic-format-validation`, `epic-from-project-plan`, `epic-generate-stories`, `epic-generate-all-stories`, `epic-analyze` y `epic-refine` dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/EPIC-NN-<slug>/`; la búsqueda de stories hijas cubre `specs/flow/` y `specs/flow/archive/`; se actualizan sus evals
 - [x] **STORY-152** — Migrar los skills de proyecto y transversales: `project-*`, `memory-system`, `header-aggregation`, `reverse-engineering`, `sddf-constitution` y `skill-preflight` usan rutas fijas; `skill-preflight` diagnostica el layout legado (`docs/specs/`, `root`, `SDDF_ROOT`) y apunta a la guía de migración; el alias deprecado `docs-wiki-builder` se elimina en lugar de migrarse
-- [ ] **STORY-153** — Migrar y archivar los work items a specs/flow: Script reproducible de un solo uso (con `--dry-run`, idempotente) que hace `git mv` de las épicas a `specs/flow/EPIC-*/`, de las stories no `COMPLETED` a `specs/flow/STORY-*/` y de las `COMPLETED` a `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` y elimina `docs/specs/`; sin eventos ni log
+- [x] **STORY-153** — Migrar y archivar los work items a specs/flow: Script reproducible de un solo uso (con `--dry-run`, idempotente) que hace `git mv` de las épicas a `specs/flow/EPIC-*/`, de las stories no `COMPLETED` a `specs/flow/STORY-*/` y de las `COMPLETED` a `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` y elimina `docs/specs/`; sin eventos ni log
 - [ ] **STORY-154** — Documentar el nuevo layout: Actualizar `AGENTS.md` (layout fijo, convención `<YYYY-MM-DD>-STORY-NNN-<slug>/` de `archive/`, nota de que `docs/requirements/` migrará a `specs/living/` en la épica de Living Spec), `docs/architecture/sddf-architecture.md`, `docs/index.md`, las guías afectadas, el CHANGELOG (cambio incompatible, versión mayor) y una sección nueva de migración en `docs/guides/artifact-directory-migration.md` para proyectos que usan `root: docs` o `docs/specs/`
 - [x] **STORY-155** — Migrar los skills de planning a specs/flow: `story-design`, `story-tasking`, `story-testcases`, `story-analyze`, `story-fix-plan` y `story-plan` (con sus subagentes) dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
 - [x] **STORY-156** — Migrar los skills de implementación a specs/flow: `story-implement` y `story-implement-tasks` dejan de usar `SPECS_BASE` y escriben `implement-report.md` en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
@@ -117,7 +117,7 @@ Escenario: Inicializar SDDF en un proyecto con el layout legado
 - **Compatibilidad hacia atrás:** mejora-013 propone una fase de compatibilidad con un resolver que respete `specs_root`, luego `root` y luego `docs`. Se descarta porque reintroduce la configuración que esta épica retira. La mitigación adoptada es detectar sin escribir: `/sddf-init` avisa y no crea estructura paralela (CS-13), `skill-preflight` diagnostica el layout legado y la guía de migración (CS-14) explica el paso a `specs/flow/`. La migración no se ejecuta sola en proyectos instalados; el script de migración única es del repo.
 - **Numeración de épicas:** mejora-013 llama EPIC-1..EPIC-4 a la secuencia Layout → Workflow → Living → Enforcement. Esta épica es su EPIC-1. Las demás se citan por nombre (épica de Workflow, de Living Spec, de Enforcement) para no confundirlas con EPIC-02 y EPIC-03, que ya existen en el repo.
 - **Nombre de directorio:** se conserva la convención vigente `STORY-NNN-<slug>/` y `EPIC-NN-<slug>/` (ADR-0004). Por eso el criterio pedido ("`/story-specify` en un repo limpio crea `specs/flow/STORY-001/story.md`") se expresa en SMOKE-1 como `specs/flow/STORY-001-<slug>/story.md`. Si se prefiere el directorio sin slug, hay que decidirlo en el ADR antes de planificar.
-- **Fecha del prefijo de archivo:** se usa el `updated:` del frontmatter de la story; si falta, `created:`. Así la migración es determinista y no depende del momento en que se ejecute.
+- **Fecha del prefijo de archivo:** se usa el `updated:` del frontmatter de la story; si falta, `created:`; si faltan ambos, `date:` (CR-001 de STORY-153: stories antiguas que solo tienen `date:`). Así la migración es determinista y no depende del momento en que se ejecute.
 - **Estados distintos de `COMPLETED`:** por la regla pedida, `CANCELED` y el resto de estados quedan en `specs/flow/`. Si las canceladas deben archivarse, lo decide la épica de Workflow.
 - **Épicas:** se aplanan a `specs/flow/EPIC-*/` pero no se archivan; el archivado de épicas (solo cuando todas sus stories están archivadas) queda para la épica de Workflow.
 - **Nombres de skills:** `epic-specify`, `epic-plan` y `epic-implement` no existen hoy. La historia de épicas cubre los skills `epic-*` que sí existen (verificado con `ls skills/`).

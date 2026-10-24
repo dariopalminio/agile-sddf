@@ -5,11 +5,11 @@ id: STORY-153
 kind: chore
 slug: STORY-153-migrar-work-items-specs-flow
 title: "Migrar y archivar los work items a specs/flow"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21
-updated: 2026-10-22
+updated: 2026-10-24
 related:
   - EPIC-26-layout-y-flow-forward-mejorado
   - STORY-157
@@ -29,7 +29,7 @@ related:
 Dado "docs/specs/" con épicas, stories COMPLETED y stories en otros estados
 Cuando se ejecuta el script de migración única
 Entonces cada épica queda en "specs/flow/EPIC-NN-<slug>/"
-  Y cada story COMPLETED queda en "specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/" con la fecha de su "updated:" (o "created:" si falta)
+  Y cada story COMPLETED queda en "specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/" con la fecha de su "updated:" (o "created:" si falta, o "date:" si faltan ambos)
   Y cada story en otro estado queda en "specs/flow/STORY-NNN-<slug>/"
   Y "docs/specs/" deja de existir
   Y el total de stories activas + archivadas es igual al previo a la migración
