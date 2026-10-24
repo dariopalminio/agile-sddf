@@ -27,7 +27,7 @@ const ACTIVE_ROOTS = [
 const HISTORICAL_EXCLUSIONS = [
   'CHANGELOG.md',
   'docs/adr',
-  'docs/specs',
+  'specs',
 ];
 
 function toPosix(value) {

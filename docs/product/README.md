@@ -19,6 +19,6 @@ más larga (años) y su audiencia son el Product Owner y negocio.
 
 **Regla:** aquí se describe el *por qué* y el *para quién*; el comportamiento que el producto debe
 cumplir siempre va en `requirements/`. `roadmap.md` es el plan de épicas, mientras
-`specs/epics/` contiene las épicas materializadas; el incremento que se construye ahora vive en `specs/`.
+`specs/flow/` (raíz del repo) contiene las épicas materializadas y las historias del incremento que se construye ahora.
 
 Volver al mapa: [[index]].

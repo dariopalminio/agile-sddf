@@ -41,8 +41,8 @@ flowchart TD
 
 ```text
 product/ + requirements/
-└── specs/epics/EPIC-NN-<slug>/epic.md
-    └── specs/stories/STORY-NNN-<slug>/story.md
+└── specs/flow/EPIC-NN-<slug>/epic.md
+    └── specs/flow/STORY-NNN-<slug>/story.md
 ```
 
 ## 5. Cardinalidad e Invariantes
@@ -64,18 +64,18 @@ product/ + requirements/
 | Nivel | Dónde vive | Naturaleza | Identificador |
 |---|---|---|---|
 | Estratégico | `product/` + `requirements/` | documentación fundacional | `FR-NNN` / `NFR-NNN` |
-| L2 | `specs/epics/` | Epic | `EPIC-NN` |
-| L1 | `specs/stories/` | Story | `STORY-NNN` |
+| L2 | `specs/flow/EPIC-NN-<slug>/` | Epic | `EPIC-NN` |
+| L1 | `specs/flow/STORY-NNN-<slug>/` | Story | `STORY-NNN` |
 
 ## 7. Estructura de Carpetas
 
-`specs/` contiene `epics/` y `stories/`, sin prefijos numéricos.
+`specs/flow/` (raíz del repo) contiene épicas (`EPIC-NN-<slug>/`) e historias (`STORY-NNN-<slug>/`) como directorios hermanos, sin subniveles ni prefijos numéricos. Las historias `COMPLETED` se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` ([[layout-fijo-de-tres-raices]]).
 
 > Hasta 3.x existía un nivel Project en `specs/01-projects/`; ver [[asegurar-dos-niveles-de-flujo-epics-stories]].
 
 ## 8. Resolución
 
-Las Epics se resuelven en `specs/epics/EPIC-NN-<slug>/epic.md` y las Stories en `specs/stories/STORY-NNN-<slug>/story.md`.
+Las Epics se resuelven en `specs/flow/EPIC-NN-<slug>/epic.md` y las Stories en `specs/flow/STORY-NNN-<slug>/story.md`; una Story archivada se resuelve en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/story.md`.
 
 ## 9. Validación
 
