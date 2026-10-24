@@ -61,7 +61,7 @@ function countDirs(repoRoot, rel, re) {
 
 /** Pares `clave: valor` de nivel superior del frontmatter; null si no hay frontmatter. */
 function readFrontmatter(file) {
-  const lines = fs.readFileSync(file, 'utf8').replace(/^﻿/, '').split(/\r?\n/);
+  const lines = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '').split(/\r?\n/);
   if (lines[0].trim() !== '---') return null;
   const fields = {};
   for (const line of lines.slice(1)) {

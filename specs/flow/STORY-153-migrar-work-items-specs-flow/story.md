@@ -5,7 +5,7 @@ id: STORY-153
 kind: chore
 slug: STORY-153-migrar-work-items-specs-flow
 title: "Migrar y archivar los work items a specs/flow"
-status: IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21

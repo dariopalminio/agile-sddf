@@ -16,14 +16,14 @@ updated: 2026-10-24
 |---|---|
 | Historia | STORY-153 |
 | Total de tareas | 21 |
-| Tareas completadas | 21 |
+| Tareas completadas | 0 |
 | Tareas bloqueadas | 0 |
-| Tareas omitidas (ya completadas antes) | 0 |
+| Tareas omitidas (ya completadas antes) | 21 |
 | Fecha de implementación | 2026-10-24 |
 
-**Estado:** ✅ Implementación completa
+**Estado:** ✅ Implementación completa — rework de code review (ronda 1) aplicado
 
-La migración se ejecutó sobre este repositorio: los 177 movimientos quedan en el índice de git como renombres y **sin commit** (lo hace el mantenedor, design Non-Goals).
+La migración se ejecutó sobre este repositorio en la ejecución anterior; sus 177 movimientos se commitearon como renombres en `8df4b11`. Esta ejecución (2026-10-24) solo aplica las correcciones de `fix-directives.md` (ronda 1).
 
 ---
 
@@ -31,27 +31,47 @@ La migración se ejecutó sobre este repositorio: los 177 movimientos quedan en 
 
 | ID | Descripción | Estado | Archivos generados |
 |---|---|---|---|
-| T001 | Verificar precondiciones (STORY-149…152, 155, 156, 158; grep v1 vacío; ADR-0016 ACCEPTED) | ✓ completado | — |
-| T002 | Línea base de tests, recuentos, status y `git status` | ✓ completado | `.tmp/story-implement/STORY-153/baseline.txt` |
-| T003 | Aplicar CR-001 (`date:` como tercer nivel) en story.md AC-1 y epic.md | ✓ completado | `specs/flow/STORY-153-…/story.md`, `specs/flow/EPIC-26-…/epic.md` |
-| T004 | Helper de fixture en repos git temporales | ✓ completado | `test/migrate-specs-to-flow.test.js` |
-| T005 | Casos de AC-1 (destinos, renombres `R`, sin artefactos extra) | ✓ completado | `test/migrate-specs-to-flow.test.js` |
-| T006 | Casos de fecha (`archiveDate` y bloqueo sin fecha) | ✓ completado | `test/migrate-specs-to-flow.test.js` |
-| T007 | Casos de AC-2 (dry-run, segunda pasada, sin `specs/` creado) | ✓ completado | `test/migrate-specs-to-flow.test.js` |
-| T008 | Casos de guardias y aviso | ✓ completado | `test/migrate-specs-to-flow.test.js` |
-| T009 | RED: el test falla por módulo inexistente | ✓ completado | `.tmp/story-implement/STORY-153/red.txt` |
-| T010 | Esqueleto del script (D-1) | ✓ completado | `scripts/migrate-specs-to-flow.js` |
-| T011 | Frontmatter y `archiveDate` | ✓ completado | `scripts/migrate-specs-to-flow.js` |
-| T012 | `planMigration` | ✓ completado | `scripts/migrate-specs-to-flow.js` |
-| T013 | `runMigration` | ✓ completado | `scripts/migrate-specs-to-flow.js` |
-| T014 | GREEN: 14/14 casos | ✓ completado | `.tmp/story-implement/STORY-153/green.txt` |
-| T015 | REFACTOR/revisión: solo `fs`, `path`, `child_process`; sin `process.cwd/env`; sin `rm -r`; `git diff package.json` vacío | ✓ completado | — |
-| T016 | `npm test` (304/304) y `verify:syntax` (44 archivos) en verde | ✓ completado | — |
-| T017 | Dry-run sobre el repo | ✓ completado | `.tmp/story-implement/STORY-153/dry-run.txt` |
-| T018 | Ejecución real sobre el repo | ✓ completado | `.tmp/story-implement/STORY-153/run.txt` |
-| T019 | Segunda ejecución sin cambios | ✓ completado | `.tmp/story-implement/STORY-153/second-run.txt` |
-| T020 | Reinstalación de runtime (`node scripts/cli.js install --force`) | ✓ completado | `.claude/` (no versionado) |
-| T021 | Artefactos en `specs/flow/STORY-153-…/` y `docs/specs/` no recreado | ✓ completado | este reporte |
+| T001 | Verificar precondiciones (STORY-149…152, 155, 156, 158; grep v1 vacío; ADR-0016 ACCEPTED) | ✓ completado (ejecución anterior) | — |
+| T002 | Línea base de tests, recuentos, status y `git status` | ✓ completado (ejecución anterior) | `.tmp/story-implement/STORY-153/baseline.txt` |
+| T003 | Aplicar CR-001 (`date:` como tercer nivel) en story.md AC-1 y epic.md | ✓ completado (ejecución anterior) | `specs/flow/STORY-153-…/story.md`, `specs/flow/EPIC-26-…/epic.md` |
+| T004 | Helper de fixture en repos git temporales | ✓ completado (ejecución anterior) | `test/migrate-specs-to-flow.test.js` |
+| T005 | Casos de AC-1 (destinos, renombres `R`, sin artefactos extra) | ✓ completado (ejecución anterior) | `test/migrate-specs-to-flow.test.js` |
+| T006 | Casos de fecha (`archiveDate` y bloqueo sin fecha) | ✓ completado (ejecución anterior) | `test/migrate-specs-to-flow.test.js` |
+| T007 | Casos de AC-2 (dry-run, segunda pasada, sin `specs/` creado) | ✓ completado (ejecución anterior) | `test/migrate-specs-to-flow.test.js` |
+| T008 | Casos de guardias y aviso | ✓ completado (ejecución anterior) | `test/migrate-specs-to-flow.test.js` |
+| T009 | RED: el test falla por módulo inexistente | ✓ completado (ejecución anterior) | `.tmp/story-implement/STORY-153/red.txt` |
+| T010 | Esqueleto del script (D-1) | ✓ completado (ejecución anterior) | `scripts/migrate-specs-to-flow.js` |
+| T011 | Frontmatter y `archiveDate` | ✓ completado (ejecución anterior) | `scripts/migrate-specs-to-flow.js` |
+| T012 | `planMigration` | ✓ completado (ejecución anterior) | `scripts/migrate-specs-to-flow.js` |
+| T013 | `runMigration` | ✓ completado (ejecución anterior) | `scripts/migrate-specs-to-flow.js` |
+| T014 | GREEN: 14/14 casos | ✓ completado (ejecución anterior) | `.tmp/story-implement/STORY-153/green.txt` |
+| T015 | REFACTOR/revisión: solo `fs`, `path`, `child_process`; sin `process.cwd/env`; sin `rm -r`; `git diff package.json` vacío | ✓ completado (ejecución anterior) | — |
+| T016 | `npm test` (304/304) y `verify:syntax` (44 archivos) en verde | ✓ completado (ejecución anterior) | — |
+| T017 | Dry-run sobre el repo | ✓ completado (ejecución anterior) | `.tmp/story-implement/STORY-153/dry-run.txt` |
+| T018 | Ejecución real sobre el repo | ✓ completado (ejecución anterior) | `.tmp/story-implement/STORY-153/run.txt` |
+| T019 | Segunda ejecución sin cambios | ✓ completado (ejecución anterior) | `.tmp/story-implement/STORY-153/second-run.txt` |
+| T020 | Reinstalación de runtime (`node scripts/cli.js install --force`) | ✓ completado (ejecución anterior) | `.claude/` (no versionado) |
+| T021 | Artefactos en `specs/flow/STORY-153-…/` y `docs/specs/` no recreado | ✓ completado (ejecución anterior) | este reporte |
+
+---
+
+## Correcciones de fix-directives.md (ronda 1)
+
+| # | Archivo:Línea | Severidad | Resultado |
+|---|---|---|---|
+| 1 | scripts/migrate-specs-to-flow.js:64 | MEDIUM | 💻 corregido: scripts/migrate-specs-to-flow.js — BOM U+FEFF literal sustituido por el escape `\uFEFF` (`.replace(/^\uFEFF/, '')`) |
+| 2 | docs/guardrails/dod-story-code-review.md:21 | MEDIUM | Sin edición (así lo indica la directiva): se resuelve con #1 |
+| 3 | docs/guardrails/dod-story-code-review.md:25 | MEDIUM | Sin edición (así lo indica la directiva): requiere re-ejecutar `/story-code-review STORY-153` |
+
+**Archivos corregidos:** `scripts/migrate-specs-to-flow.js`
+**Hallazgos omitidos por archivo inexistente:** ninguno
+
+Verificación:
+
+- `grep -c $'\xEF\xBB\xBF' scripts/migrate-specs-to-flow.js` → `0`.
+- `node --test test/migrate-specs-to-flow.test.js` → 14/14; `npm test` → 304/304; `npm run verify:syntax` → OK (44 archivos).
+- El test no tiene un caso específico de BOM (la directiva lo daba por existente). Se comprobó a mano con un fixture git temporal: una story `COMPLETED` con BOM y CRLF se planifica hacia `specs/flow/archive/2026-05-10-STORY-001-x` (dry-run, exit 0). El comportamiento no cambia: `lines[0].trim()` ya descartaba el BOM de la línea `---`.
+- Los hallazgos LOW del review (parseo de renombres en `:174`, ruta absoluta en `:110`, `mkdirSync` incondicional, traspasos CR-001/002/003) no forman parte de la directiva y no se tocaron.
 
 ---
 
@@ -84,7 +104,7 @@ Avisos del plan (esperados): EPIC-26 (1 archivo) y STORY-153 (2 archivos) se mov
 - **CR-002 → STORY-154:** `docs/specs/README.md` se movió a `specs/README.md`; su contenido sigue describiendo el layout retirado (`specs/epics/`, `specs/stories/`) y debe reescribirse al layout fijo. El enlace de `docs/index.md` se repara en STORY-157.
 - **CR-003 → STORY-157:** `sddf.config.yaml` conserva `root: docs` (no se toca en esta historia); su retiro se asigna a STORY-157 al cerrar CS-3.
 - **Precondición STORY-151:** está implementada (24/24 tareas) pero tiene un rework abierto de code review (`fix-directives.md`, ronda 2, solo sobre el cierre de su T022 por el gate). No afecta a la migración; ahora vive en `specs/flow/STORY-151-…/`.
-- **Commit:** pendiente del mantenedor. Se recomienda commitear los renombres sin mezclar otros cambios para preservar la detección de renombres (CNF-3); la verificación con `git log --follow` es de STORY-157.
+- **Commit:** los renombres se commitearon en `8df4b11` (714 R100 y 3 con cambios, según el code review); la verificación con `git log --follow` es de STORY-157.
 
 ---
 
@@ -103,11 +123,11 @@ Avisos del plan (esperados): EPIC-26 (1 archivo) y STORY-153 (2 archivos) se mov
 | 9 | Sin dependencias nuevas | ✓ | `git diff package.json` vacío |
 | 10 | Uso de `skill-master` para skills nuevos | ✓ | No aplica: no se crean skills (CNF-1) |
 | 11 | Skill nuevo incluido en `files` | ✓ | No aplica: no hay skill nuevo; `scripts/` ya está en `files` |
-| 12 | Se cumple gr-ai-security-checklist | ✓ | Sin prompts ni datos sensibles; script local de un solo uso |
+| 12 | Se cumple gr-ai-security-checklist | ✓ | Sin prompts ni datos sensibles; script local de un solo uso; `ai-no-hidden-characters`: BOM literal sustituido por `\uFEFF` (fix-directives ronda 1), 0 bytes `EF BB BF` en el script |
 | 13 | Se cumple gr-code-security-checklist | ✓ | `spawnSync` con argumentos en arreglo y sin shell; sin `rm -r`; raíz derivada de `__dirname` |
 | 14 | Se cumple gr-skill-creation-checklist | ✓ | No aplica: no se crean ni modifican skills |
 | 15 | Skills críticos con `evals/evals.json` | ✓ | No aplica: no se modifican skills |
-| 16 | Casos de prueba ejecutados según skill-master | ✓ | No aplica a skills; la prueba del script se ejecutó (14/14) |
+| 16 | Casos de prueba ejecutados según skill-master | ✓ | No aplica a skills; la prueba del script se ejecutó (14/14, re-ejecutada tras la ronda 1) |
 | 17 | `tasks.md` con todas las tareas `[x]` | ✓ | 21/21 |
 | 18 | README/docs actualizados si cambian contratos | ⚠️ | El layout cambia; la documentación (`AGENTS.md`, arquitectura, guías, `specs/README.md`) es alcance de STORY-154 |
 | 19 | Decisiones no previstas documentadas | ✓ | Sección «Decisiones de implementación menores» |
@@ -115,7 +135,7 @@ Avisos del plan (esperados): EPIC-26 (1 archivo) y STORY-153 (2 archivos) se mov
 | 21 | Build de CI pasa | ⚠️ | Requiere ejecución de CI; localmente `verify:repository` falla solo en «enlaces activos» (STORY-157) |
 | 22 | Sin secrets ni credenciales | ✓ | Ninguno en el script ni en el test |
 | 23 | Variables de entorno documentadas | ✓ | No aplica: el script no lee variables de entorno |
-| 24 | Despliegue reversible sin pérdida | ✓ | Los movimientos están solo en el índice (sin commit); `git mv` conserva el contenido y nunca se usó `rm -r` |
+| 24 | Despliegue reversible sin pérdida | ✓ | Movimientos commiteados como renombres (`8df4b11`, revertible con `git revert`); `git mv` conserva el contenido y nunca se usó `rm -r` |
 
 **Resumen:** 20/24 criterios ✓ (4 ⚠️, 0 ❌)
 
