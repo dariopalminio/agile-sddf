@@ -35,7 +35,7 @@ Separar conocimiento de estado fijando tres raíces hermanas en la raíz del rep
 - [x] **STORY-155** — Migrar los skills de planning a specs/flow: `story-design`, `story-tasking`, `story-testcases`, `story-analyze`, `story-fix-plan` y `story-plan` (con sus subagentes) dejan de usar `SPECS_BASE` y leen/escriben en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
 - [x] **STORY-156** — Migrar los skills de implementación a specs/flow: `story-implement` y `story-implement-tasks` dejan de usar `SPECS_BASE` y escriben `implement-report.md` en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
 - [ ] **STORY-157** — Reparar enlaces y validar el gate tras la migración: Reescribir los enlaces y wikilinks hacia las rutas movidas de `docs/specs/`, verificar el historial con `git log --follow` y cerrar la épica comprobando el contrato de salida global (grep de raíz legada sobre `skills/`, lista transitoria del gate vacía, `npm test` y `verify:repository` en verde)
-- [ ] **STORY-158** — Migrar los skills de revisión, verificación y aceptación a specs/flow: `story-code-review`, `story-verify` y `story-acceptance` (con sus agentes locales) dejan de usar `SPECS_BASE` y escriben sus informes en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
+- [x] **STORY-158** — Migrar los skills de revisión, verificación y aceptación a specs/flow: `story-code-review`, `story-verify` y `story-acceptance` (con sus agentes locales) dejan de usar `SPECS_BASE` y escriben sus informes en `specs/flow/STORY-NNN-<slug>/`; se actualizan sus evals
 
 ## Criterios de salida
 

@@ -110,7 +110,7 @@
       "id": "TC-004",
       "name": "dod-acceptance-ausente-usa-solo-gherkin",
       "type": "edge-case",
-      "description": "EV-005 (STORY-101, D-8) — Historia en VERIFY/DONE. No existe el DoD de la etapa acceptance: ni sddf.config.yaml › guardrails.dod.story.acceptance ni $SPECS_BASE/guardrails/dod-story-acceptance.md. El skill emite el aviso accionable de la sección DoD aplicable y continúa la sesión usando únicamente los criterios Gherkin de story.md como criterios a validar.",
+      "description": "EV-005 (STORY-101, D-8) — Historia en VERIFY/DONE. No existe el DoD de la etapa acceptance: ni sddf.config.yaml › guardrails.dod.story.acceptance ni docs/guardrails/dod-story-acceptance.md. El skill emite el aviso accionable de la sección DoD aplicable y continúa la sesión usando únicamente los criterios Gherkin de story.md como criterios a validar.",
       "input": {
         "story_id": "STORY-080",
         "story_status": "VERIFY",
@@ -308,27 +308,25 @@
     },
     {
       "id": "TC-010",
-      "name": "preflight-invalido-detiene-ejecucion",
+      "name": "historia-no-encontrada-en-specs-flow",
       "type": "fail-fast",
-      "description": "skill-preflight retorna estado de error (entorno inválido: SDDF_ROOT no configurado o directorio de stories faltante). El skill debe detenerse en el Paso 0 sin avanzar a la verificación de precondiciones ni modificar ningún archivo.",
+      "description": "STORY-158 (D-3, D-5) — No existe specs/flow/STORY-999-*/, aunque la historia exista en el layout legado (ver input.context). El skill debe detenerse en el Paso 1b con el mensaje de historia no encontrada en specs/flow/, sin consultar el layout legado ni escribir ningún archivo.",
       "input": {
-        "story_id": "STORY-055",
-        "preflight_status": "invalid",
-        "error": "SDDF_ROOT no está configurado"
+        "story_id": "STORY-999",
+        "context": "No existe specs/flow/STORY-999-*/; sí existe docs/specs/stories/STORY-999-x/story.md (layout legado)."
       },
       "expected": {
         "contains": [
-          "inválido"
+          "No se encontró la historia STORY-999",
+          "specs/flow/"
         ],
         "not_contains": [
           "Iniciando acceptance",
           "acceptance-report.md",
-          "(verdict: ",
-          "VERIFY",
-          "ACCEPTANCE/IN-PROGRESS"
+          "docs/specs"
         ]
       },
-      "threshold": 1.0
+      "threshold": 1
     },
     {
       "id": "TC-011",
@@ -444,6 +442,39 @@
         ]
       },
       "threshold": 0.90
+    },
+    {
+      "id": "TC-015",
+      "name": "informe-en-carpeta-specs-flow",
+      "type": "happy-path",
+      "description": "STORY-158 (AC-1, D-5) — Mismo flujo que TC-001 con la historia en specs/flow/STORY-055-aceptacion/. El skill debe escribir acceptance-report.md en la carpeta de la historia y no referenciar el layout legado.",
+      "input": {
+        "story_id": "STORY-055",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "gherkin_criterios": 2,
+        "dod_criterios": 4,
+        "validator": "Darío Palminio",
+        "responses": [
+          "p",
+          "p",
+          "p",
+          "p",
+          "p",
+          "p"
+        ],
+        "context": "la historia está en `specs/flow/STORY-055-aceptacion/`"
+      },
+      "expected": {
+        "contains": [
+          "specs/flow/STORY-055-aceptacion/acceptance-report.md",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "docs/specs"
+        ]
+      },
+      "threshold": 0.9
     }
   ]
 }

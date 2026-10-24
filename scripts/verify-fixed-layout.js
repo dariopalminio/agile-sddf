@@ -23,11 +23,7 @@ const REGION_END = '<!-- SDDF-LEGACY-DIAGNOSTIC:end -->';
 
 // Lista transitoria de EPIC-26: cada historia de migración retira los skills que
 // migra; STORY-157 verifica que quede vacía al cerrar la épica.
-const PENDING_MIGRATION = [
-  'story-acceptance',
-  'story-code-review',
-  'story-verify',
-];
+const PENDING_MIGRATION = [];
 
 const ACTIVE_DOCS = [
   'AGENTS.md',

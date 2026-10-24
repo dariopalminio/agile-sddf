@@ -47,9 +47,9 @@ story-acceptance  → validación humana final              ← aquí
 
 ## Entrada
 
-- `$SPECS_BASE/specs/stories/<story-id>/story.md` — historia a validar (precondición de estado)
-- DoD de la etapa `acceptance` (`$SPECS_BASE/guardrails/dod-story-acceptance.md`, ver `## DoD aplicable`) — opcional
-- `$SPECS_BASE/specs/stories/<story-id>/acceptance-report.md` — si existe, detección de sesión previa
+- `specs/flow/<STORY-NNN>-<slug>/story.md` — historia a validar (precondición de estado)
+- DoD de la etapa `acceptance` (`docs/guardrails/dod-story-acceptance.md`, ver `## DoD aplicable`) — opcional
+- `specs/flow/<STORY-NNN>-<slug>/acceptance-report.md` — si existe, detección de sesión previa
 
 ## Parámetros
 
@@ -67,14 +67,14 @@ story-acceptance  → validación humana final              ← aquí
 | Elemento | Valor |
 |---|---|
 | Etapa | `acceptance` |
-| Archivo | `$SPECS_BASE/guardrails/dod-story-acceptance.md` (en este repositorio, `docs/guardrails/dod-story-acceptance.md`) |
+| Archivo | `docs/guardrails/dod-story-acceptance.md` |
 | Override | `sddf.config.yaml › guardrails.dod.story.acceptance` |
 | Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
 
 Resolución (primera coincidencia):
 
-1. `sddf.config.yaml › guardrails.dod.story.acceptance` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-acceptance.md`
+1. `sddf.config.yaml › guardrails.dod.story.acceptance` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-acceptance.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa acceptance no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar solo con los criterios Gherkin de `story.md`.
 
 Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Sus criterios se añaden a los Gherkin de `story.md` en la sesión de validación.
@@ -104,14 +104,11 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Sus 
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -133,12 +130,16 @@ Proporciona el ID (ej. STORY-055) o la ruta completa al directorio.
 
 #### 1b. Resolver el directorio de la historia
 
-1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia
+1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `specs/flow/STORY-NNN-<slug>/` (no `specs/flow/archive/…`) y contiene `story.md`. Si no:
+   ```
+   ❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)
+   ```
+   Detener la ejecución sin escribir ningún archivo.
+2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `specs/flow/archive/`)
 
 Si no se encuentra:
 ```
-❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
+❌ No se encontró la historia {story_id} en specs/flow/
 
 Verifica el ID o ejecuta /epic-generate-stories para generar la historia primero.
 ```
@@ -505,7 +506,7 @@ o bien (si BLOCKED):
 
 ## Salida
 
-- `$SPECS_BASE/specs/stories/<story-id>/acceptance-report.md` — reporte de validación con `verdict` en el frontmatter, `## Veredicto` como primera sección, trazabilidad por criterio, resumen ejecutivo e historial de sesiones
+- `specs/flow/<STORY-NNN>-<slug>/acceptance-report.md` — reporte de validación con `verdict` en el frontmatter, `## Veredicto` como primera sección, trazabilidad por criterio, resumen ejecutivo e historial de sesiones
 - `story.md` frontmatter actualizado según el veredicto:
   - `status: ACCEPTANCE / substatus: DONE` — veredicto `APPROVED`
   - `status: READY-FOR-IMPLEMENT / substatus: DONE` — veredicto `NEEDS-CHANGES`
