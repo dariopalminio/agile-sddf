@@ -1,10 +1,10 @@
 ---
 type: epic
 id: EPIC-23
-slug: EPIC-23-skill-epic-validate
-title: "Skill epic-validate"
+slug: EPIC-23-skill-epic-refine-validate
+title: "Skill epic-refine y epic-validate"
 status: DEFINE
-substatus: DONE
+substatus: IN-PROGRESS
 parent: null
 created: 2026-10-12
 updated: 2026-10-17
@@ -12,7 +12,7 @@ related:
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
 ---
 
-# Épica: Skill `epic-validate`
+# Épica: Skill `epic-refine` y `epic-validate`
 
 ## Objetivo
 
@@ -26,12 +26,17 @@ El skill solo lee artefactos de entrada y, fuera de una previsualización, escri
 
 ## Historias
 
+Skill epic-refine:
+- [ ] **STORY-165** — Aplicar hallazgos de `epic-analyze` a la épica: corregir índice de historias, enlaces rotos y cobertura de criterios de salida según el reporte de análisis.
+
+Skill epic-validate (dividido en seis historias):
 - [ ] **STORY-124** — Validar la preparación estructural de una épica: determinar el veredicto a partir del cierre de historias y del análisis de la épica.
 - [ ] **STORY-125** — Validar la evidencia operativa de una épica: incorporar smoke tests, verificación de release y DoD aplicable.
 - [ ] **STORY-126** — Operar la validación de épicas de manera segura: ofrecer modos manual, automático y de previsualización sin efectos inesperados.
 - [ ] **STORY-127** — Integrar y documentar el gateway de validación de épicas: aplicar el gateway antes de la transición y hacerlo disponible en los runtimes soportados.
 - [ ] **STORY-128** — Evaluar la validación de épicas de forma repetible: cubrir resultados APPROVED, NEEDS-CHANGES y BLOCKED contra regresiones.
 - [ ] **STORY-137** — Controlar el detalle y los límites de la ejecución de la validación de épicas: `--verbose` y rechazo de `--mode auto` sin pruebas configuradas.
+
 
 ## Criterios de salida
 

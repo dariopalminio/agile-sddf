@@ -12,7 +12,7 @@ created: 2026-10-25
 updated: 2026-10-25
 related:
   - EPIC-27-completar-flujo-de-story
-  - STORY-160-skill-story-complete
+  - STORY-160-completar-y-archivar-historia-entregada
   - STORY-162-story-delivery-modelo-continuous
   - STORY-163-story-delivery-dry-run-y-force
 ---
