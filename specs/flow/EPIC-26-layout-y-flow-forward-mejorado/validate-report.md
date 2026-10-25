@@ -6,7 +6,7 @@ title: "Validate Report: layout-y-flow-forward-mejorado"
 epic: EPIC-26
 date: 2026-10-25
 mode: manual
-verdict: READY-TO-SHIP
+verdict: APPROVED
 created: 2026-10-25
 updated: 2026-10-25
 ---
@@ -17,7 +17,7 @@ updated: 2026-10-25
 **Date**: 2026-10-25
 **Epic**: EPIC-26
 **Mode**: manual
-**Veredicto**: ✅ READY-TO-SHIP
+**Veredicto**: ✅ APPROVED
 
 ## Sign-off
 
