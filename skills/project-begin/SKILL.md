@@ -15,7 +15,7 @@ triggers:
 
 ## Objetivo
 
-Orquesta una entrevista estructurada siguiendo el rol local `assets/agents/begin-intent.md` para completar la visión del producto en `$SPECS_BASE/product/vision.md`.
+Orquesta una entrevista estructurada siguiendo el rol local `assets/agents/begin-intent.md` para completar la visión del producto en `docs/product/vision.md`.
 
 Qué hace:
 
@@ -28,12 +28,12 @@ No hace discovery ni planificación del proyecto.
 
 ## Entrada
 
-- `$SPECS_BASE/templates/vision-template.md`, o el seed `assets/vision-template.md`.
-- `$SPECS_BASE/product/vision.md`, opcional.
+- `docs/templates/vision-template.md`, o el seed `assets/vision-template.md`.
+- `docs/product/vision.md`, opcional.
 
 ## Precondiciones
 
-- La raíz se resuelve antes de escribir mediante `SDDF_ROOT` válido, `sddf.config.yaml.root` válido o `docs`.
+- Las rutas son fijas (ADR-0016): la visión se escribe en `docs/product/vision.md`, relativa a `REPO_ROOT`.
 - Debe existir el template central o el seed del skill.
 
 ## Dependencias
@@ -60,25 +60,23 @@ No hace discovery ni planificación del proyecto.
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y `SPECS_BASE`:
-
-1. Si `SDDF_ROOT` está definida, debe ser un directorio accesible; úsala como `SPECS_BASE`. Una fuente explícita inválida detiene el flujo sin escribir.
-2. Si no hay `SDDF_ROOT`, lee `sddf.config.yaml`; su `root` no vacío debe resolver a un directorio accesible, relativo a `REPO_ROOT` cuando corresponda.
-3. Si no hay fuente explícita, usa `docs` relativo a `REPO_ROOT`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico se solicita explícitamente con `/skill-preflight`; no se ejecuta en este flujo.
 
-Con `SPECS_BASE` resuelto, comprueba que existe el rol local `assets/agents/begin-intent.md` (relativo al directorio de este skill). Si falta, muestra el siguiente mensaje y termina sin resolver el template, preguntar, escribir ni crear `.tmp/`; no se buscan roles fuera del directorio de este skill:
+Con `REPO_ROOT` resuelto, comprueba que existe el rol local `assets/agents/begin-intent.md` (relativo al directorio de este skill). Si falta, muestra el siguiente mensaje y termina sin resolver el template, preguntar, escribir ni crear `.tmp/`; no se buscan roles fuera del directorio de este skill:
 
 > ❌ Rol local no encontrado: assets/agents/begin-intent.md (skill project-begin). Reinstala el skill; no se modificó ningún archivo.
 
 ### Paso 1 — Resolver el template de visión
 
-Busca `$SPECS_BASE/templates/vision-template.md` como fuente de verdad. Si no existe, usa `assets/vision-template.md` y muestra:
+Busca `docs/templates/vision-template.md` como fuente de verdad. Si no existe, usa `assets/vision-template.md` y muestra:
 
-> ⚠️ Usando template seed del skill (assets/vision-template.md). Ejecuta sddf-init para centralizarlo en $SPECS_BASE/templates/.
+> ⚠️ Usando template seed del skill (assets/vision-template.md). Ejecuta sddf-init para centralizarlo en docs/templates/.
 
 Si ninguno existe, informa y termina sin escribir:
 
@@ -88,7 +86,7 @@ Conserva la ruta resuelta como `$TEMPLATE_PATH`; el rol no la reconstruye.
 
 ### Paso 2 — Determinar el estado de la visión
 
-Define `$VISION_PATH = $SPECS_BASE/product/vision.md`. No lo escribas antes de completar esta decisión.
+Define `$VISION_PATH = docs/product/vision.md`. No lo escribas antes de completar esta decisión.
 
 - Si no existe, usa `$MODE = full`.
 - Si tiene `substatus: TODO`, usa `$MODE = full` y ofrece el contenido existente como pre-relleno.
@@ -128,4 +126,4 @@ Lee la visión, muestra un resumen por sección y usa `AskUserQuestion` con `Con
 
 ## Salida
 
-- `$SPECS_BASE/product/vision.md`, con la estructura de `vision-template.md`; queda en `DONE` solo después de confirmar.
+- `docs/product/vision.md`, con la estructura de `vision-template.md`; queda en `DONE` solo después de confirmar.

@@ -27,14 +27,14 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 **Qué NO hace este skill:**
 - Generar diseño, tasks ni artefactos de planning
 - Corregir o reescribir la historia automáticamente
-- Crear artefactos distintos de `finvest-evaluation-report.md` en `$SPECS_BASE/specs/`
+- Crear artefactos distintos de `finvest-evaluation-report.md` en `specs/flow/`
 
 ---
 
 ## Entrada
 
 - Texto libre de historia de usuario
-- Identificador `STORY-NNN` de una historia existente en `$SPECS_BASE/specs/stories/`
+- Identificador `STORY-NNN` de una historia existente en `specs/flow/`
 - Ruta de archivo `story.md`
 
 ---
@@ -48,14 +48,14 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 ## Precondiciones
 
 - Si el input es una ruta de archivo: el archivo debe existir y ser legible
-- El template `$SPECS_BASE/templates/story-template.md` debe existir (requerido para evaluar la dimensión F)
+- El template `docs/templates/story-template.md` debe existir (requerido para evaluar la dimensión F)
 
 ---
 
 ## Dependencias
 
 - Skills: ninguno
-- Archivos: [`$SPECS_BASE/templates/story-template.md`], [`assets/evaluation-output-template.md`]
+- Archivos: [`docs/templates/story-template.md`], [`assets/evaluation-output-template.md`]
 
 ---
 
@@ -83,28 +83,27 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 
 ## Contexto de ejecución
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
 
 ## Flujo de ejecución
 
-### Paso 1 — Leer template canónico
+### Paso 1 — Resolver la historia y leer template canónico
 
-El archivo `$SPECS_BASE/templates/story-template.md` es la **única fuente de información estructural** para la dimensión F. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. El template es de **solo lectura**.
+**Resolución por ID:** si el input es un identificador `STORY-NNN`, resolver su directorio con Glob `specs/flow/STORY-NNN-*/story.md` (primera coincidencia; el directorio padre del archivo es el directorio de la historia). Si no hay coincidencia, emitir `❌ No se encontró la historia STORY-NNN en specs/flow/` y detener la ejecución sin evaluar ni generar reporte; no se consulta ni se crea nada fuera de `specs/flow/`. El Paso 6 reutiliza el directorio resuelto aquí.
 
-Leer el archivo `$SPECS_BASE/templates/story-template.md`.
+El archivo `docs/templates/story-template.md` es la **única fuente de información estructural** para la dimensión F. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. El template es de **solo lectura**.
 
-- Si el archivo central **no existe**: usar el fallback `$CLI_ROOT/skills/story-creation/assets/story-template.md` y emitir:
-  > ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `$SPECS_BASE/templates/`.
+Leer el archivo `docs/templates/story-template.md`.
+
+- Si el archivo central **no existe**: usar como fallback el seed `assets/story-template.md` del skill `story-creation` y emitir:
+  > ⚠️ Usando template del skill story-creation. Ejecuta `sddf-init` para centralizarlo en `docs/templates/`.
 - Si tampoco existe el fallback: detener la ejecución (ver Manejo de errores).
 - Si alguno de los dos **existe**: continuar al Paso 2.
 
@@ -186,7 +185,7 @@ Se evalúa en orden; gana la primera condición que coincide. Esta tabla aplica 
 **Condición:** el input fue proporcionado como ID (`STORY-NNN`) o como ruta de archivo (no texto libre).
 
 1. Resolver la ruta del directorio de la historia:
-   - Si el input fue un ID → buscar el directorio `$SPECS_BASE/specs/stories/STORY-NNN-*/` usando Glob con el patrón `$SPECS_BASE/specs/stories/STORY-NNN-*/story.md` y extraer el directorio padre.
+   - Si el input fue un ID → usar el directorio resuelto en el Paso 1 (`specs/flow/STORY-NNN-*/`).
    - Si el input fue una ruta de archivo → usar el directorio que contiene ese archivo.
 2. Escribir el reporte completo en:
    `<directorio-de-la-historia>/finvest-evaluation-report.md`
@@ -335,7 +334,8 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Template no encontrado | `❌ No se encontró el template requerido en $SPECS_BASE/templates/story-template.md. Por favor verifica que el archivo existe antes de continuar.` | Detener la ejecución |
+| Template no encontrado | `❌ No se encontró el template requerido en docs/templates/story-template.md. Por favor verifica que el archivo existe antes de continuar.` | Detener la ejecución |
+| Historia no encontrada (input fue ID) | `❌ No se encontró la historia STORY-NNN en specs/flow/` | Detener sin generar reporte |
 | Archivo de historia no accesible (input fue ruta) | `⚠️ No se pudo leer el archivo: <ruta>` | Notificar y detener |
 | Input es solo imagen sin texto de historia | `ℹ️ El skill requiere el texto de la historia para evaluar. Las imágenes adjuntas no pueden procesarse.` | Solicitar texto y detener |
 | Frontmatter no actualizable (APPROVED + ruta) | `⚠️ No se pudo actualizar el frontmatter de: <ruta> — verifica permisos y formato` | Emitir advertencia y continuar sin bloquear |

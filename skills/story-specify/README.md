@@ -21,8 +21,8 @@ Skill orquestador del flujo completo de especificación de historias SDD: guía 
 
 | Precondición | Descripción |
 |---|---|
-| `skill-preflight` retorna OK | Entorno válido (SDDF_ROOT, subdirectorios de specs) |
-| `$SPECS_BASE/specs/stories/` accesible | Se crea automáticamente si no existe |
+| `skill-preflight` retorna OK | Layout fijo válido (`specs/flow/`, `docs/templates/`, `docs/guardrails/`) |
+| `specs/flow/` accesible | Se crea automáticamente si no existe |
 
 ## Modos de ejecución
 

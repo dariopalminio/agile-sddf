@@ -108,14 +108,14 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 | Elemento | Valor |
 |---|---|
 | Etapa | `code-review` |
-| Archivo | `$SPECS_BASE/guardrails/dod-story-code-review.md` (en este repositorio, `docs/guardrails/dod-story-code-review.md`) |
+| Archivo | `docs/guardrails/dod-story-code-review.md` |
 | Override | `sddf.config.yaml › guardrails.dod.story.code-review` |
 | Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
 
 Resolución (primera coincidencia):
 
-1. `sddf.config.yaml › guardrails.dod.story.code-review` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-code-review.md`
+1. `sddf.config.yaml › guardrails.dod.story.code-review` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-code-review.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa code-review no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin validación DoD CODE-REVIEW.
 
 Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate de la revisión antes de escribir `CODE-REVIEW/DONE`; su ruta resuelta es `$DOD_PATH` para los agentes revisores.
@@ -153,14 +153,11 @@ El flujo por defecto es siempre el equipo de cuatro agentes. El flag `--single-a
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -177,11 +174,15 @@ Proporciona el ID (ej. STORY-064) o la ruta completa al directorio.
 
 #### 1b. Resolución del directorio de la historia
 
-1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
+1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `specs/flow/STORY-NNN-<slug>/` (no `specs/flow/archive/…`) y contiene `story.md`. Si no:
+   ```
+   ❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)
+   ```
+   Detener la ejecución sin escribir ningún archivo.
+2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `specs/flow/archive/`)
 3. Si no se encuentra:
    ```
-   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
+   ❌ No se encontró la historia {story_id} en specs/flow/
    Verifica el ID o ejecuta /epic-generate-stories para generarla.
    ```
    Detener la ejecución.
@@ -668,7 +669,8 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
+| Ruta explícita fuera de specs/flow/ | `❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)` | Detener sin escribir ningún archivo |
 | `story.md` y/o `design.md` ausentes | `❌ Artefactos requeridos no encontrados en: <$STORY_DIR>/` (un único mensaje con la lista de faltantes) | Detener sin modificar ningún archivo |
 | `story.md` no está en `IMPLEMENT/DONE` ni `CODE-REVIEW/IN-PROGRESS` (incluida una historia ya encolada en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`) | `❌ La historia <story_id> no está en un estado válido para revisar.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
 | `implement-report.md` o `testcases.md` ausentes | — (se registran como `⏭️` en el informe) | Continuar sin ese contexto |
@@ -683,8 +685,8 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 
 | Artefacto | Condición |
 |-----------|-----------|
-| `$SPECS_BASE/specs/stories/STORY-NNN/code-review-report.md` | Siempre |
-| `$SPECS_BASE/specs/stories/STORY-NNN/fix-directives.md` | Solo si `NEEDS-CHANGES`; incluye `round` (escritor único: este skill); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Se elimina en `APPROVED` |
+| `specs/flow/<STORY-NNN>-<slug>/code-review-report.md` | Siempre |
+| `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` | Solo si `NEEDS-CHANGES`; incluye `round` (escritor único: este skill); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Se elimina en `APPROVED` |
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |

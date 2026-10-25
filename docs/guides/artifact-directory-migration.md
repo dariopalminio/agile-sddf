@@ -12,7 +12,43 @@ related:
 
 ## Guía de migración de la estructura de artefactos SDDF
 
+## Migración a 5.0.0 — layout fijo de tres raíces
+
+**A quién aplica:** proyectos que declaran `root` en `sddf.config.yaml` (normalmente `root: docs`), que guardan sus work items en `docs/specs/` o que definen la variable de entorno `SDDF_ROOT`. Es un cambio incompatible: los skills de 5.0.0 ya no leen `root` ni `SDDF_ROOT`, no usan `SPECS_BASE` y leen y escriben los work items en `specs/flow/`. La decisión está en [ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso) son raíces hermanas en la raíz del repositorio.
+
+| Origen 4.x | Destino 5.0.0 |
+|---|---|
+| `docs/specs/epics/EPIC-NN-<slug>/` | `specs/flow/EPIC-NN-<slug>/` |
+| `docs/specs/stories/STORY-NNN-<slug>/` (no `COMPLETED`) | `specs/flow/STORY-NNN-<slug>/` |
+| `docs/specs/stories/STORY-NNN-<slug>/` (`COMPLETED`) | `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`, con la fecha de su `updated:` (o `created:` si falta, o `date:` si faltan ambos) |
+| `root:` en `sddf.config.yaml` | se elimina |
+| `SDDF_ROOT` | se elimina; ya no se lee |
+| `docs/templates/`, `docs/guardrails/`, `docs/requirements/` y demás capas de `docs/` | sin cambios |
+| — | `specs/living/` y `workflow/` (reservados, con `.gitkeep`) |
+
+1. Crea un commit de respaldo con el árbol de trabajo limpio.
+2. Ejecuta `npx agile-sddf install --force`. Borra a mano las copias instaladas de `docs-wiki-builder` en el directorio de skills de cada runtime: el skill se eliminó y el instalador no borra copias antiguas.
+3. Pide el diagnóstico explícito `/skill-preflight` y anota las señales de layout legado que informa (`docs/specs/`, la clave `root`, `SDDF_ROOT`).
+4. Crea `specs/flow/archive/`, `specs/living/` y `workflow/`, cada uno con un `.gitkeep` vacío. `/sddf-init` no los crea mientras exista `docs/specs/`: avisa del layout legado, no escribe nada y remite a esta guía.
+5. Mueve cada épica con `git mv docs/specs/epics/EPIC-NN-<slug> specs/flow/`.
+6. Mueve cada historia que no esté `COMPLETED` con `git mv docs/specs/stories/STORY-NNN-<slug> specs/flow/`.
+7. Mueve cada historia `COMPLETED` con `git mv docs/specs/stories/STORY-NNN-<slug> specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>`, con la fecha de la tabla anterior.
+8. Elimina lo que quede en `docs/specs/` (por ejemplo, su `README.md`) y el directorio.
+9. Quita la clave `root` de `sddf.config.yaml` y retira `SDDF_ROOT` del entorno, de los scripts y de la CI.
+10. Regenera el índice con `/memory-system index` y busca enlaces que aún apunten a `docs/specs/` con `git grep -n "docs/specs/"`.
+11. Verifica: `/skill-preflight` sin señales de layout legado, `/memory-system check` sin errores y `git log --follow` sobre un `story.md` movido, que debe mostrar su historial previo.
+
+Notas:
+
+- `git mv` conserva el historial de cada work item; no copies ni recrees los directorios.
+- El paquete incluye `scripts/migrate-specs-to-flow.js`, pero es un script de un solo uso para este repositorio y no es un comando soportado de `agile-sddf`: migra con los pasos manuales.
+- Solo se archivan las historias `COMPLETED`. Las `CANCELED`, las de cualquier otro estado y todas las épicas quedan en `specs/flow/`.
+- Si el proyecto usa Spec Kit, su `specs/` puede convivir con el de SDDF, que solo usa `specs/flow/` y `specs/living/`.
+- `docs/requirements/` no se mueve en 5.0.0; migrará a `specs/living/` en una versión posterior.
+
 ## Migración a 4.0.0 — specs/ de dos niveles
+
+> Su destino `specs/epics/` y `specs/stories/` bajo `docs/` quedó reemplazado en 5.0.0; tras aplicar esta sección, continúa con la sección anterior.
 
 La versión 4.0.0 elimina `specs/01-projects/`. La documentación estratégica pasa a `product/` y `requirements/`; los únicos work items son Epic y Story.
 
@@ -122,4 +158,4 @@ updated: 2026-05-01
 - El campo `parent` en épicas apunta al ID del proyecto (`PROJ-01`), no al nombre del directorio.
 - El campo `parent` en historias apunta al ID de la épica (`EPIC-01`) o al proyecto si aún no está asignada a una épica.
 - Los IDs deben ser únicos globalmente en todo `$SPECS_BASE/specs/`.
-- Resuelve `$SPECS_BASE` con la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs` antes de ejecutar la migración; no sustituyas rutas manualmente ni continúes con una fuente explícita inválida.
+- En 1.x–4.x, `$SPECS_BASE` se resolvía con la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`. Desde 5.0.0 no hay raíz configurable: tras esta sección, aplica las de 4.0.0 y 5.0.0.

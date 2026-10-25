@@ -11,7 +11,7 @@ superseded-by: ADR-0013
 
 # ADR-0004: El nivel L2 es una épica, y los niveles viven en directorios numerados
 
-> **Superado parcialmente por [ADR-0013](ADR-0013-eliminar-specs-01-projects.md) (2026-10-11):** los directorios numerados (`01-projects/`, `02-epics/`, `03-stories/`) se reemplazan por `specs/epics/` y `specs/stories/`, y el nivel Project deja de ser work item. Siguen vigentes sin cambios: el nivel L2 se llama **épica** (`EPIC-NN`, `epic.md`, skills `epic-*`) y «release» queda reservado para CI/CD.
+> **Superado parcialmente por [ADR-0013](ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) (2026-10-11):** los directorios numerados (`01-projects/`, `02-epics/`, `03-stories/`) se reemplazan por `specs/epics/` y `specs/stories/`, y el nivel Project deja de ser work item. Siguen vigentes sin cambios: el nivel L2 se llama **épica** (`EPIC-NN`, `epic.md`, skills `epic-*`) y «release» queda reservado para CI/CD.
 
 ## Contexto y problema
 

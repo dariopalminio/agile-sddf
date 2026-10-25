@@ -24,9 +24,13 @@ Coordina cuatro análisis del código fuente y una síntesis posterior para prod
 
 ## Fase 0 — Resolver contexto, templates e inventario
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve `$SPECS_BASE` con la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`. Una fuente explícita inválida detiene el flujo sin escribir.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
+
+Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para los seeds de templates y la referencia de `project-discovery`; nunca lo derives de `REPO_ROOT`.
 
 Comprueba, con rutas relativas al directorio de este skill, que existen los cinco subagentes locales: `assets/agents/architect.md`, `assets/agents/product-discovery.md`, `assets/agents/business-analyst.md`, `assets/agents/ux-flow-mapper.md` y `assets/agents/synthesizer.md`. No se buscan subagentes fuera del directorio de este skill. Si falta alguno, emite una línea por cada archivo ausente y termina sin resolver templates, preguntar, escribir ni crear `.tmp/`:
 
@@ -35,12 +39,12 @@ Comprueba, con rutas relativas al directorio de este skill, que existen los cinc
 Reinstala el skill; no se lanzó ningún análisis.
 ```
 
-Resuelve `$STAKEHOLDERS_TEMPLATE_PATH` y `$REQUIREMENT_TEMPLATE_PATH`: primero `$SPECS_BASE/templates/`, después `$CLI_ROOT/skills/project-discovery/assets/`.
+Resuelve `$STAKEHOLDERS_TEMPLATE_PATH` y `$REQUIREMENT_TEMPLATE_PATH`: primero `docs/templates/`, después `$CLI_ROOT/skills/project-discovery/assets/`.
 
-- Al usar seed, muestra `⚠️ Usando template seed del skill. Ejecuta sddf-init para centralizarlo en $SPECS_BASE/templates/.`.
+- Al usar seed, muestra `⚠️ Usando template seed del skill. Ejecuta sddf-init para centralizarlo en docs/templates/.`.
 - Si falta cualquiera: `❌ Template <nombre> no encontrado. Ejecuta sddf-init.` y termina sin escribir.
 
-Localiza `$CLI_ROOT/skills/project-discovery/references/layer-materialization.md`, calcula el inventario y `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US` según esa referencia, y define `$STAKEHOLDERS_PATH = $SPECS_BASE/product/stakeholders.md`. Con inventario vacío, el primer destino previsto es `product/stakeholders.md` y el primer requisito funcional es `requirements/functional/FR-001-<slug>.md`.
+Localiza `$CLI_ROOT/skills/project-discovery/references/layer-materialization.md`, calcula el inventario y `$NEXT_FR`, `$NEXT_NFR`, `$NEXT_US` según esa referencia, y define `$STAKEHOLDERS_PATH = docs/product/stakeholders.md`. Con inventario vacío, el primer destino previsto es `docs/product/stakeholders.md` y el primer requisito funcional es `docs/requirements/functional/FR-001-<slug>.md`.
 
 En modo normal con inventario vacío, continúa sin preguntas. Con inventario no vacío, muestra `⚠️ Ya existen <n> requisitos; los nuevos se numerarán desde <FR-…>/<NFR-…>. Usa --update para un análisis incremental.` y pregunta `Continuar` o `Cancelar` antes de escribir.
 
@@ -98,7 +102,7 @@ Si stakeholders es nuevo o está en `TODO`, déjalo con `substatus: IN-PROGRESS`
 
 ## Salida
 
-- `$SPECS_BASE/product/stakeholders.md`.
-- `$SPECS_BASE/requirements/functional/FR-NNN-<slug>.md`.
-- `$SPECS_BASE/requirements/non-functional/NFR-NNN-<slug>.md`.
+- `docs/product/stakeholders.md`.
+- `docs/requirements/functional/FR-NNN-<slug>.md`.
+- `docs/requirements/non-functional/NFR-NNN-<slug>.md`.
 - `.tmp/reverse-engineering/gaps.md` y propuesta preservada para auditoría.

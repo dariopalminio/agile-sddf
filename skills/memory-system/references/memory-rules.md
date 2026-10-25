@@ -7,6 +7,9 @@ Fuente de verdad de las reglas que aplica `scripts/memory-system.js` en los modo
 está en PATH (degradación inline). `check` no define reglas propias de slug, capa ni exclusión:
 reutiliza las de §2, y cualquier ajuste se hace aquí una sola vez y lo heredan los tres modos.
 
+La **raíz de conocimiento** es `docs/` (el `--root` del motor; ruta fija relativa a `REPO_ROOT`,
+ADR-0016). Salvo que se diga otra cosa, toda ruta relativa de este documento lo es a `docs/`.
+
 **Contenido:** [1. Perfiles de harness](#1-perfiles-de-harness-harness_profiles) ·
 [2. Nodo indexable](#2-nodo-indexable) · [3. Formato del índice](#3-formato-del-índice) ·
 [4. Resumen](#4-resumen) · [5. Scaffold](#5-scaffold-y-archivos-gestionados) ·
@@ -17,7 +20,7 @@ reutiliza las de §2, y cualquier ajuste se hace aquí una sola vez y lo heredan
 ## 1. Perfiles de harness (`HARNESS_PROFILES`)
 
 Precedencia de detección: `--harness` explícito > `sddf.config.yaml` > `.specify/` > `openspec/` >
-`generic`. Los marcadores se buscan en `REPO_ROOT` (directorio padre de `SPECS_BASE`). Un valor de
+`generic`. Los marcadores se buscan en `REPO_ROOT` (directorio padre de `docs/`). Un valor de
 `--harness` fuera de la tabla termina con exit 2:
 `valor no admitido para --harness: <v> (admitidos: sddf, speckit, openspec, generic)`.
 
@@ -28,21 +31,21 @@ Precedencia de detección: `--harness` explícito > `sddf.config.yaml` > `.speci
 | `openspec` | `openspec/` | `openspec/specs/**/spec.md`, `openspec/changes/*/proposal.md` | `['specs']` | `{}` |
 | `generic` | ninguno | — | `[]` | `{}` |
 
-Las raíces externas se leen en modo solo lectura: `index` nunca escribe fuera de `SPECS_BASE`.
+Las raíces externas se leen en modo solo lectura: `index` nunca escribe fuera de `docs/`.
 La semántica de `skipLayers` y `mappings` (STORY-098) está en §8. `skipLayers` admite, además de
-las once capas, el valor `constitution.md`: `check` lo consulta también para el archivo raíz, que
+las diez capas, el valor `specs` (controla el origen flow, §2) y `constitution.md`: `check` lo consulta también para el archivo raíz, que
 no es una capa pero sí una entrada esperada de la memoria (§7).
 
 ## 2. Nodo indexable
 
-Un nodo es un archivo `.md` bajo `SPECS_BASE` (más las raíces externas del perfil) que no cae en
+Un nodo es un archivo `.md` bajo `docs/` (más las raíces externas del perfil) que no cae en
 las exclusiones. Esquema: `{ path, relPath, layer, slug, title, hasFrontmatter, slugPlaceholder, wikilinks[], declared }`;
-`relPath` es relativa a `SPECS_BASE` con `/` (los nodos externos empiezan por `../`) y `declared` es
+`relPath` es relativa a `docs/` con `/` (los nodos externos empiezan por `../`) y `declared` es
 el frontmatter tal cual lo declara el archivo (`{}` si no hay bloque), que es lo que evalúa `check` (§6).
 
 ### Exclusiones
 
-- `index.md` en la raíz de `SPECS_BASE` (es el archivo que se genera).
+- `index.md` en la raíz de `docs/` (es el archivo que se genera).
 - Directorios `.cache/`, `templates/` (sus wikilinks son placeholders) y `pre-split/`, a cualquier profundidad.
 - Derivados de historia: `design.md`, `tasks.md`, `testcases.md`, `analyze.md`, `*-report.md`,
   `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`,
@@ -68,13 +71,36 @@ se enlaza solo por ruta con `⚠️ slug placeholder` y sus wikilinks no cuentan
 
 Primer segmento de `relPath` (`adr`, `guides`, `policies`, …). Reglas especiales:
 
-- Archivo en la raíz de `SPECS_BASE` (`constitution.md`) → `root`.
-- `specs/epics/` → `specs-epics`; `specs/stories/` → `specs-stories`; otro subdirectorio
-  `specs/<x>/` → `specs-<x>` (sin placeholder en el template: exit 2, a propósito). Los niveles
-  retirados de tres niveles entran por ese fallback; `scaffold` los detecta y avisa. Un archivo
-  suelto directamente en `specs/`
-  (su `README.md` semilla) → capa `specs`.
+- Archivo en la raíz de `docs/` (`constitution.md`) → `root`.
+- Layout legado `docs/specs/` (repo sin migrar): `specs/epics/` → `specs-epics`;
+  `specs/stories/` → `specs-stories`; otro subdirectorio `specs/<x>/` → `specs-<x>` (sin
+  placeholder en el template: exit 2, a propósito). Los niveles retirados de tres niveles entran
+  por ese fallback; `scaffold` los detecta y avisa. Un archivo suelto directamente en `specs/` →
+  capa `specs`.
+- Nodos del origen flow → capa según la tabla de «Origen flow».
 - Nodos de raíces externas → `external`.
+
+### Origen flow
+
+`index` y `check` recorren también `<REPO_ROOT>/specs/flow/`, los work items del layout fijo
+(STORY-152 D-4), con el mismo recorrido y las mismas exclusiones que `docs/`. Sus nodos son
+**propios**: `check` los evalúa (`orphan`, `invalid-frontmatter`, `broken-wikilink`,
+`requirement`). Su `relPath` es relativa a `docs/` (`../specs/flow/STORY-001-a/story.md`), válida
+como enlace desde `docs/index.md`. La capa se calcula sobre la ruta relativa a `specs/flow/`:
+
+| Ruta bajo `specs/flow/` | Capa |
+|---|---|
+| `archive/**` | `specs-archive` |
+| primer segmento `EPIC-*` | `specs-epics` |
+| primer segmento `STORY-*` | `specs-stories` |
+| cualquier otro | `specs` |
+
+- Si el perfil incluye `specs` en `skipLayers` (Speckit, OpenSpec), el origen flow no se recorre:
+  `specs/` pertenece al harness.
+- Sin `specs/flow/`, el origen queda vacío, sin aviso.
+- Ninguna escritura: `index` sigue escribiendo solo `docs/index.md`.
+- Las capas `specs-*` son las mismas del layout legado: durante la migración, los nodos de
+  `docs/specs/` y de `specs/flow/` conviven en las mismas secciones del índice.
 
 ### Frontmatter
 
@@ -106,7 +132,7 @@ Un wikilink cuyo slug no coincide con el de ningún nodo (ni con `index`) es un 
 para `index` (informativo, no bloquea) y un problema `broken-wikilink` para `check` (bloquea, una
 ocurrencia = un problema).
 
-Los ADR resuelven además por nombre de archivo (`[[ADR-0013-eliminar-specs-01-projects]]`, la forma
+Los ADR resuelven además por nombre de archivo (`[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`, la forma
 de `related`) y por ID (`[[ADR-0013]]`), aunque su `slug` declarado omita el prefijo. Solo aplica a
 los nodos de la capa `adr/` cuyo archivo se llama `ADR-<NNNN>-<slug>.md`.
 
@@ -124,7 +150,7 @@ El motor lee `assets/index-template.md` en runtime y sustituye:
 Formato de entrada:
 
 ```
-- [[<slug>]] — [<archivo>](<ruta relativa a SPECS_BASE>) — <título>
+- [[<slug>]] — [<archivo>](<ruta relativa a docs/>) — <título>
 - [<archivo>](<ruta>) — <título> ⚠️ sin frontmatter          (nodo sin frontmatter)
 - [<archivo>](<ruta>) — <título> ⚠️ slug placeholder        (slug con forma <placeholder>)
 ```
@@ -151,23 +177,24 @@ nodos indexados: N · sin frontmatter: M · nodos pendientes: K
 
 ## 5. Scaffold y archivos gestionados
 
-`scaffold` copia el árbol semilla `assets/scaffold/` (espejo del destino) sobre `SPECS_BASE` y
-después aplica la tabla de plantillas compartidas. Las once capas son el mismo catálogo `LAYERS`
-del índice: `product`, `requirements`, `specs`, `domains`, `architecture`, `adr`, `policies`,
-`guardrails`, `guides`, `runbooks`, `templates`.
+`scaffold` copia el árbol semilla `assets/scaffold/` (espejo del destino) sobre `docs/` y
+después aplica la tabla de plantillas compartidas. Las diez capas son el mismo catálogo `LAYERS`
+del índice: `product`, `requirements`, `domains`, `architecture`, `adr`, `policies`,
+`guardrails`, `guides`, `runbooks`, `templates`. `scaffold` no crea `docs/specs/` ni
+`specs/flow/`: los directorios de work items los crea `/sddf-init` (STORY-152 D-5).
 
 ### Archivos gestionados
 
 Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild --force`
 (`scaffold --force`) sobrescribe. Todo lo demás son artefactos de autor y ningún modo los toca.
 
-| Archivo (relativo a `SPECS_BASE`) | Origen | `type` / `slug` |
+| Archivo (relativo a `docs/`) | Origen | `type` / `slug` |
 |---|---|---|
 | `constitution.md` | semilla | `constitution` / `constitution` |
 | `product/README.md` | semilla | `wiki` / `product-index` |
 | `product/vision.md`, `product/stakeholders.md`, `product/objectives.md`, `product/roadmap.md` | semilla | `product` / `vision`, `stakeholders`, `objectives`, `roadmap` |
-| `requirements/README.md`, `specs/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla | `wiki` / `<capa>-index` |
-| `specs/epics/.gitkeep`, `specs/stories/.gitkeep`, `requirements/functional/.gitkeep`, `requirements/non-functional/.gitkeep` | semilla | solo si el directorio no existe; nunca se listan ni se sobrescriben si ya existe |
+| `requirements/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla | `wiki` / `<capa>-index` |
+| `requirements/functional/.gitkeep`, `requirements/non-functional/.gitkeep` | semilla | solo si el directorio no existe; nunca se listan ni se sobrescriben si ya existe |
 | `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md` del framework) | template |
 | `templates/domain-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
 | `templates/guardrail-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
@@ -208,7 +235,7 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
   conserva la regla de ADR-0001: un dueño por template compartido, sin copias en
   `assets/scaffold/`. Las cuatro plantillas de autoría manual —`adr`, `domain`, `guardrail`,
   `policy`— no tienen dueño y por eso viven en la semilla, conforme a ADR-0012).
-- **Directorios:** se crean los intermedios que hagan falta y los once de capa aunque el harness
+- **Directorios:** se crean los intermedios que hagan falta y los diez de capa aunque el harness
   omita sus semillas. Raíz ausente con padre existente → se crea (bootstrap); sin padre → exit 2.
   `assets/scaffold/` ausente → exit 2 nombrando la ruta.
 - **Harness:** una capa de `skipLayers` se informa con una sola línea
@@ -279,7 +306,7 @@ ampliar `REQUIRED_FIELDS` es una decisión de esta tabla, no del código.
 
 | Familia (`kind`) | Regla | `detail` |
 |---|---|---|
-| `missing-layer` | Una de las once capas de §5 no existe como directorio de la raíz, o falta `constitution.md`, y el perfil del harness no la omite (`skipLayers`, §1) ni, para `constitution.md`, la mapea a un equivalente existente (`mappings`, §8). | `capa ausente` |
+| `missing-layer` | Una de las diez capas de §5 no existe como directorio de la raíz, o falta `constitution.md`, y el perfil del harness no la omite (`skipLayers`, §1) ni, para `constitution.md`, la mapea a un equivalente existente (`mappings`, §8). | `capa ausente` |
 | `orphan` | Nodo indexable con `hasFrontmatter=false` (§2, *Frontmatter*). | `sin frontmatter` |
 | `invalid-frontmatter` | Campo de `REQUIRED_FIELDS` ausente del frontmatter declarado (§6). | `falta <campo>` |
 | `broken-wikilink` | Ocurrencia de `[[slug]]` cuyo slug no está en el conjunto de slugs derivados (§2, incluidas las raíces externas del perfil). | `[[slug]] no resuelve` |
@@ -287,7 +314,7 @@ ampliar `REQUIRED_FIELDS` es una decisión de esta tabla, no del código.
 
 `path` es `<capa>/` para `missing-layer` —excepto `constitution.md`, que se reporta tal cual, sin
 barra final, por ser un archivo y no un directorio— y la `relPath` del nodo en las demás familias,
-siempre relativa a `SPECS_BASE` y con `/`. Los problemas se ordenan por `(kind, path, detail)` con
+siempre relativa a `docs/` y con `/`. Los problemas se ordenan por `(kind, path, detail)` con
 comparación ordinal; el informe textual los agrupa en el orden de la tabla. `check` no escribe
 nada: ni `index.md`, ni frontmatter, ni directorios.
 
@@ -335,20 +362,20 @@ son datos (§1): actualizar un layout de harness es editar una fila, no el códi
 | Clave | Semántica |
 |---|---|
 | `skipLayers` | Capas que el harness ya modela. `scaffold` no crea su directorio ni sus semillas y lo informa con una sola línea `[OMITIDO] <capa>/ — gestionado por el harness <h>`; `check` no las reporta como `missing-layer`; el índice las muestra como `_(gestionado por el harness)_`. |
-| `mappings` | Semilla (relativa a `SPECS_BASE`) → equivalente del harness (relativo a `REPO_ROOT`). Si el equivalente **existe**, `scaffold` no crea la semilla (`[MAPEADO] <semilla> → <ruta>`), `check` no la exige y `index` enlaza el equivalente como nodo externo con el slug de la semilla (`[[constitution]]`). Si no existe, se crea la semilla como siempre. |
+| `mappings` | Semilla (relativa a `docs/`) → equivalente del harness (relativo a `REPO_ROOT`). Si el equivalente **existe**, `scaffold` no crea la semilla (`[MAPEADO] <semilla> → <ruta>`), `check` no la exige y `index` enlaza el equivalente como nodo externo con el slug de la semilla (`[[constitution]]`). Si no existe, se crea la semilla como siempre. |
 | `externalRoots` | Patrones que `index` escanea en solo lectura (`*` = un segmento, `**` = cero o más). |
 
 - **Solo lectura:** `openspec/`, `.specify/` y `specs/` del harness nunca reciben un destino de
   escritura. El motor valida **todo el plan** de `scaffold` (semillas, plantillas compartidas y
-  claves de `mappings`) y el `index.md` de `index` contra `SPECS_BASE` antes de escribir: un
+  claves de `mappings`) y el `index.md` de `index` contra `docs/` antes de escribir: un
   destino fuera de la raíz termina con exit 2 y `destino fuera de la raíz: <ruta>`, sin haber
   escrito nada (ni siquiera la raíz del bootstrap).
 - **Grupos del índice (`externalGroup`):** cada nodo externo se anota con el grupo del patrón que
   lo originó y se lista bajo su subtítulo, en este orden: `openspec-specs` → `### OpenSpec — specs`,
   `openspec-changes` → `### OpenSpec — changes`, `speckit-features` → `### Speckit — features`,
-  `mapped` → `### Mapeados desde el harness`. Las rutas son relativas a `SPECS_BASE` (`../…`).
+  `mapped` → `### Mapeados desde el harness`. Las rutas son relativas a `docs/` (`../…`).
 - **Colisión de slug (CR-002):** si el slug de un nodo externo coincide con el de un nodo de
-  `SPECS_BASE`, gana el de `SPECS_BASE`; el externo se indexa como `[[<slug>-external]]` y `index`
+  `docs/`, gana el de `docs/`; el externo se indexa como `[[<slug>-external]]` y `index`
   emite por stderr `⚠️ colisión de slug: <slug> — …`, sin cambiar el exit code.
 - **`migrate`:** es `scaffold --dry-run` (plan) → confirmación → `scaffold`, siempre con el perfil
   del harness. No transforma ni mueve artefactos y no invoca `index`. En un proyecto `sddf`

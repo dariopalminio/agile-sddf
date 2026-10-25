@@ -11,7 +11,7 @@ updated: 2026-10-10
 
 # Roadmap del producto
 
-> Origen: plan de épicas de `project-plan.md` (PROJ-01, eliminado), migrado por [[eliminar-specs-01-projects]]. El objetivo de negocio vive en [[objectives]].
+> Origen: plan de épicas de `project-plan.md` (PROJ-01, eliminado), migrado por [[asegurar-dos-niveles-de-flujo-epics-stories]]. El objetivo de negocio vive en [[objectives]].
 > La lista de épicas es una foto a la fecha de migración; no se sincroniza sola con el estado de cada épica.
 
 ## Épicas

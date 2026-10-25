@@ -565,8 +565,8 @@ test('E2E-002 los nueve skills del pipeline declaran solo el DoD de su etapa', (
     const sectionStart = dodHeading.index;
     const nextSection = text.indexOf('\n## ', sectionStart + dodHeading[0].length);
     const dodSection = text.slice(sectionStart, nextSection === -1 ? text.length : nextSection);
-    const expectedPath = `$SPECS_BASE/guardrails/${slug}.md`;
-    const referencedSlugs = [...dodSection.matchAll(/\$SPECS_BASE\/guardrails\/(dod-story-[a-z-]+)\.md/g)].map((match) => match[1]);
+    const expectedPath = `docs/guardrails/${slug}.md`;
+    const referencedSlugs = [...dodSection.matchAll(/guardrails\/(dod-story-[a-z-]+)\.md/g)].map((match) => match[1]);
 
     assert.ok(dodSection.includes(expectedPath), `${skill}: debe referenciar ${expectedPath}`);
     assert.ok(referencedSlugs.length > 0 && referencedSlugs.every((referenced) => referenced === slug), `${skill}: debe cargar solo ${slug}`);

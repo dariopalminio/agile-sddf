@@ -4,7 +4,7 @@ Genera y mantiene los documentos de gobernanza y los guardrails de transición d
 
 ## What it does
 
-- Crea o actualiza `$SPECS_BASE/constitution.md` a partir de su template.
+- Crea o actualiza `docs/constitution.md` a partir de su template.
 - Crea, solo si faltan, los guardrails DoD de story por etapa: `specify`, `plan`, `implement`, `code-review`, `verify` y `acceptance`.
 - Puede auto-completar la constitución y añadir criterios de testing detectados al DoD de `implement`.
 - Crea `policies/README.md` cuando no existe y registra la constitución en `CLAUDE.md` o `AGENTS.md`.
@@ -32,7 +32,7 @@ El skill no recibe flags propios. Las decisiones de creación y actualización s
 
 | Entrada | Uso |
 |---|---|
-| `$SPECS_BASE` | Raíz de artefactos resuelta mediante `SDDF_ROOT`, `sddf.config.yaml.root` o `docs/`. |
+| `docs/` | Raíz de conocimiento — ruta fija (ADR-0016), relativa a la raíz del repositorio. |
 | `assets/project-constitution-template.md` | Template de la constitución. |
 | `assets/dod-story/` | Seis plantillas fuente para los guardrails DoD por etapa. |
 | Archivos del proyecto | En modo auto-completar, se analizan archivos como `package.json`, configuración de testing, CI y documentación de agentes para completar criterios pertinentes. |
@@ -56,8 +56,8 @@ Al crear una constitución o un DoD por primera vez, elige entre auto-completarl
 
 ## Output
 
-- `$SPECS_BASE/constitution.md` y `$SPECS_BASE/policies/README.md`.
-- Los guardrails `$SPECS_BASE/guardrails/dod-story-{specify,plan,implement,code-review,verify,acceptance}.md`, o los slugs configurados para esas etapas.
+- `docs/constitution.md` y `docs/policies/README.md`.
+- Los guardrails `docs/guardrails/dod-story-{specify,plan,implement,code-review,verify,acceptance}.md`, o los slugs configurados para esas etapas.
 - Una referencia `@` a la constitución en `CLAUDE.md` o `AGENTS.md`, cuando se puede insertar de forma segura; los DoD no se importan globalmente para que cada skill cargue solo su propia etapa.
 - Un resumen que informa archivos creados, preservados, actualizados, omitidos o pendientes de migración.
 

@@ -155,8 +155,8 @@ test('UT-006 deriveNode: slug, capa y título según D-3', () => {
   assert.deepEqual([adr.slug, adr.layer, adr.title], ['ADR-0001-x', 'adr', 'ADR-0001: Decisión de ejemplo X']);
   const guide = node('guides/sdd.md');
   assert.deepEqual([guide.slug, guide.layer, guide.title], ['sdd', 'guides', 'Guía SDD de ejemplo']);
-  const story = node('specs/stories/STORY-001-a/story.md');
-  assert.deepEqual([story.slug, story.layer], ['STORY-001-a', 'specs-stories']);
+  const story = engine.deriveNode(path.join(base, '..', 'specs', 'flow', 'STORY-001-a', 'story.md'), base, { flow: true });
+  assert.deepEqual([story.slug, story.layer, story.relPath], ['STORY-001-a', 'specs-stories', '../specs/flow/STORY-001-a/story.md']);
   const policies = node('policies/README.md');
   assert.deepEqual([policies.slug, policies.layer], ['policies-index', 'policies']);
   const constitution = node('constitution.md');
@@ -177,20 +177,20 @@ test('UT-007 scanNodes: excluye index.md, .cache, templates, derivados y pre-spl
   const repo = copyFixture(t, 'sddf');
   const docs = path.join(repo, 'docs');
   fs.writeFileSync(path.join(docs, 'index.md'), '---\nslug: index\n---\n# Índice\n');
-  fs.mkdirSync(path.join(docs, 'specs', '.cache'), { recursive: true });
-  fs.writeFileSync(path.join(docs, 'specs', '.cache', 'index.json'), '{}');
-  fs.writeFileSync(path.join(docs, 'specs', '.cache', 'index.md'), '# cache\n');
-  const story = path.join(docs, 'specs', 'stories', 'STORY-001-a');
+  fs.mkdirSync(path.join(repo, 'specs', 'flow', '.cache'), { recursive: true });
+  fs.writeFileSync(path.join(repo, 'specs', 'flow', '.cache', 'index.json'), '{}');
+  fs.writeFileSync(path.join(repo, 'specs', 'flow', '.cache', 'index.md'), '# cache\n');
+  const story = path.join(repo, 'specs', 'flow', 'STORY-001-a');
   fs.mkdirSync(path.join(story, 'pre-split'));
   fs.writeFileSync(path.join(story, 'pre-split', 'story.md'), '---\nslug: STORY-001-a-old\n---\n# vieja\n');
   fs.writeFileSync(path.join(story, 'implement-report.md'), '# reporte\n');
   const rels = engine.scanNodes(docs, 'sddf').map((n) => n.relPath);
   assert.deepEqual(rels, [
+    '../specs/flow/STORY-001-a/story.md',
     'adr/ADR-0001-x.md',
     'constitution.md',
     'guides/sdd.md',
     'policies/README.md',
-    'specs/stories/STORY-001-a/story.md',
   ]);
 });
 
@@ -312,8 +312,8 @@ test('IT-002b index speckit: specs/*/spec.md y plan.md como nodos externos', (t)
 
 const SCAFFOLD_SUMMARY = /^creados: (\d+) · sobrescritos: (\d+) · preservados: (\d+) · mapeados: (\d+) · omitidos por harness: (\d+)$/;
 
-// Las once capas y las nueve plantillas que scaffold garantiza (AC-5, AC-6).
-const LAYER_DIRS = ['product', 'requirements', 'specs', 'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
+// Las diez capas y las nueve plantillas que scaffold garantiza (AC-5, AC-6; STORY-152 D-5).
+const LAYER_DIRS = ['product', 'requirements', 'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
 // Las seis que se copian desde su skill dueño, más las cuatro de autoría manual que viajan en la
 // semilla porque no tienen dueño (ADR-0012).
 const MANUAL_TEMPLATES = ['adr-template.md', 'domain-template.md', 'guardrail-template.md', 'policy-template.md', 'srs-template.md'];
@@ -344,12 +344,7 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   for (const name of TEN_TEMPLATES) {
     assert.ok(fs.existsSync(path.join(docs, 'templates', name)), name);
   }
-  for (const sub of ['epics', 'stories']) {
-    assert.ok(fs.existsSync(path.join(docs, 'specs', sub, '.gitkeep')), sub);
-  }
-  for (const legacy of Object.values(specs3Levels.LEGACY_LEVELS)) {
-    assert.ok(!fs.existsSync(path.join(docs, 'specs', legacy)), legacy);
-  }
+  assert.ok(!fs.existsSync(path.join(docs, 'specs')), 'los work items viven en specs/flow/, no en docs/specs/');
   for (const kind of ['functional', 'non-functional']) assert.ok(!fs.existsSync(path.join(docs, 'requirements', kind)), kind);
   assert.equal(fs.readdirSync(path.join(docs, 'requirements')).filter((name) => /^srs-.*\.md$/.test(name)).length, 1);
   assert.ok(!fs.existsSync(path.join(docs, 'index.md')), 'scaffold no crea index.md');
@@ -382,7 +377,6 @@ test('S096-UT-002 scaffold: idempotente, la segunda corrida preserva todo con cr
   assert.ok(first.stdout.includes('[CREADO] product/vision.md'));
   assert.ok(first.stdout.includes('[CREADO] requirements/README.md'));
   assert.ok(first.stdout.includes('[PRESERVADO] constitution.md'));
-  assert.ok(!first.stdout.includes('specs/stories/.gitkeep'), 'un directorio con contenido no recibe .gitkeep');
   assert.match(readUtf8(docs, 'constitution.md'), /Regla local:/);
   const after = hashTree(docs);
 
@@ -473,7 +467,7 @@ test('S096-UT-006 scaffold --force: restaura solo semillas y plantillas, conserv
   assert.ok(result.stdout.includes('[PRESERVADO] requirements/srs-'));
 
   const restored = hashTree(docs);
-  for (const author of ['adr/ADR-0001-x.md', 'guides/sdd.md', 'specs/stories/STORY-001-a/story.md']) {
+  for (const author of ['adr/ADR-0001-x.md', 'guides/sdd.md']) {
     assert.equal(restored[author], pristine[author], `${author} intacto`);
   }
   assert.ok(!readUtf8(docs, 'constitution.md').includes('Regla local'));
@@ -538,7 +532,7 @@ test('S096-IT-001 scaffold + index: las semillas se indexan sin nodos pendientes
   const result = run(['index', '--root', docs]);
   assert.equal(result.status, 0, result.stderr);
   const index = readUtf8(docs, 'index.md');
-  for (const slug of ['vision', 'stakeholders', 'objectives', 'requirements-index', 'specs-index', 'adr-index', 'constitution']) {
+  for (const slug of ['vision', 'stakeholders', 'objectives', 'requirements-index', 'adr-index', 'constitution']) {
     assert.ok(index.includes(`- [[${slug}]]`), slug);
   }
   assert.ok(!index.includes('templates-index'), 'templates/ no se indexa');
@@ -570,9 +564,6 @@ test('S096-UT-001c assets/scaffold: el árbol semilla es exactamente el declarad
     'requirements/functional/.gitkeep',
     'requirements/non-functional/.gitkeep',
     'runbooks/README.md',
-    'specs/README.md',
-    'specs/epics/.gitkeep',
-    'specs/stories/.gitkeep',
     'templates/README.md',
     ...MANUAL_TEMPLATES.map((name) => `templates/${name}`),
   ].sort();
@@ -585,8 +576,8 @@ test('S096-UT-001c assets/scaffold: el árbol semilla es exactamente el declarad
 
 test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
   assert.deepEqual(engine.LAYERS, LAYER_DIRS);
+  for (const layer of ['specs', 'specs-epics', 'specs-stories', 'specs-archive']) assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
   for (const layer of engine.LAYERS) {
-    if (layer === 'specs') continue;
     if (layer === 'templates') assert.ok(!engine.KNOWN_LAYERS.includes(layer));
     else assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
   }
@@ -702,7 +693,7 @@ function fakeNode(relPath, { declared = null, wikilinks = [] } = {}) {
   return { relPath, hasFrontmatter: declared !== null, declared: declared || {}, wikilinks, slugPlaceholder: false, slug: relPath };
 }
 
-// Raíz con las once capas menos las de `omit`; `constitution` crea también constitution.md.
+// Raíz con las diez capas menos las de `omit`; `constitution` crea también constitution.md.
 function layerTree(t, { omit = [], constitution = true } = {}) {
   const root = tempDir(t, 'memory-check-');
   for (const layer of engine.LAYERS) {
@@ -725,11 +716,13 @@ test('S097-UT-001 missingLayers: capa ausente y constitution.md ausente (V-1)', 
 });
 
 test('S097-UT-002 missingLayers: skipLayers del harness no genera missing-layer (V-7)', (t) => {
-  const root = layerTree(t, { omit: ['specs'] });
-  assert.deepEqual(engine.missingLayers(checkCtx({ root, profile: { skipLayers: ['specs'] } })), []);
+  const root = layerTree(t, { omit: ['guides'] });
+  assert.deepEqual(engine.missingLayers(checkCtx({ root, profile: { skipLayers: ['guides'] } })), []);
   assert.deepEqual(engine.missingLayers(checkCtx({ root })), [
-    { kind: 'missing-layer', path: 'specs/', detail: 'capa ausente' },
+    { kind: 'missing-layer', path: 'guides/', detail: 'capa ausente' },
   ]);
+  // `specs/` ya no es capa de docs/ (STORY-152 D-5): su ausencia nunca es missing-layer.
+  assert.deepEqual(engine.missingLayers(checkCtx({ root: layerTree(t) })), []);
 });
 
 test('S097-UT-003 orphans: un problema por nodo sin frontmatter', () => {
@@ -778,10 +771,10 @@ test('S097-UT-005 brokenWikilinks: resuelve contra el slugSet con raíces extern
 });
 
 test('UT-ADR-ALIAS slugSetOf: un ADR resuelve por nombre de archivo y por ID, no por prefijos ajenos', () => {
-  const adr = { ...fakeNode('adr/ADR-0013-eliminar-specs-01-projects.md', { declared: { type: 'adr', slug: 'eliminar-specs-01-projects', title: 'A' } }), layer: 'adr', slug: 'eliminar-specs-01-projects' };
+  const adr = { ...fakeNode('adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md', { declared: { type: 'adr', slug: 'asegurar-dos-niveles-de-flujo-epics-stories', title: 'A' } }), layer: 'adr', slug: 'asegurar-dos-niveles-de-flujo-epics-stories' };
   const guide = { ...fakeNode('guides/ADR-0099-nota.md', { declared: { type: 'guide', slug: 'nota', title: 'N' } }), layer: 'guides', slug: 'nota' };
   const slugs = engine.slugSetOf([adr, guide]);
-  for (const slug of ['eliminar-specs-01-projects', 'ADR-0013-eliminar-specs-01-projects', 'ADR-0013']) assert.ok(slugs.has(slug), slug);
+  for (const slug of ['asegurar-dos-niveles-de-flujo-epics-stories', 'ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories', 'ADR-0013']) assert.ok(slugs.has(slug), slug);
   for (const slug of ['ADR-0099-nota', 'ADR-0099', 'ADR-0014']) assert.ok(!slugs.has(slug), slug);
 });
 
@@ -802,7 +795,7 @@ test('S097-UT-007 check: templates/ y derivados de historia no se evalúan (V-5)
   const docs = path.join(copyFixture(t, 'broken'), 'docs');
   const rels = engine.scanNodes(docs, 'sddf').map((node) => node.relPath);
   assert.ok(!rels.some((rel) => rel.startsWith('templates/')), 'templates/ excluido');
-  assert.ok(!rels.includes('specs/stories/STORY-001-a/design.md'), 'derivado excluido');
+  assert.ok(!rels.includes('../specs/flow/STORY-001-a/design.md'), 'derivado excluido');
 
   const result = engine.checkMemory(docs, 'sddf');
   assert.equal(result.summary['broken-wikilink'], 1);
@@ -993,16 +986,16 @@ test('S098-UT-001 HARNESS_PROFILES: skipLayers y mappings completos (D-1)', () =
   assert.deepEqual(openspec.externalRoots, ['openspec/specs/**/spec.md', 'openspec/changes/*/proposal.md']);
 });
 
-test('S098-UT-002 scaffold --harness openspec: omite specs/ con una sola línea y la cuenta', (t) => {
+test('S098-UT-002 scaffold --harness openspec: specs/ no es capa del scaffold y no se lista', (t) => {
   const { docs } = harnessRepo(t, 'openspec', { withoutDocs: true });
   const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'openspec']);
   assert.equal(result.status, 0, result.stderr);
-  assert.ok(result.stdout.includes('[OMITIDO] specs/ — gestionado por el harness openspec'));
-  assert.ok(!actionLines(result.stdout).some((line) => /\] specs\/\S/.test(line)), 'ningún archivo de specs/ se lista');
+  // STORY-152 D-5: ninguna semilla cae en specs/, así que no hay línea [OMITIDO] que emitir.
+  assert.ok(!actionLines(result.stdout).some((line) => /\] specs\//.test(line)), 'specs/ no se lista');
   assert.ok(!fs.existsSync(path.join(docs, 'specs')));
   assert.ok(fs.existsSync(path.join(docs, 'constitution.md')), 'openspec no mapea la constitución');
   const summary = summaryOf(result.stdout);
-  assert.equal(summary.skipped, 1);
+  assert.equal(summary.skipped, 0);
   assert.equal(summary.mapped, 0);
 });
 
@@ -1027,7 +1020,7 @@ test('S098-UT-004 scaffold --harness speckit sin constitución del harness: crea
   assert.ok(!result.stdout.includes('[MAPEADO]'));
   const summary = summaryOf(result.stdout);
   assert.equal(summary.mapped, 0);
-  assert.equal(summary.skipped, 1);
+  assert.equal(summary.skipped, 0);
 });
 
 test('S098-UT-005 scaffold --dry-run --harness speckit: plan con [OMITIRÍA]/[MAPEARÍA]/[CREARÍA] sin escribir', (t) => {
@@ -1035,13 +1028,13 @@ test('S098-UT-005 scaffold --dry-run --harness speckit: plan con [OMITIRÍA]/[MA
   const before = hashTree(repo);
   const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'speckit', '--dry-run']);
   assert.equal(result.status, 0, result.stderr);
-  assert.ok(result.stdout.includes('[OMITIRÍA] specs/ — gestionado por el harness speckit'));
+  assert.ok(!result.stdout.includes('[OMITIRÍA] specs/'), 'specs/ ya no es capa del scaffold');
   assert.ok(result.stdout.includes('[MAPEARÍA] constitution.md → .specify/memory/constitution.md'));
   assert.ok(result.stdout.includes('[CREARÍA] product/vision.md'));
   assert.ok(!result.stdout.includes('[CREARÍA] constitution.md'));
   assert.ok(!/\[(CREADO|MAPEADO|OMITIDO)\]/.test(result.stdout));
   const summary = summaryOf(result.stdout);
-  assert.deepEqual([summary.mapped, summary.skipped], [1, 1]);
+  assert.deepEqual([summary.mapped, summary.skipped], [1, 0]);
   assert.ok(summary.created > 0);
   assert.ok(!fs.existsSync(docs), 'docs/ no se crea con --dry-run');
   assert.deepEqual(hashTree(repo), before);
@@ -1056,7 +1049,7 @@ test('S098-UT-006 scaffold --harness speckit: idempotente (creados: 0 en la segu
   assert.equal(second.status, 0, second.stderr);
   for (const line of actionLines(second.stdout)) assert.match(line, /^\[(PRESERVADO|MAPEADO|OMITIDO)\] /, line);
   const summary = summaryOf(second.stdout);
-  assert.deepEqual([summary.created, summary.overwritten, summary.mapped, summary.skipped], [0, 0, 1, 1]);
+  assert.deepEqual([summary.created, summary.overwritten, summary.mapped, summary.skipped], [0, 0, 1, 0]);
   assert.deepEqual(hashTree(repo), after);
 });
 
@@ -1093,7 +1086,7 @@ test('S098-UT-008 index: externalGroup, nodo mapeado y capa gestionada por el ha
   const index = readUtf8(docs, 'index.md');
   assert.match(index, /### Speckit — features/);
   assert.match(index, /### Mapeados desde el harness\n\n- \[\[constitution\]\] — \[constitution\.md\]\(\.\.\/\.specify\/memory\/constitution\.md\)/);
-  const specsSection = index.slice(index.indexOf('## 🗂️ Especificaciones'), index.indexOf('## 🧭 Dominio'));
+  const specsSection = index.slice(index.indexOf('## 🗂️ Work items'), index.indexOf('## 🧭 Dominio'));
   assert.match(specsSection, /_\(gestionado por el harness\)_/);
   assert.ok(!specsSection.includes('_(sin artefactos)_'));
   assert.ok(fs.existsSync(path.join(repo, '.specify', 'memory', 'constitution.md')));
@@ -1136,7 +1129,7 @@ test('S098-E2E-001 migrate a nivel motor sobre speckit: plan sin escrituras y sc
   const plan = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--dry-run']);
   assert.equal(plan.status, 0, plan.stderr);
   assert.match(plan.stdout, /^harness: speckit$/m);
-  assert.ok(plan.stdout.includes('[OMITIRÍA] specs/'));
+  assert.ok(!plan.stdout.includes('[OMITIRÍA] specs/'));
   assert.ok(plan.stdout.includes('[MAPEARÍA] constitution.md → .specify/memory/constitution.md'));
   assert.ok(plan.stdout.includes('[CREARÍA] '));
   assert.ok(!fs.existsSync(docs), 'antes de confirmar no existe nada bajo docs/');
@@ -1144,11 +1137,11 @@ test('S098-E2E-001 migrate a nivel motor sobre speckit: plan sin escrituras y sc
   const applied = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]);
   assert.equal(applied.status, 0, applied.stderr);
   const layers = fs.readdirSync(docs, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name).sort();
-  assert.deepEqual(layers, LAYER_DIRS.filter((layer) => layer !== 'specs').sort());
+  assert.deepEqual(layers, [...LAYER_DIRS].sort());
   assert.ok(!fs.existsSync(path.join(docs, 'constitution.md')));
   assert.deepEqual(harnessHashes(repo, ['.specify', 'specs']), before);
   const summary = summaryOf(applied.stdout);
-  assert.deepEqual([summary.mapped, summary.skipped], [1, 1]);
+  assert.deepEqual([summary.mapped, summary.skipped], [1, 0]);
 });
 
 test('S098-E2E-002 ensure --harness openspec a nivel motor: openspec/ intacto e índice con subtítulos OpenSpec', (t) => {
@@ -1156,7 +1149,7 @@ test('S098-E2E-002 ensure --harness openspec a nivel motor: openspec/ intacto e 
   const before = hashTree(path.join(repo, 'openspec'));
   const scaffolded = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--harness', 'openspec']);
   assert.equal(scaffolded.status, 0, scaffolded.stderr);
-  assert.equal(summaryOf(scaffolded.stdout).skipped, 1);
+  assert.equal(summaryOf(scaffolded.stdout).skipped, 0);
   const indexed = run(['index', '--root', docs, '--harness', 'openspec']);
   assert.equal(indexed.status, 0, indexed.stderr);
   assert.ok(!fs.existsSync(path.join(docs, 'specs')));
@@ -1313,4 +1306,92 @@ test('S114-IT-007 git detecta los movimientos de épicas e historias como renomb
   const status = spawnSync('git', ['status', '--porcelain'], { cwd: repo, encoding: 'utf8' }).stdout;
   assert.match(status, /^R\s+.*EPIC-00-demo[\s\S]*EPIC-00-demo/m);
   assert.match(status, /^R\s+.*STORY-001-a[\s\S]*STORY-001-a/m);
+});
+
+// ---------------------------------------------------------------------------
+// STORY-152 — origen flow del índice (D-4) y catálogo de diez capas (D-5)
+// ---------------------------------------------------------------------------
+
+// Repo temporal con `docs/` mínimo y work items en `specs/flow/` (activos y archivados).
+function flowRepo(t, { marker = 'sddf.config.yaml' } = {}) {
+  const repo = tempDir(t, 'memory-system-flow-');
+  const docs = path.join(repo, 'docs');
+  fs.mkdirSync(path.join(docs, 'guides'), { recursive: true });
+  fs.writeFileSync(path.join(docs, 'guides', 'intro.md'), '---\ntype: guide\nslug: intro\ntitle: "Intro"\n---\n# Intro\n');
+  if (marker === 'sddf.config.yaml') fs.writeFileSync(path.join(repo, marker), '# marcador de proyecto SDDF\n');
+  else fs.mkdirSync(path.join(repo, marker), { recursive: true });
+  const write = (rel, content) => {
+    const file = path.join(repo, 'specs', 'flow', ...rel.split('/'));
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, content);
+  };
+  write('EPIC-01-x/epic.md', '---\ntype: epic\nid: EPIC-01\nslug: EPIC-01-x\ntitle: "Épica X"\nstatus: PLAN\n---\n# Épica X\n');
+  write('STORY-001-a/story.md', '---\ntype: story\nid: STORY-001\nslug: STORY-001-a\ntitle: "Historia A"\nstatus: SPECIFY\n---\n# Historia A\n\nPadre: [[EPIC-01-x]]\n');
+  write('STORY-001-a/design.md', '---\ntype: design\nslug: STORY-001-a-design\ntitle: "Design A"\n---\n# Design A\n');
+  write('archive/2026-01-01-STORY-000-z/story.md', '---\ntype: story\nid: STORY-000\nslug: STORY-000-z\ntitle: "Historia Z"\nstatus: COMPLETED\n---\n# Historia Z\n');
+  return { repo, docs };
+}
+
+test('S152-UT-001 scanNodes: el origen flow aporta épicas, historias y archivadas con rutas ../specs/flow/', (t) => {
+  const { docs } = flowRepo(t);
+  const flow = engine.scanNodes(docs, 'sddf').filter((node) => node.relPath.startsWith('../specs/flow/'));
+  assert.deepEqual(flow.map((node) => [node.relPath, node.layer, node.slug]), [
+    ['../specs/flow/EPIC-01-x/epic.md', 'specs-epics', 'EPIC-01-x'],
+    ['../specs/flow/STORY-001-a/story.md', 'specs-stories', 'STORY-001-a'],
+    ['../specs/flow/archive/2026-01-01-STORY-000-z/story.md', 'specs-archive', 'STORY-000-z'],
+  ]);
+});
+
+test('S152-UT-002 scanNodes: con un harness que omite specs el origen flow no se recorre', (t) => {
+  const { docs } = flowRepo(t, { marker: '.specify' });
+  const rels = engine.scanNodes(docs, 'speckit').map((node) => node.relPath);
+  assert.ok(!rels.some((rel) => rel.includes('specs/flow/')), rels.join(', '));
+});
+
+test('S152-UT-003 renderIndex: el template por defecto ubica la archivada bajo Historias archivadas', (t) => {
+  const { docs } = flowRepo(t);
+  const template = readUtf8(SKILL_DIR, 'assets', 'index-template.md');
+  const { content, summary } = engine.renderIndex(template, engine.scanNodes(docs, 'sddf'), { date: '2026-01-01' });
+  const archived = content.slice(content.indexOf('### Historias archivadas'), content.indexOf('## 🧭 Dominio y arquitectura'));
+  assert.match(archived, /- \[\[STORY-000-z\]\] — \[story\.md\]\(\.\.\/specs\/flow\/archive\/2026-01-01-STORY-000-z\/story\.md\) — Historia Z/);
+  assert.match(content, /- \[\[EPIC-01-x\]\] — \[epic\.md\]\(\.\.\/specs\/flow\/EPIC-01-x\/epic\.md\)/);
+  assert.equal(summary.pending, 0);
+});
+
+test('S152-UT-004 checkMemory: los nodos flow son propios y se evalúan', (t) => {
+  const { repo, docs } = flowRepo(t);
+  fs.writeFileSync(path.join(repo, 'specs', 'flow', 'STORY-001-a', 'story.md'), '---\ntype: story\nslug: STORY-001-a\ntitle: "Historia A"\nstatus: SPECIFY\n---\n# Historia A\n');
+  const { problems } = engine.checkMemory(docs, 'sddf');
+  assert.ok(problems.some((entry) => entry.kind === 'invalid-frontmatter'
+    && entry.path === '../specs/flow/STORY-001-a/story.md' && entry.detail === 'falta id'), JSON.stringify(problems));
+});
+
+test('S152-UT-005 index: un repo sin specs/flow/ indexa sin error', (t) => {
+  const { repo, docs } = flowRepo(t);
+  fs.rmSync(path.join(repo, 'specs'), { recursive: true, force: true });
+  const result = run(['index', '--root', docs, '--dry-run']);
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(!result.stdout.includes('../specs/flow/'));
+});
+
+test('S152-UT-006 transición: docs/specs/stories/ sin migrar se sigue indexando como specs-stories', (t) => {
+  const { repo, docs } = flowRepo(t);
+  fs.rmSync(path.join(repo, 'specs'), { recursive: true, force: true });
+  const legacy = path.join(docs, 'specs', 'stories', 'STORY-009-legada', 'story.md');
+  fs.mkdirSync(path.dirname(legacy), { recursive: true });
+  fs.writeFileSync(legacy, '---\ntype: story\nid: STORY-009\nslug: STORY-009-legada\ntitle: "Legada"\nstatus: SPECIFY\n---\n# Legada\n');
+  const node = engine.scanNodes(docs, 'sddf').find((entry) => entry.slug === 'STORY-009-legada');
+  assert.deepEqual([node.relPath, node.layer], ['specs/stories/STORY-009-legada/story.md', 'specs-stories']);
+  assert.equal(run(['index', '--root', docs, '--dry-run']).status, 0);
+});
+
+test('S152-UT-007 catálogo de diez capas: scaffold sobre una raíz vacía no crea docs/specs/', (t) => {
+  assert.equal(engine.LAYERS.length, 10);
+  assert.ok(!engine.LAYERS.includes('specs'));
+  const repo = copyFixture(t, 'empty');
+  const docs = path.join(repo, 'docs');
+  const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT]);
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(!fs.existsSync(path.join(docs, 'specs')));
+  assert.ok(!result.stdout.includes('specs/'));
 });

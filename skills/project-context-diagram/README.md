@@ -10,7 +10,7 @@ Genera un diagrama de contexto C4 de Nivel 1 en PlantUML para el producto. Puede
 
 **Produces:**
 
-- `$SPECS_BASE/architecture/c4/context-diagram.puml`.
+- `docs/architecture/c4/context-diagram.puml`.
 - Un preview en modo manual y confirmación de sobrescritura en todos los modos.
 
 No genera diagramas de componentes ni modifica `context-diagram.png`.

@@ -197,7 +197,7 @@ las crea el propio usuario al fragmentar, o la migración `--from=srs-single` la
 ---
 ## Índice de requisitos
 
-Migrados desde project.md (§2.1 y §2.2) por [[eliminar-specs-01-projects]]; el hueco FR-049 se conserva.
+Migrados desde project.md (§2.1 y §2.2) por [[asegurar-dos-niveles-de-flujo-epics-stories]]; el hueco FR-049 se conserva.
 
 > **Convención de fuente.** Cada requisito referencia el skill que lo implementa (bajo `skills/` en
 > la raíz del repositorio, que es la fuente única de verdad), la historia que lo especificó y la

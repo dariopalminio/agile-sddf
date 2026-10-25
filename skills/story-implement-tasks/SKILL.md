@@ -63,11 +63,11 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 
 | Artefacto | Ubicación | Requerido |
 |---|---|---|
-| `story.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/story.md` | ✓ obligatorio |
-| `design.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/design.md` | ✓ obligatorio |
-| `tasks.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/tasks.md` | ✓ obligatorio |
-| `fix-directives.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (veredicto `NEEDS-CHANGES`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
-| DoD de la etapa `implement` | `$SPECS_BASE/guardrails/dod-story-implement.md` (ver `## DoD aplicable`) | opcional |
+| `story.md` | `specs/flow/<STORY-NNN>-<slug>/story.md` | ✓ obligatorio |
+| `design.md` | `specs/flow/<STORY-NNN>-<slug>/design.md` | ✓ obligatorio |
+| `tasks.md` | `specs/flow/<STORY-NNN>-<slug>/tasks.md` | ✓ obligatorio |
+| `fix-directives.md` | `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (veredicto `NEEDS-CHANGES`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
+| DoD de la etapa `implement` | `docs/guardrails/dod-story-implement.md` (ver `## DoD aplicable`) | opcional |
 
 ---
 
@@ -99,7 +99,7 @@ Cualquier otro estado detiene la ejecución con error descriptivo.
 
 | Skill / Herramienta | Rol |
 |---|---|
-| Resolución local de raíz | Aplica el contrato SDDF_ROOT → sddf.config.yaml.root → docs antes de cualquier operación. |
+| Contrato de layout fijo | Resuelve `REPO_ROOT` y usa `specs/flow/`, `docs/templates/` y `docs/guardrails/` (ADR-0016) antes de cualquier operación. |
 | `story-code-review` | Skill downstream que consume `implement-report.md` para revisar la implementación |
 
 ---
@@ -109,14 +109,14 @@ Cualquier otro estado detiene la ejecución con error descriptivo.
 | Elemento | Valor |
 |---|---|
 | Etapa | `implement` |
-| Archivo | `$SPECS_BASE/guardrails/dod-story-implement.md` (en este repositorio, `docs/guardrails/dod-story-implement.md`) |
+| Archivo | `docs/guardrails/dod-story-implement.md` |
 | Override | `sddf.config.yaml › guardrails.dod.story.implement` |
 | Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
 
 Resolución (primera coincidencia):
 
-1. `sddf.config.yaml › guardrails.dod.story.implement` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-implement.md`
+1. `sddf.config.yaml › guardrails.dod.story.implement` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-implement.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa implement no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin validación DoD IMPLEMENT.
 
 Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate antes de escribir `IMPLEMENT/DONE`.
@@ -157,14 +157,13 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `CLI_ROOT` (directorio de skills del runtime) solo para localizar el seed del template de épica.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -184,11 +183,15 @@ Proporciona el ID (ej. STORY-059) o la ruta completa al directorio.
 
 #### 1b. Resolución del directorio de la historia
 
-1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
+1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `specs/flow/STORY-NNN-<slug>/` (no `specs/flow/archive/…`) y contiene `story.md`. Si no:
+   ```
+   ❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)
+   ```
+   Detener la ejecución sin escribir ningún archivo.
+2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `specs/flow/archive/`)
 3. Si no se encuentra ninguno:
    ```
-   ❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
+   ❌ No se encontró la historia {story_id} en specs/flow/
 
    Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
    ```
@@ -696,10 +699,10 @@ Completar la sección "Cumplimiento DoD — Fase IMPLEMENT" en `implement-report
 
 Leer el campo `parent` del frontmatter de `story.md` (ej. `EPIC-12-story-sdd-workflow`).
 
-Buscar el archivo `epic.md` correspondiente en: `$SPECS_BASE/specs/epics/<parent>-*/epic.md`
+Buscar el archivo `epic.md` correspondiente en `specs/flow/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NN`, Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia). No se consulta `specs/flow/archive/`.
 
 **Si se encuentra `epic.md`** (transición F2 → F3 de la historia; formatos en `domain-epic-lifecycle` §9):
-- Resolver del template de épica (`$SPECS_BASE/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`) el **título** de la sección cuyo marcador declara `clave: historias` (las secciones se localizan por clave, nunca por un título fijo; contrato en `domain-epic-lifecycle` §9).
+- Resolver del template de épica (`docs/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`) el **título** de la sección cuyo marcador declara `clave: historias` (las secciones se localizan por clave, nunca por un título fijo; contrato en `domain-epic-lifecycle` §9).
 - Si el template no declara esa clave o la épica no tiene un encabezado `## <título>`: emitir `[WARN] epic.md sin la sección "<título>" → si se creó con una versión anterior del template: /memory-system migrate --from=epic-template-v1; omitiendo actualización` y continuar (no bloquea el cierre de la historia).
 - **Solo dentro de esa sección**, localizar la línea de **nivel superior** (empieza por `- `) que contenga el token exacto `**{story_id}**` en negrita (`**STORY-103**` no casa `**STORY-1030**`; menciones en otras secciones no cuentan)
 - Cambiar `- [ ]` por `- [x]` solo en esa línea y actualizar `updated:` del frontmatter de la épica
@@ -748,7 +751,8 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
+| Ruta explícita fuera de specs/flow/ | `❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)` | Detener sin escribir ningún archivo |
 | `story.md`, `design.md` o `tasks.md` ausente | `❌ No se encontró <artefacto> en: <ruta>` | Detener sin implementar ninguna tarea |
 | Estado de `story.md` no válido | `❌ La historia <story_id> no está en un estado válido para implementar.` | Detener sin implementar ninguna tarea |
 | Sin tareas pendientes y sin `fix-directives.md` | `ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.` | Terminar sin modificar ningún archivo (gate 2c) |
@@ -769,10 +773,10 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 
 | Artefacto | Ruta | Descripción |
 |---|---|---|
-| `implement-report.md` | `$SPECS_BASE/specs/stories/<STORY-NNN>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
+| `implement-report.md` | `specs/flow/<STORY-NNN>-<slug>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
 | `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs) |
 | `tasks.md` (actualizado) | mismo directorio | Tareas marcadas `[x]` (completadas) o `[~]` (bloqueadas) |
-| `epic.md` (actualizado) | `$SPECS_BASE/specs/epics/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
+| `epic.md` (actualizado) | `specs/flow/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
 | Archivos de test | según stack del proyecto | Tests generados por ciclo TDD (uno por tarea completada) |
 | Archivos de producción | según stack del proyecto | Código de producción generado por ciclo TDD |
 

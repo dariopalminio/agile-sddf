@@ -179,6 +179,28 @@
         "not_contains": ["(verdict: BLOCKED)", "RECHAZADO", "REJECTED"]
       },
       "threshold": 0.85
+    },
+    {
+      "id": "TC-007",
+      "name": "informe-en-carpeta-specs-flow",
+      "type": "happy-path",
+      "description": "STORY-158 (AC-1, D-5) — Mismo flujo que TC-001 con la historia en specs/flow/STORY-050-verificacion/. El skill debe escribir verify-report.md en la carpeta de la historia y no referenciar el layout legado.",
+      "input": {
+        "input_path": "examples/jest-project",
+        "story_id": "STORY-050",
+        "flags": [],
+        "context": "la historia está en `specs/flow/STORY-050-verificacion/`"
+      },
+      "expected": {
+        "contains": [
+          "specs/flow/STORY-050-verificacion/verify-report.md",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "docs/specs"
+        ]
+      },
+      "threshold": 0.85
     }
   ]
 }

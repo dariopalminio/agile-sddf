@@ -53,7 +53,7 @@ El skill detecta automáticamente el modo en este orden:
 
 | Archivo | Descripción |
 |---------|-------------|
-| `$SPECS_BASE/specs/stories/<ID>/verify-report.md` | Reporte completo de verificación |
+| `specs/flow/<STORY-NNN>-<slug>/verify-report.md` | Reporte completo de verificación |
 | `story.md` frontmatter | Estado según el `verdict` del reporte (ver Posición en el pipeline) |
 
 ## Veredicto
@@ -68,15 +68,13 @@ El vocabulario y la precedencia siguen `docs/policies/validation-contract-policy
 
 ## Template del reporte
 
-El skill lee el template en este orden:
-1. `$SPECS_BASE/templates/verify-report-template.md` — ubicación canónica
-2. `assets/verify-report-template.md` — fallback local del skill
+El skill lee el template de `assets/verify-report-template.md` (relativo al skill). Si no existe, usa la estructura mínima integrada descrita en el Paso 6b de `SKILL.md`.
 
 Si el template cambia, el skill lo refleja automáticamente sin modificaciones.
 
 ## DoD VERIFY
 
-Los criterios evaluados se leen en runtime del DoD de la etapa verify: `$SPECS_BASE/guardrails/dod-story-verify.md`, o el slug que declare `sddf.config.yaml › guardrails.dod.story.verify` (ver `
+Los criterios evaluados se leen en runtime del DoD de la etapa verify: `docs/guardrails/dod-story-verify.md`, o el slug que declare `sddf.config.yaml › guardrails.dod.story.verify` (ver `## DoD aplicable` en `SKILL.md`).
 
 Si ese archivo no existe, el skill usa criterios mínimos genéricos:
 1. Todos los tests del proyecto pasan

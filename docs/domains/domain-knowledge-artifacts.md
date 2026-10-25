@@ -98,8 +98,8 @@ title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifa
 | **ADR** | `ADR-` | `adr/` | ✅ Inmutable | Decisión arquitectónica con rationale. |
 | **RFC** | `RFC-` | `rfcs/` | ✅ Inmutable tras aprobación | Propuesta de cambio grande. |
 | **Product** | — | `product/` | ❌ Evoluciona | Visión, stakeholders, objetivos, roadmap y story map. |
-| **Spec (Epic)** | `EPIC-` | `specs/epics/` | ❌ Evoluciona | Entregable o release. |
-| **Spec (Story)** | `STORY-` | `specs/stories/` | ❌ Evoluciona | Historia de usuario atómica. |
+| **Spec (Epic)** | `EPIC-` | `specs/flow/EPIC-NN-<slug>/` (raíz del repo) | ❌ Evoluciona | Entregable o release. |
+| **Spec (Story)** | `STORY-` | `specs/flow/STORY-NNN-<slug>/`; archivada: `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` | ❌ Evoluciona | Historia de usuario atómica. |
 | **Domain** | `DOMAIN-` (implícito) | `domains/` | ❌ Evoluciona (lento) | Modelo DDD de un bounded context. |
 | **Constitution** | — | raíz de `docs/` | ❌ Evoluciona (lento, con aprobación) | Documento supremo del que derivan policies y guardrails. |
 | **Guardrail** | `GR-` (opcional) | `guardrails/` | ❌ Evoluciona | Restricción operativa verificable que bloquea el avance. |
@@ -241,7 +241,7 @@ enforced-by:
 5. Todo `Artifact` tiene **frontmatter YAML** con campos obligatorios: `type`, `id`, `title`, `date`, `status`.
 6. Todo `Artifact` tiene **exactamente un archivo `.md`** como cuerpo principal.
 7. Los artefactos de tipo `requirement` viven en `requirements/functional/` o `requirements/non-functional/`.
-8. Los artefactos de tipo `spec` viven en `specs/epics/` o `specs/stories/` según su nivel.
+8. Los artefactos de tipo `spec` viven en `specs/flow/` (raíz del repo), épicas e historias como directorios hermanos; las historias `COMPLETED` se archivan en `specs/flow/archive/`.
 9. Los artefactos de tipo `guardrail` viven en `guardrails/` y usan checklist con severidades.
 10. Los artefactos de tipo `policy` viven en `policies/` y declaran un `scope`.
 11. Los artefactos de tipo `template` viven en `templates/` y usan el sufijo `-template.md`. Su seed vive en el `assets/` del skill dueño; ambas copias deben ser idénticas.

@@ -1,8 +1,9 @@
 ---
 name: sddf-init
 description: >-
-  Inicializa el entorno SDDF: crea directorios base, sddf.config.yaml y .env.template. Idempotente;
-  --level minimal|standard|full (full añade el scaffold de memory-system).
+  Inicializa el entorno SDDF: crea el layout fijo specs/flow/, specs/living/ y workflow/, sddf.config.yaml y
+  .env.template. Idempotente; avisa ante el layout legado docs/specs/. --level minimal|standard|full (full añade el
+  scaffold de memory-system).
   Usar como primer paso antes de cualquier skill SDDF cuando el entorno no está configurado.
   Invocar para "inicializar SDDF", "sddf-init", "configurar entorno SDDF" o "primer paso del framework".
 ---
@@ -17,7 +18,7 @@ sddf-init → [cualquier skill SDDF con resolución local]
 
 **Usar cuando:**
 - Al configurar SDDF en un proyecto nuevo por primera vez
-- Cuando se necesita bootstrapear una raíz de artefactos declarada
+- Cuando se necesita crear el layout fijo de SDDF en un proyecto (ADR-0016)
 
 ---
 
@@ -27,7 +28,7 @@ sddf-init → [cualquier skill SDDF con resolución local]
 - NO genere código; estas iniciando el entorno SDDF, no implementando los artefactos técnicos
 - No inicializa repositorio git
 - No instala dependencias
-- Una fuente de raíz explícita inválida detiene el bootstrap antes de cualquier escritura.
+- Ante el layout legado `docs/specs/` avisa y termina sin escribir (Paso 1b); nunca crea `docs/specs/`.
 
 ---
 
@@ -38,8 +39,8 @@ el contenido de cada paso es el mismo en todos los niveles.
 
 | Nivel | Pasos ejecutados | Uso típico |
 |---|---|---|
-| `minimal` | 1, 2, 3, 4, 6 — sin 2b (templates) ni 5 (pregunta de políticas) | CI o bootstrap no interactivo |
-| `standard` | 1, 2, 2b, 3, 4, 5, 6 — idéntico a invocar sin `--level`; no invoca `memory-system` | Uso habitual |
+| `minimal` | 1, 1b, 2, 3, 4, 6 — sin 2b (templates) ni 5 (pregunta de políticas) | CI o bootstrap no interactivo |
+| `standard` | 1, 1b, 2, 2b, 3, 4, 5, 6 — idéntico a invocar sin `--level`; no invoca `memory-system` | Uso habitual |
 | `full` | `standard` + 5b (`memory-system scaffold --yes`, tras el Paso 5) | Proyecto nuevo completo en un solo comando |
 
 **Validación (antes del Paso 1):** un valor distinto de los tres admitidos emite exactamente lo
@@ -53,50 +54,68 @@ siguiente y termina sin crear archivos ni directorios:
 
 ## Protocolo de inicialización
 
-### Paso 1 — Resolver contexto local y raíz de bootstrap
+### Paso 1 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Determinar `REPO_ROOT` antes de leer configuración. Resolver la raíz una única vez, sin
-exportarla a otros procesos:
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-1. Si `SDDF_ROOT` está definida, debe ser no vacía y resolver a un directorio accesible.
-   - Si no es utilizable, emitir `[ERROR] SDDF_ROOT no es utilizable: <valor>` y detener
-     sin crear archivos ni directorios.
-   - Si es válida, usarla como `SPECS_BASE` y registrar `ROOT_SOURCE = SDDF_ROOT`.
-   - Si además no existe `<REPO_ROOT>/sddf.config.yaml`, detener antes de escribir:
-     ```
-     [ERROR] SDDF_ROOT está definida pero no existe sddf.config.yaml
-     Quita el override para inicializar el valor por defecto o declara primero una raíz versionada.
-     ```
-     El bootstrap no persiste un override temporal de CI o de una sesión local.
-2. Solo si `SDDF_ROOT` no está definida, leer `<REPO_ROOT>/sddf.config.yaml`.
-   - Si declara `root` como escalar no vacío, las rutas relativas se normalizan contra
-     `REPO_ROOT` y se registra `ROOT_SOURCE = sddf.config.yaml`.
-   - Una clave `root` vacía, no escalar, YAML ilegible o una ruta absoluta/externa
-     inexistente es un error accionable sin escrituras.
-   - Como excepción de bootstrap, un `root` relativo dentro de `REPO_ROOT` puede no
-     existir aún: `sddf-init` crea esa raíz junto con el esqueleto estándar.
-3. Si no existe configuración o no declara `root`, usar `docs` relativo a `REPO_ROOT`
-   y registrar `ROOT_SOURCE = default`.
+`CLI_ROOT` se resuelve independientemente y solo para copiar templates y componer `memory-system`
+desde los skills instalados; nunca se deriva del layout.
 
-`CLI_ROOT` se resuelve independientemente y solo para copiar templates desde los skills
-instalados; nunca se deriva de `SPECS_BASE`.
+### Paso 1b — Detectar el layout
 
-### Paso 2 — Crear directorios base
+Antes de cualquier escritura, comprobar la existencia de los directorios `docs/specs/` y
+`specs/flow/` en `REPO_ROOT` (solo existencia de directorios):
 
-Para cada uno de los siguientes directorios bajo `SPECS_BASE`:
-- `specs/epics/`
-- `specs/stories/`
-- `templates/`
+| `docs/specs/` | `specs/flow/` | Estado | Acción |
+|---|---|---|---|
+| no | no | **limpio** | continuar: el Paso 2 crea el layout fijo |
+| no | sí | **layout fijo** | continuar: el Paso 2 solo crea lo que falte |
+| sí | no | **legado** | emitir el aviso y **terminar sin escribir nada** |
+| sí | sí | **mixto** | emitir el aviso y continuar como layout fijo; `docs/specs/` no se modifica |
+
+Aviso de deprecación (estados legado y mixto):
+
+```
+⚠️ Layout legado detectado: docs/specs/ está deprecado (ADR-0016).
+   Guía de migración: docs/guides/artifact-directory-migration.md (paquete agile-sddf)
+```
+
+Con una línea adicional según el estado:
+- **legado:** `   No se crea specs/flow/ ni se modifica docs/specs/. Migra y vuelve a ejecutar /sddf-init.`
+  El skill termina aquí: sin líneas `[CREADO]`, sin los Pasos 2 a 5b y sin cierre de éxito.
+  El informe son el encabezado `── sddf-init ──`, el aviso y la línea de cierre del Paso 6.
+- **mixto:** `   Se continúa con el layout fijo existente; docs/specs/ no se modifica.`
+
+El aviso no es un `[ERROR]`: el layout legado es un estado válido de un proyecto ya instalado.
+
+### Paso 2 — Crear el layout fijo
+
+Para cada uno de los siguientes directorios, en este orden, relativos a `REPO_ROOT`:
+
+| Directorio | `.gitkeep` |
+|---|---|
+| `specs/flow/` | sí, solo si el directorio se crea en esta ejecución |
+| `specs/flow/archive/` | sí, ídem |
+| `specs/living/` | sí, ídem |
+| `workflow/` | sí, ídem |
+| `docs/templates/` | no (se llena en el Paso 2b) |
 
 Verificar si el directorio existe:
-- **No existe:** crearlo y registrar `[CREADO]  <ruta>`
-- **Ya existe:** no modificarlo y registrar `[YA EXISTÍA]  <ruta>`
+- **No existe:** crearlo (con rutas intermedias), crear el `.gitkeep` vacío si la tabla lo indica y registrar `[CREADO]  <ruta>`
+- **Ya existe:** no modificar nada dentro (tampoco añadir `.gitkeep`) y registrar `[YA EXISTÍA]  <ruta>`
 
-Si algún directorio requiere rutas intermedias (ej. `SPECS_BASE/specs/`), crearlas también.
+Si los cuatro directorios del layout (`specs/flow/`, `specs/flow/archive/`, `specs/living/`, `workflow/`)
+ya existían, registrar `[INFO] El layout fijo ya existe — sin cambios en specs/ ni workflow/`.
 
-> `templates/` es una capa hermana de `specs/`, no un subdirectorio suyo: los templates son meta-artefactos que definen la estructura de otros artefactos. Ver [ADR-0007](../../docs/adr/ADR-0007-templates-como-capa-propia.md).
+Los directorios se crean en los tres niveles. `docs/specs/` nunca se crea. Si un directorio no puede
+crearse (permisos), informar la ruta y el motivo y detener antes de los pasos siguientes; los directorios
+ya creados quedan y una re-ejecución los informa `[YA EXISTÍA]`.
+
+> `docs/templates/` es una capa hermana de `specs/`, no un subdirectorio suyo: los templates son meta-artefactos que definen la estructura de otros artefactos. Ver [ADR-0007](../../docs/adr/ADR-0007-templates-como-capa-propia.md).
 
 ### Paso 2b — Copiar templates compartidos al directorio central
 
@@ -112,7 +131,7 @@ Copiar los templates compartidos desde el `assets/` de su skill dueño. Esta tab
 | `roadmap-template.md` | `$CLI_ROOT/skills/project-planning/assets/` |
 
 Para cada template:
-- **No existe en `SPECS_BASE/templates/`:** copiarlo desde el origen y registrar `[CREADO]  <ruta destino>`
+- **No existe en `docs/templates/`:** copiarlo desde el origen y registrar `[CREADO]  <ruta destino>`
 - **Ya existe en el destino:** no sobrescribirlo (puede contener personalizaciones del proyecto) y registrar `[YA EXISTÍA]  <ruta destino>`
 - **El origen no existe (skill dueño no instalado):** emitir `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)` y continuar sin bloquear.
 
@@ -123,7 +142,7 @@ Verificar si `<REPO_ROOT>/sddf.config.yaml` existe en la raíz del proyecto:
   - Crear `sddf.config.yaml` usando exactamente el contenido del template en `$CLI_ROOT/skills/sddf-init/assets/sddf.config.yaml.template`. El template declara explícitamente `profile: core` y `stack: node-markdown`; no activa workers de extensión ni comandos requeridos.
   - Registrar `[CREADO]  sddf.config.yaml`
 - **Ya existe con contenido:**
-  - No sobrescribirlo ni reemplazar una clave `root` existente.
+  - No sobrescribirlo ni modificarlo.
   - Registrar `[YA EXISTÍA]  sddf.config.yaml` y emitir `[INFO] sddf.config.yaml ya existe — se mantiene sin cambios`.
 
 ### Paso 4 — Generar .env.template
@@ -132,11 +151,8 @@ Verificar si `.env.template` existe en la raíz del proyecto:
 - **No existe:**
   - Crear `.env.template` con el siguiente contenido exacto:
     ```
-    # SDDF_ROOT es un override opcional de la raíz versionada en sddf.config.yaml.
-    # Déjalo sin definir para usar `root` (o docs cuando la clave no existe).
-    # Úsalo, por ejemplo, en CI: export SDDF_ROOT=artefactos-ci
-    #
-    # Una ruta explícita debe existir y ser accesible; no hay fallback silencioso.
+    # Variables de entorno del proyecto (plantilla).
+    # SDDF no requiere variables de entorno: el layout de artefactos es fijo (ADR-0016).
     ```
   - Registrar `[CREADO]  .env.template`
 - **Ya existe:**
@@ -153,7 +169,7 @@ Preguntar al usuario:
 
 ```
 ¿Deseas inicializar los documentos de políticas del proyecto?
-($SPECS_BASE/constitution.md y el DoD de historia por etapa $SPECS_BASE/guardrails/dod-story-<etapa>.md)
+(docs/constitution.md y el DoD de historia por etapa docs/guardrails/dod-story-<etapa>.md)
 
   (s) Sí — ejecutar sddf-constitution ahora
   (n) No — omitir este paso
@@ -173,12 +189,12 @@ prevalezca sobre la semilla del scaffold.
    `⚠️ memory-system no está instalado — nivel full termina como standard` y pasar al Paso 6 sin
    bloque de scaffold (no es un error).
 2. Si existe, leer ese `SKILL.md` y ejecutar su modo `scaffold --yes` (composición inline, sin
-   preguntas ni más argumentos): `memory-system` resuelve la misma `SPECS_BASE` porque
-   `sddf.config.yaml` ya existe tras el Paso 3.
+   preguntas ni más argumentos): `memory-system` usa `docs/` como base de sus capas.
+   Este paso no se alcanza en el estado legado (Paso 1b).
 3. Capturar su salida completa sin reinterpretarla (`harness:`, `capas faltantes:`, líneas
    `[CREADO]`/`[PRESERVADO]`/`[MAPEADO]`/`[OMITIDO]`/`[WARNING]`, su línea `✅` y el resumen
    `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`). El
-   motor emite rutas relativas a `SPECS_BASE`; al concatenarlas, anteponer `{SPECS_BASE}/` para
+   motor emite rutas relativas a `docs/`; al concatenarlas, anteponer `docs/` para
    que ambos bloques usen rutas desde `REPO_ROOT`.
 
 Los cinco templates compartidos figuran `[CREADO]` (o `[YA EXISTÍA]`) en el bloque de `sddf-init`
@@ -190,15 +206,17 @@ Emitir el informe consolidado con todos los artefactos verificados:
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     {SPECS_BASE}/specs/epics/
-[YA EXISTÍA] {SPECS_BASE}/specs/stories/
-[CREADO]     {SPECS_BASE}/templates/
-[CREADO]     {SPECS_BASE}/templates/story-template.md
-[CREADO]     {SPECS_BASE}/templates/epic-template.md
-[CREADO]     {SPECS_BASE}/templates/stakeholders-template.md
-[CREADO]     {SPECS_BASE}/templates/requirement-template.md
-[CREADO]     {SPECS_BASE}/templates/vision-template.md
-[CREADO]     {SPECS_BASE}/templates/roadmap-template.md
+[CREADO]     specs/flow/
+[CREADO]     specs/flow/archive/
+[CREADO]     specs/living/
+[CREADO]     workflow/
+[CREADO]     docs/templates/
+[CREADO]     docs/templates/story-template.md
+[CREADO]     docs/templates/epic-template.md
+[CREADO]     docs/templates/stakeholders-template.md
+[CREADO]     docs/templates/requirement-template.md
+[CREADO]     docs/templates/vision-template.md
+[CREADO]     docs/templates/roadmap-template.md
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 [CREADO]     docs/constitution.md
@@ -206,32 +224,41 @@ Emitir el informe consolidado con todos los artefactos verificados:
 ─────────────────────────────────────────────────
 ```
 
-**Si se creó al menos un artefacto:**
-```
-✓ Entorno SDDF inicializado correctamente en {SPECS_BASE}/
-```
-
-**Si todos los artefactos ya existían:**
-```
-✓ Entorno ya inicializado — sin cambios necesarios
-```
+| Situación | Línea de cierre |
+|---|---|
+| Se creó al menos un artefacto | `✓ Entorno SDDF inicializado correctamente con el layout fijo` |
+| Nada se creó | `✓ Entorno ya inicializado — sin cambios necesarios` |
+| Estado legado | `⚠️ Entorno no inicializado: migra el layout legado antes de continuar` |
 
 Sin `--level` el informe es exactamente el anterior. Con `--level` explícito, la línea de éxito
-añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente en {SPECS_BASE}/ (nivel <n>)`.
+añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente con el layout fijo (nivel <n>)`.
+
+**Estado legado** (sin `[CREADO]`; ver Paso 1b):
+
+```
+── sddf-init ────────────────────────────────────
+⚠️ Layout legado detectado: docs/specs/ está deprecado (ADR-0016).
+   Guía de migración: docs/guides/artifact-directory-migration.md (paquete agile-sddf)
+   No se crea specs/flow/ ni se modifica docs/specs/. Migra y vuelve a ejecutar /sddf-init.
+─────────────────────────────────────────────────
+⚠️ Entorno no inicializado: migra el layout legado antes de continuar
+```
 
 **`minimal`:** el bloque omite los templates y registra
 `[OMITIDO] sddf-constitution (nivel minimal)`:
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     docs/specs/epics/
-[CREADO]     docs/specs/stories/
+[CREADO]     specs/flow/
+[CREADO]     specs/flow/archive/
+[CREADO]     specs/living/
+[CREADO]     workflow/
 [CREADO]     docs/templates/
 [CREADO]     sddf.config.yaml
 [CREADO]     .env.template
 [OMITIDO] sddf-constitution (nivel minimal)
 ─────────────────────────────────────────────────
-✓ Entorno SDDF inicializado correctamente en docs/ (nivel minimal)
+✓ Entorno SDDF inicializado correctamente con el layout fijo (nivel minimal)
 ```
 
 **`full`:** la salida capturada en el Paso 5b va en su propio bloque, tras el de `sddf-init`
@@ -259,7 +286,7 @@ capas faltantes: product, requirements, domains, architecture, adr, policies, gu
 ✅ memory-system scaffold — harness: sddf — docs
 creados: 19 · sobrescritos: 0 · preservados: 5 · mapeados: 0 · omitidos por harness: 0
 ─────────────────────────────────────────────────
-✓ Entorno SDDF inicializado correctamente en docs/ (nivel full)
+✓ Entorno SDDF inicializado correctamente con el layout fijo (nivel full)
 ```
 
 Sin `memory-system` instalado, `full` muestra el bloque de `standard`, el aviso del Paso 5b, ningún

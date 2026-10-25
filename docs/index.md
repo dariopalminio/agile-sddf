@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-18
+updated: 2026-10-24
 ---
 
 # 📚 Índice de documentación
@@ -149,73 +149,74 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ---
 
-## 🗂️ Especificaciones (specs/)
+## 🗂️ Work items (specs/flow/)
 
-- [[specs-index]] — [README.md](specs/README.md) — Especificaciones
+_(sin artefactos)_
 
-### L2 — Épicas (specs/epics/)
+### Épicas
 
-- [[EPIC-00-estructura-base-y-mecanismo-de-templates]] — [epic.md](specs/epics/EPIC-00-estructura-base-y-mecanismo-de-templates/epic.md) — Release 00 — Estructura Base y Mecanismo de Templates
-- [[EPIC-01-features-spec-builder]] — [epic.md](specs/epics/EPIC-01-features-spec-builder/epic.md) — Release 01 — Features Spec Builder
-- [[EPIC-02-project-spec-builder]] — [epic.md](specs/epics/EPIC-02-project-spec-builder/epic.md) — Release 02 — Project Spec Builder (Pipeline de proyecto)
-- [[EPIC-03-reverse-engineering]] — [epic.md](specs/epics/EPIC-03-reverse-engineering/epic.md) — Release 03 — Reverse Engineering (Ingeniería inversa)
-- [[EPIC-04-refactor-features-spec-builder]] — [epic.md](specs/epics/EPIC-04-refactor-features-spec-builder/epic.md) — Release 04 — Refactor Features Spec Builder (Consolidación y calidad)
-- [[EPIC-05-enhance-project-spec]] — [epic.md](specs/epics/EPIC-05-enhance-project-spec/epic.md) — Release 05 — Enhance Project Spec (Expansión project spec)
-- [[EPIC-06-release-and-story-generator]] — [epic.md](specs/epics/EPIC-06-release-and-story-generator/epic.md) — Release 06 — Release & Story Generator
-- [[EPIC-07-publicacion-framework-npm]] — [epic.md](specs/epics/EPIC-07-publicacion-framework-npm/epic.md) — Release 07 — Publicación del Framework SDDF como Paquete NPM
-- [[EPIC-08-npm-install-locally]] — [epic.md](specs/epics/EPIC-08-npm-install-locally/epic.md) — Release 08 — Npm Install locally
-- [[EPIC-09-docs-and-wiki-builders]] — [epic.md](specs/epics/EPIC-09-docs-and-wiki-builders/epic.md) — Release 09 — Docs and Wiki builders
-- [[EPIC-10-mejora-estructura-artefactos-nuevos-skills]] — [epic.md](specs/epics/EPIC-10-mejora-estructura-artefactos-nuevos-skills/epic.md) — Mejora en estructura de artefactos y nuevos skills
-- [[EPIC-11-centralizar-templates]] — [epic.md](specs/epics/EPIC-11-centralizar-templates/epic.md) — Centralizar templates de spec en directorio compartido
-- [[EPIC-12-story-sdd-workflow]] — [epic.md](specs/epics/EPIC-12-story-sdd-workflow/epic.md) — Story SDD Workflow - comandos del flujo de story
-- [[quality-gates-con-dod-en-story-workflow]] — [epic.md](specs/epics/EPIC-13-quality-gates-con-dod-en-story-workflow/epic.md) — Quality Gates con DoD en Story Workflow
-- [[fabrica-de-skills]] — [epic.md](specs/epics/EPIC-14-fabrica-de-skills/epic.md) — Fábrica de Skills
-- [[e2e-capability]] — [epic.md](specs/epics/EPIC-15-e2e-capability/epic.md) — Skills de Testing Especializado y E2E Capability
-- [[EPIC-16-enhancement-and-security]] — [epic.md](specs/epics/EPIC-16-enhancement-and-security/epic.md) — enhancement and security improvements for skills (Safe Enhancement & Fortify Skills)
-- [[plan-01-root-folder-selection-to-installer]] — [plan-01-root-folder-selection-to-installer.md](specs/epics/EPIC-16-enhancement-and-security/plan-01-root-folder-selection-to-installer.md) — Plan 01: Root Folder Selection for Installer
-- [[plan-02-integrate-story-testcases-in-story-plan]] — [plan-02-Integrate-story-testcases-in-story-plan.md](specs/epics/EPIC-16-enhancement-and-security/plan-02-Integrate-story-testcases-in-story-plan.md) — Plan 02: Integrate story-testcases in story-plan
-- [[plan-03-integrate-story-improve-in-story-specify]] — [plan-03-integrate-story-improve-in-story-specify.md](specs/epics/EPIC-16-enhancement-and-security/plan-03-integrate-story-improve-in-story-specify.md) — Plan 03: Integrate story-improve in story-specify
-- [[plan-04-add-and-improve-skills-readme]] — [plan-04-add-and-improve-skills-readme.md](specs/epics/EPIC-16-enhancement-and-security/plan-04-add-and-improve-skills-readme.md) — Plan 04: Add and Improve Skills README
-- [[plan-05-extend-story-code-review-with-testcases]] — [plan-05-extend-story-code-review-with-testcases.md](specs/epics/EPIC-16-enhancement-and-security/plan-05-extend-story-code-review-with-testcases.md) — Plan 05: Extender story-code-review con análisis de testcases.md e implement-report.md opcional
-- [[plan-06-configure-story-verify-with-config-file]] — [plan-06-configure-story-verify-with-config-file.md](specs/epics/EPIC-16-enhancement-and-security/plan-06-configure-story-verify-with-config-file.md) — Plan 06: Configurar story-verify con sddf.config.yaml
-- [[remediating-and-improvement]] — [epic.md](specs/epics/EPIC-17-remediating-and-improvement/epic.md) — Remediating and Improvement
-- [[plan-01-reduction-of-descriptions-context-cost]] — [plan-01-reduction-of-descriptions-context-cost.md](specs/epics/EPIC-17-remediating-and-improvement/plan-01-reduction-of-descriptions-context-cost.md) — Remediar hallazgo A1 — Reducción de costo de contexto de descriptions — Feature del EPIC-17
-- [[plan-02-fix-claude-md]] — [plan-02-fix-claude-md.md](specs/epics/EPIC-17-remediating-and-improvement/plan-02-fix-claude-md.md) — Corrección de CLAUDE.md — Feature del EPIC-17
-- [[plan-03-clean]] — [plan-03-clean.md](specs/epics/EPIC-17-remediating-and-improvement/plan-03-clean.md) — Limpieza de assets muertos y configuración legacy — Feature del EPIC-17
-- [[plan-4-fix-story-code-review]] — [plan-04-fix-story-code-review.md](specs/epics/EPIC-17-remediating-and-improvement/plan-04-fix-story-code-review.md) — Fix inconsistencia interna en story-code-review — Feature del EPIC-17
-- [[plan-5-normalize-skills-frontmatter]] — [plan-05-normalize-skills-frontmatter.md](specs/epics/EPIC-17-remediating-and-improvement/plan-05-normalize-skills-frontmatter.md) — Normalizar zoo de frontmatter en skills — Feature del EPIC-17
-- [[plan-6-centralizar-templates-compartidos]] — [plan-06-centralizar-templates-compartidos.md](specs/epics/EPIC-17-remediating-and-improvement/plan-06-centralizar-templates-compartidos.md) — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` — Feature del EPIC-17
-- [[plan-7-invocacion-agentes-locales-de-skill]] — [plan-07-invocacion-agentes-locales-de-skill.md.md](specs/epics/EPIC-17-remediating-and-improvement/plan-07-invocacion-agentes-locales-de-skill.md.md) — Contrato explícito de invocación de agentes locales de skill — Feature del EPIC-17
-- [[plan-8-align-the-declared-multi-client-support]] — [plan-08-align-the-declared-multi-client-support.md](specs/epics/EPIC-17-remediating-and-improvement/plan-08-align-the-declared-multi-client-support.md) — Alinear el soporte multi-cliente declarado con el real — Feature del EPIC-17
-- [[plan-09-state-machine-canonical-document]] — [plan-09-state-machine-canonical-document.md](specs/epics/EPIC-17-remediating-and-improvement/plan-09-state-machine-canonical-document.md) — Documento canónico de la máquina de estados SDDF
-- [[plan-10-interactive-subagent-resilience]] — [plan-10-interactive-subagent-resilience.md](specs/epics/EPIC-17-remediating-and-improvement/plan-10-interactive-subagent-resilience.md) — Resiliencia de entrevistas multivuelta (project-pm como subagente interactivo)
-- [[plan-11-fix-instalador-npm]] — [plan-11-fix-instalador-npm.md](specs/epics/EPIC-17-remediating-and-improvement/plan-11-fix-instalador-npm.md) — Fix instalador npm — quitar prompt de postinstall y agregar --force para upgrades
-- [[plan-12-centralize-preflight-paragraph]] — [plan-12-centralize-preflight-paragraph.md](specs/epics/EPIC-17-remediating-and-improvement/plan-12-centralize-preflight-paragraph.md) — Centralizar párrafo de preflight (STORY-053)
-- [[plan-13-remove-gem-and-rovo]] — [plan-13-remove-gem-and-rovo.md](specs/epics/EPIC-17-remediating-and-improvement/plan-13-remove-gem-and-rovo.md) — Eliminar gem/ y rovo/ (STORY-054)
-- [[plan-14-evals-standardization]] — [plan-14-evals-standardization.md](specs/epics/EPIC-17-remediating-and-improvement/plan-14-evals-standardization.md) — Estandarización del esquema de evals.json (STORY-055)
-- [[plan-15-improve-invocation-in-story-implement]] — [plan-15-improve-invocation-in-story-implement.md](specs/epics/EPIC-17-remediating-and-improvement/plan-15-improve-invocation-in-story-implement.md) — Formalización de la invocación de code_generators en story-implement (ADR-0002)
-- [[plan-16-agnostic-framework]] — [plan-16-agnostic-framework.md](specs/epics/EPIC-17-remediating-and-improvement/plan-16-agnostic-framework.md) — Desacoplar referencias `.claude/` de los skills SDDF (STORY-056)
-- [[plan-17-generates-evals]] — [plan-17-generates-evals.md](specs/epics/EPIC-17-remediating-and-improvement/plan-17-generates-evals.md) — Generar evals/evals.json para dos skills (STORY-057)
-- [[workflow-hardening]] — [epic.md](specs/epics/EPIC-18-workflow-hardening/epic.md) — Workflow Hardening — Robustecer el flujo de Story y Release
-- [[plan-01-deliver-status]] — [plan-01-deliver-status.md](specs/epics/EPIC-18-workflow-hardening/plan-01-deliver-status.md) — Renombrar INTEGRATION → DELIVER en el workflow de story
-- [[plan-02-epic-workflow-definition]] — [plan-02-epic-workflow-definition.md](specs/epics/EPIC-18-workflow-hardening/plan-02-epic-workflow-definition.md) — Definir workflow canónico de Épica/Release
-- [[plan-03-lazy-assignment-of-feat-ids]] — [plan-03-lazy-assignment-of-feat-ids.md](specs/epics/EPIC-18-workflow-hardening/plan-03-lazy-assignment-of-feat-ids.md) — Asignación lazy de FEAT IDs (dos fases)
-- [[plan-04-doc-story-implement]] — [plan-04-doc-story-implement.md](specs/epics/EPIC-18-workflow-hardening/plan-04-doc-story-implement.md) — Mejorar documentación de story-implement
-- [[plan-05-enhance-code-review]] — [plan-05-enhance-code-review.md](specs/epics/EPIC-18-workflow-hardening/plan-05-enhance-code-review.md) — Incorporar mejoras a `story-code-review`
-- [[plan-06-isolate-workspace-by-story]] — [plan-06-isolate-workspace-by-story.md](specs/epics/EPIC-18-workflow-hardening/plan-06-isolate-workspace-by-story.md) — Aislar espacio de trabajo por historia
-- [[plan-07-fix_code_generators_of_story-implement]] — [plan-07-fix_code_generators_of_story-implement.md](specs/epics/EPIC-18-workflow-hardening/plan-07-fix_code_generators_of_story-implement.md) — Corregir desincronización en code_generators de story-implement
-- [[plan-08-move-skills-to-the-root]] — [plan-08-move-skills-to-the-root.md](specs/epics/EPIC-18-workflow-hardening/plan-08-move-skills-to-the-root.md) — Actualizar rutas de origen tras mover `skills/` y `agents/` a la raíz
-- [[EPIC-19-framework-consistency]] — [epic.md](specs/epics/EPIC-19-framework-consistency/epic.md) — Framework Consistency — Coherencia de vocabulario, instalación, seguridad y ciclo de corrección
-- [[EPIC-20-memory-system]] — [epic.md](specs/epics/EPIC-20-memory-system/epic.md) — Memory System — Sistema de memoria unificado y agnóstico al harness
-- [[EPIC-21-colapsar-specs-dos-niveles]] — [epic.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/epic.md) — Colapsar specs/ a dos niveles y eliminar 01-projects/
-- [[insight-colapsar-specs-dos-niveles]] — [insight-colapsar-specs-dos-niveles.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
-- [[EPIC-21-colapsar-specs-dos-niveles-test-cases]] — [test-cases.md](specs/epics/EPIC-21-colapsar-specs-dos-niveles/test-cases.md) — Test Cases: Colapsar specs/ a dos niveles y eliminar 01-projects/
-- [[EPIC-22-epic-analyze]] — [epic.md](specs/epics/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
-- [[EPIC-23-skill-epic-validate]] — [epic.md](specs/epics/EPIC-23-skill-epic-validate/epic.md) — Skill epic-validate
-- [[EPIC-24-agentes-locales-por-skill]] — [epic.md](specs/epics/EPIC-24-agentes-locales-por-skill/epic.md) — Mover agentes globales a agentes locales por skill
-- [[EPIC-25-unificar-contrato-de-validaciones-en-skills]] — [epic.md](specs/epics/EPIC-25-unificar-contrato-de-validaciones-en-skills/epic.md) — Unificar contrato de validaciones en skills
+- [[EPIC-00-estructura-base-y-mecanismo-de-templates]] — [epic.md](../specs/flow/EPIC-00-estructura-base-y-mecanismo-de-templates/epic.md) — Release 00 — Estructura Base y Mecanismo de Templates
+- [[EPIC-01-features-spec-builder]] — [epic.md](../specs/flow/EPIC-01-features-spec-builder/epic.md) — Release 01 — Features Spec Builder
+- [[EPIC-02-project-spec-builder]] — [epic.md](../specs/flow/EPIC-02-project-spec-builder/epic.md) — Release 02 — Project Spec Builder (Pipeline de proyecto)
+- [[EPIC-03-reverse-engineering]] — [epic.md](../specs/flow/EPIC-03-reverse-engineering/epic.md) — Release 03 — Reverse Engineering (Ingeniería inversa)
+- [[EPIC-04-refactor-features-spec-builder]] — [epic.md](../specs/flow/EPIC-04-refactor-features-spec-builder/epic.md) — Release 04 — Refactor Features Spec Builder (Consolidación y calidad)
+- [[EPIC-05-enhance-project-spec]] — [epic.md](../specs/flow/EPIC-05-enhance-project-spec/epic.md) — Release 05 — Enhance Project Spec (Expansión project spec)
+- [[EPIC-06-release-and-story-generator]] — [epic.md](../specs/flow/EPIC-06-release-and-story-generator/epic.md) — Release 06 — Release & Story Generator
+- [[EPIC-07-publicacion-framework-npm]] — [epic.md](../specs/flow/EPIC-07-publicacion-framework-npm/epic.md) — Release 07 — Publicación del Framework SDDF como Paquete NPM
+- [[EPIC-08-npm-install-locally]] — [epic.md](../specs/flow/EPIC-08-npm-install-locally/epic.md) — Release 08 — Npm Install locally
+- [[EPIC-09-docs-and-wiki-builders]] — [epic.md](../specs/flow/EPIC-09-docs-and-wiki-builders/epic.md) — Release 09 — Docs and Wiki builders
+- [[EPIC-10-mejora-estructura-artefactos-nuevos-skills]] — [epic.md](../specs/flow/EPIC-10-mejora-estructura-artefactos-nuevos-skills/epic.md) — Mejora en estructura de artefactos y nuevos skills
+- [[EPIC-11-centralizar-templates]] — [epic.md](../specs/flow/EPIC-11-centralizar-templates/epic.md) — Centralizar templates de spec en directorio compartido
+- [[EPIC-12-story-sdd-workflow]] — [epic.md](../specs/flow/EPIC-12-story-sdd-workflow/epic.md) — Story SDD Workflow - comandos del flujo de story
+- [[quality-gates-con-dod-en-story-workflow]] — [epic.md](../specs/flow/EPIC-13-quality-gates-con-dod-en-story-workflow/epic.md) — Quality Gates con DoD en Story Workflow
+- [[fabrica-de-skills]] — [epic.md](../specs/flow/EPIC-14-fabrica-de-skills/epic.md) — Fábrica de Skills
+- [[e2e-capability]] — [epic.md](../specs/flow/EPIC-15-e2e-capability/epic.md) — Skills de Testing Especializado y E2E Capability
+- [[EPIC-16-enhancement-and-security]] — [epic.md](../specs/flow/EPIC-16-enhancement-and-security/epic.md) — enhancement and security improvements for skills (Safe Enhancement & Fortify Skills)
+- [[plan-01-root-folder-selection-to-installer]] — [plan-01-root-folder-selection-to-installer.md](../specs/flow/EPIC-16-enhancement-and-security/plan-01-root-folder-selection-to-installer.md) — Plan 01: Root Folder Selection for Installer
+- [[plan-02-integrate-story-testcases-in-story-plan]] — [plan-02-Integrate-story-testcases-in-story-plan.md](../specs/flow/EPIC-16-enhancement-and-security/plan-02-Integrate-story-testcases-in-story-plan.md) — Plan 02: Integrate story-testcases in story-plan
+- [[plan-03-integrate-story-improve-in-story-specify]] — [plan-03-integrate-story-improve-in-story-specify.md](../specs/flow/EPIC-16-enhancement-and-security/plan-03-integrate-story-improve-in-story-specify.md) — Plan 03: Integrate story-improve in story-specify
+- [[plan-04-add-and-improve-skills-readme]] — [plan-04-add-and-improve-skills-readme.md](../specs/flow/EPIC-16-enhancement-and-security/plan-04-add-and-improve-skills-readme.md) — Plan 04: Add and Improve Skills README
+- [[plan-05-extend-story-code-review-with-testcases]] — [plan-05-extend-story-code-review-with-testcases.md](../specs/flow/EPIC-16-enhancement-and-security/plan-05-extend-story-code-review-with-testcases.md) — Plan 05: Extender story-code-review con análisis de testcases.md e implement-report.md opcional
+- [[plan-06-configure-story-verify-with-config-file]] — [plan-06-configure-story-verify-with-config-file.md](../specs/flow/EPIC-16-enhancement-and-security/plan-06-configure-story-verify-with-config-file.md) — Plan 06: Configurar story-verify con sddf.config.yaml
+- [[remediating-and-improvement]] — [epic.md](../specs/flow/EPIC-17-remediating-and-improvement/epic.md) — Remediating and Improvement
+- [[plan-01-reduction-of-descriptions-context-cost]] — [plan-01-reduction-of-descriptions-context-cost.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-01-reduction-of-descriptions-context-cost.md) — Remediar hallazgo A1 — Reducción de costo de contexto de descriptions — Feature del EPIC-17
+- [[plan-02-fix-claude-md]] — [plan-02-fix-claude-md.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-02-fix-claude-md.md) — Corrección de CLAUDE.md — Feature del EPIC-17
+- [[plan-03-clean]] — [plan-03-clean.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-03-clean.md) — Limpieza de assets muertos y configuración legacy — Feature del EPIC-17
+- [[plan-4-fix-story-code-review]] — [plan-04-fix-story-code-review.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-04-fix-story-code-review.md) — Fix inconsistencia interna en story-code-review — Feature del EPIC-17
+- [[plan-5-normalize-skills-frontmatter]] — [plan-05-normalize-skills-frontmatter.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-05-normalize-skills-frontmatter.md) — Normalizar zoo de frontmatter en skills — Feature del EPIC-17
+- [[plan-6-centralizar-templates-compartidos]] — [plan-06-centralizar-templates-compartidos.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-06-centralizar-templates-compartidos.md) — Centralizar templates compartidos en `$SPECS_BASE/specs/templates/` — Feature del EPIC-17
+- [[plan-7-invocacion-agentes-locales-de-skill]] — [plan-07-invocacion-agentes-locales-de-skill.md.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-07-invocacion-agentes-locales-de-skill.md.md) — Contrato explícito de invocación de agentes locales de skill — Feature del EPIC-17
+- [[plan-8-align-the-declared-multi-client-support]] — [plan-08-align-the-declared-multi-client-support.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-08-align-the-declared-multi-client-support.md) — Alinear el soporte multi-cliente declarado con el real — Feature del EPIC-17
+- [[plan-09-state-machine-canonical-document]] — [plan-09-state-machine-canonical-document.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-09-state-machine-canonical-document.md) — Documento canónico de la máquina de estados SDDF
+- [[plan-10-interactive-subagent-resilience]] — [plan-10-interactive-subagent-resilience.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-10-interactive-subagent-resilience.md) — Resiliencia de entrevistas multivuelta (project-pm como subagente interactivo)
+- [[plan-11-fix-instalador-npm]] — [plan-11-fix-instalador-npm.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-11-fix-instalador-npm.md) — Fix instalador npm — quitar prompt de postinstall y agregar --force para upgrades
+- [[plan-12-centralize-preflight-paragraph]] — [plan-12-centralize-preflight-paragraph.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-12-centralize-preflight-paragraph.md) — Centralizar párrafo de preflight (STORY-053)
+- [[plan-13-remove-gem-and-rovo]] — [plan-13-remove-gem-and-rovo.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-13-remove-gem-and-rovo.md) — Eliminar gem/ y rovo/ (STORY-054)
+- [[plan-14-evals-standardization]] — [plan-14-evals-standardization.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-14-evals-standardization.md) — Estandarización del esquema de evals.json (STORY-055)
+- [[plan-15-improve-invocation-in-story-implement]] — [plan-15-improve-invocation-in-story-implement.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-15-improve-invocation-in-story-implement.md) — Formalización de la invocación de code_generators en story-implement (ADR-0002)
+- [[plan-16-agnostic-framework]] — [plan-16-agnostic-framework.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-16-agnostic-framework.md) — Desacoplar referencias `.claude/` de los skills SDDF (STORY-056)
+- [[plan-17-generates-evals]] — [plan-17-generates-evals.md](../specs/flow/EPIC-17-remediating-and-improvement/plan-17-generates-evals.md) — Generar evals/evals.json para dos skills (STORY-057)
+- [[workflow-hardening]] — [epic.md](../specs/flow/EPIC-18-workflow-hardening/epic.md) — Workflow Hardening — Robustecer el flujo de Story y Release
+- [[plan-01-deliver-status]] — [plan-01-deliver-status.md](../specs/flow/EPIC-18-workflow-hardening/plan-01-deliver-status.md) — Renombrar INTEGRATION → DELIVER en el workflow de story
+- [[plan-02-epic-workflow-definition]] — [plan-02-epic-workflow-definition.md](../specs/flow/EPIC-18-workflow-hardening/plan-02-epic-workflow-definition.md) — Definir workflow canónico de Épica/Release
+- [[plan-03-lazy-assignment-of-feat-ids]] — [plan-03-lazy-assignment-of-feat-ids.md](../specs/flow/EPIC-18-workflow-hardening/plan-03-lazy-assignment-of-feat-ids.md) — Asignación lazy de FEAT IDs (dos fases)
+- [[plan-04-doc-story-implement]] — [plan-04-doc-story-implement.md](../specs/flow/EPIC-18-workflow-hardening/plan-04-doc-story-implement.md) — Mejorar documentación de story-implement
+- [[plan-05-enhance-code-review]] — [plan-05-enhance-code-review.md](../specs/flow/EPIC-18-workflow-hardening/plan-05-enhance-code-review.md) — Incorporar mejoras a `story-code-review`
+- [[plan-06-isolate-workspace-by-story]] — [plan-06-isolate-workspace-by-story.md](../specs/flow/EPIC-18-workflow-hardening/plan-06-isolate-workspace-by-story.md) — Aislar espacio de trabajo por historia
+- [[plan-07-fix_code_generators_of_story-implement]] — [plan-07-fix_code_generators_of_story-implement.md](../specs/flow/EPIC-18-workflow-hardening/plan-07-fix_code_generators_of_story-implement.md) — Corregir desincronización en code_generators de story-implement
+- [[plan-08-move-skills-to-the-root]] — [plan-08-move-skills-to-the-root.md](../specs/flow/EPIC-18-workflow-hardening/plan-08-move-skills-to-the-root.md) — Actualizar rutas de origen tras mover `skills/` y `agents/` a la raíz
+- [[EPIC-19-framework-consistency]] — [epic.md](../specs/flow/EPIC-19-framework-consistency/epic.md) — Framework Consistency — Coherencia de vocabulario, instalación, seguridad y ciclo de corrección
+- [[EPIC-20-memory-system]] — [epic.md](../specs/flow/EPIC-20-memory-system/epic.md) — Memory System — Sistema de memoria unificado y agnóstico al harness
+- [[EPIC-21-colapsar-specs-dos-niveles]] — [epic.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/epic.md) — Colapsar specs/ a dos niveles y eliminar 01-projects/
+- [[insight-colapsar-specs-dos-niveles]] — [insight-colapsar-specs-dos-niveles.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
+- [[EPIC-21-colapsar-specs-dos-niveles-test-cases]] — [test-cases.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/test-cases.md) — Test Cases: Colapsar specs/ a dos niveles y eliminar 01-projects/
+- [[EPIC-22-epic-analyze]] — [epic.md](../specs/flow/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
+- [[EPIC-23-skill-epic-validate]] — [epic.md](../specs/flow/EPIC-23-skill-epic-validate/epic.md) — Skill epic-validate
+- [[EPIC-24-agentes-locales-por-skill]] — [epic.md](../specs/flow/EPIC-24-agentes-locales-por-skill/epic.md) — Mover agentes globales a agentes locales por skill
+- [[EPIC-25-unificar-contrato-de-validaciones-en-skills]] — [epic.md](../specs/flow/EPIC-25-unificar-contrato-de-validaciones-en-skills/epic.md) — Unificar contrato de validaciones en skills
+- [[EPIC-26-layout-y-flow-forward-mejorado]] — [epic.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/epic.md) — Layout y flow-forward mejorado
 
-### L1 — Historias de usuario (specs/stories/)
+### Historias de usuario
 
 > **Convención de directorio:** cada `STORY-NNN-*/` contiene `story.md` como nodo principal y, según la
 > fase alcanzada, puede contener además `analyze.md`, `design.md`, `tasks.md`, `testcases.md`,
@@ -223,169 +224,184 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 > enumeran aquí: se leen desde el directorio de la historia. Los templates (`templates/`) tampoco se
 > listan porque sus wikilinks son placeholders.
 
-- [[STORY-001-project-begin]] — [story.md](specs/stories/STORY-001-project-begin/story.md) — project-begin — Captura de intención inicial del proyecto
-- [[STORY-003-project-discovery]] — [story.md](specs/stories/STORY-003-project-discovery/story.md) — project-discovery — Discovery de usuarios y especificación de requisitos
-- [[STORY-004-project-planning]] — [story.md](specs/stories/STORY-004-project-planning/story.md) — project-planning — Planificación de releases y backlog
-- [[STORY-005-project-story-mapping]] — [story.md](specs/stories/STORY-005-project-story-mapping/story.md) — project-story-mapping — User Story Mapping según Jeff Patton
-- [[STORY-006-story-creation]] — [story.md](specs/stories/STORY-006-story-creation/story.md) — story-creation — Crear historias de usuario
-- [[STORY-007-story-evaluation]] — [story.md](specs/stories/STORY-007-story-evaluation/story.md) — story-evaluation ó Evaluación FINVEST de historias
-- [[STORY-008-control-wip]] — [story.md](specs/stories/STORY-008-control-wip/story.md) — Control WIP=1 — Detección de proyecto activo
-- [[STORY-010-gates-de-revision]] — [story.md](specs/stories/STORY-010-gates-de-revision/story.md) — Gates de Revisión Humana entre fases del pipeline
-- [[STORY-011-project-planning-mejorado]] — [story.md](specs/stories/STORY-011-project-planning-mejorado/story.md) — project-planning mejorado — Integración con story mapping
-- [[STORY-012-story-split]] — [story.md](specs/stories/STORY-012-story-split/story.md) — story-split ó Dividir ópicas en historias pequeóas
-- [[STORY-013-story-refine]] — [story.md](specs/stories/STORY-013-story-refine/story.md) — story-refine — Refinamiento iterativo de historias de usuario
-- [[STORY-015-project-flow]] — [story.md](specs/stories/STORY-015-project-flow/story.md) — project-flow — Orquestador del pipeline completo ProjectSpecFactory
-- [[STORY-017-reverse-engineering]] — [story.md](specs/stories/STORY-017-reverse-engineering/story.md) — reverse-engineering — Skill orquestador de ingeniería inversa
-- [[STORY-018-agente-reverse-engineer-architect]] — [story.md](specs/stories/STORY-018-agente-reverse-engineer-architect/story.md) — Agente reverse-engineer-architect
-- [[STORY-019-agente-reverse-engineer-product-discovery]] — [story.md](specs/stories/STORY-019-agente-reverse-engineer-product-discovery/story.md) — Agente reverse-engineer-product-discovery
-- [[STORY-020-agente-reverse-engineer-business-analyst]] — [story.md](specs/stories/STORY-020-agente-reverse-engineer-business-analyst/story.md) — Agente reverse-engineer-business-analyst
-- [[STORY-021-agente-reverse-engineer-ux-flow-mapper]] — [story.md](specs/stories/STORY-021-agente-reverse-engineer-ux-flow-mapper/story.md) — Agente reverse-engineer-ux-flow-mapper
-- [[STORY-022-agente-reverse-engineer-synthesizer]] — [story.md](specs/stories/STORY-022-agente-reverse-engineer-synthesizer/story.md) — Agente reverse-engineer-synthesizer
-- [[STORY-023-scope-acotado-focus]] — [story.md](specs/stories/STORY-023-scope-acotado-focus/story.md) — Scope acotado — Flag --focus para reverse-engineering
-- [[STORY-024-modo-incremental-update]] — [story.md](specs/stories/STORY-024-modo-incremental-update/story.md) — Modo incremental — Flag --update para reverse-engineering
-- [[STORY-027-validacion-de-formato-de-release]] — [story.md](specs/stories/STORY-027-validacion-de-formato-de-release/story.md) — Validación de formato de Release
-- [[STORY-028-generar-releases]] — [story.md](specs/stories/STORY-028-generar-releases/story.md) — Generar releases desde project-plan
-- [[STORY-029-generar-stories]] — [story.md](specs/stories/STORY-029-generar-stories/story.md) — Generar stories desde archivo de release
-- [[STORY-030-soporte-atlassian-rovo]] — [story.md](specs/stories/STORY-030-soporte-atlassian-rovo/story.md) — Soporte Atlassian Rovo — Agente story-creator
-- [[STORY-032-soporte-atlassian-rovo-para-validar-release]] — [story.md](specs/stories/STORY-032-soporte-atlassian-rovo-para-validar-release/story.md) — Soporte Atlassian Rovo para Validar Release
-- [[STORY-033-soporte-atlassian-rovo-para-crear-epic-release]] — [story.md](specs/stories/STORY-033-soporte-atlassian-rovo-para-crear-epic-release/story.md) — Soporte Atlassian Rovo para crear Epic Release
-- [[STORY-034-rovo-agent-release-reverse-generator]] — [story.md](specs/stories/STORY-034-rovo-agent-release-reverse-generator/story.md) — Rovo Agent Release Reverse Generator from children
-- [[STORY-035-generar-stories-todos-releases]] — [story.md](specs/stories/STORY-035-generar-stories-todos-releases/story.md) — Generar stories de todos los releases en batch
-- [[STORY-036-openspec-init-config]] — [story.md](specs/stories/STORY-036-openspec-init-config/story.md) — Inicializar configuración de OpenSpec automáticamente
-- [[STORY-037-generar-baseline-openspec-inversa]] — [story.md](specs/stories/STORY-037-generar-baseline-openspec-inversa/story.md) — Generar línea base de OpenSpec mediante ingeniería inversa
-- [[STORY-038-copy-templates-to-skills]] — [story.md](specs/stories/STORY-038-copy-templates-to-skills/story.md) — Copiar los templates a los skills correspondientes
-- [[STORY-039-publicar-framework-en-npm]] — [story.md](specs/stories/STORY-039-publicar-framework-en-npm/story.md) — Publicar framework en npm
-- [[STORY-040-instalar-skills-via-postinstall]] — [story.md](specs/stories/STORY-040-instalar-skills-via-postinstall/story.md) — Instalar skills via postinstall (script)
-- [[STORY-041-npm-install-locally]] — [story.md](specs/stories/STORY-041-npm-install-locally/story.md) — Npm Install locally
-- [[STORY-042-readme-builder]] — [story.md](specs/stories/STORY-042-readme-builder/story.md) — README.md builder
-- [[STORY-043-header-aggregation]] — [story.md](specs/stories/STORY-043-header-aggregation/story.md) — Encabezado de archivos spec con metadata de estado (header-aggregation)
-- [[STORY-044-directorio-docs-tipo-wiki]] — [story.md](specs/stories/STORY-044-directorio-docs-tipo-wiki/story.md) — Directorio docs tipo wiki
-- [[STORY-046-publicar-npm-con-github-actions]] — [story.md](specs/stories/STORY-046-publicar-npm-con-github-actions/story.md) — GitHub Actions CI/CD
-- [[STORY-047-skills-multicliente-rutas-relativas]] — [story.md](specs/stories/STORY-047-skills-multicliente-rutas-relativas/story.md) — Skills con templates Multicliente
-- [[STORY-048-refactor-migrates-templates-to-assets]] — [story.md](specs/stories/STORY-048-refactor-migrates-templates-to-assets/story.md) — Refactoring - Migración de templates a assets en Skills
-- [[STORY-049-reading-of-sddf-root]] — [story.md](specs/stories/STORY-049-reading-of-sddf-root/story.md) — Lectura de SDDF_ROOT como ruta base de artefactos en skills SDDF
-- [[STORY-050-organizar-artefactos-en-directorio-propio]] — [story.md](specs/stories/STORY-050-organizar-artefactos-en-directorio-propio/story.md) — Organizar artefactos de spec en directorios propios por workitem
-- [[STORY-051-crear-release-por-preguntas-guiadas]] — [story.md](specs/stories/STORY-051-crear-release-por-preguntas-guiadas/story.md) — Crear un release.md válido respondiendo preguntas guiadas por el template
-- [[STORY-052-generar-diagrama-contexto-c4]] — [story.md](specs/stories/STORY-052-generar-diagrama-contexto-c4/story.md) — Generar un diagrama de contexto C4 del proyecto respondiendo preguntas o desde specs
-- [[STORY-053-centralizar-validacion-entorno-sddf]] — [story.md](specs/stories/STORY-053-centralizar-validacion-entorno-sddf/story.md) — Centralizar la validación de entorno SDDF con skill-preflight
-- [[STORY-054-inicializar-entorno-sddf]] — [story.md](specs/stories/STORY-054-inicializar-entorno-sddf/story.md) — Inicializar entorno SDDF con sddf-init
-- [[STORY-055-centralizar-templates-en-specs-templates]] — [story.md](specs/stories/STORY-055-centralizar-templates-en-specs-templates/story.md) — Centralizar templates de spec en directorio compartido
-- [[STORY-056-project-policies]] — [story.md](specs/stories/STORY-056-project-policies/story.md) — Project policies
-- [[STORY-057-skill-para-diseno]] — [story.md](specs/stories/STORY-057-skill-para-diseno/story.md) — Skill para Diseño (story-design)
-- [[STORY-058-skill-para-tasking]] — [story.md](specs/stories/STORY-058-skill-para-tasking/story.md) — Skill para Tasking (story-tasking)
-- [[STORY-059-comando-de-analisis-transversal]] — [story.md](specs/stories/STORY-059-comando-de-analisis-transversal/story.md) — Comando de análisis transversal (story-analyze)
-- [[STORY-060-orquestacion-del-plan]] — [story.md](specs/stories/STORY-060-orquestacion-del-plan/story.md) — Orquestación del plan (story-plan)
-- [[STORY-061-skill-de-implementacion-el-programador-autonomo]] — [story.md](specs/stories/STORY-061-skill-de-implementacion-el-programador-autonomo/story.md) — Skill de implementación — El programador autónomo (story-implement)
-- [[STORY-062-status-management-on-workflow]] — [story.md](specs/stories/STORY-062-status-management-on-workflow/story.md) — Status Management on Workflow
-- [[STORY-063-reutilizar-directorio-como-historia-core]] — [story.md](specs/stories/STORY-063-reutilizar-directorio-como-historia-core/story.md) — Reutilizar directorio original como historia core al dividir
-- [[STORY-064-revision-codigo-multi-agente]] — [story.md](specs/stories/STORY-064-revision-codigo-multi-agente/story.md) — Skill story-code-review: revisión multi-agente aprobada del código implementado
-- [[STORY-065-revision-con-bloqueantes]] — [story.md](specs/stories/STORY-065-revision-con-bloqueantes/story.md) — Skill story-code-review: instrucciones de corrección cuando la revisión detecta bloqueantes
-- [[STORY-066-revision-validacion-precondiciones]] — [story.md](specs/stories/STORY-066-revision-validacion-precondiciones/story.md) — Skill story-code-review: validación de artefactos requeridos antes de revisar
-- [[STORY-067-story-implement-continuar-parcial]] — [story.md](specs/stories/STORY-067-story-implement-continuar-parcial/story.md) — skill story-implement: continuar implementación parcial con tareas pendientes y fix-directives
-- [[dod-plan-en-story-analyze]] — [story.md](specs/stories/STORY-068-dod-plan-en-story-analyze/story.md) — DoD PLAN en story-analyze
-- [[dod-IMPLEMENT-en-story-implement]] — [story.md](specs/stories/STORY-069-dod-implementing-en-story-implement/story.md) — DoD IMPLEMENT en story-implement
-- [[dod-code-review-en-story-code-review]] — [story.md](specs/stories/STORY-070-dod-code-review-en-story-code-review/story.md) — DoD CODE-REVIEW en story-code-review
-- [[STORY-071-skill-story-verify]] — [story.md](specs/stories/STORY-071-skill-story-verify/story.md) — Skill story-verify: Orquestar la fase VERIFY de pruebas de una historia
-- [[STORY-072-skill-story-acceptance]] — [story.md](specs/stories/STORY-072-skill-story-acceptance/story.md) — Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER
-- [[STORY-073-skill-security-audit-condicional]] — [story.md](specs/stories/STORY-073-skill-security-audit-condicional/story.md) — Construir skill `security-audit` para auditoría automática condicional de seguridad
-- [[STORY-074-integrar-historia-batch-configurable]] — [story.md](specs/stories/STORY-074-integrar-historia-batch-configurable/story.md) — story-integrate: Integración batch configurable de historias
-- [[STORY-075-integrar-historia-modo-manual-dryrun]] — [story.md](specs/stories/STORY-075-integrar-historia-modo-manual-dryrun/story.md) — story-integrate: Modos de ejecución manual y dry-run
-- [[STORY-076-integrar-historia-multi-modelo-entrega]] — [story.md](specs/stories/STORY-076-integrar-historia-multi-modelo-entrega/story.md) — story-integrate: Soporte multi-modelo de entrega (batch y continuous)
-- [[STORY-077-mejorar-historia-desde-reporte]] — [story.md](specs/stories/STORY-077-mejorar-historia-desde-reporte/story.md) — story-improve: Mejora automática de historia desde reporte FINVEST
-- [[STORY-078-implement-tdd-fase-red]] — [story.md](specs/stories/STORY-078-implement-tdd-fase-red/story.md) — story-implement — Fase RED: validar configuración y generar pruebas
-- [[STORY-079-story-testcases]] — [story.md](specs/stories/STORY-079-story-testcases/story.md) — story-testcases — generación de testcases.md desde story.md y design.md
-- [[STORY-080-plan]] — [plan.md](specs/stories/STORY-080-skills-master/plan.md) — Plan: Renombrar skill-creator a skill-master
-- [[STORY-080-skills-master]] — [story.md](specs/stories/STORY-080-skills-master/story.md) — skill-master — refactorización de skill-tester-eval: modos plan/build, detección de lenguaje natural e independencia SDDF
-- [[STORY-081-implement-tdd-fase-green-refactor]] — [story.md](specs/stories/STORY-081-implement-tdd-fase-green-refactor/story.md) — story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar
-- [[STORY-082-implement-tdd-modos-ejecucion]] — [story.md](specs/stories/STORY-082-implement-tdd-modos-ejecucion/story.md) — story-implement — modos interactivo y automático de ejecución del ciclo TDD
-- [[STORY-083-skill-test-evals]] — [story.md](specs/stories/STORY-083-skill-test-evals/story.md) — skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente
-- [[plan-01]] — [plan-01.md](specs/stories/STORY-084-skill-verify/plan-01.md) — Plan: Crear el skill skill-verify
-- [[plan-02]] — [plan-02.md](specs/stories/STORY-084-skill-verify/plan-02.md) — Plan: Añadir modo benchmark a skill-verify
-- [[STORY-084-plan-03]] — [plan-03.md](specs/stories/STORY-084-skill-verify/plan-03.md) — Plan: Unificar skill-verify en skill-test-evals
-- [[STORY-084-skill-verify]] — [story.md](specs/stories/STORY-084-skill-verify/story.md) — Unificar generación, ejecución y benchmark de evals en `skill-test-evals`
-- [[plan-integrar-config-sddf-init]] — [plan.md](specs/stories/STORY-085-integrar-config-sddf-init/plan.md) — Plan: Integrar sddf.config.yaml en el skill sddf-init
-- [[STORY-085-integrar-config-sddf-init]] — [story.md](specs/stories/STORY-085-integrar-config-sddf-init/story.md) — Mejora de experiencia de inicialización
-- [[plan-01-refactor-release-to-epic]] — [plan-01-refactor-release-to-epic.md](specs/stories/STORY-086-refactor-release-to-epic/plan-01-refactor-release-to-epic.md) — PLAN: Renombrar el nivel L2 de `release` a `epic`
-- [[plan-02-refactor-dev-levels]] — [plan-02-refactor-dev-levels.md](specs/stories/STORY-086-refactor-release-to-epic/plan-02-refactor-dev-levels.md) — PLAN: Reestructurar `docs/specs/` a niveles numerados (`01-projects/`, `02-epics/`, `03-stories/`)
-- [[plan-03-refactor-feat-to-story]] — [plan-03-refactor-feat-to-story.md](specs/stories/STORY-086-refactor-release-to-epic/plan-03-refactor-feat-to-story.md) — PLAN: Renombrar el prefijo de historias de `FEAT-NNN` a `STORY-NNN`
-- [[plan-04-fix-insights]] — [plan-04-fix-insights.md](specs/stories/STORY-086-refactor-release-to-epic/plan-04-fix-insights.md) — Cierre de la migración release→epic / FEAT→STORY: alinear gate, evals y documentación normativa
-- [[plan-05-findings-and-remediation-plan]] — [plan-05-findings-and-remediation-plan.md](specs/stories/STORY-086-refactor-release-to-epic/plan-05-findings-and-remediation-plan.md) — Revisión de STORY-086 — hallazgos y plan de remediación
-- [[plan-06-update-project]] — [plan-06-update-project.md](specs/stories/STORY-086-refactor-release-to-epic/plan-06-update-project.md) — Plan — Reescribir `project.md` contra la realidad + runbook del proceso
-- [[STORY-086-refactor-release-to-epic]] — [story.md](specs/stories/STORY-086-refactor-release-to-epic/story.md) — Renombrar el nivel L2 de release a épica y numerar los directorios de specs
-- [[STORY-087-error-in-npm-install-locally]] — [story.md](specs/stories/STORY-087-error-in-npm-install-locally/story.md) — Error en instalación local de npm install agile-sddf en Windows 11
-- [[plan-01-decouple-security-audit]] — [plan-01-decouple-security-audit.md](specs/stories/STORY-088-security-enhancement/plan-01-decouple-security-audit.md) — Desacoplar `story-code-review` del skill `security-audit`
-- [[STORY-088-plan-02-security]] — [plan-02-security.md](specs/stories/STORY-088-security-enhancement/plan-02-security.md) — Plan: Implementar SECURITY.md
-- [[plan-04-fix-security-insights]] — [plan-04-fix-security-insights.md](specs/stories/STORY-088-security-enhancement/plan-04-fix-security-insights.md) — Cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`
-- [[STORY-088-security-enhancement]] — [story.md](specs/stories/STORY-088-security-enhancement/story.md) — Mejoras de seguridad
-- [[plan-rechazo-nombra-ejecutor-correcciones]] — [plan.md](specs/stories/STORY-089-rechazo-nombra-ejecutor-correcciones/plan.md) — STORY-089 — Análisis y propuesta de cambio
-- [[STORY-089-rechazo-nombra-ejecutor-correcciones]] — [story.md](specs/stories/STORY-089-rechazo-nombra-ejecutor-correcciones/story.md) — Un code review rechazado nombra al ejecutor de correcciones y no depende de tasks.md
-- [[STORY-090-campos-declarados-nombran-su-escritor]] — [story.md](specs/stories/STORY-090-campos-declarados-nombran-su-escritor/story.md) — Todo campo declarado en un template nombra a su escritor
-- [[STORY-091-story-implement-modo-rework]] — [story.md](specs/stories/STORY-091-story-implement-modo-rework/story.md) — story-implement toma de la cola una historia rechazada y corrige en modo rework
-- [[STORY-092-reglas-robustez-modo-rework]] — [story.md](specs/stories/STORY-092-reglas-robustez-modo-rework/story.md) — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro
-- [[STORY-093-raiz-configurable-preflight-diagnostico]] — [story.md](specs/stories/STORY-093-raiz-configurable-preflight-diagnostico/story.md) — Resolver una raíz configurable y usar preflight como diagnóstico
-- [[STORY-094-insights]] — [insights.md](specs/stories/STORY-094-refactory-and-fixing-insights/insights.md) — Insights de refactorización y correcciones
-- [[plan-01-fix-ci-security-audit]] — [plan-01-fix-ci-security-audit.md](specs/stories/STORY-094-refactory-and-fixing-insights/plan-01-fix-ci-security-audit.md) — Plan 01 — Corregir la cobertura y el fallo de la CI de seguridad
-- [[plan-02-fix-postinstall-target-validation]] — [plan-02-fix-postinstall-target-validation.md](specs/stories/STORY-094-refactory-and-fixing-insights/plan-02-fix-postinstall-target-validation.md) — Plan 02 — Cerrar el traversal de `SDDF_TARGET` en `postinstall`
-- [[plan-03-fix-evals-runner-false-greens]] — [plan-03-fix-evals-runner-false-greens.md](specs/stories/STORY-094-refactory-and-fixing-insights/plan-03-fix-evals-runner-false-greens.md) — Plan 03 — Cerrar falsos verdes del runner de evals
-- [[plan-04-cerrar-hallazgos-pendientes-auditoria]] — [plan-04-cerrar-hallazgos-pendientes-auditoria.md](specs/stories/STORY-094-refactory-and-fixing-insights/plan-04-cerrar-hallazgos-pendientes-auditoria.md) — Plan 04 — Cerrar los hallazgos pendientes de la auditoría
-- [[plan-05-move-dod-story]] — [plan-05-move-dod-story.md](specs/stories/STORY-094-refactory-and-fixing-insights/plan-05-move-dod-story.md) — Mover `dod-story.md` de `policies/` a `guardrails/dod-story-checklist.md`
-- [[plan-06-constitution-as-root-in-docs]] — [plan-06-constitution-as-root-in-docs.md](specs/stories/STORY-094-refactory-and-fixing-insights/plan-06-constitution-as-root-in-docs.md) — Constitución como raíz: mover `docs/policies/constitution.md` → `docs/constitution.md`
-- [[STORY-094-refactory-and-fixing-insights]] — [story.md](specs/stories/STORY-094-refactory-and-fixing-insights/story.md) — Fix insight and Verificación de la instalación en Windows, macOS y Linux
-- [[STORY-095-memory-system-index-alias]] — [story.md](specs/stories/STORY-095-memory-system-index-alias/story.md) — Crear el skill memory-system con el modo index y deprecar docs-wiki-builder
-- [[STORY-096-memory-system-scaffold-ensure-rebuild]] — [story.md](specs/stories/STORY-096-memory-system-scaffold-ensure-rebuild/story.md) — Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild
-- [[STORY-097-memory-system-check-ci]] — [story.md](specs/stories/STORY-097-memory-system-check-ci/story.md) — Verificar la consistencia de la memoria con un modo check apto para CI
-- [[STORY-098-memory-system-migrate-harness]] — [story.md](specs/stories/STORY-098-memory-system-migrate-harness/story.md) — Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate
-- [[STORY-099-sddf-init-level-full]] — [story.md](specs/stories/STORY-099-sddf-init-level-full/story.md) — Inicializar la memoria completa desde sddf-init con el parámetro --level
-- [[STORY-100-restaurar-documentos-canonicos-estados]] — [story.md](specs/stories/STORY-100-restaurar-documentos-canonicos-estados/story.md) — Restaurar los documentos canónicos de la máquina de estados borrados sin repuntar sus citas
-- [[STORY-101-dod-story-por-etapa]] — [story.md](specs/stories/STORY-101-dod-story-por-etapa/story.md) — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill
-- [[STORY-102-renombrar-skill-sddf-constitution]] — [story.md](specs/stories/STORY-102-renombrar-skill-sddf-constitution/story.md) — Renombrar el skill project-policies-generation como sddf-constitution
-- [epic-template.md](specs/stories/STORY-103-replace-the-epic-template/epic-template.md) — <título de la épica> ⚠️ slug placeholder
-- [[STORY-103-replace-the-epic-template]] — [story.md](specs/stories/STORY-103-replace-the-epic-template/story.md) — Reemplazar el template de Epic por la versión minimalista y output-oriented
-- [[STORY-104-migrar-project-intent-a-vision]] — [story.md](specs/stories/STORY-104-migrar-project-intent-a-vision/story.md) — Migrar project-intent.md a product/vision.md
-- [[STORY-105-migrar-stakeholders-y-requisitos]] — [story.md](specs/stories/STORY-105-migrar-stakeholders-y-requisitos/story.md) — Migrar project.md a product/stakeholders.md y requirements/
-- [[STORY-106-migrar-plan-a-roadmap]] — [story.md](specs/stories/STORY-106-migrar-plan-a-roadmap/story.md) — Migrar project-plan.md a product/roadmap.md
-- [[STORY-107-migrar-story-map-y-diagrama-contexto]] — [story.md](specs/stories/STORY-107-migrar-story-map-y-diagrama-contexto/story.md) — Migrar story-map.md y context-diagram.puml
-- [[STORY-108-renombrar-specs-sin-prefijos]] — [story.md](specs/stories/STORY-108-renombrar-specs-sin-prefijos/story.md) — Renombrar specs/02-epics/ → specs/epics/ y specs/03-stories/ → specs/stories/
-- [[STORY-109-project-begin-escribe-vision]] — [story.md](specs/stories/STORY-109-project-begin-escribe-vision/story.md) — project-begin escribe la intención en product/vision.md
-- [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] — [story.md](specs/stories/STORY-110-discovery-escribe-stakeholders-y-requisitos/story.md) — project-discovery y reverse-engineering escriben stakeholders y requisitos individuales
-- [[STORY-111-planning-escribe-roadmap]] — [story.md](specs/stories/STORY-111-planning-escribe-roadmap/story.md) — project-planning escribe en product/roadmap.md y epic-from-project-plan lee de allí
-- [[STORY-112-story-map-y-diagrama-en-sus-capas]] — [story.md](specs/stories/STORY-112-story-map-y-diagrama-en-sus-capas/story.md) — project-story-mapping y project-context-diagram escriben en product/ y architecture/c4/
-- [[STORY-113-project-flow-sin-01-projects]] — [story.md](specs/stories/STORY-113-project-flow-sin-01-projects/story.md) — project-flow, sddf-init y header-aggregation sin specs/01-projects/
-- [[STORY-114-migrate-specs-3-levels]] — [story.md](specs/stories/STORY-114-migrate-specs-3-levels/story.md) — Implementar memory-system migrate --from=specs-3-levels
-- [[STORY-115-scaffold-dos-niveles-y-capas-destino]] — [story.md](specs/stories/STORY-115-scaffold-dos-niveles-y-capas-destino/story.md) — Actualizar scaffolding de memory-system a specs/ de dos niveles
-- [[STORY-116-documentar-modelo-dos-niveles]] — [story.md](specs/stories/STORY-116-documentar-modelo-dos-niveles/story.md) — Actualizar documentación canónica al modelo de dos niveles
-- [[STORY-117-verificar-cierre-epic-21]] — [story.md](specs/stories/STORY-117-verificar-cierre-epic-21/story.md) — Verificar sddf.config.yaml y los modos SDD sobre la estructura de dos niveles
-- [[STORY-118-requirements-srs-unico-primero]] — [story.md](specs/stories/STORY-118-requirements-srs-unico-primero/story.md) — Adoptar la estrategia 'SRS único primero, fragmentación cuando duela' en requirements/
-- [[STORY-119-story-plan-un-subagente-por-paso]] — [story.md](specs/stories/STORY-119-story-plan-un-subagente-por-paso/story.md) — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens
-- [[STORY-119-testing-report-01]] — [testing-report-01.md](specs/stories/STORY-119-story-plan-un-subagente-por-paso/testing-report-01.md) — Testing de STORY-119: Prueba 1
-- [[STORY-119-testing-report-02]] — [testing-report-02.md](specs/stories/STORY-119-story-plan-un-subagente-por-paso/testing-report-02.md) — Testing de STORY-119: Prueba 2
-- [[STORY-120-epic-analyze-integridad-historias]] — [story.md](specs/stories/STORY-120-epic-analyze-integridad-historias/story.md) — Detectar historias faltantes, huérfanas o duplicadas de una épica antes de aprobarla para desarrollo
-- [[STORY-121-epic-analyze-cobertura-criterios-salida]] — [story.md](specs/stories/STORY-121-epic-analyze-cobertura-criterios-salida/story.md) — Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias
-- [[STORY-122-epic-analyze-madurez-historias-hijas]] — [story.md](specs/stories/STORY-122-epic-analyze-madurez-historias-hijas/story.md) — Señalar historias hijas no especificadas o con referencias rotas al analizar una épica
-- [[STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo]] — [story.md](specs/stories/STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo/story.md) — Reubicar las secciones restantes de project.md y eliminarlo
-- [[STORY-124-validar-preparacion-estructural-epica]] — [story.md](specs/stories/STORY-124-validar-preparacion-estructural-epica/story.md) — Validar la preparación estructural de una épica
-- [[STORY-125-validar-evidencia-operativa-epica]] — [story.md](specs/stories/STORY-125-validar-evidencia-operativa-epica/story.md) — Validar la evidencia operativa de una épica
-- [[STORY-126-operar-validacion-epica-segura]] — [story.md](specs/stories/STORY-126-operar-validacion-epica-segura/story.md) — Operar la validación de épicas de manera segura
-- [[STORY-127-integrar-adoptar-gateway-epica]] — [story.md](specs/stories/STORY-127-integrar-adoptar-gateway-epica/story.md) — Integrar y documentar el gateway de validación de épicas
-- [[STORY-128-evaluar-validacion-epica-repetible]] — [story.md](specs/stories/STORY-128-evaluar-validacion-epica-repetible/story.md) — Evaluar la validación de épicas de forma repetible
-- [[STORY-129-migrar-analizadores-de-reverse-engineering]] — [story.md](specs/stories/STORY-129-migrar-analizadores-de-reverse-engineering/story.md) — Migrar analizadores de reverse-engineering
-- [plan.md](specs/stories/STORY-130-renombrar-skill-story-improve-a-story-refine/plan.md) — Plan — Renombrar el skill `story-improve` a `story-refine` ⚠️ sin frontmatter
-- [[STORY-130-renombrar-skill-story-improve-a-story-refine]] — [story.md](specs/stories/STORY-130-renombrar-skill-story-improve-a-story-refine/story.md) — Renombrar skill `story-improve` a `story-refine`
-- [[STORY-131-partir-project-pm-en-roles-locales]] — [story.md](specs/stories/STORY-131-partir-project-pm-en-roles-locales/story.md) — Partir project-pm en roles locales
-- [[STORY-132-partir-project-architect-en-roles-locales]] — [story.md](specs/stories/STORY-132-partir-project-architect-en-roles-locales/story.md) — Partir project-architect en roles locales
-- [[STORY-133-mover-project-ux-a-rol-local-de-project-discovery]] — [story.md](specs/stories/STORY-133-mover-project-ux-a-rol-local-de-project-discovery/story.md) — Mover project-ux a rol local de project-discovery
-- [[STORY-134-migrar-project-story-mapper-a-rol-local]] — [story.md](specs/stories/STORY-134-migrar-project-story-mapper-a-rol-local/story.md) — Migrar project-story-mapper a rol local
-- [[STORY-135-migrar-story-product-owner-a-rol-local]] — [story.md](specs/stories/STORY-135-migrar-story-product-owner-a-rol-local/story.md) — Migrar story-product-owner a rol local
-- [[STORY-137-controlar-detalle-ejecucion-validacion-epica]] — [story.md](specs/stories/STORY-137-controlar-detalle-ejecucion-validacion-epica/story.md) — Controlar el detalle y los límites de la ejecución de la validación de épicas
-- [[STORY-138-contrato-de-validacion]] — [story.md](specs/stories/STORY-138-contrato-de-validacion/story.md) — Contrato de validación
-- [[STORY-139-alinear-epic-analyze]] — [story.md](specs/stories/STORY-139-alinear-epic-analyze/story.md) — Alinear epic-analyze
-- [[STORY-140-alinear-story-evaluation]] — [story.md](specs/stories/STORY-140-alinear-story-evaluation/story.md) — Alinear story-evaluation
-- [[STORY-141-alinear-story-code-review]] — [story.md](specs/stories/STORY-141-alinear-story-code-review/story.md) — Alinear story-code-review
-- [[STORY-142-alinear-story-verify]] — [story.md](specs/stories/STORY-142-alinear-story-verify/story.md) — Alinear story-verify
-- [[STORY-143-validacion-end-to-end]] — [story.md](specs/stories/STORY-143-validacion-end-to-end/story.md) — Validación end-to-end
-- [[STORY-144-alinear-story-analyze]] — [story.md](specs/stories/STORY-144-alinear-story-analyze/story.md) — Alinear story-analyze
-- [[STORY-145-alinear-story-acceptance]] — [story.md](specs/stories/STORY-145-alinear-story-acceptance/story.md) — Alinear story-acceptance
-- [[STORY-146-skill-story-fix-plan]] — [story.md](specs/stories/STORY-146-skill-story-fix-plan/story.md) — Skill `story-fix-plan`: corregir el plan de una historia desde `analyze.md`
+- [[STORY-030-soporte-atlassian-rovo]] — [story.md](../specs/flow/STORY-030-soporte-atlassian-rovo/story.md) — Soporte Atlassian Rovo — Agente story-creator
+- [[STORY-032-soporte-atlassian-rovo-para-validar-release]] — [story.md](../specs/flow/STORY-032-soporte-atlassian-rovo-para-validar-release/story.md) — Soporte Atlassian Rovo para Validar Release
+- [[STORY-033-soporte-atlassian-rovo-para-crear-epic-release]] — [story.md](../specs/flow/STORY-033-soporte-atlassian-rovo-para-crear-epic-release/story.md) — Soporte Atlassian Rovo para crear Epic Release
+- [[STORY-036-openspec-init-config]] — [story.md](../specs/flow/STORY-036-openspec-init-config/story.md) — Inicializar configuración de OpenSpec automáticamente
+- [[STORY-037-generar-baseline-openspec-inversa]] — [story.md](../specs/flow/STORY-037-generar-baseline-openspec-inversa/story.md) — Generar línea base de OpenSpec mediante ingeniería inversa
+- [[STORY-054-inicializar-entorno-sddf]] — [story.md](../specs/flow/STORY-054-inicializar-entorno-sddf/story.md) — Inicializar entorno SDDF con sddf-init
+- [[dod-code-review-en-story-code-review]] — [story.md](../specs/flow/STORY-070-dod-code-review-en-story-code-review/story.md) — DoD CODE-REVIEW en story-code-review
+- [[STORY-071-skill-story-verify]] — [story.md](../specs/flow/STORY-071-skill-story-verify/story.md) — Skill story-verify: Orquestar la fase VERIFY de pruebas de una historia
+- [[STORY-073-skill-security-audit-condicional]] — [story.md](../specs/flow/STORY-073-skill-security-audit-condicional/story.md) — Construir skill `security-audit` para auditoría automática condicional de seguridad
+- [[STORY-074-integrar-historia-batch-configurable]] — [story.md](../specs/flow/STORY-074-integrar-historia-batch-configurable/story.md) — story-integrate: Integración batch configurable de historias
+- [[STORY-075-integrar-historia-modo-manual-dryrun]] — [story.md](../specs/flow/STORY-075-integrar-historia-modo-manual-dryrun/story.md) — story-integrate: Modos de ejecución manual y dry-run
+- [[STORY-076-integrar-historia-multi-modelo-entrega]] — [story.md](../specs/flow/STORY-076-integrar-historia-multi-modelo-entrega/story.md) — story-integrate: Soporte multi-modelo de entrega (batch y continuous)
+- [[STORY-077-mejorar-historia-desde-reporte]] — [story.md](../specs/flow/STORY-077-mejorar-historia-desde-reporte/story.md) — story-improve: Mejora automática de historia desde reporte FINVEST
+- [[STORY-078-implement-tdd-fase-red]] — [story.md](../specs/flow/STORY-078-implement-tdd-fase-red/story.md) — story-implement — Fase RED: validar configuración y generar pruebas
+- [[STORY-080-plan]] — [plan.md](../specs/flow/STORY-080-skills-master/plan.md) — Plan: Renombrar skill-creator a skill-master
+- [[STORY-080-skills-master]] — [story.md](../specs/flow/STORY-080-skills-master/story.md) — skill-master — refactorización de skill-tester-eval: modos plan/build, detección de lenguaje natural e independencia SDDF
+- [[STORY-081-implement-tdd-fase-green-refactor]] — [story.md](../specs/flow/STORY-081-implement-tdd-fase-green-refactor/story.md) — story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar
+- [[STORY-082-implement-tdd-modos-ejecucion]] — [story.md](../specs/flow/STORY-082-implement-tdd-modos-ejecucion/story.md) — story-implement — modos interactivo y automático de ejecución del ciclo TDD
+- [[STORY-083-skill-test-evals]] — [story.md](../specs/flow/STORY-083-skill-test-evals/story.md) — skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente
+- [[plan-01]] — [plan-01.md](../specs/flow/STORY-084-skill-verify/plan-01.md) — Plan: Crear el skill skill-verify
+- [[plan-02]] — [plan-02.md](../specs/flow/STORY-084-skill-verify/plan-02.md) — Plan: Añadir modo benchmark a skill-verify
+- [[STORY-084-plan-03]] — [plan-03.md](../specs/flow/STORY-084-skill-verify/plan-03.md) — Plan: Unificar skill-verify en skill-test-evals
+- [[STORY-084-skill-verify]] — [story.md](../specs/flow/STORY-084-skill-verify/story.md) — Unificar generación, ejecución y benchmark de evals en `skill-test-evals`
+- [[plan-rechazo-nombra-ejecutor-correcciones]] — [plan.md](../specs/flow/STORY-089-rechazo-nombra-ejecutor-correcciones/plan.md) — STORY-089 — Análisis y propuesta de cambio
+- [[STORY-089-rechazo-nombra-ejecutor-correcciones]] — [story.md](../specs/flow/STORY-089-rechazo-nombra-ejecutor-correcciones/story.md) — Un code review rechazado nombra al ejecutor de correcciones y no depende de tasks.md
+- [[STORY-090-campos-declarados-nombran-su-escritor]] — [story.md](../specs/flow/STORY-090-campos-declarados-nombran-su-escritor/story.md) — Todo campo declarado en un template nombra a su escritor
+- [[STORY-091-story-implement-modo-rework]] — [story.md](../specs/flow/STORY-091-story-implement-modo-rework/story.md) — story-implement toma de la cola una historia rechazada y corrige en modo rework
+- [[STORY-092-reglas-robustez-modo-rework]] — [story.md](../specs/flow/STORY-092-reglas-robustez-modo-rework/story.md) — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro
+- [[STORY-095-memory-system-index-alias]] — [story.md](../specs/flow/STORY-095-memory-system-index-alias/story.md) — Crear el skill memory-system con el modo index y deprecar docs-wiki-builder
+- [[STORY-096-memory-system-scaffold-ensure-rebuild]] — [story.md](../specs/flow/STORY-096-memory-system-scaffold-ensure-rebuild/story.md) — Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild
+- [[STORY-097-memory-system-check-ci]] — [story.md](../specs/flow/STORY-097-memory-system-check-ci/story.md) — Verificar la consistencia de la memoria con un modo check apto para CI
+- [[STORY-098-memory-system-migrate-harness]] — [story.md](../specs/flow/STORY-098-memory-system-migrate-harness/story.md) — Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate
+- [[STORY-099-sddf-init-level-full]] — [story.md](../specs/flow/STORY-099-sddf-init-level-full/story.md) — Inicializar la memoria completa desde sddf-init con el parámetro --level
+- [[STORY-101-dod-story-por-etapa]] — [story.md](../specs/flow/STORY-101-dod-story-por-etapa/story.md) — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill
+- [[STORY-102-renombrar-skill-sddf-constitution]] — [story.md](../specs/flow/STORY-102-renombrar-skill-sddf-constitution/story.md) — Renombrar el skill project-policies-generation como sddf-constitution
+- [[STORY-117-verificar-cierre-epic-21]] — [story.md](../specs/flow/STORY-117-verificar-cierre-epic-21/story.md) — Verificar sddf.config.yaml y los modos SDD sobre la estructura de dos niveles
+- [[STORY-119-story-plan-un-subagente-por-paso]] — [story.md](../specs/flow/STORY-119-story-plan-un-subagente-por-paso/story.md) — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens
+- [[STORY-119-testing-report-01]] — [testing-report-01.md](../specs/flow/STORY-119-story-plan-un-subagente-por-paso/testing-report-01.md) — Testing de STORY-119: Prueba 1
+- [[STORY-119-testing-report-02]] — [testing-report-02.md](../specs/flow/STORY-119-story-plan-un-subagente-por-paso/testing-report-02.md) — Testing de STORY-119: Prueba 2
+- [[STORY-124-validar-preparacion-estructural-epica]] — [story.md](../specs/flow/STORY-124-validar-preparacion-estructural-epica/story.md) — Validar la preparación estructural de una épica
+- [[STORY-125-validar-evidencia-operativa-epica]] — [story.md](../specs/flow/STORY-125-validar-evidencia-operativa-epica/story.md) — Validar la evidencia operativa de una épica
+- [[STORY-126-operar-validacion-epica-segura]] — [story.md](../specs/flow/STORY-126-operar-validacion-epica-segura/story.md) — Operar la validación de épicas de manera segura
+- [[STORY-127-integrar-adoptar-gateway-epica]] — [story.md](../specs/flow/STORY-127-integrar-adoptar-gateway-epica/story.md) — Integrar y documentar el gateway de validación de épicas
+- [[STORY-128-evaluar-validacion-epica-repetible]] — [story.md](../specs/flow/STORY-128-evaluar-validacion-epica-repetible/story.md) — Evaluar la validación de épicas de forma repetible
+- [plan.md](../specs/flow/STORY-130-renombrar-skill-story-improve-a-story-refine/plan.md) — Plan — Renombrar el skill `story-improve` a `story-refine` ⚠️ sin frontmatter
+- [[STORY-130-renombrar-skill-story-improve-a-story-refine]] — [story.md](../specs/flow/STORY-130-renombrar-skill-story-improve-a-story-refine/story.md) — Renombrar skill `story-improve` a `story-refine`
+- [[STORY-137-controlar-detalle-ejecucion-validacion-epica]] — [story.md](../specs/flow/STORY-137-controlar-detalle-ejecucion-validacion-epica/story.md) — Controlar el detalle y los límites de la ejecución de la validación de épicas
+- [[STORY-147-adr-del-layout-fijo-de-tres-raices]] — [story.md](../specs/flow/STORY-147-adr-del-layout-fijo-de-tres-raices/story.md) — ADR del layout fijo de tres raíces
+- [[STORY-148-contrato-de-rutas-fijas-y-gate-determinista]] — [story.md](../specs/flow/STORY-148-contrato-de-rutas-fijas-y-gate-determinista/story.md) — Contrato de rutas fijas y gate determinista
+- [[STORY-149-sddf-init-crea-el-nuevo-layout]] — [story.md](../specs/flow/STORY-149-sddf-init-crea-el-nuevo-layout/story.md) — sddf-init crea el nuevo layout
+- [[STORY-150-migrar-skills-especificacion-specs-flow]] — [story.md](../specs/flow/STORY-150-migrar-skills-especificacion-specs-flow/story.md) — Migrar los skills de especificación a specs/flow
+- [[STORY-151-migrar-los-skills-de-epica-a-specs-flow]] — [story.md](../specs/flow/STORY-151-migrar-los-skills-de-epica-a-specs-flow/story.md) — Migrar los skills de épica a specs/flow
+- [[STORY-152-migrar-los-skills-de-proyecto-y-transversales]] — [story.md](../specs/flow/STORY-152-migrar-los-skills-de-proyecto-y-transversales/story.md) — Migrar los skills de proyecto y transversales
+- [[STORY-153-migrar-work-items-specs-flow]] — [story.md](../specs/flow/STORY-153-migrar-work-items-specs-flow/story.md) — Migrar y archivar los work items a specs/flow
+- [[STORY-154-documentar-el-nuevo-layout]] — [story.md](../specs/flow/STORY-154-documentar-el-nuevo-layout/story.md) — Documentar el nuevo layout
+- [[STORY-155-migrar-skills-planning-specs-flow]] — [story.md](../specs/flow/STORY-155-migrar-skills-planning-specs-flow/story.md) — Migrar los skills de planning a specs/flow
+- [[STORY-156-migrar-skills-implementacion-specs-flow]] — [story.md](../specs/flow/STORY-156-migrar-skills-implementacion-specs-flow/story.md) — Migrar los skills de implementación a specs/flow
+- [[STORY-157-reparar-enlaces-tras-migracion]] — [story.md](../specs/flow/STORY-157-reparar-enlaces-tras-migracion/story.md) — Reparar enlaces y validar el gate tras la migración
+- [[STORY-158-migrar-skills-verificacion-specs-flow]] — [story.md](../specs/flow/STORY-158-migrar-skills-verificacion-specs-flow/story.md) — Migrar los skills de revisión, verificación y aceptación a specs/flow
+
+### Historias archivadas (archive/)
+
+- [[STORY-001-project-begin]] — [story.md](../specs/flow/archive/2026-04-22-STORY-001-project-begin/story.md) — project-begin — Captura de intención inicial del proyecto
+- [[STORY-003-project-discovery]] — [story.md](../specs/flow/archive/2026-04-22-STORY-003-project-discovery/story.md) — project-discovery — Discovery de usuarios y especificación de requisitos
+- [[STORY-004-project-planning]] — [story.md](../specs/flow/archive/2026-04-22-STORY-004-project-planning/story.md) — project-planning — Planificación de releases y backlog
+- [[STORY-005-project-story-mapping]] — [story.md](../specs/flow/archive/2026-04-22-STORY-005-project-story-mapping/story.md) — project-story-mapping — User Story Mapping según Jeff Patton
+- [[STORY-006-story-creation]] — [story.md](../specs/flow/archive/2026-04-22-STORY-006-story-creation/story.md) — story-creation — Crear historias de usuario
+- [[STORY-007-story-evaluation]] — [story.md](../specs/flow/archive/2026-04-22-STORY-007-story-evaluation/story.md) — story-evaluation ó Evaluación FINVEST de historias
+- [[STORY-008-control-wip]] — [story.md](../specs/flow/archive/2026-04-22-STORY-008-control-wip/story.md) — Control WIP=1 — Detección de proyecto activo
+- [[STORY-010-gates-de-revision]] — [story.md](../specs/flow/archive/2026-04-22-STORY-010-gates-de-revision/story.md) — Gates de Revisión Humana entre fases del pipeline
+- [[STORY-011-project-planning-mejorado]] — [story.md](../specs/flow/archive/2026-04-22-STORY-011-project-planning-mejorado/story.md) — project-planning mejorado — Integración con story mapping
+- [[STORY-012-story-split]] — [story.md](../specs/flow/archive/2026-04-22-STORY-012-story-split/story.md) — story-split ó Dividir ópicas en historias pequeóas
+- [[STORY-013-story-refine]] — [story.md](../specs/flow/archive/2026-04-22-STORY-013-story-refine/story.md) — story-refine — Refinamiento iterativo de historias de usuario
+- [[STORY-015-project-flow]] — [story.md](../specs/flow/archive/2026-04-22-STORY-015-project-flow/story.md) — project-flow — Orquestador del pipeline completo ProjectSpecFactory
+- [[STORY-017-reverse-engineering]] — [story.md](../specs/flow/archive/2026-04-22-STORY-017-reverse-engineering/story.md) — reverse-engineering — Skill orquestador de ingeniería inversa
+- [[STORY-018-agente-reverse-engineer-architect]] — [story.md](../specs/flow/archive/2026-04-22-STORY-018-agente-reverse-engineer-architect/story.md) — Agente reverse-engineer-architect
+- [[STORY-019-agente-reverse-engineer-product-discovery]] — [story.md](../specs/flow/archive/2026-04-22-STORY-019-agente-reverse-engineer-product-discovery/story.md) — Agente reverse-engineer-product-discovery
+- [[STORY-020-agente-reverse-engineer-business-analyst]] — [story.md](../specs/flow/archive/2026-04-22-STORY-020-agente-reverse-engineer-business-analyst/story.md) — Agente reverse-engineer-business-analyst
+- [[STORY-021-agente-reverse-engineer-ux-flow-mapper]] — [story.md](../specs/flow/archive/2026-04-22-STORY-021-agente-reverse-engineer-ux-flow-mapper/story.md) — Agente reverse-engineer-ux-flow-mapper
+- [[STORY-022-agente-reverse-engineer-synthesizer]] — [story.md](../specs/flow/archive/2026-04-22-STORY-022-agente-reverse-engineer-synthesizer/story.md) — Agente reverse-engineer-synthesizer
+- [[STORY-023-scope-acotado-focus]] — [story.md](../specs/flow/archive/2026-04-22-STORY-023-scope-acotado-focus/story.md) — Scope acotado — Flag --focus para reverse-engineering
+- [[STORY-024-modo-incremental-update]] — [story.md](../specs/flow/archive/2026-04-22-STORY-024-modo-incremental-update/story.md) — Modo incremental — Flag --update para reverse-engineering
+- [[STORY-027-validacion-de-formato-de-release]] — [story.md](../specs/flow/archive/2026-04-22-STORY-027-validacion-de-formato-de-release/story.md) — Validación de formato de Release
+- [[STORY-028-generar-releases]] — [story.md](../specs/flow/archive/2026-04-22-STORY-028-generar-releases/story.md) — Generar releases desde project-plan
+- [[STORY-029-generar-stories]] — [story.md](../specs/flow/archive/2026-04-22-STORY-029-generar-stories/story.md) — Generar stories desde archivo de release
+- [[STORY-034-rovo-agent-release-reverse-generator]] — [story.md](../specs/flow/archive/2026-04-22-STORY-034-rovo-agent-release-reverse-generator/story.md) — Rovo Agent Release Reverse Generator from children
+- [[STORY-035-generar-stories-todos-releases]] — [story.md](../specs/flow/archive/2026-04-22-STORY-035-generar-stories-todos-releases/story.md) — Generar stories de todos los releases en batch
+- [[STORY-038-copy-templates-to-skills]] — [story.md](../specs/flow/archive/2026-04-23-STORY-038-copy-templates-to-skills/story.md) — Copiar los templates a los skills correspondientes
+- [[STORY-039-publicar-framework-en-npm]] — [story.md](../specs/flow/archive/2026-04-23-STORY-039-publicar-framework-en-npm/story.md) — Publicar framework en npm
+- [[STORY-040-instalar-skills-via-postinstall]] — [story.md](../specs/flow/archive/2026-04-23-STORY-040-instalar-skills-via-postinstall/story.md) — Instalar skills via postinstall (script)
+- [[STORY-041-npm-install-locally]] — [story.md](../specs/flow/archive/2026-04-23-STORY-041-npm-install-locally/story.md) — Npm Install locally
+- [[STORY-042-readme-builder]] — [story.md](../specs/flow/archive/2026-04-25-STORY-042-readme-builder/story.md) — README.md builder
+- [[STORY-043-header-aggregation]] — [story.md](../specs/flow/archive/2026-04-25-STORY-043-header-aggregation/story.md) — Encabezado de archivos spec con metadata de estado (header-aggregation)
+- [[STORY-087-error-in-npm-install-locally]] — [story.md](../specs/flow/archive/2026-04-25-STORY-087-error-in-npm-install-locally/story.md) — Error en instalación local de npm install agile-sddf en Windows 11
+- [[STORY-047-skills-multicliente-rutas-relativas]] — [story.md](../specs/flow/archive/2026-04-26-STORY-047-skills-multicliente-rutas-relativas/story.md) — Skills con templates Multicliente
+- [[STORY-044-directorio-docs-tipo-wiki]] — [story.md](../specs/flow/archive/2026-04-27-STORY-044-directorio-docs-tipo-wiki/story.md) — Directorio docs tipo wiki
+- [[STORY-046-publicar-npm-con-github-actions]] — [story.md](../specs/flow/archive/2026-04-27-STORY-046-publicar-npm-con-github-actions/story.md) — GitHub Actions CI/CD
+- [[STORY-048-refactor-migrates-templates-to-assets]] — [story.md](../specs/flow/archive/2026-04-27-STORY-048-refactor-migrates-templates-to-assets/story.md) — Refactoring - Migración de templates a assets en Skills
+- [[STORY-049-reading-of-sddf-root]] — [story.md](../specs/flow/archive/2026-05-01-STORY-049-reading-of-sddf-root/story.md) — Lectura de SDDF_ROOT como ruta base de artefactos en skills SDDF
+- [[STORY-050-organizar-artefactos-en-directorio-propio]] — [story.md](../specs/flow/archive/2026-05-01-STORY-050-organizar-artefactos-en-directorio-propio/story.md) — Organizar artefactos de spec en directorios propios por workitem
+- [[STORY-051-crear-release-por-preguntas-guiadas]] — [story.md](../specs/flow/archive/2026-05-01-STORY-051-crear-release-por-preguntas-guiadas/story.md) — Crear un release.md válido respondiendo preguntas guiadas por el template
+- [[STORY-052-generar-diagrama-contexto-c4]] — [story.md](../specs/flow/archive/2026-05-01-STORY-052-generar-diagrama-contexto-c4/story.md) — Generar un diagrama de contexto C4 del proyecto respondiendo preguntas o desde specs
+- [[STORY-053-centralizar-validacion-entorno-sddf]] — [story.md](../specs/flow/archive/2026-05-02-STORY-053-centralizar-validacion-entorno-sddf/story.md) — Centralizar la validación de entorno SDDF con skill-preflight
+- [[STORY-055-centralizar-templates-en-specs-templates]] — [story.md](../specs/flow/archive/2026-05-02-STORY-055-centralizar-templates-en-specs-templates/story.md) — Centralizar templates de spec en directorio compartido
+- [[STORY-056-project-policies]] — [story.md](../specs/flow/archive/2026-05-06-STORY-056-project-policies/story.md) — Project policies
+- [[STORY-057-skill-para-diseno]] — [story.md](../specs/flow/archive/2026-05-06-STORY-057-skill-para-diseno/story.md) — Skill para Diseño (story-design)
+- [[STORY-058-skill-para-tasking]] — [story.md](../specs/flow/archive/2026-05-06-STORY-058-skill-para-tasking/story.md) — Skill para Tasking (story-tasking)
+- [[STORY-059-comando-de-analisis-transversal]] — [story.md](../specs/flow/archive/2026-05-06-STORY-059-comando-de-analisis-transversal/story.md) — Comando de análisis transversal (story-analyze)
+- [[STORY-060-orquestacion-del-plan]] — [story.md](../specs/flow/archive/2026-05-06-STORY-060-orquestacion-del-plan/story.md) — Orquestación del plan (story-plan)
+- [[STORY-061-skill-de-implementacion-el-programador-autonomo]] — [story.md](../specs/flow/archive/2026-05-06-STORY-061-skill-de-implementacion-el-programador-autonomo/story.md) — Skill de implementación — El programador autónomo (story-implement)
+- [[STORY-062-status-management-on-workflow]] — [story.md](../specs/flow/archive/2026-05-09-STORY-062-status-management-on-workflow/story.md) — Status Management on Workflow
+- [[STORY-063-reutilizar-directorio-como-historia-core]] — [story.md](../specs/flow/archive/2026-05-09-STORY-063-reutilizar-directorio-como-historia-core/story.md) — Reutilizar directorio original como historia core al dividir
+- [[STORY-064-revision-codigo-multi-agente]] — [story.md](../specs/flow/archive/2026-05-09-STORY-064-revision-codigo-multi-agente/story.md) — Skill story-code-review: revisión multi-agente aprobada del código implementado
+- [[STORY-065-revision-con-bloqueantes]] — [story.md](../specs/flow/archive/2026-05-09-STORY-065-revision-con-bloqueantes/story.md) — Skill story-code-review: instrucciones de corrección cuando la revisión detecta bloqueantes
+- [[STORY-066-revision-validacion-precondiciones]] — [story.md](../specs/flow/archive/2026-05-09-STORY-066-revision-validacion-precondiciones/story.md) — Skill story-code-review: validación de artefactos requeridos antes de revisar
+- [[STORY-067-story-implement-continuar-parcial]] — [story.md](../specs/flow/archive/2026-05-09-STORY-067-story-implement-continuar-parcial/story.md) — skill story-implement: continuar implementación parcial con tareas pendientes y fix-directives
+- [[dod-plan-en-story-analyze]] — [story.md](../specs/flow/archive/2026-05-13-STORY-068-dod-plan-en-story-analyze/story.md) — DoD PLAN en story-analyze
+- [[dod-IMPLEMENT-en-story-implement]] — [story.md](../specs/flow/archive/2026-05-13-STORY-069-dod-implementing-en-story-implement/story.md) — DoD IMPLEMENT en story-implement
+- [[STORY-072-skill-story-acceptance]] — [story.md](../specs/flow/archive/2026-05-16-STORY-072-skill-story-acceptance/story.md) — Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER
+- [[STORY-079-story-testcases]] — [story.md](../specs/flow/archive/2026-05-29-STORY-079-story-testcases/story.md) — story-testcases — generación de testcases.md desde story.md y design.md
+- [[plan-integrar-config-sddf-init]] — [plan.md](../specs/flow/archive/2026-05-30-STORY-085-integrar-config-sddf-init/plan.md) — Plan: Integrar sddf.config.yaml en el skill sddf-init
+- [[STORY-085-integrar-config-sddf-init]] — [story.md](../specs/flow/archive/2026-05-30-STORY-085-integrar-config-sddf-init/story.md) — Mejora de experiencia de inicialización
+- [[plan-01-refactor-release-to-epic]] — [plan-01-refactor-release-to-epic.md](../specs/flow/archive/2026-08-30-STORY-086-refactor-release-to-epic/plan-01-refactor-release-to-epic.md) — PLAN: Renombrar el nivel L2 de `release` a `epic`
+- [[plan-02-refactor-dev-levels]] — [plan-02-refactor-dev-levels.md](../specs/flow/archive/2026-08-30-STORY-086-refactor-release-to-epic/plan-02-refactor-dev-levels.md) — PLAN: Reestructurar `docs/specs/` a niveles numerados (`01-projects/`, `02-epics/`, `03-stories/`)
+- [[plan-03-refactor-feat-to-story]] — [plan-03-refactor-feat-to-story.md](../specs/flow/archive/2026-08-30-STORY-086-refactor-release-to-epic/plan-03-refactor-feat-to-story.md) — PLAN: Renombrar el prefijo de historias de `FEAT-NNN` a `STORY-NNN`
+- [[plan-04-fix-insights]] — [plan-04-fix-insights.md](../specs/flow/archive/2026-08-30-STORY-086-refactor-release-to-epic/plan-04-fix-insights.md) — Cierre de la migración release→epic / FEAT→STORY: alinear gate, evals y documentación normativa
+- [[plan-05-findings-and-remediation-plan]] — [plan-05-findings-and-remediation-plan.md](../specs/flow/archive/2026-08-30-STORY-086-refactor-release-to-epic/plan-05-findings-and-remediation-plan.md) — Revisión de STORY-086 — hallazgos y plan de remediación
+- [[plan-06-update-project]] — [plan-06-update-project.md](../specs/flow/archive/2026-08-30-STORY-086-refactor-release-to-epic/plan-06-update-project.md) — Plan — Reescribir `project.md` contra la realidad + runbook del proceso
+- [[STORY-086-refactor-release-to-epic]] — [story.md](../specs/flow/archive/2026-08-30-STORY-086-refactor-release-to-epic/story.md) — Renombrar el nivel L2 de release a épica y numerar los directorios de specs
+- [[plan-01-decouple-security-audit]] — [plan-01-decouple-security-audit.md](../specs/flow/archive/2026-09-10-STORY-088-security-enhancement/plan-01-decouple-security-audit.md) — Desacoplar `story-code-review` del skill `security-audit`
+- [[STORY-088-plan-02-security]] — [plan-02-security.md](../specs/flow/archive/2026-09-10-STORY-088-security-enhancement/plan-02-security.md) — Plan: Implementar SECURITY.md
+- [[plan-04-fix-security-insights]] — [plan-04-fix-security-insights.md](../specs/flow/archive/2026-09-10-STORY-088-security-enhancement/plan-04-fix-security-insights.md) — Cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`
+- [[STORY-088-security-enhancement]] — [story.md](../specs/flow/archive/2026-09-10-STORY-088-security-enhancement/story.md) — Mejoras de seguridad
+- [[STORY-093-raiz-configurable-preflight-diagnostico]] — [story.md](../specs/flow/archive/2026-09-12-STORY-093-raiz-configurable-preflight-diagnostico/story.md) — Resolver una raíz configurable y usar preflight como diagnóstico
+- [[STORY-094-insights]] — [insights.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/insights.md) — Insights de refactorización y correcciones
+- [[plan-01-fix-ci-security-audit]] — [plan-01-fix-ci-security-audit.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/plan-01-fix-ci-security-audit.md) — Plan 01 — Corregir la cobertura y el fallo de la CI de seguridad
+- [[plan-02-fix-postinstall-target-validation]] — [plan-02-fix-postinstall-target-validation.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/plan-02-fix-postinstall-target-validation.md) — Plan 02 — Cerrar el traversal de `SDDF_TARGET` en `postinstall`
+- [[plan-03-fix-evals-runner-false-greens]] — [plan-03-fix-evals-runner-false-greens.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/plan-03-fix-evals-runner-false-greens.md) — Plan 03 — Cerrar falsos verdes del runner de evals
+- [[plan-04-cerrar-hallazgos-pendientes-auditoria]] — [plan-04-cerrar-hallazgos-pendientes-auditoria.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/plan-04-cerrar-hallazgos-pendientes-auditoria.md) — Plan 04 — Cerrar los hallazgos pendientes de la auditoría
+- [[plan-05-move-dod-story]] — [plan-05-move-dod-story.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/plan-05-move-dod-story.md) — Mover `dod-story.md` de `policies/` a `guardrails/dod-story-checklist.md`
+- [[plan-06-constitution-as-root-in-docs]] — [plan-06-constitution-as-root-in-docs.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/plan-06-constitution-as-root-in-docs.md) — Constitución como raíz: mover `docs/policies/constitution.md` → `docs/constitution.md`
+- [[STORY-094-refactory-and-fixing-insights]] — [story.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/story.md) — Fix insight and Verificación de la instalación en Windows, macOS y Linux
+- [[STORY-100-restaurar-documentos-canonicos-estados]] — [story.md](../specs/flow/archive/2026-09-23-STORY-100-restaurar-documentos-canonicos-estados/story.md) — Restaurar los documentos canónicos de la máquina de estados borrados sin repuntar sus citas
+- [epic-template.md](../specs/flow/archive/2026-10-07-STORY-103-replace-the-epic-template/epic-template.md) — <título de la épica> ⚠️ slug placeholder
+- [[STORY-103-replace-the-epic-template]] — [story.md](../specs/flow/archive/2026-10-07-STORY-103-replace-the-epic-template/story.md) — Reemplazar el template de Epic por la versión minimalista y output-oriented
+- [[STORY-120-epic-analyze-integridad-historias]] — [story.md](../specs/flow/archive/2026-10-08-STORY-120-epic-analyze-integridad-historias/story.md) — Detectar historias faltantes, huérfanas o duplicadas de una épica antes de aprobarla para desarrollo
+- [[STORY-121-epic-analyze-cobertura-criterios-salida]] — [story.md](../specs/flow/archive/2026-10-09-STORY-121-epic-analyze-cobertura-criterios-salida/story.md) — Verificar que cada criterio de salida y smoke test de una épica está cubierto por sus historias
+- [[STORY-122-epic-analyze-madurez-historias-hijas]] — [story.md](../specs/flow/archive/2026-10-09-STORY-122-epic-analyze-madurez-historias-hijas/story.md) — Señalar historias hijas no especificadas o con referencias rotas al analizar una épica
+- [[STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo]] — [story.md](../specs/flow/archive/2026-10-09-STORY-123-reubicar-las-secciones-restantes-de-project-md-y-eliminarlo/story.md) — Reubicar las secciones restantes de project.md y eliminarlo
+- [[STORY-104-migrar-project-intent-a-vision]] — [story.md](../specs/flow/archive/2026-10-10-STORY-104-migrar-project-intent-a-vision/story.md) — Migrar project-intent.md a product/vision.md
+- [[STORY-105-migrar-stakeholders-y-requisitos]] — [story.md](../specs/flow/archive/2026-10-10-STORY-105-migrar-stakeholders-y-requisitos/story.md) — Migrar project.md a product/stakeholders.md y requirements/
+- [[STORY-106-migrar-plan-a-roadmap]] — [story.md](../specs/flow/archive/2026-10-10-STORY-106-migrar-plan-a-roadmap/story.md) — Migrar project-plan.md a product/roadmap.md
+- [[STORY-107-migrar-story-map-y-diagrama-contexto]] — [story.md](../specs/flow/archive/2026-10-10-STORY-107-migrar-story-map-y-diagrama-contexto/story.md) — Migrar story-map.md y context-diagram.puml
+- [[STORY-108-renombrar-specs-sin-prefijos]] — [story.md](../specs/flow/archive/2026-10-10-STORY-108-renombrar-specs-sin-prefijos/story.md) — Renombrar specs/02-epics/ → specs/epics/ y specs/03-stories/ → specs/stories/
+- [[STORY-109-project-begin-escribe-vision]] — [story.md](../specs/flow/archive/2026-10-10-STORY-109-project-begin-escribe-vision/story.md) — project-begin escribe la intención en product/vision.md
+- [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] — [story.md](../specs/flow/archive/2026-10-10-STORY-110-discovery-escribe-stakeholders-y-requisitos/story.md) — project-discovery y reverse-engineering escriben stakeholders y requisitos individuales
+- [[STORY-111-planning-escribe-roadmap]] — [story.md](../specs/flow/archive/2026-10-11-STORY-111-planning-escribe-roadmap/story.md) — project-planning escribe en product/roadmap.md y epic-from-project-plan lee de allí
+- [[STORY-112-story-map-y-diagrama-en-sus-capas]] — [story.md](../specs/flow/archive/2026-10-11-STORY-112-story-map-y-diagrama-en-sus-capas/story.md) — project-story-mapping y project-context-diagram escriben en product/ y architecture/c4/
+- [[STORY-113-project-flow-sin-01-projects]] — [story.md](../specs/flow/archive/2026-10-11-STORY-113-project-flow-sin-01-projects/story.md) — project-flow, sddf-init y header-aggregation sin specs/01-projects/
+- [[STORY-114-migrate-specs-3-levels]] — [story.md](../specs/flow/archive/2026-10-11-STORY-114-migrate-specs-3-levels/story.md) — Implementar memory-system migrate --from=specs-3-levels
+- [[STORY-115-scaffold-dos-niveles-y-capas-destino]] — [story.md](../specs/flow/archive/2026-10-11-STORY-115-scaffold-dos-niveles-y-capas-destino/story.md) — Actualizar scaffolding de memory-system a specs/ de dos niveles
+- [[STORY-116-documentar-modelo-dos-niveles]] — [story.md](../specs/flow/archive/2026-10-11-STORY-116-documentar-modelo-dos-niveles/story.md) — Actualizar documentación canónica al modelo de dos niveles
+- [[STORY-118-requirements-srs-unico-primero]] — [story.md](../specs/flow/archive/2026-10-13-STORY-118-requirements-srs-unico-primero/story.md) — Adoptar la estrategia 'SRS único primero, fragmentación cuando duela' en requirements/
+- [[STORY-129-migrar-analizadores-de-reverse-engineering]] — [story.md](../specs/flow/archive/2026-10-16-STORY-129-migrar-analizadores-de-reverse-engineering/story.md) — Migrar analizadores de reverse-engineering
+- [[STORY-131-partir-project-pm-en-roles-locales]] — [story.md](../specs/flow/archive/2026-10-16-STORY-131-partir-project-pm-en-roles-locales/story.md) — Partir project-pm en roles locales
+- [[STORY-132-partir-project-architect-en-roles-locales]] — [story.md](../specs/flow/archive/2026-10-16-STORY-132-partir-project-architect-en-roles-locales/story.md) — Partir project-architect en roles locales
+- [[STORY-133-mover-project-ux-a-rol-local-de-project-discovery]] — [story.md](../specs/flow/archive/2026-10-16-STORY-133-mover-project-ux-a-rol-local-de-project-discovery/story.md) — Mover project-ux a rol local de project-discovery
+- [[STORY-134-migrar-project-story-mapper-a-rol-local]] — [story.md](../specs/flow/archive/2026-10-16-STORY-134-migrar-project-story-mapper-a-rol-local/story.md) — Migrar project-story-mapper a rol local
+- [[STORY-135-migrar-story-product-owner-a-rol-local]] — [story.md](../specs/flow/archive/2026-10-16-STORY-135-migrar-story-product-owner-a-rol-local/story.md) — Migrar story-product-owner a rol local
+- [[STORY-146-skill-story-fix-plan]] — [story.md](../specs/flow/archive/2026-10-17-STORY-146-skill-story-fix-plan/story.md) — Skill `story-fix-plan`: corregir el plan de una historia desde `analyze.md`
+- [[STORY-138-contrato-de-validacion]] — [story.md](../specs/flow/archive/2026-10-18-STORY-138-contrato-de-validacion/story.md) — Contrato de validación
+- [[STORY-140-alinear-story-evaluation]] — [story.md](../specs/flow/archive/2026-10-18-STORY-140-alinear-story-evaluation/story.md) — Alinear story-evaluation
+- [[STORY-141-alinear-story-code-review]] — [story.md](../specs/flow/archive/2026-10-18-STORY-141-alinear-story-code-review/story.md) — Alinear story-code-review
+- [[STORY-142-alinear-story-verify]] — [story.md](../specs/flow/archive/2026-10-18-STORY-142-alinear-story-verify/story.md) — Alinear story-verify
+- [[STORY-144-alinear-story-analyze]] — [story.md](../specs/flow/archive/2026-10-18-STORY-144-alinear-story-analyze/story.md) — Alinear story-analyze
+- [[STORY-139-alinear-epic-analyze]] — [story.md](../specs/flow/archive/2026-10-19-STORY-139-alinear-epic-analyze/story.md) — Alinear epic-analyze
+- [[STORY-143-validacion-end-to-end]] — [story.md](../specs/flow/archive/2026-10-20-STORY-143-validacion-end-to-end/story.md) — Validación end-to-end
+- [[STORY-145-alinear-story-acceptance]] — [story.md](../specs/flow/archive/2026-10-20-STORY-145-alinear-story-acceptance/story.md) — Alinear story-acceptance
 
 ---
 
@@ -427,9 +443,11 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[specs-dentro-de-docs]] — [ADR-0010-specs-dentro-de-docs.md](adr/ADR-0010-specs-dentro-de-docs.md) — Mantener specs/ dentro de docs/ en lugar de la raíz
 - [[archivos-canonicos-por-tipo]] — [ADR-0011-archivos-canonicos-por-tipo.md](adr/ADR-0011-archivos-canonicos-por-tipo.md) — Los archivos canónicos de work items se nombran por tipo (story.md, epic.md, project.md)
 - [[escritor-en-templates-de-autoria-manual]] — [ADR-0012-escritor-en-templates-de-autoria-manual.md](adr/ADR-0012-escritor-en-templates-de-autoria-manual.md) — Los templates de autoría manual anotan `escritor: autoría manual` en línea completa
-- [[eliminar-specs-01-projects]] — [ADR-0013-eliminar-specs-01-projects.md](adr/ADR-0013-eliminar-specs-01-projects.md) — Eliminar `specs/01-projects/` y migrar su contenido a `product/` y `requirements/`
+- [[asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md](adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) — Asegurar dos niveles de flujo como epics y stories
+- [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-eliminar-specs-01-projects.md](adr/ADR-0013-eliminar-specs-01-projects.md) — Asegurar dos niveles de flujo como epics y stories
 - [[skills-independientes]] — [ADR-0014-skills-independientes.md](adr/ADR-0014-skills-independientes.md) — Independencia de skills y agentes: sin dependencia de skills hacia `agents/`
 - [[contrato-de-validacion]] — [ADR-0015-contrato-de-validacion.md](adr/ADR-0015-contrato-de-validacion.md) — Contrato común de validación para los skills de gate
+- [[layout-fijo-de-tres-raices]] — [ADR-0016-layout-fijo-de-tres-raices.md](adr/ADR-0016-layout-fijo-de-tres-raices.md) — Layout fijo de tres raíces: docs/, specs/ y workflow/
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
 - [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
@@ -457,7 +475,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[harness-engineering]] — [harness-eng-agents-orchestration.md](guides/harness-eng-agents-orchestration.md) — Harness Engineering: Orquestación de Skills y Agentes en Claude Code
 - [[harness-engineering-guide]] — [harness-engineering-guide.md](guides/harness-engineering-guide.md) — Guía de Harness Engineering
 - [[organization-of-artifacts]] — [organization-of-artifacts.md](guides/organization-of-artifacts.md) — Reglas de la estrategia de organización de artefactos (SDDF)
-- [[root-folder-practices]] — [root-folder-practices.md](guides/root-folder-practices.md) — Prácticas para resolver la raíz de artefactos SDDF
+- [[root-folder-practices]] — [root-folder-practices.md](guides/root-folder-practices.md) — Raíces del repositorio y layout fijo SDDF
 - [[sdd]] — [sdd.md](guides/sdd.md) — Spec Driven Development (SDD)
 - [[sddf-commands-pipeline]] — [sddf-commands-pipeline.md](guides/sddf-commands-pipeline.md) — Flujos principales SDDF
 - [[skill-structural-pattern]] — [skill-structural-pattern.md](guides/skill-structural-pattern.md) — Patrones estructurales de Skills (Skill Structural patterns)
@@ -490,10 +508,10 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 389 |
-| Nodos con frontmatter | 388 |
+| Nodos indexados | 403 |
+| Nodos con frontmatter | 402 |
 | Nodos sin frontmatter | 1 |
-| Wikilinks pendientes | 0 |
+| Wikilinks pendientes | 1 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |
 
@@ -502,3 +520,11 @@ _(sin artefactos externos)_
 ---
 
 *Generado por el skill `memory-system`. Regenera con `/memory-system index`.*
+
+---
+
+## ⚠️ Nodos pendientes
+
+Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artefacto:
+
+- [[plan-07-renombrar-skill-story-improve-a-story-refine]] ⚠️ nodo pendiente

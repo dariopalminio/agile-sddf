@@ -157,7 +157,7 @@ Un subagente sí puede seguir un skill **worker**, es decir, un skill que cumple
 
 1. **No interactúa con el usuario** — sin pasos que requieran AskUserQuestion ni confirmaciones (o que puedan correr con defaults, sin preguntas).
 2. **No lanza subagentes** — si lo hiciera, se produciría subagente → subagente, el caso prohibido.
-3. **No depende de contexto conversacional no provisto** — el subagente arranca con contexto vacío; el orquestador debe pasarle en el prompt los valores ya resueltos (`REPO_ROOT`, `SPECS_BASE`, `ROOT_SOURCE`, ruta de la historia) o el worker debe aplicar el contrato local: `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`.
+3. **No depende de contexto conversacional no provisto** — el subagente arranca con contexto vacío; el orquestador debe pasarle en el prompt los valores ya resueltos (`REPO_ROOT`, ruta de la historia) o el worker debe aplicar el contrato de layout fijo: resolver `REPO_ROOT` y usar `specs/flow/`, `docs/templates/` y `docs/guardrails/`.
 
 Matriz de invocaciones permitidas:
 
@@ -220,7 +220,7 @@ Un skill puede empaquetar **agentes locales** en su directorio `agents/` (ej. `s
 Para lanzar `agents/<nombre>.agent.md`, el skill orquestador (sesión principal):
 
 1. **Lee** el archivo del agente con `Read`.
-2. **Lanza un subagente** vía Agent tool con `subagent_type: general-purpose`, cuyo prompt es: el contenido íntegro del archivo del agente + un **bloque de contexto** con las variables resueltas que el agente necesita (`$STORY_DIR`, `$SPECS_BASE`, rutas de input...). Nunca el contexto completo de la sesión.
+2. **Lanza un subagente** vía Agent tool con `subagent_type: general-purpose`, cuyo prompt es: el contenido íntegro del archivo del agente + un **bloque de contexto** con las variables resueltas que el agente necesita (`$STORY_DIR`, `REPO_ROOT`, rutas de input...). Nunca el contexto completo de la sesión.
 3. El subagente **escribe su resultado** en la ruta declarada en el frontmatter `output:` del agente (bajo `.tmp/<skill-name>/`) y devuelve el control.
 4. El orquestador **lee solo los outputs** de `.tmp/<skill-name>/` para consolidar.
 

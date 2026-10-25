@@ -8,7 +8,7 @@ substatus: null
 parent: null
 related:
   - root-folder-practices
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
 ---
 <!-- Referencias -->
 [[root-folder-practices]]
@@ -19,46 +19,40 @@ Este documento define las reglas para organizar los artefactos de especificació
 
 ---
 
-### 1. Directorio raíz de especificaciones
+### 1. Directorio raíz de work items
 
-Todos los artefactos se guardan bajo un directorio raíz configurable. Por defecto se usa:
+Los work items se guardan en un directorio fijo de la raíz del repositorio ([ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md)); no es configurable:
 
 ```
-docs/specs/
+specs/flow/
 ```
 
-Puedes cambiarlo, pero esta documentación asume `$SPECS_BASE/specs/`. A partir de aquí, se representa como `{SPECS_ROOT}`. La visión, stakeholders, objetivos, roadmap y story map viven en `$SPECS_BASE/product/`; los requisitos viven en `$SPECS_BASE/requirements/`.
+A partir de aquí se representa como `{SPECS_ROOT}`. La visión, stakeholders, objetivos, roadmap y story map viven en `docs/product/`; los requisitos viven en `docs/requirements/`. Las raíces del repositorio se describen en [[root-folder-practices]].
 
 ---
 
 ### 2. Tipos de work item y sus carpetas
 
-Existen dos tipos de work item: **Épica** y **Story**. Cada tipo tiene su propia carpeta contenedora dentro de `{SPECS_ROOT}`:
+Existen dos tipos de work item: **Épica** y **Story**. Ambos son hermanos dentro de `{SPECS_ROOT}`, sin carpetas por tipo: cada work item se guarda en su **propio directorio**, cuyo nombre comienza con su identificador único. Las historias `COMPLETED` se archivan en `{SPECS_ROOT}/archive/` con la fecha de su `updated:` (o `created:` si falta) como prefijo:
 
 ```
 {SPECS_ROOT}/
-├── epics/      # Contiene todas las épicas
-└── stories/    # Contiene todas las historias de usuario
-```
-
-Dentro de cada carpeta de tipo, cada work item se guarda en su **propio directorio**, cuyo nombre comienza con su identificador único:
-
-```
-{SPECS_ROOT}/
-├── epics/
-│   └── EPIC-001-nombre-epica/       # directorio de la épica EPIC-001
-└── stories/
-    └── STORY-001-nombre-story/      # directorio de la historia STORY-001
+├── EPIC-001-nombre-epica/                     # directorio de la épica EPIC-001
+├── STORY-001-nombre-story/                    # directorio de la historia STORY-001
+└── archive/
+    └── 2026-05-01-STORY-002-otra-story/       # historia COMPLETED archivada
 ```
 
 Por ejemplo:
 
 ```
-docs/specs/epics/EPIC-001-nombre-epica/epic.md
-docs/specs/stories/STORY-001-nombre-story/story.md
+specs/flow/EPIC-001-nombre-epica/epic.md
+specs/flow/STORY-001-nombre-story/story.md
 ```
 
-El modelo histórico de tres niveles está retirado; para migrarlo se usa `/memory-system migrate --from=specs-3-levels`. Véase [[eliminar-specs-01-projects]].
+Las historias `CANCELED` y las épicas no se archivan.
+
+El modelo histórico de tres niveles está retirado; para migrarlo se usa `/memory-system migrate --from=specs-3-levels`. Véase [[asegurar-dos-niveles-de-flujo-epics-stories]].
 
 
 ---
@@ -143,10 +137,10 @@ La estructura de directorios permanece plana: el vínculo padre-hijo se expresa 
 
 ### 7. Resolución de rutas y búsqueda de work items
 
-Dado que todos los work items están en carpetas separadas por tipo, para encontrar uno por su ID se debe buscar en las dos carpetas (`epics/` y `stories/`). **Orden de búsqueda recomendado para IAs:**
+Para encontrar un work item por su ID se busca el directorio cuyo nombre empieza por el ID seguido de guion. **Orden de búsqueda recomendado para IAs:**
 
-1. Buscar en `stories/` (por ser el nivel más bajo y numeroso).
-2. Si no se encuentra, buscar en `epics/`.
+1. Buscar `{SPECS_ROOT}/<ID>-*/`.
+2. Si no se encuentra y es una historia, buscar `{SPECS_ROOT}/archive/*-<ID>-*/`.
 Para facilitar la navegación, `docs/index.md` contiene el índice generado de artefactos y metadatos; se regenera con `/memory-system index`.
 
 ---
@@ -156,10 +150,10 @@ Para facilitar la navegación, `docs/index.md` contiene el índice generado de a
 - Usa la sintaxis `[[ID]]` para enlazar a otro work item.
 - El enlace debe resolverse al archivo canónico: `epic.md` para una épica y `story.md` para una historia.
 
-**Ejemplo:** desde una historia, para enlazar a su épica, escribir `[[EPIC-001]]`. El enlace apunta a `{SPECS_ROOT}/epics/EPIC-001-nombre-epica/epic.md`.
+**Ejemplo:** desde una historia, para enlazar a su épica, escribir `[[EPIC-001]]`. El enlace apunta a `{SPECS_ROOT}/EPIC-001-nombre-epica/epic.md`.
 
 **Resolución para IAs:**  
-Dado un ID, buscar en los directorios de tipo según el orden de la sección 7. Si se detecta el mismo ID en dos directorios, es un error de integridad que debe corregirse, no una ambigüedad que se resuelva por prioridad.
+Dado un ID, buscar según el orden de la sección 7. Si se detecta el mismo ID en dos directorios, es un error de integridad que debe corregirse, no una ambigüedad que se resuelva por prioridad.
 
 ---
 
@@ -173,7 +167,7 @@ Para acelerar la navegación humana y de IAs, `docs/index.md` lista los work ite
 
 | Regla | Verificación |
 |-------|--------------|
-| ¿Todo work item está dentro de `epics/` o `stories/`? | ⬜ |
+| ¿Todo work item está directamente en `specs/flow/` o, si es una historia `COMPLETED`, en `specs/flow/archive/`? | ⬜ |
 | ¿El nombre del directorio comienza con el campo `id` del frontmatter? | ⬜ |
 | ¿Cada archivo principal (`epic.md` o `story.md`) comienza con frontmatter YAML? | ⬜ |
 | ¿Los campos obligatorios (`type`, `id`, `title`, `status`, `parent`, `created`, `updated`) están presentes? | ⬜ |
@@ -189,18 +183,19 @@ Para acelerar la navegación humana y de IAs, `docs/index.md` lista los work ite
 ```text
 docs/
 ├── product/                         # visión, stakeholders, objetivos y roadmap
-├── requirements/                    # FR-* y NFR-*; no son work items
-└── specs/
-    ├── epics/
-    │   └── EPIC-001-nombre-epica/
-    │       ├── epic.md              (frontmatter: type=epic, parent=null)
-    │       └── notes.md
-    └── stories/
-        └── STORY-001-nombre-story/
-            ├── story.md             (frontmatter: type=story, parent=EPIC-001)
-            ├── design.md
-            ├── tasks.md
-            └── testcases.md
+└── requirements/                    # FR-* y NFR-*; no son work items
+specs/
+└── flow/
+    ├── EPIC-001-nombre-epica/
+    │   ├── epic.md                  (frontmatter: type=epic, parent=null)
+    │   └── notes.md
+    ├── STORY-001-nombre-story/
+    │   ├── story.md                 (frontmatter: type=story, parent=EPIC-001)
+    │   ├── design.md
+    │   ├── tasks.md
+    │   └── testcases.md
+    └── archive/
+        └── 2026-05-01-STORY-002-otra-story/
 ```
 
 ---

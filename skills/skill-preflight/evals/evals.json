@@ -1,67 +1,67 @@
 {
   "skill": "skill-preflight",
-  "version": "2.0.0",
-  "description": "Evalúa el diagnóstico explícito de raíces SDDF: precedencia, errores seguros, templates centrales y ausencia de mutaciones.",
+  "version": "2.1.0",
+  "description": "Evalúa el diagnóstico explícito del layout fijo SDDF (ADR-0016): rutas fijas, señales del layout legado con remisión a la guía de migración, templates centrales y ausencia de mutaciones. TC-001..TC-003 (resolución de raíz configurable) se retiraron en STORY-152 y sus IDs no se reutilizan.",
   "cases": [
     {
-      "id": "TC-001",
-      "name": "root-versionado-valido-se-informa",
-      "type": "happy-path",
-      "description": "Sin SDDF_ROOT y con sddf.config.yaml.root válido, el diagnóstico informa REPO_ROOT, SPECS_BASE y ROOT_SOURCE = sddf.config.yaml sin modificar archivos.",
-      "input": {
-        "context": "SDDF_ROOT no está definida. sddf.config.yaml declara root: docs-personalizada y el directorio existe con specs/epics, specs/stories y los cinco templates centrales.",
-        "flags": []
-      },
-      "expected": {
-        "contains": ["REPO_ROOT", "SPECS_BASE", "ROOT_SOURCE = sddf.config.yaml", "Diagnóstico completado", "sin cambios"],
-        "not_contains": ["OpenSpec", "[ERROR]"]
-      },
-      "threshold": 0.95
-    },
-    {
-      "id": "TC-002",
-      "name": "override-valido-evita-yaml-defectuoso",
+      "id": "TC-004",
+      "name": "templates-faltantes-son-advertencias-no-mutantes",
       "type": "edge-case",
-      "description": "SDDF_ROOT válida prevalece aunque sddf.config.yaml sea ilegible; el diagnóstico no intenta usar la configuración.",
+      "description": "En un repositorio con el layout fijo, los templates centrales ausentes de docs/templates/ son advertencias no mutantes: el diagnóstico no los copia ni los crea y termina sin cambios.",
       "input": {
-        "context": "SDDF_ROOT=artefactos-ci apunta a un directorio accesible. sddf.config.yaml contiene YAML ilegible.",
+        "context": "REPO_ROOT tiene specs/flow/, specs/flow/archive/, specs/living/, workflow/ y docs/templates/ con cinco de los seis templates centrales: falta docs/templates/roadmap-template.md. No existe docs/specs/, no hay sddf.config.yaml con clave root y SDDF_ROOT no está definida.",
         "flags": []
       },
       "expected": {
-        "contains": ["SPECS_BASE", "ROOT_SOURCE = SDDF_ROOT", "Diagnóstico completado"],
-        "not_contains": ["sddf.config.yaml.root no es utilizable", "[ERROR]"]
+        "contains": ["[WARNING]", "roadmap-template.md", "docs/templates/", "sin cambios"],
+        "not_contains": ["[CREADO]", "openspec/config.yaml", "ROOT_SOURCE", "Layout legado"]
       },
       "threshold": 0.95
     },
     {
-      "id": "TC-003",
-      "name": "override-invalido-falla-cerrado",
-      "type": "fail-fast",
-      "description": "Una SDDF_ROOT definida con una ruta inexistente es un error; el diagnóstico no cae a docs ni declara éxito.",
+      "id": "TC-005",
+      "name": "layout-fijo-sin-senales",
+      "type": "happy-path",
+      "description": "AC-3 de STORY-152: un repositorio inicializado con el layout fijo y sin señales legadas recibe la confirmación de las cinco rutas fijas y ningún aviso de layout legado.",
       "input": {
-        "context": "SDDF_ROOT=/ruta/inexistente y sddf.config.yaml declara root: docs.",
+        "context": "REPO_ROOT tiene specs/flow/, specs/flow/archive/, specs/living/, workflow/ y docs/templates/ con los seis templates centrales. No existe docs/specs/, sddf.config.yaml no declara la clave root y la variable de entorno SDDF_ROOT no está definida.",
         "flags": []
       },
       "expected": {
-        "contains": ["[ERROR]", "SDDF_ROOT", "no es utilizable", "Diagnóstico incompleto"],
-        "not_contains": ["ROOT_SOURCE = default", "Diagnóstico completado"]
+        "contains": ["specs/flow/ existe", "specs/flow/archive/ existe", "specs/living/ existe", "workflow/ existe", "docs/templates/ existe", "✓ Diagnóstico completado — sin cambios"],
+        "not_contains": ["Layout legado", "Guía de migración", "[ERROR]"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-006",
+      "name": "senal-docs-specs-unica",
+      "type": "edge-case",
+      "description": "AC-2 de STORY-152 (omite las ausentes): con el layout fijo más un docs/specs/ sin migrar, el diagnóstico nombra solo la señal L1, remite a la guía de migración y no menciona las señales L2 ni L3.",
+      "input": {
+        "context": "REPO_ROOT tiene el layout fijo completo (specs/flow/, specs/flow/archive/, specs/living/, workflow/, docs/templates/) y además docs/specs/stories/STORY-001-x/story.md. sddf.config.yaml no declara la clave root y la variable de entorno SDDF_ROOT no está definida.",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["existe docs/specs/", "docs/guides/artifact-directory-migration.md", "sin cambios"],
+        "not_contains": ["declara la clave root", "SDDF_ROOT está definida", "[ERROR]"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-007",
+      "name": "tres-senales-legadas",
+      "type": "edge-case",
+      "description": "AC-2 de STORY-152: un proyecto con layout legado y las tres señales recibe una línea por señal y la remisión a la guía; las rutas fijas ausentes se avisan sin sugerir /sddf-init y ningún archivo se crea ni se modifica.",
+      "input": {
+        "context": "REPO_ROOT tiene docs/specs/epics/ y docs/specs/stories/ con work items, sddf.config.yaml con 'root: docs' y la variable de entorno SDDF_ROOT=docs definida. No existen specs/flow/, specs/flow/archive/, specs/living/ ni workflow/; docs/templates/ existe con los seis templates centrales.",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["Layout legado: existe docs/specs/", "declara la clave root", "SDDF_ROOT está definida", "docs/guides/artifact-directory-migration.md", "sin cambios"],
+        "not_contains": ["ejecuta /sddf-init", "[CREADO]", "[ERROR]"]
       },
       "threshold": 1.0
-    },
-    {
-      "id": "TC-004",
-      "name": "default-compatible-y-templates-faltantes",
-      "type": "edge-case",
-      "description": "Sin override ni clave root, se usa docs y los directorios o templates faltantes son advertencias no mutantes.",
-      "input": {
-        "context": "SDDF_ROOT no está definida. sddf.config.yaml no declara root. docs existe, pero falta specs/epics y roadmap-template.md.",
-        "flags": []
-      },
-      "expected": {
-        "contains": ["ROOT_SOURCE = default", "docs", "[WARNING]", "specs/epics", "roadmap-template.md", "sin cambios"],
-        "not_contains": ["[CREADO]", "openspec/config.yaml"]
-      },
-      "threshold": 0.95
     }
   ]
 }

@@ -99,7 +99,7 @@ updated: {date}
 ## Cumplimiento DoD — Fase PLAN
 
 <!-- Si $DOD_PLAN_CRITERIA estuvo vacío al ejecutar Correlación 5, mostrar el texto de aviso a continuación y omitir la tabla. -->
-<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que existe el DoD de la etapa plan ($SPECS_BASE/guardrails/dod-story-plan.md o su override en sddf.config.yaml). -->
+<!-- ⚠️ DoD PLAN no encontrado — se omitió la validación. Verifica que existe el DoD de la etapa plan (docs/guardrails/dod-story-plan.md o su override en sddf.config.yaml). -->
 
 | Criterio DoD | Estado | Severidad | Evidencia |
 |---|---|---|---|

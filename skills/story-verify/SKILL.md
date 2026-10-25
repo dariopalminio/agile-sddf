@@ -37,8 +37,8 @@ story-verify    ← aquí
 
 ## Entrada
 
-- `$SPECS_BASE/specs/stories/<story-id>/story.md` — historia a verificar (precondición de estado)
-- DoD de la etapa `verify` (`$SPECS_BASE/guardrails/dod-story-verify.md`, ver `## DoD aplicable`) — opcional; usa fallback genérico si no existe
+- `specs/flow/<STORY-NNN>-<slug>/story.md` — historia a verificar (precondición de estado)
+- DoD de la etapa `verify` (`docs/guardrails/dod-story-verify.md`, ver `## DoD aplicable`) — opcional; usa fallback genérico si no existe
 - `<REPO_ROOT>/sddf.config.yaml` — configuración de pruebas del proyecto (opcional; si existe y contiene tests `required: true`, tiene prioridad sobre la detección automática)
 - Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático (fallback cuando sddf.config.yaml no existe)
 - `.tmp/story-verify/{story_id}/qa-input.json` / `qa-output.json` — canal de comunicación con el agente QA (solo modo manual)
@@ -63,14 +63,14 @@ story-verify    ← aquí
 | Elemento | Valor |
 |---|---|
 | Etapa | `verify` |
-| Archivo | `$SPECS_BASE/guardrails/dod-story-verify.md` (en este repositorio, `docs/guardrails/dod-story-verify.md`) |
+| Archivo | `docs/guardrails/dod-story-verify.md` |
 | Override | `sddf.config.yaml › guardrails.dod.story.verify` |
 | Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
 
 Resolución (primera coincidencia):
 
-1. `sddf.config.yaml › guardrails.dod.story.verify` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-verify.md`
+1. `sddf.config.yaml › guardrails.dod.story.verify` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-verify.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa verify no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y usar los criterios mínimos genéricos del Paso 3.
 
 Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate del Paso 3 antes de escribir `VERIFY/DONE`.
@@ -108,14 +108,13 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `CLI_ROOT` (directorio de skills del runtime) solo para buscar el skill de pruebas del modo delegado.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -137,13 +136,20 @@ Proporciona el ID (ej. STORY-050) o la ruta completa al directorio.
 
 #### 1b. Resolver el directorio de la historia
 
-1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia
+1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `specs/flow/STORY-NNN-<slug>/` (no `specs/flow/archive/…`) y contiene `story.md`. Si no:
+   ```
+   ❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)
+   ```
+   Detener la ejecución sin escribir ningún archivo.
+2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `specs/flow/archive/`)
 
 Si no se encuentra:
 ```
-❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/
+❌ No se encontró la historia {story_id} en specs/flow/
+
+Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
 ```
+Detener la ejecución.
 
 #### 1c. Verificar existencia de story.md
 
@@ -589,7 +595,7 @@ Mostrar en pantalla:
 
 ## Salida
 
-- `$SPECS_BASE/specs/stories/<story-id>/verify-report.md` — reporte de verificación con `verdict`, sección `## Veredicto`, summary, findings por severidad, criterios DoD evaluados e historial de ejecuciones.
+- `specs/flow/<STORY-NNN>-<slug>/verify-report.md` — reporte de verificación con `verdict`, sección `## Veredicto`, summary, findings por severidad, criterios DoD evaluados e historial de ejecuciones.
 - `story.md` frontmatter actualizado:
   - `status: VERIFY / substatus: DONE` — si el veredicto es `APPROVED`
   - `status: READY-FOR-IMPLEMENT / substatus: DONE` — si el veredicto es `NEEDS-CHANGES`

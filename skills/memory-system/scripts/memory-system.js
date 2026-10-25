@@ -6,13 +6,13 @@
  * STORY-098, STORY-101, STORY-103).
  *
  * Subcomandos:
- *   detect   --root <SPECS_BASE> [--harness h]
- *   index    --root <SPECS_BASE> [--harness h] [--dry-run] [--template <ruta>] [--date YYYY-MM-DD]
- *   scaffold --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--date YYYY-MM-DD]
- *   check    --root <SPECS_BASE> [--harness h] [--json] [--skills-dir <ruta>] [--cli-root <CLI_ROOT>]
- *   migrate  --root <SPECS_BASE> --from dod-monolithic [--dry-run] [--force] [--date YYYY-MM-DD]
- *   migrate  --root <SPECS_BASE> --from epic-template-v1 [--dry-run]
- *   migrate  --root <SPECS_BASE> --from specs-3-levels [--dry-run] [--force] [--date YYYY-MM-DD]
+ *   detect   --root <DOCS_DIR> [--harness h]
+ *   index    --root <DOCS_DIR> [--harness h] [--dry-run] [--template <ruta>] [--date YYYY-MM-DD]
+ *   scaffold --root <DOCS_DIR> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--date YYYY-MM-DD]
+ *   check    --root <DOCS_DIR> [--harness h] [--json] [--skills-dir <ruta>] [--cli-root <CLI_ROOT>]
+ *   migrate  --root <DOCS_DIR> --from dod-monolithic [--dry-run] [--force] [--date YYYY-MM-DD]
+ *   migrate  --root <DOCS_DIR> --from epic-template-v1 [--dry-run]
+ *   migrate  --root <DOCS_DIR> --from specs-3-levels [--dry-run] [--force] [--date YYYY-MM-DD]
  *
  * Solo usa módulos nativos (`node:fs`, `node:path`, `node:process`) para funcionar en
  * proyectos consumidores sin `package.json` (NFR-2). Node >= 18. Las rutas se normalizan
@@ -40,7 +40,7 @@ const { detectLegacyLevels } = require('./specs-3-levels.js');
 
 // Perfiles de harness (STORY-098 D-1), como datos:
 // - `skipLayers`: capas que el harness ya modela; `scaffold` no las crea y `check` no las exige.
-// - `mappings`: semilla (relativa a SPECS_BASE) → equivalente del harness (relativo a REPO_ROOT). Si
+// - `mappings`: semilla (relativa a DOCS_DIR) → equivalente del harness (relativo a REPO_ROOT). Si
 //   el equivalente existe, `scaffold` no crea la semilla e `index` enlaza el equivalente.
 // - `externalRoots`: patrones (relativos a REPO_ROOT) que `index` escanea en solo lectura.
 // Los equivalentes de `mappings` y las `externalRoots` nunca reciben un destino de escritura (D-5).
@@ -71,30 +71,39 @@ const EXTERNAL_GROUPS = {
 };
 // Grupo de reserva para un patrón externo sin grupo declarado (no ocurre con los perfiles actuales).
 const OTHER_EXTERNAL_GROUP = { key: 'external', title: 'Otros artefactos externos' };
-// Sufijo del slug de un nodo externo que colisiona con uno de SPECS_BASE (CR-002).
+// Sufijo del slug de un nodo externo que colisiona con uno de DOCS_DIR (CR-002).
 const EXTERNAL_SUFFIX = '-external';
 
 // Orden de precedencia de los marcadores (después de `--harness` explícito).
 const HARNESS_ORDER = ['sddf', 'speckit', 'openspec', 'generic'];
 
-// Las once capas de memoria (ARCH-MEMORY §2-3), en orden de directorio. Es el único catálogo:
-// `scaffold` lo usa para saber qué capa falta y el índice deriva de él `KNOWN_LAYERS`.
+// Las diez capas de memoria (ARCH-MEMORY §2-3), en orden de directorio. Es el único catálogo:
+// `scaffold` lo usa para saber qué capa falta y el índice deriva de él `KNOWN_LAYERS`. Los work
+// items no son una capa de `docs/`: viven en `specs/flow/` (STORY-152 D-5) y los crea `/sddf-init`.
 const LAYERS = [
-  'product', 'requirements', 'specs', 'domains', 'architecture', 'adr',
+  'product', 'requirements', 'domains', 'architecture', 'adr',
   'policies', 'guardrails', 'guides', 'runbooks', 'templates',
 ];
 
 // Subdirectorios de `specs/` con nombre de capa propio.
 const SPECS_LAYERS = { epics: 'specs-epics', stories: 'specs-stories' };
 
+// Origen flow del índice (STORY-152 D-4): work items del layout fijo (ADR-0016), relativo a
+// REPO_ROOT. Sus nodos son propios (los evalúa `check`) y reutilizan las capas `specs-*`, de modo
+// que conviven con los de `docs/specs/` de un repo sin migrar.
+const FLOW_DIR = 'specs/flow';
+const FLOW_ARCHIVE = 'archive';
+
 // Directorios excluidos del índice (D-3): caché, templates (wikilinks placeholder) y pre-split.
 const EXCLUDED_DIRS = new Set(['.cache', 'templates', 'pre-split']);
 
 // Capas que el template del índice puede declarar aunque no tengan nodos: la raíz, las capas de
-// memoria indexables (`specs` más su desglose por nivel, `templates` excluida) y las externas.
+// memoria indexables (`templates` excluida), las de work items (`specs` y su desglose, compartidas
+// por el origen flow y por `docs/specs/` sin migrar) y las externas.
 const KNOWN_LAYERS = [
   'root',
-  ...LAYERS.flatMap((layer) => (layer === 'specs' ? [layer, ...Object.values(SPECS_LAYERS)] : EXCLUDED_DIRS.has(layer) ? [] : [layer])),
+  ...LAYERS.filter((layer) => !EXCLUDED_DIRS.has(layer)),
+  'specs', ...Object.values(SPECS_LAYERS), 'specs-archive',
   'external',
 ];
 
@@ -151,7 +160,7 @@ const VALUE_FLAGS = {
 const MIGRATE_SOURCES = ['dod-monolithic', 'epic-template-v1', 'specs-3-levels', 'srs-single', 'requirements-fragmented'];
 const BOOL_FLAGS = { '--dry-run': 'dryRun', '--force': 'force', '--json': 'json' };
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const USAGE = 'uso: memory-system.js <detect|index|scaffold|check|migrate> --root <SPECS_BASE> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json] [--skills-dir <ruta>] [--from dod-monolithic|epic-template-v1|specs-3-levels|srs-single|requirements-fragmented]';
+const USAGE = 'uso: memory-system.js <detect|index|scaffold|check|migrate> --root <DOCS_DIR> [--cli-root <CLI_ROOT>] [--harness h] [--dry-run] [--force] [--json] [--skills-dir <ruta>] [--from dod-monolithic|epic-template-v1|specs-3-levels|srs-single|requirements-fragmented]';
 
 // Error de uso o de datos: se informa por stderr y termina con exit 2 sin escribir.
 class UsageError extends Error {}
@@ -207,7 +216,7 @@ function under(base, relPath) {
 }
 
 /**
- * Guardia de escritura (STORY-098 D-5): `target` debe quedar bajo `root` (SPECS_BASE) una vez
+ * Guardia de escritura (STORY-098 D-5): `target` debe quedar bajo `root` (DOCS_DIR) una vez
  * normalizado. Si no, lanza UsageError (exit 2) antes de escribir nada. Es la puerta de escritura
  * de `scaffold` e `index`: los directorios del harness quedan fuera por construcción.
  */
@@ -240,7 +249,7 @@ function parseArgs(argv) {
   if (!COMMANDS.includes(args.command)) {
     throw new UsageError(`subcomando no admitido: ${args.command} (admitidos: ${COMMANDS.join(', ')})`);
   }
-  if (!args.root) throw new UsageError(`falta --root <SPECS_BASE>\n${USAGE}`);
+  if (!args.root) throw new UsageError(`falta --root <DOCS_DIR>\n${USAGE}`);
   if (args.command === 'migrate') {
     if (!args.from) throw new UsageError(`falta --from <origen> (admitidos: ${MIGRATE_SOURCES.join(', ')})`);
     if (!MIGRATE_SOURCES.includes(args.from)) throw new UsageError(`valor no admitido para --from: ${args.from} (admitidos: ${MIGRATE_SOURCES.join(', ')})`);
@@ -353,6 +362,15 @@ function deriveLayer(relPath) {
   return SPECS_LAYERS[segments[1]] || `specs-${segments[1]}`;
 }
 
+// Capa de un nodo del origen flow, calculada sobre la ruta relativa a `specs/flow/`.
+function deriveFlowLayer(flowRel) {
+  const [first] = flowRel.split('/');
+  if (first === FLOW_ARCHIVE) return 'specs-archive';
+  if (first.startsWith('EPIC-')) return 'specs-epics';
+  if (first.startsWith('STORY-')) return 'specs-stories';
+  return 'specs';
+}
+
 function deriveSlug(relPath, data) {
   if (typeof data.slug === 'string' && data.slug.trim()) return data.slug.trim();
   const segments = relPath.split('/');
@@ -366,20 +384,24 @@ function deriveSlug(relPath, data) {
 /**
  * Deriva un nodo indexable: { path, relPath, layer, slug, title, hasFrontmatter, slugPlaceholder,
  * wikilinks, declared }.
- * `relPath` siempre es relativa a SPECS_BASE con `/` (los nodos externos empiezan por `../`).
+ * `relPath` siempre es relativa a DOCS_DIR con `/` (los nodos externos y los del origen flow
+ * empiezan por `../`).
  * `declared` es el frontmatter crudo (`{}` sin bloque): `slug`/`title` ya vienen derivados en el
  * nodo, y `check` necesita saber qué campos declara el archivo (STORY-097 D-3).
  */
 function deriveNode(filePath, specsBase, options = {}) {
   const parsed = parseFrontmatter(readText(filePath));
   const relPath = toPosix(path.relative(specsBase, filePath));
+  const layer = options.external ? 'external'
+    : options.flow ? deriveFlowLayer(toPosix(path.relative(under(path.dirname(specsBase), FLOW_DIR), filePath)))
+      : deriveLayer(relPath);
   const data = parsed.hasFrontmatter ? parsed.data : {};
   const declaredTitle = typeof data.title === 'string' ? data.title.trim() : '';
   const slugPlaceholder = typeof data.slug === 'string' && PLACEHOLDER_SLUG.test(data.slug.trim());
   return {
     path: filePath,
     relPath,
-    layer: options.external ? 'external' : deriveLayer(relPath),
+    layer,
     slug: deriveSlug(relPath, data),
     title: declaredTitle || firstHeading(parsed.body) || stripMd(path.basename(filePath)),
     hasFrontmatter: parsed.hasFrontmatter,
@@ -448,7 +470,7 @@ function externalGroupOf(pattern) {
  * Nodos externos del perfil (solo lectura): los de `externalRoots`, anotados con `externalGroup`,
  * y los equivalentes existentes de `mappings` (grupo `mapped`, con el slug de la semilla mapeada
  * para que los `[[constitution]]` internos resuelvan). Un slug que colisiona con uno de
- * SPECS_BASE recibe el sufijo `-external` y guarda el original en `collidesWith` (CR-002).
+ * DOCS_DIR recibe el sufijo `-external` y guarda el original en `collidesWith` (CR-002).
  */
 function scanExternalNodes(specsBase, profile, internalSlugs) {
   const repoRoot = path.dirname(specsBase);
@@ -475,9 +497,20 @@ function scanExternalNodes(specsBase, profile, internalSlugs) {
   return external;
 }
 
-/** Escanea SPECS_BASE y las raíces externas del perfil; devuelve los nodos ordenados por ruta. */
+/**
+ * Nodos del origen flow (`<REPO_ROOT>/specs/flow/`, D-4): mismo `walk` y mismas exclusiones que
+ * DOCS_DIR. Vacío si el directorio no existe o si el harness gestiona `specs/` (`skipLayers`).
+ */
+function scanFlowNodes(specsBase, profile) {
+  const flowDir = under(path.dirname(specsBase), FLOW_DIR);
+  if (profile.skipLayers.includes('specs') || !isDirectory(flowDir)) return [];
+  return walk(flowDir, flowDir).map((file) => deriveNode(file, specsBase, { flow: true }));
+}
+
+/** Escanea DOCS_DIR, el origen flow y las raíces externas del perfil; devuelve los nodos ordenados por ruta. */
 function scanNodes(specsBase, harness = 'generic') {
   const nodes = walk(specsBase, specsBase).map((file) => deriveNode(file, specsBase));
+  nodes.push(...scanFlowNodes(specsBase, profileOf(harness)));
   const internalSlugs = new Set(nodes.filter((n) => !n.slugPlaceholder).map((n) => n.slug));
   nodes.push(...scanExternalNodes(specsBase, profileOf(harness), internalSlugs));
   return nodes.sort((a, b) => ordinalCompare(a.relPath, b.relPath));
@@ -623,7 +656,7 @@ function summaryLine(summary) {
 const REQUIRED_FIELDS = { all: ['type', 'slug', 'title'], specs: ['id', 'status'] };
 const SPEC_TYPES = new Set(['project', 'epic', 'story']);
 
-// Entrada de la raíz que `check` exige además de las once capas de `LAYERS`.
+// Entrada de la raíz que `check` exige además de las diez capas de `LAYERS`.
 const ROOT_FILE = 'constitution.md';
 
 // Familias de problemas, en el orden de presentación del informe textual (D-4).
@@ -658,7 +691,7 @@ function hasDeclaredField(declared, field) {
   return value !== undefined && value !== null;
 }
 
-// Nodos propios de SPECS_BASE: los externos (harness, solo lectura) solo sirven como destino de
+// Nodos propios de DOCS_DIR: los externos (harness, solo lectura) solo sirven como destino de
 // wikilinks; memory-system no puede corregirlos, así que `check` no los evalúa (STORY-098 D-1).
 function ownNodes(ctx) {
   return ctx.nodes.filter((node) => node.layer !== 'external');
@@ -814,7 +847,7 @@ function placeFile(source, target, { force = false, dryRun = false, render = nul
  *   - una semilla de `mappings` cuyo equivalente existe en el harness → `mapped`, sin crear ni tocar;
  *   - el resto → copia-si-falta (`created` | `preserved` | `overwritten` con `force`).
  * Antes de escribir nada, la guardia (D-5) comprueba que todos los destinos del plan (semillas,
- * plantillas compartidas y claves de `mappings`) quedan bajo SPECS_BASE. Nunca elimina nada.
+ * plantillas compartidas y claves de `mappings`) quedan bajo DOCS_DIR. Nunca elimina nada.
  * `options.profile` sustituye al perfil del harness: gancho programático para probar la guardia con
  * un perfil mal configurado; la CLI no lo expone.
  * Devuelve { root, harness, missingLayers, entries[], warnings[], summary }.
@@ -957,7 +990,7 @@ function runIndex(args) {
   const { content, summary } = renderIndex(readText(templatePath), nodes, { date: args.date, skipLayers: profileOf(harness).skipLayers, aliases });
   const target = assertInsideRoot(specsBase, path.join(specsBase, INDEX_FILE));
 
-  // Colisiones de slug (CR-002): gana el nodo de SPECS_BASE; el externo se indexa con sufijo.
+  // Colisiones de slug (CR-002): gana el nodo de DOCS_DIR; el externo se indexa con sufijo.
   for (const node of nodes.filter((n) => n.collidesWith)) {
     process.stderr.write(`⚠️ colisión de slug: ${node.collidesWith} — ${node.relPath} se indexa como [[${node.slug}]]; [[${node.collidesWith}]] queda para el nodo de ${toPosix(path.basename(specsBase))}/\n`);
   }

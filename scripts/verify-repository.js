@@ -16,7 +16,7 @@ function steps() {
     // fixtures de Jest incluidos dentro de skills, instalaciones o .tmp/.
     { label: 'pruebas deterministas', command: process.execPath, args: ['--test', 'test'] },
     { label: 'sintaxis Node', command: process.execPath, args: ['scripts/verify-syntax.js'] },
-    { label: 'resolución de raíces', command: process.execPath, args: ['scripts/audit-root-resolution.js'] },
+    { label: 'contrato de layout fijo', command: process.execPath, args: ['scripts/verify-fixed-layout.js'] },
     { label: 'perfiles y stacks', command: process.execPath, args: ['scripts/verify-profiles.js'] },
     { label: 'runtimes documentados', command: process.execPath, args: ['scripts/verify-runtime-documentation.js'] },
     { label: 'configuración YAML', command: process.execPath, args: ['scripts/verify-config-contract.js'] },

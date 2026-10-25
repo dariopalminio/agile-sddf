@@ -21,7 +21,7 @@ parent: null
 |-----------|----|---------|---------------|
 | [[sddf-architecture]] — [sddf-architecture.md](sddf-architecture.md) | ARCH-SDDF | Visión, componentes (Memory System + Harness Runtime), actores externos, flujo canónico, principios y estructura del repositorio | Necesites el mapa completo del sistema antes de tocar skills, agentes o scripts |
 | [[tech-stack]] — [tech-stack.md](tech-stack.md) | ARCH-TECH-STACK | Runtime, dependencias, test runner, CLI, CI/CD, distribución y lo que el framework **no** usa | Vayas a añadir una dependencia, un script o una herramienta de build |
-| [[memory-system]] — [memory-system.md](memory-system.md) | ARCH-MEMORY | Las once capas de `docs/`, reglas del árbol, trazabilidad, gobernanza, invariantes y anti-patrones | Vayas a crear, mover o indexar cualquier artefacto bajo `docs/` |
+| [[memory-system]] — [memory-system.md](memory-system.md) | ARCH-MEMORY | Las diez capas de `docs/`, reglas del árbol, trazabilidad, gobernanza, invariantes y anti-patrones | Vayas a crear, mover o indexar cualquier artefacto bajo `docs/` |
 | [context-diagram.puml](c4/context-diagram.puml) · [context-diagram.png](c4/context-diagram.png) | C4 L1 | Diagrama de contexto: SDDF, sus usuarios y los sistemas externos (harness, npm, Git) | Quieras comunicar el alcance del sistema a alguien que no conoce el repositorio |
 
 ---
@@ -48,7 +48,7 @@ de entrada recomendado.
 - **Qué no va aquí:**
   - Decisiones y sus alternativas → [[adr-index]] (`docs/adr/ADR-NNNN-*.md`).
   - Diseño de una historia concreta → `design.md` de la historia
-    (`docs/specs/stories/STORY-NNN-*/design.md`).
+    (`specs/flow/STORY-NNN-*/design.md`).
   - Modelo de dominio (entidades, invariantes de negocio) → [domains/README.md](../domains/README.md)
     y [[domain]].
   - Reglas de gobernanza y restricciones verificables → `policies/` y `guardrails/`.

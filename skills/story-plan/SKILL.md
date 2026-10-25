@@ -86,7 +86,7 @@ La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, i
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `$SPECS_BASE/specs/stories/`
+- El directorio de la historia existe bajo `specs/flow/`
 - `story.md` existe en el directorio de la historia
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 
@@ -104,14 +104,14 @@ La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, i
 | Elemento | Valor |
 |---|---|
 | Etapa | `plan` |
-| Archivo | `$SPECS_BASE/guardrails/dod-story-plan.md` (en este repositorio, `docs/guardrails/dod-story-plan.md`) |
+| Archivo | `docs/guardrails/dod-story-plan.md` |
 | Override | `sddf.config.yaml › guardrails.dod.story.plan` |
 | Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
 
 Resolución (primera coincidencia):
 
-1. `sddf.config.yaml › guardrails.dod.story.plan` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-plan.md`
+1. `sddf.config.yaml › guardrails.dod.story.plan` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-plan.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y `story-analyze` continúa sin validación DoD PLAN.
 
 Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. `story-plan` **no** carga este archivo: lo evalúa `story-analyze` en el Paso 5, que es quien escribe `READY-FOR-IMPLEMENT/DONE`. Se declara aquí para que la etapa del orquestador sea explícita.
@@ -144,14 +144,11 @@ En cualquier modo, `--skip-analyze` elimina el paso `story-analyze` del pipeline
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -184,7 +181,7 @@ Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 #### 1d. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
+2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
 3. Si no se encuentra: notificar y detener (ver sección Manejo de errores)
 
 #### 1e. Actualizar frontmatter a PLAN/IN-PROGRESS
@@ -420,8 +417,7 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 | Condición | Mensaje | Acción |
 |---|---|---|
 | `--only-tasks` y `--only-testcases` simultáneos | `❌ Flags mutuamente excluyentes` | Detener inmediatamente antes de cualquier sub-skill |
-| Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No invocar sub-skills |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener sin invocar sub-skills. Sugerir `/epic-generate-stories` |
 | Fallo en `story-design` | `[1/<N>] ✗ story-design — FALLO` | Registrar todos los pasos restantes como `—`. Ir a resumen |
 | Fallo en `story-tasking` | `[2/<N>] ✗ story-tasking — FALLO` | Registrar pasos restantes como `—`. Ir a resumen |

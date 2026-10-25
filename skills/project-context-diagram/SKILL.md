@@ -16,7 +16,7 @@ triggers:
 
 ## Objetivo
 
-Genera un diagrama de contexto C4 de Nivel 1 en `$SPECS_BASE/architecture/c4/context-diagram.puml`, siguiendo la convención de `docs/architecture/README.md` para fuente PlantUML L1.
+Genera un diagrama de contexto C4 de Nivel 1 en `docs/architecture/c4/context-diagram.puml`, siguiendo la convención de `docs/architecture/README.md` para fuente PlantUML L1.
 
 ## Entrada
 
@@ -54,14 +54,11 @@ El modo automático omite solo el preview; nunca omite la confirmación de sobre
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -88,9 +85,9 @@ Escanea en este orden y deduplica por nombre normalizado (minúsculas y sin acen
 
 | # | Fuente | Aporta |
 |---|---|---|
-| 1 | `$SPECS_BASE/product/vision.md` | `System()`: `**Nuestro producto:**` y `**Que provee:**`, o la primera frase del problema. |
-| 2 | `$SPECS_BASE/product/stakeholders.md` en `## Usuarios y roles` | Un `Person()` por perfil `US-NNN` y su descripción. Patrocinadores no generan personas. |
-| 3 | `$SPECS_BASE/requirements/` | `System_Ext()` y `Rel()` desde requisitos funcionales, no funcionales y SRS; el NFR de tecnología aporta protocolo. |
+| 1 | `docs/product/vision.md` | `System()`: `**Nuestro producto:**` y `**Que provee:**`, o la primera frase del problema. |
+| 2 | `docs/product/stakeholders.md` en `## Usuarios y roles` | Un `Person()` por perfil `US-NNN` y su descripción. Patrocinadores no generan personas. |
+| 3 | `docs/requirements/` | `System_Ext()` y `Rel()` desde requisitos funcionales, no funcionales y SRS; el NFR de tecnología aporta protocolo. |
 | 4 | README, manifiestos, imports y código | Nombre faltante, protocolos y sistemas complementarios. |
 
 Vision y stakeholders cuentan solo si existen y su `substatus` no es `TODO`. En las relaciones, usa los FR cuyo `**Usuario**` referencia cada `US-NNN`. Genera IDs en minúsculas, sin acentos y con secuencias no alfanuméricas convertidas a `_`.
@@ -107,7 +104,7 @@ En modo manual muestra el PlantUML completo y permite corregirlo antes de contin
 
 ### Paso 6 — Confirmar y escribir
 
-Define `$DIAGRAM_PATH = $SPECS_BASE/architecture/c4/context-diagram.puml`. Si ya existe, pregunta en todos los modos: `⚠️ Ya existe $SPECS_BASE/architecture/c4/context-diagram.puml. ¿Deseas sobrescribirlo? (Sí / No)`.
+Define `$DIAGRAM_PATH = docs/architecture/c4/context-diagram.puml`. Si ya existe, pregunta en todos los modos: `⚠️ Ya existe docs/architecture/c4/context-diagram.puml. ¿Deseas sobrescribirlo? (Sí / No)`.
 
 La respuesta predeterminada, incluida la ausencia de respuesta, es `No`: `Sin cambios: se conservan context-diagram.puml y context-diagram.png.` y finaliza sin escribir. Con `Sí`, o si no existe, crea `architecture/c4/` si falta y escribe el `.puml` en UTF-8 sin BOM. Si existe el PNG, informa `⚠️ context-diagram.png no se regeneró: renderízalo desde el .puml para que coincidan.`
 
@@ -117,4 +114,4 @@ Informa la ruta de `$DIAGRAM_PATH`, cómo renderizar el diagrama y sugiere `/pro
 
 ## Salida
 
-- `$SPECS_BASE/architecture/c4/context-diagram.puml`: diagrama C4 Nivel 1 en PlantUML.
+- `docs/architecture/c4/context-diagram.puml`: diagrama C4 Nivel 1 en PlantUML.

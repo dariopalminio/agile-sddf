@@ -14,19 +14,19 @@ triggers:
 
 ## Objetivo
 
-Convierte los requisitos funcionales disponibles en una propuesta incremental de épicas. La sesión del skill prepara la propuesta en staging siguiendo el rol local `assets/agents/planning.md`; después la valida, la presenta para confirmación y recién entonces la agrega a `$SPECS_BASE/product/roadmap.md`.
+Convierte los requisitos funcionales disponibles en una propuesta incremental de épicas. La sesión del skill prepara la propuesta en staging siguiendo el rol local `assets/agents/planning.md`; después la valida, la presenta para confirmación y recién entonces la agrega a `docs/product/roadmap.md`.
 
 ## Entrada
 
-- Requisitos funcionales en `$SPECS_BASE/requirements/functional/FR-*.md` y encabezados `### FR-NNN` en `$SPECS_BASE/requirements/srs-*.md`.
-- Insumos existentes de `$SPECS_BASE`: requisitos no funcionales, `product/vision.md`, `product/stakeholders.md`, `product/story-map.md` y `product/roadmap.md`.
-- Template de solo lectura `$SPECS_BASE/templates/roadmap-template.md`, con fallback `assets/roadmap-template.md`.
+- Requisitos funcionales en `docs/requirements/functional/FR-*.md` y encabezados `### FR-NNN` en `docs/requirements/srs-*.md`.
+- Insumos existentes de `docs/`: requisitos no funcionales, `product/vision.md`, `product/stakeholders.md`, `product/story-map.md` y `product/roadmap.md`.
+- Template de solo lectura `docs/templates/roadmap-template.md`, con fallback `assets/roadmap-template.md`.
 
 ## Precondiciones
 
 - Debe existir al menos un requisito funcional. Si no existe, mostrar:
 
-  `❌ No hay requisitos funcionales en $SPECS_BASE/requirements/. Ejecuta /project-discovery (o /reverse-engineering) antes de planificar.`
+  `❌ No hay requisitos funcionales en docs/requirements/. Ejecuta /project-discovery (o /reverse-engineering) antes de planificar.`
 
   y terminar sin escribir, incluido `.tmp/`.
 
@@ -37,7 +37,7 @@ Convierte los requisitos funcionales disponibles en una propuesta incremental de
 
 ## Restricciones
 
-- El template es de solo lectura y el rol `planning` nunca escribe en `$SPECS_BASE`; solo el Paso 7 escribe, tras `Confirmar`.
+- El template es de solo lectura y el rol `planning` nunca escribe en `docs/` ni en `specs/`; solo el Paso 7 escribe, tras `Confirmar`.
 - No se escribe en el roadmap antes del gate `Confirmar`.
 - Cada propuesta es append-only: no se reescriben `## Épicas`, `## Plan original (...)` ni propuestas anteriores.
 - Todo `roadmap.md` se escribe como UTF-8 sin BOM.
@@ -46,14 +46,13 @@ Convierte los requisitos funcionales disponibles en una propuesta incremental de
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-1. Si `SDDF_ROOT` está definida, debe ser un directorio accesible y será `SPECS_BASE`; si es inválida, detener antes de escribir.
-2. Si no está definida, leer `sddf.config.yaml`; una clave `root` explícita debe resolver a un directorio accesible o detener el flujo.
-3. Sin fuente explícita, usar `docs` relativo a `REPO_ROOT`.
-4. Resolver `CLI_ROOT` por separado únicamente para skills o agentes.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-Con `$SPECS_BASE` resuelto, comprobar que existe el rol local `assets/agents/planning.md` (ruta relativa al directorio del skill). Si falta, mostrar el siguiente mensaje y terminar sin inventariar requisitos, vaciar ni crear `.tmp/project-planning/`, preguntar por el story map ni tocar `product/roadmap.md`; no se buscan roles fuera del directorio de este skill:
+Con `REPO_ROOT` resuelto, comprobar que existe el rol local `assets/agents/planning.md` (ruta relativa al directorio del skill). Si falta, mostrar el siguiente mensaje y terminar sin inventariar requisitos, vaciar ni crear `.tmp/project-planning/`, preguntar por el story map ni tocar `product/roadmap.md`; no se buscan roles fuera del directorio de este skill:
 
 > ❌ Rol local no encontrado: assets/agents/planning.md (skill project-planning). Reinstala el skill; no se modificó ningún archivo.
 
@@ -71,28 +70,28 @@ Recopilar en `$INPUT_PATHS` los insumos existentes: inventario FR y NFR, visión
 
 Resolver `roadmap-template.md` en este orden:
 
-1. `$SPECS_BASE/templates/roadmap-template.md`.
-2. `assets/roadmap-template.md`, mostrando `⚠️ Usando template seed del skill (assets/roadmap-template.md). Ejecuta sddf-init para centralizarlo en $SPECS_BASE/templates/.`
+1. `docs/templates/roadmap-template.md`.
+2. `assets/roadmap-template.md`, mostrando `⚠️ Usando template seed del skill (assets/roadmap-template.md). Ejecuta sddf-init para centralizarlo en docs/templates/.`
 3. Si ninguno existe, mostrar `❌ Template roadmap-template.md no encontrado. Ejecuta sddf-init.` y terminar sin escribir.
 
 Guardar la ruta como `$TEMPLATE_PATH`.
 
 ### Paso 3 — Contexto para la propuesta
 
-Usar `$EPICS_DIR = $SPECS_BASE/specs/epics/`. Construir `$EPICS_INVENTORY` como `EPIC-NN — <title> — <slug>` desde cada `EPIC-*/epic.md`; si falta frontmatter, usar el nombre del directorio e informar `⚠️ <ruta>: frontmatter incompleto`.
+Construir `$EPICS_INVENTORY` como `EPIC-NN — <title> — <slug>` desde cada archivo que case con el patrón `specs/flow/EPIC-*/epic.md` (las historias comparten el directorio plano y no casan; `specs/flow/archive/` no se consulta). Sin coincidencias, el inventario queda vacío y la propuesta continúa; si falta frontmatter, usar el nombre del directorio e informar `⚠️ <ruta>: frontmatter incompleto`.
 
 Calcular `$PROPOSAL_HEADING` como `Propuesta (<hoy>)`; si ya existe, usar consecutivamente `Propuesta (<hoy> #2)`, `#3`, etc. Vaciar `.tmp/project-planning/` y fijar `$STAGING_PATH = .tmp/project-planning/proposal.md`.
 
 ### Paso 4 — Story map opcional
 
-Si existe `$SPECS_BASE/product/story-map.md`, informar `✅ Se usará $SPECS_BASE/product/story-map.md como guía estructural.`
+Si existe `docs/product/story-map.md`, informar `✅ Se usará docs/product/story-map.md como guía estructural.`
 
 Si no existe, ofrecer:
 
 1. Sí, hacer Story Mapping ahora.
 2. No, continuar sin Story Mapping.
 
-Sin respuesta, elegir 2. Con 1, componer `/project-story-mapping` inline; si al volver sigue ausente, informar `⚠️ /project-story-mapping no dejó $SPECS_BASE/product/story-map.md; se continúa sin story map.`
+Sin respuesta, elegir 2. Con 1, componer `/project-story-mapping` inline; si al volver sigue ausente, informar `⚠️ /project-story-mapping no dejó docs/product/story-map.md; se continúa sin story map.`
 
 ### Paso 5 — Propuesta con el rol `planning` y validación del staging
 
@@ -115,7 +114,7 @@ Si falta el staging o incumple el contrato, mostrar `❌ La propuesta generada n
 
 Mostrar `<k> épicas · <h> historias` y una línea `Épica N: <Nombre> — <h> historias — <FR…>` por épica. Si ya hay roadmap, agregar `Se agregará como "<heading>" sin modificar el resto del roadmap.` y `Secciones existentes que se preservan: <encabezados ## del roadmap, en orden>.`
 
-Preguntar mediante `AskUserQuestion`: `Confirmar` o `Cancelar`; sin respuesta equivale a `Cancelar`. Al cancelar, informar `Planificación cancelada: no se modificó $SPECS_BASE/product/roadmap.md.` y terminar.
+Preguntar mediante `AskUserQuestion`: `Confirmar` o `Cancelar`; sin respuesta equivale a `Cancelar`. Al cancelar, informar `Planificación cancelada: no se modificó docs/product/roadmap.md.` y terminar.
 
 ### Paso 7 — Materializar
 
@@ -125,8 +124,8 @@ Si existe, insertar el staging precedido de una línea en blanco inmediatamente 
 
 Guardar UTF-8 sin BOM e informar:
 
-`✅ Propuesta (<fecha>) agregada a $SPECS_BASE/product/roadmap.md: <k> épicas, <h> historias. Siguiente comando: /epic-from-project-plan`
+`✅ Propuesta (<fecha>) agregada a docs/product/roadmap.md: <k> épicas, <h> historias. Siguiente comando: /epic-from-project-plan`
 
 ## Salida
 
-- `$SPECS_BASE/product/roadmap.md`, con una propuesta fechada, validada y append-only.
+- `docs/product/roadmap.md`, con una propuesta fechada, validada y append-only.

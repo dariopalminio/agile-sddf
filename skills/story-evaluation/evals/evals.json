@@ -10,7 +10,7 @@
       "description": "Invocar con STORY-075 (historia existente con story.md y template disponible). El skill debe evaluar las 7 dimensiones FINVEST, mostrar scores y veredicto, y confirmar que guardó finvest-evaluation-report.md en el directorio de la historia.",
       "input": {
         "flags": ["STORY-075"],
-        "context": "La historia STORY-075 existe en docs/specs/stories/STORY-075-integrar-historia-modo-manual-dryrun/story.md y el template docs/templates/story-template.md existe"
+        "context": "La historia STORY-075 existe en specs/flow/STORY-075-integrar-historia-modo-manual-dryrun/story.md y el template docs/templates/story-template.md existe"
       },
       "expected": {
         "contains": [
@@ -33,7 +33,7 @@
       "id": "TC-002",
       "name": "fail-fast-template-ausente-detiene-ejecucion",
       "type": "fail-fast",
-      "description": "Evaluar una historia cuando story-template.md no existe en $SPECS_BASE/templates/. El skill debe emitir ❌ indicando el archivo faltante y detener sin generar ningún reporte ni score.",
+      "description": "Evaluar una historia cuando story-template.md no existe en docs/templates/. El skill debe emitir ❌ indicando el archivo faltante y detener sin generar ningún reporte ni score.",
       "input": {
         "flags": ["STORY-075"],
         "context": "La historia STORY-075 existe pero el archivo docs/templates/story-template.md NO existe"
@@ -162,6 +162,21 @@
         "not_contains": ["`SPLIT`", "RECHAZAR", "✓ Reporte guardado"]
       },
       "threshold": 0.90
+    },
+    {
+      "id": "TC-009",
+      "name": "historia-inexistente-en-specs-flow",
+      "type": "fail-fast",
+      "description": "Evaluar un ID que no existe en specs/flow/. El skill informa que la historia no existe en specs/flow/, no consulta ni crea nada fuera de specs/flow/ y no genera reporte.",
+      "input": {
+        "flags": [],
+        "context": "El usuario ejecuta /story-evaluation STORY-999. No existe ningún directorio specs/flow/STORY-999-*/."
+      },
+      "expected": {
+        "contains": ["No se encontró la historia STORY-999", "specs/flow/"],
+        "not_contains": ["docs/specs", "finvest-evaluation-report.md guardado"]
+      },
+      "threshold": 1.0
     }
   ]
 }

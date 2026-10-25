@@ -6,14 +6,14 @@ Descubre perfiles, necesidades y requisitos desde una visión de producto termin
 
 ## Inputs
 
-- `$SPECS_BASE/product/vision.md` con `substatus: DONE`.
+- `docs/product/vision.md` con `substatus: DONE`.
 - `stakeholders-template.md` y `requirement-template.md`, centralizados o incluidos como seed.
 - Inventario opcional de requisitos y stakeholders ya existentes.
 
 ## Produces
 
-- `$SPECS_BASE/product/stakeholders.md`.
-- `$SPECS_BASE/requirements/functional/FR-NNN-<slug>.md`.
-- `$SPECS_BASE/requirements/non-functional/NFR-NNN-<slug>.md`.
+- `docs/product/stakeholders.md`.
+- `docs/requirements/functional/FR-NNN-<slug>.md`.
+- `docs/requirements/non-functional/NFR-NNN-<slug>.md`.
 
 No escribe en las capas finales hasta que el usuario elige `Confirmar`.

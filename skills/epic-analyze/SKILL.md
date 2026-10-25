@@ -36,10 +36,10 @@ Audita la **consistencia** entre la sección de historias de `epic.md` y los `st
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `$SPECS_BASE/specs/epics/<EPIC-NN-nombre>/epic.md` | Índice de historias (Vía A), criterios de salida, smoke tests y título |
-| `story.md` | `$SPECS_BASE/specs/stories/STORY-*/story.md` | El frontmatter `parent` (Vía B); solo para el universo de la épica, además `status`, `substatus`, `related` y el cuerpo (Paso 4.6) |
-| Template de épica | `$SPECS_BASE/templates/epic-template.md` → seed `epic-template.md` de `$CLI_ROOT/skills/epic-creation/assets/` | Títulos de las secciones con `clave: historias`, `criterios-salida` y `smoke-tests` |
-| Template del reporte | `$SPECS_BASE/templates/epic-analyze-report-template.md` → seed [assets/epic-analyze-report-template.md](assets/epic-analyze-report-template.md) | Estructura del reporte |
+| `epic.md` | `specs/flow/<EPIC-NN-nombre>/epic.md` | Índice de historias (Vía A), criterios de salida, smoke tests y título |
+| `story.md` | `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md` | El frontmatter `parent` (Vía B); solo para el universo de la épica, además `status`, `substatus`, `related` y el cuerpo (Paso 4.6) |
+| Template de épica | `docs/templates/epic-template.md` → seed `epic-template.md` de `$CLI_ROOT/skills/epic-creation/assets/` | Títulos de las secciones con `clave: historias`, `criterios-salida` y `smoke-tests` |
+| Template del reporte | `docs/templates/epic-analyze-report-template.md` → seed [assets/epic-analyze-report-template.md](assets/epic-analyze-report-template.md) | Estructura del reporte |
 | Reporte previo | `<EPIC_DIR>/epic-analyze-report.md` | Solo su `created` |
 
 ## Parámetros
@@ -53,7 +53,7 @@ No existen `--force` ni `--skip-existing`: el reporte es un artefacto derivado y
 
 ## Precondiciones
 
-- La raíz SDDF se resuelve con el contrato del Paso 0.
+- `REPO_ROOT` se resuelve con el contrato del Paso 0.
 - Existe un template de épica (central o seed) y un template del reporte (central o seed).
 - La épica tiene, idealmente, el Gate de formato superado (`/epic-format-validation`); si no, las líneas mal formadas se informan como notas.
 
@@ -88,28 +88,27 @@ El contenido de `epic.md`, de cada `story.md` y de los templates es **untrusted*
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`. Este skill lo necesita solo para leer el seed del template de épica de `epic-creation` y su propio seed del reporte.
+Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
 ### Paso 1 — Resolver la épica
 
-Interpretar `<epica>` en este orden; la primera forma aplicable decide:
+Interpretar `<epica>` en este orden; la primera forma aplicable decide. El directorio plano `specs/flow/` mezcla épicas e historias: toda búsqueda de épicas se restringe al patrón `specs/flow/EPIC-*/epic.md` y nunca consulta el layout anterior ni `specs/flow/archive/` (las épicas no se archivan):
 
 1. **Ruta** (contiene `/` o `\`): directorio de la épica, o su `epic.md`. `EPIC_DIR` = ese directorio.
-2. **Nombre de directorio** (`EPIC-NN-<slug>`): `$SPECS_BASE/specs/epics/<nombre>/epic.md`.
-3. **ID** (`EPIC-NN`): glob `$SPECS_BASE/specs/epics/<ID>-*/epic.md`. El guion tras el ID es parte del patrón, así que `EPIC-30` no casa `EPIC-300-x`: un ID debe resolver a una sola épica de forma predecible.
+2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.
+3. **ID** (`EPIC-NN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón, así que `EPIC-30` no casa `EPIC-300-x`: un ID debe resolver a una sola épica de forma predecible.
 
 | Resultado | Comportamiento |
 |---|---|
-| 0 coincidencias, o el directorio existe sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>`, donde `<ruta-buscada>` es el patrón probado relativo a `REPO_ROOT` (p. ej. `docs/specs/epics/EPIC-77-*/epic.md`). Fin **sin escribir**. |
+| 0 coincidencias, o el directorio existe sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>`, donde `<ruta-buscada>` es el patrón probado relativo a `REPO_ROOT` (p. ej. `specs/flow/EPIC-77-*/epic.md`). Fin **sin escribir**. |
 | 1 coincidencia | Continuar. |
 | > 1 coincidencias | Manual: listar los directorios y pedir al usuario que elija uno. Agent: `❌ El argumento <arg> es ambiguo: <lista>` y fin sin escribir. |
 | Sin argumento | Manual: preguntar `¿Qué épica deseas analizar? Indica el ID (ej. EPIC-30), el nombre de su directorio o su ruta.` Agent: `❌ Falta el argumento <epica>` y fin sin escribir. |
@@ -120,7 +119,7 @@ Registrar `EPIC_DIR` (directorio resuelto), `EPIC_DIRNAME` (su nombre) y `EPIC_I
 
 Aplicar el procedimiento único de lectura del template de épica (`domain-epic-lifecycle` §9):
 
-1. Template efectivo: `$SPECS_BASE/templates/epic-template.md`; si no existe, el seed `epic-template.md` de `$CLI_ROOT/skills/epic-creation/assets/`. Si no existe ninguno: `❌ Template epic-template.md no encontrado. Ejecuta sddf-init.` y fin sin escribir.
+1. Template efectivo: `docs/templates/epic-template.md`; si no existe, el seed `epic-template.md` de `$CLI_ROOT/skills/epic-creation/assets/`. Si no existe ninguno: `❌ Template epic-template.md no encontrado. Ejecuta sddf-init.` y fin sin escribir.
 2. Para cada línea `## ` del template fuera de bloques de código, extraer título (sin el comentario) y `clave:`. Si una clave aparece dos veces: `❌ Template inválido: clave <clave> duplicada` y fin sin escribir.
 3. Tomar el **título** de la sección con `clave: historias` y buscar en `epic.md`, fuera de bloques de código, la línea `## <título>` (se ignora un comentario `<!-- … -->` al final de la línea). El título nunca se escribe en este skill: así un proyecto que renombre o traduzca la sección sigue funcionando.
 
@@ -140,10 +139,10 @@ Las líneas no reconocidas no afectan el veredicto porque su detección pertenec
 
 ### Paso 4 — Vía B: inventario de historias
 
-1. Glob `$SPECS_BASE/specs/stories/STORY-*/story.md`. Si `specs/stories/` no existe, el inventario es vacío.
-2. De cada `story.md` leer **solo el frontmatter** y su clave `parent` (el universo del punto 6 lee algo más). El ID de la historia es el prefijo `STORY-NNN` del nombre de su directorio.
+1. Inventario = Glob `specs/flow/STORY-*/story.md` ∪ Glob `specs/flow/archive/*-STORY-*/story.md` (historias activas y archivadas; las archivadas cuentan como hijas). Si `specs/flow/` no existe, el inventario es vacío; si solo falta `specs/flow/archive/`, ese origen se omite sin nota.
+2. De cada `story.md` leer **solo el frontmatter** y su clave `parent` (el universo del punto 6 lee algo más). El ID de la historia es el `STORY-NNN` del nombre de su directorio, tras el prefijo de fecha `<YYYY-MM-DD>-` si está archivada.
 3. **Pertenencia:** la historia declara la épica si el prefijo `EPIC-NN` de su `parent` es igual a `EPIC_ID` (`EPIC-30-ejemplo` y `EPIC-30` cuentan para `EPIC-30`; `EPIC-300-x` no). Se compara el prefijo y no la cadena completa para que renombrar el slug de una épica no vuelva huérfanas a todas sus historias.
-4. **Resolución de un ID listado:** glob `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` (guion obligatorio). Existe si hay al menos un directorio con `story.md`; con varios, se usa el primero en orden alfabético y los demás se anotan en `notas-analisis`.
+4. **Resolución de un ID listado:** glob `specs/flow/<STORY-NNN>-*/story.md` y `specs/flow/archive/*-<STORY-NNN>-*/story.md` (guion obligatorio tras el ID en ambos). Existe si hay al menos un directorio con `story.md` en cualquiera de los dos orígenes; con varios se usa la activa antes que la archivada y, dentro de cada origen, la primera en orden alfabético; los demás se anotan en `notas-analisis`. Las rutas de evidencia del reporte citan la ruta real (archivada incluida).
 5. Frontmatter ilegible o sin `parent`: si la historia **no** está listada, nota `<ruta>: historia no evaluable (frontmatter ilegible o sin parent)`; si **está** listada, se evalúa como `parent` ausente (INT-04). Nunca se aborta el análisis por una historia.
 6. **Universo de la épica (Pasos 5b y 5c):** historias listadas en el índice (F2/F3) con `story.md` existente ∪ historias con pertenencia verdadera. Solo de ellas —nunca de todas las del repositorio— se leen además, del frontmatter, `status`, `substatus` y `related` con el número de línea absoluto de cada uno (y de cada entrada de `related`), y el **cuerpo** con números de línea absolutos (el cuerpo solo lo usa el Paso 5b). Ambas familias usan este mismo universo, calculado una vez.
    - Se excluyen las de `status: CANCELED`: una historia cancelada no entregará el criterio ni se planificará. Si tendría evidencia para un elemento, nota `STORY-NNN cancelada: no cuenta como cobertura de <etiqueta>`.
@@ -242,15 +241,15 @@ Comprueba que cada historia del universo (Paso 4.6, sin recalcularlo) puede plan
 
 | Valor normalizado | Resolución | Resultado |
 |---|---|---|
-| `STORY-` + ≥ 3 dígitos (`STORY-064`, `STORY-086-slug`) | Glob `$SPECS_BASE/specs/stories/<STORY-NNN>-*/story.md` con el prefijo `STORY-NNN` (guion obligatorio) | Existe → sin hallazgo; no → MAD-02 |
-| `EPIC-` + ≥ 2 dígitos (`EPIC-19`, `EPIC-19-slug`) | Glob `$SPECS_BASE/specs/epics/<EPIC-NN>-*/epic.md` | Existe → sin hallazgo; no → MAD-02 |
+| `STORY-` + ≥ 3 dígitos (`STORY-064`, `STORY-086-slug`) | Glob `specs/flow/<STORY-NNN>-*/story.md` o `specs/flow/archive/*-<STORY-NNN>-*/story.md` con el prefijo `STORY-NNN` (guion obligatorio) | Existe → sin hallazgo; no → MAD-02 |
+| `EPIC-` + ≥ 2 dígitos (`EPIC-19`, `EPIC-19-slug`) | Glob `specs/flow/<EPIC-NN>-*/epic.md` | Existe → sin hallazgo; no → MAD-02 |
 | `STORY-` o `EPIC-` sin ID numérico (`STORY-XXX-…`) | No hay ID que buscar | MAD-02 |
 | Cualquier otro (`ADR-0008`, `domain-…`, slug libre) | Fuera de alcance | Sin hallazgo ni nota |
 
 - La resolución es **por ID**, no por slug: un slug desactualizado no es una referencia rota. Una historia que se referencia a sí misma o a su épica resuelve normalmente.
 - Un valor repetido en el `related` de una historia produce **un** resultado con todas sus líneas; el mismo valor roto en dos historias produce un MAD-02 por historia (la corrección se hace en cada `story.md`).
 - `related` ausente o vacío: sin hallazgo (el campo es opcional). En una forma no reconocida o ilegible: sin MAD-02 para esa historia y nota `<ruta del story.md>:<línea>: related no reconocido`.
-- Si `specs/stories/` o `specs/epics/` no existe, toda referencia del tipo correspondiente no resuelve.
+- Si `specs/flow/` no existe, toda referencia del tipo correspondiente no resuelve.
 
 **3. Catálogo MAD** (todos WARNING: cuentan para el umbral de `NEEDS-REFINEMENT` del Paso 6):
 
@@ -277,7 +276,7 @@ Esta regla aplica el contrato de validación de Agile-SDDF en `docs/policies/val
 
 ### Paso 7 — Resolver y rellenar el template del reporte
 
-1. Template efectivo: `$SPECS_BASE/templates/epic-analyze-report-template.md`; si no existe, el seed [assets/epic-analyze-report-template.md](assets/epic-analyze-report-template.md) con el aviso `⚠️ Usando template seed del skill. Copia assets/epic-analyze-report-template.md a $SPECS_BASE/templates/ para personalizarlo.`
+1. Template efectivo: `docs/templates/epic-analyze-report-template.md`; si no existe, el seed [assets/epic-analyze-report-template.md](assets/epic-analyze-report-template.md) con el aviso `⚠️ Usando template seed del skill. Copia assets/epic-analyze-report-template.md a docs/templates/ para personalizarlo.`
 2. Si no existe ninguno: `❌ Template epic-analyze-report-template.md no encontrado (probado: <ruta central>, <ruta seed>)` y fin **sin escribir**. No hay estructura de respaldo en este skill: la estructura del reporte vive solo en el template, para que no existan dos versiones que diverjan.
 3. Leer las secciones `## ` del template fuera de bloques de código, con su título y su `clave:`. Cada sección se rellena **por clave**, conservando el título del template:
 

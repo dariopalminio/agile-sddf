@@ -48,7 +48,7 @@ El flujo base es: **story-creation → story-evaluation → story-split**.
 ## Entrada
 
 - Descripción de la historia en lenguaje natural (para historia nueva)
-- Historias existentes en `$SPECS_BASE/specs/stories/` con `status: SPECIFY/IN-PROGRESS` (para retomar backlog)
+- Historias existentes en `specs/flow/` con `status: SPECIFY/IN-PROGRESS` (para retomar backlog)
 
 ---
 
@@ -61,7 +61,7 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 ## Precondiciones
 
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
-- `$SPECS_BASE/specs/stories/` accesible (se crea si no existe)
+- `specs/flow/` accesible (se crea si no existe)
 
 ---
 
@@ -77,14 +77,14 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 | Elemento | Valor |
 |---|---|
 | Etapa | `specify` |
-| Archivo | `$SPECS_BASE/guardrails/dod-story-specify.md` (en este repositorio, `docs/guardrails/dod-story-specify.md`) |
+| Archivo | `docs/guardrails/dod-story-specify.md` |
 | Override | `sddf.config.yaml › guardrails.dod.story.specify` |
 | Enforcement | el campo `enforcement` del frontmatter del archivo: `error` bloquea la transición; `warn` informa los criterios incumplidos sin bloquear |
 
 Resolución (primera coincidencia):
 
-1. `sddf.config.yaml › guardrails.dod.story.specify` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-specify.md`
+1. `sddf.config.yaml › guardrails.dod.story.specify` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-specify.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa specify no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin verificación DoD SPECIFY.
 
 Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se verifica en el Paso de verificación DoD SPECIFY, antes de escribir `SPECIFY/DONE`. Su `enforcement` es `warn`: los criterios incumplidos se informan sin bloquear la transición.
@@ -100,7 +100,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se v
 ## Restricciones / Reglas
 
 - No modificar los skills existentes `story-creation`, `story-evaluation` ni `story-split`
-- Usar `$SPECS_BASE/specs/stories/` como único directorio de salida para historias
+- Usar `specs/flow/` como único directorio de salida para historias
 - Toda historia activa debe tener `status: SPECIFY` / `substatus: IN-PROGRESS` en su frontmatter
 - Una historia pasa automáticamente a `status: SPECIFY` / `substatus: DONE` cuando `story-evaluation` devuelve `verdict: APPROVED`
 - Si el veredicto es `NEEDS-REFINEMENT`, nunca entrar en bucle infinito — siempre pedir al usuario una decisión explícita antes de iterar (gate anti-bucle, Paso 6)
@@ -108,7 +108,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se v
 - Mantener la interactividad con el usuario en todo momento — nunca avanzar en silencio
 - Conservar la esencia y el formato de los skills originales sin reescribir su lógica
 - Nunca perder trazabilidad de historias derivadas — toda historia del split se registra inmediatamente
-- Mantener `$SPECS_BASE/specs/stories/` como fuente de verdad del estado real de cada historia
+- Mantener `specs/flow/` como fuente de verdad del estado real de cada historia
 - NO modifique ningún archivo existente en el código solo se debe orquestar
 - NO genere código; este skill solo orquestar y produce archivos de especificaciones `.md`.
 - NO incluya detalles de implementación (consultas específicas, estructuras JSON, firmas de métodos, anotaciones, inventarios de la capa de componentes, lógica paso a paso); estos detalles pertenecen a la etapa de planeación del diseño.
@@ -119,29 +119,22 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se v
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
-Si una raíz explícita (`SDDF_ROOT` o `root` de `sddf.config.yaml`) es inválida, muestra el siguiente mensaje y termina:
-
-> ✗ Entorno inválido: raíz explícita `<ROOT_SOURCE>` = `<valor>` no es un directorio accesible; no se modificó ningún archivo.
-
-Con `SPECS_BASE` resuelto, comprueba que existe el rol local `assets/agents/product-owner.md` (relativo al directorio de este skill). Si falta, muestra el siguiente mensaje y termina sin detectar backlog, preguntar, invocar sub-skills ni crear o modificar ningún `story.md`; no se buscan roles fuera del directorio de este skill:
+Con `REPO_ROOT` resuelto, comprueba que existe el rol local `assets/agents/product-owner.md` (relativo al directorio de este skill). Si falta, muestra el siguiente mensaje y termina sin detectar backlog, preguntar, invocar sub-skills ni crear o modificar ningún `story.md`; no se buscan roles fuera del directorio de este skill:
 
 > ❌ Rol local no encontrado: assets/agents/product-owner.md (skill story-specify). Reinstala el skill; no se modificó ningún archivo.
 
 
 ### Paso 1 — Crear o normalizar la historia activa
 
-Antes de crear nada, busca en `$SPECS_BASE/specs/stories/` historias con `status: SPECIFY` / `substatus: IN-PROGRESS`. Si hay alguna, lístalas (`<STORY-NNN> — <ruta> — SPECIFY/IN-PROGRESS`) y pregunta:
+Antes de crear nada, busca en `specs/flow/` historias con `status: SPECIFY` / `substatus: IN-PROGRESS`. Si hay alguna, lístalas (`<STORY-NNN> — <ruta> — SPECIFY/IN-PROGRESS`) y pregunta:
 
 > 📂 Backlog existente: <N> historia(s) en SPECIFY/IN-PROGRESS. ¿Deseas retomar el backlog o crear una historia nueva?
 
@@ -151,7 +144,7 @@ Opciones: `Retomar backlog` → Caso B con la primera historia de la cola; `Crea
 
 1. Si el input del usuario es incompleto, mostrar `> 📋 Rol local: assets/agents/product-owner.md — conduce esta sesión, sin subagente.` y luego leer `assets/agents/product-owner.md` (relativo al directorio de este skill) y seguir sus instrucciones en esta sesión para aclarar con el usuario usuario, necesidad, valor, contexto y restricciones. No lances un subagente. Al terminar el rol, muestra `✓ Contexto aclarado: usuario, necesidad, valor, contexto y restricciones.` y continúa con el ítem 2.
 2. Mostrar `▶ Invocando story-creation con el contexto refinado.` e invocar el skill `story-creation` con el contexto refinado
-3. Cuando `story-creation` genere el archivo en `$SPECS_BASE/specs/stories/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN-PROGRESS`; si los campos no existen, agregarlos
+3. Cuando `story-creation` genere el archivo en `specs/flow/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN-PROGRESS`; si los campos no existen, agregarlos
 4. Registrar la historia en la tabla de backlog con `Estado = SPECIFY/IN-PROGRESS` y `Veredicto FINVEST = Pendiente`
 
 #### Caso B — Historia existente en refinamiento
@@ -290,7 +283,7 @@ Cuando no queden historias pendientes para iterar o el usuario decida detenerse,
    - Historias con `SPECIFY/DONE`
    - Historias con `SPECIFY/IN-PROGRESS`
    - Historias derivadas creadas
-2. Ruta de todos los archivos afectados en `$SPECS_BASE/specs/stories/`
+2. Ruta de todos los archivos afectados en `specs/flow/`
 3. Próximo paso recomendado para cada historia en `SPECIFY/IN-PROGRESS`
 
 Formato:
@@ -308,8 +301,7 @@ Historias derivadas creadas: [lista]
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Raíz explícita inválida (Paso 0) | `✗ Entorno inválido: raíz explícita <ROOT_SOURCE> = <valor> no es un directorio accesible` | Detener sin fallback ni escrituras |
-| `$SPECS_BASE/specs/stories/` no existe | — | Crear el directorio y continuar |
+| `specs/flow/` no existe | — | Crear el directorio y continuar |
 | `story-creation` falla | Informar el error al usuario | No registrar la historia en el backlog; preguntar si reintentar |
 | `story-evaluation` falla | Informar el error al usuario | Conservar `Veredicto FINVEST = Pendiente`; ofrecer reintentar |
 | `story-split` falla o no aplica | Informar al usuario | Conservar historia como activa; continuar al Paso 5A |
@@ -321,7 +313,7 @@ Historias derivadas creadas: [lista]
 
 ## Salida
 
-- Archivos `story.md` en `$SPECS_BASE/specs/stories/STORY-{NNN}-{slug}/` — creados o actualizados durante el ciclo
+- Archivos `story.md` en `specs/flow/STORY-{NNN}-{slug}/` — creados o actualizados durante el ciclo
 - `story.md.bak` — backup del original antes de aplicar mejoras automáticas (generado por `story-refine` en Paso 5A, cuando aplica)
 - `story-refinement-log.md` — log de cambios por dimensión FINVEST (generado por `story-refine` en Paso 5A, cuando aplica)
 - Estado final de cada historia:

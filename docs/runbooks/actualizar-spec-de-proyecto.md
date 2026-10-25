@@ -9,12 +9,12 @@ superseded-by: domain-foundational-docs-lifecycle
 created: 2026-08-30
 updated: 2026-08-30
 related:
-  - eliminar-specs-01-projects
+  - asegurar-dos-niveles-de-flujo-epics-stories
   - index
 ---
 
 <!-- Referencias -->
-[[eliminar-specs-01-projects]] · [[index]]
+[[asegurar-dos-niveles-de-flujo-epics-stories]] · [[index]]
 
 # 📘 Runbook para actualizar la especificación de proyecto
 
@@ -82,21 +82,21 @@ Antes de leer un solo documento de contenido, obtener las cifras. Este bloque es
 la que se escribe todo lo demás:
 
 ```bash
-echo "epic dirs:      $(ls -d docs/specs/epics/*/ | wc -l)"
-echo "epic.md:        $(ls docs/specs/epics/*/epic.md | wc -l)"
-echo "plan-NN.md:     $(ls docs/specs/epics/*/plan-*.md | wc -l)"
-echo "story dirs:     $(ls -d docs/specs/stories/*/ | wc -l)"
-echo "story.md:       $(ls docs/specs/stories/*/story.md | wc -l)"
+echo "epic dirs:      $(ls -d specs/flow/EPIC-*/ | wc -l)"
+echo "epic.md:        $(ls specs/flow/EPIC-*/epic.md | wc -l)"
+echo "plan-NN.md:     $(ls specs/flow/EPIC-*/plan-*.md | wc -l)"
+echo "story dirs:     $(ls -d specs/flow/STORY-*/ specs/flow/archive/*-STORY-*/ | wc -l)"
+echo "story.md:       $(ls specs/flow/STORY-*/story.md specs/flow/archive/*-STORY-*/story.md | wc -l)"
 echo "skills:         $(ls -d skills/*/ | wc -l)"
 echo "agents raiz:    $(ls agents/*.agent.md | wc -l)"
 echo "agents locales: $(ls skills/*/agents/*.md | wc -l)"
 echo "skills c/evals: $(ls -d skills/*/evals | wc -l)"
 
-grep -h "^status:"    docs/specs/epics/*/epic.md   | sort | uniq -c
-grep -h "^substatus:" docs/specs/epics/*/epic.md   | sort | uniq -c
-grep -h "^status:"    docs/specs/stories/*/story.md | sort | uniq -c
-grep -h "^substatus:" docs/specs/stories/*/story.md | sort | uniq -c
-grep -h "^kind:"      docs/specs/stories/*/story.md | sort | uniq -c
+grep -h "^status:"    specs/flow/EPIC-*/epic.md   | sort | uniq -c
+grep -h "^substatus:" specs/flow/EPIC-*/epic.md   | sort | uniq -c
+grep -h "^status:"    specs/flow/STORY-*/story.md specs/flow/archive/*-STORY-*/story.md | sort | uniq -c
+grep -h "^substatus:" specs/flow/STORY-*/story.md specs/flow/archive/*-STORY-*/story.md | sort | uniq -c
+grep -h "^kind:"      specs/flow/STORY-*/story.md specs/flow/archive/*-STORY-*/story.md | sort | uniq -c
 ```
 
 Dos avisos que la ejecución de referencia hizo evidentes:
@@ -115,8 +115,8 @@ subagentes de exploración en paralelo**, uno por eje:
 
 | Subagente | Alcance | Qué debe devolver |
 |---|---|---|
-| 1 | `docs/specs/epics/` | Por épica: frontmatter, objetivo en 1-2 líneas, historias hijas, capacidad aportada. Cierra con tabla resumen y agrupamiento temático |
-| 2 | `docs/specs/stories/` | Por historia: **solo frontmatter** + título. Cierra con tabla, conteos por estado y por épica padre, e IDs faltantes en la secuencia |
+| 1 | `specs/flow/EPIC-*/` | Por épica: frontmatter, objetivo en 1-2 líneas, historias hijas, capacidad aportada. Cierra con tabla resumen y agrupamiento temático |
+| 2 | `specs/flow/STORY-*/` y `specs/flow/archive/*-STORY-*/` | Por historia: **solo frontmatter** + título. Cierra con tabla, conteos por estado y por épica padre, e IDs faltantes en la secuencia |
 | 3 | `skills/`, `agents/`, `sddf.config.yaml`, `package.json`, `scripts/` | Por skill: descripción, precondición/gate, output, flags, subagentes que invoca. Cierra con tabla skill → fase → output y agrupamiento en pipelines |
 
 Reglas para el prompt de cada subagente:
@@ -225,8 +225,8 @@ diff <(grep -oE '^#+ [0-9]+\.?[0-9]*\.?' "$P") \
 - **Un documento generado por ingeniería inversa envejece peor que uno escrito a mano**, porque nadie
   lo revisa: parece autoritativo por su formato exhaustivo y su tabla de niveles de confianza, pero
   es una foto con fecha. Conviene dejar una nota de vigencia visible al inicio.
-- **`docs/index.md` es mejor punto de partida que `project.md`.** Lo mantiene un skill
-  (`docs-wiki-builder`) que se reejecuta con frecuencia, así que refleja el filesystem mucho mejor
+- **`docs/index.md` es mejor punto de partida que `project.md`.** Lo regenera `/memory-system index`,
+  que se reejecuta con frecuencia, así que refleja el filesystem mucho mejor
   que un documento de spec editado a mano.
 - **El `CHANGELOG.md` es la única fuente del *porqué*.** Sin él, un renombrado masivo parece un error
   de nomenclatura en vez de una decisión deliberada con su ADR detrás.

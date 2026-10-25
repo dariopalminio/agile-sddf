@@ -16,9 +16,9 @@ Completar o retomar, en orden, **Begin → Discovery → Planning** usando las c
 
 | Etapa | Skill compuesto | Capa que escribe el skill compuesto |
 |---|---|---|
-| Begin | `/project-begin` | `$SPECS_BASE/product/vision.md` |
-| Discovery | `/project-discovery` | `$SPECS_BASE/product/stakeholders.md` y `$SPECS_BASE/requirements/{functional,non-functional}/` |
-| Planning | `/project-planning` | `$SPECS_BASE/product/roadmap.md` |
+| Begin | `/project-begin` | `docs/product/vision.md` |
+| Discovery | `/project-discovery` | `docs/product/stakeholders.md` y `docs/requirements/{functional,non-functional}/` |
+| Planning | `/project-planning` | `docs/product/roadmap.md` |
 
 El gate del skill de etapa aprueba su documento. El gate de este orquestador aprueba avanzar a la etapa siguiente.
 
@@ -26,10 +26,10 @@ El gate del skill de etapa aprueba su documento. El gate de este orquestador apr
 
 El flujo solo lee, para detectar la etapa:
 
-- `$SPECS_BASE/product/vision.md`
-- `$SPECS_BASE/requirements/functional/FR-*.md`
-- encabezados `### FR-NNN` en `$SPECS_BASE/requirements/srs-*.md`
-- `$SPECS_BASE/product/roadmap.md`
+- `docs/product/vision.md`
+- `docs/requirements/functional/FR-*.md`
+- encabezados `### FR-NNN` en `docs/requirements/srs-*.md`
+- `docs/product/roadmap.md`
 
 Los directorios `product/` y `requirements/` pueden no existir: se tratan como capas vacías, no como un error.
 
@@ -59,14 +59,13 @@ Después termina sin escribir.
 
 ## Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` de forma independiente, solo para localizar skills instalados; nunca lo derives de `SPECS_BASE`.
+Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para localizar skills instalados; nunca lo derives de `REPO_ROOT`.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -83,8 +82,8 @@ Evalúa estas condiciones en orden. La primera etapa pendiente gana:
 
 Definiciones:
 
-- `$FR_COUNT`: número de archivos `$SPECS_BASE/requirements/functional/FR-*.md` más encabezados `### FR-NNN` en `$SPECS_BASE/requirements/srs-*.md`. Un directorio ausente cuenta como cero.
-- `$ROADMAP_PLANNED`: `$SPECS_BASE/product/roadmap.md` existe y contiene una sección `## Propuesta (` o una línea con un ID `EPIC-NN` dentro de su sección `## Épicas`.
+- `$FR_COUNT`: número de archivos `docs/requirements/functional/FR-*.md` más encabezados `### FR-NNN` en `docs/requirements/srs-*.md`. Un directorio ausente cuenta como cero.
+- `$ROADMAP_PLANNED`: `docs/product/roadmap.md` existe y contiene una sección `## Propuesta (` o una línea con un ID `EPIC-NN` dentro de su sección `## Épicas`.
 
 Informa siempre:
 
@@ -135,10 +134,10 @@ Si la re-detección devuelve Pipeline completo, muestra:
 ```text
 🎉 Pipeline de proyecto completo
 
-- $SPECS_BASE/product/vision.md
-- $SPECS_BASE/product/stakeholders.md
-- $SPECS_BASE/requirements/
-- $SPECS_BASE/product/roadmap.md
+- docs/product/vision.md
+- docs/product/stakeholders.md
+- docs/requirements/
+- docs/product/roadmap.md
 
 Siguiente comando: /epic-from-project-plan
 ```

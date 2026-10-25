@@ -20,6 +20,9 @@ parent: PROJ-01-demo
 **Criterios de éxito:**
 - [x] El entorno de desarrollo es reproducible.
 
+## Objetivo
+[Por completar]
+
 ## Alcance
 [Por completar]
 

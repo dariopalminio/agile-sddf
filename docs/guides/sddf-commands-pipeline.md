@@ -16,21 +16,14 @@ related:                                    # opcional, si tiene relación con o
 
 ---
 
-## Configuración — Raíz de artefactos
+## Configuración — Layout fijo
 
-Todos los skills resuelven localmente `SPECS_BASE` una vez por invocación.
-
-| Escenario | Ruta usada |
-|---|---|
-| `SDDF_ROOT` válida | La ruta del override; no se lee configuración. |
-| Sin override y `sddf.config.yaml.root` válida | La raíz versionada; las rutas relativas se anclan en `REPO_ROOT`. |
-| Sin fuente explícita | `docs/` (compatibilidad). |
-| Fuente explícita inválida | Error accionable y ninguna escritura. |
-
-```bash
-# Override opcional, por ejemplo para CI
-export SDDF_ROOT="artefactos-ci"
-```
+Los skills no resuelven una raíz de artefactos configurable: cada uno determina `REPO_ROOT` y
+usa rutas fijas relativas a él ([ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md)).
+El conocimiento vive en `docs/` (templates en `docs/templates/`, DoD en `docs/guardrails/`) y
+los work items en `specs/flow/`, con las historias `COMPLETED` archivadas en `specs/flow/archive/`.
+`SDDF_ROOT` y la clave `root` de `sddf.config.yaml` ya no se leen; para migrar un proyecto que
+los usa, sigue [la guía de migración a 5.0.0](artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices).
 
 ### Niveles de `sddf-init`
 
@@ -66,13 +59,13 @@ memory-system migrate --from=dod-monolithic   (dividir el DoD de historia en un 
 
 | Skill | Input | Output |
 |---|---|---|
-| `memory-system` = `memory-system ensure [--fix-frontmatter] [--harness h]` | `$SPECS_BASE/` (puede estar vacío o incompleto) y `<CLI_ROOT>/skills/<dueño>/assets/` para las plantillas compartidas | Crea solo lo que falta de las once capas (`constitution.md`, `product/*`, un `README.md` por capa, seis plantillas) y regenera `index.md`; informe `creados: N · preservados: M · índice regenerado: sí`. Con `--fix-frontmatter`, `header-aggregation` en batch ("Saltar todos los conflictos") completa antes los archivos sin frontmatter |
+| `memory-system` = `memory-system ensure [--fix-frontmatter] [--harness h]` | `docs/` (puede estar vacío o incompleto) y `<CLI_ROOT>/skills/<dueño>/assets/` para las plantillas compartidas | Crea solo lo que falta de las diez capas (`constitution.md`, `product/*`, un `README.md` por capa, seis plantillas) y regenera `index.md`; informe `creados: N · preservados: M · índice regenerado: sí`. Con `--fix-frontmatter`, `header-aggregation` en batch ("Saltar todos los conflictos") completa antes los archivos sin frontmatter |
 | `memory-system scaffold [--dry-run] [--harness h]` | Igual que `ensure` | Solo crea lo faltante (`[CREADO]`/`[PRESERVADO]`); no toca `index.md` |
 | `memory-system rebuild --force` | Memoria existente | `⚠️` advertencia, sobrescribe únicamente los archivos gestionados por el scaffold (`[SOBRESCRITO]`) y regenera `index.md`; sin `--force` se detiene con `❌ rebuild es destructivo. Añade --force para confirmar.` |
-| `memory-system index [--harness h] [--dry-run]` | `$SPECS_BASE/` (artefactos con frontmatter `slug`/`title`) y, según el harness detectado, las raíces externas de Spec-kit/OpenSpec | `$SPECS_BASE/index.md` regenerado con wikilinks `[[slug]]` por capa; resumen `nodos indexados: N · sin frontmatter: M · nodos pendientes: K` |
+| `memory-system index [--harness h] [--dry-run]` | `docs/` (artefactos con frontmatter `slug`/`title`) y, según el harness detectado, las raíces externas de Spec-kit/OpenSpec | `docs/index.md` regenerado con wikilinks `[[slug]]` por capa; resumen `nodos indexados: N · sin frontmatter: M · nodos pendientes: K` |
 | `memory-system migrate [--harness h] [--yes]` | Proyecto no SDDF con `.specify/` (Speckit) u `openspec/` (OpenSpec) | Entrada para proyectos no SDDF: muestra `📋 Plan de migración (<h>)` (salida de `scaffold --dry-run`: `[OMITIRÍA] specs/`, `[MAPEARÍA] constitution.md → .specify/memory/constitution.md`, `[CREARÍA] …`), pide confirmación (`--yes` la asume) y ejecuta `scaffold` adaptado al harness; los directorios del harness no se tocan. En un proyecto `sddf` remite a `ensure`. Siguiente paso: `/memory-system index` |
-| `memory-system migrate --from=dod-monolithic [--dry-run] [--force]` | `$SPECS_BASE/guardrails/dod-story-checklist.md` (o el heredado `policies/dod-story.md`) | Un `guardrails/dod-story-<etapa>.md` por etapa (`[CREADO]`) y el original como índice deprecado (`[REEMPLAZADO]`); resumen `creados: N · sobrescritos: S · preservados: M · reemplazados: R`. Idempotente: nunca sobrescribe sin `--force` |
-| `memory-system check [--json] [--harness h] [--skills-dir <ruta>]` | `$SPECS_BASE/` en solo lectura | Informe de las cinco familias de problemas (`missing-layer`, `orphan`, `invalid-frontmatter`, `broken-wikilink`, `dod-guardrail`) y cierre `problemas: N (…)`; con `--json`, un único objeto `{ harness, root, ok, summary, problems }`. No escribe nada. Exit 0 sin problemas, 1 con al menos uno, 2 ante error técnico |
+| `memory-system migrate --from=dod-monolithic [--dry-run] [--force]` | `docs/guardrails/dod-story-checklist.md` (o el heredado `policies/dod-story.md`) | Un `guardrails/dod-story-<etapa>.md` por etapa (`[CREADO]`) y el original como índice deprecado (`[REEMPLAZADO]`); resumen `creados: N · sobrescritos: S · preservados: M · reemplazados: R`. Idempotente: nunca sobrescribe sin `--force` |
+| `memory-system check [--json] [--harness h] [--skills-dir <ruta>]` | `docs/` en solo lectura | Informe de las cinco familias de problemas (`missing-layer`, `orphan`, `invalid-frontmatter`, `broken-wikilink`, `dod-guardrail`) y cierre `problemas: N (…)`; con `--json`, un único objeto `{ harness, root, ok, summary, problems }`. No escribe nada. Exit 0 sin problemas, 1 con al menos uno, 2 ante error técnico |
 
 > En un proyecto nuevo, `/sddf-init --level full` equivale a `/sddf-init` seguido de
 > `/memory-system scaffold` en un solo comando (el scaffold corre después de la pregunta de
@@ -133,7 +126,7 @@ runtime que tengas instalado. En el repositorio del framework el motor vive en
 
 ### DoD de historia por etapa
 
-El Definition of Done de historia es un guardrail **por etapa** en `$SPECS_BASE/guardrails/`:
+El Definition of Done de historia es un guardrail **por etapa** en `docs/guardrails/`:
 
 | Etapa | Archivo | `from` → `to` | Lo carga |
 |---|---|---|---|
@@ -154,16 +147,13 @@ consumidor cambia el DoD de una etapa sin tocar los skills:
 guardrails:
   dod:
     story:
-      implement: dod-story-implement-acme   # → $SPECS_BASE/guardrails/dod-story-implement-acme.md
+      implement: dod-story-implement-acme   # → docs/guardrails/dod-story-implement-acme.md
 ```
 
 `/memory-system check` verifica que cada DoD declare la transición de su etapa (`from`/`to`), que cada entrada del mapeo exista y que los skills
 referencien su etapa (familia `dod-guardrail`). Un proyecto con el DoD en un único archivo lo divide con
 `/memory-system migrate --from=dod-monolithic` (`--dry-run` para ver el plan); el original queda como
 índice deprecado hasta 4.0.0.
-
-> ⚠️ `docs-wiki-builder` está deprecado desde 3.3.0 (se elimina en 4.0.0): es un alias que
-> delega en `/memory-system index` (`--update` → `index`, `--dry-run` → `index --dry-run`).
 
 ---
 
@@ -175,12 +165,11 @@ project-begin → project-discovery → project-planning
 
 | Skill | Input | Output |
 |---|---|---|
-| `project-begin` | Intención del usuario (conversación) | `$SPECS_BASE/product/vision.md` |
-| `project-discovery` | `product/vision.md` | `$SPECS_BASE/product/stakeholders.md` y `$SPECS_BASE/requirements/` |
-| `project-planning` | Requisitos funcionales | `$SPECS_BASE/product/roadmap.md` |
+| `project-begin` | Intención del usuario (conversación) | `docs/product/vision.md` |
+| `project-discovery` | `product/vision.md` | `docs/product/stakeholders.md` y `docs/requirements/` |
+| `project-planning` | Requisitos funcionales | `docs/product/roadmap.md` |
 
 > `project-flow` detecta la etapa por el estado de las capas y compone los tres skills; no escribe `substatus`.
-> `$SPECS_BASE` procede de `SDDF_ROOT` válida, de `sddf.config.yaml.root` válida o de `docs` si no hay fuente explícita.
 
 ---
 
@@ -196,8 +185,8 @@ epic-from-project-plan → epic-generate-stories → epic-analyze ⇄ epic-refin
 
 | Skill | Input | Output |
 |---|---|---|
-| `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `$SPECS_BASE/specs/epics/EPIC-NN-<slug>/epic.md` (uno por épica) |
-| `epic-generate-stories` | Un archivo `epic.md` | `$SPECS_BASE/specs/stories/STORY-[NNN]-[nombre]/story.md` (una por feature) |
+| `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `specs/flow/EPIC-NN-<slug>/epic.md` (uno por épica) |
+| `epic-generate-stories` | Un archivo `epic.md` | `specs/flow/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
 <!-- TODO: | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`) y `<EPIC_DIR>/epic-refine-report.md` |
 -->

@@ -10,7 +10,7 @@ Conduce una sesión de User Story Mapping con su rol local `story-mapper`, que c
 
 **Produces:**
 
-- `$SPECS_BASE/product/story-map.md`.
+- `docs/product/story-map.md`.
 - Personas, backbone, walking skeleton y release slices.
 
 No reemplaza la planificación formal ni crea tareas de implementación.

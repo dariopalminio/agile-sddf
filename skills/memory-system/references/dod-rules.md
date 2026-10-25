@@ -6,7 +6,7 @@
 
 ## 1. Etapas (`DOD_STAGES`)
 
-Un archivo `$SPECS_BASE/guardrails/dod-story-<etapa>.md` por fila, en este orden canónico:
+Un archivo `docs/guardrails/dod-story-<etapa>.md` por fila, en este orden canónico:
 
 | Etapa (`stage`) | `from` | `to` | `enforcement` | `kind` | `applies-to` | Skills que lo cargan |
 |---|---|---|---|---|---|---|
@@ -27,11 +27,11 @@ Un archivo `$SPECS_BASE/guardrails/dod-story-<etapa>.md` por fila, en este orden
 
 ## 2. Resolución (la misma en `check` y en la sección `## DoD aplicable` de cada skill)
 
-1. `sddf.config.yaml › guardrails.dod.story.<etapa>: <slug>` → `$SPECS_BASE/guardrails/<slug>.md`
-2. Convención: `$SPECS_BASE/guardrails/dod-story-<etapa>.md`
+1. `sddf.config.yaml › guardrails.dod.story.<etapa>: <slug>` → `docs/guardrails/<slug>.md`
+2. Convención: `docs/guardrails/dod-story-<etapa>.md`
 3. Ninguno existe → el skill avisa y continúa sin validación DoD (el DoD es opcional).
 
-`sddf.config.yaml` se busca en `<REPO_ROOT>`, el directorio padre de `SPECS_BASE`. Solo se lee la ruta
+`sddf.config.yaml` se busca en `REPO_ROOT`, directorio padre de `docs/`. Solo se lee la ruta
 `guardrails → dod → story`; el resto del archivo se ignora.
 
 ## 3. División del monolítico (`migrate --from=dod-monolithic`)
@@ -94,5 +94,5 @@ Solo se evalúa si el proyecto tiene DoD: algún `guardrails/dod-story-*.md`, el
 
 R6 y R7 necesitan un directorio de skills: `--skills-dir <ruta>` → `<REPO_ROOT>/skills` →
 `<REPO_ROOT>/<--cli-root>/skills`; si no se resuelve ninguno, no se evalúan y la cabecera del informe
-dice `skills: —`. Las rutas fuera de `SPECS_BASE` se informan relativas a ella (`../…`). Una etapa sin
+dice `skills: —`. Las rutas fuera de `docs/` se informan relativas a ella (`../…`). Una etapa sin
 archivo no es un problema (el skill avisa y continúa); sí lo es un mapeo que apunta a un archivo inexistente.

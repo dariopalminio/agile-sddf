@@ -11,7 +11,7 @@ updated: 2026-10-10
 
 # Visión del producto
 
-> Consolidada desde `project-intent.md` (PROJ-01, eliminado) por [[eliminar-specs-01-projects]].
+> Consolidada desde `project-intent.md` (PROJ-01, eliminado) por [[asegurar-dos-niveles-de-flujo-epics-stories]].
 
 ## Problema que resolvemos
 

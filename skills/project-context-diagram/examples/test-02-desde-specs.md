@@ -7,7 +7,7 @@ El skill toma el sistema desde `product/vision.md`, los actores desde `product/s
 Después del preview manual y la confirmación de sobrescritura, escribe:
 
 ```text
-$SPECS_BASE/architecture/c4/context-diagram.puml
+docs/architecture/c4/context-diagram.puml
 ```
 
 El resultado contiene `Person()`, un único `System()`, `System_Ext()` y relaciones con etiquetas.

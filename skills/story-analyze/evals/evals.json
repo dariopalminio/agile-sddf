@@ -178,6 +178,29 @@
         ]
       },
       "threshold": 0.92
+    },
+    {
+      "id": "TC-007",
+      "name": "epica-padre-en-specs-flow",
+      "type": "happy-path",
+      "description": "La historia está en specs/flow/STORY-099-exportar-datos-csv/ con parent: EPIC-10-data-management (slug completo) y existe la épica fixture specs/flow/EPIC-10-data-management/epic.md. El skill debe resolver la épica en specs/flow/{parent}/epic.md y verificar la alineación, sin buscar fuera de specs/flow/.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "STORY-099",
+        "flags": [],
+        "context": "La historia está en specs/flow/STORY-099-exportar-datos-csv/ con story.md, design.md y tasks.md iguales a los del input_path (parent: EPIC-10-data-management). Existe la épica fixture specs/flow/EPIC-10-data-management/epic.md con el objetivo «permitir a los usuarios exportar y gestionar sus datos» y la historia STORY-099 Exportar datos en CSV listada en su índice de historias."
+      },
+      "expected": {
+        "contains": [
+          "type: analyze",
+          "Alineación con la épica EPIC-10-data-management"
+        ],
+        "not_contains": [
+          "No se encontró epic.md",
+          "docs/specs"
+        ]
+      },
+      "threshold": 0.92
     }
   ]
 }

@@ -13,6 +13,9 @@ updated: 2026-02-01
 
 # Épica: Reportes
 
+## Objetivo
+Dar visibilidad del negocio.
+
 ## Alcance
 Reportes de ventas.
 
@@ -33,9 +36,6 @@ Escenario: [Por completar]
 
 ## Notas
 Revisar con finanzas.
-
-### Objetivo
-Dar visibilidad del negocio.
 
 ### Requerimiento: exportación
 Los reportes se exportan a CSV.

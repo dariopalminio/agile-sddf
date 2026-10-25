@@ -76,10 +76,10 @@ No es:
 | Skills del framework | `skills/` | Guían los flujos de proyecto, épicas, historias, planificación, implementación y verificación. |
 | Roles y subagentes locales | dentro de cada skill, en `skills/<skill>/` | Especializan un paso del skill y se instalan con él. |
 | Instalador y contratos | `scripts/` y `config/` | Copian solo los artefactos admitidos en el runtime elegido y validan sus contratos. |
-| Configuración del proyecto | `sddf.config.yaml` | Define la raíz de artefactos, perfil, stack, comandos de verificación y workers opcionales. |
-| Memoria | `<SPECS_BASE>` | Generalmente docs. Dominio, historial y otros artefactos generados por el flujo. |
-| Políticas del proyecto | `<SPECS_BASE>/policies/` | Registran principios técnicos y Definition of Done para los gates del flujo. |
-| Especificaciones vivas | `<SPECS_BASE>/specs/` | Conservan intención, requisitos, épicas, historias, planes y reportes. |
+| Configuración del proyecto | `sddf.config.yaml` | Define perfil, stack, comandos de verificación y workers opcionales. |
+| Memoria | `docs/` | Conocimiento: producto, requisitos, dominio, arquitectura, decisiones, guías y templates. |
+| Políticas del proyecto | `docs/policies/` y `docs/guardrails/` | Registran principios técnicos y Definition of Done para los gates del flujo. |
+| Work items | `specs/flow/` | Épicas e historias con sus planes y reportes; las historias completadas se archivan en `specs/flow/archive/`. |
 ## Empieza en cinco minutos
 
 Necesitas Node.js 18 o superior y uno de los runtimes compatibles. La instalación tiene dos pasos deliberadamente separados: descargar el paquete y copiar sus artefactos en el runtime.
@@ -153,7 +153,7 @@ Cada etapa produce algo que se puede leer y revisar:
 | Síntoma | Qué revisar |
 |---|---|
 | “Instalé el paquete y no aparecen los skills” | Es esperado tras `npm install`. Ejecuta `npx agile-sddf install --target <runtime>`. |
-| El skill no puede resolver `SPECS_BASE` | Comprueba `SDDF_ROOT`, luego `sddf.config.yaml.root`, o consulta el diagnóstico `/skill-preflight`. Una ruta explícita inválida bloquea las escrituras. |
+| El skill no encuentra los work items o avisa de layout legado | Pide el diagnóstico explícito `/skill-preflight`: detecta el layout legado (`docs/specs/`, la clave `root`, `SDDF_ROOT`) y remite a la [guía de migración](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices). |
 | Un worker de implementación no existe | Decláralo como `skill: none` o instálalo y configúralo antes de invocar `/story-implement`; los workers requeridos fallan rápido. |
 | Una historia necesita correcciones tras el review | Lee `fix-directives.md` y vuelve a `/story-implement`; el artefacto señala la ronda de rework. |
 | Quieres retomar trabajo pendiente | Localiza el documento con `substatus: IN-PROGRESS` y reanuda el skill que generó el artefacto. |
@@ -171,7 +171,7 @@ SDDF separa el kit distribuido, la instalación del runtime y los artefactos de 
 |---|---|---|
 | Paquete SDDF | Distribuye skills, agentes, scripts y contratos. | Este repositorio y el paquete npm. |
 | Runtime instalado | Hace disponibles los artefactos compatibles para tu asistente de IA. | El target elegido en [`config/runtimes.json`](config/runtimes.json). |
-| Memoria | Guarda la intención, el diseño, las decisiones, la evidencia, las políticas y los specs. | `<SPECS_BASE>/` dentro de tu repositorio. |
+| Memoria | Guarda la intención, el diseño, las decisiones, la evidencia, las políticas y los specs. | `docs/` y `specs/` en la raíz de tu repositorio. |
 
 ## Flujo y evidencia
 
@@ -209,17 +209,24 @@ Los gates de validación `epic-analyze`, `story-evaluation`, `story-analyze`, `s
 ## Artefactos que deja el flujo (Memoria)
 
 <details>
+<summary>Migración a 5.0.0 (layout fijo de tres raíces)</summary>
+
+`docs/specs/epics/` y `docs/specs/stories/` pasan a `specs/flow/`, plano, en la raíz del repositorio; las historias `COMPLETED` se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. Se retiran `SDDF_ROOT` y la clave `root` de `sddf.config.yaml`.
+Sigue la [sección de migración a 5.0.0](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices).
+</details>
+
+<details>
 <summary>Migración a 4.0.0 (specs de dos niveles)</summary>
 
-`specs/01-projects/` fue reemplazado por `product/` y `requirements/`; las épicas e historias viven en `specs/epics/` y `specs/stories/`.
+`specs/01-projects/` fue reemplazado por `product/` y `requirements/`; las épicas e historias pasaron a `specs/epics/` y `specs/stories/` (reemplazados en 5.0.0 por `specs/flow/`).
 `requirements/` empieza con un SRS único y se fragmenta al superar 15 requisitos o 500 líneas.
 Sigue la [guía de migración](docs/guides/artifact-directory-migration.md), primero con `--dry-run` y luego sin él.
 </details>
 
-`SPECS_BASE` se resuelve con esta precedencia: `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`. Una fuente explícita inválida no cae silenciosamente en `docs`: detiene la escritura para proteger el proyecto.
+El layout es fijo ([ADR-0016](docs/adr/ADR-0016-layout-fijo-de-tres-raices.md)): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso, reservado) son raíces hermanas en la raíz del repositorio y no se configuran.
 
 ```text
-<SPECS_BASE>/
+docs/
 ├── index.md                        # mapa de la memoria (/memory-system index)
 ├── constitution.md
 ├── product/                        # documentación estratégica, no work item
@@ -241,30 +248,32 @@ Sigue la [guía de migración](docs/guides/artifact-directory-migration.md), pri
 ├── guardrails/
 │   ├── gr-*-checklist.md
 │   └── dod-story-<etapa>.md        # DoD por etapa (specify … acceptance, release)
-├── policies/
-│   └── README.md
-└── specs/
-    ├── epics/
-    │   └── EPIC-01-mi-epica/
-    │       └── epic.md
-    └── stories/
-        └── STORY-001-mi-historia/
-            ├── story.md
-            ├── design.md
-            ├── tasks.md
-            ├── testcases.md
-            ├── implement-report.md
-            ├── code-review-report.md
-            ├── verify-report.md
-            └── acceptance-report.md
+└── policies/
+    └── README.md
+specs/
+├── flow/
+│   ├── EPIC-01-mi-epica/
+│   │   └── epic.md
+│   ├── STORY-001-mi-historia/
+│   │   ├── story.md
+│   │   ├── design.md
+│   │   ├── tasks.md
+│   │   ├── testcases.md
+│   │   ├── implement-report.md
+│   │   ├── code-review-report.md
+│   │   ├── verify-report.md
+│   │   └── acceptance-report.md
+│   └── archive/                    # <YYYY-MM-DD>-STORY-NNN-<slug>/ de las historias COMPLETED
+└── living/                         # reservado
+workflow/                           # reservado
 
 ```
 
 No todos los reportes existen desde el comienzo: aparecen cuando el flujo llega a su fase. El árbol también puede incluir `analyze.md`, `finvest-evaluation-report.md`, `story-refinement-log.md` y `fix-directives.md`.
 
-`/memory-system` (modo `ensure`, recomendado tras `/sddf-init`) crea las once capas de esa memoria que falten (`constitution.md`, `product/*`, un `README.md` por capa y las seis plantillas de `templates/`) sin sobrescribir nada y regenera el índice; `scaffold` solo crea lo faltante, `rebuild --force` restaura los archivos semilla (única operación que sobrescribe, y solo esos archivos; nunca borra) e `index` regenera únicamente `<SPECS_BASE>/index.md`, el mapa de la memoria, con un wikilink `[[slug]]` por artefacto agrupado por capa (idempotente; `--dry-run` solo imprime). `check [--json]` no escribe nada: verifica capas ausentes, nodos sin frontmatter, frontmatter incompleto (`type`, `slug`, `title`; más `id` y `status` en specs) y wikilinks que no resuelven, e informa por texto o con un único objeto JSON, terminando con exit 0 si la memoria está sana, 1 si hay problemas y 2 ante un error técnico — el gate que un pipeline de CI ejecuta en una línea (ejemplo en `docs/guides/sddf-commands-pipeline.md` §0; complementa `npm run verify:links`, no lo sustituye). `docs-wiki-builder` queda como alias deprecado desde 3.3.0 y se elimina en 4.0.0.
+`/memory-system` (modo `ensure`, recomendado tras `/sddf-init`) crea las diez capas de esa memoria que falten (`constitution.md`, `product/*`, un `README.md` por capa y las seis plantillas de `templates/`) sin sobrescribir nada y regenera el índice; `scaffold` solo crea lo faltante, `rebuild --force` restaura los archivos semilla (única operación que sobrescribe, y solo esos archivos; nunca borra) e `index` regenera únicamente `docs/index.md`, el mapa de la memoria, con un wikilink `[[slug]]` por artefacto agrupado por capa (incluidos los work items de `specs/flow/`) (idempotente; `--dry-run` solo imprime). `check [--json]` no escribe nada: verifica capas ausentes, nodos sin frontmatter, frontmatter incompleto (`type`, `slug`, `title`; más `id` y `status` en specs) y wikilinks que no resuelven, e informa por texto o con un único objeto JSON, terminando con exit 0 si la memoria está sana, 1 si hay problemas y 2 ante un error técnico — el gate que un pipeline de CI ejecuta en una línea (ejemplo en `docs/guides/sddf-commands-pipeline.md` §0; complementa `npm run verify:links`, no lo sustituye).
 
-**Compatibilidad con OpenSpec y Speckit.** Si tu proyecto ya usa Speckit (`.specify/`) u OpenSpec (`openspec/`), `memory-system` adapta la memoria al harness en lugar de duplicarlo: no crea `docs/specs/` (el harness ya modela las especificaciones), reutiliza `.specify/memory/constitution.md` en lugar de crear `docs/constitution.md` si existe, y enlaza los artefactos del harness desde `docs/index.md` en una sección de artefactos externos. Los directorios del harness son de solo lectura. Para adoptarla:
+**Compatibilidad con OpenSpec y Speckit.** Si tu proyecto ya usa Speckit (`.specify/`) u OpenSpec (`openspec/`), `memory-system` adapta la memoria al harness en lugar de duplicarlo: no crea `specs/flow/` (el harness ya modela las especificaciones), reutiliza `.specify/memory/constitution.md` en lugar de crear `docs/constitution.md` si existe, y enlaza los artefactos del harness desde `docs/index.md` en una sección de artefactos externos. Los directorios del harness son de solo lectura. Para adoptarla:
 
 ```text
 /memory-system migrate --harness speckit     # propone el plan y escribe solo tras confirmar
@@ -341,10 +350,9 @@ pnpm exec agile-sddf install --target claude-code
 
 ## Configuración
 
-`/sddf-init` crea una configuración de consumidor segura por defecto: `profile: core`, `stack: node-markdown` y `root: docs`. El archivo `sddf.config.yaml` permite adaptar comandos de verificación y workers sin cambiar los skills core.
+`/sddf-init` crea una configuración de consumidor segura por defecto: `profile: core` y `stack: node-markdown`. Ya no escribe la clave `root`: el layout es fijo. El archivo `sddf.config.yaml` permite adaptar comandos de verificación y workers sin cambiar los skills core.
 
 ```yaml
-root: docs
 profile: core
 stack: node-markdown
 
@@ -361,7 +369,7 @@ implement:
 
 | Concepto | Cómo funciona |
 |---|---|
-| Raíz de artefactos | `SDDF_ROOT` es un override temporal válido; después se consulta `root` en `sddf.config.yaml`; sin fuente explícita se usa `docs`. |
+| Layout de artefactos | Fijo ([ADR-0016](docs/adr/ADR-0016-layout-fijo-de-tres-raices.md)): `docs/`, `specs/` y `workflow/`; `SDDF_ROOT` y `root` ya no se leen. Ver la [guía de migración](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices). |
 | Perfil `core` | Es el perfil distribuido por defecto y no exige extensiones de autoría. |
 | Perfil `dogfood` | Está reservado para el desarrollo de este repositorio y requiere workers provisionados de forma explícita. |
 | Workers por stack | Son opcionales y se declaran en `implement.test_generators` y `implement.code_generators`. `skill: none` los desactiva. |
@@ -379,7 +387,7 @@ El README te orienta; la documentación versionada contiene el detalle operativo
 | Entender el enfoque Spec-Driven Development | [Guía de SDD](docs/guides/sdd.md) |
 | Navegar toda la documentación del repositorio | [Índice de documentación](docs/index.md) |
 | Ver los flujos y comandos principales | [Guía de pipeline SDDF](docs/guides/sddf-commands-pipeline.md) |
-| Entender la raíz de artefactos | [Prácticas de resolución de raíz](docs/guides/root-folder-practices.md) |
+| Entender las raíces y el layout fijo | [Raíces del repositorio y layout fijo](docs/guides/root-folder-practices.md) |
 | Consultar estados, gates y rework | [Ciclo de vida de historias](docs/domains/domain-story-lifecycle.md) |
 | Leer el resultado (veredicto) de un gate de validación | [Política de contrato de validación](docs/policies/validation-contract-policy.md) |
 | Diseñar habilidades o delegación entre agentes | [Buenas prácticas para skills](docs/guides/best-practices-for-skills.md) |

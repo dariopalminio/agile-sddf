@@ -42,7 +42,7 @@
           "required": true
         },
         {
-          "command": "node scripts/audit-root-resolution.js",
+          "command": "node scripts/verify-fixed-layout.js",
           "required": true
         }
       ],

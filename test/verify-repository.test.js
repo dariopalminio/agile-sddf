@@ -11,7 +11,7 @@ test('el gate enumera las verificaciones deterministas requeridas y no invoca ev
   assert.deepEqual(labels, [
     'pruebas deterministas',
     'sintaxis Node',
-    'resolución de raíces',
+    'contrato de layout fijo',
     'perfiles y stacks',
     'runtimes documentados',
     'configuración YAML',

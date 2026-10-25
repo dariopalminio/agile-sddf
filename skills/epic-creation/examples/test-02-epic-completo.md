@@ -20,11 +20,11 @@
 - Slug derivado: `sistema-de-pagos`
 - Identificador sugerido: `EPIC-02` (asumiendo que EPIC-01 ya existe)
 - Usuario acepta
-- Ruta de salida: `$SPECS_BASE/specs/epics/EPIC-02-sistema-de-pagos/epic.md`
+- Ruta de salida: `specs/flow/EPIC-02-sistema-de-pagos/epic.md`
 - El directorio no existe → continuar
 
 ### Fase 1 — Leer template
-- Se lee `$SPECS_BASE/templates/epic-template.md`
+- Se lee `docs/templates/epic-template.md`
 - Contrato extraído (título · clave): `Alcance · alcance`, `Historias · historias`, `Criterios de salida · criterios-salida`, `Smoke tests · smoke-tests`, `Notas · notas`
 - Secciones opcionales: ninguna (el Paso 5 no pregunta nada)
 
@@ -56,7 +56,7 @@
 
 ### Fase 4 — Archivo generado
 ```
-docs/specs/epics/EPIC-02-sistema-de-pagos/epic.md
+specs/flow/EPIC-02-sistema-de-pagos/epic.md
 ```
 
 ### Fase 5 — Validación

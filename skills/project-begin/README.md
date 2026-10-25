@@ -8,7 +8,7 @@
 
 Orquesta la captura o actualización de la visión del producto con su rol local de entrevista `begin-intent`, que conduce la propia sesión del skill. Usa el template de visión vigente y deja el punto de partida listo para discovery.
 
-Produce `$SPECS_BASE/product/vision.md`, que queda con `substatus: DONE` únicamente después de la confirmación del desarrollador.
+Produce `docs/product/vision.md`, que queda con `substatus: DONE` únicamente después de la confirmación del desarrollador.
 
 No realiza discovery de requisitos ni genera el backlog del proyecto.
 

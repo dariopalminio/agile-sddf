@@ -7,13 +7,13 @@
       "id": "TC-001",
       "name": "happy-path-manual-aplica-plan-en-ambos-archivos",
       "type": "happy-path",
-      "description": "STORY-201 con analyze.md ❌ (INC-001 tipo A, INC-002 tipo B, INC-003 incoherencia design↔tasks, INC-004 tipo D sobre epic.md) y una fila DoD ⚠️ de trazabilidad. Modo manual; el usuario responde 's' al plan. El skill debe mostrar el plan de cambios, crear los .bak, añadir D-3 con // satisface: AC-2 y su tarea, eliminar T005, alinear T003 con el separador ';', dejar INC-004 fuera de alcance y generar fix-plan-report.md. Usar los archivos de skills/story-fix-plan/examples/example-con-hallazgos/ como directorio docs/specs/stories/STORY-201-exportar-reporte-csv/.",
+      "description": "STORY-201 con analyze.md ❌ (INC-001 tipo A, INC-002 tipo B, INC-003 incoherencia design↔tasks, INC-004 tipo D sobre epic.md) y una fila DoD ⚠️ de trazabilidad. Modo manual; el usuario responde 's' al plan. El skill debe mostrar el plan de cambios, crear los .bak, añadir D-3 con // satisface: AC-2 y su tarea, eliminar T005, alinear T003 con el separador ';', dejar INC-004 fuera de alcance y generar fix-plan-report.md. Usar los archivos de skills/story-fix-plan/examples/example-con-hallazgos/ como directorio specs/flow/STORY-201-exportar-reporte-csv/.",
       "input": {
         "input_path": "skills/story-fix-plan/examples/example-con-hallazgos/",
         "flags": [
           "STORY-201"
         ],
-        "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-201-exportar-reporte-csv/ contiene analyze.md, design.md y tasks.md iguales a los del input_path. Respuesta del usuario al plan: s."
+        "context": "El directorio specs/flow/STORY-201-exportar-reporte-csv/ contiene analyze.md, design.md y tasks.md iguales a los del input_path. Respuesta del usuario al plan: s."
       },
       "expected": {
         "contains": [
@@ -43,7 +43,7 @@
         "flags": [
           "STORY-202"
         ],
-        "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-202-filtrar-reporte-por-fecha/ contiene analyze.md, design.md y tasks.md iguales a los del input_path."
+        "context": "El directorio specs/flow/STORY-202-filtrar-reporte-por-fecha/ contiene analyze.md, design.md y tasks.md iguales a los del input_path."
       },
       "expected": {
         "contains": [
@@ -68,7 +68,7 @@
         "flags": [
           "STORY-203"
         ],
-        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-203-alta-de-usuario/ con story.md, design.md y tasks.md válidos; no existe analyze.md."
+        "context": "Existe specs/flow/STORY-203-alta-de-usuario/ con story.md, design.md y tasks.md válidos; no existe analyze.md."
       },
       "expected": {
         "contains": [
@@ -93,7 +93,7 @@
         "flags": [
           "STORY-204"
         ],
-        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-204-baja-de-usuario/ con story.md, analyze.md (**Veredicto:** `NEEDS-CHANGES` — ERROR de tipo A, B, INC-001 [ERROR] tipo A) y design.md; no existen tasks.md ni testcases.md."
+        "context": "Existe specs/flow/STORY-204-baja-de-usuario/ con story.md, analyze.md (**Veredicto:** `NEEDS-CHANGES` — ERROR de tipo A, B, INC-001 [ERROR] tipo A) y design.md; no existen tasks.md ni testcases.md."
       },
       "expected": {
         "contains": [
@@ -119,7 +119,7 @@
           "STORY-205",
           "--auto"
         ],
-        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-205-editar-perfil/ con story.md, analyze.md, design.md y tasks.md; no existe testcases.md. analyze.md: frontmatter con verdict: NEEDS-CHANGES; INC-001 [WARNING] Tipo D, Archivo afectado: docs/specs/epics/EPIC-31-perfil/epic.md — frontmatter; Recomendaciones: 1. INC-001: revisar el estado de la épica con el PO. 2. Reformular el «Para» de story.md para que exprese un beneficio medible."
+        "context": "Existe specs/flow/STORY-205-editar-perfil/ con story.md, analyze.md, design.md y tasks.md; no existe testcases.md. analyze.md: frontmatter con verdict: NEEDS-CHANGES; INC-001 [WARNING] Tipo D, Archivo afectado: specs/flow/EPIC-31-perfil/epic.md — frontmatter; Recomendaciones: 1. INC-001: revisar el estado de la épica con el PO. 2. Reformular el «Para» de story.md para que exprese un beneficio medible."
       },
       "expected": {
         "contains": [
@@ -145,7 +145,7 @@
         "flags": [
           "STORY-201"
         ],
-        "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-201-exportar-reporte-csv/ contiene los archivos del input_path. Respuesta del usuario al plan: n."
+        "context": "El directorio specs/flow/STORY-201-exportar-reporte-csv/ contiene los archivos del input_path. Respuesta del usuario al plan: n."
       },
       "expected": {
         "contains": [
@@ -170,7 +170,7 @@
           "STORY-201",
           "--auto"
         ],
-        "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-201-exportar-reporte-csv/ contiene los archivos del input_path."
+        "context": "El directorio specs/flow/STORY-201-exportar-reporte-csv/ contiene los archivos del input_path."
       },
       "expected": {
         "contains": [
@@ -219,7 +219,7 @@
           "STORY-206",
           "--auto"
         ],
-        "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-206-importar-usuarios-csv/ contiene analyze.md, design.md y testcases.md iguales a los del input_path; no existe tasks.md."
+        "context": "El directorio specs/flow/STORY-206-importar-usuarios-csv/ contiene analyze.md, design.md y testcases.md iguales a los del input_path; no existe tasks.md."
       },
       "expected": {
         "contains": [
@@ -251,7 +251,7 @@
           "STORY-207",
           "--auto"
         ],
-        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-207-nombre-de-export/ con story.md (AC-1…AC-3), analyze.md, design.md (D-1 y D-2, solo AC-1 y AC-2), tasks.md (T001–T004) y testcases.md (UT-001, API-001, API-002). analyze.md: frontmatter con el alias veredict: NEEDS-CHANGES (sin campo verdict); INC-001 [ERROR] Tipo A, Archivo afectado: design.md — Decisions, Acción requerida: añadir una decisión para AC-3 con su tarea y su caso de prueba."
+        "context": "Existe specs/flow/STORY-207-nombre-de-export/ con story.md (AC-1…AC-3), analyze.md, design.md (D-1 y D-2, solo AC-1 y AC-2), tasks.md (T001–T004) y testcases.md (UT-001, API-001, API-002). analyze.md: frontmatter con el alias veredict: NEEDS-CHANGES (sin campo verdict); INC-001 [ERROR] Tipo A, Archivo afectado: design.md — Decisions, Acción requerida: añadir una decisión para AC-3 con su tarea y su caso de prueba."
       },
       "expected": {
         "contains": [
@@ -281,7 +281,7 @@
           "STORY-208",
           "--auto"
         ],
-        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-208-cambiar-contrasena/ con story.md, analyze.md, design.md y tasks.md. Frontmatter de analyze.md: type, id, slug, title, story, created, updated (sin verdict ni veredict). Cuerpo: Estado general ❌ Inconsistencias bloqueantes; INC-001 [ERROR] Tipo B sobre T004 de tasks.md."
+        "context": "Existe specs/flow/STORY-208-cambiar-contrasena/ con story.md, analyze.md, design.md y tasks.md. Frontmatter de analyze.md: type, id, slug, title, story, created, updated (sin verdict ni veredict). Cuerpo: Estado general ❌ Inconsistencias bloqueantes; INC-001 [ERROR] Tipo B sobre T004 de tasks.md."
       },
       "expected": {
         "contains": [
@@ -307,7 +307,7 @@
           "STORY-209",
           "corrige advertencias"
         ],
-        "context": "SPECS_BASE=docs. Existe docs/specs/stories/STORY-209-ordenar-reportes/ con story.md, analyze.md, design.md (D-1, D-2) y tasks.md (T001–T003, ninguna cita D-2). Frontmatter de analyze.md: verdict: APPROVED. Cuerpo: **Veredicto:** `APPROVED` — sin ERROR; WARNING de tipo C; INC-001 [WARNING] Tipo C, Archivo afectado: tasks.md, Acción requerida: añadir la tarea que implementa D-2. Respuesta del usuario al plan: s."
+        "context": "Existe specs/flow/STORY-209-ordenar-reportes/ con story.md, analyze.md, design.md (D-1, D-2) y tasks.md (T001–T003, ninguna cita D-2). Frontmatter de analyze.md: verdict: APPROVED. Cuerpo: **Veredicto:** `APPROVED` — sin ERROR; WARNING de tipo C; INC-001 [WARNING] Tipo C, Archivo afectado: tasks.md, Acción requerida: añadir la tarea que implementa D-2. Respuesta del usuario al plan: s."
       },
       "expected": {
         "contains": [
@@ -337,7 +337,7 @@
           "STORY-202",
           "corrige warnings"
         ],
-        "context": "SPECS_BASE=docs. El directorio docs/specs/stories/STORY-202-filtrar-reporte-por-fecha/ contiene analyze.md, design.md y tasks.md iguales a los del input_path."
+        "context": "El directorio specs/flow/STORY-202-filtrar-reporte-por-fecha/ contiene analyze.md, design.md y tasks.md iguales a los del input_path."
       },
       "expected": {
         "contains": [

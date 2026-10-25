@@ -36,7 +36,7 @@ function profileFixture(t) {
     'sddf.config.yaml',
     'config/profiles.json',
     'config/runtimes.json',
-    'scripts/audit-root-resolution.js',
+    'scripts/verify-fixed-layout.js',
     'skills/sddf-init/assets/sddf.config.yaml.template',
   ]) copy(root, relative);
   return root;

@@ -1,15 +1,15 @@
 ---
 type: adr
 id: ADR-0013
-slug: eliminar-specs-01-projects
-title: "Eliminar `specs/01-projects/` y migrar su contenido a `product/` y `requirements/`"
+slug: ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories
+title: "Asegurar dos niveles de flujo como epics y stories"
 status: ACCEPTED
 date: 2026-10-05
 supersedes: ADR-0004
 superseded-by: null
 ---
 
-# ADR-0013: Eliminar `specs/01-projects/` y migrar su contenido a `product/` y `requirements/`
+# ADR-0013: Asegurar dos niveles de flujo como epics y stories
 
 ## Contexto y problema
 

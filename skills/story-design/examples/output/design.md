@@ -114,10 +114,10 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
 
 ```
 /story-design STORY-057
-  → Paso 0: resolver REPO_ROOT y SPECS_BASE localmente
+  → Paso 0: resolver REPO_ROOT (layout fijo)
   → Paso 1: resolver parámetros
-      ├── directorio historia: glob SPECS_BASE/specs/stories/STORY-057-*/
-      ├── template: SPECS_BASE/templates/story-design-template.md
+      ├── directorio historia: glob specs/flow/STORY-057-*/
+      ├── template: docs/templates/story-design-template.md
       └── salida: {directorio}/design.md
   → Paso 2: leer story.md → extraer AC-1, AC-2 + contexto
   → Paso 3: leer constitution.md + package.json (si existe) → stack real
@@ -145,7 +145,7 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
 |---|---|---|
 | Invocación del skill | Input: `{story_id}` o `{story_path}` → Output: `design.md` creado | AC-1 |
 | Lectura de template | Input: ruta del template → Output: estructura de secciones extraída en runtime | AC-1 |
-| skill-preflight | Input: ninguno → Output: `SPECS_BASE` resuelto + estado del entorno | AC-1, AC-2 |
+| skill-preflight | Input: ninguno → Output: `REPO_ROOT` resuelto + estado del entorno | AC-1, AC-2 |
 
 ### Puntos de Variación
 
@@ -167,7 +167,7 @@ La generación del `design.md` es una tarea única con inputs bien definidos. No
 
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
-| 1 | Ejecutar `/story-design STORY-057` genera `design.md` en `docs/specs/stories/STORY-057-skill-para-diseno/` | Manual: verificar existencia del archivo | AC-1 |
+| 1 | Ejecutar `/story-design STORY-057` genera `design.md` en `specs/flow/STORY-057-skill-para-diseno/` | Manual: verificar existencia del archivo | AC-1 |
 | 2 | El `design.md` generado tiene frontmatter con `type: design` e `id: STORY-057` | Manual: leer frontmatter del archivo | AC-1 |
 | 3 | El `design.md` contiene al menos dos alternativas técnicas documentadas | Manual: contar secciones de alternativas | AC-1 |
 | 4 | Si se elimina `story-design-template.md`, el skill usa el fallback interno sin error bloqueante | Manual: eliminar template y ejecutar el skill | AC-2 |
@@ -195,7 +195,7 @@ Sin CRs detectados.
    ✔ P2  Trazabilidad — todos los elementos anotados con AC-1 o AC-2
    ✔ P3  Reutilización — skill-preflight reutilizado como Paso 0
    ✔ P4  Vocabulario de dominio — "historia", "diseño", "template" del dominio SDDF
-   ✔ P5  Uniformidad — convenciones kebab-case y SPECS_BASE respetadas
+   ✔ P5  Uniformidad — convenciones kebab-case y rutas fijas respetadas
    ✔ P6  Diseño para el cambio — 2 puntos de variación documentados
    ✔ P7  Degradación gradual — todos los fallos documentados con estrategia
    ✔ P8  Sin código de implementación — solo contratos y estructuras

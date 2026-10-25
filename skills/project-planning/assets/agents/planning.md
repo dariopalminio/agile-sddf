@@ -27,4 +27,4 @@ Recibes `$INPUT_PATHS`, `$EPICS_INVENTORY`, `$TEMPLATE_PATH`, `$PROPOSAL_HEADING
 2. Agrúpalas en épicas incrementales que no dupliquen el inventario ni las propuestas previas incluidas en los insumos.
 3. Escribe solo `## <$PROPOSAL_HEADING>`, sus bloques `### Épica <N>: <Nombre>` y `### Resumen`, sin frontmatter ni comentarios HTML. Cada bloque incluye objetivo, historias F1, requisitos FR, dependencias y riesgos cuando apliquen, y criterios de éxito medibles.
 4. Si el inventario está vacío, la primera épica es un Walking Skeleton con 3–5 historias y al menos 2 criterios; si no, la primera entrega valor incremental y tiene al menos 1 criterio. Produce como mínimo una épica.
-5. Guarda UTF-8 sin BOM. Está prohibido escribir en `$SPECS_BASE`.
+5. Guarda UTF-8 sin BOM. Está prohibido escribir en `docs/` y en `specs/`.

@@ -1,8 +1,6 @@
 # Configuración SDDF — personalizar para cada proyecto
 # Reemplaza los comandos de prueba con los de tu stack tecnológico y runner de tests
 
-# Raíz versionada de los artefactos SDDF. SDDF_ROOT solo la sobrescribe si es válido.
-root: docs
 profile: dogfood
 stack: sddf-authoring
 
@@ -17,7 +15,7 @@ verify:
     command: "npm run test:eval:runner"
     required: false
   integration:
-    command: "node scripts/audit-root-resolution.js"
+    command: "node scripts/verify-fixed-layout.js"
     required: true
   contract:
     command: "npm run test:contract"
@@ -69,7 +67,7 @@ implement:
       skill: none
       required: false
 
-# DoD de historia por etapa (STORY-101): etapa → slug del guardrail en $SPECS_BASE/guardrails/<slug>.md.
+# DoD de historia por etapa (STORY-101): etapa → slug del guardrail en docs/guardrails/<slug>.md.
 # Opcional: sin esta sección cada skill usa la convención dod-story-<etapa>.md. Un proyecto
 # consumidor sobrescribe aquí una etapa (p. ej. implement: dod-story-implement-acme) sin tocar skills.
 guardrails:

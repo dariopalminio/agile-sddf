@@ -107,14 +107,11 @@ Aplicar esta tabla al procesar cada elemento de `story.md` y `design.md`:
 
 ### Paso 0 — Resolver contexto local
 
-<!-- SDDF-ROOT-RESOLUTION: v1 -->
+<!-- SDDF-FIXED-LAYOUT: v1 -->
 
-Resuelve una sola vez `REPO_ROOT` y el contexto local antes de leer o escribir artefactos:
-
-1. Si `SDDF_ROOT` está definida, exige un valor no vacío que apunte a un directorio accesible; úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = SDDF_ROOT`. Si no es utilizable, informa la fuente y el valor y detén el workflow antes de cualquier escritura.
-2. Solo si `SDDF_ROOT` no está definida, lee `<REPO_ROOT>/sddf.config.yaml`. Si su clave superior `root` existe, debe ser un escalar no vacío que resuelva a un directorio accesible (las rutas relativas se anclan en `REPO_ROOT`); úsalo como `SPECS_BASE` y registra `ROOT_SOURCE = sddf.config.yaml`. Una configuración o raíz explícita inválida detiene el workflow sin fallback ni escrituras.
-3. Si no existe ninguna fuente explícita, usa `docs` relativo a `REPO_ROOT` y registra `ROOT_SOURCE = default`. Conserva `SPECS_BASE` y `ROOT_SOURCE` durante toda la invocación.
-4. Resuelve `CLI_ROOT` independientemente y solo cuando el workflow necesite skills, agentes o comandos del runtime; nunca lo derives de `SPECS_BASE`.
+Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
+work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0016).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -132,8 +129,8 @@ Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 #### 1b. Resolución del directorio (primera coincidencia)
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `$SPECS_BASE/specs/stories/{story_id}-*/`
-3. Si no se encuentra: `❌ No se encontró la historia {story_id} bajo $SPECS_BASE/specs/stories/` → detener
+2. Glob `specs/flow/{story_id}-*/`
+3. Si no se encuentra: `❌ No se encontró la historia {story_id} en specs/flow/` → detener
 
 #### 1c. Verificar artefactos obligatorios
 
@@ -297,8 +294,7 @@ Próximo paso: /story-analyze {story_id}
 
 | Condición | Mensaje | Acción |
 |-----------|---------|--------|
-| Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| Historia no encontrada | `❌ No se encontró la historia {story_id}` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener |
 | `design.md` ausente | `❌ No se encontró design.md en: <ruta>` | Detener. Sugerir `/story-design` |
 | `story.md` sin ACs o `design.md` vacío | `⚠️ Contenido insuficiente para derivar casos de prueba` | No generar testcases.md parcial. Sugerir completar artefactos |

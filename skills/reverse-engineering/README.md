@@ -6,8 +6,8 @@ Analiza un repositorio existente con cuatro especialistas y sintetiza perfiles d
 
 ## Produces
 
-- `$SPECS_BASE/product/stakeholders.md`.
-- Un archivo por requisito en `$SPECS_BASE/requirements/functional/` y `$SPECS_BASE/requirements/non-functional/`.
+- `docs/product/stakeholders.md`.
+- Un archivo por requisito en `docs/requirements/functional/` y `docs/requirements/non-functional/`.
 - `.tmp/reverse-engineering/gaps.md` con incertidumbres y preguntas de revisión.
 
 ## Update mode
