@@ -9,14 +9,14 @@ flowchart TD
         story-evaluation[story-evaluation]
         dec_specify{verdict}
         story-split[story-split]
-        story-improve[story-improve]
+        story-refine[story-refine]
         
         story-creation --> story-evaluation
         story-evaluation --> dec_specify
         dec_specify -->|SPLIT| story-split
-        dec_specify -->|NEEDS-REFINEMENT| story-improve
+        dec_specify -->|NEEDS-REFINEMENT| story-refine
         story-split --> story-evaluation
-        story-improve --> story-evaluation
+        story-refine --> story-evaluation
     end
 
     %% FASE: PLAN (PLAN y READY-FOR-IMPLEMENT)
