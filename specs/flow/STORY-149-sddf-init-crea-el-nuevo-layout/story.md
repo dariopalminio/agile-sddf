@@ -5,11 +5,11 @@ id: STORY-149
 kind: feat
 slug: STORY-149-sddf-init-crea-el-nuevo-layout
 title: "sddf-init crea el nuevo layout"
-status: CODE-REVIEW
+status: VERIFY
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-21
-updated: 2026-10-23
+updated: 2026-10-25
 related:
   - EPIC-26-layout-y-flow-forward-mejorado
 ---

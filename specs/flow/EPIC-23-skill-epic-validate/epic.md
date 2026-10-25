@@ -4,7 +4,7 @@ id: EPIC-23
 slug: EPIC-23-skill-epic-validate
 title: "Skill epic-validate"
 status: DEFINE
-substatus: IN-PROGRESS
+substatus: DONE
 parent: null
 created: 2026-10-12
 updated: 2026-10-17

@@ -5,11 +5,11 @@ id: STORY-155
 kind: feat
 slug: STORY-155-migrar-skills-planning-specs-flow
 title: "Migrar los skills de planning a specs/flow"
-status: CODE-REVIEW
+status: VERIFY
 substatus: DONE
 parent: EPIC-26-layout-y-flow-forward-mejorado
 created: 2026-10-22
-updated: 2026-10-23
+updated: 2026-10-25
 related:
   - EPIC-26-layout-y-flow-forward-mejorado
   - STORY-148-contrato-de-rutas-fijas-y-gate-determinista
