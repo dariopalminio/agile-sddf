@@ -1,0 +1,80 @@
+flowchart TD
+    %% Nodo Inicial
+    START(START)
+    START --> story-creation
+
+    %% FASE: SPECIFY
+    subgraph SPECIFY
+        story-creation[story-creation]
+        story-evaluation[story-evaluation]
+        dec_specify{verdict}
+        story-split[story-split]
+        story-improve[story-improve]
+        
+        story-creation --> story-evaluation
+        story-evaluation --> dec_specify
+        dec_specify -->|SPLIT| story-split
+        dec_specify -->|NEEDS-REFINEMENT| story-improve
+        story-split --> story-evaluation
+        story-improve --> story-evaluation
+    end
+
+    %% FASE: PLAN (PLAN y READY-FOR-IMPLEMENT)
+    subgraph PLAN
+        dec_specify -->|APPROVED| story-design
+        story-design[story-design]
+        story-testcases[story-testcases]
+        story-tasking[story-tasking]
+        story-analyze[story-analyze]
+        story-fix-plan[story-fix-plan]
+        dec_plan{verdict}
+        
+        dec_plan -->|NEEDS-REFINEMENT| story-fix-plan
+        story-design --> story-testcases
+        story-design --> story-tasking
+        story-testcases --> story-analyze
+        story-tasking --> story-analyze
+        story-analyze --> dec_plan
+        story-fix-plan --> story-analyze
+    end
+
+    %% FASE: EXECUTION (Agrupa IMPLEMENT y CODE-REVIEW)
+    subgraph EXECUTION
+        dec_plan -->|APPROVED| story-implement
+        story-implement[story-implement / <br/>story-implement-tasks]
+        story-code-review[story-code-review]
+        dec_impl{verdict}
+        
+        story-implement --> story-code-review
+        story-code-review --> dec_impl
+        dec_impl -->|NEEDS-CHANGES| story-implement
+        dec_impl -->|BLOCKED| story-code-review
+    end
+
+    %% FASE: QUALITY (Agrupa VERIFY y ACCEPTANCE)
+    subgraph QUALITY
+        dec_impl -->|APPROVED| story-verify
+        story-verify[story-verify]
+        dec_verify{verdict}
+        story-acceptance[story-acceptance]
+        dec_acceptance{verdict}
+        
+        story-verify --> dec_verify
+        dec_verify -->|BLOCKED| story-verify
+        dec_verify -->|APPROVED| story-acceptance
+        story-acceptance --> dec_acceptance
+        dec_acceptance -->|BLOCKED| story-acceptance
+        dec_verify -->|NEEDS-REFINEMENT| story-implement
+        dec_acceptance -->|NEEDS-REFINEMENT| story-implement
+    end
+
+    %% FASE: DELIVER AND COMPLETE
+    subgraph DELIVER
+        dec_acceptance -->|APPROVED| story-delivery
+        story-delivery[story-delivery]
+        story-complete[story-complete]
+        END(END)
+        
+        story-delivery --> story-complete
+        story-complete --> END
+    end
