@@ -44,13 +44,14 @@ El framework instala skills en el runtime que elijas y conserva la fuente de ver
 1. [Modelo mental](#modelo-mental)
 2. [Flujo y evidencia](#flujo-y-evidencia)
 3. [Artefactos que deja el flujo](#artefactos-que-deja-el-flujo-memoria)
-4. [Instalación en tu runtime](#installation)
-5. [Configuración](#configuracion)
-6. [Referencia para profundizar](#referencia-para-profundizar)
-7. [Actualizar desde versiones anteriores](#actualizar-desde-versiones-anteriores)
-8. [Contribuir](#contribuir)
-9. [Seguridad](#seguridad)
-10. [Licencia](#licencia)
+4. [Monorepo o polirepo](#monorepo-o-polirepo)
+5. [Instalación en tu runtime](#installation)
+6. [Configuración](#configuracion)
+7. [Referencia para profundizar](#referencia-para-profundizar)
+8. [Actualizar desde versiones anteriores](#actualizar-desde-versiones-anteriores)
+9. [Contribuir](#contribuir)
+10. [Seguridad](#seguridad)
+11. [Licencia](#licencia)
 
 ---
 
@@ -279,6 +280,68 @@ No todos los reportes existen desde el comienzo: aparecen cuando el flujo llega 
 /memory-system migrate --harness speckit     # propone el plan y escribe solo tras confirmar
 /memory-system ensure --harness openspec     # crea las capas bajo docs/ sin tocar openspec/ e indexa sus specs y changes
 ```
+
+## Monorepo o polirepo
+
+Los skills resuelven una sola raíz de trabajo, `REPO_ROOT`. En ella viven `sddf.config.yaml` y la memoria completa: `docs/` y `specs/`. La regla es la misma en los dos esquemas: una sola memoria por producto, en un solo repositorio. Lo que cambia es dónde está el código.
+
+| | Monorepo | Polirepo |
+|---|---|---|
+| Repositorios | Uno, con muchos proyectos dentro | Varios, uno por proyecto o servicio |
+| Dónde vive la memoria | En la raíz del monorepo | En un repositorio «home» elegido para eso |
+| `REPO_ROOT` | La raíz del monorepo | El repo home |
+| Cómo ve el asistente el código | Todo está bajo la misma raíz | Un workspace multi-raíz que abre el repo home y los repos de código a la vez |
+| Dónde se instala SDDF | En la raíz del monorepo | En el repo home |
+
+### Monorepo
+
+Un único repositorio contiene todos los proyectos (por ejemplo, `apps/` y `packages/`). En la raíz viven `sddf.config.yaml`, `docs/` y `specs/`. Las épicas y las historias de todos los proyectos comparten `specs/flow/` y el mismo control WIP.
+
+```text
+mi-monorepo/                 ← REPO_ROOT
+├── sddf.config.yaml
+├── docs/                    # memoria: constitución, producto, requisitos, arquitectura…
+├── specs/flow/              # épicas e historias de todos los proyectos
+├── apps/
+│   ├── web/
+│   └── api/
+└── packages/
+    └── shared/
+```
+
+Instala SDDF en la raíz del workspace (ver [Variantes útiles](#variantes-utiles) para pnpm) y abre la sesión del asistente en esa raíz. En `design.md` y `tasks.md`, nombra los archivos con rutas relativas a la raíz (`apps/api/src/...`): así queda claro a qué proyecto afecta cada historia.
+
+### Polirepo con workspace multi-raíz
+
+Cada proyecto tiene su propio repositorio, y uno de ellos (o uno creado para eso) hace de **repo home**: guarda `sddf.config.yaml`, `docs/` y `specs/`, y es donde se instala SDDF. Un *Multi-Root Workspace* (por ejemplo, un archivo `.code-workspace` de VS Code) abre el repo home y los repos de código en la misma ventana:
+
+```json
+{
+  "folders": [
+    { "name": "home", "path": "producto-home" },
+    { "name": "web",  "path": "../producto-web" },
+    { "name": "api",  "path": "../producto-api" }
+  ]
+}
+```
+
+```text
+producto-home/               ← REPO_ROOT (memoria completa)
+├── sddf.config.yaml
+├── docs/
+└── specs/flow/
+producto-web/                ← código
+producto-api/                ← código
+```
+
+El beneficio principal es que los asistentes de IA que soportan workspaces multi-raíz pueden ver, indexar y razonar sobre el código de todas las carpetas del workspace a la vez. Una historia del repo home puede diseñarse e implementarse sobre varios repositorios sin duplicar la memoria en cada uno. En un CLI sin workspace, el equivalente es abrir la sesión en el repo home y añadir los demás repos como directorios de trabajo adicionales (en Claude Code, `--add-dir`).
+
+Para que funcione:
+
+- Abre la sesión del asistente con el repo home como carpeta principal: los skills toman de ahí `REPO_ROOT` y escriben solo en su `docs/` y `specs/`.
+- En `design.md` y `tasks.md`, nombra los archivos con la carpeta del workspace como prefijo (`api/src/...`), porque el código no está bajo `REPO_ROOT`.
+- Cada repositorio conserva su propio historial: los commits y las ramas de una historia se hacen por separado en cada repo que toca. SDDF no coordina commits entre repositorios.
+- Los comandos de verificación que cita el DoD (tests, lint) se ejecutan en el repositorio que corresponda. Si son varios, decláralos en `docs/constitution.md`.
 
 ## Qué decide SDDF y qué decides tú
 
