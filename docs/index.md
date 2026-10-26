@@ -229,15 +229,6 @@ _(sin artefactos)_
 > enumeran aquí: se leen desde el directorio de la historia. Los templates (`templates/`) tampoco se
 > listan porque sus wikilinks son placeholders.
 
-- [[STORY-082-implement-tdd-modos-ejecucion]] — [story.md](../specs/flow/STORY-082-implement-tdd-modos-ejecucion/story.md) — story-implement — modos interactivo y automático de ejecución del ciclo TDD
-- [[STORY-083-skill-test-evals]] — [story.md](../specs/flow/STORY-083-skill-test-evals/story.md) — skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente
-- [[plan-01]] — [plan-01.md](../specs/flow/STORY-084-skill-verify/plan-01.md) — Plan: Crear el skill skill-verify
-- [[plan-02]] — [plan-02.md](../specs/flow/STORY-084-skill-verify/plan-02.md) — Plan: Añadir modo benchmark a skill-verify
-- [[STORY-084-plan-03]] — [plan-03.md](../specs/flow/STORY-084-skill-verify/plan-03.md) — Plan: Unificar skill-verify en skill-test-evals
-- [[STORY-084-skill-verify]] — [story.md](../specs/flow/STORY-084-skill-verify/story.md) — Unificar generación, ejecución y benchmark de evals en `skill-test-evals`
-- [[plan-rechazo-nombra-ejecutor-correcciones]] — [plan.md](../specs/flow/STORY-089-rechazo-nombra-ejecutor-correcciones/plan.md) — STORY-089 — Análisis y propuesta de cambio
-- [[STORY-089-rechazo-nombra-ejecutor-correcciones]] — [story.md](../specs/flow/STORY-089-rechazo-nombra-ejecutor-correcciones/story.md) — Un code review rechazado nombra al ejecutor de correcciones y no depende de tasks.md
-- [[STORY-090-campos-declarados-nombran-su-escritor]] — [story.md](../specs/flow/STORY-090-campos-declarados-nombran-su-escritor/story.md) — Todo campo declarado en un template nombra a su escritor
 - [[STORY-091-story-implement-modo-rework]] — [story.md](../specs/flow/STORY-091-story-implement-modo-rework/story.md) — story-implement toma de la cola una historia rechazada y corrige en modo rework
 - [[STORY-092-reglas-robustez-modo-rework]] — [story.md](../specs/flow/STORY-092-reglas-robustez-modo-rework/story.md) — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro
 - [[STORY-095-memory-system-index-alias]] — [story.md](../specs/flow/STORY-095-memory-system-index-alias/story.md) — Crear el skill memory-system con el modo index y deprecar docs-wiki-builder
@@ -247,9 +238,6 @@ _(sin artefactos)_
 - [[STORY-099-sddf-init-level-full]] — [story.md](../specs/flow/STORY-099-sddf-init-level-full/story.md) — Inicializar la memoria completa desde sddf-init con el parámetro --level
 - [[STORY-101-dod-story-por-etapa]] — [story.md](../specs/flow/STORY-101-dod-story-por-etapa/story.md) — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill
 - [[STORY-102-renombrar-skill-sddf-constitution]] — [story.md](../specs/flow/STORY-102-renombrar-skill-sddf-constitution/story.md) — Renombrar el skill project-policies-generation como sddf-constitution
-- [[STORY-119-story-plan-un-subagente-por-paso]] — [story.md](../specs/flow/STORY-119-story-plan-un-subagente-por-paso/story.md) — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens
-- [[STORY-119-testing-report-01]] — [testing-report-01.md](../specs/flow/STORY-119-story-plan-un-subagente-por-paso/testing-report-01.md) — Testing de STORY-119: Prueba 1
-- [[STORY-119-testing-report-02]] — [testing-report-02.md](../specs/flow/STORY-119-story-plan-un-subagente-por-paso/testing-report-02.md) — Testing de STORY-119: Prueba 2
 - [[STORY-124-validar-preparacion-estructural-epica]] — [story.md](../specs/flow/STORY-124-validar-preparacion-estructural-epica/story.md) — Validar la preparación estructural de una épica
 - [[STORY-125-validar-evidencia-operativa-epica]] — [story.md](../specs/flow/STORY-125-validar-evidencia-operativa-epica/story.md) — Validar la evidencia operativa de una épica
 - [[STORY-126-operar-validacion-epica-segura]] — [story.md](../specs/flow/STORY-126-operar-validacion-epica-segura/story.md) — Operar la validación de épicas de manera segura
@@ -355,6 +343,12 @@ _(sin artefactos)_
 - [[STORY-080-plan]] — [plan.md](../specs/flow/archive/2026-05-30-STORY-080-skills-master/plan.md) — Plan: Renombrar skill-creator a skill-master
 - [[STORY-080-skills-master]] — [story.md](../specs/flow/archive/2026-05-30-STORY-080-skills-master/story.md) — skill-master — refactorización de skill-tester-eval: modos plan/build, detección de lenguaje natural e independencia SDDF
 - [[STORY-081-implement-tdd-fase-green-refactor]] — [story.md](../specs/flow/archive/2026-05-30-STORY-081-implement-tdd-fase-green-refactor/story.md) — story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar
+- [[STORY-082-implement-tdd-modos-ejecucion]] — [story.md](../specs/flow/archive/2026-05-30-STORY-082-implement-tdd-modos-ejecucion/story.md) — story-implement — modos interactivo y automático de ejecución del ciclo TDD
+- [[STORY-083-skill-test-evals]] — [story.md](../specs/flow/archive/2026-05-30-STORY-083-skill-test-evals/story.md) — skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente
+- [[plan-01]] — [plan-01.md](../specs/flow/archive/2026-05-30-STORY-084-skill-verify/plan-01.md) — Plan: Crear el skill skill-verify
+- [[plan-02]] — [plan-02.md](../specs/flow/archive/2026-05-30-STORY-084-skill-verify/plan-02.md) — Plan: Añadir modo benchmark a skill-verify
+- [[STORY-084-plan-03]] — [plan-03.md](../specs/flow/archive/2026-05-30-STORY-084-skill-verify/plan-03.md) — Plan: Unificar skill-verify en skill-test-evals
+- [[STORY-084-skill-verify]] — [story.md](../specs/flow/archive/2026-05-30-STORY-084-skill-verify/story.md) — Unificar generación, ejecución y benchmark de evals en `skill-test-evals`
 - [[plan-integrar-config-sddf-init]] — [plan.md](../specs/flow/archive/2026-05-30-STORY-085-integrar-config-sddf-init/plan.md) — Plan: Integrar sddf.config.yaml en el skill sddf-init
 - [[STORY-085-integrar-config-sddf-init]] — [story.md](../specs/flow/archive/2026-05-30-STORY-085-integrar-config-sddf-init/story.md) — Mejora de experiencia de inicialización
 - [[plan-01-refactor-release-to-epic]] — [plan-01-refactor-release-to-epic.md](../specs/flow/archive/2026-08-30-STORY-086-refactor-release-to-epic/plan-01-refactor-release-to-epic.md) — PLAN: Renombrar el nivel L2 de `release` a `epic`
@@ -368,6 +362,9 @@ _(sin artefactos)_
 - [[STORY-088-plan-02-security]] — [plan-02-security.md](../specs/flow/archive/2026-09-10-STORY-088-security-enhancement/plan-02-security.md) — Plan: Implementar SECURITY.md
 - [[plan-04-fix-security-insights]] — [plan-04-fix-security-insights.md](../specs/flow/archive/2026-09-10-STORY-088-security-enhancement/plan-04-fix-security-insights.md) — Cerrar los 8 hallazgos `(warn)` del `ai-security-checklist`
 - [[STORY-088-security-enhancement]] — [story.md](../specs/flow/archive/2026-09-10-STORY-088-security-enhancement/story.md) — Mejoras de seguridad
+- [[STORY-090-campos-declarados-nombran-su-escritor]] — [story.md](../specs/flow/archive/2026-09-11-STORY-090-campos-declarados-nombran-su-escritor/story.md) — Todo campo declarado en un template nombra a su escritor
+- [[plan-rechazo-nombra-ejecutor-correcciones]] — [plan.md](../specs/flow/archive/2026-09-12-STORY-089-rechazo-nombra-ejecutor-correcciones/plan.md) — STORY-089 — Análisis y propuesta de cambio
+- [[STORY-089-rechazo-nombra-ejecutor-correcciones]] — [story.md](../specs/flow/archive/2026-09-12-STORY-089-rechazo-nombra-ejecutor-correcciones/story.md) — Un code review rechazado nombra al ejecutor de correcciones y no depende de tasks.md
 - [[STORY-093-raiz-configurable-preflight-diagnostico]] — [story.md](../specs/flow/archive/2026-09-12-STORY-093-raiz-configurable-preflight-diagnostico/story.md) — Resolver una raíz configurable y usar preflight como diagnóstico
 - [[STORY-094-insights]] — [insights.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/insights.md) — Insights de refactorización y correcciones
 - [[plan-01-fix-ci-security-audit]] — [plan-01-fix-ci-security-audit.md](../specs/flow/archive/2026-09-13-STORY-094-refactory-and-fixing-insights/plan-01-fix-ci-security-audit.md) — Plan 01 — Corregir la cobertura y el fallo de la CI de seguridad
@@ -391,6 +388,9 @@ _(sin artefactos)_
 - [[STORY-108-renombrar-specs-sin-prefijos]] — [story.md](../specs/flow/archive/2026-10-10-STORY-108-renombrar-specs-sin-prefijos/story.md) — Renombrar specs/02-epics/ → specs/epics/ y specs/03-stories/ → specs/stories/
 - [[STORY-109-project-begin-escribe-vision]] — [story.md](../specs/flow/archive/2026-10-10-STORY-109-project-begin-escribe-vision/story.md) — project-begin escribe la intención en product/vision.md
 - [[STORY-110-discovery-escribe-stakeholders-y-requisitos]] — [story.md](../specs/flow/archive/2026-10-10-STORY-110-discovery-escribe-stakeholders-y-requisitos/story.md) — project-discovery y reverse-engineering escriben stakeholders y requisitos individuales
+- [[STORY-119-story-plan-un-subagente-por-paso]] — [story.md](../specs/flow/archive/2026-10-10-STORY-119-story-plan-un-subagente-por-paso/story.md) — Ejecutar cada paso de /story-plan en un subagente aislado para consumir menos tokens
+- [[STORY-119-testing-report-01]] — [testing-report-01.md](../specs/flow/archive/2026-10-10-STORY-119-story-plan-un-subagente-por-paso/testing-report-01.md) — Testing de STORY-119: Prueba 1
+- [[STORY-119-testing-report-02]] — [testing-report-02.md](../specs/flow/archive/2026-10-10-STORY-119-story-plan-un-subagente-por-paso/testing-report-02.md) — Testing de STORY-119: Prueba 2
 - [[STORY-111-planning-escribe-roadmap]] — [story.md](../specs/flow/archive/2026-10-11-STORY-111-planning-escribe-roadmap/story.md) — project-planning escribe en product/roadmap.md y epic-from-project-plan lee de allí
 - [[STORY-112-story-map-y-diagrama-en-sus-capas]] — [story.md](../specs/flow/archive/2026-10-11-STORY-112-story-map-y-diagrama-en-sus-capas/story.md) — project-story-mapping y project-context-diagram escriben en product/ y architecture/c4/
 - [[STORY-113-project-flow-sin-01-projects]] — [story.md](../specs/flow/archive/2026-10-11-STORY-113-project-flow-sin-01-projects/story.md) — project-flow, sddf-init y header-aggregation sin specs/01-projects/
@@ -520,8 +520,8 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 416 |
-| Nodos con frontmatter | 411 |
+| Nodos indexados | 415 |
+| Nodos con frontmatter | 410 |
 | Nodos sin frontmatter | 5 |
 | Wikilinks pendientes | 2 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
