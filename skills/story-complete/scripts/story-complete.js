@@ -56,17 +56,32 @@ function countStories(repoRoot) {
   return countDirs(repoRoot, FLOW, ACTIVE_STORY_RE) + countDirs(repoRoot, ARCHIVE, ARCHIVED_STORY_RE);
 }
 
+const BOM_RE = /^\uFEFF/;
+const FIELD_RE = /^([A-Za-z0-9_-]+):\s*(.*)$/;
+
+/** Clave y valor normalizado (comillas y espacios quitados) de una línea de nivel superior; null si no lo es. */
+function parseField(line) {
+  const match = FIELD_RE.exec(line);
+  return match ? { key: match[1], value: match[2].trim().replace(/^(["'])(.*)\1$/, '$2').trim() } : null;
+}
+
+/** Índice de la línea `---` de cierre del frontmatter; -1 si no hay frontmatter o no cierra. */
+function frontmatterClose(lines) {
+  if (lines[0].trim() !== '---') return -1;
+  return lines.findIndex((line, i) => i > 0 && line.trim() === '---');
+}
+
 /** Pares `clave: valor` de nivel superior del frontmatter; null si no hay frontmatter. */
 function readFrontmatter(text) {
-  const lines = text.replace(/^﻿/, '').split(/\r?\n/);
-  if (lines[0].trim() !== '---') return null;
+  const lines = text.replace(BOM_RE, '').split(/\r?\n/);
+  const close = frontmatterClose(lines);
+  if (close === -1) return null;
   const fields = {};
-  for (const line of lines.slice(1)) {
-    if (line.trim() === '---') return fields;
-    const match = /^([A-Za-z0-9_-]+):\s*(.*)$/.exec(line);
-    if (match) fields[match[1]] = match[2].trim().replace(/^(["'])(.*)\1$/, '$2').trim();
+  for (const line of lines.slice(1, close)) {
+    const field = parseField(line);
+    if (field) fields[field.key] = field.value;
   }
-  return null;
+  return fields;
 }
 
 /** Fecha de archivo (STORY-164 D-3): `updated:` → `created:`; `date:` solo si faltan ambas claves; null si ninguno. */
@@ -164,21 +179,33 @@ function planCompletion({ repoRoot, id, storyPath, today }) {
   return { ok: true, code: 'OK', message: `${storyId} lista para archivar en ${to}/`, story, action, archiveDate, from: dir, to, moveMethod, warnings };
 }
 
-/** Edición mínima del frontmatter (D-7): `status: COMPLETED` y `updated: <today>`, mismos finales de línea. */
+/**
+ * Edición mínima del frontmatter (D-7): `status: COMPLETED` y `updated: <today>`. Cada línea
+ * conserva su propio final; la línea insertada usa el del frontmatter. Lanza si no localiza el
+ * cierre o la línea `status` con el mismo criterio que `readFrontmatter` (→ `WRITE_FAILED`).
+ */
 function completeFrontmatter(text, today) {
-  const eol = text.includes('\r\n') ? '\r\n' : '\n';
-  const lines = text.replace(/^﻿/, '').split(eol);
-  const close = lines.findIndex((line, i) => i > 0 && line.trim() === '---');
-  const block = lines.slice(1, close);
-  const statusAt = block.findIndex((line) => /^status:\s*["']?DELIVER["']?\s*$/.test(line));
-  block[statusAt] = 'status: COMPLETED';
-  const updatedAt = block.findIndex((line) => /^updated:/.test(line));
-  if (updatedAt !== -1) block[updatedAt] = `updated: ${today}`;
+  const parts = text.replace(BOM_RE, '').split(/(\r?\n)/);
+  const lines = parts.filter((_, i) => i % 2 === 0);
+  const eols = parts.filter((_, i) => i % 2 === 1);
+  const close = frontmatterClose(lines);
+  if (close === -1) throw new Error('el frontmatter no tiene la línea --- de cierre');
+  const lastKeyAt = (key) => {
+    for (let i = close - 1; i > 0; i -= 1) if (parseField(lines[i])?.key === key) return i;
+    return -1;
+  };
+  const statusAt = lastKeyAt('status');
+  if (statusAt === -1 || parseField(lines[statusAt]).value !== 'DELIVER') throw new Error('no se localizó la línea status: DELIVER en el frontmatter');
+  lines[statusAt] = 'status: COMPLETED';
+  const updatedAt = lastKeyAt('updated');
+  if (updatedAt !== -1) lines[updatedAt] = `updated: ${today}`;
   else {
-    const createdAt = block.findIndex((line) => /^created:/.test(line));
-    block.splice(createdAt === -1 ? block.length : createdAt + 1, 0, `updated: ${today}`);
+    const createdAt = lastKeyAt('created');
+    const at = createdAt === -1 ? close : createdAt + 1;
+    lines.splice(at, 0, `updated: ${today}`);
+    eols.splice(at, 0, eols[0]);
   }
-  return [lines[0], ...block, ...lines.slice(close)].join(eol);
+  return lines.map((line, i) => line + (eols[i] ?? '')).join('');
 }
 
 /** Mueve el directorio (D-6); nunca lanza. */

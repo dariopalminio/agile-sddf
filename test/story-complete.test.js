@@ -359,6 +359,24 @@ test('story.md con \\r\\n conserva \\r\\n tras completar (D-7)', (t) => {
   assert.equal(archived.replace(/\r\n/g, '').includes('\n'), false, 'sin \\n sueltos');
 });
 
+test('frontmatter con \\n y cuerpo con \\r\\n → status COMPLETED y cada línea conserva su final (D-7)', (t) => {
+  const content = `${['---', 'id: STORY-001', 'status: DELIVER', 'substatus: DONE', 'created: 2026-10-01', 'updated: 2026-10-20', '---', ''].join('\n')}${['# Historia', '', ...BODY, ''].join('\r\n')}`;
+  const root = makeFixture(t, { stories: { [NAME]: content } });
+  const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  const archived = fs.readFileSync(storyFile(root, result.to), 'utf8');
+  assert.equal(archived, content.replace('status: DELIVER', 'status: COMPLETED').replace('updated: 2026-10-20', `updated: ${TODAY}`));
+});
+
+test('status con comillas y espacios → se reescribe con el mismo criterio que la lectura (D-7)', (t) => {
+  const root = makeFixture(t, { stories: { [NAME]: storyContent({ ...fm('DELIVER', 'DONE'), status: '"DELIVER "' }) } });
+  const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  const archived = fs.readFileSync(storyFile(root, result.to), 'utf8');
+  assert.match(archived, /^status: COMPLETED$/m);
+  assert.doesNotMatch(archived, /DELIVER/);
+});
+
 test('sin updated: se inserta tras created: al completar (D-7)', (t) => {
   const root = makeFixture(t, { stories: { [NAME]: fm('DELIVER', 'DONE', { created: '2026-10-01' }) } });
   const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });

@@ -5,11 +5,11 @@ id: STORY-160
 kind: feat
 slug: STORY-160-completar-y-archivar-historia-entregada
 title: "Skill story-complete: completar y archivar una historia entregada"
-status: IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25
-updated: 2026-10-25
+updated: 2026-10-26
 related:
   - EPIC-27-completar-flujo-de-story
   - STORY-159-story-delivery-interactivo

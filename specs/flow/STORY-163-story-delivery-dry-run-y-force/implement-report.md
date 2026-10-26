@@ -115,3 +115,42 @@ Pasos recomendados:
 1. Ejecutar `npm run test:eval -- story-delivery` (TC-010…TC-016 y TC-004 modificado)
 2. Si algún caso falla, revisar el SKILL.md y ajustar manualmente
 3. Consultar `design.md` para verificar que la implementación respeta las interfaces definidas
+
+## Eval Report: story-delivery
+
+npm run test:eval -- story-delivery              
+
+> agile-sddf@4.1.0 test:eval
+> node scripts/run-evals.js story-delivery
+
+[INFO] Skills a evaluar: story-delivery
+[INFO] Plan de selección: 16 caso(s) en 1 skill(s)
+[INFO]   story-delivery: 16 caso(s)
+[INFO] Ejecutor de eval: claude · modelo: sonnet · concurrencia: 4 · timeout: 900s
+
+**Fecha:** 2026-10-26 | **Total:** 16 | ✅ Passed: 16 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** claude | **Modelo:** sonnet
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-001 | happy-path-batch-dod-cumplido | happy-path | 0.9 | ✅ PASS | — |
+| TC-002 | estado-verify-done-no-entrega | fail-fast | 1 | ✅ PASS | — |
+| TC-003 | dod-incumplido-sin-pregunta-final | error-handling | 1 | ✅ PASS | — |
+| TC-004 | usuario-rechaza-la-entrega | error-handling | 1 | ✅ PASS | — |
+| TC-005 | delivery-model-invalido-falla-cerrado | fail-fast | 1 | ✅ PASS | — |
+| TC-006 | dod-de-entrega-ausente-falla-cerrado | fail-fast | 1 | ✅ PASS | — |
+| TC-007 | delivery-model-ausente-falla-cerrado | fail-fast | 1 | ✅ PASS | — |
+| TC-008 | happy-path-continuous-despliegue-afirmado | happy-path | 0.9 | ✅ PASS | — |
+| TC-009 | continuous-sin-despliegue-no-entrega | error-handling | 1 | ✅ PASS | — |
+| TC-010 | dry-run-sin-bloqueos | happy-path | 1 | ✅ PASS | — |
+| TC-011 | dry-run-con-bloqueos-estado-y-dod | error-handling | 1 | ✅ PASS | — |
+| TC-012 | dry-run-con-force-solo-previsualiza | edge-case | 1 | ✅ PASS | — |
+| TC-013 | force-confirmado-registra-override | happy-path | 0.9 | ✅ PASS | — |
+| TC-014 | force-rechazado-sin-sugerencia-ni-reporte | error-handling | 1 | ✅ PASS | — |
+| TC-015 | bloqueo-por-estado-sugiere-force | fail-fast | 1 | ✅ PASS | — |
+| TC-016 | bloqueo-por-dod-sugiere-force | error-handling | 1 | ✅ PASS | — |
+
+
+
+---
+✅ Todos los 16 casos pasaron. El skill está listo.

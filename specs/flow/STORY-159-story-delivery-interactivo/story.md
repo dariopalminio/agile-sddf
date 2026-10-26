@@ -5,7 +5,7 @@ id: STORY-159
 kind: feat
 slug: STORY-159-story-delivery-interactivo
 title: "story-delivery interactivo en modelo batch"
-status: IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25
