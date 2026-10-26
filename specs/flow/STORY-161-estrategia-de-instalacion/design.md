@@ -57,7 +57,7 @@ Estado verificado en el filesystem (2026-10-25):
 | Catálogo de estrategias (`INSTALL_STRATEGIES`, `VALID_STRATEGIES`, `DEFAULT_STRATEGY`) | crear | `scripts/install.js` | AC-1, AC-2, AC-3 |
 | `resolveInstallStrategy(strategy)` | crear | `scripts/install.js` | AC-2, AC-3 |
 | `promptStrategySelection(streams?)` | crear | `scripts/install.js` | AC-2 (fila con TTY) |
-| `copyDir(srcDir, destDir, { force, shouldCopy })` | modificar | `scripts/install.js` | AC-1 |
+| `copyDir(srcDir, destDir, { force, shouldCopy, strategyId })` | modificar | `scripts/install.js` | AC-1 |
 | `installSDDF(options)` — opción `strategy`, filtro de skills, resumen y resultado | modificar | `scripts/install.js` | AC-1, AC-2, CNF-2 |
 | `module.exports` — exporta `resolveInstallStrategy`, `promptStrategySelection`, `VALID_STRATEGIES` | modificar | `scripts/install.js` | AC-3, CNF-4 |
 | Parseo y validación de `--strategy`, prompt condicionado a TTY | modificar | `scripts/cli.js` | AC-2, AC-3, CNF-1 |
@@ -132,7 +132,7 @@ Las dos preguntas son independientes: `--target opencode` sin `--strategy` en TT
 
 ### D-6 — Filtro por entrada de primer nivel en `copyDir` // satisface: AC-1
 
-`copyDir(srcDir, destDir, { force = false, shouldCopy = () => true } = {}) → { installed, skipped, excluded }`.
+`copyDir(srcDir, destDir, { force = false, shouldCopy = () => true, strategyId } = {}) → { installed, skipped, excluded }`. `strategyId` solo se usa en el texto del log; `copyDir` no interpreta estrategias.
 
 - Por cada entrada de `srcDir`, si `shouldCopy(entry.name)` es falso: no se lee ni se escribe nada en el destino; se registra `  Excluded (strategy <id>): <nombre>` y se incrementa `excluded`.
 - El resto conserva el comportamiento actual (`Skipped`/`Installed`/`Updated`).
@@ -172,7 +172,7 @@ Resuelve el «pendiente de refinar» de la historia según su propuesta: las ent
 |---|---|---|
 | `resolveInstallStrategy(strategy)` | `string \| undefined → 'full' \| 'story'`; lanza `Error('Invalid strategy "<v>". Valid strategies: full, story')` | AC-2, AC-3 |
 | `promptStrategySelection({ input, output } = {})` | `→ Promise<'full' \| 'story'>`; vacío o inválido → `'full'` | AC-2 |
-| `copyDir(srcDir, destDir, { force, shouldCopy })` | `→ Promise<{ installed, skipped, excluded }>`; `shouldCopy: (name: string) → boolean`, por defecto siempre verdadero | AC-1 |
+| `copyDir(srcDir, destDir, { force, shouldCopy, strategyId })` | `→ Promise<{ installed, skipped, excluded }>`; `shouldCopy: (name: string) → boolean`, por defecto siempre verdadero; `strategyId` solo para el log | AC-1 |
 | `installSDDF(options)` | `options.strategy?: 'full' \| 'story'` además de las actuales; `→ Promise<{ runtime, destination, mode, strategy, skills: { installed, skipped, excluded }, agents: { installed, skipped } }>` | AC-1, AC-2 |
 | CLI `agile-sddf install --strategy <name>` | `full \| story`; inválido o sin valor → `stderr` `Invalid --strategy "<v>". Valid strategies: full, story`, código 1, sin escritura | AC-1, AC-2, AC-3 |
 | Exportaciones de `install.js` | agrega `resolveInstallStrategy`, `promptStrategySelection`, `VALID_STRATEGIES` | CNF-4 |
