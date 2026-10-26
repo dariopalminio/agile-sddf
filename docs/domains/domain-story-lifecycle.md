@@ -139,7 +139,7 @@ stateDiagram-v2
 | `ACCEPTANCE` | Validación humana de la historia contra los criterios de aceptación de `SPECIFY`. El humano decide si el valor es entregable. | PO / QA | `IN-PROGRESS` |
 | `DELIVER` | Incremento listo para producción (batch) o ya desplegado (continuous). La escribe `story-delivery` tras verificar el DoD de entrega y con confirmación humana. | Humano (vía `story-delivery`) / CI-CD | `DONE` |
 | `COMPLETED` | Estado terminal pasivo. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. La escribe `story-complete` desde `DELIVER/DONE` con confirmación humana y archiva la historia en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`; las historias ya `COMPLETED/DONE` se archivan sin cambiar su status. | Humano (vía `story-complete`) | `DONE` |
-| `CANCELED` | La historia fue cancelada sin entregar. Estado terminal. | PO / PM | `DONE` |
+| `CANCELED` | La historia fue cancelada sin entregar. Estado terminal. `story-complete` la archiva sin cambiar el status, con confirmación humana. | PO / PM | `DONE` |
 
 ---
 
@@ -193,6 +193,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
   * `review.md` — generado en cada ronda de `CODE-REVIEW`.
   * `verify-report.md` — generado en `VERIFY`.
   * `acceptance-report.md` (opcional) — generado en `ACCEPTANCE`.
+* **Archivo:** las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` conservando su status, con la fecha de `updated:`, `created:` o `date:` (ADR-0017). El status es lo que distingue en el archivo una historia entregada de una cancelada.
 * **Reapertura:** solo desde `COMPLETED` con acción explícita y registro del motivo.
 * **Convención de guion:** ASCII U+002D `-`.
 

@@ -92,7 +92,7 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 La documentación fundacional (`docs/product/`, `docs/requirements/`) orienta las épicas; cada épica contiene varias historias.
 
 epic (`specs/flow/<EPIC-NAME>/epic.md`)
-    └── story (`specs/flow/<STORY-NAME>/story.md`; archivada en `specs/flow/archive/<YYYY-MM-DD>-<STORY-NAME>/` al completarse)
+    └── story (`specs/flow/<STORY-NAME>/story.md`; archivada en `specs/flow/archive/<YYYY-MM-DD>-<STORY-NAME>/` al completarse o cancelarse, conservando su status)
 
 
 ---
@@ -222,7 +222,7 @@ docs/requirements/functional/FR-NNN-<slug>.md            → requisitos funciona
 docs/requirements/non-functional/NFR-NNN-<slug>.md       → requisitos no funcionales
 specs/flow/<EPIC-NN>-<slug>/epic.md                      → épicas
 specs/flow/<STORY-NNN>-<slug>/story.md                   → historias
-specs/flow/archive/<YYYY-MM-DD>-<STORY-NNN>-<slug>/      → historias COMPLETED archivadas
+specs/flow/archive/<YYYY-MM-DD>-<STORY-NNN>-<slug>/      → historias COMPLETED o CANCELED archivadas
 
 #### 14. Versionado mediante substatus
 

@@ -20,17 +20,18 @@ sigue [la sección de migración a 5.0.0](artifact-directory-migration.md#migrac
 
 ## Layout fijo
 
-[ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md) fija tres raíces hermanas en
+[ADR-0017](../adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) (que reemplaza a ADR-0016) fija tres raíces hermanas en
 `REPO_ROOT`, cada una con una responsabilidad:
 
 | Raíz | Responsabilidad | Contenido |
 |---|---|---|
 | `docs/` | Conocimiento | Las capas de memoria (`product/`, `requirements/`, `domains/`, `architecture/`, `adr/`, `policies/`, `guardrails/`, `guides/`, `runbooks/`, `templates/`), `constitution.md` e `index.md`. |
-| `specs/` | Estado | `specs/flow/` con las épicas (`EPIC-NN-<slug>/`) y las historias (`STORY-NNN-<slug>/`) como hermanas, sin subniveles; `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` para las historias `COMPLETED`; `specs/living/` reservado. |
+| `specs/` | Estado | `specs/flow/` con las épicas (`EPIC-NN-<slug>/`) y las historias (`STORY-NNN-<slug>/`) como hermanas, sin subniveles; `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` para las historias `COMPLETED` o `CANCELED`; `specs/living/` reservado. |
 | `workflow/` | Proceso | Reservado. |
 
-La fecha del prefijo de archivo es el `updated:` de la historia o, si falta, su `created:`.
-Las historias `CANCELED` y las épicas no se archivan. `docs/requirements/` no se mueve en
+Las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan conservando su status. La fecha del
+prefijo de archivo es el `updated:` de la historia; si no es válido, su `created:`; si el frontmatter no tiene
+ninguna de esas dos claves, su `date:`. Las épicas no se archivan. `docs/requirements/` no se mueve en
 5.0.0: migrará a `specs/living/` en la épica de Living Spec.
 
 ## Contrato que usan los skills
@@ -77,7 +78,7 @@ automáticamente.
 
 ## Checklist de revisión
 
-- Los work items viven en `specs/flow/` (o en `specs/flow/archive/` si están `COMPLETED`);
+- Los work items viven en `specs/flow/` (o en `specs/flow/archive/` si están `COMPLETED` o `CANCELED`);
   no existe `docs/specs/`.
 - `sddf.config.yaml` no declara la clave `root` y `SDDF_ROOT` no está definida.
 - Las rutas relativas se interpretan desde `REPO_ROOT`.

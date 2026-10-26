@@ -5,7 +5,7 @@ id: STORY-161
 kind: feat
 slug: STORY-161-estrategia-de-instalacion
 title: "Estrategia de instalación"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25

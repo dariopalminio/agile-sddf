@@ -5,7 +5,7 @@ id: STORY-164
 kind: feat
 slug: STORY-164-archivar-historias-canceladas
 title: "Skill story-complete: archivar historias canceladas"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25

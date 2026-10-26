@@ -34,10 +34,10 @@ Skill nuevo `story-delivery`: (dividida en tres historias):
 
 Skill nuevo `story-complete`: (dividida en dos historias):
   - [x] **STORY-160** — Skill story-complete (Core) — completar y archivar una historia entregada: como Solo Builder que entregó una historia con SDD flow-forward quiero completarla y archivarla con `/story-complete STORY-NNN` para que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/` para dejar `specs/flow/` solo con el trabajo activo y conservar la historia entregada como registro histórico, con su historial de git intacto.
-  - [ ] **STORY-164** — Skill story-complete — archivar historias canceladas: Como Solo Builder que canceló una historia, quiero archivarla con `/story-complete STORY-NNN` en `specs/flow/archive/` sin que deje de figurar como `CANCELED`, para sacar de `specs/flow/` el trabajo que ya no se hará, sin que una historia cancelada se confunda con una entregada en el registro histórico.
+  - [x] **STORY-164** — Skill story-complete — archivar historias canceladas: Como Solo Builder que canceló una historia, quiero archivarla con `/story-complete STORY-NNN` en `specs/flow/archive/` sin que deje de figurar como `CANCELED`, para sacar de `specs/flow/` el trabajo que ya no se hará, sin que una historia cancelada se confunda con una entregada en el registro histórico.
 
 Instalador:
-- [ ] **STORY-161** — Estrategia de instalación: Como usuario de `agile-sddf install`, quiero elegir entre la estrategia `full` (épica + story, incluye los skills `epic-*`) y `story` (sin los skills `epic-*`) para instalar solo el flujo que voy a usar. Se elige con `--strategy full|story`. Si el flag falta y hay TTY, el instalador pregunta como ya hace con el runtime; sin TTY usa `full` por defecto. Un valor inválido falla cerrado.
+- [x] **STORY-161** — Estrategia de instalación: Como usuario de `agile-sddf install`, quiero elegir entre la estrategia `full` (épica + story, incluye los skills `epic-*`) y `story` (sin los skills `epic-*`) para instalar solo el flujo que voy a usar. Se elige con `--strategy full|story`. Si el flag falta y hay TTY, el instalador pregunta como ya hace con el runtime; sin TTY usa `full` por defecto. Un valor inválido falla cerrado.
 
 ## Criterios de salida
 

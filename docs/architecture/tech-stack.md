@@ -86,7 +86,7 @@ No hay build ni lint genéricos: la validación es determinista y vive en `scrip
 | `npm test` | Pruebas `node --test` de `test/`. |
 | `npm run test:eval:runner` | Suite determinista del runner `scripts/run-evals.js`. |
 | `npm run test:eval -- [opciones]` | Ejecuta o planifica los casos de `skills/<skill>/evals/evals.json`. Una selección inválida o vacía falla cerrada; `--dry-run` solo aprueba con un plan no vacío. |
-| `npx agile-sddf install [--global] [--target <runtime>] [--force]` | Instalación explícita en otro proyecto; IDs admitidos en `config/runtimes.json`. `npm install` no crea directorios de runtime ni copia nada. |
+| `npx agile-sddf install [--global] [--target <runtime>] [--strategy full\|story] [--force]` | Instalación explícita en otro proyecto; IDs admitidos en `config/runtimes.json`. `--strategy story` excluye los skills `epic-*`; sin flag y sin TTY se usa `full`. `npm install` no crea directorios de runtime ni copia nada. |
 
 ### 4.2 Perfiles y stacks
 

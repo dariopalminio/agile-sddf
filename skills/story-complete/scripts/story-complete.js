@@ -2,15 +2,16 @@
 'use strict';
 
 /**
- * Motor de story-complete (STORY-160): completa y archiva una historia entregada.
+ * Motor de story-complete (STORY-160, STORY-164): completa y archiva una historia cerrada.
  *
  *   - `DELIVER/DONE`   → escribe `status: COMPLETED` y `updated: <hoy>` y archiva (action `complete`)
  *   - `COMPLETED/DONE` → archiva sin escribir nada en `story.md` (action `archive-only`)
- *   - cualquier otro estado, incluido `CANCELED`, se rechaza sin tocar nada
+ *   - `CANCELED/DONE`  → archiva sin escribir nada en `story.md`, conservando el status (action `archive-canceled`)
+ *   - cualquier otro estado se rechaza sin tocar nada
  *
- * Destino (ADR-0016): `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`, con la fecha de
- * `updated:` (o `created:` si falta). La regla de fecha y las regex de conteo replican las de
- * `scripts/migrate-specs-to-flow.js` (CR-004), sin el respaldo `date:` (alcance de STORY-164).
+ * Destino (ADR-0017): `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`, con la fecha de
+ * `updated:` → `created:` → `date:` (este solo si faltan las dos claves anteriores). La regla de
+ * fecha y las regex de conteo replican las de `scripts/migrate-specs-to-flow.js` (CR-004).
  *
  * `plan` es de solo lectura; `apply` re-planifica, escribe, mueve con `git mv` (o `rename` si el
  * directorio no tiene historial) y restaura `story.md` si el movimiento falla. La confirmación
@@ -68,9 +69,10 @@ function readFrontmatter(text) {
   return null;
 }
 
-/** Fecha de archivo (D-4): primer valor válido de `updated:` → `created:`; null si ninguno. */
+/** Fecha de archivo (STORY-164 D-3): `updated:` → `created:`; `date:` solo si faltan ambas claves; null si ninguno. */
 function archiveDateOf(frontmatter) {
-  const found = ['updated', 'created'].map((key) => frontmatter[key]).find((value) => value !== undefined && DATE_RE.test(value));
+  const keys = 'updated' in frontmatter || 'created' in frontmatter ? ['updated', 'created'] : ['date'];
+  const found = keys.map((key) => frontmatter[key]).find((value) => value !== undefined && DATE_RE.test(value));
   return found || null;
 }
 
@@ -141,15 +143,16 @@ function planCompletion({ repoRoot, id, storyPath, today }) {
   let action;
   if (status === 'DELIVER' && substatus === 'DONE') action = 'complete';
   else if (status === 'COMPLETED' && substatus === 'DONE') action = 'archive-only';
+  else if (status === 'CANCELED' && substatus === 'DONE') action = 'archive-canceled';
   else if (status === 'CANCELED') {
-    return fail('CANCELED_NOT_ADMITTED', `La historia ${storyId} está en ${state}: ADR-0016 solo admite historias COMPLETED en ${ARCHIVE}/, así que su archivado no está disponible`, { story });
+    return fail('CANCELED_NOT_DONE', `La historia ${storyId} no puede archivarse: estado actual ${state}. Solo se archivan las historias CANCELED con substatus DONE.`, { story });
   } else {
-    return fail('NOT_DELIVERED', `La historia ${storyId} está en ${state}: story-complete requiere DELIVER/DONE o COMPLETED/DONE. Ejecuta antes /story-delivery ${storyId}`, { story });
+    return fail('NOT_DELIVERED', `La historia ${storyId} está en ${state}: story-complete requiere DELIVER/DONE, COMPLETED/DONE o CANCELED/DONE. Ejecuta antes /story-delivery ${storyId}`, { story });
   }
 
   const archiveDate = action === 'complete' ? today : archiveDateOf(frontmatter);
   if (!archiveDate) {
-    return fail('NO_ARCHIVE_DATE', `La historia ${storyId} no tiene fecha de archivo válida: se buscaron updated: y created: con formato YYYY-MM-DD`, { story, action });
+    return fail('NO_ARCHIVE_DATE', `La historia ${storyId} no tiene fecha de archivo válida (YYYY-MM-DD): se buscó updated:, created: y date:.`, { story, action });
   }
   const to = `${ARCHIVE}/${archiveDate}-${path.posix.basename(dir)}`;
   if (fs.existsSync(abs(repoRoot, to))) {
@@ -234,7 +237,8 @@ function applyCompletion({ repoRoot, id, storyPath, today }) {
   if (after !== before) {
     return { ...result, ok: false, code: 'COUNT_MISMATCH', counts: { before, after }, message: `activas + archivadas = ${after} tras mover ${from}/ a ${to}/, pero antes eran ${before}` };
   }
-  return { ...result, code: 'OK', message: `${story.id} archivada en ${to}/`, counts: { before, after } };
+  const message = action === 'archive-canceled' ? `${story.id} archivada como CANCELED (status sin cambios): ${to}/` : `${story.id} archivada en ${to}/`;
+  return { ...result, code: 'OK', message, counts: { before, after } };
 }
 
 function localToday() {

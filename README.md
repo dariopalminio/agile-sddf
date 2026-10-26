@@ -394,6 +394,14 @@ Codex recibe solo skills en `.agents/skills`. Los roles y subagentes locales via
 
 Usa `--target codex`, no `--target .agents`: `.agents` es un destino y `--target .agents` no es un target válido.
 
+### Estrategia: `full` o `story`
+
+```bash
+npx agile-sddf install --strategy story --target claude-code
+```
+
+`--strategy full` instala el catálogo completo (épica + story). `--strategy story` instala todos los skills excepto los de prefijo `epic-*`, junto con los agentes locales que viajan dentro de ellos. Sin el flag, en una terminal interactiva el instalador pregunta la estrategia igual que el runtime; sin TTY (CI, scripts) usa `full`. Un valor distinto de `full` o `story` termina con código 1 sin copiar nada. La estrategia `story` no borra skills `epic-*` de una instalación previa, ni siquiera con `--force`.
+
 ### Variantes útiles
 
 ```bash

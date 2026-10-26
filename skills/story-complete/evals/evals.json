@@ -1,7 +1,7 @@
 {
   "skill": "story-complete",
-  "version": "1.0.0",
-  "description": "Casos de prueba para story-complete: verifica que el skill completa (DELIVER/DONE → COMPLETED/DONE) y archiva una historia en specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/ solo tras confirmación humana, que archiva sin reescribir el frontmatter las historias COMPLETED/DONE y que rechaza o aborta sin efectos (sin preguntar cuando el plan falla) las historias no entregadas, las CANCELED, la respuesta negativa y el destino existente. El fixture DELIVER/DONE se fija a mano, sin depender de story-delivery.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para story-complete: verifica que el skill completa (DELIVER/DONE → COMPLETED/DONE) y archiva una historia en specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/ solo tras confirmación humana, que archiva sin reescribir el frontmatter las historias COMPLETED/DONE y CANCELED/DONE (STORY-164, ADR-0017) con la fecha de updated:, created: o date:, y que rechaza o aborta sin efectos (sin preguntar cuando el plan falla) las historias no entregadas, las CANCELED con substatus distinto de DONE, las que no tienen fecha de archivo, la respuesta negativa y el destino existente. El fixture DELIVER/DONE se fija a mano, sin depender de story-delivery.",
   "cases": [
     {
       "id": "TC-001",
@@ -15,7 +15,9 @@
         "story_substatus": "DONE",
         "today": "2026-10-25",
         "git_tracked": true,
-        "responses": ["s"]
+        "responses": [
+          "s"
+        ]
       },
       "expected": {
         "contains": [
@@ -48,7 +50,9 @@
         "story_updated": "2026-09-15",
         "today": "2026-10-25",
         "git_tracked": true,
-        "responses": ["s"]
+        "responses": [
+          "s"
+        ]
       },
       "expected": {
         "contains": [
@@ -91,24 +95,30 @@
     },
     {
       "id": "TC-004",
-      "name": "canceled-done-rechazado-cita-adr-0016",
-      "type": "fail-fast",
-      "description": "Historia STORY-204 en CANCELED/DONE. El usuario ejecuta /story-complete STORY-204. El motor devuelve CANCELED_NOT_ADMITTED: el skill debe nombrar el estado actual e indicar que ADR-0016 no admite su archivado, sin preguntar ni mover nada.",
+      "name": "canceled-done-muestra-confirmacion-de-archivo-sin-cambio-de-status",
+      "type": "error-handling",
+      "description": "Historia STORY-204 en CANCELED/DONE con updated: 2026-09-10. El usuario ejecuta /story-complete STORY-204 y responde n. Desde STORY-164 (ADR-0017) el motor admite su archivado (action archive-canceled): el skill debe mostrar la confirmación de archivo indicando que el status no cambia, y ante la respuesta negativa informar que no hubo cambios, sin invocar apply ni citar ADR-0016 como impedimento.",
       "input": {
         "story_id": "STORY-204",
         "story_dir": "specs/flow/STORY-204-descartada",
         "story_status": "CANCELED",
-        "story_substatus": "DONE"
+        "story_substatus": "DONE",
+        "story_updated": "2026-09-10",
+        "responses": [
+          "n"
+        ]
       },
       "expected": {
         "contains": [
-          "❌",
-          "CANCELED/DONE",
-          "ADR-0016"
+          "¿Confirmas archivar STORY-204",
+          "el status no cambia",
+          "specs/flow/archive/2026-09-10-STORY-204-descartada",
+          "Operación cancelada por el usuario: no hubo cambios."
         ],
         "not_contains": [
-          "¿Confirmas completar y archivar",
-          "archivada en"
+          "ADR-0016",
+          "archivada como CANCELED",
+          "❌"
         ]
       },
       "threshold": 0.9
@@ -124,7 +134,9 @@
         "story_status": "DELIVER",
         "story_substatus": "DONE",
         "today": "2026-10-25",
-        "responses": ["n"]
+        "responses": [
+          "n"
+        ]
       },
       "expected": {
         "contains": [
@@ -160,6 +172,149 @@
         "not_contains": [
           "¿Confirmas completar y archivar",
           "archivada en"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-007",
+      "name": "canceled-done-archiva-con-fecha-de-updated",
+      "type": "happy-path",
+      "description": "Historia STORY-207 en specs/flow/STORY-207-busqueda/ con status CANCELED, substatus DONE, updated: 2026-09-10 y created: 2026-08-01, versionada en git. El usuario ejecuta /story-complete STORY-207 y responde s. El skill debe mostrar la confirmación de archivo (el status no cambia), invocar apply y anunciar que la historia quedó archivada como CANCELED en specs/flow/archive/2026-09-10-STORY-207-busqueda/ sin reescribir story.md.",
+      "input": {
+        "story_id": "STORY-207",
+        "story_dir": "specs/flow/STORY-207-busqueda",
+        "story_status": "CANCELED",
+        "story_substatus": "DONE",
+        "story_updated": "2026-09-10",
+        "story_created": "2026-08-01",
+        "today": "2026-10-25",
+        "git_tracked": true,
+        "responses": [
+          "s"
+        ]
+      },
+      "expected": {
+        "contains": [
+          "¿Confirmas archivar STORY-207",
+          "specs/flow/archive/2026-09-10-STORY-207-busqueda",
+          "archivada como CANCELED"
+        ],
+        "not_contains": [
+          "status: COMPLETED",
+          "/story-delivery",
+          "2026-10-25-STORY-207",
+          "❌"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-008",
+      "name": "canceled-done-archiva-con-fecha-de-created",
+      "type": "happy-path",
+      "description": "Historia STORY-208 en CANCELED/DONE con created: 2026-08-01 y sin updated:. El usuario ejecuta /story-complete STORY-208 y confirma con s. El skill debe archivarla en specs/flow/archive/2026-08-01-STORY-208-tablero/ (fecha de created:) conservando el status CANCELED.",
+      "input": {
+        "story_id": "STORY-208",
+        "story_dir": "specs/flow/STORY-208-tablero",
+        "story_status": "CANCELED",
+        "story_substatus": "DONE",
+        "story_created": "2026-08-01",
+        "today": "2026-10-25",
+        "git_tracked": true,
+        "responses": [
+          "s"
+        ]
+      },
+      "expected": {
+        "contains": [
+          "specs/flow/archive/2026-08-01-STORY-208-tablero",
+          "archivada como CANCELED"
+        ],
+        "not_contains": [
+          "status: COMPLETED",
+          "2026-10-25-STORY-208",
+          "❌"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-009",
+      "name": "canceled-done-archiva-con-fecha-de-date",
+      "type": "happy-path",
+      "description": "Historia STORY-209 en CANCELED/DONE con date: 2026-07-15 y sin updated: ni created:. El usuario ejecuta /story-complete STORY-209 y confirma con s. El skill debe archivarla en specs/flow/archive/2026-07-15-STORY-209-notificaciones/ (fecha de date:) conservando el status CANCELED.",
+      "input": {
+        "story_id": "STORY-209",
+        "story_dir": "specs/flow/STORY-209-notificaciones",
+        "story_status": "CANCELED",
+        "story_substatus": "DONE",
+        "story_date": "2026-07-15",
+        "today": "2026-10-25",
+        "git_tracked": true,
+        "responses": [
+          "s"
+        ]
+      },
+      "expected": {
+        "contains": [
+          "specs/flow/archive/2026-07-15-STORY-209-notificaciones",
+          "archivada como CANCELED"
+        ],
+        "not_contains": [
+          "status: COMPLETED",
+          "2026-10-25-STORY-209",
+          "❌"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-010",
+      "name": "canceled-in-progress-rechazado-nombra-estado",
+      "type": "fail-fast",
+      "description": "Historia STORY-210 en CANCELED/IN-PROGRESS. El usuario ejecuta /story-complete STORY-210. El motor devuelve CANCELED_NOT_DONE en plan: el skill debe nombrar el estado actual e indicar que solo se archivan las CANCELED con substatus DONE, terminar sin preguntar, sin sugerir /story-delivery y sin modificar ni mover nada.",
+      "input": {
+        "story_id": "STORY-210",
+        "story_dir": "specs/flow/STORY-210-exportar-pdf",
+        "story_status": "CANCELED",
+        "story_substatus": "IN-PROGRESS"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "CANCELED/IN-PROGRESS",
+          "substatus DONE"
+        ],
+        "not_contains": [
+          "¿Confirmas archivar",
+          "/story-delivery",
+          "archivada"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-011",
+      "name": "canceled-done-sin-fecha-rechazado-nombra-campos",
+      "type": "fail-fast",
+      "description": "Historia STORY-211 en CANCELED/DONE sin updated:, created: ni date: válidos. El usuario ejecuta /story-complete STORY-211. El motor devuelve NO_ARCHIVE_DATE en plan: el skill debe nombrar los tres campos buscados (updated:, created:, date:) y terminar sin preguntar ni mover nada.",
+      "input": {
+        "story_id": "STORY-211",
+        "story_dir": "specs/flow/STORY-211-sin-fecha",
+        "story_status": "CANCELED",
+        "story_substatus": "DONE"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "updated:",
+          "created:",
+          "date:"
+        ],
+        "not_contains": [
+          "¿Confirmas archivar",
+          "archivada"
         ]
       },
       "threshold": 0.9

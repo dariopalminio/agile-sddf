@@ -32,6 +32,21 @@ function resolveInstallTarget(target) {
   return resolveRuntimeTarget(target, runtimeContract());
 }
 
+// Catálogo de estrategias: el menú, la validación, el mensaje de error y el
+// filtro de skills leen esta única fuente.
+const INSTALL_STRATEGIES = Object.freeze({
+  full: Object.freeze({ label: 'epic + story; full catalog', excludedSkillPrefixes: Object.freeze([]) }),
+  story: Object.freeze({ label: 'story flow only; excludes epic-* skills', excludedSkillPrefixes: Object.freeze(['epic-']) }),
+});
+const VALID_STRATEGIES = Object.keys(INSTALL_STRATEGIES);
+const DEFAULT_STRATEGY = 'full';
+
+function resolveInstallStrategy(strategy) {
+  if (strategy === undefined) return DEFAULT_STRATEGY;
+  if (VALID_STRATEGIES.includes(strategy)) return strategy;
+  throw new Error(`Invalid strategy "${strategy}". Valid strategies: ${VALID_STRATEGIES.join(', ')}`);
+}
+
 function assertDestinationContained(baseDir, destDir) {
   const relative = path.relative(baseDir, destDir);
   const isOutsideBase = relative === ''
@@ -100,20 +115,47 @@ async function promptFolderSelection() {
   });
 }
 
-async function copyDir(srcDir, destDir, { force = false } = {}) {
-  if (!fs.existsSync(srcDir)) return { installed: 0, skipped: 0 };
+// Los streams son inyectables para probar el menú sin un TTY real.
+async function promptStrategySelection({ input = process.stdin, output = process.stdout } = {}) {
+  const defaultIndex = VALID_STRATEGIES.indexOf(DEFAULT_STRATEGY);
+  const rl = readline.createInterface({ input, output });
+  const menu = VALID_STRATEGIES
+    .map((id, index) => `  ${index + 1}) ${id}  (${INSTALL_STRATEGIES[id].label})`)
+    .join('\n');
+
+  return new Promise((resolve) => {
+    // Un prompt interrumpido (stdin cerrado sin respuesta) cae a la estrategia por defecto.
+    rl.on('close', () => resolve(DEFAULT_STRATEGY));
+    output.write(`\nWhich install strategy would you like to use?\n${menu}\n`);
+    rl.question(`Enter choice [${defaultIndex + 1}]: `, (answer) => {
+      const choice = answer.trim();
+      const index = choice === '' ? defaultIndex : Number.parseInt(choice, 10) - 1;
+      resolve(VALID_STRATEGIES[index] || DEFAULT_STRATEGY);
+      rl.close();
+    });
+  });
+}
+
+async function copyDir(srcDir, destDir, { force = false, shouldCopy = () => true, strategyId } = {}) {
+  if (!fs.existsSync(srcDir)) return { installed: 0, skipped: 0, excluded: 0 };
 
   await fse.ensureDir(destDir);
 
   const entries = fs.readdirSync(srcDir, { withFileTypes: true });
   let installed = 0;
   let skipped = 0;
+  let excluded = 0;
 
   for (const entry of entries) {
     const srcEntry = path.join(srcDir, entry.name);
     const destEntry = path.join(destDir, entry.name);
 
-    if (!force && fs.existsSync(destEntry)) {
+    // Una entrada excluida no se evalúa en el destino: con --force, una copia
+    // previa del usuario queda intacta.
+    if (!shouldCopy(entry.name)) {
+      console.log(`  Excluded (strategy ${strategyId}): ${entry.name}`);
+      excluded++;
+    } else if (!force && fs.existsSync(destEntry)) {
       console.log(`  Skipped (already exists): ${destEntry}`);
       skipped++;
     } else {
@@ -124,21 +166,27 @@ async function copyDir(srcDir, destDir, { force = false } = {}) {
     }
   }
 
-  return { installed, skipped };
+  return { installed, skipped, excluded };
 }
 
 async function installSDDF(options = {}) {
+  const strategy = resolveInstallStrategy(options.strategy);
+  const { excludedSkillPrefixes } = INSTALL_STRATEGIES[strategy];
   const { destDir, mode, runtime } = resolveDestDir(options);
   const shouldInstallAgents = installsAgents(runtime);
 
-  console.log(`\nSDDF install: copying skills${shouldInstallAgents ? ' and agents' : ''} for ${runtime.name} to ${destDir}\n`);
+  console.log(`\nSDDF install: copying skills${shouldInstallAgents ? ' and agents' : ''} for ${runtime.name} to ${destDir} (strategy ${strategy})\n`);
 
   validateDestBase(destDir);
 
   const skillsSrc = path.join(SOURCE_DIR, 'skills');
   const skillsDest = path.resolve(destDir, runtime.layout.skillsDirectory);
   assertDestinationContained(destDir, skillsDest);
-  const { installed: si, skipped: ss } = await copyDir(skillsSrc, skillsDest, { force: options.force });
+  const { installed: si, skipped: ss, excluded: se } = await copyDir(skillsSrc, skillsDest, {
+    force: options.force,
+    shouldCopy: (name) => !excludedSkillPrefixes.some((prefix) => name.startsWith(prefix)),
+    strategyId: strategy,
+  });
 
   let ai = 0;
   let as_ = 0;
@@ -153,21 +201,25 @@ async function installSDDF(options = {}) {
     runtime: runtime.id,
     destination: destDir,
     mode,
-    skills: { installed: si, skipped: ss },
+    strategy,
+    skills: { installed: si, skipped: ss, excluded: se },
     agents: { installed: ai, skipped: as_ },
   };
 
-  console.log(`\nSDDF installed (${mode}, ${runtime.id}): ${si} skills${shouldInstallAgents ? `, ${ai} agents` : ''} (${ss + as_} skipped)\n`);
+  console.log(`\nSDDF installed (${mode}, ${runtime.id}, strategy ${strategy}): ${si} skills${shouldInstallAgents ? `, ${ai} agents` : ''} (${ss + as_} skipped${se > 0 ? `, ${se} excluded` : ''})\n`);
   return result;
 }
 
 module.exports = {
   installSDDF,
   promptFolderSelection,
+  promptStrategySelection,
   resolveInstallTarget,
+  resolveInstallStrategy,
   resolveDestDir,
   formatRuntimeChoices,
   VALID_FOLDERS,
   VALID_TARGETS,
+  VALID_STRATEGIES,
   assertDestinationContained,
 };

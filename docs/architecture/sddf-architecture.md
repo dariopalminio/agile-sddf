@@ -138,7 +138,7 @@ agile-sddf/
 │
 ├── specs/                     # estado: work items (ADR-0016)
 │   ├── flow/                  # EPIC-NN-<slug>/ y STORY-NNN-<slug>/ hermanos, sin subniveles
-│   │   └── archive/           # <YYYY-MM-DD>-STORY-NNN-<slug>/ de las stories COMPLETED
+│   │   └── archive/           # <YYYY-MM-DD>-STORY-NNN-<slug>/ de las stories COMPLETED o CANCELED
 │   └── living/                # reservado: especificación viva (épica de Living Spec)
 ├── workflow/                  # reservado: proceso
 │

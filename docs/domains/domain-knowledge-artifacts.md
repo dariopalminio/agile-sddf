@@ -241,7 +241,7 @@ enforced-by:
 5. Todo `Artifact` tiene **frontmatter YAML** con campos obligatorios: `type`, `id`, `title`, `date`, `status`.
 6. Todo `Artifact` tiene **exactamente un archivo `.md`** como cuerpo principal.
 7. Los artefactos de tipo `requirement` viven en `requirements/functional/` o `requirements/non-functional/`.
-8. Los artefactos de tipo `spec` viven en `specs/flow/` (raíz del repo), épicas e historias como directorios hermanos; las historias `COMPLETED` se archivan en `specs/flow/archive/`.
+8. Los artefactos de tipo `spec` viven en `specs/flow/` (raíz del repo), épicas e historias como directorios hermanos; las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` conservando su status, con la fecha de `updated:`, `created:` o `date:` (ADR-0017).
 9. Los artefactos de tipo `guardrail` viven en `guardrails/` y usan checklist con severidades.
 10. Los artefactos de tipo `policy` viven en `policies/` y declaran un `scope`.
 11. Los artefactos de tipo `template` viven en `templates/` y usan el sufijo `-template.md`. Su seed vive en el `assets/` del skill dueño; ambas copias deben ser idénticas.

@@ -1366,6 +1366,19 @@ test('S152-UT-004 checkMemory: los nodos flow son propios y se evalúan', (t) =>
     && entry.path === '../specs/flow/STORY-001-a/story.md' && entry.detail === 'falta id'), JSON.stringify(problems));
 });
 
+test('S164-UT-001 una historia CANCELED archivada se indexa bajo Historias archivadas y check no la reporta (CNF-3)', (t) => {
+  const { repo, docs } = flowRepo(t);
+  const file = path.join(repo, 'specs', 'flow', 'archive', '2026-01-01-STORY-001-cancelada', 'story.md');
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, '---\ntype: story\nid: STORY-001\nslug: STORY-001-cancelada\ntitle: "Historia cancelada"\nstatus: CANCELED\nsubstatus: DONE\n---\n# Historia cancelada\n');
+  const template = readUtf8(SKILL_DIR, 'assets', 'index-template.md');
+  const { content } = engine.renderIndex(template, engine.scanNodes(docs, 'sddf'), { date: '2026-01-01' });
+  const archived = content.slice(content.indexOf('### Historias archivadas'), content.indexOf('## 🧭 Dominio y arquitectura'));
+  assert.match(archived, /- \[\[STORY-001-cancelada\]\] — \[story\.md\]\(\.\.\/specs\/flow\/archive\/2026-01-01-STORY-001-cancelada\/story\.md\) — Historia cancelada/);
+  const { problems } = engine.checkMemory(docs, 'sddf');
+  assert.ok(!problems.some((entry) => entry.path.includes('STORY-001-cancelada')), JSON.stringify(problems));
+});
+
 test('S152-UT-005 index: un repo sin specs/flow/ indexa sin error', (t) => {
   const { repo, docs } = flowRepo(t);
   fs.rmSync(path.join(repo, 'specs'), { recursive: true, force: true });

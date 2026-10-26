@@ -87,7 +87,7 @@ Aplican a **todo `WorkItem`**, independientemente de su nivel:
 3. `BLOCKED` **no retrocede** el status: el work item permanece en su status actual mientras espera resolución.
 4. Las transiciones deben seguir la máquina de estados canónica definida para el nivel correspondiente.
 5. Los estados buffer deben respetar un **WIP limit** definido en la política del proyecto.
-6. `SHIP` y `COMPLETED` de épica son transiciones terminales **manuales o disparadas por CI/CD**; ningún skill las escribe automáticamente. `DELIVER` de story la escribe `story-delivery` y `COMPLETED` de story la escribe `story-complete` desde `DELIVER/DONE`, ambas siempre con **confirmación humana explícita**; `story-complete` además archiva sin cambiar el status las historias que ya están en `COMPLETED/DONE`.
+6. `SHIP` y `COMPLETED` de épica son transiciones terminales **manuales o disparadas por CI/CD**; ningún skill las escribe automáticamente. `DELIVER` de story la escribe `story-delivery` y `COMPLETED` de story la escribe `story-complete` desde `DELIVER/DONE`, ambas siempre con **confirmación humana explícita**; `story-complete` además archiva sin cambiar el status las historias que ya están en `COMPLETED/DONE`, y archiva sin cambiar el status las historias `CANCELED/DONE`, siempre con confirmación humana (ADR-0017).
 7. Un `WorkItem` en estado terminal pasivo no puede retroceder sin una acción explícita de reapertura.
 8. Los nombres de `status` usan **verbos en infinitivo** (ADR-0003) para reflejar acción, no concepto estático.
 9. El conjunto de `status` válidos es **específico por nivel** y se define en el dominio de cada nivel.

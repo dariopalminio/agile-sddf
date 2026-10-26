@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { PassThrough } = require('node:stream');
 const test = require('node:test');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
@@ -14,7 +15,10 @@ const { loadRuntimeContract, installsAgents } = require('../scripts/runtime-cont
 const {
   installSDDF,
   resolveDestDir,
+  resolveInstallStrategy,
+  promptStrategySelection,
   VALID_TARGETS,
+  VALID_STRATEGIES,
   assertDestinationContained,
 } = require('../scripts/install.js');
 
@@ -101,6 +105,10 @@ function topLevelEntries(directory) {
     .filter((entry) => entry.isDirectory() || entry.isFile())
     .map((entry) => entry.name)
     .sort();
+}
+
+function epicSkillNames() {
+  return topLevelEntries(path.join(REPO_ROOT, 'skills')).filter((name) => name.startsWith('epic-'));
 }
 
 test('el mapa de runtimes es la única fuente de targets instalables', () => {
@@ -313,6 +321,9 @@ test('la ayuda del CLI se deriva del contrato y muestra los destinos canónicos'
     assert.match(result.stdout, new RegExp(runtime.id));
     assert.match(result.stdout, new RegExp(runtime.destinations.local.rootSegments.join('[/\\\\]')));
   }
+  assert.match(result.stdout, /--strategy/);
+  assert.match(result.stdout, /full/);
+  assert.match(result.stdout, /story/);
 });
 
 test('el helper de contención solo acepta un hijo estricto', () => {
@@ -327,4 +338,127 @@ test('el helper de contención solo acepta un hijo estricto', () => {
   assert.throws(() => {
     assertDestinationContained(baseDir, path.resolve(baseDir, '..', 'escape'));
   }, /installation base/);
+});
+
+test('resolveInstallStrategy usa full por defecto y rechaza valores fuera del catálogo', () => {
+  assert.deepEqual(VALID_STRATEGIES, ['full', 'story']);
+  assert.equal(resolveInstallStrategy(undefined), 'full');
+  assert.equal(resolveInstallStrategy('full'), 'full');
+  assert.equal(resolveInstallStrategy('story'), 'story');
+  assert.throws(() => resolveInstallStrategy('epic'), /Invalid strategy "epic"\. Valid strategies: full, story/);
+  assert.throws(() => resolveInstallStrategy(''), /Invalid strategy ""\. Valid strategies: full, story/);
+});
+
+test('installSDDF con estrategia story omite los skills epic-* y copia el resto', { concurrency: false }, async (t) => {
+  const { projectDir } = createFixture(t);
+  const epicSkills = epicSkillNames();
+  const expected = topLevelEntries(path.join(REPO_ROOT, 'skills')).filter((name) => !name.startsWith('epic-'));
+  assert.ok(epicSkills.length > 0, 'la fuente debe tener skills epic-* para que la prueba sea significativa');
+
+  await withInitCwd(projectDir, () => withoutInstallLogs(async () => {
+    const result = await installSDDF({ strategy: 'story', target: 'claude-code' });
+    const installed = topLevelEntries(path.join(projectDir, '.claude', 'skills'));
+    assert.deepEqual(installed, expected);
+    assert.equal(installed.some((name) => name.startsWith('epic-')), false);
+    assert.equal(result.strategy, 'story');
+    assert.equal(result.skills.excluded, epicSkills.length);
+  }));
+});
+
+test('installSDDF con estrategia full o sin estrategia instala el catálogo completo', { concurrency: false }, async (t) => {
+  const sourceSkills = topLevelEntries(path.join(REPO_ROOT, 'skills'));
+
+  for (const options of [{ strategy: 'full' }, {}]) {
+    const { projectDir } = createFixture(t);
+    await withInitCwd(projectDir, () => withoutInstallLogs(async () => {
+      const result = await installSDDF({ ...options, target: 'claude-code' });
+      assert.deepEqual(topLevelEntries(path.join(projectDir, '.claude', 'skills')), sourceSkills);
+      assert.equal(result.strategy, 'full');
+      assert.equal(result.skills.excluded, 0);
+    }));
+  }
+});
+
+test('installSDDF con story y --force deja intactos los epic-* previos, local y global', { concurrency: false }, async (t) => {
+  const { projectDir, homeDir } = createFixture(t);
+  const claude = RUNTIMES.find((runtime) => runtime.id === 'claude-code');
+  const sentinel = 'contenido previo del usuario\n';
+  const cases = [
+    { base: projectDir, mode: 'local', options: {} },
+    { base: homeDir, mode: 'global', options: { global: true, homeDir } },
+  ];
+
+  await withInitCwd(projectDir, () => withoutInstallLogs(async () => {
+    for (const { base, mode, options } of cases) {
+      const epicFile = path.join(destination(base, claude, mode), 'skills', 'epic-analyze', 'SKILL.md');
+      fs.mkdirSync(path.dirname(epicFile), { recursive: true });
+      fs.writeFileSync(epicFile, sentinel);
+
+      const result = await installSDDF({ ...options, target: 'claude-code', strategy: 'story', force: true });
+      assert.equal(result.mode, mode);
+      assert.equal(result.destination, destination(base, claude, mode));
+      assert.equal(fs.readFileSync(epicFile, 'utf8'), sentinel);
+      assert.equal(fs.existsSync(path.join(result.destination, 'skills', 'story-plan')), true);
+    }
+  }));
+});
+
+test('promptStrategySelection elige por número y cae a full ante vacío o inválido', async () => {
+  const cases = [['2\n', 'story'], ['\n', 'full'], ['9\n', 'full']];
+
+  for (const [answer, expected] of cases) {
+    const input = new PassThrough();
+    const output = new PassThrough();
+    let written = '';
+    output.on('data', (chunk) => { written += chunk; });
+
+    const selection = promptStrategySelection({ input, output });
+    input.end(answer);
+    assert.equal(await selection, expected);
+    assert.match(written, /full/);
+    assert.match(written, /story/);
+  }
+});
+
+test('el CLI instala con --strategy story sin skills epic-* y lo indica en el resumen', (t) => {
+  const { projectDir } = createFixture(t);
+  const result = runNode(
+    CLI_PATH,
+    ['install', '--strategy', 'story', '--target', 'claude-code'],
+    childEnv({ initCwd: projectDir }),
+  );
+  assertSucceeded(result);
+  const installed = topLevelEntries(path.join(projectDir, '.claude', 'skills'));
+  assert.equal(installed.some((name) => name.startsWith('epic-')), false);
+  assert.match(result.stdout, /strategy story/);
+});
+
+test('el CLI sin --strategy y sin TTY usa full e instala el catálogo completo', (t) => {
+  const { projectDir } = createFixture(t);
+  const result = runNode(CLI_PATH, ['install', '--target', 'claude-code'], childEnv({ initCwd: projectDir }));
+  assertSucceeded(result);
+  assert.deepEqual(
+    topLevelEntries(path.join(projectDir, '.claude', 'skills')),
+    topLevelEntries(path.join(REPO_ROOT, 'skills')),
+  );
+  assert.match(result.stdout, /strategy full/);
+});
+
+test('el CLI rechaza --strategy inválido o sin valor antes de escribir', (t) => {
+  const { projectDir } = createFixture(t);
+  const cases = [
+    ['install', '--strategy', 'epic'],
+    ['install', '--strategy'],
+    ['install', '--strategy', '--force'],
+  ];
+
+  for (const args of cases) {
+    const result = runNode(CLI_PATH, args, childEnv({ initCwd: projectDir }));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Invalid --strategy/);
+    assert.match(result.stderr, /full, story/);
+    if (args[2] === 'epic') assert.match(result.stderr, /"epic"/);
+  }
+
+  assertNoRuntimeOutput(projectDir);
 });

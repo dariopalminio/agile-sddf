@@ -21,7 +21,7 @@ related:                                    # opcional, si tiene relación con o
 Los skills no resuelven una raíz de artefactos configurable: cada uno determina `REPO_ROOT` y
 usa rutas fijas relativas a él ([ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md)).
 El conocimiento vive en `docs/` (templates en `docs/templates/`, DoD en `docs/guardrails/`) y
-los work items en `specs/flow/`, con las historias `COMPLETED` archivadas en `specs/flow/archive/` por `/story-complete`.
+los work items en `specs/flow/`, con las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) archivadas en `specs/flow/archive/` por `/story-complete`, que conserva su status (ADR-0017).
 `SDDF_ROOT` y la clave `root` de `sddf.config.yaml` ya no se leen; para migrar un proyecto que
 los usa, sigue [la guía de migración a 5.0.0](artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices).
 

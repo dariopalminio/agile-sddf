@@ -154,13 +154,58 @@ for (const [status, substatus] of [['ACCEPTANCE', 'DONE'], ['DELIVER', 'IN-PROGR
   });
 }
 
-test('CANCELED/DONE → CANCELED_NOT_ADMITTED citando ADR-0016, sin cambios (AC-2 fila 4)', (t) => {
-  const root = makeFixture(t, { stories: { [NAME]: fm('CANCELED', 'DONE') } });
+// ── STORY-164 — archivado de historias CANCELED (D-1, D-3, D-4) ────────────────────
+
+test('CANCELED/DONE → action archive-canceled con la fecha de updated:, created: o date: (STORY-164 AC-1)', (t) => {
+  const cases = [
+    [{ updated: '2026-09-10', created: '2026-08-01' }, '2026-09-10'],
+    [{ created: '2026-08-01' }, '2026-08-01'],
+    [{ date: '2026-07-15' }, '2026-07-15'],
+  ];
+  for (const [dates, expected] of cases) {
+    const root = makeFixture(t, { stories: { [NAME]: fm('CANCELED', 'DONE', dates) } });
+    const before = snapshot(root);
+    const result = planCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+    assert.equal(result.ok, true, result.message);
+    assert.equal(result.action, 'archive-canceled');
+    assert.equal(result.archiveDate, expected, JSON.stringify(dates));
+    assert.equal(result.to, `specs/flow/archive/${expected}-${NAME}`);
+    assert.deepEqual(snapshot(root), before, 'plan no escribe');
+  }
+});
+
+test('CANCELED/DONE → story.md byte a byte igual y status CANCELED tras archivar (STORY-164 AC-1, CNF-4)', (t) => {
+  const root = makeFixture(t, { stories: { [NAME]: fm('CANCELED', 'DONE', { date: '2026-07-15' }) } });
+  const original = fs.readFileSync(storyFile(root, `specs/flow/${NAME}`));
+  const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.equal(result.to, `specs/flow/archive/2026-07-15-${NAME}`);
+  assert.equal(fs.existsSync(path.join(root, 'specs', 'flow', NAME)), false);
+  const archived = fs.readFileSync(storyFile(root, result.to));
+  assert.ok(archived.equals(original));
+  assert.match(archived.toString('utf8'), /^status: CANCELED$/m);
+  assert.match(result.message, /archivada como CANCELED \(status sin cambios\)/);
+  assert.deepEqual(result.counts, { before: 1, after: 1 });
+});
+
+test('CANCELED con substatus distinto de DONE → CANCELED_NOT_DONE con el estado, sin /story-delivery ni cambios (STORY-164 AC-2 fila 1)', (t) => {
+  const root = makeFixture(t, { stories: { [NAME]: fm('CANCELED', 'IN-PROGRESS') } });
   const before = snapshot(root);
   const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
-  assert.equal(result.code, 'CANCELED_NOT_ADMITTED');
-  assert.match(result.message, /CANCELED\/DONE/);
-  assert.match(result.message, /ADR-0016/);
+  assert.equal(result.ok, false);
+  assert.equal(result.code, 'CANCELED_NOT_DONE');
+  assert.ok(result.message.includes('CANCELED/IN-PROGRESS'), result.message);
+  assert.match(result.message, /substatus DONE/);
+  assert.doesNotMatch(result.message, /story-delivery|ADR-0016/);
+  assert.deepEqual(snapshot(root), before);
+});
+
+test('CANCELED/DONE sin updated:, created: ni date: válidos → NO_ARCHIVE_DATE con los tres campos, sin cambios (STORY-164 AC-2 fila 2)', (t) => {
+  const root = makeFixture(t, { stories: { [NAME]: fm('CANCELED', 'DONE', { date: 'ayer' }) } });
+  const before = snapshot(root);
+  const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.equal(result.code, 'NO_ARCHIVE_DATE');
+  for (const field of ['updated:', 'created:', 'date:']) assert.ok(result.message.includes(field), result.message);
   assert.deepEqual(snapshot(root), before);
 });
 
@@ -203,20 +248,30 @@ test('COMPLETED/DONE → archive-only con la fecha de updated:, o de created: si
   }
 });
 
-test('COMPLETED/DONE sin updated: ni created: válidos → NO_ARCHIVE_DATE aunque exista date: (AC-3 fila 3)', (t) => {
+test('COMPLETED/DONE con updated: inválido y date: → NO_ARCHIVE_DATE: date: solo cuenta sin updated: ni created: (AC-3 fila 3, STORY-164 D-3)', (t) => {
   const root = makeFixture(t, { stories: { [NAME]: fm('COMPLETED', 'DONE', { date: '2026-09-01', updated: 'x' }) } });
   const before = snapshot(root);
   const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
   assert.equal(result.code, 'NO_ARCHIVE_DATE');
-  assert.match(result.message, /updated:/);
-  assert.match(result.message, /created:/);
+  for (const field of ['updated:', 'created:', 'date:']) assert.ok(result.message.includes(field), result.message);
   assert.deepEqual(snapshot(root), before);
 });
 
-test('archiveDateOf: cadena updated: → created:, nunca date:', () => {
+test('COMPLETED/DONE solo con date: → archive-only con esa fecha (STORY-164 D-3)', (t) => {
+  const root = makeFixture(t, { stories: { [NAME]: fm('COMPLETED', 'DONE', { date: '2026-07-15' }) } });
+  const result = planCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.equal(result.action, 'archive-only');
+  assert.equal(result.archiveDate, '2026-07-15');
+});
+
+test('archiveDateOf: cadena updated: → created: → date: (solo si faltan ambas claves)', () => {
   assert.equal(archiveDateOf({ updated: '2026-01-02', created: '2026-01-01' }), '2026-01-02');
   assert.equal(archiveDateOf({ created: '2026-01-01' }), '2026-01-01');
-  assert.equal(archiveDateOf({ date: '2026-01-01' }), null);
+  assert.equal(archiveDateOf({ updated: 'x', created: '2026-01-01' }), '2026-01-01');
+  assert.equal(archiveDateOf({ date: '2026-01-01' }), '2026-01-01');
+  assert.equal(archiveDateOf({ updated: 'x', date: '2026-01-01' }), null);
+  assert.equal(archiveDateOf({ date: 'x' }), null);
+  assert.equal(archiveDateOf({}), null);
 });
 
 test('destino existente → ARCHIVE_CONFLICT con la ruta, sin cambios (AC-3 fila 2)', (t) => {

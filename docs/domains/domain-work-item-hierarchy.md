@@ -69,7 +69,7 @@ product/ + requirements/
 
 ## 7. Estructura de Carpetas
 
-`specs/flow/` (raíz del repo) contiene épicas (`EPIC-NN-<slug>/`) e historias (`STORY-NNN-<slug>/`) como directorios hermanos, sin subniveles ni prefijos numéricos. Las historias `COMPLETED` se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` ([[layout-fijo-de-tres-raices]]).
+`specs/flow/` (raíz del repo) contiene épicas (`EPIC-NN-<slug>/`) e historias (`STORY-NNN-<slug>/`) como directorios hermanos, sin subniveles ni prefijos numéricos. Las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` conservando su status, con la fecha de `updated:`, `created:` o `date:` ([[layout-fijo-con-archivo-de-historias-canceladas]]).
 
 > Hasta 3.x existía un nivel Project en `specs/01-projects/`; ver [[asegurar-dos-niveles-de-flujo-epics-stories]].
 
