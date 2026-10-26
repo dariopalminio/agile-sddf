@@ -18,8 +18,9 @@ Cada skill del workflow SHALL actualizar los campos `status` y `substatus` del
 frontmatter de `story.md` al iniciar y al terminar, conforme a la máquina de estados canónica.
 Los sub-skills invocados por un orquestador (`story-design`, `story-tasking`,
 `story-testcases`) NO SHALL modificar `story.md`: solo producen su artefacto. La transición
-a `COMPLETED` SHALL ser manual o disparada por CI/CD, nunca escrita por un skill; la transición a
-`DELIVER` SHALL escribirla solo `story-delivery`, y siempre con confirmación humana explícita.
+a `DELIVER` SHALL escribirla solo `story-delivery` y la transición a `COMPLETED` de story SHALL
+escribirla solo `story-complete` (desde `DELIVER/DONE`, al archivar la historia), ambas siempre con
+confirmación humana explícita.
 
 ## Atributos
 

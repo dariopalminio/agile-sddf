@@ -138,7 +138,7 @@ stateDiagram-v2
 | `VERIFY` | Se ejecutan pruebas automatizadas (unitarias, integración, E2E, regresión) en entorno controlado. | CI / Equipo | `IN-PROGRESS` |
 | `ACCEPTANCE` | Validación humana de la historia contra los criterios de aceptación de `SPECIFY`. El humano decide si el valor es entregable. | PO / QA | `IN-PROGRESS` |
 | `DELIVER` | Incremento listo para producción (batch) o ya desplegado (continuous). La escribe `story-delivery` tras verificar el DoD de entrega y con confirmación humana. | Humano (vía `story-delivery`) / CI-CD | `DONE` |
-| `COMPLETED` | Estado terminal pasivo. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. | — | `DONE` |
+| `COMPLETED` | Estado terminal pasivo. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. La escribe `story-complete` desde `DELIVER/DONE` con confirmación humana y archiva la historia en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`; las historias ya `COMPLETED/DONE` se archivan sin cambiar su status. | Humano (vía `story-complete`) | `DONE` |
 | `CANCELED` | La historia fue cancelada sin entregar. Estado terminal. | PO / PM | `DONE` |
 
 ---

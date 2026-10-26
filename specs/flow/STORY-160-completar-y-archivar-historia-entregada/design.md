@@ -373,3 +373,15 @@ Ninguna bloqueante. La nota «Pendiente de refinar» de la historia se resuelve 
 - **Descripción**: la historia sugiere reutilizar `archiveDate` de `scripts/migrate-specs-to-flow.js`. No es reutilizable directamente: el script es de un solo uso (CS-11 de STORY-153), no se instala con los skills y su `archiveDate` acepta `date:`, que es alcance de STORY-164.
 - **Documento afectado**: design.md
 - **Acción requerida**: el motor (C-2) replica la regla `updated:` → `created:` y las regex de conteo, citando el origen; `migrate-specs-to-flow.js` no se modifica.
+
+### CR-005
+- **Tipo**: desviación (implementación)
+- **Descripción**: D-11 y T014 piden un frontmatter con `triggers` y `outputs`, como `story-acceptance`. `docs/guardrails/gr-skill-creation-checklist.md` (regla `skill-frontmatter-keys`, error) solo admite `name`, `description`, `allowed-tools` y `license`, y `skills/story-delivery/SKILL.md` ya sigue esa regla.
+- **Documento afectado**: design.md (D-11), tasks.md (T014)
+- **Acción requerida**: `skills/story-complete/SKILL.md` declara solo `name` y `description`; los disparadores viven en `description` y las salidas en `## Salida`.
+
+### CR-006
+- **Tipo**: dependencia (implementación)
+- **Descripción**: `docs/requirements/functional/FR-046-gestion-de-estados-a-lo-largo-del-workflow.md` también afirmaba que la transición a `COMPLETED` nunca la escribe un skill (regla de Veracidad de `AGENTS.md`); no figuraba entre C-6…C-11.
+- **Documento afectado**: design.md (Componentes afectados)
+- **Acción requerida**: FR-046 declara que `COMPLETED` de story la escribe solo `story-complete` desde `DELIVER/DONE`, con confirmación humana; se conserva la frase de `DELIVER` que dejó STORY-159.

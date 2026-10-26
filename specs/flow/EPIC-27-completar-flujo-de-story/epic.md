@@ -33,7 +33,7 @@ Skill nuevo `story-delivery`: (dividida en tres historias):
   - [x] **STORY-163** — Skill story-delivery: Como Solo Builder, quiero previsualizar la entrega con `--dry-run` y forzarla con `--force` cuando el estado previo o el DoD la bloquean, para decidir la entrega sabiendo qué pasaría antes de escribir nada y, si la fuerzo, dejar trazado qué se omitió.
 
 Skill nuevo `story-complete`: (dividida en dos historias):
-  - [ ] **STORY-160** — Skill story-complete (Core) — completar y archivar una historia entregada: como Solo Builder que entregó una historia con SDD flow-forward quiero completarla y archivarla con `/story-complete STORY-NNN` para que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/` para dejar `specs/flow/` solo con el trabajo activo y conservar la historia entregada como registro histórico, con su historial de git intacto.
+  - [x] **STORY-160** — Skill story-complete (Core) — completar y archivar una historia entregada: como Solo Builder que entregó una historia con SDD flow-forward quiero completarla y archivarla con `/story-complete STORY-NNN` para que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/` para dejar `specs/flow/` solo con el trabajo activo y conservar la historia entregada como registro histórico, con su historial de git intacto.
   - [ ] **STORY-164** — Skill story-complete — archivar historias canceladas: Como Solo Builder que canceló una historia, quiero archivarla con `/story-complete STORY-NNN` en `specs/flow/archive/` sin que deje de figurar como `CANCELED`, para sacar de `specs/flow/` el trabajo que ya no se hará, sin que una historia cancelada se confunda con una entregada en el registro histórico.
 
 Instalador:

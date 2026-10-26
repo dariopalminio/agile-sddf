@@ -69,7 +69,7 @@ stateDiagram-v2
     state "CODE-REVIEW" as CR
 ```
 
-`CANCELED` es alcanzable desde cualquier estado activo y, como `COMPLETED`, lo marca el humano: ningún skill lo escribe.
+`CANCELED` es alcanzable desde cualquier estado activo y lo marca el humano: ningún skill lo escribe. `COMPLETED` lo escribe `story-complete` desde `DELIVER/DONE`, siempre con confirmación humana.
 
 Happy path:
 ```
@@ -90,7 +90,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 | `VERIFY` | Se ejecutan pruebas automatizadas (unitarias, integración, E2E, regresión) en entorno controlado. | IA / CI |
 | `ACCEPTANCE` | Validación humana de la historia contra los criterios de aceptación de SPECIFY. El humano decide si el valor es entregable. | PO / QA |
 | `DELIVER` | Incremento listo para producción (batch) o ya desplegado (continuous). La escribe `story-delivery` tras verificar el DoD de entrega y con confirmación humana. | Humano (vía `story-delivery`) / CI-CD |
-| `COMPLETED` | Estado terminal pasivo. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. | — |
+| `COMPLETED` | Estado terminal pasivo. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. La escribe `story-complete` desde `DELIVER/DONE` con confirmación humana y archiva la historia en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. | Humano (vía `story-complete`) |
 | `CANCELED` | Estado terminal pasivo. La historia se abandonó sin entregar. Alcanzable desde cualquier estado activo; transición manual, ningún skill la escribe. | Humano |
 
 ### Tabla de transiciones por skill
@@ -105,8 +105,9 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 | `story-verify` | `CODE-REVIEW/DONE` (camino normal), `IMPLEMENT/DONE` (mínimo aceptable) o `VERIFY/BLOCKED` (reintento) | `VERIFY/IN-PROGRESS` | `VERIFY/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `VERIFY/BLOCKED` (`BLOCKED`) |
 | `story-acceptance` | `VERIFY/DONE` (camino normal), `ACCEPTANCE/IN-PROGRESS` (sesión en curso) o `ACCEPTANCE/BLOCKED` (reintento) | `ACCEPTANCE/IN-PROGRESS` | `ACCEPTANCE/DONE` | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `ACCEPTANCE/BLOCKED` (`BLOCKED`) |
 | `story-delivery` | `ACCEPTANCE/DONE` | — (sin estado intermedio) | `DELIVER/DONE` (con confirmación humana) | — |
+| `story-complete` | `DELIVER/DONE` o `COMPLETED/DONE` (solo archivar) | — (sin estado intermedio) | `COMPLETED/DONE` + archivado en `specs/flow/archive/` (con confirmación humana) | — (sin cambios) |
 
-**DELIVER** significa que el incremento está listo para producción (potencialmente entregable) o ya desplegado (entregado), según el modelo de entrega del equipo (batch vs. continuous). Lo escribe `story-delivery` tras verificar el DoD de entrega y solo con confirmación humana explícita; si la entrega no se confirma, `story.md` no cambia. **COMPLETED es una transición manual** — ningún skill lo escribe; lo marca el humano o CI/CD.
+**DELIVER** significa que el incremento está listo para producción (potencialmente entregable) o ya desplegado (entregado), según el modelo de entrega del equipo (batch vs. continuous). Lo escribe `story-delivery` tras verificar el DoD de entrega y solo con confirmación humana explícita; si la entrega no se confirma, `story.md` no cambia. **COMPLETED** lo escribe `story-complete` desde `DELIVER/DONE`, solo con confirmación humana explícita, y en la misma operación archiva la historia en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` (ADR-0016); las historias que ya están en `COMPLETED/DONE` se archivan sin cambiar su status.
 
 Los sub-skills `story-design`, `story-tasking` y `story-testcases` son invocados por `story-plan` y **no modifican `story.md`**: solo producen sus artefactos (`design.md`, `tasks.md`, `testcases.md`).
 

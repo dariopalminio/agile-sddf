@@ -1,0 +1,168 @@
+{
+  "skill": "story-complete",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-complete: verifica que el skill completa (DELIVER/DONE → COMPLETED/DONE) y archiva una historia en specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/ solo tras confirmación humana, que archiva sin reescribir el frontmatter las historias COMPLETED/DONE y que rechaza o aborta sin efectos (sin preguntar cuando el plan falla) las historias no entregadas, las CANCELED, la respuesta negativa y el destino existente. El fixture DELIVER/DONE se fija a mano, sin depender de story-delivery.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "deliver-done-confirmado-completa-y-archiva",
+      "type": "happy-path",
+      "description": "Historia STORY-201 en specs/flow/STORY-201-exportar-csv/ con status DELIVER y substatus DONE fijados a mano, versionada en git. El usuario ejecuta /story-complete STORY-201 y responde 's' a la confirmación. El skill debe mostrar el resumen (estado, acción, origen, destino, método git-mv), preguntar, invocar apply y anunciar la ruta final con COMPLETED/DONE y updated: de hoy, recordando que el commit queda a cargo del usuario.",
+      "input": {
+        "story_id": "STORY-201",
+        "story_dir": "specs/flow/STORY-201-exportar-csv",
+        "story_status": "DELIVER",
+        "story_substatus": "DONE",
+        "today": "2026-10-25",
+        "git_tracked": true,
+        "responses": ["s"]
+      },
+      "expected": {
+        "contains": [
+          "¿Confirmas completar y archivar STORY-201",
+          "specs/flow/archive/2026-10-25-STORY-201-exportar-csv",
+          "✅ STORY-201 archivada en",
+          "COMPLETED/DONE",
+          "updated: 2026-10-25",
+          "git-mv",
+          "commit"
+        ],
+        "not_contains": [
+          "Operación cancelada por el usuario",
+          "❌",
+          "/story-delivery STORY-201"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-002",
+      "name": "completed-done-archiva-sin-cambio-de-status",
+      "type": "happy-path",
+      "description": "Historia STORY-202 en specs/flow/STORY-202-filtros/ que ya está en COMPLETED/DONE con updated: 2026-09-15. El usuario ejecuta /story-complete STORY-202 y confirma con 's'. El skill debe indicar que no hay cambio de status, archivar en specs/flow/archive/2026-09-15-STORY-202-filtros/ (fecha de updated:) y no reescribir el frontmatter.",
+      "input": {
+        "story_id": "STORY-202",
+        "story_dir": "specs/flow/STORY-202-filtros",
+        "story_status": "COMPLETED",
+        "story_substatus": "DONE",
+        "story_updated": "2026-09-15",
+        "today": "2026-10-25",
+        "git_tracked": true,
+        "responses": ["s"]
+      },
+      "expected": {
+        "contains": [
+          "sin cambio de status",
+          "specs/flow/archive/2026-09-15-STORY-202-filtros",
+          "✅ STORY-202 archivada en"
+        ],
+        "not_contains": [
+          "updated: 2026-10-25",
+          "2026-10-25-STORY-202",
+          "❌"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-003",
+      "name": "acceptance-done-rechazado-sugiere-story-delivery",
+      "type": "fail-fast",
+      "description": "Historia STORY-203 en ACCEPTANCE/DONE. El usuario ejecuta /story-complete STORY-203. El motor devuelve NOT_DELIVERED en plan: el skill debe mostrar el estado actual y sugerir /story-delivery STORY-203, terminar sin preguntar y sin modificar ni mover ningún archivo.",
+      "input": {
+        "story_id": "STORY-203",
+        "story_dir": "specs/flow/STORY-203-paginacion",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "ACCEPTANCE/DONE",
+          "/story-delivery STORY-203"
+        ],
+        "not_contains": [
+          "¿Confirmas completar y archivar",
+          "archivada en",
+          "COMPLETED/DONE · updated"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-004",
+      "name": "canceled-done-rechazado-cita-adr-0016",
+      "type": "fail-fast",
+      "description": "Historia STORY-204 en CANCELED/DONE. El usuario ejecuta /story-complete STORY-204. El motor devuelve CANCELED_NOT_ADMITTED: el skill debe nombrar el estado actual e indicar que ADR-0016 no admite su archivado, sin preguntar ni mover nada.",
+      "input": {
+        "story_id": "STORY-204",
+        "story_dir": "specs/flow/STORY-204-descartada",
+        "story_status": "CANCELED",
+        "story_substatus": "DONE"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "CANCELED/DONE",
+          "ADR-0016"
+        ],
+        "not_contains": [
+          "¿Confirmas completar y archivar",
+          "archivada en"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-005",
+      "name": "confirmacion-rechazada-sin-cambios",
+      "type": "error-handling",
+      "description": "Historia STORY-205 en DELIVER/DONE fijada a mano. El usuario ejecuta /story-complete STORY-205 y responde 'n' a la confirmación. El skill debe informar que la operación se canceló sin cambios y no invocar apply: story.md sigue en DELIVER/DONE y el directorio no se mueve.",
+      "input": {
+        "story_id": "STORY-205",
+        "story_dir": "specs/flow/STORY-205-alertas",
+        "story_status": "DELIVER",
+        "story_substatus": "DONE",
+        "today": "2026-10-25",
+        "responses": ["n"]
+      },
+      "expected": {
+        "contains": [
+          "¿Confirmas completar y archivar STORY-205",
+          "Operación cancelada por el usuario: no hubo cambios."
+        ],
+        "not_contains": [
+          "archivada en",
+          "✅"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-006",
+      "name": "destino-existente-nombrado-sin-pregunta",
+      "type": "error-handling",
+      "description": "Historia STORY-206 en DELIVER/DONE y ya existe specs/flow/archive/2026-10-25-STORY-206-reportes/. El usuario ejecuta /story-complete STORY-206. El motor devuelve ARCHIVE_CONFLICT en plan: el skill debe nombrar la ruta en conflicto y terminar sin preguntar, sin cambiar status ni updated: y sin mover el directorio.",
+      "input": {
+        "story_id": "STORY-206",
+        "story_dir": "specs/flow/STORY-206-reportes",
+        "story_status": "DELIVER",
+        "story_substatus": "DONE",
+        "today": "2026-10-25",
+        "existing_archive_dir": "specs/flow/archive/2026-10-25-STORY-206-reportes"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "specs/flow/archive/2026-10-25-STORY-206-reportes",
+          "ya existe"
+        ],
+        "not_contains": [
+          "¿Confirmas completar y archivar",
+          "archivada en"
+        ]
+      },
+      "threshold": 0.9
+    }
+  ]
+}
