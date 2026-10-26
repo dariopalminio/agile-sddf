@@ -87,7 +87,7 @@ Aplican a **todo `WorkItem`**, independientemente de su nivel:
 3. `BLOCKED` **no retrocede** el status: el work item permanece en su status actual mientras espera resolución.
 4. Las transiciones deben seguir la máquina de estados canónica definida para el nivel correspondiente.
 5. Los estados buffer deben respetar un **WIP limit** definido en la política del proyecto.
-6. Las transiciones terminales `SHIP` y `COMPLETED` son **manuales o disparadas por CI/CD**; ningún skill las escribe automáticamente. `DELIVER` de story la escribe `story-delivery`, siempre con **confirmación humana explícita**.
+6. `SHIP` y `COMPLETED` de épica son transiciones terminales **manuales o disparadas por CI/CD**; ningún skill las escribe automáticamente. `DELIVER` de story la escribe `story-delivery` y `COMPLETED` de story la escribe `story-complete` desde `DELIVER/DONE`, ambas siempre con **confirmación humana explícita**; `story-complete` además archiva sin cambiar el status las historias que ya están en `COMPLETED/DONE`, y archiva sin cambiar el status las historias `CANCELED/DONE`, siempre con confirmación humana (ADR-0017).
 7. Un `WorkItem` en estado terminal pasivo no puede retroceder sin una acción explícita de reapertura.
 8. Los nombres de `status` usan **verbos en infinitivo** (ADR-0003) para reflejar acción, no concepto estático.
 9. El conjunto de `status` válidos es **específico por nivel** y se define en el dominio de cada nivel.
@@ -126,7 +126,7 @@ Independientemente del nivel, existen cuatro tipos de transición:
 
 * Aplican a estados terminales (según el nivel: `DELIVER`, `SHIP`, `COMPLETED`).
 * Requieren acción explícita: merge a `main`, publicación del artefacto, cierre administrativo.
-* Una transición terminal escrita por un skill solo ocurre tras confirmación humana explícita: es el caso de `DELIVER` de story, que escribe `story-delivery` después de verificar el DoD de entrega. Si el humano no confirma, el work item no cambia.
+* Una transición terminal escrita por un skill solo ocurre tras confirmación humana explícita: es el caso de `DELIVER` de story, que escribe `story-delivery` después de verificar el DoD de entrega, y de `COMPLETED` de story, que escribe `story-complete` desde `DELIVER/DONE` antes de archivar la historia en `specs/flow/archive/`. Si el humano no confirma, el work item no cambia.
 
 ### 5.3 Transiciones de retroceso (rework)
 

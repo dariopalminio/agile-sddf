@@ -109,13 +109,15 @@ Según SmartBear State of Software Quality 2025, el 68% de los equipos de desarr
 
 ### Alcance de la Regression Suite
 
-- **Regresión Selectiva (selective):** Ejecuta solo los tests relevantes para el cambio específico (una feature/story), identificados mediante análisis de impacto o etiquetado. Suele durar entre 5 y 30 minutos. Ideal para ejecutar en desarrollo y/o cada pull request, optimizando el tiempo de feedback sin sacrificar la cobertura crítica.
+- **Selective Regression (--changedSince, --findRelatedTests, --changed):** Es el caballo de batalla de la historia. Ejecuta solo los tests relevantes para el cambio específico (una feature/story), identificados mediante análisis de impacto o etiquetado. Suele durar entre 5 y 30 minutos. Ideal para ejecutar en desarrollo y/o cada pull request, optimizando el tiempo de feedback sin sacrificar la cobertura crítica.
 
-- **Smoke tests (smoke):** El Smoke tests es una regresión corta y rápida que ejecuta solo un subconjunto representativo de los tests E2E e integración (escenarios felices y críticos). Suele durar < 5 minutos. Ideal para ejecutar en cada commit, en cada pull request o en producción post-deploy, después de un cambio en una feature o con estrategia de despliegue Continuous Deployment (continuous) donde se desarrolla y despliega por historia. Usado para estrategias de despliegue acumulativa (batch) a nivel de historia donde se desarrolla por historia, con regresión corta, pero se despliega por épica (allì con regresión larga). 
+- **Smoke tests (@smoke):** Es el guardián de la integridad mínima y verifica que el build está vivo y es capaz de arrancar. El Smoke tests es una regresión corta y rápida que ejecuta solo un subconjunto representativo de los tests E2E e integración (escenarios felices y críticos). Suele durar < 5 minutos. Ideal para ejecutar en cada commit, en cada pull request o en producción post-deploy, después de un cambio en una feature o con estrategia de despliegue Continuous Deployment (continuous) donde se desarrolla y despliega por historia. Usado para estrategias de despliegue acumulativa (batch) a nivel de historia donde se desarrolla por historia, con regresión corta, pero se despliega por épica (allí con regresión larga). 
 
-- **Core regression (sanity):** La prueba core o de sanidad ejecuta un subconjunto más amplio de tests que la regresión corta, incluyendo escenarios críticos y algunos escenarios adicionales. Suele durar entre 5 y 30 minutos. Ideal para ejecutar en cada pull request importante o en builds nocturnos o en Pull Request.
+- **Sanity Test (@sanity):** El filtro de cordura del PR. Su trigger canónico es el PR. Es más profunda que smoke pero más estrecha que regression. Verifica que las funcionalidades núcleo del tren no se han roto con la integración.
 
-- **Regresión completa (regression/full):** Ejecuta toda la suite (E2E, integración, contract, rendimiento). Puede durar horas. Se ejecuta antes de épicas mayores, refactorizaciones, despues de largos períodos de desarrollo, en nightly builds, o bajo demanda. Ideal para validar la estabilidad general del sistema, detectar regresiones sutiles, y tener una visión completa del impacto de los cambios. Usado para estrategias de despliegue acumulativa (batch) a nivel de épica donde se desarrolla por historia pero se despliega por épica. Usado también para ejecutar en cada pull request a producción (main) o con estrategia de despliegue Continuous Deployment (continuous) donde se desarrolla y despliega por historia.
+- **Core Regression (@core o @regression @p0):** Verifica que no hayas roto el negocio, ejecuta un subconjunto más amplio de tests que la regresión corta, incluyendo escenarios críticos, algunos escenarios adicionales, los flujos vitales del negocio (P0/P1). Suele durar entre 5 y 30 minutos. Ideal para ejecutar en cada pull request importante o en builds nocturnos o en Pull Request.
+
+- **Full Regression (@regression o @full):** La validación del Release Candidate que verifica absolutamente todo el sistema (test exhaustivo). Ejecuta toda la suite (E2E, integración, contract, rendimiento), incluye flujos no probados (P0 a P3) y casos límite (edge cases). Puede durar horas. Se ejecuta antes de épicas mayores, refactorizaciones, despues de largos períodos de desarrollo, en nightly builds, o bajo demanda. Ideal para validar la estabilidad general del sistema, detectar regresiones sutiles, y tener una visión completa del impacto de los cambios. Usado para estrategias de despliegue acumulativa (batch) a nivel de épica donde se desarrolla por historia pero se despliega por épica. Usado también para ejecutar en cada pull request a producción (main) o con estrategia de despliegue Continuous Deployment (continuous) donde se desarrolla y despliega por historia.
 
 ### Cuándo Correr Tests de Regresión
 
@@ -123,7 +125,7 @@ Se recomiendan diferentes tipos de regresión según el entorno:
 
 - Desarrollo → Smoke tests (rápido)
 - Desarrollo → Selective test (rápido)
-- Pull Request → Core regression (medio)
+- Pull Request → Sanity Test + Core regression (medio)
 - Staging → Full regression (completo)
 - Production → Smoke tests (post-deploy)
 

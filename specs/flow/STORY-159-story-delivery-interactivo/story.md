@@ -5,11 +5,11 @@ id: STORY-159
 kind: feat
 slug: STORY-159-story-delivery-interactivo
 title: "story-delivery interactivo en modelo batch"
-status: IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25
-updated: 2026-10-25
+updated: 2026-10-26
 related:
   - EPIC-27-completar-flujo-de-story
   - STORY-160-completar-y-archivar-historia-entregada
@@ -87,3 +87,8 @@ Feature origen: STORY-159 — Skill story-delivery
 - **Contradicción DoD vs. `batch` (resuelta en AC-1, negociable):** el último criterio de `dod-story-deliver.md` («el paquete publicado puede instalarse limpiamente con `npm install agile-sddf`») no se puede cumplir si en `batch` DELIVER significa «todavía sin publicar». Se propone mostrarlo como «no aplica en batch» sin bloquear. Alternativa a evaluar en el diseño: verificarlo con el tarball de `npm pack`.
 - **Cómo se evidencia cada criterio del DoD (orientativo para el diseño):** por comando (`npm run verify:repository`, `npm pack --dry-run`); leyendo artefactos (versión en `package.json`, entrada en `CHANGELOG.md`, campo `files`); y con confirmación humana los que el skill no puede observar (estado del build de CI).
 - Coordinar con STORY-160 la redacción de AC-3: esta historia deja `COMPLETED` sin escritor y STORY-160 lo autoriza, sin reescribir el mismo invariante.
+- **Contrato de salida de la épica:** esta historia contribuye a cumplir:
+  - **CS-1** — `skills/story-delivery/SKILL.md` y `skills/story-complete/SKILL.md` existen, declaran `<!-- SDDF-FIXED-LAYOUT: v1 -->` y están incluidos en el arreglo `files` de `package.json`.
+  - **CS-2** — `story-delivery` lee `defaults.delivery-model` de `sddf.config.yaml`, aplica `dod-story-deliver.md` criterio por criterio y soporta `--force` y `--dry-run`; `--dry-run` no modifica ningún archivo.
+  - **CS-5** — `domain-state-management` y `domain-story-lifecycle` documentan que `story-delivery` y `story-complete` escriben `DELIVER` y `COMPLETED` con confirmación humana, y un ADR nuevo reemplaza a ADR-0016 para admitir historias `CANCELED` en `specs/flow/archive/`.
+  - **CS-6** — `npm run verify:repository` y `npm test` pasan sin errores.

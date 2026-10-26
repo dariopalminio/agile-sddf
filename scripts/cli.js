@@ -4,8 +4,11 @@
 const {
   installSDDF,
   promptFolderSelection,
+  promptStrategySelection,
   resolveInstallTarget,
+  resolveInstallStrategy,
   VALID_TARGETS,
+  VALID_STRATEGIES,
 } = require('./install.js');
 const { loadRuntimeContract, listInstallableRuntimes, installsAgents } = require('./runtime-contract.js');
 
@@ -16,6 +19,9 @@ const isForce = args.includes('--force');
 
 const targetIdx = args.indexOf('--target');
 const targetValue = targetIdx !== -1 ? args[targetIdx + 1] : undefined;
+
+const strategyIdx = args.indexOf('--strategy');
+const strategyValue = strategyIdx !== -1 ? args[strategyIdx + 1] : undefined;
 
 function targetHelpRows() {
   const contract = loadRuntimeContract();
@@ -38,7 +44,8 @@ Commands:
 Options:
   --global             Install to the runtime's global destination instead of the current project
   --target <runtime>   Runtime ID (default: claude-code)
-  --force              Overwrite existing files (use for upgrades)
+  --strategy <name>    Install strategy: full (default; all skills) or story (excludes epic-* skills)
+  --force             Overwrite existing files (use for upgrades)
 
 Supported runtimes:
 ${targetHelpRows()}
@@ -49,6 +56,7 @@ Examples:
   agile-sddf install --target codex
   agile-sddf install --target github-copilot --force
   agile-sddf install --global --target claude-code
+  agile-sddf install --strategy story --target claude-code
   npx agile-sddf install
 
 .agents is a destination path, not a runtime ID. Use --target codex for Codex
@@ -59,6 +67,12 @@ function exitInvalidTarget(providedTarget) {
   const printable = providedTarget === undefined ? '' : providedTarget;
   console.error(`Invalid --target "${printable}". Valid runtime IDs: ${VALID_TARGETS.join(', ')}`);
   console.error('Use --help to see canonical local and global destinations.');
+  process.exit(1);
+}
+
+function exitInvalidStrategy(providedStrategy) {
+  const printable = providedStrategy === undefined ? '' : providedStrategy;
+  console.error(`Invalid --strategy "${printable}". Valid strategies: ${VALID_STRATEGIES.join(', ')}`);
   process.exit(1);
 }
 
@@ -77,12 +91,25 @@ if (command === 'install') {
     }
   }
 
+  if (strategyIdx !== -1) {
+    if (strategyValue === undefined || strategyValue.startsWith('--')) exitInvalidStrategy(strategyValue);
+    try {
+      resolveInstallStrategy(strategyValue);
+    } catch (_) {
+      exitInvalidStrategy(strategyValue);
+    }
+  }
+
   (async () => {
     let target = targetValue;
     if (!target && process.stdin.isTTY) {
       target = await promptFolderSelection();
     }
-    installSDDF({ global: isGlobal, target, force: isForce }).catch((err) => {
+    let strategy = strategyValue;
+    if (strategy === undefined && process.stdin.isTTY) {
+      strategy = await promptStrategySelection();
+    }
+    installSDDF({ global: isGlobal, target, strategy, force: isForce }).catch((err) => {
       console.error('SDDF install failed:', err.message);
       process.exit(1);
     });

@@ -37,6 +37,10 @@ Skill epic-validate (dividido en seis historias):
 - [ ] **STORY-128** — Evaluar la validación de épicas de forma repetible: cubrir resultados APPROVED, NEEDS-CHANGES y BLOCKED contra regresiones.
 - [ ] **STORY-137** — Controlar el detalle y los límites de la ejecución de la validación de épicas: `--verbose` y rechazo de `--mode auto` sin pruebas configuradas.
 
+Skill epic-complete:
+  - [ ] **STORY-?* — Skill epic-complete (Core) — completar y archivar una épica entregada: como Solo Builder que entregó una épica con SDD flow-forward quiero completarla y archivarla con `/epic-complete EPIC-NNN` para que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/` para dejar `specs/flow/` solo con el trabajo activo y conservar la épica entregada como registro histórico, con su historial de git intacto.
+  - [ ] **STORY-?** — Skill epic-complete (Core) — archivar épicas canceladas: Como Solo Builder que canceló una épica, quiero archivarla con `/epic-complete EPIC-NNN` en `specs/flow/archive/` sin que deje de figurar como `CANCELED`, para sacar de `specs/flow/` el trabajo que ya no se hará, sin que una épica cancelada se confunda con una entregada en el registro histórico.
+
 
 ## Criterios de salida
 

@@ -460,6 +460,7 @@ _(sin artefactos)_
 - [[skills-independientes]] — [ADR-0014-skills-independientes.md](adr/ADR-0014-skills-independientes.md) — Independencia de skills y agentes: sin dependencia de skills hacia `agents/`
 - [[contrato-de-validacion]] — [ADR-0015-contrato-de-validacion.md](adr/ADR-0015-contrato-de-validacion.md) — Contrato común de validación para los skills de gate
 - [[layout-fijo-de-tres-raices]] — [ADR-0016-layout-fijo-de-tres-raices.md](adr/ADR-0016-layout-fijo-de-tres-raices.md) — Layout fijo de tres raíces: docs/, specs/ y workflow/
+- [[layout-fijo-con-archivo-de-historias-canceladas]] — [ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md](adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) — Layout fijo de tres raíces con archivo de historias completadas y canceladas
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
 - [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
@@ -520,8 +521,8 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 415 |
-| Nodos con frontmatter | 410 |
+| Nodos indexados | 416 |
+| Nodos con frontmatter | 411 |
 | Nodos sin frontmatter | 5 |
 | Wikilinks pendientes | 2 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |

@@ -18,6 +18,10 @@ ADR-0016 y EPIC-26 fijan `docs/` (conocimiento), `specs/` (estado) y `workflow/`
 
 **Guía:** migra con la [guía de migración a 5.0.0](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices).
 
+### Added
+
+- `agile-sddf install --strategy full|story` (STORY-161): `story` instala todos los skills excepto los `epic-*`; `full` instala el catálogo completo. Sin el flag, con TTY el instalador pregunta la estrategia y sin TTY usa `full`, así que la instalación no interactiva no cambia. Un valor inválido termina con código 1 sin copiar nada. El resumen de la instalación indica la estrategia aplicada.
+
 ### Changed
 
 - `story-improve` pasa a llamarse `story-refine`. El log generado ahora es `story-refinement-log.md` y su plantilla es `refinement-log-template.md`, con `type: refinement-log`. `story-specify` invoca el nombre nuevo.

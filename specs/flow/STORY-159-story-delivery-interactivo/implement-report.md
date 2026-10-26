@@ -129,3 +129,30 @@ Pasos recomendados:
 1. Ejecutar `npm run test:eval -- story-delivery` (TC-001…TC-006)
 2. Si algún caso falla, revisar `skills/story-delivery/SKILL.md` y ajustar
 3. Consultar `design.md` para verificar que la implementación respeta las interfaces definidas
+
+## Eval Report: story-delivery
+
+`npm run test:eval -- story-delivery` (TC-001…TC-006)            
+
+> agile-sddf@4.1.0 test:eval
+> node scripts/run-evals.js story-delivery
+
+[INFO] Skills a evaluar: story-delivery
+[INFO] Plan de selección: 6 caso(s) en 1 skill(s)
+[INFO]   story-delivery: 6 caso(s)
+[INFO] Ejecutor de eval: claude · modelo: sonnet · concurrencia: 4 · timeout: 900s
+
+**Fecha:** 2026-10-26 | **Total:** 6 | ✅ Passed: 6 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** claude | **Modelo:** sonnet
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-001 | happy-path-batch-dod-cumplido | happy-path | 0.9 | ✅ PASS | — |
+| TC-002 | estado-verify-done-no-entrega | fail-fast | 1 | ✅ PASS | — |
+| TC-003 | dod-incumplido-sin-pregunta-final | error-handling | 1 | ✅ PASS | — |
+| TC-004 | usuario-rechaza-la-entrega | error-handling | 1 | ✅ PASS | — |
+| TC-005 | delivery-model-invalido-falla-cerrado | fail-fast | 1 | ✅ PASS | — |
+| TC-006 | dod-de-entrega-ausente-falla-cerrado | fail-fast | 1 | ✅ PASS | — |
+
+---
+✅ Todos los 6 casos pasaron. El skill está listo.

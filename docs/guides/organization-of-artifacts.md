@@ -33,14 +33,14 @@ A partir de aquí se representa como `{SPECS_ROOT}`. La visión, stakeholders, o
 
 ### 2. Tipos de work item y sus carpetas
 
-Existen dos tipos de work item: **Épica** y **Story**. Ambos son hermanos dentro de `{SPECS_ROOT}`, sin carpetas por tipo: cada work item se guarda en su **propio directorio**, cuyo nombre comienza con su identificador único. Las historias `COMPLETED` se archivan en `{SPECS_ROOT}/archive/` con la fecha de su `updated:` (o `created:` si falta) como prefijo:
+Existen dos tipos de work item: **Épica** y **Story**. Ambos son hermanos dentro de `{SPECS_ROOT}`, sin carpetas por tipo: cada work item se guarda en su **propio directorio**, cuyo nombre comienza con su identificador único. Las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `{SPECS_ROOT}/archive/` conservando su status, con la fecha de `updated:`, `created:` o `date:` como prefijo (ADR-0017):
 
 ```
 {SPECS_ROOT}/
 ├── EPIC-001-nombre-epica/                     # directorio de la épica EPIC-001
 ├── STORY-001-nombre-story/                    # directorio de la historia STORY-001
 └── archive/
-    └── 2026-05-01-STORY-002-otra-story/       # historia COMPLETED archivada
+    └── 2026-05-01-STORY-002-otra-story/       # historia COMPLETED o CANCELED archivada
 ```
 
 Por ejemplo:
@@ -50,7 +50,7 @@ specs/flow/EPIC-001-nombre-epica/epic.md
 specs/flow/STORY-001-nombre-story/story.md
 ```
 
-Las historias `CANCELED` y las épicas no se archivan.
+Las épicas no se archivan.
 
 El modelo histórico de tres niveles está retirado; para migrarlo se usa `/memory-system migrate --from=specs-3-levels`. Véase [[asegurar-dos-niveles-de-flujo-epics-stories]].
 

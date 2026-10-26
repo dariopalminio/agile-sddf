@@ -3,13 +3,15 @@ type: adr
 id: ADR-0016
 slug: layout-fijo-de-tres-raices
 title: "Layout fijo de tres raíces: docs/, specs/ y workflow/"
-status: ACCEPTED
+status: SUPERSEDED
 date: 2026-10-23
 supersedes: ADR-0010
-superseded-by: null
+superseded-by: ADR-0017
 ---
 
 # ADR-0016: Layout fijo de tres raíces: docs/, specs/ y workflow/
+
+> **Superado por [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) (2026-10-25):** el layout de tres raíces se mantiene; el archivo admite también las historias `CANCELED` y la fecha puede salir de `date:`.
 
 ## Contexto y problema
 

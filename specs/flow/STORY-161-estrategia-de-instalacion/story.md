@@ -5,11 +5,11 @@ id: STORY-161
 kind: feat
 slug: STORY-161-estrategia-de-instalacion
 title: "Estrategia de instalación"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25
-updated: 2026-10-25
+updated: 2026-10-26
 related:
   - EPIC-27-completar-flujo-de-story
 ---
@@ -75,3 +75,6 @@ Feature origen: STORY-161 — Estrategia de instalación
 - Hoy `scripts/cli.js` solo pregunta el runtime cuando falta `--target` y `process.stdin.isTTY` es verdadero (`promptFolderSelection` en `scripts/install.js`). La pregunta de estrategia debe seguir ese mismo patrón.
 - Los agentes locales de cada skill viven en `skills/<skill>/assets/agents/` (ADR-0014). Al excluir un skill `epic-*`, sus agentes locales se excluyen con él. Revisar en `/story-design` si algún runtime de `config/runtimes.json` copia agentes a un destino aparte que también haya que filtrar.
 - **Pendiente de refinar:** con `--force` y estrategia `story` sobre un destino que ya tiene skills `epic-*` de una instalación previa, ¿se dejan intactos? (Propuesta: sí, fuera de alcance.)
+- **Contrato de salida de la épica:** esta historia contribuye a cumplir:
+  - **CS-4** — `agile-sddf install --strategy story` no instala ningún skill `epic-*`; `--strategy full` y la invocación sin flag ni TTY instalan el catálogo completo; un valor inválido termina con código distinto de 0 y sin copiar nada.
+  - **CS-6** — `npm run verify:repository` y `npm test` pasan sin errores.

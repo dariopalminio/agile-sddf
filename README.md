@@ -133,6 +133,8 @@ Cuando ya existe un `product/roadmap.md`, el camino habitual es este:
 /story-implement STORY-001
         ↓
 /story-code-review → /story-verify → /story-acceptance
+        ↓
+/story-delivery → /story-complete
 ```
 
 Cada etapa produce algo que se puede leer y revisar:
@@ -144,6 +146,8 @@ Cada etapa produce algo que se puede leer y revisar:
 | Implementar | `/story-implement` | Ciclo TDD configurable RED → GREEN → REFACTOR e `implement-report.md`. |
 | Revisar | `/story-code-review` | `code-review-report.md` o `fix-directives.md` si hay correcciones pendientes. |
 | Verificar y aceptar | `/story-verify` y `/story-acceptance` | `verify-report.md` y `acceptance-report.md`. |
+| Entregar | `/story-delivery` | `story.md` en `DELIVER/DONE` tras verificar el DoD de entrega. |
+| Completar y archivar | `/story-complete` | `story.md` en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. |
 
 `/story-implement` orquesta el ciclo TDD y los workers configurados para tu stack. Si necesitas ejecutar una historia tarea por tarea en el flujo SDD, usa `/story-implement-tasks`.
 
@@ -203,7 +207,7 @@ flowchart LR
 
 Los únicos work items son Épica e Historia; la documentación de producto los orienta, pero no tiene ciclo de work item. El modelo está en la [jerarquía de work items](docs/domains/domain-work-item-hierarchy.md).
 
-El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`. `DELIVER` lo escribe `/story-delivery` con confirmación humana, tras verificar el DoD de entrega. Los estados y subestados canónicos están documentados en el [ciclo de vida de historias](docs/domains/domain-story-lifecycle.md).
+El ciclo de vida de una historia es `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`. `DELIVER` lo escribe `/story-delivery` con confirmación humana, tras verificar el DoD de entrega, y `COMPLETED` lo escribe `/story-complete`, también con confirmación humana, al archivar la historia en `specs/flow/archive/`. Los estados y subestados canónicos están documentados en el [ciclo de vida de historias](docs/domains/domain-story-lifecycle.md).
 
 Los gates de validación `epic-analyze`, `story-evaluation`, `story-analyze`, `story-code-review`, `story-verify` y `story-acceptance` dejan un reporte con el campo `verdict` en el frontmatter y `## Veredicto` como primera sección. Solo `APPROVED` habilita el avance. Los valores de cada gate, su significado y la traducción de reportes anteriores están en la [política de contrato de validación](docs/policies/validation-contract-policy.md), fuente de verdad del contrato.
 
@@ -389,6 +393,14 @@ npx agile-sddf install --target codex
 Codex recibe solo skills en `.agents/skills`. Los roles y subagentes locales viajan dentro de cada skill, así que llegan con él; el instalador no los registra como subagentes de Codex.
 
 Usa `--target codex`, no `--target .agents`: `.agents` es un destino y `--target .agents` no es un target válido.
+
+### Estrategia: `full` o `story`
+
+```bash
+npx agile-sddf install --strategy story --target claude-code
+```
+
+`--strategy full` instala el catálogo completo (épica + story). `--strategy story` instala todos los skills excepto los de prefijo `epic-*`, junto con los agentes locales que viajan dentro de ellos. Sin el flag, en una terminal interactiva el instalador pregunta la estrategia igual que el runtime; sin TTY (CI, scripts) usa `full`. Un valor distinto de `full` o `story` termina con código 1 sin copiar nada. La estrategia `story` no borra skills `epic-*` de una instalación previa, ni siquiera con `--force`.
 
 ### Variantes útiles
 

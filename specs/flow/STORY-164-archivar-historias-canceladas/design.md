@@ -318,3 +318,15 @@ Ninguna bloqueante. Las ambigüedades se resolvieron en D-1…D-7 o se registran
 - **Descripción**: la nota «Regla de archivo» de `specs/flow/EPIC-27-completar-flujo-de-story/epic.md` dice que STORY-160 incluye el ADR nuevo; tras el split lo incluye STORY-164.
 - **Documento afectado**: epic.md
 - **Acción requerida**: corregir la nota de la épica fuera de esta historia (p. ej. con `/epic-analyze` o edición manual al cerrar la épica). No bloquea el diseño.
+
+### CR-004
+- **Tipo**: decisión de implementación no prevista
+- **Descripción**: STORY-160 se implementó con un motor determinista (`skills/story-complete/scripts/story-complete.js`, `plan|apply`) que decide la admisión por estado y la fecha de archivo; el `SKILL.md` solo orquesta. D-1 y D-3 («el skill aplica la regla leyendo el frontmatter; no invoca el script») se aplicaron por eso en el motor: `planCompletion` añade la acción `archive-canceled` (`CANCELED/DONE`, sin escritura) y el código `CANCELED_NOT_DONE` (`CANCELED` con otro substatus), sustituye `CANCELED_NOT_ADMITTED`, y `archiveDateOf` adopta la cadena `updated:` → `created:` → `date:` (`date:` solo sin ninguna de las dos claves). El mensaje final de `apply` para `archive-canceled` es el de D-4. Las pruebas del motor viven en `test/story-complete.test.js` (casos STORY-164 y ajuste de los casos de `CANCELED` y `date:` de STORY-160). El caso «`COMPLETED/DONE` sin fecha» de T003 no existía en `evals.json`; su ajuste se hizo en la prueba del motor. La tabla de D-1 sigue viviendo en un solo lugar (`planCompletion`), que el `SKILL.md` documenta en `## Precondiciones`.
+- **Documento afectado**: `skills/story-complete/scripts/story-complete.js`, `test/story-complete.test.js`
+- **Acción requerida**: ninguna; registrado para `story-code-review`.
+
+### CR-005
+- **Tipo**: dependencia (Veracidad)
+- **Descripción**: el contrato de verificación 6 encontró la regla vieja en `docs/guides/organization-of-artifacts.md` («Las historias `CANCELED` y las épicas no se archivan»), no listado en C-7…C-14. Se actualizó con la frase canónica de D-6. También se actualizó la entrada «Layout» de `AGENTS.md › Dónde está el detalle` para apuntar a ADR-0017, y la introducción de `docs/guides/root-folder-practices.md` enlaza el ADR vigente.
+- **Documento afectado**: `docs/guides/organization-of-artifacts.md`, `AGENTS.md`, `docs/guides/root-folder-practices.md`
+- **Acción requerida**: ninguna.

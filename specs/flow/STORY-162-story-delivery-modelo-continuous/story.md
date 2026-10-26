@@ -5,11 +5,11 @@ id: STORY-162
 kind: feat
 slug: STORY-162-story-delivery-modelo-continuous
 title: "story-delivery en modelo continuous"
-status: IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25
-updated: 2026-10-25
+updated: 2026-10-26
 related:
   - EPIC-27-completar-flujo-de-story
   - STORY-159-story-delivery-interactivo
@@ -74,3 +74,6 @@ Ejemplos:
 
 - **Decisión confirmada (2026-10-25):** si falta `defaults.delivery-model` o su valor no es `batch | continuous`, el skill falla cerrado en lugar de asumir `batch`. Sigue la convención del repo para valores inválidos (p. ej. `npm run test:eval` y la `--strategy` de STORY-161 fallan cerrados).
 - El significado de `DELIVER` por modelo está en `docs/domains/domain-story-lifecycle.md` (`DeliveryModel`): `continuous` = incremento ya desplegado.
+- **Contrato de salida de la épica:** esta historia contribuye a cumplir:
+  - **CS-2** — `story-delivery` lee `defaults.delivery-model` de `sddf.config.yaml`, aplica `dod-story-deliver.md` criterio por criterio y soporta `--force` y `--dry-run`; `--dry-run` no modifica ningún archivo.
+  - **CS-6** — `npm run verify:repository` y `npm test` pasan sin errores.

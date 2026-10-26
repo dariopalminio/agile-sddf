@@ -62,4 +62,5 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0013](ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) | Asegurar dos niveles de flujo como epics y stories | ACCEPTED | 2026-10-05 |
 | [ADR-0014](ADR-0014-skills-independientes.md) | Independencia de skills y agentes: sin dependencia de skills hacia `agents/` | ACCEPTED | 2026-10-14 |
 | [ADR-0015](ADR-0015-contrato-de-validacion.md) | Contrato común de validación para los skills de gate | ACCEPTED | 2026-10-17 |
-| [ADR-0016](ADR-0016-layout-fijo-de-tres-raices.md) | Layout fijo de tres raíces: docs/, specs/ y workflow/ | ACCEPTED | 2026-10-23 |
+| [ADR-0016](ADR-0016-layout-fijo-de-tres-raices.md) | Layout fijo de tres raíces: docs/, specs/ y workflow/ | SUPERSEDED → [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) | 2026-10-23 |
+| [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) | Layout fijo de tres raíces con archivo de historias completadas y canceladas | ACCEPTED | 2026-10-25 |
