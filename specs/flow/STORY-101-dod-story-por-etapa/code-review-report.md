@@ -3,6 +3,7 @@ type: code-review-report
 story: STORY-101
 title: "Code Review Report: Dividir el DoD de Story en un guardrail por etapa"
 review-status: approved
+veredict: APPROVED
 date: 2026-09-24
 max-severity: LOW
 reviewers:

@@ -5,7 +5,7 @@ id: STORY-102
 kind: chore
 slug: STORY-102-renombrar-skill-sddf-constitution
 title: "Renombrar el skill project-policies-generation como sddf-constitution"
-status: CODE-REVIEW
+status: COMPLETED
 substatus: DONE
 parent: EPIC-12-story-sdd-workflow
 created: 2026-09-26

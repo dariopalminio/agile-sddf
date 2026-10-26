@@ -6,6 +6,7 @@ title: "Analyze: Dividir el DoD de Story en un guardrail por etapa, referenciado
 story: STORY-101
 design: STORY-101
 testcases: STORY-101
+veredict: APPROVED
 tasks: STORY-101
 created: 2026-09-24
 updated: 2026-09-24

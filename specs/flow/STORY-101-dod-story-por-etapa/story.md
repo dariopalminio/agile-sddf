@@ -3,7 +3,7 @@ type: story
 id: STORY-101
 slug: STORY-101-dod-story-por-etapa
 title: "Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill"
-status: CODE-REVIEW
+status: COMPLETED
 substatus: DONE
 kind: feat
 parent: EPIC-20-memory-system

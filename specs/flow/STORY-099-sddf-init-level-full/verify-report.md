@@ -4,6 +4,7 @@ id: STORY-099
 slug: STORY-099-verify-report
 title: "Verify Report: Inicializar la memoria completa desde sddf-init con el parámetro --level"
 story: STORY-099
+veredict: APPROVED
 date: 2026-09-24
 mode: config-driven
 dod_version: docs/guardrails/dod-story-checklist.md (sección VERIFY)

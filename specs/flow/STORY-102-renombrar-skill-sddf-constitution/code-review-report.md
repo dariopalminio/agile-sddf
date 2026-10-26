@@ -3,6 +3,7 @@ type: code-review-report
 story: STORY-102
 title: "Code Review Report: Renombrar el skill project-policies-generation como sddf-constitution"
 review-status: approved
+veredict: APPROVED
 date: 2026-09-26
 max-severity: LOW
 reviewers:

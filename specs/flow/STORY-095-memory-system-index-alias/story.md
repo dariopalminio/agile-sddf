@@ -5,7 +5,7 @@ id: STORY-095
 kind: feat
 slug: STORY-095-memory-system-index-alias
 title: "Crear el skill memory-system con el modo index y deprecar docs-wiki-builder"
-status: CODE-REVIEW
+status: COMPLETED
 substatus: DONE
 parent: EPIC-20-memory-system
 created: 2026-09-20

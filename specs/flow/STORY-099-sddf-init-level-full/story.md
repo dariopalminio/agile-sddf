@@ -5,7 +5,7 @@ id: STORY-099
 kind: feat
 slug: STORY-099-sddf-init-level-full
 title: "Inicializar la memoria completa desde sddf-init con el parámetro --level"
-status: VERIFY
+status: COMPLETED
 substatus: DONE
 parent: EPIC-20-memory-system
 created: 2026-09-20

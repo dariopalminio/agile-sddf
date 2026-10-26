@@ -5,6 +5,7 @@ slug: STORY-098-verify-report
 title: "Verify Report: Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate"
 story: STORY-098
 date: 2026-09-24
+veredict: APPROVED
 mode: config-driven
 dod_version: docs/guardrails/dod-story-checklist.md (sección VERIFY)
 created: 2026-09-24

@@ -3,6 +3,7 @@ type: code-review-report
 story: STORY-095
 title: "Code Review Report: Crear el skill memory-system con el modo index y deprecar docs-wiki-builder"
 review-status: approved
+veredict: APPROVED
 date: 2026-09-21
 max-severity: LOW
 reviewers:

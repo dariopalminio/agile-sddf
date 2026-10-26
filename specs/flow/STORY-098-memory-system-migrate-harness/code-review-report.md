@@ -3,6 +3,7 @@ type: code-review-report
 story: STORY-098
 title: "Code Review Report: Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate"
 review-status: approved
+veredict: APPROVED
 date: 2026-09-23
 max-severity: LOW
 reviewers:

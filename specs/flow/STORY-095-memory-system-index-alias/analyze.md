@@ -7,6 +7,7 @@ story: STORY-095
 design: STORY-095
 testcases: STORY-095
 tasks: STORY-095
+veredict: APPROVED
 created: 2026-09-20
 updated: 2026-09-20
 related:

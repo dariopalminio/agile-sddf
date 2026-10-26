@@ -5,7 +5,7 @@ id: STORY-098
 kind: feat
 slug: STORY-098-memory-system-migrate-harness
 title: "Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate"
-status: VERIFY
+status: COMPLETED
 substatus: DONE
 parent: EPIC-20-memory-system
 created: 2026-09-20
