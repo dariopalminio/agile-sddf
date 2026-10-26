@@ -378,3 +378,15 @@ Ninguna bloqueante. Las ambigüedades se resolvieron en D-2, D-3, D-4, D-6 o se 
 - **Descripción**: el diseño base (D-6 de STORY-159) descartó `delivery-report.md`. La decisión confirmada de esta historia lo reintroduce solo para `--force`.
 - **Documento afectado**: design.md
 - **Acción requerida**: D-5/D-6 lo limitan a overrides efectivos; la entrega normal sigue sin reporte, así que D-6 de STORY-159 sigue valiendo para el modo `interactivo`. Sin cambio en story.md ni en el diseño base.
+
+### CR-005
+- **Tipo**: desvío de implementación
+- **Descripción**: D-9 pedía cambiar las claves `outputs` y `triggers` del frontmatter del SKILL.md, pero el skill que dejaron STORY-159 y STORY-162 solo declara `name` y `description`.
+- **Documento afectado**: design.md
+- **Acción requerida**: no se añadieron claves nuevas al frontmatter. Los triggers («dry-run de entrega», «forzar entrega») y la salida `delivery-report.md` se reflejan en `description`; `## Salida` del SKILL.md documenta los dos archivos posibles.
+
+### CR-006
+- **Tipo**: ambigüedad resuelta al implementar
+- **Descripción**: STORY-162 se implementó antes y añadió el Paso 2b (afirmación de despliegue en `continuous`). El diseño solo fijaba que `--force` no la omite (F-5), no qué hace en `previsualización`. Además, F-4 no fijaba en qué momento se detecta un `delivery-report.md` previo que no se puede ampliar.
+- **Documento afectado**: design.md
+- **Acción requerida**: el Paso 2b pregunta en todos los modos y un `n` detiene en todos ellos (en `previsualización` con el cierre fijo de dry-run). La comprobación del reporte previo se hace en el Paso 5a junto con la del template, antes de la confirmación final, para que la confirmación nunca autorice una escritura imposible. La tabla de gates por modo vive en el Paso 1d del SKILL.md como único lugar que decide qué omite `--force`.

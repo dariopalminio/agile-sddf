@@ -1,7 +1,7 @@
 {
   "skill": "story-delivery",
-  "version": "1.1.0",
-  "description": "Casos de prueba para story-delivery en los modelos batch y continuous: entrega interactiva con DoD de entrega cumplido (en batch, criterio de publicación como «no aplica en batch»; en continuous, afirmación de despliegue previa y criterio de publicación por confirmación humana), y los caminos de bloqueo sin efectos (estado distinto de ACCEPTANCE/DONE, DoD incumplido, rechazo del usuario, delivery-model ausente o inválido, despliegue no afirmado y DoD de entrega ausente), en los que story.md no cambia y no se crea ningún archivo.",
+  "version": "1.2.0",
+  "description": "Casos de prueba para story-delivery en los modelos batch y continuous: entrega interactiva con DoD de entrega cumplido (en batch, criterio de publicación como «no aplica en batch»; en continuous, afirmación de despliegue previa y criterio de publicación por confirmación humana), los caminos de bloqueo sin efectos (estado distinto de ACCEPTANCE/DONE, DoD incumplido, rechazo del usuario, delivery-model ausente o inválido, despliegue no afirmado y DoD de entrega ausente), en los que story.md no cambia y no se crea ningún archivo, y los flags --dry-run (previsualización sin escribir) y --force (entrega forzada con confirmación humana y override registrado en delivery-report.md).",
   "cases": [
     {
       "id": "TC-001",
@@ -127,7 +127,8 @@
         "not_contains": [
           "entregada: DELIVER/DONE",
           "status: DELIVER",
-          "Entrega bloqueada"
+          "Entrega bloqueada",
+          "--force"
         ]
       },
       "threshold": 1.0
@@ -281,6 +282,235 @@
           "entregada: DELIVER/DONE",
           "status: DELIVER",
           "| # | Criterio | Estado | Evidencia |"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-010",
+      "name": "dry-run-sin-bloqueos",
+      "type": "happy-path",
+      "description": "AC-1 fila 1 y CNF-1 (STORY-163) — Historia en ACCEPTANCE/DONE, delivery-model: batch y DoD de entrega cumplido; se invoca con --dry-run. El skill evalúa el DoD (ejecuta npm pack --dry-run porque lleva --dry-run y pregunta los criterios de confirmación), muestra la tabla y la acción que ejecutaría, no hace la confirmación final y no crea, modifica ni borra ningún archivo, tampoco en .tmp/.",
+      "input": {
+        "story_id": "STORY-209",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "flags": ["--dry-run"],
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "npm_pack_exit_code": 0,
+        "responses": ["s", "s"]
+      },
+      "expected": {
+        "contains": [
+          "| # | Criterio | Estado | Evidencia |",
+          "🔍 Dry-run: escribiría status: DELIVER, substatus: DONE",
+          "🔍 Dry-run: no se creó, modificó ni borró ningún archivo."
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "entregada: DELIVER/DONE",
+          "entregada (forzada)",
+          "delivery-report.md creado"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-011",
+      "name": "dry-run-con-bloqueos-estado-y-dod",
+      "type": "error-handling",
+      "description": "AC-1 fila 2 y CNF-1 (STORY-163) — Historia en VERIFY/DONE, delivery-model: batch y DoD con enforcement: error incumplido (CHANGELOG.md sin la entrada de la versión); se invoca con --dry-run. El skill no se detiene en el estado: registra el bloqueo, evalúa el DoD, muestra la tabla, lista los bloqueos (estado actual y criterio ❌) e indica que --force permitiría seguir, sin escribir ningún archivo.",
+      "input": {
+        "story_id": "STORY-210",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "flags": ["--dry-run"],
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "changelog_has_version_entry": false,
+        "npm_pack_exit_code": 0,
+        "responses": ["s", "s"]
+      },
+      "expected": {
+        "contains": [
+          "| # | Criterio | Estado | Evidencia |",
+          "🔍 Dry-run: la entrega quedaría bloqueada por:",
+          "estado actual VERIFY/DONE",
+          "CHANGELOG.md",
+          "❌",
+          "--force permitiría seguir",
+          "🔍 Dry-run: no se creó, modificó ni borró ningún archivo."
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "entregada: DELIVER/DONE",
+          "entregada (forzada)",
+          "delivery-report.md creado"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-012",
+      "name": "dry-run-con-force-solo-previsualiza",
+      "type": "edge-case",
+      "description": "D-1 y CNF-1 (STORY-163) — Historia en VERIFY/DONE, delivery-model: batch y DoD con enforcement: error incumplido; se invoca con --dry-run --force. --dry-run manda: el skill describe que escribiría DELIVER/DONE tras la confirmación y registraría en delivery-report.md los gates omitidos, pero no pregunta la confirmación final ni escribe ningún archivo.",
+      "input": {
+        "story_id": "STORY-211",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "flags": ["--dry-run", "--force"],
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "changelog_has_version_entry": false,
+        "npm_pack_exit_code": 0,
+        "responses": ["s", "s"]
+      },
+      "expected": {
+        "contains": [
+          "🔍 Dry-run (--force): escribiría DELIVER/DONE",
+          "gates omitidos",
+          "precondición ACCEPTANCE/DONE",
+          "🔍 Dry-run: no se creó, modificó ni borró ningún archivo."
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "entregada (forzada)",
+          "entregada: DELIVER/DONE"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-013",
+      "name": "force-confirmado-registra-override",
+      "type": "happy-path",
+      "description": "AC-2 y CNF-2 (STORY-163) — Historia en VERIFY/DONE, delivery-model: batch y DoD con enforcement: error incumplido (CHANGELOG.md sin la entrada de la versión); se invoca con --force y el usuario confirma la entrega forzada. El skill avisa de los gates omitidos, pide la confirmación forzada, crea delivery-report.md con el estado previo, los criterios incumplidos y la fecha del override, y después escribe en story.md status: DELIVER, substatus: DONE y updated: con la fecha de hoy.",
+      "input": {
+        "story_id": "STORY-212",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "flags": ["--force"],
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "changelog_has_version_entry": false,
+        "npm_pack_exit_code": 0,
+        "responses": ["s", "s", "s"]
+      },
+      "expected": {
+        "contains": [
+          "⚠️ --force: se omite la precondición ACCEPTANCE/DONE (estado actual: VERIFY/DONE)",
+          "⚠️ --force: se omiten",
+          "¿Confirmas la entrega FORZADA de STORY-212 a DELIVER/DONE omitiendo",
+          "delivery-report.md",
+          "Fecha del override:",
+          "Estado previo: VERIFY/DONE",
+          "CHANGELOG.md",
+          "status: DELIVER",
+          "substatus: DONE",
+          "updated:",
+          "✅ STORY-212 entregada (forzada): DELIVER/DONE"
+        ],
+        "not_contains": [
+          "Entrega cancelada",
+          "Entrega bloqueada",
+          "verdict:",
+          "status: SHIP",
+          "status: COMPLETED",
+          "npm publish"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-014",
+      "name": "force-rechazado-sin-sugerencia-ni-reporte",
+      "type": "error-handling",
+      "description": "CNF-2 y AC-3 «Pero» (STORY-163) — Historia en VERIFY/DONE, delivery-model: batch y DoD con enforcement: error incumplido; se invoca con --force y el usuario responde n a la confirmación forzada. --force no omite la confirmación: el skill cancela sin modificar story.md, sin crear delivery-report.md y sin sugerir --force.",
+      "input": {
+        "story_id": "STORY-213",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "flags": ["--force"],
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "changelog_has_version_entry": false,
+        "npm_pack_exit_code": 0,
+        "responses": ["s", "s", "n"]
+      },
+      "expected": {
+        "contains": [
+          "¿Confirmas la entrega FORZADA de STORY-213",
+          "Entrega cancelada por el usuario. story.md no cambió."
+        ],
+        "not_contains": [
+          "--force permitiría",
+          "Para entregar igualmente",
+          "delivery-report.md",
+          "entregada (forzada)",
+          "status: DELIVER"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-015",
+      "name": "bloqueo-por-estado-sugiere-force",
+      "type": "fail-fast",
+      "description": "AC-3 (STORY-163) — Historia en VERIFY/DONE, sin flags. El skill se detiene en el gate de estado nombrando el estado actual y sugiere --force (y --dry-run para previsualizar), sin leer el DoD, sin preguntar nada y sin escribir archivos.",
+      "input": {
+        "story_id": "STORY-214",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "delivery_model": "batch"
+      },
+      "expected": {
+        "contains": [
+          "no está en ACCEPTANCE/DONE",
+          "Estado actual: VERIFY/DONE",
+          "→ Para entregar igualmente: /story-delivery STORY-214 --force",
+          "story.md no cambió"
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "¿Se cumple",
+          "status: DELIVER"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-016",
+      "name": "bloqueo-por-dod-sugiere-force",
+      "type": "error-handling",
+      "description": "AC-3 (STORY-163) — Historia en ACCEPTANCE/DONE, delivery-model: batch y DoD con enforcement: error incumplido, sin flags. El skill muestra la tabla, informa el bloqueo por criterios incumplidos y sugiere --force, sin hacer la pregunta final ni escribir archivos.",
+      "input": {
+        "story_id": "STORY-215",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "changelog_has_version_entry": false,
+        "npm_pack_exit_code": 0,
+        "responses": ["s", "s"]
+      },
+      "expected": {
+        "contains": [
+          "❌ Entrega bloqueada: criterios incumplidos del DoD",
+          "→ Para entregar igualmente: /story-delivery STORY-215 --force",
+          "story.md no cambió"
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "entregada: DELIVER/DONE",
+          "status: DELIVER"
         ]
       },
       "threshold": 1.0

@@ -136,7 +136,7 @@ El Definition of Done de historia es un guardrail **por etapa** en `docs/guardra
 | `code-review` | `dod-story-code-review.md` | `CODE-REVIEW/IN-PROGRESS` → `CODE-REVIEW/DONE` | `story-code-review` |
 | `verify` | `dod-story-verify.md` | `VERIFY/IN-PROGRESS` → `VERIFY/DONE` | `story-verify` |
 | `acceptance` | `dod-story-acceptance.md` | `ACCEPTANCE/IN-PROGRESS` → `ACCEPTANCE/DONE` | `story-acceptance` |
-| `deliver` | `dod-story-deliver.md` (`kind: content`) | — | `story-delivery` (con confirmación humana) |
+| `deliver` | `dod-story-deliver.md` (`kind: content`) | — | `story-delivery [--dry-run] [--force]` (con confirmación humana; `delivery-report.md` solo con override de `--force`) |
 
 Cada skill declara su etapa en la sección `## DoD aplicable` de su `SKILL.md` y carga **solo** ese
 archivo, con esta precedencia: `sddf.config.yaml › guardrails.dod.story.<etapa>` → convención

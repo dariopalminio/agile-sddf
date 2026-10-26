@@ -122,6 +122,7 @@ stateDiagram-v2
 | **Bloqueo en aceptación** | `ACCEPTANCE → ACCEPTANCE` (`BLOCKED`) |
 | **Bloqueo en verificación** | `VERIFY → VERIFY` (`BLOCKED`) |
 | **Cancelación** | `* → CANCELED` (desde cualquier estado activo) |
+| **Entrega forzada** | `* → DELIVER/DONE` desde cualquier historia no archivada, vía `/story-delivery --force`; omite la precondición `ACCEPTANCE/DONE` y el DoD de entrega incumplido, exige confirmación humana y registra el override en `delivery-report.md` |
 
 ---
 
