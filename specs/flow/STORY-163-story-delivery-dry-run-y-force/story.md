@@ -9,7 +9,7 @@ status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25
-updated: 2026-10-25
+updated: 2026-10-26
 related:
   - EPIC-27-completar-flujo-de-story
   - STORY-159-story-delivery-interactivo
@@ -73,3 +73,6 @@ Entonces el skill informa el motivo del bloqueo y sugiere --force
 
 - **Decisión confirmada (2026-10-25):** el override se registra en un `delivery-report.md` en la carpeta de la historia, y solo se genera con `--force`. Se descartó una sección en `story.md` porque el template asigna el cuerpo a story-creation, story-refine y story-split, y los skills que transicionan estado solo escriben el frontmatter. Sigue el patrón de los reportes de los demás gates (`verify-report.md`, `acceptance-report.md`) y se archiva con la historia (STORY-160).
 - Según la épica (`specs/flow/EPIC-27-completar-flujo-de-story/epic.md`), `--force` escribe `DELIVER/DONE` sin importar el estado previo ni el DoD; el dominio exige igualmente la confirmación humana (STORY-159, AC-3).
+- **Contrato de salida de la épica:** esta historia contribuye a cumplir:
+  - **CS-2** — `story-delivery` lee `defaults.delivery-model` de `sddf.config.yaml`, aplica `dod-story-deliver.md` criterio por criterio y soporta `--force` y `--dry-run`; `--dry-run` no modifica ningún archivo.
+  - **CS-6** — `npm run verify:repository` y `npm test` pasan sin errores.

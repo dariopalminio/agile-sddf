@@ -7,7 +7,7 @@ status: DEVELOP
 substatus: IN-PROGRESS
 parent: null
 created: 2026-10-25
-updated: 2026-10-25
+updated: 2026-10-26
 related: []
 ---
 
@@ -28,13 +28,13 @@ Cerrar el ciclo de vida de la historia en el flujo flow-forward, desde `ACCEPTAN
 ## Historias
 
 Skill nuevo `story-delivery`: (dividida en tres historias):
-  - [x] **STORY-159** — Skill story-delivery: Como Solo Builder, quiero ejecutar `/story-delivery STORY-NNN` para verificar criterio por criterio el DoD de `docs/guardrails/dod-story-deliver.md` y llevar la historia a `DELIVER/DONE`. El skill lee `defaults.delivery-model` de `sddf.config.yaml` (`batch` = incremento listo para producción, todavía sin publicar; `continuous` = incremento ya desplegado) y pide confirmación antes del paso irreversible. Con `--force` escribe `DELIVER/DONE` sin importar el estado previo ni el DoD, y deja el override registrado. Con `--dry-run` evalúa el DoD y muestra qué haría, sin escribir nada. Incluye el ajuste de `domain-state-management` §6 y de `domain-story-lifecycle` para que `DELIVER` lo escriba este skill con confirmación humana.
-  - [x] **STORY-162** — Skill story-delivery: Como Solo Builder, quiero que el skill falle cerrado si falta `defaults.delivery-model` o su valor no es `batch | continuous`, para asegurar que el modelo de entrega sea válido antes de ejecutar `/story-delivery`.
-  - [x] **STORY-163** — Skill story-delivery: Como Solo Builder, quiero previsualizar la entrega con `--dry-run` y forzarla con `--force` cuando el estado previo o el DoD la bloquean, para decidir la entrega sabiendo qué pasaría antes de escribir nada y, si la fuerzo, dejar trazado qué se omitió.
+- [x] **STORY-159** — Skill story-delivery: Como Solo Builder, quiero ejecutar `/story-delivery STORY-NNN` para verificar criterio por criterio el DoD de `docs/guardrails/dod-story-deliver.md` y llevar la historia a `DELIVER/DONE`. El skill lee `defaults.delivery-model` de `sddf.config.yaml` (`batch` = incremento listo para producción, todavía sin publicar; `continuous` = incremento ya desplegado) y pide confirmación antes del paso irreversible. Con `--force` escribe `DELIVER/DONE` sin importar el estado previo ni el DoD, y deja el override registrado. Con `--dry-run` evalúa el DoD y muestra qué haría, sin escribir nada. Incluye el ajuste de `domain-state-management` §6 y de `domain-story-lifecycle` para que `DELIVER` lo escriba este skill con confirmación humana.
+- [x] **STORY-162** — Skill story-delivery: Como Solo Builder, quiero que el skill falle cerrado si falta `defaults.delivery-model` o su valor no es `batch | continuous`, para asegurar que el modelo de entrega sea válido antes de ejecutar `/story-delivery`.
+- [x] **STORY-163** — Skill story-delivery: Como Solo Builder, quiero previsualizar la entrega con `--dry-run` y forzarla con `--force` cuando el estado previo o el DoD la bloquean, para decidir la entrega sabiendo qué pasaría antes de escribir nada y, si la fuerzo, dejar trazado qué se omitió.
 
 Skill nuevo `story-complete`: (dividida en dos historias):
-  - [x] **STORY-160** — Skill story-complete (Core) — completar y archivar una historia entregada: como Solo Builder que entregó una historia con SDD flow-forward quiero completarla y archivarla con `/story-complete STORY-NNN` para que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/` para dejar `specs/flow/` solo con el trabajo activo y conservar la historia entregada como registro histórico, con su historial de git intacto.
-  - [x] **STORY-164** — Skill story-complete — archivar historias canceladas: Como Solo Builder que canceló una historia, quiero archivarla con `/story-complete STORY-NNN` en `specs/flow/archive/` sin que deje de figurar como `CANCELED`, para sacar de `specs/flow/` el trabajo que ya no se hará, sin que una historia cancelada se confunda con una entregada en el registro histórico.
+- [x] **STORY-160** — Skill story-complete (Core) — completar y archivar una historia entregada: como Solo Builder que entregó una historia con SDD flow-forward quiero completarla y archivarla con `/story-complete STORY-NNN` para que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/` para dejar `specs/flow/` solo con el trabajo activo y conservar la historia entregada como registro histórico, con su historial de git intacto.
+- [x] **STORY-164** — Skill story-complete — archivar historias canceladas: Como Solo Builder que canceló una historia, quiero archivarla con `/story-complete STORY-NNN` en `specs/flow/archive/` sin que deje de figurar como `CANCELED`, para sacar de `specs/flow/` el trabajo que ya no se hará, sin que una historia cancelada se confunda con una entregada en el registro histórico.
 
 Instalador:
 - [x] **STORY-161** — Estrategia de instalación: Como usuario de `agile-sddf install`, quiero elegir entre la estrategia `full` (épica + story, incluye los skills `epic-*`) y `story` (sin los skills `epic-*`) para instalar solo el flujo que voy a usar. Se elige con `--strategy full|story`. Si el flag falta y hay TTY, el instalador pregunta como ya hace con el runtime; sin TTY usa `full` por defecto. Un valor inválido falla cerrado.

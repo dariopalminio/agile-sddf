@@ -94,3 +94,8 @@ Feature origen: STORY-160 — Skill story-complete
 - Solo desde `DELIVER/DONE` el skill cambia el status: escribe `COMPLETED` y actualiza `updated:` a hoy antes de mover, así que la fecha del directorio archivado es, en la práctica, la fecha de ejecución. Para las historias que ya estaban en `COMPLETED/DONE`, la fecha sale de la cadena `updated:` → `created:` de ADR-0016.
 - `scripts/migrate-specs-to-flow.js` ya implementa el archivado con fecha durante la migración de EPIC-26 (`archiveDate`) y bloquea historias sin fecha válida; conviene revisarlo en `/story-design` para reutilizarlo.
 - **Pendiente de refinar:** comportamiento si el directorio de la historia no está versionado (el movimiento con git falla): ¿fallar cerrado o usar un movimiento simple?
+- **Contrato de salida de la épica:** esta historia contribuye a cumplir:
+  - **CS-1** — `skills/story-delivery/SKILL.md` y `skills/story-complete/SKILL.md` existen, declaran `<!-- SDDF-FIXED-LAYOUT: v1 -->` y están incluidos en el arreglo `files` de `package.json`.
+  - **CS-3** — `story-complete` rechaza una historia que no esté en `DELIVER/DONE`, `COMPLETED/DONE` ni `CANCELED/DONE` y archiva las que sí lo están en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`: las `DELIVER` pasan a `status: COMPLETED` y las `CANCELED` conservan su status. El total de historias activas + archivadas no cambia.
+  - **CS-5** — `domain-state-management` y `domain-story-lifecycle` documentan que `story-delivery` y `story-complete` escriben `DELIVER` y `COMPLETED` con confirmación humana, y un ADR nuevo reemplaza a ADR-0016 para admitir historias `CANCELED` en `specs/flow/archive/`.
+  - **CS-6** — `npm run verify:repository` y `npm test` pasan sin errores.

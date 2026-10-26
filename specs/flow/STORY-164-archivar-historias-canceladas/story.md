@@ -9,7 +9,7 @@ status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25
-updated: 2026-10-25
+updated: 2026-10-26
 related:
   - EPIC-27-completar-flujo-de-story
   - STORY-160-completar-y-archivar-historia-entregada
@@ -83,3 +83,7 @@ Feature origen: STORY-160 — Skill story-complete
 - Al terminar esta historia, la fila `CANCELED/DONE` de AC-2 de STORY-160 (rechazo por ADR-0016) deja de aplicar y se sustituye por AC-1 de esta historia.
 - Archivar una historia `CANCELED/DONE` no la convierte en entregada: conserva su status y su `updated:`.
 - `scripts/migrate-specs-to-flow.js` ya implementa la cadena `updated:` → `created:` → `date:` (`archiveDate`); conviene revisarlo en `/story-design` para reutilizarlo.
+- **Contrato de salida de la épica:** esta historia contribuye a cumplir:
+  - **CS-3** — `story-complete` rechaza una historia que no esté en `DELIVER/DONE`, `COMPLETED/DONE` ni `CANCELED/DONE` y archiva las que sí lo están en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`: las `DELIVER` pasan a `status: COMPLETED` y las `CANCELED` conservan su status. El total de historias activas + archivadas no cambia.
+  - **CS-5** — `domain-state-management` y `domain-story-lifecycle` documentan que `story-delivery` y `story-complete` escriben `DELIVER` y `COMPLETED` con confirmación humana, y un ADR nuevo reemplaza a ADR-0016 para admitir historias `CANCELED` en `specs/flow/archive/`.
+  - **CS-6** — `npm run verify:repository` y `npm test` pasan sin errores.
