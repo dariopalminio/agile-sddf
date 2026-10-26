@@ -23,7 +23,7 @@ function engine() {
  * ACCEPTANCE. Un DoD es la condición para cerrar su etapa: protege la transición
  * `<ETAPA>/IN-PROGRESS` → `<ETAPA>/DONE` (`from`/`to`). `status` es la etapa sin substatus: con él se
  * reconocen las secciones del monolítico y se titula cada archivo. `deliver` no es una transición de
- * historia: es el checklist de publicación (en npm, en este framework), sin skill por ahora.
+ * historia: es el checklist de publicación (en npm, en este framework), que aplica story-delivery.
  */
 const transition = (stage, status, enforcement, skills) => ({
   stage, status, from: `${status}/IN-PROGRESS`, to: `${status}/DONE`, enforcement, kind: 'transition', appliesTo: 'story', skills,
@@ -35,7 +35,7 @@ const DOD_STAGES = Object.freeze([
   transition('code-review', 'CODE-REVIEW', 'error', ['story-code-review']),
   transition('verify', 'VERIFY', 'error', ['story-verify']),
   transition('acceptance', 'ACCEPTANCE', 'error', ['story-acceptance']),
-  { stage: 'deliver', status: null, from: null, to: null, enforcement: 'error', kind: 'content', appliesTo: 'deliver', skills: [], optional: true },
+  { stage: 'deliver', status: null, from: null, to: null, enforcement: 'error', kind: 'content', appliesTo: 'deliver', skills: ['story-delivery'], optional: true },
 ].map((entry) => Object.freeze({ ...entry, skills: Object.freeze([...entry.skills]) })));
 
 const DOD_KIND = 'dod-guardrail';

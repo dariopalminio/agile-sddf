@@ -69,7 +69,7 @@ stateDiagram-v2
     state "CODE-REVIEW" as CR
 ```
 
-`CANCELED` es alcanzable desde cualquier estado activo y, como `DELIVER` y `COMPLETED`, lo marca el humano: ningún skill lo escribe.
+`CANCELED` es alcanzable desde cualquier estado activo y, como `COMPLETED`, lo marca el humano: ningún skill lo escribe.
 
 Happy path:
 ```
@@ -89,7 +89,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 | `CODE-REVIEW` | Se revisa el código implementado por IA, humano y/u otros miembros del equipo para garantizar calidad y estándares. | Revisor |
 | `VERIFY` | Se ejecutan pruebas automatizadas (unitarias, integración, E2E, regresión) en entorno controlado. | IA / CI |
 | `ACCEPTANCE` | Validación humana de la historia contra los criterios de aceptación de SPECIFY. El humano decide si el valor es entregable. | PO / QA |
-| `DELIVER` | Incremento listo para producción (batch) o ya desplegado (continuous). Transición manual — no la escribe ningún skill. | Humano / CI-CD |
+| `DELIVER` | Incremento listo para producción (batch) o ya desplegado (continuous). La escribe `story-delivery` tras verificar el DoD de entrega y con confirmación humana. | Humano (vía `story-delivery`) / CI-CD |
 | `COMPLETED` | Estado terminal pasivo. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. | — |
 | `CANCELED` | Estado terminal pasivo. La historia se abandonó sin entregar. Alcanzable desde cualquier estado activo; transición manual, ningún skill la escribe. | Humano |
 
@@ -104,8 +104,9 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 | `story-code-review` | `IMPLEMENT/DONE` o `CODE-REVIEW/IN-PROGRESS` (reanudación) | `CODE-REVIEW/IN-PROGRESS` | `CODE-REVIEW/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `IMPLEMENT/DONE` (`BLOCKED`) |
 | `story-verify` | `CODE-REVIEW/DONE` (camino normal), `IMPLEMENT/DONE` (mínimo aceptable) o `VERIFY/BLOCKED` (reintento) | `VERIFY/IN-PROGRESS` | `VERIFY/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `VERIFY/BLOCKED` (`BLOCKED`) |
 | `story-acceptance` | `VERIFY/DONE` (camino normal), `ACCEPTANCE/IN-PROGRESS` (sesión en curso) o `ACCEPTANCE/BLOCKED` (reintento) | `ACCEPTANCE/IN-PROGRESS` | `ACCEPTANCE/DONE` | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `ACCEPTANCE/BLOCKED` (`BLOCKED`) |
+| `story-delivery` | `ACCEPTANCE/DONE` | — (sin estado intermedio) | `DELIVER/DONE` (con confirmación humana) | — |
 
-**DELIVER y COMPLETED son transiciones manuales** — ningún skill los escribe. DELIVER significa que el incremento está listo para producción (potencialmente entregable) o ya desplegado (entregado), según el modelo de entrega del equipo (batch vs. continuous). Lo marca el humano o CI/CD.
+**DELIVER** significa que el incremento está listo para producción (potencialmente entregable) o ya desplegado (entregado), según el modelo de entrega del equipo (batch vs. continuous). Lo escribe `story-delivery` tras verificar el DoD de entrega y solo con confirmación humana explícita; si la entrega no se confirma, `story.md` no cambia. **COMPLETED es una transición manual** — ningún skill lo escribe; lo marca el humano o CI/CD.
 
 Los sub-skills `story-design`, `story-tasking` y `story-testcases` son invocados por `story-plan` y **no modifican `story.md`**: solo producen sus artefactos (`design.md`, `tasks.md`, `testcases.md`).
 

@@ -5,7 +5,7 @@ id: STORY-162
 kind: feat
 slug: STORY-162-story-delivery-modelo-continuous
 title: "story-delivery en modelo continuous"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25

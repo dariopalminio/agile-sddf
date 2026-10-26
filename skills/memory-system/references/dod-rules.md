@@ -21,7 +21,7 @@ Un archivo `docs/guardrails/dod-story-<etapa>.md` por fila, en este orden canón
 - Un DoD es la condición para **cerrar** su etapa: protege la transición `<ETAPA>/IN-PROGRESS` →
   `<ETAPA>/DONE`, que escribe el skill que lo evalúa. El orden entre etapas lo fija el orden de esta
   tabla (`CODE-REVIEW` antes de `VERIFY`), no el campo `from`.
-- `deliver` no es una transición de historia (tras `ACCEPTANCE` viene `DELIVER`, manual): es el checklist
+- `deliver` no es una transición de historia (tras `ACCEPTANCE` viene `DELIVER`, que escribe `story-delivery` con confirmación humana): es el checklist
   de publicación, un guardrail de contenido sin `from`/`to`.
 - `enforcement: error` bloquea la transición en el skill que lo evalúa; `warn` informa sin bloquear.
 

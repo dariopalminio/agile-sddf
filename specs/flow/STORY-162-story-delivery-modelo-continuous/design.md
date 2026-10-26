@@ -269,3 +269,9 @@ Ninguna bloqueante. La interacción de `--dry-run`/`--force` con el Paso 2b qued
 - **Descripción**: la entrada STORY-162 de `epic.md` solo describe el fallo cerrado ante un `delivery-model` inválido; tras el split, la historia también cubre el soporte de `continuous` (AC-1, AC-2).
 - **Documento afectado**: epic.md (EPIC-27)
 - **Acción requerida**: actualizar la descripción de STORY-162 en la épica cuando se revise (junto con INC-002 de `analyze.md` de STORY-159); no bloquea esta historia.
+
+### CR-005
+- **Tipo**: ajuste en implementación
+- **Descripción**: recomendación 3 de `analyze.md`. En TC-008, `expected.not_contains` no lleva «`npm install`»: el texto del criterio del DoD que el skill muestra en la tabla contiene `npm install agile-sddf`, así que la aserción fallaría aunque no se ejecute. El contrato se verifica en positivo con la evidencia `confirmación humana (delivery-model: continuous)` y en negativo con `no aplica en batch`. En TC-009, «la tabla del DoD» se expresa con el encabezado literal `| # | Criterio | Estado | Evidencia |`.
+- **Documento afectado**: `skills/story-delivery/evals/evals.json` (C-3)
+- **Acción requerida**: ninguna; aplicado en T004 y T005 de `story-implement-tasks`.

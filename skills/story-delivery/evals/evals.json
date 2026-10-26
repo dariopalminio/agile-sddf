@@ -1,7 +1,7 @@
 {
   "skill": "story-delivery",
-  "version": "1.0.0",
-  "description": "Casos de prueba para story-delivery en modelo batch: entrega interactiva con DoD de entrega cumplido (criterio de publicación como «no aplica en batch»), y los caminos de bloqueo sin efectos (estado distinto de ACCEPTANCE/DONE, DoD incumplido, rechazo del usuario, delivery-model distinto de batch y DoD de entrega ausente), en los que story.md no cambia y no se crea ningún archivo.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para story-delivery en los modelos batch y continuous: entrega interactiva con DoD de entrega cumplido (en batch, criterio de publicación como «no aplica en batch»; en continuous, afirmación de despliegue previa y criterio de publicación por confirmación humana), y los caminos de bloqueo sin efectos (estado distinto de ACCEPTANCE/DONE, DoD incumplido, rechazo del usuario, delivery-model ausente o inválido, despliegue no afirmado y DoD de entrega ausente), en los que story.md no cambia y no se crea ningún archivo.",
   "cases": [
     {
       "id": "TC-001",
@@ -134,23 +134,26 @@
     },
     {
       "id": "TC-005",
-      "name": "delivery-model-continuous-falla-cerrado",
+      "name": "delivery-model-invalido-falla-cerrado",
       "type": "fail-fast",
-      "description": "D-2 — Historia en ACCEPTANCE/DONE con sddf.config.yaml › defaults.delivery-model: continuous. Hasta STORY-162 el skill solo soporta batch: se detiene en el Paso 2 con el valor leído, sin evaluar el DoD, sin preguntar nada y sin modificar story.md.",
+      "description": "AC-3 (STORY-162) — Historia en ACCEPTANCE/DONE con sddf.config.yaml › defaults.delivery-model: weekly. El skill se detiene en el Paso 2 informando que falta un delivery-model válido con el valor leído y la lista de valores válidos (batch, continuous), sin evaluar el DoD, sin preguntar nada, sin modificar story.md y sin crear archivos.",
       "input": {
         "story_id": "STORY-204",
         "story_status": "ACCEPTANCE",
         "story_substatus": "DONE",
-        "delivery_model": "continuous"
+        "delivery_model": "weekly"
       },
       "expected": {
         "contains": [
-          "❌ story-delivery solo soporta delivery-model: batch (valor leído: continuous)",
+          "❌ Falta un delivery-model válido en sddf.config.yaml › defaults.delivery-model (valor leído: weekly)",
+          "Valores válidos: batch, continuous.",
           "story.md no cambió"
         ],
         "not_contains": [
+          "solo soporta delivery-model: batch",
           "¿Confirmas la entrega",
           "¿Se cumple",
+          "¿El incremento de STORY-204 ya está desplegado",
           "entregada: DELIVER/DONE",
           "status: DELIVER",
           "| # | Criterio | Estado | Evidencia |"
@@ -181,6 +184,103 @@
           "entregada: DELIVER/DONE",
           "status: DELIVER",
           "no aplica en batch"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-007",
+      "name": "delivery-model-ausente-falla-cerrado",
+      "type": "fail-fast",
+      "description": "AC-3 (STORY-162) — Historia en ACCEPTANCE/DONE, pero sddf.config.yaml no declara defaults.delivery-model. El skill no asume batch: se detiene en el Paso 2 con valor leído: ausente y la lista de valores válidos (batch, continuous), sin evaluar el DoD, sin preguntar nada, sin modificar story.md y sin crear archivos.",
+      "input": {
+        "story_id": "STORY-206",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": null
+      },
+      "expected": {
+        "contains": [
+          "❌ Falta un delivery-model válido en sddf.config.yaml › defaults.delivery-model (valor leído: ausente)",
+          "Valores válidos: batch, continuous.",
+          "story.md no cambió"
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "¿Se cumple",
+          "entregada: DELIVER/DONE",
+          "status: DELIVER",
+          "| # | Criterio | Estado | Evidencia |"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-008",
+      "name": "happy-path-continuous-despliegue-afirmado",
+      "type": "happy-path",
+      "description": "AC-1 (STORY-162) — Historia en ACCEPTANCE/DONE, sddf.config.yaml con defaults.delivery-model: continuous y docs/guardrails/dod-story-deliver.md con sus 7 criterios (enforcement: error). El usuario responde s a la afirmación de despliegue, a los criterios de confirmación (CI, secrets e instalación del paquete publicado) y a la confirmación final; package.json tiene versión con entrada en CHANGELOG.md y npm pack --dry-run termina con código 0. El skill pregunta primero si el incremento ya está desplegado, evalúa el criterio de instalación del paquete publicado por confirmación humana (no como «no aplica en batch») sin ejecutar ningún despliegue ni instalación, y escribe en story.md status: DELIVER, substatus: DONE y updated: con la fecha de hoy.",
+      "input": {
+        "story_id": "STORY-207",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": "continuous",
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "npm_pack_exit_code": 0,
+        "responses": ["s", "s", "s", "s", "s"]
+      },
+      "expected": {
+        "contains": [
+          "¿El incremento de STORY-207 ya está desplegado en producción? (s/n)",
+          "| # | Criterio | Estado | Evidencia |",
+          "confirmación humana (delivery-model: continuous)",
+          "npm pack --dry-run",
+          "¿Confirmas la entrega de STORY-207 a DELIVER/DONE? (s/n)",
+          "status: DELIVER",
+          "substatus: DONE",
+          "updated:",
+          "✅ STORY-207 entregada: DELIVER/DONE"
+        ],
+        "not_contains": [
+          "no aplica en batch",
+          "Entrega bloqueada",
+          "Entrega cancelada",
+          "DELIVER exige que el incremento ya esté desplegado",
+          "delivery-report.md",
+          "status: SHIP",
+          "status: COMPLETED",
+          "npm publish"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-009",
+      "name": "continuous-sin-despliegue-no-entrega",
+      "type": "error-handling",
+      "description": "AC-2 (STORY-162) — Historia en ACCEPTANCE/DONE con el DoD de entrega cumplido y sddf.config.yaml con defaults.delivery-model: continuous. El usuario responde n a la afirmación de despliegue. El skill informa que en continuous DELIVER exige el despliegue previo y se detiene sin leer ni evaluar el DoD, sin hacer la confirmación final, sin modificar story.md y sin crear archivos.",
+      "input": {
+        "story_id": "STORY-208",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": "continuous",
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "responses": ["n"]
+      },
+      "expected": {
+        "contains": [
+          "¿El incremento de STORY-208 ya está desplegado en producción? (s/n)",
+          "❌ En delivery-model: continuous, DELIVER exige que el incremento ya esté desplegado",
+          "story.md no cambió"
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "¿Se cumple",
+          "entregada: DELIVER/DONE",
+          "status: DELIVER",
+          "| # | Criterio | Estado | Evidencia |"
         ]
       },
       "threshold": 1.0

@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-24
+updated: 2026-10-25
 ---
 
 # 📚 Índice de documentación
@@ -211,10 +211,15 @@ _(sin artefactos)_
 - [[insight-colapsar-specs-dos-niveles]] — [insight-colapsar-specs-dos-niveles.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
 - [[EPIC-21-colapsar-specs-dos-niveles-test-cases]] — [test-cases.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/test-cases.md) — Test Cases: Colapsar specs/ a dos niveles y eliminar 01-projects/
 - [[EPIC-22-epic-analyze]] — [epic.md](../specs/flow/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
-- [[EPIC-23-skill-epic-validate]] — [epic.md](../specs/flow/EPIC-23-skill-epic-validate/epic.md) — Skill epic-validate
+- [[EPIC-23-skill-epic-refine-validate]] — [epic.md](../specs/flow/EPIC-23-skill-epic-refine-validate/epic.md) — Skill epic-refine y epic-validate
 - [[EPIC-24-agentes-locales-por-skill]] — [epic.md](../specs/flow/EPIC-24-agentes-locales-por-skill/epic.md) — Mover agentes globales a agentes locales por skill
 - [[EPIC-25-unificar-contrato-de-validaciones-en-skills]] — [epic.md](../specs/flow/EPIC-25-unificar-contrato-de-validaciones-en-skills/epic.md) — Unificar contrato de validaciones en skills
 - [[EPIC-26-layout-y-flow-forward-mejorado]] — [epic.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/epic.md) — Layout y flow-forward mejorado
+- [report-SMOKE-1-20261025.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-1-20261025.md) — Eval Report: story-specify ⚠️ sin frontmatter
+- [report-SMOKE-2-20261025.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-2-20261025.md) — Eval Report: epic-creation ⚠️ sin frontmatter
+- [report-SMOKE-3-20261025.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-3-20261025.md) — Eval Report: sddf-init ⚠️ sin frontmatter
+- [report-SMOKE-6-20261025.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-6-20261025.md) — Eval Report: sddf-init ⚠️ sin frontmatter
+- [[EPIC-27-completar-flujo-de-story]] — [epic.md](../specs/flow/EPIC-27-completar-flujo-de-story/epic.md) — Completar flujo de story
 
 ### Historias de usuario
 
@@ -283,6 +288,13 @@ _(sin artefactos)_
 - [[STORY-156-migrar-skills-implementacion-specs-flow]] — [story.md](../specs/flow/STORY-156-migrar-skills-implementacion-specs-flow/story.md) — Migrar los skills de implementación a specs/flow
 - [[STORY-157-reparar-enlaces-tras-migracion]] — [story.md](../specs/flow/STORY-157-reparar-enlaces-tras-migracion/story.md) — Reparar enlaces y validar el gate tras la migración
 - [[STORY-158-migrar-skills-verificacion-specs-flow]] — [story.md](../specs/flow/STORY-158-migrar-skills-verificacion-specs-flow/story.md) — Migrar los skills de revisión, verificación y aceptación a specs/flow
+- [[STORY-159-story-delivery-interactivo]] — [story.md](../specs/flow/STORY-159-story-delivery-interactivo/story.md) — story-delivery interactivo en modelo batch
+- [[STORY-160-completar-y-archivar-historia-entregada]] — [story.md](../specs/flow/STORY-160-completar-y-archivar-historia-entregada/story.md) — Skill story-complete: completar y archivar una historia entregada
+- [[STORY-161-estrategia-de-instalacion]] — [story.md](../specs/flow/STORY-161-estrategia-de-instalacion/story.md) — Estrategia de instalación
+- [[STORY-162-story-delivery-modelo-continuous]] — [story.md](../specs/flow/STORY-162-story-delivery-modelo-continuous/story.md) — story-delivery en modelo continuous
+- [[STORY-163-story-delivery-dry-run-y-force]] — [story.md](../specs/flow/STORY-163-story-delivery-dry-run-y-force/story.md) — story-delivery: --dry-run y --force
+- [[STORY-164-archivar-historias-canceladas]] — [story.md](../specs/flow/STORY-164-archivar-historias-canceladas/story.md) — Skill story-complete: archivar historias canceladas
+- [[STORY-165-epic-refine]] — [story.md](../specs/flow/STORY-165-epic-refine/story.md) — Skill epic-refine: aplicar hallazgos de epic-analyze
 
 ### Historias archivadas (archive/)
 
@@ -508,10 +520,10 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 403 |
-| Nodos con frontmatter | 402 |
-| Nodos sin frontmatter | 1 |
-| Wikilinks pendientes | 1 |
+| Nodos indexados | 415 |
+| Nodos con frontmatter | 410 |
+| Nodos sin frontmatter | 5 |
+| Wikilinks pendientes | 2 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |
 
@@ -527,4 +539,5 @@ _(sin artefactos externos)_
 
 Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artefacto:
 
+- [[EPIC-23-skill-epic-validate]] ⚠️ nodo pendiente
 - [[plan-07-renombrar-skill-story-improve-a-story-refine]] ⚠️ nodo pendiente

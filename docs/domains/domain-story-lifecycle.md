@@ -136,7 +136,7 @@ stateDiagram-v2
 | `CODE-REVIEW` | Se revisa el código implementado para garantizar calidad, estándares y coherencia con el diseño. | Revisor | `IN-PROGRESS` |
 | `VERIFY` | Se ejecutan pruebas automatizadas (unitarias, integración, E2E, regresión) en entorno controlado. | CI / Equipo | `IN-PROGRESS` |
 | `ACCEPTANCE` | Validación humana de la historia contra los criterios de aceptación de `SPECIFY`. El humano decide si el valor es entregable. | PO / QA | `IN-PROGRESS` |
-| `DELIVER` | Incremento listo para producción (batch) o ya desplegado (continuous). Transición manual — no escribe ningún skill. | Humano / CI-CD | `IN-PROGRESS` |
+| `DELIVER` | Incremento listo para producción (batch) o ya desplegado (continuous). La escribe `story-delivery` tras verificar el DoD de entrega y con confirmación humana. | Humano (vía `story-delivery`) / CI-CD | `DONE` |
 | `COMPLETED` | Estado terminal pasivo. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. | — | `DONE` |
 | `CANCELED` | La historia fue cancelada sin entregar. Estado terminal. | PO / PM | `DONE` |
 

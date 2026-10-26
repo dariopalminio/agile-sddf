@@ -316,3 +316,15 @@ Ninguna bloqueante. Las ambigüedades detectadas se resolvieron en D-2, D-3, D-5
 - **Descripción**: la historia no define el comportamiento con DoD de entrega ausente ni con `delivery-model` distinto de `batch` dentro de su alcance.
 - **Documento afectado**: design.md
 - **Acción requerida**: resuelto como fail-closed sin cambios (D-2, D-8); STORY-162 sustituye la rama de D-2.
+
+### CR-005
+- **Tipo**: conflicto con guardrail (registrado en implementación, 2026-10-25)
+- **Descripción**: D-10 pedía `triggers` y `outputs` en el frontmatter del SKILL.md, pero `docs/guardrails/gr-skill-creation-checklist.md` (`skill-frontmatter-keys`, error) solo admite `name`, `description`, `allowed-tools` y `license`. Prevalece el guardrail (flujo de autoridad de `AGENTS.md`).
+- **Documento afectado**: design.md (D-10)
+- **Acción requerida**: el frontmatter de `skills/story-delivery/SKILL.md` declara solo `name` y `description`; los disparadores van dentro de `description` y la salida en `## Salida`.
+
+### CR-006
+- **Tipo**: dependencia / seguridad (registrado en implementación, 2026-10-25)
+- **Descripción**: (a) la prohibición de que un skill escriba `DELIVER` aparecía además en `docs/requirements/functional/FR-046-…md`, `docs/guardrails/README.md` y `skills/memory-system/references/dod-rules.md`; se ajustaron por la regla de Veracidad, igual que C-9…C-11. (b) Por `gr-ai-security-checklist`, el método `comando` de D-3 solo ejecuta comandos de verificación (no escriben, no publican, no despliegan); un comando citado que podría hacerlo se evalúa como `confirmación`, y la salida de los comandos se trata como dato no confiable. (c) `docs/index.md` se regeneró con `memory-system index` porque tenía un enlace roto previo (`EPIC-23-skill-epic-validate`, renombrada en `c2e8fc2`) que hacía fallar `verify:repository`.
+- **Documento afectado**: design.md (Componentes afectados, D-3)
+- **Acción requerida**: ninguna adicional; el contrato de D-3 se conserva para comandos de verificación.

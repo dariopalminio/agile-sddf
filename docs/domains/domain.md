@@ -106,7 +106,7 @@ work items como estado actual sin verificarlos en el filesystem.
 - **Épica (flujo documentado):** `DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED`.
 - **Historia (flujo documentado):** `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`.
 - **Substatus documentados:** `TODO`, `IN-PROGRESS`, `DONE`, `BLOCKED`. `BLOCKED` mantiene la etapa
-  actual; los terminales requieren acción humana o CI/CD.
+  actual; los terminales requieren acción humana o CI/CD (`DELIVER` de story, mediante `story-delivery` con confirmación).
 
 > **Cautela:** el repositorio contiene valores históricos y variaciones de `status`/`substatus`
 > (por ejemplo, `READY`). No normalizarlos ni asumir que todo documento cumple el modelo hasta
@@ -156,7 +156,7 @@ work items como estado actual sin verificarlos en el filesystem.
 | BR-003 | Las relaciones de nivel son Epic → Story; no se permiten saltos de nivel en el modelo canónico. | Work items. |
 | BR-004 | Debe verificarse WIP=1 antes de activar un nuevo ítem por nivel; los buffers de Epic y Story documentan además límites configurables. | Work items. |
 | BR-005 | Los gates exigen precondiciones y DoD antes de una transición; rechazo o fallo produce bloqueo o rework. | Pipelines. |
-| BR-006 | `DELIVER`, `SHIP` y `COMPLETED` no los escribe automáticamente un skill; son manuales o de CI/CD. | Transiciones terminales. |
+| BR-006 | `SHIP` y `COMPLETED` no los escribe automáticamente un skill; son manuales o de CI/CD. `DELIVER` lo escribe `story-delivery` solo con confirmación humana. | Transiciones terminales. |
 | BR-007 | El tipo de una historia vive en `kind` (`feat`, `fix`, `chore`, `hotfix`), no en el prefijo `STORY-*`. | Stories. |
 | BR-008 | Un ADR aceptado no se edita: un ADR nuevo lo reemplaza mediante `superseded-by`. | Decisiones de arquitectura. |
 | BR-009 | La fuente de skills y agentes es la raíz del repositorio; las carpetas de runtime son salidas instaladas. | Distribución. |
