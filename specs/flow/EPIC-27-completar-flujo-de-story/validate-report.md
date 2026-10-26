@@ -65,6 +65,81 @@ Las seis historias declaran `parent: EPIC-27-completar-flujo-de-story` y están 
 | SMOKE-2 — Dry-run sin efectos | ✅ | TC-010 y TC-012: se muestra la tabla del DoD y la acción que se ejecutaría, no se pregunta la confirmación final y se informa que ningún archivo se creó, modificó ni borró |
 | SMOKE-3 — Instalación solo story | ✅ | `node scripts/cli.js install --strategy story --target claude-code` en un directorio vacío: 19 skills `story-*` y ningún `epic-*` |
 
+### Tests manuales: Archiving Stories
+
+#### Test: archivar una historia COMPLETED/DONE:
+STORY-054 is already COMPLETED/DONE, so it only needs to be archived and story.md won't be edited. The archive folder date, 2026-05-02, comes from its frontmatter. Nothing has been written or moved yet.
+
+
+ story-complete — STORY-054
+   Estado actual:  COMPLETED/DONE
+   Acción:         sin cambio de status (ya COMPLETED/DONE)
+   Origen:         specs/flow/STORY-054-inicializar-entorno-sddf/
+   Destino:        specs/flow/archive/2026-05-02-STORY-054-inicializar-entorno-sddf/
+   Movimiento:     git-mv
+¿Confirmas completar y archivar STORY-054 en specs/flow/archive/2026-05-02-STORY-054-inicializar-entorno-sddf/? (s/n)/story-complete STORY-054
+ STORY-054 is archived. It stays COMPLETED/DONE and story.md wasn't edited.
+ STORY-054 archivada en specs/flow/archive/2026-05-02-STORY-054-inicializar-entorno-sddf/
+   El movimiento quedó en el índice de git (git-mv); el commit queda a cargo del usuario.
+The total of active plus archived stories is still 156. Three renames are now staged but not committed: STORY-032, STORY-033 and STORY-054.
+
+You had STORY-054's story.md open in the editor. That tab now points to the old location; the file is at story.md.
+✅ PASS
+
+#### Test: archivar una historia CANCELED/DONE:
+/story-complete STORY-036
+STORY-036 is canceled, so it can be archived as it is. Its status stays CANCELED and story.md won't be edited. Nothing has been written or moved yet.
+
+
+ story-complete — STORY-036
+   Estado actual:  CANCELED/DONE
+   Acción:         sin cambio de status (CANCELED/DONE)
+   Origen:         specs/flow/STORY-036-openspec-init-config/
+   Destino:        specs/flow/archive/2026-04-23-STORY-036-openspec-init-config/
+   Movimiento:     git-mv
+¿Confirmas archivar STORY-036 (CANCELED/DONE, el status no cambia) en specs/flow/archive/2026-04-23-STORY-036-openspec-init-config/? (s/n)s
+STORY-036 is archived. Its status stayed CANCELED/DONE and story.md wasn't edited.
+
+
+ STORY-036 archivada como CANCELED (status sin cambios): specs/flow/archive/2026-04-23-STORY-036-openspec-init-config/
+   El movimiento quedó en el índice de git (git-mv); el commit queda a cargo del usuario.
+The total of active plus archived stories is still 156. Four renames are now staged but not committed: STORY-032, STORY-033, STORY-054 and STORY-036.
+
+Your editor tab for story.md now points to the old location; the file is at story.md.
+✅ PASS
+
+#### Test: archivar una historia READY-FOR-VERIFY/DONE (caso negativo, debe fallar):/story-complete STORY-070
+Bash Plan completion of STORY-070
+IN
+node skills/story-complete/scripts/story-complete.js plan --repo-root . --id STORY-070; echo "exit=$?"
+
+OUT
+{
+  "ok": false,
+  "code": "NOT_DELIVERED",
+  "message": "La historia STORY-070 está en READY-FOR-VERIFY/DONE: story-complete requiere DELIVER/DONE, COMPLETED/DONE o CANCELED/DONE. Ejecuta antes /story-delivery STORY-070",
+  "story": {
+    "id": "STORY-070",
+    "dir": "specs/flow/STORY-070-dod-code-review-en-story-code-review",
+    "status": "READY-FOR-VERIFY",
+    "substatus": "DONE"
+  }
+}
+exit=1
+7:02 PM
+STORY-070 can't be archived yet: it is in READY-FOR-VERIFY/DONE, which isn't a finished state. I didn't ask for confirmation and nothing was changed or moved.
+
+
+ La historia STORY-070 está en READY-FOR-VERIFY/DONE: story-complete requiere DELIVER/DONE, COMPLETED/DONE o CANCELED/DONE. Ejecuta antes /story-delivery STORY-070
+The engine suggests /story-delivery, but that skill needs the story in ACCEPTANCE/DONE, so running it now would be blocked too. The usual path from here is:
+
+/story-verify STORY-070
+/story-acceptance STORY-070
+/story-delivery STORY-070
+/story-complete STORY-070
+If STORY-070 won't go further, mark it CANCELED/DONE and /story-complete will archive it unchanged.
+✅ PASS
+
 ## Limitaciones
 
 - Los `expected` de los evals son `contains` y `not_contains` sobre el texto de salida; no inspeccionan el sistema de archivos. Que `--dry-run` no modifique nada queda respaldado por la conducta declarada del skill, no por un diff real.

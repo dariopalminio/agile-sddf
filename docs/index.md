@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 # 📚 Índice de documentación
@@ -229,23 +229,6 @@ _(sin artefactos)_
 > enumeran aquí: se leen desde el directorio de la historia. Los templates (`templates/`) tampoco se
 > listan porque sus wikilinks son placeholders.
 
-- [[STORY-030-soporte-atlassian-rovo]] — [story.md](../specs/flow/STORY-030-soporte-atlassian-rovo/story.md) — Soporte Atlassian Rovo — Agente story-creator
-- [[STORY-032-soporte-atlassian-rovo-para-validar-release]] — [story.md](../specs/flow/STORY-032-soporte-atlassian-rovo-para-validar-release/story.md) — Soporte Atlassian Rovo para Validar Release
-- [[STORY-033-soporte-atlassian-rovo-para-crear-epic-release]] — [story.md](../specs/flow/STORY-033-soporte-atlassian-rovo-para-crear-epic-release/story.md) — Soporte Atlassian Rovo para crear Epic Release
-- [[STORY-036-openspec-init-config]] — [story.md](../specs/flow/STORY-036-openspec-init-config/story.md) — Inicializar configuración de OpenSpec automáticamente
-- [[STORY-037-generar-baseline-openspec-inversa]] — [story.md](../specs/flow/STORY-037-generar-baseline-openspec-inversa/story.md) — Generar línea base de OpenSpec mediante ingeniería inversa
-- [[STORY-054-inicializar-entorno-sddf]] — [story.md](../specs/flow/STORY-054-inicializar-entorno-sddf/story.md) — Inicializar entorno SDDF con sddf-init
-- [[dod-code-review-en-story-code-review]] — [story.md](../specs/flow/STORY-070-dod-code-review-en-story-code-review/story.md) — DoD CODE-REVIEW en story-code-review
-- [[STORY-071-skill-story-verify]] — [story.md](../specs/flow/STORY-071-skill-story-verify/story.md) — Skill story-verify: Orquestar la fase VERIFY de pruebas de una historia
-- [[STORY-073-skill-security-audit-condicional]] — [story.md](../specs/flow/STORY-073-skill-security-audit-condicional/story.md) — Construir skill `security-audit` para auditoría automática condicional de seguridad
-- [[STORY-074-integrar-historia-batch-configurable]] — [story.md](../specs/flow/STORY-074-integrar-historia-batch-configurable/story.md) — story-integrate: Integración batch configurable de historias
-- [[STORY-075-integrar-historia-modo-manual-dryrun]] — [story.md](../specs/flow/STORY-075-integrar-historia-modo-manual-dryrun/story.md) — story-integrate: Modos de ejecución manual y dry-run
-- [[STORY-076-integrar-historia-multi-modelo-entrega]] — [story.md](../specs/flow/STORY-076-integrar-historia-multi-modelo-entrega/story.md) — story-integrate: Soporte multi-modelo de entrega (batch y continuous)
-- [[STORY-077-mejorar-historia-desde-reporte]] — [story.md](../specs/flow/STORY-077-mejorar-historia-desde-reporte/story.md) — story-improve: Mejora automática de historia desde reporte FINVEST
-- [[STORY-078-implement-tdd-fase-red]] — [story.md](../specs/flow/STORY-078-implement-tdd-fase-red/story.md) — story-implement — Fase RED: validar configuración y generar pruebas
-- [[STORY-080-plan]] — [plan.md](../specs/flow/STORY-080-skills-master/plan.md) — Plan: Renombrar skill-creator a skill-master
-- [[STORY-080-skills-master]] — [story.md](../specs/flow/STORY-080-skills-master/story.md) — skill-master — refactorización de skill-tester-eval: modos plan/build, detección de lenguaje natural e independencia SDDF
-- [[STORY-081-implement-tdd-fase-green-refactor]] — [story.md](../specs/flow/STORY-081-implement-tdd-fase-green-refactor/story.md) — story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar
 - [[STORY-082-implement-tdd-modos-ejecucion]] — [story.md](../specs/flow/STORY-082-implement-tdd-modos-ejecucion/story.md) — story-implement — modos interactivo y automático de ejecución del ciclo TDD
 - [[STORY-083-skill-test-evals]] — [story.md](../specs/flow/STORY-083-skill-test-evals/story.md) — skill-test-evals — generación de evals/evals.json para skills desde cualquier fuente
 - [[plan-01]] — [plan-01.md](../specs/flow/STORY-084-skill-verify/plan-01.md) — Plan: Crear el skill skill-verify
@@ -321,8 +304,13 @@ _(sin artefactos)_
 - [[STORY-027-validacion-de-formato-de-release]] — [story.md](../specs/flow/archive/2026-04-22-STORY-027-validacion-de-formato-de-release/story.md) — Validación de formato de Release
 - [[STORY-028-generar-releases]] — [story.md](../specs/flow/archive/2026-04-22-STORY-028-generar-releases/story.md) — Generar releases desde project-plan
 - [[STORY-029-generar-stories]] — [story.md](../specs/flow/archive/2026-04-22-STORY-029-generar-stories/story.md) — Generar stories desde archivo de release
+- [[STORY-030-soporte-atlassian-rovo]] — [story.md](../specs/flow/archive/2026-04-22-STORY-030-soporte-atlassian-rovo/story.md) — Soporte Atlassian Rovo — Agente story-creator
+- [[STORY-032-soporte-atlassian-rovo-para-validar-release]] — [story.md](../specs/flow/archive/2026-04-22-STORY-032-soporte-atlassian-rovo-para-validar-release/story.md) — Soporte Atlassian Rovo para Validar Release
+- [[STORY-033-soporte-atlassian-rovo-para-crear-epic-release]] — [story.md](../specs/flow/archive/2026-04-22-STORY-033-soporte-atlassian-rovo-para-crear-epic-release/story.md) — Soporte Atlassian Rovo para crear Epic Release
 - [[STORY-034-rovo-agent-release-reverse-generator]] — [story.md](../specs/flow/archive/2026-04-22-STORY-034-rovo-agent-release-reverse-generator/story.md) — Rovo Agent Release Reverse Generator from children
 - [[STORY-035-generar-stories-todos-releases]] — [story.md](../specs/flow/archive/2026-04-22-STORY-035-generar-stories-todos-releases/story.md) — Generar stories de todos los releases en batch
+- [[STORY-036-openspec-init-config]] — [story.md](../specs/flow/archive/2026-04-23-STORY-036-openspec-init-config/story.md) — Inicializar configuración de OpenSpec automáticamente
+- [[STORY-037-generar-baseline-openspec-inversa]] — [story.md](../specs/flow/archive/2026-04-23-STORY-037-generar-baseline-openspec-inversa/story.md) — Generar línea base de OpenSpec mediante ingeniería inversa
 - [[STORY-038-copy-templates-to-skills]] — [story.md](../specs/flow/archive/2026-04-23-STORY-038-copy-templates-to-skills/story.md) — Copiar los templates a los skills correspondientes
 - [[STORY-039-publicar-framework-en-npm]] — [story.md](../specs/flow/archive/2026-04-23-STORY-039-publicar-framework-en-npm/story.md) — Publicar framework en npm
 - [[STORY-040-instalar-skills-via-postinstall]] — [story.md](../specs/flow/archive/2026-04-23-STORY-040-instalar-skills-via-postinstall/story.md) — Instalar skills via postinstall (script)
@@ -339,6 +327,7 @@ _(sin artefactos)_
 - [[STORY-051-crear-release-por-preguntas-guiadas]] — [story.md](../specs/flow/archive/2026-05-01-STORY-051-crear-release-por-preguntas-guiadas/story.md) — Crear un release.md válido respondiendo preguntas guiadas por el template
 - [[STORY-052-generar-diagrama-contexto-c4]] — [story.md](../specs/flow/archive/2026-05-01-STORY-052-generar-diagrama-contexto-c4/story.md) — Generar un diagrama de contexto C4 del proyecto respondiendo preguntas o desde specs
 - [[STORY-053-centralizar-validacion-entorno-sddf]] — [story.md](../specs/flow/archive/2026-05-02-STORY-053-centralizar-validacion-entorno-sddf/story.md) — Centralizar la validación de entorno SDDF con skill-preflight
+- [[STORY-054-inicializar-entorno-sddf]] — [story.md](../specs/flow/archive/2026-05-02-STORY-054-inicializar-entorno-sddf/story.md) — Inicializar entorno SDDF con sddf-init
 - [[STORY-055-centralizar-templates-en-specs-templates]] — [story.md](../specs/flow/archive/2026-05-02-STORY-055-centralizar-templates-en-specs-templates/story.md) — Centralizar templates de spec en directorio compartido
 - [[STORY-056-project-policies]] — [story.md](../specs/flow/archive/2026-05-06-STORY-056-project-policies/story.md) — Project policies
 - [[STORY-057-skill-para-diseno]] — [story.md](../specs/flow/archive/2026-05-06-STORY-057-skill-para-diseno/story.md) — Skill para Diseño (story-design)
@@ -354,8 +343,19 @@ _(sin artefactos)_
 - [[STORY-067-story-implement-continuar-parcial]] — [story.md](../specs/flow/archive/2026-05-09-STORY-067-story-implement-continuar-parcial/story.md) — skill story-implement: continuar implementación parcial con tareas pendientes y fix-directives
 - [[dod-plan-en-story-analyze]] — [story.md](../specs/flow/archive/2026-05-13-STORY-068-dod-plan-en-story-analyze/story.md) — DoD PLAN en story-analyze
 - [[dod-IMPLEMENT-en-story-implement]] — [story.md](../specs/flow/archive/2026-05-13-STORY-069-dod-implementing-en-story-implement/story.md) — DoD IMPLEMENT en story-implement
+- [[dod-code-review-en-story-code-review]] — [story.md](../specs/flow/archive/2026-05-13-STORY-070-dod-code-review-en-story-code-review/story.md) — DoD CODE-REVIEW en story-code-review
+- [[STORY-071-skill-story-verify]] — [story.md](../specs/flow/archive/2026-05-14-STORY-071-skill-story-verify/story.md) — Skill story-verify: Orquestar la fase VERIFY de pruebas de una historia
+- [[STORY-073-skill-security-audit-condicional]] — [story.md](../specs/flow/archive/2026-05-15-STORY-073-skill-security-audit-condicional/story.md) — Construir skill `security-audit` para auditoría automática condicional de seguridad
 - [[STORY-072-skill-story-acceptance]] — [story.md](../specs/flow/archive/2026-05-16-STORY-072-skill-story-acceptance/story.md) — Skill story-acceptance: Validación final humana de criterios de aceptación antes de DELIVER
+- [[STORY-074-integrar-historia-batch-configurable]] — [story.md](../specs/flow/archive/2026-05-17-STORY-074-integrar-historia-batch-configurable/story.md) — story-integrate: Integración batch configurable de historias
+- [[STORY-075-integrar-historia-modo-manual-dryrun]] — [story.md](../specs/flow/archive/2026-05-17-STORY-075-integrar-historia-modo-manual-dryrun/story.md) — story-integrate: Modos de ejecución manual y dry-run
+- [[STORY-076-integrar-historia-multi-modelo-entrega]] — [story.md](../specs/flow/archive/2026-05-17-STORY-076-integrar-historia-multi-modelo-entrega/story.md) — story-integrate: Soporte multi-modelo de entrega (batch y continuous)
+- [[STORY-077-mejorar-historia-desde-reporte]] — [story.md](../specs/flow/archive/2026-05-17-STORY-077-mejorar-historia-desde-reporte/story.md) — story-improve: Mejora automática de historia desde reporte FINVEST
 - [[STORY-079-story-testcases]] — [story.md](../specs/flow/archive/2026-05-29-STORY-079-story-testcases/story.md) — story-testcases — generación de testcases.md desde story.md y design.md
+- [[STORY-078-implement-tdd-fase-red]] — [story.md](../specs/flow/archive/2026-05-30-STORY-078-implement-tdd-fase-red/story.md) — story-implement — Fase RED: validar configuración y generar pruebas
+- [[STORY-080-plan]] — [plan.md](../specs/flow/archive/2026-05-30-STORY-080-skills-master/plan.md) — Plan: Renombrar skill-creator a skill-master
+- [[STORY-080-skills-master]] — [story.md](../specs/flow/archive/2026-05-30-STORY-080-skills-master/story.md) — skill-master — refactorización de skill-tester-eval: modos plan/build, detección de lenguaje natural e independencia SDDF
+- [[STORY-081-implement-tdd-fase-green-refactor]] — [story.md](../specs/flow/archive/2026-05-30-STORY-081-implement-tdd-fase-green-refactor/story.md) — story-implement — Fases GREEN y REFACTOR: implementar código y refactorizar
 - [[plan-integrar-config-sddf-init]] — [plan.md](../specs/flow/archive/2026-05-30-STORY-085-integrar-config-sddf-init/plan.md) — Plan: Integrar sddf.config.yaml en el skill sddf-init
 - [[STORY-085-integrar-config-sddf-init]] — [story.md](../specs/flow/archive/2026-05-30-STORY-085-integrar-config-sddf-init/story.md) — Mejora de experiencia de inicialización
 - [[plan-01-refactor-release-to-epic]] — [plan-01-refactor-release-to-epic.md](../specs/flow/archive/2026-08-30-STORY-086-refactor-release-to-epic/plan-01-refactor-release-to-epic.md) — PLAN: Renombrar el nivel L2 de `release` a `epic`

@@ -20,10 +20,14 @@ ADR-0016 y EPIC-26 fijan `docs/` (conocimiento), `specs/` (estado) y `workflow/`
 
 ### Added
 
+- `/story-delivery` (EPIC-27, STORY-159, STORY-162, STORY-163): verifica criterio por criterio el DoD de `docs/guardrails/dod-story-deliver.md` de una historia en `ACCEPTANCE/DONE` y, con confirmación humana, la lleva a `DELIVER/DONE`. Lee `defaults.delivery-model` de `sddf.config.yaml`: con `batch` el incremento queda listo para producción y con `continuous` el usuario afirma que ya está desplegado. Si la clave falta o su valor no es `batch` ni `continuous`, falla cerrado sin escribir nada. `--dry-run` evalúa el DoD y muestra la acción sin modificar ningún archivo; `--force` entrega aunque el estado previo o el DoD lo bloqueen y registra el override en `delivery-report.md`.
+- `/story-complete` (EPIC-27, STORY-160, STORY-164): lleva una historia `DELIVER/DONE` a `COMPLETED/DONE` y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. También archiva, sin reescribir `story.md`, las historias ya `COMPLETED/DONE` y las `CANCELED/DONE`, que conservan su status. Muestra el plan y siempre pide confirmación. El trabajo lo hace el motor `scripts/story-complete.js`: mueve con `git mv` para conservar el historial, restaura `story.md` si el movimiento falla y comprueba que el total de historias activas y archivadas no cambie.
 - `agile-sddf install --strategy full|story` (STORY-161): `story` instala todos los skills excepto los `epic-*`; `full` instala el catálogo completo. Sin el flag, con TTY el instalador pregunta la estrategia y sin TTY usa `full`, así que la instalación no interactiva no cambia. Un valor inválido termina con código 1 sin copiar nada. El resumen de la instalación indica la estrategia aplicada.
 
 ### Changed
 
+- **Archivo de historias canceladas** (ADR-0017, reemplaza a ADR-0016): `specs/flow/archive/` admite también las historias `CANCELED` con substatus `DONE`, que conservan su status. La fecha del directorio sale de `updated:` o `created:`, y de `date:` solo si faltan las dos.
+- **Transiciones terminales de story** (EPIC-27): `DELIVER` lo escribe `/story-delivery` y `COMPLETED` lo escribe `/story-complete`, siempre con confirmación humana. Se actualizan `domain-state-management`, `domain-story-lifecycle`, la máquina de estados y la guía del pipeline.
 - `story-improve` pasa a llamarse `story-refine`. El log generado ahora es `story-refinement-log.md` y su plantilla es `refinement-log-template.md`, con `type: refinement-log`. `story-specify` invoca el nombre nuevo.
 
 ### Removed

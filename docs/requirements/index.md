@@ -6,7 +6,7 @@ status: IN-PROGRESS
 substatus: DONE
 parent: null
 created: 2026-10-13
-updated: 2026-10-25
+updated: 2026-10-26
 ---
 
 # Catálogo de requisitos

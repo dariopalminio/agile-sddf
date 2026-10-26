@@ -7,6 +7,7 @@ story: STORY-090
 design: STORY-090
 testcases: STORY-090
 tasks: STORY-090
+veredict: APPROVED
 created: 2026-09-10
 updated: 2026-09-10
 related:

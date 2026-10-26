@@ -80,7 +80,7 @@ No es:
 | Configuración del proyecto | `sddf.config.yaml` | Define perfil, stack, comandos de verificación y workers opcionales. |
 | Memoria | `docs/` | Conocimiento: producto, requisitos, dominio, arquitectura, decisiones, guías y templates. |
 | Políticas del proyecto | `docs/policies/` y `docs/guardrails/` | Registran principios técnicos y Definition of Done para los gates del flujo. |
-| Work items | `specs/flow/` | Épicas e historias con sus planes y reportes; las historias completadas se archivan en `specs/flow/archive/`. |
+| Work items | `specs/flow/` | Épicas e historias con sus planes y reportes; las historias completadas y canceladas se archivan en `specs/flow/archive/`. |
 ## Empieza en cinco minutos
 
 Necesitas Node.js 18 o superior y uno de los runtimes compatibles. La instalación tiene dos pasos deliberadamente separados: descargar el paquete y copiar sus artefactos en el runtime.
@@ -228,7 +228,7 @@ Sigue la [sección de migración a 5.0.0](docs/guides/artifact-directory-migrati
 Sigue la [guía de migración](docs/guides/artifact-directory-migration.md), primero con `--dry-run` y luego sin él.
 </details>
 
-El layout es fijo ([ADR-0016](docs/adr/ADR-0016-layout-fijo-de-tres-raices.md)): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso, reservado) son raíces hermanas en la raíz del repositorio y no se configuran.
+El layout es fijo ([ADR-0017](docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md)): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso, reservado) son raíces hermanas en la raíz del repositorio y no se configuran.
 
 ```text
 docs/
@@ -268,7 +268,7 @@ specs/
 │   │   ├── code-review-report.md
 │   │   ├── verify-report.md
 │   │   └── acceptance-report.md
-│   └── archive/                    # <YYYY-MM-DD>-STORY-NNN-<slug>/ de las historias COMPLETED
+│   └── archive/                    # <YYYY-MM-DD>-STORY-NNN-<slug>/ de las historias COMPLETED y CANCELED
 └── living/                         # reservado
 workflow/                           # reservado
 
@@ -431,6 +431,9 @@ pnpm exec agile-sddf install --target claude-code
 profile: core
 stack: node-markdown
 
+defaults:
+  delivery-model: batch # batch | continuous
+
 implement:
   test_generators:
     - type: unit
@@ -444,7 +447,8 @@ implement:
 
 | Concepto | Cómo funciona |
 |---|---|
-| Layout de artefactos | Fijo ([ADR-0016](docs/adr/ADR-0016-layout-fijo-de-tres-raices.md)): `docs/`, `specs/` y `workflow/`; `SDDF_ROOT` y `root` ya no se leen. Ver la [guía de migración](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices). |
+| Layout de artefactos | Fijo ([ADR-0017](docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md)): `docs/`, `specs/` y `workflow/`; `SDDF_ROOT` y `root` ya no se leen. Ver la [guía de migración](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices). |
+| Modelo de entrega | `defaults.delivery-model` es obligatorio para `/story-delivery`: `batch` (incremento listo para producción, sin publicar) o `continuous` (incremento ya desplegado). Si falta o tiene otro valor, la entrega falla cerrada. |
 | Perfil `core` | Es el perfil distribuido por defecto y no exige extensiones de autoría. |
 | Perfil `dogfood` | Está reservado para el desarrollo de este repositorio y requiere workers provisionados de forma explícita. |
 | Workers por stack | Son opcionales y se declaran en `implement.test_generators` y `implement.code_generators`. `skill: none` los desactiva. |

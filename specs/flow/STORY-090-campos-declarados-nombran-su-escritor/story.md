@@ -5,7 +5,7 @@ kind: chore
 id: STORY-090
 slug: STORY-090-campos-declarados-nombran-su-escritor
 title: "Todo campo declarado en un template nombra a su escritor"
-status: READY-FOR-IMPLEMENT
+status: COMPLETED
 substatus: DONE
 parent: EPIC-19-framework-consistency
 created: 2026-09-10

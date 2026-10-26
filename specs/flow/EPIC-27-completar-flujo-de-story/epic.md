@@ -3,8 +3,8 @@ type: epic
 id: EPIC-27
 slug: EPIC-27-completar-flujo-de-story
 title: "Completar flujo de story"
-status: VALIDATE
-substatus: DONE
+status: SHIP
+substatus: IN-PROGRESS
 parent: null
 created: 2026-10-25
 updated: 2026-10-26
