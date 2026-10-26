@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [5.0.0] — 2026-10-26
+
 ### BREAKING — layout fijo de tres raíces (EPIC-26, requiere 5.0.0)
 
 ADR-0016 y EPIC-26 fijan `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso) como raíces hermanas en la raíz del repositorio y retiran `SDDF_ROOT`, la clave `root` de `sddf.config.yaml` y `SPECS_BASE`. Este cambio requiere la versión major **5.0.0**.
