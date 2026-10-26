@@ -5,7 +5,7 @@ id: STORY-163
 kind: feat
 slug: STORY-163-story-delivery-dry-run-y-force
 title: "story-delivery: --dry-run y --force"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-27-completar-flujo-de-story
 created: 2026-10-25

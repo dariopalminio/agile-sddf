@@ -1,0 +1,189 @@
+{
+  "skill": "story-delivery",
+  "version": "1.0.0",
+  "description": "Casos de prueba para story-delivery en modelo batch: entrega interactiva con DoD de entrega cumplido (criterio de publicación como «no aplica en batch»), y los caminos de bloqueo sin efectos (estado distinto de ACCEPTANCE/DONE, DoD incumplido, rechazo del usuario, delivery-model distinto de batch y DoD de entrega ausente), en los que story.md no cambia y no se crea ningún archivo.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "happy-path-batch-dod-cumplido",
+      "type": "happy-path",
+      "description": "AC-1 — Historia en ACCEPTANCE/DONE, sddf.config.yaml con defaults.delivery-model: batch y docs/guardrails/dod-story-deliver.md con sus 7 criterios (enforcement: error). El usuario responde s a los criterios de confirmación (CI, secrets), package.json tiene versión con entrada en CHANGELOG.md, npm pack --dry-run termina con código 0 y el usuario confirma la entrega. El skill muestra la tabla de 7 criterios con su estado y evidencia, el criterio de instalación del paquete publicado como «no aplica en batch» sin bloquear, y escribe en story.md status: DELIVER, substatus: DONE y updated: con la fecha de hoy.",
+      "input": {
+        "story_id": "STORY-200",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "npm_pack_exit_code": 0,
+        "responses": ["s", "s", "s"]
+      },
+      "expected": {
+        "contains": [
+          "| # | Criterio | Estado | Evidencia |",
+          "no aplica en batch",
+          "npm pack --dry-run",
+          "package.json",
+          "CHANGELOG.md",
+          "confirmación humana",
+          "¿Confirmas la entrega de STORY-200 a DELIVER/DONE? (s/n)",
+          "status: DELIVER",
+          "substatus: DONE",
+          "updated:",
+          "✅ STORY-200 entregada: DELIVER/DONE",
+          "/story-complete STORY-200"
+        ],
+        "not_contains": [
+          "Entrega bloqueada",
+          "Entrega cancelada",
+          "delivery-report.md",
+          "status: SHIP",
+          "status: COMPLETED",
+          "npm publish"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-002",
+      "name": "estado-verify-done-no-entrega",
+      "type": "fail-fast",
+      "description": "AC-2 fila 1 — Historia en VERIFY/DONE con el DoD de entrega cumplido. El skill se detiene en el Paso 1 nombrando el estado actual, sin leer el DoD, sin preguntar nada, sin modificar story.md y sin crear archivos.",
+      "input": {
+        "story_id": "STORY-201",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "delivery_model": "batch"
+      },
+      "expected": {
+        "contains": [
+          "❌ La historia STORY-201 no está en ACCEPTANCE/DONE",
+          "Estado actual: VERIFY/DONE",
+          "story.md no cambió"
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "¿Se cumple",
+          "entregada: DELIVER/DONE",
+          "status: DELIVER",
+          "| # | Criterio | Estado | Evidencia |"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "dod-incumplido-sin-pregunta-final",
+      "type": "error-handling",
+      "description": "AC-2 fila 2 — Historia en ACCEPTANCE/DONE, delivery-model: batch y DoD con enforcement: error. CHANGELOG.md no tiene la entrada de la versión de package.json y npm pack --dry-run termina con código distinto de 0. El skill evalúa todos los criterios, muestra la tabla, informa la lista de criterios incumplidos y se detiene sin hacer la pregunta final, sin modificar story.md ni crear archivos.",
+      "input": {
+        "story_id": "STORY-202",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "changelog_has_version_entry": false,
+        "npm_pack_exit_code": 1,
+        "responses": ["s", "s"]
+      },
+      "expected": {
+        "contains": [
+          "| # | Criterio | Estado | Evidencia |",
+          "❌ Entrega bloqueada: criterios incumplidos del DoD",
+          "CHANGELOG.md",
+          "npm pack --dry-run",
+          "story.md no cambió"
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "entregada: DELIVER/DONE",
+          "status: DELIVER",
+          "Entrega cancelada"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "usuario-rechaza-la-entrega",
+      "type": "error-handling",
+      "description": "AC-2 fila 3 — Historia en ACCEPTANCE/DONE, delivery-model: batch y DoD cumplido. El usuario responde n a la confirmación final. El skill informa que el usuario canceló la entrega y termina sin modificar story.md ni crear archivos.",
+      "input": {
+        "story_id": "STORY-203",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "dod_criterios": 7,
+        "dod_enforcement": "error",
+        "npm_pack_exit_code": 0,
+        "responses": ["s", "s", "n"]
+      },
+      "expected": {
+        "contains": [
+          "¿Confirmas la entrega de STORY-203 a DELIVER/DONE? (s/n)",
+          "Entrega cancelada por el usuario. story.md no cambió."
+        ],
+        "not_contains": [
+          "entregada: DELIVER/DONE",
+          "status: DELIVER",
+          "Entrega bloqueada"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-005",
+      "name": "delivery-model-continuous-falla-cerrado",
+      "type": "fail-fast",
+      "description": "D-2 — Historia en ACCEPTANCE/DONE con sddf.config.yaml › defaults.delivery-model: continuous. Hasta STORY-162 el skill solo soporta batch: se detiene en el Paso 2 con el valor leído, sin evaluar el DoD, sin preguntar nada y sin modificar story.md.",
+      "input": {
+        "story_id": "STORY-204",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": "continuous"
+      },
+      "expected": {
+        "contains": [
+          "❌ story-delivery solo soporta delivery-model: batch (valor leído: continuous)",
+          "story.md no cambió"
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "¿Se cumple",
+          "entregada: DELIVER/DONE",
+          "status: DELIVER",
+          "| # | Criterio | Estado | Evidencia |"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-006",
+      "name": "dod-de-entrega-ausente-falla-cerrado",
+      "type": "fail-fast",
+      "description": "D-8 — Historia en ACCEPTANCE/DONE y delivery-model: batch, pero no existe docs/guardrails/dod-story-deliver.md ni override en sddf.config.yaml › guardrails.dod.story.deliver. El skill se detiene sin cambios con el mensaje de DoD de entrega no encontrado y las rutas probadas.",
+      "input": {
+        "story_id": "STORY-205",
+        "story_status": "ACCEPTANCE",
+        "story_substatus": "DONE",
+        "delivery_model": "batch",
+        "dod_deliver_file_exists": false
+      },
+      "expected": {
+        "contains": [
+          "❌ DoD de entrega no encontrado",
+          "docs/guardrails/dod-story-deliver.md",
+          "story.md no cambió"
+        ],
+        "not_contains": [
+          "¿Confirmas la entrega",
+          "entregada: DELIVER/DONE",
+          "status: DELIVER",
+          "no aplica en batch"
+        ]
+      },
+      "threshold": 1.0
+    }
+  ]
+}

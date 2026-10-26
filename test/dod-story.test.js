@@ -112,13 +112,13 @@ test('UT-002 cada DoD protege <ETAPA>/IN-PROGRESS → <ETAPA>/DONE y CODE-REVIEW
   assert.equal(byStage.verify.from, 'VERIFY/IN-PROGRESS');
 });
 
-test('UT-003 la entrada deliver es un guardrail de contenido sin from/to ni skills', () => {
+test('UT-003 la entrada deliver es un guardrail de contenido sin from/to, aplicado por story-delivery', () => {
   const deliver = dod.DOD_STAGES.find((s) => s.stage === 'deliver');
   assert.equal(deliver.kind, 'content');
   assert.equal(deliver.appliesTo, 'deliver');
   assert.equal(deliver.from, null);
   assert.equal(deliver.to, null);
-  assert.deepEqual(deliver.skills, []);
+  assert.deepEqual(deliver.skills, ['story-delivery']);
 });
 
 test('UT-004 enforcement warn solo en specify', () => {
