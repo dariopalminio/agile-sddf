@@ -11,9 +11,9 @@ parent: EPIC-23
 created: 2026-10-25
 updated: 2026-10-25
 related:
-  - EPIC-23-skill-epic-refine-validate
+  - EPIC-23-completar-flujo-de-epic
 ---
-[[EPIC-23-skill-epic-refine-validate]]
+[[EPIC-23-completar-flujo-de-epic]]
 # 📖 Historia: Implementar el skill `epic-refine` para aplicar hallazgos de `epic-analyze`
 
 **Como** Solo Builder y Product Owner  

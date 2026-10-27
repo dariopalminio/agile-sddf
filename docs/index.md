@@ -211,7 +211,7 @@ _(sin artefactos)_
 - [[insight-colapsar-specs-dos-niveles]] — [insight-colapsar-specs-dos-niveles.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
 - [[EPIC-21-colapsar-specs-dos-niveles-test-cases]] — [test-cases.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/test-cases.md) — Test Cases: Colapsar specs/ a dos niveles y eliminar 01-projects/
 - [[EPIC-22-epic-analyze]] — [epic.md](../specs/flow/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
-- [[EPIC-23-skill-epic-refine-validate]] — [epic.md](../specs/flow/EPIC-23-skill-epic-refine-validate/epic.md) — Skill epic-refine y epic-validate
+- [[EPIC-23-completar-flujo-de-epic]] — [epic.md](../specs/flow/EPIC-23-completar-flujo-de-epic/epic.md) — Skill epic-refine y epic-validate
 - [[EPIC-24-agentes-locales-por-skill]] — [epic.md](../specs/flow/EPIC-24-agentes-locales-por-skill/epic.md) — Mover agentes globales a agentes locales por skill
 - [[EPIC-25-unificar-contrato-de-validaciones-en-skills]] — [epic.md](../specs/flow/EPIC-25-unificar-contrato-de-validaciones-en-skills/epic.md) — Unificar contrato de validaciones en skills
 - [[EPIC-26-layout-y-flow-forward-mejorado]] — [epic.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/epic.md) — Layout y flow-forward mejorado
