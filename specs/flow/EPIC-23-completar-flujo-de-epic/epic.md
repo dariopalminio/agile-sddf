@@ -1,8 +1,8 @@
 ---
 type: epic
 id: EPIC-23
-slug: EPIC-23-skill-epic-refine-validate
-title: "Skill epic-refine y epic-validate"
+slug: EPIC-23-completar-flujo-de-epic
+title: "Completar flujo de epic"
 status: DEFINE
 substatus: TODO
 parent: null
@@ -12,16 +12,17 @@ related:
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
 ---
 
-# Épica: Skill `epic-refine` y `epic-validate`
+# Épica: Completar flujo de epic
 
 ## Objetivo
 
-Crear un skill `epic-validate` que actúe como gateway de calidad para la transición `DEVELOP → VALIDATE` de una épica, verificando evidencia estructural y operativa y generando un reporte con veredicto claro y consistente.
+Cerrar el ciclo de vida de la épica en el flujo flow-forward.
 
 ## Alcance
 
+Crear `/epic-refine <EPIC-ID>` como skill para refinar la épica antes de la validación.
 Crear `/epic-validate <EPIC-ID>` como gateway de calidad para la transición `DEVELOP → VALIDATE` de una épica. Verifica evidencia estructural y operativa y escribe `epic-validate-report.md` con veredicto `APPROVED`, `NEEDS-CHANGES` o `BLOCKED`, según el contrato de validación de EPIC-25.
-
+Crear `/epic-complete <EPIC-ID>` como skill para completar y archivar una épica entregada o cancelada.
 El skill solo lee artefactos de entrada y, fuera de una previsualización, escribe únicamente su reporte. No modifica la épica, las historias, el código ni las fuentes, y no reejecuta verificaciones de historias que ya cuentan con evidencia.
 
 ## Historias
