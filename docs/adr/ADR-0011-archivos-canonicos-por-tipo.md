@@ -64,8 +64,9 @@ ofrece `memory-system`: con los perfiles `speckit` y `openspec`, `index` indexa 
 2. **Diferenciación visual.** En `docs/index.md`, en un `git diff` o en un resultado de búsqueda, `epic.md` y
    `story.md` son inequívocos; N archivos `spec.md` obligan a leer la ruta para distinguirlos.
 3. **Separación entre spec de cambio y spec de estado.** `specs/flow/` contiene specs de cambio (qué se va a construir)
-   y `specs/living/` contendrá specs de estado (cómo se comporta el sistema). Usar `spec.md` en ambas raíces mezclaría
-   dos semánticas bajo un mismo nombre; reservarlo para `specs/living/` las separa y coincide con OpenSpec.
+   y `specs/living/` contendrá specs de estado (cómo se comporta el sistema), en el formato que define
+   [ADR-0018](ADR-0018-adoptar-cucumber-para-specs-living.md). Un nombre genérico como `spec.md` no distinguiría las
+   dos semánticas; `epic.md` y `story.md` dejan claro que son work items de cambio.
 4. **Identidad ágil del framework.** SDDF combina SDD con épicas e historias de usuario (INVEST, Gherkin, FINVEST). Los
    nombres de archivo expresan ese modelo, igual que hace BMAD.
 5. **No existe un estándar que justifique el coste.** Renombrar obligaría a cambiar los skills `epic-*`, `story-*`,
@@ -78,14 +79,14 @@ sistema (el nombre de archivo forma parte del contrato con el agente).
 ## Alternativas consideradas
 
 - **Renombrar a `spec.md` (convención de Spec Kit):** descartada. Pierde la auto-descripción y la diferenciación
-  visual, ocupa el nombre que necesita `specs/living/` y exige un renombrado masivo para alinearse con una convención
+  visual, confunde la spec de cambio con la spec de estado y exige un renombrado masivo para alinearse con una convención
   que no comparten OpenSpec, Kiro ni BMAD.
 - **`spec-story.md` / `spec-epic.md` (híbrido):** descartada. Es redundante, ninguna herramienta lo espera y no aporta
   nada sobre `story.md`.
 - **Alias `spec.md` mediante symlinks o copias generados por `memory-system`:** descartada. Los symlinks requieren
   privilegios en Windows y las copias físicas crean una segunda fuente de verdad que deriva. Ninguna herramienta de
   SDDF necesita el alias, y la coexistencia con Spec Kit y OpenSpec ya la resuelven los perfiles de `memory-system`.
-- **Mantener `epic.md` / `story.md` y reservar `spec.md` para `specs/living/` (decisión adoptada).**
+- **Mantener `epic.md` / `story.md` (decisión adoptada).**
 
 ## Consecuencias
 
@@ -93,7 +94,6 @@ sistema (el nombre de archivo forma parte del contrato con el agente).
 
 - Los agentes identifican el tipo de work item por el nombre del archivo.
 - `docs/index.md`, los listados y los diffs son legibles sin leer rutas completas.
-- La futura especificación viva tiene un nombre propio y alineado con OpenSpec.
 - No hay coste de migración: la convención ya está implementada.
 
 **Negativas / trade-offs:**
@@ -108,6 +108,7 @@ sistema (el nombre de archivo forma parte del contrato con el agente).
 
 - [ADR-0013](ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) — Dos niveles de flujo: épicas e historias
 - [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) — Layout fijo y raíz reservada `specs/living/`
+- [ADR-0018](ADR-0018-adoptar-cucumber-para-specs-living.md) — Formato de `specs/living/`: Gherkin en archivos `.feature`
 - [[memory-system]] — Perfiles `speckit` y `openspec` e indexación de raíces externas
 - [[domain-work-item-hierarchy]] — Modelo de work items
 - [[domain-knowledge-artifacts]] — Modelo de artefactos y tipos
