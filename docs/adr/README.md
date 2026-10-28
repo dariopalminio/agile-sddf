@@ -57,7 +57,7 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0008](ADR-0008-rework-sin-estado-propio.md) | Rework sin estado propio: la señal es el artefacto de fallo | ACCEPTED | 2026-09-11 |
 | [ADR-0009](ADR-0009-perfiles-runtimes-e-instalacion-explicita.md) | Perfiles reproducibles, runtimes canónicos e instalación explícita | ACCEPTED | 2026-09-13 |
 | [ADR-0010](ADR-0010-specs-dentro-de-docs.md) | Mantener specs/ dentro de docs/ en lugar de la raíz | SUPERSEDED → [ADR-0016](ADR-0016-layout-fijo-de-tres-raices.md) | 2026-09-20 |
-| [ADR-0011](ADR-0011-archivos-canonicos-por-tipo.md) | Los archivos canónicos de work items se nombran por tipo (story.md, epic.md, project.md) | PROPOSED | 2026-09-22 |
+| [ADR-0011](ADR-0011-archivos-canonicos-por-tipo.md) | Los archivos canónicos de work items se nombran por tipo (epic.md, story.md) | PROPOSED | 2026-09-22 |
 | [ADR-0012](ADR-0012-escritor-en-templates-de-autoria-manual.md) | Los templates de autoría manual anotan `escritor: autoría manual` en línea completa | PROPOSED | 2026-09-22 |
 | [ADR-0013](ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) | Asegurar dos niveles de flujo como epics y stories | ACCEPTED | 2026-10-05 |
 | [ADR-0014](ADR-0014-skills-independientes.md) | Independencia de skills y agentes: sin dependencia de skills hacia `agents/` | ACCEPTED | 2026-10-14 |

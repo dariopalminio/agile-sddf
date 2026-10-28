@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-26
+updated: 2026-10-27
 ---
 
 # 📚 Índice de documentación
@@ -211,7 +211,7 @@ _(sin artefactos)_
 - [[insight-colapsar-specs-dos-niveles]] — [insight-colapsar-specs-dos-niveles.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
 - [[EPIC-21-colapsar-specs-dos-niveles-test-cases]] — [test-cases.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/test-cases.md) — Test Cases: Colapsar specs/ a dos niveles y eliminar 01-projects/
 - [[EPIC-22-epic-analyze]] — [epic.md](../specs/flow/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
-- [[EPIC-23-completar-flujo-de-epic]] — [epic.md](../specs/flow/EPIC-23-completar-flujo-de-epic/epic.md) — Skill epic-refine y epic-validate
+- [[EPIC-23-completar-flujo-de-epic]] — [epic.md](../specs/flow/EPIC-23-completar-flujo-de-epic/epic.md) — Completar flujo de epic
 - [[EPIC-24-agentes-locales-por-skill]] — [epic.md](../specs/flow/EPIC-24-agentes-locales-por-skill/epic.md) — Mover agentes globales a agentes locales por skill
 - [[EPIC-25-unificar-contrato-de-validaciones-en-skills]] — [epic.md](../specs/flow/EPIC-25-unificar-contrato-de-validaciones-en-skills/epic.md) — Unificar contrato de validaciones en skills
 - [[EPIC-26-layout-y-flow-forward-mejorado]] — [epic.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/epic.md) — Layout y flow-forward mejorado
@@ -265,6 +265,13 @@ _(sin artefactos)_
 - [[STORY-163-story-delivery-dry-run-y-force]] — [story.md](../specs/flow/STORY-163-story-delivery-dry-run-y-force/story.md) — story-delivery: --dry-run y --force
 - [[STORY-164-archivar-historias-canceladas]] — [story.md](../specs/flow/STORY-164-archivar-historias-canceladas/story.md) — Skill story-complete: archivar historias canceladas
 - [[STORY-165-epic-refine]] — [story.md](../specs/flow/STORY-165-epic-refine/story.md) — Skill epic-refine: aplicar hallazgos de epic-analyze
+- [[STORY-166-veredicto-de-epic-format-validation]] — [story.md](../specs/flow/STORY-166-veredicto-de-epic-format-validation/story.md) — Veredicto de epic-format-validation
+- [[STORY-167-skill-epic-improve]] — [story.md](../specs/flow/STORY-167-skill-epic-improve/story.md) — Skill epic-improve
+- [[STORY-168-skill-epic-track-progress]] — [story.md](../specs/flow/STORY-168-skill-epic-track-progress/story.md) — Skill epic-track-progress
+- [[STORY-169-suites-de-integracion-y-regresion-de-la-epica]] — [story.md](../specs/flow/STORY-169-suites-de-integracion-y-regresion-de-la-epica/story.md) — Suites de integración y regresión de la épica
+- [[STORY-170-skill-epic-ship]] — [story.md](../specs/flow/STORY-170-skill-epic-ship/story.md) — Skill epic-ship
+- [[STORY-171-skill-epic-complete-core-completar-y-archivar-una-epica-liberada]] — [story.md](../specs/flow/STORY-171-skill-epic-complete-core-completar-y-archivar-una-epica-liberada/story.md) — Skill epic-complete (Core) — completar y archivar una épica liberada
+- [[STORY-172-skill-epic-complete-archivar-epicas-canceladas]] — [story.md](../specs/flow/STORY-172-skill-epic-complete-archivar-epicas-canceladas/story.md) — Skill epic-complete — archivar épicas canceladas
 
 ### Historias archivadas (archive/)
 
@@ -452,7 +459,7 @@ _(sin artefactos)_
 - [[rework-sin-estado-propio]] — [ADR-0008-rework-sin-estado-propio.md](adr/ADR-0008-rework-sin-estado-propio.md) — Rework sin estado propio: la señal es el artefacto de fallo
 - [[perfiles-runtimes-e-instalacion-explicita]] — [ADR-0009-perfiles-runtimes-e-instalacion-explicita.md](adr/ADR-0009-perfiles-runtimes-e-instalacion-explicita.md) — Perfiles reproducibles, runtimes canónicos e instalación explícita
 - [[specs-dentro-de-docs]] — [ADR-0010-specs-dentro-de-docs.md](adr/ADR-0010-specs-dentro-de-docs.md) — Mantener specs/ dentro de docs/ en lugar de la raíz
-- [[archivos-canonicos-por-tipo]] — [ADR-0011-archivos-canonicos-por-tipo.md](adr/ADR-0011-archivos-canonicos-por-tipo.md) — Los archivos canónicos de work items se nombran por tipo (story.md, epic.md, project.md)
+- [[archivos-canonicos-por-tipo]] — [ADR-0011-archivos-canonicos-por-tipo.md](adr/ADR-0011-archivos-canonicos-por-tipo.md) — Los archivos canónicos de work items se nombran por tipo (epic.md, story.md)
 - [[escritor-en-templates-de-autoria-manual]] — [ADR-0012-escritor-en-templates-de-autoria-manual.md](adr/ADR-0012-escritor-en-templates-de-autoria-manual.md) — Los templates de autoría manual anotan `escritor: autoría manual` en línea completa
 - [[asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md](adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) — Asegurar dos niveles de flujo como epics y stories
 - [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-eliminar-specs-01-projects.md](adr/ADR-0013-eliminar-specs-01-projects.md) — Asegurar dos niveles de flujo como epics y stories
@@ -520,10 +527,10 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 415 |
-| Nodos con frontmatter | 410 |
+| Nodos indexados | 422 |
+| Nodos con frontmatter | 417 |
 | Nodos sin frontmatter | 5 |
-| Wikilinks pendientes | 2 |
+| Wikilinks pendientes | 1 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |
 
@@ -539,5 +546,4 @@ _(sin artefactos externos)_
 
 Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artefacto:
 
-- [[EPIC-23-completar-flujo-de-epic]] ⚠️ nodo pendiente
 - [[plan-07-renombrar-skill-story-improve-a-story-refine]] ⚠️ nodo pendiente
