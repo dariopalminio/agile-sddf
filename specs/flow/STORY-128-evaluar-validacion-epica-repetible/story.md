@@ -7,18 +7,18 @@ slug: STORY-128-evaluar-validacion-epica-repetible
 title: "Evaluar la validación de épicas de forma repetible"
 status: SPECIFY
 substatus: DONE
-parent: EPIC-23-skill-epic-validate
+parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-20
+updated: 2026-10-27
 related:
-  - EPIC-23-skill-epic-validate
+  - EPIC-23-completar-flujo-de-epic
   - STORY-124
   - STORY-125
   - STORY-126
   - STORY-127
   - STORY-138
 ---
-[[EPIC-23-skill-epic-validate]]
+[[EPIC-23-completar-flujo-de-epic]]
 
 # 📖 Historia: Evaluar la validación de épicas de forma repetible
 

@@ -539,5 +539,5 @@ _(sin artefactos externos)_
 
 Wikilinks presentes en los nodos indexados cuyo slug no resuelve a ningún artefacto:
 
-- [[EPIC-23-skill-epic-validate]] ⚠️ nodo pendiente
+- [[EPIC-23-completar-flujo-de-epic]] ⚠️ nodo pendiente
 - [[plan-07-renombrar-skill-story-improve-a-story-refine]] ⚠️ nodo pendiente

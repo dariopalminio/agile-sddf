@@ -12,7 +12,7 @@ flowchart TD
         epic-format-validation --> dec_def
         
         %% Bucle de retroalimentación (Feedback Loop)
-        dec_def -->|NEEDS-CHANGES| epic-improve
+        dec_def -->|NEEDS-REFINEMENT| epic-improve
         epic-improve --> epic-format-validation
     end
 

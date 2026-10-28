@@ -7,15 +7,15 @@ slug: STORY-137-controlar-detalle-ejecucion-validacion-epica
 title: "Controlar el detalle y los límites de la ejecución de la validación de épicas"
 status: SPECIFY
 substatus: DONE
-parent: EPIC-23-skill-epic-validate
+parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-17
-updated: 2026-10-17
+updated: 2026-10-27
 related:
-  - EPIC-23-skill-epic-validate
+  - EPIC-23-completar-flujo-de-epic
   - STORY-125
   - STORY-126
 ---
-[[EPIC-23-skill-epic-validate]]
+[[EPIC-23-completar-flujo-de-epic]]
 
 # 📖 Historia: Controlar el detalle y los límites de la ejecución de la validación de épicas
 

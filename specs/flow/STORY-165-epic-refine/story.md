@@ -7,9 +7,9 @@ slug: STORY-165-epic-refine
 title: "Skill epic-refine: aplicar hallazgos de epic-analyze"
 status: SPECIFY
 substatus: DONE
-parent: EPIC-23
+parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-25
-updated: 2026-10-25
+updated: 2026-10-27
 related:
   - EPIC-23-completar-flujo-de-epic
 ---

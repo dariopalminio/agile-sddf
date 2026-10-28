@@ -7,17 +7,17 @@ slug: STORY-124-validar-preparacion-estructural-epica
 title: "Validar la preparación estructural de una épica"
 status: SPECIFY
 substatus: DONE
-parent: EPIC-23-skill-epic-validate
+parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-17
+updated: 2026-10-27
 related:
-  - EPIC-23-skill-epic-validate
+  - EPIC-23-completar-flujo-de-epic
   - STORY-125
   - STORY-126
   - STORY-127
   - STORY-128
 ---
-[[EPIC-23-skill-epic-validate]]
+[[EPIC-23-completar-flujo-de-epic]]
 
 # 📖 Historia: Validar la preparación estructural de una épica
 
