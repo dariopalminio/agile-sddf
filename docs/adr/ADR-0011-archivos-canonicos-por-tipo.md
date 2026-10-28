@@ -52,8 +52,6 @@ Los archivos canónicos de los work items SDDF se nombran **según su tipo**:
 
 No se adopta `spec.md` como nombre de work item.
 
-El nombre `spec.md` puede quedar **reservado** para la especificación viva de una capacidad en `specs/living/<capability>/spec.md`, con el mismo significado que en OpenSpec, cuando se implemente la épica de Living Spec. Esto todavía no es una decisión tomada.
-
 SDDF no crea alias, symlinks ni copias `spec.md` de los work items. Su relación con Spec Kit y OpenSpec es la que ya
 ofrece `memory-system`: con los perfiles `speckit` y `openspec`, `index` indexa en modo solo lectura sus `spec.md`,
 `plan.md` y `proposal.md`, y resuelve su slug desde el directorio contenedor igual que con `epic.md` y `story.md`.
