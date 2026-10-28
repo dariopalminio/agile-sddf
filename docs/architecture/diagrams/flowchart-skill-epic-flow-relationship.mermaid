@@ -1,0 +1,77 @@
+flowchart TD
+    START(START):::startend
+
+    %% FASE: DEFINE
+    subgraph DEFINE [DEFINE]
+        epic-creation[epic-creation]:::skill
+        epic-format-validation[epic-format-validation]:::skill
+        epic-improve[epic-improve]:::skill
+        dec_def{verdict}:::decision
+
+        epic-creation --> epic-format-validation
+        epic-format-validation --> dec_def
+        
+        %% Bucle de retroalimentación (Feedback Loop)
+        dec_def -->|NEEDS-CHANGES| epic-improve
+        epic-improve --> epic-format-validation
+    end
+
+    %% FASE: PLAN
+    subgraph PLAN [PLAN]
+        epic-generate-stories[epic-generate-stories]:::skill
+        epic-analyze[epic-analyze]:::skill
+        epic-refine[epic-refine]:::skill
+        dec_plan{verdict}:::decision
+
+        epic-generate-stories --> epic-analyze
+        epic-analyze --> dec_plan
+        dec_plan -->|NEEDS-REFINEMENT| epic-refine
+        epic-refine --> epic-analyze
+    end
+
+    %% FASE: DEVELOP
+    subgraph DEVELOP [DEVELOP]
+        epic-track-progress[epic-track-progress]:::skill
+        dec_dev{all stories done?}:::decision
+
+        epic-track-progress --> dec_dev
+        dec_dev -->|NO| epic-track-progress
+    end
+
+    %% FASE: VALIDATE
+    subgraph VALIDATE [VALIDATE]
+        epic-validate[epic-validate]:::skill
+        dec_val{verdict}:::decision
+
+        epic-validate --> dec_val
+        dec_val -->|NEEDS-CHANGES| epic-track-progress
+    end
+
+    %% FASE: SHIP
+    subgraph SHIP [SHIP]
+        epic-ship[epic-ship]:::skill
+        
+    end
+
+    %% FASE: COMPLETED
+    subgraph COMPLETED [COMPLETED]
+        epic-complete[epic-complete]:::skill
+        END(END):::startend
+
+        epic-complete --> END
+    end
+
+    %% CONEXIONES ENTRE FASES
+    START --> epic-creation
+    dec_def -->|APPROVED| epic-generate-stories
+    dec_plan -->|APPROVED| epic-track-progress
+    dec_dev -->|YES| epic-validate
+    dec_val -->|APPROVED| epic-ship
+    epic-ship --> epic-complete
+
+    %% ESTILOS
+    classDef skill fill:#f4f4f4,stroke:#333,stroke-width:2px,color:#000
+    classDef decision fill:#fff2cc,stroke:#d6b656,stroke-width:2px,color:#000
+    classDef startend fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:#000
+
+    
