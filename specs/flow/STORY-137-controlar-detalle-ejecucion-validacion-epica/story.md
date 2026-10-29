@@ -9,7 +9,7 @@ status: SPECIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-17
-updated: 2026-10-27
+updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-125
@@ -71,3 +71,4 @@ Entonces la salida indica que no se ejecutó ningún comando de prueba
 - **Decisión abierta para el diseño:** cómo se detecta que hay «pruebas configuradas» (por ejemplo, la sección `verify` de `sddf.config.yaml` o la presencia de `SMOKE-N` en `epic.md`). El rechazo de AC-2 sigue el mismo criterio que el modo no reconocido de STORY-126 AC-3: es un error de invocación y no genera reporte.
 - **Tabla de flags de EPIC-23:** `--mode auto` fuerza la ejecución automática y falla si no hay tests configurados. `--verbose` muestra la salida completa de los comandos de prueba.
 - Cubre el criterio de salida de EPIC-23: **CS-10** — Se reconocen y manejan correctamente los flags `--mode manual`, `--mode auto`, `--dry-run` y `--verbose`. Lo completa junto con STORY-126, que cubre `--mode manual`, `--mode auto` y `--dry-run`.
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

@@ -9,7 +9,7 @@ status: SPECIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-27
+updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124
@@ -75,3 +75,4 @@ Entonces skills/epic-validate/evals/evals.json conserva al menos un caso APPROVE
 - **Contrato de validación:** el veredicto sigue [`validation-contract-policy.md`](../../../policies/validation-contract-policy.md) (STORY-138). Para `epic-validate` los valores permitidos son `APPROVED`, `NEEDS-CHANGES` y `BLOCKED`, declarados en `verdict` y en `## Veredicto` (G-01, G-02, G-03). CNF-3 aplica la lectura cerrada ante fallo (G-06) y la tercera fila de AC-2 cubre la precedencia de `NEEDS-CHANGES` sobre `BLOCKED` (G-05).
 - **Vocabulario según EPIC-23:** `NEEDS-CHANGES` significa que la evidencia existe pero no cumple; `BLOCKED`, que un bloqueo impide obtenerla. Antes, `BLOCKED` significaba «la validación falló»; ese caso es ahora `NEEDS-CHANGES`.
 - Cubre el criterio de salida de EPIC-23: **CS-9** — `skills/epic-validate/evals/evals.json` incluye al menos una épica consistente que resulte APPROVED, una inconsistente que resulte NEEDS-CHANGES y una cuya evidencia no se puede obtener que resulte BLOCKED.
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

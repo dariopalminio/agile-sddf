@@ -9,7 +9,7 @@ status: SPECIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-27
+updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124
@@ -86,3 +86,4 @@ Entonces el reporte es idéntico al anterior salvo la fecha de evaluación
 - **Dependencias:** consume el veredicto de STORY-124 y la selección de evidencia de STORY-125. Se puede desarrollar y probar con un validador stub que devuelva APPROVED o BLOCKED fijo, sin esperar a que esas historias se entreguen.
 - Cubre el criterio de salida de EPIC-23: **CS-7** — El skill solo escribe `epic-validate-report.md`; no modifica código, fuentes ni otros documentos.
 - Contribuye a **CS-10** de EPIC-23 en los flags `--mode manual`, `--mode auto` y `--dry-run`.
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

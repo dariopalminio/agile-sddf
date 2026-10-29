@@ -9,7 +9,7 @@ status: SPECIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-27
+updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-125
@@ -66,9 +66,10 @@ Entonces recibe un error con la ubicación buscada y no se crea un reporte
 - Esta es la historia core del split de STORY-124. Conserva el directorio e ID originales.
 - El informe FINVEST de la historia original decidió `DIVIDIR`; su evidencia se conserva en este directorio.
 - El reporte de validación establece un veredicto binario a partir de los hallazgos de esta historia. Las comprobaciones adicionales se incorporan en STORY-125.
-- Cubre el criterio de salida de EPIC-23: **CS-1** — `skills/epic-validate/SKILL.md` existe y resuelve `REPO_ROOT` y `SPECS_BASE` con la precedencia vigente.
+- Cubre el criterio de salida de EPIC-23: **CS-1** — `skills/epic-validate/SKILL.md` existe, resuelve solo `REPO_ROOT` y declara `<!-- SDDF-FIXED-LAYOUT: v1 -->` (ADR-0017).
 - Cubre el criterio de salida de EPIC-23: **CS-2** — `skills/epic-validate/assets/epic-validate-report-template.md` existe, declara en cada sección su marcador `sección obligatoria · clave · escritor` y tiene `## Veredicto` como primera sección tras el título.
 - Cubre el criterio de salida de EPIC-23: **CS-3** — Se verifican el estado terminal de las historias y el veredicto APPROVED del análisis de la épica.
-- Cubre el criterio de salida de EPIC-23: **CS-5** — El reporte se genera desde su plantilla sin marcadores sin resolver, declara el veredicto en su primera sección y en el campo `verdict` del frontmatter con el vocabulario único `APPROVED` o `BLOCKED`.
+- Cubre el criterio de salida de EPIC-23: **CS-5** — El reporte se genera desde su plantilla sin marcadores sin resolver, declara el veredicto en su primera sección y en el campo `verdict` del frontmatter con el vocabulario único `APPROVED`, `NEEDS-CHANGES` o `BLOCKED`.
 - Cubre el criterio de salida de EPIC-23: **CS-6** — Una épica inexistente informa la ruta buscada y no genera reporte.
 - Cubre SMOKE-2 de EPIC-23 (AC-3) y SMOKE-3 de EPIC-23 (AC-2).
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

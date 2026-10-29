@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 # 📚 Índice de documentación
@@ -264,7 +264,7 @@ _(sin artefactos)_
 - [[STORY-162-story-delivery-modelo-continuous]] — [story.md](../specs/flow/STORY-162-story-delivery-modelo-continuous/story.md) — story-delivery en modelo continuous
 - [[STORY-163-story-delivery-dry-run-y-force]] — [story.md](../specs/flow/STORY-163-story-delivery-dry-run-y-force/story.md) — story-delivery: --dry-run y --force
 - [[STORY-164-archivar-historias-canceladas]] — [story.md](../specs/flow/STORY-164-archivar-historias-canceladas/story.md) — Skill story-complete: archivar historias canceladas
-- [[STORY-165-epic-refine]] — [story.md](../specs/flow/STORY-165-epic-refine/story.md) — Skill epic-refine: aplicar hallazgos de epic-analyze
+- [[STORY-165-corregir-indice-y-enlaces-epica]] — [story.md](../specs/flow/STORY-165-corregir-indice-y-enlaces-epica/story.md) — Skill epic-refine (Core): corregir índice y enlaces de una épica
 - [[STORY-166-veredicto-de-epic-format-validation]] — [story.md](../specs/flow/STORY-166-veredicto-de-epic-format-validation/story.md) — Veredicto de epic-format-validation
 - [[STORY-167-skill-epic-improve]] — [story.md](../specs/flow/STORY-167-skill-epic-improve/story.md) — Skill epic-improve
 - [[STORY-168-skill-epic-track-progress]] — [story.md](../specs/flow/STORY-168-skill-epic-track-progress/story.md) — Skill epic-track-progress
@@ -272,6 +272,8 @@ _(sin artefactos)_
 - [[STORY-170-skill-epic-ship]] — [story.md](../specs/flow/STORY-170-skill-epic-ship/story.md) — Skill epic-ship
 - [[STORY-171-skill-epic-complete-core-completar-y-archivar-una-epica-liberada]] — [story.md](../specs/flow/STORY-171-skill-epic-complete-core-completar-y-archivar-una-epica-liberada/story.md) — Skill epic-complete (Core) — completar y archivar una épica liberada
 - [[STORY-172-skill-epic-complete-archivar-epicas-canceladas]] — [story.md](../specs/flow/STORY-172-skill-epic-complete-archivar-epicas-canceladas/story.md) — Skill epic-complete — archivar épicas canceladas
+- [[STORY-173-cubrir-criterios-salida-epica]] — [story.md](../specs/flow/STORY-173-cubrir-criterios-salida-epica/story.md) — Skill epic-refine: asignar la cobertura de criterios de salida
+- [[STORY-174-corregir-referencias-obsoletas-tras-split]] — [story.md](../specs/flow/STORY-174-corregir-referencias-obsoletas-tras-split/story.md) — Skill epic-refine: corregir referencias obsoletas tras un split
 
 ### Historias archivadas (archive/)
 
@@ -528,8 +530,8 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 423 |
-| Nodos con frontmatter | 418 |
+| Nodos indexados | 425 |
+| Nodos con frontmatter | 420 |
 | Nodos sin frontmatter | 5 |
 | Wikilinks pendientes | 1 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |

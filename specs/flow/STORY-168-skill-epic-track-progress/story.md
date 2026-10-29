@@ -6,10 +6,10 @@ kind: feat
 slug: STORY-168-skill-epic-track-progress
 title: "Skill epic-track-progress"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124-validar-preparacion-estructural-epica
@@ -65,6 +65,8 @@ Entonces informa la ruta buscada y finaliza con error
 - **CNF-1 — Solo lectura:** no escribe ningún archivo, ni siquiera en `.tmp/`.
 - **CNF-2 — Fuentes de historias:** une el índice de `epic.md` con los `story.md` que declaran `parent` igual al directorio de la épica, en `specs/flow/` y en `specs/flow/archive/`.
 - **CNF-3 — Layout fijo:** declara `<!-- SDDF-FIXED-LAYOUT: v1 -->` y resuelve solo `REPO_ROOT`.
+- **CNF-4 — Progressive disclosure:** El skill debe minimizar la cantidad de tokens que se cargan en la ventana de contexto del agente, cargando únicamente la información necesaria para ejecutar la capacidad solicitada y delegando el detalle extenso a recursos que se recuperan bajo demanda (progressive disclosure).
+- **CNF-5 — Tamaño del skill óptimo:** El skill debe ser lo suficientemente compacto para ser cargado y ejecutado eficientemente, evitando la sobrecarga de la ventana de contexto del agente.
 
 ## Fuera de alcance (Non-Goals)
 
@@ -79,3 +81,5 @@ Entonces informa la ruta buscada y finaliza con error
 - **Historia terminada:** cuentan como terminadas las `DELIVER/DONE` y `COMPLETED/DONE` (invariante 3 de `domain-epic-lifecycle`). El tratamiento de las `CANCELED/DONE` se decide al refinar esta historia.
 - **Gate del diagrama:** resuelve la decisión «all stories done?» de `DEVELOP → VALIDATE`.
 - Skill Tool: se debe usar skill-master.
+- Cubre el criterio de salida de EPIC-23: **CS-16** — `epic-track-progress` lista el status y substatus de cada historia hija, incluidas las archivadas, responde si todas están terminadas y no escribe ningún archivo.
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

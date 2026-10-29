@@ -6,10 +6,10 @@ kind: feat
 slug: STORY-166-veredicto-de-epic-format-validation
 title: "Veredicto de epic-format-validation"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
@@ -64,6 +64,8 @@ Entonces validation-contract-policy §4 incluye una fila para epic-format-valida
 
 - **CNF-1 — Vocabulario cerrado:** el veredicto cumple el patrón `^[A-Z]+(-[A-Z]+)*$` y la regla G-03 de `validation-contract-policy`.
 - **CNF-2 — Compatibilidad de consumidores:** los skills y orquestadores que hoy leen `APROBADO` / `REFINAR` (por ejemplo `epic-from-project-plan`) se actualizan en la misma historia o la tabla de equivalencias §5 de la política registra los valores heredados.
+- **CNF-3 — Progressive disclosure:** El skill debe minimizar la cantidad de tokens que se cargan en la ventana de contexto del agente, cargando únicamente la información necesaria para ejecutar la capacidad solicitada y delegando el detalle extenso a recursos que se recuperan bajo demanda (progressive disclosure).
+- **CNF-4 — Tamaño del skill óptimo:** El skill debe ser lo suficientemente compacto para ser cargado y ejecutado eficientemente, evitando la sobrecarga de la ventana de contexto del agente.
 
 ## Fuera de alcance (Non-Goals)
 
@@ -77,3 +79,5 @@ Entonces validation-contract-policy §4 incluye una fila para epic-format-valida
 - **Criterios de salida que cubre:** CS-13 y la parte de CS-20 que registra en `validation-contract-policy` el gate de `DEFINE` de forma coherente con su flowchart. Participa en SMOKE-4 (primera y segunda validación).
 - **Veredicto de rechazo (decisión del PO, 2026-10-27):** `NEEDS-REFINEMENT`, coherente con §2 de `validation-contract-policy`, que lo reserva para artefactos de especificación (épica o historia). El diagrama ya rotula `NEEDS-REFINEMENT` la rama hacia `epic-improve`; falta versionar la política (fila en §4 y salida de la exclusión de §1).
 - **`RECHAZADO` actual:** hoy significa «archivo no encontrado». Con el contrato nuevo ese caso es un error sin veredicto (AC-3); decidir si además debe emitir `BLOCKED`.
+- Cubre el criterio de salida de EPIC-23: **CS-13** — `epic-format-validation` declara un veredicto canónico: un `epic.md` conforme obtiene `APPROVED` y uno con faltantes o formato inválido obtiene `NEEDS-REFINEMENT`, con el diagnóstico de cada defecto.
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

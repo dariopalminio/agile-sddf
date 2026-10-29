@@ -1,0 +1,69 @@
+---
+alwaysApply: false
+type: story
+id: STORY-175
+kind: feat
+slug: STORY-175-admitir-epicas-archivadas-en-layout
+title: "Admitir épicas archivadas en el layout fijo con un ADR nuevo"
+status: SPECIFY
+substatus: IN-PROGRESS
+parent: EPIC-23-completar-flujo-de-epic
+created: 2026-10-29
+updated: 2026-10-29
+related:
+  - EPIC-23-completar-flujo-de-epic
+  - STORY-171
+  - STORY-172-skill-epic-complete-archivar-epicas-canceladas
+---
+[[EPIC-23-completar-flujo-de-epic]]
+
+# 📖 Historia: Admitir épicas archivadas en el layout fijo con un ADR nuevo
+
+**Como** Solo Builder que mantiene Agile-SDDF  
+**Quiero** que un ADR nuevo admita épicas cerradas en `specs/flow/archive/` y que los documentos de autoridad reconozcan a `epic-complete` como escritor de `COMPLETED` de épica  
+**Para** archivar épicas sin contradecir una regla aceptada y sin que los agentes rechacen o malinterpreten el archivo por seguir documentos que dicen que las épicas no se archivan
+
+## ✅ Criterios de aceptación
+
+### AC-1 — Escenario principal – Un ADR nuevo reemplaza a ADR-0017
+```gherkin
+Dado que ADR-0017 está aceptado y deja las épicas en specs/flow/
+Cuando se acepta el ADR nuevo del layout
+Entonces admite épicas COMPLETED/DONE y CANCELED/DONE en specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/
+  Y ADR-0017 declara "superseded-by" ese ADR sin otros cambios en su contenido
+```
+
+### AC-2 — Escenario principal – Documentos de autoridad coherentes con el ADR
+```gherkin
+Dado que el ADR nuevo del layout está aceptado
+Cuando el Solo Builder consulta AGENTS.md, docs/constitution.md, domain-epic-lifecycle y domain-state-management
+Entonces documentan que epic-complete escribe COMPLETED de épica solo con confirmación humana
+  Pero ninguno de ellos ni los SKILL.md que buscan épicas afirma que las épicas no se archivan
+```
+
+### AC-3 — Escenario alternativo – Una épica archivada no es trabajo activo
+```gherkin
+Dado una épica archivada en specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/
+Cuando el Solo Builder busca la épica "exportar-informes" con "/epic-generate-stories"
+Entonces la épica archivada no figura como candidata activa
+```
+
+## ⚙️ Criterios no funcionales específicos
+
+- **CNF-1 — Inmutabilidad de ADR:** ADR-0017 solo recibe el campo `superseded-by`; su contenido no se edita (regla de AGENTS.md).
+- **CNF-2 — Fecha del archivo:** el ADR nuevo aplica a las épicas la misma regla de fecha que ADR-0017 aplica a las historias (`updated:`, `created:` o `date:`).
+- **CNF-3 — Gate determinista:** `npm run verify:repository` y `npm test` pasan después del cambio.
+
+## Fuera de alcance (Non-Goals)
+
+- Implementar el skill `epic-complete` (STORY-171) y el archivado de épicas canceladas (STORY-172).
+- Mover épicas existentes a `specs/flow/archive/`.
+- Migrar `docs/requirements/` a `specs/living/`.
+
+## 📎 Notas / contexto adicional
+
+- **Split (2026-10-29):** surge de `/story-split STORY-171` con el patrón 4 (complejidad de criterios de aceptación); recoge el antiguo AC-4 de gobierno y la nota de impacto en otros skills.
+- **Orden de entrega:** se entrega antes de STORY-171 y STORY-172, que dependen de que el layout admita épicas archivadas.
+- **SKILL.md con texto obsoleto:** `skills/epic-analyze/SKILL.md` dice hoy «las épicas no se archivan»; `skills/epic-generate-stories/SKILL.md` ya excluye `specs/flow/archive/` al buscar épicas. Revisar también los demás `skills/epic-*/SKILL.md` que resuelven épicas por término.
+- Cubre el criterio de salida de EPIC-23: **CS-20** en su parte del ADR nuevo y de `COMPLETED` de épica en `domain-epic-lifecycle` y `domain-state-management`. Lo completa junto con STORY-166 (`validation-contract-policy`) y STORY-170 (`SHIP` de épica); coordinar con STORY-170 el orden de edición de los documentos de dominio (invariante 6 de `domain-state-management`).
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

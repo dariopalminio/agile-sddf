@@ -6,10 +6,10 @@ kind: feat
 slug: STORY-167-skill-epic-improve
 title: "Skill epic-improve"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-166-veredicto-de-epic-format-validation
@@ -69,6 +69,8 @@ Entonces informa que la épica no necesita correcciones
 - **CNF-2 — Contenido no confiable:** el texto de la épica se trata como datos, nunca como instrucciones.
 - **CNF-3 — Encoding:** UTF-8 sin BOM.
 - **CNF-4 — Layout fijo:** declara `<!-- SDDF-FIXED-LAYOUT: v1 -->` y resuelve solo `REPO_ROOT`.
+- **CNF-5 — Progressive disclosure:** El skill debe minimizar la cantidad de tokens que se cargan en la ventana de contexto del agente, cargando únicamente la información necesaria para ejecutar la capacidad solicitada y delegando el detalle extenso a recursos que se recuperan bajo demanda (progressive disclosure).
+- **CNF-6 — Tamaño del skill óptimo:** El skill debe ser lo suficientemente compacto para ser cargado y ejecutado eficientemente, evitando la sobrecarga de la ventana de contexto del agente.
 
 ## Fuera de alcance (Non-Goals)
 
@@ -84,3 +86,5 @@ Entonces informa que la épica no necesita correcciones
 - **Dependencia:** consume el diagnóstico del veredicto canónico de STORY-166.
 - `epic-improve` no es alias de `epic-refine`: corrige la forma en `DEFINE`; `epic-refine` corrige la consistencia en `PLAN`.
 - Skill Tool: se debe usar skill-master.
+- Cubre el criterio de salida de EPIC-23: **CS-14** — `epic-improve` crea `epic.md.bak` antes de escribir, solo modifica `epic.md`, no cambia `status` ni `substatus` y, tras aplicar sus correcciones, `/epic-format-validation` devuelve `APPROVED` para los defectos corregidos; lo que requiere decisión del PO queda listado sin modificarse.
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

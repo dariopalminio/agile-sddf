@@ -9,7 +9,7 @@ status: SPECIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-27
+updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124
@@ -73,3 +73,4 @@ Entonces el paquete incluye skills/epic-validate/ porque figura en el arreglo fi
 - **Runtimes:** se verifican los que `config/runtimes.json` declara con `support: supported`. La lista no se duplica en esta historia.
 - La fuente del framework permanece en `skills/`; la instalación explícita genera los destinos de runtime.
 - Cubre el criterio de salida de EPIC-23: **CS-8** — `skills/epic-validate/` figura en el arreglo `files` de `package.json`.
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

@@ -6,10 +6,10 @@ kind: feat
 slug: STORY-172-skill-epic-complete-archivar-epicas-canceladas
 title: "Skill epic-complete — archivar épicas canceladas"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-171-skill-epic-complete-core-completar-y-archivar-una-epica-liberada
@@ -55,6 +55,8 @@ Entonces informa la ruta en conflicto
 
 - **CNF-1 — Status inmutable:** el archivado de una épica cancelada no escribe `status` ni `substatus`.
 - **CNF-2 — Confirmación humana:** nunca archiva sin confirmación explícita.
+- **CNF-3 — Progressive disclosure:** El skill debe minimizar la cantidad de tokens que se cargan en la ventana de contexto del agente, cargando únicamente la información necesaria para ejecutar la capacidad solicitada y delegando el detalle extenso a recursos que se recuperan bajo demanda (progressive disclosure).
+- **CNF-4 — Tamaño del skill óptimo:** El skill debe ser lo suficientemente compacto para ser cargado y ejecutado eficientemente, evitando la sobrecarga de la ventana de contexto del agente.
 
 ## Fuera de alcance (Non-Goals)
 
@@ -68,3 +70,5 @@ Entonces informa la ruta en conflicto
 - **Criterios de salida que cubre:** CS-19 (rama `CANCELED/DONE`, que conserva su status).
 - **Dependencia:** requiere el skill y el ADR de STORY-171.
 - **Antecedente:** `/story-complete` ya archiva historias `CANCELED/DONE` sin cambiar su status.
+- Cubre el criterio de salida de EPIC-23: **CS-19** — `epic-complete` rechaza una épica que no esté en `SHIP/DONE`, `COMPLETED/DONE` ni `CANCELED/DONE` y archiva las que sí lo están en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` conservando su historial de git: las `SHIP` pasan a `status: COMPLETED` y las `CANCELED` conservan su status. Lo completa junto con STORY-171, que cubre las épicas SHIP/DONE y COMPLETED/DONE.
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.
