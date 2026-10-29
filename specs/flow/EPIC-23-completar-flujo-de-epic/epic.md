@@ -3,7 +3,7 @@ type: epic
 id: EPIC-23
 slug: EPIC-23-completar-flujo-de-epic
 title: "Completar flujo de epic"
-status: DEFINE
+status: PLAN
 substatus: IN-PROGRESS
 parent: null
 created: 2026-10-12
