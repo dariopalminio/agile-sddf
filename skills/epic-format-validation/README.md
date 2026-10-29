@@ -8,16 +8,18 @@
 
 ## What it does
 
-Valida que una especificación de épica cumple el contrato estructural del template `epic-template.md`, incluidos el frontmatter, las secciones obligatorias y la forma de las dos secciones que leen otros skills: las historias (formatos F1/F2/F3) y los smoke tests (`### SMOKE-N — nombre` + bloque `gherkin`). Las secciones se localizan por su `clave:` en el template, así que renombrar o reordenar secciones no exige tocar el skill. Informa una decisión `APROBADO`, `REFINAR` o `RECHAZADO`.
+Valida que una especificación de épica cumple el contrato estructural del template `epic-template.md`, incluidos el frontmatter, las secciones obligatorias y la forma de las dos secciones que leen otros skills: las historias (formatos F1/F2/F3) y los smoke tests (`### SMOKE-N — nombre` + bloque `gherkin`). Las secciones se localizan por su `clave:` en el template, así que renombrar o reordenar secciones no exige tocar el skill. Es el gate de `DEFINE`: declara el veredicto `APPROVED` o `NEEDS-REFINEMENT` según la [política de contrato de validación](../../docs/policies/validation-contract-policy.md).
 
 **Produces:**
 
-- Un diagnóstico de validez de la épica solicitada.
-- Cuando la decisión es `REFINAR`: la lista de campos o secciones faltantes, el bloque `Formato inválido:` (línea, texto y forma esperada) y, si faltan secciones, el comando de migración `/memory-system migrate --from=epic-template-v1`.
+- `epic-format-validation-report.md` junto al `epic.md` validado (se sobrescribe en cada ejecución), con `verdict` en el frontmatter y `## Veredicto` como primera sección.
+- Con `NEEDS-REFINEMENT`: la tabla `## Defectos` (tipo, ubicación, texto encontrado y corrección esperada de cada defecto), lista para que `epic-improve` la aplique sin reanalizar, y, si faltan secciones, `## Migración` con `/memory-system migrate --from=epic-template-v1`.
+- Un resumen en consola con el veredicto, los bloques `Secciones/campos faltantes:` / `Formato inválido:` y la ruta del reporte.
+- Si la épica no existe: un error con la ruta buscada, sin veredicto ni reporte.
 
 **Does not do:**
 
-- No crea ni modifica el archivo `epic.md` validado.
+- No crea, corrige ni modifica el archivo `epic.md` validado.
 
 ---
 

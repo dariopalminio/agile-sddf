@@ -26,7 +26,7 @@ Conduce al usuario a través de la creación de un archivo de épica completa me
 - Soporta modo rápido (`--quick`) para omitir secciones opcionales sin preguntar individualmente
 - Escribe las historias como planificadas (formato F1, sin ID) y los smoke tests como `SMOKE-N` + bloque `gherkin`
 - Valida la épica generada invocando `epic-format-validation` al finalizar
-- Ofrece corrección interactiva si la validación devuelve REFINAR
+- Ofrece corrección interactiva si la validación devuelve `NEEDS-REFINEMENT`
 
 **Qué NO hace este skill:**
 - Crear épicas desde `product/roadmap.md` → usar `epic-from-project-plan`
@@ -72,7 +72,7 @@ Conduce al usuario a través de la creación de un archivo de épica completa me
 | Gate | "Gate de formato" `DEFINE → PLAN` de `domain-epic-lifecycle` §8, ejecutado por `epic-format-validation` en el Paso 7 |
 | Override | no aplica |
 
-La épica creada debe obtener `APROBADO` del gate antes de pasar a `PLAN`; un `REFINAR` se corrige en el Paso 7.
+La épica creada debe obtener `APPROVED` del gate antes de pasar a `PLAN`; un `NEEDS-REFINEMENT` se corrige en el Paso 7.
 
 ---
 
@@ -277,25 +277,28 @@ Si el usuario pide editar: mostrar el contenido y permitir correcciones antes de
 
 ### Paso 7 — Validación automática
 
-Después de escribir el archivo, invocar el skill `epic-format-validation` sobre el archivo generado.
+Después de escribir el archivo, invocar el skill `epic-format-validation` sobre el archivo generado y
+leer `verdict` del frontmatter de `specs/flow/<EPIC-NN-slug>/epic-format-validation-report.md`. Solo
+`APPROVED` habilita el avance; un `verdict` ausente o fuera de {`APPROVED`, `NEEDS-REFINEMENT`}, o un
+error del gate sin reporte, se trata como no aprobado (G-06 de `validation-contract-policy`).
 
-#### Si el resultado es APROBADO
+#### Si el `verdict` es `APPROVED`
 
 Mostrar:
 ```
-✅ APROBADO
+✅ APPROVED
 
 Archivo creado: specs/flow/<EPIC-NN-slug>/epic.md
 
 Siguiente paso: ejecuta /epic-generate-stories para generar las historias de usuario de esta épica.
 ```
 
-#### Si el resultado es REFINAR
+#### Si el `verdict` es `NEEDS-REFINEMENT`
 
-Mostrar las secciones faltantes y los ítems de formato inválido y ofrecer completarlos:
+Mostrar los defectos de `## Defectos` del reporte (secciones faltantes e ítems de formato inválido) y ofrecer completarlos:
 
 ```
-⚠️ REFINAR
+⚠️ NEEDS-REFINEMENT
 
 Las siguientes secciones están incompletas, ausentes o con formato inválido:
 - [lista de secciones e ítems de formato]
@@ -314,7 +317,7 @@ Si el usuario responde "sí": volver al Paso 4 o Paso 5 según corresponda para 
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
 | Template no encontrado | `❌ No se encontró el template requerido en assets/epic-template.md. Por favor verifica que el archivo existe antes de continuar.` | Detener la ejecución |
 | Conflicto de directorio | `El directorio <ruta> ya existe. ¿Qué deseas hacer? 1. Sobreescribir / 2. Usar un nombre diferente` | Esperar decisión del usuario; si elige "2", volver al Paso 1 |
-| Validación retorna REFINAR | `⚠️ REFINAR — Las siguientes secciones están incompletas: [lista]` | Ofrecer completar las secciones faltantes de forma interactiva |
+| Validación retorna `NEEDS-REFINEMENT` | `⚠️ NEEDS-REFINEMENT — Las siguientes secciones están incompletas: [lista]` | Ofrecer completar las secciones faltantes de forma interactiva |
 
 ---
 

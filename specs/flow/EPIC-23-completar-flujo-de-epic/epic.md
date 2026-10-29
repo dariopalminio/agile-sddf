@@ -36,7 +36,7 @@ Skills nuevos y ajustes, por fase del flujo de referencia (`docs/architecture/di
 ## Historias
 
 Fase DEFINE — ajuste de `epic-format-validation`:
-- [ ] **STORY-166** — Veredicto de epic-format-validation: Como Solo Builder, quiero que `/epic-format-validation EPIC-NN` declare un veredicto canónico (`APPROVED` o `NEEDS-REFINEMENT`) en lugar de `APROBADO` / `REFINAR` / `RECHAZADO`, para que el bucle de `DEFINE` decida sin interpretar texto libre y `epic-improve` reciba el diagnóstico de cada defecto.
+- [x] **STORY-166** — Veredicto de epic-format-validation: Como Solo Builder, quiero que `/epic-format-validation EPIC-NN` declare un veredicto canónico (`APPROVED` o `NEEDS-REFINEMENT`) en lugar de `APROBADO` / `REFINAR` / `RECHAZADO`, para que el bucle de `DEFINE` decida sin interpretar texto libre y `epic-improve` reciba el diagnóstico de cada defecto.
 
 Fase DEFINE — skill nuevo `epic-improve`:
 - [ ] **STORY-167** — Skill epic-improve: Como Solo Builder, quiero ejecutar `/epic-improve EPIC-NN` cuando la validación de formato no aprueba la épica, para que proponga y, con mi confirmación, aplique en `epic.md` las correcciones de frontmatter, secciones obligatorias, líneas F1/F2/F3 y smoke tests `SMOKE-N`, y el enriquecimiento de objetivos poco claros o criterios de salida faltantes, con backup previo, y la deje lista para volver a pasar por `/epic-format-validation`.

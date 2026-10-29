@@ -270,7 +270,7 @@ _(sin artefactos)_
 - [[STORY-168-skill-epic-track-progress]] — [story.md](../specs/flow/STORY-168-skill-epic-track-progress/story.md) — Skill epic-track-progress
 - [[STORY-169-suites-de-integracion-y-regresion-de-la-epica]] — [story.md](../specs/flow/STORY-169-suites-de-integracion-y-regresion-de-la-epica/story.md) — Suites de integración y regresión de la épica
 - [[STORY-170-skill-epic-ship]] — [story.md](../specs/flow/STORY-170-skill-epic-ship/story.md) — Skill epic-ship
-- [[STORY-171-skill-epic-complete-core-completar-y-archivar-una-epica-liberada]] — [story.md](../specs/flow/STORY-171-skill-epic-complete-core-completar-y-archivar-una-epica-liberada/story.md) — Skill epic-complete (Core) — completar y archivar una épica liberada
+- [[STORY-171-completar-archivar-epica-liberada]] — [story.md](../specs/flow/STORY-171-completar-archivar-epica-liberada/story.md) — Skill epic-complete (Core) — completar y archivar una épica liberada
 - [[STORY-172-skill-epic-complete-archivar-epicas-canceladas]] — [story.md](../specs/flow/STORY-172-skill-epic-complete-archivar-epicas-canceladas/story.md) — Skill epic-complete — archivar épicas canceladas
 - [[STORY-173-cubrir-criterios-salida-epica]] — [story.md](../specs/flow/STORY-173-cubrir-criterios-salida-epica/story.md) — Skill epic-refine: asignar la cobertura de criterios de salida
 - [[STORY-174-corregir-referencias-obsoletas-tras-split]] — [story.md](../specs/flow/STORY-174-corregir-referencias-obsoletas-tras-split/story.md) — Skill epic-refine: corregir referencias obsoletas tras un split

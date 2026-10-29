@@ -1,6 +1,6 @@
 ---
 name: epic-format-validation
-description: "Valida que una épica cumple el contrato del template epic-template.md: frontmatter, secciones obligatorias, formato F1/F2/F3 de las historias y smoke tests SMOKE-N en gherkin. Produce APROBADO, REFINAR (faltantes y formato inválido, con la corrección esperada) o RECHAZADO (archivo no encontrado)."
+description: "Valida que una épica cumple el contrato del template epic-template.md: frontmatter, secciones obligatorias, formato F1/F2/F3 de las historias y smoke tests SMOKE-N en gherkin. Escribe epic-format-validation-report.md con verdict APPROVED o NEEDS-REFINEMENT (cada defecto con ubicación y corrección esperada); una épica inexistente es un error sin veredicto."
 triggers:
   - epic-format-validation
   - /epic-format-validation
@@ -22,24 +22,26 @@ Invocar también cuando el usuario mencione "validar épica", "verificar estruct
 
 Valida que un archivo de especificación de épica cumple el contrato del template
 `epic-template.md`: frontmatter, secciones obligatorias y la **forma** de las dos secciones que
-leen otros skills (la de clave `historias` y la de clave `smoke-tests`). Produce resultado
-**APROBADO**, **REFINAR** (faltantes y formato inválido) o **RECHAZADO** (archivo no encontrado).
+leen otros skills (la de clave `historias` y la de clave `smoke-tests`). Declara el veredicto
+canónico **`APPROVED`** o **`NEEDS-REFINEMENT`** en `epic-format-validation-report.md`, según
+[validation-contract-policy](../../docs/policies/validation-contract-policy.md) §4.
 
 **Qué hace este skill:**
 - Lee el template en runtime y extrae dinámicamente las secciones obligatorias y el contrato por claves
 - Valida presencia de campos de frontmatter requeridos y encabezados de sección
 - Valida el formato de línea de las historias (F1/F2/F3) y de los smoke tests (`SMOKE-N` + `gherkin`)
-- Produce un resultado con diagnóstico accionable (línea, texto y forma esperada)
+- Escribe el reporte con `verdict` y una tabla de defectos (ubicación, texto y corrección esperada) que `epic-improve` consume sin reanalizar
 
 **Qué NO hace este skill:**
 - No valida el contenido semántico de las secciones, solo su presencia y su forma
-- No corrige ni migra el archivo de épica (la migración es `/memory-system migrate --from=epic-template-v1`)
+- No corrige, migra ni modifica `epic.md` (la migración es `/memory-system migrate --from=epic-template-v1`)
 
 ## Entrada
 
 - Argumento posicional: ruta relativa, nombre (con o sin `.md`) o término de búsqueda del archivo de épica
 - `specs/flow/EPIC-*/epic.md` — archivos de épica donde se busca por término
 - `docs/templates/epic-template.md` — fuente de verdad estructural (solo lectura)
+- `assets/epic-format-validation-report-template.md` — formato del reporte (se lee en el Paso 5)
 
 ## Parámetros
 
@@ -53,22 +55,23 @@ leen otros skills (la de clave `historias` y la de clave `smoke-tests`). Produce
 
 ## Dependencias
 
-- Archivos: `docs/templates/epic-template.md`
+- Archivos: `docs/templates/epic-template.md`, `assets/epic-format-validation-report-template.md`
+- Política: `docs/policies/validation-contract-policy.md` (G-01…G-06)
 
 ## Modos de ejecución
 
-- **Manual** (`/epic-format-validation <epica>`): muestra el resultado APROBADO/REFINAR/RECHAZADO al usuario.
-- **Automático**: invocado por otro skill (ej. `epic-generate-stories`) como gate previo — no pide confirmación.
+- **Manual** (`/epic-format-validation <epica>`): escribe el reporte y muestra el veredicto `APPROVED` / `NEEDS-REFINEMENT` al usuario.
+- **Automático**: invocado por otro skill (ej. `epic-creation`, `epic-from-project-plan`) como gate previo — no pide confirmación; el invocador lee `verdict` del reporte (G-06).
 
 ## Restricciones / Reglas
 
-- **Solo lectura:** no escribe ni modifica ningún archivo.
+- **Escritura acotada:** solo escribe `epic-format-validation-report.md` junto al `epic.md` validado (lo sobrescribe en cada ejecución); nunca modifica `epic.md` ni el template.
 - **Validación estructural, no semántica:** verifica presencia de secciones por encabezado `##` y la forma de línea de dos secciones, no el sentido del contenido.
 - **Extracción dinámica:** las secciones obligatorias y sus claves se derivan en runtime del template (comentario `<!-- sección obligatoria · clave: <clave> -->`); si el template cambia (títulos, orden, secciones), el skill se adapta automáticamente.
 - **Sin títulos de sección en este skill:** las reglas de forma se aplican a la sección cuya `clave:` corresponde y su título se lee del template. En la salida, cita las secciones solo por el título que trae el template (D-2b).
 - **Contrato fijo de dominio:** los formatos F1/F2/F3 y el patrón `SMOKE-N` se definen en `domain-epic-lifecycle` §9 ("Estructura de `epic.md`"); este skill los aplica, no los redefine.
 - **Sin corrección:** la generación o corrección de contenido están fuera del scope de este skill.
-- NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
+- NO modifique ningún otro archivo del repositorio (estamos en etapa de especificación, no de implementación)
 - NO genere código; estas validando, no implementando los artefactos técnicos
 - **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
   Do not use Latin-1, CP-1252, or any other encoding. 
@@ -108,16 +111,15 @@ El skill acepta tres formas de input. Detectar cuál aplica antes de continuar:
 #### Manejo de archivo no encontrado
 
 ```
-RECHAZADO
-
-Archivo no encontrado: <ruta o término proporcionado>
-
-No se encontró ninguna épica en specs/flow/ que coincida con el input proporcionado.
+❌ Épica no encontrada: <input>
+   Ruta buscada: <ruta exacta>                         (Tipo A)
+   Ruta buscada: specs/flow/EPIC-*<término>*/epic.md   (Tipo B)
 
 Verifica que el nombre o ruta sea correcto e inténtalo de nuevo.
 ```
 
-Terminar la ejecución del skill sin continuar.
+Es un error, no un veredicto: terminar la ejecución **sin veredicto y sin reporte**. Un invocador
+automático lo trata como fallo.
 
 ---
 
@@ -162,7 +164,7 @@ exactamente
 ❌ Template inválido: clave <clave> duplicada
 ```
 
-y **termina sin resultado** (ni APROBADO, ni REFINAR, ni RECHAZADO).
+y **termina sin veredicto ni reporte**.
 
 De la lista, toma el título de la sección con clave `historias` y el de la sección con clave
 `smoke-tests`. Si el template no declara una de esas claves, la regla de forma correspondiente
@@ -238,53 +240,51 @@ Escenario/Dado/Cuando/Entonces").
 
 ---
 
-### Paso 5 — Producir resultado
+### Paso 5 — Producir veredicto y reporte
 
-#### Si no hay faltantes ni formato inválido → APROBADO
+**Regla de veredicto:** sin defectos en los Pasos 4a–4d → `APPROVED`; al menos un defecto →
+`NEEDS-REFINEMENT`. No hay otros valores.
+
+**Defectos:** cada ausencia o incumplimiento de los Pasos 4a–4d es un defecto, en orden de detección
+(4a → 4b → 4c → 4d), con `ID` `D-<n>` y uno de estos tipos:
+
+| Tipo | Ubicación | Encontrado | Corrección esperada |
+|---|---|---|---|
+| `campo-faltante` | `frontmatter` | — | `añadir <clave>:` |
+| `seccion-faltante` | `tras ## <título previo según el template>` (o `al inicio del cuerpo`) | — | `añadir ## <título> según docs/templates/epic-template.md` |
+| `formato-historias` | `línea <n> (## <título>)` | `` `<texto literal>` `` | F1 `- <Nombre>: <descripción>`, F2 `- [ ] **STORY-NNN** — <Nombre>: <descripción>` o F3 `- [x] **STORY-NNN** — <Nombre>: <descripción>` |
+| `formato-smoke-tests` | `línea <n> (## <título>)` | `` `<encabezado>` `` | `### SMOKE-N — <nombre>` o bloque `gherkin` con Escenario/Dado/Cuando/Entonces |
+
+**Reporte:** lee `assets/epic-format-validation-report-template.md` (solo ahora) y complétalo según
+sus comentarios: `verdict` y `## Veredicto` con el mismo valor, `defects` con el número de defectos,
+`## Defectos` con la tabla (o `Sin defectos.`) y `## Migración` solo si hay algún `seccion-faltante`.
+Escríbelo en `<EPIC_DIR>/epic-format-validation-report.md` (el directorio del `epic.md` validado),
+sobrescribiendo el anterior. No detectes la versión de la épica por sus títulos: la lista de
+secciones faltantes más `## Migración` da la misma información y funciona con templates personalizados.
+
+**Consola:** muestra la línea `**Veredicto:**` del reporte, `Archivo validado: <ruta>` y, con
+`NEEDS-REFINEMENT`, un resumen derivado de la misma tabla (solo los bloques con ítems):
 
 ```
-APROBADO
-
-El archivo cumple la estructura obligatoria del template epic-template.md.
-
-Archivo validado: <ruta del archivo>
-```
-
-#### Si hay faltantes o formato inválido → REFINAR
-
-Incluir solo los bloques que tengan ítems. Los títulos de sección que se citen salen del template.
-
-```
-REFINAR
-
-El archivo no cumple la estructura obligatoria del template epic-template.md.
-
-Archivo validado: <ruta del archivo>
-
 Secciones/campos faltantes:
 - <nombre exacto del campo o título de la sección faltante>
 
 Formato inválido:
-- Línea <n> (<título de la sección>): `<texto literal>` → se esperaba F1 `- <Nombre>: <descripción>`, F2 `- [ ] **STORY-NNN** — <Nombre>: <descripción>` o F3 `- [x] **STORY-NNN** — <Nombre>: <descripción>`
-- Línea <n> (<título de la sección>): `<encabezado>` → se esperaba `### SMOKE-N — <nombre>` seguido de un bloque gherkin con Escenario/Dado/Cuando/Entonces
-
-Revisa el template en docs/templates/epic-template.md para completar las secciones indicadas.
+- Línea <n> (<título de la sección>): `<texto literal>` → se esperaba <corrección esperada>
 ```
 
-Si el bloque `Secciones/campos faltantes:` lista alguna **sección**, añadir al final esta nota:
+Si falta alguna sección, añade la nota `Si la épica se creó con una versión anterior del template → /memory-system migrate --from=epic-template-v1`.
+Termina con `📄 Reporte: <EPIC_DIR>/epic-format-validation-report.md`.
 
-```
-Si la épica se creó con una versión anterior del template → /memory-system migrate --from=epic-template-v1
-```
-
-No detectes la versión de la épica por sus títulos: la lista de secciones faltantes más esta nota da
-la misma información y funciona también con templates personalizados.
+**Fallo de escritura:** si el reporte no se puede escribir, muestra igualmente el veredicto en consola
+y `⚠️ No se pudo escribir <ruta>: <causa>`; si ya existía un reporte, añade `⚠️ El reporte existente
+está obsoleto`. Un invocador automático no encuentra un `verdict` actualizado y aplica G-06 (no aprobado).
 
 ---
 
 ## Salida
 
-- **APROBADO**: el archivo cumple la estructura completa del template.
-- **REFINAR**: el archivo existe pero le faltan secciones o campos de frontmatter, o alguna línea de historias o de smoke tests no tiene la forma del contrato; incluye lista accionable y, si faltan secciones, el comando de migración.
-- **RECHAZADO**: el archivo no fue encontrado.
-- No genera ni modifica archivos en disco.
+- **`epic-format-validation-report.md`** junto a `epic.md`, con `verdict`:
+  - **`APPROVED`**: el archivo cumple la estructura completa del template.
+  - **`NEEDS-REFINEMENT`**: faltan secciones o campos de frontmatter, o alguna línea de historias o de smoke tests no tiene la forma del contrato; `## Defectos` lista cada uno con ubicación y corrección esperada, y `## Migración` aparece si faltan secciones.
+- **Error sin veredicto ni reporte:** épica no encontrada (con la ruta buscada), template ausente o inválido.

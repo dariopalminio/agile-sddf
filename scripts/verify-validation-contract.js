@@ -7,6 +7,7 @@ const path = require('node:path');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const POLICY_PATH = 'docs/policies/validation-contract-policy.md';
 const REPORT_TEMPLATES = {
+  'epic-format-validation': 'skills/epic-format-validation/assets/epic-format-validation-report-template.md',
   'epic-analyze': 'skills/epic-analyze/assets/epic-analyze-report-template.md',
   'story-evaluation': 'skills/story-evaluation/assets/evaluation-output-template.md',
   'story-analyze': 'skills/story-analyze/assets/analyze-report-template.md',

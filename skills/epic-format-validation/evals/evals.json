@@ -1,96 +1,88 @@
 {
   "skill": "epic-format-validation",
-  "version": "2.0.0",
-  "description": "Casos de prueba para epic-format-validation: valida que produce APROBADO, REFINAR o RECHAZADO según la estructura del archivo de épica, contra el contrato del template v2 leído en runtime por claves (frontmatter YAML + 5 secciones con clave: alcance, historias, criterios-salida, smoke-tests, notas), las reglas de forma de línea F1/F2/F3 de la sección historias, el patrón SMOKE-N + gherkin de la sección smoke-tests, la nota de migración /memory-system migrate --from=epic-template-v1 para épicas de versiones anteriores y la detección de claves duplicadas en el template (STORY-103).",
+  "version": "3.0.0",
+  "description": "Casos de prueba para epic-format-validation: valida que escribe epic-format-validation-report.md con verdict APPROVED o NEEDS-REFINEMENT (validation-contract-policy §4) según la estructura del archivo de épica, y que una épica inexistente es un error sin veredicto (STORY-166), contra el contrato del template v2 leído en runtime por claves (frontmatter YAML + 5 secciones con clave: alcance, historias, criterios-salida, smoke-tests, notas), las reglas de forma de línea F1/F2/F3 de la sección historias, el patrón SMOKE-N + gherkin de la sección smoke-tests, la nota de migración /memory-system migrate --from=epic-template-v1 para épicas de versiones anteriores y la detección de claves duplicadas en el template (STORY-103).",
   "cases": [
     {
       "id": "TC-001",
-      "name": "épica-completa-resultado-aprobado",
+      "name": "épica-completa-resultado-approved",
       "type": "happy-path",
-      "description": "Archivo de épica con frontmatter completo y las 5 secciones obligatorias del template v2 presentes (Alcance, Historias, Criterios de salida, Smoke tests, Notas). El skill debe retornar APROBADO.",
+      "description": "Archivo de épica con frontmatter completo y las 5 secciones obligatorias del template v2 presentes (Alcance, Historias, Criterios de salida, Smoke tests, Notas). El skill debe retornar APPROVED.",
       "input": {
         "input_path": "specs/flow/EPIC-01-mvp/epic.md",
         "flags": []
       },
       "expected": {
-        "contains": ["APROBADO", "cumple la estructura"],
-        "not_contains": ["REFINAR", "RECHAZADO", "faltante"]
+        "contains": ["APPROVED", "cumple la estructura"],
+        "not_contains": ["NEEDS-REFINEMENT", "RECHAZADO", "faltante", "APROBADO"]
       },
       "threshold": 0.95
     },
     {
       "id": "TC-002",
-      "name": "archivo-no-encontrado-resultado-rechazado",
+      "name": "epica-inexistente-error-sin-veredicto",
       "type": "fail-fast",
-      "description": "El input no corresponde a ningún archivo existente. El skill debe retornar RECHAZADO con mensaje descriptivo.",
+      "description": "[AC-3 · STORY-166] No existe ningún directorio para EPIC-77 en specs/flow/. El skill debe informar la ruta buscada y terminar con error, sin declarar APPROVED ni NEEDS-REFINEMENT y sin escribir el reporte.",
       "input": {
-        "input_path": "specs/flow/EPIC-99-inexistente/epic.md",
+        "input_path": "EPIC-77",
         "flags": []
       },
       "expected": {
-        "contains": ["RECHAZADO", "no encontrado"],
-        "not_contains": ["APROBADO", "REFINAR"]
+        "contains": ["EPIC-77", "specs/flow", "Ruta buscada"],
+        "not_contains": ["APPROVED", "NEEDS-REFINEMENT", "RECHAZADO"]
       },
       "threshold": 1.0
     },
     {
       "id": "TC-003",
-      "name": "secciones-faltantes-resultado-refinar",
+      "name": "secciones-faltantes-resultado-needs-refinement",
       "type": "fail-fast",
-      "description": "Épica con frontmatter completo pero sin las secciones Historias y Smoke tests del template v2. El skill debe retornar REFINAR con lista de secciones ausentes.",
+      "description": "Épica con frontmatter completo pero sin las secciones Historias y Smoke tests del template v2. El skill debe retornar NEEDS-REFINEMENT con lista de secciones ausentes.",
       "input": {
         "input_path": "specs/flow/EPIC-02-incompleto/epic.md",
         "flags": []
       },
       "expected": {
-        "contains": ["REFINAR", "faltante", "Historias", "Smoke tests"],
-        "not_contains": ["APROBADO", "RECHAZADO", "Features"]
+        "contains": ["NEEDS-REFINEMENT", "faltante", "Historias", "Smoke tests"],
+        "not_contains": ["APPROVED", "RECHAZADO", "Features", "REFINAR"]
       },
       "threshold": 1.0
     },
     {
       "id": "TC-004",
-      "name": "frontmatter-incompleto-resultado-refinar",
+      "name": "frontmatter-incompleto-resultado-needs-refinement",
       "type": "edge-case",
-      "description": "Épica con las 5 secciones obligatorias del template v2 presentes pero sin las claves created y updated en el frontmatter YAML. El skill debe retornar REFINAR listando esas claves como faltantes.",
+      "description": "Épica con las 5 secciones obligatorias del template v2 presentes pero sin las claves created y updated en el frontmatter YAML. El skill debe retornar NEEDS-REFINEMENT listando esas claves como faltantes.",
       "input": {
         "input_path": "specs/flow/EPIC-03-frontmatter-incompleto/epic.md",
         "flags": []
       },
       "expected": {
-        "contains": ["REFINAR", "faltante", "created", "updated"],
-        "not_contains": ["APROBADO", "RECHAZADO", "Versión", "Fecha"]
+        "contains": ["NEEDS-REFINEMENT", "faltante", "created", "updated"],
+        "not_contains": ["APPROVED", "RECHAZADO", "Versión", "Fecha", "REFINAR"]
       },
       "threshold": 0.95
     },
     {
       "id": "TC-005",
-      "name": "epica-canonica-sin-claves-opcionales-resultado-aprobado",
+      "name": "epica-canonica-sin-claves-opcionales-resultado-approved",
       "type": "regression",
-      "description": "Regresión del contrato migrado: épica generada con el template vigente (frontmatter YAML type/id/slug/title/status/substatus/created/updated, sección ## Historias) y sin las claves opcionales parent y related. El skill NO debe exigir campos Markdown del contrato antiguo (**Título**, **Versión**, **Estado**, **Fecha**) ni la sección Features, y debe retornar APROBADO.",
+      "description": "Regresión del contrato migrado: épica generada con el template vigente (frontmatter YAML type/id/slug/title/status/substatus/created/updated, sección ## Historias) y sin las claves opcionales parent y related. El skill NO debe exigir campos Markdown del contrato antiguo (**Título**, **Versión**, **Estado**, **Fecha**) ni la sección Features, y debe retornar APPROVED.",
       "input": {
         "input_path": "specs/flow/EPIC-04-canonica/epic.md",
         "flags": []
       },
       "expected": {
-        "contains": ["APROBADO", "cumple la estructura"],
-        "not_contains": [
-          "REFINAR",
-          "RECHAZADO",
-          "Features",
-          "Versión",
-          "Título",
-          "parent",
-          "related"
-        ]
+        "contains": ["APPROVED", "cumple la estructura"],
+        "not_contains": ["NEEDS-REFINEMENT", "RECHAZADO", "Features", "Versión", "Título", "parent", "related", "APROBADO"]
       },
       "threshold": 1.0
     },
     {
       "id": "TC-006",
-      "name": "EV-001: épica v2 completa resultado aprobado",
+      "name": "EV-001: épica v2 completa resultado approved",
       "type": "happy-path",
-      "description": "[EV-001 · STORY-103] Épica v2 con las 5 secciones del template (Alcance, Historias con líneas F1/F2/F3, Criterios de salida, Smoke tests SMOKE-N + gherkin, Notas vacía). El gate debe retornar APROBADO.",
+      "description": "[EV-001 · STORY-103] Épica v2 con las 5 secciones del template (Alcance, Historias con líneas F1/F2/F3, Criterios de salida, Smoke tests SMOKE-N + gherkin, Notas vacía). El gate debe retornar APPROVED.",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -98,24 +90,16 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n\n## Criterios de salida\n- [ ] Un pago de prueba queda registrado en el historial\n\n## Smoke tests\n### SMOKE-1 — Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n### SMOKE-2 — Pago rechazado\n```gherkin\nEscenario: Pago rechazado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"
       },
       "expected": {
-        "contains": [
-          "APROBADO",
-          "cumple la estructura"
-        ],
-        "not_contains": [
-          "REFINAR",
-          "RECHAZADO",
-          "Formato inválido",
-          "faltante"
-        ]
+        "contains": ["APPROVED", "cumple la estructura"],
+        "not_contains": ["NEEDS-REFINEMENT", "RECHAZADO", "Formato inválido", "faltante", "APROBADO"]
       },
-      "threshold": 1
+      "threshold": 1.0
     },
     {
       "id": "TC-007",
-      "name": "EV-002: épica de versión anterior del template refinar con nota de migración",
+      "name": "EV-002: épica de versión anterior del template needs-refinement con nota de migración",
       "type": "edge-case",
-      "description": "[EV-002 · STORY-103] Épica v1 (## Descripción, ## Flujos Críticos / Smoke Tests, ## Notas adicionales) validada contra el template v2. Debe retornar REFINAR listando los títulos del template que faltan y la nota de migración. El skill no detecta versión por título: no debe nombrar los títulos v1 como esperados (verificación complementaria por inspección: skills/epic-format-validation/SKILL.md no contiene títulos v1).",
+      "description": "[EV-002 · STORY-103] Épica v1 (## Descripción, ## Flujos Críticos / Smoke Tests, ## Notas adicionales) validada contra el template v2. Debe retornar NEEDS-REFINEMENT listando los títulos del template que faltan y la nota de migración. El skill no detecta versión por título: no debe nombrar los títulos v1 como esperados (verificación complementaria por inspección: skills/epic-format-validation/SKILL.md no contiene títulos v1).",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -123,27 +107,16 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Descripción\nPagos online.\n\n## Historias\n- [ ] STORY-120 - **Historial:** consulta de pagos pasados\n\n## Flujos Críticos / Smoke Tests\n### Escenario 1: Pago aprobado\n**DADO** un carrito\n**CUANDO** paga\n**ENTONCES** se registra\n\n**Criterios de éxito:**\n- Pagos registrados\n\n## Notas adicionales\n"
       },
       "expected": {
-        "contains": [
-          "REFINAR",
-          "Secciones/campos faltantes:",
-          "Alcance",
-          "Criterios de salida",
-          "Smoke tests",
-          "Si la épica se creó con una versión anterior del template",
-          "/memory-system migrate --from=epic-template-v1"
-        ],
-        "not_contains": [
-          "APROBADO",
-          "RECHAZADO"
-        ]
+        "contains": ["NEEDS-REFINEMENT", "Secciones/campos faltantes:", "Alcance", "Criterios de salida", "Smoke tests", "Si la épica se creó con una versión anterior del template", "/memory-system migrate --from=epic-template-v1"],
+        "not_contains": ["APPROVED", "RECHAZADO", "REFINAR"]
       },
-      "threshold": 1
+      "threshold": 1.0
     },
     {
       "id": "TC-008",
-      "name": "EV-003: épica v2 sin Notas refinar",
+      "name": "EV-003: épica v2 sin Notas needs-refinement",
       "type": "fail-fast",
-      "description": "[EV-003 · STORY-103] Épica v2 sin el encabezado ## Notas. Notas es obligatoria como encabezado aunque su contenido sea opcional: el gate debe retornar REFINAR listando Notas en Secciones/campos faltantes.",
+      "description": "[EV-003 · STORY-103] Épica v2 sin el encabezado ## Notas. Notas es obligatoria como encabezado aunque su contenido sea opcional: el gate debe retornar NEEDS-REFINEMENT listando Notas en Secciones/campos faltantes.",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -151,23 +124,16 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n\n## Criterios de salida\n- [ ] Un pago de prueba queda registrado en el historial\n\n## Smoke tests\n### SMOKE-1 — Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n### SMOKE-2 — Pago rechazado\n```gherkin\nEscenario: Pago rechazado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n"
       },
       "expected": {
-        "contains": [
-          "REFINAR",
-          "Secciones/campos faltantes:",
-          "Notas"
-        ],
-        "not_contains": [
-          "APROBADO",
-          "RECHAZADO"
-        ]
+        "contains": ["NEEDS-REFINEMENT", "Secciones/campos faltantes:", "Notas"],
+        "not_contains": ["APPROVED", "RECHAZADO", "REFINAR"]
       },
-      "threshold": 1
+      "threshold": 1.0
     },
     {
       "id": "TC-009",
-      "name": "EV-004: línea de Historias con checkbox sin ID refinar formato inválido",
+      "name": "EV-004: línea de Historias con checkbox sin ID needs-refinement formato inválido",
       "type": "fail-fast",
-      "description": "[EV-004 · STORY-103] La sección con clave historias contiene la línea \"- [ ] Exportar CSV: descarga del historial\" (checkbox sin STORY-NNN), que no casa con F1, F2 ni F3. El gate debe retornar REFINAR con el bloque Formato inválido: indicando número de línea, texto y la forma F1/F2/F3 esperada.",
+      "description": "[EV-004 · STORY-103] La sección con clave historias contiene la línea \"- [ ] Exportar CSV: descarga del historial\" (checkbox sin STORY-NNN), que no casa con F1, F2 ni F3. El gate debe retornar NEEDS-REFINEMENT con el bloque Formato inválido: indicando número de línea, texto y la forma F1/F2/F3 esperada.",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -175,25 +141,16 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n- [ ] Exportar CSV: descarga del historial\n\n## Criterios de salida\n- [ ] Un pago de prueba queda registrado en el historial\n\n## Smoke tests\n### SMOKE-1 — Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n### SMOKE-2 — Pago rechazado\n```gherkin\nEscenario: Pago rechazado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"
       },
       "expected": {
-        "contains": [
-          "REFINAR",
-          "Formato inválido:",
-          "- [ ] Exportar CSV: descarga del historial",
-          "F1",
-          "**STORY-NNN**"
-        ],
-        "not_contains": [
-          "APROBADO",
-          "RECHAZADO"
-        ]
+        "contains": ["NEEDS-REFINEMENT", "Formato inválido:", "- [ ] Exportar CSV: descarga del historial", "F1", "**STORY-NNN**"],
+        "not_contains": ["APPROVED", "RECHAZADO", "REFINAR"]
       },
       "threshold": 0.95
     },
     {
       "id": "TC-010",
-      "name": "EV-005: dos smoke tests sin SMOKE-N refinar",
+      "name": "EV-005: dos smoke tests sin SMOKE-N needs-refinement",
       "type": "fail-fast",
-      "description": "[EV-005 · STORY-103] La sección con clave smoke-tests tiene dos encabezados \"### Escenario 1: Pago aprobado\" y \"### Escenario 2: Pago rechazado\", cada uno con bloque gherkin. Con 2 o más escenarios todos deben casar \"### SMOKE-N — <nombre>\": el gate debe retornar REFINAR exigiendo ese patrón.",
+      "description": "[EV-005 · STORY-103] La sección con clave smoke-tests tiene dos encabezados \"### Escenario 1: Pago aprobado\" y \"### Escenario 2: Pago rechazado\", cada uno con bloque gherkin. Con 2 o más escenarios todos deben casar \"### SMOKE-N — <nombre>\": el gate debe retornar NEEDS-REFINEMENT exigiendo ese patrón.",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -201,24 +158,16 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n\n## Criterios de salida\n- [ ] Un pago de prueba queda registrado en el historial\n\n## Smoke tests\n### Escenario 1: Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n### Escenario 2: Pago rechazado\n```gherkin\nEscenario: Pago rechazado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"
       },
       "expected": {
-        "contains": [
-          "REFINAR",
-          "Formato inválido:",
-          "SMOKE-N",
-          "Escenario 1: Pago aprobado"
-        ],
-        "not_contains": [
-          "APROBADO",
-          "RECHAZADO"
-        ]
+        "contains": ["NEEDS-REFINEMENT", "Formato inválido:", "SMOKE-N", "Escenario 1: Pago aprobado"],
+        "not_contains": ["APPROVED", "RECHAZADO", "REFINAR"]
       },
       "threshold": 0.95
     },
     {
       "id": "TC-011",
-      "name": "EV-006: único smoke test sin número aprobado",
+      "name": "EV-006: único smoke test sin número approved",
       "type": "edge-case",
-      "description": "[EV-006 · STORY-103] La sección con clave smoke-tests tiene un único escenario \"### Pago aprobado\" (sin SMOKE-N) con bloque gherkin completo. Con un único escenario la numeración es opcional: el gate debe retornar APROBADO.",
+      "description": "[EV-006 · STORY-103] La sección con clave smoke-tests tiene un único escenario \"### Pago aprobado\" (sin SMOKE-N) con bloque gherkin completo. Con un único escenario la numeración es opcional: el gate debe retornar APPROVED.",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -226,23 +175,16 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n\n## Criterios de salida\n- [ ] Un pago de prueba queda registrado en el historial\n\n## Smoke tests\n### Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"
       },
       "expected": {
-        "contains": [
-          "APROBADO",
-          "cumple la estructura"
-        ],
-        "not_contains": [
-          "REFINAR",
-          "RECHAZADO",
-          "Formato inválido"
-        ]
+        "contains": ["APPROVED", "cumple la estructura"],
+        "not_contains": ["NEEDS-REFINEMENT", "RECHAZADO", "Formato inválido", "APROBADO"]
       },
-      "threshold": 1
+      "threshold": 1.0
     },
     {
       "id": "TC-012",
-      "name": "EV-007: smoke test sin bloque gherkin refinar",
+      "name": "EV-007: smoke test sin bloque gherkin needs-refinement",
       "type": "fail-fast",
-      "description": "[EV-007 · STORY-103] La sección con clave smoke-tests tiene \"### SMOKE-1 — Pago aprobado\" seguido de pasos en negrita (**DADO** / **CUANDO** / **ENTONCES**) en lugar de un bloque ```gherkin. El gate debe retornar REFINAR pidiendo un bloque gherkin con Escenario/Dado/Cuando/Entonces.",
+      "description": "[EV-007 · STORY-103] La sección con clave smoke-tests tiene \"### SMOKE-1 — Pago aprobado\" seguido de pasos en negrita (**DADO** / **CUANDO** / **ENTONCES**) en lugar de un bloque ```gherkin. El gate debe retornar NEEDS-REFINEMENT pidiendo un bloque gherkin con Escenario/Dado/Cuando/Entonces.",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -250,17 +192,8 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n\n## Criterios de salida\n- [ ] Un pago de prueba queda registrado en el historial\n\n## Smoke tests\n### SMOKE-1 — Pago aprobado\n**DADO** un carrito\n**CUANDO** paga\n**ENTONCES** se registra\n\n## Notas\n"
       },
       "expected": {
-        "contains": [
-          "REFINAR",
-          "Formato inválido:",
-          "SMOKE-1",
-          "gherkin",
-          "Escenario"
-        ],
-        "not_contains": [
-          "APROBADO",
-          "RECHAZADO"
-        ]
+        "contains": ["NEEDS-REFINEMENT", "Formato inválido:", "SMOKE-1", "gherkin", "Escenario"],
+        "not_contains": ["APPROVED", "RECHAZADO", "REFINAR"]
       },
       "threshold": 0.95
     },
@@ -268,7 +201,7 @@
       "id": "TC-013",
       "name": "EV-016: título renombrado Features regla F1-F3 aplicada por clave",
       "type": "edge-case",
-      "description": "[EV-016 · STORY-103] El template personalizado titula \"## Features\" la sección con clave historias. La épica usa \"## Features\" y contiene la línea inválida \"- [ ] Exportar CSV: descarga del historial\". El gate localiza la sección por clave y debe retornar REFINAR en Formato inválido: señalando la línea de Features, sin exigir una sección Historias.",
+      "description": "[EV-016 · STORY-103] El template personalizado titula \"## Features\" la sección con clave historias. La épica usa \"## Features\" y contiene la línea inválida \"- [ ] Exportar CSV: descarga del historial\". El gate localiza la sección por clave y debe retornar NEEDS-REFINEMENT en Formato inválido: señalando la línea de Features, sin exigir una sección Historias.",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -276,25 +209,16 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Features\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n- [ ] Exportar CSV: descarga del historial\n\n## Criterios de salida\n- [ ] Un pago de prueba queda registrado en el historial\n\n## Smoke tests\n### SMOKE-1 — Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n### SMOKE-2 — Pago rechazado\n```gherkin\nEscenario: Pago rechazado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"
       },
       "expected": {
-        "contains": [
-          "REFINAR",
-          "Formato inválido:",
-          "Features",
-          "- [ ] Exportar CSV: descarga del historial"
-        ],
-        "not_contains": [
-          "APROBADO",
-          "RECHAZADO",
-          "Historias"
-        ]
+        "contains": ["NEEDS-REFINEMENT", "Formato inválido:", "Features", "- [ ] Exportar CSV: descarga del historial"],
+        "not_contains": ["APPROVED", "RECHAZADO", "Historias", "REFINAR"]
       },
-      "threshold": 1
+      "threshold": 1.0
     },
     {
       "id": "TC-014",
       "name": "EV-018: template sin smoke-tests no aplica la regla SMOKE-N",
       "type": "edge-case",
-      "description": "[EV-018 · STORY-103] El usuario quitó del template la sección con clave smoke-tests (quedan 4 secciones). La épica no tiene smoke tests. La regla SMOKE-N no se aplica: el gate debe retornar APROBADO.",
+      "description": "[EV-018 · STORY-103] El usuario quitó del template la sección con clave smoke-tests (quedan 4 secciones). La épica no tiene smoke tests. La regla SMOKE-N no se aplica: el gate debe retornar APPROVED.",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -302,24 +226,16 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n\n## Criterios de salida\n- [ ] Un pago de prueba queda registrado en el historial\n\n## Notas\n"
       },
       "expected": {
-        "contains": [
-          "APROBADO",
-          "cumple la estructura"
-        ],
-        "not_contains": [
-          "REFINAR",
-          "RECHAZADO",
-          "SMOKE-N",
-          "Smoke tests"
-        ]
+        "contains": ["APPROVED", "cumple la estructura"],
+        "not_contains": ["NEEDS-REFINEMENT", "RECHAZADO", "SMOKE-N", "Smoke tests", "APROBADO"]
       },
-      "threshold": 1
+      "threshold": 1.0
     },
     {
       "id": "TC-015",
       "name": "EV-019: clave duplicada en el template detiene sin resultado",
       "type": "fail-fast",
-      "description": "[EV-019 · STORY-103] El template declara dos secciones con clave historias (## Historias y ## Entregables). Al leer el contrato por claves el gate debe emitir el error de template inválido y detenerse sin producir APROBADO/REFINAR/RECHAZADO.",
+      "description": "[EV-019 · STORY-103] El template declara dos secciones con clave historias (## Historias y ## Entregables). Al leer el contrato por claves el gate debe emitir el error de template inválido y detenerse sin producir APPROVED/NEEDS-REFINEMENT/error sin veredicto.",
       "input": {
         "input_path": "specs/flow/EPIC-05-pagos/epic.md",
         "template_path": "docs/templates/epic-template.md",
@@ -327,16 +243,27 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n\n## Criterios de salida\n- [ ] Un pago de prueba queda registrado en el historial\n\n## Smoke tests\n### SMOKE-1 — Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n### SMOKE-2 — Pago rechazado\n```gherkin\nEscenario: Pago rechazado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"
       },
       "expected": {
-        "contains": [
-          "❌ Template inválido: clave historias duplicada"
-        ],
-        "not_contains": [
-          "APROBADO",
-          "REFINAR",
-          "RECHAZADO"
-        ]
+        "contains": ["❌ Template inválido: clave historias duplicada"],
+        "not_contains": ["APPROVED", "NEEDS-REFINEMENT", "RECHAZADO", "APROBADO", "REFINAR"]
       },
-      "threshold": 1
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-016",
+      "name": "épica-sin-criterios-de-salida-y-línea-inválida-needs-refinement",
+      "type": "fail-fast",
+      "description": "[AC-2 · STORY-166] La épica no tiene la sección ## Criterios de salida y su sección historias contiene la línea \"- [ ] Exportar CSV: descarga del historial\", que no casa con F1, F2 ni F3. El gate debe declarar NEEDS-REFINEMENT, listar ambos defectos con ubicación y corrección esperada (tabla ## Defectos) y escribir epic-format-validation-report.md.",
+      "input": {
+        "input_path": "specs/flow/EPIC-05-pagos/epic.md",
+        "template_path": "docs/templates/epic-template.md",
+        "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Historias <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
+        "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n- [ ] Exportar CSV: descarga del historial\n\n## Smoke tests\n### SMOKE-1 — Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n### SMOKE-2 — Pago rechazado\n```gherkin\nEscenario: Pago rechazado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"
+      },
+      "expected": {
+        "contains": ["NEEDS-REFINEMENT", "Criterios de salida", "Formato inválido:", "- [ ] Exportar CSV: descarga del historial", "epic-format-validation-report.md"],
+        "not_contains": ["APPROVED", "APROBADO", "REFINAR"]
+      },
+      "threshold": 1.0
     }
   ]
 }

@@ -15,6 +15,7 @@ const {
 } = require('../scripts/verify-validation-contract.js');
 
 const REPORTS = {
+  'epic-format-validation': ['epic-format-validation-report.md', 'epic-format-validation-report-template.md'],
   'epic-analyze': ['epic-analyze-report.md', 'epic-analyze-report-template.md'],
   'story-evaluation': ['finvest-evaluation-report.md', 'evaluation-output-template.md'],
   'story-analyze': ['analyze.md', 'analyze-report-template.md'],
@@ -215,4 +216,30 @@ test('F-4 informa skills sin entrada, falta de APPROVED y lectura UTF-8 inválid
   assert.ok(errors.some((error) => error.includes('new-validator sin entrada en REPORT_TEMPLATES')));
   assert.equal(errors.some((error) => error.includes('epic-validate')), false);
   assert.ok(errors.some((error) => error.includes('docs/guides/invalid.md:1: P-1')));
+});
+
+test('AC-4 registra epic-format-validation en la policy real con su flowchart de épica', () => {
+  const repoRoot = path.resolve(__dirname, '..');
+  const policyText = fs.readFileSync(path.join(repoRoot, 'docs/policies/validation-contract-policy.md'), 'utf8');
+  const policyLines = policyText.split(/\r?\n/);
+  const contract = parsePolicyContract(policyText);
+  assert.deepEqual(contract.errors, []);
+  const entry = contract.skills.get('epic-format-validation');
+  assert.ok(entry, 'falta la fila de epic-format-validation en §4');
+  assert.equal(entry.report, 'epic-format-validation-report.md');
+  assert.deepEqual([...entry.values].sort(), ['APPROVED', 'NEEDS-REFINEMENT']);
+  const exclusions = policyLines.find((line) => line.startsWith('**Exclusiones:**'));
+  assert.ok(exclusions, 'falta la línea **Exclusiones:** en §1');
+  assert.equal(exclusions.includes('epic-format-validation'), false);
+  const row = policyLines.find((line) => line.startsWith('| `epic-format-validation` |'));
+  const flowchart = 'flowchart-skill-epic-flow-relationship.mermaid';
+  assert.ok(row.includes(`(../architecture/diagrams/${flowchart})`));
+
+  const diagram = fs.readFileSync(path.join(repoRoot, 'docs/architecture/diagrams', flowchart), 'utf8');
+  const decision = diagram.match(/^\s*epic-format-validation\s*-->\s*([\w-]+)\s*$/m);
+  assert.ok(decision, 'epic-format-validation no apunta a un nodo de decisión');
+  const branches = new Map([...diagram.matchAll(new RegExp(`^\\s*${decision[1]}\\s*-->\\|([^|]+)\\|\\s*([\\w-]+)`, 'gm'))]
+    .map((match) => [match[1].trim(), match[2]]));
+  assert.deepEqual([...branches.keys()].sort(), ['APPROVED', 'NEEDS-REFINEMENT']);
+  assert.equal(branches.get('NEEDS-REFINEMENT'), 'epic-improve');
 });

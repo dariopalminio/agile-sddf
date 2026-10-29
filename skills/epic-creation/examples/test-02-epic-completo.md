@@ -60,7 +60,7 @@ specs/flow/EPIC-02-sistema-de-pagos/epic.md
 ```
 
 ### Fase 5 — Validación
-- `epic-format-validation` retorna **APROBADO**
+- `epic-format-validation` retorna **APPROVED**
 
 ---
 
@@ -122,4 +122,4 @@ Coordinar con marketing el comunicado de lanzamiento.
 - [ ] Cada pregunta usó el título y el comentario guía de la sección del template
 - [ ] Las historias quedaron en F1 y los smoke tests como `SMOKE-1`/`SMOKE-2` con bloque `gherkin`
 - [ ] Las secciones aparecen en el orden del template, sin los marcadores `<!-- sección … -->`
-- [ ] `epic-format-validation` retorna APROBADO sin refinamiento
+- [ ] `epic-format-validation` retorna APPROVED sin refinamiento
