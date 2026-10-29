@@ -5,8 +5,8 @@ id: STORY-169
 kind: feat
 slug: STORY-169-suites-de-integracion-y-regresion-de-la-epica
 title: "Suites de integración y regresión de la épica"
-status: SPECIFY
-substatus: IN-PROGRESS
+status: READY-FOR-IMPLEMENT
+substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
 updated: 2026-10-29

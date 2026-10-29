@@ -5,7 +5,7 @@ id: STORY-175
 kind: feat
 slug: STORY-175-admitir-epicas-archivadas-en-layout
 title: "Admitir épicas archivadas en el layout fijo con un ADR nuevo"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-29
@@ -56,6 +56,14 @@ Ejemplos:
   | /epic-from-project-plan |
 ```
 
+### AC-4 — Escenario principal – Máquina de estados y reporte de VALIDATE coherentes
+```gherkin
+Dado que el ADR nuevo del layout está aceptado
+Cuando el Solo Builder consulta la sección "Nivel ÉPICA" de docs/architecture/state-machine.md y domain-epic-lifecycle
+Entonces state-machine.md documenta que epic-ship escribe SHIP y epic-complete escribe COMPLETED de épica, cada uno solo con confirmación humana
+  Y domain-epic-lifecycle nombra epic-validate-report.md como el reporte de VALIDATE de la épica
+```
+
 ## ⚙️ Criterios no funcionales específicos
 
 - **CNF-1 — Inmutabilidad de ADR:** ADR-0017 solo recibe los cambios que permite `docs/adr/README.md`: `status: SUPERSEDED`, `superseded-by` y una nota visible de reemplazo bajo su título. El resto de su contenido no se edita (regla de AGENTS.md).
@@ -86,7 +94,9 @@ Ejemplos:
   | `docs/guides/root-folder-practices.md:34` | Ídem. |
   | `AGENTS.md`, `docs/constitution.md`, `docs/domains/domain-epic-lifecycle.md`, `docs/domains/domain-state-management.md` | Regla de archivo de épicas y escritor de `COMPLETED` de épica (AC-2). |
   | `docs/adr/README.md` | Fila del ADR nuevo y fila de ADR-0017 como `SUPERSEDED` (AC-1). |
+  | `docs/architecture/state-machine.md` (sección "Nivel ÉPICA") | `epic-ship` escribe `SHIP` y `epic-complete` escribe `COMPLETED` de épica con confirmación humana; hoy `SHIP` figura a cargo de DevOps / CI-CD (AC-4). |
+  | `docs/domains/domain-epic-lifecycle.md` | Nombrar `epic-validate-report.md` como reporte de `VALIDATE` (AC-4). |
 
   Las copias en `.claude/`, `.agents/` y `.codex/` son salida de `agile-sddf install` y no se editan a mano.
-- Cubre el criterio de salida de EPIC-23: **CS-20** en su parte del ADR nuevo y de `COMPLETED` de épica en `domain-epic-lifecycle` y `domain-state-management`. Lo completa junto con STORY-166 (`validation-contract-policy`) y STORY-170 (`SHIP` de épica); coordinar con STORY-170 el orden de edición de los documentos de dominio (invariante 6 de `domain-state-management`).
+- Cubre el criterio de salida de EPIC-23: **CS-20** — Un ADR nuevo reemplaza a ADR-0017 para admitir épicas en `specs/flow/archive/`; `domain-epic-lifecycle`, `domain-state-management` y `docs/architecture/state-machine.md` documentan que `epic-ship` y `epic-complete` escriben `SHIP` y `COMPLETED` de épica con confirmación humana, `domain-epic-lifecycle` nombra `epic-validate-report.md` como reporte de `VALIDATE`, y `validation-contract-policy` registra los gates del flujo de épica de forma coherente con su flowchart. Lo completa junto con STORY-166 (`validation-contract-policy`) y STORY-170 (`SHIP` de épica en `domain-epic-lifecycle` y `domain-state-management`); coordinar con STORY-170 el orden de edición de los documentos de dominio (invariante 6 de `domain-state-management`).
 - Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

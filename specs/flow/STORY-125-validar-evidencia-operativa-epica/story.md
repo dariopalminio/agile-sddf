@@ -5,7 +5,7 @@ id: STORY-125
 kind: feat
 slug: STORY-125-validar-evidencia-operativa-epica
 title: "Validar la evidencia operativa de una épica"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12

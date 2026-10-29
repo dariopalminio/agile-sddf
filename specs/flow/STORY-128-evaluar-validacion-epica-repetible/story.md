@@ -5,7 +5,7 @@ id: STORY-128
 kind: feat
 slug: STORY-128-evaluar-validacion-epica-repetible
 title: "Evaluar la validación de épicas de forma repetible"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12

@@ -5,11 +5,11 @@ id: STORY-166
 kind: feat
 slug: STORY-166-veredicto-de-epic-format-validation
 title: "Veredicto de epic-format-validation"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-28
+updated: 2026-10-29
 related:
   - EPIC-23-completar-flujo-de-epic
   - EPIC-25-unificar-contrato-de-validaciones-en-skills

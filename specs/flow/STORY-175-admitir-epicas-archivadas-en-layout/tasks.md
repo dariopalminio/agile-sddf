@@ -1,0 +1,70 @@
+---
+alwaysApply: false
+type: tasks
+id: STORY-175
+slug: STORY-175-admitir-epicas-archivadas-en-layout-tasks
+title: "Tasks: Admitir épicas archivadas en el layout fijo con un ADR nuevo"
+status: PLAN
+substatus: IN-PROGRESS
+parent: EPIC-23-completar-flujo-de-epic
+story: STORY-175
+design: STORY-175
+created: 2026-10-29
+updated: 2026-10-29
+related:
+  - STORY-175-admitir-epicas-archivadas-en-layout
+---
+
+<!-- Referencias -->
+[[STORY-175-admitir-epicas-archivadas-en-layout]]
+
+> **Orden de entrega:** STORY-175 → STORY-171 → STORY-172. La historia es documental y de contrato de skills: ninguna tarea crea ni modifica scripts, ni mueve épicas reales a `specs/flow/archive/`. Las copias de `.claude/`, `.agents/` y `.codex/` no se editan a mano.
+
+## 1. Precondiciones
+
+- [ ] T001 Verificar que `docs/adr/` no contiene `ADR-0019-*` (si existe, usar el siguiente número libre y sustituirlo en todas las tareas) y que ADR-0017 sigue `ACCEPTED` con `superseded-by: null` (Context de design.md) // AC-1
+- [ ] T002 [P] Comprobar si STORY-170 ya modificó la invariante 6 de `docs/domains/domain-state-management.md` y la nota «SHIP y COMPLETED son transiciones manuales» de `docs/architecture/state-machine.md`; si lo hizo, partir de su texto y conservar su cláusula de `SHIP` en T008 y T009 (D-6) // AC-2
+
+## 2. ADR del layout
+
+- [ ] T003 Crear `docs/adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md` desde `docs/adr/adr-template.md` con el frontmatter del Esquema de datos (`status: ACCEPTED`, `supersedes: ADR-0017`, `superseded-by: null`, slug `layout-fijo-con-archivo-de-epicas`). Decisión: árbol del layout de ADR-0017 con `archive/` para `<YYYY-MM-DD>-STORY-NNN-<slug>/` y `<YYYY-MM-DD>-EPIC-NN-<slug>/`; viñeta de archivo ampliada a épicas `COMPLETED/DONE` y `CANCELED/DONE` con status conservado y cadena de fecha `updated:` → `created:` → `date:`; viñetas de numeración (activas ∪ archivadas) y de resolución (los skills de gate solo resuelven épicas activas); escritor `epic-complete` con confirmación humana, en texto plano sin enlace (D-7). Rationale, Alternativas (D-1, D-3, D-4), Consecuencias y Referencias según design.md (D-1, D-2, D-3, D-4, D-8) // AC-1, CNF-2
+- [ ] T004 Editar `docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` con **solo** tres cambios: `status: SUPERSEDED`, `superseded-by: ADR-0019` y, bajo el `#` del título, la línea `> **Superado por [ADR-0019](ADR-0019-layout-fijo-con-archivo-de-epicas.md) (<fecha>):** el layout de tres raíces se mantiene; el archivo admite también las épicas COMPLETED y CANCELED.` con el formato de la nota de ADR-0016 // AC-1, CNF-1
+- [ ] T005 Actualizar `docs/adr/README.md` › Índice: estado de la fila ADR-0017 → `SUPERSEDED → [ADR-0019](ADR-0019-layout-fijo-con-archivo-de-epicas.md)` y fila nueva ADR-0019 (`ACCEPTED`, fecha de T003) al final // AC-1
+
+## 3. Documentos de autoridad
+
+- [ ] T006 [P] Actualizar `AGENTS.md`: en la viñeta «Layout fijo» citar ADR-0019 y añadir que las épicas `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` conservando su status y que `COMPLETED` de épica lo escribe `epic-complete` solo con confirmación humana; en «Dónde está el detalle › Layout» apuntar a ADR-0019 (reemplaza a ADR-0017). Mantener la viñeta concisa (C4, D-9) // AC-2
+- [ ] T007 [P] Actualizar `docs/constitution.md`: § Jerarquía de desarrollo (épica archivada en `specs/flow/archive/<YYYY-MM-DD>-<EPIC-NAME>/` al completarse o cancelarse, conservando su status, vía `epic-complete` con confirmación humana); §3 Layout fijo cita ADR-0019; §13 Rutas de output añade la línea `specs/flow/archive/<YYYY-MM-DD>-<EPIC-NN>-<slug>/ → épicas COMPLETED o CANCELED archivadas` (C5) // AC-2
+- [ ] T008 [P] Actualizar `docs/domains/domain-state-management.md` §4 invariante 6, solo la cláusula de `COMPLETED` de épica: `COMPLETED` de épica lo escribe `epic-complete` desde `SHIP/DONE`, solo con confirmación humana explícita, y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`; `epic-complete` además archiva sin cambiar el status las épicas `COMPLETED/DONE` y `CANCELED/DONE` (ADR-0019). No tocar la cláusula de `SHIP` (D-6, D-8) // AC-2
+- [ ] T009 [P] Actualizar `docs/architecture/state-machine.md`: sustituir en la nota bajo la tabla de Epic la parte de `COMPLETED` («ningún skill los escribe») por la regla de T008, conservando la de `SHIP` (o la de STORY-170 si ya existe), y en la fila `COMPLETED` de la tabla de Epic indicar el actor `Humano (vía epic-complete)` (C8, CR-001) // AC-2
+- [ ] T010 [P] Actualizar `docs/domains/domain-epic-lifecycle.md`: §5 fila `COMPLETED` (descripción con el archivo en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` y actor `Humano (vía epic-complete)`); §9 viñeta de archivo (épicas `COMPLETED/DONE` y `CANCELED/DONE`, status conservado, fecha `updated:` → `created:` → `date:`, ADR-0019) y viñeta de claves opcionales `completed:` y `version:`, fuera del template, escritas solo por `epic-complete` al completar (C6, D-8, CR-002) // AC-2
+
+## 4. Guías
+
+- [ ] T011 [P] Actualizar `docs/guides/organization-of-artifacts.md` §2: el párrafo introductorio cita ADR-0019 y añade las épicas archivadas; el árbol incluye `└── 2026-05-02-EPIC-002-otra-epica/   # épica COMPLETED o CANCELED archivada`; sustituir la línea 53 «Las épicas no se archivan.» por la regla de ADR-0019 (C9) // AC-2
+- [ ] T012 [P] Actualizar `docs/guides/root-folder-practices.md` § Layout fijo: la línea 23 cita ADR-0019 (que reemplaza a ADR-0017); la fila `specs/` añade `<YYYY-MM-DD>-EPIC-NN-<slug>/` para las épicas `COMPLETED` o `CANCELED`; sustituir «Las épicas no se archivan.» por la regla de archivo de épicas con la misma cadena de fecha (C10) // AC-2
+- [ ] T013 [P] Actualizar `docs/guides/artifact-directory-migration.md:45`: acotar la nota a lo que hace la migración 5.0.0 («La migración solo archiva las historias `COMPLETED`; las `CANCELED`, las de cualquier otro estado y las épicas quedan en `specs/flow/`») y añadir que archivarlas después lo hacen `/story-complete` y `epic-complete` con confirmación humana (ADR-0019), sin enlace a `skills/epic-complete/` (C11, D-7, CR-001) // AC-2
+
+## 5. Skills de épica
+
+- [ ] T014 [P] Actualizar `skills/epic-analyze/SKILL.md` Paso 1: retirar «(las épicas no se archivan)»; añadir, antes de la tabla de resultados, la regla de épica archivada (ruta explícita bajo `specs/flow/archive/`, o 0 coincidencias activas y existe `specs/flow/archive/*-<arg>-*/epic.md`) con el mensaje `❌ La épica <arg> está archivada en <ruta>: /epic-analyze solo analiza épicas activas de specs/flow/.` y fin sin escribir; añadir la fila correspondiente a la tabla de resultados. Conservar `<!-- SDDF-FIXED-LAYOUT: v1 -->` (C12, D-5) // AC-2
+- [ ] T015 [P] Actualizar `skills/epic-creation/SKILL.md` «Construir el ID de directorio»: Glob de `specs/flow/EPIC-*/epic.md` y de `specs/flow/archive/*-EPIC-*/epic.md`; en las archivadas, el `NN` del `EPIC-NN` que sigue al prefijo `<YYYY-MM-DD>-`; si `archive/` no existe, omitirlo sin nota; tomar el máximo de la unión + 1; sustituir «Las épicas no se archivan: no se consulta `specs/flow/archive/`.»; ampliar la comprobación con Bash a ambos orígenes (C13, D-4, F3) // AC-3
+- [ ] T016 [P] Actualizar `skills/epic-from-project-plan/SKILL.md` Fase 2: `$MAX_EPIC` es el mayor `NN` de `specs/flow/EPIC-<NN>-*/` y de `specs/flow/archive/<YYYY-MM-DD>-EPIC-<NN>-*/` (origen ausente omitido sin nota); en `skills/epic-from-project-plan/README.md:7` precisar «Numera desde el mayor ID existente, incluidas las épicas archivadas» (C14, D-4, F3) // AC-3
+
+## 6. Evals
+
+- [ ] T017 [P] Añadir `TC-008` a `cases` de `skills/epic-creation/evals/evals.json` con el formato de los casos existentes: fixture `specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/epic.md` y `specs/flow/EPIC-29-*/epic.md` como mayor activa; expectativas: propone `EPIC-31` y nunca `EPIC-30` (Esquema › Eval por skill) // AC-3
+- [ ] T018 [P] Añadir `TC-012` a `cases` de `skills/epic-from-project-plan/evals/evals.json` con el mismo fixture y una propuesta de una épica en `docs/product/roadmap.md`; expectativas: crea `specs/flow/EPIC-31-<slug>/epic.md` y no crea `EPIC-30-*` // AC-3
+- [ ] T019 [P] Añadir `TC-030` a `cases` de `skills/epic-analyze/evals/evals.json`: `EPIC-30` solo existe en `specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/`; expectativas: mensaje de épica archivada con la ruta y ningún archivo escrito ni modificado // AC-2
+
+## 7. Índices y trazabilidad
+
+- [ ] T020 Regenerar `docs/index.md` con `node skills/memory-system/scripts/memory-system.js index --root docs` y verificar que incluye la entrada de ADR-0019 (C15) // CNF-3
+- [ ] T021 [P] Actualizar la tabla «Alcance cerrado» de `story.md` (Notas) con `docs/architecture/state-machine.md`, `docs/guides/artifact-directory-migration.md:45` y las claves `completed:`/`version:` en `domain-epic-lifecycle` (CR-001, CR-002 de design.md)
+
+## 8. Verificación
+
+- [ ] T022 Verificar los contratos 1–3 de design.md: revisar ADR-0019 (estado, `supersedes`, archivo de épicas y cadena de fecha); `git diff -- docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` muestra solo `status`, `superseded-by` y la nota; filas de ADR-0017 y ADR-0019 en `docs/adr/README.md` // AC-1, CNF-1, CNF-2
+- [ ] T023 Verificar el contrato 4: `git grep -n -i -E "épicas (no se archivan|nunca se archivan)|todas las épicas quedan" -- AGENTS.md docs skills ':!docs/adr/ADR-*' ':!skills/*/evals/*'` sin resultados; y el contrato 5: `git grep -n "epic-complete"` encuentra coincidencia en `AGENTS.md`, `docs/constitution.md`, `domain-epic-lifecycle.md`, `domain-state-management.md` y `state-machine.md` // AC-2
+- [ ] T024 Ejecutar `npm run verify:repository` y `npm test`; ambos deben pasar sin errores (incluye `verify:links` y `verify:layout`) // CNF-3
+- [ ] T026 Registrar en el resumen de implementación que los casos `TC-008`, `TC-012` y `TC-030` quedan para `npm run test:eval -- <skill>` a criterio humano (contratos 6 y 7; AGENTS.md) // AC-2, AC-3

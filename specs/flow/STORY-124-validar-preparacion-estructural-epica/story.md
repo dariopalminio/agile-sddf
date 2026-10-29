@@ -5,11 +5,11 @@ id: STORY-124
 kind: feat
 slug: STORY-124-validar-preparacion-estructural-epica
 title: "Validar la preparación estructural de una épica"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-28
+updated: 2026-10-29
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-125

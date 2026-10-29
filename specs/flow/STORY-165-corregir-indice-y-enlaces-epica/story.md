@@ -5,7 +5,7 @@ id: STORY-165
 kind: feat
 slug: STORY-165-corregir-indice-y-enlaces-epica
 title: "Skill epic-refine (Core): corregir índice y enlaces de una épica"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-25
