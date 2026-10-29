@@ -12,7 +12,7 @@ created: 2026-10-27
 updated: 2026-10-28
 related:
   - EPIC-23-completar-flujo-de-epic
-  - STORY-171-skill-epic-complete-core-completar-y-archivar-una-epica-liberada
+  - STORY-171-completar-archivar-epica-liberada
 ---
 [[EPIC-23-completar-flujo-de-epic]]
 
