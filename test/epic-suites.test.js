@@ -154,6 +154,56 @@ test('check-command no escribe en REPO_ROOT', (t) => {
   assert.deepEqual(snapshot(root), before);
 });
 
+// STORY-137 V-1/V-2: `--full-output` agrega `output` (presentación) sin cambiar los campos de evidencia.
+const sinVolatiles = ({ durationSeconds, output, ...rest }) => rest;
+
+test('check-command --full-output agrega output con stdout y stderr; sin la opción no hay clave output', (t) => {
+  const root = makeRepo(t);
+  const command = `${NODE} -e "console.log('SDDF-MARCA-1'); console.error('SDDF-MARCA-2')"`;
+  const full = runCli(['check-command', '--repo-root', root, '--command', command, '--full-output']);
+  const plain = runCli(['check-command', '--repo-root', root, '--command', command]);
+  assert.equal(full.status, 0);
+  assert.equal(full.json.outcome, 'pass');
+  assert.ok(full.json.output.indexOf('SDDF-MARCA-1') < full.json.output.indexOf('SDDF-MARCA-2'));
+  assert.ok(full.json.output.includes('SDDF-MARCA-2'));
+  assert.equal(plain.status, 0);
+  assert.ok(!Object.prototype.hasOwnProperty.call(plain.json, 'output'));
+  assert.deepEqual(sinVolatiles(full.json), sinVolatiles(plain.json));
+});
+
+test('--full-output con fail conserva la salida completa y el mismo outputTail', (t) => {
+  const root = makeRepo(t);
+  const command = `${NODE} -e "for(let i=1;i<=30;i++)console.log('linea '+i);process.exit(1)"`;
+  const full = classifyCommand(root, command, { fullOutput: true });
+  const plain = classifyCommand(root, command);
+  assert.equal(full.outcome, 'fail');
+  assert.equal(full.output.replace(/\r\n/g, '\n').trimEnd().split('\n').length, 30);
+  assert.ok(full.output.includes('linea 1\n') || full.output.includes('linea 1\r\n'));
+  assert.equal(full.outputTail, plain.outputTail);
+  assert.deepEqual(sinVolatiles(full), sinVolatiles(plain));
+});
+
+test('--full-output con un comando no lanzado → output: null', (t) => {
+  const root = makeRepo(t, { scripts: {} });
+  const result = classifyCommand(root, 'npm run sddf-no-declarado', { fullOutput: true });
+  assert.equal(result.outcome, 'not-executable');
+  assert.equal(result.output, null);
+  const { status, json } = runCli(['check-command', '--repo-root', root, '--command', 'sddf-no-existe-xyz', '--full-output']);
+  assert.equal(status, 0);
+  assert.equal(json.outcome, 'not-executable');
+  assert.equal(json.output, null);
+});
+
+test('--full-output acepta cualquier posición y una opción desconocida sigue saliendo con 2', (t) => {
+  const root = makeRepo(t);
+  const first = runCli(['check-command', '--full-output', '--repo-root', root, '--command', `${NODE} -e "process.exit(0)"`]);
+  assert.equal(first.status, 0);
+  assert.equal(first.json.output, '');
+  const unknown = runCli(['check-command', '--repo-root', root, '--command', 'x', '--verbose']);
+  assert.equal(unknown.status, 2);
+  assert.equal(unknown.stdout, '');
+});
+
 test('comando de smoke tests con el ID ya sustituido se clasifica como cualquier otro', (t) => {
   const root = makeRepo(t);
   const smoke = (id) => `${NODE} -e "process.exit(process.argv[1]==='SMOKE-2'?1:0)" ${id}`;

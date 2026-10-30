@@ -1,7 +1,7 @@
 {
   "skill": "epic-validate",
-  "version": "1.3.0",
-  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto. STORY-126 agrega la operación segura: --mode auto nunca pregunta y --mode manual es interactivo; --dry-run imprime el reporte completo sin escribir archivos, ejecutar comandos ni pedir confirmaciones (OPE-* no ejecutada); los errores de invocación (--mode inválido, sin valor o repetido) terminan sin leer ni escribir; toda ejecución cierra con el bloque RESULTADO (ÉXITO / FALLO / SIMULACIÓN) · VEREDICTO · MODO · REPORTE; y una repetición sin cambios conserva created y el orden de los motivos. STORY-128 agrega el conjunto de regresión del veredicto (un mundo base EPIC-90 en --mode auto con una variación por caso: APPROVED, historia no terminal → NEEDS-CHANGES, smoke test no ejecutable → BLOCKED y la precedencia G-05 de NEEDS-CHANGES sobre BLOCKED) y la forma cerrada de las aserciones del veredicto en todos los casos: verdict en el frontmatter seguido de created, la misma línea **Veredicto:** y la ausencia de los otros dos valores, con threshold 1.",
+  "version": "1.4.0",
+  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto. STORY-126 agrega la operación segura: --mode auto nunca pregunta y --mode manual es interactivo; --dry-run imprime el reporte completo sin escribir archivos, ejecutar comandos ni pedir confirmaciones (OPE-* no ejecutada); los errores de invocación (--mode inválido, sin valor o repetido) terminan sin leer ni escribir; toda ejecución cierra con el bloque RESULTADO (ÉXITO / FALLO / SIMULACIÓN) · VEREDICTO · MODO · REPORTE; y una repetición sin cambios conserva created y el orden de los motivos. STORY-128 agrega el conjunto de regresión del veredicto (un mundo base EPIC-90 en --mode auto con una variación por caso: APPROVED, historia no terminal → NEEDS-CHANGES, smoke test no ejecutable → BLOCKED y la precedencia G-05 de NEEDS-CHANGES sobre BLOCKED) y la forma cerrada de las aserciones del veredicto en todos los casos: verdict en el frontmatter seguido de created, la misma línea **Veredicto:** y la ausencia de los otros dos valores, con threshold 1. STORY-137: --verbose muestra en consola la salida completa de los comandos de prueba sin cambiar el veredicto ni el reporte, y --mode auto sin pruebas configuradas es un error de invocación sin efectos.",
   "cases": [
     {
       "id": "TC-001",
@@ -909,9 +909,9 @@
     },
     {
       "id": "TC-012",
-      "name": "auto-sin-smoke-configurado-blocked",
+      "name": "auto-smoke-configurado-no-ejecutable-blocked",
       "type": "error-handling",
-      "description": "STORY-125 V-6 (D-7): con --mode auto y sin verify.e2e-smoke en sddf.config.yaml, SMOKE-1 no se puede ejecutar. OPE-01 queda bloqueada y, sin ninguna comprobación que falle, el reporte es BLOCKED.",
+      "description": "STORY-125 V-6, reemplazado por STORY-137 CR-001/D-1: con --mode auto y un verify.e2e-smoke.command declarado pero no ejecutable (ejecutable fuera del PATH), la invocación no se rechaza (hay pruebas configuradas): el motor lo clasifica not-executable, la consola lo muestra en su línea ▶, SMOKE-1 queda no ejecutable, OPE-01 bloqueada y, sin ninguna comprobación que falle, el reporte es BLOCKED. El caso sin verify.e2e-smoke es ahora el error de invocación de TC-029.",
       "input": {
         "invocation": "/epic-validate EPIC-40 --mode auto",
         "mode": "manual",
@@ -954,7 +954,11 @@
           "updated": "2026-10-25"
         },
         "sddf_config": {
-          "verify": {}
+          "verify": {
+            "e2e-smoke": {
+              "command": "sddf-eval-smoke-inexistente"
+            }
+          }
         },
         "package_json": {
           "scripts": {
@@ -967,7 +971,23 @@
           "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
           "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
         },
-        "today": "2026-10-30"
+        "today": "2026-10-30",
+        "command_results": {
+          "sddf-eval-smoke-inexistente": {
+            "outcome": "not-executable",
+            "exitCode": null,
+            "durationSeconds": null,
+            "reason": "ejecutable no encontrado (no está en el PATH)",
+            "outputTail": null
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null
+          }
+        }
       },
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
@@ -977,7 +997,9 @@
           "OPE-01",
           "SMOKE-1",
           "no ejecutable",
-          "verify.e2e-smoke"
+          "verify.e2e-smoke",
+          "▶ OPE-01",
+          "→ not-executable"
         ],
         "not_contains": [
           "verdict: NEEDS-CHANGES",
@@ -987,7 +1009,8 @@
           "{veredicto}",
           "{motivo}",
           "**Veredicto:** `APPROVED`",
-          "**Veredicto:** `NEEDS-CHANGES`"
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "sin pruebas configuradas"
         ]
       },
       "threshold": 1
@@ -2183,6 +2206,514 @@
           "**Veredicto:** `BLOCKED`"
         ]
       }
+    },
+    {
+      "id": "TC-027",
+      "name": "verbose-muestra-salida-completa",
+      "type": "happy-path",
+      "description": "STORY-137 AC-1 (fila --verbose) / CNF-1 / V-4: fixture de TC-006 con un verify.e2e-smoke.command que imprime SDDF-MARCA-1 (el texto del comando no contiene la marca). Con --mode auto --verbose, cada comando ejecutado muestra su línea ▶ y debajo su salida completa en un bloque text; el veredicto es APPROVED como sin --verbose y la marca solo aparece en consola, nunca en el reporte.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto --verbose",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"console.log(['SDDF','MARCA','1'].join('-'))\"",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"console.log(['SDDF','MARCA','1'].join('-'))\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null,
+            "output": "SDDF-MARCA-1\n"
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null,
+            "output": ""
+          }
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
+          "▶ OPE-01",
+          "▶ OPE-02",
+          "→ pass",
+          "```text",
+          "SDDF-MARCA-1",
+          "RESULTADO: ÉXITO"
+        ],
+        "not_contains": [
+          "ℹ️ --verbose",
+          "Argumento no reconocido",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-028",
+      "name": "sin-verbose-solo-resumen",
+      "type": "happy-path",
+      "description": "STORY-137 AC-1 (fila «ninguno») / CNF-1 / V-5: mismo fixture que TC-027 sin --verbose. Cada comando ejecutado muestra solo su línea ▶ con el resultado; no se muestra su salida (SDDF-MARCA-1 no aparece) y el veredicto es el mismo que en TC-027.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"console.log(['SDDF','MARCA','1'].join('-'))\"",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"console.log(['SDDF','MARCA','1'].join('-'))\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null,
+            "output": "SDDF-MARCA-1\n"
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null,
+            "output": ""
+          }
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
+          "▶ OPE-01",
+          "▶ OPE-02",
+          "→ pass",
+          "RESULTADO: ÉXITO"
+        ],
+        "not_contains": [
+          "SDDF-MARCA-1",
+          "```text",
+          "ℹ️ --verbose",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-029",
+      "name": "mode-auto-sin-pruebas-rechazado",
+      "type": "fail-fast",
+      "description": "STORY-137 AC-2 / V-6: --mode auto con un sddf.config.yaml que no declara verify.e2e-smoke. Es un error de invocación (Paso 1.2): termina con el mensaje de la guardia, sin resolver la épica, sin ejecutar comandos ni escribir archivos, y con RESULTADO: FALLO, MODO: auto y MOTIVO.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {}
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "contains": [
+          "❌ --mode auto sin pruebas configuradas: verify.e2e-smoke.command no está declarado. Declara verify.e2e-smoke.command en sddf.config.yaml o usa --mode manual",
+          "RESULTADO: FALLO",
+          "VEREDICTO: —",
+          "MODO: auto",
+          "REPORTE: —",
+          "MOTIVO: ❌ --mode auto sin pruebas configuradas"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "▶",
+          "Reporte escrito",
+          "verdict:",
+          "Previsualización"
+        ],
+        "files_written": []
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-030",
+      "name": "dry-run-verbose-sin-comandos",
+      "type": "happy-path",
+      "description": "STORY-137 AC-3 / V-7: fixture de TC-027 con --dry-run --verbose. La guardia de previsualización no invoca el motor: no hay líneas ▶ ni salida de comandos, la consola informa que no se ejecutó ningún comando de prueba por --dry-run y no se escribe ningún archivo.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --dry-run --verbose",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"console.log(['SDDF','MARCA','1'].join('-'))\"",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"console.log(['SDDF','MARCA','1'].join('-'))\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null,
+            "output": "SDDF-MARCA-1\n"
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null,
+            "output": ""
+          }
+        }
+      },
+      "expected": {
+        "contains": [
+          "ℹ️ --verbose: no se ejecutó ningún comando de prueba (--dry-run)",
+          "── Previsualización (--dry-run): no se escribió specs/flow/EPIC-40-operativa/epic-validate-report.md ──",
+          "RESULTADO: SIMULACIÓN",
+          "REPORTE: —"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "▶",
+          "SDDF-MARCA-1",
+          "Reporte escrito",
+          "RESULTADO: ÉXITO"
+        ],
+        "files_written": []
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-031",
+      "name": "verbose-antes-de-mode-auto",
+      "type": "happy-path",
+      "description": "STORY-137 CNF-2 / V-8: mismo fixture que TC-027 con los flags en otro orden (--verbose --mode auto). El orden no cambia el resultado: la salida esperada es la misma que la de TC-027.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --verbose --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"console.log(['SDDF','MARCA','1'].join('-'))\"",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"console.log(['SDDF','MARCA','1'].join('-'))\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null,
+            "output": "SDDF-MARCA-1\n"
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null,
+            "output": ""
+          }
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
+          "▶ OPE-01",
+          "▶ OPE-02",
+          "→ pass",
+          "```text",
+          "SDDF-MARCA-1",
+          "RESULTADO: ÉXITO"
+        ],
+        "not_contains": [
+          "ℹ️ --verbose",
+          "Argumento no reconocido",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
+        ]
+      },
+      "threshold": 1
     }
   ]
 }

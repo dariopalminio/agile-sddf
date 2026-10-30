@@ -19,10 +19,12 @@
  * `npm.cmd` no se lanza sin shell en Windows; solo recibe comandos de archivos versionados del
  * proyecto (excepción a `sec-no-shell-injection`, STORY-125 D-12).
  *
- * Uso: node epic-suites.js check-command --repo-root <dir> --command "<cmd>"
+ * Uso: node epic-suites.js check-command --repo-root <dir> --command "<cmd>" [--full-output]
  *
  * Salida: un único objeto JSON `CommandResult` en stdout
- * (`{ ok, command, outcome, exitCode, durationSeconds, reason, outputTail }`). Exit code: 0 si
+ * (`{ ok, command, outcome, exitCode, durationSeconds, reason, outputTail }`). Con `--full-output`
+ * (STORY-137, `--verbose` del skill) agrega `output`: stdout completo seguido de stderr completo, sin
+ * truncar y para cualquier `outcome`, o `null` si el comando no se lanzó; el resto no cambia. Exit code: 0 si
  * pudo evaluar (aunque el comando falle); 1 ante un error interno; 2 ante argumentos inválidos
  * (error en stderr). Nunca lee stdin ni escribe archivos.
  */
@@ -89,49 +91,60 @@ function tail(text) {
   return text.replace(/\r\n/g, '\n').replace(/\n+$/, '').split('\n').slice(-TAIL_LINES).join('\n');
 }
 
-/** Ejecuta `command` en `repoRoot` y devuelve su `CommandResult`. */
-function classifyCommand(repoRoot, command) {
+/**
+ * Ejecuta `command` en `repoRoot` y devuelve su `CommandResult`. Con `fullOutput`, agrega `output`
+ * (salida completa, `null` si no se lanzó) sin cambiar ningún otro campo (STORY-137 D-4, D-5).
+ */
+function classifyCommand(repoRoot, command, { fullOutput = false } = {}) {
   const base = { ok: true, command, outcome: 'not-executable', exitCode: null, durationSeconds: null, reason: null, outputTail: null };
+  const withOutput = (res, output = null) => (fullOutput ? { ...res, output } : res);
   const reason = precheckCommand(repoRoot, command);
-  if (reason) return { ...base, reason };
+  if (reason) return withOutput({ ...base, reason });
 
   const start = process.hrtime.bigint();
   const result = spawnSync(command, { cwd: repoRoot, shell: true, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
   const durationSeconds = Math.round(Number(process.hrtime.bigint() - start) / 1e8) / 10;
 
-  if (result.error && result.error.code === 'ENOENT') return { ...base, reason: 'ejecutable no encontrado (código ENOENT)' };
+  if (result.error && result.error.code === 'ENOENT') return withOutput({ ...base, reason: 'ejecutable no encontrado (código ENOENT)' });
   if (result.error) throw result.error;
-  if (NOT_FOUND_CODES.has(result.status)) return { ...base, exitCode: result.status, durationSeconds, reason: `ejecutable no encontrado (código ${result.status})` };
-  if (result.status === 0) return { ...base, outcome: 'pass', exitCode: 0, durationSeconds };
-  return { ...base, outcome: 'fail', exitCode: result.status, durationSeconds, outputTail: tail(`${result.stdout || ''}${result.stderr || ''}`) };
+  if (NOT_FOUND_CODES.has(result.status)) return withOutput({ ...base, exitCode: result.status, durationSeconds, reason: `ejecutable no encontrado (código ${result.status})` });
+  const output = `${result.stdout || ''}${result.stderr || ''}`;
+  if (result.status === 0) return withOutput({ ...base, outcome: 'pass', exitCode: 0, durationSeconds }, output);
+  return withOutput({ ...base, outcome: 'fail', exitCode: result.status, durationSeconds, outputTail: tail(output) }, output);
 }
 
-/** `{ subcommand, repoRoot, command }` o `{ error }`. */
+/** `{ subcommand, repoRoot, command, fullOutput }` o `{ error }`. */
 function parseArgs(argv) {
   const [subcommand, ...rest] = argv;
   if (subcommand !== 'check-command') return { error: subcommand ? `subcomando desconocido: ${subcommand}` : 'falta el subcomando (check-command)' };
   const opts = {};
-  for (let i = 0; i < rest.length; i += 2) {
+  let fullOutput = false;
+  for (let i = 0; i < rest.length; i += 1) {
     const flag = rest[i];
+    if (flag === '--full-output') {
+      fullOutput = true;
+      continue;
+    }
     if (flag !== '--repo-root' && flag !== '--command') return { error: `argumento no reconocido: ${flag}` };
     if (rest[i + 1] === undefined) return { error: `${flag} requiere un valor` };
     opts[flag] = rest[i + 1];
+    i += 1;
   }
   if (!opts['--repo-root']) return { error: 'falta --repo-root <dir>' };
   if (!opts['--command'] || !opts['--command'].trim()) return { error: 'falta --command "<cmd>"' };
   const repoRoot = path.resolve(opts['--repo-root']);
   if (!fs.existsSync(repoRoot) || !fs.statSync(repoRoot).isDirectory()) return { error: `--repo-root no es un directorio: ${repoRoot}` };
-  return { subcommand, repoRoot, command: opts['--command'] };
+  return { subcommand, repoRoot, command: opts['--command'], fullOutput };
 }
 
 function main(argv) {
   const args = parseArgs(argv);
   if (args.error) {
-    process.stderr.write(`epic-suites: ${args.error}\nUso: node epic-suites.js check-command --repo-root <dir> --command "<cmd>"\n`);
+    process.stderr.write(`epic-suites: ${args.error}\nUso: node epic-suites.js check-command --repo-root <dir> --command "<cmd>" [--full-output]\n`);
     return 2;
   }
   try {
-    process.stdout.write(`${JSON.stringify(classifyCommand(args.repoRoot, args.command))}\n`);
+    process.stdout.write(`${JSON.stringify(classifyCommand(args.repoRoot, args.command, { fullOutput: args.fullOutput }))}\n`);
     return 0;
   } catch (err) {
     process.stdout.write(`${JSON.stringify({ ok: false, command: args.command, error: err.message })}\n`);

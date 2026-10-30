@@ -238,3 +238,9 @@ Ninguna: la decisión abierta de la historia se resuelve en D-1, y las que afect
 - **Descripción**: C5 amplía el contrato I1 del motor `epic-suites.js` (STORY-169, reutilizado por STORY-125 D-8) con la opción `--full-output` y el campo `output`. El motor y `test/epic-suites.test.js` aún no existen.
 - **Documento afectado**: tasks.md; STORY-169 y STORY-125 design.md (contrato I1)
 - **Acción requerida**: implementar C5 y C6 después de que exista el motor (STORY-125 T001 o STORY-169 T001). Si se implementa antes, crear solo `check-command` con el contrato I1 completo más `--full-output`, y dejar `run` para STORY-169 con la obligación de aceptar la opción. Anotar `--full-output` en el contrato I1 al refinar la épica.
+
+### CR-004
+- **Tipo**: ajuste de implementación
+- **Descripción**: el runner de evals (`scripts/run-evals.js`) califica `contains`/`not_contains` sobre la respuesta completa, que siempre empieza con `=== CONSOLE ===`, y no permite asertar sobre un solo archivo. Por eso: (a) V-6 y V-7 usan `not_contains` `=== FILE:` (ningún archivo escrito) en lugar de `===`; (b) V-4 no puede asertar que el reporte no contiene `SDDF-MARCA-1` porque la consola sí lo contiene. Para que V-5 sea concluyente, el comando del fixture (`node -e "console.log(['SDDF','MARCA','1'].join('-'))"`) no contiene la marca literal: solo su salida la contiene, así que la marca solo puede aparecer vía `output`. Los casos que afirman un veredicto usan la forma cerrada de STORY-128 (`verdict: <V>\ncreated:`, `**Veredicto:**` y `threshold` 1) en lugar de `verdict:`.
+- **Documento afectado**: `skills/epic-validate/evals/evals.json` (TC-027…TC-031)
+- **Acción requerida**: ninguna; CNF-1 en el reporte queda cubierto por las pruebas del motor (V-1, V-2: los campos de evidencia no cambian con `--full-output`) y por el recorrido manual de T024.
