@@ -7,7 +7,7 @@ status: PLAN
 substatus: IN-PROGRESS
 parent: null
 created: 2026-10-12
-updated: 2026-10-29
+updated: 2026-10-30
 related:
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
   - EPIC-27-completar-flujo-de-story
@@ -47,10 +47,10 @@ Fase PLAN — skill nuevo `epic-refine` (dividido en tres historias):
 - [x] **STORY-174** — Skill epic-refine: corregir referencias obsoletas tras un split: Como Solo Builder, quiero que `/epic-refine EPIC-NN` detecte y corrija las referencias a slugs de historias que dejaron de existir tras un `/story-split`, aunque `epic-analyze` no las reporte, para que el índice de la épica y los `related` de sus historias apunten a historias reales sin rastrearlas a mano después de cada split.
 
 Fase DEVELOP — skill nuevo `epic-track-progress`:
-- [ ] **STORY-168** — Skill epic-track-progress: Como Solo Builder, quiero ejecutar `/epic-track-progress EPIC-NN` para ver el status y substatus de cada historia hija, incluidas las archivadas, y saber si todas están terminadas sin que se modifique ningún archivo, para pasar a `/epic-validate` solo cuando no queda ninguna historia pendiente.
+- [x] **STORY-168** — Skill epic-track-progress: Como Solo Builder, quiero ejecutar `/epic-track-progress EPIC-NN` para ver el status y substatus de cada historia hija, incluidas las archivadas, y saber si todas están terminadas sin que se modifique ningún archivo, para pasar a `/epic-validate` solo cuando no queda ninguna historia pendiente.
 
 Fase VALIDATE — skill nuevo `epic-validate` (dividido en siete historias):
-- [ ] **STORY-124** — Validar la preparación estructural de una épica: determinar el veredicto a partir del cierre de historias y del análisis de la épica.
+- [x] **STORY-124** — Validar la preparación estructural de una épica: determinar el veredicto a partir del cierre de historias y del análisis de la épica.
 - [ ] **STORY-125** — Validar la evidencia operativa de una épica: incorporar smoke tests, verificación de release y DoD aplicable.
 - [ ] **STORY-126** — Operar la validación de épicas de manera segura: ofrecer modos manual, automático y de previsualización sin efectos inesperados.
 - [ ] **STORY-127** — Integrar y documentar el gateway de validación de épicas: aplicar el gateway antes de la transición y hacerlo disponible en los runtimes soportados.
@@ -180,7 +180,7 @@ Escenario: Cierre y archivado de una épica liberada
 - **Veredicto de rechazo en `DEFINE` (decisión del PO, 2026-10-27):** `epic-format-validation` rechaza con `NEEDS-REFINEMENT`, el valor que `validation-contract-policy` §2 reserva para artefactos de especificación (épica o historia). El diagrama ya rotula `NEEDS-REFINEMENT` la rama hacia `epic-improve`. Falta versionar la política, que hoy excluye a `epic-format-validation` en §1 y no le asigna fila en §4 (STORY-166).
 - **Coherencia flowchart ↔ política:** la invariante de §4 de la política exige que las ramas `verdict` de cada skill coincidan con sus valores permitidos. `epic-validate` admite `BLOCKED`, que no tiene rama en el diagrama; al enlazar el flowchart desde la política, agregar esa rama.
 - **`READY-FOR-DEV`:** el diagrama pasa de `PLAN` a `DEVELOP` sin el buffer. El estado y su WIP siguen vigentes según `domain-epic-lifecycle`; ningún skill de esta épica lo escribe.
-- **Historia terminada (gate de `DEVELOP`):** la decisión «all stories done?» del diagrama es la invariante 3 de `domain-epic-lifecycle` (todas las historias en `DELIVER`). `epic-track-progress` cuenta como terminadas las `DELIVER/DONE` y `COMPLETED/DONE`, incluidas las archivadas; el tratamiento de las `CANCELED/DONE` se decide al refinar STORY-168.
+- **Historia terminada (gate de `DEVELOP`):** la decisión «all stories done?» del diagrama es la invariante 3 de `domain-epic-lifecycle` (todas las historias en `DELIVER`). `epic-track-progress` cuenta como terminadas las `DELIVER/DONE` y `COMPLETED/DONE`, incluidas las archivadas; las `CANCELED/DONE` se muestran como `cancelada` y no bloquean el gate (STORY-168, design.md D-3); la aclaración de la invariante 3 de `domain-epic-lifecycle` §7 queda para STORY-171.
 - **Posición de `epic-validate`:** en el diagrama, el gate de completitud `DEVELOP → VALIDATE` lo resuelve `epic-track-progress`; `epic-validate` decide `VALIDATE → SHIP`. Su gateway (decisión del PO, 2026-10-29; STORY-127) escribe `VALIDATE/IN-PROGRESS → VALIDATE/DONE` con `APPROVED`, que deja la épica lista para `SHIP`, y devuelve la épica a `DEVELOP/IN-PROGRESS` con `NEEDS-CHANGES` o `BLOCKED`.
 - **Suites de staging:** `sddf.config.yaml` declara las suites en `verify` (`integration`, `e2e`, `e2e-regression`), pero no define entornos. STORY-169 decide cómo se declara el entorno de staging.
 - **Escritores de estado:** la invariante 6 de `domain-state-management` impide hoy que un skill escriba `SHIP` o `COMPLETED` de épica. STORY-170 (`SHIP`, para `epic-ship`) y STORY-175 (`COMPLETED`, para `epic-complete`) ajustan los documentos de dominio, como hizo EPIC-27 con `DELIVER` y `COMPLETED` de story.
@@ -193,8 +193,7 @@ Escenario: Cierre y archivado de una épica liberada
   - Si hay a la vez algo que no cumple y algo bloqueado, gana `NEEDS-CHANGES`.
   - Antes, `BLOCKED` significaba «la validación falló»; ese caso es ahora `NEEDS-CHANGES`.
 - **Alineación pendiente de historias existentes** (el `parent` de STORY-124 a STORY-128, STORY-137 y STORY-165 ya apunta a `EPIC-23-completar-flujo-de-epic`, 2026-10-27):
-  - STORY-124 a STORY-128 todavía usan `APPROVED` / `BLOCKED` y deben alinearse con el vocabulario descrito arriba.
-  - STORY-124 cita el texto anterior de CS-1, con `SPECS_BASE`, retirado por ADR-0017.
+  - STORY-125 a STORY-128 todavía usan `APPROVED` / `BLOCKED` y deben alinearse con el vocabulario descrito arriba.
 - Los IDs `CS-N` de los criterios de salida son estables, como los `SMOKE-N`: no se renumeran al insertar o eliminar criterios.
 - Cada criterio de salida y cada smoke test tiene una historia dueña que lo cita en sus notas: STORY-124 (CS-1, CS-2, CS-3, CS-5, CS-6; SMOKE-2, SMOKE-3), STORY-125 (CS-4; SMOKE-1), STORY-126 (CS-7), STORY-127 (CS-8), STORY-128 (CS-9), STORY-137 (CS-10, junto con STORY-126 para `--mode` y `--dry-run`), STORY-165 (CS-15; SMOKE-5; STORY-173 y STORY-174 amplían su parte de CS-15 con la cobertura de criterios de salida y las referencias obsoletas tras un split), STORY-166 (CS-13; la parte de CS-20 sobre `validation-contract-policy`), STORY-167 (CS-14; SMOKE-4), STORY-168 (CS-16; SMOKE-6), STORY-169 (CS-11), STORY-170 (CS-17, CS-18; la parte de CS-20 sobre `SHIP` en `domain-epic-lifecycle` y `domain-state-management`; SMOKE-7), STORY-171 (CS-19 para `SHIP/DONE` y `COMPLETED/DONE`; SMOKE-8), STORY-172 (CS-19 para `CANCELED/DONE`) y STORY-175 (CS-20 como dueña: el ADR nuevo, `COMPLETED`, `docs/architecture/state-machine.md` y el nombre de `epic-validate-report.md` en `domain-epic-lifecycle`). CS-12 se reparte entre las historias de cada skill nuevo: STORY-165, STORY-167, STORY-168, STORY-170 y STORY-171. CS-21 es transversal: toda historia lo cumple antes de entregarse.
 - Flags de `/epic-validate`:

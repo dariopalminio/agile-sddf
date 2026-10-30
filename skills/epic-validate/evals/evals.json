@@ -1,0 +1,223 @@
+{
+  "skill": "epic-validate",
+  "version": "1.0.0",
+  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "historias-cerradas-analisis-approved",
+      "type": "happy-path",
+      "description": "AC-1: EPIC-30-ejemplo lista STORY-201 (activa, DELIVER/DONE) y STORY-202 (archivada, COMPLETED/DONE); STORY-305 declara EPIC-300-otra y no pertenece a EPIC-30. epic-analyze-report.md declara verdict: APPROVED. El skill escribe epic-validate-report.md con verdict APPROVED en el frontmatter y en ## Veredicto, sin motivos y sin marcadores de plantilla.",
+      "input": {
+        "invocation": "/epic-validate EPIC-30",
+        "mode": "manual",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/", "specs/flow/EPIC-300-otra/"],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: status: DEVELOP", "6: substatus: IN-PROGRESS", "7: ---",
+          "8: # Épica: Épica de ejemplo",
+          "9: ## Historias <!-- sección obligatoria · clave: historias · escritor: epic-creation (F1) -->",
+          "10: - [x] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "11: - [x] **STORY-202** — Filtrar clientes: filtra el listado por estado."
+        ],
+        "stories": [
+          { "path": "specs/flow/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE" },
+          { "path": "specs/flow/archive/2026-10-05-STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "COMPLETED", "substatus": "DONE" },
+          { "path": "specs/flow/STORY-305-otra-historia/story.md", "parent": "EPIC-300-otra", "status": "IMPLEMENT", "substatus": "IN-PROGRESS" }
+        ],
+        "epic_analyze_report": { "path": "specs/flow/EPIC-30-ejemplo/epic-analyze-report.md", "verdict": "APPROVED", "updated": "2026-10-20" },
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "docs/templates/epic-validate-report-template.md": "no existe",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-29"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md",
+        "contains": [
+          "verdict: APPROVED",
+          "**Veredicto:** `APPROVED`",
+          "Sin motivos.",
+          "STORY-201",
+          "STORY-202",
+          "EST-01",
+          "EST-02"
+        ],
+        "not_contains": [
+          "STORY-305",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}",
+          "NEEDS-CHANGES`"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "historia-no-terminal-needs-changes",
+      "type": "error-handling",
+      "description": "AC-2 / SMOKE-3: EPIC-31-pagos lista STORY-041 (DELIVER/DONE) y STORY-042 (IMPLEMENT/IN-PROGRESS); el análisis de la épica es APPROVED. EST-01 no cumple: el reporte declara NEEDS-CHANGES e identifica STORY-042 con su status/substatus.",
+      "input": {
+        "invocation": "/epic-validate EPIC-31",
+        "mode": "manual",
+        "epics_dirs": ["specs/flow/EPIC-31-pagos/"],
+        "epic_md_path": "specs/flow/EPIC-31-pagos/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-31", "4: title: \"Pagos\"", "5: ---",
+          "6: # Épica: Pagos",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-041** — Registrar pago.",
+          "9: - [ ] **STORY-042** — Reembolsar pago."
+        ],
+        "stories": [
+          { "path": "specs/flow/STORY-041-registrar-pago/story.md", "parent": "EPIC-31-pagos", "status": "DELIVER", "substatus": "DONE" },
+          { "path": "specs/flow/STORY-042-reembolsar-pago/story.md", "parent": "EPIC-31-pagos", "status": "IMPLEMENT", "substatus": "IN-PROGRESS" }
+        ],
+        "epic_analyze_report": { "path": "specs/flow/EPIC-31-pagos/epic-analyze-report.md", "verdict": "APPROVED", "updated": "2026-10-20" },
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-29"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-31-pagos/epic-validate-report.md",
+        "contains": [
+          "verdict: NEEDS-CHANGES",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "M-001",
+          "EST-01",
+          "STORY-042",
+          "IMPLEMENT/IN-PROGRESS"
+        ],
+        "not_contains": [
+          "verdict: BLOCKED",
+          "Sin motivos.",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-003",
+      "name": "analisis-sin-approved-needs-changes",
+      "type": "error-handling",
+      "description": "AC-2: todas las historias de EPIC-32-informes están en DELIVER/DONE, pero epic-analyze-report.md declara verdict: NEEDS-REFINEMENT. EST-02 no cumple: el reporte declara NEEDS-CHANGES y cita el veredicto del análisis.",
+      "input": {
+        "invocation": "/epic-validate specs/flow/EPIC-32-informes",
+        "mode": "manual",
+        "epics_dirs": ["specs/flow/EPIC-32-informes/"],
+        "epic_md_path": "specs/flow/EPIC-32-informes/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-32", "4: title: \"Informes\"", "5: ---",
+          "6: # Épica: Informes",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-051** — Exportar informe."
+        ],
+        "stories": [
+          { "path": "specs/flow/STORY-051-exportar-informe/story.md", "parent": "EPIC-32-informes", "status": "DELIVER", "substatus": "DONE" }
+        ],
+        "epic_analyze_report": { "path": "specs/flow/EPIC-32-informes/epic-analyze-report.md", "verdict": "NEEDS-REFINEMENT", "updated": "2026-10-18" },
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-29"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-32-informes/epic-validate-report.md",
+        "contains": [
+          "verdict: NEEDS-CHANGES",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "EST-02",
+          "NEEDS-REFINEMENT",
+          "/epic-analyze EPIC-32"
+        ],
+        "not_contains": [
+          "Sin motivos.",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-004",
+      "name": "analisis-ausente-blocked",
+      "type": "error-handling",
+      "description": "AC-4 (D-5): las historias de EPIC-33-avisos están cerradas (una DELIVER/DONE y una CANCELED/DONE que no bloquea), pero no existe epic-analyze-report.md. EST-02 queda bloqueada: el reporte declara BLOCKED y sugiere ejecutar /epic-analyze.",
+      "input": {
+        "invocation": "/epic-validate EPIC-33-avisos",
+        "mode": "manual",
+        "epics_dirs": ["specs/flow/EPIC-33-avisos/"],
+        "epic_md_path": "specs/flow/EPIC-33-avisos/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-33", "4: title: \"Avisos\"", "5: ---",
+          "6: # Épica: Avisos",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-061** — Enviar aviso.",
+          "9: - [ ] **STORY-062** — Programar aviso."
+        ],
+        "stories": [
+          { "path": "specs/flow/STORY-061-enviar-aviso/story.md", "parent": "EPIC-33-avisos", "status": "DELIVER", "substatus": "DONE" },
+          { "path": "specs/flow/STORY-062-programar-aviso/story.md", "parent": "EPIC-33-avisos", "status": "CANCELED", "substatus": "DONE" }
+        ],
+        "epic_analyze_report": { "path": "specs/flow/EPIC-33-avisos/epic-analyze-report.md", "exists": false },
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-29"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-33-avisos/epic-validate-report.md",
+        "contains": [
+          "verdict: BLOCKED",
+          "**Veredicto:** `BLOCKED`",
+          "EST-02",
+          "/epic-analyze EPIC-33",
+          "cancelada"
+        ],
+        "not_contains": [
+          "verdict: NEEDS-CHANGES",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-005",
+      "name": "epica-inexistente-sin-reporte",
+      "type": "fail-fast",
+      "description": "AC-3 / SMOKE-2: no existe ningún directorio specs/flow/EPIC-77-*. El skill informa la ruta buscada con ❌ y termina sin leer templates ni crear epic-validate-report.md.",
+      "input": {
+        "invocation": "/epic-validate EPIC-77",
+        "mode": "manual",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/"],
+        "stories": [],
+        "today": "2026-10-29"
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "No se encontró la épica EPIC-77",
+          "specs/flow/EPIC-77-*/epic.md"
+        ],
+        "not_contains": [
+          "Reporte escrito",
+          "verdict:",
+          "Veredicto:"
+        ],
+        "files_written": []
+      },
+      "threshold": 0.95
+    }
+  ]
+}

@@ -5,11 +5,11 @@ id: STORY-124
 kind: feat
 slug: STORY-124-validar-preparacion-estructural-epica
 title: "Validar la preparación estructural de una épica"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-29
+updated: 2026-10-30
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-125
@@ -40,7 +40,7 @@ Entonces se escribe epic-validate-report.md desde su plantilla con el veredicto 
 ```gherkin
 Dado una épica con una historia hija no terminal o un análisis sin APPROVED
 Cuando el mantenedor solicita validar la épica
-Entonces el reporte declara BLOCKED e identifica cada historia no terminal con su estado, o el análisis con su veredicto
+Entonces el reporte declara NEEDS-CHANGES e identifica cada historia no terminal con su estado, o el análisis con su veredicto
 ```
 
 ### AC-3 — Escenario de error — Épica inexistente
@@ -50,9 +50,17 @@ Cuando el mantenedor solicita validarla
 Entonces recibe un error con la ubicación buscada y no se crea un reporte
 ```
 
+### AC-4 — Escenario alternativo — Análisis de la épica ausente
+```gherkin
+Dado una épica cuyas historias hijas están cerradas
+  Y que no tiene epic-analyze-report.md
+Cuando el mantenedor solicita validar la épica
+Entonces el reporte declara BLOCKED y sugiere ejecutar el análisis de la épica
+```
+
 ## ⚙️ Criterios no funcionales específicos
 
-- **CNF-1 — Resolución portable:** la validación resuelve la raíz de artefactos con la precedencia vigente de SDDF antes de localizar la épica.
+- **CNF-1 — Resolución portable:** la validación resuelve solo `REPO_ROOT` y localiza la épica con las rutas fijas de ADR-0017.
 - **CNF-2 — Reporte legible:** el reporte muestra el veredicto y los resultados de las comprobaciones realizadas sin dejar marcadores de plantilla; la plantilla declara en cada sección su marcador y tiene `## Veredicto` como primera sección tras el título.
 
 ## 🚫 Fuera de alcance
@@ -65,7 +73,7 @@ Entonces recibe un error con la ubicación buscada y no se crea un reporte
 
 - Esta es la historia core del split de STORY-124. Conserva el directorio e ID originales.
 - El informe FINVEST de la historia original decidió `DIVIDIR`; su evidencia se conserva en este directorio.
-- El reporte de validación establece un veredicto binario a partir de los hallazgos de esta historia. Las comprobaciones adicionales se incorporan en STORY-125.
+- El reporte de validación establece un veredicto `APPROVED` / `NEEDS-CHANGES` / `BLOCKED` según `validation-contract-policy` a partir de los hallazgos de esta historia (CR-001 y CR-002 de `design.md`, aprobados por el PO el 2026-10-29). Las comprobaciones adicionales se incorporan en STORY-125.
 - Cubre el criterio de salida de EPIC-23: **CS-1** — `skills/epic-validate/SKILL.md` existe, resuelve solo `REPO_ROOT` y declara `<!-- SDDF-FIXED-LAYOUT: v1 -->` (ADR-0017).
 - Cubre el criterio de salida de EPIC-23: **CS-2** — `skills/epic-validate/assets/epic-validate-report-template.md` existe, declara en cada sección su marcador `sección obligatoria · clave · escritor` y tiene `## Veredicto` como primera sección tras el título.
 - Cubre el criterio de salida de EPIC-23: **CS-3** — Se verifican el estado terminal de las historias y el veredicto APPROVED del análisis de la épica.

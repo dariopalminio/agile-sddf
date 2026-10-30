@@ -5,7 +5,7 @@ id: STORY-168
 kind: feat
 slug: STORY-168-skill-epic-track-progress
 title: "Skill epic-track-progress"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
@@ -78,7 +78,7 @@ Entonces informa la ruta buscada y finaliza con error
 - Generado automáticamente desde la épica: `specs/flow/EPIC-23-completar-flujo-de-epic/epic.md`.
 - Feature origen: STORY-168 — Skill epic-track-progress.
 - **Criterios de salida que cubre:** CS-16 y CS-12 para `epic-track-progress`. Dueña de SMOKE-6.
-- **Historia terminada:** cuentan como terminadas las `DELIVER/DONE` y `COMPLETED/DONE` (invariante 3 de `domain-epic-lifecycle`). El tratamiento de las `CANCELED/DONE` se decide al refinar esta historia.
+- **Historia terminada:** cuentan como terminadas las `DELIVER/DONE` y `COMPLETED/DONE` (invariante 3 de `domain-epic-lifecycle`). Las `CANCELED/DONE` se muestran como `cancelada` y no bloquean el gate (design.md D-3, CR-001); una épica sin historias terminadas, o con todas canceladas, no está terminada (D-4). La aclaración de la invariante 3 de `domain-epic-lifecycle` §7 queda para STORY-171.
 - **Gate del diagrama:** resuelve la decisión «all stories done?» de `DEVELOP → VALIDATE`.
 - Skill Tool: se debe usar skill-master.
 - Cubre el criterio de salida de EPIC-23: **CS-16** — `epic-track-progress` lista el status y substatus de cada historia hija, incluidas las archivadas, responde si todas están terminadas y no escribe ningún archivo.

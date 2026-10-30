@@ -17,6 +17,7 @@ const {
 const REPORTS = {
   'epic-format-validation': ['epic-format-validation-report.md', 'epic-format-validation-report-template.md'],
   'epic-analyze': ['epic-analyze-report.md', 'epic-analyze-report-template.md'],
+  'epic-validate': ['epic-validate-report.md', 'epic-validate-report-template.md'],
   'story-evaluation': ['finvest-evaluation-report.md', 'evaluation-output-template.md'],
   'story-analyze': ['analyze.md', 'analyze-report-template.md'],
   'story-code-review': ['code-review-report.md', 'code-review-report-template.md'],
@@ -207,14 +208,14 @@ test('F-4 informa skills sin entrada, falta de APPROVED y lectura UTF-8 inválid
   write(root, 'skills/story-analyze/SKILL.md', '# Skill\n');
   write(root, 'skills/new-validator/SKILL.md', '# Skill\nAPPROVED\n');
   const extraRows = '| `new-validator` | `new-report.md` | `APPROVED` |\n'
-    + '| `epic-validate` | `epic-validate-report.md` | `APPROVED` |\n';
+    + '| `future-validator` | `future-report.md` | `APPROVED` |\n';
   write(root, 'docs/policies/validation-contract-policy.md', policy().replace('## 5.', extraRows + '## 5.'));
   fs.mkdirSync(path.join(root, 'docs/guides'), { recursive: true });
   fs.writeFileSync(path.join(root, 'docs/guides/invalid.md'), Buffer.from([0xff]));
   const errors = verifyValidationContract(root, { legacyExceptions: [] }).errors;
   assert.ok(errors.some((error) => error.includes('S-3') && error.includes('story-analyze')));
   assert.ok(errors.some((error) => error.includes('new-validator sin entrada en REPORT_TEMPLATES')));
-  assert.equal(errors.some((error) => error.includes('epic-validate')), false);
+  assert.equal(errors.some((error) => error.includes('future-validator')), false);
   assert.ok(errors.some((error) => error.includes('docs/guides/invalid.md:1: P-1')));
 });
 

@@ -1,0 +1,198 @@
+{
+  "skill": "epic-track-progress",
+  "version": "1.0.0",
+  "description": "Casos de prueba para epic-track-progress (STORY-168): semáforo de solo lectura de la fase DEVELOP. Une el índice de historias de epic.md con los story.md (activos en specs/flow/ y archivados en specs/flow/archive/) cuyo parent tiene el prefijo EPIC-NN de la épica, muestra en el chat una fila por historia (ID, status, substatus, ubicación, resultado) y responde si todas están terminadas (DELIVER/DONE o COMPLETED/DONE; CANCELED/DONE se muestra como cancelada y no bloquea). Solo con todas terminadas sugiere /epic-validate. Nunca escribe ningún archivo, ni en .tmp/.",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "todas-terminadas-con-archivada-sugiere-epic-validate",
+      "type": "happy-path",
+      "description": "AC-1: EPIC-30-ejemplo lista STORY-201, STORY-202 y STORY-203. Las dos primeras están activas en DELIVER/DONE y STORY-203 está archivada en COMPLETED/DONE. STORY-305 declara parent: EPIC-300-otra y no debe figurar (EPIC-300 no es EPIC-30). La tabla muestra una fila por historia con su ubicación, el resultado es ✅ y sugiere /epic-validate EPIC-30, sin escribir ningún archivo.",
+      "input": {
+        "invocation": "/epic-track-progress EPIC-30",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/", "specs/flow/EPIC-300-otra/"],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: status: DEVELOP", "6: substatus: IN-PROGRESS", "7: ---",
+          "8: ", "9: # Épica: Épica de ejemplo", "10: ",
+          "11: ## Historias",
+          "12: - [x] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "13: - [x] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "14: - [x] **STORY-203** — Exportar clientes: exporta el listado a CSV.",
+          "15: ", "16: ## Criterios de salida", "17: - [ ] El listado, el filtro y la exportación funcionan."
+        ],
+        "stories": [
+          { "path": "specs/flow/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE" },
+          { "path": "specs/flow/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE" },
+          { "path": "specs/flow/archive/2026-10-20-STORY-203-exportar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "COMPLETED", "substatus": "DONE" },
+          { "path": "specs/flow/STORY-305-otra-cosa/story.md", "parent": "EPIC-300-otra", "status": "IMPLEMENT", "substatus": "IN-PROGRESS" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'"
+        }
+      },
+      "expected": {
+        "contains": [
+          "Progreso de EPIC-30",
+          "STORY-201",
+          "STORY-203",
+          "archivada",
+          "terminada",
+          "✅",
+          "/epic-validate EPIC-30",
+          "Solo lectura"
+        ],
+        "not_contains": [
+          "STORY-305",
+          "⏳",
+          "report.md",
+          ".tmp/"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-002",
+      "name": "historia-pendiente-y-huerfana-impiden-avanzar",
+      "type": "happy-path",
+      "description": "AC-2 (SMOKE-6): EPIC-30-ejemplo lista STORY-201 (DELIVER/DONE) y STORY-202 (IMPLEMENT/IN-PROGRESS). STORY-204 no está en el índice pero declara parent: EPIC-30-ejemplo y está en DELIVER/DONE: figura con origen parent. El resultado es ⏳ e identifica STORY-202 con IMPLEMENT/IN-PROGRESS; no sugiere /epic-validate y declara que no modificó ningún archivo.",
+      "input": {
+        "invocation": "/epic-track-progress EPIC-30",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/"],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: status: DEVELOP", "6: substatus: IN-PROGRESS", "7: ---",
+          "8: ", "9: ## Historias",
+          "10: - [x] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "11: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado."
+        ],
+        "stories": [
+          { "path": "specs/flow/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE" },
+          { "path": "specs/flow/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "IMPLEMENT", "substatus": "IN-PROGRESS" },
+          { "path": "specs/flow/STORY-204-ordenar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'"
+        }
+      },
+      "expected": {
+        "contains": [
+          "⏳",
+          "No todas las historias están terminadas",
+          "STORY-202",
+          "IMPLEMENT",
+          "IN-PROGRESS",
+          "pendiente",
+          "STORY-204",
+          "Solo lectura: no se modificó ningún archivo"
+        ],
+        "not_contains": [
+          "Siguiente paso: /epic-validate",
+          "report.md",
+          ".tmp/"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-003",
+      "name": "historia-del-indice-no-encontrada",
+      "type": "edge-case",
+      "description": "AC-3: el índice de EPIC-30-ejemplo lista STORY-201 (DELIVER/DONE) y STORY-200, que no tiene directorio ni en specs/flow/ ni en specs/flow/archive/. STORY-200 figura como no encontrada y el resultado es ⏳.",
+      "input": {
+        "invocation": "/epic-track-progress EPIC-30",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/"],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---",
+          "6: ", "7: ## Historias",
+          "8: - [ ] **STORY-200** — Importar clientes: importa un CSV.",
+          "9: - [x] **STORY-201** — Listar clientes: muestra el listado paginado."
+        ],
+        "stories": [
+          { "path": "specs/flow/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'"
+        }
+      },
+      "expected": {
+        "contains": [
+          "STORY-200",
+          "no encontrada",
+          "⏳",
+          "No todas las historias están terminadas"
+        ],
+        "not_contains": [
+          "Siguiente paso: /epic-validate",
+          "report.md",
+          ".tmp/"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-004",
+      "name": "epica-inexistente-error-con-ruta",
+      "type": "fail-fast",
+      "description": "AC-4: no existe ningún directorio specs/flow/EPIC-77-*/. El skill informa la ruta buscada y termina con error, sin tabla de progreso.",
+      "input": {
+        "invocation": "/epic-track-progress EPIC-77",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/"],
+        "stories": []
+      },
+      "expected": {
+        "contains": [
+          "❌",
+          "EPIC-77",
+          "specs/flow/EPIC-77-*/epic.md"
+        ],
+        "not_contains": [
+          "Resultado",
+          "Progreso de",
+          "report.md",
+          ".tmp/"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-005",
+      "name": "historia-cancelada-no-bloquea",
+      "type": "edge-case",
+      "description": "D-3: EPIC-30-ejemplo lista STORY-201 (DELIVER/DONE) y STORY-202, archivada en CANCELED/DONE. STORY-202 se muestra como cancelada, no bloquea y el resultado es ✅ con /epic-validate EPIC-30.",
+      "input": {
+        "invocation": "/epic-track-progress EPIC-30",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/"],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---", "2: type: epic", "3: id: EPIC-30", "4: title: \"Épica de ejemplo\"", "5: ---",
+          "6: ", "7: ## Historias",
+          "8: - [x] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "9: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado."
+        ],
+        "stories": [
+          { "path": "specs/flow/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE" },
+          { "path": "specs/flow/archive/2026-10-22-STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "CANCELED", "substatus": "DONE" }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias'"
+        }
+      },
+      "expected": {
+        "contains": [
+          "cancelada",
+          "1 canceladas",
+          "✅",
+          "/epic-validate EPIC-30"
+        ],
+        "not_contains": [
+          "⏳",
+          "report.md",
+          ".tmp/"
+        ]
+      },
+      "threshold": 1.0
+    }
+  ]
+}

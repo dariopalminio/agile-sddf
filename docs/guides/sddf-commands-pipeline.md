@@ -187,6 +187,7 @@ epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-gene
 | `epic-generate-stories` | Un archivo `epic.md` | `specs/flow/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
 | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`), cobertura de criterios de salida asignada a la historia de cierre, slugs obsoletos tras un `/story-split` reemplazados y `<EPIC_DIR>/epic-refine-report.md` |
+| `epic-track-progress` | `epic.md` + `story.md` con `parent`, incluidas las archivadas | Tabla de progreso en el chat (sin archivos) |
 
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
 > con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT`) antes
@@ -198,6 +199,10 @@ epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-gene
 > (familia COH, que `epic-analyze` no reporta porque resuelve por ID); se vuelve a ejecutar `epic-analyze`
 > hasta obtener `APPROVED`. Lo que requiere decisión del PO (incluidos los criterios sin evidencia parcial o sin una
 > única historia de cierre) queda en `epic-refine-report.md` como fuera de alcance y no se escribe.
+
+> `epic-track-progress` resuelve el gate `all stories done?` de `DEVELOP → VALIDATE`: muestra el status y substatus
+> de cada historia hija (activa o archivada) y solo sugiere `/epic-validate` cuando todas están en `DELIVER/DONE` o
+> `COMPLETED/DONE` (las `CANCELED/DONE` no bloquean). Es de solo lectura: no escribe ningún archivo.
 
 > `epic-format-validation` es el gate de forma de `DEFINE`. Con `NEEDS-REFINEMENT`, `epic-improve` aplica, tras
 > confirmación, las correcciones de su tabla `## Defectos` (sin cambiar el estado de la épica) y se vuelve a ejecutar
