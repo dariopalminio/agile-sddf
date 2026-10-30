@@ -5,7 +5,7 @@ id: STORY-167
 kind: feat
 slug: STORY-167-skill-epic-improve
 title: "Skill epic-improve"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27

@@ -299,3 +299,9 @@ Ninguna. «Objetivo poco claro» se resuelve con un disparador determinista (D-5
 - **Descripción**: AC-1 dice que `epic.md` «incluye la sección de criterios de salida según el template» y AC-2 que los criterios no inferibles no se escriben. El diseño resuelve que, sin evidencia, la sección tampoco se inserta con placeholder (D-5), y que la validación siguiente seguirá en `NEEDS-REFINEMENT` por ese defecto (D-9), coherente con CS-14 («`APPROVED` para los defectos corregidos»).
 - **Documento afectado**: story.md (sin cambio obligatorio)
 - **Acción requerida**: ninguna; anotar el criterio en el `SKILL.md` y en el resumen final.
+
+### CR-003
+- **Tipo**: ajuste de implementación
+- **Descripción**: durante la implementación se tomaron cuatro decisiones menores no previstas en D-1, D-10 y D-11: (1) fixture adicional `examples/sin-reporte/` (solo `epic.md`) para que TC-005 tenga un input existente, como exige `gr-skill-creation-checklist`; (2) TC-006 usa `not_contains: "status: COMPLETED"` en lugar de `COMPLETED`, porque el plan puede citar el texto literal de la nota incrustada sin obedecerla; (3) el frontmatter de `SKILL.md` declara solo `name` y `description` (sin `triggers`), según `gr-skill-creation-checklist` (claves permitidas); (4) `docs/guides/sddf-commands-pipeline.md` §2 añade también la fila de `epic-format-validation` para que el bucle tenga sus dos extremos en la tabla.
+- **Documento afectado**: design.md (D-1, D-10, D-11)
+- **Acción requerida**: ninguna; registrado en `implement-report.md`.

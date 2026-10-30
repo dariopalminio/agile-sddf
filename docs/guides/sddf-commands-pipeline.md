@@ -176,7 +176,7 @@ project-begin → project-discovery → project-planning
 ## 2. Pipeline de generación de épicas e historias
 
 ```
-epic-from-project-plan → epic-generate-stories → epic-analyze
+epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-generate-stories → epic-analyze
 ```
 
 <!-- TODO:
@@ -186,6 +186,8 @@ epic-from-project-plan → epic-generate-stories → epic-analyze ⇄ epic-refin
 | Skill | Input | Output |
 |---|---|---|
 | `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `specs/flow/EPIC-NN-<slug>/epic.md` (uno por épica) |
+| `epic-format-validation` | Un archivo `epic.md` | `<EPIC_DIR>/epic-format-validation-report.md` (`APPROVED` / `NEEDS-REFINEMENT`) |
+| `epic-improve` | `epic.md` + `epic-format-validation-report.md` con `NEEDS-REFINEMENT` | `epic.md` corregido + `epic.md.bak` |
 | `epic-generate-stories` | Un archivo `epic.md` | `specs/flow/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
 <!-- TODO: | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`) y `<EPIC_DIR>/epic-refine-report.md` |
@@ -197,6 +199,10 @@ epic-from-project-plan → epic-generate-stories → epic-analyze ⇄ epic-refin
 -->
 > índice, la cobertura del contrato de salida y las referencias de las historias, y se vuelve a ejecutar `epic-analyze`
 > hasta obtener `APPROVED`.
+
+> `epic-format-validation` es el gate de forma de `DEFINE`. Con `NEEDS-REFINEMENT`, `epic-improve` aplica, tras
+> confirmación, las correcciones de su tabla `## Defectos` (sin cambiar el estado de la épica) y se vuelve a ejecutar
+> `epic-format-validation`; lo que requiere decisión del PO queda listado y no se escribe.
 
 ---
 

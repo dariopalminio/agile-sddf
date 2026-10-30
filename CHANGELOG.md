@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `/epic-improve` (EPIC-23, STORY-167): corrige un `epic.md` que `/epic-format-validation` dejó en `NEEDS-REFINEMENT`. Lee la tabla `## Defectos` de `epic-format-validation-report.md`, propone un único plan (frontmatter, secciones obligatorias, líneas F1/F2/F3, smoke tests `SMOKE-N` y, con evidencia en la propia épica, objetivo y criterios de salida) y, tras confirmación, crea `epic.md.bak` y escribe solo `epic.md`, sin cambiar `status` ni `substatus`. Lo que no puede inferir queda listado como «requiere decisión del PO» y no se escribe. Si la épica ya está `APPROVED` o el plan se rechaza, no modifica ningún archivo.
+
 ## [5.0.0] — 2026-10-26
 
 ### BREAKING — layout fijo de tres raíces (EPIC-26, requiere 5.0.0)

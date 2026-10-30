@@ -274,6 +274,7 @@ _(sin artefactos)_
 - [[STORY-172-skill-epic-complete-archivar-epicas-canceladas]] — [story.md](../specs/flow/STORY-172-skill-epic-complete-archivar-epicas-canceladas/story.md) — Skill epic-complete — archivar épicas canceladas
 - [[STORY-173-cubrir-criterios-salida-epica]] — [story.md](../specs/flow/STORY-173-cubrir-criterios-salida-epica/story.md) — Skill epic-refine: asignar la cobertura de criterios de salida
 - [[STORY-174-corregir-referencias-obsoletas-tras-split]] — [story.md](../specs/flow/STORY-174-corregir-referencias-obsoletas-tras-split/story.md) — Skill epic-refine: corregir referencias obsoletas tras un split
+- [[STORY-175-admitir-epicas-archivadas-en-layout]] — [story.md](../specs/flow/STORY-175-admitir-epicas-archivadas-en-layout/story.md) — Admitir épicas archivadas en el layout fijo con un ADR nuevo
 
 ### Historias archivadas (archive/)
 
@@ -492,6 +493,7 @@ _(sin artefactos)_
 - [[custom-agent-creation-guide]] — [custom-agent-creation-guide.md](guides/custom-agent-creation-guide.md) — Guía de Creación de Custom Agents
 - [[custom-skill-creation-guide]] — [custom-skill-creation-guide.md](guides/custom-skill-creation-guide.md) — Guía de Creación de Skills Personalizados
 - [[custom-system-prompt-guide]] — [custom-system-prompt-guide.md](guides/custom-system-prompt-guide.md) — Guía para la creación de System Prompts (AGENTS.md, CLAUDE.md, etc.)
+- [[descubrir-features-y-capabilities]] — [descubrir-features-y-capabilities.md](guides/descubrir-features-y-capabilities.md) — Descubrir features y agruparlas en capabilities
 - [[extreme-agile]] — [extreme-agile.md](guides/extreme-agile.md) — Agilidad Agentica (Agentic Agile)
 - [[flight-leves-model]] — [flight-leves-model.md](guides/flight-leves-model.md) — Modelo de Niveles de Vuelo (Flight Levels Model)
 - [[harness-engineering]] — [harness-eng-agents-orchestration.md](guides/harness-eng-agents-orchestration.md) — Harness Engineering: Orquestación de Skills y Agentes en Claude Code
@@ -530,8 +532,8 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 425 |
-| Nodos con frontmatter | 420 |
+| Nodos indexados | 427 |
+| Nodos con frontmatter | 422 |
 | Nodos sin frontmatter | 5 |
 | Wikilinks pendientes | 1 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |

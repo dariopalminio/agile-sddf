@@ -41,6 +41,7 @@ parent: null
 | Guía | Contenido |
 |------|-----------|
 | [organization-of-artifacts.md](organization-of-artifacts.md) | Reglas para organizar épicas e historias en `specs/flow/` (inspirado en OpenSpec y SpecKit) |
+| [descubrir-features-y-capabilities.md](descubrir-features-y-capabilities.md) | Proceso para descubrir comportamientos implementados y agrupar features por capabilities |
 | [root-folder-practices.md](root-folder-practices.md) | Las raíces no intercambiables (`REPO_ROOT`, `CLI_ROOT`) y el layout fijo `docs/` · `specs/` · `workflow/` |
 | [artifact-directory-migration.md](artifact-directory-migration.md) | Migraciones de la estructura de artefactos, de la más reciente ([5.0.0 — layout fijo de tres raíces](artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices)) a la más antigua |
 
