@@ -225,3 +225,13 @@ Ninguna: las decisiones abiertas se resuelven en D-1…D-8, y las que afectan a 
 - **Descripción**: `epic.md` (Notas, «Alineación pendiente de historias existentes») dice que «STORY-124 a STORY-128 todavía usan `APPROVED` / `BLOCKED`». STORY-128 ya usa los tres valores y la precedencia de G-05 (AC-2, CNF-3, Notas).
 - **Documento afectado**: epic.md
 - **Acción requerida**: al refinar la épica, quitar STORY-128 de esa línea.
+
+### CR-004
+- **Tipo**: decisión de implementación (2026-10-30)
+- **Descripción**: al implementar C2 y C3 aparecieron cuatro detalles que el diseño no fijaba:
+  - `threshold` vive en el caso (`testCase.threshold`, lo lee `gradeOutput`), no en `expected`. La forma cerrada lo exige ausente o `1` en ambos lugares; los casos existentes pasan de `0.95` a `1`.
+  - Los casos de STORY-125/126 fijan las respuestas simuladas en `maintainer_answers`, no en `user_answers`. G-E rechaza ambas claves en el conjunto de regresión.
+  - `command_results` tiene además la entrada `npm run verify:release`, porque es lo que ejecuta el Paso 3c, aunque G-F solo exige las cadenas configuradas.
+  - Mensajes de C3 sin fila en la tabla de Interfaces: `<TC-NNN>: el caso de regresión <nombre> no declara <V> (AC-3)` (G-D), `<TC-NNN>: depende de un servicio externo: <cadena> (CNF-2)` (G-F) y `evals.json no tiene casos en cases[] (CS-9)` (G-A).
+- **Documento afectado**: design.md
+- **Acción requerida**: ninguna; queda registrado para la revisión.

@@ -1,7 +1,7 @@
 {
   "skill": "epic-validate",
-  "version": "1.2.0",
-  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto. STORY-126 agrega la operación segura: --mode auto nunca pregunta y --mode manual es interactivo; --dry-run imprime el reporte completo sin escribir archivos, ejecutar comandos ni pedir confirmaciones (OPE-* no ejecutada); los errores de invocación (--mode inválido, sin valor o repetido) terminan sin leer ni escribir; toda ejecución cierra con el bloque RESULTADO (ÉXITO / FALLO / SIMULACIÓN) · VEREDICTO · MODO · REPORTE; y una repetición sin cambios conserva created y el orden de los motivos.",
+  "version": "1.3.0",
+  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto. STORY-126 agrega la operación segura: --mode auto nunca pregunta y --mode manual es interactivo; --dry-run imprime el reporte completo sin escribir archivos, ejecutar comandos ni pedir confirmaciones (OPE-* no ejecutada); los errores de invocación (--mode inválido, sin valor o repetido) terminan sin leer ni escribir; toda ejecución cierra con el bloque RESULTADO (ÉXITO / FALLO / SIMULACIÓN) · VEREDICTO · MODO · REPORTE; y una repetición sin cambios conserva created y el orden de los motivos. STORY-128 agrega el conjunto de regresión del veredicto (un mundo base EPIC-90 en --mode auto con una variación por caso: APPROVED, historia no terminal → NEEDS-CHANGES, smoke test no ejecutable → BLOCKED y la precedencia G-05 de NEEDS-CHANGES sobre BLOCKED) y la forma cerrada de las aserciones del veredicto en todos los casos: verdict en el frontmatter seguido de created, la misma línea **Veredicto:** y la ausencia de los otros dos valores, con threshold 1.",
   "cases": [
     {
       "id": "TC-001",
@@ -83,7 +83,7 @@
       "expected": {
         "output_file": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md",
         "contains": [
-          "verdict: APPROVED",
+          "verdict: APPROVED\ncreated:",
           "**Veredicto:** `APPROVED`",
           "Sin motivos.",
           "STORY-201",
@@ -96,10 +96,12 @@
           "sección obligatoria ·",
           "{veredicto}",
           "{motivo}",
-          "NEEDS-CHANGES`"
+          "NEEDS-CHANGES`",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-002",
@@ -152,7 +154,7 @@
       "expected": {
         "output_file": "specs/flow/EPIC-31-pagos/epic-validate-report.md",
         "contains": [
-          "verdict: NEEDS-CHANGES",
+          "verdict: NEEDS-CHANGES\ncreated:",
           "**Veredicto:** `NEEDS-CHANGES`",
           "M-001",
           "EST-01",
@@ -164,10 +166,12 @@
           "Sin motivos.",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-003",
@@ -213,7 +217,7 @@
       "expected": {
         "output_file": "specs/flow/EPIC-32-informes/epic-validate-report.md",
         "contains": [
-          "verdict: NEEDS-CHANGES",
+          "verdict: NEEDS-CHANGES\ncreated:",
           "**Veredicto:** `NEEDS-CHANGES`",
           "EST-02",
           "NEEDS-REFINEMENT",
@@ -223,10 +227,12 @@
           "Sin motivos.",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-004",
@@ -297,7 +303,7 @@
       "expected": {
         "output_file": "specs/flow/EPIC-33-avisos/epic-validate-report.md",
         "contains": [
-          "verdict: BLOCKED",
+          "verdict: BLOCKED\ncreated:",
           "**Veredicto:** `BLOCKED`",
           "EST-02",
           "/epic-analyze EPIC-33",
@@ -307,10 +313,12 @@
           "verdict: NEEDS-CHANGES",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `NEEDS-CHANGES`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-005",
@@ -411,7 +419,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: APPROVED",
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
           "Modo: `auto`",
           "SMOKE-1",
           "aprobado",
@@ -427,10 +436,12 @@
           "confirmación manual",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-007",
@@ -507,7 +518,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: APPROVED",
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
           "Modo: `manual`",
           "SMOKE-1",
           "reporte:",
@@ -521,13 +533,15 @@
           "verdict: BLOCKED",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
         ],
         "commands_executed": [
           "npm run verify:release"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-008",
@@ -595,7 +609,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: APPROVED",
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
           "SMOKE-1",
           "aprobado",
           "confirmación manual del mantenedor",
@@ -607,10 +622,12 @@
           "verdict: BLOCKED",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-009",
@@ -682,7 +699,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: NEEDS-CHANGES",
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "**Veredicto:** `NEEDS-CHANGES`",
           "M-001",
           "OPE-01",
           "SMOKE-1",
@@ -695,10 +713,12 @@
           "verdict: APPROVED",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-010",
@@ -770,7 +790,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: NEEDS-CHANGES",
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "**Veredicto:** `NEEDS-CHANGES`",
           "OPE-02",
           "npm run verify:release",
           "no cumple",
@@ -781,10 +802,12 @@
           "verdict: APPROVED",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-011",
@@ -863,7 +886,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: NEEDS-CHANGES",
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "**Veredicto:** `NEEDS-CHANGES`",
           "OPE-03",
           "criterio 1",
           "incumplido",
@@ -876,10 +900,12 @@
           "Omitido — ⚠️",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-012",
@@ -946,7 +972,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: BLOCKED",
+          "verdict: BLOCKED\ncreated:",
+          "**Veredicto:** `BLOCKED`",
           "OPE-01",
           "SMOKE-1",
           "no ejecutable",
@@ -958,10 +985,12 @@
           "Sin motivos.",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `NEEDS-CHANGES`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-013",
@@ -1031,7 +1060,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: APPROVED",
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
           "omitida",
           "⚠️",
           "verify:release no declarado en package.json",
@@ -1045,10 +1075,12 @@
           "verdict: BLOCKED",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-014",
@@ -1120,7 +1152,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: APPROVED",
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
           "RESULTADO: ÉXITO",
           "VEREDICTO: APPROVED",
           "MODO: auto",
@@ -1136,13 +1169,15 @@
           ".bak ===",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
         ],
         "files_written": [
           "specs/flow/EPIC-40-operativa/epic-validate-report.md"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-015",
@@ -1210,7 +1245,8 @@
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "verdict: BLOCKED",
+          "verdict: BLOCKED\ncreated:",
+          "**Veredicto:** `BLOCKED`",
           "sin evidencia",
           "RESULTADO: FALLO",
           "VEREDICTO: BLOCKED",
@@ -1227,13 +1263,15 @@
           ".bak ===",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `NEEDS-CHANGES`"
         ],
         "files_written": [
           "specs/flow/EPIC-40-operativa/epic-validate-report.md"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-016",
@@ -1306,7 +1344,8 @@
         "contains": [
           "── Previsualización (--dry-run): no se escribió specs/flow/EPIC-40-operativa/epic-validate-report.md ──",
           "## Veredicto",
-          "verdict: APPROVED",
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
           "no ejecutada",
           "`--dry-run`: no se ejecutan comandos ni se piden confirmaciones",
           "── Fin de la previsualización ──",
@@ -1322,11 +1361,13 @@
           "(0.",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
         ],
         "files_written": []
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-017",
@@ -1452,7 +1493,8 @@
         "contains": [
           "created: 2026-10-01",
           "updated: 2026-10-30",
-          "verdict: NEEDS-CHANGES",
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "**Veredicto:** `NEEDS-CHANGES`",
           "M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
           "M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md",
           "RESULTADO: FALLO",
@@ -1467,13 +1509,15 @@
           ".bak ===",
           "sección obligatoria ·",
           "{veredicto}",
-          "{motivo}"
+          "{motivo}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`"
         ],
         "files_written": [
           "specs/flow/EPIC-40-operativa/epic-validate-report.md"
         ]
       },
-      "threshold": 0.95
+      "threshold": 1
     },
     {
       "id": "TC-019",
@@ -1706,6 +1750,439 @@
         "files_written": []
       },
       "threshold": 0.95
+    },
+    {
+      "id": "TC-023",
+      "name": "regresion-veredicto-approved",
+      "type": "happy-path",
+      "description": "AC-1 (épica consistente): STORY-128, conjunto de regresión del veredicto: mundo base EPIC-90 en --mode auto, con STORY-901 DELIVER/DONE (dueña de SMOKE-1), STORY-902 archivada COMPLETED/DONE, epic-analyze-report.md APPROVED, sin DoD de épica y el resultado de cada comando fijado en command_results (nada se ejecuta ni se pregunta). Sin variaciones: el reporte es APPROVED en el frontmatter y en ## Veredicto, sin motivos.",
+      "input": {
+        "invocation": "/epic-validate EPIC-90 --mode auto",
+        "epics_dirs": [
+          "specs/flow/EPIC-90-epica-de-evaluacion/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-90-epica-de-evaluacion/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-90",
+          "4: title: \"Épica de evaluación\"",
+          "5: status: DEVELOP",
+          "6: substatus: IN-PROGRESS",
+          "7: ---",
+          "8: # Épica: Épica de evaluación",
+          "9: ## Historias <!-- sección obligatoria · clave: historias · escritor: epic-creation (F1) -->",
+          "10: - [x] **STORY-901** — Publicar validación: muestra el veredicto de la épica.",
+          "11: - [x] **STORY-902** — Archivar validación: conserva el reporte anterior.",
+          "12: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "13: ### SMOKE-1 — Validación visible",
+          "14: ```gherkin",
+          "15: Escenario: Validación visible",
+          "16:   Dado una épica con sus historias cerradas",
+          "17:   Cuando se ejecuta la validación",
+          "18:   Entonces el veredicto queda visible",
+          "19: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-901-publicar-validacion/story.md",
+            "parent": "EPIC-90-epica-de-evaluacion",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-90."
+            ]
+          },
+          {
+            "path": "specs/flow/archive/2026-10-20-STORY-902-archivar-validacion/story.md",
+            "parent": "EPIC-90-epica-de-evaluacion",
+            "status": "COMPLETED",
+            "substatus": "DONE"
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-90-epica-de-evaluacion/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-28"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\""
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "reason": "terminó con código 0"
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "reason": "terminó con código 0"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "docs/templates/epic-validate-report-template.md": "no existe",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "previous_report": null,
+        "today": "2026-10-29"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-90-epica-de-evaluacion/epic-validate-report.md",
+        "contains": [
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
+          "Sin motivos."
+        ],
+        "not_contains": [
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`",
+          "[NEEDS-CHANGES]",
+          "[BLOCKED]",
+          "sección obligatoria ·"
+        ]
+      }
+    },
+    {
+      "id": "TC-024",
+      "name": "regresion-veredicto-historia-no-terminal",
+      "type": "error-handling",
+      "description": "AC-2 fila 1 (historia hija no terminal): STORY-128, conjunto de regresión del veredicto: mundo base EPIC-90 en --mode auto, con STORY-901 DELIVER/DONE (dueña de SMOKE-1), STORY-902 archivada COMPLETED/DONE, epic-analyze-report.md APPROVED, sin DoD de épica y el resultado de cada comando fijado en command_results (nada se ejecuta ni se pregunta). Variación: STORY-902 está activa en IMPLEMENT/IN-PROGRESS. El reporte es NEEDS-CHANGES y su motivo de EST-01 identifica la historia y su estado.",
+      "input": {
+        "invocation": "/epic-validate EPIC-90 --mode auto",
+        "epics_dirs": [
+          "specs/flow/EPIC-90-epica-de-evaluacion/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-90-epica-de-evaluacion/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-90",
+          "4: title: \"Épica de evaluación\"",
+          "5: status: DEVELOP",
+          "6: substatus: IN-PROGRESS",
+          "7: ---",
+          "8: # Épica: Épica de evaluación",
+          "9: ## Historias <!-- sección obligatoria · clave: historias · escritor: epic-creation (F1) -->",
+          "10: - [x] **STORY-901** — Publicar validación: muestra el veredicto de la épica.",
+          "11: - [x] **STORY-902** — Archivar validación: conserva el reporte anterior.",
+          "12: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "13: ### SMOKE-1 — Validación visible",
+          "14: ```gherkin",
+          "15: Escenario: Validación visible",
+          "16:   Dado una épica con sus historias cerradas",
+          "17:   Cuando se ejecuta la validación",
+          "18:   Entonces el veredicto queda visible",
+          "19: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-901-publicar-validacion/story.md",
+            "parent": "EPIC-90-epica-de-evaluacion",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-90."
+            ]
+          },
+          {
+            "path": "specs/flow/STORY-902-archivar-validacion/story.md",
+            "parent": "EPIC-90-epica-de-evaluacion",
+            "status": "IMPLEMENT",
+            "substatus": "IN-PROGRESS"
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-90-epica-de-evaluacion/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-28"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\""
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "reason": "terminó con código 0"
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "reason": "terminó con código 0"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "docs/templates/epic-validate-report-template.md": "no existe",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "previous_report": null,
+        "today": "2026-10-29"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-90-epica-de-evaluacion/epic-validate-report.md",
+        "contains": [
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "EST-01",
+          "STORY-902",
+          "IMPLEMENT/IN-PROGRESS"
+        ],
+        "not_contains": [
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`",
+          "[BLOCKED]"
+        ]
+      }
+    },
+    {
+      "id": "TC-025",
+      "name": "regresion-veredicto-smoke-no-ejecutable",
+      "type": "error-handling",
+      "description": "AC-2 fila 2 (smoke tests que no se pueden ejecutar, CNF-2): STORY-128, conjunto de regresión del veredicto: mundo base EPIC-90 en --mode auto, con STORY-901 DELIVER/DONE (dueña de SMOKE-1), STORY-902 archivada COMPLETED/DONE, epic-analyze-report.md APPROVED, sin DoD de épica y el resultado de cada comando fijado en command_results (nada se ejecuta ni se pregunta). Variación: verify.e2e-smoke.command es sddf-eval-smoke-inexistente, cuyo resultado simulado es not-executable (código 127). SMOKE-1 queda no ejecutable, OPE-01 bloqueada y el reporte es BLOCKED.",
+      "input": {
+        "invocation": "/epic-validate EPIC-90 --mode auto",
+        "epics_dirs": [
+          "specs/flow/EPIC-90-epica-de-evaluacion/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-90-epica-de-evaluacion/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-90",
+          "4: title: \"Épica de evaluación\"",
+          "5: status: DEVELOP",
+          "6: substatus: IN-PROGRESS",
+          "7: ---",
+          "8: # Épica: Épica de evaluación",
+          "9: ## Historias <!-- sección obligatoria · clave: historias · escritor: epic-creation (F1) -->",
+          "10: - [x] **STORY-901** — Publicar validación: muestra el veredicto de la épica.",
+          "11: - [x] **STORY-902** — Archivar validación: conserva el reporte anterior.",
+          "12: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "13: ### SMOKE-1 — Validación visible",
+          "14: ```gherkin",
+          "15: Escenario: Validación visible",
+          "16:   Dado una épica con sus historias cerradas",
+          "17:   Cuando se ejecuta la validación",
+          "18:   Entonces el veredicto queda visible",
+          "19: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-901-publicar-validacion/story.md",
+            "parent": "EPIC-90-epica-de-evaluacion",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-90."
+            ]
+          },
+          {
+            "path": "specs/flow/archive/2026-10-20-STORY-902-archivar-validacion/story.md",
+            "parent": "EPIC-90-epica-de-evaluacion",
+            "status": "COMPLETED",
+            "substatus": "DONE"
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-90-epica-de-evaluacion/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-28"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "sddf-eval-smoke-inexistente"
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "reason": "terminó con código 0"
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "reason": "terminó con código 0"
+          },
+          "sddf-eval-smoke-inexistente": {
+            "outcome": "not-executable",
+            "exitCode": 127,
+            "reason": "ejecutable no encontrado"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "docs/templates/epic-validate-report-template.md": "no existe",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "previous_report": null,
+        "today": "2026-10-29"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-90-epica-de-evaluacion/epic-validate-report.md",
+        "contains": [
+          "verdict: BLOCKED\ncreated:",
+          "**Veredicto:** `BLOCKED`",
+          "OPE-01",
+          "SMOKE-1",
+          "no ejecutable",
+          "[BLOCKED]"
+        ],
+        "not_contains": [
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "[NEEDS-CHANGES]"
+        ]
+      }
+    },
+    {
+      "id": "TC-026",
+      "name": "regresion-veredicto-precedencia",
+      "type": "error-handling",
+      "description": "AC-2 fila 3 (precedencia G-05): STORY-128, conjunto de regresión del veredicto: mundo base EPIC-90 en --mode auto, con STORY-901 DELIVER/DONE (dueña de SMOKE-1), STORY-902 archivada COMPLETED/DONE, epic-analyze-report.md APPROVED, sin DoD de épica y el resultado de cada comando fijado en command_results (nada se ejecuta ni se pregunta). Variaciones de las filas 1 y 2 a la vez: STORY-902 en IMPLEMENT/IN-PROGRESS y SMOKE-1 no ejecutable. NEEDS-CHANGES prevalece sobre BLOCKED y el reporte conserva ambos motivos.",
+      "input": {
+        "invocation": "/epic-validate EPIC-90 --mode auto",
+        "epics_dirs": [
+          "specs/flow/EPIC-90-epica-de-evaluacion/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-90-epica-de-evaluacion/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-90",
+          "4: title: \"Épica de evaluación\"",
+          "5: status: DEVELOP",
+          "6: substatus: IN-PROGRESS",
+          "7: ---",
+          "8: # Épica: Épica de evaluación",
+          "9: ## Historias <!-- sección obligatoria · clave: historias · escritor: epic-creation (F1) -->",
+          "10: - [x] **STORY-901** — Publicar validación: muestra el veredicto de la épica.",
+          "11: - [x] **STORY-902** — Archivar validación: conserva el reporte anterior.",
+          "12: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "13: ### SMOKE-1 — Validación visible",
+          "14: ```gherkin",
+          "15: Escenario: Validación visible",
+          "16:   Dado una épica con sus historias cerradas",
+          "17:   Cuando se ejecuta la validación",
+          "18:   Entonces el veredicto queda visible",
+          "19: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-901-publicar-validacion/story.md",
+            "parent": "EPIC-90-epica-de-evaluacion",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-90."
+            ]
+          },
+          {
+            "path": "specs/flow/STORY-902-archivar-validacion/story.md",
+            "parent": "EPIC-90-epica-de-evaluacion",
+            "status": "IMPLEMENT",
+            "substatus": "IN-PROGRESS"
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-90-epica-de-evaluacion/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-28"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "sddf-eval-smoke-inexistente"
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "reason": "terminó con código 0"
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "reason": "terminó con código 0"
+          },
+          "sddf-eval-smoke-inexistente": {
+            "outcome": "not-executable",
+            "exitCode": 127,
+            "reason": "ejecutable no encontrado"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "docs/templates/epic-validate-report-template.md": "no existe",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "previous_report": null,
+        "today": "2026-10-29"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-90-epica-de-evaluacion/epic-validate-report.md",
+        "contains": [
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "STORY-902",
+          "IMPLEMENT/IN-PROGRESS",
+          "SMOKE-1",
+          "no ejecutable",
+          "[NEEDS-CHANGES]",
+          "[BLOCKED]"
+        ],
+        "not_contains": [
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`"
+        ]
+      }
     }
   ]
 }

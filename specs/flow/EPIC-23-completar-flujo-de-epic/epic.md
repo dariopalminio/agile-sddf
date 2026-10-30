@@ -54,7 +54,7 @@ Fase VALIDATE — skill nuevo `epic-validate` (dividido en siete historias):
 - [x] **STORY-125** — Validar la evidencia operativa de una épica: incorporar smoke tests, verificación de release y DoD aplicable.
 - [x] **STORY-126** — Operar la validación de épicas de manera segura: ofrecer modos manual, automático y de previsualización sin efectos inesperados.
 - [x] **STORY-127** — Integrar y documentar el gateway de validación de épicas: aplicar el gateway antes de la transición y hacerlo disponible en los runtimes soportados.
-- [ ] **STORY-128** — Evaluar la validación de épicas de forma repetible: cubrir resultados APPROVED, NEEDS-CHANGES y BLOCKED contra regresiones.
+- [x] **STORY-128** — Evaluar la validación de épicas de forma repetible: cubrir resultados APPROVED, NEEDS-CHANGES y BLOCKED contra regresiones.
 - [ ] **STORY-137** — Controlar el detalle y los límites de la ejecución de la validación de épicas: `--verbose` y rechazo de `--mode auto` sin pruebas configuradas.
 - [ ] **STORY-169** — Suites de integración y regresión de la épica: Como Solo Builder, quiero que `/epic-validate` ejecute en `--mode auto` las suites de nivel épica declaradas en `verify` de `sddf.config.yaml` (integración, E2E y regresión completa) sobre el entorno de staging e incorpore sus resultados al veredicto, para certificar que el conjunto de historias funciona como un release unificado.
 
@@ -194,7 +194,7 @@ Escenario: Cierre y archivado de una épica liberada
   - Si hay a la vez algo que no cumple y algo bloqueado, gana `NEEDS-CHANGES`.
   - Antes, `BLOCKED` significaba «la validación falló»; ese caso es ahora `NEEDS-CHANGES`.
 - **Alineación pendiente de historias existentes** (el `parent` de STORY-124 a STORY-128, STORY-137 y STORY-165 ya apunta a `EPIC-23-completar-flujo-de-epic`, 2026-10-27):
-  - STORY-126 a STORY-128 todavía usan `APPROVED` / `BLOCKED` y deben alinearse con el vocabulario descrito arriba (STORY-125 se alineó al implementarse, CR-001 de su design.md).
+  - STORY-126 a STORY-127 todavía usan `APPROVED` / `BLOCKED` y deben alinearse con el vocabulario descrito arriba (STORY-125 se alineó al implementarse, CR-001 de su design.md).
 - Los IDs `CS-N` de los criterios de salida son estables, como los `SMOKE-N`: no se renumeran al insertar o eliminar criterios.
 - Cada criterio de salida y cada smoke test tiene una historia dueña que lo cita en sus notas: STORY-124 (CS-1, CS-2, CS-3, CS-5, CS-6; SMOKE-2, SMOKE-3), STORY-125 (CS-4; SMOKE-1), STORY-126 (CS-7), STORY-127 (CS-8), STORY-128 (CS-9), STORY-137 (CS-10, junto con STORY-126 para `--mode` y `--dry-run`), STORY-165 (CS-15; SMOKE-5; STORY-173 y STORY-174 amplían su parte de CS-15 con la cobertura de criterios de salida y las referencias obsoletas tras un split), STORY-166 (CS-13; la parte de CS-20 sobre `validation-contract-policy`), STORY-167 (CS-14; SMOKE-4), STORY-168 (CS-16; SMOKE-6), STORY-169 (CS-11), STORY-170 (CS-17, CS-18; la parte de CS-20 sobre `SHIP` en `domain-epic-lifecycle` y `domain-state-management`; SMOKE-7), STORY-171 (CS-19 para `SHIP/DONE` y `COMPLETED/DONE`; SMOKE-8), STORY-172 (CS-19 para `CANCELED/DONE`) y STORY-175 (CS-20 como dueña: el ADR nuevo, `COMPLETED`, `docs/architecture/state-machine.md` y el nombre de `epic-validate-report.md` en `domain-epic-lifecycle`). CS-12 se reparte entre las historias de cada skill nuevo: STORY-165, STORY-167, STORY-168, STORY-170 y STORY-171. CS-21 es transversal: toda historia lo cumple antes de entregarse.
 - Flags de `/epic-validate`:

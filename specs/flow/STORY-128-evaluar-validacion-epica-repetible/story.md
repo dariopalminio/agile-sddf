@@ -5,11 +5,11 @@ id: STORY-128
 kind: feat
 slug: STORY-128-evaluar-validacion-epica-repetible
 title: "Evaluar la validación de épicas de forma repetible"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-28
+updated: 2026-10-30
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124
@@ -60,7 +60,7 @@ Entonces skills/epic-validate/evals/evals.json conserva al menos un caso APPROVE
 ## ⚙️ Criterios no funcionales específicos
 
 - **CNF-1 — Cobertura mínima:** los casos cubren al menos un resultado `APPROVED`, uno `NEEDS-CHANGES` y uno `BLOCKED`.
-- **CNF-2 — Determinismo:** los resultados no dependen de servicios externos no controlados por el caso de evaluación. El caso `BLOCKED` provoca el bloqueo con un comando de prueba controlado por el propio caso, por ejemplo uno inexistente.
+- **CNF-2 — Determinismo:** los resultados no dependen de servicios externos, salvo el runner de evals, ni de comandos reales: el resultado de cada comando lo fija el propio caso. El caso `BLOCKED` provoca el bloqueo con un comando de prueba controlado por el propio caso, por ejemplo uno inexistente.
 - **CNF-3 — Lectura cerrada del veredicto:** el veredicto observado se lee del campo `verdict` del frontmatter de `epic-validate-report.md`. El caso también exige que la primera línea de `## Veredicto` declare el mismo valor. Un `verdict` ausente, distinto del de `## Veredicto` o fuera de `APPROVED`, `NEEDS-CHANGES` y `BLOCKED` hace fallar el caso.
 
 ## 🚫 Fuera de alcance
