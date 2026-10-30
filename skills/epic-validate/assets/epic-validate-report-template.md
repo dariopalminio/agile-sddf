@@ -16,9 +16,9 @@ related:
 # Validación de épica: {título}
 
 ## Veredicto <!-- sección obligatoria · clave: veredicto · escritor: epic-validate -->
-<!-- La primera línea declara el veredicto y su motivo en una frase: APPROVED → "historias cerradas, análisis de la épica APPROVED y evidencia operativa aprobada"; NEEDS-CHANGES → "<n> motivo(s) de rechazo"; BLOCKED → "falta evidencia: <comprobación bloqueada>". La segunda línea aclara que la validación es informativa. -->
+<!-- La primera línea declara el veredicto y su motivo en una frase: APPROVED → "historias cerradas, análisis de la épica APPROVED y evidencia operativa aprobada"; NEEDS-CHANGES → "<n> motivo(s) de rechazo"; BLOCKED → "falta evidencia: <comprobación bloqueada>". La segunda línea recuerda la regla del gateway que aplica /epic-validate (Paso 5b). -->
 **Veredicto:** `{veredicto}` — {motivo}
-Informativo: esta validación no cambia el estado de la épica.
+Gateway: si la épica está en `VALIDATE`, `APPROVED` la deja en `VALIDATE/DONE` y otro veredicto la devuelve a `DEVELOP/IN-PROGRESS` (Paso 5b).
 
 ## Resumen <!-- sección obligatoria · clave: resumen · escritor: epic-validate -->
 <!-- Tabla de dos columnas (Métrica │ Valor) con: Épica ({EPIC_ID} y ruta de epic.md), Historias terminadas, Historias canceladas, Historias no terminales, Veredicto del análisis de la épica (valor literal en código en línea, o "ausente"), Smoke tests (aprobados/total y modo), Fecha y Template de reporte efectivo. -->

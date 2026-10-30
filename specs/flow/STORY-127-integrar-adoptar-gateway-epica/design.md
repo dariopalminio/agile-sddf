@@ -9,7 +9,7 @@ substatus: IN-PROGRESS
 parent: EPIC-23-completar-flujo-de-epic
 story: STORY-127
 created: 2026-10-29
-updated: 2026-10-29
+updated: 2026-10-30
 related:
   - STORY-127-integrar-adoptar-gateway-epica
   - EPIC-23-completar-flujo-de-epic
@@ -239,3 +239,9 @@ Ninguna que bloquee el diseño. Las alineaciones pendientes con otros artefactos
 - **Descripción**: `domain-epic-lifecycle` (§8 y transiciones) y `domain-state-management` no nombran a `epic-validate` como escritor de `VALIDATE/DONE` ni de la vuelta a `DEVELOP`.
 - **Documento afectado**: docs/domains/domain-epic-lifecycle.md, docs/domains/domain-state-management.md
 - **Acción requerida**: incluirlo en el ajuste de CS-20 (STORY-175, dueña del nombre de `epic-validate-report.md` en `domain-epic-lifecycle`).
+
+### CR-008
+- **Tipo**: decisión de implementación no prevista
+- **Descripción**: (1) la segunda línea fija de `## Veredicto` («Informativo: esta validación no cambia el estado de la épica.») contradecía el gateway; se reemplazó en `SKILL.md` (clave `veredicto`) y en el seed `assets/epic-validate-report-template.md` por `` Gateway: si la épica está en `VALIDATE`, `APPROVED` la deja en `VALIDATE/DONE` y otro veredicto la devuelve a `DEVELOP/IN-PROGRESS` (Paso 5b). ``. (2) Las demás afirmaciones de `SKILL.md` que excluían `epic.md` («Qué NO hace», Dependencias, «Sin cambio de estado», Paso 5.6, Verificación del flujo, Salida) se alinearon con C6. (3) `skills/epic-ship/` aún no existe (STORY-170): los textos nuevos dicen que `SHIP` sigue siendo una transición manual en lugar de nombrar `/epic-ship` como su escritor. (4) La tabla del Paso 6 agrega la fila `FALLO` con reporte escrito y escritura de `epic.md` fallida (interfaz «Fallo al escribir `epic.md`»).
+- **Documento afectado**: skills/epic-validate/SKILL.md, skills/epic-validate/assets/epic-validate-report-template.md
+- **Acción requerida**: ninguna. Al entregar STORY-170, actualizar las menciones de `SHIP` manual si `/epic-ship` pasa a escribirlo.

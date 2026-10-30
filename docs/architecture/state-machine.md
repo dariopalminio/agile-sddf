@@ -179,6 +179,8 @@ DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETE
 
 Gate de calidad: `epic-format-validation` valida la estructura del `epic.md` como precondición para `epic-generate-stories` (constitución, regla 15).
 
+**Gateway de validación de épicas:** `/epic-validate <EPIC-ID>` escribe `VALIDATE/IN-PROGRESS → VALIDATE/DONE` con `verdict: APPROVED` y `VALIDATE → DEVELOP/IN-PROGRESS` con cualquier otro veredicto; solo `VALIDATE/DONE` habilita `SHIP`. [detalle](../guides/sddf-commands-pipeline.md#gateway-de-validación-de-épicas)
+
 
 ---
 

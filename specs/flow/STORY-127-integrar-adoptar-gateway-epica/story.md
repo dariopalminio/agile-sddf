@@ -5,11 +5,11 @@ id: STORY-127
 kind: feat
 slug: STORY-127-integrar-adoptar-gateway-epica
 title: "Integrar y documentar el gateway de validación de épicas"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-29
+updated: 2026-10-30
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124

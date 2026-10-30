@@ -53,7 +53,7 @@ Fase VALIDATE — skill nuevo `epic-validate` (dividido en siete historias):
 - [x] **STORY-124** — Validar la preparación estructural de una épica: determinar el veredicto a partir del cierre de historias y del análisis de la épica.
 - [x] **STORY-125** — Validar la evidencia operativa de una épica: incorporar smoke tests, verificación de release y DoD aplicable.
 - [x] **STORY-126** — Operar la validación de épicas de manera segura: ofrecer modos manual, automático y de previsualización sin efectos inesperados.
-- [ ] **STORY-127** — Integrar y documentar el gateway de validación de épicas: aplicar el gateway antes de la transición y hacerlo disponible en los runtimes soportados.
+- [x] **STORY-127** — Integrar y documentar el gateway de validación de épicas: aplicar el gateway antes de la transición y hacerlo disponible en los runtimes soportados.
 - [ ] **STORY-128** — Evaluar la validación de épicas de forma repetible: cubrir resultados APPROVED, NEEDS-CHANGES y BLOCKED contra regresiones.
 - [ ] **STORY-137** — Controlar el detalle y los límites de la ejecución de la validación de épicas: `--verbose` y rechazo de `--mode auto` sin pruebas configuradas.
 - [ ] **STORY-169** — Suites de integración y regresión de la épica: Como Solo Builder, quiero que `/epic-validate` ejecute en `--mode auto` las suites de nivel épica declaradas en `verify` de `sddf.config.yaml` (integración, E2E y regresión completa) sobre el entorno de staging e incorpore sus resultados al veredicto, para certificar que el conjunto de historias funciona como un release unificado.

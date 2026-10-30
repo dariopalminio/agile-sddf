@@ -208,6 +208,23 @@ epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-gene
 > confirmación, las correcciones de su tabla `## Defectos` (sin cambiar el estado de la épica) y se vuelve a ejecutar
 > `epic-format-validation`; lo que requiere decisión del PO queda listado y no se escribe.
 
+### Gateway de validación de épicas
+
+**Gateway de validación de épicas:** `/epic-validate <EPIC-ID>` escribe `VALIDATE/IN-PROGRESS → VALIDATE/DONE` con `verdict: APPROVED` y `VALIDATE → DEVELOP/IN-PROGRESS` con cualquier otro veredicto; solo `VALIDATE/DONE` habilita `SHIP`.
+
+Tras escribir `<EPIC_DIR>/epic-validate-report.md`, el propio skill relee su `verdict` y cambia el `status` de la épica:
+
+| Resultado | Efecto en `epic.md` |
+|---|---|
+| `APPROVED` | `VALIDATE/DONE`: la épica queda lista para `SHIP` |
+| `NEEDS-CHANGES` o `BLOCKED` | `DEVELOP/IN-PROGRESS`: revisa la sección `## Veredicto` del reporte, corrige los hallazgos y vuelve a validar |
+| `--dry-run`, épica fuera de `VALIDATE` o reporte no escrito | sin cambio; la línea `Gateway:` de la salida explica el motivo |
+
+- `DEVELOP → VALIDATE` es otro gate, el de completitud de historias (`/epic-track-progress`); la entrada en `VALIDATE` sigue siendo manual.
+- `epic-validate-report.md` permanece en `<EPIC_DIR>` como evidencia del veredicto. `RESULTADO: ÉXITO` en la salida equivale a que la épica quedó en `VALIDATE/DONE`.
+- `/epic-validate` nunca escribe `SHIP`, que sigue siendo una transición manual.
+- **Disponibilidad:** el gateway está disponible en todo runtime de `config/runtimes.json` con `support: supported` tras `npx agile-sddf install --target <runtime>` con la estrategia `full` (por defecto); `--strategy story` excluye los skills `epic-*`. La tabla y los casos límite completos viven en `skills/epic-validate/SKILL.md` (Paso 5b).
+
 ---
 
 ## 3. Pipeline de refinamiento de historias
