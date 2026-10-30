@@ -188,6 +188,7 @@ epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-gene
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
 | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`), cobertura de criterios de salida asignada a la historia de cierre, slugs obsoletos tras un `/story-split` reemplazados y `<EPIC_DIR>/epic-refine-report.md` |
 | `epic-track-progress` | `epic.md` + `story.md` con `parent`, incluidas las archivadas | Tabla de progreso en el chat (sin archivos) |
+| `epic-ship` | `epic-validate-report.md` con `APPROVED` + `story.md` hijos (activos y archivados) | Bloque de la épica en `CHANGELOG.md`, `<EPIC_DIR>/release-notes.md`, pasos de liberación manuales en el chat y `SHIP/DONE` en `epic.md` con confirmación humana |
 
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
 > con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT`) antes
@@ -222,7 +223,7 @@ Tras escribir `<EPIC_DIR>/epic-validate-report.md`, el propio skill relee su `ve
 
 - `DEVELOP → VALIDATE` es otro gate, el de completitud de historias (`/epic-track-progress`); la entrada en `VALIDATE` sigue siendo manual.
 - `epic-validate-report.md` permanece en `<EPIC_DIR>` como evidencia del veredicto. `RESULTADO: ÉXITO` en la salida equivale a que la épica quedó en `VALIDATE/DONE`.
-- `/epic-validate` nunca escribe `SHIP`, que sigue siendo una transición manual.
+- `/epic-validate` nunca escribe `SHIP`: lo escribe `/epic-ship` solo con la confirmación humana de que se completaron los pasos de liberación manuales.
 - **Disponibilidad:** el gateway está disponible en todo runtime de `config/runtimes.json` con `support: supported` tras `npx agile-sddf install --target <runtime>` con la estrategia `full` (por defecto); `--strategy story` excluye los skills `epic-*`. La tabla y los casos límite completos viven en `skills/epic-validate/SKILL.md` (Paso 5b).
 
 ---

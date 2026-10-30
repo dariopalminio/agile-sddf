@@ -243,3 +243,9 @@ Ninguna: las decisiones abiertas se resuelven en D-1…D-10; las dependencias co
 - **Descripción**: la invariante 6 de `domain-state-management` la editan esta historia (`SHIP` de épica) y STORY-175 (`COMPLETED` de épica). Además, `docs/architecture/state-machine.md` repite la regla y no figura en la historia.
 - **Documento afectado**: story.md (Notas «Tamaño» y criterios de salida) · epic.md (CS-20)
 - **Acción requerida**: añadir `docs/architecture/state-machine.md` a los documentos que ajusta la historia y al texto de CS-20, y acordar con STORY-175 que la segunda en implementarse rebasa la invariante 6 conservando la cláusula de la otra.
+
+## Notas de implementación
+
+- **`epic-validate` ya existe (STORY-124…STORY-169):** al implementar, `skills/epic-validate/` escribe `<EPIC_DIR>/epic-validate-report.md` con `verdict` y, con `APPROVED`, deja la épica en `VALIDATE/DONE` (gateway de STORY-127). El contrato que lee `epic-ship` (CR-001) no cambia. D-7 se mantiene: el gate sigue siendo el `verdict` y solo se rechazan `COMPLETED` y `CANCELED`, así una épica validada antes del gateway (en `DEVELOP` o `VALIDATE`) también se libera.
+- **Versión sugerida sin `Added`:** el diseño fija `Added` → minor y «solo `Fixed`» → patch; la referencia extiende patch a cualquier conjunto sin `Added` (`Fixed` y `Changed`), para que la tabla sea exhaustiva.
+- **`CHANGELOG.md` nuevo:** la cabecera que crea la referencia no incluye la URL de Keep a Changelog, porque su dominio no está en la allow-list de `gr-skill-creation-checklist` (`skill-url-allowlist`).

@@ -1,0 +1,228 @@
+{
+  "skill": "epic-ship",
+  "version": "1.0.0",
+  "description": "Casos de prueba para epic-ship (STORY-170): con epic-validate-report.md en verdict: APPROVED escribe el bloque delimitado e idempotente de la épica bajo ## [Unreleased] de CHANGELOG.md (una viñeta por historia DELIVER/DONE o COMPLETED/DONE, activa o archivada, con categoría por kind) y <EPIC_DIR>/release-notes.md desde su template; muestra los pasos de liberación manuales sin ejecutar ninguno y escribe SHIP/DONE en epic.md solo tras la confirmación s/si/sí. Sin confirmación, los documentos quedan escritos y el status no cambia; sin reporte o con otro verdict rechaza sin escribir nada. En ningún caso ejecuta git commit, tag, merge, push, npm publish ni despliegues (SMOKE-7 = TC-001).",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "approved-confirmado-ship-done",
+      "type": "happy-path",
+      "description": "AC-1, AC-4, SMOKE-7: EPIC-30-ejemplo con epic-validate-report.md verdict: APPROVED. STORY-201 (feat, DELIVER/DONE), STORY-202 (fix, DELIVER/DONE), STORY-203 archivada (chore, COMPLETED/DONE) y STORY-204 (CANCELED/DONE) declaran parent EPIC-30-ejemplo; STORY-305 declara EPIC-300-otra y no pertenece. El usuario responde s. CHANGELOG.md recibe el bloque de EPIC-30 con STORY-201 (Added), STORY-203 (Changed) y STORY-202 (Fixed); STORY-204 solo aparece en ## No incluidas de release-notes.md; se muestran los cinco pasos y epic.md pasa a SHIP/DONE.",
+      "input": {
+        "invocation": "/epic-ship EPIC-30",
+        "user_answer": "s",
+        "today": "2026-10-30",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/", "specs/flow/EPIC-300-otra/"],
+        "epic_md_lines": [
+          "---",
+          "type: epic",
+          "id: EPIC-30",
+          "title: \"Gestión de clientes\"",
+          "status: VALIDATE",
+          "substatus: DONE",
+          "updated: 2026-10-20",
+          "---",
+          "# Épica: Gestión de clientes",
+          "## Objetivo",
+          "Permitir al equipo comercial consultar y filtrar su cartera de clientes. El resto del objetivo no se cita."
+        ],
+        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "stories": [
+          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
+          {"path": "specs/flow/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]},
+          {"path": "specs/flow/archive/2026-10-10-STORY-203-ordenar-columnas/story.md", "id": "STORY-203", "title": "Ordenar columnas", "kind": "chore", "parent": "EPIC-30-ejemplo", "status": "COMPLETED", "substatus": "DONE", "body": []},
+          {"path": "specs/flow/STORY-204-exportar-pdf/story.md", "id": "STORY-204", "title": "Exportar a PDF", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "CANCELED", "substatus": "DONE", "body": ["**Para** compartir el listado"]},
+          {"path": "specs/flow/STORY-305-otra-historia/story.md", "id": "STORY-305", "title": "Historia de otra épica", "kind": "feat", "parent": "EPIC-300-otra", "status": "DELIVER", "substatus": "DONE", "body": []}
+        ],
+        "changelog_lines": [
+          "# Changelog",
+          "",
+          "## [Unreleased]",
+          "",
+          "## [1.4.0] — 2026-09-01",
+          "### Added",
+          "- Algo anterior."
+        ],
+        "release_notes_previo": "no existe"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-30-ejemplo/release-notes.md",
+        "also_writes": ["CHANGELOG.md", "specs/flow/EPIC-30-ejemplo/epic.md"],
+        "contains": [
+          "<!-- epic-ship:EPIC-30:start -->",
+          "<!-- epic-ship:EPIC-30:end -->",
+          "### EPIC-30 — Gestión de clientes",
+          "- **Added** — Listar clientes (STORY-201)",
+          "- **Changed** — Ordenar columnas (STORY-203)",
+          "- **Fixed** — Corregir paginación (STORY-202)",
+          "## [1.4.0] — 2026-09-01",
+          "type: release-notes",
+          "**Listar clientes** — ver mi cartera completa de un vistazo",
+          "**Ordenar columnas** — Ordenar columnas",
+          "## No incluidas",
+          "STORY-204",
+          "Pasos de liberación",
+          "1.5.0",
+          "status: SHIP",
+          "substatus: DONE",
+          "liberada: SHIP/DONE",
+          "/epic-complete EPIC-30"
+        ],
+        "not_contains": [
+          "STORY-305",
+          "(STORY-204)",
+          "{title}",
+          "git commit",
+          "git tag",
+          "git merge",
+          "git push",
+          "npm publish"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-002",
+      "name": "approved-sin-confirmacion-status-intacto",
+      "type": "happy-path",
+      "description": "AC-2, CNF-1: mismo mundo que TC-001 pero el usuario responde n. CHANGELOG.md y release-notes.md quedan escritos y epic.md conserva status: VALIDATE / substatus: DONE.",
+      "input": {
+        "invocation": "/epic-ship EPIC-30",
+        "user_answer": "n",
+        "today": "2026-10-30",
+        "same_world_as": "TC-001"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-30-ejemplo/release-notes.md",
+        "also_writes": ["CHANGELOG.md"],
+        "contains": [
+          "<!-- epic-ship:EPIC-30:start -->",
+          "release-notes.md",
+          "sigue en VALIDATE/DONE",
+          "/epic-ship EPIC-30"
+        ],
+        "not_contains": [
+          "liberada: SHIP/DONE",
+          "status: SHIP",
+          "git commit",
+          "git tag",
+          "git merge",
+          "git push",
+          "npm publish"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-003",
+      "name": "sin-reporte-de-validacion-rechaza",
+      "type": "fail-fast",
+      "description": "AC-3: EPIC-30-ejemplo sin epic-validate-report.md. El skill rechaza remitiendo a /epic-validate y no crea ni modifica CHANGELOG.md, release-notes.md ni epic.md.",
+      "input": {
+        "invocation": "/epic-ship EPIC-30",
+        "today": "2026-10-30",
+        "same_world_as": "TC-001",
+        "epic_validate_report": "no existe"
+      },
+      "expected": {
+        "output_file": null,
+        "contains": [
+          "no está validada",
+          "/epic-validate EPIC-30"
+        ],
+        "not_contains": [
+          "<!-- epic-ship:EPIC-30:start -->",
+          "Pasos de liberación",
+          "¿Completaste los pasos de liberación",
+          "git commit",
+          "git tag",
+          "git merge",
+          "git push",
+          "npm publish"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-004",
+      "name": "veredicto-needs-changes-rechaza",
+      "type": "fail-fast",
+      "description": "AC-3: epic-validate-report.md con verdict: NEEDS-CHANGES. Mismo rechazo que TC-003, citando el veredicto; ningún archivo escrito.",
+      "input": {
+        "invocation": "/epic-ship EPIC-30",
+        "today": "2026-10-30",
+        "same_world_as": "TC-001",
+        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "NEEDS-CHANGES"}
+      },
+      "expected": {
+        "output_file": null,
+        "contains": [
+          "no está validada",
+          "NEEDS-CHANGES",
+          "/epic-validate EPIC-30"
+        ],
+        "not_contains": [
+          "<!-- epic-ship:EPIC-30:start -->",
+          "Pasos de liberación",
+          "¿Completaste los pasos de liberación",
+          "git commit",
+          "git tag",
+          "git merge",
+          "git push",
+          "npm publish"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-005",
+      "name": "reejecucion-idempotente",
+      "type": "edge-case",
+      "description": "CNF-2: CHANGELOG.md ya contiene el bloque de EPIC-30 (de una ejecución anterior, solo con STORY-201) y un bloque de EPIC-12 que no se toca; STORY-202 se entregó después. El bloque de EPIC-30 se reemplaza entre sus delimitadores (un solo epic-ship:EPIC-30:start, con STORY-201 y STORY-202) y el resto del archivo queda intacto. El usuario responde n.",
+      "input": {
+        "invocation": "/epic-ship EPIC-30",
+        "user_answer": "n",
+        "today": "2026-10-30",
+        "same_world_as": "TC-001",
+        "changelog_lines": [
+          "# Changelog",
+          "",
+          "## [Unreleased]",
+          "",
+          "<!-- epic-ship:EPIC-12:start -->",
+          "### EPIC-12 — Otra épica",
+          "- **Added** — Línea de otra épica (STORY-120)",
+          "<!-- epic-ship:EPIC-12:end -->",
+          "",
+          "<!-- epic-ship:EPIC-30:start -->",
+          "### EPIC-30 — Gestión de clientes",
+          "- **Added** — Listar clientes (STORY-201)",
+          "<!-- epic-ship:EPIC-30:end -->",
+          "",
+          "## [1.4.0] — 2026-09-01"
+        ],
+        "release_notes_previo": {"path": "specs/flow/EPIC-30-ejemplo/release-notes.md", "created": "2026-10-25"}
+      },
+      "expected": {
+        "output_file": "CHANGELOG.md",
+        "contains": [
+          "<!-- epic-ship:EPIC-12:start -->",
+          "- **Added** — Línea de otra épica (STORY-120)",
+          "<!-- epic-ship:EPIC-30:start -->",
+          "- **Fixed** — Corregir paginación (STORY-202)",
+          "created: 2026-10-25"
+        ],
+        "occurrences": {"<!-- epic-ship:EPIC-30:start -->": 1},
+        "not_contains": [
+          "liberada: SHIP/DONE",
+          "git commit",
+          "git tag",
+          "git merge",
+          "git push",
+          "npm publish"
+        ]
+      },
+      "threshold": 0.95
+    }
+  ]
+}

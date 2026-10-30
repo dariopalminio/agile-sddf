@@ -5,11 +5,11 @@ id: STORY-170
 kind: feat
 slug: STORY-170-skill-epic-ship
 title: "Skill epic-ship"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-28
+updated: 2026-10-30
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-171-completar-archivar-epica-liberada
@@ -84,4 +84,6 @@ Entonces no se creó ningún commit, tag, merge ni push
 - **Tamaño:** incluye un skill nuevo y el ajuste de dos documentos de dominio; evaluar en `/story-evaluation` si conviene separar el ajuste de dominio.
 - Skill Tool: se debe usar skill-master.
 - Cubre el criterio de salida de EPIC-23: **CS-18** — `epic-ship` no ejecuta ninguna operación de git (commit, tag, merge ni push) ni dispara releases o despliegues; muestra los pasos de liberación manuales y escribe `SHIP/DONE` en la épica solo cuando el humano confirma que los completó.
+- **Dependencia del contrato de validación (CR-001):** el gate lee solo el campo `verdict` del frontmatter de `<EPIC_DIR>/epic-validate-report.md`, el reporte de `epic-validate` (CS-2, CS-5). `epic-ship` se prueba con fixtures de ese reporte en sus evals sin depender de ejecutar `epic-validate`. La historia corrige en `domain-epic-lifecycle` §9 el nombre heredado `validate-report.md` → `epic-validate-report.md`.
+- **Documentos que ajusta (CR-002):** `docs/domains/domain-state-management.md` (invariante 6, solo la cláusula de `SHIP` de épica), `docs/domains/domain-epic-lifecycle.md` (§5, §7, §8 y §9) y `docs/architecture/state-machine.md` (nota de transiciones manuales). STORY-175 edita la cláusula de `COMPLETED` de la misma invariante 6: la historia que se implemente segunda rebasa sobre la primera conservando la cláusula de la otra.
 - Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.
