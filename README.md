@@ -148,6 +148,7 @@ Cada etapa produce algo que se puede leer y revisar:
 | Verificar y aceptar | `/story-verify` y `/story-acceptance` | `verify-report.md` y `acceptance-report.md`. |
 | Entregar | `/story-delivery` | `story.md` en `DELIVER/DONE` tras verificar el DoD de entrega. |
 | Completar y archivar | `/story-complete` | `story.md` en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. |
+| Completar y archivar épica | `/epic-complete` | `epic.md` en `COMPLETED/DONE`, con fecha de cierre y versión liberada, dentro de `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`. |
 
 `/story-implement` orquesta el ciclo TDD y los workers configurados para tu stack. Si necesitas ejecutar una historia tarea por tarea en el flujo SDD, usa `/story-implement-tasks`.
 

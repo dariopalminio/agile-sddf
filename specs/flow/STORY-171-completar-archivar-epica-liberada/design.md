@@ -234,3 +234,9 @@ Ninguna: las decisiones abiertas quedan resueltas en D-1 a D-10 o registradas co
 - **Descripción**: la línea F2 de STORY-171 en `epic.md` todavía dice «Incluye el ADR nuevo que reemplaza a ADR-0017 y el ajuste de los documentos de dominio», alcance que el split del 2026-10-29 movió a STORY-175, y STORY-175 no figura en el índice de historias de la épica. `docs/index.md` enlaza STORY-171 con el slug anterior (`STORY-171-skill-epic-complete-core-completar-y-archivar-una-epica-liberada`).
 - **Documento afectado**: `specs/flow/EPIC-23-completar-flujo-de-epic/epic.md` · `docs/index.md`
 - **Acción requerida**: corregir el índice de la épica con `/epic-refine EPIC-23` (o a mano) y regenerar el índice con `/memory-system index`. No bloquea esta historia.
+
+### CR-004
+- **Tipo**: ajuste de implementación
+- **Descripción**: (1) el JSON de `NO_VERSION` incluye además el campo `reason` (`unreleased`, `no-block`, `no-changelog`) que devuelve `releasedVersionOf`, para que las pruebas y el skill distingan el motivo sin analizar el texto del mensaje. (2) STORY-175 ya se entregó (ADR-0019), así que `SKILL.md`, `README.md` y el motor citan ADR-0019 en lugar de ADR-0017 como fuente del destino del archivo.
+- **Documento afectado**: design.md (Interfaces › Salida del motor) · `skills/epic-complete/`
+- **Acción requerida**: ninguna; registrado por `story-implement-tasks` el 2026-10-30.

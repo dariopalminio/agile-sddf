@@ -189,6 +189,7 @@ epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-gene
 | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`), cobertura de criterios de salida asignada a la historia de cierre, slugs obsoletos tras un `/story-split` reemplazados y `<EPIC_DIR>/epic-refine-report.md` |
 | `epic-track-progress` | `epic.md` + `story.md` con `parent`, incluidas las archivadas | Tabla de progreso en el chat (sin archivos) |
 | `epic-ship` | `epic-validate-report.md` con `APPROVED` + `story.md` hijos (activos y archivados) | Bloque de la épica en `CHANGELOG.md`, `<EPIC_DIR>/release-notes.md`, pasos de liberación manuales en el chat y `SHIP/DONE` en `epic.md` con confirmación humana |
+| `epic-complete` | `epic.md` en `SHIP/DONE` (+ `CHANGELOG.md` o `--version x.y.z`) | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/epic.md` en `COMPLETED/DONE` con `completed:` y `version:`, con confirmación humana |
 
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
 > con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT`) antes
