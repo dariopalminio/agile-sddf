@@ -5,7 +5,7 @@ id: STORY-166
 kind: feat
 slug: STORY-166-veredicto-de-epic-format-validation
 title: "Veredicto de epic-format-validation"
-status: IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
