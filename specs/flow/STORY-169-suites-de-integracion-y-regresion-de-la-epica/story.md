@@ -5,11 +5,11 @@ id: STORY-169
 kind: feat
 slug: STORY-169-suites-de-integracion-y-regresion-de-la-epica
 title: "Suites de integración y regresión de la épica"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-29
+updated: 2026-10-30
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124-validar-preparacion-estructural-epica
@@ -103,7 +103,7 @@ Ejemplos:
 - **Prerrequisitos de implementación:** STORY-124 crea el skill `epic-validate` y `epic-validate-report.md`; STORY-126 define `--mode`. Esta historia agrega al reporte una sección de suites y otra de DoD. Se puede desarrollar con un stub del resto de la evidencia (AC-1: «ninguna otra verificación reporta hallazgos») y con el modo simulado como parámetro de entrada, sin esperar a que STORY-125 se entregue.
 - **Decisión — Suites de nivel épica:** son la lista fija de claves `integration`, `e2e` y `e2e-regression` de `verify`, la misma que nombra CS-11. Una clave ausente de `verify` se registra como omitida con una advertencia. Las demás claves de `verify` (`unit`, `component`, `contract`, `e2e-smoke`, `e2e-sanity`, `e2e-file`, `performance`, `eval`) no se ejecutan en esta validación.
 - **Decisión — Entorno:** el skill no controla el entorno (CNF-3), así que no hace falta declararlo en `sddf.config.yaml` ni decidirlo con el PO. Si una suite necesita staging, su propio comando lo resuelve (por ejemplo, con variables de entorno que el Solo Builder exporta antes de invocar).
-- **Definición observable de «no ejecutable»:** el comando no llega a iniciarse porque invoca un script npm que no está declarado en `package.json` o porque el ejecutable no se encuentra (código de salida 127). Cualquier otro código de salida distinto de 0 es una suite fallida, aunque la causa sea el entorno. Por ejemplo, con la configuración actual, `e2e` y `e2e-regression` (`required: false`) invocan scripts que `package.json` no declara, así que se registran como omitidas.
+- **Definición observable de «no ejecutable»:** el comando no llega a iniciarse porque invoca un script npm que no está declarado en `package.json` o porque el ejecutable no se encuentra (código de salida 127, o 9009 en Windows, o el proceso no puede lanzarse). Cualquier otro código de salida distinto de 0 es una suite fallida, aunque la causa sea el entorno. Por ejemplo, con la configuración actual, `e2e` y `e2e-regression` (`required: false`) invocan scripts que `package.json` no declara, así que se registran como omitidas.
 - **DoD de validación de épica:** se lee de `docs/guardrails/dod-epic-validate.md`, con el mismo formato de checklist que los `dod-story-*.md`. Hoy el archivo no existe, así que se registra como omitido (AC-4). Un criterio incumplido produce `NEEDS-CHANGES` y uno sin evidencia, `BLOCKED`.
 - **Solapamiento con STORY-125:** STORY-125 (CS-4) también evalúa «el DoD de épica existente» y trata su fallo como `BLOCKED`, con el vocabulario anterior. Esta historia fija el archivo (`dod-epic-validate.md`) y aplica el vocabulario vigente. Hay que reconciliarlas al refinar la épica para que el DoD se evalúe una sola vez.
 - **Vocabulario del veredicto:** sigue la decisión del PO del 2026-10-17 y la regla G-05 de `validation-contract-policy`.

@@ -35,7 +35,7 @@ Gateway: si la épica está en `VALIDATE`, `APPROVED` la deja en `VALIDATE/DONE`
 | Template de reporte | `{ruta efectiva}` |
 
 ## Comprobaciones <!-- sección obligatoria · clave: comprobaciones · escritor: epic-validate -->
-<!-- Una fila por comprobación, ordenadas por ID: EST-01 Cierre de las historias, EST-02 Análisis de la épica, OPE-01 Smoke tests de la épica, OPE-02 verify:release, OPE-03 DoD de validación de épica. "Resultado": cumple / no cumple / bloqueada / omitida (solo OPE-02 y OPE-03; cuenta como cumple). "Evidencia": conteo de historias por clasificación para EST-01; ruta, verdict y updated de epic-analyze-report.md para EST-02 (o "no existe"); conteo de smoke tests por resultado para OPE-01; comando, resultado y duración (o código) para OPE-02; conteo de criterios por estado para OPE-03. Una comprobación omitida lleva "⚠️ <motivo>". -->
+<!-- Una fila por comprobación, ordenadas por ID: EST-01 Cierre de las historias, EST-02 Análisis de la épica, OPE-01 Smoke tests de la épica, OPE-02 verify:release, OPE-03 DoD de validación de épica, OPE-04 Suites de nivel épica. "Resultado": cumple / no cumple / bloqueada / omitida (solo OPE-02, OPE-03 y OPE-04; cuenta como cumple) / no ejecutada (--dry-run; OPE-04 también fuera de --mode auto). "Evidencia": conteo de historias por clasificación para EST-01; ruta, verdict y updated de epic-analyze-report.md para EST-02 (o "no existe"); conteo de smoke tests por resultado para OPE-01; comando, resultado y duración (o código) para OPE-02; conteo de criterios por estado para OPE-03; conteo de suites por resultado para OPE-04. Una comprobación omitida lleva "⚠️ <motivo>". -->
 
 | ID | Comprobación | Resultado | Evidencia |
 |---|---|---|---|
@@ -70,8 +70,19 @@ Enforcement: `{error / warn}`
 
 Omitido — ⚠️ {motivo}
 
+## Suites de nivel épica <!-- sección obligatoria · clave: suites-epica · escritor: epic-validate -->
+<!-- Siempre tres filas, en el orden fijo integration, e2e, e2e-regression (claves de verify en sddf.config.yaml). Required: `true` / `false`, o — si la clave no está en verify. Comando en código en línea, o —. Resultado: pasa / fallida / no ejecutable / omitida / no ejecutada. Duración (s): segundos con un decimal (12.3), o — si la suite no se lanzó. Motivo: el motivo del motor (no ejecutable u omitida), "código <n>" (fallida), "solo en --mode auto" o "`--dry-run`" (no ejecutada), o —. Bajo la tabla, una línea "⚠️ <advertencia>" por advertencia (clave no declarada en verify, sddf.config.yaml ausente); sin advertencias, nada. -->
+
+| Suite | Required | Comando | Resultado | Duración (s) | Motivo |
+|---|---|---|---|---|---|
+| integration | `{true / false}` | `{comando}` | {pasa / fallida / no ejecutable / omitida / no ejecutada} | {n.n / —} | {motivo / —} |
+| e2e | `{true / false}` | `{comando}` | {pasa / fallida / no ejecutable / omitida / no ejecutada} | {n.n / —} | {motivo / —} |
+| e2e-regression | `{true / false}` | `{comando}` | {pasa / fallida / no ejecutable / omitida / no ejecutada} | {n.n / —} | {motivo / —} |
+
+⚠️ {advertencia}
+
 ## Motivos <!-- sección obligatoria · clave: motivos · escritor: epic-validate -->
-<!-- Un bloque por motivo, ordenado por comprobación (EST-01 < EST-02 < OPE-01 < OPE-02 < OPE-03); dentro de EST-01, por STORY-NNN con las planificadas sin ID al final; dentro de OPE-01, por N; dentro de OPE-03, por número de criterio; la salida de un comando fallido (outputTail) va en un bloque de código bajo la evidencia; numerado M-001, M-002… después de ordenar. Valores citados en código en línea. Sin motivos: el texto "Sin motivos." en lugar de los bloques. -->
+<!-- Un bloque por motivo, ordenado por comprobación (EST-01 < EST-02 < OPE-01 < OPE-02 < OPE-03 < OPE-04); dentro de EST-01, por STORY-NNN con las planificadas sin ID al final; dentro de OPE-01, por N; dentro de OPE-03, por número de criterio; dentro de OPE-04, integration < e2e < e2e-regression; la salida de un comando fallido (outputTail) va en un bloque de código bajo la evidencia; numerado M-001, M-002… después de ordenar. Valores citados en código en línea. Sin motivos: el texto "Sin motivos." en lugar de los bloques. -->
 
 ### M-NNN [NEEDS-CHANGES|BLOCKED] — {comprobación}: {elemento}
 

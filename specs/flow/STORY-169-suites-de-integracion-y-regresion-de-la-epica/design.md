@@ -295,3 +295,13 @@ Ninguna abierta en el diseño: las decisiones pendientes se resolvieron en D-1�
 - **Descripción**: la historia define «ejecutable no encontrado» como código de salida 127. En Windows (`cmd.exe`) el código equivalente es 9009, y Node puede fallar al lanzar con `ENOENT`. D-3 trata los tres casos como `no ejecutable`.
 - **Documento afectado**: story.md (nota «Definición observable de no ejecutable»)
 - **Acción requerida**: ampliar la nota de la historia con «código 127, o 9009 en Windows».
+
+## Notas de implementación (2026-10-30)
+
+Al implementar, `skills/epic-validate/` ya existía (STORY-124, STORY-125, STORY-126, STORY-127 y STORY-137 entregadas). El diseño se aplicó sobre ese estado con estos ajustes, sin cambiar los AC:
+
+- **C4 y la sección `dod-epica` retirados (CR-002 resuelto):** STORY-125 es dueña del DoD de épica (`OPE-03`, Paso 3d, en ambos modos) con la misma tabla de evaluación, la ruta fija y `enforcement` de este diseño (STORY-125 D-5; `epic.md`, Notas). Esta historia no lo evalúa otra vez. AC-4 lo cubre `OPE-03`, y los evals TC-038 y TC-039 completan sus ejemplos.
+- **Las suites son la comprobación `OPE-04` (C3, C5):** se integran como una fila más de `## Comprobaciones` (familia operativa, Paso 3e) y suman a la regla única del veredicto del Paso 4, como prevé STORY-125 («Nuevas comprobaciones (STORY-169): nuevas filas»). Resultado de `OPE-04`: ≥ 1 `fallida` → `no cumple`; 0 `fallida` y ≥ 1 `no ejecutable` → `bloqueada`; ≥ 1 `pasa` y el resto `omitida` → `cumple`; las tres `omitida` → `omitida` con advertencia. La tabla de efecto por suite es la de este diseño.
+- **`run` acepta `--full-output` (CR-004 de STORY-137):** con `--verbose`, cada suite agrega `output` (`null` si no se lanzó) sin cambiar los demás campos.
+- **«Ejecutable no encontrado» (D-3):** se conserva `ENOENT`/127/9009, y además rige la comprobación previa del PATH de STORY-125 D-11, porque `cmd.exe /d /s /c` devuelve 1 ante un comando desconocido. `run` la hereda al reutilizar `classifyCommand`.
+- **Línea `**Veredicto:**` (T014):** conserva el formato de STORY-124 (`<n> motivo(s) de rechazo` / `falta evidencia: <comprobación>`) para no romper los evals existentes. Con `BLOCKED` por `OPE-04`, agrega la primera suite `no ejecutable`. Cada suite `fallida` o `no ejecutable` tiene su propio motivo `M-NNN`.

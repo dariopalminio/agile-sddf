@@ -1,7 +1,7 @@
 {
   "skill": "epic-validate",
-  "version": "1.4.0",
-  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto. STORY-126 agrega la operación segura: --mode auto nunca pregunta y --mode manual es interactivo; --dry-run imprime el reporte completo sin escribir archivos, ejecutar comandos ni pedir confirmaciones (OPE-* no ejecutada); los errores de invocación (--mode inválido, sin valor o repetido) terminan sin leer ni escribir; toda ejecución cierra con el bloque RESULTADO (ÉXITO / FALLO / SIMULACIÓN) · VEREDICTO · MODO · REPORTE; y una repetición sin cambios conserva created y el orden de los motivos. STORY-128 agrega el conjunto de regresión del veredicto (un mundo base EPIC-90 en --mode auto con una variación por caso: APPROVED, historia no terminal → NEEDS-CHANGES, smoke test no ejecutable → BLOCKED y la precedencia G-05 de NEEDS-CHANGES sobre BLOCKED) y la forma cerrada de las aserciones del veredicto en todos los casos: verdict en el frontmatter seguido de created, la misma línea **Veredicto:** y la ausencia de los otros dos valores, con threshold 1. STORY-137: --verbose muestra en consola la salida completa de los comandos de prueba sin cambiar el veredicto ni el reporte, y --mode auto sin pruebas configuradas es un error de invocación sin efectos.",
+  "version": "1.5.0",
+  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto. STORY-126 agrega la operación segura: --mode auto nunca pregunta y --mode manual es interactivo; --dry-run imprime el reporte completo sin escribir archivos, ejecutar comandos ni pedir confirmaciones (OPE-* no ejecutada); los errores de invocación (--mode inválido, sin valor o repetido) terminan sin leer ni escribir; toda ejecución cierra con el bloque RESULTADO (ÉXITO / FALLO / SIMULACIÓN) · VEREDICTO · MODO · REPORTE; y una repetición sin cambios conserva created y el orden de los motivos. STORY-128 agrega el conjunto de regresión del veredicto (un mundo base EPIC-90 en --mode auto con una variación por caso: APPROVED, historia no terminal → NEEDS-CHANGES, smoke test no ejecutable → BLOCKED y la precedencia G-05 de NEEDS-CHANGES sobre BLOCKED) y la forma cerrada de las aserciones del veredicto en todos los casos: verdict en el frontmatter seguido de created, la misma línea **Veredicto:** y la ausencia de los otros dos valores, con threshold 1. STORY-137: --verbose muestra en consola la salida completa de los comandos de prueba sin cambiar el veredicto ni el reporte, y --mode auto sin pruebas configuradas es un error de invocación sin efectos. STORY-169: en --mode auto ejecuta las suites de nivel épica integration, e2e y e2e-regression de verify (OPE-04, motor run; en los casos, input.suites_result es su salida): una suite que falla rechaza (NEEDS-CHANGES), una obligatoria que no se puede ejecutar bloquea (BLOCKED), una opcional que no se puede ejecutar se omite, y G-05 da precedencia al rechazo; completa los ejemplos del DoD de épica (cumplido → APPROVED, sin evidencia → BLOCKED).",
   "cases": [
     {
       "id": "TC-001",
@@ -2711,6 +2711,1318 @@
           "{veredicto}",
           "**Veredicto:** `NEEDS-CHANGES`",
           "**Veredicto:** `BLOCKED`"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-032",
+      "name": "suites-epica-todas-pasan",
+      "type": "happy-path",
+      "description": "STORY-169 AC-1 / V-7: --mode auto con integration, e2e y e2e-regression declaradas en verify; el motor (run) devuelve las tres en pass, sin DoD de épica y con el resto de la evidencia aprobada. La sección Suites de nivel épica registra por suite su comando, `pasa` y su duración con un decimal; OPE-04 cumple, el DoD queda omitido y el veredicto es APPROVED.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            },
+            "integration": {
+              "command": "npm run test:integration",
+              "required": true
+            },
+            "e2e": {
+              "command": "npm run test:e2e",
+              "required": false
+            },
+            "e2e-regression": {
+              "command": "npm run test:e2e:regression",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\"",
+            "test:integration": "node scripts/suite.js",
+            "test:e2e": "node scripts/suite.js",
+            "test:e2e:regression": "node scripts/suite.js"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null
+          }
+        },
+        "suites_result": {
+          "ok": true,
+          "configPath": "sddf.config.yaml",
+          "suites": [
+            {
+              "key": "integration",
+              "declared": true,
+              "command": "npm run test:integration",
+              "required": true,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 2.1,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e",
+              "declared": true,
+              "command": "npm run test:e2e",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 4.5,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e-regression",
+              "declared": true,
+              "command": "npm run test:e2e:regression",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 12.3,
+              "reason": null,
+              "outputTail": null
+            }
+          ],
+          "warnings": []
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
+          "Suites de nivel épica",
+          "OPE-04",
+          "`npm run test:integration`",
+          "`npm run test:e2e:regression`",
+          "pasa",
+          "12.3",
+          "dod-epic-validate.md no existe",
+          "Sin motivos."
+        ],
+        "not_contains": [
+          "verdict: NEEDS-CHANGES",
+          "verdict: BLOCKED",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-033",
+      "name": "suite-obligatoria-fallida-needs-changes",
+      "type": "edge-case",
+      "description": "STORY-169 AC-2 (fila 1) / V-7: integration (required: true) termina con código 1 y las demás suites pasan. La suite se registra `fallida` con su código, hay un motivo NEEDS-CHANGES de OPE-04 para integration con su outputTail y el veredicto es NEEDS-CHANGES.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            },
+            "integration": {
+              "command": "npm run test:integration",
+              "required": true
+            },
+            "e2e": {
+              "command": "npm run test:e2e",
+              "required": false
+            },
+            "e2e-regression": {
+              "command": "npm run test:e2e:regression",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\"",
+            "test:integration": "node scripts/suite.js",
+            "test:e2e": "node scripts/suite.js",
+            "test:e2e:regression": "node scripts/suite.js"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null
+          }
+        },
+        "suites_result": {
+          "ok": true,
+          "configPath": "sddf.config.yaml",
+          "suites": [
+            {
+              "key": "integration",
+              "declared": true,
+              "command": "npm run test:integration",
+              "required": true,
+              "outcome": "fail",
+              "exitCode": 1,
+              "durationSeconds": 3.4,
+              "reason": null,
+              "outputTail": "integración rota: 2 pruebas fallidas"
+            },
+            {
+              "key": "e2e",
+              "declared": true,
+              "command": "npm run test:e2e",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 4.5,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e-regression",
+              "declared": true,
+              "command": "npm run test:e2e:regression",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 12.3,
+              "reason": null,
+              "outputTail": null
+            }
+          ],
+          "warnings": []
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "Suites de nivel épica",
+          "OPE-04",
+          "fallida",
+          "integration",
+          "código 1",
+          "integración rota"
+        ],
+        "not_contains": [
+          "verdict: APPROVED",
+          "verdict: BLOCKED",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}",
+          "Sin motivos."
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-034",
+      "name": "suite-obligatoria-no-ejecutable-blocked",
+      "type": "edge-case",
+      "description": "STORY-169 AC-2 (fila 2) / V-7: integration (required: true) invoca un script npm que package.json no declara; el motor la clasifica not-executable sin lanzarla. Se registra `no ejecutable` con el motivo, OPE-04 queda bloqueada y el veredicto es BLOCKED.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            },
+            "integration": {
+              "command": "npm run test:integration",
+              "required": true
+            },
+            "e2e": {
+              "command": "npm run test:e2e",
+              "required": false
+            },
+            "e2e-regression": {
+              "command": "npm run test:e2e:regression",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\"",
+            "test:e2e": "node scripts/suite.js",
+            "test:e2e:regression": "node scripts/suite.js"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null
+          }
+        },
+        "suites_result": {
+          "ok": true,
+          "configPath": "sddf.config.yaml",
+          "suites": [
+            {
+              "key": "integration",
+              "declared": true,
+              "command": "npm run test:integration",
+              "required": true,
+              "outcome": "not-executable",
+              "exitCode": null,
+              "durationSeconds": null,
+              "reason": "script npm test:integration no declarado en package.json",
+              "outputTail": null
+            },
+            {
+              "key": "e2e",
+              "declared": true,
+              "command": "npm run test:e2e",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 4.5,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e-regression",
+              "declared": true,
+              "command": "npm run test:e2e:regression",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 12.3,
+              "reason": null,
+              "outputTail": null
+            }
+          ],
+          "warnings": []
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: BLOCKED\ncreated:",
+          "**Veredicto:** `BLOCKED`",
+          "Suites de nivel épica",
+          "OPE-04",
+          "no ejecutable",
+          "script npm test:integration no declarado en package.json"
+        ],
+        "not_contains": [
+          "verdict: APPROVED",
+          "verdict: NEEDS-CHANGES",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}",
+          "Sin motivos."
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-035",
+      "name": "suite-opcional-no-ejecutable-omitida",
+      "type": "edge-case",
+      "description": "STORY-169 AC-2 (fila 3) / CNF-2 / V-7: e2e-regression (required: false) invoca un script npm no declarado. Se registra `omitida` con el motivo, no produce motivos ni bloqueo, OPE-04 cumple (integration y e2e pasan) y el veredicto es APPROVED.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            },
+            "integration": {
+              "command": "npm run test:integration",
+              "required": true
+            },
+            "e2e": {
+              "command": "npm run test:e2e",
+              "required": false
+            },
+            "e2e-regression": {
+              "command": "npm run test:e2e:regression",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\"",
+            "test:integration": "node scripts/suite.js",
+            "test:e2e": "node scripts/suite.js"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null
+          }
+        },
+        "suites_result": {
+          "ok": true,
+          "configPath": "sddf.config.yaml",
+          "suites": [
+            {
+              "key": "integration",
+              "declared": true,
+              "command": "npm run test:integration",
+              "required": true,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 2.1,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e",
+              "declared": true,
+              "command": "npm run test:e2e",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 4.5,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e-regression",
+              "declared": true,
+              "command": "npm run test:e2e:regression",
+              "required": false,
+              "outcome": "not-executable",
+              "exitCode": null,
+              "durationSeconds": null,
+              "reason": "script npm test:e2e:regression no declarado en package.json",
+              "outputTail": null
+            }
+          ],
+          "warnings": []
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
+          "Suites de nivel épica",
+          "omitida",
+          "script npm test:e2e:regression no declarado en package.json",
+          "Sin motivos."
+        ],
+        "not_contains": [
+          "verdict: NEEDS-CHANGES",
+          "verdict: BLOCKED",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-036",
+      "name": "suite-opcional-fallida-needs-changes",
+      "type": "edge-case",
+      "description": "STORY-169 AC-2 (fila 4) / V-7: e2e-regression (required: false) se ejecuta y termina con código 1. Una suite opcional que falla sí rechaza: se registra `fallida` y el veredicto es NEEDS-CHANGES.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            },
+            "integration": {
+              "command": "npm run test:integration",
+              "required": true
+            },
+            "e2e": {
+              "command": "npm run test:e2e",
+              "required": false
+            },
+            "e2e-regression": {
+              "command": "npm run test:e2e:regression",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\"",
+            "test:integration": "node scripts/suite.js",
+            "test:e2e": "node scripts/suite.js",
+            "test:e2e:regression": "node scripts/suite.js"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null
+          }
+        },
+        "suites_result": {
+          "ok": true,
+          "configPath": "sddf.config.yaml",
+          "suites": [
+            {
+              "key": "integration",
+              "declared": true,
+              "command": "npm run test:integration",
+              "required": true,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 2.1,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e",
+              "declared": true,
+              "command": "npm run test:e2e",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 4.5,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e-regression",
+              "declared": true,
+              "command": "npm run test:e2e:regression",
+              "required": false,
+              "outcome": "fail",
+              "exitCode": 1,
+              "durationSeconds": 3.4,
+              "reason": null,
+              "outputTail": "regresión: 1 escenario fallido"
+            }
+          ],
+          "warnings": []
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "Suites de nivel épica",
+          "OPE-04",
+          "fallida",
+          "e2e-regression",
+          "código 1"
+        ],
+        "not_contains": [
+          "verdict: APPROVED",
+          "verdict: BLOCKED",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}",
+          "Sin motivos."
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-037",
+      "name": "suites-fallo-y-bloqueo-precedencia",
+      "type": "edge-case",
+      "description": "STORY-169 AC-3 / V-7: integration (required: true) termina con código 1 y e2e (required: true) invoca un script npm no declarado. El reporte registra integration `fallida` y e2e `no ejecutable`, con un motivo NEEDS-CHANGES y otro BLOCKED; por G-05 el veredicto es NEEDS-CHANGES.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            },
+            "integration": {
+              "command": "npm run test:integration",
+              "required": true
+            },
+            "e2e": {
+              "command": "npm run test:e2e",
+              "required": true
+            },
+            "e2e-regression": {
+              "command": "npm run test:e2e:regression",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\"",
+            "test:integration": "node scripts/suite.js",
+            "test:e2e:regression": "node scripts/suite.js"
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null
+          }
+        },
+        "suites_result": {
+          "ok": true,
+          "configPath": "sddf.config.yaml",
+          "suites": [
+            {
+              "key": "integration",
+              "declared": true,
+              "command": "npm run test:integration",
+              "required": true,
+              "outcome": "fail",
+              "exitCode": 1,
+              "durationSeconds": 3.4,
+              "reason": null,
+              "outputTail": "integración rota"
+            },
+            {
+              "key": "e2e",
+              "declared": true,
+              "command": "npm run test:e2e",
+              "required": true,
+              "outcome": "not-executable",
+              "exitCode": null,
+              "durationSeconds": null,
+              "reason": "script npm test:e2e no declarado en package.json",
+              "outputTail": null
+            },
+            {
+              "key": "e2e-regression",
+              "declared": true,
+              "command": "npm run test:e2e:regression",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 12.3,
+              "reason": null,
+              "outputTail": null
+            }
+          ],
+          "warnings": []
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "Suites de nivel épica",
+          "fallida",
+          "no ejecutable",
+          "[NEEDS-CHANGES]",
+          "[BLOCKED]",
+          "script npm test:e2e no declarado en package.json"
+        ],
+        "not_contains": [
+          "verdict: APPROVED",
+          "verdict: BLOCKED",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}",
+          "Sin motivos."
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-038",
+      "name": "dod-epica-cumplido-approved",
+      "type": "happy-path",
+      "description": "STORY-169 AC-4 (fila 2) / V-7: las suites pasan y docs/guardrails/dod-epic-validate.md (enforcement: error) tiene un criterio que cita un comando de verificación que termina con 0. El criterio se registra `cumplido` con su ejecución como evidencia y el veredicto es APPROVED.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            },
+            "integration": {
+              "command": "npm run test:integration",
+              "required": true
+            },
+            "e2e": {
+              "command": "npm run test:e2e",
+              "required": false
+            },
+            "e2e-regression": {
+              "command": "npm run test:e2e:regression",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\"",
+            "test:integration": "node scripts/suite.js",
+            "test:e2e": "node scripts/suite.js",
+            "test:e2e:regression": "node scripts/suite.js"
+          }
+        },
+        "dod_epic_validate": {
+          "path": "docs/guardrails/dod-epic-validate.md",
+          "enforcement": "error",
+          "criteria": [
+            "- [ ] La documentación pasa `npm run check:docs`"
+          ]
+        },
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null
+          },
+          "npm run check:docs": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.8,
+            "reason": null,
+            "outputTail": null
+          }
+        },
+        "suites_result": {
+          "ok": true,
+          "configPath": "sddf.config.yaml",
+          "suites": [
+            {
+              "key": "integration",
+              "declared": true,
+              "command": "npm run test:integration",
+              "required": true,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 2.1,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e",
+              "declared": true,
+              "command": "npm run test:e2e",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 4.5,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e-regression",
+              "declared": true,
+              "command": "npm run test:e2e:regression",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 12.3,
+              "reason": null,
+              "outputTail": null
+            }
+          ],
+          "warnings": []
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: APPROVED\ncreated:",
+          "**Veredicto:** `APPROVED`",
+          "DoD de validación de épica",
+          "cumplido",
+          "npm run check:docs",
+          "Sin motivos."
+        ],
+        "not_contains": [
+          "verdict: NEEDS-CHANGES",
+          "verdict: BLOCKED",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}",
+          "Omitido — ⚠️"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-039",
+      "name": "dod-epica-sin-evidencia-blocked",
+      "type": "edge-case",
+      "description": "STORY-169 AC-4 (fila 4) / V-7: las suites pasan y el DoD tiene un criterio sin comando, archivo ni campo observable; en --mode auto no se pregunta, así que queda `sin evidencia` y, sin ningún criterio incumplido, el veredicto es BLOCKED.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            },
+            "integration": {
+              "command": "npm run test:integration",
+              "required": true
+            },
+            "e2e": {
+              "command": "npm run test:e2e",
+              "required": false
+            },
+            "e2e-regression": {
+              "command": "npm run test:e2e:regression",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\"",
+            "test:integration": "node scripts/suite.js",
+            "test:e2e": "node scripts/suite.js",
+            "test:e2e:regression": "node scripts/suite.js"
+          }
+        },
+        "dod_epic_validate": {
+          "path": "docs/guardrails/dod-epic-validate.md",
+          "enforcement": "error",
+          "criteria": [
+            "- [ ] El PO revisó la demo de la épica con el equipo"
+          ]
+        },
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "command_results": {
+          "node -e \"process.exit(0)\"": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.2,
+            "reason": null,
+            "outputTail": null
+          },
+          "npm run verify:release": {
+            "outcome": "pass",
+            "exitCode": 0,
+            "durationSeconds": 0.3,
+            "reason": null,
+            "outputTail": null
+          }
+        },
+        "suites_result": {
+          "ok": true,
+          "configPath": "sddf.config.yaml",
+          "suites": [
+            {
+              "key": "integration",
+              "declared": true,
+              "command": "npm run test:integration",
+              "required": true,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 2.1,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e",
+              "declared": true,
+              "command": "npm run test:e2e",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 4.5,
+              "reason": null,
+              "outputTail": null
+            },
+            {
+              "key": "e2e-regression",
+              "declared": true,
+              "command": "npm run test:e2e:regression",
+              "required": false,
+              "outcome": "pass",
+              "exitCode": 0,
+              "durationSeconds": 12.3,
+              "reason": null,
+              "outputTail": null
+            }
+          ],
+          "warnings": []
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: BLOCKED\ncreated:",
+          "**Veredicto:** `BLOCKED`",
+          "DoD de validación de épica",
+          "sin evidencia",
+          "criterio 1",
+          "requiere confirmación humana"
+        ],
+        "not_contains": [
+          "verdict: APPROVED",
+          "verdict: NEEDS-CHANGES",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}",
+          "Sin motivos.",
+          "Omitido — ⚠️"
         ]
       },
       "threshold": 1

@@ -211,3 +211,182 @@ test('comando de smoke tests con el ID ya sustituido se clasifica como cualquier
   assert.equal(runCli(['check-command', '--repo-root', root, '--command', smoke('SMOKE-1')]).json.outcome, 'pass');
   assert.equal(runCli(['check-command', '--repo-root', root, '--command', 'echo {{smoke_id}}']).json.outcome, 'pass');
 });
+
+// STORY-169: suites de nivel épica (`readEpicSuites` + subcomando `run`, contrato I1 y `SuitesResult`).
+const { readEpicSuites, EPIC_SUITE_KEYS } = require(SCRIPT);
+
+/** `sddf.config.yaml` con un bloque `verify:`; `suites` = `{ key: { command, required } }` en ese orden. */
+function verifyYaml(suites) {
+  const lines = ['profile: fixture', '', 'verify:'];
+  for (const [key, { command, required }] of Object.entries(suites)) {
+    lines.push(`  ${key}:`);
+    if (command !== undefined) lines.push(`    command: ${JSON.stringify(command)}`);
+    if (required !== undefined) lines.push(`    required: ${required}`);
+  }
+  return `${lines.join('\n')}\n\nimplement:\n  test_generators: []\n`;
+}
+
+function writeConfig(root, text) {
+  fs.writeFileSync(path.join(root, 'sddf.config.yaml'), text);
+}
+
+const ok = `${NODE} -e "process.exit(0)"`;
+const ko = `${NODE} -e "console.log('suite rota');process.exit(1)"`;
+
+test('EPIC_SUITE_KEYS es la lista fija integration → e2e → e2e-regression', () => {
+  assert.deepEqual(EPIC_SUITE_KEYS, ['integration', 'e2e', 'e2e-regression']);
+});
+
+test('readEpicSuites lee el verify real del repo: solo las tres claves de épica, en orden', () => {
+  const text = fs.readFileSync(path.join(__dirname, '..', 'sddf.config.yaml'), 'utf8');
+  const suites = readEpicSuites(text);
+  assert.deepEqual(suites.map((s) => s.key), EPIC_SUITE_KEYS);
+  for (const suite of suites) {
+    assert.equal(suite.declared, true);
+    assert.equal(typeof suite.command, 'string');
+    assert.equal(typeof suite.required, 'boolean');
+  }
+  assert.equal(suites[0].command, 'node scripts/verify-fixed-layout.js');
+  assert.equal(suites[0].required, true);
+});
+
+test('readEpicSuites quita comillas, ignora comentarios fuera de comillas y usa required: false si falta', () => {
+  const text = [
+    'verify:',
+    '  unit:',
+    '    command: "npm run test:installer"',
+    '    required: true',
+    '  integration:',
+    '    command: "npm run test:eval" # nota con # y "comillas"',
+    '  e2e:',
+    '    command: \'node -e "1 # no es comentario"\'',
+    '    required: true # obligatorio',
+    'otra:',
+    '  e2e-regression:',
+    '    command: "fuera de verify"',
+  ].join('\n');
+  const [integration, e2e, regression] = readEpicSuites(text);
+  assert.deepEqual(integration, { key: 'integration', declared: true, command: 'npm run test:eval', required: false });
+  assert.deepEqual(e2e, { key: 'e2e', declared: true, command: 'node -e "1 # no es comentario"', required: true });
+  assert.deepEqual(regression, { key: 'e2e-regression', declared: false, command: null, required: false });
+});
+
+test('readEpicSuites: clave sin command escalar o verify en sintaxis de flujo → command null', () => {
+  const sinCommand = readEpicSuites('verify:\n  integration:\n    required: true\n  e2e:\n    command:\n');
+  assert.deepEqual(sinCommand[0], { key: 'integration', declared: true, command: null, required: true });
+  assert.equal(sinCommand[1].declared, true);
+  assert.equal(sinCommand[1].command, null);
+  const flujo = readEpicSuites('verify: { integration: { command: "x" } }\n');
+  assert.ok(flujo.every((s) => s.command === null));
+});
+
+test('run: tres suites con código 0 → 3 pass con duración de un decimal y sin advertencias (AC-1)', (t) => {
+  const root = makeRepo(t);
+  writeConfig(root, verifyYaml({ integration: { command: ok, required: true }, e2e: { command: ok, required: false }, 'e2e-regression': { command: ok, required: false } }));
+  const { status, json } = runCli(['run', '--repo-root', root]);
+  assert.equal(status, 0);
+  assert.equal(json.ok, true);
+  assert.equal(json.configPath, 'sddf.config.yaml');
+  assert.deepEqual(json.warnings, []);
+  assert.deepEqual(json.suites.map((s) => s.key), EPIC_SUITE_KEYS);
+  for (const suite of json.suites) {
+    assert.equal(suite.outcome, 'pass');
+    assert.equal(suite.command, ok);
+    assert.equal(suite.exitCode, 0);
+    assert.equal(typeof suite.durationSeconds, 'number');
+    assert.equal(Math.round(suite.durationSeconds * 10) / 10, suite.durationSeconds);
+    assert.equal(suite.outputTail, null);
+  }
+  assert.deepEqual(Object.keys(json.suites[0]).sort(), ['command', 'declared', 'durationSeconds', 'exitCode', 'key', 'outcome', 'outputTail', 'reason', 'required']);
+});
+
+test('run: fallo, script npm no declarado y clave sin command en el mismo SuitesResult (AC-2, AC-3)', (t) => {
+  const root = makeRepo(t, { scripts: {} });
+  writeConfig(root, verifyYaml({ integration: { command: ko, required: true }, e2e: { command: 'npm run falta', required: true }, 'e2e-regression': { required: false } }));
+  const { status, json } = runCli(['run', '--repo-root', root]);
+  assert.equal(status, 0);
+  const [integration, e2e, regression] = json.suites;
+  assert.equal(integration.outcome, 'fail');
+  assert.equal(integration.exitCode, 1);
+  assert.ok(integration.outputTail.includes('suite rota'));
+  assert.equal(e2e.outcome, 'not-executable');
+  assert.equal(e2e.required, true);
+  assert.equal(e2e.reason, 'script npm falta no declarado en package.json');
+  assert.equal(e2e.durationSeconds, null);
+  assert.equal(regression.outcome, 'not-executable');
+  assert.equal(regression.reason, 'e2e-regression no declara command');
+});
+
+test('run: clave ausente de verify → absent con advertencia; el orden de suites es fijo (V-5)', (t) => {
+  const root = makeRepo(t);
+  writeConfig(root, verifyYaml({ 'e2e-regression': { command: ok, required: false }, integration: { command: ok, required: true } }));
+  const { json } = runCli(['run', '--repo-root', root]);
+  assert.deepEqual(json.suites.map((s) => s.key), EPIC_SUITE_KEYS);
+  assert.equal(json.suites[1].outcome, 'absent');
+  assert.equal(json.suites[1].declared, false);
+  assert.equal(json.suites[1].command, null);
+  assert.equal(json.suites[1].reason, 'clave e2e no declarada en verify');
+  assert.deepEqual(json.warnings, ['clave e2e no declarada en verify']);
+  assert.equal(json.suites[0].outcome, 'pass');
+  assert.equal(json.suites[2].outcome, 'pass');
+});
+
+test('run: sin sddf.config.yaml → tres absent con la advertencia y salida 0', (t) => {
+  const root = makeRepo(t);
+  const { status, json } = runCli(['run', '--repo-root', root]);
+  assert.equal(status, 0);
+  assert.ok(json.suites.every((s) => s.outcome === 'absent'));
+  assert.deepEqual(json.warnings, ['sddf.config.yaml no existe']);
+});
+
+test('run: sddf.config.yaml ilegible → ok: false y salida 1', (t) => {
+  const root = makeRepo(t);
+  fs.mkdirSync(path.join(root, 'sddf.config.yaml'));
+  const { status, stdout } = runCli(['run', '--repo-root', root]);
+  assert.equal(status, 1);
+  assert.equal(JSON.parse(stdout).ok, false);
+});
+
+test('run --full-output agrega output por suite lanzada y null por suite no lanzada', (t) => {
+  const root = makeRepo(t, { scripts: {} });
+  const marca = `${NODE} -e "console.log('SDDF-SUITE-1')"`;
+  writeConfig(root, verifyYaml({ integration: { command: marca, required: true }, e2e: { command: 'npm run falta', required: false } }));
+  const full = runCli(['run', '--full-output', '--repo-root', root]).json;
+  const plain = runCli(['run', '--repo-root', root]).json;
+  assert.ok(full.suites[0].output.includes('SDDF-SUITE-1'));
+  assert.equal(full.suites[1].output, null);
+  assert.equal(full.suites[2].output, null);
+  assert.ok(plain.suites.every((s) => !Object.prototype.hasOwnProperty.call(s, 'output')));
+  assert.deepEqual(full.suites.map(sinVolatiles), plain.suites.map(sinVolatiles));
+});
+
+test('check-command clasifica igual que run el mismo comando (V-6)', (t) => {
+  const root = makeRepo(t, { scripts: {} });
+  const commands = [ok, ko, 'npm run falta'];
+  writeConfig(root, verifyYaml({ integration: { command: commands[0] }, e2e: { command: commands[1] }, 'e2e-regression': { command: commands[2] } }));
+  const { json } = runCli(['run', '--repo-root', root]);
+  for (const [i, suite] of json.suites.entries()) {
+    const single = runCli(['check-command', '--repo-root', root, '--command', commands[i]]).json;
+    assert.equal(single.outcome, suite.outcome, commands[i]);
+    assert.equal(single.reason, suite.reason, commands[i]);
+  }
+});
+
+test('run: argumentos inválidos → stderr y salida 2', (t) => {
+  const root = makeRepo(t);
+  for (const args of [['run'], ['run', '--repo-root'], ['run', '--repo-root', root, '--command', 'x'], ['run', '--repo-root', path.join(root, 'no-existe')]]) {
+    const { status, stdout, stderr } = runCli(args);
+    assert.equal(status, 2, `args: ${args.join(' ')}`);
+    assert.equal(stdout, '');
+    assert.ok(stderr.length > 0);
+  }
+});
+
+test('run no escribe en REPO_ROOT (V-9)', (t) => {
+  const root = makeRepo(t, { scripts: {} });
+  writeConfig(root, verifyYaml({ integration: { command: ok, required: true }, e2e: { command: ko }, 'e2e-regression': { command: 'npm run falta' } }));
+  const before = snapshot(root);
+  runCli(['run', '--repo-root', root]);
+  runCli(['run', '--full-output', '--repo-root', root]);
+  assert.deepEqual(snapshot(root), before);
+});
