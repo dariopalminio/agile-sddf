@@ -8,7 +8,7 @@
 
 ## What it does
 
-Corrige una épica que `epic-analyze` dejó en `NEEDS-REFINEMENT`: añade al índice de `epic.md` las historias huérfanas (INT-02), deja una sola línea por historia duplicada (INT-03) y retira de los `story.md` las entradas `related` que apuntan a historias o épicas inexistentes (MAD-02). Antes de escribir muestra un plan de cambios consolidado y pide confirmación; los hallazgos que requieren una decisión del PO no se tocan y quedan registrados como «fuera de alcance» con su responsable. Es el corrector del bucle de `PLAN`, `epic-analyze → epic-refine → epic-analyze`.
+Corrige una épica que `epic-analyze` dejó en `NEEDS-REFINEMENT`: añade al índice de `epic.md` las historias huérfanas (INT-02), deja una sola línea por historia duplicada (INT-03) y retira de los `story.md` las entradas `related` que apuntan a historias o épicas inexistentes (MAD-02) y asigna cada criterio de salida o smoke test sin cobertura (SAL-01, SAL-02) a la historia de cierre —la única que ya lo verifica en parte y de la que no depende ninguna otra—, a la que añade un AC de cierre y una cita del criterio; si no hay una única historia de cierre, la decisión queda para el PO. Antes de escribir muestra un plan de cambios consolidado y pide confirmación; los hallazgos que requieren una decisión del PO no se tocan y quedan registrados como «fuera de alcance» con su responsable. Es el corrector del bucle de `PLAN`, `epic-analyze → epic-refine → epic-analyze`.
 
 **Produces:**
 
@@ -20,7 +20,8 @@ Corrige una épica que `epic-analyze` dejó en `NEEDS-REFINEMENT`: añade al ín
 
 - No diagnostica la épica ni vuelve a ejecutar `epic-analyze` al terminar.
 - No cambia `status`, `substatus` ni `parent`; no modifica criterios de salida, smoke tests ni alcance; no crea historias.
-- No cubre criterios de salida ni smoke tests (SAL-01, SAL-02) en esta versión.
+- No modifica ni retira criterios de salida ni smoke tests de `epic.md`, y no crea historias para cubrir un criterio sin evidencia parcial.
+- No reparte citas de un criterio entre varias historias: la cobertura se asigna a una sola historia de cierre.
 - No modifica `epic-analyze-report.md` ni las historias archivadas.
 - No corrige la forma de `epic.md` (eso es `epic-improve`).
 
@@ -30,9 +31,9 @@ Corrige una épica que `epic-analyze` dejó en `NEEDS-REFINEMENT`: añade al ín
 
 **Use it when:**
 
-- `epic-analyze` declaró `NEEDS-REFINEMENT` por historias huérfanas, líneas duplicadas en el índice o `related` rotos.
+- `epic-analyze` declaró `NEEDS-REFINEMENT` por historias huérfanas, líneas duplicadas en el índice, `related` rotos o criterios de salida y smoke tests sin cobertura que una historia ya verifica en parte.
 - Quieras volver a analizar la épica sin corregir a mano el índice ni los enlaces.
-- El usuario mencione: `"epic-refine"`, `"refinar épica"`, `"aplicar epic-analyze"`, `"historia huérfana"`, `"related roto"`.
+- El usuario mencione: `"epic-refine"`, `"refinar épica"`, `"aplicar epic-analyze"`, `"historia huérfana"`, `"related roto"`, `"criterio de salida sin cobertura"`.
 
 **Do NOT use it when:**
 

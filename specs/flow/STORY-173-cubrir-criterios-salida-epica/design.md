@@ -302,3 +302,9 @@ Ninguna. La relación de dependencia (D-3), el desempate (D-3), los estados admi
 - **Descripción**: `skills/epic-refine/` no existe todavía; todos los archivos que esta historia modifica los crea STORY-165.
 - **Documento afectado**: tasks.md
 - **Acción requerida**: la primera tarea verifica que STORY-165 esté implementada (`skills/epic-refine/SKILL.md` con la tabla de enrutamiento y la fila SAL «lo asigna STORY-173»).
+
+### CR-006
+- **Tipo**: ajuste de implementación
+- **Descripción**: (1) `epic-analyze` emite las evidencias parciales en dos formas (`parcial: STORY-NNN › AC-<n> · story.md:<línea>` en **Evidencia** y `STORY-NNN · AC-<n> · story.md:<línea> … — parcial` en `cobertura-salida`, p. ej. `EPIC-26-layout-y-flow-forward-mejorado/epic-analyze-report.md:59`); `references/sal-corrections.md` acepta ambas y, si **Evidencia** no las trae, las toma de la fila de `cobertura-salida`. (2) Un SAL-02 aislado es WARNING y `epic-analyze` declararía `APPROVED`, que `epic-refine` no procesa; el fixture `cobertura-smoke-implementada/` añade un SAL-01 cuya única parcial está en la misma STORY-303 implementada (H-001 SAL-01, H-002 SAL-02), y TC-013 espera ambos fuera de alcance. (3) El error de catálogo ausente se generalizó a `❌ Catálogo references/<familia>-corrections.md no encontrado`. (4) Por veracidad se actualizaron también `CHANGELOG.md` y `docs/domains/domain-epic-lifecycle.md`, que declaraban SAL-01/SAL-02 fuera de alcance.
+- **Documento afectado**: design.md (D-2, D-8)
+- **Acción requerida**: ninguna.

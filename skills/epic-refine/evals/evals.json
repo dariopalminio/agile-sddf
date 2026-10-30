@@ -1,7 +1,7 @@
 {
   "skill": "epic-refine",
-  "version": "1.0.0",
-  "description": "Casos de prueba para epic-refine (STORY-165): con epic-analyze-report.md en NEEDS-REFINEMENT aplica INT-02 (historia huérfana al índice), INT-03 (una sola línea) y MAD-02 (retira el related roto) tras un plan consolidado, con <archivo>.bak previo, status/substatus intactos y epic-refine-report.md; con APPROVED no crea ni modifica ningún archivo; los hallazgos que requieren decisión del PO quedan fuera de alcance. En cada fixture, el directorio del ejemplo hace de specs/flow/.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para epic-refine (STORY-165, STORY-173): con epic-analyze-report.md en NEEDS-REFINEMENT aplica INT-02 (historia huérfana al índice), INT-03 (una sola línea) y MAD-02 (retira el related roto) tras un plan consolidado, con <archivo>.bak previo, status/substatus intactos y epic-refine-report.md; con APPROVED no crea ni modifica ningún archivo; los hallazgos que requieren decisión del PO quedan fuera de alcance; SAL-01/SAL-02 con evidencia parcial se asignan a la única historia de cierre (AC de cierre + cita E1). En cada fixture, el directorio del ejemplo hace de specs/flow/.",
   "cases": [
     {
       "id": "TC-001",
@@ -128,6 +128,86 @@
       "expected": {
         "contains": ["❌", "epic-analyze-report.md", "/epic-analyze EPIC-30"],
         "not_contains": ["¿Aplicar el plan?", "Backup creado"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-009",
+      "name": "asigna-cobertura-a-la-historia-de-cierre",
+      "type": "happy-path",
+      "description": "[AC-1 · CNF-1 · CNF-2] H-001 SAL-01 reporta CS-1 sin cobertura con evidencia parcial en STORY-301 y STORY-302; STORY-302 declara depends-on: STORY-301, así que es la única candidata sin dependientes. En --auto el skill crea solo el story.md.bak de STORY-302, le añade el AC-3 'Cierre del contrato de salida – CS-1 de EPIC-30' y la línea E1 '- Cubre el criterio de salida CS-1 de EPIC-30: …' en Notas, no escribe en STORY-301 ni en epic.md, y registra 'SAL-01 · CS-1 → STORY-302' como aplicado en epic-refine-report.md.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/cobertura-cierre/EPIC-30-ejemplo/epic.md",
+        "flags": ["--auto"],
+        "context": "El directorio skills/epic-refine/examples/cobertura-cierre/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": ["SAL-01 · CS-1 → STORY-302", "aplicado", "STORY-302-enviar-csv-por-correo/story.md.bak", "Cierre del contrato de salida – CS-1 de EPIC-30", "- Cubre el criterio de salida CS-1 de EPIC-30: El listado de pedidos del mes se exporta a CSV y se envía por correo al responsable de ventas", "APLICADOS: 1"],
+        "not_contains": ["STORY-301-exportar-pedidos-csv/story.md.bak", "epic.md.bak", "SAL-01 · CS-1 → STORY-301", "status: IMPLEMENT"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-010",
+      "name": "criterio-sin-evidencia-parcial-al-po",
+      "type": "edge-case",
+      "description": "[AC-2 · CNF-2] H-001 SAL-01 reporta CS-2 sin cobertura y sin ninguna evidencia parcial. En --auto el skill clasifica 'SAL-01 · CS-2' como fuera de alcance con responsable PO y la nota 'sin evidencia parcial', no crea ningún .bak y ningún story.md cita CS-2.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/cobertura-sin-parcial/EPIC-30-ejemplo/epic.md",
+        "flags": ["--auto"],
+        "context": "El directorio skills/epic-refine/examples/cobertura-sin-parcial/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": ["SAL-01 · CS-2", "fuera de alcance", "PO", "sin evidencia parcial", "APLICADOS: 0", "FUERA-DE-ALCANCE: 1"],
+        "not_contains": ["story.md.bak", "Cubre el criterio de salida CS-2", "SAL-01 · CS-2 →"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-011",
+      "name": "empate-de-candidatas-al-po",
+      "type": "edge-case",
+      "description": "[D-3 · CNF-2] Como TC-009, pero STORY-302 no declara depends-on: ambas candidatas carecen de dependientes. El skill no desempata por STORY-NNN: deja el hallazgo fuera de alcance con responsable PO y la nota 'varias candidatas sin dependientes: STORY-301, STORY-302', sin escribir ningún story.md.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/cobertura-empate/EPIC-30-ejemplo/epic.md",
+        "flags": ["--auto"],
+        "context": "El directorio skills/epic-refine/examples/cobertura-empate/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": ["varias candidatas sin dependientes: STORY-301, STORY-302", "fuera de alcance", "PO", "APLICADOS: 0"],
+        "not_contains": ["story.md.bak", "Cierre del contrato de salida", "→ STORY-302"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-012",
+      "name": "reejecucion-ya-resuelto-por-e1",
+      "type": "edge-case",
+      "description": "[D-2 · idempotencia] STORY-302 ya contiene el AC de cierre de CS-1 y la línea E1 (y su story.md.bak) de una ejecución anterior; el reporte de análisis es anterior a esa escritura. En --auto el skill clasifica SAL-01 como ya resuelto, no añade un segundo AC de cierre ni sobrescribe el .bak, y advierte que el reporte puede estar desactualizado.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/cobertura-reejecucion/EPIC-30-ejemplo/epic.md",
+        "flags": ["--auto"],
+        "context": "El directorio skills/epic-refine/examples/cobertura-reejecucion/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": ["ya resuelto", "SAL-01", "YA-RESUELTOS: 1", "APLICADOS: 0", "desactualizado"],
+        "not_contains": ["AC-4 — Cierre del contrato de salida", "Backup creado", "APLICADOS: 1"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-013",
+      "name": "historia-de-cierre-implementada-al-po",
+      "type": "edge-case",
+      "description": "[D-4 · CS-15 · CNF-2] H-001 SAL-01 (CS-1) y H-002 SAL-02 (SMOKE-2) tienen como única candidata a STORY-303, en IMPLEMENT/DONE. El skill no reabre una historia implementada: ambos hallazgos quedan fuera de alcance con responsable PO y la nota 'STORY-303 ya está implementada', STORY-303 conserva status: IMPLEMENT y no se crea ningún .bak.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/cobertura-smoke-implementada/EPIC-30-ejemplo/epic.md",
+        "flags": ["--auto"],
+        "context": "El directorio skills/epic-refine/examples/cobertura-smoke-implementada/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": ["STORY-303 ya está implementada", "fuera de alcance", "PO", "SAL-02 · SMOKE-2", "status: IMPLEMENT", "FUERA-DE-ALCANCE: 2"],
+        "not_contains": ["story.md.bak", "Cierre del contrato de salida", "Cubre SMOKE-2 de EPIC-30"]
       },
       "threshold": 1.0
     }

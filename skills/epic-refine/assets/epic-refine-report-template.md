@@ -37,7 +37,7 @@ related:
 | Fecha | {YYYY-MM-DD} |
 
 ## Hallazgos <!-- sección obligatoria · clave: hallazgos · escritor: epic-refine -->
-<!-- Una fila por hallazgo de epic-analyze-report.md, en su orden (H-001, H-002…). Origen: "H-NNN · <código>". Elemento: el valor literal del reporte en código en línea. Clasificación: aplicado · ya resuelto · fuera de alcance. Responsable: PO si queda fuera de alcance (con la Acción sugerida literal del reporte o la nota del catálogo); — en otro caso. Cambios: los C-NN que lo aplican, o —. Sin hallazgos: el texto "Sin hallazgos." -->
+<!-- Una fila por hallazgo de epic-analyze-report.md, en su orden (H-001, H-002…). Origen: "H-NNN · <código>". Elemento: el valor literal del reporte en código en línea; para SAL-01/SAL-02, la asignación de cobertura "<código> · <etiqueta>[ → STORY-NNN]" (aplicado: "SAL-01 · CS-1 → STORY-302"; ya resuelto o fuera de alcance: "SAL-01 · CS-2"). Clasificación: aplicado · ya resuelto · fuera de alcance. Responsable: PO si queda fuera de alcance (con la Acción sugerida literal del reporte o la nota del catálogo); — en otro caso. Cambios: los C-NN que lo aplican, o —. Sin hallazgos: el texto "Sin hallazgos." -->
 
 | Origen | Código | Severidad | Elemento | Clasificación | Responsable | Cambios |
 |---|---|---|---|---|---|---|
@@ -46,7 +46,7 @@ related:
 Sin hallazgos.
 
 ## Cambios aplicados <!-- sección obligatoria · clave: cambios-aplicados · escritor: epic-refine -->
-<!-- Un bloque por cambio C-NN del plan aplicado, en el orden del plan (epic.md primero, después los story.md por STORY-NNN; dentro de cada archivo, por línea). Antes y Después: las líneas literales en código en línea, o — si no hay. Sin cambios: el texto "Sin cambios." -->
+<!-- Un bloque por cambio C-NN del plan aplicado, en el orden del plan (epic.md primero, después los story.md por STORY-NNN; dentro de cada archivo, por línea). Antes y Después: las líneas literales en código en línea, o — si no hay; para SAL, Después lleva el AC de cierre completo o la línea E1 de Notas. Sin cambios: el texto "Sin cambios." -->
 
 ### C-NN — {archivo} › {ubicación}
 

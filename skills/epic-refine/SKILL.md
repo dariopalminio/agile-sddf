@@ -1,8 +1,8 @@
 ---
 name: epic-refine
 description: >-
-  Corrige en epic.md y en los story.md de la épica los hallazgos de índice (INT-02, INT-03) y de related roto (MAD-02) de epic-analyze-report.md: plan consolidado, .bak previo y epic-refine-report.md.
-  Usar tras un NEEDS-REFINEMENT de epic-analyze. Invocar para "epic-refine", "refinar épica", "aplicar epic-analyze", "historia huérfana", "related roto".
+  Corrige en epic.md y sus story.md los hallazgos de índice (INT-02, INT-03) y related roto (MAD-02) de epic-analyze-report.md y asigna la cobertura de criterios de salida y smoke tests (SAL-01, SAL-02), con plan, .bak y epic-refine-report.md.
+  Usar tras un NEEDS-REFINEMENT de epic-analyze. Invocar para "epic-refine", "refinar épica", "aplicar epic-analyze", "historia huérfana", "related roto", "criterio de salida sin cobertura".
   No usar para la forma de epic.md: eso es /epic-improve.
 ---
 
@@ -10,7 +10,8 @@ description: >-
 
 **Cuándo usar este skill:**
 - `/epic-analyze` declaró `NEEDS-REFINEMENT` y se quiere corregir el índice de historias o los `related` rotos sin editarlos a mano.
-- El usuario dice «epic-refine EPIC-NN», «refinar la épica», «aplicar epic-analyze», «añadir la historia huérfana al índice», «quitar el related roto».
+- El análisis reporta un criterio de salida o un smoke test sin cobertura (SAL-01, SAL-02) que una historia ya verifica en parte.
+- El usuario dice «epic-refine EPIC-NN», «refinar la épica», «aplicar epic-analyze», «añadir la historia huérfana al índice», «quitar el related roto», «criterio de salida sin cobertura».
 
 ## Objetivo
 
@@ -20,12 +21,12 @@ Cierra el bucle de `PLAN` (`epic-analyze → NEEDS-REFINEMENT → epic-refine �
 - Lee el `verdict` del reporte de análisis y solo trabaja con `NEEDS-REFINEMENT`.
 - Revalida cada hallazgo contra los archivos actuales y lo clasifica en *aplicable · ya resuelto · fuera de alcance*.
 - Corrige INT-02 (añade la línea F2/F3 de la historia huérfana), INT-03 (deja una sola línea) y MAD-02 (retira la entrada `related` rota).
+- Asigna la cobertura de SAL-01/SAL-02 (criterio de salida o smoke test sin cobertura) a la historia de cierre: la única con evidencia `parcial` sin dependientes, a la que añade un AC de cierre y una cita E1.
 - Muestra un único plan, pide confirmación (o aplica en `--auto`), crea los `.bak` y escribe cada archivo una sola vez.
 - Escribe `epic-refine-report.md` con cada hallazgo, su clasificación y su responsable.
 
 **Qué NO hace este skill:**
 - Diagnosticar la épica (lo hace `/epic-analyze`), buscar hallazgos que el reporte no lista ni volver a ejecutar `/epic-analyze` al terminar.
-- Cubrir criterios de salida o smoke tests (SAL-01, SAL-02: los asigna STORY-173).
 - Cambiar `parent`, `status` ni `substatus`; modificar criterios de salida, smoke tests ni alcance.
 - Crear o especificar historias (`/epic-generate-stories`, `/story-creation`, `/story-specify`).
 - Modificar `epic-analyze-report.md` (lo regenera `/epic-analyze`) ni la forma de `epic.md` (`/epic-improve`).
@@ -34,10 +35,11 @@ Cierra el bucle de `PLAN` (`epic-analyze → NEEDS-REFINEMENT → epic-refine �
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic-analyze-report.md` | `<EPIC_DIR>/epic-analyze-report.md` | Solo lectura: `verdict`, `updated` y la sección de clave `hallazgos` |
+| `epic-analyze-report.md` | `<EPIC_DIR>/epic-analyze-report.md` | Solo lectura: `verdict`, `updated`, la sección de clave `hallazgos` y, para SAL, la de clave `cobertura-salida` |
 | `epic.md` | `specs/flow/EPIC-NN-<slug>/epic.md` | Se corrige la sección de clave `historias` |
-| `story.md` | `specs/flow/STORY-NNN-<slug>/story.md` (activos) | Se corrige `related:`; se leen `title`, `status`, `substatus`, `parent` y las líneas Como/Quiero/Para |
+| `story.md` | `specs/flow/STORY-NNN-<slug>/story.md` (activos) | Se corrige `related:` y, en la historia de cierre SAL, se añaden un AC y una línea en Notas; se leen `title`, `status`, `substatus`, `parent`, las líneas Como/Quiero/Para y `depends-on:` |
 | Template de épica | `docs/templates/epic-template.md` → seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` | Solo lectura: título de la sección `historias` |
+| Template de historia | `docs/templates/story-template.md` → seed `$CLI_ROOT/skills/story-creation/assets/story-template.md` | Solo lectura: título de `## 📎 Notas…` si la historia de cierre no la tiene (SAL) |
 | Template del reporte de análisis | `docs/templates/epic-analyze-report-template.md` → seed `$CLI_ROOT/skills/epic-analyze/assets/epic-analyze-report-template.md` | Solo lectura: título de la sección `hallazgos` |
 | Template del reporte | `docs/templates/epic-refine-report-template.md` → seed [assets/epic-refine-report-template.md](assets/epic-refine-report-template.md) | Estructura de `epic-refine-report.md` |
 | Catálogos de corrección | [references/](references/) de este skill | Se leen solo en el Paso 4 |
@@ -61,7 +63,8 @@ Cierra el bucle de `PLAN` (`epic-analyze → NEEDS-REFINEMENT → epic-refine �
 - **Escritura acotada:** solo se escriben `epic.md`, los `story.md` **activos** de la épica resueltos por ID, sus `<archivo>.bak` y `<EPIC_DIR>/epic-refine-report.md`. Son de solo lectura `epic-analyze-report.md`, los templates, las historias archivadas (`specs/flow/archive/`) y cualquier otro archivo.
 - **Estado intacto:** `status` y `substatus` nunca se escriben, en ningún archivo; los decide el ciclo de vida, no el corrector.
 - **Cambio mínimo:** solo cambian las líneas del plan y `updated:` del archivo modificado (`escritor: todo skill que edite el archivo` en ambos templates).
-- **No inventar:** todo texto nuevo proviene literal de un `story.md`; si falta, el hallazgo queda fuera de alcance con responsable `PO`.
+- **No inventar:** todo texto nuevo proviene literal de un `story.md` o, para SAL, del criterio o smoke de `epic.md` más el texto fijo del catálogo; si falta, el hallazgo queda fuera de alcance con responsable `PO`.
+- **No falsear la cobertura (SAL):** una cita E1 o un AC nuevo solo se escriben en **una** historia por elemento, la historia de cierre, y **siempre juntos**; nunca se cita el elemento en las demás candidatas ni se escribe una cita sin su AC. Sin una única historia de cierre, el hallazgo va al PO.
 - **Worker secuencial:** sin subagentes, sin scripts y sin `.tmp/`; no invoca otros skills.
 - **Encoding:** UTF-8 sin BOM, preservando los finales de línea de cada archivo.
 
@@ -133,10 +136,10 @@ Enrutar cada hallazgo por su código. Esta tabla es el **único punto de extensi
 | INT-03 | Corrección automática: dejar una sola línea | `PO`, en los casos del catálogo | [references/int-corrections.md](references/int-corrections.md) |
 | MAD-02 | Corrección automática: retirar la entrada `related` | `PO`, en los casos del catálogo | [references/mad-corrections.md](references/mad-corrections.md) |
 | INT-01, INT-04, INT-05, INT-06, SAL-03, SAL-04, MAD-01, MAD-03 | Siempre fuera de alcance: exigen una decisión del PO | `PO`, con la **Acción sugerida** del reporte copiada literal | — |
-| SAL-01, SAL-02 | Fuera de alcance en esta versión | `PO`, nota `lo asigna STORY-173` | — |
+| SAL-01, SAL-02 | Asignación de cobertura a la historia de cierre: AC de cierre + cita E1 | `PO`, en los casos del catálogo | [references/sal-corrections.md](references/sal-corrections.md) |
 | Cualquier otro código | Fuera de alcance | `PO`, nota `código no reconocido por esta versión de epic-refine` | — |
 
-Leer cada catálogo **solo** si hay al menos un hallazgo corregible de su familia (INT-02/INT-03 → `int-corrections.md`; MAD-02 → `mad-corrections.md`). Un reporte sin hallazgos corregibles no carga ninguno.
+Leer cada catálogo **solo** si hay al menos un hallazgo corregible de su familia (INT-02/INT-03 → `int-corrections.md`; MAD-02 → `mad-corrections.md`; SAL-01/SAL-02 → `sal-corrections.md`). Un reporte sin hallazgos corregibles no carga ninguno. Si el catálogo requerido no existe: `❌ Catálogo references/<familia>-corrections.md no encontrado` y fin **antes** de escribir cualquier archivo.
 
 Clasificar cada hallazgo contra el estado **actual** de los archivos, con las reglas del catálogo:
 
@@ -208,8 +211,11 @@ Ruta única `<EPIC_DIR>/epic-refine-report.md`, sobrescrita completa en cada eje
    Archivos modificados: <lista con su .bak | ninguno>
    Reporte: <EPIC_DIR>/epic-refine-report.md
 
+Replanifica: /story-plan <STORY-NNN>
 Siguiente paso: /epic-analyze <EPIC_ID>
 ```
+
+La línea `Replanifica:` aparece una vez por cada historia de cierre SAL en `PLAN` o `READY-FOR-IMPLEMENT` (catálogo SAL); sin ellas se omite.
 
 Si quedan hallazgos ERROR fuera de alcance: `⚠️ El análisis seguirá en NEEDS-REFINEMENT por <n> hallazgos ERROR que requieren decisión del PO.` No se ejecuta `/epic-analyze`: el flujo de la épica lo encadena como un paso distinto.
 
@@ -234,6 +240,7 @@ Con `APPROVED`: `STATUS: OK`, conteos `0` y `REPORTE: —`. Ante un fallo que de
 | Template del reporte ausente | `❌ Template epic-refine-report-template.md no encontrado (probado: …)` | Fin sin escribir |
 | Reporte de análisis ausente | `❌ No se encontró epic-analyze-report.md en <EPIC_DIR>. Ejecuta /epic-analyze <EPIC_ID> primero.` | Fin sin escribir |
 | `verdict` ausente o inválido | `❌ <EPIC_ID>: epic-analyze-report.md no declara un verdict válido …` | Fin sin escribir |
+| Catálogo de corrección ausente | `❌ Catálogo references/<familia>-corrections.md no encontrado` | Fin sin escribir |
 | Bloque de hallazgo no reconocido | — | Nota en el reporte y continuar |
 | Escritura o relectura fallida | `❌ Corrección revertida: <archivo> — <causa>` | Restaurar todos los archivos escritos desde su `.bak`; fin sin reporte |
 
