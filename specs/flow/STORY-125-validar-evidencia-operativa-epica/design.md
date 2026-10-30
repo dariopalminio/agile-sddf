@@ -9,7 +9,7 @@ substatus: IN-PROGRESS
 parent: EPIC-23-completar-flujo-de-epic
 story: STORY-125
 created: 2026-10-29
-updated: 2026-10-29
+updated: 2026-10-30
 related:
   - STORY-125-validar-evidencia-operativa-epica
   - EPIC-23-completar-flujo-de-epic
@@ -194,6 +194,8 @@ En los tres casos el veredicto es `NEEDS-CHANGES` (D-7, CR-001), y el motivo ide
 | D-8 | Motor de comandos | Reutilizar `epic-suites.js check-command` (I1 de STORY-169). La historia que se implemente primero lo crea, con sus pruebas | (a) Que el agente lea los códigos de salida; (b) un motor propio, por ejemplo `epic-commands.js` | (a) `npm run` sin el script devuelve 1, igual que un fallo real, así que el agente no puede distinguir `NEEDS-CHANGES` de `BLOCKED` (STORY-169 D-2). (b) Daría dos definiciones de «no ejecutable» (P10). El nombre del archivo se conserva para no replanificar STORY-169 | AC-1, AC-2 |
 | D-9 | Confirmación cuando no se puede preguntar | `sin evidencia` → `bloqueada` | Tomarla como aprobada | Fail-closed (G-06): una confirmación que nadie dio no es evidencia. Así, una invocación no interactiva de `--mode manual` termina en `BLOCKED` y no en un falso `APPROVED` | AC-1, AC-2 |
 | D-10 | Contenido untrusted | Se leen solo los escalares del frontmatter (`verdict`, `enforcement`), los encabezados y pasos de los smoke tests, y las líneas `- [ ]` del DoD. `outputTail` y los textos citados se escriben en código en línea, y un texto con forma de orden va a `notas-validacion` sin seguirse | Leer los cuerpos de los reportes | Es la misma cláusula que `epic-analyze` y STORY-124 D-10. La salida de un comando es un dato | CNF-1 |
+| D-11 | Ejecutable inexistente en Windows (decisión de implementación, 2026-10-30) | Antes de lanzar, comprobar que el primer token del comando resuelve a un archivo (ruta relativa a `REPO_ROOT` o nombre en el PATH, con `PATHEXT` en Windows); si no, `not-executable` con `ejecutable no encontrado (no está en el PATH)`. Los builtins de sh y `cmd.exe` (`echo`, `exit`…) y un primer token `VAR=valor` no se comprueban. Se mantienen `ENOENT`, 127 y 9009 | Confiar solo en 127/9009 (STORY-169 D-3) | Verificado en este repositorio: con `shell: true`, Node lanza `cmd.exe /d /s /c`, que ante un comando desconocido sale con **1**, no con 9009. Sin la comprobación previa, un binario ausente se clasificaría `fail` → `NEEDS-CHANGES` en lugar de `BLOCKED`. Leer el mensaje de stderr depende del idioma del sistema | AC-2 |
+| D-12 | Excepción a `sec-no-shell-injection` de `gr-code-security-checklist` (decisión de implementación, 2026-10-30; **pendiente de ratificación humana**) | `check-command` lanza el comando con `spawnSync(command, { shell: true })`, como fija T004 | Partir la cadena en argv y lanzar sin shell | Los comandos son cadenas de shell que declara el propio proyecto (`npm run <s>`, `node -e "…"`), y en Windows `npm.cmd` no se puede lanzar sin shell (Node ≥ 18.20 / 20.12, CVE-2024-27980). Controles compensatorios: los comandos solo provienen de archivos versionados del proyecto (`sddf.config.yaml › verify`, `package.json › scripts`, `docs/guardrails/dod-epic-validate.md`), nunca de reportes, cuerpos de historias ni salida de comandos; el único valor que se interpola es el ID `SMOKE-N`, validado contra `^SMOKE-\d+$`; los criterios del DoD que citan comandos de escritura, publicación o despliegue no se ejecutan (Paso 3d, orden 1); el motor no lee stdin ni escribe archivos, y su salida se trata como dato | AC-1, AC-2 |
 
 ### Decisiones de complejidad justificada
 

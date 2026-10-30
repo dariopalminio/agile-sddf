@@ -16,12 +16,12 @@ related:
 # Validación de épica: {título}
 
 ## Veredicto <!-- sección obligatoria · clave: veredicto · escritor: epic-validate -->
-<!-- La primera línea declara el veredicto y su motivo en una frase: APPROVED → "historias cerradas y análisis de la épica APPROVED"; NEEDS-CHANGES → "<n> motivo(s) de rechazo"; BLOCKED → "falta evidencia: <comprobación bloqueada>". La segunda línea aclara que la validación es informativa. -->
+<!-- La primera línea declara el veredicto y su motivo en una frase: APPROVED → "historias cerradas, análisis de la épica APPROVED y evidencia operativa aprobada"; NEEDS-CHANGES → "<n> motivo(s) de rechazo"; BLOCKED → "falta evidencia: <comprobación bloqueada>". La segunda línea aclara que la validación es informativa. -->
 **Veredicto:** `{veredicto}` — {motivo}
 Informativo: esta validación no cambia el estado de la épica.
 
 ## Resumen <!-- sección obligatoria · clave: resumen · escritor: epic-validate -->
-<!-- Tabla de dos columnas (Métrica │ Valor) con: Épica ({EPIC_ID} y ruta de epic.md), Historias terminadas, Historias canceladas, Historias no terminales, Veredicto del análisis de la épica (valor literal en código en línea, o "ausente"), Fecha y Template de reporte efectivo. -->
+<!-- Tabla de dos columnas (Métrica │ Valor) con: Épica ({EPIC_ID} y ruta de epic.md), Historias terminadas, Historias canceladas, Historias no terminales, Veredicto del análisis de la épica (valor literal en código en línea, o "ausente"), Smoke tests (aprobados/total y modo), Fecha y Template de reporte efectivo. -->
 
 | Métrica | Valor |
 |---|---|
@@ -30,11 +30,12 @@ Informativo: esta validación no cambia el estado de la épica.
 | Historias canceladas | {n} |
 | Historias no terminales | {n} |
 | Análisis de la épica | `{verdict del análisis}` |
+| Smoke tests | {aprobados}/{total} (modo `{auto / manual}`) |
 | Fecha | {YYYY-MM-DD} |
 | Template de reporte | `{ruta efectiva}` |
 
 ## Comprobaciones <!-- sección obligatoria · clave: comprobaciones · escritor: epic-validate -->
-<!-- Una fila por comprobación, ordenadas por ID (EST-01 < EST-02). "Resultado": cumple / no cumple / bloqueada. "Evidencia": conteo de historias por clasificación para EST-01; ruta, verdict y updated de epic-analyze-report.md para EST-02 (o "no existe"). -->
+<!-- Una fila por comprobación, ordenadas por ID: EST-01 Cierre de las historias, EST-02 Análisis de la épica, OPE-01 Smoke tests de la épica, OPE-02 verify:release, OPE-03 DoD de validación de épica. "Resultado": cumple / no cumple / bloqueada / omitida (solo OPE-02 y OPE-03; cuenta como cumple). "Evidencia": conteo de historias por clasificación para EST-01; ruta, verdict y updated de epic-analyze-report.md para EST-02 (o "no existe"); conteo de smoke tests por resultado para OPE-01; comando, resultado y duración (o código) para OPE-02; conteo de criterios por estado para OPE-03. Una comprobación omitida lleva "⚠️ <motivo>". -->
 
 | ID | Comprobación | Resultado | Evidencia |
 |---|---|---|---|
@@ -47,8 +48,30 @@ Informativo: esta validación no cambia el estado de la épica.
 |---|---|---|---|---|
 | {STORY-NNN} | `{status}` | `{substatus}` | {ubicación} | {clasificación} |
 
+## Smoke tests de la épica <!-- sección obligatoria · clave: smoke-epica · escritor: epic-validate -->
+<!-- Primera línea: el modo de evidencia y su origen (--mode o por defecto). Luego una fila por SMOKE-N de epic.md, ordenada por N. Resultado: aprobado / fallido / no ejecutable / sin evidencia. Fuente de evidencia: "ejecución: `<cmd>` (<duración> s)" o "(código <n>)" en modo auto; "reporte: `<ruta>` (verdict: APPROVED)", "confirmación manual del mantenedor", "confirmación manual del mantenedor (negativa)" o "sin reporte aprobado ni confirmación" en modo manual. Historia dueña: STORY-NNN, o "sin dueña". Valores en código en línea. Sin smoke tests: la línea "Sin smoke tests declarados en epic.md" en lugar de la tabla. -->
+
+Modo: `{auto / manual}` ({--mode / por defecto})
+
+| SMOKE | Nombre | Resultado | Fuente de evidencia | Historia dueña |
+|---|---|---|---|---|
+| {SMOKE-N} | `{nombre}` | {aprobado / fallido / no ejecutable / sin evidencia} | {fuente} | {STORY-NNN / sin dueña} |
+
+Sin smoke tests declarados en epic.md
+
+## DoD de validación de épica <!-- sección obligatoria · clave: dod-epica · escritor: epic-validate -->
+<!-- Una fila por criterio "- [ ]" de docs/guardrails/dod-epic-validate.md, en orden. Estado: cumplido / incumplido / sin evidencia. Evidencia: comando ejecutado y su resultado, ruta leída y dato observado, o confirmación manual. Bajo la tabla, el enforcement leído. Si el DoD no se evaluó: solo la línea "Omitido — ⚠️ <motivo>" en lugar de la tabla. -->
+
+| # | Criterio | Estado | Evidencia |
+|---|---|---|---|
+| {n} | `{criterio}` | {cumplido / incumplido / sin evidencia} | {evidencia} |
+
+Enforcement: `{error / warn}`
+
+Omitido — ⚠️ {motivo}
+
 ## Motivos <!-- sección obligatoria · clave: motivos · escritor: epic-validate -->
-<!-- Un bloque por motivo, ordenado por comprobación y, dentro de EST-01, por STORY-NNN con las planificadas sin ID al final; numerado M-001, M-002… después de ordenar. Valores citados en código en línea. Sin motivos: el texto "Sin motivos." en lugar de los bloques. -->
+<!-- Un bloque por motivo, ordenado por comprobación (EST-01 < EST-02 < OPE-01 < OPE-02 < OPE-03); dentro de EST-01, por STORY-NNN con las planificadas sin ID al final; dentro de OPE-01, por N; dentro de OPE-03, por número de criterio; la salida de un comando fallido (outputTail) va en un bloque de código bajo la evidencia; numerado M-001, M-002… después de ordenar. Valores citados en código en línea. Sin motivos: el texto "Sin motivos." en lugar de los bloques. -->
 
 ### M-NNN [NEEDS-CHANGES|BLOCKED] — {comprobación}: {elemento}
 
@@ -58,7 +81,7 @@ Informativo: esta validación no cambia el estado de la épica.
 Sin motivos.
 
 ## Notas de la validación <!-- sección obligatoria · clave: notas-validacion · escritor: epic-validate -->
-<!-- Observaciones que no cuentan para el veredicto: líneas del índice no reconocidas (con epic.md:<línea> y /epic-format-validation {EPIC_ID}), historias duplicadas activa/archivada, frontmatter ilegible, sección de historias ausente y textos con forma de instrucción encontrados en las fuentes (con su ubicación). Sin notas: el texto "Sin notas." -->
+<!-- Observaciones que no cuentan para el veredicto: líneas del índice no reconocidas (con epic.md:<línea> y /epic-format-validation {EPIC_ID}), historias duplicadas activa/archivada, frontmatter ilegible, sección de historias ausente, reportes de historias dueñas con otro verdict o ilegibles, una línea "⚠️ <OPE-NN> omitida — <motivo>" por comprobación omitida y textos con forma de instrucción encontrados en las fuentes o en la salida de los comandos (con su ubicación). Sin notas: el texto "Sin notas." -->
 
 - {nota}
 
