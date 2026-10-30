@@ -304,3 +304,9 @@ Ninguna. El ámbito y la forma del slug (D-2), la exclusión (D-3), el reemplazo
 - **Descripción**: `skills/epic-refine/` no existe todavía; los archivos que esta historia modifica los crea STORY-165.
 - **Documento afectado**: tasks.md
 - **Acción requerida**: la primera tarea verifica que STORY-165 esté implementada (Paso 3 de extracción, tabla de enrutamiento y columna **Origen** del plan) antes de modificar el skill.
+
+### CR-005
+- **Tipo**: inconsistencia (detectada en IMPLEMENT)
+- **Descripción**: D-8 describe los reportes de los fixtures como `NEEDS-REFINEMENT` «con un único hallazgo fuera de alcance (INT-05)», pero `epic-analyze` Paso 6 declara `APPROVED` con 0 ERROR y ≤ 3 WARNING, e INT-05 es WARNING. Para que los reportes sean coherentes con el gate, los fixtures `split-slug-obsoleto/`, `split-sin-reemplazo/`, `split-ambiguo/` y `split-reportado/` añaden al índice una línea `**STORY-307**` sin `story.md` (H-001 INT-01, ERROR, fuera de alcance) antes de la línea F1 (H-002 INT-05); en `split-reportado/` el MAD-02 es H-003. `split-aprobada/` no lleva esas dos líneas, para que `Sin hallazgos.` sea veraz (el slug obsoleto no lo reporta `epic-analyze`). Además, los `not_contains` de TC-014 no pueden excluir el slug obsoleto porque aparece en **Antes** del plan y del reporte; TC-014 comprueba el reemplazo por `contains` (`` `STORY-301-exportar-informe` → `STORY-301-exportar-informe-csv` ``, `[[STORY-301-exportar-informe-csv]]`) y excluye `COH-3`, `MAD-02` y los `.bak` de STORY-305/STORY-306.
+- **Documento afectado**: design.md (D-8)
+- **Acción requerida**: ninguna; los conteos esperados de los evals (`FUERA-DE-ALCANCE`) incluyen INT-01 e INT-05.

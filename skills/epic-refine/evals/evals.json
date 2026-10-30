@@ -1,7 +1,7 @@
 {
   "skill": "epic-refine",
-  "version": "1.1.0",
-  "description": "Casos de prueba para epic-refine (STORY-165, STORY-173): con epic-analyze-report.md en NEEDS-REFINEMENT aplica INT-02 (historia huérfana al índice), INT-03 (una sola línea) y MAD-02 (retira el related roto) tras un plan consolidado, con <archivo>.bak previo, status/substatus intactos y epic-refine-report.md; con APPROVED no crea ni modifica ningún archivo; los hallazgos que requieren decisión del PO quedan fuera de alcance; SAL-01/SAL-02 con evidencia parcial se asignan a la única historia de cierre (AC de cierre + cita E1). En cada fixture, el directorio del ejemplo hace de specs/flow/.",
+  "version": "1.2.0",
+  "description": "Casos de prueba para epic-refine (STORY-165, STORY-173, STORY-174): con epic-analyze-report.md en NEEDS-REFINEMENT aplica INT-02 (historia huérfana al índice), INT-03 (una sola línea) y MAD-02 (retira el related roto) tras un plan consolidado, con <archivo>.bak previo, status/substatus intactos y epic-refine-report.md; con APPROVED no crea ni modifica ningún archivo; los hallazgos que requieren decisión del PO quedan fuera de alcance; SAL-01/SAL-02 con evidencia parcial se asignan a la única historia de cierre (AC de cierre + cita E1); las referencias a slugs obsoletos tras un /story-split (COH) se reemplazan por el único directorio con el mismo ID o quedan para el PO. En cada fixture, el directorio del ejemplo hace de specs/flow/.",
   "cases": [
     {
       "id": "TC-001",
@@ -208,6 +208,86 @@
       "expected": {
         "contains": ["STORY-303 ya está implementada", "fuera de alcance", "PO", "SAL-02 · SMOKE-2", "status: IMPLEMENT", "FUERA-DE-ALCANCE: 2"],
         "not_contains": ["story.md.bak", "Cierre del contrato de salida", "Cubre SMOKE-2 de EPIC-30"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-014",
+      "name": "reemplaza-slug-obsoleto-tras-split",
+      "type": "happy-path",
+      "description": "[AC-1 · CNF-1 · STORY-174 D-2…D-6] Tras un /story-split la core quedó como STORY-301-exportar-informe-csv, pero la línea F2 de STORY-301 del índice termina en [[STORY-301-exportar-informe]] y el related de STORY-302 cita STORY-301-exportar-informe, que no existe en specs/flow/ ni en specs/flow/archive/. epic-analyze no lo reporta (resuelve por ID). epic-refine detecta COH-1 (índice de epic.md) y COH-2 (related de STORY-302), los reemplaza por el único directorio STORY-301-*, crea epic.md.bak y story.md.bak y los registra como aplicados; INT-01 e INT-05 quedan fuera de alcance para el PO. No son COH: STORY-301 (ID sin slug) en el related de STORY-305, ni STORY-301-exportar-informe-csv y STORY-305-exportar-informe-xlsx, que existen.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/split-slug-obsoleto/EPIC-30-ejemplo/epic.md",
+        "flags": [],
+        "context": "El directorio skills/epic-refine/examples/split-slug-obsoleto/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
+      },
+      "expected": {
+        "contains": ["COH-1", "COH-2", "`STORY-301-exportar-informe` → `STORY-301-exportar-informe-csv`", "[[STORY-301-exportar-informe-csv]]", "aplicado", "EPIC-30-ejemplo/epic.md.bak", "STORY-302-programar-envio-informe/story.md.bak", "INT-01", "INT-05", "/epic-analyze EPIC-30"],
+        "not_contains": ["COH-3", "MAD-02", "STORY-305-exportar-informe-xlsx/story.md.bak", "STORY-306-exportar-informe-json/story.md.bak", "status: IMPLEMENT", "Plan rechazado"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-015",
+      "name": "reemplazo-no-determinable-al-po",
+      "type": "edge-case",
+      "description": "[AC-2 · STORY-174 D-4] El related de STORY-302 cita STORY-310-importar-datos y no existe ningún directorio STORY-310-* en specs/flow/ ni en specs/flow/archive/; el reporte no lista ese valor (reporte anterior a la referencia, CR-001). La referencia queda como COH-1 fuera de alcance con responsable PO y la nota de reemplazo no determinable; el story.md de STORY-302 no se modifica y no se crea ningún .bak.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/split-sin-reemplazo/EPIC-30-ejemplo/epic.md",
+        "flags": ["--auto"],
+        "context": "El directorio skills/epic-refine/examples/split-sin-reemplazo/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": ["COH-1", "STORY-310-importar-datos", "fuera de alcance", "PO", "reemplazo no determinable", "APLICADOS: 0", "FUERA-DE-ALCANCE: 3"],
+        "not_contains": ["story.md.bak", "epic.md.bak", "COH-2", "¿Aplicar el plan?"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-016",
+      "name": "varios-directorios-con-el-id-al-po",
+      "type": "edge-case",
+      "description": "[AC-2 · STORY-174 D-4] Como TC-014, pero además existe archive/2026-10-01-STORY-301-exportar-informe-pdf/: hay dos directorios con el ID STORY-301 (uno activo y uno archivado). Sin desempate, COH-1 (índice) y COH-2 (related de STORY-302) quedan fuera de alcance con responsable PO y la nota de varios directorios; ni epic.md ni ningún story.md se modifican y la historia archivada no se toca.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/split-ambiguo/EPIC-30-ejemplo/epic.md",
+        "flags": ["--auto"],
+        "context": "El directorio skills/epic-refine/examples/split-ambiguo/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": ["COH-1", "COH-2", "varios directorios con el ID STORY-301", "fuera de alcance", "PO", "APLICADOS: 0", "FUERA-DE-ALCANCE: 4"],
+        "not_contains": ["epic.md.bak", "story.md.bak", "→ `STORY-301-exportar-informe-csv`"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-017",
+      "name": "slug-reportado-como-mad-02-no-es-coh",
+      "type": "edge-case",
+      "description": "[STORY-174 D-3] El reporte sí lista STORY-310-importar-datos como H-003 MAD-02 en STORY-302. El valor lo retira la familia MAD (STORY-165): no se genera ningún COH ni dos cambios sobre la misma entrada; INT-01 e INT-05 quedan fuera de alcance.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/split-reportado/EPIC-30-ejemplo/epic.md",
+        "flags": ["--auto"],
+        "context": "El directorio skills/epic-refine/examples/split-reportado/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": ["MAD-02", "aplicado", "STORY-302-programar-envio-informe/story.md.bak", "APLICADOS: 1", "FUERA-DE-ALCANCE: 2"],
+        "not_contains": ["COH-1", "epic.md.bak", "reemplazo no determinable"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-018",
+      "name": "aprobada-no-ejecuta-deteccion-coh",
+      "type": "edge-case",
+      "description": "[STORY-174 Notas: disparo · AC-2 de STORY-165] El índice y el related de STORY-302 citan el slug obsoleto STORY-301-exportar-informe, pero el reporte declara verdict: APPROVED. La detección COH no se ejecuta: no se lee coh-corrections.md, no se muestra plan y no se crea ni modifica ningún archivo, tampoco epic-refine-report.md.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/split-aprobada/EPIC-30-ejemplo/epic.md",
+        "flags": [],
+        "context": "El directorio skills/epic-refine/examples/split-aprobada/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30."
+      },
+      "expected": {
+        "contains": ["APPROVED", "no necesita refinamiento"],
+        "not_contains": ["COH", "¿Aplicar el plan?", "Backup creado", "Reporte: "]
       },
       "threshold": 1.0
     }

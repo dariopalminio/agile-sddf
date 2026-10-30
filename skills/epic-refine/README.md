@@ -8,7 +8,7 @@
 
 ## What it does
 
-Corrige una épica que `epic-analyze` dejó en `NEEDS-REFINEMENT`: añade al índice de `epic.md` las historias huérfanas (INT-02), deja una sola línea por historia duplicada (INT-03) y retira de los `story.md` las entradas `related` que apuntan a historias o épicas inexistentes (MAD-02) y asigna cada criterio de salida o smoke test sin cobertura (SAL-01, SAL-02) a la historia de cierre —la única que ya lo verifica en parte y de la que no depende ninguna otra—, a la que añade un AC de cierre y una cita del criterio; si no hay una única historia de cierre, la decisión queda para el PO. Antes de escribir muestra un plan de cambios consolidado y pide confirmación; los hallazgos que requieren una decisión del PO no se tocan y quedan registrados como «fuera de alcance» con su responsable. Es el corrector del bucle de `PLAN`, `epic-analyze → epic-refine → epic-analyze`.
+Corrige una épica que `epic-analyze` dejó en `NEEDS-REFINEMENT`: añade al índice de `epic.md` las historias huérfanas (INT-02), deja una sola línea por historia duplicada (INT-03) y retira de los `story.md` las entradas `related` que apuntan a historias o épicas inexistentes (MAD-02) y asigna cada criterio de salida o smoke test sin cobertura (SAL-01, SAL-02) a la historia de cierre —la única que ya lo verifica en parte y de la que no depende ninguna otra—, a la que añade un AC de cierre y una cita del criterio; si no hay una única historia de cierre, la decisión queda para el PO. Además detecta por su cuenta (familia COH) las referencias a slugs de historias que dejaron de existir tras un `/story-split` —en el índice de `epic.md` y en los `related` de las historias de la épica, nunca en el cuerpo de los `story.md` ni en `docs/`— y las reemplaza por el slug del único directorio con el mismo ID; si no hay ninguno o hay varios, la referencia queda para el PO. Antes de escribir muestra un plan de cambios consolidado y pide confirmación; los hallazgos que requieren una decisión del PO no se tocan y quedan registrados como «fuera de alcance» con su responsable. Es el corrector del bucle de `PLAN`, `epic-analyze → epic-refine → epic-analyze`.
 
 **Produces:**
 
@@ -24,6 +24,7 @@ Corrige una épica que `epic-analyze` dejó en `NEEDS-REFINEMENT`: añade al ín
 - No reparte citas de un criterio entre varias historias: la cobertura se asigna a una sola historia de cierre.
 - No modifica `epic-analyze-report.md` ni las historias archivadas.
 - No corrige la forma de `epic.md` (eso es `epic-improve`).
+- No ejecuta `/story-split` ni detecta historias que convenga dividir.
 
 ---
 
@@ -33,7 +34,8 @@ Corrige una épica que `epic-analyze` dejó en `NEEDS-REFINEMENT`: añade al ín
 
 - `epic-analyze` declaró `NEEDS-REFINEMENT` por historias huérfanas, líneas duplicadas en el índice, `related` rotos o criterios de salida y smoke tests sin cobertura que una historia ya verifica en parte.
 - Quieras volver a analizar la épica sin corregir a mano el índice ni los enlaces.
-- El usuario mencione: `"epic-refine"`, `"refinar épica"`, `"aplicar epic-analyze"`, `"historia huérfana"`, `"related roto"`, `"criterio de salida sin cobertura"`.
+- Tras un `/story-split`, el índice o los `related` sigan citando el slug anterior de la historia core.
+- El usuario mencione: `"epic-refine"`, `"refinar épica"`, `"aplicar epic-analyze"`, `"historia huérfana"`, `"related roto"`, `"criterio de salida sin cobertura"`, `"referencias obsoletas tras split"`.
 
 **Do NOT use it when:**
 

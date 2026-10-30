@@ -10,7 +10,7 @@ substatus: IN-PROGRESS   # escritor: los mismos que status (story-evaluation lo 
 parent: <nombre-del-directorio-de-la-epica>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories
 created: <YYYY-MM-DD>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories
 updated: <YYYY-MM-DD>   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories (inicial) · todo skill que edite el archivo (story-refine, story-split y los que transicionan status)
-related:   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories · story-split (añade la core y las hermanas) · epic-refine (retira referencias rotas, MAD-02)
+related:   # escritor: story-creation · epic-generate-stories · epic-generate-all-stories · story-split (añade la core y las hermanas) · epic-refine (retira referencias rotas, MAD-02; COH: reemplaza slugs obsoletos)
   - <nombre-del-directorio-de-la-epica o slug de la épica relacionada (si existe)> <!-- Colocar referencias solo si existe épica relacionada o historia relacionada -->
 ---
 <!-- escritor del cuerpo: story-creation · epic-generate-stories · epic-generate-all-stories — salvo anotación distinta junto a la sección -->

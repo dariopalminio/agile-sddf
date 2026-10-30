@@ -19,7 +19,7 @@ related: []               # escritor: epic-creation · epic-from-project-plan
 ## Alcance <!-- sección obligatoria · clave: alcance · escritor: epic-creation · epic-from-project-plan · memory-system (migrate --from=epic-template-v1) · epic-improve -->
 <!-- Output-oriented: qué se construye (2-4 líneas). El valor de negocio vive en product/vision.md o requirements/. -->
 
-## Historias <!-- sección obligatoria · clave: historias · escritor: epic-creation (F1) · epic-from-project-plan (F1/F2/F3) · epic-generate-stories · epic-generate-all-stories (F1 → F2) · story-implement · story-implement-tasks (F2 → F3) · memory-system (migrate --from=epic-template-v1) · epic-improve · epic-refine (INT-02, INT-03) -->
+## Historias <!-- sección obligatoria · clave: historias · escritor: epic-creation (F1) · epic-from-project-plan (F1/F2/F3) · epic-generate-stories · epic-generate-all-stories (F1 → F2) · story-implement · story-implement-tasks (F2 → F3) · memory-system (migrate --from=epic-template-v1) · epic-improve · epic-refine (INT-02, INT-03; COH: reemplaza slugs obsoletos) -->
 <!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`.
      epic-generate-stories asigna el ID (planificada → creada); story-implement marca [x] (creada → completada). -->
 - [Nombre feature 1]: [descripción breve]

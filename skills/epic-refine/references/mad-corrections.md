@@ -51,4 +51,4 @@ related:
 
 ### Por qué no se reemplaza la referencia
 
-MAD-02 significa que el ID no existe: no hay un reemplazo determinable sin juicio. El valor retirado queda en **Antes** del reporte y en `story.md.bak`, para que el PO lo recupere si lo necesita. Las referencias a slugs obsoletos tras un `/story-split` son de otra familia (STORY-174).
+MAD-02 significa que el ID no existe: no hay un reemplazo determinable sin juicio. El valor retirado queda en **Antes** del reporte y en `story.md.bak`, para que el PO lo recupere si lo necesita. Las referencias a slugs obsoletos tras un `/story-split` son de la familia COH ([coh-corrections.md](coh-corrections.md)).

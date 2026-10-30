@@ -5,7 +5,7 @@ id: STORY-174
 kind: feat
 slug: STORY-174-corregir-referencias-obsoletas-tras-split
 title: "Skill epic-refine: corregir referencias obsoletas tras un split"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-29
