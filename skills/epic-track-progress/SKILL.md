@@ -43,7 +43,7 @@ Semáforo de **solo lectura** de la fase `DEVELOP`: une el índice de historias 
 ## Precondiciones
 
 - `REPO_ROOT` se resuelve con el contrato del Paso 0.
-- La épica existe en `specs/flow/` (las épicas no se archivan).
+- La épica existe en `specs/flow/` (es activa; una épica archivada en `specs/flow/archive/` es terminal y no se resuelve, ADR-0019).
 
 ## Dependencias
 

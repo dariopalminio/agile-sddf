@@ -52,7 +52,7 @@ Si no hay bloques, mostrar `No se encontraron épicas planificadas en la propues
 
 Las épicas se escriben en `specs/flow/`. Crearlo si no existe (nunca en el layout anterior).
 
-Calcular `$MAX_EPIC` como el mayor `NN` de `specs/flow/EPIC-<NN>-*/`; si no existe ninguno, usar `-1`. Las épicas nuevas reciben `$MAX_EPIC + 1` en el orden de la propuesta, rellenado a dos dígitos hasta 99 y a tres desde 100. El número de su encabezado no determina su ID.
+Calcular `$MAX_EPIC` como el mayor `NN` de la unión de `specs/flow/EPIC-<NN>-*/` (épicas activas) y `specs/flow/archive/<YYYY-MM-DD>-EPIC-<NN>-*/` (épicas archivadas, ADR-0019), de modo que nunca se reutilice el número de una épica archivada; un origen ausente se omite sin nota y, si no existe ninguno, usar `-1`. Las épicas nuevas reciben `$MAX_EPIC + 1` en el orden de la propuesta, rellenado a dos dígitos hasta 99 y a tres desde 100. El número de su encabezado no determina su ID.
 
 Convertir el nombre a kebab-case con las reglas vigentes. Si un slug se repite dentro de la propuesta, añadir `-bis` al segundo y sucesivos.
 

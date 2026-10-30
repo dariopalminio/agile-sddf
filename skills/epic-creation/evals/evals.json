@@ -189,6 +189,29 @@
       },
       "threshold": 0.9,
       "id": "TC-007"
+    },
+    {
+      "id": "TC-008",
+      "name": "numeracion-cuenta-epicas-archivadas",
+      "type": "functional",
+      "description": "AC-3 de STORY-175: existe una épica archivada en specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/epic.md y EPIC-29 es la épica activa de mayor número en specs/flow/. Al crear la épica 'Panel de métricas', epic-creation calcula el siguiente NN sobre activas ∪ archivadas (ADR-0019) y propone EPIC-31, nunca EPIC-30.",
+      "input": {
+        "context": "Layout fijo. Template docs/templates/epic-template.md existe. specs/flow/ contiene specs/flow/EPIC-28-catalogo/epic.md y specs/flow/EPIC-29-carrito/epic.md; specs/flow/archive/ contiene specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/epic.md (status: COMPLETED, substatus: DONE). El usuario provee nombre 'Panel de métricas', acepta el ID propuesto y el frontmatter por defecto y completa solo las secciones obligatorias.",
+        "flags": [
+          "--quick"
+        ]
+      },
+      "expected": {
+        "contains": [
+          "EPIC-31-panel-de-metricas",
+          "specs/flow/EPIC-31-"
+        ],
+        "not_contains": [
+          "EPIC-30-panel-de-metricas",
+          "specs/flow/EPIC-30-panel"
+        ]
+      },
+      "threshold": 1
     }
   ]
 }

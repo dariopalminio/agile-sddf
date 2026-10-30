@@ -1172,6 +1172,35 @@
         ]
       },
       "threshold": 1.0
+    },
+    {
+      "id": "TC-030",
+      "name": "epica-archivada-rechazada-sin-reporte",
+      "type": "fail-fast",
+      "description": "AC-2 de STORY-175: EPIC-30 solo existe en specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/ (status: COMPLETED, substatus: DONE); no hay ninguna EPIC-30-* activa en specs/flow/. El skill informa que la épica está archivada, nombra la ruta archivada y termina sin escribir ni modificar ningún archivo (ADR-0019).",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-29-carrito/"
+        ],
+        "archived_epics_dirs": [
+          "specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/"
+        ],
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "contains": [
+          "está archivada",
+          "specs/flow/archive/2026-10-01-EPIC-30-exportar-informes"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "epic-analyze-report.md",
+          "VEREDICTO: APPROVED"
+        ]
+      },
+      "threshold": 1
     }
   ]
 }

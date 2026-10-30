@@ -115,7 +115,7 @@ stateDiagram-v2
 | `DEVELOP` | Desarrollo en curso: las historias de la épica se implementan siguiendo su propio ciclo de vida. La épica permanece aquí hasta que todas las historias estén en `DELIVER`. | Equipo | `IN-PROGRESS` |
 | `VALIDATE` | Pruebas de integración y regresión del conjunto completo: end-to-end, UAT, requisitos no funcionales. | QA / Equipo | `IN-PROGRESS` |
 | `SHIP` | La épica se publica o despliega a producción. Último estado activo. | Humano (pasos de liberación manuales) · registro: `epic-ship` | `IN-PROGRESS` |
-| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. | — | `DONE` |
+| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. Se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`. | Humano (vía `epic-complete`) | `DONE` |
 | `CANCELED` | La épica fue cancelada sin entregar. Estado terminal. | PM / PO | `DONE` |
 
 ---
@@ -172,6 +172,8 @@ Además de las invariantes transversales de [[domain-state-management]]:
   * `epic-refine-report.md` — generado en `PLAN`.
   * `epic-validate-report.md` — generado en `VALIDATE` por `epic-validate`.
   * `release-notes.md` — generado en `SHIP` por `epic-ship`, junto con el bloque de la épica en `CHANGELOG.md`.
+* **Archivo:** `epic-complete` escribe `COMPLETED/DONE` desde `SHIP/DONE` solo con confirmación humana explícita y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`; también archiva, sin cambiar el status, las épicas `COMPLETED/DONE` y `CANCELED/DONE`. El status se conserva al archivar y `<YYYY-MM-DD>` sale de `updated:`, `created:` o `date:` (ADR-0019).
+* **Claves de cierre:** `completed:` (fecha de cierre) y `version:` (versión liberada) son claves opcionales del frontmatter de `epic.md`, fuera del template; solo las escribe `epic-complete` al completar la épica.
 * **Reapertura:** solo desde `COMPLETED` con acción explícita y registro del motivo.
 * **Convención de guion:** ASCII U+002D `-`.
 

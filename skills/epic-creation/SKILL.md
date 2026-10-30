@@ -128,12 +128,16 @@ Si el usuario no proporcionó un nombre de épica junto con el comando, pregunta
 
 Con el nombre provisto:
 - Derivar el **slug kebab-case**: minúsculas, palabras separadas por guiones, sin caracteres especiales (Ej: `"Sistema de pagos"` → `sistema-de-pagos`)
-- Construir el **ID de directorio**: proponer el siguiente ID disponible buscando con Glob el
-  patrón `specs/flow/EPIC-*/epic.md`. La herramienta Glob solo encuentra
+- Construir el **ID de directorio**: proponer el siguiente ID disponible buscando con Glob los
+  patrones `specs/flow/EPIC-*/epic.md` (épicas activas) y `specs/flow/archive/*-EPIC-*/epic.md`
+  (épicas archivadas, ADR-0019). La herramienta Glob solo encuentra
   archivos, no directorios — usar siempre este patrón de archivo anidado. De cada ruta retornada,
-  extraer el número `NN` del segmento `EPIC-NN-*` (directorio padre). Tomar el número más alto
-  y sumarle 1; si Glob retorna vacío, verificar con Bash (`ls specs/flow/ |
-  grep -E "^EPIC-"`) antes de asumir que no hay épicas previas. Las épicas no se archivan: no se consulta `specs/flow/archive/`.
+  extraer el número `NN` del segmento `EPIC-NN-*` del directorio padre; en las archivadas, el
+  `EPIC-NN` que sigue al prefijo `<YYYY-MM-DD>-`. Si `specs/flow/archive/` no existe, omitirlo sin nota.
+  Tomar el número más alto de la unión de ambos orígenes y sumarle 1, de modo que nunca se
+  reutilice el número de una épica archivada; si ambos Glob retornan vacío, verificar con Bash
+  (`ls specs/flow/ specs/flow/archive/ 2>/dev/null | grep -E "EPIC-"`) antes de asumir que no hay
+  épicas previas.
   Sin épicas previas (repo recién inicializado), el primer ID es `EPIC-01`.
   Formato final: `EPIC-NN-<slug>` con NN de 2 dígitos (Ej: `EPIC-14-mi-epica`).
   Si el usuario prefiere asignar el ID manualmente, aceptarlo sin objeción.

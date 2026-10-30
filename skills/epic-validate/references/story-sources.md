@@ -6,7 +6,7 @@ Léela en los Pasos 1 y 2 de [SKILL.md](../SKILL.md).
 
 ## 1. Resolver la épica
 
-Interpretar `<epica>` en este orden; la primera forma aplicable decide. El directorio `specs/flow/` mezcla épicas e historias: toda búsqueda de épicas se restringe al patrón `specs/flow/EPIC-*/epic.md` y nunca consulta `specs/flow/archive/` (las épicas no se archivan).
+Interpretar `<epica>` en este orden; la primera forma aplicable decide. El directorio `specs/flow/` mezcla épicas e historias: toda búsqueda de épicas se restringe al patrón `specs/flow/EPIC-*/epic.md` y nunca consulta `specs/flow/archive/`: solo se validan épicas activas (una épica archivada es terminal, ADR-0019).
 
 1. **Ruta** (contiene `/` o `\`): directorio de la épica o su `epic.md`. `EPIC_DIR` = ese directorio.
 2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.

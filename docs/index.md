@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-29
+updated: 2026-10-30
 ---
 
 # 📚 Índice de documentación
@@ -471,6 +471,7 @@ _(sin artefactos)_
 - [[layout-fijo-de-tres-raices]] — [ADR-0016-layout-fijo-de-tres-raices.md](adr/ADR-0016-layout-fijo-de-tres-raices.md) — Layout fijo de tres raíces: docs/, specs/ y workflow/
 - [[layout-fijo-con-archivo-de-historias-canceladas]] — [ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md](adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) — Layout fijo de tres raíces con archivo de historias completadas y canceladas
 - [[adoptar-cucumber-para-specs-living]] — [ADR-0018-adoptar-cucumber-para-specs-living.md](adr/ADR-0018-adoptar-cucumber-para-specs-living.md) — Adoptar Cucumber (Gherkin en archivos .feature) para specs/living/
+- [[layout-fijo-con-archivo-de-epicas]] — [ADR-0019-layout-fijo-con-archivo-de-epicas.md](adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md) — Layout fijo de tres raíces con archivo de historias y épicas cerradas
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
 - [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
@@ -532,8 +533,8 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 427 |
-| Nodos con frontmatter | 422 |
+| Nodos indexados | 428 |
+| Nodos con frontmatter | 423 |
 | Nodos sin frontmatter | 5 |
 | Wikilinks pendientes | 1 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |

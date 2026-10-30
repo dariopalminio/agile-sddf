@@ -63,5 +63,6 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0014](ADR-0014-skills-independientes.md) | Independencia de skills y agentes: sin dependencia de skills hacia `agents/` | ACCEPTED | 2026-10-14 |
 | [ADR-0015](ADR-0015-contrato-de-validacion.md) | Contrato común de validación para los skills de gate | ACCEPTED | 2026-10-17 |
 | [ADR-0016](ADR-0016-layout-fijo-de-tres-raices.md) | Layout fijo de tres raíces: docs/, specs/ y workflow/ | SUPERSEDED → [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) | 2026-10-23 |
-| [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) | Layout fijo de tres raíces con archivo de historias completadas y canceladas | ACCEPTED | 2026-10-25 |
+| [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) | Layout fijo de tres raíces con archivo de historias completadas y canceladas | SUPERSEDED → [ADR-0019](ADR-0019-layout-fijo-con-archivo-de-epicas.md) | 2026-10-25 |
 | [ADR-0018](ADR-0018-adoptar-cucumber-para-specs-living.md) | Adoptar Cucumber (Gherkin en archivos .feature) para specs/living/ | PROPOSED | 2026-10-28 |
+| [ADR-0019](ADR-0019-layout-fijo-con-archivo-de-epicas.md) | Layout fijo de tres raíces con archivo de historias y épicas cerradas | ACCEPTED | 2026-10-30 |

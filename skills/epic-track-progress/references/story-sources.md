@@ -12,7 +12,7 @@ Interpretar `<epica>` en este orden; la primera forma aplicable decide:
 2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.
 3. **ID** (`EPIC-NN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón: `EPIC-30` no casa `EPIC-300-x`.
 
-La búsqueda se restringe a `specs/flow/EPIC-*/epic.md`: las épicas no se archivan (ADR-0017), así que `specs/flow/archive/` nunca se consulta para resolverlas. `EPIC_ID` se toma del nombre del directorio, no del `id:` del frontmatter, porque el `parent` de las historias referencia el directorio.
+La búsqueda se restringe a `specs/flow/EPIC-*/epic.md`: solo se resuelven épicas activas, así que `specs/flow/archive/` nunca se consulta para resolverlas (una épica archivada es terminal, ADR-0019). `EPIC_ID` se toma del nombre del directorio, no del `id:` del frontmatter, porque el `parent` de las historias referencia el directorio.
 
 ## 2. Vía A — índice de `epic.md`
 

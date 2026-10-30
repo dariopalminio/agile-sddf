@@ -271,3 +271,14 @@ D-5).
   `completed:` y `version:` y su escritor; no figura en la historia.
 - **Documento afectado**: story.md · design.md (C6)
 - **Acción requerida**: cubrirlo en C6 §9 (este diseño ya lo hace) y mencionarlo en la tabla de la historia.
+
+### CR-003
+- **Tipo**: dependencia (detectada en implementación, 2026-10-30)
+- **Descripción**: el contrato de verificación 4 encontró la regla obsoleta en tres documentos de skills creados después
+  del planning: `skills/epic-track-progress/SKILL.md:46`, `skills/epic-track-progress/references/story-sources.md:15`
+  y `skills/epic-validate/references/story-sources.md:9`. Sin cambio, AC-2 falla.
+- **Documento afectado**: los tres archivos citados
+- **Acción aplicada**: sustituir «las épicas no se archivan» por la regla de ADR-0019 que ya aplican: solo resuelven
+  épicas activas y una épica archivada es terminal. Sin cambio de comportamiento: ambos skills ya ignoraban
+  `specs/flow/archive/`. Se ajustaron también, por coherencia con ADR-0019, el paso 2 de búsqueda (§7) y la regla de la
+  checklist (§10) de `docs/guides/organization-of-artifacts.md`, que solo mencionaban historias.
