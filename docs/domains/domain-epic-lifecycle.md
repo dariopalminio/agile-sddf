@@ -152,7 +152,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 | Gate | Estado | Qué valida |
 |------|--------|------------|
 | **Gate de formato** | `DEFINE` → `PLAN` | `/epic-format-validation`: estructura del `epic.md` contra el template canónico. Con `NEEDS-REFINEMENT`, `/epic-improve` corrige los defectos del reporte (con `epic.md.bak`, sin cambiar el estado) y se vuelve a validar: `NEEDS-REFINEMENT → epic-improve → epic-format-validation`. |
-| **Gate de integridad de historias** | `PLAN` → `READY-FOR-DEV` (informativo) | `/epic-analyze`: índice de historias ↔ `parent` de los `story.md`, cobertura de criterios de salida y smoke tests por las historias, y madurez de las historias hijas (estado ≥ `SPECIFY/DONE`, `related` resolubles); veredicto sin cambio de estado. |
+| **Gate de integridad de historias** | `PLAN` → `READY-FOR-DEV` (informativo) | `/epic-analyze`: índice de historias ↔ `parent` de los `story.md`, cobertura de criterios de salida y smoke tests por las historias, y madurez de las historias hijas (estado ≥ `SPECIFY/DONE`, `related` resolubles); veredicto sin cambio de estado. Con `NEEDS-REFINEMENT`, `/epic-refine` corrige el índice (historias huérfanas y duplicadas) y los `related` rotos del reporte (con `<archivo>.bak`, sin cambiar el estado) y se vuelve a analizar: `NEEDS-REFINEMENT → epic-refine → epic-analyze`. |
 | **Gate de completitud de historias** | `DEVELOP` → `VALIDATE` | Todas las historias están en `DELIVER`. |
 | **Gate de integración** | `VALIDATE` | E2E, regresión, requisitos no funcionales del conjunto. |
 | **Gate de aceptación de épica** | `VALIDATE` → `SHIP` | Criterios de éxito y valor de negocio del entregable. |
@@ -169,6 +169,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * **`ReleaseArtifact`** — registra el artefacto publicado (npm, Docker, APK), versión y fecha.
 * **Reportes asociados:**
   * `epic-analyze-report.md` — generado en `PLAN`.
+  * `epic-refine-report.md` — generado en `PLAN`.
   * `validate-report.md` — generado en `VALIDATE`.
   * `release-notes.md` (opcional) — generado en `SHIP`.
 * **Reapertura:** solo desde `COMPLETED` con acción explícita y registro del motivo.

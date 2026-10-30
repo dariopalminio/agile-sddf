@@ -176,12 +176,8 @@ project-begin → project-discovery → project-planning
 ## 2. Pipeline de generación de épicas e historias
 
 ```
-epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-generate-stories → epic-analyze
+epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-generate-stories → epic-analyze ⇄ epic-refine
 ```
-
-<!-- TODO:
-epic-from-project-plan → epic-generate-stories → epic-analyze ⇄ epic-refine
--->
 
 | Skill | Input | Output |
 |---|---|---|
@@ -190,15 +186,14 @@ epic-from-project-plan → epic-generate-stories → epic-analyze ⇄ epic-refin
 | `epic-improve` | `epic.md` + `epic-format-validation-report.md` con `NEEDS-REFINEMENT` | `epic.md` corregido + `epic.md.bak` |
 | `epic-generate-stories` | Un archivo `epic.md` | `specs/flow/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
-<!-- TODO: | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`) y `<EPIC_DIR>/epic-refine-report.md` |
--->
+| `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`) y `<EPIC_DIR>/epic-refine-report.md` |
+
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
-> con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT` / `BLOCKED`) antes
-<!-- TODO:
-> de aprobar la épica para `READY-FOR-DEV`; no cambia ningún estado. Con `NEEDS-REFINEMENT`, `epic-refine` corrige el
--->
-> índice, la cobertura del contrato de salida y las referencias de las historias, y se vuelve a ejecutar `epic-analyze`
-> hasta obtener `APPROVED`.
+> con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT`) antes
+> de aprobar la épica para `READY-FOR-DEV`; no cambia ningún estado. Con `NEEDS-REFINEMENT`, `epic-refine` corrige,
+> tras confirmación, el índice de historias (huérfanas y duplicadas) y las referencias `related` rotas de las historias,
+> y se vuelve a ejecutar `epic-analyze` hasta obtener `APPROVED`; lo que requiere decisión del PO (incluida, en esta
+> versión, la cobertura del contrato de salida) queda en `epic-refine-report.md` como fuera de alcance y no se escribe.
 
 > `epic-format-validation` es el gate de forma de `DEFINE`. Con `NEEDS-REFINEMENT`, `epic-improve` aplica, tras
 > confirmación, las correcciones de su tabla `## Defectos` (sin cambiar el estado de la épica) y se vuelve a ejecutar

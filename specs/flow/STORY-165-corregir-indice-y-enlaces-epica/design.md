@@ -381,3 +381,15 @@ Ninguna. La forma de la línea F2/F3 se fija con texto literal del `story.md` (D
 - **Descripción**: hacer veraces los escritores obliga a modificar `docs/templates/story-template.md` y su seed (`related:`), además de los de épica; la historia no lo menciona.
 - **Documento afectado**: tasks.md de STORY-165
 - **Acción requerida**: incluir la tarea y comprobar la igualdad central = seed con `npm test`.
+
+### CR-004
+- **Tipo**: decisión de implementación
+- **Descripción**: para que cada `epic-analyze-report.md` de fixture liste solo los hallazgos de su caso (D-11), los fixtures `duplicada/` y `solo-decisiones-po/` incluyen `STORY-304` listada en el índice: es la historia que cita `CS-1` y `SMOKE-1`, y sin ella el contrato de salida quedaría sin cubrir y el reporte debería listar además SAL-01/SAL-02 (contradiría AC-3: «todos sus hallazgos son INT-01, INT-05 o SAL-03»). Cada fixture es un `specs/flow/` mínimo con `EPIC-30-ejemplo/` y los directorios `STORY-NNN-<slug>/` como hermanos; los números de línea citados en cada reporte coinciden con los archivos.
+- **Documento afectado**: design.md (D-11)
+- **Acción requerida**: ninguna.
+
+### CR-005
+- **Tipo**: veracidad
+- **Descripción**: al descomentar §2 de `docs/guides/sddf-commands-pipeline.md` (D-10), el texto atribuía a `epic-analyze` un veredicto `BLOCKED` que no emite (solo `APPROVED` / `NEEDS-REFINEMENT`, `validation-contract-policy` §4) y a `epic-refine` la corrección de la cobertura del contrato de salida, que esta versión deja fuera de alcance (STORY-173). Se corrigieron ambas afirmaciones.
+- **Documento afectado**: `docs/guides/sddf-commands-pipeline.md`
+- **Acción requerida**: ninguna.
