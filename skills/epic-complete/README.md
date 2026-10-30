@@ -8,7 +8,7 @@
 
 ## What it does
 
-Cierra una épica liberada: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic.md` la fecha de cierre y la versión liberada y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019), conservando el historial de git. Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter. Siempre pide confirmación humana antes de escribir o mover nada.
+Cierra una épica liberada: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic.md` la fecha de cierre y la versión liberada y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019), conservando el historial de git. Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status. Siempre pide confirmación humana antes de escribir o mover nada.
 
 **Produces:**
 
@@ -19,7 +19,7 @@ Cierra una épica liberada: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra
 
 - No hace commit, tag, push ni PR, ni promueve `[Unreleased]` en `CHANGELOG.md`.
 - No archiva las historias hijas: eso lo hace `/story-complete`.
-- No archiva épicas `CANCELED/DONE` todavía (STORY-172): reciben el mismo rechazo que cualquier otro estado.
+- No cancela épicas ni archiva las `CANCELED` cuyo substatus no es `DONE`.
 - No crea reportes ni tiene DoD propio.
 
 ## Estados admitidos
@@ -28,11 +28,13 @@ Cierra una épica liberada: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra
 |---|---|
 | `SHIP/DONE` | `COMPLETED/DONE`, `completed:` y `version:`, archivada con la fecha de hoy |
 | `COMPLETED/DONE` | archivada con la fecha de archivo, sin cambiar `epic.md` |
+| `CANCELED/DONE` | archivada con la fecha de archivo, sin cambiar `epic.md`: sigue figurando como `CANCELED` |
+| `CANCELED/<otro>` | rechazo: solo se archivan las épicas canceladas con substatus `DONE` |
 | otro | rechazo: solo se completan épicas en `SHIP/DONE`, `COMPLETED/DONE` o `CANCELED/DONE` |
 
 **Versión liberada:** `--version x.y.z`; si no se indica, el encabezado `## [x.y.z]` de `CHANGELOG.md` que contiene el bloque `<!-- epic-ship:EPIC-NN:start -->`. Si la entrada sigue en `[Unreleased]` o no existe, no se cierra y se pide `--version`.
 
-**Fecha de archivo** (`COMPLETED/DONE`): `updated:`; si no es válido, `created:`; si el frontmatter no tiene ninguna de esas dos claves, `date:`.
+**Fecha de archivo** (`COMPLETED/DONE` y `CANCELED/DONE`): `updated:`; si no es válido, `created:`; si el frontmatter no tiene ninguna de esas dos claves, `date:`.
 
 ## Motor
 
@@ -46,7 +48,8 @@ Cierra una épica liberada: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra
 
 - La épica está en `SHIP/DONE`, verificaste que la versión liberada opera correctamente y quieres cerrarla y sacarla de `specs/flow/`.
 - Una épica ya marcada `COMPLETED/DONE` a mano sigue en `specs/flow/` y quieres archivarla.
-- The user mentions: `"epic-complete"`, `"completar épica"`, `"archivar épica"`, `"cerrar épica"`.
+- Cancelaste una épica (`CANCELED/DONE`) y quieres sacarla de `specs/flow/` sin que pase a `COMPLETED`.
+- The user mentions: `"epic-complete"`, `"completar épica"`, `"archivar épica"`, `"archivar épica cancelada"`, `"cerrar épica"`.
 
 **Do NOT use it when:**
 

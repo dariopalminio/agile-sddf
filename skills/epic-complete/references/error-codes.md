@@ -9,9 +9,10 @@ Se carga solo cuando el motor devuelve `ok: false` o termina con exit `2`. El `m
 | `INVALID_PATH` | `--path` fuera de `specs/flow/EPIC-NN-<slug>/` (incluido `specs/flow/archive/…`) | la forma esperada | sin cambios |
 | `NO_EPIC_FILE` | el directorio no tiene `epic.md` | la ruta | sin cambios |
 | `NO_STATUS` | frontmatter sin `status`/`substatus` | los campos buscados | sin cambios |
-| `NOT_SHIPPED` | estado distinto de `SHIP/DONE` y `COMPLETED/DONE` | `La épica EPIC-NN está en <status>/<substatus>: solo se completan épicas en SHIP/DONE, COMPLETED/DONE o CANCELED/DONE.`; con `VALIDATE/DONE` añade `Ejecuta antes /epic-ship EPIC-NN` | sin cambios |
+| `NOT_SHIPPED` | estado distinto de `SHIP/DONE`, `COMPLETED/DONE` y `CANCELED/*` | `La épica EPIC-NN está en <status>/<substatus>: solo se completan épicas en SHIP/DONE, COMPLETED/DONE o CANCELED/DONE.`; con `VALIDATE/DONE` añade `Ejecuta antes /epic-ship EPIC-NN` | sin cambios |
+| `CANCELED_NOT_DONE` | `status: CANCELED` con substatus distinto de `DONE` | `La épica EPIC-NN no puede archivarse: estado actual CANCELED/<substatus>. Solo se archivan las épicas canceladas con substatus DONE.`; sin sugerencia de otro comando | sin cambios |
 | `NO_VERSION` | `SHIP/DONE` sin `--version` y sin versión en `CHANGELOG.md` | el motivo (`reason`): `unreleased` (la entrada sigue en `[Unreleased]`: promuévela a `## [x.y.z]`), `no-block` o `no-changelog` (no se encontró la entrada en `CHANGELOG.md`); pide reejecutar con `--version x.y.z` | sin cambios |
-| `NO_ARCHIVE_DATE` | `COMPLETED/DONE` sin fecha de archivo válida | los campos buscados (`updated:`, `created:`, `date:`) | sin cambios |
+| `NO_ARCHIVE_DATE` | `COMPLETED/DONE` o `CANCELED/DONE` sin fecha de archivo válida | los campos buscados (`updated:`, `created:`, `date:`) | sin cambios |
 | `ARCHIVE_CONFLICT` | el destino ya existe | la ruta en conflicto | sin cambios |
 | `WRITE_FAILED` | error de E/S al escribir `epic.md` | la ruta y el error | nada movido |
 | `MOVE_FAILED` | `git mv` o el renombre fallan | el error; `epic.md` restaurado | sin cambios |

@@ -1,7 +1,7 @@
 {
   "skill": "epic-complete",
   "version": "1.0.0",
-  "description": "Casos de prueba para epic-complete: verifica que el skill completa (SHIP/DONE → COMPLETED/DONE) y archiva una épica en specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/ solo tras confirmación humana, registrando completed: y version: (la versión sale de --version o del encabezado ## [x.y.z] de CHANGELOG.md que contiene el bloque de epic-ship), y que rechaza o aborta sin efectos (sin preguntar cuando el plan falla) las épicas no liberadas, la versión no resuelta y la respuesta negativa. El fixture SHIP/DONE y el CHANGELOG.md se fijan a mano, sin depender de epic-ship.",
+  "description": "Casos de prueba para epic-complete: verifica que el skill completa (SHIP/DONE → COMPLETED/DONE) y archiva una épica en specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/ solo tras confirmación humana, registrando completed: y version: (la versión sale de --version o del encabezado ## [x.y.z] de CHANGELOG.md que contiene el bloque de epic-ship), y que rechaza o aborta sin efectos (sin preguntar cuando el plan falla) las épicas no liberadas, la versión no resuelta y la respuesta negativa. Desde STORY-172 verifica además que una épica CANCELED/DONE se archiva conservando su status tras una pregunta que declara que el status no cambia, y que una CANCELED sin substatus DONE o con destino de archivo existente se rechaza sin preguntar. El fixture SHIP/DONE y el CHANGELOG.md se fijan a mano, sin depender de epic-ship.",
   "cases": [
     {
       "id": "TC-001",
@@ -106,6 +106,82 @@
         "not_contains": [
           "¿Confirmas",
           "archivada en"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-005",
+      "name": "canceled-done-confirmado-archiva-sin-cambiar-status",
+      "type": "happy-path",
+      "description": "STORY-172 AC-1. Épica EPIC-35 en specs/flow/EPIC-35-reportes/ con status CANCELED, substatus DONE y updated: 2026-10-20, versionada en git. El usuario ejecuta /epic-complete EPIC-35 y responde 's'. El skill debe mostrar el resumen con la acción sin cambio de status (CANCELED/DONE), preguntar declarando que el status no cambia, invocar apply y anunciar que la épica quedó archivada como CANCELED en specs/flow/archive/2026-10-20-EPIC-35-reportes/ sin escribir COMPLETED en epic.md, recordando que el commit queda a cargo del usuario.",
+      "input": {
+        "epic_id": "EPIC-35",
+        "epic_dir": "specs/flow/EPIC-35-reportes",
+        "epic_status": "CANCELED",
+        "epic_substatus": "DONE",
+        "epic_updated": "2026-10-20",
+        "today": "2026-10-30",
+        "git_tracked": true,
+        "responses": [
+          "s"
+        ]
+      },
+      "expected": {
+        "contains": [
+          "el status no cambia",
+          "archivada como CANCELED (status sin cambios)",
+          "specs/flow/archive/2026-10-20-EPIC-35-reportes"
+        ],
+        "not_contains": [
+          "❌",
+          "COMPLETED"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-006",
+      "name": "canceled-in-progress-rechazado-sin-preguntar",
+      "type": "fail-fast",
+      "description": "STORY-172 AC-2. Épica EPIC-36 en CANCELED/IN-PROGRESS. El usuario ejecuta /epic-complete EPIC-36. El motor devuelve CANCELED_NOT_DONE en plan: el skill debe informar que solo se archivan las épicas canceladas con substatus DONE y terminar sin preguntar, sin sugerir /epic-ship y sin modificar ni mover ningún archivo.",
+      "input": {
+        "epic_id": "EPIC-36",
+        "epic_dir": "specs/flow/EPIC-36-migracion",
+        "epic_status": "CANCELED",
+        "epic_substatus": "IN-PROGRESS"
+      },
+      "expected": {
+        "contains": [
+          "Solo se archivan las épicas canceladas con substatus DONE"
+        ],
+        "not_contains": [
+          "¿Confirmas",
+          "/epic-ship"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-007",
+      "name": "canceled-done-destino-existente-sin-mover",
+      "type": "edge-case",
+      "description": "STORY-172 AC-3. Épica EPIC-37 en CANCELED/DONE con updated: 2026-10-15 y ya existe specs/flow/archive/2026-10-15-EPIC-37-alertas/. El usuario ejecuta /epic-complete EPIC-37. El motor devuelve ARCHIVE_CONFLICT en plan: el skill debe informar la ruta en conflicto y terminar sin preguntar ni sobrescribir o mover ningún archivo.",
+      "input": {
+        "epic_id": "EPIC-37",
+        "epic_dir": "specs/flow/EPIC-37-alertas",
+        "epic_status": "CANCELED",
+        "epic_substatus": "DONE",
+        "epic_updated": "2026-10-15",
+        "existing_archive_dir": "specs/flow/archive/2026-10-15-EPIC-37-alertas"
+      },
+      "expected": {
+        "contains": [
+          "specs/flow/archive/2026-10-15-EPIC-37-alertas/"
+        ],
+        "not_contains": [
+          "¿Confirmas",
+          "archivada"
         ]
       },
       "threshold": 0.9

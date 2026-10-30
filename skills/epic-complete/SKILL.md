@@ -1,16 +1,16 @@
 ---
 name: epic-complete
 description: >-
-  Completa una épica liberada (SHIP/DONE → COMPLETED/DONE), registra en epic.md la fecha de cierre y la versión
-  liberada y la archiva en specs/flow/archive/ con confirmación humana. Usar después de epic-ship, al verificar la
-  versión en producción. Invocar para "epic-complete", "completar épica", "archivar épica", "cerrar épica" o "COMPLETED".
+  Completa una épica SHIP/DONE (→ COMPLETED/DONE con fecha de cierre y versión) y la archiva en specs/flow/archive/
+  con confirmación humana; las CANCELED/DONE se archivan sin cambiar su status. Usar después de epic-ship. Invocar
+  para "epic-complete", "completar épica", "archivar épica", "archivar épica cancelada", "cerrar épica" o "COMPLETED".
 ---
 
 # Skill: `/epic-complete`
 
 ## Objetivo
 
-Cierra el ciclo de vida de una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, deja en el frontmatter de `epic.md` la fecha de cierre (`completed:`) y la versión liberada (`version:`) y mueve su directorio de `specs/flow/EPIC-NN-<slug>/` a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019). Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter.
+Cierra el ciclo de vida de una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, deja en el frontmatter de `epic.md` la fecha de cierre (`completed:`) y la versión liberada (`version:`) y mueve su directorio de `specs/flow/EPIC-NN-<slug>/` a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019). Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status para no confundirse con una liberada.
 
 `specs/flow/` queda solo con el trabajo activo y la épica archivada conserva su historial en git; `created:` y `completed:` permiten medir el tiempo de ciclo y `version:` la enlaza con su entrada de `CHANGELOG.md`.
 
@@ -24,10 +24,11 @@ El trabajo determinista (localizar, validar, resolver la versión, escribir, mov
 epic-complete    ← aquí
       │   SHIP/DONE + "s":          epic.md → COMPLETED/DONE, updated/completed: hoy, version: x.y.z, archivada
       │   COMPLETED/DONE + "s":     archivada sin tocar epic.md
+      │   CANCELED/DONE + "s":      archivada sin tocar epic.md (sigue CANCELED/DONE)
       │   Cualquier rechazo:        no se pregunta; nada se modifica ni se mueve
       │   Respuesta distinta de "s": nada se modifica ni se mueve
      ↓
-[specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/epic.md: COMPLETED/DONE]
+[specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/epic.md: COMPLETED/DONE | CANCELED/DONE]
 ```
 
 Nodo `epic-complete` (`SHIP → COMPLETED`) de `docs/architecture/diagrams/flowchart-skill-epic-flow-relationship.mermaid`.
@@ -51,9 +52,11 @@ No hay modo automático ni `--yes`: `epic-complete` escribe un estado terminal y
 |---|---|
 | `SHIP` / `DONE` | `complete`: escribe `status: COMPLETED`, `updated:` y `completed:` de hoy, `version:` y archiva con la fecha de hoy |
 | `COMPLETED` / `DONE` | `archive-only`: archiva con la fecha de `updated:` → `created:` (`date:` solo si faltan ambas); `epic.md` no cambia |
+| `CANCELED` / `DONE` | `archive-canceled`: archiva con la misma fecha que `archive-only`; `epic.md` no cambia y conserva `CANCELED/DONE`; `--version` se ignora |
+| `CANCELED` / otro substatus | rechazo `CANCELED_NOT_DONE`: solo se archivan las épicas canceladas con substatus `DONE` |
 | cualquier otro par | rechazo `NOT_SHIPPED`: solo se completan épicas en `SHIP/DONE`, `COMPLETED/DONE` o `CANCELED/DONE` |
 
-Esta tabla es el único lugar que decide por estado; la aplica el motor (`planCompletion`). El archivado de `CANCELED/DONE` lo añade STORY-172; hasta entonces recibe el mismo rechazo.
+Esta tabla es el único lugar que decide por estado; la aplica el motor (`planCompletion`).
 
 ## Dependencias
 
@@ -136,6 +139,7 @@ Muestra el resumen a partir del JSON:
    Estado actual:  <epic.status>/<epic.substatus>
    Acción:         COMPLETED/DONE · completed: <archiveDate>   (si action = complete)
    Acción:         sin cambio de status (ya COMPLETED/DONE)    (si action = archive-only)
+   Acción:         sin cambio de status (CANCELED/DONE)        (si action = archive-canceled)
    Versión:        <version> (fuente: <versionSource>)         (solo si action = complete)
    Origen:         <from>/
    Destino:        <to>/
@@ -148,6 +152,7 @@ Pregunta exactamente:
 ```
 ¿Confirmas que la versión <version> de <epic.id> opera correctamente tras el despliegue y quieres completarla y archivarla en <to>/? (s/n)   (action = complete)
 ¿Confirmas archivar <epic.id> (ya COMPLETED/DONE, el status no cambia) en <to>/? (s/n)                                                    (action = archive-only)
+¿Confirmas archivar <epic.id> (CANCELED/DONE, el status no cambia) en <to>/? (s/n)                                                        (action = archive-canceled)
 ```
 
 Solo `s`, `si` o `sí` (sin distinguir mayúsculas) confirman. Cualquier otra respuesta, o ninguna, muestra `Operación cancelada por el usuario: no hubo cambios.` y termina **sin invocar `apply`**: la épica sigue en su estado dentro de `specs/flow/`.
@@ -163,6 +168,7 @@ Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar tod
 ```
 ✅ <epic.id> archivada en <to>/ · COMPLETED/DONE · versión <version> · completed: <archiveDate>   (action = complete)
 ✅ <epic.id> archivada en <to>/ · sin cambio de status (ya COMPLETED/DONE)                        (action = archive-only)
+✅ <epic.id> archivada como CANCELED (status sin cambios): <to>/                                  (action = archive-canceled)
 <cada línea de warnings>
    El movimiento quedó en el índice de git (git-mv) o en el árbol de trabajo (rename); el commit queda a cargo del usuario.
 ```

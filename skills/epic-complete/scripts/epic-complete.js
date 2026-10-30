@@ -2,16 +2,17 @@
 'use strict';
 
 /**
- * Motor de epic-complete (STORY-171): completa y archiva una épica liberada.
+ * Motor de epic-complete (STORY-171, STORY-172): completa y archiva una épica liberada o cancelada.
  *
  *   - `SHIP/DONE`      → escribe `status: COMPLETED`, `updated:` y `completed:` de hoy y `version:` de la
  *                        versión liberada, y archiva con la fecha de hoy (action `complete`)
  *   - `COMPLETED/DONE` → archiva sin escribir nada en `epic.md` (action `archive-only`)
- *   - cualquier otro estado (incluido `CANCELED/*` hasta STORY-172) se rechaza sin tocar nada
+ *   - `CANCELED/DONE`  → archiva sin escribir nada en `epic.md`: conserva su status (action `archive-canceled`)
+ *   - `CANCELED/<otro>` se rechaza con `CANCELED_NOT_DONE`; cualquier otro estado, con `NOT_SHIPPED`
  *
- * Destino (ADR-0019): `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`. En `archive-only` la fecha sale
- * de `updated:` → `created:` → `date:` (este solo si faltan las dos claves anteriores), como en
- * `story-complete.js`.
+ * Destino (ADR-0019): `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`. En `archive-only` y
+ * `archive-canceled` la fecha sale de `updated:` → `created:` → `date:` (este solo si faltan las dos
+ * claves anteriores), como en `story-complete.js`. `--version` solo participa en `complete`.
  *
  * Versión liberada (D-4): `--version` → encabezado `## [x.y.z]` de `CHANGELOG.md` que contiene el bloque
  * `<!-- epic-ship:EPIC-NN:start -->` → `NO_VERSION`.
@@ -188,7 +189,7 @@ function resolveVersion(repoRoot, epicId, version) {
   };
 }
 
-/** Plan de solo lectura (tabla de admisión, D-3, D-4, D-6, D-9). */
+/** Plan de solo lectura (tabla de admisión, D-3, D-4, D-6, D-9; STORY-172 D-1, D-4, D-5). */
 function planCompletion({ repoRoot, id, epicPath, version, today }) {
   const located = locateEpic({ repoRoot, id, epicPath });
   if (!located.ok) return located;
@@ -206,7 +207,10 @@ function planCompletion({ repoRoot, id, epicPath, version, today }) {
   let action;
   if (status === 'SHIP' && substatus === 'DONE') action = 'complete';
   else if (status === 'COMPLETED' && substatus === 'DONE') action = 'archive-only';
-  else {
+  else if (status === 'CANCELED' && substatus === 'DONE') action = 'archive-canceled';
+  else if (status === 'CANCELED') {
+    return fail('CANCELED_NOT_DONE', `La épica ${epicId} no puede archivarse: estado actual ${state}. Solo se archivan las épicas canceladas con substatus DONE.`, { epic });
+  } else {
     const hint = state === 'VALIDATE/DONE' ? ` Ejecuta antes /epic-ship ${epicId}` : '';
     return fail('NOT_SHIPPED', `La épica ${epicId} está en ${state}: solo se completan épicas en SHIP/DONE, COMPLETED/DONE o CANCELED/DONE.${hint}`, { epic });
   }
@@ -327,7 +331,8 @@ function applyCompletion({ repoRoot, id, epicPath, version, today }) {
   if (after !== before) {
     return { ...result, ok: false, code: 'COUNT_MISMATCH', counts: { before, after }, message: `activas + archivadas = ${after} tras mover ${from}/ a ${to}/, pero antes eran ${before}` };
   }
-  return { ...result, code: 'OK', message: `${epic.id} archivada en ${to}/`, counts: { before, after } };
+  const message = action === 'archive-canceled' ? `${epic.id} archivada como CANCELED (status sin cambios): ${to}/` : `${epic.id} archivada en ${to}/`;
+  return { ...result, code: 'OK', message, counts: { before, after } };
 }
 
 function localToday() {

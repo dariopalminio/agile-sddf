@@ -6,8 +6,10 @@
  * `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019). Cubre los contratos de verificación
  * 1–8 de `design.md`: cierre con escritura mínima del frontmatter (D-5), `git mv` sin commit (D-7,
  * CNF-1), resolución de la versión liberada (D-4), admisión por estado (AC-2, D-9), fecha de archivo
- * (D-6, CNF-2), búsqueda determinista, restauración ante fallo (D-8) y la CLI `plan|apply`. Cada caso
- * opera sobre un directorio temporal; nunca sobre el repo real.
+ * (D-6, CNF-2), búsqueda determinista, restauración ante fallo (D-8) y la CLI `plan|apply`. La sección
+ * STORY-172 cubre sus contratos 1–6: `CANCELED/DONE` se archiva conservando su status
+ * (`archive-canceled`) y `CANCELED/<otro>` se rechaza con `CANCELED_NOT_DONE`. Cada caso opera sobre un
+ * directorio temporal; nunca sobre el repo real.
  */
 
 const assert = require('node:assert/strict');
@@ -218,7 +220,7 @@ for (const [label, changelog, reason, pattern] of [
 
 // ── Contrato 4 — épica no liberada (AC-2) ───────────────────────────────────────────
 
-for (const [status, substatus] of [['VALIDATE', 'DONE'], ['DEVELOP', 'IN-PROGRESS'], ['CANCELED', 'DONE'], ['SHIP', 'IN-PROGRESS']]) {
+for (const [status, substatus] of [['VALIDATE', 'DONE'], ['DEVELOP', 'IN-PROGRESS'], ['SHIP', 'IN-PROGRESS']]) {
   test(`${status}/${substatus} → NOT_SHIPPED con el mensaje de AC-2, sin cambios`, (t) => {
     const root = makeFixture(t, { epics: { [NAME]: fm(status, substatus) } });
     const before = snapshot(root);
@@ -278,6 +280,94 @@ test('archiveDateOf: cadena updated: → created: → date: (solo si faltan amba
   assert.equal(archiveDateOf({ date: '2026-01-01' }), '2026-01-01');
   assert.equal(archiveDateOf({ updated: 'x', date: '2026-01-01' }), null);
   assert.equal(archiveDateOf({}), null);
+});
+
+// ── STORY-172 — archivado de épicas CANCELED ────────────────────────────────────────
+
+test('CANCELED/DONE → plan archive-canceled con la fecha de updated:, created: o date: (solo sin las otras dos) (STORY-172 contrato 1)', (t) => {
+  const cases = [
+    [{ created: '2026-09-01', updated: '2026-09-15' }, '2026-09-15'],
+    [{ created: '2026-09-01' }, '2026-09-01'],
+    [{ date: '2026-07-15' }, '2026-07-15'],
+  ];
+  for (const [dates, expected] of cases) {
+    const root = makeFixture(t, { epics: { [NAME]: fm('CANCELED', 'DONE', dates) }, changelog: null });
+    const before = snapshot(root);
+    const result = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+    assert.equal(result.ok, true, result.message);
+    assert.equal(result.action, 'archive-canceled');
+    assert.equal(result.version, null);
+    assert.equal(result.versionSource, null);
+    assert.equal(result.archiveDate, expected, JSON.stringify(dates));
+    assert.equal(result.to, `specs/flow/archive/${expected}-${NAME}`);
+    assert.deepEqual(snapshot(root), before, 'plan no escribe');
+  }
+});
+
+test('CANCELED/DONE + apply → archivada con epic.md byte a byte igual y status CANCELED/DONE (STORY-172 contrato 2, CNF-1)', (t) => {
+  const root = makeFixture(t, { epics: { [NAME]: fm('CANCELED', 'DONE') } });
+  const original = fs.readFileSync(epicFile(root, `specs/flow/${NAME}`));
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.equal(result.to, `specs/flow/archive/2026-10-28-${NAME}`);
+  assert.equal(result.message, `EPIC-31 archivada como CANCELED (status sin cambios): ${result.to}/`);
+  assert.equal(fs.existsSync(path.join(root, 'specs', 'flow', NAME)), false);
+  const archived = fs.readFileSync(epicFile(root, result.to));
+  assert.ok(archived.equals(original), 'epic.md byte a byte igual');
+  assert.match(archived.toString('utf8'), /^status: CANCELED$/m);
+  assert.match(archived.toString('utf8'), /^substatus: DONE$/m);
+  assert.deepEqual(result.counts, { before: 1, after: 1 });
+});
+
+test('CANCELED/DONE con historial: git status muestra el rename R y no hay commit nuevo (STORY-172 contrato 3)', (t) => {
+  const root = makeFixture(t, { epics: { [NAME]: fm('CANCELED', 'DONE') } });
+  const head = runGit(root, ['rev-parse', 'HEAD']).trim();
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.equal(result.moveMethod, 'git-mv');
+  assert.equal(runGit(root, ['rev-parse', 'HEAD']).trim(), head, 'sin commit nuevo');
+  assert.match(runGit(root, ['status', '--porcelain']), new RegExp(`^R. specs/flow/${NAME}/epic\\.md -> ${result.to}/epic\\.md$`, 'm'));
+});
+
+for (const substatus of ['IN-PROGRESS', 'TODO']) {
+  test(`CANCELED/${substatus} → CANCELED_NOT_DONE sin sugerir /epic-ship, sin cambios (STORY-172 contrato 4, AC-2)`, (t) => {
+    const root = makeFixture(t, { epics: { [NAME]: fm('CANCELED', substatus) } });
+    const before = snapshot(root);
+    const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+    assert.equal(result.ok, false);
+    assert.equal(result.code, 'CANCELED_NOT_DONE');
+    assert.equal(result.message, `La épica EPIC-31 no puede archivarse: estado actual CANCELED/${substatus}. Solo se archivan las épicas canceladas con substatus DONE.`);
+    assert.doesNotMatch(result.message, /epic-ship/);
+    assert.deepEqual(snapshot(root), before);
+  });
+}
+
+test('CANCELED/DONE con destino existente → ARCHIVE_CONFLICT con la ruta, sin cambios (STORY-172 contrato 5, AC-3)', (t) => {
+  const root = makeFixture(t, {
+    epics: { [NAME]: fm('CANCELED', 'DONE') },
+    extra: (r) => fs.mkdirSync(path.join(r, 'specs', 'flow', 'archive', `2026-10-28-${NAME}`), { recursive: true }),
+  });
+  const before = snapshot(root);
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.equal(result.code, 'ARCHIVE_CONFLICT');
+  assert.equal(result.action, 'archive-canceled');
+  assert.ok(result.message.includes(`specs/flow/archive/2026-10-28-${NAME}/`), result.message);
+  assert.deepEqual(snapshot(root), before);
+});
+
+test('CANCELED/DONE sin fecha válida → NO_ARCHIVE_DATE; --version se ignora (STORY-172 contrato 6)', (t) => {
+  const noDate = makeFixture(t, { epics: { [NAME]: fm('CANCELED', 'DONE', { date: 'ayer' }) } });
+  const before = snapshot(noDate);
+  const rejected = applyCompletion({ repoRoot: noDate, id: 'EPIC-31', today: TODAY });
+  assert.equal(rejected.code, 'NO_ARCHIVE_DATE');
+  for (const field of ['updated:', 'created:', 'date:']) assert.ok(rejected.message.includes(field), rejected.message);
+  assert.deepEqual(snapshot(noDate), before);
+
+  const root = makeFixture(t, { epics: { [NAME]: fm('CANCELED', 'DONE') } });
+  const result = planCompletion({ repoRoot: root, id: 'EPIC-31', version: '9.9.9', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.equal(result.version, null);
+  assert.equal(result.versionSource, null);
+  assert.deepEqual(result.warnings, []);
 });
 
 // ── Contrato 6 — localización y conflictos ──────────────────────────────────────────
@@ -351,6 +441,16 @@ test('git mv forzado a fallar → MOVE_FAILED, epic.md restaurado byte a byte y 
   assert.ok(fs.readFileSync(file).equals(original), 'epic.md restaurado');
   assert.equal(fs.existsSync(path.join(root, 'specs', 'flow', 'archive', `${TODAY}-${NAME}`)), false);
   assert.deepEqual(result.counts, { before: 1, after: 1 });
+});
+
+test('CANCELED/DONE con git mv forzado a fallar → MOVE_FAILED con «epic.md no se modificó» (STORY-172 T005)', (t) => {
+  const root = makeFixture(t, { epics: { [NAME]: fm('CANCELED', 'DONE') } });
+  const original = fs.readFileSync(epicFile(root, `specs/flow/${NAME}`));
+  fs.writeFileSync(path.join(root, '.git', 'index.lock'), '');
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.equal(result.code, 'MOVE_FAILED');
+  assert.match(result.message, /epic\.md no se modificó/);
+  assert.ok(fs.readFileSync(epicFile(root, `specs/flow/${NAME}`)).equals(original));
 });
 
 test('epic.md con \\r\\n conserva \\r\\n en las líneas reemplazadas e insertadas', (t) => {
