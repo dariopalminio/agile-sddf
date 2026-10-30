@@ -5,11 +5,11 @@ id: STORY-126
 kind: feat
 slug: STORY-126-operar-validacion-epica-segura
 title: "Operar la validación de épicas de manera segura"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-28
+updated: 2026-10-30
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124
@@ -61,7 +61,7 @@ Entonces la ejecución termina con fallo e informa los valores válidos de --mod
 ```gherkin
 Dado una épica sin cambios desde una validación anterior
 Cuando se vuelve a validar con el mismo modo
-Entonces el reporte es idéntico al anterior salvo la fecha de evaluación
+Entonces el reporte es idéntico al anterior salvo los datos de la ejecución (fecha de evaluación y duraciones medidas)
   Y no se modifican fuentes ni artefactos distintos de epic-validate-report.md
 ```
 
@@ -82,7 +82,7 @@ Entonces el reporte es idéntico al anterior salvo la fecha de evaluación
 - **Nombres de los modos:** se adoptan los flags de EPIC-23 y STORY-125: `--mode auto`, `--mode manual` y `--dry-run` para la previsualización. `--dry-run` es ortogonal al modo: simula la validación sin escribir archivos ni ejecutar tests, y en el reporte previsualizado las comprobaciones operativas figuran como no ejecutadas.
 - **Semántica de los modos:** STORY-125 define qué evidencia toma cada modo; esta historia define cómo se selecciona el modo y qué efectos tiene la ejecución. Según la tabla de flags de EPIC-23, sin `--mode` la validación usa la ejecución automática cuando hay tests configurados, y el modo interactivo en caso contrario. `--mode manual` fuerza el modo interactivo y `--mode auto` nunca pide confirmación, así que se puede invocar desde una automatización.
 - **Regla — Resultado observable:** quien invoca la validación distingue el éxito (veredicto APPROVED) del fallo (veredicto BLOCKED o error de invocación) sin leer el reporte. El mecanismo concreto (código de salida, línea final de estado u otro) se decide en el diseño.
-- **Regla — Contenido equivalente:** dos reportes de la misma épica sin cambios solo pueden diferir en la fecha de evaluación. Los hallazgos se emiten en un orden determinista.
+- **Regla — Contenido equivalente:** dos reportes de la misma épica sin cambios solo pueden diferir en los datos de la ejecución (fecha de evaluación y duraciones medidas). Los hallazgos se emiten en un orden determinista.
 - **Dependencias:** consume el veredicto de STORY-124 y la selección de evidencia de STORY-125. Se puede desarrollar y probar con un validador stub que devuelva APPROVED o BLOCKED fijo, sin esperar a que esas historias se entreguen.
 - Cubre el criterio de salida de EPIC-23: **CS-7** — El skill solo escribe `epic-validate-report.md`; no modifica código, fuentes ni otros documentos.
 - Contribuye a **CS-10** de EPIC-23 en los flags `--mode manual`, `--mode auto` y `--dry-run`.

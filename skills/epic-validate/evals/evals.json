@@ -1,7 +1,7 @@
 {
   "skill": "epic-validate",
-  "version": "1.1.0",
-  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto.",
+  "version": "1.2.0",
+  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto. STORY-126 agrega la operación segura: --mode auto nunca pregunta y --mode manual es interactivo; --dry-run imprime el reporte completo sin escribir archivos, ejecutar comandos ni pedir confirmaciones (OPE-* no ejecutada); los errores de invocación (--mode inválido, sin valor o repetido) terminan sin leer ni escribir; toda ejecución cierra con el bloque RESULTADO (ÉXITO / FALLO / SIMULACIÓN) · VEREDICTO · MODO · REPORTE; y una repetición sin cambios conserva created y el orden de los motivos.",
   "cases": [
     {
       "id": "TC-001",
@@ -1047,6 +1047,663 @@
           "{veredicto}",
           "{motivo}"
         ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-014",
+      "name": "modo-auto-aprobado-resultado-exito",
+      "type": "happy-path",
+      "description": "STORY-126 AC-1 (fila auto / APPROVED) / V-1: mismo fixture que TC-006 con --mode auto. El skill no hace ninguna pregunta, escribe solo epic-validate-report.md con verdict APPROVED y cierra la salida con el bloque de resultado RESULTADO: ÉXITO · VEREDICTO: APPROVED · MODO: auto · REPORTE: <ruta>.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: APPROVED",
+          "RESULTADO: ÉXITO",
+          "VEREDICTO: APPROVED",
+          "MODO: auto",
+          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ],
+        "not_contains": [
+          "¿",
+          "RESULTADO: FALLO",
+          "MOTIVO:",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic.md",
+          "=== FILE: specs/flow/STORY-40",
+          "=== FILE: .tmp/",
+          ".bak ===",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ],
+        "files_written": [
+          "specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-015",
+      "name": "modo-manual-bloqueado-resultado-fallo",
+      "type": "error-handling",
+      "description": "STORY-126 AC-1 (fila manual / BLOCKED) / V-2: --mode manual, SMOKE-1 sin reporte aprobado de su historia dueña y el mantenedor responde \"o\" (omitir). SMOKE-1 queda sin evidencia, OPE-01 bloqueada y el reporte es BLOCKED; el bloque de resultado es RESULTADO: FALLO · VEREDICTO: BLOCKED · MODO: manual.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode manual",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": "no existe",
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "maintainer_answers": {
+          "SMOKE-1": "o"
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "verdict: BLOCKED",
+          "sin evidencia",
+          "RESULTADO: FALLO",
+          "VEREDICTO: BLOCKED",
+          "MODO: manual",
+          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ],
+        "not_contains": [
+          "RESULTADO: ÉXITO",
+          "MOTIVO:",
+          "verdict: APPROVED",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic.md",
+          "=== FILE: specs/flow/STORY-40",
+          "=== FILE: .tmp/",
+          ".bak ===",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ],
+        "files_written": [
+          "specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-016",
+      "name": "dry-run-previsualiza-sin-escribir",
+      "type": "happy-path",
+      "description": "STORY-126 AC-2 / V-3: mismo fixture que TC-006 con --dry-run. EST-01 y EST-02 se evalúan; OPE-01, OPE-02 y OPE-03 quedan \"no ejecutada\" sin invocar el motor check-command. El reporte completo se imprime entre las líneas de previsualización y no se escribe ningún archivo; el bloque es RESULTADO: SIMULACIÓN · VEREDICTO: APPROVED · REPORTE: —.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --dry-run",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "contains": [
+          "── Previsualización (--dry-run): no se escribió specs/flow/EPIC-40-operativa/epic-validate-report.md ──",
+          "## Veredicto",
+          "verdict: APPROVED",
+          "no ejecutada",
+          "`--dry-run`: no se ejecutan comandos ni se piden confirmaciones",
+          "── Fin de la previsualización ──",
+          "RESULTADO: SIMULACIÓN",
+          "VEREDICTO: APPROVED",
+          "REPORTE: —"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "check-command",
+          "Reporte escrito",
+          "RESULTADO: ÉXITO",
+          "(0.",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ],
+        "files_written": []
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-017",
+      "name": "modo-no-reconocido-sin-efectos",
+      "type": "fail-fast",
+      "description": "STORY-126 AC-3 / V-4: --mode rapido es un valor no reconocido. El skill informa los valores válidos de --mode, termina sin leer la épica ni escribir ningún archivo y emite RESULTADO: FALLO con MOTIVO.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode rapido",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "stories": [],
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "contains": [
+          "❌ Valor no reconocido para --mode: rapido. Valores válidos: auto, manual",
+          "RESULTADO: FALLO",
+          "VEREDICTO: —",
+          "MODO: —",
+          "REPORTE: —",
+          "MOTIVO: ❌ Valor no reconocido para --mode: rapido. Valores válidos: auto, manual"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "Reporte escrito",
+          "verdict:",
+          "Previsualización"
+        ],
+        "files_written": []
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-018",
+      "name": "repeticion-conserva-created-y-orden",
+      "type": "regression",
+      "description": "STORY-126 AC-4 / CNF-1 / V-5: existe un epic-validate-report.md previo (created: 2026-10-01) con dos motivos y la épica no cambió. STORY-402 sigue en IMPLEMENT/IN-PROGRESS y el análisis sigue en NEEDS-REFINEMENT. El nuevo reporte conserva created, presenta los mismos dos motivos en el mismo orden (M-001 EST-01, M-002 EST-02) sin duplicarlos y no escribe ningún otro archivo.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode manual",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: - [ ] **STORY-402** — Archivar informe.",
+          "10: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "11: ### SMOKE-1 — Publicar informe",
+          "12: ```gherkin",
+          "13: Escenario: Publicar informe",
+          "14:   Cuando se ejecuta el flujo",
+          "15:   Entonces el informe queda publicado",
+          "16: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          },
+          {
+            "path": "specs/flow/STORY-402-archivar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "IMPLEMENT",
+            "substatus": "IN-PROGRESS",
+            "body": [
+              "## Notas",
+              "- Archiva el informe publicado."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "NEEDS-REFINEMENT",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": "no existe",
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/acceptance-report.md",
+            "verdict": "APPROVED"
+          }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "previous_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+          "created": "2026-10-01",
+          "updated": "2026-10-29",
+          "verdict": "NEEDS-CHANGES",
+          "motivos": [
+            "M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
+            "M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md"
+          ]
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "created: 2026-10-01",
+          "updated: 2026-10-30",
+          "verdict: NEEDS-CHANGES",
+          "M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
+          "M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md",
+          "RESULTADO: FALLO",
+          "VEREDICTO: NEEDS-CHANGES"
+        ],
+        "not_contains": [
+          "M-003",
+          "created: 2026-10-30",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic.md",
+          "=== FILE: specs/flow/STORY-40",
+          "=== FILE: .tmp/",
+          ".bak ===",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ],
+        "files_written": [
+          "specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-019",
+      "name": "dry-run-antes-de-mode-manual",
+      "type": "happy-path",
+      "description": "STORY-126 AC-2 / CS-10 / V-6 (orden 1): --dry-run --mode manual sobre el fixture de TC-008. No se pide ninguna confirmación de smoke tests, no se ejecuta ningún comando ni se escribe ningún archivo; el resultado es idéntico a TC-020.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --dry-run --mode manual",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": "no existe",
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "contains": [
+          "── Previsualización (--dry-run): no se escribió specs/flow/EPIC-40-operativa/epic-validate-report.md ──",
+          "## Veredicto",
+          "no ejecutada",
+          "── Fin de la previsualización ──",
+          "RESULTADO: SIMULACIÓN",
+          "MODO: manual",
+          "REPORTE: —"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "¿Se cumple",
+          "RESULTADO: ÉXITO",
+          "Reporte escrito",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ],
+        "files_written": []
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-020",
+      "name": "mode-manual-antes-de-dry-run",
+      "type": "happy-path",
+      "description": "STORY-126 AC-2 / CS-10 / V-6 (orden 2): --mode manual --dry-run sobre el mismo fixture que TC-019. Los tokens se aceptan en cualquier orden y el resultado es el mismo que TC-019.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode manual --dry-run",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: ---",
+          "6: # Épica: Operativa",
+          "7: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "8: - [x] **STORY-401** — Publicar informe.",
+          "9: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "10: ### SMOKE-1 — Publicar informe",
+          "11: ```gherkin",
+          "12: Escenario: Publicar informe",
+          "13:   Cuando se ejecuta el flujo",
+          "14:   Entonces el informe queda publicado",
+          "15: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": "no existe",
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "contains": [
+          "── Previsualización (--dry-run): no se escribió specs/flow/EPIC-40-operativa/epic-validate-report.md ──",
+          "## Veredicto",
+          "no ejecutada",
+          "── Fin de la previsualización ──",
+          "RESULTADO: SIMULACIÓN",
+          "MODO: manual",
+          "REPORTE: —"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "¿Se cumple",
+          "RESULTADO: ÉXITO",
+          "Reporte escrito",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}"
+        ],
+        "files_written": []
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-021",
+      "name": "mode-sin-valor",
+      "type": "fail-fast",
+      "description": "STORY-126 AC-3 / V-7: --mode sin valor. El skill informa que falta el valor y los valores válidos, termina sin leer ni escribir y emite RESULTADO: FALLO con MOTIVO.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "stories": [],
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "contains": [
+          "❌ Falta el valor de --mode. Valores válidos: auto, manual",
+          "RESULTADO: FALLO",
+          "VEREDICTO: —",
+          "MODO: —",
+          "REPORTE: —",
+          "MOTIVO: ❌ Falta el valor de --mode. Valores válidos: auto, manual"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "Reporte escrito",
+          "verdict:",
+          "Previsualización"
+        ],
+        "files_written": []
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-022",
+      "name": "mode-repetido",
+      "type": "fail-fast",
+      "description": "STORY-126 AC-3 / V-7: --mode auto --mode manual. El último --mode no gana: el skill rechaza la invocación ambigua, termina sin leer ni escribir y emite RESULTADO: FALLO con MOTIVO.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto --mode manual",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "stories": [],
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "contains": [
+          "❌ --mode se indicó más de una vez. Valores válidos: auto, manual",
+          "RESULTADO: FALLO",
+          "VEREDICTO: —",
+          "MODO: —",
+          "REPORTE: —",
+          "MOTIVO: ❌ --mode se indicó más de una vez. Valores válidos: auto, manual"
+        ],
+        "not_contains": [
+          "=== FILE:",
+          "Reporte escrito",
+          "verdict:",
+          "Previsualización"
+        ],
+        "files_written": []
       },
       "threshold": 0.95
     }

@@ -234,6 +234,15 @@ Son los únicos que pueden cambiar entre dos ejecuciones equivalentes («datos d
 
 Ninguna: las decisiones abiertas se resuelven en D-1…D-10; las que afectan a otros documentos se registran como CR.
 
+## Notas de implementación (2026-10-30)
+
+Detalles que el diseño no fijaba y que se resolvieron al implementar, sin cambiar ninguna decisión D-1…D-10:
+
+- **Valores de `MODO_ORIGEN`:** se conservan `--mode` y `por defecto` (STORY-124/125) en lugar de `flag` y `regla por defecto` de C2, porque el template seed, que esta historia no cambia (D-4), ya imprime `Modo: … ({--mode / por defecto})`.
+- **Textos de la previsualización en el reporte:** con `--dry-run`, `resumen` muestra `<total> no ejecutados (modo <MODO>)` en Smoke tests; `dod-epica`, la línea `` No ejecutado — `--dry-run`: … ``; el motivo de `APPROVED` pasa a `historias cerradas y análisis de la épica APPROVED; evidencia operativa no ejecutada (--dry-run)`; y la nota de C8 es `` ℹ️ `--dry-run`: comprobaciones no ejecutadas: <IDs> ``.
+- **Alcance de la guardia C4:** `OPE-02` y `OPE-03` quedan `no ejecutada` también cuando sin `--dry-run` quedarían `omitida`, como fija la tabla «Resultado `no ejecutada`»: la guardia sustituye el paso completo.
+- **Evals:** V-1…V-7 son TC-014…TC-022 (V-6 son TC-019/TC-020 y V-7, TC-021/TC-022).
+
 ## Registro de Cambios (CR)
 
 ### CR-001
