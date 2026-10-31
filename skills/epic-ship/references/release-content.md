@@ -74,11 +74,12 @@ Formato exacto (líneas en blanco incluidas):
 
    | Encontrados | Acción |
    |---|---|
-   | `start` y `end`, en ese orden | Reemplazar solo las líneas entre ambos (delimitadores incluidos) por el bloque nuevo |
+   | `start` y `end`, en ese orden y dentro de `## [Unreleased]` | Reemplazar solo las líneas entre ambos (delimitadores incluidos) por el bloque nuevo |
+   | Ambos delimitadores dentro de una versión publicada o fuera de `## [Unreleased]` | No escribir: `❌ CHANGELOG.md contiene el bloque de <EPIC_ID> fuera de [Unreleased]: una versión publicada no se reescribe` |
    | Ninguno | Insertar el bloque dentro de `## [Unreleased]`: tras su última línea no vacía y antes del siguiente `## [`, separado por una línea en blanco |
    | Solo uno, o `end` antes de `start` | No escribir: error de bloque incompleto (Paso 4 de `SKILL.md`) |
 
-3. Si no existe `## [Unreleased]`, crearlo antes del primer `## [` (o al final si no hay ninguno) e insertar ahí el bloque.
+3. Para localizar un bloque existente, identificar la sección `## [` anterior a cada delimitador y la siguiente. Solo se reemplaza si ambos están entre el mismo `## [Unreleased]` y el próximo encabezado `## [`; si falta `## [Unreleased]` o alguno cae en otra sección, detenerse sin escribir. Si no hay delimitadores y no existe `## [Unreleased]`, crearlo antes del primer `## [` (o al final si no hay ninguno) e insertar ahí el bloque.
 4. Nada fuera del bloque se modifica: ni otras épicas, ni versiones publicadas, ni la cabecera. Nunca existe un segundo bloque de la misma épica.
 
 ## 5. Versión sugerida

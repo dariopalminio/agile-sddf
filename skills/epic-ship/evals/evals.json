@@ -1,13 +1,19 @@
 {
   "skill": "epic-ship",
   "version": "1.0.0",
-  "description": "Casos de prueba para epic-ship (STORY-170): con epic-validate-report.md en verdict: APPROVED escribe el bloque delimitado e idempotente de la épica bajo ## [Unreleased] de CHANGELOG.md (una viñeta por historia DELIVER/DONE o COMPLETED/DONE, activa o archivada, con categoría por kind) y <EPIC_DIR>/release-notes.md desde su template; muestra los pasos de liberación manuales sin ejecutar ninguno y escribe SHIP/DONE en epic.md solo tras la confirmación s/si/sí. Sin confirmación, los documentos quedan escritos y el status no cambia; sin reporte o con otro verdict rechaza sin escribir nada. En ningún caso ejecuta git commit, tag, merge, push, npm publish ni despliegues (SMOKE-7 = TC-001).",
+  "description": "Casos de prueba para epic-ship (STORY-170): solo VALIDATE/DONE con verdict: APPROVED puede preparar SHIP. Escribe el bloque de la épica bajo [Unreleased] y release-notes.md; con confirmación humana registra SHIP/DONE. Rechaza un reporte aislado o un bloque ya publicado. SMOKE-7 = TC-001 e incluye comprobaciones observables de operaciones prohibidas pendientes de ejecución humana.",
   "cases": [
     {
       "id": "TC-001",
       "name": "approved-confirmado-ship-done",
       "type": "happy-path",
-      "description": "AC-1, AC-4, SMOKE-7: EPIC-30-ejemplo con epic-validate-report.md verdict: APPROVED. STORY-201 (feat, DELIVER/DONE), STORY-202 (fix, DELIVER/DONE), STORY-203 archivada (chore, COMPLETED/DONE) y STORY-204 (CANCELED/DONE) declaran parent EPIC-30-ejemplo; STORY-305 declara EPIC-300-otra y no pertenece. El usuario responde s. CHANGELOG.md recibe el bloque de EPIC-30 con STORY-201 (Added), STORY-203 (Changed) y STORY-202 (Fixed); STORY-204 solo aparece en ## No incluidas de release-notes.md; se muestran los cinco pasos y epic.md pasa a SHIP/DONE.",
+      "description": "AC-1, AC-4, SMOKE-7: EPIC-30-ejemplo en VALIDATE/DONE con verdict: APPROVED. STORY-201 (feat, DELIVER/DONE), STORY-202 (fix, DELIVER/DONE), STORY-203 archivada (chore, COMPLETED/DONE) y STORY-204 (CANCELED/DONE) declaran parent EPIC-30-ejemplo; STORY-305 declara EPIC-300-otra y no pertenece. El usuario responde s. CHANGELOG.md recibe el bloque de EPIC-30 con STORY-201 (Added), STORY-203 (Changed) y STORY-202 (Fixed); STORY-204 solo aparece en ## No incluidas de release-notes.md; se muestran los cinco pasos y epic.md pasa a SHIP/DONE. En el recorrido manual, capturar antes y después las referencias git, el árbol de archivos y el registro de publicación/despliegue según manual_checks: la ausencia de cadenas en la salida no basta.",
+      "manual_checks": [
+        "Antes y después de invocar el skill, comparar los hashes de git log -1 HEAD y git tag --list en el repositorio fixture; deben ser idénticos.",
+        "Antes y después, comparar las referencias locales git show-ref y el árbol de trabajo; solo pueden cambiar CHANGELOG.md, release-notes.md y epic.md. No debe haber merge, push ni publicación remota según el registro de comandos/actividad del entorno fixture.",
+        "Revisar el registro del proveedor de release/despliegue o usar un fixture sin credenciales de publicación: no se debe crear release, paquete publicado ni despliegue.",
+        "Comprobar los primeros tres bytes de CHANGELOG.md, release-notes.md y epic.md: ninguno debe ser EF BB BF. Registrar fecha, fixture, evidencia y resultado en implement-report.md cuando un humano ejecute SMOKE-7."
+      ],
       "input": {
         "invocation": "/epic-ship EPIC-30",
         "user_answer": "s",
@@ -223,6 +229,72 @@
         ]
       },
       "threshold": 0.95
+    },
+    {
+      "id": "TC-006",
+      "name": "bloque-en-version-publicada-se-rechaza",
+      "type": "edge-case",
+      "description": "CNF-2, hallazgo 1: con VALIDATE/DONE y verdict: APPROVED, CHANGELOG.md ya tiene el bloque EPIC-30 bajo ## [1.4.0]. La reejecución rechaza la edición antes de cualquier escritura, aunque una historia nueva esté DELIVER/DONE; no modifica CHANGELOG.md ni release-notes.md ni pregunta por la liberación.",
+      "input": {
+        "invocation": "/epic-ship EPIC-30",
+        "today": "2026-10-30",
+        "same_world_as": "TC-001",
+        "changelog_lines": [
+          "# Changelog",
+          "",
+          "## [Unreleased]",
+          "",
+          "## [1.4.0] — 2026-09-01",
+          "<!-- epic-ship:EPIC-30:start -->",
+          "### EPIC-30 — Gestión de clientes",
+          "- **Added** — Listar clientes (STORY-201)",
+          "<!-- epic-ship:EPIC-30:end -->"
+        ]
+      },
+      "expected": {
+        "output_file": null,
+        "contains": ["fuera de [Unreleased]", "una versión publicada no se reescribe"],
+        "not_contains": ["liberada: SHIP/DONE", "¿Completaste los pasos de liberación"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-007",
+      "name": "titulo-adversarial-yaml-seguro",
+      "type": "edge-case",
+      "description": "Hallazgo 6: el título de epic.md contiene comillas, barra inversa y un salto de línea seguido de status: CANCELED. El frontmatter de release-notes.md mantiene un único escalar title, con las secuencias escapadas; no aparece una clave status adicional. El encabezado Markdown normaliza el salto de línea a espacio.",
+      "input": {
+        "invocation": "/epic-ship EPIC-30",
+        "user_answer": "n",
+        "today": "2026-10-30",
+        "same_world_as": "TC-001",
+        "epic_title": "Clientes \"VIP\" \\ cartera\nstatus: CANCELED"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-30-ejemplo/release-notes.md",
+        "contains": ["title: \"Notas de versión: Clientes", "\\nstatus: CANCELED\"", "# Notas de versión: Clientes \"VIP\" \\ cartera status: CANCELED"],
+        "not_contains": ["\nstatus: CANCELED\n"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-008",
+      "name": "reporte-aprobado-estado-no-validado",
+      "type": "fail-fast",
+      "description": "Hallazgo 4: epic-validate-report.md dice APPROVED pero epic.md permanece en DEVELOP/IN-PROGRESS. El gateway exige VALIDATE/DONE; no se escribe ningún documento ni se pregunta la liberación.",
+      "input": {
+        "invocation": "/epic-ship EPIC-30",
+        "today": "2026-10-30",
+        "same_world_as": "TC-001",
+        "epic_status": "DEVELOP",
+        "epic_substatus": "IN-PROGRESS"
+      },
+      "expected": {
+        "output_file": null,
+        "contains": ["se requiere VALIDATE/DONE", "/epic-validate EPIC-30"],
+        "not_contains": ["<!-- epic-ship:EPIC-30:start -->", "¿Completaste los pasos de liberación"]
+      },
+      "threshold": 1.0
     }
   ]
 }

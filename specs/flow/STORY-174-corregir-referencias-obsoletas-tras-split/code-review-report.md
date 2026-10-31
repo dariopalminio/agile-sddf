@@ -2,9 +2,9 @@
 type: code-review-report
 story: STORY-174
 title: "Code Review Report: Skill epic-refine: corregir referencias obsoletas tras un split"
-verdict: NEEDS-CHANGES
-date: 2026-10-30
-max-severity: MEDIUM
+verdict: APPROVED
+date: 2026-10-31
+max-severity: LOW
 reviewers:
   - tech-lead-reviewer
   - product-owner-reviewer
@@ -16,19 +16,19 @@ reviewers:
 
 ## Veredicto
 
-**Veredicto:** `NEEDS-CHANGES` — 3 hallazgo(s) bloqueante(s) (severidad máxima: MEDIUM).
+**Veredicto:** `APPROVED` — Sin hallazgos bloqueantes (severidad máxima: LOW).
 
-El eval del happy path de AC-1 (TC-014) no verifica los archivos que se escriben: todas sus aserciones ya aparecen en la consola (plan, `Recibirán .bak:`, `Archivos modificados:`), así que el caso pasaría aunque no se escriba ningún archivo ni `.bak`. Los otros dos bloqueantes son criterios DoD que dependen de ese mismo hallazgo. Los cuatro revisores entregaron un informe válido. La especificación de la familia COH es correcta y coherente con el diseño, y los 13 hallazgos restantes son LOW.
+Re-revisión (ronda 2) tras `fix-directives.md` ronda 1: los cuatro revisores emiten informe válido con `status: approved` y confirman resuelto el MEDIUM de TC-014 (`evals.json:225`), que ahora exige los bloques FILE de `epic.md` y del `story.md` de STORY-302 con sus `.bak`, mientras TC-015/TC-016 excluyen esas escrituras. Los 17 hallazgos restantes son LOW (varios arrastrados de la ronda 1, fuera de su lista blanca) y no bloquean.
 
 ## Resumen
 
 | Campo | Valor |
 |-------|-------|
 | Historia | STORY-174 — Skill epic-refine: corregir referencias obsoletas tras un split |
-| Severidad máxima detectada | MEDIUM |
+| Severidad máxima detectada | LOW |
 | Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer, Security-Reviewer |
 | testcases.md | ⏭️ no encontrado — ejecuta /story-testcases para generar la especificación canónica |
-| Fecha | 2026-10-30 |
+| Fecha | 2026-10-31 |
 
 ---
 
@@ -38,26 +38,26 @@ El eval del happy path de AC-1 (TC-014) no verifica los archivos que se escriben
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| MEDIUM | skills/epic-refine/evals/evals.json:225 | El oráculo de TC-014 (happy path de AC-1) no verifica los efectos que se persisten. Todos sus `contains` (`` `STORY-301-exportar-informe` → `STORY-301-exportar-informe-csv` ``, `[[STORY-301-exportar-informe-csv]]`, `EPIC-30-ejemplo/epic.md.bak`, `STORY-302-programar-envio-informe/story.md.bak`) ya salen en la consola: en la columna **Después** del plan del Paso 5, en `Recibirán .bak:` y en `Archivos modificados:` del Paso 9. El caso pasaría aunque no se escriba `epic.md`, el `story.md` de STORY-302 ni ningún `.bak`, y no comprueba en el archivo el Entonces de AC-1 «el `related` de STORY-302 cita `STORY-301-exportar-informe-csv`». No sigue la convención que este skill ya usa para los efectos persistidos: marcadores `<ruta> ===` de los bloques FILE en TC-001 y en el caso COH de pertenencia (línea 355). | Añadir al `context` la frase «Los bloques FILE usan la ruta relativa a specs/flow/ del fixture… e incluyen cada <archivo>.bak creado». En `contains`, usar `EPIC-30-ejemplo/epic.md.bak ===`, `EPIC-30-ejemplo/epic.md ===`, `STORY-302-programar-envio-informe/story.md.bak ===`, `STORY-302-programar-envio-informe/story.md ===` y la entrada ya reemplazada (`  - STORY-301-exportar-informe-csv`). Por coherencia, en TC-015/TC-016 (líneas 242 y 258) añadir a `not_contains` `STORY-302-programar-envio-informe/story.md ===` y `EPIC-30-ejemplo/epic.md ===`, para verificar que esos archivos no se escriben. |
-| LOW | skills/epic-refine/evals/evals.json:290 | En TC-018, `not_contains: "COH"` (y `"MAD-02"` en TC-014, línea 226) es frágil: una salida correcta que explique «no se ejecuta la detección COH» o «no reportado como MAD-02» falla el caso aunque el comportamiento sea el esperado. | Acotar a marcadores del comportamiento: `COH-1` en lugar de `COH` en TC-018; en TC-014, `H-003` o `· MAD-02` en lugar de `MAD-02`. |
-| LOW | skills/epic-refine/SKILL.md:174 | El bloque del plan del Paso 5 sigue mostrando solo `H-NNN · <código>` en las listas «Ya resueltos» y «Fuera de alcance» (líneas 175 y 177). La viñeta de la línea 183 amplía **Origen** a `COH-<n>` solo para la columna de la tabla, así que no queda especificado cómo aparece un COH en esas listas (p. ej. el COH-1 fuera de alcance de AC-2 en `--auto`). | Generalizar las plantillas de las listas a `- <Origen>: <motivo>` / `- <Origen> · responsable PO: <nota>`, con Origen = `H-NNN · <código>` o `COH-<n>`. |
-| LOW | skills/epic-refine/references/coh-corrections.md:33 | La regla de existencia (línea 33) basta con que exista el directorio `specs/flow/S/`, pero la regla de reemplazo (línea 58) exige directorios que contengan `story.md`, igual que los globs de `epic-analyze` Paso 4.4. Un directorio con el slug citado y sin `story.md` deja la referencia fuera de COH y tampoco la resuelve como historia. | Alinear la existencia con los mismos globs: `specs/flow/S/story.md` o `specs/flow/archive/<YYYY-MM-DD>-S/story.md`. |
-| LOW | skills/epic-refine/SKILL.md:6 | La frase `La forma de epic.md es /epic-improve.` sustituyó a `No usar para la forma de epic.md: eso es /epic-improve.` para ajustar la `description` a 490 caracteres. Pierde la forma explícita de disparador negativo y se lee como una afirmación suelta. | Recuperar el negativo de forma compacta (p. ej. `No para la forma de epic.md (/epic-improve).`), manteniendo ≤ 500 caracteres. |
-| LOW | skills/epic-refine/examples/split-ambiguo/archive/2026-10-01-STORY-301-exportar-informe-pdf/story.md:12 | El fixture archivado no es realista. El prefijo `2026-10-01-` no coincide con `updated: 2026-10-24`, y AGENTS.md fija que la fecha de archivo sale de `updated:`. Además, la línea 21 dice «Quiero exportar el informe mensual a CSV» en la historia de PDF (copia de STORY-301). No afecta a TC-016. | Renombrar el directorio a `2026-10-24-STORY-301-exportar-informe-pdf/` (y actualizar la descripción de TC-016) o ajustar `updated:`, y corregir la oración Quiero a PDF. |
+| LOW | skills/epic-refine/evals/evals.json:238 | El `context` de TC-015 (y el de TC-016, línea 254) no fija la convención de los bloques FILE («Los bloques FILE usan la ruta relativa a specs/flow/ del fixture… e incluyen cada <archivo>.bak creado»), que sí aparece en TC-001, TC-013 y TC-014. Los nuevos `not_contains` de marcadores `<ruta> ===` dependen de esa convención: si se escribiera el archivo con otra ruta (p. ej. con separador `\`), el negativo pasaría vacío. | Añadir la misma frase de convención al `context` de TC-015 y TC-016. |
+| LOW | skills/epic-refine/evals/evals.json:225 | `  - STORY-301-exportar-informe-csv` y `[[STORY-301-exportar-informe-csv]]` se comprueban como subcadenas sueltas y no quedan ligadas a su bloque FILE. Hoy el fixture las vuelve discriminantes, pero `epic-refine-report.md` podría llegar a contenerlas. | Opcional: anclar con un fragmento de varias líneas, como hace TC-001 (p. ej. `related:\n  - EPIC-30-ejemplo\n  - STORY-301-exportar-informe-csv` o `— [[STORY-301-exportar-informe-csv]]`). |
+| LOW | skills/epic-refine/SKILL.md:174 | (Pendiente de la ronda 1.) Las plantillas de las listas «Ya resueltos» y «Fuera de alcance» (líneas 175 y 177) solo muestran `H-NNN · <código>`. La viñeta de la línea 183 amplía **Origen** a `COH-<n>` solo para la tabla. | Generalizar a `- <Origen>: <motivo>` / `- <Origen> · responsable PO: <nota>`. |
+| LOW | skills/epic-refine/references/coh-corrections.md:33 | (Pendiente de la ronda 1.) Para la existencia basta `specs/flow/S/`, pero la regla de reemplazo (línea 58) exige directorios que contengan `story.md`. | Alinear la existencia con `specs/flow/S/story.md` o `specs/flow/archive/<YYYY-MM-DD>-S/story.md`. |
+| LOW | skills/epic-refine/SKILL.md:6 | (Pendiente de la ronda 1.) `La forma de epic.md es /epic-improve.` perdió la forma de disparador negativo. | Usar p. ej. `No para la forma de epic.md (/epic-improve).`, sin pasar de 500 caracteres. |
+| LOW | skills/epic-refine/examples/split-ambiguo/archive/2026-10-01-STORY-301-exportar-informe-pdf/story.md:12 | (Pendiente de la ronda 1.) El prefijo `2026-10-01-` no coincide con `updated: 2026-10-24` (ADR-0019), y la línea 21 dice «exportar el informe mensual a CSV» en la historia de PDF. No afecta a TC-016. | Alinear la fecha del directorio con `updated:` y corregir la oración Quiero a PDF. |
 
 ---
 
 ### Cobertura de Requisitos (Product-Owner-Reviewer)
 
-AC-1, AC-2, CNF-1, CNF-2, CNF-3 y la nota de disparo con `verdict: APPROVED` tienen correspondencia concreta en `SKILL.md`, `references/coh-corrections.md`, los fixtures `split-*` y los evals TC-014…TC-018 (6/6 verificados). Los evals no se ejecutaron (`npm run test:eval -- epic-refine` queda a criterio humano).
+Escenarios verificados: 6/6 (AC-1, AC-2, CNF-1, CNF-2, CNF-3 y la nota de disparo con `verdict: APPROVED`).
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| LOW | skills/epic-refine/evals/evals.json:225 | AC-1 «Y el `related` de STORY-302 cita `STORY-301-exportar-informe-csv`»: ninguna aserción comprueba el contenido escrito de ese `related`. La cadena `STORY-301-exportar-informe-csv` ya aparece en el `related` de STORY-306 y en la flecha del reporte o del plan. La comprobación vale para el índice (`[[STORY-301-exportar-informe-csv]]`), no para STORY-302. TC-014 no usa el modo `sandbox` de `run-evals`, que sí califica el árbol en disco (como TC-023). | Añadir un caso sandbox sobre `split-slug-obsoleto/` con `expected.files.contains` de `specs/flow/STORY-302-programar-envio-informe/story.md`, o en TC-014 añadir a contains el fragmento `  - STORY-301-exportar-informe-csv` del bloque FILE de STORY-302 |
-| LOW | skills/epic-refine/evals/evals.json:241 | En TC-015 (y TC-016, línea 257), la aserción `PO` es trivial: la línea fija `REPORTE:` del bloque de retorno ya contiene la subcadena «PO». «Responsable PO» y «el reporte lista COH-1» tampoco distinguen entre el plan y el `epic-refine-report.md` escrito. | Usar una cadena discriminante, como la fila del reporte `` | COH-1 | COH | — | `` o `fuera de alcance \| PO`, o un caso sandbox con `expected.files.contains` sobre `epic-refine-report.md` |
-| LOW | skills/epic-refine/evals/evals.json:290 | TC-018: la nota de la historia exige que con `APPROVED` no se cree ni modifique ningún archivo. Las aserciones solo excluyen textos de consola y no excluyen que aparezcan bloques `=== FILE:`. | Añadir `=== FILE:` a not_contains, o convertir el caso a sandbox con `files.written: []`, como TC-024 sobre `aprobada/` |
-| LOW | skills/epic-refine/examples/split-sin-reemplazo/STORY-302-programar-envio-informe/story.md:12 | El fixture de AC-2 justifica la ausencia de MAD-02 para `STORY-310-importar-datos` con «reporte anterior a la referencia» (CR-001), pero el `updated: 2026-10-24` de STORY-302 es anterior al `updated: 2026-10-28` del reporte. Así el aviso de reporte desactualizado (`SKILL.md:122`) no se dispara. | Subir el `updated:` de STORY-302 a una fecha posterior a la del reporte (p. ej. `2026-10-29`); TC-015 puede comprobar además el aviso `puede estar desactualizado` |
-| LOW | skills/epic-refine/examples/split-ambiguo/archive/2026-10-01-STORY-301-exportar-informe-pdf/story.md:12 | El prefijo de fecha del directorio archivado (`2026-10-01`) no coincide con su `updated: 2026-10-24`, contra la regla de archivo de ADR-0019. No afecta al resultado de TC-016. | Renombrar el directorio a `2026-10-24-STORY-301-exportar-informe-pdf/` o ajustar `updated:`, y actualizar la descripción de TC-016 |
+| LOW | skills/epic-refine/evals/evals.json:225 | AC-1 «el índice de `epic.md` y el `related` de STORY-302 citan `STORY-301-exportar-informe-csv`»: TC-014 ya verifica que se escriben los dos archivos y sus `.bak`, pero las dos aserciones de contenido (`[[STORY-301-exportar-informe-csv]]` y `  - STORY-301-exportar-informe-csv`) también aparecen en la columna **Después** del plan del Paso 5. Según `coh-corrections.md:76-77`, **Después** es la línea completa del índice o la entrada `related` sustituida. Por eso las aserciones no prueban que el contenido esté *dentro* del bloque FILE. | Anclar el contenido con fragmentos multilínea que solo existen en el archivo escrito, como hace TC-001: `"  - EPIC-30-ejemplo\n  - STORY-301-exportar-informe-csv\n---"` y `"para compartirlo con finanzas — [[STORY-301-exportar-informe-csv]]\n- [ ] **STORY-302**"`. Alternativa: un caso sandbox sobre `split-slug-obsoleto/` con `expected.files.contains`, como TC-023. |
+| LOW | skills/epic-refine/evals/evals.json:225 | AC-1 «Y `epic-refine-report.md` lista COH-1 y COH-2 como aplicados»: TC-014 no exige el bloque `EPIC-30-ejemplo/epic-refine-report.md ===` ni sus conteos, a diferencia de TC-001. `COH-1`, `COH-2` y `aplicado` ya salen en el plan y en la consola. | Añadir a `contains` `EPIC-30-ejemplo/epic-refine-report.md ===` y `findings-applied: 2` (COH-1 y COH-2; INT-01 e INT-05 quedan fuera de alcance → `findings-out-of-scope: 2`). |
+| LOW | skills/epic-refine/evals/evals.json:238 | En TC-015 (y TC-016, línea 254) el `context` no fija la ruta de los bloques FILE. Por eso los nuevos `not_contains` `STORY-302-programar-envio-informe/story.md ===` y `EPIC-30-ejemplo/epic.md ===` dependen de un formato de ruta que no se especifica, aunque `story.md.bak`/`epic.md.bak` sí cubren los backups. Además, `responsable PO` también casa con las líneas de INT-01/INT-05: la que distingue el COH es la nota `reemplazo no determinable`. | Añadir al `context` de TC-015 y TC-016 la frase de TC-014: «Los bloques FILE usan la ruta relativa a specs/flow/ del fixture … e incluyen cada <archivo>.bak creado». |
+| LOW | skills/epic-refine/examples/split-sin-reemplazo/STORY-302-programar-envio-informe/story.md:12 | (Arrastrado de la ronda 1, fuera de la lista blanca.) El `updated: 2026-10-24` de STORY-302 es anterior al `updated: 2026-10-28` del reporte. Eso contradice la justificación «reporte anterior a la referencia» (CR-001, descripción de TC-015) y no dispara el aviso de reporte desactualizado (`SKILL.md:122`). | Subir `updated:` a una fecha posterior al reporte (p. ej. `2026-10-29`) y, opcionalmente, comprobar `puede estar desactualizado` en TC-015. |
+| LOW | skills/epic-refine/examples/split-ambiguo/archive/2026-10-01-STORY-301-exportar-informe-pdf/story.md:12 | (Arrastrado de la ronda 1.) El prefijo `2026-10-01` no coincide con `updated: 2026-10-24` (regla de archivo de ADR-0019), y la línea 21 dice «exportar el informe mensual a CSV» en la historia de PDF. No afecta al resultado de TC-016. | Renombrar a `2026-10-24-STORY-301-exportar-informe-pdf/` (y actualizar la descripción de TC-016) y corregir la oración Quiero a PDF. |
 
 ---
 
@@ -65,18 +65,21 @@ AC-1, AC-2, CNF-1, CNF-2, CNF-3 y la nota de disparo con `verdict: APPROVED` tie
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| LOW | specs/flow/STORY-174-corregir-referencias-obsoletas-tras-split/design.md:138 | La tabla «Fuera de alcance (`PO`)» de D-5 solo lista «0 o ≥ 2 directorios» y «`related` no reconocido». La implementación añade la regla de **Pertenencia** (historia listada que declara otra épica o no tiene `parent` → fuera de alcance · PO: `coh-corrections.md:18-20`, `:104-105`; fila COH de `SKILL.md:147`). Llegó con la corrección del code review de STORY-165 (commit `fa0f2bf`), pero el design.md de STORY-174 no la recoge ni en D-5 ni en un CR. | Añadir un CR-006 a design.md que documente la regla de pertenencia y los dos casos nuevos de fuera de alcance de COH. No cambia el código. |
-| LOW | skills/epic-refine/SKILL.md:11-14 | La sección «Cuándo usar este skill» enumera INT, MAD y SAL, pero no el caso COH. El disparador sí está en `description` (línea 5) y en `README.md:37-38`. | Añadir una viñeta COH a «Cuándo usar este skill», igual a la de `README.md:37`. |
+| LOW | specs/flow/STORY-174-corregir-referencias-obsoletas-tras-split/design.md:138 | (Pendiente de la ronda 1, fuera de la lista blanca.) La tabla «Fuera de alcance (`PO`)» de D-5 solo lista «0 o ≥ 2 directorios» y «`related` no reconocido». La implementación añade la regla de **Pertenencia** (historia listada de otra épica o sin `parent` → fuera de alcance · PO: `coh-corrections.md:18-20`, `:104-105`; `SKILL.md:147`; TC-022), y ningún CR del design.md la documenta. | Añadir un CR-006 a design.md con la regla de pertenencia y sus dos casos de fuera de alcance. No cambia el código. |
+| LOW | skills/epic-refine/SKILL.md:11 | (Pendiente de la ronda 1.) «Cuándo usar este skill» enumera INT, MAD y SAL, pero no el caso COH. El disparador sí está en `description` (`SKILL.md:4-5`) y en `README.md:37-38`. | Añadir una viñeta COH, alineada con `README.md:37`. |
+| LOW | skills/epic-refine/examples/split-ambiguo/archive/2026-10-01-STORY-301-exportar-informe-pdf/story.md:12 | (Pendiente de la ronda 1.) El prefijo de archivo `2026-10-01-` no coincide con `updated: 2026-10-24`. ADR-0019 / AGENTS.md toman la fecha de archivo de `updated:`. La oración Quiero (línea 21) dice «CSV» en la historia de PDF. No afecta a la regla de reemplazo ni a TC-016. | Renombrar el directorio a `2026-10-24-STORY-301-exportar-informe-pdf/` (y la descripción de TC-016) o ajustar `updated:`; corregir la oración Quiero. |
+| LOW | skills/epic-refine/evals/evals.json:225 | V-1 (AC-1 «el `related` de STORY-302 cita `STORY-301-exportar-informe-csv`»). El `contains` `  - STORY-301-exportar-informe-csv` también se cumple con la columna **Después** del plan del Paso 5 (`` `  - STORY-301-exportar-informe-csv` ``), así que no queda atado al bloque FILE de STORY-302. Los marcadores `… story.md ===` sí prueban que el archivo se escribe. | Anclar el contenido al archivo con una cadena multilínea, como hace TC-001: `"related:\n  - EPIC-30-ejemplo\n  - STORY-301-exportar-informe-csv\n---"`. |
+| LOW | skills/epic-refine/evals/evals.json:241 | V-2. En TC-015 (y TC-016, línea 257), `responsable PO` y `fuera de alcance` se cumplen siempre con las líneas de H-001 INT-01 y H-002 INT-05 del fixture, así que no prueban que COH-1 vaya al PO. La discriminación real la aportan `reemplazo no determinable` y `varios directorios con el ID STORY-301`. La raíz está en que la plantilla de las listas del Paso 5 (`SKILL.md:175-177`) solo define `H-NNN · <código>`. | Usar una cadena propia de COH, como la fila del reporte `` | COH-1 | COH | — | `` o `fuera de alcance \| PO`, tras generalizar las listas del Paso 5 a `<Origen>`. |
 
 ---
 
 ### Seguridad (Security-Reviewer)
 
-**Fuentes de checklist:** docs/guardrails/gr-ai-security-checklist.md, docs/guardrails/gr-code-security-checklist.md, .claude/skills/security-audit/assets/security-checklist.md, .claude/skills/security-audit/assets/ai-security-checklist.md (35 reglas evaluadas)
+**Fuentes de checklist:** docs/guardrails/gr-ai-security-checklist.md, docs/guardrails/gr-code-security-checklist.md, .claude/skills/security-audit/assets/security-checklist.md, .claude/skills/security-audit/assets/ai-security-checklist.md (40 reglas evaluadas)
 
 | Severidad | Archivo:Línea | Regla | Descripción | Recomendación |
 |-----------|---------------|-------|-------------|---------------|
-| LOW | skills/epic-refine/references/coh-corrections.md:62 | gr-code (semántica: validar entradas por forma antes de usarlas) / AI-014 | El reemplazo es el nombre del directorio tal cual, sin exigir que cumpla la «Forma del slug» de la línea 24, que solo se aplica a los candidatos obsoletos. El glob `specs/flow/<STORY-NNN>-*/` acepta nombres con mayúsculas, espacios, `]]` o comillas invertidas, y ese valor se escribe literal dentro de `[[…]]` en `epic.md` o en `related:` del `story.md`. El impacto está acotado: hace falta poder crear directorios en `specs/flow/`, y el Paso 7 revierte si cambian `status`/`substatus`. | Exigir que el reemplazo cumpla la misma forma de slug y, si no la cumple, clasificar el COH como fuera de alcance · `PO` con la nota `directorio con nombre no conforme: reemplazo no aplicado`. |
+| LOW | skills/epic-refine/references/coh-corrections.md:62 | gr-code-security-checklist (semántica: validar por forma las entradas antes de usarlas) / SEC-051 / AI-014 | Persiste desde la ronda 1, porque `fix-directives.md` lo dejó fuera de la lista blanca. El reemplazo es el nombre del directorio tal cual: «Reemplazo = nombre del directorio». No se le exige la «Forma del slug» de la línea 24, que solo se aplica al slug obsoleto. El glob `specs/flow/<STORY-NNN>-*/` acepta nombres con mayúsculas, espacios, `]]`, comillas invertidas o saltos de línea en sistemas POSIX, y ese valor se escribe literal dentro de `[[…]]` en `epic.md` o en el `related:` del frontmatter YAML de un `story.md`. Además, la sección «Contenido no confiable» (línea 125) presenta el nombre de directorio como fuente confiable. El impacto está acotado: hace falta poder crear directorios en `specs/flow/`, y el Paso 7 revierte si cambian `status`/`substatus`. Sin embargo, la relectura no comprueba otras claves, como `parent`. | Exigir que el reemplazo cumpla la misma forma de slug de la sección 1 y empiece por el mismo `STORY-NNN-`. Si no la cumple, clasificar el COH como fuera de alcance · `PO` con la nota `directorio con nombre no conforme: reemplazo no aplicado` y añadir esa fila a la tabla de la sección 5. |
 
 ---
 
@@ -94,7 +97,7 @@ AC-1, AC-2, CNF-1, CNF-2, CNF-3 y la nota de disparo con `verdict: APPROVED` tie
 
 ## Siguiente acción
 
-Aplica `fix-directives.md` (ronda 1) con `/story-implement STORY-174` (alternativa, ya que existe `tasks.md`: `/story-implement-tasks STORY-174`) y vuelve a ejecutar `/story-code-review STORY-174`. Los hallazgos LOW son opcionales; los de `evals.json` (TC-014…TC-018) conviene resolverlos en la misma pasada que el MEDIUM.
+Ejecuta `/story-verify STORY-174`. Pendiente a criterio humano (AGENTS.md): `npm run test:eval -- epic-refine` para TC-014…TC-018. Los hallazgos LOW pueden agruparse en una historia de mantenimiento de `epic-refine`. El de mayor valor es la validación de forma del slug de reemplazo (`coh-corrections.md:62`).
 
 ---
 
@@ -102,14 +105,14 @@ Aplica `fix-directives.md` (ronda 1) con `/story-implement STORY-174` (alternati
 
 | # | Criterio | Estado | Severidad | Evidencia |
 |---|----------|--------|-----------|-----------|
-| 1 | Se cumple [[dod-story-implement]] | ⚠️ | — | `implement-report.md`: 22/24 ✓, 0 ❌; los 2 ⚠️ (Gherkin pasan, casos ejecutados) requieren `npm run test:eval -- epic-refine`, reservado a criterio humano |
-| 2 | Se cumplen los estándares del proyecto (`constitution.md`) | ✓ | — | Markdown en español, layout fijo intacto, fuente única en `skills/epic-refine/`, sin BOM (Integration y Tech-Lead) |
-| 3 | Cada escenario Gherkin tiene correspondencia en el código | ✓ | — | Product-Owner-Reviewer: AC-1 y AC-2 trazados a `SKILL.md`, `coh-corrections.md`, fixtures `split-*` y TC-014…TC-016 |
-| 4 | Los componentes respetan la arquitectura de `design.md` | ✓ | — | Integration-Reviewer: D-1…D-8 y CR-005 respetados; solo 2 LOW documentales |
-| 5 | Sin hallazgo bloqueante de severidad HIGH o MEDIUM | ❌ | MEDIUM | Tech-Lead-Reviewer: MEDIUM en `skills/epic-refine/evals/evals.json:225` (TC-014 no verifica los archivos escritos) |
-| 6 | Sin tareas pendientes en `tasks.md` (si existe el archivo) | ✓ | — | `tasks.md`: 24/24 `[x]`, ninguna `[ ]` |
-| 7 | Metadatos frontmatter de `story.md` están completos y correctos con status y substatus actualizados | ✓ | — | Frontmatter completo; status/substatus actualizados por esta revisión |
-| 8 | El reporte de revisión de código (`code-review-report.md`) está creado o actualizado | ✓ | — | Este archivo |
-| 9 | Revisión de código aprobada (`verdict: APPROVED` en `code-review-report.md`) | ❌ | MEDIUM | `verdict: NEEDS-CHANGES` por el criterio 5 |
+| 1 | Se cumple [[dod-story-implement]] | ⚠️ | — | `implement-report.md`: 22/24 ✓, 0 ❌. Los 2 ⚠️ (Gherkin pasan, evals ejecutados) requieren `npm run test:eval -- epic-refine`, reservado a criterio humano. Requiere acceso a ejecución de tests: no se puede evaluar desde los artefactos disponibles |
+| 2 | Se cumplen los estándares del proyecto (`constitution.md`) | ✓ | — | Markdown en español, layout fijo intacto (`verify-fixed-layout.js` OK), fuente única en `skills/epic-refine/`, sin BOM (Integration y Tech-Lead) |
+| 3 | Cada escenario Gherkin tiene correspondencia en el código | ✓ | — | Product-Owner-Reviewer: 6/6 escenarios verificados (AC-1 → TC-014, AC-2 → TC-015/TC-016) |
+| 4 | Los componentes respetan la arquitectura de `design.md` | ✓ | — | Integration-Reviewer: D-1…D-8 y CR-005 conformes; templates central = seed (`cmp` sin diferencias, 32/32 tests) |
+| 5 | Sin hallazgo bloqueante de severidad HIGH o MEDIUM | ✓ | — | Los cuatro informes con `max-severity: LOW`; 0 HIGH, 0 MEDIUM |
+| 6 | Sin tareas pendientes en `tasks.md` (si existe el archivo) | ✓ | — | 24/24 tareas `[x]` |
+| 7 | Metadatos frontmatter de `story.md` están completos y correctos con status y substatus actualizados | ✓ | — | `story.md` → `CODE-REVIEW/DONE`, `updated: 2026-10-31`, `parent` y `related` completos |
+| 8 | El reporte de revisión de código (`code-review-report.md`) está creado o actualizado | ✓ | — | Este reporte (2026-10-31) |
+| 9 | Revisión de código aprobada (`verdict: APPROVED` en `code-review-report.md`) | ✓ | — | `verdict: APPROVED` |
 
-**Resumen:** 6/9 criterios ✓ · 1 ⚠️ · 2 ❌
+**Resumen:** 8/9 criterios ✓ · 1 ⚠️ · 0 ❌

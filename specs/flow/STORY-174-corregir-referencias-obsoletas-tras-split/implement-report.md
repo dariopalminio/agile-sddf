@@ -5,7 +5,7 @@ slug: STORY-174-implement-report
 title: "Implement Report: Skill epic-refine: corregir referencias obsoletas tras un split"
 story: STORY-174
 created: 2026-10-29
-updated: 2026-10-30
+updated: 2026-10-31
 ---
 
 # Reporte de Implementación: Skill epic-refine: corregir referencias obsoletas tras un split
@@ -19,7 +19,7 @@ updated: 2026-10-30
 | Tareas completadas | 0 en esta ejecución |
 | Tareas bloqueadas | 0 |
 | Tareas omitidas (ya completadas antes) | 24 |
-| Fecha de implementación | 2026-10-30 |
+| Fecha de implementación | 2026-10-31 (rework ronda 1) |
 
 **Estado:** ✅ Implementación completa
 
@@ -67,12 +67,20 @@ Cambios adicionales, coherentes con el diseño:
 
 | # | Archivo:Línea | Severidad | Resultado |
 |---|---|---|---|
-| 1 | `skills/epic-refine/evals/evals.json:225` | MEDIUM | Corregido: TC-014 exige bloques FILE de `epic.md`, `story.md` de STORY-302 y sus `.bak`, además del `related` reemplazado; TC-015 y TC-016 excluyen escrituras de esos archivos. |
+| 1 | `skills/epic-refine/evals/evals.json:225` | MEDIUM | Corregido: TC-014 exige bloques FILE de `epic.md`, `story.md` de STORY-302 y sus `.bak`, además del `related` reemplazado; TC-015 y TC-016 excluyen escrituras de esos archivos. Al re-ejecutar el 2026-10-31 la corrección ya estaba en el árbol (commit `781921a`): verificada sin reescribirla. |
 | 2 | `docs/guardrails/dod-story-code-review.md:21` | MEDIUM | Criterio dependiente del hallazgo 1; sin cambios en el guardrail. |
 | 3 | `docs/guardrails/dod-story-code-review.md:25` | MEDIUM | Requiere volver a ejecutar `/story-code-review STORY-174`; sin cambios en el guardrail. |
 
 **Archivos corregidos:** `skills/epic-refine/evals/evals.json`.
 **Hallazgos omitidos por archivo inexistente:** ninguno.
+
+**LOW opcionales de `evals.json` aplicados en la misma pasada** (dentro de la lista blanca):
+
+- TC-014: `not_contains` acota `MAD-02` a `· MAD-02` (marcador del Origen `H-NNN · MAD-02` en el plan), para no fallar si la salida explica la exclusión de MAD-02.
+- TC-015 y TC-016: `contains` usa `responsable PO` en lugar de `PO`, que ya casaba con la línea fija `REPORTE:` del bloque de retorno.
+- TC-018: `not_contains` acota `COH` a `COH-1` y añade `=== FILE:`, para excluir cualquier escritura con `verdict: APPROVED`.
+
+Los LOW sobre `SKILL.md`, `coh-corrections.md`, los fixtures y `design.md` quedan fuera de esta ronda: no están en la lista blanca de `fix-directives.md`.
 
 **Verificación de esta ronda:** JSON válido; `npm run verify:repository` aprobado, con 438/438 pruebas y 0 fallos. No se ejecutó `npm run test:eval -- epic-refine`, reservado a criterio humano por `AGENTS.md`.
 
@@ -100,7 +108,7 @@ D-8 describía los reportes de los fixtures como `NEEDS-REFINEMENT` con un únic
 | 12 | Se cumple [[gr-ai-security-checklist]] | ✓ | El reemplazo COH sale solo del nombre de un directorio, nunca del texto de la fuente; texto con forma de orden → `notas` (sección «Contenido no confiable» del catálogo) |
 | 13 | Se cumple [[gr-code-security-checklist]] | ✓ | Sin código ejecutable, credenciales ni rutas absolutas |
 | 14 | Se cumple [[gr-skill-creation-checklist]] | ✓ | `description` con `>-` en 490 caracteres; `SKILL.md` < 500 líneas; `coh-corrections.md` < 300 líneas y enlazado desde el `SKILL.md` en el punto de uso (Paso 3 y tabla del Paso 4); inputs de los evals existen |
-| 15 | Los skills críticos tienen `evals/evals.json` | ✓ | `skills/epic-refine/evals/evals.json` `1.4.0` con 25 casos; TC-014…TC-016 reforzados en esta ronda |
+| 15 | Los skills críticos tienen `evals/evals.json` | ✓ | `skills/epic-refine/evals/evals.json` `1.4.0` con 25 casos; TC-014…TC-016 y TC-018 reforzados en esta ronda |
 | 16 | Se ejecutaron y evaluaron los casos de prueba automáticamente | ⚠️ | Requiere ejecución de tests — no evaluable por story-implement; AGENTS.md reserva `npm run test:eval` a criterio humano |
 | 17 | `tasks.md` tiene todas las tareas `[x]` | ✓ | 24/24 |
 | 18 | README o docs actualizados si cambian contratos | ✓ | `README.md` del skill, templates de épica e historia, `sddf-commands-pipeline.md` §2, `CHANGELOG.md` |

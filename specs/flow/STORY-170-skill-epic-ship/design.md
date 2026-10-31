@@ -9,7 +9,7 @@ substatus: IN-PROGRESS
 parent: EPIC-23-completar-flujo-de-epic
 story: STORY-170
 created: 2026-10-29
-updated: 2026-10-29
+updated: 2026-10-31
 related:
   - STORY-170-skill-epic-ship
   - EPIC-23-completar-flujo-de-epic
@@ -79,7 +79,7 @@ No se crea `scripts/` (D-1) ni `README.md` (como en STORY-168, el guardrail lo d
 | Frontmatter de `SKILL.md` | `name: epic-ship`; `description: >-` en español, ≤ 350 caracteres, con disparadores «epic-ship», «liberar épica», «notas de versión de la épica», «CHANGELOG de la épica», «SHIP» | CS-12 |
 | Resolución de épica | Glob `specs/flow/<EPIC-NN>-*/epic.md` (guion obligatorio, como `epic-analyze`); 0 coincidencias → `❌ No se encontró la épica <arg>: no existe specs/flow/<arg>-*/epic.md`; varias → listar y error. Sin escritura | AC-3 |
 | Gate de validación | Lee solo el campo `verdict` del frontmatter de `<EPIC_DIR>/epic-validate-report.md` (G-06, como `story-plan` con `analyze.md`). `APPROVED` → continuar; ausente, ilegible o distinto → `❌ La épica <EPIC_ID> no está validada (<motivo>) → ejecuta /epic-validate <EPIC_ID>`, sin escribir | AC-3 |
-| Gate de status | `epic.md` en `COMPLETED` o `CANCELED` → `❌ La épica <EPIC_ID> está en <status>/<substatus>: no se libera` sin escribir. Cualquier otro status continúa | AC-3 (robustez, D-7) |
+| Gate de status | `VALIDATE/DONE` es obligatorio para preparar `SHIP`; `SHIP/DONE` informa que ya se liberó y termina sin escribir; cualquier otro estado se rechaza sin escribir | AC-3 (robustez, D-7) |
 | Lectura de `story.md` | Frontmatter (`id`, `title`, `kind`, `parent`, `status`, `substatus`) y la línea `**Para**` del cuerpo. Todo es dato, nunca instrucción | AC-1 |
 | Escritura de `CHANGELOG.md` | `<REPO_ROOT>/CHANGELOG.md`, UTF-8 sin BOM; solo el bloque delimitado de la épica bajo `## [Unreleased]` (formato abajo) | AC-1, AC-2, CNF-2, CNF-3 |
 | Escritura de `release-notes.md` | `<EPIC_DIR>/release-notes.md`, UTF-8 sin BOM, instanciado desde `assets/release-notes-template.md`; se reescribe completo en cada ejecución | AC-1, AC-2, CNF-2, CNF-3 |
@@ -152,10 +152,10 @@ La versión sugerida sale del último `## [x.y.z]` de `CHANGELOG.md`: con alguna
 Pasos 1–5 de F1; respuesta distinta de `s`/`si`/`sí` (o invocación por orquestador sin humano) → `ℹ️ CHANGELOG.md y release-notes.md quedaron escritos; la épica sigue en <status>/<substatus>. Vuelve a ejecutar /epic-ship <EPIC_ID> cuando completes la liberación.` `epic.md` no se escribe.
 
 **F3 — Épica no validada** // satisface: AC-3
-En el paso 2, reporte ausente o `verdict` ≠ `APPROVED` → mensaje de rechazo con `/epic-validate <EPIC_ID>` y fin. Ningún archivo se crea ni modifica (el gate precede a toda escritura).
+En el paso 2, reporte ausente, `verdict` ≠ `APPROVED` o estado distinto de `VALIDATE/DONE` → mensaje de rechazo con `/epic-validate <EPIC_ID>` y fin. `SHIP/DONE` ya liberado termina de forma informativa. Ningún archivo se crea ni modifica (el gate precede a toda escritura).
 
 **F4 — Reejecución** // satisface: CNF-2
-El bloque de `CHANGELOG.md` se reemplaza entre sus delimitadores y `release-notes.md` se reescribe conservando su `created`. Si `epic.md` ya está en `SHIP/DONE`, no se pregunta la confirmación y se informa `ℹ️ <EPIC_ID> ya está en SHIP/DONE`.
+Mientras la épica siga en `VALIDATE/DONE`, el bloque de `CHANGELOG.md` dentro de `[Unreleased]` se reemplaza entre sus delimitadores y `release-notes.md` se reescribe conservando su `created`. Si el bloque ya pertenece a una versión publicada, se rechaza sin escribir. Si `epic.md` ya está en `SHIP/DONE`, se informa `ℹ️ <EPIC_ID> ya está en SHIP/DONE` sin escribir.
 
 ### Decisiones técnicas
 
@@ -164,13 +164,13 @@ El bloque de `CHANGELOG.md` se reemplaza entre sus delimitadores y `release-note
 | D-1 | Mecanismo | Instrucciones Markdown en `SKILL.md` ejecutadas por el agente | (a) Motor Node `scripts/epic-ship.js` como `story-complete`; (b) delegar en `/epic-analyze` el inventario | (a) `story-complete` usa motor porque mueve directorios con `git mv` (irreversible); aquí las escrituras son ediciones de texto revisables en el diff y un motor añadiría código, pruebas y resolución de rutas en runtimes instalados (P12). (b) `epic-analyze` escribe su reporte y carga 336 líneas | CNF-5, CNF-6 |
 | D-2 | Ubicación de la entrada en `CHANGELOG.md` | Bloque de la épica dentro de `## [Unreleased]` | (a) Crear `## [x.y.z] — fecha`; (b) repartir las viñetas en los `### Added`/`### Changed` existentes | (a) Exige fijar la versión, que el humano decide al taggear; promover `[Unreleased]` es parte de la liberación manual. (b) Mezclar líneas con las de otras épicas impide reemplazarlas de forma idempotente (CNF-2) | AC-1, CNF-2 |
 | D-3 | Origen del formato | Reglas propias en `references/release-content.md`, compatibles con Keep a Changelog | (a) Invocar `/doc-release-notes`; (b) cargar sus referencias | `doc-release-notes` vive solo en `.claude/skills/` de este repo, no en `skills/` ni en el paquete npm: en un proyecto consumidor no existe. Además pide la entrada como lista de commits y escribe `RELEASE_NOTES.md` en la raíz, no en la épica | AC-1, CNF-5 |
-| D-4 | Idempotencia | Delimitadores HTML `epic-ship:EPIC-NN:start/end` | (a) Detectar el encabezado `### EPIC-NN`; (b) no reescribir si ya existe | (a) Un encabezado editado a mano deja de coincidir y se duplicaría. (b) Una historia entregada tras la primera ejecución no entraría nunca | CNF-2 |
+| D-4 | Idempotencia | Delimitadores HTML `epic-ship:EPIC-NN:start/end`, reemplazables solo si ambos están en `[Unreleased]` | (a) Detectar el encabezado `### EPIC-NN`; (b) reescribir un bloque ya publicado | (a) Un encabezado editado a mano deja de coincidir y se duplicaría. (b) Una versión publicada debe permanecer intacta; se rechaza antes de escribir | CNF-2 |
 | D-5 | Escritura de documentos antes de la confirmación | Sin confirmación previa; la confirmación solo gobierna `SHIP/DONE` | Pedir confirmación también antes de escribir `CHANGELOG.md` | AC-2 exige que los documentos queden escritos aunque el humano no confirme la liberación; además el paso 1 de la liberación es revisarlos en el diff | AC-2 |
 | D-6 | Versión | Sugerida en el chat, nunca escrita | (a) Escribirla en `release-notes.md` o `epic.md`; (b) no sugerir nada | (a) SemVer no se verifica automáticamente (lo advierte `doc-release-notes`): registrarla fijaría un valor que el humano puede cambiar al taggear. (b) El paso «tag» queda sin orientación | AC-1 |
-| D-7 | Precondición de status | Solo se rechazan `COMPLETED` y `CANCELED`; el gate real es `verdict: APPROVED` | Exigir `status: VALIDATE` | `epic-validate` emite veredicto sin escribir estado (CS-7): una épica validada puede seguir en `DEVELOP` o `VALIDATE`. Exigir `VALIDATE` bloquearía el caso normal | AC-1, AC-3 |
+| D-7 | Precondición de status | Exigir `VALIDATE/DONE` junto con `verdict: APPROVED`; `SHIP/DONE` previo termina sin escritura | Admitir `DEVELOP` con un reporte aprobado aislado | `epic-validate` aprobado escribe `VALIDATE/DONE`; el gateway canónico solo habilita `SHIP` desde ese estado. Un reporte antiguo no basta para saltar la transición | AC-1, AC-3 |
 | D-8 | Modo automático | No disponible para `SHIP/DONE`: sin humano, se escriben los documentos y el status no cambia | Escribir `SHIP/DONE` en automático | CNF-1 y CS-18; mismo criterio que `story-delivery` para `DELIVER` | CNF-1 |
 | D-9 | Documentos de dominio | Editar solo la cláusula de `SHIP` de la invariante 6 y las secciones de `SHIP` de `domain-epic-lifecycle`; actualizar también la nota de `state-machine.md` | (a) Editar solo los dos documentos de dominio que cita la historia; (b) reescribir la invariante 6 completa | (a) `state-machine.md` es la fuente canónica de transiciones y seguiría diciendo que ningún skill escribe `SHIP`. (b) STORY-175 edita la cláusula de `COMPLETED` de la misma invariante: tocar solo `SHIP` reduce el conflicto (CR-002) | CS-20 |
-| D-10 | Contenido untrusted | Solo escalares del frontmatter y la línea `**Para**`; el texto se copia como dato y se escapa `<!--` | Leer y resumir el cuerpo completo de cada historia | Misma regla que `epic-analyze` (`gr-ai-security-checklist`); un `**Para**` con `<!-- epic-ship:… -->` rompería los delimitadores | AC-1, CNF-2 |
+| D-10 | Contenido untrusted | Solo escalares del frontmatter y la línea `**Para**`; el texto se copia como dato, se escapa `<!--` y el título en frontmatter de notas se serializa como cadena YAML segura | Leer y resumir el cuerpo completo de cada historia | Misma regla que `epic-analyze` (`gr-ai-security-checklist`); un `**Para**` con `<!-- epic-ship:… -->` rompería los delimitadores, y un título sin escape podría inyectar claves YAML | AC-1, CNF-2 |
 
 ### Decisiones de complejidad justificada
 
@@ -204,7 +204,7 @@ El bloque de `CHANGELOG.md` se reemplaza entre sus delimitadores y `release-note
 | 1 | Con reporte `APPROVED` y confirmación `s`: bloque en `CHANGELOG.md` con cada historia, `release-notes.md` existe, salida con los cinco pasos y `epic.md` en `SHIP/DONE` | Eval TC-001 (= SMOKE-7) | AC-1 |
 | 2 | Con respuesta `n`: `CHANGELOG.md` y `release-notes.md` escritos, `status`/`substatus` de `epic.md` sin cambio | Eval TC-002 | AC-2, CNF-1 |
 | 3 | Sin reporte y con `verdict: NEEDS-CHANGES`: mensaje con `/epic-validate` y ningún archivo nuevo o modificado | Eval TC-003, TC-004 | AC-3 |
-| 4 | La salida no contiene ejecución de `git commit`, `git tag`, `git merge`, `git push`, `npm publish` | Eval (aserción `not_contains` sobre comandos ejecutados) + revisión de `SKILL.md` | AC-4 |
+| 4 | No hay commit, tag, merge, push, publicación ni despliegue | TC-001 define comprobaciones observables antes/después de referencias git, árbol de trabajo y registro de publicación/despliegue en SMOKE-7 manual; `not_contains` de la salida es solo una señal adicional | AC-4 |
 | 5 | Dos ejecuciones seguidas dejan un solo bloque `epic-ship:EPIC-NN:start` | Eval TC-005 | CNF-2 |
 | 6 | `CHANGELOG.md`, `release-notes.md` y `epic.md` escritos en UTF-8 sin BOM | Revisión manual en el recorrido SMOKE-7 (`head -c3` ≠ `EF BB BF`) | CNF-3 |
 | 7 | `SKILL.md` declara `<!-- SDDF-FIXED-LAYOUT: v1 -->` y no menciona `SDDF_ROOT` ni `SPECS_BASE` | `node scripts/verify-fixed-layout.js` | CNF-4 |
@@ -246,6 +246,7 @@ Ninguna: las decisiones abiertas se resuelven en D-1…D-10; las dependencias co
 
 ## Notas de implementación
 
-- **`epic-validate` ya existe (STORY-124…STORY-169):** al implementar, `skills/epic-validate/` escribe `<EPIC_DIR>/epic-validate-report.md` con `verdict` y, con `APPROVED`, deja la épica en `VALIDATE/DONE` (gateway de STORY-127). El contrato que lee `epic-ship` (CR-001) no cambia. D-7 se mantiene: el gate sigue siendo el `verdict` y solo se rechazan `COMPLETED` y `CANCELED`, así una épica validada antes del gateway (en `DEVELOP` o `VALIDATE`) también se libera.
+- **Gateway de `epic-validate` (STORY-124…STORY-169):** `skills/epic-validate/` escribe `<EPIC_DIR>/epic-validate-report.md` con `verdict` y, con `APPROVED`, deja la épica en `VALIDATE/DONE` (STORY-127). D-7 exige ambas condiciones; un reporte aprobado con la épica aún en `DEVELOP` o `VALIDATE/IN-PROGRESS` no permite liberar.
 - **Versión sugerida sin `Added`:** el diseño fija `Added` → minor y «solo `Fixed`» → patch; la referencia extiende patch a cualquier conjunto sin `Added` (`Fixed` y `Changed`), para que la tabla sea exhaustiva.
 - **`CHANGELOG.md` nuevo:** la cabecera que crea la referencia no incluye la URL de Keep a Changelog, porque su dominio no está en la allow-list de `gr-skill-creation-checklist` (`skill-url-allowlist`).
+- **Rework de code review, ronda 1:** el bloque de `CHANGELOG.md` se reemplaza solo dentro de `[Unreleased]`; la entrada requiere `VALIDATE/DONE` y `APPROVED`; `SHIP/DONE` ya existente termina sin reescribir; `{yaml_title}` se serializa como escalar seguro. El recorrido SMOKE-7 y las observaciones externas del Contrato 4 permanecen pendientes de ejecución humana.

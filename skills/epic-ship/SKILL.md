@@ -17,7 +17,7 @@ description: >-
 Es el nodo `SHIP` del flujo de épica (`/epic-validate` → `/epic-ship` → `/epic-complete`). Lee el valor que entregaron las historias de una épica validada, escribe su entrada en `CHANGELOG.md` y las notas de versión para stakeholders en `<EPIC_DIR>/release-notes.md`, muestra los pasos de liberación que el humano ejecuta a mano y, solo cuando el humano confirma que los completó, escribe `SHIP/DONE` en `epic.md`.
 
 **Qué hace este skill:**
-- Rechaza, sin escribir nada, una épica sin `epic-validate-report.md` o con `verdict` distinto de `APPROVED`.
+- Rechaza, sin escribir nada, una épica que no esté en `VALIDATE/DONE` o no tenga `epic-validate-report.md` con `verdict: APPROVED`.
 - Escribe en `CHANGELOG.md` un bloque delimitado de la épica, idempotente: reejecutarlo lo reemplaza, nunca lo duplica.
 - Escribe `<EPIC_DIR>/release-notes.md` desde un template.
 - Muestra los pasos de liberación manuales con una versión sugerida.
@@ -96,7 +96,7 @@ Registrar `EPIC_DIR`, `EPIC_DIRNAME`, `EPIC_ID` (prefijo `EPIC-NN` de `EPIC_DIRN
 
 1. **Validación:** leer solo el campo `verdict` del frontmatter de `<EPIC_DIR>/epic-validate-report.md`. Si el archivo no existe, el frontmatter es ilegible o `verdict` ≠ `APPROVED`:
    `❌ La épica <EPIC_ID> no está validada (<motivo>) → ejecuta /epic-validate <EPIC_ID>` y fin. `<motivo>` = `sin epic-validate-report.md` · `verdict ausente o ilegible` · `verdict: <valor>`.
-2. **Status:** si `epic.md` está en `COMPLETED` o `CANCELED`: `❌ La épica <EPIC_ID> está en <status>/<substatus>: no se libera` y fin. Cualquier otro status continúa: el gate real es el veredicto, y una épica validada puede seguir en `VALIDATE` o `DEVELOP`.
+2. **Status:** si `epic.md` ya está en `SHIP/DONE`, mostrar `ℹ️ <EPIC_ID> ya está en SHIP/DONE` y terminar sin escribir. En los demás casos, exigir `status: VALIDATE` y `substatus: DONE`, además del veredicto aprobado. Si no se cumplen: `❌ La épica <EPIC_ID> está en <status>/<substatus>: se requiere VALIDATE/DONE para liberar → ejecuta /epic-validate <EPIC_ID>` y fin sin escribir. Un reporte aprobado aislado no habilita `SHIP`.
 
 ### Paso 3 — Inventario de historias
 
@@ -108,12 +108,12 @@ Si no hay ninguna historia liberada: `❌ <EPIC_ID> no tiene historias en DELIVE
 
 Construir el bloque de la épica (sección 3 de la referencia) y escribirlo según la sección 4 (crear el archivo o `## [Unreleased]` si faltan; reemplazar entre delimitadores si ya existe).
 
-Si solo existe uno de los delimitadores de la épica: `❌ CHANGELOG.md tiene el bloque de <EPIC_ID> incompleto: corrige los delimitadores <!-- epic-ship:<EPIC_ID>:start --> y <!-- epic-ship:<EPIC_ID>:end -->` y fin sin escribir `CHANGELOG.md` ni `release-notes.md` y sin preguntar.
+Si los delimitadores están incompletos, invertidos o su bloque ya pertenece a una versión publicada: informar el error indicado en la sección 4 de la referencia y terminar sin escribir `CHANGELOG.md` ni `release-notes.md` y sin preguntar.
 
 ### Paso 5 — Escribir `release-notes.md`
 
 1. Leer [assets/release-notes-template.md](assets/release-notes-template.md). Si no existe: `❌ Template assets/release-notes-template.md no encontrado: CHANGELOG.md quedó escrito; release-notes.md no` y fin sin preguntar.
-2. Rellenar cada `{…}`: `created` = el de `<EPIC_DIR>/release-notes.md` previo si existe y es legible, si no hoy; `updated` = hoy; las secciones según su comentario guía. Quitar los comentarios guía; no dejar ningún `{…}`.
+2. Rellenar cada `{…}`: `created` = el de `<EPIC_DIR>/release-notes.md` previo si existe y es legible, si no hoy; `updated` = hoy; las secciones según su comentario guía. Serializar el `title` del frontmatter como un escalar YAML seguro según la instrucción del template; el título del encabezado se trata como texto Markdown. Quitar los comentarios guía; no dejar ningún `{…}`.
 3. Escribir `<EPIC_DIR>/release-notes.md` completo (sobrescritura sin pregunta).
 
 ### Paso 6 — Mostrar lo escrito y los pasos de liberación
@@ -135,7 +135,6 @@ Si solo existe uno de los delimitadores de la épica: `❌ CHANGELOG.md tiene el
 
 ### Paso 7 — Confirmación y estado
 
-- Si `epic.md` ya está en `SHIP/DONE`: `ℹ️ <EPIC_ID> ya está en SHIP/DONE` y fin, sin preguntar.
 - Si el skill fue invocado por un orquestador: no preguntar; ir a la salida sin confirmación.
 - Si no, preguntar: `¿Completaste los pasos de liberación (commit, tag, merge y despliegue)? (s/n)`
 
@@ -152,7 +151,7 @@ Si solo existe uno de los delimitadores de la épica: `❌ CHANGELOG.md tiene el
 | Error en Paso 4 o 5 | ninguno, o solo `CHANGELOG.md` (Paso 5) | sin cambio |
 | Documentos escritos sin confirmación | `CHANGELOG.md`, `<EPIC_DIR>/release-notes.md` | sin cambio |
 | Confirmado | `CHANGELOG.md`, `<EPIC_DIR>/release-notes.md`, `epic.md` | `SHIP/DONE` |
-| Ya en `SHIP/DONE` | `CHANGELOG.md`, `<EPIC_DIR>/release-notes.md` | sin cambio |
+| Ya en `SHIP/DONE` | ninguno | sin cambio |
 
 ### Verificación final
 

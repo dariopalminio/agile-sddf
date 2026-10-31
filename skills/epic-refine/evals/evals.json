@@ -223,7 +223,7 @@
       },
       "expected": {
         "contains": ["COH-1", "COH-2", "`STORY-301-exportar-informe` → `STORY-301-exportar-informe-csv`", "EPIC-30-ejemplo/epic.md.bak ===", "EPIC-30-ejemplo/epic.md ===", "[[STORY-301-exportar-informe-csv]]", "STORY-302-programar-envio-informe/story.md.bak ===", "STORY-302-programar-envio-informe/story.md ===", "  - STORY-301-exportar-informe-csv", "aplicado", "INT-01", "INT-05", "/epic-analyze EPIC-30"],
-        "not_contains": ["COH-3", "MAD-02", "STORY-305-exportar-informe-xlsx/story.md.bak", "STORY-306-exportar-informe-json/story.md.bak", "status: IMPLEMENT", "Plan rechazado"]
+        "not_contains": ["COH-3", "· MAD-02", "STORY-305-exportar-informe-xlsx/story.md.bak", "STORY-306-exportar-informe-json/story.md.bak", "status: IMPLEMENT", "Plan rechazado"]
       },
       "threshold": 1.0
     },
@@ -238,7 +238,7 @@
         "context": "El directorio skills/epic-refine/examples/split-sin-reemplazo/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
-        "contains": ["COH-1", "STORY-310-importar-datos", "fuera de alcance", "PO", "reemplazo no determinable", "APLICADOS: 0", "FUERA-DE-ALCANCE: 3"],
+        "contains": ["COH-1", "STORY-310-importar-datos", "fuera de alcance", "responsable PO", "reemplazo no determinable", "APLICADOS: 0", "FUERA-DE-ALCANCE: 3"],
         "not_contains": ["STORY-302-programar-envio-informe/story.md ===", "EPIC-30-ejemplo/epic.md ===", "story.md.bak", "epic.md.bak", "COH-2", "¿Aplicar el plan?"]
       },
       "threshold": 1.0
@@ -254,7 +254,7 @@
         "context": "El directorio skills/epic-refine/examples/split-ambiguo/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
-        "contains": ["COH-1", "COH-2", "varios directorios con el ID STORY-301", "fuera de alcance", "PO", "APLICADOS: 0", "FUERA-DE-ALCANCE: 4"],
+        "contains": ["COH-1", "COH-2", "varios directorios con el ID STORY-301", "fuera de alcance", "responsable PO", "APLICADOS: 0", "FUERA-DE-ALCANCE: 4"],
         "not_contains": ["STORY-302-programar-envio-informe/story.md ===", "EPIC-30-ejemplo/epic.md ===", "epic.md.bak", "story.md.bak", "→ `STORY-301-exportar-informe-csv`"]
       },
       "threshold": 1.0
@@ -287,7 +287,7 @@
       },
       "expected": {
         "contains": ["APPROVED", "no necesita refinamiento"],
-        "not_contains": ["COH", "¿Aplicar el plan?", "Backup creado", "Reporte: "]
+        "not_contains": ["COH-1", "=== FILE:", "¿Aplicar el plan?", "Backup creado", "Reporte: "]
       },
       "threshold": 1.0
     },
