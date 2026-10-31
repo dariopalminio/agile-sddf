@@ -5,7 +5,7 @@ slug: STORY-174-implement-report
 title: "Implement Report: Skill epic-refine: corregir referencias obsoletas tras un split"
 story: STORY-174
 created: 2026-10-29
-updated: 2026-10-29
+updated: 2026-10-30
 ---
 
 # Reporte de Implementación: Skill epic-refine: corregir referencias obsoletas tras un split
@@ -16,16 +16,18 @@ updated: 2026-10-29
 |---|---|
 | Historia | STORY-174 |
 | Total de tareas | 24 |
-| Tareas completadas | 24 |
+| Tareas completadas | 0 en esta ejecución |
 | Tareas bloqueadas | 0 |
-| Tareas omitidas (ya completadas antes) | 0 |
-| Fecha de implementación | 2026-10-29 |
+| Tareas omitidas (ya completadas antes) | 24 |
+| Fecha de implementación | 2026-10-30 |
 
 **Estado:** ✅ Implementación completa
 
 ---
 
 ## Tabla de Estado por Tarea
+
+Las 24 tareas se completaron en la ejecución anterior. Esta ronda aplicó `fix-directives.md` sin añadir ni reabrir tareas.
 
 | ID | Descripción | Estado | Archivos generados |
 |---|---|---|---|
@@ -61,6 +63,19 @@ Cambios adicionales, coherentes con el diseño:
 - `CHANGELOG.md`: la entrada de `/epic-refine` añade la corrección de referencias obsoletas (STORY-174).
 - `design.md`: CR-005 documenta el ajuste de los fixtures y de TC-014 (ver abajo).
 
+## Correcciones de fix-directives.md (ronda 1)
+
+| # | Archivo:Línea | Severidad | Resultado |
+|---|---|---|---|
+| 1 | `skills/epic-refine/evals/evals.json:225` | MEDIUM | Corregido: TC-014 exige bloques FILE de `epic.md`, `story.md` de STORY-302 y sus `.bak`, además del `related` reemplazado; TC-015 y TC-016 excluyen escrituras de esos archivos. |
+| 2 | `docs/guardrails/dod-story-code-review.md:21` | MEDIUM | Criterio dependiente del hallazgo 1; sin cambios en el guardrail. |
+| 3 | `docs/guardrails/dod-story-code-review.md:25` | MEDIUM | Requiere volver a ejecutar `/story-code-review STORY-174`; sin cambios en el guardrail. |
+
+**Archivos corregidos:** `skills/epic-refine/evals/evals.json`.
+**Hallazgos omitidos por archivo inexistente:** ninguno.
+
+**Verificación de esta ronda:** JSON válido; `npm run verify:repository` aprobado, con 438/438 pruebas y 0 fallos. No se ejecutó `npm run test:eval -- epic-refine`, reservado a criterio humano por `AGENTS.md`.
+
 ### Desvío documentado (CR-005)
 
 D-8 describía los reportes de los fixtures como `NEEDS-REFINEMENT` con un único INT-05, pero `epic-analyze` declara `APPROVED` con 0 ERROR y ≤ 3 WARNING. Los fixtures `split-slug-obsoleto/`, `split-sin-reemplazo/`, `split-ambiguo/` y `split-reportado/` añaden una línea `**STORY-307**` sin `story.md` (H-001 INT-01, ERROR) antes de la línea F1 (H-002 INT-05); en `split-reportado/` el MAD-02 es H-003. `split-aprobada/` no lleva esas dos líneas, así que su `Sin hallazgos.` es veraz. TC-014 comprueba el reemplazo por `contains` porque el slug obsoleto aparece por diseño en **Antes** del plan y del reporte.
@@ -74,7 +89,7 @@ D-8 describía los reportes de los fixtures como `NEEDS-REFINEMENT` con un únic
 | 1 | Todos los escenarios Gherkin definidos en `story.md` pasan exitosamente | ⚠️ | Requiere ejecución de tests: AC-1 → TC-014 y AC-2 → TC-015/TC-016 se ejecutan con `npm run test:eval -- epic-refine` a criterio humano (AGENTS.md) |
 | 2 | Los criterios no funcionales de `story.md` están verificados | ✓ | CNF-1: `.bak` antes de cada escritura (Pasos 6–7 del `SKILL.md`, sección 4 de `coh-corrections.md`); CNF-2: ningún archivo creado o modificado empieza por `EF BB BF`; CNF-3: el detalle COH vive en `references/coh-corrections.md` y el `SKILL.md` tiene 263 líneas |
 | 3 | El comportamiento coincide con lo especificado en `design.md` | ✓ | D-1…D-8 implementados; el único desvío (fixtures y TC-014) está documentado en CR-005 |
-| 4 | No hay regresiones en las funcionalidades previamente trabajadas | ✓ | `npm test`: 353/353; `npm run verify:repository` aprobado; TC-001…TC-013 sin cambios |
+| 4 | No hay regresiones en las funcionalidades previamente trabajadas | ✓ | `npm run verify:repository` aprobado en esta ronda: 438/438 pruebas; TC-001…TC-013 sin cambios por STORY-174 |
 | 5 | El código sigue las convenciones de `constitution.md` | ✓ | Markdown en español, layout fijo (`<!-- SDDF-FIXED-LAYOUT: v1 -->` intacto), fuente única en `skills/epic-refine/` |
 | 6 | No hay código comentado ni `TODO` sin issue asociado | ✓ | Sin código ejecutable nuevo; ningún `TODO` en los archivos modificados |
 | 7 | No hay variables, imports ni funciones sin usar | ✓ | No se añadió código ejecutable al paquete |
@@ -85,7 +100,7 @@ D-8 describía los reportes de los fixtures como `NEEDS-REFINEMENT` con un únic
 | 12 | Se cumple [[gr-ai-security-checklist]] | ✓ | El reemplazo COH sale solo del nombre de un directorio, nunca del texto de la fuente; texto con forma de orden → `notas` (sección «Contenido no confiable» del catálogo) |
 | 13 | Se cumple [[gr-code-security-checklist]] | ✓ | Sin código ejecutable, credenciales ni rutas absolutas |
 | 14 | Se cumple [[gr-skill-creation-checklist]] | ✓ | `description` con `>-` en 490 caracteres; `SKILL.md` < 500 líneas; `coh-corrections.md` < 300 líneas y enlazado desde el `SKILL.md` en el punto de uso (Paso 3 y tabla del Paso 4); inputs de los evals existen |
-| 15 | Los skills críticos tienen `evals/evals.json` | ✓ | `skills/epic-refine/evals/evals.json` `1.2.0` con 18 casos |
+| 15 | Los skills críticos tienen `evals/evals.json` | ✓ | `skills/epic-refine/evals/evals.json` `1.4.0` con 25 casos; TC-014…TC-016 reforzados en esta ronda |
 | 16 | Se ejecutaron y evaluaron los casos de prueba automáticamente | ⚠️ | Requiere ejecución de tests — no evaluable por story-implement; AGENTS.md reserva `npm run test:eval` a criterio humano |
 | 17 | `tasks.md` tiene todas las tareas `[x]` | ✓ | 24/24 |
 | 18 | README o docs actualizados si cambian contratos | ✓ | `README.md` del skill, templates de épica e historia, `sddf-commands-pipeline.md` §2, `CHANGELOG.md` |

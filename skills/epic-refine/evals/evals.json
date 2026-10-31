@@ -199,15 +199,15 @@
       "id": "TC-013",
       "name": "historia-de-cierre-implementada-al-po",
       "type": "edge-case",
-      "description": "[D-4 · CS-15 · CNF-2] H-001 SAL-01 (CS-1) y H-002 SAL-02 (SMOKE-2) tienen como única candidata a STORY-303, en IMPLEMENT/DONE. El skill no reabre una historia implementada: ambos hallazgos quedan fuera de alcance con responsable PO y la nota 'STORY-303 ya está implementada', STORY-303 conserva status: IMPLEMENT y no se crea ningún .bak.",
+      "description": "[D-4 · CS-15 · CNF-2] H-001 SAL-01 (CS-1) y H-002 SAL-02 (SMOKE-2) tienen como única candidata a STORY-303, en IMPLEMENT/DONE. El skill no reabre una historia implementada: ambos hallazgos quedan fuera de alcance con responsable PO y la nota 'STORY-303 ya está implementada', el story.md de STORY-303 no se escribe (no aparece su bloque FILE) y no se crea ningún .bak.",
       "input": {
         "input_path": "skills/epic-refine/examples/cobertura-smoke-implementada/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/cobertura-smoke-implementada/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/cobertura-smoke-implementada/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
-        "contains": ["STORY-303 ya está implementada", "fuera de alcance", "PO", "SAL-02 · SMOKE-2", "status: IMPLEMENT", "FUERA-DE-ALCANCE: 2"],
-        "not_contains": ["story.md.bak", "Cierre del contrato de salida", "Cubre SMOKE-2 de EPIC-30"]
+        "contains": ["STORY-303 ya está implementada", "fuera de alcance", "PO", "SAL-02 · SMOKE-2", "FUERA-DE-ALCANCE: 2"],
+        "not_contains": ["STORY-303-totalizar-comisiones/story.md ===", "story.md.bak", "Cierre del contrato de salida", "Cubre SMOKE-2 de EPIC-30"]
       },
       "threshold": 1.0
     },
@@ -219,10 +219,10 @@
       "input": {
         "input_path": "skills/epic-refine/examples/split-slug-obsoleto/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio skills/epic-refine/examples/split-slug-obsoleto/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
+        "context": "El directorio skills/epic-refine/examples/split-slug-obsoleto/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n). Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
-        "contains": ["COH-1", "COH-2", "`STORY-301-exportar-informe` → `STORY-301-exportar-informe-csv`", "[[STORY-301-exportar-informe-csv]]", "aplicado", "EPIC-30-ejemplo/epic.md.bak", "STORY-302-programar-envio-informe/story.md.bak", "INT-01", "INT-05", "/epic-analyze EPIC-30"],
+        "contains": ["COH-1", "COH-2", "`STORY-301-exportar-informe` → `STORY-301-exportar-informe-csv`", "EPIC-30-ejemplo/epic.md.bak ===", "EPIC-30-ejemplo/epic.md ===", "[[STORY-301-exportar-informe-csv]]", "STORY-302-programar-envio-informe/story.md.bak ===", "STORY-302-programar-envio-informe/story.md ===", "  - STORY-301-exportar-informe-csv", "aplicado", "INT-01", "INT-05", "/epic-analyze EPIC-30"],
         "not_contains": ["COH-3", "MAD-02", "STORY-305-exportar-informe-xlsx/story.md.bak", "STORY-306-exportar-informe-json/story.md.bak", "status: IMPLEMENT", "Plan rechazado"]
       },
       "threshold": 1.0
@@ -239,7 +239,7 @@
       },
       "expected": {
         "contains": ["COH-1", "STORY-310-importar-datos", "fuera de alcance", "PO", "reemplazo no determinable", "APLICADOS: 0", "FUERA-DE-ALCANCE: 3"],
-        "not_contains": ["story.md.bak", "epic.md.bak", "COH-2", "¿Aplicar el plan?"]
+        "not_contains": ["STORY-302-programar-envio-informe/story.md ===", "EPIC-30-ejemplo/epic.md ===", "story.md.bak", "epic.md.bak", "COH-2", "¿Aplicar el plan?"]
       },
       "threshold": 1.0
     },
@@ -255,7 +255,7 @@
       },
       "expected": {
         "contains": ["COH-1", "COH-2", "varios directorios con el ID STORY-301", "fuera de alcance", "PO", "APLICADOS: 0", "FUERA-DE-ALCANCE: 4"],
-        "not_contains": ["epic.md.bak", "story.md.bak", "→ `STORY-301-exportar-informe-csv`"]
+        "not_contains": ["STORY-302-programar-envio-informe/story.md ===", "EPIC-30-ejemplo/epic.md ===", "epic.md.bak", "story.md.bak", "→ `STORY-301-exportar-informe-csv`"]
       },
       "threshold": 1.0
     },

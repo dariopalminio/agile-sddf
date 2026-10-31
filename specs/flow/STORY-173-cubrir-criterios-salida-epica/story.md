@@ -5,11 +5,11 @@ id: STORY-173
 kind: feat
 slug: STORY-173-cubrir-criterios-salida-epica
 title: "Skill epic-refine: asignar la cobertura de criterios de salida"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-29
-updated: 2026-10-29
+updated: 2026-10-30
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-165
