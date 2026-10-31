@@ -117,6 +117,14 @@ test('ejecutable inexistente → not-executable (Windows y POSIX)', (t) => {
   assert.match(result.reason, /^ejecutable no encontrado/);
 });
 
+test('salida de más de 1 MiB con código 0 → pass, sin ENOBUFS (maxBuffer)', (t) => {
+  const root = makeRepo(t);
+  const result = classifyCommand(root, `${NODE} -e "process.stdout.write('x'.repeat(2*1024*1024))"`, { fullOutput: true });
+  assert.equal(result.outcome, 'pass');
+  assert.equal(result.exitCode, 0);
+  assert.equal(result.output.length, 2 * 1024 * 1024);
+});
+
 test('check-command imprime un único CommandResult y sale con 0', (t) => {
   const root = makeRepo(t);
   const { status, json } = runCli(['check-command', '--repo-root', root, '--command', `${NODE} -e "process.exit(1)"`]);

@@ -13,7 +13,8 @@
  *     comprueba el PATH antes de lanzar: STORY-125 D-11)
  *   - código 0 → `pass`; cualquier otro → `fail`, con las últimas 20 líneas de stdout+stderr
  *
- * El comando se ejecuta tal cual con `cwd = REPO_ROOT` y sin timeout: la sustitución de
+ * El comando se ejecuta tal cual con `cwd = REPO_ROOT`, sin timeout ni límite de salida
+ * (`maxBuffer: Infinity`: una salida grande no se confunde con un motor no disponible): la sustitución de
  * `{{smoke_id}}` la hace el SKILL.md. Se lanza con shell porque es una cadena de shell que declara
  * el proyecto (`npm run <s>`) y `npm.cmd` no se lanza sin shell en Windows; solo recibe comandos de
  * archivos versionados del proyecto (excepción a `sec-no-shell-injection`, STORY-125 D-12).
@@ -86,7 +87,7 @@ function precheckCommand(repoRoot, command) {
     if (!fs.existsSync(pkgPath)) return 'package.json no existe';
     let scripts;
     try {
-      scripts = JSON.parse(fs.readFileSync(pkgPath, 'utf8').replace(/^﻿/, '')).scripts || {};
+      scripts = JSON.parse(fs.readFileSync(pkgPath, 'utf8').replace(/^\uFEFF/, '')).scripts || {};
     } catch {
       return 'package.json ilegible';
     }
@@ -112,7 +113,7 @@ function classifyCommand(repoRoot, command, { fullOutput = false } = {}) {
   if (reason) return withOutput({ ...base, reason });
 
   const start = process.hrtime.bigint();
-  const result = spawnSync(command, { cwd: repoRoot, shell: true, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  const result = spawnSync(command, { cwd: repoRoot, shell: true, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: Infinity });
   const durationSeconds = Math.round(Number(process.hrtime.bigint() - start) / 1e8) / 10;
 
   if (result.error && result.error.code === 'ENOENT') return withOutput({ ...base, reason: 'ejecutable no encontrado (código ENOENT)' });
@@ -167,7 +168,7 @@ function readEpicSuites(configText) {
   let inVerify = false;
   let keyIndent = null;
   let current = null;
-  for (const line of configText.replace(/^﻿/, '').split(/\r?\n/)) {
+  for (const line of configText.replace(/^\uFEFF/, '').split(/\r?\n/)) {
     if (!line.trim() || line.trim().startsWith('#')) continue;
     const indent = line.length - line.trimStart().length;
     const match = /^\s*([\w-]+)\s*:(.*)$/.exec(line);
