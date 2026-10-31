@@ -85,7 +85,7 @@ No hay build ni lint genéricos: la validación es determinista y vive en `scrip
 | `npm run verify:repository` | Gate determinista completo (sintaxis, resolución de raíces, perfiles, runtimes, config, inventario de evals, contrato de validación, enlaces, supply chain, release, smoke del tarball). |
 | `npm test` | Pruebas `node --test` de `test/`. |
 | `npm run test:eval:runner` | Suite determinista del runner `scripts/run-evals.js`. |
-| `npm run test:eval -- [opciones]` | Ejecuta o planifica los casos de `skills/<skill>/evals/evals.json`. Una selección inválida o vacía falla cerrada; `--dry-run` solo aprueba con un plan no vacío. |
+| `npm run test:eval -- [opciones]` | Ejecuta o planifica los casos de `skills/<skill>/evals/evals.json`. Una selección inválida o vacía falla cerrada; `--dry-run` solo aprueba con un plan no vacío. Por defecto el runner simula en seco y solo lee; un caso con `sandbox` (opt-in) ejecuta el skill de verdad sobre una copia desechable del fixture en `.tmp/skill-test-evals/<skill>/sandbox/<TC>/`, con escritura confinada a ese directorio, y califica el árbol en disco con `expected.files` (`written`, `contains`, `not_contains`, `backups`). |
 | `npx agile-sddf install [--global] [--target <runtime>] [--strategy full\|story] [--force]` | Instalación explícita en otro proyecto; IDs admitidos en `config/runtimes.json`. `--strategy story` excluye los skills `epic-*`; sin flag y sin TTY se usa `full`. `npm install` no crea directorios de runtime ni copia nada. |
 
 ### 4.2 Perfiles y stacks

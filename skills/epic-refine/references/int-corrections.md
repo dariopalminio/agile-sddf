@@ -6,14 +6,16 @@ La **sección de historias** es la de `clave: historias` del template de épica 
 
 ## INT-02 — historia huérfana: añadir la línea al índice
 
-Hallazgo: **Elemento** = `STORY-NNN`. La historia se resuelve por ID (Paso 3.5 del `SKILL.md`), nunca por la ruta de **Evidencia**.
+Hallazgo: **Elemento** = `STORY-NNN`. La historia se resuelve por ID (punto 5 del Paso 3 del `SKILL.md`), nunca por la ruta de **Evidencia**.
+
+**Pertenencia:** el `story.md` declara la épica si el ID `EPIC-NN` de su `parent` es igual a `EPIC_ID`, comparado como en `epic-analyze` Paso 4.3: el `parent` es exactamente `EPIC_ID` o empieza por `EPIC_ID` seguido de `-`. `EPIC-30-ejemplo` y `EPIC-30` declaran `EPIC-30`; `EPIC-300-x`, `EPIC-301` y `EPIC-31-y` no. Nunca se compara un prefijo sin ese delimitador.
 
 ### Ya resuelto
 
 Cualquiera de:
 - la sección de historias ya contiene una línea del índice con `**STORY-NNN**`;
 - el `story.md` ya no existe (ni activo ni archivado);
-- el `parent` del `story.md` ya no tiene el prefijo `EPIC_ID` (el PO corrigió el `parent`).
+- el `story.md` ya no declara la épica según la regla de pertenencia: el PO reasignó su `parent` a otra épica (también a una cuyo ID empieza por los mismos dígitos, como `EPIC-300-x` para `EPIC-30`). No se añade ninguna línea; si el `parent` quedó ausente o vacío, el hallazgo va a fuera de alcance.
 
 ### Fuera de alcance (responsable `PO`)
 
@@ -21,6 +23,7 @@ Cualquiera de:
 |---|---|
 | La sección de historias no existe en `epic.md` | `sin sección de historias: es INT-06, decisión del PO` |
 | La historia solo existe archivada | `historia archivada: registro histórico` |
+| `parent` ausente o vacío en el `story.md` | `parent ausente: asignar la épica es decisión del PO` |
 | `status: CANCELED` | `historia cancelada: listarla o corregir su parent es decisión del PO` |
 | Falta el `title` del frontmatter o alguna de las líneas `**Como**`, `**Quiero**`, `**Para**` del cuerpo | `sin title u oración Como/Quiero/Para: el skill no redacta la descripción` |
 

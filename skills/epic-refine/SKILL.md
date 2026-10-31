@@ -93,7 +93,7 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 Interpretar `<epica>` como `epic-analyze` Paso 1; la primera forma aplicable decide y nunca se consulta `specs/flow/archive/`:
 
-1. **Ruta** (contiene `/` o `\`): directorio de la épica o su `epic.md`.
+1. **Ruta** (contiene `/` o `\`): directorio de la épica o su `epic.md`. Antes de leer o escribir nada, se normaliza (separadores, `.`, `..`, enlaces simbólicos resueltos) y se expresa relativa a `REPO_ROOT`: solo se acepta si queda exactamente `specs/flow/EPIC-NN-<slug>/` (o su `epic.md`), hija directa de `specs/flow/`. Una ruta fuera de `REPO_ROOT`, bajo `specs/flow/archive/`, más profunda o con otra forma → `❌ La ruta <arg> no es una épica activa de specs/flow/ (se esperaba specs/flow/EPIC-NN-<slug>/)` y fin sin escribir.
 2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.
 3. **ID** (`EPIC-NN`): glob `specs/flow/<ID>-*/epic.md` (el guion es obligatorio: `EPIC-30` no casa `EPIC-300-x`).
 
@@ -144,7 +144,7 @@ Enrutar cada hallazgo por su código. Esta tabla es el **único punto de extensi
 | MAD-02 | Corrección automática: retirar la entrada `related` | `PO`, en los casos del catálogo | [references/mad-corrections.md](references/mad-corrections.md) |
 | INT-01, INT-04, INT-05, INT-06, SAL-03, SAL-04, MAD-01, MAD-03 | Siempre fuera de alcance: exigen una decisión del PO | `PO`, con la **Acción sugerida** del reporte copiada literal | — |
 | SAL-01, SAL-02 | Asignación de cobertura a la historia de cierre: AC de cierre + cita E1 | `PO`, en los casos del catálogo | [references/sal-corrections.md](references/sal-corrections.md) |
-| COH | Reemplazo del slug por el del único directorio con el mismo ID | `PO`, en los casos del catálogo (0 o ≥ 2 directorios con el ID, `related` no reconocido) | [references/coh-corrections.md](references/coh-corrections.md) |
+| COH | Reemplazo del slug por el del único directorio con el mismo ID | `PO`, en los casos del catálogo (0 o ≥ 2 directorios con el ID, `related` no reconocido, historia listada que no declara la épica en su `parent`) | [references/coh-corrections.md](references/coh-corrections.md) |
 | Cualquier otro código | Fuera de alcance | `PO`, nota `código no reconocido por esta versión de epic-refine` | — |
 
 Leer cada catálogo **solo** si hay al menos un hallazgo corregible de su familia (INT-02/INT-03 → `int-corrections.md`; MAD-02 → `mad-corrections.md`; SAL-01/SAL-02 → `sal-corrections.md`). Un reporte sin hallazgos corregibles no carga ninguno de estos; `coh-corrections.md` ya se leyó en el Paso 3. Si el catálogo requerido no existe: `❌ Catálogo references/<familia>-corrections.md no encontrado` y fin **antes** de escribir cualquier archivo.
@@ -182,8 +182,9 @@ Recibirán .bak: <lista de archivos>
 
 - **Origen** es `H-NNN · <código>` o `COH-<n>`; **Operación** es `añadir` · `eliminar` · `modificar`. Se muestran solo las listas con ítems.
 - **Manual:** `n` → `ℹ️ Plan rechazado — no se modificó ningún archivo` y fin: ni `.bak` ni reporte. `s` → Paso 6.
-- **`--auto`:** aplica sin preguntar; lo que exige decisión del PO ya está en «fuera de alcance».
+- **`--auto`:** muestra el mismo plan y las mismas listas, sin la línea `¿Aplicar el plan? (s / n)`, y aplica sin preguntar; lo que exige decisión del PO ya está en «fuera de alcance».
 - **Sin ningún `C-NN`** (ambos modos): mostrar las listas, `ℹ️ No hay correcciones aplicables — epic.md y los story.md no se modifican` y saltar al Paso 8 (el reporte se escribe igual: registra cada hallazgo y su responsable).
+- En ambos modos el detalle por hallazgo (clasificación y responsable) se emite aquí y queda en el reporte; el bloque de retorno del Paso 9 solo resume conteos.
 
 ### Paso 6 — Backup y escritura
 
@@ -227,7 +228,7 @@ La línea `Replanifica:` aparece una vez por cada historia de cierre SAL en `PLA
 
 Si quedan hallazgos ERROR fuera de alcance: `⚠️ El análisis seguirá en NEEDS-REFINEMENT por <n> hallazgos ERROR que requieren decisión del PO.` No se ejecuta `/epic-analyze`: el flujo de la épica lo encadena como un paso distinto.
 
-**Agent / `--auto`** — exactamente estas cinco líneas, sin preguntas:
+**Agent / `--auto`** — sin preguntas. Tras el plan y las listas del Paso 5 (cada hallazgo con su clasificación y responsable), la salida termina con un bloque de retorno de exactamente estas cinco líneas, que el orquestador lee sin interpretar el resto:
 
 ```
 STATUS: OK
@@ -244,6 +245,7 @@ Con `APPROVED`: `STATUS: OK`, conteos `0` y `REPORTE: —`. Ante un fallo que de
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Épica no encontrada | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>` | Fin sin escribir |
+| Ruta fuera de `specs/flow/EPIC-NN-<slug>/` (externa, archivada u otra forma) | `❌ La ruta <arg> no es una épica activa de specs/flow/ (se esperaba specs/flow/EPIC-NN-<slug>/)` | Fin sin escribir |
 | Argumento ausente o ambiguo (Agent) | `❌ Falta el argumento <epica>` / `❌ El argumento <arg> es ambiguo: <lista>` | Fin sin escribir |
 | Template del reporte ausente | `❌ Template epic-refine-report-template.md no encontrado (probado: …)` | Fin sin escribir |
 | Reporte de análisis ausente | `❌ No se encontró epic-analyze-report.md en <EPIC_DIR>. Ejecuta /epic-analyze <EPIC_ID> primero.` | Fin sin escribir |

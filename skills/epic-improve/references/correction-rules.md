@@ -39,7 +39,9 @@ Contenido:
 
 ## 3. `seccion-faltante`
 
-`Ubicación` = `tras ## <título previo>` o `al inicio del cuerpo` (tras el encabezado `# `).
+`Ubicación` = `tras ## <título previo>` o `al inicio del cuerpo` (tras el encabezado `# `). Es el
+título que precede a la sección **en el template**, que también puede faltar en `epic.md`: identifica
+el defecto, pero la posición de inserción se resuelve con el paso 3.
 
 1. Identifica la clave de la sección por su título en el template.
 2. **Cuerpo:**
@@ -47,8 +49,16 @@ Contenido:
    - clave `criterios-salida` → mejora `M-criterios` (§6);
    - clave `notas` → encabezado sin cuerpo (su contenido es opcional en el template);
    - clave `alcance`, `historias` o `smoke-tests` → solo con contenido que cumpla la regla de fuente citada (§7): `historias` en F1 a partir de nombres de entregables del `Alcance`; `smoke-tests` con un único `### <nombre>` + bloque `gherkin` derivado de una historia o un criterio existente; `alcance` a partir de las líneas de `Historias`.
-3. Inserta `## <título del template>` + cuerpo en la posición de `Ubicación`, separado por una línea en blanco.
-4. Sin cuerpo con fuente (y la clave no es `notas`) → **requiere decisión del PO** con su pregunta; la sección **no** se inserta.
+3. **Ancla:** recorre hacia atrás, en el orden del template, las secciones que preceden a la que falta. El ancla es la primera que esté presente en `epic.md` o que el propio plan inserte (un `C-NN` de `seccion-faltante`); una sección ausente que pasa a **requiere decisión del PO** no es ancla y se salta. Sin ancla → `al inicio del cuerpo`.
+4. Inserta `## <título del template>` + cuerpo justo antes del siguiente encabezado `## ` posterior al ancla (o al final del archivo si no hay ninguno); `al inicio del cuerpo` = antes del primer `## `. Separa con una línea en blanco. Las inserciones se aplican en el orden del template, para que una sección insertada sirva de ancla a la siguiente.
+5. Sin cuerpo con fuente (y la clave no es `notas`) → **requiere decisión del PO** con su pregunta; la sección **no** se inserta.
+6. En el plan, la columna `Ubicación` muestra el ancla resuelta (`tras ## <título del ancla>`), no la del reporte.
+
+**Ejemplo — secciones contiguas ausentes:** faltan `Historias` y `Criterios de salida`. `Historias` no
+tiene fuente (requiere decisión del PO) y `Criterios de salida` sí. El reporte ubica `Criterios de salida`
+`tras ## Historias`, que no existe ni se insertará; el ancla resuelta es `Alcance`, y la sección queda
+entre `Alcance` y la siguiente presente (`Smoke tests`). Cuando el PO añada `Historias` tras `Alcance`, el
+orden del template se conserva.
 
 ## 4. `formato-historias`
 

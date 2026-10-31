@@ -11,9 +11,13 @@ Lo lee `epic-refine` en el Paso 3 (sub-sección «Detección COH») siempre que 
 | Lugar | Qué se lee | Archivo que se escribiría |
 |---|---|---|
 | Índice | Las líneas de nivel superior con el token `**STORY-NNN**` (F2 `- [ ] **STORY-NNN**` / F3 `- [x] **STORY-NNN**`) de la sección de clave `historias` de `epic.md` (título del template, como en [int-corrections.md](int-corrections.md)); el texto **completo** de la línea, incluido lo que `epic-analyze` ignora tras el primer token | `epic.md` |
-| `related` | Las entradas del `related` del frontmatter (forma de bloque o en línea) de cada `story.md` **activo** del universo de la épica (`epic-analyze` Paso 4.6: listadas en el índice con `story.md` activo ∪ con `parent` de prefijo `EPIC_ID`), normalizadas como en `epic-analyze` Paso 5c.2 (sin espacios, comillas ni envoltorio `[[…]]`) | ese `story.md` |
+| `related` | Las entradas del `related` del frontmatter (forma de bloque o en línea) de cada `story.md` **activo** del universo de la épica (`epic-analyze` Paso 4.6: listadas en el índice con `story.md` activo ∪ que declaran la épica en su `parent`), normalizadas como en `epic-analyze` Paso 5c.2 (sin espacios, comillas ni envoltorio `[[…]]`) | ese `story.md` |
 
 No se leen: las historias archivadas (registro histórico, nunca se escriben), el cuerpo de los `story.md` (incluidos sus `[[…]]`), el `related` y la línea de referencias de `epic.md`, ni `docs/`.
+
+### Pertenencia (antes de planificar un cambio en un `story.md`)
+
+Estar listada en el índice no autoriza a escribir una historia. Antes de planificar cualquier COH de `related`, el `story.md` debe declarar la épica: el ID `EPIC-NN` de su `parent` es igual a `EPIC_ID`, comparado como en `epic-analyze` Paso 4.3 (el `parent` es exactamente `EPIC_ID` o empieza por `EPIC_ID` seguido de `-`; `EPIC-300-x` no declara `EPIC-30`; nunca un prefijo sin ese delimitador). Es la misma regla de [int-corrections.md](int-corrections.md) y [mad-corrections.md](mad-corrections.md). Si la historia listada declara otra épica, o su `parent` está ausente o vacío, cada candidato de su `related` queda **fuera de alcance** con responsable `PO` (sección 5) y no se genera ningún `C-NN` sobre ese `story.md`: un índice manipulado o desactualizado no puede dirigir una escritura a una historia de otra épica. Los COH del índice de `epic.md` no dependen de esta regla.
 
 ### Forma del slug
 
@@ -97,6 +101,8 @@ El archivo no se escribe por ese COH; la nota va a `notas` y a la columna **Resp
 | 0 directorios con el ID | `sin directorio STORY-NNN-* en specs/flow/ ni en specs/flow/archive/: reemplazo no determinable` |
 | ≥ 2 directorios con el ID | `varios directorios con el ID STORY-NNN: <lista>` |
 | `related` en una forma no reconocida o ilegible | `related no reconocido` (la misma nota de `epic-analyze` Paso 5c.2) |
+| La historia listada declara otra épica (regla de pertenencia) | `` historia de otra épica (parent: `<valor>`): no se modifica `` |
+| La historia listada tiene `parent` ausente o vacío | `parent ausente: la historia no se modifica` |
 
 ## 6. Fila del reporte
 

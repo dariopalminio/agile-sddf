@@ -743,3 +743,167 @@ test('--changed-from con rango valido sin skills evaluables falla cerrado', asyn
   assertPreflightFailure(result);
   assert.match(result.output, /seleccion|caso|skill/i);
 });
+
+// ---------------------------------------------------------------------------
+// Modo sandbox
+// ---------------------------------------------------------------------------
+
+const EPIC = 'specs/flow/EPIC-01-a/epic.md';
+
+function makeSandboxCase(id, files, sandbox = { fixture: 'skills/alpha/examples/base', copy: ['docs/templates'] }) {
+  return { ...makeCase(id), sandbox, expected: { contains: ['=== CONSOLE ==='], files } };
+}
+
+function writeSandboxSkill(fixture, cases) {
+  const skillDir = writeSkill(fixture, 'alpha', cases);
+  fs.mkdirSync(path.join(skillDir, 'examples', 'base', 'EPIC-01-a'), { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'examples', 'base', 'EPIC-01-a', 'epic.md'), 'status: PLAN\nindice: viejo\n');
+  fs.mkdirSync(path.join(skillDir, 'assets'), { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'assets', 'template.md'), '# seed\n');
+  fs.mkdirSync(path.join(fixture.root, 'docs', 'templates'), { recursive: true });
+  fs.writeFileSync(path.join(fixture.root, 'docs', 'templates', 'epic-template.md'), '# epic\n');
+  return skillDir;
+}
+
+function writingRunner(writes) {
+  return async (prompt, opts, runtime) => {
+    for (const [rel, content] of Object.entries(writes(runtime.sandboxDir))) {
+      fs.mkdirSync(path.dirname(path.join(runtime.sandboxDir, rel)), { recursive: true });
+      fs.writeFileSync(path.join(runtime.sandboxDir, rel), content);
+    }
+    return { ok: true, code: 0, stdout: '=== CONSOLE ===\nlisto\n=== END ===', stderr: '', durationMs: 0, timedOut: false };
+  };
+}
+
+test('los adaptadores en sandbox permiten escribir solo en el directorio de trabajo', () => {
+  const claudeArgs = buildClaudeArgs('p', { model: 'm' }, { sandbox: true });
+  assert.deepEqual(claudeArgs.slice(-7), [
+    '--permission-mode',
+    'acceptEdits',
+    '--allowedTools',
+    'Read,Glob,Grep',
+    '--disallowedTools',
+    'Bash,PowerShell,WebFetch,WebSearch',
+    '--strict-mcp-config',
+  ]);
+  // Una regla Write/Edit sin ruta aprobaría escrituras fuera del sandbox: solo acceptEdits las aprueba, y únicamente en el cwd.
+  const allowed = claudeArgs[claudeArgs.indexOf('--allowedTools') + 1].split(',');
+  assert.ok(!allowed.some((tool) => /^(Write|Edit)\b/.test(tool)), `allowedTools no debe conceder Write/Edit: ${allowed}`);
+  assert.deepEqual(buildCodexArgs({ model: null }, 'salida.txt', 'caja').slice(0, 6), [
+    'exec',
+    '--sandbox',
+    'workspace-write',
+    '--skip-git-repo-check',
+    '--cd',
+    'caja',
+  ]);
+});
+
+test('un caso sandbox sin expected.files.written o con fixture inválido falla cerrado', async (t) => {
+  const sinWritten = createFixture(t);
+  writeSandboxSkill(sinWritten, [makeSandboxCase('TC-001', {})]);
+  const r1 = await runRunner(sinWritten, ['alpha']);
+  assertPreflightFailure(r1);
+  assert.match(r1.output, /expected\.files\.written/);
+  assert.equal(r1.claudeCalls.length, 0);
+
+  const escape = createFixture(t);
+  writeSandboxSkill(escape, [makeSandboxCase('TC-001', { written: [] }, { fixture: '../fuera' })]);
+  const r2 = await runRunner(escape, ['alpha']);
+  assertPreflightFailure(r2);
+  assert.match(r2.output, /no puede escapar/);
+
+  const ausente = createFixture(t);
+  writeSandboxSkill(ausente, [makeSandboxCase('TC-001', { written: [] }, { fixture: 'skills/alpha/examples/nada' })]);
+  const r3 = await runRunner(ausente, ['alpha']);
+  assertPreflightFailure(r3);
+  assert.match(r3.output, /sandbox\.fixture no es un directorio/);
+  assertNoRunArtifacts(ausente);
+});
+
+test('sandbox: copia fixture, skill sin evals ni examples y rutas extra; califica el árbol en disco', async (t) => {
+  const fixture = createFixture(t);
+  const skillDir = writeSandboxSkill(fixture, [makeSandboxCase('TC-001', {
+    written: [EPIC, `${EPIC}.bak`],
+    contains: { [EPIC]: ['indice: nuevo'] },
+    not_contains: { [EPIC]: ['indice: viejo'] },
+    backups: { [`${EPIC}.bak`]: EPIC },
+  })]);
+  let seen;
+  const result = await runRunner(fixture, ['alpha'], {
+    runClaude: writingRunner((dir) => {
+      seen = {
+        fixture: fs.readFileSync(path.join(dir, EPIC), 'utf8'),
+        skill: fs.existsSync(path.join(dir, 'skills', 'alpha', 'SKILL.md')),
+        assets: fs.existsSync(path.join(dir, 'skills', 'alpha', 'assets', 'template.md')),
+        evals: fs.existsSync(path.join(dir, 'skills', 'alpha', 'evals')),
+        examples: fs.existsSync(path.join(dir, 'skills', 'alpha', 'examples')),
+        templates: fs.existsSync(path.join(dir, 'docs', 'templates', 'epic-template.md')),
+      };
+      return { [`${EPIC}.bak`]: seen.fixture, [EPIC]: 'status: PLAN\nindice: nuevo\n' };
+    }),
+  });
+
+  assertExit(result, 0);
+  assert.deepEqual(seen, {
+    fixture: 'status: PLAN\nindice: viejo\n',
+    skill: true,
+    assets: true,
+    evals: false,
+    examples: false,
+    templates: true,
+  });
+  assert.match(result.claudeCalls[0][0], /EJECUTAR DE VERDAD/);
+  assert.equal(
+    fs.readFileSync(path.join(skillDir, 'examples', 'base', 'EPIC-01-a', 'epic.md'), 'utf8'),
+    'status: PLAN\nindice: viejo\n',
+  );
+  const filesLog = fs.readFileSync(
+    path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'runs', 'TC-001.files.txt'),
+    'utf8',
+  );
+  assert.match(filesLog, /created:\n {2}specs\/flow\/EPIC-01-a\/epic\.md\.bak\nmodified:\n {2}specs\/flow\/EPIC-01-a\/epic\.md\n/);
+});
+
+test('sandbox: una escritura no esperada o un backup distinto del original es FAIL', async (t) => {
+  const fixture = createFixture(t);
+  writeSandboxSkill(fixture, [makeSandboxCase('TC-001', {
+    written: [EPIC, `${EPIC}.bak`],
+    backups: { [`${EPIC}.bak`]: EPIC },
+  })]);
+  const result = await runRunner(fixture, ['alpha'], {
+    runClaude: writingRunner(() => ({
+      [`${EPIC}.bak`]: 'otro contenido\n',
+      [EPIC]: 'status: COMPLETED\n',
+      'specs/flow/EPIC-01-a/epic-analyze-report.md': 'manipulado\n',
+    })),
+  });
+
+  assertExit(result, 1);
+  assert.match(result.output, /\[files\] escrito: specs\/flow\/EPIC-01-a\/epic-analyze-report\.md/);
+  assert.match(result.output, /\[files\] specs\/flow\/EPIC-01-a\/epic\.md\.bak difiere del specs\/flow\/EPIC-01-a\/epic\.md previo/);
+});
+
+test('sandbox con written vacío: cero escrituras es PASS y cualquier escritura es FAIL', async (t) => {
+  const quieto = createFixture(t);
+  writeSandboxSkill(quieto, [makeSandboxCase('TC-001', { written: [] })]);
+  assertExit(await runRunner(quieto, ['alpha'], { runClaude: writingRunner(() => ({})) }), 0);
+
+  const escribe = createFixture(t);
+  writeSandboxSkill(escribe, [makeSandboxCase('TC-001', { written: [] })]);
+  const result = await runRunner(escribe, ['alpha'], {
+    runClaude: writingRunner(() => ({ 'specs/flow/EPIC-01-a/epic-refine-report.md': 'reporte\n' })),
+  });
+  assertExit(result, 1);
+  assert.match(result.output, /\[files\] escrito: specs\/flow\/EPIC-01-a\/epic-refine-report\.md/);
+});
+
+test('sandbox en dry-run muestra el plan sin copiar ni invocar runners', async (t) => {
+  const fixture = createFixture(t);
+  writeSandboxSkill(fixture, [makeSandboxCase('TC-001', { written: [] })]);
+  const result = await runRunner(fixture, ['alpha', '--dry-run']);
+  assertExit(result, 0);
+  assert.match(result.output, /\[sandbox\] skills\/alpha\/examples\/base → specs\/flow\/ · escritos esperados: 0/);
+  assert.equal(result.claudeCalls.length, 0);
+  assertNoRunArtifacts(fixture);
+});

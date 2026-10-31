@@ -8,7 +8,10 @@
  * por cada caso construye el prompt de escenario y lo ejecuta mediante un runner de eval
  * (`claude` o `codex`) en modo solo lectura,
  * captura la salida y la califica con `expected.contains` / `not_contains` / `output_contains`
- * y `threshold`. Exit code 0 si todo pasa, 1 si algún caso falla — es lo que `story-implement`
+ * y `threshold`. Un caso con `sandbox` (opt-in) se ejecuta de verdad sobre una copia desechable
+ * del fixture en `.tmp/skill-test-evals/<skill>/sandbox/<TC>/`, con escritura confinada a ese
+ * directorio, y además se califica el árbol antes/después con `expected.files`.
+ * Exit code 0 si todo pasa, 1 si algún caso falla — es lo que `story-implement`
  * (Pasos 5, 9b y 10) interpreta como rojo/verde a través de `verify.eval.command` en
  * `sddf.config.yaml`.
  *
@@ -153,6 +156,11 @@ Options:
 
 Claude usa sonnet por defecto (o SDDF_EVAL_MODEL). Codex usa su configuración local por defecto
 (o SDDF_EVAL_CODEX_MODEL). --model prevalece sobre ambos valores.
+
+Un caso con "sandbox": { "fixture", "target" (default specs/flow), "copy" } se ejecuta de verdad
+sobre una copia desechable en .tmp/skill-test-evals/<skill>/sandbox/<TC>/, con escritura confinada
+a ese directorio, y se califica además el árbol en disco con expected.files: written (lista exacta
+de rutas creadas/modificadas/eliminadas), contains, not_contains y backups ({ ".bak": "original" }).
 
 Examples:
   npm run test:eval
@@ -386,6 +394,8 @@ function loadCases(skillsDir, name, runtime = {}) {
       throw new Error(`❌ ${path.relative(repoRoot, evalsPath)} contiene el ID duplicado ${id}.`);
     }
     seenIds.add(id);
+    const spec = parseSandboxSpec(testCase, `${path.relative(repoRoot, evalsPath)} › ${id}`);
+    if (spec) assertSandboxSources(spec, repoRoot, `${path.relative(repoRoot, evalsPath)} › ${id}`);
   }
   return { evalsPath, cases: json.cases };
 }
@@ -481,11 +491,190 @@ function buildPrompt(skillName, skillMdRel, testCase) {
 }
 
 // ---------------------------------------------------------------------------
-// Paso E3b — Invocar el runner de eval en modo de solo lectura
+// Modo sandbox — ejecución real con escritura confinada (opt-in por caso)
 // ---------------------------------------------------------------------------
 
-function buildClaudeArgs(prompt, opts) {
+// El skill bajo prueba se copia sin sus casos esperados ni sus fixtures.
+const SANDBOX_SKILL_EXCLUDES = new Set(['evals', 'examples']);
+
+function normalizeRelativePath(value, label) {
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new Error(`❌ ${label} debe ser una ruta relativa no vacía.`);
+  }
+  if (isAbsoluteOnAnySupportedPlatform(value)) {
+    throw new Error(`❌ ${label} no admite rutas absolutas: ${JSON.stringify(value)}.`);
+  }
+  const segments = value.split(/[\\/]+/).filter((segment) => segment && segment !== '.');
+  if (segments.includes('..')) {
+    throw new Error(`❌ ${label} no puede escapar de su raíz: ${JSON.stringify(value)}.`);
+  }
+  if (segments.length === 0) {
+    throw new Error(`❌ ${label} debe ser una ruta relativa no vacía.`);
+  }
+  return segments.join('/');
+}
+
+function normalizePathMap(value, label, mapValue) {
+  if (value === undefined) return {};
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(`❌ ${label} debe ser un objeto { ruta: valor }.`);
+  }
+  const out = {};
+  for (const [key, entry] of Object.entries(value)) {
+    out[normalizeRelativePath(key, `${label} (clave)`)] = mapValue(entry, `${label} › ${key}`);
+  }
+  return out;
+}
+
+function stringList(value, label) {
+  if (!Array.isArray(value) || value.some((s) => typeof s !== 'string')) {
+    throw new Error(`❌ ${label} debe ser una lista de textos.`);
+  }
+  return value;
+}
+
+/**
+ * Normaliza `testCase.sandbox` y `testCase.expected.files`. Devuelve null si el caso no es sandbox.
+ * Las rutas de `expected.files` son relativas a la raíz del sandbox.
+ */
+function parseSandboxSpec(testCase, source) {
+  if (testCase.sandbox === undefined) return null;
+  const raw = testCase.sandbox;
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    throw new Error(`❌ ${source}: sandbox debe ser un objeto con fixture.`);
+  }
+  const files = testCase.expected && testCase.expected.files;
+  if (!files || typeof files !== 'object' || !Array.isArray(files.written)) {
+    throw new Error(`❌ ${source}: un caso sandbox requiere expected.files.written (lista de rutas escritas; [] si no escribe nada).`);
+  }
+  return {
+    fixture: normalizeRelativePath(raw.fixture, `${source}: sandbox.fixture`),
+    target: normalizeRelativePath(raw.target === undefined ? 'specs/flow' : raw.target, `${source}: sandbox.target`),
+    copy: (raw.copy === undefined ? [] : stringList(raw.copy, `${source}: sandbox.copy`))
+      .map((entry) => normalizeRelativePath(entry, `${source}: sandbox.copy`)),
+    files: {
+      written: [...new Set(stringList(files.written, `${source}: expected.files.written`)
+        .map((entry) => normalizeRelativePath(entry, `${source}: expected.files.written`)))].sort(),
+      contains: normalizePathMap(files.contains, `${source}: expected.files.contains`, stringList),
+      notContains: normalizePathMap(files.not_contains, `${source}: expected.files.not_contains`, stringList),
+      backups: normalizePathMap(files.backups, `${source}: expected.files.backups`,
+        (entry, label) => normalizeRelativePath(entry, label)),
+    },
+  };
+}
+
+function assertSandboxSources(spec, repoRoot, source) {
+  const fixture = resolveContainedPath(repoRoot, spec.fixture);
+  if (!fs.existsSync(fixture) || !fs.statSync(fixture).isDirectory()) {
+    throw new Error(`❌ ${source}: sandbox.fixture no es un directorio del repositorio: ${spec.fixture}.`);
+  }
+  for (const entry of spec.copy) {
+    if (!fs.existsSync(resolveContainedPath(repoRoot, entry))) {
+      throw new Error(`❌ ${source}: sandbox.copy no existe en el repositorio: ${entry}.`);
+    }
+  }
+}
+
+function prepareSandbox(spec, { repoRoot, skillsDir, skillName, sandboxDir }) {
+  fs.rmSync(sandboxDir, { recursive: true, force: true });
+  fs.mkdirSync(sandboxDir, { recursive: true });
+  for (const entry of spec.copy) {
+    fs.cpSync(resolveContainedPath(repoRoot, entry), resolveContainedPath(sandboxDir, entry), { recursive: true });
+  }
+  const skillDir = path.dirname(skillFilePath(skillsDir, skillName, 'SKILL.md'));
+  const skillRel = path.relative(repoRoot, skillDir);
+  // Copia por entradas de primer nivel: el `filter` de cpSync recibe rutas `\\?\` en Windows.
+  for (const entry of fs.readdirSync(skillDir)) {
+    if (SANDBOX_SKILL_EXCLUDES.has(entry)) continue;
+    fs.cpSync(path.join(skillDir, entry), resolveContainedPath(sandboxDir, skillRel, entry), { recursive: true });
+  }
+  fs.cpSync(resolveContainedPath(repoRoot, spec.fixture), resolveContainedPath(sandboxDir, spec.target), { recursive: true });
+}
+
+function snapshotTree(root) {
+  const files = new Map();
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else files.set(path.relative(root, full).split(path.sep).join('/'), fs.readFileSync(full));
+    }
+  };
+  if (fs.existsSync(root)) walk(root);
+  return files;
+}
+
+function diffSnapshots(before, after) {
+  const created = [...after.keys()].filter((p) => !before.has(p)).sort();
+  const deleted = [...before.keys()].filter((p) => !after.has(p)).sort();
+  const modified = [...after.keys()].filter((p) => before.has(p) && !before.get(p).equals(after.get(p))).sort();
+  return { created, modified, deleted, written: [...new Set([...created, ...modified, ...deleted])].sort() };
+}
+
+function gradeSandboxFiles(spec, before, after) {
+  const missing = [];
+  const violated = [];
+  const diff = diffSnapshots(before, after);
+  const text = (buffer) => buffer.toString('utf8').replace(/\r\n/g, '\n');
+  for (const p of spec.files.written) {
+    if (!diff.written.includes(p)) missing.push(`[files] escrito: ${p}`);
+  }
+  for (const p of diff.written) {
+    if (!spec.files.written.includes(p)) violated.push(`[files] escrito: ${p}`);
+  }
+  for (const [p, needles] of Object.entries(spec.files.contains)) {
+    if (!after.has(p)) {
+      missing.push(`[files] existe: ${p}`);
+      continue;
+    }
+    for (const s of needles) if (!text(after.get(p)).includes(s)) missing.push(`[files] ${p} contiene: ${s}`);
+  }
+  for (const [p, needles] of Object.entries(spec.files.notContains)) {
+    if (!after.has(p)) continue;
+    for (const s of needles) if (text(after.get(p)).includes(s)) violated.push(`[files] ${p} contiene: ${s}`);
+  }
+  for (const [bak, original] of Object.entries(spec.files.backups)) {
+    if (!after.has(bak)) missing.push(`[files] backup: ${bak}`);
+    else if (!before.has(original)) missing.push(`[files] original previo: ${original}`);
+    else if (!after.get(bak).equals(before.get(original))) violated.push(`[files] ${bak} difiere del ${original} previo`);
+  }
+  return { missing, violated, diff };
+}
+
+function buildSandboxPrompt(skillName, skillMdRel, testCase, spec) {
+  const input = testCase.input === undefined ? {} : testCase.input;
   return [
+    `Eres un ejecutor de evals (protocolo E3 de \`skill-test-evals\`, modo sandbox). Debes EJECUTAR DE VERDAD el skill \`${skillName}\` sobre un escenario de prueba, escribiendo en disco lo que el skill escriba.`,
+    ``,
+    `Reglas estrictas:`,
+    `- El directorio de trabajo actual es una copia desechable del repositorio y hace a la vez de REPO_ROOT y de CLI_ROOT del skill. Contiene \`${spec.target}/\` con el fixture del escenario, \`${skillMdRel}\` y las rutas copiadas para el escenario${spec.copy.length ? ` (${spec.copy.map((entry) => `\`${entry}\``).join(', ')})` : ''}.`,
+    `- Lee íntegro \`${skillMdRel}\` (si es largo, léelo en tramos con offset/limit hasta el final). Es el único contrato: sigue sus pasos en orden literal, copia sus mensajes tal cual y crea, modifica o deja intactos los archivos exactamente como dicta.`,
+    `- Escribe solo con rutas relativas dentro del directorio de trabajo; nunca fuera de él. No ejecutes comandos de shell ni lances subagentes. El runner compara el árbol del directorio antes y después de tu ejecución.`,
+    `- El bloque "Condiciones de entrada" define la invocación y las respuestas del usuario a cada pausa (si no se especifica una respuesta, asume la opción por defecto/afirmativa). No inventes condiciones que el escenario no describa.`,
+    ``,
+    `Escenario de prueba (${testCase.id} — ${testCase.name || ''}):`,
+    testCase.description || '(sin descripción)',
+    ``,
+    `Condiciones de entrada (JSON):`,
+    '```json',
+    JSON.stringify(input, null, 2),
+    '```',
+    ``,
+    `Formato de respuesta (obligatorio, sin texto adicional antes ni después):`,
+    `=== CONSOLE ===`,
+    `<todas las líneas que el skill mostró al usuario, en orden y tal cual, incluidas las preguntas de pausa y las respuestas del usuario en una línea "> s" / "> n">`,
+    `${END_MARKER}`,
+    ``,
+    `Los archivos no se transcriben: se verifican en disco. Cualquier nota o explicación va DESPUÉS de "${END_MARKER}".`,
+  ].join('\n');
+}
+
+// ---------------------------------------------------------------------------
+// Paso E3b — Invocar el runner de eval (solo lectura, o escritura confinada en sandbox)
+// ---------------------------------------------------------------------------
+
+function buildClaudeArgs(prompt, opts, { sandbox = false } = {}) {
+  const args = [
     '-p',
     prompt,
     '--model',
@@ -493,17 +682,25 @@ function buildClaudeArgs(prompt, opts) {
     '--output-format',
     'text',
     '--permission-mode',
-    'plan',
+    sandbox ? 'acceptEdits' : 'plan',
     '--allowedTools',
     'Read,Glob,Grep',
   ];
+  if (sandbox) {
+    // Write/Edit no van en --allowedTools: una regla sin ruta aprobaría escrituras fuera del sandbox.
+    // acceptEdits solo aprueba ediciones dentro del cwd (el sandbox); en -p el resto se deniega.
+    // Se deniegan shell, web y MCP para que reglas heredadas de la configuración no abran otra vía.
+    args.push('--disallowedTools', 'Bash,PowerShell,WebFetch,WebSearch', '--strict-mcp-config');
+  }
+  return args;
 }
 
-function buildCodexArgs(opts, outputFile) {
+function buildCodexArgs(opts, outputFile, sandboxDir = null) {
   const args = [
     'exec',
     '--sandbox',
-    'read-only',
+    sandboxDir ? 'workspace-write' : 'read-only',
+    ...(sandboxDir ? ['--skip-git-repo-check', '--cd', sandboxDir] : []),
     '--ephemeral',
     '--color',
     'never',
@@ -550,7 +747,7 @@ function runProcess(command, args, opts, runtime = {}, input) {
     let child;
     try {
       child = spawnFn(command, args, {
-        cwd: repoRoot,
+        cwd: runtime.sandboxDir ? resolveRoot(runtime.sandboxDir, 'sandbox') : repoRoot,
         env,
         stdio: input === undefined ? ['ignore', 'pipe', 'pipe'] : ['pipe', 'pipe', 'pipe'],
       });
@@ -598,7 +795,7 @@ function runClaude(prompt, opts, runtime = {}) {
   // (mismo patrón que skill-master/scripts/run_eval.py).
   const env = { ...(runtime.env || process.env) };
   delete env.CLAUDECODE;
-  return runProcess('claude', buildClaudeArgs(prompt, opts), opts, { ...runtime, env });
+  return runProcess('claude', buildClaudeArgs(prompt, opts, { sandbox: Boolean(runtime.sandboxDir) }), opts, { ...runtime, env });
 }
 
 function runCodex(prompt, opts, runtime = {}) {
@@ -617,7 +814,7 @@ function runCodex(prompt, opts, runtime = {}) {
     });
   }
 
-  return runProcess('codex', buildCodexArgs(opts, outputFile), opts, runtime, prompt).then((run) => {
+  return runProcess('codex', buildCodexArgs(opts, outputFile, runtime.sandboxDir || null), opts, runtime, prompt).then((run) => {
     if (!run.ok) return run;
     try {
       const stdout = fs.readFileSync(outputFile, 'utf8');
@@ -695,14 +892,23 @@ async function runSkill(planSkill, opts, runtime = {}) {
 
   const results = await runPool(cases, opts.concurrency, async (tc) => {
     const testCaseId = validateCaseId(tc.id, `skill ${skillName}`);
-    const prompt = buildPrompt(skillName, skillMdRel, tc);
+    const spec = parseSandboxSpec(tc, `${skillName} › ${testCaseId}`);
+    const prompt = spec ? buildSandboxPrompt(skillName, skillMdRel, tc, spec) : buildPrompt(skillName, skillMdRel, tc);
     if (opts.dryRun) {
-      log(`\n----- ${tc.id} (${tc.name}) — prompt -----\n${prompt}\n`);
+      const plan = spec ? `[sandbox] ${spec.fixture} → ${spec.target}/ · escritos esperados: ${spec.files.written.length}\n` : '';
+      log(`\n----- ${tc.id} (${tc.name}) — prompt -----\n${plan}${prompt}\n`);
       return { tc, status: 'DRY', grade: null, durationMs: 0 };
     }
     write(`[${tc.id}] ejecutando…\n`);
     const outputFile = resolveContainedPath(runsDir, `${testCaseId}.txt`);
-    const run = await runEvalRunner(prompt, opts, { ...runtime, codexOutputFile: outputFile });
+    let sandboxDir = null;
+    let before = null;
+    if (spec) {
+      sandboxDir = resolveContainedPath(tmpRoot, skillName, 'sandbox', testCaseId);
+      prepareSandbox(spec, { repoRoot, skillsDir, skillName, sandboxDir });
+      before = snapshotTree(sandboxDir);
+    }
+    const run = await runEvalRunner(prompt, opts, { ...runtime, codexOutputFile: outputFile, sandboxDir });
     fs.writeFileSync(outputFile, run.stdout);
     if (run.stderr && run.stderr.trim()) {
       fs.writeFileSync(resolveContainedPath(runsDir, `${testCaseId}.stderr.txt`), run.stderr);
@@ -717,6 +923,16 @@ async function runSkill(planSkill, opts, runtime = {}) {
       return { tc, status: 'ERROR', grade: null, reason, durationMs: run.durationMs };
     }
     const grade = gradeOutput(tc, run.stdout);
+    if (spec) {
+      const files = gradeSandboxFiles(spec, before, snapshotTree(sandboxDir));
+      fs.writeFileSync(
+        resolveContainedPath(runsDir, `${testCaseId}.files.txt`),
+        ['created', 'modified', 'deleted'].map((kind) => `${kind}:\n${files.diff[kind].map((p) => `  ${p}`).join('\n')}`).join('\n') + '\n',
+      );
+      grade.missing.push(...files.missing);
+      grade.violated.push(...files.violated);
+      grade.pass = grade.pass && files.missing.length === 0 && files.violated.length === 0;
+    }
     log(`[${tc.id}] ${grade.pass ? '✅ PASS' : '❌ FAIL'} (${(run.durationMs / 1000).toFixed(0)}s)`);
     return { tc, status: grade.pass ? 'PASS' : 'FAIL', grade, durationMs: run.durationMs };
   });
@@ -885,6 +1101,11 @@ module.exports = {
   loadCases,
   buildExecutionPlan,
   buildPrompt,
+  buildSandboxPrompt,
+  parseSandboxSpec,
+  snapshotTree,
+  diffSnapshots,
+  gradeSandboxFiles,
   gradeOutput,
   renderReport,
   main,
