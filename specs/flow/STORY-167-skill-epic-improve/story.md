@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-167-skill-epic-improve
 title: "Skill epic-improve"
 status: CODE-REVIEW
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
 updated: 2026-10-30
