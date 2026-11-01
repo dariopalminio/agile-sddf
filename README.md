@@ -521,7 +521,7 @@ La motivación y el historial completo están en [CHANGELOG](CHANGELOG.md) y en 
 
 </details>
 
-## Ejecutar evals con Claude o Codex
+## Ejecutar evals con Claude, Codex u OpenCode
 
 `npm run test:eval` conserva Claude como runner predeterminado. Para seleccionar el ejecutor por
 invocación, usa `--eval-runner`:
@@ -530,14 +530,26 @@ invocación, usa `--eval-runner`:
 npm run test:eval -- --eval-runner claude
 npm run test:eval -- --eval-runner codex
 npm run test:eval -- sddf-init --eval-runner codex --model <modelo>
+npm run test:eval -- sddf-init --eval-runner opencode
+npm run test:eval -- sddf-init --eval-runner opencode --model <proveedor/modelo>
 ```
 
-También puedes persistir la elección en el entorno con `SDDF_EVAL_RUNNER=claude|codex`; el flag
+También puedes persistir la elección en el entorno con `SDDF_EVAL_RUNNER=claude|codex|opencode`; el flag
 siempre prevalece. Claude usa `sonnet` por defecto (u `SDDF_EVAL_MODEL`), mientras que Codex usa su
 configuración local salvo que se indique `--model` o `SDDF_EVAL_CODEX_MODEL`. El runner de Codex se
 ejecuta con una sesión efímera; las herramientas shell que use Codex quedan en sandbox de solo
 lectura y el runner guarda sus artefactos temporales bajo `.tmp/`. `--dry-run` valida la selección y
-genera el plan sin requerir que ninguno de los dos CLIs esté instalado.
+genera el plan sin requerir que ninguno de los CLIs esté instalado.
+
+OpenCode requiere su CLI en `PATH` y un proveedor autenticado. Usa el modelo de su configuración
+local salvo que indiques `--model proveedor/modelo` o `SDDF_EVAL_OPENCODE_MODEL`. El adaptador envía
+el prompt por stdin a `opencode run --format json`, extrae únicamente los eventos de texto para
+calificarlos y trata los eventos de error, las respuestas vacías y los timeouts como errores de
+ejecución. En Windows admite tanto el ejecutable nativo como la instalación npm de `opencode-ai`
+sin abrir un shell. Usa un agente `sddf-eval` configurado solo para lectura; los casos `sandbox`
+habilitan ediciones únicamente bajo su directorio desechable y verifican los archivos resultantes.
+Consulta el contrato de [CLI](https://opencode.ai/docs/cli/) y
+[permisos](https://opencode.ai/docs/permissions/) de OpenCode.
 
 En un proyecto que quiera fijar Codex para el gate de evals, configura su comando sin cambiar el
 contrato de runtimes de instalación:

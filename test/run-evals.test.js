@@ -11,10 +11,13 @@ const test = require('node:test');
 const {
   buildClaudeArgs,
   buildCodexArgs,
+  buildOpenCodeArgs,
   main,
   parseArgs,
   resolveContainedPath,
   runCodex,
+  runOpenCode,
+  openCodeInvocation,
 } = require('../scripts/run-evals.js');
 
 function createFixture(t) {
@@ -79,10 +82,11 @@ function initializeGit(fixture) {
   return commitAll(fixture, 'fixture inicial');
 }
 
-async function runRunner(fixture, args, { runClaude, runCodex: runCodexStub, tmpRoot } = {}) {
+async function runRunner(fixture, args, { runClaude, runCodex: runCodexStub, runOpenCode: runOpenCodeStub, tmpRoot } = {}) {
   const messages = [];
   const claudeCalls = [];
   const codexCalls = [];
+  const openCodeCalls = [];
   const capture = (...values) => {
     messages.push(values.map((value) => String(value)).join(' '));
   };
@@ -113,8 +117,12 @@ async function runRunner(fixture, args, { runClaude, runCodex: runCodexStub, tmp
       codexCalls.push(values);
       return selectedRunCodex(...values);
     },
+    runOpenCode: async (...values) => {
+      openCodeCalls.push(values);
+      return (runOpenCodeStub || fakeClaude)(...values);
+    },
   });
-  return { code, output: messages.join('\n'), claudeCalls, codexCalls };
+  return { code, output: messages.join('\n'), claudeCalls, codexCalls, openCodeCalls };
 }
 
 function assertExit(result, expectedStatus) {
@@ -138,6 +146,19 @@ test('parsea el selector de runner y aplica modelos predeterminados por ejecutor
   const codex = parseArgs(['--eval-runner', 'codex'], {});
   assert.equal(codex.evalRunner, 'codex');
   assert.equal(codex.model, null, 'Codex no debe recibir el modelo por defecto de Claude');
+
+  assert.equal(parseArgs(['--eval-runner', 'opencode'], {}).model, null);
+  const openCode = parseArgs([], {
+    SDDF_EVAL_RUNNER: 'opencode',
+    SDDF_EVAL_OPENCODE_MODEL: 'proveedor/modelo',
+    SDDF_EVAL_MODEL: 'modelo-claude',
+    SDDF_EVAL_CODEX_MODEL: 'modelo-codex',
+  });
+  assert.equal(openCode.evalRunner, 'opencode');
+  assert.equal(openCode.model, 'proveedor/modelo');
+  assert.equal(parseArgs(['--eval-runner', 'opencode', '--model', 'otro/modelo'], {
+    SDDF_EVAL_OPENCODE_MODEL: 'proveedor/modelo',
+  }).model, 'otro/modelo');
 
   const codexFromEnv = parseArgs([], {
     SDDF_EVAL_RUNNER: 'codex',
@@ -315,6 +336,161 @@ test('Claude sigue siendo el runner predeterminado', async (t) => {
   assert.equal(result.claudeCalls.length, 1);
   assert.equal(result.codexCalls.length, 0);
   assert.equal(result.claudeCalls[0][1].evalRunner, 'claude');
+});
+
+test('OpenCode se selecciona y se registra en el informe sin invocar otros runners', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--report']);
+  assertExit(result, 0);
+  assert.equal(result.claudeCalls.length, 0);
+  assert.equal(result.codexCalls.length, 0);
+  assert.equal(result.openCodeCalls.length, 1);
+  assert.match(result.output, /Ejecutor de eval: opencode/);
+  const report = fs.readdirSync(path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha'))
+    .find((name) => name.startsWith('report-'));
+  assert.match(fs.readFileSync(path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', report), 'utf8'), /\*\*Ejecutor:\*\* opencode/);
+});
+
+test('dry-run con OpenCode no invoca runners ni crea artefactos', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--dry-run']);
+  assertExit(result, 0);
+  assert.equal(result.claudeCalls.length + result.codexCalls.length + result.openCodeCalls.length, 0);
+  assertNoRunArtifacts(fixture);
+});
+
+// Simula el protocolo del CLI, sin ejecutar modelos ni consumir cuota.
+function openCodeProcess(events, { code = 0, error, stdinError, timeout = false } = {}) {
+  return (command, args, options) => {
+    const child = new EventEmitter();
+    child.stdout = new EventEmitter();
+    child.stderr = new EventEmitter();
+    child.stdin = new EventEmitter();
+    child.stdin.end = (input) => {
+      child.input = input;
+      process.nextTick(() => {
+        if (error) return child.emit('error', new Error(error));
+        if (stdinError) child.stdin.emit('error', new Error(stdinError));
+        child.stdout.emit('data', events);
+        if (!timeout) child.emit('close', code);
+      });
+    };
+    child.kill = () => { child.emit('close', null); return true; };
+    child.invocation = { command, args, options };
+    return child;
+  };
+}
+
+test('OpenCode envía stdin, extrae solo texto JSON y aplica permisos sin mutar el entorno', async (t) => {
+  const fixture = createFixture(t);
+  const events = [
+    { type: 'step_start', part: {} },
+    { type: 'tool_use', part: { state: { output: 'no calificar este texto' } } },
+    { type: 'text', part: { text: '=== CONSOLE ===\n' } },
+    { type: 'text', part: { text: 'respuesta\n=== END ===' } },
+    { type: 'step_finish', part: {} },
+  ].map((event) => JSON.stringify(event)).join('\n');
+  const env = {
+    PATH: '', OPENCODE_PERMISSION: '{"*":"allow"}',
+    OPENCODE_CONFIG_CONTENT: JSON.stringify({ model: 'p/configurado', provider: { p: {} } }),
+  };
+  let child;
+  const result = await runOpenCode('prompt con "comillas"\ny líneas', { model: 'p/m', timeout: 1 }, {
+    repoRoot: fixture.root,
+    env,
+    spawn(...args) { child = openCodeProcess(events)(...args); return child; },
+  });
+  assert.equal(result.ok, true, result.stderr);
+  assert.equal(result.stdout, '=== CONSOLE ===\nrespuesta\n=== END ===');
+  assert.equal(child.input, 'prompt con "comillas"\ny líneas');
+  assert.deepEqual(child.invocation.args, buildOpenCodeArgs({ model: 'p/m' }));
+  assert.equal(child.invocation.options.cwd, fixture.root);
+  assert.deepEqual(child.invocation.options.stdio, ['pipe', 'pipe', 'pipe']);
+  const config = JSON.parse(child.invocation.options.env.OPENCODE_CONFIG_CONTENT);
+  assert.equal(config.agent['sddf-eval'].permission['*'], 'deny');
+  assert.equal(config.agent['sddf-eval'].permission.read, 'allow');
+  assert.equal(config.agent['sddf-eval'].permission.edit, 'deny');
+  assert.equal(config.share, 'disabled');
+  assert.equal(config.model, 'p/configurado');
+  assert.deepEqual(config.provider, { p: {} });
+  assert.equal(env.OPENCODE_PERMISSION, '{"*":"allow"}');
+});
+
+test('OpenCode usa JSON y un agente propio sin forzar modelo ni reutilizar sesiones', () => {
+  assert.deepEqual(buildOpenCodeArgs({ model: null }), ['run', '--format', 'json', '--agent', 'sddf-eval']);
+  assert.deepEqual(buildOpenCodeArgs({ model: 'p/m' }), ['run', '--format', 'json', '--agent', 'sddf-eval', '--model', 'p/m']);
+});
+
+test('OpenCode falla cerrado con errores JSON, respuesta vacía, JSON inválido o fallos del proceso', async (t) => {
+  const fixture = createFixture(t);
+  const text = JSON.stringify({ type: 'text', part: { text: 'respuesta que parecería aprobar' } });
+  for (const [events, options, reason] of [
+    [text + '\n' + JSON.stringify({ type: 'error', error: { data: { message: 'proveedor sin autenticar' } } }), {}, /proveedor sin autenticar/],
+    [JSON.stringify({ type: 'step_finish', part: {} }), {}, /sin.*respuesta/i],
+    [text + '\n{incompleto', {}, /JSON/i],
+    [text, { code: 1 }, null],
+    ['', { error: 'spawn opencode ENOENT' }, /ENOENT/],
+    [text, { stdinError: 'EPIPE' }, /EPIPE/],
+    [text, { timeout: true }, null],
+  ]) {
+    const result = await runOpenCode('p', { timeout: 0.01 }, {
+      repoRoot: fixture.root, env: { PATH: '' }, spawn: openCodeProcess(events, options),
+    });
+    assert.equal(result.ok, false);
+    if (reason) assert.match(result.stderr, reason);
+    if (options.timeout) assert.equal(result.timedOut, true);
+  }
+});
+
+test('un fallo de OpenCode con stdout se reporta como ERROR, sin falso PASS', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode'], {
+    runOpenCode: async () => ({ ok: false, code: 0, stdout: '=== END ===', stderr: 'error del proveedor', durationMs: 0, timedOut: false }),
+  });
+  assertExit(result, 1);
+  assert.match(result.output, /ERROR.*opencode exit 0.*error del proveedor/);
+});
+
+test('OpenCode en Windows resuelve el binario nativo o el launcher npm sin shell', () => {
+  const args = ['run', '--format', 'json'];
+  const runtime = { platform: 'win32', nodeExecutable: 'C:\\node\\node.exe', env: { Path: 'C:\\Open Code;C:\\npm' } };
+  assert.deepEqual(openCodeInvocation(args, { ...runtime, exists: (p) => p === 'C:\\Open Code\\opencode.exe' }), {
+    command: 'C:\\Open Code\\opencode.exe', args,
+  });
+  const launcher = 'C:\\npm\\node_modules\\opencode-ai\\bin\\opencode';
+  assert.deepEqual(openCodeInvocation(args, { ...runtime, exists: (p) => p === launcher }), {
+    command: 'C:\\node\\node.exe', args: [launcher, ...args],
+  });
+  assert.deepEqual(openCodeInvocation(args, { platform: 'linux' }), { command: 'opencode', args });
+  const localLauncher = 'C:\\repo\\node_modules\\opencode-ai\\bin\\opencode';
+  assert.deepEqual(openCodeInvocation(args, {
+    ...runtime, env: { PATH: 'C:\\repo\\node_modules\\.bin' }, exists: (p) => p === localLauncher,
+  }), { command: 'C:\\node\\node.exe', args: [localLauncher, ...args] });
+});
+
+test('OpenCode en sandbox aplica cwd y permisos edit relativos a la raíz Git', async (t) => {
+  const fixture = createFixture(t);
+  fs.mkdirSync(path.join(fixture.root, '.git'));
+  const sandboxDir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'sandbox', 'TC-001');
+  fs.mkdirSync(sandboxDir, { recursive: true });
+  let child;
+  await runOpenCode('p', { timeout: 1 }, {
+    repoRoot: fixture.root, sandboxDir, env: { PATH: '' },
+    spawn(...args) {
+      child = openCodeProcess(JSON.stringify({ type: 'text', part: { text: 'listo' } }))(...args);
+      return child;
+    },
+  });
+  assert.equal(child.invocation.options.cwd, sandboxDir);
+  const config = JSON.parse(child.invocation.options.env.OPENCODE_CONFIG_CONTENT);
+  const permission = config.agent['sddf-eval'].permission;
+  assert.equal(permission['*'], 'deny', 'Shell, MCP y task siguen denegados');
+  assert.equal(permission.edit['*'], 'deny');
+  assert.equal(permission.edit['.tmp/skill-test-evals/alpha/sandbox/TC-001/*'], 'allow');
+  assert.equal(permission.external_directory, 'deny');
 });
 
 test('un runner inválido falla antes de ejecutar o crear artefactos', async (t) => {
@@ -774,6 +950,21 @@ function writingRunner(writes) {
     return { ok: true, code: 0, stdout: '=== CONSOLE ===\nlisto\n=== END ===', stderr: '', durationMs: 0, timedOut: false };
   };
 }
+
+test('OpenCode en sandbox conserva la calificación de archivos y los fixtures originales', async (t) => {
+  const fixture = createFixture(t);
+  const skillDir = writeSandboxSkill(fixture, [makeSandboxCase('TC-001', {
+    written: [EPIC], contains: { [EPIC]: ['indice: nuevo'] },
+  })]);
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode'], {
+    runOpenCode: writingRunner(() => ({ [EPIC]: 'status: PLAN\nindice: nuevo\n' })),
+  });
+  assertExit(result, 0);
+  assert.equal(result.openCodeCalls.length, 1);
+  assert.equal(result.claudeCalls.length + result.codexCalls.length, 0);
+  assert.match(result.openCodeCalls[0][0], /EJECUTAR DE VERDAD/);
+  assert.equal(fs.readFileSync(path.join(skillDir, 'examples', 'base', 'EPIC-01-a', 'epic.md'), 'utf8'), 'status: PLAN\nindice: viejo\n');
+});
 
 test('los adaptadores en sandbox permiten escribir solo en el directorio de trabajo', () => {
   const claudeArgs = buildClaudeArgs('p', { model: 'm' }, { sandbox: true });

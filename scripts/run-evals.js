@@ -6,7 +6,7 @@
  *
  * Reproduce el modo `evals` del skill `skill-test-evals` (Pasos E1–E6) sin sesión interactiva:
  * por cada caso construye el prompt de escenario y lo ejecuta mediante un runner de eval
- * (`claude` o `codex`) en modo solo lectura,
+ * (`claude`, `codex` u `opencode`) en modo solo lectura,
  * captura la salida y la califica con `expected.contains` / `not_contains` / `output_contains`
  * y `threshold`. Un caso con `sandbox` (opt-in) se ejecuta de verdad sobre una copia desechable
  * del fixture en `.tmp/skill-test-evals/<skill>/sandbox/<TC>/`, con escritura confinada a ese
@@ -23,7 +23,7 @@
  *
  * Flags:
  *   --only TC-023,TC-029   solo esos casos
- *   --eval-runner <name>   runner: claude o codex (default: claude; env SDDF_EVAL_RUNNER)
+ *   --eval-runner <name>   runner: claude, codex u opencode (default: claude; env SDDF_EVAL_RUNNER)
  *   --model <m>            modelo del runner elegido
  *   --concurrency N        casos en paralelo (default: 4)
  *   --timeout <s>          segundos por caso (default: 900)
@@ -40,7 +40,7 @@ const REPO_ROOT = path.join(__dirname, '..');
 const END_MARKER = '=== END ===';
 const SKILL_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CASE_ID_PATTERN = /^TC-\d{3,}$/;
-const EVAL_RUNNERS = new Set(['claude', 'codex']);
+const EVAL_RUNNERS = new Set(['claude', 'codex', 'opencode']);
 
 // ---------------------------------------------------------------------------
 // Rutas e identificadores no confiables
@@ -104,17 +104,18 @@ function validateCaseId(id, source = 'manifest') {
 
 function validateEvalRunner(value, source = '--eval-runner') {
   if (typeof value !== 'string' || !value.trim()) {
-    throw new Error(`❌ ${source} requiere uno de estos valores: claude, codex.`);
+    throw new Error(`❌ ${source} requiere uno de estos valores: ${[...EVAL_RUNNERS].join(', ')}.`);
   }
   const runner = value.trim();
   if (!EVAL_RUNNERS.has(runner)) {
-    throw new Error(`❌ Runner de eval no admitido en ${source}: ${JSON.stringify(value)}. Valores válidos: claude, codex.`);
+    throw new Error(`❌ Runner de eval no admitido en ${source}: ${JSON.stringify(value)}. Valores válidos: ${[...EVAL_RUNNERS].join(', ')}.`);
   }
   return runner;
 }
 
 function defaultModelForRunner(evalRunner, env = process.env) {
   if (evalRunner === 'claude') return env.SDDF_EVAL_MODEL || 'sonnet';
+  if (evalRunner === 'opencode') return env.SDDF_EVAL_OPENCODE_MODEL || null;
   return env.SDDF_EVAL_CODEX_MODEL || null;
 }
 
@@ -145,7 +146,7 @@ Options:
   --all                 Ejecuta todos los skills que tienen evals/evals.json
   --changed-from <ref>  Ejecuta skills modificados entre <ref> y HEAD
   --only TC-001,TC-002  Ejecuta solo esos casos
-  --eval-runner <name>  Runner de eval: claude o codex (default: claude; env SDDF_EVAL_RUNNER)
+  --eval-runner <name>  Runner de eval: claude, codex u opencode (default: claude; env SDDF_EVAL_RUNNER)
   --model <model>       Modelo del runner elegido (--model prevalece sobre variables de entorno)
   --concurrency <n>     Casos en paralelo (default: 4)
   --timeout <seconds>   Timeout por caso (default: 900)
@@ -155,7 +156,8 @@ Options:
   -h, --help            Muestra esta ayuda
 
 Claude usa sonnet por defecto (o SDDF_EVAL_MODEL). Codex usa su configuración local por defecto
-(o SDDF_EVAL_CODEX_MODEL). --model prevalece sobre ambos valores.
+(o SDDF_EVAL_CODEX_MODEL). OpenCode usa su configuración local por defecto
+(o SDDF_EVAL_OPENCODE_MODEL, formato proveedor/modelo). --model prevalece sobre el entorno.
 
 Un caso con "sandbox": { "fixture", "target" (default specs/flow), "copy" } se ejecuta de verdad
 sobre una copia desechable en .tmp/skill-test-evals/<skill>/sandbox/<TC>/, con escritura confinada
@@ -166,6 +168,7 @@ Examples:
   npm run test:eval
   npm run test:eval -- story-implement
   npm run test:eval -- story-implement --eval-runner codex
+  npm run test:eval -- sddf-init --eval-runner opencode
   npm run test:eval -- --all --eval-runner claude
   npm run test:eval -- story-implement --only TC-023,TC-029 --report
   npm run test:eval -- --all --concurrency 2
@@ -835,7 +838,94 @@ function runCodex(prompt, opts, runtime = {}) {
 function runEvalRunner(prompt, opts, runtime = {}) {
   const evalRunner = validateEvalRunner(opts.evalRunner);
   if (evalRunner === 'claude') return (runtime.runClaude || runClaude)(prompt, opts, runtime);
+  if (evalRunner === 'opencode') return (runtime.runOpenCode || runOpenCode)(prompt, opts, runtime);
   return (runtime.runCodex || runCodex)(prompt, opts, runtime);
+}
+
+function buildOpenCodeArgs(opts) {
+  const args = ['run', '--format', 'json', '--agent', 'sddf-eval'];
+  if (opts.model) args.push('--model', opts.model);
+  return args;
+}
+
+function openCodeInvocation(args, runtime = {}) {
+  if ((runtime.platform || process.platform) === 'win32') {
+    const env = runtime.env || process.env;
+    const exists = runtime.exists || fs.existsSync;
+    const pathKey = Object.keys(env).find((key) => key.toLowerCase() === 'path');
+    for (const directory of (env[pathKey] || '').split(';').filter(Boolean)) {
+      const dir = directory.replace(/^"|"$/g, '');
+      const binary = path.win32.join(dir, 'opencode.exe');
+      if (exists(binary)) return { command: binary, args };
+      // Los shims npm .cmd no se pueden ejecutar con spawn sin shell en Windows.
+      const launchers = [
+        path.win32.join(dir, 'node_modules', 'opencode-ai', 'bin', 'opencode'),
+        ...(path.win32.basename(dir).toLowerCase() === '.bin'
+          ? [path.win32.join(dir, '..', 'opencode-ai', 'bin', 'opencode')]
+          : []),
+      ];
+      const launcher = launchers.find((candidate) => exists(candidate));
+      if (launcher) return { command: runtime.nodeExecutable || process.execPath, args: [launcher, ...args] };
+    }
+  }
+  return { command: 'opencode', args };
+}
+
+async function runOpenCode(prompt, opts, runtime = {}) {
+  // El agente propio evita heredar los permisos del agente predeterminado del usuario.
+  // OpenCode agrupa write/edit/patch bajo el permiso edit. Shell, MCP, red y task
+  // permanecen denegados por la regla * en ambos modos.
+  const permission = { '*': 'deny', read: 'allow', glob: 'allow', grep: 'allow', edit: 'deny', external_directory: 'deny' };
+  if (runtime.sandboxDir) {
+    const dir = resolveRoot(runtime.sandboxDir, 'sandbox');
+    // Los permisos edit usan rutas relativas a Instance.worktree (raíz Git;
+    // "/" si no hay Git), incluso al arrancar OpenCode desde un subdirectorio.
+    let worktree = dir;
+    while (!fs.existsSync(path.join(worktree, '.git'))) {
+      const parent = path.dirname(worktree);
+      if (parent === worktree) { worktree = path.resolve('/'); break; }
+      worktree = parent;
+    }
+    const relative = path.relative(worktree, dir);
+    const pattern = relative ? `${relative}${path.sep}*` : '*';
+    permission.edit = { '*': 'deny', [pattern]: 'allow', [pattern.split(path.sep).join('/')]: 'allow' };
+  }
+  const inheritedEnv = runtime.env || process.env;
+  const config = JSON.parse(inheritedEnv.OPENCODE_CONFIG_CONTENT || '{}');
+  const env = {
+    ...inheritedEnv,
+    OPENCODE_CONFIG_CONTENT: JSON.stringify({
+      ...config,
+      share: 'disabled',
+      agent: { ...config.agent, 'sddf-eval': { mode: 'primary', permission } },
+    }),
+    OPENCODE_PERMISSION: JSON.stringify(permission),
+    OPENCODE_DISABLE_AUTOUPDATE: 'true',
+  };
+  const invocation = openCodeInvocation(buildOpenCodeArgs(opts), { ...runtime, env });
+  // stdin evita límites y quoting de prompts extensos en la línea de comandos.
+  const run = await runProcess(invocation.command, invocation.args, opts, { ...runtime, env }, prompt);
+  if (!run.ok) return run;
+
+  const text = [];
+  const errors = [];
+  for (const line of run.stdout.split(/\r?\n/).filter((line) => line.trim())) {
+    let event;
+    try {
+      event = JSON.parse(line);
+      if (!event || typeof event !== 'object' || typeof event.type !== 'string') throw new Error('evento sin tipo');
+    } catch {
+      errors.push('OpenCode emitió una línea JSON inválida.');
+      continue;
+    }
+    if (event.type === 'text' && typeof event.part?.text === 'string') text.push(event.part.text);
+    if (event.type === 'error') {
+      errors.push(`OpenCode: ${event.error?.data?.message || event.error?.message || event.error?.name || 'error sin detalle'}`);
+    }
+  }
+  const stdout = text.join('');
+  if (!stdout.trim()) errors.push('OpenCode terminó sin una respuesta de texto.');
+  return { ...run, ok: errors.length === 0, stdout, stderr: [run.stderr, ...errors].filter(Boolean).join('\n') };
 }
 
 // ---------------------------------------------------------------------------
@@ -1095,7 +1185,10 @@ module.exports = {
   parseArgs,
   buildClaudeArgs,
   buildCodexArgs,
+  buildOpenCodeArgs,
   runCodex,
+  runOpenCode,
+  openCodeInvocation,
   changedSkills,
   resolveSkills,
   loadCases,
