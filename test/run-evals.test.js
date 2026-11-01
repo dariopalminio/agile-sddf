@@ -14,6 +14,8 @@ const {
   buildOpenCodeArgs,
   buildPrompt,
   gradeOutput,
+  parseSandboxSpec,
+  gradeSandboxFiles,
   main,
   parseArgs,
   resolveContainedPath,
@@ -432,7 +434,10 @@ test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar
   const skillDir = path.join(__dirname, '..', 'skills', 'epic-format-validation');
   const manifest = JSON.parse(fs.readFileSync(path.join(skillDir, 'evals', 'evals.json'), 'utf8'));
   const testCase = manifest.cases.find((entry) => entry.id === 'TC-016');
-  assert.deepEqual(testCase.context_files, ['assets/epic-format-validation-report-template.md']);
+  const spec = parseSandboxSpec(testCase, 'TC-016');
+  const reportPath = 'specs/flow/EPIC-05-pagos/epic-format-validation-report.md';
+  assert.equal(spec.target, '.');
+  assert.equal(testCase.context_files, undefined);
   const report = fs.readFileSync(path.join(skillDir, 'examples', 'needs-refinement', 'epic-format-validation-report.md'), 'utf8');
   const consoleOutput = [
     '**Veredicto:** `NEEDS-REFINEMENT` — 2 defectos de estructura o formato.',
@@ -443,26 +448,29 @@ test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar
     '- Línea 23 (Historias): `- [ ] Exportar CSV: descarga del historial` → se esperaba F1, F2 o F3',
     '📄 Reporte: specs/flow/EPIC-05-pagos/epic-format-validation-report.md',
   ].join('\n');
-  const response = (body, consoleText = consoleOutput) =>
-    `=== CONSOLE ===\n${consoleText}\n=== FILE: specs/flow/EPIC-05-pagos/epic-format-validation-report.md ===\n${body}\n=== END ===`;
-  assert.equal(gradeOutput(testCase, response(report)).pass, true);
-  assert.equal(gradeOutput(testCase, response(report, consoleOutput.replace('Formato inválido:', ''))).pass, false);
+  const grade = (body, consoleText = consoleOutput) => {
+    const consoleGrade = gradeOutput(testCase, `=== CONSOLE ===\n${consoleText}\n=== END ===`);
+    const files = gradeSandboxFiles(spec, new Map(), new Map([[reportPath, Buffer.from(body)]]));
+    return { pass: consoleGrade.pass && !files.missing.length && !files.violated.length, files };
+  };
+  assert.equal(grade(report).pass, true);
+  assert.equal(grade(report, consoleOutput.replace('Formato inválido:', '')).pass, false);
   const withoutFrontmatter = report.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
-  assert.equal(gradeOutput(testCase, response(withoutFrontmatter)).pass, false);
+  assert.equal(grade(withoutFrontmatter).pass, false);
   // Regresión de la respuesta real: frontmatter con solo verdict y sin Resumen.
   const abbreviatedReport = report.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '---\nverdict: NEEDS-REFINEMENT\n---\n')
     .replace(/## Resumen[\s\S]*?(?=## Defectos)/, '');
-  const abbreviatedGrade = gradeOutput(testCase, response(abbreviatedReport));
+  const abbreviatedGrade = grade(abbreviatedReport);
   assert.equal(abbreviatedGrade.pass, false);
-  assert.deepEqual(abbreviatedGrade.missing, ['type: epic-format-validation', 'defects: 2', '## Resumen']);
-  assert.equal(gradeOutput(testCase, response(report.replace('formato-historias', 'otro-tipo'))).pass, false);
+  assert.equal(abbreviatedGrade.files.missing.length, 3);
+  assert.equal(grade(report.replace('formato-historias', 'otro-tipo')).pass, false);
   const withEditorialComments = report.replace('## Veredicto', '## Veredicto <!-- sección obligatoria -->\n<!-- Motivo determinista: APPROVED o NEEDS-REFINEMENT -->');
-  const editorialGrade = gradeOutput(testCase, response(withEditorialComments));
+  const editorialGrade = grade(withEditorialComments);
   assert.equal(editorialGrade.pass, false);
-  assert.deepEqual(editorialGrade.violated, ['APPROVED', '<!--']);
-  assert.equal(gradeOutput(testCase, response(withEditorialComments.replace(/<!--[\s\S]*?-->/g, ''))).pass, true);
-  assert.equal(gradeOutput(testCase, response(report.replace('línea 23', 'línea 16'))).pass, false);
-  assert.equal(gradeOutput(testCase, response(report.replace('tras ## Historias', 'tras ## Alcance'))).pass, false);
+  assert.equal(editorialGrade.files.violated.length, 2);
+  assert.equal(grade(withEditorialComments.replace(/<!--[\s\S]*?-->/g, '')).pass, true);
+  assert.equal(grade(report.replace('línea 23', 'línea 16')).pass, false);
+  assert.equal(grade(report.replace('tras ## Historias', 'tras ## Alcance')).pass, false);
 });
 
 test('los escenarios iniciales de epic-format-validation incluyen épica y template independientes del repo', () => {
@@ -1081,6 +1089,54 @@ test('OpenCode en sandbox conserva la calificación de archivos y los fixtures o
   assert.equal(result.claudeCalls.length + result.codexCalls.length, 0);
   assert.match(result.openCodeCalls[0][0], /EJECUTAR DE VERDAD/);
   assert.equal(fs.readFileSync(path.join(skillDir, 'examples', 'base', 'EPIC-01-a', 'epic.md'), 'utf8'), 'status: PLAN\nindice: viejo\n');
+});
+
+test('TC-016 usa su repositorio fixture y califica el reporte en disco aunque la consola declare éxito', async (t) => {
+  const fixture = createFixture(t);
+  const skillName = 'epic-format-validation';
+  const sourceSkill = path.join(__dirname, '..', 'skills', skillName);
+  const skillDir = path.join(fixture.root, 'skills', skillName);
+  fs.cpSync(sourceSkill, skillDir, { recursive: true });
+  const fixtureRoot = path.join(skillDir, 'evals', 'fixtures', 'tc-016');
+  const epicPath = 'specs/flow/EPIC-05-pagos/epic.md';
+  const templatePath = 'docs/templates/epic-template.md';
+  const reportPath = 'specs/flow/EPIC-05-pagos/epic-format-validation-report.md';
+  const epic = fs.readFileSync(path.join(fixtureRoot, epicPath), 'utf8');
+  const template = fs.readFileSync(path.join(fixtureRoot, templatePath), 'utf8');
+  const report = fs.readFileSync(path.join(skillDir, 'examples', 'needs-refinement', 'epic-format-validation-report.md'), 'utf8');
+  assert.ok(epic.includes('created: 2026-10-01'));
+  assert.equal(epic.split('\n')[22], '- [ ] Exportar CSV: descarga del historial');
+  assert.ok(!template.includes('clave: objetivo'));
+  // Los archivos reales del proyecto anfitrión discrepan deliberadamente del fixture.
+  for (const [relative, text] of [[templatePath, '## Objetivo\n'], [epicPath, '# Épica sin created\n']]) {
+    fs.mkdirSync(path.dirname(path.join(fixture.root, relative)), { recursive: true });
+    fs.writeFileSync(path.join(fixture.root, relative), text);
+  }
+  const execute = (body, alterEpic = false) => runRunner(fixture, [skillName, '--only', 'TC-016', '--eval-runner', 'opencode'], {
+    runOpenCode: async (prompt, opts, runtime) => {
+      const dir = runtime.sandboxDir;
+      assert.ok(dir);
+      assert.match(prompt, /EJECUTAR DE VERDAD/);
+      assert.ok(!prompt.includes('epic_content'));
+      assert.equal(fs.readFileSync(path.join(dir, epicPath), 'utf8'), epic);
+      assert.equal(fs.readFileSync(path.join(dir, templatePath), 'utf8'), template);
+      assert.equal(fs.existsSync(path.join(dir, 'skills', skillName, 'evals')), false);
+      assert.equal(fs.existsSync(path.join(dir, 'skills', skillName, 'examples')), false);
+      fs.writeFileSync(path.join(dir, reportPath), body);
+      if (alterEpic) fs.appendFileSync(path.join(dir, epicPath), '\nmodificado\n');
+      return { ok: true, code: 0, stdout: '=== CONSOLE ===\nNEEDS-REFINEMENT\nArchivo validado: specs/flow/EPIC-05-pagos/epic.md\nCriterios de salida\nFormato inválido:\n- [ ] Exportar CSV: descarga del historial\n📄 Reporte: specs/flow/EPIC-05-pagos/epic-format-validation-report.md\n=== END ===', stderr: '', durationMs: 0 };
+    },
+  });
+  assertExit(await execute(report), 0);
+  const wrongReport = await execute(report.replace('defects: 2', 'defects: 3'));
+  assertExit(wrongReport, 1);
+  assert.match(wrongReport.output, /\[files\].*defects: 2/);
+  const changedInput = await execute(report, true);
+  assertExit(changedInput, 1);
+  assert.match(changedInput.output, /\[files\] escrito: specs\/flow\/EPIC-05-pagos\/epic.md/);
+  assert.equal(fs.readFileSync(path.join(fixtureRoot, epicPath), 'utf8'), epic);
+  assert.equal(fs.readFileSync(path.join(fixtureRoot, templatePath), 'utf8'), template);
+  assert.equal(fs.readFileSync(path.join(fixture.root, templatePath), 'utf8'), '## Objetivo\n');
 });
 
 test('los adaptadores en sandbox permiten escribir solo en el directorio de trabajo', () => {

@@ -29,6 +29,15 @@ desde el directorio del skill; no duplica su contenido en el manifest. Solo admi
 `assets/` o `references/` del propio skill y rechaza rutas inválidas o recursos ausentes antes
 de ejecutar modelos. En casos de ejecución real se usa `sandbox.copy`.
 
+Para validar archivos y reportes en disco, declara `sandbox.fixture` y
+`expected.files` en el caso. Con `sandbox.target: "."`, el fixture contiene un repositorio
+mínimo completo: por ejemplo, `docs/templates/` y `specs/flow/` se copian a la raíz temporal.
+TC-016 de `epic-format-validation` usa ese modo para mantener su template y su épica juntos,
+sin depender del template del proyecto anfitrión. `expected.contains` comprueba la consola;
+`expected.files.contains` comprueba el reporte generado y `expected.files.written` limita
+exactamente qué archivos pueden cambiar. El runner copia el skill fuente sin sus evals ni
+sus ejemplos de salida.
+
 El runner guarda la respuesta completa en
 `.tmp/skill-test-evals/<skill>/runs/<TC>.txt`; con OpenCode conserva también los eventos originales
 en `<TC>.events.jsonl`, incluidas las lecturas de herramientas que emita el CLI. El informe

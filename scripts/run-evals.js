@@ -163,6 +163,7 @@ Un caso con "sandbox": { "fixture", "target" (default specs/flow), "copy" } se e
 sobre una copia desechable en .tmp/skill-test-evals/<skill>/sandbox/<TC>/, con escritura confinada
 a ese directorio, y se califica además el árbol en disco con expected.files: written (lista exacta
 de rutas creadas/modificadas/eliminadas), contains, not_contains y backups ({ ".bak": "original" }).
+target: "." copia un fixture de repositorio completo (por ejemplo docs/ y specs/) en esa raíz temporal.
 
 Examples:
   npm run test:eval
@@ -590,7 +591,7 @@ function parseSandboxSpec(testCase, source) {
   }
   return {
     fixture: normalizeRelativePath(raw.fixture, `${source}: sandbox.fixture`),
-    target: normalizeRelativePath(raw.target === undefined ? 'specs/flow' : raw.target, `${source}: sandbox.target`),
+    target: raw.target === '.' ? '.' : normalizeRelativePath(raw.target === undefined ? 'specs/flow' : raw.target, `${source}: sandbox.target`),
     copy: (raw.copy === undefined ? [] : stringList(raw.copy, `${source}: sandbox.copy`))
       .map((entry) => normalizeRelativePath(entry, `${source}: sandbox.copy`)),
     files: {
@@ -622,6 +623,9 @@ function prepareSandbox(spec, { repoRoot, skillsDir, skillName, sandboxDir }) {
   for (const entry of spec.copy) {
     fs.cpSync(resolveContainedPath(repoRoot, entry), resolveContainedPath(sandboxDir, entry), { recursive: true });
   }
+  // Un fixture completo usa la raíz temporal ya validada, nunca la raíz del proyecto fuente.
+  const fixtureTarget = spec.target === '.' ? sandboxDir : resolveContainedPath(sandboxDir, spec.target);
+  fs.cpSync(resolveContainedPath(repoRoot, spec.fixture), fixtureTarget, { recursive: true });
   const skillDir = path.dirname(skillFilePath(skillsDir, skillName, 'SKILL.md'));
   const skillRel = path.relative(repoRoot, skillDir);
   // Copia por entradas de primer nivel: el `filter` de cpSync recibe rutas `\\?\` en Windows.
@@ -629,7 +633,6 @@ function prepareSandbox(spec, { repoRoot, skillsDir, skillName, sandboxDir }) {
     if (SANDBOX_SKILL_EXCLUDES.has(entry)) continue;
     fs.cpSync(path.join(skillDir, entry), resolveContainedPath(sandboxDir, skillRel, entry), { recursive: true });
   }
-  fs.cpSync(resolveContainedPath(repoRoot, spec.fixture), resolveContainedPath(sandboxDir, spec.target), { recursive: true });
 }
 
 function snapshotTree(root) {

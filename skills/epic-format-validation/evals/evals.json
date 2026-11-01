@@ -262,21 +262,68 @@
     },
     {
       "id": "TC-016",
-      "context_files": ["assets/epic-format-validation-report-template.md"],
       "name": "épica-sin-criterios-de-salida-y-línea-inválida-needs-refinement",
       "type": "fail-fast",
-      "description": "[AC-2 · STORY-166] La épica no tiene la sección ## Criterios de salida y su sección historias contiene la línea \"- [ ] Exportar CSV: descarga del historial\", que no casa con F1, F2 ni F3. El gate debe declarar NEEDS-REFINEMENT, listar ambos defectos con ubicación y corrección esperada (tabla ## Defectos) y escribir epic-format-validation-report.md.",
+      "description": "[AC-2 · STORY-166] Ejecuta el skill sobre el fixture real de una épica sin Criterios de salida y con una línea de historias inválida. Debe emitir NEEDS-REFINEMENT y escribir un reporte con ambos defectos, ubicación y corrección esperada, sin modificar las entradas.",
+      "sandbox": {
+        "fixture": "skills/epic-format-validation/evals/fixtures/tc-016",
+        "target": "."
+      },
       "input": {
-        "input_path": "specs/flow/EPIC-05-pagos/epic.md",
-        "template_path": "docs/templates/epic-template.md",
-        "template_content": "---\ntype: epic\nid: <EPIC-NN>\nslug: <slug>\ntitle: \"<título>\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: <YYYY-MM-DD>\nupdated: <YYYY-MM-DD>\nrelated: []\n---\n\n# Épica: [Nombre]\n\n## Alcance <!-- sección obligatoria · clave: alcance -->\n<!-- Output-oriented: qué se construye (2-4 líneas). -->\n\n## Historias <!-- sección obligatoria · clave: historias -->\n<!-- Planificada: `- [Nombre]: [desc]` · Creada: `- [ ] **STORY-NNN** — [Nombre]: [desc]` · Completada: `- [x] **STORY-NNN** — [Nombre]: [desc]`. -->\n- [Nombre feature 1]: [descripción breve]\n\n## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->\n<!-- Criterios técnicos verificables de \"épica terminada\". -->\n- [ ] [Criterio técnico verificable]\n\n## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->\n<!-- IDs SMOKE-N estables: no renumerar. Con un único escenario la numeración es opcional. -->\n### SMOKE-1 — [Nombre descriptivo]\n```gherkin\nEscenario: [Nombre descriptivo]\n  Dado [contexto inicial]\n  Cuando [acción]\n  Entonces [resultado esperado]\n```\n\n## Notas <!-- sección obligatoria · contenido opcional · clave: notas -->\n<!-- Opcional: decisiones emergentes, cambios de alcance y acuerdos. -->\n",
-        "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n- [ ] Exportar CSV: descarga del historial\n\n## Smoke tests\n### SMOKE-1 — Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n### SMOKE-2 — Pago rechazado\n```gherkin\nEscenario: Pago rechazado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"
+        "input_path": "specs/flow/EPIC-05-pagos/epic.md"
       },
       "expected": {
-        "contains": ["NEEDS-REFINEMENT", "Criterios de salida", "Formato inválido:", "- [ ] Exportar CSV: descarga del historial", "epic-format-validation-report.md", "Archivo validado: specs/flow/EPIC-05-pagos/epic.md", "type: epic-format-validation", "verdict: NEEDS-REFINEMENT", "defects: 2", "## Resumen", "## Defectos", "seccion-faltante", "formato-historias", "añadir ## Criterios de salida", "## Migración", "línea 23 (## Historias)", "tras ## Historias"],
-        "not_contains": ["APPROVED", "APROBADO", "REFINAR", "<!--", "{veredicto}", "{n}"]
+        "contains": [
+          "NEEDS-REFINEMENT",
+          "Archivo validado: specs/flow/EPIC-05-pagos/epic.md",
+          "Criterios de salida",
+          "Formato inválido:",
+          "- [ ] Exportar CSV: descarga del historial",
+          "epic-format-validation-report.md"
+        ],
+        "not_contains": [
+          "APPROVED",
+          "APROBADO",
+          "REFINAR",
+          "<!--",
+          "{veredicto}",
+          "{n}"
+        ],
+        "files": {
+          "written": [
+            "specs/flow/EPIC-05-pagos/epic-format-validation-report.md"
+          ],
+          "contains": {
+            "specs/flow/EPIC-05-pagos/epic-format-validation-report.md": [
+              "NEEDS-REFINEMENT",
+              "Criterios de salida",
+              "- [ ] Exportar CSV: descarga del historial",
+              "type: epic-format-validation",
+              "verdict: NEEDS-REFINEMENT",
+              "defects: 2",
+              "## Resumen",
+              "## Defectos",
+              "seccion-faltante",
+              "formato-historias",
+              "añadir ## Criterios de salida",
+              "## Migración",
+              "línea 23 (## Historias)",
+              "tras ## Historias"
+            ]
+          },
+          "not_contains": {
+            "specs/flow/EPIC-05-pagos/epic-format-validation-report.md": [
+              "APPROVED",
+              "APROBADO",
+              "REFINAR",
+              "<!--",
+              "{veredicto}",
+              "{n}"
+            ]
+          }
+        }
       },
-      "threshold": 1.0
+      "threshold": 1
     }
   ]
 }

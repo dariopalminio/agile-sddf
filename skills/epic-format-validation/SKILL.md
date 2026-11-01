@@ -11,13 +11,6 @@ triggers:
 
 # Skill: `/epic-format-validation`
 
-**Cuándo usar este skill:**
-Usar antes de que un archivo de épica sea consumido por otros skills del pipeline SDDF
-(`epic-generate-stories`, etc.), para verificar que una épica recién creada o editada
-cumple la estructura requerida, o como gate de calidad antes de marcar una épica como Ready.
-Invocar también cuando el usuario mencione "validar épica", "verificar estructura de épica",
-"epic-format-validation" o equivalentes.
-
 ## Objetivo
 
 Valida que un archivo de especificación de épica cumple el contrato del template
@@ -31,10 +24,6 @@ canónico **`APPROVED`** o **`NEEDS-REFINEMENT`** en `epic-format-validation-rep
 - Valida presencia de campos de frontmatter requeridos y encabezados de sección
 - Valida el formato de línea de las historias (F1/F2/F3) y de los smoke tests (`SMOKE-N` + `gherkin`)
 - Escribe el reporte con `verdict` y una tabla de defectos (ubicación, texto y corrección esperada) que `epic-improve` consume sin reanalizar
-
-**Qué NO hace este skill:**
-- No valida el contenido semántico de las secciones, solo su presencia y su forma
-- No corrige, migra ni modifica `epic.md` (la migración es `/memory-system migrate --from=epic-template-v1`)
 
 ## Entrada
 
@@ -90,7 +79,6 @@ El layout no es configurable (ADR-0016).
 Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
-
 
 ### Paso 1 — Resolver el input
 
@@ -248,9 +236,8 @@ Escenario/Dado/Cuando/Entonces").
 **Defectos:** cada ausencia o incumplimiento de los Pasos 4a–4d es un defecto, en orden de detección
 (4a → 4b → 4c → 4d), con `ID` `D-<n>` y uno de estos tipos:
 
-Los números de línea son absolutos en el `epic.md` de entrada: cuenta desde su primera línea,
-incluidos el frontmatter y las líneas vacías. Para una sección ausente, toma el título previo
-en el orden del template; no uses la última sección que analizaste ni la línea del template.
+Cuenta las líneas desde el inicio del `epic.md`, incluidos frontmatter y líneas vacías.
+Para una sección ausente, usa el título previo en el orden del template.
 
 | Tipo | Ubicación | Encontrado | Corrección esperada |
 |---|---|---|---|
@@ -260,10 +247,9 @@ en el orden del template; no uses la última sección que analizaste ni la líne
 | `formato-smoke-tests` | `línea <n> (## <título>)` | `` `<encabezado>` `` | `### SMOKE-N — <nombre>` o bloque `gherkin` con Escenario/Dado/Cuando/Entonces |
 
 **Reporte:** resuelve [el template del reporte](assets/epic-format-validation-report-template.md)
-desde el directorio que contiene este `SKILL.md` (no desde `REPO_ROOT`) y léelo completo ahora.
-Usa sus comentarios como instrucciones de generación y elimínalos del reporte final, incluidos
-los comentarios inline de los encabezados (`clave`, `escritor`, etc.). Así el artefacto contiene
-el diagnóstico de esta ejecución sin las alternativas y los placeholders de la plantilla.
+desde el directorio de este `SKILL.md` y léelo completo ahora. Aplica sus comentarios como
+instrucciones y elimínalos del reporte, también los inline (`clave`, `escritor`, etc.);
+el artefacto contiene el diagnóstico sin alternativas ni placeholders de la plantilla.
 Completa la estructura, incluido el frontmatter YAML: `verdict` y `## Veredicto` con el mismo valor, `defects` con el número de defectos,
 `## Defectos` con la tabla (o `Sin defectos.`) y `## Migración` solo si hay algún `seccion-faltante`.
 Escríbelo en `<EPIC_DIR>/epic-format-validation-report.md` (el directorio del `epic.md` validado),
@@ -284,12 +270,11 @@ Formato inválido:
 Si falta alguna sección, añade la nota `Si la épica se creó con una versión anterior del template → /memory-system migrate --from=epic-template-v1`.
 Termina con `📄 Reporte: <EPIC_DIR>/epic-format-validation-report.md`.
 
-Antes de terminar, comprueba ambas salidas: el reporte conserva el frontmatter y las secciones
-del template, sin comentarios HTML ni placeholders pendientes; cada ubicación corresponde al
-archivo de entrada y al orden del template. La consola incluye el veredicto, el archivo validado y cada bloque con defectos.
-Si hay defectos de forma, `Formato inválido:` y sus ítems aparecen en consola aunque ya estén
-en la tabla del reporte. La tabla permite que `epic-improve` actúe y el resumen permite que el
-usuario vea el diagnóstico sin abrir otro archivo; un enlace al reporte no sustituye ese resumen.
+Antes de terminar, comprueba que el reporte conserva el frontmatter y las secciones del template,
+sin comentarios ni placeholders, y que las ubicaciones corresponden al input y al orden del template.
+La consola incluye veredicto, archivo y cada bloque con defectos, también `Formato inválido:`
+aunque esté en la tabla. La tabla permite actuar a `epic-improve`; el resumen muestra el diagnóstico
+al usuario sin abrir el reporte, por lo que su enlace no sustituye ese resumen.
 
 **Fallo de escritura:** si el reporte no se puede escribir, muestra igualmente el veredicto en consola
 y `⚠️ No se pudo escribir <ruta>: <causa>`; si ya existía un reporte, añade `⚠️ El reporte existente
