@@ -13,6 +13,7 @@ const {
   buildCodexArgs,
   buildOpenCodeArgs,
   buildPrompt,
+  gradeOutput,
   main,
   parseArgs,
   resolveContainedPath,
@@ -382,6 +383,29 @@ test('el prompt de simulación separa los artefactos declarados del filesystem r
   assert.match(prompt, /Si el escenario declara un archivo ausente, permanece ausente/);
   assert.match(prompt, /NO modifiques ningún archivo/);
   assert.ok(!prompt.includes('EXPECTATIVA_PRIVADA'));
+});
+
+test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar un reporte abreviado', () => {
+  const skillDir = path.join(__dirname, '..', 'skills', 'epic-format-validation');
+  const manifest = JSON.parse(fs.readFileSync(path.join(skillDir, 'evals', 'evals.json'), 'utf8'));
+  const testCase = manifest.cases.find((entry) => entry.id === 'TC-016');
+  const report = fs.readFileSync(path.join(skillDir, 'examples', 'needs-refinement', 'epic-format-validation-report.md'), 'utf8');
+  const consoleOutput = [
+    '**Veredicto:** `NEEDS-REFINEMENT` — 2 defectos de estructura o formato.',
+    'Archivo validado: specs/flow/EPIC-05-pagos/epic.md',
+    'Secciones/campos faltantes:',
+    '- Criterios de salida',
+    'Formato inválido:',
+    '- Línea 23 (Historias): `- [ ] Exportar CSV: descarga del historial` → se esperaba F1, F2 o F3',
+    '📄 Reporte: specs/flow/EPIC-05-pagos/epic-format-validation-report.md',
+  ].join('\n');
+  const response = (body, consoleText = consoleOutput) =>
+    `=== CONSOLE ===\n${consoleText}\n=== FILE: specs/flow/EPIC-05-pagos/epic-format-validation-report.md ===\n${body}\n=== END ===`;
+  assert.equal(gradeOutput(testCase, response(report)).pass, true);
+  assert.equal(gradeOutput(testCase, response(report, consoleOutput.replace('Formato inválido:', ''))).pass, false);
+  const withoutFrontmatter = report.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
+  assert.equal(gradeOutput(testCase, response(withoutFrontmatter)).pass, false);
+  assert.equal(gradeOutput(testCase, response(report.replace('formato-historias', 'otro-tipo'))).pass, false);
 });
 
 test('los escenarios iniciales de epic-format-validation incluyen épica y template independientes del repo', () => {

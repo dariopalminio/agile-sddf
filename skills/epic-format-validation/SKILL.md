@@ -255,14 +255,15 @@ Escenario/Dado/Cuando/Entonces").
 | `formato-historias` | `línea <n> (## <título>)` | `` `<texto literal>` `` | F1 `- <Nombre>: <descripción>`, F2 `- [ ] **STORY-NNN** — <Nombre>: <descripción>` o F3 `- [x] **STORY-NNN** — <Nombre>: <descripción>` |
 | `formato-smoke-tests` | `línea <n> (## <título>)` | `` `<encabezado>` `` | `### SMOKE-N — <nombre>` o bloque `gherkin` con Escenario/Dado/Cuando/Entonces |
 
-**Reporte:** lee `assets/epic-format-validation-report-template.md` (solo ahora) y complétalo según
-sus comentarios: `verdict` y `## Veredicto` con el mismo valor, `defects` con el número de defectos,
+**Reporte:** resuelve [el template del reporte](assets/epic-format-validation-report-template.md)
+desde el directorio que contiene este `SKILL.md` (no desde `REPO_ROOT`) y léelo completo ahora.
+Completa su estructura y sus comentarios, incluido el frontmatter YAML: `verdict` y `## Veredicto` con el mismo valor, `defects` con el número de defectos,
 `## Defectos` con la tabla (o `Sin defectos.`) y `## Migración` solo si hay algún `seccion-faltante`.
 Escríbelo en `<EPIC_DIR>/epic-format-validation-report.md` (el directorio del `epic.md` validado),
 sobrescribiendo el anterior. No detectes la versión de la épica por sus títulos: la lista de
 secciones faltantes más `## Migración` da la misma información y funciona con templates personalizados.
 
-**Consola:** muestra la línea `**Veredicto:**` del reporte, `Archivo validado: <ruta>` y, con
+**Consola:** además de escribir el reporte, muestra la línea `**Veredicto:**` del reporte, `Archivo validado: <ruta>` y, con
 `NEEDS-REFINEMENT`, un resumen derivado de la misma tabla (solo los bloques con ítems):
 
 ```
@@ -275,6 +276,12 @@ Formato inválido:
 
 Si falta alguna sección, añade la nota `Si la épica se creó con una versión anterior del template → /memory-system migrate --from=epic-template-v1`.
 Termina con `📄 Reporte: <EPIC_DIR>/epic-format-validation-report.md`.
+
+Antes de terminar, comprueba ambas salidas: el reporte conserva el frontmatter y las secciones
+del template; la consola incluye el veredicto, el archivo validado y cada bloque con defectos.
+Si hay defectos de forma, `Formato inválido:` y sus ítems aparecen en consola aunque ya estén
+en la tabla del reporte. La tabla permite que `epic-improve` actúe y el resumen permite que el
+usuario vea el diagnóstico sin abrir otro archivo; un enlace al reporte no sustituye ese resumen.
 
 **Fallo de escritura:** si el reporte no se puede escribir, muestra igualmente el veredicto en consola
 y `⚠️ No se pudo escribir <ruta>: <causa>`; si ya existía un reporte, añade `⚠️ El reporte existente

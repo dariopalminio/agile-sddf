@@ -42,9 +42,9 @@ Los 63 resultados reúnen 14 pruebas de `npm run test:installer`, 48 de `npm tes
 - [ ] Performance tests (PT)
 - [ ] Security tests (SEC)
 - [ ] Eval de skill (EV), incluyendo TC-001, TC-002 y TC-016: npm run test:eval -- epic-format-validation --only TC-001,TC-002,TC-016 --eval-runner opencode --report
-    - [x] `npm run test:eval -- epic-format-validation --only TC-001 --eval-runner opencode` --> FAIL
-    - [x] `npm run test:eval -- epic-format-validation --only TC-002 --eval-runner opencode`
-    - [x] `npm run test:eval -- epic-format-validation --only TC-016 --eval-runner opencode` --> FAIL
+    - [x] `npm run test:eval -- epic-format-validation --only TC-001 --eval-runner opencode` --> PASS
+    - [x] `npm run test:eval -- epic-format-validation --only TC-002 --eval-runner opencode` --> PASS
+    - [x] `npm run test:eval -- epic-format-validation --only TC-016 --eval-runner opencode --report` --> FAIL
 
 ## Findings
 
