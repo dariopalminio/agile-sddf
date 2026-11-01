@@ -1,7 +1,7 @@
 {
   "skill": "epic-validate",
-  "version": "1.5.0",
-  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto. STORY-126 agrega la operación segura: --mode auto nunca pregunta y --mode manual es interactivo; --dry-run imprime el reporte completo sin escribir archivos, ejecutar comandos ni pedir confirmaciones (OPE-* no ejecutada); los errores de invocación (--mode inválido, sin valor o repetido) terminan sin leer ni escribir; toda ejecución cierra con el bloque RESULTADO (ÉXITO / FALLO / SIMULACIÓN) · VEREDICTO · MODO · REPORTE; y una repetición sin cambios conserva created y el orden de los motivos. STORY-128 agrega el conjunto de regresión del veredicto (un mundo base EPIC-90 en --mode auto con una variación por caso: APPROVED, historia no terminal → NEEDS-CHANGES, smoke test no ejecutable → BLOCKED y la precedencia G-05 de NEEDS-CHANGES sobre BLOCKED) y la forma cerrada de las aserciones del veredicto en todos los casos: verdict en el frontmatter seguido de created, la misma línea **Veredicto:** y la ausencia de los otros dos valores, con threshold 1. STORY-137: --verbose muestra en consola la salida completa de los comandos de prueba sin cambiar el veredicto ni el reporte, y --mode auto sin pruebas configuradas es un error de invocación sin efectos. STORY-169: en --mode auto ejecuta las suites de nivel épica integration, e2e y e2e-regression de verify (OPE-04, motor run; en los casos, input.suites_result es su salida): una suite que falla rechaza (NEEDS-CHANGES), una obligatoria que no se puede ejecutar bloquea (BLOCKED), una opcional que no se puede ejecutar se omite, y G-05 da precedencia al rechazo; completa los ejemplos del DoD de épica (cumplido → APPROVED, sin evidencia → BLOCKED).",
+  "version": "1.6.0",
+  "description": "Casos de prueba para epic-validate (STORY-124): resuelve la épica por ID, nombre de directorio o ruta, evalúa las comprobaciones estructurales EST-01 (cierre de las historias hijas activas y archivadas: DELIVER/DONE o COMPLETED/DONE = terminada, CANCELED/DONE = cancelada) y EST-02 (verdict de epic-analyze-report.md), calcula el veredicto APPROVED / NEEDS-CHANGES / BLOCKED con la regla G-05 de validation-contract-policy y escribe <EPIC_DIR>/epic-validate-report.md desde un template leído en runtime (central → seed); ante una épica inexistente informa la ruta buscada y no escribe nada. STORY-125 agrega la evidencia operativa: OPE-01 smoke tests SMOKE-N (--mode auto: ejecución de verify.e2e-smoke.command; --mode manual: acceptance-report.md/verify-report.md APPROVED de la historia dueña o confirmación del mantenedor), OPE-02 npm run verify:release y OPE-03 DoD de validación de épica; verify:release y el DoD ausentes quedan omitidos con advertencia sin degradar el veredicto. STORY-126 agrega la operación segura: --mode auto nunca pregunta y --mode manual es interactivo; --dry-run imprime el reporte completo sin escribir archivos, ejecutar comandos ni pedir confirmaciones (OPE-* no ejecutada); los errores de invocación (--mode inválido, sin valor o repetido) terminan sin leer ni escribir; toda ejecución cierra con el bloque RESULTADO (ÉXITO / FALLO / SIMULACIÓN) · VEREDICTO · MODO · REPORTE; y una repetición sin cambios conserva created y el orden de los motivos. STORY-128 agrega el conjunto de regresión del veredicto (un mundo base EPIC-90 en --mode auto con una variación por caso: APPROVED, historia no terminal → NEEDS-CHANGES, smoke test no ejecutable → BLOCKED y la precedencia G-05 de NEEDS-CHANGES sobre BLOCKED) y la forma cerrada de las aserciones del veredicto en todos los casos: verdict en el frontmatter seguido de created, la misma línea **Veredicto:** y la ausencia de los otros dos valores, con threshold 1. STORY-137: --verbose muestra en consola la salida completa de los comandos de prueba sin cambiar el veredicto ni el reporte, y --mode auto sin pruebas configuradas es un error de invocación sin efectos. STORY-169: en --mode auto ejecuta las suites de nivel épica integration, e2e y e2e-regression de verify (OPE-04, motor run; en los casos, input.suites_result es su salida): una suite que falla rechaza (NEEDS-CHANGES), una obligatoria que no se puede ejecutar bloquea (BLOCKED), una opcional que no se puede ejecutar se omite, y G-05 da precedencia al rechazo; completa los ejemplos del DoD de épica (cumplido → APPROVED, sin evidencia → BLOCKED). Rework de STORY-126 (ronda 1): la política de efectos registra el gateway de STORY-127 como su única excepción; TC-040 (auto, APPROVED) y TC-041 (manual, BLOCKED) parten de VALIDATE/IN-PROGRESS y aseveran los dos archivos escritos y el frontmatter exacto de epic.md (solo status, substatus y updated); TC-018 compara el reporte completo con el previo, y TC-042 (VALIDATE/DONE, sin escritura en epic.md) y TC-043 (VALIDATE/IN-PROGRESS → DEVELOP/IN-PROGRESS) repiten desde VALIDATE: solo cambian updated, la fila Fecha y las duraciones medidas.",
   "cases": [
     {
       "id": "TC-001",
@@ -1109,7 +1109,7 @@
       "id": "TC-014",
       "name": "modo-auto-aprobado-resultado-exito",
       "type": "happy-path",
-      "description": "STORY-126 AC-1 (fila auto / APPROVED) / V-1: mismo fixture que TC-006 con --mode auto. El skill no hace ninguna pregunta, escribe solo epic-validate-report.md con verdict APPROVED y cierra la salida con el bloque de resultado RESULTADO: ÉXITO · VEREDICTO: APPROVED · MODO: auto · REPORTE: <ruta>.",
+      "description": "STORY-126 AC-1 (fila auto / APPROVED) / V-1: mismo fixture que TC-006 con --mode auto. El skill no hace ninguna pregunta, escribe solo epic-validate-report.md con verdict APPROVED y cierra la salida con el bloque de resultado RESULTADO: ÉXITO · VEREDICTO: APPROVED · MODO: auto · REPORTE: <ruta>. epic.md no declara status: el gateway no transiciona (Gateway: sin cambio) y el único archivo escrito es el reporte; el caso en VALIDATE es TC-040.",
       "input": {
         "invocation": "/epic-validate EPIC-40 --mode auto",
         "mode": "manual",
@@ -1180,7 +1180,8 @@
           "RESULTADO: ÉXITO",
           "VEREDICTO: APPROVED",
           "MODO: auto",
-          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md"
+          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md",
+          "Gateway: sin cambio — la épica está en"
         ],
         "not_contains": [
           "¿",
@@ -1206,7 +1207,7 @@
       "id": "TC-015",
       "name": "modo-manual-bloqueado-resultado-fallo",
       "type": "error-handling",
-      "description": "STORY-126 AC-1 (fila manual / BLOCKED) / V-2: --mode manual, SMOKE-1 sin reporte aprobado de su historia dueña y el mantenedor responde \"o\" (omitir). SMOKE-1 queda sin evidencia, OPE-01 bloqueada y el reporte es BLOCKED; el bloque de resultado es RESULTADO: FALLO · VEREDICTO: BLOCKED · MODO: manual.",
+      "description": "STORY-126 AC-1 (fila manual / BLOCKED) / V-2: --mode manual, SMOKE-1 sin reporte aprobado de su historia dueña y el mantenedor responde \"o\" (omitir). SMOKE-1 queda sin evidencia, OPE-01 bloqueada y el reporte es BLOCKED; el bloque de resultado es RESULTADO: FALLO · VEREDICTO: BLOCKED · MODO: manual. epic.md no declara status: el gateway no transiciona (Gateway: sin cambio) y el único archivo escrito es el reporte; el caso en VALIDATE es TC-041.",
       "input": {
         "invocation": "/epic-validate EPIC-40 --mode manual",
         "mode": "manual",
@@ -1274,7 +1275,8 @@
           "RESULTADO: FALLO",
           "VEREDICTO: BLOCKED",
           "MODO: manual",
-          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md"
+          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md",
+          "Gateway: sin cambio — la épica está en"
         ],
         "not_contains": [
           "RESULTADO: ÉXITO",
@@ -1429,7 +1431,7 @@
       "id": "TC-018",
       "name": "repeticion-conserva-created-y-orden",
       "type": "regression",
-      "description": "STORY-126 AC-4 / CNF-1 / V-5: existe un epic-validate-report.md previo (created: 2026-10-01) con dos motivos y la épica no cambió. STORY-402 sigue en IMPLEMENT/IN-PROGRESS y el análisis sigue en NEEDS-REFINEMENT. El nuevo reporte conserva created, presenta los mismos dos motivos en el mismo orden (M-001 EST-01, M-002 EST-02) sin duplicarlos y no escribe ningún otro archivo.",
+      "description": "STORY-126 AC-4 / CNF-1 / V-5: existe un epic-validate-report.md previo (created: 2026-10-01, updated y Fecha 2026-10-29) generado con las mismas fuentes, y la épica no cambió ni está en VALIDATE. El nuevo reporte se compara completo con el previo: cada línea fija (frontmatter salvo updated, veredicto, resumen salvo Fecha, comprobaciones salvo la duración de OPE-02, historias, smoke tests, DoD, suites, motivos y notas) se repite literal; solo cambian updated, la fila Fecha y las duraciones medidas. Los dos motivos conservan su orden (M-001 EST-01, M-002 EST-02) sin duplicarse y no se escribe ningún otro archivo (Gateway: sin cambio). La repetición desde VALIDATE la cubren TC-042 y TC-043.",
       "input": {
         "invocation": "/epic-validate EPIC-40 --mode manual",
         "mode": "manual",
@@ -1508,33 +1510,127 @@
           "motivos": [
             "M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
             "M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md"
+          ],
+          "content": [
+            "---",
+            "type: epic-validate",
+            "id: EPIC-40",
+            "slug: EPIC-40-operativa-validate-report",
+            "title: \"Epic validate: Operativa\"",
+            "epic: EPIC-40",
+            "verdict: NEEDS-CHANGES",
+            "created: 2026-10-01",
+            "updated: 2026-10-29",
+            "related:",
+            "  - EPIC-40-operativa",
+            "---",
+            "[[EPIC-40-operativa]]",
+            "# Validación de épica: Operativa",
+            "## Veredicto",
+            "**Veredicto:** `NEEDS-CHANGES` — 2 motivo(s) de rechazo",
+            "Gateway: si la épica está en `VALIDATE`, `APPROVED` la deja en `VALIDATE/DONE` y otro veredicto la devuelve a `DEVELOP/IN-PROGRESS` (Paso 5b).",
+            "## Resumen",
+            "| Épica | EPIC-40 (`specs/flow/EPIC-40-operativa/epic.md`) |",
+            "| Historias terminadas | 1 |",
+            "| Historias canceladas | 0 |",
+            "| Historias no terminales | 1 |",
+            "| Análisis de la épica | `NEEDS-REFINEMENT` |",
+            "| Smoke tests | 1/1 (modo `manual`) |",
+            "| Fecha | 2026-10-29 |",
+            "## Comprobaciones",
+            "| EST-01 | Cierre de las historias | no cumple |",
+            "| EST-02 | Análisis de la épica | no cumple |",
+            "| OPE-01 | Smoke tests de la épica | cumple |",
+            "| OPE-02 | verify:release | cumple | `npm run verify:release` · pasa (",
+            "| OPE-03 | DoD de validación de épica | omitida |",
+            "| OPE-04 | Suites de nivel épica | no ejecutada |",
+            "## Historias de la épica",
+            "| STORY-401 | `DELIVER` | `DONE` | activa | terminada |",
+            "| STORY-402 | `IMPLEMENT` | `IN-PROGRESS` | activa | no terminal |",
+            "## Smoke tests de la épica",
+            "Modo: `manual`",
+            "| SMOKE-1 | `Publicar informe` | aprobado | reporte: `specs/flow/STORY-401-publicar-informe/acceptance-report.md` (verdict: APPROVED) |",
+            "## DoD de validación de épica",
+            "Omitido — ⚠️ docs/guardrails/dod-epic-validate.md no existe",
+            "## Suites de nivel épica",
+            "| integration | — | — | no ejecutada | — | solo en --mode auto |",
+            "| e2e | — | — | no ejecutada | — | solo en --mode auto |",
+            "| e2e-regression | — | — | no ejecutada | — | solo en --mode auto |",
+            "## Motivos",
+            "### M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
+            "- **Acción sugerida:** completar la historia en su pipeline (o cancelarla)",
+            "### M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md",
+            "## Notas de la validación",
+            "⚠️ OPE-03 omitida —"
           ]
         }
       },
       "expected": {
         "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
         "contains": [
-          "created: 2026-10-01",
-          "updated: 2026-10-30",
-          "verdict: NEEDS-CHANGES\ncreated:",
+          "---\ntype: epic-validate\nid: EPIC-40\nslug: EPIC-40-operativa-validate-report\ntitle: \"Epic validate: Operativa\"\nepic: EPIC-40\nverdict: NEEDS-CHANGES\ncreated: 2026-10-01\nupdated: 2026-10-30\nrelated:\n  - EPIC-40-operativa\n---",
           "**Veredicto:** `NEEDS-CHANGES`",
-          "M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
-          "M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md",
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "[[EPIC-40-operativa]]",
+          "# Validación de épica: Operativa",
+          "## Veredicto",
+          "**Veredicto:** `NEEDS-CHANGES` — 2 motivo(s) de rechazo",
+          "Gateway: si la épica está en `VALIDATE`, `APPROVED` la deja en `VALIDATE/DONE` y otro veredicto la devuelve a `DEVELOP/IN-PROGRESS` (Paso 5b).",
+          "## Resumen",
+          "| Épica | EPIC-40 (`specs/flow/EPIC-40-operativa/epic.md`) |",
+          "| Historias terminadas | 1 |",
+          "| Historias canceladas | 0 |",
+          "| Historias no terminales | 1 |",
+          "| Análisis de la épica | `NEEDS-REFINEMENT` |",
+          "| Smoke tests | 1/1 (modo `manual`) |",
+          "| Fecha | 2026-10-30 |",
+          "## Comprobaciones",
+          "| EST-01 | Cierre de las historias | no cumple |",
+          "| EST-02 | Análisis de la épica | no cumple |",
+          "| OPE-01 | Smoke tests de la épica | cumple |",
+          "| OPE-02 | verify:release | cumple | `npm run verify:release` · pasa (",
+          "| OPE-03 | DoD de validación de épica | omitida |",
+          "| OPE-04 | Suites de nivel épica | no ejecutada |",
+          "## Historias de la épica",
+          "| STORY-401 | `DELIVER` | `DONE` | activa | terminada |",
+          "| STORY-402 | `IMPLEMENT` | `IN-PROGRESS` | activa | no terminal |",
+          "## Smoke tests de la épica",
+          "Modo: `manual`",
+          "| SMOKE-1 | `Publicar informe` | aprobado | reporte: `specs/flow/STORY-401-publicar-informe/acceptance-report.md` (verdict: APPROVED) |",
+          "## DoD de validación de épica",
+          "Omitido — ⚠️ docs/guardrails/dod-epic-validate.md no existe",
+          "## Suites de nivel épica",
+          "| integration | — | — | no ejecutada | — | solo en --mode auto |",
+          "| e2e | — | — | no ejecutada | — | solo en --mode auto |",
+          "| e2e-regression | — | — | no ejecutada | — | solo en --mode auto |",
+          "## Motivos",
+          "### M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
+          "- **Acción sugerida:** completar la historia en su pipeline (o cancelarla)",
+          "### M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md",
+          "## Notas de la validación",
+          "⚠️ OPE-03 omitida —",
+          "Gateway: sin cambio — la épica está en",
           "RESULTADO: FALLO",
           "VEREDICTO: NEEDS-CHANGES"
         ],
         "not_contains": [
           "M-003",
           "created: 2026-10-30",
+          "updated: 2026-10-29",
+          "| Fecha | 2026-10-29 |",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`",
           "=== FILE: specs/flow/EPIC-40-operativa/epic.md",
           "=== FILE: specs/flow/STORY-40",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "=== FILE: docs/",
+          "=== FILE: skills/",
           "=== FILE: .tmp/",
           ".bak ===",
           "sección obligatoria ·",
           "{veredicto}",
           "{motivo}",
-          "**Veredicto:** `APPROVED`",
-          "**Veredicto:** `BLOCKED`"
+          "{EPIC_ID}"
         ],
         "files_written": [
           "specs/flow/EPIC-40-operativa/epic-validate-report.md"
@@ -4023,6 +4119,654 @@
           "{motivo}",
           "Sin motivos.",
           "Omitido — ⚠️"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-040",
+      "name": "gateway-auto-approved-desde-validate",
+      "type": "happy-path",
+      "description": "STORY-126 AC-1 (fila auto / APPROVED) + CNF-2 con la excepción del gateway de STORY-127: mismo fixture que TC-014 con la épica en VALIDATE/IN-PROGRESS. Se escriben exactamente dos archivos: epic-validate-report.md (verdict APPROVED) y, después, el frontmatter de epic.md con solo status VALIDATE, substatus DONE y updated de hoy; title, created y el cuerpo no cambian. Ninguna pregunta; RESULTADO: ÉXITO.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: status: VALIDATE",
+          "6: substatus: IN-PROGRESS",
+          "7: created: 2026-10-01",
+          "8: updated: 2026-10-20",
+          "9: ---",
+          "10: # Épica: Operativa",
+          "11: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "12: - [x] **STORY-401** — Publicar informe.",
+          "13: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "14: ### SMOKE-1 — Publicar informe",
+          "15: ```gherkin",
+          "16: Escenario: Publicar informe",
+          "17:   Cuando se ejecuta el flujo",
+          "18:   Entonces el informe queda publicado",
+          "19: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30"
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "=== FILE: specs/flow/EPIC-40-operativa/epic-validate-report.md ===",
+          "verdict: APPROVED\ncreated:",
+          "---\ntype: epic-validate\nid: EPIC-40\nslug: EPIC-40-operativa-validate-report\ntitle: \"Epic validate: Operativa\"\nepic: EPIC-40\nverdict: APPROVED\ncreated: 2026-10-30\nupdated: 2026-10-30\nrelated:\n  - EPIC-40-operativa\n---",
+          "**Veredicto:** `APPROVED`",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic.md ===\n---\ntype: epic\nid: EPIC-40\ntitle: \"Operativa\"\nstatus: VALIDATE\nsubstatus: DONE\ncreated: 2026-10-01\nupdated: 2026-10-30\n---",
+          "- [x] **STORY-401** — Publicar informe.",
+          "### SMOKE-1 — Publicar informe",
+          "Gateway: EPIC-40 VALIDATE/IN-PROGRESS → VALIDATE/DONE",
+          "RESULTADO: ÉXITO",
+          "VEREDICTO: APPROVED",
+          "MODO: auto",
+          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ],
+        "not_contains": [
+          "¿",
+          "RESULTADO: FALLO",
+          "MOTIVO:",
+          "updated: 2026-10-20",
+          "status: SHIP",
+          "status: DEVELOP",
+          "=== FILE: specs/flow/STORY-40",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "=== FILE: docs/",
+          "=== FILE: skills/",
+          "=== FILE: .tmp/",
+          ".bak ===",
+          "{veredicto}",
+          "{motivo}",
+          "{EPIC_ID}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
+        ],
+        "files_written": [
+          "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+          "specs/flow/EPIC-40-operativa/epic.md"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-041",
+      "name": "gateway-manual-blocked-desde-validate",
+      "type": "error-handling",
+      "description": "STORY-126 AC-1 (fila manual / BLOCKED) + CNF-2 con la excepción del gateway de STORY-127: mismo fixture que TC-015 con la épica en VALIDATE/IN-PROGRESS. Se escriben exactamente dos archivos: epic-validate-report.md (verdict BLOCKED) y, después, el frontmatter de epic.md con solo status DEVELOP, substatus IN-PROGRESS y updated de hoy; title, created y el cuerpo no cambian. RESULTADO: FALLO.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode manual",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: status: VALIDATE",
+          "6: substatus: IN-PROGRESS",
+          "7: created: 2026-10-01",
+          "8: updated: 2026-10-20",
+          "9: ---",
+          "10: # Épica: Operativa",
+          "11: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "12: - [x] **STORY-401** — Publicar informe.",
+          "13: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "14: ### SMOKE-1 — Publicar informe",
+          "15: ```gherkin",
+          "16: Escenario: Publicar informe",
+          "17:   Cuando se ejecuta el flujo",
+          "18:   Entonces el informe queda publicado",
+          "19: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": "no existe",
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "maintainer_answers": {
+          "SMOKE-1": "o"
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "=== FILE: specs/flow/EPIC-40-operativa/epic-validate-report.md ===",
+          "verdict: BLOCKED\ncreated:",
+          "---\ntype: epic-validate\nid: EPIC-40\nslug: EPIC-40-operativa-validate-report\ntitle: \"Epic validate: Operativa\"\nepic: EPIC-40\nverdict: BLOCKED\ncreated: 2026-10-30\nupdated: 2026-10-30\nrelated:\n  - EPIC-40-operativa\n---",
+          "**Veredicto:** `BLOCKED`",
+          "sin evidencia",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic.md ===\n---\ntype: epic\nid: EPIC-40\ntitle: \"Operativa\"\nstatus: DEVELOP\nsubstatus: IN-PROGRESS\ncreated: 2026-10-01\nupdated: 2026-10-30\n---",
+          "- [x] **STORY-401** — Publicar informe.",
+          "### SMOKE-1 — Publicar informe",
+          "Gateway: EPIC-40 VALIDATE/IN-PROGRESS → DEVELOP/IN-PROGRESS",
+          "RESULTADO: FALLO",
+          "VEREDICTO: BLOCKED",
+          "MODO: manual",
+          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ],
+        "not_contains": [
+          "RESULTADO: ÉXITO",
+          "MOTIVO:",
+          "verdict: APPROVED",
+          "updated: 2026-10-20",
+          "substatus: DONE\ncreated: 2026-10-01",
+          "status: SHIP",
+          "=== FILE: specs/flow/STORY-40",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "=== FILE: docs/",
+          "=== FILE: skills/",
+          "=== FILE: .tmp/",
+          ".bak ===",
+          "{veredicto}",
+          "{motivo}",
+          "{EPIC_ID}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `NEEDS-CHANGES`"
+        ],
+        "files_written": [
+          "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+          "specs/flow/EPIC-40-operativa/epic.md"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-042",
+      "name": "repeticion-desde-validate-done-sin-cambio",
+      "type": "regression",
+      "description": "STORY-126 AC-4 / CNF-1 / CNF-2 desde VALIDATE: la épica de TC-014 quedó en VALIDATE/DONE tras una validación APPROVED (reporte previo created 2026-10-01, updated y Fecha 2026-10-29) y nada cambió. Se repite con --mode auto: el reporte nuevo es igual al previo salvo updated, la fila Fecha y las duraciones medidas; el gateway no escribe epic.md (la épica ya está en VALIDATE/DONE) y el único archivo escrito es el reporte.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode auto",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: status: VALIDATE",
+          "6: substatus: DONE",
+          "7: created: 2026-10-01",
+          "8: updated: 2026-10-20",
+          "9: ---",
+          "10: # Épica: Operativa",
+          "11: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "12: - [x] **STORY-401** — Publicar informe.",
+          "13: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "14: ### SMOKE-1 — Publicar informe",
+          "15: ```gherkin",
+          "16: Escenario: Publicar informe",
+          "17:   Cuando se ejecuta el flujo",
+          "18:   Entonces el informe queda publicado",
+          "19: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "APPROVED",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": {
+          "verify": {
+            "e2e-smoke": {
+              "command": "node -e \"process.exit(0)\"",
+              "required": false
+            }
+          }
+        },
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "previous_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+          "created": "2026-10-01",
+          "updated": "2026-10-29",
+          "verdict": "APPROVED",
+          "motivos": [],
+          "content": [
+            "---",
+            "type: epic-validate",
+            "id: EPIC-40",
+            "slug: EPIC-40-operativa-validate-report",
+            "title: \"Epic validate: Operativa\"",
+            "epic: EPIC-40",
+            "verdict: APPROVED",
+            "created: 2026-10-01",
+            "updated: 2026-10-29",
+            "related:",
+            "  - EPIC-40-operativa",
+            "---",
+            "[[EPIC-40-operativa]]",
+            "# Validación de épica: Operativa",
+            "## Veredicto",
+            "**Veredicto:** `APPROVED` — historias cerradas, análisis de la épica APPROVED y evidencia operativa aprobada",
+            "Gateway: si la épica está en `VALIDATE`, `APPROVED` la deja en `VALIDATE/DONE` y otro veredicto la devuelve a `DEVELOP/IN-PROGRESS` (Paso 5b).",
+            "## Resumen",
+            "| Épica | EPIC-40 (`specs/flow/EPIC-40-operativa/epic.md`) |",
+            "| Historias terminadas | 1 |",
+            "| Historias canceladas | 0 |",
+            "| Historias no terminales | 0 |",
+            "| Análisis de la épica | `APPROVED` |",
+            "| Smoke tests | 1/1 (modo `auto`) |",
+            "| Fecha | 2026-10-29 |",
+            "## Comprobaciones",
+            "| EST-01 | Cierre de las historias | cumple |",
+            "| EST-02 | Análisis de la épica | cumple |",
+            "| OPE-01 | Smoke tests de la épica | cumple |",
+            "| OPE-02 | verify:release | cumple | `npm run verify:release` · pasa (",
+            "| OPE-03 | DoD de validación de épica | omitida |",
+            "| OPE-04 | Suites de nivel épica | omitida |",
+            "## Historias de la épica",
+            "| STORY-401 | `DELIVER` | `DONE` | activa | terminada |",
+            "## Smoke tests de la épica",
+            "Modo: `auto`",
+            "| SMOKE-1 | `Publicar informe` | aprobado |",
+            "## DoD de validación de épica",
+            "Omitido — ⚠️ docs/guardrails/dod-epic-validate.md no existe",
+            "## Suites de nivel épica",
+            "| integration | — | — | omitida | — |",
+            "| e2e | — | — | omitida | — |",
+            "| e2e-regression | — | — | omitida | — |",
+            "## Motivos",
+            "Sin motivos.",
+            "## Notas de la validación",
+            "⚠️ OPE-03 omitida —"
+          ]
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "=== FILE: specs/flow/EPIC-40-operativa/epic-validate-report.md ===",
+          "**Veredicto:** `APPROVED`",
+          "verdict: APPROVED\ncreated:",
+          "---\ntype: epic-validate\nid: EPIC-40\nslug: EPIC-40-operativa-validate-report\ntitle: \"Epic validate: Operativa\"\nepic: EPIC-40\nverdict: APPROVED\ncreated: 2026-10-01\nupdated: 2026-10-30\nrelated:\n  - EPIC-40-operativa\n---",
+          "[[EPIC-40-operativa]]",
+          "# Validación de épica: Operativa",
+          "## Veredicto",
+          "**Veredicto:** `APPROVED` — historias cerradas, análisis de la épica APPROVED y evidencia operativa aprobada",
+          "Gateway: si la épica está en `VALIDATE`, `APPROVED` la deja en `VALIDATE/DONE` y otro veredicto la devuelve a `DEVELOP/IN-PROGRESS` (Paso 5b).",
+          "## Resumen",
+          "| Épica | EPIC-40 (`specs/flow/EPIC-40-operativa/epic.md`) |",
+          "| Historias terminadas | 1 |",
+          "| Historias canceladas | 0 |",
+          "| Historias no terminales | 0 |",
+          "| Análisis de la épica | `APPROVED` |",
+          "| Smoke tests | 1/1 (modo `auto`) |",
+          "| Fecha | 2026-10-30 |",
+          "## Comprobaciones",
+          "| EST-01 | Cierre de las historias | cumple |",
+          "| EST-02 | Análisis de la épica | cumple |",
+          "| OPE-01 | Smoke tests de la épica | cumple |",
+          "| OPE-02 | verify:release | cumple | `npm run verify:release` · pasa (",
+          "| OPE-03 | DoD de validación de épica | omitida |",
+          "| OPE-04 | Suites de nivel épica | omitida |",
+          "## Historias de la épica",
+          "| STORY-401 | `DELIVER` | `DONE` | activa | terminada |",
+          "## Smoke tests de la épica",
+          "Modo: `auto`",
+          "| SMOKE-1 | `Publicar informe` | aprobado |",
+          "## DoD de validación de épica",
+          "Omitido — ⚠️ docs/guardrails/dod-epic-validate.md no existe",
+          "## Suites de nivel épica",
+          "| integration | — | — | omitida | — |",
+          "| e2e | — | — | omitida | — |",
+          "| e2e-regression | — | — | omitida | — |",
+          "## Motivos",
+          "Sin motivos.",
+          "## Notas de la validación",
+          "⚠️ OPE-03 omitida —",
+          "Gateway: sin cambio — la épica ya está en VALIDATE/DONE",
+          "RESULTADO: ÉXITO",
+          "VEREDICTO: APPROVED",
+          "MODO: auto",
+          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ],
+        "not_contains": [
+          "¿",
+          "M-001",
+          "MOTIVO:",
+          "created: 2026-10-30",
+          "updated: 2026-10-29",
+          "| Fecha | 2026-10-29 |",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic.md",
+          "Gateway: EPIC-40",
+          "=== FILE: specs/flow/STORY-40",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "=== FILE: docs/",
+          "=== FILE: skills/",
+          "=== FILE: .tmp/",
+          ".bak ===",
+          "sección obligatoria ·",
+          "{veredicto}",
+          "{motivo}",
+          "{EPIC_ID}",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "**Veredicto:** `BLOCKED`"
+        ],
+        "files_written": [
+          "specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-043",
+      "name": "repeticion-desde-validate-devuelve-a-develop",
+      "type": "regression",
+      "description": "STORY-126 AC-4 / CNF-1 / CNF-2 desde VALIDATE: fixture de TC-018 con la épica devuelta a VALIDATE/IN-PROGRESS sin otros cambios. El reporte nuevo se compara completo con el previo y solo difiere en updated, la fila Fecha y las duraciones medidas; además el gateway escribe en epic.md solo status DEVELOP, substatus IN-PROGRESS y updated de hoy (title, created y el cuerpo no cambian). Se escriben exactamente esos dos archivos.",
+      "input": {
+        "invocation": "/epic-validate EPIC-40 --mode manual",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-40-operativa/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-40-operativa/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-40",
+          "4: title: \"Operativa\"",
+          "5: status: VALIDATE",
+          "6: substatus: IN-PROGRESS",
+          "7: created: 2026-10-01",
+          "8: updated: 2026-10-20",
+          "9: ---",
+          "10: # Épica: Operativa",
+          "11: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "12: - [x] **STORY-401** — Publicar informe.",
+          "13: - [ ] **STORY-402** — Archivar informe.",
+          "14: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "15: ### SMOKE-1 — Publicar informe",
+          "16: ```gherkin",
+          "17: Escenario: Publicar informe",
+          "18:   Cuando se ejecuta el flujo",
+          "19:   Entonces el informe queda publicado",
+          "20: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "DELIVER",
+            "substatus": "DONE",
+            "body": [
+              "## Notas",
+              "- Cubre SMOKE-1 de EPIC-40."
+            ]
+          },
+          {
+            "path": "specs/flow/STORY-402-archivar-informe/story.md",
+            "parent": "EPIC-40-operativa",
+            "status": "IMPLEMENT",
+            "substatus": "IN-PROGRESS",
+            "body": [
+              "## Notas",
+              "- Archiva el informe publicado."
+            ]
+          }
+        ],
+        "epic_analyze_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "verdict": "NEEDS-REFINEMENT",
+          "updated": "2026-10-25"
+        },
+        "sddf_config": "no existe",
+        "package_json": {
+          "scripts": {
+            "verify:release": "node -e \"process.exit(0)\""
+          }
+        },
+        "dod_epic_validate": "no existe",
+        "story_reports": [
+          {
+            "path": "specs/flow/STORY-401-publicar-informe/acceptance-report.md",
+            "verdict": "APPROVED"
+          }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-validate/assets/epic-validate-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-30",
+        "previous_report": {
+          "path": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+          "created": "2026-10-01",
+          "updated": "2026-10-29",
+          "verdict": "NEEDS-CHANGES",
+          "motivos": [
+            "M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
+            "M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md"
+          ],
+          "content": [
+            "---",
+            "type: epic-validate",
+            "id: EPIC-40",
+            "slug: EPIC-40-operativa-validate-report",
+            "title: \"Epic validate: Operativa\"",
+            "epic: EPIC-40",
+            "verdict: NEEDS-CHANGES",
+            "created: 2026-10-01",
+            "updated: 2026-10-29",
+            "related:",
+            "  - EPIC-40-operativa",
+            "---",
+            "[[EPIC-40-operativa]]",
+            "# Validación de épica: Operativa",
+            "## Veredicto",
+            "**Veredicto:** `NEEDS-CHANGES` — 2 motivo(s) de rechazo",
+            "Gateway: si la épica está en `VALIDATE`, `APPROVED` la deja en `VALIDATE/DONE` y otro veredicto la devuelve a `DEVELOP/IN-PROGRESS` (Paso 5b).",
+            "## Resumen",
+            "| Épica | EPIC-40 (`specs/flow/EPIC-40-operativa/epic.md`) |",
+            "| Historias terminadas | 1 |",
+            "| Historias canceladas | 0 |",
+            "| Historias no terminales | 1 |",
+            "| Análisis de la épica | `NEEDS-REFINEMENT` |",
+            "| Smoke tests | 1/1 (modo `manual`) |",
+            "| Fecha | 2026-10-29 |",
+            "## Comprobaciones",
+            "| EST-01 | Cierre de las historias | no cumple |",
+            "| EST-02 | Análisis de la épica | no cumple |",
+            "| OPE-01 | Smoke tests de la épica | cumple |",
+            "| OPE-02 | verify:release | cumple | `npm run verify:release` · pasa (",
+            "| OPE-03 | DoD de validación de épica | omitida |",
+            "| OPE-04 | Suites de nivel épica | no ejecutada |",
+            "## Historias de la épica",
+            "| STORY-401 | `DELIVER` | `DONE` | activa | terminada |",
+            "| STORY-402 | `IMPLEMENT` | `IN-PROGRESS` | activa | no terminal |",
+            "## Smoke tests de la épica",
+            "Modo: `manual`",
+            "| SMOKE-1 | `Publicar informe` | aprobado | reporte: `specs/flow/STORY-401-publicar-informe/acceptance-report.md` (verdict: APPROVED) |",
+            "## DoD de validación de épica",
+            "Omitido — ⚠️ docs/guardrails/dod-epic-validate.md no existe",
+            "## Suites de nivel épica",
+            "| integration | — | — | no ejecutada | — | solo en --mode auto |",
+            "| e2e | — | — | no ejecutada | — | solo en --mode auto |",
+            "| e2e-regression | — | — | no ejecutada | — | solo en --mode auto |",
+            "## Motivos",
+            "### M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
+            "- **Acción sugerida:** completar la historia en su pipeline (o cancelarla)",
+            "### M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md",
+            "## Notas de la validación",
+            "⚠️ OPE-03 omitida —"
+          ]
+        }
+      },
+      "expected": {
+        "output_file": "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+        "contains": [
+          "=== FILE: specs/flow/EPIC-40-operativa/epic-validate-report.md ===",
+          "**Veredicto:** `NEEDS-CHANGES`",
+          "verdict: NEEDS-CHANGES\ncreated:",
+          "---\ntype: epic-validate\nid: EPIC-40\nslug: EPIC-40-operativa-validate-report\ntitle: \"Epic validate: Operativa\"\nepic: EPIC-40\nverdict: NEEDS-CHANGES\ncreated: 2026-10-01\nupdated: 2026-10-30\nrelated:\n  - EPIC-40-operativa\n---",
+          "[[EPIC-40-operativa]]",
+          "# Validación de épica: Operativa",
+          "## Veredicto",
+          "**Veredicto:** `NEEDS-CHANGES` — 2 motivo(s) de rechazo",
+          "Gateway: si la épica está en `VALIDATE`, `APPROVED` la deja en `VALIDATE/DONE` y otro veredicto la devuelve a `DEVELOP/IN-PROGRESS` (Paso 5b).",
+          "## Resumen",
+          "| Épica | EPIC-40 (`specs/flow/EPIC-40-operativa/epic.md`) |",
+          "| Historias terminadas | 1 |",
+          "| Historias canceladas | 0 |",
+          "| Historias no terminales | 1 |",
+          "| Análisis de la épica | `NEEDS-REFINEMENT` |",
+          "| Smoke tests | 1/1 (modo `manual`) |",
+          "| Fecha | 2026-10-30 |",
+          "## Comprobaciones",
+          "| EST-01 | Cierre de las historias | no cumple |",
+          "| EST-02 | Análisis de la épica | no cumple |",
+          "| OPE-01 | Smoke tests de la épica | cumple |",
+          "| OPE-02 | verify:release | cumple | `npm run verify:release` · pasa (",
+          "| OPE-03 | DoD de validación de épica | omitida |",
+          "| OPE-04 | Suites de nivel épica | no ejecutada |",
+          "## Historias de la épica",
+          "| STORY-401 | `DELIVER` | `DONE` | activa | terminada |",
+          "| STORY-402 | `IMPLEMENT` | `IN-PROGRESS` | activa | no terminal |",
+          "## Smoke tests de la épica",
+          "Modo: `manual`",
+          "| SMOKE-1 | `Publicar informe` | aprobado | reporte: `specs/flow/STORY-401-publicar-informe/acceptance-report.md` (verdict: APPROVED) |",
+          "## DoD de validación de épica",
+          "Omitido — ⚠️ docs/guardrails/dod-epic-validate.md no existe",
+          "## Suites de nivel épica",
+          "| integration | — | — | no ejecutada | — | solo en --mode auto |",
+          "| e2e | — | — | no ejecutada | — | solo en --mode auto |",
+          "| e2e-regression | — | — | no ejecutada | — | solo en --mode auto |",
+          "## Motivos",
+          "### M-001 [NEEDS-CHANGES] — EST-01: STORY-402",
+          "- **Acción sugerida:** completar la historia en su pipeline (o cancelarla)",
+          "### M-002 [NEEDS-CHANGES] — EST-02: epic-analyze-report.md",
+          "## Notas de la validación",
+          "⚠️ OPE-03 omitida —",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic.md ===\n---\ntype: epic\nid: EPIC-40\ntitle: \"Operativa\"\nstatus: DEVELOP\nsubstatus: IN-PROGRESS\ncreated: 2026-10-01\nupdated: 2026-10-30\n---",
+          "- [ ] **STORY-402** — Archivar informe.",
+          "Gateway: EPIC-40 VALIDATE/IN-PROGRESS → DEVELOP/IN-PROGRESS",
+          "RESULTADO: FALLO",
+          "VEREDICTO: NEEDS-CHANGES",
+          "REPORTE: specs/flow/EPIC-40-operativa/epic-validate-report.md"
+        ],
+        "not_contains": [
+          "M-003",
+          "MOTIVO:",
+          "created: 2026-10-30",
+          "updated: 2026-10-29",
+          "updated: 2026-10-20",
+          "| Fecha | 2026-10-29 |",
+          "status: SHIP",
+          "substatus: DONE\ncreated: 2026-10-01",
+          "=== FILE: specs/flow/STORY-40",
+          "=== FILE: specs/flow/EPIC-40-operativa/epic-analyze-report.md",
+          "=== FILE: docs/",
+          "=== FILE: skills/",
+          "=== FILE: .tmp/",
+          ".bak ===",
+          "{veredicto}",
+          "{motivo}",
+          "{EPIC_ID}",
+          "**Veredicto:** `APPROVED`",
+          "**Veredicto:** `BLOCKED`"
+        ],
+        "files_written": [
+          "specs/flow/EPIC-40-operativa/epic-validate-report.md",
+          "specs/flow/EPIC-40-operativa/epic.md"
         ]
       },
       "threshold": 1

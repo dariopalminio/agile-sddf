@@ -90,19 +90,19 @@ Si nadie puede responder en `MODO = manual` (invocación desde un orquestador), 
 
 ### Política de efectos
 
-Fuente única de lo que cada ejecución escribe, ejecuta y pregunta; todo paso con efectos la respeta:
+Fuente única de lo que cada ejecución escribe, ejecuta y pregunta; todo paso con efectos la respeta. La validación (STORY-126) escribe solo el reporte; la columna del gateway es la única excepción y la define STORY-127 (CS-7 de EPIC-23):
 
-| Ejecución | Archivos escritos | Comandos ejecutados (vía el motor: `check-command` o `run`) | Preguntas al mantenedor |
-|---|---|---|---|
-| Error de invocación (Paso 1) | ninguno | ninguno | ninguna |
-| Rechazo de `--mode auto` sin pruebas configuradas (Paso 1.2, con o sin `--dry-run`) | ninguno | ninguno | ninguna |
-| `--dry-run` (cualquier `MODO`) | ninguno | ninguno | solo el argumento ausente con `MODO = manual` |
-| `MODO = auto`, sin `--dry-run` | `<EPIC_DIR>/epic-validate-report.md` y, después, `status`, `substatus` y `updated` de `epic.md` (gateway, Paso 5b) | smoke tests, `verify:release`, comandos de verificación del DoD y suites de nivel épica | ninguna |
-| `MODO = manual`, sin `--dry-run` | `<EPIC_DIR>/epic-validate-report.md` y, después, `status`, `substatus` y `updated` de `epic.md` (gateway, Paso 5b) | `verify:release` y comandos de verificación del DoD; nunca smoke tests ni suites de nivel épica | el argumento ausente y las confirmaciones de los Pasos 3b y 3d |
+| Ejecución | Reporte escrito (validación) | `epic.md` (gateway, Paso 5b) | Comandos ejecutados (vía el motor: `check-command` o `run`) | Preguntas al mantenedor |
+|---|---|---|---|---|
+| Error de invocación (Paso 1) | ninguno | sin cambio | ninguno | ninguna |
+| Rechazo de `--mode auto` sin pruebas configuradas (Paso 1.2, con o sin `--dry-run`) | ninguno | sin cambio | ninguno | ninguna |
+| `--dry-run` (cualquier `MODO`) | ninguno | sin cambio | ninguno | solo el argumento ausente con `MODO = manual` |
+| `MODO = auto`, sin `--dry-run` | `<EPIC_DIR>/epic-validate-report.md` | con la épica en `VALIDATE`, solo `status`, `substatus` y `updated`, después del reporte; si no, sin cambio | smoke tests, `verify:release`, comandos de verificación del DoD y suites de nivel épica | ninguna |
+| `MODO = manual`, sin `--dry-run` | `<EPIC_DIR>/epic-validate-report.md` | con la épica en `VALIDATE`, solo `status`, `substatus` y `updated`, después del reporte; si no, sin cambio | `verify:release` y comandos de verificación del DoD; nunca smoke tests ni suites de nivel épica | el argumento ausente y las confirmaciones de los Pasos 3b y 3d |
 
 `--verbose` no cambia ninguna columna de ninguna fila; solo agrega texto a la consola.
 
-**Excepción del gateway:** fuera de `--dry-run` y solo después de escribir el reporte en esta ejecución, el skill escribe en el frontmatter de `epic.md` los campos `status`, `substatus` y `updated`, según la tabla del Paso 5b; el cuerpo y el resto de los campos no cambian. Con `--dry-run`, un error de invocación o un fallo antes de escribir el reporte, `epic.md` no cambia.
+**Excepción del gateway (STORY-127):** fuera de `--dry-run` y solo después de escribir el reporte en esta ejecución, el skill escribe en el frontmatter de `epic.md` los campos `status`, `substatus` y `updated`, según la tabla del Paso 5b. El cuerpo y el resto de los campos no cambian, y una épica fuera de `VALIDATE` tampoco cambia. Con `--dry-run`, un error de invocación o un fallo antes de escribir el reporte, `epic.md` no cambia. Las comprobaciones, el veredicto y el contenido del reporte no dependen del gateway: una repetición sin cambios en las fuentes da el mismo reporte, salvo los campos volátiles del Paso 5, cualquiera sea el estado de la épica.
 
 Fuera de esa excepción, en ninguna ejecución el skill crea `.tmp/` ni copias `.bak`, ni modifica `epic.md`, ningún `story.md`, `epic-analyze-report.md`, reportes de historias, el DoD, templates ni código fuente; la escritura del reporte es una sobrescritura completa. El motor nunca escribe. Los comandos que ejecuta los declara el proyecto (`sddf.config.yaml`, `package.json`, DoD) y lo que hagan es responsabilidad suya: por eso `--dry-run` no ejecuta ninguno.
 
@@ -135,7 +135,7 @@ Lo que la consola muestra por cada comando de prueba; `verbose` solo cambia esto
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
 work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0017).
+El layout no es configurable (ADR-0019).
 
 Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
@@ -346,7 +346,7 @@ Los textos citados (`outputTail`, nombres, criterios, valores leídos) se escrib
 3. Los comentarios guía, las filas y bloques de ejemplo y los placeholders `{…}` se reemplazan; las anotaciones de marcador (`sección obligatoria · clave · escritor`) no se copian al reporte.
 4. Una clave del template que el skill no conoce se conserva con su título y el texto `N/A — sección sin escritor en esta versión`. Una clave de la tabla que el template no declara: sus datos se omiten y se emite `⚠️ El template no declara la clave <clave>: sección omitida` (si es `veredicto`, añadir `el reporte no cumple el contrato de validación (G-02)`); `verdict` se escribe igual.
 5. **Frontmatter:** `type: epic-validate`, `id` y `epic` = `EPIC_ID`, `slug: <EPIC_DIRNAME>-validate-report`, `title: "Epic validate: <title>"`, `verdict`, `created` (el del reporte previo si existe y es legible; si no, hoy), `updated` (hoy), `related: [<EPIC_DIRNAME>]`. Ningún otro campo declara un veredicto.
-6. **Escritura:** `<EPIC_DIR>/epic-validate-report.md`, sobrescritura completa sin pregunta, en UTF-8 sin BOM con LF. Del reporte previo solo se conserva `created`, así nunca quedan motivos obsoletos. Si la escritura falla: `❌ No se pudo escribir <ruta>: <causa>` y no se informa el veredicto como emitido (`VEREDICTO: —` en el Paso 6). Fuera de él, el skill solo escribe el frontmatter de `epic.md` en el gateway del Paso 5b (Política de efectos).
+6. **Escritura:** `<EPIC_DIR>/epic-validate-report.md`, sobrescritura completa sin pregunta, en UTF-8 sin BOM con LF. Del reporte previo solo se conserva `created`, así nunca quedan motivos obsoletos. Si la escritura falla: `❌ No se pudo escribir <ruta>: <causa>` y no se informa el veredicto como emitido (`VEREDICTO: —` en el Paso 6). Es la única escritura de la validación: fuera de él, el skill solo escribe el frontmatter de `epic.md` en el gateway del Paso 5b (STORY-127), la excepción que registra la Política de efectos.
 7. **Previsualización:** con `dryRun`, los sub-pasos 1–5 se aplican igual (mismo template, mismas claves y `created` del reporte previo o hoy; un template ausente es el mismo error), pero el sub-paso 6 **no se ejecuta**: el reporte renderizado completo (frontmatter y cuerpo) se imprime en consola en un bloque de código `markdown`, entre `── Previsualización (--dry-run): no se escribió <ruta relativa del reporte> ──` y `── Fin de la previsualización ──`.
 8. **Campos volátiles:** son los únicos valores que pueden cambiar entre dos ejecuciones equivalentes (datos de la ejecución); cualquier otro valor del reporte depende solo de las fuentes y, en `manual`, de las respuestas:
 
