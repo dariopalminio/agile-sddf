@@ -388,6 +388,7 @@ function loadCases(skillsDir, name, runtime = {}) {
     throw new Error(`⚠️ evals.json no contiene casos en cases[].\n   Añade al menos TC-001 antes de verificar.`);
   }
   const seenIds = new Set();
+  const contexts = new Map();
   for (const testCase of json.cases) {
     if (!testCase || typeof testCase !== 'object') {
       throw new Error(`❌ ${path.relative(repoRoot, evalsPath)} contiene un caso inválido.`);
@@ -399,8 +400,35 @@ function loadCases(skillsDir, name, runtime = {}) {
     seenIds.add(id);
     const spec = parseSandboxSpec(testCase, `${path.relative(repoRoot, evalsPath)} › ${id}`);
     if (spec) assertSandboxSources(spec, repoRoot, `${path.relative(repoRoot, evalsPath)} › ${id}`);
+    if (spec && testCase.context_files !== undefined) {
+      throw new Error(`❌ ${id}: context_files solo se admite en simulación; usa sandbox.copy para ejecución real.`);
+    }
+    contexts.set(id, readContextFiles(testCase, skillsDir, skillName));
   }
-  return { evalsPath, cases: json.cases };
+  return { evalsPath, cases: json.cases, contexts };
+}
+
+// Recursos fuente opt-in: el prompt recibe el template vigente, nunca outputs de ejemplo.
+function readContextFiles(testCase, skillsDir, skillName) {
+  if (testCase.context_files === undefined) return [];
+  const label = `${skillName} › ${testCase.id} › context_files`;
+  const skillDir = skillFilePath(skillsDir, skillName);
+  return stringList(testCase.context_files, label).map((entry) => {
+    const relative = normalizeRelativePath(entry, label);
+    if (!/^(assets|references)\//.test(relative)) {
+      throw new Error(`❌ ${label}: solo se admiten recursos de assets/ o references/: ${relative}.`);
+    }
+    const file = resolveContainedPath(skillDir, relative);
+    try {
+      const realRelative = path.relative(fs.realpathSync(skillDir), fs.realpathSync(file)).split(path.sep).join('/');
+      if (!/^(assets|references)\//.test(realRelative) || realRelative.split('/').includes('..')) {
+        throw new Error('el recurso resuelto sale de assets/ o references/ del skill');
+      }
+      return { path: relative, content: fs.readFileSync(file, 'utf8') };
+    } catch (err) {
+      throw new Error(`❌ ${label}: no se pudo leer ${relative}: ${err.message}`);
+    }
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -463,7 +491,7 @@ function buildExecutionPlan(opts, runtime = {}) {
 // Paso E3a — Prompt de escenario
 // ---------------------------------------------------------------------------
 
-function buildPrompt(skillName, skillMdRel, testCase) {
+function buildPrompt(skillName, skillMdRel, testCase, contextFiles = []) {
   const input = testCase.input === undefined ? {} : testCase.input;
   return [
     `Eres un ejecutor de evals (protocolo E3 de \`skill-test-evals\`). Debes SIMULAR en seco la ejecución del skill \`${skillName}\` sobre un escenario de prueba y reportar EXACTAMENTE qué emitiría.`,
@@ -476,6 +504,14 @@ function buildPrompt(skillName, skillMdRel, testCase) {
     `- NO modifiques ningún archivo del repositorio, NO ejecutes comandos de escritura y NO lances subagentes. Solo lee y razona.`,
     `- No mires la sección "expected" de ningún caso: emite lo que dicta el SKILL.md dado el escenario.`,
     ``,
+    ...contextFiles.flatMap((resource) => [
+      `Recurso fuente del skill: ${resource.path} (contenido íntegro leído del disco por el runner):`,
+      `Este recurso forma parte del contrato del skill. Si es un template de salida, conserva su frontmatter y su estructura al completar el bloque FILE; aplica sus comentarios y condiciones.`,
+      '```markdown',
+      resource.content,
+      '```',
+      ``,
+    ]),
     `Escenario de prueba (${testCase.id} — ${testCase.name || ''}):`,
     testCase.description || '(sin descripción)',
     ``,
@@ -907,7 +943,7 @@ async function runOpenCode(prompt, opts, runtime = {}) {
   const invocation = openCodeInvocation(buildOpenCodeArgs(opts), { ...runtime, env });
   // stdin evita límites y quoting de prompts extensos en la línea de comandos.
   const run = await runProcess(invocation.command, invocation.args, opts, { ...runtime, env }, prompt);
-  if (!run.ok) return run;
+  if (!run.ok) return { ...run, events: run.stdout };
 
   const text = [];
   const errors = [];
@@ -927,7 +963,7 @@ async function runOpenCode(prompt, opts, runtime = {}) {
   }
   const stdout = text.join('');
   if (!stdout.trim()) errors.push('OpenCode terminó sin una respuesta de texto.');
-  return { ...run, ok: errors.length === 0, stdout, stderr: [run.stderr, ...errors].filter(Boolean).join('\n') };
+  return { ...run, events: run.stdout, ok: errors.length === 0, stdout, stderr: [run.stderr, ...errors].filter(Boolean).join('\n') };
 }
 
 // ---------------------------------------------------------------------------
@@ -985,7 +1021,7 @@ async function runSkill(planSkill, opts, runtime = {}) {
   const results = await runPool(cases, opts.concurrency, async (tc) => {
     const testCaseId = validateCaseId(tc.id, `skill ${skillName}`);
     const spec = parseSandboxSpec(tc, `${skillName} › ${testCaseId}`);
-    const prompt = spec ? buildSandboxPrompt(skillName, skillMdRel, tc, spec) : buildPrompt(skillName, skillMdRel, tc);
+    const prompt = spec ? buildSandboxPrompt(skillName, skillMdRel, tc, spec) : buildPrompt(skillName, skillMdRel, tc, planSkill.contexts.get(tc.id));
     if (opts.dryRun) {
       const plan = spec ? `[sandbox] ${spec.fixture} → ${spec.target}/ · escritos esperados: ${spec.files.written.length}\n` : '';
       log(`\n----- ${tc.id} (${tc.name}) — prompt -----\n${plan}${prompt}\n`);
@@ -1002,6 +1038,9 @@ async function runSkill(planSkill, opts, runtime = {}) {
     }
     const run = await runEvalRunner(prompt, opts, { ...runtime, codexOutputFile: outputFile, sandboxDir });
     fs.writeFileSync(outputFile, run.stdout);
+    if (opts.evalRunner === 'opencode' && typeof run.events === 'string') {
+      fs.writeFileSync(resolveContainedPath(runsDir, `${testCaseId}.events.jsonl`), run.events);
+    }
     if (run.stderr && run.stderr.trim()) {
       fs.writeFileSync(resolveContainedPath(runsDir, `${testCaseId}.stderr.txt`), run.stderr);
     }

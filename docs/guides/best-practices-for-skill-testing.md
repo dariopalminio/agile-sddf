@@ -22,6 +22,19 @@ Los skills pueden ser probados de varias maneras, dependiendo de la etapa de des
 
 Las pruebas de skills se definen en archivos `evals.json` dentro de una carpeta `evals` (dentro de la carpeta del skill) que contienen los casos de prueba y las aserciones que deben cumplirse. Estos evals permiten verificar que el skill funciona correctamente y cumple con los requisitos esperados.
 
+En los casos simulados de `scripts/run-evals.js`, `context_files` permite entregar recursos
+fuente al modelo dentro del prompt. Por ejemplo,
+`"context_files": ["assets/epic-format-validation-report-template.md"]` lee el template vigente
+desde el directorio del skill; no duplica su contenido en el manifest. Solo admite archivos de
+`assets/` o `references/` del propio skill y rechaza rutas inválidas o recursos ausentes antes
+de ejecutar modelos. En casos de ejecución real se usa `sandbox.copy`.
+
+El runner guarda la respuesta completa en
+`.tmp/skill-test-evals/<skill>/runs/<TC>.txt`; con OpenCode conserva también los eventos originales
+en `<TC>.events.jsonl`, incluidas las lecturas de herramientas que emita el CLI. El informe
+Markdown solo muestra los primeros 300 caracteres de la respuesta: para investigar una omisión,
+consulta esos archivos. Los eventos no se usan para calificar el caso.
+
 ## Pruebas con skill-master o skill-test-evals
 
 El skill-master o skill-test-evals permiten la creación, edición y testeo de skills, con un fuerte enfoque interactivo y conversacional.

@@ -262,6 +262,7 @@
     },
     {
       "id": "TC-016",
+      "context_files": ["assets/epic-format-validation-report-template.md"],
       "name": "épica-sin-criterios-de-salida-y-línea-inválida-needs-refinement",
       "type": "fail-fast",
       "description": "[AC-2 · STORY-166] La épica no tiene la sección ## Criterios de salida y su sección historias contiene la línea \"- [ ] Exportar CSV: descarga del historial\", que no casa con F1, F2 ni F3. El gate debe declarar NEEDS-REFINEMENT, listar ambos defectos con ubicación y corrección esperada (tabla ## Defectos) y escribir epic-format-validation-report.md.",

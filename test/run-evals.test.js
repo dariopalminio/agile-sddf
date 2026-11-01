@@ -363,6 +363,49 @@ test('dry-run con OpenCode no invoca runners ni crea artefactos', async (t) => {
   assertNoRunArtifacts(fixture);
 });
 
+test('context_files entrega el recurso fuente vigente al runner y al dry-run, sin expectativas', async (t) => {
+  const fixture = createFixture(t);
+  const testCase = { ...makeCase('TC-001'), context_files: ['assets/report.md'], expected: { contains: ['EXPECTATIVA_PRIVADA'] } };
+  const skillDir = writeSkill(fixture, 'alpha', [testCase]);
+  fs.mkdirSync(path.join(skillDir, 'assets'));
+  const templateFile = path.join(skillDir, 'assets', 'report.md');
+  fs.writeFileSync(templateFile, '---\ntype: report\n---\n## Resumen\n');
+  const dryRun = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--dry-run']);
+  assertExit(dryRun, 0);
+  assert.match(dryRun.output, /type: report\n---\n## Resumen/);
+  assert.ok(!dryRun.output.includes('EXPECTATIVA_PRIVADA'));
+  assertNoRunArtifacts(fixture);
+  fs.writeFileSync(templateFile, '---\ntype: actualizado\n---\n## Nueva sección\n');
+  const actual = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode']);
+  assert.match(actual.openCodeCalls[0][0], /type: actualizado\n---\n## Nueva sección/);
+  assert.ok(!actual.openCodeCalls[0][0].includes('EXPECTATIVA_PRIVADA'));
+});
+
+test('context_files inválido detiene toda la selección antes de invocar modelos o crear artefactos', async (t) => {
+  for (const value of ['assets/file.md', ['../file.md'], ['/tmp/file.md'], ['evals/evals.json'], ['examples/output.md'], ['assets/missing.md']]) {
+    const fixture = createFixture(t);
+    writeSkill(fixture, 'alpha', [makeCase('TC-001'), { ...makeCase('TC-002'), context_files: value }]);
+    const result = await runRunner(fixture, ['alpha']);
+    assertExit(result, 1);
+    assert.match(result.output, /context_files/);
+    assert.equal(result.claudeCalls.length, 0);
+    assertNoRunArtifacts(fixture);
+  }
+});
+
+test('OpenCode conserva los eventos completos por separado sin calificarlos como respuesta', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const events = JSON.stringify({ type: 'tool_use', part: { state: { output: 'TEXTO_DE_HERRAMIENTA' } } });
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode'], {
+    runOpenCode: async () => ({ ok: true, code: 0, stdout: '=== END ===', events, stderr: '', durationMs: 0 }),
+  });
+  assertExit(result, 0);
+  const dir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'runs');
+  assert.equal(fs.readFileSync(path.join(dir, 'TC-001.events.jsonl'), 'utf8'), events);
+  assert.equal(fs.readFileSync(path.join(dir, 'TC-001.txt'), 'utf8'), '=== END ===');
+});
+
 test('el prompt de simulación separa los artefactos declarados del filesystem real', () => {
   const testCase = {
     ...makeCase('TC-001'),
@@ -389,6 +432,7 @@ test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar
   const skillDir = path.join(__dirname, '..', 'skills', 'epic-format-validation');
   const manifest = JSON.parse(fs.readFileSync(path.join(skillDir, 'evals', 'evals.json'), 'utf8'));
   const testCase = manifest.cases.find((entry) => entry.id === 'TC-016');
+  assert.deepEqual(testCase.context_files, ['assets/epic-format-validation-report-template.md']);
   const report = fs.readFileSync(path.join(skillDir, 'examples', 'needs-refinement', 'epic-format-validation-report.md'), 'utf8');
   const consoleOutput = [
     '**Veredicto:** `NEEDS-REFINEMENT` — 2 defectos de estructura o formato.',
@@ -405,6 +449,12 @@ test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar
   assert.equal(gradeOutput(testCase, response(report, consoleOutput.replace('Formato inválido:', ''))).pass, false);
   const withoutFrontmatter = report.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
   assert.equal(gradeOutput(testCase, response(withoutFrontmatter)).pass, false);
+  // Regresión de la respuesta real: frontmatter con solo verdict y sin Resumen.
+  const abbreviatedReport = report.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '---\nverdict: NEEDS-REFINEMENT\n---\n')
+    .replace(/## Resumen[\s\S]*?(?=## Defectos)/, '');
+  const abbreviatedGrade = gradeOutput(testCase, response(abbreviatedReport));
+  assert.equal(abbreviatedGrade.pass, false);
+  assert.deepEqual(abbreviatedGrade.missing, ['type: epic-format-validation', 'defects: 2', '## Resumen']);
   assert.equal(gradeOutput(testCase, response(report.replace('formato-historias', 'otro-tipo'))).pass, false);
 });
 
@@ -464,6 +514,7 @@ test('OpenCode envía stdin, extrae solo texto JSON y aplica permisos sin mutar 
   assert.equal(result.ok, true, result.stderr);
   assert.equal(result.stdout, '=== CONSOLE ===\nrespuesta\n=== END ===');
   assert.equal(child.input, 'prompt con "comillas"\ny líneas');
+  assert.equal(result.events, events);
   assert.deepEqual(child.invocation.args, buildOpenCodeArgs({ model: 'p/m' }));
   assert.equal(child.invocation.options.cwd, fixture.root);
   assert.deepEqual(child.invocation.options.stdio, ['pipe', 'pipe', 'pipe']);
