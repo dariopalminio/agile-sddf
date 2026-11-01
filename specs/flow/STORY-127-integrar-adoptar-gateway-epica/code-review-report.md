@@ -1,4 +1,22 @@
-# Resumen de la revisión de código para STORY-127
+---
+type: code-review-report
+story: STORY-127
+title: "Code Review Report: STORY-127"
+verdict: APPROVED
+date: 2026-10-31
+max-severity: HIGH
+reviewers:
+  - tech-lead-reviewer
+  - product-owner-reviewer
+  - integration-reviewer
+  - security-reviewer
+---
+
+# Code Review Report: STORY-127
+
+## Veredicto
+
+**Veredicto:** APPROVED
 
 ## Estado de la historia
 La historia "Integrar y documentar el gateway de validación de épicas" (STORY-127) fue implementada y se encuentra en estado `IMPLEMENT/DONE`.
