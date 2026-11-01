@@ -456,6 +456,13 @@ test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar
   assert.equal(abbreviatedGrade.pass, false);
   assert.deepEqual(abbreviatedGrade.missing, ['type: epic-format-validation', 'defects: 2', '## Resumen']);
   assert.equal(gradeOutput(testCase, response(report.replace('formato-historias', 'otro-tipo'))).pass, false);
+  const withEditorialComments = report.replace('## Veredicto', '## Veredicto <!-- sección obligatoria -->\n<!-- Motivo determinista: APPROVED o NEEDS-REFINEMENT -->');
+  const editorialGrade = gradeOutput(testCase, response(withEditorialComments));
+  assert.equal(editorialGrade.pass, false);
+  assert.deepEqual(editorialGrade.violated, ['APPROVED', '<!--']);
+  assert.equal(gradeOutput(testCase, response(withEditorialComments.replace(/<!--[\s\S]*?-->/g, ''))).pass, true);
+  assert.equal(gradeOutput(testCase, response(report.replace('línea 23', 'línea 16'))).pass, false);
+  assert.equal(gradeOutput(testCase, response(report.replace('tras ## Historias', 'tras ## Alcance'))).pass, false);
 });
 
 test('los escenarios iniciales de epic-format-validation incluyen épica y template independientes del repo', () => {

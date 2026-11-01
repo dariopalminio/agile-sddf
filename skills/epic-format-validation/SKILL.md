@@ -248,6 +248,10 @@ Escenario/Dado/Cuando/Entonces").
 **Defectos:** cada ausencia o incumplimiento de los Pasos 4a–4d es un defecto, en orden de detección
 (4a → 4b → 4c → 4d), con `ID` `D-<n>` y uno de estos tipos:
 
+Los números de línea son absolutos en el `epic.md` de entrada: cuenta desde su primera línea,
+incluidos el frontmatter y las líneas vacías. Para una sección ausente, toma el título previo
+en el orden del template; no uses la última sección que analizaste ni la línea del template.
+
 | Tipo | Ubicación | Encontrado | Corrección esperada |
 |---|---|---|---|
 | `campo-faltante` | `frontmatter` | — | `añadir <clave>:` |
@@ -257,7 +261,10 @@ Escenario/Dado/Cuando/Entonces").
 
 **Reporte:** resuelve [el template del reporte](assets/epic-format-validation-report-template.md)
 desde el directorio que contiene este `SKILL.md` (no desde `REPO_ROOT`) y léelo completo ahora.
-Completa su estructura y sus comentarios, incluido el frontmatter YAML: `verdict` y `## Veredicto` con el mismo valor, `defects` con el número de defectos,
+Usa sus comentarios como instrucciones de generación y elimínalos del reporte final, incluidos
+los comentarios inline de los encabezados (`clave`, `escritor`, etc.). Así el artefacto contiene
+el diagnóstico de esta ejecución sin las alternativas y los placeholders de la plantilla.
+Completa la estructura, incluido el frontmatter YAML: `verdict` y `## Veredicto` con el mismo valor, `defects` con el número de defectos,
 `## Defectos` con la tabla (o `Sin defectos.`) y `## Migración` solo si hay algún `seccion-faltante`.
 Escríbelo en `<EPIC_DIR>/epic-format-validation-report.md` (el directorio del `epic.md` validado),
 sobrescribiendo el anterior. No detectes la versión de la épica por sus títulos: la lista de
@@ -278,7 +285,8 @@ Si falta alguna sección, añade la nota `Si la épica se creó con una versión
 Termina con `📄 Reporte: <EPIC_DIR>/epic-format-validation-report.md`.
 
 Antes de terminar, comprueba ambas salidas: el reporte conserva el frontmatter y las secciones
-del template; la consola incluye el veredicto, el archivo validado y cada bloque con defectos.
+del template, sin comentarios HTML ni placeholders pendientes; cada ubicación corresponde al
+archivo de entrada y al orden del template. La consola incluye el veredicto, el archivo validado y cada bloque con defectos.
 Si hay defectos de forma, `Formato inválido:` y sus ítems aparecen en consola aunque ya estén
 en la tabla del reporte. La tabla permite que `epic-improve` actúe y el resumen permite que el
 usuario vea el diagnóstico sin abrir otro archivo; un enlace al reporte no sustituye ese resumen.

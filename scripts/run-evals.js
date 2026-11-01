@@ -506,7 +506,7 @@ function buildPrompt(skillName, skillMdRel, testCase, contextFiles = []) {
     ``,
     ...contextFiles.flatMap((resource) => [
       `Recurso fuente del skill: ${resource.path} (contenido íntegro leído del disco por el runner):`,
-      `Este recurso forma parte del contrato del skill. Si es un template de salida, conserva su frontmatter y su estructura al completar el bloque FILE; aplica sus comentarios y condiciones.`,
+      `Este recurso forma parte del contrato del skill. Si es un template de salida, conserva su frontmatter y su estructura al completar el bloque FILE. Sus comentarios HTML son instrucciones editoriales: aplícalas y elimínalos del archivo generado, también los inline de los encabezados; sustituye los placeholders por los valores de esta ejecución.`,
       '```markdown',
       resource.content,
       '```',

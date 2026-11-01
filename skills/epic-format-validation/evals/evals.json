@@ -273,8 +273,8 @@
         "epic_content": "---\ntype: epic\nid: EPIC-05\nslug: EPIC-05-pagos\ntitle: \"Pagos\"\nstatus: DEFINE\nsubstatus: IN-PROGRESS\nparent: null\ncreated: 2026-10-01\nupdated: 2026-10-01\nrelated: []\n---\n\n# Épica: Pagos\n\n## Alcance\nIntegración de la pasarela de pago y consulta del historial de pagos.\n\n## Historias\n- Pasarela de pago: integración con Stripe\n- [ ] **STORY-120** — Historial: consulta de pagos pasados\n- [x] **STORY-119** — Tarifas: tabla de comisiones\n- [ ] Exportar CSV: descarga del historial\n\n## Smoke tests\n### SMOKE-1 — Pago aprobado\n```gherkin\nEscenario: Pago aprobado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n### SMOKE-2 — Pago rechazado\n```gherkin\nEscenario: Pago rechazado\n  Dado un carrito con un producto\n  Cuando el usuario paga con tarjeta\n  Entonces el pago queda registrado\n```\n\n## Notas\n"
       },
       "expected": {
-        "contains": ["NEEDS-REFINEMENT", "Criterios de salida", "Formato inválido:", "- [ ] Exportar CSV: descarga del historial", "epic-format-validation-report.md", "Archivo validado: specs/flow/EPIC-05-pagos/epic.md", "type: epic-format-validation", "verdict: NEEDS-REFINEMENT", "defects: 2", "## Resumen", "## Defectos", "seccion-faltante", "formato-historias", "añadir ## Criterios de salida", "## Migración"],
-        "not_contains": ["APPROVED", "APROBADO", "REFINAR"]
+        "contains": ["NEEDS-REFINEMENT", "Criterios de salida", "Formato inválido:", "- [ ] Exportar CSV: descarga del historial", "epic-format-validation-report.md", "Archivo validado: specs/flow/EPIC-05-pagos/epic.md", "type: epic-format-validation", "verdict: NEEDS-REFINEMENT", "defects: 2", "## Resumen", "## Defectos", "seccion-faltante", "formato-historias", "añadir ## Criterios de salida", "## Migración", "línea 23 (## Historias)", "tras ## Historias"],
+        "not_contains": ["APPROVED", "APROBADO", "REFINAR", "<!--", "{veredicto}", "{n}"]
       },
       "threshold": 1.0
     }
