@@ -5,7 +5,7 @@ id: STORY-137
 kind: feat
 slug: STORY-137-controlar-detalle-ejecucion-validacion-epica
 title: "Controlar el detalle y los límites de la ejecución de la validación de épicas"
-status: IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-17
