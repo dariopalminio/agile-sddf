@@ -12,6 +12,7 @@ const {
   buildClaudeArgs,
   buildCodexArgs,
   buildOpenCodeArgs,
+  buildPrompt,
   main,
   parseArgs,
   resolveContainedPath,
@@ -359,6 +360,40 @@ test('dry-run con OpenCode no invoca runners ni crea artefactos', async (t) => {
   assertExit(result, 0);
   assert.equal(result.claudeCalls.length + result.codexCalls.length + result.openCodeCalls.length, 0);
   assertNoRunArtifacts(fixture);
+});
+
+test('el prompt de simulación separa los artefactos declarados del filesystem real', () => {
+  const testCase = {
+    ...makeCase('TC-001'),
+    description: 'El archivo existe en specs/flow/EPIC-01-mvp/epic.md.',
+    input: {
+      input_path: 'specs/flow/EPIC-01-mvp/epic.md',
+      epic_content: '# Épica simulada',
+      template_path: 'docs/templates/epic-template.md',
+      template_content: '## Sección simulada',
+    },
+    expected: { contains: ['EXPECTATIVA_PRIVADA'] },
+  };
+  const prompt = buildPrompt('epic-format-validation', 'skills/epic-format-validation/SKILL.md', testCase);
+  assert.ok(prompt.includes(testCase.description));
+  assert.ok(prompt.includes(JSON.stringify(testCase.input, null, 2)));
+  assert.match(prompt, /NO las busques ni compruebes su existencia en el filesystem real/);
+  assert.match(prompt, /El contenido proporcionado por el escenario tiene prioridad/);
+  assert.match(prompt, /Si el escenario declara un archivo ausente, permanece ausente/);
+  assert.match(prompt, /NO modifiques ningún archivo/);
+  assert.ok(!prompt.includes('EXPECTATIVA_PRIVADA'));
+});
+
+test('los escenarios iniciales de epic-format-validation incluyen épica y template independientes del repo', () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'skills', 'epic-format-validation', 'evals', 'evals.json'), 'utf8'));
+  for (const id of ['TC-001', 'TC-003', 'TC-004', 'TC-005']) {
+    const { input } = manifest.cases.find((entry) => entry.id === id);
+    assert.equal(input.template_path, 'docs/templates/epic-template.md', id);
+    assert.ok(input.template_content.includes('clave: historias'), id);
+    assert.ok(input.epic_content.includes('## Historias') || id === 'TC-003', id);
+  }
+  const missing = manifest.cases.find((entry) => entry.id === 'TC-002');
+  assert.equal(missing.input.epic_content, undefined);
 });
 
 // Simula el protocolo del CLI, sin ejecutar modelos ni consumir cuota.
