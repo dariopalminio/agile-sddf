@@ -1,4 +1,22 @@
-# Code Review Report for STORY-171: Skill epic-complete (Core) — completar y archivar una épica liberada
+---
+type: code-review-report
+story: STORY-171
+title: "Code Review Report: STORY-171"
+verdict: APPROVED
+date: 2026-10-31
+max-severity: LOW
+reviewers:
+  - tech-lead-reviewer
+  - product-owner-reviewer
+  - integration-reviewer
+  - security-reviewer
+---
+
+# Code Review Report: STORY-171
+
+## Veredicto
+
+**Veredicto:** `APPROVED` — Sin hallazgos bloqueantes (severidad máxima: LOW).
 
 ## Executive Summary
 
