@@ -129,6 +129,10 @@ Lee el archivo de plantilla `docs/templates/epic-template.md`.
 
 - Si alguno de los dos **existe**: continua.
 
+Antes del Paso 3, lee íntegro el template efectivo, incluido su frontmatter. Si la herramienta
+trunca la lectura, continúa con offset/limit hasta EOF. Conserva su ruta y la lista ordenada de
+secciones; no lo sustituyas por otro template ni reconstruyas su contenido desde una descripción.
+
 ---
 
 ### Paso 3 — Extraer el contrato obligatorio del template
@@ -176,7 +180,10 @@ La allowlist es la única parte codificada en este skill, y solo enumera claves 
 
 ### Paso 4 — Validar el archivo de épica
 
-Leer el archivo de épica resuelta en Paso 1.
+Lee íntegro el archivo de épica resuelto en el Paso 1 antes de registrar defectos. Si la lectura
+se trunca, continúa con offset/limit hasta EOF. Conserva la correspondencia entre el contenido
+literal y sus números de línea físicos desde 1, incluidos frontmatter y líneas vacías; una
+lectura paginada o un extracto de sección no reinicia esa numeración.
 
 #### 4a. Validar frontmatter
 
@@ -270,11 +277,21 @@ Formato inválido:
 Si falta alguna sección, añade la nota `Si la épica se creó con una versión anterior del template → /memory-system migrate --from=epic-template-v1`.
 Termina con `📄 Reporte: <EPIC_DIR>/epic-format-validation-report.md`.
 
-Antes de terminar, comprueba que el reporte conserva el frontmatter y las secciones del template,
-sin comentarios ni placeholders, y que las ubicaciones corresponden al input y al orden del template.
-La consola incluye veredicto, archivo y cada bloque con defectos, también `Formato inválido:`
-aunque esté en la tabla. La tabla permite actuar a `epic-improve`; el resumen muestra el diagnóstico
-al usuario sin abrir el reporte, por lo que su enlace no sustituye ese resumen.
+Antes de terminar, contrasta la tabla con las fuentes completas leídas en los Pasos 2 y 4:
+
+- Cada `campo-faltante` debe estar realmente ausente del frontmatter completo de la épica.
+- Cada ubicación de formato debe señalar la línea física cuyo texto literal figura en `Encontrado`.
+- Cada `seccion-faltante` debe citar la sección inmediatamente anterior en el orden del template
+  efectivo, no otra sección cercana del input.
+- El número de filas de defectos debe coincidir con `defects`, el resumen y el motivo del veredicto;
+  `verdict` y `## Veredicto` deben tener el mismo valor.
+- El reporte debe conservar el frontmatter y las secciones de su template, sin comentarios ni
+  placeholders. La consola debe incluir `Archivo validado: <ruta>`, el mismo veredicto y cada
+  bloque con defectos derivado de la tabla, también `Formato inválido:` aunque esté en ella.
+
+Si alguna comprobación falla, corrige el diagnóstico y sus salidas antes de terminar, sin modificar
+las fuentes. La tabla permite actuar a `epic-improve`; el resumen muestra el diagnóstico al usuario
+sin abrir el reporte, por lo que su enlace no sustituye ese resumen.
 
 **Fallo de escritura:** si el reporte no se puede escribir, muestra igualmente el veredicto en consola
 y `⚠️ No se pudo escribir <ruta>: <causa>`; si ya existía un reporte, añade `⚠️ El reporte existente

@@ -455,6 +455,8 @@ test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar
   };
   assert.equal(grade(report).pass, true);
   assert.equal(grade(report, consoleOutput.replace('Formato inválido:', '')).pass, false);
+  assert.equal(grade(report, consoleOutput.replace('Archivo validado: specs/flow/EPIC-05-pagos/epic.md', '')).pass, false);
+  assert.equal(grade(report.replace('defects: 2', 'defects: 3')).pass, false);
   const withoutFrontmatter = report.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
   assert.equal(grade(withoutFrontmatter).pass, false);
   // Regresión de la respuesta real: frontmatter con solo verdict y sin Resumen.
@@ -470,6 +472,7 @@ test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar
   assert.equal(editorialGrade.files.violated.length, 2);
   assert.equal(grade(withEditorialComments.replace(/<!--[\s\S]*?-->/g, '')).pass, true);
   assert.equal(grade(report.replace('línea 23', 'línea 16')).pass, false);
+  assert.equal(grade(report.replace('línea 23', 'línea 10')).pass, false);
   assert.equal(grade(report.replace('tras ## Historias', 'tras ## Alcance')).pass, false);
 });
 
@@ -1107,6 +1110,8 @@ test('TC-016 usa su repositorio fixture y califica el reporte en disco aunque la
   assert.ok(epic.includes('created: 2026-10-01'));
   assert.equal(epic.split('\n')[22], '- [ ] Exportar CSV: descarga del historial');
   assert.ok(!template.includes('clave: objetivo'));
+  const sections = [...template.matchAll(/^## (.*?)\s*<!--/gm)].map((match) => match[1]);
+  assert.equal(sections[sections.indexOf('Criterios de salida') - 1], 'Historias');
   // Los archivos reales del proyecto anfitrión discrepan deliberadamente del fixture.
   for (const [relative, text] of [[templatePath, '## Objetivo\n'], [epicPath, '# Épica sin created\n']]) {
     fs.mkdirSync(path.dirname(path.join(fixture.root, relative)), { recursive: true });
@@ -1137,6 +1142,22 @@ test('TC-016 usa su repositorio fixture y califica el reporte en disco aunque la
   assert.equal(fs.readFileSync(path.join(fixtureRoot, epicPath), 'utf8'), epic);
   assert.equal(fs.readFileSync(path.join(fixtureRoot, templatePath), 'utf8'), template);
   assert.equal(fs.readFileSync(path.join(fixture.root, templatePath), 'utf8'), '## Objetivo\n');
+});
+
+test('el prompt sandbox exige fuentes completas locales sin filtrar expectativas', async (t) => {
+  const fixture = createFixture(t);
+  const testCase = makeSandboxCase('TC-001', {
+    written: [], contains: { 'docs/templates/epic-template.md': ['EXPECTATIVA_PRIVADA'] },
+  });
+  writeSandboxSkill(fixture, [testCase]);
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--dry-run']);
+  assertExit(result, 0);
+  assert.match(result.output, /Lee íntegros los archivos de entrada y los templates/);
+  assert.match(result.output, /offset\/limit hasta EOF/);
+  assert.match(result.output, /No reconstruyas su contenido desde la descripción/);
+  assert.match(result.output, /ni consultes archivos equivalentes del repositorio anfitrión/);
+  assert.ok(!result.output.includes('EXPECTATIVA_PRIVADA'));
+  assert.equal(result.openCodeCalls.length, 0);
 });
 
 test('los adaptadores en sandbox permiten escribir solo en el directorio de trabajo', () => {

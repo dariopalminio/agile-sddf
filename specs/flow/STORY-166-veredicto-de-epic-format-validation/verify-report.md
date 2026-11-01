@@ -16,7 +16,7 @@ updated: 2026-11-01
 
 ## Veredicto
 
-**Veredicto:** `NEEDS-CHANGES` — Requiere ejecución manual de `npm run test:eval` para TC-001 y TC-016 fallidos.
+**Veredicto:** `NEEDS-CHANGES` — Corrección implementada y gates deterministas aprobados; pendiente revalidación manual de TC-016 y de la suite completa del skill. La ausencia de `testcases.md` sigue pendiente.
 
 ## Summary
 
@@ -26,13 +26,17 @@ updated: 2026-11-01
 | Date | 2026-11-01 |
 | Mode | config-driven |
 | DoD Version | 2026-09-24 |
-| Total Tests | 63 |
-| Passed | 63 |
+| Total Tests | 456 |
+| Passed | 456 |
 | Failed | 0 |
 | Skipped | 0 |
 | Coverage | N/A |
 
-Los 63 resultados reúnen 14 pruebas de `npm run test:installer`, 48 de `npm test` y la validación del layout fijo.
+Estos 456 resultados corresponden solo a las pruebas deterministas de `npm run verify:repository`
+tras la corrección. El gate completo también aprobó layout, contratos, enlaces, seguridad de
+workflow, release, empaquetado y smoke del tarball. Las ejecuciones focalizadas (58 del runner,
+67 del runner más contrato y 20 del instalador) son subconjuntos y no se suman al total.
+Los evals manuales se registran por separado; este resultado no demuestra un PASS de TC-016.
 
 ## Test Scope
 
@@ -42,13 +46,19 @@ Los 63 resultados reúnen 14 pruebas de `npm run test:installer`, 48 de `npm tes
 - [ ] Performance tests (PT)
 - [ ] Security tests (SEC)
 - [ ] Eval de skill (EV), incluyendo TC-001, TC-002 y TC-016: npm run test:eval -- epic-format-validation --only TC-001,TC-002,TC-016 --eval-runner opencode --report
-    - [x] `npm run test:eval -- epic-format-validation --only TC-001 --eval-runner opencode` --> PASS
-    - [x] `npm run test:eval -- epic-format-validation --only TC-002 --eval-runner opencode` --> PASS
-    - [x] `npm run test:eval -- epic-format-validation --only TC-016 --eval-runner opencode --report` --> FAIL
+    - [x] TC-001: PASS histórico en `report-20261101.md`; pendiente repetir tras la corrección.
+    - [x] TC-002: PASS histórico en `report-20261101.md`; pendiente repetir tras la corrección.
+    - [ ] TC-016: último resultado manual FAIL; pendiente repetir tras la corrección con `--report`.
 
 ## Findings
 
-> Sin defectos encontrados en esta ejecución.
+| ID | Severidad | Hallazgo | Estado |
+|---|---|---|---|
+| F-1 | MEDIUM | TC-016 omitió el resumen de formato en `report-20261101.md`; la ejecución posterior comunicada reportó `created` como ausente, tres defectos, línea 10 y ubicación tras Alcance, aunque el fixture contiene `created`, la línea inválida es la 23 y la sección faltante sigue a Historias. | Corrección de lectura y trazabilidad implementada; pendiente confirmación manual con OpenCode. |
+
+Las pruebas con runner simulado confirman la copia íntegra de las fuentes y la calificación de
+archivos, no el cumplimiento del skill por el modelo. La lectura parcial o de fuentes distintas
+es una hipótesis; los eventos completos de la reejecución deben comprobarla.
 
 ## Coverage Analysis
 
@@ -58,17 +68,18 @@ No se emitió cobertura en los runners ejecutados.
 
 | # | Criterio | Estado | Evidencia |
 |---|----------|--------|-----------|
-| 1 | Todas las pruebas `required: true` de `sddf.config.yaml › verify` pasan (exit 0) | ✓ | `npm run test:installer` (14/14) y `node scripts/verify-fixed-layout.js` finalizaron con exit 0. |
-| 2 | La suite completa `npm test` pasa sin fallos | ✓ | `npm test` finalizó con exit 0 y reportó 48 pruebas aprobadas. |
-| 3 | Si la historia modifica un skill con `evals/evals.json`, `npm run test:eval -- <skill>` pasa; un fallo solo se acepta como flaky si pasa al reejecutarlo (solo son ejecutados por humano manualmente no automaticamente) | ⚠️ | La historia modifica `skills/epic-format-validation/evals/evals.json`. La evaluación no se ejecutó: `AGENTS.md` reserva `npm run test:eval` para ejecución manual humana. |
+| 1 | Todas las pruebas `required: true` de `sddf.config.yaml › verify` pasan (exit 0) | ✓ | `npm run test:installer` (20/20) aprobó; `node scripts/verify-fixed-layout.js` aprobó dentro de `npm run verify:repository`. |
+| 2 | La suite completa `npm test` pasa sin fallos | ✓ | `npm run verify:repository` ejecutó el mismo comando de `npm test`, `node --test test`: 456/456, exit 0. |
+| 3 | Si la historia modifica un skill con `evals/evals.json`, `npm run test:eval -- <skill>` pasa; un fallo solo se acepta como flaky si pasa al reejecutarlo (solo son ejecutados por humano manualmente no automaticamente) | ⚠️ | Hay ejecuciones manuales previas: TC-001 y TC-002 PASS; TC-016 FAIL. Tras la corrección no se ejecutaron evals; pendiente revalidación humana de TC-016 y de la suite completa. No se clasifica el fallo como flaky. |
 | 4 | Ningún caso de `testcases.md` queda en `[!]` y cada `[ ]` restante cita en `verify-report.md` la evidencia que lo cubre | ⚠️ | No existe `testcases.md` para STORY-166; no hay casos canónicos que evaluar ni evidencia que vincular. |
-| 5 | Sin defectos CRITICAL o HIGH abiertos en `verify-report.md` | ✓ | Esta ejecución no detectó findings; `code-review-report.md` declara severidad máxima LOW. |
+| 5 | Sin defectos CRITICAL o HIGH abiertos en `verify-report.md` | ✓ | F-1 es MEDIUM; los gates deterministas no detectaron nuevos fallos. El code review previo declara severidad máxima LOW y no sustituye la revisión de esta corrección. |
 
 **Resumen DoD**: 3/5 criterios ✓
 
 ## Recommendations
 
-- Antes de ACCEPTANCE, una persona debe ejecutar `npm run test:eval -- epic-format-validation`, incluyendo TC-001, TC-002 y TC-016.
+- Una persona debe ejecutar primero `npm run test:eval -- epic-format-validation --only TC-016 --eval-runner opencode --report`; comprobar el reporte en disco y los eventos completos, no solo los primeros 300 caracteres.
+- Tras PASS, repetir TC-001/TC-002/TC-016 y la suite completa con OpenCode y `--report` antes de ACCEPTANCE. TC-016 debe mostrar `Archivo validado`, ambos bloques de diagnóstico, `defects: 2`, `línea 23 (## Historias)` y `tras ## Historias`, sin modificar las fuentes.
 - Generar `testcases.md` para que futuras verificaciones puedan trazar evidencia por caso.
 
 ## Sign-off
@@ -87,6 +98,25 @@ No se emitió cobertura en los runners ejecutados.
 | **LOW** | Minor issue, cosmetic, edge case |
 
 ## Historial de Ejecuciones
+
+### Corrección y validación determinista — 2026-11-01
+
+Se conservan los resultados manuales anteriores a continuación y en `report-20261101.md`.
+Esta ejecución no invocó modelos ni modificó el manifest de evals, sus fixtures o los destinos instalados.
+
+| Comando | Resultado | Alcance |
+|---|---|---|
+| `npm run test:eval:runner` antes del cambio del prompt | RED: 57/58; falló solo la nueva exigencia de lectura completa. | La copia del fixture y las regresiones de TC-016 pasaron. |
+| `npm run test:eval:runner` tras el cambio del prompt | PASS: 58/58. | Lectura completa exigida, sin filtración de expectativas; permisos y aislamiento preservados. |
+| `node --test test/run-evals.test.js test/verify-validation-contract.test.js` tras el cambio del skill | PASS: 67/67. | Runner y contrato del skill. |
+| `npm run verify:repository` | PASS: 456/456 pruebas y todos los gates adicionales. | Suite completa, sintaxis, layout, contratos, enlaces, cadena de suministro, workflow de seguridad, release y smoke del tarball en 4 runtimes. |
+| `npm run test:installer` | PASS: 20/20. | Comando obligatorio de VERIFY. |
+| `graphify update .` | Completado con advertencias. | Extracción AST sin LLM; advertencias de dos nodos sin `source_file` y archivos sin símbolos, fuera del alcance del fix. |
+
+El prompt exige leer las fuentes del sandbox hasta EOF y conservar las líneas físicas. El skill
+contrasta campos faltantes, ubicaciones, conteo y consola con las fuentes completas. Las regresiones
+rechazan consola sin `Archivo validado`, tres defectos, línea 10 y ubicación tras Alcance.
+No hay evidencia de PASS del eval real después de estos cambios; `NEEDS-CHANGES` se conserva.
 
 ### TC-001 ❌ FAIL
 
