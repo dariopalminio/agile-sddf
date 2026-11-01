@@ -41,6 +41,7 @@ Los 63 resultados reúnen 14 pruebas de `npm run test:installer`, 48 de `npm tes
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
+- [ ] Eval de skill (prueba semántica/de contrato de comportamiento): `npm run test:eval -- epic-format-validation`, incluyendo TC-001, TC-002 y TC-016.
 
 ## Findings
 
