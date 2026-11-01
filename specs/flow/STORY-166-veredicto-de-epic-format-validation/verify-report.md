@@ -45,7 +45,7 @@ Los evals manuales se registran por separado; este resultado no demuestra un PAS
 - [ ] E2E tests (E2E)
 - [ ] Performance tests (PT)
 - [ ] Security tests (SEC)
-- [x] Eval de skill (EV), incluyendo TC-001, TC-002 y TC-016: npm run test:eval -- epic-format-validation --only TC-001,TC-002,TC-016 --eval-runner claude --report
+- [x] Eval de skill (EV), incluyendo TC-001, TC-002 y TC-016: `npm run test:eval -- epic-format-validation --only TC-001,TC-002,TC-016 --eval-runner claude --report`
     - [x] TC-001: PASS histórico en `report-20261101.md`.
     - [x] TC-002: PASS histórico en `report-20261101.md`.
     - [x] TC-016: PASS histórico en `report-20261101.md`.
