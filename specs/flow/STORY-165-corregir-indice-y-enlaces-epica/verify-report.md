@@ -39,7 +39,7 @@ updated: 2026-11-01
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
-- [ ] Evals: `npm run test:eval -- epic-refine --only TC-023,TC-024,TC-025 --eval-runner opencode --report`
+- [x] Evals: `npm run test:eval -- epic-refine --only TC-023,TC-024,TC-025 --eval-runner opencode --report`
 
 ## Findings
 
