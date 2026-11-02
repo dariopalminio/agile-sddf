@@ -39,7 +39,7 @@ updated: 2026-11-01
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
-- [ ] Evals tests (TC-009…TC-013): `npm run test:eval -- epic-refine`
+- [x] Evals tests (TC-009…TC-013): `npm run test:eval -- epic-refine`
 
 ## Findings
 
@@ -97,6 +97,7 @@ Eval Report: epic-refine
 | TC-002 | epica-aprobada-no-escribe-nada | edge-case | 1 | ✅ PASS | — |
 | TC-003 | solo-decisiones-del-po-fuera-de-alcance | edge-case | 1 | ✅ PASS | — |
 | TC-009 | asigna-cobertura-a-la-historia-de-cierre | happy-path | 0.95 | ✅ PASS | — |
+| TC-010 | criterio-sin-evidencia-parcial-al-po | edge-case | 1 | ✅ PASS | — |
 | TC-011 | empate-de-candidatas-al-po | edge-case | 1 | ✅ PASS | — |
 | TC-012 | reejecucion-ya-resuelto-por-e1 | edge-case | 0.95 | ✅ PASS | — |
 | TC-013 | historia-de-cierre-implementada-al-po | edge-case | 1 | ✅ PASS | — |
