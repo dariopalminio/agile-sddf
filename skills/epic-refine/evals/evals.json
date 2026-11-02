@@ -393,7 +393,7 @@
           "not_contains": {
             "specs/flow/STORY-301-listar-pedidos-del-mes/story.md": ["STORY-999"],
             "specs/flow/EPIC-30-ejemplo/epic.md": ["status: COMPLETED"],
-            "specs/flow/EPIC-30-ejemplo/epic-refine-report.md": ["verdict:"]
+            "specs/flow/EPIC-30-ejemplo/epic-refine-report.md": ["\nverdict:"]
           }
         }
       },

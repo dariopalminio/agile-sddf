@@ -39,7 +39,7 @@ updated: 2026-11-01
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
-- [ ] Evals: `npm run test:eval -- epic-refine --only TC-023,TC-024,TC-025`
+- [ ] Evals: `npm run test:eval -- epic-refine --only TC-023,TC-024,TC-025 --eval-runner opencode --report`
 
 ## Findings
 
@@ -83,4 +83,19 @@ No se generó una métrica de cobertura. La evidencia funcional disponible es la
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+Evals: `npm run test:eval -- epic-refine --only TC-023,TC-024,TC-025 --eval-runner opencode --report`
+
+npm run test:eval -- epic-refine --only TC-023 --eval-runner opencode --report
+npm run test:eval -- epic-refine --only TC-024 --eval-runner opencode --report
+npm run test:eval -- epic-refine --only TC-025 --eval-runner opencode --report
+
+Eval Report: epic-refine
+
+**Fecha:** 2026-11-02 | **Total:** 3 | ✅ Passed: 3 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-023 | sandbox-aplica-huerfana-y-related-roto-en-disco | happy-path | 1 | ✅ PASS | — |
+| TC-024 | sandbox-aprobada-cero-escrituras-en-disco | edge-case | 1 | ✅ PASS | — |
+| TC-025 | sandbox-plan-rechazado-cero-escrituras-en-disco | edge-case | 1 | ✅ PASS | — |

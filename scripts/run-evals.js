@@ -10,7 +10,9 @@
  * captura la salida y la califica con `expected.contains` / `not_contains` / `output_contains`
  * y `threshold`. Un caso con `sandbox` (opt-in) se ejecuta de verdad sobre una copia desechable
  * del fixture en `.tmp/skill-test-evals/<skill>/sandbox/<TC>/`, con escritura confinada a ese
- * directorio, y además se califica el árbol antes/después con `expected.files`.
+ * directorio, y además se califica el árbol antes/después con `expected.files`. El sandbox es su
+ * propia raíz Git y el prompt declara su ruta absoluta: así los runners que anclan la working
+ * directory a la raíz Git (OpenCode) trabajan dentro del sandbox, no del repositorio anfitrión.
  * Exit code 0 si todo pasa, 1 si algún caso falla — es lo que `story-implement`
  * (Pasos 5, 9b y 10) interpreta como rojo/verde a través de `verify.eval.command` en
  * `sddf.config.yaml`.
@@ -617,7 +619,7 @@ function assertSandboxSources(spec, repoRoot, source) {
   }
 }
 
-function prepareSandbox(spec, { repoRoot, skillsDir, skillName, sandboxDir }) {
+function prepareSandbox(spec, { repoRoot, skillsDir, skillName, sandboxDir, runtime = {} }) {
   fs.rmSync(sandboxDir, { recursive: true, force: true });
   fs.mkdirSync(sandboxDir, { recursive: true });
   for (const entry of spec.copy) {
@@ -633,6 +635,23 @@ function prepareSandbox(spec, { repoRoot, skillsDir, skillName, sandboxDir }) {
     if (SANDBOX_SKILL_EXCLUDES.has(entry)) continue;
     fs.cpSync(path.join(skillDir, entry), resolveContainedPath(sandboxDir, skillRel, entry), { recursive: true });
   }
+  initSandboxGitRoot(sandboxDir, runtime.execFileSync);
+}
+
+/**
+ * El sandbox debe ser su propia raíz Git: runners como OpenCode anclan el worktree —y con él la
+ * working directory y los patrones de permiso edit— al `.git` más cercano. Sin esta marca
+ * arrancarían anclados a la raíz del repositorio anfitrión y el contrato del prompt sandbox
+ * ("el directorio de trabajo es una copia desechable") dejaría de ser cierto.
+ */
+function initSandboxGitRoot(sandboxDir, execFile) {
+  const runGit = execFile || execFileSync;
+  try {
+    runGit('git', ['init', '--quiet', sandboxDir], { stdio: 'pipe' });
+  } catch (err) {
+    // Sin git disponible deja la marca mínima para que el anclaje por `.git` siga funcionando.
+    fs.mkdirSync(path.join(sandboxDir, '.git'), { recursive: true });
+  }
 }
 
 function snapshotTree(root) {
@@ -640,8 +659,13 @@ function snapshotTree(root) {
   const walk = (dir) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) walk(full);
-      else files.set(path.relative(root, full).split(path.sep).join('/'), fs.readFileSync(full));
+      if (entry.isDirectory()) {
+        // El `.git` del sandbox es maquinaria del runner, no salida del agente.
+        if (entry.name === '.git') continue;
+        walk(full);
+      } else {
+        files.set(path.relative(root, full).split(path.sep).join('/'), fs.readFileSync(full));
+      }
     }
   };
   if (fs.existsSync(root)) walk(root);
@@ -685,16 +709,19 @@ function gradeSandboxFiles(spec, before, after) {
   return { missing, violated, diff };
 }
 
-function buildSandboxPrompt(skillName, skillMdRel, testCase, spec) {
+function buildSandboxPrompt(skillName, skillMdRel, testCase, spec, sandboxDir = null) {
   const input = testCase.input === undefined ? {} : testCase.input;
+  const rootLine = sandboxDir
+    ? `El directorio de trabajo es el sandbox \`${sandboxDir}\`: una copia desechable del repositorio que hace a la vez de REPO_ROOT y de CLI_ROOT del skill. Contiene \`${spec.target}/\` con el fixture del escenario, \`${skillMdRel}\` y las rutas copiadas para el escenario${spec.copy.length ? ` (${spec.copy.map((entry) => `\`${entry}\``).join(', ')})` : ''}. Resuelve TODAS las rutas de lectura y escritura del skill desde esa raíz absoluta (p. ej. \`${path.join(sandboxDir, spec.target).split(path.sep).join('/')}\`), sin buscar el fixture ni el skill en el repositorio anfitrión.`
+    : `El directorio de trabajo actual es una copia desechable del repositorio y hace a la vez de REPO_ROOT y de CLI_ROOT del skill. Contiene \`${spec.target}/\` con el fixture del escenario, \`${skillMdRel}\` y las rutas copiadas para el escenario${spec.copy.length ? ` (${spec.copy.map((entry) => `\`${entry}\``).join(', ')})` : ''}.`;
   return [
     `Eres un ejecutor de evals (protocolo E3 de \`skill-test-evals\`, modo sandbox). Debes EJECUTAR DE VERDAD el skill \`${skillName}\` sobre un escenario de prueba, escribiendo en disco lo que el skill escriba.`,
     ``,
     `Reglas estrictas:`,
-    `- El directorio de trabajo actual es una copia desechable del repositorio y hace a la vez de REPO_ROOT y de CLI_ROOT del skill. Contiene \`${spec.target}/\` con el fixture del escenario, \`${skillMdRel}\` y las rutas copiadas para el escenario${spec.copy.length ? ` (${spec.copy.map((entry) => `\`${entry}\``).join(', ')})` : ''}.`,
+    `- ${rootLine}`,
     `- Lee íntegro \`${skillMdRel}\` (si es largo, léelo en tramos con offset/limit hasta el final). Es el único contrato: sigue sus pasos en orden literal, copia sus mensajes tal cual y crea, modifica o deja intactos los archivos exactamente como dicta.`,
     `- Lee íntegros los archivos de entrada y los templates que el skill resuelva dentro del directorio de trabajo; si una lectura se trunca, continúa con offset/limit hasta EOF antes de derivar el diagnóstico. No reconstruyas su contenido desde la descripción ni consultes archivos equivalentes del repositorio anfitrión. Conserva las líneas originales, incluido el frontmatter y las líneas vacías, para citar ubicaciones.`,
-    `- Escribe solo con rutas relativas dentro del directorio de trabajo; nunca fuera de él. No ejecutes comandos de shell ni lances subagentes. El runner compara el árbol del directorio antes y después de tu ejecución.`,
+    `- Escribe solo dentro del directorio de trabajo (rutas relativas o absolutas bajo él); nunca fuera de él. No ejecutes comandos de shell ni lances subagentes. El runner compara el árbol del directorio antes y después de tu ejecución.`,
     `- El bloque "Condiciones de entrada" define la invocación y las respuestas del usuario a cada pausa (si no se especifica una respuesta, asume la opción por defecto/afirmativa). No inventes condiciones que el escenario no describa.`,
     ``,
     `Escenario de prueba (${testCase.id} — ${testCase.name || ''}):`,
@@ -1025,7 +1052,10 @@ async function runSkill(planSkill, opts, runtime = {}) {
   const results = await runPool(cases, opts.concurrency, async (tc) => {
     const testCaseId = validateCaseId(tc.id, `skill ${skillName}`);
     const spec = parseSandboxSpec(tc, `${skillName} › ${testCaseId}`);
-    const prompt = spec ? buildSandboxPrompt(skillName, skillMdRel, tc, spec) : buildPrompt(skillName, skillMdRel, tc, planSkill.contexts.get(tc.id));
+    const sandboxDir = spec ? resolveContainedPath(tmpRoot, skillName, 'sandbox', testCaseId) : null;
+    const prompt = spec
+      ? buildSandboxPrompt(skillName, skillMdRel, tc, spec, sandboxDir)
+      : buildPrompt(skillName, skillMdRel, tc, planSkill.contexts.get(tc.id));
     if (opts.dryRun) {
       const plan = spec ? `[sandbox] ${spec.fixture} → ${spec.target}/ · escritos esperados: ${spec.files.written.length}\n` : '';
       log(`\n----- ${tc.id} (${tc.name}) — prompt -----\n${plan}${prompt}\n`);
@@ -1033,10 +1063,8 @@ async function runSkill(planSkill, opts, runtime = {}) {
     }
     write(`[${tc.id}] ejecutando…\n`);
     const outputFile = resolveContainedPath(runsDir, `${testCaseId}.txt`);
-    let sandboxDir = null;
     let before = null;
     if (spec) {
-      sandboxDir = resolveContainedPath(tmpRoot, skillName, 'sandbox', testCaseId);
       prepareSandbox(spec, { repoRoot, skillsDir, skillName, sandboxDir });
       before = snapshotTree(sandboxDir);
     }
@@ -1241,6 +1269,7 @@ module.exports = {
   buildPrompt,
   buildSandboxPrompt,
   parseSandboxSpec,
+  prepareSandbox,
   snapshotTree,
   diffSnapshots,
   gradeSandboxFiles,

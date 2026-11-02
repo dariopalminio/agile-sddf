@@ -15,6 +15,8 @@ const {
   buildPrompt,
   gradeOutput,
   parseSandboxSpec,
+  prepareSandbox,
+  snapshotTree,
   gradeSandboxFiles,
   main,
   parseArgs,
@@ -1291,4 +1293,64 @@ test('sandbox en dry-run muestra el plan sin copiar ni invocar runners', async (
   assert.match(result.output, /\[sandbox\] skills\/alpha\/examples\/base → specs\/flow\/ · escritos esperados: 0/);
   assert.equal(result.claudeCalls.length, 0);
   assertNoRunArtifacts(fixture);
+});
+
+test('prepareSandbox crea su propia raíz Git dentro del sandbox', (t) => {
+  const fixture = createFixture(t);
+  writeSandboxSkill(fixture, [makeSandboxCase('TC-001', { written: [] })]);
+  const spec = parseSandboxSpec(makeSandboxCase('TC-001', { written: [] }), 'alpha › TC-001');
+  const sandboxDir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'sandbox', 'TC-001');
+  prepareSandbox(spec, {
+    repoRoot: fixture.root,
+    skillsDir: path.join(fixture.root, 'skills'),
+    skillName: 'alpha',
+    sandboxDir,
+  });
+  assert.ok(fs.existsSync(path.join(sandboxDir, '.git', 'HEAD')), 'el sandbox debe ser su propia raíz Git');
+  assert.ok(fs.existsSync(path.join(sandboxDir, 'specs', 'flow', 'EPIC-01-a', 'epic.md')));
+});
+
+test('el prompt sandbox declara la raíz absoluta del sandbox como REPO_ROOT del ejercicio', async (t) => {
+  const fixture = createFixture(t);
+  writeSandboxSkill(fixture, [makeSandboxCase('TC-001', { written: [] })]);
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--dry-run']);
+  assertExit(result, 0);
+  const sandboxDir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'sandbox', 'TC-001');
+  assert.match(result.output, /El directorio de trabajo es el sandbox `/);
+  assert.ok(result.output.includes(sandboxDir), `el prompt debe incluir la ruta absoluta ${sandboxDir}`);
+  assert.match(result.output, /sin buscar el fixture ni el skill en el repositorio anfitrión/);
+  assert.equal(result.openCodeCalls.length, 0);
+});
+
+test('snapshotTree ignora el .git interno del sandbox', (t) => {
+  const fixture = createFixture(t);
+  const dir = path.join(fixture.root, 'arbol');
+  fs.mkdirSync(path.join(dir, '.git'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'a.md'), 'a\n');
+  fs.writeFileSync(path.join(dir, '.git', 'HEAD'), 'ref: refs/heads/main\n');
+  const before = snapshotTree(dir);
+  fs.writeFileSync(path.join(dir, '.git', 'HEAD'), 'ref: refs/heads/otro\n');
+  const after = snapshotTree(dir);
+  assert.deepEqual([...before.keys()], ['a.md']);
+  assert.ok(before.get('a.md').equals(after.get('a.md')));
+});
+
+test('OpenCode en sandbox con raíz Git propia permite editar el sandbox completo', async (t) => {
+  const fixture = createFixture(t);
+  fs.mkdirSync(path.join(fixture.root, '.git'));
+  const sandboxDir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'sandbox', 'TC-001');
+  fs.mkdirSync(path.join(sandboxDir, '.git'), { recursive: true });
+  let child;
+  await runOpenCode('p', { timeout: 1 }, {
+    repoRoot: fixture.root, sandboxDir, env: { PATH: '' },
+    spawn(...args) {
+      child = openCodeProcess(JSON.stringify({ type: 'text', part: { text: 'listo' } }))(...args);
+      return child;
+    },
+  });
+  assert.equal(child.invocation.options.cwd, sandboxDir);
+  const config = JSON.parse(child.invocation.options.env.OPENCODE_CONFIG_CONTENT);
+  const permission = config.agent['sddf-eval'].permission;
+  assert.equal(permission.edit['*'], 'allow', 'con raíz Git propia el patrón edit cubre todo el sandbox');
+  assert.equal(permission.external_directory, 'deny');
 });

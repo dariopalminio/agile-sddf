@@ -84,6 +84,8 @@ No se reportó cobertura en las suites ejecutadas.
 
 ## Historial de Ejecuciones Anteriores
 
+npm run test:eval -- epic-track-progress --eval-runner opencode --report
+
 Eval Report: epic-track-progress
 
 **Fecha:** 2026-11-02 | **Total:** 5 | ✅ Passed: 5 | Failed: 0 | **Pass rate:** 100%

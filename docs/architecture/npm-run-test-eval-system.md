@@ -90,6 +90,7 @@ npm run test:eval -- epic-format-validation --only TC-016
 - Ejecuta DE VERDAD sobre un directorio desechable
 - Valida escrituras: `expected.files.written`, `expected.files.contains`
 - Verifica artefactos en disco
+- 🧱 El sandbox es su propia raíz Git y el prompt declara su ruta absoluta como REPO_ROOT del ejercicio: los runners que anclan la working directory a la raíz Git (ej. OpenCode) trabajan dentro del sandbox, no del repositorio anfitrión
 
 ---
 
