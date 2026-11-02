@@ -39,7 +39,7 @@ updated: 2026-11-01
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
-- [ ] Evals tests: `npm run test:eval -- epic-refine`
+- [ ] Evals tests (TC-009…TC-013): `npm run test:eval -- epic-refine`
 
 ## Findings
 
@@ -84,11 +84,11 @@ No disponible: los comandos configurados no publican métricas de cobertura.
 ## Historial de Ejecuciones Anteriores
 Casos TC-014…TC-018
 
-`npm run test:eval -- epic-refine --only TC-001,TC-002,TC-003 --eval-runner opencode --report`
+`npm run test:eval -- epic-refine --only TC-009,TC-010,TC-011,TC-012,TC-013 --eval-runner opencode --report`
 
 Eval Report: epic-refine
 
-**Fecha:** 2026-11-02 | **Total:** 1 | ✅ Passed: 1 | ❌ Failed: 0 | **Pass rate:** 100%
+**Fecha:** 2026-11-02 | **Total:** 1 | ✅ Passed: 6 | ❌ Failed: 0 | **Pass rate:** 100%
 **Ejecutor:** opencode
 
 | ID | Nombre | Tipo | Threshold | Estado | Notas |
@@ -96,5 +96,8 @@ Eval Report: epic-refine
 | TC-001 | aplica-huerfana-y-related-roto-con-backup | happy-path | 1 | ✅ PASS | — |
 | TC-002 | epica-aprobada-no-escribe-nada | edge-case | 1 | ✅ PASS | — |
 | TC-003 | solo-decisiones-del-po-fuera-de-alcance | edge-case | 1 | ✅ PASS | — |
-
+| TC-009 | asigna-cobertura-a-la-historia-de-cierre | happy-path | 0.95 | ✅ PASS | — |
+| TC-011 | empate-de-candidatas-al-po | edge-case | 1 | ✅ PASS | — |
+| TC-012 | reejecucion-ya-resuelto-por-e1 | edge-case | 0.95 | ✅ PASS | — |
+| TC-013 | historia-de-cierre-implementada-al-po | edge-case | 1 | ✅ PASS | — |
 
