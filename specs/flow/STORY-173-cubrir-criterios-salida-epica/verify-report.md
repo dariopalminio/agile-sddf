@@ -82,5 +82,19 @@ No disponible: los comandos configurados no publican métricas de cobertura.
 | **LOW** | Minor issue, cosmetic, edge case |
 
 ## Historial de Ejecuciones Anteriores
+Casos TC-014…TC-018
 
-(sin ejecuciones anteriores)
+`npm run test:eval -- epic-refine --only TC-001,TC-002,TC-003 --eval-runner opencode --report`
+
+Eval Report: epic-refine
+
+**Fecha:** 2026-11-02 | **Total:** 1 | ✅ Passed: 1 | ❌ Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-001 | aplica-huerfana-y-related-roto-con-backup | happy-path | 1 | ✅ PASS | — |
+| TC-002 | epica-aprobada-no-escribe-nada | edge-case | 1 | ✅ PASS | — |
+| TC-003 | solo-decisiones-del-po-fuera-de-alcance | edge-case | 1 | ✅ PASS | — |
+
+

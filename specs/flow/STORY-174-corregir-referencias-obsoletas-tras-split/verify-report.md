@@ -39,7 +39,7 @@ updated: 2026-11-01
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
-- [ ] Evals: `npm run test:eval -- epic-refine`
+- [x] Evals: `npm run test:eval -- epic-refine` Casos TC-014…TC-018
 
 
 ## Findings
@@ -84,4 +84,22 @@ No disponible: los comandos configurados no informan cobertura.
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+Casos TC-014…TC-018
+
+`npm run test:eval -- epic-refine --only TC-001,TC-002,TC-003,TC-014,TC-015,TC-016,TC-017,TC-018 --eval-runner opencode --report`
+
+Eval Report: epic-refine
+
+**Fecha:** 2026-11-02 | **Total:** 1 | ✅ Passed: 1 | ❌ Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-001 | aplica-huerfana-y-related-roto-con-backup | happy-path | 1 | ✅ PASS | — |
+| TC-002 | epica-aprobada-no-escribe-nada | edge-case | 1 | ✅ PASS | — |
+| TC-003 | solo-decisiones-del-po-fuera-de-alcance | edge-case | 1 | ✅ PASS | — |
+| TC-014 | reemplaza-slug-obsoleto-tras-split | happy-path | 1 | ✅ PASS | — |
+| TC-015 | reemplazo-no-determinable-al-po | edge-case | 1 | ✅ PASS | — |
+| TC-016 | varios-directorios-con-el-id-al-po | edge-case | 1 | ✅ PASS | — |
+| TC-017 | slug-reportado-como-mad-02-no-es-coh | edge-case | 1 | ✅ PASS | — |
+| TC-017 | slug-reportado-como-mad-02-no-es-coh | edge-case | 1 | ✅ PASS | — |
