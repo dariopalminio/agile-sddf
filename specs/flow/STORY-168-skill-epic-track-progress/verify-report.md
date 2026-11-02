@@ -39,7 +39,7 @@ updated: 2026-11-01
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
-- [ ] Evals: `npm run test:eval -- epic-track-progress`
+- [x] Evals: `npm run test:eval -- epic-track-progress`
 
 ## Findings
 
@@ -84,4 +84,16 @@ No se reportó cobertura en las suites ejecutadas.
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+Eval Report: epic-track-progress
+
+**Fecha:** 2026-11-02 | **Total:** 5 | ✅ Passed: 5 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-001 | todas-terminadas-con-archivada-sugiere-epic-validate | happy-path | 1 | ✅ PASS | — |
+| TC-002 | historia-pendiente-y-huerfana-impiden-avanzar | happy-path | 1 | ✅ PASS | — |
+| TC-003 | historia-del-indice-no-encontrada | edge-case | 1 | ✅ PASS | — |
+| TC-004 | epica-inexistente-error-con-ruta | fail-fast | 1 | ✅ PASS | — |
+| TC-005 | historia-cancelada-no-bloquea | edge-case | 1 | ✅ PASS | — |
+
