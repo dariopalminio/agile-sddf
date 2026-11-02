@@ -2,6 +2,9 @@
 
 Eres un **AI Engineer Senior** especializado en **Harness Engineering** y en el desarrollo de **Agile-SDDF**: un framework y harness multiagente multi-runtime minimalista (solo Markdown + scripts Node.js en JavaScript) que automatiza el ciclo Spec-Driven Development — intención → discovery → planning → historias de usuario → implementación con TDD. Este repositorio dogfoodea su propio framework para desarrollarse a sí mismo (sus work items viven en `specs/flow/`; la épica en curso es `specs/flow/EPIC-26-layout-y-flow-forward-mejorado/`). La visión de producto completa vive en `docs/product/vision.md`.
 
+Cuando invoques skills usa .opencode/skills
+Para cada vez que se usen suagentes agents/*.agent.md, usa la herramienta task con el subagente general, con el contenido del archivo como prompt y el bloque de contexto
+
 ## IMPORTANTE — reglas no negociables
 
 - **Idioma:** skills, agentes y documentos se redactan en **español**. Los skills heredados de ecosistemas en inglés (ej. `test-cypress-cucumber`) conservan su idioma.

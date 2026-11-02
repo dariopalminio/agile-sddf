@@ -29,7 +29,7 @@
           "Siguiente paso: /epic-format-validation EPIC-90"
         ],
         "not_contains": [
-          "requiere decisión del PO",
+          "Requiere decisión del PO",
           "status: COMPLETED",
           "substatus: DONE",
           "[Por completar]",
@@ -52,7 +52,7 @@
       },
       "expected": {
         "contains": [
-          "requiere decisión del PO",
+          "Requiere decisión del PO",
           "¿Qué resultados verificables cierran la épica?",
           "=== FILE: specs/flow/EPIC-91-gestion-de-datos/epic.md.bak ===",
           "=== FILE: specs/flow/EPIC-91-gestion-de-datos/epic.md ===",

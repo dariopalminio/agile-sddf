@@ -85,6 +85,11 @@ Detalle:
 
 Verificación: `node scripts/run-evals.js epic-improve --dry-run` planifica 8 casos; `npm run verify:repository` → `[OK] Verificación determinista del repositorio aprobada.`
 
+## Correcciones de fix-directives.md (ronda 2)
+
+Causa raíz de los 8 fallos: no eran de epic-improve — SDDF_EVAL_RUNNER=opencode estaba exportado en la shell y sobreescribía el default claude que asume el test «Claude sigue siendo el runner predeterminado». No está en perfiles, .env ni CI, así que en el entorno canónico el gate pasa.
+Fallo real corregido: el contrato de validación (L-4) marcaba el token interno approved (minúscula) de mi motor como «variante heredada». Cambié a APPROVED (mayúscula, valor canónico) en epic-improve.js:155/161/602 y la aserción en test/epic-improve.test.js:70.
+
 ---
 
 ## Decisiones no previstas (CR-003 en design.md)

@@ -65,3 +65,15 @@ related:
 - [x] T028 Ejecutar `npm test` (incluye `test/epic-template.test.js`, V-9) y `npm run verify:repository`; deben pasar sin errores (V-11) // CS-21
 - [x] T029 Ejecutar `graphify update .` para actualizar el grafo tras los cambios
 - [x] T030 Registrar como pendiente de ejecución manual (criterio humano, AGENTS.md) `npm run test:eval -- epic-improve` (TC-001…TC-007) y el recorrido SMOKE-4: `/epic-format-validation` → `/epic-improve` con `s` → `/epic-format-validation` = `APPROVED` sobre el fixture `sin-criterios-de-salida/` (V-1…V-5) // AC-1, AC-2, AC-3, AC-4
+
+Aquí tienes la transcripción del listado de tareas de la imagen:
+
+## 67. Fix Evals
+*   [x] Reescribir SKILL.md (versión motor)
+*   [x] Corregir mayúsculas en evals.json (TC-001 not_contains, TC-002 contains)
+*   [x] Añadir CR-004 en design.md de STORY-167
+*   [x] Completar scripts/epic-improve.js (motor)
+*   [x] Crear test/epic-improve.test.js
+*   [x] Restaurar README.md en español + sección motor
+*   [x] Mover plan a .tmp/epic-improve/
+*   [x] npm test + verify:repository + install + TC-002 eval
