@@ -1,0 +1,41 @@
+sequenceDiagram
+    
+    actor User as Solo Builder
+    participant RT as Runtime (Claude / Copilot/ ...)
+    participant WS as Workspace (Local)
+    participant Skill as Afile SDDF
+    participant GH as GitHub (Remoto)
+    
+    Note over User, GH: 1. INICIALIZACIÓN Y CONTEXTO
+    User->>RT: Inicia sesión en el directorio del proyecto
+    activate RT
+    RT->>WS: Lee instrucciones globales (CLAUDE.md / AGENTS.md)
+    WS-->>RT: Retorna stack tecnológico y reglas base
+    
+    Note over User, GH: 2. INTENCIÓN Y RESOLUCIÓN DEL SKILL
+    User->>RT: Envía un prompt (ej. "Implementa la feature")
+    RT->>RT: Evalúa intención vs. skills disponibles
+    RT->>WS: Busca skill en (.claude/skills/ o .agents/skills/)
+    WS-->>RT: Encuentra y retorna `SKILL.md`
+    
+    Note over User, GH: 3. EJECUCIÓN DEL SKILL Y ACCIÓN
+    RT->>Skill: Carga instrucciones del Skill
+    activate Skill
+    Skill->>WS: Lee templates y ejecuta scripts auxiliares
+    WS-->>Skill: Retorna contexto y variables
+    Skill->>WS: Escribe código y artefactos en disco (git add)
+    deactivate Skill
+    
+    Note over User, GH: 4. VERSIONADO Y PUSH A GITHUB
+    RT->>WS: Ejecuta comandos Git (git commit -m "...")
+    WS-->>RT: Confirma commit local
+    RT->>WS: Ejecuta git push origin <rama>
+    activate WS
+    WS->>GH: Envía commits (HTTPS/SSH)
+    GH-->>WS: Confirma recepción del push (200 OK)
+    deactivate WS
+    WS-->>RT: Retorna salida de consola exitosa
+    
+    Note over User, GH: 5. RETORNO
+    RT-->>User: Notifica finalización y muestra resumen
+    deactivate RT

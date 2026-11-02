@@ -5,11 +5,11 @@ id: STORY-168
 kind: feat
 slug: STORY-168-skill-epic-track-progress
 title: "Skill epic-track-progress"
-status: CODE-REVIEW
+status: VERIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-29
+updated: 2026-11-01
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124-validar-preparacion-estructural-epica

@@ -22,6 +22,30 @@ Los skills pueden ser probados de varias maneras, dependiendo de la etapa de des
 
 Las pruebas de skills se definen en archivos `evals.json` dentro de una carpeta `evals` (dentro de la carpeta del skill) que contienen los casos de prueba y las aserciones que deben cumplirse. Estos evals permiten verificar que el skill funciona correctamente y cumple con los requisitos esperados.
 
+El esquema base SDDF para evals/evals.json es:
+
+```
+{
+  "skill": "nombre-del-skill",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "nombre-descriptivo",
+      "type": "happy-path",              // ← skill-test-evals enfatiza los tipos
+      "description": "qué valida este caso",
+      "input": { },                      // ← contenido específico del skill
+      "expected": {
+        "contains": [ ],                 // ← aserciones objetivas
+        "not_contains": [ ],
+        "output_file": "path",           // ← opcional: modo sandbox
+        "exit_gracefully": true          // ← opcional: manejo de error
+      },
+      "threshold": 0.95                  // ← opcional: límite de acierto
+    }
+  ]
+}
+```
 En los casos simulados de `scripts/run-evals.js`, `context_files` permite entregar recursos
 fuente al modelo dentro del prompt. Por ejemplo,
 `"context_files": ["assets/epic-format-validation-report-template.md"]` lee el template vigente
