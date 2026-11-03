@@ -96,7 +96,7 @@ npm run test:eval -- epic-complete --only TC-001, TC-002, TC-003, TC-004 --eval-
 
 Eval Report: epic-complete
 
-**Fecha:** 2026-11-03 | **Total:** 1 | ✅ Passed: 1 | Failed: 0 | **Pass rate:** 100%
+**Fecha:** 2026-11-03 | **Total:** 4 | ✅ Passed: 4 | Failed: 0 | **Pass rate:** 100%
 **Ejecutor:** opencode
 
 | ID | Nombre | Tipo | Threshold | Estado | Notas |
@@ -106,5 +106,5 @@ Eval Report: epic-complete
 | TC-003 | confirmacion-rechazada-sin-cambios | error-handling | 0.9 | ✅ PASS | — |
 | TC-004 | entrada-en-unreleased-pide-version | edge-case | 0.9 | ✅ PASS | — |
 
-✅ Todos los 1 casos pasaron. El skill está listo.
+✅ Todos los 4 casos pasaron. El skill está listo.
 

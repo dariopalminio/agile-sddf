@@ -83,4 +83,17 @@ N/A — los runners ejecutados (`node --test` vía `npm run test:installer` y `n
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+npm run test:eval -- epic-complete --only TC-005, TC-006, TC-007 --eval-runner opencode --report
+
+Eval Report: epic-complete
+
+**Fecha:** 2026-11-03 | **Total:** 3 | ✅ Passed: 3 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-005 | canceled-done-confirmado-archiva-sin-cambiar-status | happy-path | 0.9 | ✅ PASS | — |
+| TC-006 | canceled-in-progress-rechazado-sin-preguntar | fail-fast | 0.9 | ✅ PASS | — |
+| TC-007 | canceled-done-destino-existente-sin-mover | edge-case | 0.9 | ✅ PASS | — |
+
+✅ Todos los 3 casos pasaron. El skill está listo.
