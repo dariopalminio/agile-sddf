@@ -515,7 +515,7 @@ function buildPrompt(skillName, skillMdRel, testCase, contextFiles = []) {
     `- Lee del repositorio real solo el SKILL.md y las referencias necesarias para interpretar su contrato (por ejemplo, assets del skill o un template cuyo contenido no esté simulado). El contenido proporcionado por el escenario tiene prioridad sobre cualquier archivo real de la misma ruta.`,
     `- NO modifiques ningún archivo del repositorio, NO ejecutes comandos de escritura y NO lances subagentes. Solo lee y razona.`,
     `- No mires la sección "expected" de ningún caso: emite lo que dicta el SKILL.md dado el escenario.`,
-    `- Responde únicamente con el bloque de formato: tu primera línea debe ser \`=== CONSOLE ===\`. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de \`${END_MARKER}\`.`,
+    `- Responde únicamente con el bloque de formato: tu primera línea debe ser \`=== CONSOLE ===\`. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de \`${END_MARKER}\`. Si tu primera línea no es exactamente \`=== CONSOLE ===\`, la respuesta se califica como error de formato y el caso falla.`,
     ``,
     ...contextFiles.flatMap((resource) => [
       `Recurso fuente del skill: ${resource.path} (contenido íntegro leído del disco por el runner):`,
@@ -733,7 +733,7 @@ function buildSandboxPrompt(skillName, skillMdRel, testCase, spec, sandboxDir = 
     `- Lee íntegros los archivos de entrada y los templates que el skill resuelva dentro del directorio de trabajo; si una lectura se trunca, continúa con offset/limit hasta EOF antes de derivar el diagnóstico. No reconstruyas su contenido desde la descripción ni consultes archivos equivalentes del repositorio anfitrión. Conserva las líneas originales, incluido el frontmatter y las líneas vacías, para citar ubicaciones.`,
     `- Escribe solo dentro del directorio de trabajo (rutas relativas o absolutas bajo él); nunca fuera de él. No ejecutes comandos de shell ni lances subagentes. El runner compara el árbol del directorio antes y después de tu ejecución.`,
     `- El bloque "Condiciones de entrada" define la invocación y las respuestas del usuario a cada pausa (si no se especifica una respuesta, asume la opción por defecto/afirmativa). No inventes condiciones que el escenario no describa.`,
-    `- Responde únicamente con el bloque de formato: tu primera línea debe ser \`=== CONSOLE ===\`. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de \`${END_MARKER}\`.`,
+    `- Responde únicamente con el bloque de formato: tu primera línea debe ser \`=== CONSOLE ===\`. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de \`${END_MARKER}\`. Si tu primera línea no es exactamente \`=== CONSOLE ===\`, la respuesta se califica como error de formato y el caso falla.`,
     ``,
     `Escenario de prueba (${testCase.id} — ${testCase.name || ''}):`,
     testCase.description || '(sin descripción)',
@@ -998,7 +998,7 @@ async function runOpenCode(prompt, opts, runtime = {}) {
       errors.push('OpenCode emitió una línea JSON inválida.');
       continue;
     }
-    if (event.type === 'text' && typeof event.part?.text === 'string') text.push(event.part.text);
+    if (event.type === 'text' && !event.part?.synthetic && typeof event.part?.text === 'string') text.push(event.part.text);
     if (event.type === 'error') {
       errors.push(`OpenCode: ${event.error?.data?.message || event.error?.message || event.error?.name || 'error sin detalle'}`);
     }
@@ -1012,22 +1012,51 @@ async function runOpenCode(prompt, opts, runtime = {}) {
 // Paso E3c/E3d — Calificar
 // ---------------------------------------------------------------------------
 
-function gradeOutput(testCase, rawOutput) {
-  let out = rawOutput;
-  const end = out.indexOf(END_MARKER);
-  if (end >= 0) out = out.slice(0, end);
+function findConsoleBlocks(rawOutput) {
+  const blocks = [];
+  const consoleRe = /(^|\n)=== CONSOLE ===[ \t]*\r?\n/g;
+  for (const match of rawOutput.matchAll(consoleRe)) {
+    const start = match.index + match[1].length;
+    const endRe = /(^|\n)=== END ===[ \t]*(?:\r?\n|$)/g;
+    endRe.lastIndex = start;
+    for (const end of rawOutput.matchAll(endRe)) {
+      blocks.push(rawOutput.slice(start, end.index + end[1].length));
+    }
+  }
+  return blocks;
+}
 
+function gradeOutput(testCase, rawOutput) {
   const expected = testCase.expected || {};
   const contains = [...(expected.contains || []), ...(expected.output_contains || [])];
   const notContains = expected.not_contains || [];
-  const missing = contains.filter((s) => !out.includes(s));
-  const violated = notContains.filter((s) => out.includes(s));
-  const total = contains.length;
-  const found = total - missing.length;
-  const ratio = total === 0 ? 1 : found / total;
   const threshold = typeof testCase.threshold === 'number' ? testCase.threshold : 1.0;
-  const pass = (threshold >= 1 ? missing.length === 0 : ratio >= threshold) && violated.length === 0;
-  return { pass, missing, violated, found, total, ratio, threshold, evidence: out.slice(0, 300) };
+  const blocks = findConsoleBlocks(rawOutput);
+  if (blocks.length === 0) {
+    return {
+      pass: false,
+      formatError: true,
+      missing: ['formato: la respuesta no incluye el bloque === CONSOLE === (el modelo no siguió el protocolo E3)'],
+      violated: [],
+      found: 0,
+      total: contains.length,
+      ratio: 0,
+      threshold,
+      evidence: rawOutput.slice(0, 300),
+    };
+  }
+  let last = null;
+  for (const block of blocks) {
+    const missing = contains.filter((s) => !block.includes(s));
+    const violated = notContains.filter((s) => block.includes(s));
+    const total = contains.length;
+    const found = total - missing.length;
+    const ratio = total === 0 ? 1 : found / total;
+    const pass = (threshold >= 1 ? missing.length === 0 : ratio >= threshold) && violated.length === 0;
+    last = { pass, missing, violated, found, total, ratio, threshold, evidence: block.slice(0, 300) };
+    if (pass) return last;
+  }
+  return last;
 }
 
 // ---------------------------------------------------------------------------

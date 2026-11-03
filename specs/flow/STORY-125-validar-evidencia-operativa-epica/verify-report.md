@@ -41,6 +41,7 @@ updated: 2026-11-03
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
+- [x] Evals TC-006…TC-013
 
 ## Findings
 
@@ -93,4 +94,34 @@ El total de 493 suma las ejecuciones TAP (unit + suite completa; `test/install.t
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+**Precondiciones:**
+- LLM Model: Qwen3.8-27B-Uncensored-Q4_K_M.gguf
+- ctx-size 131072 
+- spec-type draft-mtp 
+- spec-draft-n-max 2
+- opencode con límite "context": 131072
+- opencode con límite "output": 32768
+
+npm run test:eval -- epic-validate --only TC-006, TC-007, TC-008, TC-009, TC-010, TC-011, TC-012, TC-013 --eval-runner opencode --report
+
+En ejecuciones individuales:
+
+npm run test:eval -- epic-validate --only TC-001 --eval-runner opencode --report
+
+**Eval Report: epic-validate**
+
+**Fecha:** 2026-11-03 | **Total:** 8 | ✅ Passed: 8 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-006 | operativa-auto-aprobada | happy-path | 1 | ✅ PASS | — |
+| TC-007 | operativa-manual-reporte-aprobado | happy-path | 1 | ✅ PASS | — |
+| TC-008 | operativa-manual-confirmacion | happy-path | 1 | ✅ PASS | — |
+| TC-009 | smoke-fallido-needs-changes | error-handling | 1 | ✅ PASS | — |
+| TC-010 | verify-release-fallido-needs-changes | error-handling | 1 | ✅ PASS | — |
+| TC-011 | dod-epica-incumplido-needs-changes | error-handling | 1 | ✅ PASS | — |
+| TC-012 | auto-smoke-configurado-no-ejecutable-blocked | error-handling | 1 | ✅ PASS | — |
+| TC-013 | controles-opcionales-omitidos | happy-path | 1 | ✅ PASS | — |
+
+✅ Todos los 8 casos pasaron. El skill está listo.

@@ -100,7 +100,7 @@ async function runRunner(fixture, args, { runClaude, runCodex: runCodexStub, run
   const fakeClaude = async () => ({
     ok: true,
     code: 0,
-    stdout: '=== END ===',
+    stdout: '=== CONSOLE ===\nrespuesta\n=== END ===',
     stderr: '',
     durationMs: 0,
     timedOut: false,
@@ -412,12 +412,12 @@ test('OpenCode conserva los eventos completos por separado sin calificarlos como
   writeSkill(fixture, 'alpha');
   const events = JSON.stringify({ type: 'tool_use', part: { state: { output: 'TEXTO_DE_HERRAMIENTA' } } });
   const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode'], {
-    runOpenCode: async () => ({ ok: true, code: 0, stdout: '=== END ===', events, stderr: '', durationMs: 0 }),
+    runOpenCode: async () => ({ ok: true, code: 0, stdout: '=== CONSOLE ===\nrespuesta\n=== END ===', events, stderr: '', durationMs: 0 }),
   });
   assertExit(result, 0);
   const dir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'runs');
   assert.equal(fs.readFileSync(path.join(dir, 'TC-001.events.jsonl'), 'utf8'), events);
-  assert.equal(fs.readFileSync(path.join(dir, 'TC-001.txt'), 'utf8'), '=== END ===');
+  assert.equal(fs.readFileSync(path.join(dir, 'TC-001.txt'), 'utf8'), '=== CONSOLE ===\nrespuesta\n=== END ===');
 });
 
 test('el prompt de simulación separa los artefactos declarados del filesystem real', () => {
@@ -454,6 +454,105 @@ test('el prompt sandbox exige la consola canónica y veta el preámbulo anterior
   const prompt = buildSandboxPrompt('epic-format-validation', 'skills/epic-format-validation/SKILL.md', testCase, spec);
   assert.ok(prompt.includes('Eres un ejecutor de evals (protocolo E3'));
   assert.match(prompt, /Responde únicamente con el bloque de formato: tu primera línea debe ser `=== CONSOLE ===`/);
+  assert.match(prompt, /Si tu primera línea no es exactamente `=== CONSOLE ===`, la respuesta se califica como error de formato y el caso falla/);
+});
+
+test('gradeOutput califica solo el bloque CONSOLE…END aunque un preámbulo cite los marcadores', () => {
+  const testCase = {
+    ...makeCase('TC-011'),
+    expected: {
+      contains: [
+        'verdict: NEEDS-CHANGES\ncreated:',
+        '**Veredicto:** `NEEDS-CHANGES`',
+        'OPE-03',
+        'criterio 1',
+        'npm run check:docs',
+        'DoD de validación de épica',
+      ],
+      not_contains: ['verdict: APPROVED', 'Omitido — ⚠️', '{veredicto}'],
+    },
+  };
+  const block = [
+    '=== CONSOLE ===',
+    '**Veredicto:** `NEEDS-CHANGES`',
+    'verdict: NEEDS-CHANGES',
+    'created: 2026-11-03',
+    '- OPE-03: criterio 1 — ejecutar `npm run check:docs` según la DoD de validación de épica',
+    '=== END ===',
+  ].join('\n');
+  const preamble = '## Objetivo\nLa salida debe abrir con `=== CONSOLE ===` y cerrar con `=== END ===`.\n';
+  const withPreamble = gradeOutput(testCase, preamble + block + '\nNotas: la sesión terminó sin errores.');
+  assert.equal(withPreamble.pass, true, JSON.stringify({ missing: withPreamble.missing, violated: withPreamble.violated }));
+
+  const notesAfterEnd = gradeOutput(testCase, block + '\nNotas: se citan aquí `verdict: APPROVED`, `Omitido — ⚠️` y `{veredicto}`.');
+  assert.equal(notesAfterEnd.pass, true, JSON.stringify({ missing: notesAfterEnd.missing, violated: notesAfterEnd.violated }));
+});
+
+test('gradeOutput falla con diagnóstico de formato cuando la respuesta omite === CONSOLE ===', () => {
+  const testCase = {
+    ...makeCase('TC-011'),
+    expected: { contains: ['**Veredicto:** `NEEDS-CHANGES`'], not_contains: ['verdict: APPROVED'] },
+  };
+  const withoutConsole = gradeOutput(testCase, '## Objetivo\nRespuesta suelta sin el bloque canónico.\n');
+  assert.equal(withoutConsole.pass, false);
+  assert.equal(withoutConsole.formatError, true);
+  assert.match(withoutConsole.missing.join(' '), /formato/);
+  assert.match(withoutConsole.missing.join(' '), /=== CONSOLE ===/);
+
+  const quotedOnly = gradeOutput(testCase, 'Se esperaba `=== CONSOLE ===` antes de `=== END ===` pero no se emitió.\n');
+  assert.equal(quotedOnly.pass, false);
+});
+
+test('gradeOutput tolera resúmenes de compaction posteriores que citan los marcadores entre comillas', () => {
+  const testCase = {
+    ...makeCase('TC-011'),
+    expected: {
+      contains: ['verdict: APPROVED\ncreated:', '**Veredicto:** `APPROVED`', 'omitido', 'SMOKE-1'],
+      not_contains: ['verdict: NEEDS-CHANGES', '{veredicto}'],
+    },
+  };
+  const block = [
+    '=== CONSOLE ===',
+    '**Veredicto:** `APPROVED`',
+    'verdict: APPROVED',
+    'created: 2026-11-03',
+    'Control omitido: dod-epic-validate.md no existe ⚠️',
+    'SMOKE-1 — aprobado',
+    '=== END ===',
+  ].join('\n');
+  const preamble = '## Objective\nContinuar con la validación de la épica.\nContinue if you have next steps, or stop and ask for clarification if you are unsure how to proceed.\n';
+  const compactionAfter = [
+    '## Objective',
+    'Analizar el veredicto de la épica simulada.',
+    '',
+    '## Next Move',
+    '1. Emitir la respuesta final única: `=== CONSOLE ===` + líneas de consola en el orden decidido + `=== FILE: specs/flow/EPIC-40-operativa/epic-validate-report.md ===` + contenido íntegro del reporte + `=== END ===` + notas breves tras `=== END ===`.',
+    '2. Verificar la salida con `ls` y `wc -c`.',
+  ].join('\n');
+  const contaminated = `${preamble}${block}\n${compactionAfter}\n`;
+  const grade = gradeOutput(testCase, contaminated);
+  assert.equal(grade.pass, true, JSON.stringify({ missing: grade.missing, violated: grade.violated }));
+
+  const quotedOnly = `${preamble}Se esperaba emitir \`=== CONSOLE ===\` antes de \`=== END ===\` pero no se emitió.\n`;
+  const quotedGrade = gradeOutput(testCase, quotedOnly);
+  assert.equal(quotedGrade.pass, false);
+  assert.equal(quotedGrade.formatError, true);
+});
+
+test('gradeOutput evalúa cada bloque canónico y pasa si alguno cumple', () => {
+  const testCase = {
+    ...makeCase('TC-011'),
+    expected: { contains: ['veredicto final: APPROVED', 'SMOKE-1'], not_contains: [] },
+  };
+  const firstIncomplete = '=== CONSOLE ===\nprimer intento sin la línea esperada\n=== END ===';
+  const secondComplete = '=== CONSOLE ===\nveredicto final: APPROVED\nSMOKE-1 aprobado\n=== END ===';
+  const mixed = gradeOutput(testCase, firstIncomplete + '\n' + secondComplete);
+  assert.equal(mixed.pass, true, JSON.stringify({ missing: mixed.missing, violated: mixed.violated }));
+
+  const bothIncomplete = firstIncomplete + '\n=== CONSOLE ===\nsegundo intento sin la línea\n=== END ===';
+  const failed = gradeOutput(testCase, bothIncomplete);
+  assert.equal(failed.pass, false);
+  assert.match(failed.evidence, /segundo intento sin la línea/);
 });
 
 test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar un reporte abreviado', () => {
@@ -566,11 +665,28 @@ test('OpenCode envía stdin, extrae solo texto JSON y aplica permisos sin mutar 
   assert.equal(config.agent['sddf-eval'].permission['*'], 'deny');
   assert.equal(config.agent['sddf-eval'].permission.read, 'allow');
   assert.equal(config.agent['sddf-eval'].permission.edit, 'deny');
-  assert.equal(config.share, 'disabled');
-  assert.equal(config.model, 'p/configurado');
-  assert.deepEqual(config.provider, { p: {} });
-  assert.equal(env.OPENCODE_PERMISSION, '{"*":"allow"}');
-});
+    assert.equal(config.share, 'disabled');
+    assert.equal(config.model, 'p/configurado');
+    assert.deepEqual(config.provider, { p: {} });
+    assert.equal(env.OPENCODE_PERMISSION, '{"*":"allow"}');
+  });
+
+  test('OpenCode descarta las parts sintéticas (nudges de compaction) del texto capturado', async (t) => {
+    const fixture = createFixture(t);
+    const events = [
+      { type: 'text', part: { text: '=== CONSOLE ===\nrespuesta\n' } },
+      { type: 'text', part: { text: 'Continue if you have next steps, or stop and ask for clarification if you are unsure how to proceed.', synthetic: true, metadata: { compaction_continue: true } } },
+      { type: 'text', part: { text: '=== END ===' } },
+    ].map((event) => JSON.stringify(event)).join('\n');
+    const result = await runOpenCode('p', { model: 'p/m', timeout: 1 }, {
+      repoRoot: fixture.root,
+      env: { PATH: '' },
+      spawn(...args) { return openCodeProcess(events)(...args); },
+    });
+    assert.equal(result.ok, true, result.stderr);
+    assert.equal(result.stdout, '=== CONSOLE ===\nrespuesta\n=== END ===');
+    assert.equal(result.events, events);
+  });
 
 test('OpenCode usa JSON y un agente propio sin forzar modelo ni reutilizar sesiones', () => {
   assert.deepEqual(buildOpenCodeArgs({ model: null }), ['run', '--format', 'json', '--agent', 'sddf-eval']);
@@ -941,7 +1057,7 @@ test('los artefactos validos quedan contenidos bajo el tmpRoot inyectado', async
     runClaude: async () => ({
       ok: true,
       code: 0,
-      stdout: '=== END ===',
+      stdout: '=== CONSOLE ===\nrespuesta\n=== END ===',
       stderr: 'advertencia de fixture',
       durationMs: 0,
       timedOut: false,

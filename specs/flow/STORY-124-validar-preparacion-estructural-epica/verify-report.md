@@ -39,7 +39,7 @@ updated: 2026-11-03
 - [ ] E2E tests — no marcadas `required: true` en sddf.config.yaml
 - [ ] Performance tests — fuera del scope
 - [ ] Security tests — fuera del scope
-- [ ] Evals TC-001…TC-005 
+- [x] Evals TC-001…TC-005 
 
 La suite completa `npm test` (DoD criterio 2) pasó 473/473 con exit 0; incluye la suite unitaria requerida.
 
