@@ -93,4 +93,32 @@ No disponible: el runner `node --test` no reporta cobertura en esta ejecución.
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+### test:eval -- epic-analyze --only TC-030
+
+npm run test:eval -- epic-analyze --only TC-030 --eval-runner opencode --report
+
+Eval Report: epic-analyze
+
+**Fecha:** 2026-11-03 | **Total:** 1 | ✅ Passed: 1 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-030 | epica-archivada-rechazada-sin-reporte | fail-fast | 1 | ✅ PASS | — |
+
+✅ Todos los 1 casos pasaron. El skill está listo.
+
+### npm run test:eval -- epic-creation --only TC-008 --eval-runner opencode --report
+
+test:eval -- epic-creation --only TC-008 --eval-runner opencode --report
+
+Eval Report: epic-creation
+
+**Fecha:** 2026-11-03 | **Total:** 1 | ✅ Passed: 1 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-008 | numeracion-cuenta-epicas-archivadas | functional | 1 | ✅ PASS | — |
+
+✅ Todos los 1 casos pasaron. El skill está listo.
