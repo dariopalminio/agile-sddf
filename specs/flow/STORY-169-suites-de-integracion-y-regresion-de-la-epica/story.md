@@ -5,11 +5,11 @@ id: STORY-169
 kind: feat
 slug: STORY-169-suites-de-integracion-y-regresion-de-la-epica
 title: "Suites de integración y regresión de la épica"
-status: CODE-REVIEW
+status: VERIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-31
+updated: 2026-11-03
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124-validar-preparacion-estructural-epica
