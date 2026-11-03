@@ -5,11 +5,11 @@ id: STORY-170
 kind: feat
 slug: STORY-170-skill-epic-ship
 title: "Skill epic-ship"
-status: CODE-REVIEW
+status: VERIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-31
+updated: 2026-11-02
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-171-completar-archivar-epica-liberada

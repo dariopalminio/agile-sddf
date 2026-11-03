@@ -88,7 +88,7 @@ Casos TC-014…TC-018
 
 Eval Report: epic-refine
 
-**Fecha:** 2026-11-02 | **Total:** 1 | ✅ Passed: 6 | ❌ Failed: 0 | **Pass rate:** 100%
+**Fecha:** 2026-11-02 | **Total:** 8 | ✅ Passed: 8 | Failed: 0 | **Pass rate:** 100%
 **Ejecutor:** opencode
 
 | ID | Nombre | Tipo | Threshold | Estado | Notas |
