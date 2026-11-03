@@ -41,7 +41,7 @@ Nota: `npm run test:installer` (20 tests) está incluido en los 473 de `npm test
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
-- [ ] Evals
+- [x] Evals
 
 ## Findings
 

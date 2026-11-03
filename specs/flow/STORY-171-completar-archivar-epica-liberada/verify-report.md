@@ -48,7 +48,7 @@ Evidencia adicional (criterio DoD 2): `npm test` (suite completa) → 473/473 pa
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
-- [ ] Evals
+- [x] Evals
 
 ## Findings
 
@@ -92,4 +92,19 @@ Evidencia adicional (criterio DoD 2): `npm test` (suite completa) → 473/473 pa
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+npm run test:eval -- epic-complete --only TC-001, TC-002, TC-003, TC-004 --eval-runner opencode --report
+
+Eval Report: epic-complete
+
+**Fecha:** 2026-11-03 | **Total:** 1 | ✅ Passed: 1 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-001 | ship-done-confirmado-completa-y-archiva | happy-path | 0.9 | ✅ PASS | — |
+| TC-002 | validate-done-rechazado-sin-preguntar | fail-fast | 0.9 | ✅ PASS | — |
+| TC-003 | confirmacion-rechazada-sin-cambios | error-handling | 0.9 | ✅ PASS | — |
+| TC-004 | entrada-en-unreleased-pide-version | edge-case | 0.9 | ✅ PASS | — |
+
+✅ Todos los 1 casos pasaron. El skill está listo.
+
