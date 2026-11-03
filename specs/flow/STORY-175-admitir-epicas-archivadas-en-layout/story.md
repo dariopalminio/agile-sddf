@@ -5,11 +5,11 @@ id: STORY-175
 kind: feat
 slug: STORY-175-admitir-epicas-archivadas-en-layout
 title: "Admitir épicas archivadas en el layout fijo con un ADR nuevo"
-status: IMPLEMENT
+status: VERIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-29
-updated: 2026-10-30
+updated: 2026-11-02
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-171

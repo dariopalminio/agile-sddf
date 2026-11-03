@@ -5,11 +5,11 @@ id: STORY-171
 kind: feat
 slug: STORY-171-completar-archivar-epica-liberada
 title: "Skill epic-complete (Core) — completar y archivar una épica liberada"
-status: IMPLEMENT
+status: VERIFY
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-10-30
+updated: 2026-11-02
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-170-skill-epic-ship
