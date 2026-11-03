@@ -33,7 +33,7 @@ sequenceDiagram
     RunEvals->>Manifest: ✓ Verifica evals.json
     Manifest-->>RunEvals: cases[], fixtures, TC-NNN
     
-    Note over RunEvals: 🔄 E3-E4: Ejecutar (paralelo)<br/>Concurrencia: 4 | Timeout: 900s
+    Note over RunEvals: 🔄 E3-E4: Ejecutar (paralelo)<br/>Concurrencia: 4 | Timeout: 900s (opencode: 1800s)
     
     par Para cada TC-NNN
         RunEvals->>RunEvals: 📝 Construir prompt<br/>(simulación o sandbox)
@@ -217,6 +217,8 @@ export SDDF_EVAL_MODEL=opus
 export SDDF_EVAL_OPENCODE_MODEL=...
 
 # Concurrencia y timeout
+# Default por runner: claude/codex 900 s, opencode 1800 s (arranque más lento y modelos locales);
+# --timeout explícito prevalece en todos los runners.
 npm run test:eval -- --concurrency 8 --timeout 1800
 ```
 

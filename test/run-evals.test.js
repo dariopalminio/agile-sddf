@@ -13,6 +13,7 @@ const {
   buildCodexArgs,
   buildOpenCodeArgs,
   buildPrompt,
+  buildSandboxPrompt,
   gradeOutput,
   parseSandboxSpec,
   prepareSandbox,
@@ -188,6 +189,15 @@ test('parsea el selector de runner y aplica modelos predeterminados por ejecutor
   assert.throws(() => parseArgs(['--eval-runner', 'claude', '--eval-runner', 'codex'], {}), /solo puede/i);
   assert.throws(() => parseArgs([], { SDDF_EVAL_RUNNER: 'otro' }), /runner.*admitido|válidos/i);
   assert.equal(parseArgs(['--help'], { SDDF_EVAL_RUNNER: 'otro' }).help, true);
+});
+
+test('el timeout por defecto depende del runner y --timeout siempre prevalece', () => {
+  assert.equal(parseArgs([], {}).timeout, 900, 'claude conserva 900 s por defecto');
+  assert.equal(parseArgs(['--eval-runner', 'codex'], {}).timeout, 900, 'codex conserva 900 s por defecto');
+  assert.equal(parseArgs(['--eval-runner', 'opencode'], {}).timeout, 1800, 'opencode sube a 1800 s por defecto');
+  assert.equal(parseArgs(['--timeout', '60'], {}).timeout, 60, '--timeout explícito prevalece');
+  assert.equal(parseArgs(['--eval-runner', 'opencode', '--timeout', '60'], {}).timeout, 60, '--timeout explícito prevalece sobre el default de opencode');
+  assert.equal(parseArgs(['--eval-runner', 'codex', '--timeout', '60'], {}).timeout, 60, '--timeout explícito prevalece en codex');
 });
 
 test('los adaptadores construyen invocaciones restringidas para Claude y Codex', () => {
@@ -429,7 +439,21 @@ test('el prompt de simulación separa los artefactos declarados del filesystem r
   assert.match(prompt, /El contenido proporcionado por el escenario tiene prioridad/);
   assert.match(prompt, /Si el escenario declara un archivo ausente, permanece ausente/);
   assert.match(prompt, /NO modifiques ningún archivo/);
+  assert.match(prompt, /Responde únicamente con el bloque de formato: tu primera línea debe ser `=== CONSOLE ===`/);
   assert.ok(!prompt.includes('EXPECTATIVA_PRIVADA'));
+});
+
+test('el prompt sandbox exige la consola canónica y veta el preámbulo anterior a === CONSOLE ===', () => {
+  const testCase = {
+    description: 'Valida una épica simulada.',
+    input: {},
+    sandbox: { fixture: 'skills/epic-format-validation/evals/fixtures/tc-016', target: '.' },
+    expected: { files: { written: ['specs/flow/EPIC-05-pagos/epic-format-validation-report.md'] } },
+  };
+  const spec = parseSandboxSpec(testCase, 'test');
+  const prompt = buildSandboxPrompt('epic-format-validation', 'skills/epic-format-validation/SKILL.md', testCase, spec);
+  assert.ok(prompt.includes('Eres un ejecutor de evals (protocolo E3'));
+  assert.match(prompt, /Responde únicamente con el bloque de formato: tu primera línea debe ser `=== CONSOLE ===`/);
 });
 
 test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar un reporte abreviado', () => {

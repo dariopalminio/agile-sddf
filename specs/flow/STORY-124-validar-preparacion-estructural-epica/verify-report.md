@@ -39,6 +39,7 @@ updated: 2026-11-03
 - [ ] E2E tests — no marcadas `required: true` en sddf.config.yaml
 - [ ] Performance tests — fuera del scope
 - [ ] Security tests — fuera del scope
+- [ ] Evals TC-001…TC-005 
 
 La suite completa `npm test` (DoD criterio 2) pasó 473/473 con exit 0; incluye la suite unitaria requerida.
 
@@ -97,4 +98,20 @@ La ejecución de `npm run test:eval -- epic-validate` es manual por criterio hum
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+npm run test:eval -- epic-validate --only TC-001, TC-002, TC-003, TC-004, TC-005 --eval-runner opencode --report
+
+Eval Report: epic-validate
+
+**Fecha:** 2026-11-03 | **Total:** 5 | ✅ Passed: 5 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-001 | historias-cerradas-analisis-approved | happy-path | 1 | ✅ PASS | — |
+| TC-002 | historia-no-terminal-needs-changes | error-handling | 1 | ✅ PASS | — |
+| TC-003 | analisis-sin-approved-needs-changes | error-handling | 1 | ✅ PASS | — |
+| TC-004 | analisis-ausente-blocked | error-handling | 1 | ✅ PASS | — |
+| TC-005 | epica-inexistente-sin-reporte | fail-fast | 0.95 | ✅ PASS | — |
+
+✅ Todos los 5 casos pasaron. El skill está listo.
+

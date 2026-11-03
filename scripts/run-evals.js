@@ -28,7 +28,7 @@
  *   --eval-runner <name>   runner: claude, codex u opencode (default: claude; env SDDF_EVAL_RUNNER)
  *   --model <m>            modelo del runner elegido
  *   --concurrency N        casos en paralelo (default: 4)
- *   --timeout <s>          segundos por caso (default: 900)
+ *   --timeout <s>          segundos por caso (default: 900; 1800 para opencode)
  *   --report               guarda el informe en .tmp/skill-test-evals/<skill>/report-YYYYMMDD.md
  *   --skills-dir <dir>     directorio de skills fuente (default: skills/)
  *   --dry-run              imprime el prompt de cada caso sin ejecutar un runner
@@ -151,7 +151,7 @@ Options:
   --eval-runner <name>  Runner de eval: claude, codex u opencode (default: claude; env SDDF_EVAL_RUNNER)
   --model <model>       Modelo del runner elegido (--model prevalece sobre variables de entorno)
   --concurrency <n>     Casos en paralelo (default: 4)
-  --timeout <seconds>   Timeout por caso (default: 900)
+  --timeout <seconds>   Timeout por caso (default: 900; 1800 para opencode)
   --report              Guarda el informe en .tmp/skill-test-evals/<skill>/report-YYYYMMDD.md
   --skills-dir <dir>    Directorio de skills fuente (default: skills)
   --dry-run             Muestra el prompt de cada caso sin invocar un runner
@@ -160,6 +160,8 @@ Options:
 Claude usa sonnet por defecto (o SDDF_EVAL_MODEL). Codex usa su configuración local por defecto
 (o SDDF_EVAL_CODEX_MODEL). OpenCode usa su configuración local por defecto
 (o SDDF_EVAL_OPENCODE_MODEL, formato proveedor/modelo). --model prevalece sobre el entorno.
+El timeout por defecto es de 900 s por caso; con opencode sube a 1800 s (arranque más lento y
+modelos locales): --timeout explícito prevalece en todos los runners.
 
 Un caso con "sandbox": { "fixture", "target" (default specs/flow), "copy" } se ejecuta de verdad
 sobre una copia desechable en .tmp/skill-test-evals/<skill>/sandbox/<TC>/, con escritura confinada
@@ -195,6 +197,7 @@ function parseArgs(argv, env = process.env) {
     modelExplicit: false,
     concurrency: 4,
     timeout: 900,
+    timeoutExplicit: false,
     report: false,
     skillsDir: 'skills',
     dryRun: false,
@@ -230,7 +233,10 @@ function parseArgs(argv, env = process.env) {
       opts.modelExplicit = true;
     }
     else if (a === '--concurrency') opts.concurrency = Math.max(1, parseInt(next(), 10) || 1);
-    else if (a === '--timeout') opts.timeout = Math.max(1, parseInt(next(), 10) || 900);
+    else if (a === '--timeout') {
+      opts.timeout = Math.max(1, parseInt(next(), 10) || 900);
+      opts.timeoutExplicit = true;
+    }
     else if (a === '--report') opts.report = true;
     else if (a === '--skills-dir') opts.skillsDir = next();
     else if (a === '--dry-run') opts.dryRun = true;
@@ -242,6 +248,9 @@ function parseArgs(argv, env = process.env) {
     throw new Error('Los selectores de skills posicionales, --all y --changed-from son mutuamente excluyentes.');
   }
   if (!opts.modelExplicit) opts.model = defaultModelForRunner(opts.evalRunner, env);
+  // OpenCode arranca más lento (~45 s medidos) y suele usar modelos locales: sin --timeout
+  // explícito recibe 1800 s por caso; claude y codex conservan los 900 s.
+  if (!opts.timeoutExplicit) opts.timeout = opts.evalRunner === 'opencode' ? 1800 : 900;
   return opts;
 }
 
@@ -506,6 +515,7 @@ function buildPrompt(skillName, skillMdRel, testCase, contextFiles = []) {
     `- Lee del repositorio real solo el SKILL.md y las referencias necesarias para interpretar su contrato (por ejemplo, assets del skill o un template cuyo contenido no esté simulado). El contenido proporcionado por el escenario tiene prioridad sobre cualquier archivo real de la misma ruta.`,
     `- NO modifiques ningún archivo del repositorio, NO ejecutes comandos de escritura y NO lances subagentes. Solo lee y razona.`,
     `- No mires la sección "expected" de ningún caso: emite lo que dicta el SKILL.md dado el escenario.`,
+    `- Responde únicamente con el bloque de formato: tu primera línea debe ser \`=== CONSOLE ===\`. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de \`${END_MARKER}\`.`,
     ``,
     ...contextFiles.flatMap((resource) => [
       `Recurso fuente del skill: ${resource.path} (contenido íntegro leído del disco por el runner):`,
@@ -723,6 +733,7 @@ function buildSandboxPrompt(skillName, skillMdRel, testCase, spec, sandboxDir = 
     `- Lee íntegros los archivos de entrada y los templates que el skill resuelva dentro del directorio de trabajo; si una lectura se trunca, continúa con offset/limit hasta EOF antes de derivar el diagnóstico. No reconstruyas su contenido desde la descripción ni consultes archivos equivalentes del repositorio anfitrión. Conserva las líneas originales, incluido el frontmatter y las líneas vacías, para citar ubicaciones.`,
     `- Escribe solo dentro del directorio de trabajo (rutas relativas o absolutas bajo él); nunca fuera de él. No ejecutes comandos de shell ni lances subagentes. El runner compara el árbol del directorio antes y después de tu ejecución.`,
     `- El bloque "Condiciones de entrada" define la invocación y las respuestas del usuario a cada pausa (si no se especifica una respuesta, asume la opción por defecto/afirmativa). No inventes condiciones que el escenario no describa.`,
+    `- Responde únicamente con el bloque de formato: tu primera línea debe ser \`=== CONSOLE ===\`. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de \`${END_MARKER}\`.`,
     ``,
     `Escenario de prueba (${testCase.id} — ${testCase.name || ''}):`,
     testCase.description || '(sin descripción)',
