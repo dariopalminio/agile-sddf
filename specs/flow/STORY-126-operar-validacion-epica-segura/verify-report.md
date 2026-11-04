@@ -47,6 +47,7 @@ Notas de ejecución (modo config-driven, `sddf.config.yaml › verify`):
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
+- [x] Evals: `npm run test:eval -- epic-validate` TC-T014…TC-022
 
 ## Findings
 
@@ -90,4 +91,35 @@ Notas de ejecución (modo config-driven, `sddf.config.yaml › verify`):
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+**Precondiciones:**
+- LLM Model: Qwen3.8-27B-Uncensored-Q4_K_M.gguf
+- ctx-size 131072 
+- spec-type draft-mtp 
+- spec-draft-n-max 2
+- opencode con límite "context": 131072
+- opencode con límite "output": 32768
+
+npm run test:eval -- epic-validate --only TC-014, TC-015, TC-016, TC-017, TC-018, TC-019, TC-020, TC-021, TC-022 --eval-runner opencode --report
+
+En ejecuciones individuales:
+
+npm run test:eval -- epic-validate --only TC-014 --eval-runner opencode --report
+
+**Eval Report: epic-validate**
+
+**Fecha:** 2026-11-03 | **Total:** 9 | ✅ Passed: 9 | ❌ Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-014 | modo-auto-aprobado-resultado-exito | happy-path | 1 | ✅ PASS | — |
+| TC-015 | modo-manual-bloqueado-resultado-fallo | error-handling | 1 | ✅ PASS | — |
+| TC-016 | dry-run-previsualiza-sin-escribir | happy-path | 1 | ✅ PASS | — |
+| TC-017 | modo-no-reconocido-sin-efectos | fail-fast | 0.95 | ✅ PASS | — |
+| TC-018 | repeticion-conserva-created-y-orden | regression | 1 | ✅ PASS | — |
+| TC-019 | dry-run-antes-de-mode-manual | happy-path | 0.95 | ✅ PASS | — |
+| TC-020 | mode-manual-antes-de-dry-run | happy-path | 0.95 | ✅ PASS | — |
+| TC-021 | mode-sin-valor | fail-fast | 0.95 | ✅ PASS | — |
+| TC-022 | mode-repetido | fail-fast | 0.95 | ✅ PASS | — |
+
+✅ Todos los 9 casos pasaron. El skill está listo.
