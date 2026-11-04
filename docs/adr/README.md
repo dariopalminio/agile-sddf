@@ -66,3 +66,4 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) | Layout fijo de tres raíces con archivo de historias completadas y canceladas | SUPERSEDED → [ADR-0019](ADR-0019-layout-fijo-con-archivo-de-epicas.md) | 2026-10-25 |
 | [ADR-0018](ADR-0018-adoptar-cucumber-para-specs-living.md) | Adoptar Cucumber (Gherkin en archivos .feature) para specs/living/ | PROPOSED | 2026-10-28 |
 | [ADR-0019](ADR-0019-layout-fijo-con-archivo-de-epicas.md) | Layout fijo de tres raíces con archivo de historias y épicas cerradas | ACCEPTED | 2026-10-30 |
+| [ADR-0020](ADR-0020-contratos-centralizados-para-spec-living.md) | Contratos centralizados en OpenAPI/AsyncAPI para specs/living/ | PROPOSED | 2026-11-03 |

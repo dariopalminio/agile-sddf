@@ -31,6 +31,8 @@ parent: null
 | Guía | Contenido |
 |------|-----------|
 | [sdd.md](sdd.md) | Spec Driven Development: la especificación como fuente única de verdad y plano de control del código |
+| [sdd-with-bcdd.md](sdd-with-bcdd.md) | SDD con Behavior & Contract-Driven Development: integración de BDD y Contract Testing como especificaciones vivas ejecutables |
+| [contract-testing.md](contract-testing.md) | Contract Testing: cómo escribir, gestionar y validar contratos centralizados en OpenAPI/AsyncAPI |
 | [extreme-agile.md](extreme-agile.md) | Agilidad Agéntica: cómo la IA generativa transforma los valores del manifiesto ágil |
 | [flight-leves-model.md](flight-leves-model.md) | Modelo de Niveles de Vuelo: L3 Project → L2 Epic → L1 Story y los flujos de cada nivel |
 | [sddf-commands-pipeline.md](sddf-commands-pipeline.md) | Flujos principales SDDF: la secuencia de skills que recorre cada nivel del pipeline |
