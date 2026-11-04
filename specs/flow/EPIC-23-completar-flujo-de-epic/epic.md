@@ -3,11 +3,11 @@ type: epic
 id: EPIC-23
 slug: EPIC-23-completar-flujo-de-epic
 title: "Completar flujo de epic"
-status: DEVELOP
-substatus: DONE
+status: VALIDATE
+substatus: IN-PROGRESS
 parent: null
 created: 2026-10-12
-updated: 2026-10-30
+updated: 2026-11-04
 related:
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
   - EPIC-27-completar-flujo-de-story
@@ -184,7 +184,9 @@ Escenario: Cierre y archivado de una épica liberada
 - **Posición de `epic-validate`:** en el diagrama, el gate de completitud `DEVELOP → VALIDATE` lo resuelve `epic-track-progress`; `epic-validate` decide `VALIDATE → SHIP`. Su gateway (decisión del PO, 2026-10-29; STORY-127) escribe `VALIDATE/IN-PROGRESS → VALIDATE/DONE` con `APPROVED`, que deja la épica lista para `SHIP`, y devuelve la épica a `DEVELOP/IN-PROGRESS` con `NEEDS-CHANGES` o `BLOCKED`.
 - **DoD de validación de épica (CR-002 de STORY-125, 2026-10-30):** STORY-125 es dueña de `OPE-03` (`docs/guardrails/dod-epic-validate.md`, evaluado en ambos modos); STORY-169 reutiliza la sección `dod-epica` del reporte sin cambios y retira su C4 (ver `STORY-125-validar-evidencia-operativa-epica/design.md`, D-5).
 - **Suites de nivel épica (STORY-169, CR-004):** `sddf.config.yaml` declara las suites en `verify` (`integration`, `e2e`, `e2e-regression`) y no define entornos. `epic-validate` (`OPE-04`) las ejecuta en el entorno desde el que se invoca, sin seleccionarlo, prepararlo ni comprobarlo; si una suite necesita staging, su propio comando lo resuelve (`STORY-169-suites-de-integracion-y-regresion-de-la-epica/story.md`, CNF-3).
-- **Suites fuera de `--mode auto` (CR-003 de STORY-169, pendiente de confirmar):** con `--mode manual` o `--dry-run` las suites no se ejecutan; se registran `no ejecutada`, sin efecto en el veredicto (`STORY-169-suites-de-integracion-y-regresion-de-la-epica/design.md`, D-6). Acción requerida: confirmarlo al refinar la épica o pedir otra semántica para `--mode manual` (p. ej., tomar como evidencia un reporte existente, como hace `OPE-01` con los smoke tests).
+- **Suites fuera de `--mode auto` (CR-003 de STORY-169, confirmado por el PO, 2026-11-04):** con `--mode manual` o `--dry-run` las suites no se ejecutan; se registran `no ejecutada`, sin efecto en el veredicto (`STORY-169-suites-de-integracion-y-regresion-de-la-epica/design.md`, D-6).
+- **Smoke tests en este repositorio (decisión del PO, 2026-11-04):** aquí ejecutar un `SMOKE-N` requiere un runtime de IA, con costo de cuota, así que no se ejecutan al validar la épica; los cubren los evals de las historias dueñas, que se ejecutan a criterio humano. Por eso `sddf.config.yaml` no declara `verify.e2e-smoke`: `/epic-validate` corre por defecto en `--mode manual` y `OPE-01` toma la evidencia de los reportes de esas historias. Como `--mode manual` tampoco ejecuta las suites, `docs/guardrails/dod-epic-validate.md` (`OPE-03`, evaluado en ambos modos) exige `npm run verify:repository`. La decisión es de este repositorio: `epic-validate` no cambia y un proyecto con smoke tests deterministas sigue declarando `verify.e2e-smoke.command`.
+- **Evidencia pendiente de SMOKE-5:** un `verify-report.md` con `APPROVED` no prueba que un smoke test se haya ejecutado. Los evals registrados en esos reportes cubren los demás smoke tests, pero ninguno reejecuta `/epic-analyze` tras `/epic-refine` para comprobar el último paso `Entonces` de SMOKE-5; falta recorrerlo a mano (`STORY-165-corregir-indice-y-enlaces-epica/implement-report.md`).
 - **Escritores de estado:** la invariante 6 de `domain-state-management` impide hoy que un skill escriba `SHIP` o `COMPLETED` de épica. STORY-170 (`SHIP`, para `epic-ship`) y STORY-175 (`COMPLETED`, para `epic-complete`) ajustan los documentos de dominio, como hizo EPIC-27 con `DELIVER` y `COMPLETED` de story.
 - **Archivo de épicas:** ADR-0017 (aceptado, inmutable) deja las épicas en `specs/flow/`. Para que `epic-complete` las archive, STORY-175 crea un ADR nuevo que lo reemplaza (`superseded-by`) y actualiza `AGENTS.md`, `docs/constitution.md`, `docs/domains/` y `docs/architecture/state-machine.md`; se entrega antes de STORY-171 y STORY-172.
 - **Operaciones de repositorio:** `epic-ship` no hace commit, tag, merge, push, release ni despliegue; solo lista esos pasos para que el humano los ejecute. Es coherente con `AGENTS.md`, que prohíbe a los agentes hacer push, PR o merge en este repositorio.
