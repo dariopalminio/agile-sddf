@@ -17,8 +17,9 @@ description: >-
 Es el nodo `SHIP` del flujo de épica (`/epic-validate` → `/epic-ship` → `/epic-complete`). Lee el valor que entregaron las historias de una épica validada, escribe su entrada en `CHANGELOG.md` y las notas de versión para stakeholders en `<EPIC_DIR>/release-notes.md`, muestra los pasos de liberación que el humano ejecuta a mano y, solo cuando el humano confirma que los completó, escribe `SHIP/DONE` en `epic.md`.
 
 **Qué hace este skill:**
-- Rechaza, sin escribir nada, una épica que no esté en `VALIDATE/DONE` o no tenga `epic-validate-report.md` con `verdict: APPROVED`.
-- Escribe en `CHANGELOG.md` un bloque delimitado de la épica, idempotente: reejecutarlo lo reemplaza, nunca lo duplica.
+- Rechaza, sin escribir nada, una épica que no esté en `VALIDATE/DONE` o `SHIP/IN-PROGRESS` o no tenga `epic-validate-report.md` con `verdict: APPROVED`.
+- Si existe el Definition Of Done [docs/guardrails/dod-epic-ship.md](docs/guardrails/dod-epic-ship.md), lo verifica antes de permitir la transición a `SHIP/DONE`.
+- Analiza el `CHANGELOG.md` existente y revisa si está actualizado con los cambios de la épica, si no está actualizado, escribe un bloque delimitado de la épica, idempotente: reejecutarlo lo reemplaza, nunca lo duplica.
 - Escribe `<EPIC_DIR>/release-notes.md` desde un template.
 - Muestra los pasos de liberación manuales con una versión sugerida.
 - Escribe `status: SHIP`, `substatus: DONE` y `updated` en `epic.md` solo tras confirmación humana explícita.
