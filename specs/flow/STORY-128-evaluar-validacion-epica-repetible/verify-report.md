@@ -40,6 +40,7 @@ updated: 2026-11-03
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
+- [x] Evals: epic-validate (TC-023 al TC-026)
 
 Detalle de ejecuciones (orden de `sddf.config.yaml › verify`):
 
@@ -91,4 +92,26 @@ Los runners de Node (`node --test`) no reportan cobertura en esta configuración
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+**Precondiciones:**
+- LLM Model: Qwen3.8-27B
+- ctx-size 131072 
+- spec-type draft-mtp 
+- spec-draft-n-max 2
+- opencode con límite "context": 131072
+- opencode con límite "output": 32768
+
+npm run test:eval -- epic-validate --only TC-023,TC-024,TC-025,TC-026 --eval-runner opencode --report
+
+Eval Report: epic-validate
+
+**Fecha:** 2026-11-04 | **Total:** 4 | ✅ Passed: 4 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-023 | regresion-veredicto-approved | happy-path | 1 | ✅ PASS | — |
+| TC-024 | regresion-veredicto-historia-no-terminal | error-handling | 1 | ✅ PASS | — |
+| TC-025 | regresion-veredicto-smoke-no-ejecutable | error-handling | 1 | ✅ PASS | — |
+| TC-026 | regresion-veredicto-precedencia | error-handling | 1 | ✅ PASS | — |
+
+✅ Todos los 4 casos pasaron. El skill está listo.

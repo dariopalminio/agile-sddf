@@ -1003,7 +1003,7 @@ async function runOpenCode(prompt, opts, runtime = {}) {
       errors.push(`OpenCode: ${event.error?.data?.message || event.error?.message || event.error?.name || 'error sin detalle'}`);
     }
   }
-  const stdout = text.join('');
+  const stdout = text.reduce((acc, part) => acc + (acc && !acc.endsWith('\n') && !part.startsWith('\n') ? '\n' : '') + part, '');
   if (!stdout.trim()) errors.push('OpenCode terminó sin una respuesta de texto.');
   return { ...run, events: run.stdout, ok: errors.length === 0, stdout, stderr: [run.stderr, ...errors].filter(Boolean).join('\n') };
 }

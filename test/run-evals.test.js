@@ -688,6 +688,22 @@ test('OpenCode envía stdin, extrae solo texto JSON y aplica permisos sin mutar 
     assert.equal(result.events, events);
   });
 
+  test('OpenCode separa las parts cuyo límite no trae newline para no pegar la marca del bloque', async (t) => {
+    const fixture = createFixture(t);
+    const events = [
+      { type: 'text', part: { text: '## Objetivo\n- preámbulo que termina sin salto de línea.' } },
+      { type: 'text', part: { text: '=== CONSOLE ===\nrespuesta\n=== END ===' } },
+    ].map((event) => JSON.stringify(event)).join('\n');
+    const result = await runOpenCode('p', { model: 'p/m', timeout: 1 }, {
+      repoRoot: fixture.root,
+      env: { PATH: '' },
+      spawn(...args) { return openCodeProcess(events)(...args); },
+    });
+    assert.equal(result.ok, true, result.stderr);
+    assert.equal(result.stdout, '## Objetivo\n- preámbulo que termina sin salto de línea.\n=== CONSOLE ===\nrespuesta\n=== END ===');
+    assert.equal(gradeOutput({ expected: { contains: ['respuesta'] } }, result.stdout).pass, true);
+  });
+
 test('OpenCode usa JSON y un agente propio sin forzar modelo ni reutilizar sesiones', () => {
   assert.deepEqual(buildOpenCodeArgs({ model: null }), ['run', '--format', 'json', '--agent', 'sddf-eval']);
   assert.deepEqual(buildOpenCodeArgs({ model: 'p/m' }), ['run', '--format', 'json', '--agent', 'sddf-eval', '--model', 'p/m']);

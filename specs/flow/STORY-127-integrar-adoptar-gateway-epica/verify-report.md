@@ -86,7 +86,7 @@ No disponible: los runners de esta ejecución (`node --test`, `verify-fixed-layo
 ## Historial de Ejecuciones Anteriores
 
 **Precondiciones:**
-- LLM Model: Qwen3.8-27B-Uncensored-Q4_K_M.gguf
+- LLM Model: Qwen3.8-27B
 - ctx-size 131072 
 - spec-type draft-mtp 
 - spec-draft-n-max 2
