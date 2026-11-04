@@ -7,9 +7,9 @@ derives-from: constitution
 
 # Política de contrato de validación
 
-**Versión:** 1.2.0
+**Versión:** 1.3.0
 **Estado:** Aprobado
-**Última actualización:** 2026-10-19
+**Última actualización:** 2026-10-29
 **Propietario:** Mantenedores de Agile-SDDF
 
 ## 1. Propósito y alcance
@@ -20,7 +20,7 @@ derives-from: constitution
 
 **Alcance:** los skills de validación de la tabla de [§4](#4-valores-permitidos-por-skill) y los reportes que emiten.
 
-**Exclusiones:** `epic-format-validation`, `security-audit` y `fix-directives.md`, que es un artefacto de rework de `story-code-review` y no un reporte de veredicto.
+**Exclusiones:** `security-audit` y `fix-directives.md`, que es un artefacto de rework de `story-code-review` y no un reporte de veredicto.
 
 ## 2. Vocabulario de veredictos
 
@@ -54,7 +54,8 @@ derives-from: constitution
 
 | Skill | Reporte | Fase | Valores permitidos | Flowchart | Valores sin rama |
 |---|---|---|---|---|---|
-| `epic-analyze` | `epic-analyze-report.md` | Especificación | `APPROVED`, `NEEDS-REFINEMENT` | — (sin flowchart) | — |
+| `epic-format-validation` | `epic-format-validation-report.md` | Especificación | `APPROVED`, `NEEDS-REFINEMENT` | [épica](../architecture/diagrams/flowchart-skill-epic-flow-relationship.mermaid) | — |
+| `epic-analyze` | `epic-analyze-report.md` | Especificación | `APPROVED`, `NEEDS-REFINEMENT` | [épica](../architecture/diagrams/flowchart-skill-epic-flow-relationship.mermaid) | — |
 | `story-evaluation` | `finvest-evaluation-report.md` | Especificación | `APPROVED`, `NEEDS-REFINEMENT`, `SPLIT` | [specify](../architecture/diagrams/flowchart-story-specify.mermaid) | — |
 | `story-analyze` | `analyze.md` | Planificación | `APPROVED`, `NEEDS-CHANGES` | [plan](../architecture/diagrams/flowchart-story-plan.mermaid) | — |
 | `story-code-review` | `code-review-report.md` | Ejecución y QA | `APPROVED`, `NEEDS-CHANGES`, `BLOCKED` | [ejecución y QA](../architecture/diagrams/flowchart-story-excecution-qa.mermaid) | — |
@@ -193,6 +194,22 @@ verdict: PENDING
 …
 ```
 
+### 7.7 epic-format-validation
+```markdown
+---
+type: epic-format-validation
+verdict: NEEDS-REFINEMENT
+defects: 2
+---
+# Validación de formato de épica: …
+
+## Veredicto
+**Veredicto:** `NEEDS-REFINEMENT` — 2 defectos de estructura o formato.
+
+## Resumen
+…
+```
+
 ## Historial de cambios
 
 | Versión | Fecha | Cambios | Autor |
@@ -200,3 +217,4 @@ verdict: PENDING
 | 1.0.0 | 2026-10-17 | Creación inicial (STORY-138) | Dario Palminio |
 | 1.1.0 | 2026-10-18 | Excepción acotada para informes parciales de `story-code-review` (STORY-141) | Mantenedores de Agile-SDDF |
 | 1.2.0 | 2026-10-19 | Verificación automática y excepción de fixtures DoD (STORY-143) | Mantenedores de Agile-SDDF |
+| 1.3.0 | 2026-10-29 | `epic-format-validation` entra en §4 con `epic-format-validation-report.md` y sale de las exclusiones de §1; `epic-analyze` y `epic-format-validation` enlazan el flowchart de épica (STORY-166) | Mantenedores de Agile-SDDF |

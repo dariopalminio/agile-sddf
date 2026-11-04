@@ -22,6 +22,52 @@ Los skills pueden ser probados de varias maneras, dependiendo de la etapa de des
 
 Las pruebas de skills se definen en archivos `evals.json` dentro de una carpeta `evals` (dentro de la carpeta del skill) que contienen los casos de prueba y las aserciones que deben cumplirse. Estos evals permiten verificar que el skill funciona correctamente y cumple con los requisitos esperados.
 
+El esquema base SDDF para evals/evals.json es:
+
+```
+{
+  "skill": "nombre-del-skill",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "nombre-descriptivo",
+      "type": "happy-path",              // ← skill-test-evals enfatiza los tipos
+      "description": "qué valida este caso",
+      "input": { },                      // ← contenido específico del skill
+      "expected": {
+        "contains": [ ],                 // ← aserciones objetivas
+        "not_contains": [ ],
+        "output_file": "path",           // ← opcional: modo sandbox
+        "exit_gracefully": true          // ← opcional: manejo de error
+      },
+      "threshold": 0.95                  // ← opcional: límite de acierto
+    }
+  ]
+}
+```
+En los casos simulados de `scripts/run-evals.js`, `context_files` permite entregar recursos
+fuente al modelo dentro del prompt. Por ejemplo,
+`"context_files": ["assets/epic-format-validation-report-template.md"]` lee el template vigente
+desde el directorio del skill; no duplica su contenido en el manifest. Solo admite archivos de
+`assets/` o `references/` del propio skill y rechaza rutas inválidas o recursos ausentes antes
+de ejecutar modelos. En casos de ejecución real se usa `sandbox.copy`.
+
+Para validar archivos y reportes en disco, declara `sandbox.fixture` y
+`expected.files` en el caso. Con `sandbox.target: "."`, el fixture contiene un repositorio
+mínimo completo: por ejemplo, `docs/templates/` y `specs/flow/` se copian a la raíz temporal.
+TC-016 de `epic-format-validation` usa ese modo para mantener su template y su épica juntos,
+sin depender del template del proyecto anfitrión. `expected.contains` comprueba la consola;
+`expected.files.contains` comprueba el reporte generado y `expected.files.written` limita
+exactamente qué archivos pueden cambiar. El runner copia el skill fuente sin sus evals ni
+sus ejemplos de salida.
+
+El runner guarda la respuesta completa en
+`.tmp/skill-test-evals/<skill>/runs/<TC>.txt`; con OpenCode conserva también los eventos originales
+en `<TC>.events.jsonl`, incluidas las lecturas de herramientas que emita el CLI. El informe
+Markdown solo muestra los primeros 300 caracteres de la respuesta: para investigar una omisión,
+consulta esos archivos. Los eventos no se usan para calificar el caso.
+
 ## Pruebas con skill-master o skill-test-evals
 
 El skill-master o skill-test-evals permiten la creación, edición y testeo de skills, con un fuerte enfoque interactivo y conversacional.

@@ -3,13 +3,15 @@ type: adr
 id: ADR-0017
 slug: layout-fijo-con-archivo-de-historias-canceladas
 title: "Layout fijo de tres raíces con archivo de historias completadas y canceladas"
-status: ACCEPTED
+status: SUPERSEDED
 date: 2026-10-25
 supersedes: ADR-0016
-superseded-by: null
+superseded-by: ADR-0019
 ---
 
 # ADR-0017: Layout fijo de tres raíces con archivo de historias completadas y canceladas
+
+> **Superado por [ADR-0019](ADR-0019-layout-fijo-con-archivo-de-epicas.md) (2026-10-30):** el layout de tres raíces se mantiene; el archivo admite también las épicas `COMPLETED` y `CANCELED`.
 
 ## Contexto y problema
 

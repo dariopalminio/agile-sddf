@@ -100,14 +100,17 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 ### Paso 1 — Resolver la épica
 
-Interpretar `<epica>` en este orden; la primera forma aplicable decide. El directorio plano `specs/flow/` mezcla épicas e historias: toda búsqueda de épicas se restringe al patrón `specs/flow/EPIC-*/epic.md` y nunca consulta el layout anterior ni `specs/flow/archive/` (las épicas no se archivan):
+Interpretar `<epica>` en este orden; la primera forma aplicable decide. El directorio plano `specs/flow/` mezcla épicas e historias: toda búsqueda de épicas se restringe al patrón `specs/flow/EPIC-*/epic.md` y nunca consulta el layout anterior. `specs/flow/archive/` solo se consulta para reconocer una épica archivada (ADR-0019), nunca para analizarla:
 
 1. **Ruta** (contiene `/` o `\`): directorio de la épica, o su `epic.md`. `EPIC_DIR` = ese directorio.
 2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.
 3. **ID** (`EPIC-NN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón, así que `EPIC-30` no casa `EPIC-300-x`: un ID debe resolver a una sola épica de forma predecible.
 
+**Épica archivada.** Una épica archivada es terminal: este gate es de `PLAN` y escribir en `specs/flow/archive/` alteraría el registro histórico. La épica se considera archivada si la ruta explícita (forma 1) cae bajo `specs/flow/archive/`, o si la búsqueda activa (formas 2 y 3) da 0 coincidencias y existe `specs/flow/archive/*-<arg>-*/epic.md` (con `<arg>` el ID o el nombre de directorio). En ese caso: `❌ La épica <arg> está archivada en <ruta>: /epic-analyze solo analiza épicas activas de specs/flow/.`, donde `<ruta>` es el directorio archivado relativo a `REPO_ROOT`, y fin **sin escribir**.
+
 | Resultado | Comportamiento |
 |---|---|
+| Épica archivada (ruta bajo `specs/flow/archive/`, o 0 coincidencias activas y existe `specs/flow/archive/*-<arg>-*/epic.md`) | `❌ La épica <arg> está archivada en <ruta>: /epic-analyze solo analiza épicas activas de specs/flow/.` Fin **sin escribir**. |
 | 0 coincidencias, o el directorio existe sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>`, donde `<ruta-buscada>` es el patrón probado relativo a `REPO_ROOT` (p. ej. `specs/flow/EPIC-77-*/epic.md`). Fin **sin escribir**. |
 | 1 coincidencia | Continuar. |
 | > 1 coincidencias | Manual: listar los directorios y pedir al usuario que elija uno. Agent: `❌ El argumento <arg> es ambiguo: <lista>` y fin sin escribir. |

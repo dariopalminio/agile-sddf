@@ -31,6 +31,8 @@ parent: null
 | Guía | Contenido |
 |------|-----------|
 | [sdd.md](sdd.md) | Spec Driven Development: la especificación como fuente única de verdad y plano de control del código |
+| [sdd-with-bcdd.md](sdd-with-bcdd.md) | SDD con Behavior & Contract-Driven Development: integración de BDD y Contract Testing como especificaciones vivas ejecutables |
+| [contract-testing.md](contract-testing.md) | Contract Testing: cómo escribir, gestionar y validar contratos centralizados en OpenAPI/AsyncAPI |
 | [extreme-agile.md](extreme-agile.md) | Agilidad Agéntica: cómo la IA generativa transforma los valores del manifiesto ágil |
 | [flight-leves-model.md](flight-leves-model.md) | Modelo de Niveles de Vuelo: L3 Project → L2 Epic → L1 Story y los flujos de cada nivel |
 | [sddf-commands-pipeline.md](sddf-commands-pipeline.md) | Flujos principales SDDF: la secuencia de skills que recorre cada nivel del pipeline |
@@ -41,6 +43,7 @@ parent: null
 | Guía | Contenido |
 |------|-----------|
 | [organization-of-artifacts.md](organization-of-artifacts.md) | Reglas para organizar épicas e historias en `specs/flow/` (inspirado en OpenSpec y SpecKit) |
+| [descubrir-features-y-capabilities.md](descubrir-features-y-capabilities.md) | Proceso para descubrir comportamientos implementados y agrupar features por capabilities |
 | [root-folder-practices.md](root-folder-practices.md) | Las raíces no intercambiables (`REPO_ROOT`, `CLI_ROOT`) y el layout fijo `docs/` · `specs/` · `workflow/` |
 | [artifact-directory-migration.md](artifact-directory-migration.md) | Migraciones de la estructura de artefactos, de la más reciente ([5.0.0 — layout fijo de tres raíces](artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices)) a la más antigua |
 

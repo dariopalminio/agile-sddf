@@ -52,7 +52,7 @@ El skill muestra vista previa del contenido y pregunta:
 - El archivo es sobreescrito
 
 ### Fase 6 — Validación
-- `epic-format-validation` retorna **APROBADO**
+- `epic-format-validation` retorna **APPROVED**
 
 ---
 
@@ -73,4 +73,4 @@ Si en el conflicto el usuario responde **"2"**:
 - [ ] El skill presenta las dos opciones claramente (sobreescribir / renombrar)
 - [ ] Si el usuario elige sobreescribir: el archivo se reemplaza correctamente
 - [ ] Si el usuario elige renombrar: el skill vuelve a pedir el nombre sin perder el contexto
-- [ ] En ambos casos, el archivo final pasa `epic-format-validation` con APROBADO
+- [ ] En ambos casos, el archivo final pasa `epic-format-validation` con APPROVED

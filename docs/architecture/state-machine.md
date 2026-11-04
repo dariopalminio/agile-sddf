@@ -172,12 +172,14 @@ DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETE
 | `READY-FOR-DEV` | Buffer/cola. Épica completamente planificada y aprobada. Espera capacidad del equipo. Aplica límite WIP. | Sistema |
 | `DEVELOP` | Desarrollo en curso: las historias de la épica se implementan siguiendo su propio workflow. La épica permanece aquí hasta que todas las historias estén en `DELIVER`. | Equipo |
 | `VALIDATE` | Pruebas de integración y regresión del conjunto completo: end-to-end, UAT, requisitos no funcionales. | QA / Equipo |
-| `SHIP` | La épica se publica/despliega a producción. Último estado activo. | DevOps / CI-CD |
-| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes ni responsabilidades activas. Permite medir tiempos de ciclo sin reabrir artefactos. | — |
+| `SHIP` | La épica se publica/despliega a producción. Último estado activo. | Humano (pasos manuales) · registro: `epic-ship` |
+| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes ni responsabilidades activas. Permite medir tiempos de ciclo sin reabrir artefactos. Se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`. | Humano (vía `epic-complete`) |
 
-**SHIP y COMPLETED son transiciones manuales** (o disparadas por CI/CD) — ningún skill los escribe automáticamente.
+**SHIP lo escribe `epic-ship` solo con confirmación humana** de que el humano completó los pasos de liberación manuales (commit, tag, merge y despliegue), que ningún skill ejecuta. **COMPLETED lo escribe `epic-complete` solo con confirmación humana** desde `SHIP/DONE` y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`; `epic-complete` además archiva sin cambiar el status las épicas `COMPLETED/DONE` y `CANCELED/DONE` (ADR-0019).
 
 Gate de calidad: `epic-format-validation` valida la estructura del `epic.md` como precondición para `epic-generate-stories` (constitución, regla 15).
+
+**Gateway de validación de épicas:** `/epic-validate <EPIC-ID>` escribe `VALIDATE/IN-PROGRESS → VALIDATE/DONE` con `verdict: APPROVED` y `VALIDATE → DEVELOP/IN-PROGRESS` con cualquier otro veredicto; solo `VALIDATE/DONE` habilita `SHIP`. [detalle](../guides/sddf-commands-pipeline.md#gateway-de-validación-de-épicas)
 
 
 ---

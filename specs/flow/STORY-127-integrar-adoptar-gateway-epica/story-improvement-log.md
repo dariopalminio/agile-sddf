@@ -75,3 +75,21 @@ La historia mantiene 3 escenarios, cada uno con un único foco. Sigue disponible
 - **Notas:** se añadió la regla de que la ausencia del reporte también bloquea la transición.
 
 ---
+
+## Refinamiento del 2026-10-29: decisión del PO sobre el gateway
+
+**Origen:** INC-002 e INC-003 de `analyze.md` (WARNING, tipo D), que quedaron fuera de alcance de `/story-fix-plan`.
+
+**Decisión del PO:** el gateway es parte del proceso de `/epic-validate`. Con `APPROVED`, el skill cambia la épica de `VALIDATE/IN-PROGRESS` a `VALIDATE/DONE` (lista para `SHIP`). Con `NEEDS-CHANGES` o `BLOCKED`, la devuelve a `DEVELOP/IN-PROGRESS` y no puede transicionar a `SHIP`.
+
+**Cambios en story.md:**
+- `Quiero` y `Para`: el gateway lo aplica `/epic-validate` sobre `VALIDATE/IN-PROGRESS → VALIDATE/DONE`, con vuelta a `DEVELOP`, y su objetivo es que ninguna épica quede lista para `SHIP` sin `APPROVED`.
+- AC-1: épica en `VALIDATE/IN-PROGRESS` con `APPROVED` → `VALIDATE/DONE`; el reporte permanece como evidencia.
+- AC-2: esquema del escenario con `NEEDS-CHANGES` y `BLOCKED` → `DEVELOP/IN-PROGRESS`, remisión a `## Veredicto` y sin acceso a `SHIP` (resuelve INC-003).
+- CNF-1: suma `skills/epic-validate/SKILL.md` a los documentos que deben coincidir y nombra las dos transiciones.
+- Fuera de alcance: se retira «automatizar la escritura de `status`» y se agregan `DEVELOP → VALIDATE` y la exigencia de `VALIDATE/DONE` en `epic-ship` (STORY-170).
+- Notas: «Mecanismo de transición» registra la decisión y el impacto en CS-7 y STORY-126; «Contrato consumido» nombra los tres valores; «Regla» define cuándo no cambia el status; «Desarrollo independiente» pasa a «Dependencia» de STORY-124 y STORY-126.
+
+**Plan regenerado:** design.md y tasks.md se reescribieron para la nueva decisión (copias previas en `.bak`). Las alineaciones con epic.md (CS-7), STORY-126, STORY-170 y los documentos de dominio quedan como CR-004 a CR-007 en design.md.
+
+---

@@ -5,19 +5,19 @@ id: STORY-126
 kind: feat
 slug: STORY-126-operar-validacion-epica-segura
 title: "Operar la validación de épicas de manera segura"
-status: SPECIFY
+status: DELIVER
 substatus: DONE
-parent: EPIC-23-skill-epic-validate
+parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-10-17
+updated: 2026-11-04
 related:
-  - EPIC-23-skill-epic-validate
+  - EPIC-23-completar-flujo-de-epic
   - STORY-124
   - STORY-125
   - STORY-127
   - STORY-128
 ---
-[[EPIC-23-skill-epic-validate]]
+[[EPIC-23-completar-flujo-de-epic]]
 
 # 📖 Historia: Operar la validación de épicas de manera segura
 
@@ -61,14 +61,14 @@ Entonces la ejecución termina con fallo e informa los valores válidos de --mod
 ```gherkin
 Dado una épica sin cambios desde una validación anterior
 Cuando se vuelve a validar con el mismo modo
-Entonces el reporte es idéntico al anterior salvo la fecha de evaluación
-  Y no se modifican fuentes ni artefactos distintos de epic-validate-report.md
+Entonces el reporte es idéntico al anterior salvo los datos de la ejecución (fecha de evaluación y duraciones medidas)
+  Y no se modifican fuentes ni artefactos distintos de epic-validate-report.md, salvo los campos status, substatus y updated de epic.md que escribe el gateway de STORY-127 cuando la épica está en VALIDATE
 ```
 
 ## ⚙️ Criterios no funcionales específicos
 
 - **CNF-1 — Idempotencia:** dos ejecuciones equivalentes producen el mismo veredicto, presentan los hallazgos en orden determinista y no los duplican.
-- **CNF-2 — Escritura mínima:** fuera de previsualización, el único artefacto creado o actualizado es el reporte de validación de la épica.
+- **CNF-2 — Escritura mínima:** fuera de previsualización, el único artefacto creado o actualizado por esta historia es el reporte de validación de la épica. La única excepción es la del gateway de STORY-127: después de escribir el reporte y con la épica en `VALIDATE`, el skill actualiza solo los campos `status`, `substatus` y `updated` de `epic.md` (CS-7 de EPIC-23).
 
 ## 🚫 Fuera de alcance
 
@@ -82,7 +82,9 @@ Entonces el reporte es idéntico al anterior salvo la fecha de evaluación
 - **Nombres de los modos:** se adoptan los flags de EPIC-23 y STORY-125: `--mode auto`, `--mode manual` y `--dry-run` para la previsualización. `--dry-run` es ortogonal al modo: simula la validación sin escribir archivos ni ejecutar tests, y en el reporte previsualizado las comprobaciones operativas figuran como no ejecutadas.
 - **Semántica de los modos:** STORY-125 define qué evidencia toma cada modo; esta historia define cómo se selecciona el modo y qué efectos tiene la ejecución. Según la tabla de flags de EPIC-23, sin `--mode` la validación usa la ejecución automática cuando hay tests configurados, y el modo interactivo en caso contrario. `--mode manual` fuerza el modo interactivo y `--mode auto` nunca pide confirmación, así que se puede invocar desde una automatización.
 - **Regla — Resultado observable:** quien invoca la validación distingue el éxito (veredicto APPROVED) del fallo (veredicto BLOCKED o error de invocación) sin leer el reporte. El mecanismo concreto (código de salida, línea final de estado u otro) se decide en el diseño.
-- **Regla — Contenido equivalente:** dos reportes de la misma épica sin cambios solo pueden diferir en la fecha de evaluación. Los hallazgos se emiten en un orden determinista.
+- **Regla — Contenido equivalente:** dos reportes de la misma épica sin cambios solo pueden diferir en los datos de la ejecución (fecha de evaluación y duraciones medidas). Los hallazgos se emiten en un orden determinista.
 - **Dependencias:** consume el veredicto de STORY-124 y la selección de evidencia de STORY-125. Se puede desarrollar y probar con un validador stub que devuelva APPROVED o BLOCKED fijo, sin esperar a que esas historias se entreguen.
-- Cubre el criterio de salida de EPIC-23: **CS-7** — El skill solo escribe `epic-validate-report.md`; no modifica código, fuentes ni otros documentos.
+- Cubre el criterio de salida de EPIC-23: **CS-7** — El skill solo escribe `epic-validate-report.md` y, fuera de `--dry-run` y con la épica en `VALIDATE`, los campos `status`, `substatus` y `updated` de `epic.md` según su veredicto (gateway de STORY-127); no modifica código, fuentes ni otros documentos.
+- **Alineación con STORY-127 (rework de code review, ronda 1, 2026-10-31; aprobado por el PO):** esta historia define la política de efectos y su escritura propia, que es el reporte. La escritura de `epic.md` es responsabilidad del gateway de STORY-127, que la política registra como su única excepción. Así STORY-126 no decide cuándo cambia de estado la épica (Fuera de alcance).
 - Contribuye a **CS-10** de EPIC-23 en los flags `--mode manual`, `--mode auto` y `--dry-run`.
+- Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

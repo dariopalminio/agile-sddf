@@ -1,0 +1,380 @@
+openapi: 3.0.3
+info:
+  title: "[Nombre del API]"
+  version: "1.0.0"
+  description: |
+    # [Nombre del API]
+    
+    [Descripción del propósito y responsabilidades del API]
+    
+    ## Cambios recientes
+    
+    - **1.0.0:** Versión inicial (YYYY-MM-DD)
+  contact:
+    name: "[Equipo propietario]"
+    email: "[email del equipo]"
+  license:
+    name: "[Licencia, ej. Apache 2.0]"
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production
+    variables:
+      version:
+        default: v1
+  - url: http://localhost:8080/v1
+    description: Local development
+  - url: https://staging-api.example.com/v1
+    description: Staging
+
+tags:
+  - name: "[Entidad o dominio principal]"
+    description: "[Descripción de operaciones]"
+  - name: "[Otra entidad]"
+    description: "[Descripción de operaciones]"
+
+paths:
+  /[resource]:
+    get:
+      summary: "Listar [recurso]"
+      operationId: "list[Resource]"
+      tags:
+        - "[Entidad o dominio principal]"
+      parameters:
+        - name: limit
+          in: query
+          description: Número máximo de resultados
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Offset para paginación
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Lista de recursos obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/[Resource]'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    post:
+      summary: "Crear [recurso]"
+      operationId: "create[Resource]"
+      tags:
+        - "[Entidad o dominio principal]"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create[Resource]Request'
+      responses:
+        '201':
+          description: Recurso creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/[Resource]'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /[resource]/{id}:
+    get:
+      summary: "Obtener [recurso] por ID"
+      operationId: "get[Resource]ById"
+      tags:
+        - "[Entidad o dominio principal]"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del recurso
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Recurso encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/[Resource]'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    put:
+      summary: "Actualizar [recurso]"
+      operationId: "update[Resource]"
+      tags:
+        - "[Entidad o dominio principal]"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Update[Resource]Request'
+      responses:
+        '200':
+          description: Recurso actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/[Resource]'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    delete:
+      summary: "Eliminar [recurso]"
+      operationId: "delete[Resource]"
+      tags:
+        - "[Entidad o dominio principal]"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Recurso eliminado exitosamente
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    # Entidad principal
+    "[Resource]":
+      type: object
+      required:
+        - id
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identificador único del recurso
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Nombre del recurso
+          example: "Nombre descriptivo"
+        description:
+          type: string
+          nullable: true
+          description: Descripción del recurso
+          example: "Descripción detallada"
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE, PENDING, ARCHIVED]
+          description: Estado del recurso
+          example: "ACTIVE"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp de creación (ISO 8601)
+          example: "2026-11-03T21:38:41.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp de última actualización (ISO 8601)
+          example: "2026-11-03T21:38:41.000Z"
+
+    Create[Resource]Request:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+
+    Update[Resource]Request:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE, ARCHIVED]
+
+    Pagination:
+      type: object
+      required:
+        - limit
+        - offset
+        - total
+      properties:
+        limit:
+          type: integer
+          description: Número máximo de elementos por página
+        offset:
+          type: integer
+          description: Offset actual
+        total:
+          type: integer
+          description: Total de elementos disponibles
+        hasMore:
+          type: boolean
+          description: Indica si hay más resultados
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Código de error máquina-readable
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          description: Mensaje de error legible para humanos
+          example: "El campo 'name' es requerido"
+        details:
+          type: object
+          nullable: true
+          description: Detalles adicionales del error
+          example: { "field": "name", "reason": "required" }
+
+  responses:
+    BadRequest:
+      description: "Solicitud inválida (400)"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "VALIDATION_ERROR"
+            message: "Los datos proporcionados son inválidos"
+            details:
+              fields: ["name", "email"]
+
+    Unauthorized:
+      description: "No autorizado (401)"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "UNAUTHORIZED"
+            message: "Credenciales inválidas o token expirado"
+
+    NotFound:
+      description: "Recurso no encontrado (404)"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "NOT_FOUND"
+            message: "El recurso solicitado no existe"
+
+    Conflict:
+      description: "Conflicto: el recurso ya existe (409)"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "RESOURCE_EXISTS"
+            message: "Ya existe un recurso con estos datos"
+
+    InternalServerError:
+      description: "Error interno del servidor (500)"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "INTERNAL_SERVER_ERROR"
+            message: "Ocurrió un error inesperado en el servidor"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Bearer token JWT para autenticación"
+    
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: "API Key para autenticación"
+
+security:
+  - bearerAuth: []
+  # - apiKey: []
+
+# Estrategia de versionado:
+# - PATCH: cambios internos, reordenamiento, documentación
+# - MINOR: campos opcionales nuevos, nuevos endpoints, extensión de enums
+# - MAJOR: eliminación de campos obligatorios, cambio de tipos, eliminación de endpoints
+#
+# Los consumidores deben pinear a una versión fija usando tags de git o commits específicos.

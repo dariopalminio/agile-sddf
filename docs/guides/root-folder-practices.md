@@ -20,18 +20,19 @@ sigue [la sección de migración a 5.0.0](artifact-directory-migration.md#migrac
 
 ## Layout fijo
 
-[ADR-0017](../adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) (que reemplaza a ADR-0016) fija tres raíces hermanas en
+[ADR-0019](../adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md) (que reemplaza a ADR-0017) fija tres raíces hermanas en
 `REPO_ROOT`, cada una con una responsabilidad:
 
 | Raíz | Responsabilidad | Contenido |
 |---|---|---|
 | `docs/` | Conocimiento | Las capas de memoria (`product/`, `requirements/`, `domains/`, `architecture/`, `adr/`, `policies/`, `guardrails/`, `guides/`, `runbooks/`, `templates/`), `constitution.md` e `index.md`. |
-| `specs/` | Estado | `specs/flow/` con las épicas (`EPIC-NN-<slug>/`) y las historias (`STORY-NNN-<slug>/`) como hermanas, sin subniveles; `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` para las historias `COMPLETED` o `CANCELED`; `specs/living/` reservado. |
+| `specs/` | Estado | `specs/flow/` con las épicas (`EPIC-NN-<slug>/`) y las historias (`STORY-NNN-<slug>/`) como hermanas, sin subniveles; `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` y `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` para las historias y las épicas `COMPLETED` o `CANCELED`; `specs/living/` reservado. |
 | `workflow/` | Proceso | Reservado. |
 
-Las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan conservando su status. La fecha del
-prefijo de archivo es el `updated:` de la historia; si no es válido, su `created:`; si el frontmatter no tiene
-ninguna de esas dos claves, su `date:`. Las épicas no se archivan. `docs/requirements/` no se mueve en
+Las historias y las épicas `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan conservando su status. La
+fecha del prefijo de archivo es el `updated:` del work item; si no es válido, su `created:`; si el frontmatter no
+tiene ninguna de esas dos claves, su `date:`. Las historias las archiva `story-complete` y las épicas `epic-complete`,
+siempre con confirmación humana. `docs/requirements/` no se mueve en
 5.0.0: migrará a `specs/living/` en la épica de Living Spec.
 
 ## Contrato que usan los skills

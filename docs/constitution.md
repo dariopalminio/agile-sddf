@@ -91,7 +91,7 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 
 La documentación fundacional (`docs/product/`, `docs/requirements/`) orienta las épicas; cada épica contiene varias historias.
 
-epic (`specs/flow/<EPIC-NAME>/epic.md`)
+epic (`specs/flow/<EPIC-NAME>/epic.md`; archivada en `specs/flow/archive/<YYYY-MM-DD>-<EPIC-NAME>/` al completarse o cancelarse, conservando su status, por `epic-complete` y solo con confirmación humana)
     └── story (`specs/flow/<STORY-NAME>/story.md`; archivada en `specs/flow/archive/<YYYY-MM-DD>-<STORY-NAME>/` al completarse o cancelarse, conservando su status)
 
 
@@ -133,7 +133,7 @@ Todos los skills arrancan con frontmatter YAML estandarizado (campos: name, desc
 
 #### 3. Layout fijo
 
-Todo skill resuelve una vez `REPO_ROOT` y usa el layout fijo de ADR-0016: conocimiento en
+Todo skill resuelve una vez `REPO_ROOT` y usa el layout fijo de ADR-0019: conocimiento en
 `docs/`, work items en `specs/flow/` y proceso en `workflow/`. No hay raíz de artefactos
 configurable (`SDDF_ROOT`, la clave `root` de `sddf.config.yaml` y `SPECS_BASE` están
 retirados). `skill-preflight` se reserva para el diagnóstico explícito y no forma parte del
@@ -223,6 +223,7 @@ docs/requirements/non-functional/NFR-NNN-<slug>.md       → requisitos no funci
 specs/flow/<EPIC-NN>-<slug>/epic.md                      → épicas
 specs/flow/<STORY-NNN>-<slug>/story.md                   → historias
 specs/flow/archive/<YYYY-MM-DD>-<STORY-NNN>-<slug>/      → historias COMPLETED o CANCELED archivadas
+specs/flow/archive/<YYYY-MM-DD>-<EPIC-NN>-<slug>/        → épicas COMPLETED o CANCELED archivadas
 
 #### 14. Versionado mediante substatus
 

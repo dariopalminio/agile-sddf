@@ -56,7 +56,7 @@ specs/flow/EPIC-01-autenticacion-basica/epic.md
 ```
 
 ### Fase 5 — Validación
-- `epic-format-validation` retorna **APROBADO**
+- `epic-format-validation` retorna **APPROVED**
 
 ---
 
@@ -108,4 +108,4 @@ Escenario: Login exitoso
 - [ ] El skill no pidió IDs de historia y escribió las historias en F1 (sin checkbox ni `STORY-NNN`)
 - [ ] El smoke test quedó como `### SMOKE-1 — …` con bloque `gherkin`
 - [ ] Los encabezados no llevan los comentarios `<!-- sección … -->` del template
-- [ ] `epic-format-validation` retorna APROBADO sin refinamiento
+- [ ] `epic-format-validation` retorna APPROVED sin refinamiento

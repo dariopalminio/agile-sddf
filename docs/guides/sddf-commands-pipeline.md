@@ -176,27 +176,56 @@ project-begin → project-discovery → project-planning
 ## 2. Pipeline de generación de épicas e historias
 
 ```
-epic-from-project-plan → epic-generate-stories → epic-analyze
+epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-generate-stories → epic-analyze ⇄ epic-refine
 ```
-
-<!-- TODO:
-epic-from-project-plan → epic-generate-stories → epic-analyze ⇄ epic-refine
--->
 
 | Skill | Input | Output |
 |---|---|---|
 | `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `specs/flow/EPIC-NN-<slug>/epic.md` (uno por épica) |
+| `epic-format-validation` | Un archivo `epic.md` | `<EPIC_DIR>/epic-format-validation-report.md` (`APPROVED` / `NEEDS-REFINEMENT`) |
+| `epic-improve` | `epic.md` + `epic-format-validation-report.md` con `NEEDS-REFINEMENT` | `epic.md` corregido + `epic.md.bak` |
 | `epic-generate-stories` | Un archivo `epic.md` | `specs/flow/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
-<!-- TODO: | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`) y `<EPIC_DIR>/epic-refine-report.md` |
--->
+| `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`), cobertura de criterios de salida asignada a la historia de cierre, slugs obsoletos tras un `/story-split` reemplazados y `<EPIC_DIR>/epic-refine-report.md` |
+| `epic-track-progress` | `epic.md` + `story.md` con `parent`, incluidas las archivadas | Tabla de progreso en el chat (sin archivos) |
+| `epic-ship` | `epic-validate-report.md` con `APPROVED` + `story.md` hijos (activos y archivados) | Bloque de la épica en `CHANGELOG.md`, `<EPIC_DIR>/release-notes.md`, pasos de liberación manuales en el chat y `SHIP/DONE` en `epic.md` con confirmación humana |
+| `epic-complete` | `epic.md` en `SHIP/DONE` (+ `CHANGELOG.md` o `--version x.y.z`) | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/epic.md` en `COMPLETED/DONE` con `completed:` y `version:`, con confirmación humana |
+
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
-> con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT` / `BLOCKED`) antes
-<!-- TODO:
-> de aprobar la épica para `READY-FOR-DEV`; no cambia ningún estado. Con `NEEDS-REFINEMENT`, `epic-refine` corrige el
--->
-> índice, la cobertura del contrato de salida y las referencias de las historias, y se vuelve a ejecutar `epic-analyze`
-> hasta obtener `APPROVED`.
+> con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT`) antes
+> de aprobar la épica para `READY-FOR-DEV`; no cambia ningún estado. Con `NEEDS-REFINEMENT`, `epic-refine` corrige,
+> tras confirmación, el índice de historias (huérfanas y duplicadas) y las referencias `related` rotas de las historias,
+> y asigna cada criterio de salida o smoke test sin cobertura a la historia de cierre (la única con evidencia parcial
+> sin dependientes `depends-on:`) con un AC de cierre y una cita del criterio. También reemplaza, en el índice y en los
+> `related`, los slugs de historia que un `/story-split` dejó obsoletos por el del único directorio con el mismo ID
+> (familia COH, que `epic-analyze` no reporta porque resuelve por ID); se vuelve a ejecutar `epic-analyze`
+> hasta obtener `APPROVED`. Lo que requiere decisión del PO (incluidos los criterios sin evidencia parcial o sin una
+> única historia de cierre) queda en `epic-refine-report.md` como fuera de alcance y no se escribe.
+
+> `epic-track-progress` resuelve el gate `all stories done?` de `DEVELOP → VALIDATE`: muestra el status y substatus
+> de cada historia hija (activa o archivada) y solo sugiere `/epic-validate` cuando todas están en `DELIVER/DONE` o
+> `COMPLETED/DONE` (las `CANCELED/DONE` no bloquean). Es de solo lectura: no escribe ningún archivo.
+
+> `epic-format-validation` es el gate de forma de `DEFINE`. Con `NEEDS-REFINEMENT`, `epic-improve` aplica, tras
+> confirmación, las correcciones de su tabla `## Defectos` (sin cambiar el estado de la épica) y se vuelve a ejecutar
+> `epic-format-validation`; lo que requiere decisión del PO queda listado y no se escribe.
+
+### Gateway de validación de épicas
+
+**Gateway de validación de épicas:** `/epic-validate <EPIC-ID>` escribe `VALIDATE/IN-PROGRESS → VALIDATE/DONE` con `verdict: APPROVED` y `VALIDATE → DEVELOP/IN-PROGRESS` con cualquier otro veredicto; solo `VALIDATE/DONE` habilita `SHIP`.
+
+Tras escribir `<EPIC_DIR>/epic-validate-report.md`, el propio skill relee su `verdict` y cambia el `status` de la épica:
+
+| Resultado | Efecto en `epic.md` |
+|---|---|
+| `APPROVED` | `VALIDATE/DONE`: la épica queda lista para `SHIP` |
+| `NEEDS-CHANGES` o `BLOCKED` | `DEVELOP/IN-PROGRESS`: revisa la sección `## Veredicto` del reporte, corrige los hallazgos y vuelve a validar |
+| `--dry-run`, épica fuera de `VALIDATE` o reporte no escrito | sin cambio; la línea `Gateway:` de la salida explica el motivo |
+
+- `DEVELOP → VALIDATE` es otro gate, el de completitud de historias (`/epic-track-progress`); la entrada en `VALIDATE` sigue siendo manual.
+- `epic-validate-report.md` permanece en `<EPIC_DIR>` como evidencia del veredicto. `RESULTADO: ÉXITO` en la salida equivale a que la épica quedó en `VALIDATE/DONE`.
+- `/epic-validate` nunca escribe `SHIP`: lo escribe `/epic-ship` solo con la confirmación humana de que se completaron los pasos de liberación manuales.
+- **Disponibilidad:** el gateway está disponible en todo runtime de `config/runtimes.json` con `support: supported` tras `npx agile-sddf install --target <runtime>` con la estrategia `full` (por defecto); `--strategy story` excluye los skills `epic-*`. La tabla y los casos límite completos viven en `skills/epic-validate/SKILL.md` (Paso 5b).
 
 ---
 

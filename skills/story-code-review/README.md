@@ -42,9 +42,16 @@ Ejecuta el quality gate posterior a la implementación mediante cuatro revisores
 
 **Core (included in `agile-sddf`):**
 
+Para Claude:
 ```bash
 npx agile-sddf install --target claude-code
 ```
+
+Para OpenCode:
+```bash
+npx agile-sddf install --target opencode
+```
+
 
 Para otro runtime compatible, sustituye `claude-code` por un identificador declarado como `supported` en `config/runtimes.json`.
 

@@ -42,7 +42,7 @@ Notas:
 
 - `git mv` conserva el historial de cada work item; no copies ni recrees los directorios.
 - El paquete incluye `scripts/migrate-specs-to-flow.js`, pero es un script de un solo uso para este repositorio y no es un comando soportado de `agile-sddf`: migra con los pasos manuales.
-- Solo se archivan las historias `COMPLETED`. Las `CANCELED`, las de cualquier otro estado y todas las épicas quedan en `specs/flow/`.
+- La migración solo archiva las historias `COMPLETED`; las `CANCELED`, las de cualquier otro estado y las épicas quedan en `specs/flow/`. Archivarlas después lo hacen `/story-complete` (historias) y `epic-complete` (épicas), siempre con confirmación humana (ADR-0019).
 - Si el proyecto usa Spec Kit, su `specs/` puede convivir con el de SDDF, que solo usa `specs/flow/` y `specs/living/`.
 - `docs/requirements/` no se mueve en 5.0.0; migrará a `specs/living/` en una versión posterior.
 

@@ -4,7 +4,7 @@
 
 ## What it does
 
-Lee la última `## Propuesta (...)` de `docs/product/roadmap.md` y materializa una especificación `epic.md` por cada épica. Numera desde el mayor ID existente, comprueba colisiones por slug y valida cada resultado.
+Lee la última `## Propuesta (...)` de `docs/product/roadmap.md` y materializa una especificación `epic.md` por cada épica. Numera desde el mayor ID existente, incluidas las épicas archivadas, comprueba colisiones por slug y valida cada resultado.
 
 **Produces:** directorios `specs/flow/EPIC-NN-nombre/` y sus `epic.md` validados.
 

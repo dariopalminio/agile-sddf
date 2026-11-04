@@ -51,8 +51,9 @@ Aplicar esta tabla a la clasificación de pruebas para asegurar consistencia y c
 | Contrato definido entre sistemas | CON | Contract |
 | Función/método público de módulo o servicio | UT | Unit |
 | Componente UI (props, eventos, renderizado) | CT | Component |
-| Skill SDDF como sujeto de validación | EV | Eval |
-
+| Eval de skill (prueba semántica/de contrato de comportamiento) | EV | Eval |
+| Vulnerabilidad de seguridad identificada en el código o en la configuración | SEC | Security |
+| Validación visual de la UI, comparando capturas de pantalla o renderizados con referencias esperadas | VT | Visual |
 
 **Cobertura mínima por tipo:**
 - UT: happy path + al menos un caso de error/borde
@@ -63,6 +64,8 @@ Aplicar esta tabla a la clasificación de pruebas para asegurar consistencia y c
 - PT: carga esperada + estrés (si aplica)
 - CON: contrato definido + validación de contrato (si aplica)
 - EV: happy-path del skill + caso fail-fast
+- SEC: vulnerabilidad de seguridad identificada + mitigación aplicada (si aplica)
+
 ---
 
 ## Tipos de Prueba clásicas

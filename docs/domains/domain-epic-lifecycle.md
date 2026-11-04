@@ -114,8 +114,8 @@ stateDiagram-v2
 | `READY-FOR-DEV` | Buffer/cola. Épica completamente planificada, priorizada y aprobada. Espera capacidad del equipo. Aplica límite WIP. | Sistema | `DONE` |
 | `DEVELOP` | Desarrollo en curso: las historias de la épica se implementan siguiendo su propio ciclo de vida. La épica permanece aquí hasta que todas las historias estén en `DELIVER`. | Equipo | `IN-PROGRESS` |
 | `VALIDATE` | Pruebas de integración y regresión del conjunto completo: end-to-end, UAT, requisitos no funcionales. | QA / Equipo | `IN-PROGRESS` |
-| `SHIP` | La épica se publica o despliega a producción. Último estado activo. | DevOps / CI-CD | `IN-PROGRESS` |
-| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. | — | `DONE` |
+| `SHIP` | La épica se publica o despliega a producción. Último estado activo. | Humano (pasos de liberación manuales) · registro: `epic-ship` | `IN-PROGRESS` |
+| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. Se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`. | Humano (vía `epic-complete`) | `DONE` |
 | `CANCELED` | La épica fue cancelada sin entregar. Estado terminal. | PM / PO | `DONE` |
 
 ---
@@ -139,7 +139,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 2. Una `Epic` contiene **una o más historias** (`StoryRef`). Una épica sin historias no puede pasar de `PLAN` a `READY-FOR-DEV`.
 3. El estado `DEVELOP` no puede completarse hasta que **todas las historias de la épica estén en `DELIVER`**.
 4. El estado `VALIDATE` solo puede alcanzarse cuando todas las historias están entregadas; en caso de fallo, las historias problemáticas regresan a su pipeline y la épica vuelve a `DEVELOP`.
-5. El estado `SHIP` es un **último estado activo**: implica publicación o despliegue real del entregable.
+5. El estado `SHIP` es un **último estado activo**: implica publicación o despliegue real del entregable, que ejecuta el humano; `epic-ship` registra `SHIP/DONE` solo tras su confirmación explícita y nunca ejecuta commit, tag, merge, push, release ni despliegue.
 6. El estado `COMPLETED` es terminal pasivo; no retrocede sin acción explícita de reapertura.
 7. El `READY-FOR-DEV` debe respetar un **WIP limit** definido en la política del proyecto.
 8. El gate de calidad de formato (`epic-format-validation`) debe superarse antes de generar las historias.
@@ -151,12 +151,12 @@ Además de las invariantes transversales de [[domain-state-management]]:
 
 | Gate | Estado | Qué valida |
 |------|--------|------------|
-| **Gate de formato** | `DEFINE` → `PLAN` | Estructura del `epic.md` contra el template canónico. |
-| **Gate de integridad de historias** | `PLAN` → `READY-FOR-DEV` (informativo) | `/epic-analyze`: índice de historias ↔ `parent` de los `story.md`, cobertura de criterios de salida y smoke tests por las historias, y madurez de las historias hijas (estado ≥ `SPECIFY/DONE`, `related` resolubles); veredicto sin cambio de estado. |
+| **Gate de formato** | `DEFINE` → `PLAN` | `/epic-format-validation`: estructura del `epic.md` contra el template canónico. Con `NEEDS-REFINEMENT`, `/epic-improve` corrige los defectos del reporte (con `epic.md.bak`, sin cambiar el estado) y se vuelve a validar: `NEEDS-REFINEMENT → epic-improve → epic-format-validation`. |
+| **Gate de integridad de historias** | `PLAN` → `READY-FOR-DEV` (informativo) | `/epic-analyze`: índice de historias ↔ `parent` de los `story.md`, cobertura de criterios de salida y smoke tests por las historias, y madurez de las historias hijas (estado ≥ `SPECIFY/DONE`, `related` resolubles); veredicto sin cambio de estado. Con `NEEDS-REFINEMENT`, `/epic-refine` corrige el índice (historias huérfanas y duplicadas) y los `related` rotos del reporte y asigna la cobertura de criterios de salida y smoke tests a la historia de cierre (con `<archivo>.bak`, sin cambiar el estado) y se vuelve a analizar: `NEEDS-REFINEMENT → epic-refine → epic-analyze`. |
 | **Gate de completitud de historias** | `DEVELOP` → `VALIDATE` | Todas las historias están en `DELIVER`. |
 | **Gate de integración** | `VALIDATE` | E2E, regresión, requisitos no funcionales del conjunto. |
 | **Gate de aceptación de épica** | `VALIDATE` → `SHIP` | Criterios de éxito y valor de negocio del entregable. |
-| **Gate de publicación** | `SHIP` | Artefacto generado correctamente y desplegado. |
+| **Gate de publicación** | `SHIP` | `/epic-ship`: con `epic-validate-report.md` en `APPROVED`, escribe el bloque de la épica en `CHANGELOG.md` y `release-notes.md`, muestra los pasos de liberación manuales y escribe `SHIP/DONE` solo con la confirmación humana de que se completaron. |
 | **WIP Limit** | `READY-FOR-DEV` | No exceder el número máximo de épicas en cola. |
 
 ---
@@ -169,8 +169,11 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * **`ReleaseArtifact`** — registra el artefacto publicado (npm, Docker, APK), versión y fecha.
 * **Reportes asociados:**
   * `epic-analyze-report.md` — generado en `PLAN`.
-  * `validate-report.md` — generado en `VALIDATE`.
-  * `release-notes.md` (opcional) — generado en `SHIP`.
+  * `epic-refine-report.md` — generado en `PLAN`.
+  * `epic-validate-report.md` — generado en `VALIDATE` por `epic-validate`.
+  * `release-notes.md` — generado en `SHIP` por `epic-ship`, junto con el bloque de la épica en `CHANGELOG.md`.
+* **Archivo:** `epic-complete` escribe `COMPLETED/DONE` desde `SHIP/DONE` solo con confirmación humana explícita y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`; también archiva, sin cambiar el status, las épicas `COMPLETED/DONE` y `CANCELED/DONE`. El status se conserva al archivar y `<YYYY-MM-DD>` sale de `updated:`, `created:` o `date:` (ADR-0019).
+* **Claves de cierre:** `completed:` (fecha de cierre) y `version:` (versión liberada) son claves opcionales del frontmatter de `epic.md`, fuera del template; solo las escribe `epic-complete` al completar la épica.
 * **Reapertura:** solo desde `COMPLETED` con acción explícita y registro del motivo.
 * **Convención de guion:** ASCII U+002D `-`.
 

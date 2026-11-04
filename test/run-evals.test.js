@@ -11,10 +11,20 @@ const test = require('node:test');
 const {
   buildClaudeArgs,
   buildCodexArgs,
+  buildOpenCodeArgs,
+  buildPrompt,
+  buildSandboxPrompt,
+  gradeOutput,
+  parseSandboxSpec,
+  prepareSandbox,
+  snapshotTree,
+  gradeSandboxFiles,
   main,
   parseArgs,
   resolveContainedPath,
   runCodex,
+  runOpenCode,
+  openCodeInvocation,
 } = require('../scripts/run-evals.js');
 
 function createFixture(t) {
@@ -79,17 +89,18 @@ function initializeGit(fixture) {
   return commitAll(fixture, 'fixture inicial');
 }
 
-async function runRunner(fixture, args, { runClaude, runCodex: runCodexStub, tmpRoot } = {}) {
+async function runRunner(fixture, args, { runClaude, runCodex: runCodexStub, runOpenCode: runOpenCodeStub, tmpRoot } = {}) {
   const messages = [];
   const claudeCalls = [];
   const codexCalls = [];
+  const openCodeCalls = [];
   const capture = (...values) => {
     messages.push(values.map((value) => String(value)).join(' '));
   };
   const fakeClaude = async () => ({
     ok: true,
     code: 0,
-    stdout: '=== END ===',
+    stdout: '=== CONSOLE ===\nrespuesta\n=== END ===',
     stderr: '',
     durationMs: 0,
     timedOut: false,
@@ -113,8 +124,12 @@ async function runRunner(fixture, args, { runClaude, runCodex: runCodexStub, tmp
       codexCalls.push(values);
       return selectedRunCodex(...values);
     },
+    runOpenCode: async (...values) => {
+      openCodeCalls.push(values);
+      return (runOpenCodeStub || fakeClaude)(...values);
+    },
   });
-  return { code, output: messages.join('\n'), claudeCalls, codexCalls };
+  return { code, output: messages.join('\n'), claudeCalls, codexCalls, openCodeCalls };
 }
 
 function assertExit(result, expectedStatus) {
@@ -139,6 +154,19 @@ test('parsea el selector de runner y aplica modelos predeterminados por ejecutor
   assert.equal(codex.evalRunner, 'codex');
   assert.equal(codex.model, null, 'Codex no debe recibir el modelo por defecto de Claude');
 
+  assert.equal(parseArgs(['--eval-runner', 'opencode'], {}).model, null);
+  const openCode = parseArgs([], {
+    SDDF_EVAL_RUNNER: 'opencode',
+    SDDF_EVAL_OPENCODE_MODEL: 'proveedor/modelo',
+    SDDF_EVAL_MODEL: 'modelo-claude',
+    SDDF_EVAL_CODEX_MODEL: 'modelo-codex',
+  });
+  assert.equal(openCode.evalRunner, 'opencode');
+  assert.equal(openCode.model, 'proveedor/modelo');
+  assert.equal(parseArgs(['--eval-runner', 'opencode', '--model', 'otro/modelo'], {
+    SDDF_EVAL_OPENCODE_MODEL: 'proveedor/modelo',
+  }).model, 'otro/modelo');
+
   const codexFromEnv = parseArgs([], {
     SDDF_EVAL_RUNNER: 'codex',
     SDDF_EVAL_CODEX_MODEL: 'modelo-codex-prueba',
@@ -161,6 +189,15 @@ test('parsea el selector de runner y aplica modelos predeterminados por ejecutor
   assert.throws(() => parseArgs(['--eval-runner', 'claude', '--eval-runner', 'codex'], {}), /solo puede/i);
   assert.throws(() => parseArgs([], { SDDF_EVAL_RUNNER: 'otro' }), /runner.*admitido|válidos/i);
   assert.equal(parseArgs(['--help'], { SDDF_EVAL_RUNNER: 'otro' }).help, true);
+});
+
+test('el timeout por defecto depende del runner y --timeout siempre prevalece', () => {
+  assert.equal(parseArgs([], {}).timeout, 900, 'claude conserva 900 s por defecto');
+  assert.equal(parseArgs(['--eval-runner', 'codex'], {}).timeout, 900, 'codex conserva 900 s por defecto');
+  assert.equal(parseArgs(['--eval-runner', 'opencode'], {}).timeout, 1800, 'opencode sube a 1800 s por defecto');
+  assert.equal(parseArgs(['--timeout', '60'], {}).timeout, 60, '--timeout explícito prevalece');
+  assert.equal(parseArgs(['--eval-runner', 'opencode', '--timeout', '60'], {}).timeout, 60, '--timeout explícito prevalece sobre el default de opencode');
+  assert.equal(parseArgs(['--eval-runner', 'codex', '--timeout', '60'], {}).timeout, 60, '--timeout explícito prevalece en codex');
 });
 
 test('los adaptadores construyen invocaciones restringidas para Claude y Codex', () => {
@@ -315,6 +352,431 @@ test('Claude sigue siendo el runner predeterminado', async (t) => {
   assert.equal(result.claudeCalls.length, 1);
   assert.equal(result.codexCalls.length, 0);
   assert.equal(result.claudeCalls[0][1].evalRunner, 'claude');
+});
+
+test('OpenCode se selecciona y se registra en el informe sin invocar otros runners', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--report']);
+  assertExit(result, 0);
+  assert.equal(result.claudeCalls.length, 0);
+  assert.equal(result.codexCalls.length, 0);
+  assert.equal(result.openCodeCalls.length, 1);
+  assert.match(result.output, /Ejecutor de eval: opencode/);
+  const report = fs.readdirSync(path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha'))
+    .find((name) => name.startsWith('report-'));
+  assert.match(fs.readFileSync(path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', report), 'utf8'), /\*\*Ejecutor:\*\* opencode/);
+});
+
+test('dry-run con OpenCode no invoca runners ni crea artefactos', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--dry-run']);
+  assertExit(result, 0);
+  assert.equal(result.claudeCalls.length + result.codexCalls.length + result.openCodeCalls.length, 0);
+  assertNoRunArtifacts(fixture);
+});
+
+test('context_files entrega el recurso fuente vigente al runner y al dry-run, sin expectativas', async (t) => {
+  const fixture = createFixture(t);
+  const testCase = { ...makeCase('TC-001'), context_files: ['assets/report.md'], expected: { contains: ['EXPECTATIVA_PRIVADA'] } };
+  const skillDir = writeSkill(fixture, 'alpha', [testCase]);
+  fs.mkdirSync(path.join(skillDir, 'assets'));
+  const templateFile = path.join(skillDir, 'assets', 'report.md');
+  fs.writeFileSync(templateFile, '---\ntype: report\n---\n## Resumen\n');
+  const dryRun = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--dry-run']);
+  assertExit(dryRun, 0);
+  assert.match(dryRun.output, /type: report\n---\n## Resumen/);
+  assert.ok(!dryRun.output.includes('EXPECTATIVA_PRIVADA'));
+  assertNoRunArtifacts(fixture);
+  fs.writeFileSync(templateFile, '---\ntype: actualizado\n---\n## Nueva sección\n');
+  const actual = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode']);
+  assert.match(actual.openCodeCalls[0][0], /type: actualizado\n---\n## Nueva sección/);
+  assert.ok(!actual.openCodeCalls[0][0].includes('EXPECTATIVA_PRIVADA'));
+});
+
+test('context_files inválido detiene toda la selección antes de invocar modelos o crear artefactos', async (t) => {
+  for (const value of ['assets/file.md', ['../file.md'], ['/tmp/file.md'], ['evals/evals.json'], ['examples/output.md'], ['assets/missing.md']]) {
+    const fixture = createFixture(t);
+    writeSkill(fixture, 'alpha', [makeCase('TC-001'), { ...makeCase('TC-002'), context_files: value }]);
+    const result = await runRunner(fixture, ['alpha']);
+    assertExit(result, 1);
+    assert.match(result.output, /context_files/);
+    assert.equal(result.claudeCalls.length, 0);
+    assertNoRunArtifacts(fixture);
+  }
+});
+
+test('OpenCode conserva los eventos completos por separado sin calificarlos como respuesta', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const events = JSON.stringify({ type: 'tool_use', part: { state: { output: 'TEXTO_DE_HERRAMIENTA' } } });
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode'], {
+    runOpenCode: async () => ({ ok: true, code: 0, stdout: '=== CONSOLE ===\nrespuesta\n=== END ===', events, stderr: '', durationMs: 0 }),
+  });
+  assertExit(result, 0);
+  const dir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'runs');
+  assert.equal(fs.readFileSync(path.join(dir, 'TC-001.events.jsonl'), 'utf8'), events);
+  assert.equal(fs.readFileSync(path.join(dir, 'TC-001.txt'), 'utf8'), '=== CONSOLE ===\nrespuesta\n=== END ===');
+});
+
+test('el prompt de simulación separa los artefactos declarados del filesystem real', () => {
+  const testCase = {
+    ...makeCase('TC-001'),
+    description: 'El archivo existe en specs/flow/EPIC-01-mvp/epic.md.',
+    input: {
+      input_path: 'specs/flow/EPIC-01-mvp/epic.md',
+      epic_content: '# Épica simulada',
+      template_path: 'docs/templates/epic-template.md',
+      template_content: '## Sección simulada',
+    },
+    expected: { contains: ['EXPECTATIVA_PRIVADA'] },
+  };
+  const prompt = buildPrompt('epic-format-validation', 'skills/epic-format-validation/SKILL.md', testCase);
+  assert.ok(prompt.includes(testCase.description));
+  assert.ok(prompt.includes(JSON.stringify(testCase.input, null, 2)));
+  assert.match(prompt, /NO las busques ni compruebes su existencia en el filesystem real/);
+  assert.match(prompt, /El contenido proporcionado por el escenario tiene prioridad/);
+  assert.match(prompt, /Si el escenario declara un archivo ausente, permanece ausente/);
+  assert.match(prompt, /NO modifiques ningún archivo/);
+  assert.match(prompt, /Responde únicamente con el bloque de formato: tu primera línea debe ser `=== CONSOLE ===`/);
+  assert.ok(!prompt.includes('EXPECTATIVA_PRIVADA'));
+});
+
+test('el prompt sandbox exige la consola canónica y veta el preámbulo anterior a === CONSOLE ===', () => {
+  const testCase = {
+    description: 'Valida una épica simulada.',
+    input: {},
+    sandbox: { fixture: 'skills/epic-format-validation/evals/fixtures/tc-016', target: '.' },
+    expected: { files: { written: ['specs/flow/EPIC-05-pagos/epic-format-validation-report.md'] } },
+  };
+  const spec = parseSandboxSpec(testCase, 'test');
+  const prompt = buildSandboxPrompt('epic-format-validation', 'skills/epic-format-validation/SKILL.md', testCase, spec);
+  assert.ok(prompt.includes('Eres un ejecutor de evals (protocolo E3'));
+  assert.match(prompt, /Responde únicamente con el bloque de formato: tu primera línea debe ser `=== CONSOLE ===`/);
+  assert.match(prompt, /Si tu primera línea no es exactamente `=== CONSOLE ===`, la respuesta se califica como error de formato y el caso falla/);
+});
+
+test('gradeOutput califica solo el bloque CONSOLE…END aunque un preámbulo cite los marcadores', () => {
+  const testCase = {
+    ...makeCase('TC-011'),
+    expected: {
+      contains: [
+        'verdict: NEEDS-CHANGES\ncreated:',
+        '**Veredicto:** `NEEDS-CHANGES`',
+        'OPE-03',
+        'criterio 1',
+        'npm run check:docs',
+        'DoD de validación de épica',
+      ],
+      not_contains: ['verdict: APPROVED', 'Omitido — ⚠️', '{veredicto}'],
+    },
+  };
+  const block = [
+    '=== CONSOLE ===',
+    '**Veredicto:** `NEEDS-CHANGES`',
+    'verdict: NEEDS-CHANGES',
+    'created: 2026-11-03',
+    '- OPE-03: criterio 1 — ejecutar `npm run check:docs` según la DoD de validación de épica',
+    '=== END ===',
+  ].join('\n');
+  const preamble = '## Objetivo\nLa salida debe abrir con `=== CONSOLE ===` y cerrar con `=== END ===`.\n';
+  const withPreamble = gradeOutput(testCase, preamble + block + '\nNotas: la sesión terminó sin errores.');
+  assert.equal(withPreamble.pass, true, JSON.stringify({ missing: withPreamble.missing, violated: withPreamble.violated }));
+
+  const notesAfterEnd = gradeOutput(testCase, block + '\nNotas: se citan aquí `verdict: APPROVED`, `Omitido — ⚠️` y `{veredicto}`.');
+  assert.equal(notesAfterEnd.pass, true, JSON.stringify({ missing: notesAfterEnd.missing, violated: notesAfterEnd.violated }));
+});
+
+test('gradeOutput falla con diagnóstico de formato cuando la respuesta omite === CONSOLE ===', () => {
+  const testCase = {
+    ...makeCase('TC-011'),
+    expected: { contains: ['**Veredicto:** `NEEDS-CHANGES`'], not_contains: ['verdict: APPROVED'] },
+  };
+  const withoutConsole = gradeOutput(testCase, '## Objetivo\nRespuesta suelta sin el bloque canónico.\n');
+  assert.equal(withoutConsole.pass, false);
+  assert.equal(withoutConsole.formatError, true);
+  assert.match(withoutConsole.missing.join(' '), /formato/);
+  assert.match(withoutConsole.missing.join(' '), /=== CONSOLE ===/);
+
+  const quotedOnly = gradeOutput(testCase, 'Se esperaba `=== CONSOLE ===` antes de `=== END ===` pero no se emitió.\n');
+  assert.equal(quotedOnly.pass, false);
+});
+
+test('gradeOutput tolera resúmenes de compaction posteriores que citan los marcadores entre comillas', () => {
+  const testCase = {
+    ...makeCase('TC-011'),
+    expected: {
+      contains: ['verdict: APPROVED\ncreated:', '**Veredicto:** `APPROVED`', 'omitido', 'SMOKE-1'],
+      not_contains: ['verdict: NEEDS-CHANGES', '{veredicto}'],
+    },
+  };
+  const block = [
+    '=== CONSOLE ===',
+    '**Veredicto:** `APPROVED`',
+    'verdict: APPROVED',
+    'created: 2026-11-03',
+    'Control omitido: dod-epic-validate.md no existe ⚠️',
+    'SMOKE-1 — aprobado',
+    '=== END ===',
+  ].join('\n');
+  const preamble = '## Objective\nContinuar con la validación de la épica.\nContinue if you have next steps, or stop and ask for clarification if you are unsure how to proceed.\n';
+  const compactionAfter = [
+    '## Objective',
+    'Analizar el veredicto de la épica simulada.',
+    '',
+    '## Next Move',
+    '1. Emitir la respuesta final única: `=== CONSOLE ===` + líneas de consola en el orden decidido + `=== FILE: specs/flow/EPIC-40-operativa/epic-validate-report.md ===` + contenido íntegro del reporte + `=== END ===` + notas breves tras `=== END ===`.',
+    '2. Verificar la salida con `ls` y `wc -c`.',
+  ].join('\n');
+  const contaminated = `${preamble}${block}\n${compactionAfter}\n`;
+  const grade = gradeOutput(testCase, contaminated);
+  assert.equal(grade.pass, true, JSON.stringify({ missing: grade.missing, violated: grade.violated }));
+
+  const quotedOnly = `${preamble}Se esperaba emitir \`=== CONSOLE ===\` antes de \`=== END ===\` pero no se emitió.\n`;
+  const quotedGrade = gradeOutput(testCase, quotedOnly);
+  assert.equal(quotedGrade.pass, false);
+  assert.equal(quotedGrade.formatError, true);
+});
+
+test('gradeOutput evalúa cada bloque canónico y pasa si alguno cumple', () => {
+  const testCase = {
+    ...makeCase('TC-011'),
+    expected: { contains: ['veredicto final: APPROVED', 'SMOKE-1'], not_contains: [] },
+  };
+  const firstIncomplete = '=== CONSOLE ===\nprimer intento sin la línea esperada\n=== END ===';
+  const secondComplete = '=== CONSOLE ===\nveredicto final: APPROVED\nSMOKE-1 aprobado\n=== END ===';
+  const mixed = gradeOutput(testCase, firstIncomplete + '\n' + secondComplete);
+  assert.equal(mixed.pass, true, JSON.stringify({ missing: mixed.missing, violated: mixed.violated }));
+
+  const bothIncomplete = firstIncomplete + '\n=== CONSOLE ===\nsegundo intento sin la línea\n=== END ===';
+  const failed = gradeOutput(testCase, bothIncomplete);
+  assert.equal(failed.pass, false);
+  assert.match(failed.evidence, /segundo intento sin la línea/);
+});
+
+test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar un reporte abreviado', () => {
+  const skillDir = path.join(__dirname, '..', 'skills', 'epic-format-validation');
+  const manifest = JSON.parse(fs.readFileSync(path.join(skillDir, 'evals', 'evals.json'), 'utf8'));
+  const testCase = manifest.cases.find((entry) => entry.id === 'TC-016');
+  const spec = parseSandboxSpec(testCase, 'TC-016');
+  const reportPath = 'specs/flow/EPIC-05-pagos/epic-format-validation-report.md';
+  assert.equal(spec.target, '.');
+  assert.equal(testCase.context_files, undefined);
+  const report = fs.readFileSync(path.join(skillDir, 'examples', 'needs-refinement', 'epic-format-validation-report.md'), 'utf8');
+  const consoleOutput = [
+    '**Veredicto:** `NEEDS-REFINEMENT` — 2 defectos de estructura o formato.',
+    'Archivo validado: specs/flow/EPIC-05-pagos/epic.md',
+    'Secciones/campos faltantes:',
+    '- Criterios de salida',
+    'Formato inválido:',
+    '- Línea 23 (Historias): `- [ ] Exportar CSV: descarga del historial` → se esperaba F1, F2 o F3',
+    '📄 Reporte: specs/flow/EPIC-05-pagos/epic-format-validation-report.md',
+  ].join('\n');
+  const grade = (body, consoleText = consoleOutput) => {
+    const consoleGrade = gradeOutput(testCase, `=== CONSOLE ===\n${consoleText}\n=== END ===`);
+    const files = gradeSandboxFiles(spec, new Map(), new Map([[reportPath, Buffer.from(body)]]));
+    return { pass: consoleGrade.pass && !files.missing.length && !files.violated.length, files };
+  };
+  assert.equal(grade(report).pass, true);
+  assert.equal(grade(report, consoleOutput.replace('Formato inválido:', '')).pass, false);
+  assert.equal(grade(report, consoleOutput.replace('Archivo validado: specs/flow/EPIC-05-pagos/epic.md', '')).pass, false);
+  assert.equal(grade(report.replace('defects: 2', 'defects: 3')).pass, false);
+  const withoutFrontmatter = report.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
+  assert.equal(grade(withoutFrontmatter).pass, false);
+  // Regresión de la respuesta real: frontmatter con solo verdict y sin Resumen.
+  const abbreviatedReport = report.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '---\nverdict: NEEDS-REFINEMENT\n---\n')
+    .replace(/## Resumen[\s\S]*?(?=## Defectos)/, '');
+  const abbreviatedGrade = grade(abbreviatedReport);
+  assert.equal(abbreviatedGrade.pass, false);
+  assert.equal(abbreviatedGrade.files.missing.length, 3);
+  assert.equal(grade(report.replace('formato-historias', 'otro-tipo')).pass, false);
+  const withEditorialComments = report.replace('## Veredicto', '## Veredicto <!-- sección obligatoria -->\n<!-- Motivo determinista: APPROVED o NEEDS-REFINEMENT -->');
+  const editorialGrade = grade(withEditorialComments);
+  assert.equal(editorialGrade.pass, false);
+  assert.equal(editorialGrade.files.violated.length, 2);
+  assert.equal(grade(withEditorialComments.replace(/<!--[\s\S]*?-->/g, '')).pass, true);
+  assert.equal(grade(report.replace('línea 23', 'línea 16')).pass, false);
+  assert.equal(grade(report.replace('línea 23', 'línea 10')).pass, false);
+  assert.equal(grade(report.replace('tras ## Historias', 'tras ## Alcance')).pass, false);
+});
+
+test('los escenarios iniciales de epic-format-validation incluyen épica y template independientes del repo', () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'skills', 'epic-format-validation', 'evals', 'evals.json'), 'utf8'));
+  for (const id of ['TC-001', 'TC-003', 'TC-004', 'TC-005']) {
+    const { input } = manifest.cases.find((entry) => entry.id === id);
+    assert.equal(input.template_path, 'docs/templates/epic-template.md', id);
+    assert.ok(input.template_content.includes('clave: historias'), id);
+    assert.ok(input.epic_content.includes('## Historias') || id === 'TC-003', id);
+  }
+  const missing = manifest.cases.find((entry) => entry.id === 'TC-002');
+  assert.equal(missing.input.epic_content, undefined);
+});
+
+// Simula el protocolo del CLI, sin ejecutar modelos ni consumir cuota.
+function openCodeProcess(events, { code = 0, error, stdinError, timeout = false } = {}) {
+  return (command, args, options) => {
+    const child = new EventEmitter();
+    child.stdout = new EventEmitter();
+    child.stderr = new EventEmitter();
+    child.stdin = new EventEmitter();
+    child.stdin.end = (input) => {
+      child.input = input;
+      process.nextTick(() => {
+        if (error) return child.emit('error', new Error(error));
+        if (stdinError) child.stdin.emit('error', new Error(stdinError));
+        child.stdout.emit('data', events);
+        if (!timeout) child.emit('close', code);
+      });
+    };
+    child.kill = () => { child.emit('close', null); return true; };
+    child.invocation = { command, args, options };
+    return child;
+  };
+}
+
+test('OpenCode envía stdin, extrae solo texto JSON y aplica permisos sin mutar el entorno', async (t) => {
+  const fixture = createFixture(t);
+  const events = [
+    { type: 'step_start', part: {} },
+    { type: 'tool_use', part: { state: { output: 'no calificar este texto' } } },
+    { type: 'text', part: { text: '=== CONSOLE ===\n' } },
+    { type: 'text', part: { text: 'respuesta\n=== END ===' } },
+    { type: 'step_finish', part: {} },
+  ].map((event) => JSON.stringify(event)).join('\n');
+  const env = {
+    PATH: '', OPENCODE_PERMISSION: '{"*":"allow"}',
+    OPENCODE_CONFIG_CONTENT: JSON.stringify({ model: 'p/configurado', provider: { p: {} } }),
+  };
+  let child;
+  const result = await runOpenCode('prompt con "comillas"\ny líneas', { model: 'p/m', timeout: 1 }, {
+    repoRoot: fixture.root,
+    env,
+    spawn(...args) { child = openCodeProcess(events)(...args); return child; },
+  });
+  assert.equal(result.ok, true, result.stderr);
+  assert.equal(result.stdout, '=== CONSOLE ===\nrespuesta\n=== END ===');
+  assert.equal(child.input, 'prompt con "comillas"\ny líneas');
+  assert.equal(result.events, events);
+  assert.deepEqual(child.invocation.args, buildOpenCodeArgs({ model: 'p/m' }));
+  assert.equal(child.invocation.options.cwd, fixture.root);
+  assert.deepEqual(child.invocation.options.stdio, ['pipe', 'pipe', 'pipe']);
+  const config = JSON.parse(child.invocation.options.env.OPENCODE_CONFIG_CONTENT);
+  assert.equal(config.agent['sddf-eval'].permission['*'], 'deny');
+  assert.equal(config.agent['sddf-eval'].permission.read, 'allow');
+  assert.equal(config.agent['sddf-eval'].permission.edit, 'deny');
+    assert.equal(config.share, 'disabled');
+    assert.equal(config.model, 'p/configurado');
+    assert.deepEqual(config.provider, { p: {} });
+    assert.equal(env.OPENCODE_PERMISSION, '{"*":"allow"}');
+  });
+
+  test('OpenCode descarta las parts sintéticas (nudges de compaction) del texto capturado', async (t) => {
+    const fixture = createFixture(t);
+    const events = [
+      { type: 'text', part: { text: '=== CONSOLE ===\nrespuesta\n' } },
+      { type: 'text', part: { text: 'Continue if you have next steps, or stop and ask for clarification if you are unsure how to proceed.', synthetic: true, metadata: { compaction_continue: true } } },
+      { type: 'text', part: { text: '=== END ===' } },
+    ].map((event) => JSON.stringify(event)).join('\n');
+    const result = await runOpenCode('p', { model: 'p/m', timeout: 1 }, {
+      repoRoot: fixture.root,
+      env: { PATH: '' },
+      spawn(...args) { return openCodeProcess(events)(...args); },
+    });
+    assert.equal(result.ok, true, result.stderr);
+    assert.equal(result.stdout, '=== CONSOLE ===\nrespuesta\n=== END ===');
+    assert.equal(result.events, events);
+  });
+
+  test('OpenCode separa las parts cuyo límite no trae newline para no pegar la marca del bloque', async (t) => {
+    const fixture = createFixture(t);
+    const events = [
+      { type: 'text', part: { text: '## Objetivo\n- preámbulo que termina sin salto de línea.' } },
+      { type: 'text', part: { text: '=== CONSOLE ===\nrespuesta\n=== END ===' } },
+    ].map((event) => JSON.stringify(event)).join('\n');
+    const result = await runOpenCode('p', { model: 'p/m', timeout: 1 }, {
+      repoRoot: fixture.root,
+      env: { PATH: '' },
+      spawn(...args) { return openCodeProcess(events)(...args); },
+    });
+    assert.equal(result.ok, true, result.stderr);
+    assert.equal(result.stdout, '## Objetivo\n- preámbulo que termina sin salto de línea.\n=== CONSOLE ===\nrespuesta\n=== END ===');
+    assert.equal(gradeOutput({ expected: { contains: ['respuesta'] } }, result.stdout).pass, true);
+  });
+
+test('OpenCode usa JSON y un agente propio sin forzar modelo ni reutilizar sesiones', () => {
+  assert.deepEqual(buildOpenCodeArgs({ model: null }), ['run', '--format', 'json', '--agent', 'sddf-eval']);
+  assert.deepEqual(buildOpenCodeArgs({ model: 'p/m' }), ['run', '--format', 'json', '--agent', 'sddf-eval', '--model', 'p/m']);
+});
+
+test('OpenCode falla cerrado con errores JSON, respuesta vacía, JSON inválido o fallos del proceso', async (t) => {
+  const fixture = createFixture(t);
+  const text = JSON.stringify({ type: 'text', part: { text: 'respuesta que parecería aprobar' } });
+  for (const [events, options, reason] of [
+    [text + '\n' + JSON.stringify({ type: 'error', error: { data: { message: 'proveedor sin autenticar' } } }), {}, /proveedor sin autenticar/],
+    [JSON.stringify({ type: 'step_finish', part: {} }), {}, /sin.*respuesta/i],
+    [text + '\n{incompleto', {}, /JSON/i],
+    [text, { code: 1 }, null],
+    ['', { error: 'spawn opencode ENOENT' }, /ENOENT/],
+    [text, { stdinError: 'EPIPE' }, /EPIPE/],
+    [text, { timeout: true }, null],
+  ]) {
+    const result = await runOpenCode('p', { timeout: 0.01 }, {
+      repoRoot: fixture.root, env: { PATH: '' }, spawn: openCodeProcess(events, options),
+    });
+    assert.equal(result.ok, false);
+    if (reason) assert.match(result.stderr, reason);
+    if (options.timeout) assert.equal(result.timedOut, true);
+  }
+});
+
+test('un fallo de OpenCode con stdout se reporta como ERROR, sin falso PASS', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode'], {
+    runOpenCode: async () => ({ ok: false, code: 0, stdout: '=== END ===', stderr: 'error del proveedor', durationMs: 0, timedOut: false }),
+  });
+  assertExit(result, 1);
+  assert.match(result.output, /ERROR.*opencode exit 0.*error del proveedor/);
+});
+
+test('OpenCode en Windows resuelve el binario nativo o el launcher npm sin shell', () => {
+  const args = ['run', '--format', 'json'];
+  const runtime = { platform: 'win32', nodeExecutable: 'C:\\node\\node.exe', env: { Path: 'C:\\Open Code;C:\\npm' } };
+  assert.deepEqual(openCodeInvocation(args, { ...runtime, exists: (p) => p === 'C:\\Open Code\\opencode.exe' }), {
+    command: 'C:\\Open Code\\opencode.exe', args,
+  });
+  const launcher = 'C:\\npm\\node_modules\\opencode-ai\\bin\\opencode';
+  assert.deepEqual(openCodeInvocation(args, { ...runtime, exists: (p) => p === launcher }), {
+    command: 'C:\\node\\node.exe', args: [launcher, ...args],
+  });
+  assert.deepEqual(openCodeInvocation(args, { platform: 'linux' }), { command: 'opencode', args });
+  const localLauncher = 'C:\\repo\\node_modules\\opencode-ai\\bin\\opencode';
+  assert.deepEqual(openCodeInvocation(args, {
+    ...runtime, env: { PATH: 'C:\\repo\\node_modules\\.bin' }, exists: (p) => p === localLauncher,
+  }), { command: 'C:\\node\\node.exe', args: [localLauncher, ...args] });
+});
+
+test('OpenCode en sandbox aplica cwd y permisos edit relativos a la raíz Git', async (t) => {
+  const fixture = createFixture(t);
+  fs.mkdirSync(path.join(fixture.root, '.git'));
+  const sandboxDir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'sandbox', 'TC-001');
+  fs.mkdirSync(sandboxDir, { recursive: true });
+  let child;
+  await runOpenCode('p', { timeout: 1 }, {
+    repoRoot: fixture.root, sandboxDir, env: { PATH: '' },
+    spawn(...args) {
+      child = openCodeProcess(JSON.stringify({ type: 'text', part: { text: 'listo' } }))(...args);
+      return child;
+    },
+  });
+  assert.equal(child.invocation.options.cwd, sandboxDir);
+  const config = JSON.parse(child.invocation.options.env.OPENCODE_CONFIG_CONTENT);
+  const permission = config.agent['sddf-eval'].permission;
+  assert.equal(permission['*'], 'deny', 'Shell, MCP y task siguen denegados');
+  assert.equal(permission.edit['*'], 'deny');
+  assert.equal(permission.edit['.tmp/skill-test-evals/alpha/sandbox/TC-001/*'], 'allow');
+  assert.equal(permission.external_directory, 'deny');
 });
 
 test('un runner inválido falla antes de ejecutar o crear artefactos', async (t) => {
@@ -611,7 +1073,7 @@ test('los artefactos validos quedan contenidos bajo el tmpRoot inyectado', async
     runClaude: async () => ({
       ok: true,
       code: 0,
-      stdout: '=== END ===',
+      stdout: '=== CONSOLE ===\nrespuesta\n=== END ===',
       stderr: 'advertencia de fixture',
       durationMs: 0,
       timedOut: false,
@@ -742,4 +1204,309 @@ test('--changed-from con rango valido sin skills evaluables falla cerrado', asyn
 
   assertPreflightFailure(result);
   assert.match(result.output, /seleccion|caso|skill/i);
+});
+
+// ---------------------------------------------------------------------------
+// Modo sandbox
+// ---------------------------------------------------------------------------
+
+const EPIC = 'specs/flow/EPIC-01-a/epic.md';
+
+function makeSandboxCase(id, files, sandbox = { fixture: 'skills/alpha/examples/base', copy: ['docs/templates'] }) {
+  return { ...makeCase(id), sandbox, expected: { contains: ['=== CONSOLE ==='], files } };
+}
+
+function writeSandboxSkill(fixture, cases) {
+  const skillDir = writeSkill(fixture, 'alpha', cases);
+  fs.mkdirSync(path.join(skillDir, 'examples', 'base', 'EPIC-01-a'), { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'examples', 'base', 'EPIC-01-a', 'epic.md'), 'status: PLAN\nindice: viejo\n');
+  fs.mkdirSync(path.join(skillDir, 'assets'), { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'assets', 'template.md'), '# seed\n');
+  fs.mkdirSync(path.join(fixture.root, 'docs', 'templates'), { recursive: true });
+  fs.writeFileSync(path.join(fixture.root, 'docs', 'templates', 'epic-template.md'), '# epic\n');
+  return skillDir;
+}
+
+function writingRunner(writes) {
+  return async (prompt, opts, runtime) => {
+    for (const [rel, content] of Object.entries(writes(runtime.sandboxDir))) {
+      fs.mkdirSync(path.dirname(path.join(runtime.sandboxDir, rel)), { recursive: true });
+      fs.writeFileSync(path.join(runtime.sandboxDir, rel), content);
+    }
+    return { ok: true, code: 0, stdout: '=== CONSOLE ===\nlisto\n=== END ===', stderr: '', durationMs: 0, timedOut: false };
+  };
+}
+
+test('OpenCode en sandbox conserva la calificación de archivos y los fixtures originales', async (t) => {
+  const fixture = createFixture(t);
+  const skillDir = writeSandboxSkill(fixture, [makeSandboxCase('TC-001', {
+    written: [EPIC], contains: { [EPIC]: ['indice: nuevo'] },
+  })]);
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode'], {
+    runOpenCode: writingRunner(() => ({ [EPIC]: 'status: PLAN\nindice: nuevo\n' })),
+  });
+  assertExit(result, 0);
+  assert.equal(result.openCodeCalls.length, 1);
+  assert.equal(result.claudeCalls.length + result.codexCalls.length, 0);
+  assert.match(result.openCodeCalls[0][0], /EJECUTAR DE VERDAD/);
+  assert.equal(fs.readFileSync(path.join(skillDir, 'examples', 'base', 'EPIC-01-a', 'epic.md'), 'utf8'), 'status: PLAN\nindice: viejo\n');
+});
+
+test('TC-016 usa su repositorio fixture y califica el reporte en disco aunque la consola declare éxito', async (t) => {
+  const fixture = createFixture(t);
+  const skillName = 'epic-format-validation';
+  const sourceSkill = path.join(__dirname, '..', 'skills', skillName);
+  const skillDir = path.join(fixture.root, 'skills', skillName);
+  fs.cpSync(sourceSkill, skillDir, { recursive: true });
+  const fixtureRoot = path.join(skillDir, 'evals', 'fixtures', 'tc-016');
+  const epicPath = 'specs/flow/EPIC-05-pagos/epic.md';
+  const templatePath = 'docs/templates/epic-template.md';
+  const reportPath = 'specs/flow/EPIC-05-pagos/epic-format-validation-report.md';
+  const epic = fs.readFileSync(path.join(fixtureRoot, epicPath), 'utf8');
+  const template = fs.readFileSync(path.join(fixtureRoot, templatePath), 'utf8');
+  const report = fs.readFileSync(path.join(skillDir, 'examples', 'needs-refinement', 'epic-format-validation-report.md'), 'utf8');
+  assert.ok(epic.includes('created: 2026-10-01'));
+  assert.equal(epic.split('\n')[22], '- [ ] Exportar CSV: descarga del historial');
+  assert.ok(!template.includes('clave: objetivo'));
+  const sections = [...template.matchAll(/^## (.*?)\s*<!--/gm)].map((match) => match[1]);
+  assert.equal(sections[sections.indexOf('Criterios de salida') - 1], 'Historias');
+  // Los archivos reales del proyecto anfitrión discrepan deliberadamente del fixture.
+  for (const [relative, text] of [[templatePath, '## Objetivo\n'], [epicPath, '# Épica sin created\n']]) {
+    fs.mkdirSync(path.dirname(path.join(fixture.root, relative)), { recursive: true });
+    fs.writeFileSync(path.join(fixture.root, relative), text);
+  }
+  const execute = (body, alterEpic = false) => runRunner(fixture, [skillName, '--only', 'TC-016', '--eval-runner', 'opencode'], {
+    runOpenCode: async (prompt, opts, runtime) => {
+      const dir = runtime.sandboxDir;
+      assert.ok(dir);
+      assert.match(prompt, /EJECUTAR DE VERDAD/);
+      assert.ok(!prompt.includes('epic_content'));
+      assert.equal(fs.readFileSync(path.join(dir, epicPath), 'utf8'), epic);
+      assert.equal(fs.readFileSync(path.join(dir, templatePath), 'utf8'), template);
+      assert.equal(fs.existsSync(path.join(dir, 'skills', skillName, 'evals')), false);
+      assert.equal(fs.existsSync(path.join(dir, 'skills', skillName, 'examples')), false);
+      fs.writeFileSync(path.join(dir, reportPath), body);
+      if (alterEpic) fs.appendFileSync(path.join(dir, epicPath), '\nmodificado\n');
+      return { ok: true, code: 0, stdout: '=== CONSOLE ===\nNEEDS-REFINEMENT\nArchivo validado: specs/flow/EPIC-05-pagos/epic.md\nCriterios de salida\nFormato inválido:\n- [ ] Exportar CSV: descarga del historial\n📄 Reporte: specs/flow/EPIC-05-pagos/epic-format-validation-report.md\n=== END ===', stderr: '', durationMs: 0 };
+    },
+  });
+  assertExit(await execute(report), 0);
+  const wrongReport = await execute(report.replace('defects: 2', 'defects: 3'));
+  assertExit(wrongReport, 1);
+  assert.match(wrongReport.output, /\[files\].*defects: 2/);
+  const changedInput = await execute(report, true);
+  assertExit(changedInput, 1);
+  assert.match(changedInput.output, /\[files\] escrito: specs\/flow\/EPIC-05-pagos\/epic.md/);
+  assert.equal(fs.readFileSync(path.join(fixtureRoot, epicPath), 'utf8'), epic);
+  assert.equal(fs.readFileSync(path.join(fixtureRoot, templatePath), 'utf8'), template);
+  assert.equal(fs.readFileSync(path.join(fixture.root, templatePath), 'utf8'), '## Objetivo\n');
+});
+
+test('el prompt sandbox exige fuentes completas locales sin filtrar expectativas', async (t) => {
+  const fixture = createFixture(t);
+  const testCase = makeSandboxCase('TC-001', {
+    written: [], contains: { 'docs/templates/epic-template.md': ['EXPECTATIVA_PRIVADA'] },
+  });
+  writeSandboxSkill(fixture, [testCase]);
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--dry-run']);
+  assertExit(result, 0);
+  assert.match(result.output, /Lee íntegros los archivos de entrada y los templates/);
+  assert.match(result.output, /offset\/limit hasta EOF/);
+  assert.match(result.output, /No reconstruyas su contenido desde la descripción/);
+  assert.match(result.output, /ni consultes archivos equivalentes del repositorio anfitrión/);
+  assert.ok(!result.output.includes('EXPECTATIVA_PRIVADA'));
+  assert.equal(result.openCodeCalls.length, 0);
+});
+
+test('los adaptadores en sandbox permiten escribir solo en el directorio de trabajo', () => {
+  const claudeArgs = buildClaudeArgs('p', { model: 'm' }, { sandbox: true });
+  assert.deepEqual(claudeArgs.slice(-7), [
+    '--permission-mode',
+    'acceptEdits',
+    '--allowedTools',
+    'Read,Glob,Grep',
+    '--disallowedTools',
+    'Bash,PowerShell,WebFetch,WebSearch',
+    '--strict-mcp-config',
+  ]);
+  // Una regla Write/Edit sin ruta aprobaría escrituras fuera del sandbox: solo acceptEdits las aprueba, y únicamente en el cwd.
+  const allowed = claudeArgs[claudeArgs.indexOf('--allowedTools') + 1].split(',');
+  assert.ok(!allowed.some((tool) => /^(Write|Edit)\b/.test(tool)), `allowedTools no debe conceder Write/Edit: ${allowed}`);
+  assert.deepEqual(buildCodexArgs({ model: null }, 'salida.txt', 'caja').slice(0, 6), [
+    'exec',
+    '--sandbox',
+    'workspace-write',
+    '--skip-git-repo-check',
+    '--cd',
+    'caja',
+  ]);
+});
+
+test('un caso sandbox sin expected.files.written o con fixture inválido falla cerrado', async (t) => {
+  const sinWritten = createFixture(t);
+  writeSandboxSkill(sinWritten, [makeSandboxCase('TC-001', {})]);
+  const r1 = await runRunner(sinWritten, ['alpha']);
+  assertPreflightFailure(r1);
+  assert.match(r1.output, /expected\.files\.written/);
+  assert.equal(r1.claudeCalls.length, 0);
+
+  const escape = createFixture(t);
+  writeSandboxSkill(escape, [makeSandboxCase('TC-001', { written: [] }, { fixture: '../fuera' })]);
+  const r2 = await runRunner(escape, ['alpha']);
+  assertPreflightFailure(r2);
+  assert.match(r2.output, /no puede escapar/);
+
+  const ausente = createFixture(t);
+  writeSandboxSkill(ausente, [makeSandboxCase('TC-001', { written: [] }, { fixture: 'skills/alpha/examples/nada' })]);
+  const r3 = await runRunner(ausente, ['alpha']);
+  assertPreflightFailure(r3);
+  assert.match(r3.output, /sandbox\.fixture no es un directorio/);
+  assertNoRunArtifacts(ausente);
+});
+
+test('sandbox: copia fixture, skill sin evals ni examples y rutas extra; califica el árbol en disco', async (t) => {
+  const fixture = createFixture(t);
+  const skillDir = writeSandboxSkill(fixture, [makeSandboxCase('TC-001', {
+    written: [EPIC, `${EPIC}.bak`],
+    contains: { [EPIC]: ['indice: nuevo'] },
+    not_contains: { [EPIC]: ['indice: viejo'] },
+    backups: { [`${EPIC}.bak`]: EPIC },
+  })]);
+  let seen;
+  const result = await runRunner(fixture, ['alpha'], {
+    runClaude: writingRunner((dir) => {
+      seen = {
+        fixture: fs.readFileSync(path.join(dir, EPIC), 'utf8'),
+        skill: fs.existsSync(path.join(dir, 'skills', 'alpha', 'SKILL.md')),
+        assets: fs.existsSync(path.join(dir, 'skills', 'alpha', 'assets', 'template.md')),
+        evals: fs.existsSync(path.join(dir, 'skills', 'alpha', 'evals')),
+        examples: fs.existsSync(path.join(dir, 'skills', 'alpha', 'examples')),
+        templates: fs.existsSync(path.join(dir, 'docs', 'templates', 'epic-template.md')),
+      };
+      return { [`${EPIC}.bak`]: seen.fixture, [EPIC]: 'status: PLAN\nindice: nuevo\n' };
+    }),
+  });
+
+  assertExit(result, 0);
+  assert.deepEqual(seen, {
+    fixture: 'status: PLAN\nindice: viejo\n',
+    skill: true,
+    assets: true,
+    evals: false,
+    examples: false,
+    templates: true,
+  });
+  assert.match(result.claudeCalls[0][0], /EJECUTAR DE VERDAD/);
+  assert.equal(
+    fs.readFileSync(path.join(skillDir, 'examples', 'base', 'EPIC-01-a', 'epic.md'), 'utf8'),
+    'status: PLAN\nindice: viejo\n',
+  );
+  const filesLog = fs.readFileSync(
+    path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'runs', 'TC-001.files.txt'),
+    'utf8',
+  );
+  assert.match(filesLog, /created:\n {2}specs\/flow\/EPIC-01-a\/epic\.md\.bak\nmodified:\n {2}specs\/flow\/EPIC-01-a\/epic\.md\n/);
+});
+
+test('sandbox: una escritura no esperada o un backup distinto del original es FAIL', async (t) => {
+  const fixture = createFixture(t);
+  writeSandboxSkill(fixture, [makeSandboxCase('TC-001', {
+    written: [EPIC, `${EPIC}.bak`],
+    backups: { [`${EPIC}.bak`]: EPIC },
+  })]);
+  const result = await runRunner(fixture, ['alpha'], {
+    runClaude: writingRunner(() => ({
+      [`${EPIC}.bak`]: 'otro contenido\n',
+      [EPIC]: 'status: COMPLETED\n',
+      'specs/flow/EPIC-01-a/epic-analyze-report.md': 'manipulado\n',
+    })),
+  });
+
+  assertExit(result, 1);
+  assert.match(result.output, /\[files\] escrito: specs\/flow\/EPIC-01-a\/epic-analyze-report\.md/);
+  assert.match(result.output, /\[files\] specs\/flow\/EPIC-01-a\/epic\.md\.bak difiere del specs\/flow\/EPIC-01-a\/epic\.md previo/);
+});
+
+test('sandbox con written vacío: cero escrituras es PASS y cualquier escritura es FAIL', async (t) => {
+  const quieto = createFixture(t);
+  writeSandboxSkill(quieto, [makeSandboxCase('TC-001', { written: [] })]);
+  assertExit(await runRunner(quieto, ['alpha'], { runClaude: writingRunner(() => ({})) }), 0);
+
+  const escribe = createFixture(t);
+  writeSandboxSkill(escribe, [makeSandboxCase('TC-001', { written: [] })]);
+  const result = await runRunner(escribe, ['alpha'], {
+    runClaude: writingRunner(() => ({ 'specs/flow/EPIC-01-a/epic-refine-report.md': 'reporte\n' })),
+  });
+  assertExit(result, 1);
+  assert.match(result.output, /\[files\] escrito: specs\/flow\/EPIC-01-a\/epic-refine-report\.md/);
+});
+
+test('sandbox en dry-run muestra el plan sin copiar ni invocar runners', async (t) => {
+  const fixture = createFixture(t);
+  writeSandboxSkill(fixture, [makeSandboxCase('TC-001', { written: [] })]);
+  const result = await runRunner(fixture, ['alpha', '--dry-run']);
+  assertExit(result, 0);
+  assert.match(result.output, /\[sandbox\] skills\/alpha\/examples\/base → specs\/flow\/ · escritos esperados: 0/);
+  assert.equal(result.claudeCalls.length, 0);
+  assertNoRunArtifacts(fixture);
+});
+
+test('prepareSandbox crea su propia raíz Git dentro del sandbox', (t) => {
+  const fixture = createFixture(t);
+  writeSandboxSkill(fixture, [makeSandboxCase('TC-001', { written: [] })]);
+  const spec = parseSandboxSpec(makeSandboxCase('TC-001', { written: [] }), 'alpha › TC-001');
+  const sandboxDir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'sandbox', 'TC-001');
+  prepareSandbox(spec, {
+    repoRoot: fixture.root,
+    skillsDir: path.join(fixture.root, 'skills'),
+    skillName: 'alpha',
+    sandboxDir,
+  });
+  assert.ok(fs.existsSync(path.join(sandboxDir, '.git', 'HEAD')), 'el sandbox debe ser su propia raíz Git');
+  assert.ok(fs.existsSync(path.join(sandboxDir, 'specs', 'flow', 'EPIC-01-a', 'epic.md')));
+});
+
+test('el prompt sandbox declara la raíz absoluta del sandbox como REPO_ROOT del ejercicio', async (t) => {
+  const fixture = createFixture(t);
+  writeSandboxSkill(fixture, [makeSandboxCase('TC-001', { written: [] })]);
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode', '--dry-run']);
+  assertExit(result, 0);
+  const sandboxDir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'sandbox', 'TC-001');
+  assert.match(result.output, /El directorio de trabajo es el sandbox `/);
+  assert.ok(result.output.includes(sandboxDir), `el prompt debe incluir la ruta absoluta ${sandboxDir}`);
+  assert.match(result.output, /sin buscar el fixture ni el skill en el repositorio anfitrión/);
+  assert.equal(result.openCodeCalls.length, 0);
+});
+
+test('snapshotTree ignora el .git interno del sandbox', (t) => {
+  const fixture = createFixture(t);
+  const dir = path.join(fixture.root, 'arbol');
+  fs.mkdirSync(path.join(dir, '.git'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'a.md'), 'a\n');
+  fs.writeFileSync(path.join(dir, '.git', 'HEAD'), 'ref: refs/heads/main\n');
+  const before = snapshotTree(dir);
+  fs.writeFileSync(path.join(dir, '.git', 'HEAD'), 'ref: refs/heads/otro\n');
+  const after = snapshotTree(dir);
+  assert.deepEqual([...before.keys()], ['a.md']);
+  assert.ok(before.get('a.md').equals(after.get('a.md')));
+});
+
+test('OpenCode en sandbox con raíz Git propia permite editar el sandbox completo', async (t) => {
+  const fixture = createFixture(t);
+  fs.mkdirSync(path.join(fixture.root, '.git'));
+  const sandboxDir = path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'sandbox', 'TC-001');
+  fs.mkdirSync(path.join(sandboxDir, '.git'), { recursive: true });
+  let child;
+  await runOpenCode('p', { timeout: 1 }, {
+    repoRoot: fixture.root, sandboxDir, env: { PATH: '' },
+    spawn(...args) {
+      child = openCodeProcess(JSON.stringify({ type: 'text', part: { text: 'listo' } }))(...args);
+      return child;
+    },
+  });
+  assert.equal(child.invocation.options.cwd, sandboxDir);
+  const config = JSON.parse(child.invocation.options.env.OPENCODE_CONFIG_CONTENT);
+  const permission = config.agent['sddf-eval'].permission;
+  assert.equal(permission.edit['*'], 'allow', 'con raíz Git propia el patrón edit cubre todo el sandbox');
+  assert.equal(permission.external_directory, 'deny');
 });

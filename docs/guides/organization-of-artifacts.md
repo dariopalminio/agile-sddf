@@ -33,14 +33,15 @@ A partir de aquí se representa como `{SPECS_ROOT}`. La visión, stakeholders, o
 
 ### 2. Tipos de work item y sus carpetas
 
-Existen dos tipos de work item: **Épica** y **Story**. Ambos son hermanos dentro de `{SPECS_ROOT}`, sin carpetas por tipo: cada work item se guarda en su **propio directorio**, cuyo nombre comienza con su identificador único. Las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `{SPECS_ROOT}/archive/` conservando su status, con la fecha de `updated:`, `created:` o `date:` como prefijo (ADR-0017):
+Existen dos tipos de work item: **Épica** y **Story**. Ambos son hermanos dentro de `{SPECS_ROOT}`, sin carpetas por tipo: cada work item se guarda en su **propio directorio**, cuyo nombre comienza con su identificador único. Las historias y las épicas `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `{SPECS_ROOT}/archive/` conservando su status, con la fecha de `updated:`, `created:` o `date:` como prefijo ([ADR-0019](../adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md)):
 
 ```
 {SPECS_ROOT}/
 ├── EPIC-001-nombre-epica/                     # directorio de la épica EPIC-001
 ├── STORY-001-nombre-story/                    # directorio de la historia STORY-001
 └── archive/
-    └── 2026-05-01-STORY-002-otra-story/       # historia COMPLETED o CANCELED archivada
+    ├── 2026-05-01-STORY-002-otra-story/       # historia COMPLETED o CANCELED archivada
+    └── 2026-05-02-EPIC-002-otra-epica/        # épica COMPLETED o CANCELED archivada
 ```
 
 Por ejemplo:
@@ -50,7 +51,7 @@ specs/flow/EPIC-001-nombre-epica/epic.md
 specs/flow/STORY-001-nombre-story/story.md
 ```
 
-Las épicas no se archivan.
+Las historias las archiva `story-complete` y las épicas `epic-complete`, siempre con confirmación humana. Un número de épica o de historia archivada nunca se reutiliza: los skills que numeran cuentan también `{SPECS_ROOT}/archive/`.
 
 El modelo histórico de tres niveles está retirado; para migrarlo se usa `/memory-system migrate --from=specs-3-levels`. Véase [[asegurar-dos-niveles-de-flujo-epics-stories]].
 
@@ -140,7 +141,7 @@ La estructura de directorios permanece plana: el vínculo padre-hijo se expresa 
 Para encontrar un work item por su ID se busca el directorio cuyo nombre empieza por el ID seguido de guion. **Orden de búsqueda recomendado para IAs:**
 
 1. Buscar `{SPECS_ROOT}/<ID>-*/`.
-2. Si no se encuentra y es una historia, buscar `{SPECS_ROOT}/archive/*-<ID>-*/`.
+2. Si no se encuentra, buscar `{SPECS_ROOT}/archive/*-<ID>-*/` (historias y épicas archivadas).
 Para facilitar la navegación, `docs/index.md` contiene el índice generado de artefactos y metadatos; se regenera con `/memory-system index`.
 
 ---
@@ -167,7 +168,7 @@ Para acelerar la navegación humana y de IAs, `docs/index.md` lista los work ite
 
 | Regla | Verificación |
 |-------|--------------|
-| ¿Todo work item está directamente en `specs/flow/` o, si es una historia `COMPLETED`, en `specs/flow/archive/`? | ⬜ |
+| ¿Todo work item está directamente en `specs/flow/` o, si es una historia o épica `COMPLETED` o `CANCELED`, en `specs/flow/archive/`? | ⬜ |
 | ¿El nombre del directorio comienza con el campo `id` del frontmatter? | ⬜ |
 | ¿Cada archivo principal (`epic.md` o `story.md`) comienza con frontmatter YAML? | ⬜ |
 | ¿Los campos obligatorios (`type`, `id`, `title`, `status`, `parent`, `created`, `updated`) están presentes? | ⬜ |

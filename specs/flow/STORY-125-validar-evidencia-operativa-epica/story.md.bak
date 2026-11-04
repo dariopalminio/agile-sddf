@@ -7,17 +7,17 @@ slug: STORY-125-validar-evidencia-operativa-epica
 title: "Validar la evidencia operativa de una épica"
 status: SPECIFY
 substatus: DONE
-parent: EPIC-23-skill-epic-validate
+parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
 updated: 2026-10-17
 related:
-  - EPIC-23-skill-epic-validate
+  - EPIC-23-completar-flujo-de-epic
   - STORY-124
   - STORY-126
   - STORY-127
   - STORY-128
 ---
-[[EPIC-23-skill-epic-validate]]
+[[EPIC-23-completar-flujo-de-epic]]
 
 # 📖 Historia: Validar la evidencia operativa de una épica
 

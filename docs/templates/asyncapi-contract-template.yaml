@@ -1,0 +1,291 @@
+asyncapi: 2.6.0
+info:
+  title: "[Nombre del Bus de Eventos]"
+  version: "1.0.0"
+  description: |
+    # [Nombre del Bus de Eventos]
+    
+    [Descripción del propósito de los eventos: qué cambios en el sistema se comunican por este canal]
+    
+    ## Cambios recientes
+    
+    - **1.0.0:** Versión inicial (YYYY-MM-DD)
+  contact:
+    name: "[Equipo propietario]"
+    email: "[email del equipo]"
+  license:
+    name: "[Licencia, ej. Apache 2.0]"
+
+defaultContentType: application/json
+
+servers:
+  production:
+    url: kafka.example.com:9092
+    protocol: kafka
+    description: "Kafka cluster de producción"
+    variables:
+      brokers:
+        default: "kafka-0:9092,kafka-1:9092,kafka-2:9092"
+  
+  staging:
+    url: kafka-staging.example.com:9092
+    protocol: kafka
+    description: "Kafka cluster de staging"
+  
+  local:
+    url: localhost:9092
+    protocol: kafka
+    description: "Kafka local para desarrollo"
+
+tags:
+  - name: "[Dominio o entidad principal]"
+    description: "[Descripción de eventos]"
+  - name: "[Otro dominio]"
+    description: "[Descripción de eventos]"
+
+channels:
+  # Patrón: {entidad}.{acción}.{versión}
+  # Ejemplo: order.created.v1, payment.completed.v1
+  
+  "[entidad].[accion]":
+    description: "Eventos cuando [descripción en lenguaje natural del cambio que genera el evento]"
+    publish:
+      operationId: "publish[Entidad][Accion]"
+      summary: "Publicar evento cuando [entidad] [acción]"
+      tags:
+        - name: "[Dominio o entidad principal]"
+    subscribe:
+      operationId: "subscribe[Entidad][Accion]"
+      summary: "Suscribirse a eventos cuando [entidad] [acción]"
+      tags:
+        - name: "[Dominio o entidad principal]"
+      message:
+        $ref: '#/components/messages/[Entidad][Accion]Event'
+      bindings:
+        kafka:
+          clientId: "[service-name]"
+          groupId: "[service-name]-subscribers"
+
+components:
+  messages:
+    # Estructura de evento: <Entidad><Acción>Event
+    "[Entidad][Accion]Event":
+      contentType: application/json
+      summary: "Evento desencadenado cuando [descripción]"
+      description: |
+        Este evento se publica cuando [descripción detallada de la acción].
+        
+        **Garantías de entrega:**
+        - At-least-once: Kafka garantiza que el evento se entrega al menos una vez
+        - Deduplicación: Los consumidores deben manejar eventos duplicados usando el `eventId`
+        
+        **Latencia esperada:**
+        - < 100ms en 99 percentil
+        - Suscriptores deben estar preparados para retrasos de hasta 1 segundo en picos
+      
+      payload:
+        $ref: '#/components/schemas/[Entidad][Accion]EventPayload'
+      
+      headers:
+        type: object
+        properties:
+          correlationId:
+            type: string
+            format: uuid
+            description: "ID de correlación para rastrear el flujo de eventos relacionados"
+          traceId:
+            type: string
+            description: "ID de traza distribuida (OpenTelemetry format)"
+          timestamp:
+            type: string
+            format: date-time
+            description: "Timestamp del servidor cuando se generó el evento"
+      
+      bindings:
+        kafka:
+          key:
+            type: string
+            enum: ["[partition-key]"]
+            description: "Clave de partición para garantizar orden en Kafka"
+
+  schemas:
+    # Payload base de evento
+    "[Entidad][Accion]EventPayload":
+      type: object
+      required:
+        - eventId
+        - eventType
+        - eventVersion
+        - timestamp
+        - aggregateId
+        - aggregateType
+        - data
+      properties:
+        eventId:
+          type: string
+          format: uuid
+          description: "ID único del evento (para deduplicación)"
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        
+        eventType:
+          type: string
+          description: "Tipo de evento: <Entidad>.<Acción>"
+          enum: ["[Entidad].[Accion]"]
+          example: "[Entidad].[Accion]"
+        
+        eventVersion:
+          type: string
+          description: "Versión del schema del evento"
+          pattern: "^\\d+\\.\\d+\\.\\d+$"
+          example: "1.0.0"
+        
+        timestamp:
+          type: string
+          format: date-time
+          description: "Timestamp ISO 8601 de cuando ocurrió el evento"
+          example: "2026-11-03T21:38:41.000Z"
+        
+        aggregateId:
+          type: string
+          format: uuid
+          description: "ID del agregado que generó el evento (ej. ID de la orden, ID del usuario)"
+          example: "550e8400-e29b-41d4-a716-446655440001"
+        
+        aggregateType:
+          type: string
+          description: "Tipo del agregado que generó el evento"
+          enum: ["[Entidad]"]
+          example: "[Entidad]"
+        
+        aggregateVersion:
+          type: integer
+          minimum: 1
+          description: "Versión del agregado que cambió (número de eventos previos +1)"
+          example: 3
+        
+        causation:
+          type: object
+          nullable: true
+          description: "Información sobre qué causó este evento (ej. comando, usuario)"
+          properties:
+            commandId:
+              type: string
+              format: uuid
+              description: "ID del comando que causó este evento"
+            userId:
+              type: string
+              description: "ID del usuario que ejecutó la acción"
+            source:
+              type: string
+              enum: [API, UI, SCHEDULED_JOB, SYSTEM]
+              description: "Origen de la acción"
+        
+        data:
+          type: object
+          description: "Datos específicos del evento: qué cambió"
+          required:
+            - # [campos obligatorios del evento específico]
+          properties:
+            # [Propiedades específicas del evento]
+            # Ejemplo:
+            name:
+              type: string
+              description: "Nombre del recurso"
+            description:
+              type: string
+              nullable: true
+              description: "Descripción del recurso"
+            status:
+              type: string
+              enum: [ACTIVE, INACTIVE, ARCHIVED]
+              description: "Nuevo estado"
+        
+        metadata:
+          type: object
+          nullable: true
+          description: "Metadatos adicionales del evento"
+          properties:
+            domain:
+              type: string
+              description: "Dominio de negocio (ej. 'orders', 'payments')"
+            system:
+              type: string
+              description: "Sistema que generó el evento (ej. 'order-service')"
+            environment:
+              type: string
+              enum: [development, staging, production]
+              description: "Ambiente en el que se generó el evento"
+            customHeaders:
+              type: object
+              nullable: true
+              description: "Headers personalizados adicionales"
+
+  # Errores comunes en eventos
+  EventDeliveryError:
+    type: object
+    required:
+      - eventId
+      - errorCode
+      - errorMessage
+    properties:
+      eventId:
+        type: string
+        format: uuid
+        description: "ID del evento que falló"
+      errorCode:
+        type: string
+        enum: [DESERIALIZATION_ERROR, SCHEMA_VALIDATION_ERROR, PROCESSING_ERROR, UNKNOWN_ERROR]
+        description: "Tipo de error"
+      errorMessage:
+        type: string
+        description: "Descripción del error"
+      timestamp:
+        type: string
+        format: date-time
+        description: "Cuándo ocurrió el error"
+
+  # Patrón Dead Letter Queue (opcional)
+  # Para manejar eventos que fallan en procesamiento después de reintentos
+  DeadLetterEvent:
+    type: object
+    required:
+      - originalEventId
+      - originalTopic
+      - retryCount
+      - lastError
+    properties:
+      originalEventId:
+        type: string
+        format: uuid
+      originalTopic:
+        type: string
+      retryCount:
+        type: integer
+        minimum: 1
+      lastError:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+
+# Guías de consumo
+# 
+# 1. **Deduplicación:** Guarda los `eventId` procesados en una base de datos con TTL (ej. 24 horas)
+#    Rechaza eventos con `eventId` ya vistos.
+#
+# 2. **Idempotencia:** Garantiza que procesar el mismo evento múltiples veces produce el mismo estado.
+#    No es suficiente no hacer nada; hay que asegurar que el resultado final es idéntico.
+#
+# 3. **Ordenamiento:** Usa la `aggregateId` como clave de partición en Kafka para garantizar orden
+#    de eventos de la misma entidad.
+#
+# 4. **Retrocompatibilidad:** Ignora campos desconocidos. Los productores pueden agregar campos
+#    opcionales (MINOR version bump), pero los consumidores deben estar preparados.
+#
+# 5. **Versionado semántico de schemas:**
+#    - PATCH: cambios en documentación, reordenamiento de campos
+#    - MINOR: campos opcionales nuevos, extensión de enums
+#    - MAJOR: eliminación de campos, cambio de tipos
+#
+# 6. **Testing:** Usa herramientas como Specmatic o Pact para validar que productores y consumidores
+#    respetan el contrato.

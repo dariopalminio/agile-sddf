@@ -52,7 +52,7 @@ Si no hay bloques, mostrar `No se encontraron épicas planificadas en la propues
 
 Las épicas se escriben en `specs/flow/`. Crearlo si no existe (nunca en el layout anterior).
 
-Calcular `$MAX_EPIC` como el mayor `NN` de `specs/flow/EPIC-<NN>-*/`; si no existe ninguno, usar `-1`. Las épicas nuevas reciben `$MAX_EPIC + 1` en el orden de la propuesta, rellenado a dos dígitos hasta 99 y a tres desde 100. El número de su encabezado no determina su ID.
+Calcular `$MAX_EPIC` como el mayor `NN` de la unión de `specs/flow/EPIC-<NN>-*/` (épicas activas) y `specs/flow/archive/<YYYY-MM-DD>-EPIC-<NN>-*/` (épicas archivadas, ADR-0019), de modo que nunca se reutilice el número de una épica archivada; un origen ausente se omite sin nota y, si no existe ninguno, usar `-1`. Las épicas nuevas reciben `$MAX_EPIC + 1` en el orden de la propuesta, rellenado a dos dígitos hasta 99 y a tres desde 100. El número de su encabezado no determina su ID.
 
 Convertir el nombre a kebab-case con las reglas vigentes. Si un slug se repite dentro de la propuesta, añadir `-bis` al segundo y sucesivos.
 
@@ -74,11 +74,11 @@ Para cada épica nueva, crear `specs/flow/EPIC-NN-<slug>/epic.md` tomando títul
 
 El frontmatter deriva las claves del template: `type: epic`, ID, slug, título, `status: DEFINE`, `substatus: IN-PROGRESS`, `parent: null`, fechas actuales y `related: []`. `DEFINE` es el estado inicial de toda épica generada desde el roadmap.
 
-Invocar `epic-format-validation` automáticamente para cada archivo. Un resultado `REFINAR` se registra, pero no detiene el lote.
+Invocar `epic-format-validation` automáticamente para cada archivo y leer `verdict` de su `epic-format-validation-report.md` (G-06 de `validation-contract-policy`: solo `APPROVED` aprueba). Un `NEEDS-REFINEMENT` se registra, pero no detiene el lote.
 
 ## Fase 4 — Resumen
 
-Mostrar los archivos creados o saltados bajo `specs/flow/`, con el resultado de `epic-format-validation`. Si todos aprueban, sugerir `/epic-generate-stories`; si alguno requiere refinamiento, pedir corregirlo antes de generar sus historias.
+Mostrar los archivos creados o saltados bajo `specs/flow/`, con el `verdict` de `epic-format-validation` de cada épica. Si todos son `APPROVED`, sugerir `/epic-generate-stories`; si alguno requiere refinamiento, pedir corregirlo antes de generar sus historias.
 
 ## Notas
 

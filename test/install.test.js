@@ -155,6 +155,28 @@ test('installSDDF copia el inventario fuente al destino canónico de cada runtim
   }));
 });
 
+test('epic-validate se empaqueta y se instala con su SKILL.md en cada runtime soportado (STORY-127 AC-3, CS-8)', { concurrency: false }, async (t) => {
+  const { projectDir } = createFixture(t);
+  const sourceSkill = path.join(REPO_ROOT, 'skills', 'epic-validate', 'SKILL.md');
+  assert.equal(fs.existsSync(sourceSkill), true, 'skills/epic-validate/SKILL.md no existe en la fuente');
+
+  const { files } = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'package.json'), 'utf8'));
+  const covered = files.some((entry) => ['skills', 'skills/epic-validate'].includes(entry.replace(/\/+$/, '')));
+  assert.equal(covered, true, `ninguna entrada de package.json › files cubre skills/epic-validate/: ${files.join(', ')}`);
+
+  const expected = fs.readFileSync(sourceSkill);
+  await withInitCwd(projectDir, () => withoutInstallLogs(async () => {
+    for (const runtime of RUNTIMES) {
+      await installSDDF({ target: runtime.id });
+      const installed = path.join(
+        destination(projectDir, runtime, 'local'), runtime.layout.skillsDirectory, 'epic-validate', 'SKILL.md',
+      );
+      assert.equal(fs.existsSync(installed), true, `${runtime.id} no recibió epic-validate/SKILL.md`);
+      assert.deepEqual(fs.readFileSync(installed), expected, `${runtime.id} instaló un epic-validate/SKILL.md distinto de la fuente`);
+    }
+  }));
+});
+
 test('installSDDF resuelve destinos globales desde el mapa y no desde un alias de carpeta', { concurrency: false }, async (t) => {
   const { homeDir } = createFixture(t);
   const hasSourceAgents = fs.existsSync(path.join(REPO_ROOT, 'agents'));

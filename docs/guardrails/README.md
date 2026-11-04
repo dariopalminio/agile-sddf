@@ -113,6 +113,7 @@ Los dos primeros son las mitades complementarias de la política de seguridad de
 | [dod-story-code-review.md](dod-story-code-review.md) | DoD CODE-REVIEW (`CODE-REVIEW/IN-PROGRESS` → `CODE-REVIEW/DONE`) | `story-code-review` |
 | [dod-story-verify.md](dod-story-verify.md) | DoD VERIFY (`VERIFY/IN-PROGRESS` → `VERIFY/DONE`) | `story-verify` |
 | [dod-story-acceptance.md](dod-story-acceptance.md) | DoD ACCEPTANCE (`ACCEPTANCE/IN-PROGRESS` → `ACCEPTANCE/DONE`) | `story-acceptance` |
+| [dod-epic-validate.md](dod-epic-validate.md) | DoD VALIDATE de épica (`VALIDATE/IN-PROGRESS` → `VALIDATE/DONE`) | `epic-validate` (`OPE-03`, en `--mode auto` y `--mode manual`) |
 
 Cada DoD es la condición para **cerrar** su etapa: protege la transición `<ETAPA>/IN-PROGRESS` → `<ETAPA>/DONE`.
 El DoD de historia es un guardrail por etapa: cada skill declara el suyo en su sección `## DoD aplicable`

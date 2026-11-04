@@ -6,7 +6,7 @@ slug: FR-027-validacion-de-formato-de-epica-gate
 title: "Validación de formato de épica (gate)"
 status: active
 created: 2026-10-10
-updated: 2026-10-10
+updated: 2026-10-29
 related: []
 ---
 
@@ -15,9 +15,11 @@ related: []
 ## Descripción
 
 El sistema SHALL validar que un `epic.md` cumple la estructura obligatoria
-derivada en runtime del template, produciendo un veredicto `APROBADO`, `REFINAR` (con la lista
-de secciones faltantes) o `RECHAZADO`. Esta validación SHALL ser precondición de la generación
-de historias.
+derivada en runtime del template, declarando el veredicto `APPROVED` o `NEEDS-REFINEMENT` (con
+cada defecto, su ubicación y la corrección esperada) en el campo `verdict` de
+`epic-format-validation-report.md`, conforme a `validation-contract-policy`. Una épica inexistente
+SHALL terminar en error con la ruta buscada, sin veredicto ni reporte. Esta validación SHALL ser
+precondición de la generación de historias.
 
 ## Atributos
 

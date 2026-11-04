@@ -21,11 +21,10 @@ verify:
     command: "npm run test:contract"
     required: false
   e2e:
-    command: "npm run test:e2e:smoke"
+    command: manual
     required: false
-  e2e-smoke:
-    command: "npm run test:e2e:smoke"
-    required: false
+  # Sin e2e-smoke a propósito: aquí un SMOKE-N requiere un runtime de IA. Sin esta clave, /epic-validate
+  # corre por defecto en --mode manual y toma la evidencia de los reportes de las historias dueñas.
   e2e-sanity:
     command: "npm run test:e2e:sanity"
     required: false
