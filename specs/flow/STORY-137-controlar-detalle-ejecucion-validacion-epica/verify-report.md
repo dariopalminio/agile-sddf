@@ -41,6 +41,7 @@ updated: 2026-11-03
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
+- [x] Evals: epic-validate
 
 ## Findings
 
@@ -84,4 +85,37 @@ No disponible: ningún runner reportó cobertura en esta ejecución (node --test
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+**Precondiciones:**
+- LLM Model: Qwen3.8-27B
+- ctx-size 131072 
+- spec-type draft-mtp 
+- spec-draft-n-max 2
+- opencode con límite "context": 131072
+- opencode con límite "output": 32768
+
+npm run test:eval -- epic-validate --only TC-027,TC-028,TC-029,TC-030,TC-031 --eval-runner opencode --report
+
+Los test que salten con timeout usar:
+npm run test:eval -- epic-validate --only TC-028 --eval-runner opencode --timeout 3600 --report
+
+Alternativa — modelo que converge mejor (coder) y timeout mayor:
+npm run test:eval -- epic-validate --only TC-028 --eval-runner opencode \
+  --model llama.cpp/qwen3-coder/32k --timeout 3600 --report
+
+**Eval Report: epic-validate**
+
+**Fecha:** 2026-11-04 | **Total:** 5 | ✅ Passed: 5 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-027 | verbose-muestra-salida-completa | happy-path | 1 | ✅ PASS | — |
+| TC-028 | sin-verbose-solo-resumen | happy-path | 1 | ✅ PASS | — |
+| TC-029 | mode-auto-sin-pruebas-rechazado | fail-fast | 0.95 | ✅ PASS | — |
+| TC-030 | dry-run-verbose-sin-comandos | happy-path | 0.95 | ✅ PASS | — |
+| TC-031 | verbose-antes-de-mode-auto | happy-path | 1 | ✅ PASS | — |
+
+
+✅ Todos los 5 casos pasaron. El skill está listo.
+
+
