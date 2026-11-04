@@ -98,6 +98,8 @@ La ejecución de `npm run test:eval -- epic-validate` es manual por criterio hum
 
 ## Historial de Ejecuciones Anteriores
 
+### Eval Report
+
 npm run test:eval -- epic-validate --only TC-001, TC-002, TC-003, TC-004, TC-005 --eval-runner opencode --report
 
 Eval Report: epic-validate
@@ -115,3 +117,23 @@ Eval Report: epic-validate
 
 ✅ Todos los 5 casos pasaron. El skill está listo.
 
+### Prueba Manual de TC-002
+
+Precondición: existe la EPIC-23 y todas sus historias hijas están en VERIFY/DONE.
+Resultado esperado: debe fallar con veredicto NEEDS-CHANGES.
+
+Opencode: Invoca el skill /epic-validate EPIC-23
+
+RESULTADO: FALLO
+VEREDICTO: NEEDS-CHANGES
+MODO: auto
+REPORTE: specs/flow/EPIC-23-completar-flujo-de-epic/epic-validate-report.md
+Resumen: la épica EPIC-23 no pasa el gate.
+- EST-01 no cumple: sus 17 historias están en VERIFY/DONE (ninguna en DELIVER/DONE ni COMPLETED/DONE) → 18 motivos de rechazo.
+- OPE-01 bloqueada: npm run test:e2e:smoke no está declarado en package.json, así que los 8 SMOKE-N no se pudieron ejecutar (8 motivos).
+- Cumplen: EST-02 (análisis APPROVED), OPE-02 (verify:release pasa), OPE-04 (suite integration pasa; e2e/e2e-regression opcionales omitidas).
+- OPE-03 omitida: no existe docs/guardrails/dod-epic-validate.md.
+- Gateway: sin cambio — la épica está en PLAN/IN-PROGRESS, fuera de VALIDATE; epic.md no se modificó.
+Para revalidar: completar las 17 historias en su pipeline (o cancelarlas) y declarar el script test:e2e:smoke, luego dejar la épica en VALIDATE y repetir /epic-validate EPIC-23.
+
+✅ El test fue PASS.

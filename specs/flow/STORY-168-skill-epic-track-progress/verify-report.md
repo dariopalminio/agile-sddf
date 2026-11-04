@@ -84,6 +84,8 @@ No se reportó cobertura en las suites ejecutadas.
 
 ## Historial de Ejecuciones Anteriores
 
+### Eval Report
+
 npm run test:eval -- epic-track-progress --eval-runner opencode --report
 
 Eval Report: epic-track-progress
@@ -99,3 +101,28 @@ Eval Report: epic-track-progress
 | TC-004 | epica-inexistente-error-con-ruta | fail-fast | 1 | ✅ PASS | — |
 | TC-005 | historia-cancelada-no-bloquea | edge-case | 1 | ✅ PASS | — |
 
+### Ejecución manual
+
+opencode: Invoca el skill /epic-track-progress EPIC-23
+
+Progreso de EPIC-23 — Completar flujo de epic
+ID	Status	Substatus
+STORY-124	VERIFY	DONE
+STORY-125	VERIFY	DONE
+STORY-126	VERIFY	DONE
+STORY-127	VERIFY	DONE
+STORY-128	VERIFY	DONE
+STORY-137	VERIFY	DONE
+STORY-165	VERIFY	DONE
+STORY-166	VERIFY	DONE
+STORY-167	VERIFY	DONE
+STORY-168	VERIFY	DONE
+STORY-169	VERIFY	DONE
+STORY-170	VERIFY	DONE
+STORY-171	VERIFY	DONE
+STORY-172	VERIFY	DONE
+STORY-173	VERIFY	DONE
+STORY-174	VERIFY	DONE
+STORY-175	VERIFY	DONE
+⏳ No todas las historias están terminadas: 17 pendiente(s) — STORY-124 (VERIFY/DONE), STORY-125 (VERIFY/DONE), STORY-126 (VERIFY/DONE), STORY-127 (VERIFY/DONE), STORY-128 (VERIFY/DONE), STORY-137 (VERIFY/DONE), STORY-165 (VERIFY/DONE), STORY-166 (VERIFY/DONE), STORY-167 (VERIFY/DONE), STORY-168 (VERIFY/DONE), STORY-169 (VERIFY/DONE), STORY-170 (VERIFY/DONE), STORY-171 (VERIFY/DONE), STORY-172 (VERIFY/DONE), STORY-173 (VERIFY/DONE), STORY-174 (VERIFY/DONE), STORY-175 (VERIFY/DONE)
+ℹ️ Solo lectura: no se modificó ningún archivo.
