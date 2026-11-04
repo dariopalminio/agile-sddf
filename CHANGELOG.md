@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [5.1.0] — 2026-11-04
+
 ### Added
 
 - `/epic-validate` (EPIC-23, STORY-124): gate de la fase `VALIDATE` de una épica. Construye el universo de sus historias (índice de `epic.md` ∪ `story.md` activos y archivados con su `parent`) y comprueba que estén cerradas (`DELIVER/DONE` o `COMPLETED/DONE`; las `CANCELED/DONE` no bloquean) y que `epic-analyze-report.md` declare `verdict: APPROVED`. Escribe `epic-validate-report.md` desde su template con el veredicto `APPROVED`, `NEEDS-CHANGES` (una historia no terminal o un análisis sin `APPROVED`) o `BLOCKED` (análisis ausente) y un motivo por cada impedimento. No cambia el estado de la épica ni de sus historias; ante una épica inexistente informa la ruta buscada y no escribe nada. `verify:validation-contract` comprueba su template.
