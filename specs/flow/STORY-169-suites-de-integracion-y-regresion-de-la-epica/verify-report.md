@@ -39,6 +39,7 @@ updated: 2026-11-03
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
+- [x] Test Evals ( TC-032 a TC-036)
 
 ## Ejecuciones
 
@@ -90,4 +91,24 @@ updated: 2026-11-03
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+Se regresionan solo desde TC-032 a TC-036.
+
+Los test que salten con timeout usar:
+npm run test:eval -- epic-validate --only TC-032, TC-033, TC-034, TC-035, TC-036 --eval-runner opencode --timeout 3600 --report
+
+---
+Eval Report: epic-validate
+
+**Fecha:** 2026-11-04 | **Total:** 1 | ✅ Passed: 5 | Failed: 5 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-032 | suites-epica-todas-pasan | happy-path | 1 | ✅ PASS | — |
+| TC-033 | suite-obligatoria-fallida-needs-changes | edge-case | 1 | ✅ PASS | — |
+| TC-034 | suite-obligatoria-no-ejecutable-blocked | edge-case | 1 | ✅ PASS | — |
+| TC-035 | suite-opcional-no-ejecutable-omitida | edge-case | 1 | ✅ PASS | — |
+| TC-036 | suite-opcional-fallida-needs-changes | edge-case | 1 | ✅ PASS | — |
+
+✅ Todos los 5 casos pasaron. El skill está listo.
+---
