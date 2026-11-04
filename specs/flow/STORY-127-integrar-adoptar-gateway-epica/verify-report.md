@@ -41,6 +41,7 @@ Nota: además de las 20 pruebas unitarias, la comprobación de integración `nod
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
+- [x] Evals: epic-validate (T010–T015)
 
 ## Findings
 
@@ -84,4 +85,32 @@ No disponible: los runners de esta ejecución (`node --test`, `verify-fixed-layo
 
 ## Historial de Ejecuciones Anteriores
 
-(sin ejecuciones anteriores)
+**Precondiciones:**
+- LLM Model: Qwen3.8-27B-Uncensored-Q4_K_M.gguf
+- ctx-size 131072 
+- spec-type draft-mtp 
+- spec-draft-n-max 2
+- opencode con límite "context": 131072
+- opencode con límite "output": 32768
+
+npm run test:eval -- epic-validate --only TC-014, TC-015, TC-010, TC-011, TC-012, TC-013 --eval-runner opencode --report
+
+En ejecuciones individuales:
+
+npm run test:eval -- epic-validate --only TC-014 --eval-runner opencode --report
+
+**Eval Report: epic-validate**
+
+**Fecha:** 2026-11-03 | **Total:** 6 | ✅ Passed: 6 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-010 | verify-release-fallido-needs-changes | error-handling | 1 | ✅ PASS | — |
+| TC-011 | dod-epica-incumplido-needs-changes | error-handling | 1 | ✅ PASS | — |
+| TC-012 | auto-smoke-configurado-no-ejecutable-blocked | error-handling | 1 | ✅ PASS | — |
+| TC-013 | controles-opcionales-omitidos | happy-path | 1 | ✅ PASS | — |
+| TC-014 | modo-auto-aprobado-resultado-exito | happy-path | 1 | ✅ PASS | — |
+| TC-015 | modo-manual-bloqueado-resultado-fallo | error-handling | 1 | ✅ PASS | — |
+
+✅ Todos los 6 casos pasaron. El skill está listo.
