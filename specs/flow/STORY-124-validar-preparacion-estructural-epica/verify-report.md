@@ -137,3 +137,22 @@ Resumen: la épica EPIC-23 no pasa el gate.
 Para revalidar: completar las 17 historias en su pipeline (o cancelarlas) y declarar el script test:e2e:smoke, luego dejar la épica en VALIDATE y repetir /epic-validate EPIC-23.
 
 ✅ El test fue PASS.
+
+Ejecución manual de: /epic-validate EPIC-23
+
+### Prueba Manual de TC-001
+
+⚠️ Usando template seed del skill. Copia assets/epic-validate-report-template.md a docs/templates/ para personalizarlo.
+▶ OPE-02 — npm run verify:release · npm run verify:release → pass (0.7 s)
+▶ OPE-03 — criterio 1 · npm run verify:repository → pass (106.5 s)
+📄 Reporte escrito: specs/flow/EPIC-23-completar-flujo-de-epic/epic-validate-report.md
+Veredicto: APPROVED
+Sin motivos.
+Gateway: EPIC-23 VALIDATE/IN-PROGRESS → VALIDATE/DONE
+
+RESULTADO: ÉXITO
+VEREDICTO: APPROVED
+MODO: manual
+REPORTE: specs/flow/EPIC-23-completar-flujo-de-epic/epic-validate-report.md
+
+✅ El test fue PASS.
