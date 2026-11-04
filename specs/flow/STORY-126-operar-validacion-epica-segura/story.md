@@ -5,11 +5,11 @@ id: STORY-126
 kind: feat
 slug: STORY-126-operar-validacion-epica-segura
 title: "Operar la validación de épicas de manera segura"
-status: VERIFY
+status: DELIVER
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-12
-updated: 2026-11-03
+updated: 2026-11-04
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-124

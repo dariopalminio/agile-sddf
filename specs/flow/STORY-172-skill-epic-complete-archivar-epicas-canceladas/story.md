@@ -5,11 +5,11 @@ id: STORY-172
 kind: feat
 slug: STORY-172-skill-epic-complete-archivar-epicas-canceladas
 title: "Skill epic-complete — archivar épicas canceladas"
-status: VERIFY
+status: DELIVER
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-11-02
+updated: 2026-11-04
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-171-completar-archivar-epica-liberada

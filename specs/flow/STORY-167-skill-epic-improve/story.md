@@ -5,11 +5,11 @@ id: STORY-167
 kind: feat
 slug: STORY-167-skill-epic-improve
 title: "Skill epic-improve"
-status: VERIFY
+status: DELIVER
 substatus: DONE
 parent: EPIC-23-completar-flujo-de-epic
 created: 2026-10-27
-updated: 2026-11-02
+updated: 2026-11-04
 related:
   - EPIC-23-completar-flujo-de-epic
   - STORY-166-veredicto-de-epic-format-validation
