@@ -17,5 +17,6 @@ Se carga solo cuando el motor devuelve `ok: false` o termina con exit `2`. El `m
 | `MOVE_FAILED` | `git mv` o el renombre fallan | el error; `epic.md` restaurado | sin cambios |
 | `ROLLBACK_FAILED` | falla el movimiento y también la restauración | `git checkout -- <ruta>/epic.md` para recuperar | `epic.md` en `COMPLETED` dentro de `specs/flow/`: recupéralo con el comando |
 | `COUNT_MISMATCH` | activas + archivadas cambió tras mover | ambas cifras y las rutas | directorio movido; revisar a mano |
+| `LINKS_UPDATE_FAILED` | error de E/S al reescribir las referencias de la ruta original en la documentación activa (BUG-01) | el error y la instrucción de verificar con `node scripts/check-doc-links.js` | directorio movido y `epic.md` cerrada; las referencias de los archivos no reescritos quedan apuntando a la ruta vieja: reejecuta el paso o corrige a mano y valida el gate |
 | exit `2` | argumentos inválidos (subcomando, `--id`, `--version` mal formados, flags desconocidos) | el error de uso en stderr | sin cambios |
 | motor o `node` ausentes | Paso 2 del skill | `❌ No se encontró el motor de epic-complete (<ruta probada>) o node no está en PATH` | sin cambios |

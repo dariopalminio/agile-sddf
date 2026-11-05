@@ -18,8 +18,10 @@
  * `CHANGELOG.md` que contiene el bloque `<!-- epic-ship:EPIC-NN:start -->` → sin versión, con un aviso.
  *
  * `plan` es de solo lectura; `apply` re-planifica, escribe, mueve con `git mv` (o `rename` si el
- * directorio no tiene historial) y restaura `epic.md` si el movimiento falla. La confirmación humana la
- * pide el SKILL.md entre ambos subcomandos: el motor nunca lee stdin.
+ * directorio no tiene historial), actualiza las referencias a la ruta original en la documentación
+ * activa (mismo alcance que `scripts/check-doc-links.js`, tolerante a raíces ausentes) y restaura
+ * `epic.md` si el movimiento falla. La confirmación humana la pide el SKILL.md entre ambos
+ * subcomandos: el motor nunca lee stdin.
  *
  * Uso: node epic-complete.js <plan|apply> --repo-root <dir> (--id EPIC-NN | --path <ruta>) [--version <x.y.z>]
  *
@@ -40,6 +42,21 @@ const ARCHIVED_EPIC_RE = /^\d{4}-\d{2}-\d{2}-EPIC-\d{2,}-/;
 const EPIC_PATH_RE = /^specs\/flow\/EPIC-\d{2,}-[^/]+$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const VERSION_RE = /^v?\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/;
+
+/**
+ * Raíces de documentación activa (BUG-01): misma lista que `scripts/check-doc-links.js`, pero el
+ * motor salta las que no existan (un proyecto instalado puede no tenerlas; el gate sí las exige).
+ */
+const ACTIVE_DOC_ROOTS = [
+  'README.md',
+  'SECURITY.md',
+  'docs/index.md',
+  'docs/constitution.md',
+  'docs/policies',
+  'docs/guardrails',
+  'docs/guides',
+  'docs/runbooks',
+];
 
 function git(repoRoot, args) {
   return spawnSync('git', args, { cwd: repoRoot, encoding: 'utf8' });
@@ -228,10 +245,14 @@ function planCompletion({ repoRoot, id, epicPath, version, today }) {
   }
 
   const moveMethod = moveMethodOf(repoRoot, dir);
-  const warnings = [...resolved.warnings, ...(moveMethod === 'rename' ? [`⚠️ ${dir} no tiene historial de git: se moverá sin git mv`] : [])];
+  const linkUpdates = findLinkUpdates(repoRoot, dir);
+  const linkNote = linkUpdates.length > 0
+    ? [`ℹ️ ${linkUpdates.reduce((sum, u) => sum + u.count, 0)} referencia(s) en ${linkUpdates.length} archivo(s) de documentación activa apuntan a ${dir}/ y se actualizarán al archivar`]
+    : [];
+  const warnings = [...resolved.warnings, ...linkNote, ...(moveMethod === 'rename' ? [`⚠️ ${dir} no tiene historial de git: se moverá sin git mv`] : [])];
   return {
     ok: true, code: 'OK', message: `${epicId} lista para completar y archivar en ${to}/`,
-    epic, action, archiveDate, version: resolved.version, versionSource: resolved.versionSource, from: dir, to, moveMethod, warnings,
+    epic, action, archiveDate, version: resolved.version, versionSource: resolved.versionSource, from: dir, to, moveMethod, linkUpdates, warnings,
   };
 }
 
@@ -286,7 +307,72 @@ function moveEpic(repoRoot, from, to, moveMethod) {
   }
 }
 
-/** Re-planifica, escribe, mueve y verifica el conteo, en el orden de D-8. Nunca hace commit. */
+/** Archivos `.md` de las raíces de documentación activa existentes, relativos en posix (ordenados). */
+function activeDocFiles(repoRoot) {
+  const files = [];
+  const walk = (target) => {
+    const stat = fs.statSync(target);
+    if (stat.isFile()) {
+      if (path.extname(target).toLowerCase() === '.md') files.push(path.relative(repoRoot, target).split(path.sep).join('/'));
+      return;
+    }
+    for (const entry of fs.readdirSync(target, { withFileTypes: true })) {
+      const child = path.join(target, entry.name);
+      if (entry.isDirectory()) walk(child);
+      else if (entry.isFile() && path.extname(entry.name).toLowerCase() === '.md') files.push(path.relative(repoRoot, child).split(path.sep).join('/'));
+    }
+  };
+  for (const root of ACTIVE_DOC_ROOTS) {
+    const target = abs(repoRoot, root);
+    if (fs.existsSync(target)) walk(target);
+  }
+  return files.sort();
+}
+
+/** Patrón de `specs/flow/<dir>` que no forma parte de un directorio más largo ni ya está archivado. */
+function oldRefPattern(dir) {
+  const escaped = dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`specs\\/flow\\/${escaped}(?![A-Za-z0-9_-])`, 'g');
+}
+
+/** Solo lectura (BUG-01): archivos de documentación activa que referencian la ruta actual, con su conteo. */
+function findLinkUpdates(repoRoot, from) {
+  const pattern = oldRefPattern(path.posix.basename(from));
+  const updates = [];
+  for (const file of activeDocFiles(repoRoot)) {
+    const text = fs.readFileSync(abs(repoRoot, file), 'utf8');
+    const count = (text.match(pattern) || []).length;
+    if (count > 0) updates.push({ file, count });
+  }
+  return updates;
+}
+
+/**
+ * Reescribe las referencias `specs/flow/<dir>` → `specs/flow/archive/<fecha>-<dir>` en la
+ * documentación activa (BUG-01). Solo toca los archivos con coincidencias; lanza en errores de E/S.
+ */
+function updateLinkReferences(repoRoot, from, to) {
+  const pattern = oldRefPattern(path.posix.basename(from));
+  const replacement = `${ARCHIVE}/${path.posix.basename(to)}`;
+  let files = 0;
+  let occurrences = 0;
+  for (const file of activeDocFiles(repoRoot)) {
+    const target = abs(repoRoot, file);
+    const text = fs.readFileSync(target, 'utf8');
+    const updated = text.replace(pattern, () => replacement);
+    if (updated === text) continue;
+    const count = (text.match(pattern) || []).length;
+    fs.writeFileSync(target, updated, 'utf8');
+    files += 1;
+    occurrences += count;
+  }
+  return { files, occurrences };
+}
+
+/**
+ * Re-planifica, escribe, mueve, actualiza las referencias de documentación activa y verifica el
+ * conteo, en el orden de D-8. Nunca hace commit.
+ */
 function applyCompletion({ repoRoot, id, epicPath, version, today }) {
   const plan = planCompletion({ repoRoot, id, epicPath, version, today });
   if (!plan.ok) return plan;
@@ -328,8 +414,19 @@ function applyCompletion({ repoRoot, id, epicPath, version, today }) {
   if (after !== before) {
     return { ...result, ok: false, code: 'COUNT_MISMATCH', counts: { before, after }, message: `activas + archivadas = ${after} tras mover ${from}/ a ${to}/, pero antes eran ${before}` };
   }
-  const message = action === 'archive-canceled' ? `${epic.id} archivada como CANCELED (status sin cambios): ${to}/` : `${epic.id} archivada en ${to}/`;
-  return { ...result, code: 'OK', message, counts: { before, after } };
+
+  let links;
+  try {
+    links = updateLinkReferences(repoRoot, from, to);
+  } catch (error) {
+    return {
+      ...result, ok: false, code: 'LINKS_UPDATE_FAILED', counts: { before, after },
+      message: `${epic.id} quedó archivada en ${to}/, pero no se pudieron actualizar las referencias en documentación activa (${error.message}). Verifica con: node scripts/check-doc-links.js`,
+    };
+  }
+  const linkNote = links.occurrences > 0 ? ` — ${links.occurrences} referencia(s) actualizada(s) en ${links.files} archivo(s)` : '';
+  const message = (action === 'archive-canceled' ? `${epic.id} archivada como CANCELED (status sin cambios): ${to}/` : `${epic.id} archivada en ${to}/`) + linkNote;
+  return { ...result, code: 'OK', message, counts: { before, after }, links };
 }
 
 function localToday() {
@@ -374,4 +471,7 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { locateEpic, archiveDateOf, releasedVersionOf, planCompletion, applyCompletion };
+module.exports = {
+  locateEpic, archiveDateOf, releasedVersionOf, planCompletion, applyCompletion,
+  activeDocFiles, findLinkUpdates, updateLinkReferences,
+};

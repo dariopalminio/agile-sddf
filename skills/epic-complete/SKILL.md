@@ -14,7 +14,9 @@ Cierra el ciclo de vida de una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE
 
 `specs/flow/` queda solo con el trabajo activo y la épica archivada conserva su historial en git; `created:` y `completed:` permiten medir el tiempo de ciclo y `version:`, si existe, la enlaza con su entrada de `CHANGELOG.md`. Una épica puede no coincidir con un release: la versión nunca bloquea el cierre.
 
-El trabajo determinista (localizar, validar, resolver la versión, escribir, mover, verificar el conteo) lo hace el motor `scripts/epic-complete.js`; este skill solo orquesta: pide el plan, lo muestra, pregunta y aplica.
+El trabajo determinista (localizar, validar, resolver la versión, escribir, mover, actualizar las referencias en la documentación activa, verificar el conteo) lo hace el motor `scripts/epic-complete.js`; este skill solo orquesta: pide el plan, lo muestra, pregunta y aplica.
+
+Tras archivar, el motor reescribe en la documentación activa (mismo alcance que `scripts/check-doc-links.js`) las referencias a `specs/flow/EPIC-NN-<slug>/` hacia `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`, de modo que el gate de enlaces activos no quede roto (BUG-01).
 
 ## Posicionamiento
 
@@ -38,6 +40,7 @@ Nodo `epic-complete` (`SHIP → COMPLETED`) de `docs/architecture/diagrams/flowc
 - `specs/flow/<EPIC-NN>-<slug>/epic.md` — épica a cerrar (precondición de estado)
 - `CHANGELOG.md` (solo lectura, opcional) — fuente de la versión cuando no se pasa `--version`: el encabezado `## [x.y.z]` que contiene el bloque `<!-- epic-ship:EPIC-NN:start -->`. Sin ninguna de las dos fuentes, la épica se completa sin `version:` y con un aviso
 - `specs/flow/archive/` — se consulta para detectar conflictos de destino y, como pista, si la épica ya está archivada
+- Documentación activa (mismo alcance que `scripts/check-doc-links.js`) — se lee para detectar referencias a la ruta original y se reescribe tras archivar (BUG-01)
 
 ## Parámetros
 
@@ -79,7 +82,7 @@ N/A — el cierre no tiene DoD propio: `SHIP/DONE` ya implica el `APPROVED` de `
 - **No archiva las historias hijas** (lo hace `/story-complete`) ni promueve `[Unreleased]` en `CHANGELOG.md`.
 - **No reabre épicas archivadas** ni busca dentro de `specs/flow/archive/` para resolver la épica.
 - **No edita archivos a mano:** toda escritura y movimiento la hace el motor; el skill solo muestra su salida.
-- **Encoding:** el motor escribe `epic.md` en UTF-8 sin BOM y conserva sus finales de línea.
+- **Encoding:** el motor escribe `epic.md` en UTF-8 sin BOM y conserva sus finales de línea; al reescribir referencias en la documentación activa solo sustituye la ruta y conserva el resto del contenido (BOM y finales de línea incluidos).
 
 ---
 
@@ -121,7 +124,7 @@ Todas las invocaciones se hacen desde `REPO_ROOT`:
 node <CLI_ROOT>/skills/epic-complete/scripts/epic-complete.js <plan|apply> --repo-root <REPO_ROOT> (--id EPIC-NN | --path <ruta>) [--version <x.y.z>]
 ```
 
-El motor escribe un único objeto JSON en stdout (`ok`, `code`, `message`, `epic`, `action`, `archiveDate`, `version`, `versionSource`, `from`, `to`, `moveMethod`, `warnings`, `counts`). Exit `0` si `ok: true`, `1` si `ok: false`, `2` ante argumentos inválidos (error en stderr). Interpreta siempre el JSON, nunca stderr, salvo con exit `2`.
+El motor escribe un único objeto JSON en stdout (`ok`, `code`, `message`, `epic`, `action`, `archiveDate`, `version`, `versionSource`, `from`, `to`, `moveMethod`, `linkUpdates`, `warnings`, `counts`, `links`). `linkUpdates` (plan) lista `[{ file, count }]` de la documentación activa que referenciará la ruta actual; `links` (apply) es `{ files, occurrences }` de referencias reescritas. Exit `0` si `ok: true`, `1` si `ok: false`, `2` ante argumentos inválidos (error en stderr). Interpreta siempre el JSON, nunca stderr, salvo con exit `2`.
 
 ### Paso 3 — Planificar (solo lectura)
 
@@ -142,10 +145,11 @@ Muestra el resumen a partir del JSON:
    Acción:         sin cambio de status (CANCELED/DONE)        (si action = archive-canceled)
    Versión:        <version> (fuente: <versionSource>)         (si action = complete y version no es null)
    Versión:        sin versión; para registrarla, cancela y reejecuta con --version x.y.z   (si action = complete y version es null)
-   Origen:         <from>/
-   Destino:        <to>/
-   Movimiento:     <moveMethod>
-<cada línea de warnings>
+    Origen:         <from>/
+    Destino:        <to>/
+    Movimiento:     <moveMethod>
+    Referencias:    <N> en <M> archivo(s) de documentación activa se actualizarán   (si linkUpdates no está vacío)
+ <cada línea de warnings>
 ```
 
 Pregunta exactamente:
@@ -160,7 +164,7 @@ Solo `s`, `si` o `sí` (sin distinguir mayúsculas) confirman. Cualquier otra re
 
 ### Paso 5 — Aplicar
 
-Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar todo y, en este orden: escribe `epic.md` (solo si `action: complete`), crea `specs/flow/archive/` si falta, mueve el directorio, restaura `epic.md` si el movimiento falla y comprueba que activas + archivadas no cambió.
+Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar todo y, en este orden: escribe `epic.md` (solo si `action: complete`), crea `specs/flow/archive/` si falta, mueve el directorio, restaura `epic.md` si el movimiento falla, comprueba que activas + archivadas no cambió y reescribe las referencias de la ruta original en la documentación activa (solo archivos con coincidencias).
 
 ### Paso 6 — Mostrar el resultado
 
@@ -171,8 +175,9 @@ Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar tod
 ✅ <epic.id> archivada en <to>/ · COMPLETED/DONE · sin versión · completed: <archiveDate>         (action = complete y version es null)
 ✅ <epic.id> archivada en <to>/ · sin cambio de status (ya COMPLETED/DONE)                        (action = archive-only)
 ✅ <epic.id> archivada como CANCELED (status sin cambios): <to>/                                  (action = archive-canceled)
-<cada línea de warnings>
-   El movimiento quedó en el índice de git (git-mv) o en el árbol de trabajo (rename); el commit queda a cargo del usuario.
+    — <occurrences> referencia(s) actualizada(s) en <files> archivo(s)                              (si links.occurrences > 0)
+ <cada línea de warnings>
+    El movimiento quedó en el índice de git (git-mv) o en el árbol de trabajo (rename); el commit queda a cargo del usuario.
 ```
 
 **`ok: false`:** carga `references/error-codes.md`, muestra `❌ <message>` y lo que quedó según el código. No reintentes ni repares a mano: el mensaje del motor ya dice qué hacer.
@@ -185,8 +190,9 @@ Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar tod
 |---|---|---|
 | `epic.md` (actualizado) | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/epic.md` | `status: COMPLETED`, `updated:` y `completed:` de hoy, `version:` si se conoce (solo desde `SHIP/DONE`) |
 | Directorio archivado | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` | la épica completa, con sus reportes; renombre en el índice de git |
+| Documentación activa (referencias) | las raíces activas con coincidencias (p. ej. `docs/index.md`, `README.md`) | las referencias a `specs/flow/EPIC-NN-<slug>/` se reescriben hacia la ruta archivada; solo archivos con coincidencias (BUG-01) |
 
-No se crea ningún reporte ni se modifica ningún otro archivo.
+No se crea ningún reporte. Fuera de la épica, solo se modifica la documentación activa con referencias a su ruta original.
 
 ## References
 

@@ -18,7 +18,7 @@ const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 
 const SCRIPT = path.join(__dirname, '..', 'skills', 'story-complete', 'scripts', 'story-complete.js');
-const { locateStory, archiveDateOf, planCompletion, applyCompletion } = require(SCRIPT);
+const { locateStory, archiveDateOf, planCompletion, applyCompletion, activeDocFiles, findLinkUpdates, updateLinkReferences } = require(SCRIPT);
 
 const TODAY = '2026-10-25';
 const NAME = 'STORY-001-entregada';
@@ -450,4 +450,96 @@ test('CLI: argumentos inválidos → exit 2 con error en stderr (D-9)', (t) => {
     assert.equal(result.stdout, '');
     assert.notEqual(result.stderr.trim(), '');
   }
+});
+
+// ── BUG-01 — referencias de documentación activa ─────────────────────────────────────
+
+function withDocIndex(root, body) {
+  write(path.join(root, 'docs', 'index.md'), body);
+}
+
+test('BUG-01: plan con referencia en docs/index.md → linkUpdates cuenta la ocurrencia y no escribe', (t) => {
+  const root = makeFixture(t, { extra: (r) => withDocIndex(r, ['# Índice', '', `[story](specs/flow/${NAME}/story.md)`, ''].join('\n')) });
+  const before = snapshot(root);
+  const result = planCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.deepEqual(result.linkUpdates, [{ file: 'docs/index.md', count: 1 }]);
+  assert.match(result.warnings.join('\n'), /1 referencia\(s\) en 1 archivo\(s\)/);
+  assert.deepEqual(snapshot(root), before, 'plan no escribe');
+});
+
+test('BUG-01: apply → la referencia se reescribe a la ruta archivada y el resto se conserva', (t) => {
+  const body = ['# Índice', '', `antes [story](specs/flow/${NAME}/story.md) despues`, '', 'fin', ''].join('\n');
+  const root = makeFixture(t, { extra: (r) => withDocIndex(r, body) });
+  const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.deepEqual(result.links, { files: 1, occurrences: 1 });
+  assert.match(result.message, /1 referencia\(s\) actualizada\(s\) en 1 archivo\(s\)$/);
+  const after = fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8');
+  assert.ok(after.includes(`antes [story](specs/flow/archive/${TODAY}-${NAME}/story.md) despues`), after);
+  assert.ok(after.startsWith('# Índice'), 'encabezado intacto');
+  assert.ok(after.trimEnd().endsWith('fin'), 'resto intacto');
+});
+
+test('BUG-01: sin referencias → linkUpdates vacío y links a cero, nada tocado', (t) => {
+  const root = makeFixture(t, { extra: (r) => withDocIndex(r, '# Índice sin enlaces a la historia\n') });
+  const plan = planCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.deepEqual(plan.linkUpdates, []);
+  const original = fs.readFileSync(path.join(root, 'docs', 'index.md'));
+  const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.deepEqual(result.links, { files: 0, occurrences: 0 });
+  assert.doesNotMatch(result.message, /referencia/);
+  assert.ok(fs.readFileSync(path.join(root, 'docs', 'index.md')).equals(original), 'archivo no tocado');
+});
+
+test('BUG-01: colisión de prefijo → solo se reescribe el directorio exacto, no el más largo', (t) => {
+  const LONG = `${NAME}-extra`;
+  const root = makeFixture(t, {
+    stories: { [NAME]: fm('DELIVER', 'DONE'), [LONG]: fm('DELIVER', 'DONE') },
+    extra: (r) => withDocIndex(r, [`[exact](specs/flow/${NAME}/story.md) y [larga](specs/flow/${LONG}/story.md)`].join('\n')),
+  });
+  const result = applyCompletion({ repoRoot: root, id: 'STORY-001', storyPath: `specs/flow/${NAME}`, today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  const after = fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8');
+  assert.ok(after.includes(`[exact](specs/flow/archive/${TODAY}-${NAME}/story.md)`), 'el exacto se reescribe');
+  assert.ok(after.includes(`[larga](specs/flow/${LONG}/story.md)`), 'el más largo NO se reescribe');
+});
+
+test('BUG-01: múltiples ocurrencias en el mismo archivo → count y occurrences correctos', (t) => {
+  const root = makeFixture(t, {
+    extra: (r) => withDocIndex(r, [`[a](specs/flow/${NAME}/story.md)`, `[b](specs/flow/${NAME}/story.md)`, `[c](specs/flow/${NAME}/story.md)`].join('\n')),
+  });
+  const plan = planCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.deepEqual(plan.linkUpdates, [{ file: 'docs/index.md', count: 3 }]);
+  const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.deepEqual(result.links, { files: 1, occurrences: 3 });
+  const after = fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8');
+  assert.equal(after.match(new RegExp(`specs/flow/archive/${TODAY}-${NAME}/story\\.md`, 'g')).length, 3);
+});
+
+test('BUG-01: raíces ausentes (sin docs/) → no lanza y solo actualiza lo existente', (t) => {
+  const root = makeFixture(t, { extra: (r) => write(path.join(r, 'README.md'), `[s](specs/flow/${NAME}/story.md)\n`) });
+  assert.deepEqual(activeDocFiles(root), ['README.md'], 'solo README.md existe entre las raíces');
+  const result = applyCompletion({ repoRoot: root, id: 'STORY-001', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.deepEqual(result.links, { files: 1, occurrences: 1 });
+});
+
+test('BUG-01: findLinkUpdates / updateLinkReferences son puros y deterministas (helper)', (t) => {
+  const root = makeFixture(t, {
+    extra: (r) => {
+      withDocIndex(r, `ref specs/flow/${NAME}/ aquí\n`);
+      write(path.join(r, 'SECURITY.md'), `ver specs/flow/${NAME}/\n`);
+    },
+  });
+  const from = `specs/flow/${NAME}`;
+  const to = `specs/flow/archive/${TODAY}-${NAME}`;
+  assert.deepEqual(findLinkUpdates(root, from), [
+    { file: 'SECURITY.md', count: 1 },
+    { file: 'docs/index.md', count: 1 },
+  ]);
+  const result = updateLinkReferences(root, from, to);
+  assert.deepEqual(result, { files: 2, occurrences: 2 });
+  assert.match(fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8'), new RegExp(`specs/flow/archive/${TODAY}-${NAME}/`));
+  assert.match(fs.readFileSync(path.join(root, 'SECURITY.md'), 'utf8'), new RegExp(`specs/flow/archive/${TODAY}-${NAME}/`));
 });

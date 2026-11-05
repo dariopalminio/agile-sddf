@@ -20,7 +20,7 @@ const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 
 const SCRIPT = path.join(__dirname, '..', 'skills', 'epic-complete', 'scripts', 'epic-complete.js');
-const { locateEpic, archiveDateOf, releasedVersionOf, planCompletion, applyCompletion } = require(SCRIPT);
+const { locateEpic, archiveDateOf, releasedVersionOf, planCompletion, applyCompletion, activeDocFiles, findLinkUpdates, updateLinkReferences } = require(SCRIPT);
 
 test('epic-complete: description no supera 350 caracteres y las fuentes no contienen U+FEFF literal', () => {
   const skill = fs.readFileSync(path.join(path.dirname(SCRIPT), '..', 'SKILL.md'), 'utf8');
@@ -566,4 +566,102 @@ test('CLI: argumentos inválidos → exit 2 con error en stderr y stdout vacío'
     assert.equal(result.stdout, '');
     assert.notEqual(result.stderr.trim(), '');
   }
+});
+
+// ── Contrato 9 — referencias de documentación activa (BUG-01) ───────────────────────
+
+function withDocIndex(root, body) {
+  write(path.join(root, 'docs', 'index.md'), body);
+}
+
+test('BUG-01: plan con referencia en docs/index.md → linkUpdates cuenta la ocurrencia y no escribe (contrato 9, AC-1)', (t) => {
+  const root = makeFixture(t, {
+    extra: (r) => withDocIndex(r, ['# Índice', '', `[epic](specs/flow/${NAME}/epic.md)`, ''].join('\n')),
+  });
+  const before = snapshot(root);
+  const result = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.deepEqual(result.linkUpdates, [{ file: 'docs/index.md', count: 1 }]);
+  assert.match(result.warnings.join('\n'), /1 referencia\(s\) en 1 archivo\(s\)/);
+  assert.deepEqual(snapshot(root), before, 'plan no escribe');
+});
+
+test('BUG-01: apply → la referencia se reescribe a la ruta archivada y el resto del archivo se conserva (contrato 9, AC-2)', (t) => {
+  const body = ['# Índice', '', `antes [epic](specs/flow/${NAME}/epic.md) despues`, '', 'fin', ''].join('\n');
+  const root = makeFixture(t, { extra: (r) => withDocIndex(r, body) });
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.deepEqual(result.links, { files: 1, occurrences: 1 });
+  assert.match(result.message, new RegExp(`1 referencia\\(s\\) actualizada\\(s\\) en 1 archivo\\(s\\)$`));
+  const after = fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8');
+  assert.ok(after.includes(`antes [epic](specs/flow/archive/${TODAY}-${NAME}/epic.md) despues`), after);
+  assert.ok(after.startsWith('# Índice'), 'encabezado intacto');
+  assert.ok(after.trimEnd().endsWith('fin'), 'resto intacto');
+});
+
+test('BUG-01: sin referencias en documentación activa → linkUpdates vacío y links a cero, nada tocado (contrato 9, AC-3)', (t) => {
+  const root = makeFixture(t, { extra: (r) => withDocIndex(r, '# Índice sin enlaces a la épica\n') });
+  const plan = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.deepEqual(plan.linkUpdates, []);
+  assert.doesNotMatch(plan.warnings.join('\n'), /referencia/);
+  const original = fs.readFileSync(path.join(root, 'docs', 'index.md'));
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.deepEqual(result.links, { files: 0, occurrences: 0 });
+  assert.doesNotMatch(result.message, /referencia/);
+  assert.ok(fs.readFileSync(path.join(root, 'docs', 'index.md')).equals(original), 'archivo no tocado');
+});
+
+test('BUG-01: colisión de prefijo → solo se reescribe el directorio exacto, no el más largo (contrato 9, CNF-1)', (t) => {
+  const LONG = `${NAME}-extra`;
+  const root = makeFixture(t, {
+    epics: { [NAME]: fm('SHIP', 'DONE'), [LONG]: fm('SHIP', 'DONE', { created: '2026-09-01', updated: '2026-10-28' }) },
+    extra: (r) => withDocIndex(r, [`[exact](specs/flow/${NAME}/epic.md) y [larga](specs/flow/${LONG}/epic.md)`].join('\n')),
+  });
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', epicPath: `specs/flow/${NAME}`, today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  const after = fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8');
+  assert.ok(after.includes(`[exact](specs/flow/archive/${TODAY}-${NAME}/epic.md)`), 'el exacto se reescribe');
+  assert.ok(after.includes(`[larga](specs/flow/${LONG}/epic.md)`), 'el más largo NO se reescribe');
+});
+
+test('BUG-01: múltiples ocurrencias en el mismo archivo → count y occurrences correctos (contrato 9, AC-4)', (t) => {
+  const root = makeFixture(t, {
+    extra: (r) => withDocIndex(r, [`[a](specs/flow/${NAME}/epic.md)`, `[b](specs/flow/${NAME}/epic.md)`, `[c](specs/flow/${NAME}/epic.md)`].join('\n')),
+  });
+  const plan = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.deepEqual(plan.linkUpdates, [{ file: 'docs/index.md', count: 3 }]);
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.deepEqual(result.links, { files: 1, occurrences: 3 });
+  const after = fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8');
+  assert.equal(after.match(new RegExp(`specs/flow/archive/${TODAY}-${NAME}/epic\\.md`, 'g')).length, 3);
+});
+
+test('BUG-01: raíces ausentes (sin docs/) → no lanza y solo actualiza lo existente (contrato 9, CNF-2)', (t) => {
+  const root = makeFixture(t, { extra: (r) => write(path.join(r, 'README.md'), `[e](specs/flow/${NAME}/epic.md)\n`) });
+  assert.deepEqual(activeDocFiles(root), ['README.md'], 'solo README.md existe entre las raíces');
+  const plan = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.deepEqual(plan.linkUpdates, [{ file: 'README.md', count: 1 }]);
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.deepEqual(result.links, { files: 1, occurrences: 1 });
+});
+
+test('BUG-01: findLinkUpdates / updateLinkReferences son puros y deterministas (contrato 9, helper)', (t) => {
+  const root = makeFixture(t, {
+    extra: (r) => {
+      withDocIndex(r, `ref specs/flow/${NAME}/ aquí\n`);
+      write(path.join(r, 'SECURITY.md'), `ver specs/flow/${NAME}/\n`);
+    },
+  });
+  const from = `specs/flow/${NAME}`;
+  const to = `specs/flow/archive/${TODAY}-${NAME}`;
+  assert.deepEqual(findLinkUpdates(root, from), [
+    { file: 'SECURITY.md', count: 1 },
+    { file: 'docs/index.md', count: 1 },
+  ]);
+  const result = updateLinkReferences(root, from, to);
+  assert.deepEqual(result, { files: 2, occurrences: 2 });
+  assert.match(fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8'), new RegExp(`specs/flow/archive/${TODAY}-${NAME}/`));
+  assert.match(fs.readFileSync(path.join(root, 'SECURITY.md'), 'utf8'), new RegExp(`specs/flow/archive/${TODAY}-${NAME}/`));
 });

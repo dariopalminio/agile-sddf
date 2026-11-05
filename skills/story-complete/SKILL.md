@@ -15,7 +15,9 @@ Cierra el ciclo de vida de una historia: la lleva de `DELIVER/DONE` a `COMPLETED
 
 El valor está en que el cierre deja de ser una edición manual más un movimiento a mano: la fecha del directorio sale siempre del frontmatter, la búsqueda falla cerrada ante cualquier ambigüedad y, si el movimiento falla, `story.md` vuelve a su contenido previo. `specs/flow/` queda solo con el trabajo activo y la historia archivada conserva su historial en git.
 
-El trabajo determinista (localizar, validar, escribir, mover, verificar el conteo) lo hace el motor `scripts/story-complete.js`; este skill solo orquesta: pide el plan, lo muestra, pregunta y aplica. Así la operación irreversible no depende de que el agente siga pasos al pie de la letra, y el motor se prueba con `node --test` sin consumir cuota de evals.
+El trabajo determinista (localizar, validar, escribir, mover, actualizar las referencias en la documentación activa, verificar el conteo) lo hace el motor `scripts/story-complete.js`; este skill solo orquesta: pide el plan, lo muestra, pregunta y aplica. Así la operación irreversible no depende de que el agente siga pasos al pie de la letra, y el motor se prueba con `node --test` sin consumir cuota de evals.
+
+Tras archivar, el motor reescribe en la documentación activa (mismo alcance que `scripts/check-doc-links.js`) las referencias a `specs/flow/STORY-NNN-<slug>/` hacia `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`, de modo que el gate de enlaces activos no quede roto (BUG-01).
 
 ## Posicionamiento
 
@@ -41,6 +43,7 @@ story-complete    → registra COMPLETED y archiva la historia (o la cancelada, 
 
 - `specs/flow/<STORY-NNN>-<slug>/story.md` — historia a cerrar (precondición de estado)
 - `specs/flow/archive/` — se consulta para detectar conflictos de destino y, como pista, si la historia ya está archivada
+- Documentación activa (mismo alcance que `scripts/check-doc-links.js`) — se lee para detectar referencias a la ruta original y se reescribe tras archivar (BUG-01)
 
 ## Parámetros
 
@@ -85,7 +88,7 @@ N/A — el cierre no tiene DoD propio: el DoD de entrega lo verifica `story-deli
 - **Una historia `CANCELED` se archiva sin escribir `story.md`:** status, substatus y `updated:` no cambian; el status es lo que la distingue de una entregada en el archivo (ADR-0017).
 - **No reabre historias archivadas** ni busca dentro de `specs/flow/archive/` para resolver la historia.
 - **No edita archivos a mano:** toda escritura y movimiento la hace el motor; el skill solo muestra su salida.
-- **Encoding:** el motor escribe `story.md` en UTF-8 sin BOM y conserva sus finales de línea.
+- **Encoding:** el motor escribe `story.md` en UTF-8 sin BOM y conserva sus finales de línea; al reescribir referencias en la documentación activa solo sustituye la ruta y conserva el resto del contenido (BOM y finales de línea incluidos).
 
 ---
 
@@ -127,7 +130,7 @@ Todas las invocaciones se hacen desde `REPO_ROOT`:
 node <CLI_ROOT>/skills/story-complete/scripts/story-complete.js <plan|apply> --repo-root <REPO_ROOT> (--id STORY-NNN | --path <ruta>)
 ```
 
-El motor escribe un único objeto JSON en stdout (`ok`, `code`, `message`, `story`, `action`, `archiveDate`, `from`, `to`, `moveMethod`, `warnings`, `counts`). Exit `0` si `ok: true`, `1` si `ok: false`, `2` ante argumentos inválidos (error en stderr). Interpreta siempre el JSON, nunca el texto de stderr, salvo con exit `2`.
+El motor escribe un único objeto JSON en stdout (`ok`, `code`, `message`, `story`, `action`, `archiveDate`, `from`, `to`, `moveMethod`, `linkUpdates`, `warnings`, `counts`, `links`). `linkUpdates` (plan) lista `[{ file, count }]` de la documentación activa que referenciará la ruta actual; `links` (apply) es `{ files, occurrences }` de referencias reescritas. Exit `0` si `ok: true`, `1` si `ok: false`, `2` ante argumentos inválidos (error en stderr). Interpreta siempre el JSON, nunca el texto de stderr, salvo con exit `2`.
 
 ### Paso 3 — Planificar (solo lectura)
 
@@ -146,10 +149,11 @@ Muestra el resumen a partir del JSON:
    Acción:         COMPLETED/DONE · updated: <archiveDate>     (si action = complete)
    Acción:         sin cambio de status (ya COMPLETED/DONE)    (si action = archive-only)
    Acción:         sin cambio de status (CANCELED/DONE)        (si action = archive-canceled)
-   Origen:         <from>/
-   Destino:        <to>/
-   Movimiento:     <moveMethod>
-<cada línea de warnings>
+    Origen:         <from>/
+    Destino:        <to>/
+    Movimiento:     <moveMethod>
+    Referencias:    <N> en <M> archivo(s) de documentación activa se actualizarán   (si linkUpdates no está vacío)
+ <cada línea de warnings>
 ```
 
 Pregunta exactamente:
@@ -163,7 +167,7 @@ Solo `s`, `si` o `sí` (sin distinguir mayúsculas) confirman. Cualquier otra re
 
 ### Paso 5 — Aplicar
 
-Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar todo (por si el filesystem cambió desde el plan) y, en este orden: escribe `story.md` (solo si `action: complete`), mueve el directorio, restaura `story.md` si el movimiento falla y comprueba que activas + archivadas no cambió. Con `archive-canceled` (como con `archive-only`) solo se mueve: no hay escritura previa ni nada que restaurar.
+Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar todo (por si el filesystem cambió desde el plan) y, en este orden: escribe `story.md` (solo si `action: complete`), mueve el directorio, restaura `story.md` si el movimiento falla, comprueba que activas + archivadas no cambió y reescribe las referencias de la ruta original en la documentación activa (solo archivos con coincidencias). Con `archive-canceled` (como con `archive-only`) solo se mueve: no hay escritura previa ni nada que restaurar.
 
 ### Paso 6 — Mostrar el resultado
 
@@ -172,9 +176,10 @@ Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar tod
 ```
 ✅ <story.id> archivada en <to>/                              (action = complete o archive-only)
 ✅ <story.id> archivada como CANCELED (status sin cambios): <to>/   (action = archive-canceled)
-   status: COMPLETED/DONE · updated: <archiveDate>            (solo si action = complete)
-<cada línea de warnings>                                     (aviso de movimiento sin git mv, si aplica)
-   El movimiento quedó en el índice de git (git-mv) o en el árbol de trabajo (rename); el commit queda a cargo del usuario.
+    status: COMPLETED/DONE · updated: <archiveDate>            (solo si action = complete)
+    — <occurrences> referencia(s) actualizada(s) en <files> archivo(s)   (si links.occurrences > 0)
+ <cada línea de warnings>                                     (aviso de movimiento sin git mv, si aplica)
+    El movimiento quedó en el índice de git (git-mv) o en el árbol de trabajo (rename); el commit queda a cargo del usuario.
 ```
 
 **`ok: false`:** muestra `❌ <message>` y lo que quedó según el código (ver `## Manejo de errores`). No reintentes ni intentes reparar a mano: el mensaje del motor ya dice qué hacer.
@@ -196,6 +201,7 @@ Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar tod
 | `MOVE_FAILED` | `git mv` o el renombre fallan | el error; `story.md` restaurado | sin cambios |
 | `ROLLBACK_FAILED` | falla el movimiento y también la restauración | `git checkout -- <ruta>/story.md` para recuperar | `story.md` en `COMPLETED` dentro de `specs/flow/`: recupéralo con el comando |
 | `COUNT_MISMATCH` | activas + archivadas cambió tras mover | ambas cifras y las rutas | directorio movido; revisar a mano |
+| `LINKS_UPDATE_FAILED` | error de E/S al reescribir las referencias de la ruta original en la documentación activa (BUG-01) | el error y la instrucción de verificar con `node scripts/check-doc-links.js` | directorio movido y `story.md` cerrada; las referencias de los archivos no reescritos quedan apuntando a la ruta vieja: reejecuta el paso o corrige a mano y valida el gate |
 | exit `2` | argumentos inválidos | el error de uso en stderr | sin cambios |
 | motor o `node` ausentes | Paso 2 | `❌ No se encontró el motor de story-complete …` | sin cambios |
 
@@ -205,5 +211,6 @@ Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar tod
 |---|---|---|
 | `story.md` (actualizado) | `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/story.md` | `status: COMPLETED`, `updated: <hoy>` (solo desde `DELIVER/DONE`) |
 | Directorio archivado | `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` | la historia completa, con sus reportes; renombre en el índice de git. Una `CANCELED/DONE` conserva su `story.md` byte a byte |
+| Documentación activa (referencias) | las raíces activas con coincidencias (p. ej. `docs/index.md`, `README.md`) | las referencias a `specs/flow/STORY-NNN-<slug>/` se reescriben hacia la ruta archivada; solo archivos con coincidencias (BUG-01) |
 
-No se crea ningún reporte ni se modifica ningún otro archivo.
+No se crea ningún reporte. Fuera de la historia, solo se modifica la documentación activa con referencias a su ruta original.

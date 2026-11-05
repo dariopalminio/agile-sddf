@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-11-04
+updated: 2026-11-05
 ---
 
 # 📚 Índice de documentación
@@ -153,11 +153,11 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ## 🗂️ Work items (specs/flow/)
 
-_(sin artefactos)_
+- [[BUG-01-archivado-genera-enlaces-rotos]] — [bug.md](../specs/flow/BUG-01-archivado-genera-enlaces-rotos/bug.md) — Archivado genera enlaces rotos
+- [[plan-01-actualizar-referencias-al-archivar]] — [plan.md](../specs/flow/BUG-01-archivado-genera-enlaces-rotos/plan.md) — Reparación BUG-01 — Actualizar referencias en documentación activa al archivar
 
 ### Épicas
 
-- [[EPIC-00-estructura-base-y-mecanismo-de-templates]] — [epic.md](../specs/flow/EPIC-00-estructura-base-y-mecanismo-de-templates/epic.md) — Release 00 — Estructura Base y Mecanismo de Templates
 - [[EPIC-01-features-spec-builder]] — [epic.md](../specs/flow/EPIC-01-features-spec-builder/epic.md) — Release 01 — Features Spec Builder
 - [[EPIC-02-project-spec-builder]] — [epic.md](../specs/flow/EPIC-02-project-spec-builder/epic.md) — Release 02 — Project Spec Builder (Pipeline de proyecto)
 - [[EPIC-03-reverse-engineering]] — [epic.md](../specs/flow/EPIC-03-reverse-engineering/epic.md) — Release 03 — Reverse Engineering (Ingeniería inversa)
@@ -264,6 +264,7 @@ _(sin artefactos)_
 
 ### Épicas e historias archivadas (archive/)
 
+- [[EPIC-00-estructura-base-y-mecanismo-de-templates]] — [epic.md](../specs/flow/archive/2026-04-09-EPIC-00-estructura-base-y-mecanismo-de-templates/epic.md) — Release 00 — Estructura Base y Mecanismo de Templates
 - [[STORY-001-project-begin]] — [story.md](../specs/flow/archive/2026-04-22-STORY-001-project-begin/story.md) — project-begin — Captura de intención inicial del proyecto
 - [[STORY-003-project-discovery]] — [story.md](../specs/flow/archive/2026-04-22-STORY-003-project-discovery/story.md) — project-discovery — Discovery de usuarios y especificación de requisitos
 - [[STORY-004-project-planning]] — [story.md](../specs/flow/archive/2026-04-22-STORY-004-project-planning/story.md) — project-planning — Planificación de releases y backlog
@@ -545,8 +546,8 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 440 |
-| Nodos con frontmatter | 433 |
+| Nodos indexados | 442 |
+| Nodos con frontmatter | 435 |
 | Nodos sin frontmatter | 7 |
 | Wikilinks pendientes | 1 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
