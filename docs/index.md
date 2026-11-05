@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-10-30
+updated: 2026-11-04
 ---
 
 # 📚 Índice de documentación
@@ -37,6 +37,8 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 ### Guardrails (guardrails/)
 
 - [[guardrails-index]] — [README.md](guardrails/README.md) — Índice de Guardrails
+- [[dod-epic-ship]] — [dod-epic-ship.md](guardrails/dod-epic-ship.md) — DoD SHIP — Epic (transition guardrail)
+- [[dod-epic-validate]] — [dod-epic-validate.md](guardrails/dod-epic-validate.md) — DoD VALIDATE — Epic (transition guardrail)
 - [[dod-story-acceptance]] — [dod-story-acceptance.md](guardrails/dod-story-acceptance.md) — DoD ACCEPTANCE — Story (transition guardrail)
 - [[dod-story-checklist]] — [dod-story-checklist.md](guardrails/dod-story-checklist.md) — DoD Story (deprecado)
 - [[dod-story-code-review]] — [dod-story-code-review.md](guardrails/dod-story-code-review.md) — DoD CODE-REVIEW — Story (transition guardrail)
@@ -211,7 +213,6 @@ _(sin artefactos)_
 - [[insight-colapsar-specs-dos-niveles]] — [insight-colapsar-specs-dos-niveles.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
 - [[EPIC-21-colapsar-specs-dos-niveles-test-cases]] — [test-cases.md](../specs/flow/EPIC-21-colapsar-specs-dos-niveles/test-cases.md) — Test Cases: Colapsar specs/ a dos niveles y eliminar 01-projects/
 - [[EPIC-22-epic-analyze]] — [epic.md](../specs/flow/EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
-- [[EPIC-23-completar-flujo-de-epic]] — [epic.md](../specs/flow/EPIC-23-completar-flujo-de-epic/epic.md) — Completar flujo de epic
 - [[EPIC-24-agentes-locales-por-skill]] — [epic.md](../specs/flow/EPIC-24-agentes-locales-por-skill/epic.md) — Mover agentes globales a agentes locales por skill
 - [[EPIC-25-unificar-contrato-de-validaciones-en-skills]] — [epic.md](../specs/flow/EPIC-25-unificar-contrato-de-validaciones-en-skills/epic.md) — Unificar contrato de validaciones en skills
 - [[EPIC-26-layout-y-flow-forward-mejorado]] — [epic.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/epic.md) — Layout y flow-forward mejorado
@@ -238,14 +239,8 @@ _(sin artefactos)_
 - [[STORY-099-sddf-init-level-full]] — [story.md](../specs/flow/STORY-099-sddf-init-level-full/story.md) — Inicializar la memoria completa desde sddf-init con el parámetro --level
 - [[STORY-101-dod-story-por-etapa]] — [story.md](../specs/flow/STORY-101-dod-story-por-etapa/story.md) — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill
 - [[STORY-102-renombrar-skill-sddf-constitution]] — [story.md](../specs/flow/STORY-102-renombrar-skill-sddf-constitution/story.md) — Renombrar el skill project-policies-generation como sddf-constitution
-- [[STORY-124-validar-preparacion-estructural-epica]] — [story.md](../specs/flow/STORY-124-validar-preparacion-estructural-epica/story.md) — Validar la preparación estructural de una épica
-- [[STORY-125-validar-evidencia-operativa-epica]] — [story.md](../specs/flow/STORY-125-validar-evidencia-operativa-epica/story.md) — Validar la evidencia operativa de una épica
-- [[STORY-126-operar-validacion-epica-segura]] — [story.md](../specs/flow/STORY-126-operar-validacion-epica-segura/story.md) — Operar la validación de épicas de manera segura
-- [[STORY-127-integrar-adoptar-gateway-epica]] — [story.md](../specs/flow/STORY-127-integrar-adoptar-gateway-epica/story.md) — Integrar y documentar el gateway de validación de épicas
-- [[STORY-128-evaluar-validacion-epica-repetible]] — [story.md](../specs/flow/STORY-128-evaluar-validacion-epica-repetible/story.md) — Evaluar la validación de épicas de forma repetible
 - [plan.md](../specs/flow/STORY-130-renombrar-skill-story-improve-a-story-refine/plan.md) — Plan — Renombrar el skill `story-improve` a `story-refine` ⚠️ sin frontmatter
 - [[STORY-130-renombrar-skill-story-improve-a-story-refine]] — [story.md](../specs/flow/STORY-130-renombrar-skill-story-improve-a-story-refine/story.md) — Renombrar skill `story-improve` a `story-refine`
-- [[STORY-137-controlar-detalle-ejecucion-validacion-epica]] — [story.md](../specs/flow/STORY-137-controlar-detalle-ejecucion-validacion-epica/story.md) — Controlar el detalle y los límites de la ejecución de la validación de épicas
 - [[STORY-147-adr-del-layout-fijo-de-tres-raices]] — [story.md](../specs/flow/STORY-147-adr-del-layout-fijo-de-tres-raices/story.md) — ADR del layout fijo de tres raíces
 - [[STORY-148-contrato-de-rutas-fijas-y-gate-determinista]] — [story.md](../specs/flow/STORY-148-contrato-de-rutas-fijas-y-gate-determinista/story.md) — Contrato de rutas fijas y gate determinista
 - [[STORY-149-sddf-init-crea-el-nuevo-layout]] — [story.md](../specs/flow/STORY-149-sddf-init-crea-el-nuevo-layout/story.md) — sddf-init crea el nuevo layout
@@ -264,19 +259,10 @@ _(sin artefactos)_
 - [[STORY-162-story-delivery-modelo-continuous]] — [story.md](../specs/flow/STORY-162-story-delivery-modelo-continuous/story.md) — story-delivery en modelo continuous
 - [[STORY-163-story-delivery-dry-run-y-force]] — [story.md](../specs/flow/STORY-163-story-delivery-dry-run-y-force/story.md) — story-delivery: --dry-run y --force
 - [[STORY-164-archivar-historias-canceladas]] — [story.md](../specs/flow/STORY-164-archivar-historias-canceladas/story.md) — Skill story-complete: archivar historias canceladas
-- [[STORY-165-corregir-indice-y-enlaces-epica]] — [story.md](../specs/flow/STORY-165-corregir-indice-y-enlaces-epica/story.md) — Skill epic-refine (Core): corregir índice y enlaces de una épica
-- [[STORY-166-veredicto-de-epic-format-validation]] — [story.md](../specs/flow/STORY-166-veredicto-de-epic-format-validation/story.md) — Veredicto de epic-format-validation
-- [[STORY-167-skill-epic-improve]] — [story.md](../specs/flow/STORY-167-skill-epic-improve/story.md) — Skill epic-improve
-- [[STORY-168-skill-epic-track-progress]] — [story.md](../specs/flow/STORY-168-skill-epic-track-progress/story.md) — Skill epic-track-progress
-- [[STORY-169-suites-de-integracion-y-regresion-de-la-epica]] — [story.md](../specs/flow/STORY-169-suites-de-integracion-y-regresion-de-la-epica/story.md) — Suites de integración y regresión de la épica
-- [[STORY-170-skill-epic-ship]] — [story.md](../specs/flow/STORY-170-skill-epic-ship/story.md) — Skill epic-ship
-- [[STORY-171-completar-archivar-epica-liberada]] — [story.md](../specs/flow/STORY-171-completar-archivar-epica-liberada/story.md) — Skill epic-complete (Core) — completar y archivar una épica liberada
-- [[STORY-172-skill-epic-complete-archivar-epicas-canceladas]] — [story.md](../specs/flow/STORY-172-skill-epic-complete-archivar-epicas-canceladas/story.md) — Skill epic-complete — archivar épicas canceladas
-- [[STORY-173-cubrir-criterios-salida-epica]] — [story.md](../specs/flow/STORY-173-cubrir-criterios-salida-epica/story.md) — Skill epic-refine: asignar la cobertura de criterios de salida
-- [[STORY-174-corregir-referencias-obsoletas-tras-split]] — [story.md](../specs/flow/STORY-174-corregir-referencias-obsoletas-tras-split/story.md) — Skill epic-refine: corregir referencias obsoletas tras un split
-- [[STORY-175-admitir-epicas-archivadas-en-layout]] — [story.md](../specs/flow/STORY-175-admitir-epicas-archivadas-en-layout/story.md) — Admitir épicas archivadas en el layout fijo con un ADR nuevo
+- [[plan-cerrar-epica-segun-dod-proyecto]] — [plan.md](../specs/flow/STORY-176-cerrar-epica-segun-dod-proyecto/plan.md) — Plan: cerrar una épica según el DoD del proyecto, sin asumir stack ni release
+- [[STORY-176-cerrar-epica-segun-dod-proyecto]] — [story.md](../specs/flow/STORY-176-cerrar-epica-segun-dod-proyecto/story.md) — Cerrar una épica según el DoD del proyecto, sin asumir stack ni release
 
-### Historias archivadas (archive/)
+### Épicas e historias archivadas (archive/)
 
 - [[STORY-001-project-begin]] — [story.md](../specs/flow/archive/2026-04-22-STORY-001-project-begin/story.md) — project-begin — Captura de intención inicial del proyecto
 - [[STORY-003-project-discovery]] — [story.md](../specs/flow/archive/2026-04-22-STORY-003-project-discovery/story.md) — project-discovery — Discovery de usuarios y especificación de requisitos
@@ -423,6 +409,28 @@ _(sin artefactos)_
 - [[STORY-139-alinear-epic-analyze]] — [story.md](../specs/flow/archive/2026-10-19-STORY-139-alinear-epic-analyze/story.md) — Alinear epic-analyze
 - [[STORY-143-validacion-end-to-end]] — [story.md](../specs/flow/archive/2026-10-20-STORY-143-validacion-end-to-end/story.md) — Validación end-to-end
 - [[STORY-145-alinear-story-acceptance]] — [story.md](../specs/flow/archive/2026-10-20-STORY-145-alinear-story-acceptance/story.md) — Alinear story-acceptance
+- [[EPIC-23-completar-flujo-de-epic]] — [epic.md](../specs/flow/archive/2026-11-04-EPIC-23-completar-flujo-de-epic/epic.md) — Completar flujo de epic
+- [[EPIC-23-completar-flujo-de-epic-release-notes]] — [release-notes.md](../specs/flow/archive/2026-11-04-EPIC-23-completar-flujo-de-epic/release-notes.md) — Notas de versión: Completar flujo de epic
+- [[EPIC-23-report-SMOKE-5-20261104]] — [report-SMOKE-5-20261104.md](../specs/flow/archive/2026-11-04-EPIC-23-completar-flujo-de-epic/report-SMOKE-5-20261104.md) — Smoke report: SMOKE-5 de EPIC-23
+- [[STORY-124-validar-preparacion-estructural-epica]] — [story.md](../specs/flow/archive/2026-11-04-STORY-124-validar-preparacion-estructural-epica/story.md) — Validar la preparación estructural de una épica
+- [[STORY-125-validar-evidencia-operativa-epica]] — [story.md](../specs/flow/archive/2026-11-04-STORY-125-validar-evidencia-operativa-epica/story.md) — Validar la evidencia operativa de una épica
+- [[STORY-126-operar-validacion-epica-segura]] — [story.md](../specs/flow/archive/2026-11-04-STORY-126-operar-validacion-epica-segura/story.md) — Operar la validación de épicas de manera segura
+- [[STORY-127-integrar-adoptar-gateway-epica]] — [story.md](../specs/flow/archive/2026-11-04-STORY-127-integrar-adoptar-gateway-epica/story.md) — Integrar y documentar el gateway de validación de épicas
+- [[STORY-128-evaluar-validacion-epica-repetible]] — [story.md](../specs/flow/archive/2026-11-04-STORY-128-evaluar-validacion-epica-repetible/story.md) — Evaluar la validación de épicas de forma repetible
+- [[STORY-137-controlar-detalle-ejecucion-validacion-epica]] — [story.md](../specs/flow/archive/2026-11-04-STORY-137-controlar-detalle-ejecucion-validacion-epica/story.md) — Controlar el detalle y los límites de la ejecución de la validación de épicas
+- [[STORY-165-corregir-indice-y-enlaces-epica]] — [story.md](../specs/flow/archive/2026-11-04-STORY-165-corregir-indice-y-enlaces-epica/story.md) — Skill epic-refine (Core): corregir índice y enlaces de una épica
+- [report-20261101.md](../specs/flow/archive/2026-11-04-STORY-166-veredicto-de-epic-format-validation/report-20261101.md) — Eval Report: epic-format-validation ⚠️ sin frontmatter
+- [[STORY-166-veredicto-de-epic-format-validation]] — [story.md](../specs/flow/archive/2026-11-04-STORY-166-veredicto-de-epic-format-validation/story.md) — Veredicto de epic-format-validation
+- [bug-fix-01.md](../specs/flow/archive/2026-11-04-STORY-167-skill-epic-improve/bug-fix-01.md) — Plan de solución — bug `epic-improve` (eval TC-002 FAIL) ⚠️ sin frontmatter
+- [[STORY-167-skill-epic-improve]] — [story.md](../specs/flow/archive/2026-11-04-STORY-167-skill-epic-improve/story.md) — Skill epic-improve
+- [[STORY-168-skill-epic-track-progress]] — [story.md](../specs/flow/archive/2026-11-04-STORY-168-skill-epic-track-progress/story.md) — Skill epic-track-progress
+- [[STORY-169-suites-de-integracion-y-regresion-de-la-epica]] — [story.md](../specs/flow/archive/2026-11-04-STORY-169-suites-de-integracion-y-regresion-de-la-epica/story.md) — Suites de integración y regresión de la épica
+- [[STORY-170-skill-epic-ship]] — [story.md](../specs/flow/archive/2026-11-04-STORY-170-skill-epic-ship/story.md) — Skill epic-ship
+- [[STORY-171-completar-archivar-epica-liberada]] — [story.md](../specs/flow/archive/2026-11-04-STORY-171-completar-archivar-epica-liberada/story.md) — Skill epic-complete (Core) — completar y archivar una épica liberada
+- [[STORY-172-skill-epic-complete-archivar-epicas-canceladas]] — [story.md](../specs/flow/archive/2026-11-04-STORY-172-skill-epic-complete-archivar-epicas-canceladas/story.md) — Skill epic-complete — archivar épicas canceladas
+- [[STORY-173-cubrir-criterios-salida-epica]] — [story.md](../specs/flow/archive/2026-11-04-STORY-173-cubrir-criterios-salida-epica/story.md) — Skill epic-refine: asignar la cobertura de criterios de salida
+- [[STORY-174-corregir-referencias-obsoletas-tras-split]] — [story.md](../specs/flow/archive/2026-11-04-STORY-174-corregir-referencias-obsoletas-tras-split/story.md) — Skill epic-refine: corregir referencias obsoletas tras un split
+- [[STORY-175-admitir-epicas-archivadas-en-layout]] — [story.md](../specs/flow/archive/2026-11-04-STORY-175-admitir-epicas-archivadas-en-layout/story.md) — Admitir épicas archivadas en el layout fijo con un ADR nuevo
 
 ---
 
@@ -445,6 +453,7 @@ _(sin artefactos)_
 
 - [[architecture-index]] — [README.md](architecture/README.md) — Índice de arquitectura del framework SDDF
 - [[memory-system]] — [memory-system.md](architecture/memory-system.md) — Sistema de Memoria del Framework SDDF
+- [[sequence-npm-run-test-eval-simple]] — [npm-run-test-eval-system.md](architecture/npm-run-test-eval-system.md) — Secuencia simplificada: npm run test:eval
 - [[sdcl-sddf]] — [sdcl-sddf.md](architecture/sdcl-sddf.md) — Correspondencia SDLC clásico ↔ SDDF
 - [[sddf-architecture]] — [sddf-architecture.md](architecture/sddf-architecture.md) — Arquitectura del Framework SDDF
 - [[state-machine]] — [state-machine.md](architecture/state-machine.md) — Máquina de estados del framework SDDF
@@ -472,6 +481,7 @@ _(sin artefactos)_
 - [[layout-fijo-con-archivo-de-historias-canceladas]] — [ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md](adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) — Layout fijo de tres raíces con archivo de historias completadas y canceladas
 - [[adoptar-cucumber-para-specs-living]] — [ADR-0018-adoptar-cucumber-para-specs-living.md](adr/ADR-0018-adoptar-cucumber-para-specs-living.md) — Adoptar Cucumber (Gherkin en archivos .feature) para specs/living/
 - [[layout-fijo-con-archivo-de-epicas]] — [ADR-0019-layout-fijo-con-archivo-de-epicas.md](adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md) — Layout fijo de tres raíces con archivo de historias y épicas cerradas
+- [[contratos-centralizados-para-spec-living]] — [ADR-0020-contratos-centralizados-para-spec-living.md](adr/ADR-0020-contratos-centralizados-para-spec-living.md) — Contratos centralizados en OpenAPI/AsyncAPI para specs/living/
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
 - [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
@@ -491,6 +501,7 @@ _(sin artefactos)_
 - [[best-practices-for-system-prompt]] — [best-practices-for-system-prompt.md](guides/best-practices-for-system-prompt.md) — Mejores prácticas para el prompt de sistema
 - [[best-practices-for-testing]] — [best-practices-for-testing.md](guides/best-practices-for-testing.md) — Mejores Prácticas para Pruebas de Software
 - [[branching-strategy-sddf-git-flow]] — [branching-strategy-sddf-git-flow.md](guides/branching-strategy-sddf-git-flow.md) — Modelo de Branching SDDF git flow
+- [[contract-testing]] — [contract-testing.md](guides/contract-testing.md) — Guía Ejecutiva: Contract Testing y Contratos Centralizados
 - [[custom-agent-creation-guide]] — [custom-agent-creation-guide.md](guides/custom-agent-creation-guide.md) — Guía de Creación de Custom Agents
 - [[custom-skill-creation-guide]] — [custom-skill-creation-guide.md](guides/custom-skill-creation-guide.md) — Guía de Creación de Skills Personalizados
 - [[custom-system-prompt-guide]] — [custom-system-prompt-guide.md](guides/custom-system-prompt-guide.md) — Guía para la creación de System Prompts (AGENTS.md, CLAUDE.md, etc.)
@@ -501,6 +512,7 @@ _(sin artefactos)_
 - [[harness-engineering-guide]] — [harness-engineering-guide.md](guides/harness-engineering-guide.md) — Guía de Harness Engineering
 - [[organization-of-artifacts]] — [organization-of-artifacts.md](guides/organization-of-artifacts.md) — Reglas de la estrategia de organización de artefactos (SDDF)
 - [[root-folder-practices]] — [root-folder-practices.md](guides/root-folder-practices.md) — Raíces del repositorio y layout fijo SDDF
+- [[sdd-with-bcdd]] — [sdd-with-bcdd.md](guides/sdd-with-bcdd.md) — SDD con Behavior & Contract-Driven Development (BCDD)
 - [[sdd]] — [sdd.md](guides/sdd.md) — Spec Driven Development (SDD)
 - [[sddf-commands-pipeline]] — [sddf-commands-pipeline.md](guides/sddf-commands-pipeline.md) — Flujos principales SDDF
 - [[skill-structural-pattern]] — [skill-structural-pattern.md](guides/skill-structural-pattern.md) — Patrones estructurales de Skills (Skill Structural patterns)
@@ -533,9 +545,9 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 428 |
-| Nodos con frontmatter | 423 |
-| Nodos sin frontmatter | 5 |
+| Nodos indexados | 440 |
+| Nodos con frontmatter | 433 |
+| Nodos sin frontmatter | 7 |
 | Wikilinks pendientes | 1 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |

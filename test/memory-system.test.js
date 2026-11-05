@@ -1348,11 +1348,11 @@ test('S152-UT-002 scanNodes: con un harness que omite specs el origen flow no se
   assert.ok(!rels.some((rel) => rel.includes('specs/flow/')), rels.join(', '));
 });
 
-test('S152-UT-003 renderIndex: el template por defecto ubica la archivada bajo Historias archivadas', (t) => {
+test('S152-UT-003 renderIndex: el template por defecto ubica la archivada bajo Épicas e historias archivadas', (t) => {
   const { docs } = flowRepo(t);
   const template = readUtf8(SKILL_DIR, 'assets', 'index-template.md');
   const { content, summary } = engine.renderIndex(template, engine.scanNodes(docs, 'sddf'), { date: '2026-01-01' });
-  const archived = content.slice(content.indexOf('### Historias archivadas'), content.indexOf('## 🧭 Dominio y arquitectura'));
+  const archived = content.slice(content.indexOf('### Épicas e historias archivadas'), content.indexOf('## 🧭 Dominio y arquitectura'));
   assert.match(archived, /- \[\[STORY-000-z\]\] — \[story\.md\]\(\.\.\/specs\/flow\/archive\/2026-01-01-STORY-000-z\/story\.md\) — Historia Z/);
   assert.match(content, /- \[\[EPIC-01-x\]\] — \[epic\.md\]\(\.\.\/specs\/flow\/EPIC-01-x\/epic\.md\)/);
   assert.equal(summary.pending, 0);
@@ -1366,14 +1366,14 @@ test('S152-UT-004 checkMemory: los nodos flow son propios y se evalúan', (t) =>
     && entry.path === '../specs/flow/STORY-001-a/story.md' && entry.detail === 'falta id'), JSON.stringify(problems));
 });
 
-test('S164-UT-001 una historia CANCELED archivada se indexa bajo Historias archivadas y check no la reporta (CNF-3)', (t) => {
+test('S164-UT-001 una historia CANCELED archivada se indexa bajo Épicas e historias archivadas y check no la reporta (CNF-3)', (t) => {
   const { repo, docs } = flowRepo(t);
   const file = path.join(repo, 'specs', 'flow', 'archive', '2026-01-01-STORY-001-cancelada', 'story.md');
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, '---\ntype: story\nid: STORY-001\nslug: STORY-001-cancelada\ntitle: "Historia cancelada"\nstatus: CANCELED\nsubstatus: DONE\n---\n# Historia cancelada\n');
   const template = readUtf8(SKILL_DIR, 'assets', 'index-template.md');
   const { content } = engine.renderIndex(template, engine.scanNodes(docs, 'sddf'), { date: '2026-01-01' });
-  const archived = content.slice(content.indexOf('### Historias archivadas'), content.indexOf('## 🧭 Dominio y arquitectura'));
+  const archived = content.slice(content.indexOf('### Épicas e historias archivadas'), content.indexOf('## 🧭 Dominio y arquitectura'));
   assert.match(archived, /- \[\[STORY-001-cancelada\]\] — \[story\.md\]\(\.\.\/specs\/flow\/archive\/2026-01-01-STORY-001-cancelada\/story\.md\) — Historia cancelada/);
   const { problems } = engine.checkMemory(docs, 'sddf');
   assert.ok(!problems.some((entry) => entry.path.includes('STORY-001-cancelada')), JSON.stringify(problems));

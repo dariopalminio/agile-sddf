@@ -69,7 +69,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 {layer:specs-stories}
 
-### Historias archivadas (archive/)
+### Épicas e historias archivadas (archive/)
 
 {layer:specs-archive}
 
