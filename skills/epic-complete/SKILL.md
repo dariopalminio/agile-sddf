@@ -1,7 +1,7 @@
 ---
 name: epic-complete
 description: >-
-  Completa una épica SHIP/DONE (→ COMPLETED/DONE con fecha de cierre y, si se conoce, versión) y la archiva en specs/flow/archive/
+  Completa una épica SHIP/DONE (→ COMPLETED/DONE, fecha y versión opcional) y la archiva en specs/flow/archive/
   con confirmación humana; las CANCELED/DONE se archivan sin cambiar su status. Usar después de epic-ship. Invocar
   para "epic-complete", "completar épica", "archivar épica", "archivar épica cancelada", "cerrar épica" o "COMPLETED".
 ---

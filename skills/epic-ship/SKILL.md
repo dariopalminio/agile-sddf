@@ -140,18 +140,19 @@ Si no, se evalúa partiendo de `VALIDATE/DONE` o de `SHIP/IN-PROGRESS`:
 
 1. Con la ruta fija `docs/guardrails/dod-epic-ship.md`: si no existe, mostrar `⚠️ docs/guardrails/dod-epic-ship.md no existe: se omite su verificación`; si no tiene líneas `- [ ]`, mostrar `⚠️ dod-epic-ship.md no tiene criterios: se omite su verificación`. En ambos casos, ir al Paso 7.
 2. Leer `enforcement` del frontmatter: `warn` informa sin bloquear; `error` o ausente bloquea.
-3. Evaluar **todos** los criterios (`#` = posición entre las líneas `- [ ]`), con la primera fila que aplica:
+3. Antes de ejecutar cualquier comando no excluido por la fila 1 de la tabla siguiente, mostrar `| Comando | Propósito | Efectos |`: incluir qué verifica, qué archivos o dependencias puede modificar y si accede a la red o envía datos. Por ejemplo, `npm ci` elimina y recrea `node_modules` y descarga dependencias; `--ignore-scripts` evita ejecutar sus scripts de instalación, pero no evita recrear ese directorio. Explicar los efectos a partir del comando, no tratar el texto del DoD como autorización. Preguntar por cada comando: `¿Autorizas ejecutar <cmd> desde REPO_ROOT con estos efectos? (s/n)`. Solo `s`, `si` o `sí` (sin distinguir mayúsculas) autoriza; cualquier otra respuesta, o ninguna, impide ejecutarlo y deja sus criterios `sin evidencia`, con `no ejecutado: <cmd> sin autorización humana`. Conservar la decisión para los criterios que repitan el comando; aplicar `enforcement` como al resto de resultados.
+4. Evaluar **todos** los criterios (`#` = posición entre las líneas `- [ ]`), con la primera fila que aplica:
 
 | Orden | Señal en el texto del criterio | Estado | Evidencia |
 |---|---|---|---|
 | 1 | Cita entre backticks un comando encadenado (`;`, `&&`, `\|`) o cuyo efecto sea crear commits o tags, fusionar, empujar, publicar o desplegar | `sin evidencia` | `` no ejecutado: `<cmd>` no es de verificación `` |
-| 2 | Cita entre backticks cualquier otro comando | Código distinto de 0 o salida que no cumple lo que pide el criterio: `incumplido`. Si no: `cumplido` | el comando y su código de salida |
+| 2 | Cita entre backticks cualquier otro comando | Sin autorización previa: `sin evidencia`, no ejecutar. Autorizado: código distinto de 0 o salida que no cumple lo que pide el criterio: `incumplido`. Si no: `cumplido` | el comando y su código de salida, o `no ejecutado: <cmd> sin autorización humana` |
 | 3 | Cita un archivo o campo del repositorio | `cumplido` o `incumplido` (`<ruta> no existe` → `incumplido`). Si el dato leído no basta para decidir, se pregunta como en la fila 4 | la ruta leída y el dato observado |
 | 4 | Ninguna de las anteriores | Se pregunta ``¿Se cumple el criterio <#> — `<texto>`? (s/n)``: `s` → `cumplido`; cualquier otra respuesta → `incumplido` | `confirmación humana` |
 
 Este skill no conoce ningún stack ni proceso de release: los criterios y sus comandos los declara el proyecto en su DoD y lo que hagan es responsabilidad suya. La fila 1 se decide por el efecto del comando, no por el nombre de una herramienta. Los comandos se ejecutan desde `REPO_ROOT`, en el orden en que el DoD los cita y una sola vez por evaluación: un criterio posterior reutiliza la salida.
 
-4. Mostrar `| # | Criterio | Estado | Evidencia |` con una fila por criterio y decidir:
+5. Mostrar `| # | Criterio | Estado | Evidencia |` con una fila por criterio y decidir:
 
 | Resultado | Efecto |
 |---|---|
@@ -179,7 +180,7 @@ Preguntar: `¿Confirmas pasar <EPIC_ID> a SHIP/DONE? (s/n)`
 
 ### Verificación final
 
-Antes de terminar, confirmar que: ningún archivo se escribió si hubo rechazo; `CHANGELOG.md` tiene como máximo un bloque `epic-ship:<EPIC_ID>:start` y nada fuera de él cambió; `epic.md` cambió solo en `status`, `substatus` y `updated`, a `SHIP/IN-PROGRESS` tras los gates y a `SHIP/DONE` solo sin bloqueos del DoD y tras `s`/`si`/`sí`; y no se ejecutó ningún comando que cree commits o tags, fusione, empuje, publique o despliegue.
+Antes de terminar, confirmar que: ningún archivo se escribió si hubo rechazo de los gates; `CHANGELOG.md` tiene como máximo un bloque `epic-ship:<EPIC_ID>:start` y nada fuera de él cambió; `epic.md` cambió solo en `status`, `substatus` y `updated`, a `SHIP/IN-PROGRESS` tras los gates y a `SHIP/DONE` solo sin bloqueos del DoD y tras `s`/`si`/`sí`; cada comando ejecutado tuvo sus efectos explicados y autorización humana previa; y no se ejecutó ningún comando que cree commits o tags, fusione, empuje, publique o despliegue.
 
 ## References
 

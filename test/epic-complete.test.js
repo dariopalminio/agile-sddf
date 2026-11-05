@@ -22,6 +22,16 @@ const test = require('node:test');
 const SCRIPT = path.join(__dirname, '..', 'skills', 'epic-complete', 'scripts', 'epic-complete.js');
 const { locateEpic, archiveDateOf, releasedVersionOf, planCompletion, applyCompletion } = require(SCRIPT);
 
+test('epic-complete: description no supera 350 caracteres y las fuentes no contienen U+FEFF literal', () => {
+  const skill = fs.readFileSync(path.join(path.dirname(SCRIPT), '..', 'SKILL.md'), 'utf8');
+  const description = /^description: >-\r?\n([\s\S]*?)\r?\n---/m.exec(skill);
+  assert.ok(description, 'description presente en el frontmatter');
+  assert.ok(description[1].trim().replace(/\s+/g, ' ').length <= 350, 'description <= 350 caracteres');
+  for (const file of [SCRIPT, __filename]) {
+    assert.equal(fs.readFileSync(file, 'utf8').includes('\uFEFF'), false, `${file}: sin U+FEFF literal`);
+  }
+});
+
 const TODAY = '2026-10-30';
 const NAME = 'EPIC-31-exportaciones';
 const BODY = Array.from({ length: 10 }, (_, i) => `Línea ${i + 1} del cuerpo de la épica.`);
@@ -492,7 +502,8 @@ test('epic.md con \\r\\n conserva \\r\\n en las líneas reemplazadas e insertada
 });
 
 test('epic.md con BOM → se escribe sin BOM', (t) => {
-  const root = makeFixture(t, { epics: { [NAME]: `﻿${epicContent(fm('SHIP', 'DONE'))}` } });
+  const root = makeFixture(t, { epics: { [NAME]: `\uFEFF${epicContent(fm('SHIP', 'DONE'))}` } });
+  assert.deepEqual(fs.readFileSync(epicFile(root, `specs/flow/${NAME}`)).subarray(0, 3), Buffer.from([0xef, 0xbb, 0xbf]));
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.ok, true, result.message);
   assert.notEqual(fs.readFileSync(epicFile(root, result.to))[0], 0xef);

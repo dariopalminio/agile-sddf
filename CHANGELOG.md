@@ -8,6 +8,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+<!-- epic-ship:EPIC-23:start -->
+### EPIC-23 — Completar flujo de epic
+
+Cerrar el ciclo de vida de la épica en el flujo flow-forward, de `DEFINE` a `COMPLETED`, con un skill por paso del flujo de referencia y gates con veredicto que deciden cada avance o bucle de corrección.
+
+- **Added** — Validar la preparación estructural de una épica (STORY-124)
+- **Added** — Validar la evidencia operativa de una épica (STORY-125)
+- **Added** — Operar la validación de épicas de manera segura (STORY-126)
+- **Added** — Integrar y documentar el gateway de validación de épicas (STORY-127)
+- **Added** — Evaluar la validación de épicas de forma repetible (STORY-128)
+- **Added** — Controlar el detalle y los límites de la ejecución de la validación de épicas (STORY-137)
+- **Added** — Skill epic-refine (Core): corregir índice y enlaces de una épica (STORY-165)
+- **Added** — Veredicto de epic-format-validation (STORY-166)
+- **Added** — Skill epic-improve (STORY-167)
+- **Added** — Skill epic-track-progress (STORY-168)
+- **Added** — Suites de integración y regresión de la épica (STORY-169)
+- **Added** — Skill epic-ship (STORY-170)
+- **Added** — Skill epic-complete (Core) — completar y archivar una épica liberada (STORY-171)
+- **Added** — Skill epic-complete — archivar épicas canceladas (STORY-172)
+- **Added** — Skill epic-refine: asignar la cobertura de criterios de salida (STORY-173)
+- **Added** — Skill epic-refine: corregir referencias obsoletas tras un split (STORY-174)
+- **Added** — Admitir épicas archivadas en el layout fijo con un ADR nuevo (STORY-175)
+<!-- epic-ship:EPIC-23:end -->
+
 ## [5.1.0] — 2026-11-04
 
 ### Added

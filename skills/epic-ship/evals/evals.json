@@ -367,10 +367,15 @@
       "id": "TC-012",
       "name": "dod-cumplido-desde-validate-done",
       "type": "happy-path",
-      "description": "Épica en VALIDATE/DONE con APPROVED, bloque ya publicado bajo ## [1.5.0] con todas las historias y DoD con enforcement: error cumplido. Responde s a los dos criterios de confirmación y s a la confirmación final; los tres comandos terminan con código 0. Registra SHIP/IN-PROGRESS, muestra la tabla del DoD y pasa a SHIP/DONE sin tocar CHANGELOG.md.",
+      "description": "Épica en VALIDATE/DONE con APPROVED, bloque ya publicado bajo ## [1.5.0] con todas las historias y DoD con enforcement: error cumplido. Responde s a la autorización de cada comando, a los dos criterios de confirmación y a la confirmación final; los tres comandos terminan con código 0. Registra SHIP/IN-PROGRESS, muestra la tabla del DoD y pasa a SHIP/DONE sin tocar CHANGELOG.md.",
+      "manual_checks": [
+        "Antes del primer comando, comprobar que se muestran todos los comandos, sus propósitos y efectos. npm ci --ignore-scripts debe advertir que elimina y recrea node_modules, descarga dependencias y no ejecuta scripts de instalación.",
+        "Comprobar en el registro de actividad que cada comando se ejecuta solo tras su autorización humana explícita.",
+        "En una ejecución independiente del fixture, rechazar npm ci --ignore-scripts o dejar su autorización sin respuesta: no debe ejecutarse; su criterio queda sin evidencia, enforcement: error bloquea SHIP/DONE y la épica queda en SHIP/IN-PROGRESS."
+      ],
       "input": {
         "invocation": "/epic-ship EPIC-30",
-        "responses": ["s", "s", "s"],
+        "responses": ["s", "s", "s", "s", "s", "s"],
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] El árbol de trabajo está revisado.", "- [ ] `CHANGELOG.md` contiene la sección `## [1.5.0]`.", "- [ ] Las verificaciones deterministas pasan: `npm ci --ignore-scripts`, `npm run verify:repository` y `npm pack --dry-run`.", "- [ ] Confirma que el tag apunta al commit validado."],
         "command_exit_codes": {"npm ci --ignore-scripts": 0, "npm run verify:repository": 0, "npm pack --dry-run": 0},
@@ -393,10 +398,10 @@
       "id": "TC-013",
       "name": "dod-incumplido-bloquea-ship-done",
       "type": "fail-fast",
-      "description": "Épica en SHIP/IN-PROGRESS con APPROVED y DoD con enforcement: error. Responde s al criterio de confirmación, pero npm run verify:repository termina con código 1. Evalúa todos los criterios, nombra el incumplido, no hace la confirmación final, no escribe epic.md y la épica sigue en SHIP/IN-PROGRESS.",
+      "description": "Épica en SHIP/IN-PROGRESS con APPROVED y DoD con enforcement: error. Responde s a la autorización de cada comando y al criterio de confirmación, pero npm run verify:repository termina con código 1. Evalúa todos los criterios, nombra el incumplido, no hace la confirmación final, no escribe epic.md y la épica sigue en SHIP/IN-PROGRESS.",
       "input": {
         "invocation": "/epic-ship EPIC-30",
-        "responses": ["s"],
+        "responses": ["s", "s", "s", "s"],
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] Las verificaciones deterministas pasan: `npm ci --ignore-scripts`, `npm run verify:repository` y `npm pack --dry-run`.", "- [ ] Confirma que el tag apunta al commit validado."],
         "command_exit_codes": {"npm ci --ignore-scripts": 0, "npm run verify:repository": 1, "npm pack --dry-run": 0},
@@ -496,6 +501,7 @@
       "input": {
         "invocation": "/epic-ship EPIC-30",
         "user_answer": "s",
+        "responses": ["s", "s"],
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: warn", "---", "- [ ] La verificación pasa: `npm run verify:repository`."],
         "command_exit_codes": {"npm run verify:repository": 1},
@@ -597,6 +603,7 @@
       "input": {
         "invocation": "/epic-ship EPIC-30",
         "user_answer": "s",
+        "responses": ["s", "s", "s"],
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] Las verificaciones pasan: `cargo test` y `make verify`."],
         "command_exit_codes": {"cargo test": 0, "make verify": 0},

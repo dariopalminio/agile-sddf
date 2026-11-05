@@ -61,7 +61,7 @@ function countEpics(repoRoot) {
   return countDirs(repoRoot, FLOW, ACTIVE_EPIC_RE) + countDirs(repoRoot, ARCHIVE, ARCHIVED_EPIC_RE);
 }
 
-const BOM_RE = /^﻿/;
+const BOM_RE = /^\uFEFF/;
 const FIELD_RE = /^([A-Za-z0-9_-]+):\s*(.*)$/;
 
 /** Clave y valor normalizado (comillas y espacios quitados) de una línea de nivel superior; null si no lo es. */
