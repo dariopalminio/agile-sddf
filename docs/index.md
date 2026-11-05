@@ -158,14 +158,14 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ### Épicas
 
-- [[EPIC-01-features-spec-builder]] — [epic.md](../specs/flow/EPIC-01-features-spec-builder/epic.md) — Release 01 — Features Spec Builder
-- [[EPIC-02-project-spec-builder]] — [epic.md](../specs/flow/EPIC-02-project-spec-builder/epic.md) — Release 02 — Project Spec Builder (Pipeline de proyecto)
-- [[EPIC-03-reverse-engineering]] — [epic.md](../specs/flow/EPIC-03-reverse-engineering/epic.md) — Release 03 — Reverse Engineering (Ingeniería inversa)
-- [[EPIC-04-refactor-features-spec-builder]] — [epic.md](../specs/flow/EPIC-04-refactor-features-spec-builder/epic.md) — Release 04 — Refactor Features Spec Builder (Consolidación y calidad)
-- [[EPIC-05-enhance-project-spec]] — [epic.md](../specs/flow/EPIC-05-enhance-project-spec/epic.md) — Release 05 — Enhance Project Spec (Expansión project spec)
-- [[EPIC-06-release-and-story-generator]] — [epic.md](../specs/flow/EPIC-06-release-and-story-generator/epic.md) — Release 06 — Release & Story Generator
-- [[EPIC-07-publicacion-framework-npm]] — [epic.md](../specs/flow/EPIC-07-publicacion-framework-npm/epic.md) — Release 07 — Publicación del Framework SDDF como Paquete NPM
-- [[EPIC-08-npm-install-locally]] — [epic.md](../specs/flow/EPIC-08-npm-install-locally/epic.md) — Release 08 — Npm Install locally
+- [[EPIC-01-features-spec-builder]] — [epic.md](../specs/flow/archive/2026-04-09-EPIC-01-features-spec-builder/epic.md) — Release 01 — Features Spec Builder
+- [[EPIC-02-project-spec-builder]] — [epic.md](../specs/flow/archive/2026-04-16-EPIC-02-project-spec-builder/epic.md) — Release 02 — Project Spec Builder (Pipeline de proyecto)
+- [[EPIC-03-reverse-engineering]] — [epic.md](../specs/flow/archive/2026-04-16-EPIC-03-reverse-engineering/epic.md) — Release 03 — Reverse Engineering (Ingeniería inversa)
+- [[EPIC-04-refactor-features-spec-builder]] — [epic.md](../specs/flow/archive/2026-04-17-EPIC-04-refactor-features-spec-builder/epic.md) — Release 04 — Refactor Features Spec Builder (Consolidación y calidad)
+- [[EPIC-05-enhance-project-spec]] — [epic.md](../specs/flow/archive/2026-04-18-EPIC-05-enhance-project-spec/epic.md) — Release 05 — Enhance Project Spec (Expansión project spec)
+- [[EPIC-06-release-and-story-generator]] — [epic.md](../specs/flow/archive/2026-04-20-EPIC-06-release-and-story-generator/epic.md) — Release 06 — Release & Story Generator
+- [[EPIC-07-publicacion-framework-npm]] — [epic.md](../specs/flow/archive/2026-04-20-EPIC-07-publicacion-framework-npm/epic.md) — Release 07 — Publicación del Framework SDDF como Paquete NPM
+- [[EPIC-08-npm-install-locally]] — [epic.md](../specs/flow/archive/2026-04-20-EPIC-08-npm-install-locally/epic.md) — Release 08 — Npm Install locally
 - [[EPIC-09-docs-and-wiki-builders]] — [epic.md](../specs/flow/EPIC-09-docs-and-wiki-builders/epic.md) — Release 09 — Docs and Wiki builders
 - [[EPIC-10-mejora-estructura-artefactos-nuevos-skills]] — [epic.md](../specs/flow/EPIC-10-mejora-estructura-artefactos-nuevos-skills/epic.md) — Mejora en estructura de artefactos y nuevos skills
 - [[EPIC-11-centralizar-templates]] — [epic.md](../specs/flow/EPIC-11-centralizar-templates/epic.md) — Centralizar templates de spec en directorio compartido
