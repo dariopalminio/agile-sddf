@@ -3,11 +3,12 @@ type: epic
 id: EPIC-26
 slug: EPIC-26-layout-y-flow-forward-mejorado
 title: "Layout y flow-forward mejorado"
-status: VALIDATE
+status: COMPLETED
 substatus: DONE
 parent: null
 created: 2026-10-21
-updated: 2026-10-24
+updated: 2026-11-05
+completed: 2026-11-05
 related: []
 ---
 

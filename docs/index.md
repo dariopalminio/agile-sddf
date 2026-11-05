@@ -213,13 +213,13 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[insight-colapsar-specs-dos-niveles]] — [insight-colapsar-specs-dos-niveles.md](../specs/flow/archive/2026-11-05-EPIC-21-colapsar-specs-dos-niveles/insight-colapsar-specs-dos-niveles.md) — Cambio sugerido: Colapsar specs a dos niveles y eliminar 01-projects
 - [[EPIC-21-colapsar-specs-dos-niveles-test-cases]] — [test-cases.md](../specs/flow/archive/2026-11-05-EPIC-21-colapsar-specs-dos-niveles/test-cases.md) — Test Cases: Colapsar specs/ a dos niveles y eliminar 01-projects/
 - [[EPIC-22-epic-analyze]] — [epic.md](../specs/flow/archive/2026-11-05-EPIC-22-epic-analyze/epic.md) — Skill `epic-analyze`: análisis de una épica antes de desarrollarla
-- [[EPIC-24-agentes-locales-por-skill]] — [epic.md](../specs/flow/EPIC-24-agentes-locales-por-skill/epic.md) — Mover agentes globales a agentes locales por skill
-- [[EPIC-25-unificar-contrato-de-validaciones-en-skills]] — [epic.md](../specs/flow/EPIC-25-unificar-contrato-de-validaciones-en-skills/epic.md) — Unificar contrato de validaciones en skills
-- [[EPIC-26-layout-y-flow-forward-mejorado]] — [epic.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/epic.md) — Layout y flow-forward mejorado
-- [report-SMOKE-1-20261025.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-1-20261025.md) — Eval Report: story-specify ⚠️ sin frontmatter
-- [report-SMOKE-2-20261025.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-2-20261025.md) — Eval Report: epic-creation ⚠️ sin frontmatter
-- [report-SMOKE-3-20261025.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-3-20261025.md) — Eval Report: sddf-init ⚠️ sin frontmatter
-- [report-SMOKE-6-20261025.md](../specs/flow/EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-6-20261025.md) — Eval Report: sddf-init ⚠️ sin frontmatter
+- [[EPIC-24-agentes-locales-por-skill]] — [epic.md](../specs/flow/archive/2026-11-05-EPIC-24-agentes-locales-por-skill/epic.md) — Mover agentes globales a agentes locales por skill
+- [[EPIC-25-unificar-contrato-de-validaciones-en-skills]] — [epic.md](../specs/flow/archive/2026-10-19-EPIC-25-unificar-contrato-de-validaciones-en-skills/epic.md) — Unificar contrato de validaciones en skills
+- [[EPIC-26-layout-y-flow-forward-mejorado]] — [epic.md](../specs/flow/archive/2026-11-05-EPIC-26-layout-y-flow-forward-mejorado/epic.md) — Layout y flow-forward mejorado
+- [report-SMOKE-1-20261025.md](../specs/flow/archive/2026-11-05-EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-1-20261025.md) — Eval Report: story-specify ⚠️ sin frontmatter
+- [report-SMOKE-2-20261025.md](../specs/flow/archive/2026-11-05-EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-2-20261025.md) — Eval Report: epic-creation ⚠️ sin frontmatter
+- [report-SMOKE-3-20261025.md](../specs/flow/archive/2026-11-05-EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-3-20261025.md) — Eval Report: sddf-init ⚠️ sin frontmatter
+- [report-SMOKE-6-20261025.md](../specs/flow/archive/2026-11-05-EPIC-26-layout-y-flow-forward-mejorado/report-SMOKE-6-20261025.md) — Eval Report: sddf-init ⚠️ sin frontmatter
 - [[EPIC-27-completar-flujo-de-story]] — [epic.md](../specs/flow/archive/2026-11-05-EPIC-27-completar-flujo-de-story/epic.md) — Completar flujo de story
 
 ### Historias de usuario
