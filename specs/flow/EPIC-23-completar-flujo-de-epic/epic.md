@@ -8,6 +8,7 @@ substatus: IN-PROGRESS
 parent: null
 created: 2026-10-12
 updated: 2026-11-04
+release: v5.1.0
 related:
   - EPIC-25-unificar-contrato-de-validaciones-en-skills
   - EPIC-27-completar-flujo-de-story

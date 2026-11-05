@@ -8,11 +8,11 @@
 
 ## What it does
 
-Cierra una épica liberada: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic.md` la fecha de cierre y la versión liberada y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019), conservando el historial de git. Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status. Siempre pide confirmación humana antes de escribir o mover nada.
+Cierra una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic.md` la fecha de cierre y, si se conoce, la versión y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019), conservando el historial de git. Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status. Siempre pide confirmación humana antes de escribir o mover nada.
 
 **Produces:**
 
-- `epic.md` con `status: COMPLETED`, `updated:` y `completed:` de hoy y `version:` de la versión liberada, solo si venía de `SHIP/DONE`.
+- `epic.md` con `status: COMPLETED`, `updated:` y `completed:` de hoy y `version:` si se conoce, solo si venía de `SHIP/DONE`.
 - El directorio de la épica movido a `specs/flow/archive/`, con `git mv` (renombre en el índice) o, si el directorio no tiene historial de git, con un renombre simple y un aviso.
 
 **Does not do:**
@@ -26,13 +26,13 @@ Cierra una épica liberada: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra
 
 | Estado de `epic.md` | Resultado |
 |---|---|
-| `SHIP/DONE` | `COMPLETED/DONE`, `completed:` y `version:`, archivada con la fecha de hoy |
+| `SHIP/DONE` | `COMPLETED/DONE`, `completed:` y `version:` si se conoce, archivada con la fecha de hoy |
 | `COMPLETED/DONE` | archivada con la fecha de archivo, sin cambiar `epic.md` |
 | `CANCELED/DONE` | archivada con la fecha de archivo, sin cambiar `epic.md`: sigue figurando como `CANCELED` |
 | `CANCELED/<otro>` | rechazo: solo se archivan las épicas canceladas con substatus `DONE` |
 | otro | rechazo: solo se completan épicas en `SHIP/DONE`, `COMPLETED/DONE` o `CANCELED/DONE` |
 
-**Versión liberada:** `--version x.y.z`; si no se indica, el encabezado `## [x.y.z]` de `CHANGELOG.md` que contiene el bloque `<!-- epic-ship:EPIC-NN:start -->`. Si la entrada sigue en `[Unreleased]` o no existe, no se cierra y se pide `--version`.
+**Versión (opcional):** `--version x.y.z`; si no se indica, el encabezado `## [x.y.z]` de `CHANGELOG.md` que contiene el bloque `<!-- epic-ship:EPIC-NN:start -->`. Si la entrada sigue en `[Unreleased]` o no existe, la épica se completa sin `version:` y con un aviso, porque una épica puede no coincidir con un release.
 
 **Fecha de archivo** (`COMPLETED/DONE` y `CANCELED/DONE`): `updated:`; si no es válido, `created:`; si el frontmatter no tiene ninguna de esas dos claves, `date:`.
 
@@ -46,14 +46,14 @@ Cierra una épica liberada: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra
 
 **Use it when:**
 
-- La épica está en `SHIP/DONE`, verificaste que la versión liberada opera correctamente y quieres cerrarla y sacarla de `specs/flow/`.
+- La épica está en `SHIP/DONE` y quieres cerrarla y sacarla de `specs/flow/`.
 - Una épica ya marcada `COMPLETED/DONE` a mano sigue en `specs/flow/` y quieres archivarla.
 - Cancelaste una épica (`CANCELED/DONE`) y quieres sacarla de `specs/flow/` sin que pase a `COMPLETED`.
 - The user mentions: `"epic-complete"`, `"completar épica"`, `"archivar épica"`, `"archivar épica cancelada"`, `"cerrar épica"`.
 
 **Do NOT use it when:**
 
-- La épica aún no se liberó → use `[[epic-ship]]` instead.
+- La épica aún no está en `SHIP/DONE` → use `[[epic-ship]]` instead.
 - Quieres archivar una historia → use `[[story-complete]]` instead.
 
 ---

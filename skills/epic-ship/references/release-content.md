@@ -1,6 +1,6 @@
-# Contenido de la versión de una épica
+# Contenido de la entrada de una épica
 
-Reglas de *qué* escribe `epic-ship`: el inventario de historias liberadas, su categoría y valor, y el bloque de la épica en `CHANGELOG.md`. Se carga en el Paso 3 de `SKILL.md`, después de los gates. La forma de `release-notes.md` vive en [../assets/release-notes-template.md](../assets/release-notes-template.md).
+Reglas de *qué* escribe `epic-ship`: el inventario de historias liberadas, su categoría y el bloque de la épica en `CHANGELOG.md`. Se carga en el Paso 3 de `SKILL.md`, después de los gates.
 
 ## 1. Inventario de historias
 
@@ -15,8 +15,8 @@ Clasificación por `status`/`substatus`:
 
 | Estado | Destino |
 |---|---|
-| `DELIVER/DONE` o `COMPLETED/DONE` | Historia liberada: entra en `CHANGELOG.md` y en `release-notes.md` |
-| `CANCELED/DONE` | Solo en `## No incluidas` de `release-notes.md` |
+| `DELIVER/DONE` o `COMPLETED/DONE` | Historia liberada: entra en `CHANGELOG.md` |
+| `CANCELED/DONE` | No entra en `CHANGELOG.md` y no genera aviso |
 | Cualquier otro | Se excluye y se avisa `⚠️ <ID> en <status>/<substatus> no se incluye` |
 
 ## 2. Datos de cada historia
@@ -25,7 +25,6 @@ Clasificación por `status`/`substatus`:
 |---|---|
 | `title` | `title` del frontmatter; si falta, el `id` |
 | `kind` | `kind` del frontmatter |
-| `valor` | Texto tras `**Para**` en la primera línea del cuerpo que empieza por `**Para**`, sin espacios finales; si no hay, `title` |
 
 Categoría (Keep a Changelog):
 
@@ -72,24 +71,16 @@ Formato exacto (líneas en blanco incluidas):
 
 2. Buscar los delimitadores de la épica en todo el archivo:
 
-   | Encontrados | Acción |
+   | Encontrados | Resultado |
    |---|---|
-   | `start` y `end`, en ese orden y dentro de `## [Unreleased]` | Reemplazar solo las líneas entre ambos (delimitadores incluidos) por el bloque nuevo |
-   | Ambos delimitadores dentro de una versión publicada o fuera de `## [Unreleased]` | No escribir: `❌ CHANGELOG.md contiene el bloque de <EPIC_ID> fuera de [Unreleased]: una versión publicada no se reescribe` |
-   | Ninguno | Insertar el bloque dentro de `## [Unreleased]`: tras su última línea no vacía y antes del siguiente `## [`, separado por una línea en blanco |
-   | Solo uno, o `end` antes de `start` | No escribir: error de bloque incompleto (Paso 4 de `SKILL.md`) |
+   | `start` y `end`, en ese orden y dentro de `## [Unreleased]`, idénticos al bloque nuevo | `al día`: no escribir |
+   | `start` y `end`, en ese orden y dentro de `## [Unreleased]`, distintos del bloque nuevo | `escribir`: reemplazar solo las líneas entre ambos (delimitadores incluidos) por el bloque nuevo |
+   | Ambos dentro de una misma sección `## [x.y.z]`, con los ID de todas las historias liberadas entre ellos | `al día`: no escribir |
+   | Ambos fuera de `## [Unreleased]` en cualquier otro caso | Error, no escribir: `❌ CHANGELOG.md contiene el bloque de <EPIC_ID> fuera de [Unreleased]: una versión publicada no se reescribe` |
+   | Ninguno, con cobertura manual (punto 3) | `al día`: no escribir |
+   | Ninguno, sin cobertura manual | `escribir`: insertar el bloque dentro de `## [Unreleased]`, tras su última línea no vacía y antes del siguiente `## [`, separado por una línea en blanco |
+   | Solo uno, o `end` antes de `start` | Error, no escribir: bloque incompleto (Paso 4 de `SKILL.md`) |
 
-3. Para localizar un bloque existente, identificar la sección `## [` anterior a cada delimitador y la siguiente. Solo se reemplaza si ambos están entre el mismo `## [Unreleased]` y el próximo encabezado `## [`; si falta `## [Unreleased]` o alguno cae en otra sección, detenerse sin escribir. Si no hay delimitadores y no existe `## [Unreleased]`, crearlo antes del primer `## [` (o al final si no hay ninguno) e insertar ahí el bloque.
-4. Nada fuera del bloque se modifica: ni otras épicas, ni versiones publicadas, ni la cabecera. Nunca existe un segundo bloque de la misma épica.
-
-## 5. Versión sugerida
-
-Del primer encabezado `## [x.y.z]` (SemVer) bajo `## [Unreleased]`:
-
-| Historias liberadas | Sugerencia |
-|---|---|
-| Alguna `Added` | minor: `x.(y+1).0` — `hay historias Added` |
-| Ninguna `Added` (solo `Fixed` y `Changed`) | patch: `x.y.(z+1)` — `sin historias Added` |
-| Sin `## [x.y.z]` previo | `sin versión previa: decide tú` |
-
-Es texto del chat: ningún archivo la registra.
+3. **Cobertura manual:** una misma sección `## [` tiene, por cada historia liberada, una línea que cita su ID y también `EPIC_ID`. Los ID casan como palabra completa: `STORY-20` no casa `STORY-201` ni `EPIC-30` casa `EPIC-300`. Si la cobertura es parcial, no cuenta.
+4. Para localizar un bloque existente, identificar la sección `## [` anterior a cada delimitador y la siguiente. Solo se reemplaza si ambos están entre el mismo `## [Unreleased]` y el próximo encabezado `## [`. Si no hay delimitadores, no hay cobertura manual y no existe `## [Unreleased]`, crearlo antes del primer `## [` (o al final si no hay ninguno) e insertar ahí el bloque.
+5. Nada fuera del bloque se modifica: ni otras épicas, ni versiones publicadas, ni la cabecera. Nunca existe un segundo bloque de la misma épica.

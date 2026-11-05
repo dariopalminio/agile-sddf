@@ -1,13 +1,13 @@
 {
   "skill": "epic-complete",
-  "version": "1.0.0",
-  "description": "Casos de prueba para epic-complete: verifica que el skill completa (SHIP/DONE → COMPLETED/DONE) y archiva una épica en specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/ solo tras confirmación humana, registrando completed: y version: (la versión sale de --version o del encabezado ## [x.y.z] de CHANGELOG.md que contiene el bloque de epic-ship), y que rechaza o aborta sin efectos (sin preguntar cuando el plan falla) las épicas no liberadas, la versión no resuelta y la respuesta negativa. Desde STORY-172 verifica además que una épica CANCELED/DONE se archiva conservando su status tras una pregunta que declara que el status no cambia, y que una CANCELED sin substatus DONE o con destino de archivo existente se rechaza sin preguntar. El fixture SHIP/DONE y el CHANGELOG.md se fijan a mano, sin depender de epic-ship.",
+  "version": "1.2.0",
+  "description": "Casos de prueba para epic-complete: verifica que el skill completa (SHIP/DONE → COMPLETED/DONE) y archiva una épica en specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/ solo tras confirmación humana, registrando completed: y, si se conoce, version: (sale de --version o del encabezado ## [x.y.z] de CHANGELOG.md que contiene el bloque de epic-ship; sin versión la épica se completa igual, con un aviso), y que rechaza o aborta sin efectos (sin preguntar cuando el plan falla) las épicas que no están en SHIP/DONE y la respuesta negativa. Desde STORY-172 verifica además que una épica CANCELED/DONE se archiva conservando su status tras una pregunta que declara que el status no cambia, y que una CANCELED sin substatus DONE o con destino de archivo existente se rechaza sin preguntar. El fixture SHIP/DONE y el CHANGELOG.md se fijan a mano, sin depender de epic-ship.",
   "cases": [
     {
       "id": "TC-001",
       "name": "ship-done-confirmado-completa-y-archiva",
       "type": "happy-path",
-      "description": "SMOKE-8. Épica EPIC-31 en specs/flow/EPIC-31-exportaciones/ con status SHIP y substatus DONE fijados a mano, versionada en git. CHANGELOG.md tiene el bloque <!-- epic-ship:EPIC-31:start --> … <!-- epic-ship:EPIC-31:end --> bajo ## [2.1.0] — 2026-10-28. El usuario ejecuta /epic-complete EPIC-31 y responde 's'. El skill debe mostrar el resumen (estado, acción, versión 2.1.0 y su fuente, origen, destino, método git-mv), preguntar si la versión opera correctamente, invocar apply y anunciar la ruta final con COMPLETED/DONE, versión y completed: de hoy, recordando que el commit queda a cargo del usuario.",
+      "description": "SMOKE-8. Épica EPIC-31 en specs/flow/EPIC-31-exportaciones/ con status SHIP y substatus DONE fijados a mano, versionada en git. CHANGELOG.md tiene el bloque <!-- epic-ship:EPIC-31:start --> … <!-- epic-ship:EPIC-31:end --> bajo ## [2.1.0] — 2026-10-28. El usuario ejecuta /epic-complete EPIC-31 y responde 's'. El skill debe mostrar el resumen (estado, acción, versión 2.1.0 y su fuente, origen, destino, método git-mv), pedir la confirmación, invocar apply y anunciar la ruta final con COMPLETED/DONE, versión y completed: de hoy, recordando que el commit queda a cargo del usuario.",
       "input": {
         "epic_id": "EPIC-31",
         "epic_dir": "specs/flow/EPIC-31-exportaciones",
@@ -22,7 +22,8 @@
       },
       "expected": {
         "contains": [
-          "¿Confirmas que la versión 2.1.0",
+          "2.1.0",
+          "¿Confirmas completar EPIC-31",
           "specs/flow/archive/2026-10-30-EPIC-31-exportaciones",
           "✅ EPIC-31 archivada en",
           "COMPLETED/DONE",
@@ -31,7 +32,8 @@
         ],
         "not_contains": [
           "❌",
-          "Operación cancelada"
+          "Operación cancelada",
+          "opera correctamente"
         ]
       },
       "threshold": 0.9
@@ -88,24 +90,34 @@
     },
     {
       "id": "TC-004",
-      "name": "entrada-en-unreleased-pide-version",
+      "name": "entrada-en-unreleased-completa-sin-version",
       "type": "edge-case",
-      "description": "Épica EPIC-34 en SHIP/DONE cuyo bloque de epic-ship sigue bajo ## [Unreleased] en CHANGELOG.md. El usuario ejecuta /epic-complete EPIC-34 sin --version. El motor devuelve NO_VERSION (reason unreleased) en plan: el skill debe explicar que la entrada sigue en [Unreleased], pedir reejecutar con --version x.y.z y terminar sin preguntar ni modificar archivos.",
+      "description": "Una épica puede no coincidir con un release: EPIC-34 está en SHIP/DONE y su bloque de epic-ship sigue bajo ## [Unreleased] en CHANGELOG.md. El usuario ejecuta /epic-complete EPIC-34 sin --version y responde 's'. El motor devuelve ok: true con version: null y el aviso de que no se registra version: el skill debe mostrar «sin versión», pedir la confirmación, invocar apply y anunciar COMPLETED/DONE sin versión, sin escribir version: en epic.md.",
       "input": {
         "epic_id": "EPIC-34",
         "epic_dir": "specs/flow/EPIC-34-busqueda",
         "epic_status": "SHIP",
         "epic_substatus": "DONE",
-        "changelog": "## [Unreleased]\n\n<!-- epic-ship:EPIC-34:start -->\n### Added\n\n- Búsqueda (STORY-220)\n<!-- epic-ship:EPIC-34:end -->\n"
+        "changelog": "## [Unreleased]\n\n<!-- epic-ship:EPIC-34:start -->\n### Added\n\n- Búsqueda (STORY-220)\n<!-- epic-ship:EPIC-34:end -->\n",
+        "today": "2026-10-30",
+        "git_tracked": true,
+        "responses": [
+          "s"
+        ]
       },
       "expected": {
         "contains": [
+          "No se registra version en EPIC-34",
           "[Unreleased]",
-          "--version"
+          "sin versión",
+          "¿Confirmas completar EPIC-34",
+          "✅ EPIC-34 archivada en",
+          "COMPLETED/DONE · sin versión"
         ],
         "not_contains": [
-          "¿Confirmas",
-          "archivada en"
+          "❌",
+          "NO_VERSION",
+          "version: null"
         ]
       },
       "threshold": 0.9
@@ -182,6 +194,29 @@
         "not_contains": [
           "¿Confirmas",
           "archivada"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-008",
+      "name": "ship-in-progress-rechazado-sugiere-epic-ship",
+      "type": "fail-fast",
+      "description": "Épica EPIC-38 en SHIP/IN-PROGRESS, el estado en que /epic-ship deja una épica con el DoD bloqueando o sin confirmación. El usuario ejecuta /epic-complete EPIC-38. El motor devuelve NOT_SHIPPED en plan: el skill debe informar que solo se completan épicas en SHIP/DONE, COMPLETED/DONE o CANCELED/DONE, sugerir /epic-ship EPIC-38 y terminar sin preguntar ni modificar o mover ningún archivo.",
+      "input": {
+        "epic_id": "EPIC-38",
+        "epic_dir": "specs/flow/EPIC-38-facturacion",
+        "epic_status": "SHIP",
+        "epic_substatus": "IN-PROGRESS"
+      },
+      "expected": {
+        "contains": [
+          "solo se completan épicas en SHIP/DONE, COMPLETED/DONE o CANCELED/DONE",
+          "/epic-ship EPIC-38"
+        ],
+        "not_contains": [
+          "¿Confirmas",
+          "archivada en"
         ]
       },
       "threshold": 0.9

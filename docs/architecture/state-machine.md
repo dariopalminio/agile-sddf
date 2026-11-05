@@ -172,10 +172,10 @@ DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETE
 | `READY-FOR-DEV` | Buffer/cola. Épica completamente planificada y aprobada. Espera capacidad del equipo. Aplica límite WIP. | Sistema |
 | `DEVELOP` | Desarrollo en curso: las historias de la épica se implementan siguiendo su propio workflow. La épica permanece aquí hasta que todas las historias estén en `DELIVER`. | Equipo |
 | `VALIDATE` | Pruebas de integración y regresión del conjunto completo: end-to-end, UAT, requisitos no funcionales. | QA / Equipo |
-| `SHIP` | La épica se publica/despliega a producción. Último estado activo. | Humano (pasos manuales) · registro: `epic-ship` |
+| `SHIP` | La épica cumple lo que el proyecto exige en su DoD de `SHIP` (`docs/guardrails/dod-epic-ship.md`), que puede incluir publicarla o desplegarla. Último estado activo. | Humano · registro: `epic-ship` |
 | `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes ni responsabilidades activas. Permite medir tiempos de ciclo sin reabrir artefactos. Se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`. | Humano (vía `epic-complete`) |
 
-**SHIP lo escribe `epic-ship` solo con confirmación humana** de que el humano completó los pasos de liberación manuales (commit, tag, merge y despliegue), que ningún skill ejecuta. **COMPLETED lo escribe `epic-complete` solo con confirmación humana** desde `SHIP/DONE` y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`; `epic-complete` además archiva sin cambiar el status las épicas `COMPLETED/DONE` y `CANCELED/DONE` (ADR-0019).
+**`epic-ship` registra `SHIP/IN-PROGRESS` desde `VALIDATE/DONE` antes de actualizar `CHANGELOG.md`, y `SHIP/DONE` solo con confirmación humana** y sin bloqueos de `docs/guardrails/dod-epic-ship.md` si existe. Ningún skill ejecuta commit, tag, merge ni despliegue, y `epic-ship` no asume que una épica coincida con una versión. **COMPLETED lo escribe `epic-complete` solo con confirmación humana** desde `SHIP/DONE` y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`; `epic-complete` además archiva sin cambiar el status las épicas `COMPLETED/DONE` y `CANCELED/DONE` (ADR-0019).
 
 Gate de calidad: `epic-format-validation` valida la estructura del `epic.md` como precondición para `epic-generate-stories` (constitución, regla 15).
 

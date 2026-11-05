@@ -156,7 +156,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 | **Gate de completitud de historias** | `DEVELOP` → `VALIDATE` | Todas las historias están en `DELIVER`. |
 | **Gate de integración** | `VALIDATE` | E2E, regresión, requisitos no funcionales del conjunto. |
 | **Gate de aceptación de épica** | `VALIDATE` → `SHIP` | Criterios de éxito y valor de negocio del entregable. |
-| **Gate de publicación** | `SHIP` | `/epic-ship`: con `epic-validate-report.md` en `APPROVED`, escribe el bloque de la épica en `CHANGELOG.md` y `release-notes.md`, muestra los pasos de liberación manuales y escribe `SHIP/DONE` solo con la confirmación humana de que se completaron. |
+| **Gate de publicación** | `SHIP` | `/epic-ship`: con `epic-validate-report.md` en `APPROVED`, registra `SHIP/IN-PROGRESS`, escribe el bloque de la épica en `CHANGELOG.md` si no está al día y escribe `SHIP/DONE` solo sin bloqueos de `docs/guardrails/dod-epic-ship.md` y con confirmación humana. |
 | **WIP Limit** | `READY-FOR-DEV` | No exceder el número máximo de épicas en cola. |
 
 ---
@@ -171,9 +171,8 @@ Además de las invariantes transversales de [[domain-state-management]]:
   * `epic-analyze-report.md` — generado en `PLAN`.
   * `epic-refine-report.md` — generado en `PLAN`.
   * `epic-validate-report.md` — generado en `VALIDATE` por `epic-validate`.
-  * `release-notes.md` — generado en `SHIP` por `epic-ship`, junto con el bloque de la épica en `CHANGELOG.md`.
 * **Archivo:** `epic-complete` escribe `COMPLETED/DONE` desde `SHIP/DONE` solo con confirmación humana explícita y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`; también archiva, sin cambiar el status, las épicas `COMPLETED/DONE` y `CANCELED/DONE`. El status se conserva al archivar y `<YYYY-MM-DD>` sale de `updated:`, `created:` o `date:` (ADR-0019).
-* **Claves de cierre:** `completed:` (fecha de cierre) y `version:` (versión liberada) son claves opcionales del frontmatter de `epic.md`, fuera del template; solo las escribe `epic-complete` al completar la épica.
+* **Claves de cierre:** `completed:` (fecha de cierre) y `version:` (versión, si se conoce) son claves opcionales del frontmatter de `epic.md`, fuera del template; solo las escribe `epic-complete` al completar la épica. Una épica puede no coincidir con un release: sin versión se completa igual y no se escribe `version:`.
 * **Reapertura:** solo desde `COMPLETED` con acción explícita y registro del motivo.
 * **Convención de guion:** ASCII U+002D `-`.
 

@@ -2,10 +2,10 @@
 'use strict';
 
 /**
- * Motor de epic-complete (STORY-171, STORY-172): completa y archiva una épica liberada o cancelada.
+ * Motor de epic-complete (STORY-171, STORY-172): completa y archiva una épica en SHIP/DONE o cancelada.
  *
- *   - `SHIP/DONE`      → escribe `status: COMPLETED`, `updated:` y `completed:` de hoy y `version:` de la
- *                        versión liberada, y archiva con la fecha de hoy (action `complete`)
+ *   - `SHIP/DONE`      → escribe `status: COMPLETED`, `updated:` y `completed:` de hoy y, si se conoce, `version:`,
+ *                        y archiva con la fecha de hoy (action `complete`)
  *   - `COMPLETED/DONE` → archiva sin escribir nada en `epic.md` (action `archive-only`)
  *   - `CANCELED/DONE`  → archiva sin escribir nada en `epic.md`: conserva su status (action `archive-canceled`)
  *   - `CANCELED/<otro>` se rechaza con `CANCELED_NOT_DONE`; cualquier otro estado, con `NOT_SHIPPED`
@@ -14,8 +14,8 @@
  * `archive-canceled` la fecha sale de `updated:` → `created:` → `date:` (este solo si faltan las dos
  * claves anteriores), como en `story-complete.js`. `--version` solo participa en `complete`.
  *
- * Versión liberada (D-4): `--version` → encabezado `## [x.y.z]` de `CHANGELOG.md` que contiene el bloque
- * `<!-- epic-ship:EPIC-NN:start -->` → `NO_VERSION`.
+ * Versión (opcional: una épica puede no coincidir con un release): `--version` → encabezado `## [x.y.z]` de
+ * `CHANGELOG.md` que contiene el bloque `<!-- epic-ship:EPIC-NN:start -->` → sin versión, con un aviso.
  *
  * `plan` es de solo lectura; `apply` re-planifica, escribe, mueve con `git mv` (o `rename` si el
  * directorio no tiene historial) y restaura `epic.md` si el movimiento falla. La confirmación humana la
@@ -165,12 +165,12 @@ function moveMethodOf(repoRoot, dir) {
 }
 
 const NO_VERSION_REASONS = {
-  unreleased: (epicId) => `la entrada de ${epicId} sigue en [Unreleased]: promuévela a ## [x.y.z] al liberar`,
+  unreleased: (epicId) => `la entrada de ${epicId} sigue en [Unreleased]`,
   'no-block': (epicId) => `no se encontró la entrada de ${epicId} en CHANGELOG.md`,
   'no-changelog': (epicId) => `no se encontró la entrada de ${epicId} en CHANGELOG.md`,
 };
 
-/** Versión liberada de la action `complete` (D-4); `{ ok: false, … }` si no se resuelve. */
+/** Versión de la action `complete`; `version: null` con un aviso si no se conoce. */
 function resolveVersion(repoRoot, epicId, version) {
   const changelog = abs(repoRoot, 'CHANGELOG.md');
   const fromChangelog = fs.existsSync(changelog) ? releasedVersionOf(fs.readFileSync(changelog, 'utf8'), epicId) : { version: null, reason: 'no-changelog' };
@@ -179,13 +179,13 @@ function resolveVersion(repoRoot, epicId, version) {
     const warnings = fromChangelog.version && fromChangelog.version !== normalized
       ? [`⚠️ CHANGELOG.md ubica ${epicId} en ${fromChangelog.version}; se usará --version ${normalized}`]
       : [];
-    return { ok: true, version: normalized, versionSource: 'argument', warnings };
+    return { version: normalized, versionSource: 'argument', warnings };
   }
-  if (fromChangelog.version) return { ok: true, version: fromChangelog.version, versionSource: 'changelog', warnings: [] };
+  if (fromChangelog.version) return { version: fromChangelog.version, versionSource: 'changelog', warnings: [] };
   return {
-    ok: false,
-    reason: fromChangelog.reason,
-    message: `No se pudo determinar la versión liberada de ${epicId}: ${NO_VERSION_REASONS[fromChangelog.reason](epicId)}. Reejecuta con --version x.y.z`,
+    version: null,
+    versionSource: null,
+    warnings: [`ℹ️ No se registra version en ${epicId}: ${NO_VERSION_REASONS[fromChangelog.reason](epicId)}`],
   };
 }
 
@@ -211,15 +211,12 @@ function planCompletion({ repoRoot, id, epicPath, version, today }) {
   else if (status === 'CANCELED') {
     return fail('CANCELED_NOT_DONE', `La épica ${epicId} no puede archivarse: estado actual ${state}. Solo se archivan las épicas canceladas con substatus DONE.`, { epic });
   } else {
-    const hint = state === 'VALIDATE/DONE' ? ` Ejecuta antes /epic-ship ${epicId}` : '';
+    const hint = state === 'VALIDATE/DONE' || state === 'SHIP/IN-PROGRESS' ? ` Ejecuta antes /epic-ship ${epicId}` : '';
     return fail('NOT_SHIPPED', `La épica ${epicId} está en ${state}: solo se completan épicas en SHIP/DONE, COMPLETED/DONE o CANCELED/DONE.${hint}`, { epic });
   }
 
   let resolved = { version: null, versionSource: null, warnings: [] };
-  if (action === 'complete') {
-    resolved = resolveVersion(repoRoot, epicId, version);
-    if (!resolved.ok) return fail('NO_VERSION', resolved.message, { epic, action, reason: resolved.reason });
-  }
+  if (action === 'complete') resolved = resolveVersion(repoRoot, epicId, version);
 
   const archiveDate = action === 'complete' ? today : archiveDateOf(frontmatter);
   if (!archiveDate) {
@@ -239,8 +236,8 @@ function planCompletion({ repoRoot, id, epicPath, version, today }) {
 }
 
 /**
- * Edición mínima del frontmatter (D-5): `status: COMPLETED`, `updated:` y `completed:` de hoy y
- * `version:`. Cada línea conserva su propio final; las insertadas usan el del frontmatter. Lanza si no
+ * Edición mínima del frontmatter (D-5): `status: COMPLETED`, `updated:` y `completed:` de hoy y, si
+ * `version` no es null, `version:`. Cada línea conserva su propio final; las insertadas usan el del frontmatter. Lanza si no
  * localiza el cierre o la línea `status: SHIP` (→ `WRITE_FAILED`).
  */
 function completeEpicFrontmatter(text, today, version) {
@@ -271,7 +268,7 @@ function completeEpicFrontmatter(text, today, version) {
   lines[statusAt] = 'status: COMPLETED';
   upsert('updated', today, 'created');
   upsert('completed', today, 'updated');
-  upsert('version', version, 'completed');
+  if (version !== null) upsert('version', version, 'completed');
   return lines.map((line, i) => line + (eols[i] ?? '')).join('');
 }
 

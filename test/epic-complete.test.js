@@ -200,23 +200,52 @@ test('--version gana sobre un CHANGELOG.md sin bloque o ausente', (t) => {
   }
 });
 
-for (const [label, changelog, reason, pattern] of [
-  ['bloque bajo [Unreleased]', changelogWith('Unreleased'), 'unreleased', /sigue en \[Unreleased\]: promuévela a ## \[x\.y\.z\]/],
-  ['CHANGELOG.md sin bloque', '# Changelog\n\n## [Unreleased]\n', 'no-block', /no se encontró la entrada de EPIC-31 en CHANGELOG\.md/],
-  ['sin CHANGELOG.md', null, 'no-changelog', /no se encontró la entrada de EPIC-31 en CHANGELOG\.md/],
+for (const [label, changelog, pattern] of [
+  ['bloque bajo [Unreleased]', changelogWith('Unreleased'), /No se registra version en EPIC-31: la entrada de EPIC-31 sigue en \[Unreleased\]/],
+  ['CHANGELOG.md sin bloque', '# Changelog\n\n## [Unreleased]\n', /No se registra version en EPIC-31: no se encontró la entrada de EPIC-31 en CHANGELOG\.md/],
+  ['sin CHANGELOG.md', null, /No se registra version en EPIC-31: no se encontró la entrada de EPIC-31 en CHANGELOG\.md/],
 ]) {
-  test(`${label} y sin --version → NO_VERSION (${reason}) pidiendo --version, árbol intacto`, (t) => {
+  test(`${label} y sin --version → plan con version null y aviso, sin tocar el árbol`, (t) => {
     const root = makeFixture(t, { changelog });
     const before = snapshot(root);
-    const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
-    assert.equal(result.ok, false);
-    assert.equal(result.code, 'NO_VERSION');
-    assert.equal(result.reason, reason);
-    assert.match(result.message, pattern);
-    assert.match(result.message, /--version x\.y\.z/);
+    const result = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+    assert.equal(result.ok, true, result.message);
+    assert.equal(result.action, 'complete');
+    assert.equal(result.version, null);
+    assert.equal(result.versionSource, null);
+    assert.match(result.warnings.join('\n'), pattern);
     assert.deepEqual(snapshot(root), before);
   });
+
+  test(`${label} y sin --version → apply completa y archiva sin escribir version:`, (t) => {
+    const root = makeFixture(t, { changelog });
+    const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+    assert.equal(result.ok, true, result.message);
+    assert.equal(result.code, 'OK');
+    assert.equal(result.to, `specs/flow/archive/${TODAY}-${NAME}`);
+    const archived = fs.readFileSync(epicFile(root, result.to), 'utf8');
+    assert.match(archived, /^status: COMPLETED$/m);
+    assert.match(archived, new RegExp(`^completed: ${TODAY}$`, 'm'));
+    assert.doesNotMatch(archived, /^version:/m);
+  });
 }
+
+test('--version sigue registrando la versión aunque la entrada esté en [Unreleased]', (t) => {
+  const root = makeFixture(t, { changelog: changelogWith('Unreleased') });
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', version: '3.0.0', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  assert.equal(result.versionSource, 'argument');
+  assert.match(fs.readFileSync(epicFile(root, result.to), 'utf8'), /^version: 3\.0\.0$/m);
+});
+
+test('sin versión resoluble, un version: previo de epic.md se conserva sin cambios', (t) => {
+  const root = makeFixture(t, { changelog: null, epics: { [NAME]: { ...fm('SHIP', 'DONE'), version: '0.0.1' } } });
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
+  assert.equal(result.ok, true, result.message);
+  const archived = fs.readFileSync(epicFile(root, result.to), 'utf8');
+  assert.equal(archived.match(/^version:/gm).length, 1);
+  assert.match(archived, /^version: 0\.0\.1$/m);
+});
 
 // ── Contrato 4 — épica no liberada (AC-2) ───────────────────────────────────────────
 
@@ -228,7 +257,7 @@ for (const [status, substatus] of [['VALIDATE', 'DONE'], ['DEVELOP', 'IN-PROGRES
     assert.equal(result.ok, false);
     assert.equal(result.code, 'NOT_SHIPPED');
     assert.ok(result.message.startsWith(`La épica EPIC-31 está en ${status}/${substatus}: solo se completan épicas en SHIP/DONE, COMPLETED/DONE o CANCELED/DONE.`), result.message);
-    if (`${status}/${substatus}` === 'VALIDATE/DONE') assert.match(result.message, /Ejecuta antes \/epic-ship EPIC-31$/);
+    if (['VALIDATE/DONE', 'SHIP/IN-PROGRESS'].includes(`${status}/${substatus}`)) assert.match(result.message, /Ejecuta antes \/epic-ship EPIC-31$/);
     else assert.doesNotMatch(result.message, /epic-ship/);
     assert.deepEqual(snapshot(root), before);
   });
