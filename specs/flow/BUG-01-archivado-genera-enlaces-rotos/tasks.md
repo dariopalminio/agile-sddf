@@ -59,3 +59,5 @@ Checklist de progreso del plan (`plan.md`). Fuente: `specs/flow/BUG-01-archivado
 - [x] `npm run verify:layout` (43 skills OK)
 - [x] `npm run verify:repository` (gate determinista OK)
 - [x] `graphify update .` (15552 nodos)
+- [x] Verificación manual ejecutando skill: Invoca el skill /story-complete STORY-157
+- [x] Verificación manual ejecutando skill:Invoca el skill /epic-complete STORY-01

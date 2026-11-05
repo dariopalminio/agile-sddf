@@ -230,37 +230,37 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 > enumeran aquí: se leen desde el directorio de la historia. Los templates (`templates/`) tampoco se
 > listan porque sus wikilinks son placeholders.
 
-- [[STORY-091-story-implement-modo-rework]] — [story.md](../specs/flow/STORY-091-story-implement-modo-rework/story.md) — story-implement toma de la cola una historia rechazada y corrige en modo rework
-- [[STORY-092-reglas-robustez-modo-rework]] — [story.md](../specs/flow/STORY-092-reglas-robustez-modo-rework/story.md) — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro
-- [[STORY-095-memory-system-index-alias]] — [story.md](../specs/flow/STORY-095-memory-system-index-alias/story.md) — Crear el skill memory-system con el modo index y deprecar docs-wiki-builder
-- [[STORY-096-memory-system-scaffold-ensure-rebuild]] — [story.md](../specs/flow/STORY-096-memory-system-scaffold-ensure-rebuild/story.md) — Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild
-- [[STORY-097-memory-system-check-ci]] — [story.md](../specs/flow/STORY-097-memory-system-check-ci/story.md) — Verificar la consistencia de la memoria con un modo check apto para CI
-- [[STORY-098-memory-system-migrate-harness]] — [story.md](../specs/flow/STORY-098-memory-system-migrate-harness/story.md) — Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate
-- [[STORY-099-sddf-init-level-full]] — [story.md](../specs/flow/STORY-099-sddf-init-level-full/story.md) — Inicializar la memoria completa desde sddf-init con el parámetro --level
-- [[STORY-101-dod-story-por-etapa]] — [story.md](../specs/flow/STORY-101-dod-story-por-etapa/story.md) — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill
-- [[STORY-102-renombrar-skill-sddf-constitution]] — [story.md](../specs/flow/STORY-102-renombrar-skill-sddf-constitution/story.md) — Renombrar el skill project-policies-generation como sddf-constitution
-- [plan.md](../specs/flow/STORY-130-renombrar-skill-story-improve-a-story-refine/plan.md) — Plan — Renombrar el skill `story-improve` a `story-refine` ⚠️ sin frontmatter
-- [[STORY-130-renombrar-skill-story-improve-a-story-refine]] — [story.md](../specs/flow/STORY-130-renombrar-skill-story-improve-a-story-refine/story.md) — Renombrar skill `story-improve` a `story-refine`
-- [[STORY-147-adr-del-layout-fijo-de-tres-raices]] — [story.md](../specs/flow/STORY-147-adr-del-layout-fijo-de-tres-raices/story.md) — ADR del layout fijo de tres raíces
-- [[STORY-148-contrato-de-rutas-fijas-y-gate-determinista]] — [story.md](../specs/flow/STORY-148-contrato-de-rutas-fijas-y-gate-determinista/story.md) — Contrato de rutas fijas y gate determinista
-- [[STORY-149-sddf-init-crea-el-nuevo-layout]] — [story.md](../specs/flow/STORY-149-sddf-init-crea-el-nuevo-layout/story.md) — sddf-init crea el nuevo layout
-- [[STORY-150-migrar-skills-especificacion-specs-flow]] — [story.md](../specs/flow/STORY-150-migrar-skills-especificacion-specs-flow/story.md) — Migrar los skills de especificación a specs/flow
-- [[STORY-151-migrar-los-skills-de-epica-a-specs-flow]] — [story.md](../specs/flow/STORY-151-migrar-los-skills-de-epica-a-specs-flow/story.md) — Migrar los skills de épica a specs/flow
-- [[STORY-152-migrar-los-skills-de-proyecto-y-transversales]] — [story.md](../specs/flow/STORY-152-migrar-los-skills-de-proyecto-y-transversales/story.md) — Migrar los skills de proyecto y transversales
-- [[STORY-153-migrar-work-items-specs-flow]] — [story.md](../specs/flow/STORY-153-migrar-work-items-specs-flow/story.md) — Migrar y archivar los work items a specs/flow
-- [[STORY-154-documentar-el-nuevo-layout]] — [story.md](../specs/flow/STORY-154-documentar-el-nuevo-layout/story.md) — Documentar el nuevo layout
-- [[STORY-155-migrar-skills-planning-specs-flow]] — [story.md](../specs/flow/STORY-155-migrar-skills-planning-specs-flow/story.md) — Migrar los skills de planning a specs/flow
-- [[STORY-156-migrar-skills-implementacion-specs-flow]] — [story.md](../specs/flow/STORY-156-migrar-skills-implementacion-specs-flow/story.md) — Migrar los skills de implementación a specs/flow
-- [[STORY-157-reparar-enlaces-tras-migracion]] — [story.md](../specs/flow/STORY-157-reparar-enlaces-tras-migracion/story.md) — Reparar enlaces y validar el gate tras la migración
-- [[STORY-158-migrar-skills-verificacion-specs-flow]] — [story.md](../specs/flow/STORY-158-migrar-skills-verificacion-specs-flow/story.md) — Migrar los skills de revisión, verificación y aceptación a specs/flow
-- [[STORY-159-story-delivery-interactivo]] — [story.md](../specs/flow/STORY-159-story-delivery-interactivo/story.md) — story-delivery interactivo en modelo batch
-- [[STORY-160-completar-y-archivar-historia-entregada]] — [story.md](../specs/flow/STORY-160-completar-y-archivar-historia-entregada/story.md) — Skill story-complete: completar y archivar una historia entregada
-- [[STORY-161-estrategia-de-instalacion]] — [story.md](../specs/flow/STORY-161-estrategia-de-instalacion/story.md) — Estrategia de instalación
-- [[STORY-162-story-delivery-modelo-continuous]] — [story.md](../specs/flow/STORY-162-story-delivery-modelo-continuous/story.md) — story-delivery en modelo continuous
-- [[STORY-163-story-delivery-dry-run-y-force]] — [story.md](../specs/flow/STORY-163-story-delivery-dry-run-y-force/story.md) — story-delivery: --dry-run y --force
-- [[STORY-164-archivar-historias-canceladas]] — [story.md](../specs/flow/STORY-164-archivar-historias-canceladas/story.md) — Skill story-complete: archivar historias canceladas
-- [[plan-cerrar-epica-segun-dod-proyecto]] — [plan.md](../specs/flow/STORY-176-cerrar-epica-segun-dod-proyecto/plan.md) — Plan: cerrar una épica según el DoD del proyecto, sin asumir stack ni release
-- [[STORY-176-cerrar-epica-segun-dod-proyecto]] — [story.md](../specs/flow/STORY-176-cerrar-epica-segun-dod-proyecto/story.md) — Cerrar una épica según el DoD del proyecto, sin asumir stack ni release
+- [[STORY-091-story-implement-modo-rework]] — [story.md](../specs/flow/archive/2026-09-12-STORY-091-story-implement-modo-rework/story.md) — story-implement toma de la cola una historia rechazada y corrige en modo rework
+- [[STORY-092-reglas-robustez-modo-rework]] — [story.md](../specs/flow/archive/2026-09-12-STORY-092-reglas-robustez-modo-rework/story.md) — El modo rework no da señal verde falsa ni cambia archivos fuera de alcance sin dejar rastro
+- [[STORY-095-memory-system-index-alias]] — [story.md](../specs/flow/archive/2026-09-21-STORY-095-memory-system-index-alias/story.md) — Crear el skill memory-system con el modo index y deprecar docs-wiki-builder
+- [[STORY-096-memory-system-scaffold-ensure-rebuild]] — [story.md](../specs/flow/archive/2026-09-23-STORY-096-memory-system-scaffold-ensure-rebuild/story.md) — Crear y regenerar las capas de memoria con los modos scaffold, ensure y rebuild
+- [[STORY-097-memory-system-check-ci]] — [story.md](../specs/flow/archive/2026-09-23-STORY-097-memory-system-check-ci/story.md) — Verificar la consistencia de la memoria con un modo check apto para CI
+- [[STORY-098-memory-system-migrate-harness]] — [story.md](../specs/flow/archive/2026-09-24-STORY-098-memory-system-migrate-harness/story.md) — Adoptar la memoria SDDF en proyectos OpenSpec o Speckit con el modo migrate
+- [[STORY-099-sddf-init-level-full]] — [story.md](../specs/flow/archive/2026-09-24-STORY-099-sddf-init-level-full/story.md) — Inicializar la memoria completa desde sddf-init con el parámetro --level
+- [[STORY-101-dod-story-por-etapa]] — [story.md](../specs/flow/archive/2026-09-24-STORY-101-dod-story-por-etapa/story.md) — Dividir el DoD de Story en un guardrail por etapa, referenciado explícitamente por cada skill
+- [[STORY-102-renombrar-skill-sddf-constitution]] — [story.md](../specs/flow/archive/2026-09-26-STORY-102-renombrar-skill-sddf-constitution/story.md) — Renombrar el skill project-policies-generation como sddf-constitution
+- [plan.md](../specs/flow/archive/2026-11-05-STORY-130-renombrar-skill-story-improve-a-story-refine/plan.md) — Plan — Renombrar el skill `story-improve` a `story-refine` ⚠️ sin frontmatter
+- [[STORY-130-renombrar-skill-story-improve-a-story-refine]] — [story.md](../specs/flow/archive/2026-11-05-STORY-130-renombrar-skill-story-improve-a-story-refine/story.md) — Renombrar skill `story-improve` a `story-refine`
+- [[STORY-147-adr-del-layout-fijo-de-tres-raices]] — [story.md](../specs/flow/archive/2026-11-05-STORY-147-adr-del-layout-fijo-de-tres-raices/story.md) — ADR del layout fijo de tres raíces
+- [[STORY-148-contrato-de-rutas-fijas-y-gate-determinista]] — [story.md](../specs/flow/archive/2026-11-05-STORY-148-contrato-de-rutas-fijas-y-gate-determinista/story.md) — Contrato de rutas fijas y gate determinista
+- [[STORY-149-sddf-init-crea-el-nuevo-layout]] — [story.md](../specs/flow/archive/2026-11-05-STORY-149-sddf-init-crea-el-nuevo-layout/story.md) — sddf-init crea el nuevo layout
+- [[STORY-150-migrar-skills-especificacion-specs-flow]] — [story.md](../specs/flow/archive/2026-11-05-STORY-150-migrar-skills-especificacion-specs-flow/story.md) — Migrar los skills de especificación a specs/flow
+- [[STORY-151-migrar-los-skills-de-epica-a-specs-flow]] — [story.md](../specs/flow/archive/2026-11-05-STORY-151-migrar-los-skills-de-epica-a-specs-flow/story.md) — Migrar los skills de épica a specs/flow
+- [[STORY-152-migrar-los-skills-de-proyecto-y-transversales]] — [story.md](../specs/flow/archive/2026-11-05-STORY-152-migrar-los-skills-de-proyecto-y-transversales/story.md) — Migrar los skills de proyecto y transversales
+- [[STORY-153-migrar-work-items-specs-flow]] — [story.md](../specs/flow/archive/2026-11-05-STORY-153-migrar-work-items-specs-flow/story.md) — Migrar y archivar los work items a specs/flow
+- [[STORY-154-documentar-el-nuevo-layout]] — [story.md](../specs/flow/archive/2026-11-05-STORY-154-documentar-el-nuevo-layout/story.md) — Documentar el nuevo layout
+- [[STORY-155-migrar-skills-planning-specs-flow]] — [story.md](../specs/flow/archive/2026-11-05-STORY-155-migrar-skills-planning-specs-flow/story.md) — Migrar los skills de planning a specs/flow
+- [[STORY-156-migrar-skills-implementacion-specs-flow]] — [story.md](../specs/flow/archive/2026-11-05-STORY-156-migrar-skills-implementacion-specs-flow/story.md) — Migrar los skills de implementación a specs/flow
+- [[STORY-157-reparar-enlaces-tras-migracion]] — [story.md](../specs/flow/archive/2026-11-05-STORY-157-reparar-enlaces-tras-migracion/story.md) — Reparar enlaces y validar el gate tras la migración
+- [[STORY-158-migrar-skills-verificacion-specs-flow]] — [story.md](../specs/flow/archive/2026-11-05-STORY-158-migrar-skills-verificacion-specs-flow/story.md) — Migrar los skills de revisión, verificación y aceptación a specs/flow
+- [[STORY-159-story-delivery-interactivo]] — [story.md](../specs/flow/archive/2026-11-05-STORY-159-story-delivery-interactivo/story.md) — story-delivery interactivo en modelo batch
+- [[STORY-160-completar-y-archivar-historia-entregada]] — [story.md](../specs/flow/archive/2026-11-05-STORY-160-completar-y-archivar-historia-entregada/story.md) — Skill story-complete: completar y archivar una historia entregada
+- [[STORY-161-estrategia-de-instalacion]] — [story.md](../specs/flow/archive/2026-11-05-STORY-161-estrategia-de-instalacion/story.md) — Estrategia de instalación
+- [[STORY-162-story-delivery-modelo-continuous]] — [story.md](../specs/flow/archive/2026-11-05-STORY-162-story-delivery-modelo-continuous/story.md) — story-delivery en modelo continuous
+- [[STORY-163-story-delivery-dry-run-y-force]] — [story.md](../specs/flow/archive/2026-11-05-STORY-163-story-delivery-dry-run-y-force/story.md) — story-delivery: --dry-run y --force
+- [[STORY-164-archivar-historias-canceladas]] — [story.md](../specs/flow/archive/2026-11-05-STORY-164-archivar-historias-canceladas/story.md) — Skill story-complete: archivar historias canceladas
+- [[plan-cerrar-epica-segun-dod-proyecto]] — [plan.md](../specs/flow/archive/2026-11-05-STORY-176-cerrar-epica-segun-dod-proyecto/plan.md) — Plan: cerrar una épica según el DoD del proyecto, sin asumir stack ni release
+- [[STORY-176-cerrar-epica-segun-dod-proyecto]] — [story.md](../specs/flow/archive/2026-11-05-STORY-176-cerrar-epica-segun-dod-proyecto/story.md) — Cerrar una épica según el DoD del proyecto, sin asumir stack ni release
 
 ### Épicas e historias archivadas (archive/)
 
