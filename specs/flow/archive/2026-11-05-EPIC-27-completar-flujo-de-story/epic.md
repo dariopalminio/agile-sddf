@@ -3,11 +3,12 @@ type: epic
 id: EPIC-27
 slug: EPIC-27-completar-flujo-de-story
 title: "Completar flujo de story"
-status: SHIP
+status: COMPLETED
 substatus: DONE
 parent: null
 created: 2026-10-25
-updated: 2026-10-26
+updated: 2026-11-05
+completed: 2026-11-05
 related: []
 ---
 

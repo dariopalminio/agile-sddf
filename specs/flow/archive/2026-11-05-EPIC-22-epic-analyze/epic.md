@@ -4,11 +4,12 @@ type: epic
 id: EPIC-22
 slug: EPIC-22-epic-analyze
 title: "Skill `epic-analyze`: análisis de una épica antes de desarrollarla"
-status: DEVELOP
-substatus: IN-PROGRESS
+status: COMPLETED
+substatus: DONE
 parent: null
 created: 2026-10-08
-updated: 2026-10-09
+updated: 2026-11-05
+completed: 2026-11-05
 related:
   - EPIC-21-colapsar-specs-dos-niveles
   - EPIC-19-framework-consistency
