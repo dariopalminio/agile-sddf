@@ -5,12 +5,13 @@ slug: BUG-01-archivado-genera-enlaces-rotos
 title: "Archivado genera enlaces rotos"
 created: 2026-05-11
 updated: 2026-05-11
-status: PLAN
-substatus: IN-PROGRESS
+status: DELIVER
+substatus: DONE
 parent: null
-related:                              
-  - specs/flow/archive/2026-11-04-STORY-171-completar-archivar-epica-liberada
-  - specs/flow/archive/2026-11-04-STORY-172-skill-epic-complete-archivar-epicas-canceladas
+related:      
+  - EPIC-23-completar-flujo-de-epic                        
+  - STORY-171-completar-archivar-epica-liberada
+  - STORY-172-skill-epic-complete-archivar-epicas-canceladas
 ---
 
 ## Título: Archivado genera enlaces rotos
