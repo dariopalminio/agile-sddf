@@ -466,6 +466,33 @@ test('el CLI sin --strategy y sin TTY usa full e instala el catálogo completo',
   assert.match(result.stdout, /strategy full/);
 });
 
+const BANNER_LINES = [
+  '▄▀█ █▀▀ █ █   █▀▀   █▀▀ █▀▄ █▀▄ █▀▀',
+  '█▀█ █▄█ █ █▄▄ ██▄   ▄▄█ █▄▀ █▄▀ █▀',
+];
+
+test('el CLI muestra el banner una vez en install, antes de copiar archivos', (t) => {
+  const { projectDir } = createFixture(t);
+  const result = runNode(CLI_PATH, ['install', '--target', 'claude-code'], childEnv({ initCwd: projectDir }));
+  assertSucceeded(result);
+  assert.equal(result.stdout.split(BANNER_LINES.join('\n')).length, 2, 'el banner debe aparecer exactamente una vez');
+  assert.ok(result.stdout.indexOf(BANNER_LINES[0]) < result.stdout.indexOf('SDDF install:'));
+});
+
+test('el CLI no muestra el banner en --help ni ante un argumento inválido', (t) => {
+  const { projectDir } = createFixture(t);
+  const cases = [
+    ['--help'],
+    ['install', '--target', 'inexistente'],
+    ['install', '--strategy', 'epic'],
+  ];
+
+  for (const args of cases) {
+    const result = runNode(CLI_PATH, args, childEnv({ initCwd: projectDir }));
+    assert.equal(result.stdout.includes(BANNER_LINES[0]), false, args.join(' '));
+  }
+});
+
 test('el CLI rechaza --strategy inválido o sin valor antes de escribir', (t) => {
   const { projectDir } = createFixture(t);
   const cases = [

@@ -23,6 +23,10 @@ const targetValue = targetIdx !== -1 ? args[targetIdx + 1] : undefined;
 const strategyIdx = args.indexOf('--strategy');
 const strategyValue = strategyIdx !== -1 ? args[strategyIdx + 1] : undefined;
 
+const BANNER = `
+▄▀█ █▀▀ █ █   █▀▀   █▀▀ █▀▄ █▀▄ █▀▀
+█▀█ █▄█ █ █▄▄ ██▄   ▄▄█ █▄▀ █▄▀ █▀`;
+
 function targetHelpRows() {
   const contract = loadRuntimeContract();
   return listInstallableRuntimes(contract)
@@ -99,6 +103,8 @@ if (command === 'install') {
       exitInvalidStrategy(strategyValue);
     }
   }
+
+  console.log(BANNER);
 
   (async () => {
     let target = targetValue;

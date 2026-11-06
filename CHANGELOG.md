@@ -8,31 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-<!-- epic-ship:EPIC-23:start -->
+## [5.1.1] — 2026-11-05
+
+### Added
+
+- `agile-sddf install` muestra un banner «Agile SDDF» en arte de texto estilo arcade de los 80 antes de los menús y de la copia de archivos. No aparece en `--help`, ante un `--target` o `--strategy` inválido, ni al usar `installSDDF()` como API.
+
+### Fixed
+
+- `/epic-complete` y `/story-complete` (BUG-01): archivar una épica o una historia ya no deja enlaces rotos en la documentación activa, que hacían fallar el paso «enlaces activos» de `verify:repository` en CI. Tras mover el directorio, el motor reescribe las referencias de `specs/flow/<dir>` a `specs/flow/archive/<YYYY-MM-DD>-<dir>` en `README.md`, `SECURITY.md`, `docs/index.md`, `docs/constitution.md`, `docs/policies/`, `docs/guardrails/`, `docs/guides/` y `docs/runbooks/`, y omite las raíces que no existan en el proyecto. `CHANGELOG.md`, `docs/adr/` y `specs/` no se modifican. `plan` informa en `linkUpdates` qué archivos cambiarán, sin escribir nada, y `apply` devuelve el total en `links`. Si la reescritura falla, el motor devuelve `LINKS_UPDATE_FAILED`: el work item ya quedó archivado y el mensaje remite a `node scripts/check-doc-links.js` para revisar lo pendiente.
+
+## [5.1.0] — 2026-11-04
+
 ### EPIC-23 — Completar flujo de epic
 
 Cerrar el ciclo de vida de la épica en el flujo flow-forward, de `DEFINE` a `COMPLETED`, con un skill por paso del flujo de referencia y gates con veredicto que deciden cada avance o bucle de corrección.
-
-- **Added** — Validar la preparación estructural de una épica (STORY-124)
-- **Added** — Validar la evidencia operativa de una épica (STORY-125)
-- **Added** — Operar la validación de épicas de manera segura (STORY-126)
-- **Added** — Integrar y documentar el gateway de validación de épicas (STORY-127)
-- **Added** — Evaluar la validación de épicas de forma repetible (STORY-128)
-- **Added** — Controlar el detalle y los límites de la ejecución de la validación de épicas (STORY-137)
-- **Added** — Skill epic-refine (Core): corregir índice y enlaces de una épica (STORY-165)
-- **Added** — Veredicto de epic-format-validation (STORY-166)
-- **Added** — Skill epic-improve (STORY-167)
-- **Added** — Skill epic-track-progress (STORY-168)
-- **Added** — Suites de integración y regresión de la épica (STORY-169)
-- **Added** — Skill epic-ship (STORY-170)
-- **Added** — Skill epic-complete (Core) — completar y archivar una épica liberada (STORY-171)
-- **Added** — Skill epic-complete — archivar épicas canceladas (STORY-172)
-- **Added** — Skill epic-refine: asignar la cobertura de criterios de salida (STORY-173)
-- **Added** — Skill epic-refine: corregir referencias obsoletas tras un split (STORY-174)
-- **Added** — Admitir épicas archivadas en el layout fijo con un ADR nuevo (STORY-175)
-<!-- epic-ship:EPIC-23:end -->
-
-## [5.1.0] — 2026-11-04
 
 ### Added
 
