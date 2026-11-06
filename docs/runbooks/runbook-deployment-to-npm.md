@@ -71,8 +71,13 @@ npm install agile-sddf-<version>.tgz --ignore-scripts
 npx agile-sddf install --target claude-code
 npx agile-sddf --version
 ```
+o ejecuta:
 
-La instalación debe dejar `node_modules` sin crear directorios de runtime por sí sola. Solo el último comando crea el destino canónico. Repite el smoke para cada runtime soportado por `config/runtimes.json` según la matriz CI; para Codex, verifica `.agents/skills` y que no se cree `.agents/agents` ni `.codex/agents`.
+```bash
+npm run smoke:package
+```
+
+La instalación debe dejar `node_modules` sin crear directorios de runtime por sí sola. Solo `npx agile-sddf install` crea el destino canónico. Repite el smoke para cada runtime soportado por `config/runtimes.json` según la matriz CI; para Codex, verifica `.agents/skills` y que no se cree `.agents/agents` ni `.codex/agents`.
 
 ## Publicación con aprobación humana
 

@@ -181,6 +181,22 @@ function assertInstallSucceeded(result, runtime, mode) {
   );
 }
 
+// Prueba el comando que escribe el usuario. Sin el enlace local, `npm exec` recurre a un
+// agile-sddf global, y `--no` no lo impide: exigirlo evita que una instalación global
+// tape un bin roto. `--offline --no` descarta además la descarga de la versión publicada.
+function verifyPackageBin(consumerDir, homeDir, expectedVersion) {
+  const binName = process.platform === 'win32' ? 'agile-sddf.cmd' : 'agile-sddf';
+  const localBin = path.join(consumerDir, 'node_modules', '.bin', binName);
+  assert.equal(fs.existsSync(localBin), true, `El paquete no creó el bin local ${localBin}`);
+
+  const invocation = npmInvocation(['exec', '--offline', '--no', '--', 'agile-sddf', '--version']);
+  const stdout = run(invocation.command, invocation.args, {
+    cwd: consumerDir,
+    env: runtimeEnv(consumerDir, homeDir),
+  });
+  assert.equal(stdout.trim(), expectedVersion, 'El bin agile-sddf no informó la versión del paquete.');
+}
+
 function verifyPackagedCoreProfile(packageDir, consumerDir, homeDir) {
   const verifier = path.join(packageDir, 'scripts', 'verify-profiles.js');
   const result = childProcess.spawnSync(process.execPath, [
@@ -264,6 +280,7 @@ function smokePackageInstall({ repoRoot = REPO_ROOT, keep = process.env.SDDF_SMO
     assertNoRuntimeDirectories(consumerDir, sourceRuntimes, 'local');
     assertNoRuntimeDirectories(homeDir, sourceRuntimes, 'global');
     installTarball(consumerDir, tarball, homeDir);
+    verifyPackageBin(consumerDir, homeDir, sourceManifest.version);
     assertNoRuntimeDirectories(consumerDir, sourceRuntimes, 'local');
     assertNoRuntimeDirectories(homeDir, sourceRuntimes, 'global');
 
@@ -307,5 +324,6 @@ module.exports = {
   assertSameTree,
   assertNoLifecycleInstall,
   assertNoRuntimeDirectories,
+  verifyPackageBin,
   smokePackageInstall,
 };

@@ -44,6 +44,7 @@ Usage: agile-sddf <command> [options]
 
 Commands:
   install    Copy skills and compatible agents to a declared runtime destination
+  --version  Print the installed package version (alias: -v)
 
 Options:
   --global             Install to the runtime's global destination instead of the current project
@@ -78,6 +79,11 @@ function exitInvalidStrategy(providedStrategy) {
   const printable = providedStrategy === undefined ? '' : providedStrategy;
   console.error(`Invalid --strategy "${printable}". Valid strategies: ${VALID_STRATEGIES.join(', ')}`);
   process.exit(1);
+}
+
+if (command === '--version' || command === '-v') {
+  console.log(require('../package.json').version);
+  process.exit(0);
 }
 
 if (!command || command === 'help' || command === '--help' || command === '-h') {

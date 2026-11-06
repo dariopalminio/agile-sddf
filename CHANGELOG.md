@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `agile-sddf --version` (alias `-v`) imprime la versión instalada del paquete, sin mostrar el banner ni escribir archivos.
+
 ## [5.1.1] — 2026-11-05
 
 ### Added

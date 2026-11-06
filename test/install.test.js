@@ -479,10 +479,24 @@ test('el CLI muestra el banner una vez en install, antes de copiar archivos', (t
   assert.ok(result.stdout.indexOf(BANNER_LINES[0]) < result.stdout.indexOf('SDDF install:'));
 });
 
+test('el CLI informa la versión del paquete con --version y -v, sin escribir nada', (t) => {
+  const { projectDir } = createFixture(t);
+  const { version } = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'package.json'), 'utf8'));
+
+  for (const flag of ['--version', '-v']) {
+    const result = runNode(CLI_PATH, [flag], childEnv({ initCwd: projectDir }));
+    assertSucceeded(result);
+    assert.equal(result.stdout.trim(), version);
+  }
+
+  assertNoRuntimeOutput(projectDir);
+});
+
 test('el CLI no muestra el banner en --help ni ante un argumento inválido', (t) => {
   const { projectDir } = createFixture(t);
   const cases = [
     ['--help'],
+    ['--version'],
     ['install', '--target', 'inexistente'],
     ['install', '--strategy', 'epic'],
   ];
