@@ -1,6 +1,6 @@
-# Tasks: BUG-01 — Reparación de enlaces rotos al archivar
+# Tasks: BUG-001 — Reparación de enlaces rotos al archivar
 
-Checklist de progreso del plan (`plan.md`). Fuente: `specs/flow/BUG-01-archivado-genera-enlaces-rotos/plan.md`.
+Checklist de progreso del plan (`plan.md`). Fuente: `specs/flow/BUG-001-archivado-genera-enlaces-rotos/plan.md`.
 
 ## Estado
 

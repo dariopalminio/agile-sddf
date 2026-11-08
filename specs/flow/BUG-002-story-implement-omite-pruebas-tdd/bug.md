@@ -1,7 +1,7 @@
 ---
 type: bug
-id: BUG-02
-slug: BUG-02-story-implement-omite-pruebas-tdd
+id: BUG-002
+slug: BUG-002-story-implement-omite-pruebas-tdd
 title: "story-implement no ejecuta las pruebas del ciclo TDD"
 created: 2026-11-08
 updated: 2026-11-08

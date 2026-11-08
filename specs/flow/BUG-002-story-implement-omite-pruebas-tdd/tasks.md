@@ -1,6 +1,6 @@
-# Tasks: BUG-02 — story-implement lee los comandos de prueba de `verify`
+# Tasks: BUG-002 — story-implement lee los comandos de prueba de `verify`
 
-Checklist de progreso del plan. Fuente: `specs/flow/BUG-02-story-implement-omite-pruebas-tdd/plan.md`.
+Checklist de progreso del plan. Fuente: `specs/flow/BUG-002-story-implement-omite-pruebas-tdd/plan.md`.
 
 ## Estado
 

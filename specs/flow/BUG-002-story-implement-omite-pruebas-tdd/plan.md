@@ -2,19 +2,19 @@
 type: plan
 id: plan-02
 slug: plan-02-story-implement-lee-comandos-de-verify
-title: "Reparación BUG-02 — story-implement lee los comandos de prueba de verify y registra los tipos no ejecutados"
+title: "Reparación BUG-002 — story-implement lee los comandos de prueba de verify y registra los tipos no ejecutados"
 status: DRAFT
 substatus: DRAFT
-parent: BUG-02
+parent: BUG-002
 created: 2026-11-08
 updated: 2026-11-08
 related:
-  - BUG-02-story-implement-omite-pruebas-tdd
+  - BUG-002-story-implement-omite-pruebas-tdd
   - FR-040-implementacion-guiada-por-tdd
   - NFR-018-verificacion-demostrada-no-declarada
 ---
 
-# Plan: Reparación BUG-02 — story-implement lee los comandos de prueba de `verify` y registra los tipos no ejecutados
+# Plan: Reparación BUG-002 — story-implement lee los comandos de prueba de `verify` y registra los tipos no ejecutados
 
 ## Contexto
 

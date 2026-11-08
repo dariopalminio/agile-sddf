@@ -2,17 +2,17 @@
 type: plan
 id: plan-01
 slug: plan-01-actualizar-referencias-al-archivar
-title: "Reparación BUG-01 — Actualizar referencias en documentación activa al archivar"
+title: "Reparación BUG-001 — Actualizar referencias en documentación activa al archivar"
 status: DRAFT
 substatus: DRAFT
-parent: BUG-01
+parent: BUG-001
 created: 2026-11-05
 updated: 2026-11-05
 related:
-  - BUG-01-archivado-genera-enlaces-rotos
+  - BUG-001-archivado-genera-enlaces-rotos
 ---
 
-# Plan: Reparación BUG-01 — Actualizar referencias en documentación activa al archivar
+# Plan: Reparación BUG-001 — Actualizar referencias en documentación activa al archivar
 
 ## Contexto
 
