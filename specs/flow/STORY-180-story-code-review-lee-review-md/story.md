@@ -5,7 +5,7 @@ id: STORY-180
 kind: feat
 slug: STORY-180-story-code-review-lee-review-md
 title: "story-code-review lee REVIEW.md"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
