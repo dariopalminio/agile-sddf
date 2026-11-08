@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-183-dod-code-review-sin-criterios-circulares
 title: "DoD CODE-REVIEW sin criterios circulares"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
 updated: 2026-11-08
@@ -19,36 +19,46 @@ related:
 # 📖 Historia: DoD CODE-REVIEW sin criterios circulares
 
 **Como** Solo Builder que corrige lo que pide `fix-directives.md`  
-**Quiero** que `dod-story-code-review.md` (guardrail y plantilla de `sddf-constitution`) contenga solo criterios que la revisión puede comprobar, y que los criterios que ya cubre un revisor tomen su resultado en lugar de crear hallazgos nuevos  
-**Para** que el DoD no se autoevalúe con el veredicto que ayuda a calcular y que un mismo defecto no aparezca varias veces en `fix-directives.md`
+**Quiero** que el DoD de CODE-REVIEW solo exija lo que la revisión puede comprobar y no repita lo que ya reporta un revisor  
+**Para** que el DoD no se apruebe con el veredicto que ayuda a calcular (cero criterios autorreferentes) y cada defecto tenga una sola entrada en `fix-directives.md`
 
 ## ✅ Criterios de aceptación
 
-### AC-1 — Escenario principal – Sin criterios que el orquestador satisface por sí mismo
+### AC-1 — Escenario principal – Sin criterios que la revisión satisface por sí misma
 ```gherkin
-Dado "docs/guardrails/dod-story-code-review.md" y "skills/sddf-constitution/assets/dod-story/dod-story-code-review.md"
+Dado el DoD de CODE-REVIEW del repositorio y la plantilla que instala "sddf-constitution"
 Cuando se leen sus criterios "- [ ]"
-Entonces ninguno exige que "code-review-report.md" esté creado o actualizado
-  Y ninguno exige "verdict: APPROVED"
-  Y ninguno exige la ausencia de hallazgos bloqueantes HIGH o MEDIUM
+Entonces ninguno se cumple por el solo hecho de generar "code-review-report.md"
+  Y ninguno depende del veredicto de ese reporte
+  Y ninguno depende de la ausencia de hallazgos HIGH o MEDIUM de la misma revisión
   Y "memory-system check" pasa
 ```
 
 ### AC-2 — Escenario principal – Un criterio cubierto por un revisor no duplica el hallazgo
 ```gherkin
 Dado una historia STORY-NNN con un escenario Gherkin sin correspondencia en el código
-  Y el Product-Owner-Reviewer lo reporta como hallazgo
-Cuando el árbitro evalúa el criterio del DoD "Cada escenario Gherkin tiene correspondencia en el código"
-Entonces el criterio toma el resultado del Product-Owner-Reviewer
-  Y el defecto aparece una sola vez en "fix-directives.md"
+  Y un revisor lo reporta como hallazgo
+Cuando se evalúa el DoD de CODE-REVIEW
+Entonces el criterio del DoD que cubre ese defecto queda incumplido con el resultado del revisor
+  Y "fix-directives.md" tiene una sola entrada para ese defecto
+  Y "code-review-report.md" lista ese defecto una sola vez
+  Pero el DoD no añade un hallazgo propio para ese criterio
 ```
 
 ### AC-3 — Escenario alternativo – Un criterio sin revisor sigue evaluándose
 ```gherkin
-Dado una historia STORY-NNN con tareas sin marcar en "tasks.md"
-  Y ningún revisor cubre el criterio "Sin tareas pendientes en tasks.md"
-Cuando el árbitro evalúa el DoD CODE-REVIEW
-Entonces el criterio produce su propio hallazgo con "Archivo:Línea" del DoD, como hoy
+Esquema del escenario: Un criterio que ningún revisor cubre produce su propio hallazgo
+  Dado una historia STORY-NNN en la que <incumplimiento>
+    Y ningún revisor cubre el criterio "<criterio>"
+  Cuando se evalúa el DoD de CODE-REVIEW
+  Entonces "code-review-report.md" registra un hallazgo del DoD para "<criterio>"
+    Y el hallazgo cita el archivo del DoD y la línea del criterio
+    Y "fix-directives.md" tiene una sola entrada para ese hallazgo
+
+  Ejemplos:
+    | criterio                                          | incumplimiento                           |
+    | Sin tareas pendientes en tasks.md                 | "tasks.md" tiene una tarea "- [ ]"       |
+    | Metadatos frontmatter de story.md están completos | "story.md" no tiene el campo "substatus" |
 ```
 
 ## ⚙️ Criterios no funcionales específicos
@@ -64,6 +74,9 @@ Entonces el criterio produce su propio hallazgo con "Archivo:Línea" del DoD, co
 ## 📎 Notas / contexto adicional
 
 - Cubre **CS-5** de EPIC-28.
-- **Criterios circulares hoy** (`docs/guardrails/dod-story-code-review.md`): «Sin hallazgo bloqueante de severidad HIGH o MEDIUM» (L21), «El reporte de revisión de código (`code-review-report.md`) está creado o actualizado» (L24) y «Revisión de código aprobada (`verdict: APPROVED` …)» (L25). Las notas de la épica registran que los criterios 8 y 9 se autoevalúan.
-- **Criterios cubiertos por revisores:** «Cada escenario Gherkin tiene correspondencia en el código» (Product-Owner-Reviewer) y «Los componentes respetan la arquitectura de `design.md`» (Integration-Reviewer). La evaluación del DoD está en el Paso 4c.1 de `skills/story-code-review/SKILL.md`.
+- **Archivos del DoD:** el guardrail `docs/guardrails/dod-story-code-review.md` y la plantilla `skills/sddf-constitution/assets/dod-story/dod-story-code-review.md`.
+- **Criterios circulares hoy** (guardrail): «Sin hallazgo bloqueante de severidad HIGH o MEDIUM» (L21), «El reporte de revisión de código (`code-review-report.md`) está creado o actualizado» (L24) y «Revisión de código aprobada (`verdict: APPROVED` …)» (L25). Las notas de la épica registran que los criterios 8 y 9 se autoevalúan.
+- **Criterios cubiertos por revisores:** «Cada escenario Gherkin tiene correspondencia en el código» (Product-Owner-Reviewer) y «Los componentes respetan la arquitectura de `design.md`» (Integration-Reviewer). La evaluación del DoD está en el Paso 4c.1 de `skills/story-code-review/SKILL.md`. Hoy esa evaluación cita `Archivo:Línea` del DoD en cada hallazgo propio; AC-3 conserva ese comportamiento.
+- **Mecanismo abierto:** `story-design` decide cómo el árbitro reutiliza el resultado del revisor en AC-2: un mapeo explícito criterio → revisor o la deduplicación de hallazgos. AC-2 y AC-3 se comprueban sobre las entradas de `fix-directives.md` y `code-review-report.md`, no sobre el razonamiento del árbitro.
+- **Posible división:** si en `story-design` el cambio de `story-code-review` (AC-2, AC-3) crece, separar la limpieza de criterios del DoD (AC-1, CNF-1) en una historia propia.
 - La precedencia del DoD frente a `REVIEW.md` la fija el ADR de STORY-178.

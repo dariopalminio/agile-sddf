@@ -6,7 +6,7 @@ kind: chore
 slug: STORY-178-adr-guia-de-revision
 title: "ADR de la guía de revisión"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
 updated: 2026-11-08
