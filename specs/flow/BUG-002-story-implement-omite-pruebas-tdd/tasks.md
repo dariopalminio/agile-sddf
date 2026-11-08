@@ -99,6 +99,7 @@ En todos los casos nuevos, `defaults` solo contiene `delivery-model`, los comand
 
 ### 11. Verificación manual (a criterio humano)
 
-- [ ] `npm run test:eval -- story-implement --only TC-004,TC-006,TC-038,TC-039,TC-040,TC-041,TC-042,TC-043,TC-044`
+- [x] Correr manualmente: `npm run test:eval -- story-implement --only TC-004,TC-006,TC-038,TC-039,TC-040,TC-041`; o individualmente `npm run test:eval -- story-implement --only TC-004 --eval-runner opencode --timeout 3600 --report`
+- [ ] Correr manualmente: `npm run test:eval -- story-implement --only TC-042,TC-043,TC-044`; o individualmente `npm run test:eval -- story-implement --only TC-004 --eval-runner opencode --timeout 3600 --report`
 - [ ] `/story-implement` sobre una historia de prueba con `verify.unit.required: true`: `implement-report.md` muestra los exit codes de RED, GREEN y REFACTOR
-- [ ] Evidencias anotadas en `bug.md`
+- [ ] Evidencias anotadas en `implement-report.md`

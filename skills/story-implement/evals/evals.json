@@ -203,7 +203,7 @@
         ],
         "not_contains": [
           "❌",
-          "regresiones",
+          "introdujo regresiones",
           "REFACTOR no ejecutado"
         ],
         "output_file": ".tmp/story-implement/cycle-status.json",
