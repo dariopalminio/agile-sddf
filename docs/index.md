@@ -153,8 +153,8 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ## 🗂️ Work items (specs/flow/)
 
-- [[BUG-01-archivado-genera-enlaces-rotos]] — [bug.md](../specs/flow/BUG-01-archivado-genera-enlaces-rotos/bug.md) — Archivado genera enlaces rotos
-- [[plan-01-actualizar-referencias-al-archivar]] — [plan.md](../specs/flow/BUG-01-archivado-genera-enlaces-rotos/plan.md) — Reparación BUG-01 — Actualizar referencias en documentación activa al archivar
+- [[BUG-001-archivado-genera-enlaces-rotos]] — [bug.md](../specs/flow/BUG-001-archivado-genera-enlaces-rotos/bug.md) — Archivado genera enlaces rotos
+- [[plan-001-actualizar-referencias-al-archivar]] — [plan.md](../specs/flow/BUG-001-archivado-genera-enlaces-rotos/plan.md) — Reparación BUG-001 — Actualizar referencias en documentación activa al archivar
 
 ### Épicas
 
