@@ -7,7 +7,7 @@ const path = require('node:path');
 const test = require('node:test');
 
 const { verifyEvalInventory } = require('../scripts/verify-eval-inventory.js');
-const { verifyConfigContract } = require('../scripts/verify-config-contract.js');
+const { verifyConfigContract, verifySkillConfigReferences } = require('../scripts/verify-config-contract.js');
 const { verifyRelease } = require('../scripts/verify-release.js');
 
 function fixture(t) {
@@ -127,4 +127,65 @@ test('el gate de release alinea package, lockfile y changelog', (t) => {
   assert.match(selfDependencyErrors, /package\.json: fixture no puede depender de sí mismo/);
   assert.match(selfDependencyErrors, /package-lock\.json \(paquete raíz\): fixture no puede depender de sí mismo/);
   assert.match(selfDependencyErrors, /node_modules\/fixture/);
+});
+
+function skillRefFixture(t, template, reference) {
+  const root = fixture(t);
+  write(root, 'skills/sddf-init/assets/sddf.config.yaml.template', template);
+  write(root, 'skills/foo/SKILL.md', `# foo\n\nUsa \`${reference}\`.\n`);
+  return root;
+}
+
+test('la guarda de referencias de configuración acepta rutas válidas de la plantilla', (t) => {
+  const root = skillRefFixture(
+    t,
+    ['defaults:', '  delivery-model: batch', ''].join('\n'),
+    'defaults.delivery-model',
+  );
+
+  assert.deepEqual(verifySkillConfigReferences({ repoRoot: root }).errors, []);
+});
+
+test('la guarda de referencias de configuración marca rutas inexistentes nombrando archivo, línea y ruta', (t) => {
+  const root = skillRefFixture(
+    t,
+    ['defaults:', '  delivery-model: batch', ''].join('\n'),
+    'defaults.{type}.command',
+  );
+
+  const errors = verifySkillConfigReferences({ repoRoot: root }).errors.join('\n');
+  assert.match(errors, /skills\/foo\/SKILL\.md/);
+  assert.match(errors, /:3:/);
+  assert.match(errors, /defaults\.\{type\}\.command/);
+});
+
+test('la guarda de referencias de configuración acepta rutas con comodín sobre hijos que declaran command', (t) => {
+  const root = skillRefFixture(
+    t,
+    ['verify:', '  unit:', '    command: "npm test"', '    required: false', ''].join('\n'),
+    'verify.{type}.command',
+  );
+
+  assert.deepEqual(verifySkillConfigReferences({ repoRoot: root }).errors, []);
+});
+
+test('la guarda de referencias de configuración marca rutas literales inexistentes en la plantilla', (t) => {
+  const root = skillRefFixture(
+    t,
+    ['verify:', '  unit:', '    command: "npm test"', '    required: false', ''].join('\n'),
+    'verify.e2e-smoke.command',
+  );
+
+  const errors = verifySkillConfigReferences({ repoRoot: root }).errors.join('\n');
+  assert.match(errors, /verify\.e2e-smoke\.command/);
+});
+
+test('la guarda de referencias de configuración ignora secciones fuera del conjunto conocido', (t) => {
+  const root = skillRefFixture(
+    t,
+    ['defaults:', '  delivery-model: batch', ''].join('\n'),
+    'foo.bar',
+  );
+
+  assert.deepEqual(verifySkillConfigReferences({ repoRoot: root }).errors, []);
 });
