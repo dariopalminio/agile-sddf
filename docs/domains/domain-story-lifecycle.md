@@ -147,9 +147,8 @@ stateDiagram-v2
 
 | Substatus | Aplica en | Significado específico en Story |
 |-----------|-----------|--------------------------------|
-| `TODO` | `READY-FOR-IMPLEMENT` | Historia en cola, esperando capacidad del equipo. |
+| `DONE` | `READY-FOR-IMPLEMENT` | Historia en cola, esperando capacidad del equipo. |
 | `IN-PROGRESS` | `SPECIFY`, `PLAN`, `IMPLEMENT`, `CODE-REVIEW`, `VERIFY`, `ACCEPTANCE`, `DELIVER` | El rol correspondiente está trabajando activamente. |
-| `DONE` | Todos los estados activos | El trabajo del estado ha terminado y la historia está lista para avanzar. |
 | `BLOCKED` | `ACCEPTANCE` principalmente; puede aplicar a cualquier estado activo | Impedimento externo (ej. dependencia, decisión pendiente). No retrocede el status. |
 
 ---

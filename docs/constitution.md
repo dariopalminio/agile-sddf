@@ -198,7 +198,7 @@ Los campos obligatorios por `type` los fija `header-aggregation`.
 
 ### Reglas de comportamiento
 
-#### 9. Control WIP = 1 por nivel de work item
+#### 9. Control WIP = 2 por nivel de work item
 
 Solo una épica y una historia pueden tener `substatus: IN-PROGRESS` a la vez en su nivel. La documentación fundacional no tiene WIP: su avance lo decide el estado de las capas. El skill debe verificarlo antes de activar un nuevo ítem.
 

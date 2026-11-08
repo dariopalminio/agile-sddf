@@ -4,7 +4,7 @@ slug: story-map
 title: "Story Map — Agile SDDF (Spec-Driven Development Framework)"
 date: 2026-04-20
 status: COMPLETED
-substatus: READY
+substatus: DONE
 parent: null
 related:
   - project-plan
