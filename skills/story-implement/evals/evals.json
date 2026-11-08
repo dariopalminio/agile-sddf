@@ -135,7 +135,7 @@
       "id": "TC-004",
       "name": "happy-path-green-refactor-exitoso-story-actualizada-cycle-status-escrito",
       "type": "happy-path",
-      "description": "red-phase-status.json existe con red_confirmed:true, code_generators (lista, layer monolithic) declarado y el skill existe en .claude/skills/, subagente retorna status:ok en Fase GREEN y en Fase REFACTOR, tests pasan tras GREEN y siguen pasando tras REFACTOR → story.md actualizada a IMPLEMENT/DONE, cycle-status.json escrito con los tres confirmed:true y resumen final con la sugerencia '→ Ejecuta /story-code-review STORY-TEST'",
+      "description": "red-phase-status.json existe con red_confirmed:true, code_generators (lista, layer monolithic) declarado y el skill existe en .claude/skills/, subagente retorna status:ok en Fase GREEN y en Fase REFACTOR. Los comandos de prueba están SOLO en verify (unit y eval con required: true; defaults solo con delivery-model): tests_pass_after_green y tests_pass_after_refactor son los resultados (exit 0) de ejecutar esos comandos de verify tras cada fase. → story.md actualizada a IMPLEMENT/DONE, cycle-status.json escrito con los tres confirmed:true y resumen final con la sugerencia '→ Ejecuta /story-code-review STORY-TEST'",
       "input": {
         "story_id": "STORY-TEST",
         "red_phase_status": {
@@ -151,7 +151,20 @@
           ]
         },
         "sddf_config": {
-          "IMPLEMENT": {
+          "defaults": {
+            "delivery-model": "batch"
+          },
+          "verify": {
+            "unit": {
+              "command": "npm run test:unit",
+              "required": true
+            },
+            "eval": {
+              "command": "npm run test:eval",
+              "required": true
+            }
+          },
+          "implement": {
             "code_generators": [
               {
                 "layer": "monolithic",
@@ -190,7 +203,7 @@
         ],
         "not_contains": [
           "❌",
-          "regresiones",
+          "introdujo regresiones",
           "REFACTOR no ejecutado"
         ],
         "output_file": ".tmp/story-implement/cycle-status.json",
@@ -262,7 +275,7 @@
       "id": "TC-006",
       "name": "refactor-introduce-regresiones-warning-con-lista-story-sin-cambio",
       "type": "error-flow",
-      "description": "Fase GREEN exitosa (tests pasan), Fase REFACTOR completa pero tests que pasaban tras GREEN ahora fallan → el skill emite ⚠️ con cantidad y nombres exactos de los tests regresados, story.md NO se actualiza a CODE-REVIEW",
+      "description": "Fase GREEN exitosa (el comando de verify.unit retorna exit 0), Fase REFACTOR completa pero el comando de verify.unit ahora retorna exit ≠ 0: los tests que pasaban tras GREEN ahora fallan. Los comandos de prueba están SOLO en verify (unit con required: true; defaults solo con delivery-model) y tests_pass_after_green / tests_pass_after_refactor son los resultados de ejecutar ese comando de verify. → el skill emite ⚠️ con cantidad y nombres exactos de los tests regresados, story.md NO se actualiza a CODE-REVIEW",
       "input": {
         "story_id": "STORY-TEST",
         "red_phase_status": {
@@ -276,7 +289,16 @@
           ]
         },
         "sddf_config": {
-          "IMPLEMENT": {
+          "defaults": {
+            "delivery-model": "batch"
+          },
+          "verify": {
+            "unit": {
+              "command": "npm run test:unit",
+              "required": true
+            }
+          },
+          "implement": {
             "code_generators": [
               {
                 "layer": "monolithic",
@@ -3728,6 +3750,532 @@
           "- [x] **STORY-1030**",
           "- [x] Revisar **STORY-103**"
         ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-038",
+      "name": "BUG-002: comando solo en verify.unit (required true) se resuelve y ejecuta en las tres fases",
+      "type": "happy-path",
+      "description": "sddf.config.yaml con defaults solo delivery-model y el comando de unit SOLO en verify.unit (command + required: true). → el skill resuelve el comando desde verify.unit (NO desde defaults.unit.command) y lo ejecuta en RED (exit 1 ⇒ '✅ Tests en estado rojo (fallan correctamente) — tipo: unit'), en GREEN (exit 0 ⇒ '✅ Fase GREEN exitosa — tipo: unit (tests pasan)' y las casillas UT de testcases.md marcadas [x]) y en REFACTOR (exit 0 ⇒ '✅ Fase REFACTOR sin regresiones — tipo: unit'). La salida no contiene 'Sin comando configurado' ni 'no ejecutado' porque el comando existe en verify y se ejecutó. story.md → IMPLEMENT/DONE.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "red_phase_status": {
+          "story_id": "STORY-TEST",
+          "red_confirmed": true,
+          "generators_invoked": [
+            "unit"
+          ],
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "sddf_config": {
+          "defaults": {
+            "delivery-model": "batch"
+          },
+          "verify": {
+            "unit": {
+              "command": "npm run test:unit",
+              "required": true
+            }
+          },
+          "implement": {
+            "test_generators": [
+              {
+                "type": "unit",
+                "skill": "story-test-unit-jest",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "story-test-unit-jest",
+          "story-code-nodejs"
+        ],
+        "testcases_present": true,
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "command_exit_codes": {
+          "red": 1,
+          "green": 0,
+          "refactor": 0
+        }
+      },
+      "expected": {
+        "contains": [
+          "Tests en estado rojo (fallan correctamente) — tipo: unit",
+          "Fase GREEN exitosa — tipo: unit (tests pasan)",
+          "caso(s) de tipo UT marcados como [x]",
+          "Fase REFACTOR sin regresiones — tipo: unit",
+          "IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "Sin comando configurado",
+          "no ejecutado"
+        ],
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE"
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-039",
+      "name": "BUG-002: clave legada defaults.unit.command → [WARN] de migración y tipo no ejecutado",
+      "type": "alternative-flow",
+      "description": "Configuración anterior al cambio 805a17af: el comando de unit está en defaults.unit.command (junto a defaults.delivery-model) y NO existe bloque verify. → el skill NO ejecuta ningún comando (sin confirmación de rojo ni de verde): emite UNA sola vez el aviso '[WARN] sddf.config.yaml declara defaults.unit.command (esquema anterior): muévelo a verify.unit' y registra el tipo unit como 'no ejecutado' con motivo 'tipo sin configurar en verify' en cada fase (RED, GREEN y REFACTOR). La salida no contiene 'Tests en estado rojo' ni 'Fase GREEN exitosa'.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "red_phase_status": {
+          "story_id": "STORY-TEST",
+          "red_confirmed": true,
+          "generators_invoked": [
+            "unit"
+          ],
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "sddf_config": {
+          "defaults": {
+            "delivery-model": "batch",
+            "unit": {
+              "command": "npm run test:unit",
+              "required": false
+            }
+          },
+          "implement": {
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "story-test-unit-jest",
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "[WARN]",
+          "sddf.config.yaml declara defaults.unit.command (esquema anterior): muévelo a verify.unit",
+          "no ejecutado",
+          "tipo sin configurar en verify"
+        ],
+        "not_contains": [
+          "Tests en estado rojo",
+          "Fase GREEN exitosa",
+          "Fase REFACTOR sin regresiones"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-040",
+      "name": "BUG-002: verify.eval required false → no ejecuta y casillas EV sin marcar",
+      "type": "alternative-flow",
+      "description": "sddf.config.yaml con verify.eval (command 'npm run test:eval') pero required: false (defaults solo delivery-model). El tipo eval se invocó en RED. → el skill NO ejecuta 'npm run test:eval' (respetando AGENTS.md: no gastar cuota de LLM en el ciclo TDD), emite [WARN] marcando el tipo como 'no ejecutado' con motivo 'required: false' en cada fase, y deja las casillas EV de testcases.md en [ ]. La salida no contiene 'Tests en estado rojo' ni 'EV marcados como [x]'.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "red_phase_status": {
+          "story_id": "STORY-TEST",
+          "red_confirmed": true,
+          "generators_invoked": [
+            "eval"
+          ],
+          "files_generated": [
+            "evals/evals.json"
+          ]
+        },
+        "sddf_config": {
+          "defaults": {
+            "delivery-model": "batch"
+          },
+          "verify": {
+            "eval": {
+              "command": "npm run test:eval",
+              "required": false
+            }
+          },
+          "implement": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "testcases_present": true,
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "skills/story-alfa/SKILL.md"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "skills/story-alfa/SKILL.md"
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "[WARN]",
+          "no ejecutado",
+          "required: false"
+        ],
+        "not_contains": [
+          "Tests en estado rojo",
+          "EV marcados como [x]",
+          "Fase GREEN exitosa"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-041",
+      "name": "BUG-002: verify.e2e command manual (required true) → no ejecutado",
+      "type": "alternative-flow",
+      "description": "sddf.config.yaml con verify.e2e (command: manual, required: true). 'manual' no es un comando ejecutable. El tipo e2e se invocó en RED. → el skill registra el tipo como 'no ejecutado' con motivo 'command: manual' en cada fase (con [WARN]) y no intenta ejecutar 'manual'. La salida no contiene 'Tests en estado rojo' ni 'Fase GREEN exitosa'.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "red_phase_status": {
+          "story_id": "STORY-TEST",
+          "red_confirmed": true,
+          "generators_invoked": [
+            "e2e"
+          ],
+          "files_generated": [
+            "e2e/checkout.spec.ts"
+          ]
+        },
+        "sddf_config": {
+          "defaults": {
+            "delivery-model": "batch"
+          },
+          "verify": {
+            "e2e": {
+              "command": "manual",
+              "required": true
+            }
+          },
+          "implement": {
+            "test_generators": [
+              {
+                "type": "e2e",
+                "skill": "story-test-e2e-playwright",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "story-test-e2e-playwright",
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/checkout.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/checkout.ts"
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "[WARN]",
+          "no ejecutado",
+          "command: manual"
+        ],
+        "not_contains": [
+          "Tests en estado rojo",
+          "Fase GREEN exitosa"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-042",
+      "name": "BUG-002: generador api sin clave en verify → no ejecutado (tipo sin configurar)",
+      "type": "alternative-flow",
+      "description": "sddf.config.yaml con implement.test_generators activando el tipo api (skill story-test-api) pero el bloque verify NO contiene la clave api. → el skill registra el tipo api como 'no ejecutado' con motivo 'tipo sin configurar en verify' en cada fase (con [WARN]) y no ejecuta ningún comando para api. Al no existir defaults.api.command NO emite el aviso de clave legada. La salida no contiene 'Tests en estado rojo' ni 'Fase GREEN exitosa'.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "red_phase_status": {
+          "story_id": "STORY-TEST",
+          "red_confirmed": true,
+          "generators_invoked": [
+            "api"
+          ],
+          "files_generated": [
+            "tests/api/checkout.test.ts"
+          ]
+        },
+        "sddf_config": {
+          "defaults": {
+            "delivery-model": "batch"
+          },
+          "implement": {
+            "test_generators": [
+              {
+                "type": "api",
+                "skill": "story-test-api",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "story-test-api",
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/checkout.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/checkout.ts"
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "[WARN]",
+          "no ejecutado",
+          "tipo sin configurar en verify"
+        ],
+        "not_contains": [
+          "Tests en estado rojo",
+          "Fase GREEN exitosa",
+          "sddf.config.yaml declara"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-043",
+      "name": "BUG-002: command_template con {{test_file_path}} sustituido por archivos del tipo",
+      "type": "happy-path",
+      "description": "sddf.config.yaml con verify.component (command_template 'pnpm run test:component:file -- {{test_file_path}}', required: true). Escenario A (con archivos): el tipo component generó tests/component/Alert.test.tsx en RED → el marcador {{test_file_path}} se sustituye por ese archivo (files_generated ∪ files_modified del tipo) y el comando ejecutado es 'pnpm run test:component:file -- tests/component/Alert.test.tsx'; command_exit_codes {red:1, green:0, refactor:0} ⇒ fases confirmadas. Escenario B (variante sin archivos: files_generated y files_modified vacíos para el tipo) → el tipo se registra como 'no ejecutado' con motivo 'plantilla sin archivos de prueba' y no se ejecuta comando.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "red_phase_status": {
+          "story_id": "STORY-TEST",
+          "red_confirmed": true,
+          "generators_invoked": [
+            "component"
+          ],
+          "files_generated": [
+            "tests/component/Alert.test.tsx"
+          ]
+        },
+        "variant_sin_archivos": {
+          "files_generated": [],
+          "files_modified": []
+        },
+        "sddf_config": {
+          "defaults": {
+            "delivery-model": "batch"
+          },
+          "verify": {
+            "component": {
+              "command_template": "pnpm run test:component:file -- {{test_file_path}}",
+              "required": true
+            }
+          },
+          "implement": {
+            "test_generators": [
+              {
+                "type": "component",
+                "skill": "story-test-component",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "story-test-component",
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/Alert.tsx"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/Alert.tsx"
+          ]
+        },
+        "command_exit_codes": {
+          "red": 1,
+          "green": 0,
+          "refactor": 0
+        }
+      },
+      "expected": {
+        "contains": [
+          "pnpm run test:component:file -- tests/component/Alert.test.tsx",
+          "plantilla sin archivos de prueba",
+          "no ejecutado"
+        ],
+        "not_contains": [
+          "Sin comando configurado",
+          "tipo sin configurar en verify"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-044",
+      "name": "BUG-002: refactor con regresiones (comando verify.unit retorna exit 1)",
+      "type": "error-flow",
+      "description": "sddf.config.yaml con verify.unit (command + required: true). command_exit_codes {red:1, green:0, refactor:1} → la no-regresión de REFACTOR ejecuta el comando de verify.unit, el exit ≠ 0 confirma la regresión y el skill emite '⚠️ Fase REFACTOR introdujo regresiones: {N} tests que pasaban ahora fallan' listando los tests regresados. story.md NO se actualiza a IMPLEMENT/DONE y no se escribe cycle-status.json.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "red_phase_status": {
+          "story_id": "STORY-TEST",
+          "red_confirmed": true,
+          "generators_invoked": [
+            "unit"
+          ],
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "sddf_config": {
+          "defaults": {
+            "delivery-model": "batch"
+          },
+          "verify": {
+            "unit": {
+              "command": "npm run test:unit",
+              "required": true
+            }
+          },
+          "implement": {
+            "test_generators": [
+              {
+                "type": "unit",
+                "skill": "story-test-unit-jest",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "story-code-nodejs",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "story-test-unit-jest",
+          "story-code-nodejs"
+        ],
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "command_exit_codes": {
+          "red": 1,
+          "green": 0,
+          "refactor": 1
+        },
+        "regressed_tests": [
+          "feat-test > debería retornar valor correcto",
+          "feat-test > debería manejar caso edge"
+        ]
+      },
+      "expected": {
+        "contains": [
+          "⚠️",
+          "Fase REFACTOR introdujo regresiones",
+          "feat-test > debería retornar valor correcto"
+        ],
+        "not_contains": [
+          "IMPLEMENT/DONE",
+          "cycle-status.json",
+          "Fase REFACTOR sin regresiones"
+        ],
+        "story_status_unchanged": true
       },
       "threshold": 1
     }

@@ -526,19 +526,55 @@ Para cada entry de `test_generators` no omitida (en el orden del YAML):
 
 ---
 
+### Resolución del comando de prueba
+
+Subrutina común invocada por el **Paso 5 (RED)**, el **Paso 9b (GREEN)** y la **no-regresión de la Fase REFACTOR**. Define **una sola vez** cómo se resuelve el comando de prueba de un tipo a partir de `sddf.config.yaml` y qué significa que un tipo quede «no ejecutado». Cada fase la invoca con su `{fase}` (`RED`, `GREEN` o `REFACTOR`) y el `{tipo}` en cuestión; no duplican la lógica (D-1).
+
+**Fuente del comando:** siempre `verify.{type}`. La sección `defaults` solo aporta `delivery-model`; un comando declarado bajo `defaults` para un tipo es una clave legada (ver «Clave legada» más abajo) y **no** se ejecuta.
+
+**Clasificación del tipo** — se evalúan en orden y la **primera** condición que se cumpla decide (D-2):
+
+| Condición | Resultado | Motivo registrado |
+|---|---|---|
+| No existe `verify.{type}` | no ejecutado | `tipo sin configurar en verify` |
+| `required` ≠ `true` | no ejecutado | `required: false` |
+| `command: manual` | no ejecutado | `command: manual` |
+| Ni `command` ni `command_template` | no ejecutado | `sin command ni command_template` |
+| El comando o la plantilla contiene `{{test_file_path}}` y el tipo no generó ni modificó archivos de prueba en RED | no ejecutado | `plantilla sin archivos de prueba` |
+| El comando o la plantilla contiene `{{test_file_path}}` y hay archivos | ejecutable: se sustituye el marcador por esos archivos (`files_generated ∪ files_modified` del `results.json` del tipo, separados por espacio) | — |
+| Otro caso | ejecutable tal cual | — |
+
+El marcador `{{test_file_path}}` se busca tanto en `command_template` como en `command` (este repo declara `verify.e2e-file.command` con el marcador). Los tipos de generador sin clave equivalente en `verify` (`api`, `store`) caen en la primera fila.
+
+**Clave legada (D-4):** si `verify.{type}` no existe pero el comando del tipo está declarado bajo `defaults` (configuración anterior a `805a17af`), el skill **no** lo ejecuta y emite **una sola vez** durante la ejecución:
+
+```
+[WARN] sddf.config.yaml declara defaults.{type}.command (esquema anterior): muévelo a verify.{type}
+```
+
+Esto distingue «el proyecto no configuró este tipo» (primera fila) de «el comando está en el lugar equivocado» (esta rama).
+
+**Visibilidad de un tipo no ejecutado (D-3):** en lugar del `[INFO]` anterior, se emite por cada fase y se acumula en `$TEST_RUNS`:
+
+```
+[WARN] Tipo '{tipo}' no ejecutado en {fase} — {motivo}
+```
+
+`$TEST_RUNS` es una lista de registros `{fase, tipo, resultado, motivo|exit}` que alimenta la sección `## Ciclo TDD` de `implement-report.md`. Un tipo no ejecutado **no bloquea** la fase ni el ciclo: la ejecución continúa (decisión B2).
+
+**Ejecución del comando:** cuando la clasificación da «ejecutable», se ejecuta el comando (con el marcador ya sustituido, si aplicaba) en el directorio raíz del proyecto y el exit code se registra en `$TEST_RUNS` (`resultado: ok|fail`, `exit: N`). El **significado** del exit code lo interpreta cada fase: RED espera `≠ 0` (rojo), GREEN y REFACTOR esperan `0` (sin regresiones).
+
+---
+
 ### Paso 5 — Confirmar estado RED
 
 Para cada tipo generado exitosamente:
 
-1. Leer `defaults.{type}.command` de `sddf.config.yaml`
-2. **Si el comando existe:**
-   - Ejecutarlo en el directorio raíz del proyecto
+1. Invocar la subsección **Resolución del comando de prueba** con `{fase} = RED` y el `{tipo}` en cuestión.
+2. **Si la clasificación da «no ejecutado»:** emitir el `[WARN]` de la subsección (con su motivo) y continuar con el siguiente tipo; la confirmación de RED queda omitida para ese tipo.
+3. **Si la clasificación da «ejecutable»:** ejecutar el comando resuelto (con el marcador ya sustituido, si aplicaba) en el directorio raíz del proyecto:
    - Exit code ≠ 0: `✅ Tests en estado rojo (fallan correctamente) — tipo: {tipo}`
    - Exit code = 0: `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos`
-3. **Si no hay comando declarado:**
-   ```
-   [INFO] Sin comando configurado para tipo '{tipo}' — confirmación de RED omitida
-   ```
 
 La confirmación RED **no cambia en modo rework**: exit code ≠ 0 ⇒ rojo confirmado; exit code = 0 ⇒ la misma advertencia `⚠️ Los tests PASAN sin implementación — verificar que los tests sean correctos`. Que un generator haya devuelto `files_generated: []` (p. ej. correcciones ya cubiertas por tests existentes) no es condición de error en este paso — la regla "RED sin tests nuevos" se evalúa en el Paso 6b (Gate de evidencia en rework), sobre el agregado de todos los generators.
 
@@ -831,9 +867,12 @@ Mostrar: `[GREEN] ✓ {N} archivo(s) de producción generado(s) en {M} capa(s) (
 
 Para cada tipo en `$RED_GENERATORS_INVOKED`:
 
-1. Leer `defaults.{type}.command` de `sddf.config.yaml`
-2. **Si el comando existe:**
-   - Ejecutarlo en el directorio raíz del proyecto
+1. Invocar la subsección **Resolución del comando de prueba** con `{fase} = GREEN` y el `{tipo}` en cuestión.
+2. **Si la clasificación da «no ejecutado»:**
+   - Emitir el `[WARN]` de la subsección (con su motivo)
+   - Dejar las casillas de ese tipo en `testcases.md` en `[ ]` (sin marcar `[x]` ni `[!]`) y emitir: `⚠️ testcases.md — casos de tipo {PREFIX} sin marcar: tipo no ejecutado`
+   - Continuar con el siguiente tipo.
+3. **Si la clasificación da «ejecutable»:** ejecutar el comando resuelto (con el marcador ya sustituido, si aplicaba) en el directorio raíz del proyecto:
    - Exit code = 0:
      - Emitir: `✅ Fase GREEN exitosa — tipo: {tipo} (tests pasan)`
      - **Actualizar checkboxes en testcases.md** (si existe la sección `## Test Cases Progress for`):
@@ -852,10 +891,6 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
      Sugerencia: revisa el código generado en {archivos} y asegúrate de que satisface los tests.
      ```
      Detener sin ejecutar Fase REFACTOR ni modificar story.md.
-3. **Si no hay comando declarado:**
-   ```
-   [INFO] confirmación GREEN omitida para tipo '{tipo}' — sin comando configurado
-   ```
 
 ---
 
@@ -869,7 +904,7 @@ Mostrar resumen de la Fase GREEN completada:
 ```
 📋 Fase GREEN completada
    · Archivos de producción generados: {N} ({$GREEN_FILES_GENERATED})
-   · Tests: todos pasan ✅
+   · Tests: {resultado real — «todos pasan ✅» si cada tipo ejecutado pasó; los tipos no ejecutados se listan como «no ejecutadas — {lista de tipos}»}
 
 ¿Continuar con la Fase REFACTOR? (s/n)
 ```
@@ -952,9 +987,11 @@ Invocar el skill siguiendo el contrato ADR-0002:
 
 A continuación (en ambos modos), verificar no-regresión ejecutando comandos de test por tipo:
 
-Para cada tipo en `$RED_GENERATORS_INVOKED`:
-1. Leer `defaults.{type}.command` de `sddf.config.yaml`
-2. Si existe, ejecutar:
+Inicializar `$REFACTOR_VERIFICADO = false`. Para cada tipo en `$RED_GENERATORS_INVOKED`:
+
+1. Invocar la subsección **Resolución del comando de prueba** con `{fase} = REFACTOR` y el `{tipo}` en cuestión.
+2. **Si la clasificación da «no ejecutado»:** emitir el `[WARN]` de la subsección (con su motivo) y continuar con el siguiente tipo; ese tipo **no** cuenta como verificado.
+3. **Si la clasificación da «ejecutable»:** fijar `$REFACTOR_VERIFICADO = true` y ejecutar el comando resuelto (con el marcador ya sustituido, si aplicaba):
    - Exit code = 0: `✅ Fase REFACTOR sin regresiones — tipo: {tipo}`
    - Exit code ≠ 0: recopilar tests fallidos y emitir:
      ```
@@ -965,7 +1002,7 @@ Para cada tipo en `$RED_GENERATORS_INVOKED`:
      ```
      Registrar `$REFACTOR_REGRESIONES = true`. No modificar story.md. Continuar para reportar todos los tipos.
 
-**Si todos los tipos sin regresiones:** registrar `$REFACTOR_REGRESIONES = false`.
+**Al terminar todos los tipos:** `$REFACTOR_REGRESIONES = false` solo si `$REFACTOR_VERIFICADO = true` y ningún tipo ejecutado introdujo regresiones; si ningún tipo fue ejecutable, `$REFACTOR_REGRESIONES` **no** se marca `false` por vacuidad (la no-regresión queda «no ejecutada»). La transición a `IMPLEMENT/DONE` exige `$REFACTOR_REGRESIONES = false`, que ahora implica al menos un tipo verificado; el informe distingue «sin regresiones» de «no ejecutada» (D-5).
 
 ---
 
@@ -981,6 +1018,7 @@ Para cada criterio evaluar:
 - `✓` si hay evidencia positiva en los artefactos generados por el ciclo (archivos de test, código, sin errores reportados)
 - `❌` si hay evidencia explícita de incumplimiento
 - `⚠️` cuando no se puede determinar con certeza (caso por defecto para ejecución manual de tests)
+- Un criterio que verifique pruebas de una fase declarada «no ejecutada» (según `## Resumen` / `## Ciclo TDD`) se evalúa `⚠️`, **nunca `✓`** (D-7): la no-regresión o el verde de esa fase no está comprobado.
 
 Registrar `$DOD_BLOQUEADO`:
 - `true` si algún criterio resultó `❌`
@@ -1003,9 +1041,9 @@ updated: <YYYY-MM-DD>
 
 | Métrica | Valor |
 |---|---|
-| Fase RED confirmada | sí / no |
-| Fase GREEN confirmada | sí / no |
-| Fase REFACTOR confirmada | sí / no |
+| Fase RED confirmada | sí / no / no ejecutada |
+| Fase GREEN confirmada | sí / no / no ejecutada |
+| Fase REFACTOR confirmada | sí / no / no ejecutada |
 | Archivos de prueba generados | N |
 | Archivos de producción generados | N |
 
@@ -1013,9 +1051,9 @@ updated: <YYYY-MM-DD>
 
 | Fase | Estado | Detalle |
 |---|---|---|
-| RED | ✅/❌ | {tipos generados, rojo confirmado} |
-| GREEN | ✅/❌ | {capas, archivos generados} |
-| REFACTOR | ✅/❌ | {sin regresiones / regresiones detectadas} |
+| RED | ✅/❌ | {tipos generados} · por tipo: `{tipo}: rojo (exit N)` / `pasan (exit 0)` / `no ejecutado — {motivo}` |
+| GREEN | ✅/❌ | {capas, archivos generados} · por tipo: `{tipo}: pasan (exit 0)` / `no ejecutado — {motivo}` |
+| REFACTOR | ✅/❌ | por tipo: `{tipo}: sin regresiones (exit 0)` / `regresiones detectadas (exit N)` / `no ejecutado — {motivo}` |
 
 <!-- Sección condicional: SOLO si $REWORK_MODE = true. En modo normal se omite completa (ni el título). -->
 ## Ciclo de corrección — ronda {N}
@@ -1047,6 +1085,12 @@ updated: <YYYY-MM-DD>
 
 > Los tests deben ejecutarse manualmente para confirmar el resultado final.
 ```
+
+**Reglas de `## Resumen` y `## Ciclo TDD` (D-7, alimentadas por `$TEST_RUNS`):**
+- `## Resumen`, columna Valor: «Fase {RED|GREEN|REFACTOR} confirmada» admite `sí` (todos los tipos invocados se ejecutaron y cumplieron su fase), `no` (al menos un tipo ejecutado falló) o `no ejecutada` (ningún tipo invocable se ejecutó en esa fase).
+- `## Ciclo TDD`, columna Detalle: un fragmento por tipo, en el orden de `$RED_GENERATORS_INVOKED`, con `{tipo}: rojo (exit N)` (RED, exit ≠ 0), `{tipo}: pasan (exit 0)` (RED/GREEN, exit 0) o `{tipo}: no ejecutado — {motivo}` (RAMA «no ejecutado» de la subsección). El motivo es el mismo que el `[WARN]` de consola (D-2/D-3).
+- En REFACTOR, el fragmento por tipo es `{tipo}: sin regresiones (exit 0)` / `regresiones detectadas (exit N)` / `no ejecutado — {motivo}`. Si ningún tipo fue ejecutable, la fase se declara «no ejecutada» (no «sin regresiones»), coherente con D-5.
+- El estado `✅/❌` de cada fase refleja si la fase se cumplió (rojo confirmado en RED; tests en verde en GREEN; sin regresiones y al menos un tipo verificado en REFACTOR).
 
 **Reglas de la sección "Ciclo de corrección — ronda {N}"** (entre `## Ciclo TDD` y `## DoD IMPLEMENT`):
 - Se escribe **solo si `$REWORK_MODE = true`**; en modo normal no aparece ni el título.
@@ -1175,6 +1219,9 @@ Reglas comunes a ambos formatos:
 | `sddf.config.yaml` no encontrado | `❌ sddf.config.yaml no encontrado` | Detener ejecución |
 | `implement.test_generators` vacío o ausente | `[WARN] No hay test_generators configurados en sddf.config.yaml — Fase RED sin generación de pruebas` | Continuar sin subagentes |
 | Tipo activo sin campo `skill` | `[WARN] Sin skill declarado para tipo '<tipo>' — omitiendo ese tipo` | Omitir tipo |
+| Tipo no ejecutado en {fase} (Resolución del comando de prueba) | `[WARN] Tipo '{tipo}' no ejecutado en {fase} — {motivo}` | Continuar; registrar en `$TEST_RUNS`; en GREEN no marcar las casillas de `testcases.md` (D-2/D-3/D-6) |
+| Comando de un tipo bajo `defaults` sin `verify.{type}` (clave legada) | `[WARN] sddf.config.yaml declara defaults.{type}.command (esquema anterior): muévelo a verify.{type}` | No ejecutar; el tipo queda «no ejecutado — tipo sin configurar en verify» (se emite una sola vez, D-4) |
+| `command_template`/`command` con `{{test_file_path}}` y sin archivos de prueba | `[WARN] Tipo '{tipo}' no ejecutado en {fase} — plantilla sin archivos de prueba` | Continuar; registrar en `$TEST_RUNS` (D-2) |
 | Skill `required:true` no existe (test_generator) | `❌ Skill '<nombre>' declarado en sddf.config.yaml no encontrado en $CLI_ROOT/skills/` | Detener sin generar archivos |
 | Skill `required:false` no existe (test_generator) | `[WARN] Skill '<nombre>' no encontrado — omitiendo tipo '<tipo>'` | Omitir tipo y continuar |
 | `testcases.md` ausente | `⚠️ testcases.md no encontrado — generando pruebas desde story.md y design.md` | Continuar con fallback |
