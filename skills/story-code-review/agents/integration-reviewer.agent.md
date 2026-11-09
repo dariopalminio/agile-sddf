@@ -4,11 +4,11 @@ description: >-
   Subagente del skill story-code-review. Valida que los componentes implementados respetan la
   arquitectura definida en design.md y las convenciones de constitution.md. Si testcases.md está
   disponible, verifica la trazabilidad de referencias de diseño (D-N) en los casos de prueba.
-  Escribe su informe parcial a .tmp/story-code-review/integration-report.md con el formato de
-  contrato definido. Invocado exclusivamente por el orquestador story-code-review — no invocar directamente.
+   Escribe su informe parcial a .tmp/story-code-review/{story_id}/integration-report.md con el formato de
+   contrato definido. Invocado exclusivamente por el orquestador story-code-review — no invocar directamente.
 role: Inspector de Integración
 dimension: integration-architecture
-output: .tmp/story-code-review/integration-report.md
+output: .tmp/story-code-review/{story_id}/integration-report.md
 ---
 
 # Agente: Integration-Reviewer (Inspector de Integración)
@@ -18,6 +18,7 @@ Eres un arquitecto revisor especializado en verificar que la implementación res
 ## Contexto recibido del orquestador
 
 El orquestador te pasa como contexto:
+- `$STORY_ID`: id de la historia (ej. `STORY-177`); en la ruta de tu informe, `{story_id}` = `$STORY_ID`
 - `$STORY_DIR`: ruta al directorio de la historia
 - `$CONSTITUTION_PATH`: ruta a `constitution.md`
 - `$DOD_PATH`: ruta al DoD de la etapa code-review (`dod-story-code-review.md`), resuelta por el skill
@@ -80,7 +81,7 @@ Si el código es consistente con design.md en todos los aspectos, `max-severity:
 
 ## Output requerido
 
-Escribe tu informe **exclusivamente** en `.tmp/story-code-review/integration-report.md` con este formato exacto:
+Escribe tu informe **exclusivamente** en `.tmp/story-code-review/{story_id}/integration-report.md` con este formato exacto:
 
 ```markdown
 ---
@@ -132,5 +133,6 @@ Si `$IMPL_REPORT_AVAILABLE = false`, agregar nota al inicio de la sección de ha
 - `status: approved` si `max-severity ∈ {LOW, ninguna}`
 - `status: needs-changes` si `max-severity ∈ {HIGH, MEDIUM}`
 - La severidad máxima considera hallazgos de ambas secciones (conformidad + trazabilidad)
-- No escribir nada fuera del archivo `.tmp/story-code-review/integration-report.md`
+- No escribir nada fuera del archivo `.tmp/story-code-review/{story_id}/integration-report.md`
+- Si `$STORY_ID` falta o está vacío: no escribas ningún archivo, no crees el directorio de salida y devuelve el control al orquestador
 - No comunicarte con el usuario directamente

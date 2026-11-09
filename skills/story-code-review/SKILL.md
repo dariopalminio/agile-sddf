@@ -328,6 +328,7 @@ Esto impide que un informe anterior, aunque parezca válido, se consolide con ev
 > **Mecanismo de invocación:** cada agente local se lanza leyendo su archivo `agents/<nombre>.agent.md` y creando un subagente `general-purpose` cuyo prompt es el contenido del archivo más el bloque de contexto con las variables resueltas. El subagente escribe en el `output:` declarado en su frontmatter y devuelve el control. Ver contrato completo en `docs/guides/best-practices-for-skills.md` (ADR-0002).
 
 Lanzar simultáneamente los siguientes subagentes, pasando a cada agente:
+- `$STORY_ID`: id de la historia según el campo `id` del frontmatter de `story.md` (ej. `STORY-177`); es el valor de `{story_id}` en la ruta de salida de cada revisor
 - `$STORY_DIR`: ruta del directorio de la historia
 - `$REPO_PATH`: ruta raíz del repositorio (`$REPO_ROOT`)
 - `$CONSTITUTION_PATH`: ruta a constitution.md
@@ -351,7 +352,7 @@ Lanzar simultáneamente los siguientes subagentes, pasando a cada agente:
 - Output: `.tmp/story-code-review/{story_id}/integration-report.md`
 
 **Agente 4 — Security-Reviewer** (`agents/security-reviewer.agent.md`):
-- Audita los archivos de la historia contra los checklists de seguridad que existan en el contexto de ejecución (`docs/policies/*security-checklist*.md`, o el checklist de un skill de seguridad instalado, que **lee** como fuente de reglas sin invocarlo); si no encuentra ninguno, aplica su baseline embebido
+- Audita los archivos de la historia contra las fuentes de reglas, en este orden: primero los checklists de seguridad del proyecto — el glob `docs/guardrails/gr-*security*.md` bajo la raíz, unido a los checklists de seguridad enlazados desde la constitución o el DoD que existan, deduplicados por ruta —; después el checklist de un skill de seguridad instalado, que **lee** como fuente de reglas sin invocarlo; y, por último, su baseline embebido
 - Output: `.tmp/story-code-review/{story_id}/security-report.md`
 
 Mostrar progreso:
@@ -360,7 +361,8 @@ Mostrar progreso:
    🔍 Tech-Lead-Reviewer     → analizando calidad de código
    📋 Product-Owner-Reviewer → verificando cobertura de requisitos
    🏗️  Integration-Reviewer   → validando integración con design.md
-   🔒 Security-Reviewer      → auditando seguridad de los archivos de la historia
+    🔒 Security-Reviewer      → auditando seguridad de los archivos de la historia
+    📁 Informes parciales     → .tmp/story-code-review/{story_id}/
 ```
 
 Esperar a que los cuatro finalicen antes de continuar.

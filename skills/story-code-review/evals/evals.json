@@ -277,7 +277,7 @@
       "id": "TC-008",
       "name": "seguridad-sin-checklist-usa-baseline",
       "type": "happy-path",
-      "description": "Historia en IMPLEMENT/DONE en un proyecto que no tiene checklists de seguridad en docs/policies/ ni ningun skill de seguridad instalado en el contexto de ejecucion. El Security-Reviewer debe caer a su baseline embebido, declararlo en checklist-sources y no encontrar hallazgos. El skill debe consolidar la dimension security como un revisor mas (sin logica especial de pass/fail/skipped), generar code-review-report.md con la seccion Seguridad y marcar story.md como CODE-REVIEW/DONE.",
+      "description": "Historia en IMPLEMENT/DONE en un proyecto que no tiene archivos `docs/guardrails/gr-*security*` ni ningun skill de seguridad instalado en el contexto de ejecucion. El Security-Reviewer debe caer a su baseline embebido, declararlo en checklist-sources y no encontrar hallazgos. El skill debe consolidar la dimension security como un revisor mas (sin logica especial de pass/fail/skipped), generar code-review-report.md con la seccion Seguridad y marcar story.md como CODE-REVIEW/DONE.",
       "input": {
         "story_id": "STORY-080",
         "story_status": "IMPLEMENT",
@@ -866,16 +866,82 @@
         },
         "context": "la historia está en `specs/flow/STORY-010-revision/`"
       },
-      "expected": {
-        "contains": [
-          "specs/flow/STORY-010-revision/code-review-report.md",
-          "(verdict: APPROVED)"
-        ],
-        "not_contains": [
-          "docs/specs"
-        ]
-      },
-      "threshold": 0.9
-    }
-  ]
+       "expected": {
+         "contains": [
+           "specs/flow/STORY-010-revision/code-review-report.md",
+           "(verdict: APPROVED)"
+         ],
+         "not_contains": [
+           "docs/specs"
+         ]
+       },
+       "threshold": 0.9
+     },
+     {
+       "id": "TC-024",
+       "name": "informes-parciales-en-directorio-de-historia",
+       "type": "happy-path",
+       "description": "Historia STORY-194 en IMPLEMENT/DONE con story.md, design.md e implement-report.md presentes. Los cuatro agentes revisores no reportan hallazgos de severidad HIGH ni MEDIUM. El skill debe limpiar y recrear .tmp/story-code-review/STORY-194/, lanzar los cuatro revisores para que escriban sus informes parciales en ese directorio, y generar code-review-report.md con APPROVED. La salida debe nombrar .tmp/story-code-review/STORY-194/ y no debe nombrar ningun informe parcial directamente bajo .tmp/story-code-review/ (AC-1, I-2, I-6).",
+       "input": {
+         "story_id": "STORY-194",
+         "story_status": "IMPLEMENT",
+         "story_substatus": "DONE",
+         "artifacts_present": ["story.md", "design.md", "implement-report.md"],
+         "agent_results": {
+           "tech_lead_max_severity": "ninguna",
+           "product_owner_max_severity": "ninguna",
+           "integration_max_severity": "ninguna",
+           "security_max_severity": "ninguna"
+         }
+       },
+       "expected": {
+         "contains": [
+           ".tmp/story-code-review/STORY-194/",
+           "Agentes lanzados en paralelo",
+           "(verdict: APPROVED)"
+         ],
+         "not_contains": [
+           ".tmp/story-code-review/tech-lead-report.md",
+           ".tmp/story-code-review/product-owner-report.md",
+           ".tmp/story-code-review/integration-report.md",
+           ".tmp/story-code-review/security-report.md"
+         ]
+       },
+       "threshold": 0.90
+     },
+     {
+       "id": "TC-025",
+       "name": "checklist-de-guardrails-sin-enlace-en-constitucion",
+       "type": "happy-path",
+       "description": "Historia en IMPLEMENT/DONE en un proyecto que tiene docs/guardrails/gr-code-security-checklist.md, que constitution.md no enlaza y sin ningun skill de seguridad instalado en el contexto de ejecucion. El Security-Reviewer debe descubrir el checklist por el glob docs/guardrails/gr-*security*.md (no a traves del enlace de constitution.md), citarlo en el informe como fuente de reglas y no caer al baseline embebido. El skill debe generar code-review-report.md con la seccion 'Fuentes de checklist' listando gr-code-security-checklist.md y marcar story.md como CODE-REVIEW/DONE (AC-2, I-3, D-2).",
+       "input": {
+         "story_id": "STORY-200",
+         "story_status": "IMPLEMENT",
+         "story_substatus": "DONE",
+         "artifacts_present": ["story.md", "design.md", "implement-report.md"],
+         "security_checklists_present": ["docs/guardrails/gr-code-security-checklist.md"],
+         "constitution_links_security_checklists": false,
+         "security_skill_installed": false,
+         "agent_results": {
+           "tech_lead_max_severity": "ninguna",
+           "product_owner_max_severity": "ninguna",
+           "integration_max_severity": "ninguna",
+           "security_max_severity": "ninguna"
+         }
+       },
+       "expected": {
+         "contains": [
+           "gr-code-security-checklist.md",
+           "Fuentes de checklist",
+           "(verdict: APPROVED)"
+         ],
+         "not_contains": [
+           "baseline embebido",
+           "baseline-embebido",
+           "docs/policies/*security-checklist"
+         ]
+       },
+       "threshold": 0.90
+     }
+   ]
 }

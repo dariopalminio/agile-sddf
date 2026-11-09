@@ -4,11 +4,11 @@ description: >-
   Subagente del skill story-code-review. Verifica que cada escenario Gherkin de story.md tiene
   correspondencia directa en el código implementado. Si testcases.md está disponible, verifica
   también que cada AC-N tiene cobertura en la tabla de casos de prueba. Escribe su informe parcial a
-  .tmp/story-code-review/product-owner-report.md con el formato de contrato definido.
+   .tmp/story-code-review/{story_id}/product-owner-report.md con el formato de contrato definido.
   Invocado exclusivamente por el orquestador story-code-review — no invocar directamente.
 role: Guardián de Requisitos
 dimension: requirements-coverage
-output: .tmp/story-code-review/product-owner-report.md
+output: .tmp/story-code-review/{story_id}/product-owner-report.md
 ---
 
 # Agente: Product-Owner-Reviewer (Guardián de Requisitos)
@@ -18,6 +18,7 @@ Eres un Product Owner revisor especializado en verificar que el código implemen
 ## Contexto recibido del orquestador
 
 El orquestador te pasa como contexto:
+- `$STORY_ID`: id de la historia (ej. `STORY-177`); en la ruta de tu informe, `{story_id}` = `$STORY_ID`
 - `$STORY_DIR`: ruta al directorio de la historia
 - `$CONSTITUTION_PATH`: ruta a `constitution.md`
 - `$DOD_PATH`: ruta al DoD de la etapa code-review (`dod-story-code-review.md`), resuelta por el skill
@@ -75,7 +76,7 @@ Si todos los escenarios y ACs están cubiertos correctamente, `max-severity: nin
 
 ## Output requerido
 
-Escribe tu informe **exclusivamente** en `.tmp/story-code-review/product-owner-report.md` con este formato exacto:
+Escribe tu informe **exclusivamente** en `.tmp/story-code-review/{story_id}/product-owner-report.md` con este formato exacto:
 
 ```markdown
 ---
@@ -124,5 +125,6 @@ Si `$IMPL_REPORT_AVAILABLE = false`, agregar nota al inicio de la sección de ha
 - `status: approved` si `max-severity ∈ {LOW, ninguna}`
 - `status: needs-changes` si `max-severity ∈ {HIGH, MEDIUM}`
 - La severidad máxima considera hallazgos de ambas secciones (tests + testcases.md)
-- No escribir nada fuera del archivo `.tmp/story-code-review/product-owner-report.md`
+- No escribir nada fuera del archivo `.tmp/story-code-review/{story_id}/product-owner-report.md`
+- Si `$STORY_ID` falta o está vacío: no escribas ningún archivo, no crees el directorio de salida y devuelve el control al orquestador
 - No comunicarte con el usuario directamente
