@@ -25,12 +25,17 @@
 *   *Artefacto:* Evidencias de prueba (logs, capturas) añadidas al `bug.md` o al Pull Request.
 *   *Acción:* Pruebas de regresión. *En tu caso específico:* ejecutar el validador de enlaces para confirmar que ya no hay enlaces rotos. *(Nota: Si la verificación es 100% automatizable, esto ocurre en el paso 5).*
 
-**6. Bug Deploy (Despliegue)**
+**6. Acceptance (Validación desde la Perspectiva del Negocio)**
+*   *¿Qué pasa?* Se valida que la solución realmente resuelve el problema desde la perspectiva del negocio o del usuario final.
+*   *Artefacto:* Aceptación del Product Owner (PO) o evidencia de que el problema de negocio ha sido resuelto.
+*   *Acción:* El PO revisa la solución y confirma que cumple con los criterios de aceptación definidos. Si no es así, se retroalimenta al equipo para ajustes. Entiendo que para bugs triviales (typos, errores 500, fallos de rendimiento), la aceptación puede ser automática tras el VERIFY. Pero para bugs funcionales complejos, el ACEPTANCE es vital. 
+
+**7. Bug Deliver (Despliegue & entrega)**
 *   *¿Qué pasa?* Se integra el código en la rama principal y se despliega.
 *   *Artefacto:* `CHANGELOG.md` actualizado.
 *   *Acción:* Merge a `main` y despliegue automatizado o controlado por *Feature Flags*. En Trunk-Based Development, este paso es rápido y continuo.
 
-**7. Complete, Closure & Post-mortem (Cierre y Lecciones Aprendidas)**
+**8. Complete, Closure & Post-mortem (Cierre y Lecciones Aprendidas)**
 *   *¿Qué pasa?* Se cierra el workitem y se archiva.
 *   *Artefacto:* Se archiva el `bug.md` y sus derivados (ej. moviéndolos a la carpeta `archived/`).
 *   *Acción:* Se invoca el skill `/bug-complete`. Se actualiza la documentación (si aplica) y, en bugs críticos, se documenta qué se aprendió para evitar que vuelva a ocurrir.
