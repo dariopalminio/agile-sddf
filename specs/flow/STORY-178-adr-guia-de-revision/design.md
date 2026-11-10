@@ -35,9 +35,9 @@ Estado verificado en el filesystem (2026-11-08):
 | `skills/story-code-review/SKILL.md` | Severidades `HIGH > MEDIUM > LOW > ninguna`; bloqueante = `HIGH` o `MEDIUM` (4c); el orquestador no usa git (4c.2: «No se invoca `git diff`») y conoce los archivos de la historia por `$IMPL_FILES`, extraídos de `implement-report.md` (2c). El DoD se resuelve como `$DOD_PATH` (2d). |
 | `skills/story-code-review/assets/code-review-report-template.md` | Contrato del informe: frontmatter con `max-severity`, secciones y veredicto (ADR-0015). |
 | `REVIEW.md` | No existe en el repo (lo crea STORY-179). |
-| STORY-179 | Nombra las cuatro secciones de `REVIEW.md`: «Qué es «Importante» aquí», «Tope de nits», «No reportar», «Verificar siempre», con doble vocabulario según este ADR. |
+| STORY-179 | Nombra las cuatro secciones de `REVIEW.md`: «Qué es «Importante» aquí», «Tope de Minor», «No reportar», «Verificar siempre», con doble vocabulario según este ADR. |
 | STORY-180 (AC-4), STORY-181 (AC-3, Notas) | Esperan del ADR la fuente de lectura, la precedencia y el método para identificar líneas no tocadas. Ver D-6 y CR-001. |
-| Convención de Anthropic | `code.claude.com/docs/en/code-review-customize` (consultada el 2026-11-07, notas de EPIC-28): `REVIEW.md` en la raíz; solo lo lee el servicio gestionado de Code Review en GitHub; «cambia lo que la revisión encuentra y reporta; no cambia el formato»; se lee de la rama base, nunca de los cambios del PR; severidades Important, Nit, Pre-existing; el check es neutral y nunca bloquea. |
+| Convención de Anthropic | `code.claude.com/docs/en/code-review-customize` (consultada el 2026-11-07, notas de EPIC-28): `REVIEW.md` en la raíz; solo lo lee el servicio gestionado de Code Review en GitHub; «cambia lo que la revisión encuentra y reporta; no cambia el formato»; se lee de la rama base, nunca de los cambios del PR; severidades Important, Minor (Nit), Pre-existing; el check es neutral y nunca bloquea. |
 
 Stakeholders: el mantenedor que ejecuta STORY-179 a STORY-185, que citarán ADR-0021.
 
@@ -137,14 +137,14 @@ El ADR contiene esta tabla, con una fila por severidad:
 | Claude Code Review | `story-code-review` | Efecto sobre el veredicto |
 |---|---|---|
 | 🔴 Important | `HIGH` o `MEDIUM` | bloquea (`NEEDS-CHANGES`) |
-| 🟡 Nit | `LOW` | no bloquea |
+| 🟡 Minor | `LOW` | no bloquea |
 | 🟣 Pre-existing | `PREEXISTENTE` | no bloquea |
 
 Reglas que acompañan la tabla:
 - **Important → HIGH o MEDIUM:** `REVIEW.md` define qué es bloqueante; elegir entre `HIGH` y `MEDIUM` sigue el criterio actual de cada revisor. Ambos bloquean, así que la traducción es única en su efecto.
 - **PREEXISTENTE es una categoría, no un valor de severidad:** no entra en `max-severity` (cuyos valores siguen siendo `HIGH`, `MEDIUM`, `LOW`, `ninguna`) ni en `fix-directives.md`.
 - **Asignación conservadora:** un hallazgo solo es `PREEXISTENTE` con evidencia de que está en líneas que la historia no tocó. Sin esa evidencia, conserva su severidad y el informe dice por qué no se aplicó. El método para obtener la evidencia lo fija el `design.md` de STORY-181 (decisión de un solo skill, regla 16), dentro de esta regla. Ver CR-001.
-- **Secciones de `REVIEW.md`:** «Qué es «Importante» aquí» define lo que se reporta como `HIGH`/`MEDIUM`; «Tope de nits» limita los `LOW`; «No reportar» excluye hallazgos; «Verificar siempre» añade comprobaciones. Así las nombra STORY-179.
+- **Secciones de `REVIEW.md`:** «Qué es «Importante» aquí» define lo que se reporta como `HIGH`/`MEDIUM`; «Tope de Minor» limita los `LOW`; «No reportar» excluye hallazgos; «Verificar siempre» añade comprobaciones. Así las nombra `docs/templates/REVIEW-template.md`.
 
 **Alternativas rechazadas:**
 - **Important → solo HIGH:** todo `MEDIUM` dejaría de bloquear y cambiaría el veredicto de los 71 informes archivados en su línea base.
@@ -155,7 +155,7 @@ Reglas que acompañan la tabla:
 ### D-7 — Contenido de `## Contexto y problema`, `## Rationale`, `## Consecuencias` y `## Referencias` // satisface: AC-1, CNF-3
 
 - **Contexto y problema:** el ruido de `/story-code-review` (línea base de EPIC-28: ≈580 LOW en 55 de 71 informes, LOW arrastrados y duplicados en STORY-125) y las reglas propias de agile-sddf dentro de los agentes. Dos bloques separados con estos títulos:
-  - **Lo que dice la convención de Anthropic** (cita `https://code.claude.com/docs/en/code-review-customize`): `REVIEW.md` solo lo lee el servicio gestionado de GitHub (el `/code-review` local no); cambia lo que se reporta, no el formato; se lee de la rama base; Important, Nit, Pre-existing; check neutral que nunca bloquea.
+  - **Lo que dice la convención de Anthropic** (cita `https://code.claude.com/docs/en/code-review-customize`): `REVIEW.md` solo lo lee el servicio gestionado de GitHub (el `/code-review` local no); cambia lo que se reporta, no el formato; se lee de la rama base; Important, Minor (Nit), Pre-existing; check neutral que nunca bloquea.
   - **Lo que decide agile-sddf:** `story-code-review` es un gate que bloquea, así que lee `REVIEW.md` de forma explícita, desde el working tree (D-4), y traduce las severidades (D-6).
 - **Rationale:** (1) separar los criterios genéricos que distribuye el framework de la calibración de cada proyecto; (2) reutilizar la convención de Anthropic para que un mismo archivo sirva al gate local y al servicio de GitHub; (3) KISS: sin git en el skill para leer la guía; (4) la constitución prevalece (AGENTS.md, flujo de autoridad).
 - **Alternativas consideradas:** las de D-2, D-3, D-4 (incluida la rama base, CNF-2), D-5 y D-6.
@@ -206,7 +206,7 @@ Estructura de `## Decisión` (subtítulos `###` en este orden): Ubicación (D-2)
 4. Ejecutar `npm run verify:repository` y `npm test` (CNF-4).
 
 ### F-2 — Consulta de una severidad // AC-2
-El lector busca `Important`, `Nit` o `Pre-existing` en la tabla de vocabulario del ADR y encuentra una sola fila con categoría y efecto.
+El lector busca `Important`, `Minor` o `Pre-existing` en la tabla de vocabulario del ADR y encuentra una sola fila con categoría y efecto.
 
 ### F-3 — Degradación // P7
 - Si al implementar ya existe `ADR-0021-*` (trabajo en paralelo): usar el siguiente número libre y propagarlo a la fila del README, la línea de `docs/index.md` y el título; registrarlo en `implement-report.md`.
@@ -233,7 +233,7 @@ El lector busca `Important`, `Nit` o `Pre-existing` en la tabla de vocabulario d
 | 2 | Tiene las seis secciones del template, en orden | Encabezados `##` de ADR-0021 = Contexto y problema, Decisión, Rationale, Alternativas consideradas, Consecuencias, Referencias; sin `[Por completar]` | AC-1 |
 | 3 | `## Decisión` fija ubicación, precedencia y fuente | Contiene `<REPO_ROOT>/REVIEW.md` (o «raíz del repositorio»), la tabla de D-3 con `constitution.md`, `dod-story-code-review.md` y `code-review-report-template.md`, y la palabra «working tree» | AC-1 |
 | 4 | README lista el ADR igual | La fila de ADR-0021 en `docs/adr/README.md` tiene el mismo `title`, `ACCEPTED` y la misma `date` que el frontmatter | AC-1 |
-| 5 | Una fila por severidad | En la tabla de vocabulario, `Important`, `Nit` y `Pre-existing` aparecen una vez cada una, con `HIGH o MEDIUM`/bloquea, `LOW`/no bloquea y `PREEXISTENTE`/no bloquea | AC-2 |
+| 5 | Una fila por severidad | En la tabla de vocabulario, `Important`, `Minor` y `Pre-existing` aparecen una vez cada una, con `HIGH o MEDIUM`/bloquea, `LOW`/no bloquea y `PREEXISTENTE`/no bloquea | AC-2 |
 | 6 | Historia que modifica la guía o el DoD | `## Decisión` dice que rige la versión del working tree, exige la advertencia en el informe y detecta con `$IMPL_FILES`, sin git | AC-3 |
 | 7 | Sin cuarta raíz y ADR-0019 intacto | ADR-0021 compara `REVIEW.md` con `AGENTS.md` y `CLAUDE.md`; `git diff -- docs/adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md` vacío | CNF-1 |
 | 8 | Alternativa de fuente descartada | `## Alternativas consideradas` contiene «rama base» con motivo de descarte | CNF-2 |
@@ -266,3 +266,9 @@ Ninguna: la decisión (b) de la épica queda acotada en D-6 y su método se dele
 - **Descripción**: STORY-181 (AC-3 y Notas) espera que el ADR fije el método para identificar las líneas que la historia no tocó. Este diseño no lo fija: la decisión afecta solo a `story-code-review` (regla 16 de la constitución → `design.md`), y cada método evaluado (`git diff HEAD`, `git diff` contra la rama principal, rangos de línea en `implement-report.md`) tiene un caso que oculta defectos propios o cambia el contrato de otro skill. El ADR fija la regla que el método debe cumplir: asignación conservadora y aviso en el informe cuando no se aplica (D-6).
 - **Documento afectado**: `specs/flow/STORY-181-hallazgos-preexistentes/story.md`
 - **Acción requerida**: cambiar «el método que fija el ADR de la guía de revisión» por «el método que fija el `design.md` de STORY-181 conforme a ADR-0021». Si se prefiere fijarlo en el ADR, hay que decidirlo antes de implementar esta historia y añadirlo a D-6.
+
+### CR-002
+- **Tipo**: nomenclatura
+- **Descripción**: Se cambia la severidad «Nit» a «Minor» para alinear con la convención de Anthropic y la documentación actual.
+- **Documento afectado**: `design.md`
+- **Acción requerida**: actualizar todas las referencias de «Nit» a «Minor» en el diseño y en los informes relacionados.

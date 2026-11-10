@@ -57,7 +57,7 @@ related:
 - **Ejecución de evals:** EV-001 a EV-005 consumen cuota; se ejecutan a criterio humano (AGENTS.md). El gate determinista cubre UT-001 a UT-005 e IT-004.
 - **E2E:** son ejecuciones reales del skill sobre una historia; E2E-001 y E2E-004 dependen de que STORY-178 y STORY-179 estén implementadas. E2E-003 requiere un proyecto consumidor sin `REVIEW.md` (o eliminarlo temporalmente en una copia del repo, nunca en el working tree compartido). E2E-005 es determinista y lo automatiza UT-001.
 - **Borde de UT:** cada UT incluye en «Entonces» la condición que la hace fallar. No se escriben meta-pruebas de la prueba unitaria.
-- **Sin cobertura automatizada:** que un revisor LLM aplique «Qué es «Importante» aquí», «Tope de nits» y «Verificar siempre» (D-3) no es comprobable de forma determinista; lo cubren EV-001 y E2E-001 de forma indirecta. Es un riesgo aceptado en design.md (F-4).
+- **Sin cobertura automatizada:** que un revisor LLM aplique «Qué es «Importante» aquí», «Tope de Minor» y «Verificar siempre» (D-3) no es comprobable de forma determinista; lo cubren EV-001 y E2E-001 de forma indirecta. Es un riesgo aceptado en design.md (F-4).
 - **CNF-2 (evals primero):** se verifica por el orden de tareas (T004-T007 antes de T009-T021) y el historial de `evals.json`; no tiene caso propio.
 
 ## Test Cases Progress for STORY-180

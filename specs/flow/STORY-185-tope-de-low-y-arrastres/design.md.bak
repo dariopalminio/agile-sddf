@@ -45,7 +45,7 @@ Stack: skill en Markdown con agentes locales, motores Node ≥ 18 sin dependenci
 ## Goals / Non-Goals
 
 **Goals:**
-- El árbitro muestra como máximo `$LOW_CAP` filas `LOW` por revisor: el «Tope de nits» de `REVIEW.md`, o 5 si `REVIEW.md` no existe o no lo declara, y dice cuántas omitió. // satisface: AC-1
+- El árbitro muestra como máximo `$LOW_CAP` filas `LOW` por revisor: el «Tope de Minor» de `REVIEW.md`, o 5 si `REVIEW.md` no existe o no lo declara, y dice cuántas omitió. // satisface: AC-1
 - El árbitro omite los `LOW` que repiten uno de la ronda anterior sobre líneas cuyo contenido no cambió; los `HIGH`/`MEDIUM` se repiten siempre. // satisface: AC-2
 - Un motor determinista guarda la huella de contenido de las líneas de cada `LOW` mostrado y, en la ronda siguiente, dice si esas líneas siguen iguales. // satisface: AC-2
 - `verdict`, `max-severity`, el frontmatter y las secciones del informe no cambian. // satisface: CNF-1
@@ -54,7 +54,7 @@ Stack: skill en Markdown con agentes locales, motores Node ≥ 18 sin dependenci
 **Non-Goals:**
 - Verificación de evidencia de `HIGH`/`MEDIUM` y deduplicación entre revisores (STORY-182). PREEXISTENTE (STORY-181). Filas `DoD-CODE-REVIEW` (STORY-183): no son de un revisor y no pasan por el tope ni por el arrastre.
 - Omitir `HIGH` o `MEDIUM` repetidos, aunque sus líneas no cambien (AC-2, «Pero»).
-- Leer `REVIEW.md` o pasarlo a los revisores (STORY-180); este diseño solo lee su sección «Tope de nits».
+- Leer `REVIEW.md` o pasarlo a los revisores (STORY-180); este diseño solo lee su sección «Tope de Minor».
 - Cambiar `story-implement` o `story-implement-tasks` para registrar las líneas del rework.
 - Regenerar las copias instaladas en `.claude/skills/` y demás runtimes.
 
@@ -76,7 +76,7 @@ Sin cambios: `assets/fix-directives-template.md` (los `LOW` nunca entran), `docs
 
 | Interfaz | Contrato | AC / CNF |
 |---|---|---|
-| I-1 — `$LOW_CAP` y `$LOW_CAP_SOURCE` (Paso 4a.N, fase 1) | Si `$REVIEW_PATH` no está vacío y la sección cuyo encabezado `##` empieza por «Tope de nits» tiene una línea con «Máximo» seguida de un entero `N ≥ 0` (admite `**`, `[` y `]` alrededor), `$LOW_CAP = N` y `$LOW_CAP_SOURCE = REVIEW.md`. En cualquier otro caso, `$LOW_CAP = 5` y `$LOW_CAP_SOURCE` = `por defecto (REVIEW.md sin tope declarado)` o `por defecto (sin REVIEW.md)`. Si `$REVIEW_PATH` no existe como variable (STORY-180 sin implementar), se trata como vacía. | AC-1 |
+| I-1 — `$LOW_CAP` y `$LOW_CAP_SOURCE` (Paso 4a.N, fase 1) | Si `$REVIEW_PATH` no está vacío y la sección cuyo encabezado `##` empieza por «Tope de Minor» tiene una línea con «Máximo» seguida de un entero `N ≥ 0` (admite `**`, `[` y `]` alrededor), `$LOW_CAP = N` y `$LOW_CAP_SOURCE = REVIEW.md`. En cualquier otro caso, `$LOW_CAP = 5` y `$LOW_CAP_SOURCE` = `por defecto (REVIEW.md sin tope declarado)` o `por defecto (sin REVIEW.md)`. Si `$REVIEW_PATH` no existe como variable (STORY-180 sin implementar), se trata como vacía. | AC-1 |
 | I-2 — Registro de huellas `code-review-lows.json` | Archivo JSON en `$STORY_DIR/`, versionado con la historia y archivado con ella. Lo escribe solo el motor (I-4); el árbitro solo lo pasa por ruta. Esquema en `## Esquema de datos`. | AC-2 |
 | I-3 — CLI `compare` | `node <CLI_ROOT>/skills/story-code-review/scripts/low-ledger.js compare --repo-root <REPO_ROOT> --ledger <$STORY_DIR/code-review-lows.json> --locations <archivo.json>`. `<archivo.json>`: arreglo JSON de cadenas `Archivo:Línea` de los `LOW` de esta ronda. Exit `0` con un único objeto JSON en stdout, también si no hay registro; exit `2` ante argumentos inválidos o un `--locations` ilegible, con el error en stderr. No escribe archivos. | AC-2 |
 | I-4 — CLI `record` | `node <CLI_ROOT>/skills/story-code-review/scripts/low-ledger.js record --repo-root <REPO_ROOT> --lows <archivo.json> --out <$STORY_DIR/code-review-lows.json>`. `<archivo.json>`: arreglo de `{ reviewer, location, description }`. Calcula la huella de cada ubicación y escribe `--out` completo (reemplaza el anterior). Exit `0` con `{ ok: true, written: <n>, skipped: [ { location, why } ] }`; exit `2` si faltan argumentos, el JSON es ilegible o `--out` queda fuera de `--repo-root`. | AC-2 |
@@ -322,7 +322,7 @@ Se omite la parte cuyo recuento es 0.
 
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
-| 1 | Con «Tope de nits» de 3, el informe muestra 3 `LOW` del revisor y dice que omitió 9 | TC-042 | AC-1 |
+| 1 | Con «Tope de Minor» de 3, el informe muestra 3 `LOW` del revisor y dice que omitió 9 | TC-042 | AC-1 |
 | 2 | Con `REVIEW.md` sin tope o sin `REVIEW.md`, el tope es 5 y se omiten 7 | TC-043, TC-044 | AC-1 |
 | 3 | Un `LOW` de la ronda anterior sobre líneas sin cambios no se repite; `HIGH` y `MEDIUM` sin corregir sí | Con registro: TC-045; C-6 aserciones 1, 2 y 6. Sin registro pero con informe anterior: mecanismo y prueba pendientes de CR-002; cobertura parcial | AC-2 |
 | 4 | Un `LOW` sobre una línea cambiada se muestra | TC-046; C-6 aserción 3 | AC-2 |
@@ -349,7 +349,7 @@ Pendiente CR-002: adopción verificable de una ronda anterior sin registro. El m
 
 - **Omisiones:** AC-1 → I-1, D-4 (fases 1 y 3), D-5, D-6, TC-042 a TC-044; AC-2 con registro → I-2 a I-7, D-1 a D-4 (fase 2), D-9, TC-045, TC-046, C-6; AC-2 sin registro y con informe anterior → pendiente CR-002, sin prueba definida aún; CNF-1 → I-8, D-4, D-6, C-6 aserción 9; CNF-2 → D-7, contrato 7. La cobertura de AC-2 no es completa.
 - **Ambigüedad:** la historia dice «el informe de la ronda anterior». Con registro, los `LOW` de esa ronda se leen de `code-review-lows.json`, que conserva las filas mostradas y su huella (D-2); sin registro, la adopción está pendiente de CR-002. «Línea no tocada» = huella igual en una única coincidencia, original o desplazada (D-3). «Por revisor» = las filas `LOW` de todas las tablas de ese revisor (D-4).
-- **Nombres:** «tope» (`$LOW_CAP`, «Tope de nits» de `REVIEW.md`), «arrastre» (`$CARRYOVER_CHECK`, `omitido-por-arrastre`), «ronda» (como en `fix-directives.md`), «registro de huellas» (`code-review-lows.json`), «árbitro» y «revisor» se usan igual en la historia, la épica y `SKILL.md`. `{{LOW_NOISE_STATUS}}` sigue el estilo de `{{TESTCASES_STATUS}}`.
+- **Nombres:** «tope» (`$LOW_CAP`, «Tope de Minor» de `REVIEW.md`), «arrastre» (`$CARRYOVER_CHECK`, `omitido-por-arrastre`), «ronda» (como en `fix-directives.md`), «registro de huellas» (`code-review-lows.json`), «árbitro» y «revisor» se usan igual en la historia, la épica y `SKILL.md`. `{{LOW_NOISE_STATUS}}` sigue el estilo de `{{TESTCASES_STATUS}}`.
 - **Estructura:** sin dependencias cíclicas. El motor solo lee archivos y escribe el registro; el árbitro lo invoca y decide; los revisores no conocen el motor. Cada componente tiene una responsabilidad: motor = huellas, árbitro = selección de filas, plantilla = presentación. Las interfaces son dos subcomandos con tres argumentos cada uno. El documento no contiene código.
 
 ## Registro de Cambios (CR)

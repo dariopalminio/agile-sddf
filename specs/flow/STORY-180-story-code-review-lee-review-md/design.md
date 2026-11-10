@@ -36,7 +36,7 @@ related:
 | `skills/story-code-review/assets/code-review-report-template.md` | Contrato del informe (ADR-0015): frontmatter, `## Veredicto`, `## Resumen` (tabla de campos, con la fila `testcases.md`), hallazgos por dimensión, DoD. |
 | `skills/story-code-review/evals/evals.json` | 23 casos (TC-001 a TC-023). STORY-177 reserva TC-024 y TC-025. |
 | ADR de la guía de revisión (STORY-178, `docs/adr/ADR-0021-guia-de-revision-review-md.md`, aún no creado) | D-2: un solo `<REPO_ROOT>/REVIEW.md`. D-3: precedencia constitución > DoD > `REVIEW.md` > criterios genéricos de los revisores; `REVIEW.md` no cambia el formato. D-4: se lee del working tree, sin git. D-5: la detección de una historia que modifica la guía o el DoD compara con `$IMPL_FILES`, advierte en el informe y no cambia `verdict`; el texto y la sección los fija esta historia. D-6: vocabulario y PREEXISTENTE como categoría (STORY-181). |
-| `REVIEW.md` (STORY-179) | No existe todavía. Tendrá cuatro secciones: «Qué es «Importante» aquí», «Tope de nits», «No reportar», «Verificar siempre» (`docs/templates/REVIEW-template.md`). |
+| `REVIEW.md` (STORY-179) | No existe todavía. Tendrá cuatro secciones: «Qué es «Importante» aquí», «Tope de Minor», «No reportar», «Verificar siempre» (`docs/templates/REVIEW-template.md`). |
 | `docs/guardrails/dod-story-code-review.md:21` | «Sin hallazgo bloqueante de severidad HIGH o MEDIUM»: el árbitro lo evalúa con la tabla consolidada. |
 
 Stack: skill en Markdown más agentes locales; pruebas deterministas con `node:test` en `test/`; evals de simulación en `evals.json` (`contains`/`not_contains`), ejecutados a criterio humano.
@@ -116,7 +116,7 @@ Nuevo Paso 2d.2: calcular `$RULES_CHANGED` y `$RULES_CHANGE_CHECK` (I-2) compara
 Los subagentes no heredan el contexto de `SKILL.md`, así que cada agente necesita la regla completa. Se sigue el patrón existente del «Estándar de aprobación» (`SKILL.md:339`): el Paso 3b gana un «Principio compartido — Guía de revisión» que remite a la sección `## Guía de revisión (REVIEW.md)`, duplicada con el mismo texto en los cuatro agentes (I-4). C-8 comprueba que los cuatro cuerpos son idénticos. Cada revisor aplica las cuatro secciones de `REVIEW.md` solo en su dimensión y conserva el formato de su informe:
 
 - **Qué es «Importante» aquí:** decide qué es `HIGH`/`MEDIUM` en cada área; elegir entre `HIGH` y `MEDIUM` sigue el criterio actual del revisor (ADR, D-6).
-- **Tope de nits:** el revisor no reporta más `LOW` de los que fija. Que el árbitro lo haga cumplir es STORY-185.
+- **Tope de Minor:** el revisor no reporta más `LOW` de los que fija. Que el árbitro lo haga cumplir es STORY-185.
 - **No reportar:** el revisor no reporta lo que excluye, con ninguna severidad.
 - **Verificar siempre:** cada ítem lo comprueba el revisor de la dimensión a la que pertenece; si no pertenece claramente a ninguna, lo comprueba el Tech-Lead-Reviewer.
 - **Precedencia:** `$CONSTITUTION_PATH` y `$DOD_PATH` prevalecen sobre `REVIEW.md`; `REVIEW.md` prevalece sobre los criterios genéricos del agente. Una línea de `REVIEW.md` que contradice una fuente superior no se aplica.
@@ -229,7 +229,7 @@ Es independiente de `test/story-code-review-paths.test.js` (STORY-177) para que 
 **Cuerpo de `## Guía de revisión (REVIEW.md)`** (idéntico en los cuatro agentes; contenido normativo, no literal):
 
 1. Si `$REVIEW_PATH` está vacío, revisa con tus criterios de siempre.
-2. Si no, lee `$REVIEW_PATH` y aplícalo solo en tu dimensión: «Qué es «Importante» aquí» decide qué reportas como `HIGH`/`MEDIUM`; «Tope de nits» limita tus `LOW`; no reportes lo que excluye «No reportar»; comprueba los ítems de «Verificar siempre» que pertenecen a tu dimensión (los que no pertenecen claramente a ninguna, el Tech-Lead-Reviewer).
+2. Si no, lee `$REVIEW_PATH` y aplícalo solo en tu dimensión: «Qué es «Importante» aquí» decide qué reportas como `HIGH`/`MEDIUM`; «Tope de Minor» limita tus `LOW`; no reportes lo que excluye «No reportar»; comprueba los ítems de «Verificar siempre» que pertenecen a tu dimensión (los que no pertenecen claramente a ninguna, el Tech-Lead-Reviewer).
 3. Precedencia: `$CONSTITUTION_PATH` y `$DOD_PATH` prevalecen sobre `REVIEW.md`, y `REVIEW.md` sobre los criterios de este archivo. Una línea que contradice una fuente superior no se aplica.
 4. `REVIEW.md` cambia qué reportas y con qué severidad, nunca el formato: los valores de severidad siguen siendo `HIGH`, `MEDIUM`, `LOW`, `ninguna`. Si una regla pide otra categoría, conserva la severidad del hallazgo.
 

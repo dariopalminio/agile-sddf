@@ -5,11 +5,11 @@ id: STORY-178
 kind: chore
 slug: STORY-178-adr-guia-de-revision
 title: "ADR de la guía de revisión"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-10
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
 ---
@@ -17,8 +17,8 @@ related:
 
 # 📖 Historia: ADR de la guía de revisión
 
-**Como** mantenedor de agile-sddf que va a implementar las historias de EPIC-28 sobre `REVIEW.md`  
-**Quiero** un ADR aceptado que fije dónde vive `REVIEW.md`, qué decide frente a `constitution.md`, el DoD CODE-REVIEW y la plantilla del informe, de dónde se lee y cómo se traducen las severidades de Claude Code Review (Important, Nit, Pre-existing)  
+**Como** Mantenedor del Harness que va a implementar las historias de EPIC-28 sobre `REVIEW.md`  
+**Quiero** un ADR aceptado que fije dónde vive `REVIEW.md`, qué decide frente a `constitution.md`, el DoD CODE-REVIEW y la plantilla del informe, de dónde se lee y cómo se traducen las severidades de Claude Code Review (Important, Minor, Pre-existing)  
 **Para** que las demás historias de la épica implementen una sola decisión y ninguna tenga que reabrir la ubicación, la precedencia, la fuente de lectura o el vocabulario en su `design.md`
 
 ## ✅ Criterios de aceptación
@@ -41,7 +41,7 @@ Escenario: Traducción de severidades
 Ejemplos:
   | severidad       | categoría      | efecto     |
   | 🔴 Important    | HIGH o MEDIUM  | bloquea    |
-  | 🟡 Nit          | LOW            | no bloquea |
+  | 🟡 Minor        | LOW            | no bloquea |
   | 🟣 Pre-existing | PREEXISTENTE   | no bloquea |
 ```
 

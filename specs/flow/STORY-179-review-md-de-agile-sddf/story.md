@@ -19,18 +19,18 @@ related:
 # 📖 Historia: REVIEW.md de agile-sddf
 
 **Como** mantenedor de agile-sddf que revisa sus historias con `/story-code-review`  
-**Quiero** un `REVIEW.md` en la raíz, hecho desde `docs/templates/REVIEW-template.md`, con las cuatro secciones de la convención (qué es importante en cada área del repo, tope de nits, qué no reportar y qué verificar siempre) y con las reglas propias del repo que hoy viven dentro de los agentes  
+**Quiero** un `REVIEW.md` en la raíz, hecho desde `docs/templates/REVIEW-template.md`, con las cuatro secciones de la convención (qué es importante en cada área del repo, tope de Minor, qué no reportar y qué verificar siempre) y con las reglas propias del repo que hoy viven dentro de los agentes  
 **Para** que la revisión juzgue con los riesgos reales de este repositorio: que deje de bloquear por ruido (fixtures con secretos falsos, copias de instalación, LOW repetidos entre rondas) y que no pase por alto los defectos que ya costaron rondas, como los caracteres invisibles o un ADR aceptado editado in place
 
 ## ✅ Criterios de aceptación
 
 ### AC-1 — Escenario principal – REVIEW.md con las cuatro secciones de la convención
 ```gherkin
-Dado que "docs/templates/REVIEW-template.md" define las secciones "Qué es «Importante» aquí", "Tope de nits", "No reportar" y "Verificar siempre"
+Dado que "docs/templates/REVIEW-template.md" define las secciones "Qué es «Importante» aquí", "Tope de Minor", "No reportar" y "Verificar siempre"
 Cuando el mantenedor crea "REVIEW.md" en la raíz del repositorio desde esa plantilla
 Entonces "REVIEW.md" tiene esas cuatro secciones, en ese orden, sin placeholders "[...]" ni comentarios de la plantilla
   Y "Qué es «Importante» aquí" tiene una viñeta para cada área: "skills/", "scripts/", "docs/adr/", "docs/templates/" y "docs/guardrails/", y otra para cualquier archivo
-  Y "Tope de nits" fija un máximo de 5 LOW por revisor
+  Y "Tope de Minor" fija un máximo de 5 LOW por revisor
   Pero "REVIEW.md" no tiene sección de formato de salida
 ```
 
@@ -62,7 +62,7 @@ Entonces cada ítem nombra una comprobación que "verify:repository" no ejecuta
 
 ## ⚙️ Criterios no funcionales específicos
 
-- **CNF-1 — Doble vocabulario:** cada sección usa los dos vocabularios, el de Claude Code Review y el de `story-code-review` (🔴 Important = HIGH/MEDIUM, 🟡 Nit = LOW, 🟣 Pre-existing = PREEXISTENTE), con la traducción que fije el ADR de la guía de revisión (STORY-178). Así el archivo sirve a `/story-code-review` y también al servicio gestionado de GitHub si algún día se activa.
+- **CNF-1 — Doble vocabulario:** cada sección usa los dos vocabularios, el de Claude Code Review y el de `story-code-review` (🔴 Important = HIGH/MEDIUM, 🟡 Minor = LOW, 🟣 Pre-existing = PREEXISTENTE), con la traducción que fije el ADR de la guía de revisión (STORY-178). Así el archivo sirve a `/story-code-review` y también al servicio gestionado de GitHub si algún día se activa.
 
 - **CNF-2 — Sin cuarta raíz y sin publicación:** `REVIEW.md` vive en la raíz por convención de la herramienta, como `AGENTS.md` y `CLAUDE.md`, sin abrir una raíz nueva en ADR-0019. `package.json › files` no lo incluye y `npm pack --dry-run` no lo lista.
 

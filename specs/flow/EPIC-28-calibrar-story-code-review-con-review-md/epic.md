@@ -7,7 +7,7 @@ status: PLAN
 substatus: IN-PROGRESS
 parent: null
 created: 2026-11-07
-updated: 2026-11-08
+updated: 2026-11-10
 related: []
 ---
 
@@ -27,8 +27,8 @@ Que `/story-code-review` reporte lo que de verdad importa en cada repositorio y 
 ## Historias
 
 - [x] **STORY-177** — Corregir rutas de story-code-review: Como Solo Builder, quiero que los cuatro revisores escriban sus informes en `.tmp/story-code-review/{story_id}/`, la ruta que lee el orquestador, y que el Security-Reviewer busque los checklists de seguridad en `docs/guardrails/` y no en `docs/policies/`, para que la revisión no dependa de que el agente concilie rutas contradictorias ni de los enlaces de `constitution.md`.
-- [ ] **STORY-178** — ADR de la guía de revisión: Como mantenedor de agile-sddf, quiero un ADR que fije dónde vive `REVIEW.md`, qué decide frente a `constitution.md`, el DoD CODE-REVIEW y la plantilla del informe, de dónde se lee y cómo se traducen las severidades de Claude Code Review (Important, Nit, Pre-existing), para que las demás historias de la épica implementen una sola decisión.
-- [ ] **STORY-179** — REVIEW.md de agile-sddf: Como mantenedor de agile-sddf, quiero un `REVIEW.md` en la raíz con las cuatro secciones de la convención (qué es importante en cada área del repo, tope de nits, qué no reportar y qué verificar siempre), que recoja las reglas propias del repo que hoy viven dentro de los agentes, para que la revisión juzgue con los riesgos reales de este repositorio.
+- [x] **STORY-178** — ADR de la guía de revisión: Como mantenedor de agile-sddf, quiero un ADR que fije dónde vive `REVIEW.md`, qué decide frente a `constitution.md`, el DoD CODE-REVIEW y la plantilla del informe, de dónde se lee y cómo se traducen las severidades de Claude Code Review (Important, Minor, Pre-existing), para que las demás historias de la épica implementen una sola decisión.
+- [ ] **STORY-179** — REVIEW.md de agile-sddf: Como mantenedor de agile-sddf, quiero un `REVIEW.md` en la raíz con las cuatro secciones de la convención (qué es importante en cada área del repo, tope de Minor, qué no reportar y qué verificar siempre), que recoja las reglas propias del repo que hoy viven dentro de los agentes, para que la revisión juzgue con los riesgos reales de este repositorio.
 - [ ] **STORY-180** — story-code-review lee REVIEW.md: Como Solo Builder, quiero que `/story-code-review` lea `REVIEW.md` cuando existe, lo pase a los cuatro revisores y al árbitro y avise si la historia modifica `REVIEW.md` o el DoD, para calibrar la revisión de cada proyecto sin editar los agentes. Sin `REVIEW.md`, el skill advierte y mantiene el comportamiento actual, y los agentes dejan de contener reglas propias de agile-sddf.
 - [ ] **STORY-181** — Hallazgos preexistentes: Como Solo Builder, quiero que un defecto en líneas que la historia no tocó se informe como PREEXISTENTE, sin contar para `max-severity` ni entrar en `fix-directives.md`, para no pagar rondas de corrección por problemas que la historia no introdujo.
 - [ ] **STORY-182** — Verificación, deduplicación hallazgos: Como Solo Builder, quiero que el árbitro verifique la evidencia de los hallazgos, fusione los hallazgos repetidos entre revisores y no trate como bloqueante ningún HIGH o MEDIUM sin `Archivo:Línea` y escenario de fallo concreto, para que el informe tenga señal y un falso positivo no cueste una ronda.
@@ -38,7 +38,7 @@ Que `/story-code-review` reporte lo que de verdad importa en cada repositorio y 
 
 ## Criterios de salida
 
-- [ ] **CS-1** — `REVIEW.md` existe en la raíz con las secciones qué es importante, tope de nits, qué no reportar y qué verificar siempre, y un ADR nuevo, registrado en `docs/adr/README.md`, fija su ubicación, precedencia, fuente de lectura y vocabulario.
+- [ ] **CS-1** — `REVIEW.md` existe en la raíz con las secciones qué es importante, tope de Minor, qué no reportar y qué verificar siempre, y un ADR nuevo, registrado en `docs/adr/README.md`, fija su ubicación, precedencia, fuente de lectura y vocabulario.
 - [ ] **CS-2** — `story-code-review` pasa `REVIEW.md` a los cuatro revisores y al árbitro; sin `REVIEW.md` emite una advertencia y el contrato de `code-review-report.md` (frontmatter, secciones y veredicto) no cambia.
 - [ ] **CS-3** — `grep -rE "Principio 6|teléfono descompuesto|un solo nivel de delegación" skills/story-code-review/agents/` no devuelve resultados.
 - [ ] **CS-4** — Un hallazgo PREEXISTENTE, o un HIGH/MEDIUM sin `Archivo:Línea` y escenario de fallo, no cambia el veredicto ni entra en `fix-directives.md`; un hallazgo repetido entre revisores aparece una sola vez, y ningún revisor supera el tope de LOW.
@@ -85,7 +85,7 @@ Escenario: REVIEW.md semilla
 
 - **Fuente:** `.temp/propuestas-de-mejoras/mejora-015-REVIEW.md` (2026-11-07): análisis del consejo de Anthropic sobre `REVIEW.md` frente a `story-code-review` y `dod-story-code-review.md`, con evidencia de los 71 `code-review-report.md` archivados.
 - **Convención de Anthropic** (code.claude.com/docs/en/code-review-customize): `REVIEW.md` solo lo lee el servicio gestionado de Code Review en GitHub (el `/code-review` local no); "cambia lo que la revisión encuentra y reporta; no cambia el formato"; se lee de la rama base, nunca de los cambios del PR. Por eso el formato sigue siendo de la plantilla del skill y `story-code-review` debe leer `REVIEW.md` de forma explícita.
-- **Vocabulario:** 🔴 Important = HIGH/MEDIUM (bloquea en `story-code-review`), 🟡 Nit = LOW, 🟣 Pre-existing = PREEXISTENTE. A diferencia de Anthropic, cuyo check es neutral y nunca bloquea, `story-code-review` es un gate: un falso MEDIUM cuesta una ronda completa.
+- **Vocabulario:** 🔴 Important = HIGH/MEDIUM (bloquea en `story-code-review`), 🟡 Minor = LOW, 🟣 Pre-existing = PREEXISTENTE. A diferencia de Anthropic, cuyo check es neutral y nunca bloquea, `story-code-review` es un gate: un falso MEDIUM cuesta una ronda completa.
 - **Línea base (2026-11-07):** ≈580 hallazgos LOW en 55 de los 71 informes archivados (media ≈10, máximo 21); en STORY-125, 20 LOW arrastrados entre rondas y uno duplicado entre revisores; los criterios 8 y 9 del DoD se autoevalúan; el informe de STORY-171 no sigue la plantilla.
 - **Decisiones para el ADR** (obligatorio por la regla 16 de la constitución, porque afecta a `story-code-review` y `sddf-constitution`): (a) leer `REVIEW.md` del working tree o de la rama base; hoy el skill no usa git, y como mínimo debe advertir si la historia modifica `REVIEW.md` o el DoD. (b) Cómo identificar las líneas no tocadas para PREEXISTENTE, si hoy el skill no usa `git diff`. (c) `REVIEW.md` va en la raíz por convención de la herramienta, como `AGENTS.md` y `CLAUDE.md`, sin abrir una cuarta raíz en ADR-0019.
 - **Publicación:** el `REVIEW.md` de la raíz es propio de este repo y no se publica (`package.json › files` no lo incluye); los proyectos consumidores reciben la semilla vía `sddf-constitution`.

@@ -31,7 +31,7 @@ related:
 Dado un proyecto que instaló agile-sddf y no tiene "REVIEW.md" en la raíz
 Cuando el usuario ejecuta "/sddf-constitution"
 Entonces se crea "REVIEW.md" en la raíz desde la plantilla del skill
-  Y tiene las secciones "Qué es «Importante» aquí", "Tope de nits", "No reportar" y "Verificar siempre"
+  Y tiene las secciones "Qué es «Importante» aquí", "Tope de Minor", "No reportar" y "Verificar siempre"
   Y el skill informa "✅ Creado: REVIEW.md"
 ```
 

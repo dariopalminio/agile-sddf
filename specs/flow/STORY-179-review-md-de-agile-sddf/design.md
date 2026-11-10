@@ -30,8 +30,8 @@ Estado verificado en el filesystem (2026-11-08):
 | Fuente | Hallazgo |
 |---|---|
 | `REVIEW.md` | No existe. |
-| `docs/templates/REVIEW-template.md` | Comentario de uso (líneas 1-17), H1 `# REVIEW.md — Guía de revisión de [nombre del proyecto]`, dos líneas de introducción (21-22, la segunda con el vocabulario) y cuatro secciones `##`: `Qué es «Importante» aquí — 🔴 Important · HIGH/MEDIUM` (24), `Tope de nits — 🟡 Nit · LOW` (38), `No reportar` (44) y `Verificar siempre` (55). Placeholders entre corchetes (`[ruta o glob del área]`, `[5]`…) y comentarios `<!-- instrucción: … -->`. «Verificar siempre» usa casillas `- [ ]`. |
-| `specs/flow/STORY-178-adr-guia-de-revision/design.md` (D-6) | Vocabulario del futuro ADR-0021: 🔴 Important = `HIGH` o `MEDIUM` (bloquea), 🟡 Nit = `LOW`, 🟣 Pre-existing = `PREEXISTENTE` (categoría, no severidad). Coincide con la línea 22 de la plantilla. ADR-0021 aún no existe (STORY-178 en PLAN). |
+| `docs/templates/REVIEW-template.md` | Comentario de uso (líneas 1-17), H1 `# REVIEW.md — Guía de revisión de [nombre del proyecto]`, dos líneas de introducción (21-22, la segunda con el vocabulario) y cuatro secciones `##`: `Qué es «Importante» aquí — 🔴 Important · HIGH/MEDIUM` (24), `Tope de Minor — 🟡 Minor · LOW` (38), `No reportar` (44) y `Verificar siempre` (55). Placeholders entre corchetes (`[ruta o glob del área]`, `[5]`…) y comentarios `<!-- instrucción: … -->`. «Verificar siempre» usa casillas `- [ ]`. |
+| `specs/flow/STORY-178-adr-guia-de-revision/design.md` (D-6) | Vocabulario del futuro ADR-0021: 🔴 Important = `HIGH` o `MEDIUM` (bloquea), 🟡 Minor = `LOW`, 🟣 Pre-existing = `PREEXISTENTE` (categoría, no severidad). Coincide con la línea 22 de la plantilla. ADR-0021 aún no existe (STORY-178 en PLAN). |
 | `.temp/propuestas-de-mejoras/mejora-015-REVIEW.md:60-90` | Borrador de `REVIEW.md` para este repo, fuente del contenido. |
 | `skills/story-code-review/agents/integration-reviewer.agent.md:48-49` | «un solo nivel de delegación» y «Principio 6 de constitution.md» para la escritura en `.tmp/`: las reglas propias del repo que recoge AC-2. |
 | `scripts/verify-repository.js:12-31` | Los 14 pasos del gate: `node --test test`, sintaxis Node, layout fijo, perfiles, runtimes documentados, configuración YAML, inventario de evals, contrato de validación, enlaces activos, cadena de suministro, workflow de seguridad de skills, release, `npm pack --dry-run` y smoke del tarball. |
@@ -79,9 +79,9 @@ Sin cambios: la plantilla, los agentes, `package.json` (CNF-2 se cumple sin toca
 
 | Interfaz | Contrato | AC / CNF |
 |---|---|---|
-| I-1 — Estructura de `REVIEW.md` | En este orden: H1 `# REVIEW.md — Guía de revisión de agile-sddf`; las dos líneas de introducción de la plantilla (21-22) sin cambios; y exactamente cuatro encabezados `##`, con el texto literal de la plantilla: `Qué es «Importante» aquí — 🔴 Important · HIGH/MEDIUM`, `Tope de nits — 🟡 Nit · LOW`, `No reportar` y `Verificar siempre`. Sin `<!--`, sin placeholders entre corchetes y sin otros `##`. Las casillas `- [ ]` de «Verificar siempre» y los enlaces `[texto](url)` no cuentan como placeholders. | AC-1 |
+| I-1 — Estructura de `REVIEW.md` | En este orden: H1 `# REVIEW.md — Guía de revisión de agile-sddf`; las dos líneas de introducción de la plantilla (21-22) sin cambios; y exactamente cuatro encabezados `##`, con el texto literal de la plantilla: `Qué es «Importante» aquí — 🔴 Important · HIGH/MEDIUM`, `Tope de Minor — 🟡 Minor · LOW`, `No reportar` y `Verificar siempre`. Sin `<!--`, sin placeholders entre corchetes y sin otros `##`. Las casillas `- [ ]` de «Verificar siempre» y los enlaces `[texto](url)` no cuentan como placeholders. | AC-1 |
 | I-2 — Viñetas de «Qué es «Importante» aquí» | Seis viñetas de primer nivel, en este orden, que empiezan por `` `skills/` ``, `` `scripts/` ``, `` `docs/adr/` ``, `` `docs/templates/` ``, `` `docs/guardrails/` `` y `Cualquier archivo`. Cada defecto va en una subviñeta. | AC-1 |
-| I-3 — Doble vocabulario | Cada sección contiene al menos un término de Claude Code Review seguido de su traducción, según ADR-0021: `🔴 Important` con `HIGH/MEDIUM`, `🟡 Nit` con `LOW` y `🟣 Pre-existing` con `PREEXISTENTE`. Ningún término aparece sin su traducción. | CNF-1 |
+| I-3 — Doble vocabulario | Cada sección contiene al menos un término de Claude Code Review seguido de su traducción, según ADR-0021: `🔴 Important` con `HIGH/MEDIUM`, `🟡 Minor` con `LOW` y `🟣 Pre-existing` con `PREEXISTENTE`. Ningún término aparece sin su traducción. | CNF-1 |
 | I-4 — Marcadores de las reglas de AC-2 | Cada fila de AC-2 tiene un marcador literal que aparece en una sola sección de `REVIEW.md`, la indicada (tabla en D-3). C-2 comprueba los marcadores. | AC-2 |
 | I-5 — Ruta citada | Un tramo entre comillas invertidas con `/` y sin espacios es una ruta de repositorio. Si contiene `*`, se comprueba el prefijo anterior al primer `*`. La ruta existe (`fs.existsSync`) o `git check-ignore -q` la reconoce como ignorada. | AC-3 |
 
@@ -89,7 +89,7 @@ Sin cambios: la plantilla, los agentes, `package.json` (CNF-2 se cumple sin toca
 
 ### D-1 — Copia literal de la estructura de la plantilla // satisface: AC-1, CNF-1
 
-`REVIEW.md` conserva el H1 (con `agile-sddf` en lugar del placeholder), las dos líneas de introducción y los cuatro encabezados de la plantilla sin cambiar ni un carácter. Borra el comentario de uso y los `<!-- instrucción -->`. El tope es `Máximo **5** 🟡 Nit (LOW) por revisor`.
+`REVIEW.md` conserva el H1 (con `agile-sddf` en lugar del placeholder), las dos líneas de introducción y los cuatro encabezados de la plantilla sin cambiar ni un carácter. Borra el comentario de uso y los `<!-- instrucción -->`. El tope es `Máximo **5** 🟡 Minor (LOW) por revisor`.
 
 | Alternativa | Motivo del rechazo |
 |---|---|
@@ -107,7 +107,7 @@ Sin cambios: la plantilla, los agentes, `package.json` (CNF-2 se cumple sin toca
 | `` `docs/guardrails/` `` | un cambio de forma (líneas de criterio `- [ ]`, `enforcement` del frontmatter, `rule-id`) que rompe a los skills que lo resuelven | borrador L69; `dod-story-plan.md` |
 | Cualquier archivo | un secreto o credencial real versionado; documentación que describe algo que no existe en el filesystem | borrador L70; AGENTS.md (Veracidad) |
 
-Cierra con las dos líneas de la plantilla (35-36): un 🔴 Important exige `archivo:línea` y un escenario de fallo concreto; estilo, nombres y refactors, 🟡 Nit (LOW) como máximo.
+Cierra con las dos líneas de la plantilla (35-36): un 🔴 Important exige `archivo:línea` y un escenario de fallo concreto; estilo, nombres y refactors, 🟡 Minor (LOW) como máximo.
 
 Se excluyen del borrador:
 - **«carácter invisible»** en «Cualquier archivo»: AC-2 lo pone solo en «Verificar siempre».
@@ -182,7 +182,7 @@ Con `node:test` y `node:assert`, lee `REVIEW.md` desde la raíz como hacen `test
 
 1. Estructura (I-1): H1 exacto, cuatro `##` con su texto literal y en orden, sin `<!--` y sin placeholders.
 2. Áreas (I-2): seis viñetas de primer nivel en «Qué es «Importante» aquí», con sus prefijos y en orden.
-3. Tope: «Tope de nits» contiene `Máximo **5**`.
+3. Tope: «Tope de Minor» contiene `Máximo **5**`.
 4. Reglas de AC-2 (I-4): cada marcador de D-3 aparece en su sección y en ninguna otra.
 5. Vocabulario (I-3): cada sección contiene al menos un par término-traducción y ningún término sin su traducción.
 6. Rutas (I-5): toda ruta citada existe o está ignorada por git.
@@ -225,8 +225,8 @@ Esqueleto de `REVIEW.md` (el contenido de cada viñeta está en D-2, D-4 y D-5):
 - Cualquier archivo …    ← 2
 <líneas 35-36 de la plantilla>
 
-## Tope de nits — 🟡 Nit · LOW
-- Máximo **5** 🟡 Nit (LOW) por revisor …
+## Tope de Minor — 🟡 Minor · LOW
+- Máximo **5** 🟡 Minor (LOW) por revisor …
 - <líneas 41-42 de la plantilla>
 
 ## No reportar

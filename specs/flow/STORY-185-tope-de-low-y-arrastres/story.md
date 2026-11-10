@@ -23,7 +23,7 @@ related:
 
 **Como** Solo Builder que lee `code-review-report.md` para decidir si corrige o avanza  
 **Quiero** que el árbitro de `/story-code-review` limite los LOW por revisor y, cuando la revisión anterior guardó sus huellas, no repita los LOW de líneas que el rework no tocó\
-**Para** que el informe conserve señal y no me obligue a releer los mismos nits en cada ronda
+**Para** que el informe conserve señal y no me obligue a releer los mismos Minor en cada ronda
 
 ## ✅ Criterios de aceptación
 
@@ -37,7 +37,7 @@ Escenario: Tope de LOW
     Y indica cuántos LOW se omitieron
 Ejemplos:
   | guía                                   | tope |
-  | REVIEW.md con "Tope de nits" de 3 LOW  | 3    |
+  | REVIEW.md con "Tope de Minor" de 3 LOW  | 3    |
   | REVIEW.md sin tope declarado           | 5    |
   | sin REVIEW.md                          | 5    |
 ```
@@ -78,7 +78,7 @@ Escenario: Informe legado sin registro de LOW
 
 - Cubre la parte de **control de ruido** de **CS-4** de EPIC-28 (tope de LOW y arrastres entre rondas). Nace de dividir la STORY-182 original (patrón 4, complejidad de criterios de aceptación).
 - **Línea base (2026-11-07):** ≈580 LOW en 55 de los 71 `code-review-report.md` archivados (media ≈10, máximo 21). En STORY-125, 20 LOW se arrastraron entre rondas.
-- **Tope por defecto:** 5 LOW por revisor, que coincide con el «Tope de nits» de `docs/templates/REVIEW-template.md`; el éxito se mide por ese tope, no por un mecanismo concreto.
+- **Tope por defecto:** 5 LOW por revisor, que coincide con el «Tope de Minor» de `docs/templates/REVIEW-template.md`; el éxito se mide por ese tope, no por un mecanismo concreto.
 - **Alcance de AC-2:** la omisión por arrastre solo se aplica si la revisión anterior guardó `code-review-lows.json`. El contenido de una línea «no tocada por el rework» debe coincidir con la huella registrada. Un informe legado sin registro no prueba el estado anterior del código: no se reconstruyen huellas históricas ni se atribuye una comparación retroactiva. Ese informe solo permite reconocer el caso legado antes de sobrescribirlo.
 - **Registro de cada ronda:** al cerrar se guardan las huellas de los LOW visibles y de los omitidos por arrastre cuya ubicación y archivo se pueden leer; los demás no se omiten por arrastre en la próxima ronda. Los omitidos solo por el tope no se registran como vistos. El registro nuevo permite comparar en la siguiente ronda, incluso si la actual partió de un informe legado.
 - **Orden de selección:** primero se omiten los LOW cuyo arrastre se comprobó con el registro previo; después se muestran los primeros LOW restantes de cada revisor hasta su tope, según el orden de su informe. Los arrastrados no consumen cupo ni cuentan como omitidos por tope. Un LOW sin ubicación comparable se muestra si cabe en el tope.

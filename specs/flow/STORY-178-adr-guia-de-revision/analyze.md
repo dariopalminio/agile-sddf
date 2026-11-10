@@ -49,7 +49,7 @@ Hechos verificados en el filesystem el 2026-11-08 para este análisis:
 | AC | Descripción | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
 | AC-1 | El ADR fija ubicación, precedencia y fuente de lectura; está `ACCEPTED`, tiene las secciones del template y figura en `docs/adr/README.md` | ✓ | D-1 (línea 61), D-2 (81), D-3 (92), D-4 (112), D-7 (155); Componentes afectados (166-174); Interfaces «Frontmatter de ADR» y «Fila del índice de ADRs» (180-181); Esquema de datos (185); contratos 1-4 (232-235) |
-| AC-2 | Cada severidad de Claude Code Review tiene una sola traducción (Important → HIGH o MEDIUM/bloquea; Nit → LOW/no bloquea; Pre-existing → PREEXISTENTE/no bloquea) | ✓ | D-6 (133-153): la tabla coincide fila por fila con los Ejemplos de `story.md:41-45`; F-2 (208); contrato 5 (236) |
+| AC-2 | Cada severidad de Claude Code Review tiene una sola traducción (Important → HIGH o MEDIUM/bloquea; Minor → LOW/no bloquea; Pre-existing → PREEXISTENTE/no bloquea) | ✓ | D-6 (133-153): la tabla coincide fila por fila con los Ejemplos de `story.md:41-45`; F-2 (208); contrato 5 (236) |
 | AC-3 | Si la historia modifica `REVIEW.md` o el DoD, el ADR dice qué versión rige, exige una advertencia en el informe y no exige git con el working tree | ✓ | D-4 (112-118) y D-5 (120-131): rige el working tree, hay advertencia en `code-review-report.md` y se detecta con `$IMPL_FILES` sin git; contrato 6 (237) |
 
 Criterios no funcionales (no son ACs, pero el DoD exige trazabilidad):

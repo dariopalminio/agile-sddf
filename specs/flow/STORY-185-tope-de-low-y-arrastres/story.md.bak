@@ -66,7 +66,7 @@ Entonces ese LOW no se repite en el nuevo informe
 
 - Cubre la parte de **control de ruido** de **CS-4** de EPIC-28 (tope de LOW y arrastres entre rondas). Nace de dividir la STORY-182 original (patrón 4, complejidad de criterios de aceptación).
 - **Línea base (2026-11-07):** ≈580 LOW en 55 de los 71 `code-review-report.md` archivados (media ≈10, máximo 21). En STORY-125, 20 LOW se arrastraron entre rondas.
-- **Tope por defecto:** 5 LOW por revisor, que coincide con el «Tope de nits» de `docs/templates/REVIEW-template.md`; el éxito se mide por ese tope, no por un mecanismo concreto.
+- **Tope por defecto:** 5 LOW por revisor, que coincide con el «Tope de Minor» de `docs/templates/REVIEW-template.md`; el éxito se mide por ese tope, no por un mecanismo concreto.
 - **Línea «no tocada por el rework»:** el criterio es que el contenido de esa línea no cambió respecto de la ronda anterior; el mecanismo de detección (diff, comparación de contenido, etc.) se decide en `/story-design`. La lectura del informe de la ronda anterior es parte del alcance de esta historia.
 - **Punto de inserción:** Paso 4 (árbitro) de `skills/story-code-review/SKILL.md`, entre la lectura de informes (4a) y el cálculo de severidad (4b).
 - **Dependencias:** implementar después de STORY-180, que hace llegar `REVIEW.md` al árbitro (AC-1 prevé el caso «sin REVIEW.md»). Es independiente de STORY-182, que puede implementarse antes, después o en paralelo.

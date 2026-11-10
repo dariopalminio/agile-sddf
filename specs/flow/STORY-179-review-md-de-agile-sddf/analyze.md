@@ -58,7 +58,7 @@ related:
 | T002 | Crear `test/review-md.test.js` (RED) | C-2, D-7, D-8, I-1 a I-5 | ✓ |
 | T003 | Copiar la plantilla y fijar el H1 | C-1, I-1, D-1 | ✓ |
 | T004 | «Qué es «Importante» aquí» | C-1, I-2, D-2, D-3 | ✓ (ver INC-001 e INC-002) |
-| T005 | «Tope de nits» | C-1, D-1 | ✓ (ver INC-001) |
+| T005 | «Tope de Minor» | C-1, D-1 | ✓ (ver INC-001) |
 | T006 | «No reportar» | C-1, D-4, D-3 | ✓ |
 | T007 | «Verificar siempre» | C-1, D-5, D-3 | ✓ (ver INC-002) |
 | T008 | Restricciones de redacción | D-6, I-3 | ✓ |

@@ -483,6 +483,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[adoptar-cucumber-para-specs-living]] — [ADR-0018-adoptar-cucumber-para-specs-living.md](adr/ADR-0018-adoptar-cucumber-para-specs-living.md) — Adoptar Cucumber (Gherkin en archivos .feature) para specs/living/
 - [[layout-fijo-con-archivo-de-epicas]] — [ADR-0019-layout-fijo-con-archivo-de-epicas.md](adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md) — Layout fijo de tres raíces con archivo de historias y épicas cerradas
 - [[contratos-centralizados-para-spec-living]] — [ADR-0020-contratos-centralizados-para-spec-living.md](adr/ADR-0020-contratos-centralizados-para-spec-living.md) — Contratos centralizados en OpenAPI/AsyncAPI para specs/living/
+- [[guia-de-revision-review-md]] — [ADR-0021-guia-de-revision-review-md.md](adr/ADR-0021-guia-de-revision-review-md.md) — Guía de revisión por proyecto en REVIEW.md
 - [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
 - [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
