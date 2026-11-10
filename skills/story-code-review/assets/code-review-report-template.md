@@ -28,6 +28,7 @@ reviewers:
 | Severidad máxima detectada | {{MAX_SEVERITY}} |
 | Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer, Security-Reviewer |
 | testcases.md | {{TESTCASES_STATUS}} |
+| Guía de revisión | {{REVIEW_STATUS}} |
 | Fecha | {{DATE}} |
 
 ---

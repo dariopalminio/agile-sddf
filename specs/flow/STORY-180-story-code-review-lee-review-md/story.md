@@ -5,11 +5,11 @@ id: STORY-180
 kind: feat
 slug: STORY-180-story-code-review-lee-review-md
 title: "story-code-review lee REVIEW.md"
-status: READY-FOR-IMPLEMENT
-substatus: DONE
+status: CODE-REVIEW
+substatus: IN-PROGRESS
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-10
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-178-adr-guia-de-revision
@@ -78,7 +78,7 @@ Entonces no devuelve resultados
 ## Fuera de alcance (Non-Goals)
 
 - Redactar el `REVIEW.md` de agile-sddf: es STORY-179.
-- La categoría PREEXISTENTE, la verificación de evidencia, la deduplicación y el tope de LOW: son STORY-181 y STORY-182. Esta historia solo hace llegar `REVIEW.md` al árbitro.
+- La categoría PREEXISTENTE, la verificación de evidencia, la deduplicación y el tope de LOW: son STORY-181, STORY-182 y STORY-185. Esta historia solo hace llegar `REVIEW.md` al árbitro.
 - Activar Claude Code Review en GitHub.
 
 ## 📎 Notas / contexto adicional

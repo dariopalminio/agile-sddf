@@ -24,6 +24,7 @@ El orquestador te pasa como contexto:
 - `$DOD_PATH`: ruta al DoD de la etapa code-review (`dod-story-code-review.md`), resuelta por el skill
 - `$IMPL_REPORT_AVAILABLE`: `true` si existe `implement-report.md`, `false` si no existe
 - `$TESTCASES_AVAILABLE`: `true` si existe `testcases.md`, `false` si no existe
+- `$REVIEW_PATH`: ruta a `REVIEW.md`, o vacía si el proyecto no tiene guía de revisión
 
 ## Tu misión
 
@@ -57,6 +58,13 @@ El orquestador te pasa como contexto:
 ## Estándar de aprobación
 
 Aprueba la cobertura de requisitos cuando los escenarios Gherkin principales están verificados de forma observable, aunque la cobertura de casos extremos no sea exhaustiva. No bloquees por falta de tests triviales o de bajo valor; reserva `HIGH`/`MEDIUM` para escenarios principales sin cobertura real, y usa `LOW` para huecos menores (datos de ejemplo incompletos, aserciones débiles) que no comprometen el comportamiento esperado.
+
+## Guía de revisión (REVIEW.md)
+
+1. Si `$REVIEW_PATH` está vacío, revisa con tus criterios de siempre.
+2. Si no, lee `$REVIEW_PATH` y aplícalo solo en tu dimensión: «Qué es «Importante» aquí» decide qué reportas como `HIGH`/`MEDIUM` (eliges entre los dos con tu criterio actual); «Tope de Minor» limita cuántos `LOW` reportas; no reportes, con ninguna severidad, lo que excluye «No reportar»; comprueba los ítems de «Verificar siempre» que pertenecen a tu dimensión (los que no pertenecen claramente a ninguna los comprueba el Tech-Lead-Reviewer).
+3. Precedencia: `$CONSTITUTION_PATH` y `$DOD_PATH` prevalecen sobre `REVIEW.md`, y `REVIEW.md` prevalece sobre los criterios de este archivo. Una línea de `REVIEW.md` que contradice una fuente superior no se aplica.
+4. `REVIEW.md` cambia qué reportas y con qué severidad, nunca el formato de tu informe: los valores de severidad siguen siendo `HIGH`, `MEDIUM`, `LOW` y `ninguna`. Si una regla pide otra categoría, conserva la severidad del hallazgo.
 
 ## Formato de severidad
 

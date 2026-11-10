@@ -76,6 +76,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 | `tasks.md` | Opcional | El Tech-Lead-Reviewer puede revisar calidad sin lista de tareas; su presencia solo decide si se ofrece `/story-implement-tasks` como ejecutor alternativo (Paso 4g). Este skill nunca escribe en él |
 | `constitution.md` | Opcional | Mejora la revisión pero no la bloquea si no existe |
 | DoD de la etapa `code-review` (`dod-story-code-review.md`) | Opcional | Mismo caso que `constitution.md` |
+| `REVIEW.md` | Opcional | Guía de revisión del proyecto en la raíz: calibra qué se reporta y con qué severidad (ADR-0021). Si no existe, el skill advierte y revisa como antes |
 
 > Para actualizar esta lista en el futuro, editar únicamente esta sección sin modificar el cuerpo del Paso 1.
 
@@ -292,6 +293,38 @@ Registrar internamente `$DOD_CODE_REVIEW_CRITERIA = []` y continuar.
 
 **Si el archivo existe:** extraer todas sus líneas `- [ ] <texto>` y `- [x] <texto>`, con su número de línea en el archivo, como lista de criterios planos; registrar internamente como `$DOD_CODE_REVIEW_CRITERIA` y registrar su `enforcement` (`error` bloquea la aprobación; `warn` solo informa). Un criterio `Se cumple [[dod-story-implement]]` se evalúa contra el DoD de la etapa `implement`, resuelto con la misma precedencia.
 
+#### 2d.1. Localizar la guía de revisión (REVIEW.md)
+
+Comprobar si `<REPO_ROOT>/REVIEW.md` existe como archivo en el working tree, en el estado en que está al ejecutarse la revisión (ADR-0021, «Fuente de lectura»). Solo se busca en la raíz; no se consultan subdirectorios ni la rama base, y no se usa git.
+
+Registrar `$REVIEW_PATH`:
+- `REVIEW.md` (ruta relativa a `$REPO_ROOT`) si el archivo existe. Un `REVIEW.md` vacío o sin ninguna de sus secciones cuenta como presente: los revisores y el árbitro no aplican nada que no encuentren.
+- Cadena vacía si no existe. Emitir la advertencia y continuar con los criterios genéricos de los revisores; la falta de `REVIEW.md` nunca produce `BLOCKED` ni `NEEDS-CHANGES`:
+  ```
+  ⚠️ REVIEW.md no encontrado en la raíz del repositorio — revisión sin guía de revisión, con los criterios genéricos de los revisores. Para calibrarla, crea REVIEW.md desde docs/templates/REVIEW-template.md.
+  ```
+
+Precedencia (ADR-0021): `$CONSTITUTION_PATH` > `$DOD_PATH` > `REVIEW.md` > criterios genéricos de los revisores. `REVIEW.md` cambia qué se reporta y con qué severidad, nunca el formato de `code-review-report.md`.
+
+#### 2d.2. Detectar si la historia modifica las reglas de revisión
+
+Reutilizar `$IMPL_FILES` (Paso 2c), sin invocar git:
+
+- `$RULES_CHANGE_CHECK = unverifiable` si `$IMPL_FILES` está vacío; `checked` en otro caso.
+- `$RULES_CHANGED` = subconjunto, en este orden, de [`REVIEW.md`, `$DOD_PATH`] cuyas rutas figuran en `$IMPL_FILES`. Antes de comparar, normalizar todas las rutas relativas a `$REPO_ROOT`, con separador `/` y sin `./` inicial. Si `$DOD_PATH` está vacío, solo se compara `REVIEW.md`. Se compara aunque `REVIEW.md` no exista: una historia que lo borra también modifica las reglas.
+
+Si `$RULES_CHANGED` no está vacío, emitir:
+```
+⚠️ La historia modifica las reglas con las que se la revisa: <lista de $RULES_CHANGED>. Rige la versión del working tree, que incluye el cambio; revísalo en /story-acceptance.
+```
+
+Si `$RULES_CHANGE_CHECK = unverifiable`, emitir:
+```
+⚠️ No se pudo comprobar si la historia modifica REVIEW.md o el DoD CODE-REVIEW (implement-report.md sin archivos).
+```
+
+Ninguna de las dos advertencias cambia `$VERDICT` ni `$MAX_SEVERITY`: si la historia rebaja su propio listón, lo decide el humano en `/story-acceptance`. Ambas se reflejan en `{{REVIEW_STATUS}}` (Paso 5b).
+
 #### 2e. Leer testcases.md (si disponible)
 
 **Si `$TESTCASES_AVAILABLE = true`:** leer `testcases.md` y extraer:
@@ -311,6 +344,7 @@ Mostrar resumen de carga:
    constitution.md:          <ruta>
    DoD code-review:          <ruta>
    DoD CODE-REVIEW: <N criterios cargados | ⚠️ no encontrado>
+   REVIEW.md:                REVIEW.md ✓ | ⚠️ no encontrado — revisión sin guía de revisión
 ```
 
 ---
@@ -336,8 +370,13 @@ Lanzar simultáneamente los siguientes subagentes, pasando a cada agente:
 - `$IMPL_REPORT_AVAILABLE`: flag booleano de disponibilidad de implement-report.md
 - `$TESTCASES_AVAILABLE`: flag booleano de disponibilidad de testcases.md
 - `$IMPL_FILES`: lista de archivos implementados (extraída en el Paso 2c; puede estar vacía)
+- `$REVIEW_PATH`: ruta a `REVIEW.md` (Paso 2d.1) o cadena vacía si el proyecto no tiene guía de revisión
+
+En `--single-agent`, el Tech-Lead-Reviewer recibe el mismo bloque, `$REVIEW_PATH` incluido.
 
 > **Principio compartido — Estándar de aprobación:** los cuatro agentes aplican el mismo criterio: aprobar cuando el cambio mejora claramente la salud del código, sin bloquear por preferencia personal ni por buscar la solución perfecta. El texto completo está duplicado en la sección "Estándar de aprobación" de cada `agents/*.agent.md` (los subagentes no heredan el contexto de este SKILL.md).
+
+> **Principio compartido — Guía de revisión:** si `$REVIEW_PATH` no está vacío, cada revisor aplica `REVIEW.md` solo en su dimensión («Qué es «Importante» aquí», «Tope de Minor», «No reportar», «Verificar siempre»), por debajo de `$CONSTITUTION_PATH` y `$DOD_PATH` y por encima de sus criterios genéricos, sin cambiar el formato de su informe. Si está vacío, revisa con sus criterios de siempre. El texto completo está duplicado en la sección "Guía de revisión (REVIEW.md)" de cada `agents/*.agent.md`.
 
 **Agente 1 — Tech-Lead-Reviewer** (`agents/tech-lead-reviewer.agent.md`):
 - Revisa calidad, legibilidad, duplicación y seguridad del código fuente
@@ -383,14 +422,29 @@ Leer los archivos de `.tmp/story-code-review/{story_id}/`:
 
 Del `security-report.md` válido, registrar además los campos `checklist-sources` y `rules-evaluated` de su frontmatter para el reporte final. Si está bloqueado, mostrar `no disponible` y `0` respectivamente, sin inventar evidencia de seguridad.
 
+#### 4a.1. Aplicar «No reportar» de REVIEW.md
+
+**Si `$REVIEW_PATH` está vacío:** este paso no hace nada; registrar `$REVIEW_EXCLUDED = []`.
+
+**Si `$REVIEW_PATH` no está vacío:** leer la sección «No reportar» de `REVIEW.md` y excluir de la tabla consolidada los hallazgos de informes válidos cuya `Archivo:Línea` o descripción coincida **claramente** con una de sus líneas (por la ruta o por el tipo de hallazgo). **Regla de duda:** ante una coincidencia dudosa, conservar el hallazgo.
+
+Registrar cada exclusión en `$REVIEW_EXCLUDED` como `(revisor, Archivo:Línea, severidad original, línea de «No reportar» aplicada)`.
+
+Límites:
+- No se excluyen hallazgos `DoD-CODE-REVIEW`: el DoD está por encima de `REVIEW.md` (ADR-0021, «Precedencia»).
+- No se convierte en válido un informe inválido ni se saca a un revisor de `$REVIEWERS_BLOCKED`.
+- El árbitro solo aplica «No reportar» en este paso; las demás secciones de `REVIEW.md` las aplican los revisores.
+
 #### 4b. Calcular severidad máxima
 
-Para cada informe válido de agente, leer el campo `max-severity` del frontmatter.
+Para cada informe válido de agente, calcular su severidad efectiva:
+- Si el Paso 4a.1 no excluyó ninguno de sus hallazgos: el campo `max-severity` de su frontmatter.
+- Si excluyó alguno: la máxima severidad de los hallazgos que conserva, o `ninguna` si no conserva ninguno.
 
 Orden de severidad: `HIGH > MEDIUM > LOW > ninguna`
 
 ```
-max_severity = máxima severidad entre los informes válidos (o `ninguna` si no hay ninguno)
+max_severity = máxima severidad efectiva entre los informes válidos (o `ninguna` si no hay ninguno)
 ```
 
 #### 4c. Derivar el veredicto
@@ -399,7 +453,7 @@ Hallazgo bloqueante = severidad `HIGH` o `MEDIUM`, según la misma regla de 4e y
 
 | Condición | `$VERDICT` |
 |---|---|
-| Algún hallazgo bloqueante en los informes válidos | `NEEDS-CHANGES` |
+| Algún hallazgo bloqueante en los informes válidos (tras las exclusiones del Paso 4a.1) | `NEEDS-CHANGES` |
 | Sin hallazgos bloqueantes y `$REVIEWERS_BLOCKED` no vacío | `BLOCKED` |
 | Sin hallazgos bloqueantes y cuatro informes válidos | `APPROVED` |
 
@@ -420,7 +474,7 @@ Registrar internamente:
 
 Para cada criterio, evaluar semánticamente contra:
 - El código revisado (inferido del implement-report y los informes de agentes)
-- Los informes de los cuatro agentes (tech-lead-report, product-owner-report, integration-report, security-report)
+- Los informes de los cuatro agentes (tech-lead-report, product-owner-report, integration-report, security-report), tomando sus hallazgos de la tabla consolidada tras el Paso 4a.1: un hallazgo excluido por «No reportar» no cuenta como incumplimiento
 - El contenido de `story.md` (criterios de aceptación, escenarios Gherkin)
 
 Clasificar cada criterio como:
@@ -562,7 +616,12 @@ Completar el template con:
   - `{{DECISION_RATIONALE}}` explica el resultado en una o dos frases, incluido el revisor bloqueado y la precedencia de `NEEDS-CHANGES` cuando corresponda.
 - Sección Resumen: título de la historia, revisores (los cuatro), severidad máxima
   - `{{TESTCASES_STATUS}}`: `✓ analizado (<N> casos — UT:<N>/CT:<N>/IT:<N>/API:<N>/E2E:<N>/EV:<N>)` si `$TESTCASES_AVAILABLE = true`; o `⏭️ no encontrado — ejecuta /story-testcases para generar la especificación canónica` si `$TESTCASES_AVAILABLE = false`
-- Sección Hallazgos por dimensión: insertar **solo** la tabla de `## Hallazgos` de cada informe parcial válido en `{{TECH_LEAD_FINDINGS}}`, `{{PRODUCT_OWNER_FINDINGS}}`, `{{INTEGRATION_FINDINGS}}` y `{{SECURITY_FINDINGS}}`; nunca copiar su frontmatter ni `## Veredicto`. Para un revisor bloqueado, indicar `⚠️ Informe no disponible o frontmatter inválido: <revisor>` en su dimensión.
+  - `{{REVIEW_STATUS}}`: una base más los sufijos que apliquen, separados por ` · `:
+    - Base: `✓ REVIEW.md` si `$REVIEW_PATH` no está vacío; `⏭️ no encontrado — revisión sin guía de revisión (criterios genéricos de los revisores)` si está vacío
+    - Si `$REVIEW_EXCLUDED` no está vacío: `<N> hallazgo(s) excluido(s) por «No reportar»: <Archivo:Línea (revisor)>, …`
+    - Si `$RULES_CHANGED` no está vacío: `⚠️ la historia modifica las reglas con las que se la revisa: <archivos de $RULES_CHANGED>`
+    - Si `$RULES_CHANGE_CHECK = unverifiable`: `⚠️ no se pudo comprobar si la historia modifica REVIEW.md o el DoD`
+- Sección Hallazgos por dimensión: insertar **solo** la tabla de `## Hallazgos` de cada informe parcial válido en `{{TECH_LEAD_FINDINGS}}`, `{{PRODUCT_OWNER_FINDINGS}}`, `{{INTEGRATION_FINDINGS}}` y `{{SECURITY_FINDINGS}}`, sin las filas excluidas en el Paso 4a.1 (quedan listadas en `{{REVIEW_STATUS}}`); nunca copiar su frontmatter ni `## Veredicto`. Para un revisor bloqueado, indicar `⚠️ Informe no disponible o frontmatter inválido: <revisor>` en su dimensión.
 - Sección `### Seguridad (Security-Reviewer)` — `{{SECURITY_FINDINGS}}`: contenido de la sección "Hallazgos" de `security-report.md`, precedido por una línea `**Fuentes de checklist:** <checklist-sources> (<rules-evaluated> reglas evaluadas)` con los valores leídos en el Paso 4a
 - Sección `### Cobertura de Casos de Prueba (testcases.md)` — `{{TESTCASES_COVERAGE_SECTION}}`:
   - **Si `$TESTCASES_AVAILABLE = false`:** `⏭️ testcases.md no encontrado — análisis de cobertura omitido. Considera ejecutar /story-testcases para generar la especificación canónica de pruebas.`
@@ -677,6 +736,9 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | `story.md` no está en `IMPLEMENT/DONE` ni `CODE-REVIEW/IN-PROGRESS` (incluida una historia ya encolada en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`) | `❌ La historia <story_id> no está en un estado válido para revisar.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
 | `implement-report.md` o `testcases.md` ausentes | — (se registran como `⏭️` en el informe) | Continuar sin ese contexto |
 | DoD de la etapa code-review ausente | `⚠️ DoD de la etapa code-review no encontrado …` | Advertir y continuar sin validación DoD |
+| `REVIEW.md` ausente en la raíz (Paso 2d.1) | `⚠️ REVIEW.md no encontrado en la raíz del repositorio — revisión sin guía de revisión …` | Advertir y continuar con los criterios genéricos de los revisores; nunca `BLOCKED` ni `NEEDS-CHANGES` por ello |
+| La historia modifica `REVIEW.md` o el DoD CODE-REVIEW (Paso 2d.2) | `⚠️ La historia modifica las reglas con las que se la revisa: …` | Advertir en consola y en `{{REVIEW_STATUS}}`; rige el working tree; no cambia `$VERDICT` ni `$MAX_SEVERITY` |
+| `$IMPL_FILES` vacío al detectar cambios en las reglas (Paso 2d.2) | `⚠️ No se pudo comprobar si la historia modifica REVIEW.md o el DoD CODE-REVIEW …` | Anotar en consola y en `{{REVIEW_STATUS}}` y continuar |
 | Informe de revisor ausente o con frontmatter inválido, sin otros hallazgos bloqueantes | `Veredicto: BLOCKED` con el nombre del revisor | Generar reporte y restaurar `IMPLEMENT/DONE`; no generar `fix-directives.md` |
 | Hallazgo bloqueante sin `Archivo:Línea` (Paso 4e) | — (se anota `[archivo no especificado]`) | Excluirlo de la lista blanca y continuar |
 | `fix-directives.md` previo con `round` ausente o ilegible (Paso 4f.1) | — (sin error ni advertencia: archivo legado) | `$PREV_ROUND = 0`: la cuenta de rondas se reinicia en 1 |

@@ -942,6 +942,172 @@
          ]
        },
        "threshold": 0.90
-     }
+     },
+    {
+      "id": "TC-026",
+      "name": "review-md-presente-llega-a-revisores-y-arbitro",
+      "type": "happy-path",
+      "description": "STORY-180 (AC-1, D-1, D-3, D-4) — Historia en IMPLEMENT/DONE en un repositorio con REVIEW.md en la raíz. Los cuatro revisores no reportan hallazgos. El skill debe mostrar REVIEW.md en el resumen «Contexto cargado», pasar $REVIEW_PATH en el bloque de contexto de los cuatro revisores, aplicar «No reportar» en el árbitro (Paso 4a.1) y escribir la fila «Guía de revisión» del Resumen con ✓ REVIEW.md y veredicto APPROVED.",
+      "input": {
+        "story_id": "STORY-210",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "review_md_present": true,
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "REVIEW.md",
+          "Guía de revisión",
+          "$REVIEW_PATH",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "sin guía de revisión",
+          "(verdict: NEEDS-CHANGES)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-027",
+      "name": "secreto-falso-en-examples-excluido-por-review-md",
+      "type": "edge-case",
+      "description": "STORY-180 (AC-2, SMOKE-1, D-4) — REVIEW.md presente cuya sección «No reportar» excluye los secretos falsos de skills/*/examples/. El Security-Reviewer reporta igualmente un HIGH en skills/demo/examples/config.md:3. El árbitro (Paso 4a.1) debe excluirlo por «No reportar», registrarlo en la fila «Guía de revisión», calcular la severidad efectiva sin él (Paso 4b) y emitir APPROVED: el veredicto no es NEEDS-CHANGES por ese archivo y no se genera fix-directives.md.",
+      "input": {
+        "story_id": "STORY-211",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "review_md_present": true,
+        "review_md_no_reportar": [
+          "secretos falsos de skills/*/examples/"
+        ],
+        "impl_files": [
+          "skills/demo/examples/config.md"
+        ],
+        "security_findings": [
+          {
+            "severity": "HIGH",
+            "file": "skills/demo/examples/config.md:3",
+            "rule": "BASE-01"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "HIGH"
+        }
+      },
+      "expected": {
+        "contains": [
+          "excluido",
+          "No reportar",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "fix-directives.md",
+          "READY-FOR-IMPLEMENT"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-028",
+      "name": "sin-review-md-advierte-y-conserva-contrato",
+      "type": "edge-case",
+      "description": "STORY-180 (AC-3, SMOKE-3, D-1, D-5) — Proyecto consumidor sin REVIEW.md. Los cuatro revisores no reportan hallazgos. El skill debe advertir que la revisión es sin guía de revisión, generar code-review-report.md con el mismo frontmatter y las mismas secciones de la plantilla, y emitir APPROVED: la falta de REVIEW.md no produce BLOCKED ni NEEDS-CHANGES.",
+      "input": {
+        "story_id": "STORY-212",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "review_md_present": false,
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "sin guía de revisión",
+          "## Veredicto",
+          "## Resumen",
+          "## Hallazgos por dimensión",
+          "## Cumplimiento DoD",
+          "(verdict: APPROVED)",
+          "CODE-REVIEW"
+        ],
+        "not_contains": [
+          "(verdict: BLOCKED)",
+          "(verdict: NEEDS-CHANGES)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-029",
+      "name": "historia-modifica-review-md-advierte",
+      "type": "edge-case",
+      "description": "STORY-180 (AC-4, D-2) — REVIEW.md presente y una historia cuyo implement-report.md lista REVIEW.md y docs/guardrails/dod-story-code-review.md. Los cuatro revisores no reportan hallazgos. El skill debe detectar el cambio comparando con $IMPL_FILES (sin git), advertir que la historia modifica las reglas con las que se la revisa nombrando ambos archivos, leer REVIEW.md del working tree y emitir APPROVED: la advertencia no cambia el veredicto.",
+      "input": {
+        "story_id": "STORY-213",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "review_md_present": true,
+        "impl_files": [
+          "REVIEW.md",
+          "docs/guardrails/dod-story-code-review.md"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "modifica las reglas con las que se la revisa",
+          "REVIEW.md",
+          "dod-story-code-review.md",
+          "working tree",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "git diff",
+          "git show",
+          "(verdict: BLOCKED)"
+        ]
+      },
+      "threshold": 0.9
+    }
    ]
 }

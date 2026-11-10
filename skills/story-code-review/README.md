@@ -10,6 +10,8 @@
 
 Ejecuta el quality gate posterior a la implementación mediante cuatro revisores paralelos: código, requisitos, integración y seguridad. Arbitra sus hallazgos, evalúa el DoD de CODE-REVIEW y deja un veredicto consolidado (`APPROVED`, `NEEDS-CHANGES` o `BLOCKED`) para la historia.
 
+Si existe `REVIEW.md` en la raíz del repositorio, el skill lo pasa a los revisores y al árbitro para calibrar qué se reporta y con qué severidad; si no existe, advierte y revisa como antes.
+
 **Produces:**
 
 - `<directorio-historia>/code-review-report.md` en todas las ejecuciones válidas.

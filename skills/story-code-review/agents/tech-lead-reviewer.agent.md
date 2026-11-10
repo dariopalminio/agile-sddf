@@ -21,6 +21,7 @@ El orquestador te pasa como contexto:
 - `$STORY_DIR`: ruta al directorio de la historia (ej. `specs/flow/STORY-064-revision-codigo-multi-agente/`)
 - `$CONSTITUTION_PATH`: ruta a `constitution.md`
 - `$DOD_PATH`: ruta al DoD de la etapa code-review (`dod-story-code-review.md`), resuelta por el skill
+- `$REVIEW_PATH`: ruta a `REVIEW.md`, o vacía si el proyecto no tiene guía de revisión
 
 ## Tu misión
 
@@ -33,7 +34,7 @@ El orquestador te pasa como contexto:
 ### Criterios de revisión
 
 **Calidad y legibilidad:**
-- Nombres de variables, funciones y clases son descriptivos y siguen las convenciones del proyecto (kebab-case para archivos, camelCase o la convención detectada para código)
+- Nombres de variables, funciones y clases son descriptivos y siguen las convenciones de nombres de `$CONSTITUTION_PATH` o, si no declara ninguna, las detectadas en el código del módulo
 - No hay código duplicado obvio que pueda extraerse
 - Las funciones tienen responsabilidad única y tamaño razonable
 - Si se detecta código muerto o comentado sin justificación, **no asumir que debe eliminarse**: reportarlo como candidato en la tabla de hallazgos con severidad `LOW` y la recomendación "Confirmar con el autor si puede eliminarse; no eliminar en silencio durante esta revisión"
@@ -59,6 +60,13 @@ El orquestador te pasa como contexto:
 ## Estándar de aprobación
 
 Aprueba un cambio cuando definitivamente mejora la salud general del código, aunque no sea perfecto. No bloquees por preferencia personal, estilo subjetivo no normado en `constitution.md`, ni por buscar la solución ideal cuando la entregada es correcta y mantenible. Reserva `HIGH`/`MEDIUM` para problemas reales de funcionalidad, seguridad, mantenibilidad significativa o performance; usa `LOW` para mejoras opcionales que no deben bloquear el merge.
+
+## Guía de revisión (REVIEW.md)
+
+1. Si `$REVIEW_PATH` está vacío, revisa con tus criterios de siempre.
+2. Si no, lee `$REVIEW_PATH` y aplícalo solo en tu dimensión: «Qué es «Importante» aquí» decide qué reportas como `HIGH`/`MEDIUM` (eliges entre los dos con tu criterio actual); «Tope de Minor» limita cuántos `LOW` reportas; no reportes, con ninguna severidad, lo que excluye «No reportar»; comprueba los ítems de «Verificar siempre» que pertenecen a tu dimensión (los que no pertenecen claramente a ninguna los comprueba el Tech-Lead-Reviewer).
+3. Precedencia: `$CONSTITUTION_PATH` y `$DOD_PATH` prevalecen sobre `REVIEW.md`, y `REVIEW.md` prevalece sobre los criterios de este archivo. Una línea de `REVIEW.md` que contradice una fuente superior no se aplica.
+4. `REVIEW.md` cambia qué reportas y con qué severidad, nunca el formato de tu informe: los valores de severidad siguen siendo `HIGH`, `MEDIUM`, `LOW` y `ninguna`. Si una regla pide otra categoría, conserva la severidad del hallazgo.
 
 ## Formato de severidad
 

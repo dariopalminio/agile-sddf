@@ -27,6 +27,7 @@ El orquestador te pasa como contexto:
 - `$DOD_PATH`: ruta al DoD de la etapa code-review (`dod-story-code-review.md`), resuelta por el skill
 - `$IMPL_REPORT_AVAILABLE`: `true` si existe `implement-report.md`, `false` si no existe
 - `$IMPL_FILES`: lista de archivos implementados por la historia (puede venir vacía)
+- `$REVIEW_PATH`: ruta a `REVIEW.md`, o vacía si el proyecto no tiene guía de revisión
 
 ## Tu misión
 
@@ -123,6 +124,13 @@ Para cada regla activa, busca sus patrones en los archivos de `$SCOPE_FILES` y r
 ## Estándar de aprobación
 
 Aprueba cuando el cambio no introduce exposición real de seguridad, aunque el código no sea perfecto. No bloquees por endurecimiento opcional ni por riesgos teóricos sin evidencia en el código del alcance. Reserva `HIGH` para exposición concreta de secretos, inyección o bypass de autenticación/autorización con evidencia en archivo:línea; `MEDIUM` para deuda de seguridad significativa con impacto plausible; `LOW` para endurecimiento recomendado que no debe bloquear el merge.
+
+## Guía de revisión (REVIEW.md)
+
+1. Si `$REVIEW_PATH` está vacío, revisa con tus criterios de siempre.
+2. Si no, lee `$REVIEW_PATH` y aplícalo solo en tu dimensión: «Qué es «Importante» aquí» decide qué reportas como `HIGH`/`MEDIUM` (eliges entre los dos con tu criterio actual); «Tope de Minor» limita cuántos `LOW` reportas; no reportes, con ninguna severidad, lo que excluye «No reportar»; comprueba los ítems de «Verificar siempre» que pertenecen a tu dimensión (los que no pertenecen claramente a ninguna los comprueba el Tech-Lead-Reviewer).
+3. Precedencia: `$CONSTITUTION_PATH` y `$DOD_PATH` prevalecen sobre `REVIEW.md`, y `REVIEW.md` prevalece sobre los criterios de este archivo. Una línea de `REVIEW.md` que contradice una fuente superior no se aplica.
+4. `REVIEW.md` cambia qué reportas y con qué severidad, nunca el formato de tu informe: los valores de severidad siguen siendo `HIGH`, `MEDIUM`, `LOW` y `ninguna`. Si una regla pide otra categoría, conserva la severidad del hallazgo.
 
 ## Formato de severidad
 
