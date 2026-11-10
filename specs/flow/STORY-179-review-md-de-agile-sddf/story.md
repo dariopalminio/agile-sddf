@@ -5,11 +5,11 @@ id: STORY-179
 kind: chore
 slug: STORY-179-review-md-de-agile-sddf
 title: "REVIEW.md de agile-sddf"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-10
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-178-adr-guia-de-revision

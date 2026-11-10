@@ -4,8 +4,8 @@ type: tasks
 id: STORY-178
 slug: STORY-178-adr-guia-de-revision-tasks
 title: "Tasks: ADR de la guía de revisión"
-status: PLAN
-substatus: IN-PROGRESS
+status: IMPLEMENT
+substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 story: STORY-178
 design: STORY-178

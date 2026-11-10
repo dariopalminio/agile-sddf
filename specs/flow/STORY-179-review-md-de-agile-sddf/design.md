@@ -9,7 +9,7 @@ substatus: IN-PROGRESS
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 story: STORY-179
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-10
 related:
   - STORY-179-review-md-de-agile-sddf
   - EPIC-28-calibrar-story-code-review-con-review-md
@@ -319,3 +319,9 @@ Ninguna. Los candidatos del borrador que quedaban abiertos (Notas de la historia
 - **Descripción**: AC-3 («ninguna ruta citada deja de existir en el repositorio») choca con AC-2, que obliga a citar `.claude/`, `.github/skills/` y `.agents/`. Están ignoradas por `.gitignore` y no existen en un clon limpio.
 - **Documento afectado**: story.md
 - **Acción requerida**: ninguna para implementar: D-8 interpreta «existe» como «existe o está declarada en `.gitignore`». Opcionalmente, precisar AC-3 en `story.md` con esa redacción.
+
+### CR-003
+- **Tipo**: decisión de implementación (STORY-179, 2026-11-10)
+- **Descripción**: dos ajustes no previstos al aplicar I-3 e I-5. (1) I-3 exige que ningún término de Claude Code Review aparezca sin su traducción, pero las líneas 29, 35, 36 y 40-42 de la plantilla usan `🔴 Important` y `🟡 Minor` solos. En `REVIEW.md` esas líneas llevan la traducción entre paréntesis (`🔴 Important (HIGH/MEDIUM)`, `🟡 Minor (LOW)`); el resto del texto es el de la plantilla. «Verificar siempre» conserva la línea 60 de la plantilla y antepone la de D-5 junto con la aclaración de que el gate no ejecuta esas comprobaciones. (2) I-5 trataría `/story-code-review` (línea 22 de la plantilla, que D-1 conserva) como ruta de repositorio. La prueba excluye de I-5 los tramos que empiezan por `/` (comandos slash) y los que contienen `://` (URL).
+- **Documento afectado**: design.md (I-3, I-5)
+- **Acción requerida**: ninguna; la prueba `test/review-md.test.js` aplica ambas reglas.
