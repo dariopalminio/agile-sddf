@@ -5,11 +5,11 @@ id: STORY-177
 kind: fix
 slug: STORY-177-corregir-rutas-story-code-review
 title: "Corregir rutas de story-code-review"
-status: CODE-REVIEW
+status: VERIFY
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-11
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
 ---
