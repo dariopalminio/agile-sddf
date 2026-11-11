@@ -9,7 +9,7 @@ substatus: IN-PROGRESS
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 story: STORY-184
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-11
 related:
   - STORY-184-review-md-semilla-para-proyectos-consumidores
   - EPIC-28-calibrar-story-code-review-con-review-md
@@ -282,3 +282,9 @@ Ninguna. La fuente de la plantilla (observación FINVEST) se decide en D-1 y el 
 - **Descripción**: la nota «Implementar después de STORY-180» es una recomendación de orden, no un bloqueo: el paso funciona sin STORY-180, pero la semilla no tendrá efecto en `/story-code-review` hasta entonces.
 - **Documento afectado**: story.md
 - **Acción requerida**: ninguna. Opcionalmente, moverla a `related` o «Fuera de alcance», como sugiere el informe FINVEST.
+
+### CR-004
+- **Tipo**: corrección (implementación, INC-001 de analyze.md)
+- **Descripción**: la fila TC-002 de D-5 ponía `Sobreescribir` en `not_contains`, pero con `docs/constitution.md` existente el Paso 2c imprime legítimamente `(s) Sobreescribir con el template en blanco`, así que el caso fallaría aunque el Paso 4 fuera correcto.
+- **Documento afectado**: `skills/sddf-constitution/evals/evals.json` (TC-002)
+- **Acción aplicada**: `Sobreescribir` se sustituyó por `❌ No se pudo crear REVIEW.md`, que solo emite el Paso 4 (I-4) y delata un intento de escritura. El resto de D-5 no cambia.

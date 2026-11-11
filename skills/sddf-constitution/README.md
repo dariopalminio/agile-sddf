@@ -9,8 +9,9 @@ Genera y mantiene los documentos de gobernanza y los guardrails de transición d
 - Puede auto-completar la constitución y añadir criterios de testing detectados al DoD de `implement`.
 - Crea `policies/README.md` cuando no existe y registra la constitución en `CLAUDE.md` o `AGENTS.md`.
 - Ofrece migrar una constitución heredada desde `policies/constitution.md`.
+- Crea `REVIEW.md` en la raíz desde `assets/REVIEW-template.md` solo si no existe, como guía de revisión inicial para `/story-code-review`; si ya existe, lo conserva sin abrirlo.
 
-Nunca sobrescribe un guardrail DoD existente. Si detecta un DoD heredado monolítico, conserva su contenido y recomienda migrarlo con `memory-system`.
+Nunca sobrescribe un guardrail DoD existente, y tampoco sobrescribe `REVIEW.md`. Si detecta un DoD heredado monolítico, conserva su contenido y recomienda migrarlo con `memory-system`.
 
 ## When to use
 
@@ -35,6 +36,7 @@ El skill no recibe flags propios. Las decisiones de creación y actualización s
 | `docs/` | Raíz de conocimiento — ruta fija (ADR-0016), relativa a la raíz del repositorio. |
 | `assets/project-constitution-template.md` | Template de la constitución. |
 | `assets/dod-story/` | Seis plantillas fuente para los guardrails DoD por etapa. |
+| `assets/REVIEW-template.md` | Plantilla semilla de la guía de revisión `REVIEW.md`. |
 | Archivos del proyecto | En modo auto-completar, se analizan archivos como `package.json`, configuración de testing, CI y documentación de agentes para completar criterios pertinentes. |
 | `CLAUDE.md` o `AGENTS.md` | Punto de entrada donde se registra la referencia a la constitución. |
 | `sddf.config.yaml` | Puede definir un slug alternativo para el guardrail de una etapa. |
@@ -58,6 +60,7 @@ Al crear una constitución o un DoD por primera vez, elige entre auto-completarl
 
 - `docs/constitution.md` y `docs/policies/README.md`.
 - Los guardrails `docs/guardrails/dod-story-{specify,plan,implement,code-review,verify,acceptance}.md`, o los slugs configurados para esas etapas.
+- `REVIEW.md` en la raíz del repositorio, creado desde la plantilla solo si no existía.
 - Una referencia `@` a la constitución en `CLAUDE.md` o `AGENTS.md`, cuando se puede insertar de forma segura; los DoD no se importan globalmente para que cada skill cargue solo su propia etapa.
 - Un resumen que informa archivos creados, preservados, actualizados, omitidos o pendientes de migración.
 

@@ -1,0 +1,92 @@
+{
+  "skill": "sddf-constitution",
+  "version": "1.0.0",
+  "description": "Evalúa solo la semilla de REVIEW.md del Paso 4 de sddf-constitution (STORY-184): crea REVIEW.md en la raíz desde assets/REVIEW-template.md si falta, conserva uno existente sin abrirlo ni sobrescribirlo, no lo modifica en una segunda ejecución y no bloquea el flujo si falta la plantilla. No cubre la generación de la constitución ni del DoD por etapa: esos casos irán a partir de TC-005 en una historia aparte.",
+  "story": "STORY-184",
+  "cases": [
+    {
+      "id": "TC-001",
+      "name": "crea-review-md-si-falta",
+      "type": "happy-path",
+      "description": "En un proyecto sin REVIEW.md en la raíz, el Paso 4 lo crea desde assets/REVIEW-template.md, informa el literal de creación y nombra las cuatro secciones a editar (AC-1).",
+      "input": {
+        "context": "Proyecto con agile-sddf instalado y sin REVIEW.md en la raíz. Ya existen docs/constitution.md, los seis docs/guardrails/dod-story-<etapa>.md y la línea @docs/constitution.md en CLAUDE.md. El skill instalado tiene assets/REVIEW-template.md. El usuario responde n a cada pregunta.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "✅ Creado: REVIEW.md",
+          "Qué es «Importante» aquí",
+          "Tope de Minor",
+          "No reportar",
+          "Verificar siempre"
+        ],
+        "not_contains": [
+          "ℹ️ Conservado: REVIEW.md",
+          "[ERROR]"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-002",
+      "name": "conserva-review-md-existente",
+      "type": "edge-case",
+      "description": "Con un REVIEW.md propio en la raíz, el Paso 4 no lo abre ni lo escribe, informa que lo conserva y el resto del flujo (constitución, DoD y registro en CLAUDE.md) continúa como siempre (AC-2).",
+      "input": {
+        "context": "Proyecto con agile-sddf instalado y un REVIEW.md propio, editado por el equipo, en la raíz. Ya existen docs/constitution.md, los seis docs/guardrails/dod-story-<etapa>.md y la línea @docs/constitution.md en CLAUDE.md. El skill instalado tiene assets/REVIEW-template.md. El usuario responde n a cada pregunta.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "ℹ️ Conservado: REVIEW.md (ya existe)",
+          "docs/constitution.md"
+        ],
+        "not_contains": [
+          "✅ Creado: REVIEW.md",
+          "❌ No se pudo crear REVIEW.md"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-003",
+      "name": "segunda-ejecucion-no-modifica-review-md",
+      "type": "edge-case",
+      "description": "Tras una primera ejecución que creó REVIEW.md desde la plantilla, una segunda ejecución lo encuentra y lo conserva sin modificarlo (AC-3).",
+      "input": {
+        "context": "Proyecto con agile-sddf instalado en el que una ejecución anterior de /sddf-constitution creó REVIEW.md en la raíz, idéntico a assets/REVIEW-template.md. Ya existen docs/constitution.md, los seis docs/guardrails/dod-story-<etapa>.md y la línea @docs/constitution.md en CLAUDE.md. El usuario vuelve a ejecutar /sddf-constitution y responde n a cada pregunta.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "ℹ️ Conservado: REVIEW.md (ya existe)"
+        ],
+        "not_contains": [
+          "✅ Creado: REVIEW.md"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-004",
+      "name": "plantilla-ausente-no-bloquea",
+      "type": "fail-safe",
+      "description": "Sin REVIEW.md y sin assets/REVIEW-template.md en el skill instalado, el Paso 4 advierte que falta la plantilla, no crea nada y el flujo continúa hasta el resumen (AC-1, degradación).",
+      "input": {
+        "context": "Proyecto con agile-sddf instalado de forma parcial: el skill sddf-constitution instalado no tiene assets/REVIEW-template.md y no existe REVIEW.md en la raíz. Ya existen docs/constitution.md, los seis docs/guardrails/dod-story-<etapa>.md y la línea @docs/constitution.md en CLAUDE.md. El usuario responde n a cada pregunta.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "⚠️ Plantilla no encontrada: assets/REVIEW-template.md",
+          "docs/constitution.md"
+        ],
+        "not_contains": [
+          "✅ Creado: REVIEW.md"
+        ]
+      },
+      "threshold": 0.9
+    }
+  ]
+}
