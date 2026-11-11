@@ -115,7 +115,12 @@ test('el Paso 5b llena {{SECURITY_FINDINGS}} con las filas consolidadas, no con 
 
 test('todo eval que espera NEEDS-CHANGES trae un bloqueante con Archivo:Línea y escenario de fallo (CNF-2, D-8)', () => {
   const evals = JSON.parse(read(path.join(SKILL_DIR, 'evals', 'evals.json')));
-  const expectsChanges = evals.cases.filter((c) => (c.expected?.contains || []).includes('(verdict: NEEDS-CHANGES)'));
+  // Un caso cuyo bloqueante es una fila DoD-CODE-REVIEW (STORY-183) no necesita
+  // hallazgo de revisor: esas filas no pasan por la verificación del Paso 4a.3.
+  const expectsChanges = evals.cases.filter((c) => {
+    const contains = c.expected?.contains || [];
+    return contains.includes('(verdict: NEEDS-CHANGES)') && !contains.includes('DoD-CODE-REVIEW');
+  });
   assert.ok(expectsChanges.length > 0);
   for (const evalCase of expectsChanges) {
     const verified = caseFindings(evalCase).filter(

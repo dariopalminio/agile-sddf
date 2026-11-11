@@ -5,11 +5,11 @@ id: STORY-183
 kind: feat
 slug: STORY-183-dod-code-review-sin-criterios-circulares
 title: "DoD CODE-REVIEW sin criterios circulares"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-11
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-178-adr-guia-de-revision
@@ -58,7 +58,7 @@ Esquema del escenario: Un criterio que ningún revisor cubre produce su propio h
   Ejemplos:
     | criterio                                          | incumplimiento                           |
     | Sin tareas pendientes en tasks.md                 | "tasks.md" tiene una tarea "- [ ]"       |
-    | Metadatos frontmatter de story.md están completos | "story.md" no tiene el campo "substatus" |
+    | Metadatos frontmatter de story.md están completos | "story.md" no tiene el campo "created"   |
 ```
 
 ## ⚙️ Criterios no funcionales específicos
@@ -80,3 +80,4 @@ Esquema del escenario: Un criterio que ningún revisor cubre produce su propio h
 - **Mecanismo abierto:** `story-design` decide cómo el árbitro reutiliza el resultado del revisor en AC-2: un mapeo explícito criterio → revisor o la deduplicación de hallazgos. AC-2 y AC-3 se comprueban sobre las entradas de `fix-directives.md` y `code-review-report.md`, no sobre el razonamiento del árbitro.
 - **Posible división:** si en `story-design` el cambio de `story-code-review` (AC-2, AC-3) crece, separar la limpieza de criterios del DoD (AC-1, CNF-1) en una historia propia.
 - La precedencia del DoD frente a `REVIEW.md` la fija el ADR de STORY-178.
+- **Cambios aceptados en el diseño (CR-001, CR-002; 2026-11-11):** el segundo ejemplo de AC-3 usa el campo `created` y no `substatus`, porque una historia sin `substatus` se detiene en el Paso 1d y el Paso 1e escribe `substatus` antes de evaluar el DoD. El DoD también retira «Se cumple [[dod-story-implement]]», que arrastra criterios de IMPLEMENT que duplican a los revisores y al criterio de `tasks.md`, y reescribe el criterio de metadatos sin «con status y substatus actualizados», que satisface el propio Paso 1e (D-2 de `design.md`).

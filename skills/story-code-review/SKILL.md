@@ -536,12 +536,37 @@ Registrar internamente:
 
 **Si `$DOD_CODE_REVIEW_CRITERIA` tiene criterios:**
 
-Para cada criterio, evaluar semánticamente contra:
+**Criterios conocidos.** Comparar cada criterio de `$DOD_CODE_REVIEW_CRITERIA` con esta tabla por su **texto normalizado**: el texto tras `- [ ] ` o `- [x] `, sin espacios al inicio ni al final y con los espacios internos colapsados a uno; las comillas invertidas se conservan. Dos criterios son el mismo si su texto normalizado es igual. Un criterio que no está en la tabla es **no conocido** (p. ej. el DoD de un proyecto consumidor editado o instalado con una versión anterior).
+
+| Criterio (texto normalizado) | Cobertura | Revisor / evidencia propia | Severidad del `❌` propio |
+|---|---|---|---|
+| Se cumplen los estándares del proyecto (`constitution.md`) | revisor | Tech-Lead-Reviewer | — |
+| Cada escenario Gherkin tiene correspondencia en el código | revisor | Product-Owner-Reviewer | — |
+| Los componentes respetan la arquitectura de `design.md` | revisor | Integration-Reviewer | — |
+| Sin tareas pendientes en `tasks.md` (si existe el archivo) | propia | líneas `- [ ]` de `$STORY_DIR/tasks.md` | `MEDIUM` |
+| Metadatos frontmatter de `story.md` están completos y correctos | propia | campos y coherencia del frontmatter de `story.md` | `MEDIUM` |
+
+La tabla y el DoD del repositorio y de la plantilla de `sddf-constitution` los mantiene alineados `test/dod-story-code-review.test.js`: al cambiar un criterio, cambiar su fila.
+
+**Hallazgos que cuentan de un revisor:** los hallazgos de `$FINDINGS` de su informe válido con estado `bloqueante` (Paso 4a.3): nunca los excluidos por «No reportar» (Paso 4a.1), los PREEXISTENTE (Paso 4a.2) ni los `no verificado` (Paso 4a.3). Un hallazgo fusionado (Paso 4a.4) cuenta para cada revisor que cita en `Reportado por:`.
+
+**Criterio cubierto** (cobertura `revisor`): su resultado sale del revisor que lo cubre, no de una evaluación propia del árbitro:
+- `✓` si el revisor tiene informe válido y ningún hallazgo que cuente.
+- `❌` si tiene alguno: `Severidad` = la mayor de esos hallazgos; `Evidencia` = `Cubierto por <Revisor>: <Archivo:Línea>[, …]`.
+- `⚠️` si el revisor está en `$REVIEWERS_BLOCKED` o no se lanzó (`--single-agent`): `Evidencia` = `Revisor sin informe válido`.
+
+Un criterio cubierto **nunca crea fila `DoD-CODE-REVIEW`** ni cambia `$MAX_SEVERITY` o `$VERDICT`: sus hallazgos ya cuentan en 4b-4c y entran en `fix-directives.md` una sola vez, como hallazgos del revisor.
+
+**Criterio propio** (cobertura `propia`): evidencia y severidad fijas; no se aplica la clasificación genérica:
+- **Sin tareas pendientes en `tasks.md` (si existe el archivo):** si `$STORY_DIR/tasks.md` no existe → `✓` con `Evidencia` = `tasks.md no existe`. Si tiene alguna línea `- [ ]` → `❌ MEDIUM` con `Evidencia` = `tasks.md:<línea>[, …]`. Si no → `✓`. Si no se puede leer → `⚠️` con el error (regla de duda).
+- **Metadatos frontmatter de `story.md` están completos y correctos:** campos requeridos `type`, `id`, `slug`, `title`, `status`, `substatus`, `parent` (admite `null`), `created` y `updated`. «Correctos»: `id` es el prefijo `STORY-NNN` del nombre del directorio de la historia y `slug` es ese nombre. Falta un campo → `❌ MEDIUM` con `Evidencia` = `story.md: falta <campo>`; un campo incoherente → `❌ MEDIUM` con `Evidencia` = `story.md: <campo> no coincide con el directorio`. El valor de `status`/`substatus` no se juzga: lo escribe el Paso 1e.
+
+**Criterio no conocido:** evaluar semánticamente contra:
 - El código revisado (inferido del implement-report y los informes de agentes)
-- Los informes de los cuatro agentes (tech-lead-report, product-owner-report, integration-report, security-report), tomando sus hallazgos de `$FINDINGS` (tabla consolidada tras los Pasos 4a.1 a 4a.4), no de las tablas crudas de los informes: un hallazgo excluido por «No reportar» no cuenta como incumplimiento, un hallazgo PREEXISTENTE o `no verificado` nunca es evidencia de `❌` (p. ej. para «Sin hallazgo bloqueante de severidad HIGH o MEDIUM») ni se reintroduce como hallazgo DoD, y un fusionado cuenta una vez
+- Los informes de los cuatro agentes (tech-lead-report, product-owner-report, integration-report, security-report), tomando sus hallazgos de `$FINDINGS` (tabla consolidada tras los Pasos 4a.1 a 4a.4), no de las tablas crudas de los informes: un hallazgo excluido por «No reportar» no cuenta como incumplimiento, un hallazgo PREEXISTENTE o `no verificado` nunca es evidencia de `❌` (p. ej. para un «Sin hallazgo bloqueante de severidad HIGH o MEDIUM» de un DoD instalado) ni se reintroduce como hallazgo DoD, y un fusionado cuenta una vez
 - El contenido de `story.md` (criterios de aceptación, escenarios Gherkin)
 
-Clasificar cada criterio como:
+Clasificar cada criterio no conocido como:
 - `✓` — evidencia clara de cumplimiento en los artefactos revisados
 - `❌ + severidad` — criterio claramente no cumplido; asignar severidad:
   - `HIGH`: criterios funcionales y de regresión (ej. "Gherkin pasan", "no hay regresiones")
@@ -553,7 +578,9 @@ Clasificar cada criterio como:
 
 **Criterios que requieren acceso a CI/CD o ejecución de tests:** clasificar siempre como `⚠️` con evidencia: `"Requiere acceso a CI/CD — no evaluable desde artefactos disponibles"`.
 
-**Para cada hallazgo `❌`**, añadir a la tabla consolidada interna con:
+**Regla de entrada única:** un `❌` de un criterio propio o no conocido cuya evidencia de incumplimiento ya es un hallazgo que cuenta de un revisor queda `❌` con `Evidencia` = `Ya reportado por <Revisor>: <Archivo:Línea>` y **no crea fila**: el defecto entra en `fix-directives.md` una sola vez, como hallazgo del revisor. Así, las filas `DoD-CODE-REVIEW` solo nacen de criterios propios o no conocidos con evidencia nueva.
+
+**Para cada `❌` de un criterio propio o no conocido con evidencia nueva**, añadir a la tabla consolidada interna con:
 - `Dimensión`: `DoD-CODE-REVIEW`
 - `Archivo:Línea`: `<$DOD_PATH>:<número_de_línea>` (p. ej. `docs/guardrails/dod-story-code-review.md:14`)
 - `Severidad`: valor asignado (HIGH/MEDIUM/LOW)
@@ -701,7 +728,7 @@ Completar el template con:
 - Sección `### Nota de Tamaño de Cambio` — `{{CHANGE_SIZE_NOTE}}`: contenido de `$CHANGE_SIZE_NOTE` calculado en el Paso 4c.2; si está vacío, dejar la sección sin contenido visible (no mostrar el placeholder literal)
 - Sección "Cumplimiento DoD — Fase CODE-REVIEW":
   - **Si `$DOD_CODE_REVIEW_CRITERIA` estaba vacío:** mostrar `⚠️ DoD CODE-REVIEW no encontrado — se omitió la validación. Verifica que existe el DoD de la etapa code-review (ver `## DoD aplicable`).`
-  - **Si hay criterios evaluados:** completar tabla `| # | Criterio | Estado | Severidad | Evidencia |` con los resultados de `$DOD_CODE_REVIEW_RESULT` y línea de resumen `**Resumen:** N/Total criterios ✓`
+  - **Si hay criterios evaluados:** completar tabla `| # | Criterio | Estado | Severidad | Evidencia |` con los resultados de `$DOD_CODE_REVIEW_RESULT` y línea de resumen `**Resumen:** N/Total criterios ✓`. Un criterio cubierto lleva en `Evidencia` `Cubierto por <Revisor>: <Archivo:Línea>[, …]` o `Revisor sin informe válido`, y uno propio o no conocido sin fila por la regla de entrada única, `Ya reportado por <Revisor>: <Archivo:Línea>` (Paso 4c.1): la tabla DoD cita esos defectos, no los repite como hallazgos
 
 Guardar en `$STORY_DIR/code-review-report.md`.
 
@@ -817,6 +844,7 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | Informe de revisor ausente o con frontmatter inválido, sin otros hallazgos bloqueantes | `Veredicto: BLOCKED` con el nombre del revisor | Generar reporte y restaurar `IMPLEMENT/DONE`; no generar `fix-directives.md` |
 | Hallazgo `HIGH`/`MEDIUM` sin `Archivo:Línea` válido o sin escenario de fallo (Paso 4a.3) | — (prefijo `**[no verificado — <motivo>]**` en el informe) | Marcarlo `no verificado`: figura en el informe con su severidad original, pero no cuenta para `max-severity`, el veredicto ni `fix-directives.md`; se cuenta en `{{DECISION_RATIONALE}}` |
 | Duda sobre si dos hallazgos piden la misma corrección (Paso 4a.4) | — | No fusionarlos: quedan como hallazgos separados |
+| Revisor que cubre un criterio DoD sin informe válido o no lanzado con `--single-agent` (Paso 4c.1) | — (`⚠️ Revisor sin informe válido` en la tabla DoD) | Marcar el criterio `⚠️`, sin fila `DoD-CODE-REVIEW`; el criterio no cambia `$MAX_SEVERITY` ni `$VERDICT` |
 | Fila bloqueante sin ruta al construir la lista blanca (Paso 4e, degradación) | — (se anota `[archivo no especificado]`) | Excluirla de la lista blanca y continuar |
 | `fix-directives.md` previo con `round` ausente o ilegible (Paso 4f.1) | — (sin error ni advertencia: archivo legado) | `$PREV_ROUND = 0`: la cuenta de rondas se reinicia en 1 |
 

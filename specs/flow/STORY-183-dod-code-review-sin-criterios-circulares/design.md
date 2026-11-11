@@ -9,7 +9,7 @@ substatus: IN-PROGRESS
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 story: STORY-183
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-11
 related:
   - STORY-183-dod-code-review-sin-criterios-circulares
   - EPIC-28-calibrar-story-code-review-con-review-md
@@ -299,3 +299,9 @@ Ninguna. El mecanismo abierto de la historia lo fija D-3 (mapeo explícito) con 
 - **Descripción**: D-2 elimina del DoD «Se cumple [[dod-story-implement]]», que la historia no nombra entre los criterios a quitar. Es necesario para AC-2 y AC-3: ese criterio arrastra criterios de `dod-story-implement.md` que duplican a los revisores y al criterio de `tasks.md`, y una tarea pendiente daría dos entradas en `fix-directives.md`. También reescribe el criterio de metadatos sin «con status y substatus actualizados» (lo satisface el Paso 1e).
 - **Documento afectado**: story.md
 - **Acción requerida**: añadir a las Notas de la historia los dos cambios, o confirmarlos en `/story-acceptance`.
+
+### CR-003
+- **Tipo**: dependencia (descubierta en la implementación, 2026-11-11)
+- **Descripción**: `test/story-code-review-evidence-dedup.test.js` (STORY-182, D-8) exige que todo eval que espera `NEEDS-CHANGES` traiga un hallazgo de revisor `HIGH`/`MEDIUM` con `Archivo:Línea` y escenario de fallo. TC-040 y TC-041 llegan a `NEEDS-CHANGES` por una fila `DoD-CODE-REVIEW`, sin hallazgo de revisor, y esas filas no pasan por la verificación del Paso 4a.3. La prueba ahora exime a los casos cuyo `expected.contains` incluye `DoD-CODE-REVIEW`; el resto de los casos `NEEDS-CHANGES` se siguen comprobando igual.
+- **Documento afectado**: `test/story-code-review-evidence-dedup.test.js` (fuera de los Componentes afectados de este diseño)
+- **Acción requerida**: ninguna; se registra para la revisión de código.

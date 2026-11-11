@@ -7,7 +7,7 @@ status: PLAN
 substatus: IN-PROGRESS
 parent: null
 created: 2026-11-07
-updated: 2026-11-10
+updated: 2026-11-11
 related: []
 ---
 
@@ -32,7 +32,7 @@ Que `/story-code-review` reporte lo que de verdad importa en cada repositorio y 
 - [x] **STORY-180** — story-code-review lee REVIEW.md: Como Solo Builder, quiero que `/story-code-review` lea `REVIEW.md` cuando existe, lo pase a los cuatro revisores y al árbitro y avise si la historia modifica `REVIEW.md` o el DoD, para calibrar la revisión de cada proyecto sin editar los agentes. Sin `REVIEW.md`, el skill advierte y mantiene el comportamiento actual, y los agentes dejan de contener reglas propias de agile-sddf.
 - [x] **STORY-181** — Hallazgos preexistentes: Como Solo Builder, quiero que un defecto en líneas que la historia no tocó se informe como PREEXISTENTE, sin contar para `max-severity` ni entrar en `fix-directives.md`, para no pagar rondas de corrección por problemas que la historia no introdujo.
 - [x] **STORY-182** — Verificación, deduplicación hallazgos: Como Solo Builder, quiero que el árbitro verifique la evidencia de los hallazgos, fusione los hallazgos repetidos entre revisores y no trate como bloqueante ningún HIGH o MEDIUM sin `Archivo:Línea` y escenario de fallo concreto, para que el informe tenga señal y un falso positivo no cueste una ronda.
-- [ ] **STORY-183** — DoD CODE-REVIEW sin criterios circulares: Como Solo Builder, quiero que `dod-story-code-review.md` (guardrail y plantilla de `sddf-constitution`) contenga solo criterios que la revisión puede comprobar, sin "informe creado", "veredicto APPROVED" ni "sin bloqueantes", y que los criterios cubiertos por un revisor tomen su resultado en lugar de crear hallazgos nuevos, para que un mismo defecto no aparezca varias veces en `fix-directives.md`.
+- [x] **STORY-183** — DoD CODE-REVIEW sin criterios circulares: Como Solo Builder, quiero que `dod-story-code-review.md` (guardrail y plantilla de `sddf-constitution`) contenga solo criterios que la revisión puede comprobar, sin "informe creado", "veredicto APPROVED" ni "sin bloqueantes", y que los criterios cubiertos por un revisor tomen su resultado en lugar de crear hallazgos nuevos, para que un mismo defecto no aparezca varias veces en `fix-directives.md`.
 - [ ] **STORY-184** — REVIEW.md semilla para proyectos consumidores: Como Solo Builder que adopta agile-sddf, quiero que `/sddf-constitution` cree un `REVIEW.md` inicial desde una plantilla cuando el proyecto no tiene uno, sin sobrescribir uno existente, para calibrar `/story-code-review` desde el primer día.
 - [ ] **STORY-185** — Tope de LOW y arrastres entre rondas: Como Solo Builder que lee `code-review-report.md`, quiero que el árbitro limite los LOW por revisor y no repita en una nueva ronda los LOW de la anterior que están en líneas que el rework no tocó, para que el informe conserve señal y no me obligue a releer los mismos nits en cada ronda.
 

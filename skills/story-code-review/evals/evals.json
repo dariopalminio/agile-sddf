@@ -1553,6 +1553,316 @@
         ]
       },
       "threshold": 0.9
+    },
+    {
+      "id": "TC-038",
+      "name": "dod-sin-criterios-autorreferentes",
+      "type": "happy-path",
+      "description": "STORY-183 (AC-1; D-1, D-2) — Historia en IMPLEMENT/DONE con el DoD CODE-REVIEW de cinco criterios (input.dod_criteria), cuatro revisores sin hallazgos, tasks.md con todas las tareas [x] y frontmatter de story.md completo. El árbitro (Paso 4c.1) evalúa los tres criterios cubiertos con el resultado de su revisor y los dos propios con su evidencia fija: 5/5 criterios ✓ y APPROVED. Ningún criterio del informe depende de que exista code-review-report.md, de su veredicto ni de la ausencia de bloqueantes.",
+      "input": {
+        "story_id": "STORY-238",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "tasks.md"
+        ],
+        "existing_fix_directives": null,
+        "dod_path": "docs/guardrails/dod-story-code-review.md",
+        "dod_criteria": [
+          {
+            "line": 17,
+            "text": "Se cumplen los estándares del proyecto (`constitution.md`)"
+          },
+          {
+            "line": 18,
+            "text": "Cada escenario Gherkin tiene correspondencia en el código"
+          },
+          {
+            "line": 19,
+            "text": "Los componentes respetan la arquitectura de `design.md`"
+          },
+          {
+            "line": 20,
+            "text": "Sin tareas pendientes en `tasks.md` (si existe el archivo)"
+          },
+          {
+            "line": 21,
+            "text": "Metadatos frontmatter de `story.md` están completos y correctos"
+          }
+        ],
+        "tasks_md": {
+          "pending_lines": []
+        },
+        "story_frontmatter_fields": [
+          "type",
+          "id",
+          "slug",
+          "title",
+          "status",
+          "substatus",
+          "parent",
+          "created",
+          "updated"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: APPROVED)",
+          "5/5 criterios ✓"
+        ],
+        "not_contains": [
+          "está creado o actualizado",
+          "Revisión de código aprobada",
+          "Sin hallazgo bloqueante",
+          "Se cumple [[dod-story-implement]]"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-039",
+      "name": "criterio-cubierto-por-revisor-no-duplica",
+      "type": "edge-case",
+      "description": "STORY-183 (AC-2; D-3, I-5) — El Product-Owner-Reviewer reporta un MEDIUM verificado: el escenario AC-2 no tiene correspondencia en el código. El criterio «Cada escenario Gherkin tiene correspondencia en el código» es cubierto por ese revisor: queda ❌ con «Cubierto por Product-Owner-Reviewer: <Archivo:Línea>» y no crea fila DoD-CODE-REVIEW. fix-directives.md y code-review-report.md tienen una sola entrada para el defecto.",
+      "input": {
+        "story_id": "STORY-040",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "tasks.md"
+        ],
+        "existing_fix_directives": null,
+        "dod_path": "docs/guardrails/dod-story-code-review.md",
+        "dod_criteria": [
+          {
+            "line": 17,
+            "text": "Se cumplen los estándares del proyecto (`constitution.md`)"
+          },
+          {
+            "line": 18,
+            "text": "Cada escenario Gherkin tiene correspondencia en el código"
+          },
+          {
+            "line": 19,
+            "text": "Los componentes respetan la arquitectura de `design.md`"
+          },
+          {
+            "line": 20,
+            "text": "Sin tareas pendientes en `tasks.md` (si existe el archivo)"
+          },
+          {
+            "line": 21,
+            "text": "Metadatos frontmatter de `story.md` están completos y correctos"
+          }
+        ],
+        "tasks_md": {
+          "pending_lines": []
+        },
+        "story_frontmatter_fields": [
+          "type",
+          "id",
+          "slug",
+          "title",
+          "status",
+          "substatus",
+          "parent",
+          "created",
+          "updated"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "MEDIUM",
+          "product_owner_findings": [
+            {
+              "file_line": "specs/flow/STORY-040-x/story.md:30",
+              "dimension": "requirements-coverage",
+              "severity": "MEDIUM",
+              "finding": "El escenario AC-2 no tiene correspondencia en el código. Fallo: con un usuario que pide exportar su informe (AC-2), ningún módulo de src/ atiende la exportación y la petición devuelve 404",
+              "failure_scenario": "con un usuario que pide exportar su informe (AC-2), ningún módulo de src/ atiende la exportación y la petición devuelve 404",
+              "action": "Implementar el comportamiento del escenario AC-2 y su prueba"
+            }
+          ],
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "1 hallazgo(s) bloqueante(s)",
+          "Cubierto por Product-Owner-Reviewer",
+          "round: 1"
+        ],
+        "not_contains": [
+          "DoD-CODE-REVIEW",
+          "2 hallazgo(s) bloqueante(s)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-040",
+      "name": "criterio-propio-tasks-pendiente",
+      "type": "fail-path",
+      "description": "STORY-183 (AC-3, fila 1; D-5, I-6) — Cuatro revisores sin hallazgos; tasks.md tiene la tarea «- [ ] T-3» en la línea 30. El criterio «Sin tareas pendientes en `tasks.md` (si existe el archivo)» no lo cubre ningún revisor: el árbitro lo marca ❌ MEDIUM con evidencia tasks.md:30 y crea una fila DoD-CODE-REVIEW que cita docs/guardrails/dod-story-code-review.md:20. fix-directives.md tiene una sola entrada.",
+      "input": {
+        "story_id": "STORY-239",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "tasks.md"
+        ],
+        "existing_fix_directives": null,
+        "dod_path": "docs/guardrails/dod-story-code-review.md",
+        "dod_criteria": [
+          {
+            "line": 17,
+            "text": "Se cumplen los estándares del proyecto (`constitution.md`)"
+          },
+          {
+            "line": 18,
+            "text": "Cada escenario Gherkin tiene correspondencia en el código"
+          },
+          {
+            "line": 19,
+            "text": "Los componentes respetan la arquitectura de `design.md`"
+          },
+          {
+            "line": 20,
+            "text": "Sin tareas pendientes en `tasks.md` (si existe el archivo)"
+          },
+          {
+            "line": 21,
+            "text": "Metadatos frontmatter de `story.md` están completos y correctos"
+          }
+        ],
+        "tasks_md": {
+          "pending_lines": [
+            {
+              "line": 30,
+              "text": "- [ ] T-3 Documentar el flag --dry-run"
+            }
+          ]
+        },
+        "story_frontmatter_fields": [
+          "type",
+          "id",
+          "slug",
+          "title",
+          "status",
+          "substatus",
+          "parent",
+          "created",
+          "updated"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "DoD-CODE-REVIEW",
+          "dod-story-code-review.md:20",
+          "Sin tareas pendientes en",
+          "tasks.md:30",
+          "1 hallazgo(s) bloqueante(s)",
+          "(verdict: NEEDS-CHANGES)",
+          "round: 1"
+        ],
+        "not_contains": [
+          "(verdict: APPROVED)",
+          "2 hallazgo(s) bloqueante(s)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-041",
+      "name": "criterio-propio-frontmatter-incompleto",
+      "type": "fail-path",
+      "description": "STORY-183 (AC-3, fila 2; D-5, CR-001) — Cuatro revisores sin hallazgos; el frontmatter de story.md no tiene el campo created. El criterio «Metadatos frontmatter de `story.md` están completos y correctos» no lo cubre ningún revisor: el árbitro lo marca ❌ MEDIUM con evidencia «story.md: falta created» y crea una fila DoD-CODE-REVIEW que cita docs/guardrails/dod-story-code-review.md:21. fix-directives.md tiene una sola entrada.",
+      "input": {
+        "story_id": "STORY-240",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "tasks.md"
+        ],
+        "existing_fix_directives": null,
+        "dod_path": "docs/guardrails/dod-story-code-review.md",
+        "dod_criteria": [
+          {
+            "line": 17,
+            "text": "Se cumplen los estándares del proyecto (`constitution.md`)"
+          },
+          {
+            "line": 18,
+            "text": "Cada escenario Gherkin tiene correspondencia en el código"
+          },
+          {
+            "line": 19,
+            "text": "Los componentes respetan la arquitectura de `design.md`"
+          },
+          {
+            "line": 20,
+            "text": "Sin tareas pendientes en `tasks.md` (si existe el archivo)"
+          },
+          {
+            "line": 21,
+            "text": "Metadatos frontmatter de `story.md` están completos y correctos"
+          }
+        ],
+        "tasks_md": {
+          "pending_lines": []
+        },
+        "story_frontmatter_fields": [
+          "type",
+          "id",
+          "slug",
+          "title",
+          "status",
+          "substatus",
+          "parent",
+          "updated"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "DoD-CODE-REVIEW",
+          "dod-story-code-review.md:21",
+          "falta created",
+          "1 hallazgo(s) bloqueante(s)",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "(verdict: APPROVED)",
+          "2 hallazgo(s) bloqueante(s)"
+        ]
+      },
+      "threshold": 0.9
     }
   ]
 }
