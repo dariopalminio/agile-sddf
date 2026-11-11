@@ -5,7 +5,7 @@ slug: STORY-182-implement-report
 title: "Implement Report: Verificación y deduplicación de hallazgos del árbitro"
 story: STORY-182
 created: 2026-11-10
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 # Reporte de Implementación: Verificación y deduplicación de hallazgos del árbitro
@@ -16,10 +16,10 @@ updated: 2026-11-10
 |---|---|
 | Historia | STORY-182 |
 | Total de tareas | 25 |
-| Tareas completadas | 25 |
+| Tareas completadas | 0 (rework sin tareas pendientes) |
 | Tareas bloqueadas | 0 |
-| Tareas omitidas (ya completadas antes) | 0 |
-| Fecha de implementación | 2026-11-10 |
+| Tareas omitidas (ya completadas antes) | 25 |
+| Fecha de implementación | 2026-11-10 (rework ronda 1: 2026-11-11) |
 
 **Estado:** ✅ Implementación completa
 
@@ -54,6 +54,20 @@ updated: 2026-11-10
 | T023 | UTF-8 sin BOM ni invisibles; JSON válido | ✓ completado | — |
 | T024 | `npm test` y `npm run verify:repository` | ✓ completado | — |
 | T025 | `graphify update .` y este reporte | ✓ completado | `specs/flow/STORY-182-verificar-y-deduplicar-hallazgos/implement-report.md` |
+
+Todas las tareas figuran como completadas en la ejecución anterior (2026-11-10); el trabajo de esta ejecución está en la sección de correcciones.
+
+## Correcciones de fix-directives.md (ronda 1)
+
+| # | Archivo:Línea | Severidad | Resultado |
+|---|---|---|---|
+| 1 | skills/story-code-review/SKILL.md:696 | MEDIUM | 💻 corregido: `skills/story-code-review/SKILL.md` — `{{SECURITY_FINDINGS}}` recibe ahora las filas consolidadas de `$FINDINGS` de la dimensión `security` (Pasos 4a.3 y 4a.4) con las mismas reglas que los demás placeholders (prefijo de estado, fusionados, exclusiones de 4a.1, PREEXISTENTE), precedidas por la línea `**Fuentes de checklist:**`. Aserción nueva en `test/story-code-review-evidence-dedup.test.js` que impide volver a la tabla cruda (RED antes del cambio, GREEN después) |
+| 2 | docs/guardrails/dod-story-code-review.md:20 | MEDIUM | Sin cambios en el archivo (fuera de la lista blanca): se resuelve con #1 |
+| 3 | docs/guardrails/dod-story-code-review.md:21 | MEDIUM | Sin cambios en el archivo: se resuelve con #1 |
+| 4 | docs/guardrails/dod-story-code-review.md:25 | MEDIUM | Sin cambios en el archivo: se resuelve con #1 y una nueva ejecución de `/story-code-review STORY-182` |
+
+**Archivos corregidos:** `skills/story-code-review/SKILL.md`, `test/story-code-review-evidence-dedup.test.js`
+**Hallazgos omitidos por archivo inexistente:** ninguno
 
 ## Archivos tocados (para `$IMPL_FILES`)
 
@@ -101,7 +115,7 @@ No se tocaron `skills/story-code-review/assets/` (el cambio de una fila en `code
 | 1 | Todos los escenarios Gherkin de `story.md` pasan | ⚠️ | Requiere ejecución de evals (`npm run test:eval`), manual por AGENTS.md; contrato fijado por la prueba unitaria |
 | 2 | Criterios no funcionales verificados | ✓ | CNF-1, CNF-2 y CNF-3 en la tabla de trazabilidad |
 | 3 | Comportamiento coincide con `design.md` | ✓ | D-1 a D-9 implementados; la desviación de numeración está en CR-002 |
-| 4 | Sin regresiones | ✓ | `npm test`: 556/556; `npm run verify:repository`: exit 0 en la primera ejecución. Tres repeticiones posteriores, con otra sesión corriendo pruebas a la vez, fallaron solo en `S097-UT-011` (límite de 5 s para `memory-system check` sobre `docs/`: 5,1-8,1 s bajo carga; aislado pasa en 0,7 s y el comando tarda 0,9 s). Esta historia no toca `docs/` |
+| 4 | Sin regresiones | ✓ | Rework ronda 1 (2026-11-11): `npm test` 558/558 y `npm run verify:repository` exit 0. Ejecución inicial: `npm test` 556/556; `verify:repository` exit 0 la primera vez y fallos aislados de tiempo en `S097-UT-011` bajo carga concurrente (no toca `docs/`) |
 | 5 | Convenciones de `constitution.md` | ✓ | Español, layout fijo, fuente única en `skills/` |
 | 6 | Sin código comentado ni `TODO` sin issue | ✓ | Ninguno en los archivos tocados |
 | 7 | Sin variables, imports ni funciones sin usar | ✓ | La prueba nueva usa todo lo que importa |
@@ -127,7 +141,7 @@ No se tocaron `skills/story-code-review/assets/` (el cambio de una fila en `code
 
 ## Nota sobre los Tests Generados
 
-Los tests generados deben ejecutarse manualmente con el runner del proyecto. En esta ejecución ya se corrieron `node --test test/story-code-review-evidence-dedup.test.js` (7/7), `npm test` (556/556) y `npm run verify:repository` (exit 0 la primera vez; ver criterio DoD 4 sobre la prueba de tiempo `S097-UT-011` bajo carga concurrente). Conviene repetir `npm run verify:repository` cuando no haya otra sesión ejecutando pruebas.
+Los tests generados deben ejecutarse manualmente con el runner del proyecto. En el rework (ronda 1) se corrieron `node --test test/story-code-review-evidence-dedup.test.js` (8/8, con la aserción nueva del Paso 5b), `npm test` (558/558) y `npm run verify:repository` (exit 0). En la ejecución inicial se corrieron `node --test test/story-code-review-evidence-dedup.test.js` (7/7), `npm test` (556/556) y `npm run verify:repository` (exit 0 la primera vez; ver criterio DoD 4 sobre la prueba de tiempo `S097-UT-011` bajo carga concurrente). Conviene repetir `npm run verify:repository` cuando no haya otra sesión ejecutando pruebas.
 
 Los evals no se ejecutaron (AGENTS.md). Para ejecutarlos:
 

@@ -5,11 +5,11 @@ id: STORY-182
 kind: feat
 slug: STORY-182-verificar-y-deduplicar-hallazgos
 title: "Verificación y deduplicación de hallazgos del árbitro"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-11
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-185-tope-de-low-y-arrastres

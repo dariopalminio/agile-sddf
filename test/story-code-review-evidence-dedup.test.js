@@ -104,6 +104,15 @@ test('SKILL.md define la verificación (4a.3) y la fusión (4a.4) de hallazgos (
   }
 });
 
+test('el Paso 5b llena {{SECURITY_FINDINGS}} con las filas consolidadas, no con la tabla cruda (I-9)', () => {
+  const skill = read(path.join(SKILL_DIR, 'SKILL.md'));
+  const line = skill.split('\n').find((l) => l.startsWith('- Sección `### Seguridad (Security-Reviewer)`'));
+  assert.ok(line, 'SKILL.md no tiene la instrucción de la sección de Seguridad del Paso 5b');
+  assert.ok(line.includes('$FINDINGS'), 'la sección de Seguridad debe tomar las filas consolidadas de $FINDINGS');
+  assert.doesNotMatch(line, /contenido de la sección "Hallazgos" de `security-report\.md`/);
+  assert.ok(line.includes('**Fuentes de checklist:**'), 'la sección de Seguridad conserva la línea de fuentes de checklist');
+});
+
 test('todo eval que espera NEEDS-CHANGES trae un bloqueante con Archivo:Línea y escenario de fallo (CNF-2, D-8)', () => {
   const evals = JSON.parse(read(path.join(SKILL_DIR, 'evals', 'evals.json')));
   const expectsChanges = evals.cases.filter((c) => (c.expected?.contains || []).includes('(verdict: NEEDS-CHANGES)'));

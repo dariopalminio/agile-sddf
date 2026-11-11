@@ -2,9 +2,9 @@
 type: code-review-report
 story: STORY-182
 title: "Code Review Report: Verificación y deduplicación de hallazgos del árbitro"
-verdict: NEEDS-CHANGES
-date: 2026-11-10
-max-severity: MEDIUM
+verdict: APPROVED
+date: 2026-11-11
+max-severity: LOW
 reviewers:
   - tech-lead-reviewer
   - product-owner-reviewer
@@ -16,19 +16,19 @@ reviewers:
 
 ## Veredicto
 
-**Veredicto:** `NEEDS-CHANGES` — 1 hallazgo(s) bloqueante(s) (severidad máxima: MEDIUM).
+**Veredicto:** `APPROVED` — Sin hallazgos bloqueantes (severidad máxima: LOW).
 
-El Tech-Lead-Reviewer y el Integration-Reviewer reportan el mismo defecto `MEDIUM` sobre `skills/story-code-review/SKILL.md:693-696`, con `Archivo:Línea` y escenario de fallo concreto, así que se cuenta una sola vez. La regla nueva del Paso 5b (filas consolidadas con prefijo de estado y `Reportado por:`) convive con la instrucción anterior, sin actualizar, que manda insertar la tabla cruda de `security-report.md` en `{{SECURITY_FINDINGS}}`. Con las entradas de AC-2 (TC-036) o de TC-034, el informe puede salir sin `Reportado por:` o sin el prefijo `no verificado` en la sección de seguridad. El resto son 11 observaciones `LOW` que no bloquean. Los cuatro informes son válidos.
+Ronda 2. El único bloqueante de la ronda 1 (`skills/story-code-review/SKILL.md:696`) está resuelto: `{{SECURITY_FINDINGS}}` recibe ahora las filas consolidadas de `$FINDINGS` de la dimensión `security`, con las mismas reglas que los otros placeholders del Paso 5b, y la prueba nueva lo fija. Los cuatro revisores aprueban y solo quedan observaciones LOW, la mayoría arrastradas de la ronda 1. Tres de ellas se repiten entre revisores (ver la nota de consolidación al final de Hallazgos).
 
 ## Resumen
 
 | Campo | Valor |
 |-------|-------|
 | Historia | STORY-182 — Verificación y deduplicación de hallazgos del árbitro |
-| Severidad máxima detectada | MEDIUM |
+| Severidad máxima detectada | LOW |
 | Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer, Security-Reviewer |
 | testcases.md | ✓ analizado (18 casos — UT:5/CT:0/IT:5/API:0/E2E:3/EV:5) |
-| Fecha | 2026-11-10 |
+| Fecha | 2026-11-11 |
 
 ---
 
@@ -38,10 +38,9 @@ El Tech-Lead-Reviewer y el Integration-Reviewer reportan el mismo defecto `MEDIU
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| MEDIUM    | skills/story-code-review/SKILL.md:696 | El Paso 5b quedó con dos instrucciones contradictorias para `{{SECURITY_FINDINGS}}`. La línea 693 (modificada por la historia) dice que cada dimensión recibe **solo** las filas consolidadas de `$FINDINGS`, con prefijo de estado y fusión (694-695). La línea 696, que no se actualizó, sigue diciendo «contenido de la sección "Hallazgos" de `security-report.md`», es decir, la tabla cruda. Como la línea 696 es la regla específica de la sección de seguridad, el árbitro puede seguirla a ella. Fallo: con la entrada de AC-2 / TC-036 (Security HIGH y Tech-Lead MEDIUM sobre `src/auth.js:42`, con Security como representante), el árbitro copia la tabla cruda de `security-report.md` → el hallazgo fusionado aparece sin `Reportado por:` y sin `**[bloqueante]**`, y `code-review-report.md` no cita a los dos revisores como exige AC-2. Además, un HIGH `no verificado` de seguridad (TC-034) aparece sin su prefijo, como si bloqueara. Reportado por: Tech-Lead-Reviewer, Integration-Reviewer | Reescribir la línea 696 así: «`{{SECURITY_FINDINGS}}`: las filas consolidadas de `$FINDINGS` de la dimensión `security` (Pasos 4a.3 y 4a.4, con el prefijo de estado y las reglas de fusionado de 694-695), precedidas por la línea `**Fuentes de checklist:** …`» |
-| LOW       | skills/story-code-review/evals/evals.json:1328 | La descripción de TC-034 atribuye la verificación al «Paso 4a.2», que tras CR-002 es la clasificación PREEXISTENTE. La de TC-036 (línea 1440) atribuye la fusión al «Paso 4a.3», que es la verificación. Las dos referencias quedaron desfasadas por la renumeración. Reportado por: Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer | Cambiar a «Paso 4a.3» en TC-034 y a «Paso 4a.4» en TC-036 |
-| LOW       | skills/story-code-review/agents/tech-lead-reviewer.agent.md:58 | Dos textos del agente prescriben `MEDIUM` para casos que casi nunca tienen un resultado erróneo observable: la «Disciplina de dependencias» (con texto fijo y sin `Fallo:`) y el `MEDIUM` de mantenibilidad de `## Formato de severidad` (línea 75). Con la nueva sección de evidencia, esos hallazgos quedarán siempre `no verificado`, así que el agente recibe instrucciones que se contradicen. Además, el ejemplo `examples/example-needs-changes-medium/tech-lead-report.md:14` justifica un hallazgo de responsabilidad múltiple con un `Fallo:` que describe otro defecto (el orden de validación). Así enseña a fabricar escenarios. Está relacionado con CR-001, pendiente de confirmar en aceptación | Al cerrar CR-001, alinear la línea 58 y la línea 75 con `## Evidencia de hallazgos bloqueantes`: exigir un `Fallo:` o degradar a `LOW` las dependencias y la mantenibilidad sin fallo observable. Usar en el ejemplo un `Fallo:` que se derive del propio hallazgo |
-| LOW       | test/story-code-review-evidence-dedup.test.js:19 | La aserción 6 recorre solo los `*-report.md` de `examples/`. Las filas `HIGH`/`MEDIUM` de `examples/*/fix-directives.md`, que también se migraron con `Fallo:`, no están cubiertas, y una regresión en ellas pasaría la prueba. Además, la expresión de `Archivo:Línea` válido de la aserción 2 acepta cualquier `x:N` en cualquier parte de la fila, no solo en la columna de ubicación | Añadir `fix-directives.md` a los archivos de la aserción 6 y validar la celda de ubicación con `isValidFileLine` en lugar de buscar en toda la fila |
+| LOW       | skills/story-code-review/evals/evals.json:1328 | Viene de la ronda 1 y sigue presente. La descripción de TC-034 atribuye la verificación al «Paso 4a.2», que es la clasificación PREEXISTENTE. La de TC-036 (línea 1440) atribuye la fusión al «Paso 4a.3», que es la verificación. Las dos referencias quedaron desfasadas por la renumeración de CR-002 | Cambiar a «Paso 4a.3» en TC-034 y a «Paso 4a.4» en TC-036, en una ronda en que `evals.json` esté en la lista blanca |
+| LOW       | skills/story-code-review/agents/tech-lead-reviewer.agent.md:58 | Viene de la ronda 1 y sigue presente. La «Disciplina de dependencias» (línea 58) y el `MEDIUM` de mantenibilidad de `## Formato de severidad` (línea 75) prescriben `MEDIUM` sin pedir un `Fallo:`. Con la sección `## Evidencia de hallazgos bloqueantes`, esos hallazgos quedarán `no verificado`. Depende de CR-001, pendiente de confirmar en `/story-acceptance` | Al cerrar CR-001, alinear las líneas 58 y 75 con la sección de evidencia: exigir `Fallo:` o degradar a `LOW` |
+| LOW       | test/story-code-review-evidence-dedup.test.js:19 | Viene de la ronda 1 y sigue presente. La aserción sobre `Fallo:` en los ejemplos recorre solo los `*-report.md` de `examples/` y no cubre las filas `HIGH`/`MEDIUM` de `examples/*/fix-directives.md`. Además, la aserción nueva del Paso 5b (líneas 107-114) solo rechaza la frase literal anterior, así que otra redacción que vuelva a la tabla cruda la pasaría si mantiene `$FINDINGS` en la línea | Incluir `fix-directives.md` en la aserción de ejemplos y, si se quiere más protección, rechazar cualquier mención de copiar la tabla de `security-report.md` en la línea de Seguridad |
 
 ---
 
@@ -49,11 +48,9 @@ El Tech-Lead-Reviewer y el Integration-Reviewer reportan el mismo defecto `MEDIU
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| LOW | skills/story-code-review/evals/evals.json:1440 | AC-2 exige que `fix-directives.md` muestre el duplicado una sola vez, pero TC-036 solo comprueba `1 hallazgo(s) bloqueante(s)` (el motivo del veredicto en `code-review-report.md`) y no comprueba el total de `fix-directives.md` (`**Total de hallazgos bloqueantes:** 1`, `assets/fix-directives-template.md:18`). La regla está especificada en `SKILL.md:626`; lo débil es la aserción. | Añadir a `expected.contains` de TC-036 `Total de hallazgos bloqueantes:** 1` (o una cadena equivalente de `fix-directives.md`) |
-| LOW | skills/story-code-review/SKILL.md:491-494 | Hay un caso límite de AC-1 combinado con AC-2 sin regla clara: un grupo fusionado con un `HIGH` `no verificado` y un `LOW` toma severidad `LOW` (L491) y estado `no verificado` (L494). Así queda un `LOW` con prefijo de estado, que el Paso 5b (L694) no prevé, y 4b (L504) no aclara si cuenta como `LOW`. No cambia el veredicto, que no bloquea en ningún caso. Reportado por: Product-Owner-Reviewer, Integration-Reviewer | Fijar una regla en L494: si la severidad del grupo es `LOW`, el fusionado no lleva estado; o tomar como severidad y estado los del representante; o no fusionar un `no verificado` con miembros que cuentan |
-| LOW | specs/flow/STORY-182-verificar-y-deduplicar-hallazgos/implement-report.md:1 | Los escenarios Gherkin AC-1 (los tres ejemplos), AC-2 y AC-3 tienen cada uno un eval con aserciones observables (TC-034/TC-035, TC-036, TC-037). La prueba unitaria solo fija el contrato textual (7/7 en verde). Los evals y los E2E-001..003 no se ejecutaron, lo que es correcto según AGENTS.md porque se ejecutan a criterio humano. Por ahora la cobertura de comportamiento está especificada pero no demostrada. | Ejecutar `npm run test:eval -- story-code-review` (al menos TC-034..TC-037 y los migrados) antes de `/story-acceptance` |
-
-_Fusionado en Calidad de Código: la referencia desfasada de `evals.json:1328` (Pasos 4a.2/4a.3)._
+| LOW | skills/story-code-review/evals/evals.json:1437-1490 | Arrastrado de la ronda 1, sin cambios (fuera de la lista blanca de la corrección). AC-2 exige que `fix-directives.md` muestre el duplicado una sola vez. TC-036 solo comprueba `1 hallazgo(s) bloqueante(s)`, que es el motivo del veredicto en `code-review-report.md`. No comprueba el total de `fix-directives.md` (`assets/fix-directives-template.md:18`). La regla está especificada en `SKILL.md:626`; lo débil es la aserción. | Añadir a `expected.contains` de TC-036 una cadena propia de `fix-directives.md`, p. ej. `Total de hallazgos bloqueantes:** 1` |
+| LOW | skills/story-code-review/SKILL.md:491-494 | Arrastrado de la ronda 1, sin cambios. Queda un caso límite de AC-1 combinado con AC-2: un grupo con un `HIGH` `no verificado` y un `LOW` toma severidad `LOW` (L491) y estado `no verificado` (L494). El resultado es un `LOW` con prefijo de estado, que L694 no prevé. No cambia el veredicto. | Fijar en L494 que un grupo de severidad `LOW` no lleva estado |
+| LOW | skills/story-code-review/evals/evals.json:1328 | Arrastrado de la ronda 1, sin cambios. La descripción de TC-034 cita el «Paso 4a.2» para la verificación, que es el 4a.3. La de TC-036 (L1440) cita el «Paso 4a.3» para la fusión, que es el 4a.4. Las referencias quedaron desfasadas por la renumeración de CR-002 y no afectan a la calificación del eval. | Cambiar a «Paso 4a.3» en TC-034 y a «Paso 4a.4» en TC-036 |
 
 ---
 
@@ -61,19 +58,23 @@ _Fusionado en Calidad de Código: la referencia desfasada de `evals.json:1328` (
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| LOW       | specs/flow/STORY-182-verificar-y-deduplicar-hallazgos/testcases.md:35 | UT-003 (línea 35) e IT-001 (línea 38) citan los Pasos 4a.2 y 4a.3, y D-3, D-4, D-9 y F-5 de design.md conservan esa numeración. Solo CR-002 recoge la que quedó (4a.3 y 4a.4). La prueba de contrato ya usa la numeración final. Reportado por: Integration-Reviewer, Product-Owner-Reviewer | Actualizar las referencias de testcases.md o remitir a CR-002 en sus notas de cobertura |
-
-_Fusionados en otras dimensiones: el `MEDIUM` de `SKILL.md:693-696` (en Calidad de Código), la referencia desfasada de `evals.json:1328` (en Calidad de Código) y el caso límite de `SKILL.md:491-494` (en Cobertura de Requisitos)._
+| LOW | skills/story-code-review/SKILL.md:693 | Ronda 2: el bloqueante de la ronda 1 está resuelto y los cuatro placeholders del Paso 5b cumplen I-9; la prueba nueva (`test/story-code-review-evidence-dedup.test.js:107-114`) pasa (8/8). Queda una ambigüedad menor. Desde el Paso 4a.3 (línea 464), `$FINDINGS` incluye las filas de las tablas de `testcases.md`. La línea 693 filtra solo por dimensión, no por `tabla de origen`, y la 699 vuelve a mostrar esas filas en `{{TESTCASES_COVERAGE_SECTION}}`. Por eso una fila de cobertura del Product-Owner puede aparecer en las dos secciones. No afecta a `max-severity`, al veredicto ni a `fix-directives.md`. | En la línea 693, limitar los placeholders de dimensión a las filas con `tabla de origen` = `## Hallazgos`; las de `testcases.md` van solo en `{{TESTCASES_COVERAGE_SECTION}}` (línea 699) |
+| LOW | skills/story-code-review/SKILL.md:491-494 | Arrastrado de la ronda 1, sin cambios (fuera de la lista blanca). Un grupo fusionado con un `HIGH` `no verificado` y un `LOW` toma severidad `LOW` (línea 491) y estado `no verificado` (línea 494). El resultado es un `LOW` con prefijo de estado, que el Paso 5b (línea 694) no prevé. No cambia el veredicto. | Fijar en la línea 494 que un grupo de severidad `LOW` no lleva estado, o no fusionar un `no verificado` con miembros que cuentan |
+| LOW | specs/flow/STORY-182-verificar-y-deduplicar-hallazgos/testcases.md:35 | Arrastrado de la ronda 1. UT-003 (línea 35) e IT-001 (línea 38) siguen citando los Pasos 4a.2/4a.3. Lo mismo hacen las descripciones de TC-034 y TC-036 (`skills/story-code-review/evals/evals.json:1328`, `:1440`). Tras CR-002 de design.md, la numeración final es 4a.3 (verificación) y 4a.4 (fusión). La prueba de contrato ya usa la numeración final. | Actualizar esas referencias a 4a.3/4a.4 o remitir a CR-002 |
 
 ---
 
 ### Seguridad (Security-Reviewer)
 
-**Fuentes de checklist:** docs/guardrails/gr-code-security-checklist.md, docs/guardrails/gr-ai-security-checklist.md, .claude/skills/security-audit/assets/security-checklist.md, .claude/skills/security-audit/assets/ai-security-checklist.md (63 reglas evaluadas)
+**Fuentes de checklist:** docs/guardrails/gr-code-security-checklist.md, docs/guardrails/gr-ai-security-checklist.md, .claude/skills/security-audit/assets/security-checklist.md (58 reglas evaluadas)
 
 | Severidad | Archivo:Línea | Regla | Descripción | Recomendación |
 |-----------|---------------|-------|-------------|---------------|
-| LOW | skills/story-code-review/SKILL.md:477 | gr-code-security-checklist (semántica: «A change that relaxes any control… states… what compensating control applies») | Un `HIGH` de seguridad sin `Fallo:` queda `no verificado` y no bloquea, aunque cite una regla `(error)` determinista del guardrail (p. ej. `sec-no-credential-literal`), que según `docs/guardrails/gr-code-security-checklist.md:18` «blocks delivery». design.md justifica la relajación y deja el hallazgo visible, pero no trata el caso de las reglas deterministas de seguridad, cuya evidencia es la coincidencia en archivo:línea y no un escenario en prosa. Fallo: Security-Reviewer reporta `HIGH` en `src/config.js:12` por `sec-no-credential-literal` y omite `Fallo:` → el veredicto es `APPROVED` con un secreto commiteado. Lo mitiga que `security-reviewer.agent.md:150` pide escribir `Fallo:`. | Endurecimiento opcional: en 4a.3, considerar suficiente como escenario un hallazgo de seguridad con `Archivo:Línea` válido y un rule-id `(error)` determinista, o anotar en design.md que esta relajación se aceptó a conciencia para la dimensión de seguridad. |
+| — | — | — | Sin hallazgos de seguridad | — |
+
+---
+
+**Nota de consolidación:** tres observaciones LOW se repiten entre revisores. Las referencias desfasadas a los Pasos 4a.2/4a.3 (`evals.json:1328`, `:1440`) las reportan Tech-Lead, Product-Owner e Integration. El caso límite de `SKILL.md:491-494` lo reportan Product-Owner e Integration. En cada caso es el mismo defecto y se corrige una sola vez.
 
 ---
 
@@ -89,10 +90,7 @@ _Fusionados en otras dimensiones: el `MEDIUM` de `SKILL.md:693-696` (en Calidad 
 
 | Severidad | AC / Escenario | Descripción | Recomendación |
 |-----------|----------------|-------------|---------------|
-| LOW | Checklist (specs/flow/STORY-182-verificar-y-deduplicar-hallazgos/testcases.md:64-85) | Las 18 entradas de «Test Cases Progress» siguen en `[ ]`, aunque `implement-report.md` documenta que UT-001..UT-005 e IT-005 pasaron (`node --test` 7/7, `npm test` 556/556). No hay entradas `[!]`. | Marcar `[x]` UT-001..UT-005 e IT-005; dejar EV/E2E en `[ ]` hasta ejecutarlos |
-| — | AC-1, AC-2, AC-3, CNF-1..3 | Todos los ACs tienen casos referenciados: AC-1 → UT-003, UT-004, IT-001, IT-002, IT-003, IT-004, EV-001, EV-002, E2E-001; AC-2 → UT-003, IT-001, IT-003, IT-004, EV-003, E2E-002; AC-3 → IT-004, EV-004, E2E-003. Cada escenario Gherkin tiene casos IT, EV y E2E. | — |
-
-_La desalineación de numeración de UT-003 e IT-001 se consolida en Integración y Arquitectura._
+| LOW | AC-1, AC-2, AC-3 (specs/flow/STORY-182-verificar-y-deduplicar-hallazgos/testcases.md:68-85) | Los tres ACs están cubiertos: AC-1 por UT-003, UT-004, IT-001..IT-004, EV-001, EV-002 y E2E-001; AC-2 por UT-003, IT-001, IT-003, IT-004, EV-003 y E2E-002; AC-3 por IT-004, EV-004 y E2E-003. Sin entradas `[!]`. Las 18 entradas del checklist «Test Cases Progress» siguen en `[ ]`, aunque UT-001..UT-005 e IT-005 pasan (8/8; `npm test` 558/558 según implement-report.md). | Marcar `[x]` UT-001..UT-005 e IT-005; dejar en `[ ]` los EV y E2E hasta ejecutarlos |
 
 **Trazabilidad de diseño en testcases.md (Integration-Reviewer):**
 
@@ -100,16 +98,13 @@ _La desalineación de numeración de UT-003 e IT-001 se consolida en Integració
 |-----------|--------------|-------------|---------------|
 | — | — | Trazabilidad de diseño correcta en testcases.md | — |
 
+Los evals TC-034..TC-037 y los E2E-001..003 no se ejecutaron (AGENTS.md: `npm run test:eval` es manual). La cobertura de comportamiento está especificada con aserciones observables, pero no demostrada.
+
 ---
 
 ## Siguiente acción
 
-Corregir el hallazgo bloqueante de `fix-directives.md` (ronda 1) con `/story-implement STORY-182` (alternativa, porque existe `tasks.md`: `/story-implement-tasks STORY-182`) y volver a ejecutar `/story-code-review STORY-182`. Conviene resolver en la misma ronda los `LOW` de numeración desfasada (`evals.json:1328`, `:1440`; `testcases.md:35`, `:38`), que no bloquean.
-
-Notas del árbitro:
-
-- Las copias instaladas en `.claude/skills/story-code-review/` (SKILL.md y los cuatro agentes) son anteriores a STORY-181 y STORY-182. Esta revisión se ejecutó con ellas, así que los revisores no recibieron la sección nueva `## Evidencia de hallazgos bloqueantes`. Aun así, los dos `MEDIUM` traen `Archivo:Línea` y `Fallo:`, así que también bloquearían con la regla nueva. Para revisar con las reglas nuevas, reinstala con `npx agile-sddf install`.
-- Los hallazgos repetidos entre revisores se muestran una vez, con `Reportado por:`, como propone esta historia.
+Ejecuta `/story-verify STORY-182`. Las observaciones LOW pueden corregirse de forma oportunista. CR-001 sigue pendiente de confirmar en `/story-acceptance`.
 
 ---
 
@@ -117,14 +112,14 @@ Notas del árbitro:
 
 | # | Criterio | Estado | Severidad | Evidencia |
 |---|----------|--------|-----------|-----------|
-| 1 | Se cumple [[dod-story-implement]] | ⚠️ | — | `implement-report.md`: 20/24 ✓, 4 ⚠️ (evals, CI y CHANGELOG requieren ejecución o se escriben en `/epic-ship`); el criterio «comportamiento coincide con design.md» lo contradice el hallazgo `MEDIUM` sobre I-9 |
-| 2 | Se cumplen los estándares del proyecto (`constitution.md`) | ✓ | — | Español, layout fijo, fuente única en `skills/`; sin BOM ni invisibles (Security-Reviewer y Tech-Lead-Reviewer) |
-| 3 | Cada escenario Gherkin tiene correspondencia en el código | ✓ | — | Product-Owner-Reviewer: AC-1 (tres ejemplos), AC-2 y AC-3 implementados en los Pasos 4a.3, 4a.4, 4b, 4c, 4e, 4f.2 y 5b, con TC-034..TC-037 |
-| 4 | Los componentes respetan la arquitectura de `design.md` | ❌ | MEDIUM | Integration-Reviewer: `SKILL.md:696` contradice I-9 (tablas consolidadas por dimensión) |
-| 5 | Sin hallazgo bloqueante de severidad HIGH o MEDIUM | ❌ | MEDIUM | 1 hallazgo `MEDIUM` verificado en `SKILL.md:693-696` |
+| 1 | Se cumple [[dod-story-implement]] | ⚠️ | — | `implement-report.md`: 20/24 ✓, 4 ⚠️ (evals, CI y CHANGELOG requieren ejecución o se escriben en `/epic-ship`); ningún hallazgo contradice ya «comportamiento coincide con design.md». Los ⚠️ requieren acceso a CI/CD |
+| 2 | Se cumplen los estándares del proyecto (`constitution.md`) | ✓ | — | Español, layout fijo, fuente única en `skills/`; sin BOM ni caracteres invisibles (Security-Reviewer) |
+| 3 | Cada escenario Gherkin tiene correspondencia en el código | ✓ | — | Product-Owner-Reviewer: AC-1 (tres ejemplos), AC-2 y AC-3 en los Pasos 4a.3, 4a.4, 4b, 4c, 4c.1, 4e, 4f.2 y 5b, con TC-034..TC-037 |
+| 4 | Los componentes respetan la arquitectura de `design.md` | ✓ | — | Integration-Reviewer: el Paso 5b cumple I-9; los Pasos son coherentes con D-1..D-9 e I-1..I-9 (renumeración CR-002) |
+| 5 | Sin hallazgo bloqueante de severidad HIGH o MEDIUM | ✓ | — | Los cuatro informes con `max-severity` LOW o `ninguna` |
 | 6 | Sin tareas pendientes en `tasks.md` (si existe el archivo) | ✓ | — | `tasks.md`: 25/25 `[x]` |
-| 7 | Metadatos frontmatter de `story.md` están completos y correctos con status y substatus actualizados | ✓ | — | `story.md` con id, slug, parent, status/substatus actualizados por este gate |
+| 7 | Metadatos frontmatter de `story.md` están completos y correctos con status y substatus actualizados | ✓ | — | `story.md` con id, slug, parent y `CODE-REVIEW/DONE` escrito por este gate |
 | 8 | El reporte de revisión de código (`code-review-report.md`) está creado o actualizado | ✓ | — | Este archivo |
-| 9 | Revisión de código aprobada (`verdict: APPROVED` en `code-review-report.md`) | ❌ | MEDIUM | `verdict: NEEDS-CHANGES` |
+| 9 | Revisión de código aprobada (`verdict: APPROVED` en `code-review-report.md`) | ✓ | — | `verdict: APPROVED` |
 
-**Resumen:** 5/9 criterios ✓ (1 ⚠️, 3 ❌; los tres ❌ derivan del mismo hallazgo y se resuelven al corregirlo)
+**Resumen:** 8/9 criterios ✓ (1 ⚠️, 0 ❌)
