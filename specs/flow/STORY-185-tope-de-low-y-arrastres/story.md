@@ -5,11 +5,11 @@ id: STORY-185
 kind: feat
 slug: STORY-185-tope-de-low-y-arrastres
 title: "Tope de LOW por revisor y sin arrastres entre rondas"
-status: READY-FOR-IMPLEMENT
+status: CODE-REVIEW
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-11
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-182-verificar-y-deduplicar-hallazgos

@@ -1,7 +1,7 @@
 {
   "skill": "story-code-review",
   "version": "1.1.0",
-  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo inicio desde IMPLEMENT/DONE, reanudacion desde CODE-REVIEW/IN-PROGRESS con informes temporales nuevos, veredictos APPROVED, NEEDS-CHANGES y BLOCKED, fix-directives.md numerado por ronda (campo round en el frontmatter: ronda previa + 1, escritor unico story-code-review; ausente o ilegible se trata como 0), ejecutor de correcciones nombrado en el mensaje de cierre (siempre /story-implement; /story-implement-tasks solo si existe tasks.md), ausencia total de escritura en tasks.md, limpieza del fix-directives.md previo al aprobar, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias y fallback del Security-Reviewer al baseline embebido, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
+  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo inicio desde IMPLEMENT/DONE, reanudacion desde CODE-REVIEW/IN-PROGRESS con informes temporales nuevos, veredictos APPROVED, NEEDS-CHANGES y BLOCKED, fix-directives.md numerado por ronda (campo round en el frontmatter: ronda previa + 1, escritor unico story-code-review; ausente o ilegible se trata como 0), ejecutor de correcciones nombrado en el mensaje de cierre (siempre /story-implement; /story-implement-tasks solo si existe tasks.md), ausencia total de escritura en tasks.md, limpieza del fix-directives.md previo al aprobar, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias, fallback del Security-Reviewer al baseline embebido, tope de LOW por revisor (Tope de Minor de REVIEW.md o 5 por defecto) y omision de LOW arrastrados entre rondas cuando existe el registro previo code-review-lows.json, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
   "cases": [
     {
       "id": "TC-001",
@@ -1860,6 +1860,481 @@
         "not_contains": [
           "(verdict: APPROVED)",
           "2 hallazgo(s) bloqueante(s)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-042",
+      "name": "tope-de-low-desde-review-md",
+      "type": "happy-path",
+      "description": "STORY-185 (AC-1 ejemplo 1, D-4, D-6) — REVIEW.md declara en «Tope de Minor» un máximo de 3 LOW por revisor. El Tech-Lead-Reviewer reporta 12 LOW en src/a.js:1 a src/a.js:12, ordenados por relevancia; los demás revisores no tienen hallazgos y no existe informe ni code-review-lows.json previos. El árbitro (Paso 4a.5) muestra solo los 3 primeros LOW, añade tras la tabla la nota de 9 LOW omitidos por el tope y la fila «Control de LOW»; max-severity sigue siendo LOW y el veredicto APPROVED.",
+      "input": {
+        "story_id": "STORY-230",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/a.js"
+        ],
+        "previous_code_review_report": false,
+        "low_ledger_present": false,
+        "review_md_present": true,
+        "review_md_low_cap": 3,
+        "tech_lead_findings": [
+          {
+            "severity": "LOW",
+            "file": "src/a.js:1",
+            "description": "Minor 1: nombre poco descriptivo en la línea 1."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:2",
+            "description": "Minor 2: nombre poco descriptivo en la línea 2."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:3",
+            "description": "Minor 3: nombre poco descriptivo en la línea 3."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:4",
+            "description": "Minor 4: nombre poco descriptivo en la línea 4."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:5",
+            "description": "Minor 5: nombre poco descriptivo en la línea 5."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:6",
+            "description": "Minor 6: nombre poco descriptivo en la línea 6."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:7",
+            "description": "Minor 7: nombre poco descriptivo en la línea 7."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:8",
+            "description": "Minor 8: nombre poco descriptivo en la línea 8."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:9",
+            "description": "Minor 9: nombre poco descriptivo en la línea 9."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:10",
+            "description": "Minor 10: nombre poco descriptivo en la línea 10."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:11",
+            "description": "Minor 11: nombre poco descriptivo en la línea 11."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:12",
+            "description": "Minor 12: nombre poco descriptivo en la línea 12."
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "LOW",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/a.js:3",
+          "9 LOW omitidos por el tope",
+          "tope 3",
+          "REVIEW.md",
+          "(verdict: APPROVED)",
+          "max-severity: LOW"
+        ],
+        "not_contains": [
+          "src/a.js:4 |",
+          "src/a.js:12",
+          "(verdict: NEEDS-CHANGES)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-043",
+      "name": "tope-por-defecto-review-md-sin-tope",
+      "type": "edge-case",
+      "description": "STORY-185 (AC-1 ejemplo 2, I-1) — REVIEW.md existe pero no declara un número en «Tope de Minor». El Tech-Lead-Reviewer reporta 12 LOW en src/a.js:1 a src/a.js:12. El árbitro usa el tope por defecto de 5, muestra los 5 primeros LOW, indica 7 LOW omitidos por el tope y atribuye el tope a «REVIEW.md sin tope declarado».",
+      "input": {
+        "story_id": "STORY-230",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/a.js"
+        ],
+        "previous_code_review_report": false,
+        "low_ledger_present": false,
+        "review_md_present": true,
+        "review_md_low_cap": null,
+        "tech_lead_findings": [
+          {
+            "severity": "LOW",
+            "file": "src/a.js:1",
+            "description": "Minor 1: nombre poco descriptivo en la línea 1."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:2",
+            "description": "Minor 2: nombre poco descriptivo en la línea 2."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:3",
+            "description": "Minor 3: nombre poco descriptivo en la línea 3."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:4",
+            "description": "Minor 4: nombre poco descriptivo en la línea 4."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:5",
+            "description": "Minor 5: nombre poco descriptivo en la línea 5."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:6",
+            "description": "Minor 6: nombre poco descriptivo en la línea 6."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:7",
+            "description": "Minor 7: nombre poco descriptivo en la línea 7."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:8",
+            "description": "Minor 8: nombre poco descriptivo en la línea 8."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:9",
+            "description": "Minor 9: nombre poco descriptivo en la línea 9."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:10",
+            "description": "Minor 10: nombre poco descriptivo en la línea 10."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:11",
+            "description": "Minor 11: nombre poco descriptivo en la línea 11."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:12",
+            "description": "Minor 12: nombre poco descriptivo en la línea 12."
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "LOW",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/a.js:5",
+          "7 LOW omitidos por el tope",
+          "tope 5",
+          "REVIEW.md sin tope declarado"
+        ],
+        "not_contains": [
+          "src/a.js:6 |",
+          "src/a.js:12"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-044",
+      "name": "tope-por-defecto-sin-review-md",
+      "type": "edge-case",
+      "description": "STORY-185 (AC-1 ejemplo 3, SMOKE-3, I-1) — No existe REVIEW.md en la raíz. El Tech-Lead-Reviewer reporta 12 LOW en src/a.js:1 a src/a.js:12. El árbitro aplica el tope por defecto de 5 con origen «sin REVIEW.md», muestra los 5 primeros LOW e indica 7 LOW omitidos; la falta de REVIEW.md no bloquea y el veredicto es APPROVED.",
+      "input": {
+        "story_id": "STORY-230",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/a.js"
+        ],
+        "previous_code_review_report": false,
+        "low_ledger_present": false,
+        "review_md_present": false,
+        "tech_lead_findings": [
+          {
+            "severity": "LOW",
+            "file": "src/a.js:1",
+            "description": "Minor 1: nombre poco descriptivo en la línea 1."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:2",
+            "description": "Minor 2: nombre poco descriptivo en la línea 2."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:3",
+            "description": "Minor 3: nombre poco descriptivo en la línea 3."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:4",
+            "description": "Minor 4: nombre poco descriptivo en la línea 4."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:5",
+            "description": "Minor 5: nombre poco descriptivo en la línea 5."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:6",
+            "description": "Minor 6: nombre poco descriptivo en la línea 6."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:7",
+            "description": "Minor 7: nombre poco descriptivo en la línea 7."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:8",
+            "description": "Minor 8: nombre poco descriptivo en la línea 8."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:9",
+            "description": "Minor 9: nombre poco descriptivo en la línea 9."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:10",
+            "description": "Minor 10: nombre poco descriptivo en la línea 10."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:11",
+            "description": "Minor 11: nombre poco descriptivo en la línea 11."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:12",
+            "description": "Minor 12: nombre poco descriptivo en la línea 12."
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "LOW",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/a.js:5",
+          "7 LOW omitidos por el tope",
+          "sin REVIEW.md",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "src/a.js:6 |",
+          "(verdict: BLOCKED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-045",
+      "name": "low-arrastrado-no-se-repite-high-si",
+      "type": "happy-path",
+      "description": "STORY-185 (AC-2 con registro previo, D-3, D-4) — Segunda ronda: la revisión anterior terminó en NEEDS-CHANGES (fix-directives.md con round: 1) y guardó code-review-lows.json. El Tech-Lead-Reviewer vuelve a reportar el LOW «nombre de variable poco descriptivo» en src/calc.js:10 y siguen pendientes un HIGH en src/calc.js:20 y un MEDIUM en src/calc.js:30, ambos con Archivo:Línea y escenario de fallo. El motor low-ledger.js compare devuelve la entrada L1 unchanged con overlaps [L1] para src/calc.js:10. El árbitro omite ese LOW por arrastre (nota «1 LOW arrastrado»), muestra el HIGH y el MEDIUM, emite NEEDS-CHANGES y escribe fix-directives.md con round: 2.",
+      "input": {
+        "story_id": "STORY-231",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "review_md_present": false,
+        "previous_code_review_report": true,
+        "low_ledger_present": true,
+        "existing_fix_directives": {
+          "round": 1
+        },
+        "low_ledger_engine": {
+          "ok": true,
+          "applied": true,
+          "reason": null,
+          "message": null,
+          "entries": [
+            {
+              "id": "L1",
+              "reviewer": "tech-lead-reviewer",
+              "location": "src/calc.js:10",
+              "description": "nombre de variable poco descriptivo",
+              "status": "unchanged",
+              "current": "src/calc.js:10"
+            }
+          ],
+          "locations": [
+            {
+              "location": "src/calc.js:10",
+              "overlaps": [
+                "L1"
+              ]
+            }
+          ]
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "HIGH",
+            "file": "src/calc.js:20",
+            "description": "La división no valida el divisor.",
+            "failure_scenario": "con divisor 0, calc(4, 0) devuelve Infinity en lugar de lanzar un error"
+          },
+          {
+            "severity": "MEDIUM",
+            "file": "src/calc.js:30",
+            "description": "El redondeo trunca los negativos.",
+            "failure_scenario": "con round(-1.5) devuelve -1 en lugar de -2"
+          },
+          {
+            "severity": "LOW",
+            "file": "src/calc.js:10",
+            "description": "nombre de variable poco descriptivo"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/calc.js:20",
+          "HIGH",
+          "src/calc.js:30",
+          "MEDIUM",
+          "1 LOW arrastrado",
+          "(verdict: NEEDS-CHANGES)",
+          "round: 2"
+        ],
+        "not_contains": [
+          "nombre de variable poco descriptivo",
+          "(verdict: APPROVED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-046",
+      "name": "low-en-linea-cambiada-se-muestra",
+      "type": "edge-case",
+      "description": "STORY-185 (AC-2, invariante de D-3) — Segunda ronda con code-review-lows.json previo. El Tech-Lead-Reviewer reporta el LOW «nombre de variable poco descriptivo» en src/calc.js:10, pero el rework cambió esa línea: el motor low-ledger.js compare devuelve L1 changed con current null y overlaps vacío. El árbitro no lo omite por arrastre: el LOW se muestra, sujeto al tope, y el veredicto es APPROVED.",
+      "input": {
+        "story_id": "STORY-231",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "review_md_present": false,
+        "previous_code_review_report": true,
+        "low_ledger_present": true,
+        "existing_fix_directives": {
+          "round": 1
+        },
+        "low_ledger_engine": {
+          "ok": true,
+          "applied": true,
+          "reason": null,
+          "message": null,
+          "entries": [
+            {
+              "id": "L1",
+              "reviewer": "tech-lead-reviewer",
+              "location": "src/calc.js:10",
+              "description": "nombre de variable poco descriptivo",
+              "status": "changed",
+              "current": null
+            }
+          ],
+          "locations": [
+            {
+              "location": "src/calc.js:10",
+              "overlaps": []
+            }
+          ]
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "LOW",
+            "file": "src/calc.js:10",
+            "description": "nombre de variable poco descriptivo"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "LOW",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/calc.js:10",
+          "nombre de variable poco descriptivo",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "1 LOW arrastrado"
         ]
       },
       "threshold": 0.9

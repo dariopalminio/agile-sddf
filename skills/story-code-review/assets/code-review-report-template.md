@@ -30,6 +30,7 @@ reviewers:
 | testcases.md | {{TESTCASES_STATUS}} |
 | Guía de revisión | {{REVIEW_STATUS}} |
 | Hallazgos preexistentes | {{PREEXISTING_STATUS}} |
+| Control de LOW | {{LOW_NOISE_STATUS}} |
 | Fecha | {{DATE}} |
 
 ---

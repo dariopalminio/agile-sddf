@@ -27,6 +27,7 @@ Quality gate formal entre la implementación y la marca final de Done. Compatibl
 - Lanza cuatro subagentes revisores en paralelo con responsabilidades exclusivas
 - Consolida los informes parciales y calcula la severidad máxima
 - Clasifica como **PREEXISTENTE** (🟣, ADR-0021) los defectos en líneas que la historia no tocó: se informan en su dimensión, pero no cuentan para `max-severity`, el veredicto ni `fix-directives.md`. Sin evidencia de git (Paso 4a.2), ningún hallazgo es PREEXISTENTE
+- Controla el ruido de los `LOW` (Paso 4a.5): muestra como máximo el «Tope de Minor» de `REVIEW.md` (5 por defecto) por revisor y, si la revisión anterior guardó `code-review-lows.json`, omite los `LOW` que se repiten sobre líneas cuyo contenido no cambió. Los `HIGH`/`MEDIUM` se muestran siempre
 - **Si `APPROVED`**: genera `code-review-report.md`, elimina `fix-directives.md` (si existe) y marca `story.md` como `CODE-REVIEW/DONE`
 - **Si `NEEDS-CHANGES`**: genera `fix-directives.md` con `round: N` (ronda previa + 1), retrocede `story.md` a `READY-FOR-IMPLEMENT/DONE` y nombra al ejecutor de correcciones (`/story-implement`; `/story-implement-tasks` como alternativa si existe `tasks.md`)
 - **Si `BLOCKED`**: genera el reporte, identifica a los revisores sin informe válido y deja `story.md` en `IMPLEMENT/DONE` para repetir la revisión; no genera `fix-directives.md`
@@ -60,6 +61,7 @@ testcases.md          → Spec: tabla canónica de casos de prueba por tipo     
 implement-report.md   → Done: código generado, archivos, estado por tarea              [Opcional]
 code-review-report.md → Review: veredicto y hallazgos por dimensión  ← aquí
 fix-directives.md     → Rework: instrucciones de corrección + ronda (señal de rework)  ← aquí (solo NEEDS-CHANGES)
+code-review-lows.json → Registro de huellas de los LOW de la última ronda (motor low-ledger.js)  ← aquí
 ```
 
 ---
@@ -78,6 +80,8 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 | `constitution.md` | Opcional | Mejora la revisión pero no la bloquea si no existe |
 | DoD de la etapa `code-review` (`dod-story-code-review.md`) | Opcional | Mismo caso que `constitution.md` |
 | `REVIEW.md` | Opcional | Guía de revisión del proyecto en la raíz: calibra qué se reporta y con qué severidad (ADR-0021). Si no existe, el skill advierte y revisa como antes |
+| `code-review-lows.json` | Opcional | Registro de huellas de los `LOW` que escribió la revisión anterior (Paso 5c). Si existe, el Paso 4a.5 omite los `LOW` arrastrados sobre líneas sin cambios; si no existe, ningún `LOW` se omite por arrastre |
+| `code-review-report.md` anterior | Opcional | Solo distingue una primera revisión de un informe legado sin registro (Paso 4a.5): con informe anterior y sin `code-review-lows.json`, el arrastre queda «no comprobado». No se extraen huellas ni código de él |
 
 > Para actualizar esta lista en el futuro, editar únicamente esta sección sin modificar el cuerpo del Paso 1.
 
@@ -103,6 +107,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 
 - Agentes locales: [`agents/tech-lead-reviewer.agent.md`, `agents/product-owner-reviewer.agent.md`, `agents/integration-reviewer.agent.md`, `agents/security-reviewer.agent.md`]
 - Motor de líneas tocadas: `scripts/touched-lines.js` (Node ≥ 18, sin dependencias). git es opcional: sin git, fuera de un repositorio o en la rama principal, la clasificación PREEXISTENTE no se aplica y la revisión continúa (Paso 4a.2)
+- Motor de huellas de LOW: `scripts/low-ledger.js` (Node ≥ 18, sin dependencias, sin git). Compara el registro `code-review-lows.json` de la ronda anterior con el working tree (Paso 4a.5) y escribe el de esta ronda (Paso 5c). Sin el motor o sin `node`, el tope sigue aplicándose y el arrastre queda «no comprobado»
 
 ---
 
@@ -162,7 +167,7 @@ Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
 work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
 El layout no es configurable (ADR-0016).
 
-Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para localizar el motor; nunca lo derives de `REPO_ROOT`.
+Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para localizar los motores (`touched-lines.js`, `low-ledger.js`); nunca lo derives de `REPO_ROOT`.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -497,11 +502,43 @@ Registrar `$MERGED_COUNT` (número de grupos fusionados).
 
 Ejemplos: `src/auth.js:42` y `src/auth.js:40-45`, ambos «falta validar el token» → se fusionan. `src/auth.js:42` y `src/auth.js:90` → no son candidatos. `src/auth.js:42` «falta validar el token» y `src/auth.js:42` «nombre de variable engañoso» → candidatos con correcciones distintas → no se fusionan.
 
+#### 4a.5. Control de ruido de LOW
+
+Último sub-paso de 4a: actúa después de «No reportar», PREEXISTENTE, la verificación y la fusión, para que una fila fusionada cuente una vez. **Alcance:** solo las filas `LOW` de `$FINDINGS` de informes válidos, incluidas las `🟣 PREEXISTENTE (LOW)`. Nunca toca `HIGH`, `MEDIUM` (tampoco los `no verificado`) ni filas `DoD-CODE-REVIEW`: esos se muestran siempre, también en una ronda posterior aunque sus líneas no hayan cambiado.
+
+Cada fila `LOW` recibe una marca interna: `visible`, `omitido-por-tope` u `omitido-por-arrastre`. Las filas omitidas siguen en `$FINDINGS`: cuentan para la severidad efectiva (4b) y para el DoD (4c.1) y solo desaparecen de las tablas del informe (Paso 5b).
+
+**Fase 1 — Tope.** Resolver `$LOW_CAP` y `$LOW_CAP_SOURCE`:
+- Si `$REVIEW_PATH` no está vacío y la sección de `REVIEW.md` cuyo encabezado `##` empieza por «Tope de Minor» tiene una línea con «Máximo» seguida de un entero `N ≥ 0` (admite `**`, `[` y `]` alrededor, p. ej. `Máximo **[3]**`): `$LOW_CAP = N` y `$LOW_CAP_SOURCE = REVIEW.md`.
+- Si `REVIEW.md` existe pero no tiene esa sección, ni esa línea, o el número es ilegible (p. ej. `Máximo **cinco**`): `$LOW_CAP = 5` y `$LOW_CAP_SOURCE = por defecto (REVIEW.md sin tope declarado)`.
+- Si `$REVIEW_PATH` está vacío: `$LOW_CAP = 5` y `$LOW_CAP_SOURCE = por defecto (sin REVIEW.md)`.
+
+**Fase 2 — Arrastre.** Antes de sobrescribir el informe (Paso 5), comprobar si existen `$STORY_DIR/code-review-report.md` (informe anterior) y `$STORY_DIR/code-review-lows.json` (registro de la revisión anterior). Registrar `$CARRYOVER_CHECK` (`applied` | `none` | `unavailable`) y `$CARRYOVER_REASON` (cadena vacía o el motivo):
+- **Sin registro ni informe anterior** (primera revisión): `$CARRYOVER_CHECK = none`. Ningún `LOW` se omite por arrastre.
+- **Con informe anterior pero sin `code-review-lows.json`** (informe legado sin registro): `$CARRYOVER_CHECK = unavailable` y `$CARRYOVER_REASON = no existe code-review-lows.json de la revisión anterior` (`no-ledger`): el arrastre queda **no comprobado**. Ningún `LOW` se omite por arrastre; todos pasan al tope. No extraer código ni huellas del informe anterior ni inferirlas del working tree: el informe solo identifica el caso legado. El Paso 5c crea el registro de esta ronda para la próxima.
+- **Con registro:** escribir como arreglo JSON de cadenas el `Archivo:Línea` de cada fila `LOW` del alcance en `.tmp/story-code-review/{story_id}/low-locations.json` y ejecutar:
+  ```
+  node <CLI_ROOT>/skills/story-code-review/scripts/low-ledger.js compare --repo-root <REPO_ROOT> --ledger <$STORY_DIR>/code-review-lows.json --locations .tmp/story-code-review/{story_id}/low-locations.json
+  ```
+  El motor no usa git ni escribe archivos. Devuelve un único objeto JSON `{ ok, applied, reason, message, entries: [ { id, reviewer, location, description, status, current } ], locations: [ { location, overlaps: [ <id> ] } ] }`, con `status` ∈ {`unchanged`, `moved`, `changed`, `unknown`}; nunca da `unchanged` ni `moved` sin una única coincidencia exacta de la huella de contenido.
+  - **Validar la salida completa** antes de usarla: `ok: true`, `applied` booleano, `reason`/`message` presentes, cada `entries[]` con `id`, `status` y `current`, y cada `locations[]` con `overlaps` (arreglo). Si el motor o `node` no se encuentran, el exit no es `0` o la salida no cumple ese contrato: `$CARRYOVER_CHECK = unavailable` y `$CARRYOVER_REASON = no se encontró el motor low-ledger.js o node` (`engine-unavailable`). Nunca inferir solapamientos de una salida incompleta.
+  - Si `applied: false` (`no-ledger` o `invalid-ledger`): `$CARRYOVER_CHECK = unavailable` y `$CARRYOVER_REASON` = el `message` del motor.
+  - En los dos casos anteriores, ningún `LOW` se omite por arrastre.
+  - Si `applied: true`: `$CARRYOVER_CHECK = applied`. Una fila `LOW` es `omitido-por-arrastre` solo si su ubicación tiene en `overlaps` una entrada con `status` `unchanged` o `moved` **y** la `description` de esa entrada designa el mismo defecto que la fila. Registrar en la fila el `current` de esa entrada (el Paso 5c lo usa). Un `LOW` sin `Archivo:Línea` válido nunca se omite por arrastre. **Regla de duda:** ante la duda de si es el mismo defecto, la fila se muestra (la misma regla de 4c.1): el error posible es repetir un Minor, nunca ocultar uno de una línea que cambió.
+
+**Fase 3 — Corte.** Para cada revisor, recorrer sus filas `LOW` en el orden de su informe (primero la tabla de `## Hallazgos` y después las de `testcases.md`), sin contar las `omitido-por-arrastre`: las primeras `$LOW_CAP` quedan `visible` y el resto `omitido-por-tope`. Una fila fusionada (Paso 4a.4) cuenta para el revisor que la representa. Un `LOW` sin ubicación comparable se muestra si cabe en el tope. Los arrastrados no consumen cupo ni cuentan como omitidos por tope.
+
+El arrastre va antes del corte para que el cupo se reparta entre `LOW` nuevos: en una segunda ronda con los mismos 12 Minor, se ven los que no se vieron en la primera.
+
+Registrar `$LOW_OMITTED`: por revisor, `(revisor, omitidos por tope, omitidos por arrastre)`.
+
 #### 4b. Calcular severidad máxima
 
 Para cada informe válido de agente, calcular su severidad efectiva:
 - Si los Pasos 4a.1 a 4a.4 no apartaron ni cambiaron ninguno de sus hallazgos (ni excluido por «No reportar», ni PREEXISTENTE, ni `no verificado`, ni fusionado): el campo `max-severity` de su frontmatter.
 - Si apartaron o cambiaron alguno: la máxima severidad de los hallazgos que cuentan (`bloqueante` y `LOW`; un fusionado cuenta solo en el informe de su representante, con la severidad del grupo), o `ninguna` si no queda ninguno.
+
+Las filas `omitido-por-tope` y `omitido-por-arrastre` del Paso 4a.5 no apartan ni cambian ningún hallazgo: siguen contando aquí como `LOW`, así que `$MAX_SEVERITY` conserva su significado (máxima severidad detectada) y no cambia por ellas.
 
 Con `$PREEXISTING_CHECK = unavailable`, sin exclusiones de 4a.1, sin `no verificado` y sin fusiones, el cálculo es el de siempre. PREEXISTENTE no es un valor de `max-severity`, que sigue siendo `HIGH`, `MEDIUM`, `LOW` o `ninguna`.
 
@@ -547,6 +584,8 @@ Registrar internamente:
 | Metadatos frontmatter de `story.md` están completos y correctos | propia | campos y coherencia del frontmatter de `story.md` | `MEDIUM` |
 
 La tabla y el DoD del repositorio y de la plantilla de `sddf-constitution` los mantiene alineados `test/dod-story-code-review.test.js`: al cambiar un criterio, cambiar su fila.
+
+Los `LOW` omitidos por tope o por arrastre (Paso 4a.5) siguen en `$FINDINGS` y se evalúan como cualquier `LOW`: la omisión solo cambia qué se muestra, nunca `$MAX_SEVERITY` ni `$VERDICT`.
 
 **Hallazgos que cuentan de un revisor:** los hallazgos de `$FINDINGS` de su informe válido con estado `bloqueante` (Paso 4a.3): nunca los excluidos por «No reportar» (Paso 4a.1), los PREEXISTENTE (Paso 4a.2) ni los `no verificado` (Paso 4a.3). Un hallazgo fusionado (Paso 4a.4) cuenta para cada revisor que cita en `Reportado por:`.
 
@@ -717,9 +756,15 @@ Completar el template con:
     - `applied` y `$PREEXISTING` vacío: `✓ clasificación aplicada (base: <$PREEXISTING_BASE>) — sin hallazgos PREEXISTENTE`
     - `applied` y `$PREEXISTING` con N: `🟣 <N> hallazgo(s) PREEXISTENTE (base: <$PREEXISTING_BASE>): <Archivo:Línea (revisor, severidad)>, … — no cuentan para max-severity ni para fix-directives.md`
     - `unavailable`: `⚠️ clasificación PREEXISTENTE no aplicada: <$PREEXISTING_REASON> — los hallazgos conservan su severidad`
+  - `{{LOW_NOISE_STATUS}}` (fila `Control de LOW`), según el Paso 4a.5: la parte del tope y la del arrastre separadas por ` · `:
+    - Tope (siempre): `tope <$LOW_CAP> LOW por revisor (<$LOW_CAP_SOURCE>)`, seguido de `: <K> omitidos (<Revisor> <k>, …)` si se omitió alguno por tope
+    - Arrastre `none`: `sin ronda anterior registrada`
+    - Arrastre `applied`: `<M> LOW arrastrados de la ronda anterior omitidos (líneas sin cambios)`
+    - Arrastre `unavailable`: `⚠️ arrastre no comprobado: <$CARRYOVER_REASON> — no se omiten LOW por arrastre; se aplica el tope`
 - Sección Hallazgos por dimensión: insertar en `{{TECH_LEAD_FINDINGS}}`, `{{PRODUCT_OWNER_FINDINGS}}`, `{{INTEGRATION_FINDINGS}}` y `{{SECURITY_FINDINGS}}` **solo** las filas consolidadas de `$FINDINGS` de su dimensión (Pasos 4a.3 y 4a.4), con las columnas de la tabla de `## Hallazgos` del informe parcial, sin las filas excluidas en el Paso 4a.1 (quedan listadas en `{{REVIEW_STATUS}}`); nunca copiar su frontmatter ni `## Veredicto`.
   - **Prefijo de estado** al inicio de `Descripción`: `**[bloqueante]** ` para un bloqueante; `**[no verificado — falta Archivo:Línea]** `, `**[no verificado — falta escenario de fallo]** ` o `**[no verificado — falta Archivo:Línea y escenario de fallo]** ` para un `no verificado`, que conserva su severidad en `Severidad`. Los `LOW` y los PREEXISTENTE no llevan prefijo de estado.
   - **Fusionado:** una sola fila, en la dimensión de su representante, con `Reportado por: …` al final de `Descripción`; su fila se quita de las tablas de los demás miembros. Si una tabla queda sin filas, lleva la fila de vacío del agente con el texto `Sin hallazgos propios: <N> fusionado(s) en <dimensión del representante>`. En la fila de cada hallazgo de `$PREEXISTING`, reescribir la celda `Severidad` como `🟣 PREEXISTENTE (<severidad original>)` (p. ej. `🟣 PREEXISTENTE (MEDIUM)`): el hallazgo sigue en la dimensión que lo reportó. Para un revisor bloqueado, indicar `⚠️ Informe no disponible o frontmatter inválido: <revisor>` en su dimensión.
+  - **LOW omitidos (Paso 4a.5):** la tabla de cada revisor se inserta **sin** sus filas `omitido-por-tope` ni `omitido-por-arrastre`. Si omitió alguna, añadir tras la tabla la línea `ℹ️ <K> LOW omitidos por el tope (tope <$LOW_CAP>, <$LOW_CAP_SOURCE>) · <M> LOW arrastrados de la ronda anterior (líneas sin cambios), omitidos.`, sin la parte cuyo recuento es 0. Si todas las filas de una tabla quedan omitidas, la tabla conserva la fila `| — | — | Sin hallazgos visibles (ver nota) | — |`. Los `LOW` omitidos no se listan en ninguna otra parte del informe.
 - Sección `### Seguridad (Security-Reviewer)` — `{{SECURITY_FINDINGS}}`: las filas consolidadas de `$FINDINGS` de la dimensión `security` (Pasos 4a.3 y 4a.4), con las mismas reglas que los demás placeholders de la sección Hallazgos por dimensión (prefijo de estado, fusionados, filas excluidas en el Paso 4a.1 y PREEXISTENTE), precedidas por una línea `**Fuentes de checklist:** <checklist-sources> (<rules-evaluated> reglas evaluadas)` con los valores leídos en el Paso 4a
 - Sección `### Cobertura de Casos de Prueba (testcases.md)` — `{{TESTCASES_COVERAGE_SECTION}}`:
   - **Si `$TESTCASES_AVAILABLE = false`:** `⏭️ testcases.md no encontrado — análisis de cobertura omitido. Considera ejecutar /story-testcases para generar la especificación canónica de pruebas.`
@@ -736,6 +781,20 @@ Mostrar:
 ```
 📄 Reporte generado: <ruta>/code-review-report.md (verdict: <VERDICT>)
 ```
+
+#### 5c. Registrar los LOW de esta ronda
+
+Tras guardar `code-review-report.md`, con cualquier veredicto (`APPROVED`, `NEEDS-CHANGES` o `BLOCKED`), escribir en `.tmp/story-code-review/{story_id}/low-lows.json` un arreglo JSON de `{ reviewer, location, description }` con las filas `LOW` `visible` y las `omitido-por-arrastre` de esta ronda; estas últimas con la ubicación `current` que dio `compare` en el Paso 4a.5. Las `omitido-por-tope` **no** se registran: el informe no las mostró, así que no cuentan como ya vistas y pueden aparecer en la ronda siguiente. Ejecutar:
+
+```
+node <CLI_ROOT>/skills/story-code-review/scripts/low-ledger.js record --repo-root <REPO_ROOT> --lows .tmp/story-code-review/{story_id}/low-lows.json --out <$STORY_DIR>/code-review-lows.json
+```
+
+El motor calcula la huella de cada ubicación y reemplaza `code-review-lows.json` completo; las ubicaciones sin `Archivo:Línea` válido, de archivos inexistentes o fuera del archivo las devuelve en `skipped` y no se registran (no se omitirán por arrastre en la próxima ronda). Solo el motor escribe el registro: nunca copiar huellas a mano. El registro se conserva con la historia (no se borra al aprobar).
+
+En el caso legado (informe anterior sin registro), esta ronda crea el primer registro: sus huellas son las del código actual y solo sirven para comparar en la próxima revisión, nunca como prueba retroactiva de que una línea anterior siguió igual.
+
+Si el motor o `node` no se encuentran, o el exit no es `0`, emitir `⚠️ No se pudo escribir code-review-lows.json — la próxima ronda mostrará de nuevo estos LOW` y continuar: el informe y el veredicto ya están escritos y no cambian.
 
 ---
 
@@ -774,6 +833,7 @@ Mostrar:
  📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
+ LOW omitidos:     <K> por tope · <M> arrastrados | <K> por tope · ⚠️ arrastre no comprobado — <$CARRYOVER_REASON>
  Preexistentes:    <N> (no cuentan) | ⚠️ no aplicado — <$PREEXISTING_REASON>
  Veredicto:       APPROVED
 ─────────────────────────────────────────────────────────────────────
@@ -803,6 +863,7 @@ O si hay hallazgos criticos:
  📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
+ LOW omitidos:     <K> por tope · <M> arrastrados | <K> por tope · ⚠️ arrastre no comprobado — <$CARRYOVER_REASON>
  Preexistentes:    <N> (no cuentan) | ⚠️ no aplicado — <$PREEXISTING_REASON>
  Veredicto:       NEEDS-CHANGES
 ─────────────────────────────────────────────────────────────────────
@@ -841,6 +902,11 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | `$IMPL_FILES` vacío al detectar cambios en las reglas (Paso 2d.2) | `⚠️ No se pudo comprobar si la historia modifica REVIEW.md o el DoD CODE-REVIEW …` | Anotar en consola y en `{{REVIEW_STATUS}}` y continuar |
 | Líneas tocadas no determinables: git ausente, no es repositorio, HEAD separado, sin rama principal, en la rama principal o sin ancestro común (Paso 4a.2) | `⚠️ clasificación PREEXISTENTE no aplicada: <motivo>` | Continuar sin clasificar; los hallazgos conservan su severidad. Anotar el motivo en `{{PREEXISTING_STATUS}}` |
 | Motor `touched-lines.js` o `node` no encontrados, o salida ilegible (Paso 4a.2) | `⚠️ clasificación PREEXISTENTE no aplicada: no se encontró el motor touched-lines.js o node` | Continuar sin clasificar; los hallazgos conservan su severidad. Reinstalar el paquete corrige una copia instalada sin el motor |
+| Informe anterior sin `code-review-lows.json` (informe legado, Paso 4a.5) | `⚠️ arrastre no comprobado: no existe code-review-lows.json de la revisión anterior — no se omiten LOW por arrastre; se aplica el tope` | Mostrar los `LOW` sujetos al tope, sin comparación retroactiva; el Paso 5c crea el registro para la próxima ronda |
+| `code-review-lows.json` ilegible o de una versión desconocida (Paso 4a.5) | `⚠️ arrastre no comprobado: code-review-lows.json ilegible o de una versión desconocida — …` | Ningún `LOW` se omite por arrastre; el Paso 5c lo reemplaza por uno válido |
+| Motor `low-ledger.js` o `node` no encontrados, exit distinto de `0` o salida incompleta (Paso 4a.5) | `⚠️ arrastre no comprobado: no se encontró el motor low-ledger.js o node — …` | Ningún `LOW` se omite por arrastre; el tope se sigue aplicando. Reinstalar el paquete corrige una copia instalada sin el motor |
+| `record` falla o el motor no está (Paso 5c) | `⚠️ No se pudo escribir code-review-lows.json — la próxima ronda mostrará de nuevo estos LOW` | Continuar: el informe y el veredicto no cambian |
+| «Tope de Minor» de `REVIEW.md` ausente o ilegible (Paso 4a.5) | — (`tope 5 LOW por revisor (por defecto (REVIEW.md sin tope declarado))` en `Control de LOW`) | Usar el tope por defecto de 5 y continuar |
 | Informe de revisor ausente o con frontmatter inválido, sin otros hallazgos bloqueantes | `Veredicto: BLOCKED` con el nombre del revisor | Generar reporte y restaurar `IMPLEMENT/DONE`; no generar `fix-directives.md` |
 | Hallazgo `HIGH`/`MEDIUM` sin `Archivo:Línea` válido o sin escenario de fallo (Paso 4a.3) | — (prefijo `**[no verificado — <motivo>]**` en el informe) | Marcarlo `no verificado`: figura en el informe con su severidad original, pero no cuenta para `max-severity`, el veredicto ni `fix-directives.md`; se cuenta en `{{DECISION_RATIONALE}}` |
 | Duda sobre si dos hallazgos piden la misma corrección (Paso 4a.4) | — | No fusionarlos: quedan como hallazgos separados |
@@ -856,6 +922,8 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 |-----------|-----------|
 | `specs/flow/<STORY-NNN>-<slug>/code-review-report.md` | Siempre |
 | `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` | Solo si `NEEDS-CHANGES`; incluye `round` (escritor único: este skill); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Se elimina en `APPROVED` |
+| `specs/flow/<STORY-NNN>-<slug>/code-review-lows.json` | Se intenta escribir en cada ronda con el motor `low-ledger.js` (Paso 5c), con cualquier veredicto; se conserva cuando tiene éxito y se archiva con la historia. Es JSON sin frontmatter: lo escribe solo el motor |
+| `.tmp/story-code-review/{story_id}/low-locations.json` y `low-lows.json` | Temporal (entrada de los Pasos 4a.5 y 5c) |
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/integration-report.md` | Temporal (intermedio) |

@@ -198,6 +198,7 @@ y emitir `max-severity: ninguna` con `rules-evaluated: 0`.
 **Reglas:**
 - `status: approved` si `max-severity ∈ {LOW, ninguna}`
 - `status: needs-changes` si `max-severity ∈ {HIGH, MEDIUM}`
+- Ordena las filas de cada tabla de hallazgos por severidad (`HIGH`, `MEDIUM`, `LOW`) y, dentro de una misma severidad, de más a menos relevante: el árbitro conserva los primeros `LOW` hasta el tope.
 - No invocar ningún skill — los checklists de skills instalados solo se **leen**
 - No ejecutar el código auditado ni comandos que resuelvan el alcance por tu cuenta
 - No escribir nada fuera del archivo `.tmp/story-code-review/{story_id}/security-report.md`

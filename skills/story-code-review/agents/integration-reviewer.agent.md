@@ -148,6 +148,7 @@ Si `$IMPL_REPORT_AVAILABLE = false`, agregar nota al inicio de la sección de ha
 **Reglas:**
 - `status: approved` si `max-severity ∈ {LOW, ninguna}`
 - `status: needs-changes` si `max-severity ∈ {HIGH, MEDIUM}`
+- Ordena las filas de cada tabla de hallazgos por severidad (`HIGH`, `MEDIUM`, `LOW`) y, dentro de una misma severidad, de más a menos relevante: el árbitro conserva los primeros `LOW` hasta el tope.
 - La severidad máxima considera hallazgos de ambas secciones (conformidad + trazabilidad)
 - No escribir nada fuera del archivo `.tmp/story-code-review/{story_id}/integration-report.md`
 - Si `$STORY_ID` falta o está vacío: no escribas ningún archivo, no crees el directorio de salida y devuelve el control al orquestador

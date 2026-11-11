@@ -16,6 +16,8 @@ Los hallazgos en líneas que la historia no tocó se informan como PREEXISTENTE 
 
 El árbitro no cuenta un hallazgo `HIGH`/`MEDIUM` sin `Archivo:Línea` y escenario de fallo concreto: lo marca `no verificado` y lo deja visible sin bloquear. Si varios revisores reportan el mismo defecto, lo fusiona en un solo hallazgo con la severidad mayor y lo cita con `Reportado por:`.
 
+Para que el informe conserve señal, el árbitro muestra como máximo el «Tope de Minor» de `REVIEW.md` (5 `LOW` por revisor por defecto) y dice cuántos omitió. Al cerrar cada ronda, el motor `scripts/low-ledger.js` guarda las huellas de los `LOW` mostrados en `code-review-lows.json`; en la ronda siguiente, los `LOW` que se repiten sobre líneas cuyo contenido no cambió no se vuelven a mostrar. Sin ese registro (informe legado), el informe avisa «arrastre no comprobado». Los `HIGH`/`MEDIUM` se muestran siempre.
+
 **Produces:**
 
 - `<directorio-historia>/code-review-report.md` en todas las ejecuciones válidas.
