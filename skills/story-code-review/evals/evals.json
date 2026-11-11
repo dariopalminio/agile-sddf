@@ -60,7 +60,8 @@
               "file_line": "src/auth.ts:42",
               "dimension": "code-quality",
               "severity": "HIGH",
-              "finding": "API key hardcodeada en el codigo fuente",
+              "finding": "API key hardcodeada en el codigo fuente. Fallo: repositorio publicado con src/auth.ts → cualquiera que lo lea obtiene la API key y llama a la API con credenciales de produccion",
+              "failure_scenario": "repositorio publicado con src/auth.ts → cualquiera que lo lea obtiene la API key y llama a la API con credenciales de produccion",
               "action": "Mover a variable de entorno process.env.API_KEY"
             }
           ],
@@ -171,7 +172,8 @@
               "file_line": "src/orders/list.ts:55",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Consulta a base de datos ejecutada dentro de un loop sobre la lista de pedidos (riesgo N+1)",
+              "finding": "Consulta a base de datos ejecutada dentro de un loop sobre la lista de pedidos (riesgo N+1). Fallo: lista de 1000 pedidos → el endpoint ejecuta 1001 consultas y supera el timeout de la peticion",
+              "failure_scenario": "lista de 1000 pedidos → el endpoint ejecuta 1001 consultas y supera el timeout de la peticion",
               "action": "Reemplazar por una sola consulta con IN o batching antes del loop"
             }
           ],
@@ -249,7 +251,8 @@
               "file_line": "package.json:18",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Dependencia nueva 'lodash' sin justificacion de necesidad",
+              "finding": "Dependencia nueva 'lodash' sin justificacion de necesidad. Fallo: npm install del paquete publicado → descarga lodash aunque ningun modulo lo use y el paquete crece sin motivo",
+              "failure_scenario": "npm install del paquete publicado → descarga lodash aunque ningun modulo lo use y el paquete crece sin motivo",
               "action": "Documentar en design.md por que el stack existente no cubre esta necesidad, o removerla"
             }
           ],
@@ -330,7 +333,8 @@
               "file_line": "src/orders/service.ts:88",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Manejo de errores ausente en la llamada al repositorio",
+              "finding": "Manejo de errores ausente en la llamada al repositorio. Fallo: el repositorio lanza un error de conexion → la excepcion sin capturar termina el proceso en lugar de devolver un error de dominio",
+              "failure_scenario": "el repositorio lanza un error de conexion → la excepcion sin capturar termina el proceso en lugar de devolver un error de dominio",
               "action": "Envolver la llamada en try/catch y propagar un error de dominio"
             }
           ],
@@ -378,7 +382,8 @@
               "file_line": "src/payments/webhook.ts:17",
               "dimension": "code-quality",
               "severity": "HIGH",
-              "finding": "Firma del webhook no verificada antes de procesar el payload",
+              "finding": "Firma del webhook no verificada antes de procesar el payload. Fallo: POST al webhook con un payload falsificado sin firma valida → se procesa y marca un pago como cobrado",
+              "failure_scenario": "POST al webhook con un payload falsificado sin firma valida → se procesa y marca un pago como cobrado",
               "action": "Validar la firma HMAC con el secreto de entorno antes de cualquier procesamiento"
             }
           ],
@@ -463,7 +468,8 @@
               "file_line": "src/users/validator.ts:23",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Validacion de email duplicada respecto al helper compartido",
+              "finding": "Validacion de email duplicada respecto al helper compartido. Fallo: email 'a@b' que validateEmail() rechaza → validator.ts lo acepta y los dos validadores dan resultados distintos",
+              "failure_scenario": "email 'a@b' que validateEmail() rechaza → validator.ts lo acepta y los dos validadores dan resultados distintos",
               "action": "Reutilizar validateEmail() de src/shared/validation.ts"
             }
           ],
@@ -510,7 +516,8 @@
               "file_line": "src/reports/export.ts:61",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Formato de fecha hardcodeado en lugar de usar la utilidad de i18n",
+              "finding": "Formato de fecha hardcodeado en lugar de usar la utilidad de i18n. Fallo: usuario con locale en-US → el informe exportado muestra las fechas en formato DD/MM/YYYY",
+              "failure_scenario": "usuario con locale en-US → el informe exportado muestra las fechas en formato DD/MM/YYYY",
               "action": "Reemplazar por formatDate() de src/shared/i18n.ts"
             }
           ],
@@ -559,7 +566,8 @@
               "file_line": "src/auth/session.ts:35",
               "dimension": "code-quality",
               "severity": "HIGH",
-              "finding": "Token de sesion registrado en logs en texto plano",
+              "finding": "Token de sesion registrado en logs en texto plano. Fallo: inicio de sesion → el token completo queda en los logs y quien los lea puede suplantar la sesion",
+              "failure_scenario": "inicio de sesion → el token completo queda en los logs y quien los lea puede suplantar la sesion",
               "action": "Eliminar el token del log o enmascararlo antes de registrar"
             }
           ],
@@ -608,7 +616,8 @@
               "file_line": "src/catalog/search.ts:102",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Paginacion calculada en memoria sobre el resultado completo de la consulta",
+              "finding": "Paginacion calculada en memoria sobre el resultado completo de la consulta. Fallo: catalogo de 100000 productos → cada busqueda carga todos en memoria para devolver 20 y la respuesta tarda segundos",
+              "failure_scenario": "catalogo de 100000 productos → cada busqueda carga todos en memoria para devolver 20 y la respuesta tarda segundos",
               "action": "Delegar LIMIT/OFFSET a la consulta del repositorio"
             }
           ],
@@ -729,7 +738,8 @@
               "file_line": "src/auth.ts:42",
               "dimension": "code-quality",
               "severity": "HIGH",
-              "finding": "Token expuesto",
+              "finding": "Token expuesto. Fallo: lectura de src/auth.ts → el token de sesion aparece en texto plano y permite suplantar la sesion",
+              "failure_scenario": "lectura de src/auth.ts → el token de sesion aparece en texto plano y permite suplantar la sesion",
               "action": "Eliminar el token"
             }
           ],
@@ -789,7 +799,7 @@
         "artifacts_present": ["story.md", "design.md", "tasks.md"],
         "agent_results": {
           "tech_lead_max_severity": "MEDIUM",
-          "tech_lead_findings": [{"file_line": "src/review.js:21", "dimension": "code-quality", "severity": "MEDIUM", "finding": "Error de validacion", "action": "Corregir la validacion"}],
+          "tech_lead_findings": [{"file_line": "src/review.js:21", "dimension": "code-quality", "severity": "MEDIUM", "finding": "Error de validacion. Fallo: entrada vacia → la validacion la acepta y la revision continua con datos invalidos", "failure_scenario": "entrada vacia → la validacion la acepta y la revision continua con datos invalidos", "action": "Corregir la validacion"}],
           "product_owner_max_severity": "ninguna",
           "integration_max_severity": "ninguna",
           "security_max_severity": "ninguna"
@@ -1108,6 +1118,441 @@
         ]
       },
       "threshold": 0.9
+    },
+    {
+      "id": "TC-030",
+      "name": "hallazgo-preexistente-no-bloquea",
+      "type": "happy-path",
+      "description": "STORY-181 (AC-1, SMOKE-2, D-4, D-5) — La historia está en la rama epic/x y su alcance incluye src/calc.js. El Tech-Lead-Reviewer reporta un MEDIUM en src/calc.js:10 y el motor touched-lines.js (Paso 4a.2) devuelve untouched para esa línea; la descripción no atribuye el defecto a un cambio de la historia. El árbitro debe marcarlo PREEXISTENTE en la tabla de su dimensión, listarlo en la fila «Hallazgos preexistentes», excluirlo de max-severity, del veredicto y de fix-directives.md, y emitir APPROVED con story.md en CODE-REVIEW/DONE.",
+      "input": {
+        "story_id": "STORY-214",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "touched_lines_engine": {
+          "applied": true,
+          "baseRef": "main",
+          "base": "abc1234"
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "MEDIUM",
+            "file": "src/calc.js:10",
+            "description": "La división no valida el divisor cero.",
+            "line_status": "untouched"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "🟣 PREEXISTENTE (MEDIUM)",
+          "src/calc.js:10",
+          "Hallazgos preexistentes",
+          "(verdict: APPROVED)",
+          "CODE-REVIEW/DONE"
+        ],
+        "not_contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "📋 Fix directives:",
+          "READY-FOR-IMPLEMENT"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-031",
+      "name": "defecto-en-linea-tocada-bloquea",
+      "type": "edge-case",
+      "description": "STORY-181 (AC-2, D-3, D-5) — Igual que TC-030, pero el MEDIUM del Tech-Lead-Reviewer está en src/calc.js:42 y el motor touched-lines.js devuelve touched para esa línea (la historia la modificó). El hallazgo conserva su severidad MEDIUM, no es PREEXISTENTE, el veredicto es NEEDS-CHANGES y el hallazgo entra en fix-directives.md.",
+      "input": {
+        "story_id": "STORY-215",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "touched_lines_engine": {
+          "applied": true,
+          "baseRef": "main",
+          "base": "abc1234"
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "MEDIUM",
+            "file": "src/calc.js:42",
+            "description": "La división no valida el divisor cero. Fallo: divisor 0 en la llamada de src/calc.js:42 → la función devuelve Infinity en lugar de rechazar la entrada",
+            "failure_scenario": "divisor 0 en la llamada de src/calc.js:42 → la función devuelve Infinity en lugar de rechazar la entrada",
+            "line_status": "touched"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "MEDIUM",
+          "src/calc.js:42",
+          "(verdict: NEEDS-CHANGES)",
+          "📋 Fix directives:"
+        ],
+        "not_contains": [
+          "🟣 PREEXISTENTE"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-032",
+      "name": "lineas-tocadas-no-determinables",
+      "type": "edge-case",
+      "description": "STORY-181 (AC-3, D-2, F-3) — La revisión corre en la rama principal y el motor touched-lines.js devuelve applied: false con reason on-main-branch. El Tech-Lead-Reviewer reporta un MEDIUM en src/calc.js:10. Ningún hallazgo es PREEXISTENTE: el informe indica que la clasificación PREEXISTENTE no se aplicó y por qué (rama principal), el hallazgo conserva su severidad y el veredicto es el de siempre (NEEDS-CHANGES), sin BLOCKED por la falta de base.",
+      "input": {
+        "story_id": "STORY-216",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "touched_lines_engine": {
+          "applied": false,
+          "reason": "on-main-branch"
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "MEDIUM",
+            "file": "src/calc.js:10",
+            "description": "La división no valida el divisor cero. Fallo: divisor 0 en la llamada de src/calc.js:10 → la función devuelve Infinity en lugar de rechazar la entrada",
+            "failure_scenario": "divisor 0 en la llamada de src/calc.js:10 → la función devuelve Infinity en lugar de rechazar la entrada"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "clasificación PREEXISTENTE no aplicada",
+          "rama principal",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "🟣 PREEXISTENTE",
+          "(verdict: BLOCKED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-033",
+      "name": "linea-no-tocada-causada-por-la-historia",
+      "type": "edge-case",
+      "description": "STORY-181 (D-4, regla de causa) — El Tech-Lead-Reviewer reporta un HIGH en src/calc.js:10 y el motor touched-lines.js devuelve untouched para esa línea, pero la descripción atribuye el defecto a un cambio de la historia: la llamada usa la firma de sumar que la historia cambió en src/calc.js:42. El hallazgo no es PREEXISTENTE: conserva HIGH y el veredicto es NEEDS-CHANGES.",
+      "input": {
+        "story_id": "STORY-217",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "touched_lines_engine": {
+          "applied": true,
+          "baseRef": "main",
+          "base": "abc1234"
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "HIGH",
+            "file": "src/calc.js:10",
+            "description": "La llamada usa la firma de `sumar` que la historia cambió en `src/calc.js:42`. Fallo: llamada con los argumentos de la firma anterior de `sumar` → src/calc.js:10 devuelve NaN",
+            "failure_scenario": "llamada con los argumentos de la firma anterior de `sumar` → src/calc.js:10 devuelve NaN",
+            "line_status": "untouched"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "HIGH",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "🟣 PREEXISTENTE"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-034",
+      "name": "bloqueantes-sin-evidencia-no-cuentan",
+      "type": "edge-case",
+      "description": "STORY-182 (AC-1, filas 1 y 2; D-3) — El Tech-Lead-Reviewer reporta un MEDIUM sin Archivo:Línea (con escenario de fallo) y el Security-Reviewer un HIGH en src/auth.js:42 sin escenario de fallo. El árbitro (Paso 4a.2) debe marcar los dos como «no verificado», con sus motivos, mostrarlos en code-review-report.md, no contarlos para max-severity ni para el veredicto y no generar fix-directives.md: el veredicto es APPROVED.",
+      "input": {
+        "story_id": "STORY-230",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Validacion de entrada repetida en varios archivos. Fallo: formulario con un email vacio → un modulo lo rechaza y otro lo guarda",
+              "action": "Extraer la validacion a un helper compartido",
+              "failure_scenario": "formulario con un email vacio → un modulo lo rechaza y otro lo guarda"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "HIGH",
+          "security_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "security",
+              "severity": "HIGH",
+              "finding": "Puede ser inseguro",
+              "action": "Revisar la autenticacion"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "no verificado",
+          "falta Archivo:Línea",
+          "falta escenario de fallo",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "round: 1",
+          "READY-FOR-IMPLEMENT"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-035",
+      "name": "bloqueante-verificado-junto-a-no-verificado",
+      "type": "fail-path",
+      "description": "STORY-182 (AC-1, fila 3; D-3) — El Tech-Lead-Reviewer reporta un HIGH en src/auth.js:42 con escenario de fallo y el Integration-Reviewer un MEDIUM en src/db.js:10 sin escenario. El árbitro debe marcar el primero como bloqueante y el segundo como «no verificado»: el veredicto es NEEDS-CHANGES con un solo hallazgo bloqueante y fix-directives.md solo contiene src/auth.js.",
+      "input": {
+        "story_id": "STORY-231",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "code-quality",
+              "severity": "HIGH",
+              "finding": "Falta validar la expiracion del token. Fallo: peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario",
+              "action": "Rechazar los tokens con exp anterior a la fecha actual",
+              "failure_scenario": "peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "MEDIUM",
+          "integration_findings": [
+            {
+              "file_line": "src/db.js:10",
+              "dimension": "integration-architecture",
+              "severity": "MEDIUM",
+              "finding": "Podria fallar con la base de datos nueva",
+              "action": "Revisar la conexion"
+            }
+          ],
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "1 hallazgo(s) bloqueante(s)",
+          "bloqueante",
+          "no verificado",
+          "fix-directives.md",
+          "src/auth.js"
+        ],
+        "not_contains": [
+          "src/db.js (hallazgo",
+          "(verdict: APPROVED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-036",
+      "name": "hallazgo-duplicado-entre-revisores-se-fusiona",
+      "type": "edge-case",
+      "description": "STORY-182 (AC-2; D-4, D-5) — El Tech-Lead-Reviewer (MEDIUM) y el Security-Reviewer (HIGH) reportan el mismo defecto en src/auth.js:42 («falta validar el token»), con la misma recomendación y escenario de fallo. El árbitro (Paso 4a.3) debe fusionarlos: el informe y fix-directives.md lo muestran una sola vez, como HIGH, con «Reportado por:» citando a los dos revisores.",
+      "input": {
+        "story_id": "STORY-232",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Falta validar el token. Fallo: peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario",
+              "action": "Verificar la firma y la expiracion del token antes de usarlo",
+              "failure_scenario": "peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "HIGH",
+          "security_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "security",
+              "severity": "HIGH",
+              "finding": "Falta validar el token. Fallo: peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario",
+              "action": "Verificar la firma y la expiracion del token antes de usarlo",
+              "failure_scenario": "peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "Reportado por:",
+          "Tech-Lead-Reviewer",
+          "Security-Reviewer",
+          "1 hallazgo(s) bloqueante(s)",
+          "max-severity: HIGH",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "2 hallazgo(s) bloqueante(s)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-037",
+      "name": "hallazgos-distintos-no-se-fusionan",
+      "type": "edge-case",
+      "description": "STORY-182 (AC-3; D-4) — El Tech-Lead-Reviewer reporta un MEDIUM en src/auth.js:42 («falta validar el token»), el Security-Reviewer otro en src/auth.js:90 y el Integration-Reviewer un MEDIUM en src/auth.js:42 («nombre de variable engañoso») que pide otra corrección; todos con escenario de fallo. El árbitro no debe fusionar ninguno: tres hallazgos bloqueantes por separado, ninguno con «Reportado por:».",
+      "input": {
+        "story_id": "STORY-233",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Falta validar el token. Fallo: peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario",
+              "action": "Verificar la firma y la expiracion del token antes de usarlo",
+              "failure_scenario": "peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "MEDIUM",
+          "integration_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "integration-architecture",
+              "severity": "MEDIUM",
+              "finding": "Nombre de variable enganoso: 'user' guarda el token, no el usuario. Fallo: el modulo de perfil importa user de src/auth.js → recibe el token como si fuera el usuario y muestra un nombre vacio",
+              "action": "Renombrar la variable a 'token' segun el contrato de design.md",
+              "failure_scenario": "el modulo de perfil importa user de src/auth.js → recibe el token como si fuera el usuario y muestra un nombre vacio"
+            }
+          ],
+          "security_max_severity": "MEDIUM",
+          "security_findings": [
+            {
+              "file_line": "src/auth.js:90",
+              "dimension": "security",
+              "severity": "MEDIUM",
+              "finding": "El token completo se escribe en el log de depuracion. Fallo: inicio de sesion con DEBUG=1 → el token completo queda en el log y permite suplantar la sesion",
+              "action": "Enmascarar el token antes de registrarlo",
+              "failure_scenario": "inicio de sesion con DEBUG=1 → el token completo queda en el log y permite suplantar la sesion"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "3 hallazgo(s) bloqueante(s)",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "Reportado por:",
+          "fusionado"
+        ]
+      },
+      "threshold": 0.9
     }
-   ]
+  ]
 }

@@ -29,6 +29,7 @@ reviewers:
 | Revisores | Tech-Lead-Reviewer, Product-Owner-Reviewer, Integration-Reviewer, Security-Reviewer |
 | testcases.md | {{TESTCASES_STATUS}} |
 | Guía de revisión | {{REVIEW_STATUS}} |
+| Hallazgos preexistentes | {{PREEXISTING_STATUS}} |
 | Fecha | {{DATE}} |
 
 ---

@@ -26,6 +26,7 @@ Quality gate formal entre la implementación y la marca final de Done. Compatibl
 - Limpia `.tmp/story-code-review/{story_id}/` para garantizar idempotencia
 - Lanza cuatro subagentes revisores en paralelo con responsabilidades exclusivas
 - Consolida los informes parciales y calcula la severidad máxima
+- Clasifica como **PREEXISTENTE** (🟣, ADR-0021) los defectos en líneas que la historia no tocó: se informan en su dimensión, pero no cuentan para `max-severity`, el veredicto ni `fix-directives.md`. Sin evidencia de git (Paso 4a.2), ningún hallazgo es PREEXISTENTE
 - **Si `APPROVED`**: genera `code-review-report.md`, elimina `fix-directives.md` (si existe) y marca `story.md` como `CODE-REVIEW/DONE`
 - **Si `NEEDS-CHANGES`**: genera `fix-directives.md` con `round: N` (ronda previa + 1), retrocede `story.md` a `READY-FOR-IMPLEMENT/DONE` y nombra al ejecutor de correcciones (`/story-implement`; `/story-implement-tasks` como alternativa si existe `tasks.md`)
 - **Si `BLOCKED`**: genera el reporte, identifica a los revisores sin informe válido y deja `story.md` en `IMPLEMENT/DONE` para repetir la revisión; no genera `fix-directives.md`
@@ -101,6 +102,7 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 ## Dependencias
 
 - Agentes locales: [`agents/tech-lead-reviewer.agent.md`, `agents/product-owner-reviewer.agent.md`, `agents/integration-reviewer.agent.md`, `agents/security-reviewer.agent.md`]
+- Motor de líneas tocadas: `scripts/touched-lines.js` (Node ≥ 18, sin dependencias). git es opcional: sin git, fuera de un repositorio o en la rama principal, la clasificación PREEXISTENTE no se aplica y la revisión continúa (Paso 4a.2)
 
 ---
 
@@ -159,6 +161,8 @@ El flujo por defecto es siempre el equipo de cuatro agentes. El flag `--single-a
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
 work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
 El layout no es configurable (ADR-0016).
+
+Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para localizar el motor; nunca lo derives de `REPO_ROOT`.
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -378,6 +382,8 @@ En `--single-agent`, el Tech-Lead-Reviewer recibe el mismo bloque, `$REVIEW_PATH
 
 > **Principio compartido — Guía de revisión:** si `$REVIEW_PATH` no está vacío, cada revisor aplica `REVIEW.md` solo en su dimensión («Qué es «Importante» aquí», «Tope de Minor», «No reportar», «Verificar siempre»), por debajo de `$CONSTITUTION_PATH` y `$DOD_PATH` y por encima de sus criterios genéricos, sin cambiar el formato de su informe. Si está vacío, revisa con sus criterios de siempre. El texto completo está duplicado en la sección "Guía de revisión (REVIEW.md)" de cada `agents/*.agent.md`.
 
+> **Principio compartido — Evidencia de hallazgos bloqueantes:** todo `HIGH`/`MEDIUM` lleva `Archivo:Línea` válido (ruta y línea o rango; en las tablas sin esa columna, entre paréntesis en la primera celda) y termina su `Descripción` con `Fallo: <entrada o estado de partida> → <resultado erróneo observable>`. El árbitro lo comprueba en el Paso 4a.3: sin los dos, el hallazgo queda `no verificado` y no bloquea. El texto completo está duplicado en la sección "## Evidencia de hallazgos bloqueantes" de cada `agents/*.agent.md`.
+
 **Agente 1 — Tech-Lead-Reviewer** (`agents/tech-lead-reviewer.agent.md`):
 - Revisa calidad, legibilidad, duplicación y seguridad del código fuente
 - Output: `.tmp/story-code-review/{story_id}/tech-lead-report.md`
@@ -435,11 +441,69 @@ Límites:
 - No se convierte en válido un informe inválido ni se saca a un revisor de `$REVIEWERS_BLOCKED`.
 - El árbitro solo aplica «No reportar» en este paso; las demás secciones de `REVIEW.md` las aplican los revisores.
 
+#### 4a.2. Clasificar hallazgos PREEXISTENTE
+
+Un hallazgo es **PREEXISTENTE** (🟣 Pre-existing de Claude Code Review, ADR-0021) si está en líneas que la historia no tocó. Es una categoría, no un valor de severidad: el hallazgo se informa con su severidad original, pero no cuenta para `max-severity`, el veredicto, el DoD ni `fix-directives.md`. La asignación es conservadora: sin evidencia de git, ningún hallazgo es PREEXISTENTE.
+
+Registrar `$PREEXISTING_CHECK` (`applied` | `unavailable`), `$PREEXISTING_REASON` (cadena vacía o el motivo de no aplicar), `$PREEXISTING_BASE` (cadena vacía o `<baseRef>@<sha de 7 caracteres>`) y `$PREEXISTING` (lista de `(revisor, Archivo:Línea, severidad original, descripción)`, inicialmente vacía).
+
+1. **Reunir ubicaciones:** el `Archivo:Línea` de cada hallazgo `HIGH`, `MEDIUM` o `LOW` de los informes válidos que el Paso 4a.1 no excluyó. Los hallazgos `DoD-CODE-REVIEW` nunca se clasifican: citan el DoD, no el código.
+2. **Invocar el motor:** escribir esas ubicaciones como arreglo JSON de cadenas en `.tmp/story-code-review/{story_id}/locations.json` y ejecutar:
+   ```
+   node <CLI_ROOT>/skills/story-code-review/scripts/touched-lines.js classify --repo-root <REPO_ROOT> --locations .tmp/story-code-review/{story_id}/locations.json
+   ```
+   El motor compara cada línea entre la base de la rama (`merge-base` con la rama principal: `origin/HEAD`, `main` o `master`) y el working tree, y devuelve un único objeto JSON con `applied`, `reason`, `message`, `baseRef`, `base` y, por ubicación, `status` ∈ {`untouched`, `touched`, `unknown`}. Nunca devuelve `untouched` sin evidencia de git.
+3. **Sin evidencia:**
+   - Si el motor o `node` no se encuentran, el exit no es `0` o la salida no es ese JSON: `$PREEXISTING_CHECK = unavailable` y `$PREEXISTING_REASON = no se encontró el motor touched-lines.js o node` (`engine-unavailable`).
+   - Si `applied: false`: `$PREEXISTING_CHECK = unavailable` y `$PREEXISTING_REASON` = el `message` del motor (p. ej. `la revisión corre en la rama principal: no hay base que separe los cambios de la historia`).
+   - En ambos casos, ningún hallazgo es PREEXISTENTE, todos conservan su severidad y la revisión continúa: nunca `BLOCKED` ni `NEEDS-CHANGES` por ello.
+4. **Con evidencia** (`applied: true`): `$PREEXISTING_CHECK = applied` y `$PREEXISTING_BASE = <baseRef>@<sha7>`. Un hallazgo es PREEXISTENTE solo si su ubicación es `untouched` **y** su descripción no atribuye el defecto a un cambio de la historia (p. ej. «la llamada de la línea 10 usa la firma que la historia cambió en la línea 42» **no** es PREEXISTENTE). Las ubicaciones `touched` y `unknown` conservan su severidad. **Regla de duda:** ante duda, el hallazgo no es PREEXISTENTE (la misma regla de 4c.1). Registrar cada PREEXISTENTE en `$PREEXISTING` con su severidad original.
+
+#### 4a.3. Verificar la evidencia de los hallazgos bloqueantes
+
+Construir `$FINDINGS`, la tabla consolidada: una fila por hallazgo de las tablas de hallazgos de los informes válidos (las de `## Hallazgos` y, si existen, las de cobertura y trazabilidad en `testcases.md`), sin los excluidos en el Paso 4a.1. Cada fila registra `revisor`, `dimensión`, `tabla de origen`, `severidad`, `Archivo:Línea`, `descripción`, `recomendación` y `estado`. Los PREEXISTENTE del Paso 4a.2 siguen en `$FINDINGS` con su marca, pero no se verifican ni se fusionan: ya no cuentan. Las filas `DoD-CODE-REVIEW` no pasan por este paso ni por el 4a.4 (se crean en el Paso 4c.1).
+
+**Ubicación:** la columna `Archivo:Línea`; en las tablas sin esa columna (`AC / Escenario`, `Test Case ID`), el `Archivo:Línea` entre paréntesis de la primera celda (`AC-1 (specs/flow/STORY-NNN-<slug>/story.md:30)`). Una celda sin paréntesis no tiene ubicación.
+
+Asignar `estado` a cada `HIGH`/`MEDIUM`:
+
+- **`Archivo:Línea` válido:** ruta relativa a `$REPO_ROOT`, sin espacios, seguida de `:<n>` o `:<n>-<m>`, con `n ≥ 1` y `m ≥ n` (`src/auth.js:42`, `src/auth.js:40-45`). No son válidos una ruta sin línea, la línea `0`, «varios archivos» ni `—`.
+- **Escenario de fallo concreto:** el texto que sigue a `Fallo:` en `Descripción` nombra (a) una entrada o un estado de partida y (b) el resultado erróneo observable que produce (p. ej., «con un `story.md` sin `parent:`, el Paso 1b aborta con `undefined`»). Sin `Fallo:`, o con un texto sin (a) o sin (b) («podría fallar», «puede ser inseguro», «riesgo de»), no hay escenario.
+- `bloqueante`: tiene los dos.
+- `no verificado`: le falta alguno, con el motivo `falta Archivo:Línea`, `falta escenario de fallo` o `falta Archivo:Línea y escenario de fallo`.
+- **Regla de duda:** ante la duda sobre si un escenario es concreto, `no verificado` (la duda no bloquea, como en el Paso 4c.1); el hallazgo sigue visible en el informe.
+- Los `LOW` no se verifican y no llevan estado.
+
+Un `no verificado` conserva su severidad original en la columna `Severidad` y figura en el informe con su prefijo (Paso 5b), pero no cuenta para la severidad efectiva (4b), el veredicto (4c), el DoD (4c.1) ni `fix-directives.md` (4e-4f). Registrar `$UNVERIFIED_COUNT` (número de hallazgos `no verificado`).
+
+#### 4a.4. Fusionar hallazgos repetidos entre revisores
+
+Dos hallazgos de `$FINDINGS` son el mismo defecto si citan el mismo archivo, líneas que se solapan y la misma corrección los resuelve. No se compara `Dimensión`: cada revisor escribe la suya.
+
+1. **Candidatos (determinista):** pares de hallazgos de revisores **distintos**, ambos con `Archivo:Línea` válido, con la misma ruta normalizada (separador `/`, sin `./` inicial, relativa a `$REPO_ROOT`) y rangos de línea solapados (una línea `n` es el rango `n-n`).
+2. **Misma corrección (juicio del árbitro):** de cada par candidato, comparar `Recomendación` y `Descripción`; se fusionan solo si una misma corrección resuelve los dos. **Regla de duda:** ante la duda, no fusionar: un duplicado visible cuesta menos que perder un defecto.
+3. **Grupos:** la relación es transitiva dentro de un archivo; cada grupo produce un solo hallazgo fusionado.
+
+No se fusionan hallazgos del mismo revisor, filas `DoD-CODE-REVIEW` ni hallazgos PREEXISTENTE. Un hallazgo sin `Archivo:Línea` válido nunca es candidato.
+
+Hallazgo fusionado:
+
+- **Severidad:** la mayor de los miembros que cuentan (`bloqueante` y `LOW`); si ninguno cuenta, la mayor de todos. Un miembro `no verificado` no eleva la severidad de un grupo con miembros que cuentan.
+- **Representante:** el miembro `bloqueante` de mayor severidad (si no hay ninguno, el de mayor severidad); empate → orden Tech-Lead, Product-Owner, Integration, Security. El fusionado toma su `Archivo:Línea`, su descripción y su recomendación, y vive en la tabla de su dimensión; los demás miembros salen de las tablas de las suyas.
+- **Cita:** al final de `Descripción`, `Reportado por: <Revisor> (<dimensión>, <severidad>), …`, representante primero (p. ej. `Reportado por: Security-Reviewer (security, HIGH), Tech-Lead-Reviewer (code-quality, MEDIUM).`). Un hallazgo no fusionado no lleva cita: su revisor es el de la sección.
+- **Estado:** `bloqueante` si algún miembro lo es; si no, `no verificado` si algún miembro es `HIGH`/`MEDIUM`; si todos son `LOW`, sin estado.
+
+Registrar `$MERGED_COUNT` (número de grupos fusionados).
+
+Ejemplos: `src/auth.js:42` y `src/auth.js:40-45`, ambos «falta validar el token» → se fusionan. `src/auth.js:42` y `src/auth.js:90` → no son candidatos. `src/auth.js:42` «falta validar el token» y `src/auth.js:42` «nombre de variable engañoso» → candidatos con correcciones distintas → no se fusionan.
+
 #### 4b. Calcular severidad máxima
 
 Para cada informe válido de agente, calcular su severidad efectiva:
-- Si el Paso 4a.1 no excluyó ninguno de sus hallazgos: el campo `max-severity` de su frontmatter.
-- Si excluyó alguno: la máxima severidad de los hallazgos que conserva, o `ninguna` si no conserva ninguno.
+- Si los Pasos 4a.1 a 4a.4 no apartaron ni cambiaron ninguno de sus hallazgos (ni excluido por «No reportar», ni PREEXISTENTE, ni `no verificado`, ni fusionado): el campo `max-severity` de su frontmatter.
+- Si apartaron o cambiaron alguno: la máxima severidad de los hallazgos que cuentan (`bloqueante` y `LOW`; un fusionado cuenta solo en el informe de su representante, con la severidad del grupo), o `ninguna` si no queda ninguno.
+
+Con `$PREEXISTING_CHECK = unavailable`, sin exclusiones de 4a.1, sin `no verificado` y sin fusiones, el cálculo es el de siempre. PREEXISTENTE no es un valor de `max-severity`, que sigue siendo `HIGH`, `MEDIUM`, `LOW` o `ninguna`.
 
 Orden de severidad: `HIGH > MEDIUM > LOW > ninguna`
 
@@ -449,11 +513,11 @@ max_severity = máxima severidad efectiva entre los informes válidos (o `ningun
 
 #### 4c. Derivar el veredicto
 
-Hallazgo bloqueante = severidad `HIGH` o `MEDIUM`, según la misma regla de 4e y `{{TOTAL_BLOCKING}}`. Aplicar la precedencia G-05 de `docs/policies/validation-contract-policy.md`:
+Hallazgo bloqueante = hallazgo de `$FINDINGS` con estado `bloqueante` (Paso 4a.3; nunca un PREEXISTENTE ni un `no verificado`; un fusionado cuenta una vez) o fila `DoD-CODE-REVIEW` `HIGH`/`MEDIUM` (Paso 4c.1), según la misma regla de 4e y `{{TOTAL_BLOCKING}}`. Aplicar la precedencia G-05 de `docs/policies/validation-contract-policy.md`:
 
 | Condición | `$VERDICT` |
 |---|---|
-| Algún hallazgo bloqueante en los informes válidos (tras las exclusiones del Paso 4a.1) | `NEEDS-CHANGES` |
+| Algún hallazgo bloqueante en `$FINDINGS` (tras las exclusiones del Paso 4a.1, sin los PREEXISTENTE del Paso 4a.2 ni los `no verificado` del Paso 4a.3) | `NEEDS-CHANGES` |
 | Sin hallazgos bloqueantes y `$REVIEWERS_BLOCKED` no vacío | `BLOCKED` |
 | Sin hallazgos bloqueantes y cuatro informes válidos | `APPROVED` |
 
@@ -461,7 +525,7 @@ Registrar internamente:
 - `$VERDICT`: `APPROVED`, `NEEDS-CHANGES` o `BLOCKED`
 - `$MAX_SEVERITY`: valor calculado solo de informes válidos
 - `$REVIEWERS_BLOCKED`: revisores sin informe válido
-- Hallazgos consolidados por dimensión (tabla con columnas: #, Archivo:Línea, Dimensión, Severidad, Hallazgo, Recomendación)
+- Hallazgos consolidados por dimensión: `$FINDINGS` (Pasos 4a.3 y 4a.4), con columnas #, Archivo:Línea, Dimensión, Severidad, Hallazgo, Recomendación
 
 #### 4c.1. Evaluar criterios DoD CODE-REVIEW
 
@@ -474,7 +538,7 @@ Registrar internamente:
 
 Para cada criterio, evaluar semánticamente contra:
 - El código revisado (inferido del implement-report y los informes de agentes)
-- Los informes de los cuatro agentes (tech-lead-report, product-owner-report, integration-report, security-report), tomando sus hallazgos de la tabla consolidada tras el Paso 4a.1: un hallazgo excluido por «No reportar» no cuenta como incumplimiento
+- Los informes de los cuatro agentes (tech-lead-report, product-owner-report, integration-report, security-report), tomando sus hallazgos de `$FINDINGS` (tabla consolidada tras los Pasos 4a.1 a 4a.4), no de las tablas crudas de los informes: un hallazgo excluido por «No reportar» no cuenta como incumplimiento, un hallazgo PREEXISTENTE o `no verificado` nunca es evidencia de `❌` (p. ej. para «Sin hallazgo bloqueante de severidad HIGH o MEDIUM») ni se reintroduce como hallazgo DoD, y un fusionado cuenta una vez
 - El contenido de `story.md` (criterios de aceptación, escenarios Gherkin)
 
 Clasificar cada criterio como:
@@ -498,9 +562,9 @@ Clasificar cada criterio como:
 
 Registrar internamente `$DOD_CODE_REVIEW_RESULT` (tabla de criterio | resultado | severidad | evidencia).
 
-**Recalcular `$MAX_SEVERITY` y `$VERDICT`** considerando todos los hallazgos (agentes válidos + DoD):
+**Recalcular `$MAX_SEVERITY` y `$VERDICT`** considerando todos los hallazgos (agentes válidos + DoD), sin los PREEXISTENTE ni los `no verificado`:
 ```
-max_severity = máxima severidad entre hallazgos de agentes y hallazgos DoD
+max_severity = máxima severidad entre hallazgos de agentes (severidad efectiva de 4b) y hallazgos DoD
 verdict = NEEDS-CHANGES si max_severity ∈ {HIGH, MEDIUM}
 verdict = BLOCKED       si max_severity ∈ {LOW, ninguna} y $REVIEWERS_BLOCKED no está vacío
 verdict = APPROVED      si max_severity ∈ {LOW, ninguna} y $REVIEWERS_BLOCKED está vacío
@@ -519,7 +583,7 @@ Esta verificación es puramente informativa: **no participa en el cálculo de `$
    - `6 ≤ $CHANGED_FILES_COUNT ≤ 12` → `$CHANGE_SIZE_NOTE = "ℹ️ Nota informativa: tamaño de cambio aceptable (<N> archivos modificados) — sin acción requerida."`
    - `$CHANGED_FILES_COUNT > 12` → `$CHANGE_SIZE_NOTE = "⚠️ Nota informativa: tamaño de cambio elevado (<N> archivos modificados). Considera ejecutar /story-split antes de futuras historias similares para reducir el alcance. Esta nota es informativa y no afecta la decisión de este review."`
 
-No se invoca `git diff` ni ningún comando nuevo: el conteo reutiliza `$IMPL_FILES`, ya disponible desde el Paso 2c y ya pasado al Security-Reviewer en el Paso 3b, manteniendo el orquestador sin lógica de Bash propia.
+El conteo no ejecuta comandos: reutiliza `$IMPL_FILES`, ya disponible desde el Paso 2c y ya pasado al Security-Reviewer en el Paso 3b. El único uso de git del skill es el motor `touched-lines.js` del Paso 4a.2; la lectura de `REVIEW.md` (Paso 2d.1) y la detección de reglas modificadas (Paso 2d.2) siguen sin git.
 
 #### 4d. Bifurcación post-árbitro
 
@@ -531,10 +595,10 @@ No se invoca `git diff` ni ningún comando nuevo: el conteo reutiliza `$IMPL_FIL
 
 #### 4e. [NEEDS-CHANGES] Construir lista blanca de archivos
 
-Iterar los hallazgos consolidados filtrando solo los de `Severidad ∈ {HIGH, MEDIUM}`:
+Iterar los hallazgos consolidados filtrando solo los bloqueantes de 4c (estado `bloqueante` o fila `DoD-CODE-REVIEW` `HIGH`/`MEDIUM`); un PREEXISTENTE o un `no verificado` nunca entra en la lista blanca ni en `fix-directives.md`, y un fusionado entra una vez:
 
 1. Para cada hallazgo bloqueante, extraer la parte de archivo de la columna `Archivo:Línea` (texto antes del primer `:`).
-2. Si `Archivo:Línea` está vacío o ausente para un hallazgo, anotar `[archivo no especificado]` para ese hallazgo y excluirlo de la lista blanca sin fallar.
+2. Un hallazgo de revisor sin `Archivo:Línea` válido no puede ser bloqueante (Paso 4a.3). Solo como degradación, si una fila bloqueante llega sin ruta, anotar `[archivo no especificado]` para ese hallazgo y excluirlo de la lista blanca sin fallar.
 3. Deduplicar las rutas de archivo resultantes.
 4. Para cada archivo único, registrar qué número(s) de hallazgo lo referencian: `hallazgo #N, #M`.
 
@@ -556,9 +620,10 @@ Leer `assets/fix-directives-template.md` como fuente de verdad de la estructura.
 
 Completar el template con:
 - Frontmatter: `story_id`, fecha actual, `$MAX_SEVERITY`, `round: $ROUND`
-- Sección "Resumen de bloqueantes": título de la historia, severidad máxima, total de hallazgos HIGH/MEDIUM (incluyendo hallazgos DoD si los hay), `Ronda: $ROUND`
-- Tabla "Instrucciones de corrección": una fila por hallazgo bloqueante (HIGH o MEDIUM) numeradas correlativamente, con columnas `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`
+- Sección "Resumen de bloqueantes": título de la historia, severidad máxima, total de hallazgos bloqueantes HIGH/MEDIUM de 4c (incluyendo hallazgos DoD si los hay; sin los PREEXISTENTE), `Ronda: $ROUND`
+- Tabla "Instrucciones de corrección": una fila por hallazgo bloqueante de 4c (estado `bloqueante` o DoD) numeradas correlativamente, con columnas `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`
   - Hallazgos de agentes: `Dimensión` = dimensión del agente (code-quality, requirements-coverage, integration-architecture, security)
+  - Hallazgo fusionado (Paso 4a.4): una sola fila, con `Dimensión` = las dimensiones de sus miembros separadas por `, ` (representante primero), la severidad del grupo y `Hallazgo` = descripción consolidada, incluido `Reportado por:`
   - Hallazgos DoD: `Dimensión` = `DoD-CODE-REVIEW`, `Archivo:Línea` = `<$DOD_PATH>:<número_de_línea>` (p. ej. `docs/guardrails/dod-story-code-review.md:14`)
   - Todos los hallazgos se numeran correlativamente sin IDs duplicados (agentes → DoD)
 - Sección "Lista blanca de archivos permitidos": una línea por archivo de `$WHITELIST` con sus referencias de hallazgo
@@ -611,9 +676,9 @@ Completar el template con:
 - Frontmatter: `story_id`, `$VERDICT`, fecha actual, `$MAX_SEVERITY`
 - Sección `## Veredicto`: primera sección tras el título. La línea `` **Veredicto:** `{{VERDICT}}` — {{VERDICT_REASON}} `` usa estos motivos:
   - `APPROVED`: `Sin hallazgos bloqueantes (severidad máxima: <LOW | ninguna>).`
-  - `NEEDS-CHANGES`: `<N> hallazgo(s) bloqueante(s) (severidad máxima: <HIGH | MEDIUM>).` `<N>` cuenta los hallazgos `HIGH`/`MEDIUM` de agentes válidos y DoD.
+  - `NEEDS-CHANGES`: `<N> hallazgo(s) bloqueante(s) (severidad máxima: <HIGH | MEDIUM>).` `<N>` cuenta los hallazgos bloqueantes de 4c: los de `$FINDINGS` con estado `bloqueante` (un fusionado, una vez; nunca PREEXISTENTE ni `no verificado`) y los DoD.
   - `BLOCKED`: `Revisión incompleta: <nombres de los revisores sin informe válido>.`
-  - `{{DECISION_RATIONALE}}` explica el resultado en una o dos frases, incluido el revisor bloqueado y la precedencia de `NEEDS-CHANGES` cuando corresponda.
+  - `{{DECISION_RATIONALE}}` explica el resultado en una o dos frases, incluido el revisor bloqueado y la precedencia de `NEEDS-CHANGES` cuando corresponda. Si `$PREEXISTING` no está vacío, añade: `<N> hallazgo(s) PREEXISTENTE en líneas que la historia no tocó no cuentan para el veredicto.` Si `$UNVERIFIED_COUNT > 0`, añade: `<N> hallazgo(s) HIGH/MEDIUM no verificado(s): no cuentan para el veredicto (falta Archivo:Línea o escenario de fallo).` Si `$MERGED_COUNT > 0`, añade: `<M> hallazgo(s) reportado(s) por más de un revisor se fusionaron.`
 - Sección Resumen: título de la historia, revisores (los cuatro), severidad máxima
   - `{{TESTCASES_STATUS}}`: `✓ analizado (<N> casos — UT:<N>/CT:<N>/IT:<N>/API:<N>/E2E:<N>/EV:<N>)` si `$TESTCASES_AVAILABLE = true`; o `⏭️ no encontrado — ejecuta /story-testcases para generar la especificación canónica` si `$TESTCASES_AVAILABLE = false`
   - `{{REVIEW_STATUS}}`: una base más los sufijos que apliquen, separados por ` · `:
@@ -621,11 +686,17 @@ Completar el template con:
     - Si `$REVIEW_EXCLUDED` no está vacío: `<N> hallazgo(s) excluido(s) por «No reportar»: <Archivo:Línea (revisor)>, …`
     - Si `$RULES_CHANGED` no está vacío: `⚠️ la historia modifica las reglas con las que se la revisa: <archivos de $RULES_CHANGED>`
     - Si `$RULES_CHANGE_CHECK = unverifiable`: `⚠️ no se pudo comprobar si la historia modifica REVIEW.md o el DoD`
-- Sección Hallazgos por dimensión: insertar **solo** la tabla de `## Hallazgos` de cada informe parcial válido en `{{TECH_LEAD_FINDINGS}}`, `{{PRODUCT_OWNER_FINDINGS}}`, `{{INTEGRATION_FINDINGS}}` y `{{SECURITY_FINDINGS}}`, sin las filas excluidas en el Paso 4a.1 (quedan listadas en `{{REVIEW_STATUS}}`); nunca copiar su frontmatter ni `## Veredicto`. Para un revisor bloqueado, indicar `⚠️ Informe no disponible o frontmatter inválido: <revisor>` en su dimensión.
+  - `{{PREEXISTING_STATUS}}` (fila `Hallazgos preexistentes`), según el Paso 4a.2:
+    - `applied` y `$PREEXISTING` vacío: `✓ clasificación aplicada (base: <$PREEXISTING_BASE>) — sin hallazgos PREEXISTENTE`
+    - `applied` y `$PREEXISTING` con N: `🟣 <N> hallazgo(s) PREEXISTENTE (base: <$PREEXISTING_BASE>): <Archivo:Línea (revisor, severidad)>, … — no cuentan para max-severity ni para fix-directives.md`
+    - `unavailable`: `⚠️ clasificación PREEXISTENTE no aplicada: <$PREEXISTING_REASON> — los hallazgos conservan su severidad`
+- Sección Hallazgos por dimensión: insertar en `{{TECH_LEAD_FINDINGS}}`, `{{PRODUCT_OWNER_FINDINGS}}`, `{{INTEGRATION_FINDINGS}}` y `{{SECURITY_FINDINGS}}` **solo** las filas consolidadas de `$FINDINGS` de su dimensión (Pasos 4a.3 y 4a.4), con las columnas de la tabla de `## Hallazgos` del informe parcial, sin las filas excluidas en el Paso 4a.1 (quedan listadas en `{{REVIEW_STATUS}}`); nunca copiar su frontmatter ni `## Veredicto`.
+  - **Prefijo de estado** al inicio de `Descripción`: `**[bloqueante]** ` para un bloqueante; `**[no verificado — falta Archivo:Línea]** `, `**[no verificado — falta escenario de fallo]** ` o `**[no verificado — falta Archivo:Línea y escenario de fallo]** ` para un `no verificado`, que conserva su severidad en `Severidad`. Los `LOW` y los PREEXISTENTE no llevan prefijo de estado.
+  - **Fusionado:** una sola fila, en la dimensión de su representante, con `Reportado por: …` al final de `Descripción`; su fila se quita de las tablas de los demás miembros. Si una tabla queda sin filas, lleva la fila de vacío del agente con el texto `Sin hallazgos propios: <N> fusionado(s) en <dimensión del representante>`. En la fila de cada hallazgo de `$PREEXISTING`, reescribir la celda `Severidad` como `🟣 PREEXISTENTE (<severidad original>)` (p. ej. `🟣 PREEXISTENTE (MEDIUM)`): el hallazgo sigue en la dimensión que lo reportó. Para un revisor bloqueado, indicar `⚠️ Informe no disponible o frontmatter inválido: <revisor>` en su dimensión.
 - Sección `### Seguridad (Security-Reviewer)` — `{{SECURITY_FINDINGS}}`: contenido de la sección "Hallazgos" de `security-report.md`, precedido por una línea `**Fuentes de checklist:** <checklist-sources> (<rules-evaluated> reglas evaluadas)` con los valores leídos en el Paso 4a
 - Sección `### Cobertura de Casos de Prueba (testcases.md)` — `{{TESTCASES_COVERAGE_SECTION}}`:
   - **Si `$TESTCASES_AVAILABLE = false`:** `⏭️ testcases.md no encontrado — análisis de cobertura omitido. Considera ejecutar /story-testcases para generar la especificación canónica de pruebas.`
-  - **Si `$TESTCASES_AVAILABLE = true`:** extraer y mostrar los hallazgos de la sección "Hallazgos — Cobertura en testcases.md" del `product-owner-report.md` y los hallazgos de la sección "Hallazgos — Trazabilidad de diseño en testcases.md" del `integration-report.md`
+  - **Si `$TESTCASES_AVAILABLE = true`:** mostrar las filas consolidadas de `$FINDINGS` que provienen de la sección "Hallazgos — Cobertura en testcases.md" del `product-owner-report.md` y de la sección "Hallazgos — Trazabilidad de diseño en testcases.md" del `integration-report.md`, con sus columnas y el mismo prefijo de estado
   - Si alguno de esos informes está en `$REVIEWERS_BLOCKED`, indicar que su cobertura no pudo evaluarse; no atribuirle cobertura completa.
 - Sección `### Nota de Tamaño de Cambio` — `{{CHANGE_SIZE_NOTE}}`: contenido de `$CHANGE_SIZE_NOTE` calculado en el Paso 4c.2; si está vacío, dejar la sección sin contenido visible (no mostrar el placeholder literal)
 - Sección "Cumplimiento DoD — Fase CODE-REVIEW":
@@ -676,6 +747,7 @@ Mostrar:
  📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
+ Preexistentes:    <N> (no cuentan) | ⚠️ no aplicado — <$PREEXISTING_REASON>
  Veredicto:       APPROVED
 ─────────────────────────────────────────────────────────────────────
 
@@ -704,6 +776,7 @@ O si hay hallazgos criticos:
  📦 Tamaño de cambio        │ <N> archivos │ <nota>                     (solo si $CHANGE_SIZE_NOTE no está vacío)
 ─────────────────────────────────────────────────────────────────────
  Severidad máxima: <max_severity>
+ Preexistentes:    <N> (no cuentan) | ⚠️ no aplicado — <$PREEXISTING_REASON>
  Veredicto:       NEEDS-CHANGES
 ─────────────────────────────────────────────────────────────────────
 
@@ -739,8 +812,12 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | `REVIEW.md` ausente en la raíz (Paso 2d.1) | `⚠️ REVIEW.md no encontrado en la raíz del repositorio — revisión sin guía de revisión …` | Advertir y continuar con los criterios genéricos de los revisores; nunca `BLOCKED` ni `NEEDS-CHANGES` por ello |
 | La historia modifica `REVIEW.md` o el DoD CODE-REVIEW (Paso 2d.2) | `⚠️ La historia modifica las reglas con las que se la revisa: …` | Advertir en consola y en `{{REVIEW_STATUS}}`; rige el working tree; no cambia `$VERDICT` ni `$MAX_SEVERITY` |
 | `$IMPL_FILES` vacío al detectar cambios en las reglas (Paso 2d.2) | `⚠️ No se pudo comprobar si la historia modifica REVIEW.md o el DoD CODE-REVIEW …` | Anotar en consola y en `{{REVIEW_STATUS}}` y continuar |
+| Líneas tocadas no determinables: git ausente, no es repositorio, HEAD separado, sin rama principal, en la rama principal o sin ancestro común (Paso 4a.2) | `⚠️ clasificación PREEXISTENTE no aplicada: <motivo>` | Continuar sin clasificar; los hallazgos conservan su severidad. Anotar el motivo en `{{PREEXISTING_STATUS}}` |
+| Motor `touched-lines.js` o `node` no encontrados, o salida ilegible (Paso 4a.2) | `⚠️ clasificación PREEXISTENTE no aplicada: no se encontró el motor touched-lines.js o node` | Continuar sin clasificar; los hallazgos conservan su severidad. Reinstalar el paquete corrige una copia instalada sin el motor |
 | Informe de revisor ausente o con frontmatter inválido, sin otros hallazgos bloqueantes | `Veredicto: BLOCKED` con el nombre del revisor | Generar reporte y restaurar `IMPLEMENT/DONE`; no generar `fix-directives.md` |
-| Hallazgo bloqueante sin `Archivo:Línea` (Paso 4e) | — (se anota `[archivo no especificado]`) | Excluirlo de la lista blanca y continuar |
+| Hallazgo `HIGH`/`MEDIUM` sin `Archivo:Línea` válido o sin escenario de fallo (Paso 4a.3) | — (prefijo `**[no verificado — <motivo>]**` en el informe) | Marcarlo `no verificado`: figura en el informe con su severidad original, pero no cuenta para `max-severity`, el veredicto ni `fix-directives.md`; se cuenta en `{{DECISION_RATIONALE}}` |
+| Duda sobre si dos hallazgos piden la misma corrección (Paso 4a.4) | — | No fusionarlos: quedan como hallazgos separados |
+| Fila bloqueante sin ruta al construir la lista blanca (Paso 4e, degradación) | — (se anota `[archivo no especificado]`) | Excluirla de la lista blanca y continuar |
 | `fix-directives.md` previo con `round` ausente o ilegible (Paso 4f.1) | — (sin error ni advertencia: archivo legado) | `$PREV_ROUND = 0`: la cuenta de rondas se reinicia en 1 |
 
 ---

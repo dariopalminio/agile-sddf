@@ -5,11 +5,11 @@ id: STORY-181
 kind: feat
 slug: STORY-181-hallazgos-preexistentes
 title: "Hallazgos preexistentes"
-status: READY-FOR-IMPLEMENT
+status: IMPLEMENT
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-10
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-178-adr-guia-de-revision

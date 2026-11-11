@@ -331,3 +331,9 @@ Ninguna. El mecanismo de comparación lo fija D-4; la ubicación en tablas sin c
 - **Descripción**: AC-1 exige escenario de fallo concreto para todo `HIGH`/`MEDIUM`, pero `tech-lead-reviewer.agent.md` define `MEDIUM` también como «impacta mantenibilidad» o «dependencia nueva sin justificación», que rara vez producen un resultado erróneo observable. El diseño aplica la regla sin excepciones, como dice la historia: esos `MEDIUM` solo bloquean si el revisor concreta un fallo; si no, quedan `no verificado` y visibles.
 - **Documento afectado**: story.md
 - **Acción requerida**: confirmar en `/story-acceptance` que es el comportamiento deseado; si no, añadir a la historia una excepción explícita para esos tipos de `MEDIUM`.
+
+### CR-002
+- **Tipo**: desviación de implementación
+- **Descripción**: STORY-181 se implementó a la vez que esta historia y ocupó el Paso 4a.2 (clasificación PREEXISTENTE, el orden que recomienda su diseño) y los evals TC-030 a TC-033. Por eso la verificación es el Paso **4a.3** y la fusión el **4a.4** (no 4a.2 y 4a.3 como dicen D-3, D-4, F-5 y D-9), y los casos nuevos son **TC-034 a TC-037** (D-8 ya preveía «los siguientes libres»). Los hallazgos PREEXISTENTE no se verifican ni se fusionan: ya no cuentan. Los tres casos de STORY-181 que esperan `NEEDS-CHANGES` (TC-031, TC-032, TC-033) recibieron `failure_scenario` y `Fallo:` igual que los once de D-8, sin cambiar su `expected`.
+- **Documento afectado**: design.md
+- **Acción requerida**: ninguna; la prueba de contrato (D-9) fija la numeración final.

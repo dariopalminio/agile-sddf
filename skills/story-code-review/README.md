@@ -12,6 +12,10 @@ Ejecuta el quality gate posterior a la implementación mediante cuatro revisores
 
 Si existe `REVIEW.md` en la raíz del repositorio, el skill lo pasa a los revisores y al árbitro para calibrar qué se reporta y con qué severidad; si no existe, advierte y revisa como antes.
 
+Los hallazgos en líneas que la historia no tocó se informan como PREEXISTENTE y no bloquean: no cuentan para `max-severity`, el veredicto ni `fix-directives.md`. Sin git, en la rama principal o sin el motor `scripts/touched-lines.js`, la clasificación no se aplica y el informe dice por qué.
+
+El árbitro no cuenta un hallazgo `HIGH`/`MEDIUM` sin `Archivo:Línea` y escenario de fallo concreto: lo marca `no verificado` y lo deja visible sin bloquear. Si varios revisores reportan el mismo defecto, lo fusiona en un solo hallazgo con la severidad mayor y lo cita con `Reportado por:`.
+
 **Produces:**
 
 - `<directorio-historia>/code-review-report.md` en todas las ejecuciones válidas.

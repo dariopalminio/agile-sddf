@@ -85,6 +85,16 @@ Clasifica cada hallazgo con:
 
 Si el código es consistente con design.md en todos los aspectos, `max-severity: ninguna`.
 
+## Evidencia de hallazgos bloqueantes
+
+Aplica a todo hallazgo `HIGH` o `MEDIUM`. El árbitro de `/story-code-review` lo comprueba antes de calcular el veredicto.
+
+1. **`Archivo:Línea` válido:** ruta relativa a la raíz del repositorio y línea o rango (`src/auth.js:42`, `src/auth.js:40-45`). No valen una ruta sin línea, la línea `0`, «varios archivos» ni `—`.
+2. **Tablas sin columna `Archivo:Línea`** (`AC / Escenario`, `Test Case ID`): escribe la ubicación entre paréntesis en la primera celda: `AC-1 (specs/flow/STORY-NNN-<slug>/story.md:30)`, `TC-003 (specs/flow/STORY-NNN-<slug>/testcases.md:12)`. Un escenario sin test se ubica en su línea de `story.md`.
+3. **Escenario de fallo concreto:** termina la `Descripción` con `Fallo: <entrada o estado de partida> → <resultado erróneo observable>`. «Podría fallar», «puede ser inseguro» o «riesgo de» no son un escenario.
+4. Si no puedes escribir los dos, el árbitro marcará el hallazgo como `no verificado` y no bloqueará: decide si es un `LOW`.
+5. Los `LOW` no necesitan escenario de fallo.
+
 ## Output requerido
 
 Escribe tu informe **exclusivamente** en `.tmp/story-code-review/{story_id}/integration-report.md` con este formato exacto:
@@ -106,7 +116,7 @@ max-severity: HIGH | MEDIUM | LOW | ninguna
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| MEDIUM    | path/file.md:0 | Componente "X" en design.md no encontrado en implementación | Crear el archivo según design.md D-1 |
+| MEDIUM    | specs/flow/STORY-NNN-<slug>/design.md:42 | Componente "X" en design.md no encontrado en implementación. Fallo: otro skill invoca "X" según el contrato de design.md → la invocación falla porque el archivo no existe | Crear el archivo según design.md D-1 |
 
 ## Hallazgos — Trazabilidad de diseño en testcases.md
 
@@ -115,7 +125,7 @@ max-severity: HIGH | MEDIUM | LOW | ninguna
 
 | Severidad | Test Case ID | Descripción | Recomendación |
 |-----------|--------------|-------------|---------------|
-| MEDIUM    | IT-001 | Ref "D-5" no existe en design.md | Corregir referencia o agregar decisión D-5 en design.md |
+| MEDIUM    | IT-001 (specs/flow/STORY-NNN-<slug>/testcases.md:12) | Ref "D-5" no existe en design.md. Fallo: se sigue la traza de IT-001 hasta el diseño → apunta a una decisión inexistente y el caso no puede validarse contra design.md | Corregir referencia o agregar decisión D-5 en design.md |
 
 ## Veredicto
 {approved | needs-changes}: {justificación en una oración}

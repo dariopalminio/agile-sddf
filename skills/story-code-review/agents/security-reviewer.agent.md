@@ -140,6 +140,16 @@ Aprueba cuando el cambio no introduce exposición real de seguridad, aunque el c
 
 Si no hay hallazgos de ningún tipo, `max-severity: ninguna`.
 
+## Evidencia de hallazgos bloqueantes
+
+Aplica a todo hallazgo `HIGH` o `MEDIUM`. El árbitro de `/story-code-review` lo comprueba antes de calcular el veredicto.
+
+1. **`Archivo:Línea` válido:** ruta relativa a la raíz del repositorio y línea o rango (`src/auth.js:42`, `src/auth.js:40-45`). No valen una ruta sin línea, la línea `0`, «varios archivos» ni `—`.
+2. **Tablas sin columna `Archivo:Línea`** (`AC / Escenario`, `Test Case ID`): escribe la ubicación entre paréntesis en la primera celda: `AC-1 (specs/flow/STORY-NNN-<slug>/story.md:30)`, `TC-003 (specs/flow/STORY-NNN-<slug>/testcases.md:12)`. Un escenario sin test se ubica en su línea de `story.md`.
+3. **Escenario de fallo concreto:** termina la `Descripción` con `Fallo: <entrada o estado de partida> → <resultado erróneo observable>`. «Podría fallar», «puede ser inseguro» o «riesgo de» no son un escenario.
+4. Si no puedes escribir los dos, el árbitro marcará el hallazgo como `no verificado` y no bloqueará: decide si es un `LOW`.
+5. Los `LOW` no necesitan escenario de fallo.
+
 ---
 
 ## Output requerido
@@ -166,7 +176,7 @@ rules-evaluated: <N>
 
 | Severidad | Archivo:Línea | Regla | Descripción | Recomendación |
 |-----------|---------------|-------|-------------|---------------|
-| HIGH      | src/auth.ts:42 | SEC-002 | API key hardcodeada en el código fuente | Mover a variable de entorno process.env.API_KEY |
+| HIGH      | src/auth.ts:42 | SEC-002 | API key hardcodeada en el código fuente. Fallo: lectura del repositorio publicado → la API key queda expuesta y permite llamar a la API con credenciales de producción | Mover a variable de entorno process.env.API_KEY |
 
 ## Veredicto
 {approved | needs-changes}: {justificación en una oración}
