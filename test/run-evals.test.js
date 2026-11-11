@@ -439,7 +439,7 @@ test('el prompt de simulación separa los artefactos declarados del filesystem r
   assert.match(prompt, /El contenido proporcionado por el escenario tiene prioridad/);
   assert.match(prompt, /Si el escenario declara un archivo ausente, permanece ausente/);
   assert.match(prompt, /NO modifiques ningún archivo/);
-  assert.match(prompt, /Responde únicamente con el bloque de formato: tu primera línea debe ser `=== CONSOLE ===`/);
+  assert.match(prompt, /Responde únicamente con el bloque de formato: tu primera línea debe ser === CONSOLE ===, en línea propia, sin backticks ni otra decoración/);
   assert.ok(!prompt.includes('EXPECTATIVA_PRIVADA'));
 });
 
@@ -453,8 +453,8 @@ test('el prompt sandbox exige la consola canónica y veta el preámbulo anterior
   const spec = parseSandboxSpec(testCase, 'test');
   const prompt = buildSandboxPrompt('epic-format-validation', 'skills/epic-format-validation/SKILL.md', testCase, spec);
   assert.ok(prompt.includes('Eres un ejecutor de evals (protocolo E3'));
-  assert.match(prompt, /Responde únicamente con el bloque de formato: tu primera línea debe ser `=== CONSOLE ===`/);
-  assert.match(prompt, /Si tu primera línea no es exactamente `=== CONSOLE ===`, la respuesta se califica como error de formato y el caso falla/);
+  assert.match(prompt, /Responde únicamente con el bloque de formato: tu primera línea debe ser === CONSOLE ===, en línea propia, sin backticks ni otra decoración/);
+  assert.match(prompt, /Si tu primera línea no es exactamente === CONSOLE ===, la respuesta se califica como error de formato y el caso falla/);
 });
 
 test('gradeOutput califica solo el bloque CONSOLE…END aunque un preámbulo cite los marcadores', () => {
@@ -553,6 +553,47 @@ test('gradeOutput evalúa cada bloque canónico y pasa si alguno cumple', () => 
   const failed = gradeOutput(testCase, bothIncomplete);
   assert.equal(failed.pass, false);
   assert.match(failed.evidence, /segundo intento sin la línea/);
+});
+
+test('gradeOutput tolera marcadores con backticks en línea propia (falso negativo TC-039)', () => {
+  const testCase = {
+    ...makeCase('TC-039'),
+    expected: {
+      contains: ['(verdict: NEEDS-CHANGES)', '1 hallazgo(s) bloqueante(s)', 'Cubierto por Product-Owner-Reviewer', 'round: 1'],
+      not_contains: ['DoD-CODE-REVIEW', '2 hallazgo(s) bloqueante(s)'],
+    },
+  };
+  const preamble = '## Objective\n- Simular en seco (protocolo E3) la ejecución del skill story-code-review para el caso TC-039.\n\n## Work State\n### Active\n- Composición de la respuesta final única.\n';
+  const block = [
+    '`=== CONSOLE ===`',
+    '🔍 Iniciando revisión de código para: STORY-040',
+    '📄 Reporte generado: specs/flow/STORY-040-x/code-review-report.md (verdict: NEEDS-CHANGES)',
+    '1 hallazgo(s) bloqueante(s) en el reporte. Requieren corrección antes de aprobar.',
+    '`=== FILE: specs/flow/STORY-040-x/fix-directives.md ===`',
+    'round: 1',
+    'Cubierto por Product-Owner-Reviewer: specs/flow/STORY-040-x/story.md:30',
+    '`=== END ===`',
+  ].join('\n');
+  const grade = gradeOutput(
+    testCase,
+    `${preamble}\n${block}\n\nNotas (supuestos fuera del escenario, sin efecto en el scoring):\n- El hallazgo NO está excluido por la sección "No reportar".`,
+  );
+  assert.equal(grade.pass, true, JSON.stringify({ missing: grade.missing, violated: grade.violated }));
+});
+
+test('gradeOutput sigue exigiendo el bloque canónico cuando los marcadores backticked solo se citan en prosa', () => {
+  const testCase = {
+    ...makeCase('TC-039'),
+    expected: { contains: ['(verdict: NEEDS-CHANGES)'], not_contains: [] },
+  };
+  const prose = [
+    '- Formato obligatorio: primera línea exacta `=== CONSOLE ===`; luego bloques `=== FILE: <ruta> ===` por archivo escrito.',
+    'Se esperaba emitir `=== CONSOLE ===` antes de `=== END ===` pero no se emitió.',
+  ].join('\n');
+  const grade = gradeOutput(testCase, prose);
+  assert.equal(grade.pass, false);
+  assert.equal(grade.formatError, true);
+  assert.match(grade.missing.join(' '), /formato/);
 });
 
 test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar un reporte abreviado', () => {

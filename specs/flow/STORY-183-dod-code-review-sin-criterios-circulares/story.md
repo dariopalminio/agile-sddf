@@ -5,7 +5,7 @@ id: STORY-183
 kind: feat
 slug: STORY-183-dod-code-review-sin-criterios-circulares
 title: "DoD CODE-REVIEW sin criterios circulares"
-status: CODE-REVIEW
+status: ACCEPTED
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
