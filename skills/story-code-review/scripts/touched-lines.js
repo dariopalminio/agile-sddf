@@ -10,7 +10,8 @@
  *
  *   - `untouched` — el archivo existía en la base y ninguna línea del rango cambió
  *   - `touched`   — alguna línea del rango cambió, o el archivo no existe en la base
- *   - `unknown`   — la ubicación no se puede leer, el archivo no existe o git falló
+ *   - `unknown`   — la ubicación no se puede leer, el archivo no existe, el rango supera el final
+ *                   del archivo o git falló
  *
  * Invariante: nunca devuelve `untouched` sin evidencia de git; ante cualquier duda, `touched` o
  * `unknown`. El árbitro (Paso 4a.2 de SKILL.md) solo puede marcar PREEXISTENTE una ubicación
@@ -113,15 +114,24 @@ function resolveBase(repoRoot) {
   return { applied: true, reason: null, message: null, baseRef, base: mergeBase.stdout.trim() };
 }
 
+/** Número de líneas del archivo: un `\n` final no abre una línea más; un archivo vacío tiene 0. */
+function countLines(absolute) {
+  const content = fs.readFileSync(absolute, 'utf8');
+  if (content === '') return 0;
+  const breaks = content.split('\n').length - 1;
+  return content.endsWith('\n') ? breaks : breaks + 1;
+}
+
 /**
  * Evidencia de un archivo frente a la base, calculada una vez por archivo:
- * `{ status: 'unknown' | 'new' | 'diff', why?, lines?, whole? }`.
+ * `{ status: 'unknown' | 'new' | 'diff', why?, lineCount?, lines?, whole? }`.
  */
 function fileEvidence(repoRoot, base, file) {
   const absolute = path.join(repoRoot, ...file.split('/'));
   if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile()) {
     return { status: 'unknown', why: 'el archivo no existe en el working tree' };
   }
+  const lineCount = countLines(absolute);
   if (!git(repoRoot, ['cat-file', '-e', `${base}:./${file}`]).ok) {
     return { status: 'new', why: 'el archivo no existe en la base (nuevo, renombrado o sin seguimiento)' };
   }
@@ -129,7 +139,7 @@ function fileEvidence(repoRoot, base, file) {
   if (!diff.ok) return { status: 'unknown', why: 'git diff falló para el archivo' };
   const lines = touchedLines(diff.stdout);
   // Un diff sin hunks (binario, cambio de modo) no prueba qué líneas siguen intactas.
-  return { status: 'diff', lines, whole: diff.stdout.trim() !== '' && lines.size === 0 };
+  return { status: 'diff', lineCount, lines, whole: diff.stdout.trim() !== '' && lines.size === 0 };
 }
 
 function classifyOne(location, parsed, evidence) {
@@ -137,8 +147,13 @@ function classifyOne(location, parsed, evidence) {
   if (evidence.status === 'unknown') return { ...entry, status: 'unknown', why: evidence.why };
   if (evidence.status === 'new') return { ...entry, status: 'touched', why: evidence.why };
   if (evidence.whole) return { ...entry, status: 'touched', why: 'el archivo cambió sin hunks de línea legibles' };
-  for (let line = parsed.start; line <= parsed.end; line++) {
-    if (evidence.lines.has(line)) return { ...entry, status: 'touched', why: `la línea ${line} cambió respecto de la base` };
+  // Una línea inexistente no prueba nada: un defecto citado con una línea errónea no pasa por PREEXISTENTE.
+  if (parsed.end > evidence.lineCount) {
+    return { ...entry, status: 'unknown', why: `el rango supera el final del archivo (${evidence.lineCount} líneas)` };
+  }
+  const changed = [...evidence.lines].filter((line) => line >= parsed.start && line <= parsed.end);
+  if (changed.length > 0) {
+    return { ...entry, status: 'touched', why: `la línea ${Math.min(...changed)} cambió respecto de la base` };
   }
   return { ...entry, status: 'untouched', why: 'el archivo existe en la base y el rango no cambió' };
 }

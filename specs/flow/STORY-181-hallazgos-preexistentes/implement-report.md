@@ -5,7 +5,7 @@ slug: STORY-181-implement-report
 title: "Implement Report: Hallazgos preexistentes"
 story: STORY-181
 created: 2026-11-10
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 # Reporte de Implementación: Hallazgos preexistentes
@@ -20,6 +20,7 @@ updated: 2026-11-10
 | Tareas bloqueadas | 0 |
 | Tareas omitidas (ya completadas antes) | 0 |
 | Fecha de implementación | 2026-11-10 |
+| Ronda de corrección (rework) | 1 — 2026-11-11, sin tareas pendientes (25/25 ya completadas) |
 
 **Estado:** ✅ Implementación completa
 
@@ -57,6 +58,19 @@ updated: 2026-11-10
 
 ---
 
+## Correcciones de fix-directives.md (ronda 1)
+
+| # | Archivo:Línea | Severidad | Resultado |
+|---|---|---|---|
+| 1 | skills/story-code-review/scripts/touched-lines.js:134-140 | MEDIUM | 💻 corregido: skills/story-code-review/scripts/touched-lines.js — `fileEvidence` cuenta las líneas del working tree (`countLines`) y `classifyOne` devuelve `unknown` con `why` «el rango supera el final del archivo (N líneas)» si `end` las supera. Incluye el LOW recomendado: se recorre `evidence.lines` en vez de iterar el rango (sin bucle sin cota). Prueba de regresión nueva en `test/story-code-review-preexisting.test.js` (aserción 4 de D-8): `:500`, `:18-25` y `:21` sobre un archivo de 20 líneas → `unknown`; `:20` y `:19-20` → `untouched`. RED (1 fallo) → GREEN (21/21) |
+| 2 | docs/guardrails/dod-story-code-review.md:21 | MEDIUM | 💻 corregido: se resuelve con el #1 (el DoD no se editó) |
+| 3 | docs/guardrails/dod-story-code-review.md:25 | MEDIUM | 💻 corregido: se resuelve con el #1 (el DoD no se editó); requiere re-ejecutar `/story-code-review STORY-181` |
+
+**Archivos corregidos:** `skills/story-code-review/scripts/touched-lines.js`, `test/story-code-review-preexisting.test.js`
+**Hallazgos omitidos por archivo inexistente:** ninguno
+
+---
+
 ## Evidencia de verificación (contratos de design.md)
 
 | # | Contrato | Evidencia |
@@ -65,7 +79,7 @@ updated: 2026-11-10
 | 2 | `max-severity` excluye los PREEXISTENTE | Paso 4b (severidad efectiva: hallazgos apartados por 4a.1 y 4a.2); TC-030 |
 | 3 | Mismo defecto en línea tocada → `MEDIUM`, `NEEDS-CHANGES`, `fix-directives.md` | TC-031; pruebas de línea modificada, añadida, vecina de borrado y commit + working tree |
 | 4 | Sin base determinable → ningún PREEXISTENTE, motivo en el informe | TC-032; pruebas `on-main-branch`, `not-a-repo`, `detached-head`, `no-main-branch`, `no-merge-base`, `git-unavailable`; Paso 4a.2 punto 3 y texto `unavailable` de `{{PREEXISTING_STATUS}}` |
-| 5 | Nunca `untouched` sin evidencia | Pruebas de archivo nuevo (con y sin seguimiento), rango parcial, ubicación sin línea, `..`, absoluta, inexistente y rango inverso |
+| 5 | Nunca `untouched` sin evidencia | Pruebas de archivo nuevo (con y sin seguimiento), rango parcial, ubicación sin línea, `..`, absoluta, inexistente, rango inverso y línea o rango más allá del final del archivo (ronda 1) |
 | 6 | Línea no tocada causada por la historia no es PREEXISTENTE | TC-033; regla de causa en el Paso 4a.2 punto 4 |
 | 7 | Categoría en la plantilla sin cambiar `verdict`, `max-severity` ni secciones | Aserción 7 (frontmatter sin `PREEXISTENTE`); `test/story-code-review-review-md.test.js` (aserción 4 de encabezados) en verde; la plantilla solo gana la fila `Hallazgos preexistentes` |
 | 8 | Vocabulario de ADR-0021 | `🟣 PREEXISTENTE` en `SKILL.md`, igual que la tabla de ADR-0021 (`🟣 Pre-existing` → `PREEXISTENTE`) |
@@ -77,6 +91,8 @@ updated: 2026-11-10
 - **Diff sin hunks** (archivo binario o cambio de solo modo): todas las líneas del archivo cuentan como tocadas. Extiende la regla de D-3 «si el archivo difiere entero, todas sus líneas son tocadas» al caso en que git no da hunks de línea; el error va en el sentido seguro.
 - `git diff` se ejecuta con `--no-textconv` además de `--no-color --no-ext-diff`, para que un filtro de texto del proyecto no altere la numeración.
 - `git cat-file -e <base>:./<ruta>` usa la forma relativa al directorio de trabajo, válida aunque `--repo-root` no sea la raíz de git.
+- **Línea fuera de rango** (ronda 1): una ubicación cuyo `end` supera el número de líneas del archivo en el working tree es `unknown`. Un `
+` final no abre una línea más y un archivo vacío tiene 0 líneas. El control va después de los casos `new` y «diff sin hunks» (ambos `touched`), así que solo sustituye un posible `untouched` o `touched` sin evidencia por `unknown`.
 - Los mensajes de error de la CLI nombran solo el archivo de ubicaciones (`basename`), sin la ruta absoluta del host (`gr-code-security-checklist`).
 
 ## Trabajo concurrente (STORY-182)
@@ -94,6 +110,9 @@ Durante esta implementación otra sesión implementó STORY-182 (verificar y ded
 | `npm test` sin `test/story-code-review-preexisting.test.js` | 535/536: la misma falla de `S097-UT-011` (6,2 s), así que no la causa esta historia |
 | `npm run verify:repository` | exit 0 ✓ en la primera ejecución; exit 1 en las finales solo por `S097-UT-011` |
 | `npm run test:eval -- story-code-review` | no ejecutado (a criterio humano, AGENTS.md) |
+| **Ronda 1 (2026-11-11)** `node --test test/story-code-review-preexisting.test.js` | RED: 20/21 (falla solo la prueba nueva de línea fuera de rango) → GREEN: 21/21 ✓ |
+| **Ronda 1** `npm run verify:repository` | exit 0 ✓ |
+| **Ronda 1** `npm test` | 556/557: falla solo `S097-UT-011` (5,7 s sobre el umbral de 5 s); aislada pasa en 0,7 s ✓ |
 
 > **Prueba sensible a la carga:** `S097-UT-011` mide tiempo real con un umbral fijo. Falló con la máquina cargada (otra sesión implementando STORY-182 en paralelo) y pasa aislada. No toca ningún archivo de esta historia. Conviene repetir `npm run verify:repository` con la máquina libre antes de `/story-code-review`.
 
@@ -106,7 +125,7 @@ Durante esta implementación otra sesión implementó STORY-182 (verificar y ded
 | 1 | Todos los escenarios Gherkin definidos en `story.md` pasan exitosamente | ⚠️ | La mecánica de AC-1 a AC-3 la cubre la prueba del motor; los escenarios completos son TC-030 a TC-032, que requieren `npm run test:eval` (a criterio humano) |
 | 2 | Los criterios no funcionales de `story.md` están verificados | ✓ | CNF-1 (contrato 8), CNF-2 (contrato 7, aserción 7), CNF-3 (T004 antes de T012) |
 | 3 | El comportamiento coincide con lo especificado en `design.md` | ✓ | I-1 a I-8 y D-1 a D-8 implementados; desviaciones menores dentro de D-3 documentadas arriba |
-| 4 | No hay regresiones en las funcionalidades previamente trabajadas | ✓ | `npm test` 556/556 en la primera ejecución completa y prueba de STORY-180 en verde; la falla posterior de `S097-UT-011` (umbral de tiempo) aparece también sin los archivos de esta historia y pasa aislada (ver «Pruebas ejecutadas») |
+| 4 | No hay regresiones en las funcionalidades previamente trabajadas | ✓ | Ronda 1: `verify:repository` exit 0 y `npm test` 556/557 con la única falla en `S097-UT-011` (tiempo), que pasa aislada; `npm test` 556/556 en la primera ejecución completa y prueba de STORY-180 en verde; la falla posterior de `S097-UT-011` (umbral de tiempo) aparece también sin los archivos de esta historia y pasa aislada (ver «Pruebas ejecutadas») |
 | 5 | El código sigue las convenciones de `constitution.md` | ✓ | Motor Node ≥ 18 sin dependencias, patrón de `story-complete.js` (JSDoc, JSON en stdout, exit 2) |
 | 6 | No hay código comentado ni `TODO` sin issue asociado | ✓ | Revisión de los archivos tocados |
 | 7 | No hay variables, imports ni funciones sin usar | ✓ | Todas las funciones del motor se usan o se exportan (I-4) |

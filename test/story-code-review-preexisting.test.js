@@ -154,6 +154,20 @@ test('sin línea, con .., absoluta o de archivo inexistente es unknown', (t) => 
   for (const entry of result.locations) assert.equal(entry.status, 'unknown', entry.location);
 });
 
+test('una línea o un rango más allá del final del archivo es unknown; la última línea no', (t) => {
+  const root = epicRepo(t);
+  const result = classifyLocations({
+    repoRoot: root,
+    locations: ['src/mod.js:500', 'src/mod.js:18-25', 'src/mod.js:21', 'src/mod.js:20', 'src/mod.js:19-20'],
+  });
+  assert.equal(statusOf(result, 'src/mod.js:500'), 'unknown');
+  assert.equal(statusOf(result, 'src/mod.js:18-25'), 'unknown');
+  assert.equal(statusOf(result, 'src/mod.js:21'), 'unknown');
+  assert.match(result.locations[0].why, /final del archivo/);
+  assert.equal(statusOf(result, 'src/mod.js:20'), 'untouched');
+  assert.equal(statusOf(result, 'src/mod.js:19-20'), 'untouched');
+});
+
 test('parseLocation normaliza \\, ./ y comillas invertidas, y rechaza lo que no es <ruta>:<N>[-<M>]', () => {
   assert.deepEqual(parseLocation('src\\mod.js:2'), { file: 'src/mod.js', start: 2, end: 2 });
   assert.deepEqual(parseLocation('`./src/mod.js:3-6`'), { file: 'src/mod.js', start: 3, end: 6 });
