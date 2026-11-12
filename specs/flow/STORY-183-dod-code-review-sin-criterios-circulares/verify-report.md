@@ -40,7 +40,7 @@ updated: 2026-11-11
 - [ ] E2E tests
 - [ ] Performance tests
 - [ ] Security tests
-- [ ] Evals
+- [x] Evals
 
 Ejecuciones (sddf.config.yaml › verify, `required: true`):
 

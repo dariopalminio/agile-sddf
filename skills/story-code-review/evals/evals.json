@@ -27,7 +27,7 @@
           "CODE-REVIEW",
           "DONE",
           "ninguna",
-          "Revision aprobada",
+          "Revisión aprobada",
           "Veredicto:",
           "Sin hallazgos bloqueantes"
         ],
@@ -35,9 +35,9 @@
           "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "READY-FOR-IMPLEMENT",
-          "Entorno invalido",
+          "Entorno inválido",
           "Artefactos requeridos no encontrados",
-          "no esta en estado IMPLEMENT"
+          "no está en un estado válido para revisar"
         ]
       },
       "threshold": 0.90
@@ -80,16 +80,16 @@
           "HIGH",
           "code-review-report.md",
           "→ Ejecuta /story-implement",
-          "hallazgos criticos",
+          "hallazgos críticos",
           "Veredicto:",
           "hallazgo(s) bloqueante(s)"
         ],
         "not_contains": [
           "Implementar fix-directives.md",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE",
-          "Revision aprobada",
-          "Entorno invalido",
+          "Estado story.md: CODE-REVIEW/DONE",
+          "Revisión aprobada",
+          "Entorno inválido",
           "Artefactos requeridos no encontrados"
         ]
       },
@@ -118,7 +118,7 @@
           "fix-directives.md",
           "(verdict: APPROVED)",
           "(verdict: NEEDS-CHANGES)",
-          "Entorno invalido",
+          "Entorno inválido",
           "(verdict: "
         ]
       },
@@ -148,8 +148,8 @@
           "(verdict: APPROVED)",
           "(verdict: NEEDS-CHANGES)",
           "CODE-REVIEW/IN-PROGRESS",
-          "Entorno invalido",
-          "Iniciando revision",
+          "Entorno inválido",
+          "Iniciando revisión",
           "(verdict: "
         ]
       },
@@ -193,8 +193,8 @@
         ],
         "not_contains": [
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE",
-          "Revision aprobada"
+          "Estado story.md: CODE-REVIEW/DONE",
+          "Revisión aprobada"
         ]
       },
       "threshold": 0.85
@@ -271,7 +271,7 @@
         ],
         "not_contains": [
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 0.85
@@ -358,8 +358,8 @@
           "Implementar fix-directives.md",
           "Tarea agregada",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE",
-          "Revision aprobada"
+          "Estado story.md: CODE-REVIEW/DONE",
+          "Revisión aprobada"
         ]
       },
       "threshold": 0.90
@@ -407,7 +407,7 @@
           "Tarea agregada",
           "Artefactos requeridos no encontrados",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -444,7 +444,7 @@
           "READY-FOR-IMPLEMENT",
           "round: 2",
           "→ Ejecuta /story-implement",
-          "Entorno invalido",
+          "Entorno inválido",
           "Artefactos requeridos no encontrados"
         ]
       },
@@ -493,7 +493,7 @@
           "Implementar fix-directives.md",
           "Tarea agregada",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -541,7 +541,7 @@
           "round: 2",
           "Implementar fix-directives.md",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -591,7 +591,7 @@
           "Implementar fix-directives.md",
           "tasks.md (actualizado)",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -643,7 +643,7 @@
           "Implementar fix-directives.md",
           "tasks.md (actualizado)",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -672,7 +672,7 @@
           "code-review-report.md",
           "(verdict: NEEDS-CHANGES)",
           "(verdict: APPROVED)",
-          "Entorno invalido",
+          "Entorno inválido",
           "(verdict: "
         ]
       },
@@ -757,7 +757,7 @@
         ],
         "not_contains": [
           "(verdict: BLOCKED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 0.9
@@ -773,7 +773,7 @@
         "story_substatus": "IN-PROGRESS",
         "artifacts_present": ["story.md", "design.md", "implement-report.md"],
         "existing_partial_reports": ["tech-lead-report.md", "product-owner-report.md", "integration-report.md", "security-report.md"],
-        "existing_partial_finding": "Hallazgo obsoleto de una revision anterior",
+        "existing_partial_finding": "Hallazgo obsoleto de una revisión anterior",
         "agent_results": {
           "tech_lead_max_severity": "ninguna",
           "product_owner_max_severity": "ninguna",
@@ -783,7 +783,7 @@
       },
       "expected": {
         "contains": ["Reanudando revisión", "CODE-REVIEW/IN-PROGRESS", "Agentes lanzados en paralelo", "(verdict: APPROVED)", "CODE-REVIEW/DONE", "code-review-report.md"],
-        "not_contains": ["Hallazgo obsoleto de una revision anterior", "fix-directives.md (ronda", "no está en un estado válido para revisar"]
+        "not_contains": ["Hallazgo obsoleto de una revisión anterior", "fix-directives.md (ronda", "no está en un estado válido para revisar"]
       },
       "threshold": 1.0
     },
@@ -807,7 +807,7 @@
       },
       "expected": {
         "contains": ["Reanudando revisión", "(verdict: NEEDS-CHANGES)", "fix-directives.md", "round: 1", "READY-FOR-IMPLEMENT/DONE"],
-        "not_contains": ["(verdict: APPROVED)", "CODE-REVIEW/DONE"]
+        "not_contains": ["(verdict: APPROVED)", "Estado story.md: CODE-REVIEW/DONE"]
       },
       "threshold": 1.0
     },
