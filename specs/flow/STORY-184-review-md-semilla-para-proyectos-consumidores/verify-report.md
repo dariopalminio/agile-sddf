@@ -122,7 +122,7 @@ Nota de alcance (INC-002 de analyze.md): la verificación de E2E-001 a E2E-003 l
 
 ## Historial de Ejecuciones Anteriores
 
-**Evidencia:** Verificación manual de evals: TC-001 a TC-004
+**Evidencia:** Verificación manual de evals: TC-001, TC-002, TC-004
 
 Se ejecutan:
 
