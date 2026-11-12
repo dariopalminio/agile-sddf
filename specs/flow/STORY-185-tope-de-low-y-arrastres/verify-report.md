@@ -94,11 +94,33 @@ Desglose de ejecuciones:
 
 **Evidencia:** Ejecutar los evals de la historia a criterio humano para cerrar el criterio 3 del DoD: `npm run test:eval -- story-code-review --only TC-042,TC-043,TC-044,TC-045`
 
-Se ejecutan:
+Se ejecutan en primera vuelta de test:
 
-npm run test:eval -- story-code-review --only TC-042 --eval-runner opencode --timeout 3600 --report 2>&1 | tail -20
-npm run test:eval -- story-code-review --only TC-043 --eval-runner opencode --timeout 3600 --report 2>&1 | tail -22
-npm run test:eval -- story-code-review --only TC-044 --eval-runner opencode --timeout 3600 --report 2>&1 | tail -16
-npm run test:eval -- story-code-review --only TC-045 --eval-runner opencode --timeout 3600 --report 2>&1 | tail -22
+npm run test:eval -- story-code-review --only TC-042 --eval-runner opencode --timeout 3600 --report
+npm run test:eval -- story-code-review --only TC-043 --eval-runner opencode --timeout 3600 --report
+npm run test:eval -- story-code-review --only TC-044 --eval-runner opencode --timeout 3600 --report
 
+Eval Report: story-code-review
+
+**Fecha:** 2026-11-12 | **Total:** 3 | ✅ Passed: 3 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-042 | tope-de-low-desde-review-md | happy-path | 0.9 | ✅ PASS | — |
+| TC-043 | tope-por-defecto-review-md-sin-tope | edge-case | 0.9 | ✅ PASS | — |
+| TC-044 | tope-por-defecto-sin-review-md | edge-case | 0.9 | ✅ PASS | — |
+
+Segunda vuelta:
+
+npm run test:eval -- story-code-review --only TC-045 --eval-runner opencode --timeout 3600 --concurrency 1 --report 2>&1 | tail -30
+npm run test:eval -- story-code-review --only TC-046 --eval-runner opencode --timeout 3600 --concurrency 1 --report 2>&1 | tail -25
+
+Verificación
+- npm test 584/584 ✅ · npm run verify:repository OK ✅
+- E2E: TC-045 PASS (236 s) y TC-046 PASS (2314 s) con --eval-runner opencode --concurrency 1.
+
+
+✅ Todos los 5 casos pasaron. El skill está listo.
+---
 

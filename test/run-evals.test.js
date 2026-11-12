@@ -781,6 +781,33 @@ test('un fallo de OpenCode con stdout se reporta como ERROR, sin falso PASS', as
   assert.match(result.output, /ERROR.*opencode exit 0.*error del proveedor/);
 });
 
+test('un formatError de OpenCode con nudges de compaction añade el diagnóstico de auto-compaction', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const events = [
+    { type: 'text', part: { text: 'Continue if you have next steps, or stop and ask for clarification if you are unsure how to proceed.', synthetic: true, metadata: { compaction_continue: true } } },
+    { type: 'text', part: { text: '## Objective\n- trabajo previo\n## Work State\n## Next Move\nThe summary above is the complete deliverable.' } },
+  ].map((event) => JSON.stringify(event)).join('\n');
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode'], {
+    runOpenCode: async () => ({ ok: true, code: 0, stdout: '## Objective\n- trabajo previo\n## Work State\n## Next Move\nThe summary above is the complete deliverable.', events, stderr: '', durationMs: 0 }),
+  });
+  assertExit(result, 1);
+  assert.match(result.output, /auto-compaction del modelo detectada/);
+  assert.match(result.output, /SDDF_EVAL_OPENCODE_MODEL/);
+});
+
+test('un formatError de OpenCode sin compaction no añade el diagnóstico de auto-compaction', async (t) => {
+  const fixture = createFixture(t);
+  writeSkill(fixture, 'alpha');
+  const stdout = '## Objective\n## Next Move\nThe summary above is the complete deliverable.';
+  const result = await runRunner(fixture, ['alpha', '--eval-runner', 'opencode'], {
+    runOpenCode: async () => ({ ok: true, code: 0, stdout, events: JSON.stringify({ type: 'text', part: { text: stdout } }), stderr: '', durationMs: 0 }),
+  });
+  assertExit(result, 1);
+  assert.match(result.output, /la respuesta no incluye el bloque === CONSOLE ===/);
+  assert.doesNotMatch(result.output, /auto-compaction del modelo detectada/);
+});
+
 test('OpenCode en Windows resuelve el binario nativo o el launcher npm sin shell', () => {
   const args = ['run', '--format', 'json'];
   const runtime = { platform: 'win32', nodeExecutable: 'C:\\node\\node.exe', env: { Path: 'C:\\Open Code;C:\\npm' } };

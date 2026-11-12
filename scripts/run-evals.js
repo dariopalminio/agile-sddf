@@ -1126,6 +1126,9 @@ async function runSkill(planSkill, opts, runtime = {}) {
       return { tc, status: 'ERROR', grade: null, reason, durationMs: run.durationMs };
     }
     const grade = gradeOutput(tc, run.stdout);
+    if (grade.formatError && opts.evalRunner === 'opencode' && typeof run.events === 'string' && run.events.includes('compaction_continue')) {
+      grade.missing.push('diagnóstico: auto-compaction del modelo detectada (el texto final es un handover sin el bloque === CONSOLE ===); prueba un modelo con mayor contexto (SDDF_EVAL_OPENCODE_MODEL o --model) o reduce la carga del caso');
+    }
     if (spec) {
       const files = gradeSandboxFiles(spec, before, snapshotTree(sandboxDir));
       fs.writeFileSync(
