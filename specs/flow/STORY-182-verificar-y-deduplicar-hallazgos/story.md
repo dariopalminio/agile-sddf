@@ -5,11 +5,11 @@ id: STORY-182
 kind: feat
 slug: STORY-182-verificar-y-deduplicar-hallazgos
 title: "Verificación y deduplicación de hallazgos del árbitro"
-status: ACCEPTANCE
+status: DELIVER
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-11
+updated: 2026-11-12
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-185-tope-de-low-y-arrastres
@@ -71,7 +71,7 @@ Entonces "code-review-report.md" muestra los tres hallazgos por separado
 
 ## 📎 Notas / contexto adicional
 
-- Cubre la parte de **verificación y deduplicación** de **CS-4** de EPIC-28; el control de ruido (tope y arrastres de LOW) es STORY-185. Esta historia nace de dividir la STORY-182 original (patrón 4, complejidad de criterios de aceptación; la core conserva el ID y los escenarios de verificación y deduplicación).
+- Cubre el criterio de salida de EPIC-28 **CS-4b** — Un HIGH/MEDIUM sin `Archivo:Línea` y escenario de fallo no cambia el veredicto ni entra en `fix-directives.md`, y un hallazgo repetido entre revisores aparece una sola vez. El control de ruido (tope y arrastres de LOW, **CS-4c**) es STORY-185. Esta historia nace de dividir la STORY-182 original (patrón 4, complejidad de criterios de aceptación; la core conserva el ID y los escenarios de verificación y deduplicación).
 - **Escenario de fallo concreto:** nombra una entrada o un estado de partida y el resultado erróneo observable que produce (p. ej., «con un `story.md` sin `parent:`, el Paso 1b aborta con `undefined`»). «Podría fallar» o «puede ser inseguro» no lo son. Solo se verifica HIGH y MEDIUM: un LOW no bloquea.
 - **`Archivo:Línea` válido:** ruta de archivo y número de línea o rango (`src/auth.js:42`, `src/auth.js:40-45`). Una ruta sin línea o un texto como «varios archivos» no lo es.
 - **Criterio de igualdad («mismo defecto»):** dos hallazgos son el mismo defecto si citan el mismo archivo, la misma línea o rangos que se solapan, y la misma corrección los resuelve.

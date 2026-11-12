@@ -5,11 +5,11 @@ id: STORY-180
 kind: feat
 slug: STORY-180-story-code-review-lee-review-md
 title: "story-code-review lee REVIEW.md"
-status: ACCEPTANCE
+status: DELIVER
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-11
+updated: 2026-11-12
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-178-adr-guia-de-revision
@@ -83,7 +83,9 @@ Entonces no devuelve resultados
 
 ## 📎 Notas / contexto adicional
 
-- Cubre **CS-2** y **CS-3** de EPIC-28, y el escenario **SMOKE-1** y **SMOKE-3**.
+- Cubre **CS-3** de EPIC-28, y el escenario **SMOKE-1** y **SMOKE-3**.
+- Cubre el criterio de salida de EPIC-28 **CS-2** — `story-code-review` pasa `REVIEW.md` a los cuatro revisores y al árbitro; sin `REVIEW.md` emite una advertencia y el contrato de `code-review-report.md` (frontmatter, secciones y veredicto) no cambia.
+- Cubre el criterio de salida de EPIC-28 **CS-8a** — `skills/story-code-review/evals/evals.json` incluye los casos de calibración `REVIEW.md` presente, `REVIEW.md` ausente y secreto falso en `examples/`.
 - **Depende de STORY-178:** la fuente de lectura (working tree o rama base) y la precedencia de `REVIEW.md` frente a `constitution.md` y el DoD las fija el ADR. Implementar después de STORY-178 y STORY-179.
 - **Punto de inserción:** el Paso 2d de `skills/story-code-review/SKILL.md` localiza `constitution.md` y el DoD; el Paso 3b lista las variables que recibe cada revisor (`$STORY_DIR`, `$REPO_PATH`, `$CONSTITUTION_PATH`, `$DOD_PATH`…). Las reglas propias del repo están en `skills/story-code-review/agents/integration-reviewer.agent.md:48-49`.
 - **Tamaño:** cinco escenarios que tocan el skill y los cuatro agentes. Si `/story-evaluation` la marca como grande, separar AC-5 (limpieza de agentes) en una historia propia es el corte natural.

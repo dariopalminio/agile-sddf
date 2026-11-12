@@ -5,7 +5,7 @@ id: STORY-184
 kind: feat
 slug: STORY-184-review-md-semilla-para-proyectos-consumidores
 title: "REVIEW.md semilla para proyectos consumidores"
-status: ACCEPTANCE
+status: DELIVER
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08

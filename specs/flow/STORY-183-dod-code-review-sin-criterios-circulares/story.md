@@ -5,11 +5,11 @@ id: STORY-183
 kind: feat
 slug: STORY-183-dod-code-review-sin-criterios-circulares
 title: "DoD CODE-REVIEW sin criterios circulares"
-status: ACCEPTANCE
+status: DELIVER
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-11
+updated: 2026-11-12
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-178-adr-guia-de-revision
@@ -73,7 +73,7 @@ Esquema del escenario: Un criterio que ningún revisor cubre produce su propio h
 
 ## 📎 Notas / contexto adicional
 
-- Cubre **CS-5** de EPIC-28.
+- Cubre el criterio de salida de EPIC-28 **CS-5** — `dod-story-code-review.md` y su plantilla en `skills/sddf-constitution/assets/dod-story/` no contienen criterios que el orquestador satisface por sí mismo (informe creado, veredicto `APPROVED`, ausencia de bloqueantes), y `memory-system check` pasa.
 - **Archivos del DoD:** el guardrail `docs/guardrails/dod-story-code-review.md` y la plantilla `skills/sddf-constitution/assets/dod-story/dod-story-code-review.md`.
 - **Criterios circulares hoy** (guardrail): «Sin hallazgo bloqueante de severidad HIGH o MEDIUM» (L21), «El reporte de revisión de código (`code-review-report.md`) está creado o actualizado» (L24) y «Revisión de código aprobada (`verdict: APPROVED` …)» (L25). Las notas de la épica registran que los criterios 8 y 9 se autoevalúan.
 - **Criterios cubiertos por revisores:** «Cada escenario Gherkin tiene correspondencia en el código» (Product-Owner-Reviewer) y «Los componentes respetan la arquitectura de `design.md`» (Integration-Reviewer). La evaluación del DoD está en el Paso 4c.1 de `skills/story-code-review/SKILL.md`. Hoy esa evaluación cita `Archivo:Línea` del DoD en cada hallazgo propio; AC-3 conserva ese comportamiento.

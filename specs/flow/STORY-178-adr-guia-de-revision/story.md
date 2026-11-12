@@ -5,11 +5,11 @@ id: STORY-178
 kind: chore
 slug: STORY-178-adr-guia-de-revision
 title: "ADR de la guía de revisión"
-status: ACCEPTANCE
+status: DELIVER
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-11
+updated: 2026-11-12
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
 ---
@@ -72,7 +72,7 @@ Entonces el ADR indica qué versión de esa guía rige la revisión de esa histo
 
 ## 📎 Notas / contexto adicional
 
-- Cubre la parte del ADR del criterio de salida **CS-1** de EPIC-28; el resto de CS-1 (el `REVIEW.md` con sus cuatro secciones) corresponde a la historia «REVIEW.md de agile-sddf».
+- Cubre el criterio de salida de EPIC-28 **CS-1a** — Un ADR nuevo, registrado en `docs/adr/README.md`, fija la ubicación, la precedencia, la fuente de lectura y el vocabulario de `REVIEW.md`. El `REVIEW.md` con sus cuatro secciones (**CS-1b**) corresponde a la historia «REVIEW.md de agile-sddf».
 - El ADR es obligatorio por la constitución (`docs/constitution.md`, sección de decisiones transversales): la decisión afecta a `story-code-review` y `sddf-constitution` y restringe las historias siguientes. Por eso conviene implementar esta historia antes que las que leen `REVIEW.md`.
 - Las decisiones (a) fuente de lectura y (c) ubicación en la raíz vienen de la nota «Decisiones para el ADR» de la épica. La decisión (b), cómo identificar las líneas no tocadas para PREEXISTENTE si el skill no usa `git diff`, no está en el enunciado de esta historia: puede incorporarse al ADR o resolverse en el `design.md` de «Hallazgos preexistentes».
 - La tabla de AC-2 recoge el vocabulario propuesto en las notas de la épica; el ADR puede ajustarlo si documenta el motivo, siempre que cada severidad tenga una sola traducción.

@@ -5,11 +5,11 @@ id: STORY-179
 kind: chore
 slug: STORY-179-review-md-de-agile-sddf
 title: "REVIEW.md de agile-sddf"
-status: ACCEPTANCE
+status: DELIVER
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-11
+updated: 2026-11-12
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-178-adr-guia-de-revision
@@ -79,7 +79,7 @@ Entonces cada ítem nombra una comprobación que "verify:repository" no ejecuta
 
 ## 📎 Notas / contexto adicional
 
-- Cubre la parte de `REVIEW.md` del criterio de salida **CS-1** de EPIC-28. La parte del ADR corresponde a STORY-178.
+- Cubre el criterio de salida de EPIC-28 **CS-1b** — `REVIEW.md` existe en la raíz con las secciones qué es importante, tope de Minor, qué no reportar y qué verificar siempre. La parte del ADR (**CS-1a**) corresponde a STORY-178.
 - **Orden recomendado:** implementar después de STORY-178. El vocabulario de CNF-1 y la tabla de AC-2 siguen la propuesta de las notas de la épica; si el ADR la ajusta, `REVIEW.md` adopta la traducción del ADR.
 - **Plantilla:** `docs/templates/REVIEW-template.md` se ajustó el 2026-11-08, al crear esta historia, a las cuatro secciones de la convención. Se quitó la sección «Formato de salida» (prefijos `[P1-Seguridad]`…) porque `REVIEW.md` "cambia lo que la revisión encuentra y reporta; no cambia el formato" (code.claude.com/docs/en/code-review-customize): el formato lo fija la plantilla de `code-review-report.md`. Se añadió una línea con el vocabulario y la regla de que un Important exige `archivo:línea` y un escenario de fallo concreto.
 - **Reglas que hoy viven en los agentes:** `skills/story-code-review/agents/integration-reviewer.agent.md:48-49` exige «un solo nivel de delegación» y cita el «Principio 6 de constitution.md» para la escritura en `.tmp/`. En un proyecto consumidor ese principio es otro. AC-2 recoge esas reglas sin citar el número de principio.

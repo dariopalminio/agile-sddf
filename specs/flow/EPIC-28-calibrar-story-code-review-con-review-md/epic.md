@@ -7,7 +7,7 @@ status: DEVELOP
 substatus: DONE
 parent: null
 created: 2026-11-07
-updated: 2026-11-11
+updated: 2026-11-12
 related: []
 ---
 
@@ -38,14 +38,19 @@ Que `/story-code-review` reporte lo que de verdad importa en cada repositorio y 
 
 ## Criterios de salida
 
-- [ ] **CS-1** — `REVIEW.md` existe en la raíz con las secciones qué es importante, tope de Minor, qué no reportar y qué verificar siempre, y un ADR nuevo, registrado en `docs/adr/README.md`, fija su ubicación, precedencia, fuente de lectura y vocabulario.
+- [ ] **CS-1a** — Un ADR nuevo, registrado en `docs/adr/README.md`, fija la ubicación, la precedencia, la fuente de lectura y el vocabulario de `REVIEW.md`.
+- [ ] **CS-1b** — `REVIEW.md` existe en la raíz con las secciones qué es importante, tope de Minor, qué no reportar y qué verificar siempre.
 - [ ] **CS-2** — `story-code-review` pasa `REVIEW.md` a los cuatro revisores y al árbitro; sin `REVIEW.md` emite una advertencia y el contrato de `code-review-report.md` (frontmatter, secciones y veredicto) no cambia.
 - [ ] **CS-3** — `grep -rE "Principio 6|teléfono descompuesto|un solo nivel de delegación" skills/story-code-review/agents/` no devuelve resultados.
-- [ ] **CS-4** — Un hallazgo PREEXISTENTE, o un HIGH/MEDIUM sin `Archivo:Línea` y escenario de fallo, no cambia el veredicto ni entra en `fix-directives.md`; un hallazgo repetido entre revisores aparece una sola vez, y ningún revisor supera el tope de LOW.
+- [ ] **CS-4a** — Un hallazgo PREEXISTENTE no cambia el veredicto ni entra en `fix-directives.md`.
+- [ ] **CS-4b** — Un HIGH/MEDIUM sin `Archivo:Línea` y escenario de fallo no cambia el veredicto ni entra en `fix-directives.md`, y un hallazgo repetido entre revisores aparece una sola vez.
+- [ ] **CS-4c** — Ningún revisor supera el tope de LOW.
 - [ ] **CS-5** — `dod-story-code-review.md` y su plantilla en `skills/sddf-constitution/assets/dod-story/` no contienen criterios que el orquestador satisface por sí mismo (informe creado, veredicto `APPROVED`, ausencia de bloqueantes), y `memory-system check` pasa.
 - [ ] **CS-6** — `/sddf-constitution` crea `REVIEW.md` desde una plantilla cuando no existe y no lo modifica si ya existe.
 - [ ] **CS-7** — Los cuatro informes parciales se escriben en `.tmp/story-code-review/{story_id}/`, y el Security-Reviewer descubre los checklists `docs/guardrails/gr-*security*` sin depender de los enlaces de `constitution.md`.
-- [ ] **CS-8** — `skills/story-code-review/evals/evals.json` incluye casos de calibración (secreto falso en `examples/`, hallazgo preexistente, tope de LOW, `REVIEW.md` presente y ausente), y `npm run verify:repository` y `npm test` pasan sin errores.
+- [ ] **CS-8a** — `skills/story-code-review/evals/evals.json` incluye los casos de calibración `REVIEW.md` presente, `REVIEW.md` ausente y secreto falso en `examples/`.
+- [ ] **CS-8b** — `skills/story-code-review/evals/evals.json` incluye el caso de calibración hallazgo preexistente.
+- [ ] **CS-8c** — `skills/story-code-review/evals/evals.json` incluye el caso de calibración tope de LOW.
 
 ## Smoke tests
 
@@ -88,6 +93,7 @@ Escenario: REVIEW.md semilla
 - **Vocabulario:** 🔴 Important = HIGH/MEDIUM (bloquea en `story-code-review`), 🟡 Minor = LOW, 🟣 Pre-existing = PREEXISTENTE. A diferencia de Anthropic, cuyo check es neutral y nunca bloquea, `story-code-review` es un gate: un falso MEDIUM cuesta una ronda completa.
 - **Línea base (2026-11-07):** ≈580 hallazgos LOW en 55 de los 71 informes archivados (media ≈10, máximo 21); en STORY-125, 20 LOW arrastrados entre rondas y uno duplicado entre revisores; los criterios 8 y 9 del DoD se autoevalúan; el informe de STORY-171 no sigue la plantilla.
 - **Decisiones para el ADR** (obligatorio por la regla 16 de la constitución, porque afecta a `story-code-review` y `sddf-constitution`): (a) leer `REVIEW.md` del working tree o de la rama base; hoy el skill no usa git, y como mínimo debe advertir si la historia modifica `REVIEW.md` o el DoD. (b) Cómo identificar las líneas no tocadas para PREEXISTENTE, si hoy el skill no usa `git diff`. (c) `REVIEW.md` va en la raíz por convención de la herramienta, como `AGENTS.md` y `CLAUDE.md`, sin abrir una cuarta raíz en ADR-0019.
+- **Refinamiento del contrato de salida (2026-11-12):** tras el `NEEDS-REFINEMENT` de `/epic-analyze`, CS-1, CS-4 y CS-8 se dividieron según el reparto real entre historias (CS-1a/b, CS-4a/b/c, CS-8a/b/c), porque `/epic-analyze` no suma coberturas parciales de varias historias; el contenido exigido no cambia. La parte de CS-8 «`npm run verify:repository` y `npm test` pasan sin errores» se retiró del contrato de salida: la exige el DoD VALIDATE de la épica (`docs/guardrails/dod-epic-validate.md`), y `verify:repository` ya ejecuta `node --test test`.
 - **Publicación:** el `REVIEW.md` de la raíz es propio de este repo y no se publica (`package.json › files` no lo incluye); los proyectos consumidores reciben la semilla vía `sddf-constitution`.
 - **Evals:** cada historia que cambie el comportamiento de un skill escribe primero sus casos en `evals/evals.json` (principio 11); `npm run test:eval` se ejecuta a criterio humano.
 - **Fuera de alcance:** activar Claude Code Review en GitHub (decisión humana) y ejecutar los content guardrails `gr-*` en CI.

@@ -5,11 +5,11 @@ id: STORY-185
 kind: feat
 slug: STORY-185-tope-de-low-y-arrastres
 title: "Tope de LOW por revisor y sin arrastres entre rondas"
-status: ACCEPTANCE
+status: DELIVER
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-11
+updated: 2026-11-12
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-182-verificar-y-deduplicar-hallazgos
@@ -76,7 +76,8 @@ Escenario: Informe legado sin registro de LOW
 
 ## 📎 Notas / contexto adicional
 
-- Cubre la parte de **control de ruido** de **CS-4** de EPIC-28 (tope de LOW y arrastres entre rondas). Nace de dividir la STORY-182 original (patrón 4, complejidad de criterios de aceptación).
+- Cubre el criterio de salida de EPIC-28 **CS-4c** — Ningún revisor supera el tope de LOW. También cubre los arrastres de LOW entre rondas.
+- Cubre el criterio de salida de EPIC-28 **CS-8c** — `skills/story-code-review/evals/evals.json` incluye el caso de calibración tope de LOW. Nace de dividir la STORY-182 original (patrón 4, complejidad de criterios de aceptación).
 - **Línea base (2026-11-07):** ≈580 LOW en 55 de los 71 `code-review-report.md` archivados (media ≈10, máximo 21). En STORY-125, 20 LOW se arrastraron entre rondas.
 - **Tope por defecto:** 5 LOW por revisor, que coincide con el «Tope de Minor» de `docs/templates/REVIEW-template.md`; el éxito se mide por ese tope, no por un mecanismo concreto.
 - **Alcance de AC-2:** la omisión por arrastre solo se aplica si la revisión anterior guardó `code-review-lows.json`. El contenido de una línea «no tocada por el rework» debe coincidir con la huella registrada. Un informe legado sin registro no prueba el estado anterior del código: no se reconstruyen huellas históricas ni se atribuye una comparación retroactiva. Ese informe solo permite reconocer el caso legado antes de sobrescribirlo.
