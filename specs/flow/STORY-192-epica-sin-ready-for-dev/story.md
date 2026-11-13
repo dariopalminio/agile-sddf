@@ -13,7 +13,7 @@ updated: 2026-11-13
 related:
   - EPIC-029-eliminar-estados-buffer
   - STORY-186-adr-de-workflows-sin-estados-buffer
-  - STORY-187-dominio-sin-estados-buffer
+  - STORY-187-dominio-y-requisitos-sin-buffers
 ---
 [[EPIC-029-eliminar-estados-buffer]]
 
@@ -73,7 +73,7 @@ Ejemplos:
 
 - Un skill que apruebe la épica o escriba `PLAN/DONE` en `epic.md`.
 - Los documentos de dominio de la épica (`domain-epic-lifecycle`): STORY-187.
-- El aviso de `skill-preflight` para un `epic.md` en `READY-FOR-DEV`: STORY-193.
+- El aviso de `skill-preflight` para un `epic.md` en `READY-FOR-DEV`: STORY-191.
 
 ## 📎 Notas / contexto adicional
 

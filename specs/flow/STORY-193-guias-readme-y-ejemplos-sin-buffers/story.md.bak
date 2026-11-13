@@ -1,9 +1,9 @@
 ---
 alwaysApply: false
 type: story
-id: STORY-194
+id: STORY-193
 kind: chore
-slug: STORY-194-guias-readme-y-ejemplos-sin-buffers
+slug: STORY-193-guias-readme-y-ejemplos-sin-buffers
 title: "Guías, README y ejemplos sin buffers"
 status: SPECIFY
 substatus: DONE

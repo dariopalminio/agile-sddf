@@ -1,6 +1,6 @@
 ---
 type: finvest-evaluation
-story-id: STORY-194
+story-id: STORY-193
 finvest-score: 4.08
 verdict: APPROVED
 evaluated: 2026-11-13

@@ -71,7 +71,7 @@ Entonces el ADR la trata como "IMPLEMENT/TODO" si existe "implement-report.md" y
 
 ## Fuera de alcance (Non-Goals)
 
-- Modificar skills, documentos de dominio, requisitos, guías o ejemplos: lo hacen STORY-187 a STORY-194, que implementan este ADR.
+- Modificar skills, documentos de dominio, requisitos, guías o ejemplos: lo hacen STORY-187 a STORY-192 y STORY-194, que implementan este ADR.
 - El substatus `HUMAN-REVIEW`, un WIP configurable o un aviso de inventario para `PLAN/DONE`, y una política de planificación justo a tiempo (fuera de alcance de la épica).
 - Escribir el bloque BREAKING de `CHANGELOG.md` o subir la versión a 6.0.0: lo hace `/epic-ship` y un paso humano.
 

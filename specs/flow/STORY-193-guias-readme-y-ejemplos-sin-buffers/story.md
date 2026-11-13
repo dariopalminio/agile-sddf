@@ -1,9 +1,9 @@
 ---
 alwaysApply: false
 type: story
-id: STORY-194
+id: STORY-193
 kind: chore
-slug: STORY-194-guias-readme-y-ejemplos-sin-buffers
+slug: STORY-193-guias-readme-y-ejemplos-sin-buffers
 title: "Guías, README y ejemplos sin buffers"
 status: SPECIFY
 substatus: DONE
@@ -13,7 +13,7 @@ updated: 2026-11-13
 related:
   - EPIC-029-eliminar-estados-buffer
   - STORY-186-adr-de-workflows-sin-estados-buffer
-  - STORY-187-dominio-sin-estados-buffer
+  - STORY-187-dominio-y-requisitos-sin-buffers
 ---
 [[EPIC-029-eliminar-estados-buffer]]
 
@@ -27,7 +27,7 @@ related:
 
 ### AC-1 — Escenario principal – Solo quedan las menciones permitidas
 ```gherkin
-Dado que STORY-186 a STORY-193 están completadas
+Dado que STORY-186 a STORY-192 están completadas
 Cuando se ejecuta grep -rnE "READY-FOR-(IMPLEMENT|DEV)" skills docs README.md
 Entonces solo devuelve los registros históricos (ADR-0003, ADR-0006, ADR-0008 y las propuestas fechadas de "docs/product/roadmap.md")
   Y el ADR nuevo
