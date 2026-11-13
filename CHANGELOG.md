@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [5.2.1] — 2026-11-13
+
+### Fixed
+
+- `/epic-analyze` (BUG-003): un criterio de salida que declara su ID con el formato del template (`- [ ] **CS-<id>** — <criterio>`, p. ej. `CS-5` o `CS-4a`) queda cubierto cuando un `story.md` cita ese ID («Cubre **CS-5** de EPIC-NN»). Es la misma regla E1 que ya se aplicaba a `SMOKE-<N>`: con límite de palabra (`CS-1` no casa `CS-10` ni `CS-1a`) y fuera de las secciones «Fuera de alcance». Antes el skill exigía copiar el texto completo del criterio y emitía SAL-01 sobre criterios ya cubiertos, lo que además dejaba la épica en `NEEDS-CHANGES` en `/epic-validate` (EST-02). El reporte usa el ID declarado como etiqueta del criterio y copia su enunciado carácter a carácter de la línea de `epic.md` que cita, sin cláusulas tomadas del índice de historias ni de otra sección. Con ID declarado, la acción de SAL-01 sugiere «citar `CS-<id>` en su `story.md`». `/epic-refine` aplica las mismas reglas al revalidar un SAL-01: si una historia ya cita el criterio por su ID, el hallazgo queda `ya resuelto` y no se agrega ningún AC de cierre. Las épicas cuyos criterios no declaran ID se analizan como antes, con la etiqueta posicional `CS-<n>`.
+
 ## [5.2.0] — 2026-11-12
 
 ### Added
