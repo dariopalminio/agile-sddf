@@ -26,7 +26,7 @@ related:
 Estado verificado del que parte el diseño:
 
 - **Gate que resuelve:** `domain-epic-lifecycle` §7, invariante 3, y §8, «Gate de completitud de historias» (`DEVELOP → VALIDATE`: todas las historias en `DELIVER`). La épica (`Notas`) amplía «terminada» a `DELIVER/DONE` y `COMPLETED/DONE`, incluidas las archivadas, y deja abierto el trato de `CANCELED/DONE`, que este diseño decide (D-3).
-- **Reglas de cruce ya existentes (P3):** `skills/epic-analyze/SKILL.md` fija la resolución de la épica (Paso 1: `specs/flow/<ID>-*/epic.md`, guion obligatorio tras el ID, épicas nunca en `archive/`), el parseo del índice (Paso 3: F2/F3 por el token `**STORY-NNN**`, F1 sin checkbox ni ID) y el inventario de historias (Paso 4: `specs/flow/STORY-*/story.md` ∪ `specs/flow/archive/*-STORY-*/story.md`, pertenencia por prefijo `EPIC-NN` de `parent`, activa antes que archivada). `epic-analyze` no se reutiliza como paso porque escribe `epic-analyze-report.md` (contradice CNF-1); se reutilizan sus **reglas**, citadas en una referencia propia.
+- **Reglas de cruce ya existentes (P3):** `skills/epic-analyze/SKILL.md` fija la resolución de la épica (Paso 1: `specs/flow/<ID>-*/epic.md`, guion obligatorio tras el ID, épicas nunca en `archive/`), el parseo del índice (Paso 3: F2/F3 por el token `**STORY-NNN**`, F1 sin checkbox ni ID) y el inventario de historias (Paso 4: `specs/flow/STORY-*/story.md` ∪ `specs/flow/archive/*-STORY-*/story.md`, pertenencia por prefijo `EPIC-NNN` de `parent`, activa antes que archivada). `epic-analyze` no se reutiliza como paso porque escribe `epic-analyze-report.md` (contradice CNF-1); se reutilizan sus **reglas**, citadas en una referencia propia.
 - **Archivo de historias:** ADR-0017 y `domain-story-lifecycle` §9: las `COMPLETED` y `CANCELED` con `substatus: DONE` viven en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` conservando su status.
 - **Registro de un skill nuevo:** `package.json › files` ya publica `skills/` completo (CS-12 queda cubierto sin editar `package.json`); `scripts/verify-fixed-layout.js` exige el marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`; `scripts/verify-eval-inventory.js` exige `evals/evals.json` con casos `TC-NNN`; `docs/guardrails/gr-skill-creation-checklist.md` fija frontmatter (`name`, `description` `>-`, ≤ 500 caracteres), `SKILL.md` < 500 líneas y referencias enlazadas. `epic-track-progress` no emite `verdict` de archivo: no es fila de §4 de `validation-contract-policy` ni entra en `scripts/verify-validation-contract.js`.
 - **Tamaño:** el `SKILL.md` más corto del catálogo mide 53 líneas (`story-improve`) y el de `epic-analyze`, 336. La historia exige compacidad (CNF-4, CNF-5).
@@ -65,7 +65,7 @@ No se crea `assets/` (no hay reporte ni template), ni `scripts/` (D-1), ni `READ
 
 | Interfaz | Contrato | AC que satisface |
 |---|---|---|
-| Invocación | `/epic-track-progress <epica>` con `<epica>` = `EPIC-NN`, nombre de directorio `EPIC-NN-<slug>` o ruta. Sin flags. Sin argumento → pregunta el ID | AC-1…AC-4 |
+| Invocación | `/epic-track-progress <epica>` con `<epica>` = `EPIC-NNN`, nombre de directorio `EPIC-NNN-<slug>` o ruta. Sin flags. Sin argumento → pregunta el ID | AC-1…AC-4 |
 | Frontmatter de `SKILL.md` | `name: epic-track-progress`; `description: >-` en español, ≤ 350 caracteres, con disparadores «epic-track-progress», «progreso de la épica», «historias terminadas», «semáforo de épica» | CS-12 |
 | Resolución de épica | Glob `specs/flow/<EPIC-NN>-*/epic.md`; 0 coincidencias o directorio sin `epic.md` → error (Flujo F4); varias → listar candidatas y error | AC-4 |
 | Lectura de `story.md` | Solo frontmatter: `parent`, `status`, `substatus` (escalares). El cuerpo nunca se lee | AC-1, CNF-4 |
@@ -110,7 +110,7 @@ No se crea `assets/` (no hay reporte ni template), ni `scripts/` (D-1), ni `READ
 1. Resolver `REPO_ROOT` y la épica (`EPIC_DIR`, `EPIC_ID`).
 2. Cargar `references/story-sources.md`.
 3. Vía A: parsear la sección `## Historias` de `epic.md` (F1/F2/F3).
-4. Vía B: inventario de `story.md` activos y archivados; pertenencia por prefijo `EPIC-NN` de `parent`.
+4. Vía B: inventario de `story.md` activos y archivados; pertenencia por prefijo `EPIC-NNN` de `parent`.
 5. Unir A ∪ B por ID; leer `status`/`substatus` de cada `story.md` resuelto.
 6. Clasificar cada fila y emitir tabla + `✅ … /epic-validate <EPIC_ID>`.
 

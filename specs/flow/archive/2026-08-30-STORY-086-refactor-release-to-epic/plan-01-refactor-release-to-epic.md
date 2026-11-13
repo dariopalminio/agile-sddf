@@ -166,7 +166,7 @@ node scripts/install.js --target .claude --force   # sobre un directorio tempora
 
 **Verificación funcional (manual, en sesión Claude Code):**
 1. `/epic-format-validation EPIC-18-workflow-hardening` sobre el `epic.md` migrado → debe dar **APROBADO** (confirma que el skill renombrado lee el artefacto renombrado y valida contra `epic-template.md`).
-2. `/epic-from-project-plan` en dry-run → debe encontrar la sección `## Propuesta de Épicas` del `project-plan.md` actualizado y proponer directorios `EPIC-NN-*/epic.md`.
+2. `/epic-from-project-plan` en dry-run → debe encontrar la sección `## Propuesta de Épicas` del `project-plan.md` actualizado y proponer directorios `EPIC-NNN-*/epic.md`.
 3. Abrir [docs/index.md](docs/index.md) en VS Code y comprobar que los links a `specs/releases/EPIC-*/epic.md` resuelven (no quedan 404 de `release.md`).
 
 

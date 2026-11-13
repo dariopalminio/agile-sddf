@@ -94,7 +94,7 @@ related:
 |---|---|---|
 | Historia listada en la épica | ✓ | `epic.md` `## Historias`, línea `- [ ] **STORY-156** — Migrar los skills de implementación a specs/flow` |
 | Objetivo de la historia alineado con la épica | ✓ | El alcance de la épica pide que todos los skills lean y escriban en rutas fijas sin `SDDF_ROOT`/`root`/`SPECS_BASE`; la historia lo aplica a `story-implement` y `story-implement-tasks` y contribuye a CS-2 y CS-3 |
-| Restricciones de la épica respetadas | ✓ | Rutas `specs/flow/STORY-NNN-<slug>/` y `specs/flow/EPIC-NN-<slug>/` (convención ADR-0004); sin búsqueda en `archive/`; sin nuevos scripts (CS-11); retiro de la lista transitoria para STORY-157 |
+| Restricciones de la épica respetadas | ✓ | Rutas `specs/flow/STORY-NNN-<slug>/` y `specs/flow/EPIC-NNN-<slug>/` (convención ADR-0004); sin búsqueda en `archive/`; sin nuevos scripts (CS-11); retiro de la lista transitoria para STORY-157 |
 
 ---
 

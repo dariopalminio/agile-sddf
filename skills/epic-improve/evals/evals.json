@@ -1,7 +1,7 @@
 {
   "skill": "epic-improve",
   "version": "1.1.0",
-  "description": "Casos de prueba para epic-improve (STORY-167): corrige un epic.md con NEEDS-REFINEMENT de /epic-format-validation a partir de la tabla ## Defectos del reporte, con plan único, confirmación, epic.md.bak previo y status/substatus intactos; lista como decisión del PO lo que no puede inferir sin escribirlo; no escribe nada si el plan se rechaza o la épica ya está APPROVED. Cada fixture de skills/epic-improve/examples/ actúa como copia aislada de specs/flow/EPIC-NN-<slug>/: el runner es de solo lectura y los efectos en disco se verifican en los bloques FILE de la salida (backup con el contenido previo, epic.md corregido, ningún otro archivo). La ejecución de los evals queda a criterio humano.",
+  "description": "Casos de prueba para epic-improve (STORY-167): corrige un epic.md con NEEDS-REFINEMENT de /epic-format-validation a partir de la tabla ## Defectos del reporte, con plan único, confirmación, epic.md.bak previo y status/substatus intactos; lista como decisión del PO lo que no puede inferir sin escribirlo; no escribe nada si el plan se rechaza o la épica ya está APPROVED. Cada fixture de skills/epic-improve/examples/ actúa como copia aislada de specs/flow/EPIC-NNN-<slug>/: el runner es de solo lectura y los efectos en disco se verifican en los bloques FILE de la salida (backup con el contenido previo, epic.md corregido, ningún otro archivo). La ejecución de los evals queda a criterio humano.",
   "cases": [
     {
       "id": "TC-001",

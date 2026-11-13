@@ -141,5 +141,5 @@ node scripts/cli.js install --target .claude --force   # en un dir temporal
 
 1. Script que extrae los ~141 links `](specs/…)` de [docs/index.md](docs/index.md) y comprueba `os.path.exists` de cada uno → **0 rotos** (mismo check que se usó en el turno anterior).
 2. Ejecutar la lógica de `epic-format-validation` sobre los 19 `epic.md` en su nueva ruta: debe seguir extrayendo las 3 secciones obligatorias del template y encontrar los archivos. **Baseline conocida: 17 dan REFINAR** por falta de "Flujos Críticos / Smoke Tests" — es una carencia preexistente de contenido, no una regresión; el resultado debe ser idéntico antes y después.
-3. `/epic-from-project-plan` en dry-run → debe localizar `01-projects/PROJ-01-agile-sddf/project-plan.md` y su sección `## Propuesta de Épicas`, y proponer destinos `02-epics/EPIC-NN-*/epic.md`.
+3. `/epic-from-project-plan` en dry-run → debe localizar `01-projects/PROJ-01-agile-sddf/project-plan.md` y su sección `## Propuesta de Épicas`, y proponer destinos `02-epics/EPIC-NNN-*/epic.md`.
 4. Confirmar con `git diff HEAD --stat` que los 19 `epic.md` figuran como **renombrados (R)** y no como borrado+alta, para no perder el historial.

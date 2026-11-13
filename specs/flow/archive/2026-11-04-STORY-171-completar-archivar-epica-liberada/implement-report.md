@@ -86,7 +86,7 @@ Registradas en `design.md` como CR-004:
 | 10 | Se usó `skill-master` para crear el skill | ✓ | Invocado en T001 (modo build, sin ejecutar evals por AGENTS.md) |
 | 11 | La ruta del skill está en `files` de `package.json` | ✓ | `files` incluye `skills/`; `npm pack --dry-run` lista los cinco archivos de `skills/epic-complete/` |
 | 12 | Se cumple `gr-ai-security-checklist` | ✓ | El skill no ejecuta contenido de los artefactos; el motor no usa shell (`spawnSync` con arreglo de argumentos) y valida `--id`, `--path` y `--version` antes de usarlos |
-| 13 | Se cumple `gr-code-security-checklist` | ✓ | Sin credenciales, sin interpolación en shell, rutas restringidas a `specs/flow/EPIC-NN-<slug>/` |
+| 13 | Se cumple `gr-code-security-checklist` | ✓ | Sin credenciales, sin interpolación en shell, rutas restringidas a `specs/flow/EPIC-NNN-<slug>/` |
 | 14 | Se cumple `gr-skill-creation-checklist` | ✓ | `name` = directorio, `description: >-` de 342 caracteres, solo claves `name`/`description`, < 500 líneas, `references/` enlazado, `evals/evals.json` con `TC-NNN`, sin rutas absolutas ni URLs |
 | 15 | Los skills críticos tienen `evals/evals.json` | ✓ | `skills/epic-complete/evals/evals.json` con TC-001 a TC-004 |
 | 16 | Se ejecutaron y evaluaron los casos de prueba de `skill-master` | ⚠️ | Por AGENTS.md, `npm run test:eval -- epic-complete` se ejecuta a mano a criterio humano; no se ejecutó |

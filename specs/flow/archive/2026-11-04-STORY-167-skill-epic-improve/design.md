@@ -77,7 +77,7 @@ El `SKILL.md` lee `references/correction-rules.md` **solo** en el Paso 4 y solo 
 Invocación: `/epic-improve <EPIC-NN | ruta>`. Resolución (sin consultar `specs/flow/archive/` ni directorios `STORY-*`):
 
 1. Argumento con `/`, `\` o terminado en `.md` → ruta al `epic.md` o a su directorio.
-2. `EPIC-NN` → glob `specs/flow/EPIC-NN-*/epic.md`; exactamente una coincidencia.
+2. `EPIC-NNN` → glob `specs/flow/EPIC-NNN-*/epic.md`; exactamente una coincidencia.
 3. Sin argumento → preguntar el ID.
 
 Gate (Paso 2), leyendo **solo** el `verdict` del frontmatter de `<EPIC_DIR>/epic-format-validation-report.md` (G-06):
@@ -116,7 +116,7 @@ Contenido de `references/correction-rules.md` (resumen; el detalle de formas viv
 
 | Tipo (reporte) | Corrección | Si no se puede |
 |---|---|---|
-| `campo-faltante` | `type` → `epic`; `id` → `EPIC-NN` del nombre del directorio; `slug` → nombre del directorio; `title` → texto del `# ` tras «Épica:»; `created` → fecha del primer commit de `epic.md` (`git log --diff-filter=A --format=%as`) o, sin historial, `updated` actual; `updated` → fecha actual | `status`, `substatus` y cualquier clave fuera de esta lista → **requiere decisión del PO** (el skill no escribe estado) |
+| `campo-faltante` | `type` → `epic`; `id` → `EPIC-NNN` del nombre del directorio; `slug` → nombre del directorio; `title` → texto del `# ` tras «Épica:»; `created` → fecha del primer commit de `epic.md` (`git log --diff-filter=A --format=%as`) o, sin historial, `updated` actual; `updated` → fecha actual | `status`, `substatus` y cualquier clave fuera de esta lista → **requiere decisión del PO** (el skill no escribe estado) |
 | `seccion-faltante` | Insertar `## <título del template>` (título leído del template, nunca codificado) en la posición que indica `Ubicación` (orden del template). Cuerpo según D-5 | Sin evidencia para el cuerpo → **requiere decisión del PO**; la sección no se inserta |
 | `formato-historias` | `- [ ] Nombre: desc` / `- [x] STORY-NNN Nombre: desc` y variantes → F1/F2/F3 conservando ID, nombre, descripción y estado del checkbox; misma tabla de formas que R7 de `memory-system` | Completada sin `STORY-NNN` o sin nombre/descripción separables → **requiere decisión del PO** (el ID lo asigna `epic-generate-stories`) |
 | `formato-smoke-tests` | `### <nombre>` (con dos o más) → `### SMOKE-<N> — <nombre>` con el siguiente `N` libre; pasos `**DADO**/**CUANDO**/**ENTONCES**/**Y**` → bloque `gherkin` con `Escenario: <nombre>` (R2/R4); `SMOKE-N` repetido → siguiente `N` libre en el segundo | Sin pasos reconocibles Dado/Cuando/Entonces → **requiere decisión del PO** |

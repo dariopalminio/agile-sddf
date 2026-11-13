@@ -82,7 +82,7 @@ SDDF no exige que existan para que una feature sea válida como spec viva.
 4. **Emparejamiento sin ambigüedad.** El mismo nombre base y el mismo directorio permiten descubrir el `.md` de una
    feature, y validar el par, con una regla trivial: cambiar la extensión.
 5. **Kebab-case por coherencia con el repositorio.** La referencia de Gherkin no prescribe casing para los nombres de
-   archivo. SDDF elige kebab-case porque ya lo usa en todos sus slugs (`EPIC-NN-<slug>`, `STORY-NNN-<slug>`, ADRs,
+   archivo. SDDF elige kebab-case porque ya lo usa en todos sus slugs (`EPIC-NNN-<slug>`, `STORY-NNN-<slug>`, ADRs,
    skills), y porque evita colisiones en sistemas de archivos que no distinguen mayúsculas, como el de Windows.
 6. **El `.md` es opcional para no duplicar.** Gherkin ya admite descripciones libres en Markdown bajo `Feature` y
    `Rule`. Exigir siempre un `.md` crearía archivos vacíos o repetidos; solo se justifica cuando el contexto es extenso.

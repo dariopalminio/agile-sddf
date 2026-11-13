@@ -56,7 +56,7 @@ Estado verificado el 2026-10-29:
 
 **Goals:**
 - Crear ADR-0019, que re-enuncia el layout fijo y admite épicas `COMPLETED/DONE` y `CANCELED/DONE` en
-  `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` // satisface: AC-1, CNF-2
+  `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` // satisface: AC-1, CNF-2
 - Marcar ADR-0017 `SUPERSEDED` con los tres únicos cambios permitidos y actualizar su fila del índice // satisface: AC-1, CNF-1
 - Documentar en `AGENTS.md`, `docs/constitution.md`, `domain-epic-lifecycle`, `domain-state-management` y
   `state-machine.md` que `epic-complete` escribe `COMPLETED` de épica solo con confirmación humana // satisface: AC-2
@@ -105,11 +105,11 @@ búsqueda de épicas a `specs/flow/EPIC-*/epic.md` y no afirman que las épicas 
 
 | Interfaz | Contrato | AC |
 |---|---|---|
-| Ruta de épica archivada | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/epic.md`; el directorio conserva `EPIC-NN-<slug>` tras el prefijo de fecha, igual que las historias | AC-1 |
+| Ruta de épica archivada | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/epic.md`; el directorio conserva `EPIC-NNN-<slug>` tras el prefijo de fecha, igual que las historias | AC-1 |
 | Admisión al archivo | Solo `status: COMPLETED` o `CANCELED` con `substatus: DONE`; el status se conserva al archivar | AC-1 |
 | Fecha del prefijo | `updated:`; si no es válido, `created:`; si el frontmatter no tiene ninguna de las dos claves, `date:`. Sin fecha válida no se archiva. (Al completar, `epic-complete` escribe `updated:` de hoy, de modo que la cadena devuelve hoy: D-6 de STORY-171) | CNF-2 |
 | Escritor del archivo de épicas | Solo `epic-complete`, siempre con confirmación humana explícita (`COMPLETED`: desde `SHIP/DONE`; `CANCELED/DONE` y `COMPLETED/DONE`: archivar sin cambiar status) | AC-2 |
-| Universo de numeración de épicas | `NN` máximo de la unión de `specs/flow/EPIC-*/epic.md` y `specs/flow/archive/*-EPIC-*/epic.md`; en las archivadas, el `EPIC-NN` que sigue al prefijo `<YYYY-MM-DD>-`; `archive/` ausente se omite sin nota | AC-3 |
+| Universo de numeración de épicas | `NNN` máximo de la unión de `specs/flow/EPIC-*/epic.md` y `specs/flow/archive/*-EPIC-*/epic.md`; en las archivadas, el `EPIC-NNN` que sigue al prefijo `<YYYY-MM-DD>-`; `archive/` ausente se omite sin nota | AC-3 |
 | Resolución de épica en `epic-analyze` | Activas: sin cambio. Si no hay coincidencia activa y existe `specs/flow/archive/*-<arg>-*/epic.md` (ID o nombre), o la ruta explícita cae bajo `specs/flow/archive/`: `❌ La épica <arg> está archivada en <ruta>: /epic-analyze solo analiza épicas activas de specs/flow/.` y fin **sin escribir** | AC-2 |
 | Nota de reemplazo de ADR-0017 | Una línea `> **Superado por [ADR-0019](ADR-0019-layout-fijo-con-archivo-de-epicas.md) (<fecha>):** …` inmediatamente bajo el `#` del título, con el formato de la nota de ADR-0016 | AC-1, CNF-1 |
 
@@ -141,7 +141,7 @@ archivo ampliada, numeración y resolución de épicas, escritor) · Rationale �
 opcionales y fuera del template, escritas solo por `epic-complete` al completar (D-5 de STORY-171) // satisface: AC-2
 
 **Eval por skill (AC-3)** — un caso `TC-NNN` nuevo en `cases` de cada `evals.json`, con el fixture del Escenario:
-`specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/epic.md` y `specs/flow/EPIC-29-*/epic.md` como mayor activa;
+`specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/epic.md` y `specs/flow/EPIC-029-*/epic.md` como mayor activa;
 expectativa: ID `EPIC-31`, nunca `EPIC-30`. Para `epic-analyze`, un caso con `EPIC-30` solo archivada: mensaje de
 épica archivada y ningún archivo escrito.
 
@@ -178,8 +178,8 @@ sin escribir; si no, el mensaje vigente `❌ No se encontró la épica …`.
 |---|---|---|---|---|---|
 | D-1 | Alcance del ADR nuevo | ADR-0019 re-enuncia el layout completo de ADR-0017 y amplía la viñeta de archivo; ADR-0017 `SUPERSEDED` | (a) Editar ADR-0017 in place; (b) ADR solo del archivo de épicas con ADR-0017 `ACCEPTED`; (c) ADR solo del archivo con ADR-0017 `SUPERSEDED` | (a) viola la inmutabilidad (AGENTS.md, CNF-1); (b) dos ADR vigentes se contradirían («las épicas quedan en `specs/flow/`»); (c) el layout quedaría sin ADR vigente que lo enuncie. Mismo criterio que ADR-0017 frente a ADR-0016 | AC-1 |
 | D-2 | Estado inicial de ADR-0019 | `ACCEPTED` al crearlo; la aceptación humana se confirma en `/story-acceptance` | Crearlo `PROPOSED` y aceptarlo después | AC-1 exige ADR-0017 `SUPERSEDED`, lo que solo es coherente con un reemplazo vigente; un `PROPOSED` no vincula y dejaría a STORY-171 bloqueada | AC-1 |
-| D-3 | Forma del archivo de épicas | Mismo directorio plano y mismo formato `<YYYY-MM-DD>-EPIC-NN-<slug>/`, status conservado y misma cadena de fecha que las historias | (a) `specs/flow/archive/epics/`; (b) sufijo o prefijo por tipo | (a) contradice «sin subniveles» de ADR-0017; (b) cambia el patrón con el que resuelven globs y wikilinks. El prefijo `EPIC-`/`STORY-` ya distingue el tipo (KISS) | AC-1, CNF-2 |
-| D-4 | Numeración de épicas | Unión activas ∪ archivadas, extrayendo `EPIC-NN` tras el prefijo de fecha (patrón Fuente A de `epic-generate-stories`) | (a) Contador persistente en un archivo; (b) contar solo activas | (a) estado nuevo que puede divergir del filesystem; (b) reutilizaría `EPIC-30` tras archivarla (AC-3) y rompería `parent`/wikilinks de sus historias | AC-3 |
+| D-3 | Forma del archivo de épicas | Mismo directorio plano y mismo formato `<YYYY-MM-DD>-EPIC-NNN-<slug>/`, status conservado y misma cadena de fecha que las historias | (a) `specs/flow/archive/epics/`; (b) sufijo o prefijo por tipo | (a) contradice «sin subniveles» de ADR-0017; (b) cambia el patrón con el que resuelven globs y wikilinks. El prefijo `EPIC-`/`STORY-` ya distingue el tipo (KISS) | AC-1, CNF-2 |
+| D-4 | Numeración de épicas | Unión activas ∪ archivadas, extrayendo `EPIC-NNN` tras el prefijo de fecha (patrón Fuente A de `epic-generate-stories`) | (a) Contador persistente en un archivo; (b) contar solo activas | (a) estado nuevo que puede divergir del filesystem; (b) reutilizaría `EPIC-30` tras archivarla (AC-3) y rompería `parent`/wikilinks de sus historias | AC-3 |
 | D-5 | `epic-analyze` ante una épica archivada | Rechazar sin escribir con un mensaje que nombra la ruta archivada | (a) Analizarla y escribir el reporte en `archive/`; (b) mantener «No se encontró» genérico | (a) el gate es de `PLAN` y una épica archivada es terminal: escribir en `archive/` alteraría el registro histórico; (b) ocultaría por qué falla, ahora que el archivo existe | AC-2 |
 | D-6 | Edición de la invariante 6 y de `state-machine.md` | Cambiar solo la cláusula de `COMPLETED` de épica; la de `SHIP` es de STORY-170; la segunda historia en implementarse rebasa conservando la cláusula de la otra | (a) Reescribir la invariante entera; (b) dejar `state-machine.md` sin tocar | (a) pisaría a STORY-170 (D-9 y CR-002 de STORY-170); (b) la fuente canónica de transiciones seguiría diciendo que ningún skill escribe `COMPLETED` | AC-2 |
 | D-7 | Cómo nombrar a `epic-complete` antes de que exista | Como regla de gobierno («lo escribe `epic-complete`, con confirmación humana»), en texto plano, **sin enlace** a `skills/epic-complete/` | (a) Enlazar `skills/epic-complete/SKILL.md`; (b) esperar a STORY-171 para documentar el escritor | (a) `check-doc-links.js` fallaría (CNF-3); (b) invierte el orden de entrega que exigen STORY-171/172. El ADR registra la autorización; STORY-171 entrega el skill antes de `SHIP` de la épica | AC-2, CNF-3 |
@@ -209,7 +209,7 @@ sin escribir; si no, el mensaje vigente `❌ No se encontró la épica …`.
 | Situación | Comportamiento |
 |---|---|
 | `specs/flow/archive/` no existe | La numeración usa solo las activas, sin nota (F3) |
-| Directorio archivado sin `epic.md` o con nombre que no casa `<YYYY-MM-DD>-EPIC-NN-*` | No aporta `NN`; igual que `epic-generate-stories` con historias |
+| Directorio archivado sin `epic.md` o con nombre que no casa `<YYYY-MM-DD>-EPIC-NNN-*` | No aporta `NN`; igual que `epic-generate-stories` con historias |
 | `epic-complete` aún no instalado (antes de STORY-171) | Los documentos solo autorizan; ninguna épica se archiva y la numeración coincide con la actual |
 | STORY-170 se implementa antes | Rebasar la invariante 6 y la nota de `state-machine.md` conservando su cláusula de `SHIP` (D-6) |
 
@@ -217,12 +217,12 @@ sin escribir; si no, el mensaje vigente `❌ No se encontró la épica …`.
 
 | # | Criterio | Método | AC |
 |---|---|---|---|
-| 1 | ADR-0019 existe, `ACCEPTED`, `supersedes: ADR-0017`, admite `COMPLETED/DONE` y `CANCELED/DONE` en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` con la cadena `updated:` → `created:` → `date:` | Revisión del ADR | AC-1, CNF-2 |
+| 1 | ADR-0019 existe, `ACCEPTED`, `supersedes: ADR-0017`, admite `COMPLETED/DONE` y `CANCELED/DONE` en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` con la cadena `updated:` → `created:` → `date:` | Revisión del ADR | AC-1, CNF-2 |
 | 2 | ADR-0017 solo cambia en `status`, `superseded-by` y la nota bajo el título | `git diff -- docs/adr/ADR-0017-*.md` muestra exactamente esas líneas | AC-1, CNF-1 |
 | 3 | La fila de ADR-0017 muestra `SUPERSEDED → [ADR-0019](…)` y existe la fila de ADR-0019 | Revisión de `docs/adr/README.md` + `npm run verify:links` | AC-1 |
 | 4 | Ningún documento activo afirma que las épicas no se archivan | `git grep -n -i -E "épicas (no se archivan\|nunca se archivan)\|todas las épicas quedan" -- AGENTS.md docs skills ':!docs/adr/ADR-*' ':!skills/*/evals/*'` sin resultados | AC-2 |
 | 5 | `AGENTS.md`, `docs/constitution.md`, `domain-epic-lifecycle`, `domain-state-management` y `state-machine.md` nombran a `epic-complete` como escritor de `COMPLETED` de épica con confirmación humana | `git grep -n "epic-complete" -- AGENTS.md docs/constitution.md docs/domains/domain-epic-lifecycle.md docs/domains/domain-state-management.md docs/architecture/state-machine.md` cubre los cinco archivos | AC-2 |
-| 6 | `epic-creation` y `epic-from-project-plan` asignan `EPIC-31` con `EPIC-30` archivada y `EPIC-29` activa | Casos `TC-008` y `TC-012` (`npm run test:eval -- <skill>`, a criterio humano) | AC-3 |
+| 6 | `epic-creation` y `epic-from-project-plan` asignan `EPIC-31` con `EPIC-30` archivada y `EPIC-029` activa | Casos `TC-008` y `TC-012` (`npm run test:eval -- <skill>`, a criterio humano) | AC-3 |
 | 7 | `epic-analyze` rechaza sin escribir una épica archivada | Caso `TC-030` | AC-2 |
 | 8 | Gate determinista en verde | `npm run verify:repository` y `npm test` | CNF-3 |
 

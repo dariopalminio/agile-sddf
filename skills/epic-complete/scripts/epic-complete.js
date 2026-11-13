@@ -10,7 +10,7 @@
  *   - `CANCELED/DONE`  → archiva sin escribir nada en `epic.md`: conserva su status (action `archive-canceled`)
  *   - `CANCELED/<otro>` se rechaza con `CANCELED_NOT_DONE`; cualquier otro estado, con `NOT_SHIPPED`
  *
- * Destino (ADR-0019): `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`. En `archive-only` y
+ * Destino (ADR-0019): `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`. En `archive-only` y
  * `archive-canceled` la fecha sale de `updated:` → `created:` → `date:` (este solo si faltan las dos
  * claves anteriores), como en `story-complete.js`. `--version` solo participa en `complete`.
  *
@@ -152,7 +152,7 @@ function locateEpic({ repoRoot, id, epicPath }) {
   if (epicPath !== undefined) {
     const rel = path.relative(repoRoot, path.resolve(repoRoot, epicPath)).split(path.sep).join('/');
     if (!EPIC_PATH_RE.test(rel)) {
-      return fail('INVALID_PATH', `La ruta ${epicPath} no es una épica de specs/flow/ (se esperaba specs/flow/EPIC-NN-<slug>/)`);
+      return fail('INVALID_PATH', `La ruta ${epicPath} no es una épica de specs/flow/ (se esperaba specs/flow/EPIC-NNN-<slug>/)`);
     }
     if (!fs.existsSync(abs(repoRoot, rel)) || !fs.statSync(abs(repoRoot, rel)).isDirectory()) {
       return fail('NOT_FOUND', `No se encontró el directorio ${rel}/`);

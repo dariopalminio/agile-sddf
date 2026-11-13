@@ -18,7 +18,7 @@ related:
 
 | Origen 4.x | Destino 5.0.0 |
 |---|---|
-| `docs/specs/epics/EPIC-NN-<slug>/` | `specs/flow/EPIC-NN-<slug>/` |
+| `docs/specs/epics/EPIC-NNN-<slug>/` | `specs/flow/EPIC-NNN-<slug>/` |
 | `docs/specs/stories/STORY-NNN-<slug>/` (no `COMPLETED`) | `specs/flow/STORY-NNN-<slug>/` |
 | `docs/specs/stories/STORY-NNN-<slug>/` (`COMPLETED`) | `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`, con la fecha de su `updated:` (o `created:` si falta, o `date:` si faltan ambos) |
 | `root:` en `sddf.config.yaml` | se elimina |
@@ -30,7 +30,7 @@ related:
 2. Ejecuta `npx agile-sddf install --force`. Borra a mano las copias instaladas de `docs-wiki-builder` en el directorio de skills de cada runtime: el skill se eliminó y el instalador no borra copias antiguas.
 3. Pide el diagnóstico explícito `/skill-preflight` y anota las señales de layout legado que informa (`docs/specs/`, la clave `root`, `SDDF_ROOT`).
 4. Crea `specs/flow/archive/`, `specs/living/` y `workflow/`, cada uno con un `.gitkeep` vacío. `/sddf-init` no los crea mientras exista `docs/specs/`: avisa del layout legado, no escribe nada y remite a esta guía.
-5. Mueve cada épica con `git mv docs/specs/epics/EPIC-NN-<slug> specs/flow/`.
+5. Mueve cada épica con `git mv docs/specs/epics/EPIC-NNN-<slug> specs/flow/`.
 6. Mueve cada historia que no esté `COMPLETED` con `git mv docs/specs/stories/STORY-NNN-<slug> specs/flow/`.
 7. Mueve cada historia `COMPLETED` con `git mv docs/specs/stories/STORY-NNN-<slug> specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>`, con la fecha de la tabla anterior.
 8. Elimina lo que quede en `docs/specs/` (por ejemplo, su `README.md`) y el directorio.

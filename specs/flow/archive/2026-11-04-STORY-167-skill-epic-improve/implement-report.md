@@ -76,7 +76,7 @@ Orden de ejecución: siguiendo la fase RED de `skill-master` y `gr-skill-creatio
 
 Detalle:
 
-1. **Evals (#1).** Cada fixture se declara como copia aislada de `specs/flow/EPIC-NN-<slug>/` y los efectos en disco se comprueban sobre los bloques `=== FILE: … ===` que califica `scripts/run-evals.js` (patrón de `epic-refine`):
+1. **Evals (#1).** Cada fixture se declara como copia aislada de `specs/flow/EPIC-NNN-<slug>/` y los efectos en disco se comprueban sobre los bloques `=== FILE: … ===` que califica `scripts/run-evals.js` (patrón de `epic-refine`):
    - TC-001, TC-002 y TC-006 exigen los bloques de `epic.md.bak` y `epic.md`, el contenido previo en el backup (`updated: 2026-10-20`), `status: DEFINE` / `substatus: IN-PROGRESS` y la ausencia de bloques del reporte o de `STORY-*`; TC-001 fija la fecha de hoy y exige `updated: 2026-10-30` y `- [ ] **CS-1** —`.
    - TC-003 (plan rechazado), TC-004 (`APPROVED`), TC-005 y TC-007 exigen que no exista ningún bloque `=== FILE:`.
    - TC-008 (nuevo) revalida: aplica en seco `epic-format-validation` al `epic.md` corregido de TC-001 y exige `Revalidación: verdict: APPROVED`, como comprobación del eval y no del skill (D-9).

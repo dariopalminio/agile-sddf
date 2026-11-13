@@ -48,6 +48,6 @@ previous-score: 3.97
 **Cambio realizado:**
 - AC-1 exige ahora que ADR-0017 pase a `status "SUPERSEDED"` con `superseded-by` y una nota de reemplazo. Añade un `Y` para la fila del índice en `docs/adr/README.md`. CNF-1 se reescribió con los tres cambios que permite el README.
 - AC-2 cierra su `Pero` sobre `AGENTS.md`, `docs/` (salvo los ADR inmutables) y `skills/`, así que se puede verificar con una búsqueda.
-- AC-3 se reemplazó por un Scenario Outline de numeración para `/epic-creation` y `/epic-from-project-plan`: con EPIC-30 archivada y EPIC-29 como la activa mayor, la épica nueva recibe EPIC-31 y no EPIC-30. Este escenario falla con el comportamiento actual.
+- AC-3 se reemplazó por un Scenario Outline de numeración para `/epic-creation` y `/epic-from-project-plan`: con EPIC-30 archivada y EPIC-029 como la activa mayor, la épica nueva recibe EPIC-31 y no EPIC-30. Este escenario falla con el comportamiento actual.
 
 ---

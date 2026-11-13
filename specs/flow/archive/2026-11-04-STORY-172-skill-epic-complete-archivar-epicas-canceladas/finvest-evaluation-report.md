@@ -69,7 +69,7 @@ _(Solo se completa si F_score ≥ 2.5)_
 ### I – Independencia (2)
 
 - Secuenciar explícitamente: no activar STORY-172 hasta que STORY-171 esté al menos en `PLAN/DONE` con su ADR aceptado; dejarlo en las Notas como precondición de inicio, no solo como «Dependencia».
-- Para reducir el acoplamiento, indicar en las Notas qué contrato de STORY-171 se reutiliza (resolución de `EPIC-NN`, cálculo de `<YYYY-MM-DD>`, paso de confirmación y detección de conflicto), de modo que esta historia solo añada la rama `CANCELED/DONE` y pueda probarse con un stub del skill si STORY-171 se retrasa.
+- Para reducir el acoplamiento, indicar en las Notas qué contrato de STORY-171 se reutiliza (resolución de `EPIC-NNN`, cálculo de `<YYYY-MM-DD>`, paso de confirmación y detección de conflicto), de modo que esta historia solo añada la rama `CANCELED/DONE` y pueda probarse con un stub del skill si STORY-171 se retrasa.
 
 ### S – Small (3)
 

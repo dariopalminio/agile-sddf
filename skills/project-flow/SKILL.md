@@ -83,7 +83,7 @@ Evalúa estas condiciones en orden. La primera etapa pendiente gana:
 Definiciones:
 
 - `$FR_COUNT`: número de archivos `docs/requirements/functional/FR-*.md` más encabezados `### FR-NNN` en `docs/requirements/srs-*.md`. Un directorio ausente cuenta como cero.
-- `$ROADMAP_PLANNED`: `docs/product/roadmap.md` existe y contiene una sección `## Propuesta (` o una línea con un ID `EPIC-NN` dentro de su sección `## Épicas`.
+- `$ROADMAP_PLANNED`: `docs/product/roadmap.md` existe y contiene una sección `## Propuesta (` o una línea con un ID `EPIC-NNN` dentro de su sección `## Épicas`.
 
 Informa siempre:
 

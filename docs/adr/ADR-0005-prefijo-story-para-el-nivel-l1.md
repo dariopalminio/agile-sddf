@@ -13,7 +13,7 @@ superseded-by: null
 
 ## Contexto y problema
 
-Los tres niveles de work item usan prefijo de ID: `PROJ-NN` (L3), `EPIC-NN` (L2) y, hasta ahora,
+Los tres niveles de work item usan prefijo de ID: `PROJ-NN` (L3), `EPIC-NNN` (L2) y, hasta ahora,
 `FEAT-NNN` (L1). Los dos primeros nombran el **nivel**; el tercero nombraba un **tipo** de trabajo.
 Esa asimetría no era teórica — producía dos fallos concretos:
 

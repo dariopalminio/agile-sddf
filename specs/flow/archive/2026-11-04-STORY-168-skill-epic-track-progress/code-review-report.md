@@ -76,7 +76,7 @@ Escenarios verificados: 4/4 (AC-1 → TC-001, AC-2 → TC-002, AC-3 → TC-003, 
 | Severidad | Archivo:Línea | Regla | Descripción | Recomendación |
 |-----------|---------------|-------|-------------|---------------|
 | LOW | skills/epic-track-progress/SKILL.md:113 | ai-semantic (contenido ingerido como dato) / SEC-051 | La cláusula de `SKILL.md:62` dice que los valores leídos se muestran en código en línea, pero la plantilla de salida muestra `<title>` (`:113`), el nombre de las líneas F1 (`:121`) y `<status>/<substatus>` de la línea `⏳` (`:124`) sin código en línea. Solo afecta al render en el chat. | Envolver esos valores en código en línea, o acotar la cláusula de `:62` a las celdas de la tabla. |
-| LOW | skills/epic-track-progress/references/story-sources.md:11 | gr-code semántica (ruta confinada) / gr-ai semántica (nada fuera del directorio de trabajo) | La forma **Ruta** no exige de forma explícita que la ruta quede bajo `REPO_ROOT/specs/flow/EPIC-NN-<slug>/`. El impacto es bajo porque el skill es de solo lectura. | Agregar que la ruta se normaliza y debe quedar bajo `specs/flow/EPIC-NN-<slug>/`; si no, terminar con el `❌` del Paso 1. |
+| LOW | skills/epic-track-progress/references/story-sources.md:11 | gr-code semántica (ruta confinada) / gr-ai semántica (nada fuera del directorio de trabajo) | La forma **Ruta** no exige de forma explícita que la ruta quede bajo `REPO_ROOT/specs/flow/EPIC-NNN-<slug>/`. El impacto es bajo porque el skill es de solo lectura. | Agregar que la ruta se normaliza y debe quedar bajo `specs/flow/EPIC-NNN-<slug>/`; si no, terminar con el `❌` del Paso 1. |
 
 ---
 

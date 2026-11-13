@@ -30,10 +30,10 @@ related:
 ### AC-1 — Escenario principal – artefactos de planning por skill
 ```gherkin
 Escenario: <skill> lee y escribe en el layout fijo
-  Dado una historia en "specs/flow/STORY-NNN-<slug>/story.md" con su épica padre en "specs/flow/EPIC-NN-<slug>/epic.md"
+  Dado una historia en "specs/flow/STORY-NNN-<slug>/story.md" con su épica padre en "specs/flow/EPIC-NNN-<slug>/epic.md"
   Cuando el usuario ejecuta "/<skill>" sobre ella
   Entonces "<artefacto>" se escribe en "specs/flow/STORY-NNN-<slug>/"
-    Y toda lectura de la épica padre se hace desde "specs/flow/EPIC-NN-<slug>/epic.md"
+    Y toda lectura de la épica padre se hace desde "specs/flow/EPIC-NNN-<slug>/epic.md"
 
   Ejemplos:
     | skill           | artefacto                                        |
@@ -82,6 +82,6 @@ Alcance: los seis skills `story-design`, `story-tasking`, `story-testcases`, `st
 
 **Precondición (bloqueo):** STORY-148 debe estar entregada antes de implementar esta historia, porque define el contrato de rutas fijas y el gate determinista que los skills migrados declaran (CNF-2).
 
-**Independencia respecto de las hermanas:** STORY-150, STORY-151 y STORY-156 pueden entregarse en cualquier orden respecto de esta historia. La lectura de la épica padre se prueba sin esperar a STORY-151 mediante una épica fixture en `specs/flow/EPIC-NN-<slug>/epic.md`.
+**Independencia respecto de las hermanas:** STORY-150, STORY-151 y STORY-156 pueden entregarse en cualquier orden respecto de esta historia. La lectura de la épica padre se prueba sin esperar a STORY-151 mediante una épica fixture en `specs/flow/EPIC-NNN-<slug>/epic.md`.
 
 **Decisiones abiertas para `design.md`:** las rutas de los criterios son ilustrativas del layout fijo; la forma de resolverlas en cada skill (convención del propio skill o fragmento compartido) y el tratamiento de agentes con rutas distintas se deciden en el diseño. Si el diseño revela más de un patrón de migración, evaluar `/story-split`.

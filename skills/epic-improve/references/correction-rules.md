@@ -30,7 +30,7 @@ Contenido:
 | Clave | Valor | Si no se puede |
 |---|---|---|
 | `type` | `epic` | — |
-| `id` | `EPIC-NN` del nombre del directorio de la épica | Directorio sin forma `EPIC-NN-<slug>` → decisión del PO |
+| `id` | `EPIC-NNN` del nombre del directorio de la épica | Directorio sin forma `EPIC-NNN-<slug>` → decisión del PO |
 | `slug` | nombre del directorio de la épica | — |
 | `title` | texto del encabezado `# ` tras `Épica:` (entre comillas dobles) | Sin encabezado `# ` → decisión del PO |
 | `created` | `git log --diff-filter=A --format=%as -- <ruta de epic.md>` (la fecha más antigua); sin git o sin historial → la fecha de `updated:` actual o, si tampoco existe, la fecha de hoy | — |

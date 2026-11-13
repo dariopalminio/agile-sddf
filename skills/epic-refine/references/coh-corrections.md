@@ -17,7 +17,7 @@ No se leen: las historias archivadas (registro histórico, nunca se escriben), e
 
 ### Pertenencia (antes de planificar un cambio en un `story.md`)
 
-Estar listada en el índice no autoriza a escribir una historia. Antes de planificar cualquier COH de `related`, el `story.md` debe declarar la épica: el ID `EPIC-NN` de su `parent` es igual a `EPIC_ID`, comparado como en `epic-analyze` Paso 4.3 (el `parent` es exactamente `EPIC_ID` o empieza por `EPIC_ID` seguido de `-`; `EPIC-300-x` no declara `EPIC-30`; nunca un prefijo sin ese delimitador). Es la misma regla de [int-corrections.md](int-corrections.md) y [mad-corrections.md](mad-corrections.md). Si la historia listada declara otra épica, o su `parent` está ausente o vacío, cada candidato de su `related` queda **fuera de alcance** con responsable `PO` (sección 5) y no se genera ningún `C-NN` sobre ese `story.md`: un índice manipulado o desactualizado no puede dirigir una escritura a una historia de otra épica. Los COH del índice de `epic.md` no dependen de esta regla.
+Estar listada en el índice no autoriza a escribir una historia. Antes de planificar cualquier COH de `related`, el `story.md` debe declarar la épica: el ID `EPIC-NNN` de su `parent` es igual a `EPIC_ID`, comparado como en `epic-analyze` Paso 4.3 (el `parent` es exactamente `EPIC_ID` o empieza por `EPIC_ID` seguido de `-`; `EPIC-300-x` no declara `EPIC-30`; nunca un prefijo sin ese delimitador). Es la misma regla de [int-corrections.md](int-corrections.md) y [mad-corrections.md](mad-corrections.md). Si la historia listada declara otra épica, o su `parent` está ausente o vacío, cada candidato de su `related` queda **fuera de alcance** con responsable `PO` (sección 5) y no se genera ningún `C-NN` sobre ese `story.md`: un índice manipulado o desactualizado no puede dirigir una escritura a una historia de otra épica. Los COH del índice de `epic.md` no dependen de esta regla.
 
 ### Forma del slug
 
@@ -25,7 +25,7 @@ Un **slug de historia** es un token `STORY-<≥3 dígitos>-<segmentos>`, con seg
 
 No son candidatos:
 - `STORY-301` (ID sin slug);
-- `EPIC-NN-<slug>` (slug de épica);
+- `EPIC-NNN-<slug>` (slug de épica);
 - el token `**STORY-NNN**` de la línea F2/F3: es un ID, no un slug.
 
 ### Existencia

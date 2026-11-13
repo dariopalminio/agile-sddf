@@ -9,8 +9,8 @@ Léela en los Pasos 1 y 2 de [SKILL.md](../SKILL.md).
 Interpretar `<epica>` en este orden; la primera forma aplicable decide. El directorio `specs/flow/` mezcla épicas e historias: toda búsqueda de épicas se restringe al patrón `specs/flow/EPIC-*/epic.md` y nunca consulta `specs/flow/archive/`: solo se validan épicas activas (una épica archivada es terminal, ADR-0019).
 
 1. **Ruta** (contiene `/` o `\`): directorio de la épica o su `epic.md`. `EPIC_DIR` = ese directorio.
-2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.
-3. **ID** (`EPIC-NN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón: `EPIC-30` no casa `EPIC-300-x`, así un ID resuelve a una sola épica de forma predecible.
+2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `specs/flow/<nombre>/epic.md`.
+3. **ID** (`EPIC-NNN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón: `EPIC-30` no casa `EPIC-300-x`, así un ID resuelve a una sola épica de forma predecible.
 
 | Resultado | Comportamiento |
 |---|---|
@@ -18,7 +18,7 @@ Interpretar `<epica>` en este orden; la primera forma aplicable decide. El direc
 | 1 coincidencia | Continuar. |
 | > 1 coincidencias | `❌ El argumento <arg> es ambiguo: <lista de directorios>` y fin sin escribir. |
 
-Registrar `EPIC_DIR`, `EPIC_DIRNAME` (su nombre) y `EPIC_ID` = prefijo `EPIC-NN` de `EPIC_DIRNAME`. Se usa el directorio y no el `id:` del frontmatter porque el `parent` de las historias referencia el directorio. Leer el `title` del frontmatter de `epic.md` (si falta, usar `EPIC_DIRNAME`).
+Registrar `EPIC_DIR`, `EPIC_DIRNAME` (su nombre) y `EPIC_ID` = prefijo `EPIC-NNN` de `EPIC_DIRNAME`. Se usa el directorio y no el `id:` del frontmatter porque el `parent` de las historias referencia el directorio. Leer el `title` del frontmatter de `epic.md` (si falta, usar `EPIC_DIRNAME`).
 
 ## 2. Localizar la sección de historias (Vía A)
 
@@ -42,7 +42,7 @@ El estado de la casilla (`[ ]`/`[x]`) no se usa: el cierre lo decide el `status`
 
 1. Inventario = glob `specs/flow/STORY-*/story.md` ∪ glob `specs/flow/archive/*-STORY-*/story.md`. Si falta `specs/flow/archive/`, ese origen se omite sin nota.
 2. De cada `story.md` leer **solo el frontmatter** y, como escalares, `parent`, `status` y `substatus`. El ID es el `STORY-NNN` del nombre del directorio, tras el prefijo de fecha `<YYYY-MM-DD>-` si está archivada.
-3. **Pertenencia:** la historia declara la épica si el prefijo `EPIC-NN` de su `parent` es igual a `EPIC_ID` (`EPIC-30-ejemplo` y `EPIC-30` cuentan para `EPIC-30`; `EPIC-300-x` no). Se compara el prefijo para que renombrar el slug de la épica no deje huérfanas sus historias.
+3. **Pertenencia:** la historia declara la épica si el prefijo `EPIC-NNN` de su `parent` es igual a `EPIC_ID` (`EPIC-30-ejemplo` y `EPIC-30` cuentan para `EPIC-30`; `EPIC-300-x` no). Se compara el prefijo para que renombrar el slug de la épica no deje huérfanas sus historias.
 4. **Resolución de un ID listado:** glob `specs/flow/<STORY-NNN>-*/story.md` y `specs/flow/archive/*-<STORY-NNN>-*/story.md` (guion obligatorio tras el ID). Con varios, la activa antes que la archivada y, dentro de cada origen, la primera en orden alfabético; los demás se anotan (`STORY-NNN duplicada: <rutas>`).
 5. Frontmatter ilegible: la historia entra con `status`/`substatus` = `—` y la nota `<ruta>: frontmatter ilegible`. Nunca se aborta la validación por una historia.
 

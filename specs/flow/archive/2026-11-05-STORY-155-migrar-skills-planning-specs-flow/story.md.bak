@@ -28,10 +28,10 @@ related:
 
 ### AC-1 — Escenario principal – artefactos de planning
 ```gherkin
-Dado una historia en "specs/flow/STORY-NNN-<slug>/story.md" con su épica padre en "specs/flow/EPIC-NN-<slug>/epic.md"
+Dado una historia en "specs/flow/STORY-NNN-<slug>/story.md" con su épica padre en "specs/flow/EPIC-NNN-<slug>/epic.md"
 Cuando el usuario ejecuta "/story-plan" sobre ella
 Entonces "design.md", "tasks.md", "testcases.md" y "analyze.md" se escriben en "specs/flow/STORY-NNN-<slug>/"
-  Y la épica padre se lee desde "specs/flow/EPIC-NN-<slug>/epic.md"
+  Y la épica padre se lee desde "specs/flow/EPIC-NNN-<slug>/epic.md"
 ```
 
 ### AC-2 — Escenario alternativo – historia no encontrada
@@ -67,4 +67,4 @@ Feature origen: STORY-150 — Migrar los skills de historia a specs/flow (dividi
 
 Alcance: `story-design`, `story-tasking`, `story-testcases`, `story-analyze`, `story-fix-plan` y `story-plan`, más sus `assets/agents/` y `evals/evals.json`. Cubre la parte de planning de CS-2 y SMOKE-1. Depende de STORY-148.
 
-Para probar la lectura de la épica padre sin esperar a STORY-151 se usa una épica fixture en `specs/flow/EPIC-NN-<slug>/epic.md`.
+Para probar la lectura de la épica padre sin esperar a STORY-151 se usa una épica fixture en `specs/flow/EPIC-NNN-<slug>/epic.md`.

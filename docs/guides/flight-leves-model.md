@@ -22,7 +22,7 @@ Este framework propone y soporta flujos de trabajo a diferentes niveles de granu
 * **L2 - Épica:** flujo de trabajo de entregables coordinados por el roadmap.
 * **L1 - Story:** flujo de trabajo operativo dentro de una épica.
 
-> **Nota de terminología:** hasta la v1.x este nivel se llamaba *Release* y sus artefactos vivían en `specs/releases/`. Se renombró a **Épica** (`specs/epics/`) porque «release» se confundía con el sentido CI/CD del término y porque la relación entre ambos es **N:M**: una épica puede abarcar varias releases y una release puede contener varias épicas. En SDDF, **«release» queda reservado exclusivamente para el sentido de CI/CD**; el work-item de nivel L2 es siempre una **épica** (`EPIC-NN`). Ver [[nivel-l2-epic-y-directorios-numerados]].
+> **Nota de terminología:** hasta la v1.x este nivel se llamaba *Release* y sus artefactos vivían en `specs/releases/`. Se renombró a **Épica** (`specs/epics/`) porque «release» se confundía con el sentido CI/CD del término y porque la relación entre ambos es **N:M**: una épica puede abarcar varias releases y una release puede contener varias épicas. En SDDF, **«release» queda reservado exclusivamente para el sentido de CI/CD**; el work-item de nivel L2 es siempre una **épica** (`EPIC-NNN`). Ver [[nivel-l2-epic-y-directorios-numerados]].
 
 Estos niveles tienen cierta semejanza con la jerarquía tradicional de proyectos ágiles (Project --> Epic --> Story), con el modelo "Flight Levels" de Klaus Leopold (L3 -estratégico- --> L2 -coordinación- --> L1 -táctico-) y con los tres niveles que se suelen utilizar en herramientas como Jira software (Initiative --> Epic --> Story).
 
@@ -52,7 +52,7 @@ El modelo jerárquico de elementos de trabajo (Work-items) se organiza en tres n
 
 ```
 product/ + requirements/ (estratégico, documentación)
-    └── Épica (specs/flow/EPIC-NN-<slug>/ — L2)
+    └── Épica (specs/flow/EPIC-NNN-<slug>/ — L2)
         └── Story (specs/flow/STORY-NNN-<slug>/ — L1; archivada en specs/flow/archive/ al completarse)
 ```
 
@@ -68,5 +68,5 @@ specs/flow/archive/       📂 (Historias COMPLETED archivadas)
 La documentación generada por el framework se organiza en tres carpetas principales, cada una correspondiente a un nivel de flujo de trabajo:
 
 * **L3 - Estratégico:** `docs\product` y `docs\requirements` — visión, stakeholders, objetivos, roadmap y requisitos.
-* **L2 - Épica:** `docs\specs\epics` — para documentos relacionados con entregables específicos o épicas dentro del proyecto. El artefacto canónico dentro de cada `EPIC-NN-*/` es `epic.md`.
+* **L2 - Épica:** `docs\specs\epics` — para documentos relacionados con entregables específicos o épicas dentro del proyecto. El artefacto canónico dentro de cada `EPIC-NNN-*/` es `epic.md`.
 * **L1 - Story:** `docs\specs\stories` — para documentos relacionados con historias de usuario individuales, como la historia de usuario en formato gherkin, criterios de aceptación, y evaluaciones de calidad de la historia.

@@ -36,7 +36,7 @@ Audita la **consistencia** entre la sección de historias de `epic.md` y los `st
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `specs/flow/<EPIC-NN-nombre>/epic.md` | Índice de historias (Vía A), criterios de salida, smoke tests y título |
+| `epic.md` | `specs/flow/<EPIC-NNN-nombre>/epic.md` | Índice de historias (Vía A), criterios de salida, smoke tests y título |
 | `story.md` | `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md` | El frontmatter `parent` (Vía B); solo para el universo de la épica, además `status`, `substatus`, `related` y el cuerpo (Paso 4.6) |
 | Template de épica | `docs/templates/epic-template.md` → seed `epic-template.md` de `$CLI_ROOT/skills/epic-creation/assets/` | Títulos de las secciones con `clave: historias`, `criterios-salida` y `smoke-tests` |
 | Template del reporte | `docs/templates/epic-analyze-report-template.md` → seed [assets/epic-analyze-report-template.md](assets/epic-analyze-report-template.md) | Estructura del reporte |
@@ -103,8 +103,8 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 Interpretar `<epica>` en este orden; la primera forma aplicable decide. El directorio plano `specs/flow/` mezcla épicas e historias: toda búsqueda de épicas se restringe al patrón `specs/flow/EPIC-*/epic.md` y nunca consulta el layout anterior. `specs/flow/archive/` solo se consulta para reconocer una épica archivada (ADR-0019), nunca para analizarla:
 
 1. **Ruta** (contiene `/` o `\`): directorio de la épica, o su `epic.md`. `EPIC_DIR` = ese directorio.
-2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.
-3. **ID** (`EPIC-NN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón, así que `EPIC-30` no casa `EPIC-300-x`: un ID debe resolver a una sola épica de forma predecible.
+2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `specs/flow/<nombre>/epic.md`.
+3. **ID** (`EPIC-NNN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón, así que `EPIC-30` no casa `EPIC-300-x`: un ID debe resolver a una sola épica de forma predecible.
 
 **Épica archivada.** Una épica archivada es terminal: este gate es de `PLAN` y escribir en `specs/flow/archive/` alteraría el registro histórico. La épica se considera archivada si la ruta explícita (forma 1) cae bajo `specs/flow/archive/`, o si la búsqueda activa (formas 2 y 3) da 0 coincidencias y existe `specs/flow/archive/*-<arg>-*/epic.md` (con `<arg>` el ID o el nombre de directorio). En ese caso: `❌ La épica <arg> está archivada en <ruta>: /epic-analyze solo analiza épicas activas de specs/flow/.`, donde `<ruta>` es el directorio archivado relativo a `REPO_ROOT`, y fin **sin escribir**.
 
@@ -116,7 +116,7 @@ Interpretar `<epica>` en este orden; la primera forma aplicable decide. El direc
 | > 1 coincidencias | Manual: listar los directorios y pedir al usuario que elija uno. Agent: `❌ El argumento <arg> es ambiguo: <lista>` y fin sin escribir. |
 | Sin argumento | Manual: preguntar `¿Qué épica deseas analizar? Indica el ID (ej. EPIC-30), el nombre de su directorio o su ruta.` Agent: `❌ Falta el argumento <epica>` y fin sin escribir. |
 
-Registrar `EPIC_DIR` (directorio resuelto), `EPIC_DIRNAME` (su nombre) y `EPIC_ID` = prefijo `EPIC-NN` de `EPIC_DIRNAME`. Se usa el directorio y no el `id:` del frontmatter porque `parent` de las historias referencia el directorio; dos fuentes de identidad podrían divergir. Leer el `title` del frontmatter de `epic.md` (si falta, usar `EPIC_DIRNAME`).
+Registrar `EPIC_DIR` (directorio resuelto), `EPIC_DIRNAME` (su nombre) y `EPIC_ID` = prefijo `EPIC-NNN` de `EPIC_DIRNAME`. Se usa el directorio y no el `id:` del frontmatter porque `parent` de las historias referencia el directorio; dos fuentes de identidad podrían divergir. Leer el `title` del frontmatter de `epic.md` (si falta, usar `EPIC_DIRNAME`).
 
 ### Paso 2 — Localizar la sección de historias por clave
 
@@ -144,7 +144,7 @@ Las líneas no reconocidas no afectan el veredicto porque su detección pertenec
 
 1. Inventario = Glob `specs/flow/STORY-*/story.md` ∪ Glob `specs/flow/archive/*-STORY-*/story.md` (historias activas y archivadas; las archivadas cuentan como hijas). Si `specs/flow/` no existe, el inventario es vacío; si solo falta `specs/flow/archive/`, ese origen se omite sin nota.
 2. De cada `story.md` leer **solo el frontmatter** y su clave `parent` (el universo del punto 6 lee algo más). El ID de la historia es el `STORY-NNN` del nombre de su directorio, tras el prefijo de fecha `<YYYY-MM-DD>-` si está archivada.
-3. **Pertenencia:** la historia declara la épica si el prefijo `EPIC-NN` de su `parent` es igual a `EPIC_ID` (`EPIC-30-ejemplo` y `EPIC-30` cuentan para `EPIC-30`; `EPIC-300-x` no). Se compara el prefijo y no la cadena completa para que renombrar el slug de una épica no vuelva huérfanas a todas sus historias.
+3. **Pertenencia:** la historia declara la épica si el prefijo `EPIC-NNN` de su `parent` es igual a `EPIC_ID` (`EPIC-30-ejemplo` y `EPIC-30` cuentan para `EPIC-30`; `EPIC-300-x` no). Se compara el prefijo y no la cadena completa para que renombrar el slug de una épica no vuelva huérfanas a todas sus historias.
 4. **Resolución de un ID listado:** glob `specs/flow/<STORY-NNN>-*/story.md` y `specs/flow/archive/*-<STORY-NNN>-*/story.md` (guion obligatorio tras el ID en ambos). Existe si hay al menos un directorio con `story.md` en cualquiera de los dos orígenes; con varios se usa la activa antes que la archivada y, dentro de cada origen, la primera en orden alfabético; los demás se anotan en `notas-analisis`. Las rutas de evidencia del reporte citan la ruta real (archivada incluida).
 5. Frontmatter ilegible o sin `parent`: si la historia **no** está listada, nota `<ruta>: historia no evaluable (frontmatter ilegible o sin parent)`; si **está** listada, se evalúa como `parent` ausente (INT-04). Nunca se aborta el análisis por una historia.
 6. **Universo de la épica (Pasos 5b y 5c):** historias listadas en el índice (F2/F3) con `story.md` existente ∪ historias con pertenencia verdadera. Solo de ellas —nunca de todas las del repositorio— se leen además, del frontmatter, `status`, `substatus` y `related` con el número de línea absoluto de cada uno (y de cada entrada de `related`), y el **cuerpo** con números de línea absolutos (el cuerpo solo lo usa el Paso 5b). Ambas familias usan este mismo universo, calculado una vez.

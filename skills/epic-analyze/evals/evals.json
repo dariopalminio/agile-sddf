@@ -1182,7 +1182,7 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "epics_dirs": [
-          "specs/flow/EPIC-29-carrito/"
+          "specs/flow/EPIC-029-carrito/"
         ],
         "archived_epics_dirs": [
           "specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/"

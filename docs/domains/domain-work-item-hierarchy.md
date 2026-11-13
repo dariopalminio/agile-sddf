@@ -21,7 +21,7 @@ La jerarquía tiene dos niveles: Epic (L2, coordinación) y Story (L1, operativo
 | Nivel estratégico | `product/` y `requirements/`; sin pipeline, parent ni WIP. |
 | Epic | Work item L2 y raíz de la jerarquía. |
 | Story | Work item L1 que pertenece a una Epic. |
-| ParentRef | `null` para Epic; `EPIC-NN` para Story. |
+| ParentRef | `null` para Epic; `EPIC-NNN` para Story. |
 | FolderSegment | `epics` o `stories`. |
 
 ## 3. Modelo Táctico
@@ -29,7 +29,7 @@ La jerarquía tiene dos niveles: Epic (L2, coordinación) y Story (L1, operativo
 | Entidad | Level | ParentRef | FolderSegment |
 |---|---|---|---|
 | Epic | L2 | `null` | `epics` |
-| Story | L1 | `EPIC-NN` | `stories` |
+| Story | L1 | `EPIC-NNN` | `stories` |
 
 ```mermaid
 flowchart TD
@@ -41,7 +41,7 @@ flowchart TD
 
 ```text
 product/ + requirements/
-└── specs/flow/EPIC-NN-<slug>/epic.md
+└── specs/flow/EPIC-NNN-<slug>/epic.md
     └── specs/flow/STORY-NNN-<slug>/story.md
 ```
 
@@ -64,18 +64,18 @@ product/ + requirements/
 | Nivel | Dónde vive | Naturaleza | Identificador |
 |---|---|---|---|
 | Estratégico | `product/` + `requirements/` | documentación fundacional | `FR-NNN` / `NFR-NNN` |
-| L2 | `specs/flow/EPIC-NN-<slug>/` | Epic | `EPIC-NN` |
+| L2 | `specs/flow/EPIC-NNN-<slug>/` | Epic | `EPIC-NNN` |
 | L1 | `specs/flow/STORY-NNN-<slug>/` | Story | `STORY-NNN` |
 
 ## 7. Estructura de Carpetas
 
-`specs/flow/` (raíz del repo) contiene épicas (`EPIC-NN-<slug>/`) e historias (`STORY-NNN-<slug>/`) como directorios hermanos, sin subniveles ni prefijos numéricos. Las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` conservando su status, con la fecha de `updated:`, `created:` o `date:` ([[layout-fijo-con-archivo-de-historias-canceladas]]).
+`specs/flow/` (raíz del repo) contiene épicas (`EPIC-NNN-<slug>/`) e historias (`STORY-NNN-<slug>/`) como directorios hermanos, sin subniveles ni prefijos numéricos. Las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` conservando su status, con la fecha de `updated:`, `created:` o `date:` ([[layout-fijo-con-archivo-de-historias-canceladas]]).
 
 > Hasta 3.x existía un nivel Project en `specs/01-projects/`; ver [[asegurar-dos-niveles-de-flujo-epics-stories]].
 
 ## 8. Resolución
 
-Las Epics se resuelven en `specs/flow/EPIC-NN-<slug>/epic.md` y las Stories en `specs/flow/STORY-NNN-<slug>/story.md`; una Story archivada se resuelve en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/story.md`.
+Las Epics se resuelven en `specs/flow/EPIC-NNN-<slug>/epic.md` y las Stories en `specs/flow/STORY-NNN-<slug>/story.md`; una Story archivada se resuelve en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/story.md`.
 
 ## 9. Validación
 

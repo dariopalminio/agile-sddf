@@ -59,7 +59,7 @@ Las transiciones hasta `VALIDATE` son manuales: los skills de esos pasos generan
 
 **6. Complete (Cierre y Archivado)**
 *   *¿Qué pasa?* Se cierra administrativamente la épica y se archiva.
-*   *Artefacto:* El directorio de la épica, movido a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`, con `completed:` y, si se conoce, `version:` en `epic.md`.
+*   *Artefacto:* El directorio de la épica, movido a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`, con `completed:` y, si se conoce, `version:` en `epic.md`.
 *   *Acción:* Se invoca `/epic-complete`, opcionalmente con `--version x.y.z`. Siempre pide confirmación humana y actualiza las referencias a la épica en la documentación activa.
 *   *Estado al terminar:* `COMPLETED/DONE`.
 

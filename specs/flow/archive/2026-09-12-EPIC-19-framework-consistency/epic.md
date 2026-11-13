@@ -80,7 +80,7 @@ Escenario: Los templates no declaran campos huérfanos
 ```
 
 ## Notas
-- El directorio de esta épica es `EPIC-19/` sin slug, a diferencia del resto (`EPIC-NN-<slug>/`). Renombrarlo a `EPIC-19-framework-consistency/` exige actualizar `parent:` y `related:` en las cinco historias; se deja como tarea de cierre de la épica.
+- El directorio de esta épica es `EPIC-19/` sin slug, a diferencia del resto (`EPIC-NNN-<slug>/`). Renombrarlo a `EPIC-19-framework-consistency/` exige actualizar `parent:` y `related:` en las cinco historias; se deja como tarea de cierre de la épica.
 - `STORY-087` declara `parent: EPIC-08-npm-install-locally` en su frontmatter aunque se gestiona desde esta épica; alinear el `parent` al cerrar la historia.
 - El slug anterior (`workflow-hardening`) duplicaba el de EPIC-18 y se reemplazó por `framework-consistency`.
 

@@ -699,7 +699,7 @@ Completar la sección "Cumplimiento DoD — Fase IMPLEMENT" en `implement-report
 
 Leer el campo `parent` del frontmatter de `story.md` (ej. `EPIC-12-story-sdd-workflow`).
 
-Buscar el archivo `epic.md` correspondiente en `specs/flow/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NN`, Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia). No se consulta `specs/flow/archive/`.
+Buscar el archivo `epic.md` correspondiente en `specs/flow/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NNN`, Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia). No se consulta `specs/flow/archive/`.
 
 **Si se encuentra `epic.md`** (transición F2 → F3 de la historia; formatos en `domain-epic-lifecycle` §9):
 - Resolver del template de épica (`docs/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`) el **título** de la sección cuyo marcador declara `clave: historias` (las secciones se localizan por clave, nunca por un título fijo; contrato en `domain-epic-lifecycle` §9).

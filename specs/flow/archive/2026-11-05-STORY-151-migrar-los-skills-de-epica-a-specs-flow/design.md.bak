@@ -23,13 +23,13 @@ related:
 
 ## Context
 
-La historia migra los skills de épica al layout fijo de ADR-0016 (STORY-147): dejan de resolver una raíz configurable y leen/escriben en rutas fijas relativas a `REPO_ROOT` (`specs/flow/EPIC-NN-<slug>/`, `specs/flow/STORY-NNN-<slug>/`, `specs/flow/archive/`, `docs/templates/`, `docs/product/`). Adoptan el contrato verificable de STORY-148 (marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, reglas R1–R4 de `scripts/verify-fixed-layout.js`) con el mismo texto canónico que STORY-150 (D-1).
+La historia migra los skills de épica al layout fijo de ADR-0016 (STORY-147): dejan de resolver una raíz configurable y leen/escriben en rutas fijas relativas a `REPO_ROOT` (`specs/flow/EPIC-NNN-<slug>/`, `specs/flow/STORY-NNN-<slug>/`, `specs/flow/archive/`, `docs/templates/`, `docs/product/`). Adoptan el contrato verificable de STORY-148 (marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, reglas R1–R4 de `scripts/verify-fixed-layout.js`) con el mismo texto canónico que STORY-150 (D-1).
 
 Estado verificado en el filesystem (2026-10-22):
 
 | Fuente | Hallazgo |
 |---|---|
-| `skills/epic-creation/` | `SKILL.md` (16 coincidencias): bloque `SDDF-ROOT-RESOLUTION: v1` (l. 108–115); siguiente `EPIC-NN` con Glob `$SPECS_BASE/specs/epics/EPIC-*/epic.md` y fallback `ls $SPECS_BASE/specs/epics/` (l. 135–139); salida `$SPECS_BASE/specs/epics/<EPIC-NN-slug>/epic.md` (l. 142, 146, 267, 290, 325); template `$SPECS_BASE/templates/epic-template.md` con seed local `assets/epic-template.md` (l. 62, 160–161, 329). `README.md:15`. `examples/test-0{1,2,3}-*.md`: 11 rutas `$SPECS_BASE/…` y `docs/specs/epics/…`. `evals/evals.json` (6 casos): TC-001 cita `SDDF_ROOT definido` y `$SPECS_BASE/…`. |
+| `skills/epic-creation/` | `SKILL.md` (16 coincidencias): bloque `SDDF-ROOT-RESOLUTION: v1` (l. 108–115); siguiente `EPIC-NNN` con Glob `$SPECS_BASE/specs/epics/EPIC-*/epic.md` y fallback `ls $SPECS_BASE/specs/epics/` (l. 135–139); salida `$SPECS_BASE/specs/epics/<EPIC-NNN-slug>/epic.md` (l. 142, 146, 267, 290, 325); template `$SPECS_BASE/templates/epic-template.md` con seed local `assets/epic-template.md` (l. 62, 160–161, 329). `README.md:15`. `examples/test-0{1,2,3}-*.md`: 11 rutas `$SPECS_BASE/…` y `docs/specs/epics/…`. `evals/evals.json` (6 casos): TC-001 cita `SDDF_ROOT definido` y `$SPECS_BASE/…`. |
 | `skills/epic-format-validation/` | `SKILL.md` (14): bloque v1 (l. 81–88); búsqueda por término en `$SPECS_BASE/specs/epics/` (l. 104); mensaje literal «No se encontró ninguna épica en docs/specs/epics/» (l. 116); template `$SPECS_BASE/templates/epic-template.md` con fallback `$CLI_ROOT/skills/epic-creation/assets/` (l. 41–56, 131–135, 272). `evals/evals.json` (15): 3 contextos `docs/specs/epics` y uno `$SPECS_BASE/templates/`. |
 | `skills/epic-from-project-plan/` | `SKILL.md` (8): Paso 0 v1 abreviado (l. 25–31, cita `SDDF_ROOT` y «`root` válido de `sddf.config.yaml`» → R4); roadmap `$SPECS_BASE/product/roadmap.md` (l. 15, 34, 36, 44); `$EPICS_DIR = $SPECS_BASE/specs/epics/` (l. 52); template central con fallback `$CLI_ROOT/…` (l. 62). `README.md:7,9`. `evals/evals.json` (11) sin rutas legadas. |
 | `skills/epic-generate-stories/` | `SKILL.md` (30): `description` del frontmatter cita `<SPECS_BASE>/specs/stories/…`; bloque v1 (l. 81–88); búsqueda Formato A por subdirectorios de `$SPECS_BASE/specs/epics/` (l. 102) y señal de Formato B «empieza con `$SPECS_BASE/`» (l. 109); **Paso 2b**: máximo ID = Fuente A `$SPECS_BASE/specs/stories/STORY-*/story.md` ∪ Fuente B `$SPECS_BASE/specs/epics/*/epic.md` (l. 158–160); salida, conflicto y resumen bajo `$SPECS_BASE/specs/stories/` (l. 184–362). `README.md:15`. `evals/evals.json` (7): 11 rutas legadas, dos «`SDDF_ROOT` definido». |
@@ -38,7 +38,7 @@ Estado verificado en el filesystem (2026-10-22):
 | `epic-refine` | **No existe en `skills/`.** Solo hay una propuesta sin versionar en `.temp/propuestas-de-mejoras/epic-refine/` (`SKILL.md`, `README.md`, `assets/`, `evals/`) y un `epic-refine-report.md` en EPIC-26. No figura en `package.json › files`. Ver CR-001. |
 | `scripts/verify-fixed-layout.js` (STORY-148) | **Aún no existe.** Su diseño fija el bloque canónico, R1–R4 y `PENDING_MIGRATION` (36 skills), de la que cada historia de migración retira los suyos en el mismo cambio. |
 | Pruebas | Ninguna prueba de `test/` lee el contenido de los seis `SKILL.md` ni sus evals. `test/verify-validation-contract.test.js` solo usa el template del reporte de `epic-analyze` (sin rutas legadas). `test/epic-template.test.js` compara `docs/templates/epic-template.md` con el seed de `epic-creation` (no cambia). |
-| Layout (ADR-0016, STORY-147 D-2/D-3) | `docs/product/` es conocimiento; `specs/flow/` es plano (`EPIC-NN-<slug>/` y `STORY-NNN-<slug>/` conviven, sin `epics/` ni `stories/`); `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` solo para stories `COMPLETED`; las épicas no se archivan. |
+| Layout (ADR-0016, STORY-147 D-2/D-3) | `docs/product/` es conocimiento; `specs/flow/` es plano (`EPIC-NNN-<slug>/` y `STORY-NNN-<slug>/` conviven, sin `epics/` ni `stories/`); `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` solo para stories `COMPLETED`; las épicas no se archivan. |
 | `specs/` | No existe en el repo. Los work items siguen en `docs/specs/` hasta STORY-153. |
 
 Stakeholders: el practitioner que crea, valida y analiza épicas en un repo inicializado con `/sddf-init` (AC-1–AC-3); el mantenedor que cierra EPIC-26 (CS-2, SMOKE-2) y STORY-157, que verifica `PENDING_MIGRATION` vacía.
@@ -101,7 +101,7 @@ Regla única para todos los archivos de los seis skills (`SKILL.md` incluido su 
 
 | Forma legada | Forma fija | Dónde aparece |
 |---|---|---|
-| `$SPECS_BASE/specs/epics/<EPIC-NN-slug>/…` | `specs/flow/<EPIC-NN-slug>/…` | salidas y entradas de creation, from-project-plan, generate-*, analyze, examples |
+| `$SPECS_BASE/specs/epics/<EPIC-NNN-slug>/…` | `specs/flow/<EPIC-NNN-slug>/…` | salidas y entradas de creation, from-project-plan, generate-*, analyze, examples |
 | `$SPECS_BASE/specs/epics/` (directorio, búsquedas, `$EPICS_DIR`) | `specs/flow/` con patrón `specs/flow/EPIC-*/epic.md` (D-3) | todos |
 | `$SPECS_BASE/specs/epics/*/epic.md` (Fuente B) | `specs/flow/EPIC-*/epic.md` | generate-stories |
 | `$SPECS_BASE/specs/stories/STORY-…/…` | `specs/flow/STORY-…/…` | generate-*, analyze |
@@ -126,8 +126,8 @@ Regla única para todos los archivos de los seis skills (`SKILL.md` incluido su 
 
 | Skill y entrada | Búsqueda | Sin coincidencia |
 |---|---|---|
-| `epic-analyze` por ID `EPIC-NN` | Glob `specs/flow/EPIC-NN-*/epic.md` (guion obligatorio, como hoy) | `❌ No se encontró la épica EPIC-NN: no existe specs/flow/EPIC-NN-*/epic.md` |
-| `epic-analyze` por nombre `EPIC-NN-<slug>` | `specs/flow/EPIC-NN-<slug>/epic.md` | mismo patrón con la ruta probada |
+| `epic-analyze` por ID `EPIC-NNN` | Glob `specs/flow/EPIC-NNN-*/epic.md` (guion obligatorio, como hoy) | `❌ No se encontró la épica EPIC-NN: no existe specs/flow/EPIC-NNN-*/epic.md` |
+| `epic-analyze` por nombre `EPIC-NNN-<slug>` | `specs/flow/EPIC-NNN-<slug>/epic.md` | mismo patrón con la ruta probada |
 | `epic-generate-stories` Formato A (término) | nombres de directorio de `specs/flow/EPIC-*/epic.md` que contengan el término (sin distinguir mayúsculas) | `No se encontró el directorio de la épica: <término>. Asegúrate de que existe en specs/flow/ …` |
 | `epic-format-validation` Tipo B (término) | rutas `specs/flow/EPIC-*/epic.md` cuyo nombre de directorio contenga el término | `No se encontró ninguna épica en specs/flow/ que coincida …` |
 | `epic-generate-all-stories` descubrimiento | Glob `specs/flow/EPIC-*/epic.md` | `No se encontraron directorios de épica en specs/flow/` |
@@ -153,8 +153,8 @@ Cambios en `skills/epic-analyze/SKILL.md`:
 1. **Paso 4.1 (inventario):** usa la unión. Si `specs/flow/` no existe el inventario es vacío; si solo falta `specs/flow/archive/`, se omite ese origen sin nota.
 2. **Paso 4.2:** «el ID de la historia es el `STORY-NNN` del nombre de su directorio, tras el prefijo de fecha si está archivada».
 3. **Paso 4.4 (ID listado):** Glob `specs/flow/<STORY-NNN>-*/story.md` y `specs/flow/archive/*-<STORY-NNN>-*/story.md` (guion obligatorio tras el ID en ambos). Con varias coincidencias se usa la activa antes que la archivada y, dentro de cada origen, la primera en orden alfabético; las demás se anotan en `notas-analisis` como hoy.
-4. **Paso 5c (`related`):** un `STORY-NNN` resuelve si existe en cualquiera de los dos orígenes; un `EPIC-NN` con `specs/flow/EPIC-NN-*/epic.md`.
-5. **Tabla de entradas (l. 39–42):** filas `epic.md` → `specs/flow/<EPIC-NN-nombre>/epic.md`; `story.md` → `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md`.
+4. **Paso 5c (`related`):** un `STORY-NNN` resuelve si existe en cualquiera de los dos orígenes; un `EPIC-NNN` con `specs/flow/EPIC-NNN-*/epic.md`.
+5. **Tabla de entradas (l. 39–42):** filas `epic.md` → `specs/flow/<EPIC-NNN-nombre>/epic.md`; `story.md` → `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md`.
 
 Efectos: una historia archivada con `parent` de la épica es declarante (no INT-02 si está listada); un ID listado cuyo `story.md` está archivado existe (no INT-01); entra en el universo, aporta evidencia E1/E2 y su `status: COMPLETED` ya clasifica como «lista» (sin MAD-01). Las rutas de evidencia del reporte citan la ruta archivada real.
 
@@ -233,7 +233,7 @@ El JSON debe seguir siendo válido para `npm run test:eval -- <skill> --dry-run`
 
 | Componente | Acción | Ubicación | AC que satisface |
 |---|---|---|---|
-| Creación de épica | modificar (Paso 0, rutas, numeración `EPIC-NN`) | `skills/epic-creation/SKILL.md`, `README.md` | AC-1, AC-4 |
+| Creación de épica | modificar (Paso 0, rutas, numeración `EPIC-NNN`) | `skills/epic-creation/SKILL.md`, `README.md` | AC-1, AC-4 |
 | Ejemplos de creación | modificar (11 rutas) | `skills/epic-creation/examples/test-0{1,2,3}-*.md` | AC-4 |
 | Evals de creación | modificar TC-001, añadir caso AC-1 | `skills/epic-creation/evals/evals.json` | AC-1, CNF-1 |
 | Validación de formato | modificar (Paso 0, rutas, búsqueda por término, mensaje) | `skills/epic-format-validation/SKILL.md` | AC-4 |
@@ -254,12 +254,12 @@ No se modifican `assets/` de ningún skill, `README.md` de `epic-format-validati
 | Interfaz | Contrato | AC que satisface |
 |---|---|---|
 | Paso 0 de cada skill | bloque de D-1 entre el marcador y el siguiente encabezado | AC-4 |
-| Directorio de una épica | `specs/flow/EPIC-NN-<slug>/epic.md` relativo a `REPO_ROOT` | AC-1 |
+| Directorio de una épica | `specs/flow/EPIC-NNN-<slug>/epic.md` relativo a `REPO_ROOT` | AC-1 |
 | Directorio de una historia | `specs/flow/STORY-NNN-<slug>/story.md`; archivada `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/story.md` | AC-2, AC-3 |
 | Resolución de épica | `specs/flow/EPIC-*/epic.md` (D-3) | AC-1, AC-2, AC-3 |
 | Inventario de historias | `specs/flow/STORY-*/story.md` ∪ `specs/flow/archive/*-STORY-*/story.md` (D-4) | AC-3 |
 | Siguiente `STORY-NNN` | `max(activas ∪ archivadas ∪ IDs en specs/flow/EPIC-*/epic.md) + 1` (D-5) | AC-2, CNF-2 |
-| Siguiente `EPIC-NN` | `max(specs/flow/EPIC-*) + 1`; vacío → `EPIC-01` (`epic-creation`) | AC-1 |
+| Siguiente `EPIC-NNN` | `max(specs/flow/EPIC-*) + 1`; vacío → `EPIC-01` (`epic-creation`) | AC-1 |
 | Templates | `docs/templates/epic-template.md`, `docs/templates/story-template.md`, `docs/templates/epic-analyze-report-template.md`; seeds por `CLI_ROOT` | AC-1, AC-2 |
 | Roadmap | `docs/product/roadmap.md` | AC-4 |
 | Gate | `npm run verify:repository` aplica R1–R4 a los seis skills | AC-4 |
@@ -285,7 +285,7 @@ N/A — no cambia ningún frontmatter ni formato de artefacto (`epic.md`, `story
 1. Resuelve la épica (D-3); lee el índice (Vía A).
 2. Vía B (D-4): inventario sobre activas ∪ archivadas; las archivadas con `parent` de la épica son declarantes y los IDs listados resuelven en `archive/`.
 3. INT: sin INT-01 ni INT-02 por las archivadas; SAL y MAD las incluyen en el universo (`COMPLETED` = lista).
-4. Escribe `specs/flow/EPIC-NN-<slug>/epic-analyze-report.md`.
+4. Escribe `specs/flow/EPIC-NNN-<slug>/epic-analyze-report.md`.
 
 ### F-4 — Gate tras la migración // AC-4
 1. `grep -rnE "SPECS_BASE|SDDF_ROOT" skills/epic-*` → sin coincidencias.

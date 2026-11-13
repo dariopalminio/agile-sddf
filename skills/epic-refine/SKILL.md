@@ -38,7 +38,7 @@ Cierra el bucle de `PLAN` (`epic-analyze → NEEDS-REFINEMENT → epic-refine �
 | Artefacto | Ubicación | Uso |
 |---|---|---|
 | `epic-analyze-report.md` | `<EPIC_DIR>/epic-analyze-report.md` | Solo lectura: `verdict`, `updated`, la sección de clave `hallazgos` y, para SAL, la de clave `cobertura-salida` |
-| `epic.md` | `specs/flow/EPIC-NN-<slug>/epic.md` | Se corrige la sección de clave `historias` |
+| `epic.md` | `specs/flow/EPIC-NNN-<slug>/epic.md` | Se corrige la sección de clave `historias` |
 | `story.md` | `specs/flow/STORY-NNN-<slug>/story.md` (activos) | Se corrige `related:` y, en la historia de cierre SAL, se añaden un AC y una línea en Notas; se leen `title`, `status`, `substatus`, `parent`, las líneas Como/Quiero/Para y `depends-on:` |
 | Template de épica | `docs/templates/epic-template.md` → seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` | Solo lectura: título de la sección `historias` |
 | Template de historia | `docs/templates/story-template.md` → seed `$CLI_ROOT/skills/story-creation/assets/story-template.md` | Solo lectura: título de `## 📎 Notas…` si la historia de cierre no la tiene (SAL) |
@@ -93,9 +93,9 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 Interpretar `<epica>` como `epic-analyze` Paso 1; la primera forma aplicable decide y nunca se consulta `specs/flow/archive/`:
 
-1. **Ruta** (contiene `/` o `\`): directorio de la épica o su `epic.md`. Antes de leer o escribir nada, se normaliza (separadores, `.`, `..`, enlaces simbólicos resueltos) y se expresa relativa a `REPO_ROOT`: solo se acepta si queda exactamente `specs/flow/EPIC-NN-<slug>/` (o su `epic.md`), hija directa de `specs/flow/`. Una ruta fuera de `REPO_ROOT`, bajo `specs/flow/archive/`, más profunda o con otra forma → `❌ La ruta <arg> no es una épica activa de specs/flow/ (se esperaba specs/flow/EPIC-NN-<slug>/)` y fin sin escribir.
-2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.
-3. **ID** (`EPIC-NN`): glob `specs/flow/<ID>-*/epic.md` (el guion es obligatorio: `EPIC-30` no casa `EPIC-300-x`).
+1. **Ruta** (contiene `/` o `\`): directorio de la épica o su `epic.md`. Antes de leer o escribir nada, se normaliza (separadores, `.`, `..`, enlaces simbólicos resueltos) y se expresa relativa a `REPO_ROOT`: solo se acepta si queda exactamente `specs/flow/EPIC-NNN-<slug>/` (o su `epic.md`), hija directa de `specs/flow/`. Una ruta fuera de `REPO_ROOT`, bajo `specs/flow/archive/`, más profunda o con otra forma → `❌ La ruta <arg> no es una épica activa de specs/flow/ (se esperaba specs/flow/EPIC-NNN-<slug>/)` y fin sin escribir.
+2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `specs/flow/<nombre>/epic.md`.
+3. **ID** (`EPIC-NNN`): glob `specs/flow/<ID>-*/epic.md` (el guion es obligatorio: `EPIC-30` no casa `EPIC-300-x`).
 
 | Resultado | Comportamiento |
 |---|---|
@@ -104,7 +104,7 @@ Interpretar `<epica>` como `epic-analyze` Paso 1; la primera forma aplicable dec
 | > 1 coincidencias | Manual: listar y pedir que elija. Agent: `❌ El argumento <arg> es ambiguo: <lista>` y fin sin escribir |
 | Sin argumento | Manual: `¿Qué épica deseas refinar? Indica el ID (ej. EPIC-30), el nombre de su directorio o su ruta.` Agent: `❌ Falta el argumento <epica>` y fin sin escribir |
 
-Registrar `EPIC_DIR`, `EPIC_DIRNAME`, `EPIC_ID` (prefijo `EPIC-NN` de `EPIC_DIRNAME`) y el `title` de `epic.md`.
+Registrar `EPIC_DIR`, `EPIC_DIRNAME`, `EPIC_ID` (prefijo `EPIC-NNN` de `EPIC_DIRNAME`) y el `title` de `epic.md`.
 
 Resolver ahora el template del reporte: `docs/templates/epic-refine-report-template.md`; si no existe, el seed [assets/epic-refine-report-template.md](assets/epic-refine-report-template.md) con el aviso `⚠️ Usando template seed del skill. Copia assets/epic-refine-report-template.md a docs/templates/ para personalizarlo.` Si no existe ninguno: `❌ Template epic-refine-report-template.md no encontrado (probado: <ruta central>, <ruta seed>)` y fin **antes** de escribir cualquier archivo.
 
@@ -245,7 +245,7 @@ Con `APPROVED`: `STATUS: OK`, conteos `0` y `REPORTE: —`. Ante un fallo que de
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Épica no encontrada | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>` | Fin sin escribir |
-| Ruta fuera de `specs/flow/EPIC-NN-<slug>/` (externa, archivada u otra forma) | `❌ La ruta <arg> no es una épica activa de specs/flow/ (se esperaba specs/flow/EPIC-NN-<slug>/)` | Fin sin escribir |
+| Ruta fuera de `specs/flow/EPIC-NNN-<slug>/` (externa, archivada u otra forma) | `❌ La ruta <arg> no es una épica activa de specs/flow/ (se esperaba specs/flow/EPIC-NNN-<slug>/)` | Fin sin escribir |
 | Argumento ausente o ambiguo (Agent) | `❌ Falta el argumento <epica>` / `❌ El argumento <arg> es ambiguo: <lista>` | Fin sin escribir |
 | Template del reporte ausente | `❌ Template epic-refine-report-template.md no encontrado (probado: …)` | Fin sin escribir |
 | Reporte de análisis ausente | `❌ No se encontró epic-analyze-report.md en <EPIC_DIR>. Ejecuta /epic-analyze <EPIC_ID> primero.` | Fin sin escribir |

@@ -149,7 +149,7 @@ STORY-111 lo trata como destino canónico; el README mentiría sobre el contenid
 ### D-4 — Textos de dos niveles en `specs/README.md` y `constitution.md` // satisface: AC-1, CNF-1, CNF-3
 
 - `specs/README.md` (semilla): "Convención de nombres" pasa a "dos niveles: épicas (L2) e historias (L1)", con el árbol
-  `specs/epics/EPIC-NN-<slug>/epic.md` y `specs/stories/STORY-NNN-<slug>/story.md`, y una frase: la visión, los stakeholders, los
+  `specs/epics/EPIC-NNN-<slug>/epic.md` y `specs/stories/STORY-NNN-<slug>/story.md`, y una frase: la visión, los stakeholders, los
   objetivos y el roadmap viven en `product/`; los requisitos en `requirements/` ([[index]] como único enlace, regla de §5).
 - `constitution.md` (semilla), sección "Jerarquía de desarrollo": "Una épica (epic) contiene varias historias (story)"; árbol de dos
   líneas (`epic (specs/epics/…/epic.md)` → `story (specs/stories/…/story.md)`) y una frase que remite el contexto del producto a

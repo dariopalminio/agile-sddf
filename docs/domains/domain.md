@@ -208,7 +208,7 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
   documentos de dominio y los artefactos existentes muestran variaciones históricas. — 2026-09-12
 - [x] WIP=1 aplica por nivel de work item (Epic y Story); ADR-0013 resuelve que la documentación fundacional no tiene WIP.
   buffers L2/L1 configurables? — 2026-09-12
-- [x] Los identificadores vigentes son `EPIC-NN`, `STORY-NNN`, `FR-NNN` y `NFR-NNN`; ADR-0013 retiró `PROJ-`. — 2026-10-11
+- [x] Los identificadores vigentes son `EPIC-NNN`, `STORY-NNN`, `FR-NNN` y `NFR-NNN`; ADR-0013 retiró `PROJ-`. — 2026-10-11
 - [ ] ¿La ubicación activa de templates es definitivamente `$SPECS_BASE/templates/`? ADR-0007 y el
   filesystem apuntan allí, mientras documentos históricos citan `$SPECS_BASE/specs/templates/`. — 2026-09-12
 - [ ] ¿OpenSpec es legado retirado o capacidad soportada? README y documentos históricos difieren

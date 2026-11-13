@@ -29,7 +29,7 @@ related:
 Dado una épica en CANCELED/DONE en specs/flow/
 Cuando el Solo Builder ejecuta "/epic-complete EPIC-NN"
   Y confirma el archivado
-Entonces su directorio se mueve a specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/ conservando el historial de git
+Entonces su directorio se mueve a specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/ conservando el historial de git
   Y epic.md conserva status CANCELED y substatus DONE
   Y ya no aparece en specs/flow/
 ```
@@ -45,7 +45,7 @@ Entonces informa que solo se archivan las épicas canceladas con substatus DONE
 ### AC-3 — Escenario de conflicto – Destino de archivo existente
 ```gherkin
 Dado una épica en CANCELED/DONE
-  Y ya existe specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/
+  Y ya existe specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/
 Cuando el Solo Builder ejecuta "/epic-complete EPIC-NN"
 Entonces informa la ruta en conflicto
   Y no sobreescribe ni mueve ningún archivo
@@ -70,5 +70,5 @@ Entonces informa la ruta en conflicto
 - **Criterios de salida que cubre:** CS-19 (rama `CANCELED/DONE`, que conserva su status).
 - **Dependencia:** requiere el skill y el ADR de STORY-171.
 - **Antecedente:** `/story-complete` ya archiva historias `CANCELED/DONE` sin cambiar su status.
-- Cubre el criterio de salida de EPIC-23: **CS-19** — `epic-complete` rechaza una épica que no esté en `SHIP/DONE`, `COMPLETED/DONE` ni `CANCELED/DONE` y archiva las que sí lo están en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` conservando su historial de git: las `SHIP` pasan a `status: COMPLETED` y las `CANCELED` conservan su status. Lo completa junto con STORY-171, que cubre las épicas SHIP/DONE y COMPLETED/DONE.
+- Cubre el criterio de salida de EPIC-23: **CS-19** — `epic-complete` rechaza una épica que no esté en `SHIP/DONE`, `COMPLETED/DONE` ni `CANCELED/DONE` y archiva las que sí lo están en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` conservando su historial de git: las `SHIP` pasan a `status: COMPLETED` y las `CANCELED` conservan su status. Lo completa junto con STORY-171, que cubre las épicas SHIP/DONE y COMPLETED/DONE.
 - Cumple antes de entregarse el criterio transversal de EPIC-23: **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.

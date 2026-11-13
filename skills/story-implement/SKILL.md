@@ -1123,7 +1123,7 @@ updated: <YYYY-MM-DD>
 Transición F2 → F3 de la historia en la épica padre (formatos del dominio: F2 `- [ ] **STORY-NNN** — <Nombre>: <desc>`, F3 `- [x] **STORY-NNN** — <Nombre>: <desc>`).
 
 1. Leer campo `parent` del frontmatter de `story.md`
-2. Si `parent` existe, resolver ruta: `specs/flow/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NN`, Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia). No se consulta `specs/flow/archive/`.
+2. Si `parent` existe, resolver ruta: `specs/flow/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NNN`, Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia). No se consulta `specs/flow/archive/`.
 3. **Si no existe o `parent` está vacío:**
    - Emitir: `[INFO] epic.md no encontrado o sin parent declarado — omitiendo actualización`
    - No es condición de error.

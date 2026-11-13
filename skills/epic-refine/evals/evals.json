@@ -334,7 +334,7 @@
         "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de specs/flow/, pero se supone que su contenido está copiado también en ../../otro-repo/ (fuera de REPO_ROOT). El orquestador ejecuta /epic-refine ../../otro-repo/EPIC-30-ejemplo --auto. Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
-        "contains": ["=== CONSOLE ===", "no es una épica activa de specs/flow/", "specs/flow/EPIC-NN-<slug>/"],
+        "contains": ["=== CONSOLE ===", "no es una épica activa de specs/flow/", "specs/flow/EPIC-NNN-<slug>/"],
         "not_contains": ["=== FILE:", ".bak", "Backup creado", "INT-02", "APLICADOS: 1"]
       },
       "threshold": 1.0

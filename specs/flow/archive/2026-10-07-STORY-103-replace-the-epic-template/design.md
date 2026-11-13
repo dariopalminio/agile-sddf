@@ -485,7 +485,7 @@ Frontmatter v2 de `epic.md` (YAML):
 | Clave | Tipo | Exigida por el gate | Valor inicial |
 |---|---|---|---|
 | `type` | `"epic"` | sí | `epic` |
-| `id` | `EPIC-NN` | sí | — |
+| `id` | `EPIC-NNN` | sí | — |
 | `slug` | kebab ASCII | sí | nombre del directorio |
 | `title` | string | sí | — |
 | `status` | enum del ciclo de vida | sí | `DEFINE` |

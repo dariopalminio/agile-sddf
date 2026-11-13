@@ -8,7 +8,7 @@ Hallazgo: **Elemento** = el valor referenciado (p. ej. `STORY-999`); **Evidencia
 
 ### Pertenencia (antes de clasificar)
 
-Antes de evaluar «ya resuelto» o planificar cualquier cambio, el `story.md` resuelto debe declarar la épica: el ID `EPIC-NN` de su `parent` es igual a `EPIC_ID`, comparado como en `epic-analyze` Paso 4.3 (el `parent` es exactamente `EPIC_ID` o empieza por `EPIC_ID` seguido de `-`; `EPIC-300-x` no declara `EPIC-30`). Si no la declara, o su `parent` está ausente o vacío, el hallazgo queda **fuera de alcance** con responsable `PO` y no se genera ningún `C-NN` sobre esa historia: un reporte manipulado o desactualizado no puede dirigir una escritura a una historia de otra épica. El `parent` encontrado se cita en la nota.
+Antes de evaluar «ya resuelto» o planificar cualquier cambio, el `story.md` resuelto debe declarar la épica: el ID `EPIC-NNN` de su `parent` es igual a `EPIC_ID`, comparado como en `epic-analyze` Paso 4.3 (el `parent` es exactamente `EPIC_ID` o empieza por `EPIC_ID` seguido de `-`; `EPIC-300-x` no declara `EPIC-30`). Si no la declara, o su `parent` está ausente o vacío, el hallazgo queda **fuera de alcance** con responsable `PO` y no se genera ningún `C-NN` sobre esa historia: un reporte manipulado o desactualizado no puede dirigir una escritura a una historia de otra épica. El `parent` encontrado se cita en la nota.
 
 ### Normalización
 

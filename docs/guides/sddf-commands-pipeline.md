@@ -181,7 +181,7 @@ epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-gene
 
 | Skill | Input | Output |
 |---|---|---|
-| `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `specs/flow/EPIC-NN-<slug>/epic.md` (uno por épica) |
+| `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `specs/flow/EPIC-NNN-<slug>/epic.md` (uno por épica) |
 | `epic-format-validation` | Un archivo `epic.md` | `<EPIC_DIR>/epic-format-validation-report.md` (`APPROVED` / `NEEDS-REFINEMENT`) |
 | `epic-improve` | `epic.md` + `epic-format-validation-report.md` con `NEEDS-REFINEMENT` | `epic.md` corregido + `epic.md.bak` |
 | `epic-generate-stories` | Un archivo `epic.md` | `specs/flow/STORY-[NNN]-[nombre]/story.md` (una por feature) |
@@ -189,7 +189,7 @@ epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-gene
 | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`), cobertura de criterios de salida asignada a la historia de cierre, slugs obsoletos tras un `/story-split` reemplazados y `<EPIC_DIR>/epic-refine-report.md` |
 | `epic-track-progress` | `epic.md` + `story.md` con `parent`, incluidas las archivadas | Tabla de progreso en el chat (sin archivos) |
 | `epic-ship` | `epic.md` en `VALIDATE/DONE` o `SHIP/IN-PROGRESS` + `epic-validate-report.md` con `APPROVED` + `story.md` hijos (activos y archivados) + `docs/guardrails/dod-epic-ship.md` si existe | `SHIP/IN-PROGRESS` en `epic.md`, bloque de la épica en `CHANGELOG.md` si no estaba al día, evaluación del DoD en el chat y `SHIP/DONE` sin bloqueos del DoD y con confirmación humana |
-| `epic-complete` | `epic.md` en `SHIP/DONE` (versión opcional: `--version x.y.z` o `CHANGELOG.md`) | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/epic.md` en `COMPLETED/DONE` con `completed:` y, si se conoce, `version:`, con confirmación humana |
+| `epic-complete` | `epic.md` en `SHIP/DONE` (versión opcional: `--version x.y.z` o `CHANGELOG.md`) | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/epic.md` en `COMPLETED/DONE` con `completed:` y, si se conoce, `version:`, con confirmación humana |
 
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
 > con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT`) antes

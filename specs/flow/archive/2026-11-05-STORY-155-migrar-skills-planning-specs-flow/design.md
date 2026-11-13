@@ -23,7 +23,7 @@ related:
 
 ## Context
 
-La historia migra los seis skills de planning al layout fijo de ADR-0016 (STORY-147): dejan de resolver una raíz configurable y leen/escriben en rutas fijas relativas a `REPO_ROOT` (`specs/flow/STORY-NNN-<slug>/`, `specs/flow/EPIC-NN-<slug>/`, `docs/templates/`, `docs/guardrails/`). Adoptan el contrato de STORY-148 (marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, reglas R1–R4 de `scripts/verify-fixed-layout.js`) con el mismo patrón que STORY-150 (especificación) y STORY-151 (épica).
+La historia migra los seis skills de planning al layout fijo de ADR-0016 (STORY-147): dejan de resolver una raíz configurable y leen/escriben en rutas fijas relativas a `REPO_ROOT` (`specs/flow/STORY-NNN-<slug>/`, `specs/flow/EPIC-NNN-<slug>/`, `docs/templates/`, `docs/guardrails/`). Adoptan el contrato de STORY-148 (marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, reglas R1–R4 de `scripts/verify-fixed-layout.js`) con el mismo patrón que STORY-150 (especificación) y STORY-151 (épica).
 
 Estado verificado en el filesystem (2026-10-22):
 
@@ -50,7 +50,7 @@ Stakeholders: el practitioner que planifica historias en un repo recién inicial
 - Sustituir el Paso 0 de los seis `SKILL.md` por el bloque canónico del contrato de layout fijo // satisface: AC-1, AC-3, CNF-2
 - Reescribir toda ruta `$SPECS_BASE/…`, `$CLI_ROOT/…`, `docs/specs/stories/…` y `docs/specs/epics/…` de los seis skills (SKILL.md, README.md, `assets/`, `examples/`, `evals/`) a rutas fijas relativas a `REPO_ROOT` // satisface: AC-1, AC-3, CNF-1, CNF-3
 - Resolver una historia por ID solo en `specs/flow/STORY-*/`, sin fallback a `docs/specs/`, con un mensaje común que nombre `specs/flow/` // satisface: AC-2
-- Leer la épica padre de `story-analyze` desde `specs/flow/EPIC-NN-<slug>/epic.md` con una resolución que acepte el slug completo de `parent:` // satisface: AC-1
+- Leer la épica padre de `story-analyze` desde `specs/flow/EPIC-NNN-<slug>/epic.md` con una resolución que acepte el slug completo de `parent:` // satisface: AC-1
 - Retirar los seis skills de `PENDING_MIGRATION` // satisface: AC-3, CNF-2
 - Actualizar los evals afectados a `specs/flow/` y añadir los casos de AC-2 y de la épica padre // satisface: CNF-1, AC-1, AC-2
 - Mantener `npm test` verde independientemente del orden de entrega respecto de STORY-150 // satisface: AC-3 (CR-001)
@@ -246,7 +246,7 @@ N/A — no cambia ningún frontmatter ni formato de artefacto (design, tasks, te
 1. Paso 0: resuelve `REPO_ROOT`.
 2. Paso 1d: Glob `specs/flow/STORY-NNN-*/` → directorio; Paso 1e escribe `PLAN/IN-PROGRESS` en su `story.md`.
 3. `story-design` lee `docs/constitution.md` y `docs/guardrails/dod-story-plan.md` y escribe `specs/flow/STORY-NNN-<slug>/design.md`; `story-tasking` y `story-testcases` escriben `tasks.md` y `testcases.md` en el mismo directorio.
-4. `story-analyze` lee la épica en `specs/flow/EPIC-NN-<slug>/epic.md` (D-4), evalúa el DoD de `docs/guardrails/` y escribe `analyze.md`.
+4. `story-analyze` lee la épica en `specs/flow/EPIC-NNN-<slug>/epic.md` (D-4), evalúa el DoD de `docs/guardrails/` y escribe `analyze.md`.
 5. Ningún paso referencia ni crea `docs/specs/`.
 
 ### F-2 — `/story-plan STORY-999` sin historia // AC-2
@@ -326,6 +326,6 @@ Ninguna: la lectura de la épica queda decidida en D-4, el template de `story-fi
 
 ### CR-003
 - **Tipo**: ambigüedad
-- **Descripción**: AC-1 exige que «toda lectura de la épica padre» se haga desde `specs/flow/EPIC-NN-<slug>/epic.md`, pero solo `story-analyze` lee la épica, y su patrón actual (`{parent}-*`) nunca coincide cuando `parent:` contiene el slug completo. La historia no menciona el defecto.
+- **Descripción**: AC-1 exige que «toda lectura de la épica padre» se haga desde `specs/flow/EPIC-NNN-<slug>/epic.md`, pero solo `story-analyze` lee la épica, y su patrón actual (`{parent}-*`) nunca coincide cuando `parent:` contiene el slug completo. La historia no menciona el defecto.
 - **Documento afectado**: design.md (D-4)
 - **Acción requerida**: ninguna en story.md; el diseño corrige el patrón en D-4 y lo prueba con TC-007 (D-8). Los CNF-3/AC-3 sobre `assets/agents/` se cumplen de forma vacía: ningún skill de planning tiene roles locales.

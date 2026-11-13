@@ -35,7 +35,7 @@ La historia pide además que el roadmap refleje las épicas **reales**, porque e
 | `docs/specs/02-epics/` | 22 directorios `EPIC-00…EPIC-21`, cada uno con `epic.md`. |
 
 **Slugs de épica.** `memory-system.js` resuelve un wikilink por el `slug` **declarado** en el frontmatter
-(`deriveSlug`, línea 354). 17 épicas declaran `slug: EPIC-NN-<nombre>`, pero cinco no llevan prefijo:
+(`deriveSlug`, línea 354). 17 épicas declaran `slug: EPIC-NNN-<nombre>`, pero cinco no llevan prefijo:
 
 | Épica | `slug` declarado |
 |---|---|
@@ -142,7 +142,7 @@ Tabla de cinco columnas, una fila por `docs/specs/02-epics/EPIC-*/epic.md`, orde
 
 | Columna | Origen | Regla |
 |---|---|---|
-| `ID` | `id` | Literal (`EPIC-NN`). |
+| `ID` | `id` | Literal (`EPIC-NNN`). |
 | `Épica` | `slug` | `[[<slug declarado>]]`, exactamente el valor del frontmatter, para que resuelva en `memory-system`. |
 | `Título` | `title` | Literal, sin comillas; un `|` en el título se escaparía como `\|` (hoy no hay ninguno). |
 | `Status` | `status` | Literal. |
@@ -155,7 +155,7 @@ el frontmatter vigente. El contrato #3 los compara contra los `epic.md` del mism
 
 **Alternativas rechazadas:**
 
-- *Wikilink `[[EPIC-NN-<nombre de directorio>]]` para las 22:* coincide con la letra de AC-1, pero produce 5 `broken-wikilink`
+- *Wikilink `[[EPIC-NNN-<nombre de directorio>]]` para las 22:* coincide con la letra de AC-1, pero produce 5 `broken-wikilink`
   nuevos (EPIC-13/14/15/17/18) y viola el `Entonces` final de AC-3. Ver CR-001.
 - *Lista con viñetas (`- [[slug]] — título — status/substatus`):* más difícil de escanear por estado y de comparar columna a columna.
 - *Generar la tabla con un script versionado:* la sincronización automática es Non-Goal; un script permanente sería YAGNI. El
@@ -305,7 +305,7 @@ Fila de la tabla `## Épicas` (fuente: frontmatter YAML de cada `epic.md`):
 
 | Campo | Tipo | Origen |
 |---|---|---|
-| `ID` | `EPIC-NN` | `id` |
+| `ID` | `EPIC-NNN` | `id` |
 | `Épica` | wikilink | `slug` |
 | `Título` | texto | `title` |
 | `Status` | enumerado del ciclo de épica | `status` |
@@ -356,7 +356,7 @@ El mantenedor llega a `roadmap.md` desde `docs/index.md` (`### Producto`), desde
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
 | 1 | Frontmatter del roadmap | `grep -E "^(type: product\|slug: roadmap)$" docs/product/roadmap.md` → 2 líneas | AC-1 |
-| 2 | 22 filas ordenadas | En `## Épicas`, las filas de tabla cuyo primer campo es `EPIC-NN` son 22 y van de `EPIC-00` a `EPIC-21` en orden ascendente | AC-1 |
+| 2 | 22 filas ordenadas | En `## Épicas`, las filas de tabla cuyo primer campo es `EPIC-NNN` son 22 y van de `EPIC-00` a `EPIC-21` en orden ascendente | AC-1 |
 | 3 | Datos fieles al frontmatter | Comparador `.tmp/story-implement/STORY-106/compare-epics.js`: para cada `docs/specs/02-epics/EPIC-*/epic.md`, la fila con su `id` tiene `[[slug]]`, `title`, `status` y `substatus` idénticos → 22/22 coincidencias, exit 0 | AC-1 |
 | 4 | Wikilinks de épica resuelven | `memory-system check` sin `[broken-wikilink]` con path `product/roadmap.md` | AC-1, AC-3 |
 | 5 | Plan original íntegro | Comparador `.tmp/story-implement/STORY-106/compare-plan.js`: cada línea no vacía de `git show HEAD:…/project-plan.md` desde `## Backlog de Historias` hasta el final, salvo `---`, aparece en `roadmap.md` (los encabezados con un `#` extra); conteos: 56 ítems de backlog, 9 `#### Épica`, 11 filas de resumen | AC-2, CNF-1 |
@@ -390,11 +390,11 @@ Ninguna. Las ambigüedades detectadas se resolvieron en el diseño y quedan regi
 
 ### CR-001
 - **Tipo**: ambigüedad
-- **Descripción**: AC-1 pide para cada épica "su wikilink `[[EPIC-NN-<slug>]]`", pero cinco épicas (EPIC-13, 14, 15, 17, 18) declaran
-  un `slug` sin prefijo `EPIC-NN-`. Aplicar la forma literal a esas cinco crearía 5 wikilinks rotos y contradiría AC-3 ("`check` no
+- **Descripción**: AC-1 pide para cada épica "su wikilink `[[EPIC-NNN-<slug>]]`", pero cinco épicas (EPIC-13, 14, 15, 17, 18) declaran
+  un `slug` sin prefijo `EPIC-NNN-`. Aplicar la forma literal a esas cinco crearía 5 wikilinks rotos y contradiría AC-3 ("`check` no
   reporta wikilinks rotos").
 - **Documento afectado**: story.md
-- **Acción requerida**: el diseño usa `[[<slug declarado>]]` (D-2), que coincide con `EPIC-NN-<slug>` en 17 de 22 casos y resuelve
+- **Acción requerida**: el diseño usa `[[<slug declarado>]]` (D-2), que coincide con `EPIC-NNN-<slug>` en 17 de 22 casos y resuelve
   en los 22. Opcional: precisar AC-1 como "su wikilink `[[<slug>]]` según su frontmatter".
 
 ### CR-002

@@ -132,20 +132,20 @@ Con el nombre provisto:
   patrones `specs/flow/EPIC-*/epic.md` (épicas activas) y `specs/flow/archive/*-EPIC-*/epic.md`
   (épicas archivadas, ADR-0019). La herramienta Glob solo encuentra
   archivos, no directorios — usar siempre este patrón de archivo anidado. De cada ruta retornada,
-  extraer el número `NN` del segmento `EPIC-NN-*` del directorio padre; en las archivadas, el
-  `EPIC-NN` que sigue al prefijo `<YYYY-MM-DD>-`. Si `specs/flow/archive/` no existe, omitirlo sin nota.
+  extraer el número `NN` del segmento `EPIC-NNN-*` del directorio padre; en las archivadas, el
+  `EPIC-NNN` que sigue al prefijo `<YYYY-MM-DD>-`. Si `specs/flow/archive/` no existe, omitirlo sin nota.
   Tomar el número más alto de la unión de ambos orígenes y sumarle 1, de modo que nunca se
   reutilice el número de una épica archivada; si ambos Glob retornan vacío, verificar con Bash
   (`ls specs/flow/ specs/flow/archive/ 2>/dev/null | grep -E "EPIC-"`) antes de asumir que no hay
   épicas previas.
   Sin épicas previas (repo recién inicializado), el primer ID es `EPIC-01`.
-  Formato final: `EPIC-NN-<slug>` con NN de 2 dígitos (Ej: `EPIC-14-mi-epica`).
+  Formato final: `EPIC-NNN-<slug>` con NN de 2 dígitos (Ej: `EPIC-14-mi-epica`).
   Si el usuario prefiere asignar el ID manualmente, aceptarlo sin objeción.
-- Definir la **ruta de salida**: `specs/flow/<EPIC-NN-slug>/epic.md`
+- Definir la **ruta de salida**: `specs/flow/<EPIC-NNN-slug>/epic.md`
 
 #### Verificar conflicto de directorio
 
-Si el directorio `specs/flow/<EPIC-NN-slug>/` ya existe, preguntar:
+Si el directorio `specs/flow/<EPIC-NNN-slug>/` ya existe, preguntar:
 
 > "El directorio `<ruta>` ya existe. ¿Qué deseas hacer?
 > 1. Sobreescribir el archivo existente
@@ -183,7 +183,7 @@ Preguntar los campos del frontmatter con valores sugeridos. Para cada campo, mos
 | Campo | Pregunta | Valor por defecto |
 |---|---|---|
 | `type` | — | `epic` (fijo para este nivel) |
-| `id` | — | El `EPIC-NN` resuelto en el Paso 1 |
+| `id` | — | El `EPIC-NNN` resuelto en el Paso 1 |
 | `title` | "¿Cuál es el título de la épica?" | El nombre ingresado en el Paso 1 |
 | `status` | "¿Estado inicial?" | `DEFINE` — estado inicial de una épica recién creada (en etapa de definición de alcance) |
 | `substatus` | "¿Subestado? (TODO / IN-PROGRESS / DONE / BLOCKED)" | `TODO` — una épica recién creada aún no está activa; activarla con `IN-PROGRESS` está sujeto al límite WIP=1 del nivel |
@@ -266,7 +266,7 @@ Con todas las respuestas recopiladas, construir el archivo `epic.md` completo:
 #### Crear el directorio y escribir el archivo
 
 ```
-specs/flow/<EPIC-NN-slug>/epic.md
+specs/flow/<EPIC-NNN-slug>/epic.md
 ```
 
 Verificar que el directorio existe; si no, crearlo (incluido `specs/flow/` si falta). Nunca se escribe en el layout anterior.
@@ -282,7 +282,7 @@ Si el usuario pide editar: mostrar el contenido y permitir correcciones antes de
 ### Paso 7 — Validación automática
 
 Después de escribir el archivo, invocar el skill `epic-format-validation` sobre el archivo generado y
-leer `verdict` del frontmatter de `specs/flow/<EPIC-NN-slug>/epic-format-validation-report.md`. Solo
+leer `verdict` del frontmatter de `specs/flow/<EPIC-NNN-slug>/epic-format-validation-report.md`. Solo
 `APPROVED` habilita el avance; un `verdict` ausente o fuera de {`APPROVED`, `NEEDS-REFINEMENT`}, o un
 error del gate sin reporte, se trata como no aprobado (G-06 de `validation-contract-policy`).
 
@@ -292,7 +292,7 @@ Mostrar:
 ```
 ✅ APPROVED
 
-Archivo creado: specs/flow/<EPIC-NN-slug>/epic.md
+Archivo creado: specs/flow/<EPIC-NNN-slug>/epic.md
 
 Siguiente paso: ejecuta /epic-generate-stories para generar las historias de usuario de esta épica.
 ```
@@ -327,7 +327,7 @@ Si el usuario responde "sí": volver al Paso 4 o Paso 5 según corresponda para 
 
 ## Salida
 
-- `specs/flow/<EPIC-NN-slug>/epic.md` — épica creada y validado, listo para `/epic-generate-stories`
+- `specs/flow/<EPIC-NNN-slug>/epic.md` — épica creada y validado, listo para `/epic-generate-stories`
 
 ### Referencias
 

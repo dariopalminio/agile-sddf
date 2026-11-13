@@ -23,7 +23,7 @@ EPIC-23 (Completar el flujo de épica) entrega el skill `epic-complete`, que lle
 ADR-0017 lo impide y, por ser un ADR aceptado, no se edita in place.
 
 Archivar épicas tiene además un efecto sobre la numeración: los skills que crean épicas (`epic-creation` y
-`epic-from-project-plan`) calculan el siguiente `EPIC-NN` mirando solo `specs/flow/EPIC-*/`. Sin cambio, una épica
+`epic-from-project-plan`) calculan el siguiente `EPIC-NNN` mirando solo `specs/flow/EPIC-*/`. Sin cambio, una épica
 archivada liberaría su número y una épica nueva lo reutilizaría, rompiendo el `parent` y los wikilinks de sus
 historias.
 
@@ -39,9 +39,9 @@ archivo a las épicas `COMPLETED` y `CANCELED`.
 ├── docs/                  conocimiento: product/, requirements/, domains/, architecture/, adr/,
 │                          policies/, guardrails/, guides/, runbooks/, templates/, constitution.md, index.md
 ├── specs/                 estado
-│   ├── flow/              work items planos: EPIC-NN-<slug>/, STORY-NNN-<slug>/ (sin epics/ ni stories/)
+│   ├── flow/              work items planos: EPIC-NNN-<slug>/, STORY-NNN-<slug>/ (sin epics/ ni stories/)
 │   │   └── archive/       stories y épicas COMPLETED o CANCELED: <YYYY-MM-DD>-STORY-NNN-<slug>/,
-│   │                      <YYYY-MM-DD>-EPIC-NN-<slug>/
+│   │                      <YYYY-MM-DD>-EPIC-NNN-<slug>/
 │   └── living/            reservado (épica de Living Spec)
 └── workflow/              proceso, reservado (épica de Workflow)
 ```
@@ -52,21 +52,21 @@ archivo a las épicas `COMPLETED` y `CANCELED`.
   `docs/guardrails/`).
 - `docs/requirements/` no se mueve en esta decisión; su destino es `specs/living/` en la épica de Living Spec.
 - **Archivo:** `specs/flow/archive/` es plano y recibe las stories (`<YYYY-MM-DD>-STORY-NNN-<slug>/`) y las épicas
-  (`<YYYY-MM-DD>-EPIC-NN-<slug>/`) con `status: COMPLETED` o `status: CANCELED`, siempre con `substatus: DONE`; el
+  (`<YYYY-MM-DD>-EPIC-NNN-<slug>/`) con `status: COMPLETED` o `status: CANCELED`, siempre con `substatus: DONE`; el
   status se conserva al archivar y es lo que distingue un work item entregado de uno cancelado. `<YYYY-MM-DD>` es el
   `updated:`; si no es válido, el `created:`; si el frontmatter no tiene ninguna de esas dos claves, el `date:`. Un
   work item sin fecha válida no se archiva. Las épicas y las stories en cualquier otro estado quedan en `specs/flow/`.
 - **Escritores del archivo:** las historias las archiva `story-complete` y las épicas `epic-complete`, siempre con
   confirmación humana explícita. `epic-complete` escribe `COMPLETED` de épica desde `SHIP/DONE` y archiva sin cambiar
   el status las épicas que ya están en `COMPLETED/DONE` o `CANCELED/DONE`.
-- **Numeración de épicas:** el siguiente `EPIC-NN` es el máximo `NN` de la unión de `specs/flow/EPIC-*/epic.md` y
-  `specs/flow/archive/*-EPIC-*/epic.md` más uno; en las archivadas, el `NN` es el del `EPIC-NN` que sigue al prefijo
+- **Numeración de épicas:** el siguiente `EPIC-NNN` es el máximo `NN` de la unión de `specs/flow/EPIC-*/epic.md` y
+  `specs/flow/archive/*-EPIC-*/epic.md` más uno; en las archivadas, el `NN` es el del `EPIC-NNN` que sigue al prefijo
   `<YYYY-MM-DD>-`. Si `specs/flow/archive/` no existe, se omite. Un número de épica archivada nunca se reutiliza, igual
   que los de las historias.
 - **Resolución de épicas:** los skills que trabajan sobre una épica activa (por ejemplo, los gates de `PLAN`) solo
   resuelven épicas de `specs/flow/EPIC-*/`; una épica archivada es terminal y no se reabre ni se analiza.
 - **Nombre de directorio:** los directorios de `specs/flow/` conservan el slug: `STORY-NNN-<slug>/` y
-  `EPIC-NN-<slug>/`, como en ADR-0004 y ADR-0017; el archivo solo les antepone la fecha.
+  `EPIC-NNN-<slug>/`, como en ADR-0004 y ADR-0017; el archivo solo les antepone la fecha.
 
 ## Rationale
 
@@ -88,7 +88,7 @@ archivo a las épicas `COMPLETED` y `CANCELED`.
 - **ADR nuevo solo con el archivo de épicas y ADR-0017 `SUPERSEDED`:** descartada porque el layout de tres raíces
   quedaría sin ADR vigente que lo enuncie.
 - **Subdirectorio `specs/flow/archive/epics/` o sufijo/prefijo por tipo:** descartada porque contradice «sin
-  subniveles» y cambia el formato de directorio con el que se resuelven los globs y los wikilinks `EPIC-NN-<slug>`; el
+  subniveles» y cambia el formato de directorio con el que se resuelven los globs y los wikilinks `EPIC-NNN-<slug>`; el
   prefijo `EPIC-`/`STORY-` ya distingue el tipo.
 - **Contador persistente de épicas en un archivo:** descartada porque introduce estado nuevo que puede divergir del
   filesystem.
@@ -115,6 +115,6 @@ archivo a las épicas `COMPLETED` y `CANCELED`.
 ## Referencias
 
 - [[layout-fijo-con-archivo-de-historias-canceladas]] — ADR-0017, decisión reemplazada
-- [[nivel-l2-epic-y-directorios-numerados]] — ADR-0004, convención `STORY-NNN-<slug>/` y `EPIC-NN-<slug>/`
+- [[nivel-l2-epic-y-directorios-numerados]] — ADR-0004, convención `STORY-NNN-<slug>/` y `EPIC-NNN-<slug>/`
 - [[EPIC-23-completar-flujo-de-epic]] — épica que origina esta decisión
 - [[STORY-175-admitir-epicas-archivadas-en-layout]] — historia que la aplica

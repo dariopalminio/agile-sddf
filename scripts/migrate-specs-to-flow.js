@@ -6,7 +6,7 @@
  * Un solo uso — STORY-153: no es un comando reutilizable ni archiva work items futuros (CS-11).
  *
  * Reglas de destino (design.md › D-3):
- *   - docs/specs/epics/EPIC-NN-<slug>/                       → specs/flow/EPIC-NN-<slug>/
+ *   - docs/specs/epics/EPIC-NNN-<slug>/                       → specs/flow/EPIC-NNN-<slug>/
  *   - docs/specs/stories/STORY-NNN-<slug>/ con COMPLETED      → specs/flow/archive/<fecha>-STORY-NNN-<slug>/
  *   - docs/specs/stories/STORY-NNN-<slug>/ con otro status    → specs/flow/STORY-NNN-<slug>/ (incluye CANCELED)
  *   - docs/specs/README.md                                    → specs/README.md

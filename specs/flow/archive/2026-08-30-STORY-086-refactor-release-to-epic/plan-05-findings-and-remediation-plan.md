@@ -211,11 +211,11 @@ Además, el contrato de `parent` no es único:
 |---|---|
 | `story-template.md` | `<nombre-del-directorio-de-la-epica>` |
 | [header-aggregation:88](skills/header-aggregation/SKILL.md#L88) | nombre de directorio (`EPIC-01-nombre`) |
-| Las 36 historias con `parent` poblado | `EPIC-NN-slug` |
+| Las 36 historias con `parent` poblado | `EPIC-NNN-slug` |
 | Ambos generadores L2 | `parent: <EPIC-NN>` (ID desnudo) |
 
 **Fix:** poblar los 5 `parent` con el directorio de su épica; alinear los dos generadores a la
-forma `EPIC-NN-slug`.
+forma `EPIC-NNN-slug`.
 
 ---
 
@@ -282,7 +282,7 @@ la línea del `README.md` publicado, por ser parte de F-4. Queda a decisión del
 - 19 `epic.md`, 79 directorios `STORY-*` sin números duplicados, 77 con `story.md`,
   76 con `kind` (75 `feat` + 1 `fix`), `id` coherente con el nombre de directorio en todos.
 - `docs/index.md`: **0 links markdown rotos**. Los 24 wikilinks huérfanos ya existían en `main`
-  (convención de slug sin prefijo `ADR-NNNN`/`EPIC-NN`) — preexistentes, no regresión.
+  (convención de slug sin prefijo `ADR-NNNN`/`EPIC-NNN`) — preexistentes, no regresión.
 - Los 21 `evals.json` parsean. Nota: el implement-report dice "34" en los planes 01-03 y se
   autocorrige a 21 en el plan-04; **21 es el número real** (13 skills no tienen evals).
 - `package.json.files` lista directorios (`skills/`, `agents/`), no rutas por skill — los
@@ -324,7 +324,7 @@ Orden por dependencia; cada bloque es independiente y commiteable por separado.
 2. **F-2, F-3, F-11** — contrato de estados en los skills productores L2
    (`epic-creation`, `epic-generate-all-stories`).
 3. **F-5, F-9, F-10** — corrección de datos: 6 frontmatter `type: plan`, ruta de `adr/README.md`,
-   5 `parent` sin resolver + forma `EPIC-NN-slug` en los generadores.
+   5 `parent` sin resolver + forma `EPIC-NNN-slug` en los generadores.
 4. **F-7, F-8** — alineación de templates (central ↔ asset de `epic-creation`) y
    `## Backlog de Features` → `## Backlog de Historias` en los tres archivos coordinados.
 5. **F-4** — README publicado en npm.
@@ -354,7 +354,7 @@ ejecución de la lógica de los skills.
    Repetir con `/epic-creation` para cubrir F-2 y F-11.
 7. **F-3** — generar una historia con `/epic-generate-all-stories` y otra con
    `/epic-generate-stories` desde la misma épica: ambos `story.md` deben nacer con
-   `status: SPECIFY` y `parent: EPIC-NN-slug`.
+   `status: SPECIFY` y `parent: EPIC-NNN-slug`.
 8. Los `evals.json` (22 tras F-6) parsean; los casos nuevos de `epic-from-project-plan` cubren
    ambos separadores y el bloque Walking Skeleton.
 9. `docs/index.md` sin links markdown rotos; árbol de `README.md` y `CLAUDE.md` verificado contra
@@ -381,7 +381,7 @@ Aplicado el alcance aprobado (F-0 a F-11). 66 archivos tocados, todos en UTF-8 s
 | F-7 | Corregido | `diff` entre seed y central de `epic-template.md` sin diferencias |
 | F-8 | Corregido | `## Backlog de Historias` en los 3 archivos coordinados |
 | F-9 | Corregido | `docs/adr/README.md` apunta a `03-stories/STORY-NNN-<slug>/design.md` |
-| F-10 | Corregido | 0 `parent` con placeholder; generadores alineados a `EPIC-NN-<slug>` |
+| F-10 | Corregido | 0 `parent` con placeholder; generadores alineados a `EPIC-NNN-<slug>` |
 | F-11 | Corregido | `epic-creation` deriva las claves del template menos la allowlist |
 | F-12, F-13, F-14 | Documentados, no aplicados | Fuera del alcance aprobado |
 

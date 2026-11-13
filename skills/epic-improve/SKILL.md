@@ -43,14 +43,14 @@ decisión del PO sin escribirse.
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `specs/flow/EPIC-NN-<slug>/epic.md` | se corrige |
+| `epic.md` | `specs/flow/EPIC-NNN-<slug>/epic.md` | se corrige |
 | `epic-format-validation-report.md` | junto a `epic.md` | solo lectura: `verdict` y tabla `## Defectos` |
 | Template de épica | `docs/templates/epic-template.md` (fallback: seed `skills/epic-creation/assets/epic-template.md` del paquete) | solo lectura: títulos y orden por `clave:` |
 | Catálogo de correcciones | `references/` de este skill | regla determinista que implementa el motor |
 
 ## Parámetros
 
-- `<EPIC-NN | ruta>` (posicional): ID de la épica o ruta a su directorio `specs/flow/EPIC-NN-<slug>/`.
+- `<EPIC-NN | ruta>` (posicional): ID de la épica o ruta a su directorio `specs/flow/EPIC-NNN-<slug>/`.
 
 ## Restricciones / Reglas
 
@@ -80,7 +80,7 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 ### Paso 1 — Resolver el argumento
 
 - Sin argumento → pregunta `¿Qué épica deseas corregir? Proporciona el ID (ej. EPIC-23) o la ruta a su epic.md.` y espera.
-- `EPIC-NN` → `--id EPIC-NN`; una ruta → `--path <ruta>` (el motor solo acepta `specs/flow/EPIC-NN-<slug>/` o su `epic.md`; nunca consulta `specs/flow/archive/` ni directorios `STORY-*`).
+- `EPIC-NNN` → `--id EPIC-NN`; una ruta → `--path <ruta>` (el motor solo acepta `specs/flow/EPIC-NNN-<slug>/` o su `epic.md`; nunca consulta `specs/flow/archive/` ni directorios `STORY-*`).
 
 ### Paso 2 — Localizar el motor
 

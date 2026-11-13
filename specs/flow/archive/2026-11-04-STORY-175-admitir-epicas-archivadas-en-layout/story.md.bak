@@ -29,7 +29,7 @@ related:
 ```gherkin
 Dado que ADR-0017 está aceptado y deja las épicas en specs/flow/
 Cuando se acepta el ADR nuevo del layout
-Entonces admite épicas COMPLETED/DONE y CANCELED/DONE en specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/
+Entonces admite épicas COMPLETED/DONE y CANCELED/DONE en specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/
   Y ADR-0017 declara "superseded-by" ese ADR sin otros cambios en su contenido
 ```
 

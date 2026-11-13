@@ -30,7 +30,7 @@ Semáforo de **solo lectura** de la fase `DEVELOP`: une el índice de historias 
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `specs/flow/<EPIC-NN-slug>/epic.md` | `title` del frontmatter y líneas `- ` de la sección de historias |
+| `epic.md` | `specs/flow/<EPIC-NNN-slug>/epic.md` | `title` del frontmatter y líneas `- ` de la sección de historias |
 | `story.md` | `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md` | Solo los escalares `parent`, `status` y `substatus` del frontmatter |
 | Template de épica | `docs/templates/epic-template.md` | Solo el título de la sección con `clave: historias` |
 
@@ -38,7 +38,7 @@ Semáforo de **solo lectura** de la fase `DEVELOP`: une el índice de historias 
 
 | Parámetro | Tipo | Descripción |
 |---|---|---|
-| `<epica>` | posicional | `EPIC-NN`, nombre de directorio `EPIC-NN-<slug>` o ruta al directorio o a su `epic.md`. Sin flags |
+| `<epica>` | posicional | `EPIC-NNN`, nombre de directorio `EPIC-NNN-<slug>` o ruta al directorio o a su `epic.md`. Sin flags |
 
 ## Precondiciones
 
@@ -83,7 +83,7 @@ Aplicar la resolución de la sección 1 de [references/story-sources.md](referen
 | > 1 coincidencias | Manual: listar las candidatas y pedir una. Agent: `❌ El argumento <arg> es ambiguo: <lista>` y fin |
 | Sin argumento | Manual: `¿Qué épica deseas revisar? Indica el ID (ej. EPIC-30), el nombre de su directorio o su ruta.` Agent: `❌ Falta el argumento <epica>` |
 
-Registrar `EPIC_DIR`, `EPIC_ID` (prefijo `EPIC-NN` del nombre del directorio) y `title` (si falta, el nombre del directorio).
+Registrar `EPIC_DIR`, `EPIC_ID` (prefijo `EPIC-NNN` del nombre del directorio) y `title` (si falta, el nombre del directorio).
 
 ### Paso 2 — Reunir las historias
 

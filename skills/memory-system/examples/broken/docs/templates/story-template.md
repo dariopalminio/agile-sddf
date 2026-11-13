@@ -8,6 +8,6 @@ title: "Template de historia"
 
 <!-- Referencias -->
 [[<slug>]]
-[[<EPIC-NN-nombre>]]
+[[<EPIC-NNN-nombre>]]
 
 La capa `templates/` está excluida del escaneo: estos placeholders no generan problemas.

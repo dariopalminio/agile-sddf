@@ -39,7 +39,7 @@ related:
 
 | AC | Descripción | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
-| AC-1 | `/epic-creation` en un repo limpio crea `specs/flow/EPIC-01-<slug>/epic.md` y no `docs/specs/epics/` | ✓ | D-2, D-3, D-5 (numeración `EPIC-NN` → `EPIC-01`), D-7 (crea `specs/flow/`), D-9 (caso `repo-limpio-escribe-en-specs-flow`); F-1; contratos #2, #6 |
+| AC-1 | `/epic-creation` en un repo limpio crea `specs/flow/EPIC-01-<slug>/epic.md` y no `docs/specs/epics/` | ✓ | D-2, D-3, D-5 (numeración `EPIC-NNN` → `EPIC-01`), D-7 (crea `specs/flow/`), D-9 (caso `repo-limpio-escribe-en-specs-flow`); F-1; contratos #2, #6 |
 | AC-2 | `/epic-generate-stories EPIC-NN` crea historias en `specs/flow/STORY-NNN-<slug>/` con máximo ID sobre activas, archivadas y épicas | ✓ | D-3 (Formato A acotado a `EPIC-*`), D-5 (Fuentes A y B), D-6 (archivadas saltadas), D-7, D-9 (caso `max-id-incluye-archivadas`); F-2; contratos #6, #8 |
 | AC-3 | `/epic-analyze EPIC-NN` cuenta las historias de `specs/flow/archive/` como hijas, sin huérfanas ni faltantes | ✓ | D-4 (inventario y resolución de IDs en ambos orígenes, `related`), D-3, D-9 (caso `historia-archivada-cuenta-como-hija`); F-3; contrato #7 |
 | AC-4 | grep `SPECS_BASE\|SDDF_ROOT` sobre `skills/epic-*` sin coincidencias | ✓ | D-1 (bloque canónico), D-2 (mapa sobre SKILL, README, examples, evals), D-8 (retiro de `PENDING_MIGRATION`), D-9 (claves `env`/`sddf_config_root` eliminadas); F-4; contratos #1, #3, #4, #5 |
@@ -102,7 +102,7 @@ related:
 | Resolución de épica `specs/flow/EPIC-*/epic.md` | Interfaces | T006, T008, T010, T011, T020 | ✓ |
 | Inventario de historias (activas ∪ archivadas) | Interfaces | T012, T020 | ✓ |
 | Siguiente `STORY-NNN` | Interfaces | T008, T020 | ✓ |
-| Siguiente `EPIC-NN` | Interfaces | T005, T007 | ✓ |
+| Siguiente `EPIC-NNN` | Interfaces | T005, T007 | ✓ |
 | Templates en `docs/templates/` con seeds por `CLI_ROOT` | Interfaces | T005–T008, T010, T011 | ✓ |
 | Roadmap `docs/product/roadmap.md` | Interfaces | T007, T013 | ✓ |
 | Gate R1–R4 | Interfaces | T004, T019, T022 | ✓ |

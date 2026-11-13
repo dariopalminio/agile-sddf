@@ -129,7 +129,7 @@ Los 11 contratos de verificación de design.md quedan cubiertos por T001 y T020�
 ### INC-002 [WARNING]
 
 - **Tipo:** — (precisión de AC vs. regla de diseño; no bloqueante)
-- **Descripción:** la tabla de AC-2 usa literalmente "sin `roadmap.md`" (fila 3) y "`requirements/functional/` vacío" (fila 2); D-2 decide con `$ROADMAP_PLANNED` (roadmap con `## Propuesta (` o `EPIC-NN` en `## Épicas`) y con `$FR_COUNT`, que también cuenta `### FR-NNN` en `requirements/srs-*.md`. Ambas reglas son superconjuntos compatibles con los ejemplos de AC-2, pero un repo con `functional/` vacío y FR en un SRS iría a Planning, no a Discovery, sin que la historia lo diga.
+- **Descripción:** la tabla de AC-2 usa literalmente "sin `roadmap.md`" (fila 3) y "`requirements/functional/` vacío" (fila 2); D-2 decide con `$ROADMAP_PLANNED` (roadmap con `## Propuesta (` o `EPIC-NNN` en `## Épicas`) y con `$FR_COUNT`, que también cuenta `### FR-NNN` en `requirements/srs-*.md`. Ambas reglas son superconjuntos compatibles con los ejemplos de AC-2, pero un repo con `functional/` vacío y FR en un SRS iría a Planning, no a Discovery, sin que la historia lo diga.
 - **Archivo afectado:** story.md — "AC-2" (lín. 46-50); design.md — "D-2" (lín. 112-131) y "CR-002" (lín. 434-440)
 - **Acción requerida:** aplicar CR-002 en story.md (fila 3 → "sin `roadmap.md` planificado") y precisar la fila 2 como "sin requisitos FR (archivos `FR-*` o SRS)".
 

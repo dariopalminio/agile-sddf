@@ -23,7 +23,7 @@ related:
 
 ## Context
 
-`/epic-complete EPIC-NN` cierra el último paso del flujo de épica (`SHIP → COMPLETED`, nodo `epic-complete` de `docs/architecture/diagrams/flowchart-skill-epic-flow-relationship.mermaid`). Lleva una épica `SHIP/DONE` a `COMPLETED/DONE`, deja en `epic.md` la fecha de cierre y la versión liberada y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`.
+`/epic-complete EPIC-NN` cierra el último paso del flujo de épica (`SHIP → COMPLETED`, nodo `epic-complete` de `docs/architecture/diagrams/flowchart-skill-epic-flow-relationship.mermaid`). Lleva una épica `SHIP/DONE` a `COMPLETED/DONE`, deja en `epic.md` la fecha de cierre y la versión liberada y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`.
 
 Estado actual verificado en el filesystem (2026-10-29):
 
@@ -77,7 +77,7 @@ Estado actual verificado en el filesystem (2026-10-29):
 | Interfaz | Contrato | AC que satisface |
 |---|---|---|
 | Frontmatter de `SKILL.md` | `name: epic-complete`; `description: >-` en español, ≤ 350 caracteres, con disparadores «epic-complete», «completar épica», «archivar épica», «cerrar épica», «COMPLETED» | CS-12 |
-| Invocación del skill | `/epic-complete EPIC-NN [--version x.y.z]` o `/epic-complete specs/flow/EPIC-NN-<slug>/ [--version x.y.z]`. Sin modo automático ni `--yes` | AC-1, CNF-3 |
+| Invocación del skill | `/epic-complete EPIC-NN [--version x.y.z]` o `/epic-complete specs/flow/EPIC-NNN-<slug>/ [--version x.y.z]`. Sin modo automático ni `--yes` | AC-1, CNF-3 |
 | CLI del motor | `node <CLI_ROOT>/skills/epic-complete/scripts/epic-complete.js <plan\|apply> --repo-root <REPO_ROOT> (--id EPIC-NN \| --path <ruta>) [--version <x.y.z>]` | AC-1, AC-2 |
 | Salida del motor | Un único objeto JSON en stdout: `ok`, `code`, `message`, `epic {id, dir, status, substatus}`, `action`, `archiveDate`, `version`, `versionSource`, `from`, `to`, `moveMethod`, `warnings[]`, `counts {before, after}` (solo `apply`). Exit `0` si `ok: true`, `1` si `ok: false`, `2` ante argumentos inválidos (error en stderr) | AC-1, AC-2 |
 | API del módulo (para `test/`) | `module.exports = { locateEpic, archiveDateOf, releasedVersionOf, planCompletion, applyCompletion }`; las funciones reciben `{ repoRoot, id, epicPath, version, today }` y devuelven el mismo objeto que la CLI | AC-1, AC-2, CNF-1, CNF-2 |
@@ -183,7 +183,7 @@ Pasos 1–3 de F1; cualquier respuesta distinta de `s`/`si`/`sí`, o ninguna →
 
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
-| 1 | `SHIP/DONE` + `apply`: `epic.md` con `status: COMPLETED`, `substatus: DONE`, `updated`/`completed` de hoy y `version`; directorio en `specs/flow/archive/<hoy>-EPIC-NN-<slug>/`; ausente de `specs/flow/` | `test/epic-complete.test.js` (repo temporal) | AC-1 |
+| 1 | `SHIP/DONE` + `apply`: `epic.md` con `status: COMPLETED`, `substatus: DONE`, `updated`/`completed` de hoy y `version`; directorio en `specs/flow/archive/<hoy>-EPIC-NNN-<slug>/`; ausente de `specs/flow/` | `test/epic-complete.test.js` (repo temporal) | AC-1 |
 | 2 | Con historial, `git status --porcelain` muestra el rename `R` y no hay commit nuevo | `test/epic-complete.test.js` | AC-1, CNF-1 |
 | 3 | Versión: `--version` gana; bloque bajo `## [x.y.z]` la resuelve; bajo `[Unreleased]` o sin bloque → `NO_VERSION` sin cambios; `--version` distinta de `CHANGELOG.md` → aviso | `test/epic-complete.test.js` (`releasedVersionOf` y `planCompletion`) | AC-1 |
 | 4 | `VALIDATE/DONE`, `DEVELOP/IN-PROGRESS` y `CANCELED/DONE` → `NOT_SHIPPED` con el mensaje de AC-2; árbol de archivos idéntico antes y después | `test/epic-complete.test.js` | AC-2 |

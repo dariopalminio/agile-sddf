@@ -33,7 +33,7 @@ Es el nodo `SHIP` del flujo de épica (`/epic-validate` → `/epic-ship` → `/e
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `specs/flow/<EPIC-NN-nombre>/epic.md` | `title`, `status`, `substatus` y la primera frase de `## Objetivo` |
+| `epic.md` | `specs/flow/<EPIC-NNN-nombre>/epic.md` | `title`, `status`, `substatus` y la primera frase de `## Objetivo` |
 | `epic-validate-report.md` | `<EPIC_DIR>/epic-validate-report.md` | Solo `verdict` del frontmatter |
 | `story.md` | `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md` | `id`, `title`, `kind`, `parent`, `status` y `substatus` |
 | `CHANGELOG.md` | `REPO_ROOT` | Bloque o entrada de la épica |
@@ -82,8 +82,8 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 ### Paso 1 — Resolver la épica
 
 1. **Ruta** (contiene `/` o `\`): el directorio o su `epic.md`.
-2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.
-3. **ID** (`EPIC-NN`): glob `specs/flow/<ID>-*/epic.md`. El guion es parte del patrón: `EPIC-30` no casa `EPIC-300-x`.
+2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `specs/flow/<nombre>/epic.md`.
+3. **ID** (`EPIC-NNN`): glob `specs/flow/<ID>-*/epic.md`. El guion es parte del patrón: `EPIC-30` no casa `EPIC-300-x`.
 
 | Resultado | Comportamiento |
 |---|---|
@@ -91,7 +91,7 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 | > 1 coincidencias | Listar los directorios: `❌ El argumento <arg> es ambiguo: <lista>` y fin sin escribir |
 | Sin argumento | Preguntar `¿Qué épica deseas llevar a SHIP? Indica el ID (ej. EPIC-30), el nombre de su directorio o su ruta.` |
 
-Registrar `EPIC_DIR`, `EPIC_DIRNAME`, `EPIC_ID` (prefijo `EPIC-NN` de `EPIC_DIRNAME`) y, del frontmatter de `epic.md`, `title` (si falta, `EPIC_DIRNAME`), `status` y `substatus`.
+Registrar `EPIC_DIR`, `EPIC_DIRNAME`, `EPIC_ID` (prefijo `EPIC-NNN` de `EPIC_DIRNAME`) y, del frontmatter de `epic.md`, `title` (si falta, `EPIC_DIRNAME`), `status` y `substatus`.
 
 ### Paso 2 — Gates (antes de cualquier escritura)
 

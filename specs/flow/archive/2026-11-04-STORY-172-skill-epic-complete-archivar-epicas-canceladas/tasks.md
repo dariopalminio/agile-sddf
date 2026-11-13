@@ -40,7 +40,7 @@ related:
 ## 4. Pruebas del motor
 
 - [x] T009 En `test/epic-complete.test.js`, retirar `CANCELED/DONE` del caso que espera `NOT_SHIPPED` (contrato 4 de STORY-171) y añadir la sección `// ── STORY-172 — archivado de épicas CANCELED ──` con: `CANCELED/DONE` → `plan` con `action: archive-canceled` y `archiveDate` de `updated:`, de `created:` y de `date:` (solo sin las otras dos) (contrato 1) // AC-1
-- [x] T010 Añadir casos del contrato 2–3: `CANCELED/DONE` + `apply` → directorio en `specs/flow/archive/<archiveDate>-EPIC-NN-<slug>/`, ausente de `specs/flow/`, `epic.md` byte a byte igual con `^status: CANCELED$` y `^substatus: DONE$`, `message` con `archivada como CANCELED (status sin cambios)`; con historial, `git status --porcelain` con rename `R` y sin commit nuevo // AC-1, CNF-1
+- [x] T010 Añadir casos del contrato 2–3: `CANCELED/DONE` + `apply` → directorio en `specs/flow/archive/<archiveDate>-EPIC-NNN-<slug>/`, ausente de `specs/flow/`, `epic.md` byte a byte igual con `^status: CANCELED$` y `^substatus: DONE$`, `message` con `archivada como CANCELED (status sin cambios)`; con historial, `git status --porcelain` con rename `R` y sin commit nuevo // AC-1, CNF-1
 - [x] T011 Añadir casos de los contratos 4–6: `CANCELED/IN-PROGRESS` → `CANCELED_NOT_DONE` con `CANCELED/IN-PROGRESS` y «solo se archivan las épicas canceladas con substatus DONE», sin `/epic-ship`, snapshot idéntico; `CANCELED/DONE` con destino existente → `ARCHIVE_CONFLICT` con la ruta, snapshot idéntico; `CANCELED/DONE` sin fecha válida → `NO_ARCHIVE_DATE`; `CANCELED/DONE` con `--version 9.9.9` → `version: null` // AC-2, AC-3
 
 ## 5. Evals

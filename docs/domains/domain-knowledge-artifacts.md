@@ -98,7 +98,7 @@ title: "Documentación del Dominio: Artefactos de Conocimiento (Knowledge Artifa
 | **ADR** | `ADR-` | `adr/` | ✅ Inmutable | Decisión arquitectónica con rationale. |
 | **RFC** | `RFC-` | `rfcs/` | ✅ Inmutable tras aprobación | Propuesta de cambio grande. |
 | **Product** | — | `product/` | ❌ Evoluciona | Visión, stakeholders, objetivos, roadmap y story map. |
-| **Spec (Epic)** | `EPIC-` | `specs/flow/EPIC-NN-<slug>/` (raíz del repo) | ❌ Evoluciona | Entregable o release. |
+| **Spec (Epic)** | `EPIC-` | `specs/flow/EPIC-NNN-<slug>/` (raíz del repo) | ❌ Evoluciona | Entregable o release. |
 | **Spec (Story)** | `STORY-` | `specs/flow/STORY-NNN-<slug>/`; archivada: `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` | ❌ Evoluciona | Historia de usuario atómica. |
 | **Domain** | `DOMAIN-` (implícito) | `domains/` | ❌ Evoluciona (lento) | Modelo DDD de un bounded context. |
 | **Constitution** | — | raíz de `docs/` | ❌ Evoluciona (lento, con aprobación) | Documento supremo del que derivan policies y guardrails. |

@@ -53,7 +53,7 @@ agile-sddf/
 ├── sddf.config.yaml                   # configuración: skills activos por fase
 │
 ├── specs/flow/                        # work items del layout fijo (ADR-0016), fuera de docs/
-│   ├── EPIC-NN-*/epic.md              #   épicas (entregables)
+│   ├── EPIC-NNN-*/epic.md              #   épicas (entregables)
 │   ├── STORY-NNN-*/story.md           #   historias atómicas
 │   └── archive/<fecha>-STORY-NNN-*/   #   historias archivadas
 │

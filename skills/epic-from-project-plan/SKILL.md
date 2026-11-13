@@ -1,7 +1,7 @@
 ---
 name: epic-from-project-plan
 description: >-
-  Genera especificaciones EPIC-NN-nombre/epic.md desde la última propuesta de
+  Genera especificaciones EPIC-NNN-nombre/epic.md desde la última propuesta de
   product/roadmap.md y valida cada épica con epic-format-validation.
 triggers:
   - epic-from-project-plan
@@ -62,7 +62,7 @@ Si ya existe `EPIC-<cualquier NN>-<slug>`, preguntar si se sobrescribe; sin resp
 
 Resolver el template central `docs/templates/epic-template.md`; si falta, usar `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` e informar el fallback. Si tampoco existe, informar `❌ Template epic-template.md no encontrado. Ejecuta sddf-init.` y detener.
 
-Para cada épica nueva, crear `specs/flow/EPIC-NN-<slug>/epic.md` tomando títulos y orden del template. El mapeo por clave es:
+Para cada épica nueva, crear `specs/flow/EPIC-NNN-<slug>/epic.md` tomando títulos y orden del template. El mapeo por clave es:
 
 | Clave | Contenido |
 |---|---|

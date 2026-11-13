@@ -29,7 +29,7 @@ related:
 ```gherkin
 Dado que ADR-0017 está aceptado y deja las épicas en specs/flow/
 Cuando se acepta el ADR nuevo del layout
-Entonces admite épicas COMPLETED/DONE y CANCELED/DONE en specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/
+Entonces admite épicas COMPLETED/DONE y CANCELED/DONE en specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/
   Y ADR-0017 pasa a status "SUPERSEDED" con "superseded-by" apuntando al ADR nuevo y una nota de reemplazo bajo su título, sin otros cambios
   Y la fila de ADR-0017 en el índice de docs/adr/README.md muestra "SUPERSEDED → ADR-NNNN"
 ```
@@ -46,7 +46,7 @@ Entonces documentan que epic-complete escribe COMPLETED de épica solo con confi
 ```gherkin
 Escenario: <skill> no reutiliza el número de una épica archivada
   Dado una épica archivada en specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/
-    Y EPIC-29 como la épica activa de mayor número en specs/flow/
+    Y EPIC-029 como la épica activa de mayor número en specs/flow/
   Cuando el Solo Builder crea una épica nueva con "<skill>"
   Entonces la épica nueva recibe el ID "EPIC-31"
     Pero no recibe el ID "EPIC-30"

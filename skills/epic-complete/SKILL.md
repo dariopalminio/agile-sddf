@@ -10,13 +10,13 @@ description: >-
 
 ## Objetivo
 
-Cierra el ciclo de vida de una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, deja en el frontmatter de `epic.md` la fecha de cierre (`completed:`) y, si se conoce, la versión (`version:`) y mueve su directorio de `specs/flow/EPIC-NN-<slug>/` a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019). Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status para no confundirse con una liberada.
+Cierra el ciclo de vida de una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, deja en el frontmatter de `epic.md` la fecha de cierre (`completed:`) y, si se conoce, la versión (`version:`) y mueve su directorio de `specs/flow/EPIC-NNN-<slug>/` a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` (ADR-0019). Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status para no confundirse con una liberada.
 
 `specs/flow/` queda solo con el trabajo activo y la épica archivada conserva su historial en git; `created:` y `completed:` permiten medir el tiempo de ciclo y `version:`, si existe, la enlaza con su entrada de `CHANGELOG.md`. Una épica puede no coincidir con un release: la versión nunca bloquea el cierre.
 
 El trabajo determinista (localizar, validar, resolver la versión, escribir, mover, actualizar las referencias en la documentación activa, verificar el conteo) lo hace el motor `scripts/epic-complete.js`; este skill solo orquesta: pide el plan, lo muestra, pregunta y aplica.
 
-Tras archivar, el motor reescribe en la documentación activa (mismo alcance que `scripts/check-doc-links.js`) las referencias a `specs/flow/EPIC-NN-<slug>/` hacia `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`, de modo que el gate de enlaces activos no quede roto (BUG-01).
+Tras archivar, el motor reescribe en la documentación activa (mismo alcance que `scripts/check-doc-links.js`) las referencias a `specs/flow/EPIC-NNN-<slug>/` hacia `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`, de modo que el gate de enlaces activos no quede roto (BUG-01).
 
 ## Posicionamiento
 
@@ -30,7 +30,7 @@ epic-complete    ← aquí
       │   Cualquier rechazo:        no se pregunta; nada se modifica ni se mueve
       │   Respuesta distinta de "s": nada se modifica ni se mueve
      ↓
-[specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/epic.md: COMPLETED/DONE | CANCELED/DONE]
+[specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/epic.md: COMPLETED/DONE | CANCELED/DONE]
 ```
 
 Nodo `epic-complete` (`SHIP → COMPLETED`) de `docs/architecture/diagrams/flowchart-skill-epic-flow-relationship.mermaid`.
@@ -44,7 +44,7 @@ Nodo `epic-complete` (`SHIP → COMPLETED`) de `docs/architecture/diagrams/flowc
 
 ## Parámetros
 
-- Primer argumento posicional: ID de la épica (`EPIC-NN`) o ruta explícita (`specs/flow/EPIC-NN-<slug>/`)
+- Primer argumento posicional: ID de la épica (`EPIC-NNN`) o ruta explícita (`specs/flow/EPIC-NNN-<slug>/`)
 - `--version x.y.z` (opcional): versión de la épica; prevalece sobre `CHANGELOG.md` (se acepta una `v` inicial, que se descarta)
 
 No hay modo automático ni `--yes`: `epic-complete` escribe un estado terminal y la confirmación humana es obligatoria en cada ejecución.
@@ -102,7 +102,7 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 ### Paso 1 — Resolver el argumento
 
-- `EPIC-NN` → `--id EPIC-NN`; una ruta → `--path <ruta>` (el motor solo acepta `specs/flow/EPIC-NN-<slug>/`).
+- `EPIC-NNN` → `--id EPIC-NN`; una ruta → `--path <ruta>` (el motor solo acepta `specs/flow/EPIC-NNN-<slug>/`).
 - `--version x.y.z`, si se indicó, se pasa tal cual.
 - Sin argumento, pregunta:
   ```
@@ -188,9 +188,9 @@ Tras `s`, invoca `apply` con los mismos argumentos. `apply` vuelve a validar tod
 
 | Artefacto | Ruta | Descripción |
 |---|---|---|
-| `epic.md` (actualizado) | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/epic.md` | `status: COMPLETED`, `updated:` y `completed:` de hoy, `version:` si se conoce (solo desde `SHIP/DONE`) |
-| Directorio archivado | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` | la épica completa, con sus reportes; renombre en el índice de git |
-| Documentación activa (referencias) | las raíces activas con coincidencias (p. ej. `docs/index.md`, `README.md`) | las referencias a `specs/flow/EPIC-NN-<slug>/` se reescriben hacia la ruta archivada; solo archivos con coincidencias (BUG-01) |
+| `epic.md` (actualizado) | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/epic.md` | `status: COMPLETED`, `updated:` y `completed:` de hoy, `version:` si se conoce (solo desde `SHIP/DONE`) |
+| Directorio archivado | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` | la épica completa, con sus reportes; renombre en el índice de git |
+| Documentación activa (referencias) | las raíces activas con coincidencias (p. ej. `docs/index.md`, `README.md`) | las referencias a `specs/flow/EPIC-NNN-<slug>/` se reescriben hacia la ruta archivada; solo archivos con coincidencias (BUG-01) |
 
 No se crea ningún reporte. Fuera de la épica, solo se modifica la documentación activa con referencias a su ruta original.
 

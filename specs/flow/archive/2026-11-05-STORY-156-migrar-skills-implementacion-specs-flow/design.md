@@ -23,7 +23,7 @@ related:
 
 ## Context
 
-La historia migra los dos skills de implementación (`story-implement`, `story-implement-tasks`) al layout fijo de ADR-0016 (STORY-147): dejan de resolver una raíz configurable y leen/escriben en rutas fijas relativas a `REPO_ROOT` (`specs/flow/STORY-NNN-<slug>/`, `specs/flow/EPIC-NN-<slug>/`, `docs/templates/`, `docs/guardrails/`). Adoptan el contrato verificable de STORY-148 (marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, reglas R1–R4 de `scripts/verify-fixed-layout.js`) con el mismo texto canónico que STORY-150 (D-1) y STORY-151.
+La historia migra los dos skills de implementación (`story-implement`, `story-implement-tasks`) al layout fijo de ADR-0016 (STORY-147): dejan de resolver una raíz configurable y leen/escriben en rutas fijas relativas a `REPO_ROOT` (`specs/flow/STORY-NNN-<slug>/`, `specs/flow/EPIC-NNN-<slug>/`, `docs/templates/`, `docs/guardrails/`). Adoptan el contrato verificable de STORY-148 (marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, reglas R1–R4 de `scripts/verify-fixed-layout.js`) con el mismo texto canónico que STORY-150 (D-1) y STORY-151.
 
 Estado verificado en el filesystem (2026-10-22):
 
@@ -133,7 +133,7 @@ Regla única para 11d (implement) y 4c (implement-tasks), coherente con STORY-15
 
 1. Leer `parent` del frontmatter de `story.md`; vacío → comportamiento actual de «sin épica».
 2. Probar `specs/flow/<parent>/epic.md` (parent = slug completo, forma de la plantilla de historia).
-3. Si no existe y `parent` es solo `EPIC-NN`, probar Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia).
+3. Si no existe y `parent` es solo `EPIC-NNN`, probar Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia).
 4. Sin coincidencia → mensajes actuales de cada skill (`[INFO] epic.md no encontrado …` en implement; `⚠️ No se pudo actualizar el checklist de la épica: <razón>` + sección de advertencia en implement-tasks). No se consulta `specs/flow/archive/` ni `docs/specs/epics/`.
 
 Corrige el defecto actual de implement-tasks (`<parent>-*` nunca casa con un slug completo) sin cambiar la semántica de la actualización del checklist (sección `clave: historias`, token `**{story_id}**`, `- [ ]` → `- [x]`).
@@ -224,7 +224,7 @@ N/A — no cambia ningún frontmatter ni el formato de `implement-report.md`, `r
 ## Decisiones de complejidad justificada
 
 - **Validación de `{story_path}` (D-3):** sin ella, AC-2 no se cumple por construcción; es una comprobación de prefijo y existencia, no un mecanismo nuevo.
-- **Fallback `<parent>-*` en D-4:** cubre historias cuyo `parent` es solo `EPIC-NN` (forma que hoy asume implement-tasks); es un segundo intento de Glob sobre el mismo directorio.
+- **Fallback `<parent>-*` en D-4:** cubre historias cuyo `parent` es solo `EPIC-NNN` (forma que hoy asume implement-tasks); es un segundo intento de Glob sobre el mismo directorio.
 - **D-6 condicional:** evita duplicar el cambio de STORY-150 sin crear dependencia dura entre historias hermanas.
 - No se añade archivo, script, variable ni fallback a rutas legadas.
 

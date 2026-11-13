@@ -9,8 +9,8 @@ Todas las rutas son relativas a `REPO_ROOT`. Todo glob se evalúa fuera de bloqu
 Interpretar `<epica>` en este orden; la primera forma aplicable decide:
 
 1. **Ruta** (contiene `/` o `\`): directorio de la épica, o su `epic.md`. `EPIC_DIR` = ese directorio.
-2. **Nombre de directorio** (`EPIC-NN-<slug>`): `specs/flow/<nombre>/epic.md`.
-3. **ID** (`EPIC-NN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón: `EPIC-30` no casa `EPIC-300-x`.
+2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `specs/flow/<nombre>/epic.md`.
+3. **ID** (`EPIC-NNN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón: `EPIC-30` no casa `EPIC-300-x`.
 
 La búsqueda se restringe a `specs/flow/EPIC-*/epic.md`: solo se resuelven épicas activas, así que `specs/flow/archive/` nunca se consulta para resolverlas (una épica archivada es terminal, ADR-0019). `EPIC_ID` se toma del nombre del directorio, no del `id:` del frontmatter, porque el `parent` de las historias referencia el directorio.
 
@@ -32,7 +32,7 @@ El estado de la casilla (`[ ]`/`[x]`) **no** decide el resultado: lo decide el `
 
 1. Inventario = glob `specs/flow/STORY-*/story.md` ∪ glob `specs/flow/archive/*-STORY-*/story.md`. Si `specs/flow/archive/` no existe, ese origen se omite sin nota.
 2. De cada `story.md` leer **solo el frontmatter**: `parent`, `status` y `substatus` (valores escalares). El ID es el `STORY-NNN` del nombre del directorio, tras el prefijo de fecha `<YYYY-MM-DD>-` si está archivada. `Ubicación` = `activa` (en `specs/flow/`) o `archivada` (en `specs/flow/archive/`).
-3. **Pertenencia:** la historia declara la épica si el prefijo `EPIC-NN` de su `parent` es igual a `EPIC_ID`. `EPIC-30-ejemplo` y `EPIC-30` cuentan para `EPIC-30`; `EPIC-300-otra` no. Se compara el prefijo para que renombrar el slug de la épica no deje huérfanas a sus historias.
+3. **Pertenencia:** la historia declara la épica si el prefijo `EPIC-NNN` de su `parent` es igual a `EPIC_ID`. `EPIC-30-ejemplo` y `EPIC-30` cuentan para `EPIC-30`; `EPIC-300-otra` no. Se compara el prefijo para que renombrar el slug de la épica no deje huérfanas a sus historias.
 4. Frontmatter ilegible o sin `parent`: si la historia **no** está listada en el índice, se ignora; si **está** listada, se muestra igual (su fila sale del índice).
 
 ## 4. Unión y resolución de IDs

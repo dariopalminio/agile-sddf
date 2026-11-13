@@ -82,7 +82,7 @@ Sin cambios, conforme al plan: `sddf.config.yaml`, plantilla y ejemplo de `sddf-
 1. **Verificación 3 del plan vs. realidad:** el plan decía «`grep -rn "defaults.{type}" skills/` → sin resultados». La corrección es correcta, pero el literal `defaults.{type}.command` aparece de forma intencional en dos sitios nuevos (el mensaje `[WARN]` de D-4 en `SKILL.md:552` y su fila en la tabla de errores en `SKILL.md:1223`). El criterio efectivo —ninguna *lectura* de la clave legada— se cumple: las tres lecturas originales no existen.
 2. **Destino de las evidencias de la tarea 11:** `tasks.md` dice «Evidencias anotadas en `implement-report.md`» y el paso 8 de la sección Verificación del plan dice «Las evidencias se anotan en `bug.md`». Este reporte sirve de ancla para ambas lecturas: al completarse 11.1–11.3, las evidencias deben reflejarse también en `bug.md` (estado del work item) antes de cerrar.
 3. **`bug.md` aún en `PLAN`/`IN-PROGRESS`:** con la tarea 11 pendiente, el estado del bug es coherente; no se ha mutado.
-4. **Riesgo de coordinación (recordado):** EPIC-29 (`TODO`) tocará el mismo `SKILL.md` y `evals.json`; conviene integrar BUG-02 antes de que EPIC-29 pase a `IN-PROGRESS` (sección Riesgos del plan).
+4. **Riesgo de coordinación (recordado):** EPIC-029 (`TODO`) tocará el mismo `SKILL.md` y `evals.json`; conviene integrar BUG-02 antes de que EPIC-029 pase a `IN-PROGRESS` (sección Riesgos del plan).
 
 ## Verificación manual
 

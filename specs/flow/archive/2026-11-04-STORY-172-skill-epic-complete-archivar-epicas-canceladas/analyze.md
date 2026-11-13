@@ -39,7 +39,7 @@ related:
 
 | AC | Descripción | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
-| AC-1 | Archivar una épica `CANCELED/DONE` en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` conservando status e historial | ✓ | Tabla de admisión (`archive-canceled`), D-2 (sin escritura), D-3 (fecha `archiveDateOf`), F1, Interfaces `applyCompletion` y pregunta/línea de éxito; contratos 1–3, 7 |
+| AC-1 | Archivar una épica `CANCELED/DONE` en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` conservando status e historial | ✓ | Tabla de admisión (`archive-canceled`), D-2 (sin escritura), D-3 (fecha `archiveDateOf`), F1, Interfaces `applyCompletion` y pregunta/línea de éxito; contratos 1–3, 7 |
 | AC-2 | `CANCELED/IN-PROGRESS` → informa y no cambia nada | ✓ | Tabla de admisión (`CANCELED_NOT_DONE`), mensaje literal, D-4, F2, catálogo de errores; contratos 4, 8 |
 | AC-3 | Destino existente → informa la ruta y no mueve | ✓ | Esquema › Conflicto de destino, D-6 (`ARCHIVE_CONFLICT` heredado), F3; contratos 5, 9 |
 | CNF-1 | No escribe `status`/`substatus` | ✓ | D-2, Interfaces `applyCompletion`; contrato 2 |

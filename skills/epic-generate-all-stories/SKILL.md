@@ -72,7 +72,7 @@ Sin parámetros — el skill no expone flags ni argumentos posicionales.
 - El template `story-template.md` es de solo lectura — nunca escribir en él ni usarlo como ruta de salida
 - Si dos features en distintos épicas generan el mismo nombre de directorio (mismo ID y slug), el segundo se nombra con sufijo `-bis` (ej. `STORY-027-nombre-bis/`) e informa al usuario en el resumen
 - Las secciones opcionales de cada historia se incluyen con placeholder `[Por completar]` para facilitar la edición posterior
-- El orden de procesamiento es siempre alfabético por nombre de directorio de la épica, equivalente al orden numérico dado el patrón `EPIC-NN-nombre/`
+- El orden de procesamiento es siempre alfabético por nombre de directorio de la épica, equivalente al orden numérico dado el patrón `EPIC-NNN-nombre/`
 - NO modifique ningún archivo existente en el código fuente (estamos en etapa de especificación, no de implementación)
 - NO genere código; estas especificando, no implementando los artefactos técnicos
 - **Encoding**: All generated `.md` files MUST be saved as **UTF-8 without BOM**. 
@@ -98,7 +98,7 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 ### Paso 1 — Descubrir directorios de épica
 
-Listar todas las épicas disponibles usando Glob con el patrón `specs/flow/EPIC-*/epic.md`. La herramienta Glob solo encuentra archivos, no directorios — el patrón debe apuntar al archivo `epic.md` anidado dentro de cada directorio `EPIC-NN-*`. Ordenar los resultados alfabéticamente por nombre de directorio padre.
+Listar todas las épicas disponibles usando Glob con el patrón `specs/flow/EPIC-*/epic.md`. La herramienta Glob solo encuentra archivos, no directorios — el patrón debe apuntar al archivo `epic.md` anidado dentro de cada directorio `EPIC-NNN-*`. Ordenar los resultados alfabéticamente por nombre de directorio padre.
 
 **Si el directorio `specs/flow/` no existe o no contiene ningún subdirectorio con `epic.md`**, mostrar el siguiente mensaje y terminar sin generar ningún archivo:
 
@@ -106,7 +106,7 @@ Listar todas las épicas disponibles usando Glob con el patrón `specs/flow/EPIC
 No se encontraron directorios de épica en specs/flow/
 
 Asegúrate de haber ejecutado el skill /epic-from-project-plan antes de usar este skill,
-o verifica que el directorio contiene subdirectorios EPIC-NN-nombre/ con archivo epic.md.
+o verifica que el directorio contiene subdirectorios EPIC-NNN-nombre/ con archivo epic.md.
 ```
 
 Mostrar al usuario la lista de épicas descubiertas antes de continuar:
@@ -309,7 +309,7 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 ...
 
 ### Épicas sin historias (no procesadas)
-- specs/flow/EPIC-NN-nombre/
+- specs/flow/EPIC-NNN-nombre/
 
 **Siguiente paso:** Ejecuta `/story-evaluation` para verificar la calidad de las historias generadas, o `/story-specify` para especificarlas de forma interactiva.
 ```

@@ -39,7 +39,7 @@ El repositorio usa un **layout fijo de tres raíces hermanas** en la raíz del r
 ├── docs/                  conocimiento: product/, requirements/, domains/, architecture/, adr/,
 │                          policies/, guardrails/, guides/, runbooks/, templates/, constitution.md, index.md
 ├── specs/                 estado
-│   ├── flow/              work items planos: EPIC-NN-<slug>/, STORY-NNN-<slug>/ (sin epics/ ni stories/)
+│   ├── flow/              work items planos: EPIC-NNN-<slug>/, STORY-NNN-<slug>/ (sin epics/ ni stories/)
 │   │   └── archive/       stories COMPLETED: <YYYY-MM-DD>-STORY-NNN-<slug>/
 │   └── living/            reservado (épica de Living Spec)
 └── workflow/              proceso, reservado (épica de Workflow)
@@ -54,7 +54,7 @@ El repositorio usa un **layout fijo de tres raíces hermanas** en la raíz del r
   `<YYYY-MM-DD>` es el `updated:` del frontmatter de la story y, si falta, su `created:`. Las stories `CANCELED` y las
   de cualquier otro estado quedan en `specs/flow/`; las épicas se aplanan en `specs/flow/` pero no se archivan.
 - **Nombre de directorio:** los directorios de `specs/flow/` conservan el slug: `STORY-NNN-<slug>/` y
-  `EPIC-NN-<slug>/`, como en ADR-0004; el criterio `specs/flow/STORY-001/story.md` se lee como
+  `EPIC-NNN-<slug>/`, como en ADR-0004; el criterio `specs/flow/STORY-001/story.md` se lee como
   `specs/flow/STORY-001-<slug>/story.md`. Es consistente con SMOKE-1 (`specs/flow/STORY-001-<slug>/story.md`) y
   SMOKE-2 (`specs/flow/EPIC-01-<slug>/epic.md`) de EPIC-26.
 
@@ -101,6 +101,6 @@ El repositorio usa un **layout fijo de tres raíces hermanas** en la raíz del r
 ## Referencias
 
 - [[specs-dentro-de-docs]] — ADR-0010, decisión reemplazada
-- [[nivel-l2-epic-y-directorios-numerados]] — ADR-0004, convención `STORY-NNN-<slug>/` y `EPIC-NN-<slug>/`
+- [[nivel-l2-epic-y-directorios-numerados]] — ADR-0004, convención `STORY-NNN-<slug>/` y `EPIC-NNN-<slug>/`
 - [[templates-como-capa-propia]] — ADR-0007, templates como capa propia
 - [[EPIC-26-layout-y-flow-forward-mejorado]] — épica que origina y aplica esta decisión

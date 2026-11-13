@@ -40,7 +40,7 @@ related:
 
 | AC | Descripción | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
-| AC-1 | `SHIP/DONE` + confirmación → `COMPLETED/DONE`, archivada en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` con historial de git, fechas de cierre y versión legibles | ✓ | Motor (Componentes), «Frontmatter de `epic.md` tras `complete`», «Resolución de la versión liberada», F1, F5, D-4, D-5, D-7, D-8; contratos 1–3, 7, 10 |
+| AC-1 | `SHIP/DONE` + confirmación → `COMPLETED/DONE`, archivada en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` con historial de git, fechas de cierre y versión legibles | ✓ | Motor (Componentes), «Frontmatter de `epic.md` tras `complete`», «Resolución de la versión liberada», F1, F5, D-4, D-5, D-7, D-8; contratos 1–3, 7, 10 |
 | AC-2 | `VALIDATE/DONE` → informa los estados admitidos; nada cambia ni se mueve | ✓ | «Tabla de admisión por estado» con el mensaje literal de `NOT_SHIPPED`, F2, D-3, D-9, `references/error-codes.md`; contratos 4, 6, 11 |
 | AC-3 | Sin confirmación → la épica conserva `SHIP/DONE` en `specs/flow/` | ✓ | F3, D-2 (solo `s`/`si`/`sí`, sin `--yes` ni modo automático); contrato 12 |
 

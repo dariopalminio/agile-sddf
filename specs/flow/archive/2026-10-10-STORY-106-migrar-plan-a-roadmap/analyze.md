@@ -103,8 +103,8 @@ related:
 ### INC-001 [WARNING]
 
 - **Tipo:** D (desalineación de redacción entre story.md y design.md)
-- **Descripción:** AC-1 de `story.md` pide el wikilink "`[[EPIC-NN-<slug>]]`" para cada épica, pero EPIC-13, 14, 15, 17 y 18 declaran un `slug` sin prefijo `EPIC-NN-`. `design.md` (D-2, CR-001) usa `[[<slug declarado>]]` para que los 22 resuelvan y no se violen los wikilinks rotos de AC-3. La implementación es correcta, pero la letra de AC-1 y el diseño divergen en 5 de 22 filas.
-- **Archivo afectado:** `story.md` — sección "AC-1 — Escenario principal", línea `Y cada épica aparece con su wikilink "[[EPIC-NN-<slug>]]"`
+- **Descripción:** AC-1 de `story.md` pide el wikilink "`[[EPIC-NNN-<slug>]]`" para cada épica, pero EPIC-13, 14, 15, 17 y 18 declaran un `slug` sin prefijo `EPIC-NNN-`. `design.md` (D-2, CR-001) usa `[[<slug declarado>]]` para que los 22 resuelvan y no se violen los wikilinks rotos de AC-3. La implementación es correcta, pero la letra de AC-1 y el diseño divergen en 5 de 22 filas.
+- **Archivo afectado:** `story.md` — sección "AC-1 — Escenario principal", línea `Y cada épica aparece con su wikilink "[[EPIC-NNN-<slug>]]"`
 - **Acción requerida:** opcional — precisar AC-1 como "su wikilink `[[<slug>]]` según su frontmatter" antes de la aceptación, para que el validador no marque esas 5 filas como fallo.
 
 ### INC-002 [WARNING]
@@ -120,7 +120,7 @@ related:
 
 ## Recomendaciones
 
-1. **INC-001:** en `story.md` › AC-1, cambiar `"[[EPIC-NN-<slug>]]"` por `"[[<slug>]]" declarado en su frontmatter` (o aceptar explícitamente CR-001 de `design.md` en `/story-acceptance`).
+1. **INC-001:** en `story.md` › AC-1, cambiar `"[[EPIC-NNN-<slug>]]"` por `"[[<slug>]]" declarado en su frontmatter` (o aceptar explícitamente CR-001 de `design.md` en `/story-acceptance`).
 2. **INC-002:** en `/story-verify` y `/story-acceptance`, evaluar AC-3 con el criterio por delta de D-8 frente a `.tmp/story-implement/STORY-106/check-before.txt`; registrar como deuda la corrección de `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` en las historias de EPIC-21.
 3. **Coordinación con STORY-104/105:** quien implemente en segundo lugar debe reaplicar las ediciones de `index.md` y `project.md:18` por contenido (D-6, D-7, F-3), no por número de línea.
 

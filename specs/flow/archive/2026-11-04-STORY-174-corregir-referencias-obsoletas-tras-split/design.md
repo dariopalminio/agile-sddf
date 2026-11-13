@@ -44,7 +44,7 @@ Estado verificado del que parte el diseño:
 **Non-Goals:**
 - Corregir hallazgos que `epic-analyze` sí reporta (INT, MAD de STORY-165; SAL de STORY-173): COH nunca duplica un `H-NNN` (D-3).
 - Revisar referencias fuera del índice de `epic.md` y del `related` de los `story.md` de la épica: ni el cuerpo de los `story.md` (`[[…]]`), ni `docs/index.md`, ni el `related` o la línea de referencias de `epic.md`.
-- Referencias a slugs de épica (`EPIC-NN-<slug>`) y referencias por ID sin slug (`STORY-301`): no son slugs de historia que un `/story-split` deje obsoletos.
+- Referencias a slugs de épica (`EPIC-NNN-<slug>`) y referencias por ID sin slug (`STORY-301`): no son slugs de historia que un `/story-split` deje obsoletos.
 - Cambiar `status`/`substatus` (CS-15) o modificar historias archivadas.
 - Ejecutar `/story-split` o detectar historias que convenga dividir (D-7, CR-002).
 - Cambiar `skills/epic-analyze/`.
@@ -83,7 +83,7 @@ A diferencia de las familias INT, MAD y SAL, COH no llega del reporte: su origen
 
 Las historias archivadas no se leen para COH: son registro histórico (STORY-165 D-7) y nunca se escriben.
 
-**Slug de historia:** token `STORY-<≥3 dígitos>-<segmentos>` con segmentos `[a-z0-9]+` separados por `-`, delimitado por un carácter que no sea letra, dígito ni `-` (o el borde de la línea). En `related`, el valor normalizado completo debe tener esa forma. `STORY-301` (sin slug) y `EPIC-NN-<slug>` no son candidatos. El token `**STORY-NNN**` de la línea F2/F3 es un ID, no un slug.
+**Slug de historia:** token `STORY-<≥3 dígitos>-<segmentos>` con segmentos `[a-z0-9]+` separados por `-`, delimitado por un carácter que no sea letra, dígito ni `-` (o el borde de la línea). En `related`, el valor normalizado completo debe tener esa forma. `STORY-301` (sin slug) y `EPIC-NNN-<slug>` no son candidatos. El token `**STORY-NNN**` de la línea F2/F3 es un ID, no un slug.
 
 **Existencia:** el slug `S` con ID `STORY-NNN` existe si hay un directorio `specs/flow/S/` o un directorio `specs/flow/archive/<YYYY-MM-DD>-S/` (comparación exacta del nombre, sin glob). Un slug que existe no es COH.
 

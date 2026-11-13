@@ -78,7 +78,7 @@ La primera coincidencia de esta tabla decide `type`, `id`, `kind` y `slug` a par
 | otro archivo bajo `docs/requirements/` | `wiki` | — | nombre sin extensión |
 | directorio `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio sin el prefijo de fecha |
 | directorio `specs/flow/STORY-*` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio |
-| directorio `specs/flow/EPIC-*` | `epic` | `EPIC-NN` | nombre del directorio |
+| directorio `specs/flow/EPIC-*` | `epic` | `EPIC-NNN` | nombre del directorio |
 | resto | `wiki` | — | regla histórica |
 
 Reglas complementarias:
