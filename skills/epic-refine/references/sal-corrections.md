@@ -10,12 +10,12 @@ Las secciones de `epic.md` se localizan por `clave:` del template de épica (`hi
 
 ## 1. Extracción y revalidación (SAL-01, SAL-02)
 
-Hallazgo: **Elemento** = texto literal del criterio (SAL-01) o `SMOKE-<N>` + nombre (SAL-02); **Evidencia** = `epic.md:<línea>` y, si las hay, evidencias parciales. Se procesan en el orden del reporte.
+Hallazgo: **Elemento** = enunciado literal del criterio (SAL-01) o `SMOKE-<N>` + nombre (SAL-02); **Evidencia** = `epic.md:<línea>` y, si las hay, evidencias parciales. Se procesan en el orden del reporte.
 
 1. **Etiqueta del elemento.**
-   - SAL-01 → el `CS-<n>` de la fila de la sección `cobertura-salida` del reporte cuya columna «Línea en epic.md» coincide con la línea de **Evidencia**. Sin esa fila: la posición del criterio en la sección `criterios-salida` del `epic.md` actual (1, 2… por orden de aparición, misma regla que `epic-analyze` Paso 5b.1). `CS-<n>` es una etiqueta posicional del reporte, no un ID de la épica.
+   - SAL-01 → el `CS-<n>` de la fila de la sección `cobertura-salida` del reporte cuya columna «Línea en epic.md» coincide con la línea de **Evidencia**. Sin esa fila: la etiqueta del criterio en la sección `criterios-salida` del `epic.md` actual, con la regla de `epic-analyze` Paso 5b.1: el ID que declara (`- [ ] **CS-<id>** — <enunciado>`, p. ej. `CS-4a`) o, si no declara ninguno, su posición `CS-<n>` (1, 2… por orden de aparición). Solo un ID declarado es un ID de la épica; la etiqueta posicional es del reporte.
    - SAL-02 → el `SMOKE-<N>` de **Elemento**.
-2. **Elemento vigente.** Releerlo en el `epic.md` actual: criterio = línea de nivel superior de `criterios-salida` cuyo texto (sin la casilla `- [ ] `, `- [x] ` o `- `) normalizado coincide con **Elemento** normalizado; smoke = encabezado `### SMOKE-<N>` de `smoke-tests`. Si no figura → **ya resuelto**, nota `el elemento ya no figura en epic.md`.
+2. **Elemento vigente.** Releerlo en el `epic.md` actual: criterio = línea de nivel superior de `criterios-salida` que declara el ID de la etiqueta, si la etiqueta es un ID declarado; si no, la línea cuyo enunciado (sin la casilla `- [ ] `, `- [x] ` o `- ` ni el prefijo `**CS-<id>** —`) normalizado coincide con **Elemento** normalizado; smoke = encabezado `### SMOKE-<N>` de `smoke-tests`. Si no figura → **ya resuelto**, nota `el elemento ya no figura en epic.md`.
 3. **Cobertura vigente.** Si algún `story.md` **activo** del universo de la épica (`parent` con prefijo `EPIC_ID`, resuelto por glob) contiene ya una mención E1 del elemento → **ya resuelto**, nota `<STORY-NNN> ya cita <etiqueta> (E1)`. Solo se revalida E1, que es determinista; E2 es juicio de `epic-analyze` y no se re-evalúa. Así, una re-ejecución tras escribir el par no vuelve a escribir.
 4. **Candidatas.** Los `STORY-NNN` de las evidencias marcadas como parciales en **Evidencia**, en cualquiera de las dos formas de `epic-analyze`: `parcial: STORY-NNN › AC-<n> · story.md:<línea>` o `STORY-NNN · AC-<n> · story.md:<línea> … — parcial`. Si **Evidencia** no las incluye, se toman de la columna «Evidencia» de la fila de `cobertura-salida` del elemento. Cada ID se resuelve de nuevo por glob (`specs/flow/<STORY-NNN>-*/story.md`, Paso 3.5 del `SKILL.md`); la ruta citada nunca se usa para escribir. Se descartan, con nota:
 
@@ -29,7 +29,7 @@ Sin candidatas tras el paso 4 → caso «sin evidencia parcial» (sección 3).
 
 ### Regla E1
 
-La misma de `epic-analyze` Paso 5b.2. **Smoke:** el token `SMOKE-<N>` aparece en el cuerpo con límite de palabra (`SMOKE-1` no casa `SMOKE-10`). **Criterio:** su texto completo normalizado es subcadena de una línea normalizada del cuerpo. Normalización: minúsculas, sin `` ` ``, `*` ni `_`, espacios colapsados, sin punto final. No cuentan las líneas del frontmatter ni las de una sección `##` cuyo título empiece por `Fuera de alcance`.
+La misma de `epic-analyze` Paso 5b.2. **Smoke:** el token `SMOKE-<N>` aparece en el cuerpo con límite de palabra (`SMOKE-1` no casa `SMOKE-10`). **Criterio con ID declarado:** el token `CS-<id>` aparece en el cuerpo con límite de palabra, sin letra ni dígito a continuación (`CS-1` no casa `CS-10` ni `CS-1a`), o su enunciado normalizado es subcadena de una línea normalizada del cuerpo. **Criterio sin ID:** su enunciado completo normalizado es subcadena de una línea normalizada del cuerpo; mencionar su etiqueta posicional no cuenta. Normalización: minúsculas, sin `` ` ``, `*` ni `_`, espacios colapsados, sin punto final. No cuentan las líneas del frontmatter ni las de una sección `##` cuyo título empiece por `Fuera de alcance`.
 
 ## 2. Historia de cierre: la única candidata sin dependientes
 
@@ -75,14 +75,14 @@ Dos cambios `C-NN` por elemento en el `story.md` de la historia de cierre, ambos
 - **Número:** `AC-<k+1>`, con `k` = mayor número de `### AC-<n>` de la sección.
 - **Ubicación en el plan:** `Criterios de aceptación › tras AC-<k>`.
 
-Criterio `CS-<n>`:
+Criterio `CS-<n>` (la etiqueta del paso 1 de la sección 1: el ID declarado o la posición):
 
 ````markdown
 ### AC-<k+1> — Cierre del contrato de salida – CS-<n> de <EPIC_ID>
 ```gherkin
 Dado que las historias de "<EPIC_ID>" están implementadas
 Cuando se verifica el criterio de salida "CS-<n>" de "<EPIC_ID>"
-Entonces se cumple: <texto literal del criterio, sin la casilla>
+Entonces se cumple: <enunciado literal del criterio, sin la casilla ni el prefijo del ID>
 ```
 ````
 
@@ -95,7 +95,7 @@ Smoke `SMOKE-<N>`: encabezado `### AC-<k+1> — Cierre del contrato de salida �
 
 | Elemento | Línea |
 |---|---|
-| Criterio | `- Cubre el criterio de salida CS-<n> de <EPIC_ID>: <texto literal del criterio, sin la casilla>` |
+| Criterio | `- Cubre el criterio de salida CS-<n> de <EPIC_ID>: <enunciado literal del criterio, sin la casilla ni el prefijo del ID>` |
 | Smoke | `- Cubre SMOKE-<N> de <EPIC_ID>: <nombre literal del smoke>` |
 
 Por construcción la línea del criterio contiene su texto completo y la del smoke el token `SMOKE-<N>`: ambas cumplen E1 en el siguiente `/epic-analyze`.

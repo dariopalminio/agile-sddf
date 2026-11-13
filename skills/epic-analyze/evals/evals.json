@@ -1,7 +1,7 @@
 {
   "skill": "epic-analyze",
-  "version": "1.4.0",
-  "description": "Casos de prueba para epic-analyze (STORY-120): cruza la sección de historias de epic.md (localizada por la clave 'historias' del template de épica) con los story.md que declaran la épica como parent, escribe <EPIC_DIR>/epic-analyze-report.md desde un template leído en runtime (central → seed) con hallazgos INT-01…INT-06 y un veredicto APPROVED / NEEDS-REFINEMENT; desde STORY-121 añade la familia SAL-01…SAL-04 (cobertura de criterios de salida y smoke tests por las historias, con evidencia E1 mención explícita / E2 AC que verifica) y la tabla de cobertura del contrato de salida; desde STORY-122 añade la familia MAD-01…MAD-03 (madurez de las historias hijas: estado mínimo SPECIFY/DONE y referencias related a historias o épicas resolubles por ID), todos WARNING; nunca modifica epic.md ni story.md y se detiene sin escribir ante una épica no resuelta o un template ausente.",
+  "version": "1.5.0",
+  "description": "Casos de prueba para epic-analyze (STORY-120): cruza la sección de historias de epic.md (localizada por la clave 'historias' del template de épica) con los story.md que declaran la épica como parent, escribe <EPIC_DIR>/epic-analyze-report.md desde un template leído en runtime (central → seed) con hallazgos INT-01…INT-06 y un veredicto APPROVED / NEEDS-REFINEMENT; desde STORY-121 añade la familia SAL-01…SAL-04 (cobertura de criterios de salida y smoke tests por las historias, con evidencia E1 mención explícita / E2 AC que verifica) y la tabla de cobertura del contrato de salida; desde STORY-122 añade la familia MAD-01…MAD-03 (madurez de las historias hijas: estado mínimo SPECIFY/DONE y referencias related a historias o épicas resolubles por ID), todos WARNING; nunca modifica epic.md ni story.md y se detiene sin escribir ante una épica no resuelta o un template ausente; desde BUG-003 un criterio con ID declarado (`**CS-<id>** — …`) se cubre por la mención de su ID (E1, como SMOKE-<N>), el reporte lo etiqueta con ese ID y cita su enunciado literal de epic.md.",
   "cases": [
     {
       "id": "TC-001",
@@ -1198,6 +1198,463 @@
           "=== FILE:",
           "epic-analyze-report.md",
           "VEREDICTO: APPROVED"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-031",
+      "name": "criterio-con-id-cubierto-por-mencion-de-su-id",
+      "type": "happy-path",
+      "description": "BUG-003 D-1/D-2: los criterios de salida declaran su ID (`**CS-1** — …`, `**CS-2** — …`). Ningún AC los verifica (E2 no aplica), pero STORY-201 cita `**CS-1**` y SMOKE-1 en sus Notas y STORY-202 cita `**CS-2**`. La mención del ID declarado es E1, como `SMOKE-<N>`: los tres elementos quedan cubiertos con `mención · story.md:<línea>`, la tabla los etiqueta con su ID declarado, sin hallazgos SAL y con veredicto APPROVED.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-30-ejemplo/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-30",
+          "4: title: \"Épica de ejemplo\"",
+          "5: ---",
+          "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Escribir reporte: genera el reporte de la épica.",
+          "19: - [ ] **STORY-202** — Calcular veredicto: deriva el veredicto de los hallazgos.",
+          "20: ",
+          "21: ## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->",
+          "22: - [ ] **CS-1** — `/epic-analyze` escribe `epic-analyze-report.md` en el directorio de la épica",
+          "23: - [ ] **CS-2** — El reporte declara el veredicto `APPROVED` cuando no hay hallazgos",
+          "24: ",
+          "25: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "26: ### SMOKE-1 — Reporte generado",
+          "27: ```gherkin",
+          "28: Escenario: Reporte generado",
+          "29:   Dado una épica con índice consistente",
+          "30:   Cuando se ejecuta /epic-analyze",
+          "31:   Entonces existe epic-analyze-report.md",
+          "32: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-201-escribir-reporte/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Escribir reporte",
+              "8: ## ✅ Criterios de aceptación",
+              "9: ### AC-1 — Orden del índice",
+              "10: ```gherkin",
+              "11: Dado una épica con tres historias",
+              "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"",
+              "13: Entonces la tabla del índice lista las historias ordenadas por ID",
+              "14: ```",
+              "15: ## 📎 Notas",
+              "16: - Cubre **CS-1** de EPIC-30 y el escenario SMOKE-1."
+            ]
+          },
+          {
+            "path": "specs/flow/STORY-202-calcular-veredicto/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Calcular veredicto",
+              "8: ## ✅ Criterios de aceptación",
+              "9: ### AC-1 — Conteo de hallazgos",
+              "10: ```gherkin",
+              "11: Dado una épica con tres historias",
+              "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"",
+              "13: Entonces el resumen muestra el número de hallazgos ERROR",
+              "14: ```",
+              "15: ## 📎 Notas",
+              "16: - Cubre **CS-2** de EPIC-30."
+            ]
+          }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' (líneas '- [ ] **CS-N** — <criterio>') y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-11-12"
+      },
+      "expected": {
+        "contains": [
+          "Cobertura del contrato de salida",
+          "| CS-1 |",
+          "| CS-2 |",
+          "| SMOKE-1 |",
+          "mención · story.md:16",
+          "Contrato de salida: 3/3 cubiertos",
+          "verdict: APPROVED"
+        ],
+        "not_contains": [
+          "SAL-01",
+          "SAL-02",
+          "verdict: NEEDS-REFINEMENT",
+          "epic.md ===",
+          "story.md ===",
+          "verdict: BLOCKED"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-032",
+      "name": "id-de-criterio-con-limite-de-palabra",
+      "type": "edge-case",
+      "description": "BUG-003 D-2/D-4: la épica declara `**CS-1**` (línea 22) y `**CS-1a**` (línea 23). STORY-201 solo cita `**CS-1a**` y SMOKE-1. `CS-1` no casa con `CS-1a`: CS-1a queda cubierto (E1) y CS-1 produce un SAL-01 cuya acción sugiere citar `CS-1` en el `story.md`; veredicto NEEDS-REFINEMENT.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-30-ejemplo/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-30",
+          "4: title: \"Épica de ejemplo\"",
+          "5: ---",
+          "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Escribir reporte: genera el reporte de la épica.",
+          "19: - [ ] **STORY-202** — Calcular veredicto: deriva el veredicto de los hallazgos.",
+          "20: ",
+          "21: ## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->",
+          "22: - [ ] **CS-1** — `/epic-analyze` escribe `epic-analyze-report.md` en el directorio de la épica",
+          "23: - [ ] **CS-1a** — El reporte declara el veredicto `APPROVED` cuando no hay hallazgos",
+          "24: ",
+          "25: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "26: ### SMOKE-1 — Reporte generado",
+          "27: ```gherkin",
+          "28: Escenario: Reporte generado",
+          "29:   Dado una épica con índice consistente",
+          "30:   Cuando se ejecuta /epic-analyze",
+          "31:   Entonces existe epic-analyze-report.md",
+          "32: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-201-escribir-reporte/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Escribir reporte",
+              "8: ## ✅ Criterios de aceptación",
+              "9: ### AC-1 — Orden del índice",
+              "10: ```gherkin",
+              "11: Dado una épica con tres historias",
+              "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"",
+              "13: Entonces la tabla del índice lista las historias ordenadas por ID",
+              "14: ```",
+              "15: ## 📎 Notas",
+              "16: - Cubre **CS-1a** de EPIC-30 y el escenario SMOKE-1."
+            ]
+          },
+          {
+            "path": "specs/flow/STORY-202-calcular-veredicto/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Calcular veredicto",
+              "8: ## ✅ Criterios de aceptación",
+              "9: ### AC-1 — Conteo de hallazgos",
+              "10: ```gherkin",
+              "11: Dado una épica con tres historias",
+              "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"",
+              "13: Entonces el resumen muestra el número de hallazgos ERROR",
+              "14: ```"
+            ]
+          }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' (líneas '- [ ] **CS-N** — <criterio>') y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-11-12"
+      },
+      "expected": {
+        "contains": [
+          "SAL-01",
+          "epic.md:22",
+          "citar `CS-1` en su `story.md`",
+          "| CS-1a |",
+          "Contrato de salida: 2/3 cubiertos",
+          "errors: 1",
+          "verdict: NEEDS-REFINEMENT"
+        ],
+        "not_contains": [
+          "SAL-02",
+          "verdict: APPROVED",
+          "epic.md ===",
+          "story.md ===",
+          "verdict: BLOCKED"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-033",
+      "name": "id-de-criterio-en-fuera-de-alcance-no-cubre",
+      "type": "error-handling",
+      "description": "BUG-003 D-2: la épica declara `**CS-1**` (línea 22) y `**CS-2**` (línea 23). STORY-201 cita `**CS-1**` y SMOKE-1 en sus Notas; STORY-202 solo menciona `CS-2` dentro de `## Fuera de alcance`, donde una mención significa lo contrario. CS-2 produce un SAL-01 que cita epic.md:23; veredicto NEEDS-REFINEMENT.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-30-ejemplo/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-30",
+          "4: title: \"Épica de ejemplo\"",
+          "5: ---",
+          "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Escribir reporte: genera el reporte de la épica.",
+          "19: - [ ] **STORY-202** — Calcular veredicto: deriva el veredicto de los hallazgos.",
+          "20: ",
+          "21: ## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->",
+          "22: - [ ] **CS-1** — `/epic-analyze` escribe `epic-analyze-report.md` en el directorio de la épica",
+          "23: - [ ] **CS-2** — El reporte declara el veredicto `APPROVED` cuando no hay hallazgos",
+          "24: ",
+          "25: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "26: ### SMOKE-1 — Reporte generado",
+          "27: ```gherkin",
+          "28: Escenario: Reporte generado",
+          "29:   Dado una épica con índice consistente",
+          "30:   Cuando se ejecuta /epic-analyze",
+          "31:   Entonces existe epic-analyze-report.md",
+          "32: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-201-escribir-reporte/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Escribir reporte",
+              "8: ## ✅ Criterios de aceptación",
+              "9: ### AC-1 — Orden del índice",
+              "10: ```gherkin",
+              "11: Dado una épica con tres historias",
+              "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"",
+              "13: Entonces la tabla del índice lista las historias ordenadas por ID",
+              "14: ```",
+              "15: ## 📎 Notas",
+              "16: - Cubre **CS-1** de EPIC-30 y el escenario SMOKE-1."
+            ]
+          },
+          {
+            "path": "specs/flow/STORY-202-calcular-veredicto/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Calcular veredicto",
+              "8: ## ✅ Criterios de aceptación",
+              "9: ### AC-1 — Conteo de hallazgos",
+              "10: ```gherkin",
+              "11: Dado una épica con tres historias",
+              "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"",
+              "13: Entonces el resumen muestra el número de hallazgos ERROR",
+              "14: ```",
+              "15: ## 🚫 Fuera de alcance",
+              "16: - El veredicto APPROVED de CS-2 lo resuelve otra iniciativa."
+            ]
+          }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' (líneas '- [ ] **CS-N** — <criterio>') y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-11-12"
+      },
+      "expected": {
+        "contains": [
+          "SAL-01",
+          "epic.md:23",
+          "El reporte declara el veredicto",
+          "Contrato de salida: 2/3 cubiertos",
+          "errors: 1",
+          "verdict: NEEDS-REFINEMENT"
+        ],
+        "not_contains": [
+          "SAL-02",
+          "verdict: APPROVED",
+          "epic.md ===",
+          "story.md ===",
+          "verdict: BLOCKED"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-034",
+      "name": "texto-literal-del-criterio-y-etiqueta-declarada",
+      "type": "edge-case",
+      "description": "BUG-003 D-1/D-3: la épica declara `**CS-1a**`, `**CS-1b**` y `**CS-2**` (líneas 22-24) y nadie cubre CS-2. La línea de STORY-202 en el índice de historias parafrasea CS-2 y le añade la cláusula «y registra la fecha de cada ejecución en un historial». La tabla etiqueta cada criterio con su ID declarado (nunca CS-3), y la fila de CS-2 y el Elemento de su SAL-01 copian solo el enunciado de epic.md:24, sin la cláusula del índice.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "epics_dirs": [
+          "specs/flow/EPIC-30-ejemplo/"
+        ],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-30",
+          "4: title: \"Épica de ejemplo\"",
+          "5: ---",
+          "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Escribir reporte: genera el reporte de la épica.",
+          "19: - [ ] **STORY-202** — Calcular veredicto: el reporte declara el veredicto APPROVED cuando no hay hallazgos y registra la fecha de cada ejecución en un historial.",
+          "20: ",
+          "21: ## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->",
+          "22: - [ ] **CS-1a** — `/epic-analyze` escribe `epic-analyze-report.md` en el directorio de la épica",
+          "23: - [ ] **CS-1b** — El reporte lista las historias del índice ordenadas por ID",
+          "24: - [ ] **CS-2** — El reporte declara el veredicto `APPROVED` cuando no hay hallazgos",
+          "25: ",
+          "26: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "27: ### SMOKE-1 — Reporte generado",
+          "28: ```gherkin",
+          "29: Escenario: Reporte generado",
+          "30:   Dado una épica con índice consistente",
+          "31:   Cuando se ejecuta /epic-analyze",
+          "32:   Entonces existe epic-analyze-report.md",
+          "33: ```"
+        ],
+        "stories": [
+          {
+            "path": "specs/flow/STORY-201-escribir-reporte/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Escribir reporte",
+              "8: ## ✅ Criterios de aceptación",
+              "9: ### AC-1 — Orden del índice",
+              "10: ```gherkin",
+              "11: Dado una épica con tres historias",
+              "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"",
+              "13: Entonces la tabla del índice lista las historias ordenadas por ID",
+              "14: ```",
+              "15: ## 📎 Notas",
+              "16: - Cubre **CS-1a** y **CS-1b** de EPIC-30 y el escenario SMOKE-1."
+            ]
+          },
+          {
+            "path": "specs/flow/STORY-202-calcular-veredicto/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Calcular veredicto",
+              "8: ## ✅ Criterios de aceptación",
+              "9: ### AC-1 — Conteo de hallazgos",
+              "10: ```gherkin",
+              "11: Dado una épica con tres historias",
+              "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"",
+              "13: Entonces el resumen muestra el número de hallazgos ERROR",
+              "14: ```"
+            ]
+          }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' (líneas '- [ ] **CS-N** — <criterio>') y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-11-12"
+      },
+      "expected": {
+        "contains": [
+          "| CS-1a |",
+          "| CS-1b |",
+          "| CS-2 |",
+          "SAL-01",
+          "epic.md:24",
+          "El reporte declara el veredicto",
+          "cuando no hay hallazgos",
+          "errors: 1",
+          "verdict: NEEDS-REFINEMENT"
+        ],
+        "not_contains": [
+          "registra la fecha",
+          "historial",
+          "CS-3",
+          "verdict: APPROVED",
+          "epic.md ===",
+          "story.md ===",
+          "verdict: BLOCKED"
         ]
       },
       "threshold": 1

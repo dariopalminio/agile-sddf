@@ -1,6 +1,6 @@
 {
   "skill": "epic-refine",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Casos de prueba para epic-refine (STORY-165, STORY-173, STORY-174): con epic-analyze-report.md en NEEDS-REFINEMENT aplica INT-02 (historia huérfana al índice), INT-03 (una sola línea) y MAD-02 (retira el related roto) tras un plan consolidado, con <archivo>.bak previo, status/substatus intactos y epic-refine-report.md; con APPROVED no crea ni modifica ningún archivo; los hallazgos que requieren decisión del PO quedan fuera de alcance; SAL-01/SAL-02 con evidencia parcial se asignan a la única historia de cierre (AC de cierre + cita E1); las referencias a slugs obsoletos tras un /story-split (COH) se reemplazan por el único directorio con el mismo ID o quedan para el PO. En cada fixture, el directorio del ejemplo hace de specs/flow/.",
   "cases": [
     {
@@ -442,6 +442,35 @@
         "files": { "written": [] }
       },
       "threshold": 1.0
+    },
+    {
+      "id": "TC-026",
+      "name": "sal-01-ya-resuelto-por-mencion-del-id",
+      "type": "edge-case",
+      "description": "[BUG-003 D-5] El criterio de salida declara su ID (`**CS-1** — …`). El reporte de análisis, generado con la regla anterior, trae un SAL-01 sobre CS-1 con evidencia parcial de STORY-301 y STORY-302, pero STORY-302 ya cita `**CS-1**` en sus Notas (sin copiar el texto). La mención del ID declarado es E1: en --auto el skill clasifica SAL-01 como ya resuelto con la nota «STORY-302 ya cita CS-1 (E1)», no añade un AC de cierre ni crea ningún .bak.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/cobertura-por-id/EPIC-30-ejemplo/epic.md",
+        "flags": [
+          "--auto"
+        ],
+        "context": "El directorio skills/epic-refine/examples/cobertura-por-id/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": [
+          "ya resuelto",
+          "SAL-01",
+          "STORY-302 ya cita CS-1",
+          "YA-RESUELTOS: 1",
+          "APLICADOS: 0"
+        ],
+        "not_contains": [
+          "Cierre del contrato de salida",
+          "story.md.bak",
+          "Backup creado",
+          "APLICADOS: 1"
+        ]
+      },
+      "threshold": 0.95
     }
   ]
 }

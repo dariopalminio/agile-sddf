@@ -4,8 +4,8 @@ id: BUG-001
 slug: BUG-001-archivado-genera-enlaces-rotos
 title: "Archivado genera enlaces rotos"
 created: 2026-05-11
-updated: 2026-05-11
-status: DELIVER
+updated: 2026-11-12
+status: COMPLETED
 substatus: DONE
 parent: null
 related:      
