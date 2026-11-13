@@ -5,7 +5,7 @@ id: STORY-179
 kind: chore
 slug: STORY-179-review-md-de-agile-sddf
 title: "REVIEW.md de agile-sddf"
-status: DELIVER
+status: COMPLETED
 substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
