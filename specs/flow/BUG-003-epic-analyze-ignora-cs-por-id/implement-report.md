@@ -98,7 +98,7 @@ Este es el único trabajo restante. Al completarlo, las evidencias se anotan en 
 
 ## Eval Report: epic-refine
 
-**Fecha:** 2026-11-13 | **Total:** 4 | ✅ Passed: 4 | Failed: 0 | **Pass rate:** 100%
+**Fecha:** 2026-11-13 | **Total:** 5 | ✅ Passed: 5 | Failed: 0 | **Pass rate:** 100%
 **Ejecutor:** opencode
 
 | ID | Nombre | Tipo | Threshold | Estado | Notas |
@@ -109,7 +109,7 @@ Este es el único trabajo restante. Al completarlo, las evidencias se anotan en 
 | TC-011 | empate-de-candidatas-al-po | edge-case | 1 | ✅ PASS | — |
 | TC-012 | reejecucion-ya-resuelto-por-e1 | edge-case | 0.95 | ✅ PASS | — |
 
-✅ Todos los 4 casos pasaron. El skill está listo.
+✅ Todos los 5 casos pasaron. El skill está listo.
 
 ## Evidencias del cambio (árbol de trabajo, sin commit)
 
