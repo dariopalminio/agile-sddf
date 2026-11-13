@@ -3,8 +3,8 @@ type: plan
 id: plan-02
 slug: plan-02-story-implement-lee-comandos-de-verify
 title: "Reparación BUG-002 — story-implement lee los comandos de prueba de verify y registra los tipos no ejecutados"
-status: DRAFT
-substatus: DRAFT
+status: COMPLETED
+substatus: DONE
 parent: BUG-002
 created: 2026-11-08
 updated: 2026-11-08

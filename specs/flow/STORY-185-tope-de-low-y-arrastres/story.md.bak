@@ -1,0 +1,72 @@
+---
+alwaysApply: false
+type: story
+id: STORY-185
+kind: feat
+slug: STORY-185-tope-de-low-y-arrastres
+title: "Tope de LOW por revisor y sin arrastres entre rondas"
+status: PLAN
+substatus: IN-PROGRESS
+parent: EPIC-28-calibrar-story-code-review-con-review-md
+created: 2026-11-08
+updated: 2026-11-08
+related:
+  - EPIC-28-calibrar-story-code-review-con-review-md
+  - STORY-182-verificar-y-deduplicar-hallazgos
+  - STORY-178-adr-guia-de-revision
+  - STORY-180-story-code-review-lee-review-md
+  - STORY-181-hallazgos-preexistentes
+---
+[[EPIC-28-calibrar-story-code-review-con-review-md]]
+
+# 📖 Historia: Tope de LOW por revisor y sin arrastres entre rondas
+
+**Como** Solo Builder que lee `code-review-report.md` para decidir si corrige o avanza  
+**Quiero** que el árbitro de `/story-code-review` limite los LOW por revisor y no repita en una nueva ronda los LOW de la anterior que están en líneas que el rework no tocó  
+**Para** que el informe conserve señal y no me obligue a releer los mismos nits en cada ronda
+
+## ✅ Criterios de aceptación
+
+### AC-1 — Escenario con datos – Tope de LOW por revisor
+```gherkin
+Escenario: Tope de LOW
+  Dado un revisor que reporta 12 hallazgos LOW
+    Y la guía de revisión "<guía>"
+  Cuando el árbitro consolida los informes
+  Entonces el informe muestra como máximo <tope> LOW de ese revisor
+    Y indica cuántos LOW se omitieron
+Ejemplos:
+  | guía                                   | tope |
+  | REVIEW.md con "Tope de nits" de 3 LOW  | 3    |
+  | REVIEW.md sin tope declarado           | 5    |
+  | sin REVIEW.md                          | 5    |
+```
+
+### AC-2 — Escenario alternativo – LOW arrastrados entre rondas
+```gherkin
+Dado una historia STORY-NNN en su segunda ronda de revisión
+  Y un LOW del "code-review-report.md" de la ronda anterior en una línea que el rework no tocó
+Cuando el usuario ejecuta "/story-code-review STORY-NNN"
+Entonces ese LOW no se repite en el nuevo informe
+  Pero un HIGH o MEDIUM sin corregir de la ronda anterior sí se repite
+```
+
+## ⚙️ Criterios no funcionales específicos
+
+- **CNF-1 — Contrato del informe:** los valores de `verdict` y el significado de `max-severity` no cambian; el tope y la omisión de arrastres cambian qué LOW se muestran, no el formato (CS-2, CS-4).
+- **CNF-2 — Evals primero:** el caso «tope de LOW» y un caso de LOW arrastrado entre rondas se escriben en `skills/story-code-review/evals/evals.json` antes de cambiar el skill (CS-8).
+
+## Fuera de alcance (Non-Goals)
+
+- La verificación de evidencia de HIGH/MEDIUM y la deduplicación entre revisores: STORY-182.
+- La categoría PREEXISTENTE: STORY-181.
+- Los hallazgos que crea el propio DoD CODE-REVIEW: STORY-183.
+
+## 📎 Notas / contexto adicional
+
+- Cubre la parte de **control de ruido** de **CS-4** de EPIC-28 (tope de LOW y arrastres entre rondas). Nace de dividir la STORY-182 original (patrón 4, complejidad de criterios de aceptación).
+- **Línea base (2026-11-07):** ≈580 LOW en 55 de los 71 `code-review-report.md` archivados (media ≈10, máximo 21). En STORY-125, 20 LOW se arrastraron entre rondas.
+- **Tope por defecto:** 5 LOW por revisor, que coincide con el «Tope de Minor» de `docs/templates/REVIEW-template.md`; el éxito se mide por ese tope, no por un mecanismo concreto.
+- **Línea «no tocada por el rework»:** el criterio es que el contenido de esa línea no cambió respecto de la ronda anterior; el mecanismo de detección (diff, comparación de contenido, etc.) se decide en `/story-design`. La lectura del informe de la ronda anterior es parte del alcance de esta historia.
+- **Punto de inserción:** Paso 4 (árbitro) de `skills/story-code-review/SKILL.md`, entre la lectura de informes (4a) y el cálculo de severidad (4b).
+- **Dependencias:** implementar después de STORY-180, que hace llegar `REVIEW.md` al árbitro (AC-1 prevé el caso «sin REVIEW.md»). Es independiente de STORY-182, que puede implementarse antes, después o en paralelo.

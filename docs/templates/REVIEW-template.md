@@ -7,7 +7,7 @@
 <!-- 2. Reemplaza los [placeholders] por los riesgos reales de tu repo   -->
 <!--    y borra las viñetas que no apliquen.                             -->
 <!-- 3. Conserva solo las cuatro secciones de la convención de Claude    -->
-<!--    Code Review: qué es Important, tope de nits, qué no reportar y   -->
+<!--    Code Review: qué es Important, tope de Minor, qué no reportar y   -->
 <!--    qué verificar siempre. REVIEW.md cambia QUÉ se reporta y con qué -->
 <!--    severidad; NO cambia el formato del informe, que lo fija la      -->
 <!--    plantilla de code-review-report.md de /story-code-review. Por    -->
@@ -19,7 +19,7 @@
 # REVIEW.md — Guía de revisión de [nombre del proyecto]
 
 Esta guía decide qué se reporta y con qué severidad; no cambia el formato del informe.
-Vocabulario: 🔴 Important = HIGH/MEDIUM (bloquea en `/story-code-review`) · 🟡 Nit = LOW (no bloquea) · 🟣 Pre-existing = PREEXISTENTE (se informa, no bloquea).
+Vocabulario: 🔴 Important = HIGH/MEDIUM (bloquea en `/story-code-review`) · 🟡 Minor = LOW (no bloquea) · 🟣 Pre-existing = PREEXISTENTE (se informa, no bloquea).
 
 ## Qué es «Importante» aquí — 🔴 Important · HIGH/MEDIUM
 
@@ -33,13 +33,13 @@ Reserva 🔴 Important para hallazgos que rompan el comportamiento, filtren dato
 - Cualquier archivo: [riesgo transversal, p. ej. secreto o credencial versionada, PII en logs o mensajes de error]
 
 Un 🔴 Important exige `archivo:línea` y un escenario de fallo concreto (entrada o estado → resultado incorrecto).
-Estilo, nombres y refactors: 🟡 Nit como máximo.
+Estilo, nombres y refactors: 🟡 Minor como máximo.
 
-## Tope de nits — 🟡 Nit · LOW
+## Tope de Minor — 🟡 Minor · LOW
 
-- Máximo **[5]** 🟡 Nit por revisor: elige los más relevantes y resume el resto en una línea.
-- No repitas un 🟡 Nit de una ronda anterior si el rework no tocó esas líneas.
-- Si no hay hallazgos por encima de 🟡 Nit, dilo en una frase, sin elogios ni resúmenes archivo por archivo.
+- Máximo **[5]** 🟡 Minor por revisor: elige los más relevantes y resume el resto en una línea.
+- No repitas un 🟡 Minor de una ronda anterior si el rework no tocó esas líneas.
+- Si no hay hallazgos por encima de 🟡 Minor, dilo en una frase, sin elogios ni resúmenes archivo por archivo.
 
 ## No reportar
 

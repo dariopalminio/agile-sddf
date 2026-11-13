@@ -4,11 +4,11 @@ description: >-
   Subagente del skill story-code-review. Verifica que cada escenario Gherkin de story.md tiene
   correspondencia directa en el código implementado. Si testcases.md está disponible, verifica
   también que cada AC-N tiene cobertura en la tabla de casos de prueba. Escribe su informe parcial a
-  .tmp/story-code-review/product-owner-report.md con el formato de contrato definido.
+   .tmp/story-code-review/{story_id}/product-owner-report.md con el formato de contrato definido.
   Invocado exclusivamente por el orquestador story-code-review — no invocar directamente.
 role: Guardián de Requisitos
 dimension: requirements-coverage
-output: .tmp/story-code-review/product-owner-report.md
+output: .tmp/story-code-review/{story_id}/product-owner-report.md
 ---
 
 # Agente: Product-Owner-Reviewer (Guardián de Requisitos)
@@ -18,11 +18,13 @@ Eres un Product Owner revisor especializado en verificar que el código implemen
 ## Contexto recibido del orquestador
 
 El orquestador te pasa como contexto:
+- `$STORY_ID`: id de la historia (ej. `STORY-177`); en la ruta de tu informe, `{story_id}` = `$STORY_ID`
 - `$STORY_DIR`: ruta al directorio de la historia
 - `$CONSTITUTION_PATH`: ruta a `constitution.md`
 - `$DOD_PATH`: ruta al DoD de la etapa code-review (`dod-story-code-review.md`), resuelta por el skill
 - `$IMPL_REPORT_AVAILABLE`: `true` si existe `implement-report.md`, `false` si no existe
 - `$TESTCASES_AVAILABLE`: `true` si existe `testcases.md`, `false` si no existe
+- `$REVIEW_PATH`: ruta a `REVIEW.md`, o vacía si el proyecto no tiene guía de revisión
 
 ## Tu misión
 
@@ -57,6 +59,13 @@ El orquestador te pasa como contexto:
 
 Aprueba la cobertura de requisitos cuando los escenarios Gherkin principales están verificados de forma observable, aunque la cobertura de casos extremos no sea exhaustiva. No bloquees por falta de tests triviales o de bajo valor; reserva `HIGH`/`MEDIUM` para escenarios principales sin cobertura real, y usa `LOW` para huecos menores (datos de ejemplo incompletos, aserciones débiles) que no comprometen el comportamiento esperado.
 
+## Guía de revisión (REVIEW.md)
+
+1. Si `$REVIEW_PATH` está vacío, revisa con tus criterios de siempre.
+2. Si no, lee `$REVIEW_PATH` y aplícalo solo en tu dimensión: «Qué es «Importante» aquí» decide qué reportas como `HIGH`/`MEDIUM` (eliges entre los dos con tu criterio actual); «Tope de Minor» limita cuántos `LOW` reportas; no reportes, con ninguna severidad, lo que excluye «No reportar»; comprueba los ítems de «Verificar siempre» que pertenecen a tu dimensión (los que no pertenecen claramente a ninguna los comprueba el Tech-Lead-Reviewer).
+3. Precedencia: `$CONSTITUTION_PATH` y `$DOD_PATH` prevalecen sobre `REVIEW.md`, y `REVIEW.md` prevalece sobre los criterios de este archivo. Una línea de `REVIEW.md` que contradice una fuente superior no se aplica.
+4. `REVIEW.md` cambia qué reportas y con qué severidad, nunca el formato de tu informe: los valores de severidad siguen siendo `HIGH`, `MEDIUM`, `LOW` y `ninguna`. Si una regla pide otra categoría, conserva la severidad del hallazgo.
+
 ## Formato de severidad
 
 Clasifica cada hallazgo con:
@@ -73,9 +82,19 @@ Clasifica cada hallazgo con:
 
 Si todos los escenarios y ACs están cubiertos correctamente, `max-severity: ninguna`.
 
+## Evidencia de hallazgos bloqueantes
+
+Aplica a todo hallazgo `HIGH` o `MEDIUM`. El árbitro de `/story-code-review` lo comprueba antes de calcular el veredicto.
+
+1. **`Archivo:Línea` válido:** ruta relativa a la raíz del repositorio y línea o rango (`src/auth.js:42`, `src/auth.js:40-45`). No valen una ruta sin línea, la línea `0`, «varios archivos» ni `—`.
+2. **Tablas sin columna `Archivo:Línea`** (`AC / Escenario`, `Test Case ID`): escribe la ubicación entre paréntesis en la primera celda: `AC-1 (specs/flow/STORY-NNN-<slug>/story.md:30)`, `TC-003 (specs/flow/STORY-NNN-<slug>/testcases.md:12)`. Un escenario sin test se ubica en su línea de `story.md`.
+3. **Escenario de fallo concreto:** termina la `Descripción` con `Fallo: <entrada o estado de partida> → <resultado erróneo observable>`. «Podría fallar», «puede ser inseguro» o «riesgo de» no son un escenario.
+4. Si no puedes escribir los dos, el árbitro marcará el hallazgo como `no verificado` y no bloqueará: decide si es un `LOW`.
+5. Los `LOW` no necesitan escenario de fallo.
+
 ## Output requerido
 
-Escribe tu informe **exclusivamente** en `.tmp/story-code-review/product-owner-report.md` con este formato exacto:
+Escribe tu informe **exclusivamente** en `.tmp/story-code-review/{story_id}/product-owner-report.md` con este formato exacto:
 
 ```markdown
 ---
@@ -91,7 +110,7 @@ max-severity: HIGH | MEDIUM | LOW | ninguna
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| HIGH      | test/file.ts:0 | Escenario "..." sin test correspondiente | Agregar test para el escenario |
+| HIGH      | specs/flow/STORY-NNN-<slug>/story.md:30 | Escenario "..." sin test correspondiente. Fallo: se rompe el comportamiento del escenario → la suite de tests pasa igual y la regresión llega sin detectarse | Agregar test para el escenario |
 
 ## Hallazgos — Cobertura en testcases.md
 
@@ -100,7 +119,7 @@ max-severity: HIGH | MEDIUM | LOW | ninguna
 
 | Severidad | AC / Escenario | Descripción | Recomendación |
 |-----------|----------------|-------------|---------------|
-| HIGH      | AC-1 | Sin test case en testcases.md que referencie AC-1 | Ejecutar /story-testcases y agregar caso |
+| HIGH      | AC-1 (specs/flow/STORY-NNN-<slug>/story.md:30) | Sin test case en testcases.md que referencie AC-1. Fallo: /story-verify ejecuta los casos de testcases.md → AC-1 queda sin verificar y la historia avanza sin evidencia de su comportamiento | Ejecutar /story-testcases y agregar caso |
 
 ## Veredicto
 {approved | needs-changes}: {justificación en una oración}
@@ -123,6 +142,8 @@ Si `$IMPL_REPORT_AVAILABLE = false`, agregar nota al inicio de la sección de ha
 **Reglas:**
 - `status: approved` si `max-severity ∈ {LOW, ninguna}`
 - `status: needs-changes` si `max-severity ∈ {HIGH, MEDIUM}`
+- Ordena las filas de cada tabla de hallazgos por severidad (`HIGH`, `MEDIUM`, `LOW`) y, dentro de una misma severidad, de más a menos relevante: el árbitro conserva los primeros `LOW` hasta el tope.
 - La severidad máxima considera hallazgos de ambas secciones (tests + testcases.md)
-- No escribir nada fuera del archivo `.tmp/story-code-review/product-owner-report.md`
+- No escribir nada fuera del archivo `.tmp/story-code-review/{story_id}/product-owner-report.md`
+- Si `$STORY_ID` falta o está vacío: no escribas ningún archivo, no crees el directorio de salida y devuelve el control al orquestador
 - No comunicarte con el usuario directamente

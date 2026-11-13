@@ -515,7 +515,7 @@ function buildPrompt(skillName, skillMdRel, testCase, contextFiles = []) {
     `- Lee del repositorio real solo el SKILL.md y las referencias necesarias para interpretar su contrato (por ejemplo, assets del skill o un template cuyo contenido no esté simulado). El contenido proporcionado por el escenario tiene prioridad sobre cualquier archivo real de la misma ruta.`,
     `- NO modifiques ningún archivo del repositorio, NO ejecutes comandos de escritura y NO lances subagentes. Solo lee y razona.`,
     `- No mires la sección "expected" de ningún caso: emite lo que dicta el SKILL.md dado el escenario.`,
-    `- Responde únicamente con el bloque de formato: tu primera línea debe ser \`=== CONSOLE ===\`. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de \`${END_MARKER}\`. Si tu primera línea no es exactamente \`=== CONSOLE ===\`, la respuesta se califica como error de formato y el caso falla.`,
+    `- Responde únicamente con el bloque de formato: tu primera línea debe ser === CONSOLE ===, en línea propia, sin backticks ni otra decoración. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de ${END_MARKER}. Si tu primera línea no es exactamente === CONSOLE ===, la respuesta se califica como error de formato y el caso falla.`,
     ``,
     ...contextFiles.flatMap((resource) => [
       `Recurso fuente del skill: ${resource.path} (contenido íntegro leído del disco por el runner):`,
@@ -733,7 +733,7 @@ function buildSandboxPrompt(skillName, skillMdRel, testCase, spec, sandboxDir = 
     `- Lee íntegros los archivos de entrada y los templates que el skill resuelva dentro del directorio de trabajo; si una lectura se trunca, continúa con offset/limit hasta EOF antes de derivar el diagnóstico. No reconstruyas su contenido desde la descripción ni consultes archivos equivalentes del repositorio anfitrión. Conserva las líneas originales, incluido el frontmatter y las líneas vacías, para citar ubicaciones.`,
     `- Escribe solo dentro del directorio de trabajo (rutas relativas o absolutas bajo él); nunca fuera de él. No ejecutes comandos de shell ni lances subagentes. El runner compara el árbol del directorio antes y después de tu ejecución.`,
     `- El bloque "Condiciones de entrada" define la invocación y las respuestas del usuario a cada pausa (si no se especifica una respuesta, asume la opción por defecto/afirmativa). No inventes condiciones que el escenario no describa.`,
-    `- Responde únicamente con el bloque de formato: tu primera línea debe ser \`=== CONSOLE ===\`. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de \`${END_MARKER}\`. Si tu primera línea no es exactamente \`=== CONSOLE ===\`, la respuesta se califica como error de formato y el caso falla.`,
+    `- Responde únicamente con el bloque de formato: tu primera línea debe ser === CONSOLE ===, en línea propia, sin backticks ni otra decoración. No escribas antes planes, objetivos, resúmenes ni explicaciones; esas notas van solo después de ${END_MARKER}. Si tu primera línea no es exactamente === CONSOLE ===, la respuesta se califica como error de formato y el caso falla.`,
     ``,
     `Escenario de prueba (${testCase.id} — ${testCase.name || ''}):`,
     testCase.description || '(sin descripción)',
@@ -1014,10 +1014,10 @@ async function runOpenCode(prompt, opts, runtime = {}) {
 
 function findConsoleBlocks(rawOutput) {
   const blocks = [];
-  const consoleRe = /(^|\n)=== CONSOLE ===[ \t]*\r?\n/g;
+  const consoleRe = /(^|\n)[ \t]*`?=== CONSOLE ===`?[ \t]*\r?\n/g;
   for (const match of rawOutput.matchAll(consoleRe)) {
     const start = match.index + match[1].length;
-    const endRe = /(^|\n)=== END ===[ \t]*(?:\r?\n|$)/g;
+    const endRe = /(^|\n)[ \t]*`?=== END ===`?[ \t]*(?:\r?\n|$)/g;
     endRe.lastIndex = start;
     for (const end of rawOutput.matchAll(endRe)) {
       blocks.push(rawOutput.slice(start, end.index + end[1].length));
@@ -1126,6 +1126,9 @@ async function runSkill(planSkill, opts, runtime = {}) {
       return { tc, status: 'ERROR', grade: null, reason, durationMs: run.durationMs };
     }
     const grade = gradeOutput(tc, run.stdout);
+    if (grade.formatError && opts.evalRunner === 'opencode' && typeof run.events === 'string' && run.events.includes('compaction_continue')) {
+      grade.missing.push('diagnóstico: auto-compaction del modelo detectada (el texto final es un handover sin el bloque === CONSOLE ===); prueba un modelo con mayor contexto (SDDF_EVAL_OPENCODE_MODEL o --model) o reduce la carga del caso');
+    }
     if (spec) {
       const files = gradeSandboxFiles(spec, before, snapshotTree(sandboxDir));
       fs.writeFileSync(

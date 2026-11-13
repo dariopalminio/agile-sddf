@@ -22,7 +22,7 @@ based-on: code-review-report.md
 
 | # | Archivo:Línea | Dimensión | Severidad | Hallazgo | Acción requerida |
 |---|---------------|-----------|-----------|----------|-----------------|
-| 1 | src/users.ts:28 | code-quality | MEDIUM | Función `getUserById` tiene más de 3 responsabilidades | Extraer en funciones separadas: `validateUserId`, `fetchUserFromDb`, `formatUserResponse` |
+| 1 | src/users.ts:28 | code-quality | MEDIUM | Función `getUserById` tiene más de 3 responsabilidades. Fallo: id con formato inválido → `getUserById` ejecuta la query antes de terminar de validar y responde 500 en lugar de 400 | Extraer en funciones separadas: `validateUserId`, `fetchUserFromDb`, `formatUserResponse` |
 | 2 | docs/guardrails/dod-story-code-review.md:42 | DoD-CODE-REVIEW | MEDIUM | No hay código comentado ni `TODO` sin issue asociado — se detectaron TODOs en el código sin referencia a issue | Eliminar los comentarios TODO o asociarlos a un issue en el tracker del proyecto |
 
 ## Lista blanca de archivos permitidos para modificar

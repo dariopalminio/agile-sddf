@@ -5,11 +5,11 @@ id: STORY-177
 kind: fix
 slug: STORY-177-corregir-rutas-story-code-review
 title: "Corregir rutas de story-code-review"
-status: SPECIFY
-substatus: IN-PROGRESS
+status: DELIVER
+substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-12
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
 ---
@@ -64,4 +64,5 @@ Entonces "security-report.md" declara que aplicó el baseline embebido
 
 - **Defecto verificado (2026-11-08):** `SKILL.md` limpia y lee `.tmp/story-code-review/{story_id}/`, pero el `output:` y el cuerpo de `tech-lead-reviewer`, `product-owner-reviewer`, `integration-reviewer` y `security-reviewer` (en `skills/story-code-review/agents/`) apuntan a `.tmp/story-code-review/<rol>-report.md`, sin el directorio de la historia.
 - **Checklists:** `security-reviewer.agent.md` y la sección del Auditor de Seguridad de `SKILL.md` buscan `docs/policies/*security-checklist*.md`, que no existe; los checklists reales son `docs/guardrails/gr-code-security-checklist.md` y `docs/guardrails/gr-ai-security-checklist.md`, y hoy solo se encuentran a través de los enlaces de `constitution.md`.
+- Cubre el criterio de salida de EPIC-28 **CS-7** — Los cuatro informes parciales se escriben en `.tmp/story-code-review/{story_id}/`, y el Security-Reviewer descubre los checklists `docs/guardrails/gr-*security*` sin depender de los enlaces de `constitution.md`.
 - Corresponde al criterio de salida **CS-7** de EPIC-28. La épica admite tramitarla como `BUG-NN` si se quiere resolver antes de activarla.

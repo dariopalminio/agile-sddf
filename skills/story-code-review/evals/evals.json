@@ -1,7 +1,7 @@
 {
   "skill": "story-code-review",
   "version": "1.1.0",
-  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo inicio desde IMPLEMENT/DONE, reanudacion desde CODE-REVIEW/IN-PROGRESS con informes temporales nuevos, veredictos APPROVED, NEEDS-CHANGES y BLOCKED, fix-directives.md numerado por ronda (campo round en el frontmatter: ronda previa + 1, escritor unico story-code-review; ausente o ilegible se trata como 0), ejecutor de correcciones nombrado en el mensaje de cierre (siempre /story-implement; /story-implement-tasks solo si existe tasks.md), ausencia total de escritura en tasks.md, limpieza del fix-directives.md previo al aprobar, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias y fallback del Security-Reviewer al baseline embebido, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
+  "description": "Casos de prueba para story-code-review: verifica el comportamiento del skill en los flujos de revision multi-agente con sus cuatro agentes locales (tech-lead, product-owner, integration, security), cubriendo inicio desde IMPLEMENT/DONE, reanudacion desde CODE-REVIEW/IN-PROGRESS con informes temporales nuevos, veredictos APPROVED, NEEDS-CHANGES y BLOCKED, fix-directives.md numerado por ronda (campo round en el frontmatter: ronda previa + 1, escritor unico story-code-review; ausente o ilegible se trata como 0), ejecutor de correcciones nombrado en el mensaje de cierre (siempre /story-implement; /story-implement-tasks solo si existe tasks.md), ausencia total de escritura en tasks.md, limpieza del fix-directives.md previo al aprobar, precondicion invalida, artefactos faltantes, hallazgo de performance, nota informativa de tamano de cambio, disciplina de dependencias, fallback del Security-Reviewer al baseline embebido, tope de LOW por revisor (Tope de Minor de REVIEW.md o 5 por defecto) y omision de LOW arrastrados entre rondas cuando existe el registro previo code-review-lows.json, asegurando la correcta generacion de code-review-report.md, fix-directives.md y actualizacion del frontmatter de story.md.",
   "cases": [
     {
       "id": "TC-001",
@@ -27,7 +27,7 @@
           "CODE-REVIEW",
           "DONE",
           "ninguna",
-          "Revision aprobada",
+          "Revisión aprobada",
           "Veredicto:",
           "Sin hallazgos bloqueantes"
         ],
@@ -35,9 +35,9 @@
           "(verdict: NEEDS-CHANGES)",
           "fix-directives.md",
           "READY-FOR-IMPLEMENT",
-          "Entorno invalido",
+          "Entorno inválido",
           "Artefactos requeridos no encontrados",
-          "no esta en estado IMPLEMENT"
+          "no está en un estado válido para revisar"
         ]
       },
       "threshold": 0.90
@@ -60,7 +60,8 @@
               "file_line": "src/auth.ts:42",
               "dimension": "code-quality",
               "severity": "HIGH",
-              "finding": "API key hardcodeada en el codigo fuente",
+              "finding": "API key hardcodeada en el codigo fuente. Fallo: repositorio publicado con src/auth.ts → cualquiera que lo lea obtiene la API key y llama a la API con credenciales de produccion",
+              "failure_scenario": "repositorio publicado con src/auth.ts → cualquiera que lo lea obtiene la API key y llama a la API con credenciales de produccion",
               "action": "Mover a variable de entorno process.env.API_KEY"
             }
           ],
@@ -79,16 +80,16 @@
           "HIGH",
           "code-review-report.md",
           "→ Ejecuta /story-implement",
-          "hallazgos criticos",
+          "hallazgos críticos",
           "Veredicto:",
           "hallazgo(s) bloqueante(s)"
         ],
         "not_contains": [
           "Implementar fix-directives.md",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE",
-          "Revision aprobada",
-          "Entorno invalido",
+          "Estado story.md: CODE-REVIEW/DONE",
+          "Revisión aprobada",
+          "Entorno inválido",
           "Artefactos requeridos no encontrados"
         ]
       },
@@ -117,7 +118,7 @@
           "fix-directives.md",
           "(verdict: APPROVED)",
           "(verdict: NEEDS-CHANGES)",
-          "Entorno invalido",
+          "Entorno inválido",
           "(verdict: "
         ]
       },
@@ -147,8 +148,8 @@
           "(verdict: APPROVED)",
           "(verdict: NEEDS-CHANGES)",
           "CODE-REVIEW/IN-PROGRESS",
-          "Entorno invalido",
-          "Iniciando revision",
+          "Entorno inválido",
+          "Iniciando revisión",
           "(verdict: "
         ]
       },
@@ -171,7 +172,8 @@
               "file_line": "src/orders/list.ts:55",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Consulta a base de datos ejecutada dentro de un loop sobre la lista de pedidos (riesgo N+1)",
+              "finding": "Consulta a base de datos ejecutada dentro de un loop sobre la lista de pedidos (riesgo N+1). Fallo: lista de 1000 pedidos → el endpoint ejecuta 1001 consultas y supera el timeout de la peticion",
+              "failure_scenario": "lista de 1000 pedidos → el endpoint ejecuta 1001 consultas y supera el timeout de la peticion",
               "action": "Reemplazar por una sola consulta con IN o batching antes del loop"
             }
           ],
@@ -191,8 +193,8 @@
         ],
         "not_contains": [
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE",
-          "Revision aprobada"
+          "Estado story.md: CODE-REVIEW/DONE",
+          "Revisión aprobada"
         ]
       },
       "threshold": 0.85
@@ -249,7 +251,8 @@
               "file_line": "package.json:18",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Dependencia nueva 'lodash' sin justificacion de necesidad",
+              "finding": "Dependencia nueva 'lodash' sin justificacion de necesidad. Fallo: npm install del paquete publicado → descarga lodash aunque ningun modulo lo use y el paquete crece sin motivo",
+              "failure_scenario": "npm install del paquete publicado → descarga lodash aunque ningun modulo lo use y el paquete crece sin motivo",
               "action": "Documentar en design.md por que el stack existente no cubre esta necesidad, o removerla"
             }
           ],
@@ -268,7 +271,7 @@
         ],
         "not_contains": [
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 0.85
@@ -277,7 +280,7 @@
       "id": "TC-008",
       "name": "seguridad-sin-checklist-usa-baseline",
       "type": "happy-path",
-      "description": "Historia en IMPLEMENT/DONE en un proyecto que no tiene checklists de seguridad en docs/policies/ ni ningun skill de seguridad instalado en el contexto de ejecucion. El Security-Reviewer debe caer a su baseline embebido, declararlo en checklist-sources y no encontrar hallazgos. El skill debe consolidar la dimension security como un revisor mas (sin logica especial de pass/fail/skipped), generar code-review-report.md con la seccion Seguridad y marcar story.md como CODE-REVIEW/DONE.",
+      "description": "Historia en IMPLEMENT/DONE en un proyecto que no tiene archivos `docs/guardrails/gr-*security*` ni ningun skill de seguridad instalado en el contexto de ejecucion. El Security-Reviewer debe caer a su baseline embebido, declararlo en checklist-sources y no encontrar hallazgos. El skill debe consolidar la dimension security como un revisor mas (sin logica especial de pass/fail/skipped), generar code-review-report.md con la seccion Seguridad y marcar story.md como CODE-REVIEW/DONE.",
       "input": {
         "story_id": "STORY-080",
         "story_status": "IMPLEMENT",
@@ -330,7 +333,8 @@
               "file_line": "src/orders/service.ts:88",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Manejo de errores ausente en la llamada al repositorio",
+              "finding": "Manejo de errores ausente en la llamada al repositorio. Fallo: el repositorio lanza un error de conexion → la excepcion sin capturar termina el proceso en lugar de devolver un error de dominio",
+              "failure_scenario": "el repositorio lanza un error de conexion → la excepcion sin capturar termina el proceso en lugar de devolver un error de dominio",
               "action": "Envolver la llamada en try/catch y propagar un error de dominio"
             }
           ],
@@ -354,8 +358,8 @@
           "Implementar fix-directives.md",
           "Tarea agregada",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE",
-          "Revision aprobada"
+          "Estado story.md: CODE-REVIEW/DONE",
+          "Revisión aprobada"
         ]
       },
       "threshold": 0.90
@@ -378,7 +382,8 @@
               "file_line": "src/payments/webhook.ts:17",
               "dimension": "code-quality",
               "severity": "HIGH",
-              "finding": "Firma del webhook no verificada antes de procesar el payload",
+              "finding": "Firma del webhook no verificada antes de procesar el payload. Fallo: POST al webhook con un payload falsificado sin firma valida → se procesa y marca un pago como cobrado",
+              "failure_scenario": "POST al webhook con un payload falsificado sin firma valida → se procesa y marca un pago como cobrado",
               "action": "Validar la firma HMAC con el secreto de entorno antes de cualquier procesamiento"
             }
           ],
@@ -402,7 +407,7 @@
           "Tarea agregada",
           "Artefactos requeridos no encontrados",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -439,7 +444,7 @@
           "READY-FOR-IMPLEMENT",
           "round: 2",
           "→ Ejecuta /story-implement",
-          "Entorno invalido",
+          "Entorno inválido",
           "Artefactos requeridos no encontrados"
         ]
       },
@@ -463,7 +468,8 @@
               "file_line": "src/users/validator.ts:23",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Validacion de email duplicada respecto al helper compartido",
+              "finding": "Validacion de email duplicada respecto al helper compartido. Fallo: email 'a@b' que validateEmail() rechaza → validator.ts lo acepta y los dos validadores dan resultados distintos",
+              "failure_scenario": "email 'a@b' que validateEmail() rechaza → validator.ts lo acepta y los dos validadores dan resultados distintos",
               "action": "Reutilizar validateEmail() de src/shared/validation.ts"
             }
           ],
@@ -487,7 +493,7 @@
           "Implementar fix-directives.md",
           "Tarea agregada",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -510,7 +516,8 @@
               "file_line": "src/reports/export.ts:61",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Formato de fecha hardcodeado en lugar de usar la utilidad de i18n",
+              "finding": "Formato de fecha hardcodeado en lugar de usar la utilidad de i18n. Fallo: usuario con locale en-US → el informe exportado muestra las fechas en formato DD/MM/YYYY",
+              "failure_scenario": "usuario con locale en-US → el informe exportado muestra las fechas en formato DD/MM/YYYY",
               "action": "Reemplazar por formatDate() de src/shared/i18n.ts"
             }
           ],
@@ -534,7 +541,7 @@
           "round: 2",
           "Implementar fix-directives.md",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -559,7 +566,8 @@
               "file_line": "src/auth/session.ts:35",
               "dimension": "code-quality",
               "severity": "HIGH",
-              "finding": "Token de sesion registrado en logs en texto plano",
+              "finding": "Token de sesion registrado en logs en texto plano. Fallo: inicio de sesion → el token completo queda en los logs y quien los lea puede suplantar la sesion",
+              "failure_scenario": "inicio de sesion → el token completo queda en los logs y quien los lea puede suplantar la sesion",
               "action": "Eliminar el token del log o enmascararlo antes de registrar"
             }
           ],
@@ -583,7 +591,7 @@
           "Implementar fix-directives.md",
           "tasks.md (actualizado)",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -608,7 +616,8 @@
               "file_line": "src/catalog/search.ts:102",
               "dimension": "code-quality",
               "severity": "MEDIUM",
-              "finding": "Paginacion calculada en memoria sobre el resultado completo de la consulta",
+              "finding": "Paginacion calculada en memoria sobre el resultado completo de la consulta. Fallo: catalogo de 100000 productos → cada busqueda carga todos en memoria para devolver 20 y la respuesta tarda segundos",
+              "failure_scenario": "catalogo de 100000 productos → cada busqueda carga todos en memoria para devolver 20 y la respuesta tarda segundos",
               "action": "Delegar LIMIT/OFFSET a la consulta del repositorio"
             }
           ],
@@ -634,7 +643,7 @@
           "Implementar fix-directives.md",
           "tasks.md (actualizado)",
           "(verdict: APPROVED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 1.0
@@ -663,7 +672,7 @@
           "code-review-report.md",
           "(verdict: NEEDS-CHANGES)",
           "(verdict: APPROVED)",
-          "Entorno invalido",
+          "Entorno inválido",
           "(verdict: "
         ]
       },
@@ -729,7 +738,8 @@
               "file_line": "src/auth.ts:42",
               "dimension": "code-quality",
               "severity": "HIGH",
-              "finding": "Token expuesto",
+              "finding": "Token expuesto. Fallo: lectura de src/auth.ts → el token de sesion aparece en texto plano y permite suplantar la sesion",
+              "failure_scenario": "lectura de src/auth.ts → el token de sesion aparece en texto plano y permite suplantar la sesion",
               "action": "Eliminar el token"
             }
           ],
@@ -747,7 +757,7 @@
         ],
         "not_contains": [
           "(verdict: BLOCKED)",
-          "CODE-REVIEW/DONE"
+          "Estado story.md: CODE-REVIEW/DONE"
         ]
       },
       "threshold": 0.9
@@ -763,7 +773,7 @@
         "story_substatus": "IN-PROGRESS",
         "artifacts_present": ["story.md", "design.md", "implement-report.md"],
         "existing_partial_reports": ["tech-lead-report.md", "product-owner-report.md", "integration-report.md", "security-report.md"],
-        "existing_partial_finding": "Hallazgo obsoleto de una revision anterior",
+        "existing_partial_finding": "Hallazgo obsoleto de una revisión anterior",
         "agent_results": {
           "tech_lead_max_severity": "ninguna",
           "product_owner_max_severity": "ninguna",
@@ -773,7 +783,7 @@
       },
       "expected": {
         "contains": ["Reanudando revisión", "CODE-REVIEW/IN-PROGRESS", "Agentes lanzados en paralelo", "(verdict: APPROVED)", "CODE-REVIEW/DONE", "code-review-report.md"],
-        "not_contains": ["Hallazgo obsoleto de una revision anterior", "fix-directives.md (ronda", "no está en un estado válido para revisar"]
+        "not_contains": ["Hallazgo obsoleto de una revisión anterior", "fix-directives.md (ronda", "no está en un estado válido para revisar"]
       },
       "threshold": 1.0
     },
@@ -789,7 +799,7 @@
         "artifacts_present": ["story.md", "design.md", "tasks.md"],
         "agent_results": {
           "tech_lead_max_severity": "MEDIUM",
-          "tech_lead_findings": [{"file_line": "src/review.js:21", "dimension": "code-quality", "severity": "MEDIUM", "finding": "Error de validacion", "action": "Corregir la validacion"}],
+          "tech_lead_findings": [{"file_line": "src/review.js:21", "dimension": "code-quality", "severity": "MEDIUM", "finding": "Error de validacion. Fallo: entrada vacia → la validacion la acepta y la revision continua con datos invalidos", "failure_scenario": "entrada vacia → la validacion la acepta y la revision continua con datos invalidos", "action": "Corregir la validacion"}],
           "product_owner_max_severity": "ninguna",
           "integration_max_severity": "ninguna",
           "security_max_severity": "ninguna"
@@ -797,7 +807,7 @@
       },
       "expected": {
         "contains": ["Reanudando revisión", "(verdict: NEEDS-CHANGES)", "fix-directives.md", "round: 1", "READY-FOR-IMPLEMENT/DONE"],
-        "not_contains": ["(verdict: APPROVED)", "CODE-REVIEW/DONE"]
+        "not_contains": ["(verdict: APPROVED)", "Estado story.md: CODE-REVIEW/DONE"]
       },
       "threshold": 1.0
     },
@@ -866,13 +876,1465 @@
         },
         "context": "la historia está en `specs/flow/STORY-010-revision/`"
       },
+       "expected": {
+         "contains": [
+           "specs/flow/STORY-010-revision/code-review-report.md",
+           "(verdict: APPROVED)"
+         ],
+         "not_contains": [
+           "docs/specs"
+         ]
+       },
+       "threshold": 0.9
+     },
+     {
+       "id": "TC-024",
+       "name": "informes-parciales-en-directorio-de-historia",
+       "type": "happy-path",
+       "description": "Historia STORY-194 en IMPLEMENT/DONE con story.md, design.md e implement-report.md presentes. Los cuatro agentes revisores no reportan hallazgos de severidad HIGH ni MEDIUM. El skill debe limpiar y recrear .tmp/story-code-review/STORY-194/, lanzar los cuatro revisores para que escriban sus informes parciales en ese directorio, y generar code-review-report.md con APPROVED. La salida debe nombrar .tmp/story-code-review/STORY-194/ y no debe nombrar ningun informe parcial directamente bajo .tmp/story-code-review/ (AC-1, I-2, I-6).",
+       "input": {
+         "story_id": "STORY-194",
+         "story_status": "IMPLEMENT",
+         "story_substatus": "DONE",
+         "artifacts_present": ["story.md", "design.md", "implement-report.md"],
+         "agent_results": {
+           "tech_lead_max_severity": "ninguna",
+           "product_owner_max_severity": "ninguna",
+           "integration_max_severity": "ninguna",
+           "security_max_severity": "ninguna"
+         }
+       },
+       "expected": {
+         "contains": [
+           ".tmp/story-code-review/STORY-194/",
+           "Agentes lanzados en paralelo",
+           "(verdict: APPROVED)"
+         ],
+         "not_contains": [
+           ".tmp/story-code-review/tech-lead-report.md",
+           ".tmp/story-code-review/product-owner-report.md",
+           ".tmp/story-code-review/integration-report.md",
+           ".tmp/story-code-review/security-report.md"
+         ]
+       },
+       "threshold": 0.90
+     },
+     {
+       "id": "TC-025",
+       "name": "checklist-de-guardrails-sin-enlace-en-constitucion",
+       "type": "happy-path",
+       "description": "Historia en IMPLEMENT/DONE en un proyecto que tiene docs/guardrails/gr-code-security-checklist.md, que constitution.md no enlaza y sin ningun skill de seguridad instalado en el contexto de ejecucion. El Security-Reviewer debe descubrir el checklist por el glob docs/guardrails/gr-*security*.md (no a traves del enlace de constitution.md), citarlo en el informe como fuente de reglas y no caer al baseline embebido. El skill debe generar code-review-report.md con la seccion 'Fuentes de checklist' listando gr-code-security-checklist.md y marcar story.md como CODE-REVIEW/DONE (AC-2, I-3, D-2).",
+       "input": {
+         "story_id": "STORY-200",
+         "story_status": "IMPLEMENT",
+         "story_substatus": "DONE",
+         "artifacts_present": ["story.md", "design.md", "implement-report.md"],
+         "security_checklists_present": ["docs/guardrails/gr-code-security-checklist.md"],
+         "constitution_links_security_checklists": false,
+         "security_skill_installed": false,
+         "agent_results": {
+           "tech_lead_max_severity": "ninguna",
+           "product_owner_max_severity": "ninguna",
+           "integration_max_severity": "ninguna",
+           "security_max_severity": "ninguna"
+         }
+       },
+       "expected": {
+         "contains": [
+           "gr-code-security-checklist.md",
+           "Fuentes de checklist",
+           "(verdict: APPROVED)"
+         ],
+         "not_contains": [
+           "baseline embebido",
+           "baseline-embebido",
+           "docs/policies/*security-checklist"
+         ]
+       },
+       "threshold": 0.90
+     },
+    {
+      "id": "TC-026",
+      "name": "review-md-presente-llega-a-revisores-y-arbitro",
+      "type": "happy-path",
+      "description": "STORY-180 (AC-1, D-1, D-3, D-4) — Historia en IMPLEMENT/DONE en un repositorio con REVIEW.md en la raíz. Los cuatro revisores no reportan hallazgos. El skill debe mostrar REVIEW.md en el resumen «Contexto cargado», pasar $REVIEW_PATH en el bloque de contexto de los cuatro revisores, aplicar «No reportar» en el árbitro (Paso 4a.1) y escribir la fila «Guía de revisión» del Resumen con ✓ REVIEW.md y veredicto APPROVED.",
+      "input": {
+        "story_id": "STORY-210",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "review_md_present": true,
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
       "expected": {
         "contains": [
-          "specs/flow/STORY-010-revision/code-review-report.md",
+          "REVIEW.md",
+          "Guía de revisión",
+          "$REVIEW_PATH",
           "(verdict: APPROVED)"
         ],
         "not_contains": [
-          "docs/specs"
+          "sin guía de revisión",
+          "(verdict: NEEDS-CHANGES)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-027",
+      "name": "secreto-falso-en-examples-excluido-por-review-md",
+      "type": "edge-case",
+      "description": "STORY-180 (AC-2, SMOKE-1, D-4) — REVIEW.md presente cuya sección «No reportar» excluye los secretos falsos de skills/*/examples/. El Security-Reviewer reporta igualmente un HIGH en skills/demo/examples/config.md:3. El árbitro (Paso 4a.1) debe excluirlo por «No reportar», registrarlo en la fila «Guía de revisión», calcular la severidad efectiva sin él (Paso 4b) y emitir APPROVED: el veredicto no es NEEDS-CHANGES por ese archivo y no se genera fix-directives.md.",
+      "input": {
+        "story_id": "STORY-211",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "review_md_present": true,
+        "review_md_no_reportar": [
+          "secretos falsos de skills/*/examples/"
+        ],
+        "impl_files": [
+          "skills/demo/examples/config.md"
+        ],
+        "security_findings": [
+          {
+            "severity": "HIGH",
+            "file": "skills/demo/examples/config.md:3",
+            "rule": "BASE-01"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "HIGH"
+        }
+      },
+      "expected": {
+        "contains": [
+          "excluido",
+          "No reportar",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "fix-directives.md",
+          "READY-FOR-IMPLEMENT"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-028",
+      "name": "sin-review-md-advierte-y-conserva-contrato",
+      "type": "edge-case",
+      "description": "STORY-180 (AC-3, SMOKE-3, D-1, D-5) — Proyecto consumidor sin REVIEW.md. Los cuatro revisores no reportan hallazgos. El skill debe advertir que la revisión es sin guía de revisión, generar code-review-report.md con el mismo frontmatter y las mismas secciones de la plantilla, y emitir APPROVED: la falta de REVIEW.md no produce BLOCKED ni NEEDS-CHANGES.",
+      "input": {
+        "story_id": "STORY-212",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "review_md_present": false,
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "sin guía de revisión",
+          "## Veredicto",
+          "## Resumen",
+          "## Hallazgos por dimensión",
+          "## Cumplimiento DoD",
+          "(verdict: APPROVED)",
+          "CODE-REVIEW"
+        ],
+        "not_contains": [
+          "(verdict: BLOCKED)",
+          "(verdict: NEEDS-CHANGES)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-029",
+      "name": "historia-modifica-review-md-advierte",
+      "type": "edge-case",
+      "description": "STORY-180 (AC-4, D-2) — REVIEW.md presente y una historia cuyo implement-report.md lista REVIEW.md y docs/guardrails/dod-story-code-review.md. Los cuatro revisores no reportan hallazgos. El skill debe detectar el cambio comparando con $IMPL_FILES (sin git), advertir que la historia modifica las reglas con las que se la revisa nombrando ambos archivos, leer REVIEW.md del working tree y emitir APPROVED: la advertencia no cambia el veredicto.",
+      "input": {
+        "story_id": "STORY-213",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "review_md_present": true,
+        "impl_files": [
+          "REVIEW.md",
+          "docs/guardrails/dod-story-code-review.md"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "modifica las reglas con las que se la revisa",
+          "REVIEW.md",
+          "dod-story-code-review.md",
+          "working tree",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "git diff",
+          "git show",
+          "(verdict: BLOCKED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-030",
+      "name": "hallazgo-preexistente-no-bloquea",
+      "type": "happy-path",
+      "description": "STORY-181 (AC-1, SMOKE-2, D-4, D-5) — La historia está en la rama epic/x y su alcance incluye src/calc.js. El Tech-Lead-Reviewer reporta un MEDIUM en src/calc.js:10 y el motor touched-lines.js (Paso 4a.2) devuelve untouched para esa línea; la descripción no atribuye el defecto a un cambio de la historia. El árbitro debe marcarlo PREEXISTENTE en la tabla de su dimensión, listarlo en la fila «Hallazgos preexistentes», excluirlo de max-severity, del veredicto y de fix-directives.md, y emitir APPROVED con story.md en CODE-REVIEW/DONE.",
+      "input": {
+        "story_id": "STORY-214",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "touched_lines_engine": {
+          "applied": true,
+          "baseRef": "main",
+          "base": "abc1234"
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "MEDIUM",
+            "file": "src/calc.js:10",
+            "description": "La división no valida el divisor cero.",
+            "line_status": "untouched"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "🟣 PREEXISTENTE (MEDIUM)",
+          "src/calc.js:10",
+          "Hallazgos preexistentes",
+          "(verdict: APPROVED)",
+          "CODE-REVIEW/DONE"
+        ],
+        "not_contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "📋 Fix directives:",
+          "READY-FOR-IMPLEMENT"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-031",
+      "name": "defecto-en-linea-tocada-bloquea",
+      "type": "edge-case",
+      "description": "STORY-181 (AC-2, D-3, D-5) — Igual que TC-030, pero el MEDIUM del Tech-Lead-Reviewer está en src/calc.js:42 y el motor touched-lines.js devuelve touched para esa línea (la historia la modificó). El hallazgo conserva su severidad MEDIUM, no es PREEXISTENTE, el veredicto es NEEDS-CHANGES y el hallazgo entra en fix-directives.md.",
+      "input": {
+        "story_id": "STORY-215",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "touched_lines_engine": {
+          "applied": true,
+          "baseRef": "main",
+          "base": "abc1234"
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "MEDIUM",
+            "file": "src/calc.js:42",
+            "description": "La división no valida el divisor cero. Fallo: divisor 0 en la llamada de src/calc.js:42 → la función devuelve Infinity en lugar de rechazar la entrada",
+            "failure_scenario": "divisor 0 en la llamada de src/calc.js:42 → la función devuelve Infinity en lugar de rechazar la entrada",
+            "line_status": "touched"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "MEDIUM",
+          "src/calc.js:42",
+          "(verdict: NEEDS-CHANGES)",
+          "📋 Fix directives:"
+        ],
+        "not_contains": [
+          "🟣 PREEXISTENTE"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-032",
+      "name": "lineas-tocadas-no-determinables",
+      "type": "edge-case",
+      "description": "STORY-181 (AC-3, D-2, F-3) — La revisión corre en la rama principal y el motor touched-lines.js devuelve applied: false con reason on-main-branch. El Tech-Lead-Reviewer reporta un MEDIUM en src/calc.js:10. Ningún hallazgo es PREEXISTENTE: el informe indica que la clasificación PREEXISTENTE no se aplicó y por qué (rama principal), el hallazgo conserva su severidad y el veredicto es el de siempre (NEEDS-CHANGES), sin BLOCKED por la falta de base.",
+      "input": {
+        "story_id": "STORY-216",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "touched_lines_engine": {
+          "applied": false,
+          "reason": "on-main-branch"
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "MEDIUM",
+            "file": "src/calc.js:10",
+            "description": "La división no valida el divisor cero. Fallo: divisor 0 en la llamada de src/calc.js:10 → la función devuelve Infinity en lugar de rechazar la entrada",
+            "failure_scenario": "divisor 0 en la llamada de src/calc.js:10 → la función devuelve Infinity en lugar de rechazar la entrada"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "clasificación PREEXISTENTE no aplicada",
+          "rama principal",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "🟣 PREEXISTENTE",
+          "(verdict: BLOCKED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-033",
+      "name": "linea-no-tocada-causada-por-la-historia",
+      "type": "edge-case",
+      "description": "STORY-181 (D-4, regla de causa) — El Tech-Lead-Reviewer reporta un HIGH en src/calc.js:10 y el motor touched-lines.js devuelve untouched para esa línea, pero la descripción atribuye el defecto a un cambio de la historia: la llamada usa la firma de sumar que la historia cambió en src/calc.js:42. El hallazgo no es PREEXISTENTE: conserva HIGH y el veredicto es NEEDS-CHANGES.",
+      "input": {
+        "story_id": "STORY-217",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "touched_lines_engine": {
+          "applied": true,
+          "baseRef": "main",
+          "base": "abc1234"
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "HIGH",
+            "file": "src/calc.js:10",
+            "description": "La llamada usa la firma de `sumar` que la historia cambió en `src/calc.js:42`. Fallo: llamada con los argumentos de la firma anterior de `sumar` → src/calc.js:10 devuelve NaN",
+            "failure_scenario": "llamada con los argumentos de la firma anterior de `sumar` → src/calc.js:10 devuelve NaN",
+            "line_status": "untouched"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "HIGH",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "🟣 PREEXISTENTE"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-034",
+      "name": "bloqueantes-sin-evidencia-no-cuentan",
+      "type": "edge-case",
+      "description": "STORY-182 (AC-1, filas 1 y 2; D-3) — El Tech-Lead-Reviewer reporta un MEDIUM sin Archivo:Línea (con escenario de fallo) y el Security-Reviewer un HIGH en src/auth.js:42 sin escenario de fallo. El árbitro (Paso 4a.2) debe marcar los dos como «no verificado», con sus motivos, mostrarlos en code-review-report.md, no contarlos para max-severity ni para el veredicto y no generar fix-directives.md: el veredicto es APPROVED.",
+      "input": {
+        "story_id": "STORY-230",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Validacion de entrada repetida en varios archivos. Fallo: formulario con un email vacio → un modulo lo rechaza y otro lo guarda",
+              "action": "Extraer la validacion a un helper compartido",
+              "failure_scenario": "formulario con un email vacio → un modulo lo rechaza y otro lo guarda"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "HIGH",
+          "security_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "security",
+              "severity": "HIGH",
+              "finding": "Puede ser inseguro",
+              "action": "Revisar la autenticacion"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "no verificado",
+          "falta Archivo:Línea",
+          "falta escenario de fallo",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "round: 1",
+          "READY-FOR-IMPLEMENT"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-035",
+      "name": "bloqueante-verificado-junto-a-no-verificado",
+      "type": "fail-path",
+      "description": "STORY-182 (AC-1, fila 3; D-3) — El Tech-Lead-Reviewer reporta un HIGH en src/auth.js:42 con escenario de fallo y el Integration-Reviewer un MEDIUM en src/db.js:10 sin escenario. El árbitro debe marcar el primero como bloqueante y el segundo como «no verificado»: el veredicto es NEEDS-CHANGES con un solo hallazgo bloqueante y fix-directives.md solo contiene src/auth.js.",
+      "input": {
+        "story_id": "STORY-231",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "code-quality",
+              "severity": "HIGH",
+              "finding": "Falta validar la expiracion del token. Fallo: peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario",
+              "action": "Rechazar los tokens con exp anterior a la fecha actual",
+              "failure_scenario": "peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "MEDIUM",
+          "integration_findings": [
+            {
+              "file_line": "src/db.js:10",
+              "dimension": "integration-architecture",
+              "severity": "MEDIUM",
+              "finding": "Podria fallar con la base de datos nueva",
+              "action": "Revisar la conexion"
+            }
+          ],
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "1 hallazgo(s) bloqueante(s)",
+          "bloqueante",
+          "no verificado",
+          "fix-directives.md",
+          "src/auth.js"
+        ],
+        "not_contains": [
+          "src/db.js (hallazgo",
+          "(verdict: APPROVED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-036",
+      "name": "hallazgo-duplicado-entre-revisores-se-fusiona",
+      "type": "edge-case",
+      "description": "STORY-182 (AC-2; D-4, D-5) — El Tech-Lead-Reviewer (MEDIUM) y el Security-Reviewer (HIGH) reportan el mismo defecto en src/auth.js:42 («falta validar el token»), con la misma recomendación y escenario de fallo. El árbitro (Paso 4a.3) debe fusionarlos: el informe y fix-directives.md lo muestran una sola vez, como HIGH, con «Reportado por:» citando a los dos revisores.",
+      "input": {
+        "story_id": "STORY-232",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Falta validar el token. Fallo: peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario",
+              "action": "Verificar la firma y la expiracion del token antes de usarlo",
+              "failure_scenario": "peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "HIGH",
+          "security_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "security",
+              "severity": "HIGH",
+              "finding": "Falta validar el token. Fallo: peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario",
+              "action": "Verificar la firma y la expiracion del token antes de usarlo",
+              "failure_scenario": "peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "Reportado por:",
+          "Tech-Lead-Reviewer",
+          "Security-Reviewer",
+          "1 hallazgo(s) bloqueante(s)",
+          "max-severity: HIGH",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "2 hallazgo(s) bloqueante(s)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-037",
+      "name": "hallazgos-distintos-no-se-fusionan",
+      "type": "edge-case",
+      "description": "STORY-182 (AC-3; D-4) — El Tech-Lead-Reviewer reporta un MEDIUM en src/auth.js:42 («falta validar el token»), el Security-Reviewer otro en src/auth.js:90 y el Integration-Reviewer un MEDIUM en src/auth.js:42 («nombre de variable engañoso») que pide otra corrección; todos con escenario de fallo. El árbitro no debe fusionar ninguno: tres hallazgos bloqueantes por separado, ninguno con «Reportado por:».",
+      "input": {
+        "story_id": "STORY-233",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "existing_fix_directives": null,
+        "agent_results": {
+          "tech_lead_max_severity": "MEDIUM",
+          "tech_lead_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "code-quality",
+              "severity": "MEDIUM",
+              "finding": "Falta validar el token. Fallo: peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario",
+              "action": "Verificar la firma y la expiracion del token antes de usarlo",
+              "failure_scenario": "peticion con un token caducado → src/auth.js:42 la acepta y devuelve datos del usuario"
+            }
+          ],
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "MEDIUM",
+          "integration_findings": [
+            {
+              "file_line": "src/auth.js:42",
+              "dimension": "integration-architecture",
+              "severity": "MEDIUM",
+              "finding": "Nombre de variable enganoso: 'user' guarda el token, no el usuario. Fallo: el modulo de perfil importa user de src/auth.js → recibe el token como si fuera el usuario y muestra un nombre vacio",
+              "action": "Renombrar la variable a 'token' segun el contrato de design.md",
+              "failure_scenario": "el modulo de perfil importa user de src/auth.js → recibe el token como si fuera el usuario y muestra un nombre vacio"
+            }
+          ],
+          "security_max_severity": "MEDIUM",
+          "security_findings": [
+            {
+              "file_line": "src/auth.js:90",
+              "dimension": "security",
+              "severity": "MEDIUM",
+              "finding": "El token completo se escribe en el log de depuracion. Fallo: inicio de sesion con DEBUG=1 → el token completo queda en el log y permite suplantar la sesion",
+              "action": "Enmascarar el token antes de registrarlo",
+              "failure_scenario": "inicio de sesion con DEBUG=1 → el token completo queda en el log y permite suplantar la sesion"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "3 hallazgo(s) bloqueante(s)",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "Reportado por:",
+          "fusionado"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-038",
+      "name": "dod-sin-criterios-autorreferentes",
+      "type": "happy-path",
+      "description": "STORY-183 (AC-1; D-1, D-2) — Historia en IMPLEMENT/DONE con el DoD CODE-REVIEW de cinco criterios (input.dod_criteria), cuatro revisores sin hallazgos, tasks.md con todas las tareas [x] y frontmatter de story.md completo. El árbitro (Paso 4c.1) evalúa los tres criterios cubiertos con el resultado de su revisor y los dos propios con su evidencia fija: 5/5 criterios ✓ y APPROVED. Ningún criterio del informe depende de que exista code-review-report.md, de su veredicto ni de la ausencia de bloqueantes.",
+      "input": {
+        "story_id": "STORY-238",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "tasks.md"
+        ],
+        "existing_fix_directives": null,
+        "dod_path": "docs/guardrails/dod-story-code-review.md",
+        "dod_criteria": [
+          {
+            "line": 17,
+            "text": "Se cumplen los estándares del proyecto (`constitution.md`)"
+          },
+          {
+            "line": 18,
+            "text": "Cada escenario Gherkin tiene correspondencia en el código"
+          },
+          {
+            "line": 19,
+            "text": "Los componentes respetan la arquitectura de `design.md`"
+          },
+          {
+            "line": 20,
+            "text": "Sin tareas pendientes en `tasks.md` (si existe el archivo)"
+          },
+          {
+            "line": 21,
+            "text": "Metadatos frontmatter de `story.md` están completos y correctos"
+          }
+        ],
+        "tasks_md": {
+          "pending_lines": []
+        },
+        "story_frontmatter_fields": [
+          "type",
+          "id",
+          "slug",
+          "title",
+          "status",
+          "substatus",
+          "parent",
+          "created",
+          "updated"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: APPROVED)",
+          "5/5 criterios ✓"
+        ],
+        "not_contains": [
+          "está creado o actualizado",
+          "Revisión de código aprobada",
+          "Sin hallazgo bloqueante",
+          "Se cumple [[dod-story-implement]]"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-039",
+      "name": "criterio-cubierto-por-revisor-no-duplica",
+      "type": "edge-case",
+      "description": "STORY-183 (AC-2; D-3, I-5) — El Product-Owner-Reviewer reporta un MEDIUM verificado: el escenario AC-2 no tiene correspondencia en el código. El criterio «Cada escenario Gherkin tiene correspondencia en el código» es cubierto por ese revisor: queda ❌ con «Cubierto por Product-Owner-Reviewer: <Archivo:Línea>» y no crea fila DoD-CODE-REVIEW. fix-directives.md y code-review-report.md tienen una sola entrada para el defecto.",
+      "input": {
+        "story_id": "STORY-040",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "tasks.md"
+        ],
+        "existing_fix_directives": null,
+        "dod_path": "docs/guardrails/dod-story-code-review.md",
+        "dod_criteria": [
+          {
+            "line": 17,
+            "text": "Se cumplen los estándares del proyecto (`constitution.md`)"
+          },
+          {
+            "line": 18,
+            "text": "Cada escenario Gherkin tiene correspondencia en el código"
+          },
+          {
+            "line": 19,
+            "text": "Los componentes respetan la arquitectura de `design.md`"
+          },
+          {
+            "line": 20,
+            "text": "Sin tareas pendientes en `tasks.md` (si existe el archivo)"
+          },
+          {
+            "line": 21,
+            "text": "Metadatos frontmatter de `story.md` están completos y correctos"
+          }
+        ],
+        "tasks_md": {
+          "pending_lines": []
+        },
+        "story_frontmatter_fields": [
+          "type",
+          "id",
+          "slug",
+          "title",
+          "status",
+          "substatus",
+          "parent",
+          "created",
+          "updated"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "MEDIUM",
+          "product_owner_findings": [
+            {
+              "file_line": "specs/flow/STORY-040-x/story.md:30",
+              "dimension": "requirements-coverage",
+              "severity": "MEDIUM",
+              "finding": "El escenario AC-2 no tiene correspondencia en el código. Fallo: con un usuario que pide exportar su informe (AC-2), ningún módulo de src/ atiende la exportación y la petición devuelve 404",
+              "failure_scenario": "con un usuario que pide exportar su informe (AC-2), ningún módulo de src/ atiende la exportación y la petición devuelve 404",
+              "action": "Implementar el comportamiento del escenario AC-2 y su prueba"
+            }
+          ],
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "1 hallazgo(s) bloqueante(s)",
+          "Cubierto por Product-Owner-Reviewer",
+          "round: 1"
+        ],
+        "not_contains": [
+          "DoD-CODE-REVIEW",
+          "2 hallazgo(s) bloqueante(s)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-040",
+      "name": "criterio-propio-tasks-pendiente",
+      "type": "fail-path",
+      "description": "STORY-183 (AC-3, fila 1; D-5, I-6) — Cuatro revisores sin hallazgos; tasks.md tiene la tarea «- [ ] T-3» en la línea 30. El criterio «Sin tareas pendientes en `tasks.md` (si existe el archivo)» no lo cubre ningún revisor: el árbitro lo marca ❌ MEDIUM con evidencia tasks.md:30 y crea una fila DoD-CODE-REVIEW que cita docs/guardrails/dod-story-code-review.md:20. fix-directives.md tiene una sola entrada.",
+      "input": {
+        "story_id": "STORY-239",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "tasks.md"
+        ],
+        "existing_fix_directives": null,
+        "dod_path": "docs/guardrails/dod-story-code-review.md",
+        "dod_criteria": [
+          {
+            "line": 17,
+            "text": "Se cumplen los estándares del proyecto (`constitution.md`)"
+          },
+          {
+            "line": 18,
+            "text": "Cada escenario Gherkin tiene correspondencia en el código"
+          },
+          {
+            "line": 19,
+            "text": "Los componentes respetan la arquitectura de `design.md`"
+          },
+          {
+            "line": 20,
+            "text": "Sin tareas pendientes en `tasks.md` (si existe el archivo)"
+          },
+          {
+            "line": 21,
+            "text": "Metadatos frontmatter de `story.md` están completos y correctos"
+          }
+        ],
+        "tasks_md": {
+          "pending_lines": [
+            {
+              "line": 30,
+              "text": "- [ ] T-3 Documentar el flag --dry-run"
+            }
+          ]
+        },
+        "story_frontmatter_fields": [
+          "type",
+          "id",
+          "slug",
+          "title",
+          "status",
+          "substatus",
+          "parent",
+          "created",
+          "updated"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "DoD-CODE-REVIEW",
+          "dod-story-code-review.md:20",
+          "Sin tareas pendientes en",
+          "tasks.md:30",
+          "1 hallazgo(s) bloqueante(s)",
+          "(verdict: NEEDS-CHANGES)",
+          "round: 1"
+        ],
+        "not_contains": [
+          "(verdict: APPROVED)",
+          "2 hallazgo(s) bloqueante(s)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-041",
+      "name": "criterio-propio-frontmatter-incompleto",
+      "type": "fail-path",
+      "description": "STORY-183 (AC-3, fila 2; D-5, CR-001) — Cuatro revisores sin hallazgos; el frontmatter de story.md no tiene el campo created. El criterio «Metadatos frontmatter de `story.md` están completos y correctos» no lo cubre ningún revisor: el árbitro lo marca ❌ MEDIUM con evidencia «story.md: falta created» y crea una fila DoD-CODE-REVIEW que cita docs/guardrails/dod-story-code-review.md:21. fix-directives.md tiene una sola entrada.",
+      "input": {
+        "story_id": "STORY-240",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "tasks.md"
+        ],
+        "existing_fix_directives": null,
+        "dod_path": "docs/guardrails/dod-story-code-review.md",
+        "dod_criteria": [
+          {
+            "line": 17,
+            "text": "Se cumplen los estándares del proyecto (`constitution.md`)"
+          },
+          {
+            "line": 18,
+            "text": "Cada escenario Gherkin tiene correspondencia en el código"
+          },
+          {
+            "line": 19,
+            "text": "Los componentes respetan la arquitectura de `design.md`"
+          },
+          {
+            "line": 20,
+            "text": "Sin tareas pendientes en `tasks.md` (si existe el archivo)"
+          },
+          {
+            "line": 21,
+            "text": "Metadatos frontmatter de `story.md` están completos y correctos"
+          }
+        ],
+        "tasks_md": {
+          "pending_lines": []
+        },
+        "story_frontmatter_fields": [
+          "type",
+          "id",
+          "slug",
+          "title",
+          "status",
+          "substatus",
+          "parent",
+          "updated"
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "ninguna",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "DoD-CODE-REVIEW",
+          "dod-story-code-review.md:21",
+          "falta created",
+          "1 hallazgo(s) bloqueante(s)",
+          "(verdict: NEEDS-CHANGES)"
+        ],
+        "not_contains": [
+          "(verdict: APPROVED)",
+          "2 hallazgo(s) bloqueante(s)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-042",
+      "name": "tope-de-low-desde-review-md",
+      "type": "happy-path",
+      "description": "STORY-185 (AC-1 ejemplo 1, D-4, D-6) — REVIEW.md declara en «Tope de Minor» un máximo de 3 LOW por revisor. El Tech-Lead-Reviewer reporta 12 LOW en src/a.js:1 a src/a.js:12, ordenados por relevancia; los demás revisores no tienen hallazgos y no existe informe ni code-review-lows.json previos. El árbitro (Paso 4a.5) muestra solo los 3 primeros LOW, añade tras la tabla la nota de 9 LOW omitidos por el tope y la fila «Control de LOW»; max-severity sigue siendo LOW y el veredicto APPROVED.",
+      "input": {
+        "story_id": "STORY-230",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/a.js"
+        ],
+        "previous_code_review_report": false,
+        "low_ledger_present": false,
+        "review_md_present": true,
+        "review_md_low_cap": 3,
+        "tech_lead_findings": [
+          {
+            "severity": "LOW",
+            "file": "src/a.js:1",
+            "description": "Minor 1: nombre poco descriptivo en la línea 1."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:2",
+            "description": "Minor 2: nombre poco descriptivo en la línea 2."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:3",
+            "description": "Minor 3: nombre poco descriptivo en la línea 3."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:4",
+            "description": "Minor 4: nombre poco descriptivo en la línea 4."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:5",
+            "description": "Minor 5: nombre poco descriptivo en la línea 5."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:6",
+            "description": "Minor 6: nombre poco descriptivo en la línea 6."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:7",
+            "description": "Minor 7: nombre poco descriptivo en la línea 7."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:8",
+            "description": "Minor 8: nombre poco descriptivo en la línea 8."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:9",
+            "description": "Minor 9: nombre poco descriptivo en la línea 9."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:10",
+            "description": "Minor 10: nombre poco descriptivo en la línea 10."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:11",
+            "description": "Minor 11: nombre poco descriptivo en la línea 11."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:12",
+            "description": "Minor 12: nombre poco descriptivo en la línea 12."
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "LOW",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/a.js:3",
+          "9 LOW omitidos por el tope",
+          "tope 3",
+          "REVIEW.md",
+          "(verdict: APPROVED)",
+          "max-severity: LOW"
+        ],
+        "not_contains": [
+          "src/a.js:4 |",
+          "src/a.js:12",
+          "(verdict: NEEDS-CHANGES)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-043",
+      "name": "tope-por-defecto-review-md-sin-tope",
+      "type": "edge-case",
+      "description": "STORY-185 (AC-1 ejemplo 2, I-1) — REVIEW.md existe pero no declara un número en «Tope de Minor». El Tech-Lead-Reviewer reporta 12 LOW en src/a.js:1 a src/a.js:12. El árbitro usa el tope por defecto de 5, muestra los 5 primeros LOW, indica 7 LOW omitidos por el tope y atribuye el tope a «REVIEW.md sin tope declarado».",
+      "input": {
+        "story_id": "STORY-230",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/a.js"
+        ],
+        "previous_code_review_report": false,
+        "low_ledger_present": false,
+        "review_md_present": true,
+        "review_md_low_cap": null,
+        "tech_lead_findings": [
+          {
+            "severity": "LOW",
+            "file": "src/a.js:1",
+            "description": "Minor 1: nombre poco descriptivo en la línea 1."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:2",
+            "description": "Minor 2: nombre poco descriptivo en la línea 2."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:3",
+            "description": "Minor 3: nombre poco descriptivo en la línea 3."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:4",
+            "description": "Minor 4: nombre poco descriptivo en la línea 4."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:5",
+            "description": "Minor 5: nombre poco descriptivo en la línea 5."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:6",
+            "description": "Minor 6: nombre poco descriptivo en la línea 6."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:7",
+            "description": "Minor 7: nombre poco descriptivo en la línea 7."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:8",
+            "description": "Minor 8: nombre poco descriptivo en la línea 8."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:9",
+            "description": "Minor 9: nombre poco descriptivo en la línea 9."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:10",
+            "description": "Minor 10: nombre poco descriptivo en la línea 10."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:11",
+            "description": "Minor 11: nombre poco descriptivo en la línea 11."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:12",
+            "description": "Minor 12: nombre poco descriptivo en la línea 12."
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "LOW",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/a.js:5",
+          "7 LOW omitidos por el tope",
+          "tope 5",
+          "REVIEW.md sin tope declarado"
+        ],
+        "not_contains": [
+          "src/a.js:6 |",
+          "src/a.js:12"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-044",
+      "name": "tope-por-defecto-sin-review-md",
+      "type": "edge-case",
+      "description": "STORY-185 (AC-1 ejemplo 3, SMOKE-3, I-1) — No existe REVIEW.md en la raíz. El Tech-Lead-Reviewer reporta 12 LOW en src/a.js:1 a src/a.js:12. El árbitro aplica el tope por defecto de 5 con origen «sin REVIEW.md», muestra los 5 primeros LOW e indica 7 LOW omitidos; la falta de REVIEW.md no bloquea y el veredicto es APPROVED.",
+      "input": {
+        "story_id": "STORY-230",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/a.js"
+        ],
+        "previous_code_review_report": false,
+        "low_ledger_present": false,
+        "review_md_present": false,
+        "tech_lead_findings": [
+          {
+            "severity": "LOW",
+            "file": "src/a.js:1",
+            "description": "Minor 1: nombre poco descriptivo en la línea 1."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:2",
+            "description": "Minor 2: nombre poco descriptivo en la línea 2."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:3",
+            "description": "Minor 3: nombre poco descriptivo en la línea 3."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:4",
+            "description": "Minor 4: nombre poco descriptivo en la línea 4."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:5",
+            "description": "Minor 5: nombre poco descriptivo en la línea 5."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:6",
+            "description": "Minor 6: nombre poco descriptivo en la línea 6."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:7",
+            "description": "Minor 7: nombre poco descriptivo en la línea 7."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:8",
+            "description": "Minor 8: nombre poco descriptivo en la línea 8."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:9",
+            "description": "Minor 9: nombre poco descriptivo en la línea 9."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:10",
+            "description": "Minor 10: nombre poco descriptivo en la línea 10."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:11",
+            "description": "Minor 11: nombre poco descriptivo en la línea 11."
+          },
+          {
+            "severity": "LOW",
+            "file": "src/a.js:12",
+            "description": "Minor 12: nombre poco descriptivo en la línea 12."
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "LOW",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/a.js:5",
+          "7 LOW omitidos por el tope",
+          "sin REVIEW.md",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "src/a.js:6 |",
+          "(verdict: BLOCKED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-045",
+      "name": "low-arrastrado-no-se-repite-high-si",
+      "type": "happy-path",
+      "description": "STORY-185 (AC-2 con registro previo, D-3, D-4) — Segunda ronda: la revisión anterior terminó en NEEDS-CHANGES (fix-directives.md con round: 1) y guardó code-review-lows.json. El Tech-Lead-Reviewer vuelve a reportar el LOW «nombre de variable poco descriptivo» en src/calc.js:10 y siguen pendientes un HIGH en src/calc.js:20 y un MEDIUM en src/calc.js:30, ambos con Archivo:Línea y escenario de fallo. El motor low-ledger.js compare devuelve la entrada L1 unchanged con overlaps [L1] para src/calc.js:10. El árbitro omite ese LOW por arrastre (nota «1 LOW arrastrado»), muestra el HIGH y el MEDIUM, emite NEEDS-CHANGES y escribe fix-directives.md con round: 2.",
+      "input": {
+        "story_id": "STORY-231",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "review_md_present": false,
+        "previous_code_review_report": true,
+        "low_ledger_present": true,
+        "existing_fix_directives": {
+          "round": 1
+        },
+        "low_ledger_engine": {
+          "ok": true,
+          "applied": true,
+          "reason": null,
+          "message": null,
+          "entries": [
+            {
+              "id": "L1",
+              "reviewer": "tech-lead-reviewer",
+              "location": "src/calc.js:10",
+              "description": "nombre de variable poco descriptivo",
+              "status": "unchanged",
+              "current": "src/calc.js:10"
+            }
+          ],
+          "locations": [
+            {
+              "location": "src/calc.js:10",
+              "overlaps": [
+                "L1"
+              ]
+            }
+          ]
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "HIGH",
+            "file": "src/calc.js:20",
+            "description": "La división no valida el divisor.",
+            "failure_scenario": "con divisor 0, calc(4, 0) devuelve Infinity en lugar de lanzar un error"
+          },
+          {
+            "severity": "MEDIUM",
+            "file": "src/calc.js:30",
+            "description": "El redondeo trunca los negativos.",
+            "failure_scenario": "con round(-1.5) devuelve -1 en lugar de -2"
+          },
+          {
+            "severity": "LOW",
+            "file": "src/calc.js:10",
+            "description": "nombre de variable poco descriptivo"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "HIGH",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/calc.js:20",
+          "HIGH",
+          "src/calc.js:30",
+          "MEDIUM",
+          "1 LOW arrastrado",
+          "(verdict: NEEDS-CHANGES)",
+          "round: 2"
+        ],
+        "not_contains": [
+          "src/calc.js:10 |",
+          "(verdict: APPROVED)"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-046",
+      "name": "low-en-linea-cambiada-se-muestra",
+      "type": "edge-case",
+      "description": "STORY-185 (AC-2, invariante de D-3) — Segunda ronda con code-review-lows.json previo. El Tech-Lead-Reviewer reporta el LOW «nombre de variable poco descriptivo» en src/calc.js:10, pero el rework cambió esa línea: el motor low-ledger.js compare devuelve L1 changed con current null y overlaps vacío. El árbitro no lo omite por arrastre: el LOW se muestra, sujeto al tope, y el veredicto es APPROVED.",
+      "input": {
+        "story_id": "STORY-231",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md"
+        ],
+        "impl_files": [
+          "src/calc.js"
+        ],
+        "review_md_present": false,
+        "previous_code_review_report": true,
+        "low_ledger_present": true,
+        "existing_fix_directives": {
+          "round": 1
+        },
+        "low_ledger_engine": {
+          "ok": true,
+          "applied": true,
+          "reason": null,
+          "message": null,
+          "entries": [
+            {
+              "id": "L1",
+              "reviewer": "tech-lead-reviewer",
+              "location": "src/calc.js:10",
+              "description": "nombre de variable poco descriptivo",
+              "status": "changed",
+              "current": null
+            }
+          ],
+          "locations": [
+            {
+              "location": "src/calc.js:10",
+              "overlaps": []
+            }
+          ]
+        },
+        "tech_lead_findings": [
+          {
+            "severity": "LOW",
+            "file": "src/calc.js:10",
+            "description": "nombre de variable poco descriptivo"
+          }
+        ],
+        "agent_results": {
+          "tech_lead_max_severity": "LOW",
+          "product_owner_max_severity": "ninguna",
+          "integration_max_severity": "ninguna",
+          "security_max_severity": "ninguna"
+        }
+      },
+      "expected": {
+        "contains": [
+          "src/calc.js:10",
+          "nombre de variable poco descriptivo",
+          "(verdict: APPROVED)"
+        ],
+        "not_contains": [
+          "1 LOW arrastrado"
         ]
       },
       "threshold": 0.9

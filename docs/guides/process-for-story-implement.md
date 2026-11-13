@@ -29,19 +29,19 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 *   *Estado al terminar:* `SPECIFY/DONE`.
 
 **2. Plan (Planificación de la Solución)**
-*   *¿Qué pasa?* Se define *cómo* se va a construir la historia y se audita que el plan sea coherente con lo especificado.
+*   *¿Qué pasa?* Se define *cómo* se va a construir la historia (tomando decisiones técnicas) y se audita que el plan sea coherente con lo especificado.
 *   *Artefacto:* `design.md`, `tasks.md`, `testcases.md` y `analyze.md`.
 *   *Acción:* Se invoca `/story-plan`, que encadena `story-design`, `story-tasking`, `story-testcases` y `story-analyze`. Con `NEEDS-CHANGES`, se corrige con `/story-fix-plan` y se vuelve a ejecutar `/story-analyze`.
 *   *Estado al terminar:* `READY-FOR-IMPLEMENT/DONE` con `APPROVED`. Con `NEEDS-CHANGES` sigue en `PLAN/IN-PROGRESS`.
 
 **3. Implement (Implementación)**
-*   *¿Qué pasa?* Se escriben las pruebas y el código siguiendo TDD (Rojo-Verde-Refactor). `READY-FOR-IMPLEMENT` funciona como cola: antes de activar la historia, se verifica que no se supere el WIP-Limit de 2 historias en `IN-PROGRESS`.
+*   *¿Qué pasa?* Se escriben las pruebas y el código aplicando TDD (Rojo-Verde-Refactor) o listado de tareas y siguiendo el plan y la especificación.
 *   *Artefacto:* `implement-report.md`, `tasks.md` actualizado y commits en la rama `<kind>/<story-id>-<slug>`, creada desde `main` (entrega `continuous`) o desde la rama `epic/` activa (entrega `batch`).
 *   *Acción:* Se invoca `/story-implement`, que delega en los generadores de `sddf.config.yaml › implement`, o `/story-implement-tasks`, que avanza tarea por tarea y requiere `tasks.md`. Los commits siguen Conventional Commits.
 *   *Estado al terminar:* `IMPLEMENT/DONE`, tras evaluar `dod-story-implement.md`.
 
 **4. Code Review (Revisión de Código)**
-*   *¿Qué pasa?* Cuatro subagentes revisan en paralelo el código, los requisitos, la integración y la seguridad.
+*   *¿Qué pasa?* Se revisa la calidad del código y la implementación y se toma una decisión técnica sobre su aprobación. La actividad automática se encarga de verificar ciertos aspectos, mientras que los subagentes revisan en paralelo el código, los requisitos, la integración y la seguridad.
 *   *Artefacto:* `code-review-report.md` y, si hay correcciones pendientes, `fix-directives.md`.
 *   *Acción:* Se invoca `/story-code-review`. El Pull Request se abre según la [estrategia de branching](branching-strategy-sddf-git-flow.md), y `quality.yml` ejecuta el gate `verify:repository`. **Regla de oro:** en este repositorio los agentes nunca hacen push, PR ni merge; eso lo hace una persona.
 *   *Estado al terminar:*
@@ -50,7 +50,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
     *   `BLOCKED`: `IMPLEMENT/DONE`. Se repite la revisión cuando se despeje el bloqueo.
 
 **5. Verify (Verificación)**
-*   *¿Qué pasa?* Se comprueba con pruebas que la historia funciona y que no se rompió nada más. El skill detecta el modo de ejecución: delegado, automático (E2E o unitario) o manual.
+*   *¿Qué pasa?* Se hace el aseguramiento de calidad más costoso y completo: se comprueba con pruebas que la historia funciona y que no se rompió nada más regresivamente. Si hay automatización de pruebas de regresión, se ejecutan; de lo contrario, se realizan pruebas manuales.
 *   *Artefacto:* `verify-report.md`.
 *   *Acción:* Se invoca `/story-verify`, normalmente desde `CODE-REVIEW/DONE`. Desde `IMPLEMENT/DONE` también se admite, como mínimo aceptable. Con `--mode` se fuerza el modo manual o automático.
 *   *Estado al terminar:*
@@ -59,7 +59,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
     *   `BLOCKED`: `VERIFY/BLOCKED`. Se reintenta el paso.
 
 **6. Acceptance (Aceptación)**
-*   *¿Qué pasa?* Una persona valida la historia contra sus criterios de aceptación y decide si el valor es entregable.
+*   *¿Qué pasa?* Una persona responsable del producto valida la historia contra sus criterios de aceptación y decide si el valor es entregable. Pueden hacerse pruebas exploratorias adicionales según sea necesario.
 *   *Artefacto:* `acceptance-report.md`.
 *   *Acción:* Se invoca `/story-acceptance`, que guía la validación criterio por criterio. Una sesión interrumpida se guarda con `PENDING` y se reanuda con el mismo comando.
 *   *Estado al terminar:*
@@ -69,13 +69,13 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
     *   `PENDING`: `ACCEPTANCE/IN-PROGRESS`.
 
 **7. Deliver (Entrega)**
-*   *¿Qué pasa?* Se verifica el DoD de entrega y se registra que el incremento está listo para producción (`batch`) o ya desplegado (`continuous`), según `defaults.delivery-model` en `sddf.config.yaml`.
+*   *¿Qué pasa?* Se verifica el DoD de entrega y se toma la decisión de entrega a la línea principal mergeando, encendiendo flags de feature o realizando el despliegue correspondiente. Registra que el incremento está listo para producción (`batch`) o ya desplegado (`continuous`).
 *   *Artefacto:* `CHANGELOG.md` actualizado, si el DoD lo exige. `delivery-report.md` solo se genera si se fuerza la entrega con `--force`.
 *   *Acción:* Se invoca `/story-delivery`, que evalúa `dod-story-deliver.md` y pide confirmación humana. El skill no despliega nada. Con `--dry-run` se previsualiza el resultado sin escribir.
 *   *Estado al terminar:* `DELIVER/DONE`.
 
 **8. Complete (Cierre y Archivado)**
-*   *¿Qué pasa?* Se cierra la historia y se archiva.
+*   *¿Qué pasa?* Se cierra administrativamente la historia y se archiva.
 *   *Artefacto:* El directorio de la historia, movido a `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`.
 *   *Acción:* Se invoca `/story-complete`, que siempre pide confirmación humana, conserva el historial de git y actualiza las referencias a la historia en la documentación activa.
 *   *Estado al terminar:* `COMPLETED/DONE`.

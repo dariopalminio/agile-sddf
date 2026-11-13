@@ -1,7 +1,7 @@
 ---
 name: sddf-constitution
 description: >-
-  Inicializa o actualiza constitution.md y el DoD de historia por etapa (guardrails/dod-story-*.md) registrando la constitución en CLAUDE.md.
+  Inicializa o actualiza constitution.md y el DoD de historia por etapa (guardrails/dod-story-*.md) registrando la constitución en CLAUDE.md, y siembra REVIEW.md en la raíz si falta (nunca lo sobrescribe).
   Usar para establecer reglas técnicas y criterios de calidad del proyecto.
   Invocar para "generar políticas", "actualizar constitución",
   "definition of done" o "sddf-constitution".
@@ -30,6 +30,7 @@ agentes IA los lean automáticamente antes de cualquier acción:
 - Crea los archivos `dod-story-<etapa>.md` que falten desde las plantillas de `assets/dod-story/` (nunca sobrescribe)
 - Ofrece mover un `policies/constitution.md` heredado a la raíz de `docs/`; para un DoD de historia sin dividir, remite a `/memory-system migrate --from=dod-monolithic`
 - Crea `policies/README.md` (índice de la capa) si no existe
+- Crea `REVIEW.md` en la raíz desde `assets/REVIEW-template.md` si no existe (nunca lo sobrescribe), para calibrar `/story-code-review`
 - Registra referencias a las políticas en `CLAUDE.md` o `AGENTS.md`
 
 **Qué NO hace este skill:**
@@ -40,6 +41,7 @@ agentes IA los lean automáticamente antes de cualquier acción:
 
 - `assets/project-constitution-template.md` — template fuente para constitution (solo lectura)
 - `assets/dod-story/dod-story-<etapa>.md` — seis plantillas fuente del DoD por etapa (solo lectura)
+- `assets/REVIEW-template.md` — plantilla semilla de la guía de revisión `REVIEW.md` (solo lectura)
 - `CLAUDE.md` o `AGENTS.md` en la raíz del repositorio — archivo de entrada del agente donde se registran las referencias
 
 ## Parámetros
@@ -54,7 +56,7 @@ agentes IA los lean automáticamente antes de cualquier acción:
 
 ## Dependencias
 
-- Archivos: [`assets/project-constitution-template.md`, `assets/dod-story/*.md`]
+- Archivos: [`assets/project-constitution-template.md`, `assets/dod-story/*.md`, `assets/REVIEW-template.md`]
 - Skills: `memory-system` (opcional; solo se sugiere `migrate --from=dod-monolithic` para un DoD heredado)
 
 ## Modos de ejecución
@@ -340,9 +342,46 @@ Revisa el archivo y ajusta los criterios según el contexto específico de tu pr
 
 Continuar con el Paso 4.
 
-### Paso 4 — Registrar referencias en CLAUDE.md / AGENTS.md
+### Paso 4 — Sembrar REVIEW.md
 
-#### 4a. Detectar archivo de entrada del agente
+`REVIEW.md` es la guía de revisión del proyecto: le dice a `/story-code-review` qué es «Importante»,
+cuál es el tope de hallazgos menores, qué no reportar y qué verificar siempre (ADR de la guía de
+revisión). Vive en la raíz del repositorio, como `AGENTS.md` y `CLAUDE.md`. Este paso deja una guía
+inicial desde la plantilla del skill cuando el proyecto no tiene una.
+
+El paso se ejecuta **siempre**, en modo manual y en modo automático, sin preguntar y sin depender de
+las respuestas de los Pasos 2 y 3. **Nunca bloquea:** cualquier resultado continúa con el Paso 5.
+
+1. **Comprobar la existencia de `<REPO_ROOT>/REVIEW.md`.** Si existe cualquier entrada con ese nombre
+   (archivo, directorio o enlace, aunque esté roto), **no abrirla, no compararla, no preguntar y no
+   escribirla**. Informar:
+   ```
+   ℹ️ Conservado: REVIEW.md (ya existe)
+   ```
+   y continuar con el Paso 5. Solo cuenta la raíz: un `REVIEW.md` en un subdirectorio no se considera.
+2. **Comprobar la plantilla `assets/REVIEW-template.md`** (relativa al directorio de este skill, como
+   `assets/dod-story/`). Si no existe, no crear nada e informar:
+   ```
+   ⚠️ Plantilla no encontrada: assets/REVIEW-template.md — REVIEW.md no creado
+   ```
+   y continuar con el Paso 5.
+3. **Copiar la plantilla a `<REPO_ROOT>/REVIEW.md` sin cambios:** se conservan el comentario de uso,
+   los `<!-- instrucción -->` y los `[placeholders]`; no se añade frontmatter ni fecha (UTF-8 sin BOM).
+   - Si la escritura falla (permisos, disco), informar `❌ No se pudo crear REVIEW.md: <motivo>` y
+     continuar con el Paso 5.
+   - Si la escritura tiene éxito, informar:
+     ```
+     ✅ Creado: REVIEW.md
+        Edita sus [placeholders]: Qué es «Importante» aquí · Tope de Minor · No reportar · Verificar siempre
+     ```
+
+Registrar el resultado (`creado`, `conservado` o `no creado`) para el resumen del Paso 6.
+
+Continuar con el Paso 5.
+
+### Paso 5 — Registrar referencias en CLAUDE.md / AGENTS.md
+
+#### 5a. Detectar archivo de entrada del agente
 
 Verificar en la raíz del repositorio:
 1. Si existe `CLAUDE.md` → usarlo
@@ -357,7 +396,7 @@ Agrega las siguientes líneas manualmente a tu archivo de entrada del agente:
 @docs/constitution.md
 ```
 
-#### 4b. Verificar referencias existentes
+#### 5b. Verificar referencias existentes
 
 Buscar en el archivo detectado si ya contiene referencias a los archivos de políticas:
 - `@docs/constitution.md` (o la ruta relativa equivalente)
@@ -373,7 +412,7 @@ Si **la referencia ya existe**: informar que no es necesario modificar el archiv
 ℹ️ Las referencias a las políticas ya están registradas en CLAUDE.md — sin cambios.
 ```
 
-#### 4c. Agregar referencias faltantes
+#### 5c. Agregar referencias faltantes
 
 Si alguna referencia no está presente, intentar insertarla al final del archivo.
 
@@ -395,7 +434,7 @@ Si se insertaron las referencias exitosamente:
    @docs/constitution.md
 ```
 
-### Paso 5 — Resumen
+### Paso 6 — Resumen
 
 Mostrar el resumen de la ejecución:
 
@@ -405,6 +444,9 @@ Mostrar el resumen de la ejecución:
 📄 Archivos de políticas:
 - docs/constitution.md                     [creado | movido | auto-completado | actualizado | saltado]
 - docs/guardrails/dod-story-<etapa>.md    [creados N | ya existían M | auto-completado | migración sugerida | saltado]
+
+📝 Guía de revisión:
+- REVIEW.md   [creado | conservado | no creado]
 
 🔗 Referencias en CLAUDE.md:
 - [registradas | ya existían | requieren acción manual]
@@ -419,4 +461,5 @@ Luego ejecuta `/story-design` para comenzar a diseñar la implementación de una
 - `docs/constitution.md` — constitución del proyecto: documento supremo con los principios técnicos inamovibles.
 - `docs/policies/README.md` — índice de la capa de policies (creado si no existía).
 - `docs/guardrails/dod-story-{specify,plan,implement,code-review,verify,acceptance}.md` — transition guardrails con los criterios DoD de cada etapa de una historia.
+- `REVIEW.md` en la raíz del repositorio — guía de revisión inicial para `/story-code-review`, copiada de `assets/REVIEW-template.md` solo si no existía (nunca se sobrescribe).
 - Actualizaciones en `CLAUDE.md` o `AGENTS.md` con referencias `@` a los archivos de políticas generados.

@@ -5,11 +5,11 @@ id: STORY-181
 kind: feat
 slug: STORY-181-hallazgos-preexistentes
 title: "Hallazgos preexistentes"
-status: SPECIFY
-substatus: IN-PROGRESS
+status: DELIVER
+substatus: DONE
 parent: EPIC-28-calibrar-story-code-review-con-review-md
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-12
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
   - STORY-178-adr-guia-de-revision
@@ -68,7 +68,9 @@ Entonces ningún hallazgo se clasifica como PREEXISTENTE
 
 ## 📎 Notas / contexto adicional
 
-- Cubre la parte PREEXISTENTE de **CS-4** de EPIC-28 y el escenario **SMOKE-2**.
+- Cubre el escenario **SMOKE-2** de EPIC-28.
+- Cubre el criterio de salida de EPIC-28 **CS-4a** — Un hallazgo PREEXISTENTE no cambia el veredicto ni entra en `fix-directives.md`.
+- Cubre el criterio de salida de EPIC-28 **CS-8b** — `skills/story-code-review/evals/evals.json` incluye el caso de calibración hallazgo preexistente.
 - **Depende de STORY-178:** el ADR decide cómo identificar las líneas no tocadas (decisión (b) de las notas de la épica); hoy el skill no usa `git diff` y conoce los archivos de la historia por `$IMPL_FILES` (Paso 2c, desde `implement-report.md`).
 - **Punto de inserción:** el cálculo de `max_severity` (Paso 4b) y del veredicto (Pasos 4c y 4c.1), y la lista blanca de `fix-directives.md` (Pasos 4e-4f) de `skills/story-code-review/SKILL.md`.
 - Implementar después de STORY-180.

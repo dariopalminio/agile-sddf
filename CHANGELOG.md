@@ -8,9 +8,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [5.2.0] — 2026-11-12
+
 ### Added
 
 - `agile-sddf --version` (alias `-v`) imprime la versión instalada del paquete, sin mostrar el banner ni escribir archivos.
+
+<!-- epic-ship:EPIC-28:start -->
+### EPIC-28 — Calibrar story-code-review con REVIEW.md
+
+Que `/story-code-review` reporte lo que de verdad importa en cada repositorio y no bloquee por ruido, con una guía de revisión por proyecto (`REVIEW.md`, la convención de Claude Code Review) separada de los criterios genéricos que distribuye el framework.
+
+- **Added** — story-code-review lee REVIEW.md (STORY-180)
+- **Added** — Hallazgos preexistentes (STORY-181)
+- **Added** — Verificación y deduplicación de hallazgos del árbitro (STORY-182)
+- **Added** — DoD CODE-REVIEW sin criterios circulares (STORY-183)
+- **Added** — REVIEW.md semilla para proyectos consumidores (STORY-184)
+- **Added** — Tope de LOW por revisor y sin arrastres entre rondas (STORY-185)
+- **Changed** — ADR de la guía de revisión (STORY-178)
+- **Changed** — REVIEW.md de agile-sddf (STORY-179)
+- **Fixed** — Corregir rutas de story-code-review (STORY-177)
+<!-- epic-ship:EPIC-28:end -->
 
 ## [5.1.1] — 2026-11-05
 

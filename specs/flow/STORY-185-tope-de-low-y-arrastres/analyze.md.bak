@@ -1,0 +1,183 @@
+---
+type: analyze
+id: STORY-185
+slug: STORY-185-analyze-report
+title: "Analyze: Tope de LOW por revisor y sin arrastres entre rondas"
+story: STORY-185
+design: STORY-185
+tasks: STORY-185
+verdict: NEEDS-CHANGES
+created: 2026-11-08
+updated: 2026-11-08
+related:
+  - STORY-185-tope-de-low-y-arrastres
+---
+
+# Reporte de Coherencia: Tope de LOW por revisor y sin arrastres entre rondas
+
+## Veredicto
+
+**Veredicto:** `NEEDS-CHANGES` — ERROR de tipo A, E
+
+## Resumen Ejecutivo
+
+| Métrica | Estado | Detalle |
+|---|---|---|
+| Cobertura de ACs en design.md | ❌ | 1/2 criterios completamente cubiertos; AC-2 sin registro solo se resuelve si el informe conserva código histórico completo y existe confirmación humana, precondiciones no exigidas por la historia |
+| Cobertura de ACs en testcases.md | ⚠️ | No evaluada: el archivo no existe |
+| Alineación tareas → diseño | ✓ | 32/32 tareas trazables, incluidas adopción, precondiciones y verificación |
+| Cobertura diseño → tareas | ✓ | 17/17 componentes e interfaces con tarea |
+| Alineación con EPIC-28 | ✓ | Historia listada, objetivo alineado y alcance de control de ruido respetado |
+| Cumplimiento DoD — Fase PLAN | ❌ | 6/7 criterios satisfechos; enforcement: error |
+| Inconsistencias | ❌ | 1 ERROR de tipo A con impacto DoD de tipo E, 0 WARNING; las omisiones de cobertura no se cuentan como hallazgos |
+
+**Fuentes:** [story.md](story.md), [design.md](design.md), [tasks.md](tasks.md), [epic.md](../EPIC-28-calibrar-story-code-review-con-review-md/epic.md), [DoD PLAN](../../../docs/guardrails/dod-story-plan.md) y [política de validación](../../../docs/policies/validation-contract-policy.md).
+
+**Template usado:** assets del skill instalado, [analyze-report-template.md](../../../.github/skills/story-analyze/assets/analyze-report-template.md), con cobertura de pruebas y vía de implementación añadidas según el contrato del skill.
+
+**DoD resuelto:** `sddf.config.yaml › guardrails.dod.story.plan: dod-story-plan`; 7 criterios cargados de su archivo, con `enforcement: error`.
+
+El análisis es de planificación: no se ejecutaron pruebas de implementación ni evals. No se modificaron los artefactos analizados. [story.md](story.md) conserva `PLAN/IN-PROGRESS`.
+
+## Cobertura de Criterios de Aceptación
+
+| AC | Descripción | Cubierto en design.md | Elemento de diseño |
+|---|---|---|---|
+| AC-1 | Máximo 3 LOW con tope declarado, o 5 sin declaración o sin guía; informar omitidos | ✓ | C-2/C-3/C-4, I-1/I-8/I-9, D-4 a D-7 y F-1 ([design.md](design.md), líneas 66-71, 79, 86-87, 138-187 y 291-299) |
+| AC-2 | No repetir LOW anterior en líneas sin cambios; mantener HIGH/MEDIUM pendientes | ❌ Parcial | C-1/C-2, I-2 a I-7 e I-10, D-10 y F-6 cubren registro o código histórico confirmado. D-4/F-4 mantienen el LOW cuando el informe anterior no conserva ese código, aunque su línea no haya cambiado ([design.md](design.md), líneas 143, 224-233, 319 y 335-340; INC-001) |
+
+CNF-1 se traza a I-8, D-6, T017/T021 y las aserciones 9-10 de D-8. CNF-2 se traza a D-7, T004-T008/T030-T031 y el contrato de verificación 7: los seis evals y pruebas se escriben antes de editar el skill.
+
+## Alineación Tareas ↔ Diseño
+
+Todas las tareas de [tasks.md](tasks.md) tienen propósito asociado al diseño. T030-T032 concretan la adopción y sus pruebas: ya no falta un mecanismo. La trazabilidad no implica cobertura completa de AC-2; T016/T020/T028 implementan la degradación que conserva LOW cuando falta evidencia histórica.
+
+| Tarea | Descripción | Elemento de diseño asociado | Estado |
+|---|---|---|---|
+| T001 | Verificar integración con STORY-180 | Context, I-1 y dependencia de la historia | ✓ |
+| T002 | Resolver integración con hermanas y numeración | D-4, D-6, D-9 y CR-001 | ✓ |
+| T003 | Reservar seis IDs libres de eval | C-5 y D-7 | ✓ |
+| T004 | Eval de tope declarado | C-5, D-7, AC-1 ejemplo 1 | ✓ |
+| T005 | Evals de ambos topes por defecto | C-5, D-7, AC-1 ejemplos 2 y 3 | ✓ |
+| T006 | Evals de arrastre y línea cambiada | C-5, D-7, AC-2 y CNF-2 | ✓ |
+| T007 | Prueba del motor en RED | C-6, D-8 aserciones 1-8 e I-7 | ✓ |
+| T008 | Prueba del contrato estático en RED | C-6, D-8 aserción 9 | ✓ |
+| T009 | Parser de ubicación compartido | C-1, I-7 y D-9 | ✓ |
+| T010 | Huella normalizada | C-1, I-7 y D-1 | ✓ |
+| T011 | Ubicación y clasificación de entradas | C-1, I-5/I-7 y D-3 | ✓ |
+| T012 | Generar registro de huellas | C-1, I-2/I-7 y Esquema de datos | ✓ |
+| T013 | Comparar registro y calcular solapamientos | C-1, I-5/I-6/I-7 y D-3 | ✓ |
+| T014 | CLI compare/record/adopt, errores y exportaciones | C-1, I-3/I-4/I-7/I-10 | ✓ |
+| T015 | Documentar entrada histórica, dependencia y CLI_ROOT | C-2, D-2 y D-10 | ✓ |
+| T016 | Aplicar adopción, arrastre y corte en el árbitro | C-2, I-1/I-5/I-6/I-8/I-10, D-4 y D-10 | ✓ |
+| T017 | Preservar severidad y DoD | C-2, I-8 y CNF-1 | ✓ |
+| T018 | Renderizar hallazgos y notas de omisión | C-2, I-9 y D-6 | ✓ |
+| T019 | Registrar LOW al finalizar la ronda | C-2, I-2/I-4, D-2 y Esquema de datos | ✓ |
+| T020 | Resumen, salida y errores | C-2, I-9, Esquema de datos y F-4 | ✓ |
+| T021 | Fila Control de LOW en plantilla | C-3, I-9 y D-6 | ✓ |
+| T022 | Regla de orden en cuatro agentes | C-4 y D-5 | ✓ |
+| T023 | Actualizar README | C-7 | ✓ |
+| T024 | Ejecutar pruebas y contratos relacionados | C-6, D-8 y Contratos de verificación | ✓ |
+| T025 | Verificar ausencia de BOM | C-1 a C-7 y requisitos de encoding | ✓ |
+| T026 | Ejecutar gates deterministas | Contratos de verificación 8 | ✓ |
+| T027 | Recorrer los tres ejemplos de AC-1 | F-1, D-7 y Contratos de verificación 1-2 | ✓ |
+| T028 | Recorrer arrastre, adopción y degradación | F-2/F-3/F-6, I-5/I-10 y Contratos de verificación 3-4 | ✓ |
+| T029 | Actualizar grafo tras implementación | Verificación transversal del cambio, conforme a AGENTS.md | ✓ |
+| T030 | Eval de adopción sin registro | C-5, I-10, D-7/D-10 y F-6 | ✓ |
+| T031 | Pruebas de adopción en RED | C-6, I-10 y D-8.10/D-10 | ✓ |
+| T032 | Extractor de evidencia histórica | C-1, I-10 y D-10 | ✓ |
+
+Localización: T001-T003 en [tasks.md](tasks.md), líneas 28-30; T004-T008/T030-T031, líneas 34-40; T009-T014/T032, líneas 44-50; T015-T020, líneas 54-59; T021-T023, líneas 63-65; T024-T029, líneas 69-74. Los IDs no se renumeran y las dependencias de adopción se declaran explícitamente.
+
+## Cobertura Diseño → Tareas
+
+Componentes: [design.md](design.md), sección «Componentes afectados», líneas 65-71. Interfaces: sección «Interfaces», líneas 79-88.
+
+| Componente / Interfaz | Ubicación en design.md | Tarea que lo implementa | Estado |
+|---|---|---|---|
+| C-1 Motor de huellas y adopción | Componentes afectados | T009-T014, T032 | ✓ |
+| C-2 Orquestador | Componentes afectados | T015-T020 | ✓ |
+| C-3 Plantilla | Componentes afectados | T021 | ✓ |
+| C-4 Agentes revisores | Componentes afectados | T022 | ✓ |
+| C-5 Evals | Componentes afectados | T004-T006, T030 | ✓ |
+| C-6 Prueba del motor y contrato | Componentes afectados | T007-T008, T031, T024 | ✓ |
+| C-7 README | Componentes afectados | T023 | ✓ |
+| I-1 Tope y fuente | Interfaces | T016, T027 | ✓ |
+| I-2 Registro de huellas | Interfaces | T012, T015, T019-T020 | ✓ |
+| I-3 CLI compare | Interfaces | T014, T016 | ✓ |
+| I-4 CLI record | Interfaces | T014, T019 | ✓ |
+| I-5 Salida de compare | Interfaces | T011, T013-T014, T016 | ✓ |
+| I-6 Códigos reason | Interfaces | T013, T016, T020 | ✓ |
+| I-7 Funciones exportadas | Interfaces | T007, T009-T014 | ✓ |
+| I-8 Marcas del árbitro | Interfaces | T016-T019 | ✓ |
+| I-9 Presentación y notas | Interfaces | T018, T020-T021 | ✓ |
+| I-10 CLI adopt y adoptLedger | Interfaces | T014-T016, T030-T032 | ✓ |
+
+## Alineación con la Épica
+
+**Épica padre:** [EPIC-28](../EPIC-28-calibrar-story-code-review-con-review-md/epic.md).
+
+| Criterio | Estado | Detalle |
+|---|---|---|
+| Historia listada | ✓ | «Historias», línea 37, incluye STORY-185 con el mismo objetivo |
+| Objetivo alineado | ✓ | Reducir ruido sin perder señal coincide con «Objetivo», líneas 16-18, y el alcance del árbitro |
+| Restricciones respetadas | ✓ | Tope de CS-4, preservación de contrato de CS-2 y evals/gates de CS-8; no invade las historias de evidencia, PREEXISTENTE ni DoD |
+
+La dependencia de STORY-180 está declarada en [story.md](story.md), línea 72. T001 comprueba su integración; el fallback a guía ausente no demuestra el ejemplo de AC-1 con guía presente. La implementación completa debe respetar el orden declarado antes de dar por verificado ese ejemplo. No se convierte una dependencia de implementación en un defecto adicional del plan.
+
+## Inconsistencias Detectadas
+
+### INC-001 [ERROR]
+
+- **Tipo:** A, E — cobertura parcial de AC-2 e incumplimiento DoD de cobertura completa del diseño; una sola causa, sin duplicar el hallazgo.
+- **Descripción:** CR-002 ya tiene decisión, fuente, extractor y pruebas definidos. El defecto actual es de cobertura: D-10 necesita bloques literales completos para todos los LOW y confirmación humana; AC-2 solo exige un LOW anterior sobre una línea sin cambios. Contrajemplo: segunda ronda, informe anterior con una fila LOW en `src/calc.js:10`, sin registro ni bloque histórico, rework en otra línea y único LOW actual del revisor. Cumple el Dado de AC-2, pero D-4/F-4 producen `historical-evidence-insufficient`; el LOW queda visible porque cabe en el tope. La degradación es segura y explícita, pero contradice el Entonces. TC-047 añade código histórico y manifiesto sintéticos: prueba el subconjunto soportado, no este caso.
+- **Archivo afectado:** [story.md](story.md), «AC-2», líneas 45-51, y «Notas», línea 70; [design.md](design.md), I-10, línea 88; D-4, línea 143; D-10, líneas 224-233; TC-047, línea 187; F-4, línea 319; contrato 3, línea 356; limitación histórica, línea 368. [tasks.md](tasks.md), T030-T031, líneas 39-40, T016/T020, líneas 55 y 59, y T028, línea 73.
+- **Evidencia del productor:** [SKILL.md](../../../skills/story-code-review/SKILL.md), Paso 5b, línea 563, copia solo las tablas de hallazgos; [code-review-report-template.md](../../../skills/story-code-review/assets/code-review-report-template.md), líneas 35-67, no exige bloques de código histórico. D-10 reconoce que tampoco está verificado un ejemplo real. No se afirma que ningún informe pueda contener código: se verifica que el contrato no garantiza la entrada requerida.
+- **Acción requerida:** conciliar la entrada garantizada con AC-2. Sin cambiar la historia, definir una fuente histórica verificable disponible para el caso de informe anterior sin código y añadir su prueba y tareas; si se decide limitar el alcance a registro o evidencia histórica completa confirmada, aprobar explícitamente ese cambio de AC-2 mediante `/story-refine`. La decisión de usar un extractor no equivale a aprobar esa nueva precondición. Nunca reconstruir huellas históricas desde el working tree actual.
+
+## Verificación de Correcciones Anteriores
+
+Los siguientes hallazgos están resueltos en el plan y no se cuentan como inconsistencias actuales ni como pruebas ejecutadas.
+
+| Hallazgo anterior | Resultado | Evidencia |
+|---|---|---|
+| INC-001 — mecanismo de adopción pendiente | Mecanismo concretado; cobertura general aún parcial | [design.md](design.md), I-10/D-10, líneas 88 y 224-233, define extracción desde evidencia confirmada; D-7/D-8, líneas 187 y 207, define TC-047 y aserción 10. [tasks.md](tasks.md), líneas 39-40 y 49-50, añade T030-T032 y CLI. No se vuelve a exigir una decisión de extractor ya tomada |
+| INC-002 — unicidad contradictoria | Resuelto en planificación | [design.md](design.md), D-3, líneas 120-130, cuenta todas las coincidencias; D-8.3, línea 200, prueba duplicados. [tasks.md](tasks.md), T007/T011, líneas 37 y 46 |
+| INC-003 — fixtures incompletos de I-5 | Resuelto en planificación | [design.md](design.md), D-4, línea 143, valida I-5 completo; TC-045/TC-046, líneas 185-186, define `current` y `overlaps`. [tasks.md](tasks.md), T006/T016/T028, líneas 36, 55 y 73 |
+
+## Recomendaciones
+
+1. Mantener reconocida la decisión de D-10; corregir la diferencia entre las precondiciones de AC-2 y las de la adopción, no volver a marcar el extractor como pendiente. Si se conserva AC-2, justificar de dónde sale el contenido histórico en el contrajemplo de INC-001; si se limita el alcance, obtener aprobación explícita y refinar la historia.
+2. Añadir en [design.md](design.md), D-7/D-8 y contrato 3, una prueba de segunda ronda con informe de tablas solamente, sin registro, único LOW sin cambios y HIGH/MEDIUM pendientes. El resultado requerido por AC-2 es omitir ese LOW, no solo emitir el aviso. Conectar la solución a [tasks.md](tasks.md), T016/T020/T028 y tareas de pruebas; conservar TC-047 como prueba de adopción con evidencia.
+3. Aplicar la corrección con `/story-fix-plan STORY-185` y volver a ejecutar `/story-analyze STORY-185` antes de implementar. No presentar fixtures sintéticos ni un contrato de prueba pendiente como evidencia de ejecución.
+
+## Cobertura de ACs en Testcases
+
+⚠️ testcases.md no presente — cobertura de pruebas no evaluada. Esta omisión no es un hallazgo F y no bloquea por sí misma.
+
+El plan sí especifica pruebas futuras: AC-1 → TC-042/TC-043/TC-044, T004/T005/T027; AC-2 con registro → TC-045/TC-046, T006/T007/T028; adopción sin registro con código histórico completo confirmado → TC-047, aserción 10 y T030-T032. Falta cubrir el resultado de AC-2 con informe anterior de tablas solamente. Son contratos de pruebas en [design.md](design.md) y [tasks.md](tasks.md), no casos ya materializados ni evidencia de ejecución.
+
+## Vía de Implementación Disponible
+
+| Artefacto | Presente | Skill habilitado por artefactos |
+|---|---|---|
+| testcases.md | ❌ | `/story-implement STORY-185` no disponible |
+| tasks.md | ✓ | `/story-implement-tasks STORY-185` disponible |
+
+La disponibilidad del artefacto no habilita el avance mientras el gate esté rechazado. `/story-testcases STORY-185` permitiría evaluar además la correlación de cobertura de pruebas.
+
+## Cumplimiento DoD — Fase PLAN
+
+Fuente: [dod-story-plan.md](../../../docs/guardrails/dod-story-plan.md), líneas 20-26; `enforcement: error`.
+
+| Criterio DoD | Estado | Severidad | Evidencia |
+|---|---|---|---|
+| story.md tiene criterios Gherkin para escenarios principales | ✓ | — | [story.md](story.md), líneas 30-51: tope con tres ejemplos y arrastre con permanencia de HIGH/MEDIUM |
+| design.md existe y cubre todos los ACs con elementos de diseño | ❌ | ERROR | AC-1 completo; AC-2 sin registro exige código histórico y confirmación no requeridos por la historia; F-4 deja visible el LOW del contrajemplo de INC-001 ([design.md](design.md), líneas 224-233 y 319) |
+| Todos los elementos de diseño tienen trazabilidad explícita al AC satisfecho | ✓ | — | [design.md](design.md), tablas C-1 a C-7 e I-1 a I-10, líneas 65-88, y anotaciones `// satisface: AC-N` en decisiones; los identificadores de AC son explícitos |
+| No hay decisiones de arquitectura aplazadas; ambigüedad resuelta o registrada como CR | ✓ | — | D-10 y CR-002 definen la decisión de adopción ([design.md](design.md), líneas 224-233 y 391-396). El formato no verificado se trata con referencias confirmadas y degradación explícita. El mecanismo ya está decidido; su alcance no completa AC-2 |
+| Existe tasks.md o testcases.md o ambos | ✓ | — | [tasks.md](tasks.md) presente con 32 tareas, T001-T032 |
+| Si tasks.md existe, contiene tareas atómicas para escenarios principales | ✓ | — | T004-T008/T030-T031 definen pruebas; T009-T023/T032 implementan contratos; T027/T028 verifican recorridos, con resultados verificables. La cobertura incompleta del comportamiento se registra una sola vez en INC-001, no como tarea sin diseño |
+| Si testcases.md existe, contiene pruebas para escenarios principales | ✓ | — | Condición no activada: testcases.md no existe; no se exige ese artefacto cuando tasks.md está presente, ni se atribuye cobertura de pruebas inexistente |
+
+El único criterio incumplido remite a INC-001; no crea un hallazgo duplicado. Los criterios condicionales no activados se incluyen en el conteo como satisfechos por no aplicabilidad, sin atribuir cobertura de pruebas inexistente. El estado de [story.md](story.md) permanece `PLAN/IN-PROGRESS`.

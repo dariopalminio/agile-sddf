@@ -14,6 +14,19 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 const RETIRED_SKILL = 'project-policies-generation';
 const RENAMED_SKILL = 'sddf-constitution';
 
+// STORY-184: semilla de REVIEW.md. La plantilla del skill es la que se publica;
+// la de docs/templates/ es la copia central y ambas deben ser idénticas (D-1).
+const SKILL_REVIEW_TEMPLATE = `skills/${RENAMED_SKILL}/assets/REVIEW-template.md`;
+const CENTRAL_REVIEW_TEMPLATE = 'docs/templates/REVIEW-template.md';
+const SKILL_EVALS = `skills/${RENAMED_SKILL}/evals/evals.json`;
+const REVIEW_SECTION_PREFIXES = ['Qué es «Importante» aquí', 'Tope de Minor', 'No reportar', 'Verificar siempre'];
+const REVIEW_CREATED = '✅ Creado: REVIEW.md';
+const REVIEW_KEPT = 'ℹ️ Conservado: REVIEW.md (ya existe)';
+const REVIEW_TEMPLATE_MISSING = '⚠️ Plantilla no encontrada: assets/REVIEW-template.md';
+const UTF8_BOM = Buffer.from([0xef, 0xbb, 0xbf]);
+// Code points de ai-no-hidden-characters (gr-ai-security-checklist), escritos como escapes.
+const HIDDEN_CHARACTERS = /[\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF\u{E0000}-\u{E007F}]|\u001B\[/u;
+
 // Estos alcances son registro histórico, no superficies operativas. EV-004 no
 // los recorre: su allowlist evita interpretar sus menciones como aliases.
 const HISTORICAL_REFERENCE_ALLOWLIST = [
@@ -117,6 +130,8 @@ test('E2E-001: la fuente canónica adopta sddf-constitution y conserva sus artef
     'assets/dod-story/dod-story-code-review.md',
     'assets/dod-story/dod-story-verify.md',
     'assets/dod-story/dod-story-acceptance.md',
+    'assets/REVIEW-template.md',
+    'evals/evals.json',
     'examples/example-output-constitution.md',
     'examples/example-output-dod.md',
   ];
@@ -193,14 +208,14 @@ test('EV-002: TC-006 de sddf-init declara la omisión mínima con el nombre nuev
   );
 });
 
-test('EV-003: el inventario declara la exención temporal bajo sddf-constitution', () => {
+test('EV-003: el inventario reconoce los evals de sddf-constitution sin exención (STORY-184)', () => {
   const inventory = verifyEvalInventory(REPO_ROOT);
 
   assert.deepEqual(inventory.errors, []);
   assert.ok(inventory.skills.includes(RENAMED_SKILL));
   assert.equal(inventory.skills.includes(RETIRED_SKILL), false);
-  assert.ok(inventory.missing.includes(RENAMED_SKILL));
-  assert.ok(inventory.exemptions.includes(RENAMED_SKILL));
+  assert.equal(inventory.missing.includes(RENAMED_SKILL), false, `${RENAMED_SKILL} debe tener evals/evals.json`);
+  assert.equal(inventory.exemptions.includes(RENAMED_SKILL), false, `${RENAMED_SKILL} no debe seguir exento`);
   assert.equal(inventory.exemptions.includes(RETIRED_SKILL), false);
 });
 
@@ -236,10 +251,65 @@ test('IT-001: una instalación limpia distribuye sddf-constitution y no el direc
         `${runtime.id} debe instalar ${RENAMED_SKILL}`,
       );
       assert.equal(
+        fs.existsSync(path.join(skillsDirectory, RENAMED_SKILL, 'assets', 'REVIEW-template.md')),
+        true,
+        `${runtime.id} debe recibir la plantilla semilla assets/REVIEW-template.md`,
+      );
+      assert.equal(
         fs.existsSync(path.join(skillsDirectory, RETIRED_SKILL)),
         false,
         `${runtime.id} no debe recibir ${RETIRED_SKILL} en un destino limpio`,
       );
     }
   });
+});
+
+test('UT-001: la plantilla semilla del skill es idéntica byte a byte a la central (CNF-1)', () => {
+  const skillPath = path.join(REPO_ROOT, SKILL_REVIEW_TEMPLATE);
+  const centralPath = path.join(REPO_ROOT, CENTRAL_REVIEW_TEMPLATE);
+  assert.equal(fs.existsSync(skillPath), true, `debe existir ${SKILL_REVIEW_TEMPLATE}`);
+
+  assert.ok(
+    fs.readFileSync(skillPath).equals(fs.readFileSync(centralPath)),
+    `${SKILL_REVIEW_TEMPLATE} y ${CENTRAL_REVIEW_TEMPLATE} deben ser idénticos byte a byte`,
+  );
+});
+
+test('UT-002: la plantilla semilla tiene las cuatro secciones en orden, sin BOM ni caracteres invisibles (AC-1, CNF-4)', () => {
+  const skillPath = path.join(REPO_ROOT, SKILL_REVIEW_TEMPLATE);
+  assert.equal(fs.existsSync(skillPath), true, `debe existir ${SKILL_REVIEW_TEMPLATE}`);
+  const bytes = fs.readFileSync(skillPath);
+  const text = bytes.toString('utf8');
+
+  assert.equal(bytes.subarray(0, 3).equals(UTF8_BOM), false, `${SKILL_REVIEW_TEMPLATE}: sin BOM`);
+  assert.equal(HIDDEN_CHARACTERS.test(text), false, `${SKILL_REVIEW_TEMPLATE}: sin code points de ai-no-hidden-characters`);
+
+  const headings = text.split(/\r?\n/).filter((line) => line.startsWith('## ')).map((line) => line.slice(3));
+  assert.equal(headings.length, REVIEW_SECTION_PREFIXES.length, `cuatro secciones ##, encontradas: ${headings.join(' | ')}`);
+  REVIEW_SECTION_PREFIXES.forEach((prefix, index) => {
+    assert.ok(headings[index].startsWith(prefix), `la sección ${index + 1} debe empezar por «${prefix}»`);
+  });
+});
+
+test('EV-005: SKILL.md declara el Paso 4 de la semilla y los evals usan sus literales (AC-1, AC-2, CNF-3)', () => {
+  const skill = read(`skills/${RENAMED_SKILL}/SKILL.md`);
+  for (const literal of ['### Paso 4 — Sembrar REVIEW.md', 'assets/REVIEW-template.md', REVIEW_CREATED, REVIEW_KEPT]) {
+    assert.ok(skill.includes(literal), `SKILL.md debe contener «${literal}»`);
+  }
+
+  const bytes = fs.readFileSync(path.join(REPO_ROOT, SKILL_EVALS));
+  assert.equal(bytes.subarray(0, 3).equals(UTF8_BOM), false, `${SKILL_EVALS}: sin BOM`);
+  const manifest = JSON.parse(bytes.toString('utf8'));
+  const byId = (id) => {
+    const testCase = manifest.cases.find((candidate) => candidate.id === id);
+    assert.ok(testCase, `${SKILL_EVALS} debe tener ${id}`);
+    return testCase.expected;
+  };
+
+  assert.ok(byId('TC-001').contains.includes(REVIEW_CREATED), 'TC-001 exige la creación');
+  for (const id of ['TC-002', 'TC-003']) {
+    assert.ok(byId(id).contains.includes(REVIEW_KEPT), `${id} exige la conservación`);
+    assert.ok(byId(id).not_contains.includes(REVIEW_CREATED), `${id} excluye la creación`);
+  }
+  assert.ok(byId('TC-004').contains.includes(REVIEW_TEMPLATE_MISSING), 'TC-004 exige la advertencia de plantilla ausente');
 });

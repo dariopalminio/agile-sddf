@@ -22,7 +22,7 @@ based-on: code-review-report.md
 
 | # | Archivo:Línea | Dimensión | Severidad | Hallazgo | Acción requerida |
 |---|---------------|-----------|-----------|----------|-----------------|
-| 1 | src/users.ts:15 | code-quality | HIGH | API key hardcodeada: `const API_KEY = "sk-prod-abc123"` | Mover a variable de entorno (`process.env.API_KEY`); eliminar el valor hardcodeado del código fuente |
+| 1 | src/users.ts:15 | code-quality | HIGH | API key hardcodeada: `const API_KEY = "sk-prod-abc123"`. Fallo: lectura del repositorio publicado → la API key de producción queda expuesta y cualquiera puede usarla | Mover a variable de entorno (`process.env.API_KEY`); eliminar el valor hardcodeado del código fuente |
 
 ## Lista blanca de archivos permitidos para modificar
 

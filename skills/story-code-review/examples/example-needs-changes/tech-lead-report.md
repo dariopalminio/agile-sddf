@@ -11,8 +11,8 @@ max-severity: HIGH
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| HIGH      | src/users.ts:15 | API key hardcodeada: `const API_KEY = "sk-prod-abc123"` | Mover a variable de entorno; nunca commitear secrets |
-| MEDIUM    | src/users.ts:28 | Función `getUserById` hace 3 cosas distintas (validar, leer DB, formatear respuesta) | Extraer en funciones separadas con responsabilidad única |
+| HIGH      | src/users.ts:15 | API key hardcodeada: `const API_KEY = "sk-prod-abc123"`. Fallo: lectura del repositorio publicado → la API key de producción queda expuesta y cualquiera puede usarla | Mover a variable de entorno; nunca commitear secrets |
+| MEDIUM    | src/users.ts:28 | Función `getUserById` hace 3 cosas distintas (validar, leer DB, formatear respuesta). Fallo: id con formato inválido → `getUserById` ejecuta la query antes de terminar de validar y responde 500 en lugar de 400 | Extraer en funciones separadas con responsabilidad única |
 | LOW       | src/users.ts:5  | Import `fs` sin usar | Eliminar el import |
 
 ## Veredicto
