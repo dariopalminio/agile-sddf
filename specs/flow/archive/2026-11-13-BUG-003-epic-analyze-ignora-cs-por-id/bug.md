@@ -4,9 +4,9 @@ id: BUG-003
 slug: BUG-003-epic-analyze-ignora-cs-por-id
 title: "epic-analyze no acepta CS-N por ID y altera el texto citado de un criterio"
 created: 2026-11-12
-updated: 2026-11-12
-status: SHIP
-substatus: IN-PROGRESS
+updated: 2026-11-13
+status: COMPLETED
+substatus: DONE
 parent: null
 related:
   - EPIC-28-calibrar-story-code-review-con-review-md
