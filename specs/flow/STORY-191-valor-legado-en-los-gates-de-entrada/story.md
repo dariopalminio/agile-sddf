@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-191-valor-legado-en-los-gates-de-entrada
 title: "Valor legado en los gates de entrada"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13
 updated: 2026-11-13
@@ -14,8 +14,9 @@ related:
   - EPIC-029-eliminar-estados-buffer
   - STORY-186-adr-de-workflows-sin-estados-buffer
   - STORY-188-la-planificacion-termina-en-plan-done
-  - STORY-189-el-rework-vuelve-a-implement-todo
+  - STORY-189-rework-de-revision-a-implement-todo
   - STORY-193-aviso-de-estados-legados-en-skill-preflight
+  - STORY-199-origen-del-rework-en-los-ejecutores
 ---
 [[EPIC-029-eliminar-estados-buffer]]
 
@@ -81,6 +82,6 @@ Entonces rechaza la entrada y lista los estados aceptados: "PLAN/DONE", "IMPLEME
 ## 📎 Notas / contexto adicional
 
 - Cubre la parte de los ejecutores del criterio de salida **CS-4** de EPIC-029, la parte del ejecutor del **SMOKE-3** y la parte de **CS-7** que pide casos del valor legado en los evals de `story-implement` y `story-implement-tasks`.
-- Depende de STORY-186 (regla y duración de la ventana), STORY-188 (entrada `PLAN/DONE`) y STORY-189 (entrada `IMPLEMENT/TODO`). Esas dos historias dejan `READY-FOR-IMPLEMENT/DONE` como entrada aceptada; esta lo convierte en alias con aviso.
-- La fila con `implement-report.md` y sin `fix-directives.md` corresponde a un rechazo legado de verify o acceptance: antes de STORY-190 esos gates no escribían directivas. Por eso la regla usa `implement-report.md` y no `fix-directives.md` (nota «Decisiones tomadas» de la épica).
+- Depende de STORY-186 (regla y duración de la ventana), STORY-188 (entrada `PLAN/DONE`), STORY-189 (entrada `IMPLEMENT/TODO`) y STORY-199 (aviso de `IMPLEMENT/TODO` sin `fix-directives.md`, que usa la fila 3 de AC-2). STORY-188 y STORY-189 dejan `READY-FOR-IMPLEMENT/DONE` como entrada aceptada; esta lo convierte en alias con aviso.
+- La fila con `implement-report.md` y sin `fix-directives.md` corresponde a un rechazo legado de verify o acceptance: antes de STORY-198 (verify) y STORY-190 (acceptance) esos gates no escribían directivas. Por eso la regla usa `implement-report.md` y no `fix-directives.md` (nota «Decisiones tomadas» de la épica).
 - A 2026-11-07, ningún `story.md` ni `epic.md` de este repo tiene `READY-FOR-*` en el frontmatter: el alias protege a los proyectos consumidores.

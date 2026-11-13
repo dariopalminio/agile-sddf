@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-193-aviso-de-estados-legados-en-skill-preflight
 title: "Aviso de estados legados en skill-preflight"
 status: SPECIFY
-substatus: IN-PROGRESS
+substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13
 updated: 2026-11-13
