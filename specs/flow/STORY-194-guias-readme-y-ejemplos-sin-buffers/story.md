@@ -13,7 +13,7 @@ updated: 2026-11-13
 related:
   - EPIC-029-eliminar-estados-buffer
   - STORY-186-adr-de-workflows-sin-estados-buffer
-  - STORY-187-dominio-y-requisitos-sin-buffers
+  - STORY-187-dominio-sin-estados-buffer
 ---
 [[EPIC-029-eliminar-estados-buffer]]
 

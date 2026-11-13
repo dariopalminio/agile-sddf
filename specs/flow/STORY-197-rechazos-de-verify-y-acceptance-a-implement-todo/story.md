@@ -14,7 +14,7 @@ related:
   - EPIC-029-eliminar-estados-buffer
   - STORY-186-adr-de-workflows-sin-estados-buffer
   - STORY-189-rework-de-revision-a-implement-todo
-  - STORY-190-directivas-de-correccion-desde-verify-y-acceptance
+  - STORY-190-directivas-de-correccion-desde-acceptance
   - STORY-191-valor-legado-en-los-gates-de-entrada
 ---
 [[EPIC-029-eliminar-estados-buffer]]

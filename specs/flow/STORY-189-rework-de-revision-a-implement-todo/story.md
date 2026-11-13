@@ -14,7 +14,7 @@ related:
   - EPIC-029-eliminar-estados-buffer
   - STORY-186-adr-de-workflows-sin-estados-buffer
   - STORY-188-la-planificacion-termina-en-plan-done
-  - STORY-190-directivas-de-correccion-desde-verify-y-acceptance
+  - STORY-190-directivas-de-correccion-desde-acceptance
   - STORY-191-valor-legado-en-los-gates-de-entrada
   - STORY-197-rechazos-de-verify-y-acceptance-a-implement-todo
 ---
