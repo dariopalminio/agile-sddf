@@ -144,3 +144,43 @@ npm run test:eval -- story-code-review --only TC-002 --eval-runner opencode --ti
 ✅ Todos los 3 casos pasaron. El skill está listo.
 - npm test: 582/582 ✅
 ---
+
+Eval Report: sddf-constitution
+
+npm run test:eval -- sddf-constitution --only TC-001 --eval-runner opencode --timeout 3600 --report
+
+**Fecha:** 2026-11-12 | **Total:** 1 | ✅ Passed: 1 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-001 | crea-review-md-si-falta | happy-path | 0.9 | ✅ PASS | — |
+
+✅ Todos los 1 casos pasaron. El skill está listo.
+---
+
+npm run test:eval -- sddf-constitution --only TC-003 --eval-runner opencode --timeout 3600 --report
+
+> agile-sddf@5.1.1 test:eval
+> node scripts/run-evals.js sddf-constitution --only TC-003 --eval-runner opencode --timeout 3600 --report
+
+[INFO] Skills a evaluar: sddf-constitution
+[INFO] Plan de selección: 1 caso(s) en 1 skill(s)
+[INFO]   sddf-constitution: 1 caso(s)
+[INFO] Ejecutor de eval: opencode · modelo: predeterminado del runner · concurrencia: 4 · timeout: 3600s
+
+[INFO] 1 caso(s) encontrados en sddf-constitution/evals/evals.json
+[TC-003] ejecutando…
+[TC-003] ✅ PASS (278s)
+
+# Eval Report: sddf-constitution
+
+**Fecha:** 2026-11-13 | **Total:** 1 | ✅ Passed: 1 | ❌ Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-003 | segunda-ejecucion-no-modifica-review-md | edge-case | 0.9 | ✅ PASS | — |
+
+✅ Todos los 1 casos pasaron. El skill está listo.
+---
