@@ -3,7 +3,7 @@ type: epic
 id: EPIC-28
 slug: EPIC-28-calibrar-story-code-review-con-review-md
 title: "Calibrar story-code-review con REVIEW.md"
-status: VALIDATE
+status: SHIP
 substatus: DONE
 parent: null
 created: 2026-11-07
