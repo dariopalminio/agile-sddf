@@ -80,6 +80,7 @@ No es:
 | Configuración del proyecto | `sddf.config.yaml` | Define perfil, stack, comandos de verificación y workers opcionales. |
 | Memoria | `docs/` | Conocimiento: producto, requisitos, dominio, arquitectura, decisiones, guías y templates. |
 | Políticas del proyecto | `docs/policies/` y `docs/guardrails/` | Registran principios técnicos y Definition of Done para los gates del flujo. |
+| Guía de revisión | `REVIEW.md` en la raíz (lo siembra `/sddf-constitution`) | Calibra qué reporta `/story-code-review` y con qué severidad en tu proyecto, sin cambiar el formato del informe ([ADR-0021](docs/adr/ADR-0021-guia-de-revision-review-md.md)). |
 | Work items | `specs/flow/` | Épicas e historias con sus planes y reportes; las historias completadas y canceladas se archivan en `specs/flow/archive/`. |
 ## Empieza en cinco minutos
 
@@ -144,7 +145,7 @@ Cada etapa produce algo que se puede leer y revisar:
 | Especificar | `/story-specify` | `story.md`, evaluación FINVEST y, si corresponde, mejora o división de la historia. |
 | Planificar | `/story-plan` | `design.md`, `tasks.md`, `testcases.md` y `analyze.md`. |
 | Implementar | `/story-implement` | Ciclo TDD configurable RED → GREEN → REFACTOR e `implement-report.md`. |
-| Revisar | `/story-code-review` | `code-review-report.md` o `fix-directives.md` si hay correcciones pendientes. |
+| Revisar | `/story-code-review` | `code-review-report.md` o `fix-directives.md` si hay correcciones pendientes, calibrados por `REVIEW.md` si existe. |
 | Verificar y aceptar | `/story-verify` y `/story-acceptance` | `verify-report.md` y `acceptance-report.md`. |
 | Entregar | `/story-delivery` | `story.md` en `DELIVER/DONE` tras verificar el DoD de entrega. |
 | Completar y archivar | `/story-complete` | `story.md` en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. |
@@ -355,6 +356,7 @@ Para que funcione:
 | Convenciones de artefactos, estados, trazabilidad y gates. | El problema, el dominio, las prioridades y los criterios de aceptación. |
 | Un camino para proyecto, épicas e historias. | El stack, la arquitectura y los comandos reales de prueba. |
 | Políticas versionadas y control WIP por nivel de flujo. | El contenido de `constitution.md` y del DoD por etapa (`dod-story-<etapa>.md`). |
+| Revisión de código multiagente con un formato de informe fijo. | Qué es importante revisar, qué no reportar y el tope de hallazgos menores, en `REVIEW.md`. |
 | Orquestación de TDD configurable por workers. | Qué workers instalar y declarar en `sddf.config.yaml`. |
 
 Genera o actualiza las políticas cuando el equipo las necesite:
@@ -362,6 +364,8 @@ Genera o actualiza las políticas cuando el equipo las necesite:
 ```text
 /sddf-constitution
 ```
+
+Si tu proyecto no tiene `REVIEW.md`, `/sddf-constitution` crea uno en la raíz desde una plantilla con sus cuatro secciones (qué es importante, tope de Minor, qué no reportar y qué verificar siempre) y nunca sobrescribe uno existente. `/story-code-review` lo pasa a sus cuatro revisores y al árbitro; sin él, advierte y revisa con sus criterios genéricos. La precedencia es `constitution.md` > DoD de CODE-REVIEW > `REVIEW.md` > criterios genéricos.
 
 ---
 
@@ -573,7 +577,7 @@ npm run verify:runtimes
 npm run verify:links
 ```
 
-Mantén la documentación, los contratos y los tests alineados con cualquier cambio de comportamiento. Antes de abrir un Pull Request, revisa también la [constitución del proyecto](docs/constitution.md) y el [Definition of Done por etapa](docs/guardrails/README.md#transition-guardrails): cada skill de historia carga solo el `dod-story-<etapa>.md` de su etapa.
+Mantén la documentación, los contratos y los tests alineados con cualquier cambio de comportamiento. Antes de abrir un Pull Request, revisa también la [constitución del proyecto](docs/constitution.md) y el [Definition of Done por etapa](docs/guardrails/README.md#transition-guardrails): cada skill de historia carga solo el `dod-story-<etapa>.md` de su etapa. La guía [REVIEW.md](REVIEW.md) de la raíz fija qué se considera importante al revisar un cambio en este repositorio; es propia del repo y no se publica en el paquete.
 
 ## Seguridad
 
