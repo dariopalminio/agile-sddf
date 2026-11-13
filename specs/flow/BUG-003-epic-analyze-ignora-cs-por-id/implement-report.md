@@ -74,11 +74,42 @@ TC-011 y TC-012, con criterios sin ID, no cambian: comprueban que las épicas si
 
 | # | Comprobación | Estado |
 |---|---|---|
-| 5a | `npm run test:eval -- epic-analyze` (TC-011, TC-012, TC-031 a TC-034) | ⏸ Sin ejecutar |
-| 5b | `npm run test:eval -- epic-refine` (TC-026 y los casos SAL: TC-009, TC-010, TC-012 y TC-013) | ⏸ Sin ejecutar |
+| 5a | `npm run test:eval -- epic-analyze` (TC-011, TC-012, TC-031 a TC-034) | PASS |
+| 5b | `npm run test:eval -- epic-refine` (TC-026 y los casos SAL: TC-009, TC-010, TC-011, TC-012) | PASS |
 | 6 | `/epic-analyze` sobre la próxima épica que cite `CS-<id>`, o sobre una copia temporal de EPIC-28 tomada de `a33621b9`: CS-2, CS-5 y CS-7 deben salir ✓ y el texto de CS-5 debe ser literal | ⏸ Sin ejecutar |
 
 Este es el único trabajo restante. Al completarlo, las evidencias se anotan en `bug.md` y en este reporte.
+
+## Eval Report: epic-analyze
+
+**Fecha:** 2026-11-13 | **Total:** 6 | ✅ Passed: 6 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-011 | contrato-de-salida-cubierto-tabla-sin-hallazgos-sal | happy-path | 1 | ✅ PASS | — |
+| TC-012 | criterio-de-salida-sin-cobertura-sal-01 | error-handling | 1 | ✅ PASS | — |
+| TC-031 | criterio-con-id-cubierto-por-mencion-de-su-id | happy-path | 1 | ✅ PASS | — |
+| TC-032 | id-de-criterio-con-limite-de-palabra | edge-case | 1 | ✅ PASS | — |
+| TC-033 | id-de-criterio-en-fuera-de-alcance-no-cubre | error-handling | 1 | ✅ PASS | — |
+| TC-034 | texto-literal-del-criterio-y-etiqueta-declarada | edge-case | 1 | ✅ PASS | — |
+
+✅ Todos los 6 casos pasaron. 
+
+## Eval Report: epic-refine
+
+**Fecha:** 2026-11-13 | **Total:** 4 | ✅ Passed: 4 | Failed: 0 | **Pass rate:** 100%
+**Ejecutor:** opencode
+
+| ID | Nombre | Tipo | Threshold | Estado | Notas |
+|---|---|---|---|---|---|
+| TC-026 | sal-01-ya-resuelto-por-mencion-del-id | edge-case | 0.95 | ✅ PASS | — |
+| TC-009 | asigna-cobertura-a-la-historia-de-cierre | happy-path | 0.95 | ✅ PASS | — |
+| TC-010 | criterio-sin-evidencia-parcial-al-po | edge-case | 1 | ✅ PASS | — |
+| TC-011 | empate-de-candidatas-al-po | edge-case | 1 | ✅ PASS | — |
+| TC-012 | reejecucion-ya-resuelto-por-e1 | edge-case | 0.95 | ✅ PASS | — |
+
+✅ Todos los 4 casos pasaron. El skill está listo.
 
 ## Evidencias del cambio (árbol de trabajo, sin commit)
 
