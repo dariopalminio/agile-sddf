@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-191-valor-legado-durante-la-ventana-de-transicion
 title: "Valor legado durante la ventana de transición"
 status: SPECIFY
-substatus: TODO
+substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13
 updated: 2026-11-13
@@ -16,7 +16,6 @@ related:
   - STORY-188-la-planificacion-termina-en-plan-done
   - STORY-189-el-rework-vuelve-a-implement-todo
   - STORY-190-directivas-de-correccion-desde-verify-y-acceptance
-  - STORY-193-aviso-de-estados-legados-en-skill-preflight
 ---
 [[EPIC-029-eliminar-estados-buffer]]
 

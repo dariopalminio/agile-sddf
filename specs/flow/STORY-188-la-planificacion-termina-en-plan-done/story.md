@@ -15,7 +15,6 @@ related:
   - STORY-186-adr-de-workflows-sin-estados-buffer
   - STORY-189-el-rework-vuelve-a-implement-todo
   - STORY-191-valor-legado-durante-la-ventana-de-transicion
-  - STORY-196-story-plan-protege-plan-done
 ---
 [[EPIC-029-eliminar-estados-buffer]]
 

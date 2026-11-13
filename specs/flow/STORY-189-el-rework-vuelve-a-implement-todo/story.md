@@ -16,7 +16,6 @@ related:
   - STORY-188-la-planificacion-termina-en-plan-done
   - STORY-190-directivas-de-correccion-desde-verify-y-acceptance
   - STORY-191-valor-legado-durante-la-ventana-de-transicion
-  - STORY-197-rechazos-de-verify-y-acceptance-a-implement-todo
 ---
 [[EPIC-029-eliminar-estados-buffer]]
 

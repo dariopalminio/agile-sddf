@@ -6,7 +6,7 @@ kind: feat
 slug: STORY-190-directivas-de-correccion-desde-verify-y-acceptance
 title: "Directivas de corrección desde verify y acceptance"
 status: SPECIFY
-substatus: TODO
+substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13
 updated: 2026-11-13
@@ -15,8 +15,6 @@ related:
   - STORY-186-adr-de-workflows-sin-estados-buffer
   - STORY-189-el-rework-vuelve-a-implement-todo
   - STORY-191-valor-legado-durante-la-ventana-de-transicion
-  - STORY-198-directivas-de-correccion-desde-verify
-  - STORY-199-origen-del-rework-en-los-ejecutores
 ---
 [[EPIC-029-eliminar-estados-buffer]]
 

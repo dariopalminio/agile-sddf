@@ -14,7 +14,6 @@ related:
   - EPIC-029-eliminar-estados-buffer
   - STORY-186-adr-de-workflows-sin-estados-buffer
   - STORY-192-epica-sin-ready-for-dev
-  - STORY-195-requisitos-sin-estados-buffer
 ---
 [[EPIC-029-eliminar-estados-buffer]]
 
@@ -71,7 +70,7 @@ Entonces encuentra la consulta "primero IMPLEMENT/TODO, después PLAN/DONE"
 
 ## Fuera de alcance (Non-Goals)
 
-- `docs/architecture/sdcl-sddf.md`, el diagrama `flowchart-skill-story-flow-relationships.mermaid`, las guías de `docs/guides/`, `README.md` y `docs/product/objectives.md`: los cubre STORY-194.
+- `docs/architecture/sdcl-sddf.md`, el diagrama `flowchart-skill-story-flow-relationships.mermaid`, las guías de `docs/guides/`, `README.md` y `docs/product/objectives.md`: los cubre STORY-193.
 - Cambiar el comportamiento de los skills: STORY-188 a STORY-192.
 - Editar registros históricos (ADR-0003, ADR-0006, ADR-0008, `CHANGELOG.md`, las propuestas fechadas de `docs/product/roadmap.md`, `specs/flow/archive/`).
 
