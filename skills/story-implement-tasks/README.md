@@ -31,7 +31,7 @@ El skill requiere que los tres artefactos de planning existan **y** que la histo
 | `design.md` presente | Componentes, interfaces, decisiones técnicas |
 | `tasks.md` presente | Tareas atómicas con IDs T001, T002… |
 | `status: PLAN` + `substatus: DONE` | Ejecución inicial: planificación aprobada por `story-analyze` |
-| `status: IMPLEMENT` + `substatus: TODO` | Rework devuelto por `story-code-review`, `story-verify` o `story-acceptance` (las correcciones las dispara solo `fix-directives.md`; sin tareas pendientes no sale por el gate anticipado) |
+| `status: IMPLEMENT` + `substatus: TODO` | Rework devuelto por `story-code-review`, `story-verify` o `story-acceptance` (las correcciones las dispara solo `fix-directives.md`, que anuncia el gate de origen con `Origen:` desde su `based-on`; sin él, el skill avisa con `[WARN]` y continúa sin correcciones; sin tareas pendientes no sale por el gate anticipado) |
 | `status: IMPLEMENT` + `substatus: IN-PROGRESS` | Reanudación tras DoD-ERRORs o ciclo interrumpido |
 | `status: READY-FOR-IMPLEMENT` + `substatus: DONE` | Valor anterior a 6.0.0: ejecución inicial |
 

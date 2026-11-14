@@ -1,7 +1,7 @@
 {
   "skill": "story-implement",
-  "version": "1.5.0",
-  "description": "Casos de prueba para el skill story-implement: gate de estado (Paso 0c: PLAN/DONE, IMPLEMENT/TODO como entrada del rework devuelto por story-code-review, story-verify o story-acceptance, IMPLEMENT/IN-PROGRESS o READY-FOR-IMPLEMENT/DONE como valor anterior a 6.0.0, escritura de IMPLEMENT/IN-PROGRESS al arrancar), modo rework por presencia de fix-directives.md (ronda, lista blanca, campos rework_round/fix_directives_path/whitelist en los bundles, sección \"Ciclo de corrección\" del reporte), reglas de robustez del rework (gate de evidencia en RED: 0 tests + requirements-coverage ⇒ error, otras dimensiones ⇒ advertencia, rework_evidence en red-phase-status.json; barrera de lista blanca por fase: confirmación (s/n) en interactivo, [WARN] y registro en --auto, entradas \"solo lectura\" excluidas, subsección \"Archivos fuera de lista blanca\" del reporte), orquestación del ciclo TDD RED → GREEN → REFACTOR, DoD IMPLEMENT y sugerencia final de /story-code-review para historias SDDF; paso 11d (STORY-103): marcado F2 → F3 solo en la sección de clave historias leída del template, con coincidencia exacta del token STORY-NNN",
+  "version": "1.6.0",
+  "description": "Casos de prueba para el skill story-implement: gate de estado (Paso 0c: PLAN/DONE, IMPLEMENT/TODO como entrada del rework devuelto por story-code-review, story-verify o story-acceptance, IMPLEMENT/IN-PROGRESS o READY-FOR-IMPLEMENT/DONE como valor anterior a 6.0.0, escritura de IMPLEMENT/IN-PROGRESS al arrancar), modo rework por presencia de fix-directives.md (ronda, lista blanca, campos rework_round/fix_directives_path/whitelist en los bundles, sección \"Ciclo de corrección\" del reporte), reglas de robustez del rework (gate de evidencia en RED: 0 tests + requirements-coverage ⇒ error, otras dimensiones ⇒ advertencia, rework_evidence en red-phase-status.json; barrera de lista blanca por fase: confirmación (s/n) en interactivo, [WARN] y registro en --auto, entradas \"solo lectura\" excluidas, subsección \"Archivos fuera de lista blanca\" del reporte), orquestación del ciclo TDD RED → GREEN → REFACTOR, DoD IMPLEMENT y sugerencia final de /story-code-review para historias SDDF; paso 11d (STORY-103): marcado F2 → F3 solo en la sección de clave historias leída del template, con coincidencia exacta del token STORY-NNN; STORY-190: anuncio del gate de origen desde based-on de fix-directives.md (Origen: <gate> (<reporte>), aviso si based-on no se reconoce), lista blanca presente sin vinetas sin [WARN] y aviso [WARN] ante IMPLEMENT/TODO sin fix-directives.md sin activar el modo rework",
   "cases": [
     {
       "id": "TC-001",
@@ -553,7 +553,7 @@
       "id": "TC-010",
       "name": "rework-desde-implement-todo-con-fix-directives-anuncia-ronda-y-reporta",
       "type": "happy-path",
-      "description": "EV-001 / AC-1: story.md en IMPLEMENT/TODO con fix-directives.md (round: 2) y sin tasks.md → el bloque de inicio muestra 'Estado: IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS' (AC-1 de STORY-189), el Paso 0c pasa story.md a IMPLEMENT/IN-PROGRESS antes de la Fase RED, anuncia '🔁 Modo rework (ronda 2)', los bundles RED/GREEN/REFACTOR llevan rework_round: 2, fix_directives_path y whitelist no nulos, implement-report.md contiene '## Ciclo de corrección — ronda 2', story.md termina en IMPLEMENT/DONE y el resumen final sugiere '→ Ejecuta /story-code-review STORY-TEST'. fix-directives.md no se modifica (escritor único: story-code-review)",
+      "description": "EV-001 / AC-1: story.md en IMPLEMENT/TODO con fix-directives.md (round: 2) y sin tasks.md → el bloque de inicio muestra 'Estado: IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS' (AC-1 de STORY-189), el Paso 0c pasa story.md a IMPLEMENT/IN-PROGRESS antes de la Fase RED, anuncia '🔁 Modo rework (ronda 2)', los bundles RED/GREEN/REFACTOR llevan rework_round: 2, fix_directives_path y whitelist no nulos, implement-report.md contiene '## Ciclo de corrección — ronda 2', story.md termina en IMPLEMENT/DONE y el resumen final sugiere '→ Ejecuta /story-code-review STORY-TEST'. fix-directives.md no se modifica (lo escriben los gates, ADR-0022)",
       "input": {
         "story_id": "STORY-TEST",
         "invocation_flags": [
@@ -1145,7 +1145,7 @@
       "id": "TC-016",
       "name": "fix-directives-sin-round-usa-ronda-1",
       "type": "happy-path",
-      "description": "EV-007 / NFR-3, AC-6, D-2: story.md en IMPLEMENT/TODO con un fix-directives.md legado (forma de STORY-090: frontmatter sin 'round', lista blanca con una entrada anotada '**solo lectura**' y una sublista introducida por el párrafo 'Destino de las acciones requeridas') → entra en modo rework anunciando '🔁 Modo rework (ronda 1)' y el conteo 'archivo(s) en lista blanca'; fix-directives.md no se modifica (el skill nunca escribe 'round'; escritor único story-code-review)",
+      "description": "EV-007 / NFR-3, AC-6, D-2: story.md en IMPLEMENT/TODO con un fix-directives.md legado (forma de STORY-090: frontmatter sin 'round', lista blanca con una entrada anotada '**solo lectura**' y una sublista introducida por el párrafo 'Destino de las acciones requeridas') → entra en modo rework anunciando '🔁 Modo rework (ronda 1)' y el conteo 'archivo(s) en lista blanca'; fix-directives.md no se modifica (el skill nunca escribe 'round'; lo escriben los gates, ADR-0022)",
       "input": {
         "story_id": "STORY-TEST",
         "invocation_flags": [
@@ -4558,6 +4558,427 @@
           "red_confirmed",
           "green_confirmed",
           "refactor_confirmed"
+        ],
+        "files_unchanged": [
+          "fix-directives.md"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-048",
+      "name": "rework-desde-verify-anuncia-origen",
+      "type": "happy-path",
+      "description": "STORY-190 (AC-1 filas 1-2, ADR-0022): story.md en IMPLEMENT/TODO con fix-directives.md escrito por story-verify (based-on: verify-report.md, round: 2) con filas verify-defect. El bloque de inicio anuncia, tras la linea Modo, 'Origen: /story-verify (verify-report.md) — tras /story-code-review, vuelve a pasar /story-verify'. La Fase RED modifica el test existente que fallaba (files_modified), que cuenta como evidencia: verify-defect no es requirements-coverage, asi que no se exige un test nuevo ni hay error de evidencia. fix-directives.md no se modifica.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "IMPLEMENT",
+          "substatus": "TODO"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "artifacts_absent": [
+          "tasks.md"
+        ],
+        "fix_directives": {
+          "based_on": "verify-report.md",
+          "round": 2,
+          "max_severity": "HIGH",
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "src/feat-test.ts:42",
+              "dimension": "verify-defect",
+              "severidad": "HIGH",
+              "accion_requerida": "Aplicar el TTL de 30 minutos al crear la sesion"
+            },
+            {
+              "#": 2,
+              "archivo_linea": "docs/guardrails/dod-story-verify.md:15",
+              "dimension": "verify-defect",
+              "severidad": "HIGH",
+              "accion_requerida": "Haz pasar: tests/unit/feat-test.spec.ts"
+            }
+          ],
+          "whitelist_entries": [
+            {
+              "path": "src/feat-test.ts",
+              "note": "hallazgo #1"
+            }
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [],
+          "files_modified": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [],
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 2)",
+          "Origen: /story-verify (verify-report.md)",
+          "vuelve a pasar /story-verify",
+          "Ciclo de corrección — ronda 2",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "not_contains": [
+          "Rework sin evidencia",
+          "Origen: desconocido",
+          "sin based-on reconocible",
+          "no está en un estado válido"
+        ],
+        "files_unchanged": [
+          "fix-directives.md"
+        ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-049",
+      "name": "rework-desde-acceptance-exige-test",
+      "type": "edge-case",
+      "description": "STORY-190 (AC-1 fila 3, CNF-4, ADR-0022): story.md en IMPLEMENT/TODO con fix-directives.md escrito por story-acceptance (based-on: acceptance-report.md, round: 1): una fila requirements-coverage que apunta a story.md:34 y la seccion de lista blanca presente con la linea sin vineta 'Vacía: un rechazo de aceptación…'. La lista blanca vacia no es un error: W = 0 sin [WARN] de lista blanca. El bloque de inicio anuncia 'Origen: /story-acceptance (acceptance-report.md)'. La Fase RED no genera ni modifica tests, asi que el Paso 6b se detiene con el error de evidencia por requirements-coverage (#1).",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "IMPLEMENT",
+          "substatus": "TODO"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "artifacts_absent": [
+          "tasks.md"
+        ],
+        "fix_directives": {
+          "based_on": "acceptance-report.md",
+          "round": 1,
+          "max_severity": "HIGH",
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "story.md:34",
+              "dimension": "requirements-coverage",
+              "severidad": "HIGH",
+              "accion_requerida": "Implementa el comportamiento del criterio con su test; story.md es la referencia, no un destino"
+            }
+          ],
+          "whitelist_entries": [],
+          "whitelist_section_present": true,
+          "whitelist_text": "Vacía: un rechazo de aceptación no tiene archivo de origen. El ejecutor confirma (interactivo) o registra (--auto) cada archivo existente que modifique."
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [],
+          "files_modified": []
+        }
+      },
+      "expected": {
+        "contains": [
+          "🔁 Modo rework (ronda 1)",
+          "0 archivo(s) en lista blanca",
+          "Origen: /story-acceptance (acceptance-report.md)",
+          "vuelve a pasar /story-acceptance",
+          "❌ Rework sin evidencia",
+          "requirements-coverage (#1)"
+        ],
+        "not_contains": [
+          "[WARN] fix-directives.md sin lista blanca",
+          "IMPLEMENT/DONE",
+          "Ejecuta /story-code-review"
+        ],
+        "files_unchanged": [
+          "fix-directives.md"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-050",
+      "name": "implement-todo-sin-fix-directives-avisa",
+      "type": "edge-case",
+      "description": "STORY-190 (AC-3, CNF-5): story.md en IMPLEMENT/TODO sin fix-directives.md y con un verify-report.md en NEEDS-CHANGES. El Paso 0c.3 emite '[WARN] story.md está en IMPLEMENT/TODO sin fix-directives.md — se continúa sin modo rework (la única señal de rework es fix-directives.md)' y ejecuta el ciclo TDD completo, sin modo rework, sin linea Origen y sin leer verify-report.md ni acceptance-report.md.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "IMPLEMENT",
+          "substatus": "TODO"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "verify-report.md"
+        ],
+        "artifacts_absent": [
+          "fix-directives.md"
+        ],
+        "verify_report": {
+          "verdict": "NEEDS-CHANGES",
+          "criteria_failed": [
+            "Todos los tests del proyecto pasan"
+          ]
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [
+            "src/feat-test.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "[WARN] story.md está en IMPLEMENT/TODO sin fix-directives.md",
+          "ciclo TDD completo",
+          "rework_round: null",
+          "IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "Modo rework",
+          "Origen:",
+          "Ciclo de corrección",
+          "NEEDS-CHANGES"
+        ],
+        "files_consulted_for_rework_detection": [
+          "fix-directives.md"
+        ],
+        "files_not_consulted_for_rework_detection": [
+          "verify-report.md",
+          "acceptance-report.md"
+        ]
+      },
+      "threshold": 1
+    },
+    {
+      "id": "TC-051",
+      "name": "based-on-desconocido-avisa-y-continua",
+      "type": "edge-case",
+      "description": "STORY-190 (CNF-5): story.md en IMPLEMENT/TODO con fix-directives.md (round: 2) cuyo based-on es otro.md, que no es ninguno de los tres reportes de gate. El skill emite '[WARN] fix-directives.md sin based-on reconocible — origen del rework desconocido', muestra 'Origen: desconocido' y continua en modo rework: based-on no decide el modo.",
+      "input": {
+        "story_id": "STORY-TEST",
+        "invocation_flags": [
+          "--auto"
+        ],
+        "exec_mode": "auto",
+        "story_status": {
+          "status": "IMPLEMENT",
+          "substatus": "TODO"
+        },
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "testcases.md",
+          "fix-directives.md"
+        ],
+        "artifacts_absent": [
+          "tasks.md"
+        ],
+        "fix_directives": {
+          "round": 2,
+          "max_severity": "MEDIUM",
+          "findings": [
+            {
+              "#": 1,
+              "archivo_linea": "src/feat-test.ts:42",
+              "dimension": "requirements-coverage",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Cubrir el AC-2 con un test y su implementación en src/feat-test.ts"
+            },
+            {
+              "#": 2,
+              "archivo_linea": "tests/unit/feat-test.spec.ts:10",
+              "dimension": "code-quality",
+              "severidad": "MEDIUM",
+              "accion_requerida": "Eliminar el test duplicado y renombrar el describe"
+            }
+          ],
+          "whitelist_entries": [
+            {
+              "path": "src/feat-test.ts",
+              "note": "hallazgo #1"
+            },
+            {
+              "path": "tests/unit/feat-test.spec.ts",
+              "note": "hallazgo #2"
+            }
+          ],
+          "based_on": "otro.md"
+        },
+        "sddf_config": {
+          "IMPLEMENT": {
+            "test_generators": [
+              {
+                "type": "eval",
+                "skill": "skill-test-evals",
+                "required": true
+              }
+            ],
+            "code_generators": [
+              {
+                "layer": "monolithic",
+                "skill": "skill-master",
+                "required": true
+              }
+            ]
+          }
+        },
+        "skills_present": [
+          "skill-test-evals",
+          "skill-master"
+        ],
+        "test_generator_result": {
+          "status": "ok",
+          "files_generated": [
+            "tests/unit/feat-test-rework.spec.ts"
+          ]
+        },
+        "code_generator_green_result": {
+          "status": "ok",
+          "files_generated": [],
+          "files_modified": [
+            "src/feat-test.ts",
+            "tests/unit/feat-test.spec.ts"
+          ]
+        },
+        "code_generator_refactor_result": {
+          "status": "ok",
+          "files_modified": [
+            "src/feat-test.ts"
+          ]
+        },
+        "tests_pass_after_green": true,
+        "tests_pass_after_refactor": true
+      },
+      "expected": {
+        "contains": [
+          "sin based-on reconocible",
+          "Origen: desconocido",
+          "🔁 Modo rework (ronda 2)",
+          "Ciclo de corrección — ronda 2",
+          "IMPLEMENT/DONE"
+        ],
+        "not_contains": [
+          "Origen: /story-",
+          "vuelve a pasar",
+          "no está en un estado válido"
         ],
         "files_unchanged": [
           "fix-directives.md"

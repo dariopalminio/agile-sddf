@@ -24,7 +24,7 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
 **Qué hace este skill:**
 - Lee los tres artefactos de planning como entrada
 - Verifica precondiciones antes de implementar (fail-fast ante artefactos faltantes)
-- Aplica las correcciones de `fix-directives.md` cuando el archivo existe (rework tras `story-code-review`, pre-paso 2f), sin depender de una tarea en `tasks.md`
+- Aplica las correcciones de `fix-directives.md` cuando el archivo existe (rework tras `story-code-review`, `story-verify` o `story-acceptance`, pre-paso 2f), sin depender de una tarea en `tasks.md`, y anuncia el gate de origen desde su `based-on`
 - Implementa cada tarea pendiente en orden TDD: test fallido → código mínimo → refactor si aplica
 - Detecta tareas con componentes no definidos y las marca como bloqueadas sin detener el pipeline
 - Actualiza `tasks.md` en tiempo real al completar o bloquear cada tarea
@@ -68,7 +68,7 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 | `story.md` | `specs/flow/<STORY-NNN>-<slug>/story.md` | ✓ obligatorio |
 | `design.md` | `specs/flow/<STORY-NNN>-<slug>/design.md` | ✓ obligatorio |
 | `tasks.md` | `specs/flow/<STORY-NNN>-<slug>/tasks.md` | ✓ obligatorio |
-| `fix-directives.md` | `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review` (veredicto `NEEDS-CHANGES`); su presencia dispara el pre-paso 2f; el campo `round` lo escribe `story-code-review` (este skill solo lo lee) |
+| `fix-directives.md` | `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review`, `story-verify` o `story-acceptance` (veredicto `NEEDS-CHANGES`, ADR-0022); su presencia dispara el pre-paso 2f; `round` y `based-on` los escribe el gate (este skill solo los lee) |
 | DoD de la etapa `implement` | `docs/guardrails/dod-story-implement.md` (ver `## DoD aplicable`) | opcional |
 
 ---
@@ -153,7 +153,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 - **Actualización incremental de tasks.md:** marcar cada tarea como `[x]` o `[~]` inmediatamente al completarla o bloquearla, nunca en batch al final.
 - **No bloquear el pipeline por tareas con componentes no definidos:** marcar como `[~]` y continuar con la siguiente tarea.
 - **Gate de tareas completadas:** si `N_pendientes = 0` y `N_completadas > 0` y no existe `fix-directives.md` y la entrada no es `IMPLEMENT/TODO`, detener la ejecución sin modificar ningún archivo. Si `fix-directives.md` existe, el flujo continúa para aplicar las correcciones (pre-paso 2f). Si la entrada es `IMPLEMENT/TODO`, el flujo continúa hasta el Paso 4 para devolver la historia a `IMPLEMENT/DONE`.
-- **Correcciones por presencia de `fix-directives.md`:** el disparador es la existencia del archivo, no una tarea en `tasks.md`. Este skill nunca escribe en `fix-directives.md` (escritor único: `story-code-review`).
+- **Correcciones por presencia de `fix-directives.md`:** el disparador es la existencia del archivo, no una tarea en `tasks.md`. Este skill nunca escribe en `fix-directives.md` (escritores: `story-code-review`, `story-verify` y `story-acceptance`, ADR-0022).
 - **No reimplementar artefactos de planning:** si los artefactos ya existen y son válidos, no sobrescribirlos.
 - **Transición de estado bloqueada por DoD-ERRORs:** si hay criterios DoD con `❌`, el frontmatter permanece en `IMPLEMENT/IN-PROGRESS`.
 
@@ -346,6 +346,14 @@ Calcular y registrar internamente:
 
 **Si la entrada es `IMPLEMENT/TODO`** (`$ENTRADA_STATUS = IMPLEMENT` y `$ENTRADA_SUBSTATUS = TODO`) el gate tampoco aplica, aunque no haya tareas pendientes ni `fix-directives.md`: un gate posterior devolvió la historia y debe volver a `IMPLEMENT/DONE` para pasar de nuevo por `/story-code-review`. El flujo es el del rework sin tareas pendientes: 2d → 2e (`IMPLEMENT/IN-PROGRESS`) → 2f solo si `fix_directives_existe = true` → Paso 3 solo si `N_pendientes > 0` → Paso 4. Sin `fix-directives.md`, `$FIX_DIRECTIVES_APPLIED = false`: el resumen y `implement-report.md` no muestran `Correcciones de fix-directives.md` ni ronda. La entrada `READY-FOR-IMPLEMENT/DONE` (valor anterior a 6.0.0) conserva la salida anticipada.
 
+**Aviso de `IMPLEMENT/TODO` sin directivas:** si `fix_directives_existe = false` y la entrada es `IMPLEMENT/TODO` (`$ENTRADA_STATUS = IMPLEMENT` y `$ENTRADA_SUBSTATUS = TODO`), emitir:
+
+```
+[WARN] story.md está en IMPLEMENT/TODO sin fix-directives.md — se continúa sin modo rework (la única señal de rework es fix-directives.md)
+```
+
+El aviso no detiene la ejecución ni cambia el camino descrito arriba, y no lee `verify-report.md` ni `acceptance-report.md` para deducir el rework.
+
 **Si `modo = reanudación`** (y `N_pendientes > 0`), mostrar el siguiente resumen antes de la primera tarea:
 
 ```
@@ -396,19 +404,26 @@ Esta verificación debe ocurrir antes de procesar cualquier tarea del Paso 3.
 
 **Condición:** ejecutar este sub-paso **una sola vez** y únicamente si `fix_directives_existe = true` (calculado en 2c). Si el archivo no existe, omitir el sub-paso sin mensaje y registrar `$FIX_DIRECTIVES_APPLIED = false`.
 
-**2f.1 — Leer la ronda:**
-Leer el campo `round` del frontmatter de `$STORY_DIR/fix-directives.md`. Si el campo no existe o no es un entero ≥ 1, usar `1` como valor por defecto (archivo legado). Registrar como `$FIX_ROUND`. **NUNCA escribir ni completar `round` en `fix-directives.md`**: su escritor único es `story-code-review`; este skill solo lo lee.
+**2f.1 — Leer la ronda y el origen:**
+Leer el campo `round` del frontmatter de `$STORY_DIR/fix-directives.md`. Si el campo no existe o no es un entero ≥ 1, usar `1` como valor por defecto (archivo legado). Registrar como `$FIX_ROUND`. **NUNCA escribir ni completar `round` en `fix-directives.md`**: lo escriben los gates (`story-code-review`, `story-verify`, `story-acceptance`, ADR-0022); este skill solo lo lee.
+
+Leer el campo `based-on` del frontmatter y registrar `$REWORK_ORIGIN`: `code-review-report.md` ⇒ `/story-code-review`; `verify-report.md` ⇒ `/story-verify`; `acceptance-report.md` ⇒ `/story-acceptance`. Cualquier otro valor o campo ausente ⇒ `$REWORK_ORIGIN = null` y emitir `[WARN] fix-directives.md sin based-on reconocible — origen del rework desconocido`; se continúa. El origen solo produce la línea `Origen:`: no cambia la condición de rework (`fix_directives_existe`) ni cómo se aplican las filas.
 
 Mostrar:
 ```
 🔁 Correcciones de fix-directives.md (ronda <$FIX_ROUND>)
+   Origen: <gate> (<based-on>)
 ```
+- Con `$REWORK_ORIGIN = /story-code-review`: `   Origen: /story-code-review (code-review-report.md)`.
+- Con `/story-verify` o `/story-acceptance`: `   Origen: <gate> (<based-on>) — tras /story-code-review, vuelve a pasar <gate>` (p. ej. `   Origen: /story-acceptance (acceptance-report.md) — tras /story-code-review, vuelve a pasar /story-acceptance`).
+- Con `$REWORK_ORIGIN = null`: `   Origen: desconocido`.
 
 **2f.2 — Leer y aplicar correcciones:**
-Leer `fix-directives.md` y extraer la tabla "Instrucciones de corrección" (columnas: `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`) y la sección "Lista blanca de archivos permitidos para modificar". Si la tabla no es legible o falta la lista blanca, aplicar la degradación descrita en "Manejo de errores" (nunca detener la ejecución por ello).
+Leer `fix-directives.md` y extraer la tabla "Instrucciones de corrección" (columnas: `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`) y la sección "Lista blanca de archivos permitidos para modificar". Si la tabla no es legible o falta la sección de lista blanca, aplicar la degradación descrita en "Manejo de errores" (nunca detener la ejecución por ello). Una sección de lista blanca **presente sin viñetas** (p. ej. `Vacía: un rechazo de aceptación no tiene archivo de origen…`) no es un error ni emite aviso: no hay alcance declarado, y cada archivo existente que se modifique se registra en `$FIX_CORRECTED`.
 
 Para cada fila de la tabla:
 1. Extraer `archivo` y `línea` de la columna `Archivo:Línea` (texto antes y después del último `:`)
+   - **Fila sin archivo destino:** si `archivo` es `story.md` (o la ruta de `story.md` de la historia) o la columna es `—`, la fila no designa un archivo a editar: `story.md` es la referencia del criterio y **nunca se modifica**. No se salta como «archivo no encontrado»: aplicar la `Acción requerida` en el código donde la ubica `design.md` (componentes e interfaces del criterio) y registrar en `$FIX_CORRECTED` el archivo realmente modificado; continuar con la siguiente fila
 2. Verificar que el archivo existe en el repositorio
    - Si el archivo no existe: mostrar `⚠️ archivo no encontrado: <ruta>`, registrarlo en la lista interna `$FIX_SKIPPED` y continuar con la siguiente corrección **sin abortar las correcciones restantes**
 3. Aplicar la corrección indicada en `Acción requerida` en el archivo y línea especificados, limitando los cambios a la lista blanca
@@ -777,7 +792,11 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 | Sin tareas pendientes y sin `fix-directives.md` (entrada distinta de `IMPLEMENT/TODO`) | `ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.` | Terminar sin modificar ningún archivo (gate 2c). Con entrada `IMPLEMENT/TODO` el gate no aplica: 2e → Paso 4 sin anunciar correcciones |
 | `fix-directives.md` presente con `round` ausente o no entero ≥ 1 | — (sin advertencia: archivo legado) | `$FIX_ROUND = 1` y continuar; nunca escribir `round` |
 | `fix-directives.md` presente sin tabla "Instrucciones de corrección" legible | `[WARN] fix-directives.md sin tabla de correcciones legible — correcciones omitidas` | Advertir, `$FIX_DIRECTIVES_APPLIED = false` y continuar con el bucle de tareas |
-| `fix-directives.md` presente sin "Lista blanca de archivos permitidos para modificar" | `[WARN] fix-directives.md sin lista blanca — se aplican las correcciones solo en los archivos de la columna Archivo:Línea` | Advertir y continuar aplicando las correcciones |
+| `fix-directives.md` con la sección "Lista blanca de archivos permitidos para modificar" presente sin viñetas (p. ej. rechazo de `story-acceptance`) | — (sin aviso: una lista vacía no es un error) | Aplicar las correcciones y registrar en `$FIX_CORRECTED` cada archivo existente modificado |
+| Fila con `Archivo:Línea` en `story.md` o `—` (pre-paso 2f) | — | No es «archivo no encontrado»: aplicar la `Acción requerida` donde la ubica `design.md`; `story.md` nunca se modifica |
+| `fix-directives.md` con `based-on` ausente o no reconocido (2f.1) | `[WARN] fix-directives.md sin based-on reconocible — origen del rework desconocido` | Continuar con `Origen: desconocido`; la aplicación de las correcciones no cambia |
+| Entrada `IMPLEMENT/TODO` sin `fix-directives.md` (2c) | `[WARN] story.md está en IMPLEMENT/TODO sin fix-directives.md — se continúa sin modo rework (la única señal de rework es fix-directives.md)` | Continuar por el camino de la entrada `IMPLEMENT/TODO` (2c); no se leen `verify-report.md` ni `acceptance-report.md` |
+| `fix-directives.md` presente sin la sección "Lista blanca de archivos permitidos para modificar" | `[WARN] fix-directives.md sin lista blanca — se aplican las correcciones solo en los archivos de la columna Archivo:Línea` | Advertir y continuar aplicando las correcciones |
 | Hallazgo con archivo inexistente (pre-paso 2f) | `⚠️ archivo no encontrado: <ruta>` | Registrar en `$FIX_SKIPPED` y continuar con el siguiente hallazgo |
 | Tarea legada `Implementar fix-directives.md` sin `fix-directives.md` en `$STORY_DIR` | `[T] ⚠️ bloqueada — fix-directives.md no encontrado en <ruta>` | Marcar `[~]` en `tasks.md` y continuar sin error fatal |
 | Tarea con componente no definido en `design.md` | `[T] ⚠️ bloqueada — componente "<nombre>" no definido en design.md` | Marcar `[~]` y continuar |

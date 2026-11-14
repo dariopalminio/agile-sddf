@@ -29,7 +29,7 @@ Leyenda de artefactos de entrada:
 story.md            → What: requisitos, criterios de aceptación, comportamiento esperado
 design.md           → How: arquitectura, componentes, interfaces, decisiones técnicas
 testcases.md        → test plan detallado, casos de prueba explícitos (fuente canónica de la Fase RED)
-fix-directives.md   → Rework: hallazgos, lista blanca y ronda (solo si existe; escritor: story-code-review)
+fix-directives.md   → Rework: hallazgos, lista blanca, ronda y gate de origen (solo si existe; escritores: story-code-review, story-verify, story-acceptance)
 tasks.md            → (optativo) artefacto del desarrollador; este skill no lo lee
 ```
 
@@ -41,7 +41,7 @@ tasks.md            → (optativo) artefacto del desarrollador; este skill no lo
 | `story.md` en `PLAN/DONE`, `IMPLEMENT/TODO`, `IMPLEMENT/IN-PROGRESS` o `READY-FOR-IMPLEMENT/DONE` (valor anterior a 6.0.0) | Gate de estado (Paso 0c.2). Cualquier otro estado detiene la ejecución con `❌ La historia {story_id} no está en un estado válido para implementar`, sin modificar archivos |
 | `design.md` presente | Arquitectura, componentes e interfaces (fallback si falta `testcases.md`) |
 | `testcases.md` presente *(recomendado)* | Fuente canónica de casos de prueba por tipo |
-| `fix-directives.md` *(opcional)* | Señal de rework escrita por `story-code-review`; su presencia activa el modo rework (ronda = `round` del frontmatter, 1 si falta). Este skill solo lo lee |
+| `fix-directives.md` *(opcional)* | Señal de rework escrita por `story-code-review`, `story-verify` o `story-acceptance` con `NEEDS-CHANGES` (ADR-0022); su presencia activa el modo rework (ronda = `round` del frontmatter, 1 si falta; gate de origen = `based-on`). Este skill solo lo lee |
 | `sddf.config.yaml` presente | Declara `implement.test_generators` y `implement.code_generators` |
 | Skills declarados en `sddf.config.yaml` existen en `$CLI_ROOT/skills/` | Verificación fail-fast en Paso 2 |
 
@@ -51,7 +51,9 @@ Si `sddf.config.yaml` no existe o sus secciones están vacías, la ejecución se
 ## Modo rework
 
 - **Detección:** `$REWORK_MODE = true` si y solo si existe `$STORY_DIR/fix-directives.md` (Paso 0c.3). Es la única señal: el estado de `story.md` no decide el modo, y `verify-report.md` / `acceptance-report.md` no se consultan.
-- **Ronda:** `round` del frontmatter de `fix-directives.md`; si falta o no es un entero ≥ 1, se asume `1` (nunca se escribe de vuelta). El arranque anuncia `🔁 Modo rework (ronda N) — H hallazgo(s) bloqueante(s), W archivo(s) en lista blanca`.
+- **Ronda:** `round` del frontmatter de `fix-directives.md`; si falta o no es un entero ≥ 1, se asume `1` (nunca se escribe de vuelta). El arranque anuncia `🔁 Modo rework (ronda N) — H hallazgo(s) bloqueante(s), W archivo(s) en lista blanca` y, debajo, `Origen: <gate> (<based-on>)` (con `— tras /story-code-review, vuelve a pasar <gate>` si el rechazo vino de `/story-verify` o `/story-acceptance`; `Origen: desconocido` con un `based-on` no reconocido).
+- **Lista blanca vacía:** una sección de lista blanca sin viñetas (rechazo de aceptación) no es un error ni emite aviso; `story.md` es la referencia del criterio, nunca un destino.
+- **`IMPLEMENT/TODO` sin `fix-directives.md`:** `[WARN] story.md está en IMPLEMENT/TODO sin fix-directives.md — se continúa sin modo rework`; el ciclo TDD se ejecuta completo y los reportes de los gates no se leen.
 - **Bundles:** los subagentes RED, GREEN y REFACTOR reciben siempre `rework_round`, `fix_directives_path` y `whitelist` (`[{path, note}]`); fuera de rework los tres van como `null` (nunca ausentes). Solo en rework el bloque de contexto añade el párrafo "Instrucción de rework". `testcases.md` sigue siendo la fuente canónica de la Fase RED.
 - **Salida:** `implement-report.md` añade la sección `## Ciclo de corrección — ronda N` (solo en rework); `red-phase-status.json` y `cycle-status.json` llevan `rework_round`; el pie del resumen final es `→ Ejecuta /story-code-review {story_id}` cuando `story.md` queda en `IMPLEMENT/DONE`.
 - **Gate de evidencia en RED (Paso 6b):** si la Fase RED no generó ni modificó ningún archivo de prueba, el skill lee solo la columna `Dimensión` de la tabla "Instrucciones de corrección": con algún hallazgo `requirements-coverage` (o tabla ilegible) detiene con `❌` antes de GREEN; con otras dimensiones advierte con `⚠️` y continúa. El resultado queda en `red-phase-status.json.rework_evidence` (`ok`/`warning`/`error`; `n/a` fuera de rework).

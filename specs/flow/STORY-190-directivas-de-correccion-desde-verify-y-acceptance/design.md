@@ -261,3 +261,10 @@ Ninguna bloqueante. CR-001 queda para que el PO lo confirme antes de implementar
 - **Descripción:** ADR-0022 (diseño de STORY-186, D-04) fija para `story-acceptance` la dimensión `requirements-coverage` y `Archivo:Línea` = `story.md:<línea del AC>`. No dice nada de los criterios del DoD ACCEPTANCE, que `story-acceptance` también valida y puede rechazar. Este diseño les aplica la misma dimensión (exige un test) y les asigna `<ruta del DoD>:<línea>`.
 - **Documento afectado:** design.md (D-04); ADR-0022.
 - **Acción requerida:** ninguna para implementar. Si el PO prefiere que un criterio DoD rechazado no exija test, hace falta un ADR que añada una dimensión (p. ej. `DoD-ACCEPTANCE`), y se cambia la tabla A.
+
+### CR-002
+
+- **Tipo:** decisión de implementación (2026-11-14)
+- **Descripción:** la tabla V suma los defectos `CRITICAL`/`HIGH` y los criterios DoD VERIFY `❌`. El criterio «Sin defectos CRITICAL o HIGH abiertos» (DoD del proyecto y criterios mínimos del Paso 3) falla precisamente por esos defectos, así que, sin una regla, AC-1 fila 1 tendría 3 filas en lugar de 2 y el mismo defecto aparecería dos veces, contra la línea de la plantilla común. `story-verify` 6h.2 fija: un criterio DoD cuyo `❌` se debe solo a defectos `CRITICAL`/`HIGH` que ya son filas no añade otra fila.
+- **Documento afectado:** `skills/story-verify/SKILL.md` (6h.2); caso `needs-changes-defectos-critical-high-generan-fix-directives` de sus evals.
+- **Acción requerida:** ninguna.

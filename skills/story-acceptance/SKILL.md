@@ -33,6 +33,7 @@ story-acceptance    ← aquí
       │   Al iniciar sesión nueva:         story.md → ACCEPTANCE/IN-PROGRESS
       │   Veredicto APPROVED:              story.md → ACCEPTANCE/DONE
       │   Veredicto NEEDS-CHANGES:         story.md → IMPLEMENT/TODO (retoma /story-implement; /story-implement-tasks si existe tasks.md)
+      │                                    + fix-directives.md (based-on: acceptance-report.md, round N) = señal de rework
       │   Veredicto BLOCKED:               story.md → ACCEPTANCE/BLOCKED
       │   Veredicto PENDING:               story.md se mantiene en ACCEPTANCE/IN-PROGRESS
       │   Estado incorrecto:              → error sin modificar archivos
@@ -50,6 +51,8 @@ story-acceptance  → validación humana final              ← aquí
 - `specs/flow/<STORY-NNN>-<slug>/story.md` — historia a validar (precondición de estado)
 - DoD de la etapa `acceptance` (`docs/guardrails/dod-story-acceptance.md`, ver `## DoD aplicable`) — opcional
 - `specs/flow/<STORY-NNN>-<slug>/acceptance-report.md` — si existe, detección de sesión previa
+- `docs/templates/fix-directives-template.md` — plantilla común de `fix-directives.md` (solo con `NEEDS-CHANGES`); si no existe, la semilla `assets/fix-directives-template.md`
+- `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` e `implement-report.md` — opcionales, solo lectura: fuentes de la ronda previa (Paso 7f.1)
 
 ## Parámetros
 
@@ -60,7 +63,7 @@ story-acceptance  → validación humana final              ← aquí
 
 ## Dependencias
 
-- Archivos de entrada: DoD de la etapa `acceptance` (ver `## DoD aplicable`), `assets/acceptance-report-template.md`
+- Archivos de entrada: DoD de la etapa `acceptance` (ver `## DoD aplicable`), `assets/acceptance-report-template.md`, plantilla de `fix-directives.md` (`docs/templates/fix-directives-template.md` → semilla `assets/fix-directives-template.md`)
 
 ## DoD aplicable
 
@@ -86,7 +89,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Sus 
 
 ## Restricciones / Reglas
 
-- **No modifica código fuente:** solo escribe `acceptance-report.md` y actualiza el frontmatter de `story.md`
+- **No modifica código fuente:** solo escribe `acceptance-report.md`, `fix-directives.md` (solo con `NEEDS-CHANGES`, Paso 7f) y el frontmatter de `story.md`
 - **No ejecuta pruebas automáticas:** eso corresponde a `story-verify`
 - **No revisa código:** eso corresponde a `story-code-review`
 - **Idempotente:** ejecutable múltiples veces; preserva historial en `acceptance-report.md`
@@ -435,6 +438,56 @@ Para cada criterio en `$DOD_CRITERIOS`:
 - Si fue evaluado y REJECTED/BLOCKED → `✗ no cumplido`
 - Si no fue evaluado en esta sesión → `— no evaluado`
 
+#### 7f. [NEEDS-CHANGES] Generar `fix-directives.md`
+
+**Condición:** solo si `$VERDICT = NEEDS-CHANGES`. Con `APPROVED`, `BLOCKED` o `PENDING` no se escribe ni se modifica `fix-directives.md`. Este paso lee los resultados que ya registró el Paso 5: `acceptance-report.md` no cambia. Este skill nunca borra `fix-directives.md`: solo `story-code-review` lo elimina, al aprobar (ADR-0022).
+
+**7f.1 — Calcular la ronda de corrección (antes de instanciar el template):**
+
+Regla de ronda (ADR-0022; el mismo texto en `story-code-review`, `story-verify` y `story-acceptance`):
+
+1. `$PREV_ROUND` = el **máximo** entero ≥ 1 entre dos fuentes versionadas de `$STORY_DIR`:
+   - (a) el campo `round` del frontmatter de `fix-directives.md`, si el archivo existe;
+   - (b) los `N` de los encabezados de nivel 2 de `implement-report.md` con la forma `## Ciclo de corrección — ronda N` (`story-implement`) o `## Correcciones de fix-directives.md (ronda N)` (`story-implement-tasks`), si el archivo existe.
+2. Sin ningún valor válido (archivos inexistentes, campo ausente, valor no entero como `abc`, `null` o `0`, encabezados sin número) → `$PREV_ROUND = 0`, sin error ni advertencia: es una degradación controlada (archivos legados).
+3. `$ROUND = $PREV_ROUND + 1`.
+
+**7f.2 — Construir las filas y la lista blanca:**
+
+Una fila por criterio `REJECTED` (incluidos los cargados de una sesión parcial reanudada), numeradas correlativamente en el orden de la sesión (Gherkin primero, DoD después):
+
+| Columna | Valor |
+|---|---|
+| `Archivo:Línea` | Criterio Gherkin: `story.md:<línea del encabezado ### AC-N>`. Criterio del DoD ACCEPTANCE: `<ruta del DoD resuelto>:<línea del criterio>` |
+| `Dimensión` | `requirements-coverage` |
+| `Severidad` | `HIGH` |
+| `Hallazgo` | `Criterio <N> rechazado: <observación del validador>` |
+| `Acción requerida` | `Implementa el comportamiento del criterio con su test; story.md es la referencia, no un destino` |
+
+- Los criterios `BLOCKED` no entran: no son rechazos.
+- `$MAX_SEVERITY` = `HIGH`. `$TOTAL_BLOCKING` = `$TOTAL_REJECTED`.
+- Lista blanca: un rechazo de aceptación no tiene archivo de origen, así que `{{WHITELIST}}` es esta línea sin viñeta (una lista vacía no es un error): `Vacía: un rechazo de aceptación no tiene archivo de origen. El ejecutor confirma (interactivo) o registra (--auto) cada archivo existente que modifique.`
+
+**7f.3 — Instanciar el template:**
+
+Resolver la plantilla de `fix-directives.md` (primera coincidencia):
+
+1. `docs/templates/fix-directives-template.md` (plantilla común del proyecto).
+2. Si no existe, la semilla `assets/fix-directives-template.md` de este skill, con el aviso:
+   ```
+   ⚠️ Usando template seed del skill. Copia assets/fix-directives-template.md a docs/templates/ para personalizarlo.
+   ```
+3. Si no existe ninguna: `❌ Template fix-directives-template.md no encontrado`. El gate escribe su reporte y el estado de `story.md`, pero no `fix-directives.md`.
+
+Completar los placeholders: `{{STORY_ID}}`, `{{STORY_TITLE}}`, `{{DATE}}` (fecha actual), `{{MAX_SEVERITY}}` = `HIGH`, `{{ROUND}}` = `$ROUND`, `{{BASED_ON}}` = `acceptance-report.md`, `{{TOTAL_BLOCKING}}` = `$TOTAL_BLOCKING`, `{{INSTRUCTIONS_TABLE}}` = las filas de 7f.2 y `{{WHITELIST}}` = la línea de 7f.2.
+
+Guardar en `$STORY_DIR/fix-directives.md`, sobrescribiendo si ya existe (la versión previa se reemplaza completa; solo `round` conserva continuidad).
+
+Mostrar:
+```
+📋 Fix directives: <ruta>/fix-directives.md (ronda <N>)
+```
+
 ---
 
 ### Paso 8 — Actualizar frontmatter de story.md y mostrar resultado
@@ -460,10 +513,11 @@ Calcular `$TASKS_EXISTS = true` si existe `$STORY_DIR/tasks.md`, `false` si no. 
 Mostrar:
 ```
 ⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} La historia regresa a IMPLEMENT/TODO.
+📋 Fix directives: {$STORY_DIR}/fix-directives.md (ronda {N})      (si 7f lo escribió)
 → Ejecuta /story-implement {story_id}
    Alternativa (tasks.md presente): /story-implement-tasks {story_id}      (solo si $TASKS_EXISTS = true)
 ```
-La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`. Este skill no escribe `fix-directives.md`: el ejecutor parte de `acceptance-report.md`.
+La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`. El ejecutor parte de `fix-directives.md` (7f), la única señal de rework: nunca lee `acceptance-report.md`.
 
 **Si `$VERDICT = BLOCKED`:**
 ```yaml
@@ -503,6 +557,7 @@ o bien:
 ⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} La historia regresa a IMPLEMENT/TODO.
    La historia regresa a IMPLEMENT/TODO para corrección.
    Revisa acceptance-report.md para detalles de los criterios rechazados.
+📋 Fix directives: {$STORY_DIR}/fix-directives.md (ronda {N})      (si 7f lo escribió)
 → Ejecuta /story-implement {story_id}
    Alternativa (tasks.md presente): /story-implement-tasks {story_id}      (solo si $TASKS_EXISTS = true)
 ```
@@ -517,6 +572,7 @@ o bien (si BLOCKED):
 ## Salida
 
 - `specs/flow/<STORY-NNN>-<slug>/acceptance-report.md` — reporte de validación con `verdict` en el frontmatter, `## Veredicto` como primera sección, trazabilidad por criterio, resumen ejecutivo e historial de sesiones
+- `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` — solo si el veredicto es `NEEDS-CHANGES` (Paso 7f): plantilla común con `based-on: acceptance-report.md`, `round` continuo entre gates (ADR-0022), una fila `requirements-coverage` `HIGH` por criterio `REJECTED` y lista blanca vacía. Es la señal de rework que consumen `story-implement` y `story-implement-tasks`; solo `story-code-review` lo elimina, al aprobar.
 - `story.md` frontmatter actualizado según el veredicto:
   - `status: ACCEPTANCE / substatus: DONE` — veredicto `APPROVED`
   - `status: IMPLEMENT / substatus: TODO` — veredicto `NEEDS-CHANGES`
@@ -542,6 +598,7 @@ o bien (si BLOCKED):
 - `acceptance-report.md` con `verdict: NEEDS-CHANGES`, criterio 2 como REJECTED con observación
 - `story.md` actualizado a `status: IMPLEMENT / substatus: TODO`
 - Mensaje: "Veredicto: NEEDS-CHANGES — 1 criterio(s) rechazado(s) y 0 bloqueado(s). La historia regresa a IMPLEMENT/TODO."
+- `fix-directives.md` con `based-on: acceptance-report.md`, una fila `requirements-coverage` `HIGH` que apunta a `story.md:<línea del ### AC-2>` con la observación, y lista blanca vacía; mensaje `📋 Fix directives: … (ronda N)`
 - Ejecutor: "→ Ejecuta /story-implement STORY-NNN" y, solo si existe `tasks.md`, "Alternativa (tasks.md presente): /story-implement-tasks STORY-NNN"
 
 ### Caso 3 — Estado incorrecto
