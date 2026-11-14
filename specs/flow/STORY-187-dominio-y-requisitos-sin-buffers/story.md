@@ -5,7 +5,7 @@ id: STORY-187
 kind: chore
 slug: STORY-187-dominio-y-requisitos-sin-buffers
 title: "Dominio, requisitos y máquina de estados sin buffers"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13

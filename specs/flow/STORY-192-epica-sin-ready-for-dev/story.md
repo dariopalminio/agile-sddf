@@ -5,7 +5,7 @@ id: STORY-192
 kind: feat
 slug: STORY-192-epica-sin-ready-for-dev
 title: "Épica sin READY-FOR-DEV"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13

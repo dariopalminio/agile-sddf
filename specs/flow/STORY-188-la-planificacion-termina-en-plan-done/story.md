@@ -5,7 +5,7 @@ id: STORY-188
 kind: feat
 slug: STORY-188-la-planificacion-termina-en-plan-done
 title: "La planificación termina en PLAN/DONE"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13

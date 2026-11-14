@@ -5,7 +5,7 @@ id: STORY-190
 kind: feat
 slug: STORY-190-directivas-de-correccion-desde-verify-y-acceptance
 title: "Directivas de corrección desde verify y acceptance"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13

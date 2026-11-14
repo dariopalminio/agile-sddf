@@ -5,7 +5,7 @@ id: STORY-186
 kind: chore
 slug: STORY-186-adr-de-workflows-sin-estados-buffer
 title: "ADR de workflows sin estados buffer"
-status: SPECIFY
+status: READY-FOR-IMPLEMENT
 substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13
