@@ -10,13 +10,13 @@ Skill orquestador que ejecuta el pipeline completo de planning de una historia S
     ├── /story-evaluation → Evalúa con FINVEST
     └── /story-split      → Divide historias grandes
     ↓ [story.md: READY-FOR-PLAN/DONE]
-/story-plan                            [story.md: → PLANNING/IN-PROGRESS al inicio]  ← aquí
+/story-plan                            [story.md: → PLAN/IN-PROGRESS al inicio]  ← aquí
     ├── /story-design     → Genera design.md
     ├── /story-tasking    → Genera tasks.md       (omitido con --only-testcases)
     ├── /story-testcases  → Genera testcases.md   (omitido con --only-tasks)
-    └── /story-analyze    → Genera analyze.md     [story.md: → READY-FOR-IMPLEMENT/DONE si verdict APPROVED]
-    ↓ [story.md: READY-FOR-IMPLEMENT/DONE]
-/story-implement-tasks                 [story.md: → IMPLEMENT/IN-PROGRESS → IMPLEMENT/DONE]
+    └── /story-analyze    → Genera analyze.md     [story.md: → PLAN/DONE si verdict APPROVED]
+    ↓ [story.md: PLAN/DONE]
+/story-implement o /story-implement-tasks  [story.md: → IMPLEMENT/IN-PROGRESS → IMPLEMENT/DONE]
 ```
 
 ## Precondiciones
@@ -61,9 +61,12 @@ En cualquier modo, `--skip-analyze` elimina el paso `story-analyze` y reduce el 
 
 | Evento | status | substatus |
 |---|---|---|
-| Inicio del pipeline (incondicional) | `PLANNING` | `IN-PROGRESS` |
-| `story-analyze` emite verdict APPROVED | `READY-FOR-IMPLEMENT` | `DONE` |
-| Fallo en cualquier paso bloqueante | `PLANNING` | `IN-PROGRESS` (sin cambio) |
+| Inicio del pipeline (incondicional) | `PLAN` | `IN-PROGRESS` |
+| `story-analyze` emite verdict APPROVED | `PLAN` | `DONE` (lo escribe `story-analyze`) |
+| Fallo en cualquier paso bloqueante | `PLAN` | `IN-PROGRESS` (sin cambio) |
+| Guardia de cierre: `story.md` en `PLAN/DONE` (o `READY-FOR-IMPLEMENT`, valor anterior a 6.0.0) sin `verdict: APPROVED` | `PLAN` | `IN-PROGRESS` (restaurado, con aviso `⚠️ story.md estaba en <estado> sin verdict APPROVED — restaurado a PLAN/IN-PROGRESS`) |
+
+`story-plan` nunca escribe `PLAN/DONE`: ese estado lo escribe solo `story-analyze`.
 
 ## Uso
 

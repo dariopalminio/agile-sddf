@@ -1,13 +1,13 @@
 {
   "skill": "story-plan",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Casos de prueba para story-plan: verifica el comportamiento del orquestador (mensajes de progreso, artefactos generados, fail-fast y modos alternativos) sin evaluar el contenido interno de cada sub-skill.",
   "cases": [
     {
       "id": "TC-001",
       "name": "pipeline-completo-happy-path",
       "type": "happy-path",
-      "description": "Modo default (sin flags): el orquestador ejecuta los 4 pasos en secuencia (story-design → story-tasking → story-testcases → story-analyze), muestra progreso paso a paso, actualiza story.md a PLAN/IN-PROGRESS al inicio y cierra con READY-FOR-IMPLEMENT/DONE y tabla de resumen completa.",
+      "description": "Modo default (sin flags): el orquestador ejecuta los 4 pasos en secuencia (story-design → story-tasking → story-testcases → story-analyze), muestra progreso paso a paso, actualiza story.md a PLAN/IN-PROGRESS al inicio y cierra con PLAN/DONE (escrito por story-analyze, sin aviso de la guardia) y tabla de resumen completa.",
       "input": {
         "input_path": "examples/input",
         "story_id": "STORY-099",
@@ -32,7 +32,7 @@
           "testcases.md",
           "analyze.md",
           "Planning completo",
-          "READY-FOR-IMPLEMENT",
+          "PLAN/DONE",
           "(verdict: APPROVED)",
           "Veredicto de story-analyze: APPROVED"
         ],
@@ -40,7 +40,9 @@
           "Pipeline interrumpido",
           "Flags mutuamente excluyentes",
           "No se encontró la historia",
-          "Entorno inválido"
+          "Entorno inválido",
+          "READY-FOR-IMPLEMENT",
+          "restaurado a PLAN/IN-PROGRESS"
         ]
       },
       "threshold": 0.9
@@ -67,7 +69,7 @@
           "story-testcases",
           "story-analyze",
           "Planning completo",
-          "READY-FOR-IMPLEMENT",
+          "PLAN/DONE ✓",
           "docs/specs"
         ]
       },
@@ -140,7 +142,7 @@
       "id": "TC-005",
       "name": "modo-default-skip-analyze",
       "type": "edge-case",
-      "description": "Modo default con --skip-analyze: el orquestador ejecuta story-design → story-tasking → story-testcases (3 pasos) y omite story-analyze. El resumen final no debe incluir una fila para story-analyze ni el estado READY-FOR-IMPLEMENT/DONE.",
+      "description": "Modo default con --skip-analyze: el orquestador ejecuta story-design → story-tasking → story-testcases (3 pasos) y omite story-analyze. El resumen final no debe incluir una fila para story-analyze ni el estado PLAN/DONE.",
       "input": {
         "input_path": "examples/input",
         "story_id": "STORY-099",
@@ -166,7 +168,7 @@
         "not_contains": [
           "story-analyze",
           "analyze.md",
-          "READY-FOR-IMPLEMENT",
+          "PLAN/DONE ✓",
           "Pipeline interrumpido",
           "Flags mutuamente excluyentes"
         ]
@@ -192,7 +194,7 @@
           "/story-fix-plan"
         ],
         "not_contains": [
-          "READY-FOR-IMPLEMENT",
+          "PLAN/DONE ✓",
           "Planning completo"
         ]
       },
@@ -202,7 +204,7 @@
       "id": "TC-007",
       "name": "warning-aprobado-permite-implementacion",
       "type": "edge-case",
-      "description": "story-analyze genera analyze.md con verdict APPROVED y un WARNING tipo C; la historia avanza a READY-FOR-IMPLEMENT/DONE.",
+      "description": "story-analyze genera analyze.md con verdict APPROVED y un WARNING tipo C; la historia avanza a PLAN/DONE sin aviso de restauración.",
       "input": {
         "input_path": "examples/input",
         "story_id": "STORY-099",
@@ -212,12 +214,90 @@
       "expected": {
         "contains": [
           "(verdict: APPROVED)",
-          "READY-FOR-IMPLEMENT/DONE"
+          "PLAN/DONE"
         ],
         "not_contains": [
           "requiere revisión",
-          "hay ERROREs pendientes"
+          "hay ERROREs pendientes",
+          "READY-FOR-IMPLEMENT",
+          "restaurado a PLAN/IN-PROGRESS"
         ]
+      },
+      "threshold": 0.92
+    },
+    {
+      "id": "TC-008",
+      "name": "guardia-plan-done-needs-changes",
+      "type": "edge-case",
+      "description": "Fila 2 de AC-3 (STORY-188): story.md queda en PLAN/DONE y analyze.md tiene verdict NEEDS-CHANGES. La guardia del Paso 5 restaura story.md a PLAN/IN-PROGRESS y emite el aviso con el estado leído; story-plan no escribe PLAN/DONE.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "STORY-099",
+        "flags": [],
+        "context": "Tras el planning, story.md queda en status: PLAN / substatus: DONE y story-analyze genera analyze.md con verdict: NEEDS-CHANGES e INC-001 [ERROR] tipo A."
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "PLAN/DONE sin verdict APPROVED",
+          "restaurado a PLAN/IN-PROGRESS",
+          "PLAN/IN-PROGRESS"
+        ],
+        "not_contains": [
+          "Planning completo",
+          "PLAN/DONE ✓"
+        ],
+        "story_status_after": "PLAN/IN-PROGRESS"
+      },
+      "threshold": 0.92
+    },
+    {
+      "id": "TC-009",
+      "name": "guardia-plan-done-sin-analyze",
+      "type": "edge-case",
+      "description": "Fila 3 de AC-3 (STORY-188): story.md queda en PLAN/DONE y story-analyze no genera analyze.md (error técnico). La guardia del Paso 5 restaura story.md a PLAN/IN-PROGRESS con el aviso y el resumen muestra «Pipeline interrumpido».",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "STORY-099",
+        "flags": [],
+        "context": "Tras el planning, story.md queda en status: PLAN / substatus: DONE y story-analyze termina sin generar analyze.md."
+      },
+      "expected": {
+        "contains": [
+          "error técnico",
+          "PLAN/DONE sin verdict APPROVED",
+          "restaurado a PLAN/IN-PROGRESS",
+          "Pipeline interrumpido"
+        ],
+        "not_contains": [
+          "Planning completo",
+          "(verdict: APPROVED)"
+        ],
+        "story_status_after": "PLAN/IN-PROGRESS"
+      },
+      "threshold": 0.92
+    },
+    {
+      "id": "TC-010",
+      "name": "guardia-ready-for-implement-se-conserva",
+      "type": "edge-case",
+      "description": "CNF-4 de STORY-188: la guardia conserva la restauración del valor anterior a 6.0.0. story.md queda en READY-FOR-IMPLEMENT/DONE con analyze.md en verdict NEEDS-CHANGES; la guardia restaura PLAN/IN-PROGRESS y el aviso nombra el estado leído.",
+      "input": {
+        "input_path": "examples/input",
+        "story_id": "STORY-099",
+        "flags": [],
+        "context": "Tras el planning, story.md queda en status: READY-FOR-IMPLEMENT / substatus: DONE y story-analyze genera analyze.md con verdict: NEEDS-CHANGES e INC-001 [ERROR] tipo A."
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "READY-FOR-IMPLEMENT/DONE sin verdict APPROVED",
+          "restaurado a PLAN/IN-PROGRESS"
+        ],
+        "not_contains": [
+          "Planning completo"
+        ],
+        "story_status_after": "PLAN/IN-PROGRESS"
       },
       "threshold": 0.92
     }

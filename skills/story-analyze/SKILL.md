@@ -33,7 +33,7 @@ El skill nunca modifica los artefactos que analiza. Solo lee, correlaciona y gen
 - Detecta objetivos de la historia desalineados con la épica padre
 - Valida el cumplimiento del DoD para la fase PLAN
 - Genera `analyze.md` con un veredicto `APPROVED` o `NEEDS-CHANGES` en `## Veredicto` y en `verdict`, más recomendaciones accionables
-- Actualiza `story.md` a `READY-FOR-IMPLEMENT/DONE` con veredicto `APPROVED`
+- Actualiza `story.md` a `PLAN/DONE` con veredicto `APPROVED` (cierre de la planificación, ADR-0022)
 
 **Qué NO hace este skill:**
 - Modificar ningún artefacto analizado (story.md, design.md, tasks.md, testcases.md)
@@ -51,7 +51,7 @@ testcases.md  → Test: escenarios de prueba por AC (habilita /story-implement)
 tasks.md      → When: tareas de implementación, orden, seguimiento (habilita /story-implement-tasks)
 analyze.md    → Check: coherencia entre los artefactos ← aquí (ejecutar después de story-design, story-testcases o story-tasking)
      ↓
-[story.md: READY-FOR-IMPLEMENT/DONE]    ← seteado por story-analyze con verdict: APPROVED
+[story.md: PLAN/DONE]                   ← seteado por story-analyze con verdict: APPROVED
 [story.md: PLAN/IN-PROGRESS]            ← sin cambio con verdict: NEEDS-CHANGES
 ```
 
@@ -59,7 +59,7 @@ analyze.md    → Check: coherencia entre los artefactos ← aquí (ejecutar des
 
 | Condición al finalizar | status | substatus |
 |---|---|---|
-| `verdict: APPROVED` | `READY-FOR-IMPLEMENT` | `DONE` |
+| `verdict: APPROVED` | `PLAN` | `DONE` |
 | `verdict: NEEDS-CHANGES` | Sin cambio | Sin cambio |
 
 La actualización de estado ocurre tanto en modo manual como en modo Agent (invocado por `story-plan`).
@@ -120,7 +120,7 @@ Resolución (primera coincidencia):
 2. Convención: `docs/guardrails/dod-story-plan.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y continuar sin validación DoD PLAN.
 
-Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate de la Correlación 5 antes de escribir `READY-FOR-IMPLEMENT/DONE`.
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es el quality gate de la Correlación 5 antes de escribir `PLAN/DONE`.
 
 ## Modos de ejecución
 
@@ -136,7 +136,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 - Sin al menos uno de `testcases.md` o `tasks.md`, la ejecución se detiene (análisis rechazado)
 - Si `tasks.md` está ausente pero `testcases.md` presente: las correlaciones tarea↔diseño se omiten con `⚠️`
 - Si `testcases.md` está ausente pero `tasks.md` presente: la cobertura de ACs en testcases se omite con `⚠️`
-- Un hallazgo ERROR (tipo A, B o E) determina el veredicto `NEEDS-CHANGES` (Paso 6), que bloquea la transición a `READY-FOR-IMPLEMENT`.
+- Un hallazgo ERROR (tipo A, B o E) determina el veredicto `NEEDS-CHANGES` (Paso 6), que bloquea la transición a `PLAN/DONE`.
 - Aplicar el contrato de `docs/policies/validation-contract-policy.md` de Agile-SDDF.
 - Ante incertidumbre en la evaluación DoD, usar `⚠️` en lugar de `❌` (regla de duda — no bloquear indebidamente)
 - El reporte debe referenciar secciones y líneas específicas de los archivos afectados — no se admiten mensajes genéricos
@@ -497,7 +497,7 @@ Si el directorio no existe, crearlo.
 Después de guardar `analyze.md`, usar el `$VERDICT` registrado en el Paso 6:
 
 **Si `$VERDICT = APPROVED`:**
-- Actualizar el frontmatter de `story.md`: `status: READY-FOR-IMPLEMENT` / `substatus: DONE`
+- Actualizar el frontmatter de `story.md`: `status: PLAN` / `substatus: DONE`
 - Esta actualización ocurre tanto en modo manual como en modo Agent
 
 **Si `$VERDICT = NEEDS-CHANGES`:**
@@ -549,13 +549,13 @@ Si `$VERDICT = NEEDS-CHANGES`:
    Veredicto NEEDS-CHANGES — corrige el plan con /story-fix-plan <STORY-NNN> y vuelve a ejecutar /story-analyze <STORY-NNN>.
    Sugerencias en: <ruta>/analyze.md → sección "Recomendaciones"
 
-   Estado story.md: PLAN/IN-PROGRESS (no se actualizó a READY-FOR-IMPLEMENT — veredicto NEEDS-CHANGES)
+   Estado story.md: PLAN/IN-PROGRESS (no se actualizó a PLAN/DONE — veredicto NEEDS-CHANGES)
 ```
 
 Si `$VERDICT = APPROVED`:
 ```
 ✅ Sin inconsistencias bloqueantes. Puedes proceder con la implementación.
-   Estado story.md: READY-FOR-IMPLEMENT/DONE ✓
+   Estado story.md: PLAN/DONE ✓
 ```
 
 ---
@@ -580,7 +580,7 @@ Si `$VERDICT = APPROVED`:
 
 - `{directorio_historia}/analyze.md` — reporte de coherencia entre story.md, design.md, testcases.md (si existe) y tasks.md (si existe)
 - Estado del workitem actualizado en `story.md`:
-  - `READY-FOR-IMPLEMENT / DONE` con `verdict: APPROVED`
+  - `PLAN / DONE` con `verdict: APPROVED`
   - Sin cambio con `verdict: NEEDS-CHANGES`
 
 ### Template de Fallback

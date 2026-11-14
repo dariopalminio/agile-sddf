@@ -1,7 +1,7 @@
 {
   "skill": "story-implement-tasks",
-  "version": "1.0.1",
-  "description": "Casos de prueba para story-implement-tasks centrados en el ciclo de correccion post code review (STORY-089): el skill aplica las correcciones de fix-directives.md como pre-paso 2f por presencia del archivo (sin depender de la tarea literal 'Implementar fix-directives.md' en tasks.md), reporta la ronda leida del frontmatter (ronda 1 si el campo round no existe, sin escribirlo nunca: el escritor unico es story-code-review), conserva el gate de salida anticipada cuando no hay fix-directives.md, mantiene la compatibilidad con tasks.md legados que aun contienen el literal (marcado [x] con nota 'aplicado en pre-paso 2f' o bloqueo [~] si el archivo no existe) y no aborta las correcciones restantes cuando un hallazgo apunta a un archivo inexistente. Los casos que no tocan fix-directives.md quedan fuera de alcance de este archivo.",
+  "version": "1.1.0",
+  "description": "Casos de prueba para story-implement-tasks centrados en el ciclo de correccion post code review (STORY-089): el skill aplica las correcciones de fix-directives.md como pre-paso 2f por presencia del archivo (sin depender de la tarea literal 'Implementar fix-directives.md' en tasks.md), reporta la ronda leida del frontmatter (ronda 1 si el campo round no existe, sin escribirlo nunca: el escritor unico es story-code-review), conserva el gate de salida anticipada cuando no hay fix-directives.md, mantiene la compatibilidad con tasks.md legados que aun contienen el literal (marcado [x] con nota 'aplicado en pre-paso 2f' o bloqueo [~] si el archivo no existe) y no aborta las correcciones restantes cuando un hallazgo apunta a un archivo inexistente. Incluye ademas los casos del gate de entrada del Paso 1d (STORY-188): PLAN/DONE como entrada inicial canonica y el rechazo de PLAN/IN-PROGRESS listando los estados admitidos. Los demas casos que no tocan fix-directives.md quedan fuera de alcance de este archivo.",
   "cases": [
     {
       "id": "TC-001",
@@ -103,7 +103,7 @@
       "id": "TC-003",
       "name": "sin-fix-directives-gate-salida-anticipada-intacto",
       "type": "edge-case",
-      "description": "Regresion del AC-3 de STORY-067: story.md en READY-FOR-IMPLEMENT/DONE, tasks.md con todas sus tareas marcadas [x] y sin fix-directives.md en el directorio. El gate de salida anticipada del paso 2c debe seguir activo: el skill muestra 'No hay tareas pendientes en tasks.md — todas estan completadas' con el conteo de tareas completadas y termina sin modificar ningun archivo. No debe ejecutar el pre-paso 2f, ni pasar story.md a IMPLEMENT/IN-PROGRESS o IMPLEMENT/DONE, ni generar implement-report.md.",
+      "description": "Regresion del AC-3 de STORY-067: story.md en READY-FOR-IMPLEMENT/DONE (entrada anterior a 6.0.0, se conserva por CNF-4 de STORY-188), tasks.md con todas sus tareas marcadas [x] y sin fix-directives.md en el directorio. El gate de salida anticipada del paso 2c debe seguir activo: el skill muestra 'No hay tareas pendientes en tasks.md — todas estan completadas' con el conteo de tareas completadas y termina sin modificar ningun archivo. No debe ejecutar el pre-paso 2f, ni pasar story.md a IMPLEMENT/IN-PROGRESS o IMPLEMENT/DONE, ni generar implement-report.md.",
       "input": {
         "story_id": "STORY-230",
         "story_status": "READY-FOR-IMPLEMENT",
@@ -272,6 +272,72 @@
           "round: 1",
           "No hay tareas pendientes en tasks.md",
           "Implementar fix-directives.md"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-007",
+      "name": "entrada-plan-done-arranca",
+      "type": "happy-path",
+      "description": "AC-1 de STORY-188: story.md en PLAN/DONE (planificacion aprobada por story-analyze), tasks.md con tareas pendientes y sin fix-directives.md. El gate del Paso 1d admite la entrada y el bloque de inicio muestra 'Estado: PLAN/DONE ✓'; el Paso 2e escribe IMPLEMENT/IN-PROGRESS antes de la primera tarea; no se ejecuta el pre-paso 2f.",
+      "input": {
+        "story_id": "STORY-270",
+        "story_status": "PLAN",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md"],
+        "tasks_md": {
+          "total": 3,
+          "completed": 0,
+          "pending": 3,
+          "contains_literal_implementar_fix_directives": false
+        },
+        "fix_directives": null
+      },
+      "expected": {
+        "contains": [
+          "PLAN/DONE ✓",
+          "IMPLEMENT/IN-PROGRESS",
+          "implement-report.md"
+        ],
+        "not_contains": [
+          "no está en un estado válido para implementar",
+          "No hay tareas pendientes en tasks.md",
+          "Correcciones de fix-directives.md"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-008",
+      "name": "plan-in-progress-rechazado",
+      "type": "error-handling",
+      "description": "AC-2 de STORY-188 para este ejecutor: story.md en PLAN/IN-PROGRESS (story-analyze emitio NEEDS-CHANGES). El Paso 1d detiene la ejecucion con 'no está en un estado válido para implementar', lista PLAN/DONE, IMPLEMENT/IN-PROGRESS y READY-FOR-IMPLEMENT/DONE como estados admitidos y sugiere /story-plan; no implementa ninguna tarea ni modifica story.md ni tasks.md.",
+      "input": {
+        "story_id": "STORY-280",
+        "story_status": "PLAN",
+        "story_substatus": "IN-PROGRESS",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "analyze.md"],
+        "tasks_md": {
+          "total": 3,
+          "completed": 0,
+          "pending": 3,
+          "contains_literal_implementar_fix_directives": false
+        },
+        "fix_directives": null
+      },
+      "expected": {
+        "contains": [
+          "no está en un estado válido para implementar",
+          "PLAN/DONE",
+          "READY-FOR-IMPLEMENT/DONE",
+          "/story-plan"
+        ],
+        "not_contains": [
+          "🚀 Iniciando implementación",
+          "→ implementando",
+          "✓ completado",
+          "Reporte generado"
         ]
       },
       "threshold": 1.0

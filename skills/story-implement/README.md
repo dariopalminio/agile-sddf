@@ -5,13 +5,14 @@ Skill orquestador que ejecuta el ciclo TDD completo (RED → GREEN → REFACTOR)
 ## Posicionamiento en el flujo SDD
 
 ```
-/story-plan                            [story.md: PLANNING/IN-PROGRESS → READY-FOR-IMPLEMENT/DONE]
+/story-plan                            [story.md: PLAN/IN-PROGRESS → PLAN/DONE (story-analyze con verdict APPROVED)]
     ├── /story-design     → Genera design.md
     ├── /story-tasking    → Genera tasks.md
     ├── /story-testcases  → Genera testcases.md
     └── /story-analyze    → Genera analyze.md
-    ↓ [story.md: READY-FOR-IMPLEMENT/DONE]  ← ejecución inicial (story-plan) o rework encolado por story-code-review (señal: fix-directives.md)
+    ↓ [story.md: PLAN/DONE]                 ← ejecución inicial: planificación aprobada por story-analyze
     ↓ [story.md: IMPLEMENT/IN-PROGRESS]     ← reanudación (ciclo interrumpido o DoD con ❌)
+    ↓ [story.md: READY-FOR-IMPLEMENT/DONE]  ← valor anterior a 6.0.0: ejecución inicial o rework encolado por story-code-review (señal: fix-directives.md)
 /story-implement                       [story.md: → IMPLEMENT/IN-PROGRESS (Paso 0c) → IMPLEMENT/DONE]  ← aquí
     ├── Paso 0c       → gate de estado + detección de modo rework (fix-directives.md) + arranque
     ├── Fase RED      → invoca test_generators de sddf.config.yaml  → archivos de prueba
@@ -36,7 +37,7 @@ tasks.md            → (optativo) artefacto del desarrollador; este skill no lo
 | Precondición | Descripción |
 |---|---|
 | `story.md` presente | Historia con criterios de aceptación en formato Gherkin |
-| `story.md` en `READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS` | Gate de estado (Paso 0c.2). Cualquier otro estado detiene la ejecución con `❌ La historia {story_id} no está en un estado válido para implementar`, sin modificar archivos |
+| `story.md` en `PLAN/DONE`, `IMPLEMENT/IN-PROGRESS` o `READY-FOR-IMPLEMENT/DONE` (valor anterior a 6.0.0) | Gate de estado (Paso 0c.2). Cualquier otro estado detiene la ejecución con `❌ La historia {story_id} no está en un estado válido para implementar`, sin modificar archivos |
 | `design.md` presente | Arquitectura, componentes e interfaces (fallback si falta `testcases.md`) |
 | `testcases.md` presente *(recomendado)* | Fuente canónica de casos de prueba por tipo |
 | `fix-directives.md` *(opcional)* | Señal de rework escrita por `story-code-review`; su presencia activa el modo rework (ronda = `round` del frontmatter, 1 si falta). Este skill solo lo lee |
@@ -94,7 +95,7 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 | Ciclo completado sin DoD-ERRORs | `IMPLEMENT` | `DONE` |
 | Ciclo completado con criterios DoD `❌` | `IMPLEMENT` | `IN-PROGRESS` |
 
-Estados de entrada admitidos: `READY-FOR-IMPLEMENT/DONE` (ejecución inicial o rework encolado por `story-code-review`) e `IMPLEMENT/IN-PROGRESS` (reanudación). El modo de trabajo (normal o rework) no depende del estado sino de la presencia de `fix-directives.md`.
+Estados de entrada admitidos: `PLAN/DONE` (ejecución inicial: planificación aprobada por `story-analyze`), `IMPLEMENT/IN-PROGRESS` (reanudación) y `READY-FOR-IMPLEMENT/DONE` (valor anterior a 6.0.0: ejecución inicial o rework encolado por `story-code-review`). El modo de trabajo (normal o rework) no depende del estado sino de la presencia de `fix-directives.md`.
 
 ## Arquitectura de delegación
 

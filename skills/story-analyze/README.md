@@ -13,7 +13,7 @@ Audita la coherencia entre `story.md`, `design.md`, tareas y casos de prueba ant
 **Produces:**
 
 - `<directorio-historia>/analyze.md` con veredicto `APPROVED` o `NEEDS-CHANGES`, cobertura, inconsistencias y recomendaciones.
-- La transición de `story.md` a `READY-FOR-IMPLEMENT/DONE` solo con veredicto `APPROVED`.
+- La transición de `story.md` a `PLAN/DONE` (cierre de la planificación) solo con veredicto `APPROVED`.
 
 **Does not do:**
 

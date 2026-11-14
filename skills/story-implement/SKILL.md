@@ -30,7 +30,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 
 **Qué hace este skill:**
 - Resuelve `REPO_ROOT` y `CLI_ROOT` localmente como Paso 0 (layout fijo, ADR-0016)
-- **Paso 0c:** gate de estado (`READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS`), detección del modo rework por presencia de `fix-directives.md` (ronda, hallazgos y lista blanca) y transición de `story.md` a `IMPLEMENT/IN-PROGRESS` antes de leer `sddf.config.yaml`
+- **Paso 0c:** gate de estado (`PLAN/DONE`, `IMPLEMENT/IN-PROGRESS` o `READY-FOR-IMPLEMENT/DONE` como valor anterior a 6.0.0), detección del modo rework por presencia de `fix-directives.md` (ronda, hallazgos y lista blanca) y transición de `story.md` a `IMPLEMENT/IN-PROGRESS` antes de leer `sddf.config.yaml`
 - **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden con un bundle que lleva siempre `rework_round`, `fix_directives_path` y `whitelist` (`null` fuera de rework); confirma estado rojo; escribe `red-phase-status.json` (con `files_modified`, `rework_round` y `rework_evidence`)
 - **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"`, `layer:"{layer}"` y los mismos tres campos de rework en el bundle; consolida resultados (`files_generated` y `files_modified`); confirma que los tests pasan
 - **Fase REFACTOR:** Itera sobre cada capa activa invocando su skill con `phase:"REFACTOR"`, `layer:"{layer}"` y los mismos tres campos de rework; verifica no-regresión ejecutando comandos de test
@@ -51,8 +51,9 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 ### Posicionamiento
 
 ```
-[story.md: READY-FOR-IMPLEMENT/DONE]  ← ejecución inicial (story-plan) o rework encolado por story-code-review (señal: fix-directives.md)
+[story.md: PLAN/DONE]                 ← ejecución inicial: planificación aprobada por story-analyze
 [story.md: IMPLEMENT/IN-PROGRESS]     ← reanudación (ciclo interrumpido o DoD con ❌)
+[story.md: READY-FOR-IMPLEMENT/DONE]  ← valor anterior a 6.0.0: ejecución inicial, o rework encolado por story-code-review (señal: fix-directives.md)
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
      │   Al iniciar (Paso 0c): story.md → IMPLEMENT/IN-PROGRESS
@@ -268,9 +269,11 @@ Leer el frontmatter de `$STORY_DIR/story.md` y extraer `status` y `substatus`. S
 
 ```
 Precondición válida si:
-  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← ejecución inicial, o rework encolado por story-code-review (señal: fix-directives.md)
+  (status: PLAN                 AND substatus: DONE)        ← planificación aprobada por story-analyze
   OR
   (status: IMPLEMENT            AND substatus: IN-PROGRESS) ← reanudación de un ciclo interrumpido o con DoD pendiente (❌)
+  OR
+  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← valor anterior a 6.0.0: ejecución inicial, o rework encolado por story-code-review (señal: fix-directives.md)
 ```
 
 **Si la precondición NO se cumple:** detener la ejecución **sin escribir nada** (ni `story.md`, ni `.tmp/`, ni código, ni invocar ningún subagente):
@@ -279,14 +282,15 @@ Precondición válida si:
 
    Estado actual: status: {status} / substatus: {substatus}
    Estados admitidos:
-     · READY-FOR-IMPLEMENT/DONE  (ejecución inicial, o rework encolado por story-code-review)
+     · PLAN/DONE                 (planificación aprobada por story-analyze)
      · IMPLEMENT/IN-PROGRESS     (reanudación de un ciclo interrumpido o con DoD pendiente)
+     · READY-FOR-IMPLEMENT/DONE  (valor anterior a 6.0.0: ejecución inicial, o rework encolado por story-code-review)
 
    → Si la historia aún no está planificada, ejecuta /story-plan {story_id}
 ```
-Ejemplos: una historia ya aprobada (`CODE-REVIEW/DONE`) produce `Estado actual: status: CODE-REVIEW / substatus: DONE`; una historia sin `status`/`substatus` en el frontmatter produce `Estado actual: status: SPECIFY / substatus: TODO`. Una historia aprobada no se re-implementa sin pasar por un rechazo de `story-code-review`.
+Ejemplos: una historia ya aprobada (`CODE-REVIEW/DONE`) produce `Estado actual: status: CODE-REVIEW / substatus: DONE`; una planificación sin aprobar (`story-analyze` con `NEEDS-CHANGES`) produce `Estado actual: status: PLAN / substatus: IN-PROGRESS`; una historia sin `status`/`substatus` en el frontmatter produce `Estado actual: status: SPECIFY / substatus: TODO`. Una historia aprobada no se re-implementa sin pasar por un rechazo de `story-code-review`.
 
-**Si la precondición se cumple:** registrar `$ENTRADA_STATUS` = valor de `status` leído (`READY-FOR-IMPLEMENT` o `IMPLEMENT`).
+**Si la precondición se cumple:** registrar `$ENTRADA_STATUS` = valor de `status` leído (`PLAN`, `READY-FOR-IMPLEMENT` o `IMPLEMENT`).
 
 > **Reanudación (`IMPLEMENT/IN-PROGRESS`):** el gate la admite tanto si el ciclo anterior se interrumpió como si terminó con criterios DoD `❌`. En reanudación **no** se consulta `red-phase-status.json` ni `cycle-status.json` para saltar fases: el ciclo TDD se re-ejecuta completo (RED → GREEN → REFACTOR). El estado **no** decide el modo de trabajo — eso lo hace 0c.3.
 
@@ -319,19 +323,19 @@ En ambos casos inicializar `$OUT_OF_SCOPE_LOG = []` y `$NEW_FILES_LOG = []` (acu
 #### 0c.4 — Arranque
 
 Escribir en el frontmatter de `$STORY_DIR/story.md`:
-- Si `$ENTRADA_STATUS = READY-FOR-IMPLEMENT`: `status: IMPLEMENT`, `substatus: IN-PROGRESS`, `updated: {YYYY-MM-DD}`
+- Si `$ENTRADA_STATUS` es `PLAN` o `READY-FOR-IMPLEMENT`: `status: IMPLEMENT`, `substatus: IN-PROGRESS`, `updated: {YYYY-MM-DD}`
 - Si `$ENTRADA_STATUS = IMPLEMENT` (ya en `IMPLEMENT/IN-PROGRESS`): solo `updated: {YYYY-MM-DD}`
 
-Esta es la transición `→ IMPLEMENT/IN-PROGRESS` del Posicionamiento: la historia sale de la cola (`READY-FOR-IMPLEMENT`) en cuanto empieza a trabajarse.
+Esta es la transición `→ IMPLEMENT/IN-PROGRESS` del Posicionamiento: la historia pasa a implementación en cuanto empieza a trabajarse.
 
 Mostrar el bloque de inicio:
 ```
 🚀 Iniciando implementación para: {story_id}
    Directorio: {$STORY_DIR}
-   Estado: {READY-FOR-IMPLEMENT/DONE | IMPLEMENT/IN-PROGRESS} ✓  → IMPLEMENT/IN-PROGRESS
+   Estado: {PLAN/DONE | IMPLEMENT/IN-PROGRESS | READY-FOR-IMPLEMENT/DONE} ✓  → IMPLEMENT/IN-PROGRESS
    Modo: {🔁 Modo rework (ronda {N}) — {H} hallazgo(s) bloqueante(s), {W} archivo(s) en lista blanca | ciclo TDD completo}
 ```
-- Línea `Estado`: en ejecución inicial `Estado: READY-FOR-IMPLEMENT/DONE ✓  → IMPLEMENT/IN-PROGRESS`; en reanudación `Estado: IMPLEMENT/IN-PROGRESS ✓  → IMPLEMENT/IN-PROGRESS`.
+- Línea `Estado`: en ejecución inicial `Estado: PLAN/DONE ✓  → IMPLEMENT/IN-PROGRESS`; en reanudación `Estado: IMPLEMENT/IN-PROGRESS ✓  → IMPLEMENT/IN-PROGRESS`; con el valor anterior a 6.0.0 `Estado: READY-FOR-IMPLEMENT/DONE ✓  → IMPLEMENT/IN-PROGRESS`.
 - Línea `Modo`: si `$REWORK_MODE = true`, `Modo: 🔁 Modo rework (ronda {N}) — {H} hallazgo(s) bloqueante(s), {W} archivo(s) en lista blanca` (p. ej. `🔁 Modo rework (ronda 1) — 2 hallazgo(s) bloqueante(s), 10 archivo(s) en lista blanca`; con lista blanca vacía, `0 archivo(s) en lista blanca`). Si `$REWORK_MODE = false`, `Modo: ciclo TDD completo` — sin mencionar rework. Este anuncio precede siempre a la Fase RED.
 
 > **Detención posterior por configuración inválida:** si los Pasos 1–2 detienen la ejecución (p. ej. `sddf.config.yaml` ausente o skill `required: true` no encontrado), `story.md` queda en `IMPLEMENT/IN-PROGRESS`. Ese estado lo admite el gate en la siguiente ejecución (equivale a un ciclo interrumpido): basta corregir la configuración y volver a ejecutar `/story-implement {story_id}`. Los mensajes de error de los Pasos 1–2 no cambian.

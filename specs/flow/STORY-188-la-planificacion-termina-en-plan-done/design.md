@@ -205,3 +205,9 @@ Ninguna bloqueante. CR-001 queda como propuesta fuera de alcance.
 - **Descripción**: `story-analyze` no cambia `story.md` con `NEEDS-CHANGES`. Si se ejecuta a mano sobre una historia ya en `PLAN/DONE` (p. ej. tras editar `design.md`), la historia queda en `PLAN/DONE` con un `analyze.md` que no la aprueba, y los ejecutores la aceptan. La guardia solo existe en `story-plan`. El mismo hueco existe hoy con `READY-FOR-IMPLEMENT/DONE`.
 - **Documento afectado**: story.md (fuera de alcance de STORY-188); `skills/story-analyze/SKILL.md` en una historia futura.
 - **Acción requerida**: decidir en una propuesta aparte si `story-analyze` con `NEEDS-CHANGES` debe restaurar `PLAN/IN-PROGRESS` cuando encuentra `PLAN/DONE`. No bloquea esta historia.
+
+### CR-002
+- **Tipo**: decisión de implementación (2026-11-14)
+- **Descripción**: ajustes menores no previstos, dentro de los archivos de C-6, C-4, C-10 y C-11: (a) la fila «Error técnico en `story-analyze`» de «Manejo de errores» de `skills/story-plan/SKILL.md` remite a la guardia de cierre, coherente con D-03 (la guardia corre también con `analyze.md` no generado); (b) `skills/story-plan/README.md` y `skills/story-implement/README.md` decían `PLANNING/IN-PROGRESS`, un estado que ningún skill escribe, en las mismas líneas que se editaban: pasan a `PLAN/IN-PROGRESS`; (c) `skills/story-plan/README.md` añade una fila para la guardia de cierre y la frase «`story-plan` nunca escribe `PLAN/DONE`»; (d) la `description` de nivel superior de `skills/story-implement-tasks/evals/evals.json` declaraba fuera de alcance los casos sin `fix-directives.md`: ahora incluye los casos del gate de entrada (TC-007, TC-008).
+- **Documento afectado**: los archivos citados.
+- **Acción requerida**: ninguna.

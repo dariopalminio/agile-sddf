@@ -39,9 +39,10 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
 ### Posicionamiento
 
 ```
-[story.md: READY-FOR-IMPLEMENT/DONE]    ← precondición inicial: ejecución inicial (viene de story-plan/story-analyze)
-                                          o rework encolado por story-code-review (señal: fix-directives.md presente)
+[story.md: PLAN/DONE]                   ← precondición inicial: planificación aprobada por story-analyze (viene de story-plan/story-analyze)
 [story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación: tras DoD-ERRORs o ciclo interrumpido
+[story.md: READY-FOR-IMPLEMENT/DONE]    ← valor anterior a 6.0.0: ejecución inicial
+                                          o rework encolado por story-code-review (señal: fix-directives.md presente)
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
      │   Al iniciar: story.md → IMPLEMENT/IN-PROGRESS
@@ -88,8 +89,9 @@ El frontmatter de `story.md` debe cumplir alguna de las siguientes condiciones a
 
 | Condición | status | substatus | Descripción |
 |---|---|---|---|
-| Ejecución inicial o rework | `READY-FOR-IMPLEMENT` | `DONE` | ejecución inicial (story-plan / story-analyze) o rework encolado por story-code-review (señal: `fix-directives.md`) |
+| Ejecución inicial | `PLAN` | `DONE` | planificación aprobada por story-analyze (story-plan / story-analyze) |
 | Reanudación | `IMPLEMENT` | `IN-PROGRESS` | reanudación tras DoD-ERRORs o ciclo interrumpido |
+| Valor anterior a 6.0.0 | `READY-FOR-IMPLEMENT` | `DONE` | ejecución inicial o rework encolado por story-code-review (señal: `fix-directives.md`) |
 
 Cualquier otro estado detiene la ejecución con error descriptivo.
 
@@ -136,7 +138,8 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 
 | Evento | status | substatus |
 |--------|--------|-----------|
-| Precondición inicial (ejecución nueva) | `READY-FOR-IMPLEMENT` | `DONE` |
+| Precondición inicial (ejecución nueva) | `PLAN` | `DONE` |
+| Precondición inicial (valor anterior a 6.0.0) | `READY-FOR-IMPLEMENT` | `DONE` |
 | Precondición reanudación (parcialmente implementada) | `IMPLEMENT` | `IN-PROGRESS` |
 | Antes de la primera tarea (Paso 2) | `IMPLEMENT` | `IN-PROGRESS` |
 | Después de generar `implement-report.md` (Paso 4) | `IMPLEMENT` | `DONE` |
@@ -233,9 +236,11 @@ Leer el frontmatter de `story.md` y verificar que se cumple alguna de las siguie
 
 ```
 Precondición válida si:
-  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← ejecución inicial o rework encolado por story-code-review (señal: fix-directives.md)
+  (status: PLAN                 AND substatus: DONE)        ← planificación aprobada por story-analyze
   OR
-  (status: IMPLEMENT          AND substatus: IN-PROGRESS) ← reanudación tras DoD-ERRORs o ciclo interrumpido
+  (status: IMPLEMENT            AND substatus: IN-PROGRESS) ← reanudación tras DoD-ERRORs o ciclo interrumpido
+  OR
+  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← valor anterior a 6.0.0: ejecución inicial o rework encolado por story-code-review (señal: fix-directives.md)
 ```
 
 **Si la precondición NO se cumple:**
@@ -245,8 +250,9 @@ Precondición válida si:
    Estado actual: status: <valor_actual> / substatus: <valor_actual>
 
    story-implement requiere uno de los siguientes estados:
-   · READY-FOR-IMPLEMENT/DONE      → ejecución inicial o rework encolado por story-code-review (señal: fix-directives.md)
+   · PLAN/DONE                 → planificación aprobada por story-analyze
    · IMPLEMENT/IN-PROGRESS     → reanudación tras DoD-ERRORs o ciclo interrumpido
+   · READY-FOR-IMPLEMENT/DONE  → valor anterior a 6.0.0: ejecución inicial o rework encolado por story-code-review (señal: fix-directives.md)
 
    Para ejecución inicial: ejecuta /story-plan {story_id} para completar el planning.
    Si ya ejecutaste story-plan, verifica que story-analyze no reportó ERROREs.
@@ -263,8 +269,9 @@ Mostrar confirmación de inicio:
 🚀 Iniciando implementación para: <story_id>
    Directorio: <ruta_directorio>
    Artefactos: story.md ✓ | design.md ✓ | tasks.md ✓
-   Estado: READY-FOR-IMPLEMENT/DONE ✓        (si $ENTRADA_STATUS = READY-FOR-IMPLEMENT)
+   Estado: PLAN/DONE ✓                    (si $ENTRADA_STATUS = PLAN)
    Estado: IMPLEMENT/IN-PROGRESS ✓        (si $ENTRADA_STATUS = IMPLEMENT)
+   Estado: READY-FOR-IMPLEMENT/DONE ✓     (si $ENTRADA_STATUS = READY-FOR-IMPLEMENT)
 ```
 
 ---
@@ -367,7 +374,7 @@ Mostrar resumen de carga:
 Antes de ejecutar la primera tarea, verificar el estado de entrada registrado en `$ENTRADA_STATUS`:
 
 - Si `$ENTRADA_STATUS` es `IMPLEMENT` (el frontmatter ya tiene `status: IMPLEMENT / substatus: IN-PROGRESS`): **omitir la escritura** — el estado ya es correcto, no se realiza ninguna modificación al archivo.
-- Si `$ENTRADA_STATUS` es `READY-FOR-IMPLEMENT`: actualizar el frontmatter de `story.md`:
+- Si `$ENTRADA_STATUS` es `PLAN` o `READY-FOR-IMPLEMENT`: actualizar el frontmatter de `story.md`:
   - `status: IMPLEMENT`
   - `substatus: IN-PROGRESS`
 

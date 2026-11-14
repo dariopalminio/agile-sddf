@@ -13,8 +13,8 @@ Skill que implementa el código de una historia SDD tarea por tarea siguiendo TD
 /story-plan                            [story.md: → PLAN/IN-PROGRESS al inicio]
     ├── /story-design   → Genera design.md
     ├── /story-tasking  → Genera tasks.md
-    └── /story-analyze  → Genera analyze.md [story.md: → READY-FOR-IMPLEMENT/DONE si sin ERROREs]
-    ↓ [story.md: READY-FOR-IMPLEMENT/DONE]
+    └── /story-analyze  → Genera analyze.md [story.md: → PLAN/DONE si verdict APPROVED]
+    ↓ [story.md: PLAN/DONE]
 /story-implement-tasks                       [story.md: → IMPLEMENT/IN-PROGRESS → IMPLEMENT/DONE]
     → Implementa código tarea por tarea con TDD  ← aquí
     → Genera implement-report.md al finalizar
@@ -23,16 +23,18 @@ Skill que implementa el código de una historia SDD tarea por tarea siguiendo TD
 
 ## Precondiciones
 
-El skill requiere que los tres artefactos de planning existan **y** que la historia esté en estado `READY-FOR-IMPLEMENT/DONE`:
+El skill requiere que los tres artefactos de planning existan **y** que la historia esté en un estado de entrada admitido:
 
 | Precondición | Descripción |
 |---|---|
 | `story.md` presente | Criterios de aceptación (AC-1…N) |
 | `design.md` presente | Componentes, interfaces, decisiones técnicas |
 | `tasks.md` presente | Tareas atómicas con IDs T001, T002… |
-| `status: READY-FOR-IMPLEMENT` + `substatus: DONE` | Planning completo y sin ERROREs |
+| `status: PLAN` + `substatus: DONE` | Ejecución inicial: planificación aprobada por `story-analyze` |
+| `status: IMPLEMENT` + `substatus: IN-PROGRESS` | Reanudación tras DoD-ERRORs o ciclo interrumpido |
+| `status: READY-FOR-IMPLEMENT` + `substatus: DONE` | Valor anterior a 6.0.0: ejecución inicial o rework encolado por `story-code-review` |
 
-Si algún artefacto falta o la historia no está en `READY-FOR-IMPLEMENT/DONE`, el skill detiene la ejecución con un mensaje descriptivo y sugiere `/story-plan`.
+Si algún artefacto falta o la historia no está en uno de esos estados, el skill detiene la ejecución con un mensaje descriptivo y sugiere `/story-plan`.
 
 ## Transiciones de estado
 
