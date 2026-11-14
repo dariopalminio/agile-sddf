@@ -6,7 +6,7 @@ project: agile-sddf
 version: "1.0"
 status: draft
 created: 2026-09-12
-updated: 2026-09-12
+updated: 2026-11-14
 ---
 # Agile SDDF — Contexto de dominio
 
@@ -79,7 +79,7 @@ work items como estado actual sin verificarlos en el filesystem.
 | **Frontmatter** | Metadatos YAML de trazabilidad y estado de un artefacto. |
 | **Status / substatus** | Etapa del workflow / avance dentro de la etapa. |
 | **Gate / DoD** | Control de transición / criterios verificables de terminado. |
-| **WIP** | Límite de trabajo simultáneo en progreso o en un buffer. |
+| **WIP** | Límite de work items en `IN-PROGRESS` por nivel; la cola de listos no tiene WIP. |
 | **AC / TC** | Criterio de aceptación Gherkin / caso de prueba trazable. |
 | **FINVEST** | Rúbrica de calidad de historias: Formato + INVEST. |
 | **SDDF_ROOT / SPECS_BASE** | Override temporal / raíz resuelta por `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`. |
@@ -103,8 +103,9 @@ work items como estado actual sin verificarlos en el filesystem.
 - **Jerarquía documentada:** `product/` + `requirements/` → Epic (L2) → Story (L1).
 - **Proyecto (flujo documentado):** `INTENT → REQUIREMENT → PLAN`, materializado por
   `product/vision.md` → `product/stakeholders.md` + `requirements/` → `product/roadmap.md` y gates humanos.
-- **Épica (flujo documentado):** `DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED`.
-- **Historia (flujo documentado):** `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`.
+- **Épica (flujo documentado):** `DEFINE → PLAN → DEVELOP → VALIDATE → SHIP → COMPLETED`.
+- **Historia (flujo documentado):** `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`.
+- **Fuente de los dos workflows y sus transiciones:** ADR-0022, [[workflows-sin-estados-buffer]].
 - **Substatus documentados:** `TODO`, `IN-PROGRESS`, `DONE`, `BLOCKED`. `BLOCKED` mantiene la etapa
   actual; los terminales requieren acción humana o CI/CD (`DELIVER` de story, mediante `story-delivery` con confirmación).
 
@@ -139,8 +140,8 @@ work items como estado actual sin verificarlos en el filesystem.
 2. Las épicas se crean manualmente o desde el plan, se validan y generan historias trazables.
 3. La historia recorre su lifecycle, produciendo diseño, tareas, casos de prueba, reportes y evidencia
    de aceptación según corresponda.
-4. Fallos de review, verify o acceptance devuelven una historia a `READY-FOR-IMPLEMENT`; la señal de
-   rework puede ser `fix-directives.md`.
+4. Fallos de review, verify o acceptance devuelven una historia a `IMPLEMENT/TODO`; la señal de
+   rework es `fix-directives.md`, que escribe el gate que la rechazó.
 
 ### Distribución
 
@@ -154,7 +155,7 @@ work items como estado actual sin verificarlos en el filesystem.
 | BR-001 | El repositorio versionado contiene la memoria operativa, specs, políticas y decisiones. | Todo el framework. |
 | BR-002 | Todo skill aplica la precedencia `SDDF_ROOT` válida → `sddf.config.yaml.root` válida → `docs`; una fuente explícita inválida impide escribir. `skill-preflight` es diagnóstico bajo demanda. | Skills. |
 | BR-003 | Las relaciones de nivel son Epic → Story; no se permiten saltos de nivel en el modelo canónico. | Work items. |
-| BR-004 | Debe verificarse WIP=1 antes de activar un nuevo ítem por nivel; los buffers de Epic y Story documentan además límites configurables. | Work items. |
+| BR-004 | Debe verificarse el WIP limit de `IN-PROGRESS` antes de activar un nuevo ítem por nivel (constitución §9); la cola de listos es una consulta y no tiene límite. | Work items. |
 | BR-005 | Los gates exigen precondiciones y DoD antes de una transición; rechazo o fallo produce bloqueo o rework. | Pipelines. |
 | BR-006 | `SHIP` y `COMPLETED` de épica no los escribe automáticamente un skill; son manuales o de CI/CD. `DELIVER` de story lo escribe `story-delivery` y `COMPLETED` de story lo escribe `story-complete`, ambos solo con confirmación humana. | Transiciones terminales. |
 | BR-007 | El tipo de una historia vive en `kind` (`feat`, `fix`, `chore`, `hotfix`), no en el prefijo `STORY-*`. | Stories. |
@@ -207,7 +208,7 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
 - [ ] ¿Cuál es la fuente canónica única para transiciones y valores de `status`/`substatus`? Los
   documentos de dominio y los artefactos existentes muestran variaciones históricas. — 2026-09-12
 - [x] WIP=1 aplica por nivel de work item (Epic y Story); ADR-0013 resuelve que la documentación fundacional no tiene WIP.
-  buffers L2/L1 configurables? — 2026-09-12
+  ADR-0022 retira los buffers: no hay WIP de cola. — 2026-11-14
 - [x] Los identificadores vigentes son `EPIC-NNN`, `STORY-NNN`, `FR-NNN` y `NFR-NNN`; ADR-0013 retiró `PROJ-`. — 2026-10-11
 - [ ] ¿La ubicación activa de templates es definitivamente `$SPECS_BASE/templates/`? ADR-0007 y el
   filesystem apuntan allí, mientras documentos históricos citan `$SPECS_BASE/specs/templates/`. — 2026-09-12
@@ -221,3 +222,4 @@ registrar nombres, intereses y momentos de involucramiento cuando el equipo los 
 |---|---|---|---|
 | 2026-09-12 | Bootstrap desde fuentes versionadas; se registraron divergencias para revisión. | Project, Epic, Story, Artifact, Skill, Agent, Template, Policy/DoD/ADR, Configuración. | BR-001 a BR-010. |
 | 2026-10-11 | Modelo de dos niveles aplicado. | Documentación fundacional, Epic, Story. | ADR-0013. |
+| 2026-11-14 | Workflows sin estados buffer (ADR-0022): rework en IMPLEMENT/TODO, cola de listos como consulta. | — | BR-004 reescrita. |

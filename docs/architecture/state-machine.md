@@ -3,7 +3,7 @@ type: architecture
 slug: state-machine
 title: "Máquina de estados del framework SDDF"
 created: 2026-06-12
-updated: 2026-09-23
+updated: 2026-11-14
 ---
 
 # Máquina de estados del framework SDDF
@@ -42,30 +42,27 @@ Principio de la constitución (patrón 14): **el ciclo de vida se traza con `sta
 stateDiagram-v2
     [*] --> SPECIFY
     SPECIFY --> PLAN
-    PLAN --> RFI
-    RFI --> IMPLEMENT
+    PLAN --> IMPLEMENT : APPROVED (PLAN/DONE)
     IMPLEMENT --> CR
     CR --> VERIFY : APPROVED
-    CR --> RFI : NEEDS-CHANGES
+    CR --> IMPLEMENT : NEEDS-CHANGES (IMPLEMENT/TODO)
     CR --> IMPLEMENT : BLOCKED (repetir revisión)
     VERIFY --> ACCEPTANCE : APPROVED
-    VERIFY --> RFI : NEEDS-CHANGES
+    VERIFY --> IMPLEMENT : NEEDS-CHANGES (IMPLEMENT/TODO)
     VERIFY --> VERIFY : BLOCKED
     ACCEPTANCE --> DELIVER : APPROVED
-    ACCEPTANCE --> RFI : NEEDS-CHANGES
+    ACCEPTANCE --> IMPLEMENT : NEEDS-CHANGES (IMPLEMENT/TODO)
     ACCEPTANCE --> ACCEPTANCE : BLOCKED
     DELIVER --> COMPLETED
     COMPLETED --> [*]
     SPECIFY --> CANCELED
     PLAN --> CANCELED
-    RFI --> CANCELED
     IMPLEMENT --> CANCELED
     CR --> CANCELED
     VERIFY --> CANCELED
     ACCEPTANCE --> CANCELED
     CANCELED --> [*]
 
-    state "READY-FOR-IMPLEMENT" as RFI
     state "CODE-REVIEW" as CR
 ```
 
@@ -73,8 +70,10 @@ stateDiagram-v2
 
 Happy path:
 ```
-SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED
+SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED
 ```
+
+Fuente del workflow y de sus transiciones, incluido el rework de los tres gates a `IMPLEMENT/TODO`: ADR-0022, [[workflows-sin-estados-buffer]].
 
 > Los nombres de estado usan verbos en infinitivo (SPECIFY, IMPLEMENT, VERIFY…) porque cada estado representa una acción que el equipo debe realizar, no un concepto estático. Ver [[workflow-canonico-story-y-epic]] (ADR-0003) para el rationale completo.
 
@@ -83,9 +82,8 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 | Status | Descripción | Actor |
 |--------|-------------|-------|
 | `SPECIFY` | Se define el comportamiento de la historia: formato Como/Quiero/Para, criterios de aceptación con escenarios Gherkin. Fase funcional sin decisiones técnicas. | PO / PM |
-| `PLAN` | Se diseña la solución técnica: `design.md`, `tasks.md`, `testcases.md`. Se estima esfuerzo y se define el enfoque (TDD/BDD). | Equipo |
-| `READY-FOR-IMPLEMENT` | Buffer/cola. Historia planificada y aprobada, esperando capacidad del equipo. Aplica límite WIP. | Sistema |
-| `IMPLEMENT` | Se codifica la historia siguiendo TDD/BDD (Rojo-Verde-Refactor). Se escriben pruebas y código de producción. | Equipo / IA |
+| `PLAN` | Se diseña la solución técnica: `design.md`, `tasks.md`, `testcases.md`. Se estima esfuerzo y se define el enfoque (TDD/BDD). Termina en `PLAN/DONE` cuando `story-analyze` emite `APPROVED`. | Equipo |
+| `IMPLEMENT` | Se codifica la historia siguiendo TDD/BDD (Rojo-Verde-Refactor). Se escriben pruebas y código de producción. `IMPLEMENT/TODO` indica un rework pendiente si existe `fix-directives.md`. | Equipo / IA |
 | `CODE-REVIEW` | Se revisa el código implementado por IA, humano y/u otros miembros del equipo para garantizar calidad y estándares. | Revisor |
 | `VERIFY` | Se ejecutan pruebas automatizadas (unitarias, integración, E2E, regresión) en entorno controlado. | IA / CI |
 | `ACCEPTANCE` | Validación humana de la historia contra los criterios de aceptación de SPECIFY. El humano decide si el valor es entregable. | PO / QA |
@@ -99,11 +97,11 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 |-------|------------------------|-------------------|--------------|-----------|
 | `story-specify` | Sin precondición de estado | `SPECIFY/IN-PROGRESS` | `SPECIFY/DONE` | — |
 | `story-plan` | `SPECIFY/DONE` | `PLAN/IN-PROGRESS` | delegado a `story-analyze` | — |
-| `story-analyze` | Invocado por `story-plan` | — | `READY-FOR-IMPLEMENT/DONE` (`verdict: APPROVED`) | — |
-| `story-implement` | `READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS` (reanudación) | `IMPLEMENT/IN-PROGRESS` | `IMPLEMENT/DONE` | — |
-| `story-code-review` | `IMPLEMENT/DONE` o `CODE-REVIEW/IN-PROGRESS` (reanudación) | `CODE-REVIEW/IN-PROGRESS` | `CODE-REVIEW/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `IMPLEMENT/DONE` (`BLOCKED`) |
-| `story-verify` | `CODE-REVIEW/DONE` (camino normal), `IMPLEMENT/DONE` (mínimo aceptable) o `VERIFY/BLOCKED` (reintento) | `VERIFY/IN-PROGRESS` | `VERIFY/DONE` (`APPROVED`) | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `VERIFY/BLOCKED` (`BLOCKED`) |
-| `story-acceptance` | `VERIFY/DONE` (camino normal), `ACCEPTANCE/IN-PROGRESS` (sesión en curso) o `ACCEPTANCE/BLOCKED` (reintento) | `ACCEPTANCE/IN-PROGRESS` | `ACCEPTANCE/DONE` | `READY-FOR-IMPLEMENT/DONE` (`NEEDS-CHANGES`) o `ACCEPTANCE/BLOCKED` (`BLOCKED`) |
+| `story-analyze` | Invocado por `story-plan` | — | `PLAN/DONE` (`verdict: APPROVED`) | — |
+| `story-implement` | `PLAN/DONE` (ejecución inicial), `IMPLEMENT/TODO` (rework) o `IMPLEMENT/IN-PROGRESS` (reanudación) | `IMPLEMENT/IN-PROGRESS` | `IMPLEMENT/DONE` | — |
+| `story-code-review` | `IMPLEMENT/DONE` o `CODE-REVIEW/IN-PROGRESS` (reanudación) | `CODE-REVIEW/IN-PROGRESS` | `CODE-REVIEW/DONE` (`APPROVED`) | `IMPLEMENT/TODO` (`NEEDS-CHANGES`) o `IMPLEMENT/DONE` (`BLOCKED`) |
+| `story-verify` | `CODE-REVIEW/DONE` (camino normal), `IMPLEMENT/DONE` (mínimo aceptable) o `VERIFY/BLOCKED` (reintento) | `VERIFY/IN-PROGRESS` | `VERIFY/DONE` (`APPROVED`) | `IMPLEMENT/TODO` (`NEEDS-CHANGES`) o `VERIFY/BLOCKED` (`BLOCKED`) |
+| `story-acceptance` | `VERIFY/DONE` (camino normal), `ACCEPTANCE/IN-PROGRESS` (sesión en curso) o `ACCEPTANCE/BLOCKED` (reintento) | `ACCEPTANCE/IN-PROGRESS` | `ACCEPTANCE/DONE` | `IMPLEMENT/TODO` (`NEEDS-CHANGES`) o `ACCEPTANCE/BLOCKED` (`BLOCKED`) |
 | `story-delivery` | `ACCEPTANCE/DONE` | — (sin estado intermedio) | `DELIVER/DONE` (con confirmación humana) | — |
 | `story-complete` | `DELIVER/DONE` o `COMPLETED/DONE` (solo archivar) | — (sin estado intermedio) | `COMPLETED/DONE` + archivado en `specs/flow/archive/` (con confirmación humana) | — (sin cambios) |
 
@@ -148,20 +146,19 @@ La épica usa `status` + `substatus` en `epic.md` siguiendo el mismo modelo orto
 stateDiagram-v2
     [*] --> DEFINE
     DEFINE --> PLAN
-    PLAN --> RFD
-    RFD --> DEVELOP
+    PLAN --> DEVELOP
     DEVELOP --> VALIDATE
     VALIDATE --> SHIP
     SHIP --> COMPLETED
     COMPLETED --> [*]
-
-    state "READY-FOR-DEV" as RFD
 ```
 
 Happy path:
 ```
-DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED
+DEFINE → PLAN → DEVELOP → VALIDATE → SHIP → COMPLETED
 ```
+
+Fuente del workflow y de sus transiciones: ADR-0022, [[workflows-sin-estados-buffer]].
 
 ### Tabla de estados
 
@@ -169,11 +166,12 @@ DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETE
 |--------|-------------|-------|
 | `DEFINE` | Se define el alcance: objetivos, features, criterios de éxito y valor esperado. Se documenta en `epic.md`. | PM / PO |
 | `PLAN` | Se desglosan las historias, se asignan a épicas, se estima esfuerzo y se identifican dependencias. | PM / Equipo |
-| `READY-FOR-DEV` | Buffer/cola. Épica completamente planificada y aprobada. Espera capacidad del equipo. Aplica límite WIP. | Sistema |
 | `DEVELOP` | Desarrollo en curso: las historias de la épica se implementan siguiendo su propio workflow. La épica permanece aquí hasta que todas las historias estén en `DELIVER`. | Equipo |
 | `VALIDATE` | Pruebas de integración y regresión del conjunto completo: end-to-end, UAT, requisitos no funcionales. | QA / Equipo |
 | `SHIP` | La épica cumple lo que el proyecto exige en su DoD de `SHIP` (`docs/guardrails/dod-epic-ship.md`), que puede incluir publicarla o desplegarla. Último estado activo. | Humano · registro: `epic-ship` |
 | `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes ni responsabilidades activas. Permite medir tiempos de ciclo sin reabrir artefactos. Se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`. | Humano (vía `epic-complete`) |
+
+La aprobación del PO es `PLAN/DONE` y se escribe a mano: ningún skill la escribe ([[workflows-sin-estados-buffer]]).
 
 **`epic-ship` registra `SHIP/IN-PROGRESS` desde `VALIDATE/DONE` antes de actualizar `CHANGELOG.md`, y `SHIP/DONE` solo con confirmación humana** y sin bloqueos de `docs/guardrails/dod-epic-ship.md` si existe. Ningún skill ejecuta commit, tag, merge ni despliegue, y `epic-ship` no asume que una épica coincida con una versión. **COMPLETED lo escribe `epic-complete` solo con confirmación humana** desde `SHIP/DONE` y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`; `epic-complete` además archiva sin cambiar el status las épicas `COMPLETED/DONE` y `CANCELED/DONE` (ADR-0019).
 
@@ -190,5 +188,5 @@ Gate de calidad: `epic-format-validation` valida la estructura del `epic.md` com
 - Transiciones por skill: sección "Posicionamiento" de cada `story-*/SKILL.md`
 - Workflow narrativo: [[specs-and-workflows]] (descripción de estados y subestados)
 - Principios aplicables: [[constitution]] patrones 8, 14 y regla 9
-- Decisión de arquitectura: [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
+- Decisión de arquitectura: [[workflows-sin-estados-buffer]] (ADR-0022) — fuente de los workflows y las transiciones de story y epic; [[workflow-canonico-story-y-epic]] (ADR-0003) — rationale de los nombres de `status` en infinitivo
 - [[asegurar-dos-niveles-de-flujo-epics-stories]] — decisión del modelo de dos niveles

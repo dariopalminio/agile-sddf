@@ -6,7 +6,7 @@ slug: NFR-006-control-de-ciclo-de-vida-con-status-substatus
 title: "Control de ciclo de vida con `status` + `substatus`"
 status: active
 created: 2026-10-10
-updated: 2026-10-10
+updated: 2026-11-14
 related: []
 ---
 
@@ -16,11 +16,12 @@ related: []
 
 El ciclo de vida de un artefacto SHALL trazarse con dos ejes ortogonales en el
 frontmatter —`status` (etapa del pipeline) y `substatus` (progreso dentro de la etapa:
-`TODO` | `IN-PROGRESS` | `DONE` | `BLOCKED`)— y nunca con versiones numéricas. Los estados
-canónicos por nivel están definidos en `[[state-machine]]`: story
-(`SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE →
-DELIVER → COMPLETED`), épica (`DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP →
-COMPLETED`) y proyecto (solo `substatus`).
+`TODO` | `IN-PROGRESS` | `DONE` | `BLOCKED`)— y nunca con versiones numéricas. `status`
+expresa solo la etapa y `substatus` el progreso: no existen estados buffer ni de cola
+([[workflows-sin-estados-buffer]]). Los estados canónicos por nivel están definidos en
+`[[state-machine]]`: story (`SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE →
+DELIVER → COMPLETED`), épica (`DEFINE → PLAN → DEVELOP → VALIDATE → SHIP → COMPLETED`) y
+proyecto (solo `substatus`).
 
 ## Criterios de verificación
 

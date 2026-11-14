@@ -6,7 +6,7 @@ slug: FR-043-revision-de-codigo-multi-agente-gate-del-dod-code
 title: "Revisión de código multi-agente (gate del DoD CODE-REVIEW)"
 status: active
 created: 2026-10-10
-updated: 2026-10-10
+updated: 2026-11-14
 related: []
 ---
 
@@ -21,7 +21,8 @@ los componentes respetan `design.md` y que se cumplen los estándares de `consti
 SHALL validar la existencia de los artefactos requeridos antes de revisar, y SHALL invocar
 `security-audit` cuando el cambio lo amerite. Produce `code-review-report.md` si aprueba, o
 `fix-directives.md` con instrucciones accionables si hay hallazgos bloqueantes (severidad
-`HIGH` o `MEDIUM`), retrocediendo entonces la historia a `READY-FOR-IMPLEMENT/DONE`. Dispone de
+`HIGH` o `MEDIUM`), devolviendo entonces la historia a `IMPLEMENT/TODO` (ADR-0022,
+[[workflows-sin-estados-buffer]]). Dispone de
 un modo degradado `--single-agent`.
 
 ## Atributos
