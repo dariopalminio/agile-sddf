@@ -2,14 +2,14 @@
 name: epic-analyze
 description: >-
   Genera epic-analyze-report.md cruzando el índice de historias de epic.md con los story.md que la declaran como parent, la cobertura de su contrato de salida y la madurez de esas historias, con hallazgos y veredicto.
-  Usar antes de aprobar una épica en PLAN para READY-FOR-DEV.
+  Usar antes de que el PO apruebe una épica en PLAN (PLAN/DONE, edición manual).
   Invocar para "epic-analyze", "analizar épica", "historias huérfanas", "criterios de salida", "smoke tests", "madurez de historias" o "épica lista para desarrollo".
 ---
 
 # Skill: `/epic-analyze`
 
 **Cuándo usar este skill:**
-- Después de `/epic-generate-stories` o `/epic-generate-all-stories`, antes de aprobar la épica para `READY-FOR-DEV`.
+- Después de `/epic-generate-stories` o `/epic-generate-all-stories`, antes de que el PO apruebe la épica (`PLAN/DONE`, edición manual).
 - Cuando el usuario quiere saber si el índice de historias de una épica coincide con las historias que realmente existen ("historias huérfanas", "historias faltantes", "historias duplicadas").
 - Cuando el usuario quiere saber si terminar todas las historias cumple los criterios de salida y los smoke tests de la épica.
 - Cuando el usuario quiere saber si las historias hijas ya terminaron su especificación y si sus `related` apuntan a historias o épicas que existen.
@@ -74,7 +74,7 @@ En ambos modos el reporte se escribe igual; el modo solo cambia la interacción 
 ## Restricciones / Reglas
 
 - **Solo lectura salvo una ruta:** la única escritura permitida es `<EPIC_DIR>/epic-analyze-report.md`. Nada en `epic.md`, en ningún `story.md`, ni en directorios temporales. Así el análisis puede repetirse sin efectos laterales y el PO decide qué corregir.
-- **Sin cambio de estado:** nunca se escriben `status` ni `substatus`; hoy ningún skill gestiona `PLAN → READY-FOR-DEV`, y un análisis no debe tomar esa decisión por el PO.
+- **Sin cambio de estado:** nunca se escriben `status` ni `substatus`: la aprobación de la épica (`PLAN/DONE`) es una edición manual del PO (ADR-0022), y un análisis no debe tomar esa decisión por él.
 - **Worker sin delegación:** no lanza subagentes ni invoca orquestadores; el cruce es pequeño y no necesita contexto aislado.
 - **Determinismo:** mismas fuentes → mismos hallazgos, misma tabla de cobertura, mismo orden y mismo veredicto (Pasos 5, 5b, 5c y 6). Por eso las reglas de clasificación y orden son exhaustivas.
 - **Fallos que detienen antes de escribir:** argumento no resuelto o ambiguo (Paso 1), template de épica ausente o inválido (Paso 2), template del reporte ausente (Paso 7). En ellos no se crea ni se toca ningún archivo.
@@ -233,14 +233,17 @@ Reglas de combinación:
 
 Comprueba que cada historia del universo (Paso 4.6, sin recalcularlo) puede planificarse: terminó su especificación y sus referencias `related` a historias y épicas existen. Solo se usa el frontmatter; nunca el cuerpo de `story.md` ni otros artefactos de la historia (`analyze.md`, `design.md`…).
 
-**1. Estado mínimo.** Orden de estados de historia según `domain-story-lifecycle` §4.1 y §5 (se declara aquí porque ese documento no se distribuye con el skill): `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`, más el terminal `CANCELED`. Comparación exacta, en mayúsculas, tras recortar espacios y comillas:
+**1. Estado mínimo.** Orden de estados de historia según `domain-story-lifecycle` §4.1 y §5 (se declara aquí porque ese documento no se distribuye con el skill): `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`, más el terminal `CANCELED`. Comparación exacta, en mayúsculas, tras recortar espacios y comillas:
 
 | `status` | `substatus` | Clasificación |
 |---|---|---|
 | `SPECIFY` | `DONE` | `lista` |
 | `SPECIFY` | cualquier otro valor (`TODO`, `IN-PROGRESS`, `BLOCKED`…) o ausente | `no-lista` → MAD-01 |
 | `PLAN` … `COMPLETED` (posteriores a `SPECIFY`) | no se evalúa: describe otra etapa | `lista` |
+| `READY-FOR-IMPLEMENT` (valor legado, anterior a 6.0.0) | no se evalúa | `lista` + nota de valor legado |
 | ausente (también con frontmatter ilegible), vacío o fuera de la lista (p. ej. `BACKLOG`, `READY-FOR-VERIFY`) | — | `no-clasificable` → MAD-03 |
+
+Nota de valor legado (a `notas-analisis`): `` `<ruta del story.md>:<línea de status>`: STORY-NNN conserva el valor legado `READY-FOR-IMPLEMENT`, que se lee como planificación aprobada (`PLAN/DONE`); no cuenta para el veredicto `` (ADR-0022). La nota no es hallazgo MAD, no cuenta en el Paso 6 y la historia cuenta como `lista` en `Madurez de historias hijas`.
 
 `CANCELED` no llega a este paso (excluida del universo). Un estado desconocido no se asimila a `SPECIFY`: la acción "completar su especificación" sería falsa para una historia ya implementada.
 
@@ -315,9 +318,13 @@ Veredicto: <APPROVED | NEEDS-REFINEMENT>
 Hallazgos: ERROR <n> · WARNING <m>
   H-001 [ERROR] <código> — <elemento>
   …
+Siguiente paso: <según el veredicto>
 ```
 
-Sin hallazgos, la lista se sustituye por `Sin hallazgos.`
+Sin hallazgos, la lista se sustituye por `Sin hallazgos.` La línea `Siguiente paso:` depende del veredicto:
+
+- `APPROVED`: `` Siguiente paso: el PO aprueba la épica editando a mano su estado a `PLAN/DONE` (este análisis no lo escribe). ``
+- `NEEDS-REFINEMENT`: `Siguiente paso: /epic-refine <EPIC_ID> y volver a ejecutar /epic-analyze <EPIC_ID>.`
 
 **Agent / `--auto`** — exactamente estas cuatro líneas, sin preguntas:
 
@@ -340,4 +347,4 @@ Antes de dar por terminado el análisis, confirmar que: el reporte existe en `<E
 |---|---|---|
 | `epic-analyze-report.md` | `<EPIC_DIR>/epic-analyze-report.md` | Hallazgos INT, MAD y SAL, índice cruzado, cobertura del contrato de salida, madurez de las historias hijas, notas y veredicto; se sobrescribe en cada ejecución |
 
-Ningún otro archivo cambia. Momento de uso: después de `/epic-generate-stories` o `/epic-generate-all-stories` y antes de aprobar la épica para `READY-FOR-DEV`. Con `NEEDS-REFINEMENT` y `errors ≥ 1`, corregir el índice, los `parent`, los criterios de salida o la cobertura de las historias y volver a ejecutar `/epic-analyze <EPIC_ID>`; con solo WARNING, además, completar la especificación de las historias hijas o corregir sus `related`.
+Ningún otro archivo cambia. Momento de uso: después de `/epic-generate-stories` o `/epic-generate-all-stories` y antes de que el PO apruebe la épica (`PLAN/DONE`, edición manual). Con `NEEDS-REFINEMENT` y `errors ≥ 1`, corregir el índice, los `parent`, los criterios de salida o la cobertura de las historias y volver a ejecutar `/epic-analyze <EPIC_ID>`; con solo WARNING, además, completar la especificación de las historias hijas o corregir sus `related`.

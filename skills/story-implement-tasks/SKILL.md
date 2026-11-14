@@ -43,7 +43,6 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
 [story.md: IMPLEMENT/TODO]              ← rework devuelto por story-code-review, story-verify o story-acceptance
                                           (señal de correcciones: fix-directives.md presente)
 [story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación: tras DoD-ERRORs o ciclo interrumpido
-[story.md: READY-FOR-IMPLEMENT/DONE]    ← valor anterior a 6.0.0: ejecución inicial
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
      │   Al iniciar: story.md → IMPLEMENT/IN-PROGRESS
@@ -93,9 +92,8 @@ El frontmatter de `story.md` debe cumplir alguna de las siguientes condiciones a
 | Ejecución inicial | `PLAN` | `DONE` | planificación aprobada por story-analyze (story-plan / story-analyze) |
 | Rework | `IMPLEMENT` | `TODO` | rework devuelto por story-code-review, story-verify o story-acceptance (señal de correcciones: `fix-directives.md`) |
 | Reanudación | `IMPLEMENT` | `IN-PROGRESS` | reanudación tras DoD-ERRORs o ciclo interrumpido |
-| Valor anterior a 6.0.0 | `READY-FOR-IMPLEMENT` | `DONE` | ejecución inicial |
 
-Cualquier otro estado detiene la ejecución con error descriptivo.
+Durante la ventana de transición de ADR-0022 (hasta 7.0.0) el Paso 1d acepta además un valor legado con aviso y lo trata como `IMPLEMENT/TODO` o `PLAN/DONE`. Cualquier otro estado detiene la ejecución con error descriptivo.
 
 ---
 
@@ -141,7 +139,6 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 | Evento | status | substatus |
 |--------|--------|-----------|
 | Precondición inicial (ejecución nueva) | `PLAN` | `DONE` |
-| Precondición inicial (valor anterior a 6.0.0) | `READY-FOR-IMPLEMENT` | `DONE` |
 | Precondición rework (devuelta por un gate con `NEEDS-CHANGES`) | `IMPLEMENT` | `TODO` |
 | Precondición reanudación (parcialmente implementada) | `IMPLEMENT` | `IN-PROGRESS` |
 | Antes de la primera tarea (Paso 2) | `IMPLEMENT` | `IN-PROGRESS` |
@@ -245,8 +242,10 @@ Precondición válida si:
   OR
   (status: IMPLEMENT            AND substatus: IN-PROGRESS) ← reanudación tras DoD-ERRORs o ciclo interrumpido
   OR
-  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← valor anterior a 6.0.0: ejecución inicial
+  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← valor legado de la ventana de transición (ADR-0022): se acepta con aviso hasta 7.0.0
 ```
+
+Cualquier otro par se rechaza, incluidos `READY-FOR-DEV` con cualquier `substatus` y `READY-FOR-IMPLEMENT` con un `substatus` distinto de `DONE`.
 
 **Si la precondición NO se cumple:**
 ```
@@ -258,7 +257,7 @@ Precondición válida si:
    · PLAN/DONE                 → planificación aprobada por story-analyze
    · IMPLEMENT/TODO            → rework devuelto por story-code-review, story-verify o story-acceptance (señal de correcciones: fix-directives.md)
    · IMPLEMENT/IN-PROGRESS     → reanudación tras DoD-ERRORs o ciclo interrumpido
-   · READY-FOR-IMPLEMENT/DONE  → valor anterior a 6.0.0: ejecución inicial
+   · READY-FOR-IMPLEMENT/DONE  (valor legado, se acepta con aviso hasta 7.0.0 — ADR-0022)
 
    Para ejecución inicial: ejecuta /story-plan {story_id} para completar el planning.
    Si ya ejecutaste story-plan, verifica que story-analyze no reportó ERROREs.
@@ -271,17 +270,29 @@ Registrar internamente:
 - `$ENTRADA_STATUS`: el valor de `status` leído del frontmatter
 - `$ENTRADA_SUBSTATUS`: el valor de `substatus` leído del frontmatter (necesario porque `IMPLEMENT/TODO` e `IMPLEMENT/IN-PROGRESS` comparten `status`)
 
+**Valor legado de la ventana de transición (ADR-0022):** si el par leído es `READY-FOR-IMPLEMENT/DONE`, registrar `$ENTRADA_LEGADO = true` y clasificarlo por la existencia de `<ruta_directorio>/implement-report.md` (solo existencia: no se lee su contenido y un archivo vacío cuenta como existente):
+
+| `implement-report.md` | Equivalente | `$ENTRADA_STATUS` / `$ENTRADA_SUBSTATUS` |
+|---|---|---|
+| existe | `IMPLEMENT/TODO` | `IMPLEMENT` / `TODO` |
+| no existe | `PLAN/DONE` | `PLAN` / `DONE` |
+
+Emitir una sola vez, antes del bloque de inicio:
+```
+[WARN] Valor legado READY-FOR-IMPLEMENT/DONE (ADR-0022): se acepta durante la ventana de transición y se retira en 7.0.0 — se trata como <equivalente>
+```
+y sustituir **en memoria** `$ENTRADA_STATUS`/`$ENTRADA_SUBSTATUS` por el equivalente. `story.md` no se escribe en este punto: sale del valor legado con la transición normal de 2e. Desde aquí, todas las reglas (gate anticipado y aviso de 2c, 2e, 2f) leen el equivalente, sin ramas propias del valor legado. En cualquier otra entrada admitida, `$ENTRADA_LEGADO = false`. La ventana termina en 7.0.0, que retira este alias.
+
 La entrada `IMPLEMENT/TODO` indica que un gate posterior devolvió la historia, pero **no** activa por sí sola las correcciones: el pre-paso 2f lo dispara solo la presencia de `fix-directives.md`.
 
-Mostrar confirmación de inicio:
+Mostrar confirmación de inicio (con el valor legado se muestra el equivalente, como si se hubiera leído):
 ```
 🚀 Iniciando implementación para: <story_id>
    Directorio: <ruta_directorio>
    Artefactos: story.md ✓ | design.md ✓ | tasks.md ✓
-   Estado: PLAN/DONE ✓                    (si $ENTRADA_STATUS = PLAN)
+   Estado: PLAN/DONE ✓                    (si la entrada es PLAN/DONE)
    Estado: IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS   (si la entrada es IMPLEMENT/TODO)
    Estado: IMPLEMENT/IN-PROGRESS ✓        (si la entrada es IMPLEMENT/IN-PROGRESS)
-   Estado: READY-FOR-IMPLEMENT/DONE ✓     (si $ENTRADA_STATUS = READY-FOR-IMPLEMENT)
 ```
 
 ---
@@ -344,7 +355,7 @@ Calcular y registrar internamente:
 
 **Si `fix_directives_existe = true`** el gate NO aplica aunque no haya tareas pendientes: la historia está en rework (STORY-089) y el flujo continúa 2d → 2e → 2f (aplicar correcciones) → Paso 3 (solo si `N_pendientes > 0`) → Paso 4. Con `N_pendientes = 0` el bucle de tareas del Paso 3 no se ejecuta y se pasa directamente al Paso 4.
 
-**Si la entrada es `IMPLEMENT/TODO`** (`$ENTRADA_STATUS = IMPLEMENT` y `$ENTRADA_SUBSTATUS = TODO`) el gate tampoco aplica, aunque no haya tareas pendientes ni `fix-directives.md`: un gate posterior devolvió la historia y debe volver a `IMPLEMENT/DONE` para pasar de nuevo por `/story-code-review`. El flujo es el del rework sin tareas pendientes: 2d → 2e (`IMPLEMENT/IN-PROGRESS`) → 2f solo si `fix_directives_existe = true` → Paso 3 solo si `N_pendientes > 0` → Paso 4. Sin `fix-directives.md`, `$FIX_DIRECTIVES_APPLIED = false`: el resumen y `implement-report.md` no muestran `Correcciones de fix-directives.md` ni ronda. La entrada `READY-FOR-IMPLEMENT/DONE` (valor anterior a 6.0.0) conserva la salida anticipada.
+**Si la entrada es `IMPLEMENT/TODO`** (`$ENTRADA_STATUS = IMPLEMENT` y `$ENTRADA_SUBSTATUS = TODO`) el gate tampoco aplica, aunque no haya tareas pendientes ni `fix-directives.md`: un gate posterior devolvió la historia y debe volver a `IMPLEMENT/DONE` para pasar de nuevo por `/story-code-review`. El flujo es el del rework sin tareas pendientes: 2d → 2e (`IMPLEMENT/IN-PROGRESS`) → 2f solo si `fix_directives_existe = true` → Paso 3 solo si `N_pendientes > 0` → Paso 4. Sin `fix-directives.md`, `$FIX_DIRECTIVES_APPLIED = false`: el resumen y `implement-report.md` no muestran `Correcciones de fix-directives.md` ni ronda. Con el valor legado, 2c lee el equivalente clasificado en 1d: si se trata como `IMPLEMENT/TODO`, no sale por el gate anticipado; si se trata como `PLAN/DONE`, el gate se aplica igual que a una entrada `PLAN/DONE`.
 
 **Aviso de `IMPLEMENT/TODO` sin directivas:** si `fix_directives_existe = false` y la entrada es `IMPLEMENT/TODO` (`$ENTRADA_STATUS = IMPLEMENT` y `$ENTRADA_SUBSTATUS = TODO`), emitir:
 
@@ -394,7 +405,7 @@ Mostrar resumen de carga:
 Antes de ejecutar la primera tarea, verificar el estado de entrada registrado en `$ENTRADA_STATUS` y `$ENTRADA_SUBSTATUS`:
 
 - Si la entrada es `IMPLEMENT/IN-PROGRESS` (`$ENTRADA_STATUS = IMPLEMENT` **y** `$ENTRADA_SUBSTATUS = IN-PROGRESS`): **omitir la escritura** — el estado ya es correcto, no se realiza ninguna modificación al archivo.
-- En cualquier otra entrada admitida (`PLAN/DONE`, `IMPLEMENT/TODO` o `READY-FOR-IMPLEMENT/DONE`): actualizar el frontmatter de `story.md`:
+- En cualquier otra entrada admitida (`PLAN/DONE` o `IMPLEMENT/TODO`, también cuando vienen del valor legado): actualizar el frontmatter de `story.md`:
   - `status: IMPLEMENT`
   - `substatus: IN-PROGRESS`
 

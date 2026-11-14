@@ -224,7 +224,7 @@ Generar al menos un escenario Gherkin principal (happy path) y uno alternativo/e
 Crear el directorio `specs/flow/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear `story.md` dentro de ese directorio con la estructura del template `docs/templates/story-template.md` infiriendo la información. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
-- `status: SPECIFY` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento). No usar `READY-FOR-IMPLEMENT`: saltaría los gates SPECIFY y PLAN que la máquina de estados declara secuenciales
+- `status: SPECIFY` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento). No usar un estado posterior (`PLAN` o siguientes): saltaría los gates SPECIFY y PLAN que la máquina de estados declara secuenciales
 - `kind: feat` — tipo de historia por defecto; cambiar a `fix`, `chore` o `hotfix` según la naturaleza del trabajo (determina el prefijo de rama)
 - `parent: <EPIC-NN>-<slug>` — el **nombre del directorio** de la épica de origen (ej. `EPIC-01-features-spec-builder`), no el ID desnudo
 

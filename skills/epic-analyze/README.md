@@ -17,7 +17,7 @@ Audita una épica cruzando su índice de historias en `epic.md` con los `story.m
 
 **Does not do:**
 
-- No modifica `epic.md`, ningún `story.md` ni el `status`/`substatus` de nada: el veredicto es informativo y la transición `PLAN → READY-FOR-DEV` la decide el PO.
+- No modifica `epic.md`, ningún `story.md` ni el `status`/`substatus` de nada: el veredicto es informativo y la aprobación de la épica (`PLAN/DONE`) la escribe a mano el PO.
 - No valida la forma de las líneas del índice ni de los smoke tests (eso es `epic-format-validation`).
 - No crea historias para cubrir huecos, no corrige hallazgos, no analiza varias épicas a la vez ni invoca otros skills.
 
@@ -27,7 +27,7 @@ Audita una épica cruzando su índice de historias en `epic.md` con los `story.m
 
 **Use it when:**
 
-- Acabes de ejecutar `epic-generate-stories` o `epic-generate-all-stories` y quieras saber si la épica está lista para aprobarse hacia `READY-FOR-DEV`.
+- Acabes de ejecutar `epic-generate-stories` o `epic-generate-all-stories` y quieras saber si la épica está lista para que el PO la apruebe (`PLAN/DONE`).
 - Sospeches que el índice de historias no coincide con las historias reales (faltantes, huérfanas, duplicadas o con `parent` divergente).
 - Necesites saber si terminar todas las historias cumple los criterios de salida y los smoke tests de la épica.
 - Quieras comprobar que las historias hijas terminaron su especificación (`SPECIFY/DONE` o posterior) y que sus `related` apuntan a historias o épicas existentes.

@@ -30,7 +30,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 
 **Qué hace este skill:**
 - Resuelve `REPO_ROOT` y `CLI_ROOT` localmente como Paso 0 (layout fijo, ADR-0016)
-- **Paso 0c:** gate de estado (`PLAN/DONE`, `IMPLEMENT/TODO` como entrada del rework devuelto por `story-code-review`, `story-verify` o `story-acceptance`, `IMPLEMENT/IN-PROGRESS` o `READY-FOR-IMPLEMENT/DONE` como valor anterior a 6.0.0), detección del modo rework por presencia de `fix-directives.md` (ronda, hallazgos y lista blanca) y transición de `story.md` a `IMPLEMENT/IN-PROGRESS` antes de leer `sddf.config.yaml`
+- **Paso 0c:** gate de estado (`PLAN/DONE`, `IMPLEMENT/TODO` como entrada del rework devuelto por `story-code-review`, `story-verify` o `story-acceptance`, `IMPLEMENT/IN-PROGRESS`, o el valor legado de la ventana de transición, que se acepta con un aviso y se trata como `IMPLEMENT/TODO` o `PLAN/DONE` según exista `implement-report.md`, ADR-0022), detección del modo rework por presencia de `fix-directives.md` (ronda, hallazgos y lista blanca) y transición de `story.md` a `IMPLEMENT/IN-PROGRESS` antes de leer `sddf.config.yaml`
 - **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden con un bundle que lleva siempre `rework_round`, `fix_directives_path` y `whitelist` (`null` fuera de rework); confirma estado rojo; escribe `red-phase-status.json` (con `files_modified`, `rework_round` y `rework_evidence`)
 - **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"`, `layer:"{layer}"` y los mismos tres campos de rework en el bundle; consolida resultados (`files_generated` y `files_modified`); confirma que los tests pasan
 - **Fase REFACTOR:** Itera sobre cada capa activa invocando su skill con `phase:"REFACTOR"`, `layer:"{layer}"` y los mismos tres campos de rework; verifica no-regresión ejecutando comandos de test
@@ -54,7 +54,6 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 [story.md: PLAN/DONE]                 ← ejecución inicial: planificación aprobada por story-analyze
 [story.md: IMPLEMENT/TODO]            ← rework devuelto por story-code-review, story-verify o story-acceptance (señal de correcciones: fix-directives.md)
 [story.md: IMPLEMENT/IN-PROGRESS]     ← reanudación (ciclo interrumpido o DoD con ❌)
-[story.md: READY-FOR-IMPLEMENT/DONE]  ← valor anterior a 6.0.0: ejecución inicial
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
      │   Al iniciar (Paso 0c): story.md → IMPLEMENT/IN-PROGRESS
@@ -248,7 +247,7 @@ Emitir: `[INFO] Modo de ejecución: {$EXEC_MODE}`
 
 ### Paso 0c — Gate de estado, detección de modo y arranque
 
-Este paso se ejecuta **antes** de leer `sddf.config.yaml` (Pasos 1–2): la historia debe ser implementable antes de validar la configuración. Las variables que resuelve (`$STORY_DIR`, `$ENTRADA_STATUS`, `$ENTRADA_SUBSTATUS`, `$REWORK_MODE`, `$REWORK_ROUND`, `$REWORK_ORIGIN`, `$FIX_DIRECTIVES_PATH`, `$WHITELIST`, `$REWORK_FINDINGS`, `$REWORK_MAX_SEVERITY`) viven en memoria durante esta ejecución y se reutilizan en los Pasos 3, 4, 6, 9, 10 y 11.
+Este paso se ejecuta **antes** de leer `sddf.config.yaml` (Pasos 1–2): la historia debe ser implementable antes de validar la configuración. Las variables que resuelve (`$STORY_DIR`, `$ENTRADA_STATUS`, `$ENTRADA_SUBSTATUS`, `$ENTRADA_LEGADO`, `$REWORK_MODE`, `$REWORK_ROUND`, `$REWORK_ORIGIN`, `$FIX_DIRECTIVES_PATH`, `$WHITELIST`, `$REWORK_FINDINGS`, `$REWORK_MAX_SEVERITY`) viven en memoria durante esta ejecución y se reutilizan en los Pasos 3, 4, 6, 9, 10 y 11.
 
 #### 0c.1 — Resolver `$STORY_DIR`
 
@@ -276,8 +275,10 @@ Precondición válida si:
   OR
   (status: IMPLEMENT            AND substatus: IN-PROGRESS) ← reanudación de un ciclo interrumpido o con DoD pendiente (❌)
   OR
-  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← valor anterior a 6.0.0: ejecución inicial
+  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← valor legado de la ventana de transición (ADR-0022): se acepta con aviso hasta 7.0.0
 ```
+
+Cualquier otro par se rechaza, incluidos `READY-FOR-DEV` con cualquier `substatus` y `READY-FOR-IMPLEMENT` con un `substatus` distinto de `DONE`.
 
 **Si la precondición NO se cumple:** detener la ejecución **sin escribir nada** (ni `story.md`, ni `.tmp/`, ni código, ni invocar ningún subagente):
 ```
@@ -288,13 +289,26 @@ Precondición válida si:
      · PLAN/DONE                 (planificación aprobada por story-analyze)
      · IMPLEMENT/TODO            (rework devuelto por story-code-review, story-verify o story-acceptance; señal de correcciones: fix-directives.md)
      · IMPLEMENT/IN-PROGRESS     (reanudación de un ciclo interrumpido o con DoD pendiente)
-     · READY-FOR-IMPLEMENT/DONE  (valor anterior a 6.0.0: ejecución inicial)
+     · READY-FOR-IMPLEMENT/DONE  (valor legado, se acepta con aviso hasta 7.0.0 — ADR-0022)
 
    → Si la historia aún no está planificada, ejecuta /story-plan {story_id}
 ```
 Ejemplos: una historia ya aprobada (`CODE-REVIEW/DONE`) produce `Estado actual: status: CODE-REVIEW / substatus: DONE`; una planificación sin aprobar (`story-analyze` con `NEEDS-CHANGES`) produce `Estado actual: status: PLAN / substatus: IN-PROGRESS`; una historia sin `status`/`substatus` en el frontmatter produce `Estado actual: status: SPECIFY / substatus: TODO`. Una historia aprobada no se re-implementa sin pasar por un rechazo de `story-code-review`, `story-verify` o `story-acceptance` (que la devuelve a `IMPLEMENT/TODO`).
 
-**Si la precondición se cumple:** registrar `$ENTRADA_STATUS` = valor de `status` leído (`PLAN`, `READY-FOR-IMPLEMENT` o `IMPLEMENT`) y `$ENTRADA_SUBSTATUS` = valor de `substatus` leído (`DONE`, `TODO` o `IN-PROGRESS`). Las dos variables son necesarias porque `IMPLEMENT/TODO` e `IMPLEMENT/IN-PROGRESS` comparten `status`.
+**Si la precondición se cumple:** registrar `$ENTRADA_STATUS` = valor de `status` leído y `$ENTRADA_SUBSTATUS` = valor de `substatus` leído. Las dos variables son necesarias porque `IMPLEMENT/TODO` e `IMPLEMENT/IN-PROGRESS` comparten `status`.
+
+**Valor legado de la ventana de transición (ADR-0022):** si el par leído es `READY-FOR-IMPLEMENT/DONE`, registrar `$ENTRADA_LEGADO = true` y clasificarlo por la existencia de `$STORY_DIR/implement-report.md` (solo existencia: no se lee su contenido y un archivo vacío cuenta como existente):
+
+| `implement-report.md` | Equivalente | `$ENTRADA_STATUS` / `$ENTRADA_SUBSTATUS` |
+|---|---|---|
+| existe | `IMPLEMENT/TODO` | `IMPLEMENT` / `TODO` |
+| no existe | `PLAN/DONE` | `PLAN` / `DONE` |
+
+Emitir una sola vez, antes de 0c.3:
+```
+[WARN] Valor legado READY-FOR-IMPLEMENT/DONE (ADR-0022): se acepta durante la ventana de transición y se retira en 7.0.0 — se trata como {equivalente}
+```
+y sustituir **en memoria** `$ENTRADA_STATUS`/`$ENTRADA_SUBSTATUS` por el equivalente. `story.md` no se escribe en este punto: sale del valor legado con la transición normal de 0c.4. Desde aquí, todas las reglas (0c.3, aviso de `IMPLEMENT/TODO` sin directivas, 0c.4) leen el equivalente, sin ramas propias del valor legado. En cualquier otra entrada admitida, `$ENTRADA_LEGADO = false`. La ventana termina en 7.0.0, que retira este alias.
 
 > **Rework (`IMPLEMENT/TODO`):** el estado indica que un gate posterior devolvió la historia, pero **no** activa el modo rework por sí solo: lo decide 0c.3 por la presencia de `fix-directives.md`. Sin ese archivo, el ciclo TDD se ejecuta completo, como en una ejecución inicial.
 
@@ -339,7 +353,7 @@ En ambos casos inicializar `$OUT_OF_SCOPE_LOG = []` y `$NEW_FILES_LOG = []` (acu
 
 Escribir en el frontmatter de `$STORY_DIR/story.md`:
 - Si la entrada es `IMPLEMENT/IN-PROGRESS` (`$ENTRADA_STATUS = IMPLEMENT` **y** `$ENTRADA_SUBSTATUS = IN-PROGRESS`): solo `updated: {YYYY-MM-DD}`
-- En cualquier otra entrada admitida (`PLAN/DONE`, `IMPLEMENT/TODO` o `READY-FOR-IMPLEMENT/DONE`): `status: IMPLEMENT`, `substatus: IN-PROGRESS`, `updated: {YYYY-MM-DD}`
+- En cualquier otra entrada admitida (`PLAN/DONE` o `IMPLEMENT/TODO`, también cuando vienen del valor legado): `status: IMPLEMENT`, `substatus: IN-PROGRESS`, `updated: {YYYY-MM-DD}`
 
 Esta es la transición `→ IMPLEMENT/IN-PROGRESS` del Posicionamiento: la historia pasa a implementación en cuanto empieza a trabajarse.
 
@@ -347,11 +361,11 @@ Mostrar el bloque de inicio:
 ```
 🚀 Iniciando implementación para: {story_id}
    Directorio: {$STORY_DIR}
-   Estado: {PLAN/DONE | IMPLEMENT/TODO | IMPLEMENT/IN-PROGRESS | READY-FOR-IMPLEMENT/DONE} ✓  → IMPLEMENT/IN-PROGRESS
+   Estado: {PLAN/DONE | IMPLEMENT/TODO | IMPLEMENT/IN-PROGRESS} ✓  → IMPLEMENT/IN-PROGRESS
    Modo: {🔁 Modo rework (ronda {N}) — {H} hallazgo(s) bloqueante(s), {W} archivo(s) en lista blanca | ciclo TDD completo}
    Origen: {gate} ({based-on})      ← solo en modo rework
 ```
-- Línea `Estado`: en ejecución inicial `Estado: PLAN/DONE ✓  → IMPLEMENT/IN-PROGRESS`; en rework `Estado: IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS`; en reanudación `Estado: IMPLEMENT/IN-PROGRESS ✓  → IMPLEMENT/IN-PROGRESS`; con el valor anterior a 6.0.0 `Estado: READY-FOR-IMPLEMENT/DONE ✓  → IMPLEMENT/IN-PROGRESS`.
+- Línea `Estado`: en ejecución inicial `Estado: PLAN/DONE ✓  → IMPLEMENT/IN-PROGRESS`; en rework `Estado: IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS`; en reanudación `Estado: IMPLEMENT/IN-PROGRESS ✓  → IMPLEMENT/IN-PROGRESS`. Con el valor legado se muestra el equivalente (`PLAN/DONE` o `IMPLEMENT/TODO`), como si se hubiera leído: el valor leído solo aparece en el aviso de 0c.2.
 - Línea `Modo`: si `$REWORK_MODE = true`, `Modo: 🔁 Modo rework (ronda {N}) — {H} hallazgo(s) bloqueante(s), {W} archivo(s) en lista blanca` (p. ej. `🔁 Modo rework (ronda 1) — 2 hallazgo(s) bloqueante(s), 10 archivo(s) en lista blanca`; con lista blanca vacía, `0 archivo(s) en lista blanca`). Si `$REWORK_MODE = false`, `Modo: ciclo TDD completo` — sin mencionar rework. Este anuncio precede siempre a la Fase RED.
 - Línea `Origen` (solo si `$REWORK_MODE = true`, tras la línea `Modo`): con `$REWORK_ORIGIN = /story-code-review`, `Origen: /story-code-review (code-review-report.md)`; con `/story-verify` o `/story-acceptance`, `Origen: {gate} ({based-on}) — tras /story-code-review, vuelve a pasar {gate}` (p. ej. `Origen: /story-verify (verify-report.md) — tras /story-code-review, vuelve a pasar /story-verify`); con `$REWORK_ORIGIN = null`, `Origen: desconocido`. Fuera del modo rework la línea no se emite.
 

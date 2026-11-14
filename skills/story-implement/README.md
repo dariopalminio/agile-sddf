@@ -13,7 +13,6 @@ Skill orquestador que ejecuta el ciclo TDD completo (RED → GREEN → REFACTOR)
     ↓ [story.md: PLAN/DONE]                 ← ejecución inicial: planificación aprobada por story-analyze
     ↓ [story.md: IMPLEMENT/TODO]            ← rework devuelto por story-code-review, story-verify o story-acceptance (señal de correcciones: fix-directives.md)
     ↓ [story.md: IMPLEMENT/IN-PROGRESS]     ← reanudación (ciclo interrumpido o DoD con ❌)
-    ↓ [story.md: READY-FOR-IMPLEMENT/DONE]  ← valor anterior a 6.0.0: ejecución inicial
 /story-implement                       [story.md: → IMPLEMENT/IN-PROGRESS (Paso 0c) → IMPLEMENT/DONE]  ← aquí
     ├── Paso 0c       → gate de estado + detección de modo rework (fix-directives.md) + arranque
     ├── Fase RED      → invoca test_generators de sddf.config.yaml  → archivos de prueba
@@ -38,7 +37,7 @@ tasks.md            → (optativo) artefacto del desarrollador; este skill no lo
 | Precondición | Descripción |
 |---|---|
 | `story.md` presente | Historia con criterios de aceptación en formato Gherkin |
-| `story.md` en `PLAN/DONE`, `IMPLEMENT/TODO`, `IMPLEMENT/IN-PROGRESS` o `READY-FOR-IMPLEMENT/DONE` (valor anterior a 6.0.0) | Gate de estado (Paso 0c.2). Cualquier otro estado detiene la ejecución con `❌ La historia {story_id} no está en un estado válido para implementar`, sin modificar archivos |
+| `story.md` en un estado de entrada admitido (`PLAN/DONE`, `IMPLEMENT/TODO`, `IMPLEMENT/IN-PROGRESS` o el valor legado de la ventana de transición; ver «Estados de entrada admitidos») | Gate de estado (Paso 0c.2). Cualquier otro estado detiene la ejecución con `❌ La historia {story_id} no está en un estado válido para implementar`, sin modificar archivos |
 | `design.md` presente | Arquitectura, componentes e interfaces (fallback si falta `testcases.md`) |
 | `testcases.md` presente *(recomendado)* | Fuente canónica de casos de prueba por tipo |
 | `fix-directives.md` *(opcional)* | Señal de rework escrita por `story-code-review`, `story-verify` o `story-acceptance` con `NEEDS-CHANGES` (ADR-0022); su presencia activa el modo rework (ronda = `round` del frontmatter, 1 si falta; gate de origen = `based-on`). Este skill solo lo lee |
@@ -98,7 +97,7 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 | Ciclo completado sin DoD-ERRORs | `IMPLEMENT` | `DONE` |
 | Ciclo completado con criterios DoD `❌` | `IMPLEMENT` | `IN-PROGRESS` |
 
-Estados de entrada admitidos: `PLAN/DONE` (ejecución inicial: planificación aprobada por `story-analyze`), `IMPLEMENT/TODO` (rework devuelto por `story-code-review`, `story-verify` o `story-acceptance`), `IMPLEMENT/IN-PROGRESS` (reanudación) y `READY-FOR-IMPLEMENT/DONE` (valor anterior a 6.0.0: ejecución inicial). El modo de trabajo (normal o rework) no depende del estado sino de la presencia de `fix-directives.md`.
+Estados de entrada admitidos: `PLAN/DONE` (ejecución inicial: planificación aprobada por `story-analyze`), `IMPLEMENT/TODO` (rework devuelto por `story-code-review`, `story-verify` o `story-acceptance`), `IMPLEMENT/IN-PROGRESS` (reanudación) y, hasta 7.0.0, `READY-FOR-IMPLEMENT/DONE` como valor legado de la ventana de transición (ADR-0022): se acepta con un aviso y se trata como `IMPLEMENT/TODO` si existe `implement-report.md` y como `PLAN/DONE` si no. El modo de trabajo (normal o rework) no depende del estado sino de la presencia de `fix-directives.md`.
 
 ## Arquitectura de delegación
 

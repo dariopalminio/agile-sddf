@@ -22,11 +22,13 @@ de operar.
 - El mantenedor invoca `/skill-preflight` para investigar el layout o una ruta.
 - Se necesita comprobar el layout fijo de un repositorio SDDF sin crear ni modificar archivos.
 - Se quiere saber si un proyecto conserva señales del layout legado y dónde está la guía para migrarlo.
+- Tras actualizar a 6.0.0, se quiere saber qué historias o épicas activas conservan un status legado y a qué estado editarlas a mano.
 
 **No hace:**
 
 - No crea directorios, templates, archivos de configuración ni artefactos.
 - No migra el layout legado: no mueve work items ni edita la configuración.
+- No edita el `status` de los work items: la migración de status legados es manual.
 - No exporta `REPO_ROOT` ni `CLI_ROOT` como estado persistente a otro skill.
 - No inspecciona integraciones retiradas que no se hayan solicitado expresamente.
 
@@ -111,6 +113,46 @@ Evaluar todas las señales, en este orden, y emitir la línea de cada una **solo
 
 <!-- SDDF-LEGACY-DIAGNOSTIC:end -->
 
+### Verificación 3b — Status legado de work items
+
+Informa los work items activos que conservan un `status` retirado en 6.0.0 y a qué estado
+editarlos a mano. La regla viene de ADR-0022: la ventana de transición se abre en 6.0.0 y
+**termina en 7.0.0**.
+
+**Alcance:** `specs/flow/*/story.md` y `specs/flow/*/epic.md`, solo de los hijos directos de
+`specs/flow/` y excluido el directorio `specs/flow/archive/`, que es un registro histórico. Si
+`specs/flow/` no existe, esta verificación no emite nada (la Verificación 2 ya lo avisa).
+
+**Lectura del frontmatter:** de cada archivo se lee solo el bloque YAML entre la primera línea
+`---` y la siguiente, y de él la clave superior `status`. Sin bloque, sin línea de cierre, con un
+YAML que no se puede leer o con un archivo que no se puede abrir, emitir
+`[WARNING] <ruta relativa a REPO_ROOT>: frontmatter ilegible — status legado no evaluado` y seguir
+con el archivo siguiente. Un frontmatter legible sin `status`, o con un valor no legado, no emite
+nada. El cuerpo del documento no se inspecciona.
+
+**Señal y destino.** Los valores legados son `READY-FOR-IMPLEMENT` y `READY-FOR-DEV`, sea cual sea
+el `substatus`:
+
+| Señal | Archivo | `implement-report.md` en el mismo directorio | Destino |
+|---|---|---|---|
+| S1 | `story.md` con `status` legado | existe | `IMPLEMENT/TODO` |
+| S1 | `story.md` con `status` legado | no existe | `PLAN/DONE` |
+| S1 | `epic.md` con `status` legado | no se consulta | `PLAN/DONE` |
+
+Por cada archivo con `status` legado, emitir:
+
+```text
+[WARNING] Status legado: <ruta relativa a REPO_ROOT> tiene status <valor> — edítalo a mano a <destino> (ADR-0022, la ventana termina en 7.0.0)
+```
+
+- Las líneas se emiten en orden de ruta, para que la salida sea determinista.
+- Las señales son `[WARNING]`, nunca `[ERROR]`, y no detienen el diagnóstico.
+- La verificación no escribe ningún archivo: no hay migración automática; el usuario edita el
+  `status` a mano al destino indicado.
+- No afecta al sufijo `— ejecuta /sddf-init` de la Verificación 2 ni a la línea
+  `ℹ️ Guía de migración` de la Verificación 3, que solo dependen de las señales L1-L3. No tiene
+  línea de cierre: cada `[WARNING]` ya dice qué editar, a qué valor y hasta cuándo.
+
 ### Verificación 4 — Templates centrales
 
 Verificar el conjunto fijo de templates centrales en `docs/templates/`:
@@ -152,6 +194,7 @@ Acumular los resultados sin mutar el repositorio:
 [OK]      <comprobaciones de layout, templates y runtime>
 [WARNING] <advertencias operativas y señales legadas, si existen>
 ℹ️ <guía de migración, solo si hay señales legadas>
+[WARNING] <status legados de work items, si existen>
 ─────────────────────────────────────────────
 ✓ Diagnóstico completado — sin cambios
 ```

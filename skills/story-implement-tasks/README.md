@@ -33,7 +33,7 @@ El skill requiere que los tres artefactos de planning existan **y** que la histo
 | `status: PLAN` + `substatus: DONE` | Ejecución inicial: planificación aprobada por `story-analyze` |
 | `status: IMPLEMENT` + `substatus: TODO` | Rework devuelto por `story-code-review`, `story-verify` o `story-acceptance` (las correcciones las dispara solo `fix-directives.md`, que anuncia el gate de origen con `Origen:` desde su `based-on`; sin él, el skill avisa con `[WARN]` y continúa sin correcciones; sin tareas pendientes no sale por el gate anticipado) |
 | `status: IMPLEMENT` + `substatus: IN-PROGRESS` | Reanudación tras DoD-ERRORs o ciclo interrumpido |
-| `status: READY-FOR-IMPLEMENT` + `substatus: DONE` | Valor anterior a 6.0.0: ejecución inicial |
+| `status: READY-FOR-IMPLEMENT` + `substatus: DONE` | Valor legado de la ventana de transición (ADR-0022), aceptado con aviso hasta 7.0.0: se trata como `IMPLEMENT/TODO` si existe `implement-report.md` y como `PLAN/DONE` si no |
 
 Si algún artefacto falta o la historia no está en uno de esos estados, el skill detiene la ejecución con un mensaje descriptivo y sugiere `/story-plan`.
 

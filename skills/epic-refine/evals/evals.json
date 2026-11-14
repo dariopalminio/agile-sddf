@@ -1,6 +1,6 @@
 {
   "skill": "epic-refine",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Casos de prueba para epic-refine (STORY-165, STORY-173, STORY-174): con epic-analyze-report.md en NEEDS-REFINEMENT aplica INT-02 (historia huérfana al índice), INT-03 (una sola línea) y MAD-02 (retira el related roto) tras un plan consolidado, con <archivo>.bak previo, status/substatus intactos y epic-refine-report.md; con APPROVED no crea ni modifica ningún archivo; los hallazgos que requieren decisión del PO quedan fuera de alcance; SAL-01/SAL-02 con evidencia parcial se asignan a la única historia de cierre (AC de cierre + cita E1); las referencias a slugs obsoletos tras un /story-split (COH) se reemplazan por el único directorio con el mismo ID o quedan para el PO. En cada fixture, el directorio del ejemplo hace de specs/flow/.",
   "cases": [
     {
@@ -143,7 +143,7 @@
       },
       "expected": {
         "contains": ["SAL-01 · CS-1 → STORY-302", "aplicado", "STORY-302-enviar-csv-por-correo/story.md.bak", "Cierre del contrato de salida – CS-1 de EPIC-30", "- Cubre el criterio de salida CS-1 de EPIC-30: El listado de pedidos del mes se exporta a CSV y se envía por correo al responsable de ventas", "APLICADOS: 1"],
-        "not_contains": ["STORY-301-exportar-pedidos-csv/story.md.bak", "epic.md.bak", "SAL-01 · CS-1 → STORY-301", "status: IMPLEMENT"]
+        "not_contains": ["STORY-301-exportar-pedidos-csv/story.md.bak", "epic.md.bak", "SAL-01 · CS-1 → STORY-301", "status: IMPLEMENT", "Replanifica:"]
       },
       "threshold": 0.95
     },
@@ -469,6 +469,38 @@
           "Backup creado",
           "APLICADOS: 1"
         ]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-027",
+      "name": "historia-de-cierre-planificada-replanifica",
+      "type": "happy-path",
+      "description": "[STORY-192 AC-3, fila PLAN] Mismo reporte que TC-009, pero la historia de cierre STORY-302 está en PLAN/DONE. El usuario responde 's' al plan. El skill aplica la corrección SAL-01 sobre STORY-302 (AC de cierre + línea E1) y el resumen final del modo manual añade 'Replanifica: /story-plan STORY-302' antes de 'Siguiente paso: /epic-analyze EPIC-30', porque su design.md, tasks.md y analyze.md no cubren el AC nuevo. Ningún texto nombra un estado buffer.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/cobertura-cierre-planificada/EPIC-30-ejemplo/epic.md",
+        "flags": [],
+        "context": "El directorio skills/epic-refine/examples/cobertura-cierre-planificada/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n). Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+      },
+      "expected": {
+        "contains": ["SAL-01 · CS-1 → STORY-302", "Replanifica: /story-plan STORY-302", "Siguiente paso: /epic-analyze EPIC-30"],
+        "not_contains": ["READY-FOR-"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-028",
+      "name": "historia-de-cierre-con-status-desconocido-al-po",
+      "type": "edge-case",
+      "description": "[STORY-192 D-4] Mismo reporte que TC-009, pero la historia de cierre STORY-302 tiene status: BACKLOG, fuera del workflow de historia. En --auto el skill no la trata como SPECIFY ni como PLAN: clasifica 'SAL-01 · CS-1' como fuera de alcance con responsable PO y la nota «STORY-302 con status `BACKLOG` fuera del workflow de historia: normaliza su status antes de asignarle cobertura», no crea ningún .bak y no propone replanificar.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/cobertura-cierre-status-desconocido/EPIC-30-ejemplo/epic.md",
+        "flags": ["--auto"],
+        "context": "El directorio skills/epic-refine/examples/cobertura-cierre-status-desconocido/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": ["fuera del workflow de historia", "BACKLOG", "FUERA-DE-ALCANCE: 1"],
+        "not_contains": ["STORY-302-enviar-csv-por-correo/story.md.bak", "Replanifica"]
       },
       "threshold": 0.95
     }

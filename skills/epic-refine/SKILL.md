@@ -224,7 +224,7 @@ Replanifica: /story-plan <STORY-NNN>
 Siguiente paso: /epic-analyze <EPIC_ID>
 ```
 
-La línea `Replanifica:` aparece una vez por cada historia de cierre SAL en `PLAN` o `READY-FOR-IMPLEMENT` (catálogo SAL); sin ellas se omite.
+La línea `Replanifica:` aparece una vez por cada historia de cierre SAL en `PLAN` (catálogo SAL); sin ellas se omite.
 
 Si quedan hallazgos ERROR fuera de alcance: `⚠️ El análisis seguirá en NEEDS-REFINEMENT por <n> hallazgos ERROR que requieren decisión del PO.` No se ejecuta `/epic-analyze`: el flujo de la épica lo encadena como un paso distinto.
 
