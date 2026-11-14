@@ -1,7 +1,7 @@
 {
   "skill": "story-acceptance",
-  "version": "1.1.0",
-  "description": "Casos de prueba para story-acceptance: verifica el comportamiento del skill en los flujos de validación manual (happy path, rechazo, estado inválido, sesión parcial, DoD ausente, modo --dry-run y flag --restart), asegurando la correcta generación de acceptance-report.md con veredicto APPROVED / NEEDS-CHANGES / BLOCKED / PENDING y actualización del frontmatter de story.md.",
+  "version": "1.2.0",
+  "description": "Casos de prueba para story-acceptance: verifica el comportamiento del skill en los flujos de validación manual (happy path, rechazo, estado inválido, sesión parcial, DoD ausente, modo --dry-run y flag --restart), asegurando la correcta generación de acceptance-report.md con veredicto APPROVED / NEEDS-CHANGES / BLOCKED / PENDING y actualización del frontmatter de story.md (NEEDS-CHANGES devuelve la historia a IMPLEMENT/TODO y nombra a /story-implement como ejecutor, con /story-implement-tasks como alternativa solo si existe tasks.md; STORY-189).",
   "cases": [
     {
       "id": "TC-001",
@@ -34,7 +34,7 @@
           "(verdict: PENDING)",
           "ACCEPTANCE-APPROVED",
           "final-status",
-          "READY-FOR-IMPLEMENT",
+          "IMPLEMENT/TODO",
           "Entorno inválido"
         ]
       },
@@ -44,7 +44,7 @@
       "id": "TC-002",
       "name": "criterio-rechazado-historia-regresa-a-implement",
       "type": "fail-path",
-      "description": "Historia en VERIFY/DONE. El validador responde FAIL con observación al segundo criterio Gherkin. El skill debe generar acceptance-report.md con verdict NEEDS-CHANGES, y actualizar story.md a READY-FOR-IMPLEMENT/DONE. El criterio FAIL debe contener la observación registrada.",
+      "description": "Historia en VERIFY/DONE. El validador responde FAIL con observación al segundo criterio Gherkin. El skill debe generar acceptance-report.md con verdict NEEDS-CHANGES, actualizar story.md a IMPLEMENT/TODO y nombrar a /story-implement como ejecutor (AC-2 de STORY-189). El criterio FAIL debe contener la observación registrada.",
       "input": {
         "story_id": "STORY-060",
         "story_status": "VERIFY",
@@ -61,11 +61,11 @@
           "(verdict: NEEDS-CHANGES)",
           "Veredicto: NEEDS-CHANGES",
           "REJECTED",
-          "READY-FOR-IMPLEMENT",
-          "DONE",
+          "IMPLEMENT/TODO",
           "No muestra mensaje de error esperado",
           "acceptance-report.md",
-          "regresa a READY-FOR-IMPLEMENT"
+          "regresa a IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement"
         ],
         "not_contains": [
           "(verdict: APPROVED)",
@@ -201,7 +201,7 @@
           "(verdict: APPROVED)",
           "(verdict: NEEDS-CHANGES)",
           "ACCEPTANCE-BLOCKED",
-          "READY-FOR-IMPLEMENT",
+          "IMPLEMENT/TODO",
           "lista para DELIVER",
           "Entorno inválido"
         ]
@@ -275,7 +275,7 @@
       "id": "TC-009",
       "name": "fail-blocked-mixto-historia-regresa-a-implement",
       "type": "edge-case",
-      "description": "Historia en VERIFY/DONE con 3 criterios. El validador responde FAIL al criterio 1 y BLOCKED al criterio 2, APPROVED al criterio 3. Según la regla: si hay ≥1 REJECTED + ≥1 BLOCKED → verdict NEEDS-CHANGES, story.md regresa a READY-FOR-IMPLEMENT/DONE.",
+      "description": "Historia en VERIFY/DONE con 3 criterios. El validador responde FAIL al criterio 1 y BLOCKED al criterio 2, APPROVED al criterio 3. Según la regla: si hay ≥1 REJECTED + ≥1 BLOCKED → verdict NEEDS-CHANGES, story.md regresa a IMPLEMENT/TODO y el resumen nombra a /story-implement como ejecutor (STORY-189).",
       "input": {
         "story_id": "STORY-090",
         "story_status": "VERIFY",
@@ -293,8 +293,9 @@
           "Veredicto: NEEDS-CHANGES",
           "REJECTED",
           "BLOCKED",
-          "READY-FOR-IMPLEMENT",
-          "DONE",
+          "IMPLEMENT/TODO",
+          "regresa a IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement",
           "acceptance-report.md"
         ],
         "not_contains": [
@@ -475,6 +476,39 @@
         ]
       },
       "threshold": 0.9
+    },
+    {
+      "id": "TC-016",
+      "name": "needs-changes-con-tasks-md-nombra-alternativa",
+      "type": "fail-path",
+      "description": "AC-2 de STORY-189 (fila /story-acceptance): mismo flujo que TC-002 con tasks.md presente en el directorio de la historia. Con NEEDS-CHANGES el skill deja story.md en IMPLEMENT/TODO y el resumen nombra a /story-implement como ejecutor y a /story-implement-tasks como alternativa (tasks.md presente). No escribe fix-directives.md (STORY-190).",
+      "input": {
+        "story_id": "STORY-061",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "implement-report.md", "verify-report.md"],
+        "gherkin_criterios": 2,
+        "dod_criterios": 4,
+        "responses": [
+          {"criterio": 1, "resultado": "p"},
+          {"criterio": 2, "resultado": "f", "observacion": "No muestra mensaje de error esperado"}
+        ]
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement",
+          "Alternativa (tasks.md presente): /story-implement-tasks"
+        ],
+        "not_contains": [
+          "(verdict: APPROVED)",
+          "(verdict: BLOCKED)",
+          "lista para DELIVER",
+          "Ronda de corrección"
+        ]
+      },
+      "threshold": 0.90
     }
   ]
 }

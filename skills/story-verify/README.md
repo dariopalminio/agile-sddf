@@ -5,7 +5,7 @@ Orquesta la fase VERIFY del pipeline SDD: ejecuta pruebas, evalúa los criterios
 ## Posición en el pipeline
 
 ```
-story-code-review → [CODE-REVIEW/DONE] → story-verify → [APPROVED → VERIFY/DONE | NEEDS-CHANGES → READY-FOR-IMPLEMENT/DONE | BLOCKED → VERIFY/BLOCKED]
+story-code-review → [CODE-REVIEW/DONE] → story-verify → [APPROVED → VERIFY/DONE | NEEDS-CHANGES → IMPLEMENT/TODO | BLOCKED → VERIFY/BLOCKED]
 ```
 
 ## Precondiciones
@@ -61,7 +61,7 @@ El skill detecta automáticamente el modo en este orden:
 | Veredicto | Condición | Estado de `story.md` |
 |---|---|---|
 | `APPROVED` | Sin criterios DoD VERIFY fallidos ni defectos CRITICAL o HIGH abiertos, y sin ejecuciones bloqueadas | `VERIFY/DONE` |
-| `NEEDS-CHANGES` | Criterio DoD fallido o defecto CRITICAL o HIGH abierto, incluso si hay bloqueos | `READY-FOR-IMPLEMENT/DONE` |
+| `NEEDS-CHANGES` | Criterio DoD fallido o defecto CRITICAL o HIGH abierto, incluso si hay bloqueos | `IMPLEMENT/TODO` (lo retoma `/story-implement`, o `/story-implement-tasks` si existe `tasks.md`) |
 | `BLOCKED` | Ejecución no realizable, sin evidencia de fallo | `VERIFY/BLOCKED` |
 
 El vocabulario y la precedencia siguen `docs/policies/validation-contract-policy.md`.

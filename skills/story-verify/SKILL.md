@@ -28,7 +28,7 @@ Orquesta la fase VERIFY del pipeline SDD: detecta el modo de ejecución (delegad
 story-verify    ← aquí
      │   Al iniciar: story.md → VERIFY/IN-PROGRESS
      │   APPROVED: → VERIFY/DONE
-     │   NEEDS-CHANGES: → READY-FOR-IMPLEMENT/DONE
+     │   NEEDS-CHANGES: → IMPLEMENT/TODO (retoma /story-implement; /story-implement-tasks si existe tasks.md)
      │   BLOCKED: → VERIFY/BLOCKED
      │   Si estado incorrecto: → error, sin cambio
      ↓
@@ -546,15 +546,21 @@ updated: {fecha}
 
 **Si `$VERDICT = NEEDS-CHANGES`**:
 ```
-status: READY-FOR-IMPLEMENT
-substatus: DONE
+status: IMPLEMENT
+substatus: TODO
 updated: {fecha}
 ```
+
+Calcular `$TASKS_EXISTS = true` si existe `$STORY_DIR/tasks.md`, `false` si no. Este skill no escribe en `tasks.md` ni invoca al ejecutor.
 
 Mostrar en pantalla:
 ```
 ⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} Revisa verify-report.md para detalles.
+→ Ejecuta /story-implement {story_id}
+   Alternativa (tasks.md presente): /story-implement-tasks {story_id}      (solo si $TASKS_EXISTS = true)
 ```
+
+La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`. Este skill no escribe `fix-directives.md`: el ejecutor parte de `verify-report.md`.
 
 **Si `$VERDICT = BLOCKED`**:
 ```
@@ -585,7 +591,9 @@ Mostrar en pantalla:
 
 📄 Reporte: {$STORY_DIR}/verify-report.md (verdict: {verdict})
 📋 Estado story.md: VERIFY/DONE ✓                         (si APPROVED)
-📋 Estado story.md: READY-FOR-IMPLEMENT/DONE (NEEDS-CHANGES) ⚠️ (si NEEDS-CHANGES)
+📋 Estado story.md: IMPLEMENT/TODO (NEEDS-CHANGES) ⚠️     (si NEEDS-CHANGES)
+→ Ejecuta /story-implement {story_id}                     (si NEEDS-CHANGES)
+   Alternativa (tasks.md presente): /story-implement-tasks {story_id}   (si NEEDS-CHANGES y $TASKS_EXISTS = true)
 📋 Estado story.md: VERIFY/BLOCKED ⛔                      (si BLOCKED)
 
 ✅ Verificación completa                   (si APPROVED)
@@ -598,5 +606,5 @@ Mostrar en pantalla:
 - `specs/flow/<STORY-NNN>-<slug>/verify-report.md` — reporte de verificación con `verdict`, sección `## Veredicto`, summary, findings por severidad, criterios DoD evaluados e historial de ejecuciones.
 - `story.md` frontmatter actualizado:
   - `status: VERIFY / substatus: DONE` — si el veredicto es `APPROVED`
-  - `status: READY-FOR-IMPLEMENT / substatus: DONE` — si el veredicto es `NEEDS-CHANGES`
+  - `status: IMPLEMENT / substatus: TODO` — si el veredicto es `NEEDS-CHANGES`
   - `status: VERIFY / substatus: BLOCKED` — si el veredicto es `BLOCKED`

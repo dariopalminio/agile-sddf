@@ -1,7 +1,7 @@
 {
   "skill": "story-verify",
-  "version": "1.1.0",
-  "description": "Casos de prueba para story-verify: verifica deteccion de modo, precondicion de estado, generacion de verify-report.md, veredicto APPROVED / NEEDS-CHANGES / BLOCKED y transicion de estado de story.md.",
+  "version": "1.2.0",
+  "description": "Casos de prueba para story-verify: verifica deteccion de modo, precondicion de estado, generacion de verify-report.md, veredicto APPROVED / NEEDS-CHANGES / BLOCKED y transicion de estado de story.md (NEEDS-CHANGES devuelve la historia a IMPLEMENT/TODO y nombra a /story-implement como ejecutor, con /story-implement-tasks como alternativa solo si existe tasks.md; STORY-189).",
   "cases": [
     {
       "id": "TC-001",
@@ -108,11 +108,12 @@
       "id": "TC-004",
       "name": "verify-needs-changes-automatico-unit-pytest",
       "type": "edge-case",
-      "description": "Historia en CODE-REVIEW/DONE con pytest.ini presente pero los tests fallan. El skill debe detectar modo automatico-unit (pytest), generar verify-report.md con findings, y actualizar story.md a READY-FOR-IMPLEMENT/DONE con veredicto NEEDS-CHANGES por criterios DoD fallidos.",
+      "description": "Historia en CODE-REVIEW/DONE con pytest.ini presente pero los tests fallan. El skill debe detectar modo automatico-unit (pytest), generar verify-report.md con findings, actualizar story.md a IMPLEMENT/TODO con veredicto NEEDS-CHANGES por criterios DoD fallidos y nombrar a /story-implement como ejecutor; sin tasks.md no menciona /story-implement-tasks (AC-2 de STORY-189).",
       "input": {
         "input_path": "examples/pytest-project",
         "story_id": "STORY-053",
         "flags": [],
+        "artifacts_absent": ["tasks.md"],
         "simulate_test_failure": true
       },
       "expected": {
@@ -124,9 +125,11 @@
           "(verdict: NEEDS-CHANGES)",
           "Veredicto: NEEDS-CHANGES",
           "defecto(s) CRITICAL o HIGH",
-          "READY-FOR-IMPLEMENT"
+          "IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement STORY-053"
         ],
         "not_contains": [
+          "/story-implement-tasks",
           "Entorno invalido",
           "no esta en un estado valido",
           "VERIFY/DONE",
@@ -151,7 +154,7 @@
       },
       "expected": {
         "contains": ["automatico-unit", "pytest", "(verdict: BLOCKED)", "Veredicto: BLOCKED", "no ejecutable(s) en el entorno", "VERIFY/BLOCKED"],
-        "not_contains": ["(verdict: NEEDS-CHANGES)", "(verdict: APPROVED)", "READY-FOR-IMPLEMENT", "VERIFY/DONE"]
+        "not_contains": ["(verdict: NEEDS-CHANGES)", "(verdict: APPROVED)", "IMPLEMENT/TODO", "VERIFY/DONE"]
       },
       "threshold": 0.85
     },
@@ -198,6 +201,33 @@
         ],
         "not_contains": [
           "docs/specs"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-008",
+      "name": "needs-changes-con-tasks-md-nombra-alternativa",
+      "type": "edge-case",
+      "description": "AC-2 de STORY-189 (fila /story-verify): mismo flujo que TC-004 con tasks.md presente en el directorio de la historia. Con NEEDS-CHANGES el skill deja story.md en IMPLEMENT/TODO y el resumen nombra a /story-implement como ejecutor y a /story-implement-tasks como alternativa (tasks.md presente). No escribe fix-directives.md (STORY-190).",
+      "input": {
+        "input_path": "examples/pytest-project",
+        "story_id": "STORY-055",
+        "flags": [],
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "implement-report.md", "code-review-report.md"],
+        "simulate_test_failure": true
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement",
+          "Alternativa (tasks.md presente): /story-implement-tasks"
+        ],
+        "not_contains": [
+          "(verdict: APPROVED)",
+          "VERIFY/DONE",
+          "Ronda de corrección"
         ]
       },
       "threshold": 0.85

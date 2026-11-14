@@ -1,17 +1,17 @@
 {
   "skill": "story-implement-tasks",
-  "version": "1.1.0",
-  "description": "Casos de prueba para story-implement-tasks centrados en el ciclo de correccion post code review (STORY-089): el skill aplica las correcciones de fix-directives.md como pre-paso 2f por presencia del archivo (sin depender de la tarea literal 'Implementar fix-directives.md' en tasks.md), reporta la ronda leida del frontmatter (ronda 1 si el campo round no existe, sin escribirlo nunca: el escritor unico es story-code-review), conserva el gate de salida anticipada cuando no hay fix-directives.md, mantiene la compatibilidad con tasks.md legados que aun contienen el literal (marcado [x] con nota 'aplicado en pre-paso 2f' o bloqueo [~] si el archivo no existe) y no aborta las correcciones restantes cuando un hallazgo apunta a un archivo inexistente. Incluye ademas los casos del gate de entrada del Paso 1d (STORY-188): PLAN/DONE como entrada inicial canonica y el rechazo de PLAN/IN-PROGRESS listando los estados admitidos. Los demas casos que no tocan fix-directives.md quedan fuera de alcance de este archivo.",
+  "version": "1.2.0",
+  "description": "Casos de prueba para story-implement-tasks centrados en el ciclo de correccion post code review (STORY-089): el skill aplica las correcciones de fix-directives.md como pre-paso 2f por presencia del archivo (sin depender de la tarea literal 'Implementar fix-directives.md' en tasks.md), reporta la ronda leida del frontmatter (ronda 1 si el campo round no existe, sin escribirlo nunca: el escritor unico es story-code-review), conserva el gate de salida anticipada cuando no hay fix-directives.md, mantiene la compatibilidad con tasks.md legados que aun contienen el literal (marcado [x] con nota 'aplicado en pre-paso 2f' o bloqueo [~] si el archivo no existe) y no aborta las correcciones restantes cuando un hallazgo apunta a un archivo inexistente. Incluye ademas los casos del gate de entrada del Paso 1d (STORY-188): PLAN/DONE como entrada inicial canonica y el rechazo de PLAN/IN-PROGRESS listando los estados admitidos; y los de la entrada IMPLEMENT/TODO (STORY-189): el rework devuelto por story-code-review, story-verify o story-acceptance entra en IMPLEMENT/TODO, pasa a IMPLEMENT/IN-PROGRESS y activa el modo rework solo si existe fix-directives.md (sin tareas pendientes ni fix-directives.md no sale por el gate anticipado). Los demas casos que no tocan fix-directives.md quedan fuera de alcance de este archivo.",
   "cases": [
     {
       "id": "TC-001",
       "name": "fix-directives-presente-sin-literal-aplica-correcciones",
       "type": "happy-path",
-      "description": "Historia rechazada por story-code-review: story.md en READY-FOR-IMPLEMENT/DONE, tasks.md con todas sus tareas marcadas [x] y sin ninguna linea 'Implementar fix-directives.md', y fix-directives.md (round: 1) con un unico hallazgo HIGH en src/auth.ts:42 (API key hardcodeada). El skill NO debe salir por el gate de salida anticipada: debe pasar story.md a IMPLEMENT/IN-PROGRESS, ejecutar el pre-paso 2f anunciando 'Correcciones de fix-directives.md (ronda 1)', aplicar la correccion en src/auth.ts mostrando '💻 corregido: src/auth.ts', generar implement-report.md con la seccion de correcciones y dejar story.md en IMPLEMENT/DONE. tasks.md no debe recibir ninguna linea nueva.",
+      "description": "Historia rechazada por story-code-review (fila 1 de AC-3 de STORY-189): story.md en IMPLEMENT/TODO, tasks.md con todas sus tareas marcadas [x] y sin ninguna linea 'Implementar fix-directives.md', y fix-directives.md (round: 1) con un unico hallazgo HIGH en src/auth.ts:42 (API key hardcodeada). El skill NO debe salir por el gate de salida anticipada: el bloque de inicio muestra 'Estado: IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS', debe pasar story.md a IMPLEMENT/IN-PROGRESS, ejecutar el pre-paso 2f anunciando 'Correcciones de fix-directives.md (ronda 1)', aplicar la correccion en src/auth.ts mostrando '💻 corregido: src/auth.ts', generar implement-report.md con la seccion de correcciones y dejar story.md en IMPLEMENT/DONE. tasks.md no debe recibir ninguna linea nueva.",
       "input": {
         "story_id": "STORY-210",
-        "story_status": "READY-FOR-IMPLEMENT",
-        "story_substatus": "DONE",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "TODO",
         "artifacts_present": ["story.md", "design.md", "tasks.md", "testcases.md", "fix-directives.md"],
         "tasks_md": {
           "total": 5,
@@ -36,6 +36,7 @@
       },
       "expected": {
         "contains": [
+          "IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS",
           "Correcciones de fix-directives.md (ronda 1)",
           "💻 corregido: src/auth.ts",
           "implement-report.md",
@@ -176,11 +177,11 @@
       "id": "TC-005",
       "name": "hallazgo-archivo-inexistente-no-aborta",
       "type": "error-handling",
-      "description": "story.md en READY-FOR-IMPLEMENT/DONE, tasks.md todo [x] sin el literal, y fix-directives.md (round: 2) con dos hallazgos: el primero apunta a src/legacy/removed.ts:10 (archivo que ya no existe en el repositorio) y el segundo a src/auth.ts:42 (archivo real). Durante el pre-paso 2f el skill debe mostrar '⚠️ archivo no encontrado: src/legacy/removed.ts' para el primero y continuar con el segundo mostrando '💻 corregido: src/auth.ts', sin abortar las correcciones restantes. La seccion 'Correcciones de fix-directives.md (ronda 2)' de implement-report.md debe listar el hallazgo omitido; story.md termina en IMPLEMENT/DONE.",
+      "description": "story.md en IMPLEMENT/TODO (rework devuelto por story-code-review), tasks.md todo [x] sin el literal, y fix-directives.md (round: 2) con dos hallazgos: el primero apunta a src/legacy/removed.ts:10 (archivo que ya no existe en el repositorio) y el segundo a src/auth.ts:42 (archivo real). Durante el pre-paso 2f el skill debe mostrar '⚠️ archivo no encontrado: src/legacy/removed.ts' para el primero y continuar con el segundo mostrando '💻 corregido: src/auth.ts', sin abortar las correcciones restantes. La seccion 'Correcciones de fix-directives.md (ronda 2)' de implement-report.md debe listar el hallazgo omitido; story.md termina en IMPLEMENT/DONE.",
       "input": {
         "story_id": "STORY-250",
-        "story_status": "READY-FOR-IMPLEMENT",
-        "story_substatus": "DONE",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "TODO",
         "artifacts_present": ["story.md", "design.md", "tasks.md", "fix-directives.md"],
         "tasks_md": {
           "total": 3,
@@ -230,11 +231,11 @@
       "id": "TC-006",
       "name": "fix-directives-sin-round-reporta-ronda-1",
       "type": "edge-case",
-      "description": "Fixture legado (STORY-090): story.md en READY-FOR-IMPLEMENT/DONE, tasks.md todo [x] sin el literal, y fix-directives.md cuyo frontmatter NO contiene el campo round, con un hallazgo en src/auth.ts:42. El skill debe tratar la ronda ausente como 1: el anuncio del pre-paso 2f y la seccion de implement-report.md deben decir 'Correcciones de fix-directives.md (ronda 1)'. El skill no debe escribir ni completar el campo round en fix-directives.md (escritor unico: story-code-review) ni reportar la ronda como 0, desconocida o indefinida. story.md termina en IMPLEMENT/DONE.",
+      "description": "Fixture legado (STORY-090): story.md en IMPLEMENT/TODO (rework devuelto por story-code-review), tasks.md todo [x] sin el literal, y fix-directives.md cuyo frontmatter NO contiene el campo round, con un hallazgo en src/auth.ts:42. El skill debe tratar la ronda ausente como 1: el anuncio del pre-paso 2f y la seccion de implement-report.md deben decir 'Correcciones de fix-directives.md (ronda 1)'. El skill no debe escribir ni completar el campo round en fix-directives.md (escritor unico: story-code-review) ni reportar la ronda como 0, desconocida o indefinida. story.md termina en IMPLEMENT/DONE.",
       "input": {
         "story_id": "STORY-260",
-        "story_status": "READY-FOR-IMPLEMENT",
-        "story_substatus": "DONE",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "TODO",
         "artifacts_present": ["story.md", "design.md", "tasks.md", "fix-directives.md"],
         "tasks_md": {
           "total": 4,
@@ -338,6 +339,41 @@
           "→ implementando",
           "✓ completado",
           "Reporte generado"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-009",
+      "name": "implement-todo-sin-fix-directives-no-anuncia-rework",
+      "type": "edge-case",
+      "description": "Fila 2 de AC-3 de STORY-189: story.md en IMPLEMENT/TODO (rechazo de story-verify sin fix-directives.md: verify-report.md con verdict: NEEDS-CHANGES), tasks.md con sus 6 tareas marcadas [x] y sin fix-directives.md. El gate de salida anticipada del paso 2c NO aplica a la entrada IMPLEMENT/TODO: el bloque de inicio muestra 'Estado: IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS', el paso 2e escribe IMPLEMENT/IN-PROGRESS, el pre-paso 2f se omite (sin fix-directives.md) y el Paso 4 genera implement-report.md y deja story.md en IMPLEMENT/DONE. El resumen y el reporte no anuncian correcciones ni ronda de rework, porque el modo rework lo activa solo fix-directives.md.",
+      "input": {
+        "story_id": "STORY-290",
+        "story_status": "IMPLEMENT",
+        "story_substatus": "TODO",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "verify-report.md"],
+        "verify_report": {
+          "verdict": "NEEDS-CHANGES"
+        },
+        "tasks_md": {
+          "total": 6,
+          "completed": 6,
+          "pending": 0,
+          "contains_literal_implementar_fix_directives": false
+        },
+        "fix_directives": null
+      },
+      "expected": {
+        "contains": [
+          "IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS",
+          "Reporte generado"
+        ],
+        "not_contains": [
+          "No hay tareas pendientes en tasks.md",
+          "Correcciones de fix-directives.md",
+          "ronda",
+          "💻 corregido:"
         ]
       },
       "threshold": 1.0

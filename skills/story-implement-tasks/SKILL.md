@@ -40,9 +40,10 @@ Implementa una historia SDD tarea por tarea siguiendo TDD. Su propósito es **ce
 
 ```
 [story.md: PLAN/DONE]                   ← precondición inicial: planificación aprobada por story-analyze (viene de story-plan/story-analyze)
+[story.md: IMPLEMENT/TODO]              ← rework devuelto por story-code-review, story-verify o story-acceptance
+                                          (señal de correcciones: fix-directives.md presente)
 [story.md: IMPLEMENT/IN-PROGRESS]    ← precondición reanudación: tras DoD-ERRORs o ciclo interrumpido
 [story.md: READY-FOR-IMPLEMENT/DONE]    ← valor anterior a 6.0.0: ejecución inicial
-                                          o rework encolado por story-code-review (señal: fix-directives.md presente)
      ↓
 story-implement  → Entry point de la implementación: ejecuta TDD tarea por tarea  ← aquí
      │   Al iniciar: story.md → IMPLEMENT/IN-PROGRESS
@@ -90,8 +91,9 @@ El frontmatter de `story.md` debe cumplir alguna de las siguientes condiciones a
 | Condición | status | substatus | Descripción |
 |---|---|---|---|
 | Ejecución inicial | `PLAN` | `DONE` | planificación aprobada por story-analyze (story-plan / story-analyze) |
+| Rework | `IMPLEMENT` | `TODO` | rework devuelto por story-code-review, story-verify o story-acceptance (señal de correcciones: `fix-directives.md`) |
 | Reanudación | `IMPLEMENT` | `IN-PROGRESS` | reanudación tras DoD-ERRORs o ciclo interrumpido |
-| Valor anterior a 6.0.0 | `READY-FOR-IMPLEMENT` | `DONE` | ejecución inicial o rework encolado por story-code-review (señal: `fix-directives.md`) |
+| Valor anterior a 6.0.0 | `READY-FOR-IMPLEMENT` | `DONE` | ejecución inicial |
 
 Cualquier otro estado detiene la ejecución con error descriptivo.
 
@@ -140,6 +142,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 |--------|--------|-----------|
 | Precondición inicial (ejecución nueva) | `PLAN` | `DONE` |
 | Precondición inicial (valor anterior a 6.0.0) | `READY-FOR-IMPLEMENT` | `DONE` |
+| Precondición rework (devuelta por un gate con `NEEDS-CHANGES`) | `IMPLEMENT` | `TODO` |
 | Precondición reanudación (parcialmente implementada) | `IMPLEMENT` | `IN-PROGRESS` |
 | Antes de la primera tarea (Paso 2) | `IMPLEMENT` | `IN-PROGRESS` |
 | Después de generar `implement-report.md` (Paso 4) | `IMPLEMENT` | `DONE` |
@@ -149,7 +152,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 - **Fail-fast en artefactos faltantes:** si falta cualquiera de los tres artefactos obligatorios, detener la ejecución antes de implementar cualquier tarea.
 - **Actualización incremental de tasks.md:** marcar cada tarea como `[x]` o `[~]` inmediatamente al completarla o bloquearla, nunca en batch al final.
 - **No bloquear el pipeline por tareas con componentes no definidos:** marcar como `[~]` y continuar con la siguiente tarea.
-- **Gate de tareas completadas:** si `N_pendientes = 0` y `N_completadas > 0` y no existe `fix-directives.md`, detener la ejecución sin modificar ningún archivo. Si `fix-directives.md` existe, el flujo continúa para aplicar las correcciones (pre-paso 2f).
+- **Gate de tareas completadas:** si `N_pendientes = 0` y `N_completadas > 0` y no existe `fix-directives.md` y la entrada no es `IMPLEMENT/TODO`, detener la ejecución sin modificar ningún archivo. Si `fix-directives.md` existe, el flujo continúa para aplicar las correcciones (pre-paso 2f). Si la entrada es `IMPLEMENT/TODO`, el flujo continúa hasta el Paso 4 para devolver la historia a `IMPLEMENT/DONE`.
 - **Correcciones por presencia de `fix-directives.md`:** el disparador es la existencia del archivo, no una tarea en `tasks.md`. Este skill nunca escribe en `fix-directives.md` (escritor único: `story-code-review`).
 - **No reimplementar artefactos de planning:** si los artefactos ya existen y son válidos, no sobrescribirlos.
 - **Transición de estado bloqueada por DoD-ERRORs:** si hay criterios DoD con `❌`, el frontmatter permanece en `IMPLEMENT/IN-PROGRESS`.
@@ -238,9 +241,11 @@ Leer el frontmatter de `story.md` y verificar que se cumple alguna de las siguie
 Precondición válida si:
   (status: PLAN                 AND substatus: DONE)        ← planificación aprobada por story-analyze
   OR
+  (status: IMPLEMENT            AND substatus: TODO)        ← rework devuelto por story-code-review, story-verify o story-acceptance (señal de correcciones: fix-directives.md)
+  OR
   (status: IMPLEMENT            AND substatus: IN-PROGRESS) ← reanudación tras DoD-ERRORs o ciclo interrumpido
   OR
-  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← valor anterior a 6.0.0: ejecución inicial o rework encolado por story-code-review (señal: fix-directives.md)
+  (status: READY-FOR-IMPLEMENT  AND substatus: DONE)        ← valor anterior a 6.0.0: ejecución inicial
 ```
 
 **Si la precondición NO se cumple:**
@@ -251,8 +256,9 @@ Precondición válida si:
 
    story-implement requiere uno de los siguientes estados:
    · PLAN/DONE                 → planificación aprobada por story-analyze
+   · IMPLEMENT/TODO            → rework devuelto por story-code-review, story-verify o story-acceptance (señal de correcciones: fix-directives.md)
    · IMPLEMENT/IN-PROGRESS     → reanudación tras DoD-ERRORs o ciclo interrumpido
-   · READY-FOR-IMPLEMENT/DONE  → valor anterior a 6.0.0: ejecución inicial o rework encolado por story-code-review (señal: fix-directives.md)
+   · READY-FOR-IMPLEMENT/DONE  → valor anterior a 6.0.0: ejecución inicial
 
    Para ejecución inicial: ejecuta /story-plan {story_id} para completar el planning.
    Si ya ejecutaste story-plan, verifica que story-analyze no reportó ERROREs.
@@ -263,6 +269,9 @@ Detener la ejecución **sin implementar ninguna tarea**.
 
 Registrar internamente:
 - `$ENTRADA_STATUS`: el valor de `status` leído del frontmatter
+- `$ENTRADA_SUBSTATUS`: el valor de `substatus` leído del frontmatter (necesario porque `IMPLEMENT/TODO` e `IMPLEMENT/IN-PROGRESS` comparten `status`)
+
+La entrada `IMPLEMENT/TODO` indica que un gate posterior devolvió la historia, pero **no** activa por sí sola las correcciones: el pre-paso 2f lo dispara solo la presencia de `fix-directives.md`.
 
 Mostrar confirmación de inicio:
 ```
@@ -270,7 +279,8 @@ Mostrar confirmación de inicio:
    Directorio: <ruta_directorio>
    Artefactos: story.md ✓ | design.md ✓ | tasks.md ✓
    Estado: PLAN/DONE ✓                    (si $ENTRADA_STATUS = PLAN)
-   Estado: IMPLEMENT/IN-PROGRESS ✓        (si $ENTRADA_STATUS = IMPLEMENT)
+   Estado: IMPLEMENT/TODO ✓  → IMPLEMENT/IN-PROGRESS   (si la entrada es IMPLEMENT/TODO)
+   Estado: IMPLEMENT/IN-PROGRESS ✓        (si la entrada es IMPLEMENT/IN-PROGRESS)
    Estado: READY-FOR-IMPLEMENT/DONE ✓     (si $ENTRADA_STATUS = READY-FOR-IMPLEMENT)
 ```
 
@@ -324,7 +334,7 @@ Calcular y registrar internamente:
 - `fix_directives_existe` = `true` si `$STORY_DIR/fix-directives.md` existe, `false` si no
 - `modo` = `inicial` si `N_completadas = 0`; `reanudación` si `N_completadas > 0`
 
-**Gate de salida anticipada (AC-3 de STORY-067):** si `N_pendientes = 0` AND `N_completadas > 0` AND `fix_directives_existe = false`, mostrar el siguiente mensaje y terminar **sin modificar ningún archivo**:
+**Gate de salida anticipada (AC-3 de STORY-067):** si `N_pendientes = 0` AND `N_completadas > 0` AND `fix_directives_existe = false` AND la entrada no es `IMPLEMENT/TODO`, mostrar el siguiente mensaje y terminar **sin modificar ningún archivo**:
 
 ```
 ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.
@@ -333,6 +343,8 @@ Calcular y registrar internamente:
 ```
 
 **Si `fix_directives_existe = true`** el gate NO aplica aunque no haya tareas pendientes: la historia está en rework (STORY-089) y el flujo continúa 2d → 2e → 2f (aplicar correcciones) → Paso 3 (solo si `N_pendientes > 0`) → Paso 4. Con `N_pendientes = 0` el bucle de tareas del Paso 3 no se ejecuta y se pasa directamente al Paso 4.
+
+**Si la entrada es `IMPLEMENT/TODO`** (`$ENTRADA_STATUS = IMPLEMENT` y `$ENTRADA_SUBSTATUS = TODO`) el gate tampoco aplica, aunque no haya tareas pendientes ni `fix-directives.md`: un gate posterior devolvió la historia y debe volver a `IMPLEMENT/DONE` para pasar de nuevo por `/story-code-review`. El flujo es el del rework sin tareas pendientes: 2d → 2e (`IMPLEMENT/IN-PROGRESS`) → 2f solo si `fix_directives_existe = true` → Paso 3 solo si `N_pendientes > 0` → Paso 4. Sin `fix-directives.md`, `$FIX_DIRECTIVES_APPLIED = false`: el resumen y `implement-report.md` no muestran `Correcciones de fix-directives.md` ni ronda. La entrada `READY-FOR-IMPLEMENT/DONE` (valor anterior a 6.0.0) conserva la salida anticipada.
 
 **Si `modo = reanudación`** (y `N_pendientes > 0`), mostrar el siguiente resumen antes de la primera tarea:
 
@@ -371,10 +383,10 @@ Mostrar resumen de carga:
 
 #### 2e. Actualizar frontmatter a IMPLEMENT/IN-PROGRESS (si no está ya en ese estado)
 
-Antes de ejecutar la primera tarea, verificar el estado de entrada registrado en `$ENTRADA_STATUS`:
+Antes de ejecutar la primera tarea, verificar el estado de entrada registrado en `$ENTRADA_STATUS` y `$ENTRADA_SUBSTATUS`:
 
-- Si `$ENTRADA_STATUS` es `IMPLEMENT` (el frontmatter ya tiene `status: IMPLEMENT / substatus: IN-PROGRESS`): **omitir la escritura** — el estado ya es correcto, no se realiza ninguna modificación al archivo.
-- Si `$ENTRADA_STATUS` es `PLAN` o `READY-FOR-IMPLEMENT`: actualizar el frontmatter de `story.md`:
+- Si la entrada es `IMPLEMENT/IN-PROGRESS` (`$ENTRADA_STATUS = IMPLEMENT` **y** `$ENTRADA_SUBSTATUS = IN-PROGRESS`): **omitir la escritura** — el estado ya es correcto, no se realiza ninguna modificación al archivo.
+- En cualquier otra entrada admitida (`PLAN/DONE`, `IMPLEMENT/TODO` o `READY-FOR-IMPLEMENT/DONE`): actualizar el frontmatter de `story.md`:
   - `status: IMPLEMENT`
   - `substatus: IN-PROGRESS`
 
@@ -544,7 +556,7 @@ La actualización es por tarea, no en batch al final.
 
 ### Paso 4 — Generar Reporte Final y Actualizar Estado
 
-Al finalizar el procesamiento de todas las tareas (completadas + bloqueadas), o directamente tras el pre-paso 2f cuando `N_pendientes = 0` (rework sin tareas pendientes), ejecutar los siguientes pasos en orden:
+Al finalizar el procesamiento de todas las tareas (completadas + bloqueadas), o directamente tras el pre-paso 2f cuando `N_pendientes = 0` (rework sin tareas pendientes, incluida la entrada `IMPLEMENT/TODO` sin `fix-directives.md`, en la que 2f se omite), ejecutar los siguientes pasos en orden:
 
 #### 4a. Generar `implement-report.md`
 
@@ -762,7 +774,7 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 | Ruta explícita fuera de specs/flow/ | `❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)` | Detener sin escribir ningún archivo |
 | `story.md`, `design.md` o `tasks.md` ausente | `❌ No se encontró <artefacto> en: <ruta>` | Detener sin implementar ninguna tarea |
 | Estado de `story.md` no válido | `❌ La historia <story_id> no está en un estado válido para implementar.` | Detener sin implementar ninguna tarea |
-| Sin tareas pendientes y sin `fix-directives.md` | `ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.` | Terminar sin modificar ningún archivo (gate 2c) |
+| Sin tareas pendientes y sin `fix-directives.md` (entrada distinta de `IMPLEMENT/TODO`) | `ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.` | Terminar sin modificar ningún archivo (gate 2c). Con entrada `IMPLEMENT/TODO` el gate no aplica: 2e → Paso 4 sin anunciar correcciones |
 | `fix-directives.md` presente con `round` ausente o no entero ≥ 1 | — (sin advertencia: archivo legado) | `$FIX_ROUND = 1` y continuar; nunca escribir `round` |
 | `fix-directives.md` presente sin tabla "Instrucciones de corrección" legible | `[WARN] fix-directives.md sin tabla de correcciones legible — correcciones omitidas` | Advertir, `$FIX_DIRECTIVES_APPLIED = false` y continuar con el bucle de tareas |
 | `fix-directives.md` presente sin "Lista blanca de archivos permitidos para modificar" | `[WARN] fix-directives.md sin lista blanca — se aplican las correcciones solo en los archivos de la columna Archivo:Línea` | Advertir y continuar aplicando las correcciones |

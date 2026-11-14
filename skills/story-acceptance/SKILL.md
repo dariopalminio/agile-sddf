@@ -32,7 +32,7 @@ story-acceptance    ← aquí
       │   Entradas válidas:               VERIFY/DONE · ACCEPTANCE/IN-PROGRESS · ACCEPTANCE/BLOCKED (reintento)
       │   Al iniciar sesión nueva:         story.md → ACCEPTANCE/IN-PROGRESS
       │   Veredicto APPROVED:              story.md → ACCEPTANCE/DONE
-      │   Veredicto NEEDS-CHANGES:         story.md → READY-FOR-IMPLEMENT/DONE
+      │   Veredicto NEEDS-CHANGES:         story.md → IMPLEMENT/TODO (retoma /story-implement; /story-implement-tasks si existe tasks.md)
       │   Veredicto BLOCKED:               story.md → ACCEPTANCE/BLOCKED
       │   Veredicto PENDING:               story.md se mantiene en ACCEPTANCE/IN-PROGRESS
       │   Estado incorrecto:              → error sin modificar archivos
@@ -451,11 +451,19 @@ Mostrar: `✅ Veredicto: APPROVED — historia {story_id} lista para DELIVER`
 
 **Si `$VERDICT = NEEDS-CHANGES`:**
 ```yaml
-status: READY-FOR-IMPLEMENT
-substatus: DONE
+status: IMPLEMENT
+substatus: TODO
 updated: {fecha}
 ```
-Mostrar: `⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} La historia regresa a READY-FOR-IMPLEMENT/DONE.`
+Calcular `$TASKS_EXISTS = true` si existe `$STORY_DIR/tasks.md`, `false` si no. Este skill no escribe en `tasks.md` ni invoca al ejecutor.
+
+Mostrar:
+```
+⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} La historia regresa a IMPLEMENT/TODO.
+→ Ejecuta /story-implement {story_id}
+   Alternativa (tasks.md presente): /story-implement-tasks {story_id}      (solo si $TASKS_EXISTS = true)
+```
+La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`. Este skill no escribe `fix-directives.md`: el ejecutor parte de `acceptance-report.md`.
 
 **Si `$VERDICT = BLOCKED`:**
 ```yaml
@@ -485,16 +493,18 @@ Mostrar: `⛔ Veredicto: BLOCKED — {verdict_reason} La historia permanece en A
 
 📄 Reporte generado: {$STORY_DIR}/acceptance-report.md (verdict: {verdict})
 📋 Estado story.md: ACCEPTANCE/DONE ✓                        (si APPROVED)
-📋 Estado story.md: READY-FOR-IMPLEMENT/DONE ⚠️               (si NEEDS-CHANGES)
+📋 Estado story.md: IMPLEMENT/TODO ⚠️                         (si NEEDS-CHANGES)
 📋 Estado story.md: ACCEPTANCE/BLOCKED ⚠️                     (si BLOCKED)
 
 ✅ Veredicto: APPROVED — historia {story_id} lista para DELIVER
 ```
 o bien:
 ```
-⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} La historia regresa a READY-FOR-IMPLEMENT/DONE.
-   La historia regresa a READY-FOR-IMPLEMENT/DONE para corrección.
+⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} La historia regresa a IMPLEMENT/TODO.
+   La historia regresa a IMPLEMENT/TODO para corrección.
    Revisa acceptance-report.md para detalles de los criterios rechazados.
+→ Ejecuta /story-implement {story_id}
+   Alternativa (tasks.md presente): /story-implement-tasks {story_id}      (solo si $TASKS_EXISTS = true)
 ```
 o bien (si BLOCKED):
 ```
@@ -509,7 +519,7 @@ o bien (si BLOCKED):
 - `specs/flow/<STORY-NNN>-<slug>/acceptance-report.md` — reporte de validación con `verdict` en el frontmatter, `## Veredicto` como primera sección, trazabilidad por criterio, resumen ejecutivo e historial de sesiones
 - `story.md` frontmatter actualizado según el veredicto:
   - `status: ACCEPTANCE / substatus: DONE` — veredicto `APPROVED`
-  - `status: READY-FOR-IMPLEMENT / substatus: DONE` — veredicto `NEEDS-CHANGES`
+  - `status: IMPLEMENT / substatus: TODO` — veredicto `NEEDS-CHANGES`
   - `status: ACCEPTANCE / substatus: BLOCKED` — veredicto `BLOCKED`
   - `status: ACCEPTANCE / substatus: IN-PROGRESS` — veredicto `PENDING` (se mantiene; sesión por reanudar)
 
@@ -530,8 +540,9 @@ o bien (si BLOCKED):
 **Acción:** Responder FAIL con observación "No muestra mensaje de error" al segundo criterio
 **Output esperado:**
 - `acceptance-report.md` con `verdict: NEEDS-CHANGES`, criterio 2 como REJECTED con observación
-- `story.md` actualizado a `status: READY-FOR-IMPLEMENT / substatus: DONE`
-- Mensaje: "Veredicto: NEEDS-CHANGES — 1 criterio(s) rechazado(s) y 0 bloqueado(s). La historia regresa a READY-FOR-IMPLEMENT/DONE."
+- `story.md` actualizado a `status: IMPLEMENT / substatus: TODO`
+- Mensaje: "Veredicto: NEEDS-CHANGES — 1 criterio(s) rechazado(s) y 0 bloqueado(s). La historia regresa a IMPLEMENT/TODO."
+- Ejecutor: "→ Ejecuta /story-implement STORY-NNN" y, solo si existe `tasks.md`, "Alternativa (tasks.md presente): /story-implement-tasks STORY-NNN"
 
 ### Caso 3 — Estado incorrecto
 
