@@ -7,7 +7,7 @@ status: PLAN
 substatus: IN-PROGRESS
 parent: null
 created: 2026-11-07
-updated: 2026-11-13
+updated: 2026-11-14
 related: []
 ---
 
@@ -26,7 +26,7 @@ Simplificar el modelo de estados y volverlo coherente retirando los dos únicos 
 
 ## Historias
 
-- [ ] **STORY-186** — ADR de workflows sin estados buffer: Como mantenedor de agile-sddf que va a implementar las historias de EPIC-029, quiero un ADR aceptado que reemplace a ADR-0006 y ADR-0008 y fije los workflows sin buffers, `PLAN/DONE` como salida aprobada de la planificación de historia y de épica, el rework en `IMPLEMENT/TODO` sin estado ni substatus propios, el contrato de `fix-directives.md` con tres escritores y la ventana de compatibilidad de `READY-FOR-IMPLEMENT/DONE`, para que las demás historias de la épica implementen una sola decisión y ninguna tenga que reabrir el destino del rework, el contrato de directivas o la regla del valor legado en su `design.md`
+- [x] **STORY-186** — ADR de workflows sin estados buffer: Como mantenedor de agile-sddf que va a implementar las historias de EPIC-029, quiero un ADR aceptado que reemplace a ADR-0006 y ADR-0008 y fije los workflows sin buffers, `PLAN/DONE` como salida aprobada de la planificación de historia y de épica, el rework en `IMPLEMENT/TODO` sin estado ni substatus propios, el contrato de `fix-directives.md` con tres escritores y la ventana de compatibilidad de `READY-FOR-IMPLEMENT/DONE`, para que las demás historias de la épica implementen una sola decisión y ninguna tenga que reabrir el destino del rework, el contrato de directivas o la regla del valor legado en su `design.md`
 - [ ] **STORY-187** — Dominio, requisitos y máquina de estados sin buffers: Como Solo Builder que consulta el dominio, la máquina de estados y los requisitos para entender el ciclo de vida de historias y épicas, quiero que `domain.md`, `domain-state-management.md`, `domain-story-lifecycle.md`, `domain-epic-lifecycle.md`, `domain-skills-map.md`, `state-machine.md`, NFR-006 y FR-043/044/045 describan los workflows sin buffers del ADR, con el rework de los tres gates en `IMPLEMENT/TODO`, sin WIP para una cola y con `TODO` como «pendiente de iniciar» en cualquier estado activo, para que el ciclo de vida que aprendo en la documentación de autoridad sea el mismo que escriben los skills en el frontmatter
 - [ ] **STORY-188** — La planificación termina en PLAN/DONE: Como Solo Builder que planifica una historia y la pasa a implementación, quiero que una planificación aprobada por `/story-analyze` termine en `PLAN/DONE`, que los ejecutores acepten ese estado como entrada y que `/story-plan` devuelva a `PLAN/IN-PROGRESS` una historia que encuentre en `PLAN/DONE` sin un `analyze.md` aprobado, para pasar de la planificación a la implementación sin el estado buffer `READY-FOR-IMPLEMENT` y sin que una historia llegue a los ejecutores con la planificación cerrada sin un análisis aprobado
 - [ ] **STORY-189** — El rework de los tres gates vuelve a IMPLEMENT/TODO: Como Solo Builder que corrige una historia rechazada por la revisión de código, la verificación o la aceptación, quiero que `/story-code-review`, `/story-verify` y `/story-acceptance` con `NEEDS-CHANGES` devuelvan la historia a `IMPLEMENT/TODO` y nombren al ejecutor que la retoma, y que `/story-implement` y `/story-implement-tasks` acepten ese estado, con el modo rework activado, como hoy, solo por `fix-directives.md`, para que el rework se vea en el frontmatter y un rechazo después de implementar no sugiera replanificar la historia
