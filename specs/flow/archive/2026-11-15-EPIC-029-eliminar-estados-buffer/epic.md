@@ -5,11 +5,13 @@ slug: EPIC-029-eliminar-estados-buffer
 title: "Eliminar estados buffer"
 status: DEVELOP
 substatus: DONE
-status: SHIP
-substatus: IN-PROGRESS
+status: COMPLETED
+substatus: DONE
 parent: null
+version: 5.3.0
 created: 2026-11-07
 updated: 2026-11-15
+completed: 2026-11-15
 related: []
 ---
 

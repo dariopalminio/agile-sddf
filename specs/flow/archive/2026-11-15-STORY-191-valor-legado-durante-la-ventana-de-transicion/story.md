@@ -5,11 +5,11 @@ id: STORY-191
 kind: feat
 slug: STORY-191-valor-legado-durante-la-ventana-de-transicion
 title: "Valor legado durante la ventana de transición"
-status: DELIVER
+status: COMPLETED
 substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13
-updated: 2026-11-14
+updated: 2026-11-15
 related:
   - EPIC-029-eliminar-estados-buffer
   - STORY-186-adr-de-workflows-sin-estados-buffer
