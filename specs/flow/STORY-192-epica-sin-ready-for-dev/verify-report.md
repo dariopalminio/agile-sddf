@@ -92,7 +92,7 @@ Comprobaciones de los CNF de la historia:
 
 1. Ejecutar a criterio humano :
     `npm run test:eval -- epic-analyze`   # TC-035, TC-036, TC-037
-    `npm run test:eval -- epic-refine`    # TC-009, TC-027, TC-028
+    `npm run test:eval -- epic-analyze`    # TC-009, TC-027, TC-028
 2. Registrar como deuda la prueba de tiempo `S097-UT-011`, que da falsos rojos en el gate bajo carga.
 3. Considerar en una historia posterior los hallazgos LOW de `code-review-report.md` sobre la precisión de las aserciones de TC-009, TC-028, TC-035 y TC-036.
 

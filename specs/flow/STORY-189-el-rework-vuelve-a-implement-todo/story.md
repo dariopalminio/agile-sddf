@@ -5,7 +5,7 @@ id: STORY-189
 kind: feat
 slug: STORY-189-el-rework-vuelve-a-implement-todo
 title: "El rework de los tres gates vuelve a IMPLEMENT/TODO"
-status: VERIFY
+status: DELIVER
 substatus: DONE
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13
