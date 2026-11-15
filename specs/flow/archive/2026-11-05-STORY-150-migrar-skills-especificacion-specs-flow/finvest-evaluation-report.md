@@ -64,6 +64,6 @@ evaluated: 2026-10-22
 
 ## Comentarios y Recomendaciones
 
-**I – Independencia (3):** la dependencia de STORY-148 es real pero está declarada. Antes de iniciar el desarrollo, confirmar que STORY-148 esté entregada (o al menos su contrato de rutas fijas acordado) y fijar la ubicación de la épica fixture `specs/flow/EPIC-NN-<slug>/epic.md` para que las pruebas de lectura de la épica padre no esperen a STORY-151.
+**I – Independencia (3):** la dependencia de STORY-148 es real pero está declarada. Antes de iniciar el desarrollo, confirmar que STORY-148 esté entregada (o al menos su contrato de rutas fijas acordado) y fijar la ubicación de la épica fixture `specs/flow/EPIC-NNN-<slug>/epic.md` para que las pruebas de lectura de la épica padre no esperen a STORY-151.
 
 **S – Small (3):** tamaño aceptable. Si durante el planning el volumen de `assets/agents/` o de evals resulta mayor al esperado, considerar acotar la actualización de `evals/evals.json` a una tarea separada dentro de la misma historia, sin dividirla.

@@ -40,7 +40,7 @@ archivo a las historias `CANCELED`.
 ├── docs/                  conocimiento: product/, requirements/, domains/, architecture/, adr/,
 │                          policies/, guardrails/, guides/, runbooks/, templates/, constitution.md, index.md
 ├── specs/                 estado
-│   ├── flow/              work items planos: EPIC-NN-<slug>/, STORY-NNN-<slug>/ (sin epics/ ni stories/)
+│   ├── flow/              work items planos: EPIC-NNN-<slug>/, STORY-NNN-<slug>/ (sin epics/ ni stories/)
 │   │   └── archive/       stories COMPLETED o CANCELED: <YYYY-MM-DD>-STORY-NNN-<slug>/
 │   └── living/            reservado (épica de Living Spec)
 └── workflow/              proceso, reservado (épica de Workflow)
@@ -57,7 +57,7 @@ archivo a las historias `CANCELED`.
   frontmatter no tiene ninguna de esas dos claves, el `date:`. Una story sin fecha válida no se archiva. Las épicas y
   las stories en cualquier otro estado quedan en `specs/flow/`.
 - **Nombre de directorio:** los directorios de `specs/flow/` conservan el slug: `STORY-NNN-<slug>/` y
-  `EPIC-NN-<slug>/`, como en ADR-0004 y ADR-0016.
+  `EPIC-NNN-<slug>/`, como en ADR-0004 y ADR-0016.
 
 ## Rationale
 
@@ -98,6 +98,6 @@ archivo a las historias `CANCELED`.
 ## Referencias
 
 - [[layout-fijo-de-tres-raices]] — ADR-0016, decisión reemplazada
-- [[nivel-l2-epic-y-directorios-numerados]] — ADR-0004, convención `STORY-NNN-<slug>/` y `EPIC-NN-<slug>/`
+- [[nivel-l2-epic-y-directorios-numerados]] — ADR-0004, convención `STORY-NNN-<slug>/` y `EPIC-NNN-<slug>/`
 - [[EPIC-27-completar-flujo-de-story]] — épica que origina esta decisión
 - [[STORY-164-archivar-historias-canceladas]] — historia que la aplica

@@ -50,6 +50,7 @@ En todos estos casos el **Responsable** es `PO` con la **Acción sugerida** del 
 | Todas las candidatas tienen dependientes | `ninguna candidata sin dependientes: <STORY-a>, <STORY-b>` |
 | Varias candidatas sin dependientes | `varias candidatas sin dependientes: <STORY-a>, <STORY-b>` |
 | La historia de cierre está en `IMPLEMENT` o posterior (`CODE-REVIEW`, `VERIFY`, `ACCEPTANCE`, `DELIVER`, `COMPLETED`; cualquier `substatus`) | `<STORY-NNN> ya está implementada: añadir un AC reabre su alcance` |
+| La historia de cierre tiene un `status` fuera del workflow de historia | `` <STORY-NNN> con status `<valor>` fuera del workflow de historia: normaliza su status antes de asignarle cobertura `` (`<valor>` es el `status` literal del `story.md`) |
 | El `story.md` de la historia de cierre no tiene la sección `## ✅ Criterios de aceptación` o ningún `### AC-<n>` en ella | `<STORY-NNN> sin sección de criterios de aceptación reconocible` |
 | SAL-02: el smoke no tiene bloque `gherkin` con un paso `Entonces` | `<SMOKE-N> sin resultado reconocible en epic.md` |
 
@@ -60,8 +61,9 @@ Las listas de candidatas van por `STORY-NNN` ascendente.
 | `status` de la historia de cierre | Efecto |
 |---|---|
 | `SPECIFY` (o sin `status`) | Se aplica |
-| `PLAN`, `READY-FOR-IMPLEMENT` | Se aplica y el resumen final añade `Replanifica: /story-plan <STORY-NNN>`: su `design.md`, `tasks.md` y `analyze.md` no cubren el AC nuevo |
+| `PLAN` | Se aplica y el resumen final añade `Replanifica: /story-plan <STORY-NNN>`: su `design.md`, `tasks.md` y `analyze.md` no cubren el AC nuevo |
 | `IMPLEMENT` o posterior | Fuera de alcance (tabla anterior) |
+| Cualquier otro valor (fuera del workflow de historia) | Fuera de alcance (tabla anterior) |
 
 `status` y `substatus` nunca se escriben (CS-15): el aviso de replanificación es solo una recomendación.
 
@@ -124,6 +126,6 @@ La nota del caso (secciones 1 y 3) va a `notas`, precedida de `H-NNN · <código
 
 **`cambios-aplicados`:** un bloque `### C-NN — <story.md> › <ubicación>` por cambio, con el AC completo o la línea E1 en **Después**.
 
-**Resumen final (Paso 9):** una línea `Replanifica: /story-plan <STORY-NNN>` por cada historia de cierre en `PLAN` o `READY-FOR-IMPLEMENT`, antes de `Siguiente paso: /epic-analyze <EPIC_ID>`. En `--auto` el bloque de retorno no cambia.
+**Resumen final (Paso 9):** una línea `Replanifica: /story-plan <STORY-NNN>` por cada historia de cierre en `PLAN`, antes de `Siguiente paso: /epic-analyze <EPIC_ID>`. En `--auto` el bloque de retorno no cambia.
 
 **Relectura (Paso 7 del `SKILL.md`):** además de las comprobaciones generales, cada línea E1 escrita cumple la regla E1 para su elemento y cada AC de cierre quedó dentro de `## ✅ Criterios de aceptación`. Si alguna falla, restauración global desde los `.bak`.

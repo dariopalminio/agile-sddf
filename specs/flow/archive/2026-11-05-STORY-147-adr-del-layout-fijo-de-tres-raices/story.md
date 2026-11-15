@@ -45,7 +45,7 @@ Entonces solo cambian sus metadatos de reemplazo ("status" y "superseded-by")
 
 ### AC-3 — Escenario alternativo – decisión sobre el nombre del directorio de historia
 ```gherkin
-Dado que la épica conserva "STORY-NNN-<slug>/" y "EPIC-NN-<slug>/" (ADR-0004)
+Dado que la épica conserva "STORY-NNN-<slug>/" y "EPIC-NNN-<slug>/" (ADR-0004)
 Cuando se redacta el ADR
 Entonces el ADR declara explícitamente si los directorios de "specs/flow/" conservan el slug
   Y la decisión es consistente con SMOKE-1 y SMOKE-2 de la épica

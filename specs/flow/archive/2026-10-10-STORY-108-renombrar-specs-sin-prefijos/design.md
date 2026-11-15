@@ -316,7 +316,7 @@ No se crean componentes ejecutables. Se reutilizan `git mv`, `git grep`, `sed`, 
 
 | Interfaz | Contrato | AC que satisface |
 |---|---|---|
-| Ruta de épicas | `$SPECS_BASE/specs/epics/EPIC-NN-<slug>/epic.md` | AC-1, AC-2 |
+| Ruta de épicas | `$SPECS_BASE/specs/epics/EPIC-NNN-<slug>/epic.md` | AC-1, AC-2 |
 | Ruta de historias | `$SPECS_BASE/specs/stories/STORY-NNN-<slug>/story.md` (+ artefactos de la historia) | AC-1, AC-2 |
 | Capa de `memory-system` | `layerOf('specs/epics/…') = 'specs-epics'`, `layerOf('specs/stories/…') = 'specs-stories'`; segmento desconocido → `specs-<segmento>` | AC-2, CNF-2 |
 | Semilla de `scaffold` | `specs/01-projects/.gitkeep`, `specs/epics/.gitkeep`, `specs/stories/.gitkeep`, `specs/README.md` | AC-2 |

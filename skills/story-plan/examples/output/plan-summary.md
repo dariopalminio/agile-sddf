@@ -40,7 +40,7 @@ Este documento muestra el resumen final que `story-plan` produce al completar el
 
 Todos los artefactos están listos. La historia puede pasar a implementación.
 Veredicto de story-analyze: APPROVED — sin inconsistencias
-Estado de story.md: READY-FOR-IMPLEMENT/DONE ✓
+Estado de story.md: PLAN/DONE ✓
 ```
 
 ---

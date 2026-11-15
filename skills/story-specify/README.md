@@ -14,7 +14,7 @@ Skill orquestador del flujo completo de especificación de historias SDD: guía 
     ├── /story-refine      → Aplica mejoras automáticas por dimensión FINVEST (Paso 5A)
     └── rol product-owner → Refinamiento conversacional en esta sesión: discovery y gaps de contexto (pasos 1 y 5B)
     ↓ [story.md: SPECIFY/DONE]
-/story-plan                            [story.md: PLANNING/IN-PROGRESS → READY-FOR-IMPLEMENT/DONE]
+/story-plan                            [story.md: PLAN/IN-PROGRESS → PLAN/DONE]
 ```
 
 ## Precondiciones

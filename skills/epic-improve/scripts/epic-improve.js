@@ -542,7 +542,7 @@ function insertSection(lines, title, body, anchor) {
 // ── Localización y aplicación ─────────────────────────────────────────────────────
 
 /**
- * Localiza la épica. `dir` es la ruta lógica (`specs/flow/EPIC-NN-<slug>/`), `physDir` el
+ * Localiza la épica. `dir` es la ruta lógica (`specs/flow/EPIC-NNN-<slug>/`), `physDir` el
  * directorio físico que contiene `epic.md` (puede ser una copia aislada, p. ej. un fixture).
  * Con `--id`/`--path` solo busca en el primer nivel de `specs/flow/` (nunca `archive/` ni `STORY-*`).
  */
@@ -561,7 +561,7 @@ function locateEpic({ repoRoot, id, epicPath, epicDir }) {
   if (epicPath !== undefined) {
     const rel = path.relative(repoRoot, path.resolve(repoRoot, epicPath)).split(path.sep).join('/');
     if (!EPIC_PATH_RE.test(rel)) {
-      return fail('INVALID_PATH', `La ruta ${epicPath} no es una épica de specs/flow/ (se esperaba specs/flow/EPIC-NN-<slug>/)`);
+      return fail('INVALID_PATH', `La ruta ${epicPath} no es una épica de specs/flow/ (se esperaba specs/flow/EPIC-NNN-<slug>/)`);
     }
     dir = rel.replace(/\/epic\.md$/, '');
     if (!fs.existsSync(abs(repoRoot, dir)) || !fs.statSync(abs(repoRoot, dir)).isDirectory()) {

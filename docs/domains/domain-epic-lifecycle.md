@@ -35,8 +35,7 @@ title: "Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle)"
 ## 2. Lenguaje Ubicuo (Glosario)
 
 * **Epic:** Entregable o release que agrupa múltiples historias de usuario. Identificada por `EPIC-NNN`.
-* **Pipeline Epic:** Secuencia canónica de estados que recorre una épica: `DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED`.
-* **Buffer (READY-FOR-DEV):** Estado de cola que desacopla planificación de desarrollo, con WIP limitado.
+* **Pipeline Epic:** Secuencia canónica de estados que recorre una épica: `DEFINE → PLAN → DEVELOP → VALIDATE → SHIP → COMPLETED` (ADR-0022, [[workflows-sin-estados-buffer]]).
 * **Historia:** Unidad de trabajo atómica que compone la épica (`STORY-NNN`).
 * **Gate de Calidad:** Validación estructural de `epic.md` antes de generar sus historias.
 * **Release:** Publicación de la épica en un artefacto (npm, Docker, APK, etc.) o despliegue a producción.
@@ -66,7 +65,7 @@ title: "Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle)"
   * `EpicArtifact` (Entidad) — `epic.md` como artefacto principal
   * `StoryRef` (VO) — colección de historias que componen la épica
   * `ReleaseArtifact` (VO) — artefacto publicado en `SHIP`
-  * `WipLimit` (VO) — aplicable solo en `READY-FOR-DEV`
+  * `WipLimit` (VO) — aplicable solo a `substatus: IN-PROGRESS` (constitución §9)
 
 ---
 
@@ -75,8 +74,10 @@ title: "Documentación del Dominio: Ciclo de Vida de Epic (Epic Lifecycle)"
 ### 4.1 Happy path
 
 ```
-DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED
+DEFINE → PLAN → DEVELOP → VALIDATE → SHIP → COMPLETED
 ```
+
+Fuente del workflow y de sus transiciones: ADR-0022, [[workflows-sin-estados-buffer]].
 
 ### 4.2 Máquina de estados completa
 
@@ -84,22 +85,19 @@ DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETE
 stateDiagram-v2
     [*] --> DEFINE
     DEFINE --> PLAN
-    PLAN --> RFD
-    RFD --> DEVELOP
+    PLAN --> DEVELOP : aprobación del PO (PLAN/DONE)
     DEVELOP --> VALIDATE : all stories DELIVERED
     VALIDATE --> SHIP : DoD ✓
     VALIDATE --> DEVELOP : DoD ✗
     SHIP --> COMPLETED
     COMPLETED --> [*]
-
-    state "READY-FOR-DEV" as RFD
 ```
 
 ### 4.3 Rutas alternativas
 
 | Ruta | Descripción |
 |------|-------------|
-| **Happy path** | `DEFINE → PLAN → RFD → DEVELOP → VALIDATE → SHIP → COMPLETED` |
+| **Happy path** | `DEFINE → PLAN → DEVELOP → VALIDATE → SHIP → COMPLETED` |
 | **Rework por validación** | `VALIDATE → DEVELOP` (DoD ✗) — las historias con problemas regresan a su propio pipeline |
 | **Cancelación** | `* → CANCELED` (desde cualquier estado activo) |
 
@@ -110,12 +108,11 @@ stateDiagram-v2
 | Status | Descripción | Actor | Substatus inicial |
 |--------|-------------|-------|-------------------|
 | `DEFINE` | Se define el alcance: objetivos de alto nivel, features que componen la épica, criterios de éxito y valor esperado. Se documenta en `epic.md`. | PM / PO | `IN-PROGRESS` |
-| `PLAN` | Se planifica la ejecución: se desglosan las historias de usuario, se asignan a la épica, se estima esfuerzo y se identifican dependencias. | PM / Equipo | `IN-PROGRESS` |
-| `READY-FOR-DEV` | Buffer/cola. Épica completamente planificada, priorizada y aprobada. Espera capacidad del equipo. Aplica límite WIP. | Sistema | `DONE` |
+| `PLAN` | Se planifica la ejecución: se desglosan las historias de usuario, se asignan a la épica, se estima esfuerzo y se identifican dependencias. Termina en `PLAN/DONE` con la aprobación del PO, escrita a mano: ningún skill la escribe. | PM / Equipo | `IN-PROGRESS` |
 | `DEVELOP` | Desarrollo en curso: las historias de la épica se implementan siguiendo su propio ciclo de vida. La épica permanece aquí hasta que todas las historias estén en `DELIVER`. | Equipo | `IN-PROGRESS` |
 | `VALIDATE` | Pruebas de integración y regresión del conjunto completo: end-to-end, UAT, requisitos no funcionales. | QA / Equipo | `IN-PROGRESS` |
 | `SHIP` | La épica se publica o despliega a producción. Último estado activo. | Humano (pasos de liberación manuales) · registro: `epic-ship` | `IN-PROGRESS` |
-| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. Se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`. | Humano (vía `epic-complete`) | `DONE` |
+| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. Se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`. | Humano (vía `epic-complete`) | `DONE` |
 | `CANCELED` | La épica fue cancelada sin entregar. Estado terminal. | PM / PO | `DONE` |
 
 ---
@@ -124,9 +121,9 @@ stateDiagram-v2
 
 | Substatus | Aplica en | Significado específico en Epic |
 |-----------|-----------|--------------------------------|
-| `TODO` | `READY-FOR-DEV` | Épica en cola, esperando capacidad del equipo. |
+| `TODO` | Cualquier estado activo | Pendiente de iniciar. |
 | `IN-PROGRESS` | `DEFINE`, `PLAN`, `DEVELOP`, `VALIDATE`, `SHIP` | El rol correspondiente está trabajando activamente. |
-| `DONE` | Todos los estados activos | El trabajo del estado ha terminado y la épica está lista para avanzar. |
+| `DONE` | Todos los estados activos | El trabajo del estado ha terminado y la épica está lista para avanzar; `PLAN/DONE` es la aprobación del PO. |
 | `BLOCKED` | Cualquier estado activo | Impedimento externo (ej. dependencia, decisión pendiente). No retrocede el status. |
 
 ---
@@ -136,14 +133,13 @@ stateDiagram-v2
 Además de las invariantes transversales de [[domain-state-management]]:
 
 1. Una `Epic` es la raíz de la jerarquía de work items (`parent: null`); su vínculo estratégico se mantiene en `product/roadmap.md`.
-2. Una `Epic` contiene **una o más historias** (`StoryRef`). Una épica sin historias no puede pasar de `PLAN` a `READY-FOR-DEV`.
+2. Una `Epic` contiene **una o más historias** (`StoryRef`). Una épica sin historias no puede llegar a `PLAN/DONE`.
 3. El estado `DEVELOP` no puede completarse hasta que **todas las historias de la épica estén en `DELIVER`**.
 4. El estado `VALIDATE` solo puede alcanzarse cuando todas las historias están entregadas; en caso de fallo, las historias problemáticas regresan a su pipeline y la épica vuelve a `DEVELOP`.
 5. El estado `SHIP` es un **último estado activo**: implica publicación o despliegue real del entregable, que ejecuta el humano; `epic-ship` registra `SHIP/DONE` solo tras su confirmación explícita y nunca ejecuta commit, tag, merge, push, release ni despliegue.
 6. El estado `COMPLETED` es terminal pasivo; no retrocede sin acción explícita de reapertura.
-7. El `READY-FOR-DEV` debe respetar un **WIP limit** definido en la política del proyecto.
-8. El gate de calidad de formato (`epic-format-validation`) debe superarse antes de generar las historias.
-9. El estado `COMPLETED` no admite transiciones salientes excepto `CANCELED` o reapertura explícita.
+7. El gate de calidad de formato (`epic-format-validation`) debe superarse antes de generar las historias.
+8. El estado `COMPLETED` no admite transiciones salientes excepto `CANCELED` o reapertura explícita.
 
 ---
 
@@ -152,13 +148,11 @@ Además de las invariantes transversales de [[domain-state-management]]:
 | Gate | Estado | Qué valida |
 |------|--------|------------|
 | **Gate de formato** | `DEFINE` → `PLAN` | `/epic-format-validation`: estructura del `epic.md` contra el template canónico. Con `NEEDS-REFINEMENT`, `/epic-improve` corrige los defectos del reporte (con `epic.md.bak`, sin cambiar el estado) y se vuelve a validar: `NEEDS-REFINEMENT → epic-improve → epic-format-validation`. |
-| **Gate de integridad de historias** | `PLAN` → `READY-FOR-DEV` (informativo) | `/epic-analyze`: índice de historias ↔ `parent` de los `story.md`, cobertura de criterios de salida y smoke tests por las historias, y madurez de las historias hijas (estado ≥ `SPECIFY/DONE`, `related` resolubles); veredicto sin cambio de estado. Con `NEEDS-REFINEMENT`, `/epic-refine` corrige el índice (historias huérfanas y duplicadas) y los `related` rotos del reporte y asigna la cobertura de criterios de salida y smoke tests a la historia de cierre (con `<archivo>.bak`, sin cambiar el estado) y se vuelve a analizar: `NEEDS-REFINEMENT → epic-refine → epic-analyze`. |
+| **Gate de integridad de historias** | `PLAN`, antes de la aprobación del PO (`PLAN/DONE`) (informativo) | `/epic-analyze`: índice de historias ↔ `parent` de los `story.md`, cobertura de criterios de salida y smoke tests por las historias, y madurez de las historias hijas (estado ≥ `SPECIFY/DONE`, `related` resolubles); veredicto sin cambio de estado. Con `NEEDS-REFINEMENT`, `/epic-refine` corrige el índice (historias huérfanas y duplicadas) y los `related` rotos del reporte y asigna la cobertura de criterios de salida y smoke tests a la historia de cierre (con `<archivo>.bak`, sin cambiar el estado) y se vuelve a analizar: `NEEDS-REFINEMENT → epic-refine → epic-analyze`. |
 | **Gate de completitud de historias** | `DEVELOP` → `VALIDATE` | Todas las historias están en `DELIVER`. |
 | **Gate de integración** | `VALIDATE` | E2E, regresión, requisitos no funcionales del conjunto. |
 | **Gate de aceptación de épica** | `VALIDATE` → `SHIP` | Criterios de éxito y valor de negocio del entregable. |
 | **Gate de publicación** | `SHIP` | `/epic-ship`: con `epic-validate-report.md` en `APPROVED`, registra `SHIP/IN-PROGRESS`, escribe el bloque de la épica en `CHANGELOG.md` si no está al día y escribe `SHIP/DONE` solo sin bloqueos de `docs/guardrails/dod-epic-ship.md` y con confirmación humana. |
-| **WIP Limit** | `READY-FOR-DEV` | No exceder el número máximo de épicas en cola. |
-
 ---
 
 ## 9. Trazabilidad y Persistencia
@@ -171,7 +165,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
   * `epic-analyze-report.md` — generado en `PLAN`.
   * `epic-refine-report.md` — generado en `PLAN`.
   * `epic-validate-report.md` — generado en `VALIDATE` por `epic-validate`.
-* **Archivo:** `epic-complete` escribe `COMPLETED/DONE` desde `SHIP/DONE` solo con confirmación humana explícita y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`; también archiva, sin cambiar el status, las épicas `COMPLETED/DONE` y `CANCELED/DONE`. El status se conserva al archivar y `<YYYY-MM-DD>` sale de `updated:`, `created:` o `date:` (ADR-0019).
+* **Archivo:** `epic-complete` escribe `COMPLETED/DONE` desde `SHIP/DONE` solo con confirmación humana explícita y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`; también archiva, sin cambiar el status, las épicas `COMPLETED/DONE` y `CANCELED/DONE`. El status se conserva al archivar y `<YYYY-MM-DD>` sale de `updated:`, `created:` o `date:` (ADR-0019).
 * **Claves de cierre:** `completed:` (fecha de cierre) y `version:` (versión, si se conoce) son claves opcionales del frontmatter de `epic.md`, fuera del template; solo las escribe `epic-complete` al completar la épica. Una épica puede no coincidir con un release: sin versión se completa igual y no se escribe `version:`.
 * **Reapertura:** solo desde `COMPLETED` con acción explícita y registro del motivo.
 * **Convención de guion:** ASCII U+002D `-`.
@@ -235,7 +229,7 @@ template anterior (v1) se migran con `/memory-system migrate --from=epic-templat
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Dominio transversal:** [[domain-state-management]]
 * **Principios aplicables:** [[constitution]] (patrones 8, 14; reglas 9 y 15)
-* **Decisión de arquitectura:** [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
+* **Decisión de arquitectura:** [[workflows-sin-estados-buffer]] (ADR-0022) — fuente del workflow y las transiciones de epic; [[workflow-canonico-story-y-epic]] (ADR-0003) — rationale de los nombres de `status` en infinitivo
 
 ---
 
@@ -245,4 +239,5 @@ template anterior (v1) se migran con `/memory-system migrate --from=epic-templat
 * [[domain-story-lifecycle]] — Ciclo de vida de Story (contenido de la Epic)
 * [[domain-foundational-docs-lifecycle]] — Ciclo de vida de la documentación fundacional
 * [[constitution]] — Constitución del proyecto
-* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic
+* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic (nombres en infinitivo)
+* [[workflows-sin-estados-buffer]] — ADR-0022: workflows de story y epic, rework en `IMPLEMENT/TODO` y cola de listos como consulta

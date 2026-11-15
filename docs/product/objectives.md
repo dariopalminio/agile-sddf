@@ -105,11 +105,11 @@ Construir un framework (harness) CLI multiagente, declarativo y basado en Markdo
 
 ### OBJ-10 — Controlar el WIP y respetar el flujo
 
-**Descripción:** Aplicar los principios de Kanban y Flight Levels: buffers con WIP limitado, gates de transición, detección de cuellos de botella, métricas de flujo por nivel.
+**Descripción:** Aplicar los principios de Kanban y Flight Levels: colas como consulta y WIP limitado sobre `IN-PROGRESS`, gates de transición, detección de cuellos de botella, métricas de flujo por nivel.
 
 **Justificación:** sin control de flujo, el framework sería un generador de deuda técnica. Kanban y Flight Levels ya están integrados en el modelo de estados.
 
-**Indicador:** los buffers (`READY-FOR-IMPLEMENT`, `READY-FOR-DEV`) tienen WIP configurable; el framework expone lead time y throughput por nivel.
+**Indicador:** las historias listas para implementar se consultan como cola (primero `IMPLEMENT/TODO`, después `PLAN/DONE`), sin estado buffer; el WIP se limita sobre `IN-PROGRESS`, y el framework expone lead time y throughput por nivel.
 
 ---
 

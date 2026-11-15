@@ -1,6 +1,6 @@
 {
   "skill": "epic-analyze",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Casos de prueba para epic-analyze (STORY-120): cruza la sección de historias de epic.md (localizada por la clave 'historias' del template de épica) con los story.md que declaran la épica como parent, escribe <EPIC_DIR>/epic-analyze-report.md desde un template leído en runtime (central → seed) con hallazgos INT-01…INT-06 y un veredicto APPROVED / NEEDS-REFINEMENT; desde STORY-121 añade la familia SAL-01…SAL-04 (cobertura de criterios de salida y smoke tests por las historias, con evidencia E1 mención explícita / E2 AC que verifica) y la tabla de cobertura del contrato de salida; desde STORY-122 añade la familia MAD-01…MAD-03 (madurez de las historias hijas: estado mínimo SPECIFY/DONE y referencias related a historias o épicas resolubles por ID), todos WARNING; nunca modifica epic.md ni story.md y se detiene sin escribir ante una épica no resuelta o un template ausente; desde BUG-003 un criterio con ID declarado (`**CS-<id>** — …`) se cubre por la mención de su ID (E1, como SMOKE-<N>), el reporte lo etiqueta con ese ID y cita su enunciado literal de epic.md.",
   "cases": [
     {
@@ -1182,7 +1182,7 @@
         "invocation": "/epic-analyze EPIC-30",
         "mode": "manual",
         "epics_dirs": [
-          "specs/flow/EPIC-29-carrito/"
+          "specs/flow/EPIC-029-carrito/"
         ],
         "archived_epics_dirs": [
           "specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/"
@@ -1658,6 +1658,160 @@
         ]
       },
       "threshold": 1
+    },
+    {
+      "id": "TC-035",
+      "name": "epica-sin-buffers-madurez-y-aprobacion-manual",
+      "type": "happy-path",
+      "description": "STORY-192 AC-1 (D-2, D-3): EPIC-30-ejemplo está en PLAN/IN-PROGRESS y lista STORY-201 (SPECIFY/DONE, cita el criterio de salida y SMOKE-1), STORY-202 (PLAN/DONE) y STORY-203 (IMPLEMENT/TODO). Las tres se clasifican lista en el orden de madurez sin estados buffer, el resumen manual indica que el PO aprueba la épica editando a mano su estado a PLAN/DONE y epic.md no se escribe.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/"],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-30",
+          "4: title: \"Épica de ejemplo\"",
+          "5: status: PLAN",
+          "6: substatus: IN-PROGRESS",
+          "7: ---",
+          "8: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: - [ ] **STORY-203** — Exportar clientes: descarga el listado.",
+          "21: ",
+          "22: ## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->",
+          "23: - [ ] El listado funciona.",
+          "24: ",
+          "25: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "26: ### SMOKE-1 — Listado visible",
+          "27: ```gherkin",
+          "28: Escenario: Listado visible",
+          "29:   Dado clientes registrados",
+          "30:   Cuando el usuario abre el listado",
+          "31:   Entonces ve los clientes paginados",
+          "32: ```"
+        ],
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo specs/flow/ y specs/flow/archive/, y las épicas de epics_dirs las únicas EPIC-* de specs/flow/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories": [
+          { "path": "specs/flow/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "specs/flow/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "PLAN", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: PLAN", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] },
+          { "path": "specs/flow/STORY-203-exportar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "IMPLEMENT", "substatus": "TODO", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: IMPLEMENT", "4: substatus: TODO", "5: related: []", "6: ---", "7: # Historia: Exportar clientes"] }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-11-14"
+      },
+      "expected": {
+        "contains": ["verdict: APPROVED", "Madurez de historias hijas: 3/3", "PLAN/DONE", "Siguiente paso"],
+        "not_contains": ["MAD-0", "READY-FOR-DEV", "epic.md ==="]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-036",
+      "name": "historia-legada-ready-for-implement-nota-sin-mad-03",
+      "type": "edge-case",
+      "description": "STORY-192 AC-2, fila 1 (D-1): EPIC-30-ejemplo lista STORY-201 (SPECIFY/DONE, cita el criterio de salida y SMOKE-1) y STORY-202, que conserva el valor legado READY-FOR-IMPLEMENT/DONE de una historia planificada antes de 6.0.0. STORY-202 se clasifica lista, sin MAD-03, con una nota de valor legado que la cita y no cuenta para el veredicto.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/"],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-30",
+          "4: title: \"Épica de ejemplo\"",
+          "5: ---",
+          "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: ",
+          "21: ## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->",
+          "22: - [ ] El listado funciona.",
+          "23: ",
+          "24: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "25: ### SMOKE-1 — Listado visible",
+          "26: ```gherkin",
+          "27: Escenario: Listado visible",
+          "28:   Dado clientes registrados",
+          "29:   Cuando el usuario abre el listado",
+          "30:   Entonces ve los clientes paginados",
+          "31: ```"
+        ],
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo specs/flow/ y specs/flow/archive/, y las épicas de epics_dirs las únicas EPIC-* de specs/flow/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories": [
+          { "path": "specs/flow/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "specs/flow/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "READY-FOR-IMPLEMENT", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: READY-FOR-IMPLEMENT", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Filtrar clientes"] }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-11-14"
+      },
+      "expected": {
+        "contains": ["verdict: APPROVED", "warnings: 0", "Madurez de historias hijas: 2/2", "valor legado", "STORY-202"],
+        "not_contains": ["MAD-03"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-037",
+      "name": "status-ready-for-verify-no-clasificable-mad-03",
+      "type": "edge-case",
+      "description": "STORY-192 AC-2, fila 2: EPIC-30-ejemplo lista STORY-201 (SPECIFY/DONE, cita el criterio de salida y SMOKE-1) y STORY-202 con status: READY-FOR-VERIFY, fuera del orden de madurez y sin regla de valor legado. STORY-202 se clasifica no-clasificable y genera un hallazgo WARNING MAD-03 que cita el valor, sin nota de valor legado.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/"],
+        "epic_md_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-30",
+          "4: title: \"Épica de ejemplo\"",
+          "5: ---",
+          "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Listar clientes: muestra el listado paginado.",
+          "19: - [ ] **STORY-202** — Filtrar clientes: filtra el listado por estado.",
+          "20: ",
+          "21: ## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->",
+          "22: - [ ] El listado funciona.",
+          "23: ",
+          "24: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "25: ### SMOKE-1 — Listado visible",
+          "26: ```gherkin",
+          "27: Escenario: Listado visible",
+          "28:   Dado clientes registrados",
+          "29:   Cuando el usuario abre el listado",
+          "30:   Entonces ve los clientes paginados",
+          "31: ```"
+        ],
+        "stories_note": "Los story.md listados en stories son los únicos que existen bajo specs/flow/ y specs/flow/archive/, y las épicas de epics_dirs las únicas EPIC-* de specs/flow/; status, substatus y related de cada historia son los de su frontmatter (body_lines).",
+        "stories": [
+          { "path": "specs/flow/STORY-201-listar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "SPECIFY", "substatus": "DONE", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: SPECIFY", "4: substatus: DONE", "5: related: []", "6: ---", "7: # Historia: Listar clientes", "8: ## 📎 Notas", "9: - Cubre el criterio de salida `El listado funciona.` y SMOKE-1 de la épica."] },
+          { "path": "specs/flow/STORY-202-filtrar-clientes/story.md", "parent": "EPIC-30-ejemplo", "status": "READY-FOR-VERIFY", "related": [], "body_lines": ["1: ---", "2: parent: EPIC-30-ejemplo", "3: status: READY-FOR-VERIFY", "4: related: []", "5: ---", "6: # Historia: Filtrar clientes"] }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-11-14"
+      },
+      "expected": {
+        "contains": ["MAD-03", "READY-FOR-VERIFY", "Madurez de historias hijas: 1/2"],
+        "not_contains": ["valor legado"]
+      },
+      "threshold": 1.0
     }
   ]
 }

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "generated": "2026-11-15",
+  "entries": [
+    {
+      "id": "L1",
+      "reviewer": "tech-lead-reviewer",
+      "location": "skills/story-verify/evals/evals.json:323-329",
+      "description": "La regla de no copiar las anotaciones escritor: a fix-directives.md no tiene aserción en los evals de los tres gates (not_contains sin escritor:)",
+      "hash": "d8e5e75445630362"
+    },
+    {
+      "id": "L2",
+      "reviewer": "product-owner-reviewer",
+      "location": "skills/story-code-review/SKILL.md:699-699",
+      "description": "La regla nueva de omitir las anotaciones escritor: no tiene aserción en los evals de story-code-review, story-verify ni story-acceptance",
+      "hash": "972b160b3eb2b06d"
+    },
+    {
+      "id": "L3",
+      "reviewer": "integration-reviewer",
+      "location": "specs/flow/STORY-190-directivas-de-correccion-desde-verify-y-acceptance/design.md:109-109",
+      "description": "D-01 (c) sigue rechazando los comentarios en la plantilla; falta un CR-003 que registre la anotación escritor: por P13",
+      "hash": "886d20ecff2bee1f"
+    }
+  ]
+}

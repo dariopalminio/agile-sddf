@@ -29,7 +29,7 @@ Quality gate formal entre la implementación y la marca final de Done. Compatibl
 - Clasifica como **PREEXISTENTE** (🟣, ADR-0021) los defectos en líneas que la historia no tocó: se informan en su dimensión, pero no cuentan para `max-severity`, el veredicto ni `fix-directives.md`. Sin evidencia de git (Paso 4a.2), ningún hallazgo es PREEXISTENTE
 - Controla el ruido de los `LOW` (Paso 4a.5): muestra como máximo el «Tope de Minor» de `REVIEW.md` (5 por defecto) por revisor y, si la revisión anterior guardó `code-review-lows.json`, omite los `LOW` que se repiten sobre líneas cuyo contenido no cambió. Los `HIGH`/`MEDIUM` se muestran siempre
 - **Si `APPROVED`**: genera `code-review-report.md`, elimina `fix-directives.md` (si existe) y marca `story.md` como `CODE-REVIEW/DONE`
-- **Si `NEEDS-CHANGES`**: genera `fix-directives.md` con `round: N` (ronda previa + 1), retrocede `story.md` a `READY-FOR-IMPLEMENT/DONE` y nombra al ejecutor de correcciones (`/story-implement`; `/story-implement-tasks` como alternativa si existe `tasks.md`)
+- **Si `NEEDS-CHANGES`**: genera `fix-directives.md` desde la plantilla común con `round: N` (ronda previa de la historia + 1), devuelve `story.md` a `IMPLEMENT/TODO` y nombra al ejecutor de correcciones (`/story-implement`; `/story-implement-tasks` como alternativa si existe `tasks.md`)
 - **Si `BLOCKED`**: genera el reporte, identifica a los revisores sin informe válido y deja `story.md` en `IMPLEMENT/DONE` para repetir la revisión; no genera `fix-directives.md`
 
 **Qué NO hace este skill:**
@@ -48,7 +48,7 @@ Quality gate formal entre la implementación y la marca final de Done. Compatibl
 story-code-review  → Quality gate: revisión multi-agente del código  ← aquí
      │   Al iniciar: story.md → CODE-REVIEW/IN-PROGRESS
      │   Al finalizar (APPROVED): story.md → CODE-REVIEW/DONE
-     │   Al finalizar (NEEDS-CHANGES): story.md → READY-FOR-IMPLEMENT/DONE
+     │   Al finalizar (NEEDS-CHANGES): story.md → IMPLEMENT/TODO
      │   Al finalizar (BLOCKED): story.md → IMPLEMENT/DONE
      │       fix-directives.md (round N) = señal de rework → ejecutor: /story-implement
      │       (alternativa si existe tasks.md: /story-implement-tasks)
@@ -74,7 +74,8 @@ Los siguientes artefactos se usan en `$STORY_DIR`. Solo `story.md` y `design.md`
 |---|---|---|
 | `story.md` | **Requerido** | Fuente de criterios de aceptación — sin él, el Product-Owner-Reviewer no puede operar |
 | `design.md` | **Requerido** | Fuente de arquitectura esperada — sin él, el Integration-Reviewer no puede operar |
-| `implement-report.md` | Opcional | Evidencia de implementación producida por `/story-implement` o `/story-implement-tasks`; si no existe, los agentes verifican conformidad sin cruzar con tareas del reporte |
+| `implement-report.md` | Opcional | Evidencia de implementación producida por `/story-implement` o `/story-implement-tasks`; si no existe, los agentes verifican conformidad sin cruzar con tareas del reporte. Su encabezado de ronda es una de las dos fuentes de la ronda previa (Paso 4f.1) |
+| `fix-directives-template.md` | Opcional | Solo se usa con `NEEDS-CHANGES`. Plantilla común `docs/templates/fix-directives-template.md`; si no existe, la semilla `assets/fix-directives-template.md` (Paso 4f.2) |
 | `testcases.md` | Opcional | Especificación canónica de casos de prueba producida por `/story-testcases`; si existe, se incorpora al análisis de cobertura de ACs y trazabilidad de diseño |
 | `tasks.md` | Opcional | El Tech-Lead-Reviewer puede revisar calidad sin lista de tareas; su presencia solo decide si se ofrece `/story-implement-tasks` como ejecutor alternativo (Paso 4g). Este skill nunca escribe en él |
 | `constitution.md` | Opcional | Mejora la revisión pero no la bloquea si no existe |
@@ -145,7 +146,7 @@ El flujo por defecto es siempre el equipo de cuatro agentes. El flag `--single-a
 | Precondición de reanudación | `CODE-REVIEW` | `IN-PROGRESS` |
 | Al iniciar la revisión (Paso 1) | `CODE-REVIEW` | `IN-PROGRESS` |
 | Finalización aprobada (Paso 6) | `CODE-REVIEW` | `DONE` |
-| Finalización con bloqueantes (Paso 4g) | `READY-FOR-IMPLEMENT` | `DONE` |
+| Finalización con bloqueantes (Paso 4g) | `IMPLEMENT` | `TODO` |
 
 - La ejecución es idempotente: `.tmp/story-code-review/{story_id}/` se limpia al inicio de cada ejecución
 - `story-code-review` solo puede ejecutarse si `story.md` está en `IMPLEMENT/DONE` o `CODE-REVIEW/IN-PROGRESS`. Cualquier otro estado detiene la ejecución sin escrituras.
@@ -674,18 +675,31 @@ Registrar internamente como `$WHITELIST`: lista de `(archivo, [hallazgos])`.
 
 **4f.1 — Calcular la ronda de corrección (antes de instanciar el template):**
 
-1. Si existe `$STORY_DIR/fix-directives.md` (rechazo anterior), leer el campo `round` de su frontmatter.
-2. `$PREV_ROUND` = ese valor si es un entero ≥ 1; en cualquier otro caso (archivo inexistente, campo ausente, valor no entero como `abc`, `null` o `0`) → `$PREV_ROUND = 0`. No emitir error ni advertencia bloqueante: es una degradación controlada (archivos legados sin `round`).
+Regla de ronda (ADR-0022; el mismo texto en `story-code-review`, `story-verify` y `story-acceptance`):
+
+1. `$PREV_ROUND` = el **máximo** entero ≥ 1 entre dos fuentes versionadas de `$STORY_DIR`:
+   - (a) el campo `round` del frontmatter de `fix-directives.md`, si el archivo existe;
+   - (b) los `N` de los encabezados de nivel 2 de `implement-report.md` con la forma `## Ciclo de corrección — ronda N` (`story-implement`) o `## Correcciones de fix-directives.md (ronda N)` (`story-implement-tasks`), si el archivo existe.
+2. Sin ningún valor válido (archivos inexistentes, campo ausente, valor no entero como `abc`, `null` o `0`, encabezados sin número) → `$PREV_ROUND = 0`, sin error ni advertencia: es una degradación controlada (archivos legados).
 3. `$ROUND = $PREV_ROUND + 1`.
 
-> `story-code-review` es el **escritor único** de `round`: ningún otro skill lo crea, lo modifica ni lo completa. `round` cuenta las ejecuciones de este skill cerradas en `NEEDS-CHANGES` para la historia, sin más semántica.
+> `round` cuenta todas las rondas de rework de la historia; lo escriben `story-code-review`, `story-verify` y `story-acceptance` con la misma regla (ADR-0022), y los ejecutores solo lo leen. Por eso no vuelve a 1 cuando este skill aprueba y borra `fix-directives.md`: `implement-report.md` conserva el encabezado de la última ronda.
 
 **4f.2 — Instanciar el template:**
 
-Leer `assets/fix-directives-template.md` como fuente de verdad de la estructura.
+Resolver la plantilla de `fix-directives.md` (primera coincidencia):
+
+1. `docs/templates/fix-directives-template.md` (plantilla común del proyecto).
+2. Si no existe, la semilla `assets/fix-directives-template.md` de este skill, con el aviso:
+   ```
+   ⚠️ Usando template seed del skill. Copia assets/fix-directives-template.md a docs/templates/ para personalizarlo.
+   ```
+3. Si no existe ninguna: `❌ Template fix-directives-template.md no encontrado`. El gate escribe su reporte y el estado de `story.md`, pero no `fix-directives.md`.
+
+La plantilla resuelta es la fuente de verdad de la estructura. Las anotaciones `escritor:` de la plantilla (las líneas `# escritor:` y los demás comentarios `#` del frontmatter, y los comentarios `<!-- escritor: … -->` del cuerpo) no se copian a `fix-directives.md`: se omiten esas líneas (principio 13 de `docs/constitution.md`).
 
 Completar el template con:
-- Frontmatter: `story_id`, fecha actual, `$MAX_SEVERITY`, `round: $ROUND`
+- Frontmatter: `story_id`, fecha actual, `$MAX_SEVERITY`, `round: $ROUND`, `based-on: code-review-report.md` (`{{BASED_ON}}`)
 - Sección "Resumen de bloqueantes": título de la historia, severidad máxima, total de hallazgos bloqueantes HIGH/MEDIUM de 4c (incluyendo hallazgos DoD si los hay; sin los PREEXISTENTE), `Ronda: $ROUND`
 - Tabla "Instrucciones de corrección": una fila por hallazgo bloqueante de 4c (estado `bloqueante` o DoD) numeradas correlativamente, con columnas `#`, `Archivo:Línea`, `Dimensión`, `Severidad`, `Hallazgo`, `Acción requerida`
   - Hallazgos de agentes: `Dimensión` = dimensión del agente (code-quality, requirements-coverage, integration-architecture, security)
@@ -704,20 +718,20 @@ Mostrar:
 #### 4g. [NEEDS-CHANGES] Retroceder story.md y determinar ejecutor
 
 Actualizar el frontmatter de `story.md`:
-- `status: READY-FOR-IMPLEMENT`
-- `substatus: DONE`
+- `status: IMPLEMENT`
+- `substatus: TODO`
 
 Calcular `$TASKS_EXISTS = true` si existe `$STORY_DIR/tasks.md`, `false` si no. Este skill **no escribe** en ese archivo bajo ninguna condición: la señal de rework es la presencia de `fix-directives.md`, no una tarea.
 
 Mostrar:
 ```
-⚠️  Veredicto: NEEDS-CHANGES — story.md → READY-FOR-IMPLEMENT/DONE
+⚠️  Veredicto: NEEDS-CHANGES — story.md → IMPLEMENT/TODO
 🔁 Ronda de corrección: <N>
 → Ejecuta /story-implement <story_id>
    Alternativa (tasks.md presente): /story-implement-tasks <story_id>      (solo si $TASKS_EXISTS = true)
 ```
 
-Ningún ejecutor se invoca automáticamente: la historia queda encolada en `READY-FOR-IMPLEMENT`.
+Ningún ejecutor se invoca automáticamente: la historia queda en `IMPLEMENT/TODO` hasta que el ejecutor la retome.
 
 #### 4h. [APPROVED] Limpiar fix-directives.md residual
 
@@ -811,7 +825,7 @@ Mostrar:
 📋 Estado story.md: CODE-REVIEW/DONE ✓
 ```
 
-**Si `$VERDICT = NEEDS-CHANGES`:** el frontmatter ya fue actualizado a `READY-FOR-IMPLEMENT/DONE` en el Paso 4g. No ejecutar este paso.
+**Si `$VERDICT = NEEDS-CHANGES`:** el frontmatter ya fue actualizado a `IMPLEMENT/TODO` en el Paso 4g. No ejecutar este paso.
 
 **Si `$VERDICT = BLOCKED`:** actualizar el frontmatter a `IMPLEMENT/DONE` (volver al estado desde el que se inicia una revisión, también si esta ejecución era una reanudación). No crear `fix-directives.md` ni eliminar uno preexistente. Mostrar `📋 Estado story.md: IMPLEMENT/DONE — revisión bloqueada; vuelve a ejecutar /story-code-review <story_id> cuando se despeje el bloqueo`.
 
@@ -870,7 +884,7 @@ O si hay hallazgos criticos:
 
 📋 Fix directives: <ruta>/fix-directives.md (ronda <N>)
 📄 Reporte:        <ruta>/code-review-report.md
-📋 Estado:         <story_id> → READY-FOR-IMPLEMENT/DONE
+📋 Estado:         <story_id> → IMPLEMENT/TODO
 📋 DoD CODE-REVIEW: {N}/{Total} criterios ✓ | {N_error} criterios ❌
 
 ⚠️  Revisión completada con hallazgos críticos
@@ -894,7 +908,7 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
 | Ruta explícita fuera de specs/flow/ | `❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)` | Detener sin escribir ningún archivo |
 | `story.md` y/o `design.md` ausentes | `❌ Artefactos requeridos no encontrados en: <$STORY_DIR>/` (un único mensaje con la lista de faltantes) | Detener sin modificar ningún archivo |
-| `story.md` no está en `IMPLEMENT/DONE` ni `CODE-REVIEW/IN-PROGRESS` (incluida una historia ya encolada en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`) | `❌ La historia <story_id> no está en un estado válido para revisar.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
+| `story.md` no está en `IMPLEMENT/DONE` ni `CODE-REVIEW/IN-PROGRESS` (incluida una historia ya devuelta a `IMPLEMENT/TODO` con `fix-directives.md`) | `❌ La historia <story_id> no está en un estado válido para revisar.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
 | `implement-report.md` o `testcases.md` ausentes | — (se registran como `⏭️` en el informe) | Continuar sin ese contexto |
 | DoD de la etapa code-review ausente | `⚠️ DoD de la etapa code-review no encontrado …` | Advertir y continuar sin validación DoD |
 | `REVIEW.md` ausente en la raíz (Paso 2d.1) | `⚠️ REVIEW.md no encontrado en la raíz del repositorio — revisión sin guía de revisión …` | Advertir y continuar con los criterios genéricos de los revisores; nunca `BLOCKED` ni `NEEDS-CHANGES` por ello |
@@ -912,7 +926,9 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | Duda sobre si dos hallazgos piden la misma corrección (Paso 4a.4) | — | No fusionarlos: quedan como hallazgos separados |
 | Revisor que cubre un criterio DoD sin informe válido o no lanzado con `--single-agent` (Paso 4c.1) | — (`⚠️ Revisor sin informe válido` en la tabla DoD) | Marcar el criterio `⚠️`, sin fila `DoD-CODE-REVIEW`; el criterio no cambia `$MAX_SEVERITY` ni `$VERDICT` |
 | Fila bloqueante sin ruta al construir la lista blanca (Paso 4e, degradación) | — (se anota `[archivo no especificado]`) | Excluirla de la lista blanca y continuar |
-| `fix-directives.md` previo con `round` ausente o ilegible (Paso 4f.1) | — (sin error ni advertencia: archivo legado) | `$PREV_ROUND = 0`: la cuenta de rondas se reinicia en 1 |
+| `round` de `fix-directives.md` ausente o ilegible y `implement-report.md` sin encabezado de ronda válido (Paso 4f.1) | — (sin error ni advertencia: archivos legados) | La fuente sin valor válido no cuenta; sin ninguna, `$PREV_ROUND = 0` y la cuenta de rondas empieza en 1 |
+| Plantilla central ausente (Paso 4f.2) | `⚠️ Usando template seed del skill. Copia assets/fix-directives-template.md a docs/templates/ para personalizarlo.` | Instanciar la semilla de `assets/` y continuar |
+| Plantilla central y semilla ausentes (Paso 4f.2) | `❌ Template fix-directives-template.md no encontrado` | Escribir el reporte y el estado de `story.md`, pero no `fix-directives.md` |
 
 ---
 
@@ -921,7 +937,7 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | Artefacto | Condición |
 |-----------|-----------|
 | `specs/flow/<STORY-NNN>-<slug>/code-review-report.md` | Siempre |
-| `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` | Solo si `NEEDS-CHANGES`; incluye `round` (escritor único: este skill); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Se elimina en `APPROVED` |
+| `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` | Solo si `NEEDS-CHANGES`, desde la plantilla común con `based-on: code-review-report.md`; incluye `round`, que escriben con la misma regla los tres gates (`story-code-review`, `story-verify`, `story-acceptance`, ADR-0022); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Solo este skill lo elimina, en `APPROVED` |
 | `specs/flow/<STORY-NNN>-<slug>/code-review-lows.json` | Se intenta escribir en cada ronda con el motor `low-ledger.js` (Paso 5c), con cualquier veredicto; se conserva cuando tiene éxito y se archiva con la historia. Es JSON sin frontmatter: lo escribe solo el motor |
 | `.tmp/story-code-review/{story_id}/low-locations.json` y `low-lows.json` | Temporal (entrada de los Pasos 4a.5 y 5c) |
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
@@ -931,6 +947,6 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 
 Estado final de `story.md`:
 - `CODE-REVIEW/DONE` si la revisión es aprobada
-- `READY-FOR-IMPLEMENT/DONE` si hay hallazgos criticos (severidad HIGH o MEDIUM)
+- `IMPLEMENT/TODO` si hay hallazgos criticos (severidad HIGH o MEDIUM)
 - `IMPLEMENT/DONE` si la revisión queda `BLOCKED` por un informe ausente o inválido, sin hallazgos bloqueantes
 

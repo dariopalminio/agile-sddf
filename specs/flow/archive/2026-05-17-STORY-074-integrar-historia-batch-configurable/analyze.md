@@ -98,7 +98,7 @@ related:
 - **Tipo:** D
 - **Descripción:** El campo `parent:` de `story.md` contiene el placeholder `<nombre-del-release-padre>` sin ser reemplazado por el ID real del release padre.
 - **Archivo afectado:** `story.md` — frontmatter, campo `parent:`
-- **Acción requerida:** Actualizar `parent:` con el ID del release padre real (ej. `EPIC-NN-nombre-release`). No bloquea la implementación.
+- **Acción requerida:** Actualizar `parent:` con el ID del release padre real (ej. `EPIC-NNN-nombre-release`). No bloquea la implementación.
 
 ---
 

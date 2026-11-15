@@ -19,7 +19,7 @@ previous-score: 3.97
 
 ### I – Independencia (score previo: 3)
 
-**Recomendación aplicada:** Declarar la dependencia de STORY-148 en `## 📎 Notas` como precondición, no solo en `related`. Precisar que STORY-150, STORY-151 y STORY-156 pueden entregarse en cualquier orden respecto de esta historia, apoyándose en el fixture de épica de `specs/flow/EPIC-NN-<slug>/epic.md`.
+**Recomendación aplicada:** Declarar la dependencia de STORY-148 en `## 📎 Notas` como precondición, no solo en `related`. Precisar que STORY-150, STORY-151 y STORY-156 pueden entregarse en cualquier orden respecto de esta historia, apoyándose en el fixture de épica de `specs/flow/EPIC-NNN-<slug>/epic.md`.
 
 **Cambio realizado:** En "Notas / contexto adicional" se reemplazó la frase "Depende de STORY-148" por un párrafo "Precondición (bloqueo)" que explica por qué STORY-148 debe entregarse antes (contrato de rutas fijas y gate, CNF-2), y se añadió un párrafo "Independencia respecto de las hermanas" que indica que STORY-150, STORY-151 y STORY-156 pueden entregarse en cualquier orden gracias a la épica fixture.
 

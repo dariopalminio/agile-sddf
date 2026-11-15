@@ -23,7 +23,7 @@ Este dominio gobierna la producción de visión, stakeholders, requisitos y road
 - **Etapa:** `Begin`, `Discovery` o `Planning`.
 - **Visión cerrada:** `product/vision.md` con `substatus: DONE`.
 - **Requisito:** `FR-NNN` o `NFR-NNN`.
-- **Roadmap planificado:** `product/roadmap.md` con una `## Propuesta (` o una línea `EPIC-NN` en `## Épicas`.
+- **Roadmap planificado:** `product/roadmap.md` con una `## Propuesta (` o una línea `EPIC-NNN` en `## Épicas`.
 - **Propuesta:** sección fechada append-only del roadmap.
 
 ## 3. Modelo Táctico

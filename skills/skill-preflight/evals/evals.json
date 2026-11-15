@@ -1,7 +1,7 @@
 {
   "skill": "skill-preflight",
-  "version": "2.1.0",
-  "description": "Evalúa el diagnóstico explícito del layout fijo SDDF (ADR-0016): rutas fijas, señales del layout legado con remisión a la guía de migración, templates centrales y ausencia de mutaciones. TC-001..TC-003 (resolución de raíz configurable) se retiraron en STORY-152 y sus IDs no se reutilizan.",
+  "version": "2.2.0",
+  "description": "Evalúa el diagnóstico explícito del layout fijo SDDF (ADR-0016): rutas fijas, señales del layout legado con remisión a la guía de migración, señal de status legado de work items activos de specs/flow/ con su destino de edición manual (ADR-0022, STORY-191: TC-008..TC-012), templates centrales y ausencia de mutaciones. TC-001..TC-003 (resolución de raíz configurable) se retiraron en STORY-152 y sus IDs no se reutilizan.",
   "cases": [
     {
       "id": "TC-004",
@@ -60,6 +60,81 @@
       "expected": {
         "contains": ["Layout legado: existe docs/specs/", "declara la clave root", "SDDF_ROOT está definida", "docs/guides/artifact-directory-migration.md", "sin cambios"],
         "not_contains": ["ejecuta /sddf-init", "[CREADO]", "[ERROR]"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-008",
+      "name": "status-legado-historias-sin-implement-report",
+      "type": "edge-case",
+      "description": "AC-2 filas 1 y 3 de STORY-191: dos historias activas con status legado (READY-FOR-IMPLEMENT/DONE y READY-FOR-DEV/TODO) y sin implement-report.md reciben un [WARNING] cada una, con su ruta, el status legado y el destino PLAN/DONE (ADR-0022, ventana hasta 7.0.0); no aparece la guía de migración del layout y ningún archivo cambia.",
+      "input": {
+        "context": "REPO_ROOT tiene el layout fijo completo (specs/flow/, specs/flow/archive/, specs/living/, workflow/, docs/templates/ con los seis templates centrales), sin docs/specs/, sin clave root en sddf.config.yaml y sin SDDF_ROOT. specs/flow/STORY-201-x/story.md tiene en el frontmatter 'status: READY-FOR-IMPLEMENT' y 'substatus: DONE'; specs/flow/STORY-202-y/story.md tiene 'status: READY-FOR-DEV' y 'substatus: TODO'. Ninguno de los dos directorios contiene implement-report.md.",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["Status legado: specs/flow/STORY-201-x/story.md tiene status READY-FOR-IMPLEMENT", "Status legado: specs/flow/STORY-202-y/story.md tiene status READY-FOR-DEV", "edítalo a mano a PLAN/DONE", "ADR-0022", "7.0.0", "sin cambios"],
+        "not_contains": ["IMPLEMENT/TODO", "[ERROR]", "Guía de migración"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-009",
+      "name": "status-legado-historia-con-implement-report",
+      "type": "edge-case",
+      "description": "AC-2 fila 2 de STORY-191: una historia activa en READY-FOR-IMPLEMENT/DONE con implement-report.md en su directorio recibe un [WARNING] con destino IMPLEMENT/TODO (regla de ADR-0022) y ningún archivo cambia.",
+      "input": {
+        "context": "REPO_ROOT tiene el layout fijo completo con los seis templates centrales, sin docs/specs/, sin clave root en sddf.config.yaml y sin SDDF_ROOT. specs/flow/STORY-203-z/story.md tiene en el frontmatter 'status: READY-FOR-IMPLEMENT' y 'substatus: DONE', y specs/flow/STORY-203-z/implement-report.md existe.",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["Status legado: specs/flow/STORY-203-z/story.md tiene status READY-FOR-IMPLEMENT", "edítalo a mano a IMPLEMENT/TODO", "ADR-0022", "sin cambios"],
+        "not_contains": ["[ERROR]", "edítalo a mano a PLAN/DONE"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-010",
+      "name": "status-legado-epicas",
+      "type": "edge-case",
+      "description": "AC-2 filas 4 y 5 de STORY-191: dos épicas activas con status legado (READY-FOR-DEV y READY-FOR-IMPLEMENT) reciben un [WARNING] cada una con destino PLAN/DONE, sin consultar implement-report.md, y ningún archivo cambia.",
+      "input": {
+        "context": "REPO_ROOT tiene el layout fijo completo con los seis templates centrales, sin docs/specs/, sin clave root en sddf.config.yaml y sin SDDF_ROOT. specs/flow/EPIC-010-a/epic.md tiene en el frontmatter 'status: READY-FOR-DEV' y specs/flow/EPIC-011-b/epic.md tiene 'status: READY-FOR-IMPLEMENT'. No hay historias con status legado.",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["Status legado: specs/flow/EPIC-010-a/epic.md tiene status READY-FOR-DEV", "Status legado: specs/flow/EPIC-011-b/epic.md tiene status READY-FOR-IMPLEMENT", "edítalo a mano a PLAN/DONE", "sin cambios"],
+        "not_contains": ["IMPLEMENT/TODO", "[ERROR]"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-011",
+      "name": "status-legado-solo-en-archivo-no-avisa",
+      "type": "edge-case",
+      "description": "AC-3 fila 2 de STORY-191: specs/flow/archive/ es un registro histórico y no se inspecciona; sin work items activos con status legado no se emite ningún aviso de status legado.",
+      "input": {
+        "context": "REPO_ROOT tiene el layout fijo completo con los seis templates centrales, sin docs/specs/, sin clave root en sddf.config.yaml y sin SDDF_ROOT. specs/flow/STORY-210-w/story.md está en 'status: IMPLEMENT' / 'substatus: DONE'. specs/flow/archive/2026-05-01-STORY-150-z/story.md tiene 'status: READY-FOR-IMPLEMENT' y 'substatus: DONE'.",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["sin cambios"],
+        "not_contains": ["Status legado", "[ERROR]"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-012",
+      "name": "frontmatter-ilegible-no-interrumpe",
+      "type": "error-handling",
+      "description": "CNF-3 de STORY-191: un story.md con el frontmatter sin cerrar produce un [WARNING] de frontmatter ilegible y el diagnóstico continúa: avisa la otra historia legada, verifica los templates y termina sin cambios.",
+      "input": {
+        "context": "REPO_ROOT tiene el layout fijo completo con los seis templates centrales, sin docs/specs/, sin clave root en sddf.config.yaml y sin SDDF_ROOT. specs/flow/STORY-220-roto/story.md empieza por una línea '---' que nunca se cierra. specs/flow/STORY-221-ok/story.md tiene 'status: READY-FOR-IMPLEMENT' y 'substatus: DONE', sin implement-report.md.",
+        "flags": []
+      },
+      "expected": {
+        "contains": ["specs/flow/STORY-220-roto/story.md: frontmatter ilegible", "Status legado: specs/flow/STORY-221-ok/story.md", "Template presente", "sin cambios"],
+        "not_contains": ["[ERROR]"]
       },
       "threshold": 1.0
     }

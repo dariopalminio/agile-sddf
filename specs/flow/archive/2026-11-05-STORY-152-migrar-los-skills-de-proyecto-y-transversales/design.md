@@ -343,7 +343,7 @@ No se crea ningún script ni skill. No se modifican `dod-story.js`, `requirement
 |---|---|---|
 | Paso 0 de cada skill | bloque de D-1 entre el marcador y el siguiente encabezado | AC-1 |
 | Rutas de conocimiento | `docs/{product,requirements,templates,architecture,constitution.md,policies,guardrails}/…` relativas a `REPO_ROOT` | AC-1 |
-| Rutas de work items | `specs/flow/EPIC-NN-<slug>/epic.md`, `specs/flow/STORY-NNN-<slug>/story.md`, `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/story.md` | AC-1 |
+| Rutas de work items | `specs/flow/EPIC-NNN-<slug>/epic.md`, `specs/flow/STORY-NNN-<slug>/story.md`, `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/story.md` | AC-1 |
 | Invocación del motor | `node <CLI_ROOT>/skills/memory-system/scripts/memory-system.js <subcomando> --root docs [flags]` | AC-1 |
 | Origen flow del índice | `<dirname(--root)>/specs/flow/**`, `relPath` `../specs/flow/…`, capas `specs`/`specs-epics`/`specs-stories`/`specs-archive` (D-4) | AC-1 |
 | Catálogo `LAYERS` | diez capas, sin `specs` (D-5) | AC-1 |

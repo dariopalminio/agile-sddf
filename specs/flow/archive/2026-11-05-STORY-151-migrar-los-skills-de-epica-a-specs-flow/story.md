@@ -18,7 +18,7 @@ related:
 # 📖 Historia: Migrar los skills de épica a specs/flow
 
 **Como** practitioner que crea y analiza épicas con SDDF
-**Quiero** que `epic-creation`, `epic-format-validation`, `epic-from-project-plan`, `epic-generate-stories`, `epic-generate-all-stories` y `epic-analyze` lean y escriban en `specs/flow/EPIC-NN-<slug>/` sin usar `SPECS_BASE`
+**Quiero** que `epic-creation`, `epic-format-validation`, `epic-from-project-plan`, `epic-generate-stories`, `epic-generate-all-stories` y `epic-analyze` lean y escriban en `specs/flow/EPIC-NNN-<slug>/` sin usar `SPECS_BASE`
 **Para** gestionar épicas en el layout fijo y que el análisis de una épica encuentre también sus historias archivadas
 
 ## ✅ Criterios de aceptación
@@ -33,7 +33,7 @@ Entonces se crea "specs/flow/EPIC-01-<slug>/epic.md"
 
 ### AC-2 — Escenario principal – generar historias de una épica
 ```gherkin
-Dado una épica en "specs/flow/EPIC-NN-<slug>/epic.md" con historias F1
+Dado una épica en "specs/flow/EPIC-NNN-<slug>/epic.md" con historias F1
 Cuando el usuario ejecuta "/epic-generate-stories EPIC-NN"
 Entonces cada historia se crea en "specs/flow/STORY-NNN-<slug>/story.md"
   Y el máximo ID se calcula sobre "specs/flow/STORY-*", "specs/flow/archive/*-STORY-*" y las épicas de "specs/flow/"

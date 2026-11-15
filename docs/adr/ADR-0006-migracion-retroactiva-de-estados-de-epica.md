@@ -3,10 +3,10 @@ type: adr
 id: ADR-0006
 slug: migracion-retroactiva-de-estados-de-epica
 title: "Workflows canónicos de Story y Epic, con migración retroactiva de los estados históricos"
-status: ACCEPTED
+status: SUPERSEDED
 date: 2026-08-30
 supersedes: ADR-0003
-superseded-by: null
+superseded-by: ADR-0022
 ---
 
 # ADR-0006: Workflows canónicos de Story y Epic, con migración retroactiva de los estados históricos

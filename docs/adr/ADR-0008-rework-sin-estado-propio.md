@@ -3,10 +3,10 @@ type: adr
 id: ADR-0008
 slug: rework-sin-estado-propio
 title: "Rework sin estado propio: la señal es el artefacto de fallo"
-status: ACCEPTED
+status: SUPERSEDED
 date: 2026-09-11
 supersedes: null
-superseded-by: null
+superseded-by: ADR-0022
 ---
 
 <!-- Referencias -->

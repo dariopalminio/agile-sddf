@@ -30,7 +30,7 @@ Las épicas ahora tienen un recorrido completo, desde su definición hasta su ci
 - **Skill epic-track-progress** — pasar a `/epic-validate` solo cuando no queda ninguna historia pendiente, sin que se modifique ningún archivo.
 - **Suites de integración y regresión de la épica** — certificar que el conjunto de historias funciona como un release unificado.
 - **Skill epic-ship** — preparar una versión documentada sin redactarla yo y dejar la épica en `SHIP/DONE` cuando confirmo que la liberé.
-- **Skill epic-complete (Core) — completar y archivar una épica liberada** — que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`, `specs/flow/` conserve solo el trabajo activo y la épica quede como registro histórico con su historial de git intacto.
+- **Skill epic-complete (Core) — completar y archivar una épica liberada** — que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`, `specs/flow/` conserve solo el trabajo activo y la épica quede como registro histórico con su historial de git intacto.
 - **Skill epic-complete — archivar épicas canceladas** — sacar de `specs/flow/` el trabajo que ya no se hará sin que una épica cancelada se confunda con una liberada en el registro histórico.
 - **Skill epic-refine: asignar la cobertura de criterios de salida** — que la épica supere el análisis de criterios de salida sin elegir ni editar a mano la historia dueña, y sin repartir citas que falseen la cobertura.
 - **Skill epic-refine: corregir referencias obsoletas tras un split** — que el índice de la épica y los `related` de sus historias apunten a historias reales sin rastrearlas a mano después de cada split.

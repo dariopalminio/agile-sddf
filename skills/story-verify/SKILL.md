@@ -28,7 +28,8 @@ Orquesta la fase VERIFY del pipeline SDD: detecta el modo de ejecución (delegad
 story-verify    ← aquí
      │   Al iniciar: story.md → VERIFY/IN-PROGRESS
      │   APPROVED: → VERIFY/DONE
-     │   NEEDS-CHANGES: → READY-FOR-IMPLEMENT/DONE
+     │   NEEDS-CHANGES: → IMPLEMENT/TODO (retoma /story-implement; /story-implement-tasks si existe tasks.md)
+     │       + fix-directives.md (based-on: verify-report.md, round N) = señal de rework
      │   BLOCKED: → VERIFY/BLOCKED
      │   Si estado incorrecto: → error, sin cambio
      ↓
@@ -43,6 +44,8 @@ story-verify    ← aquí
 - Archivos de configuración de test en el directorio del proyecto (`pytest.ini`, `jest.config.*`, `playwright.config.*`, etc.) — para detección de modo automático (fallback cuando sddf.config.yaml no existe)
 - `.tmp/story-verify/{story_id}/qa-input.json` / `qa-output.json` — canal de comunicación con el agente QA (solo modo manual)
 - `assets/verify-report-template.md` — template del reporte
+- `docs/templates/fix-directives-template.md` — plantilla común de `fix-directives.md` (solo con `NEEDS-CHANGES`); si no existe, la semilla `assets/fix-directives-template.md`
+- `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` e `implement-report.md` — opcionales, solo lectura: fuentes de la ronda previa (Paso 6h.1)
 
 ## Parámetros
 
@@ -56,7 +59,7 @@ story-verify    ← aquí
 
 - Agentes: [`agents/qa-engineer.agent.md`] (modo manual y e2e-assessment)
 - Herramientas de testing (según modo detectado): `pytest`, `jest`, `vitest`, `go test`, `npx playwright`, `npx cypress`, `npx cucumber-js`
-- Archivos de entrada: DoD de la etapa `verify` (ver `## DoD aplicable`), `assets/verify-report-template.md`
+- Archivos de entrada: DoD de la etapa `verify` (ver `## DoD aplicable`), `assets/verify-report-template.md`, plantilla de `fix-directives.md` (`docs/templates/fix-directives-template.md` → semilla `assets/fix-directives-template.md`)
 
 ## DoD aplicable
 
@@ -91,7 +94,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 
 ## Restricciones / Reglas
 
-- **No modifica código fuente:** solo escribe `verify-report.md` y actualiza el frontmatter de `story.md`.
+- **No modifica código fuente:** solo escribe `verify-report.md`, `fix-directives.md` (solo con `NEEDS-CHANGES`, Paso 6h) y el frontmatter de `story.md`.
 - **No genera tests:** la generación de tests es responsabilidad de `story-implement-tasks`.
 - **No revisa código:** eso corresponde a `story-code-review`.
 - **No despliega:** el despliegue corresponde a `story-deploy`.
@@ -531,6 +534,54 @@ Formato de la entrada previa:
 
 Escribir `$STORY_DIR/verify-report.md` con el contenido construido.
 
+#### 6h. [NEEDS-CHANGES] Generar `fix-directives.md`
+
+**Condición:** solo si `$VERDICT = NEEDS-CHANGES`. Con `APPROVED` o `BLOCKED` no se escribe ni se modifica `fix-directives.md`. Este paso lee los datos que ya calcularon 6d y 6e: `verify-report.md` no cambia. Este skill nunca borra `fix-directives.md`: solo `story-code-review` lo elimina, al aprobar (ADR-0022).
+
+**6h.1 — Calcular la ronda de corrección (antes de instanciar el template):**
+
+Regla de ronda (ADR-0022; el mismo texto en `story-code-review`, `story-verify` y `story-acceptance`):
+
+1. `$PREV_ROUND` = el **máximo** entero ≥ 1 entre dos fuentes versionadas de `$STORY_DIR`:
+   - (a) el campo `round` del frontmatter de `fix-directives.md`, si el archivo existe;
+   - (b) los `N` de los encabezados de nivel 2 de `implement-report.md` con la forma `## Ciclo de corrección — ronda N` (`story-implement`) o `## Correcciones de fix-directives.md (ronda N)` (`story-implement-tasks`), si el archivo existe.
+2. Sin ningún valor válido (archivos inexistentes, campo ausente, valor no entero como `abc`, `null` o `0`, encabezados sin número) → `$PREV_ROUND = 0`, sin error ni advertencia: es una degradación controlada (archivos legados).
+3. `$ROUND = $PREV_ROUND + 1`.
+
+**6h.2 — Construir las filas y la lista blanca:**
+
+Las filas se numeran correlativamente en este orden, todas con `Dimensión` = `verify-defect`:
+
+| Origen | `Archivo:Línea` | `Severidad` | `Hallazgo` | `Acción requerida` |
+|---|---|---|---|---|
+| Defecto `CRITICAL` abierto de esta ejecución (6d), y luego cada `HIGH` | el `Location` si empieza por una ruta que existe en el repositorio (`ruta` o `ruta:línea`); si no, `—` | la del defecto | el `title`; si `Location` no es una ruta, `title` + ` — ` + `Location` | el `Fix`; si falta, `Corrige: Expected <Expected> / Actual <Actual>` |
+| Criterio DoD VERIFY con `❌` (6e) | `<ruta del DoD resuelto>:<línea del criterio>`; con los criterios mínimos del Paso 3 (sin DoD), `—` | `HIGH` | texto del criterio + ` — ` + su evidencia | `Haz que se cumpla el criterio`; para el criterio de que todos los tests pasan, `Haz pasar: <tests fallidos de esta ejecución>` |
+
+- Los defectos `MEDIUM` y `LOW` y los criterios `⚠️` no entran: no bloquean el veredicto.
+- Un mismo defecto aparece una sola vez: un criterio DoD cuyo `❌` se debe solo a defectos `CRITICAL`/`HIGH` que ya son filas (p. ej. «Sin defectos CRITICAL o HIGH abiertos») no añade otra fila.
+- `$MAX_SEVERITY` = la mayor severidad de las filas (`CRITICAL` > `HIGH`). `$TOTAL_BLOCKING` = número de filas.
+- Lista blanca: las rutas de las filas de defectos con ruta del repositorio (parte de `Archivo:Línea` antes de `:<línea>`), deduplicadas, una viñeta por archivo con la ruta entre acentos graves y sus referencias: `` - `<ruta>` (hallazgo #N, #M) `` (el formato que lee `$WHITELIST` en `story-implement` 0c.3). Las filas de criterios DoD no aportan entradas. Si ninguna fila aporta una ruta, `{{WHITELIST}}` es esta línea sin viñeta: `Vacía: ningún defecto de esta verificación apunta a un archivo del repositorio. El ejecutor confirma (interactivo) o registra (--auto) cada archivo existente que modifique.`
+
+**6h.3 — Instanciar el template:**
+
+Resolver la plantilla de `fix-directives.md` (primera coincidencia):
+
+1. `docs/templates/fix-directives-template.md` (plantilla común del proyecto).
+2. Si no existe, la semilla `assets/fix-directives-template.md` de este skill, con el aviso:
+   ```
+   ⚠️ Usando template seed del skill. Copia assets/fix-directives-template.md a docs/templates/ para personalizarlo.
+   ```
+3. Si no existe ninguna: `❌ Template fix-directives-template.md no encontrado`. El gate escribe su reporte y el estado de `story.md`, pero no `fix-directives.md`.
+
+Completar los placeholders: `{{STORY_ID}}`, `{{STORY_TITLE}}`, `{{DATE}}` (fecha actual), `{{MAX_SEVERITY}}` = `$MAX_SEVERITY`, `{{ROUND}}` = `$ROUND`, `{{BASED_ON}}` = `verify-report.md`, `{{TOTAL_BLOCKING}}` = `$TOTAL_BLOCKING`, `{{INSTRUCTIONS_TABLE}}` = las filas de 6h.2 y `{{WHITELIST}}` = la lista blanca de 6h.2. Las anotaciones `escritor:` de la plantilla (las líneas `# escritor:` y los demás comentarios `#` del frontmatter, y los comentarios `<!-- escritor: … -->` del cuerpo) no se copian a `fix-directives.md`: se omiten esas líneas (principio 13 de `docs/constitution.md`).
+
+Guardar en `$STORY_DIR/fix-directives.md`, sobrescribiendo si ya existe (la versión previa se reemplaza completa; solo `round` conserva continuidad).
+
+Mostrar:
+```
+📋 Fix directives: <ruta>/fix-directives.md (ronda <N>)
+```
+
 ---
 
 ### Paso 8 — Transición de estado y resumen
@@ -546,15 +597,22 @@ updated: {fecha}
 
 **Si `$VERDICT = NEEDS-CHANGES`**:
 ```
-status: READY-FOR-IMPLEMENT
-substatus: DONE
+status: IMPLEMENT
+substatus: TODO
 updated: {fecha}
 ```
+
+Calcular `$TASKS_EXISTS = true` si existe `$STORY_DIR/tasks.md`, `false` si no. Este skill no escribe en `tasks.md` ni invoca al ejecutor.
 
 Mostrar en pantalla:
 ```
 ⚠️ Veredicto: NEEDS-CHANGES — {verdict_reason} Revisa verify-report.md para detalles.
+📋 Fix directives: {$STORY_DIR}/fix-directives.md (ronda {N})      (si 6h lo escribió)
+→ Ejecuta /story-implement {story_id}
+   Alternativa (tasks.md presente): /story-implement-tasks {story_id}      (solo si $TASKS_EXISTS = true)
 ```
+
+La línea de alternativa se omite por completo cuando `$TASKS_EXISTS = false`. El ejecutor parte de `fix-directives.md` (6h), la única señal de rework: nunca lee `verify-report.md`.
 
 **Si `$VERDICT = BLOCKED`**:
 ```
@@ -585,7 +643,10 @@ Mostrar en pantalla:
 
 📄 Reporte: {$STORY_DIR}/verify-report.md (verdict: {verdict})
 📋 Estado story.md: VERIFY/DONE ✓                         (si APPROVED)
-📋 Estado story.md: READY-FOR-IMPLEMENT/DONE (NEEDS-CHANGES) ⚠️ (si NEEDS-CHANGES)
+📋 Estado story.md: IMPLEMENT/TODO (NEEDS-CHANGES) ⚠️     (si NEEDS-CHANGES)
+📋 Fix directives: {$STORY_DIR}/fix-directives.md (ronda {N})   (si NEEDS-CHANGES y 6h lo escribió)
+→ Ejecuta /story-implement {story_id}                     (si NEEDS-CHANGES)
+   Alternativa (tasks.md presente): /story-implement-tasks {story_id}   (si NEEDS-CHANGES y $TASKS_EXISTS = true)
 📋 Estado story.md: VERIFY/BLOCKED ⛔                      (si BLOCKED)
 
 ✅ Verificación completa                   (si APPROVED)
@@ -596,7 +657,8 @@ Mostrar en pantalla:
 ## Salida
 
 - `specs/flow/<STORY-NNN>-<slug>/verify-report.md` — reporte de verificación con `verdict`, sección `## Veredicto`, summary, findings por severidad, criterios DoD evaluados e historial de ejecuciones.
+- `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` — solo si el veredicto es `NEEDS-CHANGES` (Paso 6h): plantilla común con `based-on: verify-report.md`, `round` continuo entre gates (ADR-0022) y una fila `verify-defect` por defecto `CRITICAL`/`HIGH` abierto y por criterio DoD VERIFY `❌`. Es la señal de rework que consumen `story-implement` y `story-implement-tasks`; solo `story-code-review` lo elimina, al aprobar.
 - `story.md` frontmatter actualizado:
   - `status: VERIFY / substatus: DONE` — si el veredicto es `APPROVED`
-  - `status: READY-FOR-IMPLEMENT / substatus: DONE` — si el veredicto es `NEEDS-CHANGES`
+  - `status: IMPLEMENT / substatus: TODO` — si el veredicto es `NEEDS-CHANGES`
   - `status: VERIFY / substatus: BLOCKED` — si el veredicto es `BLOCKED`

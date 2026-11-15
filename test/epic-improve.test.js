@@ -31,7 +31,7 @@ const {
 const TODAY = '2026-10-30';
 
 /**
- * Directorio temporal con `specs/flow/EPIC-NN-fixture/` copiado desde `examples/<fixture>/`.
+ * Directorio temporal con `specs/flow/EPIC-NNN-fixture/` copiado desde `examples/<fixture>/`.
  * `slug` (frontmatter) define la ruta lógica; el contenido físico vive en el fixture.
  */
 function makeFixture(t, fixture) {

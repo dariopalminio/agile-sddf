@@ -16,7 +16,7 @@ related: []
 
 Todo documento de spec generado SHALL incluir el frontmatter canónico con
 `type`, `id`, `slug`, `title`, `status`, `substatus`, `parent`, `created`, `updated` y
-`related`, con IDs jerárquicos `PROJ-NN` / `EPIC-NN` / `STORY-NNN`. El prefijo del ID nombra el
+`related`, con IDs jerárquicos `PROJ-NN` / `EPIC-NNN` / `STORY-NNN`. El prefijo del ID nombra el
 **nivel**, nunca el tipo de trabajo: el tipo de una historia vive en el campo `kind`
 (`feat` | `fix` | `chore` | `hotfix`) y en el prefijo de su rama.
 

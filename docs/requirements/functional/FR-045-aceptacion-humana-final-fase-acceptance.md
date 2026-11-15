@@ -6,7 +6,7 @@ slug: FR-045-aceptacion-humana-final-fase-acceptance
 title: "Aceptación humana final (fase ACCEPTANCE)"
 status: active
 created: 2026-10-10
-updated: 2026-10-10
+updated: 2026-11-14
 related: []
 ---
 
@@ -17,8 +17,9 @@ related: []
 El sistema SHALL conducir una validación humana criterio por criterio contra
 los escenarios de `story.md`, registrando para cada uno un resultado `APPROVED` / `REJECTED` /
 `BLOCKED` con observaciones, y produciendo `acceptance-report.md`. Con todos los criterios
-aprobados la historia pasa a `ACCEPTANCE/DONE`; con al menos uno rechazado retrocede a
-`READY-FOR-IMPLEMENT/DONE`; con bloqueantes sin rechazos queda en `ACCEPTANCE/BLOCKED`. La
+aprobados la historia pasa a `ACCEPTANCE/DONE`; con al menos uno rechazado SHALL escribir
+`fix-directives.md` con `based-on: acceptance-report.md` y un `round` que continúa las rondas de
+rework, y devolver la historia a `IMPLEMENT/TODO` ([[workflows-sin-estados-buffer]]); con bloqueantes sin rechazos queda en `ACCEPTANCE/BLOCKED`. La
 aprobación SHALL requerir confirmación explícita del validador humano.
 
 ## Atributos

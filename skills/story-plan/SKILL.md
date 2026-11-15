@@ -44,9 +44,9 @@ story-plan   → Entry point: orquesta design → tasking → testcases → anal
   story-design    → design.md
   story-tasking   → tasks.md            (omitido con --only-testcases)
   story-testcases → testcases.md        (omitido con --only-tasks)
-  story-analyze   → analyze.md + story.md → READY-FOR-IMPLEMENT/DONE con verdict APPROVED
+  story-analyze   → analyze.md + story.md → PLAN/DONE con verdict APPROVED
      ↓
-[story.md: READY-FOR-IMPLEMENT/DONE]   → listo para story-implement-tasks
+[story.md: PLAN/DONE]   → listo para story-implement o story-implement-tasks
 ──────────────────────────────────────────────────────────────
 story.md      → What: requisitos, criterios de aceptación, comportamiento esperado
 design.md     → How: arquitectura, componentes, interfaces, decisiones técnicas
@@ -60,7 +60,7 @@ analyze.md    → Check: coherencia entre los tres artefactos
 | Evento | status | substatus |
 |---|---|---|
 | Inicio del pipeline (siempre, sin condición) | `PLAN` | `IN-PROGRESS` |
-| `story-analyze` emite verdict APPROVED | `READY-FOR-IMPLEMENT` | `DONE` (gestionado por `story-analyze`) |
+| `story-analyze` emite verdict APPROVED | `PLAN` | `DONE` (gestionado por `story-analyze`) |
 
 La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, independientemente del estado previo de la historia. Esto permite re-ejecutar el pipeline sobre historias en cualquier estado.
 
@@ -114,7 +114,7 @@ Resolución (primera coincidencia):
 2. Convención: `docs/guardrails/dod-story-plan.md`
 3. Ninguno existe → emitir `⚠️ DoD de la etapa plan no encontrado (probado: <rutas>) → crea el archivo o ejecuta /memory-system migrate --from=dod-monolithic` y `story-analyze` continúa sin validación DoD PLAN.
 
-Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. `story-plan` **no** carga este archivo: lo evalúa `story-analyze` en el Paso 5, que es quien escribe `READY-FOR-IMPLEMENT/DONE`. Se declara aquí para que la etapa del orquestador sea explícita.
+Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. `story-plan` **no** carga este archivo: lo evalúa `story-analyze` en el Paso 5, que es quien escribe `PLAN/DONE`. Se declara aquí para que la etapa del orquestador sea explícita.
 
 ## Modos de ejecución
 
@@ -316,7 +316,13 @@ Tras invocar `story-analyze`, leer `verdict` del frontmatter de `<directorio>/an
 | `verdict` ausente o fuera de `APPROVED \| NEEDS-CHANGES` | `✗` | `[<paso_actual>/<total_pasos>] ✗ story-analyze — analyze.md sin verdict válido` |
 | `analyze.md` no generado | `✗` | `[<paso_actual>/<total_pasos>] ✗ story-analyze — error técnico` |
 
-Antes del resumen, si el veredicto no es `APPROVED` y `story.md` quedó en `READY-FOR-IMPLEMENT`, restaurar `status: PLAN` / `substatus: IN-PROGRESS` y emitir `⚠️ story.md estaba en READY-FOR-IMPLEMENT sin verdict APPROVED — restaurado a PLAN/IN-PROGRESS`. `story-plan` nunca escribe `READY-FOR-IMPLEMENT`; solo aplica esta guardia ante un fallo del gate. Continuar al resumen final en todos los casos.
+**Guardia de cierre.** Antes del resumen, en cualquiera de las filas anteriores, leer `status`/`substatus` de `story.md`. Si el `verdict` de `analyze.md` no es `APPROVED` (incluye `NEEDS-CHANGES`, `verdict` inválido y `analyze.md` no generado) **y** `story.md` quedó en `PLAN/DONE` o con `status: READY-FOR-IMPLEMENT` (valor anterior a 6.0.0), restaurar `status: PLAN` / `substatus: IN-PROGRESS` y emitir el aviso con el estado leído:
+
+```
+⚠️ story.md estaba en <status>/<substatus> sin verdict APPROVED — restaurado a PLAN/IN-PROGRESS
+```
+
+Por ejemplo, `⚠️ story.md estaba en PLAN/DONE sin verdict APPROVED — restaurado a PLAN/IN-PROGRESS`. Con `verdict: APPROVED` la guardia no hace nada ni emite el aviso. `story-plan` nunca escribe `PLAN/DONE` ni `READY-FOR-IMPLEMENT`: `PLAN/DONE` lo escribe solo `story-analyze`, y esta guardia solo actúa ante un fallo del gate. Continuar al resumen final en todos los casos.
 
 ---
 
@@ -376,7 +382,7 @@ Elegir la rama por el veredicto leído en el Paso 5. La línea `Estado de story.
 
 Todos los artefactos están listos. La historia puede pasar a implementación.
 Veredicto de story-analyze: APPROVED — <motivo>
-Estado de story.md: <estado leído, normalmente READY-FOR-IMPLEMENT/DONE ✓>
+Estado de story.md: <estado leído, normalmente PLAN/DONE ✓>
 ```
 
 **Si `verdict: NEEDS-CHANGES`:**
@@ -422,7 +428,7 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 | Fallo en `story-design` | `[1/<N>] ✗ story-design — FALLO` | Registrar todos los pasos restantes como `—`. Ir a resumen |
 | Fallo en `story-tasking` | `[2/<N>] ✗ story-tasking — FALLO` | Registrar pasos restantes como `—`. Ir a resumen |
 | Fallo en `story-testcases` | `[<N>/<N>] ✗ story-testcases — FALLO` | Registrar `story-analyze → —`. Ir a resumen |
-| Error técnico en `story-analyze` | `[<N>/<N>] ✗ story-analyze — error técnico` | No bloquear. Continuar a resumen |
+| Error técnico en `story-analyze` | `[<N>/<N>] ✗ story-analyze — error técnico` | No bloquear. Aplicar la guardia de cierre del Paso 5 y continuar a resumen |
 | `analyze.md` sin `verdict` o con valor no permitido | `[<N>/<N>] ✗ story-analyze — analyze.md sin verdict válido` | Aplicar la guardia de cierre del Paso 5 y mostrar «Pipeline interrumpido» |
 
 ---
@@ -434,6 +440,6 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 - `{directorio_historia}/testcases.md` — casos de prueba tipificados y trazables (generado por `story-testcases`; omitido con `--only-tasks`)
 - `{directorio_historia}/analyze.md` — reporte de coherencia entre artefactos (generado por `story-analyze`, omitido con `--skip-analyze`)
 - Estado del workitem actualizado en `story.md`:
-  - `READY-FOR-IMPLEMENT / DONE` solo con `verdict: APPROVED` de `analyze.md`
+  - `PLAN / DONE` solo con `verdict: APPROVED` de `analyze.md` (lo escribe `story-analyze`)
   - Estado previo, normalmente `PLAN / IN-PROGRESS`, con `NEEDS-CHANGES` o `--skip-analyze`
-  - `PLAN / IN-PROGRESS` restaurado por la guardia si falta un veredicto válido y la historia quedó en `READY-FOR-IMPLEMENT`
+  - `PLAN / IN-PROGRESS` restaurado por la guardia si falta un `verdict: APPROVED` y la historia quedó en `PLAN / DONE` o en `READY-FOR-IMPLEMENT` (valor anterior a 6.0.0)

@@ -93,7 +93,7 @@ Cada coincidencia se clasifica con las tres clases de STORY-154 D-2, más una de
 | Clase | Criterio | Acción |
 |---|---|---|
 | **Ruta concreta de un work item** | Enlaza o cita un archivo real que se movió | Reescribir a su ruta nueva con D-3 |
-| **Descripción del layout como vigente** | Dice dónde viven hoy las épicas o historias | Reescribir: `specs/flow/EPIC-NN-<slug>/`, `specs/flow/STORY-NNN-<slug>/`, `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` |
+| **Descripción del layout como vigente** | Dice dónde viven hoy las épicas o historias | Reescribir: `specs/flow/EPIC-NNN-<slug>/`, `specs/flow/STORY-NNN-<slug>/`, `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` |
 | **Registro histórico** | Versión, migración o propuesta pasada (CHANGELOG, ADRs, `roadmap.md`, tablas de migración de versiones anteriores en `README.md`, work items) | Conservar |
 | **Fixture o default de código histórico** | Ruta dentro de una prueba de soporte legado o el default de una migración ya ejecutada (`test/memory-system.test.js`, `test/epic-template.test.js`, `scripts/migrate-finvest-field.js`) | Conservar (alcance de STORY-152 o histórico) |
 
@@ -119,7 +119,7 @@ Regla determinista, derivada del árbol migrado (no de un mapa guardado):
 
 | Ruta antigua | Ruta nueva |
 |---|---|
-| `docs/specs/epics/EPIC-NN-<slug>/<archivo>` | `specs/flow/EPIC-NN-<slug>/<archivo>` |
+| `docs/specs/epics/EPIC-NNN-<slug>/<archivo>` | `specs/flow/EPIC-NNN-<slug>/<archivo>` |
 | `docs/specs/stories/STORY-NNN-<slug>/<archivo>` | `specs/flow/STORY-NNN-<slug>/<archivo>` si existe; si no, la **única** coincidencia de `specs/flow/archive/*-STORY-NNN-<slug>/<archivo>` |
 | `docs/specs/README.md` | `specs/README.md` |
 | `specs/epics/…` / `specs/stories/…` relativos a `docs/` (enlaces del índice) | la ruta nueva anterior, expresada relativa al archivo origen (desde `docs/`: `../specs/flow/…`) |

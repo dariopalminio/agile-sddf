@@ -8,6 +8,6 @@ title: "Template de historia"
 
 <!-- Referencias -->
 [[slug]]
-[[EPIC-NN-nombre]]
+[[EPIC-NNN-nombre]]
 
 Plantilla compartida ya presente: `scaffold` la marca como preservada y no la vuelve a copiar.

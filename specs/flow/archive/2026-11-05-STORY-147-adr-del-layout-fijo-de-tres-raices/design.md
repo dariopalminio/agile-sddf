@@ -35,7 +35,7 @@ Estado verificado en el filesystem (2026-10-22):
 | `scripts/check-doc-links.js` | `docs/adr` está en `HISTORICAL_EXCLUSIONS`; `docs/index.md` es raíz activa y sus wikilinks se resuelven por `slug:` del frontmatter. |
 | `docs/index.md` | Sección `### Decisiones de arquitectura (adr/)` lista ADR-0001 a ADR-0015 con el formato `- [[<slug>]] — [<archivo>](adr/<archivo>) — <título>`. |
 | `sddf.config.yaml` | Declara `root: docs`; el repo aplica hoy ADR-0010 (`docs/specs/`). |
-| EPIC-26 | Fija el layout, los Non-Goals (Workflow, Living Spec, Enforcement), la fecha del prefijo de archivo (`updated:` y, si falta, `created:`), que solo se archivan stories `COMPLETED` y que se conserva `STORY-NNN-<slug>/` / `EPIC-NN-<slug>/` (Notas). |
+| EPIC-26 | Fija el layout, los Non-Goals (Workflow, Living Spec, Enforcement), la fecha del prefijo de archivo (`updated:` y, si falta, `created:`), que solo se archivan stories `COMPLETED` y que se conserva `STORY-NNN-<slug>/` / `EPIC-NNN-<slug>/` (Notas). |
 
 Stakeholders: el mantenedor que ejecuta STORY-148 a STORY-158, que citarán ADR-0016 en lugar de reinterpretar la épica.
 
@@ -85,7 +85,7 @@ La sección declara, con estas cadenas literales:
 ├── docs/                  conocimiento: product/, requirements/, domains/, architecture/, adr/,
 │                          policies/, guardrails/, guides/, runbooks/, templates/, constitution.md, index.md
 ├── specs/                 estado
-│   ├── flow/              work items planos: EPIC-NN-<slug>/, STORY-NNN-<slug>/ (sin epics/ ni stories/)
+│   ├── flow/              work items planos: EPIC-NNN-<slug>/, STORY-NNN-<slug>/ (sin epics/ ni stories/)
 │   │   └── archive/       stories COMPLETED: <YYYY-MM-DD>-STORY-NNN-<slug>/
 │   └── living/            reservado (épica de Living Spec)
 └── workflow/              proceso, reservado (épica de Workflow)
@@ -112,7 +112,7 @@ El ADR fija `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` con:
 
 ### D-4 — Los directorios de `specs/flow/` conservan el slug // satisface: AC-3
 
-El ADR declara en una frase explícita: «Los directorios de `specs/flow/` conservan el slug: `STORY-NNN-<slug>/` y `EPIC-NN-<slug>/`, como en ADR-0004; el criterio `specs/flow/STORY-001/story.md` se lee como `specs/flow/STORY-001-<slug>/story.md`». Coincide con SMOKE-1 (`specs/flow/STORY-001-<slug>/story.md`) y SMOKE-2 (`specs/flow/EPIC-01-<slug>/epic.md`).
+El ADR declara en una frase explícita: «Los directorios de `specs/flow/` conservan el slug: `STORY-NNN-<slug>/` y `EPIC-NNN-<slug>/`, como en ADR-0004; el criterio `specs/flow/STORY-001/story.md` se lee como `specs/flow/STORY-001-<slug>/story.md`». Coincide con SMOKE-1 (`specs/flow/STORY-001-<slug>/story.md`) y SMOKE-2 (`specs/flow/EPIC-01-<slug>/epic.md`).
 
 **Alternativas rechazadas:**
 - **Directorio sin slug (`STORY-001/`):** contradice SMOKE-1/SMOKE-2, rompe los globs `STORY-NNN-*` de todos los skills y los slugs `STORY-NNN-<slug>` que resuelven los wikilinks.
@@ -245,7 +245,7 @@ Diff de frontmatter de ADR-0010: `status: PROPOSED` → `status: SUPERSEDED`; `s
 | 5 | ADR-0010 reemplazado | Frontmatter de ADR-0010: `status: SUPERSEDED`, `superseded-by: ADR-0016` | AC-1 |
 | 6 | README lista ADR-0016 | `grep -F 'ADR-0016-layout-fijo-de-tres-raices.md' docs/adr/README.md` | AC-1 |
 | 7 | Contenido de ADR-0010 intacto | `git diff` de ADR-0010: solo `status`, `superseded-by` y la línea de nota; secciones sin cambios | AC-2, CNF-1 |
-| 8 | Decisión explícita sobre el slug | ADR-0016 contiene `STORY-NNN-<slug>/` y `EPIC-NN-<slug>/` en `## Decisión` y cita SMOKE-1/SMOKE-2 | AC-3 |
+| 8 | Decisión explícita sobre el slug | ADR-0016 contiene `STORY-NNN-<slug>/` y `EPIC-NNN-<slug>/` en `## Decisión` y cita SMOKE-1/SMOKE-2 | AC-3 |
 | 9 | Gate verde | `npm run verify:repository` termina con código 0 | CNF-2 |
 | 10 | Alcance acotado | `git diff --stat` solo muestra los 4 archivos de «Componentes afectados» (más artefactos de la historia) | Non-Goals |
 

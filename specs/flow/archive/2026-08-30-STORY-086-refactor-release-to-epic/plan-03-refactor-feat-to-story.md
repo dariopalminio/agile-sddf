@@ -8,7 +8,7 @@ title: "PLAN: Renombrar el prefijo de historias de `FEAT-NNN` a `STORY-NNN`"
 
 ## Context
 
-Los tres niveles usan prefijo de ID: `PROJ-NN` (L3), `EPIC-NN` (L2) y `FEAT-NNN` (L1). Los dos primeros nombran el **nivel**; el tercero nombra un **tipo** de trabajo. Esa asimetría produce dos problemas concretos:
+Los tres niveles usan prefijo de ID: `PROJ-NN` (L3), `EPIC-NNN` (L2) y `FEAT-NNN` (L1). Los dos primeros nombran el **nivel**; el tercero nombra un **tipo** de trabajo. Esa asimetría produce dos problemas concretos:
 
 **1. Colisión con la convención de ramas.** [branching-strategy:68](docs/guides/branching-strategy-sddf-git-flow.md#L68) define `feat/<story-id>`, `fix/<story-id>`, `chore/<story-id>` — el prefijo de rama **es** el tipo. Con `FEAT` en el ID resulta `fix/FEAT-042-corregir-login`, que se contradice. Y [flight-leves-model.md](docs/guides/flight-leves-model.md#L43-L48) ya declara cuatro **Tipos de Story** (Feat, Fix, Chore, Hotfix), así que `FEAT-042` para un bug es incorrecto por construcción.
 

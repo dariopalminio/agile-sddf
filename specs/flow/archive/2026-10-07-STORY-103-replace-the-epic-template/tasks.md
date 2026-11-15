@@ -24,7 +24,7 @@ related:
 
 ## 1. Setup — fixtures de migración
 
-- [x] T001 [P] Crear `skills/memory-system/examples/epic-template-v1/` con épicas v1 de fixture bajo `docs/specs/02-epics/EPIC-NN-*/epic.md`: (a) v1 completa (Descripción, Historias, Flujos Críticos con 3 escenarios DADO/CUANDO/ENTONCES, Requerimiento, Impacto, Dependencias, Riesgos, `**Criterios de éxito:**`, Notas adicionales); (b) mínima tipo EPIC-01 (solo Descripción + Historias); (c) sin `##` tipo EPIC-00; (d) con `## Requerimiento: <x>` y `## Objetivo`; (e) smoke no-gherkin tipo EPIC-14 y línea `- [x] **Nombre**: desc` sin ID tipo EPIC-16; además (f) un template personalizado con las mismas claves pero otros títulos y otro orden, y (g) un template sin `clave:` — D-2b, D-7, D-10, AC-10
+- [x] T001 [P] Crear `skills/memory-system/examples/epic-template-v1/` con épicas v1 de fixture bajo `docs/specs/02-epics/EPIC-NNN-*/epic.md`: (a) v1 completa (Descripción, Historias, Flujos Críticos con 3 escenarios DADO/CUANDO/ENTONCES, Requerimiento, Impacto, Dependencias, Riesgos, `**Criterios de éxito:**`, Notas adicionales); (b) mínima tipo EPIC-01 (solo Descripción + Historias); (c) sin `##` tipo EPIC-00; (d) con `## Requerimiento: <x>` y `## Objetivo`; (e) smoke no-gherkin tipo EPIC-14 y línea `- [x] **Nombre**: desc` sin ID tipo EPIC-16; además (f) un template personalizado con las mismas claves pero otros títulos y otro orden, y (g) un template sin `clave:` — D-2b, D-7, D-10, AC-10
 - [x] T002 [P] Crear junto a cada fixture de T001 su `expected.md` esperado contra el template v2 y, para (a), también contra el template personalizado (f) (aplicando a mano R1–R11 de D-7), usados como oráculo de los tests — D-7, AC-10
 
 ## 2. Template v2

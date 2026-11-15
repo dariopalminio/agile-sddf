@@ -3,7 +3,7 @@
 /**
  * Tests de STORY-171: motor `skills/epic-complete/scripts/epic-complete.js`, que completa
  * (`SHIP/DONE` → `COMPLETED/DONE`) y archiva una épica en
- * `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019). Cubre los contratos de verificación
+ * `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` (ADR-0019). Cubre los contratos de verificación
  * 1–8 de `design.md`: cierre con escritura mínima del frontmatter (D-5), `git mv` sin commit (D-7,
  * CNF-1), resolución de la versión liberada (D-4), admisión por estado (AC-2, D-9), fecha de archivo
  * (D-6, CNF-2), búsqueda determinista, restauración ante fallo (D-8) y la CLI `plan|apply`. La sección
@@ -424,7 +424,7 @@ test('ID sin coincidencia → NOT_FOUND con la ruta buscada; con pista si ya est
   assert.deepEqual(snapshot(root), before);
 });
 
-test('dos directorios EPIC-NN-* → AMBIGUOUS con ambas rutas; EPIC-3 no casa EPIC-31', (t) => {
+test('dos directorios EPIC-NNN-* → AMBIGUOUS con ambas rutas; EPIC-3 no casa EPIC-31', (t) => {
   const root = makeFixture(t, { epics: { 'EPIC-31-a': fm('SHIP', 'DONE'), 'EPIC-31-b': fm('SHIP', 'DONE'), 'EPIC-310-c': fm('SHIP', 'DONE') } });
   const result = locateEpic({ repoRoot: root, id: 'EPIC-31' });
   assert.equal(result.code, 'AMBIGUOUS');
@@ -436,7 +436,7 @@ test('--path bajo archive/, anidado o fuera de specs/flow/ → INVALID_PATH; rut
   for (const epicPath of ['specs/flow/archive/2026-05-01-EPIC-07-vieja', `specs/flow/${NAME}/sub`, 'docs/EPIC-31-x', 'specs/flow/STORY-201-exportar-csv']) {
     const result = locateEpic({ repoRoot: root, epicPath });
     assert.equal(result.code, 'INVALID_PATH', epicPath);
-    assert.match(result.message, /specs\/flow\/EPIC-NN-<slug>/);
+    assert.match(result.message, /specs\/flow\/EPIC-NNN-<slug>/);
   }
   assert.deepEqual(locateEpic({ repoRoot: root, epicPath: `specs/flow/${NAME}/` }), { ok: true, dir: `specs/flow/${NAME}` });
   assert.equal(locateEpic({ repoRoot: root, epicPath: path.join(root, 'specs', 'flow', NAME) }).dir, `specs/flow/${NAME}`);

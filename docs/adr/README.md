@@ -52,9 +52,9 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0003](ADR-0003-workflow-canonico-story-y-epic.md) | Workflows canónicos de Story y Epic en el pipeline SDDF | SUPERSEDED → [ADR-0006](ADR-0006-migracion-retroactiva-de-estados-de-epica.md) | 2026-06-14 |
 | [ADR-0004](ADR-0004-nivel-l2-epic-y-directorios-numerados.md) | El nivel L2 es una épica, y los niveles viven en directorios numerados | SUPERSEDED → [ADR-0013](ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) | 2026-08-29 |
 | [ADR-0005](ADR-0005-prefijo-story-para-el-nivel-l1.md) | El ID del nivel L1 se prefija con `STORY`; el tipo de trabajo vive en el campo `kind` | ACCEPTED | 2026-08-29 |
-| [ADR-0006](ADR-0006-migracion-retroactiva-de-estados-de-epica.md) | Workflows canónicos de Story y Epic, con migración retroactiva de los estados históricos | ACCEPTED | 2026-08-30 |
+| [ADR-0006](ADR-0006-migracion-retroactiva-de-estados-de-epica.md) | Workflows canónicos de Story y Epic, con migración retroactiva de los estados históricos | SUPERSEDED → [ADR-0022](ADR-0022-workflows-sin-estados-buffer.md) | 2026-08-30 |
 | [ADR-0007](ADR-0007-templates-como-capa-propia.md) | Los templates son una capa propia, hermana de `specs/` | ACCEPTED | 2026-09-11 |
-| [ADR-0008](ADR-0008-rework-sin-estado-propio.md) | Rework sin estado propio: la señal es el artefacto de fallo | ACCEPTED | 2026-09-11 |
+| [ADR-0008](ADR-0008-rework-sin-estado-propio.md) | Rework sin estado propio: la señal es el artefacto de fallo | SUPERSEDED → [ADR-0022](ADR-0022-workflows-sin-estados-buffer.md) | 2026-09-11 |
 | [ADR-0009](ADR-0009-perfiles-runtimes-e-instalacion-explicita.md) | Perfiles reproducibles, runtimes canónicos e instalación explícita | ACCEPTED | 2026-09-13 |
 | [ADR-0010](ADR-0010-specs-dentro-de-docs.md) | Mantener specs/ dentro de docs/ en lugar de la raíz | SUPERSEDED → [ADR-0016](ADR-0016-layout-fijo-de-tres-raices.md) | 2026-09-20 |
 | [ADR-0011](ADR-0011-archivos-canonicos-por-tipo.md) | Los archivos canónicos de work items se nombran por tipo (epic.md, story.md) | PROPOSED | 2026-09-22 |
@@ -68,3 +68,4 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0019](ADR-0019-layout-fijo-con-archivo-de-epicas.md) | Layout fijo de tres raíces con archivo de historias y épicas cerradas | ACCEPTED | 2026-10-30 |
 | [ADR-0020](ADR-0020-contratos-centralizados-para-spec-living.md) | Contratos centralizados en OpenAPI/AsyncAPI para specs/living/ | PROPOSED | 2026-11-03 |
 | [ADR-0021](ADR-0021-guia-de-revision-review-md.md) | Guía de revisión por proyecto en REVIEW.md | ACCEPTED | 2026-11-10 |
+| [ADR-0022](ADR-0022-workflows-sin-estados-buffer.md) | Workflows de Story y Epic sin estados buffer | ACCEPTED | 2026-11-14 |

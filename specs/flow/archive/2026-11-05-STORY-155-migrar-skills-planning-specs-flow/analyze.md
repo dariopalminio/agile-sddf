@@ -40,7 +40,7 @@ Avisos de cobertura (no son hallazgos): `testcases.md` no presente → cobertura
 
 | AC | Descripción | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
-| AC-1 | Cada skill de planning lee y escribe su artefacto en `specs/flow/STORY-NNN-<slug>/` y lee la épica padre desde `specs/flow/EPIC-NN-<slug>/epic.md` | ✓ | D-1 (bloque canónico), D-2 (mapa de rutas), D-4 (épica padre), D-5 (template de fix-plan), D-8 (TC-007); interfaces «Directorio de una historia», «Épica padre»; F-1; contratos #2, #5 |
+| AC-1 | Cada skill de planning lee y escribe su artefacto en `specs/flow/STORY-NNN-<slug>/` y lee la épica padre desde `specs/flow/EPIC-NNN-<slug>/epic.md` | ✓ | D-1 (bloque canónico), D-2 (mapa de rutas), D-4 (épica padre), D-5 (template de fix-plan), D-8 (TC-007); interfaces «Directorio de una historia», «Épica padre»; F-1; contratos #2, #5 |
 | AC-2 | `/story-plan STORY-999` informa que no existe en `specs/flow/` y no busca ni crea nada en `docs/specs/` | ✓ | D-3 (resolución y mensaje común), D-8 (TC-002 de plan con `STORY-999`); interfaz «Resolución por ID»; F-2; contrato #4 |
 | AC-3 | grep `SPECS_BASE\|SDDF_ROOT` vacío sobre los skills y sus `assets/agents/`; `verify:repository` en verde | ✓ | D-1, D-2, D-6 (`PENDING_MIGRATION`), D-7 (E2E-002); interfaz «Gate»; F-3; contratos #1, #3, #6, #7, #8, #10 |
 | CNF-1 | Evals con rutas `specs/flow/` | ✓ | D-2, D-8; contrato #9 |
@@ -120,7 +120,7 @@ Avisos de cobertura (no son hallazgos): `testcases.md` no presente → cobertura
 | Criterio | Estado | Detalle |
 |---|---|---|
 | Historia listada en la épica | ✓ | `epic.md` l. 30: «STORY-155 — Migrar los skills de planning a specs/flow» con los seis skills |
-| Objetivo de la historia alineado con la épica | ✓ | Contribuye a CS-2 (l. 38, grep `SPECS_BASE\|SDDF_ROOT` vacío) y CS-3 (l. 39, ningún skill lee `root`); conserva `STORY-NNN-<slug>/` y `EPIC-NN-<slug>/` (l. 114, ADR-0004) |
+| Objetivo de la historia alineado con la épica | ✓ | Contribuye a CS-2 (l. 38, grep `SPECS_BASE\|SDDF_ROOT` vacío) y CS-3 (l. 39, ningún skill lee `root`); conserva `STORY-NNN-<slug>/` y `EPIC-NNN-<slug>/` (l. 114, ADR-0004) |
 | Restricciones de la épica respetadas | ✓ | Sin búsqueda en `archive/`; sin mover work items (STORY-153); la épica menciona «con sus subagentes», pero ninguno de los seis skills tiene `assets/agents/` (design Context, CR-003): restricción satisfecha de forma vacía |
 
 ---

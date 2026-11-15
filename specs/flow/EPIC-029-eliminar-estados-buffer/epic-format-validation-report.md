@@ -1,9 +1,9 @@
 ---
 type: epic-format-validation
-id: EPIC-29
-slug: EPIC-29-eliminar-estados-buffer-format-validation-report
+id: EPIC-029
+slug: EPIC-029-eliminar-estados-buffer-format-validation-report
 title: "Epic format validation: Eliminar estados buffer"
-epic: EPIC-29
+epic: EPIC-029
 verdict: APPROVED
 defects: 0
 created: 2026-11-07
@@ -19,7 +19,7 @@ updated: 2026-11-07
 
 | Métrica | Valor |
 |---|---|
-| Épica | EPIC-29 (`specs/flow/EPIC-29-eliminar-estados-buffer/epic.md`) |
+| Épica | EPIC-029 (`specs/flow/EPIC-029-eliminar-estados-buffer/epic.md`) |
 | Template de épica | `docs/templates/epic-template.md` |
 | Defectos | 0 |
 | Fecha | 2026-11-07 |

@@ -5,12 +5,13 @@ Skill orquestador que ejecuta el ciclo TDD completo (RED → GREEN → REFACTOR)
 ## Posicionamiento en el flujo SDD
 
 ```
-/story-plan                            [story.md: PLANNING/IN-PROGRESS → READY-FOR-IMPLEMENT/DONE]
+/story-plan                            [story.md: PLAN/IN-PROGRESS → PLAN/DONE (story-analyze con verdict APPROVED)]
     ├── /story-design     → Genera design.md
     ├── /story-tasking    → Genera tasks.md
     ├── /story-testcases  → Genera testcases.md
     └── /story-analyze    → Genera analyze.md
-    ↓ [story.md: READY-FOR-IMPLEMENT/DONE]  ← ejecución inicial (story-plan) o rework encolado por story-code-review (señal: fix-directives.md)
+    ↓ [story.md: PLAN/DONE]                 ← ejecución inicial: planificación aprobada por story-analyze
+    ↓ [story.md: IMPLEMENT/TODO]            ← rework devuelto por story-code-review, story-verify o story-acceptance (señal de correcciones: fix-directives.md)
     ↓ [story.md: IMPLEMENT/IN-PROGRESS]     ← reanudación (ciclo interrumpido o DoD con ❌)
 /story-implement                       [story.md: → IMPLEMENT/IN-PROGRESS (Paso 0c) → IMPLEMENT/DONE]  ← aquí
     ├── Paso 0c       → gate de estado + detección de modo rework (fix-directives.md) + arranque
@@ -18,7 +19,7 @@ Skill orquestador que ejecuta el ciclo TDD completo (RED → GREEN → REFACTOR)
     ├── Fase GREEN    → invoca code_generators de sddf.config.yaml  → código de producción
     └── Fase REFACTOR → invoca code_generators con phase:REFACTOR   → código mejorado
     ↓ [story.md: IMPLEMENT/DONE]
-/story-code-review                     [APPROVED: → CODE-REVIEW/DONE | NEEDS-CHANGES: → READY-FOR-IMPLEMENT/DONE + fix-directives.md → vuelve a /story-implement | BLOCKED: → IMPLEMENT/DONE → repetir revisión]
+/story-code-review                     [APPROVED: → CODE-REVIEW/DONE | NEEDS-CHANGES: → IMPLEMENT/TODO + fix-directives.md → vuelve a /story-implement | BLOCKED: → IMPLEMENT/DONE → repetir revisión]
 ```
 
 Leyenda de artefactos de entrada:
@@ -27,7 +28,7 @@ Leyenda de artefactos de entrada:
 story.md            → What: requisitos, criterios de aceptación, comportamiento esperado
 design.md           → How: arquitectura, componentes, interfaces, decisiones técnicas
 testcases.md        → test plan detallado, casos de prueba explícitos (fuente canónica de la Fase RED)
-fix-directives.md   → Rework: hallazgos, lista blanca y ronda (solo si existe; escritor: story-code-review)
+fix-directives.md   → Rework: hallazgos, lista blanca, ronda y gate de origen (solo si existe; escritores: story-code-review, story-verify, story-acceptance)
 tasks.md            → (optativo) artefacto del desarrollador; este skill no lo lee
 ```
 
@@ -36,10 +37,10 @@ tasks.md            → (optativo) artefacto del desarrollador; este skill no lo
 | Precondición | Descripción |
 |---|---|
 | `story.md` presente | Historia con criterios de aceptación en formato Gherkin |
-| `story.md` en `READY-FOR-IMPLEMENT/DONE` o `IMPLEMENT/IN-PROGRESS` | Gate de estado (Paso 0c.2). Cualquier otro estado detiene la ejecución con `❌ La historia {story_id} no está en un estado válido para implementar`, sin modificar archivos |
+| `story.md` en un estado de entrada admitido (`PLAN/DONE`, `IMPLEMENT/TODO`, `IMPLEMENT/IN-PROGRESS` o el valor legado de la ventana de transición; ver «Estados de entrada admitidos») | Gate de estado (Paso 0c.2). Cualquier otro estado detiene la ejecución con `❌ La historia {story_id} no está en un estado válido para implementar`, sin modificar archivos |
 | `design.md` presente | Arquitectura, componentes e interfaces (fallback si falta `testcases.md`) |
 | `testcases.md` presente *(recomendado)* | Fuente canónica de casos de prueba por tipo |
-| `fix-directives.md` *(opcional)* | Señal de rework escrita por `story-code-review`; su presencia activa el modo rework (ronda = `round` del frontmatter, 1 si falta). Este skill solo lo lee |
+| `fix-directives.md` *(opcional)* | Señal de rework escrita por `story-code-review`, `story-verify` o `story-acceptance` con `NEEDS-CHANGES` (ADR-0022); su presencia activa el modo rework (ronda = `round` del frontmatter, 1 si falta; gate de origen = `based-on`). Este skill solo lo lee |
 | `sddf.config.yaml` presente | Declara `implement.test_generators` y `implement.code_generators` |
 | Skills declarados en `sddf.config.yaml` existen en `$CLI_ROOT/skills/` | Verificación fail-fast en Paso 2 |
 
@@ -49,7 +50,9 @@ Si `sddf.config.yaml` no existe o sus secciones están vacías, la ejecución se
 ## Modo rework
 
 - **Detección:** `$REWORK_MODE = true` si y solo si existe `$STORY_DIR/fix-directives.md` (Paso 0c.3). Es la única señal: el estado de `story.md` no decide el modo, y `verify-report.md` / `acceptance-report.md` no se consultan.
-- **Ronda:** `round` del frontmatter de `fix-directives.md`; si falta o no es un entero ≥ 1, se asume `1` (nunca se escribe de vuelta). El arranque anuncia `🔁 Modo rework (ronda N) — H hallazgo(s) bloqueante(s), W archivo(s) en lista blanca`.
+- **Ronda:** `round` del frontmatter de `fix-directives.md`; si falta o no es un entero ≥ 1, se asume `1` (nunca se escribe de vuelta). El arranque anuncia `🔁 Modo rework (ronda N) — H hallazgo(s) bloqueante(s), W archivo(s) en lista blanca` y, debajo, `Origen: <gate> (<based-on>)` (con `— tras /story-code-review, vuelve a pasar <gate>` si el rechazo vino de `/story-verify` o `/story-acceptance`; `Origen: desconocido` con un `based-on` no reconocido).
+- **Lista blanca vacía:** una sección de lista blanca sin viñetas (rechazo de aceptación) no es un error ni emite aviso; `story.md` es la referencia del criterio, nunca un destino.
+- **`IMPLEMENT/TODO` sin `fix-directives.md`:** `[WARN] story.md está en IMPLEMENT/TODO sin fix-directives.md — se continúa sin modo rework`; el ciclo TDD se ejecuta completo y los reportes de los gates no se leen.
 - **Bundles:** los subagentes RED, GREEN y REFACTOR reciben siempre `rework_round`, `fix_directives_path` y `whitelist` (`[{path, note}]`); fuera de rework los tres van como `null` (nunca ausentes). Solo en rework el bloque de contexto añade el párrafo "Instrucción de rework". `testcases.md` sigue siendo la fuente canónica de la Fase RED.
 - **Salida:** `implement-report.md` añade la sección `## Ciclo de corrección — ronda N` (solo en rework); `red-phase-status.json` y `cycle-status.json` llevan `rework_round`; el pie del resumen final es `→ Ejecuta /story-code-review {story_id}` cuando `story.md` queda en `IMPLEMENT/DONE`.
 - **Gate de evidencia en RED (Paso 6b):** si la Fase RED no generó ni modificó ningún archivo de prueba, el skill lee solo la columna `Dimensión` de la tabla "Instrucciones de corrección": con algún hallazgo `requirements-coverage` (o tabla ilegible) detiene con `❌` antes de GREEN; con otras dimensiones advierte con `⚠️` y continúa. El resultado queda en `red-phase-status.json.rework_evidence` (`ok`/`warning`/`error`; `n/a` fuera de rework).
@@ -94,7 +97,7 @@ En modo interactivo, responder `n` en cualquier pausa termina el ciclo limpiamen
 | Ciclo completado sin DoD-ERRORs | `IMPLEMENT` | `DONE` |
 | Ciclo completado con criterios DoD `❌` | `IMPLEMENT` | `IN-PROGRESS` |
 
-Estados de entrada admitidos: `READY-FOR-IMPLEMENT/DONE` (ejecución inicial o rework encolado por `story-code-review`) e `IMPLEMENT/IN-PROGRESS` (reanudación). El modo de trabajo (normal o rework) no depende del estado sino de la presencia de `fix-directives.md`.
+Estados de entrada admitidos: `PLAN/DONE` (ejecución inicial: planificación aprobada por `story-analyze`), `IMPLEMENT/TODO` (rework devuelto por `story-code-review`, `story-verify` o `story-acceptance`), `IMPLEMENT/IN-PROGRESS` (reanudación) y, hasta 7.0.0, `READY-FOR-IMPLEMENT/DONE` como valor legado de la ventana de transición (ADR-0022): se acepta con un aviso y se trata como `IMPLEMENT/TODO` si existe `implement-report.md` y como `PLAN/DONE` si no. El modo de trabajo (normal o rework) no depende del estado sino de la presencia de `fix-directives.md`.
 
 ## Arquitectura de delegación
 

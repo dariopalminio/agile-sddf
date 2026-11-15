@@ -28,7 +28,7 @@ related:
 ```gherkin
 Dado "docs/specs/" con épicas, stories COMPLETED y stories en otros estados
 Cuando se ejecuta el script de migración única
-Entonces cada épica queda en "specs/flow/EPIC-NN-<slug>/"
+Entonces cada épica queda en "specs/flow/EPIC-NNN-<slug>/"
   Y cada story COMPLETED queda en "specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/" con la fecha de su "updated:" (o "created:" si falta, o "date:" si faltan ambos)
   Y cada story en otro estado queda en "specs/flow/STORY-NNN-<slug>/"
   Y "docs/specs/" deja de existir

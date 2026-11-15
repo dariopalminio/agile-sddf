@@ -125,7 +125,7 @@ Definiciones (reutilizadas de STORY-110 D-4 y STORY-111 D-4 para que `project-fl
 - `$FR_COUNT` = número de archivos `$SPECS_BASE/requirements/functional/FR-*.md` + encabezados `### FR-NNN` en
   `$SPECS_BASE/requirements/srs-*.md`. Directorio ausente = 0.
 - `$ROADMAP_PLANNED` = `$SPECS_BASE/product/roadmap.md` existe **y** contiene al menos una sección `## Propuesta (` **o** su
-  sección `## Épicas` contiene al menos una línea con un ID `EPIC-NN`.
+  sección `## Épicas` contiene al menos una línea con un ID `EPIC-NNN`.
 
 La segunda cláusula cubre los dos roadmaps que existen sin propuesta: la semilla que sembrará STORY-115 (sin épicas → Planning
 pendiente) y el roadmap migrado por STORY-106 en este repositorio (`## Épicas` con 22 épicas → planificado). Ver CR-002.
@@ -217,7 +217,7 @@ Mensaje de cierre tras completar la última etapa en esta sesión:
 | `requirements/srs-*.md` | `srs` | — | — | nombre sin extensión |
 | otro archivo bajo `requirements/` | `wiki` | — | — | nombre sin extensión |
 | directorio `STORY-*` | `story` | `STORY-NNN` | `feat` si falta | nombre del directorio (sin cambios) |
-| directorio `EPIC-*` | `epic` | `EPIC-NN` | — | nombre del directorio (sin cambios) |
+| directorio `EPIC-*` | `epic` | `EPIC-NNN` | — | nombre del directorio (sin cambios) |
 | resto | `wiki` | — | — | sin cambios |
 
 Las reglas de slug coinciden con las de `memory-system` (`memory-rules.md` §2: `README.md` → `<directorio>-index`; otro archivo

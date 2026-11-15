@@ -34,7 +34,7 @@ Dado que "docs/specs/02-epics/" contiene 22 épicas, de "EPIC-00" a "EPIC-21", c
   Y "docs/product/roadmap.md" no existe
 Cuando el mantenedor crea el roadmap del producto
 Entonces "docs/product/roadmap.md" lista las 22 épicas ordenadas por ID
-  Y cada épica aparece con su wikilink "[[EPIC-NN-<slug>]]", su título y su "status"/"substatus" tal como figuran en su frontmatter
+  Y cada épica aparece con su wikilink "[[EPIC-NNN-<slug>]]", su título y su "status"/"substatus" tal como figuran en su frontmatter
   Y el frontmatter de "roadmap.md" declara "type: product" y "slug: roadmap"
 ```
 

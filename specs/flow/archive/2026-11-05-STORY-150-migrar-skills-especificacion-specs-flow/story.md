@@ -73,4 +73,4 @@ Historia core del split. Alcance: `story-creation`, `story-evaluation`, `story-r
 
 Hermanas del split: STORY-155 (planning), STORY-156 (implementación) y STORY-158 (revisión, verificación y aceptación; STORY-158 nació del split de STORY-156). El grep global sobre `skills/` lo verifica el AC-3 de cierre de STORY-157.
 
-Para probar la lectura de la épica padre sin esperar a STORY-151 se usa una épica fixture en `specs/flow/EPIC-NN-<slug>/epic.md`.
+Para probar la lectura de la épica padre sin esperar a STORY-151 se usa una épica fixture en `specs/flow/EPIC-NNN-<slug>/epic.md`.

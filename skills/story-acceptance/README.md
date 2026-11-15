@@ -26,7 +26,7 @@ El reporte declara `verdict` en el frontmatter y en la sección `## Veredicto` (
 | Veredicto | Condición | Estado de `story.md` |
 |---|---|---|
 | `PENDING` | La sesión termina con `[Q]` (`session-status: partial`) | `ACCEPTANCE/IN-PROGRESS` (se mantiene) |
-| `NEEDS-CHANGES` | `≥ 1` criterio `REJECTED`, con o sin bloqueados | `READY-FOR-IMPLEMENT/DONE` |
+| `NEEDS-CHANGES` | `≥ 1` criterio `REJECTED`, con o sin bloqueados | `IMPLEMENT/TODO` (lo retoma `/story-implement`, o `/story-implement-tasks` si existe `tasks.md`) y escribe `fix-directives.md` con `based-on: acceptance-report.md`: una fila `requirements-coverage` por criterio rechazado, lista blanca vacía y `round` continuo entre gates (ADR-0022) |
 | `BLOCKED` | `≥ 1` criterio `BLOCKED` y ninguno `REJECTED` | `ACCEPTANCE/BLOCKED` |
 | `APPROVED` | En otro caso | `ACCEPTANCE/DONE` |
 

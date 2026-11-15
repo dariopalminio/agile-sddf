@@ -22,7 +22,7 @@ related:
 
 **Como** Solo Builder que liberó una épica con SDD flow-forward  
 **Quiero** completarla con `/epic-complete EPIC-NN` tras verificar su operatividad post-despliegue  
-**Para** que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`, `specs/flow/` conserve solo el trabajo activo y la épica quede como registro histórico con su historial de git intacto
+**Para** que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`, `specs/flow/` conserve solo el trabajo activo y la épica quede como registro histórico con su historial de git intacto
 
 ## ✅ Criterios de aceptación
 
@@ -32,7 +32,7 @@ Dado una épica en SHIP/DONE
 Cuando el Solo Builder ejecuta "/epic-complete EPIC-NN"
   Y confirma que la versión liberada opera correctamente y que quiere cerrarla
 Entonces la épica queda con status COMPLETED y substatus DONE
-  Y su directorio se mueve a specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/ conservando el historial de git
+  Y su directorio se mueve a specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/ conservando el historial de git
   Y ya no aparece en specs/flow/
   Y epic.md conserva legibles las fechas de cierre y la versión liberada
 ```

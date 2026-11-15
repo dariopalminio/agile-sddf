@@ -22,6 +22,6 @@ Un equipo que llega desde un proceso SDLC tradicional reconoce sus seis fases; S
 | Deploy | `DELIVER` | — |
 | Done / Maintenance | `COMPLETED` | — |
 
-`READY-FOR-IMPLEMENT` no tiene equivalente en el SDLC clásico: es una cola con límite WIP entre el diseño y la codificación. `CANCELED` tampoco: es el terminal de una historia abandonada sin entregar.
+`CANCELED` no tiene equivalente en el SDLC clásico: es el terminal de una historia abandonada sin entregar. Entre el diseño y la codificación no hay un estado de cola. `PLAN/DONE` significa lista para implementar, y la cola de listos es una consulta ([[workflows-sin-estados-buffer]], ADR-0022).
 
 Para el detalle de cada estado, sus actores y sus transiciones, ver [[state-machine]].

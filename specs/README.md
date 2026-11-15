@@ -20,7 +20,7 @@ raíces hermanas del layout fijo (ADR-0016), junto a `docs/` (conocimiento) y `w
 ```
 specs/
 ├── flow/
-│   ├── EPIC-NN-<slug>/epic.md                    # L2 — entregables
+│   ├── EPIC-NNN-<slug>/epic.md                    # L2 — entregables
 │   ├── STORY-NNN-<slug>/story.md                 # L1 — historias atómicas
 │   └── archive/<YYYY-MM-DD>-STORY-NNN-<slug>/    # historias COMPLETED archivadas
 └── living/                                       # reservado: especificación viva

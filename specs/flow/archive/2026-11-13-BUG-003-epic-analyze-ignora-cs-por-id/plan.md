@@ -71,7 +71,7 @@ Resultado buscado: una historia que cita `CS-<id>` por ID cubre el criterio (E1)
 - **Mención de un CS de otra épica:** si una historia cita «CS-2 de EPIC-27», se contaría como cobertura de CS-2 de su épica `parent`. Ya ocurre lo mismo con `SMOKE-<N>` y se acepta como riesgo: el universo se limita a las historias con `parent` de esta épica.
 - **Cobertura declarada sin verificación:** citar el ID basta para cubrir, igual que con los smokes. La regla de no falsificación de `epic-refine` (CNF-2) no cambia, y E2 sigue siendo la evidencia fuerte.
 - **La copia literal depende del agente:** la decisión del usuario lo acepta. TC-034 fija el caso que falló.
-- **Conflictos con EPIC-29:** EPIC-29 no toca `epic-analyze` ni `epic-refine`. Aun así, conviene comprobarlo con `git status` antes de empezar, porque hay sesiones concurrentes (no usar `git stash`).
+- **Conflictos con EPIC-029:** EPIC-029 no toca `epic-analyze` ni `epic-refine`. Aun así, conviene comprobarlo con `git status` antes de empezar, porque hay sesiones concurrentes (no usar `git stash`).
 - **Unicode:** después de editar `SKILL.md`, `sal-corrections.md` y los `evals.json`, verificar por bytes que no aparezca un U+FEFF literal (incidencia recurrente; el gate no la detecta).
 
 ## Verificación

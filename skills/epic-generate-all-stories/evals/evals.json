@@ -63,7 +63,7 @@
       "type": "fail-fast",
       "description": "Ejecutar epic-generate-all-stories cuando specs/flow/ no contiene ningun subdirectorio con epic.md. El skill debe detectar la ausencia de épicas en el Paso 1, emitir el mensaje de orientacion indicado en la documentacion y terminar sin generar ningun archivo.",
       "input": {
-        "context": "Entorno SDDF válido con layout fijo. El directorio specs/flow/ existe pero esta vacio (no contiene subdirectorios EPIC-NN-* con epic.md)."
+        "context": "Entorno SDDF válido con layout fijo. El directorio specs/flow/ existe pero esta vacio (no contiene subdirectorios EPIC-NNN-* con epic.md)."
       },
       "expected": {
         "contains": [

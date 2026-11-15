@@ -142,4 +142,4 @@ Análisis del 2026-11-08 con dos cadenas de 5 porqués (por qué ocurre y por qu
 
 **Fuera de alcance.** Que `story-implement-tasks` ejecute pruebas y la sección «Pruebas ejecutadas» de `implement-report.md`: ambas están en mejora-017.
 
-**Coordinación.** EPIC-29 modifica el mismo `SKILL.md` en otros pasos (estados de entrada y rework). Este arreglo toca solo las tres lecturas del comando y sus evals.
+**Coordinación.** EPIC-029 modifica el mismo `SKILL.md` en otros pasos (estados de entrada y rework). Este arreglo toca solo las tres lecturas del comando y sus evals.

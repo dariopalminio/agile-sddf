@@ -33,7 +33,7 @@ Verificado en el filesystem el 2026-11-08:
 - Los `SKILL.md` citan entre backticks 13 rutas de clave de `sddf.config.yaml` (`defaults.delivery-model`, `verify.e2e-smoke.command`, `implement.code_generators`, `guardrails.dod.story`, …). Todas, salvo `defaults.{type}.command`, existen en `skills/sddf-init/assets/sddf.config.yaml.template`.
 - `skills/story-implement/evals/evals.json`: 37 casos, ninguno con bloque `verify`. Solo TC-004 (camino feliz GREEN/REFACTOR) y TC-006 (regresiones en REFACTOR) dependen del resultado de ejecutar las pruebas.
 - `test/maintenance-contracts.test.js` ya cubre `scripts/verify-config-contract.js`, que corre en el paso «configuración YAML» de `verify-repository.js`.
-- EPIC-29 está en `TODO`. Tocará el mismo `SKILL.md` (gates de entrada y rework) y el mismo `evals.json` (CS-7).
+- EPIC-029 está en `TODO`. Tocará el mismo `SKILL.md` (gates de entrada y rework) y el mismo `evals.json` (CS-7).
 
 ## Alternativas evaluadas
 
@@ -43,7 +43,7 @@ Verificado en el filesystem el 2026-11-08:
 |---|---|---|---|---|
 | **A1** | Regla de `story-verify`: solo tipos con `required: true` y un comando ejecutable | Una sola regla para los dos lectores del bloque `verify` (cierra la divergencia de CR-2). En este repo, `eval` (`required: false`) sigue sin ejecutarse, así que no consume cuota de LLM (constitución, principio 14) | Con la plantilla de `sddf-init` (todo `required: false`) un proyecto nuevo no ejecuta nada hasta que lo activa | **Elegida** |
 | A2 | Ejecutar cualquier tipo con comando real, salvo `eval` | Ejecuta pruebas sin configurar `required` | Excepción ad hoc para `eval`; mantiene dos reglas distintas sobre el mismo bloque, que es parte de la causa | Descartada |
-| A3 | Clave nueva por generador (`implement.test_generators[].command` o `run_tests`) | Desacopla TDD de VERIFY | Cambio de esquema, más superficie de contrato (justo lo que CR-3 señala como frágil), choca con EPIC-29 | Descartada (si se quiere, mejora aparte) |
+| A3 | Clave nueva por generador (`implement.test_generators[].command` o `run_tests`) | Desacopla TDD de VERIFY | Cambio de esquema, más superficie de contrato (justo lo que CR-3 señala como frágil), choca con EPIC-029 | Descartada (si se quiere, mejora aparte) |
 
 Con A1, lo que la plantilla deja apagado deja de pasar en silencio: se informa en consola y en `implement-report.md` (D-3).
 
@@ -89,8 +89,8 @@ Documentar en `docs/architecture/tech-stack.md` qué skill lee cada clave queda 
   - `## Resumen`: «Fase {RED|GREEN|REFACTOR} confirmada» admite `sí / no / no ejecutada`.
   - `## Ciclo TDD`, columna Detalle: un fragmento por tipo, `{tipo}: rojo (exit N)` / `pasan (exit 0)` / `no ejecutado — {motivo}`.
   - 11a (DoD IMPLEMENT): un criterio sobre pruebas cuya fase no se ejecutó se evalúa `⚠️`, nunca `✓`.
-- **D-8 — Evals (CR-4):** los casos nuevos declaran los comandos **solo** en `verify` (y `defaults` solo con `delivery-model`) y dan los resultados como exit codes del comando configurado (`command_exit_codes: {red, green, refactor}`), no como `tests_pass_after_*`. Un skill que lea `defaults` emite «no ejecutado — tipo sin configurar» y falla el caso. Se migran solo TC-004 y TC-006, los únicos cuyo oráculo depende del resultado de las pruebas: se les añade un bloque `verify` con `required: true` y sus `tests_pass_after_*` pasan a significar el resultado del comando. Los otros 35 no se tocan, para minimizar el conflicto con EPIC-29 (CS-7).
-- **Sin cambios:** la semántica de `red_confirmed` (un exit 0 en RED sigue siendo `⚠️`, no `false`), los estados de entrada y el modo rework (son de EPIC-29), y `story-implement-tasks` (mejora-017).
+- **D-8 — Evals (CR-4):** los casos nuevos declaran los comandos **solo** en `verify` (y `defaults` solo con `delivery-model`) y dan los resultados como exit codes del comando configurado (`command_exit_codes: {red, green, refactor}`), no como `tests_pass_after_*`. Un skill que lea `defaults` emite «no ejecutado — tipo sin configurar» y falla el caso. Se migran solo TC-004 y TC-006, los únicos cuyo oráculo depende del resultado de las pruebas: se les añade un bloque `verify` con `required: true` y sus `tests_pass_after_*` pasan a significar el resultado del comando. Los otros 35 no se tocan, para minimizar el conflicto con EPIC-029 (CS-7).
+- **Sin cambios:** la semántica de `red_confirmed` (un exit 0 en RED sigue siendo `⚠️`, no `false`), los estados de entrada y el modo rework (son de EPIC-029), y `story-implement-tasks` (mejora-017).
 
 ## Archivos que se modifican
 
@@ -138,7 +138,7 @@ TDD según el principio 11 de la constitución: los evals se escriben antes del 
 - **Acoplamiento TDD↔VERIFY:** `required: true` pasa a significar «se ejecuta en `story-implement` y bloquea en `story-verify`». Un proyecto que quiera TDD sin gate en VERIFY no puede expresarlo. Se acepta. A3 queda como posible mejora.
 - **Coste en este repo:** si alguien pone `verify.eval.required: true`, `story-implement` ejecutaría `npm run test:eval` (evals de **todos** los skills) tres veces. Mitigación: la configuración actual lo deja en `false` y TC-040 lo fija. No se cambia `sddf.config.yaml`.
 - **Comandos de suite completa:** en RED, `verify.unit.command` puede ejecutar toda la suite. Un exit ≠ 0 confirma el rojo aunque lo cause un fallo ajeno. Es la semántica actual y no se cambia aquí.
-- **Conflicto con EPIC-29:** toca el mismo `SKILL.md` y el mismo `evals.json`. Mitigación: cambios acotados a las tres lecturas, Pause-2, el informe y la tabla de errores. Los IDs nuevos (TC-038 en adelante) van al final, y solo se migran 2 casos. Conviene integrar BUG-02 antes de que EPIC-29 pase a `IN-PROGRESS`.
+- **Conflicto con EPIC-029:** toca el mismo `SKILL.md` y el mismo `evals.json`. Mitigación: cambios acotados a las tres lecturas, Pause-2, el informe y la tabla de errores. Los IDs nuevos (TC-038 en adelante) van al final, y solo se migran 2 casos. Conviene integrar BUG-02 antes de que EPIC-029 pase a `IN-PROGRESS`.
 - **Falsos positivos de la guarda C1:** una cita en prosa como `` `verify.e2e` `` dentro de un ejemplo podría no existir en la plantilla de un tercero. Mitigación: el conjunto de secciones está cerrado (`defaults`, `verify`, `implement`, `guardrails`), solo se valida contra la plantilla de `sddf-init` y las 13 referencias actuales son válidas.
 - **Literales en los evals:** TC-004 tiene `not_contains: "REFACTOR no ejecutado"`. El formato de D-3 (`Tipo '{tipo}' no ejecutado en REFACTOR`) no produce ese literal, y TC-004 queda migrado con `required: true`, así que no lo emite.
 - **Unicode:** al editar `SKILL.md` y `evals.json`, verificar por bytes que no aparezca un U+FEFF literal (incidencia recurrente; el gate no la detecta).

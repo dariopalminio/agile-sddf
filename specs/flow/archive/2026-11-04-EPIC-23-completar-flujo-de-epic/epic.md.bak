@@ -63,7 +63,7 @@ Fase SHIP — skill nuevo `epic-ship`:
 
 Fase COMPLETED — skill nuevo `epic-complete` (dividido en tres historias; orden de entrega STORY-175 → STORY-171 → STORY-172):
 - [ ] **STORY-175** — Admitir épicas archivadas en el layout fijo con un ADR nuevo: Como Solo Builder que mantiene Agile-SDDF, quiero que un ADR nuevo admita épicas cerradas en `specs/flow/archive/` y que los documentos de autoridad reconozcan a `epic-complete` como escritor de `COMPLETED` de épica, para que `/epic-complete` pueda archivar una épica sin contradecir una regla aceptada, y que los skills de épica sigan numerando y resolviendo épicas sin reutilizar números de épicas archivadas.
-- [ ] **STORY-171** — Skill epic-complete (Core) — completar y archivar una épica liberada: Como Solo Builder que liberó una épica con SDD flow-forward, quiero completarla con `/epic-complete EPIC-NN` tras verificar su operatividad post-despliegue, para que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`, `specs/flow/` conserve solo el trabajo activo y la épica quede como registro histórico con su historial de git intacto. Depende de STORY-175 (ADR nuevo y documentos de dominio).
+- [ ] **STORY-171** — Skill epic-complete (Core) — completar y archivar una épica liberada: Como Solo Builder que liberó una épica con SDD flow-forward, quiero completarla con `/epic-complete EPIC-NN` tras verificar su operatividad post-despliegue, para que quede en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`, `specs/flow/` conserve solo el trabajo activo y la épica quede como registro histórico con su historial de git intacto. Depende de STORY-175 (ADR nuevo y documentos de dominio).
 - [ ] **STORY-172** — Skill epic-complete — archivar épicas canceladas: Como Solo Builder que canceló una épica, quiero archivarla con `/epic-complete EPIC-NN` en `specs/flow/archive/` sin que deje de figurar como `CANCELED`, para sacar de `specs/flow/` el trabajo que ya no se hará sin que una épica cancelada se confunda con una liberada en el registro histórico.
 
 ## Criterios de salida
@@ -89,7 +89,7 @@ Resto del flujo y gobierno:
 - [ ] **CS-16** — `epic-track-progress` lista el status y substatus de cada historia hija, incluidas las archivadas, responde si todas están terminadas y no escribe ningún archivo.
 - [ ] **CS-17** — `epic-ship` genera, a partir de las historias de la épica, la entrada de `CHANGELOG.md` y las notas de versión para stakeholders en `release-notes.md` del directorio de la épica.
 - [ ] **CS-18** — `epic-ship` no ejecuta ninguna operación de git (commit, tag, merge ni push) ni dispara releases o despliegues; muestra los pasos de liberación manuales y escribe `SHIP/DONE` en la épica solo cuando el humano confirma que los completó.
-- [ ] **CS-19** — `epic-complete` rechaza una épica que no esté en `SHIP/DONE`, `COMPLETED/DONE` ni `CANCELED/DONE` y archiva las que sí lo están en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` conservando su historial de git: las `SHIP` pasan a `status: COMPLETED` y las `CANCELED` conservan su status.
+- [ ] **CS-19** — `epic-complete` rechaza una épica que no esté en `SHIP/DONE`, `COMPLETED/DONE` ni `CANCELED/DONE` y archiva las que sí lo están en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` conservando su historial de git: las `SHIP` pasan a `status: COMPLETED` y las `CANCELED` conservan su status.
 - [ ] **CS-20** — Un ADR nuevo reemplaza a ADR-0017 para admitir épicas en `specs/flow/archive/`; `domain-epic-lifecycle`, `domain-state-management` y `docs/architecture/state-machine.md` documentan que `epic-ship` y `epic-complete` escriben `SHIP` y `COMPLETED` de épica con confirmación humana, `domain-epic-lifecycle` nombra `epic-validate-report.md` como reporte de `VALIDATE`, y `validation-contract-policy` registra los gates del flujo de épica de forma coherente con su flowchart.
 - [ ] **CS-21** — `npm run verify:repository` y `npm test` pasan sin errores.
 
@@ -165,7 +165,7 @@ Escenario: SHIP prepara la versión sin operaciones de git
 Escenario: Cierre y archivado de una épica liberada
   Dado una épica en SHIP/DONE
   Cuando el usuario ejecuta /epic-complete sobre la épica y confirma el cierre
-  Entonces la épica queda con status COMPLETED en specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/
+  Entonces la épica queda con status COMPLETED en specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/
     Y ya no aparece en specs/flow/
 ```
 

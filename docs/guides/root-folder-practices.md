@@ -26,7 +26,7 @@ sigue [la sección de migración a 5.0.0](artifact-directory-migration.md#migrac
 | Raíz | Responsabilidad | Contenido |
 |---|---|---|
 | `docs/` | Conocimiento | Las capas de memoria (`product/`, `requirements/`, `domains/`, `architecture/`, `adr/`, `policies/`, `guardrails/`, `guides/`, `runbooks/`, `templates/`), `constitution.md` e `index.md`. |
-| `specs/` | Estado | `specs/flow/` con las épicas (`EPIC-NN-<slug>/`) y las historias (`STORY-NNN-<slug>/`) como hermanas, sin subniveles; `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` y `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` para las historias y las épicas `COMPLETED` o `CANCELED`; `specs/living/` reservado. |
+| `specs/` | Estado | `specs/flow/` con las épicas (`EPIC-NNN-<slug>/`) y las historias (`STORY-NNN-<slug>/`) como hermanas, sin subniveles; `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` y `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` para las historias y las épicas `COMPLETED` o `CANCELED`; `specs/living/` reservado. |
 | `workflow/` | Proceso | Reservado. |
 
 Las historias y las épicas `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan conservando su status. La

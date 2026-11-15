@@ -86,7 +86,7 @@ Cada aparición de `SPECS_BASE`, `$SPECS_BASE`, `SDDF_ROOT`, la clave `root`, `d
 
 | Clase | Criterio | Acción |
 |---|---|---|
-| **Mecanismo o layout vigente** | Describe cómo se resuelven las rutas hoy o dónde viven los work items | Reescribir: `docs/<capa>/` para conocimiento, `specs/flow/EPIC-NN-<slug>/` y `specs/flow/STORY-NNN-<slug>/` para work items, `docs/templates/` y `docs/guardrails/`; sin variable de raíz |
+| **Mecanismo o layout vigente** | Describe cómo se resuelven las rutas hoy o dónde viven los work items | Reescribir: `docs/<capa>/` para conocimiento, `specs/flow/EPIC-NNN-<slug>/` y `specs/flow/STORY-NNN-<slug>/` para work items, `docs/templates/` y `docs/guardrails/`; sin variable de raíz |
 | **Registro histórico** | Describe una versión o migración pasada (secciones 4.0.0 y 1.x→2.x de la guía, notas de terminología v1.x, títulos de nodos históricos del índice) | Conservar. Si contiene una instrucción imperativa vigente (nota final de la guía 1.x→2.x), se reformula en pasado y remite a la sección 5.0.0 |
 | **Ruta concreta de un work item existente** | Enlaza o cita un archivo real de `docs/specs/` (entradas del índice, excepciones de `gr-ai-security-checklist.md`) | Conservar: el archivo sigue ahí hasta STORY-153; lo reescribe STORY-157 |
 
@@ -121,7 +121,7 @@ Cambios, manteniendo el formato de reglas en viñetas y la brevedad del archivo:
 | Ubicación | Cambio |
 |---|---|
 | Línea 3 | `(ver docs/specs/01-projects/PROJ-01-agile-sddf/)` → remitir a `docs/product/vision.md` (que ya cita la frase siguiente) y a EPIC-26 por su ruta actual. Corrige una ruta inexistente (CNF-1). |
-| Viñeta «Resolución de raíz» | Se reemplaza por **«Layout fijo (ADR-0016)»**: tres raíces hermanas en `REPO_ROOT`: `docs/` (conocimiento), `specs/` (estado: `specs/flow/` plano con `EPIC-NN-<slug>/` y `STORY-NNN-<slug>/`, `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` para stories `COMPLETED` con la fecha de `updated:` o, si falta, `created:`, y `specs/living/` reservado) y `workflow/` (proceso, reservado). Se retiran `SDDF_ROOT`, la clave `root` de `sddf.config.yaml` y `SPECS_BASE`: los skills solo resuelven `REPO_ROOT` y declaran `<!-- SDDF-FIXED-LAYOUT: v1 -->`. `docs/requirements/` no se mueve: migrará a `specs/living/` en la épica de Living Spec. `skill-preflight` diagnostica el layout legado y remite a la guía de migración. |
+| Viñeta «Resolución de raíz» | Se reemplaza por **«Layout fijo (ADR-0016)»**: tres raíces hermanas en `REPO_ROOT`: `docs/` (conocimiento), `specs/` (estado: `specs/flow/` plano con `EPIC-NNN-<slug>/` y `STORY-NNN-<slug>/`, `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` para stories `COMPLETED` con la fecha de `updated:` o, si falta, `created:`, y `specs/living/` reservado) y `workflow/` (proceso, reservado). Se retiran `SDDF_ROOT`, la clave `root` de `sddf.config.yaml` y `SPECS_BASE`: los skills solo resuelven `REPO_ROOT` y declaran `<!-- SDDF-FIXED-LAYOUT: v1 -->`. `docs/requirements/` no se mueve: migrará a `specs/living/` en la épica de Living Spec. `skill-preflight` diagnostica el layout legado y remite a la guía de migración. |
 | Viñeta nueva **«Transición EPIC-26»** | «Mientras exista `docs/specs/`, los work items de este repo siguen ahí y `sddf.config.yaml` conserva `root: docs`; STORY-153 los migra y STORY-157 retira esta viñeta. Los skills pendientes del contrato son los de `PENDING_MIGRATION` en `scripts/verify-fixed-layout.js`.» No enumera skills ni estados: remite a fuentes verificables que cambian solas (P6). |
 | Viñeta «WIP = 1» | Sin cambios de regla. |
 | «Dónde está el detalle» | Añadir «**Layout:** ADR-0016 (`docs/adr/ADR-0016-layout-fijo-de-tres-raices.md`) y `docs/guides/root-folder-practices.md`». |
@@ -189,7 +189,7 @@ Sección nueva **antes** de `## Migración a 4.0.0 — specs/ de dos niveles` (o
 
    | Origen 4.x | Destino 5.0.0 |
    |---|---|
-   | `docs/specs/epics/EPIC-NN-<slug>/` | `specs/flow/EPIC-NN-<slug>/` |
+   | `docs/specs/epics/EPIC-NNN-<slug>/` | `specs/flow/EPIC-NNN-<slug>/` |
    | `docs/specs/stories/STORY-NNN-<slug>/` (no `COMPLETED`) | `specs/flow/STORY-NNN-<slug>/` |
    | `docs/specs/stories/STORY-NNN-<slug>/` (`COMPLETED`) | `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` (fecha de `updated:` o, si falta, `created:`) |
    | `root:` en `sddf.config.yaml` | se elimina |
@@ -202,7 +202,7 @@ Sección nueva **antes** de `## Migración a 4.0.0 — specs/ de dos niveles` (o
    2. Ejecuta `npx agile-sddf install --force`. Borra a mano las copias instaladas de `docs-wiki-builder` en el directorio de skills de cada runtime; el instalador no las elimina (STORY-152 CR-003).
    3. Ejecuta `/skill-preflight` y anota las señales de layout legado que informa.
    4. Crea `specs/flow/archive/`, `specs/living/` y `workflow/`, cada uno con un `.gitkeep`. `/sddf-init` no los crea mientras exista `docs/specs/`: avisa y remite a esta sección (CS-13).
-   5. Mueve cada épica con `git mv docs/specs/epics/EPIC-NN-<slug> specs/flow/`.
+   5. Mueve cada épica con `git mv docs/specs/epics/EPIC-NNN-<slug> specs/flow/`.
    6. Mueve cada historia que no esté `COMPLETED` con `git mv docs/specs/stories/STORY-NNN-<slug> specs/flow/`.
    7. Mueve cada historia `COMPLETED` con `git mv docs/specs/stories/STORY-NNN-<slug> specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>`, con la fecha de su `updated:` (o `created:`). Las `CANCELED` y los demás estados quedan en `specs/flow/`; las épicas no se archivan.
    8. Elimina lo que quede en `docs/specs/` (por ejemplo, su `README.md`) y el directorio.
@@ -228,7 +228,7 @@ Antes de escribir cada comando, comprobar que existe en el skill entregado: el d
 | Guía | Cambio |
 |---|---|
 | `root-folder-practices.md` | Se reescribe con el mismo `slug` y un `title` nuevo: «Raíces del repositorio y layout fijo SDDF». Secciones: raíces no intercambiables (`REPO_ROOT`, layout fijo `docs/`·`specs/`·`workflow/`, `CLI_ROOT` con destinos en `config/runtimes.json`); contrato de los skills (marcador `SDDF-FIXED-LAYOUT: v1` y rutas fijas); diagnóstico (`/skill-preflight`, layout legado); checklist de revisión. Se retiran «Precedencia canónica», «Configuración versionada» y «Override temporal», con una línea que remite a [la sección de migración](artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices). |
-| `sddf-commands-pipeline.md` | Se reemplaza la sección de las líneas 21–32 (tabla de precedencia y `export SDDF_ROOT`) por un párrafo de layout fijo. `$SPECS_BASE/` pasa a `docs/` (líneas 69–75, 136, 157, 178–180), a `specs/flow/EPIC-NN-<slug>/epic.md` (199) y a `specs/flow/STORY-NNN-<slug>/story.md` (200). Se quita la nota de la línea 183. |
+| `sddf-commands-pipeline.md` | Se reemplaza la sección de las líneas 21–32 (tabla de precedencia y `export SDDF_ROOT`) por un párrafo de layout fijo. `$SPECS_BASE/` pasa a `docs/` (líneas 69–75, 136, 157, 178–180), a `specs/flow/EPIC-NNN-<slug>/epic.md` (199) y a `specs/flow/STORY-NNN-<slug>/story.md` (200). Se quita la nota de la línea 183. |
 | `skill-structural-pattern.md` | §3 «Resolución local de contexto» → «Layout fijo»; línea 60 → `docs/templates/`; el árbol de las líneas 126–132 pasa a `docs/…` y `specs/flow/…`. |
 | `organization-of-artifacts.md` | Las líneas 27–30 (árbol `docs/specs/` y «Puedes cambiarlo…») pasan al layout fijo sin configurabilidad; las líneas 57–58 pasan a `specs/flow/EPIC-001-…/epic.md` y `specs/flow/STORY-001-…/story.md`. |
 | `harness-eng-agents-orchestration.md` | Línea 36 → «cada workflow resuelve `REPO_ROOT` y usa rutas fijas»; en el prompt de ejemplo de la línea 170 se quita `SPECS_BASE=docs`; línea 180 → «pasarle `REPO_ROOT` y las rutas ya resueltas». |

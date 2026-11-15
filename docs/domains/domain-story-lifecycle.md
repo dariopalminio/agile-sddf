@@ -35,9 +35,8 @@ title: "Documentación del Dominio: Ciclo de Vida de Story (Story Lifecycle)"
 ## 2. Lenguaje Ubicuo (Glosario)
 
 * **Story:** Historia de usuario atómica que aporta valor de negocio. Identificada por `STORY-NNN`.
-* **Pipeline Story:** Secuencia canónica de estados que recorre una historia: `SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`.
-* **Buffer (READY-FOR-IMPLEMENT):** Estado de cola que desacopla planificación de implementación, con WIP limitado.
-* **Rework:** Retorno a `READY-FOR-IMPLEMENT` tras un rechazo en `CODE-REVIEW`, `VERIFY` o `ACCEPTANCE`. La señal de que una historia está en rework es la presencia del artefacto de fallo en su directorio (`fix-directives.md` para `CODE-REVIEW`); no existe estado ni substatus de rework (ver ADR-0008).
+* **Pipeline Story:** Secuencia canónica de estados que recorre una historia: `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` (ADR-0022, [[workflows-sin-estados-buffer]]).
+* **Rework:** Retorno a `IMPLEMENT/TODO` tras un `NEEDS-CHANGES` de `CODE-REVIEW`, `VERIFY` o `ACCEPTANCE`. El gate que rechaza escribe `fix-directives.md` en el directorio de la historia, y la presencia de ese archivo es la única señal de rework: no existe estado ni substatus de rework (ADR-0022, [[workflows-sin-estados-buffer]]).
 * **DoD (Definition of Done):** Conjunto de criterios que una historia debe cumplir para avanzar de estado.
 * **Delivery Model:** Estrategia de entrega del proyecto (`batch` o `continuous`), que determina el significado de `DELIVER`.
 * **Incremento potencialmente entregable:** Resultado de una historia que está lista para producción pero aún no publicada (aplica en modelo `batch`).
@@ -73,7 +72,7 @@ title: "Documentación del Dominio: Ciclo de Vida de Story (Story Lifecycle)"
   * `ReworkEvent` (VO) — historial de reworks
   * `DeliveryModel` (VO) — determina el significado de `DELIVER`
   * `StoryParent` (VO) — referencia a la épica contenedora
-  * `WipLimit` (VO) — aplicable solo en `READY-FOR-IMPLEMENT`
+  * `WipLimit` (VO) — aplicable solo a `substatus: IN-PROGRESS` (constitución §9)
 
 ---
 
@@ -82,8 +81,10 @@ title: "Documentación del Dominio: Ciclo de Vida de Story (Story Lifecycle)"
 ### 4.1 Happy path
 
 ```
-SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED
+SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED
 ```
+
+Fuente del workflow y de sus transiciones: ADR-0022, [[workflows-sin-estados-buffer]].
 
 ### 4.2 Máquina de estados completa (con retrocesos)
 
@@ -91,22 +92,20 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 stateDiagram-v2
     [*] --> SPECIFY
     SPECIFY --> PLAN
-    PLAN --> RFI
-    RFI --> IMPLEMENT
+    PLAN --> IMPLEMENT : APPROVED (PLAN/DONE)
     IMPLEMENT --> CR
     CR --> VERIFY : APPROVED
-    CR --> RFI : NEEDS-CHANGES
+    CR --> IMPLEMENT : NEEDS-CHANGES (IMPLEMENT/TODO)
     CR --> IMPLEMENT : BLOCKED (repetir revisión)
     VERIFY --> ACCEPTANCE : APPROVED
-    VERIFY --> RFI : NEEDS-CHANGES
+    VERIFY --> IMPLEMENT : NEEDS-CHANGES (IMPLEMENT/TODO)
     VERIFY --> VERIFY : BLOCKED
     ACCEPTANCE --> DELIVER : APPROVED
-    ACCEPTANCE --> RFI : NEEDS-CHANGES
+    ACCEPTANCE --> IMPLEMENT : NEEDS-CHANGES (IMPLEMENT/TODO)
     ACCEPTANCE --> ACCEPTANCE : BLOCKED
     DELIVER --> COMPLETED
     COMPLETED --> [*]
 
-    state "READY-FOR-IMPLEMENT" as RFI
     state "CODE-REVIEW" as CR
 ```
 
@@ -114,11 +113,11 @@ stateDiagram-v2
 
 | Ruta | Descripción |
 |------|-------------|
-| **Happy path** | `SPECIFY → PLAN → RFI → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` |
-| **Rework por revisión** | `CODE-REVIEW → READY-FOR-IMPLEMENT` (`NEEDS-CHANGES`) |
+| **Happy path** | `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` |
+| **Rework por revisión** | `CODE-REVIEW → IMPLEMENT/TODO` (`NEEDS-CHANGES`) |
 | **Revisión incompleta** | `CODE-REVIEW → IMPLEMENT/DONE` (`BLOCKED`; repetir `story-code-review`) |
-| **Rework por verificación** | `VERIFY → READY-FOR-IMPLEMENT` (`NEEDS-CHANGES`) |
-| **Rework por aceptación** | `ACCEPTANCE → READY-FOR-IMPLEMENT` (`NEEDS-CHANGES`) |
+| **Rework por verificación** | `VERIFY → IMPLEMENT/TODO` (`NEEDS-CHANGES`) |
+| **Rework por aceptación** | `ACCEPTANCE → IMPLEMENT/TODO` (`NEEDS-CHANGES`) |
 | **Bloqueo en aceptación** | `ACCEPTANCE → ACCEPTANCE` (`BLOCKED`) |
 | **Bloqueo en verificación** | `VERIFY → VERIFY` (`BLOCKED`) |
 | **Cancelación** | `* → CANCELED` (desde cualquier estado activo) |
@@ -131,9 +130,8 @@ stateDiagram-v2
 | Status | Descripción | Actor | Substatus inicial |
 |--------|-------------|-------|-------------------|
 | `SPECIFY` | Se define el comportamiento de la historia: formato Como/Quiero/Para, criterios de aceptación con escenarios Gherkin. Fase funcional sin decisiones técnicas. | PO / PM | `IN-PROGRESS` |
-| `PLAN` | Se diseña la solución técnica: `design.md`, `tasks.md`, `testcases.md`. Se estima esfuerzo y se define el enfoque (TDD/BDD). | Equipo | `IN-PROGRESS` |
-| `READY-FOR-IMPLEMENT` | Buffer/cola. Historia planificada y aprobada, esperando capacidad del equipo. Aplica límite WIP. | Sistema | `DONE` |
-| `IMPLEMENT` | Se codifica la historia siguiendo TDD/BDD (Rojo-Verde-Refactor). Se escriben pruebas y código de producción. | Equipo / IA | `IN-PROGRESS` |
+| `PLAN` | Se diseña la solución técnica: `design.md`, `tasks.md`, `testcases.md`. Se estima esfuerzo y se define el enfoque (TDD/BDD). Termina en `PLAN/DONE` cuando `story-analyze` emite `APPROVED`. | Equipo | `IN-PROGRESS` |
+| `IMPLEMENT` | Se codifica la historia siguiendo TDD/BDD (Rojo-Verde-Refactor). Se escriben pruebas y código de producción. `IMPLEMENT/TODO` indica un rework pendiente si existe `fix-directives.md`. | Equipo / IA | `IN-PROGRESS` |
 | `CODE-REVIEW` | Se revisa el código implementado para garantizar calidad, estándares y coherencia con el diseño. | Revisor | `IN-PROGRESS` |
 | `VERIFY` | Se ejecutan pruebas automatizadas (unitarias, integración, E2E, regresión) en entorno controlado. | CI / Equipo | `IN-PROGRESS` |
 | `ACCEPTANCE` | Validación humana de la historia contra los criterios de aceptación de `SPECIFY`. El humano decide si el valor es entregable. | PO / QA | `IN-PROGRESS` |
@@ -147,8 +145,9 @@ stateDiagram-v2
 
 | Substatus | Aplica en | Significado específico en Story |
 |-----------|-----------|--------------------------------|
-| `DONE` | `READY-FOR-IMPLEMENT` | Historia en cola, esperando capacidad del equipo. |
+| `TODO` | Cualquier estado activo | Pendiente de iniciar; en `IMPLEMENT/TODO` con `fix-directives.md`, rework pendiente. |
 | `IN-PROGRESS` | `SPECIFY`, `PLAN`, `IMPLEMENT`, `CODE-REVIEW`, `VERIFY`, `ACCEPTANCE`, `DELIVER` | El rol correspondiente está trabajando activamente. |
+| `DONE` | Todos los estados activos | Trabajo de la etapa terminado; `PLAN/DONE` es la planificación aprobada, lista para implementar. |
 | `BLOCKED` | `ACCEPTANCE` principalmente; puede aplicar a cualquier estado activo | Impedimento externo (ej. dependencia, decisión pendiente). No retrocede el status. |
 
 ---
@@ -164,8 +163,8 @@ Además de las invariantes transversales de [[domain-state-management]]:
    * `continuous`: incremento ya desplegado en producción.
 4. El estado `COMPLETED` no puede retroceder sin acción explícita de reapertura.
 5. La transición `ACCEPTANCE → ACCEPTANCE` (con `BLOCKED`) mantiene el estado, pero documenta el impedimento.
-6. Todos los retrocesos apuntan a `READY-FOR-IMPLEMENT/DONE`, no a `IMPLEMENT`.
-7. El `READY-FOR-IMPLEMENT` debe respetar un **WIP limit** definido en la política del proyecto.
+6. Todos los retrocesos por `NEEDS-CHANGES` apuntan a `IMPLEMENT/TODO`; no existe estado ni substatus de rework y la señal es `fix-directives.md` (ADR-0022, [[workflows-sin-estados-buffer]]).
+7. Las historias listas para implementar se consultan en este orden: primero `IMPLEMENT/TODO`, después `PLAN/DONE`. Es una consulta, no un estado ni una cola con WIP ([[domain-state-management]] §5.5).
 8. El estado terminal `COMPLETED` no admite transiciones salientes excepto `CANCELED` o reapertura explícita.
 
 ---
@@ -179,7 +178,6 @@ Además de las invariantes transversales de [[domain-state-management]]:
 | **CI post-merge** | `VERIFY` | Integración, E2E, regresión. |
 | **DoD de Story** | `VERIFY` | Criterios de la Definition of Done de Story (cobertura, pruebas, documentación). |
 | **Aceptación del PO** | `ACCEPTANCE` | Criterios de aceptación de `story.md`, valor de negocio. |
-| **WIP Limit** | `READY-FOR-IMPLEMENT` | No exceder el número máximo de historias en cola. |
 
 ---
 
@@ -205,7 +203,7 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Dominio transversal:** [[domain-state-management]]
 * **Principios aplicables:** [[constitution]] (patrones 8, 14; reglas 9 y 15)
-* **Decisión de arquitectura:** [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
+* **Decisión de arquitectura:** [[workflows-sin-estados-buffer]] (ADR-0022) — fuente del workflow y las transiciones de story; [[workflow-canonico-story-y-epic]] (ADR-0003) — rationale de los nombres de `status` en infinitivo
 
 ---
 
@@ -215,5 +213,6 @@ Además de las invariantes transversales de [[domain-state-management]]:
 * [[domain-epic-lifecycle]] — Ciclo de vida de Epic (contenedor de Story)
 * [[domain-foundational-docs-lifecycle]] — Ciclo de vida de la documentación fundacional
 * [[constitution]] — Constitución del proyecto
-* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic
+* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic (nombres en infinitivo)
+* [[workflows-sin-estados-buffer]] — ADR-0022: workflows de story y epic, rework en `IMPLEMENT/TODO` y cola de listos como consulta
 

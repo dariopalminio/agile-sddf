@@ -8,7 +8,7 @@
 
 ## What it does
 
-Cierra una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic.md` la fecha de cierre y, si se conoce, la versión y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` (ADR-0019), conservando el historial de git. Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status. Siempre pide confirmación humana antes de escribir o mover nada.
+Cierra una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic.md` la fecha de cierre y, si se conoce, la versión y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` (ADR-0019), conservando el historial de git. Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status. Siempre pide confirmación humana antes de escribir o mover nada.
 
 **Produces:**
 
@@ -70,4 +70,4 @@ Para otro runtime compatible, sustituye `claude-code` por un identificador decla
 
 ### Invocation
 
-Usa `/epic-complete EPIC-NN [--version x.y.z]` o `/epic-complete specs/flow/EPIC-NN-<slug>/ [--version x.y.z]`.
+Usa `/epic-complete EPIC-NN [--version x.y.z]` o `/epic-complete specs/flow/EPIC-NNN-<slug>/ [--version x.y.z]`.

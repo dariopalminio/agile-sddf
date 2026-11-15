@@ -140,7 +140,7 @@ Write two new files. No existing files to modify.
       "id": "TC-001",
       "name": "happy-path: multiples releases generan historias para todas sus features",
       "type": "functional",
-      "description": "Dado un directorio $SPECS_BASE/specs/releases/ con dos o mas subdirectorios EPIC-NN-nombre/ cada uno con release.md valido y seccion ## Features, el skill debe generar un story.md por cada feature en todos los releases, en orden alfabetico, y mostrar un resumen consolidado",
+      "description": "Dado un directorio $SPECS_BASE/specs/releases/ con dos o mas subdirectorios EPIC-NNN-nombre/ cada uno con release.md valido y seccion ## Features, el skill debe generar un story.md por cada feature en todos los releases, en orden alfabetico, y mostrar un resumen consolidado",
       "input": {
         "input_path": "docs/specs/releases/",
         "flags": []

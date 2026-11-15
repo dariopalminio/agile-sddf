@@ -58,7 +58,7 @@ Para otro runtime compatible, sustituye `claude-code` por un identificador decla
 
 ### Invocación
 
-Usa `/epic-refine <epica>`, donde `<epica>` es el ID (`EPIC-30`), el nombre del directorio (`EPIC-30-ejemplo`) o la ruta al directorio o a su `epic.md`; la ruta solo se acepta si es una épica activa `specs/flow/EPIC-NN-<slug>/` del repositorio (nunca externa ni archivada). Añade `--auto` para aplicar el plan sin preguntas desde un orquestador.
+Usa `/epic-refine <epica>`, donde `<epica>` es el ID (`EPIC-30`), el nombre del directorio (`EPIC-30-ejemplo`) o la ruta al directorio o a su `epic.md`; la ruta solo se acepta si es una épica activa `specs/flow/EPIC-NNN-<slug>/` del repositorio (nunca externa ni archivada). Añade `--auto` para aplicar el plan sin preguntas desde un orquestador.
 
 ```bash
 /epic-refine EPIC-30

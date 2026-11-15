@@ -4,8 +4,8 @@ type: story
 id: STORY-057
 slug: STORY-057-skill-para-diseno
 title: "Skill para Diseño (story-design)"
-status: READY-FOR-IMPLEMENT
-substatus: TODO
+status: PLAN
+substatus: IN-PROGRESS
 parent: EPIC-12-story-sdd-workflow
 created: 2026-05-06
 updated: 2026-05-06

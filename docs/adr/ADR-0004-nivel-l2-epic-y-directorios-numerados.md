@@ -11,7 +11,7 @@ superseded-by: ADR-0013
 
 # ADR-0004: El nivel L2 es una épica, y los niveles viven en directorios numerados
 
-> **Superado parcialmente por [ADR-0013](ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) (2026-10-11):** los directorios numerados (`01-projects/`, `02-epics/`, `03-stories/`) se reemplazan por `specs/epics/` y `specs/stories/`, y el nivel Project deja de ser work item. Siguen vigentes sin cambios: el nivel L2 se llama **épica** (`EPIC-NN`, `epic.md`, skills `epic-*`) y «release» queda reservado para CI/CD.
+> **Superado parcialmente por [ADR-0013](ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) (2026-10-11):** los directorios numerados (`01-projects/`, `02-epics/`, `03-stories/`) se reemplazan por `specs/epics/` y `specs/stories/`, y el nivel Project deja de ser work item. Siguen vigentes sin cambios: el nivel L2 se llama **épica** (`EPIC-NNN`, `epic.md`, skills `epic-*`) y «release» queda reservado para CI/CD.
 
 ## Contexto y problema
 
@@ -36,7 +36,7 @@ Pero el problema de fondo no es de vocabulario sino **estructural**:
 - **Escalado bloqueado.** No hay dónde documentar el lanzamiento en sí (`release-notes.md`) sin
   mezclarlo con las épicas.
 
-El resto del framework ya usaba el vocabulario correcto de forma parcial: los IDs son `EPIC-NN`, la
+El resto del framework ya usaba el vocabulario correcto de forma parcial: los IDs son `EPIC-NNN`, la
 rama de nivel medio es `epic/`, y el ADR-0003 titula el workflow de nivel medio como "Epic/Release".
 Convivían dos nombres para el mismo concepto, y eso ya estaba produciendo errores concretos: un
 barrido automatizado de renombrado generó rutas `épicas/` (con tilde, un directorio inexistente)
@@ -84,13 +84,13 @@ lanzamientos (`release-notes.md`, changelogs por versión).
 - **Cardinalidad correcta.** Épica y release son entidades N:M. Ninguna contiene a la otra, así que
   ninguna debe anidarse dentro del directorio de la otra.
 - **Principio constitucional 8 (buenas prácticas y estándares homogéneos):** un concepto, un nombre.
-  Mantener dos nombres para el nivel L2 (`EPIC-NN` en los IDs, `release` en skills y directorios)
+  Mantener dos nombres para el nivel L2 (`EPIC-NNN` en los IDs, `release` en skills y directorios)
   producía resultados impredecibles al pedirle trabajo a un agente sobre "el release", y de hecho ya
   generó rutas inválidas en un renombrado automatizado.
 - **Principio constitucional 1 (el repositorio como sistema):** un agente que lee el repo para
   entender "cómo trabajamos" no debe tener que desambiguar si "release" significa un entregable de
   gestión o un despliegue a producción.
-- El vocabulario nuevo ya era el dominante en los artefactos reales (`EPIC-NN`, rama `epic/`), así
+- El vocabulario nuevo ya era el dominante en los artefactos reales (`EPIC-NNN`, rama `epic/`), así
   que el cambio alinea los nombres con lo que el repositorio ya hacía.
 
 ## Alternativas consideradas
@@ -122,7 +122,7 @@ lanzamientos (`release-notes.md`, changelogs por versión).
 - `release` recupera un significado único y no ambiguo (CI/CD), y sigue usándose sin conflicto en
   `security-audit --scope release`, en la estrategia de branching batch y en el CHANGELOG.
 - El nombre `releases/` queda disponible para documentar lanzamientos reales.
-- Los nombres de skill (`epic-*`) concuerdan con los IDs (`EPIC-NN`) y con la rama (`epic/`).
+- Los nombres de skill (`epic-*`) concuerdan con los IDs (`EPIC-NNN`) y con la rama (`epic/`).
 
 **Negativas / trade-offs:**
 - **Breaking change doble.** Los comandos `/release-*` dejan de existir, los artefactos `release.md`

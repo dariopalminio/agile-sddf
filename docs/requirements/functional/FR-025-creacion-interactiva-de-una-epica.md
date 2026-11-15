@@ -14,7 +14,7 @@ related: []
 
 ## Descripción
 
-El sistema SHALL crear `EPIC-NN-slug/epic.md` conduciendo al usuario sección
+El sistema SHALL crear `EPIC-NNN-slug/epic.md` conduciendo al usuario sección
 por sección según el template activo, con un flag `--quick` para el modo abreviado. Al terminar
 SHALL invocar la validación de formato.
 

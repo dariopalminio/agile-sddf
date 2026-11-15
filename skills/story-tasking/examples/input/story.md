@@ -4,8 +4,8 @@ type: story
 id: STORY-099
 slug: STORY-099-exportar-datos-csv
 title: "Exportar datos en CSV"
-status: READY-FOR-IMPLEMENT
-substatus: TODO
+status: PLAN
+substatus: IN-PROGRESS
 parent: EPIC-10-data-management
 created: 2026-05-07
 updated: 2026-05-07

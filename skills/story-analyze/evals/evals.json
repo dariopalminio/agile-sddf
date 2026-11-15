@@ -1,13 +1,13 @@
 {
   "skill": "story-analyze",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Casos de prueba para story-analyze: auditoria de coherencia entre story.md, design.md y testcases.md/tasks.md antes de implementar",
   "cases": [
     {
       "id": "TC-001",
       "name": "happy-path-artefactos-completos-coherentes",
       "type": "happy-path",
-      "description": "Todos los artefactos presentes (story.md, design.md, tasks.md) con cobertura completa de ACs, tareas alineadas al diseno y sin inconsistencias ERROR. El skill debe generar analyze.md con veredicto APPROVED y actualizar story.md a READY-FOR-IMPLEMENT/DONE.",
+      "description": "Todos los artefactos presentes (story.md, design.md, tasks.md) con cobertura completa de ACs, tareas alineadas al diseno y sin inconsistencias ERROR. El skill debe generar analyze.md con veredicto APPROVED y actualizar story.md a PLAN/DONE.",
       "input": {
         "input_path": "examples/input",
         "story_id": "STORY-099",
@@ -26,7 +26,7 @@
           "Recomendaciones",
           "Via de Implementacion Disponible",
           "Cumplimiento DoD",
-          "READY-FOR-IMPLEMENT",
+          "PLAN/DONE",
           "## Veredicto",
           "(verdict: APPROVED)"
         ],
@@ -34,7 +34,8 @@
           "Analisis rechazado",
           "Entorno invalido",
           "Estado general",
-          "NEEDS-CHANGES"
+          "NEEDS-CHANGES",
+          "READY-FOR-IMPLEMENT"
         ]
       },
       "threshold": 0.9
@@ -86,7 +87,7 @@
         "not_contains": [
           "type: analyze",
           "Resumen Ejecutivo",
-          "READY-FOR-IMPLEMENT",
+          "Estado story.md: PLAN/DONE ✓",
           "## Veredicto"
         ]
       },
@@ -96,7 +97,7 @@
       "id": "TC-004",
       "name": "happy-path-ac-sin-cobertura-en-design",
       "type": "happy-path",
-      "description": "story.md tiene 3 ACs, design.md cubre solo 2 (AC-3 sin cobertura), tasks.md presente. El skill debe detectar la inconsistencia TIPO A como ERROR, registrar INC-001 con tipo A, y NO actualizar story.md a READY-FOR-IMPLEMENT (status permanece en PLAN/IN-PROGRESS).",
+      "description": "story.md tiene 3 ACs, design.md cubre solo 2 (AC-3 sin cobertura), tasks.md presente. El skill debe detectar la inconsistencia TIPO A como ERROR, registrar INC-001 con tipo A, y NO actualizar story.md a PLAN/DONE (status permanece en PLAN/IN-PROGRESS).",
       "input": {
         "input_path": "STORY-003",
         "story_id": "STORY-003",
@@ -119,7 +120,7 @@
           "ERROR de tipo A"
         ],
         "not_contains": [
-          "READY-FOR-IMPLEMENT",
+          "Estado story.md: PLAN/DONE ✓",
           "Sin inconsistencias bloqueantes",
           "(verdict: APPROVED)",
           "Estado general"
@@ -159,7 +160,7 @@
       "id": "TC-006",
       "name": "solo-warning-conserva-aprobacion",
       "type": "edge-case",
-      "description": "Con artefactos completos, un componente de design.md sin tarea produce WARNING tipo C y ningún ERROR. El veredicto sigue siendo APPROVED.",
+      "description": "Con artefactos completos, un componente de design.md sin tarea produce WARNING tipo C y ningún ERROR. El veredicto sigue siendo APPROVED y story.md pasa a PLAN/DONE.",
       "input": {
         "input_path": "examples/input",
         "story_id": "STORY-099",
@@ -170,11 +171,12 @@
         "contains": [
           "(verdict: APPROVED)",
           "WARNING de tipo C",
-          "READY-FOR-IMPLEMENT"
+          "PLAN/DONE"
         ],
         "not_contains": [
           "NEEDS-CHANGES",
-          "Estado general"
+          "Estado general",
+          "READY-FOR-IMPLEMENT"
         ]
       },
       "threshold": 0.92

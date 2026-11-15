@@ -27,7 +27,7 @@ updated: 2026-05-01
 Dado que ejecuto el skill `/release-creation` en un proyecto sin `project-plan.md`
   Y el archivo `assets/release-spec-template.md` existe en el skill
 Cuando respondo las preguntas para cada sección obligatoria (Descripción, Features, Smoke Tests)
-Entonces el skill crea el archivo en `$SPECS_BASE/specs/releases/EPIC-NN-<slug>/release.md`
+Entonces el skill crea el archivo en `$SPECS_BASE/specs/releases/EPIC-NNN-<slug>/release.md`
   Y el skill invoca automáticamente `release-format-validation` sobre el archivo creado
   Y el resultado de la validación es APROBADO
 ```
@@ -52,7 +52,7 @@ Entonces el skill detiene la ejecución antes de formular cualquier pregunta
 ## ⚙️ Criterios no funcionales
 
 * Autonomía: el skill extrae las secciones del template dinámicamente en tiempo de ejecución — no las hardcodea; si el template cambia, el flujo de preguntas se actualiza automáticamente
-* Convención: el nombre del directorio de salida sigue el formato `EPIC-NN-<slug-kebab>` con NN derivado de los directorios existentes en `releases/`
+* Convención: el nombre del directorio de salida sigue el formato `EPIC-NNN-<slug-kebab>` con NN derivado de los directorios existentes en `releases/`
 
 ## 📎 Notas / contexto adicional
 

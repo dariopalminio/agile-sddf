@@ -1,7 +1,7 @@
 {
   "skill": "story-acceptance",
-  "version": "1.1.0",
-  "description": "Casos de prueba para story-acceptance: verifica el comportamiento del skill en los flujos de validación manual (happy path, rechazo, estado inválido, sesión parcial, DoD ausente, modo --dry-run y flag --restart), asegurando la correcta generación de acceptance-report.md con veredicto APPROVED / NEEDS-CHANGES / BLOCKED / PENDING y actualización del frontmatter de story.md.",
+  "version": "1.3.0",
+  "description": "Casos de prueba para story-acceptance: verifica el comportamiento del skill en los flujos de validación manual (happy path, rechazo, estado inválido, sesión parcial, DoD ausente, modo --dry-run y flag --restart), asegurando la correcta generación de acceptance-report.md con veredicto APPROVED / NEEDS-CHANGES / BLOCKED / PENDING y actualización del frontmatter de story.md (NEEDS-CHANGES devuelve la historia a IMPLEMENT/TODO y nombra a /story-implement como ejecutor, con /story-implement-tasks como alternativa solo si existe tasks.md; STORY-189); con NEEDS-CHANGES escribe fix-directives.md desde la plantilla comun con based-on: acceptance-report.md, una fila requirements-coverage por criterio REJECTED, lista blanca vacia y round continuo entre gates; STORY-190).",
   "cases": [
     {
       "id": "TC-001",
@@ -34,7 +34,7 @@
           "(verdict: PENDING)",
           "ACCEPTANCE-APPROVED",
           "final-status",
-          "READY-FOR-IMPLEMENT",
+          "IMPLEMENT/TODO",
           "Entorno inválido"
         ]
       },
@@ -44,7 +44,7 @@
       "id": "TC-002",
       "name": "criterio-rechazado-historia-regresa-a-implement",
       "type": "fail-path",
-      "description": "Historia en VERIFY/DONE. El validador responde FAIL con observación al segundo criterio Gherkin. El skill debe generar acceptance-report.md con verdict NEEDS-CHANGES, y actualizar story.md a READY-FOR-IMPLEMENT/DONE. El criterio FAIL debe contener la observación registrada.",
+      "description": "Historia en VERIFY/DONE. El validador responde FAIL con observación al segundo criterio Gherkin. El skill debe generar acceptance-report.md con verdict NEEDS-CHANGES, actualizar story.md a IMPLEMENT/TODO y nombrar a /story-implement como ejecutor (AC-2 de STORY-189). El criterio FAIL debe contener la observación registrada.",
       "input": {
         "story_id": "STORY-060",
         "story_status": "VERIFY",
@@ -61,11 +61,11 @@
           "(verdict: NEEDS-CHANGES)",
           "Veredicto: NEEDS-CHANGES",
           "REJECTED",
-          "READY-FOR-IMPLEMENT",
-          "DONE",
+          "IMPLEMENT/TODO",
           "No muestra mensaje de error esperado",
           "acceptance-report.md",
-          "regresa a READY-FOR-IMPLEMENT"
+          "regresa a IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement"
         ],
         "not_contains": [
           "(verdict: APPROVED)",
@@ -198,10 +198,11 @@
           "Resuelve el impedimento"
         ],
         "not_contains": [
+          "📋 Fix directives:",
           "(verdict: APPROVED)",
           "(verdict: NEEDS-CHANGES)",
           "ACCEPTANCE-BLOCKED",
-          "READY-FOR-IMPLEMENT",
+          "IMPLEMENT/TODO",
           "lista para DELIVER",
           "Entorno inválido"
         ]
@@ -275,7 +276,7 @@
       "id": "TC-009",
       "name": "fail-blocked-mixto-historia-regresa-a-implement",
       "type": "edge-case",
-      "description": "Historia en VERIFY/DONE con 3 criterios. El validador responde FAIL al criterio 1 y BLOCKED al criterio 2, APPROVED al criterio 3. Según la regla: si hay ≥1 REJECTED + ≥1 BLOCKED → verdict NEEDS-CHANGES, story.md regresa a READY-FOR-IMPLEMENT/DONE.",
+      "description": "Historia en VERIFY/DONE con 3 criterios. El validador responde FAIL al criterio 1 y BLOCKED al criterio 2, APPROVED al criterio 3. Según la regla: si hay ≥1 REJECTED + ≥1 BLOCKED → verdict NEEDS-CHANGES, story.md regresa a IMPLEMENT/TODO y el resumen nombra a /story-implement como ejecutor (STORY-189).",
       "input": {
         "story_id": "STORY-090",
         "story_status": "VERIFY",
@@ -293,8 +294,9 @@
           "Veredicto: NEEDS-CHANGES",
           "REJECTED",
           "BLOCKED",
-          "READY-FOR-IMPLEMENT",
-          "DONE",
+          "IMPLEMENT/TODO",
+          "regresa a IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement",
           "acceptance-report.md"
         ],
         "not_contains": [
@@ -382,6 +384,7 @@
           "(verdict: PENDING)"
         ],
         "not_contains": [
+          "📋 Fix directives:",
           "(verdict: APPROVED)",
           "(verdict: NEEDS-CHANGES)",
           "session-status: complete",
@@ -472,6 +475,148 @@
         ],
         "not_contains": [
           "docs/specs"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-016",
+      "name": "needs-changes-con-tasks-md-nombra-alternativa",
+      "type": "fail-path",
+      "description": "AC-2 de STORY-189 (fila /story-acceptance): mismo flujo que TC-002 con tasks.md presente en el directorio de la historia. Con NEEDS-CHANGES el skill deja story.md en IMPLEMENT/TODO y el resumen nombra a /story-implement como ejecutor y a /story-implement-tasks como alternativa (tasks.md presente). Escribe fix-directives.md con based-on: acceptance-report.md (STORY-190).",
+      "input": {
+        "story_id": "STORY-061",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "implement-report.md", "verify-report.md"],
+        "gherkin_criterios": 2,
+        "dod_criterios": 4,
+        "responses": [
+          {"criterio": 1, "resultado": "p"},
+          {"criterio": 2, "resultado": "f", "observacion": "No muestra mensaje de error esperado"}
+        ]
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement",
+          "Alternativa (tasks.md presente): /story-implement-tasks"
+        ],
+        "not_contains": [
+          "(verdict: APPROVED)",
+          "(verdict: BLOCKED)",
+          "lista para DELIVER",
+          "Ronda de corrección"
+        ]
+      },
+      "threshold": 0.90
+    },
+    {
+      "id": "TC-017",
+      "name": "rechazo-genera-fix-directives-ronda-continua",
+      "type": "fail-path",
+      "description": "STORY-190 (AC-1 fila 3, AC-2, CNF-4, ADR-0022). Base TC-002: historia en VERIFY/DONE cuya ronda de rework 1 la abrio story-code-review; story-code-review aprobo la correccion y borro fix-directives.md, pero implement-report.md conserva '## Ciclo de corrección — ronda 1'. El validador rechaza el criterio 2 (encabezado '### AC-2' en la linea 34 de story.md) con una observacion. Con NEEDS-CHANGES el skill escribe acceptance-report.md sin cambiar su formato y fix-directives.md desde la plantilla comun con based-on: acceptance-report.md, round: 2 (max(fix-directives.md ausente, 1) + 1), una fila requirements-coverage HIGH que apunta a story.md:34 con la observacion en Hallazgo, y la lista blanca vacia sin error. round no vuelve a 1.",
+      "input": {
+        "story_id": "STORY-060",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md",
+          "code-review-report.md",
+          "verify-report.md"
+        ],
+        "existing_fix_directives": null,
+        "implement_report_headings": [
+          "## Resumen",
+          "## Ciclo de corrección — ronda 1"
+        ],
+        "story_ac_heading_lines": {
+          "AC-1": 22,
+          "AC-2": 34
+        },
+        "gherkin_criterios": 2,
+        "responses": [
+          {
+            "criterio": 1,
+            "resultado": "p"
+          },
+          {
+            "criterio": 2,
+            "resultado": "f",
+            "observacion": "No muestra mensaje de error esperado, permite enumerar usuarios registrados"
+          }
+        ]
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "📋 Fix directives:",
+          "fix-directives.md (ronda 2)",
+          "based-on: acceptance-report.md",
+          "round: 2",
+          "requirements-coverage",
+          "story.md:34",
+          "No muestra mensaje de error esperado",
+          "Vacía: un rechazo de aceptación",
+          "IMPLEMENT/TODO"
+        ],
+        "not_contains": [
+          "round: 1",
+          "(ronda 1)",
+          "{{BASED_ON}}",
+          "(verdict: APPROVED)",
+          "lista para DELIVER"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-018",
+      "name": "rechazo-sin-rondas-previas-round-1",
+      "type": "edge-case",
+      "description": "STORY-190 (AC-1, CNF-4). Base TC-009: 3 criterios Gherkin, FAIL en el 1, BLOCKED en el 2 y PASS en el 3, sin fix-directives.md ni implement-report.md con encabezado de ronda. Con NEEDS-CHANGES, fix-directives.md tiene round: 1, based-on: acceptance-report.md y una sola fila (el criterio rechazado): el criterio BLOCKED no es un rechazo y no entra en la tabla de directivas.",
+      "input": {
+        "story_id": "STORY-090",
+        "story_status": "VERIFY",
+        "story_substatus": "DONE",
+        "existing_fix_directives": null,
+        "gherkin_criterios": 3,
+        "responses": [
+          {
+            "criterio": 1,
+            "resultado": "f",
+            "observacion": "El formulario no valida el campo email correctamente"
+          },
+          {
+            "criterio": 2,
+            "resultado": "b",
+            "observacion": "Servidor de pruebas caído"
+          },
+          {
+            "criterio": 3,
+            "resultado": "p"
+          }
+        ]
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "📋 Fix directives:",
+          "based-on: acceptance-report.md",
+          "round: 1",
+          "requirements-coverage",
+          "El formulario no valida el campo email correctamente",
+          "Total de hallazgos bloqueantes:** 1",
+          "IMPLEMENT/TODO"
+        ],
+        "not_contains": [
+          "Criterio 2 rechazado",
+          "round: 2",
+          "(verdict: BLOCKED)",
+          "(verdict: APPROVED)"
         ]
       },
       "threshold": 0.9

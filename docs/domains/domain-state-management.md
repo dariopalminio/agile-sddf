@@ -40,9 +40,8 @@ title: "Documentación del Dominio: Gestión de Estados (State Management)"
 * **Substatus:** Nivel de avance dentro de un status. Conjunto cerrado: `TODO`, `IN-PROGRESS`, `DONE`, `BLOCKED`.
 * **Transición:** Cambio válido de un `status` a otro, gobernado por un skill, un gate humano o CI/CD.
 * **Gate:** Punto de control (humano o automático) que valida una condición antes de permitir una transición.
-* **WIP Limit:** Límite de trabajo en progreso aplicado a un estado buffer.
-* **Buffer:** Estado de cola que desacopla una fase de la siguiente, absorbiendo variabilidad con un WIP limitado.
-* **Rework:** Retorno a un estado anterior tras un rechazo en revisión, verificación o aceptación.
+* **WIP Limit:** Límite de work items con `substatus: IN-PROGRESS` por nivel (constitución §9). No se aplica a ninguna cola.
+* **Rework:** Retorno a la etapa de ejecución tras un rechazo en revisión, verificación o aceptación: en Story, `IMPLEMENT/TODO`.
 * **Pipeline:** Secuencia ordenada de estados que un work item recorre. La secuencia concreta depende del nivel.
 * **Artefacto:** Documento Markdown que materializa el trabajo de un estado (`story.md`, `design.md`, `epic.md`).
 * **Frontmatter:** Bloque YAML al inicio de cada artefacto con `status` y `substatus`.
@@ -61,7 +60,7 @@ title: "Documentación del Dominio: Gestión de Estados (State Management)"
 | `Status` | Objeto de Valor | Inmutable. Se identifica por su nombre. El conjunto de valores válidos depende del nivel. |
 | `Substatus` | Objeto de Valor | Inmutable. Conjunto cerrado: `TODO`, `IN-PROGRESS`, `DONE`, `BLOCKED`. |
 | `Transition` | Objeto de Valor | Inmutable. Se define por origen, destino y condición. |
-| `WipLimit` | Objeto de Valor | Inmutable. Se define por estado buffer y valor numérico. |
+| `WipLimit` | Objeto de Valor | Inmutable. Se define por nivel de work item y aplica solo a `IN-PROGRESS`. |
 | `Gate` | Objeto de Valor | Inmutable. Se define por condición y actor responsable. |
 | `Frontmatter` | Objeto de Valor | Inmutable por transacción. Se reemplaza completamente en cada actualización. |
 
@@ -74,7 +73,7 @@ title: "Documentación del Dominio: Gestión de Estados (State Management)"
   * `Substatus` (VO)
   * `Artifacts` (Entidades) — documentos asociados
   * `Gates` (VO) — condiciones de avance
-  * `WipLimit` (VO) — aplicable solo en estados buffer
+  * `WipLimit` (VO) — aplicable solo a `substatus: IN-PROGRESS`
 
 ---
 
@@ -83,11 +82,11 @@ title: "Documentación del Dominio: Gestión de Estados (State Management)"
 Aplican a **todo `WorkItem`**, independientemente de su nivel:
 
 1. Todo `WorkItem` debe tener **exactamente un `status`** y **exactamente un `substatus`** en todo momento.
-2. Los `substatus` válidos son: `TODO`, `IN-PROGRESS`, `DONE`, `BLOCKED`.
+2. Los `substatus` válidos son: `TODO`, `IN-PROGRESS`, `DONE`, `BLOCKED`. `TODO` significa «pendiente de iniciar» en cualquier estado activo, no solo en el primero.
 3. `BLOCKED` **no retrocede** el status: el work item permanece en su status actual mientras espera resolución.
 4. Las transiciones deben seguir la máquina de estados canónica definida para el nivel correspondiente.
-5. Los estados buffer deben respetar un **WIP limit** definido en la política del proyecto.
-6. `SHIP` de épica la escribe `epic-ship` solo tras **confirmación humana explícita** de que el humano completó los pasos de liberación manuales (commit, tag, merge y despliegue); ningún skill ejecuta esos pasos. `COMPLETED` de épica la escribe `epic-complete` desde `SHIP/DONE`, solo con **confirmación humana explícita**, y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/`; `epic-complete` además archiva sin cambiar el status las épicas que ya están en `COMPLETED/DONE` o `CANCELED/DONE`, siempre con confirmación humana (ADR-0019). `DELIVER` de story la escribe `story-delivery` y `COMPLETED` de story la escribe `story-complete` desde `DELIVER/DONE`, ambas siempre con **confirmación humana explícita**; `story-complete` además archiva sin cambiar el status las historias que ya están en `COMPLETED/DONE`, y archiva sin cambiar el status las historias `CANCELED/DONE`, siempre con confirmación humana (ADR-0017).
+5. El **WIP limit** de cada nivel limita solo los work items en `IN-PROGRESS` (constitución §9); ninguna cola tiene WIP.
+6. `SHIP` de épica la escribe `epic-ship` solo tras **confirmación humana explícita** de que el humano completó los pasos de liberación manuales (commit, tag, merge y despliegue); ningún skill ejecuta esos pasos. `COMPLETED` de épica la escribe `epic-complete` desde `SHIP/DONE`, solo con **confirmación humana explícita**, y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`; `epic-complete` además archiva sin cambiar el status las épicas que ya están en `COMPLETED/DONE` o `CANCELED/DONE`, siempre con confirmación humana (ADR-0019). `DELIVER` de story la escribe `story-delivery` y `COMPLETED` de story la escribe `story-complete` desde `DELIVER/DONE`, ambas siempre con **confirmación humana explícita**; `story-complete` además archiva sin cambiar el status las historias que ya están en `COMPLETED/DONE`, y archiva sin cambiar el status las historias `CANCELED/DONE`, siempre con confirmación humana (ADR-0017).
 7. Un `WorkItem` en estado terminal pasivo no puede retroceder sin una acción explícita de reapertura.
 8. Los nombres de `status` usan **verbos en infinitivo** (ADR-0003) para reflejar acción, no concepto estático.
 9. El conjunto de `status` válidos es **específico por nivel** y se define en el dominio de cada nivel.
@@ -102,13 +101,12 @@ Aplican a **todo `WorkItem`**, independientemente de su nivel:
 |------|-------|------|
 | DEFINITION | SPECIFY | DEFINE |
 | PLANNING | PLAN | PLAN |
-| BUFFER | READY-FOR-IMPLEMENT | READY-FOR-DEV |
 | EXECUTION | IMPLEMENT | DEVELOP |
 | QUALITY | CODE-REVIEW → VERIFY → ACCEPTANCE | VALIDATE (+ gates opcionales) |
 | RELEASE | DELIVER | SHIP |
 | CLOSURE | COMPLETED | COMPLETED |
 
-Los nombres difieren porque los conceptos difieren, pero la estructura es la misma. Las herramientas pueden operar por `phase_type` para uniformidad.
+Los nombres difieren porque los conceptos difieren, pero la estructura es la misma. Las herramientas pueden operar por `phase_type` para uniformidad. No hay fase de cola: la cola de listos es una consulta (§5.5).
 
 ---
 
@@ -131,15 +129,23 @@ Independientemente del nivel, existen cuatro tipos de transición:
 ### 5.3 Transiciones de retroceso (rework)
 
 * Ocurren cuando una revisión, verificación o aceptación rechaza el trabajo.
-* El work item regresa a un estado de cola (`READY-FOR-IMPLEMENT` o `READY-FOR-DEV`, según el nivel).
-* El motivo del rechazo se documenta en el artefacto correspondiente (`review.md`, `verify-report.md`).
-* El skill de implementación detecta el rework por la existencia del artefacto de fallo en el directorio del work item (p. ej. `fix-directives.md`), no por un subestado (ver ADR-0008).
+* El work item regresa a su etapa de ejecución: una historia, a `IMPLEMENT/TODO` desde cualquiera de los tres gates (`story-code-review`, `story-verify`, `story-acceptance`); una épica, a `DEVELOP` con un veredicto distinto de `APPROVED` de `epic-validate`.
+* No existe estado ni substatus de rework.
+* El motivo del rechazo se documenta en el reporte del gate (`code-review-report.md`, `verify-report.md`, `acceptance-report.md`), y el gate escribe `fix-directives.md` con `based-on` igual a su reporte.
+* El skill de implementación detecta el rework solo por la existencia de `fix-directives.md` en el directorio de la historia, no por el estado ni por un substatus (ADR-0022, [[workflows-sin-estados-buffer]]).
 
 ### 5.4 Transiciones con `BLOCKED`
 
 * `BLOCKED` no cambia el `status`; solo el `substatus`.
 * El work item permanece en su status actual mientras espera resolución.
 * Al resolverse, vuelve al `substatus` previo (`TODO` o `IN-PROGRESS`).
+
+### 5.5 Flujo de la cola de listos (consulta, no estado)
+
+* Las historias listas para implementar se obtienen con la consulta: **primero `IMPLEMENT/TODO`, después `PLAN/DONE`**.
+* La cola de listos es una consulta, no un estado, un gate ni un límite WIP.
+* `TODO` significa «pendiente de iniciar» en cualquier estado activo: `IMPLEMENT/TODO` es una historia pendiente de iniciar en `IMPLEMENT` (un rework si existe `fix-directives.md`) y `PLAN/DONE` es una planificación aprobada que nadie empezó a implementar.
+* Fuente: ADR-0022, [[workflows-sin-estados-buffer]].
 
 ---
 
@@ -150,7 +156,7 @@ Independientemente del nivel, existen cuatro tipos de transición:
 | **Gate de calidad automático** | Validación ejecutada por CI/CD (compilación, tests, linters). | CI en el PR, CI post-merge. |
 | **Gate de revisión humana** | Validación de un artefacto por una persona (diseño, seguridad, estándares). | Revisión por pares, aceptación del PO. |
 | **Gate de formato** | Validación estructural de un artefacto contra un template o esquema. | `epic-format-validation`. |
-| **Gate de capacidad (WIP)** | Control del número máximo de work items en un buffer. | WIP = 1 por nivel de work item. |
+| **Gate de capacidad (WIP)** | Control del número máximo de work items en `IN-PROGRESS` por nivel. | Constitución §9. |
 | **Gate de aceptación de negocio** | Confirmación de que el valor de negocio se cumple. | Aceptación del PO en `ACCEPTANCE`. |
 
 > Los gates concretos y sus condiciones específicas se definen en el dominio de cada nivel.
@@ -172,7 +178,7 @@ Independientemente del nivel, existen cuatro tipos de transición:
 * **Máquina de estados completa:** [[state-machine]]
 * **Workflow narrativo:** [[specs-and-workflows]]
 * **Principios aplicables:** [[constitution]] (patrones 8, 14; reglas 9 y 15)
-* **Decisión de arquitectura:** [[workflow-canonico-story-y-epic]] — rationale de los workflows canónicos de story y epic
+* **Decisión de arquitectura:** [[workflows-sin-estados-buffer]] (ADR-0022) — fuente de los workflows y las transiciones de story y epic; [[workflow-canonico-story-y-epic]] (ADR-0003) — rationale de los nombres de `status` en infinitivo
 
 ---
 
@@ -184,7 +190,8 @@ Independientemente del nivel, existen cuatro tipos de transición:
 * [[domain-epic-lifecycle]] — Ciclo de vida de Epic (L2)
 * [[domain-foundational-docs-lifecycle]] — Ciclo de vida de la documentación fundacional
 * [[constitution]] — Constitución del proyecto
-* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic
+* [[workflow-canonico-story-y-epic]] — Workflow canónico de story y epic (nombres en infinitivo)
+* [[workflows-sin-estados-buffer]] — ADR-0022: workflows de story y epic, rework en `IMPLEMENT/TODO` y cola de listos como consulta
 
 ---
 

@@ -70,7 +70,7 @@ CNF-1 (D-8, F2) · CNF-2 (D-4, F4, Contrato 5) · CNF-3 (Interfaces de escritura
 | T015 | `references/release-content.md` | Componente «Reglas de contenido»; Esquema de datos; D-2, D-3, D-4 | ✓ |
 | T016 | `assets/release-notes-template.md` | Componente «Template de notas»; Esquema `release-notes.md` | ✓ |
 | T017 | `evals/evals.json` TC-001…TC-005 | Componente «Evals»; Contratos 1-5 | ✓ |
-| T018 | Casos de borde en inputs de TC-001 | Esquema «Historia liberada» (prefijo `EPIC-NN`, `CANCELED/DONE`) | ✓ |
+| T018 | Casos de borde en inputs de TC-001 | Esquema «Historia liberada» (prefijo `EPIC-NNN`, `CANCELED/DONE`) | ✓ |
 | T019 | Invariante 6 de `domain-state-management` | Componente «Invariante 6»; D-9; CR-002 | ✓ |
 | T020 | `domain-epic-lifecycle` §5, §7, §8, §9 (incluye `validate-report.md` → `epic-validate-report.md`) | Componente «Ciclo de vida de épica»; D-9; CR-001 | ✓ |
 | T021 | Nota de `state-machine.md` | Componente «Máquina de estados»; D-9; CR-002 | ✓ |

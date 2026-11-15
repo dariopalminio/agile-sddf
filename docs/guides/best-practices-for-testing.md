@@ -102,6 +102,16 @@ Aplicar esta tabla a la clasificación de pruebas para asegurar consistencia y c
 
 - **E2E de Agente (flujo completo de varios skills encadenados):** Estas pruebas simulan un flujo completo de interacción entre múltiples skills/agentes, verificando que el agente funcione correctamente como un todo integrado y que los skills se coordinen adecuadamente para cumplir con los objetivos del usuario.
 
+## Técnicas de pruebas
+
+- **Prueba de Contrato Generativa (generative):** Para Pruebas de conformidad de API autogeneradas basadas en contrato o Prueba de Contrato Generativa. Es una técnica de pruebas de contrato basadas en propiedades que describes una propiedad que siempre debería cumplirse, y luego dejas que una herramienta genere cientos de entradas para intentar romperla. Por ejemplo, la propiedad es, en esencia: "ninguna solicitud válida debería colapsar el servidor ni producir una respuesta que viole el esquema".
+
+- **Mutation testing (mutation):** Las pruebas de mutación (mutation testing) son una técnica avanzada de prueba que sirve para medir la calidad y la efectividad de tus pruebas unitarias. Una herramienta automatizada hace pequeños cambios deliberados en tu código fuente o bytecode (por ejemplo, cambiar un operador > por >= o true por false). A cada versión alterada se le llama mutante.  Se ejecutan tus pruebas unitarias existentes sobre cada mutante. Si tus pruebas unitarias fallan al detectar el cambio, se considera que el mutante ha muerto (lo cual es buen resultado, porque significa que tu test es lo suficientemente sensible para detectar el error).
+
+- **Monkey test (monkey):** Las Monkey es una técnica de prueba no funcional "comúnmente usada en la fase de pruebas unitarias y de sistema" que consiste en proporcionar entradas aleatorias, inesperadas o inválidas a una aplicación y observar cómo se comporta. 
+
+- **Parity testing (parity):** Es la práctica de demostrar empíricamente que una implementación nueva (candidata) se comporta exactamente igual que una implementación de referencia (legacy u original) para el mismo conjunto de entradas. Se trata de  de verificar que preserva el comportamiento observable del sistema que reemplaza. El testing de paridad es el cinturón de seguridad de las migraciones y refactorizaciones de alto riesgo.
+
 ## Pruebas de regresión (regression)
 
 Regression testing es el proceso de verificar que la funcionalidad que funcionaba anteriormente sigue funcionando correctamente después de cambios de código, detectando bugs donde código nuevo hace que features existentes fallen.

@@ -98,7 +98,7 @@ Escenario: Migración de un repo de tres niveles
 Escenario: Navegabilidad intacta tras el colapso
   Dado un repo con épicas e historias existentes
   Cuando se ejecuta la migración completa
-  Entonces todos los wikilinks `[[EPIC-NN-*]]` y `[[STORY-NNN-*]]` resuelven, los frontmatters mantienen sus referencias `parent`/`related` y `docs/index.md` se regenera correctamente
+  Entonces todos los wikilinks `[[EPIC-NNN-*]]` y `[[STORY-NNN-*]]` resuelven, los frontmatters mantienen sus referencias `parent`/`related` y `docs/index.md` se regenera correctamente
 ```
 
 ## Notas

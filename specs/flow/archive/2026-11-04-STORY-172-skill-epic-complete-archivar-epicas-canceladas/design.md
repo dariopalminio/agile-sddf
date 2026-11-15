@@ -22,7 +22,7 @@ related:
 
 ## Context
 
-`/epic-complete EPIC-NN` (STORY-171) completa y archiva épicas `SHIP/DONE` y archiva sin reescribir las `COMPLETED/DONE`. Esta historia añade la tercera rama de CS-19: una épica `CANCELED/DONE` se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NN-<slug>/` **conservando** `status: CANCELED` / `substatus: DONE`, para que en el registro histórico no se confunda con una liberada.
+`/epic-complete EPIC-NN` (STORY-171) completa y archiva épicas `SHIP/DONE` y archiva sin reescribir las `COMPLETED/DONE`. Esta historia añade la tercera rama de CS-19: una épica `CANCELED/DONE` se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` **conservando** `status: CANCELED` / `substatus: DONE`, para que en el registro histórico no se confunda con una liberada.
 
 Estado verificado en el filesystem (2026-10-29):
 
@@ -36,7 +36,7 @@ Estado verificado en el filesystem (2026-10-29):
 
 **Goals:**
 
-- Admitir `CANCELED/DONE` en la tabla de admisión con `action: archive-canceled`: mover el directorio a `specs/flow/archive/<archiveDate>-EPIC-NN-<slug>/` sin escribir `epic.md` // satisface: AC-1, CNF-1
+- Admitir `CANCELED/DONE` en la tabla de admisión con `action: archive-canceled`: mover el directorio a `specs/flow/archive/<archiveDate>-EPIC-NNN-<slug>/` sin escribir `epic.md` // satisface: AC-1, CNF-1
 - Rechazar `CANCELED/<substatus ≠ DONE>` con `CANCELED_NOT_DONE`, sin preguntar y sin cambios // satisface: AC-2
 - Heredar el rechazo `ARCHIVE_CONFLICT` cuando el destino existe // satisface: AC-3
 - Pedir confirmación explícita que nombra que el status no cambia // satisface: AC-1, CNF-2
@@ -152,7 +152,7 @@ Pasos 1–3 de F1; cualquier respuesta distinta de `s`/`si`/`sí` → `Operació
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
 | 1 | `CANCELED/DONE` → `plan` con `action: archive-canceled` y `archiveDate` de `updated:`, de `created:` y de `date:` (solo sin las otras dos) | `test/epic-complete.test.js` | AC-1 |
-| 2 | `CANCELED/DONE` + `apply` → directorio en `specs/flow/archive/<archiveDate>-EPIC-NN-<slug>/`, ausente de `specs/flow/`, `epic.md` byte a byte igual con `status: CANCELED` y `substatus: DONE`, `message` con `archivada como CANCELED (status sin cambios)` | `test/epic-complete.test.js` | AC-1, CNF-1 |
+| 2 | `CANCELED/DONE` + `apply` → directorio en `specs/flow/archive/<archiveDate>-EPIC-NNN-<slug>/`, ausente de `specs/flow/`, `epic.md` byte a byte igual con `status: CANCELED` y `substatus: DONE`, `message` con `archivada como CANCELED (status sin cambios)` | `test/epic-complete.test.js` | AC-1, CNF-1 |
 | 3 | Con historial: `git status --porcelain` muestra rename `R` y no hay commit nuevo | `test/epic-complete.test.js` | AC-1 |
 | 4 | `CANCELED/IN-PROGRESS` → `CANCELED_NOT_DONE` con el estado y «solo se archivan las épicas canceladas con substatus DONE», sin `/epic-ship`; snapshot de archivos idéntico | `test/epic-complete.test.js` | AC-2 |
 | 5 | `CANCELED/DONE` con destino existente → `ARCHIVE_CONFLICT` con la ruta; snapshot idéntico | `test/epic-complete.test.js` | AC-3 |

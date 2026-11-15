@@ -41,7 +41,7 @@ Comprueba la **preparación estructural** de una épica —todas sus historias h
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `specs/flow/<EPIC-NN-nombre>/epic.md` | `title`, `status` y `substatus` (gateway, Paso 5b), líneas `- ` de la sección de historias y encabezados y pasos `Entonces` de la sección de smoke tests |
+| `epic.md` | `specs/flow/<EPIC-NNN-nombre>/epic.md` | `title`, `status` y `substatus` (gateway, Paso 5b), líneas `- ` de la sección de historias y encabezados y pasos `Entonces` de la sección de smoke tests |
 | `story.md` | `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md` | `parent`, `status` y `substatus` del frontmatter; del cuerpo de las historias del universo, solo la presencia del token `SMOKE-<N>` |
 | `epic-analyze-report.md` | `<EPIC_DIR>/epic-analyze-report.md` | Solo `verdict` y `updated` del frontmatter |
 | `acceptance-report.md`, `verify-report.md` | `<STORY_DIR>/` de las historias dueñas de un `SMOKE-N` | Solo `verdict` del frontmatter, y solo en `--mode manual` |

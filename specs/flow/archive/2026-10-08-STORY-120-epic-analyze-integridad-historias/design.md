@@ -104,7 +104,7 @@ Resultados:
 | Coincidencias | Comportamiento |
 |---|---|
 | 0 (o el directorio existe sin `epic.md`) | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>` donde `<ruta-buscada>` es el patrón probado (p. ej. `docs/specs/02-epics/EPIC-77-*/epic.md`). Detener **antes** de cualquier escritura; no se crea `epic-analyze-report.md`. |
-| 1 | Continuar. `EPIC_DIR` = directorio; `EPIC_ID` = prefijo `EPIC-NN` del nombre del directorio (no el `id:` del frontmatter: el directorio es lo que referencia `parent`). |
+| 1 | Continuar. `EPIC_DIR` = directorio; `EPIC_ID` = prefijo `EPIC-NNN` del nombre del directorio (no el `id:` del frontmatter: el directorio es lo que referencia `parent`). |
 | > 1 | Manual: listar y pedir elección. Agent: `❌ El argumento <arg> es ambiguo: <lista>` y detener sin escribir. |
 | Sin argumento | Manual: preguntar el ID. Agent: `❌ Falta el argumento <epica>` y detener. |
 
@@ -147,7 +147,7 @@ línea F2/F3 (p. ej. `— [[STORY-086-…]]`) se ignora.
 - Glob `$SPECS_BASE/specs/03-stories/STORY-*/story.md`. De cada uno se lee **solo el frontmatter**: `parent`. El ID de
   la historia es el prefijo `STORY-NNN` del nombre de su directorio (misma convención que la resolución de `story_id`
   en los skills `story-*`).
-- **Pertenencia:** una historia declara la épica si el prefijo `EPIC-NN` de su `parent` es igual a `EPIC_ID`
+- **Pertenencia:** una historia declara la épica si el prefijo `EPIC-NNN` de su `parent` es igual a `EPIC_ID`
   (`EPIC-30-ejemplo` y `EPIC-30` cuentan; `EPIC-300-x` no).
 - **Resolución de un ID listado:** glob `$SPECS_BASE/specs/03-stories/<STORY-NNN>-*/story.md` (guion obligatorio tras
   el ID). Existe ↔ hay al menos un directorio con `story.md`.
@@ -337,7 +337,7 @@ No se modifica: `epic-format-validation`, `epic-template.md` (central ni seed), 
 
 | ID | Interfaz | Contrato | AC / CNF |
 |---|---|---|---|
-| I-1 | Invocación | `/epic-analyze <epica> [--auto]`; `<epica>` = ID `EPIC-NN`, nombre de directorio o ruta (D-2) | AC-1, AC-3, CNF-5 |
+| I-1 | Invocación | `/epic-analyze <epica> [--auto]`; `<epica>` = ID `EPIC-NNN`, nombre de directorio o ruta (D-2) | AC-1, AC-3, CNF-5 |
 | I-2 | Lectura de la épica | Entrada: `EPIC_DIR/epic.md` + template de épica (D-3). Salida interna: lista de `EntradaIndice` | AC-1, AC-2 |
 | I-3 | Retorno en modo Agent | Cuatro líneas exactas: `STATUS: OK\|FAIL` · `VEREDICTO: <APPROVED\|NEEDS-REFINEMENT\|BLOCKED>` · `HALLAZGOS: ERROR <n> · WARNING <m>` · `REPORTE: <ruta relativa a REPO_ROOT>`. En `FAIL` (AC-3, template ausente, ambigüedad) `VEREDICTO: —`, `REPORTE: —` y una quinta línea `MOTIVO: <mensaje ❌>` | CNF-5, AC-3 |
 | I-4 | Template del reporte | Secciones `##` con marcador `clave:`; claves `resumen`, `indice-historias`, `hallazgos`, `notas-analisis`; placeholders `{...}` en frontmatter (D-8, D-9) | CNF-4 |
@@ -395,7 +395,7 @@ lee ningún template ni se escribe ningún archivo.
 - **Secciones del reporte por clave:** cuesta un comentario por encabezado, pero es el contrato ya adoptado en
   `epic-template.md`; localizar por título obligaría a escribir títulos en el skill (contra la regla semántica del
   checklist "derive the section list from the template").
-- **Pertenencia por prefijo `EPIC-NN` y no por cadena exacta:** una línea más de regla evita falsos huérfanos masivos
+- **Pertenencia por prefijo `EPIC-NNN` y no por cadena exacta:** una línea más de regla evita falsos huérfanos masivos
   tras renombrar el slug de una épica.
 - Lo que **no** se añade: script Node, subagentes, flags `--force`/`--skip-existing`, histórico de reportes,
   validación de forma del índice, cambio de estado. Ninguno lo exige un AC o CNF.

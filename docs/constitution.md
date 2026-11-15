@@ -168,7 +168,7 @@ La lógica de dominio vive en los templates (estructura) y en los agentes (crite
 
 | Nivel | Patrón | Ejemplo |
 |---|---|---|
-| Épica | `EPIC-NN-kebab` | `EPIC-12-story-sdd-workflow` |
+| Épica | `EPIC-NNN-kebab` | `EPIC-12-story-sdd-workflow` |
 | Historia | `STORY-NNN-kebab` | `STORY-042-login` |
 
 Los requisitos usan `FR-NNN`/`NFR-NNN` y no son work items.

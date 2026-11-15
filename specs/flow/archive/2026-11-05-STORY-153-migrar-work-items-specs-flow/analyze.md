@@ -39,7 +39,7 @@ related:
 
 | AC | Descripción | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
-| AC-1 | Migrar y archivar: épicas → `specs/flow/EPIC-NN-<slug>/`, `COMPLETED` → `archive/<fecha>-STORY-…/`, resto → `specs/flow/STORY-…/`, `docs/specs/` deja de existir, total conservado | ✓ | D-1, D-2 (inventario, l. 87), D-3 (destinos, l. 104), D-4 (fecha, l. 119), D-5 (guardias, l. 130), D-6 (ejecución y `rmdir`, l. 147), D-8 (totales, l. 177), D-11 (corte, l. 210); contratos 1–3, 6–8, 10 |
+| AC-1 | Migrar y archivar: épicas → `specs/flow/EPIC-NNN-<slug>/`, `COMPLETED` → `archive/<fecha>-STORY-…/`, resto → `specs/flow/STORY-…/`, `docs/specs/` deja de existir, total conservado | ✓ | D-1, D-2 (inventario, l. 87), D-3 (destinos, l. 104), D-4 (fecha, l. 119), D-5 (guardias, l. 130), D-6 (ejecución y `rmdir`, l. 147), D-8 (totales, l. 177), D-11 (corte, l. 210); contratos 1–3, 6–8, 10 |
 | AC-2 | Dry-run lista origen → destino sin modificar nada; segunda ejecución sin cambios | ✓ | D-7 (idempotencia y `--dry-run`, l. 163), D-9 (`[MOVERÍA]`, `[SIN CAMBIOS]`, l. 186), Flujos clave (l. 267); contratos 4, 5 y 10 |
 | CNF-1 | Un solo uso, sin eventos ni log | ✓ | D-1 (sin skill ni subcomando; salida solo por consola), contrato 8 |
 | CNF-2 | Node.js sin dependencias nuevas; `CANCELED` no se archiva | ✓ | D-1 (solo `fs`, `path`, `child_process`), D-3 (regla binaria `COMPLETED`), contrato 9 |

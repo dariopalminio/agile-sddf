@@ -14,7 +14,7 @@ evaluated: 2026-10-22
 ## Historia evaluada
 
 > **Como** practitioner que crea y analiza épicas con SDDF
-> **Quiero** que `epic-creation`, `epic-format-validation`, `epic-from-project-plan`, `epic-generate-stories`, `epic-generate-all-stories` y `epic-analyze` lean y escriban en `specs/flow/EPIC-NN-<slug>/` sin usar `SPECS_BASE`
+> **Quiero** que `epic-creation`, `epic-format-validation`, `epic-from-project-plan`, `epic-generate-stories`, `epic-generate-all-stories` y `epic-analyze` lean y escriban en `specs/flow/EPIC-NNN-<slug>/` sin usar `SPECS_BASE`
 > **Para** gestionar épicas en el layout fijo y que el análisis de una épica encuentre también sus historias archivadas
 
 ---

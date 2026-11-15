@@ -8,7 +8,7 @@ La **sección de historias** es la de `clave: historias` del template de épica 
 
 Hallazgo: **Elemento** = `STORY-NNN`. La historia se resuelve por ID (punto 5 del Paso 3 del `SKILL.md`), nunca por la ruta de **Evidencia**.
 
-**Pertenencia:** el `story.md` declara la épica si el ID `EPIC-NN` de su `parent` es igual a `EPIC_ID`, comparado como en `epic-analyze` Paso 4.3: el `parent` es exactamente `EPIC_ID` o empieza por `EPIC_ID` seguido de `-`. `EPIC-30-ejemplo` y `EPIC-30` declaran `EPIC-30`; `EPIC-300-x`, `EPIC-301` y `EPIC-31-y` no. Nunca se compara un prefijo sin ese delimitador.
+**Pertenencia:** el `story.md` declara la épica si el ID `EPIC-NNN` de su `parent` es igual a `EPIC_ID`, comparado como en `epic-analyze` Paso 4.3: el `parent` es exactamente `EPIC_ID` o empieza por `EPIC_ID` seguido de `-`. `EPIC-30-ejemplo` y `EPIC-30` declaran `EPIC-30`; `EPIC-300-x`, `EPIC-301` y `EPIC-31-y` no. Nunca se compara un prefijo sin ese delimitador.
 
 ### Ya resuelto
 

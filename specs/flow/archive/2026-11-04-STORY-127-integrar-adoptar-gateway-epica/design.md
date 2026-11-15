@@ -111,7 +111,7 @@ No se modifican `package.json`, `config/runtimes.json`, `scripts/install.js` ni 
 ### Flujos clave
 
 **F1 — Veredicto aprobado** // satisface: AC-1
-1. Épica `EPIC-NN` en `VALIDATE/IN-PROGRESS`. El usuario ejecuta `/epic-validate EPIC-NN`.
+1. Épica `EPIC-NNN` en `VALIDATE/IN-PROGRESS`. El usuario ejecuta `/epic-validate EPIC-NN`.
 2. El skill escribe el reporte con `verdict: APPROVED`.
 3. C5 relee `verdict`, lee el estado de `epic.md` y escribe `VALIDATE/DONE` con `updated` de hoy.
 4. La salida termina con `Gateway: EPIC-NN VALIDATE/IN-PROGRESS → VALIDATE/DONE` y el bloque `RESULTADO: ÉXITO`. `epic-validate-report.md` queda en `<EPIC_DIR>`.

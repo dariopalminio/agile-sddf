@@ -144,7 +144,7 @@ declarados en `sddf.config.yaml`.
 constitución, el DoD y las guías clave.
 
 **§12 Glosario** — quitar OpenSpec/Rovo/Gemini/`skills-lock.json`; añadir `SDDF_ROOT`,
-`sddf.config.yaml`, `skill-preflight`, épica/`EPIC-NN`, `kind`, DoD, quality gate, evals, TDD
+`sddf.config.yaml`, `skill-preflight`, épica/`EPIC-NNN`, `kind`, DoD, quality gate, evals, TDD
 RED/GREEN/REFACTOR, DELIVER, `.tmp/<skill>/`, worker skill, `agile-sddf-extension`.
 
 **Apéndice final** — sustituir «Gaps & Next Steps» (D13) por dos secciones nuevas:

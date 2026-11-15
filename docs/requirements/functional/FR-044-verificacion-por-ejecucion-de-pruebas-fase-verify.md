@@ -6,7 +6,7 @@ slug: FR-044-verificacion-por-ejecucion-de-pruebas-fase-verify
 title: "Verificación por ejecución de pruebas (fase VERIFY)"
 status: active
 created: 2026-10-10
-updated: 2026-10-10
+updated: 2026-11-14
 related: []
 ---
 
@@ -17,8 +17,9 @@ related: []
 El sistema SHALL ejecutar las pruebas automatizadas de la historia en un
 entorno controlado, detectando el modo de operación (por configuración de `sddf.config.yaml`,
 delegado a un worker, e2e, unitario o manual) y produciendo `verify-report.md`. Precondición:
-`CODE-REVIEW/DONE`. Si el DoD del estado VERIFY no se cumple, SHALL retroceder la historia a
-`READY-FOR-IMPLEMENT/DONE`. Soporta `--mode`, `--dry-run` y `--verbose`.
+`CODE-REVIEW/DONE`. Con veredicto `NEEDS-CHANGES` SHALL escribir `fix-directives.md` con
+`based-on: verify-report.md` y un `round` que continúa las rondas de rework de la historia, y
+devolver la historia a `IMPLEMENT/TODO` ([[workflows-sin-estados-buffer]]). Soporta `--mode`, `--dry-run` y `--verbose`.
 
 ## Atributos
 

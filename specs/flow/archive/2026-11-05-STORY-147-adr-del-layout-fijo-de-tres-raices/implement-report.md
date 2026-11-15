@@ -62,7 +62,7 @@ criterios de aceptación se verificaron con los contratos de verificación 1–1
 | 5 | ADR-0010 `status: SUPERSEDED`, `superseded-by: ADR-0016` | ✓ |
 | 6 | `docs/adr/README.md` lista `ADR-0016-layout-fijo-de-tres-raices.md` | ✓ |
 | 7 | `git diff` de ADR-0010: solo `status`, `superseded-by` y la nota bajo el título (más su línea en blanco separadora) | ✓ |
-| 8 | `## Decisión` contiene `STORY-NNN-<slug>/`, `EPIC-NN-<slug>/`, SMOKE-1 y SMOKE-2 | ✓ |
+| 8 | `## Decisión` contiene `STORY-NNN-<slug>/`, `EPIC-NNN-<slug>/`, SMOKE-1 y SMOKE-2 | ✓ |
 | 9 | `npm run verify:repository` exit 0 | ⚠️ ver abajo |
 | 10 | `git diff --stat`: solo los 4 archivos de «Componentes afectados» más artefactos de la historia | ✓ |
 

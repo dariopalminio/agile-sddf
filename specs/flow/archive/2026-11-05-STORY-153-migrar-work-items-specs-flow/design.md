@@ -28,7 +28,7 @@ Estado verificado en el filesystem (2026-10-22):
 | Fuente | Hallazgo |
 |---|---|
 | `docs/specs/` | Tres entradas: `epics/`, `stories/` y `README.md` (versionado). Sin archivos ignorados (`git status --ignored` vacío) ni `.cache/`. 659 archivos versionados. |
-| `docs/specs/epics/` | 27 directorios `EPIC-NN-<slug>/`, todos con `epic.md`; ningún archivo suelto. |
+| `docs/specs/epics/` | 27 directorios `EPIC-NNN-<slug>/`, todos con `epic.md`; ningún archivo suelto. |
 | `docs/specs/stories/` | 149 directorios `STORY-NNN-<slug>/`, todos con `story.md`; ningún archivo suelto; sin IDs duplicados. |
 | `status:` de los `story.md` | 98 `COMPLETED`, 11 `CANCELED`, 40 en otros estados (`BACKLOG`, `SPECIFY`, `PLAN`, `READY-FOR-IMPLEMENT`, `IMPLEMENT`, `READY-FOR-CODE-REVIEW`, `CODE-REVIEW`, `READY-FOR-VERIFY`, `VERIFY`). Siempre sin comillas. |
 | Fechas del frontmatter | 107 stories tienen `created:` y `updated:`. **42 no tienen ninguno de los dos**: solo `date:` (STORY-001 a STORY-049 y STORY-087); 37 de ellas son `COMPLETED`. Todas las fechas cumplen `YYYY-MM-DD`. Ver CR-001. |
@@ -48,7 +48,7 @@ Stakeholders: el mantenedor que ejecuta la migración y STORY-157, que parte del
 
 **Goals:**
 - Crear `scripts/migrate-specs-to-flow.js`, una migración única que calcula un plan de movimientos y lo aplica con `git mv` // satisface: AC-1, CNF-1, CNF-2, CNF-3
-- Épicas → `specs/flow/EPIC-NN-<slug>/`; stories `COMPLETED` → `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`; el resto → `specs/flow/STORY-NNN-<slug>/`; `docs/specs/` deja de existir // satisface: AC-1
+- Épicas → `specs/flow/EPIC-NNN-<slug>/`; stories `COMPLETED` → `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`; el resto → `specs/flow/STORY-NNN-<slug>/`; `docs/specs/` deja de existir // satisface: AC-1
 - `--dry-run` que lista cada movimiento sin escribir y una segunda pasada sin cambios // satisface: AC-2
 - Comprobar que activas + archivadas = total previo // satisface: AC-1
 - Crear `test/migrate-specs-to-flow.test.js` con fixtures en repos git temporales // satisface: AC-1, AC-2
@@ -105,7 +105,7 @@ Fallar ante lo desconocido garantiza que, al final, `docs/specs/` quede vacío y
 
 | Origen | Condición | Destino |
 |---|---|---|
-| `docs/specs/epics/EPIC-NN-<slug>/` | siempre (las épicas no se archivan) | `specs/flow/EPIC-NN-<slug>/` |
+| `docs/specs/epics/EPIC-NNN-<slug>/` | siempre (las épicas no se archivan) | `specs/flow/EPIC-NNN-<slug>/` |
 | `docs/specs/stories/STORY-NNN-<slug>/` | `status` = `COMPLETED` | `specs/flow/archive/<fecha>-STORY-NNN-<slug>/` (fecha según D-4) |
 | `docs/specs/stories/STORY-NNN-<slug>/` | cualquier otro `status` (incluido `CANCELED`) | `specs/flow/STORY-NNN-<slug>/` |
 | `docs/specs/README.md` | — | `specs/README.md` (ver CR-002) |
@@ -298,7 +298,7 @@ Plan:
 
 | # | Criterio | Método de verificación | AC origen |
 |---|---|---|---|
-| 1 | Épica → `specs/flow/EPIC-NN-<slug>/`; story `COMPLETED` con `updated:` → `archive/<updated>-STORY-…/`; story `CANCELED` y story en `IMPLEMENT` → `specs/flow/STORY-…/`; `docs/specs/` no existe; totales iguales | test (fixture con 2 épicas, 4 stories y `README.md`) | AC-1 |
+| 1 | Épica → `specs/flow/EPIC-NNN-<slug>/`; story `COMPLETED` con `updated:` → `archive/<updated>-STORY-…/`; story `CANCELED` y story en `IMPLEMENT` → `specs/flow/STORY-…/`; `docs/specs/` no existe; totales iguales | test (fixture con 2 épicas, 4 stories y `README.md`) | AC-1 |
 | 2 | Fallback de fecha: sin `updated:` usa `created:`; sin ambos usa `date:`; sin ninguno → bloqueo y ningún movimiento | test (`archiveDate` + fixture) | AC-1 |
 | 3 | Los movimientos son renombres en el índice: `git status --porcelain` del fixture muestra solo entradas `R` | test | AC-1, CNF-3 |
 | 4 | `--dry-run` lista un `[MOVERÍA] <origen> → <destino>` por movimiento y el árbol queda idéntico (`git status --porcelain` y listado recursivo iguales antes y después) | test | AC-2 |

@@ -101,7 +101,7 @@ Todos los documentos reescritos usan el mismo modelo y el mismo vocabulario (P4,
 | Nivel (Flight Levels) | Dónde vive | Naturaleza | Identificador | Escritores |
 |---|---|---|---|---|
 | Estratégico | `product/` (`vision.md`, `stakeholders.md`, `objectives.md`, `roadmap.md`, `story-map.md`) + `requirements/` (`functional/FR-NNN-*.md`, `non-functional/NFR-NNN-*.md` o `srs-*.md`) | Documentación fundacional; **no es work item**: sin `status` de pipeline, sin `parent`, sin WIP | `FR-NNN` / `NFR-NNN` solo para requisitos | `/project-begin`, `/project-discovery`, `/reverse-engineering`, `/project-planning`, `/project-story-mapping` |
-| Coordinación | `specs/epics/EPIC-NN-<slug>/epic.md` | Work item **L2** (`type: epic`) | `EPIC-NN` | `/epic-creation`, `/epic-from-project-plan` |
+| Coordinación | `specs/epics/EPIC-NNN-<slug>/epic.md` | Work item **L2** (`type: epic`) | `EPIC-NNN` | `/epic-creation`, `/epic-from-project-plan` |
 | Operativo | `specs/stories/STORY-NNN-<slug>/story.md` | Work item **L1** (`type: story`) | `STORY-NNN` | `/story-creation`, `/epic-generate-stories` |
 
 Reglas que derivan de la tabla y que todos los documentos repiten igual:
@@ -170,7 +170,7 @@ Sucesor (`docs/domains/domain-foundational-docs-lifecycle.md`), misma estructura
 | Frontmatter | `type: domain` · `slug: domain-foundational-docs-lifecycle` · `title: "Documentación del Dominio: Ciclo de Vida de la Documentación Fundacional (Foundational Docs Lifecycle)"` · `status: active` · `supersedes: domain-project-lifecycle` |
 | Cabecera | `> Bounded Context: Foundational Docs Lifecycle` · `> Nivel: Estratégico — documentación, no work item` · transversal [[domain-state-management]] · canónico [[state-machine]] |
 | §1 Visión General | Gobernar la producción de visión, stakeholders, requisitos y roadmap mediante etapas con gate humano. Actores: PO/PM, equipo, `project-flow` (compositor). |
-| §2 Glosario | Documento fundacional (los de la tabla de §5), Etapa (`Begin`, `Discovery`, `Planning`), Visión cerrada (`substatus: DONE` de `vision.md`), Requisito (`FR`/`NFR`), Roadmap planificado (STORY-113 D-2: alguna `## Propuesta (` o alguna línea con `EPIC-NN` en `## Épicas`), Propuesta (sección fechada append-only). |
+| §2 Glosario | Documento fundacional (los de la tabla de §5), Etapa (`Begin`, `Discovery`, `Planning`), Visión cerrada (`substatus: DONE` de `vision.md`), Requisito (`FR`/`NFR`), Roadmap planificado (STORY-113 D-2: alguna `## Propuesta (` o alguna línea con `EPIC-NNN` en `## Épicas`), Propuesta (sección fechada append-only). |
 | §3 Modelo táctico | Sin agregado con identidad propia: entidades `FoundationalDocument` (identidad = ruta), `Requirement` (identidad `FR-NNN`/`NFR-NNN`), objeto de valor `StageSignal`. Se declara explícitamente: **no hay `PROJ-NN`, ni `status` de pipeline, ni WIP**. |
 | §4 Pipeline de etapas | `Begin → Discovery → Planning` (Mermaid), cada etapa con gate humano del skill de etapa. |
 | §5 Tabla de fases y documentos | Ver tabla siguiente. |
@@ -244,7 +244,7 @@ afirmación de AC-1.
 |---|---|
 | `flight-leves-model.md` | "Niveles de flujos": **L3 - Estratégico** (visión, requisitos y roadmap en `product/` + `requirements/`; documentación, no work item), L2 - Épica, L1 - Story. "Work-items": se elimina el bullet Project; se añade párrafo "El producto o iniciativa no es un work item…"; la épica es "un entregable dentro del producto". "Jerarquía de work-items" y "Jerarquía Flight Levels": árboles de D-1. "Documentos de especificaciones": estratégico en `docs\product` + `docs\requirements`; L2 `docs\specs\epics`; L1 `docs\specs\stories`. La analogía con Jira (Initiative → Epic → Story) se conserva aclarando que Initiative corresponde al nivel estratégico documental. |
 | `organization-of-artifacts.md` | §2 tipos de workitem: Épica y Story (el nivel estratégico se remite a `product/`/`requirements/`); §3 IDs `EPIC-`, `STORY-` (+ `FR-`/`NFR-` para requisitos, que no son workitems); §4 tabla sin Project; §5 frontmatter sin `type: project`; §6 Épica `parent: null`, Story `parent: <épica>` y se elimina el ejemplo `parent: PROJ-001`; §7 búsqueda en `epics/` y `stories/`; §8 archivos canónicos `epic.md`, `story.md`; §10 checklist; §11 resumen visual. |
-| `sddf-commands-pipeline.md` | §1 tabla con la tabla de fases de D-3 (Input/Output) y la nota "`project-flow` detecta la etapa por el estado de las capas y compone los tres skills; no escribe `substatus`" (sustituye a l. 178); §2 `epic-from-project-plan` lee `product/roadmap.md` (última propuesta) y escribe `specs/epics/EPIC-NN-<slug>/epic.md`. |
+| `sddf-commands-pipeline.md` | §1 tabla con la tabla de fases de D-3 (Input/Output) y la nota "`project-flow` detecta la etapa por el estado de las capas y compone los tres skills; no escribe `substatus`" (sustituye a l. 178); §2 `epic-from-project-plan` lee `product/roadmap.md` (última propuesta) y escribe `specs/epics/EPIC-NNN-<slug>/epic.md`. |
 | `skill-structural-pattern.md` | §7, §8, §9 y §14 con el mismo texto que la constitución (D-7) para que la copia no diverja. |
 | `artifact-directory-migration.md` | Guía de migración (D-8). |
 | `runbooks/actualizar-spec-de-proyecto.md` | CNF-2: `status: superseded`, `superseded-by: domain-foundational-docs-lifecycle`; `related` y la línea de referencias pasan de `[[PROJ-01-agile-sddf]]` a `[[asegurar-dos-niveles-de-flujo-epics-stories]]`; nota visible bajo el `#`: "Reemplazado: `project.md` ya no existe (ADR-0013). Para resincronizar requisitos con el código usa `/reverse-engineering` o `/project-discovery`, que escriben `requirements/` de forma incremental; ver [[domain-foundational-docs-lifecycle]]. Las lecciones de este runbook (contar, no recordar; verificar antes de afirmar) siguen siendo válidas." El cuerpo no se modifica. |
@@ -261,7 +261,7 @@ referencia (su valor es "escrito a partir de la ejecución del 2026-08-30"); el 
 | Proceso de desarrollo | "SDD con dos niveles de work item, epic y story, sobre la documentación fundacional de `product/` y `requirements/`." |
 | Jerarquía de desarrollo | "La documentación fundacional (`$SPECS_BASE/product/`, `$SPECS_BASE/requirements/`) orienta las épicas; cada épica contiene varias historias." Árbol: `epic ($SPECS_BASE/specs/epics/<EPIC-NAME>/epic.md)` → `story ($SPECS_BASE/specs/stories/<STORY-NAME>/story.md)`. |
 | Reglas de framework | Jerarquía `epic → story`; "project.md debe mantenerse actualizado" → "`product/` y `requirements/` deben mantenerse actualizados (documentos vivos): visión, stakeholders, requisitos y roadmap reflejan el estado actual del producto". |
-| §7 IDs | Filas `Épica EPIC-NN-kebab` y `Historia STORY-NNN-kebab`; línea "Los requisitos usan `FR-NNN`/`NFR-NNN` y no son work items". |
+| §7 IDs | Filas `Épica EPIC-NNN-kebab` y `Historia STORY-NNN-kebab`; línea "Los requisitos usan `FR-NNN`/`NFR-NNN` y no son work items". |
 | §8 Frontmatter | Esquema de STORY-113 D-6: `type: epic \| story \| product \| requirement \| srs \| wiki`; `id: EPIC-NN \| STORY-NNN \| FR-NNN \| NFR-NNN`; `kind: feat \| fix \| chore \| hotfix` (story) `\| functional \| non-functional` (requirement); `parent: null \| EPIC-NN`; "Los campos obligatorios por `type` los fija `header-aggregation`". |
 | §9 WIP | "Control WIP = 1 por nivel de work item: solo una épica y una historia pueden tener `substatus: IN-PROGRESS` a la vez en su nivel. La documentación fundacional no tiene WIP: su avance lo decide el estado de las capas." |
 | §13 Rutas | `product/vision.md`, `product/stakeholders.md`, `product/roadmap.md` → documentación fundacional; `requirements/functional/FR-NNN-<slug>.md`, `requirements/non-functional/NFR-NNN-<slug>.md` → requisitos; `specs/epics/<EPIC-NN>-<slug>/epic.md`; `specs/stories/<STORY-NNN>-<slug>/story.md`. |
@@ -342,7 +342,7 @@ y no las repite.
 - Frontmatter: `status: SUPERSEDED`, `superseded-by: ADR-0013`.
 - Nota visible bajo el `#`: `> **Superado parcialmente por [ADR-0013](ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) (<fecha>):** los
   directorios numerados (`01-projects/`, `02-epics/`, `03-stories/`) se reemplazan por `specs/epics/` y `specs/stories/`, y el
-  nivel Project deja de ser work item. Siguen vigentes sin cambios: el nivel L2 se llama **épica** (`EPIC-NN`, `epic.md`,
+  nivel Project deja de ser work item. Siguen vigentes sin cambios: el nivel L2 se llama **épica** (`EPIC-NNN`, `epic.md`,
   skills `epic-*`) y «release» queda reservado para CI/CD.` El cuerpo no cambia.
 
 **`adr/README.md`:**

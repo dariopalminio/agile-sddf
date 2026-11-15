@@ -48,7 +48,7 @@ Entonces la propuesta nueva se agrega al roadmap con su fecha
 ```gherkin
 Dado que "docs/product/roadmap.md" contiene una propuesta con 3 épicas que aún no existen en "docs/specs/epics/"
 Cuando el desarrollador ejecuta "/epic-from-project-plan"
-Entonces se crean 3 directorios "EPIC-NN-<slug>/" con su "epic.md", numerados a partir del mayor "EPIC-NN" existente
+Entonces se crean 3 directorios "EPIC-NNN-<slug>/" con su "epic.md", numerados a partir del mayor "EPIC-NN" existente
   Pero si "docs/product/roadmap.md" no existe, el skill no crea nada y muestra un mensaje que indica ejecutar "/project-planning"
 ```
 

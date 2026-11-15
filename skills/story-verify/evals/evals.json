@@ -1,7 +1,7 @@
 {
   "skill": "story-verify",
-  "version": "1.1.0",
-  "description": "Casos de prueba para story-verify: verifica deteccion de modo, precondicion de estado, generacion de verify-report.md, veredicto APPROVED / NEEDS-CHANGES / BLOCKED y transicion de estado de story.md.",
+  "version": "1.3.0",
+  "description": "Casos de prueba para story-verify: verifica deteccion de modo, precondicion de estado, generacion de verify-report.md, veredicto APPROVED / NEEDS-CHANGES / BLOCKED y transicion de estado de story.md (NEEDS-CHANGES devuelve la historia a IMPLEMENT/TODO y nombra a /story-implement como ejecutor, con /story-implement-tasks como alternativa solo si existe tasks.md; STORY-189); con NEEDS-CHANGES escribe fix-directives.md desde la plantilla comun con based-on: verify-report.md, filas verify-defect de los defectos CRITICAL/HIGH y de los criterios DoD VERIFY fallidos, y round continuo entre gates; STORY-190).",
   "cases": [
     {
       "id": "TC-001",
@@ -27,6 +27,7 @@
           "Veredicto: APPROVED"
         ],
         "not_contains": [
+          "📋 Fix directives:",
           "Entorno invalido",
           "no esta en un estado valido",
           "No se encontro la historia",
@@ -108,11 +109,12 @@
       "id": "TC-004",
       "name": "verify-needs-changes-automatico-unit-pytest",
       "type": "edge-case",
-      "description": "Historia en CODE-REVIEW/DONE con pytest.ini presente pero los tests fallan. El skill debe detectar modo automatico-unit (pytest), generar verify-report.md con findings, y actualizar story.md a READY-FOR-IMPLEMENT/DONE con veredicto NEEDS-CHANGES por criterios DoD fallidos.",
+      "description": "Historia en CODE-REVIEW/DONE con pytest.ini presente pero los tests fallan. El skill debe detectar modo automatico-unit (pytest), generar verify-report.md con findings, actualizar story.md a IMPLEMENT/TODO con veredicto NEEDS-CHANGES por criterios DoD fallidos y nombrar a /story-implement como ejecutor; sin tasks.md no menciona /story-implement-tasks (AC-2 de STORY-189).",
       "input": {
         "input_path": "examples/pytest-project",
         "story_id": "STORY-053",
         "flags": [],
+        "artifacts_absent": ["tasks.md"],
         "simulate_test_failure": true
       },
       "expected": {
@@ -124,9 +126,11 @@
           "(verdict: NEEDS-CHANGES)",
           "Veredicto: NEEDS-CHANGES",
           "defecto(s) CRITICAL o HIGH",
-          "READY-FOR-IMPLEMENT"
+          "IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement STORY-053"
         ],
         "not_contains": [
+          "/story-implement-tasks",
           "Entorno invalido",
           "no esta en un estado valido",
           "VERIFY/DONE",
@@ -151,7 +155,7 @@
       },
       "expected": {
         "contains": ["automatico-unit", "pytest", "(verdict: BLOCKED)", "Veredicto: BLOCKED", "no ejecutable(s) en el entorno", "VERIFY/BLOCKED"],
-        "not_contains": ["(verdict: NEEDS-CHANGES)", "(verdict: APPROVED)", "READY-FOR-IMPLEMENT", "VERIFY/DONE"]
+        "not_contains": ["📋 Fix directives:", "(verdict: NEEDS-CHANGES)", "(verdict: APPROVED)", "IMPLEMENT/TODO", "VERIFY/DONE"]
       },
       "threshold": 0.85
     },
@@ -198,6 +202,220 @@
         ],
         "not_contains": [
           "docs/specs"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-008",
+      "name": "needs-changes-con-tasks-md-nombra-alternativa",
+      "type": "edge-case",
+      "description": "AC-2 de STORY-189 (fila /story-verify): mismo flujo que TC-004 con tasks.md presente en el directorio de la historia. Con NEEDS-CHANGES el skill deja story.md en IMPLEMENT/TODO y el resumen nombra a /story-implement como ejecutor y a /story-implement-tasks como alternativa (tasks.md presente). Escribe fix-directives.md con based-on: verify-report.md (STORY-190), sin la linea Ronda de corrección de story-code-review.",
+      "input": {
+        "input_path": "examples/pytest-project",
+        "story_id": "STORY-055",
+        "flags": [],
+        "artifacts_present": ["story.md", "design.md", "tasks.md", "implement-report.md", "code-review-report.md"],
+        "simulate_test_failure": true
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "IMPLEMENT/TODO",
+          "→ Ejecuta /story-implement",
+          "Alternativa (tasks.md presente): /story-implement-tasks"
+        ],
+        "not_contains": [
+          "(verdict: APPROVED)",
+          "VERIFY/DONE",
+          "Ronda de corrección"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-009",
+      "name": "needs-changes-defectos-critical-high-generan-fix-directives",
+      "type": "edge-case",
+      "description": "STORY-190 (AC-1 fila 1, CNF-3, ADR-0022). Modo manual (base TC-006) con un defecto CRITICAL, un defecto HIGH y dos MEDIUM abiertos, sin fix-directives.md previo ni implement-report.md con encabezado de ronda. Con NEEDS-CHANGES el skill escribe verify-report.md sin cambiar su formato y, despues, fix-directives.md desde la plantilla comun con based-on: verify-report.md, round: 1 y exactamente dos filas con Dimension verify-defect (CRITICAL primero, luego HIGH). Los MEDIUM no entran en la tabla de directivas, y el criterio DoD de defectos CRITICAL/HIGH no duplica esas filas. La lista blanca tiene una sola entrada, src/auth.py, con las referencias de los dos hallazgos. story.md queda en IMPLEMENT/TODO.",
+      "input": {
+        "input_path": "examples/no-tests-project",
+        "story_id": "STORY-056",
+        "flags": [],
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md",
+          "code-review-report.md"
+        ],
+        "existing_fix_directives": null,
+        "simulate_qa_results": {
+          "scenario_results": [
+            {
+              "scenario_id": "AC-1",
+              "status": "FAIL",
+              "observations": "Login acepta una contraseña vacía"
+            },
+            {
+              "scenario_id": "AC-2",
+              "status": "FAIL",
+              "observations": "La sesión no expira"
+            }
+          ],
+          "findings": [
+            {
+              "scenario_id": "AC-1",
+              "severity": "CRITICAL",
+              "title": "Login acepta contraseña vacía",
+              "location": "src/auth.py:18",
+              "steps_to_reproduce": "1. Enviar el formulario con contraseña vacía",
+              "expected": "Error de validación",
+              "actual": "Sesión iniciada",
+              "fix": "Rechazar contraseñas vacías antes de consultar el repositorio"
+            },
+            {
+              "scenario_id": "AC-2",
+              "severity": "HIGH",
+              "title": "La sesión no expira",
+              "location": "src/auth.py:40",
+              "steps_to_reproduce": "1. Iniciar sesión 2. Esperar 31 minutos",
+              "expected": "Sesión cerrada",
+              "actual": "Sesión activa",
+              "fix": "Aplicar el TTL de 30 minutos al crear la sesión"
+            },
+            {
+              "scenario_id": "AC-1",
+              "severity": "MEDIUM",
+              "title": "Mensaje de error genérico",
+              "location": "src/auth.py:25",
+              "steps_to_reproduce": "1. Enviar credenciales inválidas",
+              "expected": "Mensaje específico",
+              "actual": "Mensaje genérico",
+              "fix": "Mostrar el motivo del rechazo"
+            },
+            {
+              "scenario_id": "AC-2",
+              "severity": "MEDIUM",
+              "title": "Log sin identificador de sesión",
+              "location": "src/auth.py:52",
+              "steps_to_reproduce": "1. Revisar el log tras iniciar sesión",
+              "expected": "Log con el id de sesión",
+              "actual": "Log sin id",
+              "fix": "Incluir el id de sesión en el log"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "📋 Fix directives:",
+          "fix-directives.md (ronda 1)",
+          "based-on: verify-report.md",
+          "round: 1",
+          "verify-defect",
+          "CRITICAL",
+          "Login acepta contraseña vacía",
+          "La sesión no expira",
+          "`src/auth.py` (hallazgo #1, #2)",
+          "IMPLEMENT/TODO"
+        ],
+        "not_contains": [
+          "| MEDIUM | Mensaje de error genérico",
+          "| MEDIUM | Log sin identificador de sesión",
+          "{{BASED_ON}}",
+          "(verdict: APPROVED)",
+          "VERIFY/DONE"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-010",
+      "name": "needs-changes-dod-tests-fallidos-una-fila",
+      "type": "edge-case",
+      "description": "STORY-190 (AC-1 fila 2, ADR-0022). Base TC-004: modo automatico-unit con pytest, dos tests fallidos y ningun defecto en ## Findings. El DoD VERIFY del proyecto (docs/guardrails/dod-story-verify.md) tiene el criterio 'Todos los tests del proyecto pasan' en la linea 15, que queda ❌. Con NEEDS-CHANGES, fix-directives.md tiene based-on: verify-report.md y una sola fila: Archivo:Linea docs/guardrails/dod-story-verify.md:15, Dimension verify-defect, Severidad HIGH y una Accion requerida que nombra los tests fallidos. max-severity: HIGH.",
+      "input": {
+        "input_path": "examples/pytest-project",
+        "story_id": "STORY-057",
+        "flags": [],
+        "artifacts_absent": [
+          "tasks.md",
+          "fix-directives.md"
+        ],
+        "simulate_test_failure": true,
+        "failed_tests": [
+          "tests/test_auth.py::test_login_ok",
+          "tests/test_auth.py::test_logout"
+        ],
+        "findings": [],
+        "dod_verify": {
+          "path": "docs/guardrails/dod-story-verify.md",
+          "criteria": [
+            {
+              "line": 15,
+              "text": "Todos los tests del proyecto pasan"
+            },
+            {
+              "line": 16,
+              "text": "Sin defectos CRITICAL o HIGH abiertos en verify-report.md"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "📋 Fix directives:",
+          "based-on: verify-report.md",
+          "dod-story-verify.md:15",
+          "verify-defect",
+          "max-severity: HIGH",
+          "Total de hallazgos bloqueantes:** 1",
+          "test_login_ok",
+          "IMPLEMENT/TODO"
+        ],
+        "not_contains": [
+          "requirements-coverage",
+          "(verdict: APPROVED)"
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "id": "TC-011",
+      "name": "round-continua-tras-aprobacion-de-revision",
+      "type": "edge-case",
+      "description": "STORY-190 (AC-2, CNF-2, ADR-0022). Base TC-004 (tests fallidos, NEEDS-CHANGES). La historia ya tuvo una ronda de rework abierta por story-code-review: story-code-review aprobo la correccion y borro fix-directives.md, pero implement-report.md conserva '## Ciclo de corrección — ronda 1'. La ronda previa es max(fix-directives.md ausente, 1) = 1, asi que el nuevo fix-directives.md tiene round: 2 y el mensaje dice (ronda 2). round no vuelve a 1.",
+      "input": {
+        "input_path": "examples/pytest-project",
+        "story_id": "STORY-058",
+        "flags": [],
+        "artifacts_present": [
+          "story.md",
+          "design.md",
+          "implement-report.md",
+          "code-review-report.md"
+        ],
+        "existing_fix_directives": null,
+        "implement_report_headings": [
+          "## Resumen",
+          "## Ciclo de corrección — ronda 1"
+        ],
+        "simulate_test_failure": true
+      },
+      "expected": {
+        "contains": [
+          "(verdict: NEEDS-CHANGES)",
+          "based-on: verify-report.md",
+          "round: 2",
+          "(ronda 2)",
+          "IMPLEMENT/TODO"
+        ],
+        "not_contains": [
+          "round: 1",
+          "(ronda 1)",
+          "(verdict: APPROVED)"
         ]
       },
       "threshold": 0.85

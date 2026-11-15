@@ -47,7 +47,7 @@ Los archivos canónicos de los work items SDDF se nombran **según su tipo**:
 
 | Nivel | Archivo canónico | Directorio contenedor |
 |-------|------------------|-----------------------|
-| Épica | `epic.md` | `specs/flow/EPIC-NN-<slug>/` |
+| Épica | `epic.md` | `specs/flow/EPIC-NNN-<slug>/` |
 | Historia | `story.md` | `specs/flow/STORY-NNN-<slug>/` |
 
 No se adopta `spec.md` como nombre de work item.

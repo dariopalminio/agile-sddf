@@ -114,7 +114,7 @@ Ajustes de redacción derivados:
 - **Sección DoD de `story-specify`:** `Archivo` pasa a `docs/guardrails/dod-story-specify.md` (se elimina el paréntesis «en este repositorio, …», ahora redundante); `Override` se conserva (`sddf.config.yaml › guardrails.dod.story.specify` → `docs/guardrails/<slug>.md`): la clave `guardrails` sigue vigente y no incumple R4.
 - **Mensajes de template ausente:** «Ejecuta `sddf-init` para centralizarlo en `docs/templates/`» y `❌ No se encontró el template requerido en docs/templates/story-template.md …`.
 - **Fallback de numeración en Bash/PowerShell** (creation l. 230–231, split l. 370): `ls specs/flow/ …` y `Get-ChildItem specs/flow -Directory …`, más el equivalente sobre `specs/flow/archive/` (D-4).
-- **Ejemplos con `parent:`:** se conservan los IDs de épica; donde se cite la ruta de una épica se usa `specs/flow/EPIC-NN-<slug>/epic.md`.
+- **Ejemplos con `parent:`:** se conservan los IDs de épica; donde se cite la ruta de una épica se usa `specs/flow/EPIC-NNN-<slug>/epic.md`.
 
 **Alternativas rechazadas:**
 - **Introducir una variable nueva (`FLOW_DIR`) en lugar de literales:** reintroduce la indirección que ADR-0016 retira; el contrato R2 exige los literales.

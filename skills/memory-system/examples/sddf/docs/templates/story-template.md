@@ -8,6 +8,6 @@ title: "Template de historia"
 
 <!-- Referencias -->
 [[slug]]
-[[EPIC-NN-nombre]]
+[[EPIC-NNN-nombre]]
 
 Contenido de plantilla: los wikilinks son placeholders y `templates/` queda excluido del índice.

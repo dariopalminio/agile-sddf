@@ -63,8 +63,8 @@ tests (`node --test`). No hay `skills.plan` en `sddf.config.yaml`: no aplican sk
   ni `specs/01-projects/`. // satisface: AC-1
 - Sobre un `roadmap.md` existente, `/project-planning` agrega una propuesta fechada nueva; `## Épicas`, `## Plan original (2026-04-20)`
   y las propuestas anteriores quedan byte a byte iguales. // satisface: AC-2
-- `/epic-from-project-plan` lee la última propuesta de `roadmap.md` y crea un `EPIC-NN-<slug>/epic.md` por épica que aún no existe,
-  numerando desde el mayor `EPIC-NN` existente + 1; sin `roadmap.md` no crea nada y remite a `/project-planning`. // satisface: AC-3
+- `/epic-from-project-plan` lee la última propuesta de `roadmap.md` y crea un `EPIC-NNN-<slug>/epic.md` por épica que aún no existe,
+  numerando desde el mayor `EPIC-NNN` existente + 1; sin `roadmap.md` no crea nada y remite a `/project-planning`. // satisface: AC-3
 - Los dos skills y el estado *Planning* de `project-architect` quedan sin `01-projects`, `project-plan.md` (como ruta) ni `PROJ-`;
   ambos skills tienen evals que pasan con `npm run test:eval`. // satisface: CNF-1
 - La estructura del roadmap y de cada propuesta se deriva en runtime de `roadmap-template.md` (central en `docs/templates/`, seed del
@@ -304,9 +304,9 @@ Textos del `SKILL.md` y del `README.md` que nombran `project-plan.md` como orige
 - *Conservar el ID del encabezado del plan (`Épica 3` → `EPIC-03`):* colisiona con épicas existentes; AC-3 exige numerar desde el mayor.
 - *Generar desde todas las propuestas del roadmap:* rematerializaría planes viejos ya ejecutados o descartados; AC-3 habla de "una
   propuesta".
-- *Existencia por directorio exacto `EPIC-NN-<slug>`:* con numeración nueva el `NN` nunca coincide, y la protección contra sobrescritura
+- *Existencia por directorio exacto `EPIC-NNN-<slug>`:* con numeración nueva el `NN` nunca coincide, y la protección contra sobrescritura
   dejaría de funcionar.
-- *Escribir en el roadmap qué `EPIC-NN` materializó cada épica propuesta:* sincronización que la historia declara Non-Goal; además
+- *Escribir en el roadmap qué `EPIC-NNN` materializó cada épica propuesta:* sincronización que la historia declara Non-Goal; además
   rompería el append-only de D-1.
 
 ### D-9 — Evals // satisface: CNF-1, AC-1, AC-2, AC-3
@@ -369,7 +369,7 @@ kebab y el mapeo plan → clave vigentes de `epic-from-project-plan`, y la asign
 | Encabezado de propuesta | `## Propuesta (AAAA-MM-DD)` / `## Propuesta (AAAA-MM-DD #n)`; append-only; la última del archivo es la vigente | AC-2, AC-3 |
 | Secciones protegidas | `## Épicas` (solo al crear), `## Plan original (…)` y propuestas previas: ningún skill las modifica | AC-2 |
 | Lectura del roadmap | `epic-from-project-plan` lee solo la última propuesta; nunca escribe `roadmap.md` | AC-3 |
-| Numeración de épicas | nueva épica = mayor `NN` de `$EPICS_DIR/EPIC-NN-*/` + 1 (vacío → `00`); existencia por slug | AC-3 |
+| Numeración de épicas | nueva épica = mayor `NN` de `$EPICS_DIR/EPIC-NNN-*/` + 1 (vacío → `00`); existencia por slug | AC-3 |
 | Template | `roadmap-template.md`; dueño `project-planning`; central → seed → `❌` | CNF-2 |
 
 ## Esquema de datos
@@ -482,7 +482,7 @@ Ninguna. Las ambigüedades detectadas se resolvieron en el diseño y quedan regi
 
 ### CR-003
 - **Tipo**: ambigüedad
-- **Descripción**: AC-3 fija "numerados a partir del mayor `EPIC-NN` existente" y "épicas que aún no existen", pero no define el caso
+- **Descripción**: AC-3 fija "numerados a partir del mayor `EPIC-NNN` existente" y "épicas que aún no existen", pero no define el caso
   sin épicas ni cómo se decide que una épica propuesta ya existe.
 - **Documento afectado**: story.md
 - **Acción requerida**: el diseño usa `EPIC-00` para la primera épica de un directorio vacío y existencia por slug (D-8). Opcional:
