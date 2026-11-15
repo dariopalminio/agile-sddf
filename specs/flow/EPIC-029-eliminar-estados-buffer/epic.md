@@ -3,8 +3,8 @@ type: epic
 id: EPIC-029
 slug: EPIC-029-eliminar-estados-buffer
 title: "Eliminar estados buffer"
-status: PLAN
-substatus: IN-PROGRESS
+status: DEVELOP
+substatus: DONE
 parent: null
 created: 2026-11-07
 updated: 2026-11-14
