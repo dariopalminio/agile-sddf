@@ -696,7 +696,7 @@ Resolver la plantilla de `fix-directives.md` (primera coincidencia):
    ```
 3. Si no existe ninguna: `❌ Template fix-directives-template.md no encontrado`. El gate escribe su reporte y el estado de `story.md`, pero no `fix-directives.md`.
 
-La plantilla resuelta es la fuente de verdad de la estructura.
+La plantilla resuelta es la fuente de verdad de la estructura. Las anotaciones `escritor:` de la plantilla (las líneas `# escritor:` y los demás comentarios `#` del frontmatter, y los comentarios `<!-- escritor: … -->` del cuerpo) no se copian a `fix-directives.md`: se omiten esas líneas (principio 13 de `docs/constitution.md`).
 
 Completar el template con:
 - Frontmatter: `story_id`, fecha actual, `$MAX_SEVERITY`, `round: $ROUND`, `based-on: code-review-report.md` (`{{BASED_ON}}`)

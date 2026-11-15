@@ -193,7 +193,7 @@ epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-gene
 
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
 > con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT`) antes
-> de aprobar la épica para `READY-FOR-DEV`; no cambia ningún estado. Con `NEEDS-REFINEMENT`, `epic-refine` corrige,
+> de que el PO apruebe la épica escribiendo `PLAN/DONE` a mano; no cambia ningún estado. Con `NEEDS-REFINEMENT`, `epic-refine` corrige,
 > tras confirmación, el índice de historias (huérfanas y duplicadas) y las referencias `related` rotas de las historias,
 > y asigna cada criterio de salida o smoke test sin cobertura a la historia de cierre (la única con evidencia parcial
 > sin dependientes `depends-on:`) con un AC de cierre y una cita del criterio. También reemplaza, en el índice y en los
@@ -245,19 +245,24 @@ story-creation → story-evaluation → story-split
 
 ---
 
-## 4. Pipeline de implementación y ciclo de corrección post-review
+## 4. Pipeline de implementación y ciclo de corrección
 
 ```
-story-implement | story-implement-tasks → story-code-review → APPROVED
-                                              ├─ NEEDS-CHANGES → story-implement | story-implement-tasks → story-code-review → …
+story-analyze → APPROVED → PLAN/DONE → story-implement | story-implement-tasks
+story-implement | story-implement-tasks → story-code-review → APPROVED → story-verify → APPROVED → story-acceptance → APPROVED
+                                              ├─ NEEDS-CHANGES → IMPLEMENT/TODO → story-implement | story-implement-tasks → story-code-review → …
                                               └─ BLOCKED → story-code-review (al despejar el bloqueo)
+story-verify     ─ NEEDS-CHANGES → IMPLEMENT/TODO → story-implement | story-implement-tasks → story-code-review → …
+story-acceptance ─ NEEDS-CHANGES → IMPLEMENT/TODO → story-implement | story-implement-tasks → story-code-review → …
 ```
 
 | Skill | Precondición (`story.md`) | Resultado |
 |---|---|---|
-| `story-implement` o `story-implement-tasks` | `READY-FOR-IMPLEMENT/DONE` (ejecución inicial o rework encolado) | `IMPLEMENT/DONE` + `implement-report.md`; si existe `fix-directives.md`, aplica sus correcciones |
+| `story-implement` o `story-implement-tasks` | `PLAN/DONE` (ejecución inicial) o `IMPLEMENT/TODO` (rework, con `fix-directives.md`) | `IMPLEMENT/DONE` + `implement-report.md`; si existe `fix-directives.md`, aplica sus correcciones |
 | `story-code-review` → `APPROVED` | `IMPLEMENT/DONE` | `CODE-REVIEW/DONE` + `code-review-report.md` con `verdict: APPROVED`; `fix-directives.md` eliminado si existía |
-| `story-code-review` → `NEEDS-CHANGES` | `IMPLEMENT/DONE` | `READY-FOR-IMPLEMENT/DONE` + `code-review-report.md` con `verdict: NEEDS-CHANGES` + `fix-directives.md` con `round: N` (ronda previa + 1); mensaje `→ Ejecuta /story-implement <id>` (alternativa `/story-implement-tasks <id>` si existe `tasks.md`) |
+| `story-code-review` → `NEEDS-CHANGES` | `IMPLEMENT/DONE` | `IMPLEMENT/TODO` + `code-review-report.md` con `verdict: NEEDS-CHANGES` + `fix-directives.md` con `based-on: code-review-report.md` y `round: N` (ronda previa + 1); mensaje `→ Ejecuta /story-implement <id>` (alternativa `/story-implement-tasks <id>` si existe `tasks.md`) |
 | `story-code-review` → `BLOCKED` | `IMPLEMENT/DONE` | `IMPLEMENT/DONE` + `code-review-report.md` con `verdict: BLOCKED`; repetir la revisión cuando el revisor incompleto pueda terminar |
+| `story-verify` → `NEEDS-CHANGES` | `CODE-REVIEW/DONE` o `IMPLEMENT/DONE` | `IMPLEMENT/TODO` + `verify-report.md` con `verdict: NEEDS-CHANGES` + `fix-directives.md` con `based-on: verify-report.md` y `round: N` (ronda previa + 1) |
+| `story-acceptance` → `NEEDS-CHANGES` | `VERIFY/DONE` | `IMPLEMENT/TODO` + `acceptance-report.md` con `verdict: NEEDS-CHANGES` + `fix-directives.md` con `based-on: acceptance-report.md` y `round: N` (ronda previa + 1) |
 
-> La señal de rework es la presencia de `fix-directives.md` en el directorio de la historia: lo crean o sobrescriben `story-code-review`, `story-verify` y `story-acceptance` en `NEEDS-CHANGES`, desde la plantilla común `docs/templates/fix-directives-template.md` y con `round` contando todas las rondas de rework de la historia (ADR-0022), y solo `story-code-review` lo elimina, en `APPROVED`. No existe estado ni substatus de rework; el ciclo `NEEDS-CHANGES → ejecutor → story-code-review` se repite sin editar el frontmatter a mano hasta obtener `APPROVED` (ver [[rework-sin-estado-propio]], ADR-0008).
+> La señal de rework es la presencia de `fix-directives.md` en el directorio de la historia: lo crean o sobrescriben `story-code-review`, `story-verify` y `story-acceptance` en `NEEDS-CHANGES`, desde la plantilla común `docs/templates/fix-directives-template.md`, y `round` continúa la numeración de todas las rondas de rework de la historia. Solo `story-code-review` lo elimina, en `APPROVED`. No existe estado ni substatus de rework; el ciclo `NEEDS-CHANGES → IMPLEMENT/TODO → ejecutor → story-code-review` se repite sin editar el frontmatter a mano hasta obtener `APPROVED` ([[workflows-sin-estados-buffer]], ADR-0022, que reemplaza a ADR-0008).

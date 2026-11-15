@@ -560,7 +560,7 @@ Las filas se numeran correlativamente en este orden, todas con `Dimensión` = `v
 - Los defectos `MEDIUM` y `LOW` y los criterios `⚠️` no entran: no bloquean el veredicto.
 - Un mismo defecto aparece una sola vez: un criterio DoD cuyo `❌` se debe solo a defectos `CRITICAL`/`HIGH` que ya son filas (p. ej. «Sin defectos CRITICAL o HIGH abiertos») no añade otra fila.
 - `$MAX_SEVERITY` = la mayor severidad de las filas (`CRITICAL` > `HIGH`). `$TOTAL_BLOCKING` = número de filas.
-- Lista blanca: las rutas de las filas de defectos con ruta del repositorio (parte de `Archivo:Línea` antes de `:<línea>`), deduplicadas, una viñeta por archivo con sus referencias: `- <ruta> (hallazgo #N, #M)`. Las filas de criterios DoD no aportan entradas. Si ninguna fila aporta una ruta, `{{WHITELIST}}` es esta línea sin viñeta: `Vacía: ningún defecto de esta verificación apunta a un archivo del repositorio. El ejecutor confirma (interactivo) o registra (--auto) cada archivo existente que modifique.`
+- Lista blanca: las rutas de las filas de defectos con ruta del repositorio (parte de `Archivo:Línea` antes de `:<línea>`), deduplicadas, una viñeta por archivo con la ruta entre acentos graves y sus referencias: `` - `<ruta>` (hallazgo #N, #M) `` (el formato que lee `$WHITELIST` en `story-implement` 0c.3). Las filas de criterios DoD no aportan entradas. Si ninguna fila aporta una ruta, `{{WHITELIST}}` es esta línea sin viñeta: `Vacía: ningún defecto de esta verificación apunta a un archivo del repositorio. El ejecutor confirma (interactivo) o registra (--auto) cada archivo existente que modifique.`
 
 **6h.3 — Instanciar el template:**
 
@@ -573,7 +573,7 @@ Resolver la plantilla de `fix-directives.md` (primera coincidencia):
    ```
 3. Si no existe ninguna: `❌ Template fix-directives-template.md no encontrado`. El gate escribe su reporte y el estado de `story.md`, pero no `fix-directives.md`.
 
-Completar los placeholders: `{{STORY_ID}}`, `{{STORY_TITLE}}`, `{{DATE}}` (fecha actual), `{{MAX_SEVERITY}}` = `$MAX_SEVERITY`, `{{ROUND}}` = `$ROUND`, `{{BASED_ON}}` = `verify-report.md`, `{{TOTAL_BLOCKING}}` = `$TOTAL_BLOCKING`, `{{INSTRUCTIONS_TABLE}}` = las filas de 6h.2 y `{{WHITELIST}}` = la lista blanca de 6h.2.
+Completar los placeholders: `{{STORY_ID}}`, `{{STORY_TITLE}}`, `{{DATE}}` (fecha actual), `{{MAX_SEVERITY}}` = `$MAX_SEVERITY`, `{{ROUND}}` = `$ROUND`, `{{BASED_ON}}` = `verify-report.md`, `{{TOTAL_BLOCKING}}` = `$TOTAL_BLOCKING`, `{{INSTRUCTIONS_TABLE}}` = las filas de 6h.2 y `{{WHITELIST}}` = la lista blanca de 6h.2. Las anotaciones `escritor:` de la plantilla (las líneas `# escritor:` y los demás comentarios `#` del frontmatter, y los comentarios `<!-- escritor: … -->` del cuerpo) no se copian a `fix-directives.md`: se omiten esas líneas (principio 13 de `docs/constitution.md`).
 
 Guardar en `$STORY_DIR/fix-directives.md`, sobrescribiendo si ya existe (la versión previa se reemplaza completa; solo `round` conserva continuidad).
 

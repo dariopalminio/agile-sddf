@@ -3,7 +3,7 @@ type: tasks
 id: STORY-202
 slug: STORY-202-filtrar-reporte-por-fecha-tasks
 title: "Tasks: Filtrar reporte por fecha"
-status: READY-FOR-IMPLEMENT
+status: PLAN
 substatus: DONE
 parent: EPIC-30-reportes
 story: STORY-202

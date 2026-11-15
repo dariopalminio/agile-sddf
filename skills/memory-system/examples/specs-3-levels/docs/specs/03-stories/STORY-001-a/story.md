@@ -3,7 +3,7 @@ type: story
 id: STORY-001
 slug: STORY-001-a
 title: "A"
-status: READY-FOR-IMPLEMENT
+status: PLAN
 ---
 
 # Story

@@ -479,7 +479,7 @@ Resolver la plantilla de `fix-directives.md` (primera coincidencia):
    ```
 3. Si no existe ninguna: `❌ Template fix-directives-template.md no encontrado`. El gate escribe su reporte y el estado de `story.md`, pero no `fix-directives.md`.
 
-Completar los placeholders: `{{STORY_ID}}`, `{{STORY_TITLE}}`, `{{DATE}}` (fecha actual), `{{MAX_SEVERITY}}` = `HIGH`, `{{ROUND}}` = `$ROUND`, `{{BASED_ON}}` = `acceptance-report.md`, `{{TOTAL_BLOCKING}}` = `$TOTAL_BLOCKING`, `{{INSTRUCTIONS_TABLE}}` = las filas de 7f.2 y `{{WHITELIST}}` = la línea de 7f.2.
+Completar los placeholders: `{{STORY_ID}}`, `{{STORY_TITLE}}`, `{{DATE}}` (fecha actual), `{{MAX_SEVERITY}}` = `HIGH`, `{{ROUND}}` = `$ROUND`, `{{BASED_ON}}` = `acceptance-report.md`, `{{TOTAL_BLOCKING}}` = `$TOTAL_BLOCKING`, `{{INSTRUCTIONS_TABLE}}` = las filas de 7f.2 y `{{WHITELIST}}` = la línea de 7f.2. Las anotaciones `escritor:` de la plantilla (las líneas `# escritor:` y los demás comentarios `#` del frontmatter, y los comentarios `<!-- escritor: … -->` del cuerpo) no se copian a `fix-directives.md`: se omiten esas líneas (principio 13 de `docs/constitution.md`).
 
 Guardar en `$STORY_DIR/fix-directives.md`, sobrescribiendo si ya existe (la versión previa se reemplaza completa; solo `round` conserva continuidad).
 

@@ -19,7 +19,7 @@ related:
 La historia recorre estos estados, y cada paso corresponde a un skill que escribe el estado de `story.md`:
 
 ```text
-SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED
+SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED
 ```
 
 **1. Specify (Especificación)**
@@ -32,12 +32,12 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 *   *¿Qué pasa?* Se define *cómo* se va a construir la historia (tomando decisiones técnicas) y se audita que el plan sea coherente con lo especificado.
 *   *Artefacto:* `design.md`, `tasks.md`, `testcases.md` y `analyze.md`.
 *   *Acción:* Se invoca `/story-plan`, que encadena `story-design`, `story-tasking`, `story-testcases` y `story-analyze`. Con `NEEDS-CHANGES`, se corrige con `/story-fix-plan` y se vuelve a ejecutar `/story-analyze`.
-*   *Estado al terminar:* `READY-FOR-IMPLEMENT/DONE` con `APPROVED`. Con `NEEDS-CHANGES` sigue en `PLAN/IN-PROGRESS`.
+*   *Estado al terminar:* `PLAN/DONE` con `APPROVED` (lista para implementar). Con `NEEDS-CHANGES` sigue en `PLAN/IN-PROGRESS`.
 
 **3. Implement (Implementación)**
 *   *¿Qué pasa?* Se escriben las pruebas y el código aplicando TDD (Rojo-Verde-Refactor) o listado de tareas y siguiendo el plan y la especificación.
 *   *Artefacto:* `implement-report.md`, `tasks.md` actualizado y commits en la rama `<kind>/<story-id>-<slug>`, creada desde `main` (entrega `continuous`) o desde la rama `epic/` activa (entrega `batch`).
-*   *Acción:* Se invoca `/story-implement`, que delega en los generadores de `sddf.config.yaml › implement`, o `/story-implement-tasks`, que avanza tarea por tarea y requiere `tasks.md`. Los commits siguen Conventional Commits.
+*   *Acción:* Se invoca `/story-implement`, que delega en los generadores de `sddf.config.yaml › implement`, o `/story-implement-tasks`, que avanza tarea por tarea y requiere `tasks.md`. Parte de `PLAN/DONE` (primera ejecución) o de `IMPLEMENT/TODO` con `fix-directives.md` (rework). La cola de listos se consulta en ese orden: primero `IMPLEMENT/TODO`, después `PLAN/DONE` ([[workflows-sin-estados-buffer]], ADR-0022). Los commits siguen Conventional Commits.
 *   *Estado al terminar:* `IMPLEMENT/DONE`, tras evaluar `dod-story-implement.md`.
 
 **4. Code Review (Revisión de Código)**
@@ -46,7 +46,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 *   *Acción:* Se invoca `/story-code-review`. El Pull Request se abre según la [estrategia de branching](branching-strategy-sddf-git-flow.md), y `quality.yml` ejecuta el gate `verify:repository`. **Regla de oro:** en este repositorio los agentes nunca hacen push, PR ni merge; eso lo hace una persona.
 *   *Estado al terminar:*
     *   `APPROVED`: `CODE-REVIEW/DONE`.
-    *   `NEEDS-CHANGES`: `READY-FOR-IMPLEMENT/DONE`. Se vuelve al paso 3, que aplica `fix-directives.md`.
+    *   `NEEDS-CHANGES`: `IMPLEMENT/TODO` + `fix-directives.md` con `based-on: code-review-report.md`. Se vuelve al paso 3, que aplica `fix-directives.md`, y el rework vuelve a pasar por el paso 4.
     *   `BLOCKED`: `IMPLEMENT/DONE`. Se repite la revisión cuando se despeje el bloqueo.
 
 **5. Verify (Verificación)**
@@ -55,7 +55,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 *   *Acción:* Se invoca `/story-verify`, normalmente desde `CODE-REVIEW/DONE`. Desde `IMPLEMENT/DONE` también se admite, como mínimo aceptable. Con `--mode` se fuerza el modo manual o automático.
 *   *Estado al terminar:*
     *   `APPROVED`: `VERIFY/DONE`.
-    *   `NEEDS-CHANGES`: `READY-FOR-IMPLEMENT/DONE`. Se vuelve al paso 3.
+    *   `NEEDS-CHANGES`: `IMPLEMENT/TODO` + `fix-directives.md` con `based-on: verify-report.md`. Se vuelve al paso 3, que aplica `fix-directives.md`, y el rework vuelve a pasar por el paso 4.
     *   `BLOCKED`: `VERIFY/BLOCKED`. Se reintenta el paso.
 
 **6. Acceptance (Aceptación)**
@@ -64,7 +64,7 @@ SPECIFY → PLAN → READY-FOR-IMPLEMENT → IMPLEMENT → CODE-REVIEW → VERIF
 *   *Acción:* Se invoca `/story-acceptance`, que guía la validación criterio por criterio. Una sesión interrumpida se guarda con `PENDING` y se reanuda con el mismo comando.
 *   *Estado al terminar:*
     *   `APPROVED`: `ACCEPTANCE/DONE`.
-    *   `NEEDS-CHANGES`: `READY-FOR-IMPLEMENT/DONE`. Se vuelve al paso 3.
+    *   `NEEDS-CHANGES`: `IMPLEMENT/TODO` + `fix-directives.md` con `based-on: acceptance-report.md`. Se vuelve al paso 3, que aplica `fix-directives.md`, y el rework vuelve a pasar por el paso 4.
     *   `BLOCKED`: `ACCEPTANCE/BLOCKED`. Se reintenta el paso.
     *   `PENDING`: `ACCEPTANCE/IN-PROGRESS`.
 

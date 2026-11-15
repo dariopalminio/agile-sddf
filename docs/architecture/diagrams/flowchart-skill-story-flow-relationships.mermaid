@@ -19,7 +19,7 @@ flowchart TD
         story-refine --> story-evaluation
     end
 
-    %% FASE: PLAN (PLAN y READY-FOR-IMPLEMENT)
+    %% FASE: PLAN (termina en PLAN/DONE)
     subgraph PLAN
         dec_specify -->|APPROVED| story-design
         story-design[story-design]
@@ -29,7 +29,7 @@ flowchart TD
         story-fix-plan[story-fix-plan]
         dec_plan{verdict}
         
-        dec_plan -->|NEEDS-REFINEMENT| story-fix-plan
+        dec_plan -->|NEEDS-CHANGES| story-fix-plan
         story-design --> story-testcases
         story-design --> story-tasking
         story-testcases --> story-analyze
@@ -40,14 +40,14 @@ flowchart TD
 
     %% FASE: EXECUTION (Agrupa IMPLEMENT y CODE-REVIEW)
     subgraph EXECUTION
-        dec_plan -->|APPROVED| story-implement
+        dec_plan -->|"APPROVED → PLAN/DONE"| story-implement
         story-implement[story-implement / <br/>story-implement-tasks]
         story-code-review[story-code-review]
         dec_impl{verdict}
         
         story-implement --> story-code-review
         story-code-review --> dec_impl
-        dec_impl -->|NEEDS-CHANGES| story-implement
+        dec_impl -->|"NEEDS-CHANGES → IMPLEMENT/TODO"| story-implement
         dec_impl -->|BLOCKED| story-code-review
     end
 
@@ -64,8 +64,8 @@ flowchart TD
         dec_verify -->|APPROVED| story-acceptance
         story-acceptance --> dec_acceptance
         dec_acceptance -->|BLOCKED| story-acceptance
-        dec_verify -->|NEEDS-REFINEMENT| story-implement
-        dec_acceptance -->|NEEDS-REFINEMENT| story-implement
+        dec_verify -->|"NEEDS-CHANGES → IMPLEMENT/TODO"| story-implement
+        dec_acceptance -->|"NEEDS-CHANGES → IMPLEMENT/TODO"| story-implement
     end
 
     %% FASE: DELIVER AND COMPLETE

@@ -20,7 +20,7 @@ related:
 La épica recorre estos estados, y su frontmatter en `epic.md` guarda dónde está:
 
 ```text
-DEFINE → PLAN → READY-FOR-DEV → DEVELOP → VALIDATE → SHIP → COMPLETED
+DEFINE → PLAN → DEVELOP → VALIDATE → SHIP → COMPLETED
 ```
 
 Las transiciones hasta `VALIDATE` son manuales: los skills de esos pasos generan artefactos y veredictos, pero no cambian el estado de la épica. Desde `VALIDATE`, lo escriben `/epic-validate`, `/epic-ship` y `/epic-complete`.
@@ -35,7 +35,7 @@ Las transiciones hasta `VALIDATE` son manuales: los skills de esos pasos generan
 *   *¿Qué pasa?* Se desglosa la épica, generando historias que la implementen. La épica se divide en historias y se comprueba que estas cubran su índice, sus criterios de salida y sus smoke tests.
 *   *Artefacto:* Un `story.md` por feature, en `SPECIFY/IN-PROGRESS`, y `epic-analyze-report.md`.
 *   *Acción:* Se invoca `/epic-generate-stories` y luego `/epic-analyze`. Con `NEEDS-REFINEMENT`, se corrige con `/epic-refine` y se vuelve a analizar. Lo que requiere una decisión del PO queda listado en `epic-refine-report.md` y no se escribe.
-*   *Estado al terminar:* `PLAN`. Con `APPROVED`, el PO pasa la épica a `READY-FOR-DEV` a mano. El veredicto es informativo, pero `/epic-validate` volverá a exigirlo.
+*   *Estado al terminar:* `PLAN`. Con `APPROVED`, el PO aprueba la épica escribiendo `PLAN/DONE` a mano. El veredicto es informativo, pero `/epic-validate` volverá a exigirlo.
 
 **3. Develop (Desarrollo)/IN-PROGRESS**
 *   *¿Qué pasa?* Se desarrolla la épica de manera incremental, cada historia recorre su propio [pipeline de implementación](process-for-story-implement.md), con un máximo de 2 historias en `IN-PROGRESS`. El estado de DEVELOP (IN-PROGRESS) en una épica es un Rollup (suma) de los estados de sus hijos. Si el 100% de las historias están en IMPLEMENT, la épica está en DEVELOP (IN-PROGRESS) o si el 100% de las historias están en COMPLETED, la épica pasa al estado siguiente.

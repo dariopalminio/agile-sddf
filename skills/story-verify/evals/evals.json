@@ -317,7 +317,7 @@
           "CRITICAL",
           "Login acepta contraseña vacía",
           "La sesión no expira",
-          "src/auth.py (hallazgo #1, #2)",
+          "`src/auth.py` (hallazgo #1, #2)",
           "IMPLEMENT/TODO"
         ],
         "not_contains": [

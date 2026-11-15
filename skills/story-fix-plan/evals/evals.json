@@ -183,7 +183,7 @@
         ],
         "not_contains": [
           "¿Aplicar el plan?",
-          "READY-FOR-IMPLEMENT",
+          "substatus: DONE",
           "(requiere T004, T005)"
         ]
       },
