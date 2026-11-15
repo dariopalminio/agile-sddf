@@ -5,8 +5,8 @@ id: STORY-193
 kind: chore
 slug: STORY-193-guias-readme-y-ejemplos-sin-buffers
 title: "Guías, README y ejemplos sin buffers"
-status: CODE-REVIEW
-substatus: DONE
+status: VERIFY
+substatus: IN-PROGRESS
 parent: EPIC-029-eliminar-estados-buffer
 created: 2026-11-13
 updated: 2026-11-14
