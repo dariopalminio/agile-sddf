@@ -8,7 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-<!-- epic-ship:EPIC-029:start -->
+## [5.3.1] — 2026-11-15
+
 ### EPIC-029 — Eliminar estados buffer
 
 Simplificar el modelo de estados y volverlo coherente retirando los dos únicos estados buffer del framework, `READY-FOR-IMPLEMENT` (dice lo mismo que `PLAN/DONE`) y `READY-FOR-DEV` (nunca se usó), para que `status` exprese solo la etapa y `substatus` el progreso, como define NFR-006, y que todo rework, venga del gate que venga, se vea en el estado y llegue al ejecutor con lo que hay que corregir.
@@ -21,7 +22,6 @@ Simplificar el modelo de estados y volverlo coherente retirando los dos únicos 
 - **Changed** — ADR de workflows sin estados buffer (STORY-186)
 - **Changed** — Dominio, requisitos y máquina de estados sin buffers (STORY-187)
 - **Changed** — Guías, README y ejemplos sin buffers (STORY-193)
-<!-- epic-ship:EPIC-029:end -->
 
 ## [5.2.1] — 2026-11-13
 
