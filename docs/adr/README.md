@@ -69,3 +69,4 @@ Si la decisión afecta a una sola historia, regístrala en la sección `## Decis
 | [ADR-0020](ADR-0020-contratos-centralizados-para-spec-living.md) | Contratos centralizados en OpenAPI/AsyncAPI para specs/living/ | PROPOSED | 2026-11-03 |
 | [ADR-0021](ADR-0021-guia-de-revision-review-md.md) | Guía de revisión por proyecto en REVIEW.md | ACCEPTED | 2026-11-10 |
 | [ADR-0022](ADR-0022-workflows-sin-estados-buffer.md) | Workflows de Story y Epic sin estados buffer | ACCEPTED | 2026-11-14 |
+| [ADR-0023](ADR-0023-separar-changes-de-specs.md) | Separar los cambios en curso de la especificación viva | PROPOSED | 2026-11-17 |
