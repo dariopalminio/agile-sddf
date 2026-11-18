@@ -20,7 +20,7 @@ const SCAN_ROOTS = ['skills', 'docs'];
 const SCAN_EXTENSIONS = new Set(['.md', '.json', '.yaml', '.yml', '.js', '.mermaid', '.puml', '.txt']);
 const EXCLUSIONS = [
   /^docs\/specs\//,
-  /^docs\/adr\//,
+  /^docs\/decisions\//,
   /^docs\/product\/(?:roadmap|story-map)\.md$/,
 ];
 const LEGACY_EXCEPTIONS = [

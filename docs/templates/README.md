@@ -18,7 +18,7 @@ Las once plantillas base incluyen cinco de autoría manual: `adr-template.md`,
 
 [`fix-directives-template.md`](fix-directives-template.md) es la plantilla común de `fix-directives.md`, la señal de
 rework que escriben `story-code-review`, `story-verify` y `story-acceptance` con veredicto `NEEDS-CHANGES`
-([ADR-0022](../adr/ADR-0022-workflows-sin-estados-buffer.md)). `based-on` toma el valor del reporte del gate que la
+([ADR-0022](../decisions/ADR-0022-workflows-sin-estados-buffer.md)). `based-on` toma el valor del reporte del gate que la
 instancia: `code-review-report.md`, `verify-report.md` o `acceptance-report.md`.
 
 Cada uno de esos tres skills lleva en `assets/fix-directives-template.md` una copia semilla idéntica, que usa si falta
@@ -29,4 +29,4 @@ la central: si la personalizas en este repositorio, actualiza también las semil
 
 Esta capa es hermana de `specs/`, no un subdirectorio suyo: los templates son meta-artefactos que
 definen la estructura de otros artefactos, no especificaciones de work items. Ver
-[ADR-0007](../adr/ADR-0007-templates-como-capa-propia.md).
+[ADR-0007](../decisions/ADR-0007-templates-como-capa-propia.md).

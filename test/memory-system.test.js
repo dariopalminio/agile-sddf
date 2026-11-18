@@ -151,8 +151,8 @@ test('UT-005 parseFrontmatter: ausente o sin cierre devuelve hasFrontmatter=fals
 test('UT-006 deriveNode: slug, capa y título según D-3', () => {
   const base = path.join(EXAMPLES, 'sddf', 'docs');
   const node = (rel) => engine.deriveNode(path.join(base, ...rel.split('/')), base);
-  const adr = node('adr/ADR-0001-x.md');
-  assert.deepEqual([adr.slug, adr.layer, adr.title], ['ADR-0001-x', 'adr', 'ADR-0001: Decisión de ejemplo X']);
+  const adr = node('decisions/ADR-0001-x.md');
+  assert.deepEqual([adr.slug, adr.layer, adr.title], ['ADR-0001-x', 'decisions', 'ADR-0001: Decisión de ejemplo X']);
   const guide = node('guides/sdd.md');
   assert.deepEqual([guide.slug, guide.layer, guide.title], ['sdd', 'guides', 'Guía SDD de ejemplo']);
   const story = engine.deriveNode(path.join(base, '..', 'specs', 'flow', 'STORY-001-a', 'story.md'), base, { flow: true });
@@ -187,8 +187,8 @@ test('UT-007 scanNodes: excluye index.md, .cache, templates, derivados y pre-spl
   const rels = engine.scanNodes(docs, 'sddf').map((n) => n.relPath);
   assert.deepEqual(rels, [
     '../specs/flow/STORY-001-a/story.md',
-    'adr/ADR-0001-x.md',
     'constitution.md',
+    'decisions/ADR-0001-x.md',
     'guides/sdd.md',
     'policies/README.md',
   ]);
@@ -249,16 +249,16 @@ test('UT-009 index --dry-run: nodos pendientes, sin frontmatter y sin escritura'
   assert.match(result.stdout.trim().split('\n').pop(), /^nodos indexados: 7 · sin frontmatter: 1 · nodos pendientes: 1$/);
 });
 
-test('UT-010 index: template sin {layer:adr} termina con exit 2 sin escribir', (t) => {
+test('UT-010 index: template sin {layer:decisions} termina con exit 2 sin escribir', (t) => {
   const repo = copyFixture(t, 'sddf');
   const docs = path.join(repo, 'docs');
   const previous = '# índice previo\n';
   fs.writeFileSync(path.join(docs, 'index.md'), previous);
-  const templatePath = templateVariant(repo, 'template-sin-adr.md', (tpl) => tpl.replace('{layer:adr}', ''));
+  const templatePath = templateVariant(repo, 'template-sin-adr.md', (tpl) => tpl.replace('{layer:decisions}', ''));
   const result = run(['index', '--root', docs, '--template', templatePath]);
   assert.equal(result.status, 2);
-  assert.match(result.stderr, /"adr"/);
-  assert.match(result.stderr, /\{layer:adr\}/);
+  assert.match(result.stderr, /"decisions"/);
+  assert.match(result.stderr, /\{layer:decisions\}/);
   assert.equal(readUtf8(docs, 'index.md'), previous);
 });
 
@@ -272,7 +272,7 @@ test('UT-010b index: placeholder de capa desconocida termina con exit 2', (t) =>
 });
 
 test('UT-008b renderIndex: capa vacía se sustituye por _(sin artefactos)_', () => {
-  const { content, summary } = engine.renderIndex('a\n{layer:adr}\nb\n{stats}\n{date}\n', [], { date: '2026-01-01' });
+  const { content, summary } = engine.renderIndex('a\n{layer:decisions}\nb\n{stats}\n{date}\n', [], { date: '2026-01-01' });
   assert.match(content, /_\(sin artefactos\)_/);
   assert.match(content, /2026-01-01/);
   assert.deepEqual(summary, { indexed: 0, withoutFrontmatter: 0, pending: 0 });
@@ -313,7 +313,7 @@ test('IT-002b index speckit: specs/*/spec.md y plan.md como nodos externos', (t)
 const SCAFFOLD_SUMMARY = /^creados: (\d+) · sobrescritos: (\d+) · preservados: (\d+) · mapeados: (\d+) · omitidos por harness: (\d+)$/;
 
 // Las diez capas y las nueve plantillas que scaffold garantiza (AC-5, AC-6; STORY-152 D-5).
-const LAYER_DIRS = ['product', 'requirements', 'domains', 'architecture', 'adr', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
+const LAYER_DIRS = ['product', 'requirements', 'domains', 'architecture', 'decisions', 'policies', 'guardrails', 'guides', 'runbooks', 'templates'];
 // Las seis que se copian desde su skill dueño, más las cuatro de autoría manual que viajan en la
 // semilla porque no tienen dueño (ADR-0012).
 const MANUAL_TEMPLATES = ['adr-template.md', 'domain-template.md', 'guardrail-template.md', 'policy-template.md', 'srs-template.md'];
@@ -452,13 +452,13 @@ test('S096-UT-006 scaffold --force: restaura solo semillas y plantillas, conserv
 
   // Ediciones manuales sobre archivos gestionados y un artefacto de autor.
   fs.appendFileSync(path.join(docs, 'constitution.md'), '\nRegla local añadida.\n');
-  fs.writeFileSync(path.join(docs, 'adr', 'README.md'), '# README editado\n');
+  fs.writeFileSync(path.join(docs, 'decisions', 'README.md'), '# README editado\n');
   fs.writeFileSync(path.join(docs, 'templates', 'story-template.md'), '# plantilla editada\n');
   const filesBefore = countFiles(docs);
 
   const result = run(['scaffold', '--root', docs, '--cli-root', CLI_ROOT, '--force', '--date', '2026-03-04']);
   assert.equal(result.status, 0, result.stderr);
-  for (const rel of ['constitution.md', 'adr/README.md', 'templates/story-template.md']) {
+  for (const rel of ['constitution.md', 'decisions/README.md', 'templates/story-template.md']) {
     assert.ok(result.stdout.includes(`[SOBRESCRITO] ${rel}`), rel);
   }
   assert.ok(!result.stdout.includes('ADR-0001-x.md'));
@@ -467,11 +467,11 @@ test('S096-UT-006 scaffold --force: restaura solo semillas y plantillas, conserv
   assert.ok(result.stdout.includes('[PRESERVADO] requirements/srs-'));
 
   const restored = hashTree(docs);
-  for (const author of ['adr/ADR-0001-x.md', 'guides/sdd.md']) {
+  for (const author of ['decisions/ADR-0001-x.md', 'guides/sdd.md']) {
     assert.equal(restored[author], pristine[author], `${author} intacto`);
   }
   assert.ok(!readUtf8(docs, 'constitution.md').includes('Regla local'));
-  assert.match(readUtf8(docs, 'adr', 'README.md'), /^slug: adr-index$/m);
+  assert.match(readUtf8(docs, 'decisions', 'README.md'), /^slug: adr-index$/m);
   // La plantilla compartida vuelve a ser la del skill dueño (el fixture traía una versión propia).
   const owner = fs.readFileSync(path.join(REPO_ROOT, 'skills', 'story-creation', 'assets', 'story-template.md'));
   assert.ok(owner.equals(fs.readFileSync(path.join(docs, 'templates', 'story-template.md'))));
@@ -549,7 +549,7 @@ test('S096-UT-001c assets/scaffold: el árbol semilla es exactamente el declarad
   const actual = Object.keys(hashTree(seedRoot)).sort();
   const expected = [
     'constitution.md',
-    'adr/README.md',
+    'decisions/README.md',
     'architecture/README.md',
     'domains/README.md',
     'guardrails/README.md',
@@ -729,10 +729,10 @@ test('S097-UT-003 orphans: un problema por nodo sin frontmatter', () => {
   const nodes = [
     fakeNode('guides/notas.md'),
     fakeNode('guides/sdd.md', { declared: { type: 'guide', slug: 'sdd', title: 'Guía' } }),
-    fakeNode('adr/otra.md'),
+    fakeNode('decisions/otra.md'),
   ];
   assert.deepEqual(engine.orphans(checkCtx({ nodes })), [
-    { kind: 'orphan', path: 'adr/otra.md', detail: 'sin frontmatter' },
+    { kind: 'orphan', path: 'decisions/otra.md', detail: 'sin frontmatter' },
     { kind: 'orphan', path: 'guides/notas.md', detail: 'sin frontmatter' },
   ]);
 });
@@ -742,12 +742,12 @@ test('S097-UT-004 invalidFrontmatter: campos obligatorios por tipo (V-6)', () =>
   const nodes = [
     fakeNode('guides/sdd.md', { declared: { type: 'guide', slug: 'sdd', title: 'Guía sin id' } }),
     fakeNode('specs/stories/STORY-001-a/story.md', { declared: { type: 'story', id: 'STORY-001', slug: 'STORY-001-a', title: 'H' } }),
-    fakeNode('adr/ADR-0003-x.md', { declared: { type: 'adr', slug: 'ADR-0003-x' } }),
+    fakeNode('decisions/ADR-0003-x.md', { declared: { type: 'adr', slug: 'ADR-0003-x' } }),
     fakeNode('specs/epics/EPIC-01-x/epic.md', { declared: { type: 'epic', slug: 'EPIC-01-x', title: '  ' } }),
     fakeNode('guides/huerfana.md'),
   ];
   assert.deepEqual(engine.invalidFrontmatter(checkCtx({ nodes })), [
-    { kind: 'invalid-frontmatter', path: 'adr/ADR-0003-x.md', detail: 'falta title' },
+    { kind: 'invalid-frontmatter', path: 'decisions/ADR-0003-x.md', detail: 'falta title' },
     { kind: 'invalid-frontmatter', path: 'specs/epics/EPIC-01-x/epic.md', detail: 'falta id' },
     { kind: 'invalid-frontmatter', path: 'specs/epics/EPIC-01-x/epic.md', detail: 'falta status' },
     { kind: 'invalid-frontmatter', path: 'specs/epics/EPIC-01-x/epic.md', detail: 'falta title' },
@@ -771,7 +771,7 @@ test('S097-UT-005 brokenWikilinks: resuelve contra el slugSet con raíces extern
 });
 
 test('UT-ADR-ALIAS slugSetOf: un ADR resuelve por nombre de archivo y por ID, no por prefijos ajenos', () => {
-  const adr = { ...fakeNode('adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md', { declared: { type: 'adr', slug: 'asegurar-dos-niveles-de-flujo-epics-stories', title: 'A' } }), layer: 'adr', slug: 'asegurar-dos-niveles-de-flujo-epics-stories' };
+  const adr = { ...fakeNode('decisions/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md', { declared: { type: 'adr', slug: 'asegurar-dos-niveles-de-flujo-epics-stories', title: 'A' } }), layer: 'decisions', slug: 'asegurar-dos-niveles-de-flujo-epics-stories' };
   const guide = { ...fakeNode('guides/ADR-0099-nota.md', { declared: { type: 'guide', slug: 'nota', title: 'N' } }), layer: 'guides', slug: 'nota' };
   const slugs = engine.slugSetOf([adr, guide]);
   for (const slug of ['asegurar-dos-niveles-de-flujo-epics-stories', 'ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories', 'ADR-0013']) assert.ok(slugs.has(slug), slug);
@@ -910,7 +910,7 @@ test('S097-E2E-001 check: informe con las cuatro familias sin escribir; fixture 
   assert.deepEqual(kindLines(broken.stdout), [
     '[missing-layer]        product/ — capa ausente',
     '[orphan]               guides/notas.md — sin frontmatter',
-    '[invalid-frontmatter]  adr/ADR-0003-x.md — falta title',
+    '[invalid-frontmatter]  decisions/ADR-0003-x.md — falta title',
     '[broken-wikilink]      guides/sdd.md — [[no-existe]] no resuelve',
   ]);
   assert.equal(lastLine(broken.stdout), 'problemas: 4 (missing-layer 1 · orphan 1 · invalid-frontmatter 1 · broken-wikilink 1)');
@@ -927,7 +927,7 @@ test('S097-E2E-002 check --json: gate de CI y re-chequeo tras corregir el wikili
   // Se dejan corregidas las otras tres familias: solo queda el wikilink roto.
   fs.mkdirSync(path.join(docs, 'product'));
   fs.writeFileSync(path.join(docs, 'guides', 'notas.md'), '---\ntype: guide\nslug: notas\ntitle: "Notas"\n---\n# Notas\n');
-  fs.writeFileSync(path.join(docs, 'adr', 'ADR-0003-x.md'), '---\ntype: adr\nslug: ADR-0003-x\ntitle: "ADR-0003"\n---\n# ADR-0003\n');
+  fs.writeFileSync(path.join(docs, 'decisions', 'ADR-0003-x.md'), '---\ntype: adr\nslug: ADR-0003-x\ntitle: "ADR-0003"\n---\n# ADR-0003\n');
 
   const first = run(['check', '--root', docs, '--json']);
   assert.equal(first.status, 1, first.stderr);
@@ -1066,7 +1066,7 @@ test('S098-UT-007 guardia de escritura: un destino fuera de la raíz aborta (exi
   assert.ok(!fs.existsSync(docs), 'la guardia actúa antes del bootstrap de la raíz');
   // La guardia es la misma función para scaffold e index; un UsageError es exit 2 en la CLI.
   assert.throws(() => engine.assertInsideRoot(docs, path.join(repo, 'openspec', 'x.md')), engine.UsageError);
-  assert.doesNotThrow(() => engine.assertInsideRoot(docs, path.join(docs, 'adr', 'README.md')));
+  assert.doesNotThrow(() => engine.assertInsideRoot(docs, path.join(docs, 'decisions', 'README.md')));
 });
 
 test('S098-UT-008 index: externalGroup, nodo mapeado y capa gestionada por el harness', (t) => {

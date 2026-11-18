@@ -14,7 +14,7 @@ related:
 
 ## Migración a 5.0.0 — layout fijo de tres raíces
 
-**A quién aplica:** proyectos que declaran `root` en `sddf.config.yaml` (normalmente `root: docs`), que guardan sus work items en `docs/specs/` o que definen la variable de entorno `SDDF_ROOT`. Es un cambio incompatible: los skills de 5.0.0 ya no leen `root` ni `SDDF_ROOT`, no usan `SPECS_BASE` y leen y escriben los work items en `specs/flow/`. La decisión está en [ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso) son raíces hermanas en la raíz del repositorio.
+**A quién aplica:** proyectos que declaran `root` en `sddf.config.yaml` (normalmente `root: docs`), que guardan sus work items en `docs/specs/` o que definen la variable de entorno `SDDF_ROOT`. Es un cambio incompatible: los skills de 5.0.0 ya no leen `root` ni `SDDF_ROOT`, no usan `SPECS_BASE` y leen y escriben los work items en `specs/flow/`. La decisión está en [ADR-0016](../decisions/ADR-0016-layout-fijo-de-tres-raices.md): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso) son raíces hermanas en la raíz del repositorio.
 
 | Origen 4.x | Destino 5.0.0 |
 |---|---|

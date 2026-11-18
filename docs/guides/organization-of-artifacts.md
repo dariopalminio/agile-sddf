@@ -21,7 +21,7 @@ Este documento define las reglas para organizar los artefactos de especificació
 
 ### 1. Directorio raíz de work items
 
-Los work items se guardan en un directorio fijo de la raíz del repositorio ([ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md)); no es configurable:
+Los work items se guardan en un directorio fijo de la raíz del repositorio ([ADR-0016](../decisions/ADR-0016-layout-fijo-de-tres-raices.md)); no es configurable:
 
 ```
 specs/flow/
@@ -33,7 +33,7 @@ A partir de aquí se representa como `{SPECS_ROOT}`. La visión, stakeholders, o
 
 ### 2. Tipos de work item y sus carpetas
 
-Existen dos tipos de work item: **Épica** y **Story**. Ambos son hermanos dentro de `{SPECS_ROOT}`, sin carpetas por tipo: cada work item se guarda en su **propio directorio**, cuyo nombre comienza con su identificador único. Las historias y las épicas `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `{SPECS_ROOT}/archive/` conservando su status, con la fecha de `updated:`, `created:` o `date:` como prefijo ([ADR-0019](../adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md)):
+Existen dos tipos de work item: **Épica** y **Story**. Ambos son hermanos dentro de `{SPECS_ROOT}`, sin carpetas por tipo: cada work item se guarda en su **propio directorio**, cuyo nombre comienza con su identificador único. Las historias y las épicas `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `{SPECS_ROOT}/archive/` conservando su status, con la fecha de `updated:`, `created:` o `date:` como prefijo ([ADR-0019](../decisions/ADR-0019-layout-fijo-con-archivo-de-epicas.md)):
 
 ```
 {SPECS_ROOT}/

@@ -85,9 +85,9 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 {layer:architecture}
 
-### Decisiones de arquitectura (adr/)
+### Decisiones de arquitectura (decisions/)
 
-{layer:adr}
+{layer:decisions}
 
 ---
 

@@ -8,7 +8,7 @@ parent: null
 
 # Guía Ejecutiva: Contract Testing y Contratos Centralizados
 
-> **Referencia:** [ADR-0020](../adr/ADR-0020-contratos-centralizados-para-spec-living.md) | [sdd-with-bcdd.md](sdd-with-bcdd.md)
+> **Referencia:** [ADR-0020](../decisions/ADR-0020-contratos-centralizados-para-spec-living.md) | [sdd-with-bcdd.md](sdd-with-bcdd.md)
 >
 > Qué es Contract Testing, cómo organizar contratos centralizados en `specs/living/contracts/`, y el flujo de validación en CI/CD.
 
@@ -227,7 +227,7 @@ Acción:    Version 1.0.0 → 1.1.0
 - **Estructura:** `specs/living/contracts/{openapi,asyncapi}/`
 - **Validación en CI/CD:** linting + backward compatibility check (setup en `.github/workflows/`)
 - **Plantillas reutilizables:** `docs/templates/openapi-contract-template.yaml`, `docs/templates/asyncapi-contract-template.yaml`
-- **Documentación:** [ADR-0020](../adr/ADR-0020-contratos-centralizados-para-spec-living.md), [ADR-0018](../adr/ADR-0018-adoptar-cucumber-para-specs-living.md)
+- **Documentación:** [ADR-0020](../decisions/ADR-0020-contratos-centralizados-para-spec-living.md), [ADR-0018](../decisions/ADR-0018-adoptar-cucumber-para-specs-living.md)
 
 ### En cada `producer-repo` y `consumer-repo`
 

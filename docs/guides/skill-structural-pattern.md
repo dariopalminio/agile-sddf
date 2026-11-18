@@ -42,7 +42,7 @@ diagnóstico explícito, no un paso automático.
 
 ### 3.1 Contrato de layout fijo
 
-[ADR-0016](../adr/ADR-0016-layout-fijo-de-tres-raices.md) retiró la resolución de raíz anterior (`SDDF_ROOT`, la clave
+[ADR-0016](../decisions/ADR-0016-layout-fijo-de-tres-raices.md) retiró la resolución de raíz anterior (`SDDF_ROOT`, la clave
 `root` de `sddf.config.yaml` y `SPECS_BASE`): cada skill tiene un paso 0 que solo resuelve `REPO_ROOT` y usa rutas
 fijas. El bloque canónico es:
 

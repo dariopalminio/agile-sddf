@@ -20,7 +20,7 @@ sigue [la sección de migración a 5.0.0](artifact-directory-migration.md#migrac
 
 ## Layout fijo
 
-[ADR-0019](../adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md) (que reemplaza a ADR-0017) fija tres raíces hermanas en
+[ADR-0019](../decisions/ADR-0019-layout-fijo-con-archivo-de-epicas.md) (que reemplaza a ADR-0017) fija tres raíces hermanas en
 `REPO_ROOT`, cada una con una responsabilidad:
 
 | Raíz | Responsabilidad | Contenido |

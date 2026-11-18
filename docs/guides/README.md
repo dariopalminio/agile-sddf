@@ -11,7 +11,7 @@ parent: null
 > Documentos **didácticos** del framework: explican conceptos, fundamentos y buenas prácticas para
 > que humanos y agentes entiendan *por qué* y *cómo* se hacen las cosas en SDDF.
 > No son normativos ni verificables — para restricciones que bloquean ver [guardrails/](../guardrails/README.md);
-> para reglas de gobernanza ver [policies/](../policies/); para decisiones de arquitectura ver [adr/](../adr/README.md).
+> para reglas de gobernanza ver [policies/](../policies/); para decisiones de arquitectura ver [decisions/](../decisions/README.md).
 
 ---
 

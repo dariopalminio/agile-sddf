@@ -8,7 +8,7 @@ parent: null
 
 # SDD con Behavior & Contract-Driven Development (BCDD)
 
-> **Referencia:** [ADR-0020](../adr/ADR-0020-contratos-centralizados-para-spec-living.md) | [ADR-0018](../adr/ADR-0018-adoptar-cucumber-para-specs-living.md)
+> **Referencia:** [ADR-0020](../decisions/ADR-0020-contratos-centralizados-para-spec-living.md) | [ADR-0018](../decisions/ADR-0018-adoptar-cucumber-para-specs-living.md)
 >
 > Guía arquitectónica: cómo integrar Spec-Driven Development, Behavior-Driven Development y Contract Testing como un sistema holístico de especificaciones vivas ejecutables.
 
@@ -283,7 +283,7 @@ Acción: Version 1.0.0 → 1.1.0
 - **Estructura:** `specs/living/contracts/{openapi,asyncapi}/`
 - **Validación CI/CD:** linting + backward compatibility (`.github/workflows/`)
 - **Plantillas:** `docs/templates/openapi-contract-template.yaml`, `asyncapi-contract-template.yaml`
-- **Documentación:** [ADR-0020](../adr/ADR-0020-contratos-centralizados-para-spec-living.md), [contract-testing.md](contract-testing.md)
+- **Documentación:** [ADR-0020](../decisions/ADR-0020-contratos-centralizados-para-spec-living.md), [contract-testing.md](contract-testing.md)
 
 ### En cada `producer-repo` y `consumer-repo`
 
