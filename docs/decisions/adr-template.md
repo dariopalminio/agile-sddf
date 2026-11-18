@@ -11,7 +11,7 @@ id: ADR-NNNN
 slug: <slug-kebab>
 # escritor: autoría manual — primer `#` del documento
 title: "<Título de la decisión>"
-# escritor: autoría manual — PROPOSED al crear; ACCEPTED, REJECTED o SUPERSEDED al resolver
+# escritor: autoría manual — PROPOSED al crear; ACCEPTED, REJECTED o SUPERSEDED al resolver / SUPERSEDED by ADR-0123 (si aplica)
 status: PROPOSED
 # escritor: autoría manual — fecha de la decisión
 date: <YYYY-MM-DD>
