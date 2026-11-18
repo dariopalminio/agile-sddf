@@ -176,7 +176,7 @@ Consumidores (story-design, story-analyze, story-implement, story-implement-task
 sddf-init y el template de índice de docs-wiki-builder apuntan al nuevo nombre.
 Docs activas: AGENTS.md (árbol y @docs/guardrails/dod-story-checklist.md), README.md, docs/index.md, constitution.md, domain.md, memory-system.md, y docs/guardrails/README.md ahora distingue content guardrails (gr-*) de transition guardrails (dod-*) con su propia tabla. Entrada [Unreleased] → Changed en el CHANGELOG.
 
-No tocado: docs/specs/**, docs/adr/** y entradas pasadas del CHANGELOG (históricos). Una cosa que noté al escribir la convención: los gr-* no tienen frontmatter; lo dejé anotado en el README como estado actual en lugar de inventarlo.
+No tocado: docs/specs/**, docs/decisions/** y entradas pasadas del CHANGELOG (históricos). Una cosa que noté al escribir la convención: los gr-* no tienen frontmatter; lo dejé anotado en el README como estado actual en lugar de inventarlo.
 
 Verificación: check-doc-links.js OK (36 archivos), npm run test:installer 11/11, test:eval:runner 25/25, audit-root-resolution.js OK (32 skills), ambos evals.json parsean. El grep de policies/dod-story en fuentes activas devuelve solo las líneas de fallback/deprecación.
 

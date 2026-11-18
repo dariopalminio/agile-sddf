@@ -134,7 +134,7 @@ ocurrencia = un problema).
 
 Los ADR resuelven además por nombre de archivo (`[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]`, la forma
 de `related`) y por ID (`[[ADR-0013]]`), aunque su `slug` declarado omita el prefijo. Solo aplica a
-los nodos de la capa `adr/` cuyo archivo se llama `ADR-<NNNN>-<slug>.md`.
+los nodos de la capa `decisions/` cuyo archivo se llama `ADR-<NNNN>-<slug>.md`.
 
 ## 3. Formato del índice
 
@@ -193,9 +193,9 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
 | `constitution.md` | semilla | `constitution` / `constitution` |
 | `product/README.md` | semilla | `wiki` / `product-index` |
 | `product/vision.md`, `product/stakeholders.md`, `product/objectives.md`, `product/roadmap.md` | semilla | `product` / `vision`, `stakeholders`, `objectives`, `roadmap` |
-| `requirements/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla | `wiki` / `<capa>-index` |
+| `requirements/README.md`, `domains/README.md`, `architecture/README.md`, `decisions/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla | `wiki` / `<capa>-index` |
 | `requirements/functional/.gitkeep`, `requirements/non-functional/.gitkeep` | semilla | solo si el directorio no existe; nunca se listan ni se sobrescriben si ya existe |
-| `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md` del framework) | template |
+| `templates/adr-template.md` | semilla (contenido de `docs/decisions/adr-template.md` del framework) | template |
 | `templates/domain-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
 | `templates/guardrail-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
 | `templates/policy-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) | template |
@@ -227,7 +227,7 @@ Esta lista define lo que `scaffold` crea si falta y **lo único** que `rebuild -
   anotan `escritor: autoría manual` (ADR-0012). La anotación va en **comentario de línea
   completa** encima del campo, nunca al final de su línea: `parseFrontmatter` ignora las líneas
   que empiezan por `#` pero incorporaría un comentario final al valor, contaminando `title` en el
-  índice del proyecto scaffoldeado. La semilla y `docs/adr/adr-template.md` del framework se
+  índice del proyecto scaffoldeado. La semilla y `docs/decisions/adr-template.md` del framework se
   mantienen byte a byte idénticas.
 - **Dueño ausente:** si `--cli-root` no se pasa o `<CLI_ROOT>/skills/<dueño>/assets/<nombre>` no
   existe, el motor emite `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`,

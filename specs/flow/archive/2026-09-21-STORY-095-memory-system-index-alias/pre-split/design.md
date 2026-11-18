@@ -183,7 +183,7 @@ Las **seis plantillas base** de `templates/` son: `story-template.md`, `epic-tem
 `project-template.md`, `project-intent-template.md`, `project-plan-template.md` (copiadas
 desde el `assets/` de su skill dueño con la misma tabla y reglas del Paso 2b de `sddf-init`,
 incluido el `[WARNING]` no bloqueante si el dueño no está instalado) y `adr-template.md`
-(semilla propia de `memory-system`, hoy en `docs/adr/adr-template.md`). Ver CR-003.
+(semilla propia de `memory-system`, hoy en `docs/decisions/adr-template.md`). Ver CR-003.
 
 Los archivos semilla llevan frontmatter conforme al esquema canónico de
 `header-aggregation` (`type`, `slug`, `title`, `status`, `substatus`, `parent`, `created`,

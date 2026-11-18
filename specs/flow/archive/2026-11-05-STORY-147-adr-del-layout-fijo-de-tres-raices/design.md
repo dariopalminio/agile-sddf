@@ -26,13 +26,13 @@ Estado verificado en el filesystem (2026-10-22):
 
 | Fuente | Hallazgo |
 |---|---|
-| `docs/adr/` | Último ADR: `ADR-0015-contrato-de-validacion.md`. El siguiente número libre es **ADR-0016**. |
-| `docs/adr/ADR-0010-specs-dentro-de-docs.md` | Frontmatter `status: PROPOSED` (no `ACCEPTED`, como asume la historia), `supersedes: ADR-0009`, `superseded-by: null`. Secciones: Contexto y problema, Decisión, Rationale, Alternativas consideradas, Consecuencias, Referencias. Ver CR-001. |
-| `docs/adr/README.md` | Convención de inmutabilidad: al reemplazar, «se actualizan `status` y `superseded-by` del antiguo y se añade una nota visible de reemplazo bajo su título (únicos cambios permitidos)». Índice con la fila ADR-0010 `PROPOSED`. Ver CR-002. |
-| `docs/adr/adr-template.md` | Secciones obligatorias y frontmatter (`type`, `id`, `slug`, `title`, `status`, `date`, `supersedes`, `superseded-by`). Los ADR existentes (ADR-0013, ADR-0015) no conservan los comentarios `# escritor:` del template. |
+| `docs/decisions/` | Último ADR: `ADR-0015-contrato-de-validacion.md`. El siguiente número libre es **ADR-0016**. |
+| `docs/decisions/ADR-0010-specs-dentro-de-docs.md` | Frontmatter `status: PROPOSED` (no `ACCEPTED`, como asume la historia), `supersedes: ADR-0009`, `superseded-by: null`. Secciones: Contexto y problema, Decisión, Rationale, Alternativas consideradas, Consecuencias, Referencias. Ver CR-001. |
+| `docs/decisions/README.md` | Convención de inmutabilidad: al reemplazar, «se actualizan `status` y `superseded-by` del antiguo y se añade una nota visible de reemplazo bajo su título (únicos cambios permitidos)». Índice con la fila ADR-0010 `PROPOSED`. Ver CR-002. |
+| `docs/decisions/adr-template.md` | Secciones obligatorias y frontmatter (`type`, `id`, `slug`, `title`, `status`, `date`, `supersedes`, `superseded-by`). Los ADR existentes (ADR-0013, ADR-0015) no conservan los comentarios `# escritor:` del template. |
 | Precedente de reemplazo | `ADR-0004` → `status: SUPERSEDED`, `superseded-by: ADR-0013`, blockquote `> **Superado … por [ADR-0013](…) (fecha):** …` bajo el título; fila del índice `SUPERSEDED → [ADR-0013](…)`. |
 | ADRs vigentes que citan la raíz configurable | `ADR-0002` (1), `ADR-0007` (3), `ADR-0012` (2), `ADR-0013` (1) mencionan `$SPECS_BASE`, `SDDF_ROOT` o `root:`. `ADR-0007` descartó explícitamente «ruta literal `docs/templates/`» por compatibilidad con `SDDF_ROOT`. Ver D-8. |
-| `scripts/check-doc-links.js` | `docs/adr` está en `HISTORICAL_EXCLUSIONS`; `docs/index.md` es raíz activa y sus wikilinks se resuelven por `slug:` del frontmatter. |
+| `scripts/check-doc-links.js` | `docs/decisions` está en `HISTORICAL_EXCLUSIONS`; `docs/index.md` es raíz activa y sus wikilinks se resuelven por `slug:` del frontmatter. |
 | `docs/index.md` | Sección `### Decisiones de arquitectura (adr/)` lista ADR-0001 a ADR-0015 con el formato `- [[<slug>]] — [<archivo>](adr/<archivo>) — <título>`. |
 | `sddf.config.yaml` | Declara `root: docs`; el repo aplica hoy ADR-0010 (`docs/specs/`). |
 | EPIC-26 | Fija el layout, los Non-Goals (Workflow, Living Spec, Enforcement), la fecha del prefijo de archivo (`updated:` y, si falta, `created:`), que solo se archivan stories `COMPLETED` y que se conserva `STORY-NNN-<slug>/` / `EPIC-NNN-<slug>/` (Notas). |
@@ -42,11 +42,11 @@ Stakeholders: el mantenedor que ejecuta STORY-148 a STORY-158, que citarán ADR-
 ## Goals / Non-Goals
 
 **Goals:**
-- Crear `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` con `status: ACCEPTED` y `supersedes: ADR-0010` // satisface: AC-1
+- Crear `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` con `status: ACCEPTED` y `supersedes: ADR-0010` // satisface: AC-1
 - Fijar en el ADR las cinco raíces/subraíces literales, el retiro de `SDDF_ROOT`/`root`/`SPECS_BASE` y la convención de `specs/flow/archive/` // satisface: AC-1
 - Decidir explícitamente que `specs/flow/` conserva el slug // satisface: AC-3
 - Marcar ADR-0010 como reemplazado tocando solo sus metadatos de reemplazo // satisface: AC-1, AC-2, CNF-1
-- Listar ADR-0016 en `docs/adr/README.md` (y en `docs/index.md`) // satisface: AC-1, CNF-2
+- Listar ADR-0016 en `docs/decisions/README.md` (y en `docs/index.md`) // satisface: AC-1, CNF-2
 
 **Non-Goals:**
 - Modificar skills, `sddf-init`, `sddf.config.yaml`, `AGENTS.md`, guías o mover work items (STORY-148 a STORY-158)
@@ -60,7 +60,7 @@ Stakeholders: el mantenedor que ejecuta STORY-148 a STORY-158, que citarán ADR-
 
 | Campo | Valor |
 |---|---|
-| Archivo | `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` |
+| Archivo | `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` |
 | `type` | `adr` |
 | `id` | `ADR-0016` |
 | `slug` | `layout-fijo-de-tres-raices` (único en `docs/`: verificado sin coincidencias) |
@@ -120,7 +120,7 @@ El ADR declara en una frase explícita: «Los directorios de `specs/flow/` conse
 
 ### D-5 — Marcado de ADR-0010 sin editar su contenido // satisface: AC-1, AC-2, CNF-1
 
-Cambios permitidos en `docs/adr/ADR-0010-specs-dentro-de-docs.md`, y solo estos:
+Cambios permitidos en `docs/decisions/ADR-0010-specs-dentro-de-docs.md`, y solo estos:
 
 | Ubicación | Antes | Después |
 |---|---|---|
@@ -130,10 +130,10 @@ Cambios permitidos en `docs/adr/ADR-0010-specs-dentro-de-docs.md`, y solo estos:
 
 Quedan byte a byte iguales: `type`, `id`, `slug`, `title`, `date`, `supersedes` y las secciones Contexto y problema, Decisión, Rationale, Alternativas consideradas, Consecuencias y Referencias.
 
-La nota visible aplica la convención vigente de `docs/adr/README.md` y el precedente ADR-0004; se trata como metadato de reemplazo, no como contenido (ver CR-002).
+La nota visible aplica la convención vigente de `docs/decisions/README.md` y el precedente ADR-0004; se trata como metadato de reemplazo, no como contenido (ver CR-002).
 
 **Alternativas rechazadas:**
-- **Solo frontmatter, sin nota:** incumple la convención de `docs/adr/README.md` («se añade una nota visible»); un lector del cuerpo no sabría que la decisión dejó de regir.
+- **Solo frontmatter, sin nota:** incumple la convención de `docs/decisions/README.md` («se añade una nota visible»); un lector del cuerpo no sabría que la decisión dejó de regir.
 - **Nota al final o en `## Consecuencias`:** edita una sección de contenido (AC-2).
 
 ### D-6 — ADR-0010 pasa de `PROPOSED` a `SUPERSEDED` con la disciplina de un ADR aceptado // satisface: AC-1, AC-2, CNF-1
@@ -144,9 +144,9 @@ ADR-0010 está `PROPOSED` en su frontmatter y en el índice, pero es la decisió
 - **Aceptar ADR-0010 retroactivamente y luego reemplazarlo:** fabrica un registro de aceptación que no ocurrió.
 - **Marcarlo `REJECTED`/`DEPRECATED`:** falso; la decisión rigió y se reemplaza por otra (`SUPERSEDED` es el estado del README para ese caso).
 
-### D-7 — Índices: `docs/adr/README.md` y `docs/index.md` // satisface: AC-1, CNF-2
+### D-7 — Índices: `docs/decisions/README.md` y `docs/index.md` // satisface: AC-1, CNF-2
 
-`docs/adr/README.md`, tabla `## Índice de ADRs`:
+`docs/decisions/README.md`, tabla `## Índice de ADRs`:
 - Fila ADR-0010: estado `PROPOSED` → `SUPERSEDED → [ADR-0016](ADR-0016-layout-fijo-de-tres-raices.md)` (resto igual).
 - Fila nueva al final: `| [ADR-0016](ADR-0016-layout-fijo-de-tres-raices.md) | <title> | ACCEPTED | <date> |`.
 
@@ -176,9 +176,9 @@ ADR-0016 no reemplaza a ADR-0002, ADR-0007, ADR-0012 ni ADR-0013. En `## Consecu
 
 | Componente | Acción | Ubicación | AC que satisface |
 |---|---|---|---|
-| ADR del layout fijo | crear | `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` | AC-1, AC-3 |
-| ADR-0010 | modificar (solo `status`, `superseded-by`, nota de reemplazo) | `docs/adr/ADR-0010-specs-dentro-de-docs.md` | AC-1, AC-2 |
-| Índice de ADRs | modificar (fila ADR-0010, fila ADR-0016) | `docs/adr/README.md` | AC-1 |
+| ADR del layout fijo | crear | `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` | AC-1, AC-3 |
+| ADR-0010 | modificar (solo `status`, `superseded-by`, nota de reemplazo) | `docs/decisions/ADR-0010-specs-dentro-de-docs.md` | AC-1, AC-2 |
+| Índice de ADRs | modificar (fila ADR-0010, fila ADR-0016) | `docs/decisions/README.md` | AC-1 |
 | Índice wiki | modificar (una línea) | `docs/index.md` | AC-1, CNF-2 |
 
 No se modifica ningún otro archivo (Non-Goals).
@@ -214,11 +214,11 @@ Diff de frontmatter de ADR-0010: `status: PROPOSED` → `status: SUPERSEDED`; `s
 ### F-1 — Registro del ADR (escenario principal) // AC-1, AC-3
 1. Crear ADR-0016 (D-1) con Decisión (D-2, D-3, D-4) y demás secciones (D-8, D-9).
 2. Marcar ADR-0010 (D-5, D-6).
-3. Actualizar `docs/adr/README.md` y `docs/index.md` (D-7).
+3. Actualizar `docs/decisions/README.md` y `docs/index.md` (D-7).
 4. Ejecutar `npm run verify:repository` (CNF-2).
 
 ### F-2 — Reemplazo sin edición in place // AC-2
-`git diff -- docs/adr/ADR-0010-specs-dentro-de-docs.md` muestra solo las dos líneas de frontmatter y la línea de nota; ninguna línea de las secciones de contenido.
+`git diff -- docs/decisions/ADR-0010-specs-dentro-de-docs.md` muestra solo las dos líneas de frontmatter y la línea de nota; ninguna línea de las secciones de contenido.
 
 ### F-3 — Degradación // P7
 - Si `verify:repository` falla por un enlace o wikilink de `docs/index.md`: corregir la ruta o el slug; nunca relajar el checker.
@@ -243,7 +243,7 @@ Diff de frontmatter de ADR-0010: `status: PROPOSED` → `status: SUPERSEDED`; `s
 | 3 | Declara el retiro | `grep -F` de `SDDF_ROOT`, `root`, `SPECS_BASE` en `## Decisión` | AC-1 |
 | 4 | Convención de archive | `grep -F '<YYYY-MM-DD>-STORY-NNN-<slug>/'` en ADR-0016 | AC-1 |
 | 5 | ADR-0010 reemplazado | Frontmatter de ADR-0010: `status: SUPERSEDED`, `superseded-by: ADR-0016` | AC-1 |
-| 6 | README lista ADR-0016 | `grep -F 'ADR-0016-layout-fijo-de-tres-raices.md' docs/adr/README.md` | AC-1 |
+| 6 | README lista ADR-0016 | `grep -F 'ADR-0016-layout-fijo-de-tres-raices.md' docs/decisions/README.md` | AC-1 |
 | 7 | Contenido de ADR-0010 intacto | `git diff` de ADR-0010: solo `status`, `superseded-by` y la línea de nota; secciones sin cambios | AC-2, CNF-1 |
 | 8 | Decisión explícita sobre el slug | ADR-0016 contiene `STORY-NNN-<slug>/` y `EPIC-NNN-<slug>/` en `## Decisión` y cita SMOKE-1/SMOKE-2 | AC-3 |
 | 9 | Gate verde | `npm run verify:repository` termina con código 0 | CNF-2 |
@@ -255,7 +255,7 @@ Diff de frontmatter de ADR-0010: `status: PROPOSED` → `status: SUPERSEDED`; `s
 - **[Riesgo] La nota visible podría leerse como edición de contenido (AC-2 literal)** → D-5 la limita a una línea bajo el título, como exige el README; CR-002.
 - **[Trade-off] Estado transitorio contradictorio:** ADR-0016 vigente mientras `AGENTS.md`, `sddf.config.yaml` y los skills siguen con `root: docs` → ADR-0016 lo declara como aplicación incremental en EPIC-26 (STORY-148 a STORY-158).
 - **[Limitación] ADR-0010 conserva `supersedes: ADR-0009`** (anomalía: ADR-0009 sigue `ACCEPTED` y trata otro tema) → no se corrige por inmutabilidad; queda fuera de alcance.
-- **[Limitación] `check-doc-links.js` excluye `docs/adr`** → los enlaces dentro de ADR-0016 y la nota de ADR-0010 no los valida el gate; verificar a mano que apuntan a archivos existentes.
+- **[Limitación] `check-doc-links.js` excluye `docs/decisions`** → los enlaces dentro de ADR-0016 y la nota de ADR-0010 no los valida el gate; verificar a mano que apuntan a archivos existentes.
 
 ## Open Questions
 
@@ -272,12 +272,12 @@ Ninguna: la ambigüedad del estado de ADR-0010 se resuelve en D-6 y la de la not
 
 ### CR-001
 - **Tipo**: ambigüedad
-- **Descripción**: AC-1 y AC-2 dicen «Dado que ADR-0010 está ACCEPTED», pero su frontmatter y el índice `docs/adr/README.md` lo registran como `PROPOSED`. La decisión rige de hecho (`root: docs`, `docs/specs/`).
+- **Descripción**: AC-1 y AC-2 dicen «Dado que ADR-0010 está ACCEPTED», pero su frontmatter y el índice `docs/decisions/README.md` lo registran como `PROPOSED`. La decisión rige de hecho (`root: docs`, `docs/specs/`).
 - **Documento afectado**: story.md
 - **Acción requerida**: cambiar la premisa a «ADR-0010 está PROPOSED y vigente de hecho». Mientras tanto, el diseño marca ADR-0010 `SUPERSEDED` y le aplica la restricción de un ADR aceptado (D-6), lo que satisface la intención de AC-2 y CNF-1.
 
 ### CR-002
 - **Tipo**: ambigüedad
-- **Descripción**: AC-2 dice «solo cambian sus metadatos de reemplazo ("status" y "superseded-by")», mientras `docs/adr/README.md` exige además «una nota visible de reemplazo bajo su título» (precedente ADR-0004).
+- **Descripción**: AC-2 dice «solo cambian sus metadatos de reemplazo ("status" y "superseded-by")», mientras `docs/decisions/README.md` exige además «una nota visible de reemplazo bajo su título» (precedente ADR-0004).
 - **Documento afectado**: story.md
 - **Acción requerida**: alinear AC-2 con el README («solo cambian `status`, `superseded-by` y la nota visible de reemplazo bajo el título»). El diseño aplica el README (D-5) y conserva intacto lo que AC-2 protege: contexto, decisión y consecuencias.

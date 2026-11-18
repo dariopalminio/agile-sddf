@@ -20,7 +20,7 @@ related:
 
 ## 1. Preparación
 
-- [x] T001 Verificar la precondición: existe `docs/adr/ADR-0016-*.md` con `status: ACCEPTED`; registrar si su `## Decisión` incluye el marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, el texto canónico del bloque y la región `SDDF-LEGACY-DIAGNOSTIC` (CR-001). Si el ADR no está `ACCEPTED`, detener la implementación — design Risks, CR-001
+- [x] T001 Verificar la precondición: existe `docs/decisions/ADR-0016-*.md` con `status: ACCEPTED`; registrar si su `## Decisión` incluye el marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, el texto canónico del bloque y la región `SDDF-LEGACY-DIAGNOSTIC` (CR-001). Si el ADR no está `ACCEPTED`, detener la implementación — design Risks, CR-001
 - [x] T002 [P] Ejecutar `npm test` y `npm run verify:repository` y guardar las salidas en `.tmp/story-implement/STORY-148/baseline.txt` (línea base en verde); guardar también la lista de `ls skills/` (valor inicial de `PENDING_MIGRATION`) y la salida de `git grep -n "audit-root-resolution" -- ':!CHANGELOG.md' ':!docs/specs' ':!.tmp' ':!.temp'` (5 referencias esperadas: D-6) — design Context, contrato #2
 
 ## 2. Pruebas del validador (RED)

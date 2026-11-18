@@ -149,7 +149,7 @@ test('V-4 reconoce variantes heredadas solo en posición de valor cuando corresp
 
 test('V-5 excluye históricos y revisa solo las raíces y secciones vigentes', (t) => {
   const root = fixture(t);
-  for (const file of ['docs/specs/old.md', 'docs/adr/old.md', 'docs/product/roadmap.md',
+  for (const file of ['docs/specs/old.md', 'docs/decisions/old.md', 'docs/product/roadmap.md',
     'docs/product/story-map.md', 'scripts/other.js', 'test/other.js',
     'node_modules/other.md', '.claude/other.md']) write(root, file, 'APROBADA\n');
   write(root, 'CHANGELOG.md', '## [Unreleased]\nlimpio\n## [1.0.0]\nAPROBADA\n');

@@ -44,7 +44,7 @@ excepción de código acotada (D-11).
 | Raíz | `constitution.md` ("tres niveles de workflow", "Jerarquía de desarrollo", reglas `project → epic → story` y "project.md debe mantenerse actualizado", §7 fila `PROJ-NN`, §8 `type: project \| epic \| story` y `parent: PROJ-NN`, §9 "WIP = 1 en el nivel de proyecto", §13 ruta `01-projects`). `README.md` (tabla de niveles l. 204, árbol l. 216-240 con `domain/` en lugar de `domains/`, l. 112/119 `project-plan.md`, bloque "Migración histórica desde 1.x"). `AGENTS.md` (árbol sin `product/`; WIP "(project, épica o story)"). `docs/specs/README.md` y `docs/product/README.md` de este repo (tres niveles; tres documentos fijos). |
 | ADR | `ADR-0013` `status: PROPOSED`, `supersedes: null`; referencias `[[ADR-0001]]`, `[[ADR-0007]]`, `[[ADR-0010]]`, `[[ADR-0011]]` rotas (los slugs de ADR no llevan prefijo); rationale 6 dice "Intent-First" (la guía `sdd.md` y la constitución dicen Spec-First); consecuencias con "(optativo)" y "si se decide renumerar"; cierre conversacional ("Tu observación cierra el círculo…"). `ADR-0004` `ACCEPTED`, `superseded-by: null`. `adr/README.md`: índice hasta ADR-0009 (faltan 0010-0013) y convención "se actualiza `superseded-by` (único cambio permitido)". Precedente de reemplazo parcial: ADR-0001 (`SUPERSEDED` + nota `> **Superado por …**` que enumera lo que sigue vigente). |
 | CHANGELOG | `[Unreleased]` con entradas `**BREAKING — …**` de STORY-103 bajo `### Changed` y una "Guía de actualización a 4.0.0 — épicas". STORY-109…115 añaden sus propias entradas (T019-T031 de sus `tasks.md`); ninguna redacta el resumen de ruptura ni la guía de migración global. |
-| Enlaces | `npm run verify:links` (`scripts/check-doc-links.js`, raíces activas: `README.md`, `docs/index.md`, `constitution.md`, `policies/`, `guardrails/`, `guides/`, `runbooks/`; excluye `CHANGELOG.md`, `docs/adr`, `docs/specs`): 2 errores (el enlace de `orchestrator-subagent-pattern.md` -este archivo fue eliminado por otra historia, ya no es necesario- y el wikilink placeholder de `docs/index.md` causado por `STORY-103/epic-template.md`, que corrige STORY-105 como prerrequisito). `memory-system check --root docs`: `problemas: 56 (orphan 8 · broken-wikilink 48)`; 31 son `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` en historias de EPIC-21, 1 `[[ADR-0003-workflow-canonico-story-y-epic]]` en `domain-epic-lifecycle.md`, 1 `[[security-checklist]]` en `domain-knowledge-artifacts.md`, 4 en ADR-0013. `check-doc-links.js:172` regex `canonical` con `project\|project-intent\|project-plan`. |
+| Enlaces | `npm run verify:links` (`scripts/check-doc-links.js`, raíces activas: `README.md`, `docs/index.md`, `constitution.md`, `policies/`, `guardrails/`, `guides/`, `runbooks/`; excluye `CHANGELOG.md`, `docs/decisions`, `docs/specs`): 2 errores (el enlace de `orchestrator-subagent-pattern.md` -este archivo fue eliminado por otra historia, ya no es necesario- y el wikilink placeholder de `docs/index.md` causado por `STORY-103/epic-template.md`, que corrige STORY-105 como prerrequisito). `memory-system check --root docs`: `problemas: 56 (orphan 8 · broken-wikilink 48)`; 31 son `[[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]]` en historias de EPIC-21, 1 `[[ADR-0003-workflow-canonico-story-y-epic]]` en `domain-epic-lifecycle.md`, 1 `[[security-checklist]]` en `domain-knowledge-artifacts.md`, 4 en ADR-0013. `check-doc-links.js:172` regex `canonical` con `project\|project-intent\|project-plan`. |
 | Motor de memoria | `CANONICAL_FILES` incluye `project.md` y `SPEC_TYPES` incluye `project` (`memory-system.js` l. 100 y 609); ninguna historia de EPIC-21 los retira: siguen indexando y validando nodos de repositorios sin migrar. |
 
 **CRs heredados que asignan trabajo a esta historia:** STORY-109 CR-003 (`memory-system.md`, constitución §7/§13,
@@ -412,9 +412,9 @@ STORY-111; *eliminar la preferencia de canónicos:* cambia la resolución de dup
 | READMEs de capa (este repo) | modificar | `docs/specs/README.md`, `docs/product/README.md` | AC-1 |
 | README y AGENTS | modificar | `README.md`, `AGENTS.md` | AC-1, AC-3 |
 | CHANGELOG | modificar (`[Unreleased]`) | `CHANGELOG.md` | AC-3 |
-| ADR-0013 | modificar y aceptar | `docs/adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md` | AC-2, CNF-1 |
-| ADR-0004 | marcar `SUPERSEDED` + nota | `docs/adr/ADR-0004-nivel-l2-epic-y-directorios-numerados.md` | AC-2 |
-| Índice de ADRs | modificar | `docs/adr/README.md` | AC-2 |
+| ADR-0013 | modificar y aceptar | `docs/decisions/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md` | AC-2, CNF-1 |
+| ADR-0004 | marcar `SUPERSEDED` + nota | `docs/decisions/ADR-0004-nivel-l2-epic-y-directorios-numerados.md` | AC-2 |
+| Índice de ADRs | modificar | `docs/decisions/README.md` | AC-2 |
 | Verificador de enlaces | modificar | `scripts/check-doc-links.js` (regex `canonical`) | CNF-1 |
 | Prueba del verificador | modificar | `test/check-doc-links.test.js` | CNF-1 |
 | Índice wiki | regenerar | `docs/index.md` | CNF-1 |
@@ -526,7 +526,7 @@ Ninguna. Las ambigüedades se resolvieron en las decisiones y quedan registradas
 - **Tipo**: dependencia
 - **Descripción**: el diseño incluye piezas que `story.md` no nombra pero que las historias hermanas asignan aquí o que quedarían
   falsas: `scripts/check-doc-links.js` + su prueba (STORY-109 CR-003, STORY-111), constitución §8/§9 y el rol de `project-flow`
-  (STORY-113 CR-003), `AGENTS.md` (árbol y regla WIP), `docs/product/README.md`, `docs/adr/README.md` completo (0010-0012).
+  (STORY-113 CR-003), `AGENTS.md` (árbol y regla WIP), `docs/product/README.md`, `docs/decisions/README.md` completo (0010-0012).
 - **Documento afectado**: story.md
 - **Acción requerida**: añadir a "Notas / contexto adicional" la lista de piezas extra (D-6, D-7, D-9, D-11) para que
   `story-analyze` y la aceptación las reconozcan como alcance.

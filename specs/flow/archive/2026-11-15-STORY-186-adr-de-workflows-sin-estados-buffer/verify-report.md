@@ -54,11 +54,11 @@ Además, se comprobaron sobre los archivos los criterios de aceptación de la hi
 | Criterio | Comprobación | Resultado |
 |----------|--------------|-----------|
 | AC-1 | Frontmatter de ADR-0022 | ✓ `status: ACCEPTED`, `date: 2026-11-14`, `supersedes: [ADR-0006, ADR-0008]` |
-| AC-1 | `diff` de los encabezados `## ` de `docs/adr/adr-template.md` y ADR-0022 | ✓ idénticos |
+| AC-1 | `diff` de los encabezados `## ` de `docs/decisions/adr-template.md` y ADR-0022 | ✓ idénticos |
 | AC-1 | Los dos workflows literales en ADR-0022 | ✓ 1 coincidencia de cada uno |
 | AC-1 / CNF-3 | `git diff HEAD~1` de ADR-0006 y ADR-0008 | ✓ solo cambian `status: SUPERSEDED` y `superseded-by: ADR-0022` |
 | CNF-3 | `git diff --quiet HEAD~1` de ADR-0003 | ✓ sin cambios |
-| AC-1 | `docs/adr/README.md` | ✓ ADR-0022 con el mismo título, `ACCEPTED` y `2026-11-14`; ADR-0006 y ADR-0008 como `SUPERSEDED → ADR-0022` |
+| AC-1 | `docs/decisions/README.md` | ✓ ADR-0022 con el mismo título, `ACCEPTED` y `2026-11-14`; ADR-0006 y ADR-0008 como `SUPERSEDED → ADR-0022` |
 | AC-2 | Tabla de gates de `## Decisión` | ✓ 3 filas con `based-on`, dimensiones `DoD-CODE-REVIEW` (o la del revisor), `verify-defect` y `requirements-coverage`; destino `IMPLEMENT/TODO`; regla de `round` continua |
 | AC-3 | Regla del valor legado | ✓ por `implement-report.md`; ventana de 6.0.0 a 7.0.0; «no define ningún estado ni substatus de rework» |
 | Encoding | Primeros bytes de ADR-0022 | ✓ sin BOM |
@@ -77,7 +77,7 @@ Además, se comprobaron sobre los archivos los criterios de aceptación de la hi
 
 ## Coverage Analysis
 
-No disponible: la historia solo cambia documentación (ADR-0022, ADR-0006, ADR-0008, `docs/adr/README.md`, `docs/index.md`) y ningún runner configurado reporta cobertura.
+No disponible: la historia solo cambia documentación (ADR-0022, ADR-0006, ADR-0008, `docs/decisions/README.md`, `docs/index.md`) y ningún runner configurado reporta cobertura.
 
 ## DoD VERIFY Criteria
 

@@ -105,7 +105,7 @@ Estos skills no se renombran pero referencian `release.md`, `type: release` o lo
 - [docs/guides/branching-strategy-sddf-git-flow.md:45,53](docs/guides/branching-strategy-sddf-git-flow.md#L45) — solo donde dice "rama release" pero la rama real es `epic/` (inconsistencia preexistente). El resto del documento (batch delivery, PR a main, liberación) usa "release" en sentido CI/CD legítimo y **se conserva**
 
 **NO se tocan:**
-- `docs/adr/ADR-0001`, `ADR-0002`, `ADR-0003` — ADRs aceptados son inmutables (constitución, regla 16). ADR-0003 ya usa "Epic/Release"
+- `docs/decisions/ADR-0001`, `ADR-0002`, `ADR-0003` — ADRs aceptados son inmutables (constitución, regla 16). ADR-0003 ya usa "Epic/Release"
 - `docs/specs/**` histórico: los 31 `plan-NN.md`, los `story.md` y `analyze.md` de STORY-*, `story-map.md`, `project.md`
 - `CHANGELOG.md` entradas pasadas y el heading `[Unreleased]`
 - `docs/runbooks/deployment-to-npm.md` — sentido CI/CD
@@ -114,7 +114,7 @@ Estos skills no se renombran pero referencian `release.md`, `type: release` o lo
 
 ## 7. ADR nuevo + CHANGELOG + versión
 
-**`docs/adr/ADR-0004-renombrar-nivel-l2-de-release-a-epic.md`** siguiendo [docs/adr/adr-template.md](docs/adr/adr-template.md). La constitución (regla 16) lo exige: la decisión afecta a más de un skill y restringe decisiones futuras. Debe registrar el contexto (colisión con el sentido CI/CD), la decisión (L2 = épica; `release` reservado a CI/CD) y la consecuencia (breaking change para instalaciones existentes).
+**`docs/decisions/ADR-0004-renombrar-nivel-l2-de-release-a-epic.md`** siguiendo [docs/decisions/adr-template.md](docs/decisions/adr-template.md). La constitución (regla 16) lo exige: la decisión afecta a más de un skill y restringe decisiones futuras. Debe registrar el contexto (colisión con el sentido CI/CD), la decisión (L2 = épica; `release` reservado a CI/CD) y la consecuencia (breaking change para instalaciones existentes).
 
 **CHANGELOG.md** — entrada en `[Unreleased]` bajo `### Changed` y `### Removed`, con nota de migración explícita:
 ```
@@ -137,7 +137,7 @@ Sin build ni test runner en este repo (`package.json` solo declara `postinstall`
 grep -rn "release-creation\|release-format-validation\|release-generate-stories\|release-generate-all-stories\|releases-from-project-plan" \
   --include="*.md" --include="*.json" . \
   | grep -v node_modules | grep -v "^./.git" | grep -v "^./.tmp" \
-  | grep -v "^./docs/specs/" | grep -v "^./CHANGELOG.md" | grep -v "^./docs/adr/"
+  | grep -v "^./docs/specs/" | grep -v "^./CHANGELOG.md" | grep -v "^./docs/decisions/"
 # esperado: 0 líneas
 
 # 2. No queda ningún release.md como artefacto

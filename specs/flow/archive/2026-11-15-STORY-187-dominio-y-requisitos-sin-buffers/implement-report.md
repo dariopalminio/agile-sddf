@@ -79,7 +79,7 @@ La viñeta «Pipeline Epic» termina ahora en `).` y `* **Historia:** Unidad de 
 
 ## Línea base (T001)
 
-- `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED` (V-1).
+- `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED` (V-1).
 - Conteos de `grep -c "READY-FOR-IMPLEMENT\|READY-FOR-DEV"` antes del cambio: `domain-story-lifecycle.md` 14, `domain-epic-lifecycle.md` 11, `state-machine.md` 11, `domain.md` 3, `domain-state-management.md` 2, NFR-006 2, `domain-skills-map.md` 1, FR-043/044/045 1 cada uno. Coinciden con la tabla de Context de `design.md`; sin diferencias.
 - `grep -n "WIP\|READY-FOR" docs/constitution.md` → solo las líneas 201 y 203 de §9, que limitan `IN-PROGRESS` y no nombran buffers: la constitución no necesita cambios (V-13).
 - Línea base del gate: `npm test` 583/584; falla `S097-UT-011` (`memory-system check` sobre `docs/` en menos de 5 s: 10 075 ms). La ejecución empezó tras el cambio de estado de `story.md` y la primera edición de `domain-state-management.md`, así que no es una línea base pura, pero el test mide tiempo y no lee el contenido de los documentos editados.

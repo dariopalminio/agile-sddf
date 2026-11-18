@@ -460,33 +460,33 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[state-machine]] — [state-machine.md](architecture/state-machine.md) — Máquina de estados del framework SDDF
 - [[tech-stack]] — [tech-stack.md](architecture/tech-stack.md) — Stack Tecnológico SDDF
 
-### Decisiones de arquitectura (adr/)
+### Decisiones de arquitectura (decisions/)
 
-- [[centralizar-templates-compartidos]] — [ADR-0001-centralizar-templates-compartidos.md](adr/ADR-0001-centralizar-templates-compartidos.md) — Centralizar templates compartidos en $SPECS_BASE/specs/templates/
-- [[invocacion-agentes-locales-de-skill]] — [ADR-0002-invocacion-agentes-locales-de-skill.md](adr/ADR-0002-invocacion-agentes-locales-de-skill.md) — Contrato de invocación de agentes locales de skill
-- [[workflow-canonico-story-y-epic]] — [ADR-0003-workflow-canonico-story-y-epic.md](adr/ADR-0003-workflow-canonico-story-y-epic.md) — Workflows canónicos de Story y Epic en el pipeline SDDF
-- [[nivel-l2-epic-y-directorios-numerados]] — [ADR-0004-nivel-l2-epic-y-directorios-numerados.md](adr/ADR-0004-nivel-l2-epic-y-directorios-numerados.md) — El nivel L2 es una épica, y los niveles viven en directorios numerados
-- [[prefijo-story-para-el-nivel-l1]] — [ADR-0005-prefijo-story-para-el-nivel-l1.md](adr/ADR-0005-prefijo-story-para-el-nivel-l1.md) — El ID del nivel L1 se prefija con STORY; el tipo de trabajo vive en el campo kind
-- [[migracion-retroactiva-de-estados-de-epica]] — [ADR-0006-migracion-retroactiva-de-estados-de-epica.md](adr/ADR-0006-migracion-retroactiva-de-estados-de-epica.md) — Workflows canónicos de Story y Epic, con migración retroactiva de los estados históricos
-- [[templates-como-capa-propia]] — [ADR-0007-templates-como-capa-propia.md](adr/ADR-0007-templates-como-capa-propia.md) — Los templates son una capa propia, hermana de specs/
-- [[rework-sin-estado-propio]] — [ADR-0008-rework-sin-estado-propio.md](adr/ADR-0008-rework-sin-estado-propio.md) — Rework sin estado propio: la señal es el artefacto de fallo
-- [[perfiles-runtimes-e-instalacion-explicita]] — [ADR-0009-perfiles-runtimes-e-instalacion-explicita.md](adr/ADR-0009-perfiles-runtimes-e-instalacion-explicita.md) — Perfiles reproducibles, runtimes canónicos e instalación explícita
-- [[specs-dentro-de-docs]] — [ADR-0010-specs-dentro-de-docs.md](adr/ADR-0010-specs-dentro-de-docs.md) — Mantener specs/ dentro de docs/ en lugar de la raíz
-- [[archivos-canonicos-por-tipo]] — [ADR-0011-archivos-canonicos-por-tipo.md](adr/ADR-0011-archivos-canonicos-por-tipo.md) — Los archivos canónicos de work items se nombran por tipo (epic.md, story.md)
-- [[escritor-en-templates-de-autoria-manual]] — [ADR-0012-escritor-en-templates-de-autoria-manual.md](adr/ADR-0012-escritor-en-templates-de-autoria-manual.md) — Los templates de autoría manual anotan `escritor: autoría manual` en línea completa
-- [[asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md](adr/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) — Asegurar dos niveles de flujo como epics y stories
-- [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-eliminar-specs-01-projects.md](adr/ADR-0013-eliminar-specs-01-projects.md) — Asegurar dos niveles de flujo como epics y stories
-- [[skills-independientes]] — [ADR-0014-skills-independientes.md](adr/ADR-0014-skills-independientes.md) — Independencia de skills y agentes: sin dependencia de skills hacia `agents/`
-- [[contrato-de-validacion]] — [ADR-0015-contrato-de-validacion.md](adr/ADR-0015-contrato-de-validacion.md) — Contrato común de validación para los skills de gate
-- [[layout-fijo-de-tres-raices]] — [ADR-0016-layout-fijo-de-tres-raices.md](adr/ADR-0016-layout-fijo-de-tres-raices.md) — Layout fijo de tres raíces: docs/, specs/ y workflow/
-- [[layout-fijo-con-archivo-de-historias-canceladas]] — [ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md](adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) — Layout fijo de tres raíces con archivo de historias completadas y canceladas
-- [[adoptar-cucumber-para-specs-living]] — [ADR-0018-adoptar-cucumber-para-specs-living.md](adr/ADR-0018-adoptar-cucumber-para-specs-living.md) — Adoptar Cucumber (Gherkin en archivos .feature) para specs/living/
-- [[layout-fijo-con-archivo-de-epicas]] — [ADR-0019-layout-fijo-con-archivo-de-epicas.md](adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md) — Layout fijo de tres raíces con archivo de historias y épicas cerradas
-- [[contratos-centralizados-para-spec-living]] — [ADR-0020-contratos-centralizados-para-spec-living.md](adr/ADR-0020-contratos-centralizados-para-spec-living.md) — Contratos centralizados en OpenAPI/AsyncAPI para specs/living/
-- [[guia-de-revision-review-md]] — [ADR-0021-guia-de-revision-review-md.md](adr/ADR-0021-guia-de-revision-review-md.md) — Guía de revisión por proyecto en REVIEW.md
-- [[workflows-sin-estados-buffer]] — [ADR-0022-workflows-sin-estados-buffer.md](adr/ADR-0022-workflows-sin-estados-buffer.md) — Workflows de Story y Epic sin estados buffer
-- [[adr-index]] — [README.md](adr/README.md) — Índice de Architecture Decision Records (ADRs)
-- [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
+- [[centralizar-templates-compartidos]] — [ADR-0001-centralizar-templates-compartidos.md](decisions/ADR-0001-centralizar-templates-compartidos.md) — Centralizar templates compartidos en $SPECS_BASE/specs/templates/
+- [[invocacion-agentes-locales-de-skill]] — [ADR-0002-invocacion-agentes-locales-de-skill.md](decisions/ADR-0002-invocacion-agentes-locales-de-skill.md) — Contrato de invocación de agentes locales de skill
+- [[workflow-canonico-story-y-epic]] — [ADR-0003-workflow-canonico-story-y-epic.md](decisions/ADR-0003-workflow-canonico-story-y-epic.md) — Workflows canónicos de Story y Epic en el pipeline SDDF
+- [[nivel-l2-epic-y-directorios-numerados]] — [ADR-0004-nivel-l2-epic-y-directorios-numerados.md](decisions/ADR-0004-nivel-l2-epic-y-directorios-numerados.md) — El nivel L2 es una épica, y los niveles viven en directorios numerados
+- [[prefijo-story-para-el-nivel-l1]] — [ADR-0005-prefijo-story-para-el-nivel-l1.md](decisions/ADR-0005-prefijo-story-para-el-nivel-l1.md) — El ID del nivel L1 se prefija con STORY; el tipo de trabajo vive en el campo kind
+- [[migracion-retroactiva-de-estados-de-epica]] — [ADR-0006-migracion-retroactiva-de-estados-de-epica.md](decisions/ADR-0006-migracion-retroactiva-de-estados-de-epica.md) — Workflows canónicos de Story y Epic, con migración retroactiva de los estados históricos
+- [[templates-como-capa-propia]] — [ADR-0007-templates-como-capa-propia.md](decisions/ADR-0007-templates-como-capa-propia.md) — Los templates son una capa propia, hermana de specs/
+- [[rework-sin-estado-propio]] — [ADR-0008-rework-sin-estado-propio.md](decisions/ADR-0008-rework-sin-estado-propio.md) — Rework sin estado propio: la señal es el artefacto de fallo
+- [[perfiles-runtimes-e-instalacion-explicita]] — [ADR-0009-perfiles-runtimes-e-instalacion-explicita.md](decisions/ADR-0009-perfiles-runtimes-e-instalacion-explicita.md) — Perfiles reproducibles, runtimes canónicos e instalación explícita
+- [[specs-dentro-de-docs]] — [ADR-0010-specs-dentro-de-docs.md](decisions/ADR-0010-specs-dentro-de-docs.md) — Mantener specs/ dentro de docs/ en lugar de la raíz
+- [[archivos-canonicos-por-tipo]] — [ADR-0011-archivos-canonicos-por-tipo.md](decisions/ADR-0011-archivos-canonicos-por-tipo.md) — Los archivos canónicos de work items se nombran por tipo (epic.md, story.md)
+- [[escritor-en-templates-de-autoria-manual]] — [ADR-0012-escritor-en-templates-de-autoria-manual.md](decisions/ADR-0012-escritor-en-templates-de-autoria-manual.md) — Los templates de autoría manual anotan `escritor: autoría manual` en línea completa
+- [[asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md](decisions/ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md) — Asegurar dos niveles de flujo como epics y stories
+- [[ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories]] — [ADR-0013-eliminar-specs-01-projects.md](decisions/ADR-0013-eliminar-specs-01-projects.md) — Asegurar dos niveles de flujo como epics y stories
+- [[skills-independientes]] — [ADR-0014-skills-independientes.md](decisions/ADR-0014-skills-independientes.md) — Independencia de skills y agentes: sin dependencia de skills hacia `agents/`
+- [[contrato-de-validacion]] — [ADR-0015-contrato-de-validacion.md](decisions/ADR-0015-contrato-de-validacion.md) — Contrato común de validación para los skills de gate
+- [[layout-fijo-de-tres-raices]] — [ADR-0016-layout-fijo-de-tres-raices.md](decisions/ADR-0016-layout-fijo-de-tres-raices.md) — Layout fijo de tres raíces: docs/, specs/ y workflow/
+- [[layout-fijo-con-archivo-de-historias-canceladas]] — [ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md](decisions/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) — Layout fijo de tres raíces con archivo de historias completadas y canceladas
+- [[adoptar-cucumber-para-specs-living]] — [ADR-0018-adoptar-cucumber-para-specs-living.md](decisions/ADR-0018-adoptar-cucumber-para-specs-living.md) — Adoptar Cucumber (Gherkin en archivos .feature) para specs/living/
+- [[layout-fijo-con-archivo-de-epicas]] — [ADR-0019-layout-fijo-con-archivo-de-epicas.md](decisions/ADR-0019-layout-fijo-con-archivo-de-epicas.md) — Layout fijo de tres raíces con archivo de historias y épicas cerradas
+- [[contratos-centralizados-para-spec-living]] — [ADR-0020-contratos-centralizados-para-spec-living.md](decisions/ADR-0020-contratos-centralizados-para-spec-living.md) — Contratos centralizados en OpenAPI/AsyncAPI para specs/living/
+- [[guia-de-revision-review-md]] — [ADR-0021-guia-de-revision-review-md.md](decisions/ADR-0021-guia-de-revision-review-md.md) — Guía de revisión por proyecto en REVIEW.md
+- [[workflows-sin-estados-buffer]] — [ADR-0022-workflows-sin-estados-buffer.md](decisions/ADR-0022-workflows-sin-estados-buffer.md) — Workflows de Story y Epic sin estados buffer
+- [[adr-index]] — [README.md](decisions/README.md) — Índice de Architecture Decision Records (ADRs)
+- [adr-template.md](decisions/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder
 
 ---
 

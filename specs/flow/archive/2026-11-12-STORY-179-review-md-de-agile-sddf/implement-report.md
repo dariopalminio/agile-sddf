@@ -57,7 +57,7 @@ updated: 2026-11-10
 - `scripts/verify-repository.js:17-30` tiene los 14 pasos de D-4.
 - `scripts/verify-validation-contract.js:300-303` revisa los `*.md` de la raíz.
 - `.gitignore` ignora `.claude` (4), `.github/*` (6), `.agents` (9), `.tmp` (24), `node_modules` (36) y `graphify-out/` (62). `git check-ignore -q` devuelve 0 para `.claude/`, `.github/skills/`, `.agents/`, `.tmp/`, `graphify-out/` y `node_modules/`.
-- **ADR-0021** (`docs/adr/ADR-0021-guia-de-revision-review-md.md`) existe con `status: ACCEPTED`. Su tabla «Vocabulario» (🔴 Important → `HIGH` o `MEDIUM`, 🟡 Minor → `LOW`, 🟣 Pre-existing → `PREEXISTENTE`) coincide con la línea 22 de la plantilla. **F-3 no se aplicó** (CR-001 resuelto).
+- **ADR-0021** (`docs/decisions/ADR-0021-guia-de-revision-review-md.md`) existe con `status: ACCEPTED`. Su tabla «Vocabulario» (🔴 Important → `HIGH` o `MEDIUM`, 🟡 Minor → `LOW`, 🟣 Pre-existing → `PREEXISTENTE`) coincide con la línea 22 de la plantilla. **F-3 no se aplicó** (CR-001 resuelto).
 
 ### T002 / T009 — RED → GREEN
 

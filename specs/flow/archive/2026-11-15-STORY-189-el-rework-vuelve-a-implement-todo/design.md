@@ -37,7 +37,7 @@ Estado actual verificado en el filesystem (2026-11-13):
 - **Evals.** `READY-FOR-IMPLEMENT` aparece en 20 casos de `story-code-review` (1.1.0, 46 casos), 2 de `story-verify` (1.1.0, 7 casos), 4 de `story-acceptance` (1.1.0, 15 casos), 22 de `story-implement` (1.3.1, 44 casos) y los 6 de `story-implement-tasks` (1.0.1). Ningún archivo de `test/` ni de `scripts/` lo nombra.
 - **Destinos de runtime.** `.claude/skills/` no está versionado: es salida de `agile-sddf install` y no se edita.
 
-Dependencias: ADR-0022 todavía no existe (`docs/adr/` llega a ADR-0021): STORY-186 se implementa antes. STORY-188 (añade `PLAN/DONE`) y STORY-191 (alias del valor legado) editan los mismos gates de entrada. Este diseño funciona con STORY-188 implementada o sin implementar (D-04).
+Dependencias: ADR-0022 todavía no existe (`docs/decisions/` llega a ADR-0021): STORY-186 se implementa antes. STORY-188 (añade `PLAN/DONE`) y STORY-191 (alias del valor legado) editan los mismos gates de entrada. Este diseño funciona con STORY-188 implementada o sin implementar (D-04).
 
 ## Goals / Non-Goals
 

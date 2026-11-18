@@ -75,9 +75,9 @@ Actualizar el status por defecto de releases generados:
 ### 6. `docs/knowledge/guides/skill-structural-pattern.md`
 Actualizar el enum de `status` en el ejemplo de frontmatter (sección §8) para incluir los nuevos estados de épica.
 
-### 7. `docs/adr/ADR-0003-workflow-canonico-story-y-epic.md`
+### 7. `docs/decisions/ADR-0003-workflow-canonico-story-y-epic.md`
 Crear ADR-0003 — Workflows canónicos de Story y Epic — que documente formalmente los workflows canónicos de historia y épica, incluyendo la definición de cada estado, las transiciones permitidas, y la justificación de diseño. Referenciar esta ADR desde la documentación canónica (state-machine.md) y desde el release.md de EPIC-18.
-ID del nuevo ADR: ADR-0003 (el mayor existente es ADR-0002) Nombre del archivo: docs/adr/ADR-0003-workflow-canonico-story-y-epic.md
+ID del nuevo ADR: ADR-0003 (el mayor existente es ADR-0002) Nombre del archivo: docs/decisions/ADR-0003-workflow-canonico-story-y-epic.md
 
 
 ---

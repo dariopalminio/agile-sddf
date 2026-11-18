@@ -27,11 +27,11 @@ related:
 ```gherkin
 Dado que ADR-0006 y ADR-0008 describen workflows con "READY-FOR-DEV" y "READY-FOR-IMPLEMENT"
 Cuando el mantenedor registra el ADR de workflows sin buffers con el siguiente número "ADR-NNNN" libre
-Entonces existe "docs/adr/ADR-NNNN-<slug>.md" con estado "ACCEPTED" y todas las secciones de "docs/adr/adr-template.md"
+Entonces existe "docs/decisions/ADR-NNNN-<slug>.md" con estado "ACCEPTED" y todas las secciones de "docs/decisions/adr-template.md"
   Y fija el workflow de historia "SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED"
   Y fija el workflow de épica "DEFINE → PLAN → DEVELOP → VALIDATE → SHIP → COMPLETED", con la aprobación del PO escrita a mano como "PLAN/DONE"
   Y ADR-0006 y ADR-0008 tienen "status: SUPERSEDED" y "superseded-by" apuntando al ADR nuevo, sin ningún otro cambio
-  Y "docs/adr/README.md" lista el ADR nuevo con el mismo título, estado y fecha, y muestra ADR-0006 y ADR-0008 como "SUPERSEDED"
+  Y "docs/decisions/README.md" lista el ADR nuevo con el mismo título, estado y fecha, y muestra ADR-0006 y ADR-0008 como "SUPERSEDED"
 ```
 
 ### AC-2 — Escenario con datos – Contrato de fix-directives.md por gate

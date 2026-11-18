@@ -80,7 +80,7 @@ Sin cambios: la plantilla, los agentes, `package.json` (CNF-2 se cumple sin toca
 | Interfaz | Contrato | AC / CNF |
 |---|---|---|
 | I-1 — Estructura de `REVIEW.md` | En este orden: H1 `# REVIEW.md — Guía de revisión de agile-sddf`; las dos líneas de introducción de la plantilla (21-22) sin cambios; y exactamente cuatro encabezados `##`, con el texto literal de la plantilla: `Qué es «Importante» aquí — 🔴 Important · HIGH/MEDIUM`, `Tope de Minor — 🟡 Minor · LOW`, `No reportar` y `Verificar siempre`. Sin `<!--`, sin placeholders entre corchetes y sin otros `##`. Las casillas `- [ ]` de «Verificar siempre» y los enlaces `[texto](url)` no cuentan como placeholders. | AC-1 |
-| I-2 — Viñetas de «Qué es «Importante» aquí» | Seis viñetas de primer nivel, en este orden, que empiezan por `` `skills/` ``, `` `scripts/` ``, `` `docs/adr/` ``, `` `docs/templates/` ``, `` `docs/guardrails/` `` y `Cualquier archivo`. Cada defecto va en una subviñeta. | AC-1 |
+| I-2 — Viñetas de «Qué es «Importante» aquí» | Seis viñetas de primer nivel, en este orden, que empiezan por `` `skills/` ``, `` `scripts/` ``, `` `docs/decisions/` ``, `` `docs/templates/` ``, `` `docs/guardrails/` `` y `Cualquier archivo`. Cada defecto va en una subviñeta. | AC-1 |
 | I-3 — Doble vocabulario | Cada sección contiene al menos un término de Claude Code Review seguido de su traducción, según ADR-0021: `🔴 Important` con `HIGH/MEDIUM`, `🟡 Minor` con `LOW` y `🟣 Pre-existing` con `PREEXISTENTE`. Ningún término aparece sin su traducción. | CNF-1 |
 | I-4 — Marcadores de las reglas de AC-2 | Cada fila de AC-2 tiene un marcador literal que aparece en una sola sección de `REVIEW.md`, la indicada (tabla en D-3). C-2 comprueba los marcadores. | AC-2 |
 | I-5 — Ruta citada | Un tramo entre comillas invertidas con `/` y sin espacios es una ruta de repositorio. Si contiene `*`, se comprueba el prefijo anterior al primer `*`. La ruta existe (`fs.existsSync`) o `git check-ignore -q` la reconoce como ignorada. | AC-3 |
@@ -102,7 +102,7 @@ Sin cambios: la plantilla, los agentes, `package.json` (CNF-2 se cumple sin toca
 |---|---|---|
 | `` `skills/` `` (`SKILL.md`, `agents/*.agent.md`, `assets/agents/`) | contrato roto entre un skill y su subagente: variables del bloque de contexto o frontmatter del informe parcial; **un subagente escribe su informe fuera de la ruta de `.tmp/` que lee su skill**; **un subagente delega en otro subagente o invoca un skill orquestador**; una transición de `status`/`substatus` que el ciclo de vida del skill no declara | borrador L63-65; AGENTS.md; `integration-reviewer.agent.md:48-49` |
 | `` `scripts/` `` | escribe fuera de `REPO_ROOT` o de los destinos de `config/runtimes.json`; instala agentes Markdown en `.agents`; sobrescribe un archivo existente sin `--force` | borrador L66-67; AGENTS.md; `cli.js:53` |
-| `` `docs/adr/` `` | **un ADR aceptado se edita in place** en lugar de reemplazarse con un ADR nuevo (`superseded-by`) | AGENTS.md; borrador L68 |
+| `` `docs/decisions/` `` | **un ADR aceptado se edita in place** en lugar de reemplazarse con un ADR nuevo (`superseded-by`) | AGENTS.md; borrador L68 |
 | `` `docs/templates/` `` | un cambio de forma (sección, clave de frontmatter, placeholder) que rompe al skill que lee o copia la plantilla | borrador L69 |
 | `` `docs/guardrails/` `` | un cambio de forma (líneas de criterio `- [ ]`, `enforcement` del frontmatter, `rule-id`) que rompe a los skills que lo resuelven | borrador L69; `dod-story-plan.md` |
 | Cualquier archivo | un secreto o credencial real versionado; documentación que describe algo que no existe en el filesystem | borrador L70; AGENTS.md (Veracidad) |
@@ -219,7 +219,7 @@ Esqueleto de `REVIEW.md` (el contenido de cada viñeta está en D-2, D-4 y D-5):
 <línea 29 de la plantilla>
 - `skills/` …            ← 4 subviñetas (D-2)
 - `scripts/` …           ← 3 subviñetas
-- `docs/adr/` …          ← 1
+- `docs/decisions/` …          ← 1
 - `docs/templates/` …    ← 1
 - `docs/guardrails/` …   ← 1
 - Cualquier archivo …    ← 2

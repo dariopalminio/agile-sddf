@@ -39,7 +39,7 @@ _(Solo se completa si F_score ≥ 2.5)_
 
 | Dimensión | Score (1–5) | Observación |
 |-----------|:-----------:|-------------|
-| **I** – Independencia | 2 | Depende de STORY-186 (SPECIFY/DONE; ADR-0022 todavía no existe en `docs/adr/`), que fija la fuente de la ronda anterior, la dimensión de verify y la lista blanca de acceptance. AC-1 necesita además STORY-189 (SPECIFY/DONE) para el estado `IMPLEMENT/TODO`. Las dependencias están declaradas y la plantilla puede avanzar con valores provisionales. |
+| **I** – Independencia | 2 | Depende de STORY-186 (SPECIFY/DONE; ADR-0022 todavía no existe en `docs/decisions/`), que fija la fuente de la ronda anterior, la dimensión de verify y la lista blanca de acceptance. AC-1 necesita además STORY-189 (SPECIFY/DONE) para el estado `IMPLEMENT/TODO`. Las dependencias están declaradas y la plantilla puede avanzar con valores provisionales. |
 | **N** – Negociable | 4 | Fija resultados observables (`based-on`, número de filas, `round`, aviso del ejecutor) y deja al ADR la fuente de la ronda y la lista blanca. La ruta de la plantilla y las copias semilla están decididas de antemano, pero responden a convenciones del repositorio. |
 | **V** – Valiosa | 4 | Un rechazo de VERIFY o de ACCEPTANCE deja de perderse: llega al ejecutor como corrección concreta y el usuario sabe qué gate debe volver a pasar. Cubre CS-3 y SMOKE-4 de la épica y cierra la deuda de ADR-0008. |
 | **E** – Estimable | 3 | El contrato actual de `story-code-review` sirve de base, pero el volumen es alto: plantilla nueva con tres copias semilla y registro en el README, dos escritores nuevos, `round` con tres escritores y cambios en dos ejecutores, con evals en cinco skills. La fuente de la ronda queda abierta hasta que se acepte el ADR. |

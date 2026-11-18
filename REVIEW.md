@@ -16,7 +16,7 @@ Reserva 🔴 Important (HIGH/MEDIUM) para hallazgos que rompan el comportamiento
   - Escribe fuera de `REPO_ROOT` o de los destinos de `config/runtimes.json`.
   - Instala agentes Markdown en `.agents`, que nunca es destino de los agentes de este paquete.
   - Sobrescribe un archivo existente sin `--force`.
-- `docs/adr/`:
+- `docs/decisions/`:
   - Un ADR aceptado se edita in place en lugar de reemplazarse con un ADR nuevo (`superseded-by`).
 - `docs/templates/`:
   - Un cambio de forma (sección, clave de frontmatter, placeholder) que rompe al skill que lee o copia la plantilla.

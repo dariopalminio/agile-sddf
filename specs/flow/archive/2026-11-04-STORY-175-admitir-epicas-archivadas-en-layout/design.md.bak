@@ -31,9 +31,9 @@ Estado verificado el 2026-10-29:
 
 - **ADR-0017** (`ACCEPTED`) admite en `specs/flow/archive/` solo historias `COMPLETED/DONE` y `CANCELED/DONE` y dice
   «Las épicas y las stories en cualquier otro estado quedan en `specs/flow/`». Es inmutable: el único cambio permitido
-  es `status: SUPERSEDED`, `superseded-by` y una nota bajo el título (`docs/adr/README.md` › Convención), como ya se
+  es `status: SUPERSEDED`, `superseded-by` y una nota bajo el título (`docs/decisions/README.md` › Convención), como ya se
   hizo en ADR-0016.
-- **Número del ADR nuevo:** `docs/adr/` llega hasta ADR-0018 (`PROPOSED`); hay dos archivos `ADR-0013-*`, pero
+- **Número del ADR nuevo:** `docs/decisions/` llega hasta ADR-0018 (`PROPOSED`); hay dos archivos `ADR-0013-*`, pero
   ninguno `ADR-0019-*`. El ADR nuevo es **ADR-0019**.
 - **Regla obsoleta** «las épicas no se archivan» en documentos activos (búsqueda de «no se archivan», «nunca se
   archivan», «quedan en `specs/flow/`»): `docs/guides/organization-of-artifacts.md:53`,
@@ -82,9 +82,9 @@ Estado verificado el 2026-10-29:
 
 | # | Componente | Acción | Ubicación | Responsabilidad | AC |
 |---|---|---|---|---|---|
-| C1 | ADR del layout con épicas archivadas | crear | `docs/adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md` | Re-enunciar el layout de ADR-0017 y ampliar el archivo a épicas cerradas | AC-1, CNF-2 |
-| C2 | ADR-0017 | modificar (solo 3 cambios) | `docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` | `status: SUPERSEDED`, `superseded-by: ADR-0019`, nota de reemplazo bajo el título | AC-1, CNF-1 |
-| C3 | Índice de ADRs | modificar | `docs/adr/README.md` › Índice | Fila ADR-0017 → `SUPERSEDED → [ADR-0019](…)`; fila nueva ADR-0019 `ACCEPTED` | AC-1 |
+| C1 | ADR del layout con épicas archivadas | crear | `docs/decisions/ADR-0019-layout-fijo-con-archivo-de-epicas.md` | Re-enunciar el layout de ADR-0017 y ampliar el archivo a épicas cerradas | AC-1, CNF-2 |
+| C2 | ADR-0017 | modificar (solo 3 cambios) | `docs/decisions/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` | `status: SUPERSEDED`, `superseded-by: ADR-0019`, nota de reemplazo bajo el título | AC-1, CNF-1 |
+| C3 | Índice de ADRs | modificar | `docs/decisions/README.md` › Índice | Fila ADR-0017 → `SUPERSEDED → [ADR-0019](…)`; fila nueva ADR-0019 `ACCEPTED` | AC-1 |
 | C4 | Instrucciones de agentes | modificar | `AGENTS.md` (viñeta «Layout fijo» y «Dónde está el detalle › Layout») | Citar ADR-0019; archivo de épicas; `epic-complete` escribe `COMPLETED` de épica con confirmación humana | AC-2 |
 | C5 | Constitución | modificar | `docs/constitution.md` § Jerarquía de desarrollo, §3 Layout fijo, §13 Rutas de output | Épica archivada en la jerarquía y en las rutas; §3 cita ADR-0019; escritor de `COMPLETED` de épica | AC-2 |
 | C6 | Ciclo de vida de épica | modificar | `docs/domains/domain-epic-lifecycle.md` §5 (fila `COMPLETED`, actor), §9 (archivo y claves `completed:`/`version:`) | Escritor, archivo y claves de cierre | AC-2 |
@@ -115,7 +115,7 @@ búsqueda de épicas a `specs/flow/EPIC-*/epic.md` y no afirman que las épicas 
 
 ### Esquema de datos
 
-**Frontmatter de ADR-0019** (claves del `docs/adr/adr-template.md`, autoría manual):
+**Frontmatter de ADR-0019** (claves del `docs/decisions/adr-template.md`, autoría manual):
 
 | Clave | Valor |
 |---|---|
@@ -154,10 +154,10 @@ expectativa: ID `EPIC-31`, nunca `EPIC-30`. Para `epic-analyze`, un caso con `EP
 ### Flujos clave
 
 **F1 — Reemplazo del ADR (AC-1):** crear ADR-0019 → aplicar los tres cambios a ADR-0017 → fila nueva ADR-0019 y fila
-ADR-0017 `SUPERSEDED → [ADR-0019](…)` en `docs/adr/README.md` → `/memory-system index` → `npm run verify:links`.
+ADR-0017 `SUPERSEDED → [ADR-0019](…)` en `docs/decisions/README.md` → `/memory-system index` → `npm run verify:links`.
 
 **F2 — Coherencia documental (AC-2):** por cada documento C4–C11, sustituir la regla de archivo y el escritor citando
-ADR-0019 → búsqueda de cierre (contrato de verificación 4) sobre `AGENTS.md`, `docs/` sin `docs/adr/ADR-*` y `skills/`
+ADR-0019 → búsqueda de cierre (contrato de verificación 4) sobre `AGENTS.md`, `docs/` sin `docs/decisions/ADR-*` y `skills/`
 sin `evals/` → cero coincidencias de la regla obsoleta.
 
 **F3 — Numeración (AC-3), en `epic-creation` y `epic-from-project-plan`:**
@@ -218,9 +218,9 @@ sin escribir; si no, el mensaje vigente `❌ No se encontró la épica …`.
 | # | Criterio | Método | AC |
 |---|---|---|---|
 | 1 | ADR-0019 existe, `ACCEPTED`, `supersedes: ADR-0017`, admite `COMPLETED/DONE` y `CANCELED/DONE` en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` con la cadena `updated:` → `created:` → `date:` | Revisión del ADR | AC-1, CNF-2 |
-| 2 | ADR-0017 solo cambia en `status`, `superseded-by` y la nota bajo el título | `git diff -- docs/adr/ADR-0017-*.md` muestra exactamente esas líneas | AC-1, CNF-1 |
-| 3 | La fila de ADR-0017 muestra `SUPERSEDED → [ADR-0019](…)` y existe la fila de ADR-0019 | Revisión de `docs/adr/README.md` + `npm run verify:links` | AC-1 |
-| 4 | Ningún documento activo afirma que las épicas no se archivan | `git grep -n -i -E "épicas (no se archivan\|nunca se archivan)\|todas las épicas quedan" -- AGENTS.md docs skills ':!docs/adr/ADR-*' ':!skills/*/evals/*'` sin resultados | AC-2 |
+| 2 | ADR-0017 solo cambia en `status`, `superseded-by` y la nota bajo el título | `git diff -- docs/decisions/ADR-0017-*.md` muestra exactamente esas líneas | AC-1, CNF-1 |
+| 3 | La fila de ADR-0017 muestra `SUPERSEDED → [ADR-0019](…)` y existe la fila de ADR-0019 | Revisión de `docs/decisions/README.md` + `npm run verify:links` | AC-1 |
+| 4 | Ningún documento activo afirma que las épicas no se archivan | `git grep -n -i -E "épicas (no se archivan\|nunca se archivan)\|todas las épicas quedan" -- AGENTS.md docs skills ':!docs/decisions/ADR-*' ':!skills/*/evals/*'` sin resultados | AC-2 |
 | 5 | `AGENTS.md`, `docs/constitution.md`, `domain-epic-lifecycle`, `domain-state-management` y `state-machine.md` nombran a `epic-complete` como escritor de `COMPLETED` de épica con confirmación humana | `git grep -n "epic-complete" -- AGENTS.md docs/constitution.md docs/domains/domain-epic-lifecycle.md docs/domains/domain-state-management.md docs/architecture/state-machine.md` cubre los cinco archivos | AC-2 |
 | 6 | `epic-creation` y `epic-from-project-plan` asignan `EPIC-31` con `EPIC-30` archivada y `EPIC-029` activa | Casos `TC-008` y `TC-012` (`npm run test:eval -- <skill>`, a criterio humano) | AC-3 |
 | 7 | `epic-analyze` rechaza sin escribir una épica archivada | Caso `TC-030` | AC-2 |

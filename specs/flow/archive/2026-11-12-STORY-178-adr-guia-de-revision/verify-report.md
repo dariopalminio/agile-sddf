@@ -55,7 +55,7 @@ updated: 2026-11-11
 |---|----------|--------|-----------|
 | 1 | Todas las pruebas `required: true` de `sddf.config.yaml › verify` pasan (exit 0) | ✓ | `unit` (`npm run test:installer`): 23/23 pass, 0 fail, exit 0. `integration` (`node scripts/verify-fixed-layout.js`): OK, exit 0. |
 | 2 | La suite completa `npm test` pasa sin fallos | ✓ | `npm test`: 580 tests, 580 pass, 0 fail, 0 skipped, 0 cancelled, exit 0. |
-| 3 | Si la historia modifica un skill con `evals/evals.json`, `npm run test:eval -- <skill>` pasa; un fallo solo se acepta como flaky si pasa al reejecutarlo (solo son ejecutados por humano manualmente no automaticamente) | ✓ | Sin skills modificados: el alcance solo toca `docs/adr/ADR-0021-guia-de-revision-review-md.md`, `docs/adr/README.md` y `docs/index.md` (Non-Goals de `tasks.md`). La condición no aplica. |
+| 3 | Si la historia modifica un skill con `evals/evals.json`, `npm run test:eval -- <skill>` pasa; un fallo solo se acepta como flaky si pasa al reejecutarlo (solo son ejecutados por humano manualmente no automaticamente) | ✓ | Sin skills modificados: el alcance solo toca `docs/decisions/ADR-0021-guia-de-revision-review-md.md`, `docs/decisions/README.md` y `docs/index.md` (Non-Goals de `tasks.md`). La condición no aplica. |
 | 4 | Ningún caso de `testcases.md` queda en `[!]` y cada `[ ]` restante cita en `verify-report.md` la evidencia que lo cubre | ✓ | `testcases.md` no existe en la historia (kind: chore, solo documentación). El artefacto de planning `tasks.md` tiene sus 22 tareas en `[x]`, sin `[!]` ni `[ ]` restantes. |
 | 5 | Sin defectos CRITICAL o HIGH abiertos en `verify-report.md` | ✓ | 0 findings en esta ejecución (ver `## Findings`). |
 

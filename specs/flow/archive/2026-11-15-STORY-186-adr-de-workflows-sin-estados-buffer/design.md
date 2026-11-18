@@ -24,10 +24,10 @@ EPIC-029 retira los dos estados buffer del framework: `READY-FOR-IMPLEMENT`, que
 
 Estado actual verificado en el filesystem (2026-11-13):
 
-- `docs/adr/` llega a ADR-0021 (`guia-de-revision-review-md`). El siguiente número libre es **ADR-0022**.
+- `docs/decisions/` llega a ADR-0021 (`guia-de-revision-review-md`). El siguiente número libre es **ADR-0022**.
 - ADR-0006 (`status: ACCEPTED`, `supersedes: ADR-0003`) fija los workflows con `READY-FOR-IMPLEMENT` y `READY-FOR-DEV`. ADR-0008 (`status: ACCEPTED`, `supersedes: null`) fija que no hay estado de rework, que la señal es `fix-directives.md` y que los retrocesos van a `READY-FOR-IMPLEMENT/DONE`. También deja como deuda que verify y acceptance no producen un artefacto que el ejecutor reconozca.
-- `docs/adr/adr-template.md` define el frontmatter (`type`, `id`, `slug`, `title`, `status`, `date`, `supersedes`, `superseded-by`) y siete secciones: `Contexto y problema`, `Decisión`, `Rationale`, `Alternativas consideradas`, `Consecuencias` (con **Positivas** y **Negativas / trade-offs**) y `Referencias`.
-- `docs/adr/README.md` tiene la tabla `| ID | Título | Estado | Fecha |`. Un ADR reemplazado se muestra como `SUPERSEDED → [ADR-NNNN](archivo.md)`.
+- `docs/decisions/adr-template.md` define el frontmatter (`type`, `id`, `slug`, `title`, `status`, `date`, `supersedes`, `superseded-by`) y siete secciones: `Contexto y problema`, `Decisión`, `Rationale`, `Alternativas consideradas`, `Consecuencias` (con **Positivas** y **Negativas / trade-offs**) y `Referencias`.
+- `docs/decisions/README.md` tiene la tabla `| ID | Título | Estado | Fecha |`. Un ADR reemplazado se muestra como `SUPERSEDED → [ADR-NNNN](archivo.md)`.
 - `skills/story-code-review/assets/fix-directives-template.md` es el contrato actual de `fix-directives.md`: frontmatter `type`, `story`, `title`, `date`, `max-severity`, `round`, `based-on: code-review-report.md`, la tabla `| # | Archivo:Línea | Dimensión | Severidad | Hallazgo | Acción requerida |`, la lista blanca y el ciclo de corrección. `story-code-review` (Paso 4f) calcula `round` como la ronda previa del archivo + 1 y lo borra al aprobar (Paso 4h). Desde ADR-0021, los hallazgos PREEXISTENTE y los `no verificado` no entran, y un hallazgo fusionado entra una vez, con `Reportado por:`.
 - Los ejecutores ya dejan rastro de la ronda en `implement-report.md`. `story-implement` escribe `## Ciclo de corrección — ronda {N}` (SKILL.md:1059) y `story-implement-tasks` escribe `## Correcciones de fix-directives.md (ronda <N>)` (SKILL.md:592).
 - La regla de evidencia de `story-implement` (Paso 6b) da error solo si la columna `Dimensión` contiene `requirements-coverage`. Ante cualquier otra dimensión, incluida una desconocida, da una advertencia.
@@ -50,7 +50,7 @@ La historia es `kind: chore` documental: no cambia ningún skill, script ni test
 **Non-Goals:**
 
 - Modificar skills, plantillas (incluida `docs/templates/fix-directives-template.md`, que crea STORY-190), documentos de dominio, requisitos, guías o ejemplos.
-- Añadir la nota visible de reemplazo bajo el título de ADR-0006 y ADR-0008 que pide la convención de `docs/adr/README.md` (ver D-07 y CR-001).
+- Añadir la nota visible de reemplazo bajo el título de ADR-0006 y ADR-0008 que pide la convención de `docs/decisions/README.md` (ver D-07 y CR-001).
 - Tocar ADR-0003, `CHANGELOG.md` o la versión de `package.json`.
 - `HUMAN-REVIEW`, un WIP de cola o una política de planificación justo a tiempo.
 
@@ -58,10 +58,10 @@ La historia es `kind: chore` documental: no cambia ningún skill, script ni test
 
 | # | Componente | Acción | Ubicación | Satisface |
 |---|---|---|---|---|
-| C-1 | ADR de workflows sin buffers | crear | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` | AC-1, AC-2, AC-3, CNF-1, CNF-2 |
-| C-2 | Frontmatter de ADR-0006 | modificar (`status`, `superseded-by`) | `docs/adr/ADR-0006-migracion-retroactiva-de-estados-de-epica.md` | AC-1, CNF-3 |
-| C-3 | Frontmatter de ADR-0008 | modificar (`status`, `superseded-by`) | `docs/adr/ADR-0008-rework-sin-estado-propio.md` | AC-1, CNF-3 |
-| C-4 | Índice de ADRs | modificar (fila nueva y dos celdas `Estado`) | `docs/adr/README.md` | AC-1 |
+| C-1 | ADR de workflows sin buffers | crear | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` | AC-1, AC-2, AC-3, CNF-1, CNF-2 |
+| C-2 | Frontmatter de ADR-0006 | modificar (`status`, `superseded-by`) | `docs/decisions/ADR-0006-migracion-retroactiva-de-estados-de-epica.md` | AC-1, CNF-3 |
+| C-3 | Frontmatter de ADR-0008 | modificar (`status`, `superseded-by`) | `docs/decisions/ADR-0008-rework-sin-estado-propio.md` | AC-1, CNF-3 |
+| C-4 | Índice de ADRs | modificar (fila nueva y dos celdas `Estado`) | `docs/decisions/README.md` | AC-1 |
 | C-5 | Índice wiki | modificar (una línea en `### Decisiones de arquitectura (adr/)`) | `docs/index.md` | AC-1 (descubribilidad; mismo patrón que ADR-0021) |
 
 No se crea ningún componente de código. P3: se reutilizan `adr-template.md`, la tabla de índice existente y el contrato de `fix-directives-template.md` como base del contrato común.
@@ -72,7 +72,7 @@ No se crea ningún componente de código. P3: se reutilizan `adr-template.md`, l
 |---|---|---|
 | Frontmatter de ADR-0022 | `type: adr` · `id: ADR-0022` · `slug: workflows-sin-estados-buffer` · `title: "Workflows de Story y Epic sin estados buffer"` · `status: ACCEPTED` · `date: <fecha de implementación, YYYY-MM-DD>` · `supersedes: [ADR-0006, ADR-0008]` · `superseded-by: null` | AC-1 |
 | Frontmatter de ADR-0006 y ADR-0008 tras el cambio | `status: SUPERSEDED` · `superseded-by: ADR-0022`. Ningún otro byte cambia (`git diff` muestra exactamente 2 líneas `-` y 2 `+` por archivo) | AC-1, CNF-3 |
-| Fila nueva en `docs/adr/README.md` | `\| [ADR-0022](ADR-0022-workflows-sin-estados-buffer.md) \| Workflows de Story y Epic sin estados buffer \| ACCEPTED \| <misma fecha que date> \|`, al final de la tabla | AC-1 |
+| Fila nueva en `docs/decisions/README.md` | `\| [ADR-0022](ADR-0022-workflows-sin-estados-buffer.md) \| Workflows de Story y Epic sin estados buffer \| ACCEPTED \| <misma fecha que date> \|`, al final de la tabla | AC-1 |
 | Celdas `Estado` de ADR-0006 y ADR-0008 en el índice | `SUPERSEDED → [ADR-0022](ADR-0022-workflows-sin-estados-buffer.md)` | AC-1 |
 | Línea en `docs/index.md` | `- [[workflows-sin-estados-buffer]] — [ADR-0022-workflows-sin-estados-buffer.md](adr/ADR-0022-workflows-sin-estados-buffer.md) — Workflows de Story y Epic sin estados buffer`, tras la línea de ADR-0021 | AC-1 |
 | Contrato de `fix-directives.md` (lo declara el ADR y lo implementa STORY-190) | ver «Esquema de datos» | AC-2 |
@@ -133,7 +133,7 @@ No se crea ningún componente de código. P3: se reutilizan `adr-template.md`, l
 ### D-07 — Cambios en ADR-0006 y ADR-0008: solo dos campos // satisface: AC-1, CNF-3
 
 - **Elegida:** cambiar solo `status: ACCEPTED → SUPERSEDED` y `superseded-by: null → ADR-0022`, sin la nota visible bajo el título.
-- **Rechazada:** seguir la convención de `docs/adr/README.md`, que añade una nota de reemplazo bajo el título (como en ADR-0016 y ADR-0017). La rechazan AC-1 («sin ningún otro cambio») y CNF-3 («solo cambian `status` y `superseded-by`»). La historia es más específica y la convención admite la nota sin exigirla (ADR-0003 tampoco la tiene). Se registra como CR-001.
+- **Rechazada:** seguir la convención de `docs/decisions/README.md`, que añade una nota de reemplazo bajo el título (como en ADR-0016 y ADR-0017). La rechazan AC-1 («sin ningún otro cambio») y CNF-3 («solo cambian `status` y `superseded-by`»). La historia es más específica y la convención admite la nota sin exigirla (ADR-0003 tampoco la tiene). Se registra como CR-001.
 
 ### D-08 — Alternativas descartadas que registra el ADR // satisface: CNF-2
 
@@ -181,11 +181,11 @@ Frontmatter de `fix-directives.md` que fija el ADR (lo implementa STORY-190): `t
 
 | # | Criterio | Método de verificación | Origen |
 |---|---|---|---|
-| V-1 | Existe `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` con `status: ACCEPTED` | lectura del frontmatter | AC-1 |
+| V-1 | Existe `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` con `status: ACCEPTED` | lectura del frontmatter | AC-1 |
 | V-2 | ADR-0022 tiene los 7 encabezados de `adr-template.md` | `grep -c "^## "` y comparación de nombres con la plantilla | AC-1 |
 | V-3 | El ADR contiene los dos workflows literales y `PLAN/DONE` como aprobación manual del PO | grep de las cadenas de AC-1 | AC-1 |
 | V-4 | ADR-0006 y ADR-0008: `status: SUPERSEDED`, `superseded-by: ADR-0022`, y nada más | `git diff --stat` y `git diff` (2 líneas `-` y 2 `+` por archivo) | AC-1, CNF-3 |
-| V-5 | ADR-0003 sin cambios | `git diff --quiet -- docs/adr/ADR-0003-*` | CNF-3 |
+| V-5 | ADR-0003 sin cambios | `git diff --quiet -- docs/decisions/ADR-0003-*` | CNF-3 |
 | V-6 | `README.md`: fila ADR-0022 con el mismo título, estado y fecha que el frontmatter, y ADR-0006/0008 como `SUPERSEDED → ADR-0022` | grep y comparación con el frontmatter | AC-1 |
 | V-7 | La tabla de gates del ADR contiene las 3 filas de AC-2, con `based-on`, dimensión (`DoD-CODE-REVIEW`, `verify-defect`, `requirements-coverage`) y la regla de ronda continua | lectura de `## Decisión` | AC-2, CNF-1 |
 | V-8 | Regla del valor legado por `implement-report.md`, la ventana hasta 7.0.0 y «sin estado ni substatus de rework» | grep de `implement-report.md`, `7.0.0` y `substatus` en `## Decisión` | AC-3, CNF-1 |
@@ -217,6 +217,6 @@ Ninguna. Las cuatro «Decisiones para el ADR» de la épica se cierran en D-04 (
 ### CR-001
 
 - **Tipo:** ambigüedad
-- **Descripción:** la convención de `docs/adr/README.md` («se añade una nota visible de reemplazo bajo su título») contradice AC-1 («sin ningún otro cambio») y CNF-3 («solo cambian `status` y `superseded-by`»).
-- **Documento afectado:** design.md (D-07). `docs/adr/README.md` queda fuera del alcance de la convención.
+- **Descripción:** la convención de `docs/decisions/README.md` («se añade una nota visible de reemplazo bajo su título») contradice AC-1 («sin ningún otro cambio») y CNF-3 («solo cambian `status` y `superseded-by`»).
+- **Documento afectado:** design.md (D-07). `docs/decisions/README.md` queda fuera del alcance de la convención.
 - **Acción requerida:** ninguna en esta historia: se aplica la historia, más específica, y no se añade la nota. Si el PO quiere la nota, se edita la historia antes de implementar. Alinear la redacción de la convención («opcional») queda como propuesta aparte.

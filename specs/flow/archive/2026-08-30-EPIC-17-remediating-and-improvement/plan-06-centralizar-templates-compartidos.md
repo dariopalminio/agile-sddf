@@ -125,14 +125,14 @@ Queda pendiente de tu lado, si quieres validarlo end-to-end: invocar /release-fo
 
 Verificación completa — todo en su lugar. Resumen:
 
-Creado docs/adr/ con tres archivos:
+Creado docs/decisions/ con tres archivos:
 
 README.md — convención completa: cuándo escribir un ADR (afecta >1 skill/módulo o restringe decisiones futuras), numeración ADR-NNNN-slug, estados (PROPOSED/ACCEPTED/DEPRECATED/SUPERSEDED), inmutabilidad de los aceptados, y tabla índice.
 adr-template.md — template estilo MADR con el frontmatter del repo y las secciones Contexto · Decisión · Rationale · Alternativas consideradas · Consecuencias · Referencias, alineado con el patrón ## Decisions que ya usan los design.md.
 ADR-0001-centralizar-templates-compartidos.md — primer ADR real (estado ACCEPTED) documentando la decisión de plan-06: templates compartidos en $SPECS_BASE/specs/templates/, con las 4 alternativas descartadas y los trade-offs del modelo seed/activo.
 Convención declarada:
 
-constitution.md — nuevo patrón #16 "Registro de decisiones en tres niveles": historia → design.md, cambio OpenSpec → design.md del change, transversal → docs/adr/.
+constitution.md — nuevo patrón #16 "Registro de decisiones en tres niveles": historia → design.md, cambio OpenSpec → design.md del change, transversal → docs/decisions/.
 index.md:90 — sección "Decisiones de arquitectura" con el wikilink a ADR-0001.
 Esto materializa la convención que project-constitution-template.md:77 ya prometía a los usuarios del framework sin que existiera en el propio repo.
 

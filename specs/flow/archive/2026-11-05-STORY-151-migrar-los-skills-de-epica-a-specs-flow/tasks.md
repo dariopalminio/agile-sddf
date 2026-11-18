@@ -20,7 +20,7 @@ related:
 
 ## 1. Preparación
 
-- [x] T001 Verificar las precondiciones (CR-002): existe `docs/adr/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con la constante `PENDING_MIGRATION` y contiene las seis entradas `epic-analyze`, `epic-creation`, `epic-format-validation`, `epic-from-project-plan`, `epic-generate-all-stories` y `epic-generate-stories`; STORY-147 y STORY-148 en `DONE`. Si falta alguna, detener la implementación — design Risks, CR-002
+- [x] T001 Verificar las precondiciones (CR-002): existe `docs/decisions/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con la constante `PENDING_MIGRATION` y contiene las seis entradas `epic-analyze`, `epic-creation`, `epic-format-validation`, `epic-from-project-plan`, `epic-generate-all-stories` y `epic-generate-stories`; STORY-147 y STORY-148 en `DONE`. Si falta alguna, detener la implementación — design Risks, CR-002
 - [x] T002 Resolver el alcance de `epic-refine` (CR-001): si existe `skills/epic-refine/SKILL.md`, añadirlo a todas las tareas de migración (Paso 0, rutas, evals y retiro de `PENDING_MIGRATION` si figura) y anotarlo en `.tmp/story-implement/STORY-151/scope.txt`; si no existe, anotar «epic-refine ausente en skills/: fuera de alcance» en el mismo archivo — CR-001
 - [x] T003 [P] Ejecutar `npm test` y `npm run verify:repository` y guardar las salidas en `.tmp/story-implement/STORY-151/baseline.txt` (línea base en verde); guardar también la salida de `grep -rnE "SPECS_BASE|SDDF_ROOT|SDDF-ROOT-RESOLUTION|docs/specs|specs/epics|specs/stories|sddf_config_root" skills/epic-*` como inventario de líneas a migrar — design Context, D-2
 

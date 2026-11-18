@@ -52,7 +52,7 @@ Contexto técnico relevante (ya extraído en STORY-095; se repite lo que este di
   inicialización no sobrescriben archivos existentes.
 - Tabla de templates compartidos y regla `[WARNING] template no copiado: <nombre> (skill
   <dueño> no instalado)` del Paso 2b de `sddf-init` (ADR-0001: un dueño por template).
-- `docs/adr/adr-template.md` existe hoy en `docs/adr/`, no en `docs/templates/`.
+- `docs/decisions/adr-template.md` existe hoy en `docs/decisions/`, no en `docs/templates/`.
 - `header-aggregation` en modo batch sobre un directorio ofrece la estrategia "saltar todos
   los conflictos" (procesa solo archivos sin frontmatter).
 - Principio 13 de la constitución: todo campo declarado en un template de `docs/templates/`
@@ -159,7 +159,7 @@ misma regla que el Paso 2b de `sddf-init`:
 | `project-template.md` | `$CLI_ROOT/skills/project-discovery/assets/` |
 | `project-intent-template.md` | `$CLI_ROOT/skills/project-begin/assets/` |
 | `project-plan-template.md` | `$CLI_ROOT/skills/project-planning/assets/` |
-| `adr-template.md` | `assets/scaffold/templates/adr-template.md` (semilla propia, contenido de `docs/adr/adr-template.md`) |
+| `adr-template.md` | `assets/scaffold/templates/adr-template.md` (semilla propia, contenido de `docs/decisions/adr-template.md`) |
 
 Destino existente → `[PRESERVADO]`; origen ausente → `[WARNING] template no copiado: <nombre>
 (skill <dueño> no instalado)` y continuar. El motor recibe `--cli-root <CLI_ROOT>` desde el

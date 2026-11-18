@@ -40,9 +40,9 @@ Desviación respecto de design.md, registrada como **CR-004**: STORY-160 entreg�
 | T002 | Cinco evals nuevos de canceladas | ✓ completado | `skills/story-complete/evals/evals.json` (TC-007…TC-011) |
 | T003 | Ajustar evals de STORY-160 | ✓ completado | `skills/story-complete/evals/evals.json` (TC-004 espera la confirmación de D-4 y excluye `ADR-0016`); el caso «`COMPLETED/DONE` sin fecha» solo existía en `test/story-complete.test.js` y se ajustó ahí (CR-004) |
 | T004 | Prueba de `CANCELED` archivada en el índice | ✓ completado | `test/memory-system.test.js` (S164-UT-001) |
-| T005 | Crear ADR-0017 | ✓ completado | `docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` |
-| T006 | ADR-0016: solo campos permitidos | ✓ completado | `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` (`status`, `superseded-by`, nota) |
-| T007 | Índice de ADRs | ✓ completado | `docs/adr/README.md` |
+| T005 | Crear ADR-0017 | ✓ completado | `docs/decisions/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` |
+| T006 | ADR-0016: solo campos permitidos | ✓ completado | `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` (`status`, `superseded-by`, nota) |
+| T007 | Índice de ADRs | ✓ completado | `docs/decisions/README.md` |
 | T008 | SKILL.md: frontmatter, precondiciones, reglas | ✓ completado | `skills/story-complete/SKILL.md` |
 | T009 | Tabla de admisión por estado | ✓ completado | `skills/story-complete/SKILL.md`, `skills/story-complete/scripts/story-complete.js`, `test/story-complete.test.js` |
 | T010 | Cadena de fecha | ✓ completado | `skills/story-complete/SKILL.md`, `skills/story-complete/scripts/story-complete.js`, `test/story-complete.test.js` |

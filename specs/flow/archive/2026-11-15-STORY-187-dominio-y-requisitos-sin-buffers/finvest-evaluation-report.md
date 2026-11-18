@@ -39,7 +39,7 @@ _(Solo se completa si F_score ≥ 2.5)_
 
 | Dimensión | Score (1–5) | Observación |
 |-----------|:-----------:|-------------|
-| **I** – Independencia | 3 | Depende de STORY-186 (hoy `SPECIFY/DONE`, el ADR aún no existe en `docs/adr/`), pero de forma desacoplada: los workflows, el destino del rework y la consulta de la cola ya están fijados en EPIC-029. Esperan al ADR su número (AC-1), su `ACCEPTED` y el contrato de `fix-directives.md` que describen FR-043/044/045. Coordina con STORY-192 el orden de madurez de `domain-story-lifecycle` §4.1 y §5. |
+| **I** – Independencia | 3 | Depende de STORY-186 (hoy `SPECIFY/DONE`, el ADR aún no existe en `docs/decisions/`), pero de forma desacoplada: los workflows, el destino del rework y la consulta de la cola ya están fijados en EPIC-029. Esperan al ADR su número (AC-1), su `ACCEPTED` y el contrato de `fix-directives.md` que describen FR-043/044/045. Coordina con STORY-192 el orden de madurez de `domain-story-lifecycle` §4.1 y §5. |
 | **N** – Negociable | 4 | Fija resultados observables (workflows, destino del rework por documento, consulta de la cola) y deja abierta la redacción y reorganización de cada documento. CNF-1 remite cualquier regla nueva al ADR en lugar de decidirla aquí. |
 | **V** – Valiosa | 3 | Valor claro para quien aprende el ciclo de vida en la documentación de autoridad, pero cualitativo: el beneficio es que el texto deje de contradecir a los skills. |
 | **E** – Estimable | 4 | Diez documentos Markdown con 47 menciones de buffers contadas por archivo en Notas (verificado: los conteos coinciden con el `grep` actual), más las definiciones de «Buffer», WIP por buffer y BR-004. El contenido destino está en la épica. |

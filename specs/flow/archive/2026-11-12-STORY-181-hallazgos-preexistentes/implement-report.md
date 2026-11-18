@@ -30,7 +30,7 @@ updated: 2026-11-11
 
 | ID | Descripción | Estado | Archivos generados |
 |---|---|---|---|
-| T001 | Comprobar estado de STORY-180 y de ADR-0021 | ✓ completado | — (STORY-180 implementada: 4a.1, severidad efectiva por informe y fila `Guía de revisión` existen → 4a.2 tras 4a.1 y fila tras `Guía de revisión`; `docs/adr/ADR-0021-guia-de-revision-review-md.md` existe → se cita por número) |
+| T001 | Comprobar estado de STORY-180 y de ADR-0021 | ✓ completado | — (STORY-180 implementada: 4a.1, severidad efectiva por informe y fila `Guía de revisión` existen → 4a.2 tras 4a.1 y fila tras `Guía de revisión`; `docs/decisions/ADR-0021-guia-de-revision-review-md.md` existe → se cita por número) |
 | T002 | Confirmar IDs libres de evals | ✓ completado | — (último caso TC-029 → TC-030 a TC-033) |
 | T003 | Comprobar CR-001 | ✓ completado | — (**pendiente**: AC-3 de `story.md` aún dice «el método que fija el ADR de la guía de revisión»; no bloquea, el método está fijado en D-1 a D-3 de `design.md`) |
 | T004 | Evals primero: TC-030 a TC-033 | ✓ completado | `skills/story-code-review/evals/evals.json` |

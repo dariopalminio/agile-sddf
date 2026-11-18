@@ -48,7 +48,7 @@ related:
 3. **`plan`** — tras resolver `to` (y tras `ARCHIVE_CONFLICT`): calcula `linkUpdates: [{ file, count }]` **solo lectura** y lo incluye en el JSON; el resumen de confirmación del SKILL.md lo muestra. `plan` sigue sin escribir nada.
 4. **`apply`** — tras el move exitoso y la verificación de conteo (respetando el orden D-8): reescribe las referencias detectadas y reporta `links: { files, occurrences }` en el JSON.
    - Si falla la E/S al reescribir: `ok: false`, `code: LINKS_UPDATE_FAILED`, con el conteo y un mensaje que aclara que **el work item SÍ quedó archivado** (a diferencia de `WRITE_FAILED`/`MOVE_FAILED`, donde no se movió nada) y sugiere `node scripts/check-doc-links.js` para ver lo pendiente.
-5. **Fuera de alcance** (coherente con `HISTORICAL_EXCLUSIONS` del gate): `CHANGELOG.md`, `docs/adr/`, `specs/` — conservan el contexto en el que se escribieron.
+5. **Fuera de alcance** (coherente con `HISTORICAL_EXCLUSIONS` del gate): `CHANGELOG.md`, `docs/decisions/`, `specs/` — conservan el contexto en el que se escribieron.
 
 ## Orden de trabajo
 

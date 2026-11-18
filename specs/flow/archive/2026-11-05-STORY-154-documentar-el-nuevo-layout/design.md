@@ -26,7 +26,7 @@ Estado verificado en el filesystem (2026-10-22):
 
 | Fuente | Hallazgo |
 |---|---|
-| `scripts/check-doc-links.js` | `ACTIVE_ROOTS` = `README.md`, `SECURITY.md`, `docs/index.md`, `docs/constitution.md`, `docs/policies`, `docs/guardrails`, `docs/guides`, `docs/runbooks`. `HISTORICAL_EXCLUSIONS` = `CHANGELOG.md`, `docs/adr`, `docs/specs`. **No valida** `AGENTS.md` ni `docs/architecture/`. Ignora el texto dentro de code spans y bloques de código (`visibleMarkdown`). Cada error empieza con `<archivo>:<línea>:` (`checkDocumentation`). `slugIndex` solo recorre `docs/`, `README.md` y `SECURITY.md`. |
+| `scripts/check-doc-links.js` | `ACTIVE_ROOTS` = `README.md`, `SECURITY.md`, `docs/index.md`, `docs/constitution.md`, `docs/policies`, `docs/guardrails`, `docs/guides`, `docs/runbooks`. `HISTORICAL_EXCLUSIONS` = `CHANGELOG.md`, `docs/decisions`, `docs/specs`. **No valida** `AGENTS.md` ni `docs/architecture/`. Ignora el texto dentro de code spans y bloques de código (`visibleMarkdown`). Cada error empieza con `<archivo>:<línea>:` (`checkDocumentation`). `slugIndex` solo recorre `docs/`, `README.md` y `SECURITY.md`. |
 | `test/check-doc-links.test.js` | El caso `reports missing local targets and anchors` comprueba `Missing local target` desde `README.md`, pero no que el error nombre el archivo ni que el origen sea una guía. |
 | `githubAnchor('Migración a 5.0.0 — layout fijo de tres raíces')` | `migracion-a-500--layout-fijo-de-tres-raices` (calculado con la función exportada del checker). |
 | `AGENTS.md` (52 líneas) | La línea 10 describe la precedencia `SDDF_ROOT` → `root` → `docs` y «Este repo declara `root: docs`». La línea 3 remite a `docs/specs/01-projects/PROJ-01-agile-sddf/`, **que no existe** (ADR-0013 lo eliminó). |
@@ -124,7 +124,7 @@ Cambios, manteniendo el formato de reglas en viñetas y la brevedad del archivo:
 | Viñeta «Resolución de raíz» | Se reemplaza por **«Layout fijo (ADR-0016)»**: tres raíces hermanas en `REPO_ROOT`: `docs/` (conocimiento), `specs/` (estado: `specs/flow/` plano con `EPIC-NNN-<slug>/` y `STORY-NNN-<slug>/`, `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` para stories `COMPLETED` con la fecha de `updated:` o, si falta, `created:`, y `specs/living/` reservado) y `workflow/` (proceso, reservado). Se retiran `SDDF_ROOT`, la clave `root` de `sddf.config.yaml` y `SPECS_BASE`: los skills solo resuelven `REPO_ROOT` y declaran `<!-- SDDF-FIXED-LAYOUT: v1 -->`. `docs/requirements/` no se mueve: migrará a `specs/living/` en la épica de Living Spec. `skill-preflight` diagnostica el layout legado y remite a la guía de migración. |
 | Viñeta nueva **«Transición EPIC-26»** | «Mientras exista `docs/specs/`, los work items de este repo siguen ahí y `sddf.config.yaml` conserva `root: docs`; STORY-153 los migra y STORY-157 retira esta viñeta. Los skills pendientes del contrato son los de `PENDING_MIGRATION` en `scripts/verify-fixed-layout.js`.» No enumera skills ni estados: remite a fuentes verificables que cambian solas (P6). |
 | Viñeta «WIP = 1» | Sin cambios de regla. |
-| «Dónde está el detalle» | Añadir «**Layout:** ADR-0016 (`docs/adr/ADR-0016-layout-fijo-de-tres-raices.md`) y `docs/guides/root-folder-practices.md`». |
+| «Dónde está el detalle» | Añadir «**Layout:** ADR-0016 (`docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md`) y `docs/guides/root-folder-practices.md`». |
 
 Las rutas de `AGENTS.md` van en code spans, como hoy. El checker no lo valida (D-7), así que se comprueban con el contrato 2.
 
@@ -275,7 +275,7 @@ No se duplica el `### Removed` de `docs-wiki-builder` que añade STORY-152 D-10;
 | Registro de cambios | modificar | `CHANGELOG.md` | AC-2 |
 | Prueba del checker | modificar (1 caso) | `test/check-doc-links.test.js` | AC-3 |
 
-Sin cambios: `scripts/check-doc-links.js`, skills, `sddf.config.yaml`, `docs/adr/`, `docs/specs/`, `docs/requirements/`.
+Sin cambios: `scripts/check-doc-links.js`, skills, `sddf.config.yaml`, `docs/decisions/`, `docs/specs/`, `docs/requirements/`.
 
 ## Interfaces
 
@@ -295,7 +295,7 @@ N/A: no hay datos estructurados nuevos. Frontmatter: `docs/constitution.md` actu
 ## Flujos clave
 
 ### F-1 — Documentación del layout (escenario principal) // AC-1, AC-2
-1. Comprobar las precondiciones de D-1: existen `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md`, `scripts/verify-fixed-layout.js`, el diagnóstico legado de `skill-preflight` y `docs/specs/`.
+1. Comprobar las precondiciones de D-1: existen `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md`, `scripts/verify-fixed-layout.js`, el diagnóstico legado de `skill-preflight` y `docs/specs/`.
 2. Inventario: `git grep -nE "SPECS_BASE|SDDF_ROOT|root: docs|docs/specs|specs/(epics|stories)"` sobre los archivos de D-3, clasificando cada línea con D-2.
 3. Guía de migración (D-8). Va primero porque las demás guías y el CHANGELOG enlazan su ancla.
 4. `AGENTS.md` (D-4), arquitectura (D-5), guías (D-9), constitución y `README.md` (D-9).
@@ -337,7 +337,7 @@ N/A: no hay datos estructurados nuevos. Frontmatter: `docs/constitution.md` actu
 | 7 | Ancla real | `docs/guides/README.md` enlaza la misma ancla y `npm run verify:links` termina en verde (el CHANGELOG no se valida, pero comparte la cadena) | AC-2, AC-3 |
 | 8 | Regresión del gate | El caso de D-7 pasa en `npm test` | AC-3 |
 | 9 | Gate verde | `npm run verify:repository` con código 0 | AC-3 |
-| 10 | Alcance | `git diff --stat` solo muestra los archivos de «Componentes afectados»; `git diff --quiet -- docs/requirements docs/adr docs/specs skills` | Non-Goals, CS-10 |
+| 10 | Alcance | `git diff --stat` solo muestra los archivos de «Componentes afectados»; `git diff --quiet -- docs/requirements docs/decisions docs/specs skills` | Non-Goals, CS-10 |
 | 11 | Idioma | Revisión del texto nuevo: en español (CNF-2) | CNF-2 |
 
 ## Risks / Trade-offs

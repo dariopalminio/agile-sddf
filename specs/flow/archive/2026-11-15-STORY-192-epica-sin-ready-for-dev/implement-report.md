@@ -60,7 +60,7 @@ Los skills de épica ya no nombran los estados buffer. `/epic-analyze` declara e
 
 - **T004:** el `substatus` de STORY-302 en `cobertura-cierre/` ya era `DONE`, así que `diff -r` muestra una sola línea (`status: SPECIFY` → `status: PLAN`), no dos.
 - **TC-035:** las líneas de `epic.md` del caso incluyen `status: PLAN` y `substatus: IN-PROGRESS` en el frontmatter, para reflejar el «Dado» de AC-1 (épica en `PLAN/IN-PROGRESS`).
-- **T009 / D-6:** `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`. La regla «Sin cambio de estado» y la nota del valor legado citan `ADR-0022`. No queda ninguna cita pendiente.
+- **T009 / D-6:** `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`. La regla «Sin cambio de estado» y la nota del valor legado citan `ADR-0022`. No queda ninguna cita pendiente.
 - **T021 / V-6:** STORY-187 ya está en `VERIFY`. `docs/domains/domain-story-lifecycle.md` (líneas 38, 84 y 116) tiene el mismo literal que la línea 236 de `epic-analyze`: `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`.
 
 ---

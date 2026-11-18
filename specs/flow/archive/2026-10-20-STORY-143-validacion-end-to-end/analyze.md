@@ -132,7 +132,7 @@ Se verificó contra el filesystem el «Estado medido» de design.md (l.33-52): `
 |---|---|---|
 | Historia listada en la épica | ✓ | epic.md l.27: «STORY-143 — Validación end-to-end». epic.md l.84 la designa dueña de CS-2, CS-3, CS-10, CS-11, SMOKE-1 y SMOKE-3, y story.md (l.70-74) los cita todos |
 | Objetivo de la historia alineado con la épica | ✓ | «Para que ningún consumidor encuentre variantes del vocabulario de veredictos» coincide con el gate homogéneo del Alcance (epic.md l.17) y con la mitigación del riesgo, que pide documentar el cambio en el README (epic.md l.94; design D-7) |
-| Restricciones de la épica respetadas | ⚠️ | Se respeta la habilitación secuencial (epic.md l.85; D-10 y T001). En cambio, CS-10 y SMOKE-3 solo excluyen `docs/specs/` y las versiones publicadas del CHANGELOG, y el diseño añade `docs/adr/`, `docs/product/roadmap.md`, `docs/product/story-map.md`, §5-§6 de la policy y las excepciones L-4 de §6 (D-5, D-6, CR-001). Ver INC-003 |
+| Restricciones de la épica respetadas | ⚠️ | Se respeta la habilitación secuencial (epic.md l.85; D-10 y T001). En cambio, CS-10 y SMOKE-3 solo excluyen `docs/specs/` y las versiones publicadas del CHANGELOG, y el diseño añade `docs/decisions/`, `docs/product/roadmap.md`, `docs/product/story-map.md`, §5-§6 de la policy y las excepciones L-4 de §6 (D-5, D-6, CR-001). Ver INC-003 |
 
 ---
 
@@ -155,7 +155,7 @@ Se verificó contra el filesystem el «Estado medido» de design.md (l.33-52): `
 ### INC-003 [WARNING]
 
 - **Tipo:** D (desalineación con la épica)
-- **Descripción:** CS-10 (epic.md l.43), SMOKE-3 (epic.md l.66-72) y el `Pero` de AC-2 (story.md l.46) excluyen solo `docs/specs/` y las versiones publicadas del CHANGELOG. D-5 y D-6 excluyen además `docs/adr/`, `docs/product/roadmap.md`, `docs/product/story-map.md` y §5-§6 de la policy, y eximen de L-4 los agentes y subinformes de `story-code-review` y los fixtures `dod-*` de `memory-system`. La justificación es sólida (ADR inmutables, roadmap append-only, fixtures de migración) y está registrada como CR-001, pero su «Acción requerida» es «opcional», y el criterio de salida de la épica sigue diciendo otra cosa.
+- **Descripción:** CS-10 (epic.md l.43), SMOKE-3 (epic.md l.66-72) y el `Pero` de AC-2 (story.md l.46) excluyen solo `docs/specs/` y las versiones publicadas del CHANGELOG. D-5 y D-6 excluyen además `docs/decisions/`, `docs/product/roadmap.md`, `docs/product/story-map.md` y §5-§6 de la policy, y eximen de L-4 los agentes y subinformes de `story-code-review` y los fixtures `dod-*` de `memory-system`. La justificación es sólida (ADR inmutables, roadmap append-only, fixtures de migración) y está registrada como CR-001, pero su «Acción requerida» es «opcional», y el criterio de salida de la épica sigue diciendo otra cosa.
 - **Archivo afectado:** design.md, «Registro de Cambios (CR)», CR-001; story.md, AC-2 (l.46); epic.md, CS-10 (l.43) y SMOKE-3
 - **Acción requerida:** que el PO confirme CR-001 antes de implementar y amplíe el `Pero` de AC-2 y el paréntesis de CS-10/SMOKE-3 con «los ADR, los registros cerrados de `docs/product/` y las excepciones registradas en §6 de la política».
 

@@ -23,7 +23,7 @@ related:
 
 ## 1. Precondición
 
-- [x] T001 Comprobar el estado de partida (F-1, V-1): `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED` (si no existe, **detener**: STORY-186 no está implementada y los wikilinks romperían `check-doc-links`, CR-002); el `grep -c "READY-FOR-IMPLEMENT\|READY-FOR-DEV"` de los 10 documentos coincide con la tabla de Context de design.md; `grep -n "WIP\|READY-FOR" docs/constitution.md` solo devuelve §9 (V-13); y `npm run verify:repository` y `npm test` pasan antes del cambio (línea base). Hecho: ADR-0022 existe y las diferencias, si las hay, están anotadas para `implement-report.md`.
+- [x] T001 Comprobar el estado de partida (F-1, V-1): `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED` (si no existe, **detener**: STORY-186 no está implementada y los wikilinks romperían `check-doc-links`, CR-002); el `grep -c "READY-FOR-IMPLEMENT\|READY-FOR-DEV"` de los 10 documentos coincide con la tabla de Context de design.md; `grep -n "WIP\|READY-FOR" docs/constitution.md` solo devuelve §9 (V-13); y `npm run verify:repository` y `npm test` pasan antes del cambio (línea base). Hecho: ADR-0022 existe y las diferencias, si las hay, están anotadas para `implement-report.md`.
 
 ## 2. Modelo transversal (`domain-state-management.md`, C-3)
 

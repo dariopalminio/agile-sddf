@@ -43,7 +43,7 @@ Dado que "ADR-0013" tiene "status: PROPOSED" y "ADR-0004" decide directorios num
 Cuando se cierra la documentación de la épica
 Entonces "ADR-0013" tiene "status: ACCEPTED"
   Y "ADR-0004" registra en su frontmatter y en una nota visible que su decisión de directorios numerados queda reemplazada por "ADR-0013"
-  Y "docs/adr/README.md" lista ambos ADR con su estado vigente
+  Y "docs/decisions/README.md" lista ambos ADR con su estado vigente
 ```
 
 ### AC-3 — Escenario alternativo – Usuario que actualiza un repositorio existente

@@ -115,7 +115,7 @@ Los directorios se crean en los tres niveles. `docs/specs/` nunca se crea. Si un
 crearse (permisos), informar la ruta y el motivo y detener antes de los pasos siguientes; los directorios
 ya creados quedan y una re-ejecución los informa `[YA EXISTÍA]`.
 
-> `docs/templates/` es una capa hermana de `specs/`, no un subdirectorio suyo: los templates son meta-artefactos que definen la estructura de otros artefactos. Ver [ADR-0007](../../docs/adr/ADR-0007-templates-como-capa-propia.md).
+> `docs/templates/` es una capa hermana de `specs/`, no un subdirectorio suyo: los templates son meta-artefactos que definen la estructura de otros artefactos. Ver [ADR-0007](../../docs/decisions/ADR-0007-templates-como-capa-propia.md).
 
 ### Paso 2b — Copiar templates compartidos al directorio central
 
@@ -274,7 +274,7 @@ añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente con el la
 ── memory-system scaffold (nivel full) ──────────
 harness: sddf
 capas faltantes: product, requirements, domains, architecture, adr, policies, guardrails, guides, runbooks
-[CREADO] docs/adr/README.md
+[CREADO] docs/decisions/README.md
 [CREADO] docs/constitution.md
 …
 [PRESERVADO] docs/templates/story-template.md

@@ -120,7 +120,7 @@ Cambio coordinado — todos a la vez o ninguno:
 
 ## 6. ADR-0005, CHANGELOG y versión
 
-- **`docs/adr/ADR-0005-prefijo-story-para-el-nivel-l1.md`** siguiendo [adr-template.md](docs/adr/adr-template.md). Es una decisión **nueva**, no una reversión de ADR-0004, así que no lo supersede. Debe registrar: el argumento de colisión con el prefijo de rama, la evidencia de `FIX-001` como bug ya materializado, la regla *prefijo = nivel / tipo = frontmatter*, y como alternativas descartadas: mantener `FEAT`; renombrar la carpeta a `03-features/` en vez del prefijo; permitir prefijos por tipo (`BUG-`, `CHORE-`). Añadir al índice de `docs/adr/README.md` y a `docs/index.md`.
+- **`docs/decisions/ADR-0005-prefijo-story-para-el-nivel-l1.md`** siguiendo [adr-template.md](docs/decisions/adr-template.md). Es una decisión **nueva**, no una reversión de ADR-0004, así que no lo supersede. Debe registrar: el argumento de colisión con el prefijo de rama, la evidencia de `FIX-001` como bug ya materializado, la regla *prefijo = nivel / tipo = frontmatter*, y como alternativas descartadas: mantener `FEAT`; renombrar la carpeta a `03-features/` en vez del prefijo; permitir prefijos por tipo (`BUG-`, `CHORE-`). Añadir al índice de `docs/decisions/README.md` y a `docs/index.md`.
 - **CHANGELOG** — ampliar la entrada BREAKING del 2.0.0 con este renombre, el campo `kind`, el cambio de sección, y el bloque de migración:
   ```bash
   # 1. directorios e IDs (el número se conserva)

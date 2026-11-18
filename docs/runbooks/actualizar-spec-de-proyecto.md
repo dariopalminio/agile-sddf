@@ -137,7 +137,7 @@ que el propio `project.md`:
 |---|---|
 | `docs/index.md` | El índice wiki. Es el documento mejor mantenido del repositorio y ya trae el agrupamiento temático de épicas e historias hecho |
 | `CHANGELOG.md` | Explica **por qué** cambió cada cosa. Los renombrados masivos, las capacidades retiradas y las migraciones manuales están aquí, no en las specs |
-| `docs/adr/` | Las decisiones que invalidan afirmaciones del documento. ADR-0004 y ADR-0005 obligaron a reescribir la nomenclatura entera |
+| `docs/decisions/` | Las decisiones que invalidan afirmaciones del documento. ADR-0004 y ADR-0005 obligaron a reescribir la nomenclatura entera |
 | `docs/guides/state-machine.md` | La máquina de estados canónica. El `project.md` antiguo describía un campo `**Estado**: IN-PROGRESS \| Ready` que ya no existe |
 
 ### Paso 5 — Verificar personalmente todo lo que se va a afirmar

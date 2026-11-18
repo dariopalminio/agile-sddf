@@ -32,18 +32,18 @@ La historia es `kind: chore` documental: no añade código ni pruebas automátic
 | ID | Descripción | Estado | Archivos generados |
 |---|---|---|---|
 | T001 | Comprobar el estado de partida y la línea base del gate | ✓ completado | — |
-| T002 | Crear ADR-0022 desde `adr-template.md` | ✓ completado | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` |
-| T003 | `## Contexto y problema` | ✓ completado | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` |
-| T004 | `## Decisión` — workflows | ✓ completado | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` |
-| T005 | `## Decisión` — rework y contrato de `fix-directives.md` | ✓ completado | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` |
-| T006 | `## Decisión` — valor legado y ventana | ✓ completado | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` |
-| T007 | `## Rationale` | ✓ completado | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` |
-| T008 | `## Alternativas consideradas` | ✓ completado | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` |
-| T009 | `## Consecuencias` | ✓ completado | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` |
-| T010 | `## Referencias` | ✓ completado | `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` |
-| T011 | ADR-0006: `status` y `superseded-by` | ✓ completado | `docs/adr/ADR-0006-migracion-retroactiva-de-estados-de-epica.md` |
-| T012 | ADR-0008: `status` y `superseded-by` | ✓ completado | `docs/adr/ADR-0008-rework-sin-estado-propio.md` |
-| T013 | Índice de ADRs | ✓ completado | `docs/adr/README.md` |
+| T002 | Crear ADR-0022 desde `adr-template.md` | ✓ completado | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` |
+| T003 | `## Contexto y problema` | ✓ completado | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` |
+| T004 | `## Decisión` — workflows | ✓ completado | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` |
+| T005 | `## Decisión` — rework y contrato de `fix-directives.md` | ✓ completado | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` |
+| T006 | `## Decisión` — valor legado y ventana | ✓ completado | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` |
+| T007 | `## Rationale` | ✓ completado | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` |
+| T008 | `## Alternativas consideradas` | ✓ completado | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` |
+| T009 | `## Consecuencias` | ✓ completado | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` |
+| T010 | `## Referencias` | ✓ completado | `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` |
+| T011 | ADR-0006: `status` y `superseded-by` | ✓ completado | `docs/decisions/ADR-0006-migracion-retroactiva-de-estados-de-epica.md` |
+| T012 | ADR-0008: `status` y `superseded-by` | ✓ completado | `docs/decisions/ADR-0008-rework-sin-estado-propio.md` |
+| T013 | Índice de ADRs | ✓ completado | `docs/decisions/README.md` |
 | T014 | Índice wiki | ✓ completado | `docs/index.md` |
 | T015 | Verificar AC-1 y CNF-3 (V-1 a V-6) | ✓ completado | — |
 | T016 | Verificar AC-2 y AC-3 (V-7, V-8) | ✓ completado | — |
@@ -56,10 +56,10 @@ La historia es `kind: chore` documental: no añade código ni pruebas automátic
 
 ## Archivos modificados
 
-- `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` (nuevo)
-- `docs/adr/ADR-0006-migracion-retroactiva-de-estados-de-epica.md` (2 líneas del frontmatter)
-- `docs/adr/ADR-0008-rework-sin-estado-propio.md` (2 líneas del frontmatter)
-- `docs/adr/README.md` (fila nueva y dos celdas `Estado`)
+- `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` (nuevo)
+- `docs/decisions/ADR-0006-migracion-retroactiva-de-estados-de-epica.md` (2 líneas del frontmatter)
+- `docs/decisions/ADR-0008-rework-sin-estado-propio.md` (2 líneas del frontmatter)
+- `docs/decisions/README.md` (fila nueva y dos celdas `Estado`)
 - `docs/index.md` (una línea)
 
 Ningún archivo fuera del alcance aparece en `git status` (además de los artefactos de la propia historia).
@@ -82,8 +82,8 @@ Ningún archivo fuera del alcance aparece en `git status` (además de los artefa
 | V-2 | `diff` de los `## ` de `adr-template.md` y ADR-0022 | ✓ idénticos (6 encabezados, mismo orden) |
 | V-3 | grep de los dos workflows literales y de la aprobación manual del PO | ✓ 1 coincidencia de cada workflow; «La aprobación del PO es `PLAN/DONE` y se escribe a mano» |
 | V-4 | `git diff` de ADR-0006 y ADR-0008 | ✓ exactamente 2 líneas `-` y 2 `+` por archivo (`status`, `superseded-by`) |
-| V-5 | `git diff --quiet -- docs/adr/ADR-0003-*` | ✓ exit 0 |
-| V-6 | grep de ADR-0022 en `docs/adr/README.md` | ✓ fila con el mismo título, `ACCEPTED` y `2026-11-14`; ADR-0006 y ADR-0008 como `SUPERSEDED → [ADR-0022](…)` |
+| V-5 | `git diff --quiet -- docs/decisions/ADR-0003-*` | ✓ exit 0 |
+| V-6 | grep de ADR-0022 en `docs/decisions/README.md` | ✓ fila con el mismo título, `ACCEPTED` y `2026-11-14`; ADR-0006 y ADR-0008 como `SUPERSEDED → [ADR-0022](…)` |
 | V-7 | tabla de gates en `## Decisión` | ✓ 3 filas con `based-on`, dimensiones `DoD-CODE-REVIEW` (o la del revisor), `verify-defect`, `requirements-coverage`; destino `IMPLEMENT/TODO`; regla de ronda continua |
 | V-8 | grep de `implement-report.md`, `7.0.0` y la negación del estado de rework | ✓ regla del valor legado por `implement-report.md`; «La ventana se abre en 6.0.0 y termina en 7.0.0»; «no define ningún estado ni substatus de rework» |
 | V-9 | lectura de `## Alternativas consideradas` | ✓ 4/4 obligatorias de CNF-2 con su motivo |
@@ -118,7 +118,7 @@ Ningún archivo fuera del alcance aparece en `git status` (además de los artefa
 | 15 | Skills críticos con `evals/evals.json` | ✓ | No aplica: ningún skill cambia |
 | 16 | Casos de prueba ejecutados según `skill-master` | ✓ | No aplica: ningún skill cambia |
 | 17 | `tasks.md` con todas las tareas `[x]` | ✓ | 20/20 |
-| 18 | README o docs actualizados si cambian contratos | ✓ | `docs/adr/README.md` y `docs/index.md` actualizados |
+| 18 | README o docs actualizados si cambian contratos | ✓ | `docs/decisions/README.md` y `docs/index.md` actualizados |
 | 19 | Decisiones no previstas documentadas en `design.md` | ✓ | Ninguna decisión nueva; las desviaciones menores se documentan en este reporte |
 | 20 | CHANGELOG actualizado si aplica | ✓ | No aplica: el bloque BREAKING lo escribe `/epic-ship` (fuera de alcance de la historia) |
 | 21 | El build de CI pasa | ⚠️ | `verify:repository` sale con 1 por `S097-UT-011` (preexistente, de tiempo); los demás 13 pasos salen con 0 |

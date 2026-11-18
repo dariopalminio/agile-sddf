@@ -24,7 +24,7 @@ const DO_NOT_REPORT = 'No reportar';
 const ALWAYS_CHECK = 'Verificar siempre';
 const HEADINGS = [IMPORTANT, MINOR_CAP, DO_NOT_REPORT, ALWAYS_CHECK];
 
-const AREA_PREFIXES = ['- `skills/`', '- `scripts/`', '- `docs/adr/`', '- `docs/templates/`', '- `docs/guardrails/`', '- Cualquier archivo'];
+const AREA_PREFIXES = ['- `skills/`', '- `scripts/`', '- `docs/decisions/`', '- `docs/templates/`', '- `docs/guardrails/`', '- Cualquier archivo'];
 
 // D-3: marcador literal de cada regla de AC-2 → única sección donde puede aparecer.
 const RULE_MARKERS = [

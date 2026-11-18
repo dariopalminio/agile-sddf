@@ -49,10 +49,10 @@ verificación (V-1…V-13 de `design.md`), comprobado por inspección y por scri
 | T015 | V-7 (trazado a los flowcharts) | ✓ completado | — (ver «Comparación V-7») |
 | T016 | V-8 | ✓ completado | — |
 | T017 | V-9 y CNF-1 | ✓ completado | `docs/policies/validation-contract-policy.md` (compactada de 234 a 198 líneas) |
-| T018 | Crear ADR-0015 | ✓ completado | `docs/adr/ADR-0015-contrato-de-validacion.md` |
+| T018 | Crear ADR-0015 | ✓ completado | `docs/decisions/ADR-0015-contrato-de-validacion.md` |
 | T019 | V-11 | ✓ completado | — |
 | T020 | Registrar la policy en su índice | ✓ completado | `docs/policies/README.md` |
-| T021 | Registrar ADR-0015 en su índice | ✓ completado | `docs/adr/README.md` |
+| T021 | Registrar ADR-0015 en su índice | ✓ completado | `docs/decisions/README.md` |
 | T022 | Regenerar `docs/index.md` | ✓ completado | `docs/index.md` (vía motor de `memory-system index`) |
 | T023 | V-12 | ✓ completado | — |
 | T024 | V-13 | ✓ completado | — |
@@ -101,7 +101,7 @@ verificación (V-1…V-13 de `design.md`), comprobado por inspección y por scri
 ### V-11 (T019)
 
 Frontmatter de ADR-0015 según D-10; `grep -c '^| \`story-'` = 0 (no reproduce §4 ni §5); los enlaces relativos a la
-policy, a `epic.md` de EPIC-25 y a los tres flowcharts resuelven. `docs/adr` es raíz histórica excluida de
+policy, a `epic.md` de EPIC-25 y a los tres flowcharts resuelven. `docs/decisions` es raíz histórica excluida de
 `check-doc-links.js`, por eso los enlaces se comprobaron con `test -f`.
 
 ### V-12 y V-13 (T023, T024)

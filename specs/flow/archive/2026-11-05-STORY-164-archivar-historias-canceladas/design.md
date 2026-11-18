@@ -28,7 +28,7 @@ STORY-160 crea el skill `story-complete` (completar y archivar historias `DELIVE
 Estado verificado en el filesystem (2026-10-25):
 
 - `skills/story-complete/` **todavía no existe**: STORY-160 está en `PLAN/IN-PROGRESS` y sin `design.md`. Esta historia se implementa después de STORY-160 (nota de dependencia de la historia) y modifica los artefactos que esa historia crea. Los cambios de C-1 se anclan a los gates del contrato de STORY-160 (resolución, admisión por estado, fecha de archivo, confirmación, conflicto de destino, movimiento), no a números de paso (CR-001).
-- ADR-0016 (`docs/adr/ADR-0016-layout-fijo-de-tres-raices.md`, `ACCEPTED`) fija: «`specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` recibe solo las stories con `status: COMPLETED`; `<YYYY-MM-DD>` es el `updated:` … y, si falta, su `created:`. Las stories `CANCELED` … quedan en `specs/flow/`». Por `docs/adr/README.md` (Convención › Inmutabilidad), el ADR reemplazado solo admite cambios en `status`, `superseded-by` y una nota visible bajo su título (formato de ejemplo: `docs/adr/ADR-0010-specs-dentro-de-docs.md`).
+- ADR-0016 (`docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md`, `ACCEPTED`) fija: «`specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` recibe solo las stories con `status: COMPLETED`; `<YYYY-MM-DD>` es el `updated:` … y, si falta, su `created:`. Las stories `CANCELED` … quedan en `specs/flow/`». Por `docs/decisions/README.md` (Convención › Inmutabilidad), el ADR reemplazado solo admite cambios en `status`, `superseded-by` y una nota visible bajo su título (formato de ejemplo: `docs/decisions/ADR-0010-specs-dentro-de-docs.md`).
 - El siguiente número libre es **ADR-0017** (último: ADR-0016; hay dos archivos ADR-0013, sin efecto aquí).
 - `scripts/migrate-specs-to-flow.js` exporta `archiveDate(frontmatter)` (líneas 75-80): usa `updated:` → `created:` y **solo si no existe ninguna de las dos claves** usa `date:`, siempre con formato `YYYY-MM-DD`. Es un script de un solo uso (STORY-153, «no es un comando reutilizable») y no se publica con el paquete, así que se reutiliza la **regla**, no el código (D-3).
 - Ningún script de `npm run verify:repository` lee el `status` de las historias de `specs/flow/archive/`: `scripts/verify-fixed-layout.js` solo valida `skills/*/SKILL.md`, documentos activos y `.env.template`; `skills/memory-system/scripts/memory-system.js` clasifica por ruta (`archive/` → capa `specs-archive`, línea 368), sin mirar el status. CNF-3 ya se cumple hoy; falta una prueba que lo fije (D-7).
@@ -64,9 +64,9 @@ Stack: skills en Markdown + scripts Node.js (CommonJS, `node:test`); el código 
 | C-1 | Skill `story-complete` | modificar | `skills/story-complete/SKILL.md`: frontmatter (`description`, `triggers`), `## Precondiciones`, `## Restricciones / Reglas`, pasos de admisión, fecha de archivo, confirmación y escritura, `## Manejo de errores`, `## Salida` | AC-1, AC-2, CNF-4 |
 | C-2 | Evals del skill | modificar | `skills/story-complete/evals/evals.json` (casos nuevos y el caso `CANCELED` de STORY-160) | AC-1, AC-2, CNF-4 |
 | C-3 | README del skill | modificar | `skills/story-complete/README.md` (estados admitidos, regla de fecha) si STORY-160 lo crea | AC-1 (Veracidad) |
-| C-4 | ADR nuevo | crear | `docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` | AC-3 |
-| C-5 | ADR reemplazado | modificar (solo campos permitidos) | `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md`: `status: SUPERSEDED`, `superseded-by: ADR-0017`, nota bajo el título | AC-3, CNF-1 |
-| C-6 | Índice de ADRs | modificar | `docs/adr/README.md` (fila ADR-0016 → `SUPERSEDED → ADR-0017`; fila nueva ADR-0017) | AC-3 |
+| C-4 | ADR nuevo | crear | `docs/decisions/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` | AC-3 |
+| C-5 | ADR reemplazado | modificar (solo campos permitidos) | `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md`: `status: SUPERSEDED`, `superseded-by: ADR-0017`, nota bajo el título | AC-3, CNF-1 |
+| C-6 | Índice de ADRs | modificar | `docs/decisions/README.md` (fila ADR-0016 → `SUPERSEDED → ADR-0017`; fila nueva ADR-0017) | AC-3 |
 | C-7 | Instrucciones de agentes | modificar | `AGENTS.md` (regla «Layout fijo», frase de archivo) | AC-3 |
 | C-8 | Constitución | modificar | `docs/constitution.md` (jerarquía, línea 95; mapa de rutas, línea 225) | AC-3 |
 | C-9 | Dominio transversal | modificar | `docs/domains/domain-state-management.md` §4 invariante 6 (texto que deja STORY-160) | AC-3, CNF-2 |
@@ -104,7 +104,7 @@ La fila `CANCELED/DONE` de AC-2 de STORY-160 («ADR-0016 no admite su archivado�
 
 ### D-2 — ADR-0017 reemplaza a ADR-0016 por completo, re-enunciando el layout // satisface: AC-3, CNF-1
 
-ADR-0017 (`docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md`, `slug: layout-fijo-con-archivo-de-historias-canceladas`) sigue `docs/adr/adr-template.md`, con `supersedes: ADR-0016`, `superseded-by: null`, `status: ACCEPTED` y `date:` de la implementación. Contenido:
+ADR-0017 (`docs/decisions/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md`, `slug: layout-fijo-con-archivo-de-historias-canceladas`) sigue `docs/decisions/adr-template.md`, con `supersedes: ADR-0016`, `superseded-by: null`, `status: ACCEPTED` y `date:` de la implementación. Contenido:
 
 - **Contexto:** ADR-0016 no deja archivar historias `CANCELED`; EPIC-27/STORY-164 necesitan sacarlas de `specs/flow/` sin confundirlas con entregadas.
 - **Decisión:** re-enuncia **sin cambios** las tres raíces, el layout no configurable, `docs/requirements/` y el nombre de directorio de ADR-0016, y sustituye solo la viñeta **Archivo** por: «`specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` recibe las stories con `status: COMPLETED` o `status: CANCELED` (ambas con `substatus: DONE`); el status se conserva al archivar y es lo que distingue una historia entregada de una cancelada. `<YYYY-MM-DD>` es el `updated:`; si no es válido, el `created:`; si el frontmatter no tiene ninguna de esas dos claves, el `date:`. Una story sin fecha válida no se archiva. Las épicas y las stories en cualquier otro estado quedan en `specs/flow/`.» El árbol de la sección cambia el comentario de `archive/` a `stories COMPLETED o CANCELED`.
@@ -115,7 +115,7 @@ ADR-0016 solo recibe `status: SUPERSEDED`, `superseded-by: ADR-0017` y bajo su t
 
 | Alternativa | Motivo del rechazo |
 |---|---|
-| Editar la viñeta de archivo de ADR-0016 in place | Viola la inmutabilidad de los ADR aceptados (`AGENTS.md`, `docs/adr/README.md`, CNF-1). |
+| Editar la viñeta de archivo de ADR-0016 in place | Viola la inmutabilidad de los ADR aceptados (`AGENTS.md`, `docs/decisions/README.md`, CNF-1). |
 | ADR-0017 que solo trate el archivo y deje ADR-0016 `ACCEPTED` | La historia exige `superseded-by`; además dos ADR vigentes se contradirían en la viñeta de archivo. |
 | ADR-0017 solo con el archivo y ADR-0016 `SUPERSEDED` | El layout de tres raíces quedaría sin ADR vigente que lo enuncie. |
 | Reescribir «(ADR-0016)» en los skills a «(ADR-0017)» | Toca más de 20 skills y dos pruebas sin cambio de comportamiento; la nota de reemplazo basta para llegar al ADR vigente. |
@@ -179,7 +179,7 @@ Cambios específicos:
 - `docs/domains/domain-work-item-hierarchy.md:72` y `docs/domains/domain-knowledge-artifacts.md:244`: frase canónica; el wikilink `[[layout-fijo-de-tres-raices]]` pasa a `[[layout-fijo-con-archivo-de-historias-canceladas]]`.
 - `docs/guides/root-folder-practices.md`: `:29` y `:80` con «`COMPLETED` o `CANCELED`»; `:32-33`: la cadena de fecha de D-3 y «Las épicas no se archivan».
 - `docs/architecture/sddf-architecture.md:141`: comentario `de las stories COMPLETED o CANCELED`.
-- `docs/adr/README.md`: fila ADR-0016 → `SUPERSEDED → [ADR-0017](…)`; fila ADR-0017 `ACCEPTED`.
+- `docs/decisions/README.md`: fila ADR-0016 → `SUPERSEDED → [ADR-0017](…)`; fila ADR-0017 `ACCEPTED`.
 - `docs/index.md`: se regenera con `/memory-system index`, nunca a mano.
 
 | Alternativa | Motivo del rechazo |
@@ -274,7 +274,7 @@ En ambos, ni escritura ni movimiento.
 | 1 | `CANCELED/DONE` se archiva con la fecha de cada fila y el frontmatter idéntico | evals de las tres filas (`npm run test:eval -- story-complete`, ejecución manual) + prueba manual con `git diff --stat -M` que muestre solo renombres | AC-1, CNF-4 |
 | 2 | Rechazos sin efectos | evals «cancelada en curso» y «cancelada sin fecha» + `git status --porcelain` idéntico antes y después | AC-2, CNF-4 |
 | 3 | Conteo invariante | número de `specs/flow/STORY-*/` + `specs/flow/archive/*-STORY-*/` igual antes y después de cada prueba manual | CNF-4 |
-| 4 | ADR-0017 existe con `supersedes: ADR-0016`; ADR-0016 solo cambia `status`, `superseded-by` y la nota | `git diff docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` | AC-3, CNF-1 |
+| 4 | ADR-0017 existe con `supersedes: ADR-0016`; ADR-0016 solo cambia `status`, `superseded-by` y la nota | `git diff docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` | AC-3, CNF-1 |
 | 5 | La regla nueva figura en los documentos | `grep -n "CANCELED" AGENTS.md docs/constitution.md docs/domains/domain-*.md docs/guides/root-folder-practices.md` | AC-3, CNF-2 |
 | 6 | Ningún documento activo dice que las `CANCELED` no se archivan | `grep -rn "CANCELED.*no se archivan" AGENTS.md docs/` sin resultados | AC-3 |
 | 7 | El gate acepta una `CANCELED` archivada | caso nuevo de `test/memory-system.test.js` (D-7) | CNF-3 |

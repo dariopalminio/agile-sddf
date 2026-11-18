@@ -43,7 +43,7 @@ Hechos de contexto:
 - El Paso 9 de `epic-analyze` (modo manual) no tiene línea de siguiente paso. El texto de la línea 343 no se muestra al usuario. AC-1 pide que el siguiente paso indique la aprobación manual a `PLAN/DONE`.
 - `sal-corrections.md` §«Estados admitidos» no define qué pasa con un `status` fuera de la tabla, por ejemplo `BACKLOG`. Si se quita `READY-FOR-IMPLEMENT` de la tabla, el valor legado cae en ese caso no definido.
 - Evals actuales: `skills/epic-analyze/evals/evals.json` v1.5.0 (TC-001…TC-034; `BACKLOG` → MAD-03 en TC-024; estado posterior → `lista` en TC-022). `skills/epic-refine/evals/evals.json` v1.5.0 (TC-001…TC-026; la historia de cierre en `SPECIFY` está en TC-009 con el fixture `examples/cobertura-cierre/`; la historia de cierre implementada está en TC-013). Ningún eval prueba una historia de cierre en `PLAN`. `skills/epic-generate-all-stories/evals/evals.json` v1.1.0 no nombra buffers.
-- El ADR que sustituye a ADR-0006 y ADR-0008 lo crea STORY-186 como **ADR-0022**. Hoy no existe: `docs/adr/` llega a ADR-0021.
+- El ADR que sustituye a ADR-0006 y ADR-0008 lo crea STORY-186 como **ADR-0022**. Hoy no existe: `docs/decisions/` llega a ADR-0021.
 - STORY-187 reescribe `domain-story-lifecycle` §4.1 con el literal `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`. Su CR pide a esta historia usar ese literal (`design.md` de STORY-187, CR sobre `epic-analyze`).
 - Ninguna prueba de `test/` ni ningún script de `scripts/` depende del texto que cambia: `verify-validation-contract.js` solo lee el template del reporte, y `install.test.js:415` solo verifica que `SKILL.md` existe.
 
@@ -134,7 +134,7 @@ No se crea ningún componente nuevo: las reglas nuevas se suman a las tablas de 
 
 ### D-6 — Cita al ADR condicionada a su existencia // satisface: CNF-1 (veracidad)
 
-- **Elegida:** la regla del valor legado (D-1) y la línea 77 (D-3) citan `ADR-0022` solo si al implementar existe `docs/adr/ADR-0022-*.md` con `status: ACCEPTED`. Si no, el texto va sin cita al ADR y `implement-report.md` registra la cita pendiente para cuando STORY-186 se entregue. Así se cumple «Solo hay que actualizar la cita cuando exista» de la historia sin documentar algo que no existe (AGENTS.md, Veracidad).
+- **Elegida:** la regla del valor legado (D-1) y la línea 77 (D-3) citan `ADR-0022` solo si al implementar existe `docs/decisions/ADR-0022-*.md` con `status: ACCEPTED`. Si no, el texto va sin cita al ADR y `implement-report.md` registra la cita pendiente para cuando STORY-186 se entregue. Así se cumple «Solo hay que actualizar la cita cuando exista» de la historia sin documentar algo que no existe (AGENTS.md, Veracidad).
 - **Rechazada — citar ADR-0022 desde ya:** sería una referencia rota mientras STORY-186 no se entregue.
 
 ### D-7 — `epic-generate-all-stories` sin nombrar el buffer // satisface: CNF-1

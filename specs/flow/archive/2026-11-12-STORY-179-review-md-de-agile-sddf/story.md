@@ -29,7 +29,7 @@ related:
 Dado que "docs/templates/REVIEW-template.md" define las secciones "Qué es «Importante» aquí", "Tope de Minor", "No reportar" y "Verificar siempre"
 Cuando el mantenedor crea "REVIEW.md" en la raíz del repositorio desde esa plantilla
 Entonces "REVIEW.md" tiene esas cuatro secciones, en ese orden, sin placeholders "[...]" ni comentarios de la plantilla
-  Y "Qué es «Importante» aquí" tiene una viñeta para cada área: "skills/", "scripts/", "docs/adr/", "docs/templates/" y "docs/guardrails/", y otra para cualquier archivo
+  Y "Qué es «Importante» aquí" tiene una viñeta para cada área: "skills/", "scripts/", "docs/decisions/", "docs/templates/" y "docs/guardrails/", y otra para cualquier archivo
   Y "Tope de Minor" fija un máximo de 5 LOW por revisor
   Pero "REVIEW.md" no tiene sección de formato de salida
 ```

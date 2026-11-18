@@ -190,7 +190,7 @@ artefacto vivo).
 
 ### F-9 · MEDIO — Rutas obsoletas en documentación normativa
 
-- [docs/adr/README.md:15](docs/adr/README.md#L15) → `docs/specs/stories/STORY-NNN/design.md`;
+- [docs/decisions/README.md:15](docs/decisions/README.md#L15) → `docs/specs/stories/STORY-NNN/design.md`;
   el directorio es `03-stories/`. La regla 16 de la constitución (línea 186) sí quedó bien, así
   que las dos fuentes normativas de la misma convención se contradicen.
 
@@ -380,7 +380,7 @@ Aplicado el alcance aprobado (F-0 a F-11). 66 archivos tocados, todos en UTF-8 s
 | F-6 | Corregido | `skills/epic-from-project-plan/evals/evals.json` con 7 casos; 22 evals en el repo, todos parsean |
 | F-7 | Corregido | `diff` entre seed y central de `epic-template.md` sin diferencias |
 | F-8 | Corregido | `## Backlog de Historias` en los 3 archivos coordinados |
-| F-9 | Corregido | `docs/adr/README.md` apunta a `03-stories/STORY-NNN-<slug>/design.md` |
+| F-9 | Corregido | `docs/decisions/README.md` apunta a `03-stories/STORY-NNN-<slug>/design.md` |
 | F-10 | Corregido | 0 `parent` con placeholder; generadores alineados a `EPIC-NNN-<slug>` |
 | F-11 | Corregido | `epic-creation` deriva las claves del template menos la allowlist |
 | F-12, F-13, F-14 | Documentados, no aplicados | Fuera del alcance aprobado |

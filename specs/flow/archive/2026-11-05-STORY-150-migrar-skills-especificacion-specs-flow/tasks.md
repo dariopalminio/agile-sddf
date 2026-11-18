@@ -20,7 +20,7 @@ related:
 
 ## 1. Preparación
 
-- [x] T001 Verificar las precondiciones (CR-003): existe `docs/adr/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con la constante `PENDING_MIGRATION` y contiene las seis entradas `story-creation`, `story-evaluation`, `story-improve`, `story-refine`, `story-specify` y `story-split`; STORY-147 y STORY-148 en `DONE`. Si falta alguna, detener la implementación — design Risks, CR-003
+- [x] T001 Verificar las precondiciones (CR-003): existe `docs/decisions/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con la constante `PENDING_MIGRATION` y contiene las seis entradas `story-creation`, `story-evaluation`, `story-improve`, `story-refine`, `story-specify` y `story-split`; STORY-147 y STORY-148 en `DONE`. Si falta alguna, detener la implementación — design Risks, CR-003
 - [x] T002 [P] Ejecutar `npm test` y `npm run verify:repository` y guardar las salidas en `.tmp/story-implement/STORY-150/baseline.txt` (línea base en verde); guardar también la salida de `grep -rnE "SPECS_BASE|SDDF_ROOT|SDDF-ROOT-RESOLUTION|docs/specs|specs/stories" skills/story-creation skills/story-evaluation skills/story-refine skills/story-improve skills/story-split skills/story-specify` como inventario de líneas a migrar — design Context, D-2
 
 ## 2. Gate y prueba de DoD (RED)

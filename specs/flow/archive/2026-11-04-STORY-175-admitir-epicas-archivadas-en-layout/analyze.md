@@ -51,7 +51,7 @@ Cambios verificados desde el reporte anterior (`fix-plan-report.md`, 2026-10-29)
 | CNF-2 | Cadena de fecha `updated:` → `created:` → `date:` para épicas | ✓ | Interfaz «Fecha del prefijo»; D-3; contrato 1 |
 | CNF-3 | `verify:repository` y `npm test` en verde | ✓ | C15; D-7 (sin enlaces rotos); contrato 8 |
 
-Referencias de design.md comprobadas en el repositorio (2026-10-29): `docs/adr/` no contiene `ADR-0019-*`; la regla obsoleta está en `skills/epic-analyze/SKILL.md:103`, `skills/epic-creation/SKILL.md:136`, `docs/guides/organization-of-artifacts.md:53`, `docs/guides/root-folder-practices.md:34` y `docs/guides/artifact-directory-migration.md:45`; la nota «ningún skill los escribe» está en `docs/architecture/state-machine.md:178`; `$MAX_EPIC` en `skills/epic-from-project-plan/SKILL.md:55`; los últimos casos de eval son `TC-007`, `TC-011` y `TC-029`, de modo que `TC-008`, `TC-012` y `TC-030` son los siguientes libres.
+Referencias de design.md comprobadas en el repositorio (2026-10-29): `docs/decisions/` no contiene `ADR-0019-*`; la regla obsoleta está en `skills/epic-analyze/SKILL.md:103`, `skills/epic-creation/SKILL.md:136`, `docs/guides/organization-of-artifacts.md:53`, `docs/guides/root-folder-practices.md:34` y `docs/guides/artifact-directory-migration.md:45`; la nota «ningún skill los escribe» está en `docs/architecture/state-machine.md:178`; `$MAX_EPIC` en `skills/epic-from-project-plan/SKILL.md:55`; los últimos casos de eval son `TC-007`, `TC-011` y `TC-029`, de modo que `TC-008`, `TC-012` y `TC-030` son los siguientes libres.
 
 ---
 

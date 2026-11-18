@@ -66,7 +66,7 @@ related:
 | T010 | `## Referencias` | Esquema de datos (fila Referencias) | ✓ |
 | T011 | ADR-0006: 2 campos | C-2; D-07 | ✓ |
 | T012 | ADR-0008: 2 campos | C-3; D-07 | ✓ |
-| T013 | Fila y celdas en `docs/adr/README.md` | C-4; Interfaces | ✓ |
+| T013 | Fila y celdas en `docs/decisions/README.md` | C-4; Interfaces | ✓ |
 | T014 | Línea en `docs/index.md` | C-5; Interfaces | ✓ |
 | T015 | Verificar AC-1 y CNF-3 | V-1 a V-6 | ✓ |
 | T016 | Verificar AC-2 y AC-3 | V-7, V-8 | ✓ |
@@ -88,7 +88,7 @@ related:
 | C-5 Índice wiki | Componentes afectados | T014 | ✓ |
 | Frontmatter de ADR-0022 | Interfaces | T002 | ✓ |
 | Frontmatter de ADR-0006/0008 tras el cambio | Interfaces | T011, T012 | ✓ |
-| Fila nueva en `docs/adr/README.md` | Interfaces | T013 | ✓ |
+| Fila nueva en `docs/decisions/README.md` | Interfaces | T013 | ✓ |
 | Celdas `Estado` de ADR-0006/0008 | Interfaces | T013 | ✓ |
 | Línea en `docs/index.md` | Interfaces | T014 | ✓ |
 | Contrato de `fix-directives.md` | Interfaces; Esquema de datos | T005 | ✓ |
@@ -117,7 +117,7 @@ Sin inconsistencias detectadas.
 
 Ninguna corrección es obligatoria. Tres observaciones para la implementación:
 
-1. **CR-001 (design.md › Registro de Cambios):** la historia («sin ningún otro cambio», CNF-3) prevalece sobre la convención de `docs/adr/README.md` («se añade una nota visible de reemplazo bajo su título»). Ya está decidido en D-07. Si el PO prefiere la nota, hay que editar AC-1 y CNF-3 antes de implementar, no durante.
+1. **CR-001 (design.md › Registro de Cambios):** la historia («sin ningún otro cambio», CNF-3) prevalece sobre la convención de `docs/decisions/README.md` («se añade una nota visible de reemplazo bajo su título»). Ya está decidido en D-07. Si el PO prefiere la nota, hay que editar AC-1 y CNF-3 antes de implementar, no durante.
 2. **tasks.md › T020 frente a testcases.md › IT-003:** T020 dice que `git status` muestra «solo los 5 archivos del alcance (más `graphify-out/`)» e IT-003 dice «los 5 archivos más los artefactos de la historia». La lectura correcta es la de IT-003: `story.md`, `implement-report.md` y los demás artefactos de `specs/flow/STORY-186-*/` también cambian, y `graphify-out/` está en `.gitignore`. Hay que interpretar T020 así al ejecutarla.
 3. **D-05 depende de dos encabezados de los ejecutores:** T001 y CON-005 confirman que siguen existiendo antes de escribir el ADR. STORY-190, al implementar la regla, debe mantener ambos patrones o unificarlos de forma explícita.
 

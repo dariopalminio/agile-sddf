@@ -93,7 +93,7 @@ Seguir [docs/templates/story-template.md](docs/templates/story-template.md). Man
 | `docs/domains/domain-story-lifecycle.md` | Glosario "Rework" (señal = artefacto). Inv. 6, diagrama y tabla 4.3 sin cambios. |
 | `docs/domains/domain-state-management.md` | §5.3: quitar `REWORK`; señal = artefacto de fallo. |
 | `docs/guides/sddf-commands-pipeline.md`, `README.md`, `CHANGELOG.md` | Flujo post-review. |
-| `docs/adr/ADR-0008-rework-sin-estado-propio.md` | Nuevo. |
+| `docs/decisions/ADR-0008-rework-sin-estado-propio.md` | Nuevo. |
 | `docs/domains/README.md` | Enlace preexistente roto a `docs/wiki/state-machine.md` → apuntar a `domain-story-lifecycle.md` (drive-by en el mismo pase de docs). |
 | `docs/templates/story-template.md` l. 8 | Sin cambio (story-code-review ya figura como escritor de `status`). |
 

@@ -71,7 +71,7 @@ evaluated: 2026-10-17
 Hay que decidir en las Notas si STORY-143 corrige estas coincidencias o las delega. Corregir documentación no cambia el comportamiento de los skills, así que es compatible con la primera Non-Goal. Los subagentes de `story-code-review` sí son comportamiento y necesitan un dueño explícito.
 
 **T – Testeable (3): enumerar el alcance y las exclusiones de la búsqueda de AC-2.** Hay que reemplazar "skills, templates y documentación vigente" por una lista de rutas y añadir estas exclusiones:
-- `docs/adr/`: `ADR-0008-rework-sin-estado-propio.md` está `ACCEPTED` y usa `approved` como valor (l. 34 y 56). Los ADR aceptados son inmutables, así que la búsqueda debe excluirlos o la historia debe prever un ADR que lo reemplace.
+- `docs/decisions/`: `ADR-0008-rework-sin-estado-propio.md` está `ACCEPTED` y usa `approved` como valor (l. 34 y 56). Los ADR aceptados son inmutables, así que la búsqueda debe excluirlos o la historia debe prever un ADR que lo reemplace.
 - `docs/product/roadmap.md` (append-only) y `docs/product/story-map.md`, que contienen `APROBADA`. Hay que decidir si cuentan como documentación vigente.
 - Copias de runtime como `.claude/skills/`: no están versionadas, pero existen en disco con 13 archivos que contienen `APROBADA`. La búsqueda debe limitarse a archivos versionados (`git ls-files`) o a las fuentes.
 - `CHANGELOG.md`: solo cuenta `## [Unreleased]`.

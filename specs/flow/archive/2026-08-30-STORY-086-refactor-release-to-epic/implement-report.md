@@ -240,4 +240,4 @@ La migración destapó dos estados dudosos, ahora en el apéndice B de project.m
 
 También añadí como deuda que EPIC-00…EPIC-09 conservan date: en vez de created:/updated:. Es la misma deriva de esquema que corregí en project.md, pero es un cambio de esquema, no de estado, y no lo pediste.
 
-Actualicé además project.md (apéndice A, criterio de éxito ahora cumplido, apéndice B), docs/index.md, docs/adr/README.md y el CHANGELOG.md. Sin commit.
+Actualicé además project.md (apéndice A, criterio de éxito ahora cumplido, apéndice B), docs/index.md, docs/decisions/README.md y el CHANGELOG.md. Sin commit.

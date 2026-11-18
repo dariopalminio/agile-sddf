@@ -38,9 +38,9 @@ como comprobaciones deterministas.
 |---|---|---|---|
 | T001 | Verificar número libre ADR-0019 y estado de ADR-0017 | ✓ completado | — (sin `ADR-0019-*`; ADR-0017 `ACCEPTED`, `superseded-by: null`) |
 | T002 | Comprobar cambios previos de STORY-170 | ✓ completado | — (STORY-170 ya reescribió la cláusula de `SHIP`; se conservó) |
-| T003 | Crear ADR-0019 | ✓ completado | `docs/adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md` |
-| T004 | ADR-0017 → `SUPERSEDED` con tres cambios | ✓ completado | `docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` |
-| T005 | Índice de ADRs | ✓ completado | `docs/adr/README.md` |
+| T003 | Crear ADR-0019 | ✓ completado | `docs/decisions/ADR-0019-layout-fijo-con-archivo-de-epicas.md` |
+| T004 | ADR-0017 → `SUPERSEDED` con tres cambios | ✓ completado | `docs/decisions/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md` |
+| T005 | Índice de ADRs | ✓ completado | `docs/decisions/README.md` |
 | T006 | `AGENTS.md` | ✓ completado | `AGENTS.md` |
 | T007 | Constitución | ✓ completado | `docs/constitution.md` |
 | T008 | Invariante 6 (`COMPLETED` de épica) | ✓ completado | `docs/domains/domain-state-management.md` |

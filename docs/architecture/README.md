@@ -71,7 +71,7 @@ El framework utiliza **runners de LLM** (`claude`, `codex`, `opencode`) para val
   transversales (memoria, runtime, instalador). Documentos de vida larga que describen el
   estado vigente del sistema.
 - **Qué no va aquí:**
-  - Decisiones y sus alternativas → [[adr-index]] (`docs/adr/ADR-NNNN-*.md`).
+  - Decisiones y sus alternativas → [[adr-index]] (`docs/decisions/ADR-NNNN-*.md`).
   - Diseño de una historia concreta → `design.md` de la historia
     (`specs/flow/STORY-NNN-*/design.md`).
   - Modelo de dominio (entidades, invariantes de negocio) → [domains/README.md](../domains/README.md)

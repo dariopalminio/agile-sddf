@@ -68,7 +68,7 @@ Stack: skills en Markdown, motores Node ≥ 18 sin dependencias, pruebas `node -
 | C-5 | Prueba del motor y del contrato | crear | `test/story-code-review-preexisting.test.js` | AC-1, AC-2, AC-3, CNF-2 |
 | C-6 | README del skill | modificar (una frase en «What it does») | `skills/story-code-review/README.md` | AC-1 |
 
-Sin cambios: `agents/*.agent.md`, `assets/fix-directives-template.md` (las filas siguen siendo solo bloqueantes), `docs/guardrails/`, `docs/adr/`, `package.json` (`files` ya publica `skills/`) y `scripts/`.
+Sin cambios: `agents/*.agent.md`, `assets/fix-directives-template.md` (las filas siguen siendo solo bloqueantes), `docs/guardrails/`, `docs/decisions/`, `package.json` (`files` ya publica `skills/`) y `scripts/`.
 
 ## Interfaces
 

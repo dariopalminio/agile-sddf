@@ -97,7 +97,7 @@ terminada es trabajo aparte.
   históricas parqueadas para siempre en un estado activo y desalineadas de EPIC-14, 15, 16 y 18, que
   ya estaban en `COMPLETED`.
 - **Añadir una nota de enmienda al final de ADR-0003:** descartada — viola la regla de inmutabilidad
-  de `docs/adr/README.md`, según la cual el único cambio permitido sobre un ADR aceptado es rellenar
+  de `docs/decisions/README.md`, según la cual el único cambio permitido sobre un ADR aceptado es rellenar
   su campo `superseded-by`.
 - **Registrar la migración solo en el CHANGELOG, sin ADR:** descartada — dejaría a ADR-0003, que
   sigue siendo lectura obligatoria para entender los workflows, afirmando algo que ya no es cierto.

@@ -23,7 +23,7 @@ related:
 
 ## 1. Precondición
 
-- [x] T001 Comprobar el estado de partida que cita design.md (Context): existe `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` con `status: ACCEPTED` (STORY-186 implementada); las líneas citadas de los cuatro `SKILL.md` siguen nombrando `READY-FOR-IMPLEMENT` en los mismos pasos (story-analyze 9a y 10; guardia del Paso 5 de story-plan; 0c.2 y 0c.4 de story-implement; 1d y 2e de story-implement-tasks); el último caso es TC-007 en `story-analyze` y `story-plan`, TC-044 en `story-implement` y TC-006 en `story-implement-tasks`; si STORY-189 ya se implementó, anotar qué entradas añadió a los gates; y `npm run verify:repository` y `npm test` pasan antes del cambio (línea base). Hecho: el estado está confirmado o sus diferencias están anotadas para `implement-report.md`, con los números de línea y de caso ajustados.
+- [x] T001 Comprobar el estado de partida que cita design.md (Context): existe `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` con `status: ACCEPTED` (STORY-186 implementada); las líneas citadas de los cuatro `SKILL.md` siguen nombrando `READY-FOR-IMPLEMENT` en los mismos pasos (story-analyze 9a y 10; guardia del Paso 5 de story-plan; 0c.2 y 0c.4 de story-implement; 1d y 2e de story-implement-tasks); el último caso es TC-007 en `story-analyze` y `story-plan`, TC-044 en `story-implement` y TC-006 en `story-implement-tasks`; si STORY-189 ya se implementó, anotar qué entradas añadió a los gates; y `npm run verify:repository` y `npm test` pasan antes del cambio (línea base). Hecho: el estado está confirmado o sus diferencias están anotadas para `implement-report.md`, con los números de línea y de caso ajustados.
 
 ## 2. Evals primero (CNF-1)
 

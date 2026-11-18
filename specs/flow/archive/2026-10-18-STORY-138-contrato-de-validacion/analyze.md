@@ -68,7 +68,7 @@ CNF-1…CNF-4 también tienen cobertura: CNF-1 en D-1, D-8, D-10 y D-11; CNF-2 e
 | T018 | Crear ADR-0015 | D-10 | ✓ |
 | T019 | V-11 | V-11 | ✓ (ver INC-003) |
 | T020 | Fila en `docs/policies/README.md` | D-11 | ✓ |
-| T021 | Fila en `docs/adr/README.md` | D-11 | ✓ |
+| T021 | Fila en `docs/decisions/README.md` | D-11 | ✓ |
 | T022 | Regenerar `docs/index.md` | D-11 | ✓ |
 | T023 | V-12 | V-12 | ✓ |
 | T024 | V-13 | V-13 | ✓ |
@@ -144,7 +144,7 @@ La tarea T026 del análisis anterior se retiró (`fix-plan-report.md`, C-01). No
 - **Tipo:** formato Markdown de un contrato de verificación (el comando no se lee tal como está escrito)
 - **Descripción:** el método de V-11 (l.432) y T019 (tasks.md l.55) escriben `` `grep -c '^| `story-' …` `` con comillas invertidas anidadas. Por eso el bloque de código se cierra antes de `story-`, y el comando se renderiza partido. Además, en la tabla de design.md el `|` sin escapar abre una columna extra en la fila V-11, de modo que el método y el origen (`CNF-1, CR-001`) se desplazan de columna. El comando es correcto en una terminal; lo que falla es su lectura en el documento.
 - **Archivo afectado:** design.md — «Contratos de verificación», fila V-11 (l.432); tasks.md — «4. ADR-0015», T019 (l.55)
-- **Acción requerida:** usar un bloque de código con doble comilla invertida (``` `` grep -c '^| `story-' docs/adr/ADR-0015-contrato-de-validacion.md `` ```) en ambos archivos y, dentro de la tabla de design.md, escapar el `|` como `\|`.
+- **Acción requerida:** usar un bloque de código con doble comilla invertida (``` `` grep -c '^| `story-' docs/decisions/ADR-0015-contrato-de-validacion.md `` ```) en ambos archivos y, dentro de la tabla de design.md, escapar el `|` como `\|`.
 
 ### INC-004 [WARNING]
 

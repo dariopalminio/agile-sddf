@@ -27,10 +27,10 @@ updated: 2026-11-10
 
 | # | Archivo:Línea | Severidad | Resultado |
 |---|---|---|---|
-| 1 | docs/adr/ADR-0021-guia-de-revision-review-md.md:70-72 | MEDIUM | 💻 corregido: `docs/adr/ADR-0021-guia-de-revision-review-md.md` — el nivel 2 de «Precedencia» incluye los checklists que el DoD incorpora por referencia (`gr-ai-security-checklist`, `gr-code-security-checklist` vía `dod-story-implement`); el nivel 4 queda en los agentes y el baseline embebido del Security-Reviewer; nuevo párrafo «Checklists incorporados por el DoD» (`REVIEW.md` solo acota su aplicación y la severidad de cada hallazgo, sin declararlos no aplicables). Rationale 1 y 4 ajustados en coherencia |
-| 2 | docs/adr/ADR-0021-guia-de-revision-review-md.md:110,123-125 | MEDIUM | 💻 corregido: `docs/adr/ADR-0021-guia-de-revision-review-md.md` — opción (b): `🟡 Nit` y «Tope de nits», como la plantilla; se quitó «las nombra STORY-179» y las secciones se atribuyen a `docs/templates/REVIEW-template.md`; nueva regla «`Nit`, no `Minor`» que documenta el ajuste |
+| 1 | docs/decisions/ADR-0021-guia-de-revision-review-md.md:70-72 | MEDIUM | 💻 corregido: `docs/decisions/ADR-0021-guia-de-revision-review-md.md` — el nivel 2 de «Precedencia» incluye los checklists que el DoD incorpora por referencia (`gr-ai-security-checklist`, `gr-code-security-checklist` vía `dod-story-implement`); el nivel 4 queda en los agentes y el baseline embebido del Security-Reviewer; nuevo párrafo «Checklists incorporados por el DoD» (`REVIEW.md` solo acota su aplicación y la severidad de cada hallazgo, sin declararlos no aplicables). Rationale 1 y 4 ajustados en coherencia |
+| 2 | docs/decisions/ADR-0021-guia-de-revision-review-md.md:110,123-125 | MEDIUM | 💻 corregido: `docs/decisions/ADR-0021-guia-de-revision-review-md.md` — opción (b): `🟡 Nit` y «Tope de nits», como la plantilla; se quitó «las nombra STORY-179» y las secciones se atribuyen a `docs/templates/REVIEW-template.md`; nueva regla «`Nit`, no `Minor`» que documenta el ajuste |
 
-**Archivos corregidos:** `docs/adr/ADR-0021-guia-de-revision-review-md.md`
+**Archivos corregidos:** `docs/decisions/ADR-0021-guia-de-revision-review-md.md`
 **Hallazgos omitidos por archivo inexistente:** ninguno
 
 De paso se resolvió el LOW «baseline embebido no se define» (ahora «baseline embebido del Security-Reviewer»), en la
@@ -45,18 +45,18 @@ verificación 1 a 11 de `design.md` (T016 a T022) y el gate del repositorio.
 |---|---|---|---|
 | T001 | Confirmar que ADR-0021 y el slug `guia-de-revision-review-md` siguen libres | ✓ completado | — (ADR-0021 libre; el slug no existe en `docs/`) |
 | T002 | Estado de CR-001 | ✓ completado | — (ver «Decisiones durante la implementación») |
-| T003 | Crear ADR-0021 con frontmatter y seis secciones | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T004 | `## Contexto y problema` con los dos bloques | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T005 | `### Ubicación` (D-2) | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T006 | `### Precedencia` (D-3) | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T007 | `### Fuente de lectura` (D-4) | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T008 | `### Historias que modifican la guía o el DoD` (D-5) | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T009 | `### Vocabulario` (D-6) | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T010 | `## Rationale` | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T011 | `## Alternativas consideradas` (incluye rama base) | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T012 | `## Consecuencias` con puntos de cambio | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T013 | `## Referencias` con wikilinks verificados | ✓ completado | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
-| T014 | Fila en el índice de ADRs | ✓ completado | `docs/adr/README.md` |
+| T003 | Crear ADR-0021 con frontmatter y seis secciones | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T004 | `## Contexto y problema` con los dos bloques | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T005 | `### Ubicación` (D-2) | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T006 | `### Precedencia` (D-3) | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T007 | `### Fuente de lectura` (D-4) | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T008 | `### Historias que modifican la guía o el DoD` (D-5) | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T009 | `### Vocabulario` (D-6) | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T010 | `## Rationale` | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T011 | `## Alternativas consideradas` (incluye rama base) | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T012 | `## Consecuencias` con puntos de cambio | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T013 | `## Referencias` con wikilinks verificados | ✓ completado | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
+| T014 | Fila en el índice de ADRs | ✓ completado | `docs/decisions/README.md` |
 | T015 | Línea en el índice wiki | ✓ completado | `docs/index.md` |
 | T016 | Contratos 1 y 2 | ✓ completado | — |
 | T017 | Contratos 3, 6 y 7 | ✓ completado | — |
@@ -97,16 +97,16 @@ verificación 1 a 11 de `design.md` (T016 a T022) y el gate del repositorio.
 | 1 | ADR-0021 existe y está aceptado | ✓ | `id: ADR-0021`, `status: ACCEPTED`, `slug: guia-de-revision-review-md` = nombre de archivo |
 | 2 | Seis secciones en orden | ✓ | `##` en las líneas 14, 47, 136, 150, 196 y 223, en el orden del template; 0 coincidencias de `[Por completar]` y `escritor:` |
 | 3 | Ubicación, precedencia y fuente | ✓ | `<REPO_ROOT>/REVIEW.md`; la tabla nombra `docs/constitution.md` y `docs/guardrails/dod-story-code-review.md`, y el párrafo siguiente `code-review-report-template.md`; «working tree» aparece 6 veces |
-| 4 | README igual al frontmatter | ✓ | `docs/adr/README.md:70`: mismo título, `ACCEPTED`, `2026-11-10` |
+| 4 | README igual al frontmatter | ✓ | `docs/decisions/README.md:70`: mismo título, `ACCEPTED`, `2026-11-10` |
 | 5 | Una fila por severidad | ✓ | Líneas 115-117: Important → `HIGH` o `MEDIUM`/bloquea; Minor → `LOW`/no bloquea; Pre-existing → `PREEXISTENTE`/no bloquea (decisión del mantenedor en la ronda 2) |
 | 6 | Historia que modifica la guía o el DoD | ✓ | Rige el working tree, hay advertencia en `code-review-report.md` y se detecta con `$IMPL_FILES` sin git |
-| 7 | Sin cuarta raíz y ADR-0019 intacto | ✓ | Nombra `AGENTS.md` y `CLAUDE.md`; `git diff --stat -- docs/adr/ADR-0019-…` vacío |
+| 7 | Sin cuarta raíz y ADR-0019 intacto | ✓ | Nombra `AGENTS.md` y `CLAUDE.md`; `git diff --stat -- docs/decisions/ADR-0019-…` vacío |
 | 8 | Rama base descartada con motivo | ✓ | `## Alternativas consideradas` › «Fuente de lectura» |
 | 9 | Fuente citada y distinguida | ✓ | URL citada 2 veces con fecha 2026-11-07; bloques «Lo que dice la convención de Anthropic» y «Lo que decide agile-sddf» |
 | 10 | Gate verde | ✓ | Ver «Pruebas ejecutadas» |
 | 11 | Alcance acotado | ✓ | `git status`: los 3 archivos de «Componentes afectados» más artefactos de STORY-178 y la línea del checklist en `epic.md` |
 
-Wikilinks de `## Referencias` comprobados a mano contra `slug:` (porque `check-doc-links.js` excluye `docs/adr`): los 11
+Wikilinks de `## Referencias` comprobados a mano contra `slug:` (porque `check-doc-links.js` excluye `docs/decisions`): los 11
 resuelven. Codificación: los tres archivos empiezan por `---` (sin BOM) y tienen 0 bytes `EF BB BF` en el contenido.
 
 ## Pruebas ejecutadas
@@ -144,7 +144,7 @@ DoD: `docs/guardrails/dod-story-implement.md` (`enforcement: error`).
 | 15 | Skills críticos con `evals/evals.json` | ✓ | No aplica: no se tocan skills |
 | 16 | Casos de prueba ejecutados según `skill-master` | ⚠️ | No aplica a un ADR; requiere ejecución de evals, fuera del alcance de story-implement |
 | 17 | `tasks.md` con todas las tareas `[x]` | ✓ | 22/22 `[x]` |
-| 18 | README o docs actualizados si cambian contratos | ✓ | `docs/adr/README.md` y `docs/index.md` listan ADR-0021 |
+| 18 | README o docs actualizados si cambian contratos | ✓ | `docs/decisions/README.md` y `docs/index.md` listan ADR-0021 |
 | 19 | Decisiones no previstas documentadas | ✓ | CR-001 está resuelta en este informe; `design.md` ya la preveía (D-6, CR-001) |
 | 20 | CHANGELOG actualizado si aplica | ⚠️ | El bloque de CHANGELOG lo escribe `epic-ship` al cerrar EPIC-28 |
 | 21 | Build de CI pasa | ⚠️ | Pasa el gate local que corre `quality.yml`; CI remoto no ejecutado (requiere ejecución externa) |

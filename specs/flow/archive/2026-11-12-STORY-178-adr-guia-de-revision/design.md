@@ -26,9 +26,9 @@ Estado verificado en el filesystem (2026-11-08):
 
 | Fuente | Hallazgo |
 |---|---|
-| `docs/adr/` | Último ADR: `ADR-0020-contratos-centralizados-para-spec-living.md`. Sin coincidencias de `ADR-0021` en el repo: el siguiente número libre es **ADR-0021**. |
-| `docs/adr/adr-template.md` | Frontmatter `type`, `id`, `slug`, `title`, `status`, `date`, `supersedes`, `superseded-by`; seis secciones: Contexto y problema, Decisión, Rationale, Alternativas consideradas, Consecuencias, Referencias. Los ADR existentes (ADR-0015, ADR-0019) no conservan los comentarios `escritor:` del template. |
-| `docs/adr/README.md` | Tabla `## Índice de ADRs` con columnas ID, Título, Estado, Fecha; última fila ADR-0020. |
+| `docs/decisions/` | Último ADR: `ADR-0020-contratos-centralizados-para-spec-living.md`. Sin coincidencias de `ADR-0021` en el repo: el siguiente número libre es **ADR-0021**. |
+| `docs/decisions/adr-template.md` | Frontmatter `type`, `id`, `slug`, `title`, `status`, `date`, `supersedes`, `superseded-by`; seis secciones: Contexto y problema, Decisión, Rationale, Alternativas consideradas, Consecuencias, Referencias. Los ADR existentes (ADR-0015, ADR-0019) no conservan los comentarios `escritor:` del template. |
+| `docs/decisions/README.md` | Tabla `## Índice de ADRs` con columnas ID, Título, Estado, Fecha; última fila ADR-0020. |
 | `docs/index.md` | Sección `### Decisiones de arquitectura (adr/)` lista ADR-0001 a ADR-0020 con el formato `- [[<slug>]] — [<archivo>](adr/<archivo>) — <título>`. |
 | `docs/constitution.md` | Regla 16: ADR obligatorio si la decisión afecta a más de un skill o restringe decisiones futuras; las decisiones de un solo skill van al `design.md` de la historia. |
 | `ADR-0019` | Declara las raíces hermanas `docs/`, `specs/flow/`, `specs/flow/archive/`, `specs/living/` y `workflow/`; no regula archivos sueltos de la raíz (`AGENTS.md`, `CLAUDE.md`). |
@@ -44,10 +44,10 @@ Stakeholders: el mantenedor que ejecuta STORY-179 a STORY-185, que citarán ADR-
 ## Goals / Non-Goals
 
 **Goals:**
-- Crear `docs/adr/ADR-0021-guia-de-revision-review-md.md` con `status: ACCEPTED` y las seis secciones del template // satisface: AC-1
+- Crear `docs/decisions/ADR-0021-guia-de-revision-review-md.md` con `status: ACCEPTED` y las seis secciones del template // satisface: AC-1
 - Fijar en `## Decisión` la ubicación (D-2), la precedencia (D-3), la fuente de lectura (D-4), la regla para historias que modifican la guía o el DoD (D-5) y el vocabulario (D-6) // satisface: AC-1, AC-2, AC-3
 - Distinguir en el ADR la convención de Anthropic de la decisión de agile-sddf, citando la fuente // satisface: CNF-3
-- Listar ADR-0021 en `docs/adr/README.md` y en `docs/index.md` // satisface: AC-1
+- Listar ADR-0021 en `docs/decisions/README.md` y en `docs/index.md` // satisface: AC-1
 
 **Non-Goals:**
 - Crear `REVIEW.md` o su plantilla (STORY-179, STORY-184)
@@ -62,7 +62,7 @@ Stakeholders: el mantenedor que ejecuta STORY-179 a STORY-185, que citarán ADR-
 
 | Campo | Valor |
 |---|---|
-| Archivo | `docs/adr/ADR-0021-guia-de-revision-review-md.md` |
+| Archivo | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` |
 | `type` | `adr` |
 | `id` | `ADR-0021` |
 | `slug` | `guia-de-revision-review-md` (único en `docs/`: verificado sin coincidencias) |
@@ -167,8 +167,8 @@ Reglas que acompañan la tabla:
 
 | Componente | Acción | Ubicación | AC que satisface |
 |---|---|---|---|
-| ADR de la guía de revisión | crear | `docs/adr/ADR-0021-guia-de-revision-review-md.md` | AC-1, AC-2, AC-3, CNF-1 a CNF-3 |
-| Índice de ADRs | modificar (una fila al final) | `docs/adr/README.md` | AC-1 |
+| ADR de la guía de revisión | crear | `docs/decisions/ADR-0021-guia-de-revision-review-md.md` | AC-1, AC-2, AC-3, CNF-1 a CNF-3 |
+| Índice de ADRs | modificar (una fila al final) | `docs/decisions/README.md` | AC-1 |
 | Índice wiki | modificar (una línea tras ADR-0020) | `docs/index.md` | AC-1, CNF-4 |
 
 No se modifica ningún otro archivo (Non-Goals).
@@ -202,7 +202,7 @@ Estructura de `## Decisión` (subtítulos `###` en este orden): Ubicación (D-2)
 ### F-1 — Registro del ADR (escenario principal) // AC-1
 1. Confirmar que `ADR-0021-*` sigue libre (F-3).
 2. Crear ADR-0021 (D-1) con `## Decisión` (D-2 a D-6) y el resto de secciones (D-7).
-3. Añadir la fila en `docs/adr/README.md` y la línea en `docs/index.md`.
+3. Añadir la fila en `docs/decisions/README.md` y la línea en `docs/index.md`.
 4. Ejecutar `npm run verify:repository` y `npm test` (CNF-4).
 
 ### F-2 — Consulta de una severidad // AC-2
@@ -232,10 +232,10 @@ El lector busca `Important`, `Minor` o `Pre-existing` en la tabla de vocabulario
 | 1 | ADR-0021 existe y está aceptado | Frontmatter: `id: ADR-0021`, `status: ACCEPTED`, `slug` igual al nombre de archivo sin `ADR-0021-` ni extensión | AC-1 |
 | 2 | Tiene las seis secciones del template, en orden | Encabezados `##` de ADR-0021 = Contexto y problema, Decisión, Rationale, Alternativas consideradas, Consecuencias, Referencias; sin `[Por completar]` | AC-1 |
 | 3 | `## Decisión` fija ubicación, precedencia y fuente | Contiene `<REPO_ROOT>/REVIEW.md` (o «raíz del repositorio»), la tabla de D-3 con `constitution.md`, `dod-story-code-review.md` y `code-review-report-template.md`, y la palabra «working tree» | AC-1 |
-| 4 | README lista el ADR igual | La fila de ADR-0021 en `docs/adr/README.md` tiene el mismo `title`, `ACCEPTED` y la misma `date` que el frontmatter | AC-1 |
+| 4 | README lista el ADR igual | La fila de ADR-0021 en `docs/decisions/README.md` tiene el mismo `title`, `ACCEPTED` y la misma `date` que el frontmatter | AC-1 |
 | 5 | Una fila por severidad | En la tabla de vocabulario, `Important`, `Minor` y `Pre-existing` aparecen una vez cada una, con `HIGH o MEDIUM`/bloquea, `LOW`/no bloquea y `PREEXISTENTE`/no bloquea | AC-2 |
 | 6 | Historia que modifica la guía o el DoD | `## Decisión` dice que rige la versión del working tree, exige la advertencia en el informe y detecta con `$IMPL_FILES`, sin git | AC-3 |
-| 7 | Sin cuarta raíz y ADR-0019 intacto | ADR-0021 compara `REVIEW.md` con `AGENTS.md` y `CLAUDE.md`; `git diff -- docs/adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md` vacío | CNF-1 |
+| 7 | Sin cuarta raíz y ADR-0019 intacto | ADR-0021 compara `REVIEW.md` con `AGENTS.md` y `CLAUDE.md`; `git diff -- docs/decisions/ADR-0019-layout-fijo-con-archivo-de-epicas.md` vacío | CNF-1 |
 | 8 | Alternativa de fuente descartada | `## Alternativas consideradas` contiene «rama base» con motivo de descarte | CNF-2 |
 | 9 | Fuente citada y distinguida | ADR-0021 contiene `code.claude.com/docs/en/code-review-customize` y los dos bloques de D-7 | CNF-3 |
 | 10 | Gate verde | `npm run verify:repository` y `npm test` terminan con código 0 | CNF-4 |
@@ -246,7 +246,7 @@ El lector busca `Important`, `Minor` o `Pre-existing` en la tabla de vocabulario
 - **[Riesgo] Una historia rebaja su propio listón** editando `REVIEW.md` o el DoD → advertencia en el informe (D-5) y decisión humana en `/story-acceptance`.
 - **[Riesgo] Si `implement-report.md` no lista `REVIEW.md` o el DoD, D-5 no detecta el cambio** → el informe solo dice «no pudo comprobarlo» cuando `$IMPL_FILES` está vacío; un `implement-report.md` incompleto es un defecto de esa etapa, que revisa el Product-Owner-Reviewer.
 - **[Trade-off] Lectura distinta en local y en GitHub** (working tree frente a rama base) → se documenta en Consecuencias; desaparece al fusionar el cambio.
-- **[Limitación] `check-doc-links.js` excluye `docs/adr`** → los enlaces dentro de ADR-0021 no los valida el gate; verificarlos a mano.
+- **[Limitación] `check-doc-links.js` excluye `docs/decisions`** → los enlaces dentro de ADR-0021 no los valida el gate; verificarlos a mano.
 
 ## Open Questions
 

@@ -49,7 +49,7 @@ updated: 2026-10-23
 
 ## Evidencia de verificación
 
-**T001 — precondiciones.** `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` tiene `status: ACCEPTED`; `scripts/verify-fixed-layout.js` existe con `PENDING_MIGRATION`, que contenía `story-implement` y `story-implement-tasks`. STORY-147 y STORY-148 están en `CODE-REVIEW/DONE` (implementación cerrada y revisada, aún sin VERIFY/ACCEPTANCE); se consideró suficiente porque los dos entregables de los que depende esta historia (ADR y gate) existen y funcionan.
+**T001 — precondiciones.** `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` tiene `status: ACCEPTED`; `scripts/verify-fixed-layout.js` existe con `PENDING_MIGRATION`, que contenía `story-implement` y `story-implement-tasks`. STORY-147 y STORY-148 están en `CODE-REVIEW/DONE` (implementación cerrada y revisada, aún sin VERIFY/ACCEPTANCE); se consideró suficiente porque los dos entregables de los que depende esta historia (ADR y gate) existen y funcionan.
 
 **T004 — RED.** Con las dos entradas retiradas, `npm run verify:layout` salió con exit 1 y 46 errores que nombran skill y línea: R1 (falta `<!-- SDDF-FIXED-LAYOUT: v1 -->`) en ambos `SKILL.md`, R3 (`SPECS_BASE`, `SDDF_ROOT`, `SDDF-ROOT-RESOLUTION: v1`) y R4 (lectura de `root` de `sddf.config.yaml`), incluida la fila de dependencias de `story-implement-tasks` (l. 102).
 

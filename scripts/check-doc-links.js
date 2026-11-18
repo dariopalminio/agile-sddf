@@ -26,7 +26,7 @@ const ACTIVE_ROOTS = [
 ];
 const HISTORICAL_EXCLUSIONS = [
   'CHANGELOG.md',
-  'docs/adr',
+  'docs/decisions',
   'specs',
 ];
 

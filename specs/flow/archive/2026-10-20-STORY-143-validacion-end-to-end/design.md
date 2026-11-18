@@ -35,14 +35,14 @@ equivalencias, §6 «Excepciones» y la regla D-7 sobre reportes heredados.
 | Elemento | Estado actual |
 |---|---|
 | Gate determinista | `scripts/verify-repository.js` ejecuta 13 pasos, uno por script `scripts/verify-*.js` o equivalente. `test/verify-repository.test.js` fija la lista de rótulos con `deepEqual`. Ningún paso comprueba el contrato de validación. |
-| Precedente de alcance documental (P3) | `scripts/check-doc-links.js` declara `ACTIVE_ROOTS` y `HISTORICAL_EXCLUSIONS` (`CHANGELOG.md`, `docs/adr`, `docs/specs`): los ADR y las specs «preservan el contexto en que se escribieron». |
+| Precedente de alcance documental (P3) | `scripts/check-doc-links.js` declara `ACTIVE_ROOTS` y `HISTORICAL_EXCLUSIONS` (`CHANGELOG.md`, `docs/decisions`, `docs/specs`): los ADR y las specs «preservan el contexto en que se escribieron». |
 | Precedente de excepciones versionadas (P3) | `scripts/verify-eval-inventory.js` falla si una excepción ya no hace falta («ya tiene evals y no debe seguir exento»). |
 | Dependencias | `package.json` solo declara `fs-extra`. No hay parser YAML ni motor de globs. Los scripts del gate usan `fs`, `path` y expresiones regulares. |
 | Templates de los seis skills | `epic-analyze-report-template.md`, `evaluation-output-template.md` (`story-evaluation`), `analyze-report-template.md` (`story-analyze`), `code-review-report-template.md`, `verify-report-template.md`, `acceptance-report-template.md`, todos en `skills/<skill>/assets/`. |
 | Formas de placeholder de `verdict` previstas | `{verdict}` (STORY-140, STORY-142) y la enumeración `{APPROVED \| NEEDS-REFINEMENT}` (STORY-139). El template de `epic-analyze` lleva marcadores HTML en sus encabezados: `## Veredicto <!-- sección obligatoria · … -->` (STORY-139 D-2). |
 | Ejemplos de reporte propios | `skills/story-acceptance/examples/{example-approved,example-partial,example-rejected}/acceptance-report.md`, `skills/story-analyze/examples/output/analyze.md`, `skills/story-code-review/examples/example-approved/code-review-report.md`. `epic-analyze`, `story-evaluation` y `story-verify` no tienen ejemplos de reporte. |
 | Reportes de validación en fixtures de otros skills | `skills/story-fix-plan/examples/*/analyze.md` (tres; `verdict: APPROVED` sin `## Veredicto`) y `skills/story-improve/examples/*/finvest-evaluation-report.md` (dos; los alinea STORY-140). |
-| Variantes heredadas fuera de `docs/specs/` (hoy) | 27 archivos con `APROBADA`, `Aprobada` o `review-status`, y unos 20 con `approved` como valor. Todos están en el inventario de STORY-139…142, salvo las versiones publicadas de `CHANGELOG.md` y: `docs/adr/ADR-0008-rework-sin-estado-propio.md` (l.34, l.56), `docs/product/roadmap.md` (l.59, l.145, l.248), `docs/product/story-map.md` (l.43, l.107) y `skills/memory-system/examples/dod-{custom,legacy,monolithic,template}/` («Review status approved»). |
+| Variantes heredadas fuera de `docs/specs/` (hoy) | 27 archivos con `APROBADA`, `Aprobada` o `review-status`, y unos 20 con `approved` como valor. Todos están en el inventario de STORY-139…142, salvo las versiones publicadas de `CHANGELOG.md` y: `docs/decisions/ADR-0008-rework-sin-estado-propio.md` (l.34, l.56), `docs/product/roadmap.md` (l.59, l.145, l.248), `docs/product/story-map.md` (l.43, l.107) y `skills/memory-system/examples/dod-{custom,legacy,monolithic,template}/` («Review status approved»). |
 | `approved` como palabra inglesa | `docs/templates/domain-template.md` y su copia en `skills/memory-system/assets/scaffold/templates/` (l.31, l.179-180: «an approved English rendering», «explicitly approved»). Los `name` de evals usan `approved` en kebab-case (`happy-path-todos-approved`, `indice-consistente-veredicto-approved`). |
 | CRs de otras historias dirigidos a esta | STORY-140 CR-002 (`docs/product/`), STORY-141 CR-002 (subagentes de `story-code-review` y fixtures `dod-*` de `memory-system`) y STORY-142 CR-003 (aristas `BLOCKED` del flowchart). |
 | Destinos de runtime versionados | `.github/skills`, `.github/agents`, `.codex/skills`. Son salida de `agile-sddf install`, no fuente (AGENTS.md). |
@@ -196,7 +196,7 @@ Resultado de L-4 contra el inventario medido:
 |---|---|---|
 | `docs/specs/` | Artefactos históricos | AC-2 (`Pero`) |
 | `CHANGELOG.md`, toda sección `## [<versión>]` salvo `## [Unreleased]` | Versiones publicadas | AC-2 (`Pero`) |
-| `docs/adr/` | Los ADR aceptados son inmutables (AGENTS.md). `ADR-0008` cita `approved` y no se puede editar. `check-doc-links.js` ya lo trata como histórico | CR-001 |
+| `docs/decisions/` | Los ADR aceptados son inmutables (AGENTS.md). `ADR-0008` cita `approved` y no se puede editar. `check-doc-links.js` ya lo trata como histórico | CR-001 |
 | `docs/product/roadmap.md` | Propuestas fechadas en modo append-only (`project-planning`). Reescribirlas falsea el registro | Resuelve STORY-140 CR-002 · CR-001 |
 | `docs/product/story-map.md` | `status: COMPLETED` y fecha 2026-04-20. Es una instantánea de planificación cerrada | Resuelve STORY-140 CR-002 · CR-001 |
 | Policy, secciones `## 5.` y `## 6.` | §5 traduce los valores heredados y §6 nombra los elementos conservados: citarlos es su función | CR-001 |
@@ -329,7 +329,7 @@ las filas nuevas de §6 (D-6).
 | Policy del contrato | modificar | `docs/policies/validation-contract-policy.md` (§3, §6, versión) | AC-2, AC-3 |
 | Documentación del stack | modificar | `docs/architecture/tech-stack.md` | CNF-1 |
 
-No se tocan: `skills/**`, `config/**`, los flowcharts, `docs/adr/**`, `docs/product/**`, `docs/specs/**` ni
+No se tocan: `skills/**`, `config/**`, los flowcharts, `docs/decisions/**`, `docs/product/**`, `docs/specs/**` ni
 `CHANGELOG.md`.
 
 ## Interfaces
@@ -429,13 +429,13 @@ que no deban versionarse.
 | V-2 | `checkReport` acepta un template conforme con `{verdict}`, con enumeración y con `## Veredicto <!-- … -->`; rechaza texto entre `#` y `## Veredicto` (G-02), `verdict` ausente o duplicado (G-01), una enumeración con un valor no permitido (G-03) y `decision:` en el frontmatter (G-04) | Pruebas unitarias | AC-1 |
 | V-3 | En modo reporte, rechaza un placeholder, un valor de otro skill y una línea `**Veredicto:**` con un valor distinto de `verdict` | Pruebas unitarias | AC-1 |
 | V-4 | `findLegacyVariants` detecta todos los casos positivos de la tabla de D-4 y ninguno de los negativos | Pruebas unitarias con cada fila de la tabla | AC-2 |
-| V-5 | El alcance excluye `docs/specs/`, `docs/adr/`, los dos archivos de `docs/product/`, las versiones publicadas del CHANGELOG y §5-§6 de la policy, e incluye `## [Unreleased]`, `docs/product/vision.md`, `skills/` y los `*.md` de la raíz | Pruebas con un repositorio fixture que siembra `APROBADA` en cada ubicación | AC-2 |
+| V-5 | El alcance excluye `docs/specs/`, `docs/decisions/`, los dos archivos de `docs/product/`, las versiones publicadas del CHANGELOG y §5-§6 de la policy, e incluye `## [Unreleased]`, `docs/product/vision.md`, `skills/` y los `*.md` de la raíz | Pruebas con un repositorio fixture que siembra `APROBADA` en cada ubicación | AC-2 |
 | V-6 | Una excepción sin fila en §6 produce `E-1`; una excepción sin coincidencias produce `E-2`; un `APROBADA` en un archivo exento solo de L-4 falla | Pruebas unitarias | AC-2 |
 | V-7 | Sin el enlace a la policy, el README produce `R-1` | Prueba unitaria | AC-3 |
 | V-8 | `--report` acepta los reportes conformes y rechaza un nombre de archivo que no figura en §4 | Pruebas unitarias | AC-1 |
 | V-9 | El repositorio cumple el contrato | `npm run verify:validation-contract` → código 0 tras STORY-138…145 | AC-1, AC-2, AC-3 |
 | V-10 | El gate incluye el paso y su prueba pasa | `npm test` y `npm run verify:repository` | CNF-1 |
-| V-11 | Comprobación literal independiente de AC-2: solo quedan las coincidencias de las excepciones de D-6 | `git grep -n -E "APROBADA\|Aprobada\|review-status" -- skills docs README.md AGENTS.md SECURITY.md ':!docs/specs' ':!docs/adr' ':!docs/product/roadmap.md' ':!docs/product/story-map.md'` (y lectura de §5-§6 de la policy) | AC-2 |
+| V-11 | Comprobación literal independiente de AC-2: solo quedan las coincidencias de las excepciones de D-6 | `git grep -n -E "APROBADA\|Aprobada\|review-status" -- skills docs README.md AGENTS.md SECURITY.md ':!docs/specs' ':!docs/decisions' ':!docs/product/roadmap.md' ':!docs/product/story-map.md'` (y lectura de §5-§6 de la policy) | AC-2 |
 | V-12 | SMOKE-1: los seis reportes generados sobre artefactos de ejemplo pasan `--report` | F-3, ejecución manual a criterio humano (AGENTS.md); resultado en `verify-report.md` | AC-1 |
 | V-13 | El README enlaza la policy en «Flujo y evidencia» y en «Referencia para profundizar», y `verify:links` resuelve ambos enlaces | Lectura y `npm run verify:links` | AC-3 |
 | V-14 | §3 y §6 de la policy tienen la línea y la fila de D-9, y la versión subió | Lectura de la policy | AC-2, AC-3 |
@@ -484,7 +484,7 @@ que amplían el `Pero` de AC-2 y las dependencias con otras historias están en 
 ### CR-001
 - **Tipo**: ambigüedad
 - **Descripción**: el `Pero` de AC-2 excluye solo `docs/specs/` y las versiones publicadas del CHANGELOG. Para que la
-  búsqueda sea repetible y no exija editar registros inmutables, el diseño también excluye `docs/adr/` (ADR aceptados
+  búsqueda sea repetible y no exija editar registros inmutables, el diseño también excluye `docs/decisions/` (ADR aceptados
   inmutables; `ADR-0008` cita `approved`), `docs/product/roadmap.md` (append-only) y `docs/product/story-map.md`
   (`COMPLETED`), además de §5-§6 de la policy, que citan los valores heredados por diseño. Exime de L-4 las excepciones
   registradas en §6. Así responde a STORY-140 CR-002 y STORY-141 CR-002.

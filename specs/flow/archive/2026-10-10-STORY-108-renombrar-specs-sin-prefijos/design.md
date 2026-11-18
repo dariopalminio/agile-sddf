@@ -35,7 +35,7 @@ historia hace el renombrado físico y actualiza en el mismo cambio toda referenc
 | Copia de trabajo | `core.autocrlf=true`; hoy hay 13 entradas en `git status --porcelain` (artefactos de planning de STORY-105…107 sin commitear) |
 | `npm test` (`node --test test`) | 219 pruebas, 219 pass, exit 0 |
 | `memory-system.js check --root docs` | exit 1, `problemas: 55 (orphan 6 · broken-wikilink 49)` (línea base, ninguno por ruta) |
-| `scripts/check-doc-links.js` | `[OK] Checked 46 active Markdown files`; excluye `docs/specs`, `docs/adr`, `CHANGELOG.md` |
+| `scripts/check-doc-links.js` | `[OK] Checked 46 active Markdown files`; excluye `docs/specs`, `docs/decisions`, `CHANGELOG.md` |
 
 **Referencias a `02-epics`/`03-stories` fuera de los registros históricos** (`grep -rlE "02-epics|03-stories"`):
 
@@ -47,7 +47,7 @@ historia hace el renombrado físico y actualiza en el mismo cambio toda referenc
 | `scripts/` | `migrate-finvest-field.js` (2) | valor por defecto de `--stories-dir` |
 | raíz | `README.md` (4), `AGENTS.md` (1) | árbol de directorios, tabla de migración 1.x, `specs/{01-projects,02-epics,03-stories}/` |
 | `docs/` vivos | `index.md` (169), `constitution.md` (5), `specs/README.md` (2), `adr/README.md` (1), `architecture/README.md` (1), `architecture/memory-system.md` (4), `domains/README.md` (2), `domains/domain-knowledge-artifacts.md` (5), `domains/domain-work-item-hierarchy.md` (10), `guardrails/gr-ai-security-checklist.md` (4), `guides/artifact-directory-migration.md` (6), `guides/flight-leves-model.md` (7), `guides/organization-of-artifacts.md` (11), `guides/sddf-commands-pipeline.md` (2), `guides/skill-structural-pattern.md` (2), `runbooks/actualizar-spec-de-proyecto.md` (12) | rutas, árboles ASCII, tablas de niveles |
-| Excluidos (registro histórico) | `docs/adr/ADR-0004/0005/0007/0010/0011` (`ACCEPTED`), `docs/adr/ADR-0013` (`PROPOSED`, describe el propio renombrado), `docs/specs/01-projects/**` (`project.md` 6, `project-plan.md` 2), todo `EPIC-*/` y `STORY-*/`, `CHANGELOG.md` | — |
+| Excluidos (registro histórico) | `docs/decisions/ADR-0004/0005/0007/0010/0011` (`ACCEPTED`), `docs/decisions/ADR-0013` (`PROPOSED`, describe el propio renombrado), `docs/specs/01-projects/**` (`project.md` 6, `project-plan.md` 2), todo `EPIC-*/` y `STORY-*/`, `CHANGELOG.md` | — |
 
 `.github/` y `config/` no contienen las cadenas. `sddf.config.yaml` tampoco.
 
@@ -221,13 +221,13 @@ Tras R4/R5 se ajusta a mano solo la frase que quedaría falsa; no se reescribe e
 Alcance = `skills/`, `agents/`, `test/`, `scripts/`, `README.md`, `AGENTS.md` y `docs/`, **excluyendo**:
 
 - `docs/specs/epics/*/**` y `docs/specs/stories/*/**` (registros por work item — Non-Goal de la historia);
-- `docs/adr/ADR-*.md` (decisiones; los `ACCEPTED` son inmutables y ADR-0013 describe el propio renombrado — CR-002);
+- `docs/decisions/ADR-*.md` (decisiones; los `ACCEPTED` son inmutables y ADR-0013 describe el propio renombrado — CR-002);
 - `docs/specs/01-projects/**` (AC-3: si sobrevive, se conserva intacta — CR-002).
 
-`docs/adr/README.md`, `docs/specs/README.md` e `index.md` sí están en el alcance. Verificación (exit 1 de `git grep` = sin
+`docs/decisions/README.md`, `docs/specs/README.md` e `index.md` sí están en el alcance. Verificación (exit 1 de `git grep` = sin
 coincidencias):
 
-`git grep -nE "02-epics|03-stories" -- skills agents test scripts README.md AGENTS.md docs ':(exclude,glob)docs/specs/epics/*/**' ':(exclude,glob)docs/specs/stories/*/**' ':(exclude,glob)docs/adr/ADR-*' ':(exclude,glob)docs/specs/01-projects/**'`
+`git grep -nE "02-epics|03-stories" -- skills agents test scripts README.md AGENTS.md docs ':(exclude,glob)docs/specs/epics/*/**' ':(exclude,glob)docs/specs/stories/*/**' ':(exclude,glob)docs/decisions/ADR-*' ':(exclude,glob)docs/specs/01-projects/**'`
 
 **Alternativas rechazadas:**
 
@@ -414,7 +414,7 @@ Ninguna bloqueante. El orden respecto de STORY-104…107 (CR-003) solo cambia qu
 - **Descripción**: la definición de "documentos vivos de `docs/`" de la historia (todo fuera de los work items y de los ADRs aceptados)
   incluye `docs/specs/01-projects/**` (`project.md`, `project-plan.md`) y ADR-0013 (`PROPOSED`), y omite ADR-0007 (`ACCEPTED`) de la
   lista de excepciones. Editar `01-projects/` contradice la fila 2 de AC-3 ("se conserva intacta") y editar ADR-0013 borraría el
-  "antes/después" que documenta. D-6 excluye `docs/adr/ADR-*.md` y `docs/specs/01-projects/**`.
+  "antes/después" que documenta. D-6 excluye `docs/decisions/ADR-*.md` y `docs/specs/01-projects/**`.
 - **Documento afectado**: story.md
 - **Acción requerida**: alinear el Non-Goal de registros históricos con D-6 (todos los `ADR-*.md` y `01-projects/**`).
 

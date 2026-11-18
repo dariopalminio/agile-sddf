@@ -20,7 +20,7 @@ related:
 
 ## 1. Preparación
 
-- [x] T001 Verificar las precondiciones (CR-001): existe `docs/adr/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con `PENDING_MIGRATION` y soporte de la región `SDDF-LEGACY-DIAGNOSTIC`, y la lista contiene las doce entradas de D-11; STORY-147 y STORY-148 están en `DONE`. Si falta alguna, detener la implementación o, si el humano decide adelantarla, anotar en `.tmp/story-implement/STORY-152/scope.txt` que D-11 queda aplazada y AC-1 se verificará con los contratos 1 y 5 — design Risks, CR-001
+- [x] T001 Verificar las precondiciones (CR-001): existe `docs/decisions/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con `PENDING_MIGRATION` y soporte de la región `SDDF-LEGACY-DIAGNOSTIC`, y la lista contiene las doce entradas de D-11; STORY-147 y STORY-148 están en `DONE`. Si falta alguna, detener la implementación o, si el humano decide adelantarla, anotar en `.tmp/story-implement/STORY-152/scope.txt` que D-11 queda aplazada y AC-1 se verificará con los contratos 1 y 5 — design Risks, CR-001
 - [x] T002 [P] Ejecutar `npm test` y `npm run verify:repository` y guardar las salidas en `.tmp/story-implement/STORY-152/baseline.txt` (línea base en verde). Guardar también como inventario la salida de `grep -rnE "SPECS_BASE|SDDF_ROOT|SDDF-ROOT-RESOLUTION|docs/specs|specs/epics|specs/stories|root: docs|docs-wiki-builder"` sobre los doce skills de D-11 — design Context, D-2
 
 ## 2. Eliminación de `docs-wiki-builder` (bloque 1 de D-15)

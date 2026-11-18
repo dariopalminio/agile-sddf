@@ -35,7 +35,7 @@ related:
 | `docs/constitution.md` | Declara kebab-case (líneas 76, 101), «un solo salto de delegación» (144-153) y el principio 6 «teléfono descompuesto» (256). Esas reglas siguen aplicándose a este repo por `$CONSTITUTION_PATH`. |
 | `skills/story-code-review/assets/code-review-report-template.md` | Contrato del informe (ADR-0015): frontmatter, `## Veredicto`, `## Resumen` (tabla de campos, con la fila `testcases.md`), hallazgos por dimensión, DoD. |
 | `skills/story-code-review/evals/evals.json` | 23 casos (TC-001 a TC-023). STORY-177 reserva TC-024 y TC-025. |
-| ADR de la guía de revisión (STORY-178, `docs/adr/ADR-0021-guia-de-revision-review-md.md`, aún no creado) | D-2: un solo `<REPO_ROOT>/REVIEW.md`. D-3: precedencia constitución > DoD > `REVIEW.md` > criterios genéricos de los revisores; `REVIEW.md` no cambia el formato. D-4: se lee del working tree, sin git. D-5: la detección de una historia que modifica la guía o el DoD compara con `$IMPL_FILES`, advierte en el informe y no cambia `verdict`; el texto y la sección los fija esta historia. D-6: vocabulario y PREEXISTENTE como categoría (STORY-181). |
+| ADR de la guía de revisión (STORY-178, `docs/decisions/ADR-0021-guia-de-revision-review-md.md`, aún no creado) | D-2: un solo `<REPO_ROOT>/REVIEW.md`. D-3: precedencia constitución > DoD > `REVIEW.md` > criterios genéricos de los revisores; `REVIEW.md` no cambia el formato. D-4: se lee del working tree, sin git. D-5: la detección de una historia que modifica la guía o el DoD compara con `$IMPL_FILES`, advierte en el informe y no cambia `verdict`; el texto y la sección los fija esta historia. D-6: vocabulario y PREEXISTENTE como categoría (STORY-181). |
 | `REVIEW.md` (STORY-179) | No existe todavía. Tendrá cuatro secciones: «Qué es «Importante» aquí», «Tope de Minor», «No reportar», «Verificar siempre» (`docs/templates/REVIEW-template.md`). |
 | `docs/guardrails/dod-story-code-review.md:21` | «Sin hallazgo bloqueante de severidad HIGH o MEDIUM»: el árbitro lo evalúa con la tabla consolidada. |
 
@@ -74,7 +74,7 @@ Stack: skill en Markdown más agentes locales; pruebas deterministas con `node:t
 | C-8 | Prueba de contrato de la guía | crear | `test/story-code-review-review-md.test.js` | AC-1, AC-3, AC-5, CNF-1, CNF-3 |
 | C-9 | README del skill | modificar (una frase en «What it does») | `skills/story-code-review/README.md` | AC-1 |
 
-Sin cambios: `assets/fix-directives-template.md`, `docs/guardrails/`, `docs/constitution.md`, `docs/adr/` (lo crea STORY-178), `package.json` (`files` ya publica `skills/story-code-review`) y `scripts/`.
+Sin cambios: `assets/fix-directives-template.md`, `docs/guardrails/`, `docs/constitution.md`, `docs/decisions/` (lo crea STORY-178), `package.json` (`files` ya publica `skills/story-code-review`) y `scripts/`.
 
 ## Interfaces
 

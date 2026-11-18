@@ -49,7 +49,7 @@ related:
 - `docs/domains/domain-story-lifecycle.md` — glosario l. 34 "Rework: Retorno a `READY-FOR-IMPLEMENT` tras un rechazo…"; invariante 6 (l. 157) "todos los retrocesos apuntan a `READY-FOR-IMPLEMENT/DONE`"; tabla 4.3 (l. 110–112) y `ReworkEvent` (l. 54) ya modelan origen + ronda. Todo se mantiene.
 - `docs/domains/domain-state-management.md` §5.3 l. 113 — "detecta el rework por el subestado `REWORK` o por la existencia de un reporte de fallo" (`REWORK` no pertenece al conjunto cerrado de substatus).
 - `docs/specs/02-epics/EPIC-19-framework-consistency/epic.md` — l. 26 (bullet STORY-089, "estado propio", wikilink al slug antiguo `STORY-089-story-fix-post-code-review`), l. 45 (Escenario 3, `NEEDS-CHANGES`), l. 96 y l. 104 (`docs/knowledge/guides/state-machine.md`, `NEEDS-CHANGES`).
-- `docs/adr/` — último ADR es `ADR-0007` (2026-09-11, ACCEPTED); `docs/adr/README.md` mantiene la tabla índice; `adr-template.md` define la estructura.
+- `docs/decisions/` — último ADR es `ADR-0007` (2026-09-11, ACCEPTED); `docs/decisions/README.md` mantiene la tabla índice; `adr-template.md` define la estructura.
 - `docs/guides/sddf-commands-pipeline.md` — no menciona `story-code-review` ni el flujo post-review (secciones 1–3 solo cubren proyecto, épicas y refinamiento de historias).
 - `README.md` l. 406 lista `fix-directives.md` como artefacto; l. 412 referencia `docs/guides/state-machine.md` (inexistente). `docs/domains/README.md` l. 64 referencia `docs/wiki/state-machine.md` (inexistente) --> (luego sería `domain-story-lifecycle.md`).
 - **Fixture real:** `STORY-090` está en `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md` (5 hallazgos MEDIUM, **sin** `round`) y con `tasks.md` que ya contiene la línea `- [ ] Implementar fix-directives.md` (l. 85) escrita por el 4g.1 actual.
@@ -159,7 +159,7 @@ related:
 `// satisface: NFR-1, NFR-2, NFR-3`
 
 **Elegida:**
-- `docs/adr/ADR-0008-rework-sin-estado-propio.md` según `adr-template.md`, `status: ACCEPTED`, `supersedes: null`, `superseded-by: null`; registra el descarte de `NEEDS-CHANGES` (propuesta de EPIC-19 Escenario 3), el descarte de substatus `REWORK` y de campo `rework:`, y la elección "señal = artefacto". Fila nueva en la tabla de `docs/adr/README.md`.
+- `docs/decisions/ADR-0008-rework-sin-estado-propio.md` según `adr-template.md`, `status: ACCEPTED`, `supersedes: null`, `superseded-by: null`; registra el descarte de `NEEDS-CHANGES` (propuesta de EPIC-19 Escenario 3), el descarte de substatus `REWORK` y de campo `rework:`, y la elección "señal = artefacto". Fila nueva en la tabla de `docs/decisions/README.md`.
 - `domain-story-lifecycle.md`: solo el glosario "Rework" (l. 34) añade "la señal de que una historia está en rework es la presencia del artefacto de fallo en su directorio (`fix-directives.md` para `CODE-REVIEW`); no existe estado ni substatus de rework". Invariante 6, diagrama y tabla 4.3 intactos.
 - `domain-state-management.md` §5.3: la viñeta l. 113 pasa a "El skill de implementación detecta el rework por la existencia del artefacto de fallo en el directorio del work item, no por un subestado".
 - `epic.md` EPIC-19: bullet STORY-089 (texto y wikilink al slug nuevo), Escenario 3 (`NEEDS-CHANGES` → `READY-FOR-IMPLEMENT/DONE` con `fix-directives.md`; ejecutor `/story-implement`), dependencia crítica y riesgo (rutas `docs/domains/domain-story-lifecycle.md` + `docs/guides/sddf-commands-pipeline.md`; riesgo reformulado: "`story-implement` solo reconoce `fix-directives.md`; los rechazos de `story-verify`/`story-acceptance` siguen sin ejecutor automático"), `updated: 2026-09-11`. Criterio de éxito 4 (l. 110) sin cambios.
@@ -182,8 +182,8 @@ related:
 | Evals de `story-code-review` | modificar | `skills/story-code-review/evals/evals.json` | AC-1, AC-2, AC-3 |
 | Skill `story-implement-tasks` — 2c (gate), nuevo 2f, 3c (literal legado), nota D-3, Posicionamiento l. 42 | modificar | `skills/story-implement-tasks/SKILL.md` | AC-6 |
 | Evals de `story-implement-tasks` | crear | `skills/story-implement-tasks/evals/evals.json` | AC-6 |
-| ADR-0008 | crear | `docs/adr/ADR-0008-rework-sin-estado-propio.md` | NFR-2 |
-| Índice de ADRs | modificar | `docs/adr/README.md` | NFR-2 |
+| ADR-0008 | crear | `docs/decisions/ADR-0008-rework-sin-estado-propio.md` | NFR-2 |
+| Índice de ADRs | modificar | `docs/decisions/README.md` | NFR-2 |
 | Dominio ciclo de vida — glosario "Rework" | modificar | `docs/domains/domain-story-lifecycle.md` | AC-4, NFR-1 |
 | Dominio gestión de estados — §5.3 | modificar | `docs/domains/domain-state-management.md` | AC-4, NFR-1 |
 | Épica EPIC-19 | modificar | `docs/specs/02-epics/EPIC-19-framework-consistency/epic.md` | NFR-3 |
@@ -268,7 +268,7 @@ story-implement-tasks (story.md READY-FOR-IMPLEMENT/DONE, fix-directives.md pres
 | 7 | `tasks.md` legado con el literal no re-aplica correcciones y marca `[x]` | Eval `tasks-md-legado-con-literal-no-reaplica` (nuevo) + fixture STORY-090 | AC-6, D5 |
 | 8 | `grep -rn "Implementar fix-directives.md" skills/story-code-review/` devuelve 0 resultados; `grep -rn "READY-FOR-VERIFY" skills/story-code-review/` devuelve 0 | Inspección (`grep`) | AC-1, NFR-1 |
 | 9 | `grep -n "NEEDS-CHANGES\|knowledge/guides/state-machine" docs/specs/02-epics/EPIC-19-framework-consistency/epic.md` devuelve 0; `grep -n "REWORK" docs/domains/domain-state-management.md` devuelve 0 | Inspección (`grep`) | NFR-1, NFR-3 |
-| 10 | `docs/adr/ADR-0008-rework-sin-estado-propio.md` existe, `status: ACCEPTED`, cita EPIC-19 Escenario 3 y `NEEDS-CHANGES`; fila en `docs/adr/README.md` | Inspección | NFR-2 |
+| 10 | `docs/decisions/ADR-0008-rework-sin-estado-propio.md` existe, `status: ACCEPTED`, cita EPIC-19 Escenario 3 y `NEEDS-CHANGES`; fila en `docs/decisions/README.md` | Inspección | NFR-2 |
 | 11 | Re-ejecutar `/story-code-review` en `needs-changes` solo cambia `fix-directives.md` (`round`+1), `code-review-report.md` y `story.md`; `git status` no muestra `tasks.md` | Fixture STORY-090 + `git status` | NFR-4 |
 | 12 | `skill-test-evals` sobre `story-code-review` y `story-implement-tasks` pasa (`verify.eval.required: true`) | `npm run test:eval` / `/skill-test-evals` | AC-1..AC-6 |
 

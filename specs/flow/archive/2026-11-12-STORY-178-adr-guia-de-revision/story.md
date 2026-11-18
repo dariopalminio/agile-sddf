@@ -27,9 +27,9 @@ related:
 ```gherkin
 Dado que EPIC-28 deja abiertas la ubicación, la precedencia, la fuente de lectura y el vocabulario de "REVIEW.md"
 Cuando el mantenedor registra el ADR de la guía de revisión con el siguiente número "ADR-NNNN" libre
-Entonces existe "docs/adr/ADR-NNNN-<slug>.md" con estado "ACCEPTED" y todas las secciones de "docs/adr/adr-template.md"
+Entonces existe "docs/decisions/ADR-NNNN-<slug>.md" con estado "ACCEPTED" y todas las secciones de "docs/decisions/adr-template.md"
   Y su decisión fija la ubicación de "REVIEW.md", su precedencia frente a "constitution.md", "dod-story-code-review.md" y la plantilla de "code-review-report.md", y si se lee del working tree o de la rama base
-  Y "docs/adr/README.md" lista el ADR en su índice con el mismo título, estado y fecha
+  Y "docs/decisions/README.md" lista el ADR en su índice con el mismo título, estado y fecha
 ```
 
 ### AC-2 — Escenario con datos – Cada severidad de Claude Code Review tiene una sola traducción
@@ -72,7 +72,7 @@ Entonces el ADR indica qué versión de esa guía rige la revisión de esa histo
 
 ## 📎 Notas / contexto adicional
 
-- Cubre el criterio de salida de EPIC-28 **CS-1a** — Un ADR nuevo, registrado en `docs/adr/README.md`, fija la ubicación, la precedencia, la fuente de lectura y el vocabulario de `REVIEW.md`. El `REVIEW.md` con sus cuatro secciones (**CS-1b**) corresponde a la historia «REVIEW.md de agile-sddf».
+- Cubre el criterio de salida de EPIC-28 **CS-1a** — Un ADR nuevo, registrado en `docs/decisions/README.md`, fija la ubicación, la precedencia, la fuente de lectura y el vocabulario de `REVIEW.md`. El `REVIEW.md` con sus cuatro secciones (**CS-1b**) corresponde a la historia «REVIEW.md de agile-sddf».
 - El ADR es obligatorio por la constitución (`docs/constitution.md`, sección de decisiones transversales): la decisión afecta a `story-code-review` y `sddf-constitution` y restringe las historias siguientes. Por eso conviene implementar esta historia antes que las que leen `REVIEW.md`.
 - Las decisiones (a) fuente de lectura y (c) ubicación en la raíz vienen de la nota «Decisiones para el ADR» de la épica. La decisión (b), cómo identificar las líneas no tocadas para PREEXISTENTE si el skill no usa `git diff`, no está en el enunciado de esta historia: puede incorporarse al ADR o resolverse en el `design.md` de «Hallazgos preexistentes».
 - La tabla de AC-2 recoge el vocabulario propuesto en las notas de la épica; el ADR puede ajustarlo si documenta el motivo, siempre que cada severidad tenga una sola traducción.

@@ -29,9 +29,9 @@ Estado verificado en el filesystem (2026-10-22, antes de STORY-153):
 
 | Fuente | Hallazgo |
 |---|---|
-| `git grep -lE "specs/(epics\|stories)"` | 226 archivos: 128 en `docs/specs/` (work items), 72 en `skills/`, 1 `docs/index.md` (224 líneas), 5 `docs/guides/`, 4 `docs/adr/`, 3 `test/`, 3 `docs/product/`, 2 `docs/domains/`, 2 `docs/architecture/`, 1 cada uno en `scripts/`, `docs/runbooks/`, `docs/guardrails/`, `docs/constitution.md`, `README.md`, `CHANGELOG.md`. |
+| `git grep -lE "specs/(epics\|stories)"` | 226 archivos: 128 en `docs/specs/` (work items), 72 en `skills/`, 1 `docs/index.md` (224 líneas), 5 `docs/guides/`, 4 `docs/decisions/`, 3 `test/`, 3 `docs/product/`, 2 `docs/domains/`, 2 `docs/architecture/`, 1 cada uno en `scripts/`, `docs/runbooks/`, `docs/guardrails/`, `docs/constitution.md`, `README.md`, `CHANGELOG.md`. |
 | Enlaces entre work items | Un solo enlace Markdown en `docs/specs/` apunta a otro work item, y es absoluto (`D:/code/…`, `STORY-130/story-improvement-log.md:13`, registro histórico). Los work items se relacionan por **wikilinks de slug** (`[[STORY-…]]`), que no dependen de la ruta. |
-| `scripts/check-doc-links.js` | Solo valida los archivos de `ACTIVE_ROOTS` (`README.md`, `SECURITY.md`, `docs/index.md`, `docs/constitution.md`, `docs/policies`, `docs/guardrails`, `docs/guides`, `docs/runbooks`). El **índice de slugs** para resolver wikilinks recorre solo `docs/` más `README.md`/`SECURITY.md` (`checkDocumentation`, l. 244–250). `HISTORICAL_EXCLUSIONS` (`CHANGELOG.md`, `docs/adr`, `docs/specs`) solo se imprime en el `[INFO]` final; no filtra nada. |
+| `scripts/check-doc-links.js` | Solo valida los archivos de `ACTIVE_ROOTS` (`README.md`, `SECURITY.md`, `docs/index.md`, `docs/constitution.md`, `docs/policies`, `docs/guardrails`, `docs/guides`, `docs/runbooks`). El **índice de slugs** para resolver wikilinks recorre solo `docs/` más `README.md`/`SECURITY.md` (`checkDocumentation`, l. 244–250). `HISTORICAL_EXCLUSIONS` (`CHANGELOG.md`, `docs/decisions`, `docs/specs`) solo se imprime en el `[INFO]` final; no filtra nada. |
 | `docs/index.md` | Lo genera `/memory-system index`. 224 líneas con `[[<slug>]] — [epic.md](specs/epics/…)` o `(specs/stories/…)`, y l. 154 `[[specs-index]] — [README.md](specs/README.md)`. Tras STORY-153 fallan los enlaces Markdown **y** los wikilinks (los slugs de los work items ya no están bajo `docs/`). STORY-152 D-4 cambia el motor para indexar `specs/flow/` con rutas `../specs/flow/…`. |
 | `docs/guardrails/gr-ai-security-checklist.md:170–173` | Cuatro rutas concretas de work items (`EPIC-17/plan-13-…md`, `STORY-039`, `STORY-046`, `STORY-087`) en code spans; STORY-154 D-2 las deja «para STORY-157». |
 | `docs/runbooks/actualizar-spec-de-proyecto.md:85–99, 118–119` | Comandos `ls`/`grep` sobre `docs/specs/epics/` y `docs/specs/stories/`. STORY-154 CR-001 los dejó sin dueño. |
@@ -74,7 +74,7 @@ Antes de cualquier edición se comprueban, en orden, las precondiciones de la hi
 | P1 | `test ! -e docs/specs` y existen `specs/flow/` y `specs/flow/archive/` | STORY-153 no ejecutada → detener |
 | P2 | La migración está **commiteada**: `git status --porcelain -- specs docs/specs` sin entradas `R`/`D` pendientes y `git log --diff-filter=R --format=%H -1 -- specs/flow` devuelve el commit de migración (`MIGRATION_COMMIT`) | `git log --follow` no puede ver el renombre → pedir al mantenedor el commit de STORY-153 (CR-003) |
 | P3 | `PENDING_MIGRATION` de `scripts/verify-fixed-layout.js` es `[]` | devolver cada skill listado a su historia (tabla siguiente) |
-| P4 | `docs/adr/ADR-0016-*.md` existe; `AGENTS.md` contiene la viñeta «Transición EPIC-26» (STORY-154 entregada) | STORY-147 / STORY-154 → detener |
+| P4 | `docs/decisions/ADR-0016-*.md` existe; `AGENTS.md` contiene la viñeta «Transición EPIC-26» (STORY-154 entregada) | STORY-147 / STORY-154 → detener |
 
 Propiedad de los skills para la devolución (D-8 la usa también): `sddf-init` → STORY-149; skills de especificación → STORY-150; `epic-*` → STORY-151; skills de proyecto y transversales (`memory-system`, `skill-preflight`, `project-*`, `sddf-constitution`, …) → STORY-152; planning → STORY-155; implementación → STORY-156; revisión, verificación y aceptación → STORY-158. La fuente de verdad es la tabla «Componentes afectados» del `design.md` de cada historia.
 
@@ -86,7 +86,7 @@ Propiedad de los skills para la devolución (D-8 la usa también): `sddf-init` �
 
 Tras P1–P4, el inventario se recalcula sobre el árbol real (los números de Context son previos a STORY-153 y STORY-154):
 
-`git grep -nE "docs/specs|specs/(epics|stories)" -- . ':!specs' ':!skills' ':!CHANGELOG.md' ':!docs/adr' ':!.tmp'`
+`git grep -nE "docs/specs|specs/(epics|stories)" -- . ':!specs' ':!skills' ':!CHANGELOG.md' ':!docs/decisions' ':!.tmp'`
 
 Cada coincidencia se clasifica con las tres clases de STORY-154 D-2, más una de fixture:
 
@@ -146,7 +146,7 @@ En `scripts/check-doc-links.js`:
 | Elemento | Antes | Después |
 |---|---|---|
 | Corpus del índice de slugs en `checkDocumentation` | `docs/` + `README.md` + `SECURITY.md` | lo mismo **más** `specs/` si existe (incluye `specs/flow/`, `specs/flow/archive/` y `specs/README.md`) |
-| `HISTORICAL_EXCLUSIONS` | `['CHANGELOG.md', 'docs/adr', 'docs/specs']` | `['CHANGELOG.md', 'docs/adr', 'specs']` (solo informativo; refleja dónde viven ahora los work items) |
+| `HISTORICAL_EXCLUSIONS` | `['CHANGELOG.md', 'docs/decisions', 'docs/specs']` | `['CHANGELOG.md', 'docs/decisions', 'specs']` (solo informativo; refleja dónde viven ahora los work items) |
 | `ACTIVE_ROOTS` | sin cambios | sin cambios: los work items siguen sin validarse como documentación activa |
 
 El corpus amplía **qué slugs existen**, no **qué archivos se validan**: los enlaces dentro de `specs/` siguen fuera del gate (registro histórico), y la regla de deduplicación de `slugIndex` (preferir `story.md`/`epic.md`) se mantiene.
@@ -217,7 +217,7 @@ Tras D-2 a D-6:
 | Instrucciones de agentes | modificar (retirar viñeta) | `AGENTS.md` | AC-3 |
 | Residuales del inventario | modificar si aparecen (D-2, última fila) | `ACTIVE_ROOTS`, `docs/architecture/` | AC-1 |
 
-No se crea ningún archivo versionado. No se tocan `specs/**` (salvo los artefactos de esta historia), `skills/`, `docs/adr/`, `CHANGELOG.md`, `docs/product/roadmap.md` ni `docs/requirements/`.
+No se crea ningún archivo versionado. No se tocan `specs/**` (salvo los artefactos de esta historia), `skills/`, `docs/decisions/`, `CHANGELOG.md`, `docs/product/roadmap.md` ni `docs/requirements/`.
 
 ## Interfaces
 
@@ -225,7 +225,7 @@ No se crea ningún archivo versionado. No se tocan `specs/**` (salvo los artefac
 |---|---|---|
 | Ruta nueva de un work item | regla de D-3; ambigüedad o ausencia → detener | AC-1 |
 | `checkDocumentation({ repoRoot, files })` | misma firma y salida; el índice de slugs incluye `specs/` si existe | AC-1 |
-| `HISTORICAL_EXCLUSIONS` | constante exportada `['CHANGELOG.md', 'docs/adr', 'specs']` | AC-1 |
+| `HISTORICAL_EXCLUSIONS` | constante exportada `['CHANGELOG.md', 'docs/decisions', 'specs']` | AC-1 |
 | Gate | `npm run verify:repository` → exit 0 | AC-1, AC-3 |
 | Contrato de layout | `node scripts/verify-fixed-layout.js --json` → `{ errors: [], pending: [] }` | AC-3 |
 
@@ -271,7 +271,7 @@ N/A — no hay datos nuevos. El formato de las entradas del índice lo fija el m
 |---|---|---|---|
 | 1 | Precondiciones P1–P4 | comandos de D-1; salida en `implement-report.md` | AC-3 |
 | 2 | Índice sin rutas legadas | `grep -cE "specs/(epics\|stories)" docs/index.md` = 0; `grep -c "\.\./specs/flow/" docs/index.md` > 0 | AC-1 |
-| 3 | Sin referencias vigentes a rutas movidas | `git grep -nE "docs/specs\|specs/(epics\|stories)" -- . ':!specs' ':!skills' ':!CHANGELOG.md' ':!docs/adr' ':!.tmp' ':!docs/product/roadmap.md' ':!test/memory-system.test.js' ':!test/epic-template.test.js' ':!scripts/migrate-finvest-field.js'` → solo líneas de clase «registro histórico» justificadas en `implement-report.md` | AC-1 |
+| 3 | Sin referencias vigentes a rutas movidas | `git grep -nE "docs/specs\|specs/(epics\|stories)" -- . ':!specs' ':!skills' ':!CHANGELOG.md' ':!docs/decisions' ':!.tmp' ':!docs/product/roadmap.md' ':!test/memory-system.test.js' ':!test/epic-template.test.js' ':!scripts/migrate-finvest-field.js'` → solo líneas de clase «registro histórico» justificadas en `implement-report.md` | AC-1 |
 | 4 | Wikilinks a work items resuelven | `node --test test/check-doc-links.test.js` (casos nuevos de D-5) | AC-1 |
 | 5 | Gate sin enlaces rotos | `npm run verify:links` → `[OK]` | AC-1 |
 | 6 | Historial previo | D-7: `git log --follow` muestra commits anteriores a `MIGRATION_COMMIT`; renombre con `=>` | AC-2 |

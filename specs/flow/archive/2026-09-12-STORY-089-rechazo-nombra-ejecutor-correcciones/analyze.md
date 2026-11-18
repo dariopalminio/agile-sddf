@@ -47,7 +47,7 @@ related:
 | AC-5 | `round` = ronda previa + 1 (1 si no existe); escritor único `story-code-review` | ✓ | D1, D2, D6; interfaces "Frontmatter de fix-directives.md", "Cálculo de ronda" |
 | AC-6 | `story-implement-tasks` aplica correcciones por presencia del archivo, sin literal de tarea | ✓ | D4, D5, D7; componentes `story-implement-tasks/SKILL.md`, `story-implement-tasks/evals/evals.json`; interfaces "Pre-paso 2f", "Gate 2c"; Flujo 3 |
 | NFR-1 | Documentación (template, dominios, guía, README, CHANGELOG) | ✓ | D6, D8; componentes de documentación |
-| NFR-2 | ADR-0008, no supersede ADR-0003 | ✓ | D8; componentes ADR-0008 y `docs/adr/README.md` |
+| NFR-2 | ADR-0008, no supersede ADR-0003 | ✓ | D8; componentes ADR-0008 y `docs/decisions/README.md` |
 | NFR-3 | `epic.md` sin `NEEDS-CHANGES` ni ruta inexistente | ✓ | D8; componente Épica EPIC-19 |
 | NFR-4 | Idempotencia de la re-ejecución en `needs-changes` | ✓ | D2, D4; contrato de verificación V-11 |
 
@@ -79,7 +79,7 @@ related:
 | 4.5 | `story-implement-tasks` Paso 4 (sección de reporte, sugerencia) | D5; interfaz "Pre-paso 2f" (salida) | ✓ |
 | 4.6 | `story-implement-tasks` Posicionamiento, 1d, Entrada | D5; interfaz "Contrato hacia STORY-091" (precondiciones) | ✓ |
 | 5.1 | Crear ADR-0008 | D8; componente ADR-0008 | ✓ |
-| 5.2 | Fila en `docs/adr/README.md` | D8; componente índice de ADRs | ✓ |
+| 5.2 | Fila en `docs/decisions/README.md` | D8; componente índice de ADRs | ✓ |
 | 6.1 | `domain-story-lifecycle.md` glosario | D8; componente dominio ciclo de vida | ✓ |
 | 6.2 | `domain-state-management.md` §5.3 | D8; componente dominio gestión de estados | ✓ |
 | 6.3 | `epic.md` EPIC-19 | D8; componente Épica | ✓ |

@@ -21,7 +21,7 @@ related:
 
 ## Context
 
-EPIC-029 retira los estados buffer `READY-FOR-IMPLEMENT` y `READY-FOR-DEV`. STORY-186 registra la decisión en **ADR-0022** (`docs/adr/ADR-0022-workflows-sin-estados-buffer.md`, slug `workflows-sin-estados-buffer`, según su `design.md`, D-01). Esta historia alinea con ese ADR los diez documentos de autoridad que describen el ciclo de vida: cinco de `docs/domains/`, `docs/architecture/state-machine.md`, NFR-006 y FR-043/044/045.
+EPIC-029 retira los estados buffer `READY-FOR-IMPLEMENT` y `READY-FOR-DEV`. STORY-186 registra la decisión en **ADR-0022** (`docs/decisions/ADR-0022-workflows-sin-estados-buffer.md`, slug `workflows-sin-estados-buffer`, según su `design.md`, D-01). Esta historia alinea con ese ADR los diez documentos de autoridad que describen el ciclo de vida: cinco de `docs/domains/`, `docs/architecture/state-machine.md`, NFR-006 y FR-043/044/045.
 
 Estado actual verificado en el filesystem (2026-11-13, `grep -c "READY-FOR-IMPLEMENT\|READY-FOR-DEV"`):
 
@@ -190,7 +190,7 @@ N/A — la historia no define datos ni frontmatter nuevos. Solo cambia `updated:
 
 ## Flujos clave
 
-**F-1 — Precondición:** comprobar que `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`. Si no existe, detener: los wikilinks romperían `check-doc-links`.
+**F-1 — Precondición:** comprobar que `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`. Si no existe, detener: los wikilinks romperían `check-doc-links`.
 
 **F-2 — Edición por documento (AC-1 a AC-3):** C-3 (transversal) → C-1 → C-2 → C-4 → C-5 → C-6 → C-7 → C-8 → C-9 → C-10. El orden va de lo transversal a lo particular para que los documentos de nivel remitan a definiciones ya escritas.
 

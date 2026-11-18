@@ -81,7 +81,7 @@ redirección (D-6).
 
 **Enlaces entrantes a `[[PROJ-01-agile-sddf]]` tras STORY-104…107:** `docs/index.md:77`, `docs/runbooks/actualizar-spec-de-proyecto.md:16`
 (se borra), los 14 `epic.md` (EPIC-00…12 y EPIC-20), `docs/product/story-map.md` (STORY-107 lo traslada sin tocar ese
-wikilink) y `docs/adr/ADR-0006-…md:141` ("apéndices A y B"). `project-plan.md:16` desaparece con STORY-106.
+wikilink) y `docs/decisions/ADR-0006-…md:141` ("apéndices A y B"). `project-plan.md:16` desaparece con STORY-106.
 Al `[[runbook-actualizar-spec-de-proyecto]]` solo lo enlazan `project.md` (×2) y `docs/index.md:361`; la mención de
 `CHANGELOG.md:230` es texto histórico.
 

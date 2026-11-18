@@ -50,7 +50,7 @@ En una frase: los dos ejecutores aceptan `READY-FOR-IMPLEMENT/DONE` como alias c
 
 ## Notas de T001 (estado de partida)
 
-- `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`; su regla (historia → `IMPLEMENT/TODO` con `implement-report.md`, `PLAN/DONE` sin él; épica → `PLAN/DONE`) y la ventana 6.0.0 → 7.0.0 coinciden con la Interfaz «Regla del valor legado».
+- `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`; su regla (historia → `IMPLEMENT/TODO` con `implement-report.md`, `PLAN/DONE` sin él; épica → `PLAN/DONE`) y la ventana 6.0.0 → 7.0.0 coinciden con la Interfaz «Regla del valor legado».
 - STORY-188, STORY-189 y STORY-190 ya estaban aplicadas en `skills/`: gates con `PLAN/DONE` e `IMPLEMENT/TODO`, `$ENTRADA_SUBSTATUS`, transición por exclusión (0c.4 y 2e), excepción `IMPLEMENT/TODO` del gate anticipado de 2c y el aviso `[WARN] story.md está en IMPLEMENT/TODO sin fix-directives.md`. La etiqueta del valor anterior en el rechazo era «valor anterior a 6.0.0».
 - Versiones de partida: `story-implement` 1.6.0 (último TC-051), `story-implement-tasks` 1.3.0 (último TC-012), `skill-preflight` 2.1.0 (último TC-007). Casos en el valor legado: `story-implement` TC-011, TC-022, TC-033 y TC-047; `story-implement-tasks` TC-002, TC-003 y TC-004. Ninguno tenía `implement-report.md` en su entrada.
 - La Verificación 3 de `skill-preflight` seguía en las líneas 90-112.

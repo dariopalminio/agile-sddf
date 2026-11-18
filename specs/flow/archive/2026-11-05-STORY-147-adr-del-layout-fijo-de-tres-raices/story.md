@@ -25,14 +25,14 @@ related:
 
 ### AC-1 — Escenario principal – ADR nuevo que reemplaza a ADR-0010
 ```gherkin
-Dado que "docs/adr/ADR-0010-specs-dentro-de-docs.md" está ACCEPTED
+Dado que "docs/decisions/ADR-0010-specs-dentro-de-docs.md" está ACCEPTED
 Cuando se registra el ADR del layout fijo de tres raíces
-Entonces existe un ADR nuevo con status ACCEPTED en "docs/adr/"
+Entonces existe un ADR nuevo con status ACCEPTED en "docs/decisions/"
   Y declara "docs/", "specs/flow/", "specs/flow/archive/", "specs/living/" y "workflow/" como raíces hermanas en la raíz del repo
   Y declara retirados "SDDF_ROOT", la clave "root" de "sddf.config.yaml" y "SPECS_BASE"
   Y fija la convención "<YYYY-MM-DD>-STORY-NNN-<slug>/" para "specs/flow/archive/"
   Y ADR-0010 queda marcado "superseded-by" el ADR nuevo
-  Y "docs/adr/README.md" lista el ADR nuevo
+  Y "docs/decisions/README.md" lista el ADR nuevo
 ```
 
 ### AC-2 — Escenario alternativo / error – ADR aceptado no se edita in place

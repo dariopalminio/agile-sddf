@@ -20,7 +20,7 @@ related:
 
 ## 1. Preparación
 
-- [x] T001 Verificar las precondiciones: existe `docs/adr/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con la constante `PENDING_MIGRATION` y contiene `story-implement` y `story-implement-tasks`; STORY-147 y STORY-148 en `DONE`. Si falta alguna, detener la implementación — design Risks, dependencia dura de la historia
+- [x] T001 Verificar las precondiciones: existe `docs/decisions/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con la constante `PENDING_MIGRATION` y contiene `story-implement` y `story-implement-tasks`; STORY-147 y STORY-148 en `DONE`. Si falta alguna, detener la implementación — design Risks, dependencia dura de la historia
 - [x] T002 [P] Ejecutar `npm test` y `npm run verify:repository` y guardar las salidas en `.tmp/story-implement/STORY-156/baseline.txt` (línea base en verde); guardar también la salida de `grep -rnE "SPECS_BASE|SDDF_ROOT|SDDF-ROOT-RESOLUTION|docs/specs|specs/stories|specs/epics" skills/story-implement skills/story-implement-tasks` como inventario de líneas a migrar — design Context, D-2
 - [x] T003 [P] Comprobar E2E-002 en `test/dod-story.test.js` (CR-001): si `expectedPath` ya es `` `docs/guardrails/${slug}.md` `` (STORY-150 D-7 aplicado), no tocar la prueba; si sigue en `` `$SPECS_BASE/guardrails/${slug}.md` ``, aplicar el cambio de STORY-150 D-7 tal cual (`expectedPath` → `` `docs/guardrails/${slug}.md` ``, patrón de `referencedSlugs` → `/guardrails\/(dod-story-[a-z-]+)\.md/g`, mensaje `debe referenciar docs/guardrails/<slug>.md`) y confirmar con `node --test test/dod-story.test.js` que sigue en verde con los nueve skills — D-6, CR-001, AC-2
 

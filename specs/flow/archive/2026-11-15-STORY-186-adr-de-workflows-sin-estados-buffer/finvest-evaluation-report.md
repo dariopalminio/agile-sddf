@@ -39,10 +39,10 @@ _(Solo se completa si F_score ≥ 2.5)_
 
 | Dimensión | Score (1–5) | Observación |
 |-----------|:-----------:|-------------|
-| **I** – Independencia | 4 | Es la primera historia de la épica y no depende de ninguna historia sin entregar: parte de ADR-0006, ADR-0008 y la propuesta, que ya existen. Las demás dependen de ella, no al revés. Solo comparte `docs/adr/README.md` con otros trabajos de ADR. |
+| **I** – Independencia | 4 | Es la primera historia de la épica y no depende de ninguna historia sin entregar: parte de ADR-0006, ADR-0008 y la propuesta, que ya existen. Las demás dependen de ella, no al revés. Solo comparte `docs/decisions/README.md` con otros trabajos de ADR. |
 | **N** – Negociable | 4 | Fija qué decisiones debe recoger el ADR (heredadas de la épica) y deja abiertas, a propósito, las cuatro «Decisiones para el ADR» (CNF-1): duración de la ventana, fuente de la ronda anterior, nombre de la dimensión de verify y lista blanca de acceptance. |
 | **V** – Valiosa | 2 | Valor indirecto: es una historia habilitadora (`kind: chore`) cuyo beneficio es la coherencia de las otras ocho historias. Para el Solo Builder que usa el framework, el valor llega cuando esas historias se entregan. |
-| **E** – Estimable | 4 | Un documento con estructura conocida (`docs/adr/adr-template.md`), dos cambios de frontmatter y una fila del índice. La propuesta y las notas de la épica dan el contenido; la incertidumbre se limita a las cuatro decisiones abiertas. |
+| **E** – Estimable | 4 | Un documento con estructura conocida (`docs/decisions/adr-template.md`), dos cambios de frontmatter y una fila del índice. La propuesta y las notas de la épica dan el contenido; la incertidumbre se limita a las cuatro decisiones abiertas. |
 | **S** – Small | 2 | Cinco escenarios contando las filas de `Ejemplos` (AC-1, tres filas de AC-2 y AC-3) y 18 pasos. Por la rúbrica es grande, aunque el entregable es un solo documento. |
 | **T** – Testeable | 4 | Los resultados son observables: existencia del archivo, `status: ACCEPTED`, `SUPERSEDED` y `superseded-by` en dos ADR, la fila del índice y textos de workflow que se comprueban con `grep`. AC-2 y AC-3 («se consulta qué ocurre…») se verifican leyendo el ADR, no con un comando. |
 

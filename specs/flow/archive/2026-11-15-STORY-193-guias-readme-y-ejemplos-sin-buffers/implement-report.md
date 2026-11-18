@@ -54,7 +54,7 @@ La historia es `kind: chore` documental: no genera tests nuevos. Se verifica con
 
 ## Precondiciones (T001)
 
-- `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`. Los wikilinks `[[workflows-sin-estados-buffer]]` resuelven.
+- `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`. Los wikilinks `[[workflows-sin-estados-buffer]]` resuelven.
 - **Diferencia con T001:** STORY-186 a STORY-192 no están en `COMPLETED`. Todas están implementadas: STORY-186 en `ACCEPTANCE/DONE`; STORY-187, 188 y 189 en `VERIFY/DONE`; STORY-190, 191 y 192 en `IMPLEMENT/DONE`. La única condición de parada de T001, que ADR-0022 no exista, no se cumple. La implementación continuó, pero el `grep` de AC-1 se debe repetir cuando esas historias se cierren.
 - El inventario del `grep` sobre los 25 archivos coincide con el de `design.md`, sin diferencias.
 - **Línea base:**
@@ -156,7 +156,7 @@ Texto aplicado en `docs/product/objectives.md`:
 
 - **V-3:** `IMPLEMENT/TODO` aparece 4 veces en `process-for-story-implement.md` (≥ 3).
 - **V-6:** `IMPLEMENT/TODO` aparece 3 veces en el `.mermaid`, y `NEEDS-REFINEMENT` queda en una sola línea (`dec_specify`, L17).
-- **V-13:** `git diff --name-only` no incluye `CHANGELOG.md`, `docs/adr/ADR-000{3,6,8}*`, `docs/product/roadmap.md` ni `specs/flow/archive/`.
+- **V-13:** `git diff --name-only` no incluye `CHANGELOG.md`, `docs/decisions/ADR-000{3,6,8}*`, `docs/product/roadmap.md` ni `specs/flow/archive/`.
 - **V-14:** ningún archivo modificado empieza por `EF BB BF` ni contiene U+FEFF (verificado por bytes).
 
 ---

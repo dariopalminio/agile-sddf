@@ -63,7 +63,7 @@ updated: 2026-10-24
 | P1 | ✓ `docs/specs` no existe; `specs/flow/` (27 épicas, 51 stories activas) y `specs/flow/archive/` (98 stories) existen |
 | P2 | ✓ `git status --porcelain -- specs docs/specs` vacío. El comando literal del diseño (`git log --diff-filter=R -1 -- specs/flow`) no devuelve nada: con el pathspec limitado a `specs/flow`, git no ve el origen del renombre. Se obtuvo con `git log --diff-filter=R -M` sin pathspec → `8df4b11` |
 | P3 | ✓ `node scripts/verify-fixed-layout.js --json` → `errors: []`, `pending: []` (35 skills) |
-| P4 | ✓ `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` existe; `AGENTS.md` l. 11 tenía la viñeta |
+| P4 | ✓ `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` existe; `AGENTS.md` l. 11 tenía la viñeta |
 
 Línea base: `npm test` 306/306, `verify:links` `[OK]` y `verify:repository` exit 0. Contra lo previsto en T004, `enlaces activos` ya estaba en verde: STORY-153 dejó `docs/index.md` regenerado con rutas `../specs/flow/…` y el corpus de slugs de `check-doc-links.js` ya incluía `specs/`.
 
@@ -71,7 +71,7 @@ Línea base: `npm test` 306/306, `verify:links` `[OK]` y `verify:repository` exi
 
 - El corpus `specs/` del índice de slugs ya existía (`checkDocumentation`, l. 246–247, aportado por STORY-153), al igual que un caso `resolves wikilinks to work items under specs/flow/`. Lo pendiente de D-5 era `HISTORICAL_EXCLUSIONS` y las pruebas.
 - RED: de los tres casos nuevos, fallaba `HISTORICAL_EXCLUSIONS informa specs/ como raíz histórica de work items`; los de resolución en `archive/` y de `[[STORY-999-inexistente]]` pasaban porque el corpus ya existía.
-- GREEN: `HISTORICAL_EXCLUSIONS = ['CHANGELOG.md', 'docs/adr', 'specs']` → 10/10. El fixture crea `specs/flow`; el caso de deduplicación usa `specs/flow/EPIC-01-a/`.
+- GREEN: `HISTORICAL_EXCLUSIONS = ['CHANGELOG.md', 'docs/decisions', 'specs']` → 10/10. El fixture crea `specs/flow`; el caso de deduplicación usa `specs/flow/EPIC-01-a/`.
 
 ### Índice (D-4)
 
@@ -131,7 +131,7 @@ Inventario inicial: 119 líneas; final: 89 (75 tras las exclusiones del contrato
 
 ## Alcance del diff (T019)
 
-12 archivos modificados, 0 nuevos versionados: `AGENTS.md`, `sddf.config.yaml`, `scripts/check-doc-links.js`, `test/check-doc-links.test.js`, `docs/guardrails/gr-ai-security-checklist.md`, `docs/runbooks/actualizar-spec-de-proyecto.md`, los 2 de `docs/domains/` y los 2 de `docs/product/`, más `story.md` y `tasks.md` de esta historia. `package.json`, `skills/`, `docs/adr/`, `CHANGELOG.md`, `docs/product/roadmap.md`, `docs/requirements/` y `docs/index.md` sin cambios.
+12 archivos modificados, 0 nuevos versionados: `AGENTS.md`, `sddf.config.yaml`, `scripts/check-doc-links.js`, `test/check-doc-links.test.js`, `docs/guardrails/gr-ai-security-checklist.md`, `docs/runbooks/actualizar-spec-de-proyecto.md`, los 2 de `docs/domains/` y los 2 de `docs/product/`, más `story.md` y `tasks.md` de esta historia. `package.json`, `skills/`, `docs/decisions/`, `CHANGELOG.md`, `docs/product/roadmap.md`, `docs/requirements/` y `docs/index.md` sin cambios.
 
 ---
 

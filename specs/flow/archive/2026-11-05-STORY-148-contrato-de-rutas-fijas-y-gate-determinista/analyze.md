@@ -128,7 +128,7 @@ related:
 ## Recomendaciones
 
 1. **INC-001:** con `/story-fix-plan STORY-148`, añadir a design.md › D-2 y › Esquema de datos el campo `conforming` (skills fuera de `PENDING_MIGRATION` sin errores) incluido en `--json`, y a T011/T012 su cálculo e impresión; extender el caso «Conforme» de T006 para afirmar que el skill aparece en `conforming`. No bloquea la implementación.
-2. **Aviso de precondición (no es inconsistencia):** ADR-0016 aún no existe en `docs/adr/` y STORY-147 está `READY-FOR-IMPLEMENT/DONE`. Implementar STORY-147 antes que STORY-148 e incluir en ADR-0016 el marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, el texto canónico del bloque y la región `SDDF-LEGACY-DIAGNOSTIC` (design CR-001). T001 detiene la implementación si el ADR no está `ACCEPTED`.
+2. **Aviso de precondición (no es inconsistencia):** ADR-0016 aún no existe en `docs/decisions/` y STORY-147 está `READY-FOR-IMPLEMENT/DONE`. Implementar STORY-147 antes que STORY-148 e incluir en ADR-0016 el marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->`, el texto canónico del bloque y la región `SDDF-LEGACY-DIAGNOSTIC` (design CR-001). T001 detiene la implementación si el ADR no está `ACCEPTED`.
 3. **Retroalimentación a story.md (CR-002 del diseño):** añadir `config/profiles.json` y `test/verify-repository.test.js` a «Alcance mínimo del contrato» de story.md; el plan ya los incluye (D-6, T015, T017).
 4. **T022 (eficiencia):** la «copia temporal del repo» basta con `scripts/verify-fixed-layout.js`, `skills/`, `.env.template` y los `ACTIVE_DOCS`; no es necesario copiar el repositorio completo.
 

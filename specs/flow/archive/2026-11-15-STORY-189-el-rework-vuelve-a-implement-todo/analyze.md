@@ -123,7 +123,7 @@ Criterios no funcionales: CNF-1 → D-06, F-4, C-1 a C-5, V-10, V-11; CNF-2 → 
 
 1. **INC-001:** con `/story-fix-plan STORY-189`, o a mano, añadir la línea 287 de `skills/story-implement/SKILL.md` a la lista de T004 en tasks.md y a la viñeta `story-implement` de «Context» en design.md.
 2. **Robustez del eval nuevo (no es un hallazgo):** el `not_contains` `ronda` del caso `implement-todo-sin-fix-directives-no-anuncia-rework` (design.md «Esquema de datos»; T003) es una subcadena amplia. Al implementar T003, se puede usar `(ronda` para que coincida solo con el anuncio de la ronda.
-3. **Dependencia (no es un hallazgo):** T001 exige ADR-0022, que todavía no existe (`docs/adr/` llega a ADR-0021). Implementar STORY-186 antes que esta historia. La épica también ordena STORY-188 antes. Si se respeta ese orden, T001 encontrará `PLAN/DONE` en los gates y los ID TC-045/TC-046 y TC-007/TC-008 ocupados.
+3. **Dependencia (no es un hallazgo):** T001 exige ADR-0022, que todavía no existe (`docs/decisions/` llega a ADR-0021). Implementar STORY-186 antes que esta historia. La épica también ordena STORY-188 antes. Si se respeta ese orden, T001 encontrará `PLAN/DONE` en los gates y los ID TC-045/TC-046 y TC-007/TC-008 ocupados.
 4. **CR-001 de design.md:** pasa a STORY-190 (conservar las secciones de rondas anteriores de `implement-report.md` o usar otra fuente para `round`). No bloquea.
 
 ---

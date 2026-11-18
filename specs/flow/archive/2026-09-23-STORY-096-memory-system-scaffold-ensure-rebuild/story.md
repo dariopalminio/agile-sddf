@@ -54,7 +54,7 @@ Dado un proyecto sin `docs/constitution.md` ni `docs/product/`
 Cuando ejecuto `/memory-system scaffold`
 Entonces el sistema crea `docs/constitution.md` con frontmatter y contenido plantilla
   Y crea `docs/product/vision.md`, `docs/product/stakeholders.md` y `docs/product/objectives.md` con frontmatter inicial
-  Y crea un `README.md` en cada capa faltante (`docs/domains/`, `docs/architecture/`, `docs/adr/`, etc.)
+  Y crea un `README.md` en cada capa faltante (`docs/domains/`, `docs/architecture/`, `docs/decisions/`, etc.)
   Y crea las 6 plantillas base en `docs/templates/`
   Pero no regenera `docs/index.md` (el indexado es responsabilidad del modo `index`)
 ```

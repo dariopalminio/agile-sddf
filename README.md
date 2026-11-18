@@ -80,7 +80,7 @@ No es:
 | Configuración del proyecto | `sddf.config.yaml` | Define perfil, stack, comandos de verificación y workers opcionales. |
 | Memoria | `docs/` | Conocimiento: producto, requisitos, dominio, arquitectura, decisiones, guías y templates. |
 | Políticas del proyecto | `docs/policies/` y `docs/guardrails/` | Registran principios técnicos y Definition of Done para los gates del flujo. |
-| Guía de revisión | `REVIEW.md` en la raíz (lo siembra `/sddf-constitution`) | Calibra qué reporta `/story-code-review` y con qué severidad en tu proyecto, sin cambiar el formato del informe ([ADR-0021](docs/adr/ADR-0021-guia-de-revision-review-md.md)). |
+| Guía de revisión | `REVIEW.md` en la raíz (lo siembra `/sddf-constitution`) | Calibra qué reporta `/story-code-review` y con qué severidad en tu proyecto, sin cambiar el formato del informe ([ADR-0021](docs/decisions/ADR-0021-guia-de-revision-review-md.md)). |
 | Work items | `specs/flow/` | Épicas e historias con sus planes y reportes; las historias completadas y canceladas se archivan en `specs/flow/archive/`. |
 ## Empieza en cinco minutos
 
@@ -209,7 +209,7 @@ flowchart LR
 
 Los únicos work items son Épica e Historia; la documentación de producto los orienta, pero no tiene ciclo de work item. El modelo está en la [jerarquía de work items](docs/domains/domain-work-item-hierarchy.md).
 
-El ciclo de vida de una historia es `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` ([ADR-0022](docs/adr/ADR-0022-workflows-sin-estados-buffer.md)). Una historia aprobada en el plan queda en `PLAN/DONE`, y un `NEEDS-CHANGES` de `story-code-review`, `story-verify` o `story-acceptance` la devuelve a `IMPLEMENT/TODO` con `fix-directives.md`. `DELIVER` lo escribe `/story-delivery` con confirmación humana, tras verificar el DoD de entrega, y `COMPLETED` lo escribe `/story-complete`, también con confirmación humana, al archivar la historia en `specs/flow/archive/`. Los estados y subestados canónicos están documentados en el [ciclo de vida de historias](docs/domains/domain-story-lifecycle.md).
+El ciclo de vida de una historia es `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` ([ADR-0022](docs/decisions/ADR-0022-workflows-sin-estados-buffer.md)). Una historia aprobada en el plan queda en `PLAN/DONE`, y un `NEEDS-CHANGES` de `story-code-review`, `story-verify` o `story-acceptance` la devuelve a `IMPLEMENT/TODO` con `fix-directives.md`. `DELIVER` lo escribe `/story-delivery` con confirmación humana, tras verificar el DoD de entrega, y `COMPLETED` lo escribe `/story-complete`, también con confirmación humana, al archivar la historia en `specs/flow/archive/`. Los estados y subestados canónicos están documentados en el [ciclo de vida de historias](docs/domains/domain-story-lifecycle.md).
 
 Los gates de validación `epic-analyze`, `story-evaluation`, `story-analyze`, `story-code-review`, `story-verify` y `story-acceptance` dejan un reporte con el campo `verdict` en el frontmatter y `## Veredicto` como primera sección. Solo `APPROVED` habilita el avance. Los valores de cada gate, su significado y la traducción de reportes anteriores están en la [política de contrato de validación](docs/policies/validation-contract-policy.md), fuente de verdad del contrato.
 
@@ -230,7 +230,7 @@ Sigue la [sección de migración a 5.0.0](docs/guides/artifact-directory-migrati
 Sigue la [guía de migración](docs/guides/artifact-directory-migration.md), primero con `--dry-run` y luego sin él.
 </details>
 
-El layout es fijo ([ADR-0017](docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md)): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso, reservado) son raíces hermanas en la raíz del repositorio y no se configuran.
+El layout es fijo ([ADR-0017](docs/decisions/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md)): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso, reservado) son raíces hermanas en la raíz del repositorio y no se configuran.
 
 ```text
 docs/
@@ -452,13 +452,13 @@ implement:
 
 | Concepto | Cómo funciona |
 |---|---|
-| Layout de artefactos | Fijo ([ADR-0017](docs/adr/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md)): `docs/`, `specs/` y `workflow/`; `SDDF_ROOT` y `root` ya no se leen. Ver la [guía de migración](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices). |
+| Layout de artefactos | Fijo ([ADR-0017](docs/decisions/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md)): `docs/`, `specs/` y `workflow/`; `SDDF_ROOT` y `root` ya no se leen. Ver la [guía de migración](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices). |
 | Modelo de entrega | `defaults.delivery-model` es obligatorio para `/story-delivery`: `batch` (incremento listo para producción, sin publicar) o `continuous` (incremento ya desplegado). Si falta o tiene otro valor, la entrega falla cerrada. |
 | Perfil `core` | Es el perfil distribuido por defecto y no exige extensiones de autoría. |
 | Perfil `dogfood` | Está reservado para el desarrollo de este repositorio y requiere workers provisionados de forma explícita. |
 | Workers por stack | Son opcionales y se declaran en `implement.test_generators` y `implement.code_generators`. `skill: none` los desactiva. |
 
-Los perfiles seleccionan un stack; no son otra modalidad de instalación. El detalle del contrato está en [`config/profiles.json`](config/profiles.json) y en el [ADR de perfiles, runtimes e instalación explícita](docs/adr/ADR-0009-perfiles-runtimes-e-instalacion-explicita.md).
+Los perfiles seleccionan un stack; no son otra modalidad de instalación. El detalle del contrato está en [`config/profiles.json`](config/profiles.json) y en el [ADR de perfiles, runtimes e instalación explícita](docs/decisions/ADR-0009-perfiles-runtimes-e-instalacion-explicita.md).
 
 Para usar workers específicos de tecnología, instálalos y decláralos de forma consciente. El core permanece agnóstico al stack; la lista e instrucciones vigentes de workers viven en [agile-sddf-extension](https://github.com/dariopalminio/agile-sddf-extension).
 
@@ -521,7 +521,7 @@ Después de renombrar los directorios y referencias internas:
 | `/release-generate-stories` | `/epic-generate-stories` |
 | `/release-generate-all-stories` | `/epic-generate-all-stories` |
 
-La motivación y el historial completo están en [CHANGELOG](CHANGELOG.md) y en los ADR [0004](docs/adr/ADR-0004-nivel-l2-epic-y-directorios-numerados.md) y [0005](docs/adr/ADR-0005-prefijo-story-para-el-nivel-l1.md).
+La motivación y el historial completo están en [CHANGELOG](CHANGELOG.md) y en los ADR [0004](docs/decisions/ADR-0004-nivel-l2-epic-y-directorios-numerados.md) y [0005](docs/decisions/ADR-0005-prefijo-story-para-el-nivel-l1.md).
 
 </details>
 

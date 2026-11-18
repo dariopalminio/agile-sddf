@@ -36,7 +36,7 @@ related:
 ## 1. Precondición
 
 - [x] T001 Comprobar el estado de partida (CR-001, Riesgo 1):
-  - `docs/adr/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`. Si no existe, **detener**: los wikilinks romperían `check-doc-links`.
+  - `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md` existe con `status: ACCEPTED`. Si no existe, **detener**: los wikilinks romperían `check-doc-links`.
   - STORY-186 a STORY-192 están en `COMPLETED` (o en `specs/flow/archive/`).
   - El `grep -nE "READY-FOR-(IMPLEMENT|DEV)"` de los 25 archivos coincide con el inventario de Context de design.md.
   - `npm run verify:repository` y `npm test` pasan antes del cambio (línea base).
@@ -93,7 +93,7 @@ related:
 
   Depende de T001. Hecho: V-6 (`IMPLEMENT/TODO` = 3; `NEEDS-REFINEMENT` solo en la arista `dec_specify` de `story-evaluation`) y V-7 (vista previa Mermaid sin error).
 - [x] T008 [P] Editar `README.md` L212 (C-7, D-06):
-  - Workflow `SPECIFY → PLAN → IMPLEMENT → … → COMPLETED` con enlace `[ADR-0022](docs/adr/ADR-0022-workflows-sin-estados-buffer.md)`.
+  - Workflow `SPECIFY → PLAN → IMPLEMENT → … → COMPLETED` con enlace `[ADR-0022](docs/decisions/ADR-0022-workflows-sin-estados-buffer.md)`.
   - Frase sobre `PLAN/DONE` y el rework a `IMPLEMENT/TODO` con `fix-directives.md` desde los tres gates.
   - El resto del párrafo no cambia.
 
@@ -130,7 +130,7 @@ related:
 
   Depende de T002 a T014. Hecho: el `grep` solo devuelve menciones permitidas, o los hallazgos quedan registrados con su historia propietaria.
 - [x] T016 Verificar los registros históricos y la codificación (V-13, V-14):
-  - `git diff --stat` no incluye `CHANGELOG.md`, `docs/adr/ADR-000{3,6,8}*`, `docs/product/roadmap.md` ni `specs/flow/archive/`.
+  - `git diff --stat` no incluye `CHANGELOG.md`, `docs/decisions/ADR-000{3,6,8}*`, `docs/product/roadmap.md` ni `specs/flow/archive/`.
   - Ningún archivo editado empieza por los bytes `EF BB BF` ni contiene U+FEFF literal (verificar por bytes, no con el gate).
 
   Depende de T015. Hecho: ambas comprobaciones limpias.

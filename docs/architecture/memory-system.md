@@ -345,7 +345,7 @@ ningún modo los toca ni los elimina:
 | `constitution.md` | semilla |
 | `product/README.md`, `product/vision.md`, `product/stakeholders.md`, `product/objectives.md`, `product/roadmap.md` | semilla |
 | `requirements/README.md`, `specs/README.md`, `domains/README.md`, `architecture/README.md`, `adr/README.md`, `policies/README.md`, `guardrails/README.md`, `guides/README.md`, `runbooks/README.md`, `templates/README.md` | semilla |
-| `templates/adr-template.md` | semilla (contenido de `docs/adr/adr-template.md`) |
+| `templates/adr-template.md` | semilla (contenido de `docs/decisions/adr-template.md`) |
 | `templates/domain-template.md`, `guardrail-template.md`, `policy-template.md` | semilla (autoría manual, sin skill dueño; ADR-0012) |
 | `templates/story-template.md`, `epic-template.md`, `stakeholders-template.md`, `requirement-template.md`, `vision-template.md`, `roadmap-template.md` | skill dueño (`story-creation`, `epic-creation`, `project-discovery`, `project-discovery`, `project-begin`, `project-planning`) |
 

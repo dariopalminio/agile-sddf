@@ -9,7 +9,7 @@ created: {date}
 updated: {date}
 ---
 
-# Decisiones de arquitectura (`adr/`)
+# Decisiones de arquitectura (`decisions/`)
 
 **Propósito:** decisiones transversales inmutables (`ADR-NNNN`). Un ADR es obligatorio cuando la
 decisión afecta a más de un módulo o restringe decisiones futuras.

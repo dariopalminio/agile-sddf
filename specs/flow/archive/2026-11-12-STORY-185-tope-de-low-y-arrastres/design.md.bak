@@ -70,7 +70,7 @@ Stack: skill en Markdown con agentes locales, motores Node ≥ 18 sin dependenci
 | C-6 | Prueba del motor y del contrato | crear | `test/story-code-review-low-noise.test.js` | AC-1, AC-2, CNF-1 |
 | C-7 | README del skill | modificar (una frase en «What it does») | `skills/story-code-review/README.md` | AC-1, AC-2 |
 
-Sin cambios: `assets/fix-directives-template.md` (los `LOW` nunca entran), `docs/templates/REVIEW-template.md` (ya declara el tope y la regla de arrastre), `docs/guardrails/`, `docs/adr/`, `package.json` (`files` ya publica `skills/story-code-review`, incluido `scripts/`) y `scripts/`.
+Sin cambios: `assets/fix-directives-template.md` (los `LOW` nunca entran), `docs/templates/REVIEW-template.md` (ya declara el tope y la regla de arrastre), `docs/guardrails/`, `docs/decisions/`, `package.json` (`files` ya publica `skills/story-code-review`, incluido `scripts/`) y `scripts/`.
 
 ## Interfaces
 

@@ -35,12 +35,12 @@ related:
 
 Hechos verificados en el filesystem el 2026-11-08 para este análisis:
 
-- `docs/adr/` termina en `ADR-0020-contratos-centralizados-para-spec-living.md`; `ADR-0021` solo aparece en `design.md` y `tasks.md` de esta historia, así que el número está libre.
+- `docs/decisions/` termina en `ADR-0020-contratos-centralizados-para-spec-living.md`; `ADR-0021` solo aparece en `design.md` y `tasks.md` de esta historia, así que el número está libre.
 - Los slugs `layout-fijo-con-archivo-de-epicas` (ADR-0019), `contrato-de-validacion` (ADR-0015) y `EPIC-28-calibrar-story-code-review-con-review-md` existen. `guia-de-revision-review-md` solo aparece en `design.md:190`.
 - `skills/story-code-review/SKILL.md` define `$IMPL_FILES` en el Paso 2c (línea 271) y `$DOD_PATH` en el Paso 2d (línea 282). El Paso 4c.2 dice «No se invoca `git diff`» (línea 466). Esto sostiene D-4 y D-5.
 - Los checklists `docs/guardrails/gr-code-security-checklist.md` y `gr-ai-security-checklist.md` existen (nivel 4 de D-3).
-- `docs/adr/README.md:69` y `docs/index.md:485` tienen la fila y la línea de ADR-0020 en los formatos que T014 y T015 replican.
-- `docs/adr/adr-template.md` tiene las seis secciones `##` que nombra D-1, en ese orden (líneas 26-69).
+- `docs/decisions/README.md:69` y `docs/index.md:485` tienen la fila y la línea de ADR-0020 en los formatos que T014 y T015 replican.
+- `docs/decisions/adr-template.md` tiene las seis secciones `##` que nombra D-1, en ese orden (líneas 26-69).
 
 ---
 
@@ -48,7 +48,7 @@ Hechos verificados en el filesystem el 2026-11-08 para este análisis:
 
 | AC | Descripción | Cubierto en design.md | Elemento de diseño |
 |---|---|---|---|
-| AC-1 | El ADR fija ubicación, precedencia y fuente de lectura; está `ACCEPTED`, tiene las secciones del template y figura en `docs/adr/README.md` | ✓ | D-1 (línea 61), D-2 (81), D-3 (92), D-4 (112), D-7 (155); Componentes afectados (166-174); Interfaces «Frontmatter de ADR» y «Fila del índice de ADRs» (180-181); Esquema de datos (185); contratos 1-4 (232-235) |
+| AC-1 | El ADR fija ubicación, precedencia y fuente de lectura; está `ACCEPTED`, tiene las secciones del template y figura en `docs/decisions/README.md` | ✓ | D-1 (línea 61), D-2 (81), D-3 (92), D-4 (112), D-7 (155); Componentes afectados (166-174); Interfaces «Frontmatter de ADR» y «Fila del índice de ADRs» (180-181); Esquema de datos (185); contratos 1-4 (232-235) |
 | AC-2 | Cada severidad de Claude Code Review tiene una sola traducción (Important → HIGH o MEDIUM/bloquea; Minor → LOW/no bloquea; Pre-existing → PREEXISTENTE/no bloquea) | ✓ | D-6 (133-153): la tabla coincide fila por fila con los Ejemplos de `story.md:41-45`; F-2 (208); contrato 5 (236) |
 | AC-3 | Si la historia modifica `REVIEW.md` o el DoD, el ADR dice qué versión rige, exige una advertencia en el informe y no exige git con el working tree | ✓ | D-4 (112-118) y D-5 (120-131): rige el working tree, hay advertencia en `code-review-report.md` y se detecta con `$IMPL_FILES` sin git; contrato 6 (237) |
 
@@ -79,8 +79,8 @@ Criterios no funcionales (no son ACs, pero el DoD exige trazabilidad):
 | T010 | Redactar `## Rationale` | D-7 (Rationale) | ✓ |
 | T011 | Redactar `## Alternativas consideradas` | D-7 (Alternativas), D-2 a D-6, CNF-2 | ✓ |
 | T012 | Redactar `## Consecuencias` con puntos de cambio | D-7 (Consecuencias), F-4 | ✓ |
-| T013 | Redactar `## Referencias` y verificar wikilinks a mano | D-7 (Referencias), Risks (`check-doc-links.js` excluye `docs/adr`) | ✓ |
-| T014 | Añadir fila en `docs/adr/README.md` | Componente «Índice de ADRs», Interfaz «Fila del índice de ADRs» | ✓ |
+| T013 | Redactar `## Referencias` y verificar wikilinks a mano | D-7 (Referencias), Risks (`check-doc-links.js` excluye `docs/decisions`) | ✓ |
+| T014 | Añadir fila en `docs/decisions/README.md` | Componente «Índice de ADRs», Interfaz «Fila del índice de ADRs» | ✓ |
 | T015 | Añadir línea en `docs/index.md` | Componente «Índice wiki», Interfaz «Línea de `docs/index.md`» | ✓ |
 | T016 | Verificar contratos 1 y 2 | Contratos de verificación 1-2 | ✓ |
 | T017 | Verificar contratos 3, 6 y 7 | Contratos de verificación 3, 6, 7 | ✓ |
@@ -96,8 +96,8 @@ Criterios no funcionales (no son ACs, pero el DoD exige trazabilidad):
 
 | Componente / Interfaz | Sección en design.md | Tarea que lo implementa | Estado |
 |---|---|---|---|
-| ADR de la guía de revisión (`docs/adr/ADR-0021-guia-de-revision-review-md.md`) | Componentes afectados (170) | T003-T013 | ✓ |
-| Índice de ADRs (`docs/adr/README.md`) | Componentes afectados (171) | T014 | ✓ |
+| ADR de la guía de revisión (`docs/decisions/ADR-0021-guia-de-revision-review-md.md`) | Componentes afectados (170) | T003-T013 | ✓ |
+| Índice de ADRs (`docs/decisions/README.md`) | Componentes afectados (171) | T014 | ✓ |
 | Índice wiki (`docs/index.md`) | Componentes afectados (172) | T015 | ✓ |
 | Frontmatter de ADR | Interfaces (180) | T003, T016 | ✓ |
 | Fila del índice de ADRs | Interfaces (181) | T014, T020 | ✓ |
@@ -140,7 +140,7 @@ Criterios no funcionales (no son ACs, pero el DoD exige trazabilidad):
 
 1. **INC-001:** antes de ejecutar T009, decidir si el método de líneas no tocadas queda delegado (CR-001) o se fija en el ADR. Si se delega, aplicar CR-001 en `specs/flow/STORY-181-hallazgos-preexistentes/story.md` (líneas 51 y 72) con `/story-refine STORY-181` o con una edición manual. Si se fija en el ADR, ampliar D-6 de `design.md` y quitar CR-001. T002 ya bloquea T009 hasta que esté decidido.
 2. **INC-002:** con `/story-fix-plan STORY-178`, o a mano, añadir `// satisface: AC-N` a F-3 y F-4 de `design.md`. No bloquea.
-3. **Observación (no es hallazgo):** el comentario de `docs/adr/adr-template.md:10` dice que `slug` «debe coincidir con el nombre del archivo sin extensión», pero ADR-0015 y ADR-0019 omiten el prefijo `ADR-NNNN-`. El diseño sigue esa práctica (contrato 1, `slug: guia-de-revision-review-md`), y hace bien, porque los wikilinks de `docs/index.md` se resuelven por ese slug. El template propone `PROPOSED` al crear (`adr-template.md:14`); el diseño elige `ACCEPTED` y lo justifica en D-1 con AC-1 y CS-1.
+3. **Observación (no es hallazgo):** el comentario de `docs/decisions/adr-template.md:10` dice que `slug` «debe coincidir con el nombre del archivo sin extensión», pero ADR-0015 y ADR-0019 omiten el prefijo `ADR-NNNN-`. El diseño sigue esa práctica (contrato 1, `slug: guia-de-revision-review-md`), y hace bien, porque los wikilinks de `docs/index.md` se resuelven por ese slug. El template propone `PROPOSED` al crear (`adr-template.md:14`); el diseño elige `ACCEPTED` y lo justifica en D-1 con AC-1 y CS-1.
 4. **Observación (no es hallazgo):** no hay `testcases.md`. En un `chore` documental basta con T016-T022, que verifican los 11 contratos del diseño, y la implementación va por `/story-implement-tasks`. Si se quiere habilitar `/story-implement`, ejecutar `/story-testcases STORY-178`.
 
 ---

@@ -81,7 +81,7 @@ const HARNESS_ORDER = ['sddf', 'speckit', 'openspec', 'generic'];
 // `scaffold` lo usa para saber qué capa falta y el índice deriva de él `KNOWN_LAYERS`. Los work
 // items no son una capa de `docs/`: viven en `specs/flow/` (STORY-152 D-5) y los crea `/sddf-init`.
 const LAYERS = [
-  'product', 'requirements', 'domains', 'architecture', 'adr',
+  'product', 'requirements', 'domains', 'architecture', 'decisions',
   'policies', 'guardrails', 'guides', 'runbooks', 'templates',
 ];
 
@@ -581,7 +581,7 @@ const ADR_FILE = /^(ADR-\d+)-.+\.md$/;
 function adrAliases(nodes) {
   const aliases = [];
   for (const node of nodes) {
-    const match = node.layer === 'adr' && !node.slugPlaceholder ? ADR_FILE.exec(path.basename(node.relPath)) : null;
+    const match = node.layer === 'decisions' && !node.slugPlaceholder ? ADR_FILE.exec(path.basename(node.relPath)) : null;
     if (match) aliases.push(path.basename(node.relPath, '.md'), match[1]);
   }
   return aliases;

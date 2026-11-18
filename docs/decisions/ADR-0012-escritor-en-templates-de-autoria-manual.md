@@ -25,13 +25,13 @@ El principio 13 de la constitución exige que **ningún template de `$SPECS_BASE
 La STORY-096 introduce el scaffolding de la capa `templates/`, que distribuye seis plantillas a todo proyecto scaffoldeado. Cinco se copian en tiempo de ejecución desde su skill dueño (ADR-0001) y ya llevan anotaciones `escritor:`. La sexta, `adr-template.md`, es distinta en dos aspectos:
 
 1. **Ningún skill escribe ADRs.** Los ADRs de este repositorio son documentos de autoría humana. Ninguno de los dos remedios de la constitución encaja: retirar los campos vaciaría la plantilla, y no hay ningún skill que «pase a escribirlos» ni en esta historia ni en el backlog.
-2. **Vivía fuera del alcance del principio.** `docs/adr/adr-template.md` está en la capa `adr/`, no en `templates/`, así que nunca tuvo que declarar escritores. Es el scaffolding de la STORY-096 el que la coloca en `templates/` y, con ello, bajo el principio 13.
+2. **Vivía fuera del alcance del principio.** `docs/decisions/adr-template.md` está en la capa `adr/`, no en `templates/`, así que nunca tuvo que declarar escritores. Es el scaffolding de la STORY-096 el que la coloca en `templates/` y, con ello, bajo el principio 13.
 
 La `code-review` de la STORY-096 registró la omisión como hallazgo bloqueante (MEDIUM): la plantilla se replica en cada proyecto scaffoldeado, de modo que la desviación se propaga más allá de este repositorio.
 
 Existe además una restricción técnica. La constitución describe la anotación como «comentario inline», y `story-template.md` la aplica al final de la línea del campo. El parser de frontmatter de `memory-system` (`parseFrontmatter`, `skills/memory-system/scripts/memory-system.js:237`) **no reconoce comentarios finales de línea**: `title: "<Título>"   # escritor: X` produce el valor literal `"<Título>"   # escritor: X`, con las comillas sin desescapar, porque `unquote` solo actúa cuando el valor empieza y termina por comilla.
 
-La capa `templates/` está excluida del índice (`references/memory-rules.md` §2, "sus wikilinks son placeholders"), así que la copia scaffoldeada no se indexa. Pero **`docs/adr/adr-template.md` sí se indexa**, porque vive en la capa `adr/`: aparece hoy en `docs/index.md` como `- [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder`. Y como ADR-0012 exige mantener ambas copias byte a byte idénticas, la forma de anotación debe ser segura para la copia indexada. Con anotación inline, esa línea del índice pasaría a mostrar el título con sus comillas y el comentario pegado. `story-template.md` no sufre este problema porque vive en los assets de un skill, fuera de `SPECS_BASE`.
+La capa `templates/` está excluida del índice (`references/memory-rules.md` §2, "sus wikilinks son placeholders"), así que la copia scaffoldeada no se indexa. Pero **`docs/decisions/adr-template.md` sí se indexa**, porque vive en la capa `adr/`: aparece hoy en `docs/index.md` como `- [adr-template.md](adr/adr-template.md) — <Título de la decisión> ⚠️ slug placeholder`. Y como ADR-0012 exige mantener ambas copias byte a byte idénticas, la forma de anotación debe ser segura para la copia indexada. Con anotación inline, esa línea del índice pasaría a mostrar el título con sus comillas y el comentario pegado. `story-template.md` no sufre este problema porque vive en los assets de un skill, fuera de `SPECS_BASE`.
 
 ## Decisión
 
@@ -40,13 +40,13 @@ Un template cuyos campos no escribe ningún skill **satisface el principio 13 an
 - **en el frontmatter, como comentario de línea completa inmediatamente encima del campo** (`# escritor: …`), no al final de su línea;
 - **en el cuerpo, como comentario HTML** al inicio de cada sección, igual que el resto de templates.
 
-`adr-template.md` es el primer template bajo esta regla, en sus dos copias sincronizadas: la semilla `skills/memory-system/assets/scaffold/templates/adr-template.md` y el original del framework `docs/adr/adr-template.md`.
+`adr-template.md` es el primer template bajo esta regla, en sus dos copias sincronizadas: la semilla `skills/memory-system/assets/scaffold/templates/adr-template.md` y el original del framework `docs/decisions/adr-template.md`.
 
 ## Rationale
 
 - **Cumple el propósito del principio 13.** Lo que el principio previene es el campo huérfano que nadie rellena. `escritor: autoría manual` responde la misma pregunta que `escritor: story-creation`: quién es responsable de ese campo. Un lector del template ya no tiene que deducirlo.
 - **Retirar los campos no era viable.** Es el otro remedio que ofrece la constitución, pero `type`, `id`, `slug`, `title`, `status` y `date` son el esquema canónico de un ADR; sin ellos la plantilla no sirve y los ADRs dejarían de ser indexables.
-- **El comentario de línea completa es la única forma segura.** Es la que el parser ya ignora (`line.trim().startsWith('#') → continue`), verificada contra `docs/adr/adr-template.md`: los ocho campos se parsean con exactamente los mismos valores que antes de anotar. La forma inline habría roto el título en el índice de todo proyecto scaffoldeado.
+- **El comentario de línea completa es la única forma segura.** Es la que el parser ya ignora (`line.trim().startsWith('#') → continue`), verificada contra `docs/decisions/adr-template.md`: los ocho campos se parsean con exactamente los mismos valores que antes de anotar. La forma inline habría roto el título en el índice de todo proyecto scaffoldeado.
 - **Mantiene las dos copias byte a byte idénticas**, cerrando de paso el riesgo de deriva entre la semilla y el original del framework que la propia `code-review` señaló como hallazgo LOW.
 
 ## Alternativas consideradas

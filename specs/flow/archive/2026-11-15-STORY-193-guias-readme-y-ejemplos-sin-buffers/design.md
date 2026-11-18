@@ -26,7 +26,7 @@ La historia es de tipo `chore` y solo edita documentación, fixtures y un caso d
 
 Estado verificado el 2026-11-14:
 
-- **ADR de referencia.** El diseño de STORY-186 fija el ADR como `docs/adr/ADR-0022-workflows-sin-estados-buffer.md`, con slug `workflows-sin-estados-buffer`. Este ADR todavía no existe: STORY-186 está en `READY-FOR-IMPLEMENT/DONE`. Los workflows son:
+- **ADR de referencia.** El diseño de STORY-186 fija el ADR como `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md`, con slug `workflows-sin-estados-buffer`. Este ADR todavía no existe: STORY-186 está en `READY-FOR-IMPLEMENT/DONE`. Los workflows son:
   - **Historia:** `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED`.
   - **Épica:** `DEFINE → PLAN → DEVELOP → VALIDATE → SHIP → COMPLETED`. La aprobación del PO se escribe a mano como `PLAN/DONE`.
   - **Rework:** con `NEEDS-CHANGES`, los tres gates (`story-code-review`, `story-verify` y `story-acceptance`) escriben `IMPLEMENT/TODO` y un `fix-directives.md` cuyo `based-on` es su propio reporte. `round` es la ronda previa + 1, y la ronda previa es el máximo entre el `round` de `fix-directives.md` y los encabezados de ronda de `implement-report.md` (D-05 de STORY-186). Solo `story-code-review` borra `fix-directives.md`, y lo hace al aprobar.
@@ -116,7 +116,7 @@ En esta historia, las interfaces son los contratos que leen otros componentes. /
 
 ### D-01 — Cómo citar el ADR // satisface: AC-1, AC-2
 
-- **Elegida:** en `docs/guides/` y `docs/architecture/`, el wikilink `[[workflows-sin-estados-buffer]]` con «ADR-0022» en el texto, igual que en D-01 de STORY-187. En `README.md`, un enlace Markdown relativo `[ADR-0022](docs/adr/ADR-0022-workflows-sin-estados-buffer.md)`, porque el README se lee en GitHub y en npm, donde los wikilinks no resuelven. Las guías que hoy citan `[[rework-sin-estado-propio]]` (ADR-0008) como regla vigente pasan a citar ADR-0022. Si una frase describe la historia de la regla, mantiene ADR-0008 como antecedente.
+- **Elegida:** en `docs/guides/` y `docs/architecture/`, el wikilink `[[workflows-sin-estados-buffer]]` con «ADR-0022» en el texto, igual que en D-01 de STORY-187. En `README.md`, un enlace Markdown relativo `[ADR-0022](docs/decisions/ADR-0022-workflows-sin-estados-buffer.md)`, porque el README se lee en GitHub y en npm, donde los wikilinks no resuelven. Las guías que hoy citan `[[rework-sin-estado-propio]]` (ADR-0008) como regla vigente pasan a citar ADR-0022. Si una frase describe la historia de la regla, mantiene ADR-0008 como antecedente.
 - **Rechazadas:** (a) solo «ADR-0022» en texto: no lo valida ningún script. (b) un wikilink en `README.md`: en npm y GitHub se ve como texto literal `[[…]]`.
 
 ### D-02 — Guía del pipeline de historia (C-1) // satisface: AC-1, AC-2
@@ -166,7 +166,7 @@ En esta historia, las interfaces son los contratos que leen otros componentes. /
 
 ### D-06 — README del paquete (C-7) // satisface: AC-1, AC-2
 
-- **L212:** «El ciclo de vida de una historia es `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` ([ADR-0022](docs/adr/ADR-0022-workflows-sin-estados-buffer.md)). Una historia aprobada en el plan queda en `PLAN/DONE`, y un `NEEDS-CHANGES` de `story-code-review`, `story-verify` o `story-acceptance` la devuelve a `IMPLEMENT/TODO` con `fix-directives.md`.» El resto del párrafo (`DELIVER` y `COMPLETED`) no cambia.
+- **L212:** «El ciclo de vida de una historia es `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` ([ADR-0022](docs/decisions/ADR-0022-workflows-sin-estados-buffer.md)). Una historia aprobada en el plan queda en `PLAN/DONE`, y un `NEEDS-CHANGES` de `story-code-review`, `story-verify` o `story-acceptance` la devuelve a `IMPLEMENT/TODO` con `fix-directives.md`.» El resto del párrafo (`DELIVER` y `COMPLETED`) no cambia.
 - **Rechazada:** solo quitar el estado de la secuencia. AC-2 pide «el workflow de historia del ADR», y el rework es parte de él.
 
 ### D-07 — Indicador de OBJ-10 (C-8) // satisface: AC-4
@@ -244,7 +244,7 @@ No hay esquema nuevo. Las sustituciones de frontmatter son:
 | V-10 | TC-007 conserva su condición | `not_contains` incluye `substatus: DONE`; `contains` sigue con `status: PLAN` y `substatus: IN-PROGRESS` | AC-3 |
 | V-11 | Gate verde | `npm test` y `npm run verify:repository` en exit 0 | AC-3, CNF-3 |
 | V-12 | El indicador de OBJ-10 no menciona buffers, y la confirmación del PO queda registrada | lectura de L108 y L112; nota en `implement-report.md`; AC-4 `APPROVED` en `acceptance-report.md` | AC-4 |
-| V-13 | No cambian los registros históricos | `git diff --stat` sin `CHANGELOG.md`, `docs/adr/ADR-000{3,6,8}*`, `docs/product/roadmap.md` ni `specs/flow/archive/` | CNF-1 |
+| V-13 | No cambian los registros históricos | `git diff --stat` sin `CHANGELOG.md`, `docs/decisions/ADR-000{3,6,8}*`, `docs/product/roadmap.md` ni `specs/flow/archive/` | CNF-1 |
 | V-14 | Codificación | UTF-8 sin BOM en los archivos editados (bytes iniciales distintos de `EF BB BF`) | CNF-3 |
 
 ## Risks / Trade-offs
@@ -276,7 +276,7 @@ Ninguna de diseño. La única decisión que queda abierta es la redacción final
 - **Tipo**: dependencia
 - **Descripción**: los wikilinks a `[[workflows-sin-estados-buffer]]` y la verificación de AC-1 necesitan que exista ADR-0022 (STORY-186) y que STORY-187 a STORY-192 estén completadas. Hoy STORY-186 está en `READY-FOR-IMPLEMENT/DONE`, sin implementar.
 - **Documento afectado**: design.md
-- **Acción requerida**: implementar esta historia en último lugar dentro de EPIC-029. Antes de empezar, comprobar que existe `docs/adr/ADR-0022-workflows-sin-estados-buffer.md`.
+- **Acción requerida**: implementar esta historia en último lugar dentro de EPIC-029. Antes de empezar, comprobar que existe `docs/decisions/ADR-0022-workflows-sin-estados-buffer.md`.
 
 ### CR-002
 - **Tipo**: dependencia

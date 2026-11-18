@@ -90,7 +90,7 @@ docs/constitution.md          # principios supremos (este documento)
 
 ### Decisiones técnicas
 
-- **ADRs (Architecture Decision Records):** [ej. se registran en docs/adr/ para decisiones arquitectónicas relevantes]
+- **ADRs (Architecture Decision Records):** [ej. se registran en docs/decisions/ para decisiones arquitectónicas relevantes]
 - **Diseño de features:** [ej. usando design.md del workflow SDD antes de implementar]
 
 ---

@@ -25,7 +25,7 @@ related:
 
 ## 1. Línea base
 
-- [x] T001 Confirmar el «Estado medido» del diseño sobre la rama actual. Comprobar que `ls docs/policies/` lista solo `README.md`, que `ls docs/adr/ | grep ADR-0015` no devuelve nada y que `grep -n -- '-->|' docs/architecture/diagrams/flowchart-story-*.mermaid` da las ramas de D-4. Comprobar también que los valores heredados de la tabla «Veredictos heredados por skill» siguen en sus templates y `SKILL.md`, y que el título `#` y el primer `##` de cada template coinciden con la tabla de D-9. Si alguna pieza no coincide, detener la historia e informar cuál, sin editar nada — Context, AC-1, AC-2, AC-3
+- [x] T001 Confirmar el «Estado medido» del diseño sobre la rama actual. Comprobar que `ls docs/policies/` lista solo `README.md`, que `ls docs/decisions/ | grep ADR-0015` no devuelve nada y que `grep -n -- '-->|' docs/architecture/diagrams/flowchart-story-*.mermaid` da las ramas de D-4. Comprobar también que los valores heredados de la tabla «Veredictos heredados por skill» siguen en sus templates y `SKILL.md`, y que el título `#` y el primer `##` de cada template coinciden con la tabla de D-9. Si alguna pieza no coincide, detener la historia e informar cuál, sin editar nada — Context, AC-1, AC-2, AC-3
 - [x] T002 [P] Registrar la línea base de enlaces activos con `node scripts/check-doc-links.js` (resultado y número de errores), para distinguir después los errores nuevos de los previos — V-13
 
 ## 2. Política `validation-contract-policy.md`
@@ -51,17 +51,17 @@ related:
 
 ## 4. ADR-0015
 
-- [x] T018 Crear `docs/adr/ADR-0015-contrato-de-validacion.md` a partir de `docs/adr/adr-template.md`. El frontmatter es el de D-10 (`id: ADR-0015`, `slug: contrato-de-validacion`, `title: "Contrato común de validación para los skills de gate"`, `status: ACCEPTED`, `date: 2026-10-17`, `supersedes: null`, `superseded-by: null`), sin anotaciones `escritor:`. Las secciones (Contexto y problema, Decisión, Rationale, Alternativas consideradas, Consecuencias, Referencias) siguen el contenido de D-10. Para la lista de valores, remitir a `../policies/validation-contract-policy.md` sin reproducir §4 ni §5 (requiere T012–T017) — D-10, CR-001, CNF-1
-- [x] T019 V-11: el frontmatter coincide con D-10, `grep -c '^| `story-' docs/adr/ADR-0015-contrato-de-validacion.md` da 0 y los enlaces relativos a la policy, a EPIC-25 y a los flowcharts resuelven (requiere T018) — CNF-1, CR-001
+- [x] T018 Crear `docs/decisions/ADR-0015-contrato-de-validacion.md` a partir de `docs/decisions/adr-template.md`. El frontmatter es el de D-10 (`id: ADR-0015`, `slug: contrato-de-validacion`, `title: "Contrato común de validación para los skills de gate"`, `status: ACCEPTED`, `date: 2026-10-17`, `supersedes: null`, `superseded-by: null`), sin anotaciones `escritor:`. Las secciones (Contexto y problema, Decisión, Rationale, Alternativas consideradas, Consecuencias, Referencias) siguen el contenido de D-10. Para la lista de valores, remitir a `../policies/validation-contract-policy.md` sin reproducir §4 ni §5 (requiere T012–T017) — D-10, CR-001, CNF-1
+- [x] T019 V-11: el frontmatter coincide con D-10, `grep -c '^| `story-' docs/decisions/ADR-0015-contrato-de-validacion.md` da 0 y los enlaces relativos a la policy, a EPIC-25 y a los flowcharts resuelven (requiere T018) — CNF-1, CR-001
 
 ## 5. Índices
 
 - [x] T020 [P] En `docs/policies/README.md` › «Índice de policies», reemplazar la fila «Todavía no hay policies…» por `| [validation-contract-policy.md](validation-contract-policy.md) | Veredicto y vocabulario de los reportes de validación | — |` (requiere T017) — D-11, CNF-1
-- [x] T021 [P] En `docs/adr/README.md` › «Índice de ADRs», añadir tras ADR-0014 la fila `| [ADR-0015](ADR-0015-contrato-de-validacion.md) | Contrato común de validación para los skills de gate | ACCEPTED | 2026-10-17 |` (requiere T019) — D-11, CNF-1
+- [x] T021 [P] En `docs/decisions/README.md` › «Índice de ADRs», añadir tras ADR-0014 la fila `| [ADR-0015](ADR-0015-contrato-de-validacion.md) | Contrato común de validación para los skills de gate | ACCEPTED | 2026-10-17 |` (requiere T019) — D-11, CNF-1
 - [x] T022 Regenerar `docs/index.md` con `/memory-system index`, sin editarlo a mano. Revisar el diff: las entradas nuevas deben ser `validation-contract-policy` en «Policies» y `contrato-de-validacion` en «Decisiones de arquitectura». Cualquier otro cambio del diff se anota en `implement-report.md` como ajeno a la historia (requiere T020, T021) — D-11, CNF-1
 
 ## 6. Verificación final
 
 - [x] T023 [P] V-12: `grep -n validation-contract-policy docs/policies/README.md docs/index.md` devuelve una coincidencia en cada archivo (requiere T022) — CNF-1
-- [x] T024 [P] V-13: `npm run verify:repository` pasa. Comparar el resultado de enlaces activos con la línea base de T002: no debe haber errores nuevos en `docs/policies/` ni en `docs/adr/` (requiere T022) — CNF-1
+- [x] T024 [P] V-13: `npm run verify:repository` pasa. Comparar el resultado de enlaces activos con la línea base de T002: no debe haber errores nuevos en `docs/policies/` ni en `docs/decisions/` (requiere T022) — CNF-1
 - [x] T025 [P] V-10 (preparar la evidencia para ACCEPTANCE): anotar en `implement-report.md`, con la sección y la regla de la política que la respaldan, la respuesta a dos preguntas. Qué valor emite `story-verify` cuando no puede ejecutar las pruebas (`BLOCKED`, §4) y qué valor canónico corresponde a `ACCEPTANCE-BLOCKED` (`BLOCKED`, §5). La revisión del PO se hace en `/story-acceptance` (requiere T022) — CNF-3

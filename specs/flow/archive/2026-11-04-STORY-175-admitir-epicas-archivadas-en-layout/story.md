@@ -31,7 +31,7 @@ Dado que ADR-0017 está aceptado y deja las épicas en specs/flow/
 Cuando se acepta el ADR nuevo del layout
 Entonces admite épicas COMPLETED/DONE y CANCELED/DONE en specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/
   Y ADR-0017 pasa a status "SUPERSEDED" con "superseded-by" apuntando al ADR nuevo y una nota de reemplazo bajo su título, sin otros cambios
-  Y la fila de ADR-0017 en el índice de docs/adr/README.md muestra "SUPERSEDED → ADR-NNNN"
+  Y la fila de ADR-0017 en el índice de docs/decisions/README.md muestra "SUPERSEDED → ADR-NNNN"
 ```
 
 ### AC-2 — Escenario principal – Documentos activos coherentes con el ADR
@@ -66,7 +66,7 @@ Entonces state-machine.md documenta que epic-ship escribe SHIP y epic-complete e
 
 ## ⚙️ Criterios no funcionales específicos
 
-- **CNF-1 — Inmutabilidad de ADR:** ADR-0017 solo recibe los cambios que permite `docs/adr/README.md`: `status: SUPERSEDED`, `superseded-by` y una nota visible de reemplazo bajo su título. El resto de su contenido no se edita (regla de AGENTS.md).
+- **CNF-1 — Inmutabilidad de ADR:** ADR-0017 solo recibe los cambios que permite `docs/decisions/README.md`: `status: SUPERSEDED`, `superseded-by` y una nota visible de reemplazo bajo su título. El resto de su contenido no se edita (regla de AGENTS.md).
 - **CNF-2 — Fecha del archivo:** el ADR nuevo aplica a las épicas la misma regla de fecha que ADR-0017 aplica a las historias (`updated:`, `created:` o `date:`).
 - **CNF-3 — Gate determinista:** `npm run verify:repository` y `npm test` pasan después del cambio.
 
@@ -93,7 +93,7 @@ Entonces state-machine.md documenta que epic-ship escribe SHIP y epic-complete e
   | `docs/guides/organization-of-artifacts.md:53` | Retirar «Las épicas no se archivan» y describir la regla del ADR nuevo. |
   | `docs/guides/root-folder-practices.md:34` | Ídem. |
   | `AGENTS.md`, `docs/constitution.md`, `docs/domains/domain-epic-lifecycle.md`, `docs/domains/domain-state-management.md` | Regla de archivo de épicas y escritor de `COMPLETED` de épica (AC-2). |
-  | `docs/adr/README.md` | Fila del ADR nuevo y fila de ADR-0017 como `SUPERSEDED` (AC-1). |
+  | `docs/decisions/README.md` | Fila del ADR nuevo y fila de ADR-0017 como `SUPERSEDED` (AC-1). |
   | `docs/architecture/state-machine.md` (sección "Nivel ÉPICA") | `epic-ship` escribe `SHIP` y `epic-complete` escribe `COMPLETED` de épica con confirmación humana; hoy `SHIP` figura a cargo de DevOps / CI-CD (AC-4). |
   | `docs/domains/domain-epic-lifecycle.md` | Nombrar `epic-validate-report.md` como reporte de `VALIDATE` (AC-4). |
   | `docs/domains/domain-epic-lifecycle.md` §9 | Nombrar las claves opcionales `completed:` y `version:` de `epic.md` y su escritor, `epic-complete` (CR-002 de design.md). |

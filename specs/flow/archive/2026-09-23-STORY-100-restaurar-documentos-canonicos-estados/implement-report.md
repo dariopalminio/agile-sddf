@@ -30,7 +30,7 @@ Cerrada como **corrección documental**, con transición manual a `COMPLETED/DON
 | Comprobación | Resultado |
 |---|---|
 | `check --root docs` | **46 → 10** problemas · exit 1 |
-| Citas resueltas sin editar enlaces | `git diff` sobre `docs/domains/` y `docs/adr/` sin cambios (salvo el README) |
+| Citas resueltas sin editar enlaces | `git diff` sobre `docs/domains/` y `docs/decisions/` sin cambios (salvo el README) |
 | `npm test` | 120/120 · exit 0 |
 | `npm run verify:links` | 39 archivos · exit 0 |
 | `npm run verify:syntax` · `verify:eval-inventory` · `verify:repository` | exit 0 |

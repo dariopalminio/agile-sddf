@@ -40,9 +40,9 @@ evaluated: 2026-10-22
 | **I** – Independencia | 2 | Depende de STORY-153 (en `SPECIFY/DONE`, sin entregar): sin los work items en `specs/flow/` no hay nada que reescribir. También depende de STORY-148, porque el gate debe aceptar `specs/flow/`. Se puede simular en parte: el `--dry-run` de STORY-153 lista cada movimiento origen → destino, y ese mapa basta para preparar y probar la reescritura antes de que se muevan los work items. La dependencia está explícita en las Notas. |
 | **N** – Negociable | 4 | Fija resultados (referencias en la ruta nueva, gate en verde, historial intacto) y no fija la técnica de reescritura. Las CNF solo restringen el stack y el carácter de un solo uso. |
 | **V** – Valiosa | 4 | Valor claro y observable para el mantenedor: sin esta historia, el repo migrado queda con referencias rotas en skills, scripts, tests y documentación. Cierra CS-6, CS-10 y SMOKE-5 de EPIC-26. Es una chore de habilitación, sin métrica de negocio. |
-| **E** – Estimable | 3 | Hay un inventario aproximado (~219 archivos) y el trabajo es mecánico, pero el alcance de la reescritura es ambiguo. En el filesystem: 4 ADR de `docs/adr/` (los aceptados son inmutables), `CHANGELOG.md` y unos 126 archivos de `docs/specs/` son históricos, frente a 76 activos en `skills/`, `scripts/` y `test/`. La historia no dice qué grupos se reescriben y cuáles se conservan. |
+| **E** – Estimable | 3 | Hay un inventario aproximado (~219 archivos) y el trabajo es mecánico, pero el alcance de la reescritura es ambiguo. En el filesystem: 4 ADR de `docs/decisions/` (los aceptados son inmutables), `CHANGELOG.md` y unos 126 archivos de `docs/specs/` son históricos, frente a 76 activos en `skills/`, `scripts/` y `test/`. La historia no dice qué grupos se reescriben y cuáles se conservan. |
 | **S** – Small | 3 | Dos escenarios con unos 8 pasos en total. El volumen de archivos es alto pero repetitivo. |
-| **T** – Testeable | 3 | AC-2 es directamente verificable (`git log --follow`, diff vacío de `docs/requirements/`). AC-1 tiene un oráculo débil. `scripts/check-doc-links.js` solo revisa raíces activas (`README.md`, `SECURITY.md`, `docs/index.md`, `docs/constitution.md`, `docs/policies`, `docs/guardrails`, `docs/guides`, `docs/runbooks`). Excluye `docs/specs`, `docs/adr` y `CHANGELOG.md`, y no revisa `skills/`, `scripts/` ni `test/`. Un `npm run verify:repository` en verde no prueba que «cada referencia apunta a la ruta nueva». |
+| **T** – Testeable | 3 | AC-2 es directamente verificable (`git log --follow`, diff vacío de `docs/requirements/`). AC-1 tiene un oráculo débil. `scripts/check-doc-links.js` solo revisa raíces activas (`README.md`, `SECURITY.md`, `docs/index.md`, `docs/constitution.md`, `docs/policies`, `docs/guardrails`, `docs/guides`, `docs/runbooks`). Excluye `docs/specs`, `docs/decisions` y `CHANGELOG.md`, y no revisa `skills/`, `scripts/` ni `test/`. Un `npm run verify:repository` en verde no prueba que «cada referencia apunta a la ruta nueva». |
 
 **INVEST_Score = (2 + 4 + 4 + 3 + 3 + 3) / 6 = 3.17 / 5.0**
 
@@ -69,7 +69,7 @@ evaluated: 2026-10-22
 - Para empezar antes, diseña la reescritura a partir del mapa origen → destino que produce el `--dry-run` de STORY-153 y pruébala sobre un fixture, no sobre el árbol real.
 
 **E – Estimable (3)**
-- Define en Notas o en un Non-Goal qué grupos de archivos se reescriben: activos (`skills/`, `scripts/`, `test/`, `config/`, `docs/` vivos) frente a históricos (`docs/adr/`, `CHANGELOG.md`, cuerpo de work items archivados).
+- Define en Notas o en un Non-Goal qué grupos de archivos se reescriben: activos (`skills/`, `scripts/`, `test/`, `config/`, `docs/` vivos) frente a históricos (`docs/decisions/`, `CHANGELOG.md`, cuerpo de work items archivados).
 - Aclara cómo se tratan los ADR aceptados. Son inmutables (AGENTS.md), así que reescribir sus enlaces requiere una excepción explícita o dejarlos fuera del alcance.
 
 **S – Small (3)**

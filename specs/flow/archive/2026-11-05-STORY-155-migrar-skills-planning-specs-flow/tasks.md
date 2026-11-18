@@ -20,7 +20,7 @@ related:
 
 ## 1. Preparación
 
-- [x] T001 Verificar las precondiciones (CR-002): existe `docs/adr/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con la constante `PENDING_MIGRATION` y contiene las seis entradas `story-analyze`, `story-design`, `story-fix-plan`, `story-plan`, `story-tasking` y `story-testcases`; STORY-147 y STORY-148 entregadas. Si falta alguna, detener la implementación — design Risks, CR-002
+- [x] T001 Verificar las precondiciones (CR-002): existe `docs/decisions/ADR-0016-*.md` con `status: ACCEPTED`; existe `scripts/verify-fixed-layout.js` (STORY-148) con la constante `PENDING_MIGRATION` y contiene las seis entradas `story-analyze`, `story-design`, `story-fix-plan`, `story-plan`, `story-tasking` y `story-testcases`; STORY-147 y STORY-148 entregadas. Si falta alguna, detener la implementación — design Risks, CR-002
 - [x] T002 [P] Ejecutar `npm test` y `npm run verify:repository` y guardar las salidas en `.tmp/story-implement/STORY-155/baseline.txt` (línea base en verde); guardar también la salida de `grep -rnE "SPECS_BASE|SDDF_ROOT|SDDF-ROOT-RESOLUTION|CLI_ROOT|docs/specs|specs/stories|specs/epics|Entorno inválido" skills/story-design skills/story-tasking skills/story-testcases skills/story-analyze skills/story-fix-plan skills/story-plan` como inventario de líneas a migrar, y confirmar con `find skills/story-{design,tasking,testcases,analyze,fix-plan,plan} -path "*assets/agents*"` que no hay roles locales — design Context, D-2, contrato #10
 
 ## 2. Gate y prueba de DoD (RED)

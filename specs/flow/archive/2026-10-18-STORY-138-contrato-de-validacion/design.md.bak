@@ -64,7 +64,7 @@ toma ambos como forma canónica.
   los valores permitidos por skill, las equivalencias heredadas y un ejemplo conforme por skill. // satisface: AC-1, AC-2
 - Hacer verificable por inspección que la tabla de valores permitidos coincide con las ramas `verdict` de los
   flowcharts. // satisface: AC-3
-- Registrar la decisión transversal en `docs/adr/ADR-0015-contrato-de-validacion.md` (constitución, regla 16). // ver CR-001
+- Registrar la decisión transversal en `docs/decisions/ADR-0015-contrato-de-validacion.md` (constitución, regla 16). // ver CR-001
 - Registrar la policy y el ADR en sus índices. // satisface: CNF-1
 
 **Non-Goals:**
@@ -296,7 +296,7 @@ generar falsos positivos en `verify:links`.
 
 ### D-10 — ADR-0015 registra la decisión; la policy, las reglas // satisface: CNF-1 · resuelve CR-001
 
-`docs/adr/ADR-0015-contrato-de-validacion.md` sigue `docs/adr/adr-template.md`:
+`docs/decisions/ADR-0015-contrato-de-validacion.md` sigue `docs/decisions/adr-template.md`:
 
 - **Frontmatter:** `type: adr`, `id: ADR-0015`, `slug: contrato-de-validacion`,
   `title: "Contrato común de validación para los skills de gate"`, `status: ACCEPTED`, `date: 2026-10-17`,
@@ -311,7 +311,7 @@ generar falsos positivos en `verify:links`.
 
 | Alternativa | Motivo del rechazo |
 |---|---|
-| Sin ADR, solo la policy | Incumple la regla 16 de la constitución y el criterio de `docs/adr/README.md`, porque la decisión afecta a más de un skill y fija un contrato. El PO eligió incluirlo (2026-10-17). |
+| Sin ADR, solo la policy | Incumple la regla 16 de la constitución y el criterio de `docs/decisions/README.md`, porque la decisión afecta a más de un skill y fija un contrato. El PO eligió incluirlo (2026-10-17). |
 | ADR en una historia aparte | Deja el contrato publicado sin su registro de decisión mientras STORY-139…145 avanzan en paralelo. |
 | ADR `PROPOSED` | Las decisiones ya están tomadas, y un ADR propuesto no es vinculante para las historias de alineación. |
 
@@ -320,7 +320,7 @@ generar falsos positivos en `verify:links`.
 | Índice | Cambio |
 |---|---|
 | `docs/policies/README.md` › Índice de policies | Reemplaza la fila «Todavía no hay policies…» por `[validation-contract-policy.md](validation-contract-policy.md) · Veredicto y vocabulario de los reportes de validación · —`. |
-| `docs/adr/README.md` › Índice de ADRs | Añade la fila `[ADR-0015](ADR-0015-contrato-de-validacion.md) · Contrato común de validación para los skills de gate · ACCEPTED · 2026-10-17`. |
+| `docs/decisions/README.md` › Índice de ADRs | Añade la fila `[ADR-0015](ADR-0015-contrato-de-validacion.md) · Contrato común de validación para los skills de gate · ACCEPTED · 2026-10-17`. |
 | `docs/index.md` | Se regenera con `/memory-system index`, su escritor canónico. No se edita a mano. |
 
 ## Componentes afectados
@@ -328,9 +328,9 @@ generar falsos positivos en `verify:links`.
 | Componente | Acción | Ubicación | Satisface |
 |---|---|---|---|
 | Política de contrato de validación | crear | `docs/policies/validation-contract-policy.md` | AC-1, AC-2, AC-3, CNF-1…4 |
-| ADR del contrato de validación | crear | `docs/adr/ADR-0015-contrato-de-validacion.md` | CR-001, CNF-1 |
+| ADR del contrato de validación | crear | `docs/decisions/ADR-0015-contrato-de-validacion.md` | CR-001, CNF-1 |
 | Índice de policies | modificar | `docs/policies/README.md` | CNF-1 |
-| Índice de ADRs | modificar | `docs/adr/README.md` | CNF-1 |
+| Índice de ADRs | modificar | `docs/decisions/README.md` | CNF-1 |
 | Índice de la wiki | regenerar | `docs/index.md` (vía `/memory-system index`) | CNF-1 |
 
 No se tocan: `skills/**`, `docs/architecture/diagrams/*.mermaid`, `README.md`, `docs/constitution.md` ni `epic.md`.
@@ -429,7 +429,7 @@ Si no, aplica G-06 (no aprobado).
 | V-8 | §7 tiene seis ejemplos. En cada uno, `verdict` coincide con la línea de `## Veredicto`, el valor está permitido para su skill y `## Veredicto` es el primer `##` tras el `#` | Lectura de §7 | AC-1 |
 | V-9 | La policy tiene como máximo 200 líneas y ninguna regla se repite entre secciones | `wc -l` y lectura | CNF-4 |
 | V-10 | Un PO puede responder, solo con la policy, qué valor emite `story-verify` cuando no puede ejecutar las pruebas y qué significa `ACCEPTANCE-BLOCKED` | Revisión del PO en ACCEPTANCE | CNF-3 |
-| V-11 | ADR-0015 existe con el frontmatter de D-10, no contiene las tablas de §4 ni §5 y figura en `docs/adr/README.md` | Lectura y `grep -c '^| `story-' docs/adr/ADR-0015-contrato-de-validacion.md` = 0 | CNF-1, CR-001 |
+| V-11 | ADR-0015 existe con el frontmatter de D-10, no contiene las tablas de §4 ni §5 y figura en `docs/decisions/README.md` | Lectura y `grep -c '^| `story-' docs/decisions/ADR-0015-contrato-de-validacion.md` = 0 | CNF-1, CR-001 |
 | V-12 | La policy figura en `docs/policies/README.md` y en `docs/index.md` | `grep validation-contract-policy` en ambos | CNF-1 |
 | V-13 | `npm run verify:repository` pasa, incluidos los enlaces activos de la policy | Ejecución | CNF-1 |
 
@@ -467,7 +467,7 @@ Ninguna. La necesidad del ADR se resolvió con el PO (CR-001).
 
 - **Tipo**: dependencia
 - **Descripción**: la decisión afecta a siete skills y fija un contrato que otros deben seguir. Por eso cumple los
-  criterios de ADR de la regla 16 de la constitución y de `docs/adr/README.md`. La historia no lo prevé, aunque tampoco
+  criterios de ADR de la regla 16 de la constitución y de `docs/decisions/README.md`. La historia no lo prevé, aunque tampoco
   lo excluye en Fuera de alcance.
 - **Documento afectado**: design.md
 - **Acción requerida**: resuelta. El PO eligió incluir ADR-0015 en esta historia (2026-10-17), y queda diseñado en D-10

@@ -25,7 +25,7 @@ cuando el usuario mencione "memory-system",
 
 Ser el único punto de entrada para la memoria del proyecto (ver
 `docs/architecture/memory-system.md` en el repositorio del framework): diez capas (`product`,
-`requirements`, `domains`, `architecture`, `adr`, `policies`, `guardrails`, `guides`,
+`requirements`, `domains`, `architecture`, `decisions`, `policies`, `guardrails`, `guides`,
 `runbooks`, `templates`) más `constitution.md` en la raíz de `docs/`, y un `index.md` con una
 entrada `[[slug]]` por artefacto, incluidos los work items de `specs/flow/`. Todo lo que escribe es reproducible; la única excepción a no borrar es
 `migrate --from=specs-3-levels`, que elimina exclusivamente orígenes ya migrados.
@@ -366,7 +366,7 @@ Salida de referencia (texto):
 ── memory-system check ── harness: sddf · root: docs
 [missing-layer]        product/ — capa ausente
 [orphan]               guides/notas.md — sin frontmatter
-[invalid-frontmatter]  adr/ADR-0003-x.md — falta title
+[invalid-frontmatter]  decisions/ADR-0003-x.md — falta title
 [broken-wikilink]      guides/sdd.md — [[no-existe]] no resuelve
 ────────────────────────────────────────────────
 problemas: 4 (missing-layer 1 · orphan 1 · invalid-frontmatter 1 · broken-wikilink 1)

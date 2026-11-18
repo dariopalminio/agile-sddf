@@ -19,7 +19,7 @@ related:
 <!-- Referencias -->
 [[STORY-185-tope-de-low-y-arrastres]] · [[STORY-185-tope-de-low-y-arrastres-design]]
 
-> Alcance (Componentes afectados de design.md): `skills/story-code-review/scripts/low-ledger.js` (nuevo), `skills/story-code-review/SKILL.md`, `assets/code-review-report-template.md`, los cuatro `agents/*.agent.md`, `evals/evals.json`, `README.md` del skill y `test/story-code-review-low-noise.test.js` (nuevo). No se tocan `assets/fix-directives-template.md`, `docs/templates/REVIEW-template.md`, `docs/guardrails/`, `docs/adr/`, `package.json`, `scripts/` ni las copias instaladas en `.claude/skills/` y demás runtimes.
+> Alcance (Componentes afectados de design.md): `skills/story-code-review/scripts/low-ledger.js` (nuevo), `skills/story-code-review/SKILL.md`, `assets/code-review-report-template.md`, los cuatro `agents/*.agent.md`, `evals/evals.json`, `README.md` del skill y `test/story-code-review-low-noise.test.js` (nuevo). No se tocan `assets/fix-directives-template.md`, `docs/templates/REVIEW-template.md`, `docs/guardrails/`, `docs/decisions/`, `package.json`, `scripts/` ni las copias instaladas en `.claude/skills/` y demás runtimes.
 
 ## 1. Precondiciones
 

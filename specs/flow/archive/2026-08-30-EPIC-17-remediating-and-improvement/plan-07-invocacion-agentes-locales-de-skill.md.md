@@ -34,15 +34,15 @@ related:
 
 ## Cambios
 
-### 1. `docs/adr/ADR-0002-invocacion-agentes-locales-de-skill.md` (nuevo)
-ADR estado ACCEPTED siguiendo `docs/adr/adr-template.md`:
+### 1. `docs/decisions/ADR-0002-invocacion-agentes-locales-de-skill.md` (nuevo)
+ADR estado ACCEPTED siguiendo `docs/decisions/adr-template.md`:
 - **Contexto:** hallazgo A4 — invocación por inferencia, sin contrato.
 - **Decisión:** el contrato de 4 pasos de arriba.
 - **Rationale:** un agente local es un prompt empaquetado, no infraestructura; usar general-purpose mantiene KISS (principio 4) y el bundle de contexto explícito cumple el principio 6 (anti teléfono-descompuesto); coherente con la regla "un solo salto de delegación".
 - **Alternativas descartadas:** (a) registrar todos los agentes locales en `.claude/agents/` — contamina el espacio global con agentes de uso exclusivo de un skill y rompe el empaquetado autocontenido del skill; (b) inlining de las instrucciones del agente dentro del SKILL.md — infla el contexto del orquestador y elimina el aislamiento; (c) dejar la inferencia — funciona hoy pero es frágil ante modelos/harness futuros.
 - **Referencias:** `[[remediating-and-improvement]]`, best-practices-for-skills.md, harness-engineering.md.
 
-### 2. `docs/adr/README.md` — agregar ADR-0002 a la tabla índice.
+### 2. `docs/decisions/README.md` — agregar ADR-0002 a la tabla índice.
 
 ### 3. `docs/index.md` — agregar wikilink `[[ADR-0002-invocacion-agentes-locales-de-skill]]` en la sección "Decisiones de arquitectura".
 
@@ -70,7 +70,7 @@ No repetir el contrato completo — una frase + referencia (evita el anti-patró
 
 ## Verificación
 
-1. `ls docs/adr/` incluye ADR-0002; su tabla en README.md y el wikilink en index.md existen.
+1. `ls docs/decisions/` incluye ADR-0002; su tabla en README.md y el wikilink en index.md existen.
 2. `grep -n "general-purpose" .claude/skills/{security-audit,story-code-review,story-verify}/SKILL.md` — cada uno tiene el bloque de mecanismo exactamente una vez.
 3. `grep -n "Patrón de invocación" docs/knowledge/guides/best-practices-for-skills.md` — sección presente.
 4. `Test-Path .claude/skills/story-improve/agents` → False.

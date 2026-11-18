@@ -27,7 +27,7 @@ docs/constitution.md          # documento supremo
 Decisiones con el usuario:
 - `docs/policies/` se **conserva** con un `README.md` índice (estilo `adr/`, `guardrails/`); queda sin policies por ahora.
 - Frontmatter de la constitución: `type: constitution` (archivo y template); se registra `constitution` como `ArtifactType` en el modelo de dominio.
-- Continúa el patrón de la tarea anterior: skills consumidores leen la nueva ruta con fallback a la antigua + aviso de deprecación; `docs/specs/**`, `docs/adr/**` y entradas pasadas del CHANGELOG no se reescriben.
+- Continúa el patrón de la tarea anterior: skills consumidores leen la nueva ruta con fallback a la antigua + aviso de deprecación; `docs/specs/**`, `docs/decisions/**` y entradas pasadas del CHANGELOG no se reescriben.
 
 ## Cambios
 
@@ -72,7 +72,7 @@ Mismo patrón que el DoD: buscar `$SPECS_BASE/constitution.md`; si no existe, `$
 
 ### 7. No tocar
 
-`docs/specs/**`, `docs/adr/**`, entradas pasadas del CHANGELOG, ejemplos de skills que solo nombran `constitution.md` sin ruta, copias instaladas en `.claude/`, `.agents/`, `.github/`.
+`docs/specs/**`, `docs/decisions/**`, entradas pasadas del CHANGELOG, ejemplos de skills que solo nombran `constitution.md` sin ruta, copias instaladas en `.claude/`, `.agents/`, `.github/`.
 
 ## Verificación
 

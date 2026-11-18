@@ -78,7 +78,7 @@ updated: 2026-05-06
 
 ### Decisiones técnicas
 
-- **ADRs:** se registran en `docs/adr/` para decisiones arquitectónicas que afecten múltiples módulos
+- **ADRs:** se registran en `docs/decisions/` para decisiones arquitectónicas que afecten múltiples módulos
 - **Diseño de features:** usando `design.md` del workflow SDD antes de implementar cualquier historia > 4 horas estimadas
 
 ---

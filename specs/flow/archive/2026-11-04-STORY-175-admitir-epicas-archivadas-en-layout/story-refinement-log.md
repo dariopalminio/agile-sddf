@@ -43,10 +43,10 @@ previous-score: 3.97
 
 ### T – Testeable (score previo: 3)
 
-**Recomendación aplicada:** Alinear AC-1 y CNF-1 con la convención de reemplazo de ADR (`status`, `superseded-by` y nota visible, según `docs/adr/README.md:34`), incluida la fila del índice. Hacer que AC-3 falle hoy usando la numeración en lugar de `/epic-generate-stories`, que ya excluye el archivo. Ampliar el `Pero` de AC-2 a todo documento activo de `AGENTS.md`, `docs/` (salvo los ADR inmutables) y `skills/`.
+**Recomendación aplicada:** Alinear AC-1 y CNF-1 con la convención de reemplazo de ADR (`status`, `superseded-by` y nota visible, según `docs/decisions/README.md:34`), incluida la fila del índice. Hacer que AC-3 falle hoy usando la numeración en lugar de `/epic-generate-stories`, que ya excluye el archivo. Ampliar el `Pero` de AC-2 a todo documento activo de `AGENTS.md`, `docs/` (salvo los ADR inmutables) y `skills/`.
 
 **Cambio realizado:**
-- AC-1 exige ahora que ADR-0017 pase a `status "SUPERSEDED"` con `superseded-by` y una nota de reemplazo. Añade un `Y` para la fila del índice en `docs/adr/README.md`. CNF-1 se reescribió con los tres cambios que permite el README.
+- AC-1 exige ahora que ADR-0017 pase a `status "SUPERSEDED"` con `superseded-by` y una nota de reemplazo. Añade un `Y` para la fila del índice en `docs/decisions/README.md`. CNF-1 se reescribió con los tres cambios que permite el README.
 - AC-2 cierra su `Pero` sobre `AGENTS.md`, `docs/` (salvo los ADR inmutables) y `skills/`, así que se puede verificar con una búsqueda.
 - AC-3 se reemplazó por un Scenario Outline de numeración para `/epic-creation` y `/epic-from-project-plan`: con EPIC-30 archivada y EPIC-029 como la activa mayor, la épica nueva recibe EPIC-31 y no EPIC-30. Este escenario falla con el comportamiento actual.
 

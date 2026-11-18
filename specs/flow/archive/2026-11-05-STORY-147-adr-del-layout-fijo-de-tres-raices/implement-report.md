@@ -34,13 +34,13 @@ criterios de aceptación se verificaron con los contratos de verificación 1–1
 |---|---|---|---|
 | T001 | Confirmar que ADR-0016 es el número libre | ✓ completado | — (sin `ADR-0016-*` previo) |
 | T002 | Confirmar que el slug `layout-fijo-de-tres-raices` es único en frontmatter | ✓ completado | — (solo aparece en el cuerpo de `design.md`, no indexado) |
-| T003 | Crear ADR-0016 con frontmatter y título | ✓ completado | `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` |
-| T004 | Redactar `## Contexto y problema` | ✓ completado | `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` |
-| T005 | Redactar `## Decisión` (árbol, raíces hermanas, retiro de configuración) | ✓ completado | `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` |
-| T006 | Convención de `archive/` y decisión explícita sobre el slug | ✓ completado | `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` |
-| T007 | Rationale, Alternativas, Consecuencias (D-8) y Referencias | ✓ completado | `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` |
-| T008 | Marcar ADR-0010 como reemplazado (solo metadatos + nota) | ✓ completado | `docs/adr/ADR-0010-specs-dentro-de-docs.md` |
-| T009 | Actualizar el índice de ADRs | ✓ completado | `docs/adr/README.md` |
+| T003 | Crear ADR-0016 con frontmatter y título | ✓ completado | `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` |
+| T004 | Redactar `## Contexto y problema` | ✓ completado | `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` |
+| T005 | Redactar `## Decisión` (árbol, raíces hermanas, retiro de configuración) | ✓ completado | `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` |
+| T006 | Convención de `archive/` y decisión explícita sobre el slug | ✓ completado | `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` |
+| T007 | Rationale, Alternativas, Consecuencias (D-8) y Referencias | ✓ completado | `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` |
+| T008 | Marcar ADR-0010 como reemplazado (solo metadatos + nota) | ✓ completado | `docs/decisions/ADR-0010-specs-dentro-de-docs.md` |
+| T009 | Actualizar el índice de ADRs | ✓ completado | `docs/decisions/README.md` |
 | T010 | Añadir ADR-0016 al índice wiki | ✓ completado | `docs/index.md` |
 | T011 | Verificar AC-1 (contratos 1–6) | ✓ completado | — |
 | T012 | Verificar AC-2 y CNF-1 (`git diff` de ADR-0010) | ✓ completado | — |
@@ -60,7 +60,7 @@ criterios de aceptación se verificaron con los contratos de verificación 1–1
 | 3 | `## Decisión` contiene `SDDF_ROOT`, `root`, `SPECS_BASE` | ✓ |
 | 4 | Convención `<YYYY-MM-DD>-STORY-NNN-<slug>/` | ✓ |
 | 5 | ADR-0010 `status: SUPERSEDED`, `superseded-by: ADR-0016` | ✓ |
-| 6 | `docs/adr/README.md` lista `ADR-0016-layout-fijo-de-tres-raices.md` | ✓ |
+| 6 | `docs/decisions/README.md` lista `ADR-0016-layout-fijo-de-tres-raices.md` | ✓ |
 | 7 | `git diff` de ADR-0010: solo `status`, `superseded-by` y la nota bajo el título (más su línea en blanco separadora) | ✓ |
 | 8 | `## Decisión` contiene `STORY-NNN-<slug>/`, `EPIC-NNN-<slug>/`, SMOKE-1 y SMOKE-2 | ✓ |
 | 9 | `npm run verify:repository` exit 0 | ⚠️ ver abajo |
@@ -73,12 +73,12 @@ de esta historia): son preexistentes y ajenos a STORY-147. El resto de pasos del
 con exit 0, incluido «enlaces activos» (`check-doc-links.js`: `[OK] Checked 49 active Markdown files`), que es lo que
 CNF-2 protege. `npm pack --dry-run` y el smoke del tarball no se ejecutaron por separado.
 
-Los enlaces relativos y wikilinks de ADR-0016 y de la nota de ADR-0010 (excluidos del checker por estar en `docs/adr`)
+Los enlaces relativos y wikilinks de ADR-0016 y de la nota de ADR-0010 (excluidos del checker por estar en `docs/decisions`)
 se verificaron a mano: apuntan a archivos existentes y los slugs `specs-dentro-de-docs`,
 `nivel-l2-epic-y-directorios-numerados`, `templates-como-capa-propia` y `EPIC-26-layout-y-flow-forward-mejorado`
 resuelven a un único archivo.
 
-**Observación ajena al alcance:** `docs/adr/` contiene dos archivos con número 0013
+**Observación ajena al alcance:** `docs/decisions/` contiene dos archivos con número 0013
 (`ADR-0013-asegurar-dos-niveles-de-flujo-epics-stories.md` y `ADR-0013-eliminar-specs-01-projects.md`); no se tocó.
 
 ---
@@ -104,7 +104,7 @@ resuelven a un único archivo.
 | 15 | Skills críticos con `evals/evals.json` | ✓ | No aplica: no se modifican skills |
 | 16 | Casos de prueba ejecutados según `skill-master` | ✓ | No aplica: no se modifican skills |
 | 17 | `tasks.md` con todas las tareas `[x]` | ✓ | 16/16 `[x]` |
-| 18 | README o docs de contratos actualizados | ✓ | `docs/adr/README.md` y `docs/index.md`; `AGENTS.md` y guías quedan para STORY-154 (Non-Goals) |
+| 18 | README o docs de contratos actualizados | ✓ | `docs/decisions/README.md` y `docs/index.md`; `AGENTS.md` y guías quedan para STORY-154 (Non-Goals) |
 | 19 | Decisiones no previstas documentadas en `design.md` | ✓ | Sin decisiones no previstas |
 | 20 | CHANGELOG actualizado si aplica | ✓ | No aplica: el cambio incompatible y la versión mayor los registra STORY-154 |
 | 21 | Build de CI sin errores | ⚠️ | Requiere ejecución de CI — no evaluable por story-implement; localmente el gate falla por las 15 pruebas preexistentes |

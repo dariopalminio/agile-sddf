@@ -94,7 +94,7 @@ Ambos enumeran los directorios de forma literal y son la fuente de la estructura
 
 ## 6. ADR-0004, docs y CHANGELOG
 
-- **Reescribir [ADR-0004](docs/adr/ADR-0004-renombrar-nivel-l2-de-release-a-epic.md)** (staged, nunca commiteado): la decisión pasa a incluir el renombre de directorios; la alternativa "renombrar también `specs/releases/`" deja de estar descartada y se sustituye por la que sí se descartó (mantener `releases/` con `epic.md` dentro, con su argumento de cardinalidad N:M). Actualizar título y `slug` para que reflejen el alcance real.
+- **Reescribir [ADR-0004](docs/decisions/ADR-0004-renombrar-nivel-l2-de-release-a-epic.md)** (staged, nunca commiteado): la decisión pasa a incluir el renombre de directorios; la alternativa "renombrar también `specs/releases/`" deja de estar descartada y se sustituye por la que sí se descartó (mantener `releases/` con `epic.md` dentro, con su argumento de cardinalidad N:M). Actualizar título y `slug` para que reflejen el alcance real.
 - **[flight-leves-model.md](docs/guides/flight-leves-model.md#L71)** — el usuario ya lo editó a la estructura nueva, pero la línea 71 quedó autocontradictoria: dice `docs\specs\epics` y a la vez "El directorio conserva el nombre `releases/` por compatibilidad". Eliminar esa coletilla (era mía) y dejar `docs\specs\02-epics`.
 - **[docs/index.md](docs/index.md)** — 143 referencias, todas links navegables. Regenerar o sustituir, verificando que los 141 links `specs/` sigan resolviendo.
 - **CHANGELOG** — ampliar la entrada BREAKING ya existente del 2.0.0 con el bloque de migración de directorios:

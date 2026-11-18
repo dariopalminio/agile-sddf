@@ -34,10 +34,10 @@ Para publicar un skill nuevo en npm, agrega su ruta al arreglo `files` de `packa
 
 - **Punto de entrada wiki:** `docs/index.md`. Antes de inventar una convención, busca en `docs/guides/`.
 - **Estructura del repo y arquitectura:** `docs/architecture/sddf-architecture.md`
-- **Layout:** ADR-0019 (`docs/adr/ADR-0019-layout-fijo-con-archivo-de-epicas.md`, reemplaza a ADR-0017) y `docs/guides/root-folder-practices.md`
+- **Layout:** ADR-0019 (`docs/decisions/ADR-0019-layout-fijo-con-archivo-de-epicas.md`, reemplaza a ADR-0017) y `docs/guides/root-folder-practices.md`
 - **Stack, comandos, perfiles y CI:** `docs/architecture/tech-stack.md`
 - **Delegación skills/subagentes y contrato de `.tmp/`:** `docs/guides/best-practices-for-skills.md`
-- **ADRs:** `docs/adr/README.md`
+- **ADRs:** `docs/decisions/README.md`
 
 **Flujo de autoridad:** `AGENTS.md → docs/constitution.md → docs/policies/ · docs/guardrails/`. Ante conflicto, prevalece la constitución.
 

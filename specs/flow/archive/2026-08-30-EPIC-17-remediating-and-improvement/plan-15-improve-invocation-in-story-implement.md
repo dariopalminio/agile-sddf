@@ -138,7 +138,7 @@ La invocación sigue el contrato de 4 pasos del ADR-0002: Read del SKILL.md → 
 | Archivo | Cambio |
 |---|---|
 | `.claude/skills/story-implement/SKILL.md` | 3 secciones de invocación: Fase RED (Paso 3), Fase GREEN (Paso 9), Fase REFACTOR |
-| `docs/adr/ADR-0002-*.md` | Ninguno — el ADR ya define el contrato correctamente |
+| `docs/decisions/ADR-0002-*.md` | Ninguno — el ADR ya define el contrato correctamente |
 | `.claude/skills/code-frontend-library-react/SKILL.md` | Ninguno — permanece como skill independiente |
 
 ---

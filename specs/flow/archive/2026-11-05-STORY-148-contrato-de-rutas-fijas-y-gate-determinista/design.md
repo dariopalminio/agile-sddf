@@ -325,7 +325,7 @@ Ninguna: el marcador y el texto del bloque quedan fijados en D-1 (CR-001); las r
 
 ### CR-001
 - **Tipo**: dependencia
-- **Descripción**: la historia dice que el marcador y el texto del bloque del contrato los «fija el ADR de STORY-147», pero el diseño de ADR-0016 (STORY-147) solo fija las rutas fijas y el retiro de `SDDF_ROOT`/`root`/`SPECS_BASE`; no define marcador ni texto. ADR-0016 aún no existe en `docs/adr/`.
+- **Descripción**: la historia dice que el marcador y el texto del bloque del contrato los «fija el ADR de STORY-147», pero el diseño de ADR-0016 (STORY-147) solo fija las rutas fijas y el retiro de `SDDF_ROOT`/`root`/`SPECS_BASE`; no define marcador ni texto. ADR-0016 aún no existe en `docs/decisions/`.
 - **Documento afectado**: STORY-147 `design.md`/`tasks.md` (contenido de `## Decisión` de ADR-0016); story.md de STORY-148 (precondición)
 - **Acción requerida**: al implementar STORY-147, incluir en `## Decisión` de ADR-0016 el marcador `<!-- SDDF-FIXED-LAYOUT: v1 -->` y el texto canónico del bloque de D-1 (y la región `SDDF-LEGACY-DIAGNOSTIC` de D-3 para `skill-preflight`). Si ADR-0016 se acepta sin ellos, STORY-148 los documenta en `docs/guides/skill-structural-pattern.md` y lo registra en `implement-report.md`. Implementar STORY-148 solo con ADR-0016 `ACCEPTED`.
 

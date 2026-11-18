@@ -101,7 +101,7 @@ related:
   created, updated con placeholder de fecha) y contenido plantilla mínimo — AC-3, AC-14,
   D-3.
 - [ ] T014 [P] Crear skills/memory-system/assets/scaffold/templates/adr-template.md
-  tomando como base docs/adr/adr-template.md (sexta plantilla base) — AC-3, D-3, CR-003.
+  tomando como base docs/decisions/adr-template.md (sexta plantilla base) — AC-3, D-3, CR-003.
 - [ ] T015 [P] Crear skills/memory-system/assets/index-template.md a partir del
   docs/index.md vigente (secciones Gobernanza, Especificaciones L3/L2/L1, capas de soporte,
   Artefactos externos, Estado del grafo) con los placeholders de D-4 y frontmatter

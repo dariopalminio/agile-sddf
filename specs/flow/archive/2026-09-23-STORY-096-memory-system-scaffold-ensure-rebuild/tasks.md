@@ -64,7 +64,7 @@ related:
   templates/README.md (ADR-0007); frontmatter canónico con `{date}` como único placeholder
   y sin wikilinks a nodos que el scaffold no crea — AC-2, AC-5, D-1, D-5.
 - [x] T005 [P] Crear skills/memory-system/assets/scaffold/templates/adr-template.md con el
-  contenido de docs/adr/adr-template.md (sexta plantilla base) — AC-6, D-2.
+  contenido de docs/decisions/adr-template.md (sexta plantilla base) — AC-6, D-2.
 
 ## 3. Subcomando scaffold del motor
 
@@ -170,7 +170,7 @@ related:
   > Aplicado el 2026-09-22. Hallazgo #1/#2 (principio 13): `adr-template.md` anota
   > `escritor: autoría manual` en cada campo, con la decisión registrada en
   > [[ADR-0012-escritor-en-templates-de-autoria-manual]] y la excepción documentada en
-  > `references/memory-rules.md` §5; la semilla y `docs/adr/adr-template.md` quedan byte a
+  > `references/memory-rules.md` §5; la semilla y `docs/decisions/adr-template.md` quedan byte a
   > byte idénticas. Hallazgo #3: este checklist, marcado contra evidencia ejecutada
   > (`npm test` 106/106, `verify:syntax`, `verify:links`, `verify:eval-inventory`,
   > `verify:config`, `verify:repository` en verde). T016 y T017 quedan parciales por tocar

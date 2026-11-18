@@ -119,7 +119,7 @@ Otros cambios no previstos en el diseño:
 | 7 | Ancla real | ✓ `node scripts/check-doc-links.js`: `[OK] Checked 49 active Markdown files; local links and anchors resolve.` |
 | 8 | Regresión del gate | ✓ `node --test test/check-doc-links.test.js` 7/7; `npm test` 306/306 |
 | 9 | Gate verde | ✓ `npm run verify:repository` termina con código 0 (`[OK] Verificación determinista del repositorio aprobada.`, con el smoke del tarball en 4 runtimes) |
-| 10 | Alcance | ✓ `git diff --quiet -- docs/requirements docs/adr skills` y `docs/specs/` inexistente. Fuera de «Componentes afectados» solo cambian `specs/README.md` (traspaso CR-002 de STORY-153), los artefactos de esta historia, la casilla de `epic.md` y `scripts/check-doc-links.js` (ronda 1, hallazgo #2, vía (a), en la lista blanca) |
+| 10 | Alcance | ✓ `git diff --quiet -- docs/requirements docs/decisions skills` y `docs/specs/` inexistente. Fuera de «Componentes afectados» solo cambian `specs/README.md` (traspaso CR-002 de STORY-153), los artefactos de esta historia, la casilla de `epic.md` y `scripts/check-doc-links.js` (ronda 1, hallazgo #2, vía (a), en la lista blanca) |
 | 11 | Idioma | ✓ todo el texto nuevo está en español |
 
 ### Contrato 3: coincidencias restantes de `SPECS_BASE|SDDF_ROOT|root: docs`

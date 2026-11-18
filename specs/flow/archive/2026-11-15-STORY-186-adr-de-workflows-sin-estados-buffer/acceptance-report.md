@@ -29,7 +29,7 @@ verdict: APPROVED
 
 | # | Criterio | Resultado | Observaciones del validador | Timestamp |
 |---|----------|-----------|-----------------------------|-----------|
-| 1 | AC-1 — El ADR fija los workflows y reemplaza a ADR-0006 y ADR-0008 | APPROVED | `ADR-0022` está `ACCEPTED`, con los 6 encabezados de `adr-template.md` y los dos workflows literales; la aprobación del PO se escribe a mano como `PLAN/DONE`. ADR-0006 y ADR-0008 solo cambian `status: SUPERSEDED` y `superseded-by: ADR-0022`. `docs/adr/README.md` refleja los tres. | 11:30 |
+| 1 | AC-1 — El ADR fija los workflows y reemplaza a ADR-0006 y ADR-0008 | APPROVED | `ADR-0022` está `ACCEPTED`, con los 6 encabezados de `adr-template.md` y los dos workflows literales; la aprobación del PO se escribe a mano como `PLAN/DONE`. ADR-0006 y ADR-0008 solo cambian `status: SUPERSEDED` y `superseded-by: ADR-0022`. `docs/decisions/README.md` refleja los tres. | 11:30 |
 | 2 | AC-2 — Contrato de `fix-directives.md` por gate | APPROVED | Tabla de gates de `## Decisión`: destino `IMPLEMENT/TODO`; `based-on` y dimensión por gate (la del revisor o `DoD-CODE-REVIEW`, `verify-defect`, `requirements-coverage`); `round` continúa la numeración de todas las rondas de la historia. | 11:30 |
 | 3 | AC-3 — Valor legado durante la ventana de transición | APPROVED | `READY-FOR-IMPLEMENT/DONE` se lee como `IMPLEMENT/TODO` con `implement-report.md` y como `PLAN/DONE` sin él; ventana de 6.0.0 a 7.0.0; sin estado ni substatus de rework. | 11:30 |
 | 4 | DoD — Todos los escenarios Gherkin de `story.md` han sido ejecutados manualmente y verificados | APPROVED | Criterios 1 a 3. | 11:30 |

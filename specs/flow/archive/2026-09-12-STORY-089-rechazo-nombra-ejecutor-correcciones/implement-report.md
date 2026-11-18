@@ -18,7 +18,7 @@ Generado por `/story-implement STORY-089` (modo interactivo). Capa única `monol
 | Fase GREEN confirmada | sí (por inspección estática — ver nota) |
 | Fase REFACTOR confirmada | sí (sin regresiones estáticas) |
 | Archivos de prueba generados | 2 (`skills/story-code-review/evals/evals.json` modificado: 8 casos previos + 1 modificado + 8 nuevos; `skills/story-implement-tasks/evals/evals.json` nuevo: 6 casos) |
-| Archivos de producción generados | 1 (`docs/adr/ADR-0008-rework-sin-estado-propio.md`) |
+| Archivos de producción generados | 1 (`docs/decisions/ADR-0008-rework-sin-estado-propio.md`) |
 | Archivos de producción modificados | 13 (5 en `skills/`, 8 en docs/épica/README/CHANGELOG) |
 
 > **Nota sobre la confirmación RED/GREEN:** el comando configurado en `sddf.config.yaml` para el tipo `eval` es `npm run test:eval`, que **no existe** en `package.json` (`Missing script: "test:eval"`). Las confirmaciones se hicieron por inspección estática: en RED, los literales esperados por los evals (`round`, `→ Ejecuta /story-implement`, `Correcciones de fix-directives.md (ronda N)`, `aplicado en pre-paso 2f`) no existían en los SKILL.md; en GREEN, los 22 casos tienen sus literales de `contains` cubiertos por los skills editados (12+1 de forma literal, el resto vía placeholders `round: $ROUND`, `(ronda <$FIX_ROUND>)`, `💻 corregido: <ruta>`) y ningún `not_contains` aparece en la rama que ejercita cada caso. La ejecución real de los evals (`/skill-test-evals evals story-code-review` y `… story-implement-tasks`) queda para la fase VERIFY (`/story-verify`) — tareas 7.2 y 7.3 de `tasks.md`.
@@ -40,7 +40,7 @@ Generado por `/story-implement STORY-089` (modo interactivo). Capa única `monol
 **Producción (GREEN + REFACTOR):**
 - `skills/story-code-review/SKILL.md`, `skills/story-code-review/assets/fix-directives-template.md`, `skills/story-code-review/examples/example-needs-changes/fix-directives.md`, `skills/story-code-review/examples/example-needs-changes-medium/fix-directives.md`
 - `skills/story-implement-tasks/SKILL.md`
-- `docs/adr/ADR-0008-rework-sin-estado-propio.md` (nuevo), `docs/adr/README.md`
+- `docs/decisions/ADR-0008-rework-sin-estado-propio.md` (nuevo), `docs/decisions/README.md`
 - `docs/domains/domain-story-lifecycle.md`, `docs/domains/domain-state-management.md`, `docs/domains/README.md`
 - `docs/specs/02-epics/EPIC-19-framework-consistency/epic.md`
 - `docs/guides/sddf-commands-pipeline.md`, `README.md`, `CHANGELOG.md`

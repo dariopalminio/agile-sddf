@@ -73,7 +73,7 @@ Archivos y puntos a tocar (mensajes de error, tablas de entradas, comentarios de
 
 ### 5. No tocar
 
-- `docs/specs/**`, `docs/adr/**`, entradas históricas de `CHANGELOG.md` (registros; `check-doc-links.js` los excluye).
+- `docs/specs/**`, `docs/decisions/**`, entradas históricas de `CHANGELOG.md` (registros; `check-doc-links.js` los excluye).
 - `scripts/check-doc-links.js` ya escanea `docs/guardrails`; `verify-skill-security-workflow.js` ya incluye ambas carpetas. `audit-root-resolution.js` solo lista `constitution.md`. Sin cambios en scripts salvo que las pruebas fallen.
 - Copias instaladas en `.claude/`, `.agents/`, `.github/` (no son fuente).
 

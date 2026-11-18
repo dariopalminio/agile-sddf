@@ -61,7 +61,7 @@ Escenario: Regla de archivo que admite historias canceladas
 
 ## ⚙️ Criterios no funcionales específicos
 
-- **CNF-1 — ADR inmutable:** ADR-0016 no se edita in place; solo recibe el campo `superseded-by` que apunta al ADR nuevo, según `docs/adr/README.md`.
+- **CNF-1 — ADR inmutable:** ADR-0016 no se edita in place; solo recibe el campo `superseded-by` que apunta al ADR nuevo, según `docs/decisions/README.md`.
 - **CNF-2 — Dominio:** `docs/domains/domain-state-management.md` y `docs/domains/domain-story-lifecycle.md` declaran que `story-complete` archiva sin cambiar el status las historias `CANCELED/DONE`, siempre con confirmación humana.
 - **CNF-3 — Gate determinista:** `scripts/verify-fixed-layout.js` y el resto de `npm run verify:repository` aceptan historias `CANCELED` dentro de `specs/flow/archive/`; `npm run verify:repository` y `npm test` pasan sin errores.
 - **CNF-4 — Conteo invariante:** en todos los escenarios, el total de historias activas + archivadas es igual al previo a la ejecución.

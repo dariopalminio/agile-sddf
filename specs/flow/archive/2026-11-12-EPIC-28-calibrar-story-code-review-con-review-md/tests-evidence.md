@@ -42,7 +42,7 @@ updated: 2026-11-12
 ### STORY-178 — ADR de la guía de revisión
 
 - **Estado:** `ACCEPTANCE/DONE` (2026-11-11) · verify `APPROVED` (5/5 DoD ✓) · code-review `APPROVED`
-- **Prueba determinista:** no aplica — historia de documentación (ADR-0021, `docs/adr/README.md`, `docs/index.md`); sin `testcases.md` ni skills modificados
+- **Prueba determinista:** no aplica — historia de documentación (ADR-0021, `docs/decisions/README.md`, `docs/index.md`); sin `testcases.md` ni skills modificados
 - **Evals:** no aplican (sin skills modificados)
 - **Suites:** `npm test` 580/580 · `npm run test:installer` 23/23 · `verify-fixed-layout` OK
 

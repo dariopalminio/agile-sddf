@@ -15,7 +15,7 @@ function fixture(t, readme) {
     'docs/guardrails',
     'docs/guides',
     'docs/runbooks',
-    'docs/adr',
+    'docs/decisions',
     'specs/flow',
   ];
   for (const directory of dirs) fs.mkdirSync(path.join(root, directory), { recursive: true });
@@ -98,7 +98,7 @@ test('reports a wikilink to a work item that does not exist under specs/', (t) =
 });
 
 test('HISTORICAL_EXCLUSIONS informa specs/ como raíz histórica de work items', () => {
-  assert.deepEqual(HISTORICAL_EXCLUSIONS, ['CHANGELOG.md', 'docs/adr', 'specs']);
+  assert.deepEqual(HISTORICAL_EXCLUSIONS, ['CHANGELOG.md', 'docs/decisions', 'specs']);
 });
 
 test('reports unresolved wikilinks but ignores inline-code examples', (t) => {

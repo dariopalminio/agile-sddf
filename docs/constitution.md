@@ -239,9 +239,9 @@ Las decisiones se registran en el nivel que corresponde a su alcance:
 
 - **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`specs/flow/STORY-NNN-<slug>/design.md`)
 - **Decisiones de un cambio OpenSpec** → `design.md` del change (`openspec/changes/`)
-- **Decisiones transversales de arquitectura** → `docs/adr/ADR-NNNN-slug.md` siguiendo `docs/adr/adr-template.md`
+- **Decisiones transversales de arquitectura** → `docs/decisions/ADR-NNNN-slug.md` siguiendo `docs/decisions/adr-template.md`
 
-Un ADR es obligatorio cuando la decisión afecta a más de un skill/módulo o restringe decisiones futuras. Los ADRs aceptados son inmutables: se reemplazan con un ADR nuevo (`superseded-by`), nunca se editan. Ver convención completa en `docs/adr/README.md`.
+Un ADR es obligatorio cuando la decisión afecta a más de un skill/módulo o restringe decisiones futuras. Los ADRs aceptados son inmutables: se reemplazan con un ADR nuevo (`superseded-by`), nunca se editan. Ver convención completa en `docs/decisions/README.md`.
 
 
 ## ✅ Principios Técnicos Inamovibles

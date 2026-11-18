@@ -16,7 +16,7 @@ Hoy el **Participante 4** del skill [story-code-review](skills/story-code-review
 
 **Resultado buscado:** `story-code-review` pasa a tener **cuatro agentes locales propios** en `agents/`, sin depender de ningún otro skill. El nuevo agente de seguridad es autónomo: descubre los checklists de seguridad que existan en el contexto de ejecución (incluido el `assets/security-checklist.md` de un `security-audit` instalado, que **lee como fuente de reglas, no invoca**) y cae a un baseline embebido si no encuentra ninguno. **`skills/security-audit/` no se toca.**
 
-> **Decisión de arquitectura:** el agente **no** invoca el skill de seguridad. `security-audit` es un skill *orquestador* (lanza sus propios subagentes) y `docs/guides/best-practices-for-skills.md` + [ADR-0002](docs/adr/ADR-0002-invocacion-agentes-locales-de-skill.md) prohíben `subagente → skill orquestador`. Reusar su checklist obtiene el mismo valor sin violar la matriz de invocaciones ni reintroducir el acoplamiento.
+> **Decisión de arquitectura:** el agente **no** invoca el skill de seguridad. `security-audit` es un skill *orquestador* (lanza sus propios subagentes) y `docs/guides/best-practices-for-skills.md` + [ADR-0002](docs/decisions/ADR-0002-invocacion-agentes-locales-de-skill.md) prohíben `subagente → skill orquestador`. Reusar su checklist obtiene el mismo valor sin violar la matriz de invocaciones ni reintroducir el acoplamiento.
 
 ---
 

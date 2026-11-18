@@ -74,4 +74,4 @@ _(Solo se completa si F_score ≥ 2.5)_
 
 **E – Estimable (4, sugerencia menor):** la nota sobre la decisión (b) dice «puede incorporarse al ADR o resolverse en el `design.md`». Decidirlo ahora quita la última incertidumbre de la estimación (ver la recomendación de S).
 
-Verificado en el filesystem: `docs/adr/adr-template.md` (estado inicial `PROPOSED`) y `docs/adr/README.md` existen, así que AC-1 se refiere a artefactos reales.
+Verificado en el filesystem: `docs/decisions/adr-template.md` (estado inicial `PROPOSED`) y `docs/decisions/README.md` existen, así que AC-1 se refiere a artefactos reales.

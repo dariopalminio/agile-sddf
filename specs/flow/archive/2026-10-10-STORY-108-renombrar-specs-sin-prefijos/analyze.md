@@ -199,7 +199,7 @@ related:
    STORY-115 solo quita `01-projects/`; ajustar la línea 38 de `epic.md`.
 4. **(INC-004)** Añadir a `tasks.md`, grupo 3, una tarea `[P]` que agregue pruebas para el fallback de `layerOf` (sin literal
    `02-epics`) y para `resolveStoriesDir` de `migrate-finvest-field.js` (defecto, ruta explícita y `--stories-dir` sin valor).
-5. **(INC-005)** En `story.md`, Non-Goal "Reescribir registros históricos": "todos los ADR (`docs/adr/ADR-*.md`) y
+5. **(INC-005)** En `story.md`, Non-Goal "Reescribir registros históricos": "todos los ADR (`docs/decisions/ADR-*.md`) y
    `docs/specs/01-projects/**`".
 
 ---

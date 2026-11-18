@@ -69,7 +69,7 @@ Plan-08 implementado y verificado. La documentación ya no contradice la decisi�
 (a) Consistencia documental:
 
 README.md — las tres menciones alineadas: la intro (línea 9) declara los 3 runtimes soportados con Gemini/Rovo como accesorios; el bullet Multi-runtime (línea 45) lista solo Claude Code, GitHub Copilot y OpenCode con la elección de carpeta al instalar, seguido de un bullet nuevo "Utilidades accesorias"; y Prerequisites (línea 134) renombrado a "Utilidades accesorias (complementos, no runtime del framework)".
-CLAUDE.md — nota de plataformas soportadas tras la estructura del proyecto. Además se corrigieron dos problemas de veracidad (principio 12): se eliminó la referencia a AGENTS.md, que no existe en el repo, y de paso la estructura ahora incluye docs/adr/ y templates/ (creados en planes anteriores).
+CLAUDE.md — nota de plataformas soportadas tras la estructura del proyecto. Además se corrigieron dos problemas de veracidad (principio 12): se eliminó la referencia a AGENTS.md, que no existe en el repo, y de paso la estructura ahora incluye docs/decisions/ y templates/ (creados en planes anteriores).
 (b) Sincronización desde fuente única:
 
 Verificado que scripts/install.js ya implementa la sincronización: copia desde .claude/ al destino elegido (.claude/.agents/.github) — sin cambios de código (git diff limpio en scripts/). El rediseño del postinstall sigue siendo otro ítem del backlog.

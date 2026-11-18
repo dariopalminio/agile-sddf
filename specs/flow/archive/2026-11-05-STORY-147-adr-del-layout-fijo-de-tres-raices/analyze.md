@@ -62,12 +62,12 @@ Hay dos CR de `design.md` (CR-001, CR-002) que piden corregir la premisa y la re
 | T006 | Decisión: archive y slug | D-3, D-4 | ✓ |
 | T007 | Rationale, Alternativas, Consecuencias, Referencias | D-8, D-9 | ✓ |
 | T008 | Marcar ADR-0010 | D-5, D-6, Componente «ADR-0010» | ✓ |
-| T009 | Índice `docs/adr/README.md` | D-7, Componente «Índice de ADRs», Interfaz «Fila de índice» | ✓ |
+| T009 | Índice `docs/decisions/README.md` | D-7, Componente «Índice de ADRs», Interfaz «Fila de índice» | ✓ |
 | T010 | Línea en `docs/index.md` | D-7, Componente «Índice wiki» | ✓ |
 | T011 | Verificar AC-1 | Contratos 1–6 | ✓ |
 | T012 | Verificar AC-2/CNF-1 | Contrato 7, F-2 | ✓ |
 | T013 | Verificar AC-3 | Contrato 8 | ✓ |
-| T014 | Enlaces fuera del gate | Risks «`check-doc-links.js` excluye `docs/adr`» | ✓ |
+| T014 | Enlaces fuera del gate | Risks «`check-doc-links.js` excluye `docs/decisions`» | ✓ |
 | T015 | `npm run verify:repository` | Contrato 9 | ✓ |
 | T016 | Alcance con `git diff --stat` | Contrato 10, Non-Goals | ✓ |
 
@@ -79,7 +79,7 @@ Hay dos CR de `design.md` (CR-001, CR-002) que piden corregir la premisa y la re
 |---|---|---|---|
 | ADR del layout fijo (`ADR-0016-layout-fijo-de-tres-raices.md`) | Componentes afectados | T003–T007 | ✓ |
 | ADR-0010 | Componentes afectados | T008 | ✓ |
-| Índice de ADRs (`docs/adr/README.md`) | Componentes afectados | T009 | ✓ |
+| Índice de ADRs (`docs/decisions/README.md`) | Componentes afectados | T009 | ✓ |
 | Índice wiki (`docs/index.md`) | Componentes afectados | T010 | ✓ |
 | Frontmatter de ADR | Interfaces | T003, T008 | ✓ |
 | Reemplazo entre ADRs | Interfaces | T003, T008, T011 | ✓ |
@@ -108,8 +108,8 @@ Sin inconsistencias detectadas.
 
 ## Observaciones (no tipificadas, no bloquean)
 
-1. **CR-001 — premisa de AC-1/AC-2:** `story.md › AC-1` y `AC-2` dicen «ADR-0010 está ACCEPTED»; `docs/adr/ADR-0010-specs-dentro-de-docs.md` (frontmatter `status: PROPOSED`) y la fila ADR-0010 de `docs/adr/README.md` dicen `PROPOSED`. `design.md › D-6` lo resuelve marcándolo `SUPERSEDED` con la disciplina de un ADR aceptado; `testcases.md › E2E-001/E2E-002` usan el estado real.
-2. **CR-002 — redacción de AC-2:** `story.md › AC-2` («solo cambian `status` y `superseded-by`») no menciona la nota visible que exige `docs/adr/README.md › Convención › Inmutabilidad`. `design.md › D-5` aplica el README y protege lo que AC-2 enumera (contexto, decisión, consecuencias).
+1. **CR-001 — premisa de AC-1/AC-2:** `story.md › AC-1` y `AC-2` dicen «ADR-0010 está ACCEPTED»; `docs/decisions/ADR-0010-specs-dentro-de-docs.md` (frontmatter `status: PROPOSED`) y la fila ADR-0010 de `docs/decisions/README.md` dicen `PROPOSED`. `design.md › D-6` lo resuelve marcándolo `SUPERSEDED` con la disciplina de un ADR aceptado; `testcases.md › E2E-001/E2E-002` usan el estado real.
+2. **CR-002 — redacción de AC-2:** `story.md › AC-2` («solo cambian `status` y `superseded-by`») no menciona la nota visible que exige `docs/decisions/README.md › Convención › Inmutabilidad`. `design.md › D-5` aplica el README y protege lo que AC-2 enumera (contexto, decisión, consecuencias).
 
 ---
 

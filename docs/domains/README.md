@@ -73,7 +73,7 @@ Esta carpeta de dominios **no duplica** la información canónica que vive en ot
 | [[state-machine]] | `docs/architecture/state-machine.md` | Máquina de estados canónica: `status` + `substatus`, diagramas por nivel y tabla de transiciones por skill. |
 | [[specs-and-workflows]] | `docs/guides/specs-and-workflows.md` | Workflow narrativo de estados y subestados. |
 | [[constitution]] | `docs/constitution.md` | Constitución del proyecto (principios y reglas transversales; raíz de policies y guardrails). |
-| [[workflow-canonico-story-y-epic]] | `docs/adr/ADR-0003-workflow-canonico-story-y-epic.md` | Rationale de los workflows canónicos de story y epic. |
+| [[workflow-canonico-story-y-epic]] | `docs/decisions/ADR-0003-workflow-canonico-story-y-epic.md` | Rationale de los workflows canónicos de story y epic. |
 | `header-aggregation/SKILL.md` | `.claude/skills/header-aggregation/SKILL.md` | Esquema canónico de frontmatter. |
 
 ---
@@ -108,7 +108,7 @@ Esta carpeta **no contiene**:
 - Ciclo de vida completo de cada área (vive en [[domain-foundational-docs-lifecycle]], [[domain-epic-lifecycle]] y [[domain-story-lifecycle]]).
 - Workflow narrativo (vive en [[specs-and-workflows]]).
 - Principios y reglas transversales del proyecto (viven en [[constitution]]).
-- Decisiones de arquitectura (viven en `docs/adr/`).
+- Decisiones de arquitectura (viven en `docs/decisions/`).
 - Tabla de transiciones por skill (vivirá en `domain-skills-map.md`, próximo documento operativo).
 
 Si buscas cómo **ejecutar** una transición, consulta la sección "Posicionamiento" del skill correspondiente. Si buscas **quién** ejecuta una transición, consulta `domain-skills-map.md` (próximamente).

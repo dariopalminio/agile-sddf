@@ -54,7 +54,7 @@ La decisión se sostiene en cinco argumentos:
 
 3. **Compatibilidad multi-harness.** Si un proyecto usa SDDF y Speckit simultáneamente, SDDF vive en `docs/specs/` y Speckit en `specs/` (raíz). No hay colisión. Si SDDF también usara `specs/` en la raíz, ambos chocarían y obligarían a reconfigurar uno de los dos.
 
-4. **Resolución de rutas simple.** Un solo `SDDF_ROOT` resuelve `docs/specs/`, `docs/domains/`, `docs/adr/`, etc. Adoptar la convención de Spec Kit obligaría a introducir una segunda variable (`SDDF_SPECS_ROOT`) o lógica condicional en cada skill, con el coste de tokens y mantenimiento que eso implica.
+4. **Resolución de rutas simple.** Un solo `SDDF_ROOT` resuelve `docs/specs/`, `docs/domains/`, `docs/decisions/`, etc. Adoptar la convención de Spec Kit obligaría a introducir una segunda variable (`SDDF_SPECS_ROOT`) o lógica condicional en cada skill, con el coste de tokens y mantenimiento que eso implica.
 
 5. **El argumento de Spec Kit no aplica.** Spec Kit separa `.specify/` (herramienta) de `specs/` (producto) para poder actualizar la herramienta sin tocar el producto. En SDDF no existe esa dicotomía: `docs/` **es** el producto (la memoria) y `sddf.config.yaml` es la configuración de la herramienta. No hay nada que separar.
 

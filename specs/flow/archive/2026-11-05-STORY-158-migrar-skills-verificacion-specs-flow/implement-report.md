@@ -53,7 +53,7 @@ updated: 2026-10-23
 
 ## Evidencia de verificación
 
-**T001 — precondiciones.** `docs/adr/ADR-0016-layout-fijo-de-tres-raices.md` tiene `status: ACCEPTED`. `scripts/verify-fixed-layout.js` existe, y su `PENDING_MIGRATION` contenía exactamente `story-acceptance`, `story-code-review` y `story-verify`. STORY-147 y STORY-148 están en `CODE-REVIEW/DONE`. Se aplicó el mismo criterio que en STORY-156: basta con que los dos entregables de los que depende esta historia (el ADR y el gate) existan y funcionen.
+**T001 — precondiciones.** `docs/decisions/ADR-0016-layout-fijo-de-tres-raices.md` tiene `status: ACCEPTED`. `scripts/verify-fixed-layout.js` existe, y su `PENDING_MIGRATION` contenía exactamente `story-acceptance`, `story-code-review` y `story-verify`. STORY-147 y STORY-148 están en `CODE-REVIEW/DONE`. Se aplicó el mismo criterio que en STORY-156: basta con que los dos entregables de los que depende esta historia (el ADR y el gate) existan y funcionen.
 
 **T002 — línea base.** `npm test`: 290/290 ✓. `verify:repository`: exit 0. El inventario por grep coincide con la tabla de Context del diseño: no se desplazó ninguna línea y no aparecieron rutas nuevas.
 

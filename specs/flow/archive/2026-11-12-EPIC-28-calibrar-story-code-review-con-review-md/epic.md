@@ -40,7 +40,7 @@ Que `/story-code-review` reporte lo que de verdad importa en cada repositorio y 
 
 ## Criterios de salida
 
-- [ ] **CS-1a** — Un ADR nuevo, registrado en `docs/adr/README.md`, fija la ubicación, la precedencia, la fuente de lectura y el vocabulario de `REVIEW.md`.
+- [ ] **CS-1a** — Un ADR nuevo, registrado en `docs/decisions/README.md`, fija la ubicación, la precedencia, la fuente de lectura y el vocabulario de `REVIEW.md`.
 - [ ] **CS-1b** — `REVIEW.md` existe en la raíz con las secciones qué es importante, tope de Minor, qué no reportar y qué verificar siempre.
 - [ ] **CS-2** — `story-code-review` pasa `REVIEW.md` a los cuatro revisores y al árbitro; sin `REVIEW.md` emite una advertencia y el contrato de `code-review-report.md` (frontmatter, secciones y veredicto) no cambia.
 - [ ] **CS-3** — `grep -rE "Principio 6|teléfono descompuesto|un solo nivel de delegación" skills/story-code-review/agents/` no devuelve resultados.
