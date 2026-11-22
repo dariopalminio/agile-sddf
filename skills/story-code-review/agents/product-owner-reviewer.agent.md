@@ -87,7 +87,7 @@ Si todos los escenarios y ACs están cubiertos correctamente, `max-severity: nin
 Aplica a todo hallazgo `HIGH` o `MEDIUM`. El árbitro de `/story-code-review` lo comprueba antes de calcular el veredicto.
 
 1. **`Archivo:Línea` válido:** ruta relativa a la raíz del repositorio y línea o rango (`src/auth.js:42`, `src/auth.js:40-45`). No valen una ruta sin línea, la línea `0`, «varios archivos» ni `—`.
-2. **Tablas sin columna `Archivo:Línea`** (`AC / Escenario`, `Test Case ID`): escribe la ubicación entre paréntesis en la primera celda: `AC-1 (specs/flow/STORY-NNN-<slug>/story.md:30)`, `TC-003 (specs/flow/STORY-NNN-<slug>/testcases.md:12)`. Un escenario sin test se ubica en su línea de `story.md`.
+2. **Tablas sin columna `Archivo:Línea`** (`AC / Escenario`, `Test Case ID`): escribe la ubicación entre paréntesis en la primera celda: `AC-1 (changes/STORY-NNN-<slug>/story.md:30)`, `TC-003 (changes/STORY-NNN-<slug>/testcases.md:12)`. Un escenario sin test se ubica en su línea de `story.md`.
 3. **Escenario de fallo concreto:** termina la `Descripción` con `Fallo: <entrada o estado de partida> → <resultado erróneo observable>`. «Podría fallar», «puede ser inseguro» o «riesgo de» no son un escenario.
 4. Si no puedes escribir los dos, el árbitro marcará el hallazgo como `no verificado` y no bloqueará: decide si es un `LOW`.
 5. Los `LOW` no necesitan escenario de fallo.
@@ -110,7 +110,7 @@ max-severity: HIGH | MEDIUM | LOW | ninguna
 
 | Severidad | Archivo:Línea | Descripción | Recomendación |
 |-----------|---------------|-------------|---------------|
-| HIGH      | specs/flow/STORY-NNN-<slug>/story.md:30 | Escenario "..." sin test correspondiente. Fallo: se rompe el comportamiento del escenario → la suite de tests pasa igual y la regresión llega sin detectarse | Agregar test para el escenario |
+| HIGH      | changes/STORY-NNN-<slug>/story.md:30 | Escenario "..." sin test correspondiente. Fallo: se rompe el comportamiento del escenario → la suite de tests pasa igual y la regresión llega sin detectarse | Agregar test para el escenario |
 
 ## Hallazgos — Cobertura en testcases.md
 
@@ -119,7 +119,7 @@ max-severity: HIGH | MEDIUM | LOW | ninguna
 
 | Severidad | AC / Escenario | Descripción | Recomendación |
 |-----------|----------------|-------------|---------------|
-| HIGH      | AC-1 (specs/flow/STORY-NNN-<slug>/story.md:30) | Sin test case en testcases.md que referencie AC-1. Fallo: /story-verify ejecuta los casos de testcases.md → AC-1 queda sin verificar y la historia avanza sin evidencia de su comportamiento | Ejecutar /story-testcases y agregar caso |
+| HIGH      | AC-1 (changes/STORY-NNN-<slug>/story.md:30) | Sin test case en testcases.md que referencie AC-1. Fallo: /story-verify ejecuta los casos de testcases.md → AC-1 queda sin verificar y la historia avanza sin evidencia de su comportamiento | Ejecutar /story-testcases y agregar caso |
 
 ## Veredicto
 {approved | needs-changes}: {justificación en una oración}

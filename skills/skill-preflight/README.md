@@ -8,7 +8,7 @@
 
 ## What it does
 
-Diagnostica en modo de solo lectura el layout fijo de un repositorio SDDF (ADR-0016) —`specs/flow/`, `specs/flow/archive/`, `specs/living/`, `workflow/` y `docs/templates/`, relativos a `REPO_ROOT`—, las señales del layout legado, los work items activos con un status legado, los templates centrales y el runtime. Expone advertencias sin realizar escrituras.
+Diagnostica en modo de solo lectura el layout fijo de un repositorio SDDF (ADR-0023) —`changes/`, `changes/archive/`, `specs/`, `workflow/` y `docs/templates/`, relativos a `REPO_ROOT`—, las señales del layout legado, los work items activos con un status legado, los templates centrales y el runtime. Expone advertencias sin realizar escrituras.
 
 **Produces:**
 
@@ -23,7 +23,7 @@ Diagnostica en modo de solo lectura el layout fijo de un repositorio SDDF (ADR-0
 
 **Status legados de work items** (como `[WARNING]`, sin modificar ningún archivo):
 
-- Cada `story.md` o `epic.md` de `specs/flow/`, fuera de `specs/flow/archive/`, con `status` `READY-FOR-IMPLEMENT` o `READY-FOR-DEV` produce una línea con su ruta, el valor y el destino al que editarlo a mano: una historia va a `IMPLEMENT/TODO` si su directorio tiene `implement-report.md` y a `PLAN/DONE` si no; una épica, a `PLAN/DONE`. La regla y la ventana de transición, que termina en 7.0.0, vienen de ADR-0022. Un frontmatter ilegible se avisa y el diagnóstico continúa.
+- Cada `story.md` o `epic.md` de `changes/`, fuera de `changes/archive/`, con `status` `READY-FOR-IMPLEMENT` o `READY-FOR-DEV` produce una línea con su ruta, el valor y el destino al que editarlo a mano: una historia va a `IMPLEMENT/TODO` si su directorio tiene `implement-report.md` y a `PLAN/DONE` si no; una épica, a `PLAN/DONE`. La regla y la ventana de transición, que termina en 7.0.0, vienen de ADR-0022. Un frontmatter ilegible se avisa y el diagnóstico continúa.
 
 **Does not do:**
 

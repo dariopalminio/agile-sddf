@@ -110,8 +110,8 @@ tasks.md   → When: tareas de implementación, orden, seguimiento  ← aquí
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -129,10 +129,10 @@ Proporciona el ID (ej. STORY-058) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia (primera coincidencia)
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `specs/flow/{story_id}-*/` — directorio cuyo nombre comienza con el ID
+2. Glob `changes/{story_id}-*/` — directorio cuyo nombre comienza con el ID
 3. Si no se encuentra ninguno: notificar y detener
    ```
-   ❌ No se encontró la historia {story_id} en specs/flow/
+   ❌ No se encontró la historia {story_id} en changes/
 
    Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
    ```

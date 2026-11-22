@@ -33,12 +33,12 @@ Es el nodo `SHIP` del flujo de épica (`/epic-validate` → `/epic-ship` → `/e
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `specs/flow/<EPIC-NNN-nombre>/epic.md` | `title`, `status`, `substatus` y la primera frase de `## Objetivo` |
+| `epic.md` | `changes/<EPIC-NNN-nombre>/epic.md` | `title`, `status`, `substatus` y la primera frase de `## Objetivo` |
 | `epic-validate-report.md` | `<EPIC_DIR>/epic-validate-report.md` | Solo `verdict` del frontmatter |
-| `story.md` | `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md` | `id`, `title`, `kind`, `parent`, `status` y `substatus` |
+| `story.md` | `changes/STORY-*/story.md` y `changes/archive/*-STORY-*/story.md` | `id`, `title`, `kind`, `parent`, `status` y `substatus` |
 | `CHANGELOG.md` | `REPO_ROOT` | Bloque o entrada de la épica |
 | DoD de `SHIP` (opcional) | `docs/guardrails/dod-epic-ship.md` | `enforcement` del frontmatter y líneas `- [ ]` (Paso 6) |
-| Otras épicas activas | `specs/flow/EPIC-*/epic.md` | Solo `substatus`, para el aviso de WIP (Paso 4) |
+| Otras épicas activas | `changes/EPIC-*/epic.md` | Solo `substatus`, para el aviso de WIP (Paso 4) |
 | Reglas de contenido | [references/release-content.md](references/release-content.md) | Inventario, categorías y bloque (Paso 3) |
 
 ## Parámetros
@@ -74,20 +74,20 @@ Es el nodo `SHIP` del flujo de épica (`/epic-validate` → `/epic-ship` → `/e
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
 ### Paso 1 — Resolver la épica
 
 1. **Ruta** (contiene `/` o `\`): el directorio o su `epic.md`.
-2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `specs/flow/<nombre>/epic.md`.
-3. **ID** (`EPIC-NNN`): glob `specs/flow/<ID>-*/epic.md`. El guion es parte del patrón: `EPIC-30` no casa `EPIC-300-x`.
+2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `changes/<nombre>/epic.md`.
+3. **ID** (`EPIC-NNN`): glob `changes/<ID>-*/epic.md`. El guion es parte del patrón: `EPIC-30` no casa `EPIC-300-x`.
 
 | Resultado | Comportamiento |
 |---|---|
-| 0 coincidencias | `❌ No se encontró la épica <arg>: no existe specs/flow/<arg>-*/epic.md` y fin sin escribir |
+| 0 coincidencias | `❌ No se encontró la épica <arg>: no existe changes/<arg>-*/epic.md` y fin sin escribir |
 | > 1 coincidencias | Listar los directorios: `❌ El argumento <arg> es ambiguo: <lista>` y fin sin escribir |
 | Sin argumento | Preguntar `¿Qué épica deseas llevar a SHIP? Indica el ID (ej. EPIC-30), el nombre de su directorio o su ruta.` |
 
@@ -119,7 +119,7 @@ Si no hay ninguna historia liberada: `❌ <EPIC_ID> no tiene historias en DELIVE
 1. **Analizar sin escribir:** construir el bloque de la épica (sección 3 de la referencia) y decidir con la sección 4 si `CHANGELOG.md` se debe `escribir` o ya está `al día`.
 2. **Errores:** si los delimitadores están incompletos o invertidos, o su bloque publicado no cubre todas las historias liberadas, informar el error indicado en la sección 4 y terminar sin escribir `epic.md` ni `CHANGELOG.md` y sin preguntar.
 3. **Estado:** si la épica está en `VALIDATE/DONE`:
-   - Leer el `substatus` de las demás `specs/flow/EPIC-*/epic.md`. Si alguna está en `IN-PROGRESS`, mostrar `⚠️ WIP: otras épicas en IN-PROGRESS: <lista>`, sin bloquear.
+   - Leer el `substatus` de las demás `changes/EPIC-*/epic.md`. Si alguna está en `IN-PROGRESS`, mostrar `⚠️ WIP: otras épicas en IN-PROGRESS: <lista>`, sin bloquear.
    - Escribir en el frontmatter de `epic.md` `status: SHIP`, `substatus: IN-PROGRESS` y `updated: <hoy>` (cuerpo intacto) y mostrar `🚦 <EPIC_ID>: VALIDATE/DONE → SHIP/IN-PROGRESS`.
 4. **`CHANGELOG.md`:** con `escribir`, aplicar la sección 4 (crear el archivo o `## [Unreleased]` si faltan; reemplazar entre delimitadores si ya existe). Con `al día`, no tocar el archivo.
 

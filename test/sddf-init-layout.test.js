@@ -69,8 +69,8 @@ test('CNF-3: SKILL.md cumple el contrato de layout fijo y salió de PENDING_MIGR
 test('AC-1/AC-2: SKILL.md declara el layout fijo y el aviso legado', () => {
   const skill = read(`${SKILL_DIR}/SKILL.md`);
   for (const token of [
-    'specs/flow/archive/',
-    'specs/living/',
+    'changes/archive/',
+    'specs/',
     'workflow/',
     '.gitkeep',
     'Layout legado detectado',
@@ -84,7 +84,7 @@ test('CNF-2: los evals cubren AC-1 y AC-2', () => {
   const evals = JSON.parse(read(`${SKILL_DIR}/evals/evals.json`));
   assert.equal(evals.version, '3.0.0');
   const contains = evals.cases.map((testCase) => testCase.expected.contains);
-  assert.ok(contains.some((list) => list.includes('specs/flow/archive/')), 'ningún caso cubre AC-1');
+  assert.ok(contains.some((list) => list.includes('changes/archive/')), 'ningún caso cubre AC-1');
   assert.ok(
     contains.some((list) => list.includes('docs/guides/artifact-directory-migration.md')),
     'ningún caso cubre AC-2',

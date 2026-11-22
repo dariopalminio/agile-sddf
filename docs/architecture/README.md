@@ -73,7 +73,7 @@ El framework utiliza **runners de LLM** (`claude`, `codex`, `opencode`) para val
 - **Qué no va aquí:**
   - Decisiones y sus alternativas → [[adr-index]] (`docs/decisions/ADR-NNNN-*.md`).
   - Diseño de una historia concreta → `design.md` de la historia
-    (`specs/flow/STORY-NNN-*/design.md`).
+    (`changes/STORY-NNN-*/design.md`).
   - Modelo de dominio (entidades, invariantes de negocio) → [domains/README.md](../domains/README.md)
     y [[domain]].
   - Reglas de gobernanza y restricciones verificables → `policies/` y `guardrails/`.

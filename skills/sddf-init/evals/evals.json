@@ -1,23 +1,23 @@
 {
   "skill": "sddf-init",
   "version": "3.0.0",
-  "description": "Evalúa que sddf-init crea el layout fijo (specs/flow/, specs/flow/archive/, specs/living/ y workflow/), avisa sin escribir ante el layout legado docs/specs/, es idempotente y respeta el parámetro --level minimal|standard|full (STORY-099), incluido el scaffolding de memory-system.",
+  "description": "Evalúa que sddf-init crea el layout fijo (changes/, changes/archive/, specs/ y workflow/), avisa sin escribir ante el layout legado docs/specs/, es idempotente y respeta el parámetro --level minimal|standard|full (STORY-099), incluido el scaffolding de memory-system.",
   "story": "STORY-149",
   "cases": [
     {
       "id": "TC-001",
       "name": "bootstrap-limpio-crea-layout-fijo",
       "type": "happy-path",
-      "description": "En un repositorio sin estructura SDDF, sddf-init crea specs/flow/, specs/flow/archive/, specs/living/ y workflow/ con .gitkeep, copia los templates a docs/templates/ y no declara root en sddf.config.yaml (AC-1).",
+      "description": "En un repositorio sin estructura SDDF, sddf-init crea changes/, changes/archive/, specs/ y workflow/ con .gitkeep, copia los templates a docs/templates/ y no declara root en sddf.config.yaml (AC-1).",
       "input": {
         "context": "Repositorio sin estructura SDDF: no existen docs, specs, workflow, sddf.config.yaml ni .env.template.",
         "flags": []
       },
       "expected": {
         "contains": [
-          "specs/flow/",
-          "specs/flow/archive/",
-          "specs/living/",
+          "changes/",
+          "changes/archive/",
+          "specs/",
           "workflow/",
           "docs/templates",
           "sddf.config.yaml",
@@ -38,7 +38,7 @@
       "type": "edge-case",
       "description": "Sobre un layout fijo ya inicializado, una segunda ejecución no escribe nada en specs/ ni workflow/ e informa que el layout ya existe (AC-3).",
       "input": {
-        "context": "Repositorio ya inicializado: existen specs/flow/, specs/flow/archive/, specs/living/, workflow/, docs/templates/ con los templates, sddf.config.yaml y .env.template. No existe docs/specs/.",
+        "context": "Repositorio ya inicializado: existen changes/, changes/archive/, specs/, workflow/, docs/templates/ con los templates, sddf.config.yaml y .env.template. No existe docs/specs/.",
         "flags": []
       },
       "expected": {
@@ -58,16 +58,16 @@
       "id": "TC-003",
       "name": "layout-legado-avisa-sin-escribir",
       "type": "fail-fast",
-      "description": "Ante el layout legado docs/specs/ sin specs/flow/, sddf-init emite el aviso de deprecación con la ruta de la guía de migración y no escribe nada (AC-2, CNF-1).",
+      "description": "Ante el layout legado docs/specs/ sin changes/, sddf-init emite el aviso de deprecación con la ruta de la guía de migración y no escribe nada (AC-2, CNF-1).",
       "input": {
-        "context": "Repositorio con docs/specs/epics/EPIC-01-x/epic.md y docs/specs/stories/STORY-001-y/story.md. No existe specs/flow/.",
+        "context": "Repositorio con docs/specs/epics/EPIC-01-x/epic.md y docs/specs/stories/STORY-001-y/story.md. No existe changes/.",
         "flags": []
       },
       "expected": {
         "contains": [
           "Layout legado detectado",
           "docs/guides/artifact-directory-migration.md",
-          "No se crea specs/flow/"
+          "No se crea changes/"
         ],
         "not_contains": [
           "[CREADO]",
@@ -80,9 +80,9 @@
       "id": "TC-004",
       "name": "layout-mixto-avisa-y-completa",
       "type": "edge-case",
-      "description": "Con docs/specs/ y specs/flow/ presentes, sddf-init avisa, deja docs/specs/ intacto y crea solo lo que falta del layout fijo (AC-2, AC-3).",
+      "description": "Con docs/specs/ y changes/ presentes, sddf-init avisa, deja docs/specs/ intacto y crea solo lo que falta del layout fijo (AC-2, AC-3).",
       "input": {
-        "context": "Repositorio con docs/specs/ y specs/flow/ (con archive/). Faltan specs/living/ y workflow/.",
+        "context": "Repositorio con docs/specs/ y changes/ (con archive/). Faltan specs/ y workflow/.",
         "flags": []
       },
       "expected": {
@@ -90,7 +90,7 @@
           "Layout legado detectado",
           "Se continúa con el layout fijo existente",
           "[CREADO]",
-          "specs/living/"
+          "specs/"
         ],
         "not_contains": [
           "[ERROR]"
@@ -135,7 +135,7 @@
       "expected": {
         "contains": [
           "[OMITIDO] sddf-constitution (nivel minimal)",
-          "specs/flow/",
+          "changes/",
           "sddf.config.yaml",
           ".env.template"
         ],
@@ -223,7 +223,7 @@
       "type": "edge-case",
       "description": "--level full ejecutado por segunda vez (EV-006, STORY-099): todo ya existe; sddf-init informa [YA EXISTÍA] y el scaffold no crea nada.",
       "input": {
-        "context": "Repositorio ya inicializado previamente con sddf-init --level full: existen el layout fijo (specs/flow/, specs/living/, workflow/), docs/templates/, sddf.config.yaml, .env.template y las capas de memoria. No existe docs/specs/. memory-system está instalado.",
+        "context": "Repositorio ya inicializado previamente con sddf-init --level full: existen el layout fijo (changes/, specs/, workflow/), docs/templates/, sddf.config.yaml, .env.template y las capas de memoria. No existe docs/specs/. memory-system está instalado.",
         "flags": [
           "--level",
           "full"
@@ -236,6 +236,28 @@
         ],
         "not_contains": [
           "[ERROR]"
+        ]
+      },
+      "threshold": 0.95
+    },    {
+      "id": "TC-011",
+      "name": "layout-adr-0019-avisa-sin-escribir",
+      "type": "fail-fast",
+      "description": "ADR-0023: ante el layout de ADR-0019 (specs/flow/ y specs/living/) sin changes/, sddf-init emite el aviso de deprecación con las rutas legadas y la guía de migración y no escribe nada.",
+      "input": {
+        "context": "Repositorio con specs/flow/EPIC-01-x/epic.md, specs/flow/archive/2026-01-01-STORY-000-z/story.md y specs/living/.gitkeep. No existen changes/ ni docs/specs/.",
+        "flags": []
+      },
+      "expected": {
+        "contains": [
+          "Layout legado detectado",
+          "specs/flow/",
+          "docs/guides/artifact-directory-migration.md",
+          "No se crea changes/"
+        ],
+        "not_contains": [
+          "[CREADO]",
+          "Entorno SDDF inicializado correctamente"
         ]
       },
       "threshold": 0.95

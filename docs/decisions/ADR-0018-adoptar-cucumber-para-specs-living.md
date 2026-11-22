@@ -2,31 +2,33 @@
 type: adr
 id: ADR-0018
 slug: adoptar-cucumber-para-specs-living
-title: "Adoptar Cucumber (Gherkin en archivos .feature) para specs/living/"
+title: "Adoptar Cucumber (Gherkin en archivos .feature) para specs/"
 status: PROPOSED
 date: 2026-10-28
 supersedes: null
 superseded-by: null
 ---
 
-# ADR-0018: Adoptar Cucumber (Gherkin en archivos .feature) para specs/living/
+# ADR-0018: Adoptar Cucumber (Gherkin en archivos .feature) para specs/
+
+> **Rutas alineadas con [ADR-0023](ADR-0023-separar-changes-de-specs.md) (2026-11-18):** la especificación viva vive directamente en `specs/` (antes `specs/living/`) y los cambios en `changes/` (antes `specs/flow/`). Esta propuesta sigue en discusión: el ajuste de rutas no aprueba su decisión de formato.
 
 ## Contexto y problema
 
 [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) separa `specs/` en dos raíces con semánticas
 distintas:
 
-- `specs/flow/` contiene las **specs de cambio**: épicas e historias que describen qué se va a construir. Cuando una
+- `changes/` contiene las **specs de cambio**: épicas e historias que describen qué se va a construir. Cuando una
   historia se completa, se archiva.
-- `specs/living/` está reservado para las **specs de estado**: cómo se comporta hoy el sistema. No tiene formato ni
+- `specs/` está reservado para las **specs de estado**: cómo se comporta hoy el sistema. No tiene formato ni
   estructura definidos.
 
 Las historias ya expresan sus criterios de aceptación en Gherkin en español (`Dado`/`Cuando`/`Entonces`, ver
 `docs/templates/story-template.md`), pero esos escenarios quedan dentro de cada `story.md` y se dispersan por
-`specs/flow/archive/`. Para saber cómo se comporta hoy una capacidad hay que reconstruirlo a partir de varias historias
+`changes/archive/`. Para saber cómo se comporta hoy una capacidad hay que reconstruirlo a partir de varias historias
 archivadas, algunas contradictorias entre sí.
 
-La pregunta que motiva este ADR es: **¿qué formato y qué estructura de archivos usa `specs/living/` para describir el
+La pregunta que motiva este ADR es: **¿qué formato y qué estructura de archivos usa `specs/` para describir el
 comportamiento vigente del sistema?**
 
 Origen: la épica de Living Spec, ya anticipada por ADR-0017, y la separación entre spec de cambio y spec de estado
@@ -35,10 +37,10 @@ planteada en [ADR-0011](ADR-0011-archivos-canonicos-por-tipo.md).
 ## Decisión
 
 El comportamiento vigente del sistema se especifica en **Gherkin, en archivos `.feature` ejecutables por Cucumber**,
-dentro de `specs/living/features/`, agrupados por dominio:
+dentro de `specs/features/`, agrupados por dominio:
 
 ```
-specs/living/features/
+specs/features/
 ├── pagos/
 │   ├── checkout.feature
 │   ├── checkout.md
@@ -74,8 +76,8 @@ SDDF no exige que existan para que una feature sea válida como spec viva.
 1. **Spec ejecutable frente a spec descriptiva.** Un `.feature` puede verificarse contra el sistema; un `.md` no. Si la
    spec viva se ejecuta, deja de describir el comportamiento del sistema el mismo día en que deja de pasar, y eso se
    detecta. Es la forma más directa de evitar que la documentación viva se desincronice.
-2. **Continuidad con `specs/flow/`.** Las historias ya escriben sus criterios de aceptación en Gherkin. Usar el mismo
-   lenguaje y el mismo idioma en `specs/living/` hace que consolidar los escenarios de una historia completada sea
+2. **Continuidad con `changes/`.** Las historias ya escriben sus criterios de aceptación en Gherkin. Usar el mismo
+   lenguaje y el mismo idioma en `specs/` hace que consolidar los escenarios de una historia completada sea
    copiar y ajustar, no reescribir.
 3. **Formato estándar con tooling existente.** `.feature` es la extensión de Gherkin que reconocen Cucumber, los
    editores y los formatters. SDDF no inventa un formato propio.
@@ -98,8 +100,8 @@ nombres) y repositorio como sistema (la spec viva es verificable desde el propio
   tooling de editores y formatters es mucho menor que para `.feature`.
 - **`.feature` con `.md` obligatorio para cada feature:** descartada. Genera archivos sin contenido propio cuando la
   descripción del `Feature` basta.
-- **Organizar `specs/living/` por historia (`specs/living/STORY-NNN/`):** descartada. Reproduciría la estructura de
-  `specs/flow/`; la spec viva describe capacidades, no cambios.
+- **Organizar `specs/` por historia (`specs/STORY-NNN/`):** descartada. Reproduciría la estructura de
+  `changes/`; la spec viva describe capacidades, no cambios.
 - **snake_case (como algunos ejemplos de Cucumber) o PascalCase:** descartadas por incoherentes con los slugs del
   repositorio.
 - **Gherkin en inglés (idioma por defecto de Cucumber):** descartada. Obligaría a traducir los criterios de aceptación
@@ -117,23 +119,23 @@ nombres) y repositorio como sistema (la spec viva es verificable desde el propio
 
 - Un `.feature` sin *step definitions* es documentación, no una prueba. Hasta que el proyecto implemente los pasos, la
   garantía de sincronización del punto 1 del rationale no existe.
-- `memory-system` solo indexa archivos `.md` de `docs/` y `specs/flow/`: hoy no indexa `specs/living/` ni archivos
+- `memory-system` solo indexa archivos `.md` de `docs/` y `changes/`: hoy no indexa `specs/` ni archivos
   `.feature`. Habrá que extender `index` y `check` para incluirlos.
 - No existe todavía un validador que compruebe kebab-case, `# language: es` o el emparejamiento `.feature`/`.md`. Hay
   que implementarlo, por ejemplo como regla de `check` o como script en `scripts/`.
 - Los requisitos no funcionales encajan mal en escenarios Gherkin. El destino de `docs/requirements/` en
-  `specs/living/`, que ADR-0017 anticipa, queda pendiente.
+  `specs/`, que ADR-0017 anticipa, queda pendiente.
 
 **Fuera del alcance de este ADR** (a resolver en la épica de Living Spec):
 
-- Qué skill consolida los escenarios de una historia completada en `specs/living/features/` y en qué etapa del flujo.
+- Qué skill consolida los escenarios de una historia completada en `specs/features/` y en qué etapa del flujo.
 - La trazabilidad entre escenarios vivos e historias (por ejemplo, con tags `@STORY-NNN`).
-- La migración de `docs/requirements/` a `specs/living/`.
+- La migración de `docs/requirements/` a `specs/`.
 
 ## Referencias
 
-- [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) — Layout fijo y raíz reservada `specs/living/`
-- [ADR-0011](ADR-0011-archivos-canonicos-por-tipo.md) — Nombres de los work items de `specs/flow/`
+- [ADR-0017](ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md) — Layout fijo y raíz reservada `specs/`
+- [ADR-0011](ADR-0011-archivos-canonicos-por-tipo.md) — Nombres de los work items de `changes/`
 - [Referencia de Gherkin](https://cucumber.io/docs/gherkin/reference) — Sintaxis, palabras clave e idiomas
 - [Feature en la referencia de Gherkin](https://cucumber.io/docs/gherkin/reference#feature)
 - [User story en Cucumber](https://cucumber.io/docs/terms/user-story) — Criterios de aceptación escritos en Gherkin

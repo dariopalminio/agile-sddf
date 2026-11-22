@@ -6,7 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
-const { HISTORICAL_EXCLUSIONS, checkDocumentation, slugIndex } = require('../scripts/check-doc-links.js');
+const { ACTIVE_ROOTS, HISTORICAL_EXCLUSIONS, checkDocumentation, slugIndex } = require('../scripts/check-doc-links.js');
 
 function fixture(t, readme) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'agile-sddf-links-'));
@@ -16,7 +16,8 @@ function fixture(t, readme) {
     'docs/guides',
     'docs/runbooks',
     'docs/decisions',
-    'specs/flow',
+    'changes',
+    'specs',
   ];
   for (const directory of dirs) fs.mkdirSync(path.join(root, directory), { recursive: true });
   fs.writeFileSync(path.join(root, 'README.md'), readme, 'utf8');
@@ -57,9 +58,9 @@ test('reports a guide linking to a removed docs/specs path, naming the guide', (
   assert.match(result.errors[0], /^docs\/guides\/legacy\.md:\d+: Missing local target: docs\/specs\/stories\/STORY-001-x\/story\.md$/);
 });
 
-test('resolves wikilinks to work items under specs/flow/', (t) => {
+test('resolves wikilinks to work items under changes/', (t) => {
   const root = fixture(t, '# Readme\n');
-  const story = path.join(root, 'specs/flow/STORY-001-x/story.md');
+  const story = path.join(root, 'changes/STORY-001-x/story.md');
   fs.mkdirSync(path.dirname(story), { recursive: true });
   fs.writeFileSync(story, '---\nslug: STORY-001-x\n---\n', 'utf8');
   const index = path.join(root, 'docs/index.md');
@@ -68,27 +69,27 @@ test('resolves wikilinks to work items under specs/flow/', (t) => {
   assert.deepEqual(result.errors, []);
 });
 
-test('wikilinks a work items en specs/flow y archive resuelven desde docs/index.md', (t) => {
+test('wikilinks a work items en changes y archive resuelven desde docs/index.md', (t) => {
   const root = fixture(t, '# Readme\n');
   const write = (relativePath, slug) => {
     const target = path.join(root, relativePath);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.writeFileSync(target, `---\nslug: ${slug}\n---\n`, 'utf8');
   };
-  write('specs/flow/STORY-001-a/story.md', 'STORY-001-a');
-  write('specs/flow/archive/2026-01-01-STORY-000-z/story.md', 'STORY-000-z');
+  write('changes/STORY-001-a/story.md', 'STORY-001-a');
+  write('changes/archive/2026-01-01-STORY-000-z/story.md', 'STORY-000-z');
   const index = path.join(root, 'docs/index.md');
   fs.writeFileSync(index, [
     '# Index',
-    '- [[STORY-001-a]] — [story.md](../specs/flow/STORY-001-a/story.md)',
-    '- [[STORY-000-z]] — [story.md](../specs/flow/archive/2026-01-01-STORY-000-z/story.md)',
+    '- [[STORY-001-a]] — [story.md](../changes/STORY-001-a/story.md)',
+    '- [[STORY-000-z]] — [story.md](../changes/archive/2026-01-01-STORY-000-z/story.md)',
     '',
   ].join('\n'), 'utf8');
   const result = checkDocumentation({ repoRoot: root, files: [index] });
   assert.deepEqual(result.errors, []);
 });
 
-test('reports a wikilink to a work item that does not exist under specs/', (t) => {
+test('reports a wikilink to a work item that does not exist under changes/', (t) => {
   const root = fixture(t, '# Readme\n');
   const index = path.join(root, 'docs/index.md');
   fs.writeFileSync(index, '# Index\n- [[STORY-999-inexistente]]\n', 'utf8');
@@ -97,8 +98,24 @@ test('reports a wikilink to a work item that does not exist under specs/', (t) =
   assert.match(result.errors[0], /Missing wikilink target: \[\[STORY-999-inexistente\]\]/);
 });
 
-test('HISTORICAL_EXCLUSIONS informa specs/ como raíz histórica de work items', () => {
-  assert.deepEqual(HISTORICAL_EXCLUSIONS, ['CHANGELOG.md', 'docs/decisions', 'specs']);
+test('HISTORICAL_EXCLUSIONS informa changes/ como raíz histórica de work items (ADR-0023)', () => {
+  assert.deepEqual(HISTORICAL_EXCLUSIONS, ['CHANGELOG.md', 'docs/decisions', 'changes']);
+});
+
+test('ACTIVE_ROOTS incluye specs/ como especificación viva y no changes/ (ADR-0023)', () => {
+  assert.ok(ACTIVE_ROOTS.includes('specs'));
+  assert.ok(!ACTIVE_ROOTS.includes('changes'));
+});
+
+test('wikilinks desde specs/ a work items de changes/ resuelven', (t) => {
+  const root = fixture(t, '# Readme\n');
+  const story = path.join(root, 'changes/STORY-001-x/story.md');
+  fs.mkdirSync(path.dirname(story), { recursive: true });
+  fs.writeFileSync(story, '---\nslug: STORY-001-x\n---\n# Story\n', 'utf8');
+  const living = path.join(root, 'specs/README.md');
+  fs.writeFileSync(living, '# Especificación viva\nOrigen: [[STORY-001-x]]\n', 'utf8');
+  const result = checkDocumentation({ repoRoot: root, files: [living] });
+  assert.deepEqual(result.errors, []);
 });
 
 test('reports unresolved wikilinks but ignores inline-code examples', (t) => {
@@ -123,8 +140,8 @@ test('slugIndex prefiere epic.md/story.md ante slugs duplicados y no trata proje
     fs.writeFileSync(target, `---\nslug: ${slug}\n---\n`, 'utf8');
     return target;
   };
-  const epic = write('specs/flow/EPIC-01-a/epic.md', 'duplicado-epic');
-  const epicNotes = write('specs/flow/EPIC-01-a/notes.md', 'duplicado-epic');
+  const epic = write('changes/EPIC-01-a/epic.md', 'duplicado-epic');
+  const epicNotes = write('changes/EPIC-01-a/notes.md', 'duplicado-epic');
   const project = write('docs/legacy/project.md', 'duplicado-project');
   const notes = write('docs/legacy/notes.md', 'duplicado-project');
 

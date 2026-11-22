@@ -25,7 +25,7 @@ Informativo: este análisis no cambia el estado de la épica.
 
 | Métrica | Valor |
 |---|---|
-| Épica | EPIC-30 (`specs/flow/EPIC-30-ejemplo/epic.md`) |
+| Épica | EPIC-30 (`changes/EPIC-30-ejemplo/epic.md`) |
 | Hallazgos ERROR | 1 |
 | Hallazgos WARNING | 1 |
 | Contrato de salida | Contrato de salida: 2/2 cubiertos |
@@ -38,10 +38,10 @@ Informativo: este análisis no cambia el estado de la épica.
 
 | ID | Línea(s) en epic.md | En índice | story.md | parent | Estado |
 |---|---|---|---|---|---|
-| STORY-301 | 23 | sí | `specs/flow/STORY-301-exportar-informe-csv/story.md` | `EPIC-30-ejemplo` | ✓ |
-| STORY-302 | 24 | sí | `specs/flow/STORY-302-programar-envio-informe/story.md` | `EPIC-30-ejemplo` | ✓ |
-| STORY-305 | 25 | sí | `specs/flow/STORY-305-exportar-informe-xlsx/story.md` | `EPIC-30-ejemplo` | ✓ |
-| STORY-306 | 26 | sí | `specs/flow/STORY-306-exportar-informe-json/story.md` | `EPIC-30-ejemplo` | ✓ |
+| STORY-301 | 23 | sí | `changes/STORY-301-exportar-informe-csv/story.md` | `EPIC-30-ejemplo` | ✓ |
+| STORY-302 | 24 | sí | `changes/STORY-302-programar-envio-informe/story.md` | `EPIC-30-ejemplo` | ✓ |
+| STORY-305 | 25 | sí | `changes/STORY-305-exportar-informe-xlsx/story.md` | `EPIC-30-ejemplo` | ✓ |
+| STORY-306 | 26 | sí | `changes/STORY-306-exportar-informe-json/story.md` | `EPIC-30-ejemplo` | ✓ |
 | STORY-307 | 27 | sí | — | — | INT-01 |
 
 ## Cobertura del contrato de salida

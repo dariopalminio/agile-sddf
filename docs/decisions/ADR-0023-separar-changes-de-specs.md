@@ -3,7 +3,7 @@ type: adr
 id: ADR-0023
 slug: separar-changes-de-specs
 title: "Separar los cambios en curso de la especificación viva"
-status: PROPOSED
+status: ACCEPTED
 date: 2026-11-17
 supersedes: ADR-0019
 superseded-by: null
@@ -35,7 +35,7 @@ El repositorio adopta cuatro raíces hermanas y fijas: `docs/` para conocimiento
 
 ```text
 <REPO_ROOT>/
-├── docs/                  conocimiento: product/, requirements/, domains/, architecture/, adr/,
+├── docs/                  conocimiento: product/, requirements/, domains/, architecture/, decisions/,
 │                          policies/, guardrails/, guides/, runbooks/, templates/, constitution.md, index.md
 ├── specs/                 especificación viva: fuente de verdad vigente
 ├── changes/               flow-forward specs: trabajo en curso
@@ -125,9 +125,9 @@ El repositorio adopta cuatro raíces hermanas y fijas: `docs/` para conocimiento
   detenerse y notificarlas, sin sobrescribir.
 - No se ejecutan migraciones automáticas en proyectos instalados ni se mantienen copias paralelas como fuentes
   de verdad.
-- Mientras este ADR permanezca `PROPOSED`, ADR-0019 sigue vigente. Su aceptación requiere registrar el reemplazo
-  en ADR-0019 y actualizar el índice; no se reescriben los cuerpos de los ADR aceptados.
-- Crear este ADR no implica que la migración ya esté implementada.
+- Al aceptarse, ADR-0019 pasa a `SUPERSEDED` con `superseded-by: ADR-0023` y el índice se actualiza; no se
+  reescriben los cuerpos de los ADR aceptados.
+- La migración la implementa EPIC-030 (`changes/EPIC-030-separar-changes-de-specs/`).
 
 ## Referencias
 

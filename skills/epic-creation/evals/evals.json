@@ -7,9 +7,9 @@
       "id": "TC-001",
       "name": "happy-path: creacion interactiva completa de épica",
       "type": "functional",
-      "description": "Ejecutar epic-creation con nombre 'Sistema de pagos'. El skill debe resolver REPO_ROOT con el layout fijo, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo epic.md en specs/flow/EPIC-NNN-sistema-de-pagos/, invocar epic-format-validation y mostrar APPROVED con la ruta del archivo y el siguiente paso sugerido.",
+      "description": "Ejecutar epic-creation con nombre 'Sistema de pagos'. El skill debe resolver REPO_ROOT con el layout fijo, extraer secciones del template, guiar al usuario por frontmatter y secciones obligatorias, calcular automaticamente el siguiente ID EPIC-NN, generar el archivo epic.md en changes/EPIC-NNN-sistema-de-pagos/, invocar epic-format-validation y mostrar APPROVED con la ruta del archivo y el siguiente paso sugerido.",
       "input": {
-        "context": "Entorno SDDF válido con layout fijo. Template docs/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en specs/flow/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa Alcance, lista 2 historias (Nombre: descripción), un criterio de salida y un smoke test (Dado/Cuando/Entonces) y deja Notas vacía. Acepta las secciones opcionales o las salta.",
+        "context": "Entorno SDDF válido con layout fijo. Template docs/templates/epic-template.md existe con secciones obligatorias y opcionales marcadas. Existen 2 épicas previas (EPIC-01, EPIC-02) en changes/. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto, completa Alcance, lista 2 historias (Nombre: descripción), un criterio de salida y un smoke test (Dado/Cuando/Entonces) y deja Notas vacía. Acepta las secciones opcionales o las salta.",
         "flags": []
       },
       "expected": {
@@ -37,7 +37,7 @@
       "type": "edge-case",
       "description": "Ejecutar epic-creation --quick con nombre 'Onboarding v2'. El skill debe completar frontmatter y secciones obligatorias sin mostrar preguntas por las secciones opcionales. El epic.md generado debe contener solo secciones obligatorias. La validacion debe pasar y no debe aparecer ninguna pregunta del tipo '¿Quieres completar la seccion?'.",
       "input": {
-        "context": "Entorno SDDF valido. Template disponible con al menos 2 secciones opcionales marcadas como '<!-- seccion opcional'. No hay épicas previas en specs/flow/. El usuario provee nombre 'Onboarding v2', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
+        "context": "Entorno SDDF valido. Template disponible con al menos 2 secciones opcionales marcadas como '<!-- seccion opcional'. No hay épicas previas en changes/. El usuario provee nombre 'Onboarding v2', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
         "flags": ["--quick"]
       },
       "expected": {
@@ -171,16 +171,16 @@
     {
       "name": "repo-limpio-escribe-en-specs-flow",
       "type": "functional",
-      "description": "AC-1 de STORY-151: en un repo recién inicializado con /sddf-init, sin épicas previas, epic-creation con nombre 'Sistema de pagos' calcula EPIC-01, crea specs/flow/ si falta y escribe specs/flow/EPIC-01-sistema-de-pagos/epic.md sin tocar ni crear el layout anterior.",
+      "description": "AC-1 de STORY-151: en un repo recién inicializado con /sddf-init, sin épicas previas, epic-creation con nombre 'Sistema de pagos' calcula EPIC-01, crea changes/ si falta y escribe changes/EPIC-01-sistema-de-pagos/epic.md sin tocar ni crear el layout anterior.",
       "input": {
-        "context": "Repo recién inicializado con /sddf-init (layout fijo). Template docs/templates/epic-template.md existe. specs/flow/ no contiene ninguna épica. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
+        "context": "Repo recién inicializado con /sddf-init (layout fijo). Template docs/templates/epic-template.md existe. changes/ no contiene ninguna épica. El usuario provee nombre 'Sistema de pagos', acepta frontmatter por defecto y completa solo las secciones obligatorias.",
         "flags": [
           "--quick"
         ]
       },
       "expected": {
         "contains": [
-          "specs/flow/EPIC-01-",
+          "changes/EPIC-01-",
           "epic.md"
         ],
         "not_contains": [
@@ -194,9 +194,9 @@
       "id": "TC-008",
       "name": "numeracion-cuenta-epicas-archivadas",
       "type": "functional",
-      "description": "AC-3 de STORY-175: existe una épica archivada en specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/epic.md y EPIC-029 es la épica activa de mayor número en specs/flow/. Al crear la épica 'Panel de métricas', epic-creation calcula el siguiente NN sobre activas ∪ archivadas (ADR-0019) y propone EPIC-31, nunca EPIC-30.",
+      "description": "AC-3 de STORY-175: existe una épica archivada en changes/archive/2026-10-01-EPIC-30-exportar-informes/epic.md y EPIC-029 es la épica activa de mayor número en changes/. Al crear la épica 'Panel de métricas', epic-creation calcula el siguiente NN sobre activas ∪ archivadas (ADR-0019) y propone EPIC-31, nunca EPIC-30.",
       "input": {
-        "context": "Layout fijo. Template docs/templates/epic-template.md existe. specs/flow/ contiene specs/flow/EPIC-28-catalogo/epic.md y specs/flow/EPIC-029-carrito/epic.md; specs/flow/archive/ contiene specs/flow/archive/2026-10-01-EPIC-30-exportar-informes/epic.md (status: COMPLETED, substatus: DONE). El usuario provee nombre 'Panel de métricas', acepta el ID propuesto y el frontmatter por defecto y completa solo las secciones obligatorias.",
+        "context": "Layout fijo. Template docs/templates/epic-template.md existe. changes/ contiene changes/EPIC-28-catalogo/epic.md y changes/EPIC-029-carrito/epic.md; changes/archive/ contiene changes/archive/2026-10-01-EPIC-30-exportar-informes/epic.md (status: COMPLETED, substatus: DONE). El usuario provee nombre 'Panel de métricas', acepta el ID propuesto y el frontmatter por defecto y completa solo las secciones obligatorias.",
         "flags": [
           "--quick"
         ]
@@ -204,11 +204,11 @@
       "expected": {
         "contains": [
           "EPIC-31-panel-de-metricas",
-          "specs/flow/EPIC-31-"
+          "changes/EPIC-31-"
         ],
         "not_contains": [
           "EPIC-30-panel-de-metricas",
-          "specs/flow/EPIC-30-panel"
+          "changes/EPIC-30-panel"
         ]
       },
       "threshold": 1

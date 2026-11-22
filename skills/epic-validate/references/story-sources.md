@@ -6,15 +6,15 @@ Léela en los Pasos 1 y 2 de [SKILL.md](../SKILL.md).
 
 ## 1. Resolver la épica
 
-Interpretar `<epica>` en este orden; la primera forma aplicable decide. El directorio `specs/flow/` mezcla épicas e historias: toda búsqueda de épicas se restringe al patrón `specs/flow/EPIC-*/epic.md` y nunca consulta `specs/flow/archive/`: solo se validan épicas activas (una épica archivada es terminal, ADR-0019).
+Interpretar `<epica>` en este orden; la primera forma aplicable decide. El directorio `changes/` mezcla épicas e historias: toda búsqueda de épicas se restringe al patrón `changes/EPIC-*/epic.md` y nunca consulta `changes/archive/`: solo se validan épicas activas (una épica archivada es terminal, ADR-0023).
 
 1. **Ruta** (contiene `/` o `\`): directorio de la épica o su `epic.md`. `EPIC_DIR` = ese directorio.
-2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `specs/flow/<nombre>/epic.md`.
-3. **ID** (`EPIC-NNN`): glob `specs/flow/<ID>-*/epic.md`. El guion tras el ID es parte del patrón: `EPIC-30` no casa `EPIC-300-x`, así un ID resuelve a una sola épica de forma predecible.
+2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `changes/<nombre>/epic.md`.
+3. **ID** (`EPIC-NNN`): glob `changes/<ID>-*/epic.md`. El guion tras el ID es parte del patrón: `EPIC-30` no casa `EPIC-300-x`, así un ID resuelve a una sola épica de forma predecible.
 
 | Resultado | Comportamiento |
 |---|---|
-| 0 coincidencias, o el directorio existe sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>`, con `<ruta-buscada>` = patrón probado relativo a `REPO_ROOT` (p. ej. `specs/flow/EPIC-77-*/epic.md`). Fin **sin escribir** y sin leer templates. |
+| 0 coincidencias, o el directorio existe sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>`, con `<ruta-buscada>` = patrón probado relativo a `REPO_ROOT` (p. ej. `changes/EPIC-77-*/epic.md`). Fin **sin escribir** y sin leer templates. |
 | 1 coincidencia | Continuar. |
 | > 1 coincidencias | `❌ El argumento <arg> es ambiguo: <lista de directorios>` y fin sin escribir. |
 
@@ -40,10 +40,10 @@ El estado de la casilla (`[ ]`/`[x]`) no se usa: el cierre lo decide el `status`
 
 ## 4. Inventario y pertenencia (Vía B)
 
-1. Inventario = glob `specs/flow/STORY-*/story.md` ∪ glob `specs/flow/archive/*-STORY-*/story.md`. Si falta `specs/flow/archive/`, ese origen se omite sin nota.
+1. Inventario = glob `changes/STORY-*/story.md` ∪ glob `changes/archive/*-STORY-*/story.md`. Si falta `changes/archive/`, ese origen se omite sin nota.
 2. De cada `story.md` leer **solo el frontmatter** y, como escalares, `parent`, `status` y `substatus`. El ID es el `STORY-NNN` del nombre del directorio, tras el prefijo de fecha `<YYYY-MM-DD>-` si está archivada.
 3. **Pertenencia:** la historia declara la épica si el prefijo `EPIC-NNN` de su `parent` es igual a `EPIC_ID` (`EPIC-30-ejemplo` y `EPIC-30` cuentan para `EPIC-30`; `EPIC-300-x` no). Se compara el prefijo para que renombrar el slug de la épica no deje huérfanas sus historias.
-4. **Resolución de un ID listado:** glob `specs/flow/<STORY-NNN>-*/story.md` y `specs/flow/archive/*-<STORY-NNN>-*/story.md` (guion obligatorio tras el ID). Con varios, la activa antes que la archivada y, dentro de cada origen, la primera en orden alfabético; los demás se anotan (`STORY-NNN duplicada: <rutas>`).
+4. **Resolución de un ID listado:** glob `changes/<STORY-NNN>-*/story.md` y `changes/archive/*-<STORY-NNN>-*/story.md` (guion obligatorio tras el ID). Con varios, la activa antes que la archivada y, dentro de cada origen, la primera en orden alfabético; los demás se anotan (`STORY-NNN duplicada: <rutas>`).
 5. Frontmatter ilegible: la historia entra con `status`/`substatus` = `—` y la nota `<ruta>: frontmatter ilegible`. Nunca se aborta la validación por una historia.
 
 ## 5. Universo de la épica

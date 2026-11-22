@@ -165,8 +165,8 @@ El flujo por defecto es siempre el equipo de cuatro agentes. El flag `--single-a
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para localizar los motores (`touched-lines.js`, `low-ledger.js`); nunca lo derives de `REPO_ROOT`.
 
@@ -185,15 +185,15 @@ Proporciona el ID (ej. STORY-064) o la ruta completa al directorio.
 
 #### 1b. Resolución del directorio de la historia
 
-1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `specs/flow/STORY-NNN-<slug>/` (no `specs/flow/archive/…`) y contiene `story.md`. Si no:
+1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `changes/STORY-NNN-<slug>/` (no `changes/archive/…`) y contiene `story.md`. Si no:
    ```
-   ❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)
+   ❌ La ruta {story_path} no es una historia de changes/ (se esperaba changes/STORY-NNN-<slug>/)
    ```
    Detener la ejecución sin escribir ningún archivo.
-2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `specs/flow/archive/`)
+2. Glob `changes/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `changes/archive/`)
 3. Si no se encuentra:
    ```
-   ❌ No se encontró la historia {story_id} en specs/flow/
+   ❌ No se encontró la historia {story_id} en changes/
    Verifica el ID o ejecuta /epic-generate-stories para generarla.
    ```
    Detener la ejecución.
@@ -469,7 +469,7 @@ Registrar `$PREEXISTING_CHECK` (`applied` | `unavailable`), `$PREEXISTING_REASON
 
 Construir `$FINDINGS`, la tabla consolidada: una fila por hallazgo de las tablas de hallazgos de los informes válidos (las de `## Hallazgos` y, si existen, las de cobertura y trazabilidad en `testcases.md`), sin los excluidos en el Paso 4a.1. Cada fila registra `revisor`, `dimensión`, `tabla de origen`, `severidad`, `Archivo:Línea`, `descripción`, `recomendación` y `estado`. Los PREEXISTENTE del Paso 4a.2 siguen en `$FINDINGS` con su marca, pero no se verifican ni se fusionan: ya no cuentan. Las filas `DoD-CODE-REVIEW` no pasan por este paso ni por el 4a.4 (se crean en el Paso 4c.1).
 
-**Ubicación:** la columna `Archivo:Línea`; en las tablas sin esa columna (`AC / Escenario`, `Test Case ID`), el `Archivo:Línea` entre paréntesis de la primera celda (`AC-1 (specs/flow/STORY-NNN-<slug>/story.md:30)`). Una celda sin paréntesis no tiene ubicación.
+**Ubicación:** la columna `Archivo:Línea`; en las tablas sin esa columna (`AC / Escenario`, `Test Case ID`), el `Archivo:Línea` entre paréntesis de la primera celda (`AC-1 (changes/STORY-NNN-<slug>/story.md:30)`). Una celda sin paréntesis no tiene ubicación.
 
 Asignar `estado` a cada `HIGH`/`MEDIUM`:
 
@@ -905,8 +905,8 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
-| Ruta explícita fuera de specs/flow/ | `❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)` | Detener sin escribir ningún archivo |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en changes/` | Detener. Sugerir `/epic-generate-stories` |
+| Ruta explícita fuera de changes/ | `❌ La ruta {story_path} no es una historia de changes/ (se esperaba changes/STORY-NNN-<slug>/)` | Detener sin escribir ningún archivo |
 | `story.md` y/o `design.md` ausentes | `❌ Artefactos requeridos no encontrados en: <$STORY_DIR>/` (un único mensaje con la lista de faltantes) | Detener sin modificar ningún archivo |
 | `story.md` no está en `IMPLEMENT/DONE` ni `CODE-REVIEW/IN-PROGRESS` (incluida una historia ya devuelta a `IMPLEMENT/TODO` con `fix-directives.md`) | `❌ La historia <story_id> no está en un estado válido para revisar.` | Detener sin modificar ningún archivo; no recalcular `round` ni eliminar `fix-directives.md` |
 | `implement-report.md` o `testcases.md` ausentes | — (se registran como `⏭️` en el informe) | Continuar sin ese contexto |
@@ -936,9 +936,9 @@ Si `$VERDICT = BLOCKED`, mostrar `Veredicto: BLOCKED`, nombrar los revisores de 
 
 | Artefacto | Condición |
 |-----------|-----------|
-| `specs/flow/<STORY-NNN>-<slug>/code-review-report.md` | Siempre |
-| `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` | Solo si `NEEDS-CHANGES`, desde la plantilla común con `based-on: code-review-report.md`; incluye `round`, que escriben con la misma regla los tres gates (`story-code-review`, `story-verify`, `story-acceptance`, ADR-0022); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Solo este skill lo elimina, en `APPROVED` |
-| `specs/flow/<STORY-NNN>-<slug>/code-review-lows.json` | Se intenta escribir en cada ronda con el motor `low-ledger.js` (Paso 5c), con cualquier veredicto; se conserva cuando tiene éxito y se archiva con la historia. Es JSON sin frontmatter: lo escribe solo el motor |
+| `changes/<STORY-NNN>-<slug>/code-review-report.md` | Siempre |
+| `changes/<STORY-NNN>-<slug>/fix-directives.md` | Solo si `NEEDS-CHANGES`, desde la plantilla común con `based-on: code-review-report.md`; incluye `round`, que escriben con la misma regla los tres gates (`story-code-review`, `story-verify`, `story-acceptance`, ADR-0022); es la señal de rework que consumen `story-implement` y `story-implement-tasks`. Solo este skill lo elimina, en `APPROVED` |
+| `changes/<STORY-NNN>-<slug>/code-review-lows.json` | Se intenta escribir en cada ronda con el motor `low-ledger.js` (Paso 5c), con cualquier veredicto; se conserva cuando tiene éxito y se archiva con la historia. Es JSON sin frontmatter: lo escribe solo el motor |
 | `.tmp/story-code-review/{story_id}/low-locations.json` y `low-lows.json` | Temporal (entrada de los Pasos 4a.5 y 5c) |
 | `.tmp/story-code-review/{story_id}/tech-lead-report.md` | Temporal (intermedio) |
 | `.tmp/story-code-review/{story_id}/product-owner-report.md` | Temporal (intermedio) |

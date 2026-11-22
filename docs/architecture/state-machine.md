@@ -88,7 +88,7 @@ Fuente del workflow y de sus transiciones, incluido el rework de los tres gates 
 | `VERIFY` | Se ejecutan pruebas automatizadas (unitarias, integración, E2E, regresión) en entorno controlado. | IA / CI |
 | `ACCEPTANCE` | Validación humana de la historia contra los criterios de aceptación de SPECIFY. El humano decide si el valor es entregable. | PO / QA |
 | `DELIVER` | Incremento listo para producción (batch) o ya desplegado (continuous). La escribe `story-delivery` tras verificar el DoD de entrega y con confirmación humana. | Humano (vía `story-delivery`) / CI-CD |
-| `COMPLETED` | Estado terminal pasivo. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. La escribe `story-complete` desde `DELIVER/DONE` con confirmación humana y archiva la historia en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. | Humano (vía `story-complete`) |
+| `COMPLETED` | Estado terminal pasivo. Sin acciones pendientes. Permite medir tiempos de ciclo sin reabrir artefactos. La escribe `story-complete` desde `DELIVER/DONE` con confirmación humana y archiva la historia en `changes/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. | Humano (vía `story-complete`) |
 | `CANCELED` | Estado terminal pasivo. La historia se abandonó sin entregar. Alcanzable desde cualquier estado activo; transición manual, ningún skill la escribe. | Humano |
 
 ### Tabla de transiciones por skill
@@ -103,9 +103,9 @@ Fuente del workflow y de sus transiciones, incluido el rework de los tres gates 
 | `story-verify` | `CODE-REVIEW/DONE` (camino normal), `IMPLEMENT/DONE` (mínimo aceptable) o `VERIFY/BLOCKED` (reintento) | `VERIFY/IN-PROGRESS` | `VERIFY/DONE` (`APPROVED`) | `IMPLEMENT/TODO` (`NEEDS-CHANGES`) o `VERIFY/BLOCKED` (`BLOCKED`) |
 | `story-acceptance` | `VERIFY/DONE` (camino normal), `ACCEPTANCE/IN-PROGRESS` (sesión en curso) o `ACCEPTANCE/BLOCKED` (reintento) | `ACCEPTANCE/IN-PROGRESS` | `ACCEPTANCE/DONE` | `IMPLEMENT/TODO` (`NEEDS-CHANGES`) o `ACCEPTANCE/BLOCKED` (`BLOCKED`) |
 | `story-delivery` | `ACCEPTANCE/DONE` | — (sin estado intermedio) | `DELIVER/DONE` (con confirmación humana) | — |
-| `story-complete` | `DELIVER/DONE` o `COMPLETED/DONE` (solo archivar) | — (sin estado intermedio) | `COMPLETED/DONE` + archivado en `specs/flow/archive/` (con confirmación humana) | — (sin cambios) |
+| `story-complete` | `DELIVER/DONE` o `COMPLETED/DONE` (solo archivar) | — (sin estado intermedio) | `COMPLETED/DONE` + archivado en `changes/archive/` (con confirmación humana) | — (sin cambios) |
 
-**DELIVER** significa que el incremento está listo para producción (potencialmente entregable) o ya desplegado (entregado), según el modelo de entrega del equipo (batch vs. continuous). Lo escribe `story-delivery` tras verificar el DoD de entrega y solo con confirmación humana explícita; si la entrega no se confirma, `story.md` no cambia. **COMPLETED** lo escribe `story-complete` desde `DELIVER/DONE`, solo con confirmación humana explícita, y en la misma operación archiva la historia en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` (ADR-0016); las historias que ya están en `COMPLETED/DONE` se archivan sin cambiar su status.
+**DELIVER** significa que el incremento está listo para producción (potencialmente entregable) o ya desplegado (entregado), según el modelo de entrega del equipo (batch vs. continuous). Lo escribe `story-delivery` tras verificar el DoD de entrega y solo con confirmación humana explícita; si la entrega no se confirma, `story.md` no cambia. **COMPLETED** lo escribe `story-complete` desde `DELIVER/DONE`, solo con confirmación humana explícita, y en la misma operación archiva la historia en `changes/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` (ADR-0016); las historias que ya están en `COMPLETED/DONE` se archivan sin cambiar su status.
 
 Los sub-skills `story-design`, `story-tasking` y `story-testcases` son invocados por `story-plan` y **no modifican `story.md`**: solo producen sus artefactos (`design.md`, `tasks.md`, `testcases.md`).
 
@@ -169,11 +169,11 @@ Fuente del workflow y de sus transiciones: ADR-0022, [[workflows-sin-estados-buf
 | `DEVELOP` | Desarrollo en curso: las historias de la épica se implementan siguiendo su propio workflow. La épica permanece aquí hasta que todas las historias estén en `DELIVER`. | Equipo |
 | `VALIDATE` | Pruebas de integración y regresión del conjunto completo: end-to-end, UAT, requisitos no funcionales. | QA / Equipo |
 | `SHIP` | La épica cumple lo que el proyecto exige en su DoD de `SHIP` (`docs/guardrails/dod-epic-ship.md`), que puede incluir publicarla o desplegarla. Último estado activo. | Humano · registro: `epic-ship` |
-| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes ni responsabilidades activas. Permite medir tiempos de ciclo sin reabrir artefactos. Se archiva en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`. | Humano (vía `epic-complete`) |
+| `COMPLETED` | Estado terminal pasivo. Épica cerrada administrativamente. Sin acciones pendientes ni responsabilidades activas. Permite medir tiempos de ciclo sin reabrir artefactos. Se archiva en `changes/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`. | Humano (vía `epic-complete`) |
 
 La aprobación del PO es `PLAN/DONE` y se escribe a mano: ningún skill la escribe ([[workflows-sin-estados-buffer]]).
 
-**`epic-ship` registra `SHIP/IN-PROGRESS` desde `VALIDATE/DONE` antes de actualizar `CHANGELOG.md`, y `SHIP/DONE` solo con confirmación humana** y sin bloqueos de `docs/guardrails/dod-epic-ship.md` si existe. Ningún skill ejecuta commit, tag, merge ni despliegue, y `epic-ship` no asume que una épica coincida con una versión. **COMPLETED lo escribe `epic-complete` solo con confirmación humana** desde `SHIP/DONE` y archiva la épica en `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`; `epic-complete` además archiva sin cambiar el status las épicas `COMPLETED/DONE` y `CANCELED/DONE` (ADR-0019).
+**`epic-ship` registra `SHIP/IN-PROGRESS` desde `VALIDATE/DONE` antes de actualizar `CHANGELOG.md`, y `SHIP/DONE` solo con confirmación humana** y sin bloqueos de `docs/guardrails/dod-epic-ship.md` si existe. Ningún skill ejecuta commit, tag, merge ni despliegue, y `epic-ship` no asume que una épica coincida con una versión. **COMPLETED lo escribe `epic-complete` solo con confirmación humana** desde `SHIP/DONE` y archiva la épica en `changes/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`; `epic-complete` además archiva sin cambiar el status las épicas `COMPLETED/DONE` y `CANCELED/DONE` (ADR-0019).
 
 Gate de calidad: `epic-format-validation` valida la estructura del `epic.md` como precondición para `epic-generate-stories` (constitución, regla 15).
 

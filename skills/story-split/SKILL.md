@@ -41,7 +41,7 @@ El skill acepta tres tipos de input:
 
 - **Tipo A — Texto libre**: historia completa o descripción de feature en lenguaje natural
 - **Tipo B — Ruta de archivo**: ruta relativa o absoluta a un archivo `.md` con el contenido de la historia
-- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia en `specs/flow/`
+- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia en `changes/`
 
 Fuente estructural del output: `docs/templates/story-template.md` (leído en tiempo de ejecución)
 
@@ -58,7 +58,7 @@ Fuente estructural del output: `docs/templates/story-template.md` (leído en tie
 
 ## Precondiciones
 
-- La historia a dividir existe en `specs/flow/` o fue provista como texto libre o ruta de archivo
+- La historia a dividir existe en `changes/` o fue provista como texto libre o ruta de archivo
 - El archivo `docs/templates/story-template.md` existe
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 
@@ -108,8 +108,8 @@ Fuente estructural del output: `docs/templates/story-template.md` (leído en tie
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -142,7 +142,7 @@ Detectar el tipo de input proporcionado:
 #### Tipo C — Término de búsqueda
 **Señal:** El input es una palabra o frase corta que no parece texto de historia ni ruta explícita.
 **Acción:**
-1. Buscar en `specs/flow/STORY-*/` directorios cuyo nombre contenga el término (sin distinguir mayúsculas)
+1. Buscar en `changes/STORY-*/` directorios cuyo nombre contenga el término (sin distinguir mayúsculas)
 2. Si hay exactamente 1 coincidencia → leerlo y usarlo como historia a dividir. Continuar al Paso 3.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que elija antes de continuar.
 4. Si no hay coincidencias → tratar el input como Tipo A (texto libre).
@@ -358,14 +358,14 @@ La **historia core** conserva el ID de la historia original — no se le asigna 
 Las **historias adicionales** reciben IDs nuevos consecutivos:
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
-> `specs/flow/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> `changes/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
 > el patrón de archivo anidado descrito a continuación.
 
 1. Usar Glob con dos patrones para localizar las historias existentes y archivadas:
-   - `specs/flow/STORY-*/story.md` → número `NNN` del segmento `STORY-NNN-*` (directorio padre inmediato)
-   - `specs/flow/archive/*-STORY-*/story.md` → número `NNN` del directorio `<YYYY-MM-DD>-STORY-NNN-<slug>` (ADR-0016)
-   Ejemplo: de `specs/flow/STORY-074-integrar-.../story.md` → `74`.
-   Si Glob retorna vacío, verificar con Bash (`ls specs/flow/ specs/flow/archive/ | grep -E "STORY-[0-9]+"`)
+   - `changes/STORY-*/story.md` → número `NNN` del segmento `STORY-NNN-*` (directorio padre inmediato)
+   - `changes/archive/*-STORY-*/story.md` → número `NNN` del directorio `<YYYY-MM-DD>-STORY-NNN-<slug>` (ADR-0023)
+   Ejemplo: de `changes/STORY-074-integrar-.../story.md` → `74`.
+   Si Glob retorna vacío, verificar con Bash (`ls changes/ changes/archive/ | grep -E "STORY-[0-9]+"`)
    antes de asumir que no hay historias previas.
 2. Extraer los números de todos los prefijos `STORY-NNN` encontrados en la unión de ambos directorios
 3. Tomar el número más alto y asignar IDs desde ese punto: `STORY-(N+1)`, `STORY-(N+2)`, etc.
@@ -386,7 +386,7 @@ Las **historias adicionales** reciben IDs nuevos consecutivos:
 
 #### Guardar cada historia adicional
 
-Por cada historia adicional (no-core), crear en `specs/flow/`:
+Por cada historia adicional (no-core), crear en `changes/`:
 - **Directorio:** `STORY-{NNN}-{slug}/`
 - **Archivo:** `story.md` con la historia completa en formato del template
 - **Frontmatter:** `id: STORY-{NNN}`, `kind:` heredado de la historia madre, `slug: STORY-{NNN}-{slug}`, `status: SPECIFY`, campo `related:` con el ID de la core y las demás historias hermanas
@@ -403,11 +403,11 @@ Por cada historia adicional (no-core), crear en `specs/flow/`:
 ## Historias resultantes
 
 ### Historia 1 — {título corto}
-**Archivo:** `specs/flow/STORY-{NNN}-{slug}/story.md`
+**Archivo:** `changes/STORY-{NNN}-{slug}/story.md`
 [Historia completa en formato story-template.md]
 
 ### Historia 2 — {título corto}
-**Archivo:** `specs/flow/STORY-{NNN+1}-{slug}/story.md`
+**Archivo:** `changes/STORY-{NNN+1}-{slug}/story.md`
 [Historia completa en formato story-template.md]
 
 ...
@@ -416,9 +416,9 @@ Por cada historia adicional (no-core), crear en `specs/flow/`:
 [Qué quedó fuera de scope, dependencias entre historias si las hay, orden de implementación sugerido]
 
 ## Archivos generados
-- `specs/flow/STORY-{NNN}-{slug-core}/story.md` ← repurposed (era `STORY-{NNN}-{slug-original}/`)
-- `specs/flow/STORY-{N+1}-{slug-2}/story.md` ← nuevo
-- `specs/flow/STORY-{N+2}-{slug-3}/story.md` ← nuevo
+- `changes/STORY-{NNN}-{slug-core}/story.md` ← repurposed (era `STORY-{NNN}-{slug-original}/`)
+- `changes/STORY-{N+1}-{slug-2}/story.md` ← nuevo
+- `changes/STORY-{N+2}-{slug-3}/story.md` ← nuevo
 
 > ⚠️ El directorio `STORY-{NNN}-{slug-original}/` fue renombrado a `STORY-{NNN}-{slug-core}/`.
 > Actualiza manualmente cualquier referencia al slug anterior en `epic.md` u otros documentos.
@@ -434,7 +434,7 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
 | Template no encontrado | `❌ No se encontró el template en docs/templates/story-template.md` | Detener. Pedir verificar que el archivo existe |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en changes/` | Detener. Sugerir `/epic-generate-stories` |
 | Más de 1 coincidencia (Tipo C) | Mostrar lista de coincidencias | Pedir al usuario que elija antes de continuar |
 | Directorio de historia adicional ya existe | Informar al usuario del conflicto | No sobreescribir; continuar con las demás |
 | Directorio original ya renombrado | Detectar por diferencia de slug | Omitir el renombrado sin error; continuar |
@@ -443,8 +443,8 @@ Si se generaron TADs en lugar de historias, explicar claramente que son experime
 
 ## Salida
 
-- `specs/flow/STORY-{NNN}-{slug-core}/story.md` — historia core (directorio repurposed del original)
-- `specs/flow/STORY-{N+1}-{slug}/story.md` … — historias adicionales (nuevas)
+- `changes/STORY-{NNN}-{slug-core}/story.md` — historia core (directorio repurposed del original)
+- `changes/STORY-{N+1}-{slug}/story.md` … — historias adicionales (nuevas)
 - Estado de todas las historias resultantes: `SPECIFY` (pendiente de re-evaluación con `/story-evaluation`)
 
 ### Referencias

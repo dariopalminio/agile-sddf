@@ -25,8 +25,8 @@ Lee la última propuesta de `docs/product/roadmap.md` y materializa una especifi
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
@@ -50,9 +50,9 @@ Si no hay bloques, mostrar `No se encontraron épicas planificadas en la propues
 
 ## Fase 2 — Preparar destino e IDs
 
-Las épicas se escriben en `specs/flow/`. Crearlo si no existe (nunca en el layout anterior).
+Las épicas se escriben en `changes/`. Crearlo si no existe (nunca en el layout anterior).
 
-Calcular `$MAX_EPIC` como el mayor `NN` de la unión de `specs/flow/EPIC-<NN>-*/` (épicas activas) y `specs/flow/archive/<YYYY-MM-DD>-EPIC-<NN>-*/` (épicas archivadas, ADR-0019), de modo que nunca se reutilice el número de una épica archivada; un origen ausente se omite sin nota y, si no existe ninguno, usar `-1`. Las épicas nuevas reciben `$MAX_EPIC + 1` en el orden de la propuesta, rellenado a dos dígitos hasta 99 y a tres desde 100. El número de su encabezado no determina su ID.
+Calcular `$MAX_EPIC` como el mayor `NN` de la unión de `changes/EPIC-<NN>-*/` (épicas activas) y `changes/archive/<YYYY-MM-DD>-EPIC-<NN>-*/` (épicas archivadas, ADR-0023), de modo que nunca se reutilice el número de una épica archivada; un origen ausente se omite sin nota y, si no existe ninguno, usar `-1`. Las épicas nuevas reciben `$MAX_EPIC + 1` en el orden de la propuesta, rellenado a dos dígitos hasta 99 y a tres desde 100. El número de su encabezado no determina su ID.
 
 Convertir el nombre a kebab-case con las reglas vigentes. Si un slug se repite dentro de la propuesta, añadir `-bis` al segundo y sucesivos.
 
@@ -62,7 +62,7 @@ Si ya existe `EPIC-<cualquier NN>-<slug>`, preguntar si se sobrescribe; sin resp
 
 Resolver el template central `docs/templates/epic-template.md`; si falta, usar `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` e informar el fallback. Si tampoco existe, informar `❌ Template epic-template.md no encontrado. Ejecuta sddf-init.` y detener.
 
-Para cada épica nueva, crear `specs/flow/EPIC-NNN-<slug>/epic.md` tomando títulos y orden del template. El mapeo por clave es:
+Para cada épica nueva, crear `changes/EPIC-NNN-<slug>/epic.md` tomando títulos y orden del template. El mapeo por clave es:
 
 | Clave | Contenido |
 |---|---|
@@ -78,7 +78,7 @@ Invocar `epic-format-validation` automáticamente para cada archivo y leer `verd
 
 ## Fase 4 — Resumen
 
-Mostrar los archivos creados o saltados bajo `specs/flow/`, con el `verdict` de `epic-format-validation` de cada épica. Si todos son `APPROVED`, sugerir `/epic-generate-stories`; si alguno requiere refinamiento, pedir corregirlo antes de generar sus historias.
+Mostrar los archivos creados o saltados bajo `changes/`, con el `verdict` de `epic-format-validation` de cada épica. Si todos son `APPROVED`, sugerir `/epic-generate-stories`; si alguno requiere refinamiento, pedir corregirlo antes de generar sus historias.
 
 ## Notas
 

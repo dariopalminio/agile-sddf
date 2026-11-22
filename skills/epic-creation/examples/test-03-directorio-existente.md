@@ -19,21 +19,21 @@
 - Prompt: "¿Cómo se llama la épica?"
 - Usuario responde: `"Autenticación básica"` (mismo nombre que ya existe como EPIC-01)
 - Slug derivado: `autenticacion-basica`
-- El sistema detecta que `specs/flow/EPIC-01-autenticacion-basica/` **ya existe**
+- El sistema detecta que `changes/EPIC-01-autenticacion-basica/` **ya existe**
 
 ### Detección de conflicto
 
 El skill muestra:
 
 ```
-⚠️ El directorio `specs/flow/EPIC-01-autenticacion-basica/` ya existe.
+⚠️ El directorio `changes/EPIC-01-autenticacion-basica/` ya existe.
 ¿Qué deseas hacer?
 1. Sobreescribir el archivo existente
 2. Usar un nombre diferente
 ```
 
 - Usuario responde: **"1" (sobreescribir)**
-- El skill continúa con la ruta `specs/flow/EPIC-01-autenticacion-basica/epic.md`
+- El skill continúa con la ruta `changes/EPIC-01-autenticacion-basica/epic.md`
 
 ### Fase 1 — Leer template
 - Se lee `docs/templates/epic-template.md`
@@ -46,7 +46,7 @@ El skill muestra:
 ### Fase 5 — Vista previa y confirmación
 
 El skill muestra vista previa del contenido y pregunta:
-> "Voy a crear el archivo en `specs/flow/EPIC-01-autenticacion-basica/epic.md`. ¿Confirmas? (sí / editar primero)"
+> "Voy a crear el archivo en `changes/EPIC-01-autenticacion-basica/epic.md`. ¿Confirmas? (sí / editar primero)"
 
 - Usuario responde: **"sí"**
 - El archivo es sobreescrito

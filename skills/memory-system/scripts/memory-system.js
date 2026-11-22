@@ -49,13 +49,13 @@ const HARNESS_PROFILES = {
   speckit: {
     marker: '.specify/',
     externalRoots: ['specs/*/spec.md', 'specs/*/plan.md'],
-    skipLayers: ['specs'],
+    skipLayers: ['changes'],
     mappings: { 'constitution.md': '.specify/memory/constitution.md' },
   },
   openspec: {
     marker: 'openspec/',
     externalRoots: ['openspec/specs/**/spec.md', 'openspec/changes/*/proposal.md'],
-    skipLayers: ['specs'],
+    skipLayers: ['changes'],
     mappings: {},
   },
   generic: { marker: null, externalRoots: [], skipLayers: [], mappings: {} },
@@ -79,31 +79,32 @@ const HARNESS_ORDER = ['sddf', 'speckit', 'openspec', 'generic'];
 
 // Las diez capas de memoria (ARCH-MEMORY §2-3), en orden de directorio. Es el único catálogo:
 // `scaffold` lo usa para saber qué capa falta y el índice deriva de él `KNOWN_LAYERS`. Los work
-// items no son una capa de `docs/`: viven en `specs/flow/` (STORY-152 D-5) y los crea `/sddf-init`.
+// items no son una capa de `docs/`: viven en `changes/` (ADR-0023) y los crea `/sddf-init`.
 const LAYERS = [
   'product', 'requirements', 'domains', 'architecture', 'decisions',
   'policies', 'guardrails', 'guides', 'runbooks', 'templates',
 ];
 
-// Subdirectorios de `specs/` con nombre de capa propio.
-const SPECS_LAYERS = { epics: 'specs-epics', stories: 'specs-stories' };
+// Subdirectorios del layout legado `docs/specs/` con nombre de capa propio: comparten las capas
+// `changes-*` del origen flow para convivir con él en un repo sin migrar.
+const SPECS_LAYERS = { epics: 'changes-epics', stories: 'changes-stories' };
 
-// Origen flow del índice (STORY-152 D-4): work items del layout fijo (ADR-0016), relativo a
-// REPO_ROOT. Sus nodos son propios (los evalúa `check`) y reutilizan las capas `specs-*`, de modo
-// que conviven con los de `docs/specs/` de un repo sin migrar.
-const FLOW_DIR = 'specs/flow';
+// Origen flow del índice (STORY-152 D-4): work items del layout fijo (ADR-0023), relativo a
+// REPO_ROOT. Sus nodos son propios (los evalúa `check`) y usan las capas `changes-*`, que comparten
+// con los de `docs/specs/` de un repo sin migrar.
+const FLOW_DIR = 'changes';
 const FLOW_ARCHIVE = 'archive';
 
 // Directorios excluidos del índice (D-3): caché, templates (wikilinks placeholder) y pre-split.
 const EXCLUDED_DIRS = new Set(['.cache', 'templates', 'pre-split']);
 
 // Capas que el template del índice puede declarar aunque no tengan nodos: la raíz, las capas de
-// memoria indexables (`templates` excluida), las de work items (`specs` y su desglose, compartidas
+// memoria indexables (`templates` excluida), las de work items (`changes` y su desglose, compartidas
 // por el origen flow y por `docs/specs/` sin migrar) y las externas.
 const KNOWN_LAYERS = [
   'root',
   ...LAYERS.filter((layer) => !EXCLUDED_DIRS.has(layer)),
-  'specs', ...Object.values(SPECS_LAYERS), 'specs-archive',
+  'changes', ...Object.values(SPECS_LAYERS), 'changes-archive',
   'external',
 ];
 
@@ -358,17 +359,19 @@ function deriveLayer(relPath) {
   const segments = relPath.split('/');
   if (segments.length === 1) return 'root';
   if (segments[0] !== 'specs') return segments[0];
-  if (segments.length === 2) return 'specs'; // archivo suelto en specs/ (p. ej. su README.md)
+  if (segments.length === 2) return 'changes'; // archivo suelto en docs/specs/ legado (p. ej. su README.md)
+  // Un subdirectorio legado sin capa propia (p. ej. los niveles retirados de tres niveles) conserva
+  // `specs-<x>`: no es una capa conocida y el template lo rechaza nombrándolo.
   return SPECS_LAYERS[segments[1]] || `specs-${segments[1]}`;
 }
 
-// Capa de un nodo del origen flow, calculada sobre la ruta relativa a `specs/flow/`.
+// Capa de un nodo del origen flow, calculada sobre la ruta relativa a `changes/`.
 function deriveFlowLayer(flowRel) {
   const [first] = flowRel.split('/');
-  if (first === FLOW_ARCHIVE) return 'specs-archive';
-  if (first.startsWith('EPIC-')) return 'specs-epics';
-  if (first.startsWith('STORY-')) return 'specs-stories';
-  return 'specs';
+  if (first === FLOW_ARCHIVE) return 'changes-archive';
+  if (first.startsWith('EPIC-')) return 'changes-epics';
+  if (first.startsWith('STORY-')) return 'changes-stories';
+  return 'changes';
 }
 
 function deriveSlug(relPath, data) {
@@ -498,12 +501,12 @@ function scanExternalNodes(specsBase, profile, internalSlugs) {
 }
 
 /**
- * Nodos del origen flow (`<REPO_ROOT>/specs/flow/`, D-4): mismo `walk` y mismas exclusiones que
- * DOCS_DIR. Vacío si el directorio no existe o si el harness gestiona `specs/` (`skipLayers`).
+ * Nodos del origen flow (`<REPO_ROOT>/changes/`, D-4): mismo `walk` y mismas exclusiones que
+ * DOCS_DIR. Vacío si el directorio no existe o si el harness gestiona sus cambios (`skipLayers`).
  */
 function scanFlowNodes(specsBase, profile) {
   const flowDir = under(path.dirname(specsBase), FLOW_DIR);
-  if (profile.skipLayers.includes('specs') || !isDirectory(flowDir)) return [];
+  if (profile.skipLayers.includes('changes') || !isDirectory(flowDir)) return [];
   return walk(flowDir, flowDir).map((file) => deriveNode(file, specsBase, { flow: true }));
 }
 
@@ -890,7 +893,7 @@ function scaffold(options) {
     warnings: [],
     summary: { created: 0, overwritten: 0, preserved: 0, mapped: 0, skippedByHarness: 0 },
   };
-  if (!skipLayers.has('specs')) {
+  if (!skipLayers.has('changes')) {
     const legacyLevels = detectLegacyLevels(specsBase);
     if (legacyLevels.length) {
       result.warnings.push(`estructura de specs/ de tres niveles detectada (${legacyLevels.map((level) => `${level}/`).join(', ')}): ejecuta /memory-system migrate --from=specs-3-levels`);

@@ -30,7 +30,7 @@ No son candidatos:
 
 ### Existencia
 
-El slug `S` existe si hay un directorio `specs/flow/S/` o un directorio `specs/flow/archive/<YYYY-MM-DD>-S/` (comparación exacta del nombre, sin glob). Un slug que existe no es COH.
+El slug `S` existe si hay un directorio `changes/S/` o un directorio `changes/archive/<YYYY-MM-DD>-S/` (comparación exacta del nombre, sin glob). Un slug que existe no es COH.
 
 ## 2. Exclusión, agrupación y numeración
 
@@ -55,12 +55,12 @@ Ejemplo: el slug `STORY-301-exportar-informe` aparece en la línea F2 de STORY-3
 
 ## 3. Regla de reemplazo
 
-Para un COH con ID `STORY-NNN` se listan los directorios `specs/flow/<STORY-NNN>-*/` y `specs/flow/archive/*-<STORY-NNN>-*/` que contienen `story.md` (guion obligatorio tras el ID: `STORY-301` no casa `STORY-3010-x`; los mismos globs que `epic-analyze` Paso 4.4) y se cuentan **en conjunto**:
+Para un COH con ID `STORY-NNN` se listan los directorios `changes/<STORY-NNN>-*/` y `changes/archive/*-<STORY-NNN>-*/` que contienen `story.md` (guion obligatorio tras el ID: `STORY-301` no casa `STORY-3010-x`; los mismos globs que `epic-analyze` Paso 4.4) y se cuentan **en conjunto**:
 
 | Directorios con el mismo ID | Tratamiento |
 |---|---|
 | Exactamente 1 | **Aplicable.** Reemplazo = nombre del directorio; si está archivado, sin el prefijo `<YYYY-MM-DD>-`. Ejemplo: `STORY-301-exportar-informe` → `STORY-301-exportar-informe-csv` |
-| 0 | **Fuera de alcance · `PO`**, nota `sin directorio STORY-NNN-* en specs/flow/ ni en specs/flow/archive/: reemplazo no determinable` |
+| 0 | **Fuera de alcance · `PO`**, nota `sin directorio STORY-NNN-* en changes/ ni en changes/archive/: reemplazo no determinable` |
 | ≥ 2 | **Fuera de alcance · `PO`**, nota `varios directorios con el ID STORY-NNN: <lista>` (por nombre ascendente) |
 
 No hay desempate: con un directorio activo y otro archivado, elegir entre ambos es una decisión del PO. Tampoco se infiere el reemplazo del `related` de las hermanas del split ni se retira la entrada como MAD-02: el PO puede querer recrear la referencia.
@@ -98,7 +98,7 @@ El archivo no se escribe por ese COH; la nota va a `notas` y a la columna **Resp
 
 | Caso | Nota |
 |---|---|
-| 0 directorios con el ID | `sin directorio STORY-NNN-* en specs/flow/ ni en specs/flow/archive/: reemplazo no determinable` |
+| 0 directorios con el ID | `sin directorio STORY-NNN-* en changes/ ni en changes/archive/: reemplazo no determinable` |
 | ≥ 2 directorios con el ID | `varios directorios con el ID STORY-NNN: <lista>` |
 | `related` en una forma no reconocida o ilegible | `related no reconocido` (la misma nota de `epic-analyze` Paso 5c.2) |
 | La historia listada declara otra épica (regla de pertenencia) | `` historia de otra épica (parent: `<valor>`): no se modifica `` |

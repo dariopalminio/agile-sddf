@@ -154,8 +154,8 @@ test('argumentos inválidos → stderr y salida 2', (t) => {
 
 test('check-command no escribe en REPO_ROOT', (t) => {
   const root = makeRepo(t, { scripts: { 'verify:release': 'node -e "process.exit(0)"' } });
-  fs.mkdirSync(path.join(root, 'specs', 'flow', 'EPIC-01-alfa'), { recursive: true });
-  fs.writeFileSync(path.join(root, 'specs', 'flow', 'EPIC-01-alfa', 'epic.md'), '# Épica\n');
+  fs.mkdirSync(path.join(root, 'changes', 'EPIC-01-alfa'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'changes', 'EPIC-01-alfa', 'epic.md'), '# Épica\n');
   const before = snapshot(root);
   runCli(['check-command', '--repo-root', root, '--command', `${NODE} -e "process.exit(0)"`]);
   runCli(['check-command', '--repo-root', root, '--command', 'npm run no-declarado']);

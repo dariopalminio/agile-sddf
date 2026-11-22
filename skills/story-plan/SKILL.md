@@ -86,7 +86,7 @@ La transición `PLAN/IN-PROGRESS` se aplica **incondicionalmente** al iniciar, i
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `specs/flow/`
+- El directorio de la historia existe bajo `changes/`
 - `story.md` existe en el directorio de la historia
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 
@@ -147,8 +147,8 @@ En cualquier modo, `--skip-analyze` elimina el paso `story-analyze` del pipeline
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -181,7 +181,7 @@ Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 #### 1d. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
+2. Glob `changes/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID
 3. Si no se encuentra: notificar y detener (ver sección Manejo de errores)
 
 #### 1e. Actualizar frontmatter a PLAN/IN-PROGRESS
@@ -423,7 +423,7 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 | Condición | Mensaje | Acción |
 |---|---|---|
 | `--only-tasks` y `--only-testcases` simultáneos | `❌ Flags mutuamente excluyentes` | Detener inmediatamente antes de cualquier sub-skill |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en changes/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener sin invocar sub-skills. Sugerir `/epic-generate-stories` |
 | Fallo en `story-design` | `[1/<N>] ✗ story-design — FALLO` | Registrar todos los pasos restantes como `—`. Ir a resumen |
 | Fallo en `story-tasking` | `[2/<N>] ✗ story-tasking — FALLO` | Registrar pasos restantes como `—`. Ir a resumen |

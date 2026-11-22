@@ -16,7 +16,7 @@ La historia tiene 3 flujos principales independientes (agregar, eliminar, cambia
 
 ### STORY-099 — Agregar ítem al carrito (core, repurposed)
 
-**Archivo:** `specs/flow/STORY-099-agregar-item-carrito/story.md` ← repurposed (era `STORY-099-gestionar-carrito-compras/`)
+**Archivo:** `changes/STORY-099-agregar-item-carrito/story.md` ← repurposed (era `STORY-099-gestionar-carrito-compras/`)
 
 ---
 type: story
@@ -52,7 +52,7 @@ Entonces el botón aparece deshabilitado con texto "Sin stock"
 
 ### STORY-100 — Eliminar ítem del carrito
 
-**Archivo:** `specs/flow/STORY-100-eliminar-item-carrito/story.md` ← nuevo
+**Archivo:** `changes/STORY-100-eliminar-item-carrito/story.md` ← nuevo
 
 **Como** comprador que revisó su carrito  
 **Quiero** eliminar un producto de mi carrito  
@@ -79,7 +79,7 @@ Entonces veo el estado vacío: "Tu carrito está vacío. Agrega productos para c
 
 ### STORY-101 — Cambiar cantidad de ítem en el carrito
 
-**Archivo:** `specs/flow/STORY-101-cambiar-cantidad-carrito/story.md` ← nuevo
+**Archivo:** `changes/STORY-101-cambiar-cantidad-carrito/story.md` ← nuevo
 
 **Como** comprador que quiere ajustar su pedido  
 **Quiero** cambiar la cantidad de un producto en mi carrito  
@@ -105,9 +105,9 @@ Entonces veo el mensaje "Solo quedan 2 unidades disponibles"
 
 ## Archivos generados
 
-- `specs/flow/STORY-099-agregar-item-carrito/story.md` ← **repurposed** (era `STORY-099-gestionar-carrito-compras/`)
-- `specs/flow/STORY-100-eliminar-item-carrito/story.md` ← nuevo
-- `specs/flow/STORY-101-cambiar-cantidad-carrito/story.md` ← nuevo
+- `changes/STORY-099-agregar-item-carrito/story.md` ← **repurposed** (era `STORY-099-gestionar-carrito-compras/`)
+- `changes/STORY-100-eliminar-item-carrito/story.md` ← nuevo
+- `changes/STORY-101-cambiar-cantidad-carrito/story.md` ← nuevo
 
 > ⚠️ El directorio `STORY-099-gestionar-carrito-compras/` fue renombrado a `STORY-099-agregar-item-carrito/`.
 > Actualiza manualmente cualquier referencia al slug anterior en `epic.md` u otros documentos.

@@ -108,8 +108,8 @@ La épica creada debe obtener `APPROVED` del gate antes de pasar a `PLAN`; un `N
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -129,23 +129,23 @@ Si el usuario no proporcionó un nombre de épica junto con el comando, pregunta
 Con el nombre provisto:
 - Derivar el **slug kebab-case**: minúsculas, palabras separadas por guiones, sin caracteres especiales (Ej: `"Sistema de pagos"` → `sistema-de-pagos`)
 - Construir el **ID de directorio**: proponer el siguiente ID disponible buscando con Glob los
-  patrones `specs/flow/EPIC-*/epic.md` (épicas activas) y `specs/flow/archive/*-EPIC-*/epic.md`
-  (épicas archivadas, ADR-0019). La herramienta Glob solo encuentra
+  patrones `changes/EPIC-*/epic.md` (épicas activas) y `changes/archive/*-EPIC-*/epic.md`
+  (épicas archivadas, ADR-0023). La herramienta Glob solo encuentra
   archivos, no directorios — usar siempre este patrón de archivo anidado. De cada ruta retornada,
   extraer el número `NN` del segmento `EPIC-NNN-*` del directorio padre; en las archivadas, el
-  `EPIC-NNN` que sigue al prefijo `<YYYY-MM-DD>-`. Si `specs/flow/archive/` no existe, omitirlo sin nota.
+  `EPIC-NNN` que sigue al prefijo `<YYYY-MM-DD>-`. Si `changes/archive/` no existe, omitirlo sin nota.
   Tomar el número más alto de la unión de ambos orígenes y sumarle 1, de modo que nunca se
   reutilice el número de una épica archivada; si ambos Glob retornan vacío, verificar con Bash
-  (`ls specs/flow/ specs/flow/archive/ 2>/dev/null | grep -E "EPIC-"`) antes de asumir que no hay
+  (`ls changes/ changes/archive/ 2>/dev/null | grep -E "EPIC-"`) antes de asumir que no hay
   épicas previas.
   Sin épicas previas (repo recién inicializado), el primer ID es `EPIC-01`.
   Formato final: `EPIC-NNN-<slug>` con NN de 2 dígitos (Ej: `EPIC-14-mi-epica`).
   Si el usuario prefiere asignar el ID manualmente, aceptarlo sin objeción.
-- Definir la **ruta de salida**: `specs/flow/<EPIC-NNN-slug>/epic.md`
+- Definir la **ruta de salida**: `changes/<EPIC-NNN-slug>/epic.md`
 
 #### Verificar conflicto de directorio
 
-Si el directorio `specs/flow/<EPIC-NNN-slug>/` ya existe, preguntar:
+Si el directorio `changes/<EPIC-NNN-slug>/` ya existe, preguntar:
 
 > "El directorio `<ruta>` ya existe. ¿Qué deseas hacer?
 > 1. Sobreescribir el archivo existente
@@ -266,10 +266,10 @@ Con todas las respuestas recopiladas, construir el archivo `epic.md` completo:
 #### Crear el directorio y escribir el archivo
 
 ```
-specs/flow/<EPIC-NNN-slug>/epic.md
+changes/<EPIC-NNN-slug>/epic.md
 ```
 
-Verificar que el directorio existe; si no, crearlo (incluido `specs/flow/` si falta). Nunca se escribe en el layout anterior.
+Verificar que el directorio existe; si no, crearlo (incluido `changes/` si falta). Nunca se escribe en el layout anterior.
 
 Mostrar al usuario una vista previa del archivo antes de escribirlo:
 
@@ -282,7 +282,7 @@ Si el usuario pide editar: mostrar el contenido y permitir correcciones antes de
 ### Paso 7 — Validación automática
 
 Después de escribir el archivo, invocar el skill `epic-format-validation` sobre el archivo generado y
-leer `verdict` del frontmatter de `specs/flow/<EPIC-NNN-slug>/epic-format-validation-report.md`. Solo
+leer `verdict` del frontmatter de `changes/<EPIC-NNN-slug>/epic-format-validation-report.md`. Solo
 `APPROVED` habilita el avance; un `verdict` ausente o fuera de {`APPROVED`, `NEEDS-REFINEMENT`}, o un
 error del gate sin reporte, se trata como no aprobado (G-06 de `validation-contract-policy`).
 
@@ -292,7 +292,7 @@ Mostrar:
 ```
 ✅ APPROVED
 
-Archivo creado: specs/flow/<EPIC-NNN-slug>/epic.md
+Archivo creado: changes/<EPIC-NNN-slug>/epic.md
 
 Siguiente paso: ejecuta /epic-generate-stories para generar las historias de usuario de esta épica.
 ```
@@ -327,7 +327,7 @@ Si el usuario responde "sí": volver al Paso 4 o Paso 5 según corresponda para 
 
 ## Salida
 
-- `specs/flow/<EPIC-NNN-slug>/epic.md` — épica creada y validado, listo para `/epic-generate-stories`
+- `changes/<EPIC-NNN-slug>/epic.md` — épica creada y validado, listo para `/epic-generate-stories`
 
 ### Referencias
 

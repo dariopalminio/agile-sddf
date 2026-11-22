@@ -91,7 +91,7 @@ El agente no es el sistema; el sistema es SDDF y el agente es el proceso que se 
 ```
 1. Arranque       AGENTS.md → constitution.md → index.md
 2. Asignación     /story-implement STORY-042
-3. Lectura        specs/flow/, docs/requirements/, docs/domains/
+3. Lectura        changes/, docs/requirements/, docs/domains/
 4. Producción     src/, tests/, implement-report.md
 5. Validación     code-review → verify → acceptance → integrate
 6. Registro       frontmatter actualizado, ADR si aplica, requirements si cambia el contrato
@@ -102,7 +102,7 @@ El agente no es el sistema; el sistema es SDDF y el agente es el proceso que se 
 ## 6. Principios arquitectónicos
 
 1. **El repositorio es el sistema** (Harness Engineering).
-2. **Layout fijo de tres raíces**: `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso), sin configuración de raíz (ADR-0016).
+2. **Layout fijo de cuatro raíces**: `docs/` (conocimiento), `specs/` (especificación viva), `changes/` (flujo de cambios) y `workflow/` (proceso), sin configuración de raíz (ADR-0023).
 3. **Sin duplicación**: se enlaza, no se copia.
 4. **Trazabilidad bidireccional**.
 5. **Agnóstico al LLM y al harness SDD**.
@@ -128,7 +128,7 @@ agile-sddf/
 │   ├── requirements/          # requisitos del producto
 │   ├── domains/               # modelo de dominio y reglas de negocio (DDD)
 │   ├── architecture/          # C4, stack, visión de sistema, vistas de componentes
-│   ├── adr/                   # decisiones inmutables (ADR-NNNN)
+│   ├── decisions/             # decisiones inmutables (ADR-NNNN)
 │   ├── policies/              # reglas derivadas de la constitución
 │   ├── guardrails/            # gr-*-checklist.md y dod-story-<etapa>.md
 │   ├── guides/                # guías de referencia y how-to
@@ -136,10 +136,9 @@ agile-sddf/
 │   ├── runbooks/              # procedimientos operativos (deploy npm, docker)
 │   └── templates/             # plantillas de generación (meta-artefactos)
 │
-├── specs/                     # estado: work items (ADR-0016)
-│   ├── flow/                  # EPIC-NNN-<slug>/ y STORY-NNN-<slug>/ hermanos, sin subniveles
-│   │   └── archive/           # <YYYY-MM-DD>-STORY-NNN-<slug>/ de las stories COMPLETED o CANCELED
-│   └── living/                # reservado: especificación viva (épica de Living Spec)
+├── specs/                     # especificación viva: fuente de verdad vigente (ADR-0023)
+├── changes/                   # flujo de cambios: EPIC-NNN-<slug>/ y STORY-NNN-<slug>/ hermanos, sin subniveles
+│   └── archive/               # <YYYY-MM-DD>-EPIC-NNN-<slug>/ y <YYYY-MM-DD>-STORY-NNN-<slug>/ COMPLETED o CANCELED
 ├── workflow/                  # reservado: proceso
 │
 ├── skills/                    # fuente única: skills SDD (uno por carpeta)
@@ -163,7 +162,8 @@ agile-sddf/
 | [[domain-state-management]] | Estados, subestados, transiciones |
 | [[constitution]] | Principios supremos |
 | [[perfiles-runtimes-e-instalacion-explicita]] | Perfiles reproducibles, runtimes canónicos e instalación explícita |
-| [[layout-fijo-de-tres-raices]] | Layout fijo de tres raíces; reemplaza a ADR-0010 (`specs/` dentro de `docs/`) |
+| [[separar-changes-de-specs]] | Layout fijo vigente: `changes/` para los cambios y `specs/` para la especificación viva; reemplaza a ADR-0019 |
+| [[layout-fijo-de-tres-raices]] | Origen del layout fijo de tres raíces; reemplaza a ADR-0010 (`specs/` dentro de `docs/`) |
 | [[nivel-l2-epic-y-directorios-numerados]] | Épica como nivel L2 (directorios numerados reemplazados por ADR-0013) |
 | [[asegurar-dos-niveles-de-flujo-epics-stories]] | `specs/` de dos niveles; nivel estratégico en `product/` y `requirements/` |
 

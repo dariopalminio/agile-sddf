@@ -73,7 +73,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 - `testcases.md` — casos de prueba por criterio de aceptación (opcional; requerido si tasks.md ausente)
 - `tasks.md` — plan de tareas de implementación (opcional; requerido si testcases.md ausente)
 - DoD de la etapa `plan` (`docs/guardrails/dod-story-plan.md`, ver `## DoD aplicable`) — opcional
-- `specs/flow/{parent}/epic.md` (o `specs/flow/{parent}-*/epic.md`, ver Paso 5a) — épica padre para verificar alineación (opcional)
+- `changes/{parent}/epic.md` (o `changes/{parent}-*/epic.md`, ver Paso 5a) — épica padre para verificar alineación (opcional)
 - Template del reporte: `assets/analyze-report-template.md` (opcional, hay fallback interno)
 
 ---
@@ -88,7 +88,7 @@ La actualización de estado ocurre tanto en modo manual como en modo Agent (invo
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `specs/flow/`
+- El directorio de la historia existe bajo `changes/`
 - `story.md` existe en el directorio de la historia
 - `design.md` existe en el directorio de la historia (requiere haber ejecutado `/story-design`)
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
@@ -155,8 +155,8 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -174,7 +174,7 @@ Proporciona el ID (ej. STORY-059) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `specs/flow/{story_id}-*/` — directorio cuyo nombre comienza con el ID
+2. Glob `changes/{story_id}-*/` — directorio cuyo nombre comienza con el ID
 3. Si no se encuentra: notificar y detener (ver sección Manejo de errores)
 
 #### 1c. Resolución de la ruta de salida
@@ -306,10 +306,10 @@ Si `$TASKS_AVAILABLE = false` Y `$TESTCASES_AVAILABLE = false`:
 
 Buscar el ID de la épica en el frontmatter `parent:` de story.md (ej. `EPIC-12-story-sdd-workflow`).
 
-Resolver `epic.md` en este orden (primera coincidencia), solo dentro de `specs/flow/` y nunca en `specs/flow/archive/`:
+Resolver `epic.md` en este orden (primera coincidencia), solo dentro de `changes/` y nunca en `changes/archive/`:
 
-1. `specs/flow/{parent}/epic.md` — `parent` con el slug completo (ej. `EPIC-12-story-sdd-workflow`)
-2. `specs/flow/{parent}-*/epic.md` — `parent` con solo el ID (ej. `EPIC-12`); el guion evita que `EPIC-1` coincida con `EPIC-12-…`
+1. `changes/{parent}/epic.md` — `parent` con el slug completo (ej. `EPIC-12-story-sdd-workflow`)
+2. `changes/{parent}-*/epic.md` — `parent` con solo el ID (ej. `EPIC-12`); el guion evita que `EPIC-1` coincida con `EPIC-12-…`
 
 Si no existe: emitir advertencia y continuar sin verificación de épica:
 ```
@@ -564,7 +564,7 @@ Si `$VERDICT = APPROVED`:
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en changes/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/epic-generate-stories` |
 | `design.md` ausente | `❌ No se encontró design.md en: <ruta>` | Detener. Sugerir `/story-design {story_id}` |
 | `testcases.md` y `tasks.md` ambos ausentes | `❌ Análisis rechazado: sin artefacto de implementación` | Detener. Sugerir `/story-testcases {story_id}` o `/story-tasking {story_id}` |

@@ -50,7 +50,7 @@ specs-repo/ (SSOT - Fuente de Verdad Central)
 │   ├── backward-compatibility.yml
 │   └── feature-linting.yml
 │
-└── specs/living/
+└── specs/
     ├── features/           # Gherkin: comportamiento de negocio
     │   ├── orders/
     │   ├── payments/
@@ -135,14 +135,14 @@ Resultado: Cambios coordinados, cero sorpresas
 
 ## Restricción Crítica: Agnóstico a UI
 
-### ✅ Qué SÍ va en `specs/living/`
+### ✅ Qué SÍ va en `specs/`
 
 - Contratos REST (OpenAPI): endpoints, esquemas, códigos HTTP
 - Contratos de eventos (AsyncAPI): tópicos, mensajes
 - Reglas de negocio (Gherkin): descuentos, validaciones, políticas
 - Step definitions: implementación de pasos
 
-### ❌ Qué NO va en `specs/living/`
+### ❌ Qué NO va en `specs/`
 
 - Flujos de navegación UI ("haz clic en...")
 - Layouts de pantalla, posiciones de elementos
@@ -171,7 +171,7 @@ Problema: fuerte acoplamiento, tests lentos, cambios frágiles
 ### Fase 1: Introducir Contract Testing
 
 ```
-specs-repo/specs/living/contracts/openapi/orders-api.yaml  ← NUEVA SSOT
+specs-repo/specs/contracts/openapi/orders-api.yaml  ← NUEVA SSOT
 
 orders-service/                web-gateway/
   ├── tests/unit/              ├── tests/unit/
@@ -183,7 +183,7 @@ orders-service/                web-gateway/
 ### Fase 2: Integrar Gherkin (BCDD Completo)
 
 ```
-specs-repo/specs/living/
+specs-repo/specs/
   ├── features/orders/*.feature
   ├── contracts/openapi/
   └── contracts/asyncapi/
@@ -280,7 +280,7 @@ Acción: Version 1.0.0 → 1.1.0
 
 ### En `specs-repo/` (este proyecto)
 
-- **Estructura:** `specs/living/contracts/{openapi,asyncapi}/`
+- **Estructura:** `specs/contracts/{openapi,asyncapi}/`
 - **Validación CI/CD:** linting + backward compatibility (`.github/workflows/`)
 - **Plantillas:** `docs/templates/openapi-contract-template.yaml`, `asyncapi-contract-template.yaml`
 - **Documentación:** [ADR-0020](../decisions/ADR-0020-contratos-centralizados-para-spec-living.md), [contract-testing.md](contract-testing.md)

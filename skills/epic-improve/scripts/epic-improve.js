@@ -29,9 +29,9 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const FLOW = 'specs/flow';
+const FLOW = 'changes';
 const ID_RE = /^EPIC-\d{2,}$/;
-const EPIC_PATH_RE = /^specs\/flow\/EPIC-\d{2,}-[^/]+\/?(?:epic\.md)?$/;
+const EPIC_PATH_RE = /^changes\/EPIC-\d{2,}-[^/]+\/?(?:epic\.md)?$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const BOM_RE = /^\uFEFF/;
 const FIELD_RE = /^([A-Za-z0-9_-]+):\s*(.*)$/;
@@ -542,9 +542,9 @@ function insertSection(lines, title, body, anchor) {
 // ── Localización y aplicación ─────────────────────────────────────────────────────
 
 /**
- * Localiza la épica. `dir` es la ruta lógica (`specs/flow/EPIC-NNN-<slug>/`), `physDir` el
+ * Localiza la épica. `dir` es la ruta lógica (`changes/EPIC-NNN-<slug>/`), `physDir` el
  * directorio físico que contiene `epic.md` (puede ser una copia aislada, p. ej. un fixture).
- * Con `--id`/`--path` solo busca en el primer nivel de `specs/flow/` (nunca `archive/` ni `STORY-*`).
+ * Con `--id`/`--path` solo busca en el primer nivel de `changes/` (nunca `archive/` ni `STORY-*`).
  */
 function locateEpic({ repoRoot, id, epicPath, epicDir }) {
   if (epicDir !== undefined) {
@@ -561,11 +561,11 @@ function locateEpic({ repoRoot, id, epicPath, epicDir }) {
   if (epicPath !== undefined) {
     const rel = path.relative(repoRoot, path.resolve(repoRoot, epicPath)).split(path.sep).join('/');
     if (!EPIC_PATH_RE.test(rel)) {
-      return fail('INVALID_PATH', `La ruta ${epicPath} no es una épica de specs/flow/ (se esperaba specs/flow/EPIC-NNN-<slug>/)`);
+      return fail('INVALID_PATH', `La ruta ${epicPath} no es una épica de changes/ (se esperaba changes/EPIC-NNN-<slug>/)`);
     }
     dir = rel.replace(/\/epic\.md$/, '');
     if (!fs.existsSync(abs(repoRoot, dir)) || !fs.statSync(abs(repoRoot, dir)).isDirectory()) {
-      return fail('NOT_FOUND', `No se encontró el directorio ${dir}/ (ruta buscada: specs/flow/${path.basename(dir)}/)`);
+      return fail('NOT_FOUND', `No se encontró el directorio ${dir}/ (ruta buscada: changes/${path.basename(dir)}/)`);
     }
   } else {
     const base = abs(repoRoot, FLOW);

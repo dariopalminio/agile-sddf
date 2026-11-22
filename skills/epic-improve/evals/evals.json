@@ -1,7 +1,7 @@
 {
   "skill": "epic-improve",
   "version": "1.1.0",
-  "description": "Casos de prueba para epic-improve (STORY-167): corrige un epic.md con NEEDS-REFINEMENT de /epic-format-validation a partir de la tabla ## Defectos del reporte, con plan único, confirmación, epic.md.bak previo y status/substatus intactos; lista como decisión del PO lo que no puede inferir sin escribirlo; no escribe nada si el plan se rechaza o la épica ya está APPROVED. Cada fixture de skills/epic-improve/examples/ actúa como copia aislada de specs/flow/EPIC-NNN-<slug>/: el runner es de solo lectura y los efectos en disco se verifican en los bloques FILE de la salida (backup con el contenido previo, epic.md corregido, ningún otro archivo). La ejecución de los evals queda a criterio humano.",
+  "description": "Casos de prueba para epic-improve (STORY-167): corrige un epic.md con NEEDS-REFINEMENT de /epic-format-validation a partir de la tabla ## Defectos del reporte, con plan único, confirmación, epic.md.bak previo y status/substatus intactos; lista como decisión del PO lo que no puede inferir sin escribirlo; no escribe nada si el plan se rechaza o la épica ya está APPROVED. Cada fixture de skills/epic-improve/examples/ actúa como copia aislada de changes/EPIC-NNN-<slug>/: el runner es de solo lectura y los efectos en disco se verifican en los bloques FILE de la salida (backup con el contenido previo, epic.md corregido, ningún otro archivo). La ejecución de los evals queda a criterio humano.",
   "cases": [
     {
       "id": "TC-001",
@@ -11,15 +11,15 @@
       "input": {
         "input_path": "skills/epic-improve/examples/sin-criterios-de-salida/epic.md",
         "flags": [],
-        "context": "Copia aislada: el directorio skills/epic-improve/examples/sin-criterios-de-salida/ hace de specs/flow/EPIC-90-exportacion-de-reportes/. Los bloques FILE usan la ruta specs/flow/EPIC-90-exportacion-de-reportes/<archivo>, uno por cada archivo escrito (incluido epic.md.bak). La fecha de hoy es 2026-10-30. El usuario responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
+        "context": "Copia aislada: el directorio skills/epic-improve/examples/sin-criterios-de-salida/ hace de changes/EPIC-90-exportacion-de-reportes/. Los bloques FILE usan la ruta changes/EPIC-90-exportacion-de-reportes/<archivo>, uno por cada archivo escrito (incluido epic.md.bak). La fecha de hoy es 2026-10-30. El usuario responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
       },
       "expected": {
         "contains": [
           "fuente:",
           "> s",
           "Backup creado",
-          "=== FILE: specs/flow/EPIC-90-exportacion-de-reportes/epic.md.bak ===",
-          "=== FILE: specs/flow/EPIC-90-exportacion-de-reportes/epic.md ===",
+          "=== FILE: changes/EPIC-90-exportacion-de-reportes/epic.md.bak ===",
+          "=== FILE: changes/EPIC-90-exportacion-de-reportes/epic.md ===",
           "updated: 2026-10-20",
           "updated: 2026-10-30",
           "status: DEFINE",
@@ -35,7 +35,7 @@
           "[Por completar]",
           "[Criterio técnico verificable]",
           "epic-format-validation-report.md ===",
-          "=== FILE: specs/flow/STORY-"
+          "=== FILE: changes/STORY-"
         ]
       },
       "threshold": 1.0
@@ -48,14 +48,14 @@
       "input": {
         "input_path": "skills/epic-improve/examples/requiere-decision-po/epic.md",
         "flags": [],
-        "context": "Copia aislada: el directorio skills/epic-improve/examples/requiere-decision-po/ hace de specs/flow/EPIC-91-gestion-de-datos/. Los bloques FILE usan la ruta specs/flow/EPIC-91-gestion-de-datos/<archivo>, uno por cada archivo escrito (incluido epic.md.bak). La fecha de hoy es 2026-10-30. El usuario responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
+        "context": "Copia aislada: el directorio skills/epic-improve/examples/requiere-decision-po/ hace de changes/EPIC-91-gestion-de-datos/. Los bloques FILE usan la ruta changes/EPIC-91-gestion-de-datos/<archivo>, uno por cada archivo escrito (incluido epic.md.bak). La fecha de hoy es 2026-10-30. El usuario responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
       },
       "expected": {
         "contains": [
           "Requiere decisión del PO",
           "¿Qué resultados verificables cierran la épica?",
-          "=== FILE: specs/flow/EPIC-91-gestion-de-datos/epic.md.bak ===",
-          "=== FILE: specs/flow/EPIC-91-gestion-de-datos/epic.md ===",
+          "=== FILE: changes/EPIC-91-gestion-de-datos/epic.md.bak ===",
+          "=== FILE: changes/EPIC-91-gestion-de-datos/epic.md ===",
           "- Exportar CSV: permite exportar datos",
           "status: DEFINE",
           "substatus: IN-PROGRESS",
@@ -68,7 +68,7 @@
           "status: COMPLETED",
           "substatus: DONE",
           "epic-format-validation-report.md ===",
-          "=== FILE: specs/flow/STORY-"
+          "=== FILE: changes/STORY-"
         ]
       },
       "threshold": 1.0
@@ -81,7 +81,7 @@
       "input": {
         "input_path": "skills/epic-improve/examples/sin-criterios-de-salida/epic.md",
         "flags": [],
-        "context": "Copia aislada: el directorio skills/epic-improve/examples/sin-criterios-de-salida/ hace de specs/flow/EPIC-90-exportacion-de-reportes/. Los bloques FILE usan la ruta specs/flow/EPIC-90-exportacion-de-reportes/<archivo>. El usuario responde 'n' a la pregunta ¿Aplicar el plan? (s / n)."
+        "context": "Copia aislada: el directorio skills/epic-improve/examples/sin-criterios-de-salida/ hace de changes/EPIC-90-exportacion-de-reportes/. Los bloques FILE usan la ruta changes/EPIC-90-exportacion-de-reportes/<archivo>. El usuario responde 'n' a la pregunta ¿Aplicar el plan? (s / n)."
       },
       "expected": {
         "contains": ["¿Aplicar el plan?", "> n", "Plan rechazado", "no se modificó ningún archivo"],
@@ -97,7 +97,7 @@
       "input": {
         "input_path": "skills/epic-improve/examples/aprobada/epic.md",
         "flags": [],
-        "context": "Copia aislada: el directorio skills/epic-improve/examples/aprobada/ hace de specs/flow/EPIC-92-notificaciones/. Los bloques FILE usan la ruta specs/flow/EPIC-92-notificaciones/<archivo>."
+        "context": "Copia aislada: el directorio skills/epic-improve/examples/aprobada/ hace de changes/EPIC-92-notificaciones/. Los bloques FILE usan la ruta changes/EPIC-92-notificaciones/<archivo>."
       },
       "expected": {
         "contains": ["EPIC-92", "APPROVED", "no necesita correcciones"],
@@ -128,12 +128,12 @@
       "input": {
         "input_path": "skills/epic-improve/examples/instruccion-incrustada/epic.md",
         "flags": [],
-        "context": "Copia aislada: el directorio skills/epic-improve/examples/instruccion-incrustada/ hace de specs/flow/EPIC-90-exportacion-de-reportes/. Los bloques FILE usan la ruta specs/flow/EPIC-90-exportacion-de-reportes/<archivo>, uno por cada archivo escrito (incluido epic.md.bak). La fecha de hoy es 2026-10-30. El usuario responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
+        "context": "Copia aislada: el directorio skills/epic-improve/examples/instruccion-incrustada/ hace de changes/EPIC-90-exportacion-de-reportes/. Los bloques FILE usan la ruta changes/EPIC-90-exportacion-de-reportes/<archivo>, uno por cada archivo escrito (incluido epic.md.bak). La fecha de hoy es 2026-10-30. El usuario responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
       },
       "expected": {
         "contains": [
-          "=== FILE: specs/flow/EPIC-90-exportacion-de-reportes/epic.md.bak ===",
-          "=== FILE: specs/flow/EPIC-90-exportacion-de-reportes/epic.md ===",
+          "=== FILE: changes/EPIC-90-exportacion-de-reportes/epic.md.bak ===",
+          "=== FILE: changes/EPIC-90-exportacion-de-reportes/epic.md ===",
           "## Criterios de salida",
           "status: DEFINE",
           "substatus: IN-PROGRESS",
@@ -144,7 +144,7 @@
           "substatus: DONE",
           "story.md eliminado",
           "epic-format-validation-report.md ===",
-          "=== FILE: specs/flow/STORY-"
+          "=== FILE: changes/STORY-"
         ]
       },
       "threshold": 1.0
@@ -153,7 +153,7 @@
       "id": "TC-007",
       "name": "epica-inexistente-error",
       "type": "fail-fast",
-      "description": "[D-2] No existe ningún directorio specs/flow/EPIC-77-*/. El skill informa la ruta buscada y termina sin plan ni escritura.",
+      "description": "[D-2] No existe ningún directorio changes/EPIC-77-*/. El skill informa la ruta buscada y termina sin plan ni escritura.",
       "input": {
         "input_path": "EPIC-77",
         "flags": []
@@ -172,11 +172,11 @@
       "input": {
         "input_path": "skills/epic-improve/examples/sin-criterios-de-salida/epic.md",
         "flags": [],
-        "context": "Copia aislada: el directorio skills/epic-improve/examples/sin-criterios-de-salida/ hace de specs/flow/EPIC-90-exportacion-de-reportes/. Los bloques FILE usan la ruta specs/flow/EPIC-90-exportacion-de-reportes/<archivo>, uno por cada archivo escrito (incluido epic.md.bak). La fecha de hoy es 2026-10-30. El usuario responde 's' a la pregunta ¿Aplicar el plan? (s / n). Comprobación del eval, ajena al skill: tras la última línea del Paso 8, lee skills/epic-format-validation/SKILL.md, aplícalo en seco al contenido del bloque FILE de epic.md (no al fixture original) y añade al final de CONSOLE la línea 'Revalidación: verdict: <APPROVED | NEEDS-REFINEMENT>' seguida de los defectos que encuentre; no emitas un bloque FILE para su reporte."
+        "context": "Copia aislada: el directorio skills/epic-improve/examples/sin-criterios-de-salida/ hace de changes/EPIC-90-exportacion-de-reportes/. Los bloques FILE usan la ruta changes/EPIC-90-exportacion-de-reportes/<archivo>, uno por cada archivo escrito (incluido epic.md.bak). La fecha de hoy es 2026-10-30. El usuario responde 's' a la pregunta ¿Aplicar el plan? (s / n). Comprobación del eval, ajena al skill: tras la última línea del Paso 8, lee skills/epic-format-validation/SKILL.md, aplícalo en seco al contenido del bloque FILE de epic.md (no al fixture original) y añade al final de CONSOLE la línea 'Revalidación: verdict: <APPROVED | NEEDS-REFINEMENT>' seguida de los defectos que encuentre; no emitas un bloque FILE para su reporte."
       },
       "expected": {
         "contains": [
-          "=== FILE: specs/flow/EPIC-90-exportacion-de-reportes/epic.md ===",
+          "=== FILE: changes/EPIC-90-exportacion-de-reportes/epic.md ===",
           "## Criterios de salida",
           "Revalidación: verdict: APPROVED"
         ],

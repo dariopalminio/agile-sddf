@@ -100,7 +100,7 @@ features/
 
 Las carpetas de primer nivel representan dominios y las del segundo, capabilities; los archivos representan features cuyos escenarios documentan reglas y ejemplos.
 
-La ubicación real depende de las convenciones del repositorio como ruta base de la especificación de features. En SDDF, por ejemplo, puede ser `specs/living/features/`.
+La ubicación real depende de las convenciones del repositorio como ruta base de la especificación de features. En SDDF, por ejemplo, puede ser `specs/features/`.
 
 ## Referencia
 

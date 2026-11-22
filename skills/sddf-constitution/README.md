@@ -33,7 +33,7 @@ El skill no recibe flags propios. Las decisiones de creación y actualización s
 
 | Entrada | Uso |
 |---|---|
-| `docs/` | Raíz de conocimiento — ruta fija (ADR-0016), relativa a la raíz del repositorio. |
+| `docs/` | Raíz de conocimiento — ruta fija (ADR-0023), relativa a la raíz del repositorio. |
 | `assets/project-constitution-template.md` | Template de la constitución. |
 | `assets/dod-story/` | Seis plantillas fuente para los guardrails DoD por etapa. |
 | `assets/REVIEW-template.md` | Plantilla semilla de la guía de revisión `REVIEW.md`. |

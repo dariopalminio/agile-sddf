@@ -10,7 +10,7 @@
  *   - `CANCELED/DONE`  → archiva sin escribir nada en `epic.md`: conserva su status (action `archive-canceled`)
  *   - `CANCELED/<otro>` se rechaza con `CANCELED_NOT_DONE`; cualquier otro estado, con `NOT_SHIPPED`
  *
- * Destino (ADR-0019): `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`. En `archive-only` y
+ * Destino (ADR-0023): `changes/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`. En `archive-only` y
  * `archive-canceled` la fecha sale de `updated:` → `created:` → `date:` (este solo si faltan las dos
  * claves anteriores), como en `story-complete.js`. `--version` solo participa en `complete`.
  *
@@ -33,13 +33,13 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const FLOW = 'specs/flow';
+const FLOW = 'changes';
 const ARCHIVE = `${FLOW}/archive`;
 
 const ID_RE = /^EPIC-\d{2,}$/;
 const ACTIVE_EPIC_RE = /^EPIC-\d{2,}-/;
 const ARCHIVED_EPIC_RE = /^\d{4}-\d{2}-\d{2}-EPIC-\d{2,}-/;
-const EPIC_PATH_RE = /^specs\/flow\/EPIC-\d{2,}-[^/]+$/;
+const EPIC_PATH_RE = /^changes\/EPIC-\d{2,}-[^/]+$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const VERSION_RE = /^v?\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/;
 
@@ -56,6 +56,7 @@ const ACTIVE_DOC_ROOTS = [
   'docs/guardrails',
   'docs/guides',
   'docs/runbooks',
+  'specs',
 ];
 
 function git(repoRoot, args) {
@@ -146,13 +147,13 @@ function fail(code, message, extra = {}) {
   return { ok: false, code, message, ...extra };
 }
 
-/** Localiza la épica solo en el primer nivel de `specs/flow/`; nunca resuelve dentro de `specs/flow/archive/`. */
+/** Localiza la épica solo en el primer nivel de `changes/`; nunca resuelve dentro de `changes/archive/`. */
 function locateEpic({ repoRoot, id, epicPath }) {
   let dir;
   if (epicPath !== undefined) {
     const rel = path.relative(repoRoot, path.resolve(repoRoot, epicPath)).split(path.sep).join('/');
     if (!EPIC_PATH_RE.test(rel)) {
-      return fail('INVALID_PATH', `La ruta ${epicPath} no es una épica de specs/flow/ (se esperaba specs/flow/EPIC-NNN-<slug>/)`);
+      return fail('INVALID_PATH', `La ruta ${epicPath} no es una épica de changes/ (se esperaba changes/EPIC-NNN-<slug>/)`);
     }
     if (!fs.existsSync(abs(repoRoot, rel)) || !fs.statSync(abs(repoRoot, rel)).isDirectory()) {
       return fail('NOT_FOUND', `No se encontró el directorio ${rel}/`);
@@ -329,10 +330,10 @@ function activeDocFiles(repoRoot) {
   return files.sort();
 }
 
-/** Patrón de `specs/flow/<dir>` que no forma parte de un directorio más largo ni ya está archivado. */
+/** Patrón de `changes/<dir>` que no forma parte de un nombre o directorio más largo ni ya está archivado. */
 function oldRefPattern(dir) {
   const escaped = dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`specs\\/flow\\/${escaped}(?![A-Za-z0-9_-])`, 'g');
+  return new RegExp(`(?<![A-Za-z0-9_-])changes\\/${escaped}(?![A-Za-z0-9_-])`, 'g');
 }
 
 /** Solo lectura (BUG-01): archivos de documentación activa que referencian la ruta actual, con su conteo. */
@@ -348,7 +349,7 @@ function findLinkUpdates(repoRoot, from) {
 }
 
 /**
- * Reescribe las referencias `specs/flow/<dir>` → `specs/flow/archive/<fecha>-<dir>` en la
+ * Reescribe las referencias `changes/<dir>` → `changes/archive/<fecha>-<dir>` en la
  * documentación activa (BUG-01). Solo toca los archivos con coincidencias; lanza en errores de E/S.
  */
 function updateLinkReferences(repoRoot, from, to) {

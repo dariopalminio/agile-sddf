@@ -48,7 +48,7 @@ El flujo base es: **story-creation → story-evaluation → story-split**.
 ## Entrada
 
 - Descripción de la historia en lenguaje natural (para historia nueva)
-- Historias existentes en `specs/flow/` con `status: SPECIFY/IN-PROGRESS` (para retomar backlog)
+- Historias existentes en `changes/` con `status: SPECIFY/IN-PROGRESS` (para retomar backlog)
 
 ---
 
@@ -61,7 +61,7 @@ Sin parámetros posicionales — el skill es interactivo y detecta el contexto a
 ## Precondiciones
 
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
-- `specs/flow/` accesible (se crea si no existe)
+- `changes/` accesible (se crea si no existe)
 
 ---
 
@@ -100,7 +100,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se v
 ## Restricciones / Reglas
 
 - No modificar los skills existentes `story-creation`, `story-evaluation` ni `story-split`
-- Usar `specs/flow/` como único directorio de salida para historias
+- Usar `changes/` como único directorio de salida para historias
 - Toda historia activa debe tener `status: SPECIFY` / `substatus: IN-PROGRESS` en su frontmatter
 - Una historia pasa automáticamente a `status: SPECIFY` / `substatus: DONE` cuando `story-evaluation` devuelve `verdict: APPROVED`
 - Si el veredicto es `NEEDS-REFINEMENT`, nunca entrar en bucle infinito — siempre pedir al usuario una decisión explícita antes de iterar (gate anti-bucle, Paso 6)
@@ -108,7 +108,7 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se v
 - Mantener la interactividad con el usuario en todo momento — nunca avanzar en silencio
 - Conservar la esencia y el formato de los skills originales sin reescribir su lógica
 - Nunca perder trazabilidad de historias derivadas — toda historia del split se registra inmediatamente
-- Mantener `specs/flow/` como fuente de verdad del estado real de cada historia
+- Mantener `changes/` como fuente de verdad del estado real de cada historia
 - NO modifique ningún archivo existente en el código solo se debe orquestar
 - NO genere código; este skill solo orquestar y produce archivos de especificaciones `.md`.
 - NO incluya detalles de implementación (consultas específicas, estructuras JSON, firmas de métodos, anotaciones, inventarios de la capa de componentes, lógica paso a paso); estos detalles pertenecen a la etapa de planeación del diseño.
@@ -122,8 +122,8 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se v
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -134,7 +134,7 @@ Con `REPO_ROOT` resuelto, comprueba que existe el rol local `assets/agents/produ
 
 ### Paso 1 — Crear o normalizar la historia activa
 
-Antes de crear nada, busca en `specs/flow/` historias con `status: SPECIFY` / `substatus: IN-PROGRESS`. Si hay alguna, lístalas (`<STORY-NNN> — <ruta> — SPECIFY/IN-PROGRESS`) y pregunta:
+Antes de crear nada, busca en `changes/` historias con `status: SPECIFY` / `substatus: IN-PROGRESS`. Si hay alguna, lístalas (`<STORY-NNN> — <ruta> — SPECIFY/IN-PROGRESS`) y pregunta:
 
 > 📂 Backlog existente: <N> historia(s) en SPECIFY/IN-PROGRESS. ¿Deseas retomar el backlog o crear una historia nueva?
 
@@ -144,7 +144,7 @@ Opciones: `Retomar backlog` → Caso B con la primera historia de la cola; `Crea
 
 1. Si el input del usuario es incompleto, mostrar `> 📋 Rol local: assets/agents/product-owner.md — conduce esta sesión, sin subagente.` y luego leer `assets/agents/product-owner.md` (relativo al directorio de este skill) y seguir sus instrucciones en esta sesión para aclarar con el usuario usuario, necesidad, valor, contexto y restricciones. No lances un subagente. Al terminar el rol, muestra `✓ Contexto aclarado: usuario, necesidad, valor, contexto y restricciones.` y continúa con el ítem 2.
 2. Mostrar `▶ Invocando story-creation con el contexto refinado.` e invocar el skill `story-creation` con el contexto refinado
-3. Cuando `story-creation` genere el archivo en `specs/flow/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN-PROGRESS`; si los campos no existen, agregarlos
+3. Cuando `story-creation` genere el archivo en `changes/`, actualizar el frontmatter: establecer `status: SPECIFY` / `substatus: IN-PROGRESS`; si los campos no existen, agregarlos
 4. Registrar la historia en la tabla de backlog con `Estado = SPECIFY/IN-PROGRESS` y `Veredicto FINVEST = Pendiente`
 
 #### Caso B — Historia existente en refinamiento
@@ -283,7 +283,7 @@ Cuando no queden historias pendientes para iterar o el usuario decida detenerse,
    - Historias con `SPECIFY/DONE`
    - Historias con `SPECIFY/IN-PROGRESS`
    - Historias derivadas creadas
-2. Ruta de todos los archivos afectados en `specs/flow/`
+2. Ruta de todos los archivos afectados en `changes/`
 3. Próximo paso recomendado para cada historia en `SPECIFY/IN-PROGRESS`
 
 Formato:
@@ -301,7 +301,7 @@ Historias derivadas creadas: [lista]
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| `specs/flow/` no existe | — | Crear el directorio y continuar |
+| `changes/` no existe | — | Crear el directorio y continuar |
 | `story-creation` falla | Informar el error al usuario | No registrar la historia en el backlog; preguntar si reintentar |
 | `story-evaluation` falla | Informar el error al usuario | Conservar `Veredicto FINVEST = Pendiente`; ofrecer reintentar |
 | `story-split` falla o no aplica | Informar al usuario | Conservar historia como activa; continuar al Paso 5A |
@@ -313,7 +313,7 @@ Historias derivadas creadas: [lista]
 
 ## Salida
 
-- Archivos `story.md` en `specs/flow/STORY-{NNN}-{slug}/` — creados o actualizados durante el ciclo
+- Archivos `story.md` en `changes/STORY-{NNN}-{slug}/` — creados o actualizados durante el ciclo
 - `story.md.bak` — backup del original antes de aplicar mejoras automáticas (generado por `story-refine` en Paso 5A, cuando aplica)
 - `story-refinement-log.md` — log de cambios por dimensión FINVEST (generado por `story-refine` en Paso 5A, cuando aplica)
 - Estado final de cada historia:

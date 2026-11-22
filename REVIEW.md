@@ -39,7 +39,7 @@ Estilo, nombres y refactors: 🟡 Minor (LOW) como máximo.
 
 - Lo que ya comprueba el CI con `npm run verify:repository`: pruebas deterministas (`node --test test`), sintaxis Node, contrato de layout fijo, perfiles y stacks, runtimes documentados, configuración YAML, inventario de evals, contrato de validación, enlaces activos, cadena de suministro, workflow de seguridad de skills, release, contenido publicable (`npm pack --dry-run`) y smoke del tarball.
 - Copias de instalación: los destinos que declara `config/runtimes.json` (p. ej. `.claude/`, `.github/skills/`, `.agents/`). No se revisan ni sirven como fuente de reglas: la fuente es `skills/`.
-- Artefactos generados e históricos: `.tmp/`, `graphify-out/` y `specs/flow/archive/`. No se revisan ni sirven como fuente de criterio.
+- Artefactos generados e históricos: `.tmp/`, `graphify-out/` y `changes/archive/`. No se revisan ni sirven como fuente de criterio.
 - Datos falsos intencionados (secretos, tokens o credenciales de ejemplo) en fixtures y pruebas: `skills/*/examples/` y `skills/*/evals/`.
 - Código de terceros: `node_modules/`.
 - Líneas que la historia no tocó → 🟣 Pre-existing (PREEXISTENTE): se informa, no bloquea.

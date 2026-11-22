@@ -41,8 +41,8 @@ Convierte una visión confirmada en perfiles de usuario y requisitos trazables. 
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Con `REPO_ROOT` resuelto, comprueba que existen los roles locales de este skill (rutas relativas al directorio del skill):
 

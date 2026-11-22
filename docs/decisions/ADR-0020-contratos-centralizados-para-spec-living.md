@@ -2,18 +2,20 @@
 type: adr
 id: ADR-0020
 slug: contratos-centralizados-para-spec-living
-title: "Contratos centralizados en OpenAPI/AsyncAPI para specs/living/"
+title: "Contratos centralizados en OpenAPI/AsyncAPI para specs/"
 status: PROPOSED
 date: 2026-11-03
 supersedes: null
 superseded-by: null
 ---
 
-# ADR-0020: Contratos centralizados en OpenAPI/AsyncAPI para specs/living/
+# ADR-0020: Contratos centralizados en OpenAPI/AsyncAPI para specs/
+
+> **Rutas alineadas con [ADR-0023](ADR-0023-separar-changes-de-specs.md) (2026-11-18):** la especificación viva vive directamente en `specs/` (antes `specs/living/`) y los cambios en `changes/` (antes `specs/flow/`). Esta propuesta sigue en discusión: el ajuste de rutas no aprueba su decisión de formato.
 
 ## Contexto y problema
 
-[ADR-0018](ADR-0018-adoptar-cucumber-para-specs-living.md) propone usar Gherkin en archivos `.feature` dentro de `specs/living/features/` para describir el comportamiento vigente del sistema desde la perspectiva de escenarios de negocio. Sin embargo, las especificaciones vivas (Living Specs) requieren dos capas complementarias:
+[ADR-0018](ADR-0018-adoptar-cucumber-para-specs-living.md) propone usar Gherkin en archivos `.feature` dentro de `specs/features/` para describir el comportamiento vigente del sistema desde la perspectiva de escenarios de negocio. Sin embargo, las especificaciones vivas (Living Specs) requieren dos capas complementarias:
 
 1. **Comportamiento de negocio (BDD):** escenarios Gherkin que validan las reglas de lógica empresarial.
 2. **Contratos técnicos (protocolos y esquemas):** especificaciones ejecutables de las interfaces de comunicación entre sistemas (REST, eventos asincronos, etc.).
@@ -25,14 +27,14 @@ La estructura actual no define dónde residen los contratos técnicos de una arq
 - **Sin validación cruzada:** cambios en un contrato no se verifican automáticamente contra las implementaciones de productores y consumidores en el pipeline de CI/CD.
 - **Coupling tight entre repositorios:** sin un contrato de verdad central, la evolución de interfaces genera fricción y requiere coordinación manual.
 
-Origen: la épica de Living Spec (ADR-0017, ADR-0018, ADR-0019) anticipa que `specs/living/` es el espacio para especificación viva del sistema; la decisión de arquitectura de microservicios y el flujo de CI/CD que empuja hacia Contract Testing (Specmatic, Pact, Spring Cloud Contract) como práctica de ingeniería de software de madurez alta.
+Origen: la épica de Living Spec (ADR-0017, ADR-0018, ADR-0019) anticipa que `specs/` es el espacio para especificación viva del sistema; la decisión de arquitectura de microservicios y el flujo de CI/CD que empuja hacia Contract Testing (Specmatic, Pact, Spring Cloud Contract) como práctica de ingeniería de software de madurez alta.
 
 ## Decisión
 
-El repositorio centraliza los contratos técnicos (OpenAPI, AsyncAPI) en `specs/living/contracts/` como única fuente de verdad (SSOT) para las interfaces entre sistemas:
+El repositorio centraliza los contratos técnicos (OpenAPI, AsyncAPI) en `specs/contracts/` como única fuente de verdad (SSOT) para las interfaces entre sistemas:
 
 ```
-specs/living/
+specs/
 ├── features/                          # Escenarios Gherkin de comportamiento de negocio (BDD)
 │   ├── pagos/
 │   │   ├── checkout.feature
@@ -56,7 +58,7 @@ specs/living/
         └── README.md                  # Documentación de los contratos de eventos
 ```
 
-### Estructura de un contrato OpenAPI en `specs/living/contracts/openapi/`:
+### Estructura de un contrato OpenAPI en `specs/contracts/openapi/`:
 
 Cada archivo `.yaml` contiene la especificación OpenAPI 3.0+ completa (no fragmentos parciales):
 
@@ -150,7 +152,7 @@ components:
           format: date-time
 ```
 
-### Estructura de un contrato AsyncAPI en `specs/living/contracts/asyncapi/`:
+### Estructura de un contrato AsyncAPI en `specs/contracts/asyncapi/`:
 
 Cada archivo `.yaml` describe los eventos de una entidad o dominio:
 
@@ -220,27 +222,27 @@ components:
 
 ## Restricción crítica: sin UI dentro del repositorio central
 
-Los contratos en `specs/living/contracts/` describen **únicamente especificaciones agnósticas a la presentación**:
+Los contratos en `specs/contracts/` describen **únicamente especificaciones agnósticas a la presentación**:
 
 - ✅ Contratos REST (OpenAPI): endpoints de API, esquemas de datos, códigos de error.
 - ✅ Contratos de eventos (AsyncAPI): tópicos, esquemas de mensajes, topologías de Kafka/SQS/RabbitMQ.
-- ✅ Reglas de negocio expresadas en Gherkin (`specs/living/features/`): validación de lógica empresarial.
+- ✅ Reglas de negocio expresadas en Gherkin (`specs/features/`): validación de lógica empresarial.
 
-- ❌ No residen en `specs/living/` los escenarios de interacción de UI (flujos de navegación, layouts, capas de presentación).
+- ❌ No residen en `specs/` los escenarios de interacción de UI (flujos de navegación, layouts, capas de presentación).
 - ❌ Especificaciones de UI (Storybook, figma links, mocks de pantalla) van en repositorios de frontend separados.
 
 **Rationale:** la UI es acoplada a tecnología (React, Vue, Flutter, etc.) y varía por plataforma (web, móvil, desktop). Mezclarla con contratos técnicos neutrales contamina la SSOT y acelera su obsolescencia.
 
 ## Integración con productores y consumidores
 
-Cada repositorio de microservicio declara su contrato en `specs/living/contracts/` de este repositorio central. Los clientes (consumidores) usan Contract Testing para validar que sus implementaciones cumplen:
+Cada repositorio de microservicio declara su contrato en `specs/contracts/` de este repositorio central. Los clientes (consumidores) usan Contract Testing para validar que sus implementaciones cumplen:
 
 ### En un repositorio productor (por ejemplo, `orders-service`):
 
 ```json
 {
   "specmatic.json": {
-    "contractsSource": "https://github.com/organization/specs-repo/tree/main/specs/living/contracts/openapi/orders-api.yaml",
+    "contractsSource": "https://github.com/organization/specs-repo/tree/main/specs/contracts/openapi/orders-api.yaml",
     "contractsVersion": "orders-api.yaml@1.0.0"
   }
 }
@@ -250,7 +252,7 @@ El pipeline de CI/CD del productor ejecuta:
 
 ```bash
 specmatic test \
-  --contract specs/living/contracts/openapi/orders-api.yaml \
+  --contract specs/contracts/openapi/orders-api.yaml \
   --backend http://localhost:8080
 ```
 
@@ -261,7 +263,7 @@ Valida que la implementación cumple con el contrato centralizado.
 ```json
 {
   "specmatic.json": {
-    "contractsSource": "https://github.com/organization/specs-repo/tree/main/specs/living/contracts/openapi/orders-api.yaml",
+    "contractsSource": "https://github.com/organization/specs-repo/tree/main/specs/contracts/openapi/orders-api.yaml",
     "contractsVersion": "orders-api.yaml@1.0.0"
   }
 }
@@ -270,14 +272,14 @@ Valida que la implementación cumple con el contrato centralizado.
 El pipeline del consumidor genera stubs automáticamente desde el contrato:
 
 ```bash
-specmatic stub --contract specs/living/contracts/openapi/orders-api.yaml
+specmatic stub --contract specs/contracts/openapi/orders-api.yaml
 ```
 
 Y ejecuta tests de contrato contra los stubs, garantizando que los cambios en el contrato se propagan de inmediato.
 
 ## Versionado de contratos
 
-Cada contrato en `specs/living/contracts/` sigue versionado semántico (MAJOR.MINOR.PATCH) en su campo `info.version`:
+Cada contrato en `specs/contracts/` sigue versionado semántico (MAJOR.MINOR.PATCH) en su campo `info.version`:
 
 - **PATCH:** cambios internos del esquema, reordenamiento de campos, clarificaciones de documentación. No requiere cambios en productores o consumidores.
 - **MINOR:** adición de campos opcionales, nuevos endpoints o tópicos, extensión de enumeraciones. Productores y consumidores existentes siguen siendo compatibles.
@@ -289,7 +291,7 @@ Los repositorios dependientes pinean a una versión fija (tag o commit) del cont
 
 Cuando un equipo necesita cambiar un contrato vigente:
 
-1. **Pull request en el repositorio central** (`specs-repo`) que edita el archivo `.yaml` en `specs/living/contracts/`.
+1. **Pull request en el repositorio central** (`specs-repo`) que edita el archivo `.yaml` en `specs/contracts/`.
 2. **Validación del PR:** un script de CI verifica que el contrato es OpenAPI/AsyncAPI válido (sintaxis, esquemas bien formados).
 3. **Contract breaking change detection:** una herramienta automática (por ejemplo, Specmatic CLI o Dredd) analiza si el cambio es retrocompatible. Si no, la PR requiere justificación y sincronización con productores/consumidores.
 4. **Merge:** una vez que productores y consumidores están listos, se mergea el contrato actualizado.
@@ -338,7 +340,7 @@ Cuando un equipo necesita cambiar un contrato vigente:
 
 ## Implementación esperada
 
-1. Crear la estructura `specs/living/contracts/openapi/` y `specs/living/contracts/asyncapi/` con archivos `.yaml` de plantilla.
+1. Crear la estructura `specs/contracts/openapi/` y `specs/contracts/asyncapi/` con archivos `.yaml` de plantilla.
 2. Documentar guías de cómo escribir contratos OpenAPI/AsyncAPI en `docs/guides/contract-testing.md` o similar.
 3. Agregar validación de sintaxis en el pipeline de CI (OpenAPI/AsyncAPI schema validation).
 4. Proporcionar plantillas en `docs/templates/openapi-template.yaml` y `docs/templates/asyncapi-template.yaml`.

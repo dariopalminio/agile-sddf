@@ -76,8 +76,8 @@ Una épica (epic) contiene varias historias (story). El contexto del producto vi
 `requirements/`.
 
 ```
-epic (specs/epics/<EPIC-NN>-<slug>/epic.md)
-    └── story (specs/stories/<STORY-NNN>-<slug>/story.md)
+epic (changes/<EPIC-NNN>-<slug>/epic.md)
+    └── story (changes/<STORY-NNN>-<slug>/story.md)
 ```
 
 ---

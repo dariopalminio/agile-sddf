@@ -39,8 +39,8 @@ de operar.
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 `REPO_ROOT` es la raíz del repositorio de trabajo: el top-level de git o, si el directorio no
 es un repositorio git, el directorio de la invocación. El diagnóstico no exige ningún archivo
@@ -77,9 +77,9 @@ Informar siempre:
 
 Verificar, relativas a `REPO_ROOT` y en este orden:
 
-- `specs/flow/`
-- `specs/flow/archive/`
-- `specs/living/`
+- `changes/`
+- `changes/archive/`
+- `specs/`
 - `workflow/`
 - `docs/templates/`
 
@@ -97,9 +97,11 @@ Evaluar todas las señales, en este orden, y emitir la línea de cada una **solo
 
 | Señal | Detección | Línea emitida |
 |---|---|---|
-| L1 | existe el directorio `docs/specs/` | `[WARNING] Layout legado: existe docs/specs/ — los work items van en specs/flow/` |
+| L1 | existe el directorio `docs/specs/` | `[WARNING] Layout legado: existe docs/specs/ — los work items van en changes/` |
 | L2 | `sddf.config.yaml` existe y declara la clave superior `root` | `[WARNING] Layout legado: sddf.config.yaml declara la clave root (<valor>), que ya no se lee` |
 | L3 | la variable de entorno `SDDF_ROOT` está definida (aunque esté vacía) | `[WARNING] Layout legado: SDDF_ROOT está definida (<valor>) y ya no se usa` |
+| L4 | existe el directorio `specs/flow/` (layout de ADR-0019) | `[WARNING] Layout legado: existe specs/flow/ — los work items y su archivo van en changes/ (ADR-0023)` |
+| L5 | existe el directorio `specs/living/` (layout de ADR-0019) | `[WARNING] Layout legado: existe specs/living/ — la especificación viva va directamente en specs/ (ADR-0023)` |
 | Cierre | al menos una señal presente | `ℹ️ Guía de migración: docs/guides/artifact-directory-migration.md (repositorio de agile-sddf)` |
 
 - Las señales ausentes no producen ninguna línea. Sin señales, esta verificación no emite nada.
@@ -119,9 +121,9 @@ Informa los work items activos que conservan un `status` retirado en 6.0.0 y a q
 editarlos a mano. La regla viene de ADR-0022: la ventana de transición se abre en 6.0.0 y
 **termina en 7.0.0**.
 
-**Alcance:** `specs/flow/*/story.md` y `specs/flow/*/epic.md`, solo de los hijos directos de
-`specs/flow/` y excluido el directorio `specs/flow/archive/`, que es un registro histórico. Si
-`specs/flow/` no existe, esta verificación no emite nada (la Verificación 2 ya lo avisa).
+**Alcance:** `changes/*/story.md` y `changes/*/epic.md`, solo de los hijos directos de
+`changes/` y excluido el directorio `changes/archive/`, que es un registro histórico. Si
+`changes/` no existe, esta verificación no emite nada (la Verificación 2 ya lo avisa).
 
 **Lectura del frontmatter:** de cada archivo se lee solo el bloque YAML entre la primera línea
 `---` y la siguiente, y de él la clave superior `status`. Sin bloque, sin línea de cierre, con un
@@ -150,7 +152,7 @@ Por cada archivo con `status` legado, emitir:
 - La verificación no escribe ningún archivo: no hay migración automática; el usuario edita el
   `status` a mano al destino indicado.
 - No afecta al sufijo `— ejecuta /sddf-init` de la Verificación 2 ni a la línea
-  `ℹ️ Guía de migración` de la Verificación 3, que solo dependen de las señales L1-L3. No tiene
+  `ℹ️ Guía de migración` de la Verificación 3, que solo dependen de las señales L1-L5. No tiene
   línea de cierre: cada `[WARNING]` ya dice qué editar, a qué valor y hasta cuándo.
 
 ### Verificación 4 — Templates centrales

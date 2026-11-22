@@ -25,7 +25,7 @@ Informativo: este análisis no cambia el estado de la épica.
 
 | Métrica | Valor |
 |---|---|
-| Épica | EPIC-30 (`specs/flow/EPIC-30-ejemplo/epic.md`) |
+| Épica | EPIC-30 (`changes/EPIC-30-ejemplo/epic.md`) |
 | Hallazgos ERROR | 1 |
 | Hallazgos WARNING | 1 |
 | Contrato de salida | Contrato de salida: 1/3 cubiertos |
@@ -38,8 +38,8 @@ Informativo: este análisis no cambia el estado de la épica.
 
 | ID | Línea(s) en epic.md | En índice | story.md | parent | Estado |
 |---|---|---|---|---|---|
-| STORY-301 | 23 | sí | `specs/flow/STORY-301-exportar-pedidos-csv/story.md` | `EPIC-30-ejemplo` | ✓ |
-| STORY-303 | 24 | sí | `specs/flow/STORY-303-totalizar-comisiones/story.md` | `EPIC-30-ejemplo` | ✓ |
+| STORY-301 | 23 | sí | `changes/STORY-301-exportar-pedidos-csv/story.md` | `EPIC-30-ejemplo` | ✓ |
+| STORY-303 | 24 | sí | `changes/STORY-303-totalizar-comisiones/story.md` | `EPIC-30-ejemplo` | ✓ |
 
 ## Cobertura del contrato de salida
 

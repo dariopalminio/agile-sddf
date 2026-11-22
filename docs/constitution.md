@@ -91,8 +91,8 @@ No se incluyen dependencias para los skills como skill-master (los skills son so
 
 La documentación fundacional (`docs/product/`, `docs/requirements/`) orienta las épicas; cada épica contiene varias historias.
 
-epic (`specs/flow/<EPIC-NAME>/epic.md`; archivada en `specs/flow/archive/<YYYY-MM-DD>-<EPIC-NAME>/` al completarse o cancelarse, conservando su status, por `epic-complete` y solo con confirmación humana)
-    └── story (`specs/flow/<STORY-NAME>/story.md`; archivada en `specs/flow/archive/<YYYY-MM-DD>-<STORY-NAME>/` al completarse o cancelarse, conservando su status)
+epic (`changes/<EPIC-NAME>/epic.md`; archivada en `changes/archive/<YYYY-MM-DD>-<EPIC-NAME>/` al completarse o cancelarse, conservando su status, por `epic-complete` y solo con confirmación humana)
+    └── story (`changes/<STORY-NAME>/story.md`; archivada en `changes/archive/<YYYY-MM-DD>-<STORY-NAME>/` al completarse o cancelarse, conservando su status)
 
 
 ---
@@ -133,8 +133,9 @@ Todos los skills arrancan con frontmatter YAML estandarizado (campos: name, desc
 
 #### 3. Layout fijo
 
-Todo skill resuelve una vez `REPO_ROOT` y usa el layout fijo de ADR-0019: conocimiento en
-`docs/`, work items en `specs/flow/` y proceso en `workflow/`. No hay raíz de artefactos
+Todo skill resuelve una vez `REPO_ROOT` y usa el layout fijo de ADR-0023: conocimiento en
+`docs/`, especificación viva en `specs/`, work items (cambios en curso y su archivo) en
+`changes/` y proceso en `workflow/`. No hay raíz de artefactos
 configurable (`SDDF_ROOT`, la clave `root` de `sddf.config.yaml` y `SPECS_BASE` están
 retirados). `skill-preflight` se reserva para el diagnóstico explícito y no forma parte del
 hot path.
@@ -220,10 +221,11 @@ docs/product/stakeholders.md                             → documentación fund
 docs/product/roadmap.md                                  → documentación fundacional
 docs/requirements/functional/FR-NNN-<slug>.md            → requisitos funcionales
 docs/requirements/non-functional/NFR-NNN-<slug>.md       → requisitos no funcionales
-specs/flow/<EPIC-NN>-<slug>/epic.md                      → épicas
-specs/flow/<STORY-NNN>-<slug>/story.md                   → historias
-specs/flow/archive/<YYYY-MM-DD>-<STORY-NNN>-<slug>/      → historias COMPLETED o CANCELED archivadas
-specs/flow/archive/<YYYY-MM-DD>-<EPIC-NN>-<slug>/        → épicas COMPLETED o CANCELED archivadas
+changes/<EPIC-NNN>-<slug>/epic.md                       → épicas
+changes/<STORY-NNN>-<slug>/story.md                      → historias
+changes/archive/<YYYY-MM-DD>-<STORY-NNN>-<slug>/         → historias COMPLETED o CANCELED archivadas
+changes/archive/<YYYY-MM-DD>-<EPIC-NNN>-<slug>/          → épicas COMPLETED o CANCELED archivadas
+specs/                                                   → especificación viva (formato pendiente)
 
 #### 14. Versionado mediante substatus
 
@@ -237,7 +239,7 @@ Existe un skill de validación explícito (epic-format-validation) que actúa co
 
 Las decisiones se registran en el nivel que corresponde a su alcance:
 
-- **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`specs/flow/STORY-NNN-<slug>/design.md`)
+- **Decisiones de una historia** → sección `## Decisions` en el `design.md` de la historia (`changes/STORY-NNN-<slug>/design.md`)
 - **Decisiones de un cambio OpenSpec** → `design.md` del change (`openspec/changes/`)
 - **Decisiones transversales de arquitectura** → `docs/decisions/ADR-NNNN-slug.md` siguiendo `docs/decisions/adr-template.md`
 

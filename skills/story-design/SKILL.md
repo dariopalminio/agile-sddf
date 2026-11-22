@@ -66,7 +66,7 @@ tasks.md   → When: tareas de implementación, orden, seguimiento
 
 ## Precondiciones
 
-- El directorio de la historia existe bajo `specs/flow/`
+- El directorio de la historia existe bajo `changes/`
 - `story.md` existe en el directorio de la historia con criterios de aceptación definidos
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
 
@@ -125,8 +125,8 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Se c
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -144,7 +144,7 @@ Proporciona el ID (ej. STORY-057) o la ruta completa al directorio.
 #### 1b. Resolución del directorio de la historia (primera coincidencia)
 
 1. Ruta explícita `{story_path}` si se proporcionó
-2. Glob `specs/flow/{story_id}-*/` — directorio cuyo nombre comienza con el ID
+2. Glob `changes/{story_id}-*/` — directorio cuyo nombre comienza con el ID
 3. Si no se encuentra ninguno: notificar y detener
 
 #### 1c. Resolución del template (primera coincidencia)
@@ -485,7 +485,7 @@ Preguntar: "¿La solución técnica refleja correctamente la historia? ¿Necesit
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en changes/` | Detener. Sugerir `/epic-generate-stories` |
 | `story.md` ausente en el directorio | `❌ No se encontró story.md en: <ruta>` | Detener. Sugerir `/epic-generate-stories` |
 | Template no encontrado | — | Usar template de fallback interno. Informar al usuario |
 | `constitution.md` ausente | `⚠️ No se encontró constitution.md` | Advertir y continuar |

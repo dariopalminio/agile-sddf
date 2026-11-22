@@ -44,8 +44,8 @@ related: []
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -55,8 +55,8 @@ El skill acepta una ruta relativa o absoluta, un nombre corto o ningún argument
 
 Para un nombre corto, busca en este orden:
 
-- `specs/flow/STORY-*/story.md`
-- `specs/flow/EPIC-*/epic.md`
+- `changes/STORY-*/story.md`
+- `changes/EPIC-*/epic.md`
 - `docs/product/<término>.md`
 - `docs/requirements/**/<término>*.md`
 
@@ -76,9 +76,9 @@ La primera coincidencia de esta tabla decide `type`, `id`, `kind` y `slug` a par
 | `docs/requirements/non-functional/NFR-NNN-*.md` | `requirement` | `NFR-NNN` / `non-functional` | nombre sin extensión |
 | `docs/requirements/srs-*.md` | `srs` | — | nombre sin extensión |
 | otro archivo bajo `docs/requirements/` | `wiki` | — | nombre sin extensión |
-| directorio `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio sin el prefijo de fecha |
-| directorio `specs/flow/STORY-*` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio |
-| directorio `specs/flow/EPIC-*` | `epic` | `EPIC-NNN` | nombre del directorio |
+| directorio `changes/archive/<YYYY-MM-DD>-STORY-NNN-<slug>` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio sin el prefijo de fecha |
+| directorio `changes/STORY-*` | `story` | `STORY-NNN` / `feat` si falta | nombre del directorio |
+| directorio `changes/EPIC-*` | `epic` | `EPIC-NNN` | nombre del directorio |
 | resto | `wiki` | — | regla histórica |
 
 Reglas complementarias:
@@ -117,12 +117,12 @@ El conjunto depende del directorio recibido:
 
 | Input | Archivos escaneados |
 |---|---|
-| `REPO_ROOT` (o `.`) | `docs/product/**/*.md`, `docs/requirements/**/*.md` (incluidos `functional/` y `non-functional/`), `specs/flow/EPIC-*/epic.md` y `specs/flow/STORY-*/story.md` |
+| `REPO_ROOT` (o `.`) | `docs/product/**/*.md`, `docs/requirements/**/*.md` (incluidos `functional/` y `non-functional/`), `changes/EPIC-*/epic.md` y `changes/STORY-*/story.md` |
 | `docs/` | solo `docs/product/**/*.md` y `docs/requirements/**/*.md` |
-| `specs/flow/` | solo los canónicos `specs/flow/EPIC-*/epic.md` y `specs/flow/STORY-*/story.md` |
+| `changes/` | solo los canónicos `changes/EPIC-*/epic.md` y `changes/STORY-*/story.md` |
 | otro subdirectorio | los Markdown de ese directorio |
 
-Para `product/` y `requirements/`, procesa los Markdown recursivamente. Para las épicas y las historias, conserva el escaneo de archivos canónicos por subdirectorio. `specs/flow/archive/` solo se procesa si se recibe de forma explícita como subdirectorio.
+Para `product/` y `requirements/`, procesa los Markdown recursivamente. Para las épicas y las historias, conserva el escaneo de archivos canónicos por subdirectorio. `changes/archive/` solo se procesa si se recibe de forma explícita como subdirectorio.
 
 ### 4.2 Clasificación y confirmación
 

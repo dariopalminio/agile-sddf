@@ -1,4 +1,5 @@
 ---
+slug: usar-madr-para-decisiones
 parent: Decisions
 nav_order: 0
 ---

@@ -4,9 +4,9 @@ Se carga solo cuando el motor devuelve `ok: false` o termina con exit `2`. El `m
 
 | Código | Cuándo | Mensaje (contenido) | Estado resultante |
 |---|---|---|---|
-| `NOT_FOUND` | ningún `specs/flow/EPIC-NNN-*/` (o `--path` inexistente) | la ruta buscada; si existe en el archivo, «ya archivada en <ruta>» | sin cambios |
-| `AMBIGUOUS` | más de un `specs/flow/EPIC-NNN-*/` | las rutas coincidentes | sin cambios; deja uno solo o usa la ruta explícita |
-| `INVALID_PATH` | `--path` fuera de `specs/flow/EPIC-NNN-<slug>/` (incluido `specs/flow/archive/…`) | la forma esperada | sin cambios |
+| `NOT_FOUND` | ningún `changes/EPIC-NNN-*/` (o `--path` inexistente) | la ruta buscada; si existe en el archivo, «ya archivada en <ruta>» | sin cambios |
+| `AMBIGUOUS` | más de un `changes/EPIC-NNN-*/` | las rutas coincidentes | sin cambios; deja uno solo o usa la ruta explícita |
+| `INVALID_PATH` | `--path` fuera de `changes/EPIC-NNN-<slug>/` (incluido `changes/archive/…`) | la forma esperada | sin cambios |
 | `NO_EPIC_FILE` | el directorio no tiene `epic.md` | la ruta | sin cambios |
 | `NO_STATUS` | frontmatter sin `status`/`substatus` | los campos buscados | sin cambios |
 | `NOT_SHIPPED` | estado distinto de `SHIP/DONE`, `COMPLETED/DONE` y `CANCELED/*` | `La épica EPIC-NN está en <status>/<substatus>: solo se completan épicas en SHIP/DONE, COMPLETED/DONE o CANCELED/DONE.`; con `VALIDATE/DONE` o `SHIP/IN-PROGRESS` añade `Ejecuta antes /epic-ship EPIC-NN` | sin cambios |
@@ -15,7 +15,7 @@ Se carga solo cuando el motor devuelve `ok: false` o termina con exit `2`. El `m
 | `ARCHIVE_CONFLICT` | el destino ya existe | la ruta en conflicto | sin cambios |
 | `WRITE_FAILED` | error de E/S al escribir `epic.md` | la ruta y el error | nada movido |
 | `MOVE_FAILED` | `git mv` o el renombre fallan | el error; `epic.md` restaurado | sin cambios |
-| `ROLLBACK_FAILED` | falla el movimiento y también la restauración | `git checkout -- <ruta>/epic.md` para recuperar | `epic.md` en `COMPLETED` dentro de `specs/flow/`: recupéralo con el comando |
+| `ROLLBACK_FAILED` | falla el movimiento y también la restauración | `git checkout -- <ruta>/epic.md` para recuperar | `epic.md` en `COMPLETED` dentro de `changes/`: recupéralo con el comando |
 | `COUNT_MISMATCH` | activas + archivadas cambió tras mover | ambas cifras y las rutas | directorio movido; revisar a mano |
 | `LINKS_UPDATE_FAILED` | error de E/S al reescribir las referencias de la ruta original en la documentación activa (BUG-01) | el error y la instrucción de verificar con `node scripts/check-doc-links.js` | directorio movido y `epic.md` cerrada; las referencias de los archivos no reescritos quedan apuntando a la ruta vieja: reejecuta el paso o corrige a mano y valida el gate |
 | exit `2` | argumentos inválidos (subcomando, `--id`, `--version` mal formados, flags desconocidos) | el error de uso en stderr | sin cambios |

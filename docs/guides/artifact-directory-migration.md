@@ -12,6 +12,51 @@ related:
 
 ## Guía de migración de la estructura de artefactos SDDF
 
+## Migración a 6.0.0 — changes/ y especificación viva
+
+**A quién aplica:** proyectos con el layout de 5.x, que guardan sus work items en `specs/flow/` (y su archivo en
+`specs/flow/archive/`) o que tienen el directorio reservado `specs/living/`. Es un cambio incompatible: los skills de
+6.0.0 leen y escriben los work items en `changes/` y su archivo en `changes/archive/`, y `specs/` pasa a ser la
+especificación viva, sin el nivel `living/`. La decisión está en
+[ADR-0023](../decisions/ADR-0023-separar-changes-de-specs.md): `docs/` (conocimiento), `specs/` (especificación viva),
+`changes/` (flujo de cambios) y `workflow/` (proceso) son raíces hermanas. Si vienes de 4.x, aplica antes la
+[migración a 5.0.0](#migracion-a-500--layout-fijo-de-tres-raices).
+
+| Origen 5.x | Destino 6.0.0 |
+|---|---|
+| `specs/flow/EPIC-NNN-<slug>/` | `changes/EPIC-NNN-<slug>/` |
+| `specs/flow/STORY-NNN-<slug>/` | `changes/STORY-NNN-<slug>/` |
+| `specs/flow/archive/<YYYY-MM-DD>-<ID>-<slug>/` | `changes/archive/<YYYY-MM-DD>-<ID>-<slug>/` |
+| `specs/living/<contenido>` | `specs/<contenido>`, con la misma organización interna |
+
+Identificadores, estados, fechas de archivo, relaciones y contenidos no cambian: solo cambia la ubicación.
+
+**Pasos:**
+
+1. Pide el diagnóstico explícito `/skill-preflight`: las señales L4 (`specs/flow/`) y L5 (`specs/living/`) confirman que el proyecto tiene el
+   layout de 5.x.
+2. Comprueba que no exista `changes/`. Si ya existe, detente y resuelve la colisión a mano: la migración no
+   sobrescribe nada.
+3. Mueve los work items y su archivo con `git mv specs/flow changes`.
+4. Si existe `specs/living/`, mueve su contenido a `specs/` con `git mv specs/living/<entrada> specs/` por cada
+   entrada (ignora su `.gitkeep`). Si una entrada ya existe en `specs/`, detente y resuelve la colisión a mano. Después
+   borra `specs/living/`.
+5. Ejecuta `/memory-system index` para regenerar `docs/index.md` con la sección `changes/` y las capas `changes-*`.
+6. Busca rutas viejas con `git grep -n -e "specs/flow" -e "specs/living"` y actualiza las que estén en documentación
+   vigente. No edites los registros históricos: ADR aceptados, `CHANGELOG.md` y `changes/archive/`.
+7. Comprueba que el número de épicas e historias (activas más archivadas) es el mismo antes y después, y que
+   `git log --follow` conserva el historial de un work item movido.
+
+**Notas:**
+
+- No hay migración automática ni copias paralelas: tras el `git mv`, `changes/` es la única ubicación de los work items.
+- `docs/requirements/` no se mueve en 6.0.0; si migra a la especificación viva, su destino será `specs/`.
+- ADR-0023 no define todavía el formato de la especificación viva ni la consolidación desde las historias: en 6.0.0
+  ningún skill escribe en `specs/` salvo `/sddf-init`, que solo crea el directorio con un `.gitkeep` si falta.
+- Si el proyecto usa Spec Kit, su `specs/` coincide con la raíz de la especificación viva de SDDF. Como en 6.0.0 SDDF
+  no escribe en `specs/`, ambos conviven; `memory-system` con el perfil Speckit sigue indexando `specs/*/spec.md` como
+  artefacto externo y no recorre `changes/`.
+
 ## Migración a 5.0.0 — layout fijo de tres raíces
 
 **A quién aplica:** proyectos que declaran `root` en `sddf.config.yaml` (normalmente `root: docs`), que guardan sus work items en `docs/specs/` o que definen la variable de entorno `SDDF_ROOT`. Es un cambio incompatible: los skills de 5.0.0 ya no leen `root` ni `SDDF_ROOT`, no usan `SPECS_BASE` y leen y escriben los work items en `specs/flow/`. La decisión está en [ADR-0016](../decisions/ADR-0016-layout-fijo-de-tres-raices.md): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso) son raíces hermanas en la raíz del repositorio.
@@ -41,7 +86,7 @@ related:
 Notas:
 
 - `git mv` conserva el historial de cada work item; no copies ni recrees los directorios.
-- El paquete incluye `scripts/migrate-specs-to-flow.js`, pero es un script de un solo uso para este repositorio y no es un comando soportado de `agile-sddf`: migra con los pasos manuales.
+- La migración de 5.0.0 de este repositorio se hizo con un script de un solo uso que ya no se distribuye: migra con los pasos manuales.
 - La migración solo archiva las historias `COMPLETED`; las `CANCELED`, las de cualquier otro estado y las épicas quedan en `specs/flow/`. Archivarlas después lo hacen `/story-complete` (historias) y `epic-complete` (épicas), siempre con confirmación humana (ADR-0019).
 - Si el proyecto usa Spec Kit, su `specs/` puede convivir con el de SDDF, que solo usa `specs/flow/` y `specs/living/`.
 - `docs/requirements/` no se mueve en 5.0.0; migrará a `specs/living/` en una versión posterior.

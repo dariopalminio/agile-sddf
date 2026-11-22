@@ -76,7 +76,7 @@ SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DEL
 
 **8. Complete (Cierre y Archivado)**
 *   *¿Qué pasa?* Se cierra administrativamente la historia y se archiva.
-*   *Artefacto:* El directorio de la historia, movido a `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`.
+*   *Artefacto:* El directorio de la historia, movido a `changes/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`.
 *   *Acción:* Se invoca `/story-complete`, que siempre pide confirmación humana, conserva el historial de git y actualiza las referencias a la historia en la documentación activa.
 *   *Estado al terminar:* `COMPLETED/DONE`.
 

@@ -55,7 +55,7 @@ de ejecutar modelos. En casos de ejecución real se usa `sandbox.copy`.
 
 Para validar archivos y reportes en disco, declara `sandbox.fixture` y
 `expected.files` en el caso. Con `sandbox.target: "."`, el fixture contiene un repositorio
-mínimo completo: por ejemplo, `docs/templates/` y `specs/flow/` se copian a la raíz temporal.
+mínimo completo: por ejemplo, `docs/templates/` y `changes/` se copian a la raíz temporal.
 TC-016 de `epic-format-validation` usa ese modo para mantener su template y su épica juntos,
 sin depender del template del proyecto anfitrión. `expected.contains` comprueba la consola;
 `expected.files.contains` comprueba el reporte generado y `expected.files.written` limita

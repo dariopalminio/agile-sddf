@@ -15,9 +15,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const LAYOUT_MARKER = '<!-- SDDF-FIXED-LAYOUT: v1 -->';
-const REQUIRED_BLOCK_TOKENS = ['REPO_ROOT', 'specs/flow/', 'docs/templates/', 'docs/guardrails/'];
-const LEGACY_TOKENS = ['SDDF-ROOT-RESOLUTION: v1', 'SPECS_BASE', 'SDDF_ROOT'];
+const REQUIRED_BLOCK_TOKENS = ['REPO_ROOT', 'changes/', 'docs/templates/', 'docs/guardrails/'];
+// `specs/flow` y `specs/living` son las rutas retiradas por ADR-0023: solo se nombran dentro de la región de diagnóstico.
+const LEGACY_TOKENS = ['SDDF-ROOT-RESOLUTION: v1', 'SPECS_BASE', 'SDDF_ROOT', 'specs/flow', 'specs/living'];
 const DIAGNOSTIC_SKILL = 'skill-preflight';
+// Skills que detectan el layout legado y por eso pueden nombrarlo dentro de la región de diagnóstico.
+const LEGACY_REGION_SKILLS = [DIAGNOSTIC_SKILL, 'sddf-init'];
 const REGION_START = '<!-- SDDF-LEGACY-DIAGNOSTIC:start -->';
 const REGION_END = '<!-- SDDF-LEGACY-DIAGNOSTIC:end -->';
 
@@ -93,11 +96,11 @@ function collectSupportFiles(dir) {
 // Una región mal formada se reporta y no exime nada.
 function diagnosticRegion(name, file, lines, errors) {
   const exempt = new Set();
-  if (name !== DIAGNOSTIC_SKILL) {
+  if (!LEGACY_REGION_SKILLS.includes(name)) {
     lines.forEach((line, index) => {
       const trimmed = line.trim();
       if (trimmed === REGION_START || trimmed === REGION_END) {
-        errors.push(`${file}:${index + 1}: la región SDDF-LEGACY-DIAGNOSTIC solo se admite en skill-preflight`);
+        errors.push(`${file}:${index + 1}: la región SDDF-LEGACY-DIAGNOSTIC solo se admite en ${LEGACY_REGION_SKILLS.join(' y ')}`);
       }
     });
     return exempt;
@@ -230,6 +233,7 @@ module.exports = {
   ACTIVE_DOCS,
   DIAGNOSTIC_SKILL,
   LAYOUT_MARKER,
+  LEGACY_REGION_SKILLS,
   LEGACY_TOKENS,
   PENDING_MIGRATION,
   REQUIRED_BLOCK_TOKENS,

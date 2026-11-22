@@ -9,9 +9,8 @@
  *   - `CANCELED/DONE`  → archiva sin escribir nada en `story.md`, conservando el status (action `archive-canceled`)
  *   - cualquier otro estado se rechaza sin tocar nada
  *
- * Destino (ADR-0017): `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`, con la fecha de
- * `updated:` → `created:` → `date:` (este solo si faltan las dos claves anteriores). La regla de
- * fecha y las regex de conteo replican las de `scripts/migrate-specs-to-flow.js` (CR-004).
+ * Destino (ADR-0023): `changes/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`, con la fecha de
+ * `updated:` → `created:` → `date:` (este solo si faltan las dos claves anteriores).
  *
  * `plan` es de solo lectura; `apply` re-planifica, escribe, mueve con `git mv` (o `rename` si el
  * directorio no tiene historial), actualiza las referencias a la ruta original en la documentación
@@ -29,14 +28,14 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const FLOW = 'specs/flow';
+const FLOW = 'changes';
 const ARCHIVE = `${FLOW}/archive`;
 
 const ID_RE = /^STORY-\d{3}$/;
 const ACTIVE_STORY_RE = /^STORY-\d{3}-/;
 const ARCHIVED_STORY_RE = /^\d{4}-\d{2}-\d{2}-STORY-\d{3}-/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-const STORY_PATH_RE = /^specs\/flow\/STORY-\d{3}-[^/]+$/;
+const STORY_PATH_RE = /^changes\/STORY-\d{3}-[^/]+$/;
 
 /**
  * Raíces de documentación activa (BUG-01): misma lista que `scripts/check-doc-links.js`, pero el
@@ -51,6 +50,7 @@ const ACTIVE_DOC_ROOTS = [
   'docs/guardrails',
   'docs/guides',
   'docs/runbooks',
+  'specs',
 ];
 
 function git(repoRoot, args) {
@@ -122,13 +122,13 @@ function fail(code, message, extra = {}) {
   return { ok: false, code, message, ...extra };
 }
 
-/** Localiza la historia solo en el primer nivel de `specs/flow/` (D-3). */
+/** Localiza la historia solo en el primer nivel de `changes/` (D-3). */
 function locateStory({ repoRoot, id, storyPath }) {
   let dir;
   if (storyPath !== undefined) {
     const rel = path.relative(repoRoot, path.resolve(repoRoot, storyPath)).split(path.sep).join('/');
     if (!STORY_PATH_RE.test(rel)) {
-      return fail('INVALID_PATH', `La ruta ${storyPath} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)`);
+      return fail('INVALID_PATH', `La ruta ${storyPath} no es una historia de changes/ (se esperaba changes/STORY-NNN-<slug>/)`);
     }
     if (!fs.existsSync(abs(repoRoot, rel)) || !fs.statSync(abs(repoRoot, rel)).isDirectory()) {
       return fail('NOT_FOUND', `No se encontró el directorio ${rel}/`);
@@ -162,7 +162,7 @@ function planCompletion({ repoRoot, id, storyPath, today }) {
   const located = locateStory({ repoRoot, id, storyPath });
   if (!located.ok) return located;
   const { dir } = located;
-  const storyId = dir.slice(FLOW.length + 1, FLOW.length + 10);
+  const storyId = path.posix.basename(dir).slice(0, 9);
 
   const frontmatter = readFrontmatter(fs.readFileSync(abs(repoRoot, `${dir}/story.md`), 'utf8'));
   if (!frontmatter || !frontmatter.status || !frontmatter.substatus) {
@@ -265,10 +265,10 @@ function activeDocFiles(repoRoot) {
   return files.sort();
 }
 
-/** Patrón de `specs/flow/<dir>` que no forma parte de un directorio más largo ni ya está archivado. */
+/** Patrón de `changes/<dir>` que no forma parte de un nombre o directorio más largo ni ya está archivado. */
 function oldRefPattern(dir) {
   const escaped = dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`specs\\/flow\\/${escaped}(?![A-Za-z0-9_-])`, 'g');
+  return new RegExp(`(?<![A-Za-z0-9_-])changes\\/${escaped}(?![A-Za-z0-9_-])`, 'g');
 }
 
 /** Solo lectura (BUG-01): archivos de documentación activa que referencian la ruta actual, con su conteo. */
@@ -284,7 +284,7 @@ function findLinkUpdates(repoRoot, from) {
 }
 
 /**
- * Reescribe las referencias `specs/flow/<dir>` → `specs/flow/archive/<fecha>-<dir>` en la
+ * Reescribe las referencias `changes/<dir>` → `changes/archive/<fecha>-<dir>` en la
  * documentación activa (BUG-01). Solo toca los archivos con coincidencias; lanza en errores de E/S.
  */
 function updateLinkReferences(repoRoot, from, to) {

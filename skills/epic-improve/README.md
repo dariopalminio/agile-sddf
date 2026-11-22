@@ -19,7 +19,7 @@ Corrige un `epic.md` que `/epic-format-validation` dejó en `NEEDS-REFINEMENT` a
 **Does not do:**
 
 - No escribe `status` ni `substatus`, ni inventa contenido sin fuente (lo deja como decisión del PO).
-- No consulta `specs/flow/archive/` ni directorios `STORY-*`.
+- No consulta `changes/archive/` ni directorios `STORY-*`.
 - No modifica el `epic.md` validado cuando el veredicto es `APPROVED`.
 
 ---

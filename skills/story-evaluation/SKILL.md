@@ -27,14 +27,14 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 **Qué NO hace este skill:**
 - Generar diseño, tasks ni artefactos de planning
 - Corregir o reescribir la historia automáticamente
-- Crear artefactos distintos de `finvest-evaluation-report.md` en `specs/flow/`
+- Crear artefactos distintos de `finvest-evaluation-report.md` en `changes/`
 
 ---
 
 ## Entrada
 
 - Texto libre de historia de usuario
-- Identificador `STORY-NNN` de una historia existente en `specs/flow/`
+- Identificador `STORY-NNN` de una historia existente en `changes/`
 - Ruta de archivo `story.md`
 
 ---
@@ -86,8 +86,8 @@ Evalúa la calidad de una historia de usuario aplicando la rúbrica **FINVEST** 
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -96,7 +96,7 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 ### Paso 1 — Resolver la historia y leer template canónico
 
-**Resolución por ID:** si el input es un identificador `STORY-NNN`, resolver su directorio con Glob `specs/flow/STORY-NNN-*/story.md` (primera coincidencia; el directorio padre del archivo es el directorio de la historia). Si no hay coincidencia, emitir `❌ No se encontró la historia STORY-NNN en specs/flow/` y detener la ejecución sin evaluar ni generar reporte; no se consulta ni se crea nada fuera de `specs/flow/`. El Paso 6 reutiliza el directorio resuelto aquí.
+**Resolución por ID:** si el input es un identificador `STORY-NNN`, resolver su directorio con Glob `changes/STORY-NNN-*/story.md` (primera coincidencia; el directorio padre del archivo es el directorio de la historia). Si no hay coincidencia, emitir `❌ No se encontró la historia STORY-NNN en changes/` y detener la ejecución sin evaluar ni generar reporte; no se consulta ni se crea nada fuera de `changes/`. El Paso 6 reutiliza el directorio resuelto aquí.
 
 El archivo `docs/templates/story-template.md` es la **única fuente de información estructural** para la dimensión F. Define qué secciones existen, en qué orden y con qué propósito. Nunca hardcodear los nombres o la estructura de las secciones — siempre derivarlos del template en tiempo de ejecución. El template es de **solo lectura**.
 
@@ -185,7 +185,7 @@ Se evalúa en orden; gana la primera condición que coincide. Esta tabla aplica 
 **Condición:** el input fue proporcionado como ID (`STORY-NNN`) o como ruta de archivo (no texto libre).
 
 1. Resolver la ruta del directorio de la historia:
-   - Si el input fue un ID → usar el directorio resuelto en el Paso 1 (`specs/flow/STORY-NNN-*/`).
+   - Si el input fue un ID → usar el directorio resuelto en el Paso 1 (`changes/STORY-NNN-*/`).
    - Si el input fue una ruta de archivo → usar el directorio que contiene ese archivo.
 2. Escribir el reporte completo en:
    `<directorio-de-la-historia>/finvest-evaluation-report.md`
@@ -335,7 +335,7 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Template no encontrado | `❌ No se encontró el template requerido en docs/templates/story-template.md. Por favor verifica que el archivo existe antes de continuar.` | Detener la ejecución |
-| Historia no encontrada (input fue ID) | `❌ No se encontró la historia STORY-NNN en specs/flow/` | Detener sin generar reporte |
+| Historia no encontrada (input fue ID) | `❌ No se encontró la historia STORY-NNN en changes/` | Detener sin generar reporte |
 | Archivo de historia no accesible (input fue ruta) | `⚠️ No se pudo leer el archivo: <ruta>` | Notificar y detener |
 | Input es solo imagen sin texto de historia | `ℹ️ El skill requiere el texto de la historia para evaluar. Las imágenes adjuntas no pueden procesarse.` | Solicitar texto y detener |
 | Frontmatter no actualizable (APPROVED + ruta) | `⚠️ No se pudo actualizar el frontmatter de: <ruta> — verifica permisos y formato` | Emitir advertencia y continuar sin bloquear |

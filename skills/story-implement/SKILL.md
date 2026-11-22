@@ -29,7 +29,7 @@ story-plan → story-testcases → story-implement (ciclo TDD completo) → stor
 ```
 
 **Qué hace este skill:**
-- Resuelve `REPO_ROOT` y `CLI_ROOT` localmente como Paso 0 (layout fijo, ADR-0016)
+- Resuelve `REPO_ROOT` y `CLI_ROOT` localmente como Paso 0 (layout fijo, ADR-0023)
 - **Paso 0c:** gate de estado (`PLAN/DONE`, `IMPLEMENT/TODO` como entrada del rework devuelto por `story-code-review`, `story-verify` o `story-acceptance`, `IMPLEMENT/IN-PROGRESS`, o el valor legado de la ventana de transición, que se acepta con un aviso y se trata como `IMPLEMENT/TODO` o `PLAN/DONE` según exista `implement-report.md`, ADR-0022), detección del modo rework por presencia de `fix-directives.md` (ronda, hallazgos y lista blanca) y transición de `story.md` a `IMPLEMENT/IN-PROGRESS` antes de leer `sddf.config.yaml`
 - **Fase RED:** Lee `implement.test_generators` de `sddf.config.yaml`; valida skills (fail-fast); resuelve artefactos (`testcases.md` o fallback `story.md`+`design.md`); invoca cada skill de pruebas en orden con un bundle que lleva siempre `rework_round`, `fix_directives_path` y `whitelist` (`null` fuera de rework); confirma estado rojo; escribe `red-phase-status.json` (con `files_modified`, `rework_round` y `rework_evidence`)
 - **Fase GREEN:** Lee `red-phase-status.json` como precondición; lee y valida `implement.code_generators` como lista; itera sobre cada capa activa invocando su skill con `phase:"GREEN"`, `layer:"{layer}"` y los mismos tres campos de rework en el bundle; consolida resultados (`files_generated` y `files_modified`); confirma que los tests pasan
@@ -224,8 +224,8 @@ y por cada archivo: `$OUT_OF_SCOPE_LOG += {fase, archivo, origen, resolución: "
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Resuelve `CLI_ROOT` (directorio de skills del runtime) solo para localizar los generadores declarados y el seed del template de épica.
 
@@ -251,11 +251,11 @@ Este paso se ejecuta **antes** de leer `sddf.config.yaml` (Pasos 1–2): la hist
 
 #### 0c.1 — Resolver `$STORY_DIR`
 
-Resolver el directorio de la historia con Glob: `specs/flow/{story_id}-*/story.md` (con guion: `STORY-15` no casa `STORY-150-…`); la primera coincidencia da `$STORY_DIR`. Nunca se consulta el layout legado ni `specs/flow/archive/`.
+Resolver el directorio de la historia con Glob: `changes/{story_id}-*/story.md` (con guion: `STORY-15` no casa `STORY-150-…`); la primera coincidencia da `$STORY_DIR`. Nunca se consulta el layout legado ni `changes/archive/`.
 
 **Si no hay coincidencia:**
 ```
-❌ No se encontró la historia {story_id} en specs/flow/
+❌ No se encontró la historia {story_id} en changes/
 
 Verifica el ID o ejecuta /epic-generate-stories para generar la historia desde su épica.
 ```
@@ -1158,7 +1158,7 @@ updated: <YYYY-MM-DD>
 Transición F2 → F3 de la historia en la épica padre (formatos del dominio: F2 `- [ ] **STORY-NNN** — <Nombre>: <desc>`, F3 `- [x] **STORY-NNN** — <Nombre>: <desc>`).
 
 1. Leer campo `parent` del frontmatter de `story.md`
-2. Si `parent` existe, resolver ruta: `specs/flow/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NNN`, Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia). No se consulta `specs/flow/archive/`.
+2. Si `parent` existe, resolver ruta: `changes/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NNN`, Glob `changes/<parent>-*/epic.md` (primera coincidencia). No se consulta `changes/archive/`.
 3. **Si no existe o `parent` está vacío:**
    - Emitir: `[INFO] epic.md no encontrado o sin parent declarado — omitiendo actualización`
    - No es condición de error.
@@ -1246,7 +1246,7 @@ Reglas comunes a ambos formatos:
 
 | Condición | Mensaje | Acción |
 |---|---|---|
-| Historia no encontrada (0c.1) | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener ejecución |
+| Historia no encontrada (0c.1) | `❌ No se encontró la historia {story_id} en changes/` | Detener ejecución |
 | Estado de `story.md` no admitido (0c.2) | `❌ La historia {story_id} no está en un estado válido para implementar` | Detener sin modificar archivos (ni `story.md` ni `.tmp/`) ni invocar subagentes |
 | `fix-directives.md` sin sección de lista blanca (0c.3) | `[WARN] fix-directives.md sin lista blanca — los generators recibirán whitelist vacía` | Continuar con `whitelist: []` |
 | `fix-directives.md` con sección de lista blanca sin viñetas (0c.3; p. ej. rechazo de `story-acceptance`) | — (sin aviso: una lista vacía no es un error) | Continuar con `whitelist: []`; la Consolidación de alcance trata todo archivo modificado como fuera de la lista |
@@ -1336,7 +1336,7 @@ La invocación sigue el contrato de 4 pasos del ADR-0002: `Read` del SKILL.md �
 | Archivos de producción | según skill de generación | Código generado en Fases GREEN/REFACTOR |
 | `implement-report.md` | `$STORY_DIR/implement-report.md` | Reporte final: ciclo TDD, DoD compliance, estado por fase + sección `## Ciclo de corrección — ronda N` (con la subsección `### Archivos fuera de lista blanca`) solo en modo rework |
 | `story.md` (actualizado) | `$STORY_DIR/story.md` | Frontmatter: 0c.4 → `IMPLEMENT/IN-PROGRESS` al arrancar; 11c → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si DoD-ERRORs) |
-| `epic.md` (actualizado) | `specs/flow/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
+| `epic.md` (actualizado) | `changes/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
 | `red-phase-status.json` | `.tmp/story-implement/{story_id}/red-phase-status.json` | Estado de la Fase RED — precondición para GREEN; incluye `files_generated`, `files_modified`, `rework_round` (`null` fuera de rework) y `rework_evidence` (`ok`/`warning`/`error`; `n/a` fuera de rework) |
 | `cycle-status.json` | `.tmp/story-implement/{story_id}/cycle-status.json` | Estado final del ciclo TDD completo; incluye `rework_round` (`null` fuera de rework) y `out_of_scope_files` (`0` fuera de rework) |
 | `results.json` por tipo/capa | `.tmp/story-implement/{story_id}/{tipo o fase/capa}/results.json` | Output de cada subagente: `{status, message?, files_generated, files_modified?}` |

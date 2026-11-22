@@ -5,7 +5,7 @@
  * Deterministic checker for the documentation users and maintainers rely on.
  *
  * It deliberately does not fetch the network: external URLs are checked for a
- * valid, safe scheme only. Historical specs and ADRs are excluded because they
+ * valid, safe scheme only. Change records (changes/) and ADRs are excluded because they
  * preserve the context in which they were written rather than being rewritten
  * when a later directory or runtime changes.
  */
@@ -23,11 +23,12 @@ const ACTIVE_ROOTS = [
   'docs/guardrails',
   'docs/guides',
   'docs/runbooks',
+  'specs',
 ];
 const HISTORICAL_EXCLUSIONS = [
   'CHANGELOG.md',
   'docs/decisions',
-  'specs',
+  'changes',
 ];
 
 function toPosix(value) {
@@ -243,8 +244,10 @@ function checkDocumentation({ repoRoot = REPO_ROOT, files = activeMarkdownFiles(
   const errors = [];
   const allMarkdown = [];
   walkMarkdown(path.join(repoRoot, 'docs'), allMarkdown);
-  const specsRoot = path.join(repoRoot, 'specs');
-  if (fs.existsSync(specsRoot)) walkMarkdown(specsRoot, allMarkdown);
+  for (const root of ['specs', 'changes']) {
+    const candidate = path.join(repoRoot, root);
+    if (fs.existsSync(candidate)) walkMarkdown(candidate, allMarkdown);
+  }
   for (const rootFile of ['README.md', 'SECURITY.md']) {
     const candidate = path.join(repoRoot, rootFile);
     if (fs.existsSync(candidate)) allMarkdown.push(candidate);

@@ -31,19 +31,19 @@ const {
 const TODAY = '2026-10-30';
 
 /**
- * Directorio temporal con `specs/flow/EPIC-NNN-fixture/` copiado desde `examples/<fixture>/`.
+ * Directorio temporal con `changes/EPIC-NNN-fixture/` copiado desde `examples/<fixture>/`.
  * `slug` (frontmatter) define la ruta lógica; el contenido físico vive en el fixture.
  */
 function makeFixture(t, fixture) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sddf-epic-improve-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true, maxRetries: 3 }));
   const src = path.join(EXAMPLES, fixture);
-  const dest = path.join(root, 'specs', 'flow', `${path.basename(src)}-fixture`);
+  const dest = path.join(root, 'changes', `${path.basename(src)}-fixture`);
   fs.mkdirSync(dest, { recursive: true });
   fs.cpSync(path.join(src, 'epic.md'), path.join(dest, 'epic.md'));
   const report = path.join(src, 'epic-format-validation-report.md');
   if (fs.existsSync(report)) fs.cpSync(report, path.join(dest, 'epic-format-validation-report.md'));
-  return { root, dest, epicDir: path.join(root, 'specs', 'flow', path.basename(dest)) };
+  return { root, dest, epicDir: path.join(root, 'changes', path.basename(dest)) };
 }
 
 function read(root, rel) {
@@ -95,7 +95,7 @@ test('parseDefects: extrae la tabla ## Defectos (id, tipo, ubicacion, encontrado
 
 test('TC-001: plan inserta ## Criterios de salida con CS-1 + fuente, status intacto, sin PO (sin escritura)', (t) => {
   const { root, dest } = makeFixture(t, 'sin-criterios-de-salida');
-  const before = read(root, `specs/flow/${path.basename(dest)}/epic.md`);
+  const before = read(root, `changes/${path.basename(dest)}/epic.md`);
   const res = planImprove({ repoRoot: root, id: 'EPIC-90', epicDir: dest, today: TODAY });
   assert.equal(res.ok, true, res.message);
   assert.equal(res.code, 'OK');
@@ -114,18 +114,18 @@ test('TC-001: plan inserta ## Criterios de salida con CS-1 + fuente, status inta
   // sin decisiones del PO
   assert.deepEqual(res.poDecisions, []);
   // plan no escribe
-  assert.equal(read(root, `specs/flow/${path.basename(dest)}/epic.md`), before, 'plan no modifica epic.md');
+  assert.equal(read(root, `changes/${path.basename(dest)}/epic.md`), before, 'plan no modifica epic.md');
   assert.ok(!fs.existsSync(path.join(dest, 'epic.md.bak')), 'plan no crea epic.md.bak');
 });
 
 test('TC-001: apply crea epic.md.bak (previo) y escribe epic.md corregido', (t) => {
   const { root, dest } = makeFixture(t, 'sin-criterios-de-salida');
-  const original = read(root, `specs/flow/${path.basename(dest)}/epic.md`);
+  const original = read(root, `changes/${path.basename(dest)}/epic.md`);
   const res = applyImprove({ repoRoot: root, id: 'EPIC-90', epicDir: dest, today: TODAY });
   assert.equal(res.ok, true, res.message);
   assert.ok(fs.existsSync(path.join(dest, 'epic.md.bak')), 'epic.md.bak creado');
-  assert.equal(read(root, `specs/flow/${path.basename(dest)}/epic.md.bak`), original, 'el .bak conserva el contenido previo');
-  const after = read(root, `specs/flow/${path.basename(dest)}/epic.md`);
+  assert.equal(read(root, `changes/${path.basename(dest)}/epic.md.bak`), original, 'el .bak conserva el contenido previo');
+  const after = read(root, `changes/${path.basename(dest)}/epic.md`);
   assert.match(after, /## Criterios de salida/);
   assert.match(after, /- \[ \] \*\*CS-1\*\* —/);
   assert.match(after, /^status: DEFINE$/m);
@@ -197,7 +197,7 @@ test('TC-006: la instrucción incrustada en Notas se conserva como texto, status
 
 test('apply restaura epic.md desde el .bak si la relectura detecta un cambio de status', (t) => {
   const { root, dest } = makeFixture(t, 'sin-criterios-de-salida');
-  const original = read(root, `specs/flow/${path.basename(dest)}/epic.md`);
+  const original = read(root, `changes/${path.basename(dest)}/epic.md`);
   // Fuerza un fallo de verificación: status distinto entre .bak y epic.md.
   const fsx = require('node:fs');
   const epicFile = path.join(dest, 'epic.md');
@@ -221,7 +221,7 @@ test('apply restaura epic.md desde el .bak si la relectura detecta un cambio de 
   } finally {
     fsx.writeFileSync = realWrite;
   }
-  assert.equal(read(root, `specs/flow/${path.basename(dest)}/epic.md`), original, 'epic.md restaurado al contenido previo');
+  assert.equal(read(root, `changes/${path.basename(dest)}/epic.md`), original, 'epic.md restaurado al contenido previo');
 });
 
 // ── planCorrections (núcleo puro) — anclaje y orden ────────────────────────────────

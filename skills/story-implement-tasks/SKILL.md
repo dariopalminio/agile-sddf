@@ -64,10 +64,10 @@ story-implement   → Entry point de la implementación: ejecuta TDD tarea por t
 
 | Artefacto | Ubicación | Requerido |
 |---|---|---|
-| `story.md` | `specs/flow/<STORY-NNN>-<slug>/story.md` | ✓ obligatorio |
-| `design.md` | `specs/flow/<STORY-NNN>-<slug>/design.md` | ✓ obligatorio |
-| `tasks.md` | `specs/flow/<STORY-NNN>-<slug>/tasks.md` | ✓ obligatorio |
-| `fix-directives.md` | `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review`, `story-verify` o `story-acceptance` (veredicto `NEEDS-CHANGES`, ADR-0022); su presencia dispara el pre-paso 2f; `round` y `based-on` los escribe el gate (este skill solo los lee) |
+| `story.md` | `changes/<STORY-NNN>-<slug>/story.md` | ✓ obligatorio |
+| `design.md` | `changes/<STORY-NNN>-<slug>/design.md` | ✓ obligatorio |
+| `tasks.md` | `changes/<STORY-NNN>-<slug>/tasks.md` | ✓ obligatorio |
+| `fix-directives.md` | `changes/<STORY-NNN>-<slug>/fix-directives.md` | opcional — señal de rework escrita por `story-code-review`, `story-verify` o `story-acceptance` (veredicto `NEEDS-CHANGES`, ADR-0022); su presencia dispara el pre-paso 2f; `round` y `based-on` los escribe el gate (este skill solo los lee) |
 | DoD de la etapa `implement` | `docs/guardrails/dod-story-implement.md` (ver `## DoD aplicable`) | opcional |
 
 ---
@@ -101,7 +101,7 @@ Durante la ventana de transición de ADR-0022 (hasta 7.0.0) el Paso 1d acepta ad
 
 | Skill / Herramienta | Rol |
 |---|---|
-| Contrato de layout fijo | Resuelve `REPO_ROOT` y usa `specs/flow/`, `docs/templates/` y `docs/guardrails/` (ADR-0016) antes de cualquier operación. |
+| Contrato de layout fijo | Resuelve `REPO_ROOT` y usa `changes/`, `docs/templates/` y `docs/guardrails/` (ADR-0023) antes de cualquier operación. |
 | `story-code-review` | Skill downstream que consume `implement-report.md` para revisar la implementación |
 
 ---
@@ -163,8 +163,8 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Es e
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Resuelve `CLI_ROOT` (directorio de skills del runtime) solo para localizar el seed del template de épica.
 
@@ -186,15 +186,15 @@ Proporciona el ID (ej. STORY-059) o la ruta completa al directorio.
 
 #### 1b. Resolución del directorio de la historia
 
-1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `specs/flow/STORY-NNN-<slug>/` (no `specs/flow/archive/…`) y contiene `story.md`. Si no:
+1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `changes/STORY-NNN-<slug>/` (no `changes/archive/…`) y contiene `story.md`. Si no:
    ```
-   ❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)
+   ❌ La ruta {story_path} no es una historia de changes/ (se esperaba changes/STORY-NNN-<slug>/)
    ```
    Detener la ejecución sin escribir ningún archivo.
-2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `specs/flow/archive/`)
+2. Glob `changes/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `changes/archive/`)
 3. Si no se encuentra ninguno:
    ```
-   ❌ No se encontró la historia {story_id} en specs/flow/
+   ❌ No se encontró la historia {story_id} en changes/
 
    Verifica el ID o ejecuta /epic-generate-stories para generar la historia.
    ```
@@ -744,7 +744,7 @@ Completar la sección "Cumplimiento DoD — Fase IMPLEMENT" en `implement-report
 
 Leer el campo `parent` del frontmatter de `story.md` (ej. `EPIC-12-story-sdd-workflow`).
 
-Buscar el archivo `epic.md` correspondiente en `specs/flow/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NNN`, Glob `specs/flow/<parent>-*/epic.md` (primera coincidencia). No se consulta `specs/flow/archive/`.
+Buscar el archivo `epic.md` correspondiente en `changes/<parent>/epic.md`; si no existe y `parent` es solo `EPIC-NNN`, Glob `changes/<parent>-*/epic.md` (primera coincidencia). No se consulta `changes/archive/`.
 
 **Si se encuentra `epic.md`** (transición F2 → F3 de la historia; formatos en `domain-epic-lifecycle` §9):
 - Resolver del template de épica (`docs/templates/epic-template.md`; si no existe, el seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md`) el **título** de la sección cuyo marcador declara `clave: historias` (las secciones se localizan por clave, nunca por un título fijo; contrato en `domain-epic-lifecycle` §9).
@@ -796,8 +796,8 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente. No generar archivos |
-| Historia no encontrada | `❌ No se encontró la historia {story_id} en specs/flow/` | Detener. Sugerir `/epic-generate-stories` |
-| Ruta explícita fuera de specs/flow/ | `❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)` | Detener sin escribir ningún archivo |
+| Historia no encontrada | `❌ No se encontró la historia {story_id} en changes/` | Detener. Sugerir `/epic-generate-stories` |
+| Ruta explícita fuera de changes/ | `❌ La ruta {story_path} no es una historia de changes/ (se esperaba changes/STORY-NNN-<slug>/)` | Detener sin escribir ningún archivo |
 | `story.md`, `design.md` o `tasks.md` ausente | `❌ No se encontró <artefacto> en: <ruta>` | Detener sin implementar ninguna tarea |
 | Estado de `story.md` no válido | `❌ La historia <story_id> no está en un estado válido para implementar.` | Detener sin implementar ninguna tarea |
 | Sin tareas pendientes y sin `fix-directives.md` (entrada distinta de `IMPLEMENT/TODO`) | `ℹ️  No hay tareas pendientes en tasks.md — todas están completadas.` | Terminar sin modificar ningún archivo (gate 2c). Con entrada `IMPLEMENT/TODO` el gate no aplica: 2e → Paso 4 sin anunciar correcciones |
@@ -822,10 +822,10 @@ Los tests generados deben ejecutarse manualmente con el runner del proyecto.
 
 | Artefacto | Ruta | Descripción |
 |---|---|---|
-| `implement-report.md` | `specs/flow/<STORY-NNN>-<slug>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
+| `implement-report.md` | `changes/<STORY-NNN>-<slug>/implement-report.md` | Reporte con estado por tarea, DoD y trazabilidad |
 | `story.md` (actualizado) | mismo directorio | Frontmatter → `IMPLEMENT/DONE` (o `IMPLEMENT/IN-PROGRESS` si hay DoD-ERRORs) |
 | `tasks.md` (actualizado) | mismo directorio | Tareas marcadas `[x]` (completadas) o `[~]` (bloqueadas) |
-| `epic.md` (actualizado) | `specs/flow/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
+| `epic.md` (actualizado) | `changes/<parent>/epic.md` | Checklist con `[x]` para la historia completada (si existe) |
 | Archivos de test | según stack del proyecto | Tests generados por ciclo TDD (uno por tarea completada) |
 | Archivos de producción | según stack del proyecto | Código de producción generado por ciclo TDD |
 

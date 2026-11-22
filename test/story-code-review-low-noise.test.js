@@ -44,7 +44,7 @@ const numbered = (n) => Array.from({ length: n }, (_, i) => `const v${i + 1} = $
 function recordTo(root, lows) {
   const { recordLedger } = engine();
   const { ledger } = recordLedger({ repoRoot: root, lows, date: '2026-11-11' });
-  return write(root, 'specs/flow/STORY-900-x/code-review-lows.json', JSON.stringify(ledger));
+  return write(root, 'changes/STORY-900-x/code-review-lows.json', JSON.stringify(ledger));
 }
 
 function compare(root, ledgerPath, locations = []) {
@@ -230,7 +230,7 @@ test('8 — CLI: exit 0 con un único objeto JSON; exit 2 ante argumentos o JSON
   write(root, 'src/calc.js', numbered(12));
   const run = (args) => spawnSync(process.execPath, [SCRIPT, ...args], { encoding: 'utf8' });
   const lowsFile = write(root, '.tmp/lows.json', JSON.stringify([low('src/calc.js:3'), low('src/nada.js:1')]));
-  const out = path.join(root, 'specs', 'flow', 'STORY-900-x', 'code-review-lows.json');
+  const out = path.join(root, 'changes', 'STORY-900-x', 'code-review-lows.json');
   fs.mkdirSync(path.dirname(out), { recursive: true });
 
   const recorded = run(['record', '--repo-root', root, '--lows', lowsFile, '--out', out]);

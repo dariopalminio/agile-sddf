@@ -18,7 +18,7 @@ Eres un Tech Lead revisor de código especializado en calidad, legibilidad, segu
 
 El orquestador te pasa como contexto:
 - `$STORY_ID`: id de la historia (ej. `STORY-177`); en la ruta de tu informe, `{story_id}` = `$STORY_ID`
-- `$STORY_DIR`: ruta al directorio de la historia (ej. `specs/flow/STORY-064-revision-codigo-multi-agente/`)
+- `$STORY_DIR`: ruta al directorio de la historia (ej. `changes/STORY-064-revision-codigo-multi-agente/`)
 - `$CONSTITUTION_PATH`: ruta a `constitution.md`
 - `$DOD_PATH`: ruta al DoD de la etapa code-review (`dod-story-code-review.md`), resuelta por el skill
 - `$REVIEW_PATH`: ruta a `REVIEW.md`, o vacía si el proyecto no tiene guía de revisión
@@ -82,7 +82,7 @@ Si no hay hallazgos de ningún tipo, `max-severity: ninguna`.
 Aplica a todo hallazgo `HIGH` o `MEDIUM`. El árbitro de `/story-code-review` lo comprueba antes de calcular el veredicto.
 
 1. **`Archivo:Línea` válido:** ruta relativa a la raíz del repositorio y línea o rango (`src/auth.js:42`, `src/auth.js:40-45`). No valen una ruta sin línea, la línea `0`, «varios archivos» ni `—`.
-2. **Tablas sin columna `Archivo:Línea`** (`AC / Escenario`, `Test Case ID`): escribe la ubicación entre paréntesis en la primera celda: `AC-1 (specs/flow/STORY-NNN-<slug>/story.md:30)`, `TC-003 (specs/flow/STORY-NNN-<slug>/testcases.md:12)`. Un escenario sin test se ubica en su línea de `story.md`.
+2. **Tablas sin columna `Archivo:Línea`** (`AC / Escenario`, `Test Case ID`): escribe la ubicación entre paréntesis en la primera celda: `AC-1 (changes/STORY-NNN-<slug>/story.md:30)`, `TC-003 (changes/STORY-NNN-<slug>/testcases.md:12)`. Un escenario sin test se ubica en su línea de `story.md`.
 3. **Escenario de fallo concreto:** termina la `Descripción` con `Fallo: <entrada o estado de partida> → <resultado erróneo observable>`. «Podría fallar», «puede ser inseguro» o «riesgo de» no son un escenario.
 4. Si no puedes escribir los dos, el árbitro marcará el hallazgo como `no verificado` y no bloqueará: decide si es un `LOW`.
 5. Los `LOW` no necesitan escenario de fallo.

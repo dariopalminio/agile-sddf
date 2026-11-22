@@ -52,7 +52,7 @@ fijas. El bloque canónico es:
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+work items en `changes/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
 El layout no es configurable (ADR-0016).
 ```
 
@@ -61,7 +61,7 @@ El layout no es configurable (ADR-0016).
 | Regla | Condición |
 |---|---|
 | R1 | la línea exacta `<!-- SDDF-FIXED-LAYOUT: v1 -->` |
-| R2 | el bloque, desde el marcador hasta el siguiente encabezado, nombra `REPO_ROOT`, `specs/flow/`, `docs/templates/` y `docs/guardrails/` |
+| R2 | el bloque, desde el marcador hasta el siguiente encabezado, nombra `REPO_ROOT`, `changes/`, `docs/templates/` y `docs/guardrails/` |
 | R3 | ninguna línea contiene `SDDF-ROOT-RESOLUTION: v1`, `SPECS_BASE` ni `SDDF_ROOT` |
 | R4 | ninguna línea nombra a la vez la clave `root` y `sddf.config.yaml` |
 
@@ -159,9 +159,9 @@ docs/product/stakeholders.md                             → documentación fund
 docs/product/roadmap.md                                  → documentación fundacional
 docs/requirements/functional/FR-NNN-<slug>.md            → requisitos funcionales
 docs/requirements/non-functional/NFR-NNN-<slug>.md       → requisitos no funcionales
-specs/flow/<EPIC-NN>-<slug>/epic.md                      → épicas
-specs/flow/<STORY-NNN>-<slug>/story.md                   → historias
-specs/flow/archive/<YYYY-MM-DD>-<STORY-NNN>-<slug>/      → historias COMPLETED archivadas
+changes/<EPIC-NN>-<slug>/epic.md                      → épicas
+changes/<STORY-NNN>-<slug>/story.md                   → historias
+changes/archive/<YYYY-MM-DD>-<STORY-NNN>-<slug>/      → historias COMPLETED archivadas
 
 ### 15. Versionado mediante substatus
 

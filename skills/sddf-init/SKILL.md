@@ -1,8 +1,8 @@
 ---
 name: sddf-init
 description: >-
-  Inicializa el entorno SDDF: crea el layout fijo specs/flow/, specs/living/ y workflow/, sddf.config.yaml y
-  .env.template. Idempotente; avisa ante el layout legado docs/specs/. --level minimal|standard|full (full añade el
+  Inicializa el entorno SDDF: crea el layout fijo changes/, specs/ y workflow/, sddf.config.yaml y
+  .env.template. Idempotente; avisa ante un layout legado (docs/specs/ o el de ADR-0019). --level minimal|standard|full (full añade el
   scaffold de memory-system).
   Usar como primer paso antes de cualquier skill SDDF cuando el entorno no está configurado.
   Invocar para "inicializar SDDF", "sddf-init", "configurar entorno SDDF" o "primer paso del framework".
@@ -18,7 +18,7 @@ sddf-init → [cualquier skill SDDF con resolución local]
 
 **Usar cuando:**
 - Al configurar SDDF en un proyecto nuevo por primera vez
-- Cuando se necesita crear el layout fijo de SDDF en un proyecto (ADR-0016)
+- Cuando se necesita crear el layout fijo de SDDF en un proyecto (ADR-0023)
 
 ---
 
@@ -28,7 +28,7 @@ sddf-init → [cualquier skill SDDF con resolución local]
 - NO genere código; estas iniciando el entorno SDDF, no implementando los artefactos técnicos
 - No inicializa repositorio git
 - No instala dependencias
-- Ante el layout legado `docs/specs/` avisa y termina sin escribir (Paso 1b); nunca crea `docs/specs/`.
+- Ante un layout legado (`docs/specs/` o los niveles `flow/` y `living/` de ADR-0019) avisa y termina sin escribir (Paso 1b); nunca crea `docs/specs/` ni esos niveles.
 
 ---
 
@@ -59,36 +59,44 @@ siguiente y termina sin crear archivos ni directorios:
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 `CLI_ROOT` se resuelve independientemente y solo para copiar templates y componer `memory-system`
 desde los skills instalados; nunca se deriva del layout.
 
 ### Paso 1b — Detectar el layout
 
-Antes de cualquier escritura, comprobar la existencia de los directorios `docs/specs/` y
-`specs/flow/` en `REPO_ROOT` (solo existencia de directorios):
+Antes de cualquier escritura, comprobar en `REPO_ROOT` la existencia de los directorios legados y de
+`changes/` (solo existencia de directorios). Las rutas legadas son:
 
-| `docs/specs/` | `specs/flow/` | Estado | Acción |
+<!-- SDDF-LEGACY-DIAGNOSTIC:start -->
+
+- `docs/specs/` (layout anterior a ADR-0016);
+- `specs/flow/` y `specs/living/` (layout de ADR-0019, reemplazado por ADR-0023).
+
+| Alguna ruta legada | `changes/` | Estado | Acción |
 |---|---|---|---|
 | no | no | **limpio** | continuar: el Paso 2 crea el layout fijo |
 | no | sí | **layout fijo** | continuar: el Paso 2 solo crea lo que falte |
 | sí | no | **legado** | emitir el aviso y **terminar sin escribir nada** |
-| sí | sí | **mixto** | emitir el aviso y continuar como layout fijo; `docs/specs/` no se modifica |
+| sí | sí | **mixto** | emitir el aviso y continuar como layout fijo; las rutas legadas no se modifican |
 
-Aviso de deprecación (estados legado y mixto):
+Aviso de deprecación (estados legado y mixto), con `<rutas>` igual a las rutas legadas presentes,
+separadas por coma, en el orden de la lista:
 
 ```
-⚠️ Layout legado detectado: docs/specs/ está deprecado (ADR-0016).
+⚠️ Layout legado detectado: <rutas> está deprecado (ADR-0023).
    Guía de migración: docs/guides/artifact-directory-migration.md (paquete agile-sddf)
 ```
 
 Con una línea adicional según el estado:
-- **legado:** `   No se crea specs/flow/ ni se modifica docs/specs/. Migra y vuelve a ejecutar /sddf-init.`
+- **legado:** `   No se crea changes/ ni se modifican las rutas legadas. Migra y vuelve a ejecutar /sddf-init.`
   El skill termina aquí: sin líneas `[CREADO]`, sin los Pasos 2 a 5b y sin cierre de éxito.
   El informe son el encabezado `── sddf-init ──`, el aviso y la línea de cierre del Paso 6.
-- **mixto:** `   Se continúa con el layout fijo existente; docs/specs/ no se modifica.`
+- **mixto:** `   Se continúa con el layout fijo existente; las rutas legadas no se modifican.`
+
+<!-- SDDF-LEGACY-DIAGNOSTIC:end -->
 
 El aviso no es un `[ERROR]`: el layout legado es un estado válido de un proyecto ya instalado.
 
@@ -98,9 +106,9 @@ Para cada uno de los siguientes directorios, en este orden, relativos a `REPO_RO
 
 | Directorio | `.gitkeep` |
 |---|---|
-| `specs/flow/` | sí, solo si el directorio se crea en esta ejecución |
-| `specs/flow/archive/` | sí, ídem |
-| `specs/living/` | sí, ídem |
+| `changes/` | sí, solo si el directorio se crea en esta ejecución |
+| `changes/archive/` | sí, ídem |
+| `specs/` | sí, ídem |
 | `workflow/` | sí, ídem |
 | `docs/templates/` | no (se llena en el Paso 2b) |
 
@@ -108,14 +116,14 @@ Verificar si el directorio existe:
 - **No existe:** crearlo (con rutas intermedias), crear el `.gitkeep` vacío si la tabla lo indica y registrar `[CREADO]  <ruta>`
 - **Ya existe:** no modificar nada dentro (tampoco añadir `.gitkeep`) y registrar `[YA EXISTÍA]  <ruta>`
 
-Si los cuatro directorios del layout (`specs/flow/`, `specs/flow/archive/`, `specs/living/`, `workflow/`)
-ya existían, registrar `[INFO] El layout fijo ya existe — sin cambios en specs/ ni workflow/`.
+Si los cuatro directorios del layout (`changes/`, `changes/archive/`, `specs/`, `workflow/`)
+ya existían, registrar `[INFO] El layout fijo ya existe — sin cambios en changes/, specs/ ni workflow/`.
 
 Los directorios se crean en los tres niveles. `docs/specs/` nunca se crea. Si un directorio no puede
 crearse (permisos), informar la ruta y el motivo y detener antes de los pasos siguientes; los directorios
 ya creados quedan y una re-ejecución los informa `[YA EXISTÍA]`.
 
-> `docs/templates/` es una capa hermana de `specs/`, no un subdirectorio suyo: los templates son meta-artefactos que definen la estructura de otros artefactos. Ver [ADR-0007](../../docs/decisions/ADR-0007-templates-como-capa-propia.md).
+> `docs/templates/` es una capa de `docs/`, no un subdirectorio de `changes/` ni de `specs/`: los templates son meta-artefactos que definen la estructura de otros artefactos. Ver [ADR-0007](../../docs/decisions/ADR-0007-templates-como-capa-propia.md).
 
 ### Paso 2b — Copiar templates compartidos al directorio central
 
@@ -206,9 +214,9 @@ Emitir el informe consolidado con todos los artefactos verificados:
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     specs/flow/
-[CREADO]     specs/flow/archive/
-[CREADO]     specs/living/
+[CREADO]     changes/
+[CREADO]     changes/archive/
+[CREADO]     specs/
 [CREADO]     workflow/
 [CREADO]     docs/templates/
 [CREADO]     docs/templates/story-template.md
@@ -237,9 +245,9 @@ añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente con el la
 
 ```
 ── sddf-init ────────────────────────────────────
-⚠️ Layout legado detectado: docs/specs/ está deprecado (ADR-0016).
+⚠️ Layout legado detectado: docs/specs/ está deprecado (ADR-0023).
    Guía de migración: docs/guides/artifact-directory-migration.md (paquete agile-sddf)
-   No se crea specs/flow/ ni se modifica docs/specs/. Migra y vuelve a ejecutar /sddf-init.
+   No se crea changes/ ni se modifican las rutas legadas. Migra y vuelve a ejecutar /sddf-init.
 ─────────────────────────────────────────────────
 ⚠️ Entorno no inicializado: migra el layout legado antes de continuar
 ```
@@ -249,9 +257,9 @@ añade el nivel efectivo: `✓ Entorno SDDF inicializado correctamente con el la
 
 ```
 ── sddf-init ────────────────────────────────────
-[CREADO]     specs/flow/
-[CREADO]     specs/flow/archive/
-[CREADO]     specs/living/
+[CREADO]     changes/
+[CREADO]     changes/archive/
+[CREADO]     specs/
 [CREADO]     workflow/
 [CREADO]     docs/templates/
 [CREADO]     sddf.config.yaml

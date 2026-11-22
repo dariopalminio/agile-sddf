@@ -38,7 +38,7 @@ updated: 2026-10-19
 - **US-005**: Mantenedor del Harness (dogfood) / Harness Maintainer (dogfood)
     - **Descripción**: Quien evoluciona el propio SDDF. Usa el framework sobre sí mismo
       (*dogfooding*): las capacidades nuevas del framework se especifican como historias en
-      `specs/flow/` y se implementan con `story-implement`. Necesita además `security-audit`,
+      `changes/` y se implementan con `story-implement`. Necesita además `security-audit`,
       los `evals/evals.json` de cada skill y el runbook de publicación en npm.
 
 - **US-006**: Agente de IA consumidor

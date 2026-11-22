@@ -22,7 +22,7 @@ related: []
 |------|----------|------|-----------|
 | `product/` | ¿Por qué existe? | Años | PO, negocio |
 | `requirements/` | ¿Qué debe hacer? | Meses | PO, equipo, QA |
-| `specs/flow/` (raíz del repositorio, fuera de `docs/`) | ¿Cómo lo construimos ahora? | Días/semanas | Equipo, IA |
+| `changes/` (raíz del repositorio, fuera de `docs/`) | ¿Cómo lo construimos ahora? | Días/semanas | Equipo, IA |
 
 **Regla dura:** un requirement describe **comportamiento del producto**; una story describe **un incremento que lo materializa** y declara `implements: [FR-NNN]`. No duplicar el "qué".
 
@@ -52,7 +52,7 @@ agile-sddf/
 ├── CLAUDE.md                          # (opcional) punto de entrada para Claude Code
 ├── sddf.config.yaml                   # configuración: skills activos por fase
 │
-├── specs/flow/                        # work items del layout fijo (ADR-0016), fuera de docs/
+├── changes/                        # work items del layout fijo (ADR-0016), fuera de docs/
 │   ├── EPIC-NNN-*/epic.md              #   épicas (entregables)
 │   ├── STORY-NNN-*/story.md           #   historias atómicas
 │   └── archive/<fecha>-STORY-NNN-*/   #   historias archivadas
@@ -130,7 +130,7 @@ agile-sddf/
 
 Las diez capas de memoria son `product/`, `requirements/`, `domains/`, `architecture/`,
 `adr/`, `policies/`, `guardrails/`, `guides/`, `runbooks/` y `templates/`, más `constitution.md`
-en la raíz de `docs/`. Los work items no son una capa de `docs/`: viven en `specs/flow/`, los crea
+en la raíz de `docs/`. Los work items no son una capa de `docs/`: viven en `changes/`, los crea
 `/sddf-init` y `memory-system index` los indexa como origen flow (§10.2, STORY-152). `rfcs/` es opcional y no la gestiona ningún skill. Las seis plantillas compartidas se
 declaran en `SHARED_TEMPLATES` del motor; las de ADR, dominio, guardrail, policy y SRS son de autoría manual.
 
@@ -138,9 +138,9 @@ declaran en `SHARED_TEMPLATES` del motor; las de ADR, dominio, guardrail, policy
 
 | Regla | Detalle |
 |-------|---------|
-| **Raíz fija** | Todo el conocimiento bajo `docs/`; los work items en `specs/flow/` (ADR-0016). Ninguna de las dos rutas es configurable. |
+| **Raíz fija** | Todo el conocimiento bajo `docs/`; los work items en `changes/` (ADR-0016). Ninguna de las dos rutas es configurable. |
 | **Un nivel, una responsabilidad** | Cada carpeta de primer nivel agrupa un tipo de artefacto distinto. |
-| **Sin anidamiento profundo** | Máximo 2–3 niveles por debajo de `docs/`; `specs/flow/` es plano (épicas e historias hermanas) más `archive/`. |
+| **Sin anidamiento profundo** | Máximo 2–3 niveles por debajo de `docs/`; `changes/` es plano (épicas e historias hermanas) más `archive/`. |
 | **Prefijos numéricos** | Ninguna capa usa prefijos numéricos (ADR-0013). |
 | **`.cache/` no versionado** | Los índices derivados viven en `.cache/` y se regeneran on-demand. |
 | **Templates fuera de specs** | `docs/templates/` es meta-artefacto; no vive dentro de `specs/`. |
@@ -184,7 +184,7 @@ product/vision.md
     ↓ informs
 requirements/FR-001.md
     ↓ verified-by
-specs/flow/STORY-042/story.md
+changes/STORY-042/story.md
     ↓ implements
 requirements/FR-001.md
 ```
@@ -283,7 +283,7 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
 - **Catálogo único de capas** (`LAYERS`): las diez capas se declaran una vez en el motor; `scaffold`
   las usa para detectar capas faltantes y el índice deriva de ellas sus placeholders (`templates`
   excluida), más `root`, las capas de work items `specs|specs-epics|specs-stories|specs-archive` y
-  `external`. `scaffold` no crea `docs/specs/` ni `specs/flow/` (STORY-152 D-5).
+  `external`. `scaffold` no crea `docs/specs/` ni `changes/` (STORY-152 D-5).
 - **Árbol semilla** (`assets/scaffold/**`, espejo del destino): `constitution.md` (secciones de la
   constitución del framework con `[Por completar]`), `product/{README,vision,stakeholders,objectives,roadmap}.md`,
   un `README.md` por capa con propósito, convención de nombres y wikilink `[[index]]`,
@@ -316,12 +316,12 @@ el único punto de entrada operativo de este sistema. Expone los modos `ensure` 
   derivados de historia (`design.md`, `tasks.md`, `testcases.md`, `analyze.md`, `*-report.md`,
   `fix-directives.md`, `finvest-evaluation-report.md`, `story-improvement-log.md`,
   `story-refinement-log.md`).
-- **Origen flow** (STORY-152 D-4): `index` y `check` recorren también `<REPO_ROOT>/specs/flow/` con
+- **Origen flow** (STORY-152 D-4): `index` y `check` recorren también `<REPO_ROOT>/changes/` con
   el mismo recorrido y las mismas exclusiones. Sus nodos son propios (`check` los evalúa), su ruta
-  es relativa a `docs/` (`../specs/flow/…`) y su capa sale de la ruta bajo `specs/flow/`:
+  es relativa a `docs/` (`../changes/…`) y su capa sale de la ruta bajo `changes/`:
   `archive/**` → `specs-archive`, `EPIC-*` → `specs-epics`, `STORY-*` → `specs-stories`, otro →
   `specs`. Si el harness gestiona `specs/` (`skipLayers`), el origen no se recorre; sin
-  `specs/flow/`, queda vacío. Un repo sin migrar sigue indexando `docs/specs/` en las mismas capas.
+  `changes/`, queda vacío. Un repo sin migrar sigue indexando `docs/specs/` en las mismas capas.
 - **Template como fuente de verdad**: `assets/index-template.md` fija las secciones; el motor solo
   sustituye `{layer:<capa>}`, `{stats}` y `{date}`, y falla (exit 2, sin escribir) si un placeholder
   no corresponde a una capa conocida o una capa con nodos carece de placeholder.

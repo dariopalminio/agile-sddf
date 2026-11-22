@@ -3,7 +3,7 @@
 /**
  * Tests de STORY-171: motor `skills/epic-complete/scripts/epic-complete.js`, que completa
  * (`SHIP/DONE` → `COMPLETED/DONE`) y archiva una épica en
- * `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` (ADR-0019). Cubre los contratos de verificación
+ * `changes/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` (ADR-0019). Cubre los contratos de verificación
  * 1–8 de `design.md`: cierre con escritura mínima del frontmatter (D-5), `git mv` sin commit (D-7,
  * CNF-1), resolución de la versión liberada (D-4), admisión por estado (AC-2, D-9), fecha de archivo
  * (D-6, CNF-2), búsqueda determinista, restauración ante fallo (D-8) y la CLI `plan|apply`. La sección
@@ -66,17 +66,17 @@ function fm(status, substatus, dates = { created: '2026-09-01', updated: '2026-1
 }
 
 /**
- * Directorio temporal con `specs/flow/`, `CHANGELOG.md` y, salvo `git: false`, un repo git con todo
- * commiteado. `epics` mapea nombre de directorio (relativo a `specs/flow/`) → frontmatter o contenido literal.
+ * Directorio temporal con `changes/`, `CHANGELOG.md` y, salvo `git: false`, un repo git con todo
+ * commiteado. `epics` mapea nombre de directorio (relativo a `changes/`) → frontmatter o contenido literal.
  */
 function makeFixture(t, { epics = { [NAME]: fm('SHIP', 'DONE') }, changelog = changelogWith('2.1.0'), git = true, extra } = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sddf-epic-complete-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true, maxRetries: 3 }));
   for (const [name, fields] of Object.entries(epics)) {
-    write(epicFile(root, `specs/flow/${name}`), typeof fields === 'string' ? fields : epicContent(fields));
-    write(path.join(root, 'specs', 'flow', name, 'release-notes.md'), `# Release notes ${name}\n`);
+    write(epicFile(root, `changes/${name}`), typeof fields === 'string' ? fields : epicContent(fields));
+    write(path.join(root, 'changes', name, 'release-notes.md'), `# Release notes ${name}\n`);
   }
-  write(path.join(root, 'specs', 'flow', 'STORY-201-exportar-csv', 'story.md'), '# Historia\n');
+  write(path.join(root, 'changes', 'STORY-201-exportar-csv', 'story.md'), '# Historia\n');
   if (changelog !== null) write(path.join(root, 'CHANGELOG.md'), changelog);
   if (git) {
     runGit(root, ['init', '-q']);
@@ -121,21 +121,21 @@ test('SHIP/DONE → plan complete con versión de CHANGELOG.md, fecha de hoy y g
   assert.equal(result.version, '2.1.0');
   assert.equal(result.versionSource, 'changelog');
   assert.equal(result.archiveDate, TODAY);
-  assert.equal(result.from, `specs/flow/${NAME}`);
-  assert.equal(result.to, `specs/flow/archive/${TODAY}-${NAME}`);
+  assert.equal(result.from, `changes/${NAME}`);
+  assert.equal(result.to, `changes/archive/${TODAY}-${NAME}`);
   assert.equal(result.moveMethod, 'git-mv');
-  assert.deepEqual(result.epic, { id: 'EPIC-31', dir: `specs/flow/${NAME}`, status: 'SHIP', substatus: 'DONE' });
+  assert.deepEqual(result.epic, { id: 'EPIC-31', dir: `changes/${NAME}`, status: 'SHIP', substatus: 'DONE' });
   assert.deepEqual(result.warnings, []);
   assert.deepEqual(snapshot(root), before, 'plan no escribe');
 });
 
-test('SHIP/DONE + apply → COMPLETED/DONE con updated/completed de hoy y version, archivada y ausente de specs/flow/ (contrato 1)', (t) => {
+test('SHIP/DONE + apply → COMPLETED/DONE con updated/completed de hoy y version, archivada y ausente de changes/ (contrato 1)', (t) => {
   const root = makeFixture(t);
-  const original = fs.readFileSync(epicFile(root, `specs/flow/${NAME}`), 'utf8');
+  const original = fs.readFileSync(epicFile(root, `changes/${NAME}`), 'utf8');
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.ok, true, result.message);
-  assert.equal(result.message, `EPIC-31 archivada en specs/flow/archive/${TODAY}-${NAME}/`);
-  assert.equal(fs.existsSync(path.join(root, 'specs', 'flow', NAME)), false);
+  assert.equal(result.message, `EPIC-31 archivada en changes/archive/${TODAY}-${NAME}/`);
+  assert.equal(fs.existsSync(path.join(root, 'changes', NAME)), false);
   const archived = fs.readFileSync(epicFile(root, result.to), 'utf8');
   const expected = original
     .replace('status: SHIP', 'status: COMPLETED')
@@ -153,7 +153,7 @@ test('con historial: git status muestra el rename R, no hay commit nuevo y git l
   assert.equal(result.moveMethod, 'git-mv');
   assert.equal(runGit(root, ['rev-parse', 'HEAD']).trim(), head, 'sin commit nuevo');
   const porcelain = runGit(root, ['status', '--porcelain']);
-  assert.match(porcelain, new RegExp(`^R. specs/flow/${NAME}/release-notes\\.md -> specs/flow/archive/${TODAY}-${NAME}/release-notes\\.md$`, 'm'));
+  assert.match(porcelain, new RegExp(`^R. changes/${NAME}/release-notes\\.md -> changes/archive/${TODAY}-${NAME}/release-notes\\.md$`, 'm'));
   runGit(root, ['add', '-A']);
   runGit(root, ['commit', '-q', '-m', 'archivar']);
   const log = runGit(root, ['log', '--follow', '--format=%s', '--', `${result.to}/epic.md`]);
@@ -232,7 +232,7 @@ for (const [label, changelog, pattern] of [
     const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
     assert.equal(result.ok, true, result.message);
     assert.equal(result.code, 'OK');
-    assert.equal(result.to, `specs/flow/archive/${TODAY}-${NAME}`);
+    assert.equal(result.to, `changes/archive/${TODAY}-${NAME}`);
     const archived = fs.readFileSync(epicFile(root, result.to), 'utf8');
     assert.match(archived, /^status: COMPLETED$/m);
     assert.match(archived, new RegExp(`^completed: ${TODAY}$`, 'm'));
@@ -289,16 +289,16 @@ test('COMPLETED/DONE → archive-only con la fecha de updated:, created: o date:
     assert.equal(result.action, 'archive-only');
     assert.equal(result.version, null);
     assert.equal(result.archiveDate, expected, JSON.stringify(dates));
-    assert.equal(result.to, `specs/flow/archive/${expected}-${NAME}`);
+    assert.equal(result.to, `changes/archive/${expected}-${NAME}`);
   }
 });
 
 test('COMPLETED/DONE + apply → epic.md byte a byte igual tras archivar', (t) => {
   const root = makeFixture(t, { epics: { [NAME]: fm('COMPLETED', 'DONE') } });
-  const original = fs.readFileSync(epicFile(root, `specs/flow/${NAME}`));
+  const original = fs.readFileSync(epicFile(root, `changes/${NAME}`));
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.ok, true, result.message);
-  assert.equal(result.to, `specs/flow/archive/2026-10-28-${NAME}`);
+  assert.equal(result.to, `changes/archive/2026-10-28-${NAME}`);
   assert.ok(fs.readFileSync(epicFile(root, result.to)).equals(original));
 });
 
@@ -338,19 +338,19 @@ test('CANCELED/DONE → plan archive-canceled con la fecha de updated:, created:
     assert.equal(result.version, null);
     assert.equal(result.versionSource, null);
     assert.equal(result.archiveDate, expected, JSON.stringify(dates));
-    assert.equal(result.to, `specs/flow/archive/${expected}-${NAME}`);
+    assert.equal(result.to, `changes/archive/${expected}-${NAME}`);
     assert.deepEqual(snapshot(root), before, 'plan no escribe');
   }
 });
 
 test('CANCELED/DONE + apply → archivada con epic.md byte a byte igual y status CANCELED/DONE (STORY-172 contrato 2, CNF-1)', (t) => {
   const root = makeFixture(t, { epics: { [NAME]: fm('CANCELED', 'DONE') } });
-  const original = fs.readFileSync(epicFile(root, `specs/flow/${NAME}`));
+  const original = fs.readFileSync(epicFile(root, `changes/${NAME}`));
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.ok, true, result.message);
-  assert.equal(result.to, `specs/flow/archive/2026-10-28-${NAME}`);
+  assert.equal(result.to, `changes/archive/2026-10-28-${NAME}`);
   assert.equal(result.message, `EPIC-31 archivada como CANCELED (status sin cambios): ${result.to}/`);
-  assert.equal(fs.existsSync(path.join(root, 'specs', 'flow', NAME)), false);
+  assert.equal(fs.existsSync(path.join(root, 'changes', NAME)), false);
   const archived = fs.readFileSync(epicFile(root, result.to));
   assert.ok(archived.equals(original), 'epic.md byte a byte igual');
   assert.match(archived.toString('utf8'), /^status: CANCELED$/m);
@@ -364,7 +364,7 @@ test('CANCELED/DONE con historial: git status muestra el rename R y no hay commi
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.moveMethod, 'git-mv');
   assert.equal(runGit(root, ['rev-parse', 'HEAD']).trim(), head, 'sin commit nuevo');
-  assert.match(runGit(root, ['status', '--porcelain']), new RegExp(`^R. specs/flow/${NAME}/epic\\.md -> ${result.to}/epic\\.md$`, 'm'));
+  assert.match(runGit(root, ['status', '--porcelain']), new RegExp(`^R. changes/${NAME}/epic\\.md -> ${result.to}/epic\\.md$`, 'm'));
 });
 
 for (const substatus of ['IN-PROGRESS', 'TODO']) {
@@ -383,13 +383,13 @@ for (const substatus of ['IN-PROGRESS', 'TODO']) {
 test('CANCELED/DONE con destino existente → ARCHIVE_CONFLICT con la ruta, sin cambios (STORY-172 contrato 5, AC-3)', (t) => {
   const root = makeFixture(t, {
     epics: { [NAME]: fm('CANCELED', 'DONE') },
-    extra: (r) => fs.mkdirSync(path.join(r, 'specs', 'flow', 'archive', `2026-10-28-${NAME}`), { recursive: true }),
+    extra: (r) => fs.mkdirSync(path.join(r, 'changes', 'archive', `2026-10-28-${NAME}`), { recursive: true }),
   });
   const before = snapshot(root);
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.code, 'ARCHIVE_CONFLICT');
   assert.equal(result.action, 'archive-canceled');
-  assert.ok(result.message.includes(`specs/flow/archive/2026-10-28-${NAME}/`), result.message);
+  assert.ok(result.message.includes(`changes/archive/2026-10-28-${NAME}/`), result.message);
   assert.deepEqual(snapshot(root), before);
 });
 
@@ -416,11 +416,11 @@ test('ID sin coincidencia → NOT_FOUND con la ruta buscada; con pista si ya est
   const before = snapshot(root);
   const missing = planCompletion({ repoRoot: root, id: 'EPIC-99', today: TODAY });
   assert.equal(missing.code, 'NOT_FOUND');
-  assert.match(missing.message, /specs\/flow\/EPIC-99-\*\//);
+  assert.match(missing.message, /changes\/EPIC-99-\*\//);
   assert.doesNotMatch(missing.message, /ya archivada/);
   const archived = planCompletion({ repoRoot: root, id: 'EPIC-07', today: TODAY });
   assert.equal(archived.code, 'NOT_FOUND');
-  assert.match(archived.message, /ya archivada en specs\/flow\/archive\/2026-05-01-EPIC-07-vieja\//);
+  assert.match(archived.message, /ya archivada en changes\/archive\/2026-05-01-EPIC-07-vieja\//);
   assert.deepEqual(snapshot(root), before);
 });
 
@@ -428,28 +428,28 @@ test('dos directorios EPIC-NNN-* → AMBIGUOUS con ambas rutas; EPIC-3 no casa E
   const root = makeFixture(t, { epics: { 'EPIC-31-a': fm('SHIP', 'DONE'), 'EPIC-31-b': fm('SHIP', 'DONE'), 'EPIC-310-c': fm('SHIP', 'DONE') } });
   const result = locateEpic({ repoRoot: root, id: 'EPIC-31' });
   assert.equal(result.code, 'AMBIGUOUS');
-  assert.deepEqual(result.matches, ['specs/flow/EPIC-31-a', 'specs/flow/EPIC-31-b']);
+  assert.deepEqual(result.matches, ['changes/EPIC-31-a', 'changes/EPIC-31-b']);
 });
 
-test('--path bajo archive/, anidado o fuera de specs/flow/ → INVALID_PATH; ruta válida se acepta', (t) => {
+test('--path bajo archive/, anidado o fuera de changes/ → INVALID_PATH; ruta válida se acepta', (t) => {
   const root = makeFixture(t, { epics: { [NAME]: fm('SHIP', 'DONE'), 'archive/2026-05-01-EPIC-07-vieja': fm('COMPLETED', 'DONE') } });
-  for (const epicPath of ['specs/flow/archive/2026-05-01-EPIC-07-vieja', `specs/flow/${NAME}/sub`, 'docs/EPIC-31-x', 'specs/flow/STORY-201-exportar-csv']) {
+  for (const epicPath of ['changes/archive/2026-05-01-EPIC-07-vieja', `changes/${NAME}/sub`, 'docs/EPIC-31-x', 'changes/STORY-201-exportar-csv']) {
     const result = locateEpic({ repoRoot: root, epicPath });
     assert.equal(result.code, 'INVALID_PATH', epicPath);
-    assert.match(result.message, /specs\/flow\/EPIC-NNN-<slug>/);
+    assert.match(result.message, /changes\/EPIC-NNN-<slug>/);
   }
-  assert.deepEqual(locateEpic({ repoRoot: root, epicPath: `specs/flow/${NAME}/` }), { ok: true, dir: `specs/flow/${NAME}` });
-  assert.equal(locateEpic({ repoRoot: root, epicPath: path.join(root, 'specs', 'flow', NAME) }).dir, `specs/flow/${NAME}`);
+  assert.deepEqual(locateEpic({ repoRoot: root, epicPath: `changes/${NAME}/` }), { ok: true, dir: `changes/${NAME}` });
+  assert.equal(locateEpic({ repoRoot: root, epicPath: path.join(root, 'changes', NAME) }).dir, `changes/${NAME}`);
 });
 
 test('directorio sin epic.md → NO_EPIC_FILE; frontmatter sin status → NO_STATUS', (t) => {
   const root = makeFixture(t, {
     epics: { [NAME]: { type: 'epic', id: 'EPIC-31', created: '2026-09-01' } },
-    extra: (r) => write(path.join(r, 'specs', 'flow', 'EPIC-32-vacia', 'notes.md'), '# N\n'),
+    extra: (r) => write(path.join(r, 'changes', 'EPIC-32-vacia', 'notes.md'), '# N\n'),
   });
   const noFile = planCompletion({ repoRoot: root, id: 'EPIC-32', today: TODAY });
   assert.equal(noFile.code, 'NO_EPIC_FILE');
-  assert.match(noFile.message, /specs\/flow\/EPIC-32-vacia/);
+  assert.match(noFile.message, /changes\/EPIC-32-vacia/);
   const noStatus = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(noStatus.code, 'NO_STATUS');
   assert.match(noStatus.message, /status, substatus/);
@@ -458,11 +458,11 @@ test('directorio sin epic.md → NO_EPIC_FILE; frontmatter sin status → NO_STA
 test('destino existente → ARCHIVE_CONFLICT con la ruta, sin cambios; también si aparece entre plan y apply', (t) => {
   const root = makeFixture(t);
   assert.equal(planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY }).ok, true);
-  fs.mkdirSync(path.join(root, 'specs', 'flow', 'archive', `${TODAY}-${NAME}`), { recursive: true });
+  fs.mkdirSync(path.join(root, 'changes', 'archive', `${TODAY}-${NAME}`), { recursive: true });
   const before = snapshot(root);
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.code, 'ARCHIVE_CONFLICT');
-  assert.ok(result.message.includes(`specs/flow/archive/${TODAY}-${NAME}/`), result.message);
+  assert.ok(result.message.includes(`changes/archive/${TODAY}-${NAME}/`), result.message);
   assert.deepEqual(snapshot(root), before);
 });
 
@@ -470,7 +470,7 @@ test('destino existente → ARCHIVE_CONFLICT con la ruta, sin cambios; también 
 
 test('git mv forzado a fallar → MOVE_FAILED, epic.md restaurado byte a byte y conteo igual', (t) => {
   const root = makeFixture(t);
-  const file = epicFile(root, `specs/flow/${NAME}`);
+  const file = epicFile(root, `changes/${NAME}`);
   const original = fs.readFileSync(file);
   fs.writeFileSync(path.join(root, '.git', 'index.lock'), '');
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
@@ -478,18 +478,18 @@ test('git mv forzado a fallar → MOVE_FAILED, epic.md restaurado byte a byte y 
   assert.equal(result.code, 'MOVE_FAILED');
   assert.match(result.message, /epic\.md se restauró/);
   assert.ok(fs.readFileSync(file).equals(original), 'epic.md restaurado');
-  assert.equal(fs.existsSync(path.join(root, 'specs', 'flow', 'archive', `${TODAY}-${NAME}`)), false);
+  assert.equal(fs.existsSync(path.join(root, 'changes', 'archive', `${TODAY}-${NAME}`)), false);
   assert.deepEqual(result.counts, { before: 1, after: 1 });
 });
 
 test('CANCELED/DONE con git mv forzado a fallar → MOVE_FAILED con «epic.md no se modificó» (STORY-172 T005)', (t) => {
   const root = makeFixture(t, { epics: { [NAME]: fm('CANCELED', 'DONE') } });
-  const original = fs.readFileSync(epicFile(root, `specs/flow/${NAME}`));
+  const original = fs.readFileSync(epicFile(root, `changes/${NAME}`));
   fs.writeFileSync(path.join(root, '.git', 'index.lock'), '');
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.code, 'MOVE_FAILED');
   assert.match(result.message, /epic\.md no se modificó/);
-  assert.ok(fs.readFileSync(epicFile(root, `specs/flow/${NAME}`)).equals(original));
+  assert.ok(fs.readFileSync(epicFile(root, `changes/${NAME}`)).equals(original));
 });
 
 test('epic.md con \\r\\n conserva \\r\\n en las líneas reemplazadas e insertadas', (t) => {
@@ -503,7 +503,7 @@ test('epic.md con \\r\\n conserva \\r\\n en las líneas reemplazadas e insertada
 
 test('epic.md con BOM → se escribe sin BOM', (t) => {
   const root = makeFixture(t, { epics: { [NAME]: `\uFEFF${epicContent(fm('SHIP', 'DONE'))}` } });
-  assert.deepEqual(fs.readFileSync(epicFile(root, `specs/flow/${NAME}`)).subarray(0, 3), Buffer.from([0xef, 0xbb, 0xbf]));
+  assert.deepEqual(fs.readFileSync(epicFile(root, `changes/${NAME}`)).subarray(0, 3), Buffer.from([0xef, 0xbb, 0xbf]));
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.ok, true, result.message);
   assert.notEqual(fs.readFileSync(epicFile(root, result.to))[0], 0xef);
@@ -513,12 +513,12 @@ test('directorio sin historial de git → moveMethod rename con aviso', (t) => {
   const root = makeFixture(t, { git: false });
   const plan = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(plan.moveMethod, 'rename');
-  assert.ok(plan.warnings.includes(`⚠️ specs/flow/${NAME} no tiene historial de git: se moverá sin git mv`), plan.warnings.join('\n'));
+  assert.ok(plan.warnings.includes(`⚠️ changes/${NAME} no tiene historial de git: se moverá sin git mv`), plan.warnings.join('\n'));
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.ok, true, result.message);
-  assert.ok(result.warnings.includes(`⚠️ specs/flow/${NAME} no tiene historial de git: se movió sin git mv`), result.warnings.join('\n'));
+  assert.ok(result.warnings.includes(`⚠️ changes/${NAME} no tiene historial de git: se movió sin git mv`), result.warnings.join('\n'));
   assert.ok(fs.existsSync(epicFile(root, result.to)));
-  assert.equal(fs.existsSync(path.join(root, 'specs', 'flow', NAME)), false);
+  assert.equal(fs.existsSync(path.join(root, 'changes', NAME)), false);
 });
 
 // ── Contrato 8 — CLI ────────────────────────────────────────────────────────────────
@@ -535,7 +535,7 @@ test('CLI: plan admitido → exit 0 y JSON ok: true; rechazo → exit 1 y ok: fa
   assert.equal(okJson.ok, true);
   assert.equal(okJson.version, '2.1.0');
   assert.match(okJson.archiveDate, /^\d{4}-\d{2}-\d{2}$/);
-  const rejected = cli(['plan', '--repo-root', root, '--path', 'specs/flow/EPIC-32-validada']);
+  const rejected = cli(['plan', '--repo-root', root, '--path', 'changes/EPIC-32-validada']);
   assert.equal(rejected.status, 1);
   assert.equal(JSON.parse(rejected.stdout).code, 'NOT_SHIPPED');
 });
@@ -554,7 +554,7 @@ test('CLI: argumentos inválidos → exit 2 con error en stderr y stdout vacío'
   for (const args of [
     ['borrar', '--repo-root', root, '--id', 'EPIC-31'],
     ['plan', '--repo-root', root, '--id', 'EPIC-1'],
-    ['plan', '--repo-root', root, '--id', 'EPIC-31', '--path', `specs/flow/${NAME}`],
+    ['plan', '--repo-root', root, '--id', 'EPIC-31', '--path', `changes/${NAME}`],
     ['plan', '--repo-root', root],
     ['plan', '--id', 'EPIC-31'],
     ['plan', '--repo-root', root, '--id', 'EPIC-31', '--yes'],
@@ -576,7 +576,7 @@ function withDocIndex(root, body) {
 
 test('BUG-01: plan con referencia en docs/index.md → linkUpdates cuenta la ocurrencia y no escribe (contrato 9, AC-1)', (t) => {
   const root = makeFixture(t, {
-    extra: (r) => withDocIndex(r, ['# Índice', '', `[epic](specs/flow/${NAME}/epic.md)`, ''].join('\n')),
+    extra: (r) => withDocIndex(r, ['# Índice', '', `[epic](changes/${NAME}/epic.md)`, ''].join('\n')),
   });
   const before = snapshot(root);
   const result = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
@@ -587,14 +587,14 @@ test('BUG-01: plan con referencia en docs/index.md → linkUpdates cuenta la ocu
 });
 
 test('BUG-01: apply → la referencia se reescribe a la ruta archivada y el resto del archivo se conserva (contrato 9, AC-2)', (t) => {
-  const body = ['# Índice', '', `antes [epic](specs/flow/${NAME}/epic.md) despues`, '', 'fin', ''].join('\n');
+  const body = ['# Índice', '', `antes [epic](changes/${NAME}/epic.md) despues`, '', 'fin', ''].join('\n');
   const root = makeFixture(t, { extra: (r) => withDocIndex(r, body) });
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.equal(result.ok, true, result.message);
   assert.deepEqual(result.links, { files: 1, occurrences: 1 });
   assert.match(result.message, new RegExp(`1 referencia\\(s\\) actualizada\\(s\\) en 1 archivo\\(s\\)$`));
   const after = fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8');
-  assert.ok(after.includes(`antes [epic](specs/flow/archive/${TODAY}-${NAME}/epic.md) despues`), after);
+  assert.ok(after.includes(`antes [epic](changes/archive/${TODAY}-${NAME}/epic.md) despues`), after);
   assert.ok(after.startsWith('# Índice'), 'encabezado intacto');
   assert.ok(after.trimEnd().endsWith('fin'), 'resto intacto');
 });
@@ -616,29 +616,29 @@ test('BUG-01: colisión de prefijo → solo se reescribe el directorio exacto, n
   const LONG = `${NAME}-extra`;
   const root = makeFixture(t, {
     epics: { [NAME]: fm('SHIP', 'DONE'), [LONG]: fm('SHIP', 'DONE', { created: '2026-09-01', updated: '2026-10-28' }) },
-    extra: (r) => withDocIndex(r, [`[exact](specs/flow/${NAME}/epic.md) y [larga](specs/flow/${LONG}/epic.md)`].join('\n')),
+    extra: (r) => withDocIndex(r, [`[exact](changes/${NAME}/epic.md) y [larga](changes/${LONG}/epic.md)`].join('\n')),
   });
-  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', epicPath: `specs/flow/${NAME}`, today: TODAY });
+  const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', epicPath: `changes/${NAME}`, today: TODAY });
   assert.equal(result.ok, true, result.message);
   const after = fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8');
-  assert.ok(after.includes(`[exact](specs/flow/archive/${TODAY}-${NAME}/epic.md)`), 'el exacto se reescribe');
-  assert.ok(after.includes(`[larga](specs/flow/${LONG}/epic.md)`), 'el más largo NO se reescribe');
+  assert.ok(after.includes(`[exact](changes/archive/${TODAY}-${NAME}/epic.md)`), 'el exacto se reescribe');
+  assert.ok(after.includes(`[larga](changes/${LONG}/epic.md)`), 'el más largo NO se reescribe');
 });
 
 test('BUG-01: múltiples ocurrencias en el mismo archivo → count y occurrences correctos (contrato 9, AC-4)', (t) => {
   const root = makeFixture(t, {
-    extra: (r) => withDocIndex(r, [`[a](specs/flow/${NAME}/epic.md)`, `[b](specs/flow/${NAME}/epic.md)`, `[c](specs/flow/${NAME}/epic.md)`].join('\n')),
+    extra: (r) => withDocIndex(r, [`[a](changes/${NAME}/epic.md)`, `[b](changes/${NAME}/epic.md)`, `[c](changes/${NAME}/epic.md)`].join('\n')),
   });
   const plan = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.deepEqual(plan.linkUpdates, [{ file: 'docs/index.md', count: 3 }]);
   const result = applyCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.deepEqual(result.links, { files: 1, occurrences: 3 });
   const after = fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8');
-  assert.equal(after.match(new RegExp(`specs/flow/archive/${TODAY}-${NAME}/epic\\.md`, 'g')).length, 3);
+  assert.equal(after.match(new RegExp(`changes/archive/${TODAY}-${NAME}/epic\\.md`, 'g')).length, 3);
 });
 
 test('BUG-01: raíces ausentes (sin docs/) → no lanza y solo actualiza lo existente (contrato 9, CNF-2)', (t) => {
-  const root = makeFixture(t, { extra: (r) => write(path.join(r, 'README.md'), `[e](specs/flow/${NAME}/epic.md)\n`) });
+  const root = makeFixture(t, { extra: (r) => write(path.join(r, 'README.md'), `[e](changes/${NAME}/epic.md)\n`) });
   assert.deepEqual(activeDocFiles(root), ['README.md'], 'solo README.md existe entre las raíces');
   const plan = planCompletion({ repoRoot: root, id: 'EPIC-31', today: TODAY });
   assert.deepEqual(plan.linkUpdates, [{ file: 'README.md', count: 1 }]);
@@ -650,18 +650,18 @@ test('BUG-01: raíces ausentes (sin docs/) → no lanza y solo actualiza lo exis
 test('BUG-01: findLinkUpdates / updateLinkReferences son puros y deterministas (contrato 9, helper)', (t) => {
   const root = makeFixture(t, {
     extra: (r) => {
-      withDocIndex(r, `ref specs/flow/${NAME}/ aquí\n`);
-      write(path.join(r, 'SECURITY.md'), `ver specs/flow/${NAME}/\n`);
+      withDocIndex(r, `ref changes/${NAME}/ aquí\n`);
+      write(path.join(r, 'SECURITY.md'), `ver changes/${NAME}/\n`);
     },
   });
-  const from = `specs/flow/${NAME}`;
-  const to = `specs/flow/archive/${TODAY}-${NAME}`;
+  const from = `changes/${NAME}`;
+  const to = `changes/archive/${TODAY}-${NAME}`;
   assert.deepEqual(findLinkUpdates(root, from), [
     { file: 'SECURITY.md', count: 1 },
     { file: 'docs/index.md', count: 1 },
   ]);
   const result = updateLinkReferences(root, from, to);
   assert.deepEqual(result, { files: 2, occurrences: 2 });
-  assert.match(fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8'), new RegExp(`specs/flow/archive/${TODAY}-${NAME}/`));
-  assert.match(fs.readFileSync(path.join(root, 'SECURITY.md'), 'utf8'), new RegExp(`specs/flow/archive/${TODAY}-${NAME}/`));
+  assert.match(fs.readFileSync(path.join(root, 'docs', 'index.md'), 'utf8'), new RegExp(`changes/archive/${TODAY}-${NAME}/`));
+  assert.match(fs.readFileSync(path.join(root, 'SECURITY.md'), 'utf8'), new RegExp(`changes/archive/${TODAY}-${NAME}/`));
 });

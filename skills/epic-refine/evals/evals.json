@@ -1,7 +1,7 @@
 {
   "skill": "epic-refine",
   "version": "1.6.0",
-  "description": "Casos de prueba para epic-refine (STORY-165, STORY-173, STORY-174): con epic-analyze-report.md en NEEDS-REFINEMENT aplica INT-02 (historia huérfana al índice), INT-03 (una sola línea) y MAD-02 (retira el related roto) tras un plan consolidado, con <archivo>.bak previo, status/substatus intactos y epic-refine-report.md; con APPROVED no crea ni modifica ningún archivo; los hallazgos que requieren decisión del PO quedan fuera de alcance; SAL-01/SAL-02 con evidencia parcial se asignan a la única historia de cierre (AC de cierre + cita E1); las referencias a slugs obsoletos tras un /story-split (COH) se reemplazan por el único directorio con el mismo ID o quedan para el PO. En cada fixture, el directorio del ejemplo hace de specs/flow/.",
+  "description": "Casos de prueba para epic-refine (STORY-165, STORY-173, STORY-174): con epic-analyze-report.md en NEEDS-REFINEMENT aplica INT-02 (historia huérfana al índice), INT-03 (una sola línea) y MAD-02 (retira el related roto) tras un plan consolidado, con <archivo>.bak previo, status/substatus intactos y epic-refine-report.md; con APPROVED no crea ni modifica ningún archivo; los hallazgos que requieren decisión del PO quedan fuera de alcance; SAL-01/SAL-02 con evidencia parcial se asignan a la única historia de cierre (AC de cierre + cita E1); las referencias a slugs obsoletos tras un /story-split (COH) se reemplazan por el único directorio con el mismo ID o quedan para el PO. En cada fixture, el directorio del ejemplo hace de changes/.",
   "cases": [
     {
       "id": "TC-001",
@@ -11,7 +11,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/huerfana-y-related-roto/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n). Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de changes/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n). Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
         "contains": ["EPIC-30-ejemplo/epic.md.bak ===", "EPIC-30-ejemplo/epic.md ===", "STORY-301-listar-pedidos-del-mes/story.md.bak ===", "STORY-301-listar-pedidos-del-mes/story.md ===", "EPIC-30-ejemplo/epic-refine-report.md ===", "- [ ] **STORY-303** — Totalizar comisiones: Como responsable de ventas, quiero ver el total de comisiones por vendedor, para aprobar el pago del mes\n- [ ] **STORY-304** — Exportar pedidos a CSV: Como responsable de ventas, quiero exportar los pedidos del mes a CSV, para cargarlos en la hoja de cálculo de comisiones", "related:\n  - EPIC-30-ejemplo\n---\n[[EPIC-30-ejemplo]]\n\n# 📖 Historia: Listar pedidos del mes", "title: \"Listar pedidos del mes\"\nstatus: SPECIFY\nsubstatus: DONE", "status: PLAN\nsubstatus: IN-PROGRESS", "type: epic-refine-report", "findings-applied: 2", "findings-out-of-scope: 0", "INT-02", "MAD-02", "aplicado", "/epic-analyze EPIC-30"],
@@ -27,7 +27,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/aprobada/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio skills/epic-refine/examples/aprobada/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30. Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/aprobada/ hace de changes/. El usuario ejecuta /epic-refine EPIC-30. Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
         "contains": ["=== CONSOLE ===", "APPROVED", "no necesita refinamiento"],
@@ -43,7 +43,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/solo-decisiones-po/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/solo-decisiones-po/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/solo-decisiones-po/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
         "contains": ["H-001 · INT-01 · responsable PO", "H-002 · INT-05 · responsable PO", "H-003 · SAL-03 · responsable PO", "EPIC-30-ejemplo/epic-refine-report.md ===", "findings-out-of-scope: 3", "| fuera de alcance | PO |", "STATUS: OK", "APLICADOS: 0", "FUERA-DE-ALCANCE: 3"],
@@ -59,7 +59,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/huerfana-y-related-roto/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30 y responde 'n' a la pregunta ¿Aplicar el plan? (s / n)."
+        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de changes/. El usuario ejecuta /epic-refine EPIC-30 y responde 'n' a la pregunta ¿Aplicar el plan? (s / n)."
       },
       "expected": {
         "contains": ["Plan rechazado", "no se modificó ningún archivo"],
@@ -75,7 +75,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/reejecucion-parcial/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/reejecucion-parcial/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/reejecucion-parcial/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["ya resuelto", "INT-02", "MAD-02", "aplicado", "story.md.bak", "YA-RESUELTOS: 1", "APLICADOS: 1"],
@@ -91,7 +91,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/duplicada/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/duplicada/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/duplicada/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["INT-03", "aplicado", "eliminar", "epic.md.bak", "APLICADOS: 1"],
@@ -107,7 +107,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/instruccion-incrustada/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/instruccion-incrustada/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/instruccion-incrustada/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["Notas", "status: SPECIFY", "INT-02", "MAD-02", "APLICADOS: 2"],
@@ -123,7 +123,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/huerfana-y-related-roto/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de specs/flow/, pero se supone que EPIC-30-ejemplo/epic-analyze-report.md no existe. El usuario ejecuta /epic-refine EPIC-30."
+        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de changes/, pero se supone que EPIC-30-ejemplo/epic-analyze-report.md no existe. El usuario ejecuta /epic-refine EPIC-30."
       },
       "expected": {
         "contains": ["❌", "epic-analyze-report.md", "/epic-analyze EPIC-30"],
@@ -139,7 +139,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/cobertura-cierre/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/cobertura-cierre/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/cobertura-cierre/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["SAL-01 · CS-1 → STORY-302", "aplicado", "STORY-302-enviar-csv-por-correo/story.md.bak", "Cierre del contrato de salida – CS-1 de EPIC-30", "- Cubre el criterio de salida CS-1 de EPIC-30: El listado de pedidos del mes se exporta a CSV y se envía por correo al responsable de ventas", "APLICADOS: 1"],
@@ -155,7 +155,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/cobertura-sin-parcial/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/cobertura-sin-parcial/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/cobertura-sin-parcial/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["SAL-01 · CS-2", "fuera de alcance", "PO", "sin evidencia parcial", "APLICADOS: 0", "FUERA-DE-ALCANCE: 1"],
@@ -171,7 +171,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/cobertura-empate/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/cobertura-empate/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/cobertura-empate/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["varias candidatas sin dependientes: STORY-301, STORY-302", "fuera de alcance", "PO", "APLICADOS: 0"],
@@ -187,7 +187,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/cobertura-reejecucion/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/cobertura-reejecucion/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/cobertura-reejecucion/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["ya resuelto", "SAL-01", "YA-RESUELTOS: 1", "APLICADOS: 0", "desactualizado"],
@@ -203,7 +203,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/cobertura-smoke-implementada/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/cobertura-smoke-implementada/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/cobertura-smoke-implementada/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
         "contains": ["STORY-303 ya está implementada", "fuera de alcance", "PO", "SAL-02 · SMOKE-2", "FUERA-DE-ALCANCE: 2"],
@@ -215,11 +215,11 @@
       "id": "TC-014",
       "name": "reemplaza-slug-obsoleto-tras-split",
       "type": "happy-path",
-      "description": "[AC-1 · CNF-1 · STORY-174 D-2…D-6] Tras un /story-split la core quedó como STORY-301-exportar-informe-csv, pero la línea F2 de STORY-301 del índice termina en [[STORY-301-exportar-informe]] y el related de STORY-302 cita STORY-301-exportar-informe, que no existe en specs/flow/ ni en specs/flow/archive/. epic-analyze no lo reporta (resuelve por ID). epic-refine detecta COH-1 (índice de epic.md) y COH-2 (related de STORY-302), los reemplaza por el único directorio STORY-301-*, crea epic.md.bak y story.md.bak y los registra como aplicados; INT-01 e INT-05 quedan fuera de alcance para el PO. No son COH: STORY-301 (ID sin slug) en el related de STORY-305, ni STORY-301-exportar-informe-csv y STORY-305-exportar-informe-xlsx, que existen.",
+      "description": "[AC-1 · CNF-1 · STORY-174 D-2…D-6] Tras un /story-split la core quedó como STORY-301-exportar-informe-csv, pero la línea F2 de STORY-301 del índice termina en [[STORY-301-exportar-informe]] y el related de STORY-302 cita STORY-301-exportar-informe, que no existe en changes/ ni en changes/archive/. epic-analyze no lo reporta (resuelve por ID). epic-refine detecta COH-1 (índice de epic.md) y COH-2 (related de STORY-302), los reemplaza por el único directorio STORY-301-*, crea epic.md.bak y story.md.bak y los registra como aplicados; INT-01 e INT-05 quedan fuera de alcance para el PO. No son COH: STORY-301 (ID sin slug) en el related de STORY-305, ni STORY-301-exportar-informe-csv y STORY-305-exportar-informe-xlsx, que existen.",
       "input": {
         "input_path": "skills/epic-refine/examples/split-slug-obsoleto/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio skills/epic-refine/examples/split-slug-obsoleto/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n). Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/split-slug-obsoleto/ hace de changes/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n). Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
         "contains": ["COH-1", "COH-2", "`STORY-301-exportar-informe` → `STORY-301-exportar-informe-csv`", "EPIC-30-ejemplo/epic.md.bak ===", "EPIC-30-ejemplo/epic.md ===", "[[STORY-301-exportar-informe-csv]]", "STORY-302-programar-envio-informe/story.md.bak ===", "STORY-302-programar-envio-informe/story.md ===", "  - STORY-301-exportar-informe-csv", "aplicado", "INT-01", "INT-05", "/epic-analyze EPIC-30"],
@@ -231,11 +231,11 @@
       "id": "TC-015",
       "name": "reemplazo-no-determinable-al-po",
       "type": "edge-case",
-      "description": "[AC-2 · STORY-174 D-4] El related de STORY-302 cita STORY-310-importar-datos y no existe ningún directorio STORY-310-* en specs/flow/ ni en specs/flow/archive/; el reporte no lista ese valor (reporte anterior a la referencia, CR-001). La referencia queda como COH-1 fuera de alcance con responsable PO y la nota de reemplazo no determinable; el story.md de STORY-302 no se modifica y no se crea ningún .bak.",
+      "description": "[AC-2 · STORY-174 D-4] El related de STORY-302 cita STORY-310-importar-datos y no existe ningún directorio STORY-310-* en changes/ ni en changes/archive/; el reporte no lista ese valor (reporte anterior a la referencia, CR-001). La referencia queda como COH-1 fuera de alcance con responsable PO y la nota de reemplazo no determinable; el story.md de STORY-302 no se modifica y no se crea ningún .bak.",
       "input": {
         "input_path": "skills/epic-refine/examples/split-sin-reemplazo/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/split-sin-reemplazo/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/split-sin-reemplazo/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["COH-1", "STORY-310-importar-datos", "fuera de alcance", "responsable PO", "reemplazo no determinable", "APLICADOS: 0", "FUERA-DE-ALCANCE: 3"],
@@ -251,7 +251,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/split-ambiguo/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/split-ambiguo/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/split-ambiguo/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["COH-1", "COH-2", "varios directorios con el ID STORY-301", "fuera de alcance", "responsable PO", "APLICADOS: 0", "FUERA-DE-ALCANCE: 4"],
@@ -267,7 +267,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/split-reportado/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/split-reportado/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/split-reportado/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["MAD-02", "aplicado", "STORY-302-programar-envio-informe/story.md.bak", "APLICADOS: 1", "FUERA-DE-ALCANCE: 2"],
@@ -283,7 +283,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/split-aprobada/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio skills/epic-refine/examples/split-aprobada/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30."
+        "context": "El directorio skills/epic-refine/examples/split-aprobada/ hace de changes/. El usuario ejecuta /epic-refine EPIC-30."
       },
       "expected": {
         "contains": ["APPROVED", "no necesita refinamiento"],
@@ -299,7 +299,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/huerfana-y-related-roto/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de specs/flow/, pero se supone que el frontmatter de STORY-304-exportar-pedidos-csv/story.md declara parent: EPIC-300-otra y updated: 2026-10-29 (posterior al reporte). El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de changes/, pero se supone que el frontmatter de STORY-304-exportar-pedidos-csv/story.md declara parent: EPIC-300-otra y updated: 2026-10-29 (posterior al reporte). El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
         "contains": ["INT-02", "ya resuelto", "MAD-02", "aplicado", "STORY-301-listar-pedidos-del-mes/story.md.bak ===", "YA-RESUELTOS: 1", "APLICADOS: 1"],
@@ -315,7 +315,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/huerfana-y-related-roto/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de specs/flow/, pero se supone que el frontmatter de STORY-301-listar-pedidos-del-mes/story.md declara parent: EPIC-300-otra. El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de changes/, pero se supone que el frontmatter de STORY-301-listar-pedidos-del-mes/story.md declara parent: EPIC-300-otra. El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
         "contains": ["MAD-02", "fuera de alcance", "responsable PO", "historia de otra épica", "EPIC-300-otra", "EPIC-30-ejemplo/epic.md.bak ===", "APLICADOS: 1", "FUERA-DE-ALCANCE: 1"],
@@ -327,14 +327,14 @@
       "id": "TC-021",
       "name": "ruta-fuera-de-specs-flow-rechazada",
       "type": "error-case",
-      "description": "[CNF-1 · SEC · fix-directives ronda 2 #3] El argumento es una ruta que, normalizada, sale de REPO_ROOT/specs/flow/ (../../otro-repo/EPIC-30-ejemplo) aunque el directorio contenga un epic.md y un epic-analyze-report.md en NEEDS-REFINEMENT. El skill la rechaza en el Paso 1, antes de leer el reporte o escribir: no hay plan, ni .bak, ni epic-refine-report.md.",
+      "description": "[CNF-1 · SEC · fix-directives ronda 2 #3] El argumento es una ruta que, normalizada, sale de REPO_ROOT/changes/ (../../otro-repo/EPIC-30-ejemplo) aunque el directorio contenga un epic.md y un epic-analyze-report.md en NEEDS-REFINEMENT. El skill la rechaza en el Paso 1, antes de leer el reporte o escribir: no hay plan, ni .bak, ni epic-refine-report.md.",
       "input": {
         "input_path": "skills/epic-refine/examples/huerfana-y-related-roto/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de specs/flow/, pero se supone que su contenido está copiado también en ../../otro-repo/ (fuera de REPO_ROOT). El orquestador ejecuta /epic-refine ../../otro-repo/EPIC-30-ejemplo --auto. Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/huerfana-y-related-roto/ hace de changes/, pero se supone que su contenido está copiado también en ../../otro-repo/ (fuera de REPO_ROOT). El orquestador ejecuta /epic-refine ../../otro-repo/EPIC-30-ejemplo --auto. Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
-        "contains": ["=== CONSOLE ===", "no es una épica activa de specs/flow/", "specs/flow/EPIC-NNN-<slug>/"],
+        "contains": ["=== CONSOLE ===", "no es una épica activa de changes/", "changes/EPIC-NNN-<slug>/"],
         "not_contains": ["=== FILE:", ".bak", "Backup creado", "INT-02", "APLICADOS: 1"]
       },
       "threshold": 1.0
@@ -347,7 +347,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/split-slug-obsoleto/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/split-slug-obsoleto/ hace de specs/flow/, pero se supone que el frontmatter de STORY-302-programar-envio-informe/story.md declara parent: EPIC-300-otra. El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/split-slug-obsoleto/ hace de changes/, pero se supone que el frontmatter de STORY-302-programar-envio-informe/story.md declara parent: EPIC-300-otra. El orquestador ejecuta /epic-refine EPIC-30 --auto. Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
         "contains": ["COH-1", "COH-2", "historia de otra épica", "EPIC-300-otra", "fuera de alcance", "PO", "EPIC-30-ejemplo/epic.md.bak ===", "[[STORY-301-exportar-informe-csv]]", "APLICADOS: 1", "FUERA-DE-ALCANCE: 3"],
@@ -362,38 +362,38 @@
       "description": "[AC-1 · CS-15 · CNF-1 · fix-directives ronda 2 #2] Ejecución real sobre una copia aislada del fixture huerfana-y-related-roto/ (modo sandbox de run-evals). El usuario responde 's'. En disco: solo se escriben epic.md, el story.md de STORY-301, sus dos .bak (idénticos al contenido previo) y epic-refine-report.md; el índice contiene la línea F2 de STORY-304 tras la de STORY-303, el related de STORY-301 ya no contiene STORY-999, status/substatus siguen intactos y el reporte registra ambos hallazgos aplicados. Ningún otro story.md ni epic-analyze-report.md cambia.",
       "sandbox": {
         "fixture": "skills/epic-refine/examples/huerfana-y-related-roto",
-        "target": "specs/flow",
+        "target": "changes",
         "copy": ["docs/templates", "skills/epic-analyze/SKILL.md", "skills/epic-analyze/assets"]
       },
       "input": {
-        "input_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "input_path": "changes/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio de trabajo es REPO_ROOT; la épica está en specs/flow/EPIC-30-ejemplo/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
+        "context": "El directorio de trabajo es REPO_ROOT; la épica está en changes/EPIC-30-ejemplo/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n)."
       },
       "expected": {
         "contains": ["=== CONSOLE ===", "/epic-analyze EPIC-30"],
         "not_contains": ["Plan rechazado", "Corrección revertida"],
         "files": {
           "written": [
-            "specs/flow/EPIC-30-ejemplo/epic.md",
-            "specs/flow/EPIC-30-ejemplo/epic.md.bak",
-            "specs/flow/EPIC-30-ejemplo/epic-refine-report.md",
-            "specs/flow/STORY-301-listar-pedidos-del-mes/story.md",
-            "specs/flow/STORY-301-listar-pedidos-del-mes/story.md.bak"
+            "changes/EPIC-30-ejemplo/epic.md",
+            "changes/EPIC-30-ejemplo/epic.md.bak",
+            "changes/EPIC-30-ejemplo/epic-refine-report.md",
+            "changes/STORY-301-listar-pedidos-del-mes/story.md",
+            "changes/STORY-301-listar-pedidos-del-mes/story.md.bak"
           ],
           "backups": {
-            "specs/flow/EPIC-30-ejemplo/epic.md.bak": "specs/flow/EPIC-30-ejemplo/epic.md",
-            "specs/flow/STORY-301-listar-pedidos-del-mes/story.md.bak": "specs/flow/STORY-301-listar-pedidos-del-mes/story.md"
+            "changes/EPIC-30-ejemplo/epic.md.bak": "changes/EPIC-30-ejemplo/epic.md",
+            "changes/STORY-301-listar-pedidos-del-mes/story.md.bak": "changes/STORY-301-listar-pedidos-del-mes/story.md"
           },
           "contains": {
-            "specs/flow/EPIC-30-ejemplo/epic.md": ["- [ ] **STORY-303** — Totalizar comisiones: Como responsable de ventas, quiero ver el total de comisiones por vendedor, para aprobar el pago del mes\n- [ ] **STORY-304** — Exportar pedidos a CSV: Como responsable de ventas, quiero exportar los pedidos del mes a CSV, para cargarlos en la hoja de cálculo de comisiones", "status: PLAN\nsubstatus: IN-PROGRESS"],
-            "specs/flow/STORY-301-listar-pedidos-del-mes/story.md": ["related:\n  - EPIC-30-ejemplo\n---", "status: SPECIFY\nsubstatus: DONE"],
-            "specs/flow/EPIC-30-ejemplo/epic-refine-report.md": ["type: epic-refine-report", "findings-applied: 2", "findings-out-of-scope: 0", "INT-02", "MAD-02", "aplicado"]
+            "changes/EPIC-30-ejemplo/epic.md": ["- [ ] **STORY-303** — Totalizar comisiones: Como responsable de ventas, quiero ver el total de comisiones por vendedor, para aprobar el pago del mes\n- [ ] **STORY-304** — Exportar pedidos a CSV: Como responsable de ventas, quiero exportar los pedidos del mes a CSV, para cargarlos en la hoja de cálculo de comisiones", "status: PLAN\nsubstatus: IN-PROGRESS"],
+            "changes/STORY-301-listar-pedidos-del-mes/story.md": ["related:\n  - EPIC-30-ejemplo\n---", "status: SPECIFY\nsubstatus: DONE"],
+            "changes/EPIC-30-ejemplo/epic-refine-report.md": ["type: epic-refine-report", "findings-applied: 2", "findings-out-of-scope: 0", "INT-02", "MAD-02", "aplicado"]
           },
           "not_contains": {
-            "specs/flow/STORY-301-listar-pedidos-del-mes/story.md": ["STORY-999"],
-            "specs/flow/EPIC-30-ejemplo/epic.md": ["status: COMPLETED"],
-            "specs/flow/EPIC-30-ejemplo/epic-refine-report.md": ["\nverdict:"]
+            "changes/STORY-301-listar-pedidos-del-mes/story.md": ["STORY-999"],
+            "changes/EPIC-30-ejemplo/epic.md": ["status: COMPLETED"],
+            "changes/EPIC-30-ejemplo/epic-refine-report.md": ["\nverdict:"]
           }
         }
       },
@@ -406,13 +406,13 @@
       "description": "[AC-2 · CS-15 · fix-directives ronda 2 #2] Ejecución real sobre una copia aislada del fixture aprobada/ (verdict: APPROVED). El árbol del sandbox queda idéntico: ningún archivo creado, modificado ni eliminado, tampoco epic-refine-report.md ni ningún .bak.",
       "sandbox": {
         "fixture": "skills/epic-refine/examples/aprobada",
-        "target": "specs/flow",
+        "target": "changes",
         "copy": ["docs/templates", "skills/epic-analyze/SKILL.md", "skills/epic-analyze/assets"]
       },
       "input": {
-        "input_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "input_path": "changes/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio de trabajo es REPO_ROOT; la épica está en specs/flow/EPIC-30-ejemplo/. El usuario ejecuta /epic-refine EPIC-30."
+        "context": "El directorio de trabajo es REPO_ROOT; la épica está en changes/EPIC-30-ejemplo/. El usuario ejecuta /epic-refine EPIC-30."
       },
       "expected": {
         "contains": ["=== CONSOLE ===", "APPROVED", "no necesita refinamiento"],
@@ -428,13 +428,13 @@
       "description": "[D-6 · CNF-1 · fix-directives ronda 2 #2] Ejecución real sobre una copia aislada del fixture huerfana-y-related-roto/; el usuario responde 'n' al plan. El árbol del sandbox queda idéntico: ni .bak, ni cambios en epic.md o story.md, ni epic-refine-report.md.",
       "sandbox": {
         "fixture": "skills/epic-refine/examples/huerfana-y-related-roto",
-        "target": "specs/flow",
+        "target": "changes",
         "copy": ["docs/templates", "skills/epic-analyze/SKILL.md", "skills/epic-analyze/assets"]
       },
       "input": {
-        "input_path": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "input_path": "changes/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio de trabajo es REPO_ROOT; la épica está en specs/flow/EPIC-30-ejemplo/. El usuario ejecuta /epic-refine EPIC-30 y responde 'n' a la pregunta ¿Aplicar el plan? (s / n)."
+        "context": "El directorio de trabajo es REPO_ROOT; la épica está en changes/EPIC-30-ejemplo/. El usuario ejecuta /epic-refine EPIC-30 y responde 'n' a la pregunta ¿Aplicar el plan? (s / n)."
       },
       "expected": {
         "contains": ["=== CONSOLE ===", "¿Aplicar el plan? (s / n)", "Plan rechazado"],
@@ -453,7 +453,7 @@
         "flags": [
           "--auto"
         ],
-        "context": "El directorio skills/epic-refine/examples/cobertura-por-id/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/cobertura-por-id/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": [
@@ -480,7 +480,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/cobertura-cierre-planificada/EPIC-30-ejemplo/epic.md",
         "flags": [],
-        "context": "El directorio skills/epic-refine/examples/cobertura-cierre-planificada/ hace de specs/flow/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n). Los bloques FILE usan la ruta relativa a specs/flow/ del fixture (p. ej. specs/flow/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
+        "context": "El directorio skills/epic-refine/examples/cobertura-cierre-planificada/ hace de changes/. El usuario ejecuta /epic-refine EPIC-30 y responde 's' a la pregunta ¿Aplicar el plan? (s / n). Los bloques FILE usan la ruta relativa a changes/ del fixture (p. ej. changes/EPIC-30-ejemplo/epic.md) e incluyen cada <archivo>.bak creado."
       },
       "expected": {
         "contains": ["SAL-01 · CS-1 → STORY-302", "Replanifica: /story-plan STORY-302", "Siguiente paso: /epic-analyze EPIC-30"],
@@ -496,7 +496,7 @@
       "input": {
         "input_path": "skills/epic-refine/examples/cobertura-cierre-status-desconocido/EPIC-30-ejemplo/epic.md",
         "flags": ["--auto"],
-        "context": "El directorio skills/epic-refine/examples/cobertura-cierre-status-desconocido/ hace de specs/flow/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+        "context": "El directorio skills/epic-refine/examples/cobertura-cierre-status-desconocido/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
       },
       "expected": {
         "contains": ["fuera del workflow de historia", "BACKLOG", "FUERA-DE-ALCANCE: 1"],

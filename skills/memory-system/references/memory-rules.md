@@ -8,7 +8,7 @@ está en PATH (degradación inline). `check` no define reglas propias de slug, c
 reutiliza las de §2, y cualquier ajuste se hace aquí una sola vez y lo heredan los tres modos.
 
 La **raíz de conocimiento** es `docs/` (el `--root` del motor; ruta fija relativa a `REPO_ROOT`,
-ADR-0016). Salvo que se diga otra cosa, toda ruta relativa de este documento lo es a `docs/`.
+ADR-0023). Salvo que se diga otra cosa, toda ruta relativa de este documento lo es a `docs/`.
 
 **Contenido:** [1. Perfiles de harness](#1-perfiles-de-harness-harness_profiles) ·
 [2. Nodo indexable](#2-nodo-indexable) · [3. Formato del índice](#3-formato-del-índice) ·
@@ -72,35 +72,37 @@ se enlaza solo por ruta con `⚠️ slug placeholder` y sus wikilinks no cuentan
 Primer segmento de `relPath` (`adr`, `guides`, `policies`, …). Reglas especiales:
 
 - Archivo en la raíz de `docs/` (`constitution.md`) → `root`.
-- Layout legado `docs/specs/` (repo sin migrar): `specs/epics/` → `specs-epics`;
-  `specs/stories/` → `specs-stories`; otro subdirectorio `specs/<x>/` → `specs-<x>` (sin
-  placeholder en el template: exit 2, a propósito). Los niveles retirados de tres niveles entran
-  por ese fallback; `scaffold` los detecta y avisa. Un archivo suelto directamente en `specs/` →
-  capa `specs`.
+- Layout legado `docs/specs/` (repo sin migrar): `specs/epics/` → `changes-epics`;
+  `specs/stories/` → `changes-stories` (conviven con los nodos del origen flow); otro
+  subdirectorio `specs/<x>/` → `specs-<x>` (sin placeholder en el template: exit 2, a propósito).
+  Los niveles retirados de tres niveles entran por ese fallback; `scaffold` los detecta y avisa.
+  Un archivo suelto directamente en `docs/specs/` → capa `changes`.
 - Nodos del origen flow → capa según la tabla de «Origen flow».
 - Nodos de raíces externas → `external`.
 
 ### Origen flow
 
-`index` y `check` recorren también `<REPO_ROOT>/specs/flow/`, los work items del layout fijo
-(STORY-152 D-4), con el mismo recorrido y las mismas exclusiones que `docs/`. Sus nodos son
+`index` y `check` recorren también `<REPO_ROOT>/changes/`, los work items del layout fijo
+(STORY-152 D-4, ADR-0023), con el mismo recorrido y las mismas exclusiones que `docs/`. Sus nodos son
 **propios**: `check` los evalúa (`orphan`, `invalid-frontmatter`, `broken-wikilink`,
-`requirement`). Su `relPath` es relativa a `docs/` (`../specs/flow/STORY-001-a/story.md`), válida
-como enlace desde `docs/index.md`. La capa se calcula sobre la ruta relativa a `specs/flow/`:
+`requirement`). Su `relPath` es relativa a `docs/` (`../changes/STORY-001-a/story.md`), válida
+como enlace desde `docs/index.md`. La capa se calcula sobre la ruta relativa a `changes/`:
 
-| Ruta bajo `specs/flow/` | Capa |
+| Ruta bajo `changes/` | Capa |
 |---|---|
-| `archive/**` | `specs-archive` |
-| primer segmento `EPIC-*` | `specs-epics` |
-| primer segmento `STORY-*` | `specs-stories` |
-| cualquier otro | `specs` |
+| `archive/**` | `changes-archive` |
+| primer segmento `EPIC-*` | `changes-epics` |
+| primer segmento `STORY-*` | `changes-stories` |
+| cualquier otro | `changes` |
 
-- Si el perfil incluye `specs` en `skipLayers` (Speckit, OpenSpec), el origen flow no se recorre:
-  `specs/` pertenece al harness.
-- Sin `specs/flow/`, el origen queda vacío, sin aviso.
+- Si el perfil incluye `changes` en `skipLayers` (Speckit, OpenSpec), el origen flow no se recorre:
+  el harness gestiona sus propios cambios.
+- La especificación viva de `<REPO_ROOT>/specs/` no es un origen del índice (ADR-0023 no define su
+  formato).
+- Sin `changes/`, el origen queda vacío, sin aviso.
 - Ninguna escritura: `index` sigue escribiendo solo `docs/index.md`.
 - Las capas `specs-*` son las mismas del layout legado: durante la migración, los nodos de
-  `docs/specs/` y de `specs/flow/` conviven en las mismas secciones del índice.
+  `docs/specs/` y de `changes/` conviven en las mismas secciones del índice.
 
 ### Frontmatter
 
@@ -160,7 +162,7 @@ Si hay nodos pendientes, el índice termina con la sección `## ⚠️ Nodos pen
 `scripts/check-doc-links.js` del framework ignora los wikilinks marcados así.
 
 Protección del template (exit 2 sin escribir): un `{layer:<capa>}` que no sea una capa conocida
-(`root`, `product`, `requirements`, `specs`, `specs-epics`, `specs-stories`, `domains`,
+(`root`, `product`, `requirements`, `changes`, `changes-epics`, `changes-stories`, `changes-archive`, `domains`,
 `architecture`, `adr`, `policies`, `guardrails`, `guides`, `runbooks`, `external`) ni una capa con
 nodos, o una capa con nodos sin placeholder. El mensaje nombra la capa.
 
@@ -181,7 +183,7 @@ nodos indexados: N · sin frontmatter: M · nodos pendientes: K
 después aplica la tabla de plantillas compartidas. Las diez capas son el mismo catálogo `LAYERS`
 del índice: `product`, `requirements`, `domains`, `architecture`, `adr`, `policies`,
 `guardrails`, `guides`, `runbooks`, `templates`. `scaffold` no crea `docs/specs/` ni
-`specs/flow/`: los directorios de work items los crea `/sddf-init` (STORY-152 D-5).
+`changes/`: los directorios de work items los crea `/sddf-init` (STORY-152 D-5).
 
 ### Archivos gestionados
 

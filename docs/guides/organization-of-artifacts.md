@@ -24,7 +24,7 @@ Este documento define las reglas para organizar los artefactos de especificació
 Los work items se guardan en un directorio fijo de la raíz del repositorio ([ADR-0016](../decisions/ADR-0016-layout-fijo-de-tres-raices.md)); no es configurable:
 
 ```
-specs/flow/
+changes/
 ```
 
 A partir de aquí se representa como `{SPECS_ROOT}`. La visión, stakeholders, objetivos, roadmap y story map viven en `docs/product/`; los requisitos viven en `docs/requirements/`. Las raíces del repositorio se describen en [[root-folder-practices]].
@@ -47,8 +47,8 @@ Existen dos tipos de work item: **Épica** y **Story**. Ambos son hermanos dentr
 Por ejemplo:
 
 ```
-specs/flow/EPIC-001-nombre-epica/epic.md
-specs/flow/STORY-001-nombre-story/story.md
+changes/EPIC-001-nombre-epica/epic.md
+changes/STORY-001-nombre-story/story.md
 ```
 
 Las historias las archiva `story-complete` y las épicas `epic-complete`, siempre con confirmación humana. Un número de épica o de historia archivada nunca se reutiliza: los skills que numeran cuentan también `{SPECS_ROOT}/archive/`.
@@ -168,7 +168,7 @@ Para acelerar la navegación humana y de IAs, `docs/index.md` lista los work ite
 
 | Regla | Verificación |
 |-------|--------------|
-| ¿Todo work item está directamente en `specs/flow/` o, si es una historia o épica `COMPLETED` o `CANCELED`, en `specs/flow/archive/`? | ⬜ |
+| ¿Todo work item está directamente en `changes/` o, si es una historia o épica `COMPLETED` o `CANCELED`, en `changes/archive/`? | ⬜ |
 | ¿El nombre del directorio comienza con el campo `id` del frontmatter? | ⬜ |
 | ¿Cada archivo principal (`epic.md` o `story.md`) comienza con frontmatter YAML? | ⬜ |
 | ¿Los campos obligatorios (`type`, `id`, `title`, `status`, `parent`, `created`, `updated`) están presentes? | ⬜ |

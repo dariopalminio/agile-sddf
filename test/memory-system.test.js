@@ -155,8 +155,8 @@ test('UT-006 deriveNode: slug, capa y título según D-3', () => {
   assert.deepEqual([adr.slug, adr.layer, adr.title], ['ADR-0001-x', 'decisions', 'ADR-0001: Decisión de ejemplo X']);
   const guide = node('guides/sdd.md');
   assert.deepEqual([guide.slug, guide.layer, guide.title], ['sdd', 'guides', 'Guía SDD de ejemplo']);
-  const story = engine.deriveNode(path.join(base, '..', 'specs', 'flow', 'STORY-001-a', 'story.md'), base, { flow: true });
-  assert.deepEqual([story.slug, story.layer, story.relPath], ['STORY-001-a', 'specs-stories', '../specs/flow/STORY-001-a/story.md']);
+  const story = engine.deriveNode(path.join(base, '..', 'changes', 'STORY-001-a', 'story.md'), base, { flow: true });
+  assert.deepEqual([story.slug, story.layer, story.relPath], ['STORY-001-a', 'changes-stories', '../changes/STORY-001-a/story.md']);
   const policies = node('policies/README.md');
   assert.deepEqual([policies.slug, policies.layer], ['policies-index', 'policies']);
   const constitution = node('constitution.md');
@@ -177,16 +177,16 @@ test('UT-007 scanNodes: excluye index.md, .cache, templates, derivados y pre-spl
   const repo = copyFixture(t, 'sddf');
   const docs = path.join(repo, 'docs');
   fs.writeFileSync(path.join(docs, 'index.md'), '---\nslug: index\n---\n# Índice\n');
-  fs.mkdirSync(path.join(repo, 'specs', 'flow', '.cache'), { recursive: true });
-  fs.writeFileSync(path.join(repo, 'specs', 'flow', '.cache', 'index.json'), '{}');
-  fs.writeFileSync(path.join(repo, 'specs', 'flow', '.cache', 'index.md'), '# cache\n');
-  const story = path.join(repo, 'specs', 'flow', 'STORY-001-a');
+  fs.mkdirSync(path.join(repo, 'changes', '.cache'), { recursive: true });
+  fs.writeFileSync(path.join(repo, 'changes', '.cache', 'index.json'), '{}');
+  fs.writeFileSync(path.join(repo, 'changes', '.cache', 'index.md'), '# cache\n');
+  const story = path.join(repo, 'changes', 'STORY-001-a');
   fs.mkdirSync(path.join(story, 'pre-split'));
   fs.writeFileSync(path.join(story, 'pre-split', 'story.md'), '---\nslug: STORY-001-a-old\n---\n# vieja\n');
   fs.writeFileSync(path.join(story, 'implement-report.md'), '# reporte\n');
   const rels = engine.scanNodes(docs, 'sddf').map((n) => n.relPath);
   assert.deepEqual(rels, [
-    '../specs/flow/STORY-001-a/story.md',
+    '../changes/STORY-001-a/story.md',
     'constitution.md',
     'decisions/ADR-0001-x.md',
     'guides/sdd.md',
@@ -344,7 +344,7 @@ test('S096-UT-001 scaffold: copia-si-falta crea el árbol semilla con {date} sus
   for (const name of TEN_TEMPLATES) {
     assert.ok(fs.existsSync(path.join(docs, 'templates', name)), name);
   }
-  assert.ok(!fs.existsSync(path.join(docs, 'specs')), 'los work items viven en specs/flow/, no en docs/specs/');
+  assert.ok(!fs.existsSync(path.join(docs, 'specs')), 'los work items viven en changes/, no en docs/specs/');
   for (const kind of ['functional', 'non-functional']) assert.ok(!fs.existsSync(path.join(docs, 'requirements', kind)), kind);
   assert.equal(fs.readdirSync(path.join(docs, 'requirements')).filter((name) => /^srs-.*\.md$/.test(name)).length, 1);
   assert.ok(!fs.existsSync(path.join(docs, 'index.md')), 'scaffold no crea index.md');
@@ -576,7 +576,8 @@ test('S096-UT-001c assets/scaffold: el árbol semilla es exactamente el declarad
 
 test('S096-UT-001b LAYERS: catálogo único del scaffold y del índice', () => {
   assert.deepEqual(engine.LAYERS, LAYER_DIRS);
-  for (const layer of ['specs', 'specs-epics', 'specs-stories', 'specs-archive']) assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
+  for (const layer of ['changes', 'changes-epics', 'changes-stories', 'changes-archive']) assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
+  for (const layer of ['specs', 'specs-epics', 'specs-stories', 'specs-archive']) assert.ok(!engine.KNOWN_LAYERS.includes(layer), layer);
   for (const layer of engine.LAYERS) {
     if (layer === 'templates') assert.ok(!engine.KNOWN_LAYERS.includes(layer));
     else assert.ok(engine.KNOWN_LAYERS.includes(layer), layer);
@@ -795,7 +796,7 @@ test('S097-UT-007 check: templates/ y derivados de historia no se evalúan (V-5)
   const docs = path.join(copyFixture(t, 'broken'), 'docs');
   const rels = engine.scanNodes(docs, 'sddf').map((node) => node.relPath);
   assert.ok(!rels.some((rel) => rel.startsWith('templates/')), 'templates/ excluido');
-  assert.ok(!rels.includes('../specs/flow/STORY-001-a/design.md'), 'derivado excluido');
+  assert.ok(!rels.includes('../changes/STORY-001-a/design.md'), 'derivado excluido');
 
   const result = engine.checkMemory(docs, 'sddf');
   assert.equal(result.summary['broken-wikilink'], 1);
@@ -972,9 +973,9 @@ const actionLines = (stdout) => stdout.split('\n').filter((line) => line.startsW
 
 test('S098-UT-001 HARNESS_PROFILES: skipLayers y mappings completos (D-1)', () => {
   const { sddf, generic, speckit, openspec } = engine.HARNESS_PROFILES;
-  assert.deepEqual(speckit.skipLayers, ['specs']);
+  assert.deepEqual(speckit.skipLayers, ['changes']);
   assert.deepEqual(speckit.mappings, { 'constitution.md': '.specify/memory/constitution.md' });
-  assert.deepEqual(openspec.skipLayers, ['specs']);
+  assert.deepEqual(openspec.skipLayers, ['changes']);
   assert.deepEqual(openspec.mappings, {});
   for (const profile of [sddf, generic]) {
     assert.deepEqual(profile.skipLayers, []);
@@ -1312,7 +1313,7 @@ test('S114-IT-007 git detecta los movimientos de épicas e historias como renomb
 // STORY-152 — origen flow del índice (D-4) y catálogo de diez capas (D-5)
 // ---------------------------------------------------------------------------
 
-// Repo temporal con `docs/` mínimo y work items en `specs/flow/` (activos y archivados).
+// Repo temporal con `docs/` mínimo y work items en `changes/` (activos y archivados).
 function flowRepo(t, { marker = 'sddf.config.yaml' } = {}) {
   const repo = tempDir(t, 'memory-system-flow-');
   const docs = path.join(repo, 'docs');
@@ -1321,7 +1322,7 @@ function flowRepo(t, { marker = 'sddf.config.yaml' } = {}) {
   if (marker === 'sddf.config.yaml') fs.writeFileSync(path.join(repo, marker), '# marcador de proyecto SDDF\n');
   else fs.mkdirSync(path.join(repo, marker), { recursive: true });
   const write = (rel, content) => {
-    const file = path.join(repo, 'specs', 'flow', ...rel.split('/'));
+    const file = path.join(repo, 'changes', ...rel.split('/'));
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, content);
   };
@@ -1332,20 +1333,20 @@ function flowRepo(t, { marker = 'sddf.config.yaml' } = {}) {
   return { repo, docs };
 }
 
-test('S152-UT-001 scanNodes: el origen flow aporta épicas, historias y archivadas con rutas ../specs/flow/', (t) => {
+test('S152-UT-001 scanNodes: el origen flow aporta épicas, historias y archivadas con rutas ../changes/', (t) => {
   const { docs } = flowRepo(t);
-  const flow = engine.scanNodes(docs, 'sddf').filter((node) => node.relPath.startsWith('../specs/flow/'));
+  const flow = engine.scanNodes(docs, 'sddf').filter((node) => node.relPath.startsWith('../changes/'));
   assert.deepEqual(flow.map((node) => [node.relPath, node.layer, node.slug]), [
-    ['../specs/flow/EPIC-01-x/epic.md', 'specs-epics', 'EPIC-01-x'],
-    ['../specs/flow/STORY-001-a/story.md', 'specs-stories', 'STORY-001-a'],
-    ['../specs/flow/archive/2026-01-01-STORY-000-z/story.md', 'specs-archive', 'STORY-000-z'],
+    ['../changes/EPIC-01-x/epic.md', 'changes-epics', 'EPIC-01-x'],
+    ['../changes/STORY-001-a/story.md', 'changes-stories', 'STORY-001-a'],
+    ['../changes/archive/2026-01-01-STORY-000-z/story.md', 'changes-archive', 'STORY-000-z'],
   ]);
 });
 
-test('S152-UT-002 scanNodes: con un harness que omite specs el origen flow no se recorre', (t) => {
+test('S152-UT-002 scanNodes: con un harness que omite changes el origen flow no se recorre', (t) => {
   const { docs } = flowRepo(t, { marker: '.specify' });
   const rels = engine.scanNodes(docs, 'speckit').map((node) => node.relPath);
-  assert.ok(!rels.some((rel) => rel.includes('specs/flow/')), rels.join(', '));
+  assert.ok(!rels.some((rel) => rel.includes('changes/')), rels.join(', '));
 });
 
 test('S152-UT-003 renderIndex: el template por defecto ubica la archivada bajo Épicas e historias archivadas', (t) => {
@@ -1353,48 +1354,48 @@ test('S152-UT-003 renderIndex: el template por defecto ubica la archivada bajo �
   const template = readUtf8(SKILL_DIR, 'assets', 'index-template.md');
   const { content, summary } = engine.renderIndex(template, engine.scanNodes(docs, 'sddf'), { date: '2026-01-01' });
   const archived = content.slice(content.indexOf('### Épicas e historias archivadas'), content.indexOf('## 🧭 Dominio y arquitectura'));
-  assert.match(archived, /- \[\[STORY-000-z\]\] — \[story\.md\]\(\.\.\/specs\/flow\/archive\/2026-01-01-STORY-000-z\/story\.md\) — Historia Z/);
-  assert.match(content, /- \[\[EPIC-01-x\]\] — \[epic\.md\]\(\.\.\/specs\/flow\/EPIC-01-x\/epic\.md\)/);
+  assert.match(archived, /- \[\[STORY-000-z\]\] — \[story\.md\]\(\.\.\/changes\/archive\/2026-01-01-STORY-000-z\/story\.md\) — Historia Z/);
+  assert.match(content, /- \[\[EPIC-01-x\]\] — \[epic\.md\]\(\.\.\/changes\/EPIC-01-x\/epic\.md\)/);
   assert.equal(summary.pending, 0);
 });
 
 test('S152-UT-004 checkMemory: los nodos flow son propios y se evalúan', (t) => {
   const { repo, docs } = flowRepo(t);
-  fs.writeFileSync(path.join(repo, 'specs', 'flow', 'STORY-001-a', 'story.md'), '---\ntype: story\nslug: STORY-001-a\ntitle: "Historia A"\nstatus: SPECIFY\n---\n# Historia A\n');
+  fs.writeFileSync(path.join(repo, 'changes', 'STORY-001-a', 'story.md'), '---\ntype: story\nslug: STORY-001-a\ntitle: "Historia A"\nstatus: SPECIFY\n---\n# Historia A\n');
   const { problems } = engine.checkMemory(docs, 'sddf');
   assert.ok(problems.some((entry) => entry.kind === 'invalid-frontmatter'
-    && entry.path === '../specs/flow/STORY-001-a/story.md' && entry.detail === 'falta id'), JSON.stringify(problems));
+    && entry.path === '../changes/STORY-001-a/story.md' && entry.detail === 'falta id'), JSON.stringify(problems));
 });
 
 test('S164-UT-001 una historia CANCELED archivada se indexa bajo Épicas e historias archivadas y check no la reporta (CNF-3)', (t) => {
   const { repo, docs } = flowRepo(t);
-  const file = path.join(repo, 'specs', 'flow', 'archive', '2026-01-01-STORY-001-cancelada', 'story.md');
+  const file = path.join(repo, 'changes', 'archive', '2026-01-01-STORY-001-cancelada', 'story.md');
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, '---\ntype: story\nid: STORY-001\nslug: STORY-001-cancelada\ntitle: "Historia cancelada"\nstatus: CANCELED\nsubstatus: DONE\n---\n# Historia cancelada\n');
   const template = readUtf8(SKILL_DIR, 'assets', 'index-template.md');
   const { content } = engine.renderIndex(template, engine.scanNodes(docs, 'sddf'), { date: '2026-01-01' });
   const archived = content.slice(content.indexOf('### Épicas e historias archivadas'), content.indexOf('## 🧭 Dominio y arquitectura'));
-  assert.match(archived, /- \[\[STORY-001-cancelada\]\] — \[story\.md\]\(\.\.\/specs\/flow\/archive\/2026-01-01-STORY-001-cancelada\/story\.md\) — Historia cancelada/);
+  assert.match(archived, /- \[\[STORY-001-cancelada\]\] — \[story\.md\]\(\.\.\/changes\/archive\/2026-01-01-STORY-001-cancelada\/story\.md\) — Historia cancelada/);
   const { problems } = engine.checkMemory(docs, 'sddf');
   assert.ok(!problems.some((entry) => entry.path.includes('STORY-001-cancelada')), JSON.stringify(problems));
 });
 
-test('S152-UT-005 index: un repo sin specs/flow/ indexa sin error', (t) => {
+test('S152-UT-005 index: un repo sin changes/ indexa sin error', (t) => {
   const { repo, docs } = flowRepo(t);
-  fs.rmSync(path.join(repo, 'specs'), { recursive: true, force: true });
+  fs.rmSync(path.join(repo, 'changes'), { recursive: true, force: true });
   const result = run(['index', '--root', docs, '--dry-run']);
   assert.equal(result.status, 0, result.stderr);
-  assert.ok(!result.stdout.includes('../specs/flow/'));
+  assert.ok(!result.stdout.includes('../changes/'));
 });
 
-test('S152-UT-006 transición: docs/specs/stories/ sin migrar se sigue indexando como specs-stories', (t) => {
+test('S152-UT-006 transición: docs/specs/stories/ sin migrar se sigue indexando como changes-stories', (t) => {
   const { repo, docs } = flowRepo(t);
-  fs.rmSync(path.join(repo, 'specs'), { recursive: true, force: true });
+  fs.rmSync(path.join(repo, 'changes'), { recursive: true, force: true });
   const legacy = path.join(docs, 'specs', 'stories', 'STORY-009-legada', 'story.md');
   fs.mkdirSync(path.dirname(legacy), { recursive: true });
   fs.writeFileSync(legacy, '---\ntype: story\nid: STORY-009\nslug: STORY-009-legada\ntitle: "Legada"\nstatus: SPECIFY\n---\n# Legada\n');
   const node = engine.scanNodes(docs, 'sddf').find((entry) => entry.slug === 'STORY-009-legada');
-  assert.deepEqual([node.relPath, node.layer], ['specs/stories/STORY-009-legada/story.md', 'specs-stories']);
+  assert.deepEqual([node.relPath, node.layer], ['specs/stories/STORY-009-legada/story.md', 'changes-stories']);
   assert.equal(run(['index', '--root', docs, '--dry-run']).status, 0);
 });
 

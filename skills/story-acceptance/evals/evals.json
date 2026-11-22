@@ -312,15 +312,15 @@
       "id": "TC-010",
       "name": "historia-no-encontrada-en-specs-flow",
       "type": "fail-fast",
-      "description": "STORY-158 (D-3, D-5) — No existe specs/flow/STORY-999-*/, aunque la historia exista en el layout legado (ver input.context). El skill debe detenerse en el Paso 1b con el mensaje de historia no encontrada en specs/flow/, sin consultar el layout legado ni escribir ningún archivo.",
+      "description": "STORY-158 (D-3, D-5) — No existe changes/STORY-999-*/, aunque la historia exista en el layout legado (ver input.context). El skill debe detenerse en el Paso 1b con el mensaje de historia no encontrada en changes/, sin consultar el layout legado ni escribir ningún archivo.",
       "input": {
         "story_id": "STORY-999",
-        "context": "No existe specs/flow/STORY-999-*/; sí existe docs/specs/stories/STORY-999-x/story.md (layout legado)."
+        "context": "No existe changes/STORY-999-*/; sí existe docs/specs/stories/STORY-999-x/story.md (layout legado)."
       },
       "expected": {
         "contains": [
           "No se encontró la historia STORY-999",
-          "specs/flow/"
+          "changes/"
         ],
         "not_contains": [
           "Iniciando acceptance",
@@ -450,7 +450,7 @@
       "id": "TC-015",
       "name": "informe-en-carpeta-specs-flow",
       "type": "happy-path",
-      "description": "STORY-158 (AC-1, D-5) — Mismo flujo que TC-001 con la historia en specs/flow/STORY-055-aceptacion/. El skill debe escribir acceptance-report.md en la carpeta de la historia y no referenciar el layout legado.",
+      "description": "STORY-158 (AC-1, D-5) — Mismo flujo que TC-001 con la historia en changes/STORY-055-aceptacion/. El skill debe escribir acceptance-report.md en la carpeta de la historia y no referenciar el layout legado.",
       "input": {
         "story_id": "STORY-055",
         "story_status": "VERIFY",
@@ -466,11 +466,11 @@
           "p",
           "p"
         ],
-        "context": "la historia está en `specs/flow/STORY-055-aceptacion/`"
+        "context": "la historia está en `changes/STORY-055-aceptacion/`"
       },
       "expected": {
         "contains": [
-          "specs/flow/STORY-055-aceptacion/acceptance-report.md",
+          "changes/STORY-055-aceptacion/acceptance-report.md",
           "(verdict: APPROVED)"
         ],
         "not_contains": [

@@ -6,7 +6,7 @@ Punto de entrada para crear, mantener y verificar la memoria documental del proy
 
 - Detecta el harness del proyecto: `sddf`, `speckit`, `openspec` o `generic`.
 - Crea las capas de memoria que falten, junto con `constitution.md` y las plantillas gestionadas.
-- Regenera `docs/index.md` con wikilinks `[[slug]]` para los artefactos documentales y los work items de `specs/flow/`.
+- Regenera `docs/index.md` con wikilinks `[[slug]]` para los artefactos documentales y los work items de `changes/`.
 - Verifica en solo lectura capas ausentes, archivos sin frontmatter, frontmatter inválido y wikilinks rotos.
 - Adopta la memoria SDDF en proyectos Speckit u OpenSpec, o divide un DoD monolítico en guardrails por etapa.
 - Mantiene requisitos como SRS único o fragmentos FR/NFR, con migración reversible y catálogo generado.
@@ -39,7 +39,7 @@ No elimina archivos. Solo `rebuild --force` puede sobrescribir archivos gestiona
 
 | Entrada | Uso |
 |---|---|
-| `docs/` y `specs/flow/` | Rutas fijas (ADR-0016), relativas a la raíz del repositorio: la memoria vive en `docs/` y los work items que indexa `index`, en `specs/flow/`. |
+| `docs/` y `changes/` | Rutas fijas (ADR-0023), relativas a la raíz del repositorio: la memoria vive en `docs/` y los work items que indexa `index`, en `changes/`. |
 | `sddf.config.yaml`, `.specify/`, `openspec/` | Marcadores opcionales para detectar el harness. |
 | Argumentos y flags | Seleccionan el modo, `--harness`, `--dry-run`, `--json`, `--fix-frontmatter`, `--yes` o `--force`. |
 | `assets/scaffold/` y plantillas compartidas | Semillas y plantillas que el skill copia cuando corresponda. |

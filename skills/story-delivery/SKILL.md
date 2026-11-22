@@ -50,7 +50,7 @@ story-delivery    → verifica el DoD de entrega y registra DELIVER   ← aquí
 
 ## Entrada
 
-- `specs/flow/<STORY-NNN>-<slug>/story.md` — historia a entregar (precondición de estado)
+- `changes/<STORY-NNN>-<slug>/story.md` — historia a entregar (precondición de estado)
 - `sddf.config.yaml` — `defaults.delivery-model` (obligatorio, `batch` o `continuous`) y `guardrails.dod.story.deliver` (override opcional)
 - DoD de la etapa `deliver` (ver `## DoD aplicable`) — obligatorio
 - Los archivos que citen los criterios del DoD (p. ej. `package.json`, `CHANGELOG.md`, `.npmignore`) — se leen solo como evidencia
@@ -133,8 +133,8 @@ En el resto del flujo, «`previsualización`» abarca los dos modos con `--dry-r
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -172,18 +172,18 @@ Proporciona el ID (ej. STORY-159) o la ruta completa al directorio.
 
 #### 1b. Resolver el directorio de la historia
 
-1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `specs/flow/STORY-NNN-<slug>/` (no `specs/flow/archive/…`) y contiene `story.md`. Si no:
+1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `changes/STORY-NNN-<slug>/` (no `changes/archive/…`) y contiene `story.md`. Si no:
    ```
-   ❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)
+   ❌ La ruta {story_path} no es una historia de changes/ (se esperaba changes/STORY-NNN-<slug>/)
    ```
    Detener la ejecución sin escribir ningún archivo.
-2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `specs/flow/archive/`)
+2. Glob `changes/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `changes/archive/`)
 
 Si no se encuentra:
 ```
-❌ No se encontró la historia {story_id} en specs/flow/
+❌ No se encontró la historia {story_id} en changes/
 
-Verifica el ID. Las historias archivadas en specs/flow/archive/ no se entregan.
+Verifica el ID. Las historias archivadas en changes/archive/ no se entregan.
 ```
 Detener la ejecución.
 
@@ -216,12 +216,12 @@ Bloqueo en `interactivo`:
 ```
 (la última línea es la sugerencia de override de `## Restricciones / Reglas`).
 
-Aplica a cualquier `status`, también `CANCELED` o `BLOCKED`: `--force` entrega «sin importar el estado previo» y el estado previo queda en el reporte. Los rechazos de 1b y 1c (ruta fuera de `specs/flow/`, historia archivada o inexistente, sin `story.md`) no son gates de estado: detienen en todos los modos y no sugieren `--force`.
+Aplica a cualquier `status`, también `CANCELED` o `BLOCKED`: `--force` entrega «sin importar el estado previo» y el estado previo queda en el reporte. Los rechazos de 1b y 1c (ruta fuera de `changes/`, historia archivada o inexistente, sin `story.md`) no son gates de estado: detienen en todos los modos y no sugieren `--force`.
 
 | Gate | `interactivo` | `forzado` | `previsualización` |
 |---|---|---|---|
 | Estado ≠ `ACCEPTANCE/DONE` (1d) | bloquea + sugerencia | se omite con aviso | se registra y continúa |
-| Historia fuera de `specs/flow/`, archivada o sin `story.md` (1b, 1c) | detiene | detiene | detiene |
+| Historia fuera de `changes/`, archivada o sin `story.md` (1b, 1c) | detiene | detiene | detiene |
 | `delivery-model` inválido (Paso 2) | detiene | detiene | detiene |
 | Despliegue no afirmado en `continuous` (Paso 2b) | detiene | detiene | detiene |
 | DoD ausente o sin criterios (Paso 3) | detiene | detiene | detiene |
@@ -505,8 +505,8 @@ Cerrar siempre con:
 
 ## Salida
 
-- `specs/flow/<STORY-NNN>-<slug>/story.md` — escrito **solo** cuando la entrega se confirma: `status: DELIVER`, `substatus: DONE`, `updated: <hoy>`.
-- `specs/flow/<STORY-NNN>-<slug>/delivery-report.md` — **solo** en modo `forzado` cuando se omitió al menos un gate, tras la confirmación y antes de `story.md`; append-only (una sección `## Override <n> — <fecha>` por override). Se archiva con la historia.
+- `changes/<STORY-NNN>-<slug>/story.md` — escrito **solo** cuando la entrega se confirma: `status: DELIVER`, `substatus: DONE`, `updated: <hoy>`.
+- `changes/<STORY-NNN>-<slug>/delivery-report.md` — **solo** en modo `forzado` cuando se omitió al menos un gate, tras la confirmación y antes de `story.md`; append-only (una sección `## Override <n> — <fecha>` por override). Se archiva con la historia.
 - Consola: la tabla `| # | Criterio | Estado | Evidencia |` y el mensaje de resultado, de bloqueo o de previsualización.
 - En `previsualización` (`--dry-run`, con o sin `--force`) no se crea, modifica ni borra ningún archivo, tampoco en `.tmp/`.
 

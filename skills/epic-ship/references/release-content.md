@@ -6,7 +6,7 @@ Reglas de *qué* escribe `epic-ship`: el inventario de historias liberadas, su c
 
 Origen: reglas del inventario de `skills/epic-analyze/SKILL.md` (Paso 4), copiadas aquí y limitadas al inventario.
 
-1. Universo: `specs/flow/STORY-*/story.md` ∪ `specs/flow/archive/*-STORY-*/story.md`.
+1. Universo: `changes/STORY-*/story.md` ∪ `changes/archive/*-STORY-*/story.md`.
 2. Pertenencia: el `parent` del frontmatter es `EPIC_ID` o empieza por `EPIC_ID-`. El guion es obligatorio: `EPIC-300-x` no pertenece a `EPIC-30`.
 3. Si el mismo `STORY-NNN` existe activo y archivado, cuenta el activo.
 4. `id` = `id` del frontmatter; si falta, el prefijo `STORY-NNN` del directorio.

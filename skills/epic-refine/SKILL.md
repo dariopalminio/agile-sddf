@@ -38,14 +38,14 @@ Cierra el bucle de `PLAN` (`epic-analyze → NEEDS-REFINEMENT → epic-refine �
 | Artefacto | Ubicación | Uso |
 |---|---|---|
 | `epic-analyze-report.md` | `<EPIC_DIR>/epic-analyze-report.md` | Solo lectura: `verdict`, `updated`, la sección de clave `hallazgos` y, para SAL, la de clave `cobertura-salida` |
-| `epic.md` | `specs/flow/EPIC-NNN-<slug>/epic.md` | Se corrige la sección de clave `historias` |
-| `story.md` | `specs/flow/STORY-NNN-<slug>/story.md` (activos) | Se corrige `related:` y, en la historia de cierre SAL, se añaden un AC y una línea en Notas; se leen `title`, `status`, `substatus`, `parent`, las líneas Como/Quiero/Para y `depends-on:` |
+| `epic.md` | `changes/EPIC-NNN-<slug>/epic.md` | Se corrige la sección de clave `historias` |
+| `story.md` | `changes/STORY-NNN-<slug>/story.md` (activos) | Se corrige `related:` y, en la historia de cierre SAL, se añaden un AC y una línea en Notas; se leen `title`, `status`, `substatus`, `parent`, las líneas Como/Quiero/Para y `depends-on:` |
 | Template de épica | `docs/templates/epic-template.md` → seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` | Solo lectura: título de la sección `historias` |
 | Template de historia | `docs/templates/story-template.md` → seed `$CLI_ROOT/skills/story-creation/assets/story-template.md` | Solo lectura: título de `## 📎 Notas…` si la historia de cierre no la tiene (SAL) |
 | Template del reporte de análisis | `docs/templates/epic-analyze-report-template.md` → seed `$CLI_ROOT/skills/epic-analyze/assets/epic-analyze-report-template.md` | Solo lectura: título de la sección `hallazgos` |
 | Template del reporte | `docs/templates/epic-refine-report-template.md` → seed [assets/epic-refine-report-template.md](assets/epic-refine-report-template.md) | Estructura de `epic-refine-report.md` |
 | Catálogos de corrección | [references/](references/) de este skill | Se leen en el Paso 4; `coh-corrections.md`, en el Paso 3 |
-| Directorios de historias | `specs/flow/` y `specs/flow/archive/` | Solo nombres de directorio: existencia y reemplazo de los slugs `COH` |
+| Directorios de historias | `changes/` y `changes/archive/` | Solo nombres de directorio: existencia y reemplazo de los slugs `COH` |
 
 ## Parámetros
 
@@ -63,10 +63,10 @@ Cierra el bucle de `PLAN` (`epic-analyze → NEEDS-REFINEMENT → epic-refine �
 
 ## Restricciones / Reglas
 
-- **Escritura acotada:** solo se escriben `epic.md`, los `story.md` **activos** de la épica resueltos por ID, sus `<archivo>.bak` y `<EPIC_DIR>/epic-refine-report.md`. Son de solo lectura `epic-analyze-report.md`, los templates, las historias archivadas (`specs/flow/archive/`) y cualquier otro archivo.
+- **Escritura acotada:** solo se escriben `epic.md`, los `story.md` **activos** de la épica resueltos por ID, sus `<archivo>.bak` y `<EPIC_DIR>/epic-refine-report.md`. Son de solo lectura `epic-analyze-report.md`, los templates, las historias archivadas (`changes/archive/`) y cualquier otro archivo.
 - **Estado intacto:** `status` y `substatus` nunca se escriben, en ningún archivo; los decide el ciclo de vida, no el corrector.
 - **Cambio mínimo:** solo cambian las líneas del plan y `updated:` del archivo modificado (`escritor: todo skill que edite el archivo` en ambos templates).
-- **No inventar:** todo texto nuevo proviene literal de un `story.md`; para SAL, del criterio o smoke de `epic.md` más el texto fijo del catálogo; para COH, del nombre de un directorio de `specs/flow/`. Si falta, el hallazgo queda fuera de alcance con responsable `PO`.
+- **No inventar:** todo texto nuevo proviene literal de un `story.md`; para SAL, del criterio o smoke de `epic.md` más el texto fijo del catálogo; para COH, del nombre de un directorio de `changes/`. Si falta, el hallazgo queda fuera de alcance con responsable `PO`.
 - **No falsear la cobertura (SAL):** una cita E1 o un AC nuevo solo se escriben en **una** historia por elemento, la historia de cierre, y **siempre juntos**; nunca se cita el elemento en las demás candidatas ni se escribe una cita sin su AC. Sin una única historia de cierre, el hallazgo va al PO.
 - **Worker secuencial:** sin subagentes, sin scripts y sin `.tmp/`; no invoca otros skills.
 - **Encoding:** UTF-8 sin BOM, preservando los finales de línea de cada archivo.
@@ -82,8 +82,8 @@ El contenido de `epic-analyze-report.md` (incluidos **Elemento**, **Evidencia** 
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
@@ -91,11 +91,11 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 ### Paso 1 — Resolver la épica y el template del reporte
 
-Interpretar `<epica>` como `epic-analyze` Paso 1; la primera forma aplicable decide y nunca se consulta `specs/flow/archive/`:
+Interpretar `<epica>` como `epic-analyze` Paso 1; la primera forma aplicable decide y nunca se consulta `changes/archive/`:
 
-1. **Ruta** (contiene `/` o `\`): directorio de la épica o su `epic.md`. Antes de leer o escribir nada, se normaliza (separadores, `.`, `..`, enlaces simbólicos resueltos) y se expresa relativa a `REPO_ROOT`: solo se acepta si queda exactamente `specs/flow/EPIC-NNN-<slug>/` (o su `epic.md`), hija directa de `specs/flow/`. Una ruta fuera de `REPO_ROOT`, bajo `specs/flow/archive/`, más profunda o con otra forma → `❌ La ruta <arg> no es una épica activa de specs/flow/ (se esperaba specs/flow/EPIC-NNN-<slug>/)` y fin sin escribir.
-2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `specs/flow/<nombre>/epic.md`.
-3. **ID** (`EPIC-NNN`): glob `specs/flow/<ID>-*/epic.md` (el guion es obligatorio: `EPIC-30` no casa `EPIC-300-x`).
+1. **Ruta** (contiene `/` o `\`): directorio de la épica o su `epic.md`. Antes de leer o escribir nada, se normaliza (separadores, `.`, `..`, enlaces simbólicos resueltos) y se expresa relativa a `REPO_ROOT`: solo se acepta si queda exactamente `changes/EPIC-NNN-<slug>/` (o su `epic.md`), hija directa de `changes/`. Una ruta fuera de `REPO_ROOT`, bajo `changes/archive/`, más profunda o con otra forma → `❌ La ruta <arg> no es una épica activa de changes/ (se esperaba changes/EPIC-NNN-<slug>/)` y fin sin escribir.
+2. **Nombre de directorio** (`EPIC-NNN-<slug>`): `changes/<nombre>/epic.md`.
+3. **ID** (`EPIC-NNN`): glob `changes/<ID>-*/epic.md` (el guion es obligatorio: `EPIC-30` no casa `EPIC-300-x`).
 
 | Resultado | Comportamiento |
 |---|---|
@@ -127,11 +127,11 @@ No se invoca `/epic-analyze`: escribiría su reporte, también con `APPROVED`. S
 2. En el reporte, la sección abarca desde `## <título>` hasta el siguiente `## `. Cada bloque `### H-NNN [ERROR|WARNING] — <código>: <título>` con sus líneas **Elemento**, **Evidencia** y **Acción sugerida** produce un `HallazgoAnalisis { id, codigo, severidad, elemento, evidencia, accion }`; los valores entre comillas invertidas se toman literales.
 3. Un bloque que no casa ese patrón no se procesa: nota `epic-analyze-report.md:<línea>: bloque de hallazgo no reconocido`.
 4. Si el título no se encuentra o la sección solo dice `Sin hallazgos.`: `ℹ️ El reporte no lista hallazgos` y se continúa con cero `H-NNN`.
-5. **Identidad de los archivos:** cada `STORY-NNN` se resuelve de nuevo con los globs de `epic-analyze` Paso 4.4 (`specs/flow/<STORY-NNN>-*/story.md`, después `specs/flow/archive/*-<STORY-NNN>-*/story.md`; guion obligatorio; la activa antes que la archivada). Las rutas de **Evidencia** nunca se usan para escribir: así un reporte manipulado no puede dirigir una escritura fuera de los `story.md` de la épica.
+5. **Identidad de los archivos:** cada `STORY-NNN` se resuelve de nuevo con los globs de `epic-analyze` Paso 4.4 (`changes/<STORY-NNN>-*/story.md`, después `changes/archive/*-<STORY-NNN>-*/story.md`; guion obligatorio; la activa antes que la archivada). Las rutas de **Evidencia** nunca se usan para escribir: así un reporte manipulado no puede dirigir una escritura fuera de los `story.md` de la épica.
 
 #### Detección COH
 
-Solo aquí se buscan hallazgos que el reporte no lista, y solo con `verdict: NEEDS-REFINEMENT` (con `APPROVED` el Paso 2 ya terminó). Leer [references/coh-corrections.md](references/coh-corrections.md); si no existe: `❌ Catálogo references/coh-corrections.md no encontrado` y fin **antes** de escribir cualquier archivo. Aplicar su detección sobre el índice de `epic.md` y los `related` de las historias activas de la épica: cada slug `STORY-NNN-<slug>` sin directorio en `specs/flow/` ni en `specs/flow/archive/`, y no reportado como MAD-02, produce un hallazgo `COH-<n>` (numeración propia, independiente de `H-NNN`). Los Pasos 4 a 9 tratan los `COH-<n>` como un origen más. Si no hay ni `H-NNN` ni `COH-<n>`, se salta al Paso 8 con cero hallazgos.
+Solo aquí se buscan hallazgos que el reporte no lista, y solo con `verdict: NEEDS-REFINEMENT` (con `APPROVED` el Paso 2 ya terminó). Leer [references/coh-corrections.md](references/coh-corrections.md); si no existe: `❌ Catálogo references/coh-corrections.md no encontrado` y fin **antes** de escribir cualquier archivo. Aplicar su detección sobre el índice de `epic.md` y los `related` de las historias activas de la épica: cada slug `STORY-NNN-<slug>` sin directorio en `changes/` ni en `changes/archive/`, y no reportado como MAD-02, produce un hallazgo `COH-<n>` (numeración propia, independiente de `H-NNN`). Los Pasos 4 a 9 tratan los `COH-<n>` como un origen más. Si no hay ni `H-NNN` ni `COH-<n>`, se salta al Paso 8 con cero hallazgos.
 
 ### Paso 4 — Enrutar y revalidar
 
@@ -168,8 +168,8 @@ Construir, en memoria y sin escribir, un cambio `C-NN` por cada modificación de
 
 | C-NN | Origen | Archivo | Ubicación | Operación | Antes | Después |
 |---|---|---|---|---|---|---|
-| C-01 | H-001 · INT-02 | specs/flow/EPIC-30-ejemplo/epic.md | <título historias> · tras línea 25 | añadir | — | `- [ ] **STORY-304** — …` |
-| C-02 | H-002 · MAD-02 | specs/flow/STORY-301-…/story.md | related · línea 15 | eliminar | `  - STORY-999` | — |
+| C-01 | H-001 · INT-02 | changes/EPIC-30-ejemplo/epic.md | <título historias> · tras línea 25 | añadir | — | `- [ ] **STORY-304** — …` |
+| C-02 | H-002 · MAD-02 | changes/STORY-301-…/story.md | related · línea 15 | eliminar | `  - STORY-999` | — |
 
 Ya resueltos:
 - H-NNN · <código>: <motivo>
@@ -245,7 +245,7 @@ Con `APPROVED`: `STATUS: OK`, conteos `0` y `REPORTE: —`. Ante un fallo que de
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Épica no encontrada | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>` | Fin sin escribir |
-| Ruta fuera de `specs/flow/EPIC-NNN-<slug>/` (externa, archivada u otra forma) | `❌ La ruta <arg> no es una épica activa de specs/flow/ (se esperaba specs/flow/EPIC-NNN-<slug>/)` | Fin sin escribir |
+| Ruta fuera de `changes/EPIC-NNN-<slug>/` (externa, archivada u otra forma) | `❌ La ruta <arg> no es una épica activa de changes/ (se esperaba changes/EPIC-NNN-<slug>/)` | Fin sin escribir |
 | Argumento ausente o ambiguo (Agent) | `❌ Falta el argumento <epica>` / `❌ El argumento <arg> es ambiguo: <lista>` | Fin sin escribir |
 | Template del reporte ausente | `❌ Template epic-refine-report-template.md no encontrado (probado: …)` | Fin sin escribir |
 | Reporte de análisis ausente | `❌ No se encontró epic-analyze-report.md en <EPIC_DIR>. Ejecuta /epic-analyze <EPIC_ID> primero.` | Fin sin escribir |
@@ -259,7 +259,7 @@ Con `APPROVED`: `STATUS: OK`, conteos `0` y `REPORTE: —`. Ante un fallo que de
 | Artefacto | Ruta | Cuándo |
 |---|---|---|
 | `epic.md` corregido + `epic.md.bak` | `<EPIC_DIR>/` | Con algún `C-NN` en `epic.md` y el plan aceptado (o `--auto`) |
-| `story.md` corregido + `story.md.bak` | `specs/flow/STORY-NNN-<slug>/` | Con algún `C-NN` en esa historia |
+| `story.md` corregido + `story.md.bak` | `changes/STORY-NNN-<slug>/` | Con algún `C-NN` en esa historia |
 | `epic-refine-report.md` | `<EPIC_DIR>/epic-refine-report.md` | Con `NEEDS-REFINEMENT`, salvo plan rechazado o corrección revertida |
 
 Sin escritura: épica o reporte no encontrados, `verdict` `APPROVED` o inválido, template ausente, plan rechazado. Ningún otro archivo se crea ni se modifica.

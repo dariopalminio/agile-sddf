@@ -71,7 +71,7 @@ Para otro runtime compatible, sustituye `claude-code` por un identificador decla
 
 ### Invocation
 
-Usa `/story-delivery STORY-NNN [--dry-run] [--force]` o `/story-delivery specs/flow/STORY-NNN-<slug>/ [--dry-run] [--force]`; los flags van en cualquier orden. Soporta `delivery-model: batch` y `continuous`. Un flag distinto de `--dry-run` y `--force` detiene el skill sin cambios.
+Usa `/story-delivery STORY-NNN [--dry-run] [--force]` o `/story-delivery changes/STORY-NNN-<slug>/ [--dry-run] [--force]`; los flags van en cualquier orden. Soporta `delivery-model: batch` y `continuous`. Un flag distinto de `--dry-run` y `--force` detiene el skill sin cambios.
 
 ### `--dry-run`: previsualizar
 

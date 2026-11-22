@@ -8,7 +8,7 @@ Este documento muestra el resumen final que `story-plan` produce al completar el
 
 ```
 🚀 Iniciando pipeline de planning para: STORY-099
-   Directorio: specs/flow/STORY-099-exportar-reporte-pdf/
+   Directorio: changes/STORY-099-exportar-reporte-pdf/
    Pasos: story-design → story-tasking → story-analyze
 
 [Paso 0] ✓ REPO_ROOT resuelto — layout fijo
@@ -63,7 +63,7 @@ Línea de progreso previa: `[3/3] ⚠️ story-analyze — analyze.md generado (
 ⚠️ Planning completado — requiere revisión
 
 Veredicto de story-analyze: NEEDS-CHANGES — ERROR de tipo A
-→ specs/flow/STORY-099-exportar-reporte-pdf/analyze.md
+→ changes/STORY-099-exportar-reporte-pdf/analyze.md
 
 Estado de story.md: PLAN/IN-PROGRESS (veredicto NEEDS-CHANGES)
 Corrige el plan con /story-fix-plan STORY-099 y vuelve a ejecutar /story-analyze STORY-099.
@@ -87,7 +87,7 @@ Corrige el plan con /story-fix-plan STORY-099 y vuelve a ejecutar /story-analyze
 ✗ Pipeline interrumpido en: story-design
 
 Los artefactos generados antes del fallo están disponibles en:
-  specs/flow/STORY-099-exportar-reporte-pdf/
+  changes/STORY-099-exportar-reporte-pdf/
 
 Corrige el problema indicado arriba y re-ejecuta /story-plan STORY-099.
 
@@ -101,7 +101,7 @@ Nota: al re-ejecutar, cada sub-skill preguntará si deseas sobreescribir los art
 Tras una ejecución exitosa, el directorio de la historia contendrá:
 
 ```
-specs/flow/STORY-099-exportar-reporte-pdf/
+changes/STORY-099-exportar-reporte-pdf/
 ├── story.md      (existía antes — no modificado)
 ├── design.md     (generado por story-design)
 ├── tasks.md      (generado por story-tasking)

@@ -4,7 +4,7 @@ Inicializa de forma idempotente el entorno base de SDDF en un proyecto.
 
 ## What it does
 
-- Crea el layout fijo (`specs/flow/`, `specs/flow/archive/`, `specs/living/`, `workflow/`) y `docs/templates/`.
+- Crea el layout fijo (`changes/`, `changes/archive/`, `specs/`, `workflow/`) y `docs/templates/`.
 - Crea o preserva `sddf.config.yaml` y `.env.template` en la raíz del repositorio.
 - Copia los templates compartidos que falten en el nivel adecuado.
 - Puede inicializar la constitución y los guardrails de políticas mediante `sddf-constitution`.
@@ -61,6 +61,6 @@ En los niveles `standard` y `full`, el skill pregunta si debe inicializar los do
 
 El skill informa cada resultado como `[CREADO]`, `[YA EXISTÍA]` u `[OMITIDO]` y cierra con un informe consolidado.
 
-Puede crear los directorios `specs/flow/`, `specs/flow/archive/`, `specs/living/` y `workflow/` (cada uno con `.gitkeep`) y `docs/templates/`; hasta cinco templates compartidos; `sddf.config.yaml`; y `.env.template`. Si se aceptan las políticas, también genera sus artefactos, incluida la constitución y los guardrails DoD. El nivel `full` puede añadir el scaffold de memoria.
+Puede crear los directorios `changes/`, `changes/archive/`, `specs/` y `workflow/` (cada uno con `.gitkeep`) y `docs/templates/`; hasta cinco templates compartidos; `sddf.config.yaml`; y `.env.template`. Si se aceptan las políticas, también genera sus artefactos, incluida la constitución y los guardrails DoD. El nivel `full` puede añadir el scaffold de memoria.
 
 Los archivos y directorios existentes se preservan: una ejecución posterior informa que el entorno ya estaba inicializado y no requiere cambios.

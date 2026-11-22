@@ -3,13 +3,15 @@ type: adr
 id: ADR-0019
 slug: layout-fijo-con-archivo-de-epicas
 title: "Layout fijo de tres raíces con archivo de historias y épicas cerradas"
-status: ACCEPTED
+status: SUPERSEDED
 date: 2026-10-30
 supersedes: ADR-0017
-superseded-by: null
+superseded-by: ADR-0023
 ---
 
 # ADR-0019: Layout fijo de tres raíces con archivo de historias y épicas cerradas
+
+> **Superado por [ADR-0023](ADR-0023-separar-changes-de-specs.md) (2026-11-18):** los cambios en curso y su archivo pasan de `specs/flow/` a `changes/`, y `specs/` asume la especificación viva sin el nivel `living/`; las reglas de archivo se mantienen.
 
 ## Contexto y problema
 

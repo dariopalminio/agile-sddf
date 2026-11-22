@@ -1,6 +1,6 @@
 ---
 name: epic-generate-all-stories
-description: "Genera historias de usuario (directorio STORY-NNN-nombre/story.md) para todas las épicas existentes en `specs/flow/`, aplicando el mismo flujo de extracción y generación del skill epic-generate-stories. Procesa todos los directorios de épica en orden alfabético en una sola invocación."
+description: "Genera historias de usuario (directorio STORY-NNN-nombre/story.md) para todas las épicas existentes en `changes/`, aplicando el mismo flujo de extracción y generación del skill epic-generate-stories. Procesa todos los directorios de épica en orden alfabético en una sola invocación."
 triggers:
   - "epic-generate-all-stories"
   - "generar todas las historias"
@@ -14,10 +14,10 @@ triggers:
 
 ## Objetivo
 
-Escanea todos los **directorios** de épica en `specs/flow/`, lee `epic.md` de cada uno, y genera automáticamente un directorio `STORY-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature encontrada, siguiendo exactamente la estructura de `docs/templates/story-template.md`. Es el equivalente batch de `/epic-generate-stories`.
+Escanea todos los **directorios** de épica en `changes/`, lee `epic.md` de cada uno, y genera automáticamente un directorio `STORY-[ID]-[Nombre-kebab]/` con un archivo `story.md` por cada feature encontrada, siguiendo exactamente la estructura de `docs/templates/story-template.md`. Es el equivalente batch de `/epic-generate-stories`.
 
 **Qué hace este skill:**
-- Descubre automáticamente todas las épicas en `specs/flow/`
+- Descubre automáticamente todas las épicas en `changes/`
 - Detecta conflictos anticipadamente y consulta al usuario antes de comenzar el procesamiento
 - Genera un `story.md` por cada feature de cada épica, respetando el template canónico en tiempo de ejecución
 - Produce un resumen consolidado con el estado de cada historia generada, saltada o fallida
@@ -31,7 +31,7 @@ Escanea todos los **directorios** de épica en `specs/flow/`, lee `epic.md` de c
 
 ## Entrada
 
-Ninguna — el skill opera sobre todas las épicas existentes en `specs/flow/` sin input explícito del usuario.
+Ninguna — el skill opera sobre todas las épicas existentes en `changes/` sin input explícito del usuario.
 
 ---
 
@@ -43,7 +43,7 @@ Sin parámetros — el skill no expone flags ni argumentos posicionales.
 
 ## Precondiciones
 
-- `specs/flow/` debe existir y contener al menos un subdirectorio con `epic.md`
+- `changes/` debe existir y contener al menos un subdirectorio con `epic.md`
 - `docs/templates/story-template.md` debe existir (para estructurar las historias generadas)
 - `REPO_ROOT` debe resolverse según el contrato de layout fijo antes de continuar.
 
@@ -88,8 +88,8 @@ Sin parámetros — el skill no expone flags ni argumentos posicionales.
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
@@ -98,12 +98,12 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 
 ### Paso 1 — Descubrir directorios de épica
 
-Listar todas las épicas disponibles usando Glob con el patrón `specs/flow/EPIC-*/epic.md`. La herramienta Glob solo encuentra archivos, no directorios — el patrón debe apuntar al archivo `epic.md` anidado dentro de cada directorio `EPIC-NNN-*`. Ordenar los resultados alfabéticamente por nombre de directorio padre.
+Listar todas las épicas disponibles usando Glob con el patrón `changes/EPIC-*/epic.md`. La herramienta Glob solo encuentra archivos, no directorios — el patrón debe apuntar al archivo `epic.md` anidado dentro de cada directorio `EPIC-NNN-*`. Ordenar los resultados alfabéticamente por nombre de directorio padre.
 
-**Si el directorio `specs/flow/` no existe o no contiene ningún subdirectorio con `epic.md`**, mostrar el siguiente mensaje y terminar sin generar ningún archivo:
+**Si el directorio `changes/` no existe o no contiene ningún subdirectorio con `epic.md`**, mostrar el siguiente mensaje y terminar sin generar ningún archivo:
 
 ```
-No se encontraron directorios de épica en specs/flow/
+No se encontraron directorios de épica en changes/
 
 Asegúrate de haber ejecutado el skill /epic-from-project-plan antes de usar este skill,
 o verifica que el directorio contiene subdirectorios EPIC-NNN-nombre/ con archivo epic.md.
@@ -111,7 +111,7 @@ o verifica que el directorio contiene subdirectorios EPIC-NNN-nombre/ con archiv
 
 Mostrar al usuario la lista de épicas descubiertas antes de continuar:
 ```
-Se encontraron [N] directorios de épica en specs/flow/:
+Se encontraron [N] directorios de épica en changes/:
 - EPIC-00-nombre/
 - EPIC-01-nombre/
 ...
@@ -122,13 +122,13 @@ Procesando en orden alfabético.
 
 ### Paso 2 — Detección anticipada de conflictos
 
-Antes de procesar ningún épica, verificar qué historias ya existen en `specs/flow/` que serían generadas en este batch.
+Antes de procesar ningún épica, verificar qué historias ya existen en `changes/` que serían generadas en este batch.
 
-Para ello, resolver una vez el título de la sección con `clave: historias` del template de épica (Paso 1b de `epic-generate-stories`), leer esa sección de cada `epic.md` descubierto en el Paso 1 y calcular los nombres de directorio que se generarían (`STORY-[NNN]-[nombre-kebab]/`) **solo para las líneas que ya tienen ID** (F2/F3). Las historias planificadas (F1) no pueden colisionar con un directorio existente porque su ID será nuevo. Verificar cuáles de esos directorios ya existen en `specs/flow/`. Además, verificar con Glob `specs/flow/archive/*-STORY-[NNN]-*/story.md` si el ID corresponde a una historia archivada: esas se **saltan sin preguntar** (nunca se crea `specs/flow/STORY-[NNN]-*/` para un ID archivado), se listan aparte como `- specs/flow/archive/<dir>/ — saltada (archivada)` y no forman parte de las opciones (a)/(b)/(c).
+Para ello, resolver una vez el título de la sección con `clave: historias` del template de épica (Paso 1b de `epic-generate-stories`), leer esa sección de cada `epic.md` descubierto en el Paso 1 y calcular los nombres de directorio que se generarían (`STORY-[NNN]-[nombre-kebab]/`) **solo para las líneas que ya tienen ID** (F2/F3). Las historias planificadas (F1) no pueden colisionar con un directorio existente porque su ID será nuevo. Verificar cuáles de esos directorios ya existen en `changes/`. Además, verificar con Glob `changes/archive/*-STORY-[NNN]-*/story.md` si el ID corresponde a una historia archivada: esas se **saltan sin preguntar** (nunca se crea `changes/STORY-[NNN]-*/` para un ID archivado), se listan aparte como `- changes/archive/<dir>/ — saltada (archivada)` y no forman parte de las opciones (a)/(b)/(c).
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios.
 > Para verificar si ya existe una historia, usar el patrón de archivo anidado:
-> `specs/flow/STORY-[NNN]-[nombre-kebab]/story.md`.
+> `changes/STORY-[NNN]-[nombre-kebab]/story.md`.
 > Si Glob retorna ese archivo, el directorio existe. Nunca usar el patrón de directorio
 > desnudo — retornará vacío aunque el directorio exista, causando detección fallida.
 
@@ -138,8 +138,8 @@ Para ello, resolver una vez el título de la sección con `clave: historias` del
 
 ```
 Se detectaron [N] directorios de historia que ya existen y serían sobreescritos:
-- specs/flow/STORY-NNN-nombre/ (EPIC-XX)
-- specs/flow/STORY-NNN-nombre/ (EPIC-YY)
+- changes/STORY-NNN-nombre/ (EPIC-XX)
+- changes/STORY-NNN-nombre/ (EPIC-YY)
 ...
 
 ¿Cómo deseas manejar los conflictos?
@@ -154,9 +154,9 @@ Esperar la respuesta del usuario antes de continuar al Paso 3. Registrar la deci
 
 ### Paso 3 — Preparar directorio de destino
 
-Verificar si el directorio `specs/flow/` existe.
+Verificar si el directorio `changes/` existe.
 
-Si no existe, crearlo antes de continuar. Nunca se crea el layout anterior ni `specs/flow/archive/`.
+Si no existe, crearlo antes de continuar. Nunca se crea el layout anterior ni `changes/archive/`.
 
 ---
 
@@ -190,7 +190,7 @@ Convertir el nombre de la feature a kebab-case:
 
 Nombre de directorio resultante: `STORY-[NNN]-[nombre-kebab]`
 
-Ruta del archivo de salida: `specs/flow/STORY-[NNN]-[nombre-kebab]/story.md`
+Ruta del archivo de salida: `changes/STORY-[NNN]-[nombre-kebab]/story.md`
 
 **2. Gestionar idempotencia según la decisión del Paso 2:**
 - **(a) Sobreescribir todos:** sobreescribir sin preguntar
@@ -221,7 +221,7 @@ Generar al menos un escenario Gherkin principal (happy path) y uno alternativo/e
 
 **5. Escribir el archivo:**
 
-Crear el directorio `specs/flow/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear `story.md` dentro de ese directorio con la estructura del template `docs/templates/story-template.md` infiriendo la información. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
+Crear el directorio `changes/STORY-[NNN]-[nombre-kebab]/` si no existe, luego crear `story.md` dentro de ese directorio con la estructura del template `docs/templates/story-template.md` infiriendo la información. Completar dinámicamente la estructura de la plantilla en tiempo de ejecución para asegurar flexibilidad ante cambios futuros.
 
 Al completar el frontmatter del archivo generado, usar:
 - `status: SPECIFY` — estado inicial de toda historia generada desde una épica planificada (pendiente de refinamiento). No usar un estado posterior (`PLAN` o siguientes): saltaría los gates SPECIFY y PLAN que la máquina de estados declara secuenciales
@@ -296,20 +296,20 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 **Épicas sin historias:** [N épicas que no tenían historias]
 
 ### Directorios creados
-- specs/flow/STORY-NNN-nombre/story.md  (EPIC-XX)
-- specs/flow/STORY-NNN-nombre/story.md  (EPIC-YY)
+- changes/STORY-NNN-nombre/story.md  (EPIC-XX)
+- changes/STORY-NNN-nombre/story.md  (EPIC-YY)
 ...
 
 ### Directorios saltados (ya existían)
-- specs/flow/STORY-NNN-nombre/  (EPIC-XX)
+- changes/STORY-NNN-nombre/  (EPIC-XX)
 ...
 
 ### Historias saltadas (archivadas)
-- specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-nombre/ — saltada (archivada)  (EPIC-XX)
+- changes/archive/<YYYY-MM-DD>-STORY-NNN-nombre/ — saltada (archivada)  (EPIC-XX)
 ...
 
 ### Épicas sin historias (no procesadas)
-- specs/flow/EPIC-NNN-nombre/
+- changes/EPIC-NNN-nombre/
 
 **Siguiente paso:** Ejecuta `/story-evaluation` para verificar la calidad de las historias generadas, o `/story-specify` para especificarlas de forma interactiva.
 ```
@@ -321,7 +321,7 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 | Condición | Mensaje | Acción |
 |---|---|---|
 | Entorno inválido (preflight) | `✗ Entorno inválido` | Detener inmediatamente |
-| `specs/flow/` vacío o sin `epic.md` | `No se encontraron directorios de épica en specs/flow/` | Mostrar mensaje de orientación y detener |
+| `changes/` vacío o sin `epic.md` | `No se encontraron directorios de épica en changes/` | Mostrar mensaje de orientación y detener |
 | Template `story-template.md` no encontrado | `❌ No se encontró el template requerido en docs/templates/story-template.md` | Detener la ejecución del batch |
 | Template sin `clave: historias` | `❌ El template no declara una sección con clave historias` | Detener el batch sin escribir |
 | Épica sin la sección de clave `historias` | — | Registrar como `[nombre-epica] — saltada (sin historias)` con la nota de migración y continuar con la siguiente épica |
@@ -330,5 +330,5 @@ Al finalizar el procesamiento de todas las épicas, mostrar el resumen:
 
 ## Salida
 
-- Directorios `specs/flow/STORY-[NNN]-[nombre-kebab]/story.md` creados — una historia por feature de cada épica procesada
+- Directorios `changes/STORY-[NNN]-[nombre-kebab]/story.md` creados — una historia por feature de cada épica procesada
 - Resumen consolidado con: épicas procesadas, historias generadas, historias saltadas, épicas sin historias

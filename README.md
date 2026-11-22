@@ -81,7 +81,7 @@ No es:
 | Memoria | `docs/` | Conocimiento: producto, requisitos, dominio, arquitectura, decisiones, guías y templates. |
 | Políticas del proyecto | `docs/policies/` y `docs/guardrails/` | Registran principios técnicos y Definition of Done para los gates del flujo. |
 | Guía de revisión | `REVIEW.md` en la raíz (lo siembra `/sddf-constitution`) | Calibra qué reporta `/story-code-review` y con qué severidad en tu proyecto, sin cambiar el formato del informe ([ADR-0021](docs/decisions/ADR-0021-guia-de-revision-review-md.md)). |
-| Work items | `specs/flow/` | Épicas e historias con sus planes y reportes; las historias completadas y canceladas se archivan en `specs/flow/archive/`. |
+| Work items | `changes/` | Épicas e historias con sus planes y reportes; las historias completadas y canceladas se archivan en `changes/archive/`. |
 ## Empieza en cinco minutos
 
 Necesitas Node.js 18 o superior y uno de los runtimes compatibles. La instalación tiene dos pasos deliberadamente separados: descargar el paquete y copiar sus artefactos en el runtime.
@@ -148,8 +148,8 @@ Cada etapa produce algo que se puede leer y revisar:
 | Revisar | `/story-code-review` | `code-review-report.md` o `fix-directives.md` si hay correcciones pendientes, calibrados por `REVIEW.md` si existe. |
 | Verificar y aceptar | `/story-verify` y `/story-acceptance` | `verify-report.md` y `acceptance-report.md`. |
 | Entregar | `/story-delivery` | `story.md` en `DELIVER/DONE` tras verificar el DoD de entrega. |
-| Completar y archivar | `/story-complete` | `story.md` en `COMPLETED/DONE` dentro de `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. |
-| Completar y archivar épica | `/epic-complete` | `epic.md` en `COMPLETED/DONE`, con fecha de cierre y versión liberada, dentro de `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`. |
+| Completar y archivar | `/story-complete` | `story.md` en `COMPLETED/DONE` dentro de `changes/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. |
+| Completar y archivar épica | `/epic-complete` | `epic.md` en `COMPLETED/DONE`, con fecha de cierre y versión liberada, dentro de `changes/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/`. |
 
 `/story-implement` orquesta el ciclo TDD y los workers configurados para tu stack. Si necesitas ejecutar una historia tarea por tarea en el flujo SDD, usa `/story-implement-tasks`.
 
@@ -209,28 +209,35 @@ flowchart LR
 
 Los únicos work items son Épica e Historia; la documentación de producto los orienta, pero no tiene ciclo de work item. El modelo está en la [jerarquía de work items](docs/domains/domain-work-item-hierarchy.md).
 
-El ciclo de vida de una historia es `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` ([ADR-0022](docs/decisions/ADR-0022-workflows-sin-estados-buffer.md)). Una historia aprobada en el plan queda en `PLAN/DONE`, y un `NEEDS-CHANGES` de `story-code-review`, `story-verify` o `story-acceptance` la devuelve a `IMPLEMENT/TODO` con `fix-directives.md`. `DELIVER` lo escribe `/story-delivery` con confirmación humana, tras verificar el DoD de entrega, y `COMPLETED` lo escribe `/story-complete`, también con confirmación humana, al archivar la historia en `specs/flow/archive/`. Los estados y subestados canónicos están documentados en el [ciclo de vida de historias](docs/domains/domain-story-lifecycle.md).
+El ciclo de vida de una historia es `SPECIFY → PLAN → IMPLEMENT → CODE-REVIEW → VERIFY → ACCEPTANCE → DELIVER → COMPLETED` ([ADR-0022](docs/decisions/ADR-0022-workflows-sin-estados-buffer.md)). Una historia aprobada en el plan queda en `PLAN/DONE`, y un `NEEDS-CHANGES` de `story-code-review`, `story-verify` o `story-acceptance` la devuelve a `IMPLEMENT/TODO` con `fix-directives.md`. `DELIVER` lo escribe `/story-delivery` con confirmación humana, tras verificar el DoD de entrega, y `COMPLETED` lo escribe `/story-complete`, también con confirmación humana, al archivar la historia en `changes/archive/`. Los estados y subestados canónicos están documentados en el [ciclo de vida de historias](docs/domains/domain-story-lifecycle.md).
 
 Los gates de validación `epic-analyze`, `story-evaluation`, `story-analyze`, `story-code-review`, `story-verify` y `story-acceptance` dejan un reporte con el campo `verdict` en el frontmatter y `## Veredicto` como primera sección. Solo `APPROVED` habilita el avance. Los valores de cada gate, su significado y la traducción de reportes anteriores están en la [política de contrato de validación](docs/policies/validation-contract-policy.md), fuente de verdad del contrato.
 
 ## Artefactos que deja el flujo (Memoria)
 
 <details>
+<summary>Migración a 6.0.0 (changes/ y especificación viva)</summary>
+
+`specs/flow/` pasa a `changes/` en la raíz del repositorio, con su archivo en `changes/archive/`, y `specs/` asume la especificación viva sin el nivel `living/` ([ADR-0023](docs/decisions/ADR-0023-separar-changes-de-specs.md)). Identificadores, estados, archivo y confirmaciones humanas no cambian; la migración es manual.
+Sigue la [sección de migración a 6.0.0](docs/guides/artifact-directory-migration.md#migracion-a-600--changes-y-especificacion-viva).
+</details>
+
+<details>
 <summary>Migración a 5.0.0 (layout fijo de tres raíces)</summary>
 
-`docs/specs/epics/` y `docs/specs/stories/` pasan a `specs/flow/`, plano, en la raíz del repositorio; las historias `COMPLETED` se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. Se retiran `SDDF_ROOT` y la clave `root` de `sddf.config.yaml`.
+`docs/specs/epics/` y `docs/specs/stories/` pasaron a `specs/flow/`, plano, en la raíz del repositorio (en 6.0.0, `changes/`); las historias `COMPLETED` se archivaron en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/`. Se retiran `SDDF_ROOT` y la clave `root` de `sddf.config.yaml`.
 Sigue la [sección de migración a 5.0.0](docs/guides/artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices).
 </details>
 
 <details>
 <summary>Migración a 4.0.0 (specs de dos niveles)</summary>
 
-`specs/01-projects/` fue reemplazado por `product/` y `requirements/`; las épicas e historias pasaron a `specs/epics/` y `specs/stories/` (reemplazados en 5.0.0 por `specs/flow/`).
+`specs/01-projects/` fue reemplazado por `product/` y `requirements/`; las épicas e historias pasaron a `specs/epics/` y `specs/stories/` (reemplazados en 5.0.0 por `specs/flow/` y en 6.0.0 por `changes/`).
 `requirements/` empieza con un SRS único y se fragmenta al superar 15 requisitos o 500 líneas.
 Sigue la [guía de migración](docs/guides/artifact-directory-migration.md), primero con `--dry-run` y luego sin él.
 </details>
 
-El layout es fijo ([ADR-0017](docs/decisions/ADR-0017-layout-fijo-con-archivo-de-historias-canceladas.md)): `docs/` (conocimiento), `specs/` (estado) y `workflow/` (proceso, reservado) son raíces hermanas en la raíz del repositorio y no se configuran.
+El layout es fijo ([ADR-0023](docs/decisions/ADR-0023-separar-changes-de-specs.md)): `docs/` (conocimiento), `specs/` (especificación viva), `changes/` (flujo de cambios) y `workflow/` (proceso, reservado) son raíces hermanas en la raíz del repositorio y no se configuran. `changes/` describe qué se quiere cambiar; `specs/`, qué está vigente.
 
 ```text
 docs/
@@ -247,7 +254,7 @@ docs/
 ├── architecture/
 │   └── c4/
 │       └── context-diagram.puml
-├── adr/
+├── decisions/
 ├── domains/
 ├── guides/
 ├── runbooks/
@@ -257,30 +264,29 @@ docs/
 │   └── dod-story-<etapa>.md        # DoD por etapa (specify … acceptance, release)
 └── policies/
     └── README.md
-specs/
-├── flow/
-│   ├── EPIC-01-mi-epica/
-│   │   └── epic.md
-│   ├── STORY-001-mi-historia/
-│   │   ├── story.md
-│   │   ├── design.md
-│   │   ├── tasks.md
-│   │   ├── testcases.md
-│   │   ├── implement-report.md
-│   │   ├── code-review-report.md
-│   │   ├── verify-report.md
-│   │   └── acceptance-report.md
-│   └── archive/                    # <YYYY-MM-DD>-STORY-NNN-<slug>/ de las historias COMPLETED y CANCELED
-└── living/                         # reservado
+specs/                              # especificación viva (formato pendiente de definir)
+changes/
+├── EPIC-001-mi-epica/
+│   └── epic.md
+├── STORY-001-mi-historia/
+│   ├── story.md
+│   ├── design.md
+│   ├── tasks.md
+│   ├── testcases.md
+│   ├── implement-report.md
+│   ├── code-review-report.md
+│   ├── verify-report.md
+│   └── acceptance-report.md
+└── archive/                        # <YYYY-MM-DD>-EPIC-NNN-<slug>/ y <YYYY-MM-DD>-STORY-NNN-<slug>/ COMPLETED y CANCELED
 workflow/                           # reservado
 
 ```
 
 No todos los reportes existen desde el comienzo: aparecen cuando el flujo llega a su fase. El árbol también puede incluir `analyze.md`, `finvest-evaluation-report.md`, `story-refinement-log.md` y `fix-directives.md`.
 
-`/memory-system` (modo `ensure`, recomendado tras `/sddf-init`) crea las diez capas de esa memoria que falten (`constitution.md`, `product/*`, un `README.md` por capa y las seis plantillas de `templates/`) sin sobrescribir nada y regenera el índice; `scaffold` solo crea lo faltante, `rebuild --force` restaura los archivos semilla (única operación que sobrescribe, y solo esos archivos; nunca borra) e `index` regenera únicamente `docs/index.md`, el mapa de la memoria, con un wikilink `[[slug]]` por artefacto agrupado por capa (incluidos los work items de `specs/flow/`) (idempotente; `--dry-run` solo imprime). `check [--json]` no escribe nada: verifica capas ausentes, nodos sin frontmatter, frontmatter incompleto (`type`, `slug`, `title`; más `id` y `status` en specs) y wikilinks que no resuelven, e informa por texto o con un único objeto JSON, terminando con exit 0 si la memoria está sana, 1 si hay problemas y 2 ante un error técnico — el gate que un pipeline de CI ejecuta en una línea (ejemplo en `docs/guides/sddf-commands-pipeline.md` §0; complementa `npm run verify:links`, no lo sustituye).
+`/memory-system` (modo `ensure`, recomendado tras `/sddf-init`) crea las diez capas de esa memoria que falten (`constitution.md`, `product/*`, un `README.md` por capa y las seis plantillas de `templates/`) sin sobrescribir nada y regenera el índice; `scaffold` solo crea lo faltante, `rebuild --force` restaura los archivos semilla (única operación que sobrescribe, y solo esos archivos; nunca borra) e `index` regenera únicamente `docs/index.md`, el mapa de la memoria, con un wikilink `[[slug]]` por artefacto agrupado por capa (incluidos los work items de `changes/`) (idempotente; `--dry-run` solo imprime). `check [--json]` no escribe nada: verifica capas ausentes, nodos sin frontmatter, frontmatter incompleto (`type`, `slug`, `title`; más `id` y `status` en specs) y wikilinks que no resuelven, e informa por texto o con un único objeto JSON, terminando con exit 0 si la memoria está sana, 1 si hay problemas y 2 ante un error técnico — el gate que un pipeline de CI ejecuta en una línea (ejemplo en `docs/guides/sddf-commands-pipeline.md` §0; complementa `npm run verify:links`, no lo sustituye).
 
-**Compatibilidad con OpenSpec y Speckit.** Si tu proyecto ya usa Speckit (`.specify/`) u OpenSpec (`openspec/`), `memory-system` adapta la memoria al harness en lugar de duplicarlo: no crea `specs/flow/` (el harness ya modela las especificaciones), reutiliza `.specify/memory/constitution.md` en lugar de crear `docs/constitution.md` si existe, y enlaza los artefactos del harness desde `docs/index.md` en una sección de artefactos externos. Los directorios del harness son de solo lectura. Para adoptarla:
+**Compatibilidad con OpenSpec y Speckit.** Si tu proyecto ya usa Speckit (`.specify/`) u OpenSpec (`openspec/`), `memory-system` adapta la memoria al harness en lugar de duplicarlo: no crea `changes/` (el harness ya modela las especificaciones), reutiliza `.specify/memory/constitution.md` en lugar de crear `docs/constitution.md` si existe, y enlaza los artefactos del harness desde `docs/index.md` en una sección de artefactos externos. Los directorios del harness son de solo lectura. Para adoptarla:
 
 ```text
 /memory-system migrate --harness speckit     # propone el plan y escribe solo tras confirmar
@@ -301,13 +307,13 @@ Los skills resuelven una sola raíz de trabajo, `REPO_ROOT`. En ella viven `sddf
 
 ### Monorepo
 
-Un único repositorio contiene todos los proyectos (por ejemplo, `apps/` y `packages/`). En la raíz viven `sddf.config.yaml`, `docs/` y `specs/`. Las épicas y las historias de todos los proyectos comparten `specs/flow/` y el mismo control WIP.
+Un único repositorio contiene todos los proyectos (por ejemplo, `apps/` y `packages/`). En la raíz viven `sddf.config.yaml`, `docs/` y `specs/`. Las épicas y las historias de todos los proyectos comparten `changes/` y el mismo control WIP.
 
 ```text
 mi-monorepo/                 ← REPO_ROOT
 ├── sddf.config.yaml
 ├── docs/                    # memoria: constitución, producto, requisitos, arquitectura…
-├── specs/flow/              # épicas e historias de todos los proyectos
+├── changes/              # épicas e historias de todos los proyectos
 ├── apps/
 │   ├── web/
 │   └── api/
@@ -335,7 +341,7 @@ Cada proyecto tiene su propio repositorio, y uno de ellos (o uno creado para eso
 producto-home/               ← REPO_ROOT (memoria completa)
 ├── sddf.config.yaml
 ├── docs/
-└── specs/flow/
+└── changes/
 producto-web/                ← código
 producto-api/                ← código
 ```

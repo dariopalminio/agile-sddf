@@ -43,14 +43,14 @@ decisión del PO sin escribirse.
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `specs/flow/EPIC-NNN-<slug>/epic.md` | se corrige |
+| `epic.md` | `changes/EPIC-NNN-<slug>/epic.md` | se corrige |
 | `epic-format-validation-report.md` | junto a `epic.md` | solo lectura: `verdict` y tabla `## Defectos` |
 | Template de épica | `docs/templates/epic-template.md` (fallback: seed `skills/epic-creation/assets/epic-template.md` del paquete) | solo lectura: títulos y orden por `clave:` |
 | Catálogo de correcciones | `references/` de este skill | regla determinista que implementa el motor |
 
 ## Parámetros
 
-- `<EPIC-NN | ruta>` (posicional): ID de la épica o ruta a su directorio `specs/flow/EPIC-NNN-<slug>/`.
+- `<EPIC-NN | ruta>` (posicional): ID de la épica o ruta a su directorio `changes/EPIC-NNN-<slug>/`.
 
 ## Restricciones / Reglas
 
@@ -70,8 +70,8 @@ decisión del PO sin escribirse.
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para localizar el motor; nunca lo derives de `REPO_ROOT`.
 
@@ -80,7 +80,7 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
 ### Paso 1 — Resolver el argumento
 
 - Sin argumento → pregunta `¿Qué épica deseas corregir? Proporciona el ID (ej. EPIC-23) o la ruta a su epic.md.` y espera.
-- `EPIC-NNN` → `--id EPIC-NN`; una ruta → `--path <ruta>` (el motor solo acepta `specs/flow/EPIC-NNN-<slug>/` o su `epic.md`; nunca consulta `specs/flow/archive/` ni directorios `STORY-*`).
+- `EPIC-NNN` → `--id EPIC-NN`; una ruta → `--path <ruta>` (el motor solo acepta `changes/EPIC-NNN-<slug>/` o su `epic.md`; nunca consulta `changes/archive/` ni directorios `STORY-*`).
 
 ### Paso 2 — Localizar el motor
 
@@ -90,9 +90,9 @@ Localiza `<CLI_ROOT>/skills/epic-improve/scripts/epic-improve.js` y comprueba `n
 ❌ No se encontró el motor de epic-improve (<ruta probada>) o node no está en PATH
 ```
 
-Todas las invocaciones se hacen desde `REPO_ROOT`. `--id`/`--path` buscan en `specs/flow/`;
+Todas las invocaciones se hacen desde `REPO_ROOT`. `--id`/`--path` buscan en `changes/`;
 `--dir` apunta a cualquier directorio que contenga `epic.md` (copia aislada o fixture), usando el
-`slug` de su frontmatter como ruta lógica `specs/flow/<slug>/`. `--today YYYY-MM-DD` fija la fecha
+`slug` de su frontmatter como ruta lógica `changes/<slug>/`. `--today YYYY-MM-DD` fija la fecha
 de `updated:` (en simulación, la «fecha de hoy» del escenario):
 
 ```
@@ -171,7 +171,7 @@ No se ejecuta la validación: el flujo de la épica la encadena como un paso dis
 
 | Condición | Mensaje (motor) | Acción |
 |---|---|---|
-| Épica no encontrada | `❌ No se encontró la épica <input> (ruta buscada: specs/flow/<input>-*/)` | Fin sin escribir |
+| Épica no encontrada | `❌ No se encontró la épica <input> (ruta buscada: changes/<input>-*/)` | Fin sin escribir |
 | Reporte ausente | `❌ No se encontró epic-format-validation-report.md en <EPIC_DIR>. Ejecuta /epic-format-validation <EPIC-NN> primero.` | Fin sin escribir |
 | `verdict: APPROVED` | `ℹ️ <EPIC-NN>: /epic-format-validation declara APPROVED — la épica no necesita correcciones.` | Fin sin escribir |
 | `verdict` ausente o inválido | `ℹ️ <EPIC-NN>: el reporte no declara NEEDS-REFINEMENT (verdict: <valor \| ausente>) — vuelve a ejecutar /epic-format-validation <EPIC-NN>.` | Fin sin escribir |

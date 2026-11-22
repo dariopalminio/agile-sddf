@@ -157,7 +157,7 @@ Un subagente sí puede seguir un skill **worker**, es decir, un skill que cumple
 
 1. **No interactúa con el usuario** — sin pasos que requieran AskUserQuestion ni confirmaciones (o que puedan correr con defaults, sin preguntas).
 2. **No lanza subagentes** — si lo hiciera, se produciría subagente → subagente, el caso prohibido.
-3. **No depende de contexto conversacional no provisto** — el subagente arranca con contexto vacío; el orquestador debe pasarle en el prompt los valores ya resueltos (`REPO_ROOT`, ruta de la historia) o el worker debe aplicar el contrato de layout fijo: resolver `REPO_ROOT` y usar `specs/flow/`, `docs/templates/` y `docs/guardrails/`.
+3. **No depende de contexto conversacional no provisto** — el subagente arranca con contexto vacío; el orquestador debe pasarle en el prompt los valores ya resueltos (`REPO_ROOT`, ruta de la historia) o el worker debe aplicar el contrato de layout fijo: resolver `REPO_ROOT` y usar `changes/`, `docs/templates/` y `docs/guardrails/`.
 
 Matriz de invocaciones permitidas:
 

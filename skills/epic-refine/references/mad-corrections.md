@@ -18,7 +18,7 @@ Cada entrada de `related` se compara normalizada como en `epic-analyze` Paso 5c.
 
 Cualquiera de:
 - el `related` de la historia ya no contiene el valor normalizado;
-- el valor ahora resuelve por ID con los globs de `epic-analyze` Paso 5c.2 (`specs/flow/<STORY-NNN>-*/story.md`, `specs/flow/archive/*-<STORY-NNN>-*/story.md` o `specs/flow/<EPIC-NN>-*/epic.md`): alguien creó la historia o la épica referenciada.
+- el valor ahora resuelve por ID con los globs de `epic-analyze` Paso 5c.2 (`changes/<STORY-NNN>-*/story.md`, `changes/archive/*-<STORY-NNN>-*/story.md` o `changes/<EPIC-NN>-*/epic.md`): alguien creó la historia o la épica referenciada.
 
 ### Regla
 

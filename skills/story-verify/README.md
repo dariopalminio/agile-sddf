@@ -53,7 +53,7 @@ El skill detecta automáticamente el modo en este orden:
 
 | Archivo | Descripción |
 |---------|-------------|
-| `specs/flow/<STORY-NNN>-<slug>/verify-report.md` | Reporte completo de verificación |
+| `changes/<STORY-NNN>-<slug>/verify-report.md` | Reporte completo de verificación |
 | `story.md` frontmatter | Estado según el `verdict` del reporte (ver Posición en el pipeline) |
 
 ## Veredicto

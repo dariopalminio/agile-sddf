@@ -40,11 +40,11 @@ Lee los hallazgos de `analyze.md`, planifica en un único ciclo los cambios mín
 
 | Artefacto | Ubicación | Requerido |
 |---|---|---|
-| `analyze.md` | `specs/flow/<STORY-NNN>-*/analyze.md` | ✓ obligatorio |
-| `design.md` | `specs/flow/<STORY-NNN>-*/design.md` | ✓ obligatorio |
-| `tasks.md` | `specs/flow/<STORY-NNN>-*/tasks.md` | condicional — al menos uno de `tasks.md` o `testcases.md` |
-| `testcases.md` | `specs/flow/<STORY-NNN>-*/testcases.md` | condicional — al menos uno de `tasks.md` o `testcases.md` |
-| `story.md` | `specs/flow/<STORY-NNN>-*/story.md` | opcional — solo lectura, para verificar los AC citados |
+| `analyze.md` | `changes/<STORY-NNN>-*/analyze.md` | ✓ obligatorio |
+| `design.md` | `changes/<STORY-NNN>-*/design.md` | ✓ obligatorio |
+| `tasks.md` | `changes/<STORY-NNN>-*/tasks.md` | condicional — al menos uno de `tasks.md` o `testcases.md` |
+| `testcases.md` | `changes/<STORY-NNN>-*/testcases.md` | condicional — al menos uno de `tasks.md` o `testcases.md` |
+| `story.md` | `changes/<STORY-NNN>-*/story.md` | opcional — solo lectura, para verificar los AC citados |
 | `assets/fix-plan-report-template.md` | relativo al directorio del skill | ✓ obligatorio |
 
 ## Parámetros
@@ -56,7 +56,7 @@ Lee los hallazgos de `analyze.md`, planifica en un único ciclo los cambios mín
 ## Precondiciones
 
 - La raíz de artefactos debe resolverse mediante el contrato local antes de continuar.
-- La historia existe bajo `specs/flow/` y su directorio contiene `analyze.md` y `design.md`.
+- La historia existe bajo `changes/` y su directorio contiene `analyze.md` y `design.md`.
 - El directorio contiene `tasks.md`, `testcases.md` o ambos.
 
 ## Dependencias
@@ -97,8 +97,8 @@ Lee los hallazgos de `analyze.md`, planifica en un único ciclo los cambios mín
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -109,9 +109,9 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
    ¿Qué historia deseas corregir?
    Proporciona el ID (ej. STORY-138).
    ```
-2. Buscar con Glob `specs/flow/<STORY-NNN>-*/` y tomar el directorio cuyo nombre empieza por el ID. Si no existe:
+2. Buscar con Glob `changes/<STORY-NNN>-*/` y tomar el directorio cuyo nombre empieza por el ID. Si no existe:
    ```
-   ❌ No se encontró la historia <STORY-NNN> en specs/flow/
+   ❌ No se encontró la historia <STORY-NNN> en changes/
    ```
    Detener.
 3. Verificar los artefactos en este orden. Ante el primer fallo, emitir el mensaje y detener sin escribir nada:
@@ -272,8 +272,8 @@ Omitir las líneas de archivos que el plan no tocó.
 
 | Artefacto | Ubicación | Condición |
 |---|---|---|
-| `design.md` / `tasks.md` / `testcases.md` | `specs/flow/<STORY-NNN>-*/` | Solo los que existen y el plan modifica |
-| `<archivo>.bak` | `specs/flow/<STORY-NNN>-*/` | Uno por cada archivo modificado |
-| `fix-plan-report.md` | `specs/flow/<STORY-NNN>-*/fix-plan-report.md` | Siempre que se aplique al menos un cambio |
+| `design.md` / `tasks.md` / `testcases.md` | `changes/<STORY-NNN>-*/` | Solo los que existen y el plan modifica |
+| `<archivo>.bak` | `changes/<STORY-NNN>-*/` | Uno por cada archivo modificado |
+| `fix-plan-report.md` | `changes/<STORY-NNN>-*/fix-plan-report.md` | Siempre que se aplique al menos un cambio |
 
 Sin `verdict: NEEDS-CHANGES` (o `APPROVED` en modo advertencias), sin hallazgos accionables, con el plan rechazado o con un artefacto obligatorio ausente, no se crea ni modifica ningún archivo.

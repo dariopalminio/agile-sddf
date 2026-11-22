@@ -28,7 +28,7 @@ canónico **`APPROVED`** o **`NEEDS-REFINEMENT`** en `epic-format-validation-rep
 ## Entrada
 
 - Argumento posicional: ruta relativa, nombre (con o sin `.md`) o término de búsqueda del archivo de épica
-- `specs/flow/EPIC-*/epic.md` — archivos de épica donde se busca por término
+- `changes/EPIC-*/epic.md` — archivos de épica donde se busca por término
 - `docs/templates/epic-template.md` — fuente de verdad estructural (solo lectura)
 - `assets/epic-format-validation-report-template.md` — formato del reporte (se lee en el Paso 5)
 
@@ -73,8 +73,8 @@ canónico **`APPROVED`** o **`NEEDS-REFINEMENT`** en `epic-format-validation-rep
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
@@ -91,7 +91,7 @@ El skill acepta tres formas de input. Detectar cuál aplica antes de continuar:
 #### Tipo B — Nombre con o sin extensión `.md`
 **Señal:** El input es una palabra o frase corta que no contiene separadores de ruta.
 **Acción:**
-1. Buscar entre las rutas `specs/flow/EPIC-*/epic.md` aquellas cuyo nombre de directorio contenga el término (sin distinguir mayúsculas/minúsculas). El directorio plano también contiene `STORY-*`: nunca se consideran como épicas ni se consulta `specs/flow/archive/`
+1. Buscar entre las rutas `changes/EPIC-*/epic.md` aquellas cuyo nombre de directorio contenga el término (sin distinguir mayúsculas/minúsculas). El directorio plano también contiene `STORY-*`: nunca se consideran como épicas ni se consulta `changes/archive/`
 2. Si hay exactamente 1 coincidencia → usar ese archivo. Continuar a Paso 2.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que elija antes de continuar.
 4. Si no hay coincidencias → ir a **manejo de archivo no encontrado**.
@@ -101,7 +101,7 @@ El skill acepta tres formas de input. Detectar cuál aplica antes de continuar:
 ```
 ❌ Épica no encontrada: <input>
    Ruta buscada: <ruta exacta>                         (Tipo A)
-   Ruta buscada: specs/flow/EPIC-*<término>*/epic.md   (Tipo B)
+   Ruta buscada: changes/EPIC-*<término>*/epic.md   (Tipo B)
 
 Verifica que el nombre o ruta sea correcto e inténtalo de nuevo.
 ```

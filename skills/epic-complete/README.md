@@ -8,12 +8,12 @@
 
 ## What it does
 
-Cierra una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic.md` la fecha de cierre y, si se conoce, la versión y mueve su directorio a `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` (ADR-0019), conservando el historial de git. Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status. Siempre pide confirmación humana antes de escribir o mover nada.
+Cierra una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic.md` la fecha de cierre y, si se conoce, la versión y mueve su directorio a `changes/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/` (ADR-0023), conservando el historial de git. Una épica que ya está en `COMPLETED/DONE` se archiva sin reescribir su frontmatter, y una `CANCELED/DONE` también, conservando su status. Siempre pide confirmación humana antes de escribir o mover nada.
 
 **Produces:**
 
 - `epic.md` con `status: COMPLETED`, `updated:` y `completed:` de hoy y `version:` si se conoce, solo si venía de `SHIP/DONE`.
-- El directorio de la épica movido a `specs/flow/archive/`, con `git mv` (renombre en el índice) o, si el directorio no tiene historial de git, con un renombre simple y un aviso.
+- El directorio de la épica movido a `changes/archive/`, con `git mv` (renombre en el índice) o, si el directorio no tiene historial de git, con un renombre simple y un aviso.
 
 **Does not do:**
 
@@ -38,7 +38,7 @@ Cierra una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic
 
 ## Motor
 
-`scripts/epic-complete.js` hace todo el trabajo determinista: localizar la épica (solo en el primer nivel de `specs/flow/`), validar, resolver la versión, escribir el frontmatter, mover y comprobar que activas + archivadas no cambió. Si el movimiento falla, restaura `epic.md`. Tiene dos subcomandos: `plan` (solo lectura) y `apply`. Sus pruebas viven en `test/epic-complete.test.js`.
+`scripts/epic-complete.js` hace todo el trabajo determinista: localizar la épica (solo en el primer nivel de `changes/`), validar, resolver la versión, escribir el frontmatter, mover y comprobar que activas + archivadas no cambió. Si el movimiento falla, restaura `epic.md`. Tiene dos subcomandos: `plan` (solo lectura) y `apply`. Sus pruebas viven en `test/epic-complete.test.js`.
 
 ---
 
@@ -46,9 +46,9 @@ Cierra una épica: la lleva de `SHIP/DONE` a `COMPLETED/DONE`, registra en `epic
 
 **Use it when:**
 
-- La épica está en `SHIP/DONE` y quieres cerrarla y sacarla de `specs/flow/`.
-- Una épica ya marcada `COMPLETED/DONE` a mano sigue en `specs/flow/` y quieres archivarla.
-- Cancelaste una épica (`CANCELED/DONE`) y quieres sacarla de `specs/flow/` sin que pase a `COMPLETED`.
+- La épica está en `SHIP/DONE` y quieres cerrarla y sacarla de `changes/`.
+- Una épica ya marcada `COMPLETED/DONE` a mano sigue en `changes/` y quieres archivarla.
+- Cancelaste una épica (`CANCELED/DONE`) y quieres sacarla de `changes/` sin que pase a `COMPLETED`.
 - The user mentions: `"epic-complete"`, `"completar épica"`, `"archivar épica"`, `"archivar épica cancelada"`, `"cerrar épica"`.
 
 **Do NOT use it when:**
@@ -70,4 +70,4 @@ Para otro runtime compatible, sustituye `claude-code` por un identificador decla
 
 ### Invocation
 
-Usa `/epic-complete EPIC-NN [--version x.y.z]` o `/epic-complete specs/flow/EPIC-NNN-<slug>/ [--version x.y.z]`.
+Usa `/epic-complete EPIC-NN [--version x.y.z]` o `/epic-complete changes/EPIC-NNN-<slug>/ [--version x.y.z]`.

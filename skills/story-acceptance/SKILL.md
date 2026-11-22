@@ -48,11 +48,11 @@ story-acceptance  → validación humana final              ← aquí
 
 ## Entrada
 
-- `specs/flow/<STORY-NNN>-<slug>/story.md` — historia a validar (precondición de estado)
+- `changes/<STORY-NNN>-<slug>/story.md` — historia a validar (precondición de estado)
 - DoD de la etapa `acceptance` (`docs/guardrails/dod-story-acceptance.md`, ver `## DoD aplicable`) — opcional
-- `specs/flow/<STORY-NNN>-<slug>/acceptance-report.md` — si existe, detección de sesión previa
+- `changes/<STORY-NNN>-<slug>/acceptance-report.md` — si existe, detección de sesión previa
 - `docs/templates/fix-directives-template.md` — plantilla común de `fix-directives.md` (solo con `NEEDS-CHANGES`); si no existe, la semilla `assets/fix-directives-template.md`
-- `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` e `implement-report.md` — opcionales, solo lectura: fuentes de la ronda previa (Paso 7f.1)
+- `changes/<STORY-NNN>-<slug>/fix-directives.md` e `implement-report.md` — opcionales, solo lectura: fuentes de la ronda previa (Paso 7f.1)
 
 ## Parámetros
 
@@ -110,8 +110,8 @@ Se carga **solo** ese archivo: sus criterios son todas sus líneas `- [ ]`. Sus 
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -133,16 +133,16 @@ Proporciona el ID (ej. STORY-055) o la ruta completa al directorio.
 
 #### 1b. Resolver el directorio de la historia
 
-1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `specs/flow/STORY-NNN-<slug>/` (no `specs/flow/archive/…`) y contiene `story.md`. Si no:
+1. Ruta explícita `{story_path}` si se proporcionó: se acepta solo si, normalizada y relativa a `REPO_ROOT`, tiene la forma `changes/STORY-NNN-<slug>/` (no `changes/archive/…`) y contiene `story.md`. Si no:
    ```
-   ❌ La ruta {story_path} no es una historia de specs/flow/ (se esperaba specs/flow/STORY-NNN-<slug>/)
+   ❌ La ruta {story_path} no es una historia de changes/ (se esperaba changes/STORY-NNN-<slug>/)
    ```
    Detener la ejecución sin escribir ningún archivo.
-2. Glob `specs/flow/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `specs/flow/archive/`)
+2. Glob `changes/{story_id}-*/` — primera coincidencia cuyo nombre comienza con el ID seguido de guion (nunca se consulta el layout legado ni `changes/archive/`)
 
 Si no se encuentra:
 ```
-❌ No se encontró la historia {story_id} en specs/flow/
+❌ No se encontró la historia {story_id} en changes/
 
 Verifica el ID o ejecuta /epic-generate-stories para generar la historia primero.
 ```
@@ -571,8 +571,8 @@ o bien (si BLOCKED):
 
 ## Salida
 
-- `specs/flow/<STORY-NNN>-<slug>/acceptance-report.md` — reporte de validación con `verdict` en el frontmatter, `## Veredicto` como primera sección, trazabilidad por criterio, resumen ejecutivo e historial de sesiones
-- `specs/flow/<STORY-NNN>-<slug>/fix-directives.md` — solo si el veredicto es `NEEDS-CHANGES` (Paso 7f): plantilla común con `based-on: acceptance-report.md`, `round` continuo entre gates (ADR-0022), una fila `requirements-coverage` `HIGH` por criterio `REJECTED` y lista blanca vacía. Es la señal de rework que consumen `story-implement` y `story-implement-tasks`; solo `story-code-review` lo elimina, al aprobar.
+- `changes/<STORY-NNN>-<slug>/acceptance-report.md` — reporte de validación con `verdict` en el frontmatter, `## Veredicto` como primera sección, trazabilidad por criterio, resumen ejecutivo e historial de sesiones
+- `changes/<STORY-NNN>-<slug>/fix-directives.md` — solo si el veredicto es `NEEDS-CHANGES` (Paso 7f): plantilla común con `based-on: acceptance-report.md`, `round` continuo entre gates (ADR-0022), una fila `requirements-coverage` `HIGH` por criterio `REJECTED` y lista blanca vacía. Es la señal de rework que consumen `story-implement` y `story-implement-tasks`; solo `story-code-review` lo elimina, al aprobar.
 - `story.md` frontmatter actualizado según el veredicto:
   - `status: ACCEPTANCE / substatus: DONE` — veredicto `APPROVED`
   - `status: IMPLEMENT / substatus: TODO` — veredicto `NEEDS-CHANGES`

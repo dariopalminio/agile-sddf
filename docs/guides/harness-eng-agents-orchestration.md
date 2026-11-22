@@ -33,7 +33,7 @@ Este enfoque se basa en varios principios clave:
 * **Mantenlo simple con las herramientas (KISS):** otorgarle a la IA herramientas muy sencillas del ecosistema y dejar que la IA deduzca cómo resolver los problemas.
 * **Gestión estricta de la memoria y el contexto:** la IA no debe acumular todo en su contexto; debe tener un sistema de memoria externa (ficheros locales o bases de datos) donde lea y escriba solo lo que necesita en cada momento.
 * **Evita el "teléfono descompuesto":** cuando el agente padre crea subagentes, no debe pasarles todo su contexto heredado, en su lugar, los subagentes deben escribir sus resultados de forma independiente en un directorio `.tmp/<skill-name>/` para que otros agentes lean exclusivamente lo que necesiten. Ver patrón detallado en `[[best-practices-for-skills]]`.
-* **Layout fijo:** cada workflow resuelve `REPO_ROOT` una vez antes de escribir y usa rutas fijas relativas a él (`specs/flow/`, `docs/templates/`, `docs/guardrails/`; ADR-0016). `skill-preflight` es un diagnóstico no mutante solicitado bajo demanda, no una dependencia implícita.
+* **Layout fijo:** cada workflow resuelve `REPO_ROOT` una vez antes de escribir y usa rutas fijas relativas a él (`changes/`, `docs/templates/`, `docs/guardrails/`; ADR-0016). `skill-preflight` es un diagnóstico no mutante solicitado bajo demanda, no una dependencia implícita.
 * **Mantener buenas prácticas y estándares homogéneos:** El código base debe estar bien estructurado y definimos buenas prácticas y reglas claras para que los patrones de resultado esperado sean predecibles.
 
 

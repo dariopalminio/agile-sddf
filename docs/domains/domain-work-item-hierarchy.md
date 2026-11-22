@@ -41,8 +41,8 @@ flowchart TD
 
 ```text
 product/ + requirements/
-└── specs/flow/EPIC-NNN-<slug>/epic.md
-    └── specs/flow/STORY-NNN-<slug>/story.md
+└── changes/EPIC-NNN-<slug>/epic.md
+    └── changes/STORY-NNN-<slug>/story.md
 ```
 
 ## 5. Cardinalidad e Invariantes
@@ -64,18 +64,18 @@ product/ + requirements/
 | Nivel | Dónde vive | Naturaleza | Identificador |
 |---|---|---|---|
 | Estratégico | `product/` + `requirements/` | documentación fundacional | `FR-NNN` / `NFR-NNN` |
-| L2 | `specs/flow/EPIC-NNN-<slug>/` | Epic | `EPIC-NNN` |
-| L1 | `specs/flow/STORY-NNN-<slug>/` | Story | `STORY-NNN` |
+| L2 | `changes/EPIC-NNN-<slug>/` | Epic | `EPIC-NNN` |
+| L1 | `changes/STORY-NNN-<slug>/` | Story | `STORY-NNN` |
 
 ## 7. Estructura de Carpetas
 
-`specs/flow/` (raíz del repo) contiene épicas (`EPIC-NNN-<slug>/`) e historias (`STORY-NNN-<slug>/`) como directorios hermanos, sin subniveles ni prefijos numéricos. Las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` conservando su status, con la fecha de `updated:`, `created:` o `date:` ([[layout-fijo-con-archivo-de-historias-canceladas]]).
+`changes/` (raíz del repo) contiene épicas (`EPIC-NNN-<slug>/`) e historias (`STORY-NNN-<slug>/`) como directorios hermanos, sin subniveles ni prefijos numéricos. Las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) se archivan en `changes/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/` conservando su status, con la fecha de `updated:`, `created:` o `date:` ([[layout-fijo-con-archivo-de-historias-canceladas]]).
 
 > Hasta 3.x existía un nivel Project en `specs/01-projects/`; ver [[asegurar-dos-niveles-de-flujo-epics-stories]].
 
 ## 8. Resolución
 
-Las Epics se resuelven en `specs/flow/EPIC-NNN-<slug>/epic.md` y las Stories en `specs/flow/STORY-NNN-<slug>/story.md`; una Story archivada se resuelve en `specs/flow/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/story.md`.
+Las Epics se resuelven en `changes/EPIC-NNN-<slug>/epic.md` y las Stories en `changes/STORY-NNN-<slug>/story.md`; una Story archivada se resuelve en `changes/archive/<YYYY-MM-DD>-STORY-NNN-<slug>/story.md`.
 
 ## 9. Validación
 

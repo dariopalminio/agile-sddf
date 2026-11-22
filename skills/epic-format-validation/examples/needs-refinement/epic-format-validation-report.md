@@ -18,7 +18,7 @@ updated: 2026-10-29
 
 | Métrica | Valor |
 |---|---|
-| Épica | EPIC-05 (`specs/flow/EPIC-05-pagos/epic.md`) |
+| Épica | EPIC-05 (`changes/EPIC-05-pagos/epic.md`) |
 | Template de épica | `docs/templates/epic-template.md` |
 | Defectos | 2 |
 | Fecha | 2026-10-29 |

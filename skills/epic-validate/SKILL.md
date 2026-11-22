@@ -41,8 +41,8 @@ Comprueba la **preparación estructural** de una épica —todas sus historias h
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `specs/flow/<EPIC-NNN-nombre>/epic.md` | `title`, `status` y `substatus` (gateway, Paso 5b), líneas `- ` de la sección de historias y encabezados y pasos `Entonces` de la sección de smoke tests |
-| `story.md` | `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md` | `parent`, `status` y `substatus` del frontmatter; del cuerpo de las historias del universo, solo la presencia del token `SMOKE-<N>` |
+| `epic.md` | `changes/<EPIC-NNN-nombre>/epic.md` | `title`, `status` y `substatus` (gateway, Paso 5b), líneas `- ` de la sección de historias y encabezados y pasos `Entonces` de la sección de smoke tests |
+| `story.md` | `changes/STORY-*/story.md` y `changes/archive/*-STORY-*/story.md` | `parent`, `status` y `substatus` del frontmatter; del cuerpo de las historias del universo, solo la presencia del token `SMOKE-<N>` |
 | `epic-analyze-report.md` | `<EPIC_DIR>/epic-analyze-report.md` | Solo `verdict` y `updated` del frontmatter |
 | `acceptance-report.md`, `verify-report.md` | `<STORY_DIR>/` de las historias dueñas de un `SMOKE-N` | Solo `verdict` del frontmatter, y solo en `--mode manual` |
 | `sddf.config.yaml` | `REPO_ROOT` | `verify.e2e-smoke.command`; el motor lee además `command` y `required` de `verify.integration`, `verify.e2e` y `verify.e2e-regression` (Paso 3e) |
@@ -134,8 +134,8 @@ Lo que la consola muestra por cada comando de prueba; `verbose` solo cambia esto
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0019).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Resuelve `CLI_ROOT` (instalación del paquete) por separado y solo para leer los seeds de templates; nunca lo derives de `REPO_ROOT`.
 
@@ -158,7 +158,7 @@ El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; e
    - **Guardia `--mode auto` sin pruebas:** solo si `modoFlag = auto` y no hay pruebas configuradas, también con `--dry-run`: `❌ --mode auto sin pruebas configuradas: <causa>. Declara verify.e2e-smoke.command en sddf.config.yaml o usa --mode manual`, con `<causa>` = `sddf.config.yaml no existe` · `sddf.config.yaml no se pudo leer` · `verify.e2e-smoke.command no está declarado`. Es un error de invocación: fin inmediato sin resolver la épica, sin invocar el motor ni escribir, y bloque con `RESULTADO: FALLO`, `VEREDICTO: —`, `MODO: auto`, `REPORTE: —` y `MOTIVO: <mensaje>`. Forzar la ejecución automática sin nada que ejecutar solo produciría un `BLOCKED` que no informa nada; con `--dry-run` se aplica igual porque la previsualización muestra lo que pasaría.
    - **Orden de evaluación de la invocación:** (1) errores del Paso 1.1; (2) resolución de `MODO`; (3) guardia `--mode auto` sin pruebas; (4) `<epica>` ausente (Paso 1.3) y resolución de la épica (Paso 1.4). El primer error gana y ningún error escribe archivos.
 3. **Sin argumento:** `MODO = manual` → preguntar `¿Qué épica deseas validar? Indica el ID (ej. EPIC-30), el nombre de su directorio o su ruta.` (si nadie puede responder, como en `auto`); `MODO = auto` → error de invocación `❌ Falta el argumento <epica>`: fin sin escribir y bloque con `FALLO`. Una automatización esperando una respuesta no es observable.
-4. **Resolver la épica:** leer [references/story-sources.md](references/story-sources.md) §1 y aplicarlo. Con 0 coincidencias o un directorio sin `epic.md`: `❌ No se encontró la épica <arg>: no existe <ruta-buscada>` (ruta relativa a `REPO_ROOT`, p. ej. `specs/flow/EPIC-77-*/epic.md`) y fin **sin leer templates ni escribir**. Con > 1: listar los directorios y terminar con error. En ambos casos, bloque con `FALLO`.
+4. **Resolver la épica:** leer [references/story-sources.md](references/story-sources.md) §1 y aplicarlo. Con 0 coincidencias o un directorio sin `epic.md`: `❌ No se encontró la épica <arg>: no existe <ruta-buscada>` (ruta relativa a `REPO_ROOT`, p. ej. `changes/EPIC-77-*/epic.md`) y fin **sin leer templates ni escribir**. Con > 1: listar los directorios y terminar con error. En ambos casos, bloque con `FALLO`.
 5. Registrar `EPIC_DIR`, `EPIC_DIRNAME`, `EPIC_ID` y `title`.
 
 ### Paso 2 — `EST-01`: cierre de las historias hijas
@@ -439,7 +439,7 @@ Quien automatiza trata todo valor distinto de `ÉXITO` como no aprobado: una sim
 | `--dry-run` | Ningún archivo escrito, ningún comando, ninguna confirmación; `OPE-*` `no ejecutada`; `RESULTADO: SIMULACIÓN` |
 | Épica inexistente o directorio sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>`; fin sin leer templates ni escribir |
 | Argumento ambiguo | `❌ El argumento <arg> es ambiguo: <lista>`; fin sin escribir |
-| `specs/flow/archive/` no existe | Se omite ese origen sin nota |
+| `changes/archive/` no existe | Se omite ese origen sin nota |
 | `story.md` con frontmatter ilegible | `no terminal` con `—` y nota con su ruta; nunca se aborta |
 | Sin sección de historias en `epic.md` | Solo Vía B y nota `epic.md sin sección de historias → /epic-format-validation <EPIC_ID>` |
 | `epic-analyze-report.md` ausente o ilegible | `EST-02 bloqueada` |

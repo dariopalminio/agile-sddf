@@ -27,7 +27,7 @@ Ser el único punto de entrada para la memoria del proyecto (ver
 `docs/architecture/memory-system.md` en el repositorio del framework): diez capas (`product`,
 `requirements`, `domains`, `architecture`, `decisions`, `policies`, `guardrails`, `guides`,
 `runbooks`, `templates`) más `constitution.md` en la raíz de `docs/`, y un `index.md` con una
-entrada `[[slug]]` por artefacto, incluidos los work items de `specs/flow/`. Todo lo que escribe es reproducible; la única excepción a no borrar es
+entrada `[[slug]]` por artefacto, incluidos los work items de `changes/`. Todo lo que escribe es reproducible; la única excepción a no borrar es
 `migrate --from=specs-3-levels`, que elimina exclusivamente orígenes ya migrados.
 
 **Qué hace este skill:**
@@ -38,7 +38,7 @@ entrada `[[slug]]` por artefacto, incluidos los work items de `specs/flow/`. Tod
   un `README.md` por capa, `templates/README.md` y las cuatro plantillas de autoría manual
   `adr-template.md`, `domain-template.md`, `guardrail-template.md`, `policy-template.md`) y de las cinco plantillas
   compartidas desde su skill dueño. `[CREADO]` lo nuevo, `[PRESERVADO]` lo existente. No crea
-  `docs/specs/` ni `specs/flow/`: los directorios de work items los crea `/sddf-init`. Aplica el
+  `docs/specs/` ni `changes/`: los directorios de work items los crea `/sddf-init`. Aplica el
   perfil del harness: `[OMITIDO]` las capas que el harness ya modela y `[MAPEADO]` las semillas
   con equivalente en el harness
   (`constitution.md → .specify/memory/constitution.md`).
@@ -48,8 +48,8 @@ entrada `[[slug]]` por artefacto, incluidos los work items de `specs/flow/`. Tod
 - `ensure` (por defecto): `scaffold` + `index` en un solo paso; con `--fix-frontmatter` normaliza
   antes los archivos sin frontmatter mediante `/header-aggregation` en batch.
 - `rebuild --force`: `scaffold --force` (sobrescribe solo los archivos gestionados) + `index`.
-- `index`: regenera `docs/index.md` (nodos de `docs/` y work items de `specs/flow/`, enlazados como
-  `../specs/flow/…`; los archivados en su propia sección) desde `assets/index-template.md` con el motor
+- `index`: regenera `docs/index.md` (nodos de `docs/` y work items de `changes/`, enlazados como
+  `../changes/…`; los archivados en su propia sección) desde `assets/index-template.md` con el motor
   determinista `scripts/memory-system.js` (Node ≥ 18, sin dependencias): dos ejecuciones seguidas
   producen el mismo archivo salvo `updated`. Los wikilinks sin destino se marcan como nodos
   pendientes sin bloquear.
@@ -64,7 +64,7 @@ entrada `[[slug]]` por artefacto, incluidos los work items de `specs/flow/`. Tod
   gestionados por el scaffold (lista en `references/memory-rules.md` §5).
 - No añade frontmatter por sí mismo: `ensure --fix-frontmatter` delega en `/header-aggregation`,
   que permanece como utilidad independiente (este skill solo lee su esquema `slug`/`title`).
-- No escribe fuera de `docs/`: `specs/flow/`, `openspec/`, `.specify/` y `specs/` del harness son de solo
+- No escribe fuera de `docs/`: `changes/`, `openspec/`, `.specify/` y `specs/` del harness son de solo
   lectura, y el motor aborta con exit 2 (`destino fuera de la raíz: <ruta>`) antes de escribir si
   un destino cae fuera.
 - No corrige lo que `check` encuentra: `check` solo informa. La corrección es `ensure`,
@@ -77,7 +77,7 @@ entrada `[[slug]]` por artefacto, incluidos los work items de `specs/flow/`. Tod
 ## Entrada
 
 - `docs/` — raíz de conocimiento, ruta fija relativa a `REPO_ROOT` (si no existe, `scaffold` la crea).
-- `specs/flow/` — work items del layout fijo (ADR-0016); `index` y `check` los leen, nunca los escriben.
+- `changes/` — work items del layout fijo (ADR-0023); `index` y `check` los leen, nunca los escriben.
 - `<REPO_ROOT>/sddf.config.yaml`, `.specify/`, `openspec/` — marcadores de harness (opcionales).
 - `assets/scaffold/**` — árbol semilla (espejo del destino; `{date}` como único placeholder).
 - `<CLI_ROOT>/skills/<dueño>/assets/<plantilla>` — origen de las cinco plantillas compartidas.
@@ -174,8 +174,8 @@ entrada `[[slug]]` por artefacto, incluidos los work items de `specs/flow/`. Tod
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 La raíz de conocimiento es siempre `docs/` (relativa a `REPO_ROOT`) y el motor se invoca con
 `--root docs`. Bootstrap: en `scaffold`/`ensure`, si `docs/` todavía no existe pero `REPO_ROOT` sí,
@@ -253,7 +253,7 @@ Exit codes (comunes a todos los subcomandos):
    `M` (preservados) para el informe final.
 3. Solo si el usuario pasó `--fix-frontmatter`: invoca el skill `header-aggregation` con
    `REPO_ROOT` como input (activa su modo batch, Paso 4 de ese skill: `docs/product/`,
-   `docs/requirements/` y los canónicos de `specs/flow/`). Responde a
+   `docs/requirements/` y los canónicos de `changes/`). Responde a
    sus dos preguntas sin abrir diálogos de merge: a la estrategia para los archivos con
    conflicto, **"Saltar todos los conflictos"** (procesa solo los archivos sin frontmatter); a
    "¿Confirmas el procesamiento de N archivos?", **"s"**. Muestra la invocación, la estrategia
@@ -301,7 +301,7 @@ un SRS.
 
 Invoca `index --root docs [--harness h] [--dry-run]`. El motor detecta el harness
 (precedencia `--harness` > `sddf.config.yaml` > `.specify/` > `openspec/` > `generic`), escanea
-`docs/`, el origen flow (`specs/flow/`, salvo que el harness gestione `specs/`) y las raíces
+`docs/`, el origen flow (`changes/`, salvo que el harness gestione sus propios cambios) y las raíces
 externas del perfil, deriva slug, título y capa de cada nodo según
 `references/memory-rules.md`, rellena `assets/index-template.md` y escribe `docs/index.md`.
 Con `--dry-run` imprime el índice por stdout y no escribe: en ese caso emite
@@ -322,7 +322,7 @@ simulación del skill), no inventes la salida del motor: pasa al Paso 5 y genera
 #### 3.5 `check` — verificar sin escribir y propagar el exit code
 
 Invoca `check --root docs [--harness h] [--json]`. El motor detecta el harness (misma
-precedencia que `index`), escanea `docs/` y `specs/flow/` una sola vez con las mismas exclusiones y ejecuta
+precedencia que `index`), escanea `docs/` y `changes/` una sola vez con las mismas exclusiones y ejecuta
 cinco evaluadores puros sobre los nodos:
 
 | Familia | Regla |
@@ -333,7 +333,7 @@ cinco evaluadores puros sobre los nodos:
 | `broken-wikilink` | Cada ocurrencia de `[[slug]]` cuyo slug no resuelve contra el conjunto de slugs derivados. |
 | `dod-guardrail` | Solo si el proyecto tiene DoD de historia: frontmatter y cadena `from`/`to` de cada `dod-story-<etapa>.md`, mapeo `guardrails.dod.story` de `sddf.config.yaml`, DoD monolítico o heredado sin migrar y, si hay directorio de skills (`--skills-dir` → `<REPO_ROOT>/skills` → `<CLI_ROOT>/skills`), la sección `## DoD aplicable` de cada skill de historia. Reglas R1–R7 en `references/dod-rules.md`. |
 
-Los work items de `specs/flow/` son nodos propios: `check` los evalúa igual que los de `docs/`.
+Los work items de `changes/` son nodos propios: `check` los evalúa igual que los de `docs/`.
 Se evalúa el campo **declarado**, no el derivado: un archivo cuyo `slug` deduce el motor por su
 nombre sigue siendo `invalid-frontmatter` porque no lo declara. Las reglas completas (campos
 obligatorios y extracción de wikilinks) están en `references/memory-rules.md` §6 y §2.
@@ -493,7 +493,7 @@ modos, si `node` no está disponible, avisa:
 Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los archivos reales:
 
 1. Resuelve las rutas relativas al `REPO_ROOT` indicado (o al directorio de trabajo): la raíz de
-   conocimiento es `<REPO_ROOT>/docs`, los work items están en `<REPO_ROOT>/specs/flow/` y los
+   conocimiento es `<REPO_ROOT>/docs`, los work items están en `<REPO_ROOT>/changes/` y los
    marcadores de harness se buscan en `REPO_ROOT`. Determina el
    harness con la tabla de perfiles.
 2. **Scaffold inline** (`ensure`, `scaffold`, `rebuild --force`, `migrate`): recorre la lista de archivos
@@ -508,10 +508,10 @@ Después lee `references/memory-rules.md` y aplica sus reglas a mano, con los ar
    las cinco plantillas compartidas desde `<CLI_ROOT>/skills/<dueño>/assets/` tal cual; si el
    origen no existe, `[WARNING] template no copiado: <nombre> (skill <dueño> no instalado)`. Crea
    los directorios de capa y `requirements/functional/`, `requirements/non-functional/` (con
-   `.gitkeep` solo si el directorio no existía). No crea `docs/specs/` ni `specs/flow/`. No borres nada. Con `--dry-run` solo lista `[CREARÍA]`/`[PRESERVARÍA]`/`[MAPEARÍA]`/`[OMITIRÍA]`. Cierra
+   `.gitkeep` solo si el directorio no existía). No crea `docs/specs/` ni `changes/`. No borres nada. Con `--dry-run` solo lista `[CREARÍA]`/`[PRESERVARÍA]`/`[MAPEARÍA]`/`[OMITIRÍA]`. Cierra
    con `creados: N · sobrescritos: S · preservados: M · mapeados: X · omitidos por harness: K`.
 3. **Índice inline** (`ensure`, `rebuild --force`, `index`): lista los `.md` de `docs/`, los de
-   `specs/flow/` (origen flow, `memory-rules.md` §2) y los de las raíces externas del perfil,
+   `changes/` (origen flow, `memory-rules.md` §2) y los de las raíces externas del perfil,
    descartando las exclusiones. **Lee cada `.md` candidato con la
    herramienta de lectura antes de clasificarlo.** Un nodo solo se marca `⚠️ sin frontmatter` si
    su primera línea no es `---` (o el bloque no cierra); en caso contrario toma `slug` y `title`

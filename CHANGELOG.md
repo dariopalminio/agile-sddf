@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### BREAKING — changes/ y especificación viva en specs/ (EPIC-030, requiere 6.0.0)
+
+[ADR-0023](docs/decisions/ADR-0023-separar-changes-de-specs.md) reemplaza a ADR-0019. Los work items (épicas, historias y su archivo) pasan de `specs/flow/` a la raíz `changes/` (archivo en `changes/archive/`), y `specs/` asume directamente la especificación viva, sin el nivel `living/`. Identificadores, estados, reglas de archivo y confirmaciones humanas no cambian.
+
+- Todos los skills leen y escriben en `changes/`; el contrato `<!-- SDDF-FIXED-LAYOUT: v1 -->` nombra `changes/` y `scripts/verify-fixed-layout.js` rechaza `specs/flow` y `specs/living` fuera de la región de diagnóstico de `skill-preflight` y `sddf-init`.
+- `story-complete` y `epic-complete` archivan en `changes/archive/`; `memory-system index` indexa `changes/` con las capas `changes`, `changes-epics`, `changes-stories` y `changes-archive` (antes `specs-*`).
+- `/sddf-init` crea `changes/`, `changes/archive/`, `specs/` y `workflow/` y no escribe ante el layout de 5.x; `/skill-preflight` lo informa con las señales L4 (`specs/flow/`) y L5 (`specs/living/`).
+- `scripts/check-doc-links.js` revisa `specs/` como documentación activa y excluye `changes/` como registro histórico.
+- Se retira `scripts/migrate-specs-to-flow.js` (migración única de 5.0.0).
+- Migración manual: [sección de migración a 6.0.0](docs/guides/artifact-directory-migration.md#migracion-a-600--changes-y-especificacion-viva).
+
 ## [5.3.0] — 2026-11-15
 
 ### EPIC-029 — Eliminar estados buffer

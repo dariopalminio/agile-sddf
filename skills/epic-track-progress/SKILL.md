@@ -18,7 +18,7 @@ Semáforo de **solo lectura** de la fase `DEVELOP`: une el índice de historias 
 
 **Qué hace este skill:**
 - Resuelve la épica por ID, nombre de directorio o ruta.
-- Cruza el índice de `epic.md` con el `parent` de los `story.md` de `specs/flow/` y `specs/flow/archive/`.
+- Cruza el índice de `epic.md` con el `parent` de los `story.md` de `changes/` y `changes/archive/`.
 - Clasifica cada historia como `terminada`, `cancelada` o `pendiente` y emite el resultado global en el chat.
 
 **Qué NO hace este skill:**
@@ -30,8 +30,8 @@ Semáforo de **solo lectura** de la fase `DEVELOP`: une el índice de historias 
 
 | Artefacto | Ubicación | Uso |
 |---|---|---|
-| `epic.md` | `specs/flow/<EPIC-NNN-slug>/epic.md` | `title` del frontmatter y líneas `- ` de la sección de historias |
-| `story.md` | `specs/flow/STORY-*/story.md` y `specs/flow/archive/*-STORY-*/story.md` | Solo los escalares `parent`, `status` y `substatus` del frontmatter |
+| `epic.md` | `changes/<EPIC-NNN-slug>/epic.md` | `title` del frontmatter y líneas `- ` de la sección de historias |
+| `story.md` | `changes/STORY-*/story.md` y `changes/archive/*-STORY-*/story.md` | Solo los escalares `parent`, `status` y `substatus` del frontmatter |
 | Template de épica | `docs/templates/epic-template.md` | Solo el título de la sección con `clave: historias` |
 
 ## Parámetros
@@ -43,7 +43,7 @@ Semáforo de **solo lectura** de la fase `DEVELOP`: une el índice de historias 
 ## Precondiciones
 
 - `REPO_ROOT` se resuelve con el contrato del Paso 0.
-- La épica existe en `specs/flow/` (es activa; una épica archivada en `specs/flow/archive/` es terminal y no se resuelve, ADR-0019).
+- La épica existe en `changes/` (es activa; una épica archivada en `changes/archive/` es terminal y no se resuelve, ADR-0023).
 
 ## Dependencias
 
@@ -68,18 +68,18 @@ Semáforo de **solo lectura** de la fase `DEVELOP`: une el índice de historias 
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
 ### Paso 1 — Resolver la épica
 
-Aplicar la resolución de la sección 1 de [references/story-sources.md](references/story-sources.md) (ID → glob `specs/flow/<EPIC-NN>-*/epic.md`, guion obligatorio, nunca `archive/`):
+Aplicar la resolución de la sección 1 de [references/story-sources.md](references/story-sources.md) (ID → glob `changes/<EPIC-NN>-*/epic.md`, guion obligatorio, nunca `archive/`):
 
 | Resultado | Comportamiento |
 |---|---|
-| 0 coincidencias, o directorio sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>` (p. ej. `specs/flow/EPIC-77-*/epic.md`) y fin sin tabla |
+| 0 coincidencias, o directorio sin `epic.md` | `❌ No se encontró la épica <arg>: no existe <ruta-buscada>` (p. ej. `changes/EPIC-77-*/epic.md`) y fin sin tabla |
 | > 1 coincidencias | Manual: listar las candidatas y pedir una. Agent: `❌ El argumento <arg> es ambiguo: <lista>` y fin |
 | Sin argumento | Manual: `¿Qué épica deseas revisar? Indica el ID (ej. EPIC-30), el nombre de su directorio o su ruta.` Agent: `❌ Falta el argumento <epica>` |
 
@@ -102,7 +102,7 @@ Comparación exacta, en mayúsculas, tras recortar espacios y comillas:
 | `DELIVER/DONE` o `COMPLETED/DONE` | `activa` / `archivada` | `terminada` | No |
 | `CANCELED/DONE` | `activa` / `archivada` | `cancelada` | No |
 | Cualquier otro par (incluido `DELIVER/IN-PROGRESS` o `status`/`substatus` ausente) | `activa` / `archivada` | `pendiente` | Sí |
-| ID del índice sin directorio en `specs/flow/` ni en `specs/flow/archive/` | `no encontrada` | `pendiente` | Sí |
+| ID del índice sin directorio en `changes/` ni en `changes/archive/` | `no encontrada` | `pendiente` | Sí |
 | Línea F1 (planificada sin ID) | `planificada (sin ID)` | `pendiente` | Sí |
 
 **Resultado global:** `todas terminadas` solo si hay ≥ 1 fila `terminada` y 0 `pendiente`. Sin filas, o con todas `cancelada`, es `no todas terminadas`: un gate que aprueba una épica sin entregas manda a validar algo que no entregó valor.
@@ -130,7 +130,7 @@ Progreso de <EPIC_ID> — <title>
 | Condición | Comportamiento |
 |---|---|
 | Épica no encontrada o ambigua | Paso 1: `❌ …` y fin sin tabla |
-| `specs/flow/archive/` no existe | Se omite ese origen sin nota |
+| `changes/archive/` no existe | Se omite ese origen sin nota |
 | `story.md` con frontmatter ilegible | Fila con `—`/`—`, `pendiente` y nota `<ruta>: frontmatter ilegible`; nunca se aborta |
 | `epic.md` sin sección de historias | Solo Vía B y nota `epic.md sin sección de historias → /epic-format-validation <EPIC_ID>` |
 | ID presente en activa y archivada | Se usa la activa y nota `<ID> duplicada: <ruta archivada> ignorada` |

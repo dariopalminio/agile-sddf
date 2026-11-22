@@ -163,11 +163,11 @@ Claude usa sonnet por defecto (o SDDF_EVAL_MODEL). Codex usa su configuración l
 El timeout por defecto es de 900 s por caso; con opencode sube a 1800 s (arranque más lento y
 modelos locales): --timeout explícito prevalece en todos los runners.
 
-Un caso con "sandbox": { "fixture", "target" (default specs/flow), "copy" } se ejecuta de verdad
+Un caso con "sandbox": { "fixture", "target" (default changes), "copy" } se ejecuta de verdad
 sobre una copia desechable en .tmp/skill-test-evals/<skill>/sandbox/<TC>/, con escritura confinada
 a ese directorio, y se califica además el árbol en disco con expected.files: written (lista exacta
 de rutas creadas/modificadas/eliminadas), contains, not_contains y backups ({ ".bak": "original" }).
-target: "." copia un fixture de repositorio completo (por ejemplo docs/ y specs/) en esa raíz temporal.
+target: "." copia un fixture de repositorio completo (por ejemplo docs/ y changes/) en esa raíz temporal.
 
 Examples:
   npm run test:eval
@@ -603,7 +603,7 @@ function parseSandboxSpec(testCase, source) {
   }
   return {
     fixture: normalizeRelativePath(raw.fixture, `${source}: sandbox.fixture`),
-    target: raw.target === '.' ? '.' : normalizeRelativePath(raw.target === undefined ? 'specs/flow' : raw.target, `${source}: sandbox.target`),
+    target: raw.target === '.' ? '.' : normalizeRelativePath(raw.target === undefined ? 'changes' : raw.target, `${source}: sandbox.target`),
     copy: (raw.copy === undefined ? [] : stringList(raw.copy, `${source}: sandbox.copy`))
       .map((entry) => normalizeRelativePath(entry, `${source}: sandbox.copy`)),
     files: {

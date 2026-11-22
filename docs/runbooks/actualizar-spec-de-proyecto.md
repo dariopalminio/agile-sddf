@@ -82,21 +82,21 @@ Antes de leer un solo documento de contenido, obtener las cifras. Este bloque es
 la que se escribe todo lo demás:
 
 ```bash
-echo "epic dirs:      $(ls -d specs/flow/EPIC-*/ | wc -l)"
-echo "epic.md:        $(ls specs/flow/EPIC-*/epic.md | wc -l)"
-echo "plan-NN.md:     $(ls specs/flow/EPIC-*/plan-*.md | wc -l)"
-echo "story dirs:     $(ls -d specs/flow/STORY-*/ specs/flow/archive/*-STORY-*/ | wc -l)"
-echo "story.md:       $(ls specs/flow/STORY-*/story.md specs/flow/archive/*-STORY-*/story.md | wc -l)"
+echo "epic dirs:      $(ls -d changes/EPIC-*/ | wc -l)"
+echo "epic.md:        $(ls changes/EPIC-*/epic.md | wc -l)"
+echo "plan-NN.md:     $(ls changes/EPIC-*/plan-*.md | wc -l)"
+echo "story dirs:     $(ls -d changes/STORY-*/ changes/archive/*-STORY-*/ | wc -l)"
+echo "story.md:       $(ls changes/STORY-*/story.md changes/archive/*-STORY-*/story.md | wc -l)"
 echo "skills:         $(ls -d skills/*/ | wc -l)"
 echo "agents raiz:    $(ls agents/*.agent.md | wc -l)"
 echo "agents locales: $(ls skills/*/agents/*.md | wc -l)"
 echo "skills c/evals: $(ls -d skills/*/evals | wc -l)"
 
-grep -h "^status:"    specs/flow/EPIC-*/epic.md   | sort | uniq -c
-grep -h "^substatus:" specs/flow/EPIC-*/epic.md   | sort | uniq -c
-grep -h "^status:"    specs/flow/STORY-*/story.md specs/flow/archive/*-STORY-*/story.md | sort | uniq -c
-grep -h "^substatus:" specs/flow/STORY-*/story.md specs/flow/archive/*-STORY-*/story.md | sort | uniq -c
-grep -h "^kind:"      specs/flow/STORY-*/story.md specs/flow/archive/*-STORY-*/story.md | sort | uniq -c
+grep -h "^status:"    changes/EPIC-*/epic.md   | sort | uniq -c
+grep -h "^substatus:" changes/EPIC-*/epic.md   | sort | uniq -c
+grep -h "^status:"    changes/STORY-*/story.md changes/archive/*-STORY-*/story.md | sort | uniq -c
+grep -h "^substatus:" changes/STORY-*/story.md changes/archive/*-STORY-*/story.md | sort | uniq -c
+grep -h "^kind:"      changes/STORY-*/story.md changes/archive/*-STORY-*/story.md | sort | uniq -c
 ```
 
 Dos avisos que la ejecución de referencia hizo evidentes:
@@ -115,8 +115,8 @@ subagentes de exploración en paralelo**, uno por eje:
 
 | Subagente | Alcance | Qué debe devolver |
 |---|---|---|
-| 1 | `specs/flow/EPIC-*/` | Por épica: frontmatter, objetivo en 1-2 líneas, historias hijas, capacidad aportada. Cierra con tabla resumen y agrupamiento temático |
-| 2 | `specs/flow/STORY-*/` y `specs/flow/archive/*-STORY-*/` | Por historia: **solo frontmatter** + título. Cierra con tabla, conteos por estado y por épica padre, e IDs faltantes en la secuencia |
+| 1 | `changes/EPIC-*/` | Por épica: frontmatter, objetivo en 1-2 líneas, historias hijas, capacidad aportada. Cierra con tabla resumen y agrupamiento temático |
+| 2 | `changes/STORY-*/` y `changes/archive/*-STORY-*/` | Por historia: **solo frontmatter** + título. Cierra con tabla, conteos por estado y por épica padre, e IDs faltantes en la secuencia |
 | 3 | `skills/`, `agents/`, `sddf.config.yaml`, `package.json`, `scripts/` | Por skill: descripción, precondición/gate, output, flags, subagentes que invoca. Cierra con tabla skill → fase → output y agrupamiento en pipelines |
 
 Reglas para el prompt de cada subagente:

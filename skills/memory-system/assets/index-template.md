@@ -51,13 +51,13 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ---
 
-## 🗂️ Work items (specs/flow/)
+## 🗂️ Work items (changes/)
 
-{layer:specs}
+{layer:changes}
 
 ### Épicas
 
-{layer:specs-epics}
+{layer:changes-epics}
 
 ### Historias de usuario
 
@@ -67,11 +67,11 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 > enumeran aquí: se leen desde el directorio de la historia. Los templates (`templates/`) tampoco se
 > listan porque sus wikilinks son placeholders.
 
-{layer:specs-stories}
+{layer:changes-stories}
 
 ### Épicas e historias archivadas (archive/)
 
-{layer:specs-archive}
+{layer:changes-archive}
 
 ---
 

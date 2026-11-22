@@ -19,7 +19,7 @@
         "user_answer": "s",
         "today": "2026-10-30",
         "dod_ship_file_exists": false,
-        "epics_dirs": ["specs/flow/EPIC-30-ejemplo/", "specs/flow/EPIC-300-otra/"],
+        "epics_dirs": ["changes/EPIC-30-ejemplo/", "changes/EPIC-300-otra/"],
         "epic_md_lines": [
           "---",
           "type: epic",
@@ -33,13 +33,13 @@
           "## Objetivo",
           "Permitir al equipo comercial consultar y filtrar su cartera de clientes. El resto del objetivo no se cita."
         ],
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
-          {"path": "specs/flow/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]},
-          {"path": "specs/flow/archive/2026-10-10-STORY-203-ordenar-columnas/story.md", "id": "STORY-203", "title": "Ordenar columnas", "kind": "chore", "parent": "EPIC-30-ejemplo", "status": "COMPLETED", "substatus": "DONE", "body": []},
-          {"path": "specs/flow/STORY-204-exportar-pdf/story.md", "id": "STORY-204", "title": "Exportar a PDF", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "CANCELED", "substatus": "DONE", "body": ["**Para** compartir el listado"]},
-          {"path": "specs/flow/STORY-305-otra-historia/story.md", "id": "STORY-305", "title": "Historia de otra épica", "kind": "feat", "parent": "EPIC-300-otra", "status": "DELIVER", "substatus": "DONE", "body": []}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
+          {"path": "changes/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]},
+          {"path": "changes/archive/2026-10-10-STORY-203-ordenar-columnas/story.md", "id": "STORY-203", "title": "Ordenar columnas", "kind": "chore", "parent": "EPIC-30-ejemplo", "status": "COMPLETED", "substatus": "DONE", "body": []},
+          {"path": "changes/STORY-204-exportar-pdf/story.md", "id": "STORY-204", "title": "Exportar a PDF", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "CANCELED", "substatus": "DONE", "body": ["**Para** compartir el listado"]},
+          {"path": "changes/STORY-305-otra-historia/story.md", "id": "STORY-305", "title": "Historia de otra épica", "kind": "feat", "parent": "EPIC-300-otra", "status": "DELIVER", "substatus": "DONE", "body": []}
         ],
         "changelog_lines": [
           "# Changelog",
@@ -53,7 +53,7 @@
       },
       "expected": {
         "output_file": "CHANGELOG.md",
-        "also_writes": ["specs/flow/EPIC-30-ejemplo/epic.md"],
+        "also_writes": ["changes/EPIC-30-ejemplo/epic.md"],
         "contains": [
           "<!-- epic-ship:EPIC-30:start -->",
           "<!-- epic-ship:EPIC-30:end -->",
@@ -96,17 +96,17 @@
         "user_answer": "n",
         "today": "2026-10-30",
         "dod_ship_file_exists": false,
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
-          {"path": "specs/flow/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
+          {"path": "changes/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.4.0] — 2026-09-01", "### Added", "- Algo anterior."]
       },
       "expected": {
         "output_file": "CHANGELOG.md",
-        "also_writes": ["specs/flow/EPIC-30-ejemplo/epic.md"],
+        "also_writes": ["changes/EPIC-30-ejemplo/epic.md"],
         "contains": [
           "<!-- epic-ship:EPIC-30:start -->",
           "VALIDATE/DONE → SHIP/IN-PROGRESS",
@@ -135,7 +135,7 @@
       "input": {
         "invocation": "/epic-ship EPIC-30",
         "today": "2026-10-30",
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE"},
         "epic_validate_report": "no existe"
       },
       "expected": {
@@ -165,8 +165,8 @@
       "input": {
         "invocation": "/epic-ship EPIC-30",
         "today": "2026-10-30",
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE"},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "NEEDS-CHANGES"}
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE"},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "NEEDS-CHANGES"}
       },
       "expected": {
         "output_file": null,
@@ -198,11 +198,11 @@
         "user_answer": "n",
         "today": "2026-10-30",
         "dod_ship_file_exists": false,
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
-          {"path": "specs/flow/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
+          {"path": "changes/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
         ],
         "changelog_lines": [
           "# Changelog",
@@ -224,7 +224,7 @@
       },
       "expected": {
         "output_file": "CHANGELOG.md",
-        "also_writes": ["specs/flow/EPIC-30-ejemplo/epic.md"],
+        "also_writes": ["changes/EPIC-30-ejemplo/epic.md"],
         "contains": [
           "<!-- epic-ship:EPIC-12:start -->",
           "- **Added** — Línea de otra épica (STORY-120)",
@@ -252,11 +252,11 @@
       "input": {
         "invocation": "/epic-ship EPIC-30",
         "today": "2026-10-30",
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
-          {"path": "specs/flow/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
+          {"path": "changes/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
         ],
         "changelog_lines": [
           "# Changelog",
@@ -285,8 +285,8 @@
       "input": {
         "invocation": "/epic-ship EPIC-30",
         "today": "2026-10-30",
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "DEVELOP", "substatus": "IN-PROGRESS"},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"}
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "DEVELOP", "substatus": "IN-PROGRESS"},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"}
       },
       "expected": {
         "output_file": null,
@@ -305,16 +305,16 @@
         "user_answer": "s",
         "today": "2026-10-30",
         "dod_ship_file_exists": false,
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
-          {"path": "specs/flow/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
+          {"path": "changes/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.4.0] — 2026-09-01"]
       },
       "expected": {
-        "output_file": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "output_file": "changes/EPIC-30-ejemplo/epic.md",
         "also_writes": ["CHANGELOG.md"],
         "contains": ["<!-- epic-ship:EPIC-30:start -->", "dod-epic-ship.md no existe", "¿Confirmas pasar EPIC-30 a SHIP/DONE? (s/n)", "status: SHIP", "substatus: DONE", "✅ EPIC-30 en SHIP/DONE", "/epic-complete EPIC-30"],
         "not_contains": ["VALIDATE/DONE → SHIP/IN-PROGRESS", "se requiere VALIDATE/DONE"]
@@ -331,17 +331,17 @@
         "responses": ["s", "n"],
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] Confirma que el tag apunta al commit validado."],
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.4.0] — 2026-09-01"]
       },
       "expected": {
         "output_file": "CHANGELOG.md",
         "contains": ["| # | Criterio | Estado | Evidencia |", "¿Confirmas pasar EPIC-30 a SHIP/DONE? (s/n)", "sigue en SHIP/IN-PROGRESS", "/epic-ship EPIC-30"],
-        "not_contains": ["✅ EPIC-30 en SHIP/DONE", "sigue en VALIDATE/DONE", "=== FILE: specs/flow/EPIC-30-ejemplo/epic.md ==="]
+        "not_contains": ["✅ EPIC-30 en SHIP/DONE", "sigue en VALIDATE/DONE", "=== FILE: changes/EPIC-30-ejemplo/epic.md ==="]
       },
       "threshold": 0.95
     },
@@ -353,8 +353,8 @@
       "input": {
         "invocation": "/epic-ship EPIC-30",
         "today": "2026-10-30",
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS"},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "NEEDS-CHANGES"}
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS"},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "NEEDS-CHANGES"}
       },
       "expected": {
         "output_file": null,
@@ -379,16 +379,16 @@
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] El árbol de trabajo está revisado.", "- [ ] `CHANGELOG.md` contiene la sección `## [1.5.0]`.", "- [ ] Las verificaciones deterministas pasan: `npm ci --ignore-scripts`, `npm run verify:repository` y `npm pack --dry-run`.", "- [ ] Confirma que el tag apunta al commit validado."],
         "command_exit_codes": {"npm ci --ignore-scripts": 0, "npm run verify:repository": 0, "npm pack --dry-run": 0},
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
-          {"path": "specs/flow/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
+          {"path": "changes/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.5.0] — 2026-10-29", "<!-- epic-ship:EPIC-30:start -->", "### EPIC-30 — Gestión de clientes", "", "Permitir al equipo comercial consultar y filtrar su cartera de clientes.", "", "- **Added** — Listar clientes (STORY-201)", "- **Fixed** — Corregir paginación (STORY-202)", "<!-- epic-ship:EPIC-30:end -->"]
       },
       "expected": {
-        "output_file": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "output_file": "changes/EPIC-30-ejemplo/epic.md",
         "contains": ["VALIDATE/DONE → SHIP/IN-PROGRESS", "ya actualizado para EPIC-30", "| # | Criterio | Estado | Evidencia |", "npm run verify:repository", "confirmación humana", "status: SHIP", "substatus: DONE", "✅ EPIC-30 en SHIP/DONE"],
         "not_contains": ["SHIP/DONE bloqueado", "=== FILE: CHANGELOG.md ===", "git tag", "npm publish"]
       },
@@ -405,10 +405,10 @@
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] Las verificaciones deterministas pasan: `npm ci --ignore-scripts`, `npm run verify:repository` y `npm pack --dry-run`.", "- [ ] Confirma que el tag apunta al commit validado."],
         "command_exit_codes": {"npm ci --ignore-scripts": 0, "npm run verify:repository": 1, "npm pack --dry-run": 0},
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.5.0] — 2026-10-29", "<!-- epic-ship:EPIC-30:start -->", "### EPIC-30 — Gestión de clientes", "", "Permitir al equipo comercial consultar y filtrar su cartera de clientes.", "", "- **Added** — Listar clientes (STORY-201)", "<!-- epic-ship:EPIC-30:end -->"]
       },
@@ -429,10 +429,10 @@
         "user_answer": "n",
         "today": "2026-10-30",
         "dod_ship_file_exists": false,
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "<!-- epic-ship:EPIC-30:start -->", "### EPIC-30 — Gestión de clientes", "", "Permitir al equipo comercial consultar y filtrar su cartera de clientes.", "", "- **Added** — Listar clientes (STORY-201)", "<!-- epic-ship:EPIC-30:end -->", "", "## [1.4.0] — 2026-09-01"]
       },
@@ -453,11 +453,11 @@
         "user_answer": "n",
         "today": "2026-10-30",
         "dod_ship_file_exists": false,
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
-          {"path": "specs/flow/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
+          {"path": "changes/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.5.0] — 2026-10-29", "### Added", "- Listado de clientes (EPIC-30, STORY-201).", "### Fixed", "- Paginación estable (EPIC-30, STORY-202)."]
       },
@@ -478,11 +478,11 @@
         "user_answer": "n",
         "today": "2026-10-30",
         "dod_ship_file_exists": false,
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
-          {"path": "specs/flow/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]},
+          {"path": "changes/STORY-202-corregir-paginacion/story.md", "id": "STORY-202", "title": "Corregir paginación", "kind": "fix", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** no perder clientes al cambiar de página"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.5.0] — 2026-10-29", "### Added", "- Listado de clientes (EPIC-30, STORY-201).", "### Fixed", "- Otra corrección (EPIC-300, STORY-202)."]
       },
@@ -505,15 +505,15 @@
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: warn", "---", "- [ ] La verificación pasa: `npm run verify:repository`."],
         "command_exit_codes": {"npm run verify:repository": 1},
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.4.0] — 2026-09-01"]
       },
       "expected": {
-        "output_file": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "output_file": "changes/EPIC-30-ejemplo/epic.md",
         "also_writes": ["CHANGELOG.md"],
         "contains": ["enforcement: warn, no bloquean", "npm run verify:repository", "status: SHIP", "substatus: DONE", "✅ EPIC-30 en SHIP/DONE"],
         "not_contains": ["SHIP/DONE bloqueado"]
@@ -530,17 +530,17 @@
         "user_answer": "s",
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] Ejecuta `git push --tags` y `cargo publish` para terminar."],
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.4.0] — 2026-09-01"]
       },
       "expected": {
         "output_file": "CHANGELOG.md",
         "contains": ["sin evidencia", "no es de verificación", "SHIP/DONE bloqueado", "sigue en SHIP/IN-PROGRESS"],
-        "not_contains": ["✅ EPIC-30 en SHIP/DONE", "=== FILE: specs/flow/EPIC-30-ejemplo/epic.md ==="]
+        "not_contains": ["✅ EPIC-30 en SHIP/DONE", "=== FILE: changes/EPIC-30-ejemplo/epic.md ==="]
       },
       "threshold": 1.0
     },
@@ -554,16 +554,16 @@
         "user_answer": "n",
         "today": "2026-10-30",
         "dod_ship_file_exists": false,
-        "other_epics": [{"path": "specs/flow/EPIC-31-otra/epic.md", "id": "EPIC-31", "status": "DEVELOP", "substatus": "IN-PROGRESS"}],
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "other_epics": [{"path": "changes/EPIC-31-otra/epic.md", "id": "EPIC-31", "status": "DEVELOP", "substatus": "IN-PROGRESS"}],
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.4.0] — 2026-09-01"]
       },
       "expected": {
-        "output_file": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "output_file": "changes/EPIC-30-ejemplo/epic.md",
         "also_writes": ["CHANGELOG.md"],
         "contains": ["WIP", "EPIC-31", "VALIDATE/DONE → SHIP/IN-PROGRESS", "sigue en SHIP/IN-PROGRESS"],
         "not_contains": ["✅ EPIC-30 en SHIP/DONE"]
@@ -580,15 +580,15 @@
         "invoked_by_orchestrator": true,
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] La verificación pasa: `npm run verify:repository`."],
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.4.0] — 2026-09-01"]
       },
       "expected": {
-        "output_file": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "output_file": "changes/EPIC-30-ejemplo/epic.md",
         "also_writes": ["CHANGELOG.md"],
         "contains": ["VALIDATE/DONE → SHIP/IN-PROGRESS", "substatus: IN-PROGRESS", "<!-- epic-ship:EPIC-30:start -->"],
         "not_contains": ["¿Confirmas pasar", "| # | Criterio |", "✅ EPIC-30 en SHIP/DONE"]
@@ -607,15 +607,15 @@
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] Las verificaciones pasan: `cargo test` y `make verify`."],
         "command_exit_codes": {"cargo test": 0, "make verify": 0},
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "SHIP", "substatus": "IN-PROGRESS", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.4.0] — 2026-09-01"]
       },
       "expected": {
-        "output_file": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "output_file": "changes/EPIC-30-ejemplo/epic.md",
         "also_writes": ["CHANGELOG.md"],
         "contains": ["| # | Criterio | Estado | Evidencia |", "cargo test", "make verify", "status: SHIP", "substatus: DONE", "✅ EPIC-30 en SHIP/DONE"],
         "not_contains": ["no es de verificación", "SHIP/DONE bloqueado", "npm"]
@@ -633,15 +633,15 @@
         "today": "2026-10-30",
         "dod_ship_lines": ["---", "enforcement: error", "---", "- [ ] `docs/manual-usuario.md` existe.", "- [ ] El PO aprobó la demo de la épica."],
         "files_present": ["docs/manual-usuario.md"],
-        "epic": {"path": "specs/flow/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
-        "epic_validate_report": {"path": "specs/flow/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
+        "epic": {"path": "changes/EPIC-30-ejemplo/epic.md", "id": "EPIC-30", "title": "Gestión de clientes", "status": "VALIDATE", "substatus": "DONE", "objetivo": "Permitir al equipo comercial consultar y filtrar su cartera de clientes."},
+        "epic_validate_report": {"path": "changes/EPIC-30-ejemplo/epic-validate-report.md", "verdict": "APPROVED"},
         "stories": [
-          {"path": "specs/flow/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
+          {"path": "changes/STORY-201-listar-clientes/story.md", "id": "STORY-201", "title": "Listar clientes", "kind": "feat", "parent": "EPIC-30-ejemplo", "status": "DELIVER", "substatus": "DONE", "body": ["**Para** ver mi cartera completa de un vistazo"]}
         ],
         "changelog_lines": ["# Changelog", "", "## [Unreleased]", "", "## [1.4.0] — 2026-09-01"]
       },
       "expected": {
-        "output_file": "specs/flow/EPIC-30-ejemplo/epic.md",
+        "output_file": "changes/EPIC-30-ejemplo/epic.md",
         "also_writes": ["CHANGELOG.md"],
         "contains": ["<!-- epic-ship:EPIC-30:start -->", "docs/manual-usuario.md", "¿Se cumple el criterio 2", "confirmación humana", "¿Confirmas pasar EPIC-30 a SHIP/DONE? (s/n)", "status: SHIP", "substatus: DONE", "✅ EPIC-30 en SHIP/DONE"],
         "not_contains": ["Pasos de liberación", "¿Completaste", "1.5.0", "SHIP/DONE bloqueado"]

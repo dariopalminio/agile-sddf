@@ -19,7 +19,7 @@ const CANONICAL_BLOCK = [
   '<!-- SDDF-FIXED-LAYOUT: v1 -->',
   '',
   'Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:',
-  'work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.',
+  'work items en `changes/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.',
   'El layout no es configurable (ADR-0016).',
 ].join('\n');
 
@@ -127,7 +127,7 @@ test('Región en otro skill: se rechaza y sus líneas se evalúan', () => {
   const content = preflight();
   const errors = checkSkillLayout('demo', content);
   assert.ok(errors.includes(
-    `skills/demo/SKILL.md:${lineOf(content, REGION_START)}: la región SDDF-LEGACY-DIAGNOSTIC solo se admite en skill-preflight`,
+    `skills/demo/SKILL.md:${lineOf(content, REGION_START)}: la región SDDF-LEGACY-DIAGNOSTIC solo se admite en skill-preflight y sddf-init`,
   ), errors.join('\n'));
   const inner = lineOf(content, 'del layout legado');
   assert.ok(errors.includes(`skills/demo/SKILL.md:${inner}: referencia legada \`SDDF_ROOT\``), errors.join('\n'));

@@ -33,7 +33,7 @@ No hace discovery ni planificación del proyecto.
 
 ## Precondiciones
 
-- Las rutas son fijas (ADR-0016): la visión se escribe en `docs/product/vision.md`, relativa a `REPO_ROOT`.
+- Las rutas son fijas (ADR-0023): la visión se escribe en `docs/product/vision.md`, relativa a `REPO_ROOT`.
 - Debe existir el template central o el seed del skill.
 
 ## Dependencias
@@ -63,8 +63,8 @@ No hace discovery ni planificación del proyecto.
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico se solicita explícitamente con `/skill-preflight`; no se ejecuta en este flujo.
 

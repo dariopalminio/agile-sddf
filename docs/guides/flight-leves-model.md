@@ -52,16 +52,16 @@ El modelo jerárquico de elementos de trabajo (Work-items) se organiza en tres n
 
 ```
 product/ + requirements/ (estratégico, documentación)
-    └── Épica (specs/flow/EPIC-NNN-<slug>/ — L2)
-        └── Story (specs/flow/STORY-NNN-<slug>/ — L1; archivada en specs/flow/archive/ al completarse)
+    └── Épica (changes/EPIC-NNN-<slug>/ — L2)
+        └── Story (changes/STORY-NNN-<slug>/ — L1; archivada en changes/archive/ al completarse)
 ```
 
 ## Jerarquía Flight Levels
 
 product/ + requirements/  📄 (Estratégico; documentación, no work item)
-specs/flow/EPIC-*/        📂 (Entregables - L2)
-specs/flow/STORY-*/       📂 (Historias y tareas - L1)
-specs/flow/archive/       📂 (Historias COMPLETED archivadas)
+changes/EPIC-*/        📂 (Entregables - L2)
+changes/STORY-*/       📂 (Historias y tareas - L1)
+changes/archive/       📂 (Historias COMPLETED archivadas)
 
 ## Documentos de especificaciones
 

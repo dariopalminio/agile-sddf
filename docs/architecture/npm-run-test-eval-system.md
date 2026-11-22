@@ -178,7 +178,7 @@ if (!stdout.includes("APROBADO")) → FAIL
 if (!regex.test(stdout)) → FAIL
 
 // Sandbox
-if (!files.includes("specs/flow/EPIC-01/epic.md")) → FAIL
+if (!files.includes("changes/EPIC-01/epic.md")) → FAIL
 if (!fileContent.includes("estado: READY")) → FAIL
 ```
 

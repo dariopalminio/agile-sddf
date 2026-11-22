@@ -37,7 +37,7 @@ El skill acepta tres tipos de input:
 
 - **Tipo A — Texto libre**: descripción de una necesidad o feature en lenguaje natural
 - **Tipo B — Ruta de archivo**: ruta relativa o absoluta a un archivo `.md` existente con contenido de historia incompleto
-- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia existente en `specs/flow/`
+- **Tipo C — Término de búsqueda**: palabra o frase corta para localizar una historia existente en `changes/`
 
 Fuente estructural del output: `assets/story-template.md` (leído en tiempo de ejecución)
 
@@ -95,8 +95,8 @@ Fuente estructural del output: `assets/story-template.md` (leído en tiempo de e
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 El diagnóstico de entorno se solicita explícitamente con `/skill-preflight`; este workflow no lo invoca en su hot path.
 
@@ -132,7 +132,7 @@ Detectar el tipo de input proporcionado:
 #### Tipo C — Término de búsqueda
 **Señal:** El input es una palabra o frase corta que no parece texto de historia ni ruta explícita.
 **Acción:**
-1. Buscar en `specs/flow/STORY-*/` directorios cuyo nombre contenga el término (sin distinguir mayúsculas)
+1. Buscar en `changes/STORY-*/` directorios cuyo nombre contenga el término (sin distinguir mayúsculas)
 2. Si hay exactamente 1 coincidencia → leerlo y usarlo como base. Continuar al Paso 3.
 3. Si hay más de 1 coincidencia → mostrar la lista y pedir al usuario que elija antes de continuar.
 4. Si no hay coincidencias → tratar el input como Tipo A (texto libre).
@@ -216,20 +216,20 @@ Si alguna dimensión falla, ajustar la historia antes de continuar. Si `S` es de
 #### Derivar el siguiente ID (STORY-NNN)
 
 > **IMPORTANTE:** La herramienta Glob solo encuentra **archivos**, nunca directorios. El patrón
-> `specs/flow/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
+> `changes/STORY-*` (apuntando a directorios) retorna siempre vacío. Usar obligatoriamente
 > el patrón de archivo anidado descrito a continuación.
 
 1. Usar Glob con dos patrones para localizar los `story.md` existentes y archivados:
-   - `specs/flow/STORY-*/story.md` → NNN del directorio padre `STORY-NNN-<slug>`
-   - `specs/flow/archive/*-STORY-*/story.md` → NNN del directorio `<YYYY-MM-DD>-STORY-NNN-<slug>` (historias archivadas, ADR-0016)
-   Ejemplo: de `specs/flow/STORY-073-skill-security-audit-condicional/story.md` → `73`.
+   - `changes/STORY-*/story.md` → NNN del directorio padre `STORY-NNN-<slug>`
+   - `changes/archive/*-STORY-*/story.md` → NNN del directorio `<YYYY-MM-DD>-STORY-NNN-<slug>` (historias archivadas, ADR-0023)
+   Ejemplo: de `changes/STORY-073-skill-security-audit-condicional/story.md` → `73`.
    Si Glob retorna vacío, usar como fallback:
-   - Bash: `ls specs/flow/ specs/flow/archive/ | grep -E "STORY-[0-9]+"`
-   - PowerShell: `Get-ChildItem specs/flow, specs/flow/archive -Directory | Where-Object { $_.Name -match "STORY-" }`
+   - Bash: `ls changes/ changes/archive/ | grep -E "STORY-[0-9]+"`
+   - PowerShell: `Get-ChildItem changes, changes/archive -Directory | Where-Object { $_.Name -match "STORY-" }`
    Nunca asumir que "sin resultados de Glob" significa "no hay historias previas".
 2. Extraer los números de todos los prefijos `STORY-NNN` encontrados en la unión de ambos directorios
-3. Tomar el número más alto y sumarle 1. Solo comenzar en `STORY-001` si ambos mecanismos (Glob + fallback) confirman que no existe ningún directorio `STORY-*` en `specs/flow/` ni en `specs/flow/archive/`
-   Si `specs/flow/` no existe, crearlo junto con `STORY-{NNN}-{slug}/` al guardar; no se crea ningún otro directorio de work items
+3. Tomar el número más alto y sumarle 1. Solo comenzar en `STORY-001` si ambos mecanismos (Glob + fallback) confirman que no existe ningún directorio `STORY-*` en `changes/` ni en `changes/archive/`
+   Si `changes/` no existe, crearlo junto con `STORY-{NNN}-{slug}/` al guardar; no se crea ningún otro directorio de work items
 4. Formatear con ceros a la izquierda hasta 3 dígitos: `STORY-001`, `STORY-053`, etc.
 
 #### Reglas de nomenclatura
@@ -237,7 +237,7 @@ Si alguna dimensión falla, ajustar la historia antes de continuar. Si `S` es de
 - **Directorio:** `STORY-{NNN}-{slug}/`
 - **Archivo:** `story.md` dentro de ese directorio
 - El `{slug}` se deriva del `Quiero` de la historia: minúsculas, palabras separadas por guiones, máximo 5 palabras significativas, sin acentos ni caracteres especiales
-- Ruta final: `specs/flow/STORY-{NNN}-{slug}/story.md`
+- Ruta final: `changes/STORY-{NNN}-{slug}/story.md`
 
 Si el directorio `STORY-{NNN}-{slug}/` ya existe, incrementar NNN hasta encontrar uno disponible.
 
@@ -254,7 +254,7 @@ En el archivo `story.md`, completar los campos del frontmatter con los valores r
 Después de guardar, mostrar en la conversación:
 
 ```
-**Archivo generado:** `specs/flow/STORY-{NNN}-{slug}/story.md`
+**Archivo generado:** `changes/STORY-{NNN}-{slug}/story.md`
 
 [Historia completa en formato story-template.md]
 
@@ -279,7 +279,7 @@ Si la historia fue simplificada para cumplir INVEST, explicar brevemente qué se
 
 ## Salida
 
-- `specs/flow/STORY-{NNN}-{slug}/story.md` — historia de usuario generada
+- `changes/STORY-{NNN}-{slug}/story.md` — historia de usuario generada
 - Estado del workitem: `SPECIFY` (estado inicial; pendiente de evaluación con `/story-evaluation`)
 
 ### Ejemplo de output

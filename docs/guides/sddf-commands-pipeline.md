@@ -21,7 +21,7 @@ related:                                    # opcional, si tiene relación con o
 Los skills no resuelven una raíz de artefactos configurable: cada uno determina `REPO_ROOT` y
 usa rutas fijas relativas a él ([ADR-0016](../decisions/ADR-0016-layout-fijo-de-tres-raices.md)).
 El conocimiento vive en `docs/` (templates en `docs/templates/`, DoD en `docs/guardrails/`) y
-los work items en `specs/flow/`, con las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) archivadas en `specs/flow/archive/` por `/story-complete`, que conserva su status (ADR-0017).
+los work items en `changes/`, con las historias `COMPLETED` y `CANCELED` (con `substatus: DONE`) archivadas en `changes/archive/` por `/story-complete`, que conserva su status (ADR-0023).
 `SDDF_ROOT` y la clave `root` de `sddf.config.yaml` ya no se leen; para migrar un proyecto que
 los usa, sigue [la guía de migración a 5.0.0](artifact-directory-migration.md#migracion-a-500--layout-fijo-de-tres-raices).
 
@@ -181,15 +181,15 @@ epic-from-project-plan → epic-format-validation ⇄ epic-improve → epic-gene
 
 | Skill | Input | Output |
 |---|---|---|
-| `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `specs/flow/EPIC-NNN-<slug>/epic.md` (uno por épica) |
+| `epic-from-project-plan` | Última propuesta de `product/roadmap.md` | `changes/EPIC-NNN-<slug>/epic.md` (uno por épica) |
 | `epic-format-validation` | Un archivo `epic.md` | `<EPIC_DIR>/epic-format-validation-report.md` (`APPROVED` / `NEEDS-REFINEMENT`) |
 | `epic-improve` | `epic.md` + `epic-format-validation-report.md` con `NEEDS-REFINEMENT` | `epic.md` corregido + `epic.md.bak` |
-| `epic-generate-stories` | Un archivo `epic.md` | `specs/flow/STORY-[NNN]-[nombre]/story.md` (una por feature) |
+| `epic-generate-stories` | Un archivo `epic.md` | `changes/STORY-[NNN]-[nombre]/story.md` (una por feature) |
 | `epic-analyze` | `epic.md` + `story.md` con `parent` | `<EPIC_DIR>/epic-analyze-report.md` |
 | `epic-refine` | `epic-analyze-report.md` con `NEEDS-REFINEMENT` | `epic.md` y `story.md` corregidos (+ `.bak`), cobertura de criterios de salida asignada a la historia de cierre, slugs obsoletos tras un `/story-split` reemplazados y `<EPIC_DIR>/epic-refine-report.md` |
 | `epic-track-progress` | `epic.md` + `story.md` con `parent`, incluidas las archivadas | Tabla de progreso en el chat (sin archivos) |
 | `epic-ship` | `epic.md` en `VALIDATE/DONE` o `SHIP/IN-PROGRESS` + `epic-validate-report.md` con `APPROVED` + `story.md` hijos (activos y archivados) + `docs/guardrails/dod-epic-ship.md` si existe | `SHIP/IN-PROGRESS` en `epic.md`, bloque de la épica en `CHANGELOG.md` si no estaba al día, evaluación del DoD en el chat y `SHIP/DONE` sin bloqueos del DoD y con confirmación humana |
-| `epic-complete` | `epic.md` en `SHIP/DONE` (versión opcional: `--version x.y.z` o `CHANGELOG.md`) | `specs/flow/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/epic.md` en `COMPLETED/DONE` con `completed:` y, si se conoce, `version:`, con confirmación humana |
+| `epic-complete` | `epic.md` en `SHIP/DONE` (versión opcional: `--version x.y.z` o `CHANGELOG.md`) | `changes/archive/<YYYY-MM-DD>-EPIC-NNN-<slug>/epic.md` en `COMPLETED/DONE` con `completed:` y, si se conoce, `version:`, con confirmación humana |
 
 > `epic-generate-all-stories` procesa todas las épicas en batch. `epic-analyze` cruza el índice de historias de la épica
 > con el `parent` de los `story.md` y emite un veredicto informativo (`APPROVED` / `NEEDS-REFINEMENT`) antes

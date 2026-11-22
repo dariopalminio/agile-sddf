@@ -423,9 +423,9 @@ test('OpenCode conserva los eventos completos por separado sin calificarlos como
 test('el prompt de simulación separa los artefactos declarados del filesystem real', () => {
   const testCase = {
     ...makeCase('TC-001'),
-    description: 'El archivo existe en specs/flow/EPIC-01-mvp/epic.md.',
+    description: 'El archivo existe en changes/EPIC-01-mvp/epic.md.',
     input: {
-      input_path: 'specs/flow/EPIC-01-mvp/epic.md',
+      input_path: 'changes/EPIC-01-mvp/epic.md',
       epic_content: '# Épica simulada',
       template_path: 'docs/templates/epic-template.md',
       template_content: '## Sección simulada',
@@ -448,7 +448,7 @@ test('el prompt sandbox exige la consola canónica y veta el preámbulo anterior
     description: 'Valida una épica simulada.',
     input: {},
     sandbox: { fixture: 'skills/epic-format-validation/evals/fixtures/tc-016', target: '.' },
-    expected: { files: { written: ['specs/flow/EPIC-05-pagos/epic-format-validation-report.md'] } },
+    expected: { files: { written: ['changes/EPIC-05-pagos/epic-format-validation-report.md'] } },
   };
   const spec = parseSandboxSpec(testCase, 'test');
   const prompt = buildSandboxPrompt('epic-format-validation', 'skills/epic-format-validation/SKILL.md', testCase, spec);
@@ -526,7 +526,7 @@ test('gradeOutput tolera resúmenes de compaction posteriores que citan los marc
     'Analizar el veredicto de la épica simulada.',
     '',
     '## Next Move',
-    '1. Emitir la respuesta final única: `=== CONSOLE ===` + líneas de consola en el orden decidido + `=== FILE: specs/flow/EPIC-40-operativa/epic-validate-report.md ===` + contenido íntegro del reporte + `=== END ===` + notas breves tras `=== END ===`.',
+    '1. Emitir la respuesta final única: `=== CONSOLE ===` + líneas de consola en el orden decidido + `=== FILE: changes/EPIC-40-operativa/epic-validate-report.md ===` + contenido íntegro del reporte + `=== END ===` + notas breves tras `=== END ===`.',
     '2. Verificar la salida con `ls` y `wc -c`.',
   ].join('\n');
   const contaminated = `${preamble}${block}\n${compactionAfter}\n`;
@@ -567,11 +567,11 @@ test('gradeOutput tolera marcadores con backticks en línea propia (falso negati
   const block = [
     '`=== CONSOLE ===`',
     '🔍 Iniciando revisión de código para: STORY-040',
-    '📄 Reporte generado: specs/flow/STORY-040-x/code-review-report.md (verdict: NEEDS-CHANGES)',
+    '📄 Reporte generado: changes/STORY-040-x/code-review-report.md (verdict: NEEDS-CHANGES)',
     '1 hallazgo(s) bloqueante(s) en el reporte. Requieren corrección antes de aprobar.',
-    '`=== FILE: specs/flow/STORY-040-x/fix-directives.md ===`',
+    '`=== FILE: changes/STORY-040-x/fix-directives.md ===`',
     'round: 1',
-    'Cubierto por Product-Owner-Reviewer: specs/flow/STORY-040-x/story.md:30',
+    'Cubierto por Product-Owner-Reviewer: changes/STORY-040-x/story.md:30',
     '`=== END ===`',
   ].join('\n');
   const grade = gradeOutput(
@@ -601,18 +601,18 @@ test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar
   const manifest = JSON.parse(fs.readFileSync(path.join(skillDir, 'evals', 'evals.json'), 'utf8'));
   const testCase = manifest.cases.find((entry) => entry.id === 'TC-016');
   const spec = parseSandboxSpec(testCase, 'TC-016');
-  const reportPath = 'specs/flow/EPIC-05-pagos/epic-format-validation-report.md';
+  const reportPath = 'changes/EPIC-05-pagos/epic-format-validation-report.md';
   assert.equal(spec.target, '.');
   assert.equal(testCase.context_files, undefined);
   const report = fs.readFileSync(path.join(skillDir, 'examples', 'needs-refinement', 'epic-format-validation-report.md'), 'utf8');
   const consoleOutput = [
     '**Veredicto:** `NEEDS-REFINEMENT` — 2 defectos de estructura o formato.',
-    'Archivo validado: specs/flow/EPIC-05-pagos/epic.md',
+    'Archivo validado: changes/EPIC-05-pagos/epic.md',
     'Secciones/campos faltantes:',
     '- Criterios de salida',
     'Formato inválido:',
     '- Línea 23 (Historias): `- [ ] Exportar CSV: descarga del historial` → se esperaba F1, F2 o F3',
-    '📄 Reporte: specs/flow/EPIC-05-pagos/epic-format-validation-report.md',
+    '📄 Reporte: changes/EPIC-05-pagos/epic-format-validation-report.md',
   ].join('\n');
   const grade = (body, consoleText = consoleOutput) => {
     const consoleGrade = gradeOutput(testCase, `=== CONSOLE ===\n${consoleText}\n=== END ===`);
@@ -621,7 +621,7 @@ test('TC-016 exige el diagnóstico de consola y el reporte canónico sin aceptar
   };
   assert.equal(grade(report).pass, true);
   assert.equal(grade(report, consoleOutput.replace('Formato inválido:', '')).pass, false);
-  assert.equal(grade(report, consoleOutput.replace('Archivo validado: specs/flow/EPIC-05-pagos/epic.md', '')).pass, false);
+  assert.equal(grade(report, consoleOutput.replace('Archivo validado: changes/EPIC-05-pagos/epic.md', '')).pass, false);
   assert.equal(grade(report.replace('defects: 2', 'defects: 3')).pass, false);
   const withoutFrontmatter = report.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
   assert.equal(grade(withoutFrontmatter).pass, false);
@@ -1278,7 +1278,7 @@ test('--changed-from con rango valido sin skills evaluables falla cerrado', asyn
 // Modo sandbox
 // ---------------------------------------------------------------------------
 
-const EPIC = 'specs/flow/EPIC-01-a/epic.md';
+const EPIC = 'changes/EPIC-01-a/epic.md';
 
 function makeSandboxCase(id, files, sandbox = { fixture: 'skills/alpha/examples/base', copy: ['docs/templates'] }) {
   return { ...makeCase(id), sandbox, expected: { contains: ['=== CONSOLE ==='], files } };
@@ -1327,9 +1327,9 @@ test('TC-016 usa su repositorio fixture y califica el reporte en disco aunque la
   const skillDir = path.join(fixture.root, 'skills', skillName);
   fs.cpSync(sourceSkill, skillDir, { recursive: true });
   const fixtureRoot = path.join(skillDir, 'evals', 'fixtures', 'tc-016');
-  const epicPath = 'specs/flow/EPIC-05-pagos/epic.md';
+  const epicPath = 'changes/EPIC-05-pagos/epic.md';
   const templatePath = 'docs/templates/epic-template.md';
-  const reportPath = 'specs/flow/EPIC-05-pagos/epic-format-validation-report.md';
+  const reportPath = 'changes/EPIC-05-pagos/epic-format-validation-report.md';
   const epic = fs.readFileSync(path.join(fixtureRoot, epicPath), 'utf8');
   const template = fs.readFileSync(path.join(fixtureRoot, templatePath), 'utf8');
   const report = fs.readFileSync(path.join(skillDir, 'examples', 'needs-refinement', 'epic-format-validation-report.md'), 'utf8');
@@ -1355,7 +1355,7 @@ test('TC-016 usa su repositorio fixture y califica el reporte en disco aunque la
       assert.equal(fs.existsSync(path.join(dir, 'skills', skillName, 'examples')), false);
       fs.writeFileSync(path.join(dir, reportPath), body);
       if (alterEpic) fs.appendFileSync(path.join(dir, epicPath), '\nmodificado\n');
-      return { ok: true, code: 0, stdout: '=== CONSOLE ===\nNEEDS-REFINEMENT\nArchivo validado: specs/flow/EPIC-05-pagos/epic.md\nCriterios de salida\nFormato inválido:\n- [ ] Exportar CSV: descarga del historial\n📄 Reporte: specs/flow/EPIC-05-pagos/epic-format-validation-report.md\n=== END ===', stderr: '', durationMs: 0 };
+      return { ok: true, code: 0, stdout: '=== CONSOLE ===\nNEEDS-REFINEMENT\nArchivo validado: changes/EPIC-05-pagos/epic.md\nCriterios de salida\nFormato inválido:\n- [ ] Exportar CSV: descarga del historial\n📄 Reporte: changes/EPIC-05-pagos/epic-format-validation-report.md\n=== END ===', stderr: '', durationMs: 0 };
     },
   });
   assertExit(await execute(report), 0);
@@ -1364,7 +1364,7 @@ test('TC-016 usa su repositorio fixture y califica el reporte en disco aunque la
   assert.match(wrongReport.output, /\[files\].*defects: 2/);
   const changedInput = await execute(report, true);
   assertExit(changedInput, 1);
-  assert.match(changedInput.output, /\[files\] escrito: specs\/flow\/EPIC-05-pagos\/epic.md/);
+  assert.match(changedInput.output, /\[files\] escrito: changes\/EPIC-05-pagos\/epic.md/);
   assert.equal(fs.readFileSync(path.join(fixtureRoot, epicPath), 'utf8'), epic);
   assert.equal(fs.readFileSync(path.join(fixtureRoot, templatePath), 'utf8'), template);
   assert.equal(fs.readFileSync(path.join(fixture.root, templatePath), 'utf8'), '## Objetivo\n');
@@ -1473,7 +1473,7 @@ test('sandbox: copia fixture, skill sin evals ni examples y rutas extra; calific
     path.join(fixture.root, '.tmp', 'skill-test-evals', 'alpha', 'runs', 'TC-001.files.txt'),
     'utf8',
   );
-  assert.match(filesLog, /created:\n {2}specs\/flow\/EPIC-01-a\/epic\.md\.bak\nmodified:\n {2}specs\/flow\/EPIC-01-a\/epic\.md\n/);
+  assert.match(filesLog, /created:\n {2}changes\/EPIC-01-a\/epic\.md\.bak\nmodified:\n {2}changes\/EPIC-01-a\/epic\.md\n/);
 });
 
 test('sandbox: una escritura no esperada o un backup distinto del original es FAIL', async (t) => {
@@ -1486,13 +1486,13 @@ test('sandbox: una escritura no esperada o un backup distinto del original es FA
     runClaude: writingRunner(() => ({
       [`${EPIC}.bak`]: 'otro contenido\n',
       [EPIC]: 'status: COMPLETED\n',
-      'specs/flow/EPIC-01-a/epic-analyze-report.md': 'manipulado\n',
+      'changes/EPIC-01-a/epic-analyze-report.md': 'manipulado\n',
     })),
   });
 
   assertExit(result, 1);
-  assert.match(result.output, /\[files\] escrito: specs\/flow\/EPIC-01-a\/epic-analyze-report\.md/);
-  assert.match(result.output, /\[files\] specs\/flow\/EPIC-01-a\/epic\.md\.bak difiere del specs\/flow\/EPIC-01-a\/epic\.md previo/);
+  assert.match(result.output, /\[files\] escrito: changes\/EPIC-01-a\/epic-analyze-report\.md/);
+  assert.match(result.output, /\[files\] changes\/EPIC-01-a\/epic\.md\.bak difiere del changes\/EPIC-01-a\/epic\.md previo/);
 });
 
 test('sandbox con written vacío: cero escrituras es PASS y cualquier escritura es FAIL', async (t) => {
@@ -1503,10 +1503,10 @@ test('sandbox con written vacío: cero escrituras es PASS y cualquier escritura 
   const escribe = createFixture(t);
   writeSandboxSkill(escribe, [makeSandboxCase('TC-001', { written: [] })]);
   const result = await runRunner(escribe, ['alpha'], {
-    runClaude: writingRunner(() => ({ 'specs/flow/EPIC-01-a/epic-refine-report.md': 'reporte\n' })),
+    runClaude: writingRunner(() => ({ 'changes/EPIC-01-a/epic-refine-report.md': 'reporte\n' })),
   });
   assertExit(result, 1);
-  assert.match(result.output, /\[files\] escrito: specs\/flow\/EPIC-01-a\/epic-refine-report\.md/);
+  assert.match(result.output, /\[files\] escrito: changes\/EPIC-01-a\/epic-refine-report\.md/);
 });
 
 test('sandbox en dry-run muestra el plan sin copiar ni invocar runners', async (t) => {
@@ -1514,7 +1514,7 @@ test('sandbox en dry-run muestra el plan sin copiar ni invocar runners', async (
   writeSandboxSkill(fixture, [makeSandboxCase('TC-001', { written: [] })]);
   const result = await runRunner(fixture, ['alpha', '--dry-run']);
   assertExit(result, 0);
-  assert.match(result.output, /\[sandbox\] skills\/alpha\/examples\/base → specs\/flow\/ · escritos esperados: 0/);
+  assert.match(result.output, /\[sandbox\] skills\/alpha\/examples\/base → changes\/ · escritos esperados: 0/);
   assert.equal(result.claudeCalls.length, 0);
   assertNoRunArtifacts(fixture);
 });
@@ -1531,7 +1531,7 @@ test('prepareSandbox crea su propia raíz Git dentro del sandbox', (t) => {
     sandboxDir,
   });
   assert.ok(fs.existsSync(path.join(sandboxDir, '.git', 'HEAD')), 'el sandbox debe ser su propia raíz Git');
-  assert.ok(fs.existsSync(path.join(sandboxDir, 'specs', 'flow', 'EPIC-01-a', 'epic.md')));
+  assert.ok(fs.existsSync(path.join(sandboxDir, 'changes', 'EPIC-01-a', 'epic.md')));
 });
 
 test('el prompt sandbox declara la raíz absoluta del sandbox como REPO_ROOT del ejercicio', async (t) => {

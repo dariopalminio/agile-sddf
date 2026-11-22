@@ -49,8 +49,8 @@ Convierte los requisitos funcionales disponibles en una propuesta incremental de
 <!-- SDDF-FIXED-LAYOUT: v1 -->
 
 Resuelve `REPO_ROOT` (raíz del repositorio) y usa rutas fijas relativas a él:
-work items en `specs/flow/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
-El layout no es configurable (ADR-0016).
+work items en `changes/` (archivo en `changes/archive/`), especificación viva en `specs/`, templates en `docs/templates/` y DoD en `docs/guardrails/`.
+El layout no es configurable (ADR-0023).
 
 Con `REPO_ROOT` resuelto, comprobar que existe el rol local `assets/agents/planning.md` (ruta relativa al directorio del skill). Si falta, mostrar el siguiente mensaje y terminar sin inventariar requisitos, vaciar ni crear `.tmp/project-planning/`, preguntar por el story map ni tocar `product/roadmap.md`; no se buscan roles fuera del directorio de este skill:
 
@@ -78,7 +78,7 @@ Guardar la ruta como `$TEMPLATE_PATH`.
 
 ### Paso 3 — Contexto para la propuesta
 
-Construir `$EPICS_INVENTORY` como `EPIC-NN — <title> — <slug>` desde cada archivo que case con el patrón `specs/flow/EPIC-*/epic.md` (las historias comparten el directorio plano y no casan; `specs/flow/archive/` no se consulta). Sin coincidencias, el inventario queda vacío y la propuesta continúa; si falta frontmatter, usar el nombre del directorio e informar `⚠️ <ruta>: frontmatter incompleto`.
+Construir `$EPICS_INVENTORY` como `EPIC-NN — <title> — <slug>` desde cada archivo que case con el patrón `changes/EPIC-*/epic.md` (las historias comparten el directorio plano y no casan; `changes/archive/` no se consulta). Sin coincidencias, el inventario queda vacío y la propuesta continúa; si falta frontmatter, usar el nombre del directorio e informar `⚠️ <ruta>: frontmatter incompleto`.
 
 Calcular `$PROPOSAL_HEADING` como `Propuesta (<hoy>)`; si ya existe, usar consecutivamente `Propuesta (<hoy> #2)`, `#3`, etc. Vaciar `.tmp/project-planning/` y fijar `$STAGING_PATH = .tmp/project-planning/proposal.md`.
 

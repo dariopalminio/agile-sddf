@@ -10,7 +10,7 @@ parent: null
 
 > **Referencia:** [ADR-0020](../decisions/ADR-0020-contratos-centralizados-para-spec-living.md) | [sdd-with-bcdd.md](sdd-with-bcdd.md)
 >
-> Qué es Contract Testing, cómo organizar contratos centralizados en `specs/living/contracts/`, y el flujo de validación en CI/CD.
+> Qué es Contract Testing, cómo organizar contratos centralizados en `specs/contracts/`, y el flujo de validación en CI/CD.
 
 ---
 
@@ -23,7 +23,7 @@ parent: null
 | Problema | Solución BCDD |
 |----------|---|
 | N productores × M consumidores = N×M tests (caro, lento) | Contract SSOT: N + M tests |
-| Contratos dispersos en múltiples repos (divergencia) | Único `specs-repo/specs/living/contracts/` |
+| Contratos dispersos en múltiples repos (divergencia) | Único `specs-repo/specs/contracts/` |
 | Cambios de API sorpresa en producción | Validación automática en cada PR |
 | Documentación desincronizada del código | Especificación ejecutable y sincronizada |
 
@@ -33,7 +33,7 @@ parent: null
 
 ```
 specs-repo/
-└── specs/living/
+└── specs/
     ├── features/          # Escenarios Gherkin (BDD)
     └── contracts/         # SSOT: Contratos ejecutables
         ├── openapi/       # REST: orders-api.yaml, payments-api.yaml
@@ -224,7 +224,7 @@ Acción:    Version 1.0.0 → 1.1.0
 
 ### En `specs-repo/` (este proyecto)
 
-- **Estructura:** `specs/living/contracts/{openapi,asyncapi}/`
+- **Estructura:** `specs/contracts/{openapi,asyncapi}/`
 - **Validación en CI/CD:** linting + backward compatibility check (setup en `.github/workflows/`)
 - **Plantillas reutilizables:** `docs/templates/openapi-contract-template.yaml`, `docs/templates/asyncapi-contract-template.yaml`
 - **Documentación:** [ADR-0020](../decisions/ADR-0020-contratos-centralizados-para-spec-living.md), [ADR-0018](../decisions/ADR-0018-adoptar-cucumber-para-specs-living.md)
