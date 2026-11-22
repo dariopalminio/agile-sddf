@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [6.0.0] — 2026-11-22
+
 ### BREAKING — changes/ y especificación viva en specs/ (EPIC-030, requiere 6.0.0)
 
 [ADR-0023](docs/decisions/ADR-0023-separar-changes-de-specs.md) reemplaza a ADR-0019. Los work items (épicas, historias y su archivo) pasan de `specs/flow/` a la raíz `changes/` (archivo en `changes/archive/`), y `specs/` asume directamente la especificación viva, sin el nivel `living/`. Identificadores, estados, reglas de archivo y confirmaciones humanas no cambian.
