@@ -127,7 +127,7 @@ El repositorio adopta cuatro raíces hermanas y fijas: `docs/` para conocimiento
   de verdad.
 - Al aceptarse, ADR-0019 pasa a `SUPERSEDED` con `superseded-by: ADR-0023` y el índice se actualiza; no se
   reescriben los cuerpos de los ADR aceptados.
-- La migración la implementa EPIC-030 (`changes/EPIC-030-separar-changes-de-specs/`).
+- La migración la implementa EPIC-030.
 
 ## Referencias
 

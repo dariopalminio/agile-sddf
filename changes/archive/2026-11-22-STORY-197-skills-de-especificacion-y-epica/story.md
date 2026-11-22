@@ -5,11 +5,11 @@ id: STORY-197
 kind: chore
 slug: STORY-197-skills-de-especificacion-y-epica
 title: "Skills de especificación y épica sobre changes/"
-status: DELIVER
+status: COMPLETED
 substatus: DONE
 parent: EPIC-030-separar-changes-de-specs
 created: 2026-11-18
-updated: 2026-11-18
+updated: 2026-11-22
 related:
   - EPIC-030-separar-changes-de-specs
 ---

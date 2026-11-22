@@ -5,11 +5,11 @@ id: STORY-196
 kind: chore
 slug: STORY-196-scripts-y-mudanza-a-changes
 title: "Scripts deterministas y mudanza a changes/"
-status: DELIVER
+status: COMPLETED
 substatus: DONE
 parent: EPIC-030-separar-changes-de-specs
 created: 2026-11-18
-updated: 2026-11-18
+updated: 2026-11-22
 related:
   - EPIC-030-separar-changes-de-specs
 ---

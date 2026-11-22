@@ -5,11 +5,11 @@ id: STORY-195
 kind: chore
 slug: STORY-195-contrato-de-layout-con-changes
 title: "Contrato de layout y gate determinista con changes/"
-status: DELIVER
+status: COMPLETED
 substatus: DONE
 parent: EPIC-030-separar-changes-de-specs
 created: 2026-11-18
-updated: 2026-11-18
+updated: 2026-11-22
 related:
   - EPIC-030-separar-changes-de-specs
 ---

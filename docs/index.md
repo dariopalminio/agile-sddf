@@ -157,7 +157,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ### Épicas
 
-- [[EPIC-030-separar-changes-de-specs]] — [epic.md](../changes/EPIC-030-separar-changes-de-specs/epic.md) — Separar changes/ de la especificación viva
+- [[EPIC-030-separar-changes-de-specs]] — [epic.md](../changes/archive/2026-11-22-EPIC-030-separar-changes-de-specs/epic.md) — Separar changes/ de la especificación viva
 
 ### Historias de usuario
 
@@ -167,13 +167,13 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 > enumeran aquí: se leen desde el directorio de la historia. Los templates (`templates/`) tampoco se
 > listan porque sus wikilinks son placeholders.
 
-- [[STORY-194-adr-0023-aceptado]] — [story.md](../changes/STORY-194-adr-0023-aceptado/story.md) — Aceptar ADR-0023
-- [[STORY-195-contrato-de-layout-con-changes]] — [story.md](../changes/STORY-195-contrato-de-layout-con-changes/story.md) — Contrato de layout y gate determinista con changes/
-- [[STORY-196-scripts-y-mudanza-a-changes]] — [story.md](../changes/STORY-196-scripts-y-mudanza-a-changes/story.md) — Scripts deterministas y mudanza a changes/
-- [[STORY-197-skills-de-especificacion-y-epica]] — [story.md](../changes/STORY-197-skills-de-especificacion-y-epica/story.md) — Skills de especificación y épica sobre changes/
-- [[STORY-198-skills-de-planning-a-entrega]] — [story.md](../changes/STORY-198-skills-de-planning-a-entrega/story.md) — Skills de planning a entrega sobre changes/
-- [[STORY-199-sddf-init-y-preflight-adr-0023]] — [story.md](../changes/STORY-199-sddf-init-y-preflight-adr-0023/story.md) — sddf-init y skill-preflight con el layout de ADR-0023
-- [[STORY-200-documentacion-y-migracion-a-6-0-0]] — [story.md](../changes/STORY-200-documentacion-y-migracion-a-6-0-0/story.md) — Documentación y migración a 6.0.0
+- [[STORY-194-adr-0023-aceptado]] — [story.md](../changes/archive/2026-11-22-STORY-194-adr-0023-aceptado/story.md) — Aceptar ADR-0023
+- [[STORY-195-contrato-de-layout-con-changes]] — [story.md](../changes/archive/2026-11-22-STORY-195-contrato-de-layout-con-changes/story.md) — Contrato de layout y gate determinista con changes/
+- [[STORY-196-scripts-y-mudanza-a-changes]] — [story.md](../changes/archive/2026-11-22-STORY-196-scripts-y-mudanza-a-changes/story.md) — Scripts deterministas y mudanza a changes/
+- [[STORY-197-skills-de-especificacion-y-epica]] — [story.md](../changes/archive/2026-11-22-STORY-197-skills-de-especificacion-y-epica/story.md) — Skills de especificación y épica sobre changes/
+- [[STORY-198-skills-de-planning-a-entrega]] — [story.md](../changes/archive/2026-11-22-STORY-198-skills-de-planning-a-entrega/story.md) — Skills de planning a entrega sobre changes/
+- [[STORY-199-sddf-init-y-preflight-adr-0023]] — [story.md](../changes/archive/2026-11-22-STORY-199-sddf-init-y-preflight-adr-0023/story.md) — sddf-init y skill-preflight con el layout de ADR-0023
+- [[STORY-200-documentacion-y-migracion-a-6-0-0]] — [story.md](../changes/archive/2026-11-22-STORY-200-documentacion-y-migracion-a-6-0-0/story.md) — Documentación y migración a 6.0.0
 
 ### Épicas e historias archivadas (archive/)
 

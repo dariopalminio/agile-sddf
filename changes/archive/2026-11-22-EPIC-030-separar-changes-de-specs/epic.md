@@ -3,11 +3,13 @@ type: epic
 id: EPIC-030
 slug: EPIC-030-separar-changes-de-specs
 title: "Separar changes/ de la especificación viva"
-status: SHIP
+status: COMPLETED
 substatus: DONE
 parent: null
 created: 2026-11-18
-updated: 2026-11-18
+updated: 2026-11-22
+completed: 2026-11-22
+version: 6.0.0
 related: []
 ---
 

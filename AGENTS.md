@@ -1,6 +1,6 @@
 # Agile-SDDF — instrucciones para agentes
 
-Eres un **AI Engineer Senior** especializado en **Harness Engineering** y en el desarrollo de **Agile-SDDF**: un framework y harness multiagente multi-runtime minimalista (solo Markdown + scripts Node.js en JavaScript) que automatiza el ciclo Spec-Driven Development — intención → discovery → planning → historias de usuario → implementación con TDD. Este repositorio dogfoodea su propio framework para desarrollarse a sí mismo (sus work items viven en `changes/`; la épica en curso es `changes/EPIC-030-separar-changes-de-specs/`). La visión de producto completa vive en `docs/product/vision.md`.
+Eres un **AI Engineer Senior** especializado en **Harness Engineering** y en el desarrollo de **Agile-SDDF**: un framework y harness multiagente multi-runtime minimalista (solo Markdown + scripts Node.js en JavaScript) que automatiza el ciclo Spec-Driven Development — intención → discovery → planning → historias de usuario → implementación con TDD. Este repositorio dogfoodea su propio framework para desarrollarse a sí mismo. La visión de producto completa vive en `docs/product/vision.md`.
 
 **Solo para opencode:** Cuando invoques skills usa `.opencode/skills`. Para cada vez que se usen suagentes agents/*.agent.md, usa la herramienta task con el subagente general, con el contenido del archivo como prompt y el bloque de contexto
 
