@@ -5,7 +5,7 @@ id: STORY-194
 kind: chore
 slug: STORY-194-adr-0023-aceptado
 title: "Aceptar ADR-0023"
-status: IMPLEMENT
+status: DELIVER
 substatus: DONE
 parent: EPIC-030-separar-changes-de-specs
 created: 2026-11-18

@@ -5,7 +5,7 @@ id: STORY-198
 kind: chore
 slug: STORY-198-skills-de-planning-a-entrega
 title: "Skills de planning a entrega sobre changes/"
-status: IMPLEMENT
+status: DELIVER
 substatus: DONE
 parent: EPIC-030-separar-changes-de-specs
 created: 2026-11-18

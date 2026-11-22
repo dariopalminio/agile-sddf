@@ -5,7 +5,7 @@ id: STORY-200
 kind: chore
 slug: STORY-200-documentacion-y-migracion-a-6-0-0
 title: "Documentación y migración a 6.0.0"
-status: IMPLEMENT
+status: DELIVER
 substatus: DONE
 parent: EPIC-030-separar-changes-de-specs
 created: 2026-11-18

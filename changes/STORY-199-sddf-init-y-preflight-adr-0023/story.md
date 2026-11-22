@@ -5,7 +5,7 @@ id: STORY-199
 kind: feat
 slug: STORY-199-sddf-init-y-preflight-adr-0023
 title: "sddf-init y skill-preflight con el layout de ADR-0023"
-status: IMPLEMENT
+status: DELIVER
 substatus: DONE
 parent: EPIC-030-separar-changes-de-specs
 created: 2026-11-18
