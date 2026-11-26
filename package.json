@@ -55,6 +55,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "agile-sddf": "^6.0.0",
     "fs-extra": "^11.4.1"
   }
 }
