@@ -61,7 +61,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[PROJ-01-agile-sddf]] — [PROJ-01-agile-sddf.md](product/PROJ-01-agile-sddf.md) — Redirección de PROJ-01-agile-sddf
 - [[product-index]] — [README.md](product/README.md) — Producto
 - [[objectives]] — [objectives.md](product/objectives.md) — Objetivos
-- [[person-user]] — [person-user.md](product/person-user.md) — Persona de usuario
+- [[person-users]] — [person-users.md](product/person-users.md) — Persona de usuario
 - [[roadmap]] — [roadmap.md](product/roadmap.md) — Roadmap del producto
 - [[stakeholders]] — [stakeholders.md](product/stakeholders.md) — Stakeholders
 - [[story-map]] — [story-map.md](product/story-map.md) — Story Map — Agile SDDF (Spec-Driven Development Framework)

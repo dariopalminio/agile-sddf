@@ -20,7 +20,7 @@ evaluated: 2026-10-14
 
 | Componente | Score (1–5) | Observación |
 |------------|:-----------:|-------------|
-| Formato `Como/Quiero/Para` | 4 | Encabezado `# 📖 Historia` y las tres cláusulas presentes. El `Quiero` es concreto. El `Como` usa "practitioner", que no es una persona canónica de `product/stakeholders.md` / `product/person-user.md` (US-001 Solo Builder, Local Builder). El `Para` es algo genérico ("en cualquier runtime") y no nombra el runtime donde hoy falla. |
+| Formato `Como/Quiero/Para` | 4 | Encabezado `# 📖 Historia` y las tres cláusulas presentes. El `Quiero` es concreto. El `Como` usa "practitioner", que no es una persona canónica de `product/stakeholders.md` / `product/person-users.md` (US-001 Solo Builder, Local Builder). El `Para` es algo genérico ("en cualquier runtime") y no nombra el runtime donde hoy falla. |
 | Criterios de aceptación | 5 | Sección `## ✅ Criterios de aceptación` con AC-1 (principal) y AC-2 (alternativo/error) nombrados como `###`. |
 | Escenarios Gherkin | 5 | 2 bloques ` ```gherkin ` con `Dado/Y/Cuando/Entonces/Pero`. AC-2 es un escenario alternativo con `Pero`. |
 
