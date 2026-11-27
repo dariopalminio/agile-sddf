@@ -5,7 +5,7 @@ title: "Índice de documentación"
 status: IN-PROGRESS
 substatus: IN-PROGRESS
 parent: null
-updated: 2026-11-18
+updated: 2026-11-27
 ---
 
 # 📚 Índice de documentación
@@ -157,7 +157,8 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 ### Épicas
 
-- [[EPIC-030-separar-changes-de-specs]] — [epic.md](../changes/archive/2026-11-22-EPIC-030-separar-changes-de-specs/epic.md) — Separar changes/ de la especificación viva
+- [[EPIC-031-optimizar-desglose-de-epicas]] — [epic.md](../changes/EPIC-031-optimizar-desglose-de-epicas/epic.md) — Optimizar el desglose de épicas en historias
+- [intent.md](../changes/EPIC-031-optimizar-desglose-de-epicas/intent.md) — Intención: Optimizar el desglose de épicas en historias ⚠️ sin frontmatter
 
 ### Historias de usuario
 
@@ -167,13 +168,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 > enumeran aquí: se leen desde el directorio de la historia. Los templates (`templates/`) tampoco se
 > listan porque sus wikilinks son placeholders.
 
-- [[STORY-194-adr-0023-aceptado]] — [story.md](../changes/archive/2026-11-22-STORY-194-adr-0023-aceptado/story.md) — Aceptar ADR-0023
-- [[STORY-195-contrato-de-layout-con-changes]] — [story.md](../changes/archive/2026-11-22-STORY-195-contrato-de-layout-con-changes/story.md) — Contrato de layout y gate determinista con changes/
-- [[STORY-196-scripts-y-mudanza-a-changes]] — [story.md](../changes/archive/2026-11-22-STORY-196-scripts-y-mudanza-a-changes/story.md) — Scripts deterministas y mudanza a changes/
-- [[STORY-197-skills-de-especificacion-y-epica]] — [story.md](../changes/archive/2026-11-22-STORY-197-skills-de-especificacion-y-epica/story.md) — Skills de especificación y épica sobre changes/
-- [[STORY-198-skills-de-planning-a-entrega]] — [story.md](../changes/archive/2026-11-22-STORY-198-skills-de-planning-a-entrega/story.md) — Skills de planning a entrega sobre changes/
-- [[STORY-199-sddf-init-y-preflight-adr-0023]] — [story.md](../changes/archive/2026-11-22-STORY-199-sddf-init-y-preflight-adr-0023/story.md) — sddf-init y skill-preflight con el layout de ADR-0023
-- [[STORY-200-documentacion-y-migracion-a-6-0-0]] — [story.md](../changes/archive/2026-11-22-STORY-200-documentacion-y-migracion-a-6-0-0/story.md) — Documentación y migración a 6.0.0
+_(sin artefactos)_
 
 ### Épicas e historias archivadas (archive/)
 
@@ -465,6 +460,14 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[STORY-191-valor-legado-durante-la-ventana-de-transicion]] — [story.md](../changes/archive/2026-11-15-STORY-191-valor-legado-durante-la-ventana-de-transicion/story.md) — Valor legado durante la ventana de transición
 - [[STORY-192-epica-sin-ready-for-dev]] — [story.md](../changes/archive/2026-11-15-STORY-192-epica-sin-ready-for-dev/story.md) — Épica sin READY-FOR-DEV
 - [[STORY-193-guias-readme-y-ejemplos-sin-buffers]] — [story.md](../changes/archive/2026-11-15-STORY-193-guias-readme-y-ejemplos-sin-buffers/story.md) — Guías, README y ejemplos sin buffers
+- [[EPIC-030-separar-changes-de-specs]] — [epic.md](../changes/archive/2026-11-22-EPIC-030-separar-changes-de-specs/epic.md) — Separar changes/ de la especificación viva
+- [[STORY-194-adr-0023-aceptado]] — [story.md](../changes/archive/2026-11-22-STORY-194-adr-0023-aceptado/story.md) — Aceptar ADR-0023
+- [[STORY-195-contrato-de-layout-con-changes]] — [story.md](../changes/archive/2026-11-22-STORY-195-contrato-de-layout-con-changes/story.md) — Contrato de layout y gate determinista con changes/
+- [[STORY-196-scripts-y-mudanza-a-changes]] — [story.md](../changes/archive/2026-11-22-STORY-196-scripts-y-mudanza-a-changes/story.md) — Scripts deterministas y mudanza a changes/
+- [[STORY-197-skills-de-especificacion-y-epica]] — [story.md](../changes/archive/2026-11-22-STORY-197-skills-de-especificacion-y-epica/story.md) — Skills de especificación y épica sobre changes/
+- [[STORY-198-skills-de-planning-a-entrega]] — [story.md](../changes/archive/2026-11-22-STORY-198-skills-de-planning-a-entrega/story.md) — Skills de planning a entrega sobre changes/
+- [[STORY-199-sddf-init-y-preflight-adr-0023]] — [story.md](../changes/archive/2026-11-22-STORY-199-sddf-init-y-preflight-adr-0023/story.md) — sddf-init y skill-preflight con el layout de ADR-0023
+- [[STORY-200-documentacion-y-migracion-a-6-0-0]] — [story.md](../changes/archive/2026-11-22-STORY-200-documentacion-y-migracion-a-6-0-0/story.md) — Documentación y migración a 6.0.0
 
 ---
 
@@ -480,6 +483,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 - [[domain-skills-map]] — [domain-skills-map.md](domains/domain-skills-map.md) — Mapa de skills por nivel del pipeline
 - [[domain-state-management]] — [domain-state-management.md](domains/domain-state-management.md) — Documentación del Dominio: Gestión de Estados (State Management)
 - [[domain-story-lifecycle]] — [domain-story-lifecycle.md](domains/domain-story-lifecycle.md) — Documentación del Dominio: Ciclo de Vida de Story (Story Lifecycle)
+- [domain-story-vs-feature.md](domains/domain-story-vs-feature.md) — Story vs Feature ⚠️ sin frontmatter
 - [[domain-work-item-hierarchy]] — [domain-work-item-hierarchy.md](domains/domain-work-item-hierarchy.md) — Documentación del Dominio: Jerarquía de Work Items
 - [[domain]] — [domain.md](domains/domain.md) — Agile SDDF — Contexto de dominio
 
@@ -531,6 +535,7 @@ Tres capas con jerarquía explícita: la **constitución** es el documento supre
 
 - [[guides-index]] — [README.md](guides/README.md) — Índice de Guías
 - [[agent-harness-guide]] — [agent-harness-guide.md](guides/agent-harness-guide.md) — Guía de Agent Harness
+- [ai-driven-development-lifecycle.md](guides/ai-driven-development-lifecycle.md) — AI-Driven Development Lifecycle (AI-DLC) ⚠️ sin frontmatter
 - [[artifact-directory-migration]] — [artifact-directory-migration.md](guides/artifact-directory-migration.md) — Guía de migración de la estructura de artefactos SDDF
 - [[best-practices-for-agents]] — [best-practices-for-agents.md](guides/best-practices-for-agents.md) — Buenas prácticas para Agentes
 - [[best-practices-for-commands]] — [best-practices-for-commands.md](guides/best-practices-for-commands.md) — Buenas prácticas para LLM Clients: Comandos
@@ -586,9 +591,9 @@ _(sin artefactos externos)_
 
 | Métrica | Valor |
 |---------|-------|
-| Nodos indexados | 482 |
-| Nodos con frontmatter | 474 |
-| Nodos sin frontmatter | 8 |
+| Nodos indexados | 486 |
+| Nodos con frontmatter | 475 |
+| Nodos sin frontmatter | 11 |
 | Wikilinks pendientes | 1 |
 | Enlaces locales, anchors y wikilinks de documentación activa | `node scripts/check-doc-links.js` |
 | Última regeneración | ver `updated` en el frontmatter |

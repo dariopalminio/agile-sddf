@@ -1,6 +1,6 @@
 ---
 type: product
-slug: person-user
+slug: person-users
 title: "Persona de usuario"
 ---
 
