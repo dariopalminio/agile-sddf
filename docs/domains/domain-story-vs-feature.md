@@ -11,8 +11,8 @@ Una Story se corresponde con Features y Scenarios dentro de la documentación vi
 flowchart TD
     subgraph PlanificacionDelCambio ["Changes - Planificación Ágil (Temporal)"]
         US["User Story<br/>(Como / Quiero / Para)"]
-        REQ["Requirement<br/>(Requisitos / Reglas de negocio)"]
-        AC["Criterios de Aceptación<br/>(Formato Escenario Gherkin)"]
+        REQ["Requirement/Rules<br/>(Requisitos / Reglas)"]
+        AC["Criterios de Aceptación<br/>(Escenarios Gherkin)"]
         US -->|"define (1 a N)"| REQ
         US -->|"define (1 a N)"| AC
         REQ -.->|"se validan mediante"| AC
