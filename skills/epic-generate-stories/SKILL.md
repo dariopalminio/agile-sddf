@@ -250,7 +250,7 @@ Generar al menos:
 
 Si la feature tiene descripción detallada, usarla para enriquecer los escenarios. Si la descripción es mínima, inferir escenarios razonables desde el nombre y el contexto del sistema SDDF (framework de especificación de software con skills, agents y templates Markdown).
 
-Las secciones opcionales (`⚙️ Criterios no funcionales`, `📎 Notas`) se incluyen con placeholder `[Por completar]` si no hay datos suficientes.
+Las secciones opcionales (`⚙️ Criterios no funcionales`, `🔗 Notas adicionales`) se incluyen con placeholder `[Por completar]` si no hay datos suficientes.
 
 #### 4e. Escribir el archivo de historia
 
@@ -277,17 +277,16 @@ created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 ---
 
-# Historia de Usuario
+# 📖 Historia: [Nombre de la feature]
 
-## 📖 Historia: [Nombre de la feature]
-
+## Narrativa
 **Como** [rol específico inferido]
 **Quiero** [acción concreta orientada al usuario]
 **Para** [beneficio real y medible]
 
-## ✅ Criterios de aceptación
+## ✅ Criterios de aceptación (escenarios Gherkin)
 
-### Escenario principal – [título descriptivo del happy path]
+### AC-1 - Escenario principal – [título descriptivo del happy path]
 ```gherkin
 Dado [contexto inicial específico]
   Y [condición adicional si aplica]
@@ -296,7 +295,7 @@ Entonces [resultado esperado concreto]
   Y [resultado adicional si aplica]
 ```
 
-### Escenario alternativo / error – [título]
+### AC-2 - Escenario alternativo / error – [título]
 ```gherkin
 Dado [contexto de fallo]
 Cuando [acción inválida o condición de error]
@@ -304,11 +303,11 @@ Entonces [mensaje de error o comportamiento alternativo]
   Pero [excepción si aplica]
 ```
 
-## ⚙️ Criterios no funcionales
+## ⚙️ Criterios no funcionales específicos *(si aplica)*
 
 [Por completar]
 
-## 📎 Notas / contexto adicional
+## 🔗 Notas adicionales (Dependencias, supuestos y notas) *(si aplica)*
 
 Generado automáticamente desde la épica: [nombre del archivo de épica]
 Feature origen: [ID] — [Nombre de la feature]

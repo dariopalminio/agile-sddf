@@ -19,16 +19,20 @@ related:   # escritor: story-creation · epic-generate-stories · epic-generate-
 
 # 📖 Historia: [Título de la historia o nombre de historia] <!-- escritor: defecto · story-refine (aplica recomendaciones FINVEST) · story-split (reescribe la historia core) -->
 
-**Como** [rol o persona]  
-**Quiero** [acción o funcionalidad]  
-**Para** [beneficio o valor]
+## Narrativa
+**Como** [rol/persona]  
+**Quiero** [acción/funcionalidad]  
+**Para** [beneficio/valor]
 
-## ✅ Criterios de aceptación <!-- escritor: defecto · story-refine (aplica recomendaciones FINVEST) · story-split (reparte escenarios entre core y hermanas) · epic-refine (AC de cierre del contrato de salida, SAL-01/SAL-02) -->
+## Contexto y valor *(si aplica)* <!-- sección opcional · escritor: defecto -->
+[2–5 líneas: problema, situación actual, por qué importa, qué cambia para el usuario/negocio.]
+
+## ✅ Criterios de aceptación (escenarios Gherkin) <!-- escritor: defecto · story-refine (aplica recomendaciones FINVEST) · story-split (reparte escenarios entre core y hermanas) · epic-refine (AC de cierre del contrato de salida, SAL-01/SAL-02) -->
 <!-- Los escenarios Gherkin SON los criterios de aceptación funcionales.
      No se duplican en una sección separada. Si hay reglas transversales,
-     exprésalas con "Regla:" o como comentario. -->
+     exprésalas en sección "Reglas". -->
 
-### AC-1 — Escenario principal – [título descriptivo]
+### AC-1 - Escenario principal – [título descriptivo]
 ```gherkin
 Dado [contexto inicial]
   Y [otra condición si aplica]
@@ -36,7 +40,7 @@ Cuando [acción del usuario]
 Entonces [resultado esperado]
   Y [otro resultado]
 ```
-### AC-2 — Escenario alternativo / error – [título]
+### AC-2 - Escenario alternativo / error – [título]
 ```gherkin
 Dado [contexto]
 Cuando [acción inválida o límite]
@@ -44,7 +48,7 @@ Entonces [mensaje de error o comportamiento alternativo]
   Pero [excepción si aplica]
 ```
 
-### AC-3 — Escenario con datos (Scenario Outline) – opcional
+### AC-3 - Escenario con datos (Scenario Outline) – opcional
 ```gherkin
 Escenario: [título]
   Dado que el usuario tiene el rol "<rol>"
@@ -57,17 +61,21 @@ Ejemplos:
   | admin     | /admin    | "Panel de control"    |
 ```
 
-## ⚙️ Criterios no funcionales específicos <!-- sección opcional · escritor: defecto · story-refine (aplica recomendaciones FINVEST) -->
+## Reglas (reglas de negocio) *(si aplica)* <!-- sección opcional · escritor: defecto -->
+<!-- Listado de declaraciones normativas, con uso de palabras clave RFC 2119: MUST/SHALL, observables y verificables -->
+- **Regla-1:** [regla transversal que aplica a varios escenarios] → cubierta por [AC-1, AC-n]
+- **Regla-2:** [validación, cálculo, permisos, límites] → cubierta por [AC-1, AC-n]
 
-- **CNF-[n] — [Nombre de requerimiento no funcional]:** [Descripción del requerimiento no funcional asociado a la historia.]
+## ⚙️ Criterios no funcionales específicos *(si aplica)* <!-- sección opcional · escritor: defecto · story-refine (aplica recomendaciones FINVEST) -->
+- **CNF-[n] — [Nombre de requerimiento no funcional]:** [Descripción medible: umbral, percentil, condición, ventana de tiempo]
 
-- **CNF-[n+1] — [Nombre de requerimiento no funcional]:** [Descripción del requerimiento no funcional asociado a la historia.]
+- **CNF-[n+1] — [Nombre de requerimiento no funcional]:** [Descripción medible: umbral, percentil, condición, ventana de tiempo]
 
-## Fuera de alcance (Non-Goals)  <!-- sección opcional solo si es necesario indicar qué no se abordará -->
-[Aspectos que no serán abordados por esta historia, para evitar malentendidos]
+## 🚫 Fuera de alcance (Non-Goals) *(si aplica)* <!-- sección opcional solo si es necesario indicar qué no se abordará -->
+- [Lo que explícitamente NO cubre esta historia]
 
-## 📎 Notas / contexto adicional <!-- sección opcional · escritor: defecto · story-refine (dimensiones I y E) · story-split (contexto del split) · epic-refine (cita E1 del contrato de salida) -->
-[Información relevante para el equipo de desarrollo o QA]
-
-
-
+## 🔗 Notas adicionales (Dependencias, supuestos y notas) *(si aplica)* <!-- sección opcional · escritor: defecto · story-refine (dimensiones I y E) · story-split (contexto del split) · epic-refine (cita E1 del contrato de salida) -->
+- **Dependencia:** [API, diseño, otra historia]
+- **Supuesto:** [dato o condición asumida]
+- **Notas UX/UI:** [enlace a prototipo]
+- **Datos de prueba:** [si son relevantes]

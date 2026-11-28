@@ -1,6 +1,6 @@
 {
   "skill": "story-evaluation",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Casos de prueba para story-evaluation: evalúa historias de usuario con rúbrica FINVEST y genera finvest-evaluation-report.md",
   "cases": [
     {
@@ -175,6 +175,47 @@
       "expected": {
         "contains": ["No se encontró la historia STORY-999", "changes/"],
         "not_contains": ["docs/specs", "finvest-evaluation-report.md guardado"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-010",
+      "name": "texto-libre-example-template-actual-sin-penalizar-titulos-nuevos",
+      "type": "happy-path",
+      "description": "[STORY-201 AC-3 · EV-003] Evaluar como texto libre la historia de examples/example-template-actual.md, escrita con la estructura del template actual: # 📖 Historia: + ## Narrativa y ## ✅ Criterios de aceptación (escenarios Gherkin) con un AC principal y dos alternativos. El componente 1 no se penaliza por la falta de ## 📖 Historia (score 5, no 4) y el componente 2 reconoce la sección por su comienzo común (score 5): F_score 5 y veredicto APPROVED, sin persistir el reporte.",
+      "input": {
+        "flags": [],
+        "context": "El usuario pega como texto libre la historia de skills/story-evaluation/examples/example-template-actual.md. No se proporciona ruta ni ID."
+      },
+      "expected": {
+        "contains": [
+          "**Veredicto:** `APPROVED`",
+          "F_score = (5 × 0.4) + (5 × 0.3) + (5 × 0.3)"
+        ],
+        "not_contains": [
+          "(4 × 0.4)",
+          "✓ Reporte guardado"
+        ]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-011",
+      "name": "texto-libre-example-ready-titulos-anteriores-mismo-score",
+      "type": "edge-case",
+      "description": "[STORY-201 AC-3 · EV-004] Evaluar como texto libre la historia de examples/example-ready.md, con los títulos anteriores (## 📖 Historia y ## ✅ Criterios de aceptación sin sufijo). Los componentes 1 y 2 de la rúbrica F la puntúan igual que antes del cambio de template (5 y 5): F_score 5 y veredicto APPROVED, sin persistir el reporte.",
+      "input": {
+        "flags": [],
+        "context": "El usuario pega como texto libre la historia de skills/story-evaluation/examples/example-ready.md. No se proporciona ruta ni ID."
+      },
+      "expected": {
+        "contains": [
+          "**Veredicto:** `APPROVED`",
+          "F_score = (5 × 0.4) + (5 × 0.3) + (5 × 0.3)"
+        ],
+        "not_contains": [
+          "✓ Reporte guardado"
+        ]
       },
       "threshold": 1.0
     }

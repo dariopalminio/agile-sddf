@@ -41,7 +41,7 @@ Cierra el bucle de `PLAN` (`epic-analyze → NEEDS-REFINEMENT → epic-refine �
 | `epic.md` | `changes/EPIC-NNN-<slug>/epic.md` | Se corrige la sección de clave `historias` |
 | `story.md` | `changes/STORY-NNN-<slug>/story.md` (activos) | Se corrige `related:` y, en la historia de cierre SAL, se añaden un AC y una línea en Notas; se leen `title`, `status`, `substatus`, `parent`, las líneas Como/Quiero/Para y `depends-on:` |
 | Template de épica | `docs/templates/epic-template.md` → seed `$CLI_ROOT/skills/epic-creation/assets/epic-template.md` | Solo lectura: título de la sección `historias` |
-| Template de historia | `docs/templates/story-template.md` → seed `$CLI_ROOT/skills/story-creation/assets/story-template.md` | Solo lectura: título de `## 📎 Notas…` si la historia de cierre no la tiene (SAL) |
+| Template de historia | `docs/templates/story-template.md` → seed `$CLI_ROOT/skills/story-creation/assets/story-template.md` | Solo lectura: título de la sección de notas (`## 🔗 Notas adicionales…`) si la historia de cierre no tiene ni `## 🔗 Notas` ni `## 📎 Notas` (SAL) |
 | Template del reporte de análisis | `docs/templates/epic-analyze-report-template.md` → seed `$CLI_ROOT/skills/epic-analyze/assets/epic-analyze-report-template.md` | Solo lectura: título de la sección `hallazgos` |
 | Template del reporte | `docs/templates/epic-refine-report-template.md` → seed [assets/epic-refine-report-template.md](assets/epic-refine-report-template.md) | Estructura de `epic-refine-report.md` |
 | Catálogos de corrección | [references/](references/) de este skill | Se leen en el Paso 4; `coh-corrections.md`, en el Paso 3 |

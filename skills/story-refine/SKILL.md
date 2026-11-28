@@ -241,10 +241,10 @@ Para cada dimensión con score ≤ 3 que tenga recomendación explícita en el r
 
 | Dimensión | Sección típica de `story.md` a mejorar |
 |---|---|
-| I – Independencia | Notas / contexto adicional: reducir o desacoplar dependencias; añadir cómo simular con stubs |
+| I – Independencia | Notas adicionales (`## 🔗 Notas adicionales…`; `## 📎 Notas / contexto adicional` en historias anteriores): reducir o desacoplar dependencias; añadir cómo simular con stubs |
 | N – Negociable | Historia Como/Quiero/Para: reformular para documentar qué/para qué sin prescribir implementación |
 | V – Valiosa | Para (beneficio): clarificar el valor de negocio con métrica observable |
-| E – Estimable | Notas / contexto adicional: añadir schema mínimo, alcance, o spike previo que reduce incertidumbre |
+| E – Estimable | Notas adicionales (`## 🔗 Notas adicionales…`; `## 📎 Notas / contexto adicional` en historias anteriores): añadir schema mínimo, alcance, o spike previo que reduce incertidumbre |
 | S – Small | Criterios de aceptación: reducir escenarios; si S ≤ 2, considerar notificar que la historia debería dividirse |
 | T – Testeable | Criterios Gherkin: añadir valores concretos, Scenario Outline con tabla Ejemplos, pasos más específicos |
 

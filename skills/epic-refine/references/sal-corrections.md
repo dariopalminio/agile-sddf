@@ -29,12 +29,12 @@ Sin candidatas tras el paso 4 → caso «sin evidencia parcial» (sección 3).
 
 ### Regla E1
 
-La misma de `epic-analyze` Paso 5b.2. **Smoke:** el token `SMOKE-<N>` aparece en el cuerpo con límite de palabra (`SMOKE-1` no casa `SMOKE-10`). **Criterio con ID declarado:** el token `CS-<id>` aparece en el cuerpo con límite de palabra, sin letra ni dígito a continuación (`CS-1` no casa `CS-10` ni `CS-1a`), o su enunciado normalizado es subcadena de una línea normalizada del cuerpo. **Criterio sin ID:** su enunciado completo normalizado es subcadena de una línea normalizada del cuerpo; mencionar su etiqueta posicional no cuenta. Normalización: minúsculas, sin `` ` ``, `*` ni `_`, espacios colapsados, sin punto final. No cuentan las líneas del frontmatter ni las de una sección `##` cuyo título empiece por `Fuera de alcance`.
+La misma de `epic-analyze` Paso 5b.2. **Smoke:** el token `SMOKE-<N>` aparece en el cuerpo con límite de palabra (`SMOKE-1` no casa `SMOKE-10`). **Criterio con ID declarado:** el token `CS-<id>` aparece en el cuerpo con límite de palabra, sin letra ni dígito a continuación (`CS-1` no casa `CS-10` ni `CS-1a`), o su enunciado normalizado es subcadena de una línea normalizada del cuerpo. **Criterio sin ID:** su enunciado completo normalizado es subcadena de una línea normalizada del cuerpo; mencionar su etiqueta posicional no cuenta. Normalización: minúsculas, sin `` ` ``, `*` ni `_`, espacios colapsados, sin punto final. No cuentan las líneas del frontmatter ni las de una sección `##` cuyo título empiece por `🚫 Fuera de alcance` o `Fuera de alcance` (`## 🚫 Fuera de alcance (Non-Goals) *(si aplica)*` en el template actual; sin emoji en historias anteriores).
 
 ## 2. Historia de cierre: la única candidata sin dependientes
 
 - **Índice:** las historias de las líneas de nivel superior con el token `**STORY-NNN**` de la sección `historias` de `epic.md`.
-- **Dependiente de X:** una historia del índice, distinta de X, cuyo `story.md` activo contiene en el cuerpo (fuera del frontmatter y de una sección `## Fuera de alcance…`) una línea con el token `depends-on:` seguido de una lista que incluye `X` con límite de palabra. La lista admite comillas invertidas, comas y la anotación `(dura)`: `depends-on: STORY-301`, ``- `depends-on:` `STORY-148` (dura), `STORY-150` `` son válidas.
+- **Dependiente de X:** una historia del índice, distinta de X, cuyo `story.md` activo contiene en el cuerpo (fuera del frontmatter y de una sección cuyo título empiece por `## 🚫 Fuera de alcance` o `## Fuera de alcance`) una línea con el token `depends-on:` seguido de una lista que incluye `X` con límite de palabra. La lista admite comillas invertidas, comas y la anotación `(dura)`: `depends-on: STORY-301`, ``- `depends-on:` `STORY-148` (dura), `STORY-150` `` son válidas.
 - **Historia de cierre:** entre las candidatas de la sección 1, la **única** sin dependientes.
 - No hay desempate: si todas las candidatas tienen dependientes, o varias no tienen ninguno, el hallazgo va al PO (sección 3). Ni el orden del índice, ni el mayor `STORY-NNN`, ni `related`, ni frases libres («se implementa después de…») cuentan como dependencia.
 
@@ -51,7 +51,7 @@ En todos estos casos el **Responsable** es `PO` con la **Acción sugerida** del 
 | Varias candidatas sin dependientes | `varias candidatas sin dependientes: <STORY-a>, <STORY-b>` |
 | La historia de cierre está en `IMPLEMENT` o posterior (`CODE-REVIEW`, `VERIFY`, `ACCEPTANCE`, `DELIVER`, `COMPLETED`; cualquier `substatus`) | `<STORY-NNN> ya está implementada: añadir un AC reabre su alcance` |
 | La historia de cierre tiene un `status` fuera del workflow de historia | `` <STORY-NNN> con status `<valor>` fuera del workflow de historia: normaliza su status antes de asignarle cobertura `` (`<valor>` es el `status` literal del `story.md`) |
-| El `story.md` de la historia de cierre no tiene la sección `## ✅ Criterios de aceptación` o ningún `### AC-<n>` en ella | `<STORY-NNN> sin sección de criterios de aceptación reconocible` |
+| El `story.md` de la historia de cierre no tiene la sección cuyo título empieza por `## ✅ Criterios de aceptación` o ningún `### AC-<n>` en ella | `<STORY-NNN> sin sección de criterios de aceptación reconocible` |
 | SAL-02: el smoke no tiene bloque `gherkin` con un paso `Entonces` | `<SMOKE-N> sin resultado reconocible en epic.md` |
 
 Las listas de candidatas van por `STORY-NNN` ascendente.
@@ -73,14 +73,14 @@ Dos cambios `C-NN` por elemento en el `story.md` de la historia de cierre, ambos
 
 ### 4.1 AC de cierre
 
-- **Posición:** tras el último bloque `### AC-<k>` de la sección `## ✅ Criterios de aceptación` (incluido su bloque `gherkin`), antes del siguiente `## `, separado por una línea en blanco.
+- **Posición:** tras el último bloque `### AC-<k>` de la sección cuyo título empieza por `## ✅ Criterios de aceptación` (incluido su bloque `gherkin`), antes del siguiente `## `, separado por una línea en blanco.
 - **Número:** `AC-<k+1>`, con `k` = mayor número de `### AC-<n>` de la sección.
 - **Ubicación en el plan:** `Criterios de aceptación › tras AC-<k>`.
 
 Criterio `CS-<n>` (la etiqueta del paso 1 de la sección 1: el ID declarado o la posición):
 
 ````markdown
-### AC-<k+1> — Cierre del contrato de salida – CS-<n> de <EPIC_ID>
+### AC-<k+1> - Cierre del contrato de salida – CS-<n> de <EPIC_ID>
 ```gherkin
 Dado que las historias de "<EPIC_ID>" están implementadas
 Cuando se verifica el criterio de salida "CS-<n>" de "<EPIC_ID>"
@@ -88,11 +88,11 @@ Entonces se cumple: <enunciado literal del criterio, sin la casilla ni el prefij
 ```
 ````
 
-Smoke `SMOKE-<N>`: encabezado `### AC-<k+1> — Cierre del contrato de salida – SMOKE-<N> de <EPIC_ID>` y un bloque `gherkin` con la copia literal, en su orden, de los pasos `Dado`/`Cuando`/`Entonces`/`Y`/`Pero` del bloque `gherkin` del smoke en `epic.md` (sin la línea `Escenario:` ni la indentación inicial).
+Smoke `SMOKE-<N>`: encabezado `### AC-<k+1> - Cierre del contrato de salida – SMOKE-<N> de <EPIC_ID>` y un bloque `gherkin` con la copia literal, en su orden, de los pasos `Dado`/`Cuando`/`Entonces`/`Y`/`Pero` del bloque `gherkin` del smoke en `epic.md` (sin la línea `Escenario:` ni la indentación inicial).
 
 ### 4.2 Cita E1
 
-- **Posición:** una línea al final de la sección cuyo título empieza por `## 📎 Notas` (antes del siguiente `## ` o del fin del archivo). Si la sección no existe, se añade al final del archivo con su título leído de `docs/templates/story-template.md` (seed `$CLI_ROOT/skills/story-creation/assets/story-template.md`) sin el comentario de escritor.
+- **Posición:** una línea al final de la sección cuyo título empieza por `## 🔗 Notas` o `## 📎 Notas` (antes del siguiente `## ` o del fin del archivo). Si la sección no existe, se añade al final del archivo con su título leído de `docs/templates/story-template.md` (seed `$CLI_ROOT/skills/story-creation/assets/story-template.md`) sin el comentario de escritor.
 - **Ubicación en el plan:** `Notas`.
 
 | Elemento | Línea |
@@ -128,4 +128,4 @@ La nota del caso (secciones 1 y 3) va a `notas`, precedida de `H-NNN · <código
 
 **Resumen final (Paso 9):** una línea `Replanifica: /story-plan <STORY-NNN>` por cada historia de cierre en `PLAN`, antes de `Siguiente paso: /epic-analyze <EPIC_ID>`. En `--auto` el bloque de retorno no cambia.
 
-**Relectura (Paso 7 del `SKILL.md`):** además de las comprobaciones generales, cada línea E1 escrita cumple la regla E1 para su elemento y cada AC de cierre quedó dentro de `## ✅ Criterios de aceptación`. Si alguna falla, restauración global desde los `.bak`.
+**Relectura (Paso 7 del `SKILL.md`):** además de las comprobaciones generales, cada línea E1 escrita cumple la regla E1 para su elemento y cada AC de cierre quedó dentro de la sección cuyo título empieza por `## ✅ Criterios de aceptación`. Si alguna falla, restauración global desde los `.bak`.

@@ -200,7 +200,7 @@ Mostrar confirmación de inicio:
 
 #### 2a. Leer story.md — extraer escenarios Gherkin
 
-Leer `story.md` y extraer todos los escenarios Gherkin de la sección `## ✅ Criterios de aceptación` como lista numerada. Cada escenario Gherkin es un criterio a validar.
+Leer `story.md` y extraer todos los escenarios Gherkin de la sección cuyo título empieza por `## ✅ Criterios de aceptación` (`## ✅ Criterios de aceptación (escenarios Gherkin)` en el template actual; sin sufijo en historias anteriores) como lista numerada. Cada escenario Gherkin es un criterio a validar.
 
 Registrar internamente como `$GHERKIN_CRITERIOS`.
 

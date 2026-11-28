@@ -73,6 +73,7 @@ Fuente estructural del output: `assets/story-template.md` (leído en tiempo de e
 
 - La estructura del output la dicta el template en tiempo de ejecución — nunca se hardcodea la estructura de secciones en el skill
 - El template es de solo lectura — nunca se escribe, modifica ni usa como ruta de salida
+- Las secciones del template marcadas `*(si aplica)*` se omiten por completo (título incluido) cuando la necesidad no aporta contenido para ellas; nunca se dejan con placeholders
 - Toda historia debe tener mínimo 1 escenario principal (happy path) y 1 escenario alternativo o de error en formato Gherkin
 - Si alguna dimensión INVEST falla, se ajusta la historia antes de guardar; si `S` (Small) es demasiado grande, se sugiere `/story-split`
 - El rol en `Como` debe ser específico y contextualizado — nunca "usuario" genérico ni "el sistema"
@@ -285,15 +286,16 @@ Si la historia fue simplificada para cumplir INVEST, explicar brevemente qué se
 ### Ejemplo de output
 
 ```markdown
-## 📖 Historia
+# 📖 Historia: Recuperar la contraseña por email
 
+## Narrativa
 **Como** cliente registrado que olvidó su contraseña
 **Quiero** recibir un enlace de recuperación a mi email
 **Para** poder acceder a mi cuenta sin contactar a soporte
 
-## ✅ Criterios de aceptación
+## ✅ Criterios de aceptación (escenarios Gherkin)
 
-### Escenario principal – Recuperación exitosa
+### AC-1 - Escenario principal – Recuperación exitosa
 ```gherkin
 Dado que soy un usuario registrado con email "juan@example.com"
 Cuando solicito recuperar mi contraseña
@@ -301,7 +303,7 @@ Entonces recibo un email con un enlace único de recuperación
   Y el enlace expira en exactamente 1 hora
 ```
 
-### Escenario alternativo / error – Email no registrado
+### AC-2 - Escenario alternativo / error – Email no registrado
 ```gherkin
 Dado que solicito recuperación con email "invalido@example.com"
 Cuando el sistema verifica el email
@@ -309,15 +311,15 @@ Entonces veo el mensaje "No encontramos una cuenta con ese email"
   Pero no se envía ningún email
 ```
 
-## ⚙️ Criterios no funcionales
+## ⚙️ Criterios no funcionales específicos *(si aplica)*
+- **CNF-1 — Seguridad:** el enlace solo puede usarse una vez; se invalida tras el primer uso o al expirar
+- **CNF-2 — UX:** la confirmación de envío se muestra inmediatamente tras la solicitud
 
-* Seguridad: el enlace solo puede usarse una vez; se invalida tras el primer uso o expiración
-* UX: se muestra confirmación de envío inmediatamente tras la solicitud
-
-## 📎 Notas / contexto adicional
-
-Flujo de recuperación vía email. SMS queda fuera de scope de esta historia.
+## 🔗 Notas adicionales (Dependencias, supuestos y notas) *(si aplica)*
+- **Supuesto:** la recuperación es solo por email; SMS queda fuera de esta historia.
 ```
+
+El ejemplo no incluye `## Contexto y valor` ni `## Reglas`: la necesidad no aportaba contenido para esas secciones `*(si aplica)*`, así que se omiten por completo.
 
 ### Referencias
 

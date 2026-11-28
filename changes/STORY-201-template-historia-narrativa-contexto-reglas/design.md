@@ -147,6 +147,11 @@ Se agrega `### Changed` en `## [Unreleased]` con: estructura nueva del template 
 | Mapa dimensión → sección | modificar | `skills/story-refine/SKILL.md` | AC-3 |
 | Correcciones SAL (títulos, prefijos, AC de cierre) | modificar | `skills/epic-refine/references/sal-corrections.md` | AC-3 |
 | Ejemplos inline de generación desde épica | modificar | `skills/epic-generate-stories/SKILL.md`, `skills/epic-generate-all-stories/SKILL.md` | AC-3 |
+| Exclusión E1 de la sección «Fuera de alcance» (CR-005) | modificar | `skills/epic-analyze/SKILL.md` | AC-3 |
+| Regla E1 y exclusión de `depends-on:` en las correcciones SAL (CR-005) | modificar | `skills/epic-refine/references/sal-corrections.md` | AC-3 |
+| Historias dueñas de un smoke (CR-005) | modificar | `skills/epic-validate/references/story-sources.md` | AC-3 |
+| Casos de eval de la estructura nueva (CR-006) | modificar | `skills/{story-creation,story-evaluation,epic-refine,epic-analyze,epic-validate}/evals/evals.json` | AC-1, AC-2, AC-3 |
+| Fixtures de eval con la estructura nueva (CR-006) | crear | `skills/story-evaluation/examples/example-template-actual.md`, `skills/epic-refine/examples/cobertura-cierre-template-actual/` | AC-3 |
 | Changelog | modificar | `CHANGELOG.md` | AC-1, AC-3 |
 | Propuesta del Solo Builder | solo lectura (fuente de D-1) | `changes/STORY-201-…/story-new-template.md` | AC-1 |
 
@@ -232,3 +237,27 @@ Ninguna: la sección `Contexto y valor` y la dimensión V de `story-refine` se d
 - **Descripción**: los ejemplos inline de `story-creation`, `epic-generate-stories` y `epic-generate-all-stories` reproducen la estructura anterior. La historia los menciona solo en las Notas; el diseño los incluye en el alcance (D-4, D-7) para que AC-2 no dependa de un ejemplo contradictorio.
 - **Documento afectado**: design.md
 - **Acción requerida**: ninguna en story.md.
+
+### CR-003
+- **Tipo**: alcance (decisión de implementación no prevista)
+- **Descripción**: el inventario de D-5 no incluía dos puntos que dependen del título de notas y del AC de cierre: `skills/epic-refine/SKILL.md:44` (tabla de dependencias: «título de `## 📎 Notas…`») y la aserción `not_contains` de TC-012 en `skills/epic-refine/evals/evals.json` («AC-4 — Cierre del contrato de salida»). Con el guion (D-6), esa aserción dejaba de detectar un AC de cierre duplicado. Se nombró `## 🔗 Notas adicionales…` en la tabla de dependencias y se añadió la variante con guion a la aserción, conservando la de raya. Los fixtures de `examples/` mantienen los títulos anteriores (Risks / Trade-offs).
+- **Documento afectado**: design.md
+- **Acción requerida**: ninguna en story.md.
+
+### CR-004
+- **Tipo**: verificación
+- **Descripción**: T014 pide que `📎 Notas / contexto adicional` no aparezca en `skills/` (salvo `examples/`, `evals/` y `refinement-log-template.md`), pero T009 exige que `skills/story-refine/SKILL.md:244,247` nombre esa forma anterior junto a la nueva. Las dos únicas coincidencias restantes son esas menciones de compatibilidad, que AC-3 requiere.
+- **Documento afectado**: design.md
+- **Acción requerida**: ninguna.
+
+### CR-005
+- **Tipo**: alcance (corrección de code review, `fix-directives.md` ronda 1, hallazgo #2)
+- **Descripción**: el inventario de D-5 omitía un tercer título que cambia: `## 🚫 Fuera de alcance (Non-Goals) *(si aplica)*` ya no empieza por `Fuera de alcance`. Cuatro reglas excluían solo las secciones `##` «cuyo título empiece por `Fuera de alcance`»: la evidencia E1 de `skills/epic-analyze/SKILL.md` (Paso 5b.2), la regla E1 y la exclusión de `depends-on:` de `skills/epic-refine/references/sal-corrections.md` y las historias dueñas de `skills/epic-validate/references/story-sources.md` (§6). Con el título nuevo, una mención en esa sección contaba como cobertura, dependencia o dueña. Las cuatro reglas reconocen ahora el comienzo común (`🚫 Fuera de alcance` o `Fuera de alcance`), con el patrón de D-5. También se actualizó el ejemplo E1 de `epic-analyze`. El emoji del template no cambia: AC-1 exige ese título.
+- **Documento afectado**: design.md, story.md (AC-3 y la nota de riesgo nombran el tercer título y los nuevos consumidores)
+- **Acción requerida**: ninguna adicional.
+
+### CR-006
+- **Tipo**: verificación (corrección de code review, `fix-directives.md` ronda 1, hallazgos #1 y #3)
+- **Descripción**: EV-001…EV-006 de `testcases.md` no estaban en ningún `evals.json`, y la evidencia de AC-2 dependía solo de la validación manual T016. Se añadieron como casos `TC-NNN`: `story-creation` TC-004 (sin contexto ni reglas: `## Narrativa`, `## ✅ Criterios de aceptación (escenarios Gherkin)` y sin `## Contexto y valor` ni `## Reglas`) y TC-005 (con contexto y reglas: `→ cubierta por [AC-`); `story-evaluation` TC-010 (fixture nuevo `examples/example-template-actual.md`, componentes 1 y 2 = 5) y TC-011 (`examples/example-ready.md` con los títulos anteriores, mismo score); `epic-refine` TC-029 (fixture nuevo `examples/cobertura-cierre-template-actual/`: AC de cierre con guion, línea E1 al final de `## 🔗 Notas adicionales…` sin duplicar la sección, y exclusión de `## 🚫 Fuera de alcance…` para E1 y `depends-on:`). Por CR-005 se añadieron `epic-analyze` TC-038 y `epic-validate` TC-044. Su ejecución (`npm run test:eval -- <skill>`) queda a criterio humano (`AGENTS.md`).
+- **Documento afectado**: design.md
+- **Acción requerida**: ninguna.
