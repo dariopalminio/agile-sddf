@@ -1,6 +1,6 @@
 {
   "skill": "story-creation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Casos de prueba para story-creation: generación de historias de usuario con formato Como/Quiero/Para, criterios Gherkin y frontmatter completo.",
   "cases": [
     {
@@ -59,6 +59,60 @@
         "not_contains": ["❌"]
       },
       "threshold": 0.90
+    },
+    {
+      "id": "TC-004",
+      "name": "historia-sin-contexto-ni-reglas-omite-secciones-opcionales",
+      "type": "happy-path",
+      "description": "[STORY-201 AC-2 · E2E-002] La necesidad no aporta contexto de negocio ni reglas transversales. El story.md generado sigue la estructura del template actual: ## Narrativa con Como/Quiero/Para y ## ✅ Criterios de aceptación (escenarios Gherkin) con un AC principal y uno alternativo titulados ### AC-<n> - …. Las secciones marcadas *(si aplica)* sin contenido se omiten por completo, título incluido: no aparecen ## Contexto y valor ni ## Reglas, ni sus placeholders.",
+      "input": {
+        "context": "Crear una historia de usuario para: un lector del blog quiere filtrar los artículos por etiqueta, para encontrar rápido los que tratan el tema que le interesa. No hay contexto de negocio adicional ni reglas que apliquen a varios escenarios."
+      },
+      "expected": {
+        "contains": [
+          "## Narrativa",
+          "**Como**",
+          "## ✅ Criterios de aceptación (escenarios Gherkin)",
+          "### AC-1 - ",
+          "### AC-2 - ",
+          "status: SPECIFY"
+        ],
+        "not_contains": [
+          "## Contexto y valor",
+          "## Reglas",
+          "[2–5 líneas",
+          "→ cubierta por [AC-1, AC-n]",
+          "❌"
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "id": "TC-005",
+      "name": "historia-con-contexto-y-reglas-traza-reglas-a-los-ac",
+      "type": "happy-path",
+      "description": "[STORY-201 AC-1 · EV-001] La necesidad aporta contexto de negocio y dos reglas transversales. El story.md generado incluye ## Contexto y valor con el problema real, sin el placeholder del template, y ## Reglas (reglas de negocio) con una línea - **Regla-<n>:** … → cubierta por [AC-…] por regla, que referencia AC existentes de la historia y nunca el placeholder [AC-1, AC-n].",
+      "input": {
+        "context": "Crear una historia de usuario para: el responsable de facturación de una tienda online necesita emitir notas de crédito por devoluciones aprobadas, para cerrar el mes sin ajustes manuales. Contexto: hoy las notas se hacen a mano en una planilla y el cierre mensual se retrasa 3 días por errores de importe. Reglas que aplican a todos los escenarios: el importe de una nota de crédito nunca supera el de la factura original, y solo un usuario con rol de facturación puede emitirla."
+      },
+      "expected": {
+        "contains": [
+          "## Narrativa",
+          "## Contexto y valor",
+          "## Reglas (reglas de negocio)",
+          "- **Regla-1:**",
+          "- **Regla-2:**",
+          "→ cubierta por [AC-",
+          "status: SPECIFY"
+        ],
+        "not_contains": [
+          "[2–5 líneas",
+          "[regla transversal",
+          "AC-n]",
+          "❌"
+        ]
+      },
+      "threshold": 0.9
     }
   ]
 }

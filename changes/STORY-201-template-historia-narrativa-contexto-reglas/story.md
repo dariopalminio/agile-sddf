@@ -5,7 +5,7 @@ id: STORY-201
 kind: feat
 slug: STORY-201-template-historia-narrativa-contexto-reglas
 title: "Template de historia con narrativa, contexto y reglas de negocio"
-status: PLAN
+status: VERIFY
 substatus: DONE
 parent:
 created: 2026-11-27
@@ -49,10 +49,10 @@ Entonces el story.md generado contiene "## Narrativa" con las líneas "Como", "Q
 
 ### AC-3 - Escenario de compatibilidad – Historias existentes con encabezados anteriores
 ```gherkin
-Dado una historia existente con los encabezados "## ✅ Criterios de aceptación" y "## 📎 Notas / contexto adicional"
+Dado una historia existente con los encabezados "## ✅ Criterios de aceptación", "## Fuera de alcance (Non-Goals)" y "## 📎 Notas / contexto adicional"
 Cuando se ejecuta "npm run verify:repository"
 Entonces el gate termina con código 0
-  Y cada skill que localiza esas secciones (story-acceptance, story-verify, story-evaluation, story-refine y epic-refine) nombra en su SKILL.md o references/ ambos títulos, o los busca por el comienzo común ("## ✅ Criterios de aceptación", "## 📎 Notas" / "## 🔗 Notas")
+  Y cada skill que localiza esas secciones (story-acceptance, story-verify, story-evaluation, story-refine, epic-refine, epic-analyze y epic-validate) nombra en su SKILL.md o references/ ambos títulos, o los busca por el comienzo común ("## ✅ Criterios de aceptación", "## 🚫 Fuera de alcance" / "## Fuera de alcance", "## 📎 Notas" / "## 🔗 Notas")
   Y el AC de cierre que genera epic-refine usa el formato "### AC-<k+1> - …" con guion
 ```
 
@@ -67,7 +67,7 @@ Entonces el gate termina con código 0
 
 ## 📎 Notas / contexto adicional
 - **Origen:** propuesta del Solo Builder del 2026-11-27 con la estructura completa del template nuevo (Narrativa, Contexto y valor, AC, Reglas con keywords RFC 2119, CNF, Fuera de alcance, Notas adicionales con Dependencia/Supuesto/Notas UX-UI/Datos de prueba).
-- **Riesgo de compatibilidad:** dos encabezados cambian de texto. `## ✅ Criterios de aceptación (escenarios Gherkin)` conserva el prefijo anterior, pero `## 🔗 Notas adicionales` no coincide con el prefijo `## 📎 Notas` que usa `skills/epic-refine/references/sal-corrections.md`. Hoy localizan secciones por encabezado: `story-acceptance`, `story-verify`, `story-evaluation` (componente 2), `story-refine` (dimensiones I y E), `epic-refine` (SAL-01/SAL-02) y el ejemplo inline de `epic-generate-stories`.
+- **Riesgo de compatibilidad:** tres encabezados cambian de texto. `## ✅ Criterios de aceptación (escenarios Gherkin)` conserva el prefijo anterior, pero `## 🔗 Notas adicionales` no coincide con el prefijo `## 📎 Notas` que usa `skills/epic-refine/references/sal-corrections.md`, y `## 🚫 Fuera de alcance (Non-Goals) *(si aplica)*` ya no empieza por `Fuera de alcance`, el comienzo que excluyen la evidencia E1 y las dependencias. Hoy localizan secciones por encabezado: `story-acceptance`, `story-verify`, `story-evaluation` (componente 2), `story-refine` (dimensiones I y E), `epic-refine` (SAL-01/SAL-02, regla E1 y `depends-on:`), `epic-analyze` (evidencia E1), `epic-validate` (historias dueñas de un smoke) y el ejemplo inline de `epic-generate-stories`.
 - **Decisión:** los encabezados de AC se unifican con guion (`### AC-<n> - …`) porque no es un carácter raro. Hoy el template vigente y el AC de cierre de `epic-refine` (`skills/epic-refine/references/sal-corrections.md:83`) usan raya (`### AC-<n> — …`); ambos se alinean (AC-1, AC-3). Los consumidores buscan el prefijo `### AC-<n>`, así que las historias existentes con raya siguen siendo válidas.
 - **Supuesto:** la sección `## Reglas` usa las palabras clave RFC 2119 (MUST/SHALL) tal como propone el comentario guía del template nuevo.
 - Mantener frontmatter como està actualmente definido, consistente con los metadatos requeridos por el repositorio.

@@ -1,6 +1,6 @@
 {
   "skill": "epic-analyze",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Casos de prueba para epic-analyze (STORY-120): cruza la sección de historias de epic.md (localizada por la clave 'historias' del template de épica) con los story.md que declaran la épica como parent, escribe <EPIC_DIR>/epic-analyze-report.md desde un template leído en runtime (central → seed) con hallazgos INT-01…INT-06 y un veredicto APPROVED / NEEDS-REFINEMENT; desde STORY-121 añade la familia SAL-01…SAL-04 (cobertura de criterios de salida y smoke tests por las historias, con evidencia E1 mención explícita / E2 AC que verifica) y la tabla de cobertura del contrato de salida; desde STORY-122 añade la familia MAD-01…MAD-03 (madurez de las historias hijas: estado mínimo SPECIFY/DONE y referencias related a historias o épicas resolubles por ID), todos WARNING; nunca modifica epic.md ni story.md y se detiene sin escribir ante una épica no resuelta o un template ausente; desde BUG-003 un criterio con ID declarado (`**CS-<id>** — …`) se cubre por la mención de su ID (E1, como SMOKE-<N>), el reporte lo etiqueta con ese ID y cita su enunciado literal de epic.md.",
   "cases": [
     {
@@ -1810,6 +1810,141 @@
       "expected": {
         "contains": ["MAD-03", "READY-FOR-VERIFY", "Madurez de historias hijas: 1/2"],
         "not_contains": ["valor legado"]
+      },
+      "threshold": 1.0
+    },
+    {
+      "id": "TC-038",
+      "name": "fuera-de-alcance-con-emoji-no-cubre",
+      "type": "error-handling",
+      "description": "STORY-201 fix-directives ronda 1 #2: como TC-016, pero las tres historias usan los títulos del template actual. STORY-203 menciona SMOKE-2 solo en `## 🚫 Fuera de alcance (Non-Goals) *(si aplica)*`, STORY-201 cita SMOKE-1 en `## 🔗 Notas adicionales…` y STORY-202 titula su AC con guion. La sección de exclusión con emoji tampoco cuenta como evidencia E1: se esperan SAL-01 (criterio) y SAL-02 (SMOKE-2), y la tabla cuenta 1 de 3 elementos cubiertos.",
+      "input": {
+        "invocation": "/epic-analyze EPIC-30",
+        "mode": "manual",
+        "epics_dirs": [
+          "changes/EPIC-30-ejemplo/"
+        ],
+        "epic_md_path": "changes/EPIC-30-ejemplo/epic.md",
+        "epic_md_lines": [
+          "1: ---",
+          "2: type: epic",
+          "3: id: EPIC-30",
+          "4: title: \"Épica de ejemplo\"",
+          "5: ---",
+          "6: ",
+          "17: ## Historias <!-- sección obligatoria · clave: historias -->",
+          "18: - [ ] **STORY-201** — Escribir reporte: genera el reporte de la épica.",
+          "19: - [ ] **STORY-202** — Calcular veredicto: deriva el veredicto de los hallazgos.",
+          "20: - [ ] **STORY-203** — Notas del análisis: lista observaciones.",
+          "21: ",
+          "22: ## Criterios de salida <!-- sección obligatoria · clave: criterios-salida -->",
+          "23: - [ ] `/epic-analyze` escribe `epic-analyze-report.md` en el directorio de la épica",
+          "24: ",
+          "25: ## Smoke tests <!-- sección obligatoria · clave: smoke-tests -->",
+          "26: ### SMOKE-1 — Reporte generado",
+          "27: ```gherkin",
+          "28: Escenario: Reporte generado",
+          "29:   Dado una épica con índice consistente",
+          "30:   Cuando se ejecuta /epic-analyze",
+          "31:   Entonces existe epic-analyze-report.md",
+          "32: ```",
+          "33: ",
+          "34: ### SMOKE-2 — Notas visibles",
+          "35: ```gherkin",
+          "36: Escenario: Notas visibles",
+          "37:   Dado una épica con líneas no reconocidas",
+          "38:   Cuando se ejecuta /epic-analyze",
+          "39:   Entonces el reporte lista cada línea en Notas del análisis",
+          "40: ```"
+        ],
+        "stories": [
+          {
+            "path": "changes/STORY-201-escribir-reporte/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Escribir reporte",
+              "8: ## 🔗 Notas adicionales (Dependencias, supuestos y notas) *(si aplica)*",
+              "9: - Cubre SMOKE-1 de la épica."
+            ]
+          },
+          {
+            "path": "changes/STORY-202-calcular-veredicto/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Calcular veredicto",
+              "8: ## ✅ Criterios de aceptación (escenarios Gherkin)",
+              "9: ### AC-1 - Veredicto aprobado",
+              "10: ```gherkin",
+              "11: Dado una épica sin hallazgos",
+              "12: Cuando se ejecuta \"/epic-analyze EPIC-30\"",
+              "13: Entonces el reporte declara el veredicto \"APPROVED\"",
+              "14: ```"
+            ]
+          },
+          {
+            "path": "changes/STORY-203-notas-analisis/story.md",
+            "parent": "EPIC-30-ejemplo",
+            "status": "SPECIFY",
+            "substatus": "DONE",
+            "related": [],
+            "body_lines": [
+              "1: ---",
+              "2: parent: EPIC-30-ejemplo",
+              "3: status: SPECIFY",
+              "4: substatus: DONE",
+              "5: related: []",
+              "6: ---",
+              "7: # Historia: Notas del análisis",
+              "8: ## 🚫 Fuera de alcance (Non-Goals) *(si aplica)*",
+              "9: - El flujo de SMOKE-2 → STORY-205."
+            ]
+          }
+        ],
+        "templates": {
+          "docs/templates/epic-template.md": "existe; declara '## Historias' con 'clave: historias', '## Criterios de salida' con 'clave: criterios-salida' y '## Smoke tests' con 'clave: smoke-tests'",
+          "skills/epic-analyze/assets/epic-analyze-report-template.md": "existe (seed del skill)"
+        },
+        "today": "2026-10-08"
+      },
+      "expected": {
+        "contains": [
+          "SAL-01",
+          "SAL-02",
+          "SMOKE-2",
+          "Contrato de salida: 1/3 cubiertos",
+          "errors: 1",
+          "warnings: 1",
+          "verdict: NEEDS-REFINEMENT",
+          "## Veredicto",
+          "**Veredicto:** `NEEDS-REFINEMENT`"
+        ],
+        "not_contains": [
+          "Contrato de salida: 2/3",
+          "Contrato de salida: 3/3",
+          "verdict: APPROVED",
+          "epic.md ===",
+          "story.md ===",
+          "verdict: BLOCKED",
+          "**Veredicto:** `BLOCKED`"
+        ]
       },
       "threshold": 1.0
     }

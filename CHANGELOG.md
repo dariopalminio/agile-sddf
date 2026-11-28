@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Template de historia con narrativa, contexto y reglas (STORY-201): `docs/templates/story-template.md` y su seed `skills/story-creation/assets/story-template.md` (idénticos) separan `## Narrativa` (`Como/Quiero/Para`) del título y agregan `## Contexto y valor *(si aplica)*` y `## Reglas (reglas de negocio) *(si aplica)*`, con reglas RFC 2119 trazadas a los AC (`→ cubierta por [AC-1, AC-n]`). Los encabezados pasan a `## ✅ Criterios de aceptación (escenarios Gherkin)`, `## 🚫 Fuera de alcance (Non-Goals) *(si aplica)*` y `## 🔗 Notas adicionales (Dependencias, supuestos y notas) *(si aplica)*`; el frontmatter y los comentarios `escritor:` no cambian. `/story-creation` omite por completo, título incluido, las secciones `*(si aplica)*` sin contenido.
+- Títulos de AC con guion (STORY-201): el template, los ejemplos de `story-creation`, `epic-generate-stories` y `epic-generate-all-stories` y el AC de cierre que añade `epic-refine` (SAL-01/SAL-02) usan `### AC-<n> - …` en lugar de la raya `—`.
+- Compatibilidad con los títulos anteriores (STORY-201): `story-acceptance`, `story-verify`, `story-evaluation` (componentes 1 y 2 de la rúbrica F, sin cambiar scores), `story-refine` y `epic-refine` localizan las secciones por su comienzo común (`## ✅ Criterios de aceptación`, `## 🔗 Notas` / `## 📎 Notas`) o aceptan `## 📖 Historia` y el par `# 📖 Historia:` + `## Narrativa`. `epic-analyze` (evidencia E1), `epic-refine` (regla E1 y `depends-on:`) y `epic-validate` (historias dueñas de un smoke) siguen excluyendo la sección de no-objetivos con el título nuevo: reconocen `## 🚫 Fuera de alcance` y `## Fuera de alcance`. Las historias existentes no se migran y siguen siendo válidas: no es un cambio BREAKING.
+
 ## [6.0.0] — 2026-11-22
 
 ### BREAKING — changes/ y especificación viva en specs/ (EPIC-030, requiere 6.0.0)

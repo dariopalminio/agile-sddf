@@ -221,6 +221,8 @@ Se evalúa en orden; gana la primera condición que coincide. Esta tabla aplica 
 
 ##### Componente 1: Sección Historia `## 📖 Historia` con `Como/Quiero/Para` (peso 40%)
 
+Se acepta como sección Historia `## 📖 Historia` o el par `# 📖 Historia:` + `## Narrativa` (template actual); los criterios de score son los mismos para ambas formas.
+
 | Score | Criterio |
 |:---:|---|
 | 5 | Sección `## 📖 Historia` presente + `Como/Quiero/Para` completo y semánticamente correcto: rol real, acción concreta, beneficio medible |
@@ -231,6 +233,8 @@ Se evalúa en orden; gana la primera condición que coincide. Esta tabla aplica 
 | 0 | Sin intento de formato historia de usuario |
 
 ##### Componente 2: Sección `## ✅ Criterios de aceptación` con escenarios nombrados (peso 30%)
+
+La sección de criterios es la que empieza por `## ✅ Criterios de aceptación` (`## ✅ Criterios de aceptación (escenarios Gherkin)` en el template actual; sin sufijo en historias anteriores); los criterios de score no cambian.
 
 | Score | Criterio |
 |:---:|---|
@@ -350,9 +354,10 @@ Si la historia no tiene escenarios Gherkin, estimar por complejidad implícita d
 
 ### Ejemplos de referencia
 
-Los tres ejemplos ilustran los caminos principales de FINVEST:
+Los ejemplos ilustran los caminos principales de FINVEST:
 
 - `examples/example-ready.md` — Historia con secciones completas → F_score 5.0, FINVEST Score 4.50 → `APPROVED` (fila 4)
+- `examples/example-template-actual.md` — La misma historia con la estructura del template actual (`# 📖 Historia:` + `## Narrativa`, `## ✅ Criterios de aceptación (escenarios Gherkin)`) → F_score 5.0, FINVEST Score 4.50 → `APPROVED` (fila 4)
 - `examples/example-refinar.md` — Historia con criterios y un escenario Gherkin, pero con dimensiones débiles → F_score 3.40, FINVEST Score 3.28 → `NEEDS-REFINEMENT` (fila 5)
 - `examples/example-rechazar.md` — Dos casos:
   - Caso A: Sin secciones ni Gherkin formal → F_score 1.00 → `NEEDS-REFINEMENT` (fila 1)

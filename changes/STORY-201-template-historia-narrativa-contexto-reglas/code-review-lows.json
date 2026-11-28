@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "generated": "2026-11-28",
+  "entries": [
+    {
+      "id": "L1",
+      "reviewer": "tech-lead-reviewer",
+      "location": "skills/story-evaluation/evals/evals.json:188-188",
+      "description": "TC-010/TC-011 remiten a fixtures que ya contienen las cadenas esperadas y la description anuncia el resultado",
+      "hash": "6492263af8cd3e16"
+    },
+    {
+      "id": "L2",
+      "reviewer": "product-owner-reviewer",
+      "location": "skills/story-creation/evals/evals.json:73-78",
+      "description": "TC-004 solo comprueba **Como** y no distingue AC principal de alternativo",
+      "hash": "34b55a21af676b60"
+    },
+    {
+      "id": "L3",
+      "reviewer": "product-owner-reviewer",
+      "location": "changes/STORY-201-template-historia-narrativa-contexto-reglas/testcases.md:35-35",
+      "description": "E2E-003 no refleja la ampliación de AC-3 (Fuera de alcance, epic-analyze, epic-validate) ni traza TC-038/TC-044",
+      "hash": "61eebcd046b51fa6"
+    },
+    {
+      "id": "L4",
+      "reviewer": "integration-reviewer",
+      "location": "docs/templates/story-template.md:78-78",
+      "description": "La línea **Dependencia:** del template no la reconoce sal-corrections.md §2, que solo cuenta depends-on:",
+      "hash": "cdfee22674dcfe6e"
+    },
+    {
+      "id": "L5",
+      "reviewer": "integration-reviewer",
+      "location": "changes/STORY-201-template-historia-narrativa-contexto-reglas/design.md:42-42",
+      "description": "El cuerpo de design.md no se alineó con CR-005 (epic-analyze sin cambios, Interfaces, cinco skills)",
+      "hash": "d9dada3683130621"
+    }
+  ]
+}

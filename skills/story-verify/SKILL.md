@@ -394,7 +394,7 @@ Si no puede crearse, agregar `{origen: "modo manual", motivo: "no se pudo crear 
 
 Si el directorio existe, proceder:
 
-1. Leer los escenarios Gherkin de `story.md` (sección `## ✅ Criterios de aceptación`)
+1. Leer los escenarios Gherkin de `story.md` (la sección cuyo título empieza por `## ✅ Criterios de aceptación` (`## ✅ Criterios de aceptación (escenarios Gherkin)` en el template actual; sin sufijo en historias anteriores))
 2. Escribir `.tmp/story-verify/{story_id}/qa-input.json`:
 ```json
 {

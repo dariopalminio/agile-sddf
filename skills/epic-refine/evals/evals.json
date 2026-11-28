@@ -1,6 +1,6 @@
 {
   "skill": "epic-refine",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Casos de prueba para epic-refine (STORY-165, STORY-173, STORY-174): con epic-analyze-report.md en NEEDS-REFINEMENT aplica INT-02 (historia huérfana al índice), INT-03 (una sola línea) y MAD-02 (retira el related roto) tras un plan consolidado, con <archivo>.bak previo, status/substatus intactos y epic-refine-report.md; con APPROVED no crea ni modifica ningún archivo; los hallazgos que requieren decisión del PO quedan fuera de alcance; SAL-01/SAL-02 con evidencia parcial se asignan a la única historia de cierre (AC de cierre + cita E1); las referencias a slugs obsoletos tras un /story-split (COH) se reemplazan por el único directorio con el mismo ID o quedan para el PO. En cada fixture, el directorio del ejemplo hace de changes/.",
   "cases": [
     {
@@ -191,7 +191,7 @@
       },
       "expected": {
         "contains": ["ya resuelto", "SAL-01", "YA-RESUELTOS: 1", "APLICADOS: 0", "desactualizado"],
-        "not_contains": ["AC-4 — Cierre del contrato de salida", "Backup creado", "APLICADOS: 1"]
+        "not_contains": ["AC-4 — Cierre del contrato de salida", "AC-4 - Cierre del contrato de salida", "Backup creado", "APLICADOS: 1"]
       },
       "threshold": 0.95
     },
@@ -501,6 +501,38 @@
       "expected": {
         "contains": ["fuera del workflow de historia", "BACKLOG", "FUERA-DE-ALCANCE: 1"],
         "not_contains": ["STORY-302-enviar-csv-por-correo/story.md.bak", "Replanifica"]
+      },
+      "threshold": 0.95
+    },
+    {
+      "id": "TC-029",
+      "name": "cierre-en-historia-con-titulos-del-template-actual",
+      "type": "happy-path",
+      "description": "[STORY-201 AC-3 · EV-005 · EV-006 · fix-directives ronda 1 #1 y #2] Como TC-009, pero las dos historias usan los títulos del template actual: ## ✅ Criterios de aceptación (escenarios Gherkin) con AC titulados con guion y ## 🔗 Notas adicionales (Dependencias, supuestos y notas) *(si aplica)*. STORY-301 cita el criterio CS-1 completo y un depends-on: STORY-302 solo dentro de ## 🚫 Fuera de alcance (Non-Goals) *(si aplica)*, donde no cuentan: CS-1 no está ya resuelto y STORY-301 no depende de STORY-302. En --auto el skill crea solo el story.md.bak de STORY-302, añade tras su AC-2 el AC de cierre con guion '### AC-3 - Cierre del contrato de salida – CS-1 de EPIC-30' y agrega la línea E1 al final de la sección de notas existente, justo tras '- depends-on: STORY-301', sin crear otra sección de notas.",
+      "input": {
+        "input_path": "skills/epic-refine/examples/cobertura-cierre-template-actual/EPIC-30-ejemplo/epic.md",
+        "flags": [
+          "--auto"
+        ],
+        "context": "El directorio skills/epic-refine/examples/cobertura-cierre-template-actual/ hace de changes/. El orquestador ejecuta /epic-refine EPIC-30 --auto."
+      },
+      "expected": {
+        "contains": [
+          "SAL-01 · CS-1 → STORY-302",
+          "STORY-302-enviar-csv-por-correo/story.md.bak",
+          "### AC-3 - Cierre del contrato de salida – CS-1 de EPIC-30",
+          "- depends-on: STORY-301\n- Cubre el criterio de salida CS-1 de EPIC-30: El listado de pedidos del mes se exporta a CSV y se envía por correo al responsable de ventas",
+          "APLICADOS: 1"
+        ],
+        "not_contains": [
+          "AC-3 — Cierre del contrato de salida",
+          "STORY-301-exportar-pedidos-csv/story.md.bak",
+          "SAL-01 · CS-1 → STORY-301",
+          "YA-RESUELTOS: 1",
+          "ninguna candidata sin dependientes",
+          "## 📎 Notas",
+          "epic.md.bak"
+        ]
       },
       "threshold": 0.95
     }
